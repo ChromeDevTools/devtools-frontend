@@ -14,6 +14,8 @@ Protocol.SessionRouter = ProtocolModule.InspectorBackend.SessionRouter;
 /** @constructor */
 Protocol.InspectorBackend = ProtocolModule.InspectorBackend.InspectorBackend;
 
+Protocol.InspectorBackend.ProtocolError = ProtocolModule.InspectorBackend.ProtocolError;
+
 /** @interface */
 Protocol.Connection = ProtocolModule.InspectorBackend.Connection;
 
@@ -25,14 +27,5 @@ Protocol.test = ProtocolModule.InspectorBackend.test;
 /** @constructor */
 Protocol.TargetBase = ProtocolModule.InspectorBackend.TargetBase;
 
-/** @typedef {string} */
-Protocol.Error = ProtocolModule.InspectorBackend.ProtocolError;
-
 /** @constructor */
 Protocol.NodeURL = ProtocolModule.NodeURL.NodeURL;
-
-/**
- * Takes error and result.
- * @typedef {function(?Object, ?Object)}
- */
-Protocol._Callback;

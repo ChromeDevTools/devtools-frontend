@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as ProtocolModule from '../protocol/protocol.js';
 
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
@@ -446,7 +447,7 @@ export async function _evaluateInPage(code) {
     code += `//# sourceURL=${sourceURL}`;
   }
   const response = await TestRunner.RuntimeAgent.invoke_evaluate({expression: code, objectGroup: 'console'});
-  const error = response[Protocol.Error];
+  const error = response[ProtocolModule.InspectorBackend.ProtocolError];
   if (error) {
     addResult('Error: ' + error);
     completeTest();
@@ -465,7 +466,7 @@ export async function _evaluateInPage(code) {
 export async function evaluateInPageAnonymously(code, userGesture) {
   const response =
       await TestRunner.RuntimeAgent.invoke_evaluate({expression: code, objectGroup: 'console', userGesture});
-  if (!response[Protocol.Error]) {
+  if (!response[ProtocolModule.InspectorBackend.ProtocolError]) {
     return response.result.value;
   }
   addResult(
@@ -490,7 +491,7 @@ export async function evaluateInPageAsync(code) {
   const response = await TestRunner.RuntimeAgent.invoke_evaluate(
       {expression: code, objectGroup: 'console', includeCommandLineAPI: false, awaitPromise: true});
 
-  const error = response[Protocol.Error];
+  const error = response[ProtocolModule.InspectorBackend.ProtocolError];
   if (!error && !response.exceptionDetails) {
     return response.result.value;
   }

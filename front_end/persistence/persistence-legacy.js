@@ -61,12 +61,6 @@ Persistence.PlatformFileSystem = PersistenceModule.PlatformFileSystem.PlatformFi
 /** @constructor */
 Persistence.WorkspaceSettingsTab = PersistenceModule.WorkspaceSettingsTab.WorkspaceSettingsTab;
 
-/** @typedef {!{type: string, fileSystemName: string, rootURL: string, fileSystemPath: string}} */
-Persistence.IsolatedFileSystemManager.FileSystem;
-
-/** @typedef {!{changed:!Platform.Multimap<string, string>, added:!Platform.Multimap<string, string>, removed:!Platform.Multimap<string, string>}} */
-Persistence.IsolatedFileSystemManager.FilesChangedData;
-
 /**
  * @type {!PersistenceModule.IsolatedFileSystemManager.IsolatedFileSystemManager}
  */

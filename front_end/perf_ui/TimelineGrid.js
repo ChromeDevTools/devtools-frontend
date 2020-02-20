@@ -51,7 +51,7 @@ export class TimelineGrid {
   /**
    * @param {!Calculator} calculator
    * @param {number=} freeZoneAtLeft
-   * @return {!PerfUI.TimelineGrid.DividersData}
+   * @return {!DividersData}
    */
   static calculateGridOffsets(calculator, freeZoneAtLeft) {
     /** @const */ const minGridSlicePx = 64;  // minimal distance between grid lines.
@@ -102,7 +102,7 @@ export class TimelineGrid {
 
   /**
    * @param {!CanvasRenderingContext2D} context
-   * @param {!PerfUI.TimelineGrid.DividersData} dividersData
+   * @param {!DividersData} dividersData
    */
   static drawCanvasGrid(context, dividersData) {
     context.save();
@@ -124,7 +124,7 @@ export class TimelineGrid {
 
   /**
    * @param {!CanvasRenderingContext2D} context
-   * @param {!PerfUI.TimelineGrid.DividersData} dividersData
+   * @param {!DividersData} dividersData
    * @param {function(number):string} formatTimeFunction
    * @param {number} paddingTop
    * @param {number} headerHeight
@@ -307,3 +307,6 @@ export class Calculator {
   /** @return {number} */
   boundarySpan() {}
 }
+
+/** @typedef {!{offsets: !Array<!{position: number, time: number}>, precision: number}} */
+export let DividersData;

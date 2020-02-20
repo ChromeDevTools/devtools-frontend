@@ -56,7 +56,7 @@ export class FlameChartDelegate {
 
   /**
    * @param {!FlameChart} flameChart
-   * @param {?PerfUI.FlameChart.Group} group
+   * @param {?Group} group
    */
   updateSelectedGroup(flameChart, group) {
   }
@@ -1529,7 +1529,7 @@ export class FlameChart extends UI.Widget.VBox {
   }
 
   /**
-   * @param {function(number, number, !PerfUI.FlameChart.Group, boolean, number)} callback
+   * @param {function(number, number, !Group, boolean, number)} callback
    */
   _forEachGroup(callback) {
     const groups = this._rawTimelineData.groups || [];
@@ -1559,7 +1559,7 @@ export class FlameChart extends UI.Widget.VBox {
   }
 
   /**
-   * @param {function(number, number, !PerfUI.FlameChart.Group, boolean, number)} callback
+   * @param {function(number, number, !Group, boolean, number)} callback
    */
   _forEachGroupInViewport(callback) {
     const top = this._chartViewport.scrollOffset();
@@ -1576,7 +1576,7 @@ export class FlameChart extends UI.Widget.VBox {
 
   /**
    * @param {!CanvasRenderingContext2D} context
-   * @param {!PerfUI.FlameChart.Group} group
+   * @param {!Group} group
    * @return {number}
    */
   _labelWidthForGroup(context, group) {
@@ -1585,7 +1585,7 @@ export class FlameChart extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!PerfUI.FlameChart.Group} group
+   * @param {!Group} group
    * @param {number} y
    * @param {number} endLevel
    */
@@ -2120,7 +2120,7 @@ export class TimelineData {
    * @param {!Array<number>|!Uint16Array} entryLevels
    * @param {!Array<number>|!Float32Array} entryTotalTimes
    * @param {!Array<number>|!Float64Array} entryStartTimes
-   * @param {?Array<!PerfUI.FlameChart.Group>} groups
+   * @param {?Array<!Group>} groups
    */
   constructor(entryLevels, entryTotalTimes, entryStartTimes, groups) {
     this.entryLevels = entryLevels;
@@ -2133,7 +2133,7 @@ export class TimelineData {
     this.flowStartLevels = [];
     this.flowEndTimes = [];
     this.flowEndLevels = [];
-    /** @type {?PerfUI.FlameChart.Group} */
+    /** @type {?Group} */
     this.selectedGroup = null;
   }
 }

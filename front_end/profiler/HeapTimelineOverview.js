@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as UI from '../ui/ui.js';
 
 /**
@@ -15,7 +16,7 @@ export class HeapTimelineOverview extends UI.Widget.VBox {
 
     this._overviewCalculator = new OverviewCalculator();
     this._overviewContainer = this.element.createChild('div', 'heap-overview-container');
-    this._overviewGrid = new PerfUI.OverviewGrid('heap-recording', this._overviewCalculator);
+    this._overviewGrid = new PerfUI.OverviewGrid.OverviewGrid('heap-recording', this._overviewCalculator);
     this._overviewGrid.element.classList.add('fill');
 
     this._overviewCanvas = this._overviewContainer.createChild('canvas', 'heap-recording-overview-canvas');

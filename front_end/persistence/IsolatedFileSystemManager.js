@@ -86,7 +86,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
      * @this {IsolatedFileSystemManager}
      */
     function onFileSystemsLoaded(event) {
-      const fileSystems = /** @type {!Array.<!Persistence.IsolatedFileSystemManager.FileSystem>} */ (event.data);
+      const fileSystems = /** @type {!Array.<!FileSystem>} */ (event.data);
       const promises = [];
       for (let i = 0; i < fileSystems.length; ++i) {
         promises.push(this._innerAddFileSystem(fileSystems[i], false));
@@ -128,7 +128,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   /**
-   * @param {!Persistence.IsolatedFileSystemManager.FileSystem} fileSystem
+   * @param {!FileSystem} fileSystem
    * @param {boolean} dispatchEvent
    * @return {!Promise<?IsolatedFileSystem>}
    */
@@ -169,7 +169,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
    */
   async _onFileSystemAdded(event) {
     const errorMessage = /** @type {string} */ (event.data['errorMessage']);
-    let fileSystem = /** @type {?Persistence.IsolatedFileSystemManager.FileSystem} */ (event.data['fileSystem']);
+    let fileSystem = /** @type {?FileSystem} */ (event.data['fileSystem']);
     if (errorMessage) {
       self.Common.console.error(Common.UIString.UIString('Unable to add filesystem: %s', errorMessage));
       if (!this._fileSystemRequestResolve) {
@@ -375,3 +375,6 @@ export const Events = {
 };
 
 let _lastRequestId = 0;
+
+/** @typedef {!{type: string, fileSystemName: string, rootURL: string, fileSystemPath: string}} */
+export let FileSystem;

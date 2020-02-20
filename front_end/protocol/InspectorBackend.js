@@ -289,7 +289,7 @@ export class SessionRouter {
     this._pendingResponsesCount = 0;
     this._domainToLogger = new Map();
 
-    /** @type {!Map<string, {target: !TargetBase, callbacks: !Map<number, !Protocol._Callback>, proxyConnection: ?Connection}>} */
+    /** @type {!Map<string, {target: !TargetBase, callbacks: !Map<number, !_Callback>, proxyConnection: ?Connection}>} */
     this._sessions = new Map();
 
     /** @type {!Array<function()>} */
@@ -370,7 +370,7 @@ export class SessionRouter {
    * @param {string} domain
    * @param {string} method
    * @param {?Object} params
-   * @param {!Protocol._Callback} callback
+   * @param {!_Callback} callback
    */
   sendMessage(sessionId, domain, method, params, callback) {
     const messageObject = {};
@@ -524,7 +524,7 @@ export class SessionRouter {
   }
 
   /**
-   * @param {!Protocol._Callback} callback
+   * @param {!_Callback} callback
    */
   static dispatchConnectionError(callback) {
     const error = {
@@ -844,3 +844,9 @@ class _DispatcherPrototype {
     }
   }
 }
+
+/**
+ * Takes error and result.
+ * @typedef {function(?Object, ?Object)}
+ */
+export let _Callback;

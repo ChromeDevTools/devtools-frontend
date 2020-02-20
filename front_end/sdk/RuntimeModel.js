@@ -872,7 +872,7 @@ SDKModel.register(RuntimeModel, Capability.JS, true);
 /** @typedef {{
  *    object: (!RemoteObject|undefined),
  *    exceptionDetails: (!Protocol.Runtime.ExceptionDetails|undefined),
- *    error: (!Protocol.Error|undefined)}
+ *    error: (!ProtocolModule.InspectorBackend.ProtocolError|undefined)}
  *  }}
  */
 export let EvaluationResult;
@@ -901,7 +901,7 @@ export let EvaluationOptions;
 
 /** @typedef {{
  *    objects: (!RemoteObject|undefined),
- *    error: (!Protocol.Error|undefined)}
+ *    error: (!ProtocolModule.InspectorBackend.ProtocolError|undefined)}
  *  }}
  */
 export let QueryObjectResult;

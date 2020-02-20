@@ -35,6 +35,7 @@ import * as DataGrid from '../data_grid/data_grid.js';
 import * as HeapSnapshotModel from '../heap_snapshot_model/heap_snapshot_model.js';
 import * as Host from '../host/host.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
+import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -1759,7 +1760,7 @@ export class HeapSnapshotStatisticsView extends UI.Widget.VBox {
   constructor() {
     super();
     this.element.classList.add('heap-snapshot-statistics-view');
-    this._pieChart = new PerfUI.PieChart({
+    this._pieChart = new PerfUI.PieChart.PieChart({
       chartName: ls`Heap memory usage`,
       size: 150,
       formatter: HeapSnapshotStatisticsView._valueFormatter,

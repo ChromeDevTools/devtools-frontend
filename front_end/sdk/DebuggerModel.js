@@ -489,7 +489,7 @@ export class DebuggerModel extends SDKModel {
    * @param {!Protocol.Runtime.ScriptId} scriptId
    * @param {string} newSource
    * @param {function(?ProtocolModule.InspectorBackend.ProtocolError, !Protocol.Runtime.ExceptionDetails=)} callback
-   * @param {?Protocol.Error} error
+   * @param {?ProtocolModule.InspectorBackend.ProtocolError} error
    * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
    * @param {!Array.<!Protocol.Debugger.CallFrame>=} callFrames
    * @param {!Protocol.Runtime.StackTrace=} asyncStackTrace

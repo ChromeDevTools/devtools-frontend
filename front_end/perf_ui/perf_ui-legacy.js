@@ -86,37 +86,3 @@ PerfUI.TimelineOverviewBase = PerfUIModule.TimelineOverviewPane.TimelineOverview
 
 /** @interface */
 PerfUI.TimelineOverview = PerfUIModule.TimelineOverviewPane.TimelineOverview;
-
-/**
- * @typedef {!{
-  *     name: string,
-  *     startLevel: number,
-  *     expanded: (boolean|undefined),
-  *     selectable: (boolean|undefined),
-  *     style: !PerfUI.FlameChart.GroupStyle
-  * }}
-  */
-PerfUI.FlameChart.Group;
-
-/**
-  * @typedef {!{
-  *     height: number,
-  *     padding: number,
-  *     collapsible: boolean,
-  *     font: string,
-  *     color: string,
-  *     backgroundColor: string,
-  *     nestingLevel: number,
-  *     itemsHeight: (number|undefined),
-  *     shareHeaderLine: (boolean|undefined),
-  *     useFirstLineForOverview: (boolean|undefined),
-  *     useDecoratorsForOverview: (boolean|undefined)
-  * }}
-  */
-PerfUI.FlameChart.GroupStyle;
-
-/** @typedef {{size: number, formatter: function(number):string, showLegend: (boolean|undefined), chartName: string}} */
-PerfUI.PieChartOptions;
-
-/** @typedef {!{offsets: !Array<!{position: number, time: number}>, precision: number}} */
-PerfUI.TimelineGrid.DividersData;

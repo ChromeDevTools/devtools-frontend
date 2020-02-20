@@ -35,7 +35,7 @@ import * as UI from '../ui/ui.js';
  */
 export class PieChart {
   /**
-   * @param {!PerfUI.PieChartOptions} options
+   * @param {!PieChartOptions} options
    */
   constructor(options) {
     const {size, formatter, showLegend, chartName} = options;
@@ -177,3 +177,6 @@ export class PieChart {
     return node;
   }
 }
+
+/** @typedef {{size: number, formatter: function(number):string, showLegend: (boolean|undefined), chartName: string}} */
+export let PieChartOptions;

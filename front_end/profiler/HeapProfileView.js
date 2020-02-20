@@ -4,6 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
+import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 

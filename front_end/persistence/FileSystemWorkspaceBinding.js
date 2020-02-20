@@ -169,7 +169,7 @@ export class FileSystemWorkspaceBinding {
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _fileSystemFilesChanged(event) {
-    const paths = /** @type {!Persistence.IsolatedFileSystemManager.FilesChangedData} */ (event.data);
+    const paths = /** @type {!FilesChangedData} */ (event.data);
     for (const fileSystemPath of paths.changed.keysArray()) {
       const fileSystem = this._boundFileSystems.get(fileSystemPath);
       if (!fileSystem) {
@@ -587,3 +587,6 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
 }
 
 const _metadata = Symbol('FileSystemWorkspaceBinding.Metadata');
+
+/** @typedef {!{changed:!Platform.Multimap<string, string>, added:!Platform.Multimap<string, string>, removed:!Platform.Multimap<string, string>}} */
+export let FilesChangedData;

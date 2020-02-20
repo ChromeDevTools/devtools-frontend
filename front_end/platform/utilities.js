@@ -26,6 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+// @ts-nocheck
 
 /* the long term goal here is to remove all functions in this file and
  * replace them with ES Module functions rather than prototype
@@ -33,6 +34,10 @@
  * that has been migrated it will need to be imported
  */
 import * as StringUtilities from './string-utilities.js';
+
+
+// Still used in the test runners that can't use ES modules :(
+String.sprintf = StringUtilities.sprintf;
 
 /**
  * @param {number} m
@@ -703,210 +708,6 @@ Object.defineProperty(Array.prototype, 'peekLast', {
 })();
 
 /**
- * @param {string} format
- * @param {...*} var_arg
- * @return {string}
- */
-String.sprintf = function(format, var_arg) {
-  return String.vsprintf(format, Array.prototype.slice.call(arguments, 1));
-};
-
-/**
- * @param {string} format
- * @param {!Object.<string, function(string, ...):*>} formatters
- * @return {!Array.<!Object>}
- */
-String.tokenizeFormatString = function(format, formatters) {
-  const tokens = [];
-
-  function addStringToken(str) {
-    if (!str) {
-      return;
-    }
-    if (tokens.length && tokens[tokens.length - 1].type === 'string') {
-      tokens[tokens.length - 1].value += str;
-    } else {
-      tokens.push({type: 'string', value: str});
-    }
-  }
-
-  function addSpecifierToken(specifier, precision, substitutionIndex) {
-    tokens.push({type: 'specifier', specifier: specifier, precision: precision, substitutionIndex: substitutionIndex});
-  }
-
-  function addAnsiColor(code) {
-    const types = {3: 'color', 9: 'colorLight', 4: 'bgColor', 10: 'bgColorLight'};
-    const colorCodes = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'lightGray', '', 'default'];
-    const colorCodesLight =
-        ['darkGray', 'lightRed', 'lightGreen', 'lightYellow', 'lightBlue', 'lightMagenta', 'lightCyan', 'white', ''];
-    const colors = {color: colorCodes, colorLight: colorCodesLight, bgColor: colorCodes, bgColorLight: colorCodesLight};
-    const type = types[Math.floor(code / 10)];
-    if (!type) {
-      return;
-    }
-    const color = colors[type][code % 10];
-    if (!color) {
-      return;
-    }
-    tokens.push({
-      type: 'specifier',
-      specifier: 'c',
-      value: {description: (type.startsWith('bg') ? 'background : ' : 'color: ') + color}
-    });
-  }
-
-  let textStart = 0;
-  let substitutionIndex = 0;
-  const re =
-      new RegExp(`%%|%(?:(\\d+)\\$)?(?:\\.(\\d*))?([${Object.keys(formatters).join('')}])|\\u001b\\[(\\d+)m`, 'g');
-  for (let match = re.exec(format); !!match; match = re.exec(format)) {
-    const matchStart = match.index;
-    if (matchStart > textStart) {
-      addStringToken(format.substring(textStart, matchStart));
-    }
-
-    if (match[0] === '%%') {
-      addStringToken('%');
-    } else if (match[0].startsWith('%')) {
-      // eslint-disable-next-line no-unused-vars
-      const [_, substitionString, precisionString, specifierString] = match;
-      if (substitionString && Number(substitionString) > 0) {
-        substitutionIndex = Number(substitionString) - 1;
-      }
-      const precision = precisionString ? Number(precisionString) : -1;
-      addSpecifierToken(specifierString, precision, substitutionIndex);
-      ++substitutionIndex;
-    } else {
-      const code = Number(match[4]);
-      addAnsiColor(code);
-    }
-    textStart = matchStart + match[0].length;
-  }
-  addStringToken(format.substring(textStart));
-  return tokens;
-};
-
-String.standardFormatters = {
-  /**
-   * @return {number}
-   */
-  d: function(substitution) {
-    return !isNaN(substitution) ? substitution : 0;
-  },
-
-  /**
-   * @return {number}
-   */
-  f: function(substitution, token) {
-    if (substitution && token.precision > -1) {
-      substitution = substitution.toFixed(token.precision);
-    }
-    return !isNaN(substitution) ? substitution : (token.precision > -1 ? Number(0).toFixed(token.precision) : 0);
-  },
-
-  /**
-   * @return {string}
-   */
-  s: function(substitution) {
-    return substitution;
-  }
-};
-
-/**
- * @param {string} format
- * @param {!Array.<*>} substitutions
- * @return {string}
- */
-String.vsprintf = function(format, substitutions) {
-  return String
-      .format(
-          format, substitutions, String.standardFormatters, '',
-          function(a, b) {
-            return a + b;
-          })
-      .formattedResult;
-};
-
-/**
- * @param {string} format
- * @param {?ArrayLike} substitutions
- * @param {!Object.<string, function(string, ...):Q>} formatters
- * @param {!T} initialValue
- * @param {function(T, Q): T|undefined} append
- * @param {!Array.<!Object>=} tokenizedFormat
- * @return {!{formattedResult: T, unusedSubstitutions: ?ArrayLike}};
- * @template T, Q
- */
-String.format = function(format, substitutions, formatters, initialValue, append, tokenizedFormat) {
-  if (!format || ((!substitutions || !substitutions.length) && format.search(/\u001b\[(\d+)m/) === -1)) {
-    return {formattedResult: append(initialValue, format), unusedSubstitutions: substitutions};
-  }
-
-  function prettyFunctionName() {
-    return 'String.format("' + format + '", "' + Array.prototype.join.call(substitutions, '", "') + '")';
-  }
-
-  function warn(msg) {
-    console.warn(prettyFunctionName() + ': ' + msg);
-  }
-
-  function error(msg) {
-    console.error(prettyFunctionName() + ': ' + msg);
-  }
-
-  let result = initialValue;
-  const tokens = tokenizedFormat || String.tokenizeFormatString(format, formatters);
-  const usedSubstitutionIndexes = {};
-
-  for (let i = 0; i < tokens.length; ++i) {
-    const token = tokens[i];
-
-    if (token.type === 'string') {
-      result = append(result, token.value);
-      continue;
-    }
-
-    if (token.type !== 'specifier') {
-      error('Unknown token type "' + token.type + '" found.');
-      continue;
-    }
-
-    if (!token.value && token.substitutionIndex >= substitutions.length) {
-      // If there are not enough substitutions for the current substitutionIndex
-      // just output the format specifier literally and move on.
-      error(
-          'not enough substitution arguments. Had ' + substitutions.length + ' but needed ' +
-          (token.substitutionIndex + 1) + ', so substitution was skipped.');
-      result = append(result, '%' + (token.precision > -1 ? token.precision : '') + token.specifier);
-      continue;
-    }
-
-    if (!token.value) {
-      usedSubstitutionIndexes[token.substitutionIndex] = true;
-    }
-
-    if (!(token.specifier in formatters)) {
-      // Encountered an unsupported format character, treat as a string.
-      warn('unsupported format character \u201C' + token.specifier + '\u201D. Treating as a string.');
-      result = append(result, token.value ? '' : substitutions[token.substitutionIndex]);
-      continue;
-    }
-
-    result = append(result, formatters[token.specifier](token.value || substitutions[token.substitutionIndex], token));
-  }
-
-  const unusedSubstitutions = [];
-  for (let i = 0; i < substitutions.length; ++i) {
-    if (i in usedSubstitutionIndexes) {
-      continue;
-    }
-    unusedSubstitutions.push(substitutions[i]);
-  }
-
-  return {formattedResult: result, unusedSubstitutions: unusedSubstitutions};
-};
-
-/**
  * @param {string} query
  * @param {boolean} caseSensitive
  * @param {boolean} isRegex
@@ -1015,7 +816,7 @@ Map.prototype.inverse = function() {
 /**
  * @template K, V
  */
-const Multimap = class {
+export class Multimap {
   constructor() {
     /** @type {!Map.<K, !Set.<!V>>} */
     this._map = new Map();
@@ -1115,7 +916,7 @@ const Multimap = class {
   clear() {
     this._map.clear();
   }
-};
+}
 
 /**
  * @param {string} url
@@ -1176,6 +977,7 @@ Promise.prototype.catchException = function(defaultValue) {
 /**
  * TODO: move into its own module
  * @param {function()} callback
+ * @suppressGlobalPropertiesCheck
  */
 self.runOnWindowLoad = function(callback) {
   /**

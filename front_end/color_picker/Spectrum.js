@@ -28,6 +28,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -414,7 +415,8 @@ export class Spectrum extends UI.Widget.VBox {
    */
   _createPaletteColor(colorText, colorName, animationDelay) {
     const element = createElementWithClass('div', 'spectrum-palette-color');
-    element.style.background = String.sprintf('linear-gradient(%s, %s), url(Images/checker.png)', colorText, colorText);
+    element.style.background =
+        Platform.StringUtilities.sprintf('linear-gradient(%s, %s), url(Images/checker.png)', colorText, colorText);
     if (animationDelay) {
       element.animate([{opacity: 0}, {opacity: 1}], {duration: 100, delay: animationDelay, fill: 'backwards'});
     }
@@ -1018,8 +1020,8 @@ export class Spectrum extends UI.Widget.VBox {
     this._colorDragElement.style.backgroundColor =
         /** @type {string} */ (this._color().asString(Common.Color.Format.RGBA));
     const noAlpha = Common.Color.Color.fromHSVA(this._hsv.slice(0, 3).concat(1));
-    this._alphaElementBackground.style.backgroundImage =
-        String.sprintf('linear-gradient(to right, rgba(0,0,0,0), %s)', noAlpha.asString(Common.Color.Format.RGB));
+    this._alphaElementBackground.style.backgroundImage = Platform.StringUtilities.sprintf(
+        'linear-gradient(to right, rgba(0,0,0,0), %s)', noAlpha.asString(Common.Color.Format.RGB));
   }
 
   _formatViewSwitch() {
@@ -1061,7 +1063,7 @@ export class Spectrum extends UI.Widget.VBox {
     } else {
       const format = this._colorFormat === cf.RGB ? 'rgba' : 'hsla';
       const values = this._textValues.map(elementValue).join(', ');
-      colorString = String.sprintf('%s(%s)', format, values);
+      colorString = Platform.StringUtilities.sprintf('%s(%s)', format, values);
     }
 
     const color = Common.Color.Color.parse(colorString);

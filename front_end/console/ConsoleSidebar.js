@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
@@ -172,7 +173,7 @@ export class FilterTreeElement extends UI.TreeOutline.TreeElement {
     } else if (this._messageCount === 1) {
       this.title = _groupSingularTitleMap.get(this._filter.name);
     } else {
-      this.title = String.sprintf(_groupPluralTitleMap.get(this._filter.name), this._messageCount);
+      this.title = Platform.StringUtilities.sprintf(_groupPluralTitleMap.get(this._filter.name), this._messageCount);
     }
 
     this.setExpandable(!!this.childCount());

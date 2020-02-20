@@ -27,6 +27,7 @@
  */
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
 /**
@@ -64,7 +65,7 @@ export class FontView extends UI.View.SimpleView {
     const {content} = deferredContent;
     const url = content ? Common.ContentProvider.contentAsDataURL(content, this._mimeType, true) : this._url;
     this.fontStyleElement.textContent =
-        String.sprintf('@font-face { font-family: "%s"; src: url(%s); }', uniqueFontName, url);
+        Platform.StringUtilities.sprintf('@font-face { font-family: "%s"; src: url(%s); }', uniqueFontName, url);
   }
 
   _createContentIfNeeded() {

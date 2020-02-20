@@ -30,6 +30,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as Platform from '../platform/platform.js';
 import * as ProtocolModule from '../protocol/protocol.js';
 
 import {Cookie} from './Cookie.js';
@@ -1047,7 +1048,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     if (chromeMatch && chromeMatch.length > 1) {
       // "1.2.3.4" becomes "1.0.100.0"
       const additionalAppVersion = chromeMatch[1].split('.', 1)[0] + '.0.100.0';
-      return String.sprintf(uaString, chromeMatch[1], additionalAppVersion);
+      return Platform.StringUtilities.sprintf(uaString, chromeMatch[1], additionalAppVersion);
     }
     return uaString;
   }

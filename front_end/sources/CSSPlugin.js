@@ -31,6 +31,7 @@
 import * as ColorPicker from '../color_picker/color_picker.js';
 import * as Common from '../common/common.js';
 import * as InlineEditor from '../inline_editor/inline_editor.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as TextUtils from '../text_utils/text_utils.js';
@@ -123,7 +124,7 @@ export class CSSPlugin extends Plugin {
       return null;
     }
     const tail = unit.substring((unitValue).toString().length);
-    return String.sprintf('%d%s', unitValue + change, tail);
+    return Platform.StringUtilities.sprintf('%d%s', unitValue + change, tail);
   }
 
   /**

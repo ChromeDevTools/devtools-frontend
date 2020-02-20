@@ -32,6 +32,7 @@ import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
+import * as Platform from '../platform/platform.js';
 import * as ProtocolModule from '../protocol/protocol.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
@@ -1027,7 +1028,7 @@ export class ExtensionStatus {
       const status = {code: code, description: description, details: details};
       if (code !== 'OK') {
         status.isError = true;
-        console.error('Extension server error: ' + String.vsprintf(description, details));
+        console.error('Extension server error: ' + Platform.StringUtilities.vsprintf(description, details));
       }
       return status;
     }

@@ -33,6 +33,7 @@ import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';
 import * as UI from '../ui/ui.js';
@@ -2496,7 +2497,8 @@ export class TimelineDetailsContentHelper {
       return;
     }
     locationContent.appendChild(link);
-    locationContent.createTextChild(String.sprintf(' [%s\u2026%s]', startLine + 1, endLine + 1 || ''));
+    locationContent.createTextChild(
+        Platform.StringUtilities.sprintf(' [%s\u2026%s]', startLine + 1, endLine + 1 || ''));
     this.appendElementRow(title, locationContent);
   }
 

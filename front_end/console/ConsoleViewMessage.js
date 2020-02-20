@@ -32,6 +32,7 @@ import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
@@ -963,8 +964,8 @@ export class ConsoleViewMessage {
       }
     }
 
-    // String.format does treat formattedResult like a Builder, result is an object.
-    return String.format(format, parameters, formatters, formattedResult, append.bind(this));
+    // Platform.StringUtilities.format does treat formattedResult like a Builder, result is an object.
+    return Platform.StringUtilities.format(format, parameters, formatters, formattedResult, append.bind(this));
   }
 
   /**

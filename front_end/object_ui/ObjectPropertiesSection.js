@@ -27,6 +27,7 @@
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';  // eslint-disable-line no-unused-vars
 import * as Host from '../host/host.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
@@ -1178,7 +1179,7 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
    * @param {!Components.Linkifier.Linkifier=} linkifier
    */
   constructor(object, fromIndex, toIndex, propertyCount, linkifier) {
-    super(String.sprintf('[%d \u2026 %d]', fromIndex, toIndex), true);
+    super(Platform.StringUtilities.sprintf('[%d \u2026 %d]', fromIndex, toIndex), true);
     this.toggleOnClick = true;
     this._fromIndex = fromIndex;
     this._toIndex = toIndex;

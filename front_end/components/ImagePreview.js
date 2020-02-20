@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
 export class ImagePreview {
@@ -72,7 +73,7 @@ export class ImagePreview {
       }
       if (imageURL !== originalImageURL) {
         container.createChild('tr').createChild('td').createChild('span', 'description').textContent =
-            String.sprintf('currentSrc: %s', imageURL.trimMiddle(100));
+            Platform.StringUtilities.sprintf('currentSrc: %s', imageURL.trimMiddle(100));
       }
       fulfill(container);
     }

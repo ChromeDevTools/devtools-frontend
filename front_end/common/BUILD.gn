@@ -17,4 +17,6 @@ ts_library("trie") {
 
 ts_library("color") {
   sources = [ "Color.js" ]
+
+  deps = [ "../platform" ]
 }

@@ -31,6 +31,7 @@ import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
@@ -760,7 +761,7 @@ export class ConsoleView extends UI.Widget.VBox {
   async _saveConsole() {
     const url = self.SDK.targetManager.mainTarget().inspectedURL();
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(url);
-    const filename = String.sprintf('%s-%d.log', parsedURL ? parsedURL.host : 'console', Date.now());
+    const filename = Platform.StringUtilities.sprintf('%s-%d.log', parsedURL ? parsedURL.host : 'console', Date.now());
     const stream = new Bindings.FileUtils.FileOutputStream();
 
     const progressIndicator = new UI.ProgressIndicator.ProgressIndicator();

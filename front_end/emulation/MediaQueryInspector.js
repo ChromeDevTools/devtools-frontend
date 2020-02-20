@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
@@ -122,7 +123,7 @@ export class MediaQueryInspector extends UI.Widget.Widget {
       if (!uiLocation) {
         continue;
       }
-      const descriptor = String.sprintf(
+      const descriptor = Platform.StringUtilities.sprintf(
           '%s:%d:%d', uiLocation.uiSourceCode.url(), uiLocation.lineNumber + 1, uiLocation.columnNumber + 1);
       uiLocations.set(descriptor, uiLocation);
     }

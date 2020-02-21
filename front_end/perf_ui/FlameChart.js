@@ -87,6 +87,9 @@ export class FlameChart extends UI.Widget.VBox {
 
     this._dataProvider = dataProvider;
 
+    this._candyStripeCanvas = /** @type {!HTMLCanvasElement} */ (document.createElement('canvas'));
+    this._createCandyStripePattern();
+
     this._viewportElement = this._chartViewport.viewportElement;
     if (this._useWebGL) {
       this._canvasGL = /** @type {!HTMLCanvasElement} */ (this._viewportElement.createChild('canvas', 'fill'));
@@ -225,6 +228,25 @@ export class FlameChart extends UI.Widget.VBox {
     this._highlightedEntryIndex = -1;
     this._updateElementPosition(this._highlightElement, this._highlightedEntryIndex);
     this.dispatchEventToListeners(Events.EntryHighlighted, -1);
+  }
+
+  _createCandyStripePattern() {
+    // Set the candy stripe pattern to 17px so it repeats well.
+    const size = 17;
+    this._candyStripeCanvas.width = size;
+    this._candyStripeCanvas.height = size;
+
+    const ctx = this._candyStripeCanvas.getContext('2d');
+
+    // Rotate the stripe by 45deg to the right.
+    ctx.translate(size * 0.5, size * 0.5);
+    ctx.rotate(Math.PI * 0.25);
+    ctx.translate(-size * 0.5, -size * 0.5);
+
+    ctx.fillStyle = 'rgba(255, 0, 0, 0.4)';
+    for (let x = -size; x < size * 2; x += 3) {
+      ctx.fillRect(x, -size, 1, size * 3);
+    }
   }
 
   _resetCanvas() {
@@ -981,6 +1003,8 @@ export class FlameChart extends UI.Widget.VBox {
     const defaultFont = '11px ' + Host.Platform.fontFamily();
     context.font = defaultFont;
 
+    const candyStripePattern = context.createPattern(this._candyStripeCanvas, 'repeat');
+
     const entryTotalTimes = timelineData.entryTotalTimes;
     const entryStartTimes = timelineData.entryStartTimes;
     const entryLevels = timelineData.entryLevels;
@@ -994,7 +1018,24 @@ export class FlameChart extends UI.Widget.VBox {
     const minVisibleBarLevel = Math.max(this._visibleLevelOffsets.upperBound(top) - 1, 0);
     this._markerPositions.clear();
 
-    /** @type {!Map<string, !Array<number>>} */
+    let mainThreadTopLevel = -1;
+
+    // Find the main thread so that we can mark tasks longer than 50ms.
+    if ('groups' in timelineData && Array.isArray(timelineData.groups)) {
+      const mainThread = timelineData.groups.find(v => {
+        if (!v._track) {
+          return false;
+        }
+
+        return v._track.name === 'CrRendererMain';
+      });
+
+      if (mainThread) {
+        mainThreadTopLevel = mainThread.startLevel;
+      }
+    }
+
+    /** @type {!Map<string, {indexes: !Array<number>, showLongDurations: boolean}>} */
     const colorBuckets = new Map();
     for (let level = minVisibleBarLevel; level < this._dataProvider.maxStackDepth(); ++level) {
       if (this._levelToOffset(level) > top + height) {
@@ -1041,10 +1082,10 @@ export class FlameChart extends UI.Widget.VBox {
         const color = this._entryColorsCache[entryIndex];
         let bucket = colorBuckets.get(color);
         if (!bucket) {
-          bucket = [];
+          bucket = {indexes: [], showLongDurations: level === mainThreadTopLevel};
           colorBuckets.set(color, bucket);
         }
-        bucket.push(entryIndex);
+        bucket.indexes.push(entryIndex);
       }
     }
 
@@ -1060,7 +1101,7 @@ export class FlameChart extends UI.Widget.VBox {
       });
       context.restore();
 
-      for (const [color, indexes] of colorBuckets) {
+      for (const [color, {indexes, showLongDurations}] of colorBuckets) {
         context.beginPath();
         for (let i = 0; i < indexes.length; ++i) {
           const entryIndex = indexes[i];
@@ -1078,6 +1119,37 @@ export class FlameChart extends UI.Widget.VBox {
           context.rect(barX, barY, barWidth - 0.4, barHeight - 1);
         }
         context.fillStyle = color;
+        context.fill();
+
+        // Draw long task regions.
+        context.beginPath();
+        for (let i = 0; i < indexes.length; ++i) {
+          const entryIndex = indexes[i];
+          const duration = entryTotalTimes[entryIndex];
+
+          if (!showLongDurations) {
+            continue;
+          }
+
+          if (isNaN(duration)) {
+            continue;
+          }
+
+          if (duration < 50) {
+            continue;
+          }
+
+          const entryStartTime = entryStartTimes[entryIndex];
+          const barX = this._timeToPositionClipped(entryStartTime + 50);
+          const barLevel = entryLevels[entryIndex];
+          const barHeight = this._levelHeight(barLevel);
+          const barY = this._levelToOffset(barLevel);
+          const barRight = this._timeToPositionClipped(entryStartTime + duration);
+          const barWidth = Math.max(barRight - barX, 1);
+          context.rect(barX, barY, barWidth - 0.4, barHeight - 1);
+        }
+
+        context.fillStyle = candyStripePattern;
         context.fill();
       }
     }

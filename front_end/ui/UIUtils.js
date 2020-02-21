@@ -1229,6 +1229,11 @@ export class LongClickController extends Common.ObjectWrapper.ObjectWrapper {
 
 LongClickController.TIME_MS = 200;
 
+function _trackKeyboardFocus() {
+  UI._keyboardFocus = true;
+  document.defaultView.requestAnimationFrame(() => void(UI._keyboardFocus = false));
+}
+
 /**
  * @param {!Document} document
  * @param {!Common.Settings.Setting} themeSetting
@@ -1238,10 +1243,12 @@ export function initializeUIUtils(document, themeSetting) {
   document.defaultView.addEventListener('focus', _windowFocused.bind(UI, document), false);
   document.defaultView.addEventListener('blur', _windowBlurred.bind(UI, document), false);
   document.addEventListener('focus', focusChanged.bind(UI), true);
-  document.addEventListener('keydown', event => {
-    UI._keyboardFocus = true;
-    document.defaultView.requestAnimationFrame(() => void(UI._keyboardFocus = false));
-  }, true);
+
+  // Track which focus changes occur due to keyboard input.
+  // When focus changes from tab navigation (keydown).
+  // When focus() is called in keyboard initiated click events (keyup).
+  document.addEventListener('keydown', _trackKeyboardFocus, true);
+  document.addEventListener('keyup', _trackKeyboardFocus, true);
 
   if (!self.UI.themeSupport) {
     self.UI.themeSupport = new ThemeSupport(themeSetting);

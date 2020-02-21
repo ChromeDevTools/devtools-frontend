@@ -28,7 +28,7 @@ This person is the creator of the feature and the creator of the design document
 
 ### The Technical Leads (TL)
 *LGTM*: Must have
-An LGTM is needed from the DevTools TLs, which are Benedikt Meurer (bmeurer@chromium.org) and Lorne Mitchell (lomitch@microsoft.com) at this point, in order to ensure architectural consistency. The TLs are also responsible for finding the right LGTM providers (i.e. the domain experts) to sign off on the design.
+An LGTM is needed from the DevTools TLs, which are Benedikt Meurer (bmeurer@chromium.org) and Rob Paveza (Rob.Paveza@microsoft.com) at this point, in order to ensure architectural consistency. The TLs are also responsible for finding the right LGTM providers (i.e. the domain experts) to sign off on the design.
 
 In the absence of the TLs, the EnReOw takes over the responsibility.
 

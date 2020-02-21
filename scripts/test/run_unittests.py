@@ -20,6 +20,8 @@ sys.path.append(scripts_path)
 import test_helpers
 import devtools_paths
 
+NINJA_BUILD_NAME = os.environ.get('NINJA_BUILD_NAME') or 'Release'
+
 
 def run_tests(chrome_binary):
     cwd = devtools_paths.devtools_root_path()

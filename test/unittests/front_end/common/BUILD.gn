@@ -1,0 +1,11 @@
+import("../../../../third_party/typescript/typescript.gni")
+
+ts_library("common") {
+  deps = [ ":Color" ]
+}
+
+ts_library("Color") {
+  sources = [ "Color_test.ts" ]
+
+  deps = [ "../../../../front_end/common" ]
+}

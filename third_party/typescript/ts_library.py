@@ -20,9 +20,10 @@ finally:
     sys.path = old_sys_path
 NODE_LOCATION = devtools_paths.node_path()
 
-ROOT_TS_CONFIG_LOCATION = path.join(_CURRENT_DIR, '..', '..', 'tsconfig.json')
-
-GLOBAL_DEFS = path.join(_CURRENT_DIR, '..', '..', 'front_end', 'legacy', 'legacy-defs.d.ts')
+ROOT_DIRECTORY_OF_REPOSITORY = path.join(_CURRENT_DIR, '..', '..')
+ROOT_TS_CONFIG_LOCATION = path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'tsconfig.json')
+GLOBAL_DEFS = path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'front_end', 'legacy', 'legacy-defs.d.ts')
+TYPES_NODE_MODULES_DIRECTORY = path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'node_modules', '@types')
 RESOURCES_INSPECTOR_PATH = path.join(os.getcwd(), 'resources', 'inspector')
 
 
@@ -63,6 +64,7 @@ def main():
     tsconfig['compilerOptions']['declaration'] = True
     tsconfig['compilerOptions']['composite'] = True
     tsconfig['compilerOptions']['rootDir'] = get_relative_path_from_output_directory(opts.front_end_directory)
+    tsconfig['compilerOptions']['typeRoots'] = [get_relative_path_from_output_directory(TYPES_NODE_MODULES_DIRECTORY)]
     tsconfig['compilerOptions']['outDir'] = '.'
     tsconfig['compilerOptions']['tsBuildInfoFile'] = path.basename(tsconfig_output_location) + '.tsbuildinfo'
     with open(tsconfig_output_location, 'w') as generated_tsconfig:

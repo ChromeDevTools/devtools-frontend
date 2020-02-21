@@ -12,7 +12,8 @@ describe('Multi-Workers', async () => {
     await resetPages();
   });
 
-  it('loads scripts exactly once', async () => {
+  // Test is flaky: https://logs.chromium.org/logs/devtools-frontend/buildbucket/cr-buildbucket.appspot.com/8887838790062903056/+/steps/E2E_tests/0/stdout
+  it.skip('loads scripts exactly once', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     // Have the target load the page.

@@ -120,8 +120,6 @@ module.exports = {
     'mocha/no-pending-tests': 2,
     // errors on {describe, it}.only
     'mocha/no-exclusive-tests': 2,
-    // errors on {describe, it}.skip
-    'mocha/no-skipped-tests': 2,
   },
   'overrides': [{
     'files': ['*.ts'],

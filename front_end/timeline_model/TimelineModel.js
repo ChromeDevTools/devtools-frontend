@@ -1486,7 +1486,7 @@ TimelineModelImpl.DevToolsMetadataEvent = {
 };
 
 TimelineModelImpl.Thresholds = {
-  LongTask: 50,
+  LongTask: 200,
   Handler: 150,
   RecurringHandler: 50,
   ForcedLayout: 30,

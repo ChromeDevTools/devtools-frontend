@@ -172,4 +172,8 @@
         forced-color-adjust: none;
         color: LinkText;
     }
+    .devtools-link[data-keyboard-focus="true"]:focus {
+        background: Highlight;
+        color: HighlightText;
+    }
 }

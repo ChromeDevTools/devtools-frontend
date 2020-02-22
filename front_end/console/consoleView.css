@@ -503,15 +503,29 @@
     .console-message-wrapper:focus:last-of-type {
         forced-color-adjust: none;
         background-color: Highlight;
+        border-top-color: Highlight;
+        border-bottom-color: Highlight;
     }
-    .console-message-wrapper.console-warning-level .console-message-text,
-    .console-message-wrapper.console-warning-level .console-message-anchor #console-messages .link, #console-messages .devtools-link {
-        color: HighlightText;
+    .console-message-wrapper:focus *,
+    .console-message-wrapper:focus:last-of-type *,
+    .console-message-wrapper:focus .devtools-link,
+    .console-message-wrapper:focus:last-of-type .devtools-link {
+        color: HighlightText !important;
     }
     #console-messages .link[data-keyboard-focus="true"]:focus,
     #console-messages .devtools-link[data-keyboard-focus="true"]:focus {
-        forced-color-adjust: none;
         background: Highlight;
         color: HighlightText;
+    }
+    .console-message-wrapper:focus [is=ui-icon].icon-mask {
+        background-color: HighlightText;
+    }
+    .console-message-wrapper.console-error-level:focus,
+    .console-message-wrapper.console-error-level:focus:last-of-type {
+        --error-text-color: HighlightText;
+    }
+    #console-messages .devtools-link,
+    #console-messages .devtools-link:hover {
+        color: LinkText;
     }
 }

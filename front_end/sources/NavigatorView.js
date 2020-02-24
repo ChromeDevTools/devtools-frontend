@@ -807,6 +807,30 @@ export class NavigatorView extends UI.Widget.VBox {
   }
 
   /**
+   * @param {!NavigatorTreeNode} node
+   */
+  _handleDeleteOverrides(node) {
+    const shouldRemove = window.confirm(
+      ls`Are you sure you want to delete all overrides contained in this folder?`
+    );
+    if (shouldRemove) {
+      this._handleDeleteOverridesHelper(node);
+    }
+  }
+
+  /**
+   * @param {!NavigatorTreeNode} node
+   */
+  _handleDeleteOverridesHelper(node) {
+    node._children.forEach(child => {
+      this._handleDeleteOverridesHelper(child);
+    });
+    if (node instanceof NavigatorUISourceCodeTreeNode) {
+      node.uiSourceCode().project().deleteFile(node.uiSourceCode());
+    }
+  }
+
+  /**
    * @param {!Event} event
    * @param {!NavigatorTreeNode} node
    */
@@ -847,6 +871,12 @@ export class NavigatorView extends UI.Widget.VBox {
       contextMenu.defaultSection().appendAction('sources.add-folder-to-workspace', undefined, true);
       if (node instanceof NavigatorGroupTreeNode) {
         contextMenu.defaultSection().appendItem(Common.UIString.UIString('Remove folder from workspace'), removeFolder);
+      }
+      if (project._fileSystem._type === 'overrides') {
+        contextMenu.defaultSection().appendItem(
+          ls`Delete all overrides`,
+          this._handleDeleteOverrides.bind(this, node)
+        );
       }
     }
 

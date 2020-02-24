@@ -63,6 +63,9 @@
   <message name="IDS_DEVTOOLS_1d770934d44de09b0d24f04fd01708ba" desc="Accessible text for a breakpoint collection with a combination of checked states.">
     mixed
   </message>
+  <message name="IDS_DEVTOOLS_1ee7ea86b29266310a7177ff79cdfb70" desc="A context menu item in the Navigator View of the Sources panel">
+    Delete all overrides
+  </message>
   <message name="IDS_DEVTOOLS_1f15646f60fc3c1dea747963f02d51ac" desc="Text in Sources Panel of the Sources panel">
     Group by folder
   </message>
@@ -296,6 +299,9 @@
   </message>
   <message name="IDS_DEVTOOLS_8560d166d251804230566118358414e5" desc="A context menu item in the Watch Expressions Sidebar Pane of the Sources panel">
     Add watch expression
+  </message>
+  <message name="IDS_DEVTOOLS_867c53ff916d5162540d5c109a4d8800" desc="Text in Navigator View of the Sources panel">
+    Are you sure you want to delete all overrides contained in this folder?
   </message>
   <message name="IDS_DEVTOOLS_87837d0ddaa832891236be71b7bf6935" desc="Text in Sources Panel of the Sources panel">
     Pause on caught exceptions

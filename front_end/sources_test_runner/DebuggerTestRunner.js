@@ -102,9 +102,9 @@ SourcesTestRunner.runAsyncCallStacksTest = function(totalDebuggerStatements, max
   let step = 0;
   const callStacksOutput = [];
 
-  function didPause(callFrames, reason, breakpointIds, asyncStackTrace) {
+  async function didPause(callFrames, reason, breakpointIds, asyncStackTrace) {
     ++step;
-    callStacksOutput.push(SourcesTestRunner.captureStackTraceIntoString(callFrames, asyncStackTrace) + '\n');
+    callStacksOutput.push(await SourcesTestRunner.captureStackTraceIntoString(callFrames, asyncStackTrace) + '\n');
 
     if (step < totalDebuggerStatements) {
       SourcesTestRunner.resumeExecution(SourcesTestRunner.waitUntilPaused.bind(SourcesTestRunner, didPause));
@@ -193,17 +193,17 @@ SourcesTestRunner.waitUntilPausedAndDumpStackAndResume = function(callback, opti
     }
   }
 
-  function paused(frames, reason, breakpointIds, async) {
+  async function paused(frames, reason, breakpointIds, async) {
     callFrames = frames;
     asyncStackTrace = async;
 
     if (typeof caption === 'string') {
-      step1();
+      await step1();
     }
   }
 
-  function step1() {
-    SourcesTestRunner.captureStackTrace(callFrames, asyncStackTrace, options);
+  async function step1() {
+    await SourcesTestRunner.captureStackTrace(callFrames, asyncStackTrace, options);
     TestRunner.addResult(TestRunner.clearSpecificInfoFromStackFrames(caption));
     TestRunner.deprecatedRunAfterPendingDispatches(step2);
   }
@@ -247,11 +247,11 @@ SourcesTestRunner.waitUntilPausedAndPerformSteppingActions = function(actions, c
   callback = TestRunner.safeWrap(callback);
   SourcesTestRunner.waitUntilPaused(didPause);
 
-  function didPause(callFrames, reason, breakpointIds, asyncStackTrace) {
+  async function didPause(callFrames, reason, breakpointIds, asyncStackTrace) {
     let action = actions.shift();
 
     if (action === 'Print') {
-      SourcesTestRunner.captureStackTrace(callFrames, asyncStackTrace);
+      await SourcesTestRunner.captureStackTrace(callFrames, asyncStackTrace);
       TestRunner.addResult('');
 
       while (action === 'Print') {
@@ -290,22 +290,22 @@ SourcesTestRunner.waitUntilPausedAndPerformSteppingActions = function(actions, c
   }
 };
 
-SourcesTestRunner.captureStackTrace = function(callFrames, asyncStackTrace, options) {
-  TestRunner.addResult(SourcesTestRunner.captureStackTraceIntoString(callFrames, asyncStackTrace, options));
+SourcesTestRunner.captureStackTrace = async function(callFrames, asyncStackTrace, options) {
+  TestRunner.addResult(await SourcesTestRunner.captureStackTraceIntoString(callFrames, asyncStackTrace, options));
 };
 
-SourcesTestRunner.captureStackTraceIntoString = function(callFrames, asyncStackTrace, options) {
+SourcesTestRunner.captureStackTraceIntoString = async function(callFrames, asyncStackTrace, options) {
   const results = [];
   options = options || {};
 
-  function printCallFrames(callFrames, locationFunction, returnValueFunction) {
+  async function printCallFrames(callFrames, locationFunction, returnValueFunction) {
     let printed = 0;
 
     for (let i = 0; i < callFrames.length; i++) {
       const frame = callFrames[i];
       const location = locationFunction.call(frame);
       const script = location.script();
-      const uiLocation = self.Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(location);
+      const uiLocation = await self.Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(location);
       const isFramework =
           uiLocation ? self.Bindings.blackboxManager.isBlackboxedUISourceCode(uiLocation.uiSourceCode) : false;
 
@@ -352,12 +352,12 @@ SourcesTestRunner.captureStackTraceIntoString = function(callFrames, asyncStackT
   }
 
   results.push('Call stack:');
-  printCallFrames(
+  await printCallFrames(
       callFrames, SDK.DebuggerModel.CallFrame.prototype.location, SDK.DebuggerModel.CallFrame.prototype.returnValue);
 
   while (asyncStackTrace) {
     results.push('    [' + (asyncStackTrace.description || 'Async Call') + ']');
-    const printed = printCallFrames(asyncStackTrace.callFrames, runtimeCallFramePosition);
+    const printed = await printCallFrames(asyncStackTrace.callFrames, runtimeCallFramePosition);
 
     if (!printed) {
       results.pop();

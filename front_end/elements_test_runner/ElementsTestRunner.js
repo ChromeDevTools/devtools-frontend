@@ -165,7 +165,7 @@ ElementsTestRunner.computedStyleWidget = function() {
   return UI.panels.elements._computedStyleWidget;
 };
 
-ElementsTestRunner.dumpComputedStyle = function(doNotAutoExpand, printInnerText) {
+ElementsTestRunner.dumpComputedStyle = async function(doNotAutoExpand, printInnerText) {
   const computed = ElementsTestRunner.computedStyleWidget();
   const treeOutline = computed._propertiesOutline;
   const children = treeOutline.rootElement().children();
@@ -200,7 +200,7 @@ ElementsTestRunner.dumpComputedStyle = function(doNotAutoExpand, printInnerText)
       const link = title.querySelector('.trace-link');
 
       if (link) {
-        dumpText += ' ' + extractLinkText(link);
+        dumpText += ' ' + await extractLinkText(link);
       }
 
       TestRunner.addResult('    ' + dumpText);
@@ -440,12 +440,12 @@ ElementsTestRunner.dumpRenderedMatchedStyles = function() {
   }
 };
 
-ElementsTestRunner.dumpSelectedElementStyles = function(
+ElementsTestRunner.dumpSelectedElementStyles = async function(
     excludeComputed, excludeMatched, omitLonghands, includeSelectorGroupMarks, printInnerText) {
   const sectionBlocks = UI.panels.elements._stylesWidget._sectionBlocks;
 
   if (!excludeComputed) {
-    ElementsTestRunner.dumpComputedStyle(false /* doNotAutoExpand */, printInnerText);
+    await ElementsTestRunner.dumpComputedStyle(false /* doNotAutoExpand */, printInnerText);
   }
 
   for (const block of sectionBlocks) {
@@ -464,7 +464,7 @@ ElementsTestRunner.dumpSelectedElementStyles = function(
         TestRunner.addResult('======== ' + text(section.element.previousSibling) + nodeDescription + ' ========');
       }
 
-      printStyleSection(section, omitLonghands, includeSelectorGroupMarks, printInnerText);
+      await printStyleSection(section, omitLonghands, includeSelectorGroupMarks, printInnerText);
     }
   }
 
@@ -473,7 +473,7 @@ ElementsTestRunner.dumpSelectedElementStyles = function(
   }
 };
 
-function printStyleSection(section, omitLonghands, includeSelectorGroupMarks, printInnerText) {
+async function printStyleSection(section, omitLonghands, includeSelectorGroupMarks, printInnerText) {
   if (!section) {
     return;
   }
@@ -494,7 +494,7 @@ function printStyleSection(section, omitLonghands, includeSelectorGroupMarks, pr
   const anchor = section._titleElement.querySelector('.styles-section-subtitle');
 
   if (anchor) {
-    const anchorText = extractLinkText(anchor);
+    const anchorText = await extractLinkText(anchor);
     selectorText += String.sprintf(' (%s)', anchorText);
   }
 
@@ -510,7 +510,9 @@ function printStyleSection(section, omitLonghands, includeSelectorGroupMarks, pr
   }
 }
 
-function extractLinkText(element) {
+async function extractLinkText(element) {
+  // Links can contain live locations.
+  await TestRunner.waitForPendingLiveLocationUpdates();
   const anchor = element.querySelector('.devtools-link');
 
   if (!anchor) {

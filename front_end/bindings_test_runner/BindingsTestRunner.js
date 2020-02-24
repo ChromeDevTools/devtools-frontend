@@ -210,17 +210,17 @@ BindingsTestRunner.createCSSLiveLocation = function(name, urlSuffix, lineNumber,
       rawLocation, updateDelegate.bind(null, name), locationPool);
 };
 
-function updateDelegate(name, liveLocation) {
+async function updateDelegate(name, liveLocation) {
   liveLocation[nameSymbol] = name;
   const hint = (liveLocation[createdSymbol] ? '[ UPDATE ]' : '[ CREATE ]');
   liveLocation[createdSymbol] = true;
-  BindingsTestRunner.dumpLocation(liveLocation, hint);
+  await BindingsTestRunner.dumpLocation(liveLocation, hint);
 }
 
-BindingsTestRunner.dumpLocation = function(liveLocation, hint) {
+BindingsTestRunner.dumpLocation = async function(liveLocation, hint) {
   hint = hint || '[  GET   ]';
   const prefix = `${hint}  LiveLocation-${liveLocation[nameSymbol]}: `;
-  const uiLocation = liveLocation.uiLocation();
+  const uiLocation = await liveLocation.uiLocation();
 
   if (!uiLocation) {
     TestRunner.addResult(prefix + 'null');

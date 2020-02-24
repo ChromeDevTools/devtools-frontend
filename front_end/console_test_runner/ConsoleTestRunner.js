@@ -15,18 +15,18 @@ ConsoleTestRunner.Formatter;
  * @param {boolean=} dumpClassNames
  * @param {!ConsoleTestRunner.Formatter=} formatter
  */
-ConsoleTestRunner.dumpConsoleMessages = function(printOriginatingCommand, dumpClassNames, formatter) {
+ConsoleTestRunner.dumpConsoleMessages = async function(printOriginatingCommand, dumpClassNames, formatter) {
   TestRunner.addResults(
-      ConsoleTestRunner.dumpConsoleMessagesIntoArray(printOriginatingCommand, dumpClassNames, formatter));
+      await ConsoleTestRunner.dumpConsoleMessagesIntoArray(printOriginatingCommand, dumpClassNames, formatter));
 };
 
 /**
  * @param {boolean=} printOriginatingCommand
  * @param {boolean=} dumpClassNames
  * @param {!ConsoleTestRunner.Formatter=} formatter
- * @return {!Array<string>}
+ * @return {!Promise<!Array<string>>}
  */
-ConsoleTestRunner.dumpConsoleMessagesIntoArray = function(printOriginatingCommand, dumpClassNames, formatter) {
+ConsoleTestRunner.dumpConsoleMessagesIntoArray = async function(printOriginatingCommand, dumpClassNames, formatter) {
   formatter = formatter || ConsoleTestRunner.prepareConsoleMessageText;
   const result = [];
   const consoleView = Console.ConsoleView.instance();
@@ -41,6 +41,9 @@ ConsoleTestRunner.dumpConsoleMessagesIntoArray = function(printOriginatingComman
     const uiMessage = viewMessages[i];
     const message = uiMessage.consoleMessage();
     const element = uiMessage.element();
+    // Retrieving the message element triggered rendering, now wait for
+    // the live location within to be resolved initially.
+    await TestRunner.waitForPendingLiveLocationUpdates();
 
     let classNames;
     if (dumpClassNames) {
@@ -195,7 +198,12 @@ ConsoleTestRunner.evaluateInConsole = function(code, callback, dontForceMainCont
   const consoleView = Console.ConsoleView.instance();
   consoleView._prompt._appendCommand(code, true);
   ConsoleTestRunner.addConsoleViewSniffer(function(commandResult) {
-    callback(commandResult.toMessageElement().deepTextContent());
+    const element = commandResult.toMessageElement();
+    // Only call the callback once the live location within the
+    // message element is resolved initially.
+    TestRunner.waitForPendingLiveLocationUpdates().then(() => {
+      callback(element.deepTextContent());
+    });
   });
 };
 
@@ -297,9 +305,9 @@ ConsoleTestRunner.simpleFormatter = function(element, message) {
  * @param {boolean=} dumpClassNames
  * @param {!ConsoleTestRunner.Formatter=} messageFormatter
  */
-ConsoleTestRunner.dumpConsoleMessagesIgnoreErrorStackFrames = function(
+ConsoleTestRunner.dumpConsoleMessagesIgnoreErrorStackFrames = async function(
     printOriginatingCommand, dumpClassNames, messageFormatter) {
-  TestRunner.addResults(ConsoleTestRunner.dumpConsoleMessagesIntoArray(
+  TestRunner.addResults(await ConsoleTestRunner.dumpConsoleMessagesIntoArray(
       printOriginatingCommand, dumpClassNames,
       ConsoleTestRunner.formatterIgnoreStackFrameUrls.bind(this, messageFormatter)));
 };
@@ -320,12 +328,13 @@ ConsoleTestRunner.dumpConsoleMessagesWithStyles = function() {
 /**
  * @param {boolean=} sortMessages
  */
-ConsoleTestRunner.dumpConsoleMessagesWithClasses = function(sortMessages) {
+ConsoleTestRunner.dumpConsoleMessagesWithClasses = async function(sortMessages) {
   const result = [];
   const messageViews = Console.ConsoleView.instance()._visibleViewMessages;
   for (let i = 0; i < messageViews.length; ++i) {
     const element = messageViews[i].element();
     const contentElement = messageViews[i].contentElement();
+    await TestRunner.waitForPendingLiveLocationUpdates();
     const messageText = ConsoleTestRunner.prepareConsoleMessageText(element);
     result.push(messageText + ' ' + element.getAttribute('class') + ' > ' + contentElement.getAttribute('class'));
   }
@@ -335,11 +344,13 @@ ConsoleTestRunner.dumpConsoleMessagesWithClasses = function(sortMessages) {
   TestRunner.addResults(result);
 };
 
-ConsoleTestRunner.dumpConsoleClassesBrief = function() {
+ConsoleTestRunner.dumpConsoleClassesBrief = async function() {
   const messageViews = Console.ConsoleView.instance()._visibleViewMessages;
   for (let i = 0; i < messageViews.length; ++i) {
     const repeatText = messageViews[i].repeatCount() > 1 ? (' x' + messageViews[i].repeatCount()) : '';
-    TestRunner.addResult(messageViews[i].toMessageElement().className + repeatText);
+    const element = messageViews[i].toMessageElement();
+    await TestRunner.waitForPendingLiveLocationUpdates();
+    TestRunner.addResult(element.className + repeatText);
   }
 };
 
@@ -351,7 +362,7 @@ ConsoleTestRunner.dumpConsoleCounters = async function() {
   if (counter._titles) {
     TestRunner.addResult(counter._titles);
   }
-  ConsoleTestRunner.dumpConsoleClassesBrief();
+  await ConsoleTestRunner.dumpConsoleClassesBrief();
 };
 
 /**
@@ -568,6 +579,7 @@ ConsoleTestRunner.waitForConsoleMessages = function(expectedCount, callback) {
  */
 ConsoleTestRunner.waitForConsoleMessagesPromise = async function(expectedCount) {
   await new Promise(fulfill => ConsoleTestRunner.waitForConsoleMessages(expectedCount, fulfill));
+  await TestRunner.waitForPendingLiveLocationUpdates();
   return ConsoleTestRunner.waitForPendingViewportUpdates();
 };
 
@@ -578,10 +590,13 @@ ConsoleTestRunner.waitForConsoleMessagesPromise = async function(expectedCount) 
  * @param {number} toTextOffset
  * @suppressGlobalPropertiesCheck
  */
-ConsoleTestRunner.selectConsoleMessages = function(fromMessage, fromTextOffset, toMessage, toTextOffset) {
+ConsoleTestRunner.selectConsoleMessages = async function(fromMessage, fromTextOffset, toMessage, toTextOffset) {
   const consoleView = Console.ConsoleView.instance();
-  const from = selectionContainerAndOffset(consoleView.itemElement(fromMessage).element(), fromTextOffset);
-  const to = selectionContainerAndOffset(consoleView.itemElement(toMessage).element(), toTextOffset);
+  const fromElement = consoleView.itemElement(fromMessage).element();
+  const toElement = consoleView.itemElement(toMessage).element();
+  await TestRunner.waitForPendingLiveLocationUpdates();
+  const from = selectionContainerAndOffset(fromElement, fromTextOffset);
+  const to = selectionContainerAndOffset(toElement, toTextOffset);
   window.getSelection().setBaseAndExtent(from.container, from.offset, to.container, to.offset);
 
   /**

@@ -137,6 +137,7 @@ export class TimelinePanel extends UI.Panel.Panel {
     this._searchableView.show(this._timelinePane.element);
     this._flameChart.show(this._searchableView.element);
     this._flameChart.setSearchableView(this._searchableView);
+    this._searchableView.hideWidget();
 
     this._onModeChanged();
     this._populateToolbar();
@@ -679,7 +680,10 @@ export class TimelinePanel extends UI.Panel.Panel {
     }
     this._performanceModel = model;
     if (model) {
+      this._searchableView.showWidget();
       this._applyFilters(model);
+    } else {
+      this._searchableView.hideWidget();
     }
     this._flameChart.setModel(model);
 

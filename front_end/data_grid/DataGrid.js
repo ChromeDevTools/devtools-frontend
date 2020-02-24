@@ -2483,6 +2483,7 @@ export class DataGridWidget extends UI.Widget.VBox {
     super();
     this._dataGrid = dataGrid;
     this.element.appendChild(dataGrid.element);
+    this.setDefaultFocusedElement(dataGrid.element);
   }
 
   /**

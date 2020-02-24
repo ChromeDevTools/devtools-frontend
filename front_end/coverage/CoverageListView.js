@@ -52,6 +52,7 @@ export class CoverageListView extends UI.Widget.VBox {
 
     const dataGridWidget = this._dataGrid.asWidget();
     dataGridWidget.show(this.contentElement);
+    this.setDefaultFocusedChild(dataGridWidget);
   }
 
   /**

@@ -252,10 +252,14 @@ export class CoverageView extends UI.Widget.VBox {
     this._coverageTypeComboBox.setEnabled(false);
     this._filterInput.setEnabled(true);
     this._filterByTypeComboBox.setEnabled(true);
+    const hadFocus = this.hasFocus();
     if (this._landingPage.isShowing()) {
       this._landingPage.detach();
     }
     this._listView.show(this._coverageResultsElement);
+    if (hadFocus) {
+      this._listView.focus();
+    }
     if (reload && this._resourceTreeModel) {
       this._resourceTreeModel.reloadPage();
     } else {

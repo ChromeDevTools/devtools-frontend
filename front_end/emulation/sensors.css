@@ -301,3 +301,9 @@ fieldset.device-orientation-override-section {
 button.text-button {
   margin: 0 10px;
 }
+
+@media (forced-colors: active) {
+  .sensors-view fieldset[disabled] {
+    opacity: 1;
+  }
+}

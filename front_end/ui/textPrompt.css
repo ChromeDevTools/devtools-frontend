@@ -69,4 +69,7 @@
     .text-prompt[data-placeholder]:empty::before {
         color: GrayText !important;
     }
+    .text-prompt.disabled {
+        opacity: 1;
+    }
 }

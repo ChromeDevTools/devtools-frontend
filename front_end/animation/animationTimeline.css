@@ -449,3 +449,14 @@ text.animation-timeline-grid-label {
 .animation-buffer-preview:hover .animation-remove-button {
     display: flex;
 }
+
+@media (forced-colors: active) {
+    .animation-playback-rate-button[data-keyboard-focus="true"].selected:first-child:focus,
+    .animation-playback-rate-button[data-keyboard-focus="true"]:focus,
+    .animation-playback-rate-button.selected,
+    .animation-playback-rate-button.selected:first-child {
+        forced-color-adjust: none;
+        color: HighlightText;
+        background-color: Highlight;
+    }
+}

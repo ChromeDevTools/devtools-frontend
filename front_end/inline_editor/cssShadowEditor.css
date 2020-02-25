@@ -7,6 +7,7 @@
 :host {
     user-select: none;
     padding: 4px 12px 12px 12px;
+    border: 1px solid transparent;
 }
 
 .shadow-editor-field:last-of-type {
@@ -93,7 +94,14 @@
 }
 
 @media (forced-colors: active) {
-    :host {
-        border: 1px solid CanvasText !important;
+    .shadow-editor-button-left:hover,
+    .shadow-editor-button-right:hover
+    .shadow-editor-button-left.enabled,
+    .shadow-editor-button-right.enabled,
+    .shadow-editor-button-left.enabled:focus,
+    .shadow-editor-button-right.enabled:focus {
+        forced-color-adjust: none;
+        background-color: Highlight;
+        color: HighlightText;
     }
 }

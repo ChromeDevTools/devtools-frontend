@@ -101,3 +101,19 @@
 .editor-content input.error-input {
     background-color: white;
 }
+
+@media (forced-colors: active) {
+    .list-item:hover .controls-buttons {
+        background-color: Canvas;
+    }
+    .list-item:hover {
+        forced-color-adjust: none;
+        background: Highlight;
+    }
+    .list-item:hover * {
+        color: HighlightText;
+    }
+    .list-item:hover .controls-gradient {
+        background-image: unset;
+    }
+}

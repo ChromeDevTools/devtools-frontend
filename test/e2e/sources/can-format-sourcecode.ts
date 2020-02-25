@@ -73,7 +73,7 @@ async function retrieveTopCallFrameScriptLocation(target: puppeteer.Page) {
   const scriptEvaluation = target.evaluate('notFormattedFunction();');
 
   // Wait for the evaluation to be paused and shown in the UI
-  await waitFor('.paused-message');
+  await waitFor('.paused-status');
 
   // Retrieve the top level call frame script location name
   const scriptLocation =

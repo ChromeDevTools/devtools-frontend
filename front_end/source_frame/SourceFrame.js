@@ -67,6 +67,8 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     this._shouldAutoPrettyPrint = false;
     this._prettyToggle.setVisible(false);
 
+    this._progressToolbarItem = new UI.Toolbar.ToolbarItem(createElement('div'));
+
     this._textEditor = new SourcesTextEditor(this, codeMirrorOptions);
     this._textEditor.show(this.element);
 
@@ -271,7 +273,7 @@ export class SourceFrameImpl extends UI.View.SimpleView {
    * @return {!Promise<!Array<!UI.Toolbar.ToolbarItem>>}
    */
   async toolbarItems() {
-    return [this._prettyToggle, this._sourcePosition];
+    return [this._prettyToggle, this._sourcePosition, this._progressToolbarItem];
   }
 
   get loaded() {
@@ -292,7 +294,17 @@ export class SourceFrameImpl extends UI.View.SimpleView {
   async _ensureContentLoaded() {
     if (!this._contentRequested) {
       this._contentRequested = true;
+
+      const progressIndicator = new UI.ProgressIndicator.ProgressIndicator();
+      progressIndicator.setTitle(Common.UIString.UIString(`Loading…`));
+      progressIndicator.setTotalWork(1);
+      this._progressToolbarItem.element.appendChild(progressIndicator.element);
+
       const {content, error} = (await this._lazyContent());
+
+      progressIndicator.setWorked(1);
+      progressIndicator.done();
+
       this._rawContent = error || content || '';
       this._formattedContentPromise = null;
       this._formattedMap = null;

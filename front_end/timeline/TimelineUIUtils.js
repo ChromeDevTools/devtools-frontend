@@ -480,9 +480,9 @@ export class TimelineUIUtils {
   /**
    * @param {!SDK.TracingModel.Event} event
    * @param {?SDK.SDKModel.Target} target
-   * @return {?string}
+   * @return {!Promise<?string>}
    */
-  static buildDetailsTextForTraceEvent(event, target) {
+  static async buildDetailsTextForTraceEvent(event, target) {
     const recordType = TimelineModel.TimelineModel.RecordType;
     let detailsText;
     const eventData = event.args['data'];
@@ -497,7 +497,7 @@ export class TimelineUIUtils {
       case recordType.FunctionCall:
         if (eventData) {
           detailsText =
-              linkifyLocationAsText(eventData['scriptId'], eventData['lineNumber'], eventData['columnNumber']);
+              await linkifyLocationAsText(eventData['scriptId'], eventData['lineNumber'], eventData['columnNumber']);
         }
         break;
       case recordType.JSFrame:
@@ -594,7 +594,7 @@ export class TimelineUIUtils {
         if (event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.Console)) {
           detailsText = null;
         } else {
-          detailsText = linkifyTopCallFrameAsText();
+          detailsText = await linkifyTopCallFrameAsText();
         }
         break;
     }
@@ -605,9 +605,9 @@ export class TimelineUIUtils {
      * @param {string} scriptId
      * @param {number} lineNumber
      * @param {number} columnNumber
-     * @return {?string}
+     * @return {!Promise<?string>}
      */
-    function linkifyLocationAsText(scriptId, lineNumber, columnNumber) {
+    async function linkifyLocationAsText(scriptId, lineNumber, columnNumber) {
       const debuggerModel = target ? target.model(SDK.DebuggerModel.DebuggerModel) : null;
       if (!target || target.isDisposed() || !scriptId || !debuggerModel) {
         return null;
@@ -616,19 +616,19 @@ export class TimelineUIUtils {
       if (!rawLocation) {
         return null;
       }
-      const uiLocation = self.Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
+      const uiLocation = await self.Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
       return uiLocation ? uiLocation.linkText() : null;
     }
 
     /**
-     * @return {?string}
+     * @return {!Promise<?string>}
      */
-    function linkifyTopCallFrameAsText() {
+    async function linkifyTopCallFrameAsText() {
       const frame = TimelineModel.TimelineModel.TimelineData.forEvent(event).topFrame();
       if (!frame) {
         return null;
       }
-      let text = linkifyLocationAsText(frame.scriptId, frame.lineNumber, frame.columnNumber);
+      let text = await linkifyLocationAsText(frame.scriptId, frame.lineNumber, frame.columnNumber);
       if (!text) {
         text = frame.url;
         if (typeof frame.lineNumber === 'number') {
@@ -643,9 +643,9 @@ export class TimelineUIUtils {
    * @param {!SDK.TracingModel.Event} event
    * @param {?SDK.SDKModel.Target} target
    * @param {!Components.Linkifier.Linkifier} linkifier
-   * @return {?Node}
+   * @return {!Promise<?Node>}
    */
-  static buildDetailsNodeForTraceEvent(event, target, linkifier) {
+  static async buildDetailsNodeForTraceEvent(event, target, linkifier) {
     const recordType = TimelineModel.TimelineModel.RecordType;
     let details = null;
     let detailsText;
@@ -668,7 +668,7 @@ export class TimelineUIUtils {
       case recordType.WebSocketSendHandshakeRequest:
       case recordType.WebSocketReceiveHandshakeResponse:
       case recordType.WebSocketDestroy:
-        detailsText = TimelineUIUtils.buildDetailsTextForTraceEvent(event, target);
+        detailsText = await TimelineUIUtils.buildDetailsTextForTraceEvent(event, target);
         break;
       case recordType.PaintImage:
       case recordType.DecodeImage:
@@ -872,7 +872,7 @@ export class TimelineUIUtils {
         break;
       case recordTypes.JSFrame:
       case recordTypes.FunctionCall:
-        const detailsNode = TimelineUIUtils.buildDetailsNodeForTraceEvent(event, model.targetByEvent(event), linkifier);
+        const detailsNode = await TimelineUIUtils.buildDetailsNodeForTraceEvent(event, model.targetByEvent(event), linkifier);
         if (detailsNode) {
           contentHelper.appendElementRow(ls`Function`, detailsNode);
         }
@@ -1071,7 +1071,7 @@ export class TimelineUIUtils {
         break;
 
       default: {
-        const detailsNode = TimelineUIUtils.buildDetailsNodeForTraceEvent(event, model.targetByEvent(event), linkifier);
+        const detailsNode = await TimelineUIUtils.buildDetailsNodeForTraceEvent(event, model.targetByEvent(event), linkifier);
         if (detailsNode) {
           contentHelper.appendElementRow(ls`Details`, detailsNode);
         }

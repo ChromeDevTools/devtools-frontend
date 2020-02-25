@@ -18,9 +18,6 @@
   <message name="IDS_DEVTOOLS_3c4684d2d502d7f9d20e05451c2f581c" desc="Next button title in Film Strip View of the Performance panel">
     Next frame
   </message>
-  <message name="IDS_DEVTOOLS_3e56c011b37f0bc78fb9eb175c1181c6" desc="Units in Line Level Profile of the Performance panel">
-    kB
-  </message>
   <message name="IDS_DEVTOOLS_3f21c340f01b96cb3325a5d38ece9da6" desc="Title of a setting under the Memory category in Settings">
     Live memory allocation annotations
   </message>

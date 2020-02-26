@@ -6,17 +6,22 @@ import("../../third_party/typescript/typescript.gni")
 
 ts_library("common") {
   deps = [
+    ":app",
     ":color",
     ":trie",
   ]
 }
 
-ts_library("trie") {
-  sources = [ "Trie.js" ]
+ts_library("app") {
+  sources = [ "App.js" ]
 }
 
 ts_library("color") {
   sources = [ "Color.js" ]
 
   deps = [ "../platform" ]
+}
+
+ts_library("trie") {
+  sources = [ "Trie.js" ]
 }

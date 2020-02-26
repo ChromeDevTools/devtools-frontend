@@ -52,6 +52,7 @@ function setState({type, msg, left, right, diff, rawMisMatchPercentage, fileName
       diffImageContainer.appendChild(diffImage);
       diffImage.onerror = () => {
         diffImage.src = './no-diff-available.png';
+        diffImage.onerror = null;
       };
 
       listening = true;

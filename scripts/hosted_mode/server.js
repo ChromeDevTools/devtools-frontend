@@ -54,7 +54,13 @@ function requestHandler(request, response) {
       sendResponse(404, '404 - File not found');
       return;
     }
-    fs.readFile(absoluteFilePath, 'utf8', readFileCallback);
+
+    let encoding = 'utf8';
+    if (absoluteFilePath.endsWith('.png') || absoluteFilePath.endsWith('.jpg')) {
+      encoding = 'binary';
+    }
+
+    fs.readFile(absoluteFilePath, encoding, readFileCallback);
   }
 
   function readFileCallback(err, file) {
@@ -75,7 +81,6 @@ function requestHandler(request, response) {
     }
 
     let encoding = 'utf8';
-
     if (path.endsWith('.js')) {
       response.setHeader('Content-Type', 'text/javascript; charset=utf-8');
     } else if (path.endsWith('.wasm')) {
@@ -83,6 +88,12 @@ function requestHandler(request, response) {
       encoding = 'binary'
     } else if (path.endsWith('.svg')) {
       response.setHeader('Content-Type', 'image/svg+xml; charset=utf-8');
+    } else if (path.endsWith('.png')) {
+      response.setHeader('Content-Type', 'image/png');
+      encoding = 'binary';
+    } else if (path.endsWith('.jpg')) {
+      response.setHeader('Content-Type', 'image/jpg');
+      encoding = 'binary';
     }
 
     response.writeHead(statusCode);

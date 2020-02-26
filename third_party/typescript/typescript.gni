@@ -65,7 +65,9 @@ template("ts_library") {
 
     output_files = [
       "$target_gen_dir/$target_name-tsconfig.json",
-      "$target_gen_dir/$target_name-tsconfig.json.tsbuildinfo",
+      # TODO(crbug.com/1054494): Enable tsbuildinfo output again to make Ninja
+      # outputs deterministic.
+      # "$target_gen_dir/$target_name-tsconfig.json.tsbuildinfo",
     ]
 
     if (defined(sources)) {

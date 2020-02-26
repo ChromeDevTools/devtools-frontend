@@ -79,29 +79,39 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
 
     const mainTarget = self.SDK.targetManager.mainTarget();
     this._model = mainTarget.model(SDK.IssuesModel.IssuesModel);
-    this._model.addEventListener(SDK.IssuesModel.Events.IssueAdded, this._issueAdded.bind(this));
+    this._model.addEventListener(SDK.IssuesModel.Events.IssueAdded, this._issueAdded, this);
+    this._model.addEventListener(SDK.IssuesModel.Events.AllIssuesCleared, this._issuesCleared, this);
     this._model.ensureEnabled();
 
-    this._issues = new Map();
     this._issueViews = new Map();
-
     this._selectedIssue = null;
 
-    const issues = this._model.issues();
-    for (const issue of issues) {
-      this._issueAdded(issue);
+    for (const issue of this._model.issues()) {
+      this._addIssueView(issue);
     }
   }
 
   _issueAdded(event) {
-    if (!(event.data.code in issueDetails)) {
-      console.warn('Received issue with unknow code:', event.data.code);
+    this._addIssueView(event.data);
+  }
+
+  _addIssueView(issue) {
+    if (!(issue.code in issueDetails)) {
+      console.warn('Received issue with unknow code:', issue.code);
       return;
     }
 
-    const view = new IssueView(this, event.data);
+    const view = new IssueView(this, issue);
     view.show(this.contentElement);
-    this._issueViews.set(event.data.code, view);
+    this._issueViews.set(issue.code, view);
+  }
+
+  _issuesCleared() {
+    for (const view of this._issueViews.values()) {
+      view.detach();
+    }
+    this._issueViews.clear();
+    this._selectedIssue = null;
   }
 
   handleSelect(issue) {

@@ -9,6 +9,7 @@ import {Issue} from './Issue.js';
 import {Events as NetworkManagerEvents, NetworkManager} from './NetworkManager.js';
 import {NetworkRequest,  // eslint-disable-line no-unused-vars
         setCookieBlockedReasonToAttribute, setCookieBlockedReasonToUiString,} from './NetworkRequest.js';
+import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 const connectedIssuesSymbol = Symbol('issues');
@@ -33,6 +34,23 @@ export class IssuesModel extends SDKModel {
     if (networkManager) {
       networkManager.addEventListener(NetworkManagerEvents.RequestFinished, this._handleRequestFinished, this);
     }
+
+    const resourceTreeModel = /** @type {?ResourceTreeModel} */ (target.model(ResourceTreeModel));
+    if (resourceTreeModel) {
+      resourceTreeModel.addEventListener(
+        ResourceTreeModelEvents.MainFrameNavigated, this._onMainFrameNavigated, this);
+    }
+  }
+
+  _onMainFrameNavigated() {
+    this._clearIssues();
+  }
+
+  _clearIssues() {
+    this._issues = [];
+    this._browserIssues = [];
+    this._browserIssuesByCode = new Map();
+    this.dispatchEventToListeners(Events.AllIssuesCleared);
   }
 
   ensureEnabled() {
@@ -127,6 +145,7 @@ export const Events = {
   Updated: Symbol('Updated'),
   IssueAdded: Symbol('IssueAdded'),
   IssueUpdated: Symbol('IssueUpdated'),
+  AllIssuesCleared: Symbol('AllIssuesCleared'),
 };
 
 SDKModel.register(IssuesModel, Capability.None, true);

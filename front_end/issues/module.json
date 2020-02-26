@@ -11,7 +11,7 @@
           "experiment": "issuesPane"
       }
     ],
-    "dependencies": ["platform", "ui", "host", "components"],
+    "dependencies": ["platform", "ui", "host", "components", "sdk"],
     "scripts": [],
     "modules": [
       "issues.js",

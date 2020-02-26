@@ -33,6 +33,30 @@
  */
 import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
 
+class UserMetricEvent extends Event {
+  /**
+   *
+   * @param {string} type
+   * @param {!Object} init
+   * @param {!Object} detail
+   */
+  constructor(type, init, detail = {}) {
+    super(type, init);
+
+    this.detail = detail;
+  }
+}
+
+/**
+ * @param {string} name
+ * @param {!Object} detail
+ * @param {!HTMLElement | !Window} target
+ */
+function fireEvent(name, detail = {}, target = window) {
+  const evt = new UserMetricEvent(name, {bubbles: true, cancelable: true}, detail);
+  target.dispatchEvent(evt);
+}
+
 export class UserMetrics {
   constructor() {
     this._panelChangedSinceLaunch = false;
@@ -47,6 +71,7 @@ export class UserMetrics {
     const code = PanelCodes[panelName] || 0;
     const size = Object.keys(PanelCodes).length + 1;
     InspectorFrontendHostInstance.recordEnumeratedHistogram('DevTools.PanelShown', code, size);
+    fireEvent('DevTools.PanelShown', {value: code});
     // Store that the user has changed the panel so we know launch histograms should not be fired.
     this._panelChangedSinceLaunch = true;
   }
@@ -64,6 +89,7 @@ export class UserMetrics {
   actionTaken(action) {
     const size = Object.keys(Action).length + 1;
     InspectorFrontendHostInstance.recordEnumeratedHistogram('DevTools.ActionTaken', action, size);
+    fireEvent('DevTools.ActionTaken', {value: action});
   }
 
   /**

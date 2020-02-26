@@ -7,15 +7,20 @@ import("../../third_party/typescript/typescript.gni")
 ts_library("common") {
   deps = [
     ":app",
+    ":character_id_map",
     ":color",
     ":query_param_handler",
-    ":trie",
     ":revealer",
+    ":trie",
   ]
 }
 
 ts_library("app") {
   sources = [ "App.js" ]
+}
+
+ts_library("character_id_map") {
+  sources = [ "CharacterIdMap.js" ]
 }
 
 ts_library("color") {
@@ -24,14 +29,14 @@ ts_library("color") {
   deps = [ "../platform" ]
 }
 
+ts_library("revealer") {
+  sources = [ "Revealer.js" ]
+}
+
 ts_library("query_param_handler") {
   sources = [ "QueryParamHandler.js" ]
 }
 
 ts_library("trie") {
   sources = [ "Trie.js" ]
-}
-
-ts_library("revealer") {
-  sources = [ "Revealer.js" ]
 }

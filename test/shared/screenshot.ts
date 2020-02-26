@@ -57,11 +57,28 @@ mkdirp(__dirname, generatedScreenshotFolderParts);
 
 const defaultScreenshotOpts: puppeteer.ScreenshotOptions = {
   type: 'png',
-  fullPage: true,
   encoding: 'binary',
 };
-export const assertScreenshotUnchanged =
-    async (page: puppeteer.Page, fileName: string, options: Partial<puppeteer.ScreenshotOptions> = {}) => {
+
+export const assertElementScreenshotUnchanged = async (element: puppeteer.ElementHandle | null, fileName: string, options: Partial<puppeteer.ScreenshotOptions> = {}) => {
+
+  if (!element) {
+    assert.fail(`Given element for test ${fileName} was not found.`);
+    return;
+  }
+
+  return assertScreenshotUnchanged(element, fileName, options);
+};
+
+export const assertPageScreenshotUnchanged = async (page: puppeteer.Page, fileName: string, options: Partial<puppeteer.ScreenshotOptions> = {}) => {
+  return assertScreenshotUnchanged(page, fileName, {
+    ...options,
+    fullPage: true,
+  });
+};
+
+const assertScreenshotUnchanged =
+    async (elementOrPage: puppeteer.ElementHandle | puppeteer.Page, fileName: string, options: Partial<puppeteer.ScreenshotOptions> = {}) => {
   try {
     const goldensScreenshotPath = join(goldensScreenshotFolder, fileName);
     const generatedScreenshotPath = join(generatedScreenshotFolder, fileName);
@@ -71,7 +88,7 @@ export const assertScreenshotUnchanged =
     }
 
     const opts = {...defaultScreenshotOpts, ...options, path: generatedScreenshotPath};
-    await page.screenshot(opts);
+    await elementOrPage.screenshot(opts);
 
     // In the event that a golden does not exist, assume the generated screenshot is the new golden.
     if (!fs.existsSync(goldensScreenshotPath)) {

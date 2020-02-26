@@ -4,7 +4,7 @@
 
 import {describe, it} from 'mocha';
 import {click, getBrowserAndPages, resetPages, resourcesPath} from '../../shared/helper.js';
-import {assertScreenshotUnchanged} from '../../shared/screenshot.js';
+import {assertPageScreenshotUnchanged, assertElementScreenshotUnchanged} from '../../shared/screenshot.js';
 
 describe('hello world', () => {
   beforeEach(async () => {
@@ -17,6 +17,16 @@ describe('hello world', () => {
     await click('#tab-console');
     await frontend.waitForSelector('.console-group-messages');
 
-    await assertScreenshotUnchanged(frontend, 'hello-world.png');
+    await assertPageScreenshotUnchanged(frontend, 'hello-world.png');
+  });
+
+  it('can take a screenshot of a single element', async () => {
+    const {target, frontend} = getBrowserAndPages();
+    await target.goto(`${resourcesPath}/console/dom-interactions.html`);
+    await click('#tab-console');
+    await frontend.waitForSelector('.console-group-messages');
+    const selectElem = await target.$('select[name="sel"]');
+
+    await assertElementScreenshotUnchanged(selectElem, 'select-elem.png');
   });
 });

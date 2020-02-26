@@ -487,7 +487,7 @@ export class SourcesPanel extends UI.Panel.Panel {
     lastModificationTimeout = Number.MAX_VALUE;
   }
 
-  _callFrameChanged() {
+  async _callFrameChanged() {
     const callFrame = self.UI.context.flavor(SDK.DebuggerModel.CallFrame);
     if (!callFrame) {
       return;
@@ -495,7 +495,7 @@ export class SourcesPanel extends UI.Panel.Panel {
     if (this._executionLineLocation) {
       this._executionLineLocation.dispose();
     }
-    this._executionLineLocation = self.Bindings.debuggerWorkspaceBinding.createCallFrameLiveLocation(
+    this._executionLineLocation = await self.Bindings.debuggerWorkspaceBinding.createCallFrameLiveLocation(
         callFrame.location(), this._executionLineChanged.bind(this), this._liveLocationPool);
   }
 
@@ -889,12 +889,12 @@ export class SourcesPanel extends UI.Panel.Panel {
   /**
    * @param {?{location: ?SDK.DebuggerModel.Location}} response
    */
-  _didGetFunctionDetails(response) {
+  async _didGetFunctionDetails(response) {
     if (!response || !response.location) {
       return;
     }
 
-    const uiLocation = self.Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(response.location);
+    const uiLocation = await self.Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(response.location);
     if (uiLocation) {
       this.showUILocation(uiLocation);
     }
@@ -1093,16 +1093,14 @@ export class DebuggerLocationRevealer {
    * @param {boolean=} omitFocus
    * @return {!Promise}
    */
-  reveal(rawLocation, omitFocus) {
+  async reveal(rawLocation, omitFocus) {
     if (!(rawLocation instanceof SDK.DebuggerModel.Location)) {
-      return Promise.reject(new Error('Internal error: not a debugger location'));
+      throw new Error('Internal error: not a debugger location');
     }
-    const uiLocation = self.Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
-    if (!uiLocation) {
-      return Promise.resolve();
+    const uiLocation = await self.Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
+    if (uiLocation) {
+      SourcesPanel.instance().showUILocation(uiLocation, omitFocus);
     }
-    SourcesPanel.instance().showUILocation(uiLocation, omitFocus);
-    return Promise.resolve();
   }
 }
 

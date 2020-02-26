@@ -2,7 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-class IssueView extends UI.Widget {
+import * as UI from '../ui/ui.js';
+import * as SDK from '../sdk/sdk.js';
+
+class IssueView extends UI.Widget.Widget {
   constructor(parent, issue) {
     super(false);
     this._parent = parent;
@@ -19,7 +22,7 @@ class IssueView extends UI.Widget {
   appendHeader() {
     const header = createElementWithClass('div', 'header');
     header.addEventListener('click', this._handleSelect.bind(this));
-    const icon = UI.Icon.create('largeicon-breaking-change', 'icon');
+    const icon = UI.Icon.Icon.create('largeicon-breaking-change', 'icon');
     header.appendChild(icon);
 
     const title = createElementWithClass('div', 'title');
@@ -49,10 +52,10 @@ class IssueView extends UI.Widget {
     code.innerText = this._issue.code;
     body.appendChild(code);
 
-    const link = UI.XLink.create(this._details.link, 'Read more · ' + this._details.linkTitle, 'link');
+    const link = UI.XLink.XLink.create(this._details.link, 'Read more · ' + this._details.linkTitle, 'link');
     body.appendChild(link);
 
-    const linkIcon = UI.Icon.create('largeicon-link', 'link-icon');
+    const linkIcon = UI.Icon.Icon.create('largeicon-link', 'link-icon');
     link.prepend(linkIcon);
 
     const bodyWrapper = createElementWithClass('div', 'body-wrapper');
@@ -69,13 +72,13 @@ class IssueView extends UI.Widget {
   }
 }
 
-export class IssuesPaneImpl extends UI.VBox {
+export class IssuesPaneImpl extends UI.Widget.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('issues/issuesPane.css');
 
-    const mainTarget = SDK.targetManager.mainTarget();
-    this._model = mainTarget.model(SDK.IssuesModel);
+    const mainTarget = self.SDK.targetManager.mainTarget();
+    this._model = mainTarget.model(SDK.IssuesModel.IssuesModel);
     this._model.addEventListener(SDK.IssuesModel.Events.IssueAdded, this._issueAdded.bind(this));
     this._model.ensureEnabled();
 

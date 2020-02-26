@@ -6,7 +6,7 @@ import * as Common from '../common/common.js';  // eslint-disable-line no-unused
 
 import {CookieModel} from './CookieModel.js';
 import {Issue} from './Issue.js';
-import {Events, NetworkManager} from './NetworkManager.js';
+import {Events as NetworkManagerEvents, NetworkManager} from './NetworkManager.js';
 import {NetworkRequest,  // eslint-disable-line no-unused-vars
         setCookieBlockedReasonToAttribute, setCookieBlockedReasonToUiString,} from './NetworkRequest.js';
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
@@ -31,7 +31,7 @@ export class IssuesModel extends SDKModel {
 
     const networkManager = target.model(NetworkManager);
     if (networkManager) {
-      networkManager.addEventListener(Events.RequestFinished, this._handleRequestFinished, this);
+      networkManager.addEventListener(NetworkManagerEvents.RequestFinished, this._handleRequestFinished, this);
     }
   }
 
@@ -54,10 +54,10 @@ export class IssuesModel extends SDKModel {
     if (!this._browserIssuesByCode.has(payload.code)) {
       const issue = new Issue(payload.code);
       this._browserIssuesByCode.set(payload.code, issue);
-      this.dispatchEventToListeners(IssuesModel.Events.IssueAdded, issue);
+      this.dispatchEventToListeners(Events.IssueAdded, issue);
     } else {
       const issue = this._browserIssuesByCode.get(payload.code);
-      this.dispatchEventToListeners(IssuesModel.Events.IssueUpdated, issue);
+      this.dispatchEventToListeners(Events.IssueUpdated, issue);
     }
   }
 
@@ -123,7 +123,7 @@ export class IssuesModel extends SDKModel {
 }
 
 /** @enum {symbol} */
-IssuesModel.Events = {
+export const Events = {
   Updated: Symbol('Updated'),
   IssueAdded: Symbol('IssueAdded'),
   IssueUpdated: Symbol('IssueUpdated'),

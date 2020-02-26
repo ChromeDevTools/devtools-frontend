@@ -333,7 +333,7 @@ export class ProfileView extends UI.View.SimpleView {
   /**
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
-  _onEntryInvoked(event) {
+  async _onEntryInvoked(event) {
     const entryIndex = event.data;
     const node = this._dataProvider._entryNodes[entryIndex];
     const debuggerModel = this._profileHeader._debuggerModel;
@@ -346,7 +346,8 @@ export class ProfileView extends UI.View.SimpleView {
     }
     const location = /** @type {!SDK.DebuggerModel.Location} */ (
         debuggerModel.createRawLocation(script, node.lineNumber, node.columnNumber));
-    Common.Revealer.reveal(self.Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(location));
+    const uiLocation = await self.Bindings.DebuggerWorkspaceBinding.rawLocationToUILocation(location);
+    Common.Revealer.reveal(uiLocation);
   }
 
   _changeView() {

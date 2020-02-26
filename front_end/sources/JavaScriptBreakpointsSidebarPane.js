@@ -42,7 +42,7 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
    * @override
    * @return {!Promise<?>}
    */
-  doUpdate() {
+  async doUpdate() {
     const hadFocus = this.hasFocus();
     const breakpointLocations = this._breakpointManager.allBreakpointLocations().filter(
         breakpointLocation =>
@@ -75,7 +75,7 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
 
     const details = self.UI.context.flavor(SDK.DebuggerModel.DebuggerPausedDetails);
     const selectedUILocation = details && details.callFrames.length ?
-        self.Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(details.callFrames[0].location()) :
+        await self.Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(details.callFrames[0].location()) :
         null;
 
     let shouldShowView = false;

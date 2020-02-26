@@ -154,7 +154,7 @@ export class BlackboxManager {
       if (script[_blackboxedRanges] && await script.setBlackboxedRanges([])) {
         delete script[_blackboxedRanges];
       }
-      this._debuggerWorkspaceBinding.updateLocations(script);
+      await this._debuggerWorkspaceBinding.updateLocations(script);
       return;
     }
 

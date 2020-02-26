@@ -23,7 +23,7 @@ async function doubleClickSourceTreeItem(selector: string) {
   await click(selector, {clickOptions: {clickCount: 2}});
 }
 
-describe('The Network Tab', async () => {
+describe('The Application Tab', async () => {
   beforeEach(async () => {
     await resetPages();
   });

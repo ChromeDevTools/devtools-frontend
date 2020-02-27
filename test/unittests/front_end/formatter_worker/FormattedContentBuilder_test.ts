@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {FormattedContentBuilder} from '/front_end/formatter_worker/FormattedContentBuilder.js';
+import {FormattedContentBuilder} from '../../../../front_end/formatter_worker/FormattedContentBuilder.js';
 
 describe('FormattedContentBuilder', () => {
   it('can add a token successfully', () => {
@@ -138,7 +138,7 @@ describe('FormattedContentBuilder', () => {
     builder.addToken('}', 17);
     builder.addNewLine();
 
-    const {original,formatted} = builder.mapping();
+    const {original, formatted} = builder.mapping();
     assert.deepEqual(original, [0, 5, 6, 17]);
     assert.deepEqual(formatted, [0, 6, 10, 22]);
     assert.equal(builder.content(), '#main {\n  color: red;\n}\n');
@@ -164,13 +164,16 @@ describe('FormattedContentBuilder', () => {
     builder.addNewLine();
     builder.addToken('Token 3', 0);
 
-    assert.equal(builder.content(), 'Token 1\n012345678910111213141516171819Token 2\n012345678910111213141516171819Token 3');
+    assert.equal(
+        builder.content(), 'Token 1\n012345678910111213141516171819Token 2\n012345678910111213141516171819Token 3');
 
     builder.increaseNestingLevel();
 
     builder.addNewLine();
     builder.addToken('Token 4', 0);
 
-    assert.equal(builder.content(), 'Token 1\n012345678910111213141516171819Token 2\n012345678910111213141516171819Token 3\n202122232425262728293031323334353637383940Token 4');
+    assert.equal(
+        builder.content(),
+        'Token 1\n012345678910111213141516171819Token 2\n012345678910111213141516171819Token 3\n202122232425262728293031323334353637383940Token 4');
   });
 });

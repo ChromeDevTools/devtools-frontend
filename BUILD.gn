@@ -2232,7 +2232,10 @@ group("devtools_all_files") {
   deps = [ ":devtools_frontend_resources_data" ]
 }
 
-devtools_typescript_deps = [ "front_end/common:common" ]
+devtools_typescript_deps = [
+  "front_end/common:common",
+  "front_end/formatter_worker",
+]
 
 devtools_frontend_resources_deps = devtools_typescript_deps + [
                                      ":aria_properties",
@@ -2265,6 +2268,7 @@ if (!is_android) {
   devtools_frontend_resources_deps += [
     ":copy_karma_conf",
     "test/unittests/front_end/common",
+    "test/unittests/front_end/formatter_worker",
   ]
 }
 

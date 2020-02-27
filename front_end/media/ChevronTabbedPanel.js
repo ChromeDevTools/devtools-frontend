@@ -2,20 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as UI from '../ui/ui.js';
+
 /**
  * @typedef {{
  *     title: !Node,
- *     element: !UI.Widget,
+ *     element: !UI.Widget.Widget,
  * }}
  */
-Media.ChevronTab;
+export let ChevronTab;
 
 /**
  * @unrestricted
  */
-Media.ChevronTabbedPanel = class extends UI.VBox {
+export class ChevronTabbedPanel extends UI.Widget.VBox {
   /**
-   * @param {!Object.<!Media.ChevronTab>} tab_definitions
+   * @param {!Object.<!ChevronTab>} tab_definitions
    */
   constructor(tab_definitions) {
     super();
@@ -36,7 +38,7 @@ Media.ChevronTabbedPanel = class extends UI.VBox {
 
   /**
    * @param {string} identifier
-   * @param {!Media.ChevronTab} tab
+   * @param {!ChevronTab} tab
    */
   CreateAndAddDropdownButton(identifier, tab) {
     const button = this._header_panel_button_container.createChild('div', 'chevron-tabbed-panel-buttons-item');
@@ -86,7 +88,7 @@ Media.ChevronTabbedPanel = class extends UI.VBox {
   }
 
   /**
-   * @param {!UI.Widget} content_element
+   * @param {!UI.Widget.Widget} content_element
    */
   _DisplayContentSection(content_element) {
     this._content_panel.innerHTML = '';
@@ -102,7 +104,7 @@ Media.ChevronTabbedPanel = class extends UI.VBox {
 
   /**
    * @param {string} name
-   * @return {?UI.Widget}
+   * @return {?UI.Widget.Widget}
    */
   GetContentPanelByName(name) {
     if (!this._chevronButtons.has(name)) {
@@ -113,9 +115,9 @@ Media.ChevronTabbedPanel = class extends UI.VBox {
 
   /**
    * @param {string} name
-   * @return {?UI.Widget}
+   * @return {?UI.Widget.Widget}
    */
   GetButtonByName(name) {
     return this._chevronButtons.get(name).button;
   }
-};
+}

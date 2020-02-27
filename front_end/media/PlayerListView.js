@@ -2,20 +2,23 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as UI from '../ui/ui.js';
+import * as MediaModel from './MediaModel.js';
+
 /**
  * @typedef {{playerTitle: string, playerID: string, exists: boolean, playing: boolean, titleEdited: boolean}}
  */
-Media.PlayerStatus;
+export let PlayerStatus;
 
 /**
- * @typedef {{playerStatus: !Media.PlayerStatus, playerTitleElement: ?HTMLElement}}
+ * @typedef {{playerStatus: !PlayerStatus, playerTitleElement: ?HTMLElement}}
  */
-Media.PlayerStatusMapElement;
+export let PlayerStatusMapElement;
 
 
-Media.PlayerEntryTreeElement = class extends UI.TreeElement {
+export class PlayerEntryTreeElement extends UI.TreeOutline.TreeElement {
   /**
-   * @param {!Media.PlayerStatus} playerStatus
+   * @param {!PlayerStatus} playerStatus
    * @param {!Media.MainView} displayContainer
    */
   constructor(playerStatus, displayContainer) {
@@ -23,7 +26,7 @@ Media.PlayerEntryTreeElement = class extends UI.TreeElement {
     this.titleFromUrl = true;
     this._playerStatus = playerStatus;
     this._displayContainer = displayContainer;
-    this.setLeadingIcons([UI.Icon.create('smallicon-videoplayer-playing', 'media-player')]);
+    this.setLeadingIcons([UI.Icon.Icon.create('smallicon-videoplayer-playing', 'media-player')]);
   }
 
   /**
@@ -34,10 +37,10 @@ Media.PlayerEntryTreeElement = class extends UI.TreeElement {
     this._displayContainer.renderMainPanel(this._playerStatus.playerID);
     return true;
   }
-};
+}
 
 
-Media.PlayerListView = class extends UI.VBox {
+export class PlayerListView extends UI.Widget.VBox {
   /**
    * @param {!Media.MainView} mainContainer
    */
@@ -50,7 +53,7 @@ Media.PlayerListView = class extends UI.VBox {
     this._mainContainer = mainContainer;
 
     // The parent tree for storing sections
-    this._sidebarTree = new UI.TreeOutlineInShadow();
+    this._sidebarTree = new UI.TreeOutline.TreeOutlineInShadow();
     this.contentElement.appendChild(this._sidebarTree.element);
     this._sidebarTree.registerRequiredCSS('media/playerListView.css');
 
@@ -66,10 +69,10 @@ Media.PlayerListView = class extends UI.VBox {
 
   /**
    * @param {string} title
-   * @return {!UI.TreeElement}
+   * @return {!UI.TreeOutline.TreeElement}
    */
   _addListSection(title) {
-    const treeElement = new UI.TreeElement(title, true);
+    const treeElement = new UI.TreeOutline.TreeElement(title, true);
     treeElement.listItemElement.classList.add('storage-group-list-item');
     treeElement.setCollapsible(false);
     treeElement.selectable = false;
@@ -82,7 +85,7 @@ Media.PlayerListView = class extends UI.VBox {
    */
   addMediaElementItem(playerID) {
     const playerStatus = {playerTitle: playerID, playerID: playerID, exists: true, playing: false, titleEdited: false};
-    const playerElement = new Media.PlayerEntryTreeElement(playerStatus, this._mainContainer);
+    const playerElement = new PlayerEntryTreeElement(playerStatus, this._mainContainer);
     this._playerStatuses.set(playerID, playerElement);
     this._playerList.appendChild(playerElement);
   }
@@ -109,18 +112,18 @@ Media.PlayerListView = class extends UI.VBox {
   setMediaElementPlayerIcon(playerID, iconName) {
     if (this._playerStatuses.has(playerID)) {
       const sidebarEntry = this._playerStatuses.get(playerID);
-      sidebarEntry.setLeadingIcons([UI.Icon.create('smallicon-videoplayer-' + iconName, 'media-player')]);
+      sidebarEntry.setLeadingIcons([UI.Icon.Icon.create('smallicon-videoplayer-' + iconName, 'media-player')]);
     }
   }
 
   /**
    * @param {string} playerID
-   * @param {!Array.<!Media.Event>} changes
+   * @param {!Array.<!MediaModel.Event>} changes
    * @param {string} changeType
    */
   renderChanges(playerID, changes, changeType) {
     // We only want to try setting the title from the 'frame_title' and 'frame_url' properties.
-    if (changeType === Media.MediaModel.MediaChangeTypeKeys.Property) {
+    if (changeType === MediaModel.MediaChangeTypeKeys.Property) {
       for (const change of changes) {
         // Sometimes frame_title can be an empty string.
         if (change.name === 'frame_title' && change.value) {
@@ -134,7 +137,7 @@ Media.PlayerListView = class extends UI.VBox {
       }
     }
 
-    if (changeType === Media.MediaModel.MediaChangeTypeKeys.Event) {
+    if (changeType === MediaModel.MediaChangeTypeKeys.Event) {
       let change_to = null;
       for (const change of changes) {
         if (change.name === 'Event') {
@@ -152,4 +155,4 @@ Media.PlayerListView = class extends UI.VBox {
       }
     }
   }
-};
+}

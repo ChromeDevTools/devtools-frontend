@@ -2,10 +2,38 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as UI from '../ui/ui.js';
+import * as Common from '../common/common.js';
+import * as ChevronTabbedPanel from './ChevronTabbedPanel.js';
+import * as MediaModel from './MediaModel.js';  // eslint-disable-line no-unused-vars
+
+/** @enum {string} */
+export const PlayerPropertyKeys = {
+  kResolution: 'kResolution',
+  kTotalBytes: 'kTotalBytes',
+  kBitrate: 'kBitrate',
+  kMaxDuration: 'kMaxDuration',
+  kStartTime: 'kStartTime',
+  kIsVideoEncrypted: 'kIsVideoEncrypted',
+  kIsStreaming: 'kIsStreaming',
+  kFrameUrl: 'kFrameUrl',
+  kFrameTitle: 'kFrameTitle',
+  kIsSingleOrigin: 'kIsSingleOrigin',
+  kIsRangeHeaderSupported: 'kIsRangeHeaderSupported',
+  kVideoDecoderName: 'kVideoDecoderName',
+  kAudioDecoderName: 'kAudioDecoderName',
+  kIsPlatformVideoDecoder: 'kIsPlatformVideoDecoder',
+  kIsPlatformAudioDecoder: 'kIsPlatformAudioDecoder',
+  kIsVideoDecryptingDemuxerStream: 'kIsVideoDecryptingDemuxerStream',
+  kIsAudioDecryptingDemuxerStream: 'kIsAudioDecryptingDemuxerStream',
+  kAudioTracks: 'kAudioTracks',
+  kVideoTracks: 'kVideoTracks',
+};
+
 /**
  * @unrestricted
  */
-Media.PropertyRenderer = class extends UI.VBox {
+export class PropertyRenderer extends UI.Widget.VBox {
   constructor(title) {
     super();
     this.contentElement.classList.add('media-property-renderer');
@@ -64,11 +92,11 @@ Media.PropertyRenderer = class extends UI.VBox {
       this._contents.appendChild(spanElement);
     }
   }
-};
+}
 
-Media.FormattedPropertyRenderer = class extends Media.PropertyRenderer {
+export class FormattedPropertyRenderer extends PropertyRenderer {
   constructor(title, formatfunction) {
-    super(Common.UIString(title));
+    super(Common.UIString.UIString(title));
     this._formatfunction = formatfunction;
   }
 
@@ -82,24 +110,24 @@ Media.FormattedPropertyRenderer = class extends Media.PropertyRenderer {
       this.changeContents(this._formatfunction(propvalue));
     }
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Media.DefaultPropertyRenderer = class extends Media.PropertyRenderer {
+export class DefaultPropertyRenderer extends PropertyRenderer {
   constructor(title, default_text) {
-    super(Common.UIString(title));
+    super(Common.UIString.UIString(title));
     this.changeContents(default_text);
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Media.DimensionPropertyRenderer = class extends Media.PropertyRenderer {
+export class DimensionPropertyRenderer extends PropertyRenderer {
   constructor(title) {
-    super(Common.UIString(title));
+    super(Common.UIString.UIString(title));
     this._width = 0;
     this._height = 0;
   }
@@ -125,12 +153,12 @@ Media.DimensionPropertyRenderer = class extends Media.PropertyRenderer {
       this.changeContents(`${this._width}\xD7${this._height}`);
     }
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Media.AttributesView = class extends UI.VBox {
+export class AttributesView extends UI.Widget.VBox {
   constructor(elements) {
     super();
     this.contentElement.classList.add('media-attributes-view');
@@ -138,9 +166,9 @@ Media.AttributesView = class extends UI.VBox {
       element.show(this.contentElement);
     }
   }
-};
+}
 
-Media.TrackManager = class {
+export class TrackManager {
   constructor(propertiesView, type) {
     this._type = type;
     this._view = propertiesView;
@@ -162,9 +190,9 @@ Media.TrackManager = class {
   addNewTab(tabs, data, index) {
     // abstract method!
   }
-};
+}
 
-Media.VideoTrackManager = class extends Media.TrackManager {
+export class VideoTrackManager extends TrackManager {
   constructor(propertiesView) {
     super(propertiesView, 'video');
   }
@@ -175,14 +203,14 @@ Media.VideoTrackManager = class extends Media.TrackManager {
   addNewTab(tabs, tabData, tabNumber) {
     const tabElements = [];
     for (const [name, data] of Object.entries(tabData)) {
-      tabElements.push(new Media.DefaultPropertyRenderer(name, data));
+      tabElements.push(new DefaultPropertyRenderer(name, data));
     }
-    const newTab = new Media.AttributesView(tabElements);
-    tabs.CreateAndAddDropdownButton('tab_' + tabNumber, {title: UI.html`Track #${tabNumber}`, element: newTab});
+    const newTab = new AttributesView(tabElements);
+    tabs.CreateAndAddDropdownButton('tab_' + tabNumber, {title: UI.Fragment.html`Track #${tabNumber}`, element: newTab});
   }
-};
+}
 
-Media.AudioTrackManager = class extends Media.TrackManager {
+export class AudioTrackManager extends TrackManager {
   constructor(propertiesView) {
     super(propertiesView, 'audio');
   }
@@ -193,37 +221,37 @@ Media.AudioTrackManager = class extends Media.TrackManager {
   addNewTab(tabs, tabData, tabNumber) {
     const tabElements = [];
     for (const [name, data] of Object.entries(tabData)) {
-      tabElements.push(new Media.DefaultPropertyRenderer(name, data));
+      tabElements.push(new DefaultPropertyRenderer(name, data));
     }
-    const newtab = new Media.AttributesView(tabElements);
-    tabs.CreateAndAddDropdownButton('tab_' + tabNumber, {title: UI.html`Track #${tabNumber}`, element: newtab});
+    const newtab = new AttributesView(tabElements);
+    tabs.CreateAndAddDropdownButton('tab_' + tabNumber, {title: UI.Fragment.html`Track #${tabNumber}`, element: newtab});
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Media.PlayerPropertiesView = class extends UI.VBox {
+export class PlayerPropertiesView extends UI.Widget.VBox {
   constructor() {
     super();
     this.contentElement.classList.add('media-properties-frame');
     this.registerRequiredCSS('media/playerPropertiesView.css');
     this.populateAttributesAndElements();
-    this._videoProperties = new Media.AttributesView(this._mediaElements);
-    this._videoDecoderProperties = new Media.AttributesView(this._videoDecoderElements);
-    this._audioDecoderProperties = new Media.AttributesView(this._audioDecoderElements);
+    this._videoProperties = new AttributesView(this._mediaElements);
+    this._videoDecoderProperties = new AttributesView(this._videoDecoderElements);
+    this._audioDecoderProperties = new AttributesView(this._audioDecoderElements);
 
-    const video = new Media.ChevronTabbedPanel({tab: {title: UI.html`Media`, element: this._videoProperties}});
+    const video = new ChevronTabbedPanel.ChevronTabbedPanel({tab: {title: UI.Fragment.html`Media`, element: this._videoProperties}});
     video.contentElement.classList.add('media-properties-view');
     video.show(this.contentElement);
 
     this._videoDecoderTab =
-        new Media.ChevronTabbedPanel({tab: {title: UI.html`Video Decoder`, element: this._videoDecoderProperties}});
+        new ChevronTabbedPanel.ChevronTabbedPanel({tab: {title: UI.Fragment.html`Video Decoder`, element: this._videoDecoderProperties}});
     this._videoDecoderTab.contentElement.classList.add('media-properties-view');
     this._videoDecoderTab.show(this.contentElement);
 
     this._audioDecoderTab =
-        new Media.ChevronTabbedPanel({tab: {title: UI.html`Audio Decoder`, element: this._audioDecoderProperties}});
+        new ChevronTabbedPanel.ChevronTabbedPanel({tab: {title: UI.Fragment.html`Audio Decoder`, element: this._audioDecoderProperties}});
     this._audioDecoderTab.contentElement.classList.add('media-properties-view');
     this._audioDecoderTab.show(this.contentElement);
   }
@@ -241,8 +269,8 @@ Media.PlayerPropertiesView = class extends UI.VBox {
 
   /**
    * @param {string} playerID
-   * @param {!Array.<!Media.Event>} changes
-   * @param {!Media.MediaModel.MediaChangeTypeKeys} changeType
+   * @param {!Array.<!MediaModel.Event>} changes
+   * @param {!MediaModel.MediaChangeTypeKeys} changeType
    */
   renderChanges(playerID, changes, changeType) {
     for (const change of changes) {
@@ -292,99 +320,76 @@ Media.PlayerPropertiesView = class extends UI.VBox {
     this._attributeMap = new Map();
 
     /* Media properties */
-    const resolution = new Media.PropertyRenderer(ls`Resolution`);
+    const resolution = new PropertyRenderer(ls`Resolution`);
     this._mediaElements.push(resolution);
-    this._attributeMap.set(Media.PlayerPropertiesView.PlayerProperties.kResolution, resolution);
+    this._attributeMap.set(PlayerPropertyKeys.kResolution, resolution);
 
-    const fileSize = new Media.FormattedPropertyRenderer(ls`File Size`, this.formatFileSize);
+    const fileSize = new FormattedPropertyRenderer(ls`File Size`, this.formatFileSize);
     this._mediaElements.push(fileSize);
-    this._attributeMap.set(Media.PlayerPropertiesView.PlayerProperties.kTotalBytes, fileSize);
+    this._attributeMap.set(PlayerPropertyKeys.kTotalBytes, fileSize);
 
-    const bitrate = new Media.FormattedPropertyRenderer(ls`Bitrate`, this.formatKbps);
+    const bitrate = new FormattedPropertyRenderer(ls`Bitrate`, this.formatKbps);
     this._mediaElements.push(bitrate);
-    this._attributeMap.set(Media.PlayerPropertiesView.PlayerProperties.kBitrate, bitrate);
+    this._attributeMap.set(PlayerPropertyKeys.kBitrate, bitrate);
 
-    const duration = new Media.FormattedPropertyRenderer(ls`Duration`, this.formatTime);
+    const duration = new FormattedPropertyRenderer(ls`Duration`, this.formatTime);
     this._mediaElements.push(duration);
-    this._attributeMap.set(Media.PlayerPropertiesView.PlayerProperties.kMaxDuration, duration);
+    this._attributeMap.set(PlayerPropertyKeys.kMaxDuration, duration);
 
-    const startTime = new Media.PropertyRenderer(ls`Start Time`);
+    const startTime = new PropertyRenderer(ls`Start Time`);
     this._mediaElements.push(startTime);
-    this._attributeMap.set(Media.PlayerPropertiesView.PlayerProperties.kStartTime, startTime);
+    this._attributeMap.set(PlayerPropertyKeys.kStartTime, startTime);
 
-    const streaming = new Media.PropertyRenderer(ls`Streaming`);
+    const streaming = new PropertyRenderer(ls`Streaming`);
     this._mediaElements.push(streaming);
-    this._attributeMap.set(Media.PlayerPropertiesView.PlayerProperties.kIsStreaming, streaming);
+    this._attributeMap.set(PlayerPropertyKeys.kIsStreaming, streaming);
 
-    const frameUrl = new Media.PropertyRenderer(ls`Playback Frame URL`);
+    const frameUrl = new PropertyRenderer(ls`Playback Frame URL`);
     this._mediaElements.push(frameUrl);
-    this._attributeMap.set(Media.PlayerPropertiesView.PlayerProperties.kFrameUrl, frameUrl);
+    this._attributeMap.set(PlayerPropertyKeys.kFrameUrl, frameUrl);
 
-    const frameTitle = new Media.PropertyRenderer(ls`Playback Frame Title`);
+    const frameTitle = new PropertyRenderer(ls`Playback Frame Title`);
     this._mediaElements.push(frameTitle);
-    this._attributeMap.set(Media.PlayerPropertiesView.PlayerProperties.kFrameTitle, frameTitle);
+    this._attributeMap.set(PlayerPropertyKeys.kFrameTitle, frameTitle);
 
-    const singleOrigin = new Media.PropertyRenderer(ls`Is Single Origin Playback`);
+    const singleOrigin = new PropertyRenderer(ls`Is Single Origin Playback`);
     this._mediaElements.push(singleOrigin);
-    this._attributeMap.set(Media.PlayerPropertiesView.PlayerProperties.kIsSingleOrigin, singleOrigin);
+    this._attributeMap.set(PlayerPropertyKeys.kIsSingleOrigin, singleOrigin);
 
-    const rangeHeaders = new Media.PropertyRenderer(ls`Range Header Support`);
+    const rangeHeaders = new PropertyRenderer(ls`Range Header Support`);
     this._mediaElements.push(rangeHeaders);
-    this._attributeMap.set(Media.PlayerPropertiesView.PlayerProperties.kIsRangeHeaderSupported, rangeHeaders);
+    this._attributeMap.set(PlayerPropertyKeys.kIsRangeHeaderSupported, rangeHeaders);
 
     /* Video Decoder Properties */
-    const decoderName = new Media.DefaultPropertyRenderer(ls`Decoder Name`, ls`No Decoder`);
+    const decoderName = new DefaultPropertyRenderer(ls`Decoder Name`, ls`No Decoder`);
     this._videoDecoderElements.push(decoderName);
-    this._attributeMap.set(Media.PlayerPropertiesView.PlayerProperties.kVideoDecoderName, decoderName);
+    this._attributeMap.set(PlayerPropertyKeys.kVideoDecoderName, decoderName);
 
-    const videoPlatformDecoder = new Media.PropertyRenderer(ls`Hardware Decoder`);
+    const videoPlatformDecoder = new PropertyRenderer(ls`Hardware Decoder`);
     this._videoDecoderElements.push(videoPlatformDecoder);
-    this._attributeMap.set(Media.PlayerPropertiesView.PlayerProperties.kIsPlatformVideoDecoder, videoPlatformDecoder);
+    this._attributeMap.set(PlayerPropertyKeys.kIsPlatformVideoDecoder, videoPlatformDecoder);
 
-    const videoDDS = new Media.PropertyRenderer(ls`Decrypting Demuxer`);
+    const videoDDS = new PropertyRenderer(ls`Decrypting Demuxer`);
     this._videoDecoderElements.push(videoDDS);
-    this._attributeMap.set(Media.PlayerPropertiesView.PlayerProperties.kIsVideoDecryptingDemuxerStream, videoDDS);
+    this._attributeMap.set(PlayerPropertyKeys.kIsVideoDecryptingDemuxerStream, videoDDS);
 
-    const videoTrackManager = new Media.VideoTrackManager(this);
-    this._attributeMap.set(Media.PlayerPropertiesView.PlayerProperties.kVideoTracks, videoTrackManager);
+    const videoTrackManager = new VideoTrackManager(this);
+    this._attributeMap.set(PlayerPropertyKeys.kVideoTracks, videoTrackManager);
 
     /* Audio Decoder Properties */
-    const audioDecoder = new Media.DefaultPropertyRenderer(ls`Decoder Name`, ls`No Decoder`);
+    const audioDecoder = new DefaultPropertyRenderer(ls`Decoder Name`, ls`No Decoder`);
     this._audioDecoderElements.push(audioDecoder);
-    this._attributeMap.set(Media.PlayerPropertiesView.PlayerProperties.kAudioDecoderName, audioDecoder);
+    this._attributeMap.set(PlayerPropertyKeys.kAudioDecoderName, audioDecoder);
 
-    const audioPlatformDecoder = new Media.PropertyRenderer(ls`Hardware Decoder`);
+    const audioPlatformDecoder = new PropertyRenderer(ls`Hardware Decoder`);
     this._audioDecoderElements.push(audioPlatformDecoder);
-    this._attributeMap.set(Media.PlayerPropertiesView.PlayerProperties.kIsPlatformAudioDecoder, audioPlatformDecoder);
+    this._attributeMap.set(PlayerPropertyKeys.kIsPlatformAudioDecoder, audioPlatformDecoder);
 
-    const audioDDS = new Media.PropertyRenderer(ls`Decrypting Demuxer`);
+    const audioDDS = new PropertyRenderer(ls`Decrypting Demuxer`);
     this._audioDecoderElements.push(audioDDS);
-    this._attributeMap.set(Media.PlayerPropertiesView.PlayerProperties.kIsAudioDecryptingDemuxerStream, audioDDS);
+    this._attributeMap.set(PlayerPropertyKeys.kIsAudioDecryptingDemuxerStream, audioDDS);
 
-    const audioTrackManager = new Media.AudioTrackManager(this);
-    this._attributeMap.set(Media.PlayerPropertiesView.PlayerProperties.kAudioTracks, audioTrackManager);
+    const audioTrackManager = new AudioTrackManager(this);
+    this._attributeMap.set(PlayerPropertyKeys.kAudioTracks, audioTrackManager);
   }
-};
-
-/** @enum {string} */
-Media.PlayerPropertiesView.PlayerProperties = {
-  kResolution: 'kResolution',
-  kTotalBytes: 'kTotalBytes',
-  kBitrate: 'kBitrate',
-  kMaxDuration: 'kMaxDuration',
-  kStartTime: 'kStartTime',
-  kIsVideoEncrypted: 'kIsVideoEncrypted',
-  kIsStreaming: 'kIsStreaming',
-  kFrameUrl: 'kFrameUrl',
-  kFrameTitle: 'kFrameTitle',
-  kIsSingleOrigin: 'kIsSingleOrigin',
-  kIsRangeHeaderSupported: 'kIsRangeHeaderSupported',
-  kVideoDecoderName: 'kVideoDecoderName',
-  kAudioDecoderName: 'kAudioDecoderName',
-  kIsPlatformVideoDecoder: 'kIsPlatformVideoDecoder',
-  kIsPlatformAudioDecoder: 'kIsPlatformAudioDecoder',
-  kIsVideoDecryptingDemuxerStream: 'kIsVideoDecryptingDemuxerStream',
-  kIsAudioDecryptingDemuxerStream: 'kIsAudioDecryptingDemuxerStream',
-  kAudioTracks: 'kAudioTracks',
-  kVideoTracks: 'kVideoTracks',
-};
+}

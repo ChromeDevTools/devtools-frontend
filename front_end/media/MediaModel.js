@@ -2,12 +2,24 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../sdk/sdk.js';
+
+/**
+ * @typedef {{
+ *     name: string,
+ *     value: *,
+ *     timestamp: (number|string|undefined),
+ *     displayTimestamp: string
+ * }}
+ */
+export let Event;
+
 /**
  * @implements {Protocol.MediaDispatcher}
  */
-Media.MediaModel = class extends SDK.SDKModel {
+export class MediaModel extends SDK.SDKModel.SDKModel {
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.SDKModel.Target} target
    */
   constructor(target) {
     super(target);
@@ -41,7 +53,7 @@ Media.MediaModel = class extends SDK.SDKModel {
    */
   playerPropertiesChanged(playerId, properties) {
     this.dispatchEventToListeners(
-        Media.MediaModel.Events.PlayerPropertiesChanged, {playerId: playerId, properties: properties});
+        Events.PlayerPropertiesChanged, {playerId: playerId, properties: properties});
   }
 
   /**
@@ -50,7 +62,7 @@ Media.MediaModel = class extends SDK.SDKModel {
    * @override
    */
   playerEventsAdded(playerId, events) {
-    this.dispatchEventToListeners(Media.MediaModel.Events.PlayerEventsAdded, {playerId: playerId, events: events});
+    this.dispatchEventToListeners(Events.PlayerEventsAdded, {playerId: playerId, events: events});
   }
 
   /**
@@ -58,21 +70,21 @@ Media.MediaModel = class extends SDK.SDKModel {
    * @override
    */
   playersCreated(playerIds) {
-    this.dispatchEventToListeners(Media.MediaModel.Events.PlayersCreated, playerIds);
+    this.dispatchEventToListeners(Events.PlayersCreated, playerIds);
   }
-};
+}
 
-SDK.SDKModel.register(Media.MediaModel, SDK.Target.Capability.DOM, false);
+SDK.SDKModel.SDKModel.register(MediaModel, SDK.SDKModel.Capability.DOM, false);
 
 /** @enum {symbol} */
-Media.MediaModel.Events = {
+export const Events = {
   PlayerPropertiesChanged: Symbol('PlayerPropertiesChanged'),
   PlayerEventsAdded: Symbol('PlayerEventsAdded'),
   PlayersCreated: Symbol('PlayersCreated')
 };
 
 /** @enum {string} */
-Media.MediaModel.MediaChangeTypeKeys = {
+export const MediaChangeTypeKeys = {
   Event: 'Events',
   Property: 'Properties'
 };

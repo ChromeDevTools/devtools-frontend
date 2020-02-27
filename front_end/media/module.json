@@ -19,7 +19,9 @@
       "data_grid",
       "source_frame"
   ],
-  "scripts": [
+  "modules": [
+      "media.js",
+      "media-legacy.js",
       "EventDisplayTable.js",
       "MainView.js",
       "PlayerDetailView.js",
@@ -28,6 +30,7 @@
       "MediaModel.js",
       "ChevronTabbedPanel.js"
   ],
+  "scripts": [],
   "resources": [
     "eventDisplayTable.css",
     "mediaView.css",

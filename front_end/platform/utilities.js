@@ -253,43 +253,6 @@ String.isDigitAt = function(string, index) {
 };
 
 /**
- * @return {string}
- */
-String.prototype.toBase64 = function() {
-  /**
-   * @param {number} b
-   * @return {number}
-   */
-  function encodeBits(b) {
-    return b < 26 ? b + 65 : b < 52 ? b + 71 : b < 62 ? b - 4 : b === 62 ? 43 : b === 63 ? 47 : 65;
-  }
-  const encoder = new TextEncoder();
-  const data = encoder.encode(this.toString());
-  const n = data.length;
-  let encoded = '';
-  if (n === 0) {
-    return encoded;
-  }
-  let shift;
-  let v = 0;
-  for (let i = 0; i < n; i++) {
-    shift = i % 3;
-    v |= data[i] << (16 >>> shift & 24);
-    if (shift === 2) {
-      encoded += String.fromCharCode(
-          encodeBits(v >>> 18 & 63), encodeBits(v >>> 12 & 63), encodeBits(v >>> 6 & 63), encodeBits(v & 63));
-      v = 0;
-    }
-  }
-  if (shift === 0) {
-    encoded += String.fromCharCode(encodeBits(v >>> 18 & 63), encodeBits(v >>> 12 & 63), 61, 61);
-  } else if (shift === 1) {
-    encoded += String.fromCharCode(encodeBits(v >>> 18 & 63), encodeBits(v >>> 12 & 63), encodeBits(v >>> 6 & 63), 61);
-  }
-  return encoded;
-};
-
-/**
  * @param {string} a
  * @param {string} b
  * @return {number}

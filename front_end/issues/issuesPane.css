@@ -101,3 +101,21 @@
 .issue.collapsed .body-wrapper {
     max-height: 0;
 }
+
+.issues-toolbar-container {
+    display: flex;
+    flex: none;
+}
+
+.issues-toolbar-container > .toolbar {
+    background-color: var(--toolbar-bg-color);
+    border-bottom: var(--divider-border);
+}
+
+.issues-toolbar-left {
+    flex: 1 1 auto;
+}
+
+.issues-toolbar-right {
+    padding-right: 6px;
+}

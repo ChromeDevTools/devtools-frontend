@@ -86,6 +86,17 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     this._issueViews = new Map();
     this._selectedIssue = null;
 
+    const issuesToolbarContainer = this.contentElement.createChild('div', 'issues-toolbar-container');
+    new UI.Toolbar.Toolbar('issues-toolbar-left', issuesToolbarContainer);
+    const rightToolbar = new UI.Toolbar.Toolbar('issues-toolbar-right', issuesToolbarContainer);
+    rightToolbar.appendSeparator();
+    const toolbarWarnings = new UI.Toolbar.ToolbarItem(createElement('div'));
+    const breakingChangeIcon = UI.Icon.Icon.create('largeicon-breaking-change');
+    toolbarWarnings.element.appendChild(breakingChangeIcon);
+    this._toolbarIssuesCount = toolbarWarnings.element.createChild('span', 'warnings-count-label');
+    this._updateIssuesCount();
+    rightToolbar.appendToolbarItem(toolbarWarnings);
+
     for (const issue of this._model.issues()) {
       this._addIssueView(issue);
     }
@@ -97,13 +108,14 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
 
   _addIssueView(issue) {
     if (!(issue.code in issueDetails)) {
-      console.warn('Received issue with unknow code:', issue.code);
+      console.warn('Received issue with unknown code:', issue.code);
       return;
     }
 
     const view = new IssueView(this, issue);
     view.show(this.contentElement);
     this._issueViews.set(issue.code, view);
+    this._updateIssuesCount();
   }
 
   _issuesCleared() {
@@ -112,6 +124,11 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     }
     this._issueViews.clear();
     this._selectedIssue = null;
+    this._updateIssuesCount();
+  }
+
+  _updateIssuesCount() {
+    this._toolbarIssuesCount.textContent = this._model.size();
   }
 
   handleSelect(issue) {

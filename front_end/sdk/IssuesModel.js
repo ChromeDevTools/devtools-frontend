@@ -86,6 +86,13 @@ export class IssuesModel extends SDKModel {
     return this._browserIssuesByCode.values();
   }
 
+   /**
+   * @return {number}
+   */
+  size() {
+    return this._browserIssuesByCode.size;
+  }
+
   /**
    * @param {!*} obj
    * @param {!Issue} issue

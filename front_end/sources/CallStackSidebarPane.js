@@ -110,11 +110,16 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
     let debuggerModel = details.debuggerModel;
     this._notPausedMessageElement.classList.add('hidden');
 
-    const items = details.callFrames.map(frame => {
-      const item = Item.createForDebuggerCallFrame(frame, this._locationPool, this._refreshItem.bind(this));
-      item[debuggerCallFrameSymbol] = frame;
-      return item;
-    });
+    const itemPromises = [];
+    for (const frame of details.callFrames) {
+      const itemPromise =
+          Item.createForDebuggerCallFrame(frame, this._locationPool, this._refreshItem.bind(this)).then(item => {
+            item[debuggerCallFrameSymbol] = frame;
+            return item;
+          });
+      itemPromises.push(itemPromise);
+    }
+    const items = await Promise.all(itemPromises);
 
     let asyncStackTrace = details.asyncStackTrace;
     if (!asyncStackTrace && details.asyncStackTraceId) {
@@ -136,7 +141,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
         title = UI.UIUtils.asyncStackTraceLabel(asyncStackTrace.description);
       }
 
-      items.push(...Item.createItemsForAsyncStack(
+      items.push(...await Item.createItemsForAsyncStack(
           title, debuggerModel, asyncStackTrace.callFrames, this._locationPool, this._refreshItem.bind(this)));
 
       --maxAsyncStackChainDepth;
@@ -498,11 +503,11 @@ export class Item {
    * @param {!SDK.DebuggerModel.CallFrame} frame
    * @param {!Bindings.LiveLocation.LiveLocationPool} locationPool
    * @param {function(!Item)} updateDelegate
-   * @return {!Item}
+   * @return {!Promise<!Item>}
    */
-  static createForDebuggerCallFrame(frame, locationPool, updateDelegate) {
+  static async createForDebuggerCallFrame(frame, locationPool, updateDelegate) {
     const item = new Item(UI.UIUtils.beautifyFunctionName(frame.functionName), updateDelegate);
-    self.Bindings.debuggerWorkspaceBinding.createCallFrameLiveLocation(
+    await self.Bindings.debuggerWorkspaceBinding.createCallFrameLiveLocation(
         frame.location(), item._update.bind(item), locationPool);
     return item;
   }
@@ -513,15 +518,17 @@ export class Item {
    * @param {!Array<!Protocol.Runtime.CallFrame>} frames
    * @param {!Bindings.LiveLocation.LiveLocationPool} locationPool
    * @param {function(!Item)} updateDelegate
-   * @return {!Array<!Item>}
+   * @return {!Promise<!Array<!Item>>}
    */
-  static createItemsForAsyncStack(title, debuggerModel, frames, locationPool, updateDelegate) {
+  static async createItemsForAsyncStack(title, debuggerModel, frames, locationPool, updateDelegate) {
     const whiteboxedItemsSymbol = Symbol('whiteboxedItems');
     const asyncHeaderItem = new Item(title, updateDelegate);
     asyncHeaderItem[whiteboxedItemsSymbol] = new Set();
     asyncHeaderItem.isAsyncHeader = true;
 
-    const asyncFrameItems = frames.map(frame => {
+    const asyncFrameItems = [];
+    const liveLocationPromises = [];
+    for (const frame of frames) {
       const item = new Item(UI.UIUtils.beautifyFunctionName(frame.functionName), update);
       const rawLocation = debuggerModel ?
           debuggerModel.createRawLocationByScriptId(frame.scriptId, frame.lineNumber, frame.columnNumber) :
@@ -530,13 +537,15 @@ export class Item {
         item.linkText = (frame.url || '<unknown>') + ':' + (frame.lineNumber + 1);
         item.updateDelegate(item);
       } else {
-        self.Bindings.debuggerWorkspaceBinding.createCallFrameLiveLocation(
-            rawLocation, item._update.bind(item), locationPool);
+        liveLocationPromises.push(self.Bindings.debuggerWorkspaceBinding.createCallFrameLiveLocation(
+            rawLocation, item._update.bind(item), locationPool));
       }
-      return item;
-    });
+      asyncFrameItems.push(item);
+    }
 
+    await Promise.all(liveLocationPromises);
     updateDelegate(asyncHeaderItem);
+
     return [asyncHeaderItem, ...asyncFrameItems];
 
     /**
@@ -578,8 +587,7 @@ export class Item {
    */
   _update(liveLocation) {
     const uiLocation = liveLocation.uiLocation();
-    this.isBlackboxed =
-        uiLocation ? self.Bindings.blackboxManager.isBlackboxedUISourceCode(uiLocation.uiSourceCode) : false;
+    this.isBlackboxed = liveLocation.isBlackboxed();
     this.linkText = uiLocation ? uiLocation.linkText() : '';
     this.uiLocation = uiLocation;
     this.updateDelegate(this);

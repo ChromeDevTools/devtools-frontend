@@ -153,7 +153,7 @@ export class LighthouseReportUIFeatures extends ReportUIFeatures {
     const clonedReport = document.querySelector('.lh-root').cloneNode(true /* deep */);
     const printWindow = window.open('', '_blank', 'channelmode=1,status=1,resizable=1');
     const style = printWindow.document.createElement('style');
-    style.textContent = Root.Runtime.cachedResources['lighthouse/lighthouse/report.css'];
+    style.textContent = Root.Runtime.cachedResources['third_party/lighthouse/report-assets/report.css'];
     printWindow.document.head.appendChild(style);
     printWindow.document.body.replaceWith(clonedReport);
     // Linkified nodes are shadow elements, which aren't exposed via `cloneNode`.

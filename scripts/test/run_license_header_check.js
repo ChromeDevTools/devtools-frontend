@@ -53,10 +53,6 @@ const LINE_REGEXES = LINE_LICENSE_HEADER.map(line => new RegExp('[ ]?' + line.re
 const BLOCK_REGEX = new RegExp('[\\s\\\\n\\*]*' + BLOCK_LICENSE_HEADER.join('[\\s\\\\n\\*]*'), 'm');
 
 const EXCLUDED_FILES = [
-  // FIXME: LightHouse bundles must be moved to third_party
-  'lighthouse/lighthouse/report.js',
-  'lighthouse/lighthouse/report-generator.js',
-  'lighthouse_worker/lighthouse/lighthouse-dt-bundle.js',
   // FIXME: CodeMirror bundles must be moved to third_party
   'cm/active-line.js',
   'cm/brace-fold.js',

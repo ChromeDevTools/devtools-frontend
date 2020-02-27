@@ -23,16 +23,16 @@ const cachedResources = Root.Runtime.cachedResources;
 // is going to be OK.
 module.exports = {
   get REPORT_CSS() {
-    return cachedResources['lighthouse/lighthouse/report.css'];
+    return cachedResources['third_party/lighthouse/report-assets/report.css'];
   },
   get REPORT_JAVASCRIPT() {
-    return cachedResources['lighthouse/lighthouse/report.js'];
+    return cachedResources['third_party/lighthouse/report-assets/report.js'];
   },
   get REPORT_TEMPLATE() {
-    return cachedResources['lighthouse/lighthouse/template.html'];
+    return cachedResources['third_party/lighthouse/report-assets/template.html'];
   },
   get REPORT_TEMPLATES() {
-    return cachedResources['lighthouse/lighthouse/templates.html'];
+    return cachedResources['third_party/lighthouse/report-assets/templates.html'];
   },
 };
 

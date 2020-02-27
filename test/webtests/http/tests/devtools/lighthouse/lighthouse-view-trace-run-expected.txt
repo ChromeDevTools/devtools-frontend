@@ -54,6 +54,6 @@ uses-rel-preload
 uses-responsive-images
 uses-text-compression
 uses-webp-images
-PROMISE FAILURE: TypeError: Cannot read property 'click' of null
-    at http://127.0.0.1:8000/devtools/lighthouse/lighthouse-view-trace-run.js:33:19
+
+Showing view: timeline
 

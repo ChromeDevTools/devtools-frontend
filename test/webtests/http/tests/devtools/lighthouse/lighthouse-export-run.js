@@ -4,7 +4,7 @@
 
 (async function () {
   TestRunner.addResult('Tests that exporting works.\n');
-  await TestRunner.navigatePromise('resources/audits-basic.html');
+  await TestRunner.navigatePromise('resources/lighthouse-basic.html');
 
   await TestRunner.loadModule('lighthouse_test_runner');
   await TestRunner.showPanel('lighthouse');

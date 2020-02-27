@@ -10,10 +10,10 @@
         }
     ],
     "scripts": [
-        "lighthouse/lighthouse-dt-bundle.js",
+        "../third_party/lighthouse/lighthouse-dt-bundle.js",
         "LighthouseService.js"
     ],
     "skip_compilation": [
-        "lighthouse/lighthouse-dt-bundle.js"
+        "../third_party/lighthouse/lighthouse-dt-bundle.js"
     ]
 }

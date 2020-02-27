@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './lighthouse/report.js';
-import './lighthouse/report-generator.js';
+import '../third_party/lighthouse/report-assets/report.js';
+import '../third_party/lighthouse/report-assets/report-generator.js';
 
 import * as LighthouseController from './LighthouseController.js';
 import * as LighthousePanel from './LighthousePanel.js';

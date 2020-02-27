@@ -1370,10 +1370,14 @@ export class CheckboxLabel extends HTMLSpanElement {
     this.checkboxElement;
     /** @type {!Element} */
     this.textElement;
+    CheckboxLabel._lastId = (CheckboxLabel._lastId || 0) + 1;
+    const id = 'ui-checkbox-label' + CheckboxLabel._lastId;
     this._shadowRoot = createShadowRootWithCoreStyles(this, 'ui/checkboxTextLabel.css');
     this.checkboxElement = /** @type {!HTMLInputElement} */ (this._shadowRoot.createChild('input'));
     this.checkboxElement.type = 'checkbox';
+    this.checkboxElement.setAttribute('id', id);
     this.textElement = this._shadowRoot.createChild('label', 'dt-checkbox-text');
+    this.textElement.setAttribute('for', id);
     this._shadowRoot.createChild('slot');
   }
 

@@ -20,6 +20,19 @@ describe('The Network Tab', async () => {
     await resetPages();
   });
 
+  it('can click on checkbox label to toggle checkbox', async () => {
+    const {target} = getBrowserAndPages();
+    await navigateToNetworkTab(target, 'resources-from-cache.html');
+
+    // Click the label next to the checkbox input element
+    await click(`[aria-label="Disable cache"] + label`);
+
+    const checkbox = await $('[aria-label="Disable cache"]');
+    const checked = await checkbox.evaluate(box => box.checked);
+
+    assert.equal(checked, true, 'The disable cache checkbox should be checked');
+  });
+
   it('shows Last-Modified', async () => {
     const {target, frontend} = getBrowserAndPages();
     await navigateToNetworkTab(target, 'last-modified.html');

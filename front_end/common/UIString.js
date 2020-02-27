@@ -42,7 +42,7 @@ export function UIString(string, vararg) {
 
 /**
  * @param {string} string
- * @param {?ArrayLike} values
+ * @param {?ArrayLike<*>} values
  * @return {string}
  */
 export function serializeUIString(string, values = []) {
@@ -102,6 +102,9 @@ export class UIStringFormat {
   format(vararg) {
     return Platform.StringUtilities
         .format(
+          // the code here uses odd generics that Closure likes but TS doesn't
+          // so rather than fight to typecheck this in a dodgy way we just let TS ignore it
+          // @ts-ignore
             this._localizedFormat, arguments, Platform.StringUtilities.standardFormatters, '', UIStringFormat._append,
             this._tokenizedFormat)
         .formattedResult;
@@ -124,5 +127,6 @@ export function ls(strings, vararg) {
     substitutionString = strings.join('%s');
     _substitutionStrings.set(strings, substitutionString);
   }
+  // @ts-ignore TS gets confused with the arguments slicing
   return UIString(substitutionString, ...Array.prototype.slice.call(arguments, 1));
 }

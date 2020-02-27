@@ -4,33 +4,9 @@
 
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
-import * as puppeteer from 'puppeteer';
 
-import {click, debuggerStatement, getBrowserAndPages, resetPages, resourcesPath} from '../../shared/helper.js';
-
-async function obtainMessagesForTest(testName: string, callback?: (page: puppeteer.Page) => Promise<void>) {
-  const {target, frontend} = getBrowserAndPages();
-
-  // Have the target load the page.
-  await target.goto(`${resourcesPath}/console/${testName}.html`);
-
-  // Locate the button for switching to the console tab.
-  await click('#tab-console');
-  // Obtain console messages that were logged
-  await frontend.waitForSelector('.console-group-messages');
-
-  if (callback) {
-    await debuggerStatement(frontend);
-    await callback(frontend);
-  }
-  await debuggerStatement(frontend);
-
-  // Get the first message from the console.
-  return frontend.evaluate(() => {
-    return Array.from(document.querySelectorAll('.console-group-messages .source-code .console-message-text'))
-        .map(message => message.textContent);
-  });
-}
+import {obtainConsoleMessages, showVerboseMessages} from './console-helpers.js';
+import {resetPages} from '../../shared/helper.js';
 
 describe('The Console Tab', async () => {
   beforeEach(async () => {
@@ -38,7 +14,7 @@ describe('The Console Tab', async () => {
   });
 
   it('shows BigInts formatted', async () => {
-    const messages = await obtainMessagesForTest('big-int');
+    const messages = await obtainConsoleMessages('big-int');
 
     assert.deepEqual(messages, [
       '1n',
@@ -50,7 +26,7 @@ describe('The Console Tab', async () => {
   });
 
   it('shows uncaught promises', async () => {
-    const messages = await obtainMessagesForTest('uncaught-promise');
+    const messages = await obtainConsoleMessages('uncaught-promise');
 
     assert.deepEqual(messages, [
       `Uncaught (in promise) Error: err1
@@ -64,7 +40,7 @@ describe('The Console Tab', async () => {
   });
 
   it('shows structured objects', async () => {
-    const messages = await obtainMessagesForTest('structured-objects');
+    const messages = await obtainConsoleMessages('structured-objects');
 
     assert.deepEqual(messages, [
       `{}`,
@@ -80,7 +56,7 @@ describe('The Console Tab', async () => {
   });
 
   it('escapes and substitutes correctly', async () => {
-    const messages = await obtainMessagesForTest('escaping');
+    const messages = await obtainConsoleMessages('escaping');
 
     assert.deepEqual(messages, [
       `Test for zero "0" in formatter`,
@@ -96,7 +72,7 @@ describe('The Console Tab', async () => {
   });
 
   it('shows built-in objects', async () => {
-    const messages = await obtainMessagesForTest('built-ins');
+    const messages = await obtainConsoleMessages('built-ins');
 
     assert.deepEqual(messages, [
       `/^url\\(\\s*(?:(?:\"(?:[^\\\\\\\"]|(?:\\\\[\\da-f]{1,6}\\s?|\\.))*\"|'(?:[^\\\\\\']|(?:\\\\[\\da-f]{1,6}\\s?|\\.))*')|(?:[!#$%&*-~\\w]|(?:\\\\[\\da-f]{1,6}\\s?|\\.))*)\\s*\\)/i`,
@@ -139,7 +115,7 @@ error message
   });
 
   it('shows primitives', async () => {
-    const messages = await obtainMessagesForTest('primitives');
+    const messages = await obtainConsoleMessages('primitives');
 
     assert.deepEqual(messages, [
       `null`,
@@ -161,7 +137,7 @@ error message
   });
 
   it('can handle prototype fields', async () => {
-    const messages = await obtainMessagesForTest('prototypes');
+    const messages = await obtainConsoleMessages('prototypes');
 
     assert.deepEqual(messages, [
       `{enumerableProp: 4, __underscoreEnumerableProp__: 5, __underscoreNonEnumerableProp: 2, abc: 3, getFoo: ƒ,\xA0…}`,
@@ -181,7 +157,7 @@ error message
   });
 
   it('can show DOM interactions', async () => {
-    const messages = await obtainMessagesForTest('dom-interactions');
+    const messages = await obtainConsoleMessages('dom-interactions');
 
     assert.deepEqual(messages, [
       ``,
@@ -201,7 +177,7 @@ error message
   });
 
   it('can handle sourceURLs in exceptions', async () => {
-    const messages = await obtainMessagesForTest('source-url-exceptions');
+    const messages = await obtainConsoleMessages('source-url-exceptions');
 
     assert.deepEqual(messages, [
       `Uncaught ReferenceError: FAIL is not defined
@@ -211,7 +187,7 @@ error message
   });
 
   it('can show stackoverflow exceptions', async () => {
-    const messages = await obtainMessagesForTest('stack-overflow');
+    const messages = await obtainConsoleMessages('stack-overflow');
 
     assert.deepEqual(messages, [
       `Uncaught RangeError: Maximum call stack size exceeded
@@ -229,7 +205,7 @@ error message
   });
 
   it('can show document.write messages', async () => {
-    const messages = await obtainMessagesForTest('document-write');
+    const messages = await obtainConsoleMessages('document-write');
 
     assert.deepEqual(messages, [
       `script element`,
@@ -238,11 +214,7 @@ error message
   });
 
   it('can show verbose promise unhandledrejections', async () => {
-    const messages = await obtainMessagesForTest('onunhandledrejection', async () => {
-      await click(`[aria-label="Log level: Default levels"]`);
-
-      await click(`[aria-label="Verbose, unchecked"]`);
-    });
+    const messages = await obtainConsoleMessages('onunhandledrejection', showVerboseMessages);
 
     assert.deepEqual(messages, [
       `onunhandledrejection1`,
@@ -256,7 +228,7 @@ error message
 
   describe('shows messages from before', async () => {
     it('iframe removal', async () => {
-      const messages = await obtainMessagesForTest('navigation/after-removal');
+      const messages = await obtainConsoleMessages('navigation/after-removal');
 
       assert.deepEqual(messages, [
         `A message with first argument string Second argument which should not be discarded`,
@@ -266,7 +238,7 @@ error message
     });
 
     it('and after iframe navigation', async () => {
-      const messages = await obtainMessagesForTest('navigation/after-navigation');
+      const messages = await obtainConsoleMessages('navigation/after-navigation');
 
       assert.deepEqual(messages, [
         `A message with first argument string Second argument which should not be discarded`,

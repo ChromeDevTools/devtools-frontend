@@ -11,6 +11,7 @@ export class JavaScriptMetaData {
    * @return {?Array<!Array<string>>}
    */
   signaturesForNativeFunction(name) {
+    throw new Error('not implemented');
   }
 
   /**
@@ -19,6 +20,7 @@ export class JavaScriptMetaData {
    * @return {?Array<!Array<string>>}
    */
   signaturesForInstanceMethod(name, receiverClassName) {
+    throw new Error('not implemented');
   }
 
   /**
@@ -27,5 +29,6 @@ export class JavaScriptMetaData {
    * @return {?Array<!Array<string>>}
    */
   signaturesForStaticMethod(name, receiverConstructorName) {
+    throw new Error('not implemented');
   }
 }

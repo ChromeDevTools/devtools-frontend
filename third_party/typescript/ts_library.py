@@ -28,7 +28,7 @@ RESOURCES_INSPECTOR_PATH = path.join(os.getcwd(), 'resources', 'inspector')
 
 
 def runTsc(tsconfig_location):
-    process = subprocess.Popen([NODE_LOCATION, TSC_LOCATION, '-b', tsconfig_location],
+    process = subprocess.Popen([NODE_LOCATION, TSC_LOCATION, '-p', tsconfig_location],
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()

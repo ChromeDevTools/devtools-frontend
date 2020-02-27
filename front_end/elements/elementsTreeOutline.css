@@ -12,8 +12,7 @@
 
 .elements-disclosure li {
     /** Keep margin-left & padding-left in sync with ElementsTreeElements.updateDecorators **/
-    padding: 0 0 0 14px;
-    border-top: 1px solid transparent;
+    padding: 1px 0 0 14px;
     margin-left: -2px;
     word-wrap: break-word;
     position: relative;

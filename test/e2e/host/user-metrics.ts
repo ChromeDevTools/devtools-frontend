@@ -24,6 +24,7 @@ declare global {
     __endCatchEvents: () => void;
     __panelShown: (evt: Event) => void;
     __actionTaken: (evt: Event) => void;
+    __keyboardShortcutFired: (evt: Event) => void;
     Host: {UserMetrics: UserMetrics; userMetrics: {actionTaken(name: number): void;}};
     UI: {inspectorView: {_showDrawer(show: boolean): void; showView(name: string): void;}};
   }
@@ -41,15 +42,22 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.__caughtEvents.push({name: 'DevTools.ActionTaken', value: customEvt.detail.value});
     };
 
+    window.__keyboardShortcutFired = (evt: Event) => {
+      const customEvt = evt as CustomEvent;
+      window.__caughtEvents.push({name: 'DevTools.KeyboardShortcutFired', value: customEvt.detail.value});
+    };
+
     window.__caughtEvents = [];
     window.__beginCatchEvents = () => {
       window.addEventListener('DevTools.PanelShown', window.__panelShown);
       window.addEventListener('DevTools.ActionTaken', window.__actionTaken);
+      window.addEventListener('DevTools.KeyboardShortcutFired', window.__keyboardShortcutFired);
     };
 
     window.__endCatchEvents = () => {
       window.removeEventListener('DevTools.PanelShown', window.__panelShown);
       window.removeEventListener('DevTools.ActionTaken', window.__actionTaken);
+      window.removeEventListener('DevTools.KeyboardShortcutFired', window.__keyboardShortcutFired);
     };
 
     window.__beginCatchEvents();
@@ -112,6 +120,10 @@ describe('User Metrics', () => {
     await assertCapturedEvents([{
       name: 'DevTools.PanelShown',
       value: 10,  // drawer-console-view.
+    },
+    {
+      name: 'DevTools.KeyboardShortcutFired',
+      value: 17,  // main.toggle-drawer
     }]);
   });
 
@@ -157,6 +169,42 @@ describe('User Metrics', () => {
       {
         name: 'DevTools.PanelShown',
         value: 11,  // 'drawer-animations'.
+      },
+    ]);
+  });
+
+  it('dispatches an event when F1 is used to open settings', async () => {
+    const {frontend} = getBrowserAndPages();
+
+    await frontend.keyboard.press('F1');
+    await waitFor('.settings-window-main');
+
+    await assertCapturedEvents([
+      {
+        name: 'DevTools.KeyboardShortcutFired',
+        value: 22, // settings.show
+      },
+    ]);
+  });
+
+  it('dispatches an event when Ctrl+F8 is used to deactivate breakpoints', async () => {
+    const {frontend} = getBrowserAndPages();
+
+    await click('#tab-sources');
+    await waitFor('#sources-panel-sources-view');
+    await frontend.keyboard.down('Control');
+    await frontend.keyboard.press('F8');
+    await frontend.keyboard.up('Control');
+    await waitFor('.toolbar-state-on[aria-label="Deactivate breakpoints"]');
+
+    await assertCapturedEvents([
+      {
+        name: 'DevTools.PanelShown',
+        value: 4,  // sources
+      },
+      {
+        name: 'DevTools.KeyboardShortcutFired',
+        value: 0,  // OtherShortcut
       },
     ]);
   });

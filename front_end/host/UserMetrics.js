@@ -129,6 +129,16 @@ export class UserMetrics {
     // Other calls to panelLoaded will be ignored if the name does not match the one set here.
     this._launchPanelName = panelName;
   }
+
+  /**
+   * @param {string} actionId
+   */
+  keyboardShortcutFired(actionId) {
+    const size = Object.keys(KeyboardShortcutAction).length + 1;
+    const action = KeyboardShortcutAction[actionId] || KeyboardShortcutAction.OtherShortcut;
+    InspectorFrontendHostInstance.recordEnumeratedHistogram('DevTools.KeyboardShortcutFired', action, size);
+    fireEvent('DevTools.KeyboardShortcutFired', {value: action});
+  }
 }
 
 // Codes below are used to collect UMA histograms in the Chromium port.
@@ -205,4 +215,32 @@ export const PanelCodes = {
   'drawer-live_heap_profile': 26,
   'drawer-sources.quick': 27,
   'drawer-network.blocked-urls': 28,
+};
+
+/** @enum {number} */
+export const KeyboardShortcutAction = {
+  OtherShortcut: 0,
+  'commandMenu.show': 1,
+  'console.clear': 2,
+  'console.show': 3,
+  'debugger.step': 4,
+  'debugger.step-into': 5,
+  'debugger.step-out': 6,
+  'debugger.step-over': 7,
+  'debugger.toggle-breakpoint': 8,
+  'debugger.toggle-breakpoint-enabled': 9,
+  'debugger.toggle-pause': 10,
+  'elements.edit-as-html': 11,
+  'elements.hide-element': 12,
+  'elements.redo': 13,
+  'elements.toggle-element-search': 14,
+  'elements.undo': 15,
+  'main.search-in-panel.find': 16,
+  'main.toggle-drawer': 17,
+  'network.hide-request-details': 18,
+  'network.search': 19,
+  'network.toggle-recording': 20,
+  'quickOpen.show': 21,
+  'settings.show': 22,
+  'sources.search': 23,
 };

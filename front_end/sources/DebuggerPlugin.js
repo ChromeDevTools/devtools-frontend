@@ -986,16 +986,19 @@ export class DebuggerPlugin extends Plugin {
    * @param {!SDK.DebuggerModel.CallFrame} callFrame
    * @param {!SDK.RemoteObject.GetPropertiesResult} allProperties
    */
-  _prepareScopeVariables(callFrame, allProperties) {
+  async _prepareScopeVariables(callFrame, allProperties) {
     const properties = allProperties.properties;
     this._clearValueWidgets();
     if (!properties || !properties.length || properties.length > 500 || !this._textEditor.isShowing()) {
       return;
     }
 
-    const functionUILocation = self.Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(
+    const functionUILocationPromise = self.Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(
         /** @type {!SDK.DebuggerModel.Location} */ (callFrame.functionLocation()));
-    const executionUILocation = self.Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(callFrame.location());
+    const executionUILocationPromise =
+        self.Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(callFrame.location());
+    const [functionUILocation, executionUILocation] =
+        await Promise.all([functionUILocationPromise, executionUILocationPromise]);
     if (!functionUILocation || !executionUILocation || functionUILocation.uiSourceCode !== this._uiSourceCode ||
         executionUILocation.uiSourceCode !== this._uiSourceCode) {
       return;
@@ -1699,14 +1702,14 @@ export class DebuggerPlugin extends Plugin {
   }
 
 
-  _callFrameChanged() {
+  async _callFrameChanged() {
     this._liveLocationPool.disposeAll();
     const callFrame = self.UI.context.flavor(SDK.DebuggerModel.CallFrame);
     if (!callFrame) {
       this._clearExecutionLine();
       return;
     }
-    self.Bindings.debuggerWorkspaceBinding.createCallFrameLiveLocation(
+    await self.Bindings.debuggerWorkspaceBinding.createCallFrameLiveLocation(
         callFrame.location(), this._executionLineChanged.bind(this), this._liveLocationPool);
   }
 

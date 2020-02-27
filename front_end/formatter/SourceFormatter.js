@@ -54,25 +54,25 @@ export class SourceFormatter {
   /**
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
-  _onUISourceCodeRemoved(event) {
+  async _onUISourceCodeRemoved(event) {
     const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data);
     const cacheEntry = this._formattedSourceCodes.get(uiSourceCode);
     if (cacheEntry && cacheEntry.formatData) {
-      this._discardFormatData(cacheEntry.formatData);
+      await this._discardFormatData(cacheEntry.formatData);
     }
     this._formattedSourceCodes.remove(uiSourceCode);
   }
 
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} formattedUISourceCode
-   * @return {?Workspace.UISourceCode.UISourceCode}
+   * @return {!Promise<?Workspace.UISourceCode.UISourceCode>}
    */
-  discardFormattedUISourceCode(formattedUISourceCode) {
+  async discardFormattedUISourceCode(formattedUISourceCode) {
     const formatData = SourceFormatData._for(formattedUISourceCode);
     if (!formatData) {
       return null;
     }
-    this._discardFormatData(formatData);
+    await this._discardFormatData(formatData);
     this._formattedSourceCodes.remove(formatData.originalSourceCode);
     return formatData.originalSourceCode;
   }
@@ -80,9 +80,9 @@ export class SourceFormatter {
   /**
    * @param {!SourceFormatData} formatData
    */
-  _discardFormatData(formatData) {
+  async _discardFormatData(formatData) {
     delete formatData.formattedSourceCode[SourceFormatData._formatDataSymbol];
-    this._scriptMapping._setSourceMappingEnabled(formatData, false);
+    await this._scriptMapping._setSourceMappingEnabled(formatData, false);
     this._styleMapping._setSourceMappingEnabled(formatData, false);
     this._project.removeFile(formatData.formattedSourceCode.url());
   }
@@ -134,7 +134,7 @@ export class SourceFormatter {
      * @param {string} formattedContent
      * @param {!FormatterSourceMapping} formatterMapping
      */
-    function formatDone(formattedContent, formatterMapping) {
+    async function formatDone(formattedContent, formatterMapping) {
       const cacheEntry = this._formattedSourceCodes.get(uiSourceCode);
       if (!cacheEntry || cacheEntry.promise !== resultPromise) {
         return;
@@ -152,8 +152,8 @@ export class SourceFormatter {
           this._project.addContentProvider(formattedURL, contentProvider, uiSourceCode.mimeType());
       const formatData = new SourceFormatData(uiSourceCode, formattedUISourceCode, formatterMapping);
       formattedUISourceCode[SourceFormatData._formatDataSymbol] = formatData;
-      this._scriptMapping._setSourceMappingEnabled(formatData, true);
-      this._styleMapping._setSourceMappingEnabled(formatData, true);
+      await this._scriptMapping._setSourceMappingEnabled(formatData, true);
+      await this._styleMapping._setSourceMappingEnabled(formatData, true);
       cacheEntry.formatData = formatData;
 
       for (const decoration of uiSourceCode.allDecorations()) {
@@ -252,7 +252,7 @@ class ScriptMapping {
    * @param {!SourceFormatData} formatData
    * @param {boolean} enabled
    */
-  _setSourceMappingEnabled(formatData, enabled) {
+  async _setSourceMappingEnabled(formatData, enabled) {
     const scripts = this._scriptsForUISourceCode(formatData.originalSourceCode);
     if (!scripts.length) {
       return;
@@ -266,9 +266,8 @@ class ScriptMapping {
         delete script[SourceFormatData._formatDataSymbol];
       }
     }
-    for (const script of scripts) {
-      self.Bindings.debuggerWorkspaceBinding.updateLocations(script);
-    }
+    const updatePromises = scripts.map(script => self.Bindings.debuggerWorkspaceBinding.updateLocations(script));
+    await Promise.all(updatePromises);
   }
 
   /**
@@ -343,7 +342,7 @@ class StyleMapping {
    * @param {!SourceFormatData} formatData
    * @param {boolean} enable
    */
-  _setSourceMappingEnabled(formatData, enable) {
+  async _setSourceMappingEnabled(formatData, enable) {
     const original = formatData.originalSourceCode;
     const headers = this._headersForUISourceCode(original);
     if (enable) {
@@ -353,7 +352,8 @@ class StyleMapping {
       original[this._headersSymbol] = null;
       headers.forEach(header => delete header[SourceFormatData._formatDataSymbol]);
     }
-    headers.forEach(header => self.Bindings.cssWorkspaceBinding.updateLocations(header));
+    const updatePromises = headers.map(header => self.Bindings.cssWorkspaceBinding.updateLocations(header));
+    await Promise.all(updatePromises);
   }
 
   /**

@@ -35,14 +35,14 @@ export class ScriptFormatterEditorAction {
   /**
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
-  _editorClosed(event) {
+  async _editorClosed(event) {
     const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data.uiSourceCode);
     const wasSelected = /** @type {boolean} */ (event.data.wasSelected);
 
     if (wasSelected) {
       this._updateButton(null);
     }
-    const original = FormatterModule.sourceFormatter.discardFormattedUISourceCode(uiSourceCode);
+    const original = await FormatterModule.sourceFormatter.discardFormattedUISourceCode(uiSourceCode);
     if (original) {
       this._pathsToFormatOnLoad.delete(original.url());
     }

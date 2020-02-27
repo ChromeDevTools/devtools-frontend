@@ -2,14 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const { assert } = chai;
+const {assert} = chai;
 
-import * as Common from '/front_end/common/common.js';
+import {Trie} from '../../../../front_end/common/Trie.js';
 
 describe('Trie', () => {
-  let trie: Common.Trie.Trie;
+  let trie: Trie;
   beforeEach(() => {
-    trie = new Common.Trie.Trie();
+    trie = new Trie();
   });
 
   it('stores and retrieves words', () => {

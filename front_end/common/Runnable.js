@@ -7,8 +7,9 @@
  */
 export class Runnable {
   /**
-   * @return {!Promise}
+   * @return {!Promise.<void>}
    */
   run() {
+    throw new Error('not implemented');
   }
 }

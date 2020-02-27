@@ -42,7 +42,6 @@ export let reveal = function(revealable, omitFocus) {
 };
 
 /**
- *
  * @param {function(?Object, boolean=):!Promise.<undefined>} newReveal
  */
 export function setRevealForTest(newReveal) {

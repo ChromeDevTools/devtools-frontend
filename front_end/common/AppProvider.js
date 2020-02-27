@@ -12,5 +12,6 @@ export class AppProvider {
    * @return {!App}
    */
   createApp() {
+    throw new Error('not implemented');
   }
 }

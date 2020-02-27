@@ -15,6 +15,7 @@ ts_library("common") {
     ":runnable",
     ":string_output_stream",
     ":text_dictionary",
+    ":throttler",
     ":trie",
     ":progress",
   ]
@@ -64,6 +65,10 @@ ts_library("text_dictionary") {
   sources = [ "TextDictionary.js" ]
 
   deps = [":trie"]
+}
+
+ts_library("throttler") {
+  sources = [ "Throttler.js" ]
 }
 
 ts_library("trie") {

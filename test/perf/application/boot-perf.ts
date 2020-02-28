@@ -22,7 +22,10 @@ describe('Boot performance', () => {
     for (let run = 0; run < 37; run++) {
       const start = performance.now();
       await resetPages();
-      times.bootperf.push(performance.now() - start);
+
+      // Ensure only 2 decimal places.
+      const timeTaken = (performance.now() - start).toFixed(2);
+      times.bootperf.push(Number(timeTaken));
     }
 
     await storeGeneratedResults('devtools-perf.json', JSON.stringify(times));

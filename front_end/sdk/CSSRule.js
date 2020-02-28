@@ -171,7 +171,7 @@ export class CSSStyleRule extends CSSRule {
    * @return {string}
    */
   selectorText() {
-    return this.selectors.select('text').join(', ');
+    return this.selectors.map(selector => selector.text).join(', ');
   }
 
   /**

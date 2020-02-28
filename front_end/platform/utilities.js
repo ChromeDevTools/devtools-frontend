@@ -549,23 +549,6 @@ Object.defineProperty(Array.prototype, 'binaryIndexOf', {
   configurable: true
 });
 
-Object.defineProperty(Array.prototype, 'select', {
-  /**
-   * @param {string} field
-   * @return {!Array.<!T>}
-   * @this {Array.<!Object.<string,!T>>}
-   * @template T
-   */
-  value: function(field) {
-    const result = new Array(this.length);
-    for (let i = 0; i < this.length; ++i) {
-      result[i] = this[i][field];
-    }
-    return result;
-  },
-  configurable: true
-});
-
 Object.defineProperty(Array.prototype, 'peekLast', {
   /**
    * @return {!T|undefined}

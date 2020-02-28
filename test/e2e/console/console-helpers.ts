@@ -34,7 +34,13 @@ export async function obtainConsoleMessages(testName: string, callback?: (page: 
   }
   await debuggerStatement(frontend);
 
-  // Get the first message from the console.
+  // Ensure all messages are populated.
+  await frontend.waitForFunction(CONSOLE_FIRST_MESSAGES_SELECTOR => {
+    return Array.from(document.querySelectorAll(CONSOLE_FIRST_MESSAGES_SELECTOR))
+        .every(message => message.childNodes.length > 0);
+  }, {timeout: 3000}, CONSOLE_FIRST_MESSAGES_SELECTOR);
+
+  // Get the messages from the console.
   return frontend.evaluate(CONSOLE_FIRST_MESSAGES_SELECTOR => {
     return Array.from(document.querySelectorAll(CONSOLE_FIRST_MESSAGES_SELECTOR))
         .map(message => message.textContent);

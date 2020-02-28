@@ -109,10 +109,11 @@ def copy_all_typescript_sources(sources, output_directory):
                 os.remove(dest)
             # Make sure that the directory actually exists, otherwise
             # the copy action will throw an error
+            dest_directory = path.dirname(dest)
             try:
-                os.makedirs(path.dirname(dest))
+                os.makedirs(dest_directory)
             except OSError as exc:  # Python >2.5
-                if exc.errno == errno.EEXIST and os.path.isdir(path):
+                if exc.errno == errno.EEXIST and os.path.isdir(dest_directory):
                     pass
                 else:
                     raise

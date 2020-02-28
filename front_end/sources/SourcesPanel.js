@@ -282,9 +282,8 @@ export class SourcesPanel extends UI.Panel.Panel {
     if (locationName === 'sources.sidebar-top' || locationName === 'sources.sidebar-bottom' ||
         locationName === 'sources.sidebar-tabs') {
       return this._sidebarPaneStack;
-    } else {
-      return this._navigatorTabbedLocation;
     }
+    return this._navigatorTabbedLocation;
   }
 
   /**

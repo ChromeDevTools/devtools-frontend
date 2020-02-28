@@ -1043,7 +1043,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
             }
             treeElement.startEditing(elementToEdit);
             return;
-          } else if (!alreadyNew) {
+          }
+          if (!alreadyNew) {
             moveToSelector = true;
           }
         }

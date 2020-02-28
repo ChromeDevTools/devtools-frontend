@@ -401,10 +401,9 @@ export class TextEditorAutocompleteController {
           this._suggestBox.acceptSuggestion();
           this.clearAutocomplete();
           return true;
-        } else {
-          this.clearAutocomplete();
-          return false;
         }
+        this.clearAutocomplete();
+        return false;
       case UI.KeyboardShortcut.Keys.Left.code:
       case UI.KeyboardShortcut.Keys.Home.code:
         this.clearAutocomplete();

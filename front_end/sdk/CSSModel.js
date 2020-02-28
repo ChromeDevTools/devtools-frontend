@@ -367,7 +367,8 @@ export class CSSModel extends SDKModel {
     function styleSheetComparator(a, b) {
       if (a.sourceURL < b.sourceURL) {
         return -1;
-      } else if (a.sourceURL > b.sourceURL) {
+      }
+      if (a.sourceURL > b.sourceURL) {
         return 1;
       }
       return a.startLine - b.startLine || a.startColumn - b.startColumn;

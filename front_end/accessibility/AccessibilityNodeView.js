@@ -211,7 +211,8 @@ export class AXNodePropertyTreeElement extends UI.TreeOutline.TreeElement {
         value.type === AXValueType.NodeList) {
       this.appendRelatedNodeListValueElement(value);
       return;
-    } else if (value.sources) {
+    }
+    if (value.sources) {
       const sources = value.sources;
       for (let i = 0; i < sources.length; i++) {
         const source = sources[i];

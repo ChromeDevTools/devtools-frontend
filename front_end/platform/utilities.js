@@ -245,9 +245,8 @@ String.naturalOrderComparator = function(a, b) {
     } else {
       if (b) {
         return -1;
-      } else {
-        return 0;
       }
+      return 0;
     }
     chunka = a.match(chunk)[0];
     chunkb = b.match(chunk)[0];
@@ -265,12 +264,10 @@ String.naturalOrderComparator = function(a, b) {
         return diff;
       }
       if (chunka.length !== chunkb.length) {
-        if (!+chunka && !+chunkb)  // chunks are strings of all 0s (special case)
-        {
+        if (!+chunka && !+chunkb) {  // chunks are strings of all 0s (special case)
           return chunka.length - chunkb.length;
-        } else {
-          return chunkb.length - chunka.length;
         }
+        return chunkb.length - chunka.length;
       }
     } else if (chunka !== chunkb) {
       return (chunka < chunkb) ? -1 : 1;
@@ -317,9 +314,8 @@ Number.constrain = function(num, min, max) {
 Number.gcd = function(a, b) {
   if (b === 0) {
     return a;
-  } else {
-    return Number.gcd(b, a % b);
   }
+  return Number.gcd(b, a % b);
 };
 
 /**

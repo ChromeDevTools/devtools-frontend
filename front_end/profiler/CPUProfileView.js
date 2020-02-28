@@ -141,10 +141,9 @@ export class CPUProfileType extends ProfileType {
     if (this._recording) {
       this._stopRecordingProfile();
       return false;
-    } else {
-      this._startRecordingProfile();
-      return true;
     }
+    this._startRecordingProfile();
+    return true;
   }
 
   /**

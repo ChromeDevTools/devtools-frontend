@@ -765,11 +765,10 @@ export class SplitWidget extends Widget {
       mainConstraints = mainConstraints.widthToMax(min).addWidth(1);  // 1 for splitter
       sidebarConstraints = sidebarConstraints.widthToMax(min);
       return mainConstraints.addWidth(sidebarConstraints).heightToMax(sidebarConstraints);
-    } else {
+    }
       mainConstraints = mainConstraints.heightToMax(min).addHeight(1);  // 1 for splitter
       sidebarConstraints = sidebarConstraints.heightToMax(min);
       return mainConstraints.widthToMax(sidebarConstraints).addHeight(sidebarConstraints);
-    }
   }
 
   /**

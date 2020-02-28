@@ -152,9 +152,11 @@ export class InplaceEditor {
     function defaultFinishHandler(event) {
       if (isEnterKey(event)) {
         return 'commit';
-      } else if (event.keyCode === Keys.Esc.code || event.key === 'Escape') {
+      }
+      if (event.keyCode === Keys.Esc.code || event.key === 'Escape') {
         return 'cancel';
-      } else if (event.key === 'Tab') {
+      }
+      if (event.key === 'Tab') {
         return 'move-' + (event.shiftKey ? 'backward' : 'forward');
       }
       return '';

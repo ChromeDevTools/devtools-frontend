@@ -1146,7 +1146,8 @@
       const text = messages[i].messageText;
       if (text === 'PASS') {
         return;
-      } else if (/^FAIL/.test(text)) {
+      }
+      if (/^FAIL/.test(text)) {
         this.fail(text);
       }  // This will throw.
     }

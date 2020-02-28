@@ -346,7 +346,8 @@ export function _createMainConnection(websocketConnectionLost) {
   if (wsParam || wssParam) {
     const ws = wsParam ? `ws://${wsParam}` : `wss://${wssParam}`;
     return new WebSocketConnection(ws, websocketConnectionLost);
-  } else if (Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {
+  }
+  if (Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {
     return new StubConnection();
   }
 

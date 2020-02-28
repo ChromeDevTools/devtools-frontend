@@ -182,9 +182,8 @@ export class FrameworkBlackboxSettingsTab extends UI.Widget.VBox {
       }
       if (!regex) {
         return {valid: false, errorMessage: ls`Pattern must be a valid regular expression`};
-      } else {
-        return {valid: true};
       }
+      return {valid: true};
     }
 
     /**

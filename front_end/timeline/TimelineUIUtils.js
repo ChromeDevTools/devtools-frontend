@@ -2215,11 +2215,14 @@ export class InvalidationsGroupElement extends UI.TreeOutline.TreeElement {
 
     if (invalidationNodes.length === 1) {
       return invalidationNodes[0];
-    } else if (invalidationNodes.length === 2) {
+    }
+    if (invalidationNodes.length === 2) {
       return UI.UIUtils.formatLocalized('%s and %s', invalidationNodes);
-    } else if (invalidationNodes.length === 3) {
+    }
+    if (invalidationNodes.length === 3) {
       return UI.UIUtils.formatLocalized('%s, %s, and 1 other', invalidationNodes.slice(0, 2));
-    } else if (invalidationNodes.length >= 4) {
+    }
+    if (invalidationNodes.length >= 4) {
       return UI.UIUtils.formatLocalized(
           '%s, %s, and %s others', [...invalidationNodes.slice(0, 2), (invalidationNodes.length - 2).toString()]);
     }

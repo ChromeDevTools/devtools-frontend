@@ -485,9 +485,9 @@ export class ConsoleView extends UI.Widget.VBox {
       this._maybeDirtyWhileMuted = true;
       this._scheduleViewportRefreshForTest(true);
       return;
-    } else {
-      this._scheduleViewportRefreshForTest(false);
     }
+    this._scheduleViewportRefreshForTest(false);
+
     this._scheduledRefreshPromiseForTest = this._viewportThrottler.schedule(this._invalidateViewport.bind(this));
   }
 

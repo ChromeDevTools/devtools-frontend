@@ -54,12 +54,12 @@ export const generateEdgePortIdsByData = (data, type) => {
   function getDestinationPortId(data, type) {
     if (type === EdgeTypes.NodeToNode) {
       return generateInputPortId(data.destinationId, data.destinationInputIndex);
-    } else if (type === EdgeTypes.NodeToParam) {
-      return generateParamPortId(data.destinationId, data.destinationParamId);
-    } else {
-      console.error(`Unknown edge type: ${type}`);
-      return '';
     }
+    if (type === EdgeTypes.NodeToParam) {
+      return generateParamPortId(data.destinationId, data.destinationParamId);
+    }
+    console.error(`Unknown edge type: ${type}`);
+    return '';
   }
 };
 

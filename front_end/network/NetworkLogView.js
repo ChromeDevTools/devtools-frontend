@@ -350,11 +350,14 @@ export class NetworkLogView extends UI.Widget.VBox {
   static _requestMixedContentFilter(value, request) {
     if (value === MixedContentFilterValues.Displayed) {
       return request.mixedContentType === Protocol.Security.MixedContentType.OptionallyBlockable;
-    } else if (value === MixedContentFilterValues.Blocked) {
+    }
+    if (value === MixedContentFilterValues.Blocked) {
       return request.mixedContentType === Protocol.Security.MixedContentType.Blockable && request.wasBlocked();
-    } else if (value === MixedContentFilterValues.BlockOverridden) {
+    }
+    if (value === MixedContentFilterValues.BlockOverridden) {
       return request.mixedContentType === Protocol.Security.MixedContentType.Blockable && !request.wasBlocked();
-    } else if (value === MixedContentFilterValues.All) {
+    }
+    if (value === MixedContentFilterValues.All) {
       return request.mixedContentType !== Protocol.Security.MixedContentType.None;
     }
 
@@ -1933,19 +1936,18 @@ export class NetworkLogView extends UI.Widget.VBox {
         return '\\u' + hexString;
       }
 
-      if (/[\u0000-\u001f\u007f-\u009f!]|\'/.test(str)) {
+      if (/[\0-\x1F\x7F-\x9F!]|\'/.test(str)) {
         // Use ANSI-C quoting syntax.
         return '$\'' +
             str.replace(/\\/g, '\\\\')
                 .replace(/\'/g, '\\\'')
                 .replace(/\n/g, '\\n')
                 .replace(/\r/g, '\\r')
-                .replace(/[\u0000-\u001f\u007f-\u009f!]/g, escapeCharacter) +
+                .replace(/[\0-\x1F\x7F-\x9F!]/g, escapeCharacter) +
             '\'';
-      } else {
-        // Use single quote syntax.
-        return '\'' + str + '\'';
       }
+      // Use single quote syntax.
+      return '\'' + str + '\'';
     }
 
     // cURL command expected to run on the same platform that DevTools run
@@ -2002,9 +2004,8 @@ export class NetworkLogView extends UI.Widget.VBox {
     const commands = await Promise.all(nonBlobRequests.map(request => this._generateCurlCommand(request, platform)));
     if (platform === 'win') {
       return commands.join(' &\r\n');
-    } else {
-      return commands.join(' ;\n');
     }
+    return commands.join(' ;\n');
   }
 
   /**

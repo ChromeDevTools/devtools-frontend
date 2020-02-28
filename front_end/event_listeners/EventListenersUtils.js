@@ -386,12 +386,11 @@ export function frameworkEventListeners(object) {
         }
         if (!errorString) {
           return {type: type, useCapture: useCapture, passive: passive, once: once, handler: handler, remove: remove};
-        } else {
-          errorLines.push(errorString.substr(0, errorString.length - 2));
-          return null;
         }
-      } catch (e) {
-        errorLines.push(toString(e));
+        errorLines.push(errorString.substr(0, errorString.length - 2));
+        return null;
+      } catch (error) {
+        errorLines.push(toString(error));
         return null;
       }
     }

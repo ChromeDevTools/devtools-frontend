@@ -157,9 +157,8 @@ export class TextRange {
   normalize() {
     if (this.startLine > this.endLine || (this.startLine === this.endLine && this.startColumn > this.endColumn)) {
       return new TextRange(this.endLine, this.endColumn, this.startLine, this.startColumn);
-    } else {
-      return this.clone();
     }
+    return this.clone();
   }
 
   /**

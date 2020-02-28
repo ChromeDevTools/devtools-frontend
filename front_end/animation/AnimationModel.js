@@ -682,9 +682,8 @@ export class AnimationGroup {
     function extractId(anim) {
       if (anim.type() === Type.WebAnimation) {
         return anim.type() + anim.id();
-      } else {
-        return anim._cssId();
       }
+      return anim._cssId();
     }
 
     if (this._animations.length !== group._animations.length) {

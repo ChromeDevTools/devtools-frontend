@@ -118,17 +118,16 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper 
         newObjectId: newObjectId
       });
       return null;
-    } else {
-      this._postMessage({
-        callId: callId,
-        disposition: 'factory',
-        objectId: objectId,
-        methodName: methodName,
-        methodArguments: methodArguments,
-        newObjectId: newObjectId
-      });
-      return new proxyConstructor(this, newObjectId);
     }
+    this._postMessage({
+      callId: callId,
+      disposition: 'factory',
+      objectId: objectId,
+      methodName: methodName,
+      methodArguments: methodArguments,
+      newObjectId: newObjectId
+    });
+    return new proxyConstructor(this, newObjectId);
   }
 
   /**

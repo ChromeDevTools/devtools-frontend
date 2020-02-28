@@ -90,9 +90,8 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
         ObjectPropertiesSection.defaultObjectPropertiesSection(object, linkifier, skipProto, readOnly);
     if (!object.hasChildren) {
       return objectPropertiesSection.titleElement;
-    } else {
-      return objectPropertiesSection.element;
     }
+    return objectPropertiesSection.element;
   }
 
   /**

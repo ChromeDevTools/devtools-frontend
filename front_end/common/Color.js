@@ -236,9 +236,11 @@ export class Color {
 
     if (value.indexOf('turn') !== -1) {
       return number % 1;
-    } else if (value.indexOf('grad') !== -1) {
+    }
+    if (value.indexOf('grad') !== -1) {
       return (number / 400) % 1;
-    } else if (value.indexOf('rad') !== -1) {
+    }
+    if (value.indexOf('rad') !== -1) {
       return (number / (2 * Math.PI)) % 1;
     }
     return (number / 360) % 1;
@@ -310,13 +312,14 @@ export class Color {
 
       if ((h * 6) < 1) {
         return p + (q - p) * h * 6;
-      } else if ((h * 2) < 1) {
-        return q;
-      } else if ((h * 3) < 2) {
-        return p + (q - p) * ((2 / 3) - h) * 6;
-      } else {
-        return p;
       }
+      if ((h * 2) < 1) {
+        return q;
+      }
+      if ((h * 3) < 2) {
+        return p + (q - p) * ((2 / 3) - h) * 6;
+      }
+      return p;
     }
 
     if (s < 0) {
@@ -425,9 +428,8 @@ export class Color {
     function computeLuminance() {
       if (lighter) {
         return (luminance + 0.05) * contrast - 0.05;
-      } else {
-        return (luminance + 0.05) / contrast - 0.05;
       }
+      return (luminance + 0.05) / contrast - 0.05;
     }
     let desiredLuminance = computeLuminance();
     if (desiredLuminance < 0 || desiredLuminance > 1) {

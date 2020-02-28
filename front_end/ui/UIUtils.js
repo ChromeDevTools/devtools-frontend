@@ -664,23 +664,22 @@ Number.secondsToString = function(seconds, higherResolution) {
  */
 Number.bytesToString = function(bytes) {
   if (bytes < 1000) {
-    return Common.UIString.UIString('%.0f\xa0B', bytes);
+    return Common.UIString.UIString('%.0f\xA0B', bytes);
   }
 
   const kilobytes = bytes / 1000;
   if (kilobytes < 100) {
-    return Common.UIString.UIString('%.1f\xa0kB', kilobytes);
+    return Common.UIString.UIString('%.1f\xA0kB', kilobytes);
   }
   if (kilobytes < 1000) {
-    return Common.UIString.UIString('%.0f\xa0kB', kilobytes);
+    return Common.UIString.UIString('%.0f\xA0kB', kilobytes);
   }
 
   const megabytes = kilobytes / 1000;
   if (megabytes < 100) {
-    return Common.UIString.UIString('%.1f\xa0MB', megabytes);
-  } else {
-    return Common.UIString.UIString('%.0f\xa0MB', megabytes);
+    return Common.UIString.UIString('%.1f\xA0MB', megabytes);
   }
+  return Common.UIString.UIString('%.0f\xA0MB', megabytes);
 };
 
 /**
@@ -691,7 +690,7 @@ Number.withThousandsSeparator = function(num) {
   let str = num + '';
   const re = /(\d+)(\d{3})/;
   while (str.match(re)) {
-    str = str.replace(re, '$1\xa0$2');
+    str = str.replace(re, '$1\xA0$2');
   }  // \xa0 is a non-breaking space
   return str;
 };
@@ -746,7 +745,8 @@ export function asyncStackTraceLabel(description) {
   if (description) {
     if (description === 'Promise.resolve') {
       return ls`Promise resolved (async)`;
-    } else if (description === 'Promise.reject') {
+    }
+    if (description === 'Promise.reject') {
       return ls`Promise rejected (async)`;
     }
     return ls`${description} (async)`;

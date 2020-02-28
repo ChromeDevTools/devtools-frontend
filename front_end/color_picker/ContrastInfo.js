@@ -141,9 +141,8 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper {
     const fontSizePt = fontSizePx * 72 / 96;
     if (isBold) {
       return fontSizePt >= 14;
-    } else {
-      return fontSizePt >= 18;
     }
+    return fontSizePt >= 18;
   }
 }
 

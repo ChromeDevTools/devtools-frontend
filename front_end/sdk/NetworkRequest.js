@@ -1032,9 +1032,8 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
       const position = pair.indexOf('=');
       if (position === -1) {
         return {name: pair, value: ''};
-      } else {
-        return {name: pair.substring(0, position), value: pair.substring(position + 1)};
       }
+      return {name: pair.substring(0, position), value: pair.substring(position + 1)};
     }
     return queryString.split('&').map(parseNameValue);
   }

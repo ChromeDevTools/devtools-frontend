@@ -41,8 +41,7 @@ export class NodeURL {
     if (isWindows) {
       const re = /^([a-z]:[\/\\]|\\\\)/i;
       return re.test(fileSystemPath);
-    } else {
-      return fileSystemPath.length ? fileSystemPath[0] === '/' : false;
     }
+    return fileSystemPath.length ? fileSystemPath[0] === '/' : false;
   }
 }

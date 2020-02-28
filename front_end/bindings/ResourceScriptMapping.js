@@ -139,7 +139,8 @@ export class ResourceScriptMapping {
     const script = scriptFile._script;
     if (script.isWasmDisassembly()) {
       return [script.wasmByteLocation(lineNumber)];
-    } else if (script.isInlineScriptWithSourceURL()) {
+    }
+    if (script.isInlineScriptWithSourceURL()) {
       return [this._debuggerModel.createRawLocation(
           script, lineNumber + script.lineOffset, lineNumber ? columnNumber : columnNumber + script.columnOffset)];
     }

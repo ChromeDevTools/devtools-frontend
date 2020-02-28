@@ -451,9 +451,11 @@ export class ServiceWorkerVersion {
   mode() {
     if (this.isNew() || this.isInstalling()) {
       return ServiceWorkerVersion.Modes.Installing;
-    } else if (this.isInstalled()) {
+    }
+    if (this.isInstalled()) {
       return ServiceWorkerVersion.Modes.Waiting;
-    } else if (this.isActivating() || this.isActivated()) {
+    }
+    if (this.isActivating() || this.isActivated()) {
       return ServiceWorkerVersion.Modes.Active;
     }
     return ServiceWorkerVersion.Modes.Redundant;

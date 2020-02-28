@@ -1045,10 +1045,9 @@ export class LocalJSONObject extends RemoteObject {
   getAllProperties(accessorPropertiesOnly, generatePreview) {
     if (accessorPropertiesOnly) {
       return Promise.resolve(/** @type {!GetPropertiesResult} */ ({properties: [], internalProperties: null}));
-    } else {
-      return Promise.resolve(
-          /** @type {!GetPropertiesResult} */ ({properties: this._children(), internalProperties: null}));
     }
+    return Promise.resolve(
+        /** @type {!GetPropertiesResult} */ ({properties: this._children(), internalProperties: null}));
   }
 
   /**

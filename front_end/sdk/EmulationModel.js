@@ -83,9 +83,8 @@ export class EmulationModel extends SDKModel {
   emulateDevice(metrics) {
     if (metrics) {
       return this._emulationAgent.invoke_setDeviceMetricsOverride(metrics);
-    } else {
-      return this._emulationAgent.clearDeviceMetricsOverride();
     }
+    return this._emulationAgent.clearDeviceMetricsOverride();
   }
 
   /**

@@ -237,9 +237,8 @@ export class ServiceWorkersView extends UI.Widget.VBox {
     if (this._securityOriginManager.securityOrigins().includes(origin) ||
         this._securityOriginManager.unreachableMainSecurityOrigin() === origin) {
       return this._currentWorkersView;
-    } else {
-      return this._otherWorkersView;
     }
+    return this._otherWorkersView;
   }
 
   /**

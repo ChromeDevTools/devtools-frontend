@@ -273,21 +273,26 @@ export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode 
 
     if (this.selected && hasFocus && isSelected && isFailed) {
       return bgColors.FocusSelectedHasError;
-    } else if (this.selected && hasFocus && isSelected) {
-      return bgColors.FocusSelected;
-    } else if (this.selected) {
-      return bgColors.Selected;
-    } else if (this.hovered()) {
-      return bgColors.Hovered;
-    } else if (this.isOnInitiatorPath()) {
-      return bgColors.InitiatorPath;
-    } else if (this.isOnInitiatedPath()) {
-      return bgColors.InitiatedPath;
-    } else if (this.isStriped()) {
-      return bgColors.Stripe;
-    } else {
-      return bgColors.Default;
     }
+    if (this.selected && hasFocus && isSelected) {
+      return bgColors.FocusSelected;
+    }
+    if (this.selected) {
+      return bgColors.Selected;
+    }
+    if (this.hovered()) {
+      return bgColors.Hovered;
+    }
+    if (this.isOnInitiatorPath()) {
+      return bgColors.InitiatorPath;
+    }
+    if (this.isOnInitiatedPath()) {
+      return bgColors.InitiatedPath;
+    }
+    if (this.isStriped()) {
+      return bgColors.Stripe;
+    }
+    return bgColors.Default;
   }
 
   updateBackgroundColor() {

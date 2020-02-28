@@ -492,7 +492,8 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
           hasChanged = true;
           return this._editingCommitted(
               element, checkboxElement.checked, initialValue, undefined, event.shiftKey ? 'backward' : 'forward');
-        } else if (event.key === ' ') {
+        }
+        if (event.key === ' ') {
           event.consume(true);
           checkboxElement.checked = !checkboxElement.checked;
         } else if (event.key === 'Enter') {
@@ -1326,15 +1327,15 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
           Common.UIString.UIString('Reset Columns'), this._resetColumnWeights.bind(this));
       contextMenu.show();
       return;
-    } else {
-      // Add header context menu to a subsection available from the body
-      const headerSubMenu = contextMenu.defaultSection().appendSubMenuItem(ls`Header Options`);
-      if (this._headerContextMenuCallback) {
-        this._headerContextMenuCallback(headerSubMenu);
-      }
-      headerSubMenu.defaultSection().appendItem(
-          Common.UIString.UIString('Reset Columns'), this._resetColumnWeights.bind(this));
     }
+
+    // Add header context menu to a subsection available from the body
+    const headerSubMenu = contextMenu.defaultSection().appendSubMenuItem(ls`Header Options`);
+    if (this._headerContextMenuCallback) {
+      this._headerContextMenuCallback(headerSubMenu);
+    }
+    headerSubMenu.defaultSection().appendItem(
+        Common.UIString.UIString('Reset Columns'), this._resetColumnWeights.bind(this));
 
     const isContextMenuKey = (event.button === 0);
     const gridNode = isContextMenuKey ? this.selectedNode : this.dataGridNodeFromNode(target);

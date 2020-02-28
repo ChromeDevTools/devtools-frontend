@@ -477,9 +477,8 @@ export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
     const nameFilterValue = this._nameFilter ? this._nameFilter.value().toLowerCase() : '';
     if (nameFilterValue && node.filteredOut && node.filteredOut(nameFilterValue)) {
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 
   /**

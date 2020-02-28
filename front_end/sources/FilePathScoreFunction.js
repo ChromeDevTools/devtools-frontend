@@ -195,8 +195,7 @@ export class FilePathScoreFunction {
 
     if (!consecutiveMatch) {
       return this._singleCharScore(query, data, i, j);
-    } else {
-      return this._sequenceCharScore(query, data, i, j - consecutiveMatch, consecutiveMatch);
     }
+    return this._sequenceCharScore(query, data, i, j - consecutiveMatch, consecutiveMatch);
   }
 }

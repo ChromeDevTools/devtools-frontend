@@ -596,9 +596,8 @@ ElementsTestRunner.dumpObjectPropertySectionDeep = function(section) {
   function domNodeToString(node) {
     if (node) {
       return '\'' + node.textContent + '\'';
-    } else {
-      return 'null';
     }
+    return 'null';
   }
 
   function dumpTreeElementRecursively(treeElement, prefix) {

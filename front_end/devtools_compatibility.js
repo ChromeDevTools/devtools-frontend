@@ -344,10 +344,9 @@
       request.send(null);
       if (request.status === 200) {
         return request.responseText;
-      } else {
-        console.error('Error while decoding chunk in streamWrite');
-        return '';
       }
+      console.error('Error while decoding chunk in streamWrite');
+      return '';
     }
   };
 

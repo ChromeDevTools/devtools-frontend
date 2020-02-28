@@ -33,7 +33,8 @@ export class PreviewFactory {
     const deferredContent = await provider.requestContent();
     if (deferredContent.error) {
       return new UI.EmptyWidget.EmptyWidget(deferredContent.error);
-    } else if (!deferredContent.content) {
+    }
+    if (!deferredContent.content) {
       return new UI.EmptyWidget.EmptyWidget(Common.UIString.UIString('Nothing to preview'));
     }
 

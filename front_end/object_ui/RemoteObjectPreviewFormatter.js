@@ -27,13 +27,15 @@ export class RemoteObjectPreviewFormatter {
       const internalName = _internalName;
       if (property.name === internalName.PromiseStatus) {
         return 1;
-      } else if (property.name === internalName.PromiseValue) {
+      }
+      if (property.name === internalName.PromiseValue) {
         return 2;
-      } else if (property.name === internalName.GeneratorStatus || property.name === internalName.PrimitiveValue) {
+      }
+      if (property.name === internalName.GeneratorStatus || property.name === internalName.PrimitiveValue) {
         return 3;
       }
       // TODO(einbinder) expose whether preview properties are actually private.
-      else if (property.type !== 'function' && !property.name.startsWith('#')) {
+      if (property.type !== 'function' && !property.name.startsWith('#')) {
         return 4;
       }
       return 5;

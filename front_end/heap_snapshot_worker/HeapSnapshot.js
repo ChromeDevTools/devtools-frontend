@@ -3171,9 +3171,8 @@ export class JSHeapSnapshotEdge extends HeapSnapshotEdge {
       case 'shortcut':
         if (typeof name === 'string') {
           return name.indexOf(' ') === -1 ? '.' + name : '["' + name + '"]';
-        } else {
-          return '[' + name + ']';
         }
+        return '[' + name + ']';
       case 'internal':
       case 'hidden':
       case 'invisible':

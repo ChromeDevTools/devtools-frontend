@@ -577,7 +577,8 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
 
     if (whitespaceMode === 'all') {
       return this._allWhitespaceOverlayMode(mimeType);
-    } else if (whitespaceMode === 'trailing') {
+    }
+    if (whitespaceMode === 'trailing') {
       return this._trailingWhitespaceOverlayMode(mimeType);
     }
 
@@ -953,11 +954,10 @@ export class TokenHighlighter {
         }
         this._searchMatchLength = 1;
         return 'search-highlight';
-      } else {
-        stream.next();
-        delete this._searchMatchLength;
-        return 'search-highlight search-highlight-end';
       }
+      stream.next();
+      delete this._searchMatchLength;
+      return 'search-highlight search-highlight-end';
     }
     const match = stream.match(regex, false);
     if (match) {

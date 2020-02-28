@@ -411,9 +411,8 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
     const valueSpan = this._calculator.maximumBoundary() - minimumValue;
     if (leftSlider) {
       return minimumValue + valueSpan * this.windowLeft;
-    } else {
-      return minimumValue + valueSpan * this.windowRight;
     }
+    return minimumValue + valueSpan * this.windowRight;
   }
 
   /**

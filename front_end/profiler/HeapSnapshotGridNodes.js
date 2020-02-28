@@ -1279,9 +1279,8 @@ export class HeapSnapshotDiffNode extends HeapSnapshotGridNode {
   _createChildNode(item) {
     if (item.isAddedNotRemoved) {
       return new HeapSnapshotInstanceNode(this._dataGrid, this._dataGrid.snapshot, item, false);
-    } else {
-      return new HeapSnapshotInstanceNode(this._dataGrid, this._dataGrid.baseSnapshot, item, true);
     }
+    return new HeapSnapshotInstanceNode(this._dataGrid, this._dataGrid.baseSnapshot, item, true);
   }
 
   /**
@@ -1332,9 +1331,8 @@ export class HeapSnapshotDiffNode extends HeapSnapshotGridNode {
     }
     if (delta > 0) {
       return '+';
-    } else {
-      return '\u2212';
-    }  // Math minus sign, same width as plus.
+    }
+    return '\u2212';  // Math minus sign, same width as plus.
   }
 }
 

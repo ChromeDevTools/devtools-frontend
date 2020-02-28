@@ -332,9 +332,8 @@ export class ParsedURL {
     const wasmFunctionIndex = url.search(wasmFunctionRegEx);
     if (wasmFunctionIndex === -1) {
       return url;
-    } else {
-      return url.substring(0, wasmFunctionIndex);
     }
+    return url.substring(0, wasmFunctionIndex);
   }
 
   /**

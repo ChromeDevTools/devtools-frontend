@@ -3,8 +3,9 @@
 // found in the LICENSE file.
 
 /**
- * @typedef {!{eventTarget: !EventTarget, eventType: (string|symbol), thisObject: (!Object|undefined), listener: function(!EventTargetEvent)}}
+ * @typedef {!{eventTarget: !EventTarget, eventType: (string|symbol), thisObject: (!Object|undefined), listener: function(!EventTargetEvent):void}}
  */
+// @ts-ignore TS can't pick up that EventDescriptor is of this type
 export let EventDescriptor;
 
 /**
@@ -24,11 +25,12 @@ export function removeEventListeners(eventList) {
 export class EventTarget {
   /**
    * @param {symbol} eventType
-   * @param {function(!EventTargetEvent)} listener
+   * @param {function(!EventTargetEvent):void} listener
    * @param {!Object=} thisObject
    * @return {!EventDescriptor}
    */
   addEventListener(eventType, listener, thisObject) {
+    throw new Error('not implemented');
   }
 
   /**
@@ -36,14 +38,16 @@ export class EventTarget {
    * @return {!Promise<*>}
    */
   once(eventType) {
+    throw new Error('not implemented');
   }
 
   /**
    * @param {string|symbol} eventType
-   * @param {function(!EventTargetEvent)} listener
+   * @param {function(!EventTargetEvent):void} listener
    * @param {!Object=} thisObject
    */
   removeEventListener(eventType, listener, thisObject) {
+    throw new Error('not implemented');
   }
 
   /**
@@ -51,6 +55,7 @@ export class EventTarget {
    * @return {boolean}
    */
   hasEventListeners(eventType) {
+    throw new Error('not implemented');
   }
 
   /**
@@ -66,4 +71,5 @@ EventTarget.removeEventListeners = removeEventListeners;
 /**
  * @typedef {!{data: *}}
  */
+// @ts-ignore TS can't pick up that EventTargetEvent is of this type
 export let EventTargetEvent;

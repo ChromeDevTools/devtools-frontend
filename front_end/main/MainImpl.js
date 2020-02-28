@@ -278,7 +278,9 @@ export class MainImpl {
     if (toggleSearchNodeAction) {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
           Host.InspectorFrontendHostAPI.Events.EnterInspectElementMode,
-          toggleSearchNodeAction.execute.bind(toggleSearchNodeAction), this);
+          () => {
+            toggleSearchNodeAction.execute();
+          }, this);
     }
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.RevealSourceLine, this._revealSourceLine, this);

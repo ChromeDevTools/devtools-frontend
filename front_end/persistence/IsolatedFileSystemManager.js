@@ -167,9 +167,9 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
   /**
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
-  async _onFileSystemAdded(event) {
+  _onFileSystemAdded(event) {
     const errorMessage = /** @type {string} */ (event.data['errorMessage']);
-    let fileSystem = /** @type {?FileSystem} */ (event.data['fileSystem']);
+    const fileSystem = /** @type {?FileSystem} */ (event.data['fileSystem']);
     if (errorMessage) {
       self.Common.console.error(Common.UIString.UIString('Unable to add filesystem: %s', errorMessage));
       if (!this._fileSystemRequestResolve) {
@@ -178,11 +178,12 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
       this._fileSystemRequestResolve.call(null, null);
       this._fileSystemRequestResolve = null;
     } else if (fileSystem) {
-      fileSystem = await this._innerAddFileSystem(fileSystem, true);
-      if (this._fileSystemRequestResolve) {
-        this._fileSystemRequestResolve.call(null, fileSystem);
-        this._fileSystemRequestResolve = null;
-      }
+      this._innerAddFileSystem(fileSystem, true).then(fileSystem => {
+        if (this._fileSystemRequestResolve) {
+          this._fileSystemRequestResolve.call(null, fileSystem);
+          this._fileSystemRequestResolve = null;
+        }
+      });
     }
   }
 

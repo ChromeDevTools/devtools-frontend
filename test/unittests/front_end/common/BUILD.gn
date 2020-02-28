@@ -2,12 +2,19 @@ import("../../../../third_party/typescript/typescript.gni")
 
 ts_library("common") {
   deps = [
-    ":Color",
+    ":character_id_map",
+    ":color",
     ":trie",
   ]
 }
 
-ts_library("Color") {
+ts_library("character_id_map") {
+  sources = [ "CharacterIdMap_test.ts" ]
+
+  deps = [ "../../../../front_end/common" ]
+}
+
+ts_library("color") {
   sources = [ "Color_test.ts" ]
 
   deps = [ "../../../../front_end/common" ]

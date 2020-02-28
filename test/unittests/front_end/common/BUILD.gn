@@ -5,6 +5,7 @@ ts_library("common") {
     ":character_id_map",
     ":color",
     ":trie",
+    ":ui_string",
   ]
 }
 
@@ -22,6 +23,12 @@ ts_library("color") {
 
 ts_library("trie") {
   sources = [ "Trie_test.ts" ]
+
+  deps = [ "../../../../front_end/common" ]
+}
+
+ts_library("ui_string") {
+  sources = [ "UIString_test.ts" ]
 
   deps = [ "../../../../front_end/common" ]
 }

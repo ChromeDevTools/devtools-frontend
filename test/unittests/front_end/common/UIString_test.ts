@@ -4,11 +4,11 @@
 
 const {assert} = chai;
 
-import * as Common from '/front_end/common/common.js';
+import * as UIString from '../../../../front_end/common/UIString.js';
 
 describe('UIString', () => {
   it('serializes UI strings', () => {
-    const output = Common.UIString.serializeUIString('foo');
+    const output = UIString.serializeUIString('foo');
     assert.equal(output, JSON.stringify({
       messageParts: ['foo'],
       values: [],
@@ -16,7 +16,7 @@ describe('UIString', () => {
   });
 
   it('serializes UI strings and includes any values', () => {
-    const output = Common.UIString.serializeUIString('a string', ['value1', 'value2']);
+    const output = UIString.serializeUIString('a string', ['value1', 'value2']);
     assert.equal(output, JSON.stringify({
       messageParts: ['a string'],
       values: ['value1', 'value2'],
@@ -25,8 +25,8 @@ describe('UIString', () => {
 
   it('deserializes UI strings', () => {
     const inputString = 'a string';
-    const serializedString = Common.UIString.serializeUIString(inputString);
-    const deserializedString = Common.UIString.deserializeUIString(serializedString);
+    const serializedString = UIString.serializeUIString(inputString);
+    const deserializedString = UIString.deserializeUIString(serializedString);
     assert.deepEqual(deserializedString, {
       messageParts: [inputString],
       values: [],
@@ -34,7 +34,7 @@ describe('UIString', () => {
   });
 
   it('returns an empty object if no string is given to deserialize', () => {
-    const output = Common.UIString.deserializeUIString();
+    const output = UIString.deserializeUIString();
     assert.deepEqual(output, {});
   });
 });

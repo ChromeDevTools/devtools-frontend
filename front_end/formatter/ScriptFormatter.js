@@ -29,6 +29,7 @@
  */
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as Platform from '../platform/platform.js';
 
 import {FormatResult, formatterWorkerPool} from './FormatterWorkerPool.js';  // eslint-disable-line no-unused-vars
 
@@ -101,8 +102,11 @@ export class ScriptFormatter {
    * @param {!FormatResult} formatResult
    */
   _didFormatContent(formatResult) {
-    const sourceMapping = new FormatterSourceMappingImpl(
-        this._originalContent.computeLineEndings(), formatResult.content.computeLineEndings(), formatResult.mapping);
+    const originalContentLineEndings = Platform.StringUtilities.findLineEndingIndexes(this._originalContent);
+    const formattedContentLineEndings = Platform.StringUtilities.findLineEndingIndexes(formatResult.content);
+
+    const sourceMapping =
+        new FormatterSourceMappingImpl(originalContentLineEndings, formattedContentLineEndings, formatResult.mapping);
     this._callback(formatResult.content, sourceMapping);
   }
 }

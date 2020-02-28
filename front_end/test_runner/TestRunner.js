@@ -1407,6 +1407,39 @@ export function dumpSyntaxHighlight(str, mimeType) {
   }
 }
 
+/* this code exists in Platform.StringUtilities but these layout tests
+* cannot import ES modules so we copy the required code in directly as
+* these layout tests are going to be removed in favour of e2e so it's
+* not worth adding ESM support here
+*/
+
+/**
+ *
+ * @param {string} inputString
+ * @param {string} searchString
+ * @return {!Array.<number>}
+ */
+const findIndexesOfSubString = function(inputString, searchString) {
+  const matches = [];
+  let i = inputString.indexOf(searchString);
+  while (i !== -1) {
+    matches.push(i);
+    i = inputString.indexOf(searchString, i + searchString.length);
+  }
+  return matches;
+};
+
+/**
+ *
+ * @param {string} inputString
+ * @return {!Array.<number>}
+ */
+export const findLineEndingIndexes = function(inputString) {
+  const endings = findIndexesOfSubString(inputString, '\n');
+  endings.push(inputString.length);
+  return endings;
+};
+
 /**
  * @param {string} querySelector
  */
@@ -1511,6 +1544,7 @@ TestRunner.deprecatedInitAsync = deprecatedInitAsync;
 TestRunner.runAsyncTestSuite = runAsyncTestSuite;
 TestRunner.dumpInspectedPageElementText = dumpInspectedPageElementText;
 TestRunner.waitForPendingLiveLocationUpdates = waitForPendingLiveLocationUpdates;
+TestRunner.findLineEndingIndexes = findLineEndingIndexes;
 
 /**
  * @typedef {!Object<string, string>}

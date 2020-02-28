@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../platform/platform.js';
+
 import {TextCursor} from './TextCursor.js';
 import {SourceRange, TextRange} from './TextRange.js';
 
@@ -21,7 +23,7 @@ export class Text {
    */
   lineEndings() {
     if (!this._lineEndings) {
-      this._lineEndings = this._value.computeLineEndings();
+      this._lineEndings = Platform.StringUtilities.findLineEndingIndexes(this._value);
     }
     return this._lineEndings;
   }

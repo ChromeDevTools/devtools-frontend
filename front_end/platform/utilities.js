@@ -49,20 +49,6 @@ self.mod = function(m, n) {
 };
 
 /**
- * @param {string} string
- * @return {!Array.<number>}
- */
-String.prototype.findAll = function(string) {
-  const matches = [];
-  let i = this.indexOf(string);
-  while (i !== -1) {
-    matches.push(i);
-    i = this.indexOf(string, i + string.length);
-  }
-  return matches;
-};
-
-/**
  * @return {string}
  */
 String.prototype.reverse = function() {
@@ -83,15 +69,6 @@ String.prototype.replaceControlCharacters = function() {
  */
 String.prototype.isWhitespace = function() {
   return /^\s*$/.test(this);
-};
-
-/**
- * @return {!Array.<number>}
- */
-String.prototype.computeLineEndings = function() {
-  const endings = this.findAll('\n');
-  endings.push(this.length);
-  return endings;
 };
 
 /**

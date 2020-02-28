@@ -30,6 +30,7 @@
 
 import * as Common from '../common/common.js';
 import * as Formatter from '../formatter/formatter.js';
+import * as Platform from '../platform/platform.js';
 import * as TextEditor from '../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
@@ -756,7 +757,7 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     const currentRangeIndex = ranges.lowerBound(this._textEditor.selection(), TextUtils.TextRange.TextRange.comparator);
     const lastRangeIndex = mod(currentRangeIndex - 1, ranges.length);
     const lastRange = ranges[lastRangeIndex];
-    const replacementLineEndings = replacement.computeLineEndings();
+    const replacementLineEndings = Platform.StringUtilities.findLineEndingIndexes(replacement);
     const replacementLineCount = replacementLineEndings.length;
     const lastLineNumber = lastRange.startLine + replacementLineEndings.length - 1;
     let lastColumnNumber = lastRange.startColumn;

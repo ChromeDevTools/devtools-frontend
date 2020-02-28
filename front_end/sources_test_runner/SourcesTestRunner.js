@@ -96,10 +96,14 @@ SourcesTestRunner.addScriptUISourceCode = function(url, content, isContentScript
 function testSourceMapping(text1, text2, mapping, testToken) {
   const originalPosition = text1.indexOf(testToken);
   TestRunner.assertTrue(originalPosition !== -1);
-  const originalLocation = Formatter.Formatter.positionToLocation(text1.computeLineEndings(), originalPosition);
+
+  const text1LineEndings = TestRunner.findLineEndingIndexes(text1);
+  const text2LineEndings = TestRunner.findLineEndingIndexes(text2);
+
+  const originalLocation = Formatter.Formatter.positionToLocation(text1LineEndings, originalPosition);
   const formattedLocation = mapping.originalToFormatted(originalLocation[0], originalLocation[1]);
   const formattedPosition =
-      Formatter.Formatter.locationToPosition(text2.computeLineEndings(), formattedLocation[0], formattedLocation[1]);
+      Formatter.Formatter.locationToPosition(text2LineEndings, formattedLocation[0], formattedLocation[1]);
   const expectedFormattedPosition = text2.indexOf(testToken);
 
   if (expectedFormattedPosition === formattedPosition) {

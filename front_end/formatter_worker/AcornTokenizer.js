@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
 /**
@@ -15,7 +16,8 @@ export class AcornTokenizer {
     this._content = content;
     this._comments = [];
     this._tokenizer = acorn.tokenizer(this._content, {onComment: this._comments});
-    this._textCursor = new TextUtils.TextCursor.TextCursor(this._content.computeLineEndings());
+    const contentLineEndings = Platform.StringUtilities.findLineEndingIndexes(this._content);
+    this._textCursor = new TextUtils.TextCursor.TextCursor(contentLineEndings);
     this._tokenLineStart = 0;
     this._tokenLineEnd = 0;
     this._nextTokenInternal();

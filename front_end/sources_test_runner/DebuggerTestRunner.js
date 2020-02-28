@@ -7,6 +7,7 @@
  * @suppress {accessControls}
  */
 
+
 SourcesTestRunner.startDebuggerTest = function(callback, quiet) {
   console.assert(TestRunner.debuggerModel.debuggerEnabled(), 'Debugger has to be enabled');
 
@@ -642,10 +643,10 @@ SourcesTestRunner.createScriptMock = function(
   target = target || self.SDK.targetManager.mainTarget();
   const debuggerModel = target.model(SDK.DebuggerModel);
   const scriptId = ++SourcesTestRunner._lastScriptId + '';
-  const lineCount = source.computeLineEndings().length;
+  const sourceLineEndings = TestRunner.findLineEndingIndexes(source);
+  const lineCount = sourceLineEndings.length;
   const endLine = startLine + lineCount - 1;
-  const endColumn =
-      (lineCount === 1 ? startColumn + source.length : source.length - source.computeLineEndings()[lineCount - 2]);
+  const endColumn = (lineCount === 1 ? startColumn + source.length : source.length - sourceLineEndings[lineCount - 2]);
   const hasSourceURL =
       !!source.match(/\/\/#\ssourceURL=\s*(\S*?)\s*$/m) || !!source.match(/\/\/@\ssourceURL=\s*(\S*?)\s*$/m);
 

@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Platform from '../platform/platform.js';
+
 import {AcornTokenizer} from './AcornTokenizer.js';
 import {CSSFormatter} from './CSSFormatter.js';
 import {parseCSS} from './CSSRuleParser.js';
@@ -230,7 +232,7 @@ export function format(mimeType, text, indentString) {
   indentString = indentString || '    ';
   const result = {};
   const builder = new FormattedContentBuilder(indentString);
-  const lineEndings = text.computeLineEndings();
+  const lineEndings = Platform.StringUtilities.findLineEndingIndexes(text);
   try {
     switch (mimeType) {
       case 'text/html': {

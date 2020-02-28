@@ -41,4 +41,23 @@ describe('StringUtilities', () => {
       }
     });
   });
+
+  describe('findIndexesOfSubstring', () => {
+    it('finds the expected indexes', () => {
+      const inputString = '111111F1111111F11111111F';
+      const indexes = StringUtilities.findIndexesOfSubString(inputString, 'F');
+      assert.deepEqual(indexes, [6, 14, 23]);
+    });
+  });
+
+  describe('findLineEndingIndexes', () => {
+    it('finds the indexes of the line endings and returns them', () => {
+      const inputString = `1234
+56
+78
+9`;
+      const indexes = StringUtilities.findLineEndingIndexes(inputString);
+      assert.deepEqual(indexes, [4, 7, 10, 12]);
+    });
+  });
 });

@@ -277,3 +277,30 @@ export const toBase64 = inputString => {
   }
   return encoded;
 };
+
+/**
+ *
+ * @param {string} inputString
+ * @param {string} searchString
+ * @return {!Array.<number>}
+ */
+export const findIndexesOfSubString = (inputString, searchString) => {
+  const matches = [];
+  let i = inputString.indexOf(searchString);
+  while (i !== -1) {
+    matches.push(i);
+    i = inputString.indexOf(searchString, i + searchString.length);
+  }
+  return matches;
+};
+
+/**
+ *
+ * @param {string} inputString
+ * @return {!Array.<number>}
+ */
+export const findLineEndingIndexes = inputString => {
+  const endings = findIndexesOfSubString(inputString, '\n');
+  endings.push(inputString.length);
+  return endings;
+};

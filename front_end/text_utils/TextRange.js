@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Platform from '../platform/platform.js';
+
 /**
  * @unrestricted
  */
@@ -81,7 +83,8 @@ export class TextRange {
   static fromEdit(oldRange, newText) {
     let endLine = oldRange.startLine;
     let endColumn = oldRange.startColumn + newText.length;
-    const lineEndings = newText.computeLineEndings();
+
+    const lineEndings = Platform.StringUtilities.findLineEndingIndexes(newText);
     if (lineEndings.length > 1) {
       endLine = oldRange.startLine + lineEndings.length - 1;
       const len = lineEndings.length;

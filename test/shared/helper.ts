@@ -6,6 +6,22 @@ import * as fs from 'fs';
 import {join} from 'path';
 import {performance} from 'perf_hooks';
 import * as puppeteer from 'puppeteer';
+import * as os from 'os';
+
+export let platform: string;
+switch (os.platform()) {
+  case 'darwin':
+    platform = 'mac';
+    break;
+
+  case 'win32':
+    platform = 'win32';
+    break;
+
+  default:
+    platform = 'linux';
+    break;
+}
 
 interface BrowserAndPages {
   browser: puppeteer.Browser;

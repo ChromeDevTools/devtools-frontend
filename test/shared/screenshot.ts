@@ -8,28 +8,12 @@
 import {assert} from 'chai';
 import * as childProcess from 'child_process';
 import * as fs from 'fs';
-import * as os from 'os';
 import * as path from 'path';
 import {join} from 'path';
 import * as puppeteer from 'puppeteer';
 import * as rimraf from 'rimraf';
 
-import {getBrowserAndPages, mkdirp} from './helper.js';
-
-let platform: string;
-switch (os.platform()) {
-  case 'darwin':
-    platform = 'mac';
-    break;
-
-  case 'win32':
-    platform = 'win32';
-    break;
-
-  default:
-    platform = 'linux';
-    break;
-}
+import {getBrowserAndPages, mkdirp, platform} from './helper.js';
 
 const goldensScreenshotFolderParts = ['..', 'screenshots', 'goldens', platform];
 const goldensScreenshotFolder = join(__dirname, ...goldensScreenshotFolderParts);

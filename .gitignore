@@ -46,3 +46,6 @@ test/screenshots/**/*.js
 !test/screenshots/**/interactive.js
 test/screenshots/**/*.tsbuildinfo
 test/screenshots/.generated
+test/perf/.generated
+test/perf/**/*.js
+test/perf/**/*.tsbuildinfo

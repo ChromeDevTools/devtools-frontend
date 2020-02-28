@@ -65,13 +65,6 @@ String.prototype.replaceControlCharacters = function() {
 };
 
 /**
- * @return {boolean}
- */
-String.prototype.isWhitespace = function() {
-  return /^\s*$/.test(this);
-};
-
-/**
  * @param {string} chars
  * @return {string}
  */

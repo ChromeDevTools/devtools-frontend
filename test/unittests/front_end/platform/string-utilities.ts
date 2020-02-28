@@ -60,4 +60,15 @@ describe('StringUtilities', () => {
       assert.deepEqual(indexes, [4, 7, 10, 12]);
     });
   });
+
+  describe('isWhitespace', () => {
+    it('correctly recognizes different kinds of whitespace', () => {
+      assert.isTrue(StringUtilities.isWhitespace(''));
+      assert.isTrue(StringUtilities.isWhitespace('  '));
+      assert.isTrue(StringUtilities.isWhitespace('\t'));
+      assert.isTrue(StringUtilities.isWhitespace('\n'));
+
+      assert.isFalse(StringUtilities.isWhitespace('  foo '));
+    });
+  });
 });

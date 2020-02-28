@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -69,7 +70,7 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
 
     let text = event.target.textContent;
     if (isEscKey(event)) {
-      if (!text.isWhitespace()) {
+      if (!Platform.StringUtilities.isWhitespace(text)) {
         event.consume(true);
       }
       text = '';

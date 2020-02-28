@@ -304,3 +304,11 @@ export const findLineEndingIndexes = inputString => {
   endings.push(inputString.length);
   return endings;
 };
+
+/**
+ * @param {string} inputString
+ * @return {boolean}
+ */
+export const isWhitespace = inputString => {
+  return /^\s*$/.test(inputString);
+};

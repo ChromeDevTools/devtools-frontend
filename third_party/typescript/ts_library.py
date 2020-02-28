@@ -97,7 +97,7 @@ def copy_all_typescript_sources(sources, output_directory):
     while path.basename(front_end_output_location) != 'front_end':
         front_end_output_location = path.dirname(front_end_output_location)
     for src in sources:
-        if src.endswith('.ts') or src.endswith('_bridge.js'):
+        if (src.endswith('.ts') and not src.endswith('_test.ts')) or src.endswith('_bridge.js'):
             generated_javascript_location = path.join(output_directory, path.basename(src).replace('.ts', '.js'))
 
             relative_path_from_generated_front_end_folder = path.relpath(generated_javascript_location, front_end_output_location)
@@ -106,6 +106,15 @@ def copy_all_typescript_sources(sources, output_directory):
 
             if path.exists(dest):
                 os.remove(dest)
+            # Make sure that the directory actually exists, otherwise
+            # the copy action will throw an error
+            try:
+                os.makedirs(path.dirname(dest))
+            except OSError as exc:  # Python >2.5
+                if exc.errno == errno.EEXIST and os.path.isdir(path):
+                    pass
+                else:
+                    raise
             shutil.copy(generated_javascript_location, dest)
 
 

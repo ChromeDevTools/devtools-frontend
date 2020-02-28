@@ -12,6 +12,7 @@ export class FormattedContentBuilder {
   constructor(indentString) {
     this._lastOriginalPosition = 0;
 
+    /** @type {!Array.<string>} */
     this._formattedContent = [];
     this._formattedContentLength = 0;
     this._lastFormattedPosition = 0;
@@ -24,6 +25,7 @@ export class FormattedContentBuilder {
     /** @type {!Map<number, string>} */
     this._cachedIndents = new Map();
 
+    /** @type {number} */
     this._newLines = 0;
     this._softSpace = false;
     this._hardSpaces = 0;

@@ -24,6 +24,7 @@
 .data-grid td .bar {
   display: inline-block;
   height: 8px;
+  border: 1px solid transparent;
 }
 
 .data-grid .selected td .bar {
@@ -58,4 +59,32 @@
 
 .data-grid:focus tr.selected span.percent-value {
   color: #eee;
+}
+
+@media (forced-colors: active) {
+  .data-grid td .bar-container {
+    forced-color-adjust: none;
+  }
+  .data-grid td .bar-unused-size {
+    background-color: ButtonText;
+  }
+  .data-grid td .bar-used-size {
+    background-color: ButtonFace;
+  }
+  .data-grid .selected td .bar {
+    border-top-color: HighlightText;
+    border-bottom-color: HighlightText;
+  }
+  .data-grid .selected td .bar:last-child {
+    border-right-color: HighlightText;
+  }
+  .data-grid .selected td .bar:first-child {
+    border-left-color: HighlightText;
+  }
+  .data-grid td .bar {
+    border-color: ButtonText;
+  }
+  .data-grid:focus tr.selected span.percent-value {
+    color: HighlightText;
+  }
 }

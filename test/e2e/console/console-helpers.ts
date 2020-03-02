@@ -4,18 +4,13 @@
 
 import * as puppeteer from 'puppeteer';
 
-import {waitFor, click, debuggerStatement, getBrowserAndPages, resourcesPath} from '../../shared/helper.js';
+import {click, debuggerStatement, getBrowserAndPages, resourcesPath} from '../../shared/helper.js';
 
 export const CONSOLE_TAB_SELECTOR = '#tab-console';
 export const CONSOLE_MESSAGES_SELECTOR = '.console-group-messages';
 export const CONSOLE_FIRST_MESSAGES_SELECTOR = '.console-group-messages .source-code .console-message-text';
 export const LOG_LEVELS_SELECTOR = '[aria-label^="Log level: "]';
 export const LOG_LEVELS_VERBOSE_OPTION_SELECTOR = '[aria-label^="Verbose"]';
-
-export async function doubleClickSourceTreeItem(selector: string) {
-  await waitFor(selector);
-  await click(selector, {clickOptions: {clickCount: 2}});
-}
 
 export async function obtainConsoleMessages(testName: string, callback?: (page: puppeteer.Page) => Promise<void>) {
   const {target, frontend} = getBrowserAndPages();

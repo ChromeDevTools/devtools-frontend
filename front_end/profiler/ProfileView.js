@@ -327,7 +327,7 @@ export class ProfileView extends UI.View.SimpleView {
     }
     this._dataProvider = this.createFlameChartDataProvider();
     this._flameChart = new CPUProfileFlameChart(this._searchableView, this._dataProvider);
-    this._flameChart.addEventListener(PerfUI.FlameChart.Events.EntryInvoked, this._onEntryInvoked.bind(this));
+    this._flameChart.addEventListener(PerfUI.FlameChart.Events.EntryInvoked, event => { this._onEntryInvoked(event); });
   }
 
   /**

@@ -44,7 +44,7 @@ export class ApplicationCacheModel extends SDK.SDKModel.SDKModel {
     this._agent.enable();
 
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated, this);
+    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, event => { this._frameNavigated(event); }, this);
     resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameDetached, this._frameDetached, this);
 
     this._statuses = {};

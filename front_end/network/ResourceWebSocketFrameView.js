@@ -64,7 +64,7 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortItems, this);
 
     this._dataGrid.setName('ResourceWebSocketFrameView');
-    this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, this._onFrameSelected, this);
+    this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, event => { this._onFrameSelected(event); }, this);
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.DeselectedNode, this._onFrameDeselected, this);
 
     this._mainToolbar = new UI.Toolbar.Toolbar('');

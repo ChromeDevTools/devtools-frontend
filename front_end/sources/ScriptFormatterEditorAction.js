@@ -70,8 +70,8 @@ export class ScriptFormatterEditorAction {
     }
 
     this._sourcesView = sourcesView;
-    this._sourcesView.addEventListener(Events.EditorSelected, this._editorSelected.bind(this));
-    this._sourcesView.addEventListener(Events.EditorClosed, this._editorClosed.bind(this));
+    this._sourcesView.addEventListener(Events.EditorSelected, event => { this._editorSelected(event); });
+    this._sourcesView.addEventListener(Events.EditorClosed, event => { this._editorClosed(event); });
 
     this._button = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Pretty print'), 'largeicon-pretty-print');
     this._button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._toggleFormatScriptSource, this);

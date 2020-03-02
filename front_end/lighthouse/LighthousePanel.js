@@ -34,8 +34,8 @@ export class LighthousePanel extends UI.Panel {
 
     this._controller.addEventListener(Events.PageAuditabilityChanged, this._refreshStartAuditUI.bind(this));
     this._controller.addEventListener(Events.AuditProgressChanged, this._refreshStatusUI.bind(this));
-    this._controller.addEventListener(Events.RequestLighthouseStart, this._startLighthouse.bind(this));
-    this._controller.addEventListener(Events.RequestLighthouseCancel, this._cancelLighthouse.bind(this));
+    this._controller.addEventListener(Events.RequestLighthouseStart, event => { this._startLighthouse(event); });
+    this._controller.addEventListener(Events.RequestLighthouseCancel, event => { this._cancelLighthouse(); });
 
     this._renderToolbar();
     this._auditResultsElement = this.contentElement.createChild('div', 'lighthouse-results-container');

@@ -28,12 +28,12 @@ export class OverlayModel extends SDKModel {
       self.Common.settings.moduleSetting('disablePausedStateOverlay')
           .addChangeListener(this._updatePausedInDebuggerMessage, this);
       this._debuggerModel.addEventListener(
-          DebuggerModelEvents.DebuggerPaused, this._updatePausedInDebuggerMessage, this);
+          DebuggerModelEvents.DebuggerPaused, event => { this._updatePausedInDebuggerMessage(); }, this);
       this._debuggerModel.addEventListener(
-          DebuggerModelEvents.DebuggerResumed, this._updatePausedInDebuggerMessage, this);
+          DebuggerModelEvents.DebuggerResumed, event => { this._updatePausedInDebuggerMessage(); }, this);
       // TODO(dgozman): we should get DebuggerResumed on navigations instead of listening to GlobalObjectCleared.
       this._debuggerModel.addEventListener(
-          DebuggerModelEvents.GlobalObjectCleared, this._updatePausedInDebuggerMessage, this);
+          DebuggerModelEvents.GlobalObjectCleared, event => { this._updatePausedInDebuggerMessage(); }, this);
     }
 
     this._inspectModeEnabled = false;
@@ -158,18 +158,15 @@ export class OverlayModel extends SDKModel {
     this._overlayAgent.setShowViewportSizeOnResize(show);
   }
 
-  /**
-   * @return {!Promise}
-   */
   _updatePausedInDebuggerMessage() {
     if (this.target().suspended()) {
-      return Promise.resolve();
+      return;
     }
     const message =
         this._debuggerModel.isPaused() && !self.Common.settings.moduleSetting('disablePausedStateOverlay').get() ?
         Common.UIString.UIString('Paused in debugger') :
         undefined;
-    return this._overlayAgent.setPausedInDebuggerMessage(message);
+    this._overlayAgent.setPausedInDebuggerMessage(message);
   }
 
   /**

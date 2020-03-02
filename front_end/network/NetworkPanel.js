@@ -218,6 +218,13 @@ export class NetworkPanel extends UI.Panel.Panel {
     this._networkLogView.setWindow(startTime, endTime);
   }
 
+  /**
+   * @param {!Common.EventTarget.EventTargetEvent} event
+   */
+  async _searchToggleClick(event) {
+    await self.UI.actionRegistry.action('network.search').execute();
+  }
+
   _setupToolbarButtons(splitWidget) {
     const searchToggle = new UI.Toolbar.ToolbarToggle(ls`Search`, 'largeicon-search');
     function updateSidebarToggle() {
@@ -236,9 +243,7 @@ export class NetworkPanel extends UI.Panel.Panel {
     this._panelToolbar.appendToolbarItem(this._filterBar.filterButton());
     updateSidebarToggle();
     splitWidget.addEventListener(UI.SplitWidget.Events.ShowModeChanged, updateSidebarToggle);
-    searchToggle.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.Click,
-        async () => await self.UI.actionRegistry.action('network.search').execute());
+    searchToggle.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, event => { this._searchToggleClick(event); });
     this._panelToolbar.appendToolbarItem(searchToggle);
     this._panelToolbar.appendSeparator();
 
@@ -280,7 +285,7 @@ export class NetworkPanel extends UI.Panel.Panel {
     this._panelToolbar.appendToolbarItem(importHarButton);
     const exportHarButton = new UI.Toolbar.ToolbarButton(ls`Export HAR...`, 'largeicon-download');
     exportHarButton.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.Click, () => this._networkLogView.exportAll(), this);
+        UI.Toolbar.ToolbarButton.Events.Click, event => { this._networkLogView.exportAll(); }, this);
     this._panelToolbar.appendToolbarItem(exportHarButton);
   }
 

@@ -76,9 +76,9 @@ export class AppManifestView extends UI.Widget.VBox {
 
     this._registeredListeners = [
       this._resourceTreeModel.addEventListener(
-          SDK.ResourceTreeModel.Events.DOMContentLoaded, this._updateManifest.bind(this, true)),
+          SDK.ResourceTreeModel.Events.DOMContentLoaded, event => { this._updateManifest(true); }),
       this._serviceWorkerManager.addEventListener(
-          SDK.ServiceWorkerManager.Events.RegistrationUpdated, this._updateManifest.bind(this, false))
+          SDK.ServiceWorkerManager.Events.RegistrationUpdated, event => { this._updateManifest(false); })
     ];
   }
 

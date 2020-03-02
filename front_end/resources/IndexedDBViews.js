@@ -134,10 +134,10 @@ export class IDBDataView extends UI.View.SimpleView {
     this._deleteSelectedButton =
         new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Delete selected'), 'largeicon-delete');
     this._deleteSelectedButton.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.Click, () => this._deleteButtonClicked(null));
+        UI.Toolbar.ToolbarButton.Events.Click, event => { this._deleteButtonClicked(null); });
 
     this._clearButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Clear object store'), 'largeicon-clear');
-    this._clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._clearButtonClicked, this);
+    this._clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, event => { this._clearButtonClicked(event);} , this);
 
     this._needsRefresh = new UI.Toolbar.ToolbarItem(
         UI.UIUtils.createIconLabel(Common.UIString.UIString('Data may be stale'), 'smallicon-warning'));

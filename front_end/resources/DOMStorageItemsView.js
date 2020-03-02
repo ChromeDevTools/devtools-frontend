@@ -63,8 +63,8 @@ export class DOMStorageItemsView extends StorageItemsView {
     });
     this._dataGrid.addEventListener(
         DataGrid.DataGrid.Events.SelectedNode,
-        event => this._previewEntry(/** @type {!DataGrid.DataGrid.DataGridNode} */ (event.data)));
-    this._dataGrid.addEventListener(DataGrid.DataGrid.Events.DeselectedNode, event => this._previewEntry(null));
+        event => { this._previewEntry(/** @type {!DataGrid.DataGrid.DataGridNode} */ (event.data));});
+    this._dataGrid.addEventListener(DataGrid.DataGrid.Events.DeselectedNode, event => { this._previewEntry(null); });
     this._dataGrid.setStriped(true);
     this._dataGrid.setName('DOMStorageItemsView');
 

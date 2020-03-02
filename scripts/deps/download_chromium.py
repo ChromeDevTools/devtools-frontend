@@ -10,6 +10,7 @@ Used to download a pre-built version of Chrome for running unit tests
 import argparse
 import os
 import shutil
+import stat
 import sys
 import urllib
 import zipfile
@@ -24,6 +25,17 @@ def parse_options(cli_args):
     return parser.parse_args(cli_args)
 
 
+def handleAccessDeniedOnWindows(func, path, exc):
+    if not os.name == 'nt':
+        raise exc
+    if not os.access(path, os.W_OK):
+        # Is the error an access error ?
+        print("Retrying due to access error: %s ..." % exc)
+        os.chmod(path, stat.S_IWUSR)
+        func(path)
+    else:
+        raise exc
+
 def download_and_extract(options):
     BUILD_NUMBER_FILE = os.path.join(options.target, 'build_number')
     EXPECTED_BINARY = os.path.join(options.target, options.path_to_binary)
@@ -37,7 +49,7 @@ def download_and_extract(options):
 
     # Remove previous download
     if os.path.exists(options.target):
-        shutil.rmtree(options.target)
+        shutil.rmtree(options.target, ignore_errors=False, onerror=handleAccessDeniedOnWindows)
 
     # Download again and save build number
     filehandle, headers = urllib.urlretrieve(options.url)

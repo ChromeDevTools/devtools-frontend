@@ -32,6 +32,7 @@ import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
+import {Icon} from './Icon.js';
 import {KeyboardShortcut, Modifiers} from './KeyboardShortcut.js';
 import {bindCheckbox} from './SettingsUI.js';
 import {Suggestions} from './SuggestBox.js';  // eslint-disable-line no-unused-vars
@@ -198,7 +199,8 @@ export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper {
     this._filterElement = createElement('div');
     this._filterElement.className = 'filter-text-filter';
 
-    this._filterInputElement = this._filterElement.createChild('span', 'filter-input-field');
+    const container = this._filterElement.createChild('div', 'filter-input-container');
+    this._filterInputElement = container.createChild('span', 'filter-input-field');
 
     this._prompt = new TextPrompt();
     this._prompt.initialize(this._completions.bind(this), ' ');
@@ -209,6 +211,14 @@ export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper {
 
     /** @type {?function(string, string, boolean=):!Promise<!Suggestions>} */
     this._suggestionProvider = null;
+
+    const clearButton = container.createChild('div', 'filter-input-clear-button');
+    clearButton.appendChild(Icon.create('mediumicon-gray-cross-hover', 'filter-cancel-button'));
+    clearButton.addEventListener('click', () => {
+      this.clear();
+      this.focus();
+    });
+    this._updateEmptyStyles();
   }
 
   /**
@@ -268,6 +278,11 @@ export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper {
 
   _valueChanged() {
     this.dispatchEventToListeners(FilterUI.Events.FilterChanged, null);
+    this._updateEmptyStyles();
+  }
+
+  _updateEmptyStyles() {
+    this._filterElement.classList.toggle('filter-text-empty', !this._prompt.text());
   }
 
   clear() {

@@ -46,7 +46,7 @@ SDKTestRunner.PageMock = class {
     self.Bindings.debuggerWorkspaceBinding._resetForTest(TestRunner.mainTarget);
     self.Bindings.resourceMapping._resetForTest(TestRunner.mainTarget);
     this._enabledDomains.clear();
-    self.SDK.targetManager._targets = [];
+    self.SDK.targetManager._targets.clear();
 
     const oldFactory = Protocol.Connection.getFactory();
     Protocol.Connection.setFactory(() => {

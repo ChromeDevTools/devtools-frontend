@@ -9,15 +9,6 @@
         ]
     },
     {
-        "prefix": "sxg-with-network-service",
-        "bases": [
-            "http/tests/devtools/sxg"
-        ],
-        "args": [
-            "--enable-features=NetworkService"
-        ]
-    },
-    {
         "prefix": "site-isolated-code-cache",
         "bases": [
             "http/tests/devtools/isolated-code-cache"

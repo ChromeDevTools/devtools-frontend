@@ -142,20 +142,6 @@ String.prototype.trimEndWithMaxLength = function(maxLength) {
 };
 
 /**
- * @param {?string=} baseURLDomain
- * @return {string}
- */
-String.prototype.trimURL = function(baseURLDomain) {
-  let result = this.replace(/^(https|http|file):\/\//i, '');
-  if (baseURLDomain) {
-    if (result.toLowerCase().startsWith(baseURLDomain.toLowerCase())) {
-      result = result.substr(baseURLDomain.length);
-    }
-  }
-  return result;
-};
-
-/**
  * @return {string}
  */
 String.prototype.toTitleCase = function() {

@@ -71,4 +71,18 @@ describe('StringUtilities', () => {
       assert.isFalse(StringUtilities.isWhitespace('  foo '));
     });
   });
+
+  describe('trimURL', () => {
+    it('trims the protocol and an optional domain from URLs', () => {
+      const baseURLDomain = 'www.chromium.org';
+      const fixtures = new Map([
+        ['http://www.chromium.org/foo/bar', '/foo/bar'],
+        ['https://www.CHromium.ORG/BAZ/zoo', '/BAZ/zoo'],
+        ['https://example.com/foo[]', 'example.com/foo[]'],
+      ]);
+      for (const [url, expected] of fixtures) {
+        assert.equal(StringUtilities.trimURL(url, baseURLDomain), expected, url);
+      }
+    });
+  });
 });

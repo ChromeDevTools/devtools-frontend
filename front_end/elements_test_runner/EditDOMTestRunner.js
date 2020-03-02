@@ -16,7 +16,7 @@ ElementsTestRunner.doAddAttribute = function(testName, dataNodeId, attributeText
     TestRunner.deprecatedRunAfterPendingDispatches(testContinuation);
 
     function testContinuation() {
-      const editorElement = UI.panels.elements._treeOutlines[0]._shadowRoot.getSelection().anchorNode.parentElement;
+      const editorElement = ElementsTestRunner.firstElementsTreeOutline()._shadowRoot.getSelection().anchorNode.parentElement;
       editorElement.textContent = attributeText;
       editorElement.dispatchEvent(TestRunner.createKeyEvent('Enter'));
       TestRunner.addSniffer(Elements.ElementsTreeOutline.prototype, '_updateModifiedNodes', done);

@@ -368,7 +368,7 @@ ElementsTestRunner.selectNodeAndWaitForStylesWithComputed = function(idValue, ca
 };
 
 ElementsTestRunner.firstElementsTreeOutline = function() {
-  return UI.panels.elements._treeOutlines[0];
+  return UI.panels.elements._treeOutlines.values().next().value;
 };
 
 ElementsTestRunner.filterMatchedStyles = function(text) {

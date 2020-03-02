@@ -30,7 +30,10 @@ template("ts_library") {
                              "deps",
                            ])
 
-    inputs = [ "//$devtools_location/tsconfig.json" ]
+    inputs = [
+      "//$devtools_location/tsconfig.json",
+      "//$devtools_location/node_modules/typescript/lib/tsc.js",
+    ]
 
     args = [
       "--tsconfig_output_location",

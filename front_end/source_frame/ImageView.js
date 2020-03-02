@@ -133,7 +133,7 @@ export class ImageView extends UI.View.SimpleView {
 
     contextMenu.clipboardSection().appendItem(
         Common.UIString.UIString('Open image in new tab'), this._openInNewTab.bind(this));
-    contextMenu.clipboardSection().appendItem(Common.UIString.UIString('Save\u2026'), this._saveImage.bind(this));
+    contextMenu.clipboardSection().appendItem(Common.UIString.UIString('Save…'), this._saveImage.bind(this));
     contextMenu.show();
   }
 

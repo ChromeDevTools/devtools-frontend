@@ -518,7 +518,7 @@ export class Linkifier {
    * @param {string} string
    */
   static _appendHiddenText(link, string) {
-    const ellipsisNode = link.createChild('span', 'devtools-link-ellipsis').createTextChild('\u2026');
+    const ellipsisNode = link.createChild('span', 'devtools-link-ellipsis').createTextChild('…');
     ellipsisNode[_untruncatedNodeTextSymbol] = string;
   }
 

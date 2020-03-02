@@ -73,7 +73,7 @@ export class GraphView extends Common.Object {
   addParam(data) {
     const node = this.getNodeById(data.nodeId);
     if (!node) {
-      console.error(`AudioNode should be added before AudioParam`);
+      console.error('AudioNode should be added before AudioParam');
       return;
     }
     node.addParamPort(data.paramId, data.paramType);

@@ -295,7 +295,7 @@ export class SnippetsNavigatorView extends NavigatorView {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.headerSection().appendItem(
         Common.UIString.UIString('Run'), () => Snippets.ScriptSnippetFileSystem.evaluateScriptSnippet(uiSourceCode));
-    contextMenu.editSection().appendItem(Common.UIString.UIString('Rename\u2026'), () => this.rename(node, false));
+    contextMenu.editSection().appendItem(Common.UIString.UIString('Rename…'), () => this.rename(node, false));
     contextMenu.editSection().appendItem(
         Common.UIString.UIString('Remove'), () => uiSourceCode.project().deleteFile(uiSourceCode));
     contextMenu.saveSection().appendItem(

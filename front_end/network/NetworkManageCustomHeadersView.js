@@ -32,7 +32,7 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox {
     this._list.setEmptyPlaceholder(placeholder);
     this._list.show(this.contentElement);
     this.contentElement.appendChild(UI.UIUtils.createTextButton(
-        Common.UIString.UIString('Add custom header\u2026'), this._addButtonClicked.bind(this), 'add-button'));
+        Common.UIString.UIString('Add custom header…'), this._addButtonClicked.bind(this), 'add-button'));
 
     /** @type {!Map.<string, !{title: string, editable: boolean}>} */
     this._columnConfigs = new Map();

@@ -77,7 +77,7 @@ export class SensorsView extends UI.Widget.VBox {
     fillCustomSettings();
 
     // Other location
-    const customLocationOption = {title: Common.UIString.UIString('Other\u2026'), location: NonPresetOptions.Custom};
+    const customLocationOption = {title: Common.UIString.UIString('Other…'), location: NonPresetOptions.Custom};
     this._locationSelectElement.appendChild(new Option(customLocationOption.title, customLocationOption.location));
 
     // Error location.

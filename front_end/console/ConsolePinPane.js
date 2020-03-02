@@ -269,7 +269,7 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
       this._pinPreview.removeChildren();
       if (result && SDK.RuntimeModel.RuntimeModel.isSideEffectFailure(result)) {
         const sideEffectLabel = this._pinPreview.createChild('span', 'object-value-calculate-value-button');
-        sideEffectLabel.textContent = `(...)`;
+        sideEffectLabel.textContent = '(…)';
         sideEffectLabel.title = ls`Evaluate, allowing side effects`;
       } else if (previewText) {
         this._pinPreview.appendChild(preview);

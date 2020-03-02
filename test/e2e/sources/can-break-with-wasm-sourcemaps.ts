@@ -21,6 +21,6 @@ describe('The Sources Tab', async () => {
     await addBreakpointForLine(frontend, 5);
 
     const scriptLocation = await retrieveTopCallFrameScriptLocation('main();', target);
-    assert.deepEqual(scriptLocation, `with-sourcemap.ll:5`);
+    assert.deepEqual(scriptLocation, 'with-sourcemap.ll:5');
   });
 });

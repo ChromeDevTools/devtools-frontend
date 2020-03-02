@@ -680,7 +680,7 @@ export class NetworkLogView extends UI.Widget.VBox {
 
     if (this._recording) {
       const recordingText = hintText.createChild('span');
-      recordingText.textContent = Common.UIString.UIString('Recording network activity\u2026');
+      recordingText.textContent = Common.UIString.UIString('Recording network activity…');
       if (reloadShortcutNode) {
         hintText.createChild('br');
         hintText.appendChild(

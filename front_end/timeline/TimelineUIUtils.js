@@ -510,7 +510,7 @@ export class TimelineUIUtils {
         const width = TimelineUIUtils.quadWidth(eventData.clip);
         const height = TimelineUIUtils.quadHeight(eventData.clip);
         if (width && height) {
-          detailsText = Common.UIString.UIString('%d\xa0\u00d7\xa0%d', width, height);
+          detailsText = Common.UIString.UIString('%d\xA0×\xA0%d', width, height);
         }
         break;
       }
@@ -519,9 +519,9 @@ export class TimelineUIUtils {
         const endLine = event.args['endData'] && event.args['endData']['endLine'];
         const url = Bindings.ResourceUtils.displayNameForURL(event.args['beginData']['url']);
         if (endLine >= 0) {
-          detailsText = Common.UIString.UIString('%s [%s\u2026%s]', url, startLine + 1, endLine + 1);
+          detailsText = Common.UIString.UIString('%s [%s…%s]', url, startLine + 1, endLine + 1);
         } else {
-          detailsText = Common.UIString.UIString('%s [%s\u2026]', url, startLine + 1);
+          detailsText = Common.UIString.UIString('%s [%s…]', url, startLine + 1);
         }
         break;
       }
@@ -2501,7 +2501,7 @@ export class TimelineDetailsContentHelper {
     }
     locationContent.appendChild(link);
     locationContent.createTextChild(
-        Platform.StringUtilities.sprintf(' [%s\u2026%s]', startLine + 1, endLine + 1 || ''));
+        Platform.StringUtilities.sprintf(' [%s…%s]', startLine + 1, endLine + 1 || ''));
     this.appendElementRow(title, locationContent);
   }
 

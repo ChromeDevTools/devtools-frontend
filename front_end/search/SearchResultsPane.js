@@ -208,7 +208,7 @@ export class SearchResultsTreeElement extends UI.TreeOutline.TreeElement {
     if (trimBy) {
       matchRanges =
           matchRanges.map(range => new TextUtils.TextRange.SourceRange(range.offset - trimBy + 1, range.length));
-      lineContent = '\u2026' + lineContent;
+      lineContent = '…' + lineContent;
     }
     const contentSpan = createElement('span');
     contentSpan.className = 'search-match-content';

@@ -8,7 +8,7 @@ import * as puppeteer from 'puppeteer';
 
 import {$, click, getBrowserAndPages, resetPages, resourcesPath, waitFor, debuggerStatement} from '../../shared/helper.js';
 
-const WEB_SQL_SELECTOR = `[aria-label="Web SQL"]`;
+const WEB_SQL_SELECTOR = '[aria-label="Web SQL"]';
 const DATABASES_SELECTOR = `${WEB_SQL_SELECTOR} + ol`;
 
 async function navigateToApplicationTab(target: puppeteer.Page, testName: string) {

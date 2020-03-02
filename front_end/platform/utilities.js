@@ -120,7 +120,7 @@ String.prototype.trimMiddle = function(maxLength) {
   if (leftHalf > 0 && this.codePointAt(leftHalf - 1) >= 0x10000) {
     --leftHalf;
   }
-  return this.substr(0, leftHalf) + '\u2026' + this.substr(this.length - rightHalf, rightHalf);
+  return this.substr(0, leftHalf) + '…' + this.substr(this.length - rightHalf, rightHalf);
 };
 
 /**
@@ -131,7 +131,7 @@ String.prototype.trimEndWithMaxLength = function(maxLength) {
   if (this.length <= maxLength) {
     return String(this);
   }
-  return this.substr(0, maxLength - 1) + '\u2026';
+  return this.substr(0, maxLength - 1) + '…';
 };
 
 /**

@@ -9,7 +9,7 @@ import * as puppeteer from 'puppeteer';
 import {click, getBrowserAndPages, resetPages, waitFor} from '../../shared/helper.js';
 import {addBreakpointForLine, openFileInSourcesPanel, retrieveTopCallFrameScriptLocation} from './sources-helpers.js';
 
-const PRETTY_PRINT_BUTTON = `[aria-label="Pretty print minified-sourcecode.js"]`;
+const PRETTY_PRINT_BUTTON = '[aria-label="Pretty print minified-sourcecode.js"]';
 
 function retrieveCodeMirrorEditorContent() {
   return document.querySelector('.CodeMirror-code')!.textContent;
@@ -39,19 +39,19 @@ describe('The Sources Tab', async () => {
     await prettyPrintMinifiedFile(frontend);
 
     const expectedLines = [
-      `// clang-format off`,
-      `const notFormatted = {`,
-      `    something: 'not-formatted'`,
-      `};`,
-      `console.log('Test for correct line number');`,
-      `function notFormattedFunction() {`,
-      `    console.log('second log');`,
-      `    return {`,
-      `        field: 2 + 4`,
-      `    }`,
-      `}`,
-      `;notFormattedFunction();`,
-      ​`\u200B`,
+      '// clang-format off',
+      'const notFormatted = {',
+      '    something: \'not-formatted\'',
+      '};',
+      'console.log(\'Test for correct line number\');',
+      'function notFormattedFunction() {',
+      '    console.log(\'second log\');',
+      '    return {',
+      '        field: 2 + 4',
+      '    }',
+      '}',
+      ';notFormattedFunction();',
+      ​'\u200B',
     ];
     let expectedTextContent = '';
 
@@ -83,12 +83,12 @@ describe('The Sources Tab', async () => {
 
     assert.deepEqual(messageLinks, [
       {
-        message: `Test for correct line number`,
-        lineNumber: `minified-sourcecode.js:formatted:5 `,
+        message: 'Test for correct line number',
+        lineNumber: 'minified-sourcecode.js:formatted:5 ',
       },
       {
-        message: `second log`,
-        lineNumber: `minified-sourcecode.js:formatted:7 `,
+        message: 'second log',
+        lineNumber: 'minified-sourcecode.js:formatted:7 ',
       },
     ]);
   });
@@ -101,7 +101,7 @@ describe('The Sources Tab', async () => {
     await addBreakpointForLine(frontend, 7);
 
     const scriptLocation = await retrieveTopCallFrameScriptLocation('notFormattedFunction();', target);
-    assert.deepEqual(scriptLocation, `minified-source…js:formatted:7`);
+    assert.deepEqual(scriptLocation, 'minified-source…js:formatted:7');
   });
 
   it('can add breakpoint for unformatted file', async () => {
@@ -111,7 +111,7 @@ describe('The Sources Tab', async () => {
     await addBreakpointForLine(frontend, 2);
 
     const scriptLocation = await retrieveTopCallFrameScriptLocation('notFormattedFunction();', target);
-    assert.deepEqual(scriptLocation, `minified-sourcecode.js:3`);
+    assert.deepEqual(scriptLocation, 'minified-sourcecode.js:3');
   });
 
   it('can add breakpoint on minified source and then break correctly on formatted source', async () => {
@@ -122,6 +122,6 @@ describe('The Sources Tab', async () => {
     await prettyPrintMinifiedFile(frontend);
 
     const scriptLocation = await retrieveTopCallFrameScriptLocation('notFormattedFunction();', target);
-    assert.deepEqual(scriptLocation, `minified-source…js:formatted:7`);
+    assert.deepEqual(scriptLocation, 'minified-source…js:formatted:7');
   });
 });

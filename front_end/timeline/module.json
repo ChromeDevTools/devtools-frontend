@@ -94,7 +94,7 @@
                 "Timeline.TimelinePanel"
             ],
             "className": "Timeline.TimelinePanel.ActionDelegate",
-            "title": "Save profile\u2026",
+            "title": "Save profile…",
             "bindings": [
                 {
                     "platform": "windows,linux",
@@ -114,7 +114,7 @@
                 "Timeline.TimelinePanel"
             ],
             "className": "Timeline.TimelinePanel.ActionDelegate",
-            "title": "Load profile\u2026",
+            "title": "Load profile…",
             "bindings": [
                 {
                     "platform": "windows,linux",

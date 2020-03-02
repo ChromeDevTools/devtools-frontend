@@ -28,7 +28,7 @@ module.exports = {
 
 
     // syntax preferences
-    'quotes': [2, 'single', {'avoidEscape': true, 'allowTemplateLiterals': true}],
+    'quotes': [2, 'single', {'avoidEscape': true, 'allowTemplateLiterals': false}],
     'semi': 2,
     'no-extra-semi': 2,
     'comma-style': [2, 'last'],

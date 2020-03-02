@@ -48,9 +48,9 @@ export class InputTimeline extends UI.Widget.VBox {
     this._panelToolbar.appendSeparator();
 
     // Load / Save
-    this._loadButton = new UI.Toolbar.ToolbarButton(Common.UIString('Load profile\u2026'), 'largeicon-load');
+    this._loadButton = new UI.Toolbar.ToolbarButton(Common.UIString('Load profile…'), 'largeicon-load');
     this._loadButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => this._selectFileToLoad());
-    this._saveButton = new UI.Toolbar.ToolbarButton(Common.UIString('Save profile\u2026'), 'largeicon-download');
+    this._saveButton = new UI.Toolbar.ToolbarButton(Common.UIString('Save profile…'), 'largeicon-download');
     this._saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => this._saveToFile());
     this._panelToolbar.appendSeparator();
     this._panelToolbar.appendToolbarItem(this._loadButton);

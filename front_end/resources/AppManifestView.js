@@ -210,7 +210,7 @@ export class AppManifestView extends UI.Widget.VBox {
         continue;
       }
       const {wrapper, image} = result;
-      const sizes = icon['sizes'] ? icon['sizes'].replace('x', '\xD7') + 'px' : '';
+      const sizes = icon['sizes'] ? icon['sizes'].replace('x', '×') + 'px' : '';
       const title = sizes + '\n' + (icon['type'] || '');
       const field = this._iconsSection.appendFlexedField(title);
       if (!icon.sizes) {
@@ -220,8 +220,8 @@ export class AppManifestView extends UI.Widget.VBox {
       } else {
         const [width, height] = icon.sizes.split('x').map(x => parseInt(x, 10));
         if (image.naturalWidth !== width && image.naturalHeight !== height) {
-          imageErrors.push(ls`Actual size (${image.naturalWidth}\xD7${image.naturalHeight})px of icon ${
-              iconUrl} does not match specified size (${width}\xD7${height}px)`);
+          imageErrors.push(ls`Actual size (${image.naturalWidth}×${image.naturalHeight})px of icon ${
+              iconUrl} does not match specified size (${width}×${height}px)`);
         } else if (image.naturalWidth !== width) {
           imageErrors.push(
               ls

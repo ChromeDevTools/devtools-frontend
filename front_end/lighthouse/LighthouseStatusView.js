@@ -40,7 +40,7 @@ export class StatusView {
     const cancelButton = UI.createTextButton(ls`Cancel`, this._cancel.bind(this));
     const fragment = UI.Fragment.build`
       <div class="lighthouse-view vbox">
-        <h2 $="status-header">Auditing your web page\u2026</h2>
+        <h2 $="status-header">Auditing your web page…</h2>
         <div class="lighthouse-status vbox" $="status-view">
           <div class="lighthouse-progress-wrapper" $="progress-wrapper">
             <div class="lighthouse-progress-bar" $="progress-bar"></div>
@@ -84,7 +84,7 @@ export class StatusView {
    */
   show(dialogRenderElement) {
     this._reset();
-    this.updateStatus(ls`Loading\u2026`);
+    this.updateStatus(ls`Loading…`);
 
     const parsedURL = Common.ParsedURL.fromString(this._inspectedURL);
     const pageHost = parsedURL && parsedURL.host;
@@ -97,7 +97,7 @@ export class StatusView {
    * @param {string=} statusHeader
    */
   _renderStatusHeader(statusHeader) {
-    this._statusHeader.textContent = `${statusHeader}\u2026`;
+    this._statusHeader.textContent = `${statusHeader}…`;
   }
 
   hide() {
@@ -122,7 +122,7 @@ export class StatusView {
     }
 
     if (message.startsWith('Cancel')) {
-      this._commitTextChange(Common.UIString('Cancelling\u2026'));
+      this._commitTextChange(Common.UIString('Cancelling…'));
       clearTimeout(this._scheduledFastFactTimeout);
       return;
     }
@@ -131,7 +131,7 @@ export class StatusView {
     const nextPhaseIndex = StatusPhases.indexOf(nextPhase);
     const currentPhaseIndex = StatusPhases.indexOf(this._currentPhase);
     if (!nextPhase && !this._currentPhase) {
-      this._commitTextChange(Common.UIString('Lighthouse is warming up\u2026'));
+      this._commitTextChange(Common.UIString('Lighthouse is warming up…'));
       clearTimeout(this._scheduledFastFactTimeout);
     } else if (nextPhase && (!this._currentPhase || currentPhaseIndex < nextPhaseIndex)) {
       this._currentPhase = nextPhase;

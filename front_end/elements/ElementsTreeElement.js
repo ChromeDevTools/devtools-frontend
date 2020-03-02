@@ -1592,7 +1592,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         if (this.isExpandable()) {
           if (!this.expanded) {
             const textNodeElement = titleDOM.createChild('span', 'webkit-html-text-node bogus');
-            textNodeElement.textContent = '\u2026';
+            textNodeElement.textContent = '…';
             titleDOM.createTextChild('\u200B');
             this._buildTagDOM(titleDOM, tagName, true, false, updateRecord);
           }

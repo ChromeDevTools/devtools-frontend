@@ -150,7 +150,7 @@ export class DimensionPropertyRenderer extends PropertyRenderer {
     if (this._width === 0 || this._height === 0) {
       this.changeContents(null);
     } else if (needsUpdate) {
-      this.changeContents(`${this._width}\xD7${this._height}`);
+      this.changeContents(`${this._width}×${this._height}`);
     }
   }
 }

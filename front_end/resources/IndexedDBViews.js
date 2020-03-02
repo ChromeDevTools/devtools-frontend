@@ -48,7 +48,7 @@ export class IDBDatabaseView extends UI.Widget.VBox {
     super();
 
     this._model = model;
-    const databaseName = database ? database.databaseId.name : ls`Loading\u2026`;
+    const databaseName = database ? database.databaseId.name : ls`Loading…`;
 
     this._reportView = new UI.ReportView.ReportView(databaseName);
     this._reportView.show(this.contentElement);

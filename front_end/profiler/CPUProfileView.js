@@ -181,7 +181,7 @@ export class CPUProfileType extends ProfileType {
     this.setProfileBeingRecorded(profile);
     self.SDK.targetManager.suspendAllTargets();
     this.addProfile(profile);
-    profile.updateStatus(Common.UIString.UIString('Recording\u2026'));
+    profile.updateStatus(Common.UIString.UIString('Recording…'));
     this._recording = true;
     cpuProfilerModel.startRecording();
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ProfilesCPUProfileTaken);

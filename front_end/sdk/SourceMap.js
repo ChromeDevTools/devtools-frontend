@@ -718,7 +718,7 @@ export class WasmSourceMap {
    */
   findEntry(lineNumber, columnNumber) {
     if (lineNumber !== 0) {
-      console.warn(new Error(`Invalid non-zero line number.`));
+      console.warn(new Error('Invalid non-zero line number.'));
     }
     return this._resolver.resolve(columnNumber);
   }

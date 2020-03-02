@@ -96,7 +96,7 @@ export const releaseNoteText = [
       },
       {
         title: 'View cookie values',
-        subtitle: 'Click a row in the Cookies pane in the Application panel to see the cookie\'s value.',
+        subtitle: 'Click a row in the Cookies pane in the Application panel to see the cookie’s value.',
         link: 'https://developers.google.com/web/updates/2019/10/devtools#cookiepreviews',
       },
       {
@@ -259,14 +259,14 @@ export const releaseNoteText = [
         link: 'https://developers.google.com/web/updates/2019/04/devtools#indexeddb',
       },
       {
-        title: 'View a resource\'s uncompressed size on hover',
-        subtitle: 'Hover over the Size column in the Network panel to view a resource\'s full size.',
+        title: 'View a resource’s uncompressed size on hover',
+        subtitle: 'Hover over the Size column in the Network panel to view a resource’s full size.',
         link: 'https://developers.google.com/web/updates/2019/04/devtools#uncompressed',
       },
       {
         title: 'Inline breakpoints in the Breakpoints pane',
         subtitle:
-            'When you\'ve got multiple breakpoints on a single line of code, the Breakpoints pane now lets you manage each one independently.',
+            'When you’ve got multiple breakpoints on a single line of code, the Breakpoints pane now lets you manage each one independently.',
         link: 'https://developers.google.com/web/updates/2019/04/devtools#inline',
       },
     ],
@@ -456,7 +456,7 @@ export const releaseNoteText = [
       },
       {
         title: 'Argument hints',
-        subtitle: `View a function's expected arguments in the Console.`,
+        subtitle: 'View a function’s expected arguments in the Console.',
         link: 'https://developers.google.com/web/updates/2018/05/devtools#hints',
       },
       {
@@ -645,7 +645,7 @@ export const releaseNoteText = [
       },
       {
         title: 'CSS Grid highlighting',
-        subtitle: 'Hover over an element to see the CSS Grid that\'s affecting it.',
+        subtitle: 'Hover over an element to see the CSS Grid that’s affecting it.',
         link: 'https://developers.google.com/web/updates/2017/08/devtools-release-notes#css-grid-highlighting',
       },
       {
@@ -677,7 +677,7 @@ export const releaseNoteText = [
     highlights: [
       {
         title: 'Mobile device throttling',
-        subtitle: 'Simulate a mobile device\'s CPU and network throttling from Device Mode.',
+        subtitle: 'Simulate a mobile device’s CPU and network throttling from Device Mode.',
         link: 'https://developers.google.com/web/updates/2017/07/devtools-release-notes#throttling',
       },
       {

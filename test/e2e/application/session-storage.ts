@@ -8,7 +8,7 @@ import * as puppeteer from 'puppeteer';
 
 import {$$, click, getBrowserAndPages, resetPages, resourcesPath, waitFor} from '../../shared/helper.js';
 
-const SESSION_STORAGE_SELECTOR = `[aria-label="Session Storage"]`;
+const SESSION_STORAGE_SELECTOR = '[aria-label="Session Storage"]';
 const DOMAIN_SELECTOR = `${SESSION_STORAGE_SELECTOR} + ol > [aria-label="http://localhost:8090"]`;
 
 async function navigateToApplicationTab(target: puppeteer.Page, testName: string) {
@@ -53,7 +53,7 @@ describe('The Application Tab', async () => {
       },
       {
         key: 'secondKey',
-        value: `{"field":"complexValue","primitive":2}`,
+        value: '{"field":"complexValue","primitive":2}',
       },
       {
         key: '',

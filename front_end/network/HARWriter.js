@@ -56,7 +56,7 @@ export class HARWriter {
    */
   static async _harStringForRequests(requests, compositeProgress) {
     const progress = compositeProgress.createSubProgress();
-    progress.setTitle(Common.UIString.UIString('Collecting content\u2026'));
+    progress.setTitle(Common.UIString.UIString('Collecting content…'));
     progress.setTotalWork(requests.length);
 
     const harLog = await SDK.HARLog.HARLog.build(requests);
@@ -119,7 +119,7 @@ export class HARWriter {
    */
   static async _writeToStream(stream, compositeProgress, fileContent) {
     const progress = compositeProgress.createSubProgress();
-    progress.setTitle(Common.UIString.UIString('Writing file\u2026'));
+    progress.setTitle(Common.UIString.UIString('Writing file…'));
     progress.setTotalWork(fileContent.length);
     for (let i = 0; i < fileContent.length && !progress.isCanceled(); i += _chunkSize) {
       const chunk = fileContent.substr(i, _chunkSize);

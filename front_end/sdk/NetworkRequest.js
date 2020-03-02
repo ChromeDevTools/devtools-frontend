@@ -1421,7 +1421,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
         if (this.parsedURL.queryParams) {
           requestHeadersText += `?${this.parsedURL.queryParams}`;
         }
-        requestHeadersText += ` HTTP/1.1\r\n`;
+        requestHeadersText += ' HTTP/1.1\r\n';
 
         for (const {name, value} of this.requestHeaders()) {
           requestHeadersText += `${name}: ${value}\r\n`;

@@ -795,9 +795,9 @@ export class NavigatorView extends UI.Widget.VBox {
     const project = uiSourceCode.project();
     if (project.type() === Workspace.Workspace.projectTypes.FileSystem) {
       contextMenu.editSection().appendItem(
-          Common.UIString.UIString('Rename\u2026'), this._handleContextMenuRename.bind(this, node));
+          Common.UIString.UIString('Rename…'), this._handleContextMenuRename.bind(this, node));
       contextMenu.editSection().appendItem(
-          Common.UIString.UIString('Make a copy\u2026'),
+          Common.UIString.UIString('Make a copy…'),
           this._handleContextMenuCreate.bind(this, project, '', uiSourceCode));
       contextMenu.editSection().appendItem(
           Common.UIString.UIString('Delete'), this._handleContextMenuDelete.bind(this, uiSourceCode));

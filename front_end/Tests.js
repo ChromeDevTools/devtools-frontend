@@ -1168,7 +1168,7 @@
   TestSuite.prototype._overrideMethod = function(receiver, methodName, override) {
     const original = receiver[methodName];
     if (typeof original !== 'function') {
-      this.fail(`TestSuite._overrideMethod: $[methodName] is not a function`);
+      this.fail(`TestSuite._overrideMethod: ${methodName} is not a function`);
       return;
     }
     receiver[methodName] = function() {
@@ -1374,7 +1374,7 @@
 
 
     await inputAgent.invoke_dispatchKeyEvent({type: 'keyDown', key: 'a'});
-    await runtimeAgent.invoke_evaluate({expression: `document.querySelector('iframe').focus()`});
+    await runtimeAgent.invoke_evaluate({expression: "document.querySelector('iframe').focus()"});
     await inputAgent.invoke_dispatchKeyEvent({type: 'keyDown', key: 'a'});
     parentFrameOutput = 'Event type: keydown';
     this.assertEquals(parentFrameOutput, await takeLogs(self.SDK.targetManager.targets()[0]));

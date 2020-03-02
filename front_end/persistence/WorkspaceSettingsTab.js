@@ -37,7 +37,7 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
 
     this._fileSystemsListContainer = this.containerElement.createChild('div', '');
 
-    const addButton = UI.UIUtils.createTextButton(ls`Add folder\u2026`, this._addFileSystemClicked.bind(this));
+    const addButton = UI.UIUtils.createTextButton(ls`Add folder…`, this._addFileSystemClicked.bind(this));
     this.containerElement.appendChild(addButton);
     this.setDefaultFocusedElement(addButton);
 

@@ -69,7 +69,7 @@ export class HeapSnapshotLoader {
    * @return {!JSHeapSnapshot}
    */
   buildSnapshot() {
-    this._progress.updateStatus(ls`Processing snapshot\u2026`);
+    this._progress.updateStatus(ls`Processing snapshot…`);
     const result = new JSHeapSnapshot(this._snapshot, this._progress);
     this._reset();
     return result;
@@ -116,7 +116,7 @@ export class HeapSnapshotLoader {
   }
 
   _parseStringsArray() {
-    this._progress.updateStatus(ls`Parsing strings\u2026`);
+    this._progress.updateStatus(ls`Parsing strings…`);
     const closingBracketIndex = this._json.lastIndexOf(']');
     if (closingBracketIndex === -1) {
       throw new Error('Incomplete JSON');
@@ -189,7 +189,7 @@ export class HeapSnapshotLoader {
       throw new Error('Snapshot token not found');
     }
 
-    this._progress.updateStatus(ls`Loading snapshot info\u2026`);
+    this._progress.updateStatus(ls`Loading snapshot info…`);
     const json = this._json.slice(snapshotTokenIndex + snapshotToken.length + 1);
     this._jsonTokenizer = new TextUtils.TextUtils.BalancedJSONTokenizer(metaJSON => {
       this._json = this._jsonTokenizer.remainder();
@@ -202,16 +202,16 @@ export class HeapSnapshotLoader {
     }
 
     this._snapshot.nodes = await this._parseArray(
-        '"nodes"', ls`Loading nodes\u2026 %d%%`,
+        '"nodes"', ls`Loading nodes… %d%%`,
         this._snapshot.snapshot.meta.node_fields.length * this._snapshot.snapshot.node_count);
 
     this._snapshot.edges = await this._parseArray(
-        '"edges"', ls`Loading edges\u2026 %d%%`,
+        '"edges"', ls`Loading edges… %d%%`,
         this._snapshot.snapshot.meta.edge_fields.length * this._snapshot.snapshot.edge_count);
 
     if (this._snapshot.snapshot.trace_function_count) {
       this._snapshot.trace_function_infos = await this._parseArray(
-          '"trace_function_infos"', ls`Loading allocation traces\u2026 %d%%`,
+          '"trace_function_infos"', ls`Loading allocation traces… %d%%`,
           this._snapshot.snapshot.meta.trace_function_info_fields.length *
               this._snapshot.snapshot.trace_function_count);
 
@@ -224,16 +224,16 @@ export class HeapSnapshotLoader {
     }
 
     if (this._snapshot.snapshot.meta.sample_fields) {
-      this._snapshot.samples = await this._parseArray('"samples"', ls`Loading samples\u2026`);
+      this._snapshot.samples = await this._parseArray('"samples"', ls`Loading samples…`);
     }
 
     if (this._snapshot.snapshot.meta['location_fields']) {
-      this._snapshot.locations = await this._parseArray('"locations"', ls`Loading locations\u2026`);
+      this._snapshot.locations = await this._parseArray('"locations"', ls`Loading locations…`);
     } else {
       this._snapshot.locations = [];
     }
 
-    this._progress.updateStatus(ls`Loading strings\u2026`);
+    this._progress.updateStatus(ls`Loading strings…`);
     const stringsTokenIndex = await this._findToken('"strings"');
     const bracketIndex = await this._findToken('[', stringsTokenIndex);
     this._json = this._json.slice(bracketIndex);

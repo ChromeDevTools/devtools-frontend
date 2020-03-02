@@ -493,14 +493,14 @@ export class WritableProfileHeader extends ProfileHeader {
    */
   _onChunkTransferred(reader) {
     this.updateStatus(
-        Common.UIString.UIString('Loading\u2026 %d%%', Number.bytesToString(this._jsonifiedProfile.length)));
+        Common.UIString.UIString('Loading… %d%%', Number.bytesToString(this._jsonifiedProfile.length)));
   }
 
   /**
    * @param {!Bindings.FileUtils.ChunkedReader} reader
    */
   _onError(reader) {
-    this.updateStatus(Common.UIString.UIString(`File '%s' read error: %s`, reader.fileName(), reader.error().message));
+    this.updateStatus(Common.UIString.UIString('File \'%s\' read error: %s', reader.fileName(), reader.error().message));
   }
 
   /**
@@ -566,7 +566,7 @@ export class WritableProfileHeader extends ProfileHeader {
    * @return {!Promise<?Error>}
    */
   async loadFromFile(file) {
-    this.updateStatus(Common.UIString.UIString('Loading\u2026'), true);
+    this.updateStatus(Common.UIString.UIString('Loading…'), true);
     const fileReader = new Bindings.FileUtils.ChunkedFileReader(file, 10000000, this._onChunkTransferred.bind(this));
     this._jsonifiedProfile = '';
 
@@ -576,7 +576,7 @@ export class WritableProfileHeader extends ProfileHeader {
       return new Error(Common.UIString.UIString('Failed to read file'));
     }
 
-    this.updateStatus(Common.UIString.UIString('Parsing\u2026'), true);
+    this.updateStatus(Common.UIString.UIString('Parsing…'), true);
     let error = null;
     try {
       this._profile = /** @type {!Protocol.Profiler.Profile} */ (JSON.parse(this._jsonifiedProfile));

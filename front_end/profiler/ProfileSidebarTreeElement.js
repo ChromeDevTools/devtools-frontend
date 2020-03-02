@@ -145,10 +145,10 @@ export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     // FIXME: use context menu provider
     contextMenu.headerSection().appendItem(
-        Common.UIString.UIString('Load\u2026'),
+        Common.UIString.UIString('Load…'),
         self.Profiler.ProfilesPanel._fileSelectorElement.click.bind(self.Profiler.ProfilesPanel._fileSelectorElement));
     if (profile.canSaveToFile()) {
-      contextMenu.saveSection().appendItem(Common.UIString.UIString('Save\u2026'), profile.saveToFile.bind(profile));
+      contextMenu.saveSection().appendItem(Common.UIString.UIString('Save…'), profile.saveToFile.bind(profile));
     }
     contextMenu.footerSection().appendItem(Common.UIString.UIString('Delete'), this.ondelete.bind(this));
     contextMenu.show();

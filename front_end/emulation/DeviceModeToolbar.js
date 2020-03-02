@@ -107,7 +107,7 @@ export class DeviceModeToolbar {
     toolbar.appendToolbarItem(this._widthItem);
 
     const xElement = createElementWithClass('div', 'device-mode-x');
-    xElement.textContent = '\u00D7';
+    xElement.textContent = '×';
     this._xItem = this._wrapToolbarItem(xElement);
     toolbar.appendToolbarItem(this._xItem);
 
@@ -411,7 +411,7 @@ export class DeviceModeToolbar {
     appendGroup.call(this, this._standardDevices());
     appendGroup.call(this, this._customDevices());
     contextMenu.footerSection().appendItem(
-        Common.UIString.UIString('Edit\u2026'),
+        Common.UIString.UIString('Edit…'),
         this._emulatedDevicesList.revealCustomSetting.bind(this._emulatedDevicesList), false);
 
     /**

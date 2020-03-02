@@ -81,7 +81,7 @@ export class RemoteObjectPreviewFormatter {
       this._appendObjectPropertiesPreview(propertiesElement, preview);
     }
     if (preview.overflow) {
-      const ellipsisText = propertiesElement.textContent.length > 1 ? ',\xA0\u2026' : '\u2026';
+      const ellipsisText = propertiesElement.textContent.length > 1 ? ',\xA0…' : '…';
       propertiesElement.createChild('span').textContent = ellipsisText;
     }
     propertiesElement.createTextChild(isArrayOrTypedArray ? ']' : '}');
@@ -296,7 +296,7 @@ export class RemoteObjectPreviewFormatter {
     if (type === 'object' && !subtype) {
       let preview = this._abbreviateFullQualifiedClassName(description);
       if (preview === 'Object') {
-        preview = '{\u2026}';
+        preview = '{…}';
       }
       span.textContent = preview;
       span.title = description;

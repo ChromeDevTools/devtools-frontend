@@ -1013,7 +1013,7 @@ export class FlameChart extends UI.Widget.VBox {
     const titleIndices = [];
     const markerIndices = [];
     const textPadding = this._textPadding;
-    const minTextWidth = 2 * textPadding + UI.UIUtils.measureTextWidth(context, '\u2026');
+    const minTextWidth = 2 * textPadding + UI.UIUtils.measureTextWidth(context, '…');
     const minTextWidthDuration = this._chartViewport.pixelToTimeOffset(minTextWidth);
     const minVisibleBarLevel = Math.max(this._visibleLevelOffsets.upperBound(top) - 1, 0);
     this._markerPositions.clear();

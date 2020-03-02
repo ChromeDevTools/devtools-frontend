@@ -246,7 +246,7 @@ export class ChangesView extends UI.Widget.VBox {
         }
         if (lines.length > paddingLines * 2 + 1 && !atEnd) {
           equalRows.push(createRow(
-              Common.UIString.UIString('( \u2026 Skipping %d matching lines \u2026 )', lines.length - paddingLines * 2),
+              Common.UIString.UIString('( … Skipping %d matching lines … )', lines.length - paddingLines * 2),
               RowType.Spacer));
         }
       }

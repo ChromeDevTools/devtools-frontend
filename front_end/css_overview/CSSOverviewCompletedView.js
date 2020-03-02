@@ -637,7 +637,7 @@ export class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode 
         if (link.textContent !== '') {
           cell.appendChild(link);
         } else {
-          cell.textContent = `(unable to link)`;
+          cell.textContent = '(unable to link)';
         }
       } else {
         cell.textContent = '(unable to link to inlined styles)';

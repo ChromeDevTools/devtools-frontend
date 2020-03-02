@@ -564,7 +564,7 @@ export class RemoteObjectImpl extends RemoteObject {
    */
   async setPropertyValue(name, value) {
     if (!this._objectId) {
-      return `Can't set a property of non-object.`;
+      return 'Can’t set a property of non-object.';
     }
 
     const response = await this._runtimeAgent.invoke_evaluate({expression: value, silent: true});
@@ -613,7 +613,7 @@ export class RemoteObjectImpl extends RemoteObject {
    */
   async deleteProperty(name) {
     if (!this._objectId) {
-      return `Can't delete a property of non-object.`;
+      return 'Can’t delete a property of non-object.';
     }
 
     const deletePropertyFunction = 'function(a) { delete this[a]; return !(a in this); }';
@@ -975,7 +975,7 @@ export class LocalJSONObject extends RemoteObject {
     for (let i = 0; i < children.length; ++i) {
       const itemDescription = formatProperty(children[i]);
       if (buffer.length + itemDescription.length > previewChars) {
-        buffer += ',\u2026';
+        buffer += ',…';
         break;
       }
       if (i) {

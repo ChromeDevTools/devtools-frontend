@@ -51,7 +51,7 @@ process.on('uncaughtException', interruptionHandler);
 process.stdin.resume();
 
 if (!testListPath) {
-  throw new Error(`Must specify a list of tests in the "TEST_LIST" environment variable.`);
+  throw new Error('Must specify a list of tests in the "TEST_LIST" environment variable.');
 }
 
 const launchArgs = [`--remote-debugging-port=${envPort}`];

@@ -265,10 +265,10 @@ export class DebuggerPlugin extends Plugin {
             Common.UIString.UIString('Add breakpoint'),
             this._createNewBreakpoint.bind(this, editorLineNumber, '', true));
         contextMenu.debugSection().appendItem(
-            Common.UIString.UIString('Add conditional breakpoint\u2026'),
+            Common.UIString.UIString('Add conditional breakpoint…'),
             this._editBreakpointCondition.bind(this, editorLineNumber, null, null));
         contextMenu.debugSection().appendItem(
-            ls`Add logpoint\u2026`,
+            ls`Add logpoint…`,
             this._editBreakpointCondition.bind(this, editorLineNumber, null, null, true /* preferLogpoint */));
         contextMenu.debugSection().appendItem(
             Common.UIString.UIString('Never pause here'),
@@ -280,7 +280,7 @@ export class DebuggerPlugin extends Plugin {
         contextMenu.debugSection().appendItem(removeTitle, () => breakpoints.map(breakpoint => breakpoint.remove()));
         if (hasOneBreakpoint) {
           contextMenu.debugSection().appendItem(
-              Common.UIString.UIString('Edit breakpoint\u2026'),
+              Common.UIString.UIString('Edit breakpoint…'),
               this._editBreakpointCondition.bind(this, editorLineNumber, breakpoints[0], null));
         }
         const hasEnabled = breakpoints.some(breakpoint => breakpoint.enabled());
@@ -339,7 +339,7 @@ export class DebuggerPlugin extends Plugin {
           !self.Bindings.blackboxManager.isBlackboxedUISourceCode(this._uiSourceCode)) {
         if (this._scriptFileForDebuggerModel.size) {
           const scriptFile = this._scriptFileForDebuggerModel.values().next().value;
-          const addSourceMapURLLabel = Common.UIString.UIString('Add source map\u2026');
+          const addSourceMapURLLabel = Common.UIString.UIString('Add source map…');
           contextMenu.debugSection().appendItem(addSourceMapURLLabel, addSourceMapURL.bind(null, scriptFile));
         }
       }
@@ -1343,14 +1343,14 @@ export class DebuggerPlugin extends Plugin {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     if (decoration.breakpoint) {
       contextMenu.debugSection().appendItem(
-          Common.UIString.UIString('Edit breakpoint\u2026'),
+          Common.UIString.UIString('Edit breakpoint…'),
           this._editBreakpointCondition.bind(this, editorLocation.lineNumber, decoration.breakpoint, null));
     } else {
       contextMenu.debugSection().appendItem(
-          Common.UIString.UIString('Add conditional breakpoint\u2026'),
+          Common.UIString.UIString('Add conditional breakpoint…'),
           this._editBreakpointCondition.bind(this, editorLocation.lineNumber, null, editorLocation));
       contextMenu.debugSection().appendItem(
-          ls`Add logpoint\u2026`,
+          ls`Add logpoint…`,
           this._editBreakpointCondition.bind(
               this, editorLocation.lineNumber, null, editorLocation, true /* preferLogpoint */));
       contextMenu.debugSection().appendItem(

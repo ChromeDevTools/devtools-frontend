@@ -297,7 +297,7 @@ export class SourceFrameImpl extends UI.View.SimpleView {
       this._contentRequested = true;
 
       const progressIndicator = new UI.ProgressIndicator.ProgressIndicator();
-      progressIndicator.setTitle(Common.UIString.UIString(`Loading…`));
+      progressIndicator.setTitle(Common.UIString.UIString('Loading…'));
       progressIndicator.setTotalWork(1);
       this._progressToolbarItem.element.appendChild(progressIndicator.element);
 

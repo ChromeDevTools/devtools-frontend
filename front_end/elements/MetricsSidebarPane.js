@@ -284,7 +284,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
             'dblclick', this.startEditing.bind(this, heightElement, 'height', 'height', style), false);
 
         boxElement.appendChild(widthElement);
-        boxElement.createTextChild(' \u00D7 ');
+        boxElement.createTextChild(' × ');
         boxElement.appendChild(heightElement);
       } else {
         const suffix = (name === 'border' ? '-width' : '');

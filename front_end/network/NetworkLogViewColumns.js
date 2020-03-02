@@ -491,7 +491,7 @@ export class NetworkLogViewColumns {
     }
 
     responseSubMenu.footerSection().appendItem(
-        Common.UIString.UIString('Manage Header Columns\u2026'), this._manageCustomHeaderDialog.bind(this));
+        Common.UIString.UIString('Manage Header Columns…'), this._manageCustomHeaderDialog.bind(this));
 
     const waterfallSortIds = WaterfallSortIds;
     const waterfallSubMenu = contextMenu.footerSection().appendSubMenuItem(Common.UIString.UIString('Waterfall'));

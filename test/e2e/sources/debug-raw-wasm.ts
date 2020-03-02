@@ -70,6 +70,6 @@ describe('Raw-Wasm', async () => {
     assert.equal(codeText, '    call $import0');
 
     // Resume the evaluation
-    await click(`[aria-label="Pause script execution"]`);
+    await click('[aria-label="Pause script execution"]');
   });
 });

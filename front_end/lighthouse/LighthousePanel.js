@@ -80,7 +80,7 @@ export class LighthousePanel extends UI.Panel {
 
     const toolbar = new UI.Toolbar('', lighthouseToolbarContainer);
 
-    this._newButton = new UI.ToolbarButton(Common.UIString.UIString('Perform an audit\u2026'), 'largeicon-add');
+    this._newButton = new UI.ToolbarButton(Common.UIString.UIString('Perform an audit…'), 'largeicon-add');
     toolbar.appendToolbarItem(this._newButton);
     this._newButton.addEventListener(UI.ToolbarButton.Events.Click, this._renderStartView.bind(this));
 

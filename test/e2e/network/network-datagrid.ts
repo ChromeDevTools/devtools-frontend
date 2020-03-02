@@ -25,7 +25,7 @@ describe('The Network Tab', async () => {
     await navigateToNetworkTab(target, 'resources-from-cache.html');
 
     // Click the label next to the checkbox input element
-    await click(`[aria-label="Disable cache"] + label`);
+    await click('[aria-label="Disable cache"] + label');
 
     const checkbox = await $('[aria-label="Disable cache"]');
     const checked = await checkbox.evaluate(box => box.checked);
@@ -41,8 +41,8 @@ describe('The Network Tab', async () => {
     await click('.name-column', {clickOptions: {button: 'right'}});
 
     // Enable the Last-Modified column in the network datagrid
-    await click(`[aria-label="Response Headers"]`);
-    await click(`[aria-label="Last-Modified, unchecked"]`);
+    await click('[aria-label="Response Headers"]');
+    await click('[aria-label="Last-Modified, unchecked"]');
 
     // Wait for the column to show up and populate its values
     await frontend.waitForFunction(() => {
@@ -54,9 +54,9 @@ describe('The Network Tab', async () => {
     });
 
     assert.deepEqual(lastModifiedColumnValues, [
-      `Last-Modified`,
-      ``,
-      `Sun, 26 Sep 2010 22:04:35 GMT`,
+      'Last-Modified',
+      '',
+      'Sun, 26 Sep 2010 22:04:35 GMT',
     ]);
   });
 
@@ -73,9 +73,9 @@ describe('The Network Tab', async () => {
     // Open the HTML file that was loaded
     await click('td.name-column');
     // Wait for the detailed network information pane to show up
-    await waitFor(`[aria-label="Response"]`);
+    await waitFor('[aria-label="Response"]');
     // Open the raw response HTML
-    await click(`[aria-label="Response"]`);
+    await click('[aria-label="Response"]');
     // Wait for the raw response editor to show up
     await waitFor('.CodeMirror-code');
 
@@ -84,7 +84,7 @@ describe('The Network Tab', async () => {
 
     assert.equal(
         htmlRawResponse,
-        `1<html><body>The following word is written using cyrillic letters and should look like "SUCCESS": SU\u0421\u0421\u0415SS.</body></html>`);
+        '1<html><body>The following word is written using cyrillic letters and should look like "SUCCESS": SU\u0421\u0421\u0415SS.</body></html>');
   });
 
   it('shows correct MimeType when resources came from HTTP cache', async () => {
@@ -98,7 +98,7 @@ describe('The Network Tab', async () => {
     });
 
     // Reload the page without a cache, to force a fresh load of the network resources
-    await click(`[aria-label="Disable cache"]`);
+    await click('[aria-label="Disable cache"]');
     await target.reload({waitUntil: 'networkidle2'});
 
     // Request the first two network request responses (excluding header and favicon.ico)
@@ -117,12 +117,12 @@ describe('The Network Tab', async () => {
       computeByteSize(362) + computeByteSize(28),
     ]);
     assert.deepEqual(await obtainNetworkRequestMimeTypes(), [
-      `document`,
-      `script`,
+      'document',
+      'script',
     ]);
 
     // Allow resources from the cache again and reload the page to load from cache
-    await click(`[aria-label="Disable cache"]`);
+    await click('[aria-label="Disable cache"]');
     await target.reload({waitUntil: 'networkidle2'});
 
     assert.deepEqual(await obtainNetworkRequestSize(), [
@@ -131,8 +131,8 @@ describe('The Network Tab', async () => {
     ]);
 
     assert.deepEqual(await obtainNetworkRequestMimeTypes(), [
-      `document`,
-      `script`,
+      'document',
+      'script',
     ]);
   });
 });

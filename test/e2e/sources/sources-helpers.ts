@@ -62,7 +62,7 @@ export async function retrieveTopCallFrameScriptLocation(script: string, target:
       await (await $('.call-frame-location')).evaluate((location: HTMLElement) => location.textContent);
 
   // Resume the evaluation
-  await click(`[aria-label="Pause script execution"]`);
+  await click('[aria-label="Pause script execution"]');
 
   // Make sure to await the context evaluate before asserting
   // Otherwise the Puppeteer process might crash on a failure assertion,

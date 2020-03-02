@@ -231,7 +231,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       if (defaultName) {
         abbreviation = defaultName + '()';
       } else if (text.length > maxArrowFunctionCharacterLength) {
-        abbreviation = text.substring(0, firstArrowIndex + 2) + ' {\u2026}';
+        abbreviation = text.substring(0, firstArrowIndex + 2) + ' {…}';
       }
       addElements('', text, abbreviation);
     } else {
@@ -1178,7 +1178,7 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
    * @param {!Components.Linkifier.Linkifier=} linkifier
    */
   constructor(object, fromIndex, toIndex, propertyCount, linkifier) {
-    super(Platform.StringUtilities.sprintf('[%d \u2026 %d]', fromIndex, toIndex), true);
+    super(Platform.StringUtilities.sprintf('[%d … %d]', fromIndex, toIndex), true);
     this.toggleOnClick = true;
     this._fromIndex = fromIndex;
     this._toIndex = toIndex;

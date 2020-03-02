@@ -97,7 +97,7 @@ export class TimelineHistoryManager {
     }
     const index = this._recordings.indexOf(model);
     if (index < 0) {
-      console.assert(false, `selected recording not found`);
+      console.assert(false, 'selected recording not found');
       return null;
     }
     this._setCurrentModel(model);

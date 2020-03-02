@@ -1204,7 +1204,7 @@ export class HeapSnapshotProfileType extends ProfileType {
     let profile = new HeapProfileHeader(heapProfilerModel, this);
     this.setProfileBeingRecorded(profile);
     this.addProfile(profile);
-    profile.updateStatus(Common.UIString.UIString('Snapshotting\u2026'));
+    profile.updateStatus(Common.UIString.UIString('Snapshotting…'));
 
     await heapProfilerModel.takeHeapSnapshot(true, this._treatGlobalObjectsAsRoots.get());
     // ------------ ASYNC ------------
@@ -1411,13 +1411,13 @@ export class TrackingHeapSnapshotProfileType extends HeapSnapshotProfileType {
     this.profileBeingRecorded()._profileSamples = this._profileSamples;
     this._recording = true;
     this.addProfile(/** @type {!ProfileHeader} */ (this.profileBeingRecorded()));
-    this.profileBeingRecorded().updateStatus(Common.UIString.UIString('Recording\u2026'));
+    this.profileBeingRecorded().updateStatus(Common.UIString.UIString('Recording…'));
     this.dispatchEventToListeners(TrackingHeapSnapshotProfileType.TrackingStarted);
     return heapProfilerModel;
   }
 
   async _stopRecordingProfile() {
-    this.profileBeingRecorded().updateStatus(Common.UIString.UIString('Snapshotting\u2026'));
+    this.profileBeingRecorded().updateStatus(Common.UIString.UIString('Snapshotting…'));
     const stopPromise = this.profileBeingRecorded().heapProfilerModel().stopTrackingHeapObjects(true);
     this._recording = false;
     this.dispatchEventToListeners(TrackingHeapSnapshotProfileType.TrackingStopped);
@@ -1562,7 +1562,7 @@ export class HeapProfileHeader extends ProfileHeader {
   _prepareToLoad() {
     console.assert(!this._receiver, 'Already loading');
     this._setupWorker();
-    this.updateStatus(Common.UIString.UIString('Loading\u2026'), true);
+    this.updateStatus(Common.UIString.UIString('Loading…'), true);
   }
 
   _finishLoad() {
@@ -1733,7 +1733,7 @@ export class HeapProfileHeader extends ProfileHeader {
    */
   _updateSaveProgress(value, total) {
     const percentValue = ((total && value / total) * 100).toFixed(0);
-    this.updateStatus(Common.UIString.UIString('Saving\u2026 %d%%', percentValue));
+    this.updateStatus(Common.UIString.UIString('Saving… %d%%', percentValue));
   }
 
   /**
@@ -1742,7 +1742,7 @@ export class HeapProfileHeader extends ProfileHeader {
    * @return {!Promise<?FileError>}
    */
   async loadFromFile(file) {
-    this.updateStatus(Common.UIString.UIString('Loading\u2026'), true);
+    this.updateStatus(Common.UIString.UIString('Loading…'), true);
     this._setupWorker();
     const reader = new Bindings.FileUtils.ChunkedFileReader(file, 10000000);
     const success = await reader.read(/** @type {!Common.StringOutputStream.OutputStream} */ (this._receiver));

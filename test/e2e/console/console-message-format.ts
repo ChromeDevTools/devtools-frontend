@@ -43,15 +43,15 @@ describe('The Console Tab', async () => {
     const messages = await obtainConsoleMessages('structured-objects');
 
     assert.deepEqual(messages, [
-      `{}`,
-      `ƒ Object() { [native code] }`,
-      `{constructor: ƒ, __defineGetter__: ƒ, __defineSetter__: ƒ, hasOwnProperty: ƒ, __lookupGetter__: ƒ,\xA0…}`,
-      `{foo: "foo"}`,
-      `{bar: "bar"}`,
-      `["test"]`,
-      `(10)\xA0["test", "test2", empty × 2, "test4", empty × 5, foo: {…}]`,
-      `(200)\xA0[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …]`,
-      `(2)\xA0[1, Array(2)]`,
+      '{}',
+      'ƒ Object() { [native code] }',
+      '{constructor: ƒ, __defineGetter__: ƒ, __defineSetter__: ƒ, hasOwnProperty: ƒ, __lookupGetter__: ƒ,\xA0…}',
+      '{foo: "foo"}',
+      '{bar: "bar"}',
+      '["test"]',
+      '(10)\xA0["test", "test2", empty × 2, "test4", empty × 5, foo: {…}]',
+      '(200)\xA0[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …]',
+      '(2)\xA0[1, Array(2)]',
     ]);
   });
 
@@ -59,15 +59,15 @@ describe('The Console Tab', async () => {
     const messages = await obtainConsoleMessages('escaping');
 
     assert.deepEqual(messages, [
-      `Test for zero "0" in formatter`,
-      `% self-escape1 dummy`,
-      `%s self-escape2 dummy`,
-      `%ss self-escape3 dummy`,
-      `%sdummy%s self-escape4`,
-      `%%% self-escape5 dummy`,
-      `%dummy self-escape6`,
-      `(2)\xA0["test", "test2"]`,
-      `Array(2)`,
+      'Test for zero "0" in formatter',
+      '% self-escape1 dummy',
+      '%s self-escape2 dummy',
+      '%ss self-escape3 dummy',
+      '%sdummy%s self-escape4',
+      '%%% self-escape5 dummy',
+      '%dummy self-escape6',
+      '(2)\xA0["test", "test2"]',
+      'Array(2)',
     ]);
   });
 
@@ -75,8 +75,8 @@ describe('The Console Tab', async () => {
     const messages = await obtainConsoleMessages('built-ins');
 
     assert.deepEqual(messages, [
-      `/^url\\(\\s*(?:(?:\"(?:[^\\\\\\\"]|(?:\\\\[\\da-f]{1,6}\\s?|\\.))*\"|'(?:[^\\\\\\']|(?:\\\\[\\da-f]{1,6}\\s?|\\.))*')|(?:[!#$%&*-~\\w]|(?:\\\\[\\da-f]{1,6}\\s?|\\.))*)\\s*\\)/i`,
-      `/foo\\\\bar\\sbaz/i`,
+      '/^url\\(\\s*(?:(?:\"(?:[^\\\\\\\"]|(?:\\\\[\\da-f]{1,6}\\s?|\\.))*\"|\'(?:[^\\\\\\\']|(?:\\\\[\\da-f]{1,6}\\s?|\\.))*\')|(?:[!#$%&*-~\\w]|(?:\\\\[\\da-f]{1,6}\\s?|\\.))*)\\s*\\)/i',
+      '/foo\\\\bar\\sbaz/i',
       `Error
     at built-ins.html:16`,
       `Error: My error message
@@ -84,33 +84,33 @@ describe('The Console Tab', async () => {
       `Error: my multiline
 error message
     at built-ins.html:22`,
-      `ƒ () { return 1; }`,
+      'ƒ () { return 1; }',
       `ƒ () {
         return 2;
       }`,
       `ƒ ( /**/ foo/**/, /*/**/bar,
       /**/baz) {}`,
-      `Arguments(2)\xA0[1, "2", callee: (...), Symbol(Symbol.iterator): ƒ]`,
-      `Uint8Array\xA0[3]`,
-      `Uint8Array(400)\xA0[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …]`,
-      `Uint8Array(400000000)\xA0[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …]`,
-      `Uint16Array(3)\xA0[1, 2, 3]`,
-      `Promise\xA0{<rejected>: -0}`,
-      `Promise\xA0{<resolved>: 1}`,
-      `Promise\xA0{<pending>}`,
-      `Symbol()`,
-      `Symbol(a)`,
-      `{a: Symbol(), Symbol(a): 2}`,
-      `Map(1)\xA0{{…} => {…}}`,
-      `WeakMap\xA0{{…} => {…}}`,
-      `Set(1)\xA0{{…}}`,
-      `WeakSet\xA0{{…}}`,
-      `Map(1)\xA0{Map(1) => WeakMap}`,
-      `Map(1)\xA0{Map(0) => WeakMap}`,
-      `Set(1)\xA0{WeakSet}`,
-      `Set(1)\xA0{WeakSet}`,
-      `Map(6)\xA0{" from str " => " to str ", undefined => undefined, null => null, 42 => 42, {…} => {…}, …}`,
-      `genFunction\xA0{<suspended>}`,
+      'Arguments(2)\xA0[1, "2", callee: (...), Symbol(Symbol.iterator): ƒ]',
+      'Uint8Array\xA0[3]',
+      'Uint8Array(400)\xA0[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …]',
+      'Uint8Array(400000000)\xA0[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …]',
+      'Uint16Array(3)\xA0[1, 2, 3]',
+      'Promise\xA0{<rejected>: -0}',
+      'Promise\xA0{<resolved>: 1}',
+      'Promise\xA0{<pending>}',
+      'Symbol()',
+      'Symbol(a)',
+      '{a: Symbol(), Symbol(a): 2}',
+      'Map(1)\xA0{{…} => {…}}',
+      'WeakMap\xA0{{…} => {…}}',
+      'Set(1)\xA0{{…}}',
+      'WeakSet\xA0{{…}}',
+      'Map(1)\xA0{Map(1) => WeakMap}',
+      'Map(1)\xA0{Map(0) => WeakMap}',
+      'Set(1)\xA0{WeakSet}',
+      'Set(1)\xA0{WeakSet}',
+      'Map(6)\xA0{" from str " => " to str ", undefined => undefined, null => null, 42 => 42, {…} => {…}, …}',
+      'genFunction\xA0{<suspended>}',
     ]);
   });
 
@@ -118,21 +118,21 @@ error message
     const messages = await obtainConsoleMessages('primitives');
 
     assert.deepEqual(messages, [
-      `null`,
-      `undefined`,
-      `NaN`,
-      `{}`,
-      `[ƒ]`,
-      `Infinity`,
-      `-Infinity`,
-      `Number\xA0{42}`,
-      `String\xA0{"abc"}`,
-      `0.12`,
-      `-0`,
-      `test`,
-      `https://chromium.org`,
-      `Number\xA0{42, 1: "foo", a: "bar"}`,
-      `String\xA0{"abc", 3: "foo", 01: "foo", a: "bar"}`,
+      'null',
+      'undefined',
+      'NaN',
+      '{}',
+      '[ƒ]',
+      'Infinity',
+      '-Infinity',
+      'Number\xA0{42}',
+      'String\xA0{"abc"}',
+      '0.12',
+      '-0',
+      'test',
+      'https://chromium.org',
+      'Number\xA0{42, 1: "foo", a: "bar"}',
+      'String\xA0{"abc", 3: "foo", 01: "foo", a: "bar"}',
     ]);
   });
 
@@ -140,19 +140,19 @@ error message
     const messages = await obtainConsoleMessages('prototypes');
 
     assert.deepEqual(messages, [
-      `{enumerableProp: 4, __underscoreEnumerableProp__: 5, __underscoreNonEnumerableProp: 2, abc: 3, getFoo: ƒ,\xA0…}`,
-      `{longSubNamespace: {…}}`,
-      `namespace.longSubNamespace.x.className\xA0{}`,
-      `{}`,
-      `ArrayLike(5)\xA0[empty × 5]`,
-      `ArrayLike(4294967295)\xA0[empty × 4294967295]`,
-      `ArrayLike\xA0{length: -5}`,
-      `ArrayLike\xA0{length: 5.6}`,
-      `ArrayLike\xA0{length: NaN}`,
-      `ArrayLike\xA0{length: Infinity}`,
-      `ArrayLike\xA0{length: -0}`,
-      `ArrayLike\xA0{length: 4294967296}`,
-      `NonArrayWithLength\xA0{keys: Array(0)}`,
+      '{enumerableProp: 4, __underscoreEnumerableProp__: 5, __underscoreNonEnumerableProp: 2, abc: 3, getFoo: ƒ,\xA0…}',
+      '{longSubNamespace: {…}}',
+      'namespace.longSubNamespace.x.className\xA0{}',
+      '{}',
+      'ArrayLike(5)\xA0[empty × 5]',
+      'ArrayLike(4294967295)\xA0[empty × 4294967295]',
+      'ArrayLike\xA0{length: -5}',
+      'ArrayLike\xA0{length: 5.6}',
+      'ArrayLike\xA0{length: NaN}',
+      'ArrayLike\xA0{length: Infinity}',
+      'ArrayLike\xA0{length: -0}',
+      'ArrayLike\xA0{length: 4294967296}',
+      'NonArrayWithLength\xA0{keys: Array(0)}',
     ]);
   });
 
@@ -160,19 +160,19 @@ error message
     const messages = await obtainConsoleMessages('dom-interactions');
 
     assert.deepEqual(messages, [
-      ``,
-      ``,
-      ``,
-      ``,
-      `#text`,
-      `HTMLCollection\xA0[select, sel: select]`,
-      `HTMLCollection(3)\xA0[meta, meta, title, viewport: meta]`,
-      `HTMLOptionsCollection(2)\xA0[option, option, selectedIndex: 0]`,
-      `HTMLAllCollection(15)\xA0[html, head, meta, meta, title, body, div#first-child.c1.c2.c3, div#p, form, select, option, option, input, input, script, viewport: meta, first-child: div#first-child.c1.c2.c3, p: div#p, sel: select, input: HTMLCollection(2)]`,
-      `HTMLFormControlsCollection(3)\xA0[select, input, input, sel: select, input: RadioNodeList(2)]`,
-      `RadioNodeList(2)\xA0[input, input, value: ""]`,
-      `DOMTokenList(3)\xA0["c1", "c2", "c3", value: "c1 c2 c3"]`,
-      `DOMException: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.`,
+      '',
+      '',
+      '',
+      '',
+      '#text',
+      'HTMLCollection\xA0[select, sel: select]',
+      'HTMLCollection(3)\xA0[meta, meta, title, viewport: meta]',
+      'HTMLOptionsCollection(2)\xA0[option, option, selectedIndex: 0]',
+      'HTMLAllCollection(15)\xA0[html, head, meta, meta, title, body, div#first-child.c1.c2.c3, div#p, form, select, option, option, input, input, script, viewport: meta, first-child: div#first-child.c1.c2.c3, p: div#p, sel: select, input: HTMLCollection(2)]',
+      'HTMLFormControlsCollection(3)\xA0[select, input, input, sel: select, input: RadioNodeList(2)]',
+      'RadioNodeList(2)\xA0[input, input, value: ""]',
+      'DOMTokenList(3)\xA0["c1", "c2", "c3", value: "c1 c2 c3"]',
+      'DOMException: Failed to execute \'removeChild\' on \'Node\': The node to be removed is not a child of this node.',
     ]);
   });
 
@@ -208,8 +208,8 @@ error message
     const messages = await obtainConsoleMessages('document-write');
 
     assert.deepEqual(messages, [
-      `script element`,
-      `document.write from onload`,
+      'script element',
+      'document.write from onload',
     ]);
   });
 
@@ -217,12 +217,12 @@ error message
     const messages = await obtainConsoleMessages('onunhandledrejection', showVerboseMessages);
 
     assert.deepEqual(messages, [
-      `onunhandledrejection1`,
-      `onrejectionhandled1`,
-      `onunhandledrejection2`,
+      'onunhandledrejection1',
+      'onrejectionhandled1',
+      'onunhandledrejection2',
       `Uncaught (in promise) Error: e
     at runSecondPromiseRejection (onunhandledrejection.html:26)`,
-      `onrejectionhandled2`,
+      'onrejectionhandled2',
     ]);
   });
 
@@ -231,9 +231,9 @@ error message
       const messages = await obtainConsoleMessages('navigation/after-removal');
 
       assert.deepEqual(messages, [
-        `A message with first argument string Second argument which should not be discarded`,
-        `2011 "A message with first argument integer"`,
-        `Window\xA0{parent: Window, opener: null, top: Window, length: 0, frames: Window,\xA0…} "A message with first argument window"`,
+        'A message with first argument string Second argument which should not be discarded',
+        '2011 "A message with first argument integer"',
+        'Window\xA0{parent: Window, opener: null, top: Window, length: 0, frames: Window,\xA0…} "A message with first argument window"',
       ]);
     });
 
@@ -241,10 +241,10 @@ error message
       const messages = await obtainConsoleMessages('navigation/after-navigation');
 
       assert.deepEqual(messages, [
-        `A message with first argument string Second argument which should not be discarded`,
-        `2011 "A message with first argument integer"`,
-        `Window\xA0{parent: Window, opener: null, top: Window, length: 0, frames: Window,\xA0…} "A message with first argument window"`,
-        `After iframe navigation.`,
+        'A message with first argument string Second argument which should not be discarded',
+        '2011 "A message with first argument integer"',
+        'Window\xA0{parent: Window, opener: null, top: Window, length: 0, frames: Window,\xA0…} "A message with first argument window"',
+        'After iframe navigation.',
       ]);
     });
   });

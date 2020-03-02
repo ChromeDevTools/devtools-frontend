@@ -68,7 +68,7 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
           options.push(conditions);
         }
         if (i === groups.length - 1) {
-          const option = new Option(ls`Add\u2026`, ls`Add\u2026`);
+          const option = new Option(ls`Add…`, ls`Add…`);
           UI.ARIAUtils.setAccessibleName(option, ls`Add ${group.title}`);
           groupElement.appendChild(option);
           options.push(null);
@@ -244,7 +244,7 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
     for (let i = 0; i < this._cpuThrottlingRates.length; ++i) {
       const rate = this._cpuThrottlingRates[i];
       const title =
-          rate === 1 ? Common.UIString.UIString('No throttling') : Common.UIString.UIString('%d\xD7 slowdown', rate);
+          rate === 1 ? Common.UIString.UIString('No throttling') : Common.UIString.UIString('%d× slowdown', rate);
       const option = control.createOption(title);
       control.addOption(option);
       if (currentRate === rate) {

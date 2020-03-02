@@ -18,7 +18,7 @@ Before proceeding, make sure you know the different [[localization APIs|]] and k
 2. If your string contains variables, consider the following cases:
    1. Directly substitute variables, as how you would normally inject variables into a template literal with `${}`, **only if** your variable satisfies one of the following
 
-      1. If the variable is a number, e.g. `` ls`${renderedWidth} \xd7 ${renderedHeight} pixels` ``
+      1. If the variable is a number, e.g. `` ls`${renderedWidth} × ${renderedHeight} pixels` ``
       2. or if your variable is a string that likely doesn't need to be localized (for example, DOM, or a url),
 
       3. or if it's a string that is already localized somewhere (for example, Console and other tool titles)

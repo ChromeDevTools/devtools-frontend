@@ -176,7 +176,7 @@ export class SearchView extends UI.Widget.VBox {
       this._progressIndicator.done();
     }
     this._progressIndicator = new UI.ProgressIndicator.ProgressIndicator();
-    this._searchMessageElement.textContent = Common.UIString.UIString('Indexing\u2026');
+    this._searchMessageElement.textContent = Common.UIString.UIString('Indexing…');
     this._progressIndicator.show(this._searchProgressPlaceholderElement);
     this._searchScope.performIndexing(
         new Common.Progress.ProgressProxy(this._progressIndicator, this._onIndexingFinished.bind(this)));
@@ -275,10 +275,10 @@ export class SearchView extends UI.Widget.VBox {
   _searchStarted(progressIndicator) {
     this._resetCounters();
     if (!this._searchingView) {
-      this._searchingView = new UI.EmptyWidget.EmptyWidget(Common.UIString.UIString('Searching\u2026'));
+      this._searchingView = new UI.EmptyWidget.EmptyWidget(Common.UIString.UIString('Searching…'));
     }
     this._showPane(this._searchingView);
-    this._searchMessageElement.textContent = Common.UIString.UIString('Searching\u2026');
+    this._searchMessageElement.textContent = Common.UIString.UIString('Searching…');
     progressIndicator.show(this._searchProgressPlaceholderElement);
     this._updateSearchResultsMessage();
   }

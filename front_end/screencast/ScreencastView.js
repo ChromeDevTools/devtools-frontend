@@ -85,7 +85,7 @@ export class ScreencastView extends UI.Widget.VBox {
     this._titleElement.createTextChild(' ');
     this._nodeWidthElement = this._titleElement.createChild('span');
     this._titleElement.createChild('span', 'screencast-px').textContent = 'px';
-    this._titleElement.createTextChild(' \u00D7 ');
+    this._titleElement.createTextChild(' × ');
     this._nodeHeightElement = this._titleElement.createChild('span');
     this._titleElement.createChild('span', 'screencast-px').textContent = 'px';
     this._titleElement.style.top = '0';
@@ -531,7 +531,7 @@ export class ScreencastView extends UI.Widget.VBox {
     this._nodeIdElement.textContent = this._node.getAttribute('id') ? '#' + this._node.getAttribute('id') : '';
     let className = this._node.getAttribute('class');
     if (className && className.length > 50) {
-      className = className.substring(0, 50) + '\u2026';
+      className = className.substring(0, 50) + '…';
     }
     this._classNameElement.textContent = className || '';
     this._nodeWidthElement.textContent = this._model.width;

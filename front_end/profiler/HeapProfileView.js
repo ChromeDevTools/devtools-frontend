@@ -158,11 +158,11 @@ export class HeapProfileView extends ProfileView {
   populateTextView(view) {
     const guides = '+!:|';
     let text = `Sampling memory profile.\n\nDate/Time:       ${new Date()}\n` +
-        `Report Version:  7\n` +
+        'Report Version:  7\n' +
         `App Version:     ${/Chrom\S*/.exec(navigator.appVersion)[0] || 'Unknown'}\n` +
-        `Node Weight:     1 KiB\n` +
+        'Node Weight:     1 KiB\n' +
         `Total Size:      ${Math.round(this.profile().root.total / 1024)} KiB\n` +
-        `----\n\nCall graph:\n`;
+        '----\n\nCall graph:\n';
     const sortedChildren = this.profile().root.children.sort((a, b) => b.total - a.total);
     const modules = this.profile().modules.map(
         m => Object.assign({address: BigInt(m.baseAddress), endAddress: BigInt(m.baseAddress) + BigInt(m.size)}, m));
@@ -290,7 +290,7 @@ export class SamplingHeapProfileTypeBase extends ProfileType {
     const profileHeader = new SamplingHeapProfileHeader(heapProfilerModel, this);
     this.setProfileBeingRecorded(profileHeader);
     this.addProfile(profileHeader);
-    profileHeader.updateStatus(ls`Recording\u2026`);
+    profileHeader.updateStatus(ls`Recording…`);
 
     const icon = UI.Icon.Icon.create('smallicon-warning');
     icon.title = ls`Heap profiler is recording`;
@@ -306,7 +306,7 @@ export class SamplingHeapProfileTypeBase extends ProfileType {
       return;
     }
 
-    this.profileBeingRecorded().updateStatus(ls`Stopping\u2026`);
+    this.profileBeingRecorded().updateStatus(ls`Stopping…`);
     const profile = await this._stopSampling();
     const recordedProfile = this.profileBeingRecorded();
     if (recordedProfile) {
@@ -520,7 +520,7 @@ export class SamplingNativeHeapSnapshotType extends SamplingHeapProfileTypeBase 
     const profile = new SamplingHeapProfileHeader(heapProfilerModel, this, ls`Snapshot ${this.nextProfileUid()}`);
     this.setProfileBeingRecorded(profile);
     this.addProfile(profile);
-    profile.updateStatus(ls`Snapshotting\u2026`);
+    profile.updateStatus(ls`Snapshotting…`);
 
     const protocolProfile =
         await this._takeNativeSnapshot(/** @type {!SDK.HeapProfilerModel.HeapProfilerModel} */ (heapProfilerModel));

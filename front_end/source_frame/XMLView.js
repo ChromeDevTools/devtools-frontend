@@ -328,7 +328,7 @@ export class XMLViewNode extends UI.TreeOutline.TreeElement {
         if (!this.expanded) {
           if (node.childElementCount) {
             titleItems.push(
-                '>', 'shadow-xml-view-tag', '\u2026', 'shadow-xml-view-comment', '</' + tag, 'shadow-xml-view-tag');
+                '>', 'shadow-xml-view-tag', '…', 'shadow-xml-view-comment', '</' + tag, 'shadow-xml-view-tag');
           } else if (this._node.textContent) {
             titleItems.push(
                 '>', 'shadow-xml-view-tag', node.textContent, 'shadow-xml-view-text', '</' + tag,

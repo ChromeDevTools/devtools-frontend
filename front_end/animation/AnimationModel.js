@@ -20,8 +20,8 @@ export class AnimationModel extends SDK.SDKModel.SDKModel {
     this._animationsById = new Map();
     /** @type {!Map.<string, !AnimationGroup>} */
     this._animationGroups = new Map();
-    /** @type {!Array.<string>} */
-    this._pendingAnimations = [];
+    /** @type {!Set.<string>} */
+    this._pendingAnimations = new Set();
     this._playbackRate = 1;
     const resourceTreeModel =
         /** @type {!SDK.ResourceTreeModel.ResourceTreeModel} */ (target.model(SDK.ResourceTreeModel.ResourceTreeModel));
@@ -35,7 +35,7 @@ export class AnimationModel extends SDK.SDKModel.SDKModel {
   _reset() {
     this._animationsById.clear();
     this._animationGroups.clear();
-    this._pendingAnimations = [];
+    this._pendingAnimations.clear();
     this.dispatchEventToListeners(Events.ModelReset);
   }
 
@@ -43,14 +43,14 @@ export class AnimationModel extends SDK.SDKModel.SDKModel {
    * @param {string} id
    */
   animationCreated(id) {
-    this._pendingAnimations.push(id);
+    this._pendingAnimations.add(id);
   }
 
   /**
    * @param {string} id
    */
   _animationCanceled(id) {
-    this._pendingAnimations.remove(id);
+    this._pendingAnimations.delete(id);
     this._flushPendingAnimationsIfNeeded();
   }
 
@@ -67,12 +67,10 @@ export class AnimationModel extends SDK.SDKModel.SDKModel {
 
     // Ignore Web Animations custom effects & groups.
     if (animation.type() === 'WebAnimation' && animation.source().keyframesRule().keyframes().length === 0) {
-      this._pendingAnimations.remove(animation.id());
+      this._pendingAnimations.delete(animation.id());
     } else {
       this._animationsById.set(animation.id(), animation);
-      if (this._pendingAnimations.indexOf(animation.id()) === -1) {
-        this._pendingAnimations.push(animation.id());
-      }
+      this._pendingAnimations.add(animation.id());
     }
 
     this._flushPendingAnimationsIfNeeded();
@@ -85,7 +83,7 @@ export class AnimationModel extends SDK.SDKModel.SDKModel {
       }
     }
 
-    while (this._pendingAnimations.length) {
+    while (this._pendingAnimations.size) {
       this._matchExistingGroups(this._createGroupFromPendingAnimations());
     }
   }
@@ -118,19 +116,24 @@ export class AnimationModel extends SDK.SDKModel.SDKModel {
    * @return {!AnimationGroup}
    */
   _createGroupFromPendingAnimations() {
-    console.assert(this._pendingAnimations.length);
-    const groupedAnimations = [this._animationsById.get(this._pendingAnimations.shift())];
-    const remainingAnimations = [];
+    console.assert(this._pendingAnimations.size);
+    const firstAnimationId = this._pendingAnimations.values().next().value;
+    this._pendingAnimations.delete(firstAnimationId);
+
+    const firstAnimation = this._animationsById.get(firstAnimationId);
+    const groupedAnimations = [firstAnimation];
+    const groupStartTime = firstAnimation.startTime();
+    const remainingAnimations = new Set();
     for (const id of this._pendingAnimations) {
       const anim = this._animationsById.get(id);
-      if (anim.startTime() === groupedAnimations[0].startTime()) {
+      if (anim.startTime() === groupStartTime) {
         groupedAnimations.push(anim);
       } else {
-        remainingAnimations.push(id);
+        remainingAnimations.add(id);
       }
     }
     this._pendingAnimations = remainingAnimations;
-    return new AnimationGroup(this, groupedAnimations[0].id(), groupedAnimations);
+    return new AnimationGroup(this, firstAnimationId, groupedAnimations);
   }
 
   /**

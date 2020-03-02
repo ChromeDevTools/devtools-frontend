@@ -1679,10 +1679,11 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
       case Node.DOCUMENT_FRAGMENT_NODE:
         const fragmentElement = titleDOM.createChild('span', 'webkit-html-fragment');
-        fragmentElement.textContent = node.nodeNameInCorrectCase().collapseWhitespace();
+        fragmentElement.textContent = Platform.StringUtilities.collapseWhitespace(node.nodeNameInCorrectCase());
         break;
       default:
-        titleDOM.createTextChild(node.nodeNameInCorrectCase().collapseWhitespace());
+        const nameWithSpaceCollapsed = Platform.StringUtilities.collapseWhitespace(node.nodeNameInCorrectCase());
+        titleDOM.createTextChild(nameWithSpaceCollapsed);
     }
 
     /**

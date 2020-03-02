@@ -104,13 +104,6 @@ String.filterRegex = function(query) {
 };
 
 /**
- * @return {string}
- */
-String.prototype.collapseWhitespace = function() {
-  return this.replace(/[\s\xA0]+/g, ' ');
-};
-
-/**
  * @param {number} maxLength
  * @return {string}
  */

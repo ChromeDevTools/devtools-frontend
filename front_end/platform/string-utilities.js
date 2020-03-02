@@ -327,3 +327,11 @@ export const trimURL = (url, baseURLDomain) => {
   }
   return result;
 };
+
+/**
+ * @param {string} inputString
+ * @return {string}
+ */
+export const collapseWhitespace = inputString => {
+  return inputString.replace(/[\s\xA0]+/g, ' ');
+};

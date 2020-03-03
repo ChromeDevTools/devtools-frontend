@@ -185,16 +185,6 @@ String.hashCode = function(string) {
 };
 
 /**
- * @param {string} string
- * @param {number} index
- * @return {boolean}
- */
-String.isDigitAt = function(string, index) {
-  const c = string.charCodeAt(index);
-  return (48 <= c && c <= 57);
-};
-
-/**
  * @param {string} a
  * @param {string} b
  * @return {number}

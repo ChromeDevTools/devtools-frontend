@@ -7,7 +7,7 @@ import {describe, it} from 'mocha';
 
 import {getBrowserAndPages, resetPages} from '../../shared/helper.js';
 
-import {addBreakpointForLine, openFileInSourcesPanel, retrieveTopCallFrameScriptLocation} from './sources-helpers.js';
+import {addBreakpointForLine, openFileInSourcesPanel, retrieveTopCallFrameScriptLocation} from '../helpers/sources-helpers.js';
 
 describe('The Sources Tab', async () => {
   beforeEach(async () => {

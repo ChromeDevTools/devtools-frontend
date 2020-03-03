@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {obtainConsoleMessages, showVerboseMessages} from './console-helpers.js';
+import {obtainConsoleMessages, showVerboseMessages} from '../helpers/console-helpers.js';
 import {resetPages} from '../../shared/helper.js';
 
 describe('The Console Tab', async () => {

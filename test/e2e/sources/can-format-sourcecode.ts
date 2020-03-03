@@ -7,7 +7,7 @@ import {describe, it} from 'mocha';
 import * as puppeteer from 'puppeteer';
 
 import {click, getBrowserAndPages, resetPages, waitFor} from '../../shared/helper.js';
-import {addBreakpointForLine, openFileInSourcesPanel, retrieveTopCallFrameScriptLocation} from './sources-helpers.js';
+import {addBreakpointForLine, openFileInSourcesPanel, retrieveTopCallFrameScriptLocation} from '../helpers/sources-helpers.js';
 
 const PRETTY_PRINT_BUTTON = '[aria-label="Pretty print minified-sourcecode.js"]';
 

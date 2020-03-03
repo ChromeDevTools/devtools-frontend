@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 import {$, $$, getBrowserAndPages, resetPages, resourcesPath, waitFor} from '../../shared/helper.js';
-import {triggerFindDialog} from './search-helpers.js';
+import {triggerFindDialog} from '../helpers/search-helpers.js';
 
 describe('The Search Panel', async () => {
   beforeEach(async () => {

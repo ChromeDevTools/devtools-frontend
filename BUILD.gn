@@ -865,6 +865,7 @@ all_devtools_modules = [
   "front_end/issues/issues.js",
   "front_end/issues/issues-legacy.js",
   "front_end/issues/IssuesPane.js",
+  "front_end/issues/IssueRevealer.js",
   "front_end/protocol/InspectorBackend.js",
   "front_end/protocol/NodeURL.js",
   "front_end/protocol/protocol.js",
@@ -1798,6 +1799,7 @@ copied_devtools_modules = [
   "$resources_out_dir/issues/issues.js",
   "$resources_out_dir/issues/issues-legacy.js",
   "$resources_out_dir/issues/IssuesPane.js",
+  "$resources_out_dir/issues/IssueRevealer.js",
   "$resources_out_dir/protocol_monitor/protocol_monitor.js",
   "$resources_out_dir/protocol_monitor/protocol_monitor-legacy.js",
   "$resources_out_dir/protocol_monitor/ProtocolMonitor.js",
@@ -2320,7 +2322,9 @@ copy("copy_emulated_devices_images") {
 
 copy("copy_lighthouse_locale_files") {
   sources = lighthouse_locale_files
-  outputs = [ "$resources_out_dir/third_party/lighthouse/locales/{{source_file_part}}" ]
+  outputs = [
+    "$resources_out_dir/third_party/lighthouse/locales/{{source_file_part}}",
+  ]
 }
 
 copy("copy_wasm_deps") {

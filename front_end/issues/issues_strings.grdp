@@ -6,6 +6,9 @@
   <message name="IDS_DEVTOOLS_3ac50b50b2090885755631100cb73b51" desc="Message for the SameSiteCookies::SameSiteNoneWithoutSecure issue code">
     In a future version of chrome, third party cookies will only be sent when marked as SameSite=None and Secure to prevent them from being accessed in a man in the middle scenario.
   </message>
+  <message name="IDS_DEVTOOLS_ee02b74d0caebce3dabaf3b3e79b6a65" desc="The UI destination when right clicking an item that can be revealed">
+    Issues view
+  </message>
   <message name="IDS_DEVTOOLS_80b768b15c3693e345a436b9dc0ea36f" desc="Label for the issues Pane">
     Issues
   </message>

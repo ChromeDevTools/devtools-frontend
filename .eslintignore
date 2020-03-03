@@ -7,7 +7,7 @@
 front_end/.eslintrc.js
 front_end/InspectorBackendCommands.js
 front_end/SupportedCSSProperties.js
-front_end/accessibility/ARIAProperties.js
+front_end/generated/
 front_end/cm/
 front_end/cm_headless/
 front_end/cm_modes/

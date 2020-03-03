@@ -13,6 +13,7 @@
     "dependencies": ["elements"],
     "scripts": [],
     "modules": [
+        "../generated/ARIAProperties.js",
         "accessibility.js",
         "accessibility-legacy.js",
         "AccessibilityModel.js",
@@ -20,13 +21,9 @@
         "AccessibilityNodeView.js",
         "AccessibilityStrings.js",
         "AccessibilitySubPane.js",
-        "ARIAProperties.js",
         "ARIAAttributesView.js",
         "ARIAMetadata.js",
         "AXBreadcrumbsPane.js"
-    ],
-    "skip_compilation": [
-        "ARIAProperties.js"
     ],
     "resources": [
         "accessibilityNode.css",

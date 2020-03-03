@@ -42,6 +42,18 @@ EXCLUSIVE_CHANGE_DIRECTORIES = [
 
 AUTOROLL_ACCOUNT = "devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com"
 
+
+def _ExecuteSubProcess(input_api, output_api, script_path, args, results):
+    process = input_api.subprocess.Popen(
+        [input_api.python_executable, script_path] + args, stdout=input_api.subprocess.PIPE, stderr=input_api.subprocess.STDOUT)
+    out, _ = process.communicate()
+    if process.returncode != 0:
+        results.append(output_api.PresubmitError(out))
+    else:
+        results.append(output_api.PresubmitNotifyResult(out))
+    return results
+
+
 def _CheckChangesAreExclusiveToDirectory(input_api, output_api):
     if input_api.change.DISABLE_THIRD_PARTY_CHECK != None:
         return []
@@ -167,28 +179,15 @@ def _CheckDevtoolsLocalization(input_api, output_api, check_all_files=False):  #
 
         # Scan only added or modified files with specific extensions.
         args = ['--autofix', '--file-list', file_list.name]
-    process = input_api.subprocess.Popen(
-        [input_api.python_executable, script_path] + args, stdout=input_api.subprocess.PIPE, stderr=input_api.subprocess.STDOUT)
-    out, _ = process.communicate()
-    if process.returncode != 0:
-        results.append(output_api.PresubmitError(out))
-    else:
-        results.append(output_api.PresubmitNotifyResult(out))
-    return results
+
+    return _ExecuteSubProcess(input_api, output_api, script_path, args, results)
 
 
 def _CheckDevtoolsStyle(input_api, output_api):
     results = [output_api.PresubmitNotifyResult('Running Devtools Style Check:')]
     lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'test', 'run_lint_check.py')
-    process = input_api.subprocess.Popen([input_api.python_executable, lint_path],
-                                         stdout=input_api.subprocess.PIPE,
-                                         stderr=input_api.subprocess.STDOUT)
-    out, _ = process.communicate()
-    if process.returncode != 0:
-        results.append(output_api.PresubmitError(out))
-    else:
-        results.append(output_api.PresubmitNotifyResult(out))
-    return results
+
+    return _ExecuteSubProcess(input_api, output_api, lint_path, [], results)
 
 
 def _CheckOptimizeSVGHashes(input_api, output_api):
@@ -229,6 +228,15 @@ def _CheckCSSViolations(input_api, output_api):
                 results.append(output_api.PresubmitError(('%s:%d uses /deep/ selector') % (f.LocalPath(), line_number)))
             if '::shadow' in line:
                 results.append(output_api.PresubmitError(('%s:%d uses ::shadow selector') % (f.LocalPath(), line_number)))
+    return results
+
+
+def _CheckGeneratedFiles(input_api, output_api):
+    results = [output_api.PresubmitNotifyResult('Running Generated Files Check:')]
+
+    generated_aria_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'build', 'generate_aria.py')
+    results = _ExecuteSubProcess(input_api, output_api, generated_aria_path, [], results)
+
     return results
 
 
@@ -283,6 +291,7 @@ def _CommonChecks(input_api, output_api):
     results.extend(input_api.canned_checks.CheckChangeHasNoStrayWhitespace(input_api, output_api))
     results.extend(input_api.canned_checks.CheckGenderNeutral(input_api, output_api))
     results.extend(_CheckBuildGN(input_api, output_api))
+    results.extend(_CheckGeneratedFiles(input_api, output_api))
     results.extend(_CheckJSON(input_api, output_api))
     results.extend(_CheckLicenses(input_api, output_api))
     results.extend(_CheckDevtoolsStyle(input_api, output_api))

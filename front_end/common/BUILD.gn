@@ -10,6 +10,7 @@ ts_library("common") {
     ":app_provider",
     ":character_id_map",
     ":color",
+    ":console",
     ":event_target",
     ":javascript_meta_data",
     ":object",
@@ -44,6 +45,12 @@ ts_library("color") {
   sources = [ "Color.js" ]
 
   deps = [ "../platform" ]
+}
+
+ts_library("console") {
+  sources = [ "Console.js" ]
+
+  deps = [ ":object", ":revealer" ]
 }
 
 ts_library("event_target") {

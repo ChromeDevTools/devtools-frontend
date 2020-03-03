@@ -344,3 +344,13 @@ export const collapseWhitespace = inputString => {
 export const reverse = inputString => {
   return inputString.split('').reverse().join('');
 };
+
+/**
+ * @param {string} inputString
+ * @return {string}
+ */
+export const replaceControlCharacters = inputString => {
+  // Replace C0 and C1 control character sets with replacement character.
+  // Do not replace '\t', \n' and '\r'.
+  return inputString.replace(/[\0-\x08\x0B\f\x0E-\x1F\x80-\x9F]/g, '\uFFFD');
+};

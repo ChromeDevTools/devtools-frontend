@@ -1472,7 +1472,7 @@ export class ConsoleCommand extends ConsoleViewMessage {
       this._contentElement.message = this;
 
       this._formattedCommand = createElementWithClass('span', 'source-code');
-      this._formattedCommand.textContent = this.text.replaceControlCharacters();
+      this._formattedCommand.textContent = Platform.StringUtilities.replaceControlCharacters(this.text);
       this._contentElement.appendChild(this._formattedCommand);
 
       if (this._formattedCommand.textContent.length < MaxLengthToIgnoreHighlighter) {

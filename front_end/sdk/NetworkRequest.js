@@ -1483,26 +1483,27 @@ export const WebSocketFrameType = {
 export const cookieBlockedReasonToUiString = function(blockedReason) {
   switch (blockedReason) {
     case Protocol.Network.CookieBlockedReason.SecureOnly:
-      return ls`This cookie had the "Secure" attribute and the connection was not secure.`;
+      return ls`This cookie was blocked because it had the "Secure" attribute and the connection was not secure.`;
     case Protocol.Network.CookieBlockedReason.NotOnPath:
-      return ls`This cookie's path was not within the request url's path.`;
+      return ls
+      `This cookie was blocked because its path was not an exact match for or a superdirectory of the request url's path.`;
     case Protocol.Network.CookieBlockedReason.DomainMismatch:
       return ls
-      `This cookie's domain is not configured to match the request url's domain, even though they share a common TLD+1 (TLD+1 of foo.bar.example.com is example.com).`;
+      `This cookie was blocked because neither did the request URL's domain exactly match the cookie's domain, nor was the request URL's domain a subdomain of the cookie's Domain attribute value.`;
     case Protocol.Network.CookieBlockedReason.SameSiteStrict:
       return ls
-      `This cookie had the "SameSite=Strict" attribute and the request was made on on a different site. This includes navigation requests initiated by other sites.`;
+      `This cookie was blocked because it had the "SameSite=Strict" attribute and the request was made from a different site. This includes top-level navigation requests initiated by other sites.`;
     case Protocol.Network.CookieBlockedReason.SameSiteLax:
       return ls
-      `This cookie had the "SameSite=Lax" attribute and the request was made on a different site. This does not include navigation requests initiated by other sites.`;
+      `This cookie was blocked because it had the "SameSite=Lax" attribute and the request was made from a different site and was not initiated by a top-level navigation.`;
     case Protocol.Network.CookieBlockedReason.SameSiteUnspecifiedTreatedAsLax:
       return ls
-      `This cookie didn't specify a SameSite attribute when it was stored and was defaulted to "SameSite=Lax" and broke the same rules specified in the SameSiteLax value. The cookie had to have been set with "SameSite=None" to enable third-party usage.`;
+      `This cookie didn't specify a "SameSite" attribute when it was stored and was defaulted to "SameSite=Lax," and was blocked because the request was made from a different site and was not initiated by a top-level navigation. The cookie had to have been set with "SameSite=None" to enable cross-site usage.`;
     case Protocol.Network.CookieBlockedReason.SameSiteNoneInsecure:
       return ls
-      `This cookie had the "SameSite=None" attribute but was not marked "Secure". Cookies without SameSite restrictions must be marked "Secure" and sent over a secure connection.`;
+      `This cookie was blocked because it had the "SameSite=None" attribute but was not marked "Secure". Cookies without SameSite restrictions must be marked "Secure" and sent over a secure connection.`;
     case Protocol.Network.CookieBlockedReason.UserPreferences:
-      return ls`This cookie was not sent due to user preferences.`;
+      return ls`This cookie was blocked due to user preferences.`;
     case Protocol.Network.CookieBlockedReason.UnknownError:
       return ls`An unknown error was encountered when trying to send this cookie.`;
   }
@@ -1517,32 +1518,34 @@ export const setCookieBlockedReasonToUiString = function(blockedReason) {
   switch (blockedReason) {
     case Protocol.Network.SetCookieBlockedReason.SecureOnly:
       return ls
-      `This set-cookie had the "Secure" attribute but was not received over a secure connection.`;
+      `This Set-Cookie was blocked because it had the "Secure" attribute but was not received over a secure connection.`;
     case Protocol.Network.SetCookieBlockedReason.SameSiteStrict:
       return ls
-      `This set-cookie had the "SameSite=Strict" attribute but came from a cross-origin response. This includes navigation requests intitiated by other origins.`;
+      `This Set-Cookie was blocked because it had the "SameSite=Strict" attribute but came from a cross-site response which was not the response to a top-level navigation.`;
     case Protocol.Network.SetCookieBlockedReason.SameSiteLax:
-      return ls`This set-cookie had the "SameSite=Lax" attribute but came from a cross-origin response.`;
+      return ls
+      `This Set-Cookie was blocked because it had the "SameSite=Lax" attribute but came from a cross-site response which was not the response to a top-level navigation.`;
     case Protocol.Network.SetCookieBlockedReason.SameSiteUnspecifiedTreatedAsLax:
       return ls
-      `This set-cookie didn't specify a "SameSite" attribute and was defaulted to "SameSite=Lax" and broke the same rules specified in the SameSiteLax value.`;
+      `This Set-Cookie didn't specify a "SameSite" attribute and was defaulted to "SameSite=Lax," and was blocked because it came from a cross-site response which was not the response to a top-level navigation. The Set-Cookie had to have been set with "SameSite=None" to enable cross-site usage.`;
     case Protocol.Network.SetCookieBlockedReason.SameSiteNoneInsecure:
       return ls
-      `This set-cookie had the "SameSite=None" attribute but did not have the "Secure" attribute, which is required in order to use "SameSite=None".`;
+      `This Set-Cookie was blocked because it had the "SameSite=None" attribute but did not have the "Secure" attribute, which is required in order to use "SameSite=None".`;
     case Protocol.Network.SetCookieBlockedReason.UserPreferences:
-      return ls`This set-cookie was not stored due to user preferences.`;
+      return ls`This Set-Cookie was blocked due to user preferences.`;
     case Protocol.Network.SetCookieBlockedReason.SyntaxError:
-      return ls`This set-cookie had invalid syntax.`;
+      return ls`This Set-Cookie had invalid syntax.`;
     case Protocol.Network.SetCookieBlockedReason.SchemeNotSupported:
       return ls`The scheme of this connection is not allowed to store cookies.`;
     case Protocol.Network.SetCookieBlockedReason.OverwriteSecure:
       return ls
-      `This set-cookie was not sent over a secure connection and would have overwritten a cookie with the Secure attribute.`;
+      `This Set-Cookie was blocked because it was not sent over a secure connection and would have overwritten a cookie with the Secure attribute.`;
     case Protocol.Network.SetCookieBlockedReason.InvalidDomain:
-      return ls`This set-cookie's Domain attribute was invalid with regards to the current host url.`;
+      return ls
+      `This Set-Cookie was blocked because its Domain attribute was invalid with regards to the current host url.`;
     case Protocol.Network.SetCookieBlockedReason.InvalidPrefix:
       return ls
-      `This set-cookie used the "__Secure-" or "__Host-" prefix in its name and broke the additional rules applied to cookies with these prefixes as defined in https://tools.ietf.org/html/draft-west-cookie-prefixes-05.`;
+      `This Set-Cookie was blocked because it used the "__Secure-" or "__Host-" prefix in its name and broke the additional rules applied to cookies with these prefixes as defined in https://tools.ietf.org/html/draft-west-cookie-prefixes-05.`;
     case Protocol.Network.SetCookieBlockedReason.UnknownError:
       return ls`An unknown error was encountered when trying to store this cookie.`;
   }

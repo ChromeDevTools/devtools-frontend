@@ -22,7 +22,7 @@
     Apply mobile emulation during auditing
   </message>
   <message name="IDS_DEVTOOLS_1b6afe2c9d75a77ce44cca9a356bf3ef" desc="Text that appears when user drag and drop something (for example, a file) in Lighthouse Panel">
-    Drop Lighthouse JSON here
+    Drop <ph name="LOCKED_1">Lighthouse</ph> JSON here
   </message>
   <message name="IDS_DEVTOOLS_2046d43f4cc1f59c06f764da2ca2355a" desc="Status text in the Lighthouse panel">
     The print popup window is open. Please close it to continue.
@@ -85,7 +85,7 @@
     As page load time increases from one second to seven seconds, the probability of a mobile site visitor bouncing increases 113%. [Source: <ph name="LOCKED_1">Think with Google</ph>]
   </message>
   <message name="IDS_DEVTOOLS_d7d305befb5ff987deb149b9f4e197d6" desc="Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in start view of the audits panel">
-    Lighthouse settings
+    <ph name="LOCKED_1">Lighthouse</ph> settings
   </message>
   <message name="IDS_DEVTOOLS_6f4495ebc9e34bfc4a7748c568ddd6f0" desc="Text in Lighthouse Status View">
     Community Plugins (beta)
@@ -135,8 +135,8 @@
   <message name="IDS_DEVTOOLS_b002a564ceda05dbdf012a48a145d0d3" desc="Status header in the Lighthouse panel">
     Printing
   </message>
-  <message name="IDS_DEVTOOLS_bcb3798d312ed46335afe6b1c0ebd398" desc="Text in Lighthouse Start View labeling audit configuraion control group">
-    Lighthouse
+  <message name="IDS_DEVTOOLS_bcb3798d312ed46335afe6b1c0ebd398" desc="Text in Lighthouse Start View labeling audit configuration control group">
+    <ph name="LOCKED_1">Lighthouse</ph>
   </message>
   <message name="IDS_DEVTOOLS_b1b01acb63f79615b05f6d816705d7d3" desc="Text in Lighthouse Controller">
     Does this page meet the standard of a Progressive Web App

@@ -351,8 +351,8 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
     super();
     /** @type {!Set.<!Target>} */
     this._targets = new Set();
-    /** @type {!Array.<!Observer>} */
-    this._observers = [];
+    /** @type {!Set.<!Observer>} */
+    this._observers = new Set();
     /** @type {!Platform.Multimap<symbol, !{modelClass: !Function, thisObject: (!Object|undefined), listener: function(!Common.EventTarget.EventTargetEvent)}>} */
     this._modelListeners = new Platform.Multimap();
     /** @type {!Platform.Multimap<function(new:SDKModel, !Target), !SDKModelObserver>} */
@@ -501,20 +501,20 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!Observer} targetObserver
    */
   observeTargets(targetObserver) {
-    if (this._observers.indexOf(targetObserver) !== -1) {
+    if (this._observers.has(targetObserver)) {
       throw new Error('Observer can only be registered once');
     }
     for (const target of this._targets) {
       targetObserver.targetAdded(target);
     }
-    this._observers.push(targetObserver);
+    this._observers.add(targetObserver);
   }
 
   /**
    * @param {!Observer} targetObserver
    */
   unobserveTargets(targetObserver) {
-    this._observers.remove(targetObserver);
+    this._observers.delete(targetObserver);
   }
 
   /**
@@ -536,8 +536,8 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
     target.createModels(new Set(this._modelObservers.keysArray()));
     this._targets.add(target);
 
-    const copy = this._observers.slice(0);
-    for (const observer of copy) {
+    // Iterate over a copy. _observers might be modified during iteration.
+    for (const observer of [...this._observers]) {
       observer.targetAdded(target);
     }
 
@@ -570,8 +570,8 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
       this._modelRemoved(target, modelClass, target.models().get(modelClass));
     }
 
-    const copy = this._observers.slice(0);
-    for (const observer of copy) {
+    // Iterate over a copy. _observers might be modified during iteration.
+    for (const observer of [...this._observers]) {
       observer.targetRemoved(target);
     }
 

@@ -100,31 +100,7 @@ export function completeTest() {
   _innerCompleteTest();
 }
 
-self.TestRunner = self.TestRunner || {_startupTestSetupFinished: () => {}};
-
-let _initializeTargetForStartupTest;
-
-export function setInitializeTargetForStartupTest(updatedInitializeTargetForStartupTest) {
-  _initializeTargetForStartupTest = updatedInitializeTargetForStartupTest;
-}
-
-/**
- * Only tests in web_tests/http/tests/devtools/startup/ need to call
- * this method because these tests need certain activities to be exercised
- * in the inspected page prior to the DevTools session.
- * @param {string} path
- * @return {!Promise<undefined>}
- */
-export function setupStartupTest(path) {
-  const absoluteURL = url(path);
-  const promise = new Promise(f => TestRunner._startupTestSetupFinished = () => {
-    _initializeTargetForStartupTest();
-    delete TestRunner._startupTestSetupFinished;
-    f();
-  });
-  self.testRunner.navigateSecondaryWindow(absoluteURL);
-  return promise;
-}
+self.TestRunner = self.TestRunner || {};
 
 /**
  * @suppressGlobalPropertiesCheck
@@ -1473,7 +1449,6 @@ TestRunner.MockSetting = MockSetting;
 
 TestRunner.formatters = formatters;
 
-TestRunner.setupStartupTest = setupStartupTest;
 TestRunner.flushResults = flushResults;
 TestRunner.completeTest = completeTest;
 TestRunner.addResult = addResult;

@@ -9,13 +9,6 @@ export {
 };
 
 /**
- * @return {boolean}
- */
-function _isStartupTest() {
-  return Root.Runtime.queryParam('test').includes('/startup/');
-}
-
-/**
  * @param {!SDK.Target} target
  */
 function _setupTestHelpers(target) {
@@ -97,9 +90,6 @@ export class _TestObserver {
       return;
     }
     _startedTest = true;
-    if (_isStartupTest()) {
-      return;
-    }
     TestRunner
         .loadHTML(`
       <head>
@@ -118,23 +108,4 @@ export class _TestObserver {
   }
 }
 
-/** @suppress {accessControls} */
-(async function() {
-  self.SDK.targetManager.observeTargets(new _TestObserver());
-  if (!_isStartupTest()) {
-    return;
-  }
-  /**
-   * Startup test initialization:
-   * 1. Wait for DevTools app UI to load
-   * 2. Execute test script, the first line will be TestRunner.setupStartupTest(...) which:
-   *    A. Navigate secondary window
-   *    B. After preconditions occur, secondary window calls testRunner.inspectSecondaryWindow()
-   * 3. Backend executes TestRunner._startupTestSetupFinished() which calls _initializeTarget()
-   */
-  TestRunner.setInitializeTargetForStartupTest(
-      TestRunner.override(Main.Main._instanceForTest, '_initializeTarget', () => undefined)
-          .bind(Main.Main._instanceForTest));
-  await TestRunner.addSnifferPromise(Main.Main._instanceForTest, '_showAppUI');
-  await _executeTestScript();
-})();
+self.SDK.targetManager.observeTargets(new _TestObserver());

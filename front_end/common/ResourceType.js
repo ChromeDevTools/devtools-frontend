@@ -98,7 +98,7 @@ export class ResourceType {
    */
   static fromName(name) {
     for (const resourceTypeId in resourceTypes) {
-      const resourceType = resourceTypes[resourceTypeId];
+      const resourceType = /** @type {!Object<string, !ResourceType>} */(resourceTypes)[resourceTypeId];
       if (resourceType.name() === name) {
         return resourceType;
       }

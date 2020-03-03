@@ -17,6 +17,7 @@ ts_library("common") {
     ":parsed_url",
     ":progress",
     ":query_param_handler",
+    ":resource_type",
     ":revealer",
     ":runnable",
     ":segmented_range",
@@ -85,6 +86,12 @@ ts_library("progress") {
 
 ts_library("javascript_meta_data") {
   sources = [ "JavaScriptMetaData.js" ]
+}
+
+ts_library("resource_type") {
+  sources = [ "ResourceType.js" ]
+
+  deps = [ ":ui_string", ":parsed_url" ]
 }
 
 ts_library("revealer") {

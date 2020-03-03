@@ -147,8 +147,18 @@ export const $$ = async (selector: string, root?: puppeteer.JSHandle) => {
 
 export const timeout = (duration: number) => new Promise(resolve => setTimeout(resolve, duration));
 
-export const waitFor =
-    async (selector: string, root?: puppeteer.JSHandle, maxTotalTimeout = 0) => {
+export const waitFor = async (selector: string, root?: puppeteer.JSHandle, maxTotalTimeout = 0) => {
+  return waitForFunction(async () => {
+    const element = await $(selector, root);
+    if (element.asElement()) {
+      return element;
+    }
+    return undefined;
+  }, `Unable to find element with selector ${selector}`, maxTotalTimeout);
+};
+
+export const waitForFunction =
+    async<T>(fn: () => Promise<T>, errorMessage: string, maxTotalTimeout = 0): Promise<T> => {
   if (maxTotalTimeout === 0) {
     maxTotalTimeout = Number.POSITIVE_INFINITY;
   }
@@ -156,13 +166,13 @@ export const waitFor =
   const start = performance.now();
   do {
     await timeout(100);
-    const element = await $(selector, root);
-    if (element.asElement()) {
-      return element;
+    const result = await fn();
+    if (result) {
+      return result;
     }
   } while (performance.now() - start < maxTotalTimeout);
 
-  throw new Error(`Unable to find element with selector ${selector}`);
+  throw new Error(errorMessage);
 };
 
 export const debuggerStatement = (frontend: puppeteer.Page) => {

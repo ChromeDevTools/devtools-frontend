@@ -53,7 +53,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     super();
     this._clientObjects = {};
     this._handlers = {};
-    this._subscribers = {};
+    /** @type {!Map<string, !Set<!MessagePort>>} */
+    this._subscribers = new Map();
     this._subscriptionStartHandlers = {};
     this._subscriptionStopHandlers = {};
     this._extraHeaders = {};
@@ -182,7 +183,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
    * @return {boolean}
    */
   hasSubscribers(type) {
-    return !!this._subscribers[type];
+    return this._subscribers.has(type);
   }
 
   /**
@@ -190,22 +191,22 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
    * @param {...*} vararg
    */
   _postNotification(type, vararg) {
-    const subscribers = this._subscribers[type];
+    const subscribers = this._subscribers.get(type);
     if (!subscribers) {
       return;
     }
     const message = {command: 'notify-' + type, arguments: Array.prototype.slice.call(arguments, 1)};
-    for (let i = 0; i < subscribers.length; ++i) {
-      subscribers[i].postMessage(message);
+    for (const subscriber of subscribers) {
+      subscriber.postMessage(message);
     }
   }
 
   _onSubscribe(message, port) {
-    const subscribers = this._subscribers[message.type];
+    const subscribers = this._subscribers.get(message.type);
     if (subscribers) {
-      subscribers.push(port);
+      subscribers.add(port);
     } else {
-      this._subscribers[message.type] = [port];
+      this._subscribers.set(message.type, new Set([port]));
       if (this._subscriptionStartHandlers[message.type]) {
         this._subscriptionStartHandlers[message.type]();
       }
@@ -213,13 +214,13 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   _onUnsubscribe(message, port) {
-    const subscribers = this._subscribers[message.type];
+    const subscribers = this._subscribers.get(message.type);
     if (!subscribers) {
       return;
     }
-    subscribers.remove(port);
-    if (!subscribers.length) {
-      delete this._subscribers[message.type];
+    subscribers.delete(port);
+    if (!subscribers.size) {
+      this._subscribers.delete(message.type);
       if (this._subscriptionStopHandlers[message.type]) {
         this._subscriptionStopHandlers[message.type]();
       }

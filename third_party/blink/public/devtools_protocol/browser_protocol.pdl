@@ -4060,6 +4060,11 @@ domain Network
       subresource-filter
       content-type
       collapsed-by-client
+      coep-frame-resource-needs-coep-header
+      coop-sandboxed-iframe-cannot-navigate-to-coop-page
+      corp-not-same-origin
+      corp-not-same-origin-after-defaulted-to-same-origin-by-coep
+      corp-not-same-site
 
   # HTTP response data.
   type Response extends object
@@ -5392,6 +5397,18 @@ domain Page
       # The list of error arguments (e.g. {name:'minimum-icon-size-in-pixels', value:'64'}).
       array of InstallabilityErrorArgument errorArguments
 
+  # The referring-policy used for the navigation.
+  experimental type ReferrerPolicy extends string
+    enum
+      noReferrer
+      noReferrerWhenDowngrade
+      origin
+      originWhenCrossOrigin
+      sameOrigin
+      strictOrigin
+      strictOriginWhenCrossOrigin
+      unsafeUrl
+
   # Deprecated, please use addScriptToEvaluateOnNewDocument instead.
   experimental deprecated command addScriptToEvaluateOnLoad
     parameters
@@ -5581,6 +5598,8 @@ domain Page
       optional TransitionType transitionType
       # Frame id to navigate, if not specified navigates the top frame.
       optional FrameId frameId
+      # Referrer-policy used for the navigation.
+      experimental optional ReferrerPolicy referrerPolicy
     returns
       # Frame id that has navigated (or failed to navigate)
       FrameId frameId
@@ -6079,11 +6098,18 @@ domain Performance
 
   # Enable collecting and reporting metrics.
   command enable
+    parameters
+      # Time domain to use for collecting and reporting duration metrics.
+      optional enum timeDomain
+        # Use monotonically increasing abstract time (default).
+        timeTicks
+        # Use thread running time.
+        threadTicks
 
   # Sets time domain to use for collecting and reporting duration metrics.
   # Note that this must be called before enabling metrics collection. Calling
   # this method while metrics collection is enabled returns an error.
-  experimental command setTimeDomain
+  experimental deprecated command setTimeDomain
     parameters
       # Time domain
       enum timeDomain

@@ -1000,8 +1000,8 @@ export class ServiceWorkerCacheTreeElement extends StorageCategoryTreeElement {
    * @param {?SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel} model
    */
   _initialize(model) {
-    /** @type {!Array.<!SWCacheTreeElement>} */
-    this._swCacheTreeElements = [];
+    /** @type {!Set.<!SWCacheTreeElement>} */
+    this._swCacheTreeElements = new Set();
     this._swCacheModel = model;
     if (model) {
       for (const cache of model.caches()) {
@@ -1051,7 +1051,7 @@ export class ServiceWorkerCacheTreeElement extends StorageCategoryTreeElement {
    */
   _addCache(model, cache) {
     const swCacheTreeElement = new SWCacheTreeElement(this._storagePanel, model, cache);
-    this._swCacheTreeElements.push(swCacheTreeElement);
+    this._swCacheTreeElements.add(swCacheTreeElement);
     this.appendChild(swCacheTreeElement);
   }
 
@@ -1068,7 +1068,7 @@ export class ServiceWorkerCacheTreeElement extends StorageCategoryTreeElement {
     }
 
     this.removeChild(swCacheTreeElement);
-    this._swCacheTreeElements.remove(swCacheTreeElement);
+    this._swCacheTreeElements.delete(swCacheTreeElement);
     this.setExpandable(this.childCount() > 0);
   }
 
@@ -1078,16 +1078,10 @@ export class ServiceWorkerCacheTreeElement extends StorageCategoryTreeElement {
    * @return {?SWCacheTreeElement}
    */
   _cacheTreeElement(model, cache) {
-    let index = -1;
-    let i;
-    for (i = 0; i < this._swCacheTreeElements.length; ++i) {
-      if (this._swCacheTreeElements[i]._cache.equals(cache) && this._swCacheTreeElements[i]._model === model) {
-        index = i;
-        break;
+    for (const cacheTreeElement of this._swCacheTreeElements) {
+      if (cacheTreeElement._cache.equals(cache) && cacheTreeElement._model === model) {
+        return cacheTreeElement;
       }
-    }
-    if (index !== -1) {
-      return this._swCacheTreeElements[i];
     }
     return null;
   }

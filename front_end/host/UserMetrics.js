@@ -95,6 +95,7 @@ export class UserMetrics {
         // This fires the event for the appropriate launch histogram.
         // The duration is measured as the time elapsed since the time origin of the document.
         InspectorFrontendHostInstance.recordPerformanceHistogram(histogramName, performance.now());
+        Common.EventTarget.fireEvent('DevTools.PanelLoaded', {value: {panelName, histogramName}});
       }, 0);
     });
   }

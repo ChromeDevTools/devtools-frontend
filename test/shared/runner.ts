@@ -149,24 +149,47 @@ interface DevToolsTarget {
     });
 
     const resetPages =
-        async (...enabledExperiments: string[]) => {
+        async (opts: {enabledExperiments?: string[], selectedPanel?: {name: string, selector?: string}} = {}) => {
       // Reload the target page.
       await srcPage.goto(blankPage, {waitUntil: ['domcontentloaded']});
 
       // Clear any local storage settings.
       await frontend.evaluate(() => localStorage.clear());
 
+      const { enabledExperiments } = opts;
+      let { selectedPanel } = opts;
       await frontend.evaluate(enabledExperiments => {
         for (const experiment of enabledExperiments) {
           // @ts-ignore
           globalThis.Root.Runtime.experiments.setEnabled(experiment, true);
         }
-      }, enabledExperiments);
+      }, enabledExperiments || []);
+
+      if (selectedPanel) {
+        await frontend.evaluate(name => {
+          // @ts-ignore
+          globalThis.localStorage.setItem('panel-selectedTab', `"${name}"`);
+        }, selectedPanel.name);
+      }
 
       // Reload the DevTools frontend and await the elements panel.
       await frontend.goto(blankPage, {waitUntil: ['domcontentloaded']});
-      await frontend.goto(frontendUrl, {waitUntil: ['networkidle2', 'domcontentloaded']});
-      await frontend.waitForSelector('.elements');
+      await frontend.goto(frontendUrl, {waitUntil: ['domcontentloaded']});
+
+      // Default to elements if no other panel is defined.
+      if (!selectedPanel) {
+        selectedPanel = {
+          name: 'elements',
+          selector: '.elements',
+        };
+      }
+
+      if (!selectedPanel.selector) {
+        return;
+      }
+
+      // For the unspecified case wait for loading, then wait for the elements panel.
+      await frontend.waitForSelector(selectedPanel.selector);
     };
 
     store(browser, srcPage, frontend, screenshotPage, resetPages);

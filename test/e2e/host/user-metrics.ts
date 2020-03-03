@@ -6,11 +6,16 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 import * as puppeteer from 'puppeteer';
 
-import {platform, click, getBrowserAndPages, getElementPosition, resetPages, timeout, waitFor} from '../../shared/helper.js';
+import {click, getBrowserAndPages, getElementPosition, platform, resetPages, timeout, waitFor} from '../../shared/helper.js';
 
 interface UserMetric {
   name: string;
-  value: string|number;
+  value: string|number|LoadMetric;
+}
+
+interface LoadMetric {
+  histogramName: string;
+  panelName: string;
 }
 
 interface UserMetrics {
@@ -22,10 +27,15 @@ declare global {
     __caughtEvents: UserMetric[];
     __beginCatchEvents: () => void;
     __endCatchEvents: () => void;
+    __panelLoaded: (evt: Event) => void;
     __panelShown: (evt: Event) => void;
     __actionTaken: (evt: Event) => void;
     __keyboardShortcutFired: (evt: Event) => void;
-    Host: {UserMetrics: UserMetrics; userMetrics: {actionTaken(name: number): void;}};
+    Host: {
+      UserMetrics: UserMetrics;
+      userMetrics:
+          {actionTaken(name: number): void;}
+    };
     UI: {inspectorView: {_showDrawer(show: boolean): void; showView(name: string): void;}};
   }
 }
@@ -35,6 +45,11 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
     window.__panelShown = (evt: Event) => {
       const customEvt = evt as CustomEvent;
       window.__caughtEvents.push({name: 'DevTools.PanelShown', value: customEvt.detail.value});
+    };
+
+    window.__panelLoaded = (evt: Event) => {
+      const customEvt = evt as CustomEvent;
+      window.__caughtEvents.push({name: 'DevTools.PanelLoaded', value: customEvt.detail.value});
     };
 
     window.__actionTaken = (evt: Event) => {
@@ -50,12 +65,14 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
     window.__caughtEvents = [];
     window.__beginCatchEvents = () => {
       window.addEventListener('DevTools.PanelShown', window.__panelShown);
+      window.addEventListener('DevTools.PanelLoaded', window.__panelLoaded);
       window.addEventListener('DevTools.ActionTaken', window.__actionTaken);
       window.addEventListener('DevTools.KeyboardShortcutFired', window.__keyboardShortcutFired);
     };
 
     window.__endCatchEvents = () => {
       window.removeEventListener('DevTools.PanelShown', window.__panelShown);
+      window.removeEventListener('DevTools.PanelLoaded', window.__panelLoaded);
       window.removeEventListener('DevTools.ActionTaken', window.__actionTaken);
       window.removeEventListener('DevTools.KeyboardShortcutFired', window.__keyboardShortcutFired);
     };
@@ -227,6 +244,29 @@ describe('User Metrics', () => {
       {
         name: 'DevTools.KeyboardShortcutFired',
         value: 0,  // OtherShortcut
+      },
+    ]);
+  });
+
+  it('tracks panel loading', async () => {
+    // We specify the selected panel here because the default behavior is to go to the
+    // elements panel, but this means we won't get the PanelLoaded event. Instead we
+    // request that the resetPages helper sets the timeline as the target panel, and
+    // we wait for the timeline in the test. This means, in turn, we get the PanelLoaded
+    // event.
+    await resetPages({selectedPanel: {name: 'timeline'}});
+    const {frontend} = getBrowserAndPages();
+
+    await beginCatchEvents(frontend);
+    await waitFor('.timeline');
+
+    await assertCapturedEvents([
+      {
+        name: 'DevTools.PanelLoaded',
+        value: {
+          histogramName: 'DevTools.Launch.Timeline',
+          panelName: 'timeline',
+        },
       },
     ]);
   });

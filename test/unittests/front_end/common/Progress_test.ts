@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {Progress, CompositeProgress, ProgressProxy} from '/front_end/common/Progress.js';
+import {Progress, CompositeProgress, ProgressProxy} from '../../../../front_end/common/Progress.js';
 
 class MockProgressIndicator implements Progress {
   private isCanceledInternal = false;

@@ -4,6 +4,11 @@ ts_library("common") {
   deps = [
     ":character_id_map",
     ":color",
+    ":object",
+    ":progress",
+    ":string_output_stream",
+    ":text_dictionary",
+    ":throttler",
     ":trie",
     ":ui_string",
   ]
@@ -17,6 +22,36 @@ ts_library("character_id_map") {
 
 ts_library("color") {
   sources = [ "Color_test.ts" ]
+
+  deps = [ "../../../../front_end/common" ]
+}
+
+ts_library("object") {
+  sources = [ "Object_test.ts" ]
+
+  deps = [ "../../../../front_end/common" ]
+}
+
+ts_library("progress") {
+  sources = [ "Progress_test.ts" ]
+
+  deps = [ "../../../../front_end/common" ]
+}
+
+ts_library("string_output_stream") {
+  sources = [ "StringOutputStream_test.ts" ]
+
+  deps = [ "../../../../front_end/common" ]
+}
+
+ts_library("text_dictionary") {
+  sources = [ "TextDictionary_test.ts" ]
+
+  deps = [ "../../../../front_end/common" ]
+}
+
+ts_library("throttler") {
+  sources = [ "Throttler_test.ts" ]
 
   deps = [ "../../../../front_end/common" ]
 }

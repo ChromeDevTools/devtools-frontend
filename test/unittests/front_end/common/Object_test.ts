@@ -4,12 +4,12 @@
 
 const { assert } = chai;
 
-import * as Common from '/front_end/common/common.js';
+import {ObjectWrapper} from '../../../../front_end/common/Object.js';
 
 describe('ObjectWrapper', () => {
-  let obj: Common.ObjectWrapper.ObjectWrapper;
+  let obj: ObjectWrapper;
   beforeEach(() => {
-    obj = new Common.ObjectWrapper.ObjectWrapper();
+    obj = new ObjectWrapper();
   });
 
   describe('event listeners', () => {

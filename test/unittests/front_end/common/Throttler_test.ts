@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {Throttler} from '/front_end/common/Throttler.js';
+import {Throttler} from '../../../../front_end/common/Throttler.js';
 
 describe('Throttler class', () => {
   it('is able to schedule a process as soon as possible', () => {

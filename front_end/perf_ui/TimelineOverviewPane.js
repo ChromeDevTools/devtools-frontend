@@ -92,8 +92,7 @@ export class TimelineOverviewPane extends UI.Widget.VBox {
     const x = this._cursorPosition;
     const elements = await Promise.all(this._overviewControls.map(control => control.overviewInfoPromise(x)));
     const fragment = document.createDocumentFragment();
-    elements.remove(null);
-    fragment.appendChildren.apply(fragment, elements);
+    fragment.appendChildren.apply(fragment, elements.filter(element => element !== null));
     return fragment;
   }
 

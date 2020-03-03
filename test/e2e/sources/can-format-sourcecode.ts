@@ -7,7 +7,7 @@ import {describe, it} from 'mocha';
 import * as puppeteer from 'puppeteer';
 
 import {click, getBrowserAndPages, resetPages, waitFor} from '../../shared/helper.js';
-import {addBreakpointForLine, openFileInSourcesPanel, retrieveTopCallFrameScriptLocation} from '../helpers/sources-helpers.js';
+import {addBreakpointForLine, openSourceCodeEditorForFile, retrieveTopCallFrameScriptLocation} from '../helpers/sources-helpers.js';
 
 const PRETTY_PRINT_BUTTON = '[aria-label="Pretty print minified-sourcecode.js"]';
 
@@ -35,7 +35,7 @@ describe('The Sources Tab', async () => {
   it('can format a JavaScript file', async () => {
     const {target, frontend} = getBrowserAndPages();
 
-    await openFileInSourcesPanel(target, 'minified-sourcecode.js', 'minified-sourcecode.html');
+    await openSourceCodeEditorForFile(target, 'minified-sourcecode.js', 'minified-sourcecode.html');
     await prettyPrintMinifiedFile(frontend);
 
     const expectedLines = [
@@ -69,7 +69,7 @@ describe('The Sources Tab', async () => {
   it('causes the correct line number to show up in the console panel', async () => {
     const {target, frontend} = getBrowserAndPages();
 
-    await openFileInSourcesPanel(target, 'minified-sourcecode.js', 'minified-sourcecode.html');
+    await openSourceCodeEditorForFile(target, 'minified-sourcecode.js', 'minified-sourcecode.html');
     await prettyPrintMinifiedFile(frontend);
 
     await click('#tab-console');
@@ -99,7 +99,7 @@ describe('The Sources Tab', async () => {
   it('can add breakpoint for formatted file', async () => {
     const {target, frontend} = getBrowserAndPages();
 
-    await openFileInSourcesPanel(target, 'minified-sourcecode.js', 'minified-sourcecode.html');
+    await openSourceCodeEditorForFile(target, 'minified-sourcecode.js', 'minified-sourcecode.html');
     await prettyPrintMinifiedFile(frontend);
     await addBreakpointForLine(frontend, 10);
 
@@ -110,7 +110,7 @@ describe('The Sources Tab', async () => {
   it('can add breakpoint for unformatted file', async () => {
     const {target, frontend} = getBrowserAndPages();
 
-    await openFileInSourcesPanel(target, 'minified-sourcecode.js', 'minified-sourcecode.html');
+    await openSourceCodeEditorForFile(target, 'minified-sourcecode.js', 'minified-sourcecode.html');
     await addBreakpointForLine(frontend, 5);
 
     const scriptLocation = await retrieveTopCallFrameScriptLocation('notFormattedFunction();', target);
@@ -120,7 +120,7 @@ describe('The Sources Tab', async () => {
   it('can add breakpoint on minified source and then break correctly on formatted source', async () => {
     const {target, frontend} = getBrowserAndPages();
 
-    await openFileInSourcesPanel(target, 'minified-sourcecode.js', 'minified-sourcecode.html');
+    await openSourceCodeEditorForFile(target, 'minified-sourcecode.js', 'minified-sourcecode.html');
     await addBreakpointForLine(frontend, 5);
     await prettyPrintMinifiedFile(frontend);
 

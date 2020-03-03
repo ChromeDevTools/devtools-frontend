@@ -11,8 +11,7 @@ export async function doubleClickSourceTreeItem(selector: string) {
   await click(selector, {clickOptions: {clickCount: 2}});
 }
 
-export async function openFileInSourcesPanel(target: puppeteer.Page, sourceFile: string, testInput: string) {
-  const PRETTY_PRINT_BUTTON = `[aria-label="Pretty print ${sourceFile}"]`;
+export async function openFileInSourcesPanel(target: puppeteer.Page, testInput: string) {
   await target.goto(`${resourcesPath}/sources/${testInput}`);
 
   // Locate the button for switching to the sources tab.
@@ -20,12 +19,16 @@ export async function openFileInSourcesPanel(target: puppeteer.Page, sourceFile:
 
   // Wait for the navigation panel to show up
   await waitFor('.navigator-file-tree-item');
+}
+
+export async function openSourceCodeEditorForFile(target: puppeteer.Page, sourceFile: string, testInput: string) {
+  await openFileInSourcesPanel(target, testInput);
 
   // Open a particular file in the editor
   await doubleClickSourceTreeItem(`[aria-label="${sourceFile}, file"]`);
 
   // Wait for the file to be formattable, this process is async after opening a file
-  await waitFor(PRETTY_PRINT_BUTTON);
+  await waitFor(`[aria-label="Pretty print ${sourceFile}"]`);
 }
 
 // We can't use the click helper, as it is not possible to select a particular
@@ -70,4 +73,27 @@ export async function retrieveTopCallFrameScriptLocation(script: string, target:
   await scriptEvaluation;
 
   return scriptLocation;
+}
+
+export function listenForSourceFilesAdded(frontend: puppeteer.Page) {
+  return frontend.evaluate(() => {
+    window.__sourceFilesAddedEvents = [];
+    window.addEventListener('source-tree-file-added', (event: Event) => {
+      const customEvent = event as CustomEvent<string>;
+      if (customEvent.detail !== '/__puppeteer_evaluation_script__') {
+        window.__sourceFilesAddedEvents.push(customEvent.detail);
+      }
+    });
+  });
+}
+
+export function waitForAdditionalSourceFiles(frontend: puppeteer.Page) {
+  return frontend.waitForFunction(() => {
+    return window.__sourceFilesAddedEvents.length > 0;
+  });
+}
+
+export function retrieveSourceFilesAdded(frontend: puppeteer.Page) {
+  // Strip hostname, to make it agnostic of which server port we use
+  return frontend.evaluate(() => window.__sourceFilesAddedEvents.map(file => new URL(`http://${file}`).pathname));
 }

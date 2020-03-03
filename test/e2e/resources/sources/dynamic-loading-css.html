@@ -1,0 +1,21 @@
+<!--
+  Copyright 2020 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Dynamic loading of files</title>
+<script>
+  window.go = function() {
+    return new Promise((resolve) => {
+      const externalStylesheetElement = document.createElement('link');
+      externalStylesheetElement.rel = 'stylesheet';
+      externalStylesheetElement.href = 'dynamic.css';
+      externalStylesheetElement.onload = () => {
+        resolve();
+      };
+      document.head.appendChild(externalStylesheetElement);
+    });
+  };
+</script>

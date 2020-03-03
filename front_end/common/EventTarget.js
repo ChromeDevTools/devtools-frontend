@@ -69,6 +69,16 @@ export class EventTarget {
 EventTarget.removeEventListeners = removeEventListeners;
 
 /**
+ * @param {string} name
+ * @param {*} detail
+ * @param {!HTMLElement | !Window} target
+ */
+export function fireEvent(name, detail = {}, target = window) {
+  const evt = new CustomEvent(name, {bubbles: true, cancelable: true, detail});
+  target.dispatchEvent(evt);
+}
+
+/**
  * @typedef {!{data: *}}
  */
 // @ts-ignore TS can't pick up that EventTargetEvent is of this type

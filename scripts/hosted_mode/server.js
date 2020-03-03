@@ -83,6 +83,8 @@ function requestHandler(request, response) {
     let encoding = 'utf8';
     if (path.endsWith('.js')) {
       response.setHeader('Content-Type', 'text/javascript; charset=utf-8');
+    } else if (path.endsWith('.css')) {
+      response.setHeader('Content-Type', 'text/css; charset=utf-8');
     } else if (path.endsWith('.wasm')) {
       response.setHeader('Content-Type', 'application/wasm');
       encoding = 'binary'

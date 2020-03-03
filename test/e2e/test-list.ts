@@ -10,6 +10,7 @@ export const testList = [
   join(__dirname, '.', 'console', 'console-message-format.js'),
   join(__dirname, '.', 'network', 'network-datagrid.js'),
   join(__dirname, '.', 'sources', 'can-format-sourcecode.js'),
+  join(__dirname, '.', 'sources', 'can-show-files-after-loading.js'),
   join(__dirname, '.', 'sources', 'can-break-with-wasm-sourcemaps.js'),
   join(__dirname, '.', 'sources', 'can-show-multiple-workers.js'),
   join(__dirname, '.', 'sources', 'debug-raw-wasm.js'),

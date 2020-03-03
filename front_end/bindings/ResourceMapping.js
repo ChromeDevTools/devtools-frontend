@@ -184,7 +184,12 @@ class ModelInfo {
       resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.ResourceAdded, this._resourceAdded, this),
       resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameWillNavigate, this._frameWillNavigate, this),
       resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameDetached, this._frameDetached, this),
-      cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetChanged, this._styleSheetChanged, this)
+      cssModel.addEventListener(
+          SDK.CSSModel.Events.StyleSheetChanged,
+          event => {
+            this._styleSheetChanged(event);
+          },
+          this)
     ];
   }
 

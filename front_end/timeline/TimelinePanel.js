@@ -241,7 +241,9 @@ export class TimelinePanel extends UI.Panel.Panel {
     this._loadButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => this._selectFileToLoad());
     this._saveButton =
         new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Save profile…'), 'largeicon-download');
-    this._saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => this._saveToFile());
+    this._saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, event => {
+      this._saveToFile();
+    });
     this._panelToolbar.appendSeparator();
     this._panelToolbar.appendToolbarItem(this._loadButton);
     this._panelToolbar.appendToolbarItem(this._saveButton);

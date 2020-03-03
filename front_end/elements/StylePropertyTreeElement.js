@@ -732,8 +732,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this._prompt = new CSSPropertyPrompt(this, isEditingName);
     this._prompt.setAutocompletionTimeout(0);
 
-    this._prompt.addEventListener(
-        UI.TextPrompt.Events.TextChanged, this._applyFreeFlowStyleTextEdit.bind(this, context));
+    this._prompt.addEventListener(UI.TextPrompt.Events.TextChanged, event => {
+      this._applyFreeFlowStyleTextEdit(context);
+    });
 
     const proxyElement = this._prompt.attachAndStartEditing(selectElement, blurListener.bind(this, context));
     this._navigateToSource(selectElement, true);

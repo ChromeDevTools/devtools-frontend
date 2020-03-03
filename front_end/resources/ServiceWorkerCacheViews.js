@@ -46,8 +46,9 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
 
     this._deleteSelectedButton =
         new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Delete Selected'), 'largeicon-delete');
-    this._deleteSelectedButton.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.Click, () => this._deleteButtonClicked(null));
+    this._deleteSelectedButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, event => {
+      this._deleteButtonClicked(null);
+    });
     editorToolbar.appendToolbarItem(this._deleteSelectedButton);
 
     const entryPathFilterBox = new UI.Toolbar.ToolbarInput(ls`Filter by Path`, '', 1);
@@ -145,8 +146,9 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
 
     dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortingChanged, this);
 
-    dataGrid.addEventListener(
-        DataGrid.DataGrid.Events.SelectedNode, event => this._previewCachedResponse(event.data.data), this);
+    dataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, event => {
+      this._previewCachedResponse(event.data.data);
+    }, this);
     dataGrid.setStriped(true);
     return dataGrid;
   }

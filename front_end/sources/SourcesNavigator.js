@@ -198,7 +198,9 @@ export class OverridesNavigatorView extends NavigatorView {
     }
     const title = Common.UIString.UIString('Select folder for overrides');
     const setupButton = new UI.Toolbar.ToolbarButton(title, 'largeicon-add', title);
-    setupButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._setupNewWorkspace, this);
+    setupButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, event => {
+      this._setupNewWorkspace();
+    }, this);
     this._toolbar.appendToolbarItem(setupButton);
   }
 
@@ -261,7 +263,9 @@ export class SnippetsNavigatorView extends NavigatorView {
 
     const toolbar = new UI.Toolbar.Toolbar('navigator-toolbar');
     const newButton = new UI.Toolbar.ToolbarButton('', 'largeicon-add', Common.UIString.UIString('New snippet'));
-    newButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => this.create(self.Snippets.project, ''));
+    newButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, event => {
+      this.create(self.Snippets.project, '');
+    });
     toolbar.appendToolbarItem(newButton);
     this.contentElement.insertBefore(toolbar.element, this.contentElement.firstChild);
   }

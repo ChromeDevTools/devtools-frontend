@@ -37,12 +37,12 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     this._active = false;
     this._enabled = false;
 
-    this._workspace.addEventListener(
-        Workspace.Workspace.Events.ProjectAdded,
-        event => this._onProjectAdded(/** @type {!Workspace.Workspace.Project} */ (event.data)));
-    this._workspace.addEventListener(
-        Workspace.Workspace.Events.ProjectRemoved,
-        event => this._onProjectRemoved(/** @type {!Workspace.Workspace.Project} */ (event.data)));
+    this._workspace.addEventListener(Workspace.Workspace.Events.ProjectAdded, event => {
+      this._onProjectAdded(/** @type {!Workspace.Workspace.Project} */ (event.data));
+    });
+    this._workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, event => {
+      this._onProjectRemoved(/** @type {!Workspace.Workspace.Project} */ (event.data));
+    });
 
     self.Persistence.persistence.addNetworkInterceptor(this._canHandleNetworkUISourceCode.bind(this));
 
@@ -87,19 +87,19 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
       this._eventDescriptors = [
         self.Workspace.workspace.addEventListener(
             Workspace.Workspace.Events.UISourceCodeRenamed,
-            async event => {
-              const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data.uiSourceCode);
-              await this._onUISourceCodeRemoved(uiSourceCode);
-              await this._onUISourceCodeAdded(uiSourceCode);
+            event => {
+              this._uiSourceCodeRenamedListener(event);
             }),
         self.Workspace.workspace.addEventListener(
             Workspace.Workspace.Events.UISourceCodeAdded,
-            async event =>
-                await this._onUISourceCodeAdded(/** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data))),
+            event => {
+              this._uiSourceCodeAdded(event);
+            }),
         self.Workspace.workspace.addEventListener(
             Workspace.Workspace.Events.UISourceCodeRemoved,
-            async event =>
-                await this._onUISourceCodeRemoved(/** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data))),
+            event => {
+              this._uiSourceCodeRemovedListener(event);
+            }),
         self.Workspace.workspace.addEventListener(
             Workspace.Workspace.Events.WorkingCopyCommitted,
             event => this._onUISourceCodeWorkingCopyCommitted(
@@ -110,6 +110,29 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
       Common.EventTarget.EventTarget.removeEventListeners(this._eventDescriptors);
       await this._updateActiveProject();
     }
+  }
+
+  /**
+   * @param {!Common.EventTarget.EventTargetEvent} event
+   */
+  async _uiSourceCodeRenamedListener(event) {
+    const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data.uiSourceCode);
+    await this._onUISourceCodeRemoved(uiSourceCode);
+    await this._onUISourceCodeAdded(uiSourceCode);
+  }
+
+  /**
+   * @param {!Common.EventTarget.EventTargetEvent} event
+   */
+  async _uiSourceCodeRemovedListener(event) {
+    await this._onUISourceCodeRemoved(/** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data));
+  }
+
+  /**
+   * @param {!Common.EventTarget.EventTargetEvent} event
+   */
+  async _uiSourceCodeAdded(event) {
+    await this._onUISourceCodeAdded(/** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data));
   }
 
   async _updateActiveProject() {

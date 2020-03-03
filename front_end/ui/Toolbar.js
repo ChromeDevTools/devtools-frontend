@@ -187,7 +187,9 @@ export class Toolbar {
     if (showLabel) {
       button.setText(action.title());
     }
-    button.addEventListener(ToolbarButton.Events.Click, action.execute, action);
+    button.addEventListener(ToolbarButton.Events.Click, event => {
+      action.execute();
+    }, action);
     action.addEventListener(ActionEvents.Enabled, enabledChanged);
     button.setEnabled(action.enabled());
     return button;

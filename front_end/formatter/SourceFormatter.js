@@ -47,8 +47,9 @@ export class SourceFormatter {
     this._formattedSourceCodes = new Map();
     this._scriptMapping = new ScriptMapping();
     this._styleMapping = new StyleMapping();
-    self.Workspace.workspace.addEventListener(
-        Workspace.Workspace.Events.UISourceCodeRemoved, this._onUISourceCodeRemoved, this);
+    self.Workspace.workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, event => {
+      this._onUISourceCodeRemoved(event);
+    }, this);
   }
 
   /**

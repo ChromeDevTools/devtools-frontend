@@ -54,11 +54,23 @@ export class SASSSourceMapping {
 
     this._eventListeners = [
       this._sourceMapManager.addEventListener(
-          SDK.SourceMapManager.Events.SourceMapAttached, this._sourceMapAttached, this),
+          SDK.SourceMapManager.Events.SourceMapAttached,
+          event => {
+            this._sourceMapAttached(event);
+          },
+          this),
       this._sourceMapManager.addEventListener(
-          SDK.SourceMapManager.Events.SourceMapDetached, this._sourceMapDetached, this),
+          SDK.SourceMapManager.Events.SourceMapDetached,
+          event => {
+            this._sourceMapDetached(event);
+          },
+          this),
       this._sourceMapManager.addEventListener(
-          SDK.SourceMapManager.Events.SourceMapChanged, this._sourceMapChanged, this)
+          SDK.SourceMapManager.Events.SourceMapChanged,
+          event => {
+            this._sourceMapChanged(event);
+          },
+          this)
     ];
   }
 

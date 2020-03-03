@@ -216,7 +216,7 @@ async function removeResourcesFromGRDP(keysToRemoveFromGRD) {
     for (let i = 0; i < messages.length; i++) {
       const message = messages[i];
       const match =
-          line.match(new RegExp(`<message[^>]*name="${message.ids}"[^>]*desc="${message.description}"[^>]*>`));
+        line.match(new RegExp(`<message[^>]*name="${message.ids}"[^>]*desc="(.*)?"[^>]*>`));
       if (match)
         return i;
     }

@@ -99,4 +99,15 @@ describe('StringUtilities', () => {
       assert.equal(outputString, 'a b c');
     });
   });
+
+  describe('reverse', () => {
+    it('reverses the string', () => {
+      const inputString = 'abc';
+      assert.equal(StringUtilities.reverse(inputString), 'cba');
+    });
+
+    it('does nothing to an empty string', () => {
+      assert.equal('', StringUtilities.reverse(''));
+    });
+  });
 });

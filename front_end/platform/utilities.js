@@ -51,13 +51,6 @@ self.mod = function(m, n) {
 /**
  * @return {string}
  */
-String.prototype.reverse = function() {
-  return this.split('').reverse().join('');
-};
-
-/**
- * @return {string}
- */
 String.prototype.replaceControlCharacters = function() {
   // Replace C0 and C1 control character sets with printable character.
   // Do not replace '\t', \n' and '\r'.

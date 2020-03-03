@@ -4,6 +4,7 @@
 
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -438,7 +439,7 @@ class FilePathIndex {
    */
   addPath(path) {
     const encodedPath = this._encoder.encode(path);
-    this._reversedIndex.add(encodedPath.reverse());
+    this._reversedIndex.add(Platform.StringUtilities.reverse(encodedPath));
   }
 
   /**
@@ -446,7 +447,7 @@ class FilePathIndex {
    */
   removePath(path) {
     const encodedPath = this._encoder.encode(path);
-    this._reversedIndex.remove(encodedPath.reverse());
+    this._reversedIndex.remove(Platform.StringUtilities.reverse(encodedPath));
   }
 
   /**
@@ -455,12 +456,13 @@ class FilePathIndex {
    */
   similarFiles(networkPath) {
     const encodedPath = this._encoder.encode(networkPath);
-    const longestCommonPrefix = this._reversedIndex.longestPrefix(encodedPath.reverse(), false);
+    const reversedEncodedPath = Platform.StringUtilities.reverse(encodedPath);
+    const longestCommonPrefix = this._reversedIndex.longestPrefix(reversedEncodedPath, false);
     if (!longestCommonPrefix) {
       return [];
     }
     return this._reversedIndex.words(longestCommonPrefix)
-        .map(encodedPath => this._encoder.decode(encodedPath.reverse()));
+        .map(encodedPath => this._encoder.decode(Platform.StringUtilities.reverse(encodedPath)));
   }
 }
 

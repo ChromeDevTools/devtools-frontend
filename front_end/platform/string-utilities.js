@@ -335,3 +335,12 @@ export const trimURL = (url, baseURLDomain) => {
 export const collapseWhitespace = inputString => {
   return inputString.replace(/[\s\xA0]+/g, ' ');
 };
+
+/**
+ *
+ * @param {string} inputString
+ * @return {string}
+ */
+export const reverse = inputString => {
+  return inputString.split('').reverse().join('');
+};

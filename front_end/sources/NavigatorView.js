@@ -32,6 +32,7 @@ import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as Persistence from '../persistence/persistence.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Snippets from '../snippets/snippets.js';
 import * as UI from '../ui/ui.js';
@@ -415,7 +416,7 @@ export class NavigatorView extends UI.Widget.VBox {
     const encoder = new Persistence.Persistence.PathEncoder();
     const reversedPaths = fileSystemProjects.map(project => {
       const fileSystem = /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem} */ (project);
-      return encoder.encode(fileSystem.fileSystemPath()).reverse();
+      return Platform.StringUtilities.reverse(encoder.encode(fileSystem.fileSystemPath()));
     });
     const reversedIndex = new Common.Trie.Trie();
     for (const reversedPath of reversedPaths) {
@@ -428,7 +429,9 @@ export class NavigatorView extends UI.Widget.VBox {
       reversedIndex.remove(reversedPath);
       const commonPrefix = reversedIndex.longestPrefix(reversedPath, false /* fullWordOnly */);
       reversedIndex.add(reversedPath);
-      const path = encoder.decode(reversedPath.substring(0, commonPrefix.length + 1).reverse());
+      const prefixPath = reversedPath.substring(0, commonPrefix.length + 1);
+      const path = encoder.decode(Platform.StringUtilities.reverse(prefixPath));
+
       const fileSystemNode = this._rootNode.child(project.id());
       if (fileSystemNode) {
         fileSystemNode.setTitle(path);

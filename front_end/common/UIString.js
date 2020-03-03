@@ -114,7 +114,7 @@ export class UIStringFormat {
 const _substitutionStrings = new WeakMap();
 
 /**
- * @param {!Array<string>|string} strings
+ * @param {!ITemplateArray|string} strings
  * @param {...*} vararg
  * @return {string}
  */

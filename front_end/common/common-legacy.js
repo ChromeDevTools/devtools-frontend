@@ -224,7 +224,7 @@ Common.Worker = CommonModule.Worker.WorkerWrapper;
 self.Common.settings;
 
 /**
- * @param {!Array<string>|string} strings
+ * @param {!ITemplateArray|string} strings
  * @param {...*} vararg
  * @return {string}
  */

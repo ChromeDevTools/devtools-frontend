@@ -124,6 +124,31 @@ export class RequestHeadersView extends UI.Widget.VBox {
   }
 
   /**
+   * @param {!{name:string,value:(string|undefined),headerNotSet:(boolean|undefined),headerValueIncorrect:(boolean|undefined),details:(string|undefined)}} header
+   * @return {!DocumentFragment}
+   */
+  _formatHeaderObject(header) {
+    const fragment = createDocumentFragment();
+    if (header.headerNotSet) {
+      fragment.createChild('div', 'header-badge header-badge-text').textContent = 'not-set';
+    }
+    const colon = header.value ? ': ' : '';
+    fragment.createChild('div', 'header-name').textContent = header.name + colon;
+    fragment.createChild('span', 'header-separator');
+    if (header.value) {
+      if (header.headerValueIncorrect) {
+        fragment.createChild('div', 'header-value source-code header-warning').textContent = header.value;
+      } else {
+        fragment.createChild('div', 'header-value source-code').textContent = header.value;
+      }
+    }
+    if (header.details) {
+      fragment.createChild('div', 'header-details').innerHTML = header.details;
+    }
+    return fragment;
+  }
+
+  /**
    * @param {string} value
    * @param {string} className
    * @param {boolean} decodeParameters
@@ -538,15 +563,44 @@ export class RequestHeadersView extends UI.Widget.VBox {
     if (this._showResponseHeadersText) {
       this._refreshHeadersText(Common.UIString.UIString('Response Headers'), headers.length, headersText, treeElement);
     } else {
+      const headersWithIssues = [];
+      if (this._request.wasBlocked()) {
+        const headerWithIssues = BlockedReasonDetails.get(this._request.blockedReason());
+        if (headerWithIssues) {
+          headersWithIssues.push(headerWithIssues);
+        }
+      }
       this._refreshHeaders(
-          Common.UIString.UIString('Response Headers'), headers, treeElement, /* provisional */ false,
-          this._request.blockedResponseCookies());
+          Common.UIString.UIString('Response Headers'), mergeHeadersWithIssues(headers, headersWithIssues), treeElement,
+          /* provisional */ false, this._request.blockedResponseCookies());
     }
 
     if (headersText) {
       const toggleButton = this._createHeadersToggleButton(this._showResponseHeadersText);
       toggleButton.addEventListener('click', this._toggleResponseHeadersText.bind(this), false);
       treeElement.listItemElement.appendChild(toggleButton);
+    }
+
+    /**
+     *
+     * @param {!Array<*>} headers
+     * @param {!Array<*>} headersWithIssues
+     */
+    function mergeHeadersWithIssues(headers, headersWithIssues) {
+      let i = 0, j = 0;
+      const result = [];
+      while (i < headers.length || j < headersWithIssues.length) {
+        if (i < headers.length && (j >= headersWithIssues.length || headers[i].name < headersWithIssues[j].name)) {
+          result.push({...headers[i++], headerNotSet: false});
+        } else if (
+            j < headersWithIssues.length && (i >= headers.length || headers[i].name > headersWithIssues[j].name)) {
+          result.push({...headersWithIssues[j++], headerNotSet: true});
+        } else if (
+            i < headers.length && j < headersWithIssues.length && headers[i].name === headersWithIssues[j].name) {
+          result.push({...headersWithIssues[j++], ...headers[i++], headerNotSet: false});
+        }
+      }
+      return result;
     }
   }
 
@@ -656,7 +710,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
 
     headersTreeElement.hidden = !length && !provisionalHeaders;
     for (let i = 0; i < length; ++i) {
-      const headerTreeElement = new UI.TreeOutline.TreeElement(this._formatHeader(headers[i].name, headers[i].value));
+      const headerTreeElement = new UI.TreeOutline.TreeElement(this._formatHeaderObject(headers[i]));
       headerTreeElement[_headerNameSymbol] = headers[i].name;
 
       if (headers[i].name.toLowerCase() === 'set-cookie') {
@@ -831,3 +885,75 @@ export class Category extends UI.TreeOutline.TreeElement {
     this._expandedSetting.set(false);
   }
 }
+
+
+const BlockedReasonDetails = new Map([
+  [
+    Protocol.Network.BlockedReason.CoepFrameResourceNeedsCoepHeader, {
+      name: 'cross-origin-embedder-policy',
+      value: null,
+      details: `<div class='call-to-action'><div class='call-to-action-body'>
+                <div class='explanation'>To embedd this frame in your document,
+                the response needs to enable the Cross Origin Embedder Policy by specifying the following response header:
+                <div class='source-code'>Cross-Origin-Embedder-Policy: require-corp</div>
+                </div>
+            </div>`
+    }
+  ],
+  [
+    Protocol.Network.BlockedReason.CorpNotSameOriginAfterDefaultedToSameOriginByCoep, {
+      name: 'cross-origin-resource-policy',
+      value: null,
+      details: `<div class='call-to-action'><div class='call-to-action-body'>
+                <div class='explanation'>To use this resource from a different origin,
+                  the server needs to specify a <code>Cross-Origin-Resource-Policy<code> response header, e.g.:</div>
+                  <div><code>Cross-Origin-Resource-Policy: same-site</code> &mdash;
+                  Choose this option if the resource and the document are served from the same site.</div>
+              <div><code>Cross-Origin-Resource-Policy: cross-origin</code> &mdash;
+                  <span class='explanation warning'>Only do this if an arbitrary website including this resource does not impose a security risk.</span></div>
+                </div>
+            </div>`
+    }
+  ],
+  [
+    Protocol.Network.BlockedReason.CoopSandboxedIframeCannotNavigateToCoopPage, {
+      name: 'cross-origin-opener-policy',
+      value: null,
+      headerValueIncorrect: false,
+      details: `<div class='call-to-action'><div class='call-to-action-body'>
+             <div class='explanation'>This document was blocked from loading in an <code>iframe</code> with a <code>sandbox</code> attribute because it specified a <code>Cross-Origin-Opener-Policy</code>.</div>
+           </div>
+         </div>`
+    }
+  ],
+  [
+    Protocol.Network.BlockedReason.CorpNotSameSite, {
+      name: 'cross-origin-resource-policy',
+      value: null,
+      headerValueIncorrect: true,
+      details: `<div class='call-to-action'><div class='call-to-action-body'>
+             <div class='explanation'>To use this resource from a different site,
+               the server may relax the <code>Cross-Origin-Resource-Policy</code> response header:</div>
+               <div><code>Cross-Origin-Resource-Policy: cross-origin</code> &mdash;
+                 <span class='explanation warning'>Only do this if an arbitrary website including this resource does not impose a security risk.</span></div>
+             </div>
+          </div>`
+    }
+  ],
+  [
+    Protocol.Network.BlockedReason.CorpNotSameOrigin, {
+      name: 'cross-origin-resource-policy',
+      value: null,
+      headerValueIncorrect: true,
+      details: `<div class='call-to-action'><div class='call-to-action-body'>
+             <div class='explanation'>To use this resource from a different origin,
+             the server may relax the <code>Cross-Origin-Resource-Policy</code> response header:</div>
+             <div><code>Cross-Origin-Resource-Policy: same-site</code> &mdash;
+                 Choose this option if the resource and the document are served from the same site.</div>
+             <div><code>Cross-Origin-Resource-Policy: cross-origin</code> &mdash;
+                 <span class='explanation warning'>Only do this if an arbitrary website including this resource does not impose a security risk.</span></div>
+           </div>
+         </div>`
+    }
+  ],
+]);

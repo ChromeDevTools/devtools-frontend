@@ -348,6 +348,12 @@
     pointer-events: none;
 }
 
+.network-log-grid.data-grid span.separator-in-cell {
+    user-select: none;
+    min-width: 1ex;
+    display: inline-block;
+}
+
 #network-container {
     overflow: hidden;
 }

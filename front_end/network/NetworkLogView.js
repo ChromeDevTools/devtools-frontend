@@ -65,6 +65,7 @@ export class NetworkLogView extends UI.Widget.VBox {
 
     this._networkHideDataURLSetting = self.Common.settings.createSetting('networkHideDataURL', false);
     this._networkShowIssuesOnlySetting = self.Common.settings.createSetting('networkShowIssuesOnly', false);
+    this._networkOnlyBlockedRequestsSetting = self.Common.settings.createSetting('networkOnlyBlockedRequests', false);
     this._networkResourceTypeFiltersSetting = self.Common.settings.createSetting('networkResourceTypeFilters', {});
 
     this._rawRowHeight = 0;
@@ -155,6 +156,13 @@ export class NetworkLogView extends UI.Widget.VBox {
         UI.FilterBar.FilterUI.Events.FilterChanged, this._filterChanged.bind(this), this);
     this._onlyIssuesFilterUI.element().title = ls`Only show requests with blocked response cookies`;
     filterBar.addFilter(this._onlyIssuesFilterUI);
+
+    this._onlyBlockedRequestsUI = new UI.FilterBar.CheckboxFilterUI(
+        'only-show-blocked-requests', ls`Blocked Requests`, true, this._networkOnlyBlockedRequestsSetting);
+    this._onlyBlockedRequestsUI.addEventListener(
+        UI.FilterBar.FilterUI.Events.FilterChanged, this._filterChanged.bind(this), this);
+    this._onlyBlockedRequestsUI.element().title = ls`Only show blocked requests`;
+    filterBar.addFilter(this._onlyBlockedRequestsUI);
 
 
     this._filterParser = new TextUtils.TextUtils.FilterParser(_searchKeys);
@@ -1220,6 +1228,7 @@ export class NetworkLogView extends UI.Widget.VBox {
     this._textFilterUI.setValue(filterString);
     this._dataURLFilterUI.setChecked(false);
     this._onlyIssuesFilterUI.setChecked(false);
+    this._onlyBlockedRequestsUI.setChecked(false);
     this._resourceCategoryFilterUI.reset();
   }
 
@@ -1564,6 +1573,9 @@ export class NetworkLogView extends UI.Widget.VBox {
       return false;
     }
     if (this._onlyIssuesFilterUI.checked() && !SDK.IssuesModel.IssuesModel.hasIssues(request)) {
+      return false;
+    }
+    if (this._onlyBlockedRequestsUI.checked() && !request.wasBlocked()) {
       return false;
     }
     if (request.statusText === 'Service Worker Fallback Required') {

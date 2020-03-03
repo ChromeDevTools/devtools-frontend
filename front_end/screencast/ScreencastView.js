@@ -667,9 +667,9 @@ export class ScreencastView extends UI.Widget.VBox {
       this._navigationUrl.addEventListener('keyup', this._navigationUrlKeyUp.bind(this), true);
       this._requestNavigationHistory();
       this._resourceTreeModel.addEventListener(
-          SDK.ResourceTreeModel.Events.MainFrameNavigated, this._requestNavigationHistoryEvent, this);
+          SDK.ResourceTreeModel.Events.MainFrameNavigated, this._requestNavigationHistory, this);
       this._resourceTreeModel.addEventListener(
-          SDK.ResourceTreeModel.Events.CachedResourcesLoaded, this._requestNavigationHistoryEvent, this);
+          SDK.ResourceTreeModel.Events.CachedResourcesLoaded, this._requestNavigationHistory, this);
     }
   }
 
@@ -705,13 +705,6 @@ export class ScreencastView extends UI.Widget.VBox {
     }
     this._resourceTreeModel.navigate(url);
     this._canvasElement.focus();
-  }
-
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _requestNavigationHistoryEvent(event) {
-    this._requestNavigationHistory();
   }
 
   async _requestNavigationHistory() {

@@ -31,7 +31,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox {
     this._breakpointElements = new Map();
 
     this._addButton = new UI.Toolbar.ToolbarButton(ls`Add XHR/fetch breakpoint`, 'largeicon-add');
-    this._addButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, event => { this._addButtonClicked(); });
+    this._addButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._addButtonClicked.bind(this));
 
     this._emptyElement.addEventListener('contextmenu', this._emptyElementContextMenu.bind(this), true);
     this._emptyElement.tabIndex = -1;
@@ -47,9 +47,6 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox {
     return [this._addButton];
   }
 
-  /**
-   * @param {!Event} event
-   */
   _emptyElementContextMenu(event) {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(

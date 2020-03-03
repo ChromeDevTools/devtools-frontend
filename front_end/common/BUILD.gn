@@ -12,7 +12,6 @@ ts_library("common") {
     ":color",
     ":event_target",
     ":javascript_meta_data",
-    ":object",
     ":progress",
     ":query_param_handler",
     ":ui_string",
@@ -58,12 +57,6 @@ ts_library("ui_string") {
   sources = [ "UIString.js" ]
 
   deps = [ "../platform" ]
-}
-
-ts_library("object") {
-  sources = [ "Object.js" ]
-
-  deps = [ ":event_target" ]
 }
 
 ts_library("progress") {

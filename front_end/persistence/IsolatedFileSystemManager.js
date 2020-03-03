@@ -51,7 +51,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.FileSystemRemoved, this._onFileSystemRemoved, this);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-        Host.InspectorFrontendHostAPI.Events.FileSystemAdded, event => { this._onFileSystemAdded(event); }, this);
+        Host.InspectorFrontendHostAPI.Events.FileSystemAdded, this._onFileSystemAdded, this);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved, this._onFileSystemFilesChanged, this);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(

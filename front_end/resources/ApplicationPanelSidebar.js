@@ -328,7 +328,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
 
   _resetWebSQL() {
     for (const queryView of this._databaseQueryViews.values()) {
-      queryView.removeEventListener(DatabaseQueryViewEvents.SchemaUpdated, event => { this._updateDatabaseTables(event); }, this);
+      queryView.removeEventListener(DatabaseQueryViewEvents.SchemaUpdated, this._updateDatabaseTables, this);
     }
     this._databaseTableViews.clear();
     this._databaseQueryViews.clear();
@@ -510,7 +510,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
       if (!view) {
         view = new DatabaseQueryView(database);
         this._databaseQueryViews.set(database, view);
-        view.addEventListener(DatabaseQueryViewEvents.SchemaUpdated, event => { this._updateDatabaseTables(event); }, this);
+        view.addEventListener(DatabaseQueryViewEvents.SchemaUpdated, this._updateDatabaseTables, this);
       }
     }
 

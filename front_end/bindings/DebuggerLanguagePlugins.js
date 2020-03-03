@@ -145,7 +145,7 @@ export class DebuggerLanguagePluginManager {
 
     const runtimeModel = debuggerModel.runtimeModel();
     this._eventHandlers = [
-      this._debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this._newScriptSourceListener, this),
+      this._debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this._newScriptSource, this),
       runtimeModel.addEventListener(
           SDK.RuntimeModel.Events.ExecutionContextDestroyed, this._executionContextDestroyed, this)
     ];
@@ -337,15 +337,8 @@ export class DebuggerLanguagePluginManager {
   /**
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
-  _newScriptSourceListener(event) {
+  async _newScriptSource(event) {
     const script = /** @type {!SDK.Script.Script} */ (event.data);
-    this._newScriptSource(script);
-  }
-
-  /**
-   * @param {!SDK.Script.Script} script
-   */
-  async _newScriptSource(script) {
     const sourceFiles = await this._getSourceFiles(script);
     if (!sourceFiles) {
       return;

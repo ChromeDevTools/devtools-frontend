@@ -72,7 +72,7 @@ export class CoverageView extends UI.Widget.VBox {
 
     toolbar.appendSeparator();
     const saveButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Export...'), 'largeicon-download');
-    saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, event => { this._exportReport(); });
+    saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => this._exportReport());
     toolbar.appendToolbarItem(saveButton);
 
     /** @type {?RegExp} */

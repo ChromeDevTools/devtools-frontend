@@ -26,7 +26,7 @@
 import {EventDescriptor, EventTarget, EventTargetEvent} from './EventTarget.js';  // eslint-disable-line no-unused-vars
 
 /**
- * @typedef {!{thisObject: (!Object|undefined), listener: function(!EventTargetEvent):void, disposed: (boolean|undefined)}}
+ * @typedef {!{thisObject: (!Object|undefined), listener: function(!EventTargetEvent), disposed: (boolean|undefined)}}
  */
 let _listenerCallbackTuple;  // eslint-disable-line no-unused-vars
 
@@ -43,7 +43,7 @@ export class ObjectWrapper {
   /**
    * @override
    * @param {string|symbol} eventType
-   * @param {function(!EventTargetEvent):void} listener
+   * @param {function(!EventTargetEvent)} listener
    * @param {!Object=} thisObject
    * @return {!EventDescriptor}
    */
@@ -59,10 +59,7 @@ export class ObjectWrapper {
     if (!this._listeners.has(eventType)) {
       this._listeners.set(eventType, []);
     }
-    const listenerForEventType = this._listeners.get(eventType);
-    if (listenerForEventType) {
-      listenerForEventType.push({thisObject: thisObject, listener: listener, disposed: undefined});
-    }
+    this._listeners.get(eventType).push({thisObject: thisObject, listener: listener});
     return {eventTarget: this, eventType: eventType, thisObject: thisObject, listener: listener};
   }
 
@@ -83,7 +80,7 @@ export class ObjectWrapper {
   /**
    * @override
    * @param {string|symbol} eventType
-   * @param {function(!EventTargetEvent):void} listener
+   * @param {function(!EventTargetEvent)} listener
    * @param {!Object=} thisObject
    */
   removeEventListener(eventType, listener, thisObject) {
@@ -92,7 +89,7 @@ export class ObjectWrapper {
     if (!this._listeners || !this._listeners.has(eventType)) {
       return;
     }
-    const listeners = this._listeners.get(eventType) || [];
+    const listeners = this._listeners.get(eventType);
     for (let i = 0; i < listeners.length; ++i) {
       if (listeners[i].listener === listener && listeners[i].thisObject === thisObject) {
         listeners[i].disposed = true;
@@ -125,8 +122,7 @@ export class ObjectWrapper {
     }
 
     const event = /** @type {!EventTargetEvent} */ ({data: eventData});
-    // @ts-ignore we do the check for undefined above
-    const listeners = this._listeners.get(eventType).slice(0) || [];
+    const listeners = this._listeners.get(eventType).slice(0);
     for (let i = 0; i < listeners.length; ++i) {
       if (!listeners[i].disposed) {
         listeners[i].listener.call(listeners[i].thisObject, event);

@@ -75,13 +75,13 @@ export class CompilerScriptMapping {
         true /* isServiceProject */);
     this._eventListeners = [
       this._sourceMapManager.addEventListener(
-          SDK.SourceMapManager.Events.SourceMapWillAttach, event => { this._sourceMapWillAttach(event); }, this),
+          SDK.SourceMapManager.Events.SourceMapWillAttach, this._sourceMapWillAttach, this),
       this._sourceMapManager.addEventListener(
-          SDK.SourceMapManager.Events.SourceMapFailedToAttach, event => { this._sourceMapFailedToAttach(event); }, this),
+          SDK.SourceMapManager.Events.SourceMapFailedToAttach, this._sourceMapFailedToAttach, this),
       this._sourceMapManager.addEventListener(
-          SDK.SourceMapManager.Events.SourceMapAttached, event => { this._sourceMapAttached(event); }, this),
+          SDK.SourceMapManager.Events.SourceMapAttached, this._sourceMapAttached, this),
       this._sourceMapManager.addEventListener(
-          SDK.SourceMapManager.Events.SourceMapDetached, event => { this._sourceMapDetached(event); }, this),
+          SDK.SourceMapManager.Events.SourceMapDetached, this._sourceMapDetached, this),
     ];
   }
 

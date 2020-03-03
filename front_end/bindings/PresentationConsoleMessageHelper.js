@@ -100,7 +100,7 @@ export class PresentationConsoleMessageHelper {
 
     // TODO(dgozman): setImmediate because we race with DebuggerWorkspaceBinding on ParsedScriptSource event delivery.
     debuggerModel.addEventListener(
-        SDK.DebuggerModel.Events.ParsedScriptSource, event => { setImmediate(this._parsedScriptSource.bind(this, event)); });
+        SDK.DebuggerModel.Events.ParsedScriptSource, event => setImmediate(this._parsedScriptSource.bind(this, event)));
     debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this);
 
     this._locationPool = new LiveLocationPool();

@@ -39,6 +39,9 @@ describe('The Sources Tab', async () => {
     await prettyPrintMinifiedFile(frontend);
 
     const expectedLines = [
+      '// Copyright 2020 The Chromium Authors. All rights reserved.',
+      '// Use of this source code is governed by a BSD-style license that can be',
+      '// found in the LICENSE file.',
       '// clang-format off',
       'const notFormatted = {',
       '    something: \'not-formatted\'',
@@ -84,11 +87,11 @@ describe('The Sources Tab', async () => {
     assert.deepEqual(messageLinks, [
       {
         message: 'Test for correct line number',
-        lineNumber: 'minified-sourcecode.js:formatted:5 ',
+        lineNumber: 'minified-sourcecode.js:formatted:8 ',
       },
       {
         message: 'second log',
-        lineNumber: 'minified-sourcecode.js:formatted:7 ',
+        lineNumber: 'minified-sourcecode.js:formatted:10 ',
       },
     ]);
   });
@@ -98,30 +101,30 @@ describe('The Sources Tab', async () => {
 
     await openFileInSourcesPanel(target, 'minified-sourcecode.js', 'minified-sourcecode.html');
     await prettyPrintMinifiedFile(frontend);
-    await addBreakpointForLine(frontend, 7);
+    await addBreakpointForLine(frontend, 10);
 
     const scriptLocation = await retrieveTopCallFrameScriptLocation('notFormattedFunction();', target);
-    assert.deepEqual(scriptLocation, 'minified-source…js:formatted:7');
+    assert.deepEqual(scriptLocation, 'minified-source…s:formatted:10');
   });
 
   it('can add breakpoint for unformatted file', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await openFileInSourcesPanel(target, 'minified-sourcecode.js', 'minified-sourcecode.html');
-    await addBreakpointForLine(frontend, 2);
+    await addBreakpointForLine(frontend, 5);
 
     const scriptLocation = await retrieveTopCallFrameScriptLocation('notFormattedFunction();', target);
-    assert.deepEqual(scriptLocation, 'minified-sourcecode.js:3');
+    assert.deepEqual(scriptLocation, 'minified-sourcecode.js:6');
   });
 
   it('can add breakpoint on minified source and then break correctly on formatted source', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await openFileInSourcesPanel(target, 'minified-sourcecode.js', 'minified-sourcecode.html');
-    await addBreakpointForLine(frontend, 2);
+    await addBreakpointForLine(frontend, 5);
     await prettyPrintMinifiedFile(frontend);
 
     const scriptLocation = await retrieveTopCallFrameScriptLocation('notFormattedFunction();', target);
-    assert.deepEqual(scriptLocation, 'minified-source…js:formatted:7');
+    assert.deepEqual(scriptLocation, 'minified-source…s:formatted:10');
   });
 });

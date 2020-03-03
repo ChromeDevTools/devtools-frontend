@@ -113,7 +113,7 @@ describe('The Network Tab', async () => {
     };
 
     assert.deepEqual(await obtainNetworkRequestSize(), [
-      computeByteSize(378) + computeByteSize(258),
+      computeByteSize(549) + computeByteSize(429),
       computeByteSize(362) + computeByteSize(28),
     ]);
     assert.deepEqual(await obtainNetworkRequestMimeTypes(), [
@@ -126,7 +126,7 @@ describe('The Network Tab', async () => {
     await target.reload({waitUntil: 'networkidle2'});
 
     assert.deepEqual(await obtainNetworkRequestSize(), [
-      computeByteSize(378) + computeByteSize(258),
+      computeByteSize(549) + computeByteSize(429),
       `(memory cache)${computeByteSize(28)}`,
     ]);
 

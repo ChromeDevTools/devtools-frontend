@@ -6,7 +6,7 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 import * as puppeteer from 'puppeteer';
 
-import {click, getBrowserAndPages, getElementPosition, resetPages, timeout, waitFor} from '../../shared/helper.js';
+import {platform, click, getBrowserAndPages, getElementPosition, resetPages, timeout, waitFor} from '../../shared/helper.js';
 
 interface UserMetric {
   name: string;
@@ -187,14 +187,36 @@ describe('User Metrics', () => {
     ]);
   });
 
-  it('dispatches an event when Ctrl+F8 is used to deactivate breakpoints', async () => {
+  it('dispatches an event when Ctrl/Meta+F8 is used to deactivate breakpoints', async () => {
     const {frontend} = getBrowserAndPages();
 
     await click('#tab-sources');
     await waitFor('#sources-panel-sources-view');
-    await frontend.keyboard.down('Control');
+
+    switch (platform) {
+      case 'mac':
+        await frontend.keyboard.down('Meta');
+        break;
+
+      case 'linux':
+      case 'win32':
+        await frontend.keyboard.down('Control');
+        break;
+    }
+
     await frontend.keyboard.press('F8');
-    await frontend.keyboard.up('Control');
+
+    switch (platform) {
+      case 'mac':
+        await frontend.keyboard.up('Meta');
+        break;
+
+      case 'linux':
+      case 'win32':
+        await frontend.keyboard.up('Control');
+        break;
+    }
+
     await waitFor('.toolbar-state-on[aria-label="Deactivate breakpoints"]');
 
     await assertCapturedEvents([

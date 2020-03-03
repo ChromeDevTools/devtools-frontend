@@ -30,12 +30,12 @@ describe('The Console Tab', async () => {
 
     assert.deepEqual(messages, [
       `Uncaught (in promise) Error: err1
-    at uncaught-promise.html:10`,
+    at uncaught-promise.html:15`,
       `Uncaught (in promise) Error: err2
-    at uncaught-promise.html:28`,
+    at uncaught-promise.html:33`,
       `Uncaught (in promise) DOMException: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
-    at throwDOMException (http://localhost:8090/test/e2e/resources/console/uncaught-promise.html:43:11)
-    at catcher (http://localhost:8090/test/e2e/resources/console/uncaught-promise.html:36:9)`,
+    at throwDOMException (http://localhost:8090/test/e2e/resources/console/uncaught-promise.html:48:11)
+    at catcher (http://localhost:8090/test/e2e/resources/console/uncaught-promise.html:41:9)`,
     ]);
   });
 
@@ -78,12 +78,12 @@ describe('The Console Tab', async () => {
       '/^url\\(\\s*(?:(?:\"(?:[^\\\\\\\"]|(?:\\\\[\\da-f]{1,6}\\s?|\\.))*\"|\'(?:[^\\\\\\\']|(?:\\\\[\\da-f]{1,6}\\s?|\\.))*\')|(?:[!#$%&*-~\\w]|(?:\\\\[\\da-f]{1,6}\\s?|\\.))*)\\s*\\)/i',
       '/foo\\\\bar\\sbaz/i',
       `Error
-    at built-ins.html:16`,
+    at built-ins.html:21`,
       `Error: My error message
-    at built-ins.html:19`,
+    at built-ins.html:24`,
       `Error: my multiline
 error message
-    at built-ins.html:22`,
+    at built-ins.html:27`,
       'ƒ () { return 1; }',
       `ƒ () {
         return 2;
@@ -182,7 +182,7 @@ error message
     assert.deepEqual(messages, [
       `Uncaught ReferenceError: FAIL is not defined
     at foo (foo2.js:1)
-    at source-url-exceptions.html:12`,
+    at source-url-exceptions.html:17`,
     ]);
   });
 
@@ -221,7 +221,7 @@ error message
       'onrejectionhandled1',
       'onunhandledrejection2',
       `Uncaught (in promise) Error: e
-    at runSecondPromiseRejection (onunhandledrejection.html:26)`,
+    at runSecondPromiseRejection (onunhandledrejection.html:31)`,
       'onrejectionhandled2',
     ]);
   });

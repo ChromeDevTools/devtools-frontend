@@ -155,8 +155,9 @@ export class RequestCookiesView extends UI.Widget.Widget {
       const blockedCookieLines = this._request.blockedResponseCookies().map(blockedCookie => blockedCookie.cookieLine);
       responseCookies = this._request.responseCookies.filter(cookie => {
         // remove the regular cookies that would overlap with blocked cookies
-        if (blockedCookieLines.includes(cookie.getCookieLine())) {
-          blockedCookieLines.remove(cookie.getCookieLine(), /* firstOnly */ true);
+        const index = blockedCookieLines.indexOf(cookie.getCookieLine());
+        if (index !== -1) {
+          blockedCookieLines[index] = null;
           return false;
         }
         return true;

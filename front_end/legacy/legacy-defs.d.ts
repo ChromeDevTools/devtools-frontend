@@ -8,3 +8,7 @@ interface Array<T>{peekLast(): T | undefined}
 // Type alias for the Closure-supported ItemplateArray which is equivalent
 // to TemplateStringsArray in TypeScript land
 type ITemplateArray = TemplateStringsArray
+
+interface String {
+  trimEndWithMaxLength(maxLength: number): string;
+}

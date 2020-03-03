@@ -29,7 +29,7 @@ BindingsTestRunner.TestFileSystem.prototype = {
       result.push(indent + node.name);
       const newIndent = indent + '    ';
 
-      for (const child of node._children) {
+      for (const child of node._children.values()) {
         dfs(child, newIndent);
       }
     }
@@ -76,7 +76,7 @@ BindingsTestRunner.TestFileSystem.prototype = {
     const fileName = pathTokens.peekLast();
 
     for (const folder of folders) {
-      let dir = node._childrenMap[folder];
+      let dir = node._children.get(folder);
 
       if (!dir) {
         dir = node.mkdir(folder);
@@ -98,8 +98,7 @@ BindingsTestRunner.TestFileSystem.prototype = {
 BindingsTestRunner.TestFileSystem.Entry = function(fileSystem, name, isDirectory, parent) {
   this._fileSystem = fileSystem;
   this.name = name;
-  this._children = [];
-  this._childrenMap = {};
+  this._children = new Map();
   this.isDirectory = isDirectory;
   this._timestamp = 1000000;
   this._parent = parent;
@@ -107,7 +106,7 @@ BindingsTestRunner.TestFileSystem.Entry = function(fileSystem, name, isDirectory
 
 BindingsTestRunner.TestFileSystem.Entry.prototype = {
   get fullPath() {
-    return (this.parent ? this.parent.fullPath + '/' + this.name : '');
+    return (this._parent ? this._parent.fullPath + '/' + this.name : '');
   },
 
   remove: function(success, failure) {
@@ -115,17 +114,14 @@ BindingsTestRunner.TestFileSystem.Entry.prototype = {
   },
 
   _removeChild: function(child, success, failure) {
-    const index = this._children.indexOf(child);
-
-    if (index === -1) {
+    if (!this._children.has(child.name)) {
       failure('Failed to remove file: file not found.');
       return;
     }
 
     const fullPath = this._fileSystem.fileSystemPath + child.fullPath;
-    this._children.splice(index, 1);
-    delete this._childrenMap[child.name];
-    child.parent = null;
+    this._children.delete(child.name);
+    child._parent = null;
 
     Host.InspectorFrontendHost.events.dispatchEventToListeners(
         Host.InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved,
@@ -136,17 +132,13 @@ BindingsTestRunner.TestFileSystem.Entry.prototype = {
 
   mkdir: function(name) {
     const child = new BindingsTestRunner.TestFileSystem.Entry(this._fileSystem, name, true, this);
-    this._childrenMap[name] = child;
-    this._children.push(child);
-    child.parent = this;
+    this._children.set(name, child);
     return child;
   },
 
   addFile: function(name, content) {
     const child = new BindingsTestRunner.TestFileSystem.Entry(this._fileSystem, name, false, this);
-    this._childrenMap[name] = child;
-    this._children.push(child);
-    child.parent = this;
+    this._children.set(name, child);
 
     child.content = new Blob([content], {type: 'text/plain'});
 
@@ -171,7 +163,7 @@ BindingsTestRunner.TestFileSystem.Entry.prototype = {
   },
 
   createReader: function() {
-    return new BindingsTestRunner.TestFileSystem.Reader(this._children);
+    return new BindingsTestRunner.TestFileSystem.Reader([...this._children.values()]);
   },
 
   createWriter: function(success, failure) {
@@ -196,10 +188,10 @@ BindingsTestRunner.TestFileSystem.Entry.prototype = {
     let parentEntry = this;
 
     for (const token of tokens) {
-      parentEntry = parentEntry._childrenMap[token];
+      parentEntry = parentEntry._children.get(token);
     }
 
-    let entry = parentEntry._childrenMap[name];
+    let entry = parentEntry._children.get(name);
 
     if (entry && options.exclusive) {
       errorCallback(new DOMException('File exists: ' + path, 'InvalidModificationError'));
@@ -231,7 +223,7 @@ BindingsTestRunner.TestFileSystem.Entry.prototype = {
     let entry = this;
 
     for (const token of path.split('/')) {
-      entry = entry._childrenMap[token];
+      entry = entry._children.get(token);
       if (!entry) {
         break;
       }
@@ -245,12 +237,10 @@ BindingsTestRunner.TestFileSystem.Entry.prototype = {
   },
 
   moveTo: function(parent, newName, callback, errorCallback) {
-    this._parent._children.remove(this);
-    delete this._parent._childrenMap[this.name];
+    this._parent._children.delete(this.name);
     this._parent = parent;
-    this._parent._children.push(this);
     this.name = newName;
-    this._parent._childrenMap[this.name] = this;
+    this._parent._children.set(this.name, this);
     callback(this);
   },
 

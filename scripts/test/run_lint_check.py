@@ -8,91 +8,39 @@ import os.path as path
 import re
 import subprocess
 import sys
+import test_helpers
+from subprocess import Popen
 
 scripts_path = path.dirname(path.dirname(path.abspath(__file__)))
 sys.path.append(scripts_path)
 import devtools_paths
 
-files_to_lint = None
+ROOT_DIRECTORY = path.join(path.dirname(path.abspath(__file__)), '..', '..')
+FRONT_END_DIRECTORY = path.join(ROOT_DIRECTORY, 'front_end')
+TEST_DIRECTORY = path.join(ROOT_DIRECTORY, 'test')
 
-if len(sys.argv) >= 2:
-    if sys.argv[1] == '--help':
-        print('Usage: %s [file|dir|glob]*' % path.basename(sys.argv[0]))
-        print
-        print(' [file|dir|glob]*  Path or glob to run eslint on.')
-        print('                   If absent, the entire frontend will be checked.')
-        sys.exit(0)
-
-    else:
-        print('Linting only these files:\n %s' % sys.argv[1:])
-        files_to_lint = sys.argv[1:]
-
-is_cygwin = sys.platform == 'cygwin'
+FILES_TO_LINT = [FRONT_END_DIRECTORY, TEST_DIRECTORY]
 
 
-def popen(arguments, cwd=None):
-    return subprocess.Popen(arguments, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-
-
-def to_platform_path(filepath):
-    if not is_cygwin:
-        return filepath
-    return re.sub(r'^/cygdrive/(\w)', '\\1:', filepath)
-
-
-def to_platform_path_exact(filepath):
-    if not is_cygwin:
-        return filepath
-    output, _ = popen(['cygpath', '-w', filepath]).communicate()
-    # pylint: disable=E1103
-    return output.strip().replace('\\', '\\\\')
-
-
-devtools_path = devtools_paths.devtools_root_path()
-devtools_frontend_path = path.join(devtools_path, 'front_end')
-tests_path = path.join(devtools_path, 'test')
-
-print('Linting JavaScript with eslint...\n')
-
-
-def js_lint(files_list=None):
-    eslint_errors_found = False
-
-    if files_list is None:
-        files_list = [devtools_frontend_path, tests_path]
-    files_list = [file_name for file_name in files_list if not file_name.endswith('.eslintrc.js')]
-
-    eslintconfig_path = path.join(devtools_path, '.eslintrc.js')
-    eslintignore_path = path.join(devtools_path, '.eslintignore')
+def main():
+    eslintconfig_path = path.join(ROOT_DIRECTORY, '.eslintrc.js')
+    eslintignore_path = path.join(ROOT_DIRECTORY, '.eslintignore')
     exec_command = [
         devtools_paths.node_path(),
         devtools_paths.eslint_path(),
         '--config',
-        to_platform_path_exact(eslintconfig_path),
+        test_helpers.to_platform_path_exact(eslintconfig_path),
         '--ignore-path',
-        to_platform_path_exact(eslintignore_path),
+        test_helpers.to_platform_path_exact(eslintignore_path),
         '--ext',
         '.js,.ts',
         '--fix',
-    ] + files_list
+    ] + FILES_TO_LINT
 
-    eslint_proc = popen(exec_command, cwd=devtools_path)
-    (eslint_proc_out, _) = eslint_proc.communicate()
-    if eslint_proc.returncode != 0:
-        eslint_errors_found = True
-    else:
-        print('eslint exited successfully')
+    eslint_proc = Popen(exec_command, cwd=ROOT_DIRECTORY)
+    eslint_proc.communicate()
 
-    print(eslint_proc_out)
-    return eslint_errors_found
-
-
-def main():
-    errors_found = js_lint(files_to_lint)
-
-    if errors_found:
-        print('ERRORS DETECTED')
-        sys.exit(1)
+    sys.exit(eslint_proc.returncode)
 
 
 if __name__ == '__main__':

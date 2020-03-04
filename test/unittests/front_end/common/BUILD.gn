@@ -4,10 +4,12 @@ ts_library("common") {
   deps = [
     ":character_id_map",
     ":color",
+    ":console",
     ":object",
     ":parsed_url",
     ":progress",
     ":resource_type",
+    ":segmented_range",
     ":string_output_stream",
     ":text_dictionary",
     ":throttler",
@@ -24,6 +26,12 @@ ts_library("character_id_map") {
 
 ts_library("color") {
   sources = [ "Color_test.ts" ]
+
+  deps = [ "../../../../front_end/common" ]
+}
+
+ts_library("console") {
+  sources = [ "Console_test.ts" ]
 
   deps = [ "../../../../front_end/common" ]
 }
@@ -48,6 +56,12 @@ ts_library("progress") {
 
 ts_library("resource_type") {
   sources = [ "ResourceType_test.ts" ]
+
+  deps = [ "../../../../front_end/common" ]
+}
+
+ts_library("segmented_range") {
+  sources = [ "SegmentedRange_test.ts" ]
 
   deps = [ "../../../../front_end/common" ]
 }

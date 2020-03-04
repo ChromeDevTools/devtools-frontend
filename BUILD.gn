@@ -5,6 +5,7 @@
 import("//third_party/blink/public/public_features.gni")
 
 all_devtools_files = [
+  "front_end/shell.js",
   "front_end/accessibility_test_runner/AccessibilityPaneTestRunner.js",
   "front_end/accessibility_test_runner/module.json",
   "front_end/accessibility/accessibilityNode.css",
@@ -901,7 +902,6 @@ all_devtools_modules = [
   "front_end/resources/ApplicationCacheModel.js",
   "front_end/resources/ApplicationCacheItemsView.js",
   "front_end/resources/AppManifestView.js",
-  "front_end/root.js",
   "front_end/root.js",
   "front_end/Runtime.js",
   "front_end/screencast/InputModel.js",

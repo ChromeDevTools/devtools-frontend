@@ -3,6 +3,9 @@
   <message name="IDS_DEVTOOLS_0203e27fe44545283879b18e7084391b" desc="Error message when failing to load a script source text">
     Unable to fetch script source.
   </message>
+  <message name="IDS_DEVTOOLS_03ad1a888d3306eb6eb2346c17803f96" desc="Name of a color vision deficiency that can be emulated via the Rendering drawer">
+    Protanomaly
+  </message>
   <message name="IDS_DEVTOOLS_05dfd3a2f7eebfad702620a4a7e182eb" desc="Tooltip to explain why a cookie was blocked">
     This Set-Cookie was blocked because it had the &quot;SameSite=Strict&quot; attribute but came from a cross-site response which was not the response to a top-level navigation.
   </message>
@@ -30,6 +33,15 @@
   <message name="IDS_DEVTOOLS_10bdea5cc4e1689c7db90eb7bf7f45c0" desc="Title of a setting under the Rendering drawer">
     Emulate CSS media type
   </message>
+  <message name="IDS_DEVTOOLS_10e45a4fda66bbd058dbb08ed7d4af2f" desc="Name of a color vision deficiency that can be emulated via the Rendering drawer">
+    Tritanopia
+  </message>
+  <message name="IDS_DEVTOOLS_1629102ff8f1fee3f79d199758cab928" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
+    Do not emulate any vision deficiency
+  </message>
+  <message name="IDS_DEVTOOLS_17ef39d79c395cc2274bf685b1d70b2c" desc="Name of a color vision deficiency that can be emulated via the Rendering drawer">
+    Achromatopsia
+  </message>
   <message name="IDS_DEVTOOLS_1826966037c093803f9bd475b362057d" desc="Tooltip to explain why a cookie was blocked">
     This Set-Cookie was blocked because it was not sent over a secure connection and would have overwritten a cookie with the Secure attribute.
   </message>
@@ -44,6 +56,9 @@
   </message>
   <message name="IDS_DEVTOOLS_1ee85f6c60017a7f0646ba8dc5824de6" desc="Service worker running status displayed in the Service Workers view in the Application panel">
     starting
+  </message>
+  <message name="IDS_DEVTOOLS_20537cc0d1dc49616ff3f71590c2d31b" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
+    Emulate achromatomaly
   </message>
   <message name="IDS_DEVTOOLS_21070fd87b02611a5426d726a70a5502" desc="Text in Server Timing">
     No value found for parameter &quot;<ph name="PARAMNAME">$1s<ex>https</ex></ph>&quot;.
@@ -69,14 +84,29 @@
   <message name="IDS_DEVTOOLS_2973958e77629e3a167a1a4c60dd5c5f" desc="Text in Network Manager">
     Slow 3G
   </message>
+  <message name="IDS_DEVTOOLS_2d4f58197f03de72c0472189fd18c162" desc="Title of a setting under the Rendering drawer">
+    Emulate vision deficiencies
+  </message>
+  <message name="IDS_DEVTOOLS_3bd3beb3fb5c78e8e85ad06d749bea78" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
+    Emulate protanopia
+  </message>
   <message name="IDS_DEVTOOLS_3cbd091fd9522762ed01c1b305a8beda" desc="Tooltip to explain why a cookie was blocked">
     This cookie didn&apos;t specify a &quot;SameSite&quot; attribute when it was stored and was defaulted to &quot;SameSite=Lax,&quot; and was blocked because the request was made from a different site and was not initiated by a top-level navigation. The cookie had to have been set with &quot;SameSite=None&quot; to enable cross-site usage.
   </message>
   <message name="IDS_DEVTOOLS_3f23f0e9da2803d48c2d67aa09f01bf5" desc="Tooltip to explain why a cookie was blocked">
     This Set-Cookie didn&apos;t specify a &quot;SameSite&quot; attribute and was defaulted to &quot;SameSite=Lax,&quot; and was blocked because it came from a cross-site response which was not the response to a top-level navigation. The Set-Cookie had to have been set with &quot;SameSite=None&quot; to enable cross-site usage.
   </message>
+  <message name="IDS_DEVTOOLS_43fde213dddc0ce31eca48a551757f41" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
+    Emulate blurred vision
+  </message>
   <message name="IDS_DEVTOOLS_534a6087ddb75adb6dccea8139b18fd2" desc="Tooltip to explain why a cookie was blocked">
     This Set-Cookie was blocked because it had the &quot;SameSite=None&quot; attribute but did not have the &quot;Secure&quot; attribute, which is required in order to use &quot;SameSite=None&quot;.
+  </message>
+  <message name="IDS_DEVTOOLS_53cd1fbc07fe37544e195e5ad3746175" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
+    Emulate achromatopsia
+  </message>
+  <message name="IDS_DEVTOOLS_548180b145dfc70126a9b2b7b55a611d" desc="Name of a color vision deficiency that can be emulated via the Rendering drawer">
+    Tritanomaly
   </message>
   <message name="IDS_DEVTOOLS_5e53467e9b005376370c28e92b42b6f5" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Emulate CSS prefers-reduced-motion: reduce
@@ -201,6 +231,9 @@
   <message name="IDS_DEVTOOLS_716ddf802d9b9ee6899a47025e38bff7" desc="Error message when failing to fetch a resource referenced in a source map">
     Could not load content for <ph name="THIS__SOURCEURL">$1s<ex>https://example.com/sourcemap.map</ex></ph> (<ph name="ERRORMESSAGE">$2s<ex>An error occurred</ex></ph>)
   </message>
+  <message name="IDS_DEVTOOLS_720bffbd392bad37272a7c1202250bb9" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
+    Emulate deuteranopia
+  </message>
   <message name="IDS_DEVTOOLS_73329564760013a7824ff9d5d1af91ff" desc="Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel">
     installed
   </message>
@@ -213,6 +246,9 @@
   <message name="IDS_DEVTOOLS_794f64c7f20487f6e13679201deeab3d" desc="Text in DOMDebugger Model">
     Picture-in-Picture
   </message>
+  <message name="IDS_DEVTOOLS_79d147ddfc61cd5ac1cdc1ae6d7e4feb" desc="Name of a vision deficiency that can be emulated via the Rendering drawer">
+    Blurred vision
+  </message>
   <message name="IDS_DEVTOOLS_7c2bc755363ab11a1611bfa369654ff8" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Show frames per second (FPS) meter
   </message>
@@ -221,6 +257,9 @@
   </message>
   <message name="IDS_DEVTOOLS_7e237311e1b03bddac9c200e27482ac8" desc="Tooltip to explain why a cookie was blocked">
     This Set-Cookie was blocked because its Domain attribute was invalid with regards to the current host url.
+  </message>
+  <message name="IDS_DEVTOOLS_8022a7ceb04a413d242483f01407dfba" desc="Name of a color vision deficiency that can be emulated via the Rendering drawer">
+    Protanopia
   </message>
   <message name="IDS_DEVTOOLS_81961fe251f4d1cb4df131561dedf319" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Hide layer borders
@@ -233,6 +272,9 @@
   </message>
   <message name="IDS_DEVTOOLS_8eb3dbe83bec0f4c902665a1d49c1f38" desc="Tooltip to explain why a cookie was blocked">
     This Set-Cookie was blocked due to user preferences.
+  </message>
+  <message name="IDS_DEVTOOLS_8f53fc4d956f78a40764f692b0439492" desc="Name of a color vision deficiency that can be emulated via the Rendering drawer">
+    Achromatomaly
   </message>
   <message name="IDS_DEVTOOLS_9028784c589c0c809700c7fbc66a5d96" desc="Text in Network Manager">
     Resource interpreted as <ph name="NETWORKREQUEST_RESOURCETYPE___TITLE__">$1s<ex>application</ex></ph> but transferred with MIME type <ph name="NETWORKREQUEST_MIMETYPE">$2s<ex>image</ex></ph>: &quot;<ph name="NETWORKREQUEST_URL__">$3s<ex>https://example.com</ex></ph>&quot;.
@@ -254,6 +296,9 @@
   </message>
   <message name="IDS_DEVTOOLS_96d008db67fc0b5551a926842bbb6a71" desc="Text in DOMDebugger Model">
     Notification
+  </message>
+  <message name="IDS_DEVTOOLS_982c177a1c47f2180a62c1a16858a734" desc="Name of a color vision deficiency that can be emulated via the Rendering drawer">
+    Deuteranopia
   </message>
   <message name="IDS_DEVTOOLS_9850063efe194af1c63d2aa61ef94c62" desc="Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel">
     Create canvas context
@@ -291,6 +336,9 @@
   <message name="IDS_DEVTOOLS_aec445acc1539341cf9a79c3a336131d" desc="Tooltip to explain why a cookie was blocked">
     This cookie was blocked due to user preferences.
   </message>
+  <message name="IDS_DEVTOOLS_b04928d58621eb42c5993eb5bed9c321" desc="Name of a color vision deficiency that can be emulated via the Rendering drawer">
+    Deuteranomaly
+  </message>
   <message name="IDS_DEVTOOLS_b28354b543375bfa94dabaeda722927f" desc="Text in Resource Tree Model">
     top
   </message>
@@ -317,6 +365,12 @@
   </message>
   <message name="IDS_DEVTOOLS_beff15b1acf49b84bf1080cceb920ebf" desc="Title of a media query that can be emulated via the Rendering drawer">
     prefers-color-scheme: dark
+  </message>
+  <message name="IDS_DEVTOOLS_bf0c4dde750bb6c624483d4b280f721d" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
+    Emulate tritanomaly
+  </message>
+  <message name="IDS_DEVTOOLS_c2b67a1559b80b23f73dabb8bba0f534" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
+    Emulate tritanopia
   </message>
   <message name="IDS_DEVTOOLS_c3905c37f4127686d512a7665206852e" desc="Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel">
     activated
@@ -345,6 +399,9 @@
   <message name="IDS_DEVTOOLS_ceb19b7234304452f0c748bac8ba3fb8" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Do not emulate CSS prefers-reduced-motion
   </message>
+  <message name="IDS_DEVTOOLS_ceb574a869e25ce4c51e52204dbc3bac" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
+    Emulate deuteranomaly
+  </message>
   <message name="IDS_DEVTOOLS_cedab6b9e4e794e93bba797e8aff218a" desc="Message in Network Manager">
     <ph name="NETWORKREQUEST_RESOURCETYPE___TITLE__">$1s<ex>XHR</ex></ph> finished loading: <ph name="NETWORKREQUEST_REQUESTMETHOD">$2s<ex>GET</ex></ph> &quot;<ph name="NETWORKREQUEST_URL__">$3s<ex>https://example.com</ex></ph>&quot;.
   </message>
@@ -353,6 +410,9 @@
   </message>
   <message name="IDS_DEVTOOLS_d4fad802fc7bf0248d34c685533bd56f" desc="Title of a setting under the Network category that can be invoked through the Command Menu">
     Disable request blocking
+  </message>
+  <message name="IDS_DEVTOOLS_d9ddd995c44a445431e57733748b4ea8" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
+    Emulate protanomaly
   </message>
   <message name="IDS_DEVTOOLS_dcd9c13c4f8ae68ea7ae92edf9191264" desc="Text in Server Timing">
     Deprecated syntax found. Please use: &lt;name&gt;;dur=&lt;duration&gt;;desc=&lt;description&gt;

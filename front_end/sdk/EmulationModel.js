@@ -56,6 +56,12 @@ export class EmulationModel extends SDKModel {
     });
     this._updateCssMedia();
 
+    const visionDeficiencySetting = self.Common.settings.moduleSetting('emulatedVisionDeficiency');
+    visionDeficiencySetting.addChangeListener(() => this._emulateVisionDeficiency(visionDeficiencySetting.get()));
+    if (visionDeficiencySetting.get()) {
+      this._emulateVisionDeficiency(visionDeficiencySetting.get());
+    }
+
     this._touchEnabled = false;
     this._touchMobile = false;
     this._customTouchEnabled = false;
@@ -138,6 +144,13 @@ export class EmulationModel extends SDKModel {
     if (this._cssModel) {
       this._cssModel.mediaQueryResultChanged();
     }
+  }
+
+  /**
+   * @param {string} type
+   */
+  _emulateVisionDeficiency(type) {
+    this._emulationAgent.setEmulatedVisionDeficiency(type);
   }
 
   /**

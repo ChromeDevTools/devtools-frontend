@@ -186,18 +186,6 @@ def _CheckOptimizeSVGHashes(input_api, output_api):
     return results
 
 
-def _CheckCSSViolations(input_api, output_api):
-    results = [output_api.PresubmitNotifyResult('Running CSS Violation Check:')]
-    for f in input_api.AffectedFiles(include_deletes=False):
-        if not f.LocalPath().endswith('.css'):
-            continue
-        for line_number, line in f.ChangedContents():
-            if '/deep/' in line:
-                results.append(output_api.PresubmitError(('%s:%d uses /deep/ selector') % (f.LocalPath(), line_number)))
-            if '::shadow' in line:
-                results.append(output_api.PresubmitError(('%s:%d uses ::shadow selector') % (f.LocalPath(), line_number)))
-    return results
-
 
 def _CheckGeneratedFiles(input_api, output_api):
     v8_directory_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'v8')
@@ -288,7 +276,6 @@ def _CommonChecks(input_api, output_api):
     results.extend(_CheckDevtoolsStyle(input_api, output_api))
     results.extend(_CheckFormat(input_api, output_api))
     results.extend(_CheckOptimizeSVGHashes(input_api, output_api))
-    results.extend(_CheckCSSViolations(input_api, output_api))
     results.extend(_CheckChangesAreExclusiveToDirectory(input_api, output_api))
     results.extend(_CheckNoUncheckedFiles(input_api, output_api))
     results.extend(_CheckForTooLargeFiles(input_api, output_api))

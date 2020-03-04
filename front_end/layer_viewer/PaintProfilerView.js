@@ -30,6 +30,7 @@
 
 import * as Common from '../common/common.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
@@ -330,8 +331,8 @@ export class PaintProfilerView extends UI.Widget.HBox {
     const screenRight = this._selectionWindow.windowRight * this._canvas.width;
     const barLeft = Math.floor(screenLeft / this._outerBarWidth);
     const barRight = Math.floor((screenRight + this._innerBarWidth - this._barPaddingWidth / 2) / this._outerBarWidth);
-    const stepLeft = Number.constrain(barLeft * this._samplesPerBar, 0, this._log.length - 1);
-    const stepRight = Number.constrain(barRight * this._samplesPerBar, 0, this._log.length);
+    const stepLeft = Platform.NumberUtilities.clamp(barLeft * this._samplesPerBar, 0, this._log.length - 1);
+    const stepRight = Platform.NumberUtilities.clamp(barRight * this._samplesPerBar, 0, this._log.length);
 
     return {left: stepLeft, right: stepRight};
   }

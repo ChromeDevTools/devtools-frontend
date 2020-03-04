@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
 /**
@@ -133,7 +134,7 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
   setScaleConstraints(minScale, maxScale) {
     this._minScale = minScale;
     this._maxScale = maxScale;
-    this._scale = Number.constrain(this._scale, minScale, maxScale);
+    this._scale = Platform.NumberUtilities.clamp(this._scale, minScale, maxScale);
   }
 
   /**
@@ -143,8 +144,8 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
    * @param {number} maxY
    */
   clampOffsets(minX, maxX, minY, maxY) {
-    this._offsetX = Number.constrain(this._offsetX, minX, maxX);
-    this._offsetY = Number.constrain(this._offsetY, minY, maxY);
+    this._offsetX = Platform.NumberUtilities.clamp(this._offsetX, minX, maxX);
+    this._offsetY = Platform.NumberUtilities.clamp(this._offsetY, minY, maxY);
   }
 
   /**
@@ -188,7 +189,8 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
    * @param {number} y
    */
   _onScale(scaleFactor, x, y) {
-    scaleFactor = Number.constrain(this._scale * scaleFactor, this._minScale, this._maxScale) / this._scale;
+    scaleFactor =
+        Platform.NumberUtilities.clamp(this._scale * scaleFactor, this._minScale, this._maxScale) / this._scale;
     this._scale *= scaleFactor;
     this._offsetX -= (x - this._offsetX) * (scaleFactor - 1);
     this._offsetY -= (y - this._offsetY) * (scaleFactor - 1);

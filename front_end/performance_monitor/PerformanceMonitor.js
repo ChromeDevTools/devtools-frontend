@@ -4,6 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -345,7 +346,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
       let value = metrics.metrics.get(metricName);
       if (stackedChartBaseLandscape) {
         value += stackedChartBaseLandscape.get(timestamp) || 0;
-        value = Number.constrain(value, 0, 1);
+        value = Platform.NumberUtilities.clamp(value, 0, 1);
         stackedChartBaseLandscape.set(timestamp, value);
       }
       const y = calcY(value);

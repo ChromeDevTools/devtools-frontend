@@ -28,6 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
@@ -265,7 +266,7 @@ export class Layers3DView extends UI.Widget.VBox {
     const rotateY = this._transformController.rotateY();
 
     this._scale = scale * viewScale;
-    const textureScale = Number.constrain(this._scale, 0.1, 1);
+    const textureScale = Platform.NumberUtilities.clamp(this._scale, 0.1, 1);
     if (textureScale !== this._oldTextureScale) {
       this._oldTextureScale = textureScale;
       this._textureManager.setScale(textureScale);

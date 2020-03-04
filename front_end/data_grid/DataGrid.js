@@ -24,6 +24,7 @@
  */
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
 /**
@@ -1473,7 +1474,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
       return;
     }
 
-    dragPoint = Number.constrain(dragPoint, leftMinimum, rightMaximum);
+    dragPoint = Platform.NumberUtilities.clamp(dragPoint, leftMinimum, rightMaximum);
 
     const position = (dragPoint - CenterResizerOverBorderAdjustment);
     resizer.__position = position;

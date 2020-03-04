@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
 import {MinimalTimeWindowMs} from './FlameChart.js';
@@ -313,7 +314,7 @@ export class ChartViewport extends UI.Widget.VBox {
    * @param {!MouseEvent} event
    */
   _rangeSelectionDragging(event) {
-    const x = Number.constrain(event.pageX + this._selectionOffsetShiftX, 0, this._offsetWidth);
+    const x = Platform.NumberUtilities.clamp(event.pageX + this._selectionOffsetShiftX, 0, this._offsetWidth);
     const start = this.pixelToTime(this._selectionStartX);
     const end = this.pixelToTime(x);
     this.setRangeSelection(start, end);
@@ -321,8 +322,10 @@ export class ChartViewport extends UI.Widget.VBox {
 
   _updateRangeSelectionOverlay() {
     const /** @const */ margin = 100;
-    const left = Number.constrain(this.timeToPosition(this._rangeSelectionStart), -margin, this._offsetWidth + margin);
-    const right = Number.constrain(this.timeToPosition(this._rangeSelectionEnd), -margin, this._offsetWidth + margin);
+    const left = Platform.NumberUtilities.clamp(
+        this.timeToPosition(this._rangeSelectionStart), -margin, this._offsetWidth + margin);
+    const right = Platform.NumberUtilities.clamp(
+        this.timeToPosition(this._rangeSelectionEnd), -margin, this._offsetWidth + margin);
     const style = this._selectionOverlay.style;
     style.left = left + 'px';
     style.width = (right - left) + 'px';
@@ -448,7 +451,7 @@ export class ChartViewport extends UI.Widget.VBox {
    */
   _handlePanGesture(offset, animate) {
     const bounds = {left: this._targetLeftTime, right: this._targetRightTime};
-    const timeOffset = Number.constrain(
+    const timeOffset = Platform.NumberUtilities.clamp(
         this.pixelToTimeOffset(offset), this._minimumBoundary - bounds.left,
         this._totalTime + this._minimumBoundary - bounds.right);
     bounds.left += timeOffset;

@@ -29,6 +29,7 @@
  */
 
 import * as Host from '../host/host.js';
+import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
@@ -441,7 +442,7 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox {
       ++lineNumber;
       columnNumber = 0;
     } else {
-      columnNumber = Number.constrain(charNumber, 0, lineLength);
+      columnNumber = Platform.NumberUtilities.clamp(charNumber, 0, lineLength);
     }
     return {lineNumber: lineNumber, columnNumber: columnNumber};
   }
@@ -499,7 +500,7 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox {
      * @return {{lineNumber: number, columnNumber: number}}
      */
     function constrainPosition(lineNumber, lineLength, columnNumber) {
-      return {lineNumber: lineNumber, columnNumber: Number.constrain(columnNumber, 0, lineLength)};
+      return {lineNumber: lineNumber, columnNumber: Platform.NumberUtilities.clamp(columnNumber, 0, lineLength)};
     }
 
     const text = this.line(lineNumber);
@@ -1006,11 +1007,11 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox {
    * @param {boolean=} shouldHighlight
    */
   revealPosition(lineNumber, columnNumber, shouldHighlight) {
-    lineNumber = Number.constrain(lineNumber, 0, this._codeMirror.lineCount() - 1);
+    lineNumber = Platform.NumberUtilities.clamp(lineNumber, 0, this._codeMirror.lineCount() - 1);
     if (typeof columnNumber !== 'number') {
       columnNumber = 0;
     }
-    columnNumber = Number.constrain(columnNumber, 0, this._codeMirror.getLine(lineNumber).length);
+    columnNumber = Platform.NumberUtilities.clamp(columnNumber, 0, this._codeMirror.getLine(lineNumber).length);
 
     this.clearPositionHighlight();
     this._highlightedLine = this._codeMirror.getLineHandle(lineNumber);

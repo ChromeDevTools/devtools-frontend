@@ -31,6 +31,7 @@
 import * as Common from '../common/common.js';
 import * as Coverage from '../coverage/coverage.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as TimelineModel from '../timeline_model/timeline_model.js';
 import * as UI from '../ui/ui.js';
@@ -125,8 +126,9 @@ export class TimelineEventOverviewInput extends TimelineEventOverview {
           if (!descriptor || descriptor.priority !== priority) {
             continue;
           }
-          const start = Number.constrain(Math.floor((event.startTime - timeOffset) * scale), 0, canvasWidth);
-          const end = Number.constrain(Math.ceil((event.endTime - timeOffset) * scale), 0, canvasWidth);
+          const start =
+              Platform.NumberUtilities.clamp(Math.floor((event.startTime - timeOffset) * scale), 0, canvasWidth);
+          const end = Platform.NumberUtilities.clamp(Math.ceil((event.endTime - timeOffset) * scale), 0, canvasWidth);
           const width = Math.max(end - start, minWidth);
           this._renderBar(start, start + width, 0, height, descriptor.color);
         }

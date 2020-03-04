@@ -30,6 +30,7 @@
 
 import * as Common from '../common/common.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
+import * as Platform from '../platform/platform.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';
 import * as UI from '../ui/ui.js';
 
@@ -336,10 +337,10 @@ export class Counter {
     const end = calculator.maximumBoundary();
 
     // Maximum index of element whose time <= start.
-    this._minimumIndex = Number.constrain(this.times.upperBound(start) - 1, 0, this.times.length - 1);
+    this._minimumIndex = Platform.NumberUtilities.clamp(this.times.upperBound(start) - 1, 0, this.times.length - 1);
 
     // Minimum index of element whose time >= end.
-    this._maximumIndex = Number.constrain(this.times.lowerBound(end), 0, this.times.length - 1);
+    this._maximumIndex = Platform.NumberUtilities.clamp(this.times.lowerBound(end), 0, this.times.length - 1);
 
     // Current window bounds.
     this._minTime = start;

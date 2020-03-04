@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as PerfUI from '../perf_ui/perf_ui.js';
+import * as Platform from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
 /**
@@ -274,7 +275,7 @@ export class SmoothScale {
       const maxChangePerSec = 20;
       const maxChangePerDelta = Math.pow(maxChangePerSec, timeDeltaMs / 1000);
       const scaleChange = target / this._currentScale;
-      this._currentScale *= Number.constrain(scaleChange, 1 / maxChangePerDelta, maxChangePerDelta);
+      this._currentScale *= Platform.NumberUtilities.clamp(scaleChange, 1 / maxChangePerDelta, maxChangePerDelta);
     } else {
       this._currentScale = target;
     }

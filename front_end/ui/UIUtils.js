@@ -413,7 +413,7 @@ function _modifiedHexValue(hexString, event) {
 
   // Increase hex value by 1 and clamp from 0 ... maxValue.
   const maxValue = Math.pow(16, hexStrLen) - 1;
-  const result = Number.constrain(number + delta, 0, maxValue);
+  const result = Platform.NumberUtilities.clamp(number + delta, 0, maxValue);
 
   // Ensure the result length is the same as the original hex value.
   let resultString = result.toString(16).toUpperCase();
@@ -1114,7 +1114,7 @@ export function animateFunction(window, func, params, duration, animationComplet
   let raf = window.requestAnimationFrame(animationStep);
 
   function animationStep(timestamp) {
-    const progress = Number.constrain((timestamp - start) / duration, 0, 1);
+    const progress = Platform.NumberUtilities.clamp((timestamp - start) / duration, 0, 1);
     func(...params.map(p => p.from + (p.to - p.from) * progress));
     if (progress < 1) {
       raf = window.requestAnimationFrame(animationStep);
@@ -1987,10 +1987,10 @@ export class ThemeSupport {
 
         break;
     }
-    hsla[0] = Number.constrain(hue, 0, 1);
-    hsla[1] = Number.constrain(sat, 0, 1);
-    hsla[2] = Number.constrain(lit, 0, 1);
-    hsla[3] = Number.constrain(alpha, 0, 1);
+    hsla[0] = Platform.NumberUtilities.clamp(hue, 0, 1);
+    hsla[1] = Platform.NumberUtilities.clamp(sat, 0, 1);
+    hsla[2] = Platform.NumberUtilities.clamp(lit, 0, 1);
+    hsla[3] = Platform.NumberUtilities.clamp(alpha, 0, 1);
   }
 }
 

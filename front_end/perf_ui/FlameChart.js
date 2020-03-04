@@ -30,6 +30,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as Platform from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
 import {ChartViewport, ChartViewportDelegate} from './ChartViewport.js';  // eslint-disable-line no-unused-vars
@@ -452,8 +453,8 @@ export class FlameChart extends UI.Widget.VBox {
     for (let quadrant = 0; quadrant < 4; ++quadrant) {
       const dx = quadrant & 2 ? -offsetX - infoWidth : offsetX;
       const dy = quadrant & 1 ? -offsetY - infoHeight : offsetY;
-      x = Number.constrain(mouseX + dx, 0, parentWidth - infoWidth);
-      y = Number.constrain(mouseY + dy, 0, parentHeight - infoHeight);
+      x = Platform.NumberUtilities.clamp(mouseX + dx, 0, parentWidth - infoWidth);
+      y = Platform.NumberUtilities.clamp(mouseY + dy, 0, parentHeight - infoHeight);
       if (x >= mouseX || mouseX >= x + infoWidth || y >= mouseY || mouseY >= y + infoHeight) {
         break;
       }
@@ -2056,7 +2057,7 @@ export class FlameChart extends UI.Widget.VBox {
    * @return {number}
    */
   _timeToPositionClipped(time) {
-    return Number.constrain(this._chartViewport.timeToPosition(time), 0, this._offsetWidth);
+    return Platform.NumberUtilities.clamp(this._chartViewport.timeToPosition(time), 0, this._offsetWidth);
   }
 
   /**

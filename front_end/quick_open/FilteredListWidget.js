@@ -4,6 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as Diff from '../diff/diff.js';
+import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
@@ -372,7 +373,7 @@ export class FilteredListWidget extends UI.Widget.VBox {
     const overflowItems = [];
     const scoreStartTime = window.performance.now();
 
-    const maxWorkItems = Number.constrain(10, 500, (this._provider.itemCount() / 10) | 0);
+    const maxWorkItems = Platform.NumberUtilities.clamp(10, 500, (this._provider.itemCount() / 10) | 0);
 
     scoreItems.call(this, 0);
 

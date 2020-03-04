@@ -4,6 +4,7 @@
 
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 import * as Profiler from '../profiler/profiler.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';
 import * as SourceFrame from '../source_frame/source_frame.js';  // eslint-disable-line no-unused-vars
@@ -254,12 +255,12 @@ export class LineDecorator {
   _createElement(type, value) {
     const element = createElementWithClass('div', 'text-editor-line-marker-text');
     if (type === 'performance') {
-      const intensity = Number.constrain(Math.log10(1 + 10 * value) / 5, 0.02, 1);
+      const intensity = Platform.NumberUtilities.clamp(Math.log10(1 + 10 * value) / 5, 0.02, 1);
       element.textContent = Common.UIString.UIString('%.1f', value);
       element.style.backgroundColor = `hsla(44, 100%, 50%, ${intensity.toFixed(3)})`;
       element.createChild('span', 'line-marker-units').textContent = ls`ms`;
     } else {
-      const intensity = Number.constrain(Math.log10(1 + 2e-3 * value) / 5, 0.02, 1);
+      const intensity = Platform.NumberUtilities.clamp(Math.log10(1 + 2e-3 * value) / 5, 0.02, 1);
       element.style.backgroundColor = `hsla(217, 100%, 70%, ${intensity.toFixed(3)})`;
       value /= 1e3;
       let units;

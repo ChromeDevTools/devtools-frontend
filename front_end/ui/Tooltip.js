@@ -1,6 +1,7 @@
 // Copyright (c) 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Platform from '../platform/platform.js';
 
 import {GlassPane} from './GlassPane.js';
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
@@ -141,7 +142,7 @@ export class Tooltip {
     const anchorTooltipAtElement =
         this._anchorElement.nodeName === 'BUTTON' || this._anchorElement.nodeName === 'LABEL';
     let tooltipX = anchorTooltipAtElement ? anchorBox.x : event.x + cursorOffset;
-    tooltipX = Number.constrain(
+    tooltipX = Platform.NumberUtilities.clamp(
         tooltipX, containerBox.x + pageMargin, containerBox.x + containerBox.width - tooltipWidth - pageMargin);
     let tooltipY;
     if (!anchorTooltipAtElement) {

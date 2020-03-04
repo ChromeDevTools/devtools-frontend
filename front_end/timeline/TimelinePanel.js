@@ -935,7 +935,7 @@ export class TimelinePanel extends UI.Panel.Panel {
     const frames = this._performanceModel.frames();
     let index = frames.indexOf(currentFrame);
     console.assert(index >= 0, 'Can\'t find current frame in the frame list');
-    index = Number.constrain(index + offset, 0, frames.length - 1);
+    index = Platform.NumberUtilities.clamp(index + offset, 0, frames.length - 1);
     const frame = frames[index];
     this._revealTimeRange(frame.startTime, frame.endTime);
     this.select(TimelineSelection.fromFrame(frame));

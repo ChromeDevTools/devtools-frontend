@@ -248,7 +248,7 @@ export class Spectrum extends UI.Widget.VBox {
       const hueAlphaLeft = this._hueElement.getBoundingClientRect().left;
       const positionFraction = (sliderPosition - hueAlphaLeft) / this._hueAlphaWidth;
       const newHue = 1 - positionFraction;
-      hsva[0] = Number.constrain(newHue, 0, 1);
+      hsva[0] = Platform.NumberUtilities.clamp(newHue, 0, 1);
       this._innerSetColor(hsva, '', undefined /* colorName */, undefined, ChangeSource.Other);
       const colorValues = this._color().canonicalHSLA();
       UI.ARIAUtils.setValueNow(this._hueElement, colorValues[0]);
@@ -264,7 +264,7 @@ export class Spectrum extends UI.Widget.VBox {
       const hueAlphaLeft = this._hueElement.getBoundingClientRect().left;
       const positionFraction = (sliderPosition - hueAlphaLeft) / this._hueAlphaWidth;
       const newAlpha = Math.round(positionFraction * 100) / 100;
-      hsva[3] = Number.constrain(newAlpha, 0, 1);
+      hsva[3] = Platform.NumberUtilities.clamp(newAlpha, 0, 1);
       this._innerSetColor(hsva, '', undefined /* colorName */, undefined, ChangeSource.Other);
       const colorValues = this._color().canonicalHSLA();
       UI.ARIAUtils.setValueText(this._alphaElement, colorValues[3]);
@@ -278,8 +278,8 @@ export class Spectrum extends UI.Widget.VBox {
       const hsva = this._hsv.slice();
       const colorPosition = getUpdatedColorPosition(this._colorDragElement, event);
       this._colorOffset = this._colorElement.totalOffset();
-      hsva[1] = Number.constrain((colorPosition.x - this._colorOffset.left) / this.dragWidth, 0, 1);
-      hsva[2] = Number.constrain(1 - (colorPosition.y - this._colorOffset.top) / this.dragHeight, 0, 1);
+      hsva[1] = Platform.NumberUtilities.clamp((colorPosition.x - this._colorOffset.left) / this.dragWidth, 0, 1);
+      hsva[2] = Platform.NumberUtilities.clamp(1 - (colorPosition.y - this._colorOffset.top) / this.dragHeight, 0, 1);
 
       this._innerSetColor(hsva, '', undefined /* colorName */, undefined, ChangeSource.Other);
     }

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
 import {CSSLength, CSSShadowModel} from './CSSShadowModel.js';  // eslint-disable-line no-unused-vars
@@ -370,7 +371,7 @@ export class CSSShadowEditor extends UI.Widget.VBox {
 
     if (shiftX) {
       const offsetX = this._model.offsetX();
-      const newAmount = Number.constrain(offsetX.amount + shiftX, -maxRange, maxRange);
+      const newAmount = Platform.NumberUtilities.clamp(offsetX.amount + shiftX, -maxRange, maxRange);
       if (newAmount === offsetX.amount) {
         return;
       }
@@ -380,7 +381,7 @@ export class CSSShadowEditor extends UI.Widget.VBox {
     }
     if (shiftY) {
       const offsetY = this._model.offsetY();
-      const newAmount = Number.constrain(offsetY.amount + shiftY, -maxRange, maxRange);
+      const newAmount = Platform.NumberUtilities.clamp(offsetY.amount + shiftY, -maxRange, maxRange);
       if (newAmount === offsetY.amount) {
         return;
       }

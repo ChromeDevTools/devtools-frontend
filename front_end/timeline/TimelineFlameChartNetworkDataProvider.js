@@ -5,6 +5,7 @@
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
+import * as Platform from '../platform/platform.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
@@ -233,7 +234,7 @@ export class TimelineFlameChartNetworkDataProvider {
     if (!request.cached() && request.timing.pushStart) {
       const pushStart = timeToPixel(request.timing.pushStart * 1000);
       const pushEnd = request.timing.pushEnd ? timeToPixel(request.timing.pushEnd * 1000) : start;
-      const dentSize = Number.constrain(pushEnd - pushStart - 2, 0, 4);
+      const dentSize = Platform.NumberUtilities.clamp(pushEnd - pushStart - 2, 0, 4);
       const padding = 1;
       context.save();
       context.beginPath();
@@ -420,7 +421,7 @@ export class TimelineFlameChartNetworkDataProvider {
    * @return {number}
    */
   preferredHeight() {
-    return this._style.height * (this._group.expanded ? Number.constrain(this._maxLevel + 1, 4, 8.5) : 1);
+    return this._style.height * (this._group.expanded ? Platform.NumberUtilities.clamp(this._maxLevel + 1, 4, 8.5) : 1);
   }
 
   /**

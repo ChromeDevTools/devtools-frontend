@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as Platform from '../platform/platform.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {Events as ListModelEvents, ListModel} from './ListModel.js';  // eslint-disable-line no-unused-vars
@@ -186,7 +187,8 @@ export class ListControl {
     const scrollTop = this.element.scrollTop;
     const viewportHeight = this.element.offsetHeight;
     this._clearViewport();
-    this._updateViewport(Number.constrain(scrollTop, 0, this._totalHeight() - viewportHeight), viewportHeight);
+    this._updateViewport(
+        Platform.NumberUtilities.clamp(scrollTop, 0, this._totalHeight() - viewportHeight), viewportHeight);
   }
 
   invalidateItemHeight() {
@@ -360,7 +362,8 @@ export class ListControl {
     const viewportHeight = this.element.offsetHeight;
     if (center) {
       const scrollTo = (top + bottom) / 2 - viewportHeight / 2;
-      this._updateViewport(Number.constrain(scrollTo, 0, this._totalHeight() - viewportHeight), viewportHeight);
+      this._updateViewport(
+          Platform.NumberUtilities.clamp(scrollTo, 0, this._totalHeight() - viewportHeight), viewportHeight);
       return;
     }
 
@@ -595,7 +598,7 @@ export class ListControl {
 
     if (this._renderedHeight < viewportHeight || totalHeight < viewportHeight) {
       this._clearViewport();
-      this._updateViewport(Number.constrain(scrollTop, 0, totalHeight - viewportHeight), viewportHeight);
+      this._updateViewport(Platform.NumberUtilities.clamp(scrollTop, 0, totalHeight - viewportHeight), viewportHeight);
       return;
     }
 
@@ -623,7 +626,7 @@ export class ListControl {
     // TODO(dgozman): try to keep visible scrollTop the same
     // when invalidating after firstIndex but before first visible element.
     this._clearViewport();
-    this._updateViewport(Number.constrain(scrollTop, 0, totalHeight - viewportHeight), viewportHeight);
+    this._updateViewport(Platform.NumberUtilities.clamp(scrollTop, 0, totalHeight - viewportHeight), viewportHeight);
   }
 
   /**

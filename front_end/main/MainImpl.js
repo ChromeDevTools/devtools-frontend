@@ -34,6 +34,7 @@ import * as Components from '../components/components.js';
 import * as Extensions from '../extensions/extensions.js';
 import * as Host from '../host/host.js';
 import * as Persistence from '../persistence/persistence.js';
+import * as Platform from '../platform/platform.js';
 import * as ProtocolModule from '../protocol/protocol.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
@@ -645,7 +646,7 @@ export class MainMenuItem {
 
         const buttons = [undock, left, bottom, right];
         let index = buttons.findIndex(button => button.element.hasFocus());
-        index = Number.constrain(index + dir, 0, buttons.length - 1);
+        index = Platform.NumberUtilities.clamp(index + dir, 0, buttons.length - 1);
 
         buttons[index].element.focus();
         event.consume(true);

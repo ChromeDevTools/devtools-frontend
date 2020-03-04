@@ -29,6 +29,7 @@
  */
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 
 import {Constraints} from './Geometry.js';
 import {Events as ResizerWidgetEvents, SimpleResizerWidget} from './ResizerWidget.js';
@@ -702,7 +703,7 @@ export class SplitWidget extends Widget {
     // Enough space for preferred.
     const totalPreferred = preferredMainSize + preferredSidebarSize;
     if (totalPreferred <= totalSize) {
-      return Number.constrain(sidebarSize, preferredSidebarSize, totalSize - preferredMainSize);
+      return Platform.NumberUtilities.clamp(sidebarSize, preferredSidebarSize, totalSize - preferredMainSize);
     }
 
     // Enough space for minimum.
@@ -710,7 +711,7 @@ export class SplitWidget extends Widget {
       const delta = totalPreferred - totalSize;
       const sidebarDelta = delta * preferredSidebarSize / totalPreferred;
       sidebarSize = preferredSidebarSize - sidebarDelta;
-      return Number.constrain(sidebarSize, minSidebarSize, totalSize - minMainSize);
+      return Platform.NumberUtilities.clamp(sidebarSize, minSidebarSize, totalSize - minMainSize);
     }
 
     // Not enough space even for minimum sizes.

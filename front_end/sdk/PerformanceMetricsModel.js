@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../platform/platform.js';
+
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 export class PerformanceMetricsModel extends SDKModel {
@@ -55,7 +57,8 @@ export class PerformanceMetricsModel extends SDKModel {
       switch (this._metricModes.get(metric.name)) {
         case MetricMode.CumulativeTime:
           value = data.lastTimestamp ?
-              Number.constrain((metric.value - data.lastValue) * 1000 / (timestamp - data.lastTimestamp), 0, 1) :
+              Platform.NumberUtilities.clamp(
+                  (metric.value - data.lastValue) * 1000 / (timestamp - data.lastTimestamp), 0, 1) :
               0;
           data.lastValue = metric.value;
           data.lastTimestamp = timestamp;

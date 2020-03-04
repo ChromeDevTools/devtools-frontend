@@ -30,7 +30,8 @@
 
 import './utilities.js';
 
+import * as NumberUtilities from './number-utilities.js';
 import * as StringUtilities from './string-utilities.js';
 
 export {Multimap} from './utilities.js';
-export {StringUtilities};
+export {NumberUtilities, StringUtilities};

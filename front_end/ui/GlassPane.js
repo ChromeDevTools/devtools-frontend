@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../platform/platform.js';
+
 import {Size} from './Geometry.js';  // eslint-disable-line no-unused-vars
 import {Icon} from './Icon.js';
 import {measuredScrollbarWidth} from './utils/measured-scrollbar-width.js';
@@ -269,7 +271,7 @@ export class GlassPane {
           this._arrowElement.classList.add('arrow-none');
         } else {
           let arrowX = anchorBox.x + Math.min(50, Math.floor(anchorBox.width / 2));
-          arrowX = Number.constrain(arrowX, positionX + arrowSize, positionX + width - arrowSize);
+          arrowX = Platform.NumberUtilities.clamp(arrowX, positionX + arrowSize, positionX + width - arrowSize);
           this._arrowElement.positionAt(arrowX, arrowY, container);
         }
       } else {
@@ -326,7 +328,7 @@ export class GlassPane {
           this._arrowElement.classList.add('arrow-none');
         } else {
           let arrowY = anchorBox.y + Math.min(50, Math.floor(anchorBox.height / 2));
-          arrowY = Number.constrain(arrowY, positionY + arrowSize, positionY + height - arrowSize);
+          arrowY = Platform.NumberUtilities.clamp(arrowY, positionY + arrowSize, positionY + height - arrowSize);
           this._arrowElement.positionAt(arrowX, arrowY, container);
         }
       }

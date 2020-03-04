@@ -29,6 +29,7 @@
  */
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
 import {Calculator, TimelineGrid} from './TimelineGrid.js';  // eslint-disable-line no-unused-vars
@@ -568,10 +569,10 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
       factor = newWindowSize / windowSize;
     }
     left = reference + (left - reference) * factor;
-    left = Number.constrain(left, 0, 1 - newWindowSize);
+    left = Platform.NumberUtilities.clamp(left, 0, 1 - newWindowSize);
 
     right = reference + (right - reference) * factor;
-    right = Number.constrain(right, newWindowSize, 1);
+    right = Platform.NumberUtilities.clamp(right, newWindowSize, 1);
     this._setWindow(left, right);
   }
 }

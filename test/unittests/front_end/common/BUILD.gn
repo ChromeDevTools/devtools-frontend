@@ -5,7 +5,9 @@ ts_library("common") {
     ":character_id_map",
     ":color",
     ":object",
+    ":parsed_url",
     ":progress",
+    ":resource_type",
     ":string_output_stream",
     ":text_dictionary",
     ":throttler",
@@ -32,8 +34,20 @@ ts_library("object") {
   deps = [ "../../../../front_end/common" ]
 }
 
+ts_library("parsed_url") {
+  sources = [ "ParsedURL_test.ts" ]
+
+  deps = [ "../../../../front_end/common" ]
+}
+
 ts_library("progress") {
   sources = [ "Progress_test.ts" ]
+
+  deps = [ "../../../../front_end/common" ]
+}
+
+ts_library("resource_type") {
+  sources = [ "ResourceType_test.ts" ]
 
   deps = [ "../../../../front_end/common" ]
 }

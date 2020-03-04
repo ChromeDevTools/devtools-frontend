@@ -28,33 +28,19 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import os.path
 import sys
 import string
-import optparse
 import re
+from os import path
+
 try:
     import json
 except ImportError:
     import simplejson as json
 
-cmdline_parser = optparse.OptionParser()
-cmdline_parser.add_option("--output_js_dir")
-
-try:
-    arg_options, arg_values = cmdline_parser.parse_args()
-    if (len(arg_values) != 1):
-        raise Exception("Exactly one plain argument expected (found %s)" % len(arg_values))
-    input_json_filename = arg_values[0]
-    output_js_dirname = arg_options.output_js_dir
-    if not output_js_dirname:
-        raise Exception("Output .js directory must be specified")
-except Exception:
-    # Work with python 2 and 3 http://docs.python.org/py3k/howto/pyporting.html
-    exc = sys.exc_info()[1]
-    sys.stderr.write("Failed to parse command-line arguments: %s\n\n" % exc)
-    sys.stderr.write("Usage: <script> some.json --output_js_dir <output_js_dir>\n")
-    exit(1)
+ROOT_DIRECTORY = path.join(path.dirname(__file__), '..', '..')
+GENERATED_LOCATION = path.join(ROOT_DIRECTORY, 'front_end', 'generated', 'InspectorBackendCommands.js')
+READ_LOCATION = path.join(ROOT_DIRECTORY, 'third_party', 'blink', 'public', 'devtools_protocol', 'browser_protocol.json')
 
 
 def fix_camel_case(name):
@@ -150,7 +136,7 @@ def get_ref_data_js(json_ref, scope_domain_name):
     return type_map.get(domain_name, type_name).get_raw_type_js()
 
 
-input_file = open(input_json_filename, "r")
+input_file = open(READ_LOCATION, "r")
 json_string = input_file.read()
 json_api = json.loads(json_string)
 
@@ -158,14 +144,14 @@ json_api = json.loads(json_string)
 class Templates:
 
     def get_this_script_path_(absolute_path):
-        absolute_path = os.path.abspath(absolute_path)
+        absolute_path = path.abspath(absolute_path)
         components = []
 
         def fill_recursive(path_part, depth):
             if depth <= 0 or path_part == '/':
                 return
-            fill_recursive(os.path.dirname(path_part), depth - 1)
-            components.append(os.path.basename(path_part))
+            fill_recursive(path.dirname(path_part), depth - 1)
+            components.append(path.basename(path_part))
 
         # Typical path is /Source/platform/inspector_protocol/CodeGenerator.py
         # Let's take 4 components from the real path then.
@@ -290,7 +276,7 @@ class Generator:
 
 Generator.go()
 
-backend_js_file = open(output_js_dirname + "/InspectorBackendCommands.js", "w")
+backend_js_file = open(GENERATED_LOCATION, "w+")
 
 backend_js_file.write(
     Templates.backend_js.substitute(None, domainInitializers="".join(Generator.backend_js_domain_initializer_list)))

@@ -138,22 +138,12 @@ def _CheckFormat(input_api, output_api):
     if len(formattable_files) == 0:
         return results
 
-    check_formatting_process = popen(['git', 'cl', 'format', '--js', '--dry-run'] + formattable_files)
-    check_formatting_process.communicate()
-    if check_formatting_process.returncode == 0:
-        return results
-
     format_args = ['git', 'cl', 'format', '--js'] + formattable_files
     format_process = popen(format_args)
     format_out, _ = format_process.communicate()
     if format_process.returncode != 0:
         results.append(output_api.PresubmitError(format_out))
-        return results
 
-    results.append(output_api.PresubmitError('ERROR: Found formatting violations.\n'
-                                  'Ran clang-format on diff\n'
-                                  'Use git status to check the formatting changes'))
-    results.append(output_api.PresubmitError(format_out))
     return results
 
 
@@ -232,13 +222,48 @@ def _CheckCSSViolations(input_api, output_api):
 
 
 def _CheckGeneratedFiles(input_api, output_api):
+    v8_directory_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'v8')
+    blink_directory_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'third_party', 'blink')
+    protocol_location = input_api.os_path.join(blink_directory_path, 'public', 'devtools_protocol')
+    scripts_build_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'build')
+
+    generated_aria_path = input_api.os_path.join(scripts_build_path, 'generate_aria.py')
+    generated_supported_css_path = input_api.os_path.join(scripts_build_path, 'generate_supported_css.py')
+    generated_protocol_path = input_api.os_path.join(scripts_build_path, 'code_generator_frontend.py')
+    concatenate_protocols_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'third_party', 'inspector_protocol',
+                                                        'concatenate_protocols.py')
+
+    affected_files = _getAffectedFiles(input_api, [
+        v8_directory_path,
+        blink_directory_path,
+        input_api.os_path.join(input_api.PresubmitLocalPath(), 'third_party', 'pyjson5'),
+        generated_aria_path,
+        generated_supported_css_path,
+        concatenate_protocols_path,
+        generated_protocol_path,
+    ], [], ['.pdl', '.json5', '.py'])
+
+    if len(affected_files) == 0:
+        return []
+
     results = [output_api.PresubmitNotifyResult('Running Generated Files Check:')]
 
-    generated_aria_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'build', 'generate_aria.py')
     results = _ExecuteSubProcess(input_api, output_api, generated_aria_path, [], results)
+    results = _ExecuteSubProcess(input_api, output_api, generated_supported_css_path, [], results)
 
-    generated_aria_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'build', 'generate_supported_css.py')
-    results = _ExecuteSubProcess(input_api, output_api, generated_aria_path, [], results)
+    results = _ExecuteSubProcess(
+        input_api,
+        output_api,
+        concatenate_protocols_path,
+        [
+            input_api.os_path.join(protocol_location, 'browser_protocol.pdl'),
+            input_api.os_path.join(v8_directory_path, 'include', 'js_protocol.pdl'),
+            # output_file
+            input_api.os_path.join(protocol_location, 'browser_protocol.json'),
+        ],
+        results)
+
+    results = _ExecuteSubProcess(input_api, output_api, generated_protocol_path, [], results)
 
     return results
 

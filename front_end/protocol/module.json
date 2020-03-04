@@ -5,13 +5,10 @@
   ],
   "scripts": [],
   "modules": [
+    "../generated/InspectorBackendCommands.js",
     "protocol.js",
     "protocol-legacy.js",
     "NodeURL.js",
-    "InspectorBackend.js",
-    "../InspectorBackendCommands.js"
-  ],
-  "skip_compilation": [
-    "../InspectorBackendCommands.js"
+    "InspectorBackend.js"
   ]
 }

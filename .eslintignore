@@ -3,10 +3,7 @@
 // it will ignore any that contain a glob, so if you add a
 // glob into this file it willl not mean that the
 // clang-format check also ignores that file
-
 front_end/.eslintrc.js
-front_end/InspectorBackendCommands.js
-front_end/generated/
 front_end/cm/
 front_end/cm_headless/
 front_end/cm_modes/

@@ -41,7 +41,7 @@ Common.Color.PageHighlight = CommonModule.Color.PageHighlight;
  */
 Common.Color.Generator = CommonModule.Color.Generator;
 
-Common.console = new CommonModule.Console.Console();
+Common.console = CommonModule.Console.Console.instance();
 
 /**
  * @constructor

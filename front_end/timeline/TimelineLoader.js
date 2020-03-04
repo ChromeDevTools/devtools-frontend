@@ -200,7 +200,7 @@ export class TimelineLoader {
    */
   _reportErrorAndCancelLoading(message) {
     if (message) {
-      self.Common.console.error(message);
+      Common.Console.Console.instance().error(message);
     }
     this.cancel();
   }

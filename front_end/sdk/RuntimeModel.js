@@ -422,7 +422,7 @@ export class RuntimeModel extends SDKModel {
     const result = await this.queryObjects(object);
     object.release();
     if (result.error) {
-      self.Common.console.error(result.error);
+      Common.Console.Console.instance().error(result.error);
       return;
     }
     this.dispatchEventToListeners(Events.QueryObjectRequested, {objects: result.objects});

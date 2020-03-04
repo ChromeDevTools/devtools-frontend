@@ -31,6 +31,7 @@
 import {Color, Format} from './Color.js';                            // eslint-disable-line no-unused-vars
 import {EventDescriptor, EventTargetEvent} from './EventTarget.js';  // eslint-disable-line no-unused-vars
 import {ObjectWrapper} from './Object.js';
+import {Console} from './Console.js';
 
 /**
  * @unrestricted
@@ -237,7 +238,7 @@ export class SettingsStorage {
   }
 
   _dumpSizes() {
-    self.Common.console.log('Ten largest settings: ');
+    Console.instance().log('Ten largest settings: ');
 
     const sizes = {__proto__: null};
     for (const key in this._object) {
@@ -252,7 +253,7 @@ export class SettingsStorage {
     keys.sort(comparator);
 
     for (let i = 0; i < 10 && i < keys.length; ++i) {
-      self.Common.console.log('Setting: \'' + keys[i] + '\', size: ' + sizes[keys[i]]);
+      Console.instance().log('Setting: \'' + keys[i] + '\', size: ' + sizes[keys[i]]);
     }
   }
 }
@@ -359,7 +360,7 @@ export class Setting {
         this._printSettingsSavingError(e.message, this._name, settingString);
       }
     } catch (e) {
-      self.Common.console.error('Cannot stringify setting with name: ' + this._name + ', error: ' + e.message);
+      Console.instance().error('Cannot stringify setting with name: ' + this._name + ', error: ' + e.message);
     }
     this._eventSupport.dispatchEventToListeners(this._name, value);
   }
@@ -386,7 +387,7 @@ export class Setting {
     const errorMessage =
         'Error saving setting with name: ' + this._name + ', value length: ' + value.length + '. Error: ' + message;
     console.error(errorMessage);
-    self.Common.console.error(errorMessage);
+    Console.instance().error(errorMessage);
     this._storage._dumpSizes();
   }
 }

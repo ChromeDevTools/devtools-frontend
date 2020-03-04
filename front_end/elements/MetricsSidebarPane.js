@@ -424,7 +424,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
 
     if (computedStyle.get('box-sizing') === 'border-box' && (styleProperty === 'width' || styleProperty === 'height')) {
       if (!userInput.match(/px$/)) {
-        self.Common.console.error(
+        Common.Console.Console.instance().error(
             'For elements with box-sizing: border-box, only absolute content area dimensions can be applied');
         return;
       }

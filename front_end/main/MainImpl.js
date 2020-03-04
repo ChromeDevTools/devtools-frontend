@@ -370,7 +370,7 @@ export class MainImpl {
   }
 
   _registerMessageSinkListener() {
-    self.Common.console.addEventListener(Common.Console.Events.MessageAdded, messageAdded);
+    Common.Console.Console.instance().addEventListener(Common.Console.Events.MessageAdded, messageAdded);
 
     /**
      * @param {!Common.EventTarget.EventTargetEvent} event
@@ -378,7 +378,7 @@ export class MainImpl {
     function messageAdded(event) {
       const message = /** @type {!Common.Console.Message} */ (event.data);
       if (message.show) {
-        self.Common.console.show();
+        Common.Console.Console.instance().show();
       }
     }
   }

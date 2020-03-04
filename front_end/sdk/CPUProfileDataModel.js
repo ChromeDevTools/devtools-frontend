@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+
 import {ProfileNode, ProfileTreeModel} from './ProfileTreeModel.js';
 import {Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
@@ -315,7 +317,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
       nodeId = nextNodeId;
     }
     if (count) {
-      self.Common.console.warn(ls`DevTools: CPU profile parser is fixing ${count} missing samples.`);
+      Common.Console.Console.instance().warn(ls`DevTools: CPU profile parser is fixing ${count} missing samples.`);
     }
     /**
      * @param {!ProfileNode} node

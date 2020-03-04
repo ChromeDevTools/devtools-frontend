@@ -198,6 +198,6 @@ export class ServerTiming {
    * @param {string} msg
    */
   static showWarning(msg) {
-    self.Common.console.warn(Common.UIString.UIString(`ServerTiming: ${msg}`));
+    Common.Console.Console.instance().warn(Common.UIString.UIString(`ServerTiming: ${msg}`));
   }
 }

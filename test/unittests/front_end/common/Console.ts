@@ -9,7 +9,7 @@ import * as Common from '/front_end/common/common.js';
 describe('Console', () => {
   let consoleImpl: Common.Console.Console;
   beforeEach(() => {
-    consoleImpl = new Common.Console.Console();
+    consoleImpl = Common.Console.Console.instance({forceNew: true});
   });
 
   it('adds messages', () => {
@@ -27,7 +27,7 @@ describe('Console', () => {
     ]);
 
     for (const [type, method] of messageTypes) {
-      consoleImpl = new Common.Console.Console();
+      consoleImpl = Common.Console.Console.instance({forceNew: true});
 
       // Dispatch the message of the appropriate type.
       // @ts-ignore
@@ -52,11 +52,13 @@ describe('Console', () => {
   });
 
   it('dispatches events to listeners', done => {
-    consoleImpl.addEventListener(Common.Console.Events.MessageAdded, ({data}) => {
+    const callback = ({data}: {data: {text: string}}) => {
+      consoleImpl.removeEventListener(Common.Console.Events.MessageAdded, callback);
       assert.equal(data.text, 'Foo');
       done();
-    });
+    };
 
+    consoleImpl.addEventListener(Common.Console.Events.MessageAdded, callback);
     consoleImpl.addMessage('Foo', Common.Console.MessageLevel.Info, true);
   });
 });

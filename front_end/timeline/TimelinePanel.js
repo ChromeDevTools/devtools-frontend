@@ -410,7 +410,7 @@ export class TimelinePanel extends UI.Panel.Panel {
     if (!error) {
       return;
     }
-    self.Common.console.error(
+    Common.Console.Console.instance().error(
         Common.UIString.UIString('Failed to save timeline: %s (%s, %s)', error.message, error.name, error.code));
   }
 

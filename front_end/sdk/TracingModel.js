@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+
 import {EventPayload} from './TracingManager.js';  // eslint-disable-line no-unused-vars
 
 export class TracingModel {
@@ -125,7 +127,7 @@ export class TracingModel {
     if (tracingStartedInBrowser.length === 1) {
       return tracingStartedInBrowser[0].thread;
     }
-    self.Common.console.error('Failed to find browser main thread in trace, some timeline features may be unavailable');
+    Common.Console.Console.instance().error('Failed to find browser main thread in trace, some timeline features may be unavailable');
     return null;
   }
 
@@ -715,7 +717,7 @@ export class ObjectSnapshot extends Event {
         const payload = JSON.parse(result);
         callback(payload['args']['snapshot']);
       } catch (e) {
-        self.Common.console.error('Malformed event data in backing storage');
+        Common.Console.Console.instance().error('Malformed event data in backing storage');
         callback(null);
       }
     }

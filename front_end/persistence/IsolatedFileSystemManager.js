@@ -173,7 +173,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     const errorMessage = /** @type {string} */ (event.data['errorMessage']);
     const fileSystem = /** @type {?FileSystem} */ (event.data['fileSystem']);
     if (errorMessage) {
-      self.Common.console.error(Common.UIString.UIString('Unable to add filesystem: %s', errorMessage));
+      Common.Console.Console.instance().error(Common.UIString.UIString('Unable to add filesystem: %s', errorMessage));
       if (!this._fileSystemRequestResolve) {
         return;
       }

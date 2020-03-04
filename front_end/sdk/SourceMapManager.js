@@ -171,7 +171,7 @@ export class SourceMapManager extends Common.ObjectWrapper.ObjectWrapper {
 
       sourceMapPromise
           .catch(error => {
-            self.Common.console.warn(ls`DevTools failed to load SourceMap: ${error.message}`);
+            Common.Console.Console.instance().warn(ls`DevTools failed to load SourceMap: ${error.message}`);
           })
           .then(onSourceMap.bind(this, sourceMapId));
     }

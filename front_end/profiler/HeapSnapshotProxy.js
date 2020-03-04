@@ -184,10 +184,10 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper 
     }
     if (data.error) {
       if (data.errorMethodName) {
-        self.Common.console.error(Common.UIString.UIString(
+        Common.Console.Console.instance().error(Common.UIString.UIString(
             'An error occurred when a call to method \'%s\' was requested', data.errorMethodName));
       }
-      self.Common.console.error(data['errorCallStack']);
+      Common.Console.Console.instance().error(data['errorCallStack']);
       this._callbacks.delete(data.callId);
       return;
     }

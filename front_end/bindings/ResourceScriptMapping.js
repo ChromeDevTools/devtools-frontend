@@ -367,7 +367,7 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper {
         return;
       }
       if (!exceptionDetails) {
-        self.Common.console.addMessage(
+        Common.Console.Console.instance().addMessage(
             Common.UIString.UIString('LiveEdit failed: %s', error), Common.Console.MessageLevel.Warning);
         return;
       }

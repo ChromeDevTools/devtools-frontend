@@ -171,7 +171,7 @@ export async function evaluateScriptSnippet(uiSourceCode) {
   await uiSourceCode.requestContent();
   uiSourceCode.commitWorkingCopy();
   const expression = uiSourceCode.workingCopy();
-  self.Common.console.show();
+  Common.Console.Console.instance().show();
 
   const url = uiSourceCode.url();
 

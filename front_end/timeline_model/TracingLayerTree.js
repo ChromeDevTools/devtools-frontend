@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as SDK from '../sdk/sdk.js';
+import * as Common from '../common/common.js';
 
 import {LayerPaintEvent} from './TimelineFrameModel.js';  // eslint-disable-line no-unused-vars
 
@@ -76,12 +77,12 @@ export class TracingLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
   pictureForRasterTile(tileId) {
     const tile = this._tileById.get('cc::Tile/' + tileId);
     if (!tile) {
-      self.Common.console.error(`Tile ${tileId} is missing`);
+      Common.Console.Console.instance().error(`Tile ${tileId} is missing`);
       return /** @type {!Promise<?SDK.PaintProfiler.SnapshotWithRect>} */ (Promise.resolve(null));
     }
     const layer = /** @type {?TracingLayer} */ (this.layerById(tile.layer_id));
     if (!layer) {
-      self.Common.console.error(`Layer ${tile.layer_id} for tile ${tileId} is not found`);
+      Common.Console.Console.instance().error(`Layer ${tile.layer_id} for tile ${tileId} is not found`);
       return /** @type {!Promise<?SDK.PaintProfiler.SnapshotWithRect>} */ (Promise.resolve(null));
     }
     return layer._pictureForRect(tile.content_rect);

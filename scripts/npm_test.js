@@ -98,13 +98,11 @@ function copyFrontend(contentShellResourcesPath) {
   const copiedFrontendPath = path.resolve(devtoolsResourcesPath, 'front_end');
   const debugFrontendPath = path.resolve(devtoolsResourcesPath, 'debug');
   const inspectorBackendCommandsPath = path.resolve(devtoolsResourcesPath, 'InspectorBackendCommands.js');
-  const supportedCSSPropertiesPath = path.resolve(devtoolsResourcesPath, 'SupportedCSSProperties.js');
   utils.removeRecursive(copiedFrontendPath);
   utils.removeRecursive(debugFrontendPath);
   utils.copyRecursive(SOURCE_PATH, devtoolsResourcesPath);
   fs.renameSync(copiedFrontendPath, debugFrontendPath);
   utils.copy(inspectorBackendCommandsPath, debugFrontendPath);
-  utils.copy(supportedCSSPropertiesPath, debugFrontendPath);
 }
 
 function getChromiumSrcPath(isThirdParty) {

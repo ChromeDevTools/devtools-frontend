@@ -30,11 +30,16 @@
 import json
 import os
 import sys
+from os import path
 
 PYJSON5_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'third_party', 'pyjson5', 'src')
 sys.path.append(PYJSON5_DIR)
 
 import json5  # pylint: disable=import-error
+
+ROOT_DIRECTORY = path.join(path.dirname(__file__), '..', '..')
+GENERATED_LOCATION = path.join(ROOT_DIRECTORY, 'front_end', 'generated', 'SupportedCSSProperties.js')
+READ_LOCATION = path.join(ROOT_DIRECTORY, 'third_party', 'blink', 'renderer', 'core', 'css', 'css_properties.json5')
 
 
 def _keep_only_required_keys(entry):
@@ -85,7 +90,7 @@ def properties_from_file(file_name):
     return properties, property_values
 
 
-properties, property_values = properties_from_file(sys.argv[1])
-with open(sys.argv[2], "w") as f:
+properties, property_values = properties_from_file(READ_LOCATION)
+with open(GENERATED_LOCATION, "w+") as f:
     f.write("export const generatedProperties = %s;\n" % json.dumps(properties))
-    f.write("export const generatedPropertyValues = %s;" % json.dumps(property_values))
+    f.write("export const generatedPropertyValues = %s;\n" % json.dumps(property_values))

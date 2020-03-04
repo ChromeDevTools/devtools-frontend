@@ -135,7 +135,6 @@ function requestHandler(request, response) {
 }
 
 var proxyFilePathToURL = {
-  '/front_end/SupportedCSSProperties.js': cloudURL.bind(null, 'SupportedCSSProperties.js'),
   '/front_end/InspectorBackendCommands.js': cloudURL.bind(null, 'InspectorBackendCommands.js'),
   '/favicon.ico': () => 'https://chrome-devtools-frontend.appspot.com/favicon.ico',
 };

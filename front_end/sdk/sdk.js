@@ -4,7 +4,7 @@
 
 import './SDKModel.js';
 import './CSSMetadata.js';
-import '../SupportedCSSProperties.js';
+import '../generated/SupportedCSSProperties.js';
 import './ProfileTreeModel.js';
 import './NetworkRequest.js';
 import './NetworkManager.js';

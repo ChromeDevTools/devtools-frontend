@@ -32,7 +32,7 @@
 
 import * as Common from '../common/common.js';
 
-import {generatedProperties, generatedPropertyValues} from '../SupportedCSSProperties.js';
+import {generatedProperties, generatedPropertyValues} from '../generated/SupportedCSSProperties.js';
 
 /**
  * @unrestricted

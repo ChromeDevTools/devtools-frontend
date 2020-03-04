@@ -237,6 +237,9 @@ def _CheckGeneratedFiles(input_api, output_api):
     generated_aria_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'build', 'generate_aria.py')
     results = _ExecuteSubProcess(input_api, output_api, generated_aria_path, [], results)
 
+    generated_aria_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'build', 'generate_supported_css.py')
+    results = _ExecuteSubProcess(input_api, output_api, generated_aria_path, [], results)
+
     return results
 
 

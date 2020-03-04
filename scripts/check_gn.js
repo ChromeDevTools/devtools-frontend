@@ -104,10 +104,9 @@ function checkCopiedDevToolsModules() {
 
 function checkGNVariable(gnVariable, obtainFiles, obtainRelativePath) {
   const errors = [];
-  const excludedFiles =
-      ['InspectorBackendCommands.js', 'SupportedCSSProperties.js', 'generated/', 'axe.js', 'formatter_worker/',
-      'third_party/lighthouse/']
-      .map(path.normalize);
+  const excludedFiles = [
+    'InspectorBackendCommands.js', 'generated/', 'axe.js', 'formatter_worker/', 'third_party/lighthouse/'
+  ].map(path.normalize);
   const lines = selectGNLines(`${gnVariable} = [`, ']').map(path.normalize);
   if (!lines.length) {
     return [

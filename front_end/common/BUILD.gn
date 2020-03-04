@@ -13,6 +13,7 @@ ts_library("common") {
     ":console",
     ":event_target",
     ":javascript_meta_data",
+    ":linkifier",
     ":object",
     ":parsed_url",
     ":progress",
@@ -58,6 +59,10 @@ ts_library("console") {
 
 ts_library("event_target") {
   sources = [ "EventTarget.js" ]
+}
+
+ts_library("linkifier") {
+  sources = [ "Linkifier.js" ]
 }
 
 ts_library("query_param_handler") {

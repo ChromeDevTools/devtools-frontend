@@ -302,81 +302,19 @@
           "storageType": "session",
           "defaultValue": "",
           "options": [
-            {
-              "title": "Do not emulate CSS prefers-reduced-motion",
-              "text": "No emulation",
-              "value": ""
-            },
-            {
-              "title": "Emulate CSS prefers-reduced-motion: reduce",
-              "text": "prefers-reduced-motion: reduce",
-              "value": "reduce"
-            }
+              {
+                  "title": "Do not emulate CSS prefers-reduced-motion",
+                  "text": "No emulation",
+                  "value": ""
+              },
+              {
+                  "title": "Emulate CSS prefers-reduced-motion: reduce",
+                  "text": "prefers-reduced-motion: reduce",
+                  "value": "reduce"
+              }
           ],
           "tags": "query",
           "title": "Emulate CSS media feature prefers-reduced-motion"
-        },
-        {
-          "type": "setting",
-          "category": "Rendering",
-          "settingName": "emulatedVisionDeficiency",
-          "settingType": "enum",
-          "storageType": "session",
-          "defaultValue": "",
-          "options": [
-            {
-              "title": "Do not emulate any vision deficiency",
-              "text": "No emulation",
-              "value": "none"
-            },
-            {
-              "title": "Emulate blurred vision",
-              "text": "Blurred vision",
-              "value": "blurredVision"
-            },
-            {
-              "title": "Emulate protanopia",
-              "text": "Protanopia",
-              "value": "protanopia"
-            },
-            {
-              "title": "Emulate protanomaly",
-              "text": "Protanomaly",
-              "value": "protanomaly"
-            },
-            {
-              "title": "Emulate deuteranopia",
-              "text": "Deuteranopia",
-              "value": "deuteranopia"
-            },
-            {
-              "title": "Emulate deuteranomaly",
-              "text": "Deuteranomaly",
-              "value": "deuteranomaly"
-            },
-            {
-              "title": "Emulate tritanopia",
-              "text": "Tritanopia",
-              "value": "tritanopia"
-            },
-            {
-              "title": "Emulate tritanomaly",
-              "text": "Tritanomaly",
-              "value": "tritanomaly"
-            },
-            {
-              "title": "Emulate achromatopsia",
-              "text": "Achromatopsia",
-              "value": "achromatopsia"
-            },
-            {
-              "title": "Emulate achromatomaly",
-              "text": "Achromatomaly",
-              "value": "achromatomaly"
-            }
-          ],
-          "tags": "query",
-          "title": "Emulate vision deficiencies"
         },
         {
             "type": "setting",

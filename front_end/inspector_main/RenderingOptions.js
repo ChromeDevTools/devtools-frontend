@@ -74,10 +74,6 @@ export class RenderingOptionsView extends UI.Widget.VBox {
         this._appendSelect(
             ls`Forces CSS prefers-reduced-motion media feature`,
             self.Common.settings.moduleSetting('emulatedCSSMediaFeaturePrefersReducedMotion'));
-        this.contentElement.createChild('div').classList.add('panel-section-separator');
-
-        this._appendSelect(
-            ls`Forces vision deficiency emulation`, self.Common.settings.moduleSetting('emulatedVisionDeficiency'));
   }
 
   /**

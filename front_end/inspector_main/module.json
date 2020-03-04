@@ -126,8 +126,7 @@
             "title": "Rendering",
             "persistence": "closeable",
             "order": 50,
-            "className": "InspectorMain.RenderingOptionsView",
-            "tags": "paint, layout, fps, CSS media type, CSS media feature, vision deficiency, color vision deficiency"
+            "className": "InspectorMain.RenderingOptionsView"
         }
     ],
     "dependencies": [

@@ -3,9 +3,6 @@
   <message name="IDS_DEVTOOLS_035f93937dfd06c795a75877c9e6ddeb" desc="Checkbox subtitle for 'FPS meter' in the Rendering tool">
     Plots frames per second, frame rate distribution, and GPU memory.
   </message>
-  <message name="IDS_DEVTOOLS_05934928102b17827b8f03ed60c3e6e0" desc="Command Menu search query that points to the Rendering tool">
-    fps
-  </message>
   <message name="IDS_DEVTOOLS_099969ccad146161b304e766f9a1fe56" desc="Title of a setting under the Network category that can be invoked through the Command Menu">
     Show ads on this site, if allowed
   </message>
@@ -24,29 +21,17 @@
   <message name="IDS_DEVTOOLS_1e7cf45a622bb0fe494f9e4da1016982" desc="Text in Rendering Options">
     Layout Shift Regions
   </message>
-  <message name="IDS_DEVTOOLS_22858c2062e610f015f64e2090f77f8a" desc="Command Menu search query that points to the Rendering tool">
-    color vision deficiency
-  </message>
   <message name="IDS_DEVTOOLS_2b1a578586beb46008e1542e9283ad99" desc="Checkbox title in Rendering tool">
     Scrolling performance issues
   </message>
   <message name="IDS_DEVTOOLS_36bec95bf12fb795a5a100251f0cc421" desc="Checkbox subtitle for 'Layer boarders' in the Rendering tool">
     Shows layer borders (orange/olive) and tiles (cyan).
   </message>
-  <message name="IDS_DEVTOOLS_3a3d5225e008ed3017e9572ab8160815" desc="Command Menu search query that points to the Rendering tool">
-    CSS media type
-  </message>
-  <message name="IDS_DEVTOOLS_4047b37213dd5663ffd2cfbfe54826b0" desc="Command Menu search query that points to the Rendering tool">
-    vision deficiency
-  </message>
   <message name="IDS_DEVTOOLS_417316246f12b8235535182cc9eebe45" desc="Accessibility subtitle for media select element in Rendering tool">
     Forces media type for testing print and screen styles
   </message>
   <message name="IDS_DEVTOOLS_43f244627bf87f76a0dee86f364df473" desc="Checkbox subtitle for 'Layout Shift Regions' in the Rendering tool">
     Highlights areas of the page (blue) that were shifted. May not be suitable for people prone to photosensitive epilepsy.
-  </message>
-  <message name="IDS_DEVTOOLS_508386d4665c7d3d7b4958a52e28eab1" desc="Command Menu search query that points to the Rendering tool">
-    CSS media feature
   </message>
   <message name="IDS_DEVTOOLS_53f2f05226edcd77bd4351cb27d07ba8" desc="Text in Rendering Options">
     Highlights frames (red) detected to be ads.
@@ -96,12 +81,6 @@
   <message name="IDS_DEVTOOLS_a4c766a2e6eb33e7575331b6affd9778" desc="Checkbox subtitle for 'Paint flashing' in the Rendering tool">
     Highlights areas of the page (green) that need to be repainted. May not be suitable for people prone to photosensitive epilepsy.
   </message>
-  <message name="IDS_DEVTOOLS_c1940aeeb9693a02e28c52eb85ce261c" desc="Command Menu search query that points to the Rendering tool">
-    paint
-  </message>
-  <message name="IDS_DEVTOOLS_c61404957758dfda283709e89376ab3e" desc="Command Menu search query that points to the Rendering tool">
-    layout
-  </message>
   <message name="IDS_DEVTOOLS_cb835af5f855f79e8611dd3f8fec6aac" desc="Title of an action in the inspector main tool to reload">
     Reload page
   </message>
@@ -110,8 +89,5 @@
   </message>
   <message name="IDS_DEVTOOLS_f23c9ba06e7123f0b4c906de90fbcc9f" desc="Title of a setting under the DevTools category that can be invoked through the Command Menu">
     Auto-open <ph name="LOCKED_1">DevTools</ph> for popups
-  </message>
-  <message name="IDS_DEVTOOLS_fe904c39945840470511a9ff798e9812" desc="Accessibility subtitle for vision deficiency select element in Rendering tool">
-    Forces vision deficiency emulation
   </message>
 </grit-part>

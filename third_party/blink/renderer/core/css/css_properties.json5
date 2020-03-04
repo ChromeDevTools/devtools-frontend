@@ -2907,18 +2907,13 @@
       typedom_types: ["Keyword"]
     },
     {
-      name: "render-subtree",
+      name: "subtree-visibility",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
-      field_group: "*",
-      field_size: 3,
-      field_template: "multi_keyword",
-      keywords: ["none", "invisible", "skip-activation", "skip-viewport-activation"],
-      default_value: "none",
-      name_for_methods: "RenderSubtree",
-      type_name: "RenderSubtreeFlags",
-      converter: "ConvertFlags<RenderSubtreeFlags>",
+      field_template: "keyword",
+      keywords: ["visible", "auto", "hidden", "hidden-matchable"],
+      default_value: "visible",
       typedom_types: ["Keyword"],
-      runtime_flag: "CSSRenderSubtree"
+      runtime_flag: "CSSSubtreeVisibility"
     },
     {
       name: "resize",

@@ -2845,6 +2845,22 @@ domain Emulation
       # Media features to emulate.
       optional array of MediaFeature features
 
+  # Emulates the given vision deficiency.
+  experimental command setEmulatedVisionDeficiency
+    parameters
+      # Vision deficiency to emulate.
+      enum type
+        none
+        achromatomaly
+        achromatopsia
+        blurredVision
+        deuteranomaly
+        deuteranopia
+        protanomaly
+        protanopia
+        tritanomaly
+        tritanopia
+
   # Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position
   # unavailable.
   command setGeolocationOverride

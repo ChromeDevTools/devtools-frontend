@@ -247,25 +247,10 @@ def _CheckGeneratedFiles(input_api, output_api):
         return []
 
     results = [output_api.PresubmitNotifyResult('Running Generated Files Check:')]
+    generate_protocol_resources_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'deps',
+                                                              'generate_protocol_resources.py')
 
-    results = _ExecuteSubProcess(input_api, output_api, generated_aria_path, [], results)
-    results = _ExecuteSubProcess(input_api, output_api, generated_supported_css_path, [], results)
-
-    results = _ExecuteSubProcess(
-        input_api,
-        output_api,
-        concatenate_protocols_path,
-        [
-            input_api.os_path.join(protocol_location, 'browser_protocol.pdl'),
-            input_api.os_path.join(v8_directory_path, 'include', 'js_protocol.pdl'),
-            # output_file
-            input_api.os_path.join(protocol_location, 'browser_protocol.json'),
-        ],
-        results)
-
-    results = _ExecuteSubProcess(input_api, output_api, generated_protocol_path, [], results)
-
-    return results
+    return _ExecuteSubProcess(input_api, output_api, generate_protocol_resources_path, [], results)
 
 
 def _CheckNoUncheckedFiles(input_api, output_api):

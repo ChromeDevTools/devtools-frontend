@@ -16,8 +16,53 @@ Please be aware that DevTools follows additional [development guidelines](DESIGN
 
 In order to make changes to DevTools frontend, build, run, test, and submit changes, several workflows exist. Having [depot_tools](https://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up) set up is a common prerequisite.
 
+#### Integrate standalone checkout into Chromium (strongly recommended)
+
+This workflow will ensure that your local setup is equivalent to how Chromium infrastructure tests your change.
+It also allows you to develop DevTools independently of the version in your Chromium checkout.
+This means that you don't need to update Chromium often, in order to work on DevTools.
+
+<details>
+
+In `chromium/src`, run `gclient sync` to make sure you have installed all required submodules.
+```bash
+gclient sync
+```
+
+Then, disable `gclient sync` for DevTools frontend inside of Chromium by editing `.gclient` config. From `chromium/src/`, simply run
+```bash
+vim $(gclient root)/.gclient
+```
+
+In the `custom_deps` section, insert this line:
+```python
+"src/third_party/devtools-frontend/src": None,
+```
+
+Then run
+```bash
+gclient sync -D
+```
+This removes the DevTools frontend dependency. We now create a symlink to refer to the standalone checkout (execute in `chromium/src` and make sure that `third_party/devtools-frontend` exists):
+
+**(Note that the folder names do NOT include the trailing slash)**
+
+```bash
+ln -s path/to/standalone/devtools-frontend third_party/devtools-frontend/src
+```
+
+Running `gclient sync` in `chromium/src/` will update dependencies for the Chromium checkout.
+Running `gclient sync` in `chromium/src/third_party/devtools-frontend/src` will update dependencies for the standalone checkout.
+
+</details>
+
+
 #### Standalone workflow
-As a standalone project, Chrome DevTools frontend can be checked out and built independently from Chromium. The main advantage is not having to check out and build Chromium. However, there is also no way to run layout tests in this workflow.
+
+As a standalone project, Chrome DevTools frontend can be checked out and built independently from Chromium.
+The main advantage is not having to check out and build Chromium.
+However, there is also no way to run layout tests in this workflow.
+
 <details>
 
 ##### Checking out source
@@ -81,8 +126,12 @@ Usual [steps](https://chromium.googlesource.com/chromium/src/+/master/docs/contr
 - To update DevTools frontend's DEPS, use `roll-dep`.
 </details>
 
-#### Chromium workflow
+#### Chromium workflow (discouraged)
+
 DevTools frontend can also be developed as part of the full Chromium checkout.
+This workflow can be used to make small patches to DevTools as a Chromium engineer.
+However, it is different to our infrastructure setup and how to execute general maintenance work.
+
 <details>
 
 ##### Checking out source
@@ -110,36 +159,6 @@ third_party/blink/tools/run_web_tests.py http/tests/devtools
 ##### Create a change
 Usual [steps](https://chromium.googlesource.com/chromium/src/+/master/docs/contributing.md#creating-a-change) for creating a change work out of the box, when executed in `third_party/devtools-frontend/src/`.
 </details>
-
-#### Integrate standalone checkout into Chromium
-If you prefer working on a standalone checkout of DevTools frontend, but want to build, test, and run inside the full Chromium checkout. This way, you combine the best of both worlds.
-<details>
-
-Disable `gclient sync` for DevTools frontend inside of Chromium by editing `.gclient` config. From `chromium/src/`, simply run
-```bash
-vim $(gclient root)/.gclient
-```
-
-In the `custom_deps` section, insert this line:
-```python
-"src/third_party/devtools-frontend/src": None,
-```
-
-Then run
-```bash
-gclient sync -D
-```
-This removes the DevTools frontend dependency. We now create a symlink to refer to the standalone checkout:
-
-**(Note that the folder names do NOT include the trailing slash)**
-
-```bash
-ln -s path/to/standalone/devtools-frontend third_party/devtools-frontend/src
-```
-
-</details>
-
-Running `gclient sync` in `chromium/src/` will update dependencies for the Chromium checkout. Running `gclient sync` in `chromium/src/third_party/devtools-frontend/src` will update dependencies for the standalone checkout.
 
 ### Testing
 Please refer to the [overview document](https://docs.google.com/document/d/1c2KLKoFMqLB2A9sNAHIhYb70XFyfBUBs5BZSYfQAT-Y/edit). The current test status can be seen at the [test waterfall].

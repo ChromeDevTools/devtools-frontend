@@ -126,8 +126,9 @@ export class ScreencastView extends UI.Widget.VBox {
       return;
     }
     this._isCasting = true;
-
-    const maxImageDimension = 2048;
+    /**************** POWWOW CHANGED ****************/
+    const maxImageDimension = 5048  /* 2048 */;
+    /**************** POWWOW CHANGED ****************/
     const dimensions = this._viewportDimensions();
     if (dimensions.width < 0 || dimensions.height < 0) {
       this._isCasting = false;
@@ -141,7 +142,9 @@ export class ScreencastView extends UI.Widget.VBox {
         Math.floor(Math.min(maxImageDimension, dimensions.height)), undefined, this._screencastFrame.bind(this),
         this._screencastVisibilityChanged.bind(this));
     for (const emulationModel of self.SDK.targetManager.models(SDK.EmulationModel.EmulationModel)) {
-      emulationModel.overrideEmulateTouch(true);
+      /**************** POWWOW CHANGED ****************/
+      emulationModel.overrideEmulateTouch(false /* true */); //powwow - prevent mouse->touch translation
+      /**************** POWWOW CHANGED ****************/
     }
     if (this._overlayModel) {
       this._overlayModel.setHighlighter(this);
@@ -249,6 +252,20 @@ export class ScreencastView extends UI.Widget.VBox {
       event.preventDefault();
       if (event.type === 'mousedown') {
         this._canvasElement.focus();
+        /**************** POWWOW ADDED ****************/
+        const position = this._convertIntoScreenSpace(event);
+        let offsetX = event.offsetX;
+        let offsetY = event.offsetY;
+
+        let node = await this._domModel.nodeForLocation(
+            Math.floor(position.x / this._pageScaleFactor + this._scrollOffsetX),
+            Math.floor(position.y / this._pageScaleFactor + this._scrollOffsetY),
+            self.Common.settings.moduleSetting('showUAShadowDOM').get());
+            
+        window.getSelectData(node, offsetX, offsetY);
+        window.showFileUpload(node, offsetX, offsetY);
+        event.stopPropagation();
+        /**************** POWWOW ADDED ****************/
       }
       return;
     }
@@ -415,6 +432,9 @@ export class ScreencastView extends UI.Widget.VBox {
     this._canvasElement.width = window.devicePixelRatio * canvasWidth;
     this._canvasElement.height = window.devicePixelRatio * canvasHeight;
 
+    /**************** POWWOW ADDED ****************/
+    window.document.dispatchEvent(new CustomEvent('SCREENCAST_RESIZED'));
+    /**************** POWWOW ADDED ****************/
     this._context.save();
     this._context.scale(window.devicePixelRatio, window.devicePixelRatio);
 
@@ -603,7 +623,9 @@ export class ScreencastView extends UI.Widget.VBox {
    * @return {!{width: number, height: number}}
    */
   _viewportDimensions() {
-    const gutterSize = 30;
+    /**************** POWWOW CHANGED ****************/
+    const gutterSize = 0; /* 30; */
+    /**************** POWWOW CHANGED ****************/
     const bordersSize = _bordersSize;
     const width = this.element.offsetWidth - bordersSize - gutterSize;
     const height = this.element.offsetHeight - bordersSize - gutterSize - _navBarHeight;
@@ -742,7 +764,9 @@ export class ScreencastView extends UI.Widget.VBox {
   }
 }
 
-export const _bordersSize = 44;
+/**************** POWWOW CHANGED ****************/
+export const _bordersSize = 2; /* 44; */
+/**************** POWWOW CHANGED ****************/
 export const _navBarHeight = 29;
 export const _HttpRegex = /^http:\/\/(.+)/;
 export const _SchemeRegex = /^(https?|about|chrome):/;

@@ -79,6 +79,9 @@ export class MainImpl {
     Root.Runtime.setPlatform(Host.Platform.platform());
     Root.Runtime.setL10nCallback(ls);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.getPreferences(this._gotPreferences.bind(this));
+    /**************** POWWOW ADDED ****************/
+    window.document.dispatchEvent(new CustomEvent('MAIN_LOADED'));
+    /**************** POWWOW ADDED ****************/
   }
 
   /**

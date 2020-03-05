@@ -35,7 +35,15 @@
 .screencast-navigation {
     flex-direction: row;
     display: flex;
-    flex: 24px 0 0;
+    /**************** POWWOW ADDED ****************/
+    background-color: rgb(90%, 90%, 90%);
+    z-index: 5;
+    flex: 40px 0 0;
+    border-right: 1px solid rgb(64%, 64%, 64%);
+    /**************** POWWOW ADDED ****************/
+    /**************** POWWOW REMOVED ****************/
+    /* flex: 24px 0 0; */
+    /**************** POWWOW REMOVED ****************/
     position: relative;
     padding-left: 1px;
     border-bottom: 1px solid rgb(64%, 64%, 64%);
@@ -55,8 +63,25 @@
     border: 1px solid transparent;
     height: 23px;
     padding: 2px;
-    width: 23px;
+    /**************** POWWOW REMOVED ****************/
+    /* width: 23px; */
+    /**************** POWWOW REMOVED ****************/
+    /**************** POWWOW ADDED ****************/
+    height: 24px;
+    width: 24px;
+    margin-top: 6px;
+    /**************** POWWOW ADDED ****************/
 }
+
+/**************** POWWOW ADDED ****************/
+.screencast-navigation button.fa.fa-code {
+    background-image: url(Images/devtools.png);
+    width: 32px;
+    height: 32px;
+    margin-top: 3px;
+    background-size: 97%;
+}
+/**************** POWWOW ADDED ****************/
 
 .screencast-navigation button:hover {
     border-color: #ccc;
@@ -85,7 +110,15 @@
 .screencast-navigation input {
     -webkit-flex: 1;
     margin: 2px;
-    max-height: 19px;
+    /**************** POWWOW REMOVED ****************/
+    /* max-height: 19px; */
+    /**************** POWWOW REMOVED ****************/
+    /**************** POWWOW ADDED ****************/
+    max-height: 40px;
+    height: 32px !important;
+    border-radius: 3px;
+    font-size: 15px;
+    /**************** POWWOW ADDED ****************/
 }
 
 .screencast-navigation .progress {
@@ -100,12 +133,16 @@
 
 .screencast-viewport {
     display: flex;
-    border: 1px solid #999;
-    border-radius: 20px;
+    /**************** POWWOW REMOVED ****************/
+    /* border: 1px solid #999;
+    border-radius: 20px; */
+    /**************** POWWOW REMOVED ****************/
     flex: none;
-    padding: 20px;
+    /**************** POWWOW REMOVED ****************/
+    /* padding: 20px;
     margin: 10px;
-    background-color: #eee;
+    background-color: #eee; */
+    /**************** POWWOW REMOVED ****************/
 }
 
 .screencast-canvas-container {
@@ -113,7 +150,12 @@
     display: flex;
     border: 1px solid #999;
     position: relative;
-    cursor: -webkit-image-set(url(Images/touchCursor.png) 1x, url(Images/touchCursor_2x.png) 2x), default;
+    /**************** POWWOW REMOVED ****************/
+    /* cursor: -webkit-image-set(url(Images/touchCursor.png) 1x, url(Images/touchCursor_2x.png) 2x), default; */
+    /**************** POWWOW REMOVED ****************/
+    /**************** POWWOW ADDED ****************/
+    cursor: default;
+    /**************** POWWOW ADDED ****************/
 }
 
 .screencast canvas {

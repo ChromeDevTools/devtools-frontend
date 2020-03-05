@@ -139,7 +139,9 @@ export class InspectorFrontendHostStub {
    * @suppressGlobalPropertiesCheck
    */
   inspectedURLChanged(url) {
-    document.title = Common.UIString.UIString('DevTools - %s', url.replace(/^https?:\/\//, ''));
+    /**************** POWWOW REMOVED ****************/
+    // document.title = Common.UIString.UIString('DevTools - %s', url.replace(/^https?:\/\//, ''));
+    /**************** POWWOW REMOVED ****************/
   }
 
   /**

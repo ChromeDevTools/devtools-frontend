@@ -526,7 +526,12 @@ export class SplitWidget extends Widget {
     if (this._isVertical) {
       this._sidebarElement.style.width = sidebarSizeValue;
       this._mainElement.style.width = mainSizeValue;
-      this._sidebarElement.style.height = this._totalSizeOtherDimensionCSS + 'px';
+      /**************** POWWOW REMOVED ****************/
+      // this._sidebarElement.style.height = this._totalSizeOtherDimensionCSS + 'px';
+      /**************** POWWOW REMOVED ****************/
+      /**************** POWWOW ADDED ****************/
+      this._sidebarElement.style.height = document.querySelector('[ui-view="topPane"]').style.height;
+      /**************** POWWOW ADDED ****************/
       this._mainElement.style.height = this._totalSizeOtherDimensionCSS + 'px';
     } else {
       this._sidebarElement.style.height = sidebarSizeValue;

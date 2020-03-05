@@ -76,6 +76,23 @@ class Runtime {
      */
     function load(fulfill, reject) {
       const xhr = new XMLHttpRequest();
+      /**************** POWWOW ADDED ****************/
+      if (url.includes('http')) {
+        var parts = url.split('/');
+        parts.shift();
+        parts.shift();
+        parts.shift();
+        url = parts.join('/');
+      }
+      if (url === 'InspectorBackendCommands.js' || url === 'SupportedCSSProperties.js') {
+        url += '?commitHash=' + window.explorerData.commitHash;
+      } else {
+        if (window.explorerData.env === 'development')
+          url = 'bower_components/devtools/front_end/' + url;
+        else
+          url = 'scripts/devtools/' + url;
+      }
+      /**************** POWWOW ADDED ****************/
       xhr.open('GET', url, true);
       if (asBinary) {
         xhr.responseType = 'arraybuffer';
@@ -355,7 +372,14 @@ class Runtime {
    * @return {string}
    */
   static queryParamsString() {
-    return location.search;
+    /**************** POWWOW REMOVED ****************/
+    // return location.search;
+    /**************** POWWOW REMOVED ****************/
+
+    /**************** POWWOW ADDED ****************/
+    var splitLocation = window.location.href.split('?');
+    return splitLocation[1] ? '?' + splitLocation[1] : '';
+    /**************** POWWOW ADDED ****************/
   }
 
   /**
@@ -592,7 +616,15 @@ class Runtime {
    * @return {?Extension}
    */
   extension(type, context) {
-    return this.extensions(type, context)[0] || null;
+    /**************** POWWOW REMOVED ****************/
+    // return this.extensions(type, context)[0] || null;
+    /**************** POWWOW REMOVED ****************/
+
+    /**************** POWWOW ADDED ****************/
+    /* Select index '1' for the screencastAppProvider b/c of how Runtime is called
+    /* but select index '0' for how everything defaults */
+    return this.extensions(type, context)[1] || this.extensions(type, context)[0] || null;
+    /**************** POWWOW ADDED ****************/
   }
 
   /**
@@ -1009,6 +1041,10 @@ class Extension { /**
       throw new Error('Could not instantiate: ' + className);
     }
     if (this._className) {
+      /**************** POWWOW ADDED ****************/
+      if (className === 'Elements.ElementsPanel')
+        window.document.dispatchEvent(new CustomEvent('ELEMENTS_PANEL_CONSTRUCTED'));
+      /**************** POWWOW ADDED ****************/
       return this._module._manager.sharedInstance(constructorFunction);
     }
     return new constructorFunction(this);

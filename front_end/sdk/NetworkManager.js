@@ -55,6 +55,13 @@ export class NetworkManager extends SDKModel {
 
     this._networkAgent.enable(undefined, undefined, MAX_EAGER_POST_REQUEST_BODY_LENGTH);
 
+    /**************** POWWOW ADDED ****************/
+    // STUDIO-2501 - Handle security errors.
+    var securityAgent = target.securityAgent();
+    securityAgent.enable();
+    securityAgent.setOverrideCertificateErrors(true);
+    /**************** POWWOW ADDED ****************/
+
     this._bypassServiceWorkerSetting = self.Common.settings.createSetting('bypassServiceWorker', false);
     if (this._bypassServiceWorkerSetting.get()) {
       this._bypassServiceWorkerChanged();
@@ -1031,6 +1038,25 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
 
     /** @type {!Platform.Multimap<!RequestInterceptor, !InterceptionPattern>} */
     this._urlsForRequestInterceptor = new Platform.Multimap();
+
+    /**************** POWWOW ADDED ****************/
+    // STUDIO-2361: Allow www-authentication.
+    let requestInterceptionUrls = Root.Runtime.queryParam('requestInterceptionUrls');
+    if (requestInterceptionUrls) {
+      let arrUrls = requestInterceptionUrls.split('|');
+
+      let patterns = [];
+      if (arrUrls.length) {
+          for (let urlPattern of arrUrls) {
+              patterns.push({
+                  interceptionStage: 'Response',
+                  urlPattern: urlPattern
+              });
+          }
+      }
+      this.setInterceptionHandlerForPatterns(patterns, window.requestInterceptor);
+    }
+    /**************** POWWOW ADDED ****************/
 
     self.SDK.targetManager.observeModels(NetworkManager, this);
   }

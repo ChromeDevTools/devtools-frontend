@@ -46,3 +46,7 @@ Main.SimpleApp = MainModule.SimpleApp.SimpleApp;
  * @constructor
  */
 Main.SimpleAppProvider = MainModule.SimpleApp.SimpleAppProvider;
+
+/**************** POWWOW ADDED ****************/
+Main.sendOverProtocol = MainModule.MainImpl.sendOverProtocol;
+/**************** POWWOW ADDED ****************/

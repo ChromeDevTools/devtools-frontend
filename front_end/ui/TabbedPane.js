@@ -215,6 +215,9 @@ export class TabbedPane extends VBox {
    * @param {number=} index
    */
   appendTab(id, tabTitle, view, tabTooltip, userGesture, isCloseable, index) {
+    /**************** POWWOW ADDED ****************/
+    if (~['Performance', 'Memory', 'Audits'].indexOf(tabTitle)) return; // POWWOW - filter unwanted tabs
+    /**************** POWWOW ADDED ****************/
     isCloseable = typeof isCloseable === 'boolean' ? isCloseable : this._closeableTabs;
     const tab = new TabbedPaneTab(this, id, tabTitle, isCloseable, view, tabTooltip);
     tab.setDelegate(this._delegate);

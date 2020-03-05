@@ -1507,7 +1507,11 @@ export class DOMModel extends SDKModel {
     }
 
     const parent = this._idToDOMNode[parentId];
-    parent._setChildrenPayload(payloads);
+    /**************** POWWOW ADDED ****************/
+    if (parent) {
+    /**************** POWWOW ADDED ****************/
+      parent._setChildrenPayload(payloads);
+    }
   }
 
   /**

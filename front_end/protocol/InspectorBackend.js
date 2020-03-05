@@ -296,6 +296,7 @@ export class SessionRouter {
     this._pendingScripts = [];
 
     test.deprecatedRunAfterPendingDispatches = this._deprecatedRunAfterPendingDispatches.bind(this);
+    // CHECK FOR POWWOW CHANGE
     test.sendRawMessage = this._sendRawMessageForTesting.bind(this);
 
     this._connection.setOnMessage(this._onMessage.bind(this));

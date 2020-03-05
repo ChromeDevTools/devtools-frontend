@@ -86,7 +86,12 @@ export class Widget extends Common.ObjectWrapper.ObjectWrapper {
 
   static __assert(condition, message) {
     if (!condition) {
-      throw new Error(message);
+      /**************** POWWOW REMOVED ****************/
+      // throw new Error(message);
+      /**************** POWWOW REMOVED ****************/
+      /**************** POWWOW ADDED ****************/
+      console.error(message);
+      /**************** POWWOW ADDED ****************/
     }
   }
 

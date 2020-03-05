@@ -163,6 +163,9 @@ export class ResizerWidget extends Common.ObjectWrapper.ObjectWrapper {
     this.dispatchEventToListeners(Events.ResizeEnd);
     delete this._startX;
     delete this._startY;
+    /**************** POWWOW ADDED ****************/
+    window.document.dispatchEvent(new CustomEvent('DEVTOOLS_SPLITBAR_DRAG_END'));
+    /**************** POWWOW ADDED ****************/    
   }
 }
 

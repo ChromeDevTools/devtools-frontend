@@ -85,7 +85,10 @@ export class InputModel extends SDK.SDKModel.SDKModel {
       y: y,
       modifiers: this._modifiersForEvent(event),
       button: buttons[event.which],
-      clickCount: 0
+      clickCount: 0,
+      /**************** POWWOW ADDED ****************/
+      timestamp: Date.now()
+      /**************** POWWOW ADDED ****************/
     };
     if (event.type === 'mousewheel') {
       params.deltaX = event.wheelDeltaX / zoom;
@@ -96,6 +99,10 @@ export class InputModel extends SDK.SDKModel.SDKModel {
     if (event.type === 'mouseup') {
       this._activeTouchOffsetTop = null;
     }
+    /**************** POWWOW ADDED ****************/
+    if (event.type === 'mousedown')
+      params.clickCount = 1;
+    /**************** POWWOW ADDED ****************/
     this._inputAgent.invoke_emulateTouchFromMouseEvent(params);
   }
 

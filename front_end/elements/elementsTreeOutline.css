@@ -307,6 +307,12 @@ li.selected {
     z-index: 0;
 }
 
+/**************** POWWOW ADDED ****************/
+li.hovered {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+/**************** POWWOW ADDED ****************/
+
 li.hovered:not(.always-parent) + ol.children, .elements-tree-outline ol.shadow-root, li.selected:not(.always-parent) + ol.children {
     margin-left: 5px;
     padding-inline-start: 6px;

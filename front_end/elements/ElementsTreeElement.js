@@ -558,6 +558,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
     const isShadowRoot = this._node.isShadowRoot();
 
+    // MAY NEED POWWOW CHANGE
     // Place it here so that all "Copy"-ing items stick together.
     const copyMenu = contextMenu.clipboardSection().appendSubMenuItem(Common.UIString.UIString('Copy'));
     const createShortcut = UI.KeyboardShortcut.KeyboardShortcut.shortcutToString.bind(null);
@@ -1614,7 +1615,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           }
           break;
         }
-
+        // MAY NEED POWWOW CHANGE
         if (this.treeOutline.isXMLMimeType || !ForbiddenClosingTagElements.has(tagName)) {
           this._buildTagDOM(titleDOM, tagName, true, false, updateRecord);
         }

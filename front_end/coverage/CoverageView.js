@@ -214,6 +214,13 @@ export class CoverageView extends UI.Widget.VBox {
    *   - **jsCoveragePerBlock** - `{boolean}` - Collect per Block coverage if `true`, per function coverage otherwise.
    */
   async _startRecording(options) {
+    let hadFocus, reloadButtonFocused;
+    if (this._startWithReloadButton && this._startWithReloadButton.element.hasFocus()) {
+      reloadButtonFocused = true;
+    } else if (this.hasFocus()) {
+      hadFocus = true;
+    }
+
     this._reset();
     const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
     if (!mainTarget) {
@@ -250,16 +257,18 @@ export class CoverageView extends UI.Widget.VBox {
       this._startWithReloadButton.setVisible(false);
       this._toggleRecordButton.setEnabled(true);
       this._toggleRecordButton.setVisible(true);
+      if (reloadButtonFocused) {
+        this._toggleRecordButton.element.focus();
+      }
     }
     this._coverageTypeComboBox.setEnabled(false);
     this._filterInput.setEnabled(true);
     this._filterByTypeComboBox.setEnabled(true);
-    const hadFocus = this.hasFocus();
     if (this._landingPage.isShowing()) {
       this._landingPage.detach();
     }
     this._listView.show(this._coverageResultsElement);
-    if (hadFocus) {
+    if (hadFocus && !reloadButtonFocused) {
       this._listView.focus();
     }
     if (reload && this._resourceTreeModel) {
@@ -278,6 +287,9 @@ export class CoverageView extends UI.Widget.VBox {
       this._resourceTreeModel.removeEventListener(
           SDK.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated, this);
       this._resourceTreeModel = null;
+    }
+    if (this.hasFocus()) {
+      this._listView.focus();
     }
     // Stopping the model triggers one last poll to get the final data.
     await this._model.stop();
@@ -403,7 +415,7 @@ export class ActionDelegate {
    */
   handleAction(context, actionId) {
     const coverageViewId = 'coverage';
-    self.UI.viewManager.showView(coverageViewId)
+    self.UI.viewManager.showView(coverageViewId, /** userGesture= */ false, /** omitFocus= */ true)
         .then(() => self.UI.viewManager.view(coverageViewId).widget())
         .then(widget => this._innerHandleAction(/** @type !CoverageView} */ (widget), actionId));
 

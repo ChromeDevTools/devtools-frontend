@@ -1,0 +1,1 @@
+s/https\:\/\/chromium.googlesource.com\/devtools\/devtools-frontend/https\:\/\/github.com\/powwowinc\/devtools-frontend/g

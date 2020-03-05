@@ -115,10 +115,9 @@ const _substitutionStrings = new WeakMap();
 
 /**
  * @param {!ITemplateArray|string} strings
- * @param {...*} vararg
  * @return {string}
  */
-export function ls(strings, vararg) {
+export function ls(strings) {
   if (typeof strings === 'string') {
     return strings;
   }

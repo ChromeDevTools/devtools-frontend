@@ -5,130 +5,30 @@
 import("../../third_party/typescript/typescript.gni")
 
 ts_library("common") {
-  deps = [
-    ":app",
-    ":app_provider",
-    ":character_id_map",
-    ":color",
-    ":console",
-    ":event_target",
-    ":javascript_meta_data",
-    ":linkifier",
-    ":object",
-    ":parsed_url",
-    ":progress",
-    ":query_param_handler",
-    ":resource_type",
-    ":revealer",
-    ":runnable",
-    ":segmented_range",
-    ":string_output_stream",
-    ":text_dictionary",
-    ":throttler",
-    ":trie",
-    ":ui_string",
-    ":worker",
+  sources = [
+    "App.js",
+    "AppProvider.js",
+    "CharacterIdMap.js",
+    "Color.js",
+    "Console.js",
+    "EventTarget.js",
+    "JavaScriptMetaData.js",
+    "Linkifier.js",
+    "Object.js",
+    "ParsedURL.js",
+    "Progress.js",
+    "QueryParamHandler.js",
+    "ResourceType.js",
+    "Revealer.js",
+    "Runnable.js",
+    "SegmentedRange.js",
+    "StringOutputStream.js",
+    "TextDictionary.js",
+    "Throttler.js",
+    "Trie.js",
+    "UIString.js",
+    "Worker.js",
   ]
-}
-
-ts_library("app") {
-  sources = [ "App.js" ]
-}
-
-ts_library("app_provider") {
-  sources = [ "AppProvider.js" ]
-
-  deps = [ ":app" ]
-}
-
-ts_library("character_id_map") {
-  sources = [ "CharacterIdMap.js" ]
-}
-
-ts_library("color") {
-  sources = [ "Color.js" ]
 
   deps = [ "../platform" ]
-}
-
-ts_library("console") {
-  sources = [ "Console.js" ]
-
-  deps = [ ":object", ":revealer" ]
-}
-
-ts_library("event_target") {
-  sources = [ "EventTarget.js" ]
-}
-
-ts_library("linkifier") {
-  sources = [ "Linkifier.js" ]
-}
-
-ts_library("query_param_handler") {
-  sources = [ "QueryParamHandler.js" ]
-}
-
-ts_library("ui_string") {
-  sources = [ "UIString.js" ]
-
-  deps = [ "../platform" ]
-}
-
-ts_library("object") {
-  sources = [ "Object.js" ]
-
-  deps = [ ":event_target" ]
-}
-
-ts_library("parsed_url") {
-  sources = [ "ParsedURL.js" ]
-}
-
-ts_library("progress") {
-  sources = [ "Progress.js" ]
-}
-
-ts_library("javascript_meta_data") {
-  sources = [ "JavaScriptMetaData.js" ]
-}
-
-ts_library("resource_type") {
-  sources = [ "ResourceType.js" ]
-
-  deps = [ ":ui_string", ":parsed_url" ]
-}
-
-ts_library("revealer") {
-  sources = [ "Revealer.js" ]
-}
-
-ts_library("runnable") {
-  sources = [ "Runnable.js" ]
-}
-
-ts_library("segmented_range") {
-  sources = [ "SegmentedRange.js" ]
-}
-
-ts_library("string_output_stream") {
-  sources = [ "StringOutputStream.js" ]
-}
-
-ts_library("text_dictionary") {
-  sources = [ "TextDictionary.js" ]
-
-  deps = [ ":trie" ]
-}
-
-ts_library("throttler") {
-  sources = [ "Throttler.js" ]
-}
-
-ts_library("trie") {
-  sources = [ "Trie.js" ]
-}
-
-ts_library("worker") {
-  sources = [ "Worker.js" ]
 }

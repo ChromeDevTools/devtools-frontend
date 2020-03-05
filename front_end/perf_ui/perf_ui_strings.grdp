@@ -15,17 +15,11 @@
   <message name="IDS_DEVTOOLS_2bd10b449de36fcff52a5d91a97a7365" desc="Element text content in Line Level Profile of the Performance panel">
     %.<ph name="FRACTIONDIGITS">$1s<ex>3</ex></ph>f
   </message>
-  <message name="IDS_DEVTOOLS_3c4684d2d502d7f9d20e05451c2f581c" desc="Next button title in Film Strip View of the Performance panel">
-    Next frame
-  </message>
   <message name="IDS_DEVTOOLS_3f21c340f01b96cb3325a5d38ece9da6" desc="Title of a setting under the Memory category in Settings">
     Live memory allocation annotations
   </message>
   <message name="IDS_DEVTOOLS_4a6d0345e7b6cfcf339237b9cf2d27b4" desc="Title of a setting under the Performance category in Settings">
     Flamechart mouse wheel action:
-  </message>
-  <message name="IDS_DEVTOOLS_529a032eab49b8ddc6f49f8bcc086607" desc="Prev button title in Film Strip View of the Performance panel">
-    Previous frame
   </message>
   <message name="IDS_DEVTOOLS_5335fb2e66825def53ea1d975f942194" desc="Text for the screen reader to announce a hovered group">
     <ph name="GROUPNAME">$1s<ex>Network</ex></ph> hovered

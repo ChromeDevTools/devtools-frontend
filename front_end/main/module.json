@@ -52,6 +52,7 @@
         {
             "type": "action",
             "actionId": "main.next-tab",
+            "title": "Next panel",
             "className": "UI.InspectorView.ActionDelegate",
             "bindings": [
                 {
@@ -67,6 +68,7 @@
         {
             "type": "action",
             "actionId": "main.previous-tab",
+            "title": "Previous panel",
             "className": "UI.InspectorView.ActionDelegate",
             "bindings": [
                 {
@@ -82,6 +84,7 @@
         {
             "type": "action",
             "actionId": "main.debug-reload",
+            "title": "Reload DevTools",
             "className": "Main.ReloadActionDelegate",
             "bindings": [
                 {
@@ -109,6 +112,7 @@
         {
             "type": "action",
             "actionId": "main.zoom-in",
+            "title": "Zoom in",
             "className": "Main.Main.ZoomActionDelegate",
             "bindings": [
                 {
@@ -124,6 +128,7 @@
         {
             "type": "action",
             "actionId": "main.zoom-out",
+            "title": "Zoom out",
             "className": "Main.Main.ZoomActionDelegate",
             "bindings": [
                 {
@@ -154,6 +159,7 @@
         {
             "type": "action",
             "actionId": "main.search-in-panel.find",
+            "title": "Search in panel",
             "className": "Main.Main.SearchActionDelegate",
             "bindings": [
                 {
@@ -169,6 +175,7 @@
         {
             "type": "action",
             "actionId": "main.search-in-panel.cancel",
+            "title": "Cancel search",
             "className": "Main.Main.SearchActionDelegate",
             "order": 10,
             "bindings": [
@@ -180,6 +187,7 @@
         {
             "type": "action",
             "actionId": "main.search-in-panel.find-next",
+            "title": "Find next result",
             "className": "Main.Main.SearchActionDelegate",
             "bindings": [
                 {
@@ -199,6 +207,7 @@
         {
             "type": "action",
             "actionId": "main.search-in-panel.find-previous",
+            "title": "Find previous result",
             "className": "Main.Main.SearchActionDelegate",
             "bindings": [
                 {

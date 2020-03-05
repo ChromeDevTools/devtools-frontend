@@ -129,6 +129,7 @@
         {
             "type": "action",
             "actionId": "timeline.jump-to-previous-frame",
+            "title": "Previous frame",
             "contextTypes": [
                 "Timeline.TimelinePanel"
             ],
@@ -142,6 +143,7 @@
         {
             "type": "action",
             "actionId": "timeline.jump-to-next-frame",
+            "title": "Next frame",
             "contextTypes": [
                 "Timeline.TimelinePanel"
             ],
@@ -185,6 +187,7 @@
             "type": "action",
             "actionId": "timeline.previous-recording",
             "className": "Timeline.TimelinePanel.ActionDelegate",
+            "title": "Previous recording",
             "contextTypes": [
                 "Timeline.TimelinePanel"
             ],
@@ -203,6 +206,7 @@
             "type": "action",
             "actionId": "timeline.next-recording",
             "className": "Timeline.TimelinePanel.ActionDelegate",
+            "title": "Next recording",
             "contextTypes": [
                 "Timeline.TimelinePanel"
             ],

@@ -27,6 +27,9 @@
   <message name="IDS_DEVTOOLS_1cc5c88b14a818f9f8d053f3c9f9249e" desc="Title of a setting under the Elements category in Settings">
     Word wrap
   </message>
+  <message name="IDS_DEVTOOLS_1cdc076b28f70afac5fcedadf99fa119" desc="Title of an Elements panel action to undo changes.">
+    Undo
+  </message>
   <message name="IDS_DEVTOOLS_20bfc7bb53e1d2639556bce9852c32d8" desc="Tooltip text that appears on the setting when hovering over it in Event Listeners Widget of the Elements panel">
     Resolve event listeners bound with framework
   </message>
@@ -119,6 +122,9 @@
   </message>
   <message name="IDS_DEVTOOLS_5adda1916cde33ce6e49c22ba58f03f7" desc="Text in Styles Sidebar Pane of the Elements panel">
     injected stylesheet
+  </message>
+  <message name="IDS_DEVTOOLS_5afeaba074ef570dc720caaa855d49f6" desc="Title of an Elements panel action to redo changes.">
+    Redo
   </message>
   <message name="IDS_DEVTOOLS_5c6236c705b0086fbbdb2df3133f8a06" desc="Title of a setting under the Elements category in Settings">
     Reveal DOM node on hover

@@ -105,6 +105,7 @@
         {
             "type": "action",
             "actionId": "network.hide-request-details",
+            "title": "Hide request details",
             "contextTypes": [
                 "Network.NetworkPanel"
             ],

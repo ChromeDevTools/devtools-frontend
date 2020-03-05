@@ -3,6 +3,9 @@
   <message name="IDS_DEVTOOLS_00463255013f500126fb5cc8c824e384" desc="Title of a setting under the Appearance category in Settings">
     Panel layout:
   </message>
+  <message name="IDS_DEVTOOLS_036934cf9842451c835a9981a067d0c3" desc="Title of an action that cancels the current search">
+    Cancel search
+  </message>
   <message name="IDS_DEVTOOLS_08e71f00acd63d0a546ba42f9e780ddc" desc="Title of item in main">
     Customize and control DevTools
   </message>
@@ -15,7 +18,7 @@
   <message name="IDS_DEVTOOLS_1b1ac1c7a54457ce73ddd25a5b51c47d" desc="A title of the 'Drawer sidebar' @UI.ViewLocationResolver category">
     Drawer sidebar
   </message>
-  <message name="IDS_DEVTOOLS_1cf59b16fd253d6ff4bbee7c237cea0d" desc="Text in Main">
+  <message name="IDS_DEVTOOLS_1cf59b16fd253d6ff4bbee7c237cea0d" desc="Title of an action that shows the console.">
     Show console
   </message>
   <message name="IDS_DEVTOOLS_2ac43aa43bf473f9a9c09b4b608619d3" desc="A tag of theme preference settings that can be searched in the command menu">
@@ -36,6 +39,9 @@
   <message name="IDS_DEVTOOLS_4505cad087312551a6fbbe6ebe163e0f" desc="A drop-down menu option to use horizontal panel layout">
     horizontal
   </message>
+  <message name="IDS_DEVTOOLS_4c20618d49e444eaf277e2f4377515b4" desc="Title of an action to find the previous search result">
+    Find previous result
+  </message>
   <message name="IDS_DEVTOOLS_4f1133a5722c0189f59e0490b2ae1c31" desc="Text in the Shortcuts page in settings to explain a keyboard shortcut">
     Go to source
   </message>
@@ -44,6 +50,9 @@
   </message>
   <message name="IDS_DEVTOOLS_55e1bbb4e00add64284ed28f15d40b25" desc="Title of a setting under the Appearance category in Settings">
     Color format:
+  </message>
+  <message name="IDS_DEVTOOLS_57d4dbd692f5fd663ea2fe5f7a755ced" desc="Title of an action to search in panel">
+    Search in panel
   </message>
   <message name="IDS_DEVTOOLS_581138047ce1459b079a8c4abba128a1" desc="Text in the Shortcuts page in settings to explain a keyboard shortcut in the Section">
     Go to the panel to the left/right
@@ -62,6 +71,9 @@
   </message>
   <message name="IDS_DEVTOOLS_71f0df44b05415f2d20b59bb6188a118" desc="Text in the Shortcuts page in settings to explain a keyboard shortcut">
     Toggle dock side
+  </message>
+  <message name="IDS_DEVTOOLS_72507d307327a430052f9fcd914dfaee" desc="Title of an action that reloads the DevTools">
+    Reload DevTools
   </message>
   <message name="IDS_DEVTOOLS_75def4784fa71c4ccde7762316ed0e3e" desc="Text in the Shortcuts page in settings to explain a keyboard shortcut in the Section">
     Find next/previous
@@ -149,6 +161,15 @@
   </message>
   <message name="IDS_DEVTOOLS_eafbab965ec3970b0e97705882ebf8d0" desc="Text in Main">
     Show console drawer
+  </message>
+  <message name="IDS_DEVTOOLS_efb65a57c36ab02c0ad64a800d6f2dee" desc="Title of an action that navigates to the previous panel">
+    Previous panel
+  </message>
+  <message name="IDS_DEVTOOLS_effdeb9b4f7ef29d2b970ccc4d62c0f6" desc="Title of an action that finds the next search result">
+    Find next result
+  </message>
+  <message name="IDS_DEVTOOLS_f52a9fce93c15e9340054e40f837a7ef" desc="Title of an action that navigates to the next panel">
+    Next panel
   </message>
   <message name="IDS_DEVTOOLS_fa480abba67730dd6bd15aa40308d78a" desc="Title of a setting under the Appearance category that can be invoked through the Command Menu">
     Set color format to HSL

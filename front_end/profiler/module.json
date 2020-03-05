@@ -73,6 +73,7 @@
             "type": "action",
             "actionId": "profiler.heap-toggle-recording",
             "iconClass": "largeicon-start-recording",
+            "title": "Start/stop recording",
             "toggleable": true,
             "toggledIconClass": "largeicon-stop-recording",
             "toggleWithRedColor": true,
@@ -94,6 +95,7 @@
         {
             "type": "action",
             "actionId": "profiler.js-toggle-recording",
+            "title": "Start/stop recording",
             "iconClass": "largeicon-start-recording",
             "toggleable": true,
             "toggledIconClass": "largeicon-stop-recording",

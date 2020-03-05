@@ -174,6 +174,9 @@
   <message name="IDS_DEVTOOLS_4bc16757f0e30f62902ac7f86f19b23b" desc="A context menu item in the Sources Panel of the Sources panel">
     Show function definition
   </message>
+  <message name="IDS_DEVTOOLS_4ccfddde7696759c35d434580be577f0" desc="Title of an action to save all files in the Sources panel">
+    Save all
+  </message>
   <message name="IDS_DEVTOOLS_51eb42e9c7ed7951fea0d51a1e4a2cfc" desc="Text in Go To Line Quick Open of the Sources panel">
     Go to line <ph name="POSITION_LINE">$1s<ex>2</ex></ph>.
   </message>
@@ -203,6 +206,9 @@
   </message>
   <message name="IDS_DEVTOOLS_6005268f51bade5b1f650b47b7ff68ff" desc="A context menu item in the Call Stack Sidebar Pane of the Sources panel">
     Stop blackboxing all content scripts
+  </message>
+  <message name="IDS_DEVTOOLS_609e1caaefa475a5144c13008b30edf8" desc="Title of an action that opens the go to member menu">
+    Go to a function declaration/rule set
   </message>
   <message name="IDS_DEVTOOLS_610fbde3ea8bddc086a8f50a83f0fedf" desc="Title of an action in the debugger tool to previous call frame">
     Previous call frame
@@ -236,6 +242,9 @@
   </message>
   <message name="IDS_DEVTOOLS_6bb8aa3b54918eeb27dafcace1e5addd" desc="Text in Navigator View of the Sources panel">
     (no domain)
+  </message>
+  <message name="IDS_DEVTOOLS_6c2dd758b001f05ee8c70b4e9f5b05fc" desc="Title of an action that switches files in the Sources panel">
+    Switch file
   </message>
   <message name="IDS_DEVTOOLS_6cc39b227b3571623cfa817ed5df1c8b" desc="Text in Java Script Breakpoints Sidebar Pane of the Sources panel">
     Disable all breakpoints
@@ -464,6 +473,9 @@
   </message>
   <message name="IDS_DEVTOOLS_cd26a6a87959e99fdf99f5ccccef0464" desc="Text in Debugger Plugin of the Sources panel">
     Disable breakpoint
+  </message>
+  <message name="IDS_DEVTOOLS_cea5216011685c0546bb07c8e8a470df" desc="Title of an action that closes the active editor tab in the Sources panel">
+    Close the active tab
   </message>
   <message name="IDS_DEVTOOLS_d07d651006c823c6f008158f6eb63056" desc="Tooltip text that appears when hovering over the largeicon play button in the Sources Panel of the Sources panel">
     Resume with all pauses blocked for 500 ms

@@ -9,7 +9,8 @@
       "items": {
         "properties": {
           "type": {"type": "string"},
-          "order": {"type": "number"}
+          "order": {"type": "number"},
+          "title": {"type": "string"}
         }
       }
     },

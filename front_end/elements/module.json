@@ -143,6 +143,7 @@
         {
             "type": "action",
             "actionId": "elements.hide-element",
+            "title": "Hide element",
             "contextTypes": [
                 "Elements.ElementsPanel"
             ],
@@ -156,6 +157,7 @@
         {
             "type": "action",
             "actionId": "elements.edit-as-html",
+            "title": "Edit as HTML",
             "contextTypes": [
                 "Elements.ElementsPanel"
             ],
@@ -169,6 +171,7 @@
         {
             "type": "action",
             "actionId": "elements.undo",
+            "title": "Undo",
             "contextTypes": [
                 "Elements.ElementsPanel"
             ],
@@ -187,6 +190,7 @@
         {
             "type": "action",
             "actionId": "elements.redo",
+            "title": "Redo",
             "contextTypes": [
                 "Elements.ElementsPanel"
             ],

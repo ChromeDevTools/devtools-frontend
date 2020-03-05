@@ -429,6 +429,9 @@
   <message name="IDS_DEVTOOLS_da3211be40e2b7282b37431dc1e6ceb6" desc="An option in the user agent dropdown menu in the Network conditions tool">
     <ph name="LOCKED_1">Googlebot Desktop</ph>
   </message>
+  <message name="IDS_DEVTOOLS_db6cb44185e9c607291751f915b1ca99" desc="Title of an action that hides network request details">
+    Hide request details
+  </message>
   <message name="IDS_DEVTOOLS_de9b14d980b77c264d42463f407180be" desc="Message to explain lack of raw headers for a particular network request">
     Provisional headers are shown
   </message>

@@ -111,6 +111,9 @@
   <message name="IDS_DEVTOOLS_63e4e92bb7d207ca577b11c07f827279" desc="Text in Console Context Selector of the Console panel">
     Extension
   </message>
+  <message name="IDS_DEVTOOLS_64c8a81e835cec91157071a1ffc53029" desc="Title of an action that shows the console.">
+    Show Console
+  </message>
   <message name="IDS_DEVTOOLS_650140bd73628d283d870d4648ae3324" desc="Text in Console View of the Console panel">
     Find string in logs
   </message>

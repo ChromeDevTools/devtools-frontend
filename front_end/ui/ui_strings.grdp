@@ -99,9 +99,6 @@
   <message name="IDS_DEVTOOLS_48f12760504bf8e958a4bdde56d4fa46" desc="Text to indicate search result for the ctrl+F search bar">
     1 match
   </message>
-  <message name="IDS_DEVTOOLS_4b50fa6fd1a6a30c9b16f71dd2600574" desc="Text in the Shortcuts page to explain a keyboard shortcut (jump to next editing location in text editor)">
-    Jump to next editing location
-  </message>
   <message name="IDS_DEVTOOLS_4c4306efb0e40e97e5f8693613b1fcfd" desc="Text in the Shortcuts page to explain a keyboard shortcut (go to matching bracket in text editor)">
     Go to matching bracket
   </message>
@@ -113,9 +110,6 @@
   </message>
   <message name="IDS_DEVTOOLS_50071e5690f1fa19ea303c55302ce167" desc="Text in the Shortcuts page in settings to explain a keyboard shortcut in the Debugger Section">
     Open breakpoint editor
-  </message>
-  <message name="IDS_DEVTOOLS_52ebc26c2921d5b84fc670dff9891821" desc="Text in the Shortcuts page to explain a keyboard shortcut (zoom out in Layers Panel)">
-    Zoom out
   </message>
   <message name="IDS_DEVTOOLS_5372591390f99dcf8e0467c671abbc23" desc="Text in the Shortcuts page to explain a keyboard shortcut (switch to rotate mode in Layers Panel)">
     Switch to rotate mode
@@ -162,14 +156,8 @@
   <message name="IDS_DEVTOOLS_75cfe68daf4ccd62d15e9e0fb5ec1097" desc="Text in the Shortcuts page to explain a keyboard shortcut (increment CSS unit by 1 in Styles pane)">
     Increment CSS unit by 1
   </message>
-  <message name="IDS_DEVTOOLS_76f8c7ad696be0b330b46afe79ac279d" desc="Text in the Shortcuts page to explain a keyboard shortcut (start/stop recording performance)">
-    Start/stop recording
-  </message>
   <message name="IDS_DEVTOOLS_79fb17b82d0adb283dc78efc0d7f73e8" desc="Text in the Shortcuts page to explain a keyboard shortcut (Temporarily toggle pan/rotate mode while held in Layers Panel)">
     Temporarily toggle pan/rotate mode while held
-  </message>
-  <message name="IDS_DEVTOOLS_7b91156d64b76a5dda815937fce9119d" desc="Text in the Shortcuts page to explain a keyboard shortcut (zoom in in Layers Panel)">
-    Zoom in
   </message>
   <message name="IDS_DEVTOOLS_7cf206a681131cf4d86fc190f2d9ad27" desc="Text on a button to reconnect Devtools when remote debugging terminated">
     Reconnect <ph name="LOCKED_1">DevTools</ph>
@@ -251,9 +239,6 @@
   </message>
   <message name="IDS_DEVTOOLS_b79f0c59be8253d3acb4515071312bda" desc="Text on a button to hide sidebar">
     Hide <ph name="THIS__SHOWHIDESIDEBARBUTTONTITLE">$1s<ex>Setting</ex></ph>
-  </message>
-  <message name="IDS_DEVTOOLS_b7ad6a024765bbfbff22dedf9afe0d17" desc="Text in the Shortcuts page to explain a keyboard shortcut (jump to previous editing location in text editor)">
-    Jump to previous editing location
   </message>
   <message name="IDS_DEVTOOLS_b94d1b250ba62f06dadf0edc4a947f5c" desc="Text in UIUtils">
     Promise resolved (async)

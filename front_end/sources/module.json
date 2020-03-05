@@ -342,6 +342,7 @@
         {
             "type": "action",
             "actionId": "sources.switch-file",
+            "title": "Switch file",
             "className": "Sources.SourcesView.SwitchFileActionDelegate",
             "contextTypes": [
                 "Sources.SourcesView"
@@ -614,6 +615,7 @@
         {
             "type": "action",
             "actionId": "sources.jump-to-previous-location",
+            "title": "Jump to previous editing location",
             "className": "Sources.SourcesView.ActionDelegate",
             "contextTypes": [
                 "Sources.SourcesView"
@@ -627,6 +629,7 @@
         {
             "type": "action",
             "actionId": "sources.jump-to-next-location",
+            "title": "Jump to next editing location",
             "className": "Sources.SourcesView.ActionDelegate",
             "contextTypes": [
                 "Sources.SourcesView"
@@ -640,6 +643,7 @@
         {
             "type": "action",
             "actionId": "sources.close-editor-tab",
+            "title": "Close the active tab",
             "className": "Sources.SourcesView.ActionDelegate",
             "contextTypes": [
                 "Sources.SourcesView"
@@ -653,6 +657,7 @@
         {
             "type": "action",
             "actionId": "sources.go-to-line",
+            "title": "Go to line",
             "className": "Sources.SourcesView.ActionDelegate",
             "contextTypes": [
                 "Sources.SourcesView"
@@ -666,6 +671,7 @@
         {
             "type": "action",
             "actionId": "sources.go-to-member",
+            "title": "Go to a function declaration/rule set",
             "className": "Sources.SourcesView.ActionDelegate",
             "contextTypes": [
                 "Sources.SourcesView"
@@ -726,6 +732,7 @@
         {
             "type": "action",
             "actionId": "sources.save",
+            "title": "Save",
             "className": "Sources.SourcesView.ActionDelegate",
             "contextTypes": [
                 "Sources.SourcesView"
@@ -744,6 +751,7 @@
         {
             "type": "action",
             "actionId": "sources.save-all",
+            "title": "Save all",
             "className": "Sources.SourcesView.ActionDelegate",
             "contextTypes": [
                 "Sources.SourcesView"

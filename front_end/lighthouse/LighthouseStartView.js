@@ -2,13 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
+
 import {Events, LighthouseController, Presets, RuntimeSettings} from './LighthouseController.js';  // eslint-disable-line no-unused-vars
 import {RadioSetting} from './RadioSetting.js';
 
 /**
  * @unrestricted
  */
-export class StartView extends UI.Widget {
+export class StartView extends UI.Widget.Widget {
   /**
    * @param {!LighthouseController} controller
    */
@@ -16,12 +18,12 @@ export class StartView extends UI.Widget {
     super();
     this.registerRequiredCSS('lighthouse/lighthouseStartView.css');
     this._controller = controller;
-    this._settingsToolbar = new UI.Toolbar('');
+    this._settingsToolbar = new UI.Toolbar.Toolbar('');
     this._render();
   }
 
   /**
-   * @return {!UI.Toolbar}
+   * @return {!UI.Toolbar.Toolbar}
    */
   settingsToolbar() {
     return this._settingsToolbar;
@@ -45,7 +47,7 @@ export class StartView extends UI.Widget {
 
   /**
    * @param {string} settingName
-   * @param {!UI.Toolbar} toolbar
+   * @param {!UI.Toolbar.Toolbar} toolbar
    */
   _populateRuntimeSettingAsToolbarCheckbox(settingName, toolbar) {
     const runtimeSetting = RuntimeSettings.find(item => item.setting.name === settingName);
@@ -54,17 +56,17 @@ export class StartView extends UI.Widget {
     }
 
     runtimeSetting.setting.setTitle(runtimeSetting.title);
-    const control = new UI.ToolbarSettingCheckbox(runtimeSetting.setting, runtimeSetting.description);
+    const control = new UI.Toolbar.ToolbarSettingCheckbox(runtimeSetting.setting, runtimeSetting.description);
     toolbar.appendToolbarItem(control);
     if (runtimeSetting.learnMore) {
-      const link = UI.XLink.create(runtimeSetting.learnMore, ls`Learn more`, 'lighthouse-learn-more');
+      const link = UI.XLink.XLink.create(runtimeSetting.learnMore, ls`Learn more`, 'lighthouse-learn-more');
       link.style.padding = '5px';
       control.element.appendChild(link);
     }
   }
 
   /**
-   * @param {!UI.Fragment} fragment
+   * @param {!UI.Fragment.Fragment} fragment
    */
   _populateFormControls(fragment) {
     // Populate the device type
@@ -77,7 +79,7 @@ export class StartView extends UI.Widget {
     for (const preset of Presets) {
       const formElements = preset.plugin ? pluginFormElements : categoryFormElements;
       preset.setting.setTitle(preset.title);
-      const checkbox = new UI.ToolbarSettingCheckbox(preset.setting);
+      const checkbox = new UI.Toolbar.ToolbarSettingCheckbox(preset.setting);
       const row = formElements.createChild('div', 'vbox lighthouse-launcher-row');
       row.title = preset.description;
       row.appendChild(checkbox.element);
@@ -92,18 +94,18 @@ export class StartView extends UI.Widget {
     this._populateRuntimeSettingAsToolbarCheckbox('lighthouse.clear_storage', this._settingsToolbar);
     this._populateRuntimeSettingAsToolbarCheckbox('lighthouse.throttling', this._settingsToolbar);
 
-    this._startButton = UI.createTextButton(
+    this._startButton = UI.UIUtils.createTextButton(
         ls`Generate report`,
         () => this._controller.dispatchEventToListeners(
             Events.RequestLighthouseStart,
-            /* keyboardInitiated */ UI.elementIsFocusedByKeyboard(this._startButton)),
+            /* keyboardInitiated */ UI.UIUtils.elementIsFocusedByKeyboard(this._startButton)),
         /* className */ '', /* primary */ true);
     this.setDefaultFocusedElement(this._startButton);
 
     const auditsDescription = ls
     `Identify and fix common problems that affect your site's performance, accessibility, and user experience.`;  // crbug.com/972969
 
-    const fragment = UI.Fragment.build`
+    const fragment = UI.Fragment.Fragment.build`
       <div class="vbox lighthouse-start-view">
         <header>
           <div class="lighthouse-logo"></div>
@@ -113,7 +115,7 @@ export class StartView extends UI.Widget {
           <div $="help-text" class="lighthouse-help-text hidden"></div>
           <div class="lighthouse-start-view-text">
             <span>${auditsDescription}</span>
-            ${UI.XLink.create('https://developers.google.com/web/tools/lighthouse/', ls`Learn more`)}
+            ${UI.XLink.XLink.create('https://developers.google.com/web/tools/lighthouse/', ls`Learn more`)}
           </div>
         </header>
         <form>

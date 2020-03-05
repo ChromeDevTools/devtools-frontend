@@ -47,7 +47,7 @@ export class BlockedURLsPane extends UI.Widget.VBox {
 
     /** @type {!Map<string, number>} */
     this._blockedCountForUrl = new Map();
-    self.SDK.targetManager.addModelListener(
+    SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.NetworkManager.NetworkManager, SDK.NetworkManager.Events.RequestFinished, this._onRequestFinished, this);
 
     this._updateThrottler = new Common.Throttler.Throttler(200);

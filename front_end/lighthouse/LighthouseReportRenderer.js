@@ -2,6 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as Components from '../components/components.js';
+import * as HostModule from '../host/host.js';
+import * as SDK from '../sdk/sdk.js';
+import * as Timeline from '../timeline/timeline.js';
+import * as UI from '../ui/ui.js';
+
 const MaxLengthForLinks = 40;
 
 /**
@@ -25,13 +32,14 @@ export class LighthouseReportRenderer extends ReportRenderer {
     }
 
     const defaultPassTrace = artifacts.traces.defaultPass;
-    const timelineButton = UI.createTextButton(Common.UIString('View Trace'), onViewTraceClick, 'view-trace');
+    const timelineButton =
+        UI.UIUtils.createTextButton(Common.UIString.UIString('View Trace'), onViewTraceClick, 'view-trace');
     container.insertBefore(timelineButton, columnsEl.nextSibling);
 
     async function onViewTraceClick() {
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.LighthouseViewTrace);
+      HostModule.userMetrics.actionTaken(Host.UserMetrics.Action.LighthouseViewTrace);
       await self.UI.inspectorView.showPanel('timeline');
-      Timeline.TimelinePanel.instance().loadFromEvents(defaultPassTrace.traceEvents);
+      Timeline.TimelinePanel.TimelinePanel.instance().loadFromEvents(defaultPassTrace.traceEvents);
     }
   }
 
@@ -39,8 +47,8 @@ export class LighthouseReportRenderer extends ReportRenderer {
    * @param {!Element} el
    */
   static async linkifyNodeDetails(el) {
-    const mainTarget = self.SDK.targetManager.mainTarget();
-    const domModel = mainTarget.model(SDK.DOMModel);
+    const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
+    const domModel = mainTarget.model(SDK.DOMModel.DOMModel);
 
     for (const origElement of el.getElementsByClassName('lh-node')) {
       /** @type {!DetailsRenderer.NodeDetailsJSON} */
@@ -59,7 +67,7 @@ export class LighthouseReportRenderer extends ReportRenderer {
         continue;
       }
 
-      const element = await Common.Linkifier.linkify(node, {tooltip: detailsItem.snippet});
+      const element = await Common.Linkifier.Linkifier.linkify(node, {tooltip: detailsItem.snippet});
       origElement.title = '';
       origElement.textContent = '';
       origElement.appendChild(element);
@@ -79,8 +87,8 @@ export class LighthouseReportRenderer extends ReportRenderer {
       const url = detailsItem.sourceUrl;
       const line = Number(detailsItem.sourceLine);
       const column = Number(detailsItem.sourceColumn);
-      const element =
-          await Components.Linkifier.linkifyURL(url, {lineNumber: line, column, maxLength: MaxLengthForLinks});
+      const element = await Components.Linkifier.Linkifier.linkifyURL(
+          url, {lineNumber: line, column, maxLength: MaxLengthForLinks});
       origElement.title = '';
       origElement.textContent = '';
       origElement.appendChild(element);
@@ -139,7 +147,7 @@ export class LighthouseReportUIFeatures extends ReportUIFeatures {
    * @param {!Blob|!File} blob The file to save.
    */
   async _saveFile(blob) {
-    const domain = new Common.ParsedURL(this.json.finalUrl).domain();
+    const domain = new Common.ParsedURL.ParsedURL(this.json.finalUrl).domain();
     const sanitizedDomain = domain.replace(/[^a-z0-9.-]+/gi, '_');
     const timestamp = new Date(this.json.fetchTime).toISO8601Compact();
     const ext = blob.type.match('json') ? '.json' : '.html';

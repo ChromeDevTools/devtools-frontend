@@ -109,7 +109,8 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar {
     this._createFileSelectorElement();
     this.element.addEventListener('contextmenu', this._handleContextMenuEvent.bind(this), false);
 
-    self.SDK.targetManager.addEventListener(SDK.SDKModel.Events.SuspendStateChanged, this._onSuspendStateChanged, this);
+    SDK.SDKModel.TargetManager.instance().addEventListener(
+        SDK.SDKModel.Events.SuspendStateChanged, this._onSuspendStateChanged, this);
     self.UI.context.addFlavorChangeListener(
         SDK.CPUProfilerModel.CPUProfilerModel, this._updateProfileTypeSpecificUI, this);
     self.UI.context.addFlavorChangeListener(
@@ -219,7 +220,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar {
     const hasSelectedTarget =
         !!(self.UI.context.flavor(SDK.CPUProfilerModel.CPUProfilerModel) ||
            self.UI.context.flavor(SDK.HeapProfilerModel.HeapProfilerModel));
-    const enable = toggled || (!self.SDK.targetManager.allTargetsSuspended() && hasSelectedTarget);
+    const enable = toggled || (!SDK.SDKModel.TargetManager.instance().allTargetsSuspended() && hasSelectedTarget);
     this._toggleRecordAction.setEnabled(enable);
     this._toggleRecordAction.setToggled(toggled);
     if (enable) {

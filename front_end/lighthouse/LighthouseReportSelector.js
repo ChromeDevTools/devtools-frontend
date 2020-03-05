@@ -2,11 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as UI from '../ui/ui.js';
+
 export class ReportSelector {
   constructor(renderNewLighthouseView) {
     this._renderNewLighthouseView = renderNewLighthouseView;
     this._newLighthouseItem = createElement('option');
-    this._comboBox = new UI.ToolbarComboBox(this._handleChange.bind(this), ls`Reports`, 'lighthouse-report');
+    this._comboBox = new UI.Toolbar.ToolbarComboBox(this._handleChange.bind(this), ls`Reports`, 'lighthouse-report');
     this._comboBox.setMaxWidth(180);
     this._comboBox.setMinWidth(140);
     this._itemByOptionElement = new Map();
@@ -18,7 +21,7 @@ export class ReportSelector {
 
     this._comboBox.setEnabled(false);
     this._newLighthouseItem = createElement('option');
-    this._newLighthouseItem.label = Common.UIString('(new report)');
+    this._newLighthouseItem.label = Common.UIString.UIString('(new report)');
     this._comboBox.selectElement().appendChild(this._newLighthouseItem);
     this._comboBox.select(this._newLighthouseItem);
   }
@@ -58,7 +61,7 @@ export class ReportSelector {
   }
 
   /**
-   * @return {!UI.ToolbarComboBox}
+   * @return {!UI.Toolbar.ToolbarComboBox}
    */
   comboBox() {
     return this._comboBox;
@@ -107,7 +110,7 @@ export class Item {
     this._renderReport = renderReport;
     this._showLandingCallback = showLandingCallback;
 
-    const url = new Common.ParsedURL(lighthouseResult.finalUrl);
+    const url = new Common.ParsedURL.ParsedURL(lighthouseResult.finalUrl);
     const timestamp = lighthouseResult.fetchTime;
     this._element = createElement('option');
     this._element.label = `${new Date(timestamp).toLocaleTimeString()} - ${url.domain()}`;

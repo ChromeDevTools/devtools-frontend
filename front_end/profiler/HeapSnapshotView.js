@@ -1075,13 +1075,13 @@ export class HeapSnapshotProfileType extends ProfileType {
    */
   constructor(id, title) {
     super(id || HeapSnapshotProfileType.TypeId, title || ls`Heap snapshot`);
-    self.SDK.targetManager.observeModels(SDK.HeapProfilerModel.HeapProfilerModel, this);
-    self.SDK.targetManager.addModelListener(
+    SDK.SDKModel.TargetManager.instance().observeModels(SDK.HeapProfilerModel.HeapProfilerModel, this);
+    SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.HeapProfilerModel.HeapProfilerModel, SDK.HeapProfilerModel.Events.ResetProfiles, this._resetProfiles, this);
-    self.SDK.targetManager.addModelListener(
+    SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.HeapProfilerModel.HeapProfilerModel, SDK.HeapProfilerModel.Events.AddHeapSnapshotChunk,
         this._addHeapSnapshotChunk, this);
-    self.SDK.targetManager.addModelListener(
+    SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.HeapProfilerModel.HeapProfilerModel, SDK.HeapProfilerModel.Events.ReportHeapSnapshotProgress,
         this._reportHeapSnapshotProgress, this);
     this._treatGlobalObjectsAsRoots = self.Common.settings.createSetting('treatGlobalObjectsAsRoots', true);

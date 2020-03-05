@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../ui/ui.js';
+
 import {Events, LighthouseController, RuntimeSettings} from './LighthouseController.js';  // eslint-disable-line no-unused-vars
 
 export class StatusView {
@@ -25,7 +28,7 @@ export class StatusView {
     this._scheduledTextChangeTimeout = null;
     this._scheduledFastFactTimeout = null;
 
-    this._dialog = new UI.Dialog();
+    this._dialog = new UI.Dialog.Dialog();
     this._dialog.setDimmed(true);
     this._dialog.setCloseOnEscape(false);
     this._dialog.setOutsideClickCallback(event => event.consume(true));
@@ -34,11 +37,11 @@ export class StatusView {
 
   _render() {
     const dialogRoot =
-        UI.createShadowRootWithCoreStyles(this._dialog.contentElement, 'lighthouse/lighthouseDialog.css');
+        UI.Utils.createShadowRootWithCoreStyles(this._dialog.contentElement, 'lighthouse/lighthouseDialog.css');
     const lighthouseViewElement = dialogRoot.createChild('div', 'lighthouse-view vbox');
 
-    const cancelButton = UI.createTextButton(ls`Cancel`, this._cancel.bind(this));
-    const fragment = UI.Fragment.build`
+    const cancelButton = UI.UIUtils.createTextButton(ls`Cancel`, this._cancel.bind(this));
+    const fragment = UI.Fragment.Fragment.build`
       <div class="lighthouse-view vbox">
         <h2 $="status-header">Auditing your web page…</h2>
         <div class="lighthouse-status vbox" $="status-view">
@@ -65,7 +68,7 @@ export class StatusView {
 
     this._dialog.setDefaultFocusedElement(cancelButton);
     this._dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SetExactWidthMaxHeight);
-    this._dialog.setMaxContentSize(new UI.Size(500, 400));
+    this._dialog.setMaxContentSize(new UI.Geometry.Size(500, 400));
   }
 
   _reset() {
@@ -86,7 +89,7 @@ export class StatusView {
     this._reset();
     this.updateStatus(ls`Loading…`);
 
-    const parsedURL = Common.ParsedURL.fromString(this._inspectedURL);
+    const parsedURL = Common.ParsedURL.ParsedURL.fromString(this._inspectedURL);
     const pageHost = parsedURL && parsedURL.host;
     const statusHeader = pageHost ? ls`Auditing ${pageHost}` : ls`Auditing your web page`;
     this._renderStatusHeader(statusHeader);
@@ -122,7 +125,7 @@ export class StatusView {
     }
 
     if (message.startsWith('Cancel')) {
-      this._commitTextChange(Common.UIString('Cancelling…'));
+      this._commitTextChange(Common.UIString.UIString('Cancelling…'));
       clearTimeout(this._scheduledFastFactTimeout);
       return;
     }
@@ -131,7 +134,7 @@ export class StatusView {
     const nextPhaseIndex = StatusPhases.indexOf(nextPhase);
     const currentPhaseIndex = StatusPhases.indexOf(this._currentPhase);
     if (!nextPhase && !this._currentPhase) {
-      this._commitTextChange(Common.UIString('Lighthouse is warming up…'));
+      this._commitTextChange(Common.UIString.UIString('Lighthouse is warming up…'));
       clearTimeout(this._scheduledFastFactTimeout);
     } else if (nextPhase && (!this._currentPhase || currentPhaseIndex < nextPhaseIndex)) {
       this._currentPhase = nextPhase;
@@ -247,9 +250,9 @@ export class StatusView {
     this._progressBar.classList.add('errored');
 
     this._commitTextChange('');
-    this._statusText.createChild('p').createTextChild(Common.UIString('Ah, sorry! We ran into an error.'));
+    this._statusText.createChild('p').createTextChild(Common.UIString.UIString('Ah, sorry! We ran into an error.'));
     if (KnownBugPatterns.some(pattern => pattern.test(err.message))) {
-      const message = Common.UIString(
+      const message = Common.UIString.UIString(
           'Try to navigate to the URL in a fresh Chrome profile without any other tabs or extensions open and try again.');
       this._statusText.createChild('p').createTextChild(message);
     } else {

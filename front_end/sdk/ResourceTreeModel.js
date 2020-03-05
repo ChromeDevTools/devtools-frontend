@@ -36,7 +36,7 @@ import {Events as NetworkManagerEvents, NetworkManager} from './NetworkManager.j
 import {NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
 import {Resource} from './Resource.js';
 import {ExecutionContext, RuntimeModel} from './RuntimeModel.js';
-import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import {Capability, SDKModel, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 import {SecurityOriginManager} from './SecurityOriginManager.js';
 
 export class ResourceTreeModel extends SDKModel {
@@ -87,7 +87,7 @@ export class ResourceTreeModel extends SDKModel {
    */
   static frames() {
     const result = [];
-    for (const resourceTreeModel of self.SDK.targetManager.models(ResourceTreeModel)) {
+    for (const resourceTreeModel of TargetManager.instance().models(ResourceTreeModel)) {
       result.push(...resourceTreeModel._frames.values());
     }
     return result;
@@ -98,7 +98,7 @@ export class ResourceTreeModel extends SDKModel {
    * @return {?Resource}
    */
   static resourceForURL(url) {
-    for (const resourceTreeModel of self.SDK.targetManager.models(ResourceTreeModel)) {
+    for (const resourceTreeModel of TargetManager.instance().models(ResourceTreeModel)) {
       const mainFrame = resourceTreeModel.mainFrame;
       const result = mainFrame ? mainFrame.resourceForURL(url) : null;
       if (result) {
@@ -113,7 +113,7 @@ export class ResourceTreeModel extends SDKModel {
    * @param {string=} scriptToEvaluateOnLoad
    */
   static reloadAllPages(bypassCache, scriptToEvaluateOnLoad) {
-    for (const resourceTreeModel of self.SDK.targetManager.models(ResourceTreeModel)) {
+    for (const resourceTreeModel of TargetManager.instance().models(ResourceTreeModel)) {
       if (!resourceTreeModel.target().parentTarget()) {
         resourceTreeModel.reloadPage(bypassCache, scriptToEvaluateOnLoad);
       }

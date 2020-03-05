@@ -137,19 +137,19 @@ export class SourcesPanel extends UI.Panel.Panel {
         .addChangeListener(this._breakpointsActiveStateChanged, this);
     self.UI.context.addFlavorChangeListener(SDK.SDKModel.Target, this._onCurrentTargetChanged, this);
     self.UI.context.addFlavorChangeListener(SDK.DebuggerModel.CallFrame, this._callFrameChanged, this);
-    self.SDK.targetManager.addModelListener(
+    SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerWasEnabled, this._debuggerWasEnabled, this);
-    self.SDK.targetManager.addModelListener(
+    SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._debuggerPaused, this);
-    self.SDK.targetManager.addModelListener(
+    SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed,
         event => this._debuggerResumed(/** @type {!SDK.DebuggerModel.DebuggerModel} */ (event.data)));
-    self.SDK.targetManager.addModelListener(
+    SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared,
         event => this._debuggerResumed(/** @type {!SDK.DebuggerModel.DebuggerModel} */ (event.data)));
     self.Extensions.extensionServer.addEventListener(
         Extensions.ExtensionServer.Events.SidebarPaneAdded, this._extensionSidebarPaneAdded, this);
-    self.SDK.targetManager.observeTargets(this);
+    SDK.SDKModel.TargetManager.instance().observeTargets(this);
   }
 
   /**
@@ -560,7 +560,7 @@ export class SourcesPanel extends UI.Panel.Panel {
       return;
     }
 
-    for (const debuggerModel of self.SDK.targetManager.models(SDK.DebuggerModel.DebuggerModel)) {
+    for (const debuggerModel of SDK.SDKModel.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel)) {
       if (debuggerModel.isPaused()) {
         self.UI.context.setFlavor(SDK.SDKModel.Target, debuggerModel.target());
         break;

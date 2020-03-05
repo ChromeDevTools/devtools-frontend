@@ -27,7 +27,7 @@ export class WebAudioModel extends SDK.SDKModel.SDKModel {
     // To resolve this inconsistency, we flush the leftover from the previous
     // frame when the current page is loaded. This call can be omitted when the
     // bug is fixed.
-    self.SDK.targetManager.addModelListener(
+    SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated, this._flushContexts,
         this);
   }

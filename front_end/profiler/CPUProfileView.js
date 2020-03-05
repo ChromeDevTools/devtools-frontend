@@ -96,7 +96,7 @@ export class CPUProfileType extends ProfileType {
     this._recording = false;
 
     CPUProfileType.instance = this;
-    self.SDK.targetManager.addModelListener(
+    SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.CPUProfilerModel.CPUProfilerModel, SDK.CPUProfilerModel.Events.ConsoleProfileFinished,
         this._consoleProfileFinished, this);
   }
@@ -179,7 +179,7 @@ export class CPUProfileType extends ProfileType {
     }
     const profile = new CPUProfileHeader(cpuProfilerModel, this);
     this.setProfileBeingRecorded(profile);
-    self.SDK.targetManager.suspendAllTargets();
+    SDK.SDKModel.TargetManager.instance().suspendAllTargets();
     this.addProfile(profile);
     profile.updateStatus(Common.UIString.UIString('Recording…'));
     this._recording = true;
@@ -202,7 +202,7 @@ export class CPUProfileType extends ProfileType {
       this.setProfileBeingRecorded(null);
     }
 
-    await self.SDK.targetManager.resumeAllTargets();
+    await SDK.SDKModel.TargetManager.instance().resumeAllTargets();
     this.dispatchEventToListeners(ProfileEvents.ProfileComplete, recordedProfile);
   }
 

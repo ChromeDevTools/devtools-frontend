@@ -31,7 +31,7 @@
 import * as Common from '../common/common.js';
 
 import {Events as RuntimeModelEvents, ExecutionContext, RuntimeModel} from './RuntimeModel.js';  // eslint-disable-line no-unused-vars
-import {Capability, SDKModel, Target, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import {Capability, SDKModel, Target, TargetManager, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
@@ -606,7 +606,7 @@ class ServiceWorkerContextNamer {
     this._versionByTargetId = new Map();
     serviceWorkerManager.addEventListener(Events.RegistrationUpdated, this._registrationsUpdated, this);
     serviceWorkerManager.addEventListener(Events.RegistrationDeleted, this._registrationsUpdated, this);
-    self.SDK.targetManager.addModelListener(
+    TargetManager.instance().addModelListener(
         RuntimeModel, RuntimeModelEvents.ExecutionContextCreated, this._executionContextCreated, this);
   }
 
@@ -650,7 +650,7 @@ class ServiceWorkerContextNamer {
   }
 
   _updateAllContextLabels() {
-    for (const target of self.SDK.targetManager.targets()) {
+    for (const target of TargetManager.instance().targets()) {
       const serviceWorkerTargetId = this._serviceWorkerTargetId(target);
       if (!serviceWorkerTargetId) {
         continue;

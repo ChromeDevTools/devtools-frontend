@@ -7,7 +7,7 @@ import * as Common from '../common/common.js';
 import {DebuggerModel, Events as DebuggerModelEvents} from './DebuggerModel.js';
 import {DeferredDOMNode, DOMModel, DOMNode} from './DOMModel.js';  // eslint-disable-line no-unused-vars
 import {RemoteObject} from './RemoteObject.js';                    // eslint-disable-line no-unused-vars
-import {Capability, SDKModel, Target} from './SDKModel.js';        // eslint-disable-line no-unused-vars
+import {Capability, SDKModel, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @implements {Protocol.OverlayDispatcher}
@@ -71,17 +71,17 @@ export class OverlayModel extends SDKModel {
   }
 
   static hideDOMNodeHighlight() {
-    for (const overlayModel of self.SDK.targetManager.models(OverlayModel)) {
+    for (const overlayModel of TargetManager.instance().models(OverlayModel)) {
       overlayModel._delayedHideHighlight(0);
     }
   }
 
   static async muteHighlight() {
-    return Promise.all(self.SDK.targetManager.models(OverlayModel).map(model => model.suspendModel()));
+    return Promise.all(TargetManager.instance().models(OverlayModel).map(model => model.suspendModel()));
   }
 
   static async unmuteHighlight() {
-    return Promise.all(self.SDK.targetManager.models(OverlayModel).map(model => model.resumeModel()));
+    return Promise.all(TargetManager.instance().models(OverlayModel).map(model => model.resumeModel()));
   }
 
   /**

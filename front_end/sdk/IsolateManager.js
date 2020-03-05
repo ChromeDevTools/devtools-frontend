@@ -6,7 +6,7 @@ import * as Common from '../common/common.js';
 
 import {HeapProfilerModel} from './HeapProfilerModel.js';  // eslint-disable-line no-unused-vars
 import {RuntimeModel} from './RuntimeModel.js';
-import {SDKModelObserver} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import {SDKModelObserver, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @implements {SDKModelObserver}
@@ -22,7 +22,7 @@ export class IsolateManager extends Common.ObjectWrapper.ObjectWrapper {
     this._isolateIdByModel = new Map();
     /** @type {!Set<!Observer>} */
     this._observers = new Set();
-    self.SDK.targetManager.observeModels(RuntimeModel, this);
+    TargetManager.instance().observeModels(RuntimeModel, this);
     this._pollId = 0;
   }
 

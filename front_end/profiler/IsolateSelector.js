@@ -35,8 +35,9 @@ export class IsolateSelector extends UI.Widget.VBox {
     this._totalValueDiv.title = ls`Total page JS heap size across all VM instances.`;
 
     self.SDK.isolateManager.observeIsolates(this);
-    self.SDK.targetManager.addEventListener(SDK.SDKModel.Events.NameChanged, this._targetChanged, this);
-    self.SDK.targetManager.addEventListener(SDK.SDKModel.Events.InspectedURLChanged, this._targetChanged, this);
+    SDK.SDKModel.TargetManager.instance().addEventListener(SDK.SDKModel.Events.NameChanged, this._targetChanged, this);
+    SDK.SDKModel.TargetManager.instance().addEventListener(
+        SDK.SDKModel.Events.InspectedURLChanged, this._targetChanged, this);
   }
 
   /**
@@ -59,7 +60,7 @@ export class IsolateSelector extends UI.Widget.VBox {
    */
   isolateAdded(isolate) {
     const item = new ListItem(isolate);
-    const index = item.model().target() === self.SDK.targetManager.mainTarget() ? 0 : this._items.length;
+    const index = item.model().target() === SDK.SDKModel.TargetManager.instance().mainTarget() ? 0 : this._items.length;
     this._items.insert(index, item);
     this._itemByIsolate.set(isolate, item);
     if (this._items.length === 1 || isolate.isMainThread()) {
@@ -256,7 +257,7 @@ export class ListItem {
     const modelCountByName = new Map();
     for (const model of this._isolate.models()) {
       const target = model.target();
-      const name = self.SDK.targetManager.mainTarget() !== target ? target.name() : '';
+      const name = SDK.SDKModel.TargetManager.instance().mainTarget() !== target ? target.name() : '';
       const parsedURL = new Common.ParsedURL.ParsedURL(target.inspectedURL());
       const domain = parsedURL.isValid ? parsedURL.domain() : '';
       const title = target.decorateLabel(domain && name ? `${domain}: ${name}` : name || domain || ls`(empty)`);

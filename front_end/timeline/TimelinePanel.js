@@ -127,7 +127,7 @@ export class TimelinePanel extends UI.Panel.Panel {
 
     this._createFileSelector();
 
-    self.SDK.targetManager.addModelListener(
+    SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._loadEventFired, this);
 
     this._flameChart = new TimelineFlameChartView(this);
@@ -146,7 +146,8 @@ export class TimelinePanel extends UI.Panel.Panel {
 
     self.Extensions.extensionServer.addEventListener(
         Extensions.ExtensionServer.Events.TraceProviderAdded, this._appendExtensionsToToolbar, this);
-    self.SDK.targetManager.addEventListener(SDK.SDKModel.Events.SuspendStateChanged, this._onSuspendStateChanged, this);
+    SDK.SDKModel.TargetManager.instance().addEventListener(
+        SDK.SDKModel.Events.SuspendStateChanged, this._onSuspendStateChanged, this);
   }
 
   /**
@@ -557,7 +558,7 @@ export class TimelinePanel extends UI.Panel.Panel {
     const enabledTraceProviders = self.Extensions.extensionServer.traceProviders().filter(
         provider => TimelinePanel._settingForTraceProvider(provider).get());
 
-    const mainTarget = /** @type {!SDK.SDKModel.Target} */ (self.SDK.targetManager.mainTarget());
+    const mainTarget = /** @type {!SDK.SDKModel.Target} */ (SDK.SDKModel.TargetManager.instance().mainTarget());
     if (UIDevtoolsUtils.isUiDevTools()) {
       this._controller = new UIDevtoolsController(mainTarget, this);
     } else {

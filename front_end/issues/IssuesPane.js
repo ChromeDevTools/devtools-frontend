@@ -89,7 +89,7 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     super(true);
     this.registerRequiredCSS('issues/issuesPane.css');
 
-    const mainTarget = self.SDK.targetManager.mainTarget();
+    const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
     this._model = mainTarget.model(SDK.IssuesModel.IssuesModel);
     this._model.addEventListener(SDK.IssuesModel.Events.IssueAdded, this._issueAdded, this);
     this._model.addEventListener(SDK.IssuesModel.Events.AllIssuesCleared, this._issuesCleared, this);

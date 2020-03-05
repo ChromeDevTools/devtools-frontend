@@ -2,11 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';
+
 /**
- * @implements {SDK.SDKModelObserver<!SDK.ServiceWorkerManager>}
+ * @implements {SDK.SDKModel.SDKModelObserver<!SDK.ServiceWorkerManager.ServiceWorkerManager>}
  * @unrestricted
  */
-export class LighthouseController extends Common.Object {
+export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper {
   constructor(protocolService) {
     super();
 
@@ -17,14 +20,14 @@ export class LighthouseController extends Common.Object {
       preset.setting.addChangeListener(this.recomputePageAuditability.bind(this));
     }
 
-    self.SDK.targetManager.observeModels(SDK.ServiceWorkerManager, this);
-    self.SDK.targetManager.addEventListener(
-        SDK.TargetManager.Events.InspectedURLChanged, this.recomputePageAuditability, this);
+    SDK.SDKModel.TargetManager.instance().observeModels(SDK.ServiceWorkerManager.ServiceWorkerManager, this);
+    SDK.SDKModel.TargetManager.instance().addEventListener(
+        SDK.SDKModel.Events.InspectedURLChanged, this.recomputePageAuditability, this);
   }
 
   /**
    * @override
-   * @param {!SDK.ServiceWorkerManager} serviceWorkerManager
+   * @param {!SDK.ServiceWorkerManager.ServiceWorkerManager} serviceWorkerManager
    */
   modelAdded(serviceWorkerManager) {
     if (this._manager) {
@@ -44,14 +47,14 @@ export class LighthouseController extends Common.Object {
 
   /**
    * @override
-   * @param {!SDK.ServiceWorkerManager} serviceWorkerManager
+   * @param {!SDK.ServiceWorkerManager.ServiceWorkerManager} serviceWorkerManager
    */
   modelRemoved(serviceWorkerManager) {
     if (this._manager !== serviceWorkerManager) {
       return;
     }
 
-    Common.EventTarget.removeEventListeners(this._serviceWorkerListeners);
+    Common.EventTarget.EventTarget.removeEventListeners(this._serviceWorkerListeners);
     this._manager = null;
     this.recomputePageAuditability();
   }
@@ -69,7 +72,7 @@ export class LighthouseController extends Common.Object {
       return false;
     }
 
-    const inspectedURL = Common.ParsedURL.fromString(mainTarget.inspectedURL());
+    const inspectedURL = Common.ParsedURL.ParsedURL.fromString(mainTarget.inspectedURL());
     const inspectedOrigin = inspectedURL && inspectedURL.securityOrigin();
     for (const registration of this._manager.registrations().values()) {
       if (registration.securityOrigin !== inspectedOrigin) {
@@ -104,7 +107,7 @@ export class LighthouseController extends Common.Object {
     const mainTarget = this._manager.target();
     const inspectedURL = mainTarget && mainTarget.inspectedURL();
     if (inspectedURL && !/^(http|chrome-extension)/.test(inspectedURL)) {
-      return Common.UIString(
+      return Common.UIString.UIString(
           'Can only audit HTTP/HTTPS pages and Chrome extensions. Navigate to a different page to start an audit.');
     }
 
@@ -116,7 +119,7 @@ export class LighthouseController extends Common.Object {
    */
   async _evaluateInspectedURL() {
     const mainTarget = this._manager.target();
-    const runtimeModel = mainTarget.model(SDK.RuntimeModel);
+    const runtimeModel = mainTarget.model(SDK.RuntimeModel.RuntimeModel);
     const executionContext = runtimeModel && runtimeModel.defaultExecutionContext();
     let inspectedURL = mainTarget.inspectedURL();
     if (!executionContext) {
@@ -192,10 +195,10 @@ export class LighthouseController extends Common.Object {
 
     let helpText = '';
     if (hasActiveServiceWorker) {
-      helpText = Common.UIString(
+      helpText = Common.UIString.UIString(
           'Multiple tabs are being controlled by the same service worker. Close your other tabs on the same origin to audit this page.');
     } else if (!hasAtLeastOneCategory) {
-      helpText = Common.UIString('At least one category must be selected.');
+      helpText = Common.UIString.UIString('At least one category must be selected.');
     } else if (unauditablePageMessage) {
       helpText = unauditablePageMessage;
     }

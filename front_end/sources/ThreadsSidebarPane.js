@@ -24,14 +24,14 @@ export class ThreadsSidebarPane extends UI.Widget.VBox {
     this.contentElement.appendChild(this._list.element);
 
     self.UI.context.addFlavorChangeListener(SDK.SDKModel.Target, this._targetFlavorChanged, this);
-    self.SDK.targetManager.observeModels(SDK.DebuggerModel.DebuggerModel, this);
+    SDK.SDKModel.TargetManager.instance().observeModels(SDK.DebuggerModel.DebuggerModel, this);
   }
 
   /**
    * @return {boolean}
    */
   static shouldBeShown() {
-    return self.SDK.targetManager.models(SDK.DebuggerModel.DebuggerModel).length >= 2;
+    return SDK.SDKModel.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel).length >= 2;
   }
 
   /**
@@ -76,7 +76,7 @@ export class ThreadsSidebarPane extends UI.Widget.VBox {
     debuggerModel.addEventListener(SDK.DebuggerModel.Events.DebuggerPaused, updatePausedState);
     debuggerModel.addEventListener(SDK.DebuggerModel.Events.DebuggerResumed, updatePausedState);
     debuggerModel.runtimeModel().addEventListener(SDK.RuntimeModel.Events.ExecutionContextChanged, updateTitle);
-    self.SDK.targetManager.addEventListener(SDK.SDKModel.Events.NameChanged, targetNameChanged);
+    SDK.SDKModel.TargetManager.instance().addEventListener(SDK.SDKModel.Events.NameChanged, targetNameChanged);
 
     updatePausedState();
     updateTitle();

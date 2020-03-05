@@ -207,7 +207,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
       return '';
     }
     return target.decorateLabel(
-        `${target.name()} ${target === self.SDK.targetManager.mainTarget() ? '' : target.id()}`);
+        `${target.name()} ${target === SDK.SDKModel.TargetManager.instance().mainTarget() ? '' : target.id()}`);
   }
 
   /**

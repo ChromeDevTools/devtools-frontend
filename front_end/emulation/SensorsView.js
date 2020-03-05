@@ -185,7 +185,7 @@ export class SensorsView extends UI.Widget.VBox {
     if (this._geolocationOverrideEnabled) {
       this._geolocationSetting.set(this._geolocation.toSetting());
     }
-    for (const emulationModel of self.SDK.targetManager.models(SDK.EmulationModel.EmulationModel)) {
+    for (const emulationModel of SDK.SDKModel.TargetManager.instance().models(SDK.EmulationModel.EmulationModel)) {
       emulationModel.emulateGeolocation(this._geolocationOverrideEnabled ? this._geolocation : null).catch(err => {
         switch (err.type) {
           case 'emulation-set-timezone':
@@ -288,7 +288,7 @@ export class SensorsView extends UI.Widget.VBox {
     if (this._deviceOrientationOverrideEnabled) {
       this._deviceOrientationSetting.set(this._deviceOrientation.toSetting());
     }
-    for (const emulationModel of self.SDK.targetManager.models(SDK.EmulationModel.EmulationModel)) {
+    for (const emulationModel of SDK.SDKModel.TargetManager.instance().models(SDK.EmulationModel.EmulationModel)) {
       emulationModel.emulateDeviceOrientation(this._deviceOrientationOverrideEnabled ? this._deviceOrientation : null);
     }
   }
@@ -510,11 +510,12 @@ export class SensorsView extends UI.Widget.VBox {
     UI.ARIAUtils.markAsAlert(reloadWarning);
 
     function applyTouch() {
-      for (const emulationModel of self.SDK.targetManager.models(SDK.EmulationModel.EmulationModel)) {
+      for (const emulationModel of SDK.SDKModel.TargetManager.instance().models(SDK.EmulationModel.EmulationModel)) {
         emulationModel.overrideEmulateTouch(select.value === 'enabled');
       }
       reloadWarning.classList.remove('hidden');
-      const resourceTreeModel = self.SDK.targetManager.models(SDK.ResourceTreeModel.ResourceTreeModel)[0];
+      const resourceTreeModel =
+          SDK.SDKModel.TargetManager.instance().models(SDK.ResourceTreeModel.ResourceTreeModel)[0];
       if (resourceTreeModel) {
         resourceTreeModel.once(SDK.ResourceTreeModel.Events.MainFrameNavigated)
             .then(() => reloadWarning.classList.add('hidden'));

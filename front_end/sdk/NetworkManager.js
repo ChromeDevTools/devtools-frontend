@@ -35,7 +35,7 @@ import * as ProtocolModule from '../protocol/protocol.js';
 
 import {Cookie} from './Cookie.js';
 import {ContentData, Events as NetworkRequestEvents, ExtraRequestInfo, ExtraResponseInfo, NameValue, NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
-import {Capability, SDKModel, SDKModelObserver, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import {Capability, SDKModel, SDKModelObserver, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
@@ -1032,7 +1032,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     /** @type {!Platform.Multimap<!RequestInterceptor, !InterceptionPattern>} */
     this._urlsForRequestInterceptor = new Platform.Multimap();
 
-    self.SDK.targetManager.observeModels(NetworkManager, this);
+    TargetManager.instance().observeModels(NetworkManager, this);
   }
 
   /**
@@ -1334,7 +1334,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
    * @return {!Promise<!Array<string>>}
    */
   getCertificate(origin) {
-    const target = self.SDK.targetManager.mainTarget();
+    const target = TargetManager.instance().mainTarget();
     return target.networkAgent().getCertificate(origin).then(certificate => certificate || []);
   }
 

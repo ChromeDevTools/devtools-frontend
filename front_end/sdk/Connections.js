@@ -6,6 +6,8 @@ import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as ProtocolModule from '../protocol/protocol.js';
 
+import {TargetManager} from './SDKModel.js';
+
 /**
  * @implements {ProtocolModule.InspectorBackend.Connection}
  */
@@ -330,7 +332,7 @@ export async function initMainConnection(createMainTarget, websocketConnectionLo
   Host.InspectorFrontendHost.InspectorFrontendHostInstance.connectionReady();
   Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
       Host.InspectorFrontendHostAPI.Events.ReattachMainTarget, () => {
-        self.SDK.targetManager.mainTarget().router().connection().disconnect();
+        TargetManager.instance().mainTarget().router().connection().disconnect();
         createMainTarget();
       });
   return Promise.resolve();

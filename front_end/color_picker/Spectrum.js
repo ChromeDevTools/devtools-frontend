@@ -1172,7 +1172,7 @@ export class PaletteGenerator {
     /** @type {!Map.<string, number>} */
     this._frequencyMap = new Map();
     const stylesheetPromises = [];
-    for (const cssModel of self.SDK.targetManager.models(SDK.CSSModel.CSSModel)) {
+    for (const cssModel of SDK.SDKModel.TargetManager.instance().models(SDK.CSSModel.CSSModel)) {
       for (const stylesheet of cssModel.allStyleSheets()) {
         stylesheetPromises.push(this._processStylesheet(stylesheet));
       }

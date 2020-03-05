@@ -19,7 +19,7 @@ export class BlackboxManager {
   constructor(debuggerWorkspaceBinding) {
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
 
-    self.SDK.targetManager.addModelListener(
+    SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared,
         this._clearCacheIfNeeded.bind(this), this);
     self.Common.settings.moduleSetting('skipStackFramesPattern').addChangeListener(this._patternChanged.bind(this));
@@ -31,7 +31,7 @@ export class BlackboxManager {
     /** @type {!Map<string, boolean>} */
     this._isBlackboxedURLCache = new Map();
 
-    self.SDK.targetManager.observeModels(SDK.DebuggerModel.DebuggerModel, this);
+    SDK.SDKModel.TargetManager.instance().observeModels(SDK.DebuggerModel.DebuggerModel, this);
   }
 
   /**
@@ -298,7 +298,7 @@ export class BlackboxManager {
 
     /** @type {!Array<!Promise>} */
     const promises = [];
-    for (const debuggerModel of self.SDK.targetManager.models(SDK.DebuggerModel.DebuggerModel)) {
+    for (const debuggerModel of SDK.SDKModel.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel)) {
       promises.push(this._setBlackboxPatterns(debuggerModel));
       const sourceMapManager = debuggerModel.sourceMapManager();
       for (const script of debuggerModel.scripts()) {

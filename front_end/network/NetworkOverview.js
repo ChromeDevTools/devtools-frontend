@@ -25,9 +25,9 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
     this._updateScheduled = false;
     this._highlightedRequest = null;
 
-    self.SDK.targetManager.addModelListener(
+    SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._loadEventFired, this);
-    self.SDK.targetManager.addModelListener(
+    SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.DOMContentLoaded,
         this._domContentLoadedEventFired, this);
 

@@ -254,7 +254,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
    * @param {!SDK.TracingModel.Event} event
    */
   _showEventInPaintProfiler(event) {
-    const paintProfilerModel = self.SDK.targetManager.models(SDK.PaintProfiler.PaintProfilerModel)[0];
+    const paintProfilerModel = SDK.SDKModel.TargetManager.instance().models(SDK.PaintProfiler.PaintProfilerModel)[0];
     if (!paintProfilerModel) {
       return;
     }

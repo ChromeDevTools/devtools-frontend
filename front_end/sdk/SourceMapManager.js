@@ -4,7 +4,7 @@
 
 import * as Common from '../common/common.js';
 
-import {Events as TargetManagerEvents, Target} from './SDKModel.js';     // eslint-disable-line no-unused-vars
+import {Events as TargetManagerEvents, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 import {SourceMap, TextSourceMap, WasmSourceMap} from './SourceMap.js';  // eslint-disable-line no-unused-vars
 
 /**
@@ -34,7 +34,7 @@ export class SourceMapManager extends Common.ObjectWrapper.ObjectWrapper {
     /** @type {!Platform.Multimap<string, !T>} */
     this._sourceMapIdToClients = new Platform.Multimap();
 
-    self.SDK.targetManager.addEventListener(TargetManagerEvents.InspectedURLChanged, this._inspectedURLChanged, this);
+    TargetManager.instance().addEventListener(TargetManagerEvents.InspectedURLChanged, this._inspectedURLChanged, this);
   }
 
   /**
@@ -247,7 +247,7 @@ export class SourceMapManager extends Common.ObjectWrapper.ObjectWrapper {
     for (const sourceMap of this._sourceMapById.values()) {
       sourceMap.dispose();
     }
-    self.SDK.targetManager.removeEventListener(
+    TargetManager.instance().removeEventListener(
         TargetManagerEvents.InspectedURLChanged, this._inspectedURLChanged, this);
   }
 }

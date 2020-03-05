@@ -542,7 +542,7 @@ self.SDK.domDebuggerManager;
  */
 SDK.multitargetNetworkManager;
 
-self.SDK.targetManager = new SDKModule.SDKModel.TargetManager();
+self.SDK.targetManager = SDKModule.SDKModel.TargetManager.instance();
 self.SDK.isolateManager = new SDKModule.IsolateManager.IsolateManager();
 self.SDK.domModelUndoStack = new SDKModule.DOMModel.DOMModelUndoStack();
 self.SDK.networkLog = new SDKModule.NetworkLog.NetworkLog();

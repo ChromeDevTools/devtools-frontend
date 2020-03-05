@@ -17,7 +17,7 @@ export class JsMainImpl extends Common.ObjectWrapper.ObjectWrapper {
   run() {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConnectToNodeJSDirectly);
     SDK.Connections.initMainConnection(() => {
-      const target = self.SDK.targetManager.createTarget('main', ls`Main`, SDK.SDKModel.Type.Node, null);
+      const target = SDK.SDKModel.TargetManager.instance().createTarget('main', ls`Main`, SDK.SDKModel.Type.Node, null);
       target.runtimeAgent().runIfWaitingForDebugger();
     }, Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost);
   }

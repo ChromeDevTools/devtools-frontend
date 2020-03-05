@@ -28,7 +28,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
     this._toggleRecordButton.setToggled(this._setting.get());
     toolbar.appendToolbarItem(this._toggleRecordButton);
 
-    const mainTarget = self.SDK.targetManager.mainTarget();
+    const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
     if (mainTarget && mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel)) {
       const startWithReloadAction =
           /** @type {!UI.Action.Action }*/ (self.UI.actionRegistry.action('live-heap-profile.start-with-reload'));
@@ -252,7 +252,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
     if (!reload) {
       return;
     }
-    const mainTarget = self.SDK.targetManager.mainTarget();
+    const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
     if (!mainTarget) {
       return;
     }

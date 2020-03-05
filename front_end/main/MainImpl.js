@@ -215,7 +215,7 @@ export class MainImpl {
     self.Components.dockController = new Components.DockController.DockController(canDock);
     self.SDK.multitargetNetworkManager = new SDK.NetworkManager.MultitargetNetworkManager();
     self.SDK.domDebuggerManager = new SDK.DOMDebuggerModel.DOMDebuggerManager();
-    self.SDK.targetManager.addEventListener(
+    SDK.SDKModel.TargetManager.instance().addEventListener(
         SDK.SDKModel.Events.SuspendStateChanged, this._onSuspendStateChanged.bind(this));
 
     self.UI.shortcutsScreen = new UI.ShortcutsScreen.ShortcutsScreen();
@@ -230,14 +230,14 @@ export class MainImpl {
 
     self.Bindings.networkProjectManager = new Bindings.NetworkProject.NetworkProjectManager();
     self.Bindings.resourceMapping =
-        new Bindings.ResourceMapping.ResourceMapping(self.SDK.targetManager, self.Workspace.workspace);
+        new Bindings.ResourceMapping.ResourceMapping(SDK.SDKModel.TargetManager.instance(), self.Workspace.workspace);
     new Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager();
-    self.Bindings.cssWorkspaceBinding =
-        new Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding(self.SDK.targetManager, self.Workspace.workspace);
+    self.Bindings.cssWorkspaceBinding = new Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding(
+        SDK.SDKModel.TargetManager.instance(), self.Workspace.workspace);
     self.Bindings.debuggerWorkspaceBinding = new Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding(
-        self.SDK.targetManager, self.Workspace.workspace);
+        SDK.SDKModel.TargetManager.instance(), self.Workspace.workspace);
     self.Bindings.breakpointManager = new Bindings.BreakpointManager.BreakpointManager(
-        self.Workspace.workspace, self.SDK.targetManager, self.Bindings.debuggerWorkspaceBinding);
+        self.Workspace.workspace, SDK.SDKModel.TargetManager.instance(), self.Bindings.debuggerWorkspaceBinding);
     self.Extensions.extensionServer = new Extensions.ExtensionServer.ExtensionServer();
 
     new Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding(
@@ -247,7 +247,7 @@ export class MainImpl {
     self.Persistence.networkPersistenceManager =
         new Persistence.NetworkPersistenceManager.NetworkPersistenceManager(self.Workspace.workspace);
 
-    new ExecutionContextSelector(self.SDK.targetManager, self.UI.context);
+    new ExecutionContextSelector(SDK.SDKModel.TargetManager.instance(), self.UI.context);
     self.Bindings.blackboxManager =
         new Bindings.BlackboxManager.BlackboxManager(self.Bindings.debuggerWorkspaceBinding);
 
@@ -500,7 +500,7 @@ export class MainImpl {
   }
 
   _onSuspendStateChanged() {
-    const suspended = self.SDK.targetManager.allTargetsSuspended();
+    const suspended = SDK.SDKModel.TargetManager.instance().allTargetsSuspended();
     self.UI.inspectorView.onSuspendStateChanged(suspended);
   }
 }
@@ -674,7 +674,8 @@ export class MainMenuItem {
     }
 
     if (self.Components.dockController.dockSide() === Components.DockController.State.Undocked &&
-        self.SDK.targetManager.mainTarget() && self.SDK.targetManager.mainTarget().type() === SDK.SDKModel.Type.Frame) {
+        SDK.SDKModel.TargetManager.instance().mainTarget() &&
+        SDK.SDKModel.TargetManager.instance().mainTarget().type() === SDK.SDKModel.Type.Frame) {
       contextMenu.defaultSection().appendAction(
           'inspector_main.focus-debuggee', Common.UIString.UIString('Focus debuggee'));
     }
@@ -708,7 +709,7 @@ export class MainMenuItem {
  */
 export class PauseListener {
   constructor() {
-    self.SDK.targetManager.addModelListener(
+    SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._debuggerPaused, this);
   }
 
@@ -716,7 +717,7 @@ export class PauseListener {
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _debuggerPaused(event) {
-    self.SDK.targetManager.removeModelListener(
+    SDK.SDKModel.TargetManager.instance().removeModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._debuggerPaused, this);
     const debuggerModel = /** @type {!SDK.DebuggerModel.DebuggerModel} */ (event.data);
     const debuggerPausedDetails = debuggerModel.debuggerPausedDetails();

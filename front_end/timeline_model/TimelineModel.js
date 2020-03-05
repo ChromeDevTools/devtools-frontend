@@ -173,8 +173,8 @@ export class TimelineModelImpl {
   targetByEvent(event) {
     // FIXME: Consider returning null for loaded traces.
     const workerId = this._workerIdByThread.get(event.thread);
-    const mainTarget = self.SDK.targetManager.mainTarget();
-    return workerId ? self.SDK.targetManager.targetById(workerId) : mainTarget;
+    const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
+    return workerId ? SDK.SDKModel.TargetManager.instance().targetById(workerId) : mainTarget;
   }
 
   /**

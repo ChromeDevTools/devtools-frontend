@@ -187,7 +187,7 @@ export class InputTimeline extends UI.Widget.VBox {
     this._setState(State.StartPending);
 
     this._tracingClient = new InputTimeline.TracingClient(
-        /** @type {!SDK.SDKModel.Target} */ (self.SDK.targetManager.mainTarget()), this);
+        /** @type {!SDK.SDKModel.Target} */ (SDK.SDKModel.TargetManager.instance().mainTarget()), this);
 
     const response = await this._tracingClient.startRecording();
     if (response[ProtocolModule.InspectorBackend.ProtocolError]) {
@@ -247,7 +247,8 @@ export class InputTimeline extends UI.Widget.VBox {
       this._reset();
       return;
     }
-    this._inputModel = new InputModel(/** @type {!SDK.SDKModel.Target} */ (self.SDK.targetManager.mainTarget()));
+    this._inputModel =
+        new InputModel(/** @type {!SDK.SDKModel.Target} */ (SDK.SDKModel.TargetManager.instance().mainTarget()));
     this._tracingModel = tracingModel;
     this._inputModel.setEvents(tracingModel);
 
@@ -362,7 +363,7 @@ export class TracingClient {
     }
 
     await this._waitForTracingToStop(true);
-    await self.SDK.targetManager.resumeAllTargets();
+    await SDK.SDKModel.TargetManager.instance().resumeAllTargets();
     this._tracingModel.tracingComplete();
     this._client.loadingComplete(this._tracingModel);
   }

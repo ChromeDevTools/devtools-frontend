@@ -100,7 +100,8 @@ export class ScreencastView extends UI.Widget.VBox {
     this._shortcuts[UI.KeyboardShortcut.KeyboardShortcut.makeKey('l', UI.KeyboardShortcut.Modifiers.Ctrl)] =
         this._focusNavigationBar.bind(this);
 
-    self.SDK.targetManager.addEventListener(SDK.SDKModel.Events.SuspendStateChanged, this._onSuspendStateChange, this);
+    SDK.SDKModel.TargetManager.instance().addEventListener(
+        SDK.SDKModel.Events.SuspendStateChanged, this._onSuspendStateChange, this);
     this._updateGlasspane();
   }
 
@@ -119,7 +120,7 @@ export class ScreencastView extends UI.Widget.VBox {
   }
 
   _startCasting() {
-    if (self.SDK.targetManager.allTargetsSuspended()) {
+    if (SDK.SDKModel.TargetManager.instance().allTargetsSuspended()) {
       return;
     }
     if (this._isCasting) {
@@ -140,7 +141,7 @@ export class ScreencastView extends UI.Widget.VBox {
         'jpeg', 80, Math.floor(Math.min(maxImageDimension, dimensions.width)),
         Math.floor(Math.min(maxImageDimension, dimensions.height)), undefined, this._screencastFrame.bind(this),
         this._screencastVisibilityChanged.bind(this));
-    for (const emulationModel of self.SDK.targetManager.models(SDK.EmulationModel.EmulationModel)) {
+    for (const emulationModel of SDK.SDKModel.TargetManager.instance().models(SDK.EmulationModel.EmulationModel)) {
       emulationModel.overrideEmulateTouch(true);
     }
     if (this._overlayModel) {
@@ -154,7 +155,7 @@ export class ScreencastView extends UI.Widget.VBox {
     }
     this._isCasting = false;
     this._screenCaptureModel.stopScreencast();
-    for (const emulationModel of self.SDK.targetManager.models(SDK.EmulationModel.EmulationModel)) {
+    for (const emulationModel of SDK.SDKModel.TargetManager.instance().models(SDK.EmulationModel.EmulationModel)) {
       emulationModel.overrideEmulateTouch(false);
     }
     if (this._overlayModel) {
@@ -209,7 +210,7 @@ export class ScreencastView extends UI.Widget.VBox {
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onSuspendStateChange(event) {
-    if (self.SDK.targetManager.allTargetsSuspended()) {
+    if (SDK.SDKModel.TargetManager.instance().allTargetsSuspended()) {
       this._stopCasting();
     } else {
       this._startCasting();
@@ -221,7 +222,7 @@ export class ScreencastView extends UI.Widget.VBox {
     if (this._targetInactive) {
       this._glassPaneElement.textContent = Common.UIString.UIString('The tab is inactive');
       this._glassPaneElement.classList.remove('hidden');
-    } else if (self.SDK.targetManager.allTargetsSuspended()) {
+    } else if (SDK.SDKModel.TargetManager.instance().allTargetsSuspended()) {
       this._glassPaneElement.textContent = Common.UIString.UIString('Profiling in progress');
       this._glassPaneElement.classList.remove('hidden');
     } else {

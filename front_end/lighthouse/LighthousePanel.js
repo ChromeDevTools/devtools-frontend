@@ -2,7 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as Common from '../common/common.js';
+import * as Emulation from '../emulation/emulation.js';  // eslint-disable-line no-unused-vars
+import * as HostModule from '../host/host.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
 
 import {Events, LighthouseController} from './LighthouseController.js';
 import {ProtocolService} from './LighthouseProtocolService.js';
@@ -14,7 +18,7 @@ import {StatusView} from './LighthouseStatusView.js';
 /**
  * @unrestricted
  */
-export class LighthousePanel extends UI.Panel {
+export class LighthousePanel extends UI.Panel.Panel {
   constructor() {
     super('lighthouse');
     this.registerRequiredCSS('third_party/lighthouse/report-assets/report.css');
@@ -28,7 +32,7 @@ export class LighthousePanel extends UI.Panel {
     this._unauditableExplanation = null;
     this._cachedRenderedReports = new Map();
 
-    this._dropTarget = new UI.DropTarget(
+    this._dropTarget = new UI.DropTarget.DropTarget(
         this.contentElement, [UI.DropTarget.Type.File], Common.UIString.UIString('Drop Lighthouse JSON here'),
         this._handleDrop.bind(this));
 
@@ -82,31 +86,31 @@ export class LighthousePanel extends UI.Panel {
   _renderToolbar() {
     const lighthouseToolbarContainer = this.element.createChild('div', 'lighthouse-toolbar-container');
 
-    const toolbar = new UI.Toolbar('', lighthouseToolbarContainer);
+    const toolbar = new UI.Toolbar.Toolbar('', lighthouseToolbarContainer);
 
-    this._newButton = new UI.ToolbarButton(Common.UIString.UIString('Perform an audit…'), 'largeicon-add');
+    this._newButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Perform an audit…'), 'largeicon-add');
     toolbar.appendToolbarItem(this._newButton);
-    this._newButton.addEventListener(UI.ToolbarButton.Events.Click, this._renderStartView.bind(this));
+    this._newButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._renderStartView.bind(this));
 
     toolbar.appendSeparator();
 
     this._reportSelector = new ReportSelector(() => this._renderStartView());
     toolbar.appendToolbarItem(this._reportSelector.comboBox());
 
-    this._clearButton = new UI.ToolbarButton(Common.UIString.UIString('Clear all'), 'largeicon-clear');
+    this._clearButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Clear all'), 'largeicon-clear');
     toolbar.appendToolbarItem(this._clearButton);
-    this._clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._clearAll.bind(this));
+    this._clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._clearAll.bind(this));
 
-    this._settingsPane = new UI.HBox();
+    this._settingsPane = new UI.Widget.HBox();
     this._settingsPane.show(this.contentElement);
     this._settingsPane.element.classList.add('lighthouse-settings-pane');
     this._settingsPane.element.appendChild(this._startView.settingsToolbar().element);
     this._showSettingsPaneSetting = self.Common.settings.createSetting('lighthouseShowSettingsToolbar', false);
 
-    this._rightToolbar = new UI.Toolbar('', lighthouseToolbarContainer);
+    this._rightToolbar = new UI.Toolbar.Toolbar('', lighthouseToolbarContainer);
     this._rightToolbar.appendSeparator();
-    this._rightToolbar.appendToolbarItem(
-        new UI.ToolbarSettingToggle(this._showSettingsPaneSetting, 'largeicon-settings-gear', ls`Lighthouse settings`));
+    this._rightToolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingToggle(
+        this._showSettingsPaneSetting, 'largeicon-settings-gear', ls`Lighthouse settings`));
     this._showSettingsPaneSetting.addChangeListener(this._updateSettingsPaneVisibility.bind(this));
     this._updateSettingsPaneVisibility();
 
@@ -218,8 +222,8 @@ export class LighthousePanel extends UI.Panel {
   }
 
   _waitForMainTargetLoad() {
-    const mainTarget = self.SDK.targetManager.mainTarget();
-    const resourceTreeModel = mainTarget.model(SDK.ResourceTreeModel);
+    const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
+    const resourceTreeModel = mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
     return resourceTreeModel.once(SDK.ResourceTreeModel.Events.Load);
   }
 
@@ -276,7 +280,7 @@ export class LighthousePanel extends UI.Panel {
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   async _startLighthouse(event) {
-    Host.userMetrics.actionTaken(Host.UserMetrics.Action.LighthouseStarted);
+    HostModule.userMetrics.actionTaken(Host.UserMetrics.Action.LighthouseStarted);
 
     try {
       const inspectedURL = await this._controller.getInspectedURL({force: true});
@@ -299,7 +303,7 @@ export class LighthousePanel extends UI.Panel {
         throw new Error('Auditing failed to produce a result');
       }
 
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.LighthouseFinished);
+      HostModule.userMetrics.actionTaken(Host.UserMetrics.Action.LighthouseFinished);
 
       await this._resetEmulationAndProtocolConnection();
       this._buildReportUI(lighthouseResponse.lhr, lighthouseResponse.artifacts);
@@ -307,7 +311,7 @@ export class LighthousePanel extends UI.Panel {
       this._newButton.element.focus();
       const keyboardInitiated = /** @type {boolean} */ (event.data);
       if (keyboardInitiated) {
-        UI.markAsFocusedByKeyboard(this._newButton.element);
+        UI.UIUtils.markAsFocusedByKeyboard(this._newButton.element);
       }
     } catch (err) {
       await this._resetEmulationAndProtocolConnection();
@@ -333,7 +337,7 @@ export class LighthousePanel extends UI.Panel {
   async _setupEmulationAndProtocolConnection() {
     const flags = this._controller.getFlags();
 
-    const emulationModel = self.singleton(Emulation.DeviceModeModel);
+    const emulationModel = self.singleton(Emulation.DeviceModeModel.DeviceModeModel);
     this._stateBefore = {
       emulation: {
         enabled: emulationModel.enabledSetting().get(),
@@ -351,7 +355,7 @@ export class LighthousePanel extends UI.Panel {
       emulationModel.enabledSetting().set(true);
       emulationModel.deviceOutlineSetting().set(true);
 
-      for (const device of Emulation.EmulatedDevicesList.instance().standard()) {
+      for (const device of Emulation.EmulatedDevices.EmulatedDevicesList.instance().standard()) {
         if (device.title === 'Nexus 5X') {
           emulationModel.emulate(Emulation.DeviceModeModel.Type.Device, device, device.modes[0], 1);
         }
@@ -371,7 +375,7 @@ export class LighthousePanel extends UI.Panel {
     await this._protocolService.detach();
 
     if (this._stateBefore) {
-      const emulationModel = self.singleton(Emulation.DeviceModeModel);
+      const emulationModel = self.singleton(Emulation.DeviceModeModel.DeviceModeModel);
       emulationModel.enabledSetting().set(this._stateBefore.emulation.enabled);
       emulationModel.deviceOutlineSetting().set(this._stateBefore.emulation.outlineEnabled);
       emulationModel.toolbarControlsEnabledSetting().set(this._stateBefore.emulation.toolbarControlsEnabled);
@@ -381,7 +385,8 @@ export class LighthousePanel extends UI.Panel {
 
     Emulation.InspectedPagePlaceholder.instance().update(true);
 
-    const resourceTreeModel = self.SDK.targetManager.mainTarget().model(SDK.ResourceTreeModel);
+    const resourceTreeModel =
+        SDK.SDKModel.TargetManager.instance().mainTarget().model(SDK.ResourceTreeModel.ResourceTreeModel);
     // reload to reset the page state
     const inspectedURL = await this._controller.getInspectedURL();
     await resourceTreeModel.navigate(inspectedURL);

@@ -29,7 +29,7 @@ export class MediaQueryInspector extends UI.Widget.Widget {
     this._setWidthCallback = setWidthCallback;
     this._scale = 1;
 
-    self.SDK.targetManager.observeModels(SDK.CSSModel.CSSModel, this);
+    SDK.SDKModel.TargetManager.instance().observeModels(SDK.CSSModel.CSSModel, this);
     self.UI.zoomManager.addEventListener(UI.ZoomManager.Events.ZoomChanged, this._renderMediaQueries.bind(this), this);
   }
 

@@ -77,7 +77,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     this._emulationModel = null;
     /** @type {?function()} */
     this._onModelAvailable = null;
-    self.SDK.targetManager.observeModels(SDK.EmulationModel.EmulationModel, this);
+    SDK.SDKModel.TargetManager.instance().observeModels(SDK.EmulationModel.EmulationModel, this);
   }
 
   /**
@@ -769,7 +769,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
   _applyTouch(touchEnabled, mobile) {
     this._touchEnabled = touchEnabled;
     this._touchMobile = mobile;
-    for (const emulationModel of self.SDK.targetManager.models(SDK.EmulationModel.EmulationModel)) {
+    for (const emulationModel of SDK.SDKModel.TargetManager.instance().models(SDK.EmulationModel.EmulationModel)) {
       emulationModel.emulateTouch(touchEnabled, mobile);
     }
   }

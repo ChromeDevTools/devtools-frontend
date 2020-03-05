@@ -2,10 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../ui/ui.js';
+
 export class RadioSetting {
   /**
    * @param {!Array<!{value: string, label: string}>} options
-   * @param {!Common.Setting} setting
+   * @param {!Common.Settings.Setting} setting
    * @param {string} description
    */
   constructor(options, setting, description) {
@@ -19,7 +22,7 @@ export class RadioSetting {
 
     this._radioElements = [];
     for (const option of this._options) {
-      const fragment = UI.Fragment.build`
+      const fragment = UI.Fragment.Fragment.build`
         <label $="label" class="audits-radio">
           <input $="input" type="radio" value=${option.value} name=${setting.name}>
           ${option.label}
@@ -28,7 +31,7 @@ export class RadioSetting {
 
       this.element.appendChild(fragment.element());
       if (option.title) {
-        UI.Tooltip.install(fragment.$('label'), option.title);
+        UI.Tooltip.Tooltip.install(fragment.$('label'), option.title);
       }
       const radioElement = fragment.$('input');
       radioElement.addEventListener('change', this._valueChanged.bind(this));

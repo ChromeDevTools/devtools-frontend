@@ -16,7 +16,7 @@ export class WorkerMainImpl extends Common.ObjectWrapper.ObjectWrapper {
    */
   run() {
     SDK.Connections.initMainConnection(() => {
-      self.SDK.targetManager.createTarget('main', ls`Main`, SDK.SDKModel.Type.ServiceWorker, null);
+      SDK.SDKModel.TargetManager.instance().createTarget('main', ls`Main`, SDK.SDKModel.Type.ServiceWorker, null);
     }, Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost);
     new MobileThrottling.NetworkPanelIndicator.NetworkPanelIndicator();
   }

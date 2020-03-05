@@ -25,7 +25,7 @@ export class MainView extends UI.Panel.PanelWithSidebar {
     this._sidebar = new PlayerListView.PlayerListView(this);
     this._sidebar.show(this.panelSidebarElement());
 
-    self.SDK.targetManager.observeModels(MediaModel.MediaModel, this);
+    SDK.SDKModel.TargetManager.instance().observeModels(MediaModel.MediaModel, this);
   }
 
   /**
@@ -70,7 +70,7 @@ export class MainView extends UI.Panel.PanelWithSidebar {
    */
   wasShown() {
     super.wasShown();
-    for (const model of self.SDK.targetManager.models(MediaModel.MediaModel)) {
+    for (const model of SDK.SDKModel.TargetManager.instance().models(MediaModel.MediaModel)) {
       this._addEventListeners(model);
     }
   }
@@ -79,7 +79,7 @@ export class MainView extends UI.Panel.PanelWithSidebar {
    * @override
    */
   willHide() {
-    for (const model of self.SDK.targetManager.models(MediaModel.MediaModel)) {
+    for (const model of SDK.SDKModel.TargetManager.instance().models(MediaModel.MediaModel)) {
       this._removeEventListeners(model);
     }
   }

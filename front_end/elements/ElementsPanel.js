@@ -97,12 +97,12 @@ export class ElementsPanel extends UI.Panel.Panel {
     this._treeOutlines = new Set();
     /** @type {!Map<!ElementsTreeOutline, !Element>} */
     this._treeOutlineHeaders = new Map();
-    self.SDK.targetManager.observeModels(SDK.DOMModel.DOMModel, this);
-    self.SDK.targetManager.addEventListener(
+    SDK.SDKModel.TargetManager.instance().observeModels(SDK.DOMModel.DOMModel, this);
+    SDK.SDKModel.TargetManager.instance().addEventListener(
         SDK.SDKModel.Events.NameChanged,
         event => this._targetNameChanged(/** @type {!SDK.SDKModel.Target} */ (event.data)));
     self.Common.settings.moduleSetting('showUAShadowDOM').addChangeListener(this._showUAShadowDOMChanged.bind(this));
-    self.SDK.targetManager.addModelListener(
+    SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.DocumentUpdated, this._documentUpdatedEvent, this);
     self.Extensions.extensionServer.addEventListener(
         Extensions.ExtensionServer.Events.SidebarPaneAdded, this._extensionSidebarPaneAdded, this);
@@ -267,7 +267,7 @@ export class ElementsPanel extends UI.Panel.Panel {
     super.wasShown();
     this._breadcrumbs.update();
 
-    const domModels = self.SDK.targetManager.models(SDK.DOMModel.DOMModel);
+    const domModels = SDK.SDKModel.TargetManager.instance().models(SDK.DOMModel.DOMModel);
     for (const domModel of domModels) {
       if (domModel.parentModel()) {
         continue;
@@ -461,7 +461,7 @@ export class ElementsPanel extends UI.Panel.Panel {
     this._searchConfig = searchConfig;
 
     const showUAShadowDOM = self.Common.settings.moduleSetting('showUAShadowDOM').get();
-    const domModels = self.SDK.targetManager.models(SDK.DOMModel.DOMModel);
+    const domModels = SDK.SDKModel.TargetManager.instance().models(SDK.DOMModel.DOMModel);
     const promises = domModels.map(domModel => domModel.performSearch(whitespaceTrimmedQuery, showUAShadowDOM));
     Promise.all(promises).then(resultCountCallback.bind(this));
 

@@ -81,9 +81,10 @@ export class NavigatorView extends UI.Widget.VBox {
         Persistence.Persistence.Events.BindingCreated, this._onBindingChanged, this);
     self.Persistence.persistence.addEventListener(
         Persistence.Persistence.Events.BindingRemoved, this._onBindingChanged, this);
-    self.SDK.targetManager.addEventListener(SDK.SDKModel.Events.NameChanged, this._targetNameChanged, this);
+    SDK.SDKModel.TargetManager.instance().addEventListener(
+        SDK.SDKModel.Events.NameChanged, this._targetNameChanged, this);
 
-    self.SDK.targetManager.observeTargets(this);
+    SDK.SDKModel.TargetManager.instance().observeTargets(this);
     this._resetWorkspace(self.Workspace.workspace);
     this._workspace.uiSourceCodes().forEach(this._addUISourceCode.bind(this));
     self.Bindings.networkProjectManager.addEventListener(
@@ -597,7 +598,7 @@ export class NavigatorView extends UI.Widget.VBox {
    * @return {!NavigatorTreeNode}
    */
   _targetNode(project, target) {
-    if (target === self.SDK.targetManager.mainTarget()) {
+    if (target === SDK.SDKModel.TargetManager.instance().mainTarget()) {
       return this._rootNode;
     }
 

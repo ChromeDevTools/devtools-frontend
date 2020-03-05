@@ -35,7 +35,7 @@ import {Events as NetworkManagerEvents, Message, NetworkManager} from './Network
 import {Events as NetworkRequestEvents, InitiatorType, NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
 import {Events as ResourceTreeModelEvents, ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars
 import {RuntimeModel} from './RuntimeModel.js';
-import {SDKModelObserver} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import {SDKModelObserver, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @implements {SDKModelObserver<!NetworkManager>}
@@ -50,7 +50,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
     /** @type {!Map<!NetworkManager, !PageLoad>} */
     this._pageLoadForManager = new Map();
     this._isRecording = true;
-    self.SDK.targetManager.observeModels(NetworkManager, this);
+    TargetManager.instance().observeModels(NetworkManager, this);
   }
 
   /**
@@ -108,10 +108,10 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
     }
     this._isRecording = enabled;
     if (enabled) {
-      self.SDK.targetManager.observeModels(NetworkManager, this);
+      TargetManager.instance().observeModels(NetworkManager, this);
     } else {
-      self.SDK.targetManager.unobserveModels(NetworkManager, this);
-      self.SDK.targetManager.models(NetworkManager).forEach(this._removeNetworkManagerListeners.bind(this));
+      TargetManager.instance().unobserveModels(NetworkManager, this);
+      TargetManager.instance().models(NetworkManager).forEach(this._removeNetworkManagerListeners.bind(this));
     }
   }
 
@@ -457,7 +457,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
   reset() {
     this._requests = [];
     this._requestsSet.clear();
-    const managers = new Set(self.SDK.targetManager.models(NetworkManager));
+    const managers = new Set(TargetManager.instance().models(NetworkManager));
     for (const manager of this._pageLoadForManager.keys()) {
       if (!managers.has(manager)) {
         this._pageLoadForManager.delete(manager);

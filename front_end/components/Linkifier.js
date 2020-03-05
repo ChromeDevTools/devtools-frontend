@@ -31,10 +31,11 @@
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 /**
- * @implements {SDK.TargetManager.Observer}
+ * @implements {SDK.SDKModel.Observer}
  * @unrestricted
  */
 export class Linkifier {
@@ -44,13 +45,13 @@ export class Linkifier {
    */
   constructor(maxLengthForDisplayedURLs, useLinkDecorator) {
     this._maxLength = maxLengthForDisplayedURLs || UI.UIUtils.MaxLengthForDisplayedURLs;
-    /** @type {!Map<!SDK.Target, !Array<!Element>>} */
+    /** @type {!Map<!SDK.SDKModel.Target, !Array<!Element>>} */
     this._anchorsByTarget = new Map();
-    /** @type {!Map<!SDK.Target, !Bindings.LiveLocation.LiveLocationPool>} */
+    /** @type {!Map<!SDK.SDKModel.Target, !Bindings.LiveLocation.LiveLocationPool>} */
     this._locationPoolByTarget = new Map();
     this._useLinkDecorator = !!useLinkDecorator;
     _instances.add(this);
-    self.SDK.targetManager.observeTargets(this);
+    SDK.SDKModel.TargetManager.instance().observeTargets(this);
   }
 
   /**
@@ -121,7 +122,7 @@ export class Linkifier {
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.SDKModel.Target} target
    */
   targetAdded(target) {
     this._anchorsByTarget.set(target, []);
@@ -130,7 +131,7 @@ export class Linkifier {
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.SDKModel.Target} target
    */
   targetRemoved(target) {
     const locationPool =
@@ -152,7 +153,7 @@ export class Linkifier {
   }
 
   /**
-   * @param {?SDK.Target} target
+   * @param {?SDK.SDKModel.Target} target
    * @param {?string} scriptId
    * @param {string} sourceURL
    * @param {number} lineNumber
@@ -169,7 +170,7 @@ export class Linkifier {
     if (!target || target.isDisposed()) {
       return fallbackAnchor;
     }
-    const debuggerModel = target.model(SDK.DebuggerModel);
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
     if (!debuggerModel) {
       return fallbackAnchor;
     }
@@ -200,7 +201,7 @@ export class Linkifier {
   }
 
   /**
-   * @param {?SDK.Target} target
+   * @param {?SDK.SDKModel.Target} target
    * @param {?string} scriptId
    * @param {string} sourceURL
    * @param {number} lineNumber
@@ -225,7 +226,7 @@ export class Linkifier {
   }
 
   /**
-   * @param {?SDK.Target} target
+   * @param {?SDK.SDKModel.Target} target
    * @param {!Protocol.Runtime.CallFrame} callFrame
    * @param {!Components.LinkifyOptions=} options
    * @return {?Element}
@@ -235,7 +236,7 @@ export class Linkifier {
   }
 
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.SDKModel.Target} target
    * @param {!Protocol.Runtime.StackTrace} stackTrace
    * @param {string=} classes
    * @return {!Element}
@@ -254,7 +255,7 @@ export class Linkifier {
       return fallbackAnchor;
     }
 
-    const debuggerModel = target.model(SDK.DebuggerModel);
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
     const rawLocations = debuggerModel.createRawLocationsByStackTrace(stackTrace);
     if (rawLocations.length === 0) {
       return fallbackAnchor;
@@ -274,7 +275,7 @@ export class Linkifier {
   }
 
   /**
-   * @param {!SDK.CSSLocation} rawLocation
+   * @param {!SDK.CSSModel.CSSLocation} rawLocation
    * @param {string=} classes
    * @return {!Element}
    */
@@ -305,7 +306,7 @@ export class Linkifier {
     for (const target of [...this._anchorsByTarget.keys()]) {
       this.targetRemoved(target);
     }
-    self.SDK.targetManager.unobserveTargets(this);
+    SDK.SDKModel.TargetManager.instance().unobserveTargets(this);
     _instances.delete(this);
   }
 
@@ -784,7 +785,7 @@ export class ContentProviderContextMenuProvider {
       contextMenu.revealSection().appendItem(
           Common.UIString.UIString('Open using %s', title), handler.bind(null, contentProvider, 0));
     }
-    if (contentProvider instanceof SDK.NetworkRequest) {
+    if (contentProvider instanceof SDK.NetworkRequest.NetworkRequest) {
       return;
     }
 

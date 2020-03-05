@@ -186,7 +186,7 @@ export class NetworkLogView extends UI.Widget.VBox {
     self.Common.settings.moduleSetting('networkColorCodeResourceTypes')
         .addChangeListener(this._invalidateAllItems.bind(this, false), this);
 
-    self.SDK.targetManager.observeModels(SDK.NetworkManager.NetworkManager, this);
+    SDK.SDKModel.TargetManager.instance().observeModels(SDK.NetworkManager.NetworkManager, this);
     self.SDK.networkLog.addEventListener(SDK.NetworkLog.Events.RequestAdded, this._onRequestUpdated, this);
     self.SDK.networkLog.addEventListener(SDK.NetworkLog.Events.RequestUpdated, this._onRequestUpdated, this);
     self.SDK.networkLog.addEventListener(SDK.NetworkLog.Events.Reset, this._reset, this);
@@ -1520,7 +1520,7 @@ export class NetworkLogView extends UI.Widget.VBox {
    * @return {!Promise}
    */
   async exportAll() {
-    const url = self.SDK.targetManager.mainTarget().inspectedURL();
+    const url = SDK.SDKModel.TargetManager.instance().mainTarget().inspectedURL();
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(url);
     const filename = parsedURL ? parsedURL.host : 'network-log';
     const stream = new Bindings.FileUtils.FileOutputStream();

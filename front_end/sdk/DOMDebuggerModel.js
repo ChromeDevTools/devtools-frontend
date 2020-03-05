@@ -8,7 +8,7 @@ import {Location} from './DebuggerModel.js';                                // e
 import {DOMModel, DOMNode, Events as DOMModelEvents} from './DOMModel.js';  // eslint-disable-line no-unused-vars
 import {RemoteObject} from './RemoteObject.js';
 import {RuntimeModel} from './RuntimeModel.js';
-import {Capability, SDKModel, SDKModelObserver, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import {Capability, SDKModel, SDKModelObserver, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 export class DOMDebuggerModel extends SDKModel {
   /**
@@ -543,7 +543,7 @@ export class EventListenerBreakpoint {
       return;
     }
     this._enabled = enabled;
-    for (const model of self.SDK.targetManager.models(DOMDebuggerModel)) {
+    for (const model of TargetManager.instance().models(DOMDebuggerModel)) {
       this._updateOnModel(model);
     }
   }
@@ -712,7 +712,7 @@ export class DOMDebuggerManager {
     this._resolveEventListenerBreakpoint('instrumentation:audioContextSuspended')._title =
         Common.UIString.UIString('Suspend AudioContext');
 
-    self.SDK.targetManager.observeModels(DOMDebuggerModel, this);
+    TargetManager.instance().observeModels(DOMDebuggerModel, this);
   }
 
   /**
@@ -836,7 +836,7 @@ export class DOMDebuggerManager {
   addXHRBreakpoint(url, enabled) {
     this._xhrBreakpoints.set(url, enabled);
     if (enabled) {
-      for (const model of self.SDK.targetManager.models(DOMDebuggerModel)) {
+      for (const model of TargetManager.instance().models(DOMDebuggerModel)) {
         model._agent.setXHRBreakpoint(url);
       }
     }
@@ -850,7 +850,7 @@ export class DOMDebuggerManager {
     const enabled = this._xhrBreakpoints.get(url);
     this._xhrBreakpoints.delete(url);
     if (enabled) {
-      for (const model of self.SDK.targetManager.models(DOMDebuggerModel)) {
+      for (const model of TargetManager.instance().models(DOMDebuggerModel)) {
         model._agent.removeXHRBreakpoint(url);
       }
     }
@@ -863,7 +863,7 @@ export class DOMDebuggerManager {
    */
   toggleXHRBreakpoint(url, enabled) {
     this._xhrBreakpoints.set(url, enabled);
-    for (const model of self.SDK.targetManager.models(DOMDebuggerModel)) {
+    for (const model of TargetManager.instance().models(DOMDebuggerModel)) {
       if (enabled) {
         model._agent.setXHRBreakpoint(url);
       } else {

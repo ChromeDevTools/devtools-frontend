@@ -2,10 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export class ProtocolService extends Common.Object {
+import * as Common from '../common/common.js';
+import * as ProtocolModule from '../protocol/protocol.js';  // eslint-disable-line no-unused-vars
+import * as SDK from '../sdk/sdk.js';
+
+export class ProtocolService extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
-    /** @type {?Protocol.Connection} */
+    /** @type {?ProtocolModule.InspectorBackend.Connection} */
     this._rawConnection = null;
     /** @type {?Services.ServiceManager.Service} */
     this._backend = null;
@@ -19,8 +23,9 @@ export class ProtocolService extends Common.Object {
    * @return {!Promise<undefined>}
    */
   async attach() {
-    await self.SDK.targetManager.suspendAllTargets();
-    const childTargetManager = self.SDK.targetManager.mainTarget().model(SDK.ChildTargetManager);
+    await SDK.SDKModel.TargetManager.instance().suspendAllTargets();
+    const childTargetManager =
+        SDK.SDKModel.TargetManager.instance().mainTarget().model(SDK.ChildTargetManager.ChildTargetManager);
     this._rawConnection = await childTargetManager.createParallelConnection(this._dispatchProtocolMessage.bind(this));
   }
 
@@ -43,7 +48,7 @@ export class ProtocolService extends Common.Object {
     delete this._backend;
     delete this._backendPromise;
     await this._rawConnection.disconnect();
-    await self.SDK.targetManager.resumeAllTargets();
+    await SDK.SDKModel.TargetManager.instance().resumeAllTargets();
   }
 
   /**

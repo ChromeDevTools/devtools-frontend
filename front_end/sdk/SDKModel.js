@@ -346,7 +346,15 @@ export const Type = {
   Browser: 'browser',
 };
 
+/**
+ * @type {!TargetManager}
+ */
+let targetManagerInstance;
+
 export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
+  /**
+   * @private
+   */
   constructor() {
     super();
     /** @type {!Set.<!Target>} */
@@ -358,6 +366,17 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
     /** @type {!Platform.Multimap<function(new:SDKModel, !Target), !SDKModelObserver>} */
     this._modelObservers = new Platform.Multimap();
     this._isSuspended = false;
+  }
+
+  /**
+   * @param {{forceNew: boolean}} opts
+   */
+  static instance({forceNew} = {forceNew: false}) {
+    if (!targetManagerInstance || forceNew) {
+      targetManagerInstance = new TargetManager();
+    }
+
+    return targetManagerInstance;
   }
 
   /**

@@ -7,7 +7,7 @@ import * as Host from '../host/host.js';
 import * as ProtocolModule from '../protocol/protocol.js';  // eslint-disable-line no-unused-vars
 
 import {ParallelConnection} from './Connections.js';
-import {Capability, Events, SDKModel, Target, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import {Capability, Events, SDKModel, Target, TargetManager, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 let _lastAnonymousTargetId = 0;
 
@@ -116,7 +116,7 @@ export class ChildTargetManager extends SDKModel {
   }
 
   _fireAvailableTargetsChanged() {
-    self.SDK.targetManager.dispatchEventToListeners(Events.AvailableTargetsChanged, [...this._targetInfos.values()]);
+    TargetManager.instance().dispatchEventToListeners(Events.AvailableTargetsChanged, [...this._targetInfos.values()]);
   }
 
   /**

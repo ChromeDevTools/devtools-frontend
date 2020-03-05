@@ -10,7 +10,7 @@ import * as SDK from '../sdk/sdk.js';
  */
 export class LogManager {
   constructor() {
-    self.SDK.targetManager.observeModels(SDK.LogModel.LogModel, this);
+    SDK.SDKModel.TargetManager.instance().observeModels(SDK.LogModel.LogModel, this);
   }
 
   /**
@@ -53,11 +53,11 @@ export class LogManager {
       // user can see messages from the worker which has been already destroyed.
       // When opening DevTools, give us some time to connect to the worker and
       // not report the message twice if the worker is still alive.
-      if (self.SDK.targetManager.targetById(workerId)) {
+      if (SDK.SDKModel.TargetManager.instance().targetById(workerId)) {
         return;
       }
       setTimeout(() => {
-        if (!self.SDK.targetManager.targetById(workerId)) {
+        if (!SDK.SDKModel.TargetManager.instance().targetById(workerId)) {
           self.SDK.consoleModel.addMessage(consoleMessage);
         }
       }, 1000);

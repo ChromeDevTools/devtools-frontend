@@ -35,7 +35,7 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
           this._currentNetworkThrottlingConditions = self.SDK.multitargetNetworkManager.networkConditions();
         });
 
-    self.SDK.targetManager.observeModels(SDK.EmulationModel.EmulationModel, this);
+    SDK.SDKModel.TargetManager.instance().observeModels(SDK.EmulationModel.EmulationModel, this);
   }
 
 
@@ -198,7 +198,7 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
    */
   setCPUThrottlingRate(rate) {
     this._cpuThrottlingRate = rate;
-    for (const emulationModel of self.SDK.targetManager.models(SDK.EmulationModel.EmulationModel)) {
+    for (const emulationModel of SDK.SDKModel.TargetManager.instance().models(SDK.EmulationModel.EmulationModel)) {
       emulationModel.setCPUThrottlingRate(this._cpuThrottlingRate);
     }
     let icon = null;

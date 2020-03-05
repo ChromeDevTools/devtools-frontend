@@ -109,13 +109,13 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
     // Pull down the latest date for this node.
     this.doUpdate();
 
-    self.SDK.targetManager.addModelListener(
+    SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrModified, this._onAttrChange, this);
-    self.SDK.targetManager.addModelListener(
+    SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrRemoved, this._onAttrChange, this);
-    self.SDK.targetManager.addModelListener(
+    SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.CharacterDataModified, this._onNodeChange, this);
-    self.SDK.targetManager.addModelListener(
+    SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.ChildNodeCountUpdated, this._onNodeChange, this);
   }
 
@@ -123,13 +123,13 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
    * @override
    */
   willHide() {
-    self.SDK.targetManager.removeModelListener(
+    SDK.SDKModel.TargetManager.instance().removeModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrModified, this._onAttrChange, this);
-    self.SDK.targetManager.removeModelListener(
+    SDK.SDKModel.TargetManager.instance().removeModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrRemoved, this._onAttrChange, this);
-    self.SDK.targetManager.removeModelListener(
+    SDK.SDKModel.TargetManager.instance().removeModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.CharacterDataModified, this._onNodeChange, this);
-    self.SDK.targetManager.removeModelListener(
+    SDK.SDKModel.TargetManager.instance().removeModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.ChildNodeCountUpdated, this._onNodeChange, this);
   }
 

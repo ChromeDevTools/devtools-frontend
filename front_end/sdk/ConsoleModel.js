@@ -37,7 +37,7 @@ import {LogModel} from './LogModel.js';
 import {RemoteObject} from './RemoteObject.js';
 import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';
 import {Events as RuntimeModelEvents, ExecutionContext, RuntimeModel} from './RuntimeModel.js';  // eslint-disable-line no-unused-vars
-import {Observer, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import {Observer, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 const _events = Symbol('SDK.ConsoleModel.events');
 
@@ -57,7 +57,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
     this._violations = 0;
     this._pageLoadSequenceNumber = 0;
 
-    self.SDK.targetManager.observeTargets(this);
+    TargetManager.instance().observeTargets(this);
   }
 
   /**
@@ -349,10 +349,10 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   requestClearMessages() {
-    for (const logModel of self.SDK.targetManager.models(LogModel)) {
+    for (const logModel of TargetManager.instance().models(LogModel)) {
       logModel.requestClear();
     }
-    for (const runtimeModel of self.SDK.targetManager.models(RuntimeModel)) {
+    for (const runtimeModel of TargetManager.instance().models(RuntimeModel)) {
       runtimeModel.discardConsoleEntries();
     }
     this._clear();

@@ -12,17 +12,17 @@ export class OverviewController extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
 
-    this.currentUrl = self.SDK.targetManager.inspectedURL();
-    self.SDK.targetManager.addEventListener(
+    this.currentUrl = SDK.SDKModel.TargetManager.instance().inspectedURL();
+    SDK.SDKModel.TargetManager.instance().addEventListener(
         SDK.SDKModel.Events.InspectedURLChanged, this._checkUrlAndResetIfChanged, this);
   }
 
   _checkUrlAndResetIfChanged() {
-    if (this.currentUrl === self.SDK.targetManager.inspectedURL()) {
+    if (this.currentUrl === SDK.SDKModel.TargetManager.instance().inspectedURL()) {
       return;
     }
 
-    this.currentUrl = self.SDK.targetManager.inspectedURL();
+    this.currentUrl = SDK.SDKModel.TargetManager.instance().inspectedURL();
     this.dispatchEventToListeners(Events.Reset);
   }
 }

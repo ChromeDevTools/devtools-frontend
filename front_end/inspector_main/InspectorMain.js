@@ -21,7 +21,7 @@ export class InspectorMainImpl extends Common.ObjectWrapper.ObjectWrapper {
     await SDK.Connections.initMainConnection(async () => {
       const type = Root.Runtime.queryParam('v8only') ? SDK.SDKModel.Type.Node : SDK.SDKModel.Type.Frame;
       const waitForDebuggerInPage = type === SDK.SDKModel.Type.Frame && Root.Runtime.queryParam('panel') === 'sources';
-      const target = self.SDK.targetManager.createTarget(
+      const target = SDK.SDKModel.TargetManager.instance().createTarget(
           'main', Common.UIString.UIString('Main'), type, null, undefined, waitForDebuggerInPage);
 
       // Only resume target during the first connection,
@@ -91,7 +91,7 @@ export class FocusDebuggeeActionDelegate {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    self.SDK.targetManager.mainTarget().pageAgent().bringToFront();
+    SDK.SDKModel.TargetManager.instance().mainTarget().pageAgent().bringToFront();
     return true;
   }
 }
@@ -108,7 +108,7 @@ export class NodeIndicator {
         'click', () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openNodeFrontend(), false);
     this._button = new UI.Toolbar.ToolbarItem(element);
     this._button.setTitle(Common.UIString.UIString('Open dedicated DevTools for Node.js'));
-    self.SDK.targetManager.addEventListener(
+    SDK.SDKModel.TargetManager.instance().addEventListener(
         SDK.SDKModel.Events.AvailableTargetsChanged,
         event => this._update(/** @type {!Array<!Protocol.Target.TargetInfo>} */ (event.data)));
     this._button.setVisible(false);
@@ -171,7 +171,7 @@ export class BackendSettingsSync {
     this._emulatePageFocusSetting = self.Common.settings.moduleSetting('emulatePageFocus');
     this._emulatePageFocusSetting.addChangeListener(this._update, this);
 
-    self.SDK.targetManager.observeTargets(this);
+    SDK.SDKModel.TargetManager.instance().observeTargets(this);
   }
 
   /**
@@ -190,7 +190,7 @@ export class BackendSettingsSync {
   }
 
   _update() {
-    for (const target of self.SDK.targetManager.targets()) {
+    for (const target of SDK.SDKModel.TargetManager.instance().targets()) {
       this._updateTarget(target);
     }
   }

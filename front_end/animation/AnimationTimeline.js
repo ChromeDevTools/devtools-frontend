@@ -43,9 +43,9 @@ export class AnimationTimeline extends UI.Widget.VBox {
     this._symbol = Symbol('animationTimeline');
     /** @type {!Map.<string, !AnimationImpl>} */
     this._animationsMap = new Map();
-    self.SDK.targetManager.addModelListener(
+    SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
-    self.SDK.targetManager.observeModels(AnimationModel, this);
+    SDK.SDKModel.TargetManager.instance().observeModels(AnimationModel, this);
     self.UI.context.addFlavorChangeListener(SDK.DOMModel.DOMNode, this._nodeChanged, this);
   }
 
@@ -53,7 +53,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
    * @override
    */
   wasShown() {
-    for (const animationModel of self.SDK.targetManager.models(AnimationModel)) {
+    for (const animationModel of SDK.SDKModel.TargetManager.instance().models(AnimationModel)) {
       this._addEventListeners(animationModel);
     }
   }
@@ -62,7 +62,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
    * @override
    */
   willHide() {
-    for (const animationModel of self.SDK.targetManager.models(AnimationModel)) {
+    for (const animationModel of SDK.SDKModel.TargetManager.instance().models(AnimationModel)) {
       this._removeEventListeners(animationModel);
     }
     this._popoverHelper.hidePopover();
@@ -272,7 +272,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
    */
   _setPlaybackRate(playbackRate) {
     this._playbackRate = playbackRate;
-    for (const animationModel of self.SDK.targetManager.models(AnimationModel)) {
+    for (const animationModel of SDK.SDKModel.TargetManager.instance().models(AnimationModel)) {
       animationModel.setPlaybackRate(this._allPaused ? 0 : this._playbackRate);
     }
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AnimationsPlaybackRateChanged);

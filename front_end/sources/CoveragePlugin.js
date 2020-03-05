@@ -4,6 +4,7 @@
 
 import * as Coverage from '../coverage/coverage.js';
 import * as Formatter from '../formatter/formatter.js';
+import * as SDK from '../sdk/sdk.js';
 import * as SourceFrame from '../source_frame/source_frame.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
@@ -30,7 +31,7 @@ export class CoveragePlugin extends Plugin {
       self.UI.viewManager.showView('coverage');
     });
 
-    const mainTarget = self.SDK.targetManager.mainTarget();
+    const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
     if (mainTarget) {
       this._model = mainTarget.model(Coverage.CoverageModel.CoverageModel);
       this._model.addEventListener(Coverage.CoverageModel.Events.CoverageReset, this._handleReset, this);

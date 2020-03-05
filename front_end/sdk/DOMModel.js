@@ -37,7 +37,7 @@ import {CSSModel} from './CSSModel.js';
 import {OverlayModel} from './OverlayModel.js';
 import {RemoteObject} from './RemoteObject.js';  // eslint-disable-line no-unused-vars
 import {RuntimeModel} from './RuntimeModel.js';
-import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import {Capability, SDKModel, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
@@ -128,7 +128,7 @@ export class DOMNode {
       this._contentDocument.parentNode = this;
       this._children = [];
     } else if ((payload.nodeName === 'IFRAME' || payload.nodeName === 'PORTAL') && payload.frameId) {
-      const childTarget = self.SDK.targetManager.targetById(payload.frameId);
+      const childTarget = TargetManager.instance().targetById(payload.frameId);
       const childModel = childTarget ? childTarget.model(DOMModel) : null;
       if (childModel) {
         this._childDocumentPromiseForTesting = childModel.requestDocument();
@@ -1232,7 +1232,7 @@ export class DOMModel extends SDKModel {
   }
 
   static cancelSearch() {
-    for (const domModel of self.SDK.targetManager.models(DOMModel)) {
+    for (const domModel of TargetManager.instance().models(DOMModel)) {
       domModel._cancelSearch();
     }
   }

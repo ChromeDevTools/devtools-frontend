@@ -36,9 +36,9 @@ export class EventListenerBreakpointsSidebarPane extends UI.Widget.VBox {
       this._createBreakpoint(breakpoint);
     }
 
-    self.SDK.targetManager.addModelListener(
+    SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._update, this);
-    self.SDK.targetManager.addModelListener(
+    SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, this._update, this);
     self.UI.context.addFlavorChangeListener(SDK.SDKModel.Target, this._update, this);
   }

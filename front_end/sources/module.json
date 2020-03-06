@@ -356,6 +356,7 @@
         {
             "type": "action",
             "actionId": "sources.rename",
+            "title": "Rename",
             "bindings": [
                 {
                     "platform": "windows,linux",
@@ -690,6 +691,7 @@
         {
             "type": "action",
             "actionId": "debugger.toggle-breakpoint",
+            "title": "Toggle breakpoint",
             "bindings": [
                 {
                     "platform":"windows,linux",
@@ -704,6 +706,7 @@
         {
             "type": "action",
             "actionId": "debugger.toggle-breakpoint-enabled",
+            "title": "Toggle breakpoint",
             "bindings": [
                 {
                     "platform":"windows,linux",
@@ -718,6 +721,7 @@
         {
             "type": "action",
             "actionId": "debugger.breakpoint-input-window",
+            "title": "Toggle breakpoint input window",
             "bindings": [
                 {
                     "platform":"windows,linux",

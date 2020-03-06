@@ -270,9 +270,6 @@
   <message name="IDS_DEVTOOLS_d9f57fb1f634a4e047fd69b574434c7f" desc="Text in the Shortcuts page to explain a keyboard shortcut (evaluate the selected expression in console)">
     Evaluate selection in console
   </message>
-  <message name="IDS_DEVTOOLS_dd92c3884d43902407a4c2f0d8cc0eb1" desc="Text in the Shortcuts page to explain a keyboard shortcut (toggle breakpoint in debugger)">
-    Toggle breakpoint
-  </message>
   <message name="IDS_DEVTOOLS_e0aa021e21dddbd6d8cecec71e9cf564" desc="Text on a button for message dialog">
     OK
   </message>

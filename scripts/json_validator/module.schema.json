@@ -10,7 +10,36 @@
         "properties": {
           "type": {"type": "string"},
           "order": {"type": "number"},
-          "title": {"type": "string"}
+          "title": {"type": "string"},
+          "options": {
+            "type": "array",
+            "items": {
+              "properties": {
+                "title": {"type": "string"}
+              }
+            }
+          }
+        },
+        "if": {
+          "properties": {"type": {"const": "action"}}
+        },
+        "then": {
+          "anyOf": [
+            {
+              "required": ["title"]
+            },
+            {
+              "required": ["options"],
+              "properties": {
+                "options": {
+                  "minItems": 1,
+                  "items": {
+                    "required": ["title"]
+                  }
+                }
+              }
+            }
+          ]
         }
       }
     },

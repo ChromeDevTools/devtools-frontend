@@ -72,6 +72,9 @@
   <message name="IDS_DEVTOOLS_1fbbb6684f67ee895ff5dc2e429697ce" desc="Screen reader label for a select box that chooses the breakpoint type in the Sources panel when editing a breakpoint">
     Breakpoint type
   </message>
+  <message name="IDS_DEVTOOLS_2118ab60a260a53e4b3a0ea25cce453a" desc="Title of a sources panel action that opens the breakpoint input window">
+    Toggle breakpoint input window
+  </message>
   <message name="IDS_DEVTOOLS_212ddcf3f12042e2ad7f557788e92bf6" desc="Title of a setting under the Sources category in Settings">
     Allow scrolling past end of file
   </message>
@@ -317,6 +320,9 @@
   </message>
   <message name="IDS_DEVTOOLS_88da81657234efcab8a23679d2e97b8e" desc="Text in the GoToLine dialog of the Sources pane that describes the current line number, file line number range, and use of the GoToLine dialog">
     Current line: <ph name="CURRENTLINENUMBER">$1s<ex>1</ex></ph>. Type a line number between 1 and <ph name="LINESCOUNT">$2s<ex>100</ex></ph> to navigate to.
+  </message>
+  <message name="IDS_DEVTOOLS_904a8304056d77e4547744781b7ceb50" desc="Title of a sources panel action that renames a file">
+    Rename
   </message>
   <message name="IDS_DEVTOOLS_906646d2d69e110dcd4cfc74e5790f6f" desc="Text in Debugger Paused Message of the Sources panel">
     Paused on event listener

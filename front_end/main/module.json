@@ -144,6 +144,7 @@
         {
             "type": "action",
             "actionId": "main.zoom-reset",
+            "title": "Reset zoom level",
             "className": "Main.Main.ZoomActionDelegate",
             "bindings": [
                 {

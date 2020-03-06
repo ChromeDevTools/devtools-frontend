@@ -6,6 +6,9 @@
   <message name="IDS_DEVTOOLS_036934cf9842451c835a9981a067d0c3" desc="Title of an action that cancels the current search">
     Cancel search
   </message>
+  <message name="IDS_DEVTOOLS_04ce1b14fa66bcc35e8a9085ec849fac" desc="Title of an action that reset the zoom level to its default">
+    Reset zoom level
+  </message>
   <message name="IDS_DEVTOOLS_08e71f00acd63d0a546ba42f9e780ddc" desc="Title of item in main">
     Customize and control DevTools
   </message>

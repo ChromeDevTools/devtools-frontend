@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-(async function () {
+(async function() {
   await TestRunner.loadModule('axe_core_test_runner');
   const locationsToTest =
     [
@@ -14,13 +14,14 @@
       'sensors',
     ];
 
-  //TODO(crbug.com/1004940): exclude scrollable-region-focusable for performance.monitor only
+  // TODO(crbug.com/1004940): exclude scrollable-region-focusable for performance.monitor only
   const NO_SCROLLABLE_REGION_FOCUSABLE_RULESET = {
     'scrollable-region-focusable': { enabled: false, },
   };
 
-  for (const location of locationsToTest)
+  for (const location of locationsToTest) {
     await loadViewAndTestElementViolations(location);
+  }
 
   TestRunner.completeTest();
 

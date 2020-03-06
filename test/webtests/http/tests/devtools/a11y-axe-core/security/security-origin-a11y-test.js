@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-(async function () {
+(async function() {
   await TestRunner.loadModule('security_test_runner');
   await TestRunner.loadModule('axe_core_test_runner');
   await TestRunner.showPanel('security');
@@ -29,7 +29,7 @@
   SecurityTestRunner.dispatchRequestFinished(request1);
   const securityPanel = runtime.sharedInstance(Security.SecurityPanel);
 
-  securityPanel.showOrigin("https://foo.test");
+  securityPanel.showOrigin('https://foo.test');
   await AxeCoreTestRunner.runValidation(securityPanel.contentElement);
 
   TestRunner.completeTest();

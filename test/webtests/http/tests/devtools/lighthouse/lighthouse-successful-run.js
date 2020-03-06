@@ -5,7 +5,7 @@
 (async function() {
   // screenshots in content shell are flaky and NO_NAVSTART occurs on bots way more frequently than local
   // ignore the results of the trace-dependent audits, just make sure they ran
-  var FLAKY_AUDITS = [
+  const FLAKY_AUDITS = [
     // metrics
     'first-contentful-paint',
     'first-meaningful-paint',
@@ -42,12 +42,12 @@
 
   LighthouseTestRunner.dumpStartAuditState();
 
-  TestRunner.addResult(`\n=============== Lighthouse Status Updates ===============`);
+  TestRunner.addResult('\n=============== Lighthouse Status Updates ===============');
   LighthouseTestRunner.addStatusListener(msg => TestRunner.addResult(msg));
   LighthouseTestRunner.getRunButton().click();
 
-  var {artifacts, lhr} = await LighthouseTestRunner.waitForResults();
-  TestRunner.addResult(`\n=============== Lighthouse Results ===============`);
+  const {artifacts, lhr} = await LighthouseTestRunner.waitForResults();
+  TestRunner.addResult('\n=============== Lighthouse Results ===============');
   TestRunner.addResult(`URL: ${lhr.finalUrl}`);
   TestRunner.addResult(`Version: ${lhr.lighthouseVersion}`);
   TestRunner.addResult(`TestedAsMobileDevice: ${artifacts.TestedAsMobileDevice}`);
@@ -55,7 +55,7 @@
   TestRunner.addResult('\n');
 
   Object.keys(lhr.audits).sort().forEach(auditName => {
-    var audit = lhr.audits[auditName];
+    const audit = lhr.audits[auditName];
 
     if (FLAKY_AUDITS.includes(auditName)) {
       TestRunner.addResult(`${auditName}: flaky`);

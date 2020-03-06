@@ -20,7 +20,7 @@
   LighthouseTestRunner.getRunButton().click();
 
   const {artifacts, lhr} = await LighthouseTestRunner.waitForResults();
-  TestRunner.addResult(`\n=============== Lighthouse Results ===============`);
+  TestRunner.addResult('\n=============== Lighthouse Results ===============');
   TestRunner.addResult(`emulatedFormFactor: ${lhr.configSettings.emulatedFormFactor}`);
   TestRunner.addResult(`disableStorageReset: ${lhr.configSettings.disableStorageReset}`);
   TestRunner.addResult(`throttlingMethod: ${lhr.configSettings.throttlingMethod}`);

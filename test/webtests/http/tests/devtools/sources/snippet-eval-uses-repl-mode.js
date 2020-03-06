@@ -3,20 +3,20 @@
 // found in the LICENSE file.
 
 (async function() {
-    TestRunner.addResult(`Tests that snippet scripts are evaluated in REPL mode\n`);
+  TestRunner.addResult('Tests that snippet scripts are evaluated in REPL mode\n');
 
-    await TestRunner.showPanel('sources');
+  await TestRunner.showPanel('sources');
 
-    TestRunner.addSniffer(TestRunner.RuntimeAgent, "invoke_evaluate", function(args) {
-      TestRunner.addResult("Called RuntimeAgent.invoke_evaluate");
-      TestRunner.addResult("Value of 'replMode': " + args.replMode);
-    });
+  TestRunner.addSniffer(TestRunner.RuntimeAgent, 'invoke_evaluate', function(args) {
+    TestRunner.addResult('Called RuntimeAgent.invoke_evaluate');
+    TestRunner.addResult('Value of \'replMode\': ' + args.replMode);
+  });
 
-    const uiSourceCode = await Snippets.project.createFile('', null, '');
-    await uiSourceCode.rename('Snippet1');
-    uiSourceCode.setWorkingCopy('let a = 1; let a = 2;');
+  const uiSourceCode = await Snippets.project.createFile('', null, '');
+  await uiSourceCode.rename('Snippet1');
+  uiSourceCode.setWorkingCopy('let a = 1; let a = 2;');
 
-    await Snippets.evaluateScriptSnippet(uiSourceCode);
+  await Snippets.evaluateScriptSnippet(uiSourceCode);
 
-    TestRunner.completeTest();
+  TestRunner.completeTest();
 })();

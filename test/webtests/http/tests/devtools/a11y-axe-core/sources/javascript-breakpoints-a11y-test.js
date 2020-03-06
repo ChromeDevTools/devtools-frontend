@@ -12,8 +12,8 @@
   const sourceFrame = await SourcesTestRunner.showScriptSourcePromise('set-breakpoint.html');
 
   TestRunner.addResult('Setting a breakpoint.');
-  await SourcesTestRunner.createNewBreakpoint(sourceFrame, 13, '', true)
-  await SourcesTestRunner.createNewBreakpoint(sourceFrame, 11, '', false)
+  await SourcesTestRunner.createNewBreakpoint(sourceFrame, 13, '', true);
+  await SourcesTestRunner.createNewBreakpoint(sourceFrame, 11, '', false);
   await UI.viewManager.showView('sources.jsBreakpoints');
   const breakpointsPaneElement = runtime.sharedInstance(Sources.JavaScriptBreakpointsSidebarPane).contentElement;
 

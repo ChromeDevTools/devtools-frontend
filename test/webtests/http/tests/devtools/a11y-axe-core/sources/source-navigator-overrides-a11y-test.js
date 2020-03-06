@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-(async function () {
+(async function() {
   TestRunner.addResult('Tests accessibility in the Sources panel Navigator pane Overrides tab using axe-core.');
 
   // axe-core issue #1444 -- role="tree" requires children with role="treeitem",

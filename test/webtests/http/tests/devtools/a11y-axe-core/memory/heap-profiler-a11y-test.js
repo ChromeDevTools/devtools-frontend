@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 (async function() {
-  TestRunner.addResult(`Tests accessibility in heap profiler using the axe-core linter.`);
+  TestRunner.addResult('Tests accessibility in heap profiler using the axe-core linter.');
   await TestRunner.loadModule('axe_core_test_runner');
   await TestRunner.loadModule('heap_profiler_test_runner');
   await TestRunner.showPanel('heap_profiler');

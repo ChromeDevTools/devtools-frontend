@@ -3,13 +3,13 @@
 // found in the LICENSE file.
 
 (async function() {
-  TestRunner.addResult(`Tests that console inputs are evaluated in REPL mode\n`);
+  TestRunner.addResult('Tests that console inputs are evaluated in REPL mode\n');
 
   await TestRunner.loadModule('console_test_runner');
   await TestRunner.showPanel('console');
 
-  TestRunner.addSniffer(TestRunner.RuntimeAgent, "invoke_evaluate", function(args) {
-    TestRunner.addResult("Called RuntimeAgent.invoke_evaluate");
+  TestRunner.addSniffer(TestRunner.RuntimeAgent, 'invoke_evaluate', function(args) {
+    TestRunner.addResult('Called RuntimeAgent.invoke_evaluate');
     TestRunner.addResult("Value of 'replMode': " + args.replMode);
   });
 

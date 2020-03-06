@@ -5,7 +5,7 @@
 (async function() {
   // about:blank never fires a load event so just wait until we see the URL change
   function navigateToAboutBlankAndWait() {
-    var listenerPromise = new Promise(resolve => {
+    const listenerPromise = new Promise(resolve => {
       self.SDK.targetManager.addEventListener(SDK.TargetManager.Events.InspectedURLChanged, resolve);
     });
 
@@ -21,8 +21,8 @@
 
   TestRunner.addResult('\n\n**Prevents audit with no categories**');
   LighthouseTestRunner.openStartAudit();
-  var containerElement = LighthouseTestRunner.getContainerElement();
-  var checkboxes = containerElement.querySelectorAll('.checkbox');
+  const containerElement = LighthouseTestRunner.getContainerElement();
+  const checkboxes = containerElement.querySelectorAll('.checkbox');
   checkboxes.forEach(checkbox => checkbox.checkboxElement.checked && checkbox.checkboxElement.click());
   LighthouseTestRunner.dumpStartAuditState();
 

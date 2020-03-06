@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-(async function () {
+(async function() {
   await TestRunner.loadModule('axe_core_test_runner');
   await TestRunner.showPanel('sources');
 

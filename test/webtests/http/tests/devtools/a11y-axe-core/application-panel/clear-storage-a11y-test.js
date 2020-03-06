@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 (async function() {
-  TestRunner.addResult(`Tests accessibility in the Clear Storage view using the axe-core linter.`);
+  TestRunner.addResult('Tests accessibility in the Clear Storage view using the axe-core linter.');
   await TestRunner.loadModule('application_test_runner');
   await TestRunner.loadModule('axe_core_test_runner');
   await ApplicationTestRunner.resetState();

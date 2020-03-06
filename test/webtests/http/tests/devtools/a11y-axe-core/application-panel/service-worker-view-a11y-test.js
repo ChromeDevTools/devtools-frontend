@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 (async function() {
-  TestRunner.addResult(`Tests accessibility of ServiceWorkersView on application panel.`);
+  TestRunner.addResult('Tests accessibility of ServiceWorkersView on application panel.');
   await TestRunner.loadModule('axe_core_test_runner');
   await TestRunner.loadModule('application_test_runner');
   await ApplicationTestRunner.resetState();

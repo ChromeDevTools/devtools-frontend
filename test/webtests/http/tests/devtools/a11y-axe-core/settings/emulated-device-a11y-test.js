@@ -11,7 +11,7 @@
     const addDeviceButton = devicesWidget._defaultFocusedElement;
     addDeviceButton.click();
 
-    TestRunner.addResult(`Invalidating the device pixel ratio`);
+    TestRunner.addResult('Invalidating the device pixel ratio');
     const editor = devicesWidget._list._editor;
     const title = editor.control('title');
     const width = editor.control('width');

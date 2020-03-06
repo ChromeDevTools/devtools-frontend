@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-(async function () {
+(async function() {
   TestRunner.addResult('Tests that exporting works.\n');
   await TestRunner.navigatePromise('resources/lighthouse-basic.html');
 

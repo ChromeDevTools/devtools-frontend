@@ -116,29 +116,7 @@ def _CheckFormat(input_api, output_api):
     def popen(args):
         return input_api.subprocess.Popen(args=args, stdout=input_api.subprocess.PIPE, stderr=input_api.subprocess.STDOUT)
 
-    affected_files = _getAffectedJSFiles(input_api)
-    if len(affected_files) == 0:
-        return results
-    original_sys_path = sys.path
-    try:
-        sys.path = sys.path + [input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts')]
-        import devtools_paths
-    finally:
-        sys.path = original_sys_path
-
-    ignore_files = []
-    eslint_ignore_path = input_api.os_path.join(input_api.PresubmitLocalPath(), '.eslintignore')
-    with open(eslint_ignore_path, 'r') as ignore_manifest:
-        for line in ignore_manifest:
-            if '*' not in line.strip():
-                ignore_files.append(input_api.os_path.normpath(line.strip()))
-    formattable_files = [
-        affected_file for affected_file in affected_files if all(ignore_file not in affected_file for ignore_file in ignore_files)
-    ]
-    if len(formattable_files) == 0:
-        return results
-
-    format_args = ['git', 'cl', 'format', '--js'] + formattable_files
+    format_args = ['git', 'cl', 'format', '--js']
     format_process = popen(format_args)
     format_out, _ = format_process.communicate()
     if format_process.returncode != 0:

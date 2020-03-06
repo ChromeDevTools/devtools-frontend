@@ -13,17 +13,20 @@
   const checkboxes = containerElement.querySelectorAll('.checkbox');
   for (const checkbox of checkboxes) {
     if (checkbox.textElement.textContent === 'Progressive Web App' ||
-        checkbox.textElement.textContent === 'Clear storage')
+        checkbox.textElement.textContent === 'Clear storage') {
       continue;
+    }
 
-    if (checkbox.checkboxElement.checked) checkbox.checkboxElement.click();
+    if (checkbox.checkboxElement.checked) {
+      checkbox.checkboxElement.click();
+    }
   }
 
   LighthouseTestRunner.dumpStartAuditState();
   LighthouseTestRunner.getRunButton().click();
 
   const {lhr} = await LighthouseTestRunner.waitForResults();
-  TestRunner.addResult(`\n=============== Audits run ===============`);
+  TestRunner.addResult('\n=============== Audits run ===============');
   TestRunner.addResult(Object.keys(lhr.audits).sort().join('\n'));
 
   TestRunner.completeTest();

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 (async function() {
-  TestRunner.addResult(`Test accessibility in Quick Open dialog\n`);
+  TestRunner.addResult('Test accessibility in Quick Open dialog\n');
   await self.runtime.loadModulePromise('quick_open');
   await TestRunner.loadModule('axe_core_test_runner');
 

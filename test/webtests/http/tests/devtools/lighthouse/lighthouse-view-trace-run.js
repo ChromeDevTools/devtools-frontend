@@ -12,18 +12,20 @@
   const containerElement = LighthouseTestRunner.getContainerElement();
   const checkboxes = containerElement.querySelectorAll('.checkbox');
   for (const checkbox of checkboxes) {
-    if (checkbox.textElement.textContent === 'Performance' ||
-        checkbox.textElement.textContent === 'Clear storage')
+    if (checkbox.textElement.textContent === 'Performance' || checkbox.textElement.textContent === 'Clear storage') {
       continue;
+    }
 
-    if (checkbox.checkboxElement.checked) checkbox.checkboxElement.click();
+    if (checkbox.checkboxElement.checked) {
+      checkbox.checkboxElement.click();
+    }
   }
 
   LighthouseTestRunner.dumpStartAuditState();
   LighthouseTestRunner.getRunButton().click();
 
   const {lhr} = await LighthouseTestRunner.waitForResults();
-  TestRunner.addResult(`\n=============== Audits run ===============`);
+  TestRunner.addResult('\n=============== Audits run ===============');
   TestRunner.addResult(Object.keys(lhr.audits).sort().join('\n'));
 
   const waitForShowView = new Promise(resolve => {

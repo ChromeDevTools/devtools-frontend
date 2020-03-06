@@ -307,7 +307,7 @@ def _getAffectedFiles(input_api, parent_directories, excluded_actions, accepted_
     return affected_files
 
 
-def _checkWithNodeScript(input_api, output_api, script_path, script_arguments=None):  # pylint: disable=invalid-name
+def _checkWithNodeScript(input_api, output_api, script_path, script_arguments=[]):  # pylint: disable=invalid-name
     original_sys_path = sys.path
     try:
         sys.path = sys.path + [input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts')]
@@ -315,15 +315,4 @@ def _checkWithNodeScript(input_api, output_api, script_path, script_arguments=No
     finally:
         sys.path = original_sys_path
 
-    node_path = devtools_paths.node_path()
-
-    if script_arguments is None:
-        script_arguments = []
-
-    process = input_api.subprocess.Popen(
-        [node_path, script_path] + script_arguments, stdout=input_api.subprocess.PIPE, stderr=input_api.subprocess.STDOUT)
-    out, _ = process.communicate()
-
-    if process.returncode != 0:
-        return [output_api.PresubmitError(out)]
-    return [output_api.PresubmitNotifyResult(out)]
+    return _ExecuteSubProcess(input_api, output_api, [devtools_paths.node_path(), script_path], script_arguments, [])

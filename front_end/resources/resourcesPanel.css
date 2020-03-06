@@ -139,4 +139,5 @@
 
 .resources-sidebar {
     padding: 0;
+    overflow-x: auto;
 }

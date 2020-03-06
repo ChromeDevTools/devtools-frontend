@@ -221,7 +221,15 @@ def _CheckNoUncheckedFiles(input_api, output_api):
                                          stderr=input_api.subprocess.STDOUT)
     out, _ = process.communicate()
     if process.returncode != 0:
-        return [output_api.PresubmitError('You have changed files that need to be committed.')]
+        files_changed_process = input_api.subprocess.Popen(['git', 'diff', '--name-only'],
+                                                           stdout=input_api.subprocess.PIPE,
+                                                           stderr=input_api.subprocess.STDOUT)
+        files_changed, _ = files_changed_process.communicate()
+
+        return [
+            output_api.PresubmitError('You have changed files that need to be committed:'),
+            output_api.PresubmitError(files_changed)
+        ]
     return []
 
 def _CheckForTooLargeFiles(input_api, output_api):

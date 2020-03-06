@@ -8,6 +8,7 @@ import subprocess
 import json
 import os
 import shutil
+import collections
 
 from os import path
 _CURRENT_DIR = path.join(path.dirname(__file__))
@@ -53,6 +54,7 @@ def main():
             return 1
     tsconfig_output_location = path.join(os.getcwd(), opts.tsconfig_output_location)
     tsconfig_output_directory = path.dirname(tsconfig_output_location)
+    tsbuildinfo_name = path.basename(tsconfig_output_location) + '.tsbuildinfo'
 
     def get_relative_path_from_output_directory(file_to_resolve):
         return path.relpath(path.join(os.getcwd(), file_to_resolve), tsconfig_output_directory)
@@ -67,7 +69,7 @@ def main():
     tsconfig['compilerOptions']['rootDir'] = get_relative_path_from_output_directory(opts.front_end_directory)
     tsconfig['compilerOptions']['typeRoots'] = [get_relative_path_from_output_directory(TYPES_NODE_MODULES_DIRECTORY)]
     tsconfig['compilerOptions']['outDir'] = '.'
-    tsconfig['compilerOptions']['tsBuildInfoFile'] = path.basename(tsconfig_output_location) + '.tsbuildinfo'
+    tsconfig['compilerOptions']['tsBuildInfoFile'] = tsbuildinfo_name
     with open(tsconfig_output_location, 'w') as generated_tsconfig:
         try:
             json.dump(tsconfig, generated_tsconfig)
@@ -84,6 +86,11 @@ def main():
         print('')
         return 1
 
+    # The .tsbuildinfo is non-deterministic (https://github.com/microsoft/TypeScript/issues/37156)
+    # To make sure the output remains the same for consecutive invocations, we have to manually
+    # re-order the "json"-like output.
+    fix_non_determinism_in_ts_buildinfo(path.join(tsconfig_output_directory, tsbuildinfo_name))
+
     # We are currently still loading devtools from out/<NAME>/resources/inspector
     # but we generate our sources in out/<NAME>/gen/ (which is the proper location).
     # For now, copy paste the build output back into resources/inspector to keep
@@ -91,6 +98,29 @@ def main():
     copy_all_typescript_sources(sources, path.dirname(tsconfig_output_location))
 
     return 0
+
+
+def order_arrays_and_dicts_recursively(obj):
+    ordered_obj = collections.OrderedDict()
+    for key in sorted(obj):
+        value = obj[key]
+        if isinstance(value, dict):
+            ordered_obj[key] = order_arrays_and_dicts_recursively(value)
+        else:
+            if isinstance(value, list):
+                value.sort()
+            ordered_obj[key] = value
+    return ordered_obj
+
+
+def fix_non_determinism_in_ts_buildinfo(tsbuildinfo_location):
+    with open(tsbuildinfo_location, 'rt') as input:
+        tsbuildinfo_content = input.read()
+
+    tsbuildinfo_ordered = order_arrays_and_dicts_recursively(json.loads(tsbuildinfo_content))
+
+    with open(tsbuildinfo_location, 'wt') as output:
+        output.write(json.dumps(tsbuildinfo_ordered, indent=2))
 
 
 def copy_all_typescript_sources(sources, output_directory):

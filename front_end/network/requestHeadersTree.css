@@ -134,8 +134,13 @@
     font-weight: bold;
 }
 
-.tree-outline .call-to-action .explanation.warning {
-    color: var(--error-background-color);
+.tree-outline .call-to-action code {
+    font-size: 90%;
+}
+
+
+.tree-outline .call-to-action .example .comment::before {
+   content: " — ";
 }
 
 .tree-outline .empty-request-header {

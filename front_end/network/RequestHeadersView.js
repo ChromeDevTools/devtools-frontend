@@ -124,7 +124,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!{name:string,value:(string|undefined),headerNotSet:(boolean|undefined),headerValueIncorrect:(boolean|undefined),details:(string|undefined)}} header
+   * @param {!{name:string,value:(string|undefined),headerNotSet:(boolean|undefined),headerValueIncorrect:(boolean|undefined),details:(!{explanation:string,examples:!Array<!{codeSnippet:string,comment:(string|undefined)}>}|undefined)}} header
    * @return {!DocumentFragment}
    */
   _formatHeaderObject(header) {
@@ -143,7 +143,17 @@ export class RequestHeadersView extends UI.Widget.VBox {
       }
     }
     if (header.details) {
-      fragment.createChild('div', 'header-details').innerHTML = header.details;
+      const detailsNode = fragment.createChild('div', 'header-details');
+      const callToAction = detailsNode.createChild('div', 'call-to-action');
+      const callToActionBody = callToAction.createChild('div', 'call-to-action-body');
+      callToActionBody.createChild('div', 'explanation').textContent = header.details.explanation;
+      for (const example of header.details.examples) {
+        const exampleNode = callToActionBody.createChild('div', 'example');
+        exampleNode.createChild('code').textContent = example.codeSnippet;
+        if (example.comment) {
+          exampleNode.createChild('span', 'comment').textContent = example.comment;
+        }
+      }
     }
     return fragment;
   }
@@ -892,27 +902,27 @@ const BlockedReasonDetails = new Map([
     Protocol.Network.BlockedReason.CoepFrameResourceNeedsCoepHeader, {
       name: 'cross-origin-embedder-policy',
       value: null,
-      details: `<div class='call-to-action'><div class='call-to-action-body'>
-                <div class='explanation'>To embedd this frame in your document,
-                the response needs to enable the Cross Origin Embedder Policy by specifying the following response header:
-                <div class='source-code'>Cross-Origin-Embedder-Policy: require-corp</div>
-                </div>
-            </div>`
+      details: {
+          explanation:
+              ls
+          `To embed this frame in your document, the response needs to enable the cross-origin embedder policy by specifying the following response header:`,
+          examples: [{codeSnippet:'Cross-Origin-Embedder-Policy: require-corp'}]
+      }
     }
   ],
   [
     Protocol.Network.BlockedReason.CorpNotSameOriginAfterDefaultedToSameOriginByCoep, {
       name: 'cross-origin-resource-policy',
       value: null,
-      details: `<div class='call-to-action'><div class='call-to-action-body'>
-                <div class='explanation'>To use this resource from a different origin,
-                  the server needs to specify a <code>Cross-Origin-Resource-Policy<code> response header, e.g.:</div>
-                  <div><code>Cross-Origin-Resource-Policy: same-site</code> &mdash;
-                  Choose this option if the resource and the document are served from the same site.</div>
-              <div><code>Cross-Origin-Resource-Policy: cross-origin</code> &mdash;
-                  <span class='explanation warning'>Only do this if an arbitrary website including this resource does not impose a security risk.</span></div>
-                </div>
-            </div>`
+      details: {
+        explanation:
+            ls
+            `To use this resource from a different origin, the server needs to specify a cross-origin resource policy in the response headers:`,
+        examples: [
+          {codeSnippet:'Cross-Origin-Resource-Policy: same-site', comment: ls`Choose this option if the resource and the document are served from the same site.` },
+          {codeSnippet:'Cross-Origin-Resource-Policy: cross-origin', comment: ls`Only choose this option if an arbitrary website including this resource does not impose a security risk.` },
+        ]
+      }
     }
   ],
   [
@@ -920,10 +930,12 @@ const BlockedReasonDetails = new Map([
       name: 'cross-origin-opener-policy',
       value: null,
       headerValueIncorrect: false,
-      details: `<div class='call-to-action'><div class='call-to-action-body'>
-             <div class='explanation'>This document was blocked from loading in an <code>iframe</code> with a <code>sandbox</code> attribute because it specified a <code>Cross-Origin-Opener-Policy</code>.</div>
-           </div>
-         </div>`
+      details: {
+        explanation:
+        ls
+        `This document was blocked from loading in an iframe with a sandbox attribute because this document specified a cross-origin opener policy.`,
+        examples: []
+      }
     }
   ],
   [
@@ -931,13 +943,14 @@ const BlockedReasonDetails = new Map([
       name: 'cross-origin-resource-policy',
       value: null,
       headerValueIncorrect: true,
-      details: `<div class='call-to-action'><div class='call-to-action-body'>
-             <div class='explanation'>To use this resource from a different site,
-               the server may relax the <code>Cross-Origin-Resource-Policy</code> response header:</div>
-               <div><code>Cross-Origin-Resource-Policy: cross-origin</code> &mdash;
-                 <span class='explanation warning'>Only do this if an arbitrary website including this resource does not impose a security risk.</span></div>
-             </div>
-          </div>`
+      details: {
+        explanation:
+            ls
+            `To use this resource from a different site, the server may relax the cross-origin resource policy response header:`,
+        examples: [
+          {codeSnippet:'Cross-Origin-Resource-Policy: cross-origin', comment: ls`Only choose this option if an arbitrary website including this resource does not impose a security risk.` },
+        ]
+      }
     }
   ],
   [
@@ -945,15 +958,15 @@ const BlockedReasonDetails = new Map([
       name: 'cross-origin-resource-policy',
       value: null,
       headerValueIncorrect: true,
-      details: `<div class='call-to-action'><div class='call-to-action-body'>
-             <div class='explanation'>To use this resource from a different origin,
-             the server may relax the <code>Cross-Origin-Resource-Policy</code> response header:</div>
-             <div><code>Cross-Origin-Resource-Policy: same-site</code> &mdash;
-                 Choose this option if the resource and the document are served from the same site.</div>
-             <div><code>Cross-Origin-Resource-Policy: cross-origin</code> &mdash;
-                 <span class='explanation warning'>Only do this if an arbitrary website including this resource does not impose a security risk.</span></div>
-           </div>
-         </div>`
+      details: {
+        explanation:
+            ls
+            `To use this resource from a different origin, the server may relax the cross-origin resource policy response header:`,
+            examples: [
+              {codeSnippet:'Cross-Origin-Resource-Policy: same-site', comment: ls`Choose this option if the resource and the document are served from the same site.` },
+              {codeSnippet:'Cross-Origin-Resource-Policy: cross-origin', comment: ls`Only choose this option if an arbitrary website including this resource does not impose a security risk.` },
+            ]
+      }
     }
   ],
 ]);

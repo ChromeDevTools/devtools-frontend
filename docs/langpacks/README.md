@@ -1,4 +1,4 @@
-Localization FAQs
+# Localization FAQs
 
 - [How to add a localizable string?](adding_strings.md)
 - [What are the localization APIs?](localization_apis.md)

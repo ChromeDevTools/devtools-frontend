@@ -6,10 +6,10 @@ When you introduce a new UI string or modify an existing one that will be displa
   - [Frontend GRDP file](#frontend-grdp-file)
 - [Modifying a string](#modifying-a-string)
 - [Removing a string](#removing-a-string)
-- [Adding a GRD file](#adding-a-grd-file)
+- [Adding a new GRD file](#adding-a-new-grd-file)
 
 ## Adding a string
-Before proceeding, make sure you know the different [[localization APIs|]] and know which one you should use.
+Before proceeding, make sure you know the different [localization APIs](localization_apis.md) and know which one you should use.
 
 ### Frontend source code
 
@@ -33,30 +33,48 @@ Before proceeding, make sure you know the different [[localization APIs|]] and k
 3. Make sure your string is localizable:
 
    1. Do not assume word order by using concatenation. Use the whole string.
-      - ❌ `` ls`Add`  + ls`breakpoint` `` --> ✅ `` ls`Add breakpoint` ``
-   2. Variable substitution over concatenation. This is so that the translators can adjust variable order based on what works in another language. For example:
+
+      ❌
       ```javascript
-      // ❌
+      ls`Add`  + ls`breakpoint`
+      ```
+
+      ✔️
+      ```javascript
+      ls`Add breakpoint`
+      ```
+   2. Variable substitution over concatenation. This is so that the translators can adjust variable order based on what works in another language. For example:
+
+      ❌
+      ```javascript
       ls`Check ` + title + ls` for more information.`
-      // ✅
+      ```
+
+      ✔️
+      ```javascript
       ls`Check ${title} for more information.`
       ```
    3. Only inject variables when necessary, i.e., do not extract common substrings from similar messages.
       - Example: <https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_content_best_practices#Idiom>
    4. Prefer simple strings whenever possible. Try to move conditionals out of the string. For example:
 
+      ❌
       ```javascript
-      // ❌
       ls`Reveal${destination ? ls` in ${destination}` : ``}`
-      // ✅
+      ```
+      ✔️
+      ```javascript
       destination ? ls`Reveal in ${destination}` : ls`Reveal`
       ```
    5. When your string contains plurals, make sure you pluralize by pulling conditionals outside of the string. This is because in other languages, plurals can be different from English ones. For example:
 
+      ❌
       ```javascript
-      // ❌
       ls`${count} insertion${count !== 1 ? `s` : ``}`
-      // ✅
+      ```
+
+      ✔️
+      ```javascript
       if (count === 0)
         ls`No insertion`
       else if (count === 1)
@@ -65,12 +83,16 @@ Before proceeding, make sure you know the different [[localization APIs|]] and k
         ls`${count} insertions`
       ```
    6. In general, a complete sentence is preferred. This usually increases the localizability of a string, as the translators have the context of the string. For example:
+
+      ❌
       ```javascript
-      // ❌
       let description = ls`first part`
       if (condition)
         description += ls` second part`
-      // ✅
+      ```
+
+      ✔️
+      ```javascript
       let description
       if (condition)
         description = ls`first part second part`
@@ -79,29 +101,35 @@ Before proceeding, make sure you know the different [[localization APIs|]] and k
       ```
    7. If your string contains leading or trailing white space, it's usually an indication that it's half of a sentence. This decreases localizability as it's essentially concatenating. Modify it so that it doesn't contain leading or trailing white space anymore if you can.
    8. Do not use nested template literals. This is due to a limitation of the release minifier. For more info see https://crbug.com/973285.
+
+      ❌
       ```javascript
-      // ❌
       UI.Fragment.build`<a>${ls`Learn more`}</a>`
-      // ✅
+      ```
+
+      ✔️
+      ```javascript
       const link = ls`Learn more`
       UI.Fragment.build`<a>${link}</a>`
       ```
    9. What kinds of terms should be localized?
-      ```
-      // ❌
-      Numbers: 1, 1.23, 1.2e3, etc.
-      Application data: error codes, enums, database names, rgba, urls, etc.
-      // ✅
-      Words and sentences
-      Punctuation
-      Units of measurement: kb/s, mph, etc.
-      ```
+
+      ❌
+
+      - Numbers: 1, 1.23, 1.2e3, etc.
+      - Application data: error codes, enums, database names, rgba, urls, etc.
+
+      ✔️
+
+      - Words and sentences
+      - Punctuation
+      - Units of measurement: kb/s, mph, etc.
 
 ### Frontend GRDP file
 1. Run any of the following commands to have new strings automatically added to the corresponding grdp file:
   - `git cl presubmit --upload`, or
   - `node scripts/check_localizable_resources.js --autofix` under the devtools folder
-2. Manually add information to the new grdp message. See [[Adding Descriptive Information to GRDP Messages|]].
+2. Manually add information to the new grdp message. See [Adding Descriptive Information to GRDP Messages](grdp_files.md)
 
 ## Modifying a string
 Follow the above steps.

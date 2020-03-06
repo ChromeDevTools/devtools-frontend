@@ -54,7 +54,7 @@ module.exports = function(config) {
 
     browsers,
 
-    frameworks: ['mocha', 'chai', 'sinon', 'karma-typescript'],
+    frameworks: ['mocha', 'chai', 'karma-typescript'],
 
     karmaTypescriptConfig: {
       tsconfig: './tsconfig.json',
@@ -75,7 +75,6 @@ module.exports = function(config) {
       require('karma-chrome-launcher'),
       require('karma-mocha'),
       require('karma-chai'),
-      require('karma-sinon'),
       require('karma-typescript'),
       ...coverageKarmaPlugins,
     ],

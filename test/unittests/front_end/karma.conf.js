@@ -26,13 +26,12 @@ module.exports = function(config) {
 
     browsers,
 
-    frameworks: ['mocha', 'chai', 'sinon'],
+    frameworks: ['mocha', 'chai'],
 
     plugins: [
       require('karma-chrome-launcher'),
       require('karma-mocha'),
       require('karma-chai'),
-      require('karma-sinon'),
     ],
 
     singleRun: !DEBUG_ENABLED

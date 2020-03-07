@@ -17,7 +17,12 @@ export class WorkerMainImpl extends Common.ObjectWrapper.ObjectWrapper {
   run() {
     SDK.Connections.initMainConnection(() => {
       self.SDK.targetManager.createTarget('main', ls`Main`, SDK.SDKModel.Type.ServiceWorker, null);
-    }, Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost);
+    }, () => {
+      console.log("WorkerMain: Connection lost callback");
+      Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost();
+    }, ()  => {
+      console.log("WorkerMain: On Open callback");
+    });
     new MobileThrottling.NetworkPanelIndicator.NetworkPanelIndicator();
   }
 }

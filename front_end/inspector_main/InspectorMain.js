@@ -41,7 +41,12 @@ export class InspectorMainImpl extends Common.ObjectWrapper.ObjectWrapper {
       }
 
       target.runtimeAgent().runIfWaitingForDebugger();
-    }, Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost);
+    }, () => {
+      console.log("InspectorMain: Connection lost callback!");
+      //Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost();
+    }, () => {
+      console.log("InspectorMain: Open open callback!");
+    });
 
     new SourcesPanelIndicator();
     new BackendSettingsSync();

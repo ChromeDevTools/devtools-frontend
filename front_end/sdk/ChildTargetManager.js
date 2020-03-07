@@ -38,7 +38,7 @@ export class ChildTargetManager extends SDKModel {
     this._parentTargetId = null;
 
     parentTarget.registerTargetDispatcher(this);
-    this._targetAgent.invoke_setAutoAttach({autoAttach: true, waitForDebuggerOnStart: true, flatten: true});
+    //this._targetAgent.invoke_setAutoAttach({autoAttach: true, waitForDebuggerOnStart: true, flatten: true});
 
     if (!parentTarget.parentTarget() && !Host.InspectorFrontendHost.isUnderTest()) {
       this._targetAgent.setDiscoverTargets(true);

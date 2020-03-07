@@ -100,6 +100,7 @@ export class WebSocketConnection {
   /**
    * @param {string} url
    * @param {function()} onWebSocketDisconnect
+   * @param {function()} onWebSocketOpen
    */
   constructor(url, onWebSocketDisconnect, onWebSocketOpen /* POWWOW */) {
     this._socket = new WebSocket(url);
@@ -154,6 +155,9 @@ export class WebSocketConnection {
     this._close();
   }
 
+  /**
+   * @param {function()} callback
+   */
   _onOpen(callback /* POWWOW */) {
     this._socket.onerror = console.error;
     this._connected = true;
@@ -337,6 +341,7 @@ export class ParallelConnection {
 /**
  * @param {function():!Promise<undefined>} createMainTarget
  * @param {function()} websocketConnectionLost
+ * @param {function()} websocketConnectionOpen
  * @return {!Promise}
  */
 export async function initMainConnection(createMainTarget, websocketConnectionLost, websocketConnectionOpen /*POWWOW*/) {
@@ -353,6 +358,7 @@ export async function initMainConnection(createMainTarget, websocketConnectionLo
 
 /**
  * @param {function()} websocketConnectionLost
+ * @param {function()} websocketConnectionOpen
  * @return {!ProtocolModule.InspectorBackend.Connection}
  */
 export function _createMainConnection(websocketConnectionLost, websocketConnectionOpen /*POWWOW*/) {

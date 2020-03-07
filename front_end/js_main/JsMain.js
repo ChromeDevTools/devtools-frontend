@@ -19,6 +19,11 @@ export class JsMainImpl extends Common.ObjectWrapper.ObjectWrapper {
     SDK.Connections.initMainConnection(() => {
       const target = self.SDK.targetManager.createTarget('main', ls`Main`, SDK.SDKModel.Type.Node, null);
       target.runtimeAgent().runIfWaitingForDebugger();
-    }, Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost);
+    }, () => {
+      console.log("JSMain: Connection lost callback");
+      Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost();
+    }, () => {
+      console.log("JSMain: On Open callback;")
+    });
   }
 }

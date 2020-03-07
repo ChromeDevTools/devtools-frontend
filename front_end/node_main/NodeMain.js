@@ -21,7 +21,12 @@ export class NodeMainImpl extends Common.ObjectWrapper.ObjectWrapper {
       const target = self.SDK.targetManager.createTarget(
           'main', Common.UIString.UIString('Main'), SDK.SDKModel.Type.Browser, null);
       target.setInspectedURL('Node.js');
-    }, Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost);
+    }, () => {
+      console.log("NodeMain: Connection lost callback");
+      Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost();
+    }, () => {
+      console.log("NodeMain: Connection Open callback");
+    });
   }
 }
 

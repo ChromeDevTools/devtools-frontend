@@ -202,7 +202,7 @@ export class MainImpl {
     UI.UIUtils.initializeUIUtils(document, themeSetting);
     themeSetting.addChangeListener(Components.Reload.reload.bind(Components));
 
-    UI.UIUtils.installComponentRootStyles(/** @type {!Element} */ (document.body));
+    UI.UIUtils.installComponentRootStyles(/** @type {!Element} */ (document.getElementById('domInspector')));
 
     this._addMainEventListeners(document);
 

@@ -1239,7 +1239,9 @@ function _trackKeyboardFocus() {
  * @param {!Common.Settings.Setting} themeSetting
  */
 export function initializeUIUtils(document, themeSetting) {
-  document.body.classList.toggle('inactive', !document.hasFocus());
+  let document_body = document.getElementById('domInspector');
+
+  document_body.classList.toggle('inactive', !document.hasFocus());
   document.defaultView.addEventListener('focus', _windowFocused.bind(UI, document), false);
   document.defaultView.addEventListener('blur', _windowBlurred.bind(UI, document), false);
   document.addEventListener('focus', focusChanged.bind(UI), true);
@@ -1255,9 +1257,9 @@ export function initializeUIUtils(document, themeSetting) {
   }
   self.UI.themeSupport.applyTheme(document);
 
-  const body = /** @type {!Element} */ (document.body);
+  const body = /** @type {!Element} */ (document_body);
   appendStyle(body, 'ui/inspectorStyle.css');
-  GlassPane.setContainer(/** @type {!Element} */ (document.body));
+  GlassPane.setContainer(/** @type {!Element} */ (document_body));
 }
 
 /**

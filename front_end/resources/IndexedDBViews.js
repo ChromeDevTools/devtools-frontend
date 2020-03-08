@@ -471,7 +471,6 @@ export class IDBDataView extends UI.View.SimpleView {
 
   _updateToolbarEnablement() {
     const empty = !this._dataGrid || this._dataGrid.rootNode().children.length === 0;
-    this._clearButton.setEnabled(!empty);
     this._deleteSelectedButton.setEnabled(!empty && this._dataGrid.selectedNode !== null);
   }
 }

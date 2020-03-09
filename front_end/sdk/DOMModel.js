@@ -31,6 +31,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as Platform from '../platform/platform.js';
 import * as ProtocolModule from '../protocol/protocol.js';
 
 import {CSSModel} from './CSSModel.js';
@@ -2001,7 +2002,7 @@ export class DOMModelUndoStack {
         ++shift;
       }
     }
-    this._stack.remove(model);
+    Platform.ArrayUtilities.removeElement(this._stack, model);
     this._index -= shift;
     if (this._lastModelWithMinorChange === model) {
       this._lastModelWithMinorChange = null;

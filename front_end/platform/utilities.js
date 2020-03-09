@@ -40,15 +40,6 @@ import * as StringUtilities from './string-utilities.js';
 String.sprintf = StringUtilities.sprintf;
 
 /**
- * @param {number} m
- * @param {number} n
- * @return {number}
- */
-self.mod = function(m, n) {
-  return ((m % n) + n) % n;
-};
-
-/**
  * @param {string} chars
  * @return {string}
  */

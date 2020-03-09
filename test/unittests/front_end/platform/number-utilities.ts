@@ -20,4 +20,11 @@ describe('NumberUtilities', () => {
       assert.equal(7, NumberUtilities.clamp(7, 5, 10));
     });
   });
+
+  describe('mod', () => {
+    it('returns the remainder', () => {
+      const result = NumberUtilities.mod(12, 5);
+      assert.equal(result, 2);
+    });
+  });
 });

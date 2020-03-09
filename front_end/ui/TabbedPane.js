@@ -29,6 +29,7 @@
  */
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {ContextMenu} from './ContextMenu.js';
@@ -377,13 +378,13 @@ export class TabbedPane extends VBox {
 
   selectNextTab() {
     const index = this._tabs.indexOf(this._currentTab);
-    const nextIndex = mod(index + 1, this._tabs.length);
+    const nextIndex = Platform.NumberUtilities.mod(index + 1, this._tabs.length);
     this.selectTab(this._tabs[nextIndex].id, true);
   }
 
   selectPrevTab() {
     const index = this._tabs.indexOf(this._currentTab);
-    const nextIndex = mod(index - 1, this._tabs.length);
+    const nextIndex = Platform.NumberUtilities.mod(index - 1, this._tabs.length);
     this.selectTab(this._tabs[nextIndex].id, true);
   }
 

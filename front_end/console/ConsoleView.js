@@ -1185,7 +1185,7 @@ export class ConsoleView extends UI.Widget.VBox {
           .classList.remove(UI.UIUtils.highlightedCurrentSearchResultClassName);
     }
 
-    index = mod(index, this._regexMatchRanges.length);
+    index = Platform.NumberUtilities.mod(index, this._regexMatchRanges.length);
     this._currentMatchRangeIndex = index;
     this._searchableView.updateCurrentMatchIndex(index);
     matchRange = this._regexMatchRanges[index];

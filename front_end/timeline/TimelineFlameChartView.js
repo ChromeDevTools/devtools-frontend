@@ -4,6 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';
 import * as UI from '../ui/ui.js';
@@ -349,7 +350,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
     const index = typeof this._selectedSearchResult !== 'undefined' ?
         this._searchResults.indexOf(this._selectedSearchResult) :
         -1;
-    this._selectSearchResult(mod(index + 1, this._searchResults.length));
+    this._selectSearchResult(Platform.NumberUtilities.mod(index + 1, this._searchResults.length));
   }
 
   /**
@@ -361,7 +362,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
     }
     const index =
         typeof this._selectedSearchResult !== 'undefined' ? this._searchResults.indexOf(this._selectedSearchResult) : 0;
-    this._selectSearchResult(mod(index - 1, this._searchResults.length));
+    this._selectSearchResult(Platform.NumberUtilities.mod(index - 1, this._searchResults.length));
   }
 
   /**

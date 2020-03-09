@@ -4,6 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as Persistence from '../persistence/persistence.js';
+import * as Platform from '../platform/platform.js';
 import * as QuickOpen from '../quick_open/quick_open.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as UI from '../ui/ui.js';
@@ -728,7 +729,7 @@ export class SwitchFileActionDelegate {
       }
     }
     candidates.sort(String.naturalOrderComparator);
-    const index = mod(candidates.indexOf(name) + 1, candidates.length);
+    const index = Platform.NumberUtilities.mod(candidates.indexOf(name) + 1, candidates.length);
     const fullURL = (url ? url + '/' : '') + candidates[index];
     const nextUISourceCode = currentUISourceCode.project().uiSourceCodeForURL(fullURL);
     return nextUISourceCode !== currentUISourceCode ? nextUISourceCode : null;

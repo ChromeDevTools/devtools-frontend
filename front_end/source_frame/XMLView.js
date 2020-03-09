@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
@@ -150,7 +151,7 @@ export class XMLView extends UI.Widget.Widget {
       this._updateSearchIndex(0);
       return;
     }
-    newIndex = mod(newIndex, this._currentSearchTreeElements.length);
+    newIndex = Platform.NumberUtilities.mod(newIndex, this._currentSearchTreeElements.length);
 
     this._jumpToMatch(newIndex, shouldJump);
   }
@@ -194,7 +195,8 @@ export class XMLView extends UI.Widget.Widget {
       return;
     }
 
-    const newIndex = mod(this._currentSearchFocusIndex + 1, this._currentSearchTreeElements.length);
+    const newIndex =
+        Platform.NumberUtilities.mod(this._currentSearchFocusIndex + 1, this._currentSearchTreeElements.length);
     this._jumpToMatch(newIndex, true);
   }
 
@@ -206,7 +208,8 @@ export class XMLView extends UI.Widget.Widget {
       return;
     }
 
-    const newIndex = mod(this._currentSearchFocusIndex - 1, this._currentSearchTreeElements.length);
+    const newIndex =
+        Platform.NumberUtilities.mod(this._currentSearchFocusIndex - 1, this._currentSearchTreeElements.length);
     this._jumpToMatch(newIndex, true);
   }
 

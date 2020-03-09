@@ -31,6 +31,7 @@
 import * as Common from '../common/common.js';
 import * as Formatter from '../formatter/formatter.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -291,7 +292,7 @@ export class JSONView extends UI.Widget.VBox {
       this._updateSearchIndex(0);
       return;
     }
-    newIndex = mod(newIndex, this._currentSearchTreeElements.length);
+    newIndex = Platform.NumberUtilities.mod(newIndex, this._currentSearchTreeElements.length);
 
     this._jumpToMatch(newIndex);
   }
@@ -303,7 +304,8 @@ export class JSONView extends UI.Widget.VBox {
     if (!this._currentSearchTreeElements.length) {
       return;
     }
-    const newIndex = mod(this._currentSearchFocusIndex + 1, this._currentSearchTreeElements.length);
+    const newIndex =
+        Platform.NumberUtilities.mod(this._currentSearchFocusIndex + 1, this._currentSearchTreeElements.length);
     this._jumpToMatch(newIndex);
   }
 
@@ -314,7 +316,8 @@ export class JSONView extends UI.Widget.VBox {
     if (!this._currentSearchTreeElements.length) {
       return;
     }
-    const newIndex = mod(this._currentSearchFocusIndex - 1, this._currentSearchTreeElements.length);
+    const newIndex =
+        Platform.NumberUtilities.mod(this._currentSearchFocusIndex - 1, this._currentSearchTreeElements.length);
     this._jumpToMatch(newIndex);
   }
 

@@ -17,3 +17,12 @@ export const clamp = (num, min, max) => {
   }
   return clampedNumber;
 };
+
+/**
+ * @param {number} m
+ * @param {number} n
+ * @return {number}
+ */
+export const mod = (m, n) => {
+  return ((m % n) + n) % n;
+};

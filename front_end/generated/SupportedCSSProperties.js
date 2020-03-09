@@ -884,51 +884,209 @@ export const generatedProperties = [
   {'name': 'zoom'}
 ];
 export const generatedPropertyValues = {
+  '-webkit-app-region': {'values': ['none', 'drag', 'no-drag']},
+  '-webkit-box-align': {'values': ['stretch', 'start', 'center', 'end', 'baseline']},
+  '-webkit-box-decoration-break': {'values': ['slice', 'clone']},
+  '-webkit-box-direction': {'values': ['normal', 'reverse']},
   '-webkit-box-orient': {'values': ['horizontal', 'vertical']},
-  'counter-reset': {'values': ['none']},
-  'color-rendering': {'values': ['auto', 'optimizespeed', 'optimizequality']},
-  'flex-direction': {'values': ['row', 'row-reverse', 'column', 'column-reverse']},
-  'font-feature-settings': {'values': ['normal']},
-  'scroll-padding-inline-end': {'values': ['auto']},
-  'ry': {'values': ['auto']},
-  'quotes': {'values': ['none']},
-  'grid-auto-columns': {'values': ['auto', 'min-content', 'max-content']},
-  'font-optical-sizing': {'values': ['auto', 'none']},
-  'max-inline-size': {'values': ['none']},
-  'baseline-shift': {'values': ['sub', 'super']},
-  'flex-wrap': {'values': ['nowrap', 'wrap', 'wrap-reverse']},
-  'lighting-color': {'values': ['currentcolor']},
-  'background-size': {'values': ['auto', 'cover', 'contain']},
-  'grid-row-start': {'values': ['auto']},
-  'scroll-padding-inline-start': {'values': ['auto']},
-  'list-style-image': {'values': ['none']},
-  'background-origin': {'values': ['border-box', 'padding-box', 'content-box']},
+  '-webkit-box-pack': {'values': ['start', 'center', 'end', 'justify']},
+  '-webkit-line-break': {'values': ['auto', 'loose', 'normal', 'strict', 'after-white-space', 'anywhere']},
+  '-webkit-print-color-adjust': {'values': ['economy', 'exact']},
+  '-webkit-rtl-ordering': {'values': ['logical', 'visual']},
+  '-webkit-ruby-position': {'values': ['before', 'after']},
+  '-webkit-text-security': {'values': ['none', 'disc', 'circle', 'square']},
   '-webkit-user-drag': {'values': ['auto', 'none', 'element']},
+  '-webkit-user-modify': {'values': ['read-only', 'read-write', 'read-write-plaintext-only']},
+  'alignment-baseline': {'values': ['baseline', 'alphabetic', 'ideographic', 'middle', 'central', 'mathematical']},
+  'animation-direction': {'values': ['normal', 'reverse', 'alternate', 'alternate-reverse']},
+  'animation-fill-mode': {'values': ['none', 'forwards', 'backwards', 'both']},
+  'animation-iteration-count': {'values': ['infinite']},
+  'animation-name': {'values': ['none']},
+  'animation-play-state': {'values': ['running', 'paused']},
+  'animation-timing-function': {
+    'values': [
+      'linear', 'ease', 'ease-in', 'ease-out', 'ease-in-out', 'jump-both', 'jump-end', 'jump-none', 'jump-start',
+      'step-start', 'step-end'
+    ]
+  },
   'backdrop-filter': {'values': ['none']},
+  'backface-visibility': {'values': ['visible', 'hidden']},
+  'background-attachment': {'values': ['scroll', 'fixed', 'local']},
+  'background-blend-mode': {
+    'values': [
+      'normal', 'multiply', 'screen', 'overlay', 'darken', 'lighten', 'color-dodge', 'color-burn', 'hard-light',
+      'soft-light', 'difference', 'exclusion', 'hue', 'saturation', 'color', 'luminosity'
+    ]
+  },
+  'background-clip': {'values': ['border-box', 'padding-box', 'content-box']},
+  'background-color': {'values': ['currentcolor']},
+  'background-image': {'values': ['auto', 'none']},
+  'background-origin': {'values': ['border-box', 'padding-box', 'content-box']},
+  'background-size': {'values': ['auto', 'cover', 'contain']},
+  'baseline-shift': {'values': ['sub', 'super']},
+  'block-size': {'values': ['auto']},
+  'border-bottom-color': {'values': ['currentcolor']},
+  'border-bottom-style':
+      {'values': ['none', 'hidden', 'inset', 'groove', 'outset', 'ridge', 'dotted', 'dashed', 'solid', 'double']},
+  'border-bottom-width': {'values': ['thin', 'medium', 'thick']},
+  'border-collapse': {'values': ['separate', 'collapse']},
+  'border-image-repeat': {'values': ['stretch', 'repeat', 'round', 'space']},
+  'border-image-source': {'values': ['none']},
+  'border-image-width': {'values': ['auto']},
+  'border-left-color': {'values': ['currentcolor']},
+  'border-left-style':
+      {'values': ['none', 'hidden', 'inset', 'groove', 'outset', 'ridge', 'dotted', 'dashed', 'solid', 'double']},
+  'border-left-width': {'values': ['thin', 'medium', 'thick']},
+  'border-right-color': {'values': ['currentcolor']},
+  'border-right-style':
+      {'values': ['none', 'hidden', 'inset', 'groove', 'outset', 'ridge', 'dotted', 'dashed', 'solid', 'double']},
+  'border-right-width': {'values': ['thin', 'medium', 'thick']},
+  'border-style': {'values': ['none']},
+  'border-top-color': {'values': ['currentcolor']},
+  'border-top-style':
+      {'values': ['none', 'hidden', 'inset', 'groove', 'outset', 'ridge', 'dotted', 'dashed', 'solid', 'double']},
+  'border-top-width': {'values': ['thin', 'medium', 'thick']},
+  'bottom': {'values': ['auto']},
+  'box-shadow': {'values': ['none']},
+  'box-sizing': {'values': ['content-box', 'border-box']},
+  'break-after':
+      {'values': ['auto', 'avoid', 'avoid-column', 'avoid-page', 'column', 'left', 'page', 'recto', 'right', 'verso']},
+  'break-before':
+      {'values': ['auto', 'avoid', 'avoid-column', 'avoid-page', 'column', 'left', 'page', 'recto', 'right', 'verso']},
+  'break-inside': {'values': ['auto', 'avoid', 'avoid-column', 'avoid-page']},
+  'caption-side': {'values': ['top', 'bottom']},
+  'caret-color': {'values': ['auto', 'currentcolor']},
+  'clear': {'values': ['none', 'left', 'right', 'both', 'inline-start', 'inline-end']},
+  'clip': {'values': ['auto']},
+  'clip-path': {'values': ['none']},
+  'clip-rule': {'values': ['nonzero', 'evenodd']},
+  'color': {'values': ['currentcolor']},
+  'color-interpolation': {'values': ['auto', 'srgb', 'linearrgb']},
+  'color-rendering': {'values': ['auto', 'optimizespeed', 'optimizequality']},
+  'column-count': {'values': ['auto']},
+  'column-fill': {'values': ['balance', 'auto']},
+  'column-gap': {'values': ['normal']},
+  'column-rule-color': {'values': ['currentcolor']},
+  'column-rule-style':
+      {'values': ['none', 'hidden', 'inset', 'groove', 'outset', 'ridge', 'dotted', 'dashed', 'solid', 'double']},
+  'column-rule-width': {'values': ['thin', 'medium', 'thick']},
+  'column-span': {'values': ['none', 'all']},
+  'column-width': {'values': ['auto']},
+  'contain': {'values': ['none', 'strict', 'content', 'size', 'layout', 'style', 'paint']},
+  'contain-intrinsic-size': {'values': ['auto']},
+  'counter-increment': {'values': ['none']},
+  'counter-reset': {'values': ['none']},
+  'cursor': {
+    'values': [
+      'auto',        'default',   'none',      'context-menu',  'help',        'pointer',    'progress',   'wait',
+      'cell',        'crosshair', 'text',      'vertical-text', 'alias',       'copy',       'move',       'no-drop',
+      'not-allowed', 'e-resize',  'n-resize',  'ne-resize',     'nw-resize',   's-resize',   'se-resize',  'sw-resize',
+      'w-resize',    'ew-resize', 'ns-resize', 'nesw-resize',   'nwse-resize', 'col-resize', 'row-resize', 'all-scroll',
+      'zoom-in',     'zoom-out',  'grab',      'grabbing'
+    ]
+  },
+  'd': {'values': ['none']},
+  'direction': {'values': ['ltr', 'rtl']},
+  'display': {
+    'values': [
+      'inline',
+      'block',
+      'list-item',
+      'inline-block',
+      'table',
+      'inline-table',
+      'table-row-group',
+      'table-header-group',
+      'table-footer-group',
+      'table-row',
+      'table-column-group',
+      'table-column',
+      'table-cell',
+      'table-caption',
+      '-webkit-box',
+      '-webkit-inline-box',
+      'flex',
+      'inline-flex',
+      'grid',
+      'inline-grid',
+      'contents',
+      'flow-root',
+      'none'
+    ]
+  },
+  'dominant-baseline':
+      {'values': ['auto', 'alphabetic', 'ideographic', 'middle', 'central', 'mathematical', 'hanging']},
+  'empty-cells': {'values': ['show', 'hide']},
+  'fill-rule': {'values': ['nonzero', 'evenodd']},
+  'filter': {'values': ['none']},
+  'flex-basis': {'values': ['auto']},
+  'flex-direction': {'values': ['row', 'row-reverse', 'column', 'column-reverse']},
+  'flex-wrap': {'values': ['nowrap', 'wrap', 'wrap-reverse']},
+  'float': {'values': ['none', 'left', 'right', 'inline-start', 'inline-end']},
+  'flood-color': {'values': ['currentcolor']},
+  'font-feature-settings': {'values': ['normal']},
+  'font-kerning': {'values': ['auto', 'normal', 'none']},
+  'font-optical-sizing': {'values': ['auto', 'none']},
+  'font-size': {
+    'values': [
+      'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large', 'xxx-large', 'larger', 'smaller',
+      '-webkit-xxx-large'
+    ]
+  },
+  'font-size-adjust': {'values': ['none']},
+  'font-stretch': {
+    'values': [
+      'normal', 'ultra-condensed', 'extra-condensed', 'condensed', 'semi-condensed', 'semi-expanded', 'expanded',
+      'extra-expanded', 'ultra-expanded'
+    ]
+  },
+  'font-style': {'values': ['normal', 'italic', 'oblique']},
+  'font-variant-caps': {
+    'values': ['normal', 'small-caps', 'all-small-caps', 'petite-caps', 'all-petite-caps', 'unicase', 'titling-caps']
+  },
   'font-variant-east-asian': {
     'values': [
       'normal', 'jis78', 'jis83', 'jis90', 'jis04', 'simplified', 'traditional', 'full-width', 'proportional-width',
       'ruby'
     ]
   },
-  'isolation': {'values': ['auto', 'isolate']},
-  'grid-auto-flow': {'values': ['row', 'column']},
-  'outline-width': {'values': ['thin', 'medium', 'thick']},
-  'counter-increment': {'values': ['none']},
-  'row-gap': {'values': ['normal']},
-  'text-align': {
-    'values': ['left', 'right', 'center', 'justify', '-webkit-left', '-webkit-right', '-webkit-center', 'start', 'end']
+  'font-variant-ligatures': {
+    'values': [
+      'normal', 'none', 'common-ligatures', 'no-common-ligatures', 'discretionary-ligatures',
+      'no-discretionary-ligatures', 'historical-ligatures', 'no-historical-ligatures', 'contextual', 'no-contextual'
+    ]
   },
-  '-webkit-box-decoration-break': {'values': ['slice', 'clone']},
-  '-webkit-box-pack': {'values': ['start', 'center', 'end', 'justify']},
-  'box-shadow': {'values': ['none']},
-  'margin-inline-end': {'values': ['auto']},
-  '-webkit-box-align': {'values': ['stretch', 'start', 'center', 'end', 'baseline']},
+  'font-variant-numeric': {
+    'values': [
+      'normal', 'lining-nums', 'oldstyle-nums', 'proportional-nums', 'tabular-nums', 'diagonal-fractions',
+      'stacked-fractions', 'ordinal', 'slashed-zero'
+    ]
+  },
+  'font-variation-settings': {'values': ['normal']},
+  'font-weight': {'values': ['normal', 'bold', 'bolder', 'lighter']},
+  'forced-color-adjust': {'values': ['auto', 'none']},
+  'grid-auto-columns': {'values': ['auto', 'min-content', 'max-content']},
+  'grid-auto-flow': {'values': ['row', 'column']},
+  'grid-auto-rows': {'values': ['auto', 'min-content', 'max-content']},
+  'grid-column-end': {'values': ['auto']},
+  'grid-column-start': {'values': ['auto']},
+  'grid-row-end': {'values': ['auto']},
+  'grid-row-start': {'values': ['auto']},
+  'grid-template-areas': {'values': ['none']},
+  'grid-template-columns': {'values': ['none']},
+  'grid-template-rows': {'values': ['none']},
+  'height': {'values': ['auto', 'fit-content', 'min-content', 'max-content']},
   'hyphens': {'values': ['none', 'manual', 'auto']},
-  'column-rule-width': {'values': ['thin', 'medium', 'thick']},
-  'margin-inline-start': {'values': ['auto']},
-  '-webkit-print-color-adjust': {'values': ['economy', 'exact']},
-  'marker-end': {'values': ['none']},
+  'image-rendering': {'values': ['auto', 'optimizespeed', 'optimizequality', '-webkit-optimize-contrast', 'pixelated']},
+  'inline-size': {'values': ['auto']},
+  'isolation': {'values': ['auto', 'isolate']},
+  'left': {'values': ['auto']},
+  'letter-spacing': {'values': ['normal']},
+  'lighting-color': {'values': ['currentcolor']},
+  'line-break': {'values': ['auto', 'loose', 'normal', 'strict', 'anywhere']},
+  'line-height': {'values': ['normal']},
+  'list-style-image': {'values': ['none']},
+  'list-style-position': {'values': ['outside', 'inside']},
   'list-style-type': {
     'values': [
       'disc',
@@ -989,283 +1147,125 @@ export const generatedPropertyValues = {
       'none'
     ]
   },
-  'shape-rendering': {'values': ['auto', 'optimizespeed', 'crispedges', 'geometricprecision']},
-  'grid-column-start': {'values': ['auto']},
-  'animation-fill-mode': {'values': ['none', 'forwards', 'backwards', 'both']},
-  'grid-row-end': {'values': ['auto']},
-  'font-variant-numeric': {
-    'values': [
-      'normal', 'lining-nums', 'oldstyle-nums', 'proportional-nums', 'tabular-nums', 'diagonal-fractions',
-      'stacked-fractions', 'ordinal', 'slashed-zero'
-    ]
-  },
-  'd': {'values': ['none']},
-  'text-underline-position': {'values': ['auto', 'under', 'left', 'right']},
-  'text-decoration-skip-ink': {'values': ['none', 'auto']},
-  'subtree-visibility': {'values': ['visible', 'auto', 'hidden', 'hidden-matchable']},
-  'flood-color': {'values': ['currentcolor']},
-  'text-anchor': {'values': ['start', 'middle', 'end']},
-  'break-after':
-      {'values': ['auto', 'avoid', 'avoid-column', 'avoid-page', 'column', 'left', 'page', 'recto', 'right', 'verso']},
-  'column-span': {'values': ['none', 'all']},
-  'column-fill': {'values': ['balance', 'auto']},
-  'shape-margin': {'values': ['none']},
-  'contain': {'values': ['none', 'strict', 'content', 'size', 'layout', 'style', 'paint']},
-  'scroll-padding-left': {'values': ['auto']},
-  'column-gap': {'values': ['normal']},
-  'text-transform': {'values': ['capitalize', 'uppercase', 'lowercase', 'none']},
-  'line-height': {'values': ['normal']},
-  'stroke-linejoin': {'values': ['miter', 'bevel', 'round']},
-  'text-align-last': {'values': ['auto', 'start', 'end', 'left', 'right', 'center', 'justify']},
-  'font-size': {
-    'values': [
-      'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large', 'xxx-large', 'larger', 'smaller',
-      '-webkit-xxx-large'
-    ]
-  },
-  'right': {'values': ['auto']},
-  'user-select': {'values': ['auto', 'none', 'text', 'all']},
-  'offset-position': {'values': ['auto']},
-  'paint-order': {'values': ['normal', 'fill', 'stroke', 'markers']},
-  'break-inside': {'values': ['auto', 'avoid', 'avoid-column', 'avoid-page']},
-  '-webkit-user-modify': {'values': ['read-only', 'read-write', 'read-write-plaintext-only']},
-  'scroll-behavior': {'values': ['auto', 'smooth']},
-  'text-orientation': {'values': ['sideways', 'mixed', 'upright']},
-  'line-break': {'values': ['auto', 'loose', 'normal', 'strict', 'anywhere']},
-  'transform-style': {'values': ['flat', 'preserve-3d']},
-  '-webkit-app-region': {'values': ['none', 'drag', 'no-drag']},
-  'perspective': {'values': ['none']},
-  'max-block-size': {'values': ['none']},
-  'offset-path': {'values': ['none']},
-  'vector-effect': {'values': ['none', 'non-scaling-stroke']},
-  'touch-action': {
-    'values':
-        ['auto', 'none', 'pan-x', 'pan-left', 'pan-right', 'pan-y', 'pan-up', 'pan-down', 'pinch-zoom', 'manipulation']
-  },
-  'border-image-repeat': {'values': ['stretch', 'repeat', 'round', 'space']},
-  'outline-style':
-      {'values': ['none', 'hidden', 'inset', 'groove', 'outset', 'ridge', 'dotted', 'dashed', 'solid', 'double']},
-  'scroll-snap-align': {'values': ['none', 'start', 'end', 'center']},
-  'bottom': {'values': ['auto']},
-  'rx': {'values': ['auto']},
-  'grid-template-rows': {'values': ['none']},
-  'overscroll-behavior-x': {'values': ['auto', 'contain', 'none']},
-  'overscroll-behavior-y': {'values': ['auto', 'contain', 'none']},
-  'scroll-padding-bottom': {'values': ['auto']},
-  'border-right-style':
-      {'values': ['none', 'hidden', 'inset', 'groove', 'outset', 'ridge', 'dotted', 'dashed', 'solid', 'double']},
-  'border-left-style':
-      {'values': ['none', 'hidden', 'inset', 'groove', 'outset', 'ridge', 'dotted', 'dashed', 'solid', 'double']},
-  'marker-mid': {'values': ['none']},
-  'background-color': {'values': ['currentcolor']},
-  'border-bottom-color': {'values': ['currentcolor']},
-  'shape-outside': {'values': ['none']},
-  'outline-color': {'values': ['currentcolor']},
-  '-webkit-ruby-position': {'values': ['before', 'after']},
-  'word-spacing': {'values': ['normal']},
-  'unicode-bidi': {'values': ['normal', 'embed', 'bidi-override', 'isolate', 'plaintext', 'isolate-override']},
-  'text-shadow': {'values': ['none']},
-  'clip-rule': {'values': ['nonzero', 'evenodd']},
-  'text-justify': {'values': ['auto', 'none', 'inter-word', 'distribute']},
-  'image-rendering': {'values': ['auto', 'optimizespeed', 'optimizequality', '-webkit-optimize-contrast', 'pixelated']},
-  'max-width': {'values': ['none']},
-  'caption-side': {'values': ['top', 'bottom']},
-  'block-size': {'values': ['auto']},
-  'text-size-adjust': {'values': ['none', 'auto']},
-  'filter': {'values': ['none']},
-  'pointer-events': {
-    'values': [
-      'none', 'auto', 'stroke', 'fill', 'painted', 'visible', 'visiblestroke', 'visiblefill', 'visiblepainted',
-      'bounding-box', 'all'
-    ]
-  },
-  'border-right-width': {'values': ['thin', 'medium', 'thick']},
-  'border-image-width': {'values': ['auto']},
-  'top': {'values': ['auto']},
-  'column-rule-color': {'values': ['currentcolor']},
-  'color-interpolation': {'values': ['auto', 'srgb', 'linearrgb']},
-  'border-top-style':
-      {'values': ['none', 'hidden', 'inset', 'groove', 'outset', 'ridge', 'dotted', 'dashed', 'solid', 'double']},
-  'text-rendering': {'values': ['auto', 'optimizespeed', 'optimizelegibility', 'geometricprecision']},
-  '-webkit-box-direction': {'values': ['normal', 'reverse']},
-  'text-decoration-color': {'values': ['currentcolor']},
-  'color': {'values': ['currentcolor']},
-  'border-collapse': {'values': ['separate', 'collapse']},
-  'border-bottom-width': {'values': ['thin', 'medium', 'thick']},
-  'float': {'values': ['none', 'left', 'right', 'inline-start', 'inline-end']},
-  'text-combine-upright': {'values': ['none', 'all']},
-  'height': {'values': ['auto', 'fit-content', 'min-content', 'max-content']},
-  'max-height': {'values': ['none']},
+  'margin-block-end': {'values': ['auto']},
+  'margin-block-start': {'values': ['auto']},
+  'margin-bottom': {'values': ['auto']},
+  'margin-inline-end': {'values': ['auto']},
+  'margin-inline-start': {'values': ['auto']},
+  'margin-left': {'values': ['auto']},
   'margin-right': {'values': ['auto']},
-  'border-top-width': {'values': ['thin', 'medium', 'thick']},
-  'overflow-wrap': {'values': ['normal', 'break-word', 'anywhere']},
-  'speak': {'values': ['none', 'normal', 'spell-out', 'digits', 'literal-punctuation', 'no-punctuation']},
-  'background-clip': {'values': ['border-box', 'padding-box', 'content-box']},
-  'contain-intrinsic-size': {'values': ['auto']},
-  'scroll-snap-type': {'values': ['none', 'x', 'y', 'block', 'inline', 'both', 'mandatory', 'proximity']},
-  '-webkit-line-break': {'values': ['auto', 'loose', 'normal', 'strict', 'after-white-space', 'anywhere']},
-  'fill-rule': {'values': ['nonzero', 'evenodd']},
+  'margin-top': {'values': ['auto']},
+  'marker-end': {'values': ['none']},
+  'marker-mid': {'values': ['none']},
+  'marker-start': {'values': ['none']},
+  'mask-type': {'values': ['luminance', 'alpha']},
+  'max-block-size': {'values': ['none']},
+  'max-height': {'values': ['none']},
+  'max-inline-size': {'values': ['none']},
+  'max-width': {'values': ['none']},
   'mix-blend-mode': {
     'values': [
       'normal', 'multiply', 'screen', 'overlay', 'darken', 'lighten', 'color-dodge', 'color-burn', 'hard-light',
       'soft-light', 'difference', 'exclusion', 'hue', 'saturation', 'color', 'luminosity'
     ]
   },
-  'transform': {'values': ['none']},
-  'width': {'values': ['auto', 'fit-content', 'min-content', 'max-content']},
-  'scroll-padding-top': {'values': ['auto']},
-  'offset-anchor': {'values': ['auto']},
-  'break-before':
-      {'values': ['auto', 'avoid', 'avoid-column', 'avoid-page', 'column', 'left', 'page', 'recto', 'right', 'verso']},
-  'caret-color': {'values': ['auto', 'currentcolor']},
-  'border-top-color': {'values': ['currentcolor']},
   'object-fit': {'values': ['fill', 'contain', 'cover', 'none', 'scale-down']},
-  'empty-cells': {'values': ['show', 'hide']},
-  'inline-size': {'values': ['auto']},
-  'direction': {'values': ['ltr', 'rtl']},
-  'clip-path': {'values': ['none']},
-  'alignment-baseline': {'values': ['baseline', 'alphabetic', 'ideographic', 'middle', 'central', 'mathematical']},
-  'animation-play-state': {'values': ['running', 'paused']},
-  'visibility': {'values': ['visible', 'hidden', 'collapse']},
-  'scroll-padding-block-end': {'values': ['auto']},
-  'transform-box': {'values': ['fill-box', 'view-box']},
-  'z-index': {'values': ['auto']},
-  'animation-iteration-count': {'values': ['infinite']},
-  'dominant-baseline':
-      {'values': ['auto', 'alphabetic', 'ideographic', 'middle', 'central', 'mathematical', 'hanging']},
-  'font-variant-caps': {
-    'values': ['normal', 'small-caps', 'all-small-caps', 'petite-caps', 'all-petite-caps', 'unicase', 'titling-caps']
-  },
-  'background-attachment': {'values': ['scroll', 'fixed', 'local']},
-  'text-decoration-style': {'values': ['solid', 'double', 'dotted', 'dashed', 'wavy']},
-  'resize': {'values': ['none', 'both', 'horizontal', 'vertical', 'block', 'inline']},
-  'grid-template-areas': {'values': ['none']},
-  'margin-block-start': {'values': ['auto']},
-  'grid-template-columns': {'values': ['none']},
-  'will-change': {'values': ['auto']},
-  '-webkit-rtl-ordering': {'values': ['logical', 'visual']},
-  'font-size-adjust': {'values': ['none']},
-  '-webkit-text-security': {'values': ['none', 'disc', 'circle', 'square']},
-  'marker-start': {'values': ['none']},
-  'overflow-anchor': {'values': ['visible', 'none', 'auto']},
-  'cursor': {
-    'values': [
-      'auto',        'default',   'none',      'context-menu',  'help',        'pointer',    'progress',   'wait',
-      'cell',        'crosshair', 'text',      'vertical-text', 'alias',       'copy',       'move',       'no-drop',
-      'not-allowed', 'e-resize',  'n-resize',  'ne-resize',     'nw-resize',   's-resize',   'se-resize',  'sw-resize',
-      'w-resize',    'ew-resize', 'ns-resize', 'nesw-resize',   'nwse-resize', 'col-resize', 'row-resize', 'all-scroll',
-      'zoom-in',     'zoom-out',  'grab',      'grabbing'
-    ]
-  },
-  'text-decoration-line': {'values': ['none', 'underline', 'overline', 'line-through', 'blink']},
-  'column-rule-style':
-      {'values': ['none', 'hidden', 'inset', 'groove', 'outset', 'ridge', 'dotted', 'dashed', 'solid', 'double']},
-  'animation-direction': {'values': ['normal', 'reverse', 'alternate', 'alternate-reverse']},
-  'display': {
-    'values': [
-      'inline',
-      'block',
-      'list-item',
-      'inline-block',
-      'table',
-      'inline-table',
-      'table-row-group',
-      'table-header-group',
-      'table-footer-group',
-      'table-row',
-      'table-column-group',
-      'table-column',
-      'table-cell',
-      'table-caption',
-      '-webkit-box',
-      '-webkit-inline-box',
-      'flex',
-      'inline-flex',
-      'grid',
-      'inline-grid',
-      'contents',
-      'flow-root',
-      'none'
-    ]
-  },
-  'border-left-width': {'values': ['thin', 'medium', 'thick']},
-  'grid-column-end': {'values': ['auto']},
-  'letter-spacing': {'values': ['normal']},
-  'background-blend-mode': {
-    'values': [
-      'normal', 'multiply', 'screen', 'overlay', 'darken', 'lighten', 'color-dodge', 'color-burn', 'hard-light',
-      'soft-light', 'difference', 'exclusion', 'hue', 'saturation', 'color', 'luminosity'
-    ]
-  },
-  'vertical-align': {'values': ['baseline', 'sub', 'super', 'text-top', 'text-bottom', 'middle']},
-  'clip': {'values': ['auto']},
-  'column-width': {'values': ['auto']},
-  'margin-left': {'values': ['auto']},
-  'grid-auto-rows': {'values': ['auto', 'min-content', 'max-content']},
+  'offset-anchor': {'values': ['auto']},
+  'offset-path': {'values': ['none']},
+  'offset-position': {'values': ['auto']},
   'offset-rotate': {'values': ['auto', 'reverse']},
-  'font-variant-ligatures': {
-    'values': [
-      'normal', 'none', 'common-ligatures', 'no-common-ligatures', 'discretionary-ligatures',
-      'no-discretionary-ligatures', 'historical-ligatures', 'no-historical-ligatures', 'contextual', 'no-contextual'
-    ]
-  },
-  'stroke-linecap': {'values': ['butt', 'round', 'square']},
-  'list-style-position': {'values': ['outside', 'inside']},
-  'animation-name': {'values': ['none']},
-  'font-style': {'values': ['normal', 'italic', 'oblique']},
-  'border-left-color': {'values': ['currentcolor']},
-  'stop-color': {'values': ['currentcolor']},
-  'overflow-y': {'values': ['visible', 'hidden', 'scroll', 'auto', 'overlay']},
-  'overflow-x': {'values': ['visible', 'hidden', 'scroll', 'auto', 'overlay']},
-  'word-break': {'values': ['normal', 'break-all', 'keep-all', 'break-word']},
-  'flex-basis': {'values': ['auto']},
-  'table-layout': {'values': ['auto', 'fixed']},
-  'text-overflow': {'values': ['clip', 'ellipsis']},
-  'column-count': {'values': ['auto']},
-  'margin-bottom': {'values': ['auto']},
-  'font-stretch': {
-    'values': [
-      'normal', 'ultra-condensed', 'extra-condensed', 'condensed', 'semi-condensed', 'semi-expanded', 'expanded',
-      'extra-expanded', 'ultra-expanded'
-    ]
-  },
-  'font-weight': {'values': ['normal', 'bold', 'bolder', 'lighter']},
-  'forced-color-adjust': {'values': ['auto', 'none']},
-  'scroll-padding-block-start': {'values': ['auto']},
-  'font-variation-settings': {'values': ['normal']},
-  'mask-type': {'values': ['luminance', 'alpha']},
   'origin-trial-test-property': {'values': ['normal', 'none']},
-  'border-right-color': {'values': ['currentcolor']},
-  'transition-property': {'values': ['none']},
-  'white-space':
-      {'values': ['none', 'normal', 'pre', 'pre-wrap', 'pre-line', 'nowrap', '-webkit-nowrap', 'break-spaces']},
-  'backface-visibility': {'values': ['visible', 'hidden']},
-  'background-image': {'values': ['auto', 'none']},
-  'writing-mode': {'values': ['horizontal-tb', 'vertical-rl', 'vertical-lr']},
-  'border-bottom-style':
+  'outline-color': {'values': ['currentcolor']},
+  'outline-style':
       {'values': ['none', 'hidden', 'inset', 'groove', 'outset', 'ridge', 'dotted', 'dashed', 'solid', 'double']},
-  'font-kerning': {'values': ['auto', 'normal', 'none']},
-  'clear': {'values': ['none', 'left', 'right', 'both', 'inline-start', 'inline-end']},
-  'animation-timing-function': {
+  'outline-width': {'values': ['thin', 'medium', 'thick']},
+  'overflow-anchor': {'values': ['visible', 'none', 'auto']},
+  'overflow-wrap': {'values': ['normal', 'break-word', 'anywhere']},
+  'overflow-x': {'values': ['visible', 'hidden', 'scroll', 'auto', 'overlay']},
+  'overflow-y': {'values': ['visible', 'hidden', 'scroll', 'auto', 'overlay']},
+  'overscroll-behavior-x': {'values': ['auto', 'contain', 'none']},
+  'overscroll-behavior-y': {'values': ['auto', 'contain', 'none']},
+  'paint-order': {'values': ['normal', 'fill', 'stroke', 'markers']},
+  'perspective': {'values': ['none']},
+  'pointer-events': {
     'values': [
-      'linear', 'ease', 'ease-in', 'ease-out', 'ease-in-out', 'jump-both', 'jump-end', 'jump-none', 'jump-start',
-      'step-start', 'step-end'
+      'none', 'auto', 'stroke', 'fill', 'painted', 'visible', 'visiblestroke', 'visiblefill', 'visiblepainted',
+      'bounding-box', 'all'
     ]
   },
-  'border-style': {'values': ['none']},
-  'scroll-padding-right': {'values': ['auto']},
-  'border-image-source': {'values': ['none']},
-  'box-sizing': {'values': ['content-box', 'border-box']},
-  'margin-top': {'values': ['auto']},
-  'stroke-dasharray': {'values': ['none']},
   'position': {'values': ['static', 'relative', 'absolute', 'fixed', 'sticky']},
+  'quotes': {'values': ['none']},
+  'resize': {'values': ['none', 'both', 'horizontal', 'vertical', 'block', 'inline']},
+  'right': {'values': ['auto']},
+  'row-gap': {'values': ['normal']},
+  'rx': {'values': ['auto']},
+  'ry': {'values': ['auto']},
+  'scroll-behavior': {'values': ['auto', 'smooth']},
+  'scroll-padding-block-end': {'values': ['auto']},
+  'scroll-padding-block-start': {'values': ['auto']},
+  'scroll-padding-bottom': {'values': ['auto']},
+  'scroll-padding-inline-end': {'values': ['auto']},
+  'scroll-padding-inline-start': {'values': ['auto']},
+  'scroll-padding-left': {'values': ['auto']},
+  'scroll-padding-right': {'values': ['auto']},
+  'scroll-padding-top': {'values': ['auto']},
+  'scroll-snap-align': {'values': ['none', 'start', 'end', 'center']},
+  'scroll-snap-stop': {'values': ['normal', 'always']},
+  'scroll-snap-type': {'values': ['none', 'x', 'y', 'block', 'inline', 'both', 'mandatory', 'proximity']},
+  'shape-margin': {'values': ['none']},
+  'shape-outside': {'values': ['none']},
+  'shape-rendering': {'values': ['auto', 'optimizespeed', 'crispedges', 'geometricprecision']},
+  'speak': {'values': ['none', 'normal', 'spell-out', 'digits', 'literal-punctuation', 'no-punctuation']},
+  'stop-color': {'values': ['currentcolor']},
+  'stroke-dasharray': {'values': ['none']},
+  'stroke-linecap': {'values': ['butt', 'round', 'square']},
+  'stroke-linejoin': {'values': ['miter', 'bevel', 'round']},
+  'subtree-visibility': {'values': ['visible', 'auto', 'hidden', 'hidden-matchable']},
+  'table-layout': {'values': ['auto', 'fixed']},
+  'text-align': {
+    'values': ['left', 'right', 'center', 'justify', '-webkit-left', '-webkit-right', '-webkit-center', 'start', 'end']
+  },
+  'text-align-last': {'values': ['auto', 'start', 'end', 'left', 'right', 'center', 'justify']},
+  'text-anchor': {'values': ['start', 'middle', 'end']},
+  'text-combine-upright': {'values': ['none', 'all']},
+  'text-decoration-color': {'values': ['currentcolor']},
+  'text-decoration-line': {'values': ['none', 'underline', 'overline', 'line-through', 'blink']},
+  'text-decoration-skip-ink': {'values': ['none', 'auto']},
+  'text-decoration-style': {'values': ['solid', 'double', 'dotted', 'dashed', 'wavy']},
+  'text-justify': {'values': ['auto', 'none', 'inter-word', 'distribute']},
+  'text-orientation': {'values': ['sideways', 'mixed', 'upright']},
+  'text-overflow': {'values': ['clip', 'ellipsis']},
+  'text-rendering': {'values': ['auto', 'optimizespeed', 'optimizelegibility', 'geometricprecision']},
+  'text-shadow': {'values': ['none']},
+  'text-size-adjust': {'values': ['none', 'auto']},
+  'text-transform': {'values': ['capitalize', 'uppercase', 'lowercase', 'none']},
+  'text-underline-position': {'values': ['auto', 'under', 'left', 'right']},
+  'top': {'values': ['auto']},
+  'touch-action': {
+    'values':
+        ['auto', 'none', 'pan-x', 'pan-left', 'pan-right', 'pan-y', 'pan-up', 'pan-down', 'pinch-zoom', 'manipulation']
+  },
+  'transform': {'values': ['none']},
+  'transform-box': {'values': ['fill-box', 'view-box']},
+  'transform-style': {'values': ['flat', 'preserve-3d']},
+  'transition-property': {'values': ['none']},
   'transition-timing-function': {
     'values': [
       'linear', 'ease', 'ease-in', 'ease-out', 'ease-in-out', 'jump-both', 'jump-end', 'jump-none', 'jump-start',
       'step-start', 'step-end'
     ]
   },
-  'scroll-snap-stop': {'values': ['normal', 'always']},
-  'margin-block-end': {'values': ['auto']},
-  'left': {'values': ['auto']}
+  'unicode-bidi': {'values': ['normal', 'embed', 'bidi-override', 'isolate', 'plaintext', 'isolate-override']},
+  'user-select': {'values': ['auto', 'none', 'text', 'all']},
+  'vector-effect': {'values': ['none', 'non-scaling-stroke']},
+  'vertical-align': {'values': ['baseline', 'sub', 'super', 'text-top', 'text-bottom', 'middle']},
+  'visibility': {'values': ['visible', 'hidden', 'collapse']},
+  'white-space':
+      {'values': ['none', 'normal', 'pre', 'pre-wrap', 'pre-line', 'nowrap', '-webkit-nowrap', 'break-spaces']},
+  'width': {'values': ['auto', 'fit-content', 'min-content', 'max-content']},
+  'will-change': {'values': ['auto']},
+  'word-break': {'values': ['normal', 'break-all', 'keep-all', 'break-word']},
+  'word-spacing': {'values': ['normal']},
+  'writing-mode': {'values': ['horizontal-tb', 'vertical-rl', 'vertical-lr']},
+  'z-index': {'values': ['auto']}
 };

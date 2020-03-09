@@ -93,4 +93,4 @@ def properties_from_file(file_name):
 properties, property_values = properties_from_file(READ_LOCATION)
 with open(GENERATED_LOCATION, "w+") as f:
     f.write("export const generatedProperties = %s;\n" % json.dumps(properties))
-    f.write("export const generatedPropertyValues = %s;\n" % json.dumps(property_values))
+    f.write("export const generatedPropertyValues = %s;\n" % json.dumps(property_values, sort_keys=True))

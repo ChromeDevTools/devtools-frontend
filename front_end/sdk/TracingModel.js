@@ -950,7 +950,7 @@ export class Thread extends NamedObject {
     while (stack.length) {
       stack.pop().setEndTime(this._model.maximumRecordTime());
     }
-    this._events.remove(null, false);
+    this._events = this._events.filter(event => event !== null);
   }
 
   /**

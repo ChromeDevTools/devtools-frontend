@@ -28,6 +28,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -37,7 +38,7 @@ import * as Workspace from '../workspace/workspace.js';
 export class ImageView extends UI.View.SimpleView {
   /**
    * @param {string} mimeType
-   * @param {!Common.ContentProvider.ContentProvider} contentProvider
+   * @param {!TextUtils.ContentProvider.ContentProvider} contentProvider
    */
   constructor(mimeType, contentProvider) {
     super(Common.UIString.UIString('Image'));
@@ -107,7 +108,7 @@ export class ImageView extends UI.View.SimpleView {
 
     const contentEncoded = await this._contentProvider.contentEncoded();
     this._cachedContent = content;
-    let imageSrc = Common.ContentProvider.contentAsDataURL(content, this._mimeType, contentEncoded);
+    let imageSrc = TextUtils.ContentProvider.contentAsDataURL(content, this._mimeType, contentEncoded);
     if (content === null) {
       imageSrc = this._url;
     }

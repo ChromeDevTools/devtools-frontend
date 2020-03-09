@@ -2,8 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+
 import {ContentProvider, DeferredContent, SearchMatch} from './ContentProvider.js';  // eslint-disable-line no-unused-vars
-import {ResourceType} from './ResourceType.js';  // eslint-disable-line no-unused-vars
+import {performSearchInContent} from './TextUtils.js';
 
 /**
  * @implements {ContentProvider}
@@ -12,7 +14,7 @@ import {ResourceType} from './ResourceType.js';  // eslint-disable-line no-unuse
 export class StaticContentProvider {
   /**
    * @param {string} contentURL
-   * @param {!ResourceType} contentType
+   * @param {!Common.ResourceType.ResourceType} contentType
    * @param {function():!Promise<!DeferredContent>} lazyContent
    */
   constructor(contentURL, contentType, lazyContent) {
@@ -23,7 +25,7 @@ export class StaticContentProvider {
 
   /**
    * @param {string} contentURL
-   * @param {!ResourceType} contentType
+   * @param {!Common.ResourceType.ResourceType} contentType
    * @param {string} content
    * @return {!StaticContentProvider}
    */
@@ -42,7 +44,7 @@ export class StaticContentProvider {
 
   /**
    * @override
-   * @return {!ResourceType}
+   * @return {!Common.ResourceType.ResourceType}
    */
   contentType() {
     return this._contentType;
@@ -72,7 +74,7 @@ export class StaticContentProvider {
    * @return {!Promise<!Array<!SearchMatch>>}
    */
   async searchInContent(query, caseSensitive, isRegex) {
-    const {content} = (await this._lazyContent());
-    return content ? ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex) : [];
+    const {content} = /** @type { {content: string, isEncoded: boolean} }*/ (await this._lazyContent());
+    return content ? performSearchInContent(content, query, caseSensitive, isRegex) : [];
   }
 }

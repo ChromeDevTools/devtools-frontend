@@ -27,6 +27,7 @@
 import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
+import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
 import {DOMStorage} from './DOMStorageModel.js';
@@ -313,7 +314,7 @@ export class DOMStorageItemsView extends StorageItemsView {
     }
     const protocol = this._domStorage.isLocalStorage ? 'localstorage' : 'sessionstorage';
     const url = `${protocol}://${entry.key}`;
-    const provider = Common.StaticContentProvider.StaticContentProvider.fromString(
+    const provider = TextUtils.StaticContentProvider.StaticContentProvider.fromString(
         url, Common.ResourceType.resourceTypes.XHR, /** @type {string} */ (value));
     const preview = await SourceFrame.PreviewFactory.PreviewFactory.createPreview(provider, 'text/plain');
     // Selection could've changed while the preview was loaded

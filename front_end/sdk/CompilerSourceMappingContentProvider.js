@@ -28,10 +28,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../common/common.js';
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as TextUtils from '../text_utils/text_utils.js';
 
 /**
- * @implements {Common.ContentProvider.ContentProvider}
+ * @implements {TextUtils.ContentProvider.ContentProvider}
  * @unrestricted
  */
 export class CompilerSourceMappingContentProvider {
@@ -70,7 +71,7 @@ export class CompilerSourceMappingContentProvider {
 
   /**
    * @override
-   * @return {!Promise<!Common.ContentProvider.DeferredContent>}
+   * @return {!Promise<!TextUtils.ContentProvider.DeferredContent>}
    */
   requestContent() {
     return new Promise(resolve => {
@@ -92,13 +93,13 @@ export class CompilerSourceMappingContentProvider {
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
+   * @return {!Promise<!Array<!TextUtils.ContentProvider.SearchMatch>>}
    */
   async searchInContent(query, caseSensitive, isRegex) {
     const {content} = await this.requestContent();
     if (typeof content !== 'string') {
       return [];
     }
-    return Common.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex);
+    return TextUtils.TextUtils.performSearchInContent(content, query, caseSensitive, isRegex);
   }
 }

@@ -4,6 +4,8 @@
     ],
     "scripts": [],
     "modules": [
+        "ContentProvider.js",
+        "StaticContentProvider.js",
         "text_utils.js",
         "text_utils-legacy.js",
         "Text.js",

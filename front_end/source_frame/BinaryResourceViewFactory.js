@@ -2,7 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
+import * as Common from '../common/common.js';             // eslint-disable-line no-unused-vars
+import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 
 import {ResourceSourceFrame} from './ResourceSourceFrame.js';
 
@@ -20,7 +21,7 @@ export class BinaryResourceViewFactory {
     this._arrayPromise = null;
     /** @type {?Promise<string>} */
     this._hexPromise = null;
-    /** @type {?Promise<!Common.ContentProvider.DeferredContent>} */
+    /** @type {?Promise<!TextUtils.ContentProvider.DeferredContent>} */
     this._utf8Promise = null;
   }
 
@@ -35,7 +36,7 @@ export class BinaryResourceViewFactory {
   }
 
   /**
-   * @return {!Promise<!Common.ContentProvider.DeferredContent>}
+   * @return {!Promise<!TextUtils.ContentProvider.DeferredContent>}
    */
   async hex() {
     if (!this._hexPromise) {
@@ -50,14 +51,14 @@ export class BinaryResourceViewFactory {
   }
 
   /**
-   * @return {!Promise<!Common.ContentProvider.DeferredContent>}
+   * @return {!Promise<!TextUtils.ContentProvider.DeferredContent>}
    */
   async base64() {
     return {content: this._base64content, isEncoded: true};
   }
 
   /**
-   * @return {!Promise<!Common.ContentProvider.DeferredContent>}
+   * @return {!Promise<!TextUtils.ContentProvider.DeferredContent>}
    */
   async utf8() {
     if (!this._utf8Promise) {
@@ -76,7 +77,7 @@ export class BinaryResourceViewFactory {
    */
   createBase64View() {
     return new ResourceSourceFrame(
-        Common.StaticContentProvider.StaticContentProvider.fromString(
+        TextUtils.StaticContentProvider.StaticContentProvider.fromString(
             this._contentUrl, this._resourceType, this._base64content),
         /* autoPrettyPrint */ false, {lineNumbers: false, lineWrapping: true});
   }
@@ -86,7 +87,7 @@ export class BinaryResourceViewFactory {
    */
   createHexView() {
     const hexViewerContentProvider =
-        new Common.StaticContentProvider.StaticContentProvider(this._contentUrl, this._resourceType, async () => {
+        new TextUtils.StaticContentProvider.StaticContentProvider(this._contentUrl, this._resourceType, async () => {
           const contentAsArray = await this._fetchContentAsArray();
           const content = BinaryResourceViewFactory.uint8ArrayToHexViewer(contentAsArray);
           return {content, isEncoded: false};
@@ -102,7 +103,7 @@ export class BinaryResourceViewFactory {
   createUtf8View() {
     const utf8fn = this.utf8.bind(this);
     const utf8ContentProvider =
-        new Common.StaticContentProvider.StaticContentProvider(this._contentUrl, this._resourceType, utf8fn);
+        new TextUtils.StaticContentProvider.StaticContentProvider(this._contentUrl, this._resourceType, utf8fn);
     return new ResourceSourceFrame(
         utf8ContentProvider,
         /* autoPrettyPrint */ false, {lineNumbers: true, lineWrapping: true});

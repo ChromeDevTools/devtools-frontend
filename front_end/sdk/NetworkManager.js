@@ -97,7 +97,7 @@ export class NetworkManager extends SDKModel {
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
+   * @return {!Promise<!Array<!TextUtils.ContentProvider.SearchMatch>>}
    */
   static async searchInRequest(request, query, caseSensitive, isRegex) {
     const manager = NetworkManager.forRequest(request);

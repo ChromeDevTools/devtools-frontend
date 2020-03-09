@@ -94,7 +94,7 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
     this._initializeUISourceCode();
 
     /**
-     * @return {!Promise<!Common.ContentProvider.DeferredContent>}
+     * @return {!Promise<!TextUtils.ContentProvider.DeferredContent>}
      */
     function workingCopy() {
       if (uiSourceCode.isDirty()) {

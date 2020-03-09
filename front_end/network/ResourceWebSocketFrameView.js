@@ -21,6 +21,7 @@ import * as DataGrid from '../data_grid/data_grid.js';
 import * as Host from '../host/host.js';
 import * as SDK from '../sdk/sdk.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
+import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
 import {BinaryResourceView} from './BinaryResourceView.js';
@@ -206,7 +207,7 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
     }
 
     this._splitWidget.setSidebarWidget(new SourceFrame.ResourceSourceFrame.ResourceSourceFrame(
-        Common.StaticContentProvider.StaticContentProvider.fromString(
+        TextUtils.StaticContentProvider.StaticContentProvider.fromString(
             this._request.url(), Common.ResourceType.resourceTypes.WebSocket, content)));
   }
 

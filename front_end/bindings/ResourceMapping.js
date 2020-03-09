@@ -4,6 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
+import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
@@ -70,7 +71,8 @@ export class ResourceMapping {
     if (!uiSourceCode) {
       return null;
     }
-    const offset = header[offsetSymbol] || TextUtils.TextRange.createFromLocation(header.startLine, header.startColumn);
+    const offset =
+        header[offsetSymbol] || TextUtils.TextRange.TextRange.createFromLocation(header.startLine, header.startColumn);
     const lineNumber = cssLocation.lineNumber + offset.startLine - header.startLine;
     let columnNumber = cssLocation.columnNumber;
     if (cssLocation.lineNumber === header.startLine) {
@@ -96,8 +98,8 @@ export class ResourceMapping {
     if (!uiSourceCode) {
       return null;
     }
-    const offset =
-        script[offsetSymbol] || TextUtils.TextRange.createFromLocation(script.lineOffset, script.columnOffset);
+    const offset = script[offsetSymbol] ||
+        TextUtils.TextRange.TextRange.createFromLocation(script.lineOffset, script.columnOffset);
     const lineNumber = jsLocation.lineNumber + offset.startLine - script.lineOffset;
     let columnNumber = jsLocation.columnNumber;
     if (jsLocation.lineNumber === script.lineOffset) {
@@ -308,7 +310,7 @@ class ModelInfo {
 }
 
 /**
- * @implements {Common.ContentProvider.ContentProvider}
+ * @implements {TextUtils.ContentProvider.ContentProvider}
  */
 class Binding {
   /**
@@ -379,7 +381,7 @@ class Binding {
   async _innerStyleSheetChanged(content) {
     const scripts = this._inlineScripts();
     const styles = this._inlineStyles();
-    let text = new TextUtils.Text(content);
+    let text = new TextUtils.Text.Text(content);
     for (const data of this._edits) {
       const edit = data.edit;
       if (!edit) {
@@ -387,15 +389,15 @@ class Binding {
       }
       const stylesheet = data.stylesheet;
       const startLocation = stylesheet[offsetSymbol] ||
-          TextUtils.TextRange.createFromLocation(stylesheet.startLine, stylesheet.startColumn);
+          TextUtils.TextRange.TextRange.createFromLocation(stylesheet.startLine, stylesheet.startColumn);
 
       const oldRange = edit.oldRange.relativeFrom(startLocation.startLine, startLocation.startColumn);
       const newRange = edit.newRange.relativeFrom(startLocation.startLine, startLocation.startColumn);
-      text = new TextUtils.Text(text.replaceRange(oldRange, edit.newText));
+      text = new TextUtils.Text.Text(text.replaceRange(oldRange, edit.newText));
       const updatePromises = [];
       for (const script of scripts) {
-        const scriptOffset =
-            script[offsetSymbol] || TextUtils.TextRange.createFromLocation(script.lineOffset, script.columnOffset);
+        const scriptOffset = script[offsetSymbol] ||
+            TextUtils.TextRange.TextRange.createFromLocation(script.lineOffset, script.columnOffset);
         if (!scriptOffset.follows(oldRange)) {
           continue;
         }
@@ -404,7 +406,7 @@ class Binding {
       }
       for (const style of styles) {
         const styleOffset =
-            style[offsetSymbol] || TextUtils.TextRange.createFromLocation(style.startLine, style.startColumn);
+            style[offsetSymbol] || TextUtils.TextRange.TextRange.createFromLocation(style.startLine, style.startColumn);
         if (!styleOffset.follows(oldRange)) {
           continue;
         }
@@ -462,7 +464,7 @@ class Binding {
 
   /**
    * @override
-   * @return {!Promise<!Common.ContentProvider.DeferredContent>}
+   * @return {!Promise<!TextUtils.ContentProvider.DeferredContent>}
    */
   requestContent() {
     return this._resources.firstValue().requestContent();
@@ -473,7 +475,7 @@ class Binding {
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
+   * @return {!Promise<!Array<!TextUtils.ContentProvider.SearchMatch>>}
    */
   searchInContent(query, caseSensitive, isRegex) {
     return this._resources.firstValue().searchInContent(query, caseSensitive, isRegex);

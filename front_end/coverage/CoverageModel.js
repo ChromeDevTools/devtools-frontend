@@ -44,7 +44,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
 
     /** @type {!Map<string, !URLCoverageInfo>} */
     this._coverageByURL = new Map();
-    /** @type {!Map<!Common.ContentProvider.ContentProvider, !CoverageInfo>} */
+    /** @type {!Map<!TextUtils.ContentProvider.ContentProvider, !CoverageInfo>} */
     this._coverageByContentProvider = new Map();
 
     // We keep track of the update times, because the other data-structures don't change if an
@@ -249,7 +249,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
   }
 
   /**
-   * @param {!Common.ContentProvider.ContentProvider} contentProvider
+   * @param {!TextUtils.ContentProvider.ContentProvider} contentProvider
    * @param {number} startOffset
    * @param {number} endOffset
    * @return {boolean|undefined}
@@ -486,7 +486,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
   }
 
   /**
-   * @param {!Common.ContentProvider.ContentProvider} contentProvider
+   * @param {!TextUtils.ContentProvider.ContentProvider} contentProvider
    * @param {number} contentLength
    * @param {number} startLine
    * @param {number} startColumn
@@ -697,7 +697,7 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Common.ContentProvider.ContentProvider} contentProvider
+   * @param {!TextUtils.ContentProvider.ContentProvider} contentProvider
    * @param {number} contentLength
    * @param {number} lineOffset
    * @param {number} columnOffset
@@ -740,7 +740,7 @@ URLCoverageInfo.Events = {
  */
 export class CoverageInfo {
   /**
-   * @param {!Common.ContentProvider.ContentProvider} contentProvider
+   * @param {!TextUtils.ContentProvider.ContentProvider} contentProvider
    * @param {number} size
    * @param {number} lineOffset
    * @param {number} columnOffset
@@ -760,7 +760,7 @@ export class CoverageInfo {
   }
 
   /**
-   * @return {!Common.ContentProvider.ContentProvider}
+   * @return {!TextUtils.ContentProvider.ContentProvider}
    */
   contentProvider() {
     return this._contentProvider;

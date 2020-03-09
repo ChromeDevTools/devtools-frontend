@@ -498,7 +498,7 @@ export class NetworkLogView extends UI.Widget.VBox {
     const contentData = await request.contentData();
     let content = contentData.content || '';
     if (!request.contentType().isTextType()) {
-      content = Common.ContentProvider.contentAsDataURL(content, request.mimeType, contentData.encoded);
+      content = TextUtils.ContentProvider.contentAsDataURL(content, request.mimeType, contentData.encoded);
     } else if (contentData.encoded) {
       content = window.atob(content);
     }

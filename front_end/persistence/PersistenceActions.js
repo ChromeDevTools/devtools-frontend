@@ -4,6 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
 import * as Workspace from '../workspace/workspace.js';
 
@@ -19,7 +20,7 @@ export class ContextMenuProvider {
    * @param {!Object} target
    */
   appendApplicableItems(event, contextMenu, target) {
-    const contentProvider = /** @type {!Common.ContentProvider.ContentProvider} */ (target);
+    const contentProvider = /** @type {!TextUtils.ContentProvider.ContentProvider} */ (target);
     async function saveAs() {
       if (contentProvider instanceof Workspace.UISourceCode.UISourceCode) {
         /** @type {!Workspace.UISourceCode.UISourceCode} */ (contentProvider).commitWorkingCopy();

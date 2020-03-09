@@ -147,8 +147,8 @@ export class SourceFormatter {
         formattedURL = `${uiSourceCode.url()}:formatted${suffix}`;
         suffix = `:${count++}`;
       } while (this._project.uiSourceCodeForURL(formattedURL));
-      const contentProvider = Common.StaticContentProvider.StaticContentProvider.fromString(
-          formattedURL, uiSourceCode.contentType(), formattedContent);
+      const contentProvider =
+          TextUtils.StaticContentProvider.fromString(formattedURL, uiSourceCode.contentType(), formattedContent);
       const formattedUISourceCode =
           this._project.addContentProvider(formattedURL, contentProvider, uiSourceCode.mimeType());
       const formatData = new SourceFormatData(uiSourceCode, formattedUISourceCode, formatterMapping);

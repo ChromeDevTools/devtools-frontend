@@ -5,6 +5,7 @@
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Host from '../host/host.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
+import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
 export class BinaryResourceView extends UI.Widget.VBox {
@@ -172,7 +173,7 @@ export class BinaryViewObject {
    * @param {string} label
    * @param {string} copiedMessage
    * @param {function():!UI.Widget.Widget} createViewFn
-   * @param {function():Promise<!Common.ContentProvider.DeferredContent>} deferredContent
+   * @param {function():Promise<!TextUtils.ContentProvider.DeferredContent>} deferredContent
    */
   constructor(type, label, copiedMessage, createViewFn, deferredContent) {
     this.type = type;

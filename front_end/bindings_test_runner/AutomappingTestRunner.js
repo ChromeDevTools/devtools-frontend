@@ -73,7 +73,7 @@ BindingsTestRunner.AutomappingTest.prototype = {
     for (const url in assets) {
       const asset = assets[url];
       const contentType = asset.contentType || Common.resourceTypes.Script;
-      const contentProvider = Common.StaticContentProvider.fromString(url, contentType, asset.content);
+      const contentProvider = TextUtils.StaticContentProvider.fromString(url, contentType, asset.content);
       const metadata =
           (typeof asset.content === 'string' || asset.time ?
                new Workspace.UISourceCodeMetadata(asset.time, asset.content.length) :

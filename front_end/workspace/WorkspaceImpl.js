@@ -29,6 +29,7 @@
  */
 
 import * as Common from '../common/common.js';
+import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 
 import {UISourceCode, UISourceCodeMetadata} from './UISourceCode.js';  // eslint-disable-line no-unused-vars
 
@@ -111,7 +112,7 @@ export class Project {
 
   /**
    * @param {!UISourceCode} uiSourceCode
-   * @returns {!Promise<!Common.ContentProvider.DeferredContent>}
+   * @returns {!Promise<!TextUtils.ContentProvider.DeferredContent>}
    */
   requestFileContent(uiSourceCode) {
   }
@@ -202,7 +203,7 @@ export class Project {
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
+   * @return {!Promise<!Array<!TextUtils.ContentProvider.SearchMatch>>}
    */
   searchInFileContent(uiSourceCode, query, caseSensitive, isRegex) {
   }

@@ -123,7 +123,7 @@ export class UIRequestLocation {
    * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @param {?SDK.NetworkRequest.NameValue} requestHeader
    * @param {?SDK.NetworkRequest.NameValue} responseHeader
-   * @param {?Common.ContentProvider.SearchMatch} searchMatch
+   * @param {?TextUtils.ContentProvider.SearchMatch} searchMatch
    * @param {boolean} urlMatch
    */
   constructor(request, requestHeader, responseHeader, searchMatch, urlMatch) {
@@ -152,7 +152,7 @@ export class UIRequestLocation {
 
   /**
    * @param {!SDK.NetworkRequest.NetworkRequest} request
-   * @param {?Common.ContentProvider.SearchMatch} searchMatch
+   * @param {?TextUtils.ContentProvider.SearchMatch} searchMatch
    */
   static bodyMatch(request, searchMatch) {
     return new UIRequestLocation(request, null, null, searchMatch, false);

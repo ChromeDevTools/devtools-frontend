@@ -1317,6 +1317,7 @@ if (is_debug) {
     "platform/utilities.js",
     "platform/string-utilities.js",
     "platform/number-utilities.js",
+    "platform/array-utilities.js",
     "profiler/TopDownProfileDataGrid.js",
     "profiler/ProfileView.js",
     "profiler/ProfileTypeRegistry.js",

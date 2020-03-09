@@ -6,6 +6,7 @@
         "platform.js",
         "utilities.js",
         "string-utilities.js",
-        "number-utilities.js"
+        "number-utilities.js",
+        "array-utilities.js"
     ]
 }

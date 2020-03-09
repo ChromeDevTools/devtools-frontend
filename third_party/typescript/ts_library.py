@@ -44,7 +44,11 @@ def main():
     parser.add_argument('-deps', '--deps', nargs='*', help='List of Ninja build dependencies')
     parser.add_argument('-dir', '--front_end_directory', required=True, help='Folder that contains source files')
     parser.add_argument('-b', '--tsconfig_output_location', required=True)
+    parser.add_argument('--test-only', action='store_true')
+    parser.set_defaults(test_only=False)
+
     opts = parser.parse_args()
+
     with open(ROOT_TS_CONFIG_LOCATION) as root_tsconfig:
         try:
             tsconfig = json.loads(root_tsconfig.read())
@@ -91,11 +95,12 @@ def main():
     # re-order the "json"-like output.
     fix_non_determinism_in_ts_buildinfo(path.join(tsconfig_output_directory, tsbuildinfo_name))
 
-    # We are currently still loading devtools from out/<NAME>/resources/inspector
-    # but we generate our sources in out/<NAME>/gen/ (which is the proper location).
-    # For now, copy paste the build output back into resources/inspector to keep
-    # DevTools loading properly
-    copy_all_typescript_sources(sources, path.dirname(tsconfig_output_location))
+    if not opts.test_only:
+        # We are currently still loading devtools from out/<NAME>/resources/inspector
+        # but we generate our sources in out/<NAME>/gen/ (which is the proper location).
+        # For now, copy paste the build output back into resources/inspector to keep
+        # DevTools loading properly
+        copy_all_typescript_sources(sources, path.dirname(tsconfig_output_location))
 
     return 0
 
@@ -128,7 +133,7 @@ def copy_all_typescript_sources(sources, output_directory):
     while path.basename(front_end_output_location) != 'front_end':
         front_end_output_location = path.dirname(front_end_output_location)
     for src in sources:
-        if (src.endswith('.ts') and not src.endswith('_test.ts')) or src.endswith('_bridge.js'):
+        if src.endswith('.ts') or src.endswith('_bridge.js'):
             generated_javascript_location = path.join(output_directory, path.basename(src).replace('.ts', '.js'))
 
             relative_path_from_generated_front_end_folder = path.relpath(generated_javascript_location, front_end_output_location)

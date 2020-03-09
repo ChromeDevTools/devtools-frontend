@@ -1,6 +1,7 @@
 import("../../../../third_party/typescript/typescript.gni")
 
 ts_library("common") {
+  testonly = true
   deps = [
     ":character_id_map",
     ":color",
@@ -19,79 +20,79 @@ ts_library("common") {
 }
 
 ts_library("character_id_map") {
+  testonly = true
   sources = [ "CharacterIdMap_test.ts" ]
-
   deps = [ "../../../../front_end/common" ]
 }
 
 ts_library("color") {
+  testonly = true
   sources = [ "Color_test.ts" ]
-
   deps = [ "../../../../front_end/common" ]
 }
 
 ts_library("console") {
+  testonly = true
   sources = [ "Console_test.ts" ]
-
   deps = [ "../../../../front_end/common" ]
 }
 
 ts_library("object") {
+  testonly = true
   sources = [ "Object_test.ts" ]
-
   deps = [ "../../../../front_end/common" ]
 }
 
 ts_library("parsed_url") {
+  testonly = true
   sources = [ "ParsedURL_test.ts" ]
-
   deps = [ "../../../../front_end/common" ]
 }
 
 ts_library("progress") {
+  testonly = true
   sources = [ "Progress_test.ts" ]
-
   deps = [ "../../../../front_end/common" ]
 }
 
 ts_library("resource_type") {
+  testonly = true
   sources = [ "ResourceType_test.ts" ]
-
   deps = [ "../../../../front_end/common" ]
 }
 
 ts_library("segmented_range") {
+  testonly = true
   sources = [ "SegmentedRange_test.ts" ]
-
   deps = [ "../../../../front_end/common" ]
 }
 
 ts_library("string_output_stream") {
+  testonly = true
   sources = [ "StringOutputStream_test.ts" ]
-
   deps = [ "../../../../front_end/common" ]
 }
 
 ts_library("text_dictionary") {
+  testonly = true
   sources = [ "TextDictionary_test.ts" ]
-
   deps = [ "../../../../front_end/common" ]
 }
 
 ts_library("throttler") {
+  testonly = true
   sources = [ "Throttler_test.ts" ]
-
   deps = [ "../../../../front_end/common" ]
 }
 
 ts_library("trie") {
+  testonly = true
   sources = [ "Trie_test.ts" ]
-
   deps = [ "../../../../front_end/common" ]
 }
 
 ts_library("ui_string") {
+  testonly = true
   sources = [ "UIString_test.ts" ]
-
   deps = [ "../../../../front_end/common" ]
 }

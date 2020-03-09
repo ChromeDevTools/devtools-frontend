@@ -12,13 +12,27 @@ if (defined(use_devtools_typescript) && use_devtools_typescript) {
 # A temporary tsconfig.json is generated which uses the
 # tsconfig.json in this folder as basis.
 #
+# Either `sources` or `deps` must be listed (or both).
+#
+# For tests, you must specify the `testonly = true` argument:
+#
 # Variables:
-#   sources:
+#   sources (optional):
 #     List of TypeScript files to typecheck and generate
+#   deps (optional):
+#     List of dependencies that are ts_libraries or export a tsconfig.json
 # Example:
 #   ts_library("main") {
-#     sources = ["bar.ts", "foo.ts"]
+#     sources = ["bar.js", "foo.ts"]
+#     deps = ["../common"]
 #   }
+#
+#   ts_library("unittest") {
+#     testonly = true
+#     sources = [ "bar_test.ts" ]
+#     deps = [ "../../../../front_end/common" ]
+#   }
+#
 template("ts_library") {
   action(target_name) {
     script = "//$devtools_location/third_party/typescript/ts_library.py"
@@ -45,6 +59,8 @@ template("ts_library") {
         defined(sources) || defined(deps),
         "You must either specify an array of 'sources' or 'deps' for $target_name")
 
+    _test_only = defined(invoker.testonly) && invoker.testonly
+
     if (defined(deps)) {
       args += [ "--deps" ]
       foreach(dep, deps) {
@@ -65,6 +81,10 @@ template("ts_library") {
       "--front_end_directory",
       rebase_path(".", root_build_dir),
     ]
+
+    if (_test_only) {
+      args += [ "--test-only" ]
+    }
 
     output_files = [
       "$target_gen_dir/$target_name-tsconfig.json",
@@ -91,8 +111,7 @@ template("ts_library") {
 
           # check that the file is TypeScript and not a unittest file
           # add it to the outputs
-          if (_extension == "ts" &&
-              string_replace(_fileName, "_test", "") == _fileName) {
+          if (_extension == "ts" && !_test_only) {
             _front_end_module_name = get_path_info(target_gen_dir, "name")
 
             # Generate JavaScript files are temporarily copied into the old

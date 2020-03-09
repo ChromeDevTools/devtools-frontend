@@ -904,6 +904,7 @@ foreach(module, devtools_module_entrypoints) {
 }
 
 group("devtools_all_files") {
+  testonly = true
   data = all_devtools_files + generated_devtools_module_entrypoints
   data += [
     # This enables us to test bots with whitespace changes.
@@ -936,12 +937,14 @@ if (debug_devtools) {
   devtools_frontend_resources_deps += [ ":build_debug_devtools" ]
 }
 
+devtools_frontend_resources_data_test_deps = devtools_frontend_resources_deps
+
 # It is unclear why, but the Android Ninja configuration starts warning about
 # duplicate files being generated. This does not happen for regular Chromium
 # builds. Since we don't run these tests on Android any case, we disable
 # the generation of the tests on Android.
 if (!is_android) {
-  devtools_frontend_resources_deps += [
+  devtools_frontend_resources_data_test_deps += [
     ":copy_karma_conf",
     "test/unittests/front_end/common",
     "test/unittests/front_end/formatter_worker",
@@ -955,7 +958,8 @@ group("devtools_frontend_resources") {
 
 # Do not use this unless you need unpacked devtools at runtime.
 group("devtools_frontend_resources_data") {
-  data_deps = devtools_frontend_resources_deps
+  testonly = true
+  data_deps = devtools_frontend_resources_data_test_deps
 }
 
 copy("copy_embedder_scripts") {

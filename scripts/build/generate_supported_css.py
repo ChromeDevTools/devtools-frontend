@@ -56,10 +56,12 @@ def properties_from_file(file_name):
     properties = []
     property_names = {}
     property_values = {}
+    aliases_for = {}
     for entry in doc["data"]:
         if type(entry) is str:
             entry = {"name": entry}
         if "alias_for" in entry:
+            aliases_for[entry["name"]] = entry["alias_for"]
             continue
         properties.append(_keep_only_required_keys(entry))
         property_names[entry["name"]] = entry
@@ -87,10 +89,12 @@ def properties_from_file(file_name):
         if all_inherited:
             property["inherited"] = True
 
-    return properties, property_values
+    return properties, property_values, aliases_for
 
 
-properties, property_values = properties_from_file(READ_LOCATION)
+properties, property_values, aliases_for = properties_from_file(READ_LOCATION)
 with open(GENERATED_LOCATION, "w+") as f:
     f.write("export const generatedProperties = %s;\n" % json.dumps(properties))
+    # sort keys to ensure entries are generated in a deterministic way to avoid inconsistencies across different OS
     f.write("export const generatedPropertyValues = %s;\n" % json.dumps(property_values, sort_keys=True))
+    f.write("export const generatedAliasesFor = new Map(Object.entries(%s));\n" % json.dumps(aliases_for, sort_keys=True))

@@ -66,9 +66,10 @@ export class SettingsScreen extends UI.Widget.VBox {
   }
 
   /**
-   * @param {string=} name
+   * @param {{name: (string|undefined), focusTabHeader: (boolean|undefined)}=} options
    */
-  static async _showSettingsScreen(name) {
+  static async _showSettingsScreen(options = {}) {
+    const {name, focusTabHeader} = options;
     const settingsScreen =
         /** @type {!SettingsScreen} */ (self.runtime.sharedInstance(SettingsScreen));
     if (settingsScreen.isShowing()) {
@@ -83,9 +84,12 @@ export class SettingsScreen extends UI.Widget.VBox {
     settingsScreen.show(dialog.contentElement);
     dialog.show();
     settingsScreen._selectTab(name || 'preferences');
-    const tabbedPane = settingsScreen._tabbedLocation.tabbedPane();
-    await tabbedPane.waitForTabElementUpdate();
-    tabbedPane.focusSelectedTabHeader();
+
+    if (focusTabHeader) {
+      const tabbedPane = settingsScreen._tabbedLocation.tabbedPane();
+      await tabbedPane.waitForTabElementUpdate();
+      tabbedPane.focusSelectedTabHeader();
+    }
   }
 
   /**
@@ -308,14 +312,14 @@ export class ActionDelegate {
   handleAction(context, actionId) {
     switch (actionId) {
       case 'settings.show':
-        SettingsScreen._showSettingsScreen();
+        SettingsScreen._showSettingsScreen({focusTabHeader: true});
         return true;
       case 'settings.documentation':
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
             UI.UIUtils.addReferrerToURL('https://developers.google.com/web/tools/chrome-devtools/'));
         return true;
       case 'settings.shortcuts':
-        SettingsScreen._showSettingsScreen(Common.UIString.UIString('Shortcuts'));
+        SettingsScreen._showSettingsScreen({name: ls`Shortcuts`, focusTabHeader: true});
         return true;
     }
     return false;
@@ -380,7 +384,7 @@ export class Revealer {
       const settings = extension.descriptor()['settings'];
       if (settings && settings.indexOf(setting.name) !== -1) {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
-        SettingsScreen._showSettingsScreen(extension.descriptor()['id']);
+        SettingsScreen._showSettingsScreen({name: extension.descriptor()['id']});
         success = true;
       }
     }

@@ -4,6 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -502,7 +503,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
   _removeAnimationGroup(group, event) {
     const currentGroupIndex = this._groupBuffer.indexOf(group);
 
-    this._groupBuffer.remove(group);
+    Platform.ArrayUtilities.removeElement(this._groupBuffer, group);
     this._previewMap.get(group).element.remove();
     this._previewMap.delete(group);
     group.release();

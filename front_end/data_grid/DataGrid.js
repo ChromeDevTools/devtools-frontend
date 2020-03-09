@@ -2110,7 +2110,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
 
     child._detach();
     child.resetNode();
-    this.children.remove(child, true);
+    Platform.ArrayUtilities.removeElement(this.children, child, true);
 
     if (this.children.length <= 0) {
       this.setHasChildren(false);

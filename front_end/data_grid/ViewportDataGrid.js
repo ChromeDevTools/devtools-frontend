@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../platform/platform.js';
+
 import {DataGridImpl, DataGridNode, Parameters} from './DataGrid.js';  // eslint-disable-line no-unused-vars
 
 /**
@@ -430,7 +432,7 @@ export class ViewportDataGridNode extends DataGridNode {
       throw 'removeChild: Node is not a child of this node.';
     }
 
-    this.children.remove(child, true);
+    Platform.ArrayUtilities.removeElement(this.children, child, true);
     child._unlink();
 
     if (!this.children.length) {

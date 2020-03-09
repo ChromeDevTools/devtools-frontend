@@ -28,6 +28,7 @@
 // each child still represent the root node. We have to be particularly careful of recursion with this mode
 // because a root node can represent itself AND an ancestor.
 
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';     // eslint-disable-line no-unused-vars
 
@@ -291,7 +292,7 @@ export class BottomUpProfileDataGridTree extends ProfileDataGridTree {
     // If we have a top level node that is excluded, get rid of it completely (not keeping children),
     // since bottom up data relies entirely on the root node.
     if (excludedTopLevelChild) {
-      this.children.remove(excludedTopLevelChild);
+      Platform.ArrayUtilities.removeElement(this.children, excludedTopLevelChild);
     }
 
     const children = this.children;

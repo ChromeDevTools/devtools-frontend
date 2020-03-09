@@ -30,7 +30,8 @@ const excludeDirs = [
   'langpacks',
   'node_modules',
   'lighthouse/lighthouse',
-  'lighthouse_worker/lighthouse'
+  'lighthouse_worker/lighthouse',
+  'front_end/third_party',
 ];
 const cppSpecialCharactersMap = {
   '"': '\\"',

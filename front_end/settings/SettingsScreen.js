@@ -312,7 +312,7 @@ export class ActionDelegate {
         return true;
       case 'settings.documentation':
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
-            'https://developers.google.com/web/tools/chrome-devtools/');
+            UI.UIUtils.addReferrerToURL('https://developers.google.com/web/tools/chrome-devtools/'));
         return true;
       case 'settings.shortcuts':
         SettingsScreen._showSettingsScreen(Common.UIString.UIString('Shortcuts'));

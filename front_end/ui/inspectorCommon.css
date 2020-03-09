@@ -51,7 +51,7 @@
 }
 
 input[type=radio]:focus {
-    outline: auto 5px -webkit-focus-ring-color;
+    box-shadow: var(--focus-ring-active-shadow);
 }
 
 img {

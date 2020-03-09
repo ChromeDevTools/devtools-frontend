@@ -14,9 +14,7 @@ export class DefaultCodeMirrorMimeMode {
    * @override
    */
   async install(extension) {
-    const modeFileName = extension.descriptor()['fileName'];
-
-    return /** @type {!Promise} */ (eval(`import('./${modeFileName}')`));
+    return Promise.resolve();
   }
 }
 

@@ -23,7 +23,7 @@ function main() {
     ...checkNonAutostartNonRemoteModules(),
     ...checkAllDevToolsFiles(),
     ...checkAllDevToolsModules(),
-    ...checkCopiedDevToolsModules(),
+    ...checkDevtoolsModuleEntrypoints(),
   ];
   if (errors.length) {
     console.log('DevTools BUILD.gn checker detected errors!');
@@ -85,19 +85,29 @@ function checkAllDevToolsFiles() {
 }
 
 function checkAllDevToolsModules() {
-  return checkGNVariable('all_devtools_modules', (moduleJSON) => {
-    return moduleJSON.modules || [];
-  });
-}
-
-function checkCopiedDevToolsModules() {
   return checkGNVariable(
-      'copied_devtools_modules',
-      (moduleJSON) => {
-        return moduleJSON.modules || [];
+      'all_devtools_modules',
+      (moduleJSON, folderName) => {
+        return (moduleJSON.modules || []).filter(fileName => {
+          return fileName !== `${folderName}.js` && fileName !== `${folderName}-legacy.js`;
+        });
       },
       (buildGNPath) => (filename) => {
-        const relativePath = path.normalize(`$resources_out_dir/${buildGNPath}/${filename}`);
+        const relativePath = path.normalize(`${buildGNPath}/${filename}`);
+        return `"${relativePath}",`;
+      });
+}
+
+function checkDevtoolsModuleEntrypoints() {
+  return checkGNVariable(
+      'devtools_module_entrypoints',
+      (moduleJSON, folderName) => {
+        return (moduleJSON.modules || []).filter(fileName => {
+          return fileName === `${folderName}.js` || fileName === `${folderName}-legacy.js`;
+        });
+      },
+      (buildGNPath) => (filename) => {
+        const relativePath = path.normalize(`${buildGNPath}/${filename}`);
         return `"${relativePath}",`;
       });
 }
@@ -115,9 +125,9 @@ function checkGNVariable(gnVariable, obtainFiles, obtainRelativePath) {
   const gnFiles = new Set(lines);
   var moduleFiles = [];
 
-  function addModuleFilesForDirectory(moduleJSONPath, buildGNPath) {
+  function addModuleFilesForDirectory(moduleJSONPath, buildGNPath, folderName) {
     const moduleJSON = require(moduleJSONPath);
-    const files = obtainFiles(moduleJSON)
+    const files = obtainFiles(moduleJSON, folderName)
                       .map(obtainRelativePath && obtainRelativePath(buildGNPath) || relativePathFromBuildGN)
                       .filter(file => excludedFiles.every(excludedFile => !file.includes(excludedFile)));
     moduleFiles = moduleFiles.concat(files);
@@ -134,7 +144,7 @@ function checkGNVariable(gnVariable, obtainFiles, obtainRelativePath) {
     }
     const moduleJSONPath = path.join(folderName, 'module.json');
     if (utils.isFile(moduleJSONPath)) {
-      addModuleFilesForDirectory(moduleJSONPath, buildGNPath);
+      addModuleFilesForDirectory(moduleJSONPath, buildGNPath, path.basename(folderName));
     }
 
     fs.readdirSync(folderName).forEach((nestedModuleName) => {

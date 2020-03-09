@@ -399,39 +399,43 @@ export class CSSModel extends SDKModel {
    * @param {!DOMNode} node
    * @param {string} pseudoClass
    * @param {boolean} enable
-   * @return {boolean}
    */
   forcePseudoState(node, pseudoClass, enable) {
-    const pseudoClasses = node.marker(PseudoStateMarker) || [];
+    const pseudoClasses = node.marker(PseudoStateMarker) || new Set();
     if (enable) {
-      if (pseudoClasses.indexOf(pseudoClass) >= 0) {
-        return false;
+      if (pseudoClasses.has(pseudoClass)) {
+        return;
       }
-      pseudoClasses.push(pseudoClass);
+      pseudoClasses.add(pseudoClass);
       node.setMarker(PseudoStateMarker, pseudoClasses);
     } else {
-      if (pseudoClasses.indexOf(pseudoClass) < 0) {
-        return false;
+      if (!pseudoClasses.has(pseudoClass)) {
+        return;
       }
-      pseudoClasses.remove(pseudoClass);
-      if (pseudoClasses.length) {
+      pseudoClasses.delete(pseudoClass);
+      if (pseudoClasses.size) {
         node.setMarker(PseudoStateMarker, pseudoClasses);
       } else {
         node.setMarker(PseudoStateMarker, null);
       }
     }
 
-    this._agent.forcePseudoState(node.id, pseudoClasses);
-    this.dispatchEventToListeners(Events.PseudoStateForced, {node: node, pseudoClass: pseudoClass, enable: enable});
+    this._agent.forcePseudoState(node.id, [...pseudoClasses]);
+    this.dispatchEventToListeners(
+        Events.PseudoStateForced, {node: node, pseudoClass: [...pseudoClass], enable: enable});
     return true;
   }
 
   /**
    * @param {!DOMNode} node
-   * @return {?Array<string>} state
+   * @return {!Array<string>} state
    */
   pseudoState(node) {
-    return node.marker(PseudoStateMarker) || [];
+    const pseudoClasses = node.marker(PseudoStateMarker);
+    if (pseudoClasses) {
+      return [...pseudoClasses];
+    }
+    return [];
   }
 
   /**

@@ -52,8 +52,6 @@ describe('The Elements Tab', async () => {
       return numFound === 3;
     }, 'Unable to find 3 style sections on page');
 
-    frontend.waitForFunction;
-
     const styleSections = await $$('.styles-section');
     const selectorTexts = await styleSections.evaluate((nodes: Element[]) => nodes.map(node => node.textContent));
 

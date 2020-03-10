@@ -945,6 +945,7 @@ if (!is_android) {
     ":copy_karma_conf",
     "test/unittests/front_end/common",
     "test/unittests/front_end/formatter_worker",
+    "test/unittests/front_end/platform",
   ]
 }
 

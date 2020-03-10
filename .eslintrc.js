@@ -1,3 +1,7 @@
+const path = require('path');
+const rulesDirPlugin = require('eslint-plugin-rulesdir')
+rulesDirPlugin.RULES_DIR = path.join(__dirname, 'scripts', 'eslint_rules', 'lib');
+
 module.exports = {
   'root': true,
 
@@ -8,6 +12,7 @@ module.exports = {
   'plugins': [
     '@typescript-eslint',
     'mocha',
+    'rulesdir',
   ],
 
   'parserOptions': {'ecmaVersion': 9, 'sourceType': 'module'},
@@ -121,6 +126,9 @@ module.exports = {
     'mocha/no-pending-tests': 2,
     // errors on {describe, it}.only
     'mocha/no-exclusive-tests': 2,
+
+    // DevTools specific rules
+    'rulesdir/es_modules_import': 2,
   },
   'overrides': [{
     'files': ['*.ts'],

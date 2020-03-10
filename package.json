@@ -32,6 +32,7 @@
     "debug-test": "node scripts/npm_test.js --debug-devtools",
     "debug-unittest": "DEBUG=1 npm run unittest",
     "e2etest": "python scripts/test/run_test_suite.py --test-suite=e2e",
+    "eslint-test": "mocha \"./scripts/eslint_rules/tests/*_test.js\"",
     "generate-jsconfig": "node scripts/generate_jsconfig.js",
     "generate-protocol-resources": "python scripts/deps/generate_protocol_resources.py",
     "install-deps": "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true python scripts/deps/manage_node_deps.py",

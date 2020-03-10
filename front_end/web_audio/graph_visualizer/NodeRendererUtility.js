@@ -2,16 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as GraphStyle from './GraphStyle.js';
+import {AudioParamRadius, InputPortRadius, LeftSideTopPadding, Point, Size, TotalInputPortHeight, TotalOutputPortHeight, TotalParamPortHeight} from './GraphStyle.js';  // eslint-disable-line no-unused-vars
 
 /**
  * Calculate the x, y value of input port.
  * Input ports are placed near the top of the left-side border.
  * @param {number} portIndex
- * @return {!GraphStyle.Point}
+ * @return {!Point}
  */
 export const calculateInputPortXY = portIndex => {
-  const y = GraphStyle.InputPortRadius + GraphStyle.LeftSideTopPadding + portIndex * GraphStyle.TotalInputPortHeight;
+  const y = InputPortRadius + LeftSideTopPadding + portIndex * TotalInputPortHeight;
   return {x: 0, y: y};
 };
 
@@ -19,13 +19,13 @@ export const calculateInputPortXY = portIndex => {
  * Calculate the x, y value of output port.
  * Output ports are placed near the center of the right-side border.
  * @param {number} portIndex
- * @param {!GraphStyle.Size} nodeSize
+ * @param {!Size} nodeSize
  * @param {number} numberOfOutputs
- * @return {!GraphStyle.Point}
+ * @return {!Point}
  */
 export const calculateOutputPortXY = (portIndex, nodeSize, numberOfOutputs) => {
   const {width, height} = nodeSize;
-  const outputPortY = (height / 2) + (2 * portIndex - numberOfOutputs + 1) * GraphStyle.TotalOutputPortHeight / 2;
+  const outputPortY = (height / 2) + (2 * portIndex - numberOfOutputs + 1) * TotalOutputPortHeight / 2;
 
   return {x: width, y: outputPortY};
 };
@@ -35,9 +35,9 @@ export const calculateOutputPortXY = (portIndex, nodeSize, numberOfOutputs) => {
  * Param ports are placed near the bottom of the left-side border.
  * @param {number} portIndex
  * @param {number} offsetY
- * @return {!GraphStyle.Point}
+ * @return {!Point}
  */
 export const calculateParamPortXY = (portIndex, offsetY) => {
-  const paramPortY = offsetY + GraphStyle.TotalParamPortHeight * (portIndex + 1) - GraphStyle.AudioParamRadius;
+  const paramPortY = offsetY + TotalParamPortHeight * (portIndex + 1) - AudioParamRadius;
   return {x: 0, y: paramPortY};
 };

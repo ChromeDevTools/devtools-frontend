@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {config} from '../generated/ARIAProperties.js';
+import * as ARIAProperties from '../generated/ARIAProperties.js';
 
 /**
  * @unrestricted
@@ -60,7 +60,7 @@ export class ARIAMetadata {
  */
 export function ariaMetadata() {
   if (!ARIAMetadata._instance) {
-    ARIAMetadata._instance = new ARIAMetadata(config || null);
+    ARIAMetadata._instance = new ARIAMetadata(ARIAProperties.config || null);
   }
   return ARIAMetadata._instance;
 }

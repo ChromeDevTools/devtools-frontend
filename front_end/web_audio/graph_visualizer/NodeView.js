@@ -2,14 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as GraphStyle from './GraphStyle.js';
+import {BottomPaddingWithoutParam, BottomPaddingWithParam, LeftMarginOfText, LeftSideTopPadding, NodeCreationData, NodeLabelFontStyle, NodeLayout, ParamLabelFontStyle, Port, PortTypes, RightMarginOfText, TotalInputPortHeight, TotalOutputPortHeight, TotalParamPortHeight} from './GraphStyle.js';  // eslint-disable-line no-unused-vars
 import {calculateInputPortXY, calculateOutputPortXY, calculateParamPortXY} from './NodeRendererUtility.js';
 
 // A class that represents a node of a graph, consisting of the information needed to layout the
 // node and display the node. Each node has zero or more ports, including input, output, and param ports.
 export class NodeView {
   /**
-   * @param {!GraphStyle.NodeCreationData} data
+   * @param {!NodeCreationData} data
    * @param {string} label
    */
   constructor(data, label) {
@@ -24,21 +24,21 @@ export class NodeView {
     // and this node should not be rendered. It will be set after layouting.
     this.position = null;
 
-    /** @type {!GraphStyle.NodeLayout} */
+    /** @type {!NodeLayout} */
     this._layout = {
       inputPortSectionHeight: 0,
       outputPortSectionHeight: 0,
       maxTextLength: 0,
       totalHeight: 0,
     };
-    /** @type {!Map<string, !GraphStyle.Port>} */
+    /** @type {!Map<string, !Port>} */
     this.ports = new Map();
 
     this._initialize(data);
   }
 
   /**
-   * @param {!GraphStyle.NodeCreationData} data
+   * @param {!NodeCreationData} data
    */
   _initialize(data) {
     this._updateNodeLayoutAfterAddingNode(data);
@@ -55,13 +55,13 @@ export class NodeView {
    * @param {string} paramType
    */
   addParamPort(paramId, paramType) {
-    const paramPorts = this.getPortsByType(GraphStyle.PortTypes.Param);
+    const paramPorts = this.getPortsByType(PortTypes.Param);
     const numberOfParams = paramPorts.length;
 
     const {x, y} = calculateParamPortXY(numberOfParams, this._layout.inputPortSectionHeight);
     this._addPort({
       id: generateParamPortId(this.id, paramId),
-      type: GraphStyle.PortTypes.Param,
+      type: PortTypes.Param,
       label: paramType,
       x,
       y,
@@ -74,8 +74,8 @@ export class NodeView {
   }
 
   /**
-   * @param {!GraphStyle.PortTypes} type
-   * @return {!Array<!GraphStyle.Port>}
+   * @param {!PortTypes} type
+   * @return {!Array<!Port>}
    */
   getPortsByType(type) {
     const result = [];
@@ -93,17 +93,10 @@ export class NodeView {
    * Credit: This function is mostly borrowed from Audion/
    *      `audion.entryPoints.handleNodeCreated_()`.
    *      https://github.com/google/audion/blob/master/js/entry-points/panel.js
-   * @param {!GraphStyle.NodeCreationData} data
+   * @param {!NodeCreationData} data
    */
   _updateNodeLayoutAfterAddingNode(data) {
     // Even if there are no input ports, leave room for the node label.
-    const {
-      TotalInputPortHeight,
-      LeftSideTopPadding,
-      BottomPaddingWithoutParam,
-      TotalOutputPortHeight,
-      NodeLabelFontStyle,
-    } = GraphStyle;
     const inputPortSectionHeight = TotalInputPortHeight * Math.max(1, data.numberOfInputs) + LeftSideTopPadding;
     this._layout.inputPortSectionHeight = inputPortSectionHeight;
     this._layout.outputPortSectionHeight = TotalOutputPortHeight * data.numberOfOutputs;
@@ -129,14 +122,14 @@ export class NodeView {
   _updateNodeLayoutAfterAddingParam(numberOfParams, paramType) {
     // The height after adding param ports and input ports.
     // Include a little padding on the left.
-    const leftSideMaxHeight = this._layout.inputPortSectionHeight + numberOfParams * GraphStyle.TotalParamPortHeight +
-        GraphStyle.BottomPaddingWithParam;
+    const leftSideMaxHeight =
+        this._layout.inputPortSectionHeight + numberOfParams * TotalParamPortHeight + BottomPaddingWithParam;
 
     // Use the max of the left and right side heights as the total height.
     this._layout.totalHeight = Math.max(leftSideMaxHeight, this._layout.outputPortSectionHeight);
 
     // Update max length with param label.
-    const paramLabelLength = measureTextWidth(paramType, GraphStyle.ParamLabelFontStyle);
+    const paramLabelLength = measureTextWidth(paramType, ParamLabelFontStyle);
     this._layout.maxTextLength = Math.max(this._layout.maxTextLength, paramLabelLength);
 
     this._updateNodeSize();
@@ -144,7 +137,7 @@ export class NodeView {
 
   _updateNodeSize() {
     this.size = {
-      width: Math.ceil(GraphStyle.LeftMarginOfText + this._layout.maxTextLength + GraphStyle.RightMarginOfText),
+      width: Math.ceil(LeftMarginOfText + this._layout.maxTextLength + RightMarginOfText),
       height: this._layout.totalHeight,
     };
   }
@@ -155,7 +148,7 @@ export class NodeView {
       const {x, y} = calculateInputPortXY(i);
       this._addPort({
         id: generateInputPortId(this.id, i),
-        type: GraphStyle.PortTypes.In,
+        type: PortTypes.In,
         x,
         y,
       });
@@ -175,7 +168,7 @@ export class NodeView {
       } else {
         this._addPort({
           id: portId,
-          type: GraphStyle.PortTypes.Out,
+          type: PortTypes.Out,
           x,
           y,
         });
@@ -183,7 +176,7 @@ export class NodeView {
     }
   }
 
-  /** @param {!GraphStyle.Port} port */
+  /** @param {!Port} port */
   _addPort(port) {
     this.ports.set(port.id, port);
   }

@@ -2,10 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as UI from '../ui/ui.js';
 import * as Common from '../common/common.js';
-import * as ChevronTabbedPanel from './ChevronTabbedPanel.js';
-import * as MediaModel from './MediaModel.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../ui/ui.js';
+
+import {ChevronTabbedPanel} from './ChevronTabbedPanel.js';
+import {Event, MediaChangeTypeKeys} from './MediaModel.js';  // eslint-disable-line no-unused-vars
 
 /** @enum {string} */
 export const PlayerPropertyKeys = {
@@ -241,17 +242,17 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
     this._videoDecoderProperties = new AttributesView(this._videoDecoderElements);
     this._audioDecoderProperties = new AttributesView(this._audioDecoderElements);
 
-    const video = new ChevronTabbedPanel.ChevronTabbedPanel({tab: {title: UI.Fragment.html`Media`, element: this._videoProperties}});
+    const video = new ChevronTabbedPanel({tab: {title: UI.Fragment.html`Media`, element: this._videoProperties}});
     video.contentElement.classList.add('media-properties-view');
     video.show(this.contentElement);
 
     this._videoDecoderTab =
-        new ChevronTabbedPanel.ChevronTabbedPanel({tab: {title: UI.Fragment.html`Video Decoder`, element: this._videoDecoderProperties}});
+        new ChevronTabbedPanel({tab: {title: UI.Fragment.html`Video Decoder`, element: this._videoDecoderProperties}});
     this._videoDecoderTab.contentElement.classList.add('media-properties-view');
     this._videoDecoderTab.show(this.contentElement);
 
     this._audioDecoderTab =
-        new ChevronTabbedPanel.ChevronTabbedPanel({tab: {title: UI.Fragment.html`Audio Decoder`, element: this._audioDecoderProperties}});
+        new ChevronTabbedPanel({tab: {title: UI.Fragment.html`Audio Decoder`, element: this._audioDecoderProperties}});
     this._audioDecoderTab.contentElement.classList.add('media-properties-view');
     this._audioDecoderTab.show(this.contentElement);
   }
@@ -269,8 +270,8 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
 
   /**
    * @param {string} playerID
-   * @param {!Array.<!MediaModel.Event>} changes
-   * @param {!MediaModel.MediaChangeTypeKeys} changeType
+   * @param {!Array.<!Event>} changes
+   * @param {!MediaChangeTypeKeys} changeType
    */
   renderChanges(playerID, changes, changeType) {
     for (const change of changes) {

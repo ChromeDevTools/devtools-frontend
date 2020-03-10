@@ -33,11 +33,10 @@
  * extensions but in the mean time if an old func in here depends on one
  * that has been migrated it will need to be imported
  */
-import * as StringUtilities from './string-utilities.js';
-
+import {escapeCharacters, sprintf} from './string-utilities.js';
 
 // Still used in the test runners that can't use ES modules :(
-String.sprintf = StringUtilities.sprintf;
+String.sprintf = sprintf;
 
 /**
  * @param {string} chars
@@ -55,7 +54,7 @@ String.regexSpecialCharacters = function() {
  * @return {string}
  */
 String.prototype.escapeForRegExp = function() {
-  return StringUtilities.escapeCharacters(this, String.regexSpecialCharacters());
+  return escapeCharacters(this, String.regexSpecialCharacters());
 };
 
 /**

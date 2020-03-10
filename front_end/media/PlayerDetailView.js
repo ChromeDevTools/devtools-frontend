@@ -3,10 +3,11 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import * as PlayerEventsView from './EventDisplayTable.js';
-import * as PlayerPropertiesView from './PlayerPropertiesView.js';
 import * as UI from '../ui/ui.js';
-import * as MediaModel from './MediaModel.js';
+
+import {PlayerEventsView} from './EventDisplayTable.js';
+import {Event, MediaChangeTypeKeys} from './MediaModel.js';  // eslint-disable-line no-unused-vars
+import {PlayerPropertiesView} from './PlayerPropertiesView.js';
 
 /**
  * @enum {string}
@@ -23,14 +24,11 @@ export class PlayerDetailView extends UI.TabbedPane.TabbedPane {
   constructor() {
     super();
 
-    const eventView = new PlayerEventsView.PlayerEventsView();
-    const propertyView = new PlayerPropertiesView.PlayerPropertiesView();
+    const eventView = new PlayerEventsView();
+    const propertyView = new PlayerPropertiesView();
 
     // maps handler type to a list of panels that support rendering changes.
-    this._panels = new Map([
-      [MediaModel.MediaChangeTypeKeys.Property, [propertyView]],
-      [MediaModel.MediaChangeTypeKeys.Event, [eventView]]
-    ]);
+    this._panels = new Map([[MediaChangeTypeKeys.Property, [propertyView]], [MediaChangeTypeKeys.Event, [eventView]]]);
 
     this.appendTab(
         PlayerDetailViewTabs.Properties, Common.UIString.UIString('Properties'), propertyView,
@@ -42,8 +40,8 @@ export class PlayerDetailView extends UI.TabbedPane.TabbedPane {
 
   /**
    * @param {string} playerID
-   * @param {!Array.<!MediaModel.Event>} changes
-   * @param {!MediaModel.MediaChangeTypeKeys} changeType
+   * @param {!Array.<!Event>} changes
+   * @param {!MediaChangeTypeKeys} changeType
    */
   renderChanges(playerID, changes, changeType) {
     for (const panel of this._panels.get(changeType)) {

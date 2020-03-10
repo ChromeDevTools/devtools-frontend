@@ -31,8 +31,7 @@
  */
 
 import * as Common from '../common/common.js';
-
-import {generatedAliasesFor, generatedProperties, generatedPropertyValues} from '../generated/SupportedCSSProperties.js';
+import * as SupportedCSSProperties from '../generated/SupportedCSSProperties.js';
 
 /**
  * @unrestricted
@@ -91,7 +90,7 @@ export class CSSMetadata {
     // Reads in auto-generated property names and values from blink/public/renderer/core/css/css_properties.json5
     // treats _generatedPropertyValues as basis
     const propertyValueSets = new Map();
-    for (const [propertyName, basisValueObj] of Object.entries(generatedPropertyValues)) {
+    for (const [propertyName, basisValueObj] of Object.entries(SupportedCSSProperties.generatedPropertyValues)) {
       propertyValueSets.set(propertyName, new Set(basisValueObj.values));
     }
     // and add manually maintained map of extra prop-value pairs
@@ -389,7 +388,8 @@ export const GridAreaRowRegex = /((?:\[[\w\- ]+\]\s*)*(?:"[^"]+"|'[^']+'))[^'"\[
  */
 export function cssMetadata() {
   if (!CSSMetadata._instance) {
-    CSSMetadata._instance = new CSSMetadata(generatedProperties, generatedAliasesFor);
+    CSSMetadata._instance =
+        new CSSMetadata(SupportedCSSProperties.generatedProperties, SupportedCSSProperties.generatedAliasesFor);
   }
   return CSSMetadata._instance;
 }

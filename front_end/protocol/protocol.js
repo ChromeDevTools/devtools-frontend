@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {registerCommands} from '../generated/InspectorBackendCommands.js';
+import * as InspectorBackendCommands from '../generated/InspectorBackendCommands.js';
 import * as InspectorBackend from './InspectorBackend.js';
 import * as NodeURL from './NodeURL.js';
 
@@ -17,4 +17,4 @@ self.Protocol = self.Protocol || {};
 
 // FIXME: This instance of InspectorBackend should not be a side effect of importing this module.
 export const inspectorBackend = new InspectorBackend.InspectorBackend();
-registerCommands(inspectorBackend);
+InspectorBackendCommands.registerCommands(inspectorBackend);

@@ -4,7 +4,8 @@
 
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as UI from '../ui/ui.js';
-import * as MediaModel from './MediaModel.js';  // eslint-disable-line no-unused-vars
+
+import {Event, MediaChangeTypeKeys} from './MediaModel.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @typedef {{
@@ -29,7 +30,7 @@ export const MediaEventColumnKeys = {
  */
 export class EventNode extends DataGrid.DataGrid.DataGridNode {
   /**
-   * @param {!MediaModel.Event} event
+   * @param {!Event} event
    */
   constructor(event) {
     super(event, false);
@@ -105,8 +106,8 @@ export class PlayerEventsView extends UI.Widget.VBox {
 
   /**
    * @param {string} playerID
-   * @param {!Array.<!MediaModel.Event>} changes
-   * @param {!MediaModel.MediaChangeTypeKeys} change_type
+   * @param {!Array.<!Event>} changes
+   * @param {!MediaChangeTypeKeys} change_type
    */
   renderChanges(playerID, changes, change_type) {
     if (this._firstEventTime === 0 && changes.length > 0) {
@@ -119,7 +120,7 @@ export class PlayerEventsView extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!MediaModel.Event} event
+   * @param {!Event} event
    */
   addEvent(event) {
     if (event.type === 'triggeredEvent') {
@@ -145,7 +146,7 @@ export class PlayerEventsView extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!MediaModel.Event} event
+   * @param {!Event} event
    */
   _subtractFirstEventTime(event) {
     event.displayTimestamp = (event.timestamp - this._firstEventTime).toFixed(3);

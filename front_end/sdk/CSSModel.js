@@ -66,7 +66,7 @@ export class CSSModel extends SDKModel {
     }
     /** @type {!Map.<string, !CSSStyleSheetHeader>} */
     this._styleSheetIdToHeader = new Map();
-    /** @type {!Map.<string, !Object.<!Protocol.Page.FrameId, !Array.<!Protocol.CSS.StyleSheetId>>>} */
+    /** @type {!Map.<string, !Map.<!Protocol.Page.FrameId, !Set.<!Protocol.CSS.StyleSheetId>>>} */
     this._styleSheetIdsForURL = new Map();
 
     /** @type {!Map.<!CSSStyleSheetHeader, !Promise<?string>>} */
@@ -582,15 +582,15 @@ export class CSSModel extends SDKModel {
     this._styleSheetIdToHeader.set(header.styleSheetId, styleSheetHeader);
     const url = styleSheetHeader.resourceURL();
     if (!this._styleSheetIdsForURL.get(url)) {
-      this._styleSheetIdsForURL.set(url, {});
+      this._styleSheetIdsForURL.set(url, new Map());
     }
     const frameIdToStyleSheetIds = this._styleSheetIdsForURL.get(url);
-    let styleSheetIds = frameIdToStyleSheetIds[styleSheetHeader.frameId];
+    let styleSheetIds = frameIdToStyleSheetIds.get(styleSheetHeader.frameId);
     if (!styleSheetIds) {
-      styleSheetIds = [];
-      frameIdToStyleSheetIds[styleSheetHeader.frameId] = styleSheetIds;
+      styleSheetIds = new Set();
+      frameIdToStyleSheetIds.set(styleSheetHeader.frameId, styleSheetIds);
     }
-    styleSheetIds.push(styleSheetHeader.id);
+    styleSheetIds.add(styleSheetHeader.id);
     this._sourceMapManager.attachSourceMap(styleSheetHeader, styleSheetHeader.sourceURL, styleSheetHeader.sourceMapURL);
     this.dispatchEventToListeners(Events.StyleSheetAdded, styleSheetHeader);
   }
@@ -606,14 +606,12 @@ export class CSSModel extends SDKModel {
     }
     this._styleSheetIdToHeader.delete(id);
     const url = header.resourceURL();
-    const frameIdToStyleSheetIds =
-        /** @type {!Object.<!Protocol.Page.FrameId, !Array.<!Protocol.CSS.StyleSheetId>>} */ (
-            this._styleSheetIdsForURL.get(url));
+    const frameIdToStyleSheetIds = this._styleSheetIdsForURL.get(url);
     console.assert(frameIdToStyleSheetIds, 'No frameId to styleSheetId map is available for given style sheet URL.');
-    frameIdToStyleSheetIds[header.frameId].remove(id);
-    if (!frameIdToStyleSheetIds[header.frameId].length) {
-      delete frameIdToStyleSheetIds[header.frameId];
-      if (!Object.keys(frameIdToStyleSheetIds).length) {
+    frameIdToStyleSheetIds.get(header.frameId).delete(id);
+    if (!frameIdToStyleSheetIds.get(header.frameId).size) {
+      frameIdToStyleSheetIds.delete(header.frameId);
+      if (!frameIdToStyleSheetIds.size) {
         this._styleSheetIdsForURL.delete(url);
       }
     }
@@ -632,9 +630,9 @@ export class CSSModel extends SDKModel {
       return [];
     }
 
-    let result = [];
-    for (const frameId in frameIdToStyleSheetIds) {
-      result = result.concat(frameIdToStyleSheetIds[frameId]);
+    const result = [];
+    for (const styleSheetIds of frameIdToStyleSheetIds.values()) {
+      result.push(...styleSheetIds);
     }
     return result;
   }

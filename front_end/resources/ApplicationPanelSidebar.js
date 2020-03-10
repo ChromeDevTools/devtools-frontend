@@ -30,6 +30,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as UI from '../ui/ui.js';
@@ -1279,6 +1280,8 @@ export class IndexedDBTreeElement extends StorageCategoryTreeElement {
         IndexedDBModel, IndexedDBModelEvents.DatabaseLoaded, this._indexedDBLoaded, this);
     SDK.SDKModel.TargetManager.instance().addModelListener(
         IndexedDBModel, IndexedDBModelEvents.IndexedDBContentUpdated, this._indexedDBContentUpdated, this);
+    // TODO(szuend): Replace with a Set once two web tests no longer directly access this private
+    //               variable (indexeddb/live-update-indexeddb-content.js, indexeddb/delete-entry.js).
     /** @type {!Array.<!IDBDatabaseTreeElement>} */
     this._idbDatabaseTreeElements = [];
 
@@ -1361,7 +1364,7 @@ export class IndexedDBTreeElement extends StorageCategoryTreeElement {
   _removeIDBDatabaseTreeElement(idbDatabaseTreeElement) {
     idbDatabaseTreeElement.clear();
     this.removeChild(idbDatabaseTreeElement);
-    this._idbDatabaseTreeElements.remove(idbDatabaseTreeElement);
+    Platform.ArrayUtilities.removeElement(this._idbDatabaseTreeElements, idbDatabaseTreeElement);
     this.setExpandable(this.childCount() > 0);
   }
 

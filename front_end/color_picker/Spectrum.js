@@ -1177,7 +1177,11 @@ export class PaletteGenerator {
         stylesheetPromises.push(this._processStylesheet(stylesheet));
       }
     }
-    Promise.all(stylesheetPromises).catchException(null).then(this._finish.bind(this));
+    Promise.all(stylesheetPromises)
+        .catch(error => {
+          console.error(error);
+        })
+        .then(this._finish.bind(this));
   }
 
   /**

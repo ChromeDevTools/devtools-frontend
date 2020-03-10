@@ -496,7 +496,12 @@ export class FormatterWorkerContentParser {
 FormatterWorkerContentParser.parse = function(content, mimeType) {
   const extension = self.runtime.extensions(FormatterWorkerContentParser).find(findExtension);
   console.assert(extension);
-  extension.instance().then(instance => instance.parse(content)).catchException(null).then(postMessage);
+  extension.instance()
+      .then(instance => instance.parse(content))
+      .catch(error => {
+        console.error(error);
+      })
+      .then(postMessage);
 
   /**
    * @param {!Root.Runtime.Extension} extension

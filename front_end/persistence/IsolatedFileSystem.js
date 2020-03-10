@@ -80,9 +80,9 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     }
 
     const fileSystem = new IsolatedFileSystem(manager, path, embedderPath, domFileSystem, type);
-    return fileSystem._initializeFilePaths()
-        .then(() => fileSystem)
-        .catchException(/** @type {?IsolatedFileSystem} */ (null));
+    return fileSystem._initializeFilePaths().then(() => fileSystem).catch(error => {
+      console.error(error);
+    });
   }
 
   /**

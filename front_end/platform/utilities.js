@@ -763,18 +763,6 @@ self.setImmediate = function(callback) {
 };
 
 /**
- * @param {T} defaultValue
- * @return {!Promise.<T>}
- * @template T
- */
-Promise.prototype.catchException = function(defaultValue) {
-  return this.catch(function(error) {
-    console.error(error);
-    return defaultValue;
-  });
-};
-
-/**
  * TODO: move into its own module
  * @param {function()} callback
  * @suppressGlobalPropertiesCheck

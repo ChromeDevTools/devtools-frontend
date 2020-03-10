@@ -23,7 +23,10 @@ export function frameworkEventListeners(object) {
       .then(getOwnProperties)
       .then(createEventListeners)
       .then(returnResult)
-      .catchException(listenersResult);
+      .catch(error => {
+        console.error(error);
+        return listenersResult;
+      });
 
   /**
    * @param {!SDK.RemoteObject.RemoteObject} object
@@ -172,9 +175,10 @@ export function frameworkEventListeners(object) {
         removeFunctionObject = functionObject;
       }
 
-      return Promise.all(promises)
-          .then(createEventListener)
-          .catchException(/** @type {?SDK.DOMDebuggerModel.EventListener} */ (null));
+      return Promise.all(promises).then(createEventListener).catch(error => {
+        console.error(error);
+        return null;
+      });
 
       /**
        * @return {!SDK.DOMDebuggerModel.EventListener}

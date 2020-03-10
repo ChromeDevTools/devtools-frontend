@@ -262,34 +262,6 @@ Date.prototype.toISO8601Compact = function() {
       leadZero(this.getHours()) + leadZero(this.getMinutes()) + leadZero(this.getSeconds());
 };
 
-Object.defineProperty(Array.prototype, 'remove', {
-  /**
-   * @param {!T} value
-   * @param {boolean=} firstOnly
-   * @return {boolean}
-   * @this {Array.<!T>}
-   * @template T
-   */
-  value: function(value, firstOnly) {
-    let index = this.indexOf(value);
-    if (index === -1) {
-      return false;
-    }
-    if (firstOnly) {
-      this.splice(index, 1);
-      return true;
-    }
-    for (let i = index + 1, n = this.length; i < n; ++i) {
-      if (this[i] !== value) {
-        this[index++] = this[i];
-      }
-    }
-    this.length = index;
-    return true;
-  },
-  configurable: true
-});
-
 (function() {
 const partition = {
   /**

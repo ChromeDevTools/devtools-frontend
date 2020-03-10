@@ -9,7 +9,6 @@ import '/front_end/platform/utilities.js';
 
 declare global {
   interface Array<T> {
-    remove(value: T, firstOnly: boolean): boolean;
     mergeOrdered(array: T[], comparator: (a: T, b: T) => number): T[];
     intersectOrdered(array: T[], comparator: (a: T, b: T) => number): T[];
     upperBound(value: T, comparator?: (a: T, b: T) => number): number;
@@ -33,28 +32,6 @@ declare global {
 }
 
 describe('Utilities', () => {
-  it('removes values', () => {
-    const testArrays = [
-      [], [], [],
-      [1], [1], [1],
-      [1, 2, 3, 4, 5, 4, 3, 2, 1], [1, 3, 4, 5, 4, 3, 2, 1], [1, 3, 4, 5, 4, 3, 1],
-      [2, 2, 2, 2, 2], [2, 2, 2, 2], [],
-      [2, 2, 2, 1, 2, 2, 3, 2], [2, 2, 1, 2, 2, 3, 2], [1, 3],
-    ];
-
-    for (let i = 0; i < testArrays.length; i += 3) {
-      let actual = testArrays[i].slice(0);
-      let expected = testArrays[i + 1];
-      actual.remove(2, true);
-      assert.deepStrictEqual(expected, actual, 'Removing firstOnly (true) failed');
-
-      actual = testArrays[i].slice(0);
-      expected = testArrays[i + 2];
-      actual.remove(2, false);
-      assert.deepStrictEqual(expected, actual, 'Removing firstOnly (false) failed');
-    }
-  });
-
   it('orders merge intersect', () => {
     function comparator(a: number, b: number) {
       return a - b;

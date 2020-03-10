@@ -1449,7 +1449,9 @@ export class DebuggerPlugin extends Plugin {
         }
         columns.add(editorLocation.columnNumber);
       }
-      for (const location of possibleLocations) {
+      // Only consider the first 100 inline breakpoints, as DevTools might appear to hang while CodeMirror is updating
+      // the inline breakpoints. See crbug.com/1060105.
+      for (const location of possibleLocations.slice(0, 100)) {
         const editorLocation = this._transformer.rawToEditorLocation(location.lineNumber, location.columnNumber);
         if (editorLocation[0] !== editorLineNumber) {
           continue;

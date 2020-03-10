@@ -30,12 +30,12 @@ export const forcePseudoState = async (pseudoState: string) => {
   await click(`[aria-label="${pseudoState}"]`);
 };
 
-export const obtainComputedStylesForVisibleDOMNode = async (elementSelector: string, styleAttribute: string) => {
-  const {target} = getBrowserAndPages();
+export const removePseudoState = async (pseudoState: string) => {
+  await click(`[aria-label="${pseudoState}"]`);
+};
 
-  // DevTools will force Blink to make the hover shown, so we have
-  // to wait for the element to be DOM-visible (e.g. no `display: none;`)
-  await target.waitForSelector(elementSelector, {visible: true});
+export const obtainComputedStylesForDOMNode = async (elementSelector: string, styleAttribute: string) => {
+  const {target} = getBrowserAndPages();
 
   return target.evaluate((elementSelector, styleAttribute) => {
     const element = document.querySelector(elementSelector);
@@ -44,6 +44,19 @@ export const obtainComputedStylesForVisibleDOMNode = async (elementSelector: str
     }
     return getComputedStyle(element)[styleAttribute];
   }, elementSelector, styleAttribute);
+};
+
+export const waitForDOMNodeToBeShown = async (elementSelector: string) => {
+  const {target} = getBrowserAndPages();
+
+  // DevTools will force Blink to make the hover shown, so we have
+  // to wait for the element to be DOM-visible (e.g. no `display: none;`)
+  await target.waitForSelector(elementSelector, {visible: true});
+};
+
+export const waitForDOMNodeToBeHidden = async (elementSelector: string) => {
+  const {target} = getBrowserAndPages();
+  await target.waitForSelector(elementSelector, {hidden: true});
 };
 
 export const ensureGutterDecorationForDOMNodeExists = async () => {

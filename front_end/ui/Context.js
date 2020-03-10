@@ -27,7 +27,7 @@ export class Context {
     if (flavorValue) {
       this._flavors.set(flavorType, flavorValue);
     } else {
-      this._flavors.remove(flavorType);
+      this._flavors.delete(flavorType);
     }
 
     this._dispatchFlavorChange(flavorType, flavorValue);
@@ -78,7 +78,7 @@ export class Context {
     }
     dispatcher.removeEventListener(Events.FlavorChanged, listener, thisObject);
     if (!dispatcher.hasEventListeners(Events.FlavorChanged)) {
-      this._eventDispatchers.remove(flavorType);
+      this._eventDispatchers.delete(flavorType);
     }
   }
 

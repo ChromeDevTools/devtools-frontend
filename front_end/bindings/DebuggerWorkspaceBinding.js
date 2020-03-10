@@ -60,7 +60,7 @@ export class DebuggerWorkspaceBinding {
   modelRemoved(debuggerModel) {
     const modelData = this._debuggerModelToData.get(debuggerModel);
     modelData._dispose();
-    this._debuggerModelToData.remove(debuggerModel);
+    this._debuggerModelToData.delete(debuggerModel);
   }
 
   /**

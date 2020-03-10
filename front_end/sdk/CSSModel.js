@@ -604,7 +604,7 @@ export class CSSModel extends SDKModel {
     if (!header) {
       return;
     }
-    this._styleSheetIdToHeader.remove(id);
+    this._styleSheetIdToHeader.delete(id);
     const url = header.resourceURL();
     const frameIdToStyleSheetIds =
         /** @type {!Object.<!Protocol.Page.FrameId, !Array.<!Protocol.CSS.StyleSheetId>>} */ (
@@ -614,10 +614,10 @@ export class CSSModel extends SDKModel {
     if (!frameIdToStyleSheetIds[header.frameId].length) {
       delete frameIdToStyleSheetIds[header.frameId];
       if (!Object.keys(frameIdToStyleSheetIds).length) {
-        this._styleSheetIdsForURL.remove(url);
+        this._styleSheetIdsForURL.delete(url);
       }
     }
-    this._originalStyleSheetText.remove(header);
+    this._originalStyleSheetText.delete(header);
     this._sourceMapManager.detachSourceMap(header);
     this.dispatchEventToListeners(Events.StyleSheetRemoved, header);
   }

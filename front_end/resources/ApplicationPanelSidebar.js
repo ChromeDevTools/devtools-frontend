@@ -465,7 +465,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
     if (wasSelected) {
       parentListTreeElement.select();
     }
-    this._domStorageTreeElements.remove(domStorage);
+    this._domStorageTreeElements.delete(domStorage);
   }
 
   /**
@@ -2103,7 +2103,7 @@ export class ResourcesSection {
       return;
     }
 
-    this._treeElementForFrameId.remove(frame.id);
+    this._treeElementForFrameId.delete(frame.id);
     if (frameTreeElement.parent) {
       frameTreeElement.parent.removeChild(frameTreeElement);
     }

@@ -463,7 +463,7 @@ export class SourcesView extends UI.Widget.VBox {
    */
   _removeSourceFrame(uiSourceCode) {
     const sourceView = this._sourceViewByUISourceCode.get(uiSourceCode);
-    this._sourceViewByUISourceCode.remove(uiSourceCode);
+    this._sourceViewByUISourceCode.delete(uiSourceCode);
     if (sourceView && sourceView instanceof UISourceCodeFrame) {
       /** @type {!UISourceCodeFrame} */ (sourceView).dispose();
     }

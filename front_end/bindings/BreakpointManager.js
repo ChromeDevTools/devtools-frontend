@@ -348,7 +348,8 @@ export class Breakpoint {
    * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel
    */
   modelRemoved(debuggerModel) {
-    const modelBreakpoint = this._modelBreakpoints.remove(debuggerModel);
+    const modelBreakpoint = this._modelBreakpoints.get(debuggerModel);
+    this._modelBreakpoints.delete(debuggerModel);
     modelBreakpoint._cleanUpAfterDebuggerIsGone();
     modelBreakpoint._removeEventListeners();
   }

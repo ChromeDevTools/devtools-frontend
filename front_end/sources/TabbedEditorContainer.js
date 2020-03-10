@@ -562,7 +562,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
       delete this._currentView;
       delete this._currentFile;
     }
-    this._tabIds.remove(uiSourceCode);
+    this._tabIds.delete(uiSourceCode);
     delete this._files[tabId];
 
     this._removeUISourceCodeListeners(uiSourceCode);

@@ -162,7 +162,7 @@ export class FileSystemWorkspaceBinding {
     const fileSystem = /** @type {!PlatformFileSystem} */ (event.data);
     const boundFileSystem = this._boundFileSystems.get(fileSystem.path());
     boundFileSystem.dispose();
-    this._boundFileSystems.remove(fileSystem.path());
+    this._boundFileSystems.delete(fileSystem.path());
   }
 
   /**
@@ -199,7 +199,7 @@ export class FileSystemWorkspaceBinding {
     Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners);
     for (const fileSystem of this._boundFileSystems.values()) {
       fileSystem.dispose();
-      this._boundFileSystems.remove(fileSystem._fileSystem.path());
+      this._boundFileSystems.delete(fileSystem._fileSystem.path());
     }
   }
 }

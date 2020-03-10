@@ -61,7 +61,7 @@ export class SourceFormatter {
     if (cacheEntry && cacheEntry.formatData) {
       await this._discardFormatData(cacheEntry.formatData);
     }
-    this._formattedSourceCodes.remove(uiSourceCode);
+    this._formattedSourceCodes.delete(uiSourceCode);
   }
 
   /**
@@ -74,7 +74,7 @@ export class SourceFormatter {
       return null;
     }
     await this._discardFormatData(formatData);
-    this._formattedSourceCodes.remove(formatData.originalSourceCode);
+    this._formattedSourceCodes.delete(formatData.originalSourceCode);
     return formatData.originalSourceCode;
   }
 

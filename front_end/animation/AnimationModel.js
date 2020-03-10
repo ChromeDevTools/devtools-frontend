@@ -598,7 +598,7 @@ export class AnimationGroup {
   }
 
   release() {
-    this._animationModel._animationGroups.remove(this.id());
+    this._animationModel._animationGroups.delete(this.id());
     this._animationModel._releaseAnimations(this._animationIds());
   }
 

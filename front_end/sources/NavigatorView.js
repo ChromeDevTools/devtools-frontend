@@ -1394,7 +1394,7 @@ export class NavigatorTreeNode {
    */
   removeChild(node) {
     this.willRemoveChild(node);
-    this._children.remove(node.id);
+    this._children.delete(node.id);
     delete node.parent;
     node.dispose();
   }

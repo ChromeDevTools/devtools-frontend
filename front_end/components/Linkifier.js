@@ -134,10 +134,11 @@ export class Linkifier {
    * @param {!SDK.SDKModel.Target} target
    */
   targetRemoved(target) {
-    const locationPool =
-        /** @type {!Bindings.LiveLocation.LiveLocationPool} */ (this._locationPoolByTarget.remove(target));
+    const locationPool = this._locationPoolByTarget.get(target);
+    this._locationPoolByTarget.delete(target);
     locationPool.disposeAll();
-    const anchors = this._anchorsByTarget.remove(target);
+    const anchors = this._anchorsByTarget.get(target);
+    this._anchorsByTarget.delete(target);
     for (const anchor of anchors) {
       const info = Linkifier._linkInfo(anchor);
       info.liveLocation = null;

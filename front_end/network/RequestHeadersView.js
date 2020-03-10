@@ -154,6 +154,11 @@ export class RequestHeadersView extends UI.Widget.VBox {
           exampleNode.createChild('span', 'comment').textContent = example.comment;
         }
       }
+      if (header.details.link) {
+        const link = UI.XLink.XLink.create(header.details.link.url, ls`Learn more`, 'link');
+        link.prepend(UI.Icon.Icon.create('largeicon-link', 'link-icon'));
+        callToActionBody.appendChild(link);
+      }
     }
     return fragment;
   }
@@ -906,7 +911,8 @@ const BlockedReasonDetails = new Map([
           explanation:
               ls
           `To embed this frame in your document, the response needs to enable the cross-origin embedder policy by specifying the following response header:`,
-          examples: [{codeSnippet:'Cross-Origin-Embedder-Policy: require-corp'}]
+          examples: [{codeSnippet:'Cross-Origin-Embedder-Policy: require-corp'}],
+          link: {url: 'https://web.dev/coop-coep/'}
       }
     }
   ],
@@ -921,7 +927,8 @@ const BlockedReasonDetails = new Map([
         examples: [
           {codeSnippet:'Cross-Origin-Resource-Policy: same-site', comment: ls`Choose this option if the resource and the document are served from the same site.` },
           {codeSnippet:'Cross-Origin-Resource-Policy: cross-origin', comment: ls`Only choose this option if an arbitrary website including this resource does not impose a security risk.` },
-        ]
+        ],
+        link: {url: 'https://web.dev/coop-coep/'}
       }
     }
   ],
@@ -934,7 +941,8 @@ const BlockedReasonDetails = new Map([
         explanation:
         ls
         `This document was blocked from loading in an iframe with a sandbox attribute because this document specified a cross-origin opener policy.`,
-        examples: []
+        examples: [],
+        link: {url: 'https://web.dev/coop-coep/'}
       }
     }
   ],

@@ -933,12 +933,6 @@ const spacesPadding = function(spacesCount) {};
 const numberToStringWithSpacesPadding = function(value, symbolsCount) {};
 
 /**
- * @param {string} url
- * @return {!Promise.<string>}
- */
-const loadXHR = function(url) {};
-
-/**
  * @param {*} value
  */
 const suppressUnused = function(value) {};

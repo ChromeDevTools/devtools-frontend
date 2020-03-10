@@ -151,6 +151,33 @@ function createErrorMessageFromResponse(response) {
 
 /**
  * @param {string} url
+ * @return {!Promise<string>}
+ */
+const loadXHR = url => {
+  return new Promise((successCallback, failureCallback) => {
+    function onReadyStateChanged() {
+      if (xhr.readyState !== XMLHttpRequest.DONE) {
+        return;
+      }
+      if (xhr.status !== 200) {
+        xhr.onreadystatechange = null;
+        failureCallback(new Error(xhr.status));
+        return;
+      }
+      xhr.onreadystatechange = null;
+      successCallback(xhr.responseText);
+    }
+
+    const xhr = new XMLHttpRequest();
+    xhr.withCredentials = false;
+    xhr.open('GET', url, true);
+    xhr.onreadystatechange = onReadyStateChanged;
+    xhr.send(null);
+  });
+};
+
+/**
+ * @param {string} url
  * @param {?Object.<string, string>} headers
  * @param {!Common.StringOutputStream.OutputStream} stream
  * @param {function(boolean, !Object.<string, string>, !LoadErrorDescription)=} callback

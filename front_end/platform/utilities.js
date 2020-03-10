@@ -748,35 +748,6 @@ export class Multimap {
 }
 
 /**
- * @param {string} url
- * @return {!Promise.<string>}
- */
-self.loadXHR = function(url) {
-  return new Promise(load);
-
-  function load(successCallback, failureCallback) {
-    function onReadyStateChanged() {
-      if (xhr.readyState !== XMLHttpRequest.DONE) {
-        return;
-      }
-      if (xhr.status !== 200) {
-        xhr.onreadystatechange = null;
-        failureCallback(new Error(xhr.status));
-        return;
-      }
-      xhr.onreadystatechange = null;
-      successCallback(xhr.responseText);
-    }
-
-    const xhr = new XMLHttpRequest();
-    xhr.withCredentials = false;
-    xhr.open('GET', url, true);
-    xhr.onreadystatechange = onReadyStateChanged;
-    xhr.send(null);
-  }
-};
-
-/**
  * @param {*} value
  */
 self.suppressUnused = function(value) {};

@@ -32,6 +32,7 @@ import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -49,6 +50,9 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     this.registerRequiredCSS('object_ui/objectValue.css');
     this.registerRequiredCSS('sources/watchExpressionsSidebarPane.css');
 
+    // TODO(szuend): Replace with a Set once the web test
+    //               sources/debugger-ui/watch-expressions-preserve-expansion.js is either converted
+    //               to an e2e test or no longer accesses this variable directly.
     /** @type {!Array.<!WatchExpression>} */
     this._watchExpressions = [];
     this._watchExpressionsSetting = self.Common.settings.createLocalSetting('watchExpressions', []);
@@ -161,7 +165,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
   _watchExpressionUpdated(event) {
     const watchExpression = /** @type {!WatchExpression} */ (event.data);
     if (!watchExpression.expression()) {
-      this._watchExpressions.remove(watchExpression);
+      Platform.ArrayUtilities.removeElement(this._watchExpressions, watchExpression);
       this._treeOutline.removeChild(watchExpression.treeElement());
       this._emptyElement.classList.toggle('hidden', !!this._watchExpressions.length);
       if (this._watchExpressions.length === 0) {

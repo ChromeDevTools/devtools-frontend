@@ -387,7 +387,6 @@ export class ElementsPanel extends UI.Panel.Panel {
      */
     async function restoreNode(domModel, staleNode) {
       const nodePath = staleNode ? staleNode.path() : null;
-
       const restoredNodeId = nodePath ? await domModel.pushNodeByPathToFrontend(nodePath) : null;
 
       if (savedSelectedNodeOnReset !== this._selectedNodeOnReset) {
@@ -398,8 +397,14 @@ export class ElementsPanel extends UI.Panel.Panel {
         const inspectedDocument = domModel.existingDocument();
         node = inspectedDocument ? inspectedDocument.body || inspectedDocument.documentElement : null;
       }
-      this._setDefaultSelectedNode(node);
-      this._lastSelectedNodeSelectedForTest();
+      // If `node` is null here, the document hasn't been transmitted from the backend yet
+      // and isn't in a valid state to have a default-selected node. Another document update
+      // should be forthcoming. In the meantime, don't set the default-selected node or notify
+      // the test that it's ready, because it isn't.
+      if (node) {
+        this._setDefaultSelectedNode(node);
+        this._lastSelectedNodeSelectedForTest();
+      }
     }
   }
 

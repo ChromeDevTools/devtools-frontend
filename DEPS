@@ -4,22 +4,22 @@
 
 vars = {
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': '1739acfe5148f87781e5d51f462d23a2f542f0d5',
+  'build_revision': '9b4e0260e779403e7ecf67cc9fc632a8b7833576',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
-  'buildtools_revision': 'fa6ae42dcfbf3bf965439c0bdfeb03cf4e2a5840',
+  'buildtools_revision': '1a8a3a71e0ec5cf3a8ad3aceecd690369be3c02a',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
-  'depot_tools_revision': 'ffd02955e6680f9f5a32872682bd03227487014e',
+  'depot_tools_revision': 'a12175c2a7a9f79c3296068a022ac4f3051f8600',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
-  'inspector_protocol_revision': '81ef742ba3587767fc08652d299df9e9b7051407',
+  'inspector_protocol_revision': '8c2064ea99cffdb5647760ad3953c43e612e07fc',
 
   'clang_format_url': 'https://chromium.googlesource.com/chromium/llvm-project/cfe/tools/clang-format.git',
   'clang_format_revision': '96636aa0e9f047f17447f2d45a094d0b59ed7917',
 
   # GN CIPD package version.
-  'gn_version': 'git_revision:4166e9fbc1fa5ceab69b69710a0f8b430c50127b',
+  'gn_version': 'git_revision:fd3d768bcfd44a8d9639fe278581bd9851d0ce3a',
 
   # Chromium build number for unit tests. It should be regularly updated to
   # the content of https://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/LAST_CHANGE

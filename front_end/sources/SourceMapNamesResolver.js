@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Formatter from '../formatter/formatter.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
@@ -44,7 +45,7 @@ export const scopeIdentifiers = function(scope) {
   return script.requestContent().then(onContent);
 
   /**
-   * @param {!TextUtils.ContentProvider.DeferredContent} deferredContent
+   * @param {!Common.ContentProvider.DeferredContent} deferredContent
    * @return {!Promise<!Array<!Identifier>>}
    */
   function onContent(deferredContent) {
@@ -296,7 +297,7 @@ export const resolveExpressionAsync =
   return script.requestContent().then(onContent);
 
   /**
-   * @param {!TextUtils.ContentProvider.DeferredContent} deferredContent
+   * @param {!Common.ContentProvider.DeferredContent} deferredContent
    * @return {!Promise<string>}
    */
   function onContent(deferredContent) {

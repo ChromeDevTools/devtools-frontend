@@ -30,7 +30,6 @@
 
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
-import * as TextUtils from '../text_utils/text_utils.js';
 
 import {Attributes, Cookie} from './Cookie.js';  // eslint-disable-line no-unused-vars
 import {CookieParser} from './CookieParser.js';
@@ -39,7 +38,7 @@ import {Type} from './SDKModel.js';
 import {ServerTiming} from './ServerTiming.js';
 
 /**
- * @implements {TextUtils.ContentProvider.ContentProvider}
+ * @implements {Common.ContentProvider.ContentProvider}
  * @unrestricted
  */
 export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
@@ -1166,11 +1165,11 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @override
-   * @return {!Promise<!TextUtils.ContentProvider.DeferredContent>}
+   * @return {!Promise<!Common.ContentProvider.DeferredContent>}
    */
   async requestContent() {
     const {content, error, encoded} = await this.contentData();
-    return /** @type{!TextUtils.ContentProvider.DeferredContent} */ ({
+    return /** @type{!Common.ContentProvider.DeferredContent} */ ({
       content,
       error,
       isEncoded: encoded,
@@ -1182,7 +1181,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @return {!Promise<!Array<!TextUtils.ContentProvider.SearchMatch>>}
+   * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
    */
   async searchInContent(query, caseSensitive, isRegex) {
     if (!this._contentDataProvider) {
@@ -1197,7 +1196,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     if (contentData.encoded) {
       content = window.atob(content);
     }
-    return TextUtils.TextUtils.performSearchInContent(content, query, caseSensitive, isRegex);
+    return Common.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex);
   }
 
   /**
@@ -1268,7 +1267,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
    */
   async populateImageSource(image) {
     const {content, encoded} = await this.contentData();
-    let imageSrc = TextUtils.ContentProvider.contentAsDataURL(content, this._mimeType, encoded);
+    let imageSrc = Common.ContentProvider.contentAsDataURL(content, this._mimeType, encoded);
     if (imageSrc === null && !this._failed) {
       const cacheControl = this.responseHeaderValue('cache-control') || '';
       if (!cacheControl.includes('no-cache')) {

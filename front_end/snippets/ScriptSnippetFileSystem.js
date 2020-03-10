@@ -5,7 +5,6 @@
 import * as Common from '../common/common.js';
 import * as Persistence from '../persistence/persistence.js';
 import * as SDK from '../sdk/sdk.js';
-import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 import * as Workspace from '../workspace/workspace.js';
 
 class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFileSystem {
@@ -61,7 +60,7 @@ class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFileSyste
   /**
    * @override
    * @param {string} path
-   * @returns {!Promise<!TextUtils.ContentProvider.DeferredContent>}
+   * @returns {!Promise<!Common.ContentProvider.DeferredContent>}
    */
   async requestFileContent(path) {
     const name = unescape(path.substring(1));

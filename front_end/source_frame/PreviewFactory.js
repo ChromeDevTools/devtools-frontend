@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
 import {FontView} from './FontView.js';
@@ -14,7 +13,7 @@ import {XMLView} from './XMLView.js';
 
 export class PreviewFactory {
   /**
-   * @param {!TextUtils.ContentProvider.ContentProvider} provider
+   * @param {!Common.ContentProvider.ContentProvider} provider
    * @param {string} mimeType
    * @returns {!Promise<?UI.Widget.Widget>}
    */

@@ -27,7 +27,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
 import {SourceFrameImpl} from './SourceFrame.js';
@@ -37,7 +37,7 @@ import {SourceFrameImpl} from './SourceFrame.js';
  */
 export class ResourceSourceFrame extends SourceFrameImpl {
   /**
-   * @param {!TextUtils.ContentProvider.ContentProvider} resource
+   * @param {!Common.ContentProvider.ContentProvider} resource
    * @param {boolean=} autoPrettyPrint
    * @param {!UI.TextEditor.Options=} codeMirrorOptions
    */
@@ -54,7 +54,7 @@ export class ResourceSourceFrame extends SourceFrameImpl {
   }
 
   /**
-   * @param {!TextUtils.ContentProvider.ContentProvider} resource
+   * @param {!Common.ContentProvider.ContentProvider} resource
    * @param {string} highlighterType
    * @param {boolean=} autoPrettyPrint
    * @return {!UI.Widget.Widget}
@@ -82,7 +82,7 @@ export class ResourceSourceFrame extends SourceFrameImpl {
 
 export class SearchableContainer extends UI.Widget.VBox {
   /**
-   * @param {!TextUtils.ContentProvider.ContentProvider} resource
+   * @param {!Common.ContentProvider.ContentProvider} resource
    * @param {string} highlighterType
    * @param {boolean=} autoPrettyPrint
    * @return {!UI.Widget.Widget}

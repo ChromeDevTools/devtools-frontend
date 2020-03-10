@@ -7,19 +7,6 @@ import * as TextUtilsModule from './text_utils.js';
 self.TextUtils = self.TextUtils || {};
 TextUtils = TextUtils || {};
 
-/**
- * @interface
- */
-TextUtils.ContentProvider = TextUtilsModule.ContentProvider.ContentProvider;
-
-/**
- * @constructor
- */
-TextUtils.ContentProvider.SearchMatch = TextUtilsModule.ContentProvider.SearchMatch;
-TextUtils.ContentProvider.contentAsDataURL = TextUtilsModule.ContentProvider.contentAsDataURL;
-TextUtils.StaticContentProvider = TextUtilsModule.StaticContentProvider.StaticContentProvider;
-
-
 /** @constructor */
 TextUtils.Text = TextUtilsModule.Text.Text;
 

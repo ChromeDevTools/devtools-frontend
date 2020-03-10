@@ -32,7 +32,6 @@ import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as SDK from '../sdk/sdk.js';
-import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
 /**
@@ -504,7 +503,7 @@ export class Linkifier {
    * @param {string} string
    */
   static _appendTextWithoutHashes(link, string) {
-    const hashSplit = TextUtils.TextUtils.Utils.splitStringByRegexes(string, [/[a-f0-9]{20,}/g]);
+    const hashSplit = TextUtils.TextUtils.splitStringByRegexes(string, [/[a-f0-9]{20,}/g]);
     for (const match of hashSplit) {
       if (match.regexIndex === -1) {
         link.createTextChild(match.value);
@@ -773,7 +772,7 @@ export class ContentProviderContextMenuProvider {
    * @param {!Object} target
    */
   appendApplicableItems(event, contextMenu, target) {
-    const contentProvider = /** @type {!TextUtils.ContentProvider.ContentProvider} */ (target);
+    const contentProvider = /** @type {!Common.ContentProvider.ContentProvider} */ (target);
     if (!contentProvider.contentURL()) {
       return;
     }

@@ -29,12 +29,11 @@
  */
 
 import * as Common from '../common/common.js';
-import * as TextUtils from '../text_utils/text_utils.js';
 
 import {Events as WorkspaceImplEvents, Project, projectTypes} from './WorkspaceImpl.js';  // eslint-disable-line no-unused-vars
 
 /**
- * @implements {TextUtils.ContentProvider.ContentProvider}
+ * @implements {Common.ContentProvider.ContentProvider}
  * @unrestricted
  */
 export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
@@ -63,7 +62,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
     }
 
     this._contentType = contentType;
-    /** @type {?Promise<!TextUtils.ContentProvider.DeferredContent>} */
+    /** @type {?Promise<!Common.ContentProvider.DeferredContent>} */
     this._requestContentPromise = null;
     /** @type {?Platform.Multimap<string, !LineMarker>} */
     this._decorations = null;
@@ -71,7 +70,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
     /** @type {?Set<!Message>} */
     this._messages = null;
     this._contentLoaded = false;
-    /** @type {?TextUtils.ContentProvider.DeferredContent} */
+    /** @type {?Common.ContentProvider.DeferredContent} */
     this._content = null;
     this._forceLoadOnCheckContent = false;
     this._checkingContent = false;
@@ -244,7 +243,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @override
-   * @return {!Promise<!TextUtils.ContentProvider.DeferredContent>}
+   * @return {!Promise<!Common.ContentProvider.DeferredContent>}
    */
   requestContent() {
     if (this._requestContentPromise) {
@@ -252,7 +251,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
     }
 
     if (this._contentLoaded) {
-      return Promise.resolve(/** @type {!TextUtils.ContentProvider.DeferredContent} */ (this._content));
+      return Promise.resolve(/** @type {!Common.ContentProvider.DeferredContent} */ (this._content));
     }
 
 
@@ -261,7 +260,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @returns {!Promise<!TextUtils.ContentProvider.DeferredContent>}
+   * @returns {!Promise<!Common.ContentProvider.DeferredContent>}
    */
   async _requestContentImpl() {
     try {
@@ -276,7 +275,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
       this._content = {error: err ? String(err) : '', isEncoded: false};
     }
 
-    return /** @type {!TextUtils.ContentProvider.DeferredContent} */ (this._content);
+    return /** @type {!Common.ContentProvider.DeferredContent} */ (this._content);
   }
 
   async checkContentUpdated() {
@@ -479,14 +478,14 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @return {!Promise<!Array<!TextUtils.ContentProvider.SearchMatch>>}
+   * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
    */
   searchInContent(query, caseSensitive, isRegex) {
     const content = this.content();
     if (!content) {
       return this._project.searchInFileContent(this, query, caseSensitive, isRegex);
     }
-    return Promise.resolve(TextUtils.TextUtils.performSearchInContent(content, query, caseSensitive, isRegex));
+    return Promise.resolve(Common.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex));
   }
 
   /**
@@ -524,13 +523,13 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
    */
   addLineMessage(level, text, lineNumber, columnNumber) {
     return this.addMessage(
-        level, text, new TextUtils.TextRange.TextRange(lineNumber, columnNumber || 0, lineNumber, columnNumber || 0));
+        level, text, new TextUtils.TextRange(lineNumber, columnNumber || 0, lineNumber, columnNumber || 0));
   }
 
   /**
    * @param {!Message.Level} level
    * @param {string} text
-   * @param {!TextUtils.TextRange.TextRange} range
+   * @param {!TextUtils.TextRange} range
    * @return {!Message} message
    */
   addMessage(level, text, range) {
@@ -568,11 +567,11 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
    * @param {?} data
    */
   addLineDecoration(lineNumber, type, data) {
-    this.addDecoration(TextUtils.TextRange.TextRange.createFromLocation(lineNumber, 0), type, data);
+    this.addDecoration(TextUtils.TextRange.createFromLocation(lineNumber, 0), type, data);
   }
 
   /**
-   * @param {!TextUtils.TextRange.TextRange} range
+   * @param {!TextUtils.TextRange} range
    * @param {string} type
    * @param {?} data
    */
@@ -709,7 +708,7 @@ export class Message {
    * @param {!UISourceCode} uiSourceCode
    * @param {!Message.Level} level
    * @param {string} text
-   * @param {!TextUtils.TextRange.TextRange} range
+   * @param {!TextUtils.TextRange} range
    */
   constructor(uiSourceCode, level, text, range) {
     this._uiSourceCode = uiSourceCode;
@@ -740,7 +739,7 @@ export class Message {
   }
 
   /**
-   * @return {!TextUtils.TextRange.TextRange}
+   * @return {!TextUtils.TextRange}
    */
   range() {
     return this._range;
@@ -787,7 +786,7 @@ Message.Level = {
  */
 export class LineMarker {
   /**
-   * @param {!TextUtils.TextRange.TextRange} range
+   * @param {!TextUtils.TextRange} range
    * @param {string} type
    * @param {?} data
    */
@@ -798,7 +797,7 @@ export class LineMarker {
   }
 
   /**
-   * @return {!TextUtils.TextRange.TextRange}
+   * @return {!TextUtils.TextRange}
    */
   range() {
     return this._range;

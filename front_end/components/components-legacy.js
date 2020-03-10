@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
-
 import * as ComponentsModule from './components.js';
 
 self.Components = self.Components || {};
@@ -107,7 +105,7 @@ Components.LinkifyOptions;
 Components._CreateLinkOptions;
 
 /**
- * @typedef {function(!TextUtils.ContentProvider.ContentProvider, number)}
+ * @typedef {function(!Common.ContentProvider, number)}
  */
 Components.Linkifier.LinkHandler;
 

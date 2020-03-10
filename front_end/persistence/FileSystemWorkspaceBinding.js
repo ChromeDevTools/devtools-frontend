@@ -29,7 +29,6 @@
  */
 
 import * as Common from '../common/common.js';
-import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {IsolatedFileSystem} from './IsolatedFileSystem.js';                        // eslint-disable-line no-unused-vars
@@ -311,7 +310,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
   /**
    * @override
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   * @returns {!Promise<!TextUtils.ContentProvider.DeferredContent>}
+   * @returns {!Promise<!Common.ContentProvider.DeferredContent>}
    */
   requestFileContent(uiSourceCode) {
     const filePath = this._filePathForUISourceCode(uiSourceCode);
@@ -400,13 +399,13 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @return {!Promise<!Array<!TextUtils.ContentProvider.SearchMatch>>}
+   * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
    */
   async searchInFileContent(uiSourceCode, query, caseSensitive, isRegex) {
     const filePath = this._filePathForUISourceCode(uiSourceCode);
     const {content} = await this._fileSystem.requestFileContent(filePath);
     if (content) {
-      return TextUtils.TextUtils.performSearchInContent(content, query, caseSensitive, isRegex);
+      return Common.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex);
     }
     return [];
   }

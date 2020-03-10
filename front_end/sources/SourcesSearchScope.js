@@ -31,7 +31,6 @@
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Search from '../search/search.js';  // eslint-disable-line no-unused-vars
-import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
 /**
@@ -283,8 +282,8 @@ export class SourcesSearchScope {
      */
     function contentLoaded(uiSourceCode, content) {
       /**
-       * @param {!TextUtils.ContentProvider.SearchMatch} a
-       * @param {!TextUtils.ContentProvider.SearchMatch} b
+       * @param {!Common.ContentProvider.SearchMatch} a
+       * @param {!Common.ContentProvider.SearchMatch} b
        */
       function matchesComparator(a, b) {
         return a.lineNumber - b.lineNumber;
@@ -295,7 +294,7 @@ export class SourcesSearchScope {
       const queries = this._searchConfig.queries();
       if (content !== null) {
         for (let i = 0; i < queries.length; ++i) {
-          const nextMatches = TextUtils.TextUtils.performSearchInContent(
+          const nextMatches = Common.ContentProvider.performSearchInContent(
               content, queries[i], !this._searchConfig.ignoreCase(), this._searchConfig.isRegex());
           matches = matches.mergeOrdered(nextMatches, matchesComparator);
         }
@@ -324,7 +323,7 @@ export class SourcesSearchScope {
 export class FileBasedSearchResult {
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   * @param {!Array.<!TextUtils.ContentProvider.SearchMatch>} searchMatches
+   * @param {!Array.<!Common.ContentProvider.SearchMatch>} searchMatches
    */
   constructor(uiSourceCode, searchMatches) {
     this._uiSourceCode = uiSourceCode;

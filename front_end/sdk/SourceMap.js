@@ -29,7 +29,6 @@
  */
 
 import * as Common from '../common/common.js';
-import * as TextUtils from '../text_utils/text_utils.js';
 
 import {CompilerSourceMappingContentProvider} from './CompilerSourceMappingContentProvider.js';
 
@@ -58,7 +57,7 @@ export class SourceMap {
   /**
    * @param {string} sourceURL
    * @param {!Common.ResourceType.ResourceType} contentType
-   * @return {!TextUtils.ContentProvider.ContentProvider}
+   * @return {!Common.ContentProvider.ContentProvider}
    */
   sourceContentProvider(sourceURL, contentType) {
   }
@@ -172,7 +171,7 @@ export class SourceMapEntry {
 export class EditResult {
   /**
    * @param {!SourceMap} map
-   * @param {!Array<!TextUtils.TextRange.SourceEdit>} compiledEdits
+   * @param {!Array<!TextUtils.SourceEdit>} compiledEdits
    * @param {!Map<string, string>} newSources
    */
   constructor(map, compiledEdits, newSources) {
@@ -280,12 +279,12 @@ export class TextSourceMap {
    * @override
    * @param {string} sourceURL
    * @param {!Common.ResourceType.ResourceType} contentType
-   * @return {!TextUtils.ContentProvider.ContentProvider}
+   * @return {!Common.ContentProvider.ContentProvider}
    */
   sourceContentProvider(sourceURL, contentType) {
     const info = this._sourceInfos.get(sourceURL);
     if (info.content) {
-      return TextUtils.StaticContentProvider.StaticContentProvider.fromString(sourceURL, contentType, info.content);
+      return Common.StaticContentProvider.StaticContentProvider.fromString(sourceURL, contentType, info.content);
     }
     return new CompilerSourceMappingContentProvider(sourceURL, contentType);
   }
@@ -540,8 +539,8 @@ export class TextSourceMap {
 
   /**
    * @param {string} url
-   * @param {!TextUtils.TextRange.TextRange} textRange
-   * @return {!TextUtils.TextRange.TextRange}
+   * @param {!TextUtils.TextRange} textRange
+   * @return {!TextUtils.TextRange}
    */
   reverseMapTextRange(url, textRange) {
     /**
@@ -565,7 +564,7 @@ export class TextSourceMap {
 
     const startMapping = mappings[startIndex];
     const endMapping = mappings[endIndex];
-    return new TextUtils.TextRange.TextRange(
+    return new TextUtils.TextRange(
         startMapping.lineNumber, startMapping.columnNumber, endMapping.lineNumber, endMapping.columnNumber);
   }
 
@@ -696,7 +695,7 @@ export class WasmSourceMap {
    * @override
    * @param {string} sourceURL
    * @param {!Common.ResourceType.ResourceType} contentType
-   * @return {!TextUtils.ContentProvider.ContentProvider}
+   * @return {!Common.ContentProvider.ContentProvider}
    */
   sourceContentProvider(sourceURL, contentType) {
     return new CompilerSourceMappingContentProvider(sourceURL, contentType);

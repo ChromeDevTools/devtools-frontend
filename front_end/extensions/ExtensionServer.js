@@ -483,17 +483,17 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!TextUtils.ContentProvider.ContentProvider} contentProvider
+   * @param {!Common.ContentProvider.ContentProvider} contentProvider
    */
   _makeResource(contentProvider) {
     return {url: contentProvider.contentURL(), type: contentProvider.contentType().name()};
   }
 
   /**
-   * @return {!Array<!TextUtils.ContentProvider.ContentProvider>}
+   * @return {!Array<!Common.ContentProvider.ContentProvider>}
    */
   _onGetPageResources() {
-    /** @type {!Map<string, !TextUtils.ContentProvider.ContentProvider>} */
+    /** @type {!Map<string, !Common.ContentProvider.ContentProvider>} */
     const resources = new Map();
 
     /**
@@ -516,7 +516,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!TextUtils.ContentProvider.ContentProvider} contentProvider
+   * @param {!Common.ContentProvider.ContentProvider} contentProvider
    * @param {!Object} message
    * @param {!MessagePort} port
    */

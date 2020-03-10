@@ -30,7 +30,6 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
-import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 
 import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';  // eslint-disable-line no-unused-vars
 import {PlatformFileSystem} from './PlatformFileSystem.js';
@@ -346,7 +345,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   /**
    * @override
    * @param {string} path
-   * @returns {!Promise<!TextUtils.ContentProvider.DeferredContent>}
+   * @returns {!Promise<!Common.ContentProvider.DeferredContent>}
    */
   requestFileContent(path) {
     return this._serializedFileOperation(path, () => this._innerRequestFileContent(path));
@@ -354,7 +353,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
 
   /**
    * @param {string} path
-   * @return {!Promise<!TextUtils.ContentProvider.DeferredContent>}
+   * @return {!Promise<!Common.ContentProvider.DeferredContent>}
    */
   async _innerRequestFileContent(path) {
     const blob = await this.requestFileBlob(path);

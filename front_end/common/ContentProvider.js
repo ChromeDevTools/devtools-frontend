@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import {ResourceType} from './ResourceType.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @interface
@@ -38,28 +38,24 @@ export class ContentProvider {
    * @return {string}
    */
   contentURL() {
-    throw new Error('not implemented');
   }
 
   /**
-   * @return {!Common.ResourceType.ResourceType}
+   * @return {!ResourceType}
    */
   contentType() {
-    throw new Error('not implemented');
   }
 
   /**
    * @return {!Promise<boolean>}
    */
   contentEncoded() {
-    throw new Error('not implemented');
   }
 
   /**
    * @return {!Promise<!DeferredContent>}
    */
   requestContent() {
-    throw new Error('not implemented');
   }
 
   /**
@@ -68,9 +64,7 @@ export class ContentProvider {
    * @param {boolean} isRegex
    * @return {!Promise<!Array<!SearchMatch>>}
    */
-  searchInContent(query, caseSensitive, isRegex) {
-    throw new Error('not implemented');
-  }
+  searchInContent(query, caseSensitive, isRegex) {}
 }
 
 /**
@@ -86,6 +80,28 @@ export class SearchMatch {
     this.lineContent = lineContent;
   }
 }
+
+/**
+ * @param {string} content
+ * @param {string} query
+ * @param {boolean} caseSensitive
+ * @param {boolean} isRegex
+ * @return {!Array.<!SearchMatch>}
+ */
+export const performSearchInContent = function(content, query, caseSensitive, isRegex) {
+  const regex = createSearchRegex(query, caseSensitive, isRegex);
+
+  const text = new TextUtils.Text(content);
+  const result = [];
+  for (let i = 0; i < text.lineCount(); ++i) {
+    const lineContent = text.lineAt(i);
+    regex.lastIndex = 0;
+    if (regex.exec(lineContent)) {
+      result.push(new SearchMatch(i, lineContent));
+    }
+  }
+  return result;
+};
 
 /**
  * @param {?string} content
@@ -113,5 +129,4 @@ export const contentAsDataURL = function(content, mimeType, contentEncoded, char
  *    isEncoded: boolean,
  * }}
  */
-// @ts-ignore typedef
 export let DeferredContent;

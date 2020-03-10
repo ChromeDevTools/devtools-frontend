@@ -31,7 +31,6 @@
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as SourceFrame from '../source_frame/source_frame.js';
-import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
 import {RequestHTMLView} from './RequestHTMLView.js';
@@ -86,7 +85,7 @@ export class RequestPreviewView extends RequestResponseView {
       return jsonView;
     }
 
-    const dataURL = TextUtils.ContentProvider.contentAsDataURL(
+    const dataURL = Common.ContentProvider.contentAsDataURL(
         contentData.content, this.request.mimeType, contentData.encoded, this.request.charset());
     return dataURL ? new RequestHTMLView(dataURL) : null;
   }

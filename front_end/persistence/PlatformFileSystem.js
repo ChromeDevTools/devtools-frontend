@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
-import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 
 export class PlatformFileSystem {
   /**
@@ -86,7 +85,7 @@ export class PlatformFileSystem {
 
   /**
    * @param {string} path
-   * @returns {!Promise<!TextUtils.ContentProvider.DeferredContent>}
+   * @returns {!Promise<!Common.ContentProvider.DeferredContent>}
    */
   async requestFileContent(path) {
     return {error: ls`Unable to read files with this implementation.`, isEncoded: false};

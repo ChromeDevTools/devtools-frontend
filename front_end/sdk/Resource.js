@@ -28,13 +28,12 @@
 
 import * as Common from '../common/common.js';
 import * as ProtocolModule from '../protocol/protocol.js';
-import * as TextUtils from '../text_utils/text_utils.js';
 
 import {Events, NetworkRequest} from './NetworkRequest.js';                   // eslint-disable-line no-unused-vars
 import {ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars
 
 /**
- * @implements {TextUtils.ContentProvider.ContentProvider}
+ * @implements {Common.ContentProvider.ContentProvider}
  * @unrestricted
  */
 export class Resource {
@@ -202,7 +201,7 @@ export class Resource {
 
   /**
    * @override
-   * @return {!Promise<!TextUtils.ContentProvider.DeferredContent>}
+   * @return {!Promise<!Common.ContentProvider.DeferredContent>}
    */
   requestContent() {
     if (typeof this._content !== 'undefined') {
@@ -230,7 +229,7 @@ export class Resource {
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @return {!Promise<!Array<!TextUtils.ContentProvider.SearchMatch>>}
+   * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
    */
   async searchInContent(query, caseSensitive, isRegex) {
     if (!this.frameId) {
@@ -250,7 +249,7 @@ export class Resource {
   async populateImageSource(image) {
     const {content} = await this.requestContent();
     const encoded = this._contentEncoded;
-    image.src = TextUtils.ContentProvider.contentAsDataURL(content, this._mimeType, encoded) || this._url;
+    image.src = Common.ContentProvider.contentAsDataURL(content, this._mimeType, encoded) || this._url;
   }
 
   _requestFinished() {
@@ -266,7 +265,7 @@ export class Resource {
     }
     this._contentRequested = true;
 
-    /** @type {!TextUtils.ContentProvider.DeferredContent} */
+    /** @type {!Common.ContentProvider.DeferredContent} */
     let loadResult;
     if (this.request) {
       const contentData = await this.request.contentData();

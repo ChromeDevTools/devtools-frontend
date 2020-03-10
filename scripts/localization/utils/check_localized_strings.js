@@ -18,6 +18,7 @@ const escodegen = localizationUtils.escodegen;
 const esprimaTypes = localizationUtils.esprimaTypes;
 const esprima = localizationUtils.esprima;
 const extensionStringKeys = ['category', 'destination', 'title', 'title-mac'];
+const {parseLocalizableStringFromTypeScriptFile} = require('./parse_typescript_files');
 
 // Format of frontendStrings
 // { IDS_md5-hash => {
@@ -70,10 +71,10 @@ let devtoolsFrontendDirs;
 async function validateGrdAndGrdpFiles(shouldAutoFix) {
   const grdError = await validateGrdFile(shouldAutoFix);
   const grdpError = await validateGrdpFiles(shouldAutoFix);
-  if (grdError !== '' || grdpError !== '')
+  if (grdError !== '' || grdpError !== '') {
     return `${grdError}\n${grdpError}`;
-  else
-    return '';
+  }
+  return '';
 }
 
 function expectedGrdpFilePath(dir) {
@@ -86,8 +87,9 @@ async function validateGrdFile(shouldAutoFix) {
   const newLines = [];
   let errors = '';
   fileLines.forEach(line => errors += validateGrdLine(line, newLines));
-  if (errors !== '' && shouldAutoFix)
+  if (errors !== '' && shouldAutoFix) {
     await writeFileAsync(localizationUtils.GRD_PATH, newLines.join('\n'));
+  }
   return errors;
 }
 
@@ -106,12 +108,13 @@ function validateGrdLine(line, newLines) {
       (grdpFilePath === expectedGrdpFile || grdpFilePath === localizationUtils.SHARED_STRINGS_PATH)) {
     newLines.push(line);
     return error;
-  } else if (!fs.existsSync(grdpFilePath)) {
+  }
+  if (!fs.existsSync(grdpFilePath)) {
     error += `${line.trim()} in ${
                  localizationUtils.getRelativeFilePathFromSrc(
                      localizationUtils.GRD_PATH)} refers to a grdp file that doesn't exist. ` +
-        `Please verify the grdp file and update the <part file="..."> entry to reference the correct grdp file. ` +
-        `Make sure the grdp file name is ${path.basename(expectedGrdpFile)}.`
+        'Please verify the grdp file and update the <part file="..."> entry to reference the correct grdp file. ' +
+        `Make sure the grdp file name is ${path.basename(expectedGrdpFile)}.`;
   } else {
     error += `${line.trim()} in ${
         localizationUtils.getRelativeFilePathFromSrc(localizationUtils.GRD_PATH)} should reference "${
@@ -129,8 +132,9 @@ async function validateGrdpFiles(shouldAutoFix) {
   frontendDirsToGrdpFiles.forEach(
       (grdpFiles, dir) => errors +=
       validateGrdpFile(dir, grdpFiles, grdFileContent, shouldAutoFix, renameFilePromises, grdpFilesToAddToGrd));
-  if (grdpFilesToAddToGrd.length > 0)
+  if (grdpFilesToAddToGrd.length > 0) {
     await localizationUtils.addChildGRDPFilePathsToGRD(grdpFilesToAddToGrd.sort());
+  }
   await Promise.all(renameFilePromises);
   return errors;
 }
@@ -151,8 +155,9 @@ async function mapFrontendDirsToGrdpFiles() {
 function validateGrdpFile(dir, grdpFiles, grdFileContent, shouldAutoFix, renameFilePromises, grdpFilesToAddToGrd) {
   let error = '';
   const expectedGrdpFile = expectedGrdpFilePath(dir);
-  if (grdpFiles.length === 0)
+  if (grdpFiles.length === 0) {
     return error;
+  }
   if (grdpFiles.length > 1) {
     throw new Error(`${grdpFiles.length} GRDP files found under ${
         localizationUtils.getRelativeFilePathFromSrc(dir)}. Please make sure there's only one GRDP file named ${
@@ -188,8 +193,9 @@ function validateGrdpFile(dir, grdpFiles, grdFileContent, shouldAutoFix, renameF
  * Parse localizable resources.
  */
 async function parseLocalizableResourceMaps() {
-  if (frontendStrings.size === 0 && IDSkeys.size === 0)
+  if (frontendStrings.size === 0 && IDSkeys.size === 0) {
     await parseLocalizableResourceMapsHelper();
+  }
   return [frontendStrings, IDSkeys];
 }
 
@@ -199,7 +205,7 @@ async function parseLocalizableResourceMapsHelper() {
   const grdpToFilesPromises = dirs.map(dir => {
     const files = [];
     grdpToFiles.set(expectedGrdpFilePath(dir), files);
-    return localizationUtils.getFilesFromDirectory(dir, files, ['.js', 'module.json']);
+    return localizationUtils.getFilesFromDirectory(dir, files, ['.js', 'module.json', '.ts']);
   });
   await Promise.all(grdpToFilesPromises);
 
@@ -226,8 +232,25 @@ async function parseLocalizableStrings(devtoolsFiles) {
 
 async function parseLocalizableStringsFromFile(filePath) {
   const fileContent = await localizationUtils.parseFileContent(filePath);
-  if (path.basename(filePath) === 'module.json')
+  if (path.basename(filePath) === 'module.json') {
     return parseLocalizableStringFromModuleJson(fileContent, filePath);
+  }
+
+  if (path.extname(filePath) === '.ts') {
+    try {
+      const tsStrings = await parseLocalizableStringFromTypeScriptFile(filePath);
+      tsStrings.forEach(tsString => {
+        addString(tsString.cooked, tsString.code, tsString.filePath, tsString.location, tsString.parsedArguments);
+      });
+    } catch (e) {
+      throw new Error(
+          `DevTools localization TypeScript parser failed on:\n${
+              localizationUtils.getRelativeFilePathFromSrc(filePath)}: ${e.message}` +
+          '\nThis error is likely down to an issue in our TypeScript AST parser.' +
+          '\nPlease report this at crbug.com.');
+    }
+    return;
+  }
 
   let ast;
   try {
@@ -236,9 +259,9 @@ async function parseLocalizableStringsFromFile(filePath) {
     throw new Error(
         `DevTools localization parser failed:\n${localizationUtils.getRelativeFilePathFromSrc(filePath)}: ${
             e.message}` +
-        `\nThis error is likely due to unsupported JavaScript features.` +
-        ` Such features are not supported by eslint either and will cause presubmit to fail.` +
-        ` Please update the code and use official JavaScript features.`);
+        '\nThis error is likely due to unsupported JavaScript features.' +
+        ' Such features are not supported by eslint either and will cause presubmit to fail.' +
+        ' Please update the code and use official JavaScript features.');
   }
   for (const node of ast.body) {
     parseLocalizableStringFromNode(node, filePath);
@@ -247,8 +270,9 @@ async function parseLocalizableStringsFromFile(filePath) {
 
 function parseLocalizableStringFromModuleJson(fileContent, filePath) {
   const fileJSON = JSON.parse(fileContent);
-  if (!fileJSON.extensions)
+  if (!fileJSON.extensions) {
     return;
+  }
 
   for (const extension of fileJSON.extensions) {
     for (const key in extension) {
@@ -259,13 +283,15 @@ function parseLocalizableStringFromModuleJson(fileContent, filePath) {
       } else if (key === 'options') {
         for (const option of extension.options) {
           addString(option.title, option.title, filePath);
-          if (option.text !== undefined)
+          if (option.text !== undefined) {
             addString(option.text, option.text, filePath);
+          }
         }
       } else if (key === 'defaultValue' && Array.isArray(extension[key])) {
         for (const defaultVal of extension[key]) {
-          if (defaultVal.title)
+          if (defaultVal.title) {
             addString(defaultVal.title, defaultVal.title, filePath);
+          }
         }
       } else if (key === 'tags' && extension[key]) {
         const tagsList = extension[key].split(',');
@@ -279,12 +305,14 @@ function parseLocalizableStringFromModuleJson(fileContent, filePath) {
 }
 
 function parseLocalizableStringFromNode(node, filePath) {
-  if (!node)
+  if (!node) {
     return;
+  }
 
   if (Array.isArray(node)) {
-    for (const child of node)
+    for (const child of node) {
       parseLocalizableStringFromNode(child, filePath);
+    }
 
     return;
   }
@@ -303,8 +331,9 @@ function parseLocalizableStringFromNode(node, filePath) {
       handleCommonUIString(node, filePath);
       break;
     case 'UI.formatLocalized':
-      if (node.arguments !== undefined && node.arguments[1] !== undefined && node.arguments[1].elements !== undefined)
+      if (node.arguments !== undefined && node.arguments[1] !== undefined && node.arguments[1].elements !== undefined) {
         handleCommonUIString(node, filePath, node.arguments[1].elements);
+      }
       break;
     case 'Tagged Template':
       handleTemplateLiteral(node.quasi, escodegen.generate(node), filePath);
@@ -324,8 +353,9 @@ function parseLocalizableStringFromNode(node, filePath) {
 }
 
 function handleCommonUIString(node, filePath, argumentNodes) {
-  if (argumentNodes === undefined)
+  if (argumentNodes === undefined) {
     argumentNodes = node.arguments.slice(1);
+  }
   const firstArgType = node.arguments[0].type;
   switch (firstArgType) {
     case esprimaTypes.LITERAL:
@@ -377,10 +407,22 @@ function addString(str, code, filePath, location, argumentNodes) {
 
   const currentString =
       {string: str, code: code, isShared: false, filepath: filePath, grdpPath: fileToGRDPMap.get(filePath)};
-  if (location)
+
+  if (location) {
     currentString.location = location;
-  if (argumentNodes && argumentNodes.length > 0)
-    currentString.arguments = argumentNodes.map(argNode => escodegen.generate(argNode));
+  }
+  if (argumentNodes && argumentNodes.length > 0) {
+    currentString.arguments = argumentNodes.map(argNode => {
+      /* if this string came from TS the nodes have already been parsed
+       * and converted from an AST Node into a string
+       */
+      if (typeof argNode === 'string') {
+        return argNode;
+      }
+
+      return escodegen.generate(argNode);
+    });
+  }
 
   frontendStrings.set(ids, currentString);
 }
@@ -404,8 +446,9 @@ async function parseGRDFile() {
   let match;
   const grdpFilePaths = new Set();
   while ((match = partFileRegex.exec(fileContent)) !== null) {
-    if (match.index === partFileRegex.lastIndex)
+    if (match.index === partFileRegex.lastIndex) {
       partFileRegex.lastIndex++;
+    }
     // match[0]: full match
     // match[1]: part file path
     grdpFilePaths.add(path.resolve(grdFileDir, match[1]));
@@ -428,7 +471,7 @@ function convertToFrontendPlaceholders(message) {
   // <ph name="phname">$1s<ex>my example</ex></ph> and <ph name="phname2">$2.3f</ph>
   // match[0]: <ph name="phname1">$1s</ph>
   // match[1]: $1s<ex>my example</ex>
-  let placeholderRegex = new RegExp('<ph[^>]*>(.*?)<\/ph>', 'gms');
+  const placeholderRegex = new RegExp('<ph[^>]*>(.*?)<\/ph>', 'gms');
   let match;
   while ((match = placeholderRegex.exec(message)) !== null) {
     const placeholder = match[0];
@@ -447,11 +490,13 @@ async function parseGRDPFile(filePath) {
 
   function stripWhitespacePadding(message) {
     let match = message.match(/^'''/);
-    if (match)
+    if (match) {
       message = message.substring(3);
+    }
     match = message.match(/(.*?)'''$/);
-    if (match)
+    if (match) {
       message = match[1];
+    }
     return message;
   }
 
@@ -480,8 +525,9 @@ async function parseGRDPFile(filePath) {
 }
 
 function addMessage(expectedIDSKey, actualIDSKey, grdpPath, line, description) {
-  if (!IDSkeys.has(expectedIDSKey))
+  if (!IDSkeys.has(expectedIDSKey)) {
     IDSkeys.set(expectedIDSKey, []);
+  }
 
   IDSkeys.get(expectedIDSKey).push({actualIDSKey, grdpPath, location: {start: {line}, end: {line}}, description});
 }
@@ -493,8 +539,9 @@ function addMessage(expectedIDSKey, actualIDSKey, grdpPath, line, description) {
  */
 function getAndReportResourcesToAdd() {
   const keysToAddToGRD = getMessagesToAdd();
-  if (keysToAddToGRD.size === 0)
+  if (keysToAddToGRD.size === 0) {
     return;
+  }
 
   let errorStr = 'The following frontend string(s) need to be added to GRD/GRDP file(s).\n';
   errorStr += 'Please refer to auto-generated message(s) below and modify as needed.\n\n';
@@ -517,8 +564,9 @@ function getAndReportResourcesToAdd() {
 
 function getAndReportResourcesToRemove() {
   const keysToRemoveFromGRD = getMessagesToRemove();
-  if (keysToRemoveFromGRD.size === 0)
+  if (keysToRemoveFromGRD.size === 0) {
     return;
+  }
 
   let errorStr =
       '\nThe message(s) associated with the following IDS key(s) should be removed from its GRD/GRDP file(s):\n';
@@ -534,8 +582,9 @@ function getAndReportResourcesToRemove() {
 
 function getAndReportIDSKeysToModify() {
   const messagesToModify = getIDSKeysToModify();
-  if (messagesToModify.size === 0)
+  if (messagesToModify.size === 0) {
     return;
+  }
 
   let errorStr = '\nThe following GRD/GRDP message(s) do not have the correct IDS key.\n';
   errorStr += 'Please update the key(s) by changing the "name" value.\n\n';
@@ -558,8 +607,9 @@ function getMessagesToAdd() {
 
   const difference = [];
   for (const [ids, frontendString] of frontendStrings) {
-    if (!IDSkeys.has(ids) || !messageExists(ids, frontendString.grdpPath))
+    if (!IDSkeys.has(ids) || !messageExists(ids, frontendString.grdpPath)) {
       difference.push([ids, frontendString]);
+    }
   }
   return new Map(difference.sort());
 }
@@ -571,10 +621,11 @@ function getIDSKeysToModify() {
   for (const [expectedIDSKey, messages] of IDSkeys) {
     for (const message of messages) {
       if (expectedIDSKey !== message.actualIDSKey) {
-        if (messagesToModify.has(expectedIDSKey))
+        if (messagesToModify.has(expectedIDSKey)) {
           messagesToModify.get(expectedIDSKey).push(message);
-        else
+        } else {
           messagesToModify.set(expectedIDSKey, [message]);
+        }
       }
     }
   }
@@ -593,14 +644,16 @@ function getMessagesToRemove() {
     const messagesInGrdp = [];
     const messagesToRemove = [];
     messages.forEach(message => {
-      if (message.grdpPath !== expectedGrdpPath)
+      if (message.grdpPath !== expectedGrdpPath) {
         messagesToRemove.push(message);
-      else
+      } else {
         messagesInGrdp.push(message);
+      }
     });
 
-    if (messagesToRemove.length === 0 && messagesInGrdp.length === 1)
+    if (messagesToRemove.length === 0 && messagesInGrdp.length === 1) {
       continue;
+    }
 
     if (messagesInGrdp.length > 1) {
       // If there are more than one messages with ids in the
@@ -624,8 +677,9 @@ function getMessagesToRemove() {
 function getLongestDescription(messages) {
   let longestDescription = '';
   messages.forEach(message => {
-    if (message.description.length > longestDescription.length)
+    if (message.description.length > longestDescription.length) {
       longestDescription = message.description;
+    }
   });
   return longestDescription;
 }

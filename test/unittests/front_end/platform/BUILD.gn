@@ -1,7 +1,10 @@
 import("../../../../third_party/typescript/typescript.gni")
 
 ts_library("platform") {
-  sources = [ "StringUtilities_test.ts" ]
+  sources = [
+    "StringUtilities_test.ts",
+    "Utilities_test.ts",
+  ]
 
   deps = [ "../../../../front_end/platform" ]
 }

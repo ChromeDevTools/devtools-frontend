@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const { assert } = chai;
+const {assert} = chai;
 
 // FIXME: Convert to pure functions as these utilities have side effects.
 import '/front_end/platform/utilities.js';
@@ -14,7 +14,9 @@ declare global {
     upperBound(value: T, comparator?: (a: T, b: T) => number): number;
     lowerBound(value: T, comparator?: (a: T, b: T) => number): number;
     binaryIndexOf(value: T, comparator: (a: T, b: T) => number): number;
-    sortRange(comparator: (a: T, b: T) => number, leftBound: number, rightBound: number, sortWindowLeft: number, sortWindowRight: number): T[];
+    sortRange(
+        comparator: (a: T, b: T) => number, leftBound: number, rightBound: number, sortWindowLeft: number,
+        sortWindowRight: number): T[];
   }
 
   interface String {
@@ -46,7 +48,8 @@ describe('Utilities', () => {
       testOperation(a, b, a.intersectOrdered(b, comparator), Math.min, 'x');
     }
 
-    function testOperation(a: number[], b: number[], actual: number[], checkOperation: (...values: number[]) => number, opName: string) {
+    function testOperation(
+        a: number[], b: number[], actual: number[], checkOperation: (...values: number[]) => number, opName: string) {
       const allValues = a.concat(b).concat(actual);
       let expectedCount: number;
       let actualCount: number;
@@ -55,9 +58,9 @@ describe('Utilities', () => {
         const value = allValues[i];
         expectedCount = checkOperation(count(a, value), count(b, value));
         actualCount = count(actual, value);
-        assert.equal(expectedCount, actualCount,
-            'Incorrect result for value: ' + value + ' at [' + a + '] ' + opName + ' [' + b + '] -> [' + actual +
-                ']');
+        assert.equal(
+            expectedCount, actualCount,
+            'Incorrect result for value: ' + value + ' at [' + a + '] ' + opName + ' [' + b + '] -> [' + actual + ']');
       }
 
       const shallowCopy = [...actual];
@@ -179,7 +182,8 @@ describe('Utilities', () => {
             for (let count = 1, k = right - first + 1; count <= k; ++count) {
               const actual = array.slice(0);
               actual.sortRange(comparator, left, right, first, first + count - 1);
-              assert.deepStrictEqual(array.slice(0, left), actual.slice(0, left), 'left ' + left + ' ' + right + ' ' + count);
+              assert.deepStrictEqual(
+                  array.slice(0, left), actual.slice(0, left), 'left ' + left + ' ' + right + ' ' + count);
               assert.deepStrictEqual(
                   array.slice(right + 1), actual.slice(right + 1), 'right ' + left + ' ' + right + ' ' + count);
 
@@ -267,22 +271,18 @@ describe('Utilities', () => {
 
   it('unescapes CSS strings', () => {
     assert.equal(
-      unescapeCssString(String.raw`"I\F1 t\EB rn\E2 ti\F4 n\E0 liz\E6 ti\F8 n\2603 \1F308  can be \t\r\ic\k\y"`),
-      '"I\xF1t\xEBrn\xE2ti\xF4n\xE0liz\xE6ti\xF8n\u2603\u{1F308} can be tricky"');
+        unescapeCssString(String.raw`"I\F1 t\EB rn\E2 ti\F4 n\E0 liz\E6 ti\F8 n\2603 \1F308  can be \t\r\ic\k\y"`),
+        '"I\xF1t\xEBrn\xE2ti\xF4n\xE0liz\xE6ti\xF8n\u2603\u{1F308} can be tricky"');
     assert.equal(
-      unescapeCssString(String.raw`"_\DBFF_\\DBFF_\\\DBFF_\\\\DBFF_\\\\\DBFF_"`),
-      '"_\uFFFD_\\DBFF_\\\\DBFF_\\\\\\DBFF_\\\\\\\\DBFF_"');
+        unescapeCssString(String.raw`"_\DBFF_\\DBFF_\\\DBFF_\\\\DBFF_\\\\\DBFF_"`),
+        '"_\uFFFD_\\DBFF_\\\\DBFF_\\\\\\DBFF_\\\\\\\\DBFF_"');
     assert.equal(
-      unescapeCssString(String.raw`"\0_\DBFF_\DFFF_\110000"`),
-      '"\uFFFD_\uFFFD_\uFFFD_\uFFFD"',
-      'U+0000, lone surrogates, and values above U+10FFFF should become U+FFFD');
+        unescapeCssString(String.raw`"\0_\DBFF_\DFFF_\110000"`), '"\uFFFD_\uFFFD_\uFFFD_\uFFFD"',
+        'U+0000, lone surrogates, and values above U+10FFFF should become U+FFFD');
     assert.equal(
-      unescapeCssString(String.raw`"_\D83C\DF08_"`),
-      '"_\uFFFD\uFFFD_"',
-      'surrogates should not be combined');
+        unescapeCssString(String.raw`"_\D83C\DF08_"`), '"_\uFFFD\uFFFD_"', 'surrogates should not be combined');
     assert.equal(
-      unescapeCssString('"_\\41\n_\\41\t_\\41\x20_"'),
-      '"_A_A_A_"',
-      'certain trailing whitespace characters should be consumed as part of the escape sequence');
+        unescapeCssString('"_\\41\n_\\41\t_\\41\x20_"'), '"_A_A_A_"',
+        'certain trailing whitespace characters should be consumed as part of the escape sequence');
   });
 });

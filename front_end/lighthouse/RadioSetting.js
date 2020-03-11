@@ -15,7 +15,7 @@ export class RadioSetting {
     this._setting = setting;
     this._options = options;
 
-    this.element = createElement('div', 'audits-radio-group');
+    this.element = createElement('div');
     this.element.title = description;
     UI.ARIAUtils.setDescription(this.element, description);
     UI.ARIAUtils.markAsRadioGroup(this.element);
@@ -23,7 +23,7 @@ export class RadioSetting {
     this._radioElements = [];
     for (const option of this._options) {
       const fragment = UI.Fragment.Fragment.build`
-        <label $="label" class="audits-radio">
+        <label $="label" class="lighthouse-radio">
           <input $="input" type="radio" value=${option.value} name=${setting.name}>
           ${option.label}
         </label>

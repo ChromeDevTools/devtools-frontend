@@ -77,6 +77,10 @@
   align-items: center;
 }
 
+input[type="radio"]:focus {
+  outline-width: 2px;
+}
+
 .lighthouse-start-button-container {
   align-items: center;
 }

@@ -2,16 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import { parse, print, types } from 'recast';
+import {CommentKind, IdentifierKind, MemberExpressionKind} from 'ast-types/gen/kinds';
 import fs from 'fs';
 import path from 'path';
-import { promisify } from 'util';
-import { IdentifierKind, MemberExpressionKind, ExpressionKind, CommentKind } from 'ast-types/gen/kinds';
+import {parse, print, types} from 'recast';
+import {promisify} from 'util';
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 
-const FRONT_END_FOLDER = path.join(__dirname, '..', '..', 'front_end')
+const FRONT_END_FOLDER = path.join(__dirname, '..', '..', 'front_end');
 
 function capitalizeFirstLetter(string: string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -26,7 +26,7 @@ function createReplacementDeclaration(propertyName: IdentifierKind, declaration:
   }
   // UI.ARIAUtils.Foo = expression; -> export const Foo = expression;
   if (declaration.type === 'Literal' || declaration.type.endsWith('Expression')) {
-    return b.exportNamedDeclaration(b.variableDeclaration("const", [b.variableDeclarator(propertyName, declaration)]));
+    return b.exportNamedDeclaration(b.variableDeclaration('const', [b.variableDeclarator(propertyName, declaration)]));
   }
   console.error(`Unable to refactor declaration of type "${declaration.type}" named "${propertyName.name}"`);
 }
@@ -106,20 +106,20 @@ function rewriteSource(source: string, refactoringNamespace: string, refactoring
   // self.UI = self.UI || {};
   {
     const legacyNamespaceName = b.memberExpression(b.identifier('self'), b.identifier(refactoringNamespace), false);
-    const legacyNamespaceOr = b.logicalExpression("||", legacyNamespaceName, b.objectExpression([]));
+    const legacyNamespaceOr = b.logicalExpression('||', legacyNamespaceName, b.objectExpression([]));
     ast.program.body.push(b.expressionStatement.from({
       expression: b.assignmentExpression('=', legacyNamespaceName, legacyNamespaceOr),
-      comments: [b.commentBlock(' Legacy exported object ', true, false)]
+      comments: [b.commentBlock(' Legacy exported object ', true, false)],
     }));
   }
 
   // UI = UI || {};
-  const legacyNamespaceName = b.identifier(refactoringNamespace)
+  const legacyNamespaceName = b.identifier(refactoringNamespace);
   {
-    const legacyNamespaceOr = b.logicalExpression("||", legacyNamespaceName, b.objectExpression([]));
+    const legacyNamespaceOr = b.logicalExpression('||', legacyNamespaceName, b.objectExpression([]));
     ast.program.body.push(b.expressionStatement.from({
       expression: b.assignmentExpression('=', legacyNamespaceName, legacyNamespaceOr),
-      comments: [b.commentBlock(' Legacy exported object ', true, false)]
+      comments: [b.commentBlock(' Legacy exported object ', true, false)],
     }));
   }
 
@@ -130,7 +130,7 @@ function rewriteSource(source: string, refactoringNamespace: string, refactoring
     operator: '=',
     left: legacyNamespaceExport,
     right: b.identifier(refactoringFileName),
-    comments: [b.commentLine(' TODO(http://crbug.com/1006759): Add type information if necessary')]
+    comments: [b.commentLine(' TODO(http://crbug.com/1006759): Add type information if necessary')],
   })));
 
   // UI.ARIAUtils.Foo = Foo;
@@ -169,7 +169,7 @@ async function main(refactoringNamespace: string, refactoringFileName: string) {
 }
 
 if (!process.argv[2]) {
-  console.error(`No arguments specified. Run this script with "<folder-name> <filename>". For example: "common Color"`);
+  console.error('No arguments specified. Run this script with "<folder-name> <filename>". For example: "common Color"');
   process.exit(1);
 }
 

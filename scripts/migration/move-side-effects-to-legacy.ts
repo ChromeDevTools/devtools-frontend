@@ -2,18 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import { parse, print, types } from 'recast';
-import fs, { stat } from 'fs';
+import fs from 'fs';
 import path from 'path';
-import { promisify } from 'util';
-import { IdentifierKind, MemberExpressionKind, ExpressionKind, CommentKind } from 'ast-types/gen/kinds';
+import {parse, print, types} from 'recast';
+import {promisify} from 'util';
 
 const readDir = promisify(fs.readdir);
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 const b = types.builders;
 
-const FRONT_END_FOLDER = path.join(__dirname, '..', '..', 'front_end')
+const FRONT_END_FOLDER = path.join(__dirname, '..', '..', 'front_end');
 
 let legacyStatements: any[] = [];
 let legacyTypeDefs: any[] = [];
@@ -153,7 +152,7 @@ ${createLegacy()}
 }
 
 if (!process.argv[2]) {
-  console.error(`No arguments specified. Run this script with "<folder-name>". For example: "ui"`);
+  console.error('No arguments specified. Run this script with "<folder-name>". For example: "ui"');
   process.exit(1);
 }
 

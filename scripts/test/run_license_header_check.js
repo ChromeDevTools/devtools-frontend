@@ -222,7 +222,7 @@ async function checkFolder(folder) {
       } else if (firstStatement.comments[0].type === 'Line') {
         checkLineCommentLicense(firstStatement.comments, fileName);
       } else {
-        checkBlockCommentLicense(firstStatement.comments[0].value, fileName)
+        checkBlockCommentLicense(firstStatement.comments[0].value, fileName);
       }
     }
   }

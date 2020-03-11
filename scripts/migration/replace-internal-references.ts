@@ -11,10 +11,9 @@ import { getMappings } from './get-mappings.js';
 const readDir = promisify(fs.readdir);
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
-const stat = promisify(fs.stat);
 const b = types.builders;
 
-const FRONT_END_FOLDER = path.join(__dirname, '..', '..', 'front_end')
+const FRONT_END_FOLDER = path.join(__dirname, '..', '..', 'front_end');
 
 async function rewriteSource(pathName: string, srcFile: string, mappings:Map<string, any>, useExternalRefs = false) {
   const filePath = path.join(pathName, srcFile);
@@ -67,7 +66,7 @@ async function rewriteSource(pathName: string, srcFile: string, mappings:Map<str
       }
 
       this.traverse(path);
-    }
+    },
   });
 
   const importMap = new Map<string, any[]>();
@@ -118,7 +117,7 @@ async function rewriteSource(pathName: string, srcFile: string, mappings:Map<str
     const newImport = b.importDeclaration.from({
       specifiers,
       comments: ast.program.body[0].comments,
-      source: b.literal(targetImportFile)
+      source: b.literal(targetImportFile),
     });
 
     // Remove any file comments.
@@ -155,7 +154,7 @@ async function main(folder: string, namespaces?: string[]) {
 }
 
 if (!process.argv[2]) {
-  console.error(`No arguments specified. Run this script with "<folder-name>". For example: "ui"`);
+  console.error('No arguments specified. Run this script with "<folder-name>". For example: "ui"');
   process.exit(1);
 }
 

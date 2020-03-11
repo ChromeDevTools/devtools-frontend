@@ -17,3 +17,5 @@ front_end/third_party/
 test/e2e/**/*.js
 test/shared/**/*.js
 test/**/fixtures/
+scripts/jsdoc_validator/tests/
+scripts/migration/**/*.js

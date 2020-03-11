@@ -19,16 +19,16 @@ function core_md5(x, len) {
   x[len >> 5] |= 0x80 << ((len) % 32);
   x[(((len + 64) >>> 9) << 4) + 14] = len;
 
-  var a = 1732584193;
-  var b = -271733879;
-  var c = -1732584194;
-  var d = 271733878;
+  let a = 1732584193;
+  let b = -271733879;
+  let c = -1732584194;
+  let d = 271733878;
 
-  for (var i = 0; i < x.length; i += 16) {
-    var olda = a;
-    var oldb = b;
-    var oldc = c;
-    var oldd = d;
+  for (let i = 0; i < x.length; i += 16) {
+    const olda = a;
+    const oldb = b;
+    const oldc = c;
+    const oldd = d;
 
     a = md5_ff(a, b, c, d, x[i + 0], 7, -680876936);
     d = md5_ff(d, a, b, c, x[i + 1], 12, -389564586);
@@ -127,8 +127,8 @@ function md5_ii(a, b, c, d, x, s, t) {
 }
 
 function safe_add(x, y) {
-  var lsw = (x & 0xFFFF) + (y & 0xFFFF);
-  var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+  const lsw = (x & 0xFFFF) + (y & 0xFFFF);
+  const msw = (x >> 16) + (y >> 16) + (lsw >> 16);
   return (msw << 16) | (lsw & 0xFFFF);
 }
 
@@ -137,17 +137,18 @@ function bit_rol(num, cnt) {
 }
 
 function str2binl(str) {
-  var bin = Array();
-  var mask = (1 << 8) - 1;
-  for (var i = 0; i < str.length * 8; i += 8)
+  const bin = Array();
+  const mask = (1 << 8) - 1;
+  for (let i = 0; i < str.length * 8; i += 8) {
     bin[i >> 5] |= (str.charCodeAt(i / 8) & mask) << (i % 32);
+  }
   return bin;
 }
 
 function binl2hex(binarray) {
-  var hex_tab = '0123456789abcdef';
-  var str = '';
-  for (var i = 0; i < binarray.length * 4; i++) {
+  const hex_tab = '0123456789abcdef';
+  let str = '';
+  for (let i = 0; i < binarray.length * 4; i++) {
     str += hex_tab.charAt((binarray[i >> 2] >> ((i % 4) * 8 + 4)) & 0xF) +
         hex_tab.charAt((binarray[i >> 2] >> ((i % 4) * 8)) & 0xF);
   }

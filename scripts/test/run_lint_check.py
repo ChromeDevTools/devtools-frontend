@@ -18,18 +18,22 @@ import devtools_paths
 ROOT_DIRECTORY = path.join(path.dirname(path.abspath(__file__)), '..', '..')
 FRONT_END_DIRECTORY = path.join(ROOT_DIRECTORY, 'front_end')
 TEST_DIRECTORY = path.join(ROOT_DIRECTORY, 'test')
+SCRIPTS_DIRECTORY = path.join(ROOT_DIRECTORY, 'scripts')
 
-FILES_TO_LINT = [FRONT_END_DIRECTORY, TEST_DIRECTORY]
+FILES_TO_LINT = [FRONT_END_DIRECTORY, TEST_DIRECTORY, SCRIPTS_DIRECTORY]
 
 
 def main():
     eslintconfig_path = path.join(ROOT_DIRECTORY, '.eslintrc.js')
+    scripts_eslintconfig_path = path.join(ROOT_DIRECTORY, 'scripts', '.eslintrc.js')
     eslintignore_path = path.join(ROOT_DIRECTORY, '.eslintignore')
     exec_command = [
         devtools_paths.node_path(),
         devtools_paths.eslint_path(),
         '--config',
         test_helpers.to_platform_path_exact(eslintconfig_path),
+        '--config',
+        test_helpers.to_platform_path_exact(scripts_eslintconfig_path),
         '--ignore-path',
         test_helpers.to_platform_path_exact(eslintignore_path),
         '--ext',

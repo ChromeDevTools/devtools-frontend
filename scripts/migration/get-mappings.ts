@@ -2,17 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import { parse, print, types, visit } from 'recast';
 import fs from 'fs';
 import path from 'path';
-import { promisify } from 'util';
+import {parse, print} from 'recast';
+import {promisify} from 'util';
 
-const readDir = promisify(fs.readdir);
 const readFile = promisify(fs.readFile);
 const stat = promisify(fs.stat);
-const b = types.builders;
 
-const FRONT_END_FOLDER = path.join(__dirname, '..', '..', 'front_end')
+const FRONT_END_FOLDER = path.join(__dirname, '..', '..', 'front_end');
 
 export async function getMappings(namespace: string, mappings: Map<string, any>, useExternalRefs = false) {
   const src = namespace.toLocaleLowerCase();
@@ -22,7 +20,6 @@ export async function getMappings(namespace: string, mappings: Map<string, any>,
   if (!(await stat(legacy))) {
     console.error(`Unable to find legacy file: ${legacy}`);
     process.exit(1);
-    return mappings;
   }
 
   const legacyFileContents = await readFile(legacy, { encoding: 'utf-8' });
@@ -36,9 +33,9 @@ export async function getMappings(namespace: string, mappings: Map<string, any>,
     // We need to check that we have an assignment expression, of which the left and right are both member expressions.
     // This allows us to extract things like Foo.Bar = FooModule.Bar.Bar from the legacy file, while ignoring self.Foo
     // and Foo = Foo || {} statements.
-    const isMemberExpressionOnLeftAndRight = statement.expression && statement.expression.left && statement.expression.right &&
-        statement.expression.type === 'AssignmentExpression' && statement.expression.left.type === 'MemberExpression' &&
-        statement.expression.right.type === 'MemberExpression'
+    const isMemberExpressionOnLeftAndRight = statement.expression && statement.expression.left &&
+        statement.expression.right && statement.expression.type === 'AssignmentExpression' &&
+        statement.expression.left.type === 'MemberExpression' && statement.expression.right.type === 'MemberExpression';
 
     if (isMemberExpressionOnLeftAndRight) {
       // Rename FooModule back to Foo because we know we will want to use the latter when doing replacements.
@@ -59,7 +56,7 @@ export async function getMappings(namespace: string, mappings: Map<string, any>,
       mappings.set(leftSide, {
         file,
         replacement: rightSideParts.join('.'),
-        sameFolderReplacement: rightSideParts[rightSideParts.length - 1]
+        sameFolderReplacement: rightSideParts[rightSideParts.length - 1],
       });
     }
   }

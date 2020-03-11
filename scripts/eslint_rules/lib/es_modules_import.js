@@ -18,9 +18,9 @@ const EXEMPTED_THIRD_PARTY_MODULES = new Set([
   path.join(FRONT_END_DIRECTORY, 'third_party', 'lit-html'),
 ]);
 
-//------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
 // Rule Definition
-//------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
 
 function isStarAsImportSpecifier(specifiers) {
   return specifiers.length === 1 && specifiers[0].type === 'ImportNamespaceSpecifier';
@@ -98,7 +98,7 @@ module.exports = {
             context.report({
               node,
               message:
-                  `Incorrect same-namespace import: "{{importPath}}". Use "import { Symbol } from './relative-file.js';" instead.`,
+                  'Incorrect same-namespace import: "{{importPath}}". Use "import { Symbol } from \'./relative-file.js\';" instead.',
               data: {
                 importPath,
               },
@@ -107,10 +107,10 @@ module.exports = {
         } else {
           if (computeTopLevelFolder(importingFileName) !== computeTopLevelFolder(exportingFileName)) {
             let message =
-                `Incorrect cross-namespace import: "{{importPath}}". Use "import * as Namespace from '../namespace/namespace.js';" instead.`;
+                'Incorrect cross-namespace import: "{{importPath}}". Use "import * as Namespace from \'../namespace/namespace.js\';" instead.';
 
             if (importPath.endsWith(path.join('common', 'ls.js'))) {
-              message += ' You may only import common/ls.js directly from TypeScript source files.'
+              message += ' You may only import common/ls.js directly from TypeScript source files.';
             }
 
             if (importPath.includes('third_party')) {

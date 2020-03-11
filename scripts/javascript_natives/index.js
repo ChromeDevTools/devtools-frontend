@@ -6,9 +6,6 @@ const glob = require('glob');
 const methods = {
   __proto__: null
 };
-const methodsByName = {
-  __proto__: null
-};
 const program = ts.createProgram(
     [
       path.join(__dirname, 'node_modules', 'typescript', 'lib', 'lib.esnext.d.ts'),
@@ -18,43 +15,50 @@ for (const file of program.getSourceFiles()) {
   ts.forEachChild(file, node => {
     if (node.kind === ts.SyntaxKind.InterfaceDeclaration) {
       for (const member of node.members) {
-        if (member.kind === ts.SyntaxKind.MethodSignature)
+        if (member.kind === ts.SyntaxKind.MethodSignature) {
           parseTSFunction(member, node);
+        }
       }
     }
-    if (node.kind === ts.SyntaxKind.FunctionDeclaration)
+    if (node.kind === ts.SyntaxKind.FunctionDeclaration) {
       parseTSFunction(node, {name: {text: 'Window'}});
+    }
 
   });
 }
 
 function parseTSFunction(func, node) {
-  if (!func.name.escapedText)
+  if (!func.name.escapedText) {
     return;
+  }
 
   const args = func.parameters
                    .map(p => {
                      let text = p.name.escapedText;
-                     if (p.questionToken)
+                     if (p.questionToken) {
                        text = '?' + text;
-                     if (p.dotDotDotToken)
+                     }
+                     if (p.dotDotDotToken) {
                        text = '...' + text;
+                     }
                      return text;
                    })
                    .filter(x => x !== 'this');
   storeMethod(node.name.text, func.name.escapedText, args);
 }
 
-const files = glob('../../../../blink/renderer/+(core|modules)/**/*.idl', {cwd: process.env.PWD}, function(er, files) {
+glob('../../../../blink/renderer/+(core|modules)/**/*.idl', {cwd: process.env.PWD}, function(er, files) {
   for (const file of files) {
-    if (file.includes('testing'))
+    if (file.includes('testing')) {
       continue;
+    }
     const data = fs.readFileSync(path.join(process.env.PWD, file), 'utf8');
     const lines = data.split('\n');
     const newLines = [];
     for (line of lines) {
-      if (!line.includes(' attribute '))
+      if (!line.includes(' attribute ')) {
         newLines.push(line);
+      }
     }
 
     try {
@@ -94,37 +98,44 @@ const files = glob('../../../../blink/renderer/+(core|modules)/**/*.idl', {cwd: 
 function walk(thing, parent) {
   if (thing.type === 'interface') {
     const constructor = thing.extAttrs.find(extAttr => extAttr.name === 'Constructor');
-    if (constructor && constructor.arguments && thing.extAttrs.find(extAttr => extAttr.name === 'Exposed'))
+    if (constructor && constructor.arguments && thing.extAttrs.find(extAttr => extAttr.name === 'Exposed')) {
       storeMethod('Window', thing.name, constructor.arguments.map(argName));
+    }
 
     const namedConstructor = thing.extAttrs.find(extAttr => extAttr.name === 'NamedConstructor');
-    if (namedConstructor && namedConstructor.arguments)
+    if (namedConstructor && namedConstructor.arguments) {
       storeMethod('Window', namedConstructor.rhs.value, namedConstructor.arguments.map(argName));
+    }
   }
   if (thing.type.includes('operation')) {
     storeMethod(thing.static ? (parent.name + 'Constructor') : parent.name, thing.name, thing.arguments.map(argName));
     return;
   }
   if (thing.members) {
-    for (const member of thing.members)
+    for (const member of thing.members) {
       walk(member, thing);
+    }
   }
 }
 
 function argName(a) {
   let name = a.name;
-  if (a.optional)
+  if (a.optional) {
     name = '?' + name;
-  if (a.variadic)
+  }
+  if (a.variadic) {
     name = '...' + name;
+  }
   return name;
 }
 
 function storeMethod(parent, name, args) {
-  if (!methods[name])
+  if (!methods[name]) {
     methods[name] = {__proto__: null};
-  if (!methods[name][parent])
+  }
+  if (!methods[name][parent]) {
     methods[name][parent] = [];
+  }
   methods[name][parent].push(args);
 }
 
@@ -140,10 +151,12 @@ function postProcess() {
         if (smallerIndex !== -1) {
           filteredSignatures[smallerIndex] = (signature.map((arg, index) => {
             const otherArg = filteredSignatures[smallerIndex][index];
-            if (otherArg)
+            if (otherArg) {
               return otherArg.length > arg.length ? otherArg : arg;
-            if (arg.startsWith('?') || arg.startsWith('...'))
+            }
+            if (arg.startsWith('?') || arg.startsWith('...')) {
               return arg;
+            }
             return '?' + arg;
           }));
         } else {
@@ -154,8 +167,9 @@ function postProcess() {
       function startsThesame(smaller, bigger) {
         for (let i = 0; i < smaller.length; i++) {
           const withoutQuestion = str => /[\?]?(.*)/.exec(str)[1];
-          if (withoutQuestion(smaller[i]) !== withoutQuestion(bigger[i]))
+          if (withoutQuestion(smaller[i]) !== withoutQuestion(bigger[i])) {
             return false;
+          }
         }
         return true;
       }
@@ -168,11 +182,13 @@ function postProcess() {
     }
     for (const parent in methods[name]) {
       const signatures = methods[name][parent];
-      if (signatures.length === 1 && !signatures[0].length)
+      if (signatures.length === 1 && !signatures[0].length) {
         delete methods[name][parent];
+      }
     }
-    if (!Object.keys(methods[name]).length)
+    if (!Object.keys(methods[name]).length) {
       delete methods[name];
+    }
   }
   const functions = [];
   for (const name in methods) {
@@ -180,10 +196,16 @@ function postProcess() {
       functions.push({name, signatures: methods[name]['*']});
     } else {
       for (const parent in methods[name]) {
-        if (parent.endsWith('Constructor'))
-          functions.push({name, signatures: methods[name][parent], static: true, receiver: parent.substring(0, parent.length - 'Constructor'.length)});
-        else
+        if (parent.endsWith('Constructor')) {
+          functions.push({
+            name,
+            signatures: methods[name][parent],
+            static: true,
+            receiver: parent.substring(0, parent.length - 'Constructor'.length)
+          });
+        } else {
           functions.push({name, signatures: methods[name][parent], receiver: parent});
+        }
       }
     }
   }

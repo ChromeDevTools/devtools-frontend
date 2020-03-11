@@ -22,55 +22,79 @@ const trickyStrings = new Set([
   await Promise.all(fs.readdirSync(FRONTEND_PATH).map(dir => processFolder(dir)));
   const unused = [];
   for (const className of classes) {
-    if (strings.has(className) || trickyStrings.has(className))
+    if (strings.has(className) || trickyStrings.has(className)) {
       continue;
-    if (className.startsWith('CodeMirror'))
+    }
+    if (className.startsWith('CodeMirror')) {
       continue;
-    if (className.startsWith('xterm-'))
+    }
+    if (className.startsWith('xterm-')) {
       continue;
-    if (className.startsWith('lh-'))
+    }
+    if (className.startsWith('lh-')) {
       continue;
-    if (className.startsWith('cm-'))
+    }
+    if (className.startsWith('cm-')) {
       continue;
-    if (className.startsWith('navigator-'))
+    }
+    if (className.startsWith('navigator-')) {
       continue;
-    if (className.startsWith('object-value-'))
+    }
+    if (className.startsWith('object-value-')) {
       continue;
-    if (className.startsWith('security-summary-'))
+    }
+    if (className.startsWith('security-summary-')) {
       continue;
-    if (className.startsWith('security-explanation-title-'))
+    }
+    if (className.startsWith('security-explanation-title-')) {
       continue;
-    if (className.startsWith('security-explanation-'))
+    }
+    if (className.startsWith('security-explanation-')) {
       continue;
-    if (className.startsWith('lock-icon-'))
+    }
+    if (className.startsWith('lock-icon-')) {
       continue;
-    if (className.startsWith('security-property-'))
+    }
+    if (className.startsWith('security-property-')) {
       continue;
-    if (className.startsWith('url-scheme-'))
+    }
+    if (className.startsWith('url-scheme-')) {
       continue;
-    if (className.startsWith('infobar-'))
+    }
+    if (className.startsWith('infobar-')) {
       continue;
-    if (className.startsWith('shadow-root-depth-'))
+    }
+    if (className.startsWith('shadow-root-depth-')) {
       continue;
-    if (className.startsWith('timeline-overview-'))
+    }
+    if (className.startsWith('timeline-overview-')) {
       continue;
-    if (className.startsWith('spritesheet-'))
+    }
+    if (className.startsWith('spritesheet-')) {
       continue;
-    if (className.startsWith('report-icon--'))
+    }
+    if (className.startsWith('report-icon--')) {
       continue;
+    }
 
-    if (checkSuffix('-start'))
+    if (checkSuffix('-start')) {
       continue;
-    if (checkSuffix('-end'))
+    }
+    if (checkSuffix('-end')) {
       continue;
-    if (checkSuffix('-column'))
+    }
+    if (checkSuffix('-column')) {
       continue;
-    if (checkSuffix('-overview-grid'))
+    }
+    if (checkSuffix('-overview-grid')) {
       continue;
-    if (checkSuffix('-overview-container'))
+    }
+    if (checkSuffix('-overview-container')) {
       continue;
-    if (checkSuffix('-icon'))
+    }
+    if (checkSuffix('-icon')) {
       continue;
+    }
     unused.push(className);
 
     function checkSuffix(suffix) {
@@ -83,22 +107,26 @@ const trickyStrings = new Set([
 
 
 async function processFolder(dir) {
-  if (!utils.isDir(path.join(FRONTEND_PATH, dir)))
+  if (!utils.isDir(path.join(FRONTEND_PATH, dir))) {
     return;
+  }
   const modulePath = path.join(FRONTEND_PATH, dir, 'module.json');
-  if (!utils.isFile(modulePath))
+  if (!utils.isFile(modulePath)) {
     return;
+  }
   const content = JSON.parse(await readFile(modulePath, 'utf8'));
   const promises = [];
   for (const resource of content.resources || []) {
-    if (!resource.endsWith('.css'))
+    if (!resource.endsWith('.css')) {
       continue;
+    }
     promises.push(processCSSFile(path.join(FRONTEND_PATH, dir, resource)));
   }
   const skips = new Set(content.skip_compilation || []);
   for (const script of content.scripts || []) {
-    if (skips.has(script))
+    if (skips.has(script)) {
       continue;
+    }
     promises.push(processScriptFile(path.join(FRONTEND_PATH, dir, script)));
   }
   await Promise.all(promises);
@@ -111,22 +139,23 @@ async function processCSSFile(cssFile) {
     for (const rule of ast.stylesheet.rules) {
       for (const selector of rule.selectors || []) {
         for (const token of parseSimpleSelector(selector)) {
-          if (token.name === 'class' || token.name === 'id')
+          if (token.name === 'class' || token.name === 'id') {
             classes.add(token.value);
+          }
         }
       }
     }
-  } catch(e) {
-    console.log(cssFile, e)
+  } catch (e) {
+    console.log(cssFile, e);
   }
 }
 
 function parseSimpleSelector(selector) {
   // css-what isn't the best. Try catch.
   try {
-    const parsed = cssWhat(selector)
+    const parsed = cssWhat(selector);
     return parsed[0] || [];
-  } catch(e) {
+  } catch (e) {
     return [];
   }
 }
@@ -135,14 +164,16 @@ async function processScriptFile(scriptFile) {
   const content = await readFile(scriptFile, 'utf8');
   const tokens = acorn.tokenizer(content);
   for (const token of tokens) {
-    if(token.type.label === 'string' || token.type.label === 'template') {
-      for (const word of token.value.split(' '))
+    if (token.type.label === 'string' || token.type.label === 'template') {
+      for (const word of token.value.split(' ')) {
         strings.add(word);
+      }
       const regex = /class\s*=\s*['"]?([\w\-_ ]*)/ig;
       let result;
       while ((result = regex.exec(token.value))) {
-        for (const word of result[1].split(' '))
+        for (const word of result[1].split(' ')) {
           strings.add(word);
+        }
       }
     }
   }

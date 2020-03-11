@@ -2,11 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-var childProcess = require('child_process');
-var path = require('path');
+const childProcess = require('child_process');
 
-var chrome = childProcess.fork('scripts/hosted_mode/launch_chrome.js', process.argv.slice(2));
-var server = childProcess.fork('scripts/hosted_mode/server.js');
+const chrome = childProcess.fork('scripts/hosted_mode/launch_chrome.js', process.argv.slice(2));
+const server = childProcess.fork('scripts/hosted_mode/server.js');
 
 chrome.on('exit', function() {
   server.kill();

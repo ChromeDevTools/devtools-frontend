@@ -37,15 +37,17 @@ const CACHE_PATH = path.resolve(DEVTOOLS_PATH, '.test_cache');
 const SOURCE_PATH = path.resolve(DEVTOOLS_PATH, 'front_end');
 
 function main() {
-  if (!utils.isDir(CACHE_PATH))
+  if (!utils.isDir(CACHE_PATH)) {
     fs.mkdirSync(CACHE_PATH);
+  }
   deleteOldContentShells();
 
   const hasUserCompiledContentShell = utils.isFile(getContentShellBinaryPath(RELEASE_PATH));
   if (!IS_FETCH_CONTENT_SHELL && hasUserCompiledContentShell) {
     const outDir = path.resolve(RELEASE_PATH, '..');
-    if (!IS_DEBUG_ENABLED)
+    if (!IS_DEBUG_ENABLED) {
       compileFrontend();
+    }
 
     runTests(outDir, IS_DEBUG_ENABLED);
     return;
@@ -105,16 +107,20 @@ function copyFrontend(contentShellResourcesPath) {
 
 function getChromiumSrcPath(isThirdParty) {
   if (isThirdParty)
-    // Assume we're in `chromium/src/third_party/devtools-frontend/src`.
+  // Assume we're in `chromium/src/third_party/devtools-frontend/src`.
+  {
     return path.resolve(CURRENT_PATH, '..', '..', '..');
+  }
   // Assume we're in `devtools/devtools-frontend`, where `devtools` is
   // on the same level as `chromium`.
   const srcPath = path.resolve(CURRENT_PATH, '..', '..', 'chromium', 'src');
-  if (!utils.isDir(srcPath))
-    throw new Error(`Chromium source directory not found at \`${srcPath}\`. ` +
-        `Either move your standalone \`devtools/devtools-frontend\` checkout ` +
-        `so that \`devtools\` is at the same level as \`chromium\` in ` +
-        `\`chromium/src\`, or use \`--chromium-path\`.`);
+  if (!utils.isDir(srcPath)) {
+    throw new Error(
+        `Chromium source directory not found at \`${srcPath}\`. ` +
+        'Either move your standalone `devtools/devtools-frontend` checkout ' +
+        'so that `devtools` is at the same level as `chromium` in ' +
+        '`chromium/src`, or use `--chromium-path`.');
+  }
   return srcPath;
 }
 
@@ -125,27 +131,30 @@ function getPlatform() {
   if (process.platform === 'win32') {
     return 'Win_x64';
   }
-  if (process.platform === 'darwin')
+  if (process.platform === 'darwin') {
     return 'Mac';
+  }
 
   throw new Error(`Unrecognized platform detected: ${process.platform}`);
 }
 
 function findMostRecentChromiumCommit() {
-  const commitMessage = shell(`git log --max-count=1 --grep="Cr-Commit-Position"`).toString().trim();
+  const commitMessage = shell('git log --max-count=1 --grep="Cr-Commit-Position"').toString().trim();
   const commitPosition = commitMessage.match(/Cr-Commit-Position: refs\/heads\/master@\{#([0-9]+)\}/)[1];
   return commitPosition;
 }
 
 function deleteOldContentShells() {
   const files = fs.readdirSync(CACHE_PATH);
-  if (files.length < MAX_CONTENT_SHELLS)
+  if (files.length < MAX_CONTENT_SHELLS) {
     return;
+  }
   files.sort((a, b) => parseInt(b, 10) - parseInt(a, 10));
   const remainingNumberOfContentShells = MAX_CONTENT_SHELLS / 2;
   const oldContentShellDirs = files.slice(remainingNumberOfContentShells);
-  for (let i = 0; i < oldContentShellDirs.length; i++)
+  for (let i = 0; i < oldContentShellDirs.length; i++) {
     utils.removeRecursive(path.resolve(CACHE_PATH, oldContentShellDirs[i]));
+  }
   console.log(`Removed old content shells: ${oldContentShellDirs}`);
 }
 
@@ -164,24 +173,27 @@ function findPreviousUploadedPosition(commitPosition) {
     const positionSet = new Set(positions);
     let previousUploadedPosition = commitPosition;
     while (commitPosition - previousUploadedPosition < 100) {
-      if (positionSet.has(previousUploadedPosition))
+      if (positionSet.has(previousUploadedPosition)) {
         return previousUploadedPosition.toString();
+      }
       previousUploadedPosition--;
     }
     onError();
   }
 
   function onError(error) {
-    if (error)
+    if (error) {
       console.log(`Received error: ${error} trying to fetch positions list from url: ${positionsListURL}`);
+    }
     throw new Error(`Unable to find a previous upload position for commit position: ${commitPosition}`);
   }
 }
 
 async function prepareContentShellDirectory(folder) {
   const contentShellPath = path.join(CACHE_PATH, folder);
-  if (utils.isDir(contentShellPath))
+  if (utils.isDir(contentShellPath)) {
     utils.removeRecursive(contentShellPath);
+  }
   fs.mkdirSync(contentShellPath);
   return folder;
 }
@@ -225,14 +237,17 @@ function extractContentShell(contentShellZipPath) {
 }
 
 function getContentShellBinaryPath(dirPath) {
-  if (process.platform === 'linux')
+  if (process.platform === 'linux') {
     return path.resolve(dirPath, 'content_shell');
+  }
 
-  if (process.platform === 'win32')
+  if (process.platform === 'win32') {
     return path.resolve(dirPath, 'content_shell.exe');
+  }
 
-  if (process.platform === 'darwin')
+  if (process.platform === 'darwin') {
     return path.resolve(dirPath, 'Content Shell.app', 'Contents', 'MacOS', 'Content Shell');
+  }
 }
 
 function runTests(buildDirectoryPath, useDebugDevtools) {
@@ -242,10 +257,11 @@ function runTests(buildDirectoryPath, useDebugDevtools) {
     '--target',
     TARGET,
   ]);
-  if (useDebugDevtools)
+  if (useDebugDevtools) {
     testArgs.push('--additional-driver-flag=--debug-devtools');
-  else
+  } else {
     console.log('TIP: You can debug a test using: npm run debug-test inspector/test-name.html');
+  }
 
   if (IS_DEBUG_ENABLED) {
     testArgs.push('--additional-driver-flag=--remote-debugging-port=9222');
@@ -258,7 +274,7 @@ function runTests(buildDirectoryPath, useDebugDevtools) {
           `http://localhost:8080/inspector-sources/debug/integration_test_runner.html?test=${unitTestPath}`;
       console.log('1) Go to: ', link);
       console.log('2) Go to: http://localhost:9222/, click on "inspected-page.html", and copy the ws query parameter');
-      console.log('3) Open DevTools on DevTools and you can refresh to re-run the test')
+      console.log('3) Open DevTools on DevTools and you can refresh to re-run the test');
     } else {
       console.log('Go to: http://localhost:9222/');
       console.log('Click on link and in console execute: test()');
@@ -282,8 +298,9 @@ function getTestFlags() {
 function getInspectorTests() {
   const specificTests =
       process.argv.filter(arg => utils.includes(arg, 'inspector') || utils.includes(arg, 'http/tests/devtools'));
-  if (specificTests.length)
+  if (specificTests.length) {
     return specificTests;
+  }
   return [
     'inspector*',
     'http/tests/inspector*',

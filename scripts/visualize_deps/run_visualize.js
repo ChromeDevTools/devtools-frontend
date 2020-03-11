@@ -4,11 +4,11 @@
 
 'use strict';
 
-var childProcess = require('child_process');
+const childProcess = require('child_process');
 const fs = require('fs');
-var http = require('http');
+const http = require('http');
 const path = require('path');
-var parseURL = require('url').parse;
+const parseURL = require('url').parse;
 
 const utils = require('../utils');
 
@@ -33,8 +33,9 @@ function main() {
 }
 
 function generateDot() {
-  if (!utils.isDir(OUT_DIR_PATH))
+  if (!utils.isDir(OUT_DIR_PATH)) {
     fs.mkdirSync(OUT_DIR_PATH);
+  }
   const modules = new Set();
   const moduleToDependencyList = ['digraph dependencies {'];
   moduleToDependencyList.push('fixedsize = true;');
@@ -42,26 +43,29 @@ function generateDot() {
     const moduleJSONPath = path.join(FRONTEND_PATH, file, 'module.json');
     if (fs.statSync(path.join(FRONTEND_PATH, file)).isDirectory() && utils.isFile(moduleJSONPath)) {
       const module = file;
-      if (module === 'lighthouse_worker')
+      if (module === 'lighthouse_worker') {
         return;
+      }
       modules.add(module);
       const moduleJSON = require(moduleJSONPath);
       let moduleSize = 0;
 
-      let resources = (moduleJSON.scripts || []).concat((moduleJSON.resources || []));
-      for (let script of resources) {
-        if (fs.existsSync(path.join(FRONTEND_PATH, module, script)))
+      const resources = (moduleJSON.scripts || []).concat((moduleJSON.resources || []));
+      for (const script of resources) {
+        if (fs.existsSync(path.join(FRONTEND_PATH, module, script))) {
           moduleSize += fs.statSync(path.join(FRONTEND_PATH, module, script)).size;
+        }
       }
       moduleSize /= 200000;
       moduleSize = Math.max(0.5, moduleSize);
-      let fontSize = Math.max(moduleSize * 14, 14);
+      const fontSize = Math.max(moduleSize * 14, 14);
 
       moduleToDependencyList.push(`${module} [width=${moduleSize}, height=${moduleSize} fontsize=${fontSize}];`);
 
       if (moduleJSON.dependencies) {
-        for (let d of moduleJSON.dependencies)
+        for (const d of moduleJSON.dependencies) {
           moduleToDependencyList.push(`  ${module} -> ${d}`);
+        }
       }
     }
   });
@@ -74,8 +78,8 @@ function startServer() {
   http.createServer(requestHandler).listen(SERVER_PORT);
 
   function requestHandler(request, response) {
-    var filePath = parseURL(request.url).pathname;
-    var absoluteFilePath = path.join(__dirname, filePath);
+    const filePath = parseURL(request.url).pathname;
+    const absoluteFilePath = path.join(__dirname, filePath);
     if (!path.resolve(absoluteFilePath).startsWith(__dirname)) {
       console.log(`File requested is outside of folder: ${__dirname}`);
       sendResponse(403, `403 - Access denied. File requested is outside of folder: ${__dirname}`);
@@ -110,5 +114,6 @@ function startServer() {
   }
 }
 
-if (require.main === module)
+if (require.main === module) {
   main();
+}

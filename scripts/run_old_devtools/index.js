@@ -1,5 +1,4 @@
 const path = require('path');
-const fs = require('fs');
 const puppeteer = require('puppeteer');
 const childProcess = require('child_process');
 const CHROMIUM_DEFAULT_PATH = path.resolve(__dirname, '..', '..', '..', '..', '..', '..', 'out', 'Release', 'chrome');
@@ -17,11 +16,13 @@ const CHROMIUM_DEFAULT_PATH = path.resolve(__dirname, '..', '..', '..', '..', '.
     dumpio: true,
     defaultViewport: null,
     ignoreDefaultArgs: true,
-    args: puppeteer.defaultArgs({
-      headless: false,
-      args: ['--no-default-browser-check', `--custom-devtools-frontend=http://localhost:9227/devtools/`],
-      userDataDir: 'debugging-user-data-dir'
-    }).filter(x => !x.startsWith('--enable-automation'))
+    args: puppeteer
+              .defaultArgs({
+                headless: false,
+                args: ['--no-default-browser-check', '--custom-devtools-frontend=http://localhost:9227/devtools/'],
+                userDataDir: 'debugging-user-data-dir'
+              })
+              .filter(x => !x.startsWith('--enable-automation'))
   });
   const page = (await browser.pages())[0];
   await page.goto('http://localhost:9227');

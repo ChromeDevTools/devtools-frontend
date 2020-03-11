@@ -51,7 +51,7 @@ async function main() {
   try {
     let filePaths = [];
     const frontendPath = path.resolve(__dirname, '..', '..', 'front_end');
-    let filePathPromises = [localizationUtils.getFilesFromDirectory(frontendPath, filePaths, ['.grdp'])];
+    const filePathPromises = [localizationUtils.getFilesFromDirectory(frontendPath, filePaths, ['.grdp'])];
     if (process.argv[2] === '-a') {
       filePathPromises.push(localizationUtils.getFilesFromDirectory(frontendPath, filePaths, ['.js']));
     } else {
@@ -63,7 +63,7 @@ async function main() {
         filePaths = process.argv.slice(2);
       }
       // esprima has a bug parsing a valid JSON format, so exclude them.
-      filePaths = filePaths.filter( file => {
+      filePaths = filePaths.filter(file => {
         return (path.extname(file) !== '.json') && localizationUtils.shouldParseDirectory(file);
       });
     }
@@ -91,13 +91,15 @@ function includesConditionalExpression(listOfElements) {
 }
 
 function addError(error, errors) {
-  if (!errors.includes(error))
+  if (!errors.includes(error)) {
     errors.push(error);
+  }
 }
 
 function buildConcatenatedNodesList(node, nodes) {
-  if (!node)
+  if (!node) {
     return;
+  }
   if (node.left === undefined && node.right === undefined) {
     nodes.push(node);
     return;
@@ -117,17 +119,20 @@ function buildConcatenatedNodesList(node, nodes) {
  */
 function checkConcatenation(parentNode, node, filePath, errors) {
   function isConcatenationDisallowed(node) {
-    if (node.type !== esprimaTypes.LITERAL && node.type !== esprimaTypes.TEMP_LITERAL)
+    if (node.type !== esprimaTypes.LITERAL && node.type !== esprimaTypes.TEMP_LITERAL) {
       return true;
+    }
 
     let value;
-    if (node.type === esprimaTypes.LITERAL)
+    if (node.type === esprimaTypes.LITERAL) {
       value = node.value;
-    else if (node.type === esprimaTypes.TEMP_LITERAL && node.expressions.length === 0)
+    } else if (node.type === esprimaTypes.TEMP_LITERAL && node.expressions.length === 0) {
       value = node.quasis[0].value.cooked;
+    }
 
-    if (!value || typeof value !== 'string')
+    if (!value || typeof value !== 'string') {
       return true;
+    }
 
     return value.match(/[a-z]/i) !== null;
   }
@@ -136,8 +141,9 @@ function checkConcatenation(parentNode, node, filePath, errors) {
     return (node !== undefined && node.type === esprimaTypes.BI_EXPR && node.operator === '+');
   }
 
-  if (isConcatenation(parentNode))
+  if (isConcatenation(parentNode)) {
     return;
+  }
 
   if (isConcatenation(node)) {
     const concatenatedNodes = [];
@@ -160,52 +166,18 @@ function checkConcatenation(parentNode, node, filePath, errors) {
 }
 
 /**
- * Check if an argument of a function is localized.
- */
-function checkFunctionArgument(functionName, argumentIndex, node, filePath, errors) {
-  if (node !== undefined && node.type === esprimaTypes.CALL_EXPR &&
-      localizationUtils.verifyFunctionCallee(node.callee, functionName) && node.arguments !== undefined &&
-      node.arguments.length > argumentIndex) {
-    const arg = node.arguments[argumentIndex];
-    // No need to localize empty strings.
-    if (arg.type === esprimaTypes.LITERAL && arg.value === '')
-      return;
-
-    if (!localizationUtils.isLocalizationCall(arg)) {
-      let order = '';
-      switch (argumentIndex) {
-        case 0:
-          order = 'first';
-          break;
-        case 1:
-          order = 'second';
-          break;
-        case 2:
-          order = 'third';
-          break;
-        default:
-          order = `${argumentIndex + 1}th`;
-      }
-      addError(
-          `${localizationUtils.getRelativeFilePathFromSrc(filePath)}${
-              localizationUtils.getLocationMessage(
-                  node.loc)}: ${order} argument to ${functionName}() should be localized: ${escodegen.generate(node)}`,
-          errors);
-    }
-  }
-}
-
-/**
  * Check esprima node object that represents the AST of code
  * to see if there is any localization error.
  */
 function analyzeNode(parentNode, node, filePath, errors) {
-  if (node === undefined || node === null)
+  if (node === undefined || node === null) {
     return;
+  }
 
   if (node instanceof Array) {
-    for (const child of node)
+    for (const child of node) {
       analyzeNode(node, child, filePath, errors);
+    }
 
     return;
   }
@@ -302,12 +274,14 @@ function auditGrdpFile(filePath, fileContent, errors) {
 
 async function auditFileForLocalizability(filePath, errors) {
   const fileContent = await localizationUtils.parseFileContent(filePath);
-  if (path.extname(filePath) === '.grdp')
+  if (path.extname(filePath) === '.grdp') {
     return auditGrdpFile(filePath, fileContent, errors);
+  }
 
   const ast = esprima.parseModule(fileContent, {loc: true});
 
   const relativeFilePath = localizationUtils.getRelativeFilePathFromSrc(filePath);
-  for (const node of ast.body)
+  for (const node of ast.body) {
     analyzeNode(undefined, node, relativeFilePath, errors);
+  }
 }

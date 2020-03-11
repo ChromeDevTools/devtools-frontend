@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {CommentKind, ExpressionKind, IdentifierKind, MemberExpressionKind} from 'ast-types/gen/kinds';
+import {MemberExpressionKind} from 'ast-types/gen/kinds';
 import child_process from 'child_process';
 import fs from 'fs';
 import path from 'path';
@@ -110,11 +110,11 @@ function rewriteSource(refactoringNamespace: string, source: string) {
               return b.functionDeclaration.from({
                 ...statement.declaration,
                 comments: statement.comments || [],
-              })
+              });
             }
             break;
           default:
-            throw new Error(`Unknown type: ${statement.declaration.type}`)
+            throw new Error(`Unknown type: ${statement.declaration.type}`);
         }
       }
     }
@@ -141,7 +141,7 @@ async function main(refactoringNamespace: string) {
 }
 
 if (!process.argv[2]) {
-  console.error(`No arguments specified. Run this script with "<folder-name>". For example: "common"`);
+  console.error('No arguments specified. Run this script with "<folder-name>". For example: "common"');
   process.exit(1);
 }
 

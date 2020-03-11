@@ -20,13 +20,19 @@ FRONT_END_DIRECTORY = path.join(ROOT_DIRECTORY, 'front_end')
 TEST_DIRECTORY = path.join(ROOT_DIRECTORY, 'test')
 SCRIPTS_DIRECTORY = path.join(ROOT_DIRECTORY, 'scripts')
 
-FILES_TO_LINT = [FRONT_END_DIRECTORY, TEST_DIRECTORY, SCRIPTS_DIRECTORY]
+DEFAULT_DIRECTORIES_TO_LINT = [FRONT_END_DIRECTORY, TEST_DIRECTORY, SCRIPTS_DIRECTORY]
 
 
 def main():
     eslintconfig_path = path.join(ROOT_DIRECTORY, '.eslintrc.js')
     scripts_eslintconfig_path = path.join(ROOT_DIRECTORY, 'scripts', '.eslintrc.js')
     eslintignore_path = path.join(ROOT_DIRECTORY, '.eslintignore')
+
+    directories_or_files_to_lint = sys.argv[1:]
+
+    if len(directories_or_files_to_lint) == 0:
+        directories_or_files_to_lint = DEFAULT_DIRECTORIES_TO_LINT
+
     exec_command = [
         devtools_paths.node_path(),
         devtools_paths.eslint_path(),
@@ -39,7 +45,7 @@ def main():
         '--ext',
         '.js,.ts',
         '--fix',
-    ] + FILES_TO_LINT
+    ] + directories_or_files_to_lint
 
     eslint_proc = Popen(exec_command, cwd=ROOT_DIRECTORY)
     eslint_proc.communicate()

@@ -143,7 +143,37 @@ def _CheckDevtoolsStyle(input_api, output_api):
     results = [output_api.PresubmitNotifyResult('Running Devtools Style Check:')]
     lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'test', 'run_lint_check.py')
 
-    return _ExecuteSubProcess(input_api, output_api, lint_path, [], results)
+    front_end_directory = input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end')
+    test_directory = input_api.os_path.join(input_api.PresubmitLocalPath(), 'test')
+    scripts_directory = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts')
+
+    default_linted_directories = [front_end_directory, test_directory, scripts_directory]
+
+    eslint_related_files = [
+        input_api.os_path.join(input_api.PresubmitLocalPath(), '.eslintrc.js'),
+        input_api.os_path.join(input_api.PresubmitLocalPath(), '.eslintignore'),
+        input_api.os_path.join(scripts_directory, 'test', 'run_lint_check.py'),
+        input_api.os_path.join(scripts_directory, '.eslintrc.js'),
+        input_api.os_path.join(scripts_directory, 'eslint_rules'),
+    ]
+
+    affected_files = _getAffectedFiles(input_api, eslint_related_files, [], ['.js', '.py', '.eslintignore'])
+
+    # We are changing the ESLint configuration, make sure to run the full check
+    if len(affected_files) is not 0:
+        results.append(output_api.PresubmitNotifyResult('Running full ESLint check'))
+        affected_files = default_linted_directories
+    else:
+        # Only run ESLint on files that are relevant, to save PRESUBMIT time
+        affected_files = _getAffectedFiles(input_api, default_linted_directories, ['D'], ['.js', '.ts'])
+
+        # If we have not changed any lintable files, then we should bail out.
+        # Otherwise, `run_lint_check.py` will lint *all* files.
+        if len(affected_files) is 0:
+            results.append(output_api.PresubmitNotifyResult('No affected files for ESLint check'))
+            return results
+
+    return _ExecuteSubProcess(input_api, output_api, lint_path, affected_files, results)
 
 
 def _CheckOptimizeSVGHashes(input_api, output_api):

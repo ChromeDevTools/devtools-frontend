@@ -36,7 +36,7 @@ import * as Platform from '../platform/platform.js';
  * @param {...*} vararg
  * @return {string}
  */
-export function UIString(string, vararg) {
+export function UIString(string, ...vararg) {
   return Platform.StringUtilities.vsprintf(localize(string), Array.prototype.slice.call(arguments, 1));
 }
 

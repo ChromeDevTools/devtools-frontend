@@ -19,3 +19,5 @@ type ITemplateArray = TemplateStringsArray
 interface String {
   trimEndWithMaxLength(maxLength: number): string;
 }
+
+declare let ls: (template: ITemplateArray) => string;

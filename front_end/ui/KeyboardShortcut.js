@@ -34,6 +34,17 @@ import * as Host from '../host/host.js';
  */
 export class KeyboardShortcut {
   /**
+   * @param {!Descriptor} descriptor
+   * @param {string} action
+   * @param {!Type=} type
+   */
+  constructor(descriptor, action, type) {
+    this.descriptor = descriptor;
+    this.action = action;
+    this.type = type || Type.UserShortcut;
+  }
+
+  /**
    * Creates a number encoding keyCode in the lower 8 bits and modifiers mask in the higher 8 bits.
    * It is useful for matching pressed keys.
    *
@@ -278,6 +289,14 @@ export const Keys = {
     // "default" command/ctrl key for platform, Command on Mac, Ctrl on other platforms
     return Host.Platform.isMac() ? this.Meta : this.Ctrl;
   },
+};
+
+/** @enum {symbol} */
+export const Type = {
+  UserShortcut: Symbol('UserShortcut'),
+  DefaultShortcut: Symbol('DefaultShortcut'),
+  DisabledDefault: Symbol('DisabledDefault'),
+  UnsetShortcut: Symbol('UnsetShortcut'),
 };
 
 export const KeyBindings = {};

@@ -254,7 +254,7 @@ export class MainImpl {
     new PauseListener();
 
     self.UI.actionRegistry = new UI.ActionRegistry.ActionRegistry();
-    self.UI.shortcutRegistry = new UI.ShortcutRegistry.ShortcutRegistry(self.UI.actionRegistry, document);
+    self.UI.shortcutRegistry = new UI.ShortcutRegistry.ShortcutRegistry(self.UI.actionRegistry);
     UI.ShortcutsScreen.ShortcutsScreen.registerShortcuts();
     this._registerForwardedShortcuts();
     this._registerMessageSinkListener();

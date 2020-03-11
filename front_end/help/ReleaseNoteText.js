@@ -17,6 +17,49 @@ const commandMenuShortcut = Host.Platform.isMac() ? 'Command+Shift+P' : 'Control
 /** @type {!Array<!ReleaseNote>} */
 export const releaseNoteText = [
   {
+    version: 24,
+    header: 'Highlights from the Chrome 82 update',
+    highlights: [
+      {
+        title: 'Emulate vision deficiencies from the Rendering tab',
+        subtitle: 'Get a visual approximation of how people with vision deficiencies might experience your site.',
+        link: 'https://developers.google.com/web/updates/2020/03/devtools#vision-deficiences',
+      },
+      {
+        title: 'Cross-Origin Opener Policy (COOP) and Cross-Origin Embedder Policy (COEP) debugging',
+        subtitle:
+            'Use the Status column and Response Headers section in the Network panel to debug COOP and COEP issues.',
+        link: 'https://developers.google.com/web/updates/2020/03/devtools#COOP-COEP',
+      },
+      {
+        title: 'Dock to left from the Command Menu',
+        subtitle: 'Run the "Dock to left" command to quickly move DevTools to the left of your viewport.',
+        link: 'https://developers.google.com/web/updates/2020/03/devtools#dock-to-left',
+      },
+      {
+        title: 'The Audits panel is now the Lighthouse panel',
+        subtitle: 'Same features. New name.',
+        link: 'https://developers.google.com/web/updates/2020/03/devtools#lighthouse',
+      },
+      {
+        title: 'Delete all Local Overrides in a folder',
+        subtitle: 'Right-click a folder from the Overrides tab and select "Delete all overrides".',
+        link: 'https://developers.google.com/web/updates/2020/03/devtools#overrides',
+      },
+      {
+        title: 'Updated Long Tasks UI',
+        subtitle: 'In the Performance panel Long Tasks now have a striped red background.',
+        link: 'https://developers.google.com/web/updates/2020/03/devtools#long-tasks',
+      },
+      {
+        title: 'Maskable icon support in the Manifest pane',
+        subtitle: 'Enable the "Show only the minimum safe area for maskable icons" checkbox.',
+        link: 'https://developers.google.com/web/updates/2020/03/devtools#maskable-icons',
+      },
+    ],
+    link: 'https://developers.google.com/web/updates/2020/03/devtools',
+  },
+  {
     version: 23,
     header: 'Highlights from the Chrome 81 update',
     highlights: [

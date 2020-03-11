@@ -47,6 +47,11 @@ ruleTester.run('es_modules_import', rule, {
       code: `import * as ARIAUtils from './ARIAUtils.js';`,
       filename: 'front_end/ui/Toolbar.js',
     },
+    // the `ls` helper is an exception in a TypeScript file
+    {
+      code: `import {ls} from '../common/ls.js';`,
+      filename: 'front_end/elements/ElementsBreadcrumbs.ts',
+    },
   ],
 
   invalid: [
@@ -64,6 +69,15 @@ ruleTester.run('es_modules_import', rule, {
       errors: [{
         message:
             `Incorrect same-namespace import: "../common/common.js". Use "import { Symbol } from './relative-file.js';" instead.`
+      }],
+    },
+    // the `ls` helper is not an exception in a JS file
+    {
+      code: `import {ls} from '../common/ls.js';`,
+      filename: 'front_end/elements/ElementsPanel.js',
+      errors: [{
+        message:
+            `Incorrect cross-namespace import: "../common/ls.js". Use "import * as Namespace from '../namespace/namespace.js';" instead. You may only import common/ls.js directly from TypeScript source files.`
       }],
     },
   ]

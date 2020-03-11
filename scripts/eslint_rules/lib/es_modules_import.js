@@ -69,6 +69,13 @@ module.exports = {
           return;
         }
 
+        if (importPath.endsWith(path.join('common', 'ls.js')) && path.extname(importingFileName) === '.ts') {
+          /* We allow TypeScript files to import the ls module directly.
+           * See common/ls.ts for more detail.
+           */
+          return;
+        }
+
         if (isStarAsImportSpecifier(node.specifiers)) {
           if (computeTopLevelFolder(importingFileName) === computeTopLevelFolder(exportingFileName) &&
               !isModuleEntrypoint(importingFileName)) {
@@ -83,10 +90,16 @@ module.exports = {
           }
         } else {
           if (computeTopLevelFolder(importingFileName) !== computeTopLevelFolder(exportingFileName)) {
+            let message =
+                `Incorrect cross-namespace import: "{{importPath}}". Use "import * as Namespace from '../namespace/namespace.js';" instead.`;
+
+            if (importPath.endsWith(path.join('common', 'ls.js'))) {
+              message += ' You may only import common/ls.js directly from TypeScript source files.'
+            }
+
             context.report({
               node,
-              message:
-                  `Incorrect cross-namespace import: "{{importPath}}". Use "import * as Namespace from '../namespace/namespace.js';" instead.`,
+              message,
               data: {
                 importPath,
               },

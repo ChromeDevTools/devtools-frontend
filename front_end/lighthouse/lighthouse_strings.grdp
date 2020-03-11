@@ -84,6 +84,9 @@
   <message name="IDS_DEVTOOLS_6e394d18cb68d551f58fa35f4dfc70bb" desc="Fast fact in the pop-up dialog when lighthouse is running in the Lighthouse panel">
     As page load time increases from one second to seven seconds, the probability of a mobile site visitor bouncing increases 113%. [Source: <ph name="LOCKED_1">Think with Google</ph>]
   </message>
+  <message name="IDS_DEVTOOLS_c919bc809db2475992927aebf39eeb7d" desc="Tooltip text that appears when hovering over the 'Simulated Throttling' checkbox in the settings pane opened by clicking the setting cog in the start view of the audits panel">
+    Simulate a slower page load, based on data from an initial unthrottled load. If disabled, the page is actually slowed with applied throttling.
+  </message>
   <message name="IDS_DEVTOOLS_d7d305befb5ff987deb149b9f4e197d6" desc="Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in start view of the audits panel">
     <ph name="LOCKED_1">Lighthouse</ph> settings
   </message>

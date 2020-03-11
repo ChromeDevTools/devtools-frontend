@@ -270,6 +270,8 @@ export const RuntimeSettings = [
     // We will disable this when we have a Lantern trace viewer within DevTools.
     learnMore:
         'https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#devtools-lighthouse-panel-throttling',
+    description: ls
+    `Simulate a slower page load, based on data from an initial unthrottled load. If disabled, the page is actually slowed with applied throttling.`,
     setFlags: (flags, value) => {
       flags.throttlingMethod = value ? 'simulate' : 'devtools';
     },

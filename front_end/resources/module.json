@@ -18,6 +18,14 @@
             "className": "Resources.ResourcesPanel.ResourceRevealer"
         },
         {
+            "type": "@Common.Revealer",
+            "contextTypes": [
+                "SDK.CookieReference"
+            ],
+            "destination": "Application panel",
+            "className": "Resources.ResourcesPanel.CookieReferenceRevealer"
+        },
+        {
             "type": "action",
             "category": "Resources",
             "actionId": "resources.clear",

@@ -134,6 +134,9 @@ SDK.ConsoleMessage.MessageSourceDisplayName = SDKModule.ConsoleModel.MessageSour
 /** @constructor */
 SDK.Cookie = SDKModule.Cookie.Cookie;
 
+/** @constructor */
+SDK.CookieReference = SDKModule.Cookie.CookieReference;
+
 /**
  * @enum {number}
  */

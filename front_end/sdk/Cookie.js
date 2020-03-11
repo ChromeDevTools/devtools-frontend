@@ -242,3 +242,36 @@ export const Attributes = {
   SameSite: 'sameSite',
   Priority: 'priority',
 };
+
+/**
+ * A `CookieReference` uniquely identifies a cookie by the triple (name,domain,path). Additionally, a context may be
+ * included to make it clear which site under Application>Cookies should be opened when revealing a `CookieReference`.
+ */
+export class CookieReference {
+  /**
+   * @param {string} name
+   * @param {string} domain
+   * @param {string} path
+   * @param {string|undefined} contextUrl - Context in which to reveal the cookie.
+   */
+  constructor(name, domain, path, contextUrl) {
+    this._name = name;
+    this._domain = domain;
+    this._path = path;
+    this._contextUrl = contextUrl;
+  }
+
+  /**
+   * @returns {string}
+   */
+  domain() {
+    return this._domain;
+  }
+
+  /**
+   * @returns {string|undefined}
+   */
+  contextUrl() {
+    return this._contextUrl;
+  }
+}

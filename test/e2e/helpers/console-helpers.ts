@@ -22,7 +22,7 @@ export async function obtainConsoleMessages(testName: string, callback?: (page: 
   // Locate the button for switching to the console tab.
   await click(CONSOLE_TAB_SELECTOR);
   // Obtain console messages that were logged
-  await frontend.waitForSelector(CONSOLE_MESSAGES_SELECTOR);
+  await waitFor(CONSOLE_MESSAGES_SELECTOR);
 
   if (callback) {
     await debuggerStatement(frontend);

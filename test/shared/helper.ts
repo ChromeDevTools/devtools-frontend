@@ -113,6 +113,15 @@ export const click =
   await frontend.mouse.click(clickableElement.x, clickableElement.y, options && options.clickOptions);
 };
 
+export const typeText = async (text: string) => {
+  const frontend: puppeteer.Page = globalThis[frontEndPage];
+  if (!frontend) {
+    throw new Error('Unable to locate DevTools frontend page. Was it stored first?');
+  }
+
+  await frontend.keyboard.type(text);
+};
+
 // Get a single element handle, across Shadow DOM boundaries.
 export const $ = async (selector: string, root?: puppeteer.JSHandle) => {
   const frontend: puppeteer.Page = globalThis[frontEndPage];
@@ -155,6 +164,16 @@ export const waitFor = async (selector: string, root?: puppeteer.JSHandle, maxTo
     }
     return undefined;
   }, `Unable to find element with selector ${selector}`, maxTotalTimeout);
+};
+
+export const waitForNone = async (selector: string, root?: puppeteer.JSHandle, maxTotalTimeout = 0) => {
+  return waitForFunction(async () => {
+    const elements = await $$(selector, root);
+    if (elements.evaluate(list => list.length === 0)) {
+      return true;
+    }
+    return false;
+  }, `At least one element with selector ${selector} still exists`, maxTotalTimeout);
 };
 
 export const waitForFunction =

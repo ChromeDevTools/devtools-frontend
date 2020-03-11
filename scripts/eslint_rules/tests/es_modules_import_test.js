@@ -52,6 +52,11 @@ ruleTester.run('es_modules_import', rule, {
       code: `import {ls} from '../common/ls.js';`,
       filename: 'front_end/elements/ElementsBreadcrumbs.ts',
     },
+    // lit-html is exempt from any rules
+    {
+      code: `import {classMap} from '../third_party/lit-html/package/directives/class-map.js';`,
+      filename: 'front_end/elements/ElementsBreadcrumbs.ts',
+    },
   ],
 
   invalid: [
@@ -78,6 +83,15 @@ ruleTester.run('es_modules_import', rule, {
       errors: [{
         message:
             `Incorrect cross-namespace import: "../common/ls.js". Use "import * as Namespace from '../namespace/namespace.js';" instead. You may only import common/ls.js directly from TypeScript source files.`
+      }],
+    },
+    // third-party modules are not exempt by default
+    {
+      code: `import {someThing} from '../third_party/some-module/foo.js';`,
+      filename: 'front_end/elements/ElementsPanel.js',
+      errors: [{
+        message:
+            `Incorrect cross-namespace import: "../third_party/some-module/foo.js". Use "import * as Namespace from '../namespace/namespace.js';" instead. If the third_party dependency does not expose a single entrypoint, update es_modules_import.js to make it exempt.`
       }],
     },
   ]

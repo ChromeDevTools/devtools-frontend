@@ -13,6 +13,11 @@ const path = require('path');
 const FRONT_END_DIRECTORY = path.join(__dirname, '..', '..', '..', 'front_end');
 const EXEMPTED_EXPORTING_FILES = new Set([path.join(FRONT_END_DIRECTORY, 'ui', 'ARIAUtils.js')]);
 
+const EXEMPTED_THIRD_PARTY_MODULES = new Set([
+  // lit-html is exempt as it doesn't expose all its modules from the root file
+  path.join(FRONT_END_DIRECTORY, 'third_party', 'lit-html'),
+]);
+
 //------------------------------------------------------------------------------
 // Rule Definition
 //------------------------------------------------------------------------------
@@ -69,6 +74,17 @@ module.exports = {
           return;
         }
 
+        const importMatchesExemptThirdParty =
+            Array.from(EXEMPTED_THIRD_PARTY_MODULES)
+                .some(exemptModulePath => exportingFileName.startsWith(exemptModulePath));
+
+        if (importMatchesExemptThirdParty) {
+          /* We don't impose any rules on third_party DEPS which do not expose
+           * all functionality in a single entrypoint
+           */
+          return;
+        }
+
         if (importPath.endsWith(path.join('common', 'ls.js')) && path.extname(importingFileName) === '.ts') {
           /* We allow TypeScript files to import the ls module directly.
            * See common/ls.ts for more detail.
@@ -95,6 +111,11 @@ module.exports = {
 
             if (importPath.endsWith(path.join('common', 'ls.js'))) {
               message += ' You may only import common/ls.js directly from TypeScript source files.'
+            }
+
+            if (importPath.includes('third_party')) {
+              message +=
+                  ' If the third_party dependency does not expose a single entrypoint, update es_modules_import.js to make it exempt.';
             }
 
             context.report({

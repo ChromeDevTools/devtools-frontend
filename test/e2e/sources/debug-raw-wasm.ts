@@ -5,7 +5,8 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {click, getBrowserAndPages, resetPages, resourcesPath, $} from '../../shared/helper.js';
+import {$, click, getBrowserAndPages, resetPages, resourcesPath} from '../../shared/helper.js';
+import {RESUME_BUTTON} from '../helpers/sources-helpers.js';
 
 describe('Raw-Wasm', async () => {
   beforeEach(async () => {
@@ -70,6 +71,6 @@ describe('Raw-Wasm', async () => {
     assert.equal(codeText, '    call $import0');
 
     // Resume the evaluation
-    await click('[aria-label="Pause script execution"]');
+    await click(RESUME_BUTTON);
   });
 });

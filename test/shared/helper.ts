@@ -158,7 +158,7 @@ export const waitFor = async (selector: string, root?: puppeteer.JSHandle, maxTo
 };
 
 export const waitForFunction =
-    async<T>(fn: () => Promise<T>, errorMessage: string, maxTotalTimeout = 0): Promise<T> => {
+    async<T>(fn: () => Promise<T|undefined>, errorMessage: string, maxTotalTimeout = 0): Promise<T> => {
   if (maxTotalTimeout === 0) {
     maxTotalTimeout = Number.POSITIVE_INFINITY;
   }

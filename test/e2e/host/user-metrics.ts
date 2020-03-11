@@ -234,7 +234,7 @@ describe('User Metrics', () => {
         break;
     }
 
-    await waitFor('.toolbar-state-on[aria-label="Deactivate breakpoints"]');
+    await waitFor('[aria-label="Activate breakpoints"]');
 
     await assertCapturedEvents([
       {

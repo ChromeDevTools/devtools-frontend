@@ -1,0 +1,7 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Spans multiple source mapped workers</title>
+<script>
+  var workers = new Array();
+  for (let i = 0; i < 10; ++i) workers.push(new Worker('multi-workers.min.js'));
+</script>

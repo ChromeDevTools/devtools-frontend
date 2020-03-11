@@ -6,6 +6,9 @@ import * as puppeteer from 'puppeteer';
 
 import {$, click, resourcesPath, waitFor} from '../../shared/helper.js';
 
+export const PAUSE_BUTTON = '[aria-label="Pause script execution"]';
+export const RESUME_BUTTON = '[aria-label="Resume script execution"]';
+
 export async function doubleClickSourceTreeItem(selector: string) {
   await waitFor(selector);
   await click(selector, {clickOptions: {clickCount: 2}});
@@ -31,6 +34,14 @@ export async function openSourceCodeEditorForFile(target: puppeteer.Page, source
   await waitFor(`[aria-label="Pretty print ${sourceFile}"]`);
 }
 
+export async function getOpenSources() {
+  const sourceTabPane = await waitFor('#sources-panel-sources-view .tabbed-pane');
+  const sourceTabs = (await $('.tabbed-pane-header-tabs', sourceTabPane)).asElement()!;
+  const openSources =
+      await sourceTabs.$$eval('.tabbed-pane-header-tab', nodes => nodes.map(n => n.getAttribute('aria-label')));
+  return openSources;
+}
+
 // We can't use the click helper, as it is not possible to select a particular
 // line number element in CodeMirror.
 export async function addBreakpointForLine(frontend: puppeteer.Page, index: number) {
@@ -51,6 +62,11 @@ export async function addBreakpointForLine(frontend: puppeteer.Page, index: numb
   });
 }
 
+export async function getBreakpointDecorators(frontend: puppeteer.Page, disabledOnly = false) {
+  const selector = `.cm-breakpoint${disabledOnly ? '-disabled' : ''} .CodeMirror-linenumber`;
+  return await frontend.$$eval(selector, nodes => nodes.map(n => parseInt(n.textContent!, 10)));
+}
+
 export async function retrieveTopCallFrameScriptLocation(script: string, target: puppeteer.Page) {
   // The script will run into a breakpoint, which means that it will not actually
   // finish the evaluation, until we continue executing.
@@ -65,7 +81,7 @@ export async function retrieveTopCallFrameScriptLocation(script: string, target:
       await (await $('.call-frame-location')).evaluate((location: HTMLElement) => location.textContent);
 
   // Resume the evaluation
-  await click('[aria-label="Pause script execution"]');
+  await click(RESUME_BUTTON);
 
   // Make sure to await the context evaluate before asserting
   // Otherwise the Puppeteer process might crash on a failure assertion,
@@ -96,4 +112,39 @@ export function waitForAdditionalSourceFiles(frontend: puppeteer.Page) {
 export function retrieveSourceFilesAdded(frontend: puppeteer.Page) {
   // Strip hostname, to make it agnostic of which server port we use
   return frontend.evaluate(() => window.__sourceFilesAddedEvents.map(file => new URL(`http://${file}`).pathname));
+}
+
+// Helpers for navigating the file tree.
+export type NestedFileSelector = {
+  rootSelector: string,
+  domainSelector: string,
+  folderSelector: string,
+  fileSelector: string,
+};
+
+export function createSelectorsForWorkerFile(
+    workerName: string, folderName: string, fileName: string, workerIndex = 1): NestedFileSelector {
+  const rootSelector = new Array(workerIndex).fill(`[aria-label="${workerName}, worker"]`).join(' ~ ');
+  const domainSelector = `${rootSelector} + ol > [aria-label="localhost:8090, domain"]`;
+  const folderSelector = `${domainSelector} + ol > [aria-label^="${folderName}, "]`;
+  const fileSelector = `${folderSelector} + ol > [aria-label="${fileName}, file"]`;
+
+  return {
+    rootSelector,
+    domainSelector,
+    folderSelector,
+    fileSelector,
+  };
+}
+
+export async function expandFileTree(selectors: NestedFileSelector) {
+  await doubleClickSourceTreeItem(selectors.rootSelector);
+  await doubleClickSourceTreeItem(selectors.domainSelector);
+  await doubleClickSourceTreeItem(selectors.folderSelector);
+  return await waitFor(selectors.fileSelector);
+}
+
+export async function openNestedWorkerFile(selectors: NestedFileSelector) {
+  await expandFileTree(selectors);
+  await click(selectors.fileSelector);
 }

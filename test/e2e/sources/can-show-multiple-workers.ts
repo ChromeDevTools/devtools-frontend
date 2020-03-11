@@ -5,43 +5,18 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {$, click, getBrowserAndPages, resetPages, resourcesPath, waitFor} from '../../shared/helper.js';
+import {click, getBrowserAndPages, resetPages, resourcesPath, waitFor} from '../../shared/helper.js';
+import {createSelectorsForWorkerFile, expandFileTree, NestedFileSelector} from '../helpers/sources-helpers.js';
 
 const WORKER1_SELECTORS = createSelectorsForFile('worker1.js');
 const WORKER2_SELECTORS = createSelectorsForFile('worker2.js');
 
-type NestedFileSelector = {
-  rootSelector: string,
-  domainSelector: string,
-  folderSelector: string,
-  fileSelector: string,
-};
-
-function createSelectorsForFile(fileName: string): NestedFileSelector {
-  const rootSelector = `[aria-label="${fileName}, worker"]`;
-  const domainSelector = `${rootSelector} + ol > [aria-label="localhost:8090, domain"]`;
-  const folderSelector = `${domainSelector} + ol > [aria-label="test/e2e/resources/sources, nw-folder"]`;
-  const fileSelector = `${folderSelector} + ol > [aria-label="${fileName}, file"]`;
-
-  return {
-    rootSelector,
-    domainSelector,
-    folderSelector,
-    fileSelector,
-  };
-}
-
-async function doubleClickSourceTreeItem(selector: string) {
-  await waitFor(selector);
-  await click(selector, {clickOptions: {clickCount: 2}});
+function createSelectorsForFile(fileName: string) {
+  return createSelectorsForWorkerFile(fileName, 'test/e2e/resources/sources', fileName);
 }
 
 async function openNestedWorkerFile(selectors: NestedFileSelector) {
-  await doubleClickSourceTreeItem(selectors.rootSelector);
-  await doubleClickSourceTreeItem(selectors.domainSelector);
-  await doubleClickSourceTreeItem(selectors.folderSelector);
-  await waitFor(selectors.fileSelector);
-  const workerFile = await $(selectors.fileSelector);
+  const workerFile = await expandFileTree(selectors);
 
   return workerFile.asElement()!.evaluate(node => node.textContent);
 }

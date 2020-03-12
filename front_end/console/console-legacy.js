@@ -86,8 +86,3 @@ Console.ConsoleViewport = ConsoleModule.ConsoleViewport.ConsoleViewport;
  * @interface
  */
 Console.ConsoleViewportElement = ConsoleModule.ConsoleViewport.ConsoleViewportElement;
-
-/**
- * @typedef {{messageIndex: number, matchIndex: number}}
- */
-Console.ConsoleView.RegexMatchRange;

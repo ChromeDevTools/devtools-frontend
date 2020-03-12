@@ -41,6 +41,7 @@ import {linkifyDeferredNodeReference} from './DOMLinkifier.js';
 import {ElementsSidebarPane} from './ElementsSidebarPane.js';
 import {StylePropertyHighlighter} from './StylePropertyHighlighter.js';
 import {StylePropertyTreeElement} from './StylePropertyTreeElement.js';
+import {Context} from './StylePropertyTreeElement.js';  // eslint-disable-line no-unused-vars
 
 export class StylesSidebarPane extends ElementsSidebarPane {
   constructor() {
@@ -1829,7 +1830,7 @@ export class StylePropertiesSection {
    * @param {!Element} element
    * @param {string} newContent
    * @param {string} oldContent
-   * @param {(!Elements.StylePropertyTreeElement.Context|undefined)} context
+   * @param {(!Context|undefined)} context
    * @param {string} moveDirection
    */
   _editingMediaCommitted(media, element, newContent, oldContent, context, moveDirection) {
@@ -1979,7 +1980,7 @@ export class StylePropertiesSection {
    * @param {!Element} element
    * @param {string} newContent
    * @param {string} oldContent
-   * @param {(!Elements.StylePropertyTreeElement.Context|undefined)} context
+   * @param {(!Context|undefined)} context
    * @param {string} moveDirection
    */
   editingSelectorCommitted(element, newContent, oldContent, context, moveDirection) {
@@ -2129,7 +2130,7 @@ export class BlankStylePropertiesSection extends StylePropertiesSection {
    * @param {!Element} element
    * @param {string} newContent
    * @param {string} oldContent
-   * @param {!Elements.StylePropertyTreeElement.Context|undefined} context
+   * @param {!Context|undefined} context
    * @param {string} moveDirection
    */
   editingSelectorCommitted(element, newContent, oldContent, context, moveDirection) {

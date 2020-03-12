@@ -12,6 +12,3 @@ CookieTable.CookiesTable = CookieTableModule.CookiesTable.CookiesTable;
 
 /** @constructor */
 CookieTable.DataGridNode = CookieTableModule.CookiesTable.DataGridNode;
-
-/** @typedef {!{uiString: string, attribute: ?SDK.Cookie.Attributes}} */
-CookieTable.BlockedReason;

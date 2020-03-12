@@ -7,7 +7,7 @@ import * as Host from '../host/host.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-import {EmulatedDevice, Horizontal} from './EmulatedDevices.js';  // eslint-disable-line no-unused-vars
+import {EmulatedDevice, Horizontal, Mode} from './EmulatedDevices.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.EmulationModel.EmulationModel>}
@@ -66,7 +66,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     this._type = Type.None;
     /** @type {?EmulatedDevice} */
     this._device = null;
-    /** @type {?Emulation.EmulatedDevice.Mode} */
+    /** @type {?Mode} */
     this._mode = null;
     /** @type {number} */
     this._fitScale = 1;
@@ -160,7 +160,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!Type} type
    * @param {?EmulatedDevice} device
-   * @param {?Emulation.EmulatedDevice.Mode} mode
+   * @param {?Mode} mode
    * @param {number=} scale
    */
   emulate(type, device, mode, scale) {
@@ -243,7 +243,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @return {?Emulation.EmulatedDevice.Mode}
+   * @return {?Mode}
    */
   mode() {
     return this._mode;

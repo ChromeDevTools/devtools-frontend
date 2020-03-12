@@ -143,7 +143,7 @@ export class CoverageDecorationManager {
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {number} line
    * @param {number} column
-   * @return {!Promise<!Array<!Coverage.RawLocation>>}
+   * @return {!Promise<!Array<!RawLocation>>}
    */
   async _rawLocationsForSourceLocation(uiSourceCode, line, column) {
     const result = [];
@@ -193,8 +193,8 @@ export class CoverageDecorationManager {
   }
 
   /**
-   * @param {!Coverage.RawLocation} a
-   * @param {!Coverage.RawLocation} b
+   * @param {!RawLocation} a
+   * @param {!RawLocation} b
    */
   static _compareLocations(a, b) {
     return a.id.localeCompare(b.id) || a.line - b.line || a.column - b.column;
@@ -208,3 +208,13 @@ export class CoverageDecorationManager {
     uiSourceCode.addLineDecoration(0, decoratorType, this);
   }
 }
+
+/**
+ * @typedef {!{
+ *    id: string,
+ *    contentProvider: !Common.ContentProvider.ContentProvider,
+ *    line: number,
+ *    column: number
+ * }}
+ */
+export let RawLocation;

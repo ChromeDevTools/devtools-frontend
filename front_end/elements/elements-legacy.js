@@ -105,21 +105,3 @@ Elements.StylesSidebarPane.ButtonProvider = ElementsModule.StylesSidebarPane.But
 
 /** @constructor */
 Elements.StylePropertiesSection = ElementsModule.StylesSidebarPane.StylePropertiesSection;
-
-/** @typedef {{cancel: function(), commit: function(), resize: function(), editor:!UI.TextEditor}} */
-Elements.MultilineEditorController;
-
-/** @typedef {{node: !SDK.DOMNode, isCut: boolean}} */
-Elements.ElementsTreeOutline.ClipboardData;
-
-/** @typedef {{
- *    expanded: boolean,
- *    hasChildren: boolean,
- *    isEditingName: boolean,
- *    originalProperty: (!SDK.CSSProperty|undefined),
- *    originalName: (string|undefined),
- *    originalValue: (string|undefined),
- *    previousContent: string
- *  }}
- */
-Elements.StylePropertyTreeElement.Context;

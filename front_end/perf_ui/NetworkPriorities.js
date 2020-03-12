@@ -25,8 +25,8 @@ export function uiLabelToNetworkPriority(priorityLabel) {
   return PerfUI._uiLabelToPriorityMapInstance.get(priorityLabel) || '';
 }
 
-/** @type {?Map<!Protocol.Network.ResourcePriority, string>} */
-let _priorityUILabelMapInstance = null;
+/** @type {!Map<!Protocol.Network.ResourcePriority, string>} */
+let _priorityUILabelMapInstance;
 
 /**
  * @return {!Map<!Protocol.Network.ResourcePriority, string>}

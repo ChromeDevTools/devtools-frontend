@@ -134,7 +134,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
   }
 
   /**
-   * @param {?Elements.MultilineEditorController} multilineEditing
+   * @param {?MultilineEditorController} multilineEditing
    */
   setMultilineEditing(multilineEditing) {
     this._multilineEditing = multilineEditing;
@@ -158,7 +158,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
   }
 
   /**
-   * @param {?Elements.ElementsTreeOutline.ClipboardData} data
+   * @param {?ClipboardData} data
    */
   _setClipboardData(data) {
     if (this._clipboardNodeData) {
@@ -1816,3 +1816,9 @@ export class ShortcutTreeElement extends UI.TreeOutline.TreeElement {
     return true;
   }
 }
+
+/** @typedef {{cancel: function(), commit: function(), resize: function(), editor:!UI.TextEditor.TextEditor}} */
+export let MultilineEditorController;
+
+/** @typedef {{node: !SDK.DOMModel.DOMNode, isCut: boolean}} */
+export let ClipboardData;

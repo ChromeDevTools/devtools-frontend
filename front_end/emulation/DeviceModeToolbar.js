@@ -8,7 +8,7 @@ import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as UI from '../ui/ui.js';
 
 import {defaultMobileScaleFactor, DeviceModeModel, Type, UA} from './DeviceModeModel.js';
-import {EmulatedDevice, EmulatedDevicesList, Events, Horizontal, Vertical} from './EmulatedDevices.js';
+import {EmulatedDevice, EmulatedDevicesList, Events, Horizontal, Mode, Vertical} from './EmulatedDevices.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
@@ -33,7 +33,7 @@ export class DeviceModeToolbar {
 
     this._autoAdjustScaleSetting = self.Common.settings.createSetting('emulation.autoAdjustScale', true);
 
-    /** @type {!Map<!EmulatedDevice, !Emulation.EmulatedDevice.Mode>} */
+    /** @type {!Map<!EmulatedDevice, !Mode>} */
     this._lastMode = new Map();
 
     this._element = createElementWithClass('div', 'device-mode-toolbar');
@@ -509,7 +509,7 @@ export class DeviceModeToolbar {
     }
 
     /**
-     * @param {!Emulation.EmulatedDevice.Mode} mode
+     * @param {!Mode} mode
      * @param {string} title
      */
     function addMode(mode, title) {
@@ -517,7 +517,7 @@ export class DeviceModeToolbar {
     }
 
     /**
-     * @param {!Emulation.EmulatedDevice.Mode} mode
+     * @param {!Mode} mode
      */
     function applyMode(mode) {
       const scale = autoAdjustScaleSetting.get() ? undefined : model.scaleSetting().get();
@@ -593,7 +593,7 @@ export class DeviceModeToolbar {
     if (this._model.type() === Type.Device) {
       this._lastMode.set(
           /** @type {!EmulatedDevice} */ (this._model.device()),
-          /** @type {!Emulation.EmulatedDevice.Mode} */ (this._model.mode()));
+          /** @type {!Mode} */ (this._model.mode()));
     }
 
     if (this._model.mode() !== this._cachedModelMode && this._model.type() !== Type.None) {

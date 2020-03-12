@@ -403,7 +403,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
    */
   _processCSSCoverage(ruleUsageList, stamp) {
     const updatedEntries = [];
-    /** @type {!Map<!SDK.CSSStyleSheetHeader.CSSStyleSheetHeader, !Array<!Coverage.RangeUseCount>>} */
+    /** @type {!Map<!SDK.CSSStyleSheetHeader.CSSStyleSheetHeader, !Array<!RangeUseCount>>} */
     const rulesByStyleSheet = new Map();
     for (const rule of ruleUsageList) {
       const styleSheetHeader = this._cssModel.styleSheetHeaderForId(rule.styleSheetId);
@@ -419,7 +419,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
     }
     for (const entry of rulesByStyleSheet) {
       const styleSheetHeader = /** @type {!SDK.CSSStyleSheetHeader.CSSStyleSheetHeader} */ (entry[0]);
-      const ranges = /** @type {!Array<!Coverage.RangeUseCount>} */ (entry[1]);
+      const ranges = /** @type {!Array<!RangeUseCount>} */ (entry[1]);
       const subentry = this._addCoverage(
           styleSheetHeader, styleSheetHeader.contentLength, styleSheetHeader.startLine, styleSheetHeader.startColumn,
           ranges, CoverageType.CSS, stamp);
@@ -431,8 +431,8 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
   }
 
   /**
-   * @param {!Array<!Coverage.RangeUseCount>} ranges
-   * @return {!Array<!Coverage.CoverageSegment>}
+   * @param {!Array<!RangeUseCount>} ranges
+   * @return {!Array<!CoverageSegment>}
    */
   static _convertToDisjointSegments(ranges, stamp) {
     ranges.sort((a, b) => a.startOffset - b.startOffset);
@@ -490,7 +490,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
    * @param {number} contentLength
    * @param {number} startLine
    * @param {number} startColumn
-   * @param {!Array<!Coverage.RangeUseCount>} ranges
+   * @param {!Array<!RangeUseCount>} ranges
    * @param {!CoverageType} type
    * @return {?CoverageInfo}
    */
@@ -755,7 +755,7 @@ export class CoverageInfo {
     this._columnOffset = columnOffset;
     this._coverageType = type;
 
-    /** !Array<!Coverage.CoverageSegment> */
+    /** !Array<!CoverageSegment> */
     this._segments = [];
   }
 
@@ -781,7 +781,7 @@ export class CoverageInfo {
   }
 
   /**
-   * @param {!Array<!Coverage.CoverageSegment>} segments
+   * @param {!Array<!CoverageSegment>} segments
    */
   mergeCoverage(segments) {
     this._segments = CoverageInfo._mergeCoverage(this._segments, segments);
@@ -812,8 +812,8 @@ export class CoverageInfo {
   }
 
   /**
-   * @param {!Array<!Coverage.CoverageSegment>} segmentsA
-   * @param {!Array<!Coverage.CoverageSegment>} segmentsB
+   * @param {!Array<!CoverageSegment>} segmentsA
+   * @param {!Array<!CoverageSegment>} segmentsB
    */
   static _mergeCoverage(segmentsA, segmentsB) {
     const result = [];
@@ -869,3 +869,9 @@ export class CoverageInfo {
     }
   }
 }
+
+/** @typedef {{startOffset: number, endOffset: number, count: number}} */
+export let RangeUseCount;
+
+/** @typedef {{end: number, count: (number|undefined)}} */
+export let CoverageSegment;

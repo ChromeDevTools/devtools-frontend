@@ -4,8 +4,8 @@
 
 import * as Common from '../common/common.js';
 
-import {Cookie} from './Cookie.js';
-import {Resource} from './Resource.js';  // eslint-disable-line no-unused-vars
+import {Attributes, Cookie} from './Cookie.js';  // eslint-disable-line no-unused-vars
+import {Resource} from './Resource.js';          // eslint-disable-line no-unused-vars
 import {ResourceTreeModel} from './ResourceTreeModel.js';
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
@@ -23,7 +23,7 @@ export class CookieModel extends SDKModel {
 
   /**
    * @param {!Cookie} cookie
-   * @param {?Array<!CookieTable.BlockedReason>} blockedReasons
+   * @param {?Array<!BlockedReason>} blockedReasons
    */
   addBlockedCookie(cookie, blockedReasons) {
     const key = cookie.key();
@@ -126,3 +126,6 @@ export class CookieModel extends SDKModel {
 }
 
 SDKModel.register(CookieModel, Capability.Network, false);
+
+/** @typedef {!{uiString: string, attribute: ?Attributes}} */
+export let BlockedReason;

@@ -17,9 +17,9 @@ export class EmulatedDevice {
     this.title = '';
     /** @type {string} */
     this.type = Type.Unknown;
-    /** @type {!Emulation.EmulatedDevice.Orientation} */
+    /** @type {!Orientation} */
     this.vertical = {width: 0, height: 0, outlineInsets: null, outlineImage: null};
-    /** @type {!Emulation.EmulatedDevice.Orientation} */
+    /** @type {!Orientation} */
     this.horizontal = {width: 0, height: 0, outlineInsets: null, outlineImage: null};
     /** @type {number} */
     this.deviceScaleFactor = 1;
@@ -27,7 +27,7 @@ export class EmulatedDevice {
     this.capabilities = [Capability.Touch, Capability.Mobile];
     /** @type {string} */
     this.userAgent = '';
-    /** @type {!Array.<!Emulation.EmulatedDevice.Mode>} */
+    /** @type {!Array.<!Mode>} */
     this.modes = [];
 
     /** @type {string} */
@@ -91,7 +91,7 @@ export class EmulatedDevice {
 
       /**
        * @param {*} json
-       * @return {!EmulatedDevice.Orientation}
+       * @return {!Orientation}
        */
       function parseOrientation(json) {
         const result = {};
@@ -114,7 +114,7 @@ export class EmulatedDevice {
           }
           result.outlineImage = /** @type {string} */ (parseValue(json['outline'], 'image', 'string'));
         }
-        return /** @type {!EmulatedDevice.Orientation} */ (result);
+        return /** @type {!Orientation} */ (result);
       }
 
       const result = new EmulatedDevice();
@@ -210,7 +210,7 @@ export class EmulatedDevice {
 
   /**
    * @param {string} orientation
-   * @return {!Array.<!EmulatedDevice.Mode>}
+   * @return {!Array.<!Mode>}
    */
   modesForOrientation(orientation) {
     const result = [];
@@ -260,7 +260,7 @@ export class EmulatedDevice {
   }
 
   /**
-   * @param {!EmulatedDevice.Orientation} orientation
+   * @param {!Orientation} orientation
    * @return {*}
    */
   _orientationToJSON(orientation) {
@@ -280,7 +280,7 @@ export class EmulatedDevice {
   }
 
   /**
-   * @param {!EmulatedDevice.Mode} mode
+   * @param {!Mode} mode
    * @return {string}
    */
   modeImage(mode) {
@@ -294,7 +294,7 @@ export class EmulatedDevice {
   }
 
   /**
-   * @param {!EmulatedDevice.Mode} mode
+   * @param {!Mode} mode
    * @return {string}
    */
   outlineImage(mode) {
@@ -310,7 +310,7 @@ export class EmulatedDevice {
 
   /**
    * @param {string} name
-   * @return {!EmulatedDevice.Orientation}
+   * @return {!Orientation}
    */
   orientationByName(name) {
     return name === Vertical ? this.vertical : this.horizontal;
@@ -527,3 +527,9 @@ export const Events = {
   CustomDevicesUpdated: Symbol('CustomDevicesUpdated'),
   StandardDevicesUpdated: Symbol('StandardDevicesUpdated')
 };
+
+/** @typedef {!{title: string, orientation: string, insets: !UI.Geometry.Insets, image: ?string}} */
+export let Mode;
+
+/** @typedef {!{width: number, height: number, outlineInsets: ?UI.Geometry.Insets, outlineImage: ?string}} */
+export let Orientation;

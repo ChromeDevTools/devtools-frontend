@@ -97,7 +97,7 @@ export class ConsoleView extends UI.Widget.VBox {
     this._groupableMessageTitle = new Map();
 
     /**
-     * @type {!Array.<!Console.ConsoleView.RegexMatchRange>}
+     * @type {!Array.<!RegexMatchRange>}
      */
     this._regexMatchRanges = [];
 
@@ -1597,3 +1597,8 @@ const _messageSortingTimeSymbol = Symbol('messageSortingTime');
  * @type {number}
  */
 const MaxLengthToIgnoreHighlighter = 10000;
+
+/**
+ * @typedef {{messageIndex: number, matchIndex: number}}
+ */
+export let RegexMatchRange;

@@ -47,7 +47,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this._hasBeenEditedIncrementally = false;
     this._prompt = null;
     this._lastComputedValue = null;
-    /** @type {(!Elements.StylePropertyTreeElement.Context|undefined)} */
+    /** @type {(!Context|undefined)} */
     this._contextForTest;
   }
 
@@ -557,7 +557,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   /**
-   * @param {!Elements.StylePropertyTreeElement.Context} context
+   * @param {!Context} context
    * @param {!Event} event
    */
   _handleContextMenuEvent(context, event) {
@@ -658,7 +658,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       return splitFieldValue.join('');
     }
 
-    /** @type {!Elements.StylePropertyTreeElement.Context} */
+    /** @type {!Context} */
     const context = {
       expanded: this.expanded,
       hasChildren: this.isExpandable(),
@@ -677,7 +677,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     selectElement.textContent = selectElement.textContent;  // remove color swatch and the like
 
     /**
-     * @param {!Elements.StylePropertyTreeElement.Context} context
+     * @param {!Context} context
      * @param {!Event} event
      * @this {StylePropertyTreeElement}
      */
@@ -710,7 +710,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     /**
-     * @param {!Elements.StylePropertyTreeElement.Context} context
+     * @param {!Context} context
      * @param {!Event} event
      * @this {StylePropertyTreeElement}
      */
@@ -749,7 +749,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   /**
-   * @param {!Elements.StylePropertyTreeElement.Context} context
+   * @param {!Context} context
    * @param {!Event} event
    */
   _editingNameValueKeyDown(context, event) {
@@ -793,7 +793,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   /**
-   * @param {!Elements.StylePropertyTreeElement.Context} context
+   * @param {!Context} context
    * @param {!Event} event
    */
   _editingNameValueKeyPress(context, event) {
@@ -833,7 +833,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   /**
-   * @param {!Elements.StylePropertyTreeElement.Context} context
+   * @param {!Context} context
    * @return {!Promise}
    */
   async _applyFreeFlowStyleTextEdit(context) {
@@ -879,11 +879,11 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
    */
   kickFreeFlowStyleEditForTest() {
     const context = this._contextForTest;
-    return this._applyFreeFlowStyleTextEdit(/** @type {!Elements.StylePropertyTreeElement.Context} */ (context));
+    return this._applyFreeFlowStyleTextEdit(/** @type {!Context} */ (context));
   }
 
   /**
-   * @param {!Elements.StylePropertyTreeElement.Context} context
+   * @param {!Context} context
    */
   editingEnded(context) {
     this.setExpandable(context.hasChildren);
@@ -901,7 +901,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
   /**
    * @param {?Element} element
-   * @param {!Elements.StylePropertyTreeElement.Context} context
+   * @param {!Context} context
    */
   editingCancelled(element, context) {
     this._removePrompt();
@@ -918,7 +918,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   /**
-   * @param {!Elements.StylePropertyTreeElement.Context} context
+   * @param {!Context} context
    */
   async _applyOriginalStyle(context) {
     await this.applyStyleText(this._originalPropertyText, false, context.originalProperty);
@@ -939,7 +939,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
   /**
    * @param {string} userInput
-   * @param {!Elements.StylePropertyTreeElement.Context} context
+   * @param {!Context} context
    * @param {string} moveDirection
    */
   async _editingCommitted(userInput, context, moveDirection) {
@@ -1193,3 +1193,15 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 }
 
 export const ActiveSymbol = Symbol('ActiveSymbol');
+
+/** @typedef {{
+ *    expanded: boolean,
+ *    hasChildren: boolean,
+ *    isEditingName: boolean,
+ *    originalProperty: (!SDK.CSSProperty.CSSProperty|undefined),
+ *    originalName: (string|undefined),
+ *    originalValue: (string|undefined),
+ *    previousContent: string
+ *  }}
+ */
+export let Context;

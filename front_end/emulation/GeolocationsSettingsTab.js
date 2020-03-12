@@ -61,7 +61,7 @@ export class GeolocationsSettingsTab extends UI.Widget.VBox {
    * @return {!Element}
    */
   renderItem(item, editable) {
-    const geolocation = /** @type {!Emulation.GeolocationsSettingsTab.Item} */ (item);
+    const geolocation = /** @type {!Item} */ (item);
     const element = createElementWithClass('div', 'geolocations-list-item');
     const title = element.createChild('div', 'geolocations-list-text geolocations-list-title');
     const titleText = title.createChild('div', 'geolocations-list-title-text');
@@ -94,7 +94,7 @@ export class GeolocationsSettingsTab extends UI.Widget.VBox {
    * @param {boolean} isNew
    */
   commitEdit(item, editor, isNew) {
-    const geolocation = /** @type {?Emulation.GeolocationsSettingsTab.Item} */ (item);
+    const geolocation = /** @type {?Item} */ (item);
     geolocation.title = editor.control('title').value.trim();
     const lat = editor.control('lat').value.trim();
     geolocation.lat = lat ? parseFloat(lat) : 0;
@@ -116,7 +116,7 @@ export class GeolocationsSettingsTab extends UI.Widget.VBox {
    * @return {!UI.ListWidget.Editor}
    */
   beginEdit(item) {
-    const geolocation = /** @type {?Emulation.GeolocationsSettingsTab.Item} */ (item);
+    const geolocation = /** @type {?Item} */ (item);
     const editor = this._createEditor();
     editor.control('title').value = geolocation.title;
     editor.control('lat').value = String(geolocation.lat);
@@ -272,3 +272,6 @@ export class GeolocationsSettingsTab extends UI.Widget.VBox {
     }
   }
 }
+
+/** @typedef {{title: string, lat: number, long: number}} */
+export let Item;

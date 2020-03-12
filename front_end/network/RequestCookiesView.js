@@ -29,6 +29,7 @@
  */
 
 import * as Common from '../common/common.js';
+import * as CookieTable from '../cookie_table/cookie_table.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -67,7 +68,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
     this._requestCookiesEmpty = this.element.createChild('div', 'cookies-panel-item');
     this._requestCookiesEmpty.textContent = ls`No request cookies were sent.`;
 
-    this._requestCookiesTable = new CookieTable.CookiesTable(/* renderInline */ true);
+    this._requestCookiesTable = new CookieTable.CookiesTable.CookiesTable(/* renderInline */ true);
     this._requestCookiesTable.contentElement.classList.add('cookie-table', 'cookies-panel-item');
     this._requestCookiesTable.show(this.element);
 
@@ -76,7 +77,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
     this._responseCookiesTitle.title =
         ls`Cookies that were received from the server in the 'set-cookie' header of the response`;
 
-    this._responseCookiesTable = new CookieTable.CookiesTable(/* renderInline */ true);
+    this._responseCookiesTable = new CookieTable.CookiesTable.CookiesTable(/* renderInline */ true);
     this._responseCookiesTable.contentElement.classList.add('cookie-table', 'cookies-panel-item');
     this._responseCookiesTable.show(this.element);
 
@@ -89,11 +90,11 @@ export class RequestCookiesView extends UI.Widget.Widget {
   }
 
   /**
-   * @return {!{requestCookies: !Array<!SDK.Cookie.Cookie>, requestCookieToBlockedReasons: !Map<!SDK.Cookie.Cookie, !Array<!CookieTable.BlockedReason>>}}
+   * @return {!{requestCookies: !Array<!SDK.Cookie.Cookie>, requestCookieToBlockedReasons: !Map<!SDK.Cookie.Cookie, !Array<!SDK.CookieModel.BlockedReason>>}}
    */
   _getRequestCookies() {
     let requestCookies = [];
-    /** @type {!Map<!SDK.Cookie.Cookie, !Array<!CookieTable.BlockedReason>>} */
+    /** @type {!Map<!SDK.Cookie.Cookie, !Array<!SDK.CookieModel.BlockedReason>>} */
     const requestCookieToBlockedReasons = new Map();
 
     if (this._request.requestCookies.length) {
@@ -141,12 +142,12 @@ export class RequestCookiesView extends UI.Widget.Widget {
   }
 
   /**
-   * @return {!{responseCookies: !Array<!SDK.Cookie.Cookie>, responseCookieToBlockedReasons: !Map<!SDK.Cookie.Cookie, !Array<!CookieTable.BlockedReason>>, malformedResponseCookies: !Array<!SDK.NetworkRequest.BlockedSetCookieWithReason>}}
+   * @return {!{responseCookies: !Array<!SDK.Cookie.Cookie>, responseCookieToBlockedReasons: !Map<!SDK.Cookie.Cookie, !Array<!SDK.CookieModel.BlockedReason>>, malformedResponseCookies: !Array<!SDK.NetworkRequest.BlockedSetCookieWithReason>}}
    */
   _getResponseCookies() {
     /** @type {!Array<!SDK.Cookie.Cookie>} */
     let responseCookies = [];
-    /** @type {!Map<!SDK.Cookie.Cookie, !Array<!CookieTable.BlockedReason>>} */
+    /** @type {!Map<!SDK.Cookie.Cookie, !Array<!SDK.CookieModel.BlockedReason>>} */
     const responseCookieToBlockedReasons = new Map();
     /** @type {!Array<!SDK.NetworkRequest.BlockedSetCookieWithReason>} */
     const malformedResponseCookies = [];

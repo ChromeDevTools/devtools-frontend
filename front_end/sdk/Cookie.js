@@ -16,6 +16,7 @@ export class Cookie {
     this._name = name;
     this._value = value;
     this._type = type;
+    /** @type {!Object<string, *>} */
     this._attributes = {};
     this._size = 0;
     this._priority = /** @type {!Protocol.Network.CookiePriority} */ (priority || 'Medium');
@@ -31,6 +32,7 @@ export class Cookie {
     const cookie = new Cookie(protocolCookie.name, protocolCookie.value, null, protocolCookie.priority);
     cookie.addAttribute('domain', protocolCookie['domain']);
     cookie.addAttribute('path', protocolCookie['path']);
+    // @ts-ignore the PDL says Cookies do not have a port attribute: https://crbug.com/1060613
     cookie.addAttribute('port', protocolCookie['port']);
     if (protocolCookie['expires']) {
       cookie.addAttribute('expires', protocolCookie['expires'] * 1000);
@@ -95,6 +97,7 @@ export class Cookie {
      */
   sameSite() {
     // TODO(allada) This should not rely on _attributes and instead store them individually.
+    // when attributes get added via addAttribute() they are lowercased, hence the lowercasing of samesite here
     return /** @type {!Protocol.Network.CookieSameSite} */ (this._attributes['samesite']);
   }
 
@@ -118,35 +121,35 @@ export class Cookie {
      * @return {string}
      */
   path() {
-    return this._attributes['path'];
+    return /** @type {string} */ (this._attributes['path']);
   }
 
   /**
      * @return {string}
      */
   port() {
-    return this._attributes['port'];
+    return /** @type {string} */ (this._attributes['port']);
   }
 
   /**
      * @return {string}
      */
   domain() {
-    return this._attributes['domain'];
+    return /** @type {string} */ (this._attributes['domain']);
   }
 
   /**
      * @return {number}
      */
   expires() {
-    return this._attributes['expires'];
+    return /** @type {number} */ (this._attributes['expires']);
   }
 
   /**
-     * @return {string}
+     * @return {number}
      */
   maxAge() {
-    return this._attributes['max-age'];
+    return /** @type {number} */ (this._attributes['max-age']);
   }
 
   /**
@@ -174,8 +177,9 @@ export class Cookie {
   }
 
   /**
-     * @return {!Date|null}
-     */
+   * @param {!Date} requestDate
+   * @return {!Date|null}
+   */
   expiresDate(requestDate) {
     // RFC 6265 indicates that the max-age attribute takes precedence over the expires attribute
     if (this.maxAge()) {

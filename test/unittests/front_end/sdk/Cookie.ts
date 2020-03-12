@@ -145,7 +145,7 @@ describe('Cookie', () => {
 
   it('can calculate the expiration date for session cookies', () => {
     const cookie = new Cookie('name', 'value');
-    assert.equal(cookie.expiresDate(), null);
+    assert.equal(cookie.expiresDate(new Date()), null);
   });
 
   it('can calculate the expiration date for max age cookies', () => {

@@ -33,6 +33,7 @@ import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
+import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @implements {SDK.SDKModel.Observer}
@@ -69,7 +70,7 @@ export class Linkifier {
      * @param {!Common.EventTarget.EventTargetEvent} event
      */
     function onLinkIconChanged(event) {
-      const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
+      const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data);
       const links = uiSourceCode[_sourceCodeAnchors] || [];
       for (const link of links) {
         Linkifier._updateLinkDecorations(link);
@@ -87,7 +88,7 @@ export class Linkifier {
 
   /**
    * @param {!Element} anchor
-   * @param {!Workspace.UILocation} uiLocation
+   * @param {!Workspace.UISourceCode.UILocation} uiLocation
    */
   static _bindUILocation(anchor, uiLocation) {
     Linkifier._linkInfo(anchor).uiLocation = uiLocation;
@@ -158,7 +159,7 @@ export class Linkifier {
    * @param {?string} scriptId
    * @param {string} sourceURL
    * @param {number} lineNumber
-   * @param {!Components.LinkifyOptions=} options
+   * @param {!LinkifyOptions=} options
    * @return {?Element}
    */
   maybeLinkifyScriptLocation(target, scriptId, sourceURL, lineNumber, options) {
@@ -206,7 +207,7 @@ export class Linkifier {
    * @param {?string} scriptId
    * @param {string} sourceURL
    * @param {number} lineNumber
-   * @param {!Components.LinkifyOptions=} options
+   * @param {!LinkifyOptions=} options
    * @return {!Element}
    */
   linkifyScriptLocation(target, scriptId, sourceURL, lineNumber, options) {
@@ -229,7 +230,7 @@ export class Linkifier {
   /**
    * @param {?SDK.SDKModel.Target} target
    * @param {!Protocol.Runtime.CallFrame} callFrame
-   * @param {!Components.LinkifyOptions=} options
+   * @param {!LinkifyOptions=} options
    * @return {?Element}
    */
   maybeLinkifyConsoleCallFrame(target, callFrame, options) {
@@ -359,7 +360,7 @@ export class Linkifier {
 
   /**
    * @param {string} url
-   * @param  {!Components.LinkifyURLOptions=} options
+   * @param  {!LinkifyURLOptions=} options
    * @return {!Element}
    */
   static linkifyURL(url, options) {
@@ -409,7 +410,7 @@ export class Linkifier {
   /**
    * @param {string} text
    * @param {string} className
-   * @param {!Components._CreateLinkOptions=} options
+   * @param {!_CreateLinkOptions=} options
    * @returns{!Element}
    */
   static _createLink(text, className, options) {
@@ -534,10 +535,10 @@ export class Linkifier {
 
   /**
    * @param {?Element} link
-   * @return {?Components._LinkInfo}
+   * @return {?_LinkInfo}
    */
   static _linkInfo(link) {
-    return /** @type {?Components._LinkInfo} */ (link ? link[_infoSymbol] || null : null);
+    return /** @type {?_LinkInfo} */ (link ? link[_infoSymbol] || null : null);
   }
 
   /**
@@ -577,7 +578,7 @@ export class Linkifier {
 
   /**
    * @param {string} title
-   * @param {!Linkifier.LinkHandler} handler
+   * @param {!LinkHandler} handler
    */
   static registerLinkHandler(title, handler) {
     _linkHandlers.set(title, handler);
@@ -594,7 +595,7 @@ export class Linkifier {
 
   /**
    * @param {!Element} link
-   * @return {?Workspace.UILocation}
+   * @return {?Workspace.UISourceCode.UILocation}
    */
   static uiLocation(link) {
     const info = Linkifier._linkInfo(link);
@@ -677,7 +678,7 @@ const _sourceCodeAnchors = Symbol('Linkifier.anchors');
 const _infoSymbol = Symbol('Linkifier.info');
 const _untruncatedNodeTextSymbol = Symbol('Linkifier.untruncatedNodeText');
 
-/** @type {!Map<string, !Linkifier.LinkHandler>} */
+/** @type {!Map<string, !LinkHandler>} */
 const _linkHandlers = new Map();
 
 /**
@@ -686,7 +687,7 @@ const _linkHandlers = new Map();
  */
 export class LinkDecorator {
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {?UI.Icon.Icon}
    */
   linkIcon(uiSourceCode) {}
@@ -795,3 +796,58 @@ export class ContentProviderContextMenuProvider {
         () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(contentProvider.contentURL()));
   }
 }
+
+/**
+ * @typedef {{
+ *     icon: ?UI.Icon.Icon,
+ *     enableDecorator: boolean,
+ *     uiLocation: ?Workspace.UISourceCode.UILocation,
+ *     liveLocation: ?Bindings.LiveLocation.LiveLocation,
+ *     url: ?string,
+ *     lineNumber: ?number,
+ *     columnNumber: ?number,
+ *     revealable: ?Object,
+ *     fallback: ?Element
+ * }}
+ */
+export let _LinkInfo;
+
+/**
+ * @typedef {{
+ *     text: (string|undefined),
+ *     className: (string|undefined),
+ *     lineNumber: (number|undefined),
+ *     columnNumber: (number|undefined),
+ *     preventClick: (boolean|undefined),
+ *     maxLength: (number|undefined),
+ *     tabStop: (boolean|undefined),
+ *     bypassURLTrimming: (boolean|undefined)
+ * }}
+ */
+export let LinkifyURLOptions;
+
+/**
+ * @typedef {{
+ *     className: (string|undefined),
+ *     columnNumber: (number|undefined),
+ *     tabStop: (boolean|undefined)
+ * }}
+ */
+export let LinkifyOptions;
+
+/**
+ * @typedef {{
+ *     maxLength: (number|undefined),
+ *     title: (string|undefined),
+ *     href: (string|undefined),
+ *     preventClick: (boolean|undefined),
+ *     tabStop: (boolean|undefined),
+ *     bypassURLTrimming: (boolean|undefined)
+ * }}
+ */
+export let _CreateLinkOptions;
+
+/**
+ * @typedef {function(!Common.ContentProvider.ContentProvider, number):void}
+ */
+export let LinkHandler;

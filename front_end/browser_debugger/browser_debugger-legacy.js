@@ -37,9 +37,3 @@ BrowserDebugger.ObjectEventListenersSidebarPane._objectGroupName =
  * @constructor
  */
 BrowserDebugger.XHRBreakpointsSidebarPane = BrowserDebuggerModule.XHRBreakpointsSidebarPane.XHRBreakpointsSidebarPane;
-
-/** @typedef {!{element: !Element, checkbox: !Element, breakpoint: !SDK.DOMDebuggerModel.DOMBreakpoint}} */
-BrowserDebugger.DOMBreakpointsSidebarPane.Item;
-
-/** @typedef {!{element: !UI.TreeElement, checkbox: !Element}} */
-BrowserDebugger.EventListenerBreakpointsSidebarPane.Item;

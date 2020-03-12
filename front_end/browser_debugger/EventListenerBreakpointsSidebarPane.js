@@ -16,7 +16,7 @@ export class EventListenerBreakpointsSidebarPane extends UI.Widget.VBox {
     this._categoriesTreeOutline.setShowSelectionOnKeyboardFocus(/* show */ true);
     this.contentElement.appendChild(this._categoriesTreeOutline.element);
 
-    /** @type {!Map<string, !BrowserDebugger.EventListenerBreakpointsSidebarPane.Item>} */
+    /** @type {!Map<string, !Item>} */
     this._categories = new Map();
     const categories = self.SDK.domDebuggerManager.eventListenerBreakpoints().map(breakpoint => breakpoint.category());
     categories.sort();
@@ -30,7 +30,7 @@ export class EventListenerBreakpointsSidebarPane extends UI.Widget.VBox {
       firstCategory.element.select();
     }
 
-    /** @type {!Map<!SDK.DOMDebuggerModel.EventListenerBreakpoint, !BrowserDebugger.EventListenerBreakpointsSidebarPane.Item>} */
+    /** @type {!Map<!SDK.DOMDebuggerModel.EventListenerBreakpoint, !Item>} */
     this._breakpoints = new Map();
     for (const breakpoint of self.SDK.domDebuggerManager.eventListenerBreakpoints()) {
       this._createBreakpoint(breakpoint);
@@ -167,3 +167,6 @@ export class EventListenerBreakpointsSidebarPane extends UI.Widget.VBox {
     }
   }
 }
+
+/** @typedef {!{element: !UI.TreeOutline.TreeElement, checkbox: !Element}} */
+export let Item;

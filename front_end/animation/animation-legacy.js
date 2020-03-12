@@ -46,6 +46,3 @@ Animation.AnimationUI = AnimationModule.AnimationUI.AnimationUI;
  * @enum {string}
  */
 Animation.AnimationUI.Events = AnimationModule.AnimationUI.Events;
-
-/** @typedef {{ endTime: number, screenshots: !Array.<string>}} */
-Animation.AnimationModel.ScreenshotCapture.Request;

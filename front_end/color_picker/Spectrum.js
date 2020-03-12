@@ -161,7 +161,7 @@ export class Spectrum extends UI.Widget.VBox {
     }
 
     this.element.classList.add('flex-none');
-    /** @type {!Map.<string, !ColorPicker.Spectrum.Palette>} */
+    /** @type {!Map.<string, !Palette>} */
     this._palettes = new Map();
     this._palettePanel = this.contentElement.createChild('div', 'palette-panel');
     this._palettePanelShowing = false;
@@ -425,7 +425,7 @@ export class Spectrum extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!ColorPicker.Spectrum.Palette} palette
+   * @param {!Palette} palette
    * @param {boolean} animate
    * @param {!Event=} event
    */
@@ -645,7 +645,7 @@ export class Spectrum extends UI.Widget.VBox {
 
   _loadPalettes() {
     this._palettes.set(MaterialPalette.title, MaterialPalette);
-    /** @type {!ColorPicker.Spectrum.Palette} */
+    /** @type {!Palette} */
     const defaultCustomPalette = {title: 'Custom', colors: [], colorNames: [], mutable: true};
     this._customPaletteSetting = self.Common.settings.createSetting('customColorPalette', defaultCustomPalette);
     const customPalette = this._customPaletteSetting.get();
@@ -661,7 +661,7 @@ export class Spectrum extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!ColorPicker.Spectrum.Palette} palette
+   * @param {!Palette} palette
    */
   addPalette(palette) {
     this._palettes.set(palette.title, palette);
@@ -671,7 +671,7 @@ export class Spectrum extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!ColorPicker.Spectrum.Palette} palette
+   * @param {!Palette} palette
    * @return {!Element}
    */
   _createPreviewPaletteElement(palette) {
@@ -696,7 +696,7 @@ export class Spectrum extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!ColorPicker.Spectrum.Palette} palette
+   * @param {!Palette} palette
    */
   _paletteSelected(palette) {
     this._selectedColorPalette.set(palette.title);
@@ -1165,7 +1165,7 @@ const GeneratedPaletteTitle = 'Page colors';
 
 export class PaletteGenerator {
   /**
-   * @param {function(!ColorPicker.Spectrum.Palette)} callback
+   * @param {function(!Palette)} callback
    */
   constructor(callback) {
     this._callback = callback;

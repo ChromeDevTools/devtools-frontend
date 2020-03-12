@@ -36,7 +36,7 @@ import {Linkifier} from './Linkifier.js';
 /**
  * @param {?SDK.Target} target
  * @param {!Linkifier} linkifier
- * @param {!Components.JSPresentationUtils.Options=} options
+ * @param {!Options=} options
  * @return {{element: !Element, links: !Array<!Element>}}
  */
 export function buildStackTracePreviewContents(target, linkifier, options = {}) {
@@ -149,3 +149,12 @@ export function buildStackTracePreviewContents(target, linkifier, options = {}) 
 
   return {element, links};
 }
+
+/**
+ * @typedef {{
+ *   stackTrace: (!Protocol.Runtime.StackTrace|undefined),
+ *   contentUpdated: (function()|undefined),
+ *   tabStops: (boolean|undefined)
+ * }}
+ */
+export let Options;

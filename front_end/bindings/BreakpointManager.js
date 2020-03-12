@@ -51,7 +51,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper {
     this._targetManager = targetManager;
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
 
-    /** @type {!Map<!Workspace.UISourceCode.UISourceCode, !Map<string, !Bindings.BreakpointManager.BreakpointLocation>>} */
+    /** @type {!Map<!Workspace.UISourceCode.UISourceCode, !Map<string, !BreakpointLocation>>} */
     this._breakpointsForUISourceCode = new Map();
     /** @type {!Map<string, !Breakpoint>} */
     this._breakpointByStorageId = new Map();
@@ -151,7 +151,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!Workspace.UISourceCode.UILocation} uiLocation
-   * @return {?Bindings.BreakpointManager.BreakpointLocation}
+   * @return {?BreakpointLocation}
    */
   findBreakpoint(uiLocation) {
     const breakpoints = this._breakpointsForUISourceCode.get(uiLocation.uiSourceCode);
@@ -219,7 +219,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   * @return {!Array<!Bindings.BreakpointManager.BreakpointLocation>}
+   * @return {!Array<!BreakpointLocation>}
    */
   breakpointLocationsForUISourceCode(uiSourceCode) {
     const breakpoints = this._breakpointsForUISourceCode.get(uiSourceCode);
@@ -227,7 +227,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @return {!Array<!Bindings.BreakpointManager.BreakpointLocation>}
+   * @return {!Array<!BreakpointLocation>}
    */
   allBreakpointLocations() {
     const result = [];

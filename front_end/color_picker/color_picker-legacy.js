@@ -38,6 +38,3 @@ ColorPicker.Spectrum.Swatch = ColorPickerModule.Spectrum.Swatch;
 ColorPicker.Spectrum.Events = ColorPickerModule.Spectrum.Events;
 
 ColorPicker.Spectrum._ChangeSource = ColorPickerModule.Spectrum.ChangeSource;
-
-/** @typedef {{ title: string, colors: !Array<string>, colorNames: !Array<string>, mutable: boolean }} */
-ColorPicker.Spectrum.Palette;

@@ -767,7 +767,7 @@ export class ScreenshotCapture {
    * @param {!SDK.ScreenCaptureModel.ScreenCaptureModel} screenCaptureModel
    */
   constructor(animationModel, screenCaptureModel) {
-    /** @type {!Array<!Animation.AnimationModel.ScreenshotCapture.Request>} */
+    /** @type {!Array<!Request>} */
     this._requests = [];
     this._screenCaptureModel = screenCaptureModel;
     this._animationModel = animationModel;
@@ -803,7 +803,7 @@ export class ScreenshotCapture {
    */
   _screencastFrame(base64Data, metadata) {
     /**
-     * @param {!Animation.AnimationModel.ScreenshotCapture.Request} request
+     * @param {!Request} request
      * @return {boolean}
      */
     function isAnimating(request) {
@@ -835,3 +835,6 @@ export class ScreenshotCapture {
 }
 
 SDK.SDKModel.SDKModel.register(AnimationModel, SDK.SDKModel.Capability.DOM, false);
+
+/** @typedef {{ endTime: number, screenshots: !Array.<string>}} */
+export let Request;

@@ -37,6 +37,7 @@ import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
+import {Tabs as NetworkItemViewTabs} from './NetworkItemView.js';
 import {NetworkTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
 
 /** @enum {symbol} */
@@ -1025,7 +1026,7 @@ export class NetworkRequestNode extends NetworkNode {
       this._nameCell = cell;
       cell.addEventListener('dblclick', this._openInNewTab.bind(this), false);
       cell.addEventListener('click', () => {
-        this.parentView().dispatchEventToListeners(Events.RequestActivated, /* showPanel */ true);
+        this.parentView().dispatchEventToListeners(Events.RequestActivated, {showPanel: true});
       });
       let iconElement;
       if (this._request.resourceType() === Common.ResourceType.resourceTypes.Image) {
@@ -1131,7 +1132,8 @@ export class NetworkRequestNode extends NetworkNode {
       }
       if (displayShowHeadersLink) {
         this._setTextAndTitleAndLink(cell, Common.UIString.UIString('(blocked:%s)', reason), 'View Headers', () => {
-          this.parentView().dispatchEventToListeners(Events.RequestActivated, /* showPanel */ true);
+          this.parentView().dispatchEventToListeners(
+              Events.RequestActivated, {showPanel: true, tab: NetworkItemViewTabs.Headers});
         });
       } else {
         this._setTextAndTitle(cell, Common.UIString.UIString('(blocked:%s)', reason));

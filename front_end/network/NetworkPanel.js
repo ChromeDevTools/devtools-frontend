@@ -40,7 +40,7 @@ import * as Workspace from '../workspace/workspace.js';
 
 import {BlockedURLsPane} from './BlockedURLsPane.js';
 import {Events} from './NetworkDataGridNode.js';
-import {NetworkItemView} from './NetworkItemView.js';
+import {NetworkItemView, Tabs as NetworkItemViewTabs} from './NetworkItemView.js';  // eslint-disable-line no-unused-vars
 import {FilterType, NetworkLogView} from './NetworkLogView.js';  // eslint-disable-line no-unused-vars
 import {NetworkOverview} from './NetworkOverview.js';
 import {NetworkSearchScope, UIRequestLocation} from './NetworkSearchScope.js';  // eslint-disable-line no-unused-vars
@@ -505,21 +505,24 @@ export class NetworkPanel extends UI.Panel.Panel {
   }
 
   /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
+   * @param {!{data: *}} event
    */
   _onRequestActivated(event) {
-    const showPanel = /** @type {boolean} */ (event.data);
-    if (showPanel) {
-      this._showRequestPanel();
+    const eventData = /** @type {!{showPanel: boolean, tab: !NetworkItemViewTabs}} */ (event.data);
+    if (eventData.showPanel) {
+      this._showRequestPanel(eventData.tab);
     } else {
       this._hideRequestPanel();
     }
   }
 
-  _showRequestPanel() {
+  /**
+   * @param {!NetworkItemViewTabs=} shownTab
+   */
+  _showRequestPanel(shownTab) {
     this._clearNetworkItemView();
     if (this._currentRequest) {
-      this._createNetworkItemView();
+      this._createNetworkItemView(shownTab);
     }
     this._updateUI();
   }
@@ -544,12 +547,15 @@ export class NetworkPanel extends UI.Panel.Panel {
       this._networkItemView = null;
     }
   }
-
-  _createNetworkItemView() {
+  /**
+   * @param {!NetworkItemViewTabs=} initialTab
+   */
+  _createNetworkItemView(initialTab) {
     if (!this._currentRequest) {
       return;
     }
-    this._networkItemView = new NetworkItemView(this._currentRequest, this._networkLogView.timeCalculator());
+    this._networkItemView =
+        new NetworkItemView(this._currentRequest, this._networkLogView.timeCalculator(), initialTab);
     this._networkItemView.leftToolbar().appendToolbarItem(new UI.Toolbar.ToolbarItem(this._closeButtonElement));
     this._networkItemView.show(this._detailsWidget.element);
     this._splitWidget.showBoth();

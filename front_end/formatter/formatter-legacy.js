@@ -26,24 +26,3 @@ Formatter.SourceFormatter = FormatterModule.SourceFormatter.SourceFormatter;
 
 /** @type {!Formatter.SourceFormatter} */
 Formatter.sourceFormatter = FormatterModule.sourceFormatter;
-
-/** @typedef {{original: !Array<number>, formatted: !Array<number>}} */
-Formatter.FormatterWorkerPool.FormatMapping;
-
-/** @typedef {{line: number, column: number, title: string, subtitle: (string|undefined) }} */
-Formatter.FormatterWorkerPool.OutlineItem;
-
-/**
- * @typedef {{atRule: string, lineNumber: number, columnNumber: number}}
- */
-Formatter.FormatterWorkerPool.CSSAtRule;
-
-/**
- * @typedef {(CSSStyleRule|Formatter.FormatterWorkerPool.CSSAtRule)}
- */
-Formatter.FormatterWorkerPool.CSSRule;
-
-/**
- * @typedef {{startLine: number, startColumn: number, endLine: number, endColumn: number}}
- */
-Formatter.FormatterWorkerPool.TextRange;

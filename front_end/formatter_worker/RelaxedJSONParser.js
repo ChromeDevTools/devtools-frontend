@@ -23,11 +23,11 @@ export const RelaxedJSONParser = {
 
     const rootTip = [];
 
-    /** @type {!Array.<!FormatterWorker.RelaxedJSONParser.Context>} */
+    /** @type {!Array.<!Context>} */
     const stack = [];
 
-    let stackData = /** @type {!FormatterWorker.RelaxedJSONParser.Context} */ (
-        {key: 0, tip: rootTip, state: States.ExpectValue, parentIsArray: true});
+    /** @type {!Context} */
+    let stackData = {key: 0, tip: rootTip, state: States.ExpectValue, parentIsArray: true};
 
     walker.setWalkNulls(true);
     let hasExpression = false;
@@ -40,7 +40,7 @@ export const RelaxedJSONParser = {
     return rootTip.length ? rootTip[0] : null;
 
     /**
-   * @param {!FormatterWorker.RelaxedJSONParser.Context} newStack
+   * @param {!Context} newStack
    */
     function pushStack(newStack) {
       stack.push(stackData);
@@ -73,16 +73,14 @@ export const RelaxedJSONParser = {
           const newTip = {};
           applyValue(newTip);
 
-          pushStack(/** @type {!FormatterWorker.RelaxedJSONParser.Context} */ (
-              {key: null, tip: newTip, state: null, parentIsArray: false}));
+          pushStack(/** @type {!Context} */ ({key: null, tip: newTip, state: null, parentIsArray: false}));
           break;
         }
         case 'ArrayExpression': {
           const newTip = [];
           applyValue(newTip);
 
-          pushStack(/** @type {!FormatterWorker.RelaxedJSONParser.Context} */ (
-              {key: 0, tip: newTip, state: States.ExpectValue, parentIsArray: true}));
+          pushStack({key: 0, tip: newTip, state: States.ExpectValue, parentIsArray: true});
           break;
         }
         case 'Property':
@@ -183,3 +181,8 @@ export const Keywords = {
   'undefined': undefined,
   'null': null
 };
+
+/**
+ * @typedef {!{key: (number|string), tip: (!Array|!Object), state: ?States, parentIsArray: boolean}}
+ */
+export let Context;

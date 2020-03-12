@@ -751,6 +751,8 @@ ESTree.Node = function() {
   /** @type {string} */
   this.type;
   /** @type {(!ESTree.Node|undefined)} */
+  this.key;
+  /** @type {(!ESTree.Node|undefined)} */
   this.body;
   /** @type {(!Array.<!ESTree.Node>|undefined)} */
   this.declarations;

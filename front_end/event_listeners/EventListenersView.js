@@ -8,7 +8,7 @@ import * as ObjectUI from '../object_ui/object_ui.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-import {frameworkEventListeners} from './EventListenersUtils.js';
+import {frameworkEventListeners, FrameworkEventListenersObject} from './EventListenersUtils.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
@@ -66,7 +66,7 @@ export class EventListenersView extends UI.Widget.VBox {
   _addObject(object) {
     /** @type {!Array<!SDK.DOMDebuggerModel.EventListener>} */
     let eventListeners;
-    /** @type {?EventListeners.FrameworkEventListenersObject}*/
+    /** @type {?FrameworkEventListenersObject}*/
     let frameworkEventListenersObject = null;
 
     const promises = [];
@@ -86,7 +86,7 @@ export class EventListenersView extends UI.Widget.VBox {
     }
 
     /**
-     * @param {?EventListeners.FrameworkEventListenersObject} result
+     * @param {?FrameworkEventListenersObject} result
      */
     function storeFrameworkEventListenersObject(result) {
       frameworkEventListenersObject = result;

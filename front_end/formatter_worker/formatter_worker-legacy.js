@@ -48,8 +48,3 @@ FormatterWorker.JavaScriptFormatter = FormatterWorkerModule.JavaScriptFormatter.
 FormatterWorker.javaScriptOutline = FormatterWorkerModule.JavaScriptOutline.javaScriptOutline;
 
 FormatterWorker.RelaxedJSONParser = FormatterWorkerModule.RelaxedJSONParser.RelaxedJSONParser;
-
-/**
- * @typedef {!{key: (number|string), tip: (!Array|!Object), state: ?FormatterWorkerModule.RelaxedJSONParser.States, parentIsArray: boolean}}
- */
-FormatterWorker.RelaxedJSONParser.Context;

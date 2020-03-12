@@ -1602,6 +1602,8 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     this._dirty = false;
     /** @type {boolean} */
     this._inactive = false;
+    /** @type {string} */
+    this.key;
     /** @type {number|undefined} */
     this._depth;
     /** @type {boolean|undefined} */

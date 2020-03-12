@@ -31,7 +31,7 @@
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Platform from '../platform/platform.js';
 
-import {FormatResult, formatterWorkerPool} from './FormatterWorkerPool.js';  // eslint-disable-line no-unused-vars
+import {FormatMapping, FormatResult, formatterWorkerPool} from './FormatterWorkerPool.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @interface
@@ -180,7 +180,7 @@ class FormatterSourceMappingImpl {
   /**
    * @param {!Array.<number>} originalLineEndings
    * @param {!Array.<number>} formattedLineEndings
-   * @param {!Formatter.FormatterWorkerPool.FormatMapping} mapping
+   * @param {!FormatMapping} mapping
    */
   constructor(originalLineEndings, formattedLineEndings, mapping) {
     this._originalLineEndings = originalLineEndings;

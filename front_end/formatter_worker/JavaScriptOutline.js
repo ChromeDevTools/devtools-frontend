@@ -56,7 +56,7 @@ export function javaScriptOutline(content) {
       if (node.static) {
         namePrefix.push('static');
       }
-      reportFunction(node.key, node.value, namePrefix.join(' '));
+      reportFunction(/** @type {!ESTree.Node} */ (node.key), node.value, namePrefix.join(' '));
     }
   }
 

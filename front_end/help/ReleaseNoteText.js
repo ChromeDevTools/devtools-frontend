@@ -8,11 +8,13 @@
 
 import * as Host from '../host/host.js';
 
+import {ReleaseNote} from './HelpImpl.js';  // eslint-disable-line no-unused-vars
+
 const continueToHereShortcut = Host.Platform.isMac() ? 'Command' : 'Control';
 const networkSearchShortcut = Host.Platform.isMac() ? 'Command+F' : 'Control+F';
 const commandMenuShortcut = Host.Platform.isMac() ? 'Command+Shift+P' : 'Control+Shift+P';
 
-/** @type {!Array<!Help.ReleaseNote>} */
+/** @type {!Array<!ReleaseNote>} */
 export const releaseNoteText = [
   {
     version: 23,

@@ -1397,8 +1397,8 @@ export class HeapSnapshot {
 
   /**
    * @param {function(!HeapSnapshotNode):boolean=} filter
-   * @return {!{aggregatesByClassName: !Object<string, !HeapSnapshotWorker.HeapSnapshot.AggregatedInfo>,
-   *     aggregatesByClassIndex: !Object<number, !HeapSnapshotWorker.HeapSnapshot.AggregatedInfo>}}
+   * @return {!{aggregatesByClassName: !Object<string, !AggregatedInfo>,
+   *     aggregatesByClassIndex: !Object<number, !AggregatedInfo>}}
    */
   _buildAggregates(filter) {
     const aggregates = {};
@@ -1458,7 +1458,7 @@ export class HeapSnapshot {
   }
 
   /**
-   * @param {!Object<number, !HeapSnapshotWorker.HeapSnapshot.AggregatedInfo>} aggregates
+   * @param {!Object<number, !AggregatedInfo>} aggregates
    * @param {function(!HeapSnapshotNode):boolean=} filter
    */
   _calculateClassesRetainedSize(aggregates, filter) {
@@ -1507,7 +1507,7 @@ export class HeapSnapshot {
   }
 
   /**
-   * @param {!{aggregatesByClassName: !Object<string, !HeapSnapshotWorker.HeapSnapshot.AggregatedInfo>, aggregatesByClassIndex: !Object<number, !HeapSnapshotWorker.HeapSnapshot.AggregatedInfo>}} aggregates
+   * @param {!{aggregatesByClassName: !Object<string, !AggregatedInfo>, aggregatesByClassIndex: !Object<number, !AggregatedInfo>}} aggregates
    */
   _sortAggregateIndexes(aggregates) {
     const nodeA = this.createNode();
@@ -3277,3 +3277,15 @@ export class JSHeapSnapshotRetainerEdge extends HeapSnapshotRetainerEdge {
     console.warn = () => undefined;
   }
 })();
+
+/**
+ * @typedef {!{
+ *   count: number,
+ *   distance: number,
+ *   self: number,
+ *   maxRet: number,
+ *   name: ?string,
+ *   idxs: !Array<number>
+ * }}
+ */
+export let AggregatedInfo;

@@ -5,7 +5,7 @@
 import * as Host from '../host/host.js';
 import * as UI from '../ui/ui.js';
 
-import {latestReleaseNote, releaseNoteViewId} from './HelpImpl.js';
+import {latestReleaseNote, ReleaseNote, releaseNoteViewId} from './HelpImpl.js';  // eslint-disable-line no-unused-vars
 
 export class ReleaseNoteView extends UI.Widget.VBox {
   constructor() {
@@ -18,7 +18,7 @@ export class ReleaseNoteView extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Help.ReleaseNote} releaseNote
+   * @param {!ReleaseNote} releaseNote
    * @return {!Element}
    */
   _createReleaseNoteElement(releaseNote) {

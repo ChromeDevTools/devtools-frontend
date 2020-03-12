@@ -103,15 +103,3 @@ HeapSnapshotWorker.HeapSnapshotLoader = HeapSnapshotWorkerModule.HeapSnapshotLoa
 /** @constructor */
 HeapSnapshotWorker.HeapSnapshotWorkerDispatcher =
     HeapSnapshotWorkerModule.HeapSnapshotWorkerDispatcher.HeapSnapshotWorkerDispatcher;
-
-/**
- * @typedef {!{
- *   count: number,
- *   distance: number,
- *   self: number,
- *   maxRet: number,
- *   name: ?string,
- *   idxs: !Array<number>
- * }}
- */
-HeapSnapshotWorker.HeapSnapshot.AggregatedInfo;

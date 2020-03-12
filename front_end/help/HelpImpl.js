@@ -15,11 +15,11 @@ import {releaseNoteText} from './ReleaseNoteText.js';
 export const releaseNoteViewId = 'release-note';
 
 /**
- * @return {!Help.ReleaseNote}
+ * @return {!ReleaseNote}
  */
 export function latestReleaseNote() {
   if (!Help._latestReleaseNote) {
-    /** @type {!Help.ReleaseNote} */
+    /** @type {!ReleaseNote} */
     Help._latestReleaseNote =
         (self.Help.releaseNoteText || releaseNoteText).reduce((acc, note) => note.version > acc.version ? note : acc);
   }
@@ -98,3 +98,12 @@ export class ReportIssueActionDelegate {
     return true;
   }
 }
+
+/** @typedef {!{title: string, subtitle: string, link: string}} */
+export let ReleaseNoteHighlight;
+
+/**
+ * @typedef {!{version: number, header: string, highlights: !Array<!ReleaseNoteHighlight>,
+ *    link: string}}
+ */
+export let ReleaseNote;

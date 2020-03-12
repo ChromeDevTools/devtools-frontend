@@ -17,14 +17,3 @@ EventListeners.EventListenersTreeElement = EventListenersModule.EventListenersVi
 
 /** @constructor */
 EventListeners.ObjectEventListenerBar = EventListenersModule.EventListenersView.ObjectEventListenerBar;
-
-/** @typedef {{eventListeners:!Array<!SDK.EventListener>, internalHandlers:?SDK.RemoteArray}} */
-EventListeners.FrameworkEventListenersObject;
-
-/** @typedef {{type: string, useCapture: boolean, passive: boolean, once: boolean, handler: function()}} */
-EventListeners.EventListenerObjectInInspectedPage;
-
-/**
- * @typedef {Array<{object: !SDK.RemoteObject, eventListeners: ?Array<!SDK.EventListener>, frameworkEventListeners: ?{eventListeners: ?Array<!SDK.EventListener>, internalHandlers: ?SDK.RemoteArray}, isInternal: ?Array<boolean>}>}
- */
-EventListeners.EventListenersResult;

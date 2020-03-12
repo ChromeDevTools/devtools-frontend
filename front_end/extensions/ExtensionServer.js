@@ -882,7 +882,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
    * @param {?Object} options
    * @param {string} securityOrigin
    * @param {function(?string, ?SDK.RemoteObject.RemoteObject, boolean)} callback
-   * @return {!Extensions.ExtensionStatus.Record|undefined}
+   * @return {!Record|undefined}
    */
   evaluate(expression, exposeCommandLineAPI, returnByValue, options, securityOrigin, callback) {
     let context;
@@ -1024,7 +1024,7 @@ export class ExtensionStatus {
     /**
      * @param {string} code
      * @param {string} description
-     * @return {!Extensions.ExtensionStatus.Record}
+     * @return {!Record}
      */
     function makeStatus(code, description) {
       const details = Array.prototype.slice.call(arguments, 2);
@@ -1046,3 +1046,8 @@ export class ExtensionStatus {
     this.E_FAILED = makeStatus.bind(null, 'E_FAILED', 'Operation failed: %s');
   }
 }
+
+/**
+ * @typedef {{code: string, description: string, details: !Array.<*>}}
+ */
+export let Record;

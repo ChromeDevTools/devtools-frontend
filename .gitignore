@@ -20,6 +20,7 @@
 config.gypi
 karma-coverage
 npm-debug.log
+/scripts/protocol_typescript/*.js
 
 /build
 /buildtools

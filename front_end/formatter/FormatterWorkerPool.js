@@ -233,19 +233,18 @@ export class FormatterWorkerPool {
 
   /**
    * @param {string} content
-   * @return {!Promise<?{baseExpression: string, possibleSideEffects:boolean}>}
+   * @return {!Promise<?string>}
    */
   findLastExpression(content) {
-    return /** @type {!Promise<?{baseExpression: string, possibleSideEffects:boolean}>} */ (
-        this._runTask('findLastExpression', {content}));
+    return /** @type {!Promise<?string>} */ (this._runTask('findLastExpression', {content}));
   }
 
   /**
    * @param {string} content
-   * @return {!Promise<?{baseExpression: string, possibleSideEffects:boolean, receiver: string, argumentIndex: number, functionName: string}>}
+   * @return {!Promise<?{baseExpression: string, receiver: string, argumentIndex: number, functionName: string}>}
    */
   findLastFunctionCall(content) {
-    return /** @type {!Promise<?{baseExpression: string, possibleSideEffects:boolean, receiver: string, argumentIndex: number, functionName: string}>} */ (
+    return /** @type {!Promise<?{baseExpression: string, receiver: string, argumentIndex: number, functionName: string}>} */ (
         this._runTask('findLastFunctionCall', {content}));
   }
 

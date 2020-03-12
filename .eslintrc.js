@@ -129,6 +129,7 @@ module.exports = {
 
     // DevTools specific rules
     'rulesdir/es_modules_import': 2,
+    'rulesdir/check_license_header': 2,
   },
   'overrides': [{
     'files': ['*.ts'],

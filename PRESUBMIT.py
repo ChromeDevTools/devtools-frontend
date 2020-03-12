@@ -107,13 +107,6 @@ def _CheckJSON(input_api, output_api):
     return results
 
 
-def _CheckLicenses(input_api, output_api):
-    results = [output_api.PresubmitNotifyResult('Running License Header Check:')]
-    script_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'test', 'run_license_header_check.js')
-    results.extend(_checkWithNodeScript(input_api, output_api, script_path))
-    return results
-
-
 def _CheckFormat(input_api, output_api):
     results = [output_api.PresubmitNotifyResult('Running Format Checks:')]
 
@@ -275,7 +268,6 @@ def _CommonChecks(input_api, output_api):
     results.extend(_CheckBuildGN(input_api, output_api))
     results.extend(_CheckGeneratedFiles(input_api, output_api))
     results.extend(_CheckJSON(input_api, output_api))
-    results.extend(_CheckLicenses(input_api, output_api))
     results.extend(_CheckDevtoolsStyle(input_api, output_api))
     results.extend(_CheckFormat(input_api, output_api))
     results.extend(_CheckOptimizeSVGHashes(input_api, output_api))

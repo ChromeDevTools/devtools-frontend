@@ -2,16 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const fs = require('fs');
+/**
+ * @fileoverview Rule to check license headers
+ * @author Tim van der Lippe
+ */
+'use strict';
+
 const path = require('path');
-const {parse, print, types} = require('recast');
-const {promisify} = require('util');
 
-const readFile = promisify(fs.readFile);
-const readDir = promisify(fs.readdir);
-const writeFile = promisify(fs.writeFile);
-
-const FRONT_END_FOLDER = path.join(__filename, '..', '..', '..', 'front_end');
+const FRONT_END_FOLDER = path.join(__filename, '..', '..', '..', '..', 'front_end');
 
 const LINE_LICENSE_HEADER = [
   'Copyright 2020 The Chromium Authors. All rights reserved.',
@@ -51,6 +50,8 @@ const BLOCK_LICENSE_HEADER = [
 
 const LINE_REGEXES = LINE_LICENSE_HEADER.map(line => new RegExp('[ ]?' + line.replace('2020', '(\\(c\\) )?\\d{4}')));
 const BLOCK_REGEX = new RegExp('[\\s\\\\n\\*]*' + BLOCK_LICENSE_HEADER.join('[\\s\\\\n\\*]*'), 'm');
+
+const LICENSE_HEADER_ADDITION = LINE_LICENSE_HEADER.map(line => `// ${line}`).join('\n') + '\n\n';
 
 const EXCLUDED_FILES = [
   // FIXME: CodeMirror bundles must be moved to third_party
@@ -167,74 +168,89 @@ const OTHER_LICENSE_HEADERS = [
   'ui/Widget.js',
 ];
 
-async function readAstFromFile(fileName) {
-  try {
-    return parse(await readFile(fileName));
-  } catch (e) {
-    throw new Error(`Failed to check license header for ${fileName}: ${e.stack}`);
-  }
-}
-
-async function addMissingLicenseHeader(firstStatement, ast, fileName) {
-  firstStatement.comments = LINE_LICENSE_HEADER.map(line => types.builders.commentLine(line));
-  await writeFile(fileName, print(ast).code);
-}
+// ------------------------------------------------------------------------------
+// Rule Definition
+// ------------------------------------------------------------------------------
 
 /**
  * Check each linecomment that should (combined) result in the LINE_LICENSE_HEADER.
  */
-function checkLineCommentLicense(comments, fileName) {
+function isMissingLineCommentLicense(comments) {
   for (let i = 0; i < LINE_REGEXES.length; i++) {
-    if (!LINE_REGEXES[i].test(comments[i].value)) {
-      throw new Error(`Invalid license header detected in ${fileName}`);
+    if (!comments[i] || !LINE_REGEXES[i].test(comments[i].value)) {
+      return true;
     }
   }
+
+  return false;
 }
 
 /**
  * We match the whole block comment, including potential leading asterisks of the jsdoc.
  */
-function checkBlockCommentLicense(licenseText, fileName) {
-  if (!BLOCK_REGEX.test(licenseText)) {
-    throw new Error(`Invalid license header detected in ${fileName}`);
-  }
+function isMissingBlockLineCommentLicense(licenseText) {
+  return !BLOCK_REGEX.test(licenseText);
 }
 
-async function checkFolder(folder) {
-  for (const file of await readDir(folder, {withFileTypes: true})) {
-    const fileName = path.join(folder, file.name);
-    let relativePath = path.relative(FRONT_END_FOLDER, fileName);
+module.exports = {
+  meta: {
+    type: 'problem',
+
+    docs: {
+      description: 'check license headers',
+      category: 'Possible Errors',
+    },
+    fixable: 'code',
+    schema: []  // no options
+  },
+  create: function(context) {
+    const fileName = context.getFilename();
     // Fix windows paths for exemptions
-    relativePath = relativePath.replace(/\\/g, '/');
-    if (file.name === 'third_party' || file.name.endsWith('TestRunner.js') || EXCLUDED_FILES.includes(relativePath) ||
-        OTHER_LICENSE_HEADERS.includes(relativePath)) {
-      continue;
+    const relativePath = path.relative(FRONT_END_FOLDER, fileName).replace(/\\/g, '/');
+
+    if (relativePath.startsWith('third_party') || fileName.endsWith('TestRunner.js') ||
+        EXCLUDED_FILES.includes(relativePath) || OTHER_LICENSE_HEADERS.includes(relativePath)) {
+      return {};
     }
 
-    if (file.isDirectory()) {
-      await checkFolder(fileName);
-    } else if (file.isFile() && file.name.endsWith('.js')) {
-      const ast = await readAstFromFile(fileName);
-      const firstStatement = ast.program.body[0];
+    return {
+      Program(node) {
+        if (node.body.length === 0) {
+          return;
+        }
 
-      if (!firstStatement.comments || firstStatement.comments.length === 0) {
-        await addMissingLicenseHeader(firstStatement, ast, fileName);
-      } else if (firstStatement.comments[0].type === 'Line') {
-        checkLineCommentLicense(firstStatement.comments, fileName);
-      } else {
-        checkBlockCommentLicense(firstStatement.comments[0].value, fileName);
+        const {leading: comments} = context.getComments(node.body[0]);
+
+        if (!comments || comments.length === 0) {
+          context.report({
+            node,
+            message: 'Missing license header',
+            fix(fixer) {
+              return fixer.insertTextBefore(node, LICENSE_HEADER_ADDITION);
+            },
+          });
+        } else if (comments[0].type === 'Line') {
+          if (isMissingLineCommentLicense(comments)) {
+            context.report({
+              node,
+              message: 'Incorrect line license header',
+              fix(fixer) {
+                return fixer.insertTextBefore(comments[0], LICENSE_HEADER_ADDITION);
+              }
+            });
+          }
+        } else {
+          if (isMissingBlockLineCommentLicense(comments[0].value)) {
+            context.report({
+              node,
+              message: 'Incorrect block license header',
+              fix(fixer) {
+                return fixer.insertTextBefore(comments[0], LICENSE_HEADER_ADDITION);
+              }
+            });
+          }
+        }
       }
-    }
+    };
   }
-}
-
-async function main() {
-  try {
-    await checkFolder(FRONT_END_FOLDER);
-  } catch (e) {
-    console.error(e.stack);
-    process.exit(1);
-  }
-}
-
-main();
+};

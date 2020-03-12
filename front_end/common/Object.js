@@ -87,7 +87,7 @@ export class ObjectWrapper {
    * @param {!Object=} thisObject
    */
   removeEventListener(eventType, listener, thisObject) {
-    console.assert(listener);
+    console.assert(!!listener);
 
     if (!this._listeners || !this._listeners.has(eventType)) {
       return;

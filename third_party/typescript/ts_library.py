@@ -79,7 +79,9 @@ def main():
     tsconfig['compilerOptions']['declaration'] = True
     tsconfig['compilerOptions']['composite'] = True
     tsconfig['compilerOptions']['rootDir'] = get_relative_path_from_output_directory(opts.front_end_directory)
-    tsconfig['compilerOptions']['typeRoots'] = [get_relative_path_from_output_directory(TYPES_NODE_MODULES_DIRECTORY)]
+    tsconfig['compilerOptions']['typeRoots'] = opts.test_only and [
+        get_relative_path_from_output_directory(TYPES_NODE_MODULES_DIRECTORY)
+    ] or []
     tsconfig['compilerOptions']['outDir'] = '.'
     tsconfig['compilerOptions']['tsBuildInfoFile'] = tsbuildinfo_name
     with open(tsconfig_output_location, 'w') as generated_tsconfig:

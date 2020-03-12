@@ -23,7 +23,7 @@ export const DiffWrapper = {
   /**
    * @param {!Array.<string>} lines1
    * @param {!Array.<string>} lines2
-   * @return {!Diff.Diff.DiffArray}
+   * @return {!DiffArray}
    */
   lineDiff: function(lines1, lines2) {
     /** @type {!Common.CharacterIdMap.CharacterIdMap<string>} */
@@ -45,7 +45,7 @@ export const DiffWrapper = {
   },
 
   /**
-   * @param {!Diff.Diff.DiffArray} diff
+   * @param {!DiffArray} diff
    * @return {!Array<!Array<number>>}
    */
   convertToEditDiff: function(diff) {

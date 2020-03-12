@@ -24,9 +24,3 @@ Lighthouse.ReportSelector = LighthouseModule.LighthouseReportSelector.ReportSele
 * @constructor
 */
 Lighthouse.StatusView = LighthouseModule.LighthouseStatusView.StatusView;
-
-/** @typedef {{setting: !Common.Setting, configID: string, title: string, description: string}} */
-Lighthouse.Preset;
-
-/** @typedef {{setting: !Common.Setting, description: string, setFlags: function(!Object, string), options: (!Array|undefined), title: (string|undefined)}} */
-Lighthouse.RuntimeSetting;

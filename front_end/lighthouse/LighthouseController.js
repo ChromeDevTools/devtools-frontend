@@ -207,7 +207,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper {
   }
 }
 
-/** @type {!Array.<!Lighthouse.Preset>} */
+/** @type {!Array.<!Preset>} */
 export const Presets = [
   // configID maps to Lighthouse's Object.keys(config.categories)[0] value
   {
@@ -249,7 +249,7 @@ export const Presets = [
   },
 ];
 
-/** @type {!Array.<!Lighthouse.RuntimeSetting>} */
+/** @type {!Array.<!RuntimeSetting>} */
 export const RuntimeSettings = [
   {
     setting: self.Common.settings.createSetting('lighthouse.device_type', 'mobile'),
@@ -292,3 +292,9 @@ export const Events = {
   RequestLighthouseStart: Symbol('RequestLighthouseStart'),
   RequestLighthouseCancel: Symbol('RequestLighthouseCancel'),
 };
+
+/** @typedef {{setting: !Common.Settings.Setting, configID: string, title: string, description: string}} */
+export let Preset;
+
+/** @typedef {{setting: !Common.Settings.Setting, description: string, setFlags: function(!Object, string), options: (!Array|undefined), title: (string|undefined)}} */
+export let RuntimeSetting;

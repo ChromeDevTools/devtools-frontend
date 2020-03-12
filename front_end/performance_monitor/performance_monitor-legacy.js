@@ -27,23 +27,3 @@ PerformanceMonitor.PerformanceMonitor.ControlPane.Events = PerformanceMonitorMod
  */
 PerformanceMonitor.PerformanceMonitor.MetricIndicator = PerformanceMonitorModule.PerformanceMonitor.MetricIndicator;
 PerformanceMonitor.PerformanceMonitor.MetricIndicator._format = PerformanceMonitorModule.PerformanceMonitor.format;
-
-/**
- * @typedef {!{
- *   name: string,
- *   color: string
- * }}
- */
-PerformanceMonitor.PerformanceMonitor.MetricInfo;
-
-/**
- * @typedef {!{
-  *   title: string,
-  *   metrics: !Array<!PerformanceMonitor.PerformanceMonitor.MetricInfo>,
-  *   max: (number|undefined),
-  *   currentMax: (number|undefined),
-  *   format: (!PerformanceMonitorModule.PerformanceMonitor.Format|undefined),
-  *   smooth: (boolean|undefined)
-  * }}
-  */
-PerformanceMonitor.PerformanceMonitor.ChartInfo;

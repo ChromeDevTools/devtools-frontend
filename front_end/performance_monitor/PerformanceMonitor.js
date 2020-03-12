@@ -189,7 +189,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
 
   /**
    * @param {!CanvasRenderingContext2D} ctx
-   * @param {!PerformanceMonitor.PerformanceMonitor.ChartInfo} chartInfo
+   * @param {!ChartInfo} chartInfo
    * @param {number} height
    */
   _drawChart(ctx, chartInfo, height) {
@@ -230,7 +230,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
   }
 
   /**
-   * @param {!PerformanceMonitor.PerformanceMonitor.ChartInfo} chartInfo
+   * @param {!ChartInfo} chartInfo
    * @return {number}
    */
   _calcMax(chartInfo) {
@@ -266,7 +266,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
    * @param {!CanvasRenderingContext2D} ctx
    * @param {number} height
    * @param {number} max
-   * @param {!PerformanceMonitor.PerformanceMonitor.ChartInfo} info
+   * @param {!ChartInfo} info
    */
   _drawVerticalGrid(ctx, height, max, info) {
     let base = Math.pow(10, Math.floor(Math.log10(max)));
@@ -310,8 +310,8 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
   }
 
   /**
-   * @param {!PerformanceMonitor.PerformanceMonitor.ChartInfo} chartInfo
-   * @param {!PerformanceMonitor.PerformanceMonitor.MetricInfo} metricInfo
+   * @param {!ChartInfo} chartInfo
+   * @param {!MetricInfo} metricInfo
    * @param {number} height
    * @param {number} scaleMax
    * @param {?Map<number, number>} stackedChartBaseLandscape
@@ -419,7 +419,7 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
     this._enabledCharts = new Set(this._enabledChartsSetting.get());
     const format = Format;
 
-    /** @type {!Array<!PerformanceMonitor.PerformanceMonitor.ChartInfo>} */
+    /** @type {!Array<!ChartInfo>} */
     this._chartsInfo = [
       {
         title: Common.UIString.UIString('CPU usage'),
@@ -479,7 +479,7 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @return {!Array<!PerformanceMonitor.PerformanceMonitor.ChartInfo>}
+   * @return {!Array<!ChartInfo>}
    */
   charts() {
     return this._chartsInfo;
@@ -513,7 +513,7 @@ export const Events = {
 export class MetricIndicator {
   /**
    * @param {!Element} parent
-   * @param {!PerformanceMonitor.PerformanceMonitor.ChartInfo} info
+   * @param {!ChartInfo} info
    * @param {boolean} active
    * @param {function(boolean)} onToggle
    */
@@ -539,7 +539,7 @@ export class MetricIndicator {
 
   /**
    * @param {number} value
-   * @param {!PerformanceMonitor.PerformanceMonitor.ChartInfo} info
+   * @param {!ChartInfo} info
    * @return {string}
    */
   static _formatNumber(value, info) {
@@ -583,3 +583,23 @@ export class MetricIndicator {
 }
 
 export const format = new Intl.NumberFormat('en-US', {maximumFractionDigits: 1});
+
+/**
+ * @typedef {!{
+ *   name: string,
+ *   color: string
+ * }}
+ */
+export let MetricInfo;
+
+/**
+ * @typedef {!{
+ *   title: string,
+ *   metrics: !Array<!MetricInfo>,
+ *   max: (number|undefined),
+ *   currentMax: (number|undefined),
+ *   format: (!Format|undefined),
+ *   smooth: (boolean|undefined)
+ * }}
+ */
+export let ChartInfo;

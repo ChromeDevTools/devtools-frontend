@@ -11,6 +11,3 @@ Diff.Diff = DiffModule.Diff.DiffWrapper;
 
 /** @enum {number} */
 Diff.Diff.Operation = DiffModule.Diff.Operation;
-
-/** @typedef {!Array<!{0: !Diff.Diff.Operation, 1: !Array<string>}>} */
-Diff.Diff.DiffArray;

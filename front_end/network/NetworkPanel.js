@@ -268,17 +268,18 @@ export class NetworkPanel extends UI.Panel.Panel {
 
     const settingsToolbarLeft = new UI.Toolbar.Toolbar('', this._settingsPane.element);
     settingsToolbarLeft.makeVertical();
-    settingsToolbarLeft.appendToolbarItem(
-        new UI.Toolbar.ToolbarSettingCheckbox(this._networkLogLargeRowsSetting, '', ls`Use large request rows`));
-    settingsToolbarLeft.appendToolbarItem(
-        new UI.Toolbar.ToolbarSettingCheckbox(this._networkLogShowOverviewSetting, '', ls`Show overview`));
+    settingsToolbarLeft.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
+        this._networkLogLargeRowsSetting, ls`Show more information in request rows`, ls`Use large request rows`));
+    settingsToolbarLeft.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
+        this._networkLogShowOverviewSetting, ls`Show overview of network requests`, ls`Show overview`));
 
     const settingsToolbarRight = new UI.Toolbar.Toolbar('', this._settingsPane.element);
     settingsToolbarRight.makeVertical();
     settingsToolbarRight.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
-        self.Common.settings.moduleSetting('network.group-by-frame'), '', ls`Group by frame`));
-    settingsToolbarRight.appendToolbarItem(
-        new UI.Toolbar.ToolbarSettingCheckbox(this._networkRecordFilmStripSetting, '', ls`Capture screenshots`));
+        self.Common.settings.moduleSetting('network.group-by-frame'), ls`Group requests by top level request frame`,
+        ls`Group by frame`));
+    settingsToolbarRight.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
+        this._networkRecordFilmStripSetting, ls`Capture screenshots when loading a page`, ls`Capture screenshots`));
 
     this._panelToolbar.appendSeparator();
     const importHarButton = new UI.Toolbar.ToolbarButton(ls`Import HAR file...`, 'largeicon-load');

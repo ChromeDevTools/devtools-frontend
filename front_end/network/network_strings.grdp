@@ -180,6 +180,9 @@
   <message name="IDS_DEVTOOLS_383fc50a38f1666adc3f06d0bdf71467" desc="Text in Network Log View of the Network panel">
     Are you sure you want to clear browser cookies?
   </message>
+  <message name="IDS_DEVTOOLS_38adb5ba687241627ce2b1f82b714e7d" desc="Tooltip text for network request overview setting">
+    Show overview of network requests
+  </message>
   <message name="IDS_DEVTOOLS_39b8414d89adf80e97ec0024e13e3b86" desc="Title of a section in Request Initiator view of the Network Panel">
     Request call stack
   </message>
@@ -441,6 +444,9 @@
   <message name="IDS_DEVTOOLS_d55df13c735b6066e930b3e66c4588ab" desc="Text for toggling header data (e.g. query string parameters) from decoded to encoded in the headers tab">
     View URL encoded
   </message>
+  <message name="IDS_DEVTOOLS_d68ff2d86e48cad77057a4b0a842089d" desc="Tooltip for group by frame network setting">
+    Group requests by top level request frame
+  </message>
   <message name="IDS_DEVTOOLS_da011b03135db41fae6598372f46bd0c" desc="An option in the user agent dropdown menu in the Network conditions tool">
     Safari — iPad iOS 13.2
   </message>
@@ -456,6 +462,9 @@
   <message name="IDS_DEVTOOLS_decbe8975cc2421194a7c86283fef5e4" desc="Text in Network Data Grid Node of the Network panel">
     NotSameOrigin
   </message>
+  <message name="IDS_DEVTOOLS_ded747188d830e091a643af558251af5" desc="Tooltip for capture screenshot network setting">
+    Capture screenshots when loading a page
+  </message>
   <message name="IDS_DEVTOOLS_e2cfb91cd8426f99401143d41343faff" desc="Text in Headers View of the Network panel">
     To embed this frame in your document, the response needs to enable the cross-origin embedder policy by specifying the following response header:
   </message>
@@ -470,6 +479,9 @@
   </message>
   <message name="IDS_DEVTOOLS_e48c00bc05b642164b5520137b66d011" desc="Text in Network Log View of the Network panel">
     Copy all as Node.js fetch
+  </message>
+  <message name="IDS_DEVTOOLS_f59329e45eb11a75d709aeb5b9b8943e" desc="Tooltip for expanding network request row setting">
+    Show more information in request rows
   </message>
   <message name="IDS_DEVTOOLS_f5a6d40aab4d260009df79b7dab7e6a0" desc="An option in the user agent dropdown menu in the Network conditions tool">
     <ph name="LOCKED_1">Microsoft Edge — iPhone</ph>

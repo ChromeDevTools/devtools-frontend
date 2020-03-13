@@ -27,7 +27,7 @@ const MAX_CONTENT_SHELLS = 10;
 const PLATFORM = getPlatform();
 const PYTHON = process.platform === 'win32' ? 'python.bat' : 'python';
 
-const CURRENT_PATH = process.env.PWD;  // Using env.PWD to account for symlinks.
+const CURRENT_PATH = process.env.PWD || process.cwd();  // Using env.PWD to account for symlinks.
 const isThirdParty = CURRENT_PATH.includes('third_party');
 const CHROMIUM_SRC_PATH = CUSTOM_CHROMIUM_PATH || getChromiumSrcPath(isThirdParty);
 const RELEASE_PATH = path.resolve(CHROMIUM_SRC_PATH, 'out', TARGET);

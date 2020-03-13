@@ -25,7 +25,7 @@ export class RadioSetting {
       const fragment = UI.Fragment.Fragment.build`
         <label $="label" class="lighthouse-radio">
           <input $="input" type="radio" value=${option.value} name=${setting.name}>
-          ${option.label}
+          <span class="lighthouse-radio-text">${option.label}</span>
         </label>
       `;
 

@@ -57,12 +57,6 @@
   font-weight: 500;
 }
 
-.lighthouse-form-section input {
-  margin-top: 0;
-  margin-bottom: 0;
-  margin-left: 0;
-}
-
 .lighthouse-form-section-label i span {
   position: relative;
   top: -2px;
@@ -79,6 +73,10 @@
 
 input[type="radio"]:focus {
   outline-width: 2px;
+}
+
+.lighthouse-radio-text {
+  margin-left: 3px;
 }
 
 .lighthouse-start-button-container {

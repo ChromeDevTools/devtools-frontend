@@ -23,11 +23,11 @@ vars = {
 
   # Chromium build number for unit tests. It should be regularly updated to
   # the content of https://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/LAST_CHANGE
-  'chromium_linux': '750387',
+  'chromium_linux': '750417',
   # the content of https://commondatastorage.googleapis.com/chromium-browser-snapshots/Win_x64/LAST_CHANGE
-  'chromium_win': '750382',
+  'chromium_win': '750418',
   # the content of https://commondatastorage.googleapis.com/chromium-browser-snapshots/Mac/LAST_CHANGE
-  'chromium_mac': '750385',
+  'chromium_mac': '750418',
 }
 
 # Only these hosts are allowed for dependencies in this DEPS file.

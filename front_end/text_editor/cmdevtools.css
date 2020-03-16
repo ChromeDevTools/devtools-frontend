@@ -27,6 +27,13 @@
     margin-left: 3px;
 }
 
+.CodeMirror-gutter-breakpoints {
+    width: 10px;
+    margin: 0 -4px 0 2px;
+    pointer-events: none;
+    cursor: default;
+}
+
 .CodeMirror .source-frame-eval-expression {
     outline: 0;
     border: 1px solid rgb(163, 41, 34);
@@ -167,47 +174,85 @@
     to { background-color: #14522b; }
 }
 
-.cm-breakpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber, -theme-preserve {
-    color: white;
-    border-width: 1px 4px 1px 1px !important;
-    -webkit-border-image: url(Images/breakpoint.svg) 1 4 1 1;
-    margin: 0 0 0 3px !important;
-    padding-right: 3px;
-    padding-left: 1px;
-    height: 11px;
-    line-height: 12px !important;
-    border-style: solid;
-}
-
 .cm-line-without-source-mapping .CodeMirror-linenumber {
     color: rgba(128, 128, 128, 0.4);
 }
 
-.cm-breakpoint.cm-breakpoint-conditional .CodeMirror-linenumber {
-    -webkit-border-image: url(Images/breakpointConditional.svg) 1 4 1 1;
+.breakpoint-element {
+    padding-top: 1px;
 }
 
-:host-context(.-theme-with-dark-background) .cm-breakpoint:not(.cm-breakpoint-conditional) .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
-.-theme-with-dark-background .cm-breakpoint:not(.cm-breakpoint-conditional) .CodeMirror-gutter-wrapper .CodeMirror-linenumber {
-    filter: hue-rotate(-139deg);
+.breakpoint-element:before {
+    content: "\00AD";
 }
 
-.cm-breakpoint-disabled .CodeMirror-linenumber {
-    opacity: 0.5;
+.cm-breakpoint .breakpoint-element:before {
+    content: url(Images/breakpoint.svg);
 }
 
-.breakpoints-deactivated .cm-breakpoint .CodeMirror-linenumber {
-    opacity: 0.5;
+.breakpoints-deactivated .cm-breakpoint .breakpoint-element:before,
+.cm-breakpoint-disabled .breakpoint-element:before {
+    content: url(Images/breakpoint-disabled.svg);
 }
 
-.breakpoints-deactivated .cm-breakpoint-disabled .CodeMirror-linenumber {
-    opacity: 0.3;
+.cm-breakpoint.cm-breakpoint-conditional .breakpoint-element:before {
+    content: url(Images/breakpoint-conditional.svg);
+}
+
+.cm-breakpoint-disabled.cm-breakpoint-conditional .breakpoint-element:before,
+.breakpoints-deactivated .cm-breakpoint.cm-breakpoint-conditional .breakpoint-element:before {
+    content: url(Images/breakpoint-conditional-disabled.svg);
+}
+
+.cm-breakpoint.cm-breakpoint-logpoint .breakpoint-element:before {
+    content: url(Images/logpoint.svg);
+}
+
+.cm-breakpoint-disabled.cm-breakpoint-logpoint .breakpoint-element:before,
+.breakpoints-deactivated .cm-breakpoint.cm-breakpoint-logpoint .breakpoint-element:before {
+    content: url(Images/logpoint-disabled.svg);
 }
 
 .cm-inline-breakpoint {
     position:relative;
-    top: 2px;
+    top: 1px;
     cursor: pointer;
+}
+
+.cm-inline-breakpoint:before {
+    content: url(Images/breakpoint.svg);
+}
+
+.cm-inline-breakpoint.cm-inline-disabled:before {
+    content: url(Images/breakpoint-disabled.svg);
+}
+
+.breakpoints-deactivated .cm-inline-breakpoint:before {
+    content: url(Images/breakpoint-disabled.svg);
+}
+
+.cm-inline-breakpoint.cm-inline-breakpoint-conditional:before {
+    content: url(Images/breakpoint-conditional.svg);
+}
+
+.cm-inline-breakpoint.cm-inline-breakpoint-conditional.cm-inline-disabled:before {
+    content: url(Images/breakpoint-conditional-disabled.svg);
+}
+
+.breakpoints-deactivated .cm-inline-breakpoint.cm-inline-breakpoint-conditional:before {
+    content: url(Images/breakpoint-conditional-disabled.svg);
+}
+
+.cm-inline-breakpoint.cm-inline-logpoint:before {
+    content: url(Images/logpoint.svg);
+}
+
+.cm-inline-breakpoint.cm-inline-logpoint.cm-inline-disabled:before {
+    content: url(Images/logpoint-disabled.svg);
+}
+
+.breakpoints-deactivated .cm-inline-breakpoint.cm-inline-logpoint:before {
+    content: url(Images/logpoint-disabled.svg);
 }
 
 .cm-execution-line-tail + .CodeMirror-widget {
@@ -231,10 +276,6 @@
 
 .cm-inline-breakpoint.cm-inline-conditional {
     background-color: #ef9d0d;
-}
-
-.cm-inline-breakpoint.cm-inline-disabled {
-    opacity: 0.5;
 }
 
 .cm-continue-to-location {

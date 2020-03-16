@@ -111,7 +111,7 @@ describe('The Sources Tab', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await openSourceCodeEditorForFile(target, 'minified-sourcecode.js', 'minified-sourcecode.html');
-    await addBreakpointForLine(frontend, 5);
+    await addBreakpointForLine(frontend, 6);
 
     const scriptLocation = await retrieveTopCallFrameScriptLocation('notFormattedFunction();', target);
     assert.deepEqual(scriptLocation, 'minified-sourcecode.js:6');
@@ -121,7 +121,7 @@ describe('The Sources Tab', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await openSourceCodeEditorForFile(target, 'minified-sourcecode.js', 'minified-sourcecode.html');
-    await addBreakpointForLine(frontend, 5);
+    await addBreakpointForLine(frontend, 6);
     await prettyPrintMinifiedFile(frontend);
 
     const scriptLocation = await retrieveTopCallFrameScriptLocation('notFormattedFunction();', target);

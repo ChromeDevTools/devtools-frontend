@@ -1,0 +1,4 @@
+<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="5" cy="5" r="3.25" stroke="#9AA0A6" stroke-width="1.5"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M5 9V1.00001H5.00922C5.00615 1 5.00307 1 5 1C2.79086 1 1 2.79086 1 5C1 7.20914 2.79086 9 5 9Z" fill="#9AA0A6"/>
+</svg>

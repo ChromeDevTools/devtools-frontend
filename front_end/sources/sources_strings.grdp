@@ -24,9 +24,6 @@
   <message name="IDS_DEVTOOLS_08355a3ae65d425a4a6bac94ce97dcb4" desc="A context menu item in the Debugger Plugin of the Sources panel">
     Edit breakpoint…
   </message>
-  <message name="IDS_DEVTOOLS_08fb8cd30c88d3b186962bb2c3226479" desc="Text in Debugger Plugin of the Sources panel">
-    Enabled all breakpoints in line
-  </message>
   <message name="IDS_DEVTOOLS_0ab9daf7d77e9446aeae5f66be24e800" desc="A context menu item in the Debugger Plugin of the Sources panel">
     Never pause here
   </message>
@@ -440,6 +437,9 @@
   </message>
   <message name="IDS_DEVTOOLS_b9947e230aa5ac451e3b0649bdb1c7fc" desc="Event return value in Sources View of the Sources panel">
     <ph name="LOCKED_1">DevTools</ph> have unsaved changes that will be permanently lost.
+  </message>
+  <message name="IDS_DEVTOOLS_bceac9ba5f9e73f46255c5056368fd00" desc="Text in Debugger Plugin of the Sources panel">
+    Enable all breakpoints in line
   </message>
   <message name="IDS_DEVTOOLS_bd1066101df937dfc5704f95ef779f62" desc="Empty element text content in Watch Expressions Sidebar Pane of the Sources panel">
     No watch expressions

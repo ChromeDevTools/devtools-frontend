@@ -23,7 +23,7 @@ finally:
 NODE_LOCATION = devtools_paths.node_path()
 
 ROOT_DIRECTORY_OF_REPOSITORY = path.join(_CURRENT_DIR, '..', '..')
-ROOT_TS_CONFIG_LOCATION = path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'tsconfig.json')
+BASE_TS_CONFIG_LOCATION = path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'tsconfig.base.json')
 TYPES_NODE_MODULES_DIRECTORY = path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'node_modules', '@types')
 RESOURCES_INSPECTOR_PATH = path.join(os.getcwd(), 'resources', 'inspector')
 
@@ -54,8 +54,7 @@ def main():
     parser.set_defaults(test_only=False)
 
     opts = parser.parse_args()
-
-    with open(ROOT_TS_CONFIG_LOCATION) as root_tsconfig:
+    with open(BASE_TS_CONFIG_LOCATION) as root_tsconfig:
         try:
             tsconfig = json.loads(root_tsconfig.read())
         except Exception as e:

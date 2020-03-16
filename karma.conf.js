@@ -57,7 +57,7 @@ module.exports = function(config) {
     frameworks: ['mocha', 'chai', 'karma-typescript'],
 
     karmaTypescriptConfig: {
-      tsconfig: './tsconfig.json',
+      tsconfig: './tsconfig.base.json',
       compilerOptions: {
         checkJs: false,
         baseUrl: '.',

@@ -1,24 +1,10 @@
 {
-  "compilerOptions": {
-    "module": "esnext",
-    "target": "esnext",
-    "baseUrl": ".",
-    "paths": {
-      "/front_end/*": ["front_end/*"]
-    },
-    "checkJs": true,
-    "allowJs": true,
-
-    "noEmitOnError": true,
-
-    "lib": [
-      "esnext",
-      "dom"
-    ],
-
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
-  }
+  "extends": "./tsconfig.base.json",
+  "include": [
+    "front_end/",
+    "test/"
+  ],
+  "exclude": [
+    "front_end/externs.js"
+  ]
 }

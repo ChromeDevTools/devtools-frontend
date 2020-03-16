@@ -7,5 +7,5 @@
     "checkJs": false,
     "allowJs": false
   },
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig.base.json",
 }

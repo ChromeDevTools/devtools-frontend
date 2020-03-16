@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {Event, Events, MediaChangeTypeKeys, MediaModel} from './MediaModel.js';  // eslint-disable-line no-unused-vars
@@ -10,7 +11,7 @@ import {PlayerDetailView} from './PlayerDetailView.js';
 import {PlayerListView} from './PlayerListView.js';
 
 /**
- * @implements {SDK.SDKModelObserver<!Media.MediaModel>}
+ * @implements {SDK.SDKModel.SDKModelObserver<!Media.MediaModel>}
  */
 export class MainView extends UI.Panel.PanelWithSidebar {
   constructor() {

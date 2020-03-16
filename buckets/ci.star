@@ -27,11 +27,11 @@ generate_ci_configs(
       ),
       config_section(
         name="beta",
-        branch='refs/heads/chromium/4044',
+        branch='refs/heads/chromium/4085',
       ),
       config_section(
         name="stable",
-        branch='refs/heads/chromium/3987',
+        branch='refs/heads/chromium/4044',
       ),
     ],
     builders = [

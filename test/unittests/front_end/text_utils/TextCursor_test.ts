@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {TextCursor} from '/front_end/text_utils/TextCursor.js';
+import {TextCursor} from '../../../../front_end/text_utils/TextCursor.js';
 
 describe('TextCursor', () => {
   it('can be instantiated successfully', () => {

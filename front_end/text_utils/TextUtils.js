@@ -28,6 +28,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 export const Utils = {
+  get _keyValueFilterRegex() {
+    return /(?:^|\s)(\-)?([\w\-]+):([^\s]+)/;
+  },
+  get _regexFilterRegex() {
+    return /(?:^|\s)(\-)?\/([^\s]+)\//;
+  },
+  get _textFilterRegex() {
+    return /(?:^|\s)(\-)?([^\s]+)/;
+  },
+  get _SpaceCharRegex() {
+    return /\s/;
+  },
+  /**
+   * @enum {string}
+   */
+  get Indent() {
+    return {TwoSpaces: '  ', FourSpaces: '    ', EightSpaces: '        ', TabCharacter: '\t'};
+  },
+
   /**
    * @param {string} char
    * @return {boolean}
@@ -146,7 +165,9 @@ export const Utils = {
    * @return {!Array<{value: string, position: number, regexIndex: number, captureGroups: !Array<string|undefined>}>}
    */
   splitStringByRegexes(text, regexes) {
+    /** @type {!Array<{value: string, position: number, regexIndex: number, captureGroups: !Array<string|undefined>}>} */
     const matches = [];
+    /** @type {!Array<!RegExp>} */
     const globalRegexes = [];
     for (let i = 0; i < regexes.length; i++) {
       const regex = regexes[i];
@@ -219,6 +240,7 @@ export class FilterParser {
   parse(query) {
     const splitResult = Utils.splitStringByRegexes(
         query, [Utils._keyValueFilterRegex, Utils._regexFilterRegex, Utils._textFilterRegex]);
+    /** @type {!Array<!ParsedFilter>} */
     const filters = [];
     for (let i = 0; i < splitResult.length; i++) {
       const regexIndex = splitResult[i].regexIndex;
@@ -228,51 +250,43 @@ export class FilterParser {
       const result = splitResult[i].captureGroups;
       if (regexIndex === 0) {
         if (this._keys.indexOf(/** @type {string} */ (result[1])) !== -1) {
-          filters.push({key: result[1], text: result[2], negative: !!result[0]});
+          filters.push({key: result[1], regex: undefined, text: result[2], negative: !!result[0]});
         } else {
-          filters.push({text: result[1] + ':' + result[2], negative: !!result[0]});
+          filters.push({key: undefined, regex: undefined, text: result[1] + ':' + result[2], negative: !!result[0]});
         }
       } else if (regexIndex === 1) {
         try {
-          filters.push({regex: new RegExp(result[1], 'i'), negative: !!result[0]});
+          filters.push({
+            key: undefined,
+            regex: new RegExp(/** @type {string} */ (result[1]), 'i'),
+            text: undefined,
+            negative: !!result[0]
+          });
         } catch (e) {
-          filters.push({text: '/' + result[1] + '/', negative: !!result[0]});
+          filters.push({key: undefined, regex: undefined, text: '/' + result[1] + '/', negative: !!result[0]});
         }
       } else if (regexIndex === 2) {
-        filters.push({text: result[1], negative: !!result[0]});
+        filters.push({key: undefined, regex: undefined, text: result[1], negative: !!result[0]});
       }
     }
     return filters;
   }
 }
 
-Utils._keyValueFilterRegex = /(?:^|\s)(\-)?([\w\-]+):([^\s]+)/;
-Utils._regexFilterRegex = /(?:^|\s)(\-)?\/([^\s]+)\//;
-Utils._textFilterRegex = /(?:^|\s)(\-)?([^\s]+)/;
-Utils._SpaceCharRegex = /\s/;
-
-/**
- * @enum {string}
- */
-Utils.Indent = {
-  TwoSpaces: '  ',
-  FourSpaces: '    ',
-  EightSpaces: '        ',
-  TabCharacter: '\t'
-};
-
 /**
  * @unrestricted
  */
 export class BalancedJSONTokenizer {
   /**
-   * @param {function(string)} callback
+   * @param {function(string):void} callback
    * @param {boolean=} findMultiple
    */
   constructor(callback, findMultiple) {
     this._callback = callback;
+    /** @type {number} */
     this._index = 0;
     this._balance = 0;
+    /** @type {string} */
     this._buffer = '';
     this._findMultiple = findMultiple || false;
     this._closingDoubleQuoteRegex = /[^\\](?:\\\\)*"/g;
@@ -343,9 +357,11 @@ export class BalancedJSONTokenizer {
 export class TokenizerFactory {
   /**
    * @param {string} mimeType
-   * @return {function(string, function(string, ?string, number, number))}
+   * @return {function(string, function(string, ?string, number, number)):void}
    */
-  createTokenizer(mimeType) {}
+  createTokenizer(mimeType) {
+    throw new Error('not implemented');
+  }
 }
 
 /**
@@ -384,4 +400,5 @@ export function isMinified(text) {
 }
 
 /** @typedef {{key:(string|undefined), text:(?string|undefined), regex:(!RegExp|undefined), negative:boolean}} */
+// @ts-ignore typedef
 export let ParsedFilter;

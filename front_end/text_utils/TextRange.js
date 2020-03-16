@@ -57,7 +57,7 @@ export class TextRange {
   }
 
   /**
-   * @param {!Object} serializedTextRange
+   * @param {{startLine: number, startColumn: number, endLine: number, endColumn: number}} serializedTextRange
    * @return {!TextRange}
    */
   static fromObject(serializedTextRange) {

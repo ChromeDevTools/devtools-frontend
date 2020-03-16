@@ -9,7 +9,7 @@ interface StringConstructor {
 
 interface Array<T> {
   peekLast(): T | undefined;
-  lowerBound(object: T, comparator: {(a:T, b:T):number}): number;
+  lowerBound(object: T, comparator?: {(a: T, b: T): number}): number;
 }
 
 // Type alias for the Closure-supported ITemplateArray which is equivalent

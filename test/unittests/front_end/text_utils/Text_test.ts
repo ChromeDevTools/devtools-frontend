@@ -4,8 +4,8 @@
 
 const {assert} = chai;
 
-import {Text} from '/front_end/text_utils/Text.js';
-import {TextRange, SourceRange} from '/front_end/text_utils/TextRange.js';
+import {Text} from '../../../../front_end/text_utils/Text.js';
+import {TextRange, SourceRange} from '../../../../front_end/text_utils/TextRange.js';
 
 describe('Text', () => {
   it('can be instantiated successfully', () => {

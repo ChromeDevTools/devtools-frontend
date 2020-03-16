@@ -63,6 +63,7 @@ export class Text {
   }
 
   /**
+   * @param {number} lineNumber
    * @return {string}
    */
   lineAt(lineNumber) {
@@ -126,4 +127,5 @@ export class Text {
 }
 
 /** @typedef {{lineNumber: number, columnNumber: number}} */
+// @ts-ignore typedef
 export let Position;

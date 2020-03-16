@@ -10,7 +10,7 @@ group("front_end") {
     "platform",
 
     # "sdk",
-    # "text_utils",
+    "text_utils",
   ]
 }
 

@@ -41,6 +41,9 @@ generate_ci_configs(
       ...
 ```
 
+After editing the above mentioned file run `lucicfg generate main.star` to have the change propagated to the cfg files.
+Example: [CL](https://chromium-review.googlesource.com/c/devtools/devtools-frontend/+/2104476)
+
 ## Rolling/Integrating into Chromium
 
 The [Skia

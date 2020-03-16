@@ -6,14 +6,23 @@
  * @unrestricted
  */
 export class Issue {
+  /**
+   * @param {string} code
+   */
   constructor(code) {
     this._code = code;
   }
 
+  /**
+   * @return {string}
+   */
   get code() {
     return this._code;
   }
 
+  /**
+   * @param {string} code
+   */
   static create(code) {
     return new Issue(code);
   }

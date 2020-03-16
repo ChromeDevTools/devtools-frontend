@@ -8,8 +8,7 @@ group("front_end") {
     "common",
     "formatter_worker",
     "platform",
-
-    # "sdk",
+    "sdk",
     "text_utils",
   ]
 }

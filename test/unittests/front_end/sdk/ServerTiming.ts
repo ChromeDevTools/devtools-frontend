@@ -6,7 +6,8 @@ const {assert} = chai;
 
 import {ServerTiming} from '/front_end/sdk/ServerTiming.js';
 
-describe('ServerTiming', () => {
+// TODO(crbug.com/1061125): Requires common/ to be typechecked
+describe.skip('ServerTiming', () => {
   it('can be instantiated correctly', () => {
     const serverTiming = new ServerTiming('example metric', 1, 'example description');
     assert.equal(serverTiming.metric, 'example metric', 'metric was not set correctly');

@@ -1,0 +1,11 @@
+import("../../../../third_party/typescript/typescript.gni")
+
+ts_library("sdk") {
+  testonly = true
+  sources = [
+    "Cookie_test.ts",
+    "Issue_test.ts",
+  ]
+
+  deps = [ "../../../../front_end/sdk" ]
+}

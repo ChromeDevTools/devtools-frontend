@@ -49,6 +49,14 @@ export class CookieParser {
       // https://tools.ietf.org/html/draft-ietf-httpbis-rfc6265bis-03#section-5.3.3
       this._domain = domain.toLowerCase().replace(/^\./, '');
     }
+
+    /** @type {!Array<!Cookie>} */
+    this._cookies = [];
+
+    /** @type {string|undefined} */
+    this._input;
+
+    this._originalInputLength = 0;
   }
 
   /**
@@ -124,20 +132,25 @@ export class CookieParser {
    */
   _initialize(headerValue) {
     this._input = headerValue;
+
     if (typeof headerValue !== 'string') {
       return false;
     }
+
     this._cookies = [];
     this._lastCookie = null;
     this._lastCookieLine = '';
-    this._originalInputLength = this._input.length;
+    this._originalInputLength = /** @type {string} */ (this._input).length;
     return true;
   }
 
   _flushCookie() {
     if (this._lastCookie) {
-      this._lastCookie.setSize(this._originalInputLength - this._input.length - this._lastCookiePosition);
-      this._lastCookie.setCookieLine(this._lastCookieLine.replace('\n', ''));
+      // if we have a last cookie we know that these valeus all exist, hence the typecasts
+      this._lastCookie.setSize(
+          this._originalInputLength - /** @type {string} */ (this._input).length -
+          /** @type {number} */ (this._lastCookiePosition));
+      this._lastCookie.setCookieLine(/** @type {string} */ (this._lastCookieLine).replace('\n', ''));
     }
     this._lastCookie = null;
     this._lastCookieLine = '';
@@ -162,7 +175,8 @@ export class CookieParser {
     }
 
     const result = new KeyValue(
-        keyValueMatch[1], keyValueMatch[2] && keyValueMatch[2].trim(), this._originalInputLength - this._input.length);
+        keyValueMatch[1], keyValueMatch[2] && keyValueMatch[2].trim(),
+        /** @type {number} */ (this._originalInputLength) - this._input.length);
     this._lastCookieLine += keyValueMatch[0];
     this._input = this._input.slice(keyValueMatch[0].length);
     return result;
@@ -172,6 +186,10 @@ export class CookieParser {
    * @return {boolean}
    */
   _advanceAndCheckCookieDelimiter() {
+    if (!this._input) {
+      return false;
+    }
+
     const match = /^\s*[\n;]\s*/.exec(this._input);
     if (!match) {
       return false;
@@ -187,7 +205,7 @@ export class CookieParser {
    */
   _addCookie(keyValue, type) {
     if (this._lastCookie) {
-      this._lastCookie.setSize(keyValue.position - this._lastCookiePosition);
+      this._lastCookie.setSize(keyValue.position - /** @type {number} */ (this._lastCookiePosition));
     }
 
     // Mozilla bug 169091: Mozilla, IE and Chrome treat single token (w/o "=") as

@@ -188,7 +188,10 @@ export class Linkifier {
       return fallbackAnchor;
     }
 
-    const anchor = Linkifier._createLink('', className, options);
+    // Not initialising the anchor element with 'zero width space' (\u200b) causes a crash
+    // in the layout engine.
+    // TODO(szuend): Remove comment and workaround once the crash is fixed.
+    const anchor = Linkifier._createLink('\u200b', className, options);
     const info = Linkifier._linkInfo(anchor);
     info.enableDecorator = this._useLinkDecorator;
     info.fallback = fallbackAnchor;
@@ -267,7 +270,10 @@ export class Linkifier {
       return fallbackAnchor;
     }
 
-    const anchor = Linkifier._createLink('', classes || '');
+    // Not initialising the anchor element with 'zero width space' (\u200b) causes a crash
+    // in the layout engine.
+    // TODO(szuend): Remove comment and workaround once the crash is fixed.
+    const anchor = Linkifier._createLink('\u200b', classes || '');
     const info = Linkifier._linkInfo(anchor);
     info.enableDecorator = this._useLinkDecorator;
     info.fallback = fallbackAnchor;
@@ -291,7 +297,10 @@ export class Linkifier {
    * @return {!Element}
    */
   linkifyCSSLocation(rawLocation, classes) {
-    const anchor = Linkifier._createLink('', classes || '');
+    // Not initialising the anchor element with 'zero width space' (\u200b) causes a crash
+    // in the layout engine.
+    // TODO(szuend): Remove comment and workaround once the crash is fixed.
+    const anchor = Linkifier._createLink('\u200b', classes || '');
     const info = Linkifier._linkInfo(anchor);
     info.enableDecorator = this._useLinkDecorator;
 

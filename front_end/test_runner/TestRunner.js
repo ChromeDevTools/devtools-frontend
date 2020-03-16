@@ -1434,11 +1434,8 @@ export async function dumpInspectedPageElementText(querySelector) {
  * once all currently-pending updates (at call time) are completed.
  */
 export async function waitForPendingLiveLocationUpdates() {
-  // TODO(chromium:1032016): Implement once the frontend has the actual methods in the bindings.
-  //
-  //                         This empty function is here so we can prepare affected web
-  //                         tests and than asyncify the frontend without needing to disable the
-  //                         affected web tests inbetween.
+  await self.Bindings.debuggerWorkspaceBinding.pendingLiveLocationChangesPromise();
+  await self.Bindings.cssWorkspaceBinding.pendingLiveLocationChangesPromise();
 }
 
 /** @type {!{logToStderr: function(), navigateSecondaryWindow: function(string), notifyDone: function()}|undefined} */

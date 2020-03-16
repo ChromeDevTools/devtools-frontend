@@ -30,10 +30,11 @@ export class LiveLocation {
  */
 export class LiveLocationWithPool {
   /**
-   * @param {function(!LiveLocation)} updateDelegate
+   * @param {function(!LiveLocation):void} updateDelegate
    * @param {!LiveLocationPool} locationPool
    */
   constructor(updateDelegate, locationPool) {
+    /** @type {?function(!LiveLocation):void} */
     this._updateDelegate = updateDelegate;
     this._locationPool = locationPool;
     this._locationPool._add(this);
@@ -43,7 +44,9 @@ export class LiveLocationWithPool {
    * @override
    */
   update() {
-    this._updateDelegate(this);
+    if (this._updateDelegate) {
+      this._updateDelegate(this);
+    }
   }
 
   /**

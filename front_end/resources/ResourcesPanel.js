@@ -20,7 +20,8 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     super('resources');
     this.registerRequiredCSS('resources/resourcesPanel.css');
 
-    this._resourcesLastSelectedItemSetting = self.Common.settings.createSetting('resourcesLastSelectedElementPath', []);
+    this._resourcesLastSelectedItemSetting =
+        Common.Settings.Settings.instance().createSetting('resourcesLastSelectedElementPath', []);
 
     /** @type {?UI.Widget.Widget} */
     this.visibleView = null;

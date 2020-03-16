@@ -49,8 +49,8 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     this.setMinimumSize(96, 26);
     this.registerRequiredCSS('elements/stylesSidebarPane.css');
 
-    self.Common.settings.moduleSetting('colorFormat').addChangeListener(this.update.bind(this));
-    self.Common.settings.moduleSetting('textEditorIndent').addChangeListener(this.update.bind(this));
+    Common.Settings.Settings.instance().moduleSetting('colorFormat').addChangeListener(this.update.bind(this));
+    Common.Settings.Settings.instance().moduleSetting('textEditorIndent').addChangeListener(this.update.bind(this));
 
     /** @type {?UI.Widget.Widget} */
     this._currentToolbarPane = null;

@@ -39,7 +39,8 @@ export class DatabaseTableView extends UI.View.SimpleView {
 
     this.element.classList.add('storage-view', 'table');
 
-    this._visibleColumnsSetting = self.Common.settings.createSetting('databaseTableViewVisibleColumns', {});
+    this._visibleColumnsSetting =
+        Common.Settings.Settings.instance().createSetting('databaseTableViewVisibleColumns', {});
 
     this.refreshButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Refresh'), 'largeicon-refresh');
     this.refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._refreshButtonClicked, this);

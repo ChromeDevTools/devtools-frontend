@@ -80,7 +80,7 @@ export class TimelineController {
     }
     if (!Root.Runtime.queryParam('timelineTracingJSProfileDisabled') && options.enableJSSampling) {
       categoriesArray.push(disabledByDefault('v8.cpu_profiler'));
-      if (self.Common.settings.moduleSetting('highResolutionCpuProfiling').get()) {
+      if (Common.Settings.Settings.instance().moduleSetting('highResolutionCpuProfiling').get()) {
         categoriesArray.push(disabledByDefault('v8.cpu_profiler.hires'));
       }
     }
@@ -217,7 +217,8 @@ export class TimelineController {
       return;
     }
 
-    const samplingFrequencyHz = self.Common.settings.moduleSetting('highResolutionCpuProfiling').get() ? 10000 : 1000;
+    const samplingFrequencyHz =
+        Common.Settings.Settings.instance().moduleSetting('highResolutionCpuProfiling').get() ? 10000 : 1000;
     const options = 'sampling-frequency=' + samplingFrequencyHz;
     return this._tracingManager.start(this, categories, options);
   }

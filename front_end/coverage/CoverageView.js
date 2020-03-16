@@ -115,7 +115,7 @@ export class CoverageView extends UI.Widget.VBox {
     toolbar.appendToolbarItem(this._filterByTypeComboBox);
 
     toolbar.appendSeparator();
-    this._showContentScriptsSetting = self.Common.settings.createSetting('showContentScripts', false);
+    this._showContentScriptsSetting = Common.Settings.Settings.instance().createSetting('showContentScripts', false);
     this._showContentScriptsSetting.addChangeListener(this._onFilterChanged, this);
     const contentScriptsCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
         this._showContentScriptsSetting, Common.UIString.UIString('Include extension content scripts'),

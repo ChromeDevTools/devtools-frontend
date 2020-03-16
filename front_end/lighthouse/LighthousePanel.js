@@ -105,7 +105,8 @@ export class LighthousePanel extends UI.Panel.Panel {
     this._settingsPane.show(this.contentElement);
     this._settingsPane.element.classList.add('lighthouse-settings-pane');
     this._settingsPane.element.appendChild(this._startView.settingsToolbar().element);
-    this._showSettingsPaneSetting = self.Common.settings.createSetting('lighthouseShowSettingsToolbar', false);
+    this._showSettingsPaneSetting =
+        Common.Settings.Settings.instance().createSetting('lighthouseShowSettingsToolbar', false);
 
     this._rightToolbar = new UI.Toolbar.Toolbar('', lighthouseToolbarContainer);
     this._rightToolbar.appendSeparator();

@@ -25,7 +25,7 @@ export class GeolocationsSettingsTab extends UI.Widget.VBox {
     this._list.registerRequiredCSS('emulation/geolocationsSettingsTab.css');
     this._list.show(this.contentElement);
 
-    this._customSetting = self.Common.settings.moduleSetting('emulation.geolocations');
+    this._customSetting = Common.Settings.Settings.instance().moduleSetting('emulation.geolocations');
     this._customSetting.addChangeListener(this._geolocationsUpdated, this);
 
     this.setDefaultFocusedElement(addButton);

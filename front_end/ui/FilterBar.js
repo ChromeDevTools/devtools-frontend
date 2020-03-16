@@ -30,8 +30,8 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
-
 import * as ARIAUtils from './ARIAUtils.js';
+
 import {Icon} from './Icon.js';
 import {KeyboardShortcut, Modifiers} from './KeyboardShortcut.js';
 import {bindCheckbox} from './SettingsUI.js';
@@ -56,7 +56,8 @@ export class FilterBar extends HBox {
     this.element.classList.add('filter-bar');
 
     // Note: go via self.Common for globally-namespaced singletons.
-    this._stateSetting = self.self.Common.settings.createSetting('filterBar-' + name + '-toggled', !!visibleByDefault);
+    this._stateSetting =
+        Common.Settings.Settings.instance().createSetting('filterBar-' + name + '-toggled', !!visibleByDefault);
     this._filterButton =
         new ToolbarSettingToggle(this._stateSetting, 'largeicon-filter', Common.UIString.UIString('Filter'));
 

@@ -122,18 +122,22 @@ export class SourcesPanel extends UI.Panel.Panel {
     this._watchSidebarPane = /** @type {!UI.View.View} */ (self.UI.viewManager.view('sources.watch'));
     this._callstackPane = self.runtime.sharedInstance(CallStackSidebarPane);
 
-    self.Common.settings.moduleSetting('sidebarPosition').addChangeListener(this._updateSidebarPosition.bind(this));
+    Common.Settings.Settings.instance()
+        .moduleSetting('sidebarPosition')
+        .addChangeListener(this._updateSidebarPosition.bind(this));
     this._updateSidebarPosition();
 
     this._updateDebuggerButtonsAndStatus();
     this._pauseOnExceptionEnabledChanged();
-    self.Common.settings.moduleSetting('pauseOnExceptionEnabled')
+    Common.Settings.Settings.instance()
+        .moduleSetting('pauseOnExceptionEnabled')
         .addChangeListener(this._pauseOnExceptionEnabledChanged, this);
 
     this._liveLocationPool = new Bindings.LiveLocation.LiveLocationPool();
 
     this._setTarget(self.UI.context.flavor(SDK.SDKModel.Target));
-    self.Common.settings.moduleSetting('breakpointsActive')
+    Common.Settings.Settings.instance()
+        .moduleSetting('breakpointsActive')
         .addChangeListener(this._breakpointsActiveStateChanged, this);
     self.UI.context.addFlavorChangeListener(SDK.SDKModel.Target, this._onCurrentTargetChanged, this);
     self.UI.context.addFlavorChangeListener(SDK.DebuggerModel.CallFrame, this._callFrameChanged, this);
@@ -304,7 +308,7 @@ export class SourcesPanel extends UI.Panel.Panel {
    * @override
    */
   onResize() {
-    if (self.Common.settings.moduleSetting('sidebarPosition').get() === 'auto') {
+    if (Common.Settings.Settings.instance().moduleSetting('sidebarPosition').get() === 'auto') {
       this.element.window().requestAnimationFrame(this._updateSidebarPosition.bind(this));
     }  // Do not force layout.
   }
@@ -445,7 +449,7 @@ export class SourcesPanel extends UI.Panel.Panel {
    * @param {!UI.ContextMenu.ContextMenu} contextMenu
    */
   _populateNavigatorMenu(contextMenu) {
-    const groupByFolderSetting = self.Common.settings.moduleSetting('navigatorGroupByFolder');
+    const groupByFolderSetting = Common.Settings.Settings.instance().moduleSetting('navigatorGroupByFolder');
     contextMenu.appendItemsAtLocation('navigatorMenu');
     contextMenu.viewSection().appendCheckboxItem(
         Common.UIString.UIString('Group by folder'), () => groupByFolderSetting.set(!groupByFolderSetting.get()),
@@ -499,7 +503,7 @@ export class SourcesPanel extends UI.Panel.Panel {
   }
 
   _pauseOnExceptionEnabledChanged() {
-    const enabled = self.Common.settings.moduleSetting('pauseOnExceptionEnabled').get();
+    const enabled = Common.Settings.Settings.instance().moduleSetting('pauseOnExceptionEnabled').get();
     this._pauseOnExceptionButton.setToggled(enabled);
     this._pauseOnExceptionButton.setTitle(enabled ? ls`Don't pause on exceptions` : ls`Pause on exceptions`);
     this._debugToolbarDrawer.classList.toggle('expanded', enabled);
@@ -569,7 +573,9 @@ export class SourcesPanel extends UI.Panel.Panel {
   }
 
   _togglePauseOnExceptions() {
-    self.Common.settings.moduleSetting('pauseOnExceptionEnabled').set(!this._pauseOnExceptionButton.toggled());
+    Common.Settings.Settings.instance()
+        .moduleSetting('pauseOnExceptionEnabled')
+        .set(!this._pauseOnExceptionButton.toggled());
   }
 
   _runSnippet() {
@@ -584,7 +590,8 @@ export class SourcesPanel extends UI.Panel.Panel {
    */
   _editorSelected(event) {
     const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data);
-    if (this.editorView.mainWidget() && self.Common.settings.moduleSetting('autoRevealInNavigator').get()) {
+    if (this.editorView.mainWidget() &&
+        Common.Settings.Settings.instance().moduleSetting('autoRevealInNavigator').get()) {
       this._revealInNavigator(uiSourceCode, true);
     }
   }
@@ -713,12 +720,13 @@ export class SourcesPanel extends UI.Panel.Panel {
   }
 
   _toggleBreakpointsActive() {
-    self.Common.settings.moduleSetting('breakpointsActive')
-        .set(!self.Common.settings.moduleSetting('breakpointsActive').get());
+    Common.Settings.Settings.instance()
+        .moduleSetting('breakpointsActive')
+        .set(!Common.Settings.Settings.instance().moduleSetting('breakpointsActive').get());
   }
 
   _breakpointsActiveStateChanged() {
-    const active = self.Common.settings.moduleSetting('breakpointsActive').get();
+    const active = Common.Settings.Settings.instance().moduleSetting('breakpointsActive').get();
     this._toggleBreakpointsActiveAction.setToggled(!active);
     this._sourcesView.toggleBreakpointsActiveState(active);
   }
@@ -758,7 +766,7 @@ export class SourcesPanel extends UI.Panel.Panel {
     const debugToolbarDrawer = createElementWithClass('div', 'scripts-debug-toolbar-drawer');
 
     const label = Common.UIString.UIString('Pause on caught exceptions');
-    const setting = self.Common.settings.moduleSetting('pauseOnCaughtException');
+    const setting = Common.Settings.Settings.instance().moduleSetting('pauseOnCaughtException');
     debugToolbarDrawer.appendChild(UI.SettingsUI.createSettingCheckbox(label, setting, true));
 
     return debugToolbarDrawer;
@@ -911,7 +919,7 @@ export class SourcesPanel extends UI.Panel.Panel {
 
   _updateSidebarPosition() {
     let vertically;
-    const position = self.Common.settings.moduleSetting('sidebarPosition').get();
+    const position = Common.Settings.Settings.instance().moduleSetting('sidebarPosition').get();
     if (position === 'right') {
       vertically = false;
     } else if (position === 'bottom') {

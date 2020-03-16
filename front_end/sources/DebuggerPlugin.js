@@ -126,9 +126,12 @@ export class DebuggerPlugin extends Plugin {
     /** @type {!Map.<!SDK.DebuggerModel.DebuggerModel, !Bindings.ResourceScriptMapping.ResourceScriptFile>}*/
     this._scriptFileForDebuggerModel = new Map();
 
-    self.Common.settings.moduleSetting('skipStackFramesPattern')
+    Common.Settings.Settings.instance()
+        .moduleSetting('skipStackFramesPattern')
         .addChangeListener(this._showBlackboxInfobarIfNeeded, this);
-    self.Common.settings.moduleSetting('skipContentScripts').addChangeListener(this._showBlackboxInfobarIfNeeded, this);
+    Common.Settings.Settings.instance()
+        .moduleSetting('skipContentScripts')
+        .addChangeListener(this._showBlackboxInfobarIfNeeded, this);
 
     /** @type {!Map.<number, !Element>} */
     this._valueWidgets = new Map();
@@ -346,7 +349,7 @@ export class DebuggerPlugin extends Plugin {
      */
     function populateSourceMapMembers() {
       if (this._uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Network &&
-          self.Common.settings.moduleSetting('jsSourceMapsEnabled').get() &&
+          Common.Settings.Settings.instance().moduleSetting('jsSourceMapsEnabled').get() &&
           !self.Bindings.blackboxManager.isBlackboxedUISourceCode(this._uiSourceCode)) {
         if (this._scriptFileForDebuggerModel.size) {
           const scriptFile = this._scriptFileForDebuggerModel.values().next().value;
@@ -779,7 +782,7 @@ export class DebuggerPlugin extends Plugin {
   }
 
   _generateValuesInSource() {
-    if (!self.Common.settings.moduleSetting('inlineVariableValues').get()) {
+    if (!Common.Settings.Settings.instance().moduleSetting('inlineVariableValues').get()) {
       return;
     }
     const executionContext = self.UI.context.flavor(SDK.RuntimeModel.ExecutionContext);
@@ -1586,7 +1589,7 @@ export class DebuggerPlugin extends Plugin {
     }
     this._sourceMapInfobar = UI.Infobar.Infobar.create(
         UI.Infobar.Type.Info, Common.UIString.UIString('Source Map detected.'), [],
-        self.Common.settings.createSetting('sourceMapInfobarDisabled', false));
+        Common.Settings.Settings.instance().createSetting('sourceMapInfobarDisabled', false));
     if (!this._sourceMapInfobar) {
       return;
     }
@@ -1617,8 +1620,7 @@ export class DebuggerPlugin extends Plugin {
     this._prettyPrintInfobar = UI.Infobar.Infobar.create(
         UI.Infobar.Type.Info, Common.UIString.UIString('Pretty-print this minified file?'),
         [{text: ls`Pretty-print`, delegate: formatterCallback, highlight: true, dismiss: true}],
-        self.Common.settings.createSetting('prettyPrintInfobarDisabled', false));
-
+        Common.Settings.Settings.instance().createSetting('prettyPrintInfobarDisabled', false));
     if (!this._prettyPrintInfobar) {
       return;
     }
@@ -1717,7 +1719,7 @@ export class DebuggerPlugin extends Plugin {
       return;
     }
 
-    self.Common.settings.moduleSetting('breakpointsActive').set(true);
+    Common.Settings.Settings.instance().moduleSetting('breakpointsActive').set(true);
     await this._breakpointManager.setBreakpoint(this._uiSourceCode, lineNumber, columnNumber, condition, enabled);
     this._breakpointWasSetForTest(lineNumber, columnNumber, condition, enabled);
   }
@@ -1797,9 +1799,11 @@ export class DebuggerPlugin extends Plugin {
     this._uiSourceCode.removeEventListener(
         Workspace.UISourceCode.Events.WorkingCopyCommitted, this._workingCopyCommitted, this);
 
-    self.Common.settings.moduleSetting('skipStackFramesPattern')
+    Common.Settings.Settings.instance()
+        .moduleSetting('skipStackFramesPattern')
         .removeChangeListener(this._showBlackboxInfobarIfNeeded, this);
-    self.Common.settings.moduleSetting('skipContentScripts')
+    Common.Settings.Settings.instance()
+        .moduleSetting('skipContentScripts')
         .removeChangeListener(this._showBlackboxInfobarIfNeeded, this);
     super.dispose();
 

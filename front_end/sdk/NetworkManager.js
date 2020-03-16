@@ -49,19 +49,21 @@ export class NetworkManager extends SDKModel {
     this._dispatcher = new NetworkDispatcher(this);
     this._networkAgent = target.networkAgent();
     target.registerNetworkDispatcher(this._dispatcher);
-    if (self.Common.settings.moduleSetting('cacheDisabled').get()) {
+    if (Common.Settings.Settings.instance().moduleSetting('cacheDisabled').get()) {
       this._networkAgent.setCacheDisabled(true);
     }
 
     this._networkAgent.enable(undefined, undefined, MAX_EAGER_POST_REQUEST_BODY_LENGTH);
 
-    this._bypassServiceWorkerSetting = self.Common.settings.createSetting('bypassServiceWorker', false);
+    this._bypassServiceWorkerSetting = Common.Settings.Settings.instance().createSetting('bypassServiceWorker', false);
     if (this._bypassServiceWorkerSetting.get()) {
       this._bypassServiceWorkerChanged();
     }
     this._bypassServiceWorkerSetting.addChangeListener(this._bypassServiceWorkerChanged, this);
 
-    self.Common.settings.moduleSetting('cacheDisabled').addChangeListener(this._cacheDisabledSettingChanged, this);
+    Common.Settings.Settings.instance()
+        .moduleSetting('cacheDisabled')
+        .addChangeListener(this._cacheDisabledSettingChanged, this);
   }
 
   /**
@@ -202,7 +204,9 @@ export class NetworkManager extends SDKModel {
    * @override
    */
   dispose() {
-    self.Common.settings.moduleSetting('cacheDisabled').removeChangeListener(this._cacheDisabledSettingChanged, this);
+    Common.Settings.Settings.instance()
+        .moduleSetting('cacheDisabled')
+        .removeChangeListener(this._cacheDisabledSettingChanged, this);
   }
 
   _bypassServiceWorkerChanged() {
@@ -972,7 +976,7 @@ export class NetworkDispatcher {
           Events.MessageGenerated, {message: message, requestId: networkRequest.requestId(), warning: true});
     }
 
-    if (self.Common.settings.moduleSetting('monitoringXHREnabled').get() &&
+    if (Common.Settings.Settings.instance().moduleSetting('monitoringXHREnabled').get() &&
         networkRequest.resourceType().category() === Common.ResourceType.resourceCategories.XHR) {
       let message;
       const failedToLoad = networkRequest.failed || networkRequest.hasErrorStatusCode();
@@ -1024,8 +1028,8 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     this._updatingInterceptionPatternsPromise = null;
 
     // TODO(allada) Remove these and merge it with request interception.
-    this._blockingEnabledSetting = self.Common.settings.moduleSetting('requestBlockingEnabled');
-    this._blockedPatternsSetting = self.Common.settings.createSetting('networkBlockedPatterns', []);
+    this._blockingEnabledSetting = Common.Settings.Settings.instance().moduleSetting('requestBlockingEnabled');
+    this._blockedPatternsSetting = Common.Settings.Settings.instance().createSetting('networkBlockedPatterns', []);
     this._effectiveBlockedURLs = [];
     this._updateBlockedPatterns();
 
@@ -1290,8 +1294,8 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
    * @return {!Promise}
    */
   _updateInterceptionPatterns() {
-    if (!self.Common.settings.moduleSetting('cacheDisabled').get()) {
-      self.Common.settings.moduleSetting('cacheDisabled').set(true);
+    if (!Common.Settings.Settings.instance().moduleSetting('cacheDisabled').get()) {
+      Common.Settings.Settings.instance().moduleSetting('cacheDisabled').set(true);
     }
     this._updatingInterceptionPatternsPromise = null;
     const promises = /** @type {!Array<!Promise>} */ ([]);
@@ -1350,7 +1354,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
       headers['User-Agent'] = currentUserAgent;
     }
 
-    if (self.Common.settings.moduleSetting('cacheDisabled').get()) {
+    if (Common.Settings.Settings.instance().moduleSetting('cacheDisabled').get()) {
       headers['Cache-Control'] = 'no-cache';
     }
 

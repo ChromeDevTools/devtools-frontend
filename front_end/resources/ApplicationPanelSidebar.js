@@ -760,8 +760,8 @@ export class StorageCategoryTreeElement extends BaseStorageTreeElement {
    */
   constructor(storagePanel, categoryName, settingsKey) {
     super(storagePanel, categoryName, false);
-    this._expandedSetting =
-        self.Common.settings.createSetting('resources' + settingsKey + 'Expanded', settingsKey === 'Frames');
+    this._expandedSetting = Common.Settings.Settings.instance().createSetting(
+        'resources' + settingsKey + 'Expanded', settingsKey === 'Frames');
     this._categoryName = categoryName;
     this._categoryLink = null;
   }

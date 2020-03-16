@@ -306,7 +306,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   _willReloadPage() {
-    if (!self.Common.settings.moduleSetting('network_log.preserve-log').get()) {
+    if (!Common.Settings.Settings.instance().moduleSetting('network_log.preserve-log').get()) {
       this.reset();
     }
   }
@@ -370,7 +370,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
       this.dispatchEventToListeners(Events.RequestAdded, request);
     }
 
-    if (self.Common.settings.moduleSetting('network_log.preserve-log').get()) {
+    if (Common.Settings.Settings.instance().moduleSetting('network_log.preserve-log').get()) {
       for (const request of oldRequestsSet) {
         this._requests.push(request);
         this._requestsSet.add(request);

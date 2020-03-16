@@ -48,7 +48,7 @@ export class ServiceWorkerManager extends SDKModel {
     /** @type {!Map.<string, !ServiceWorkerRegistration>} */
     this._registrations = new Map();
     this.enable();
-    this._forceUpdateSetting = self.Common.settings.createSetting('serviceWorkerUpdateOnReload', false);
+    this._forceUpdateSetting = Common.Settings.Settings.instance().createSetting('serviceWorkerUpdateOnReload', false);
     if (this._forceUpdateSetting.get()) {
       this._forceUpdateSettingChanged();
     }

@@ -41,14 +41,15 @@ export class EventListenersWidget extends UI.ThrottledWidget.ThrottledWidget {
     super();
     this._toolbarItems = [];
 
-    this._showForAncestorsSetting = self.Common.settings.moduleSetting('showEventListenersForAncestors');
+    this._showForAncestorsSetting = Common.Settings.Settings.instance().moduleSetting('showEventListenersForAncestors');
     this._showForAncestorsSetting.addChangeListener(this.update.bind(this));
 
     this._dispatchFilterBySetting =
-        self.Common.settings.createSetting('eventListenerDispatchFilterType', DispatchFilterBy.All);
+        Common.Settings.Settings.instance().createSetting('eventListenerDispatchFilterType', DispatchFilterBy.All);
     this._dispatchFilterBySetting.addChangeListener(this.update.bind(this));
 
-    this._showFrameworkListenersSetting = self.Common.settings.createSetting('showFrameowkrListeners', true);
+    this._showFrameworkListenersSetting =
+        Common.Settings.Settings.instance().createSetting('showFrameowkrListeners', true);
     this._showFrameworkListenersSetting.setTitle(Common.UIString.UIString('Framework listeners'));
     this._showFrameworkListenersSetting.addChangeListener(this._showFrameworkListenersChanged.bind(this));
     this._eventListenersView = new EventListeners.EventListenersView.EventListenersView(this.update.bind(this));

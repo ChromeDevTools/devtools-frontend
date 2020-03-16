@@ -120,7 +120,10 @@ export class MainImpl {
         prefs, Host.InspectorFrontendHost.InspectorFrontendHostInstance.setPreference,
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.removePreference,
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.clearPreferences, storagePrefix);
-    self.Common.settings = new Common.Settings.Settings(globalStorage, localStorage);
+    Common.Settings.Settings.instance({forceNew: true, globalStorage, localStorage});
+
+    self.Common.settings = Common.Settings.Settings.instance();
+
     if (!Host.InspectorFrontendHost.isUnderTest()) {
       new Common.Settings.VersionController().updateVersion();
     }
@@ -196,7 +199,7 @@ export class MainImpl {
     // Request filesystems early, we won't create connections until callback is fired. Things will happen in parallel.
     self.Persistence.isolatedFileSystemManager = new Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager();
 
-    const themeSetting = self.Common.settings.createSetting('uiTheme', 'systemPreferred');
+    const themeSetting = Common.Settings.Settings.instance().createSetting('uiTheme', 'systemPreferred');
     UI.UIUtils.initializeUIUtils(document, themeSetting);
     themeSetting.addChangeListener(Components.Reload.reload.bind(Components));
 
@@ -332,7 +335,7 @@ export class MainImpl {
     const promises = [];
     for (const extension of extensions) {
       const setting = extension.descriptor()['setting'];
-      if (!setting || self.Common.settings.moduleSetting(setting).get()) {
+      if (!setting || Common.Settings.Settings.instance().moduleSetting(setting).get()) {
         promises.push(
             extension.instance().then(instance => (/** @type {!Common.Runnable.Runnable} */ (instance)).run()));
         continue;
@@ -344,10 +347,10 @@ export class MainImpl {
         if (!event.data) {
           return;
         }
-        self.Common.settings.moduleSetting(setting).removeChangeListener(changeListener);
+        Common.Settings.Settings.instance().moduleSetting(setting).removeChangeListener(changeListener);
         (/** @type {!Common.Runnable.Runnable} */ (await extension.instance())).run();
       }
-      self.Common.settings.moduleSetting(setting).addChangeListener(changeListener);
+      Common.Settings.Settings.instance().moduleSetting(setting).addChangeListener(changeListener);
     }
     this._lateInitDonePromise = Promise.all(promises);
     MainImpl.timeEnd('Main._lateInitialization');

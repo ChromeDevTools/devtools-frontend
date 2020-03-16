@@ -806,7 +806,7 @@ Breakpoint.State = class {
 
 class Storage {
   constructor() {
-    this._setting = self.Common.settings.createLocalSetting('breakpoints', []);
+    this._setting = Common.Settings.Settings.instance().createLocalSetting('breakpoints', []);
     /** @type {!Map<string, !Storage.Item>} */
     this._breakpoints = new Map();
     const items = /** @type {!Array<!Storage.Item>} */ (this._setting.get());

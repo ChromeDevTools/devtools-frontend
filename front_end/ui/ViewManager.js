@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-
 import * as ARIAUtils from './ARIAUtils.js';
+
 import {ContextMenu} from './ContextMenu.js';  // eslint-disable-line no-unused-vars
 import {Icon} from './Icon.js';
 import {Events as TabbedPaneEvents, TabbedPane} from './TabbedPane.js';
@@ -407,13 +407,13 @@ export class _TabbedLocation extends _Location {
     this._tabbedPane.addEventListener(TabbedPaneEvents.TabSelected, this._tabSelected, this);
     this._tabbedPane.addEventListener(TabbedPaneEvents.TabClosed, this._tabClosed, this);
     // Note: go via self.Common for globally-namespaced singletons.
-    this._closeableTabSetting = self.self.Common.settings.createSetting(location + '-closeableTabs', {});
+    this._closeableTabSetting = Common.Settings.Settings.instance().createSetting(location + '-closeableTabs', {});
     // Note: go via self.Common for globally-namespaced singletons.
-    this._tabOrderSetting = self.self.Common.settings.createSetting(location + '-tabOrder', {});
+    this._tabOrderSetting = Common.Settings.Settings.instance().createSetting(location + '-tabOrder', {});
     this._tabbedPane.addEventListener(TabbedPaneEvents.TabOrderChanged, this._persistTabOrder, this);
     if (restoreSelection) {
       // Note: go via self.Common for globally-namespaced singletons.
-      this._lastSelectedTabSetting = self.self.Common.settings.createSetting(location + '-selectedTab', '');
+      this._lastSelectedTabSetting = Common.Settings.Settings.instance().createSetting(location + '-selectedTab', '');
     }
     this._defaultTab = defaultTab;
 

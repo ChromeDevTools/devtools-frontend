@@ -89,7 +89,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
    */
   static visibleShadowRoots(node) {
     let roots = node.shadowRoots();
-    if (roots.length && !self.Common.settings.moduleSetting('showUAShadowDOM').get()) {
+    if (roots.length && !Common.Settings.Settings.instance().moduleSetting('showUAShadowDOM').get()) {
       roots = roots.filter(filter);
     }
 
@@ -873,7 +873,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     function gotFactory(factory) {
       const editor = factory.createEditor({
         lineNumbers: false,
-        lineWrapping: self.Common.settings.moduleSetting('domWordWrap').get(),
+        lineWrapping: Common.Settings.Settings.instance().moduleSetting('domWordWrap').get(),
         mimeType: 'text/html',
         autoHeight: false,
         padBottom: false

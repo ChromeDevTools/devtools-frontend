@@ -17,7 +17,9 @@ export class AppManifestView extends UI.Widget.VBox {
     super(true);
     this.registerRequiredCSS('resources/appManifestView.css');
 
-    self.Common.settings.moduleSetting('colorFormat').addChangeListener(this._updateManifest.bind(this, true));
+    Common.Settings.Settings.instance()
+        .moduleSetting('colorFormat')
+        .addChangeListener(this._updateManifest.bind(this, true));
 
     this._emptyView = new UI.EmptyWidget.EmptyWidget(Common.UIString.UIString('No manifest detected'));
     this._emptyView.appendLink(

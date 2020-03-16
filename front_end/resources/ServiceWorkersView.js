@@ -64,12 +64,13 @@ export class ServiceWorkersView extends UI.Widget.VBox {
 
     this._toolbar.appendToolbarItem(
         MobileThrottling.ThrottlingManager.throttlingManager().createOfflineToolbarCheckbox());
-    const updateOnReloadSetting = self.Common.settings.createSetting('serviceWorkerUpdateOnReload', false);
+    const updateOnReloadSetting =
+        Common.Settings.Settings.instance().createSetting('serviceWorkerUpdateOnReload', false);
     updateOnReloadSetting.setTitle(Common.UIString.UIString('Update on reload'));
     const forceUpdate = new UI.Toolbar.ToolbarSettingCheckbox(
         updateOnReloadSetting, ls`On page reload, force the service worker to update, and activate it`);
     this._toolbar.appendToolbarItem(forceUpdate);
-    const bypassServiceWorkerSetting = self.Common.settings.createSetting('bypassServiceWorker', false);
+    const bypassServiceWorkerSetting = Common.Settings.Settings.instance().createSetting('bypassServiceWorker', false);
     bypassServiceWorkerSetting.setTitle(Common.UIString.UIString('Bypass for network'));
     const fallbackToNetwork = new UI.Toolbar.ToolbarSettingCheckbox(
         bypassServiceWorkerSetting, ls`Bypass the service worker and load resources from the network`);
@@ -336,11 +337,12 @@ export class Section {
     this._registration = registration;
     /** @type {?symbol} */
     this._fingerprint = null;
-    this._pushNotificationDataSetting = self.Common.settings.createLocalSetting(
+    this._pushNotificationDataSetting = Common.Settings.Settings.instance().createLocalSetting(
         'pushData', Common.UIString.UIString('Test push message from DevTools.'));
-    this._syncTagNameSetting = self.Common.settings.createLocalSetting('syncTagName', 'test-tag-from-devtools');
+    this._syncTagNameSetting =
+        Common.Settings.Settings.instance().createLocalSetting('syncTagName', 'test-tag-from-devtools');
     this._periodicSyncTagNameSetting =
-        self.Common.settings.createLocalSetting('periodicSyncTagName', 'test-tag-from-devtools');
+        Common.Settings.Settings.instance().createLocalSetting('periodicSyncTagName', 'test-tag-from-devtools');
 
     this._toolbar = section.createToolbar();
     this._toolbar.renderAsLinks();

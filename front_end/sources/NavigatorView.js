@@ -72,7 +72,7 @@ export class NavigatorView extends UI.Widget.VBox {
     self.UI.shortcutRegistry.addShortcutListener(
         this.contentElement, 'sources.rename', this._renameShortcut.bind(this), true);
 
-    this._navigatorGroupByFolderSetting = self.Common.settings.moduleSetting('navigatorGroupByFolder');
+    this._navigatorGroupByFolderSetting = Common.Settings.Settings.instance().moduleSetting('navigatorGroupByFolder');
     this._navigatorGroupByFolderSetting.addChangeListener(this._groupingChanged.bind(this));
 
     this._initGrouping();

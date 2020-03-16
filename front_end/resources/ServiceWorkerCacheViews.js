@@ -434,7 +434,7 @@ export class RequestView extends UI.Widget.VBox {
 
     this._tabbedPane = new UI.TabbedPane.TabbedPane();
     this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._tabSelected, this);
-    this._resourceViewTabSetting = self.Common.settings.createSetting('cacheStorageViewTab', 'preview');
+    this._resourceViewTabSetting = Common.Settings.Settings.instance().createSetting('cacheStorageViewTab', 'preview');
 
     this._tabbedPane.appendTab(
         'headers', Common.UIString.UIString('Headers'), new Network.RequestHeadersView.RequestHeadersView(request));

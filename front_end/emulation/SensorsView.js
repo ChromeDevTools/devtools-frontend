@@ -16,14 +16,15 @@ export class SensorsView extends UI.Widget.VBox {
     this.registerRequiredCSS('emulation/sensors.css');
     this.contentElement.classList.add('sensors-view');
 
-    this._geolocationSetting = self.Common.settings.createSetting('emulation.geolocationOverride', '');
+    this._geolocationSetting = Common.Settings.Settings.instance().createSetting('emulation.geolocationOverride', '');
     this._geolocation = SDK.EmulationModel.Geolocation.parseSetting(this._geolocationSetting.get());
     this._geolocationOverrideEnabled = false;
     this._createGeolocationSection(this._geolocation);
 
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
-    this._deviceOrientationSetting = self.Common.settings.createSetting('emulation.deviceOrientationOverride', '');
+    this._deviceOrientationSetting =
+        Common.Settings.Settings.instance().createSetting('emulation.deviceOrientationOverride', '');
     this._deviceOrientation = SDK.EmulationModel.DeviceOrientation.parseSetting(this._deviceOrientationSetting.get());
     this._deviceOrientationOverrideEnabled = false;
     this._createDeviceOrientationSection();
@@ -63,7 +64,7 @@ export class SensorsView extends UI.Widget.VBox {
     // Locations
     this._customLocationsGroup = this._locationSelectElement.createChild('optgroup');
     this._customLocationsGroup.label = ls`Overrides`;
-    const customGeolocations = self.Common.settings.moduleSetting('emulation.geolocations');
+    const customGeolocations = Common.Settings.Settings.instance().moduleSetting('emulation.geolocations');
     const manageButton = UI.UIUtils.createTextButton(ls`Manage`, () => Common.Revealer.reveal(customGeolocations));
     UI.ARIAUtils.setAccessibleName(manageButton, ls`Manage the list of geolocations`);
     fields.appendChild(manageButton);

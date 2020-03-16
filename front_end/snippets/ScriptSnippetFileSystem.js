@@ -10,8 +10,9 @@ import * as Workspace from '../workspace/workspace.js';
 class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFileSystem {
   constructor() {
     super('snippet://', 'snippets');
-    this._lastSnippetIdentifierSetting = self.Common.settings.createSetting('scriptSnippets_lastIdentifier', 0);
-    this._snippetsSetting = self.Common.settings.createSetting('scriptSnippets', []);
+    this._lastSnippetIdentifierSetting =
+        Common.Settings.Settings.instance().createSetting('scriptSnippets_lastIdentifier', 0);
+    this._snippetsSetting = Common.Settings.Settings.instance().createSetting('scriptSnippets', []);
   }
 
   /**

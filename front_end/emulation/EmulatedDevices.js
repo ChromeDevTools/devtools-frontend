@@ -388,14 +388,14 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper {
     super();
 
     /** @type {!Common.Settings.Setting} */
-    this._standardSetting = self.Common.settings.createSetting('standardEmulatedDeviceList', []);
+    this._standardSetting = Common.Settings.Settings.instance().createSetting('standardEmulatedDeviceList', []);
     /** @type {!Set.<!EmulatedDevice>} */
     this._standard = new Set();
     this._listFromJSONV1(this._standardSetting.get(), this._standard);
     this._updateStandardDevices();
 
     /** @type {!Common.Settings.Setting} */
-    this._customSetting = self.Common.settings.createSetting('customEmulatedDeviceList', []);
+    this._customSetting = Common.Settings.Settings.instance().createSetting('customEmulatedDeviceList', []);
     /** @type {!Set.<!EmulatedDevice>} */
     this._custom = new Set();
     if (!this._listFromJSONV1(this._customSetting.get(), this._custom)) {

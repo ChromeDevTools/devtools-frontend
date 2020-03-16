@@ -24,7 +24,7 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
 
     /** @type {!Set<!ConsolePin>} */
     this._pins = new Set();
-    this._pinsSetting = self.Common.settings.createLocalSetting('consolePins', []);
+    this._pinsSetting = Common.Settings.Settings.instance().createLocalSetting('consolePins', []);
     for (const expression of this._pinsSetting.get()) {
       this.addPin(expression);
     }

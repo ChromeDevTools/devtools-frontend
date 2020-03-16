@@ -31,7 +31,7 @@ export class ElementsTreeElementHighlighter {
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _highlightNode(event) {
-    if (!self.Common.settings.moduleSetting('highlightNodeOnHoverInOverlay').get()) {
+    if (!Common.Settings.Settings.instance().moduleSetting('highlightNodeOnHoverInOverlay').get()) {
       return;
     }
 

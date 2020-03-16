@@ -30,6 +30,7 @@
  */
 
 import * as Common from '../common/common.js';
+
 import {HistoryInput} from './HistoryInput.js';
 import {Toolbar, ToolbarButton, ToolbarToggle} from './Toolbar.js';
 import {createTextButton} from './UIUtils.js';
@@ -50,7 +51,7 @@ export class SearchableView extends VBox {
 
     this._searchProvider = searchable;
     // Note: go via self.Common for globally-namespaced singletons.
-    this._setting = settingName ? self.self.Common.settings.createSetting(settingName, {}) : null;
+    this._setting = settingName ? Common.Settings.Settings.instance().createSetting(settingName, {}) : null;
     this._replaceable = false;
 
     this.contentElement.createChild('slot');

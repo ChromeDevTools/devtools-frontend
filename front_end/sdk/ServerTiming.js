@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import {ls} from '../common/common.js';  // eslint-disable-line rulesdir/es_modules_import
 
 import {NameValue} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
 

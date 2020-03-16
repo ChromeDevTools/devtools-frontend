@@ -63,10 +63,13 @@ export class NetworkLogView extends UI.Widget.VBox {
     this.element.id = 'network-container';
     this.element.classList.add('no-node-selected');
 
-    this._networkHideDataURLSetting = self.Common.settings.createSetting('networkHideDataURL', false);
-    this._networkShowIssuesOnlySetting = self.Common.settings.createSetting('networkShowIssuesOnly', false);
-    this._networkOnlyBlockedRequestsSetting = self.Common.settings.createSetting('networkOnlyBlockedRequests', false);
-    this._networkResourceTypeFiltersSetting = self.Common.settings.createSetting('networkResourceTypeFilters', {});
+    this._networkHideDataURLSetting = Common.Settings.Settings.instance().createSetting('networkHideDataURL', false);
+    this._networkShowIssuesOnlySetting =
+        Common.Settings.Settings.instance().createSetting('networkShowIssuesOnly', false);
+    this._networkOnlyBlockedRequestsSetting =
+        Common.Settings.Settings.instance().createSetting('networkOnlyBlockedRequests', false);
+    this._networkResourceTypeFiltersSetting =
+        Common.Settings.Settings.instance().createSetting('networkResourceTypeFilters', {});
 
     this._rawRowHeight = 0;
     this._progressBarContainer = progressBarContainer;
@@ -183,7 +186,8 @@ export class NetworkLogView extends UI.Widget.VBox {
         this.element, [UI.DropTarget.Type.File], Common.UIString.UIString('Drop HAR files here'),
         this._handleDrop.bind(this));
 
-    self.Common.settings.moduleSetting('networkColorCodeResourceTypes')
+    Common.Settings.Settings.instance()
+        .moduleSetting('networkColorCodeResourceTypes')
         .addChangeListener(this._invalidateAllItems.bind(this, false), this);
 
     SDK.SDKModel.TargetManager.instance().observeModels(SDK.NetworkManager.NetworkManager, this);
@@ -192,13 +196,15 @@ export class NetworkLogView extends UI.Widget.VBox {
     self.SDK.networkLog.addEventListener(SDK.NetworkLog.Events.Reset, this._reset, this);
 
     this._updateGroupByFrame();
-    self.Common.settings.moduleSetting('network.group-by-frame').addChangeListener(() => this._updateGroupByFrame());
+    Common.Settings.Settings.instance()
+        .moduleSetting('network.group-by-frame')
+        .addChangeListener(() => this._updateGroupByFrame());
 
     this._filterBar = filterBar;
   }
 
   _updateGroupByFrame() {
-    const value = self.Common.settings.moduleSetting('network.group-by-frame').get();
+    const value = Common.Settings.Settings.instance().moduleSetting('network.group-by-frame').get();
     this._setGrouping(value ? 'Frame' : null);
   }
 

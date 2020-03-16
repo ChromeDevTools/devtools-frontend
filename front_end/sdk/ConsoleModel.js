@@ -147,7 +147,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
           generatePreview: true,
           replMode: true
         },
-        self.Common.settings.moduleSetting('consoleUserActivationEval').get(), awaitPromise);
+        Common.Settings.Settings.instance().moduleSetting('consoleUserActivationEval').get(), awaitPromise);
     HostModule.userMetrics.actionTaken(Host.UserMetrics.Action.ConsoleEvaluated);
     if (result.error) {
       return;
@@ -267,7 +267,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   _clearIfNecessary() {
-    if (!self.Common.settings.moduleSetting('preserveConsoleLog').get()) {
+    if (!Common.Settings.Settings.instance().moduleSetting('preserveConsoleLog').get()) {
       this._clear();
     }
     ++this._pageLoadSequenceNumber;
@@ -277,7 +277,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _mainFrameNavigated(event) {
-    if (self.Common.settings.moduleSetting('preserveConsoleLog').get()) {
+    if (Common.Settings.Settings.instance().moduleSetting('preserveConsoleLog').get()) {
       Common.Console.Console.instance().log(Common.UIString.UIString('Navigated to %s', event.data.url));
     }
   }

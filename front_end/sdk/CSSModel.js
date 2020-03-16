@@ -28,6 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
 import * as HostModule from '../host/host.js';
 import * as Platform from '../platform/platform.js';
 import * as ProtocolModule from '../protocol/protocol.js';
@@ -76,8 +77,9 @@ export class CSSModel extends SDKModel {
     /** @type {boolean} */
     this._isRuleUsageTrackingEnabled = false;
 
-    this._sourceMapManager.setEnabled(self.Common.settings.moduleSetting('cssSourceMapsEnabled').get());
-    self.Common.settings.moduleSetting('cssSourceMapsEnabled')
+    this._sourceMapManager.setEnabled(Common.Settings.Settings.instance().moduleSetting('cssSourceMapsEnabled').get());
+    Common.Settings.Settings.instance()
+        .moduleSetting('cssSourceMapsEnabled')
         .addChangeListener(event => this._sourceMapManager.setEnabled(/** @type {boolean} */ (event.data)));
   }
 

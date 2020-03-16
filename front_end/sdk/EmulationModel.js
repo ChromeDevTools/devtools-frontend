@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+
 import {CSSModel} from './CSSModel.js';
 import {Events, OverlayModel} from './OverlayModel.js';
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
@@ -21,18 +23,18 @@ export class EmulationModel extends SDKModel {
       this._overlayModel.addEventListener(Events.InspectModeWillBeToggled, this._updateTouch, this);
     }
 
-    const disableJavascriptSetting = self.Common.settings.moduleSetting('javaScriptDisabled');
+    const disableJavascriptSetting = Common.Settings.Settings.instance().moduleSetting('javaScriptDisabled');
     disableJavascriptSetting.addChangeListener(
         () => this._emulationAgent.setScriptExecutionDisabled(disableJavascriptSetting.get()));
     if (disableJavascriptSetting.get()) {
       this._emulationAgent.setScriptExecutionDisabled(true);
     }
 
-    const mediaTypeSetting = self.Common.settings.moduleSetting('emulatedCSSMedia');
+    const mediaTypeSetting = Common.Settings.Settings.instance().moduleSetting('emulatedCSSMedia');
     const mediaFeaturePrefersColorSchemeSetting =
-        self.Common.settings.moduleSetting('emulatedCSSMediaFeaturePrefersColorScheme');
+        Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeaturePrefersColorScheme');
     const mediaFeaturePrefersReducedMotionSetting =
-        self.Common.settings.moduleSetting('emulatedCSSMediaFeaturePrefersReducedMotion');
+        Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeaturePrefersReducedMotion');
     // Note: this uses a different format than what the CDP API expects,
     // because we want to update these values per media type/feature
     // without having to search the `features` array (inefficient) or
@@ -56,7 +58,7 @@ export class EmulationModel extends SDKModel {
     });
     this._updateCssMedia();
 
-    const visionDeficiencySetting = self.Common.settings.moduleSetting('emulatedVisionDeficiency');
+    const visionDeficiencySetting = Common.Settings.Settings.instance().moduleSetting('emulatedVisionDeficiency');
     visionDeficiencySetting.addChangeListener(() => this._emulateVisionDeficiency(visionDeficiencySetting.get()));
     if (visionDeficiencySetting.get()) {
       this._emulateVisionDeficiency(visionDeficiencySetting.get());

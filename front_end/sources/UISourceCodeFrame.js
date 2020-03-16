@@ -78,7 +78,8 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
         SourceFrame.SourcesTextEditor.Events.EditorBlurred, () => self.UI.context.setFlavor(UISourceCodeFrame, null));
     this.textEditor.addEventListener(
         SourceFrame.SourcesTextEditor.Events.EditorFocused, () => self.UI.context.setFlavor(UISourceCodeFrame, this));
-    self.Common.settings.moduleSetting('persistenceNetworkOverridesEnabled')
+    Common.Settings.Settings.instance()
+        .moduleSetting('persistenceNetworkOverridesEnabled')
         .addChangeListener(this._onNetworkPersistenceChanged, this);
 
 
@@ -448,7 +449,8 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
     this._unloadUISourceCode();
     this.textEditor.dispose();
     this.detach();
-    self.Common.settings.moduleSetting('persistenceNetworkOverridesEnabled')
+    Common.Settings.Settings.instance()
+        .moduleSetting('persistenceNetworkOverridesEnabled')
         .removeChangeListener(this._onNetworkPersistenceChanged, this);
   }
 

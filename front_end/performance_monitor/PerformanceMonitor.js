@@ -413,8 +413,8 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
     super();
     this.element = parent.createChild('div', 'perfmon-control-pane');
 
-    this._enabledChartsSetting =
-        self.Common.settings.createSetting('perfmonActiveIndicators2', ['TaskDuration', 'JSHeapTotalSize', 'Nodes']);
+    this._enabledChartsSetting = Common.Settings.Settings.instance().createSetting(
+        'perfmonActiveIndicators2', ['TaskDuration', 'JSHeapTotalSize', 'Nodes']);
     /** @type {!Set<string>} */
     this._enabledCharts = new Set(this._enabledChartsSetting.get());
     const format = Format;

@@ -25,13 +25,15 @@ export class DeviceModeToolbar {
     this._showRulersSetting = showRulersSetting;
 
     this._deviceOutlineSetting = this._model.deviceOutlineSetting();
-    this._showDeviceScaleFactorSetting = self.Common.settings.createSetting('emulation.showDeviceScaleFactor', false);
+    this._showDeviceScaleFactorSetting =
+        Common.Settings.Settings.instance().createSetting('emulation.showDeviceScaleFactor', false);
     this._showDeviceScaleFactorSetting.addChangeListener(this._updateDeviceScaleFactorVisibility, this);
 
-    this._showUserAgentTypeSetting = self.Common.settings.createSetting('emulation.showUserAgentType', false);
+    this._showUserAgentTypeSetting =
+        Common.Settings.Settings.instance().createSetting('emulation.showUserAgentType', false);
     this._showUserAgentTypeSetting.addChangeListener(this._updateUserAgentTypeVisibility, this);
 
-    this._autoAdjustScaleSetting = self.Common.settings.createSetting('emulation.autoAdjustScale', true);
+    this._autoAdjustScaleSetting = Common.Settings.Settings.instance().createSetting('emulation.autoAdjustScale', true);
 
     /** @type {!Map<!EmulatedDevice, !Mode>} */
     this._lastMode = new Map();
@@ -64,8 +66,8 @@ export class DeviceModeToolbar {
     this._emulatedDevicesList.addEventListener(Events.CustomDevicesUpdated, this._deviceListChanged, this);
     this._emulatedDevicesList.addEventListener(Events.StandardDevicesUpdated, this._deviceListChanged, this);
 
-    this._persistenceSetting =
-        self.Common.settings.createSetting('emulation.deviceModeValue', {device: '', orientation: '', mode: ''});
+    this._persistenceSetting = Common.Settings.Settings.instance().createSetting(
+        'emulation.deviceModeValue', {device: '', orientation: '', mode: ''});
 
     this._model.toolbarControlsEnabledSetting().addChangeListener(updateToolbarsEnabled);
     updateToolbarsEnabled();

@@ -30,6 +30,8 @@ import * as Trie from './Trie.js';
 import * as UIString from './UIString.js';
 import * as Worker from './Worker.js';
 
+export const ls = UIString.ls;
+
 /**
  * @type {!Settings.Settings}
  */

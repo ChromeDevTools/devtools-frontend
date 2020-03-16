@@ -52,6 +52,6 @@ def main():
 
     sys.exit(eslint_proc.returncode)
 
-
+# Run
 if __name__ == '__main__':
     main()

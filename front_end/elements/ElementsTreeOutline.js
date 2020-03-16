@@ -97,7 +97,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
     /** @type {!Set<!ElementsTreeElement>} */
     this._treeElementsBeingUpdated = new Set();
 
-    this._showHTMLCommentsSetting = self.Common.settings.moduleSetting('showHTMLComments');
+    this._showHTMLCommentsSetting = Common.Settings.Settings.instance().moduleSetting('showHTMLComments');
     this._showHTMLCommentsSetting.addChangeListener(this._onShowHTMLCommentsChange.bind(this));
     this.useLightSelectionColor();
   }

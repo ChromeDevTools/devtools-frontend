@@ -35,7 +35,7 @@ export class ConsolePrompt extends UI.Widget.Widget {
     this.element.appendChild(this._promptIcon);
     this._iconThrottler = new Common.Throttler.Throttler(0);
 
-    this._eagerEvalSetting = self.Common.settings.moduleSetting('consoleEagerEval');
+    this._eagerEvalSetting = Common.Settings.Settings.instance().moduleSetting('consoleEagerEval');
     this._eagerEvalSetting.addChangeListener(this._eagerSettingChanged.bind(this));
     this._eagerPreviewElement.classList.toggle('hidden', !this._eagerEvalSetting.get());
 

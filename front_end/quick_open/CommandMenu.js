@@ -49,7 +49,7 @@ export class CommandMenu {
   static createSettingCommand(extension, title, value) {
     const category = extension.descriptor()['category'] || '';
     const tags = extension.descriptor()['tags'] || '';
-    const setting = self.Common.settings.moduleSetting(extension.descriptor()['settingName']);
+    const setting = Common.Settings.Settings.instance().moduleSetting(extension.descriptor()['settingName']);
     return CommandMenu.createCommand(ls(category), tags, title, '', setting.set.bind(setting, value), availableHandler);
 
     /**

@@ -115,9 +115,10 @@ const _substitutionStrings = new WeakMap();
 
 /**
  * @param {!ITemplateArray|string} strings
+ * @param {...*} vararg
  * @return {string}
  */
-export function ls(strings) {
+export function ls(strings, ...vararg) {
   if (typeof strings === 'string') {
     return strings;
   }
@@ -127,5 +128,5 @@ export function ls(strings) {
     _substitutionStrings.set(strings, substitutionString);
   }
   // @ts-ignore TS gets confused with the arguments slicing
-  return UIString(substitutionString, ...Array.prototype.slice.call(arguments, 1));
+  return UIString(substitutionString, ...vararg);
 }

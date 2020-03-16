@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
 import * as TextEditor from '../text_editor/text_editor.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
@@ -18,8 +19,8 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
     const defaultCodeMirrorOptions = {
       lineNumbers: true,
       lineWrapping: false,
-      bracketMatchingSetting: self.Common.settings.moduleSetting('textEditorBracketMatching'),
-      padBottom: self.Common.settings.moduleSetting('allowScrollPastEof').get()
+      bracketMatchingSetting: Common.Settings.Settings.instance().moduleSetting('textEditorBracketMatching'),
+      padBottom: Common.Settings.Settings.instance().moduleSetting('allowScrollPastEof').get()
     };
     if (codeMirrorOptions) {
       Object.assign(defaultCodeMirrorOptions, codeMirrorOptions);
@@ -67,17 +68,28 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
 
     this.element.addEventListener('mousedown', updateAnticipateJumpFlag.bind(this, true), true);
     this.element.addEventListener('mousedown', updateAnticipateJumpFlag.bind(this, false), false);
-    self.Common.settings.moduleSetting('textEditorIndent').addChangeListener(this._onUpdateEditorIndentation, this);
-    self.Common.settings.moduleSetting('textEditorAutoDetectIndent')
+    Common.Settings.Settings.instance()
+        .moduleSetting('textEditorIndent')
         .addChangeListener(this._onUpdateEditorIndentation, this);
-    self.Common.settings.moduleSetting('showWhitespacesInEditor').addChangeListener(this._updateWhitespace, this);
-    self.Common.settings.moduleSetting('textEditorCodeFolding').addChangeListener(this._updateCodeFolding, this);
-    self.Common.settings.moduleSetting('allowScrollPastEof').addChangeListener(this._updateScrollPastEof, this);
+    Common.Settings.Settings.instance()
+        .moduleSetting('textEditorAutoDetectIndent')
+        .addChangeListener(this._onUpdateEditorIndentation, this);
+    Common.Settings.Settings.instance()
+        .moduleSetting('showWhitespacesInEditor')
+        .addChangeListener(this._updateWhitespace, this);
+    Common.Settings.Settings.instance()
+        .moduleSetting('textEditorCodeFolding')
+        .addChangeListener(this._updateCodeFolding, this);
+    Common.Settings.Settings.instance()
+        .moduleSetting('allowScrollPastEof')
+        .addChangeListener(this._updateScrollPastEof, this);
     this._updateCodeFolding();
 
     /** @type {?UI.TextEditor.AutocompleteConfig} */
     this._autocompleteConfig = {isWordChar: TextUtils.TextUtils.Utils.isWordChar};
-    self.Common.settings.moduleSetting('textEditorAutocompletion').addChangeListener(this._updateAutocomplete, this);
+    Common.Settings.Settings.instance()
+        .moduleSetting('textEditorAutocompletion')
+        .addChangeListener(this._updateAutocomplete, this);
     this._updateAutocomplete();
 
     this._onUpdateEditorIndentation();
@@ -141,7 +153,7 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
       }
     }
     if (minimumIndent === Infinity) {
-      return self.Common.settings.moduleSetting('textEditorIndent').get();
+      return Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get();
     }
     return ' '.repeat(minimumIndent);
   }
@@ -395,7 +407,7 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
    */
   editRange(range, text, origin) {
     const newRange = super.editRange(range, text, origin);
-    if (self.Common.settings.moduleSetting('textEditorAutoDetectIndent').get()) {
+    if (Common.Settings.Settings.instance().moduleSetting('textEditorAutoDetectIndent').get()) {
       this._onUpdateEditorIndentation();
     }
 
@@ -412,8 +424,8 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
    */
   _setEditorIndentation(lines) {
     const extraKeys = {};
-    let indent = self.Common.settings.moduleSetting('textEditorIndent').get();
-    if (self.Common.settings.moduleSetting('textEditorAutoDetectIndent').get()) {
+    let indent = Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get();
+    if (Common.Settings.Settings.instance().moduleSetting('textEditorAutoDetectIndent').get()) {
       indent = SourcesTextEditor._guessIndentationLevel(lines);
     }
 
@@ -523,12 +535,21 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
    */
   dispose() {
     super.dispose();
-    self.Common.settings.moduleSetting('textEditorIndent').removeChangeListener(this._onUpdateEditorIndentation, this);
-    self.Common.settings.moduleSetting('textEditorAutoDetectIndent')
+    Common.Settings.Settings.instance()
+        .moduleSetting('textEditorIndent')
         .removeChangeListener(this._onUpdateEditorIndentation, this);
-    self.Common.settings.moduleSetting('showWhitespacesInEditor').removeChangeListener(this._updateWhitespace, this);
-    self.Common.settings.moduleSetting('textEditorCodeFolding').removeChangeListener(this._updateCodeFolding, this);
-    self.Common.settings.moduleSetting('allowScrollPastEof').removeChangeListener(this._updateScrollPastEof, this);
+    Common.Settings.Settings.instance()
+        .moduleSetting('textEditorAutoDetectIndent')
+        .removeChangeListener(this._onUpdateEditorIndentation, this);
+    Common.Settings.Settings.instance()
+        .moduleSetting('showWhitespacesInEditor')
+        .removeChangeListener(this._updateWhitespace, this);
+    Common.Settings.Settings.instance()
+        .moduleSetting('textEditorCodeFolding')
+        .removeChangeListener(this._updateCodeFolding, this);
+    Common.Settings.Settings.instance()
+        .moduleSetting('allowScrollPastEof')
+        .removeChangeListener(this._updateScrollPastEof, this);
   }
 
   /**
@@ -545,7 +566,7 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
   }
 
   _updateCodeFolding() {
-    if (self.Common.settings.moduleSetting('textEditorCodeFolding').get()) {
+    if (Common.Settings.Settings.instance().moduleSetting('textEditorCodeFolding').get()) {
       this.installGutter('CodeMirror-foldgutter', false);
       this.element.addEventListener('mousemove', this._gutterMouseMove);
       this.element.addEventListener('mouseout', this._gutterMouseOut);
@@ -561,7 +582,7 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
   }
 
   _updateScrollPastEof() {
-    this.toggleScrollPastEof(self.Common.settings.moduleSetting('allowScrollPastEof').get());
+    this.toggleScrollPastEof(Common.Settings.Settings.instance().moduleSetting('allowScrollPastEof').get());
   }
 
   /**
@@ -571,7 +592,7 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
    */
   rewriteMimeType(mimeType) {
     this._setupWhitespaceHighlight();
-    const whitespaceMode = self.Common.settings.moduleSetting('showWhitespacesInEditor').get();
+    const whitespaceMode = Common.Settings.Settings.instance().moduleSetting('showWhitespacesInEditor').get();
     this.element.classList.toggle('show-whitespaces', whitespaceMode === 'all');
 
     if (whitespaceMode === 'all') {
@@ -652,7 +673,7 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
   _setupWhitespaceHighlight() {
     const doc = this.element.ownerDocument;
     if (doc._codeMirrorWhitespaceStyleInjected ||
-        !self.Common.settings.moduleSetting('showWhitespacesInEditor').get()) {
+        !Common.Settings.Settings.instance().moduleSetting('showWhitespacesInEditor').get()) {
       return;
     }
     doc._codeMirrorWhitespaceStyleInjected = true;
@@ -681,7 +702,8 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
 
   _updateAutocomplete() {
     super.configureAutocomplete(
-        self.Common.settings.moduleSetting('textEditorAutocompletion').get() ? this._autocompleteConfig : null);
+        Common.Settings.Settings.instance().moduleSetting('textEditorAutocompletion').get() ? this._autocompleteConfig :
+                                                                                              null);
   }
 }
 

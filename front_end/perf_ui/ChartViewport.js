@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
@@ -207,7 +208,7 @@ export class ChartViewport extends UI.Widget.VBox {
    */
   _onMouseWheel(e) {
     const doZoomInstead =
-        e.shiftKey ^ (self.Common.settings.moduleSetting('flamechartMouseWheelAction').get() === 'zoom');
+        e.shiftKey ^ (Common.Settings.Settings.instance().moduleSetting('flamechartMouseWheelAction').get() === 'zoom');
     const panVertically = !doZoomInstead && (e.wheelDeltaY || Math.abs(e.wheelDeltaX) === 120);
     const panHorizontally = doZoomInstead && Math.abs(e.wheelDeltaX) > Math.abs(e.wheelDeltaY);
     if (panVertically) {

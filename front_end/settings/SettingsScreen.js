@@ -168,7 +168,7 @@ export class GenericSettingsTab extends SettingsTab {
         UI.UIUtils.createTextButton(Common.UIString.UIString('Restore defaults and reload'), restoreAndReload));
 
     function restoreAndReload() {
-      self.Common.settings.clearAll();
+      Common.Settings.Settings.instance().clearAll();
       Components.Reload.reload();
     }
   }
@@ -196,7 +196,7 @@ export class GenericSettingsTab extends SettingsTab {
       return;
     }
     const sectionElement = this._sectionElement(extension.descriptor()['category']);
-    const setting = self.Common.settings.moduleSetting(extension.descriptor()['settingName']);
+    const setting = Common.Settings.Settings.instance().moduleSetting(extension.descriptor()['settingName']);
     const settingControl = UI.SettingsUI.createControlForSetting(setting);
     if (settingControl) {
       sectionElement.appendChild(settingControl);

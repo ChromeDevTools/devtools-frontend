@@ -25,7 +25,7 @@ export class NetworkConfigView extends UI.Widget.VBox {
    * @return {{select: !Element, input: !Element, error: !Element}}
    */
   static createUserAgentSelectAndInput(title) {
-    const userAgentSetting = self.Common.settings.createSetting('customUserAgent', '');
+    const userAgentSetting = Common.Settings.Settings.instance().createSetting('customUserAgent', '');
     const userAgentSelectElement = createElement('select');
     UI.ARIAUtils.setAccessibleName(userAgentSelectElement, title);
 
@@ -123,7 +123,8 @@ export class NetworkConfigView extends UI.Widget.VBox {
   _createCacheSection() {
     const section = this._createSection(Common.UIString.UIString('Caching'), 'network-config-disable-cache');
     section.appendChild(UI.SettingsUI.createSettingCheckbox(
-        Common.UIString.UIString('Disable cache'), self.Common.settings.moduleSetting('cacheDisabled'), true));
+        Common.UIString.UIString('Disable cache'), Common.Settings.Settings.instance().moduleSetting('cacheDisabled'),
+        true));
   }
 
   _createNetworkThrottlingSection() {
@@ -142,7 +143,7 @@ export class NetworkConfigView extends UI.Widget.VBox {
     section.appendChild(checkboxLabel);
     const autoCheckbox = checkboxLabel.checkboxElement;
 
-    const customUserAgentSetting = self.Common.settings.createSetting('customUserAgent', '');
+    const customUserAgentSetting = Common.Settings.Settings.instance().createSetting('customUserAgent', '');
     customUserAgentSetting.addChangeListener(() => {
       if (autoCheckbox.checked) {
         return;

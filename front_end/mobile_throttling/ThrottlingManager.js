@@ -23,7 +23,7 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
     this._cpuThrottlingControls = new Set();
     this._cpuThrottlingRates = cpuThrottlingPresets;
     /** @type {!Common.Settings.Setting<!Array<!SDK.NetworkManager.Conditions>>} */
-    this._customNetworkConditionsSetting = self.Common.settings.moduleSetting('customNetworkConditions');
+    this._customNetworkConditionsSetting = Common.Settings.Settings.instance().moduleSetting('customNetworkConditions');
     /** @type {!SDK.NetworkManager.Conditions} */
     this._currentNetworkThrottlingConditions = SDK.NetworkManager.NoThrottlingConditions;
     /** @type {!SDK.NetworkManager.Conditions} */

@@ -55,9 +55,11 @@ export class NetworkPanel extends UI.Panel.Panel {
     super('network');
     this.registerRequiredCSS('network/networkPanel.css');
 
-    this._networkLogShowOverviewSetting = self.Common.settings.createSetting('networkLogShowOverview', true);
-    this._networkLogLargeRowsSetting = self.Common.settings.createSetting('networkLogLargeRows', false);
-    this._networkRecordFilmStripSetting = self.Common.settings.createSetting('networkRecordFilmStripSetting', false);
+    this._networkLogShowOverviewSetting =
+        Common.Settings.Settings.instance().createSetting('networkLogShowOverview', true);
+    this._networkLogLargeRowsSetting = Common.Settings.Settings.instance().createSetting('networkLogLargeRows', false);
+    this._networkRecordFilmStripSetting =
+        Common.Settings.Settings.instance().createSetting('networkRecordFilmStripSetting', false);
     this._toggleRecordAction =
         /** @type {!UI.Action.Action }*/ (self.UI.actionRegistry.action('network.toggle-recording'));
 
@@ -85,7 +87,8 @@ export class NetworkPanel extends UI.Panel.Panel {
     this._settingsPane = new UI.Widget.HBox();
     this._settingsPane.element.classList.add('network-settings-pane');
     this._settingsPane.show(panel.contentElement);
-    this._showSettingsPaneSetting = self.Common.settings.createSetting('networkShowSettingsToolbar', false);
+    this._showSettingsPaneSetting =
+        Common.Settings.Settings.instance().createSetting('networkShowSettingsToolbar', false);
     this._showSettingsPaneSetting.addChangeListener(this._updateSettingsPaneVisibility.bind(this));
     this._updateSettingsPaneVisibility();
 
@@ -159,7 +162,7 @@ export class NetworkPanel extends UI.Panel.Panel {
     this._networkLogLargeRowsSetting.addChangeListener(this._toggleLargerRequests, this);
     this._networkRecordFilmStripSetting.addChangeListener(this._toggleRecordFilmStrip, this);
 
-    this._preserveLogSetting = self.Common.settings.moduleSetting('network_log.preserve-log');
+    this._preserveLogSetting = Common.Settings.Settings.instance().moduleSetting('network_log.preserve-log');
 
     this._throttlingSelect = this._createThrottlingConditionsSelect();
     this._setupToolbarButtons(splitWidget);
@@ -254,7 +257,7 @@ export class NetworkPanel extends UI.Panel.Panel {
         Common.UIString.UIString('Preserve log')));
 
     const disableCacheCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
-        self.Common.settings.moduleSetting('cacheDisabled'),
+        Common.Settings.Settings.instance().moduleSetting('cacheDisabled'),
         Common.UIString.UIString('Disable cache (while DevTools is open)'), Common.UIString.UIString('Disable cache'));
     this._panelToolbar.appendToolbarItem(disableCacheCheckbox);
 
@@ -276,8 +279,8 @@ export class NetworkPanel extends UI.Panel.Panel {
     const settingsToolbarRight = new UI.Toolbar.Toolbar('', this._settingsPane.element);
     settingsToolbarRight.makeVertical();
     settingsToolbarRight.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
-        self.Common.settings.moduleSetting('network.group-by-frame'), ls`Group requests by top level request frame`,
-        ls`Group by frame`));
+        Common.Settings.Settings.instance().moduleSetting('network.group-by-frame'),
+        ls`Group requests by top level request frame`, ls`Group by frame`));
     settingsToolbarRight.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
         this._networkRecordFilmStripSetting, ls`Capture screenshots when loading a page`, ls`Capture screenshots`));
 

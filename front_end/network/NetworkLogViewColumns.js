@@ -29,7 +29,7 @@ export class NetworkLogViewColumns {
     this._networkLogView = networkLogView;
 
     /** @type {!Common.Settings.Setting} */
-    this._persistantSettings = self.Common.settings.createSetting('networkLogColumns', {});
+    this._persistantSettings = Common.Settings.Settings.instance().createSetting('networkLogColumns', {});
 
     this._networkLogLargeRowsSetting = networkLogLargeRowsSetting;
     this._networkLogLargeRowsSetting.addChangeListener(this._updateRowsSize, this);

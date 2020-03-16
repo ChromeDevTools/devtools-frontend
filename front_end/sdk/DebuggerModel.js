@@ -74,13 +74,18 @@ export class DebuggerModel extends SDKModel {
     this._autoStepOver = false;
 
     this._isPausing = false;
-    self.Common.settings.moduleSetting('pauseOnExceptionEnabled')
+    Common.Settings.Settings.instance()
+        .moduleSetting('pauseOnExceptionEnabled')
         .addChangeListener(this._pauseOnExceptionStateChanged, this);
-    self.Common.settings.moduleSetting('pauseOnCaughtException')
+    Common.Settings.Settings.instance()
+        .moduleSetting('pauseOnCaughtException')
         .addChangeListener(this._pauseOnExceptionStateChanged, this);
-    self.Common.settings.moduleSetting('disableAsyncStackTraces')
+    Common.Settings.Settings.instance()
+        .moduleSetting('disableAsyncStackTraces')
         .addChangeListener(this._asyncStackTracesStateChanged, this);
-    self.Common.settings.moduleSetting('breakpointsActive').addChangeListener(this._breakpointsActiveChanged, this);
+    Common.Settings.Settings.instance()
+        .moduleSetting('breakpointsActive')
+        .addChangeListener(this._breakpointsActiveChanged, this);
 
     if (!target.suspended()) {
       this._enableDebugger();
@@ -88,8 +93,9 @@ export class DebuggerModel extends SDKModel {
 
     /** @type {!Map<string, string>} */
     this._stringMap = new Map();
-    this._sourceMapManager.setEnabled(self.Common.settings.moduleSetting('jsSourceMapsEnabled').get());
-    self.Common.settings.moduleSetting('jsSourceMapsEnabled')
+    this._sourceMapManager.setEnabled(Common.Settings.Settings.instance().moduleSetting('jsSourceMapsEnabled').get());
+    Common.Settings.Settings.instance()
+        .moduleSetting('jsSourceMapsEnabled')
         .addChangeListener(event => this._sourceMapManager.setEnabled(/** @type {boolean} */ (event.data)));
   }
 
@@ -144,7 +150,7 @@ export class DebuggerModel extends SDKModel {
     enablePromise.then(this._registerDebugger.bind(this));
     this._pauseOnExceptionStateChanged();
     this._asyncStackTracesStateChanged();
-    if (!self.Common.settings.moduleSetting('breakpointsActive').get()) {
+    if (!Common.Settings.Settings.instance().moduleSetting('breakpointsActive').get()) {
       this._breakpointsActiveChanged();
     }
     if (DebuggerModel._scheduledPauseOnAsyncCall) {
@@ -223,9 +229,9 @@ export class DebuggerModel extends SDKModel {
 
   _pauseOnExceptionStateChanged() {
     let state;
-    if (!self.Common.settings.moduleSetting('pauseOnExceptionEnabled').get()) {
+    if (!Common.Settings.Settings.instance().moduleSetting('pauseOnExceptionEnabled').get()) {
       state = PauseOnExceptionsState.DontPauseOnExceptions;
-    } else if (self.Common.settings.moduleSetting('pauseOnCaughtException').get()) {
+    } else if (Common.Settings.Settings.instance().moduleSetting('pauseOnCaughtException').get()) {
       state = PauseOnExceptionsState.PauseOnAllExceptions;
     } else {
       state = PauseOnExceptionsState.PauseOnUncaughtExceptions;
@@ -236,12 +242,13 @@ export class DebuggerModel extends SDKModel {
 
   _asyncStackTracesStateChanged() {
     const maxAsyncStackChainDepth = 32;
-    const enabled = !self.Common.settings.moduleSetting('disableAsyncStackTraces').get() && this._debuggerEnabled;
+    const enabled =
+        !Common.Settings.Settings.instance().moduleSetting('disableAsyncStackTraces').get() && this._debuggerEnabled;
     return this._agent.setAsyncCallStackDepth(enabled ? maxAsyncStackChainDepth : 0);
   }
 
   _breakpointsActiveChanged() {
-    this._agent.setBreakpointsActive(self.Common.settings.moduleSetting('breakpointsActive').get());
+    this._agent.setBreakpointsActive(Common.Settings.Settings.instance().moduleSetting('breakpointsActive').get());
   }
 
   stepInto() {
@@ -953,11 +960,14 @@ export class DebuggerModel extends SDKModel {
   dispose() {
     this._sourceMapManager.dispose();
     _debuggerIdToModel.delete(this._debuggerId);
-    self.Common.settings.moduleSetting('pauseOnExceptionEnabled')
+    Common.Settings.Settings.instance()
+        .moduleSetting('pauseOnExceptionEnabled')
         .removeChangeListener(this._pauseOnExceptionStateChanged, this);
-    self.Common.settings.moduleSetting('pauseOnCaughtException')
+    Common.Settings.Settings.instance()
+        .moduleSetting('pauseOnCaughtException')
         .removeChangeListener(this._pauseOnExceptionStateChanged, this);
-    self.Common.settings.moduleSetting('disableAsyncStackTraces')
+    Common.Settings.Settings.instance()
+        .moduleSetting('disableAsyncStackTraces')
         .removeChangeListener(this._asyncStackTracesStateChanged, this);
   }
 

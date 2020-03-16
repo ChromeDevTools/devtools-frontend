@@ -26,14 +26,14 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     this._appliedDeviceScaleFactor = window.devicePixelRatio;
     this._appliedUserAgentType = UA.Desktop;
 
-    this._scaleSetting = self.Common.settings.createSetting('emulation.deviceScale', 1);
+    this._scaleSetting = Common.Settings.Settings.instance().createSetting('emulation.deviceScale', 1);
     // We've used to allow zero before.
     if (!this._scaleSetting.get()) {
       this._scaleSetting.set(1);
     }
     this._scaleSetting.addChangeListener(this._scaleSettingChanged, this);
 
-    this._widthSetting = self.Common.settings.createSetting('emulation.deviceWidth', 400);
+    this._widthSetting = Common.Settings.Settings.instance().createSetting('emulation.deviceWidth', 400);
     if (this._widthSetting.get() < MinDeviceSize) {
       this._widthSetting.set(MinDeviceSize);
     }
@@ -42,7 +42,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     }
     this._widthSetting.addChangeListener(this._widthSettingChanged, this);
 
-    this._heightSetting = self.Common.settings.createSetting('emulation.deviceHeight', 0);
+    this._heightSetting = Common.Settings.Settings.instance().createSetting('emulation.deviceHeight', 0);
     if (this._heightSetting.get() && this._heightSetting.get() < MinDeviceSize) {
       this._heightSetting.set(MinDeviceSize);
     }
@@ -51,15 +51,16 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     }
     this._heightSetting.addChangeListener(this._heightSettingChanged, this);
 
-    this._uaSetting = self.Common.settings.createSetting('emulation.deviceUA', UA.Mobile);
+    this._uaSetting = Common.Settings.Settings.instance().createSetting('emulation.deviceUA', UA.Mobile);
     this._uaSetting.addChangeListener(this._uaSettingChanged, this);
-    this._deviceScaleFactorSetting = self.Common.settings.createSetting('emulation.deviceScaleFactor', 0);
+    this._deviceScaleFactorSetting =
+        Common.Settings.Settings.instance().createSetting('emulation.deviceScaleFactor', 0);
     this._deviceScaleFactorSetting.addChangeListener(this._deviceScaleFactorSettingChanged, this);
 
-    this._deviceOutlineSetting = self.Common.settings.moduleSetting('emulation.showDeviceOutline');
+    this._deviceOutlineSetting = Common.Settings.Settings.instance().moduleSetting('emulation.showDeviceOutline');
     this._deviceOutlineSetting.addChangeListener(this._deviceOutlineSettingChanged, this);
 
-    this._toolbarControlsEnabledSetting = self.Common.settings.createSetting(
+    this._toolbarControlsEnabledSetting = Common.Settings.Settings.instance().createSetting(
         'emulation.toolbarControlsEnabled', true, Common.Settings.SettingStorageType.Session);
 
     /** @type {!Type} */
@@ -353,7 +354,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
    * @return {!Common.Settings.Setting}
    */
   enabledSetting() {
-    return self.Common.settings.createSetting('emulation.showDeviceMode', false);
+    return Common.Settings.Settings.instance().createSetting('emulation.showDeviceMode', false);
   }
 
   /**

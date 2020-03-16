@@ -24,7 +24,8 @@ export class ConsoleSidebar extends UI.Widget.VBox {
     this._selectedTreeElement = null;
     /** @type {!Array<!FilterTreeElement>} */
     this._treeElements = [];
-    const selectedFilterSetting = self.Common.settings.createSetting('console.sidebarSelectedFilter', null);
+    const selectedFilterSetting =
+        Common.Settings.Settings.instance().createSetting('console.sidebarSelectedFilter', null);
 
     const Levels = SDK.ConsoleModel.MessageLevel;
     const consoleAPIParsedFilters =

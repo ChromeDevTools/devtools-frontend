@@ -872,7 +872,8 @@ export class Category extends UI.TreeOutline.TreeElement {
     super(title || '', true);
     this.toggleOnClick = true;
     this.hidden = true;
-    this._expandedSetting = self.Common.settings.createSetting('request-info-' + name + '-category-expanded', true);
+    this._expandedSetting =
+        Common.Settings.Settings.instance().createSetting('request-info-' + name + '-category-expanded', true);
     this.expanded = this._expandedSetting.get();
     root.appendChild(this);
   }

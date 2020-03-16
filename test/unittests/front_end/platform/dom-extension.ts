@@ -31,8 +31,8 @@ function createChild(parent: HTMLElement, tagName: string, name?: string, text =
   return child;
 }
 
-
-describe('DataGrid', () => {
+// TODO(crbug.com/1061125): re-enable once dom-extension typechecks with TypeScript
+describe.skip('DataGrid', () => {
   it('Traverse Node with Children', () => {
     const component1 = createElementWithClass('div', 'component1');
     createChild(component1, 'div', 'component1-content', 'text 1');

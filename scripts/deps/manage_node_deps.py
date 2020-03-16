@@ -49,6 +49,7 @@ DEPS = {
     "karma-coverage-istanbul-instrumenter": "1.0.1",
     "karma-coverage-istanbul-reporter": "2.1.0",
     "karma-mocha": "1.3.0",
+    "karma-sourcemap-loader": "0.3.0",
     "karma-typescript": "4.1.1",
     "license-checker": "25.0.1",
     "mocha": "6.2.0",

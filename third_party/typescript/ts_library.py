@@ -77,6 +77,7 @@ def main():
         tsconfig['references'] = [{'path': src} for src in opts.deps]
     tsconfig['compilerOptions']['declaration'] = True
     tsconfig['compilerOptions']['composite'] = True
+    tsconfig['compilerOptions']['sourceMap'] = True
     tsconfig['compilerOptions']['rootDir'] = get_relative_path_from_output_directory(opts.front_end_directory)
     tsconfig['compilerOptions']['typeRoots'] = opts.test_only and [
         get_relative_path_from_output_directory(TYPES_NODE_MODULES_DIRECTORY)

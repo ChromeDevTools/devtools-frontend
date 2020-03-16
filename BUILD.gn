@@ -949,12 +949,7 @@ devtools_frontend_resources_data_test_deps = devtools_frontend_resources_deps
 # builds. Since we don't run these tests on Android any case, we disable
 # the generation of the tests on Android.
 if (!is_android) {
-  devtools_frontend_resources_data_test_deps += [
-    ":copy_karma_conf",
-    "test/unittests/front_end/common",
-    "test/unittests/front_end/formatter_worker",
-    "test/unittests/front_end/platform",
-  ]
+  devtools_frontend_resources_data_test_deps += [ "test/unittests/front_end/" ]
 }
 
 group("devtools_frontend_resources") {
@@ -970,11 +965,6 @@ group("devtools_frontend_resources_data") {
 copy("copy_embedder_scripts") {
   sources = devtools_embedder_scripts
   outputs = [ "$resources_out_dir/{{source_file_part}}" ]
-}
-
-copy("copy_karma_conf") {
-  sources = [ "test/unittests/front_end/karma.conf.js" ]
-  outputs = [ "$target_gen_dir/karma.conf.js" ]
 }
 
 copy("copy_htaccess") {

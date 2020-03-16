@@ -109,7 +109,10 @@ template("ts_library") {
           # Any file checked by TypeScript that is jsdoc-typed will be also
           # generating a js file in the gen folder
         } else if (_extension == "js" || _extension == "ts") {
-          output_files += [ "$target_gen_dir/$_fileName.js" ]
+          output_files += [
+            "$target_gen_dir/$_fileName.js",
+            "$target_gen_dir/$_fileName.js.map",
+          ]
 
           # check that the file is TypeScript and not a unittest file
           # add it to the outputs

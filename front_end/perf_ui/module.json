@@ -58,6 +58,7 @@
         {
             "type": "action",
             "actionId": "components.collect-garbage",
+            "category": "Performance",
             "title": "Collect garbage",
             "iconClass": "largeicon-trash-bin",
             "className": "PerfUI.GCActionDelegate"

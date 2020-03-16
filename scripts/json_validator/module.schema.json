@@ -15,7 +15,8 @@
             "type": "array",
             "items": {
               "properties": {
-                "title": {"type": "string"}
+                "title": {"type": "string"},
+                "category": {"type": "string"}
               }
             }
           }
@@ -39,7 +40,8 @@
                 }
               }
             }
-          ]
+          ],
+          "required": ["category"]
         }
       }
     },

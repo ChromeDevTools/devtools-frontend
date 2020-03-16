@@ -165,9 +165,6 @@
   <message name="IDS_DEVTOOLS_4cc00b9253c692417d3b0765d5ae5e79" desc="Text in Server Timing">
     Unable to parse &quot;<ph name="PARAMNAME">$1s<ex>https</ex></ph>&quot; value &quot;<ph name="PARAMVALUE">$2s<ex>2.0</ex></ph>&quot;.
   </message>
-  <message name="IDS_DEVTOOLS_4cc6684df7b4a92b1dec6fce3264fac8" desc="Text in Debugger Model">
-    Global
-  </message>
   <message name="IDS_DEVTOOLS_509820290d57f333403f490dde7316f4" desc="Text in Debugger Model">
     Local
   </message>

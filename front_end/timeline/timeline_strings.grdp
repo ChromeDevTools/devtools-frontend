@@ -256,9 +256,6 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_3b419ceb25fddb807ea9483f65fded06" desc="Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in timeline panel of the performance panel">
     Capture settings
   </message>
-  <message name="IDS_DEVTOOLS_3d1f92a565d3b1a61880236e33c49bf3" desc="A title of the 'Timeline' action category">
-    Timeline
-  </message>
   <message name="IDS_DEVTOOLS_3de9387fc230ce74214446e58c4fefde" desc="Text in Timeline UIUtils of the Performance panel">
     Compile
   </message>
@@ -902,9 +899,6 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_dd810137d5737309d18208a7be75773f" desc="Text in Timeline Loader of the Performance panel">
     Malformed timeline data: Unknown JSON format
-  </message>
-  <message name="IDS_DEVTOOLS_dde38f333e095c2293593f504fd701a2" desc="Title of the 'JavaScript Profiler' tool">
-    JavaScript Profiler
   </message>
   <message name="IDS_DEVTOOLS_de1ec1ac3add3d69ffedffd437af7056" desc="Text in Timeline UIUtils of the Performance panel">
     Pinch Update

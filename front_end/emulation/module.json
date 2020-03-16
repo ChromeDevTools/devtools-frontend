@@ -135,6 +135,7 @@
         {
             "type": "action",
             "actionId": "emulation.show-sensors",
+            "category": "Sensors",
             "title": "Sensors",
             "className": "Emulation.SensorsView.ShowActionDelegate"
         },

@@ -49,7 +49,7 @@
             "toggledIconClass": "largeicon-stop-recording",
             "toggleWithRedColor": true,
             "className": "Profiler.LiveHeapProfileView.ActionDelegate",
-            "category": "Performance",
+            "category": "Memory",
             "options": [
                 {
                     "value": true,
@@ -66,12 +66,13 @@
             "actionId": "live-heap-profile.start-with-reload",
             "iconClass": "largeicon-refresh",
             "className": "Profiler.LiveHeapProfileView.ActionDelegate",
-            "category": "Performance",
+            "category": "Memory",
             "title": "Start recording heap allocations and reload the page"
         },
         {
             "type": "action",
             "actionId": "profiler.heap-toggle-recording",
+            "category": "Memory",
             "iconClass": "largeicon-start-recording",
             "title": "Start/stop recording",
             "toggleable": true,
@@ -95,6 +96,7 @@
         {
             "type": "action",
             "actionId": "profiler.js-toggle-recording",
+            "category": "JavaScript Profiler",
             "title": "Start/stop recording",
             "iconClass": "largeicon-start-recording",
             "toggleable": true,

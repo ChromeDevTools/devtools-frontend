@@ -73,6 +73,7 @@
         {
             "type": "action",
             "actionId": "network.toggle-recording",
+            "category": "Network",
             "iconClass": "largeicon-start-recording",
             "toggleable": true,
             "toggledIconClass": "largeicon-stop-recording",
@@ -105,6 +106,7 @@
         {
             "type": "action",
             "actionId": "network.hide-request-details",
+            "category": "Network",
             "title": "Hide request details",
             "contextTypes": [
                 "Network.NetworkPanel"
@@ -152,12 +154,13 @@
         {
             "type": "action",
             "actionId": "network.search",
+            "category": "Network",
             "title": "Search",
             "className": "Network.NetworkPanel.ActionDelegate",
             "contextTypes": [
                 "Network.NetworkPanel"
             ],
-            "category": "DevTools",
+            "category": "Network",
             "bindings": [
                 {
                     "platform": "mac",

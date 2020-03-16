@@ -134,6 +134,7 @@
         {
             "type": "action",
             "actionId": "debugger.run-snippet",
+            "category": "Debugger",
             "className": "Sources.SourcesPanel.DebuggingActionDelegate",
             "title": "Run snippet",
             "iconClass": "largeicon-play",
@@ -187,6 +188,7 @@
             "type": "action",
             "actionId": "sources.add-to-watch",
             "className": "Sources.WatchExpressionsSidebarPane",
+            "category": "Debugger",
             "title": "Add selected text to watches",
             "contextTypes": [
                 "Sources.UISourceCodeFrame"
@@ -223,6 +225,7 @@
         {
             "type": "action",
             "actionId": "debugger.evaluate-selection",
+            "category": "Debugger",
             "className": "Sources.SourcesPanel.DebuggingActionDelegate",
             "title": "Evaluate selected text in console",
             "contextTypes": [
@@ -342,6 +345,7 @@
         {
             "type": "action",
             "actionId": "sources.switch-file",
+            "category": "Sources",
             "title": "Switch file",
             "className": "Sources.SourcesView.SwitchFileActionDelegate",
             "contextTypes": [
@@ -356,6 +360,7 @@
         {
             "type": "action",
             "actionId": "sources.rename",
+            "category": "Sources",
             "title": "Rename",
             "bindings": [
                 {
@@ -616,6 +621,7 @@
         {
             "type": "action",
             "actionId": "sources.jump-to-previous-location",
+            "category": "Sources",
             "title": "Jump to previous editing location",
             "className": "Sources.SourcesView.ActionDelegate",
             "contextTypes": [
@@ -630,6 +636,7 @@
         {
             "type": "action",
             "actionId": "sources.jump-to-next-location",
+            "category": "Sources",
             "title": "Jump to next editing location",
             "className": "Sources.SourcesView.ActionDelegate",
             "contextTypes": [
@@ -644,6 +651,7 @@
         {
             "type": "action",
             "actionId": "sources.close-editor-tab",
+            "category": "Sources",
             "title": "Close the active tab",
             "className": "Sources.SourcesView.ActionDelegate",
             "contextTypes": [
@@ -658,6 +666,7 @@
         {
             "type": "action",
             "actionId": "sources.go-to-line",
+            "category": "Sources",
             "title": "Go to line",
             "className": "Sources.SourcesView.ActionDelegate",
             "contextTypes": [
@@ -672,6 +681,7 @@
         {
             "type": "action",
             "actionId": "sources.go-to-member",
+            "category": "Sources",
             "title": "Go to a function declaration/rule set",
             "className": "Sources.SourcesView.ActionDelegate",
             "contextTypes": [
@@ -691,6 +701,7 @@
         {
             "type": "action",
             "actionId": "debugger.toggle-breakpoint",
+            "category": "Debugger",
             "title": "Toggle breakpoint",
             "bindings": [
                 {
@@ -706,6 +717,7 @@
         {
             "type": "action",
             "actionId": "debugger.toggle-breakpoint-enabled",
+            "category": "Debugger",
             "title": "Toggle breakpoint",
             "bindings": [
                 {
@@ -721,6 +733,7 @@
         {
             "type": "action",
             "actionId": "debugger.breakpoint-input-window",
+            "category": "Debugger",
             "title": "Toggle breakpoint input window",
             "bindings": [
                 {
@@ -736,6 +749,7 @@
         {
             "type": "action",
             "actionId": "sources.save",
+            "category": "Sources",
             "title": "Save",
             "className": "Sources.SourcesView.ActionDelegate",
             "contextTypes": [
@@ -755,6 +769,7 @@
         {
             "type": "action",
             "actionId": "sources.save-all",
+            "category": "Sources",
             "title": "Save all",
             "className": "Sources.SourcesView.ActionDelegate",
             "contextTypes": [
@@ -918,7 +933,7 @@
             "actionId": "sources.search",
             "title": "Search",
             "className": "Sources.SearchSourcesView.ActionDelegate",
-            "category": "DevTools",
+            "category": "Sources",
             "bindings": [
                 {
                     "platform": "mac",

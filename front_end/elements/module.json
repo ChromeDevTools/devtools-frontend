@@ -143,6 +143,7 @@
         {
             "type": "action",
             "actionId": "elements.hide-element",
+            "category": "Elements",
             "title": "Hide element",
             "contextTypes": [
                 "Elements.ElementsPanel"
@@ -157,6 +158,7 @@
         {
             "type": "action",
             "actionId": "elements.edit-as-html",
+            "category": "Elements",
             "title": "Edit as HTML",
             "contextTypes": [
                 "Elements.ElementsPanel"
@@ -171,6 +173,7 @@
         {
             "type": "action",
             "actionId": "elements.undo",
+            "category": "Elements",
             "title": "Undo",
             "contextTypes": [
                 "Elements.ElementsPanel"
@@ -190,6 +193,7 @@
         {
             "type": "action",
             "actionId": "elements.redo",
+            "category": "Elements",
             "title": "Redo",
             "contextTypes": [
                 "Elements.ElementsPanel"
@@ -220,6 +224,7 @@
         },
         {
             "type": "action",
+            "category": "Elements",
             "actionId": "elements.toggle-element-search",
             "toggleable": true,
             "className": "Elements.InspectElementModeController.ToggleSearchActionDelegate",

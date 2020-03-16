@@ -178,9 +178,6 @@
   <message name="IDS_DEVTOOLS_47bda3033cb8fe0e76c45c293db011b5" desc="Text to indicate there are no breakpoints">
     No breakpoints
   </message>
-  <message name="IDS_DEVTOOLS_482a4dca0bbd8fcdda5acc6f95f3c279" desc="Title of the DevTools">
-    <ph name="LOCKED_1">DevTools</ph>
-  </message>
   <message name="IDS_DEVTOOLS_49ee3087348e8d44e1feda1917443987" desc="Text for the name of something">
     Name
   </message>
@@ -192,6 +189,9 @@
   </message>
   <message name="IDS_DEVTOOLS_4c3880bb027f159e801041b1021e88e8" desc="Text for one or a group of functions">
     Method
+  </message>
+  <message name="IDS_DEVTOOLS_4cc6684df7b4a92b1dec6fce3264fac8" desc="Text describing global shortcuts and settings that are available throughout the DevTools">
+    Global
   </message>
   <message name="IDS_DEVTOOLS_4cf8e5f6ffbb182b5d480cbabae6a028" desc="Text to modify the attribute of an item">
     Edit attribute
@@ -567,6 +567,9 @@
   </message>
   <message name="IDS_DEVTOOLS_ddcf50c29294d4414f3f7c1bbc892cb5" desc="A title of the 'Resources' action category">
     Resources
+  </message>
+  <message name="IDS_DEVTOOLS_dde38f333e095c2293593f504fd701a2" desc="Title of the 'JavaScript Profiler' tool">
+    JavaScript Profiler
   </message>
   <message name="IDS_DEVTOOLS_e02d2ae03de9d493df2b6b2d2813d302" desc="Text for the duration of something">
     Duration

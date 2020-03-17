@@ -32,7 +32,30 @@ import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
 
-export class NetworkProjectManager extends Common.ObjectWrapper.ObjectWrapper {}
+/**
+ * @type {!NetworkProjectManager}
+ */
+let networkProjectManagerInstance;
+
+export class NetworkProjectManager extends Common.ObjectWrapper.ObjectWrapper {
+  /**
+   * @private
+   */
+  constructor() {
+    super();
+  }
+
+  /**
+   * @param {{forceNew: boolean}} opts
+   */
+  static instance({forceNew} = {forceNew: false}) {
+    if (!networkProjectManagerInstance || forceNew) {
+      networkProjectManagerInstance = new NetworkProjectManager();
+    }
+
+    return networkProjectManagerInstance;
+  }
+}
 
 export const Events = {
   FrameAttributionAdded: Symbol('FrameAttributionAdded'),
@@ -104,7 +127,7 @@ export class NetworkProject {
     }
 
     const data = {uiSourceCode: uiSourceCode, frame: frame};
-    self.Bindings.networkProjectManager.dispatchEventToListeners(Events.FrameAttributionAdded, data);
+    NetworkProjectManager.instance().dispatchEventToListeners(Events.FrameAttributionAdded, data);
   }
 
   /**
@@ -124,7 +147,7 @@ export class NetworkProject {
     }
     frameAttribution.delete(frameId);
     const data = {uiSourceCode: uiSourceCode, frame: attributionInfo.frame};
-    self.Bindings.networkProjectManager.dispatchEventToListeners(Events.FrameAttributionRemoved, data);
+    NetworkProjectManager.instance().dispatchEventToListeners(Events.FrameAttributionRemoved, data);
   }
 
   /**

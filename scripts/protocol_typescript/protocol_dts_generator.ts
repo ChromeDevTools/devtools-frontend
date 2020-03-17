@@ -95,7 +95,7 @@ const emitDomain = (domain: Protocol.Domain) => {
 };
 
 const getCommentLines = (description: string) => {
-  const lines = description.split(/\r?\n/g).map(line => ` * ${line}`);
+  const lines = description.split(/\r?\n/g).map(line => line && ` * ${line}` || ' *');
   return ['/**', ...lines, ' */'];
 };
 

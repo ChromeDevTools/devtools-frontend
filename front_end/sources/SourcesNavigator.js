@@ -263,7 +263,8 @@ export class SnippetsNavigatorView extends NavigatorView {
     `);
 
     const toolbar = new UI.Toolbar.Toolbar('navigator-toolbar');
-    const newButton = new UI.Toolbar.ToolbarButton('', 'largeicon-add', Common.UIString.UIString('New snippet'));
+    const newButton =
+        new UI.Toolbar.ToolbarButton(ls`New snippet`, 'largeicon-add', Common.UIString.UIString('New snippet'));
     newButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, event => {
       this.create(self.Snippets.project, '');
     });

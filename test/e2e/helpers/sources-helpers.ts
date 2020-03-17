@@ -4,7 +4,7 @@
 
 import * as puppeteer from 'puppeteer';
 
-import {$, click, resourcesPath, waitFor} from '../../shared/helper.js';
+import {$, click, getBrowserAndPages, resourcesPath, typeText, waitFor} from '../../shared/helper.js';
 
 export const PAUSE_BUTTON = '[aria-label="Pause script execution"]';
 export const RESUME_BUTTON = '[aria-label="Resume script execution"]';
@@ -14,14 +14,37 @@ export async function doubleClickSourceTreeItem(selector: string) {
   await click(selector, {clickOptions: {clickCount: 2}});
 }
 
-export async function openFileInSourcesPanel(target: puppeteer.Page, testInput: string) {
-  await target.goto(`${resourcesPath}/sources/${testInput}`);
-
+export async function openSourcesPanel() {
   // Locate the button for switching to the sources tab.
   await click('#tab-sources');
 
   // Wait for the navigation panel to show up
   await waitFor('.navigator-file-tree-item');
+}
+
+export async function openFileInSourcesPanel(target: puppeteer.Page, testInput: string) {
+  await target.goto(`${resourcesPath}/sources/${testInput}`);
+
+  await openSourcesPanel();
+}
+
+export async function openSnippetsSubPane() {
+  await click('[aria-label="More tabs"]', {root: await $('.navigator-tabbed-pane')});
+  await waitFor('[aria-label="Snippets"]');
+
+  await click('[aria-label="Snippets"]');
+  await waitFor('[aria-label="New snippet"]');
+}
+
+export async function createNewSnippet(snippetName: string) {
+  const {frontend} = await getBrowserAndPages();
+
+  await click('[aria-label="New snippet"]');
+  await waitFor('[aria-label^="Script%20snippet"]');
+
+  await typeText(snippetName);
+
+  await frontend.keyboard.press('Enter');
 }
 
 export async function openSourceCodeEditorForFile(target: puppeteer.Page, sourceFile: string, testInput: string) {

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -168,7 +169,7 @@ export class CoverageDecorationManager {
       }
     }
     if (contentType.isStyleSheet() || contentType.isDocument()) {
-      const rawStyleLocations = self.Bindings.cssWorkspaceBinding.uiLocationToRawLocations(
+      const rawStyleLocations = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().uiLocationToRawLocations(
           new Workspace.UISourceCode.UILocation(uiSourceCode, line, column));
       for (const location of rawStyleLocations) {
         const header = location.header();

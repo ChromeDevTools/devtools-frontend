@@ -1771,7 +1771,7 @@ export class StylePropertiesSection {
         event.consume(true);
         return;
       }
-      const uiLocation = self.Bindings.cssWorkspaceBinding.rawLocationToUILocation(location);
+      const uiLocation = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().rawLocationToUILocation(location);
       if (uiLocation) {
         Common.Revealer.reveal(uiLocation);
       }
@@ -1906,7 +1906,7 @@ export class StylePropertiesSection {
    * @param {boolean} focus
    */
   static _revealSelectorSource(rawLocation, focus) {
-    const uiLocation = self.Bindings.cssWorkspaceBinding.rawLocationToUILocation(rawLocation);
+    const uiLocation = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().rawLocationToUILocation(rawLocation);
     if (uiLocation) {
       Common.Revealer.reveal(uiLocation, !focus);
     }

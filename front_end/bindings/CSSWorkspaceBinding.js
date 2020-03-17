@@ -12,10 +12,16 @@ import {SASSSourceMapping} from './SASSSourceMapping.js';
 import {StylesSourceMapping} from './StylesSourceMapping.js';
 
 /**
+ * @type {!CSSWorkspaceBinding}
+ */
+let cssWorkspaceBindingInstance;
+
+/**
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.CSSModel.CSSModel>}
  */
 export class CSSWorkspaceBinding {
   /**
+   * @private
    * @param {!SDK.SDKModel.TargetManager} targetManager
    * @param {!Workspace.Workspace.WorkspaceImpl} workspace
    */
@@ -30,6 +36,23 @@ export class CSSWorkspaceBinding {
 
     /** @type {!Set.<!Promise>} */
     this._liveLocationPromises = new Set();
+  }
+
+  /**
+   * @param {{forceNew: ?boolean, targetManager: ?SDK.SDKModel.TargetManager, workspace: ?Workspace.Workspace.WorkspaceImpl}} opts
+   */
+  static instance(opts = {forceNew: null, targetManager: null, workspace: null}) {
+    const {forceNew, targetManager, workspace} = opts;
+    if (!cssWorkspaceBindingInstance || forceNew) {
+      if (!targetManager || !workspace) {
+        throw new Error(
+            `Unable to create settings: targetManager and workspace must be provided: ${new Error().stack}`);
+      }
+
+      cssWorkspaceBindingInstance = new CSSWorkspaceBinding(targetManager, workspace);
+    }
+
+    return cssWorkspaceBindingInstance;
   }
 
   /**
@@ -347,7 +370,7 @@ export class LiveLocation extends LiveLocationWithPool {
       return null;
     }
     const rawLocation = new SDK.CSSModel.CSSLocation(this._header, this._lineNumber, this._columnNumber);
-    return self.Bindings.cssWorkspaceBinding.rawLocationToUILocation(rawLocation);
+    return CSSWorkspaceBinding.instance().rawLocationToUILocation(rawLocation);
   }
 
   /**

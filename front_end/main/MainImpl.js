@@ -235,8 +235,8 @@ export class MainImpl {
     self.Bindings.resourceMapping = Bindings.ResourceMapping.ResourceMapping.instance(
         {forceNew: true, targetManager: SDK.SDKModel.TargetManager.instance(), workspace: self.Workspace.workspace});
     new Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager();
-    self.Bindings.cssWorkspaceBinding = new Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding(
-        SDK.SDKModel.TargetManager.instance(), self.Workspace.workspace);
+    self.Bindings.cssWorkspaceBinding = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance(
+        {forceNew: true, targetManager: SDK.SDKModel.TargetManager.instance(), workspace: self.Workspace.workspace});
     self.Bindings.debuggerWorkspaceBinding = new Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding(
         SDK.SDKModel.TargetManager.instance(), self.Workspace.workspace);
     self.Bindings.breakpointManager = new Bindings.BreakpointManager.BreakpointManager(

@@ -303,7 +303,7 @@ class ScriptMapping {
  */
 class StyleMapping {
   constructor() {
-    self.Bindings.cssWorkspaceBinding.addSourceMapping(this);
+    Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().addSourceMapping(this);
     this._headersSymbol = Symbol('Formatter.SourceFormatter.StyleMapping._headersSymbol');
   }
 
@@ -354,7 +354,8 @@ class StyleMapping {
       original[this._headersSymbol] = null;
       headers.forEach(header => delete header[SourceFormatData._formatDataSymbol]);
     }
-    const updatePromises = headers.map(header => self.Bindings.cssWorkspaceBinding.updateLocations(header));
+    const updatePromises =
+        headers.map(header => Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().updateLocations(header));
     await Promise.all(updatePromises);
   }
 
@@ -371,7 +372,8 @@ class StyleMapping {
             .filter(header => header.isInline && !header.hasSourceURL);
       }
     } else if (uiSourceCode.contentType().isStyleSheet()) {
-      const rawLocations = self.Bindings.cssWorkspaceBinding.uiLocationToRawLocations(uiSourceCode.uiLocation(0, 0));
+      const rawLocations = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().uiLocationToRawLocations(
+          uiSourceCode.uiLocation(0, 0));
       return rawLocations.map(rawLocation => rawLocation.header()).filter(header => !!header);
     }
     return [];

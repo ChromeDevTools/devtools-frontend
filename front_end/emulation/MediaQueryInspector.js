@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
@@ -119,7 +120,8 @@ export class MediaQueryInspector extends UI.Widget.Widget {
     const locations = mediaQueryMarker._locations;
     const uiLocations = new Map();
     for (let i = 0; i < locations.length; ++i) {
-      const uiLocation = self.Bindings.cssWorkspaceBinding.rawLocationToUILocation(locations[i]);
+      const uiLocation =
+          Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().rawLocationToUILocation(locations[i]);
       if (!uiLocation) {
         continue;
       }

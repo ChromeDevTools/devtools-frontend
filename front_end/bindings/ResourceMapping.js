@@ -8,6 +8,7 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
+import {CSSWorkspaceBinding} from './CSSWorkspaceBinding.js';
 import {NetworkProject} from './NetworkProject.js';
 import {resourceMetadata} from './ResourceUtils.js';
 
@@ -434,7 +435,7 @@ class Binding {
           continue;
         }
         style[offsetSymbol] = styleOffset.rebaseAfterTextEdit(oldRange, newRange);
-        updatePromises.push(self.Bindings.cssWorkspaceBinding.updateLocations(style));
+        updatePromises.push(CSSWorkspaceBinding.instance().updateLocations(style));
       }
       await Promise.all(updatePromises);
     }

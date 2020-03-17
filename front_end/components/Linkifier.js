@@ -306,8 +306,8 @@ export class Linkifier {
     info.enableDecorator = this._useLinkDecorator;
 
     const pool = this._locationPoolByTarget.get(rawLocation.cssModel().target());
-    const maybeLiveLocationPromise =
-        self.Bindings.cssWorkspaceBinding.createLiveLocation(rawLocation, this._updateAnchor.bind(this, anchor), pool);
+    const maybeLiveLocationPromise = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().createLiveLocation(
+        rawLocation, this._updateAnchor.bind(this, anchor), pool);
     // TODO(1032016): Remove {Promise.resolve} wrapping once {createLiveLocation} returns a promise.
     Promise.resolve(maybeLiveLocationPromise).then(liveLocation => {
       info.liveLocation = liveLocation;

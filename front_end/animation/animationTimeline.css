@@ -303,6 +303,7 @@ text.animation-timeline-grid-label {
     height: 40px;
     margin: 4px 2px;
     background-color: var(--toolbar-bg-color);
+    border: 1px solid transparent;
     border-radius: 2px;
     flex: 1 1;
     padding: 4px;
@@ -458,5 +459,12 @@ text.animation-timeline-grid-label {
         forced-color-adjust: none;
         color: HighlightText;
         background-color: Highlight;
+    }
+    .animation-node-description[data-keyboard-focus="true"]:focus {
+        background-color: Canvas;
+        forced-color-adjust: none;
+    }
+    .monospace {
+        forced-color-adjust: auto;
     }
 }

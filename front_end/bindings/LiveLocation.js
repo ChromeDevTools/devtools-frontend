@@ -6,6 +6,9 @@ import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line 
 
 /** @interface */
 export class LiveLocation {
+  /**
+   * @return {!Promise<void>}
+   */
   update() {
   }
 
@@ -30,22 +33,36 @@ export class LiveLocation {
  */
 export class LiveLocationWithPool {
   /**
-   * @param {function(!LiveLocation):void} updateDelegate
+   * @param {function(!LiveLocation)} updateDelegate
    * @param {!LiveLocationPool} locationPool
    */
   constructor(updateDelegate, locationPool) {
-    /** @type {?function(!LiveLocation):void} */
+    // TODO(1032016): Set return type to {Promise<void>} once all update delegates are asyncified.
+    /** @type {?function(!LiveLocation)} */
     this._updateDelegate = updateDelegate;
     this._locationPool = locationPool;
     this._locationPool._add(this);
+
+    /** @type {?Promise<void>} */
+    this._updatePromise = null;
   }
 
   /**
    * @override
    */
-  update() {
-    if (this._updateDelegate) {
-      this._updateDelegate(this);
+  async update() {
+    if (!this._updateDelegate) {
+      return;
+    }
+    // The following is a basic scheduling algorithm, guaranteeing that
+    // {_updateDelegate} is always run atomically. That is, we always
+    // wait for an update to finish before we trigger the next run.
+    if (this._updatePromise) {
+      await this._updatePromise.then(() => this.update());
+    } else {
+      this._updatePromise = this._updateDelegate(this);
+      await this._updatePromise;
+      this._updatePromise = null;
     }
   }
 

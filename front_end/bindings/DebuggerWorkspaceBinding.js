@@ -11,6 +11,7 @@ import {DebuggerLanguagePluginManager} from './DebuggerLanguagePlugins.js';
 import {DefaultScriptMapping} from './DefaultScriptMapping.js';
 import {CXXDWARFLanguagePlugin} from './language_plugins/CXXDWARFLanguagePlugin.js';
 import {LiveLocation, LiveLocationPool, LiveLocationWithPool} from './LiveLocation.js';  // eslint-disable-line no-unused-vars
+import {ResourceMapping} from './ResourceMapping.js';
 import {ResourceScriptFile, ResourceScriptMapping} from './ResourceScriptMapping.js';  // eslint-disable-line no-unused-vars
 
 
@@ -399,7 +400,7 @@ class ModelData {
     }
     uiLocation = uiLocation || this._compilerMapping.rawLocationToUILocation(rawLocation);
     uiLocation = uiLocation || this._resourceMapping.rawLocationToUILocation(rawLocation);
-    uiLocation = uiLocation || self.Bindings.resourceMapping.jsLocationToUILocation(rawLocation);
+    uiLocation = uiLocation || ResourceMapping.instance().jsLocationToUILocation(rawLocation);
     uiLocation = uiLocation || this._defaultMapping.rawLocationToUILocation(rawLocation);
     return /** @type {!Workspace.UISourceCode.UILocation} */ (uiLocation);
   }
@@ -432,7 +433,7 @@ class ModelData {
         this._resourceMapping.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
     locations = locations.length ?
         locations :
-        self.Bindings.resourceMapping.uiLocationToJSLocations(uiSourceCode, lineNumber, columnNumber);
+        ResourceMapping.instance().uiLocationToJSLocations(uiSourceCode, lineNumber, columnNumber);
     locations = locations.length ?
         locations :
         this._defaultMapping.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);

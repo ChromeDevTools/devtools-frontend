@@ -12,10 +12,16 @@ import {NetworkProject} from './NetworkProject.js';
 import {resourceMetadata} from './ResourceUtils.js';
 
 /**
+ * @type {!ResourceMapping}
+ */
+let resourceMappingInstance;
+
+/**
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.ResourceTreeModel.ResourceTreeModel>}
  */
 export class ResourceMapping {
   /**
+   * @private
    * @param {!SDK.SDKModel.TargetManager} targetManager
    * @param {!Workspace.Workspace.WorkspaceImpl} workspace
    */
@@ -24,6 +30,23 @@ export class ResourceMapping {
     /** @type {!Map<!SDK.ResourceTreeModel.ResourceTreeModel, !ModelInfo>} */
     this._modelToInfo = new Map();
     targetManager.observeModels(SDK.ResourceTreeModel.ResourceTreeModel, this);
+  }
+
+  /**
+   * @param {{forceNew: ?boolean, targetManager: ?SDK.SDKModel.TargetManager, workspace: ?Workspace.Workspace.WorkspaceImpl}} opts
+   */
+  static instance(opts = {forceNew: null, targetManager: null, workspace: null}) {
+    const {forceNew, targetManager, workspace} = opts;
+    if (!resourceMappingInstance || forceNew) {
+      if (!targetManager || !workspace) {
+        throw new Error(
+            `Unable to create settings: targetManager and workspace must be provided: ${new Error().stack}`);
+      }
+
+      resourceMappingInstance = new ResourceMapping(targetManager, workspace);
+    }
+
+    return resourceMappingInstance;
   }
 
   /**

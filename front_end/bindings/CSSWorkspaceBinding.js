@@ -7,6 +7,7 @@ import * as SDK from '../sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
 
 import {LiveLocation as LiveLocationInterface, LiveLocationPool, LiveLocationWithPool,} from './LiveLocation.js';  // eslint-disable-line no-unused-vars
+import {ResourceMapping} from './ResourceMapping.js';
 import {SASSSourceMapping} from './SASSSourceMapping.js';
 import {StylesSourceMapping} from './StylesSourceMapping.js';
 
@@ -291,7 +292,7 @@ export class ModelInfo {
     let uiLocation = null;
     uiLocation = uiLocation || this._sassSourceMapping.rawLocationToUILocation(rawLocation);
     uiLocation = uiLocation || this._stylesSourceMapping.rawLocationToUILocation(rawLocation);
-    uiLocation = uiLocation || self.Bindings.resourceMapping.cssLocationToUILocation(rawLocation);
+    uiLocation = uiLocation || ResourceMapping.instance().cssLocationToUILocation(rawLocation);
     return uiLocation;
   }
 
@@ -308,7 +309,7 @@ export class ModelInfo {
     if (rawLocations.length) {
       return rawLocations;
     }
-    return self.Bindings.resourceMapping.uiLocationToCSSLocations(uiLocation);
+    return ResourceMapping.instance().uiLocationToCSSLocations(uiLocation);
   }
 
   _dispose() {

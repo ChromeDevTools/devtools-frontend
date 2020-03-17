@@ -339,9 +339,9 @@ export class Linkifier {
    * @param {!Element} anchor
    * @param {!Bindings.LiveLocation.LiveLocation} liveLocation
    */
-  _updateAnchor(anchor, liveLocation) {
+  async _updateAnchor(anchor, liveLocation) {
     Linkifier._unbindUILocation(anchor);
-    const uiLocation = liveLocation.uiLocation();
+    const uiLocation = await liveLocation.uiLocation();
     if (!uiLocation) {
       return;
     }
@@ -355,7 +355,7 @@ export class Linkifier {
       titleText += ':' + (uiLocation.lineNumber + 1);
     }
     anchor.title = titleText;
-    anchor.classList.toggle('webkit-html-blackbox-link', liveLocation.isBlackboxed());
+    anchor.classList.toggle('webkit-html-blackbox-link', await liveLocation.isBlackboxed());
     Linkifier._updateLinkDecorations(anchor);
   }
 

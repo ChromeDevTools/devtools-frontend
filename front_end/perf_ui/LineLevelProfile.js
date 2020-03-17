@@ -211,11 +211,11 @@ export class Presentation {
   /**
    * @param {!Bindings.LiveLocation.LiveLocation} liveLocation
    */
-  updateLocation(liveLocation) {
+  async updateLocation(liveLocation) {
     if (this._uiLocation) {
       this._uiLocation.uiSourceCode.removeDecorationsForType(this._type);
     }
-    this._uiLocation = liveLocation.uiLocation();
+    this._uiLocation = await liveLocation.uiLocation();
     if (this._uiLocation) {
       this._uiLocation.uiSourceCode.addLineDecoration(this._uiLocation.lineNumber, this._type, this._time);
     }

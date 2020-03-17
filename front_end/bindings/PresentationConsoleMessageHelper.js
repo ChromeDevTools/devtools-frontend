@@ -225,11 +225,11 @@ export class PresentationConsoleMessage {
   /**
    * @param {!LiveLocation} liveLocation
    */
-  _updateLocation(liveLocation) {
+  async _updateLocation(liveLocation) {
     if (this._uiMessage) {
       this._uiMessage.remove();
     }
-    const uiLocation = liveLocation.uiLocation();
+    const uiLocation = await liveLocation.uiLocation();
     if (!uiLocation) {
       return;
     }

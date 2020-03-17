@@ -585,9 +585,9 @@ export class Item {
   /**
    * @param {!Bindings.LiveLocation.LiveLocation} liveLocation
    */
-  _update(liveLocation) {
-    const uiLocation = liveLocation.uiLocation();
-    this.isBlackboxed = liveLocation.isBlackboxed();
+  async _update(liveLocation) {
+    const uiLocation = await liveLocation.uiLocation();
+    this.isBlackboxed = await liveLocation.isBlackboxed();
     this.linkText = uiLocation ? uiLocation.linkText() : '';
     this.uiLocation = uiLocation;
     this.updateDelegate(this);

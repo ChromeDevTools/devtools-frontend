@@ -708,12 +708,12 @@ export class ModelBreakpoint {
   /**
    * @param {!LiveLocation} liveLocation
    */
-  _locationUpdated(liveLocation) {
+  async _locationUpdated(liveLocation) {
     const oldUILocation = this._uiLocations.get(liveLocation);
     if (oldUILocation) {
       this._breakpoint._uiLocationRemoved(oldUILocation);
     }
-    let uiLocation = liveLocation.uiLocation();
+    let uiLocation = await liveLocation.uiLocation();
 
     if (uiLocation) {
       const breakpointLocation = this._breakpoint._breakpointManager.findBreakpoint(uiLocation);

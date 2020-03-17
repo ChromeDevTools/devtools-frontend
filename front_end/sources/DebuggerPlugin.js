@@ -758,9 +758,9 @@ export class DebuggerPlugin extends Plugin {
   /**
    * @param {!Bindings.LiveLocation.LiveLocation} liveLocation
    */
-  _executionLineChanged(liveLocation) {
+  async _executionLineChanged(liveLocation) {
     this._clearExecutionLine();
-    const uiLocation = liveLocation.uiLocation();
+    const uiLocation = await liveLocation.uiLocation();
     if (!uiLocation || uiLocation.uiSourceCode !== this._uiSourceCode) {
       this._executionLocation = null;
       return;

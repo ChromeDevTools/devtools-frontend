@@ -206,6 +206,7 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus * {
     .tree-outline:not(.hide-selection-when-blurred) li[data-keyboard-focus="true"]:focus .tree-element-title,
     .tree-outline:not(.hide-selection-when-blurred) li.selected .tree-element-title,
     .tree-outline:not(.hide-selection-when-blurred) li.selected,
+    .tree-outline:not(.hide-selection-when-blurred) li.selected span,
     .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] span {
         forced-color-adjust: none;
         color: HighlightText;

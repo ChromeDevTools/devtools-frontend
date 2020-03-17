@@ -71,4 +71,8 @@
         forced-color-adjust: none;
         border-color: ButtonText;
     }
+    .pie-chart-total {
+        forced-color-adjust: none;
+        background-color: Canvas;
+    }
 }

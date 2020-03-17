@@ -9,7 +9,6 @@ ts_library("text_utils") {
     "Text.js",
     "TextCursor.js",
     "TextRange.js",
-    "TextUtils.js",
   ]
 
   deps = [ "../platform" ]

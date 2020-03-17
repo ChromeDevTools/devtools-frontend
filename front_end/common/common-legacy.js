@@ -64,18 +64,6 @@ Common.Console.Message = CommonModule.Console.Message;
 /**
  * @interface
  */
-Common.ContentProvider = CommonModule.ContentProvider.ContentProvider;
-
-/**
- * @constructor
- */
-Common.ContentProvider.SearchMatch = CommonModule.ContentProvider.SearchMatch;
-Common.ContentProvider.performSearchInContent = CommonModule.ContentProvider.performSearchInContent;
-Common.ContentProvider.contentAsDataURL = CommonModule.ContentProvider.contentAsDataURL;
-
-/**
- * @interface
- */
 Common.EventTarget = CommonModule.EventTarget.EventTarget;
 
 /**
@@ -185,11 +173,6 @@ Common.moduleSetting = CommonModule.Settings.moduleSetting;
  * @enum {symbol}
  */
 Common.SettingStorageType = CommonModule.Settings.SettingStorageType;
-
-/**
- * @constructor
- */
-Common.StaticContentProvider = CommonModule.StaticContentProvider.StaticContentProvider;
 
 /**
  * @interface

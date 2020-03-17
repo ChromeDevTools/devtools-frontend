@@ -5,7 +5,8 @@ ts_library("text_utils") {
   sources = [
     "TextCursor_test.ts",
     "TextRange_test.ts",
-    "TextUtils_test.ts",
+
+    # "TextUtils_test.ts",
     "Text_test.ts",
   ]
 

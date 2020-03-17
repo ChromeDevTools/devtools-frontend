@@ -27,6 +27,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+import {SearchMatch} from './ContentProvider.js';
+import {Text} from './Text.js';
+
 export const Utils = {
   get _keyValueFilterRegex() {
     return /(?:^|\s)(\-)?([\w\-]+):([^\s]+)/;
@@ -398,6 +402,29 @@ export function isMinified(text) {
   } while (--linesToCheck >= 0 && lastPosition > 0);
   return false;
 }
+
+/**
+ * @param {string} content
+ * @param {string} query
+ * @param {boolean} caseSensitive
+ * @param {boolean} isRegex
+ * @return {!Array.<!SearchMatch>}
+ */
+export const performSearchInContent = function(content, query, caseSensitive, isRegex) {
+  // @ts-ignore global function
+  const regex = createSearchRegex(query, caseSensitive, isRegex);
+
+  const text = new Text(content);
+  const result = [];
+  for (let i = 0; i < text.lineCount(); ++i) {
+    const lineContent = text.lineAt(i);
+    regex.lastIndex = 0;
+    if (regex.exec(lineContent)) {
+      result.push(new SearchMatch(i, lineContent));
+    }
+  }
+  return result;
+};
 
 /** @typedef {{key:(string|undefined), text:(?string|undefined), regex:(!RegExp|undefined), negative:boolean}} */
 // @ts-ignore typedef

@@ -5,6 +5,7 @@
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
+import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {FormatterInterface, FormatterSourceMapping} from './ScriptFormatter.js';  // eslint-disable-line no-unused-vars
@@ -147,7 +148,7 @@ export class SourceFormatter {
         formattedURL = `${uiSourceCode.url()}:formatted${suffix}`;
         suffix = `:${count++}`;
       } while (this._project.uiSourceCodeForURL(formattedURL));
-      const contentProvider = Common.StaticContentProvider.StaticContentProvider.fromString(
+      const contentProvider = TextUtils.StaticContentProvider.StaticContentProvider.fromString(
           formattedURL, uiSourceCode.contentType(), formattedContent);
       const formattedUISourceCode =
           this._project.addContentProvider(formattedURL, contentProvider, uiSourceCode.mimeType());
@@ -163,7 +164,7 @@ export class SourceFormatter {
         const endLocation = formatterMapping.originalToFormatted(range.endLine, range.endColumn);
 
         formattedUISourceCode.addDecoration(
-            new TextUtils.TextRange(startLocation[0], startLocation[1], endLocation[0], endLocation[1]),
+            new TextUtils.TextRange.TextRange(startLocation[0], startLocation[1], endLocation[0], endLocation[1]),
             /** @type {string} */ (decoration.type()), decoration.data());
       }
 

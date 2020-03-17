@@ -4,6 +4,7 @@
 
 import './Runtime.js';
 
+import './common/common.js';
 import './platform/platform.js';
 import './text_utils/text_utils-legacy.js';
 import './cm_headless/cm_headless.js';

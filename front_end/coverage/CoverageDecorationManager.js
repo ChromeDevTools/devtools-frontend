@@ -16,9 +16,9 @@ export class CoverageDecorationManager {
    */
   constructor(coverageModel) {
     this._coverageModel = coverageModel;
-    /** @type {!Map<!Common.ContentProvider.ContentProvider, ?TextUtils.Text.Text>} */
+    /** @type {!Map<!TextUtils.ContentProvider.ContentProvider, ?TextUtils.Text.Text>} */
     this._textByProvider = new Map();
-    /** @type {!Platform.Multimap<!Common.ContentProvider.ContentProvider, !Workspace.UISourceCode.UISourceCode>} */
+    /** @type {!Platform.Multimap<!TextUtils.ContentProvider.ContentProvider, !Workspace.UISourceCode.UISourceCode>} */
     this._uiSourceCodeByContentProvider = new Platform.Multimap();
 
     for (const uiSourceCode of self.Workspace.workspace.uiSourceCodes()) {
@@ -131,7 +131,7 @@ export class CoverageDecorationManager {
   }
 
   /**
-   * @param {!Common.ContentProvider.ContentProvider} contentProvider
+   * @param {!TextUtils.ContentProvider.ContentProvider} contentProvider
    * @return {!Promise}
    */
   async _updateTextForProvider(contentProvider) {
@@ -212,7 +212,7 @@ export class CoverageDecorationManager {
 /**
  * @typedef {!{
  *    id: string,
- *    contentProvider: !Common.ContentProvider.ContentProvider,
+ *    contentProvider: !TextUtils.ContentProvider.ContentProvider,
  *    line: number,
  *    column: number
  * }}

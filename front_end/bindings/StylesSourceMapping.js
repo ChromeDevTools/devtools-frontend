@@ -30,6 +30,7 @@
 
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
+import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 import * as Workspace from '../workspace/workspace.js';
 
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
@@ -181,7 +182,7 @@ export class StylesSourceMapping {
 }
 
 /**
- * @implements {Common.ContentProvider.ContentProvider}
+ * @implements {TextUtils.ContentProvider.ContentProvider}
  * @unrestricted
  */
 export class StyleFile {
@@ -267,7 +268,7 @@ export class StyleFile {
   }
 
   /**
-   * @param {!Common.ContentProvider.ContentProvider} fromProvider
+   * @param {!TextUtils.ContentProvider.ContentProvider} fromProvider
    * @param {boolean} majorChange
    * @return {!Promise}
    */
@@ -348,7 +349,7 @@ export class StyleFile {
 
   /**
    * @override
-   * @return {!Promise<!Common.ContentProvider.DeferredContent>}
+   * @return {!Promise<!TextUtils.ContentProvider.DeferredContent>}
    */
   requestContent() {
     return this._headers.firstValue().originalContentProvider().requestContent();
@@ -359,7 +360,7 @@ export class StyleFile {
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
+   * @return {!Promise<!Array<!TextUtils.ContentProvider.SearchMatch>>}
    */
   searchInContent(query, caseSensitive, isRegex) {
     return this._headers.firstValue().originalContentProvider().searchInContent(query, caseSensitive, isRegex);

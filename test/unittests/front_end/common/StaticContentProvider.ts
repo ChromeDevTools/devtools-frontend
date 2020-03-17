@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {ResourceType} from '/front_end/common/ResourceType.js';
-import {StaticContentProvider} from '/front_end/common/StaticContentProvider.js';
+import {StaticContentProvider} from '/front_end/text_utils/StaticContentProvider.js';
 
 const {assert} = chai;
 

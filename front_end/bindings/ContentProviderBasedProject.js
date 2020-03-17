@@ -29,6 +29,7 @@
  */
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 import * as Workspace from '../workspace/workspace.js';
 
 /**
@@ -45,7 +46,7 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
    */
   constructor(workspace, id, type, displayName, isServiceProject) {
     super(workspace, id, type, displayName);
-    /** @type {!Object.<string, !Common.ContentProvider.ContentProvider>} */
+    /** @type {!Object.<string, !TextUtils.ContentProvider.ContentProvider>} */
     this._contentProviders = {};
     this._isServiceProject = isServiceProject;
     workspace.addProject(this);
@@ -54,7 +55,7 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
   /**
    * @override
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   * @returns {!Promise<!Common.ContentProvider.DeferredContent>}
+   * @returns {!Promise<!TextUtils.ContentProvider.DeferredContent>}
    */
   async requestFileContent(uiSourceCode) {
     const contentProvider = this._contentProviders[uiSourceCode.url()];
@@ -225,7 +226,7 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
+   * @return {!Promise<!Array<!TextUtils.ContentProvider.SearchMatch>>}
    */
   searchInFileContent(uiSourceCode, query, caseSensitive, isRegex) {
     const contentProvider = this._contentProviders[uiSourceCode.url()];
@@ -277,7 +278,7 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
 
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   * @param {!Common.ContentProvider.ContentProvider} contentProvider
+   * @param {!TextUtils.ContentProvider.ContentProvider} contentProvider
    * @param {?Workspace.UISourceCode.UISourceCodeMetadata} metadata
    * @param {string} mimeType
    */
@@ -290,7 +291,7 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
 
   /**
    * @param {string} url
-   * @param {!Common.ContentProvider.ContentProvider} contentProvider
+   * @param {!TextUtils.ContentProvider.ContentProvider} contentProvider
    * @param {string} mimeType
    * @return {!Workspace.UISourceCode.UISourceCode}
    */

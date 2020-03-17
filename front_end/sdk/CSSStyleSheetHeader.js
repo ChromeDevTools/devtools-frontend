@@ -3,13 +3,14 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as TextUtils from '../text_utils/text_utils.js';
 
 import {CSSModel} from './CSSModel.js';  // eslint-disable-line no-unused-vars
 import {DeferredDOMNode} from './DOMModel.js';
 import {ResourceTreeModel} from './ResourceTreeModel.js';
 
 /**
- * @implements {Common.ContentProvider.ContentProvider}
+ * @implements {TextUtils.ContentProvider.ContentProvider}
  * @unrestricted
  */
 export class CSSStyleSheetHeader {
@@ -39,11 +40,11 @@ export class CSSStyleSheetHeader {
   }
 
   /**
-   * @return {!Common.ContentProvider.ContentProvider}
+   * @return {!TextUtils.ContentProvider.ContentProvider}
    */
   originalContentProvider() {
     if (!this._originalContentProvider) {
-      const lazyContent = /** @type {function():!Promise<!Common.ContentProvider.DeferredContent>} */ (async () => {
+      const lazyContent = /** @type {function():!Promise<!TextUtils.ContentProvider.DeferredContent>} */ (async () => {
         const originalText = await this._cssModel.originalStyleSheetText(this);
         // originalText might be an empty string which should not trigger the error
         if (originalText === null) {
@@ -52,7 +53,7 @@ export class CSSStyleSheetHeader {
         return {content: originalText, isEncoded: false};
       });
       this._originalContentProvider =
-          new Common.StaticContentProvider.StaticContentProvider(this.contentURL(), this.contentType(), lazyContent);
+          new TextUtils.StaticContentProvider.StaticContentProvider(this.contentURL(), this.contentType(), lazyContent);
     }
     return this._originalContentProvider;
   }
@@ -157,7 +158,7 @@ export class CSSStyleSheetHeader {
 
   /**
    * @override
-   * @return {!Promise<!Common.ContentProvider.DeferredContent>}
+   * @return {!Promise<!TextUtils.ContentProvider.DeferredContent>}
    */
   async requestContent() {
     try {
@@ -176,11 +177,11 @@ export class CSSStyleSheetHeader {
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
+   * @return {!Promise<!Array<!TextUtils.ContentProvider.SearchMatch>>}
    */
   async searchInContent(query, caseSensitive, isRegex) {
     const {content} = await this.requestContent();
-    return Common.ContentProvider.performSearchInContent(content || '', query, caseSensitive, isRegex);
+    return TextUtils.TextUtils.performSearchInContent(content || '', query, caseSensitive, isRegex);
   }
 
   /**

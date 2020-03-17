@@ -182,11 +182,11 @@ export class DebuggerWorkspaceBinding {
 
   /**
    * @param {!SDK.DebuggerModel.Location} rawLocation
-   * @return {?Workspace.UISourceCode.UILocation}
+   * @return {!Promise<?Workspace.UISourceCode.UILocation>}
    */
-  rawLocationToUILocation(rawLocation) {
-    for (let i = 0; i < this._sourceMappings.length; ++i) {
-      const uiLocation = this._sourceMappings[i].rawLocationToUILocation(rawLocation);
+  async rawLocationToUILocation(rawLocation) {
+    for (const sourceMapping of this._sourceMappings) {
+      const uiLocation = sourceMapping.rawLocationToUILocation(rawLocation);
       if (uiLocation) {
         return uiLocation;
       }
@@ -414,12 +414,12 @@ class ModelData {
 
   /**
    * @param {!SDK.DebuggerModel.Location} rawLocation
-   * @return {?Workspace.UISourceCode.UILocation}
+   * @return {!Promise<?Workspace.UISourceCode.UILocation>}
    */
-  _rawLocationToUILocation(rawLocation) {
+  async _rawLocationToUILocation(rawLocation) {
     let uiLocation = null;
     if (Root.Runtime.experiments.isEnabled('wasmDWARFDebugging')) {
-      uiLocation = this._pluginManager.rawLocationToUILocation(rawLocation);
+      uiLocation = await this._pluginManager.rawLocationToUILocation(rawLocation);
     }
     uiLocation = uiLocation || this._compilerMapping.rawLocationToUILocation(rawLocation);
     uiLocation = uiLocation || this._resourceMapping.rawLocationToUILocation(rawLocation);

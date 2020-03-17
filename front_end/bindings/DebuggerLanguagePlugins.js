@@ -159,11 +159,11 @@ export class DebuggerLanguagePluginManager {
     this._plugins.push(plugin);
   }
 
-  /** TODO(chromium:1032016): Make async once chromium:1032016 is complete.
+  /**
    * @param {!SDK.DebuggerModel.Location} rawLocation
-   * @return {?Workspace.UISourceCode.UILocation}
+   * @return {!Promise<?Workspace.UISourceCode.UILocation>}
    */
-  /* async */ rawLocationToUILocation(rawLocation) {
+  async rawLocationToUILocation(rawLocation) {
     const script = rawLocation.script();
     if (!script) {
       return null;

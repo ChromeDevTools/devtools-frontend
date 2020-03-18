@@ -12,7 +12,7 @@ li .icon {
   background-color: var(--item-hover-color);
 }
 
-.navigator-fs-tree-item .icon{
+.navigator-fs-tree-item .icon {
   background: linear-gradient(45deg, hsl(28, 75%, 50%), hsl(28, 75%, 70%));
 }
 
@@ -30,4 +30,20 @@ li .icon {
 .navigator-image-tree-item .icon,
 .navigator-font-tree-item .icon {
   background: linear-gradient(45deg, hsl(109, 33%, 50%), hsl(109, 33%, 70%));
+}
+
+@media (forced-colors: active) {
+  li .icon,
+  .navigator-fs-tree-item .icon,
+  .navigator-sm-script-tree-item .icon,
+  .navigator-script-tree-item .icon,
+  .navigator-snippet-tree-item .icon,
+  .navigator-sm-stylesheet-tree-item .icon,
+  .navigator-stylesheet-tree-item .icon,
+  .navigator-image-tree-item .icon,
+  .navigator-font-tree-item .icon {
+    background-color: ButtonText;
+    background-image: none;
+    forced-color-adjust: none;
+  }
 }

@@ -33,12 +33,16 @@ generate_ci_configs(
         name="stable",
         branch='refs/heads/chromium/4044',
       ),
+      config_section(
+        name="previous",
+        branch='refs/heads/chromium/3987',
+      ),
     ],
     builders = [
       builder_descriptor(
         name='DevTools Linux',
         recipe_name='chromium_integration',
-        excluded_from=['beta', 'stable']
+        excluded_from=['beta', 'stable', 'previous']
       ),
       builder_descriptor(
         name="Stand-alone Linux",

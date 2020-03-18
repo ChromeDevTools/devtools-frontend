@@ -76,7 +76,7 @@ export class MainImpl {
 
   async _loaded() {
     console.timeStamp('Main._loaded');
-    await Root.Runtime.appStarted();
+    await Runtime.appStarted;
     Root.Runtime.setPlatform(Host.Platform.platform());
     Root.Runtime.setL10nCallback(ls);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.getPreferences(this._gotPreferences.bind(this));

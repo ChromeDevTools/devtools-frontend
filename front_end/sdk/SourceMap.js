@@ -650,7 +650,7 @@ export class WasmSourceMap {
    */
   static async _loadBindings() {
     const arrayBuffer =
-        await Root.Runtime.loadBinaryResourcePromise('./sdk/wasm_source_map/pkg/wasm_source_map_bg.wasm');
+        await self.runtime.loadBinaryResourcePromise('./sdk/wasm_source_map/pkg/wasm_source_map_bg.wasm', true);
     await self.wasm_bindgen(arrayBuffer);
     return self.wasm_bindgen.Resolver;
   }

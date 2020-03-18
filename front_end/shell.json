@@ -13,6 +13,7 @@
     { "name": "protocol", "type": "autostart" },
     { "name": "sdk", "type": "autostart" },
     { "name": "browser_sdk", "type": "autostart" },
+    { "name": "root", "type": "autostart" },
     { "name": "services", "type": "autostart" },
     { "name": "text_utils", "type": "autostart" },
     { "name": "ui", "type": "autostart" },

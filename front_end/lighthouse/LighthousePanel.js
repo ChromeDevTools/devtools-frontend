@@ -195,7 +195,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     const dom = new DOM(/** @type {!Document} */ (this._auditResultsElement.ownerDocument));
     const renderer = new LighthouseReportRenderer(dom);
 
-    const templatesHTML = Root.Runtime.cachedResources['third_party/lighthouse/report-assets/templates.html'];
+    const templatesHTML = self.Runtime.cachedResources['third_party/lighthouse/report-assets/templates.html'];
     const templatesDOM = new DOMParser().parseFromString(templatesHTML, 'text/html');
     if (!templatesDOM) {
       return;

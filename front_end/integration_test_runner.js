@@ -3,10 +3,11 @@
 // found in the LICENSE file.
 
 import './devtools_app.js';
+import {startApplication} from './RuntimeInstantiator.js';
 
 if (self.testRunner) {
   testRunner.dumpAsText();
   testRunner.waitUntilDone();
 }
 
-Root.Runtime.startApplication('integration_test_runner');
+startApplication('integration_test_runner');

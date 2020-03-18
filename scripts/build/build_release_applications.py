@@ -74,7 +74,7 @@ def main(argv):
         write_file(join(output_path, file_name), minify_js(read_file(join(input_path, file_name))))
 
     copy_file('root.js')
-    copy_file('Runtime.js')
+    copy_file('RuntimeInstantiator.js')
 
 
 
@@ -162,7 +162,7 @@ class ReleaseBuilder(object):
     def _write_module_resources(self, resource_names, output):
         for resource_name in resource_names:
             resource_name = path.normpath(resource_name).replace('\\', '/')
-            output.write('Root.Runtime.cachedResources["%s"] = "' % resource_name)
+            output.write('self.Runtime.cachedResources["%s"] = "' % resource_name)
             resource_content = read_file(path.join(self.application_dir, resource_name))
             resource_content += resource_source_url(resource_name).encode('utf-8')
             resource_content = resource_content.replace('\\', '\\\\')

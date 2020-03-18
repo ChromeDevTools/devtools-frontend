@@ -36,9 +36,7 @@ export class WorkerWrapper {
    * @param {string} appName
    */
   constructor(appName) {
-    let url = appName + '.js';
-    // @ts-ignore Runtime needs to be properly exported
-    url += Root.Runtime.queryParamsString();
+    const url = appName + '.js' + location.search;
 
     /** @type {!Promise<!Worker>} */
     this._workerPromise = new Promise(fulfill => {

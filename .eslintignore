@@ -18,5 +18,6 @@ test/e2e/**/*.js
 test/shared/**/*.js
 test/**/fixtures/
 scripts/jsdoc_validator/tests/
+scripts/protocol_typescript/*.js
 scripts/migration/**/*.js
 node_modules

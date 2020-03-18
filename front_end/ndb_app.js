@@ -2,5 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import './shell.js';
+import {startApplication} from './RuntimeInstantiator.js';
 
-Root.Runtime.startApplication('ndb_app');
+startApplication('ndb_app');

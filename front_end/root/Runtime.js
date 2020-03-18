@@ -1,56 +1,47 @@
-/*
- * Copyright (C) 2014 Google Inc. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- *     * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above
- * copyright notice, this list of conditions and the following disclaimer
- * in the documentation and/or other materials provided with the
- * distribution.
- *     * Neither the name of Google Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-const _loadedScripts = {};
 
-(function() {
-const baseUrl = self.location ? self.location.origin + self.location.pathname : '';
-self._importScriptPathPrefix = baseUrl.substring(0, baseUrl.lastIndexOf('/') + 1);
-})();
+// Copyright 2020 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 
 const REMOTE_MODULE_FALLBACK_REVISION = '@010ddcfda246975d194964ccf20038ebbdec6084';
+const instanceSymbol = Symbol('instance');
+
+const originalConsole = console;
+const originalAssert = console.assert;
+
+/** @type {!URLSearchParams} */
+const queryParamsObject = new URLSearchParams(location.search);
+
+// The following two variables are initialized all the way at the bottom of this file
+/** @type {?string} */
+let remoteBase;
+/** @type {string} */
+let importScriptPathPrefix;
+
+let runtimePlatform = '';
+
+/** @type {function(string):string} */
+let l10nCallback;
+
+/** @type {!Runtime} */
+let runtimeInstance;
 
 /**
  * @unrestricted
  */
-class Runtime {
+export class Runtime {
   /**
+   * @private
    * @param {!Array.<!ModuleDescriptor>} descriptors
    */
   constructor(descriptors) {
-    /** @type {!Array<!Runtime.Module>} */
+    /** @type {!Array<!Module>} */
     this._modules = [];
-    /** @type {!Object<string, !Runtime.Module>} */
+    /** @type {!Object<string, !Module>} */
     this._modulesMap = {};
     /** @type {!Array<!Extension>} */
     this._extensions = [];
-    /** @type {!Object<string, !function(new:Object)>} */
+    /** @type {!Object<string, function(new:Object):void>} */
     this._cachedTypeClasses = {};
     /** @type {!Object<string, !ModuleDescriptor>} */
     this._descriptorsMap = {};
@@ -61,82 +52,29 @@ class Runtime {
   }
 
   /**
-   * @private
-   * @param {string} url
-   * @param {boolean} asBinary
-   * @template T
-   * @return {!Promise.<T>}
+   * @param {{forceNew: ?boolean, moduleDescriptors: ?Array.<!ModuleDescriptor>}=} opts
+   * @return {!Runtime}
    */
-  static _loadResourcePromise(url, asBinary) {
-    return new Promise(load);
-
-    /**
-     * @param {function(?)} fulfill
-     * @param {function(*)} reject
-     */
-    function load(fulfill, reject) {
-      const xhr = new XMLHttpRequest();
-      xhr.open('GET', url, true);
-      if (asBinary) {
-        xhr.responseType = 'arraybuffer';
+  static instance(opts = {forceNew: null, moduleDescriptors: null}) {
+    const {forceNew, moduleDescriptors} = opts;
+    if (!moduleDescriptors || forceNew) {
+      if (!moduleDescriptors) {
+        throw new Error(
+            `Unable to create settings: targetManager and workspace must be provided: ${new Error().stack}`);
       }
-      xhr.onreadystatechange = onreadystatechange;
 
-      /**
-       * @param {Event} e
-       */
-      function onreadystatechange(e) {
-        if (xhr.readyState !== XMLHttpRequest.DONE) {
-          return;
-        }
-
-        const {response} = e.target;
-
-        const text = asBinary ? new TextDecoder().decode(response) : response;
-
-        // DevTools Proxy server can mask 404s as 200s, check the body to be sure
-        const status = /^HTTP\/1.1 404/.test(text) ? 404 : xhr.status;
-
-        if ([0, 200, 304].indexOf(status) === -1)  // Testing harness file:/// results in 0.
-        {
-          reject(new Error('While loading from url ' + url + ' server responded with a status of ' + status));
-        } else {
-          fulfill(response);
-        }
-      }
-      xhr.send(null);
+      runtimeInstance = new Runtime(moduleDescriptors);
     }
-  }
 
-  /**
-   * @param {string} url
-   * @return {!Promise.<string>}
-   */
-  static loadResourcePromise(url) {
-    return Runtime._loadResourcePromise(url, false);
+    return runtimeInstance;
   }
 
   /**
    * @param {string} url
    * @return {!Promise.<!ArrayBuffer>}
    */
-  static loadBinaryResourcePromise(url) {
-    return Runtime._loadResourcePromise(url, true);
-  }
-
-  /**
-   * @param {string} url
-   * @return {!Promise.<string>}
-   */
-  static loadResourcePromiseWithFallback(url) {
-    return Runtime.loadResourcePromise(url).catch(err => {
-      const urlWithFallbackVersion = url.replace(/@[0-9a-f]{40}/, REMOTE_MODULE_FALLBACK_REVISION);
-      // TODO(phulce): mark fallbacks in module.json and modify build script instead
-      if (urlWithFallbackVersion === url || !url.includes('lighthouse_worker_module')) {
-        throw err;
-      }
-      return Runtime.loadResourcePromise(urlWithFallbackVersion);
-    });
+  loadBinaryResourcePromise(url) {
+    return internalLoadResourcePromise(url, true);
   }
 
   /**
@@ -177,185 +115,11 @@ class Runtime {
   }
 
   /**
-   * @param {string} scriptName
-   * @param {string=} base
-   * @return {string}
-   */
-  static getResourceURL(scriptName, base) {
-    const sourceURL = (base || self._importScriptPathPrefix) + scriptName;
-    const schemaIndex = sourceURL.indexOf('://') + 3;
-    let pathIndex = sourceURL.indexOf('/', schemaIndex);
-    if (pathIndex === -1) {
-      pathIndex = sourceURL.length;
-    }
-    return sourceURL.substring(0, pathIndex) + Runtime.normalizePath(sourceURL.substring(pathIndex));
-  }
-
-  /**
-   * @param {!Array.<string>} scriptNames
-   * @param {string=} base
-   * @return {!Promise.<undefined>}
-   */
-  static _loadScriptsPromise(scriptNames, base) {
-    /** @type {!Array<!Promise<undefined>>} */
-    const promises = [];
-    /** @type {!Array<string>} */
-    const urls = [];
-    const sources = new Array(scriptNames.length);
-    let scriptToEval = 0;
-    for (let i = 0; i < scriptNames.length; ++i) {
-      const scriptName = scriptNames[i];
-      const sourceURL = Runtime.getResourceURL(scriptName, base);
-
-      if (_loadedScripts[sourceURL]) {
-        continue;
-      }
-      urls.push(sourceURL);
-      const loadResourcePromise =
-          base ? Runtime.loadResourcePromiseWithFallback(sourceURL) : Runtime.loadResourcePromise(sourceURL);
-      promises.push(
-          loadResourcePromise.then(scriptSourceLoaded.bind(null, i), scriptSourceLoaded.bind(null, i, undefined)));
-    }
-    return Promise.all(promises).then(undefined);
-
-    /**
-     * @param {number} scriptNumber
-     * @param {string=} scriptSource
-     */
-    function scriptSourceLoaded(scriptNumber, scriptSource) {
-      sources[scriptNumber] = scriptSource || '';
-      // Eval scripts as fast as possible.
-      while (typeof sources[scriptToEval] !== 'undefined') {
-        evaluateScript(urls[scriptToEval], sources[scriptToEval]);
-        ++scriptToEval;
-      }
-    }
-
-    /**
-     * @param {string} sourceURL
-     * @param {string=} scriptSource
-     */
-    function evaluateScript(sourceURL, scriptSource) {
-      _loadedScripts[sourceURL] = true;
-      if (!scriptSource) {
-        // Do not reject, as this is normal in the hosted mode.
-        console.error('Empty response arrived for script \'' + sourceURL + '\'');
-        return;
-      }
-      self.eval(scriptSource + '\n//# sourceURL=' + sourceURL);
-    }
-  }
-
-  /**
-   * @param {string} url
-   * @param {boolean} appendSourceURL
-   * @return {!Promise<undefined>}
-   */
-  static _loadResourceIntoCache(url, appendSourceURL) {
-    return Runtime.loadResourcePromise(url).then(
-        cacheResource.bind(this, url), cacheResource.bind(this, url, undefined));
-
-    /**
-     * @param {string} path
-     * @param {string=} content
-     */
-    function cacheResource(path, content) {
-      if (!content) {
-        console.error('Failed to load resource: ' + path);
-        return;
-      }
-      const sourceURL = appendSourceURL ? Runtime.resolveSourceURL(path) : '';
-      Runtime.cachedResources[path] = content + sourceURL;
-    }
-  }
-
-  /**
-   * @return {!Promise}
-   */
-  static async appStarted() {
-    return Runtime._appStartedPromise;
-  }
-
-  /**
-   * @param {string} appName
-   * @return {!Promise.<undefined>}
-   */
-  static async startApplication(appName) {
-    console.timeStamp('Root.Runtime.startApplication');
-
-    const allDescriptorsByName = {};
-    for (let i = 0; i < Root.allDescriptors.length; ++i) {
-      const d = Root.allDescriptors[i];
-      allDescriptorsByName[d['name']] = d;
-    }
-
-    if (!Root.applicationDescriptor) {
-      let data = await Runtime.loadResourcePromise(appName + '.json');
-      Root.applicationDescriptor = JSON.parse(data);
-      let descriptor = Root.applicationDescriptor;
-      while (descriptor.extends) {
-        data = await Runtime.loadResourcePromise(descriptor.extends + '.json');
-        descriptor = JSON.parse(data);
-        Root.applicationDescriptor.modules = descriptor.modules.concat(Root.applicationDescriptor.modules);
-      }
-    }
-
-    const configuration = Root.applicationDescriptor.modules;
-    const moduleJSONPromises = [];
-    const coreModuleNames = [];
-    for (let i = 0; i < configuration.length; ++i) {
-      const descriptor = configuration[i];
-      const name = descriptor['name'];
-      const moduleJSON = allDescriptorsByName[name];
-      if (moduleJSON) {
-        moduleJSONPromises.push(Promise.resolve(moduleJSON));
-      } else {
-        moduleJSONPromises.push(Runtime.loadResourcePromise(name + '/module.json').then(JSON.parse.bind(JSON)));
-      }
-      if (descriptor['type'] === 'autostart') {
-        coreModuleNames.push(name);
-      }
-    }
-
-    const moduleDescriptors = await Promise.all(moduleJSONPromises);
-
-    for (let i = 0; i < moduleDescriptors.length; ++i) {
-      moduleDescriptors[i].name = configuration[i]['name'];
-      moduleDescriptors[i].condition = configuration[i]['condition'];
-      moduleDescriptors[i].remote = configuration[i]['type'] === 'remote';
-    }
-    self.runtime = new Runtime(moduleDescriptors);
-    if (coreModuleNames) {
-      await self.runtime._loadAutoStartModules(coreModuleNames);
-    }
-    Runtime._appStartedPromiseCallback();
-  }
-
-  /**
-   * @param {string} appName
-   * @return {!Promise.<undefined>}
-   */
-  static startWorker(appName) {
-    return Root.Runtime.startApplication(appName).then(sendWorkerReady);
-
-    function sendWorkerReady() {
-      self.postMessage('workerReady');
-    }
-  }
-
-  /**
    * @param {string} name
    * @return {?string}
    */
   static queryParam(name) {
-    return Runtime._queryParamsObject.get(name);
-  }
-
-  /**
-   * @return {string}
-   */
-  static queryParamsString() {
-    return location.search;
+    return queryParamsObject.get(name);
   }
 
   /**
@@ -371,18 +135,22 @@ class Runtime {
     }
   }
 
+  /**
+   * @param {*} value
+   * @param {string} message
+   */
   static _assert(value, message) {
     if (value) {
       return;
     }
-    Runtime._originalAssert.call(Runtime._console, value, message + ' ' + new Error().stack);
+    originalAssert.call(originalConsole, value, message + ' ' + new Error().stack);
   }
 
   /**
    * @param {string} platform
    */
   static setPlatform(platform) {
-    Runtime._platform = platform;
+    runtimePlatform = platform;
   }
 
   /**
@@ -395,11 +163,11 @@ class Runtime {
       return true;
     }
     if (activatorExperiment && activatorExperiment.startsWith('!') &&
-        Runtime.experiments.isEnabled(activatorExperiment.substring(1))) {
+        Root.Runtime.experiments.isEnabled(activatorExperiment.substring(1))) {
       return false;
     }
     if (activatorExperiment && !activatorExperiment.startsWith('!') &&
-        !Runtime.experiments.isEnabled(activatorExperiment)) {
+        !Root.Runtime.experiments.isEnabled(activatorExperiment)) {
       return false;
     }
     const condition = descriptor['condition'];
@@ -429,19 +197,19 @@ class Runtime {
    * @param {function(string):string} localizationFunction
    */
   static setL10nCallback(localizationFunction) {
-    Runtime._l10nCallback = localizationFunction;
+    l10nCallback = localizationFunction;
   }
 
   useTestBase() {
-    Runtime._remoteBase = 'http://localhost:8000/inspector-sources/';
+    remoteBase = 'http://localhost:8000/inspector-sources/';
     if (Runtime.queryParam('debugFrontend')) {
-      Runtime._remoteBase += 'debug/';
+      remoteBase += 'debug/';
     }
   }
 
   /**
    * @param {string} moduleName
-   * @return {!Runtime.Module}
+   * @return {!Module}
    */
   module(moduleName) {
     return this._modulesMap[moduleName];
@@ -451,14 +219,14 @@ class Runtime {
    * @param {!ModuleDescriptor} descriptor
    */
   _registerModule(descriptor) {
-    const module = new Runtime.Module(this, descriptor);
+    const module = new Module(this, descriptor);
     this._modules.push(module);
     this._modulesMap[descriptor['name']] = module;
   }
 
   /**
    * @param {string} moduleName
-   * @return {!Promise.<undefined>}
+   * @return {!Promise.<boolean>}
    */
   loadModulePromise(moduleName) {
     return this._modulesMap[moduleName]._loadPromise();
@@ -468,7 +236,7 @@ class Runtime {
    * @param {!Array.<string>} moduleNames
    * @return {!Promise.<!Array.<*>>}
    */
-  _loadAutoStartModules(moduleNames) {
+  loadAutoStartModules(moduleNames) {
     const promises = [];
     for (let i = 0; i < moduleNames.length; ++i) {
       promises.push(this.loadModulePromise(moduleNames[i]));
@@ -605,17 +373,19 @@ class Runtime {
   }
 
   /**
+   * @param {string} typeName
    * @return {?function(new:Object)}
    */
   _resolve(typeName) {
     if (!this._cachedTypeClasses[typeName]) {
+      /** @type {!Array<string>} */
       const path = typeName.split('.');
       let object = self;
       for (let i = 0; object && (i < path.length); ++i) {
         object = object[path[i]];
       }
       if (object) {
-        this._cachedTypeClasses[typeName] = /** @type function(new:Object) */ (object);
+        this._cachedTypeClasses[typeName] = /** @type {function(new:Object):void} */ (object);
       }
     }
     return this._cachedTypeClasses[typeName] || null;
@@ -627,41 +397,21 @@ class Runtime {
    * @template T
    */
   sharedInstance(constructorFunction) {
-    if (Runtime._instanceSymbol in constructorFunction &&
-        Object.getOwnPropertySymbols(constructorFunction).includes(Runtime._instanceSymbol)) {
-      return constructorFunction[Runtime._instanceSymbol];
+    if (instanceSymbol in constructorFunction &&
+        Object.getOwnPropertySymbols(constructorFunction).includes(instanceSymbol)) {
+      return constructorFunction[instanceSymbol];
     }
 
     const instance = new constructorFunction();
-    constructorFunction[Runtime._instanceSymbol] = instance;
+    constructorFunction[instanceSymbol] = instance;
     return instance;
   }
 }
 
-/** @type {!URLSearchParams} */
-Runtime._queryParamsObject = new URLSearchParams(Runtime.queryParamsString());
-
-Runtime._instanceSymbol = Symbol('instance');
-
-/**
- * @type {!Object.<string, string>}
- */
-Runtime.cachedResources = {
-  __proto__: null
-};
-
-
-Runtime._console = console;
-Runtime._originalAssert = console.assert;
-
-
-Runtime._platform = '';
-
-
 /**
  * @unrestricted
  */
-class ModuleDescriptor {
+export class ModuleDescriptor {
   constructor() {
     /**
      * @type {string}
@@ -705,7 +455,7 @@ class ModuleDescriptor {
 /**
  * @unrestricted
  */
-class RuntimeExtensionDescriptor {
+class RuntimeExtensionDescriptor {  // eslint-disable-line no-unused-vars
   constructor() {
     /**
      * @type {string}
@@ -736,6 +486,7 @@ class RuntimeExtensionDescriptor {
 
 // Module namespaces.
 // NOTE: Update scripts/build/special_case_namespaces.json if you add a special cased namespace.
+/** @type {!Object<string,string>} */
 const specialCases = {
   'sdk': 'SDK',
   'js_sdk': 'JSSDK',
@@ -752,7 +503,7 @@ const specialCases = {
 /**
  * @unrestricted
  */
-class Module {
+export class Module {
   /**
    * @param {!Runtime} manager
    * @param {!ModuleDescriptor} descriptor
@@ -795,7 +546,7 @@ class Module {
    */
   resource(name) {
     const fullName = this._name + '/' + name;
-    const content = Runtime.cachedResources[fullName];
+    const content = self.Runtime.cachedResources[fullName];
     if (!content) {
       throw new Error(fullName + ' not preloaded. Check module.json');
     }
@@ -803,7 +554,7 @@ class Module {
   }
 
   /**
-   * @return {!Promise.<undefined>}
+   * @return {!Promise.<boolean>}
    */
   _loadPromise() {
     if (!this.enabled()) {
@@ -830,8 +581,8 @@ class Module {
   }
 
   /**
-   * @return {!Promise.<undefined>}
-   * @this {Runtime.Module}
+   * @return {!Promise.<void>}
+   * @this {Module}
    */
   _loadResources() {
     const resources = this._descriptor['resources'];
@@ -842,7 +593,7 @@ class Module {
     for (let i = 0; i < resources.length; ++i) {
       const url = this._modularizeURL(resources[i]);
       const isHtml = url.endsWith('.html');
-      promises.push(Runtime._loadResourceIntoCache(url, !isHtml /* appendSourceURL */));
+      promises.push(loadResourceIntoCache(url, !isHtml /* appendSourceURL */));
     }
     return Promise.all(promises).then(undefined);
   }
@@ -864,11 +615,11 @@ class Module {
     const fileName = this._descriptor.modules.includes(legacyFileName) ? legacyFileName : `${this._name}.js`;
 
     // TODO(crbug.com/1011811): Remove eval when we use TypeScript which does support dynamic imports
-    return eval(`import('./${this._name}/${fileName}')`);
+    return eval(`import('../${this._name}/${fileName}')`);
   }
 
   /**
-   * @return {!Promise.<undefined>}
+   * @return {!Promise.<void>}
    */
   _loadScripts() {
     if (!this._descriptor.scripts || !this._descriptor.scripts.length) {
@@ -877,7 +628,7 @@ class Module {
 
     const namespace = this._computeNamespace();
     self[namespace] = self[namespace] || {};
-    return Runtime._loadScriptsPromise(this._descriptor.scripts.map(this._modularizeURL, this), this._remoteBase());
+    return loadScriptsPromise(this._descriptor.scripts.map(this._modularizeURL, this), this._remoteBase());
   }
 
   /**
@@ -899,7 +650,7 @@ class Module {
    * @return {string|undefined}
    */
   _remoteBase() {
-    return !Runtime.queryParam('debugFrontend') && this._descriptor.remote && Runtime._remoteBase || undefined;
+    return !Runtime.queryParam('debugFrontend') && this._descriptor.remote && remoteBase || undefined;
   }
 
   /**
@@ -908,8 +659,8 @@ class Module {
    */
   fetchResource(resourceName) {
     const base = this._remoteBase();
-    const sourceURL = Runtime.getResourceURL(this._modularizeURL(resourceName), base);
-    return base ? Runtime.loadResourcePromiseWithFallback(sourceURL) : Runtime.loadResourcePromise(sourceURL);
+    const sourceURL = getResourceURL(this._modularizeURL(resourceName), base);
+    return base ? loadResourcePromiseWithFallback(sourceURL) : loadResourcePromise(sourceURL);
   }
 
   /**
@@ -926,52 +677,52 @@ class Module {
   }
 }
 
-
 /**
  * @unrestricted
  */
-class Extension { /**
-   * @param {!Runtime.Module} module
-   * @param {!RuntimeExtensionDescriptor} descriptor
-   */
-  constructor(module, descriptor) {
-    this._module = module;
+export class Extension {
+  /**
+  * @param {!Module} moduleParam
+  * @param {!RuntimeExtensionDescriptor} descriptor
+  */
+  constructor(moduleParam, descriptor) {
+    this._module = moduleParam;
     this._descriptor = descriptor;
 
     this._type = descriptor.type;
     this._hasTypeClass = this._type.charAt(0) === '@';
 
     /**
-     * @type {?string}
-     */
+    * @type {?string}
+    */
     this._className = descriptor.className || null;
     this._factoryName = descriptor.factoryName || null;
   }
 
   /**
-   * @return {!Object}
-   */
+  * @return {!Object}
+  */
   descriptor() {
     return this._descriptor;
   }
 
   /**
-   * @return {!Runtime.Module}
-   */
+  * @return {!Module}
+  */
   module() {
     return this._module;
   }
 
   /**
-   * @return {boolean}
-   */
+  * @return {boolean}
+  */
   enabled() {
     return this._module.enabled() && Runtime._isDescriptorEnabled(this.descriptor());
   }
 
   /**
-   * @return {?function(new:Object)}
-   */
+  * @return {?function(new:Object)}
+  */
   _typeClass() {
     if (!this._hasTypeClass) {
       return null;
@@ -980,30 +731,30 @@ class Extension { /**
   }
 
   /**
-   * @param {?Object} context
-   * @return {boolean}
-   */
+  * @param {?Object} context
+  * @return {boolean}
+  */
   isApplicable(context) {
     return this._module._manager.isExtensionApplicableToContext(this, context);
   }
 
   /**
-   * @return {!Promise.<!Object>}
-   */
+  * @return {!Promise.<!Object>}
+  */
   instance() {
     return this._module._loadPromise().then(this._createInstance.bind(this));
   }
 
   /**
-   * @return {boolean}
-   */
+  * @return {boolean}
+  */
   canInstantiate() {
     return !!(this._className || this._factoryName);
   }
 
   /**
-   * @return {!Object}
-   */
+  * @return {!Object}
+  */
   _createInstance() {
     const className = this._className || this._factoryName;
     if (!className) {
@@ -1020,20 +771,20 @@ class Extension { /**
   }
 
   /**
-   * @return {string}
-   */
+  * @return {string}
+  */
   title() {
-    const title = this._descriptor['title-' + Runtime._platform] || this._descriptor['title'];
-    if (title && Runtime._l10nCallback) {
-      return Runtime._l10nCallback(title);
+    const title = this._descriptor['title-' + runtimePlatform] || this._descriptor['title'];
+    if (title && l10nCallback) {
+      return l10nCallback(title);
     }
     return title;
   }
 
   /**
-   * @param {function(new:Object)} contextType
-   * @return {boolean}
-   */
+  * @param {function(new:Object)} contextType
+  * @return {boolean}
+  */
   hasContextType(contextType) {
     const contextTypes = this.descriptor().contextTypes;
     if (!contextTypes) {
@@ -1049,20 +800,23 @@ class Extension { /**
 }
 
 /**
- * @unrestricted
- */
-class ExperimentsSupport {
+* @unrestricted
+*/
+export class ExperimentsSupport {
   constructor() {
+    /** @type {!Array<!Experiment>} */
     this._experiments = [];
+    /** @type {!Object<string,boolean>} */
     this._experimentNames = {};
+    /** @type {!Object<string,boolean>} */
     this._enabledTransiently = {};
     /** @type {!Set<string>} */
     this._serverEnabled = new Set();
   }
 
   /**
-   * @return {!Array.<!Runtime.Experiment>}
-   */
+  * @return {!Array.<!Experiment>}
+  */
   allConfigurableExperiments() {
     const result = [];
     for (let i = 0; i < this._experiments.length; i++) {
@@ -1075,8 +829,8 @@ class ExperimentsSupport {
   }
 
   /**
-   * @param {!Object} value
-   */
+  * @param {!Object} value
+  */
   _setExperimentsSetting(value) {
     if (!self.localStorage) {
       return;
@@ -1085,20 +839,20 @@ class ExperimentsSupport {
   }
 
   /**
-   * @param {string} experimentName
-   * @param {string} experimentTitle
-   * @param {boolean=} unstable
-   */
+  * @param {string} experimentName
+  * @param {string} experimentTitle
+  * @param {boolean=} unstable
+  */
   register(experimentName, experimentTitle, unstable) {
     Runtime._assert(!this._experimentNames[experimentName], 'Duplicate registration of experiment ' + experimentName);
     this._experimentNames[experimentName] = true;
-    this._experiments.push(new Runtime.Experiment(this, experimentName, experimentTitle, !!unstable));
+    this._experiments.push(new Experiment(this, experimentName, experimentTitle, !!unstable));
   }
 
   /**
-   * @param {string} experimentName
-   * @return {boolean}
-   */
+  * @param {string} experimentName
+  * @return {boolean}
+  */
   isEnabled(experimentName) {
     this._checkExperiment(experimentName);
     // Check for explicitly disabled experiments first - the code could call setEnable(false) on the experiment enabled
@@ -1117,9 +871,9 @@ class ExperimentsSupport {
   }
 
   /**
-   * @param {string} experimentName
-   * @param {boolean} enabled
-   */
+  * @param {string} experimentName
+  * @param {boolean} enabled
+  */
   setEnabled(experimentName, enabled) {
     this._checkExperiment(experimentName);
     const experimentsSetting = Runtime._experimentsSetting();
@@ -1128,8 +882,8 @@ class ExperimentsSupport {
   }
 
   /**
-   * @param {!Array.<string>} experimentNames
-   */
+  * @param {!Array.<string>} experimentNames
+  */
   setDefaultExperiments(experimentNames) {
     for (let i = 0; i < experimentNames.length; ++i) {
       this._checkExperiment(experimentNames[i]);
@@ -1138,8 +892,8 @@ class ExperimentsSupport {
   }
 
   /**
-   * @param {!Array.<string>} experimentNames
-   */
+  * @param {!Array.<string>} experimentNames
+  */
   setServerEnabledExperiments(experimentNames) {
     for (const experiment of experimentNames) {
       this._checkExperiment(experiment);
@@ -1148,8 +902,8 @@ class ExperimentsSupport {
   }
 
   /**
-   * @param {string} experimentName
-   */
+  * @param {string} experimentName
+  */
   enableForTest(experimentName) {
     this._checkExperiment(experimentName);
     this._enabledTransiently[experimentName] = true;
@@ -1175,23 +929,23 @@ class ExperimentsSupport {
   }
 
   /**
-   * @param {string} experimentName
-   */
+  * @param {string} experimentName
+  */
   _checkExperiment(experimentName) {
     Runtime._assert(this._experimentNames[experimentName], 'Unknown experiment ' + experimentName);
   }
 }
 
 /**
- * @unrestricted
- */
+* @unrestricted
+*/
 class Experiment {
   /**
-   * @param {!Runtime.ExperimentsSupport} experiments
-   * @param {string} name
-   * @param {string} title
-   * @param {boolean} unstable
-   */
+  * @param {!ExperimentsSupport} experiments
+  * @param {string} name
+  * @param {string} title
+  * @param {boolean} unstable
+  */
   constructor(experiments, name, title, unstable) {
     this.name = name;
     this.title = title;
@@ -1200,71 +954,199 @@ class Experiment {
   }
 
   /**
-   * @return {boolean}
-   */
+  * @return {boolean}
+  */
   isEnabled() {
     return this._experiments.isEnabled(this.name);
   }
 
   /**
-   * @param {boolean} enabled
-   */
+  * @param {boolean} enabled
+  */
   setEnabled(enabled) {
     this._experiments.setEnabled(this.name, enabled);
   }
 }
 
-// This must be constructed after the query parameters have been parsed.
-Runtime.experiments = new ExperimentsSupport();
+/**
+ * @private
+ * @param {string} url
+ * @param {boolean} asBinary
+ * @template T
+ * @return {!Promise.<T>}
+ */
+function internalLoadResourcePromise(url, asBinary) {
+  return new Promise(load);
 
-/** @type {Function} */
-Runtime._appStartedPromiseCallback;
-Runtime._appStartedPromise = new Promise(fulfil => Runtime._appStartedPromiseCallback = fulfil);
+  /**
+   * @param {function(?):void} fulfill
+   * @param {function(*):void} reject
+   */
+  function load(fulfill, reject) {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    if (asBinary) {
+      xhr.responseType = 'arraybuffer';
+    }
+    xhr.onreadystatechange = onreadystatechange;
 
-/** @type {function(string):string} */
-Runtime._l10nCallback;
+    /**
+     * @param {!Event} e
+     */
+    function onreadystatechange(e) {
+      if (xhr.readyState !== XMLHttpRequest.DONE) {
+        return;
+      }
+
+      const {response} = e.target;
+
+      const text = asBinary ? new TextDecoder().decode(response) : response;
+
+      // DevTools Proxy server can mask 404s as 200s, check the body to be sure
+      const status = /^HTTP\/1.1 404/.test(text) ? 404 : xhr.status;
+
+      if ([0, 200, 304].indexOf(status) === -1)  // Testing harness file:/// results in 0.
+      {
+        reject(new Error('While loading from url ' + url + ' server responded with a status of ' + status));
+      } else {
+        fulfill(response);
+      }
+    }
+    xhr.send(null);
+  }
+}
 
 /**
- * @type {?string}
+ * @type {!Object<string,boolean>}
  */
-Runtime._remoteBase;
+const loadedScripts = {};
+
+/**
+ * @param {!Array.<string>} scriptNames
+ * @param {string=} base
+ * @return {!Promise.<void>}
+ */
+function loadScriptsPromise(scriptNames, base) {
+  /** @type {!Array<!Promise<void>>} */
+  const promises = [];
+  /** @type {!Array<string>} */
+  const urls = [];
+  const sources = new Array(scriptNames.length);
+  let scriptToEval = 0;
+  for (let i = 0; i < scriptNames.length; ++i) {
+    const scriptName = scriptNames[i];
+    const sourceURL = getResourceURL(scriptName, base);
+
+    if (loadedScripts[sourceURL]) {
+      continue;
+    }
+    urls.push(sourceURL);
+    const promise = base ? loadResourcePromiseWithFallback(sourceURL) : loadResourcePromise(sourceURL);
+    promises.push(promise.then(scriptSourceLoaded.bind(null, i), scriptSourceLoaded.bind(null, i, undefined)));
+  }
+  return Promise.all(promises).then(undefined);
+
+  /**
+   * @param {number} scriptNumber
+   * @param {string=} scriptSource
+   */
+  function scriptSourceLoaded(scriptNumber, scriptSource) {
+    sources[scriptNumber] = scriptSource || '';
+    // Eval scripts as fast as possible.
+    while (typeof sources[scriptToEval] !== 'undefined') {
+      evaluateScript(urls[scriptToEval], sources[scriptToEval]);
+      ++scriptToEval;
+    }
+  }
+
+  /**
+   * @param {string} sourceURL
+   * @param {string=} scriptSource
+   */
+  function evaluateScript(sourceURL, scriptSource) {
+    loadedScripts[sourceURL] = true;
+    if (!scriptSource) {
+      // Do not reject, as this is normal in the hosted mode.
+      console.error('Empty response arrived for script \'' + sourceURL + '\'');
+      return;
+    }
+    self.eval(scriptSource + '\n//# sourceURL=' + sourceURL);
+  }
+}
+
+/**
+ * @param {string} url
+ * @return {!Promise.<string>}
+ */
+function loadResourcePromiseWithFallback(url) {
+  return loadResourcePromise(url).catch(err => {
+    const urlWithFallbackVersion = url.replace(/@[0-9a-f]{40}/, REMOTE_MODULE_FALLBACK_REVISION);
+    // TODO(phulce): mark fallbacks in module.json and modify build script instead
+    if (urlWithFallbackVersion === url || !url.includes('lighthouse_worker_module')) {
+      throw err;
+    }
+    return loadResourcePromise(urlWithFallbackVersion);
+  });
+}
+
+/**
+ * @param {string} url
+ * @param {boolean} appendSourceURL
+ * @return {!Promise<void>}
+ */
+function loadResourceIntoCache(url, appendSourceURL) {
+  return loadResourcePromise(url).then(cacheResource.bind(null, url), cacheResource.bind(null, url, undefined));
+
+  /**
+   * @param {string} path
+   * @param {string=} content
+   */
+  function cacheResource(path, content) {
+    if (!content) {
+      console.error('Failed to load resource: ' + path);
+      return;
+    }
+    const sourceURL = appendSourceURL ? Runtime.resolveSourceURL(path) : '';
+    self.Runtime.cachedResources[path] = content + sourceURL;
+  }
+}
+
+/**
+ * @param {string} url
+ * @return {!Promise.<string>}
+ */
+export function loadResourcePromise(url) {
+  return internalLoadResourcePromise(url, false);
+}
+
+/**
+ * @param {string} scriptName
+ * @param {string=} base
+ * @return {string}
+ */
+function getResourceURL(scriptName, base) {
+  const sourceURL = (base || importScriptPathPrefix) + scriptName;
+  const schemaIndex = sourceURL.indexOf('://') + 3;
+  let pathIndex = sourceURL.indexOf('/', schemaIndex);
+  if (pathIndex === -1) {
+    pathIndex = sourceURL.length;
+  }
+  return sourceURL.substring(0, pathIndex) + Runtime.normalizePath(sourceURL.substring(pathIndex));
+}
+
 (function validateRemoteBase() {
-  if (location.href.startsWith('devtools://devtools/bundled/') && Runtime.queryParam('remoteBase')) {
-    const versionMatch = /\/serve_file\/(@[0-9a-zA-Z]+)\/?$/.exec(Runtime.queryParam('remoteBase'));
-    if (versionMatch) {
-      Runtime._remoteBase = `${location.origin}/remote/serve_file/${versionMatch[1]}/`;
+  if (location.href.startsWith('devtools://devtools/bundled/')) {
+    const queryParam = Runtime.queryParam('remoteBase');
+    if (queryParam) {
+      const versionMatch = /\/serve_file\/(@[0-9a-zA-Z]+)\/?$/.exec(queryParam);
+      if (versionMatch) {
+        remoteBase = `${location.origin}/remote/serve_file/${versionMatch[1]}/`;
+      }
     }
   }
 })();
 
-self.Root = self.Root || {};
-Root = Root || {};
-
-// This gets all concatenated module descriptors in the release mode.
-Root.allDescriptors = Root.allDescriptors || [];
-
-Root.applicationDescriptor = Root.applicationDescriptor || undefined;
-
-/** @constructor */
-Root.Runtime = Runtime;
-
-/** @type {!Runtime} */
-Root.runtime;
-
-/** @constructor */
-Root.Runtime.ModuleDescriptor = ModuleDescriptor;
-
-/** @constructor */
-Root.Runtime.ExtensionDescriptor = RuntimeExtensionDescriptor;
-
-/** @constructor */
-Root.Runtime.Extension = Extension;
-
-/** @constructor */
-Root.Runtime.Module = Module;
-
-/** @constructor */
-Root.Runtime.ExperimentsSupport = ExperimentsSupport;
-
-/** @constructor */
-Root.Runtime.Experiment = Experiment;
+(function() {
+const baseUrl = self.location ? self.location.origin + self.location.pathname : '';
+importScriptPathPrefix = baseUrl.substring(0, baseUrl.lastIndexOf('/') + 1);
+})();

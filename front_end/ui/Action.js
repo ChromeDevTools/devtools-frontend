@@ -27,7 +27,7 @@ export class Action extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @return {!Runtime.Extension}
+   * @return {!Root.Runtime.Extension}
    */
   extension() {
     return this._extension;

@@ -249,6 +249,7 @@ all_devtools_files = [
   "front_end/resources/resourcesSidebar.css",
   "front_end/resources/serviceWorkerCacheViews.css",
   "front_end/resources/serviceWorkersView.css",
+  "front_end/root/module.json",
   "front_end/screencast/module.json",
   "front_end/screencast/screencastView.css",
   "front_end/sdk_test_runner/module.json",
@@ -430,7 +431,7 @@ all_devtools_files += lighthouse_locale_files
 
 devtools_module_entrypoints = [
   "root.js",
-  "Runtime.js",
+  "RuntimeInstantiator.js",
   "accessibility/accessibility.js",
   "accessibility/accessibility-legacy.js",
   "animation/animation.js",
@@ -537,6 +538,8 @@ devtools_module_entrypoints = [
   "quick_open/quick_open-legacy.js",
   "resources/resources.js",
   "resources/resources-legacy.js",
+  "root/root.js",
+  "root/root-legacy.js",
   "screencast/screencast.js",
   "screencast/screencast-legacy.js",
   "sdk/sdk.js",
@@ -1365,6 +1368,7 @@ all_devtools_modules = [
   "resources/ApplicationCacheModel.js",
   "resources/ApplicationCacheItemsView.js",
   "resources/AppManifestView.js",
+  "root/Runtime.js",
   "screencast/InputModel.js",
   "screencast/ScreencastApp.js",
   "screencast/ScreencastView.js",

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './Runtime.js';
+import './RuntimeInstantiator.js';
 import './platform/platform.js';
 import './dom_extension/dom_extension.js';
 import './common/common-legacy.js';

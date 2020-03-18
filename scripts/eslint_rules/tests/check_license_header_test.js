@@ -58,7 +58,7 @@ import * as Action from './Action.js';
 */
 const _loadedScripts = {};
 `,
-      filename: 'front_end/Runtime.js',
+      filename: 'front_end/RuntimeInstantiator.js',
     },
     {
       code: `

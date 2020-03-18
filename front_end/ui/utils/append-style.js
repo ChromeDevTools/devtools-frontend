@@ -8,7 +8,7 @@
  * @suppressGlobalPropertiesCheck
  */
 export function appendStyle(node, cssFile) {
-  const content = Root.Runtime.cachedResources[cssFile] || '';
+  const content = self.Runtime.cachedResources[cssFile] || '';
   if (!content) {
     console.error(cssFile + ' not preloaded. Check module.json');
   }

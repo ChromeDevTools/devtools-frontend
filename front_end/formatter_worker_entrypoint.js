@@ -2,12 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './Runtime.js';
-
+import './RuntimeInstantiator.js';
 import './common/common.js';
 import './platform/platform.js';
 import './text_utils/text_utils-legacy.js';
 import './cm_headless/cm_headless.js';
 import './formatter_worker/formatter_worker.js';
 
-Root.Runtime.startWorker('formatter_worker_entrypoint');
+import {startWorker} from './RuntimeInstantiator.js';
+
+startWorker('formatter_worker_entrypoint');

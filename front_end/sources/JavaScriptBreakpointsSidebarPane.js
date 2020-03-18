@@ -19,7 +19,7 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
     super(true);
     this.registerRequiredCSS('sources/javaScriptBreakpointsSidebarPane.css');
 
-    this._breakpointManager = self.Bindings.breakpointManager;
+    this._breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance();
     this._breakpointManager.addEventListener(Bindings.BreakpointManager.Events.BreakpointAdded, this.update, this);
     this._breakpointManager.addEventListener(Bindings.BreakpointManager.Events.BreakpointRemoved, this.update, this);
     Common.Settings.Settings.instance().moduleSetting('breakpointsActive').addChangeListener(this.update, this);

@@ -72,7 +72,7 @@ export class DebuggerPlugin extends Plugin {
     this._controlTimeout = null;
 
     this._scriptsPanel = SourcesPanel.instance();
-    this._breakpointManager = self.Bindings.breakpointManager;
+    this._breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance();
     if (uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Debugger) {
       this._textEditor.element.classList.add('source-frame-debugger-script');
     }

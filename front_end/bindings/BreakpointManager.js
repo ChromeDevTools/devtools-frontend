@@ -36,15 +36,21 @@ import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';  // esli
 import {LiveLocation, LiveLocationPool} from './LiveLocation.js';        // eslint-disable-line no-unused-vars
 
 /**
+ * @type {!BreakpointManager}
+ */
+let breakpointManagerInstance;
+
+/**
  * @unrestricted
  */
 export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper {
   /**
-   * @param {!Workspace.Workspace.WorkspaceImpl} workspace
+   * @private
    * @param {!SDK.SDKModel.TargetManager} targetManager
+   * @param {!Workspace.Workspace.WorkspaceImpl} workspace
    * @param {!DebuggerWorkspaceBinding} debuggerWorkspaceBinding
    */
-  constructor(workspace, targetManager, debuggerWorkspaceBinding) {
+  constructor(targetManager, workspace, debuggerWorkspaceBinding) {
     super();
     this._storage = new Storage();
     this._workspace = workspace;
@@ -57,6 +63,24 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper {
     this._breakpointByStorageId = new Map();
 
     this._workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
+  }
+
+  /**
+   * @param {{forceNew: ?boolean, targetManager: ?SDK.SDKModel.TargetManager, workspace: ?Workspace.Workspace.WorkspaceImpl, debuggerWorkspaceBinding: ?DebuggerWorkspaceBinding}} opts
+   */
+  static instance(opts = {forceNew: null, targetManager: null, workspace: null, debuggerWorkspaceBinding: null}) {
+    const {forceNew, targetManager, workspace, debuggerWorkspaceBinding} = opts;
+    if (!breakpointManagerInstance || forceNew) {
+      if (!targetManager || !workspace || !debuggerWorkspaceBinding) {
+        throw new Error(
+            `Unable to create settings: targetManager, workspace, and debuggerWorkspaceBinding must be provided: ${
+                new Error().stack}`);
+      }
+
+      breakpointManagerInstance = new BreakpointManager(targetManager, workspace, debuggerWorkspaceBinding);
+    }
+
+    return breakpointManagerInstance;
   }
 
   /**

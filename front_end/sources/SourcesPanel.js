@@ -538,7 +538,7 @@ export class SourcesPanel extends UI.Panel.Panel {
     const details = currentDebuggerModel ? currentDebuggerModel.debuggerPausedDetails() : null;
     await this._debuggerPausedMessage.render(
         details, Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(),
-        self.Bindings.breakpointManager);
+        Bindings.BreakpointManager.BreakpointManager.instance());
     if (details) {
       this._updateDebuggerButtonsAndStatusForTest();
     }

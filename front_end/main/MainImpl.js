@@ -239,15 +239,18 @@ export class MainImpl {
         {forceNew: true, targetManager: SDK.SDKModel.TargetManager.instance(), workspace: self.Workspace.workspace});
     self.Bindings.debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(
         {forceNew: true, targetManager: SDK.SDKModel.TargetManager.instance(), workspace: self.Workspace.workspace});
-    self.Bindings.breakpointManager = new Bindings.BreakpointManager.BreakpointManager(
-        self.Workspace.workspace, SDK.SDKModel.TargetManager.instance(),
-        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance());
+    self.Bindings.breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance({
+      forceNew: true,
+      workspace: self.Workspace.workspace,
+      targetManager: SDK.SDKModel.TargetManager.instance(),
+      debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+    });
     self.Extensions.extensionServer = new Extensions.ExtensionServer.ExtensionServer();
 
     new Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding(
         self.Persistence.isolatedFileSystemManager, self.Workspace.workspace);
-    self.Persistence.persistence =
-        new Persistence.Persistence.PersistenceImpl(self.Workspace.workspace, self.Bindings.breakpointManager);
+    self.Persistence.persistence = new Persistence.Persistence.PersistenceImpl(
+        self.Workspace.workspace, Bindings.BreakpointManager.BreakpointManager.instance());
     self.Persistence.networkPersistenceManager =
         new Persistence.NetworkPersistenceManager.NetworkPersistenceManager(self.Workspace.workspace);
 

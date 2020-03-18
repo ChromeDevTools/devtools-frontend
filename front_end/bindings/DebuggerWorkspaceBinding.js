@@ -14,6 +14,10 @@ import {LiveLocation, LiveLocationPool, LiveLocationWithPool} from './LiveLocati
 import {ResourceMapping} from './ResourceMapping.js';
 import {ResourceScriptFile, ResourceScriptMapping} from './ResourceScriptMapping.js';  // eslint-disable-line no-unused-vars
 
+/**
+ * @type {!DebuggerWorkspaceBinding}
+ */
+let debuggerWorkspaceBindingInstance;
 
 /**
  * @unrestricted
@@ -21,6 +25,7 @@ import {ResourceScriptFile, ResourceScriptMapping} from './ResourceScriptMapping
  */
 export class DebuggerWorkspaceBinding {
   /**
+   * @private
    * @param {!SDK.SDKModel.TargetManager} targetManager
    * @param {!Workspace.Workspace.WorkspaceImpl} workspace
    */
@@ -40,6 +45,23 @@ export class DebuggerWorkspaceBinding {
 
     /** @type {!Set.<!Promise>} */
     this._liveLocationPromises = new Set();
+  }
+
+  /**
+   * @param {{forceNew: ?boolean, targetManager: ?SDK.SDKModel.TargetManager, workspace: ?Workspace.Workspace.WorkspaceImpl}} opts
+   */
+  static instance(opts = {forceNew: null, targetManager: null, workspace: null}) {
+    const {forceNew, targetManager, workspace} = opts;
+    if (!debuggerWorkspaceBindingInstance || forceNew) {
+      if (!targetManager || !workspace) {
+        throw new Error(
+            `Unable to create settings: targetManager and workspace must be provided: ${new Error().stack}`);
+      }
+
+      debuggerWorkspaceBindingInstance = new DebuggerWorkspaceBinding(targetManager, workspace);
+    }
+
+    return debuggerWorkspaceBindingInstance;
   }
 
   /**

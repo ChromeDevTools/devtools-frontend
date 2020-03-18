@@ -498,8 +498,9 @@ export class SourcesPanel extends UI.Panel.Panel {
     if (this._executionLineLocation) {
       this._executionLineLocation.dispose();
     }
-    this._executionLineLocation = await self.Bindings.debuggerWorkspaceBinding.createCallFrameLiveLocation(
-        callFrame.location(), this._executionLineChanged.bind(this), this._liveLocationPool);
+    this._executionLineLocation =
+        await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createCallFrameLiveLocation(
+            callFrame.location(), this._executionLineChanged.bind(this), this._liveLocationPool);
   }
 
   _pauseOnExceptionEnabledChanged() {
@@ -536,7 +537,8 @@ export class SourcesPanel extends UI.Panel.Panel {
 
     const details = currentDebuggerModel ? currentDebuggerModel.debuggerPausedDetails() : null;
     await this._debuggerPausedMessage.render(
-        details, self.Bindings.debuggerWorkspaceBinding, self.Bindings.breakpointManager);
+        details, Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(),
+        self.Bindings.breakpointManager);
     if (details) {
       this._updateDebuggerButtonsAndStatusForTest();
     }
@@ -711,8 +713,9 @@ export class SourcesPanel extends UI.Panel.Panel {
       return;
     }
     // Always use 0 column.
-    const rawLocations = await self.Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(
-        uiLocation.uiSourceCode, uiLocation.lineNumber, 0);
+    const rawLocations =
+        await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().uiLocationToRawLocations(
+            uiLocation.uiSourceCode, uiLocation.lineNumber, 0);
     const rawLocation = rawLocations.find(location => location.debuggerModel === executionContext.debuggerModel);
     if (rawLocation && this._prepareToResume()) {
       rawLocation.continueToLocation();
@@ -901,7 +904,9 @@ export class SourcesPanel extends UI.Panel.Panel {
       return;
     }
 
-    const uiLocation = await self.Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(response.location);
+    const uiLocation =
+        await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(
+            response.location);
     if (uiLocation) {
       this.showUILocation(uiLocation);
     }
@@ -1104,7 +1109,9 @@ export class DebuggerLocationRevealer {
     if (!(rawLocation instanceof SDK.DebuggerModel.Location)) {
       throw new Error('Internal error: not a debugger location');
     }
-    const uiLocation = await self.Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
+    const uiLocation =
+        await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(
+            rawLocation);
     if (uiLocation) {
       SourcesPanel.instance().showUILocation(uiLocation, omitFocus);
     }

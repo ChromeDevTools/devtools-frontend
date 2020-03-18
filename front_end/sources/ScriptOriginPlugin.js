@@ -57,7 +57,9 @@ export class ScriptOriginPlugin extends Plugin {
    * @return {!Promise<?SDK.Script.Script>}
    */
   static async _script(uiSourceCode) {
-    const locations = await self.Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(uiSourceCode, 0, 0);
+    const locations =
+        await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().uiLocationToRawLocations(
+            uiSourceCode, 0, 0);
     for (const location of locations) {
       const script = location.script();
       if (script && script.originStackTrace) {

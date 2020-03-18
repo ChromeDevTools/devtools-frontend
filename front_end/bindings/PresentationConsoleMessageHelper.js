@@ -32,6 +32,7 @@ import * as Common from '../common/common.js';  // eslint-disable-line no-unused
 import * as SDK from '../sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
 
+import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
 import {LiveLocation, LiveLocationPool} from './LiveLocation.js';  // eslint-disable-line no-unused-vars
 
 /**
@@ -218,8 +219,7 @@ export class PresentationConsoleMessage {
     this._text = message.messageText;
     this._level = message.level === SDK.ConsoleModel.MessageLevel.Error ? Workspace.UISourceCode.Message.Level.Error :
                                                                           Workspace.UISourceCode.Message.Level.Warning;
-    self.Bindings.debuggerWorkspaceBinding.createLiveLocation(
-        rawLocation, this._updateLocation.bind(this), locationPool);
+    DebuggerWorkspaceBinding.instance().createLiveLocation(rawLocation, this._updateLocation.bind(this), locationPool);
   }
 
   /**

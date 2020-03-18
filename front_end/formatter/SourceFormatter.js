@@ -178,7 +178,7 @@ export class SourceFormatter {
  */
 class ScriptMapping {
   constructor() {
-    self.Bindings.debuggerWorkspaceBinding.addSourceMapping(this);
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().addSourceMapping(this);
   }
 
   /**
@@ -229,8 +229,9 @@ class ScriptMapping {
       // Here we have a script that is displayed on its own (i.e. it has a dedicated uiSourceCode). This means it is
       // either a stand-alone script or an inline script with a #sourceURL= and in both cases we can just forward the
       // question to the original (unformatted) source code.
-      const rawLocations = self.Bindings.debuggerWorkspaceBinding.uiLocationToRawLocationsForUnformattedJavaScript(
-          formatData.originalSourceCode, originalLine, originalColumn);
+      const rawLocations = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+                               .uiLocationToRawLocationsForUnformattedJavaScript(
+                                   formatData.originalSourceCode, originalLine, originalColumn);
       console.assert(rawLocations.every(l => l && !!l.script()));
       return rawLocations;
     }
@@ -268,7 +269,8 @@ class ScriptMapping {
         delete script[SourceFormatData._formatDataSymbol];
       }
     }
-    const updatePromises = scripts.map(script => self.Bindings.debuggerWorkspaceBinding.updateLocations(script));
+    const updatePromises = scripts.map(
+        script => Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().updateLocations(script));
     await Promise.all(updatePromises);
   }
 
@@ -290,8 +292,8 @@ class ScriptMapping {
       console.assert(
           !uiSourceCode[SourceFormatData._formatDataSymbol] ||
           uiSourceCode[SourceFormatData._formatDataSymbol] === uiSourceCode);
-      const rawLocations =
-          self.Bindings.debuggerWorkspaceBinding.uiLocationToRawLocationsForUnformattedJavaScript(uiSourceCode, 0, 0);
+      const rawLocations = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+                               .uiLocationToRawLocationsForUnformattedJavaScript(uiSourceCode, 0, 0);
       return rawLocations.map(location => location.script()).filter(script => !!script);
     }
     return [];

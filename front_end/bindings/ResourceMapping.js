@@ -9,6 +9,7 @@ import * as Workspace from '../workspace/workspace.js';
 
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
 import {CSSWorkspaceBinding} from './CSSWorkspaceBinding.js';
+import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
 import {NetworkProject} from './NetworkProject.js';
 import {resourceMetadata} from './ResourceUtils.js';
 
@@ -426,7 +427,7 @@ class Binding {
           continue;
         }
         script[offsetSymbol] = scriptOffset.rebaseAfterTextEdit(oldRange, newRange);
-        updatePromises.push(self.Bindings.debuggerWorkspaceBinding.updateLocations(script));
+        updatePromises.push(DebuggerWorkspaceBinding.instance().updateLocations(script));
       }
       for (const style of styles) {
         const styleOffset =

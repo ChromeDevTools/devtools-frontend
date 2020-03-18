@@ -616,7 +616,9 @@ export class TimelineUIUtils {
       if (!rawLocation) {
         return null;
       }
-      const uiLocation = await self.Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
+      const uiLocation =
+          await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(
+              rawLocation);
       return uiLocation ? uiLocation.linkText() : null;
     }
 

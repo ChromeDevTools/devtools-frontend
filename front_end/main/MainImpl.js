@@ -237,10 +237,11 @@ export class MainImpl {
     new Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager();
     self.Bindings.cssWorkspaceBinding = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance(
         {forceNew: true, targetManager: SDK.SDKModel.TargetManager.instance(), workspace: self.Workspace.workspace});
-    self.Bindings.debuggerWorkspaceBinding = new Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding(
-        SDK.SDKModel.TargetManager.instance(), self.Workspace.workspace);
+    self.Bindings.debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(
+        {forceNew: true, targetManager: SDK.SDKModel.TargetManager.instance(), workspace: self.Workspace.workspace});
     self.Bindings.breakpointManager = new Bindings.BreakpointManager.BreakpointManager(
-        self.Workspace.workspace, SDK.SDKModel.TargetManager.instance(), self.Bindings.debuggerWorkspaceBinding);
+        self.Workspace.workspace, SDK.SDKModel.TargetManager.instance(),
+        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance());
     self.Extensions.extensionServer = new Extensions.ExtensionServer.ExtensionServer();
 
     new Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding(
@@ -251,8 +252,8 @@ export class MainImpl {
         new Persistence.NetworkPersistenceManager.NetworkPersistenceManager(self.Workspace.workspace);
 
     new ExecutionContextSelector(SDK.SDKModel.TargetManager.instance(), self.UI.context);
-    self.Bindings.blackboxManager =
-        new Bindings.BlackboxManager.BlackboxManager(self.Bindings.debuggerWorkspaceBinding);
+    self.Bindings.blackboxManager = new Bindings.BlackboxManager.BlackboxManager(
+        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance());
 
     new PauseListener();
 

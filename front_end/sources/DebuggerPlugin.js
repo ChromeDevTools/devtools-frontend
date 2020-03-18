@@ -1007,10 +1007,12 @@ export class DebuggerPlugin extends Plugin {
       return;
     }
 
-    const functionUILocationPromise = self.Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(
-        /** @type {!SDK.DebuggerModel.Location} */ (callFrame.functionLocation()));
+    const functionUILocationPromise =
+        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(
+            /** @type {!SDK.DebuggerModel.Location} */ (callFrame.functionLocation()));
     const executionUILocationPromise =
-        self.Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(callFrame.location());
+        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(
+            callFrame.location());
     const [functionUILocation, executionUILocation] =
         await Promise.all([functionUILocationPromise, executionUILocationPromise]);
     if (!functionUILocation || !executionUILocation || functionUILocation.uiSourceCode !== this._uiSourceCode ||
@@ -1546,7 +1548,8 @@ export class DebuggerPlugin extends Plugin {
 
   _updateScriptFiles() {
     for (const debuggerModel of SDK.SDKModel.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel)) {
-      const scriptFile = self.Bindings.debuggerWorkspaceBinding.scriptFile(this._uiSourceCode, debuggerModel);
+      const scriptFile = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptFile(
+          this._uiSourceCode, debuggerModel);
       if (scriptFile) {
         this._updateScriptFile(debuggerModel);
       }
@@ -1558,7 +1561,8 @@ export class DebuggerPlugin extends Plugin {
    */
   _updateScriptFile(debuggerModel) {
     const oldScriptFile = this._scriptFileForDebuggerModel.get(debuggerModel);
-    const newScriptFile = self.Bindings.debuggerWorkspaceBinding.scriptFile(this._uiSourceCode, debuggerModel);
+    const newScriptFile = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptFile(
+        this._uiSourceCode, debuggerModel);
     this._scriptFileForDebuggerModel.delete(debuggerModel);
     if (oldScriptFile) {
       oldScriptFile.removeEventListener(
@@ -1741,7 +1745,7 @@ export class DebuggerPlugin extends Plugin {
       this._clearExecutionLine();
       return;
     }
-    await self.Bindings.debuggerWorkspaceBinding.createCallFrameLiveLocation(
+    await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createCallFrameLiveLocation(
         callFrame.location(), this._executionLineChanged.bind(this), this._liveLocationPool);
   }
 

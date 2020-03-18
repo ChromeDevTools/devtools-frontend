@@ -164,9 +164,9 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper {
    * @return {!Promise<!Array<!Workspace.UISourceCode.UILocation>>}
    */
   async possibleBreakpoints(uiSourceCode, textRange) {
-    const startLocationsPromise = self.Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(
+    const startLocationsPromise = DebuggerWorkspaceBinding.instance().uiLocationToRawLocations(
         uiSourceCode, textRange.startLine, textRange.startColumn);
-    const endLocationsPromise = self.Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(
+    const endLocationsPromise = DebuggerWorkspaceBinding.instance().uiLocationToRawLocations(
         uiSourceCode, textRange.endLine, textRange.endColumn);
     const [startLocations, endLocations] = await Promise.all([startLocationsPromise, endLocationsPromise]);
     const endLocationByModel = new Map();
@@ -593,7 +593,7 @@ export class ModelBreakpoint {
     let debuggerLocation = null;
     if (uiSourceCode) {
       const locations =
-          await self.Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
+          await DebuggerWorkspaceBinding.instance().uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
       debuggerLocation = locations.find(location => location.debuggerModel === this._debuggerModel);
     }
     let newState;

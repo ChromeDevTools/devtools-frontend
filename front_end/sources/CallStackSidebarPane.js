@@ -507,7 +507,7 @@ export class Item {
    */
   static async createForDebuggerCallFrame(frame, locationPool, updateDelegate) {
     const item = new Item(UI.UIUtils.beautifyFunctionName(frame.functionName), updateDelegate);
-    await self.Bindings.debuggerWorkspaceBinding.createCallFrameLiveLocation(
+    await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createCallFrameLiveLocation(
         frame.location(), item._update.bind(item), locationPool);
     return item;
   }
@@ -537,8 +537,9 @@ export class Item {
         item.linkText = (frame.url || '<unknown>') + ':' + (frame.lineNumber + 1);
         item.updateDelegate(item);
       } else {
-        liveLocationPromises.push(self.Bindings.debuggerWorkspaceBinding.createCallFrameLiveLocation(
-            rawLocation, item._update.bind(item), locationPool));
+        liveLocationPromises.push(
+            Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createCallFrameLiveLocation(
+                rawLocation, item._update.bind(item), locationPool));
       }
       asyncFrameItems.push(item);
     }

@@ -198,8 +198,9 @@ export class Linkifier {
     info.fallback = fallbackAnchor;
 
     const pool = this._locationPoolByTarget.get(rawLocation.debuggerModel.target());
-    const maybeLiveLocationPromise = self.Bindings.debuggerWorkspaceBinding.createLiveLocation(
-        rawLocation, this._updateAnchor.bind(this, anchor), pool);
+    const maybeLiveLocationPromise =
+        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createLiveLocation(
+            rawLocation, this._updateAnchor.bind(this, anchor), pool);
     // TODO(1032016): Remove {Promise.resolve} wrapping once {createLiveLocation} returns a promise.
     Promise.resolve(maybeLiveLocationPromise).then(liveLocation => {
       info.liveLocation = liveLocation;
@@ -280,8 +281,9 @@ export class Linkifier {
     info.fallback = fallbackAnchor;
 
     const pool = this._locationPoolByTarget.get(target);
-    const maybeLiveLocationPromise = self.Bindings.debuggerWorkspaceBinding.createStackTraceTopFrameLiveLocation(
-        rawLocations, this._updateAnchor.bind(this, anchor), pool);
+    const maybeLiveLocationPromise =
+        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceTopFrameLiveLocation(
+            rawLocations, this._updateAnchor.bind(this, anchor), pool);
     // TODO(1032016): Remove {Promise.resolve} wrapping once {createStackTraceTopFrameLiveLocation} returns a promise.
     Promise.resolve(maybeLiveLocationPromise).then(liveLocation => {
       info.liveLocation = liveLocation;

@@ -510,6 +510,21 @@ class RuntimeExtensionDescriptor {  // eslint-disable-line no-unused-vars
 
     /** @type {string|null} */
     this.condition;
+
+    /** @type {string} */
+    this.settingName;
+
+    /** @type {string|null} */
+    this.settingType;
+
+    /** @type {string} */
+    this.defaultValue;
+
+    /** @type {string|null} */
+    this.storageType;
+
+    /** @type {string|null} */
+    this.userActionCondition;
   }
 }
 

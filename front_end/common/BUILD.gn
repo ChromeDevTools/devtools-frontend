@@ -22,13 +22,18 @@ ts_library("common") {
     "Revealer.js",
     "Runnable.js",
     "SegmentedRange.js",
+    "Settings.js",
     "StringOutputStream.js",
     "TextDictionary.js",
     "Throttler.js",
     "Trie.js",
     "UIString.js",
     "Worker.js",
+    "common.js",
   ]
 
-  deps = [ "../platform" ]
+  deps = [
+    "../platform",
+    "../root",
+  ]
 }

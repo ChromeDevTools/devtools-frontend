@@ -321,9 +321,7 @@ export class ConsolePrompt extends UI.Widget.Widget {
       const executionContext = currentExecutionContext;
       const message = self.SDK.consoleModel.addCommandMessage(executionContext, text);
       const expression = ObjectUI.JavaScriptREPL.JavaScriptREPL.preprocessExpression(text);
-      self.SDK.consoleModel.evaluateCommandInConsole(
-          executionContext, message, expression, useCommandLineAPI,
-          /* awaitPromise */ false);
+      self.SDK.consoleModel.evaluateCommandInConsole(executionContext, message, expression, useCommandLineAPI);
       if (ConsolePanel.instance().isShowing()) {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.CommandEvaluatedInConsolePanel);
       }

@@ -133,10 +133,8 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!ConsoleMessage} originatingMessage
    * @param {string} expression
    * @param {boolean} useCommandLineAPI
-   * @param {boolean} awaitPromise
    */
-  async evaluateCommandInConsole(executionContext, originatingMessage, expression, useCommandLineAPI, awaitPromise) {
-    // TODO(crbug/1021921): Remove {awaitPromise} argument. {awaitPromise} is hard-coded to false by all call-sites.
+  async evaluateCommandInConsole(executionContext, originatingMessage, expression, useCommandLineAPI) {
     const result = await executionContext.evaluate(
         {
           expression: expression,
@@ -147,7 +145,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
           generatePreview: true,
           replMode: true
         },
-        Common.Settings.Settings.instance().moduleSetting('consoleUserActivationEval').get(), awaitPromise);
+        Common.Settings.Settings.instance().moduleSetting('consoleUserActivationEval').get(), /* awaitPromise */ false);
     HostModule.userMetrics.actionTaken(Host.UserMetrics.Action.ConsoleEvaluated);
     if (result.error) {
       return;
@@ -414,8 +412,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
     } else {
       const text = /** @type {string} */ (callFunctionResult.object.value);
       const message = this.addCommandMessage(executionContext, text);
-      this.evaluateCommandInConsole(
-          executionContext, message, text, /* useCommandLineAPI */ false, /* awaitPromise */ false);
+      this.evaluateCommandInConsole(executionContext, message, text, /* useCommandLineAPI */ false);
     }
     if (callFunctionResult.object) {
       callFunctionResult.object.release();

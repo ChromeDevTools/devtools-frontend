@@ -1212,7 +1212,7 @@ export class DebuggingActionDelegate {
             const message = self.SDK.consoleModel.addCommandMessage(executionContext, text);
             text = ObjectUI.JavaScriptREPL.JavaScriptREPL.wrapObjectLiteral(text);
             self.SDK.consoleModel.evaluateCommandInConsole(
-                executionContext, message, text, /* useCommandLineAPI */ true, /* awaitPromise */ false);
+                executionContext, message, text, /* useCommandLineAPI */ true);
           }
         }
         return true;

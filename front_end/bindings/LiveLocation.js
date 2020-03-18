@@ -13,7 +13,7 @@ export class LiveLocation {
   }
 
   /**
-   * @return {?Workspace.UISourceCode.UILocation}
+   * @return {!Promise<?Workspace.UISourceCode.UILocation>}
    */
   uiLocation() {
   }
@@ -22,7 +22,7 @@ export class LiveLocation {
   }
 
   /**
-   * @return {boolean}
+   * @return {!Promise<boolean>}
    */
   isBlackboxed() {}
 }
@@ -68,9 +68,9 @@ export class LiveLocationWithPool {
 
   /**
    * @override
-   * @return {?Workspace.UISourceCode.UILocation}
+   * @return {!Promise<?Workspace.UISourceCode.UILocation>}
    */
-  uiLocation() {
+  async uiLocation() {
     throw 'Not implemented';
   }
 
@@ -84,9 +84,9 @@ export class LiveLocationWithPool {
 
   /**
    * @override
-   * @return {boolean}
+   * @return {!Promise<boolean>}
    */
-  isBlackboxed() {
+  async isBlackboxed() {
     throw 'Not implemented';
   }
 }

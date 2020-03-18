@@ -363,9 +363,9 @@ export class LiveLocation extends LiveLocationWithPool {
 
   /**
    * @override
-   * @return {?Workspace.UISourceCode.UILocation}
+   * @return {!Promise<?Workspace.UISourceCode.UILocation>}
    */
-  uiLocation() {
+  async uiLocation() {
     if (!this._header) {
       return null;
     }
@@ -383,9 +383,9 @@ export class LiveLocation extends LiveLocationWithPool {
 
   /**
    * @override
-   * @return {boolean}
+   * @return {!Promise<boolean>}
    */
-  isBlackboxed() {
+  async isBlackboxed() {
     return false;
   }
 }

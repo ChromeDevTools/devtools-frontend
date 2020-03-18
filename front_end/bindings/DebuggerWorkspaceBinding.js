@@ -481,9 +481,9 @@ class Location extends LiveLocationWithPool {
 
   /**
    * @override
-   * @return {?Workspace.UISourceCode.UILocation}
+   * @return {!Promise<?Workspace.UISourceCode.UILocation>}
    */
-  uiLocation() {
+  async uiLocation() {
     const debuggerModelLocation = this._rawLocation;
     return this._binding.rawLocationToUILocation(debuggerModelLocation);
   }
@@ -498,10 +498,10 @@ class Location extends LiveLocationWithPool {
 
   /**
    * @override
-   * @return {boolean}
+   * @return {!Promise<boolean>}
    */
-  isBlackboxed() {
-    const uiLocation = this.uiLocation();
+  async isBlackboxed() {
+    const uiLocation = await this.uiLocation();
     return uiLocation ? self.Bindings.blackboxManager.isBlackboxedUISourceCode(uiLocation.uiSourceCode) : false;
   }
 }
@@ -514,7 +514,9 @@ class StackTraceTopFrameLocation extends LiveLocationWithPool {
   constructor(updateDelegate, locationPool) {
     super(updateDelegate, locationPool);
     this._updateScheduled = true;
+    /** @type {?LiveLocation} */
     this._current = null;
+    /** @type {?Array<!LiveLocation>} */
     this._locations = null;
   }
 
@@ -536,18 +538,18 @@ class StackTraceTopFrameLocation extends LiveLocationWithPool {
 
   /**
    * @override
-   * @return {?Workspace.UISourceCode.UILocation}
+   * @return {!Promise<?Workspace.UISourceCode.UILocation>}
    */
-  uiLocation() {
-    return this._current.uiLocation();
+  async uiLocation() {
+    return this._current ? this._current.uiLocation() : null;
   }
 
   /**
    * @override
-   * @return {boolean}
+   * @return {!Promise<boolean>}
    */
-  isBlackboxed() {
-    return this._current.isBlackboxed();
+  async isBlackboxed() {
+    return this._current ? this._current.isBlackboxed() : false;
   }
 
   /**
@@ -572,12 +574,19 @@ class StackTraceTopFrameLocation extends LiveLocationWithPool {
     setImmediate(this._updateLocation.bind(this));
   }
 
-  _updateLocation() {
+  async _updateLocation() {
     this._updateScheduled = false;
-    if (!this._locations) {
+    if (!this._locations || this._locations.length === 0) {
       return;
     }
-    this._current = this._locations.find(location => !location.isBlackboxed()) || this._locations[0];
+
+    this._current = this._locations[0];
+    for (const location of this._locations) {
+      if (!(await location.isBlackboxed())) {
+        this._current = location;
+        break;
+      }
+    }
     this.update();
   }
 }

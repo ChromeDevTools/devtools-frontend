@@ -2203,6 +2203,7 @@ export function registerCommands(inspectorBackend) {
   });
   inspectorBackend.registerEnum(
       'Debugger.BreakLocationType', {DebuggerStatement: 'debuggerStatement', Call: 'call', Return: 'return'});
+  inspectorBackend.registerEnum('Debugger.ScriptLanguage', {JavaScript: 'JavaScript', WebAssembly: 'WebAssembly'});
   inspectorBackend.registerEvent('Debugger.breakpointResolved', ['breakpointId', 'location']);
   inspectorBackend.registerEvent('Debugger.paused', [
     'callFrames', 'reason', 'data', 'hitBreakpoints', 'asyncStackTrace', 'asyncStackTraceId', 'asyncCallStackTraceId'
@@ -2210,11 +2211,13 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEvent('Debugger.resumed', []);
   inspectorBackend.registerEvent('Debugger.scriptFailedToParse', [
     'scriptId', 'url', 'startLine', 'startColumn', 'endLine', 'endColumn', 'executionContextId', 'hash',
-    'executionContextAuxData', 'sourceMapURL', 'hasSourceURL', 'isModule', 'length', 'stackTrace'
+    'executionContextAuxData', 'sourceMapURL', 'hasSourceURL', 'isModule', 'length', 'stackTrace', 'codeOffset',
+    'scriptLanguage'
   ]);
   inspectorBackend.registerEvent('Debugger.scriptParsed', [
     'scriptId', 'url', 'startLine', 'startColumn', 'endLine', 'endColumn', 'executionContextId', 'hash',
-    'executionContextAuxData', 'isLiveEdit', 'sourceMapURL', 'hasSourceURL', 'isModule', 'length', 'stackTrace'
+    'executionContextAuxData', 'isLiveEdit', 'sourceMapURL', 'hasSourceURL', 'isModule', 'length', 'stackTrace',
+    'codeOffset', 'scriptLanguage'
   ]);
   inspectorBackend.registerCommand(
       'Debugger.continueToLocation',

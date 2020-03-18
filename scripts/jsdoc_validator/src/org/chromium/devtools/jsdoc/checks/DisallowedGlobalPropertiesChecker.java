@@ -16,9 +16,6 @@ public final class DisallowedGlobalPropertiesChecker extends ContextTrackingChec
     private static final Set<String> GLOBAL_OBJECT_NAMES = new HashSet<>();
     private static final Set<String> DISALLOWED_PROPERTIES = new HashSet<>();
     static {
-        GLOBAL_OBJECT_NAMES.add("window");
-        GLOBAL_OBJECT_NAMES.add("self");
-        DISALLOWED_PROPERTIES.add("document");
         DISALLOWED_PROPERTIES.add("addEventListener");
         DISALLOWED_PROPERTIES.add("removeEventListener");
         DISALLOWED_PROPERTIES.add("requestAnimationFrame");

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as Platform from '../platform/platform.js';
@@ -265,7 +266,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
   willHide() {
     this._networkFlameChartGroupExpansionSetting.removeChangeListener(this.resizeToPreferredHeights, this);
     this._showMemoryGraphSetting.removeChangeListener(this._updateCountersGraphToggle, this);
-    self.Bindings.blackboxManager.removeChangeListener(this._boundRefresh);
+    Bindings.BlackboxManager.BlackboxManager.instance().removeChangeListener(this._boundRefresh);
   }
 
   /**
@@ -274,7 +275,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
   wasShown() {
     this._networkFlameChartGroupExpansionSetting.addChangeListener(this.resizeToPreferredHeights, this);
     this._showMemoryGraphSetting.addChangeListener(this._updateCountersGraphToggle, this);
-    self.Bindings.blackboxManager.addChangeListener(this._boundRefresh);
+    Bindings.BlackboxManager.BlackboxManager.instance().addChangeListener(this._boundRefresh);
     if (this._needsResizeToPreferredHeights) {
       this.resizeToPreferredHeights();
     }

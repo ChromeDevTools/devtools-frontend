@@ -9,11 +9,17 @@ import * as Workspace from '../workspace/workspace.js';
 import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
 
 /**
+ * @type {!BlackboxManager}
+ */
+let blackboxManagerInstance;
+
+/**
  * @unrestricted
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.DebuggerModel.DebuggerModel>}
  */
 export class BlackboxManager {
   /**
+   * @private
    * @param {!DebuggerWorkspaceBinding} debuggerWorkspaceBinding
    */
   constructor(debuggerWorkspaceBinding) {
@@ -36,6 +42,24 @@ export class BlackboxManager {
     this._isBlackboxedURLCache = new Map();
 
     SDK.SDKModel.TargetManager.instance().observeModels(SDK.DebuggerModel.DebuggerModel, this);
+  }
+
+  /**
+   * @param {{forceNew: ?boolean, debuggerWorkspaceBinding: ?DebuggerWorkspaceBinding}} opts
+   */
+  static instance(opts = {forceNew: null, debuggerWorkspaceBinding: null}) {
+    const {forceNew, debuggerWorkspaceBinding} = opts;
+    if (!blackboxManagerInstance || forceNew) {
+      if (!debuggerWorkspaceBinding) {
+        throw new Error(
+            `Unable to create settings: targetManager, workspace, and debuggerWorkspaceBinding must be provided: ${
+                new Error().stack}`);
+      }
+
+      blackboxManagerInstance = new BlackboxManager(debuggerWorkspaceBinding);
+    }
+
+    return blackboxManagerInstance;
   }
 
   /**
@@ -151,7 +175,7 @@ export class BlackboxManager {
    */
   async _updateScriptRanges(script, sourceMap) {
     let hasBlackboxedMappings = false;
-    if (!self.Bindings.blackboxManager.isBlackboxedURL(script.sourceURL, script.isContentScript())) {
+    if (!BlackboxManager.instance().isBlackboxedURL(script.sourceURL, script.isContentScript())) {
       hasBlackboxedMappings = sourceMap ? sourceMap.sourceURLs().some(url => this.isBlackboxedURL(url)) : false;
     }
     if (!hasBlackboxedMappings) {
@@ -274,7 +298,7 @@ export class BlackboxManager {
    */
   _unblackboxURL(url) {
     let regexPatterns = Common.Settings.Settings.instance().moduleSetting('skipStackFramesPattern').getAsArray();
-    const regexValue = self.Bindings.blackboxManager._urlToRegExpString(url);
+    const regexValue = BlackboxManager.instance()._urlToRegExpString(url);
     if (!regexValue) {
       return;
     }

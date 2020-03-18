@@ -33,6 +33,7 @@ import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
+import {BlackboxManager} from './BlackboxManager.js';
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
 import {DebuggerSourceMapping, DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
 import {NetworkProject} from './NetworkProject.js';
@@ -253,7 +254,7 @@ export class CompilerScriptMapping {
     const sourceMap = /** @type {!SDK.SourceMap.SourceMap} */ (event.data.sourceMap);
     await this._removeStubUISourceCode(script);
 
-    if (self.Bindings.blackboxManager.isBlackboxedURL(script.sourceURL, script.isContentScript())) {
+    if (BlackboxManager.instance().isBlackboxedURL(script.sourceURL, script.isContentScript())) {
       this._sourceMapAttachedForTest(sourceMap);
       return;
     }

@@ -255,8 +255,10 @@ export class MainImpl {
         new Persistence.NetworkPersistenceManager.NetworkPersistenceManager(self.Workspace.workspace);
 
     new ExecutionContextSelector(SDK.SDKModel.TargetManager.instance(), self.UI.context);
-    self.Bindings.blackboxManager = new Bindings.BlackboxManager.BlackboxManager(
-        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance());
+    self.Bindings.blackboxManager = Bindings.BlackboxManager.BlackboxManager.instance({
+      forceNew: true,
+      debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+    });
 
     new PauseListener();
 

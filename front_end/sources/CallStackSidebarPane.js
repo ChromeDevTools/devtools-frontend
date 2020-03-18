@@ -407,11 +407,11 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
     if (uiSourceCode.project().type() === Workspace.Workspace.projectTypes.FileSystem) {
       return;
     }
-    const canBlackbox = self.Bindings.blackboxManager.canBlackboxUISourceCode(uiSourceCode);
-    const isBlackboxed = self.Bindings.blackboxManager.isBlackboxedUISourceCode(uiSourceCode);
+    const canBlackbox = Bindings.BlackboxManager.BlackboxManager.instance().canBlackboxUISourceCode(uiSourceCode);
+    const isBlackboxed = Bindings.BlackboxManager.BlackboxManager.instance().isBlackboxedUISourceCode(uiSourceCode);
     const isContentScript = uiSourceCode.project().type() === Workspace.Workspace.projectTypes.ContentScripts;
 
-    const manager = self.Bindings.blackboxManager;
+    const manager = Bindings.BlackboxManager.BlackboxManager.instance();
     if (canBlackbox) {
       if (isBlackboxed) {
         contextMenu.defaultSection().appendItem(

@@ -29,6 +29,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Bindings from '../bindings/bindings.js';
 import * as UI from '../ui/ui.js';
 
 import {Linkifier} from './Linkifier.js';
@@ -66,7 +67,8 @@ export function buildStackTracePreviewContents(target, linkifier, options = {}) 
       if (link) {
         link.addEventListener('contextmenu', populateContextMenu.bind(null, link));
         const uiLocation = Linkifier.uiLocation(link);
-        if (uiLocation && self.Bindings.blackboxManager.isBlackboxedUISourceCode(uiLocation.uiSourceCode)) {
+        if (uiLocation &&
+            Bindings.BlackboxManager.BlackboxManager.instance().isBlackboxedUISourceCode(uiLocation.uiSourceCode)) {
           shouldHide = true;
         }
         row.createChild('td').textContent = ' @ ';
@@ -91,13 +93,16 @@ export function buildStackTracePreviewContents(target, linkifier, options = {}) 
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     event.consume(true);
     const uiLocation = Linkifier.uiLocation(link);
-    if (uiLocation && self.Bindings.blackboxManager.canBlackboxUISourceCode(uiLocation.uiSourceCode)) {
-      if (self.Bindings.blackboxManager.isBlackboxedUISourceCode(uiLocation.uiSourceCode)) {
+    if (uiLocation &&
+        Bindings.BlackboxManager.BlackboxManager.instance().canBlackboxUISourceCode(uiLocation.uiSourceCode)) {
+      if (Bindings.BlackboxManager.BlackboxManager.instance().isBlackboxedUISourceCode(uiLocation.uiSourceCode)) {
         contextMenu.debugSection().appendItem(
-            ls`Stop blackboxing`, () => self.Bindings.blackboxManager.unblackboxUISourceCode(uiLocation.uiSourceCode));
+            ls`Stop blackboxing`,
+            () => Bindings.BlackboxManager.BlackboxManager.instance().unblackboxUISourceCode(uiLocation.uiSourceCode));
       } else {
         contextMenu.debugSection().appendItem(
-            ls`Blackbox script`, () => self.Bindings.blackboxManager.blackboxUISourceCode(uiLocation.uiSourceCode));
+            ls`Blackbox script`,
+            () => Bindings.BlackboxManager.BlackboxManager.instance().blackboxUISourceCode(uiLocation.uiSourceCode));
       }
     }
     contextMenu.appendApplicableItems(event);

@@ -28,6 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
@@ -513,7 +514,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
    * @return {boolean}
    */
   _isBlackboxedURL(url) {
-    return self.Bindings.blackboxManager.isBlackboxedURL(url);
+    return Bindings.BlackboxManager.BlackboxManager.instance().isBlackboxedURL(url);
   }
 
   /**

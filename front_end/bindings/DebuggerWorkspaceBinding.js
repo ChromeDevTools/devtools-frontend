@@ -6,6 +6,7 @@ import * as Common from '../common/common.js';  // eslint-disable-line no-unused
 import * as SDK from '../sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
 
+import {BlackboxManager} from './BlackboxManager.js';
 import {CompilerScriptMapping} from './CompilerScriptMapping.js';
 import {DebuggerLanguagePluginManager} from './DebuggerLanguagePlugins.js';
 import {DefaultScriptMapping} from './DefaultScriptMapping.js';
@@ -524,7 +525,7 @@ class Location extends LiveLocationWithPool {
    */
   async isBlackboxed() {
     const uiLocation = await this.uiLocation();
-    return uiLocation ? self.Bindings.blackboxManager.isBlackboxedUISourceCode(uiLocation.uiSourceCode) : false;
+    return uiLocation ? BlackboxManager.instance().isBlackboxedUISourceCode(uiLocation.uiSourceCode) : false;
   }
 }
 

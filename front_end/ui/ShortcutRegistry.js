@@ -233,7 +233,8 @@ export class ShortcutRegistry {
         shortcuts.forEach(shortcut => {
           const shortcutDescriptor = KeyboardShortcut.makeDescriptorFromBindingShortcut(shortcut);
           if (shortcutDescriptor) {
-            this._registerShortcut(new KeyboardShortcut(shortcutDescriptor, descriptor.actionId, Type.DefaultShortcut));
+            this._registerShortcut(new KeyboardShortcut(
+                shortcutDescriptor, /** @type {string} */ (descriptor.actionId), Type.DefaultShortcut));
           }
         });
       }

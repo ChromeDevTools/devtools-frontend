@@ -11,7 +11,7 @@ Root = Root || {};
 Root.Runtime = RootModule.Runtime.Runtime;
 
 // This must be constructed after the query parameters have been parsed.
-Root.Runtime.experiments = new RootModule.Runtime.ExperimentsSupport();
+Root.Runtime.experiments = RootModule.Runtime.experiments;
 
 Root.Runtime.queryParam = RootModule.Runtime.Runtime.queryParam;
 

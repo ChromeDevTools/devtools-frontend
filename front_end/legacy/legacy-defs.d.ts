@@ -21,3 +21,7 @@ interface String {
 }
 
 declare let ls: (template: ITemplateArray) => string;
+
+declare namespace Runtime {
+  const cachedResources: {[cachePath: string]: string};
+}

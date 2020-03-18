@@ -123,11 +123,11 @@ export class Runtime {
   }
 
   /**
-   * @return {!Object}
+   * @return {!Object<string,boolean>}
    */
   static _experimentsSetting() {
     try {
-      return /** @type {!Object} */ (
+      return /** @type {!Object<string,boolean>} */ (
           JSON.parse(self.localStorage && self.localStorage['experiments'] ? self.localStorage['experiments'] : '{}'));
     } catch (e) {
       console.error('Failed to parse localStorage[\'experiments\']');
@@ -154,7 +154,7 @@ export class Runtime {
   }
 
   /**
-   * @param {!Object} descriptor
+   * @param {!ModuleDescriptor|!RuntimeExtensionDescriptor} descriptor
    * @return {boolean}
    */
   static _isDescriptorEnabled(descriptor) {
@@ -163,11 +163,10 @@ export class Runtime {
       return true;
     }
     if (activatorExperiment && activatorExperiment.startsWith('!') &&
-        Root.Runtime.experiments.isEnabled(activatorExperiment.substring(1))) {
+        experiments.isEnabled(activatorExperiment.substring(1))) {
       return false;
     }
-    if (activatorExperiment && !activatorExperiment.startsWith('!') &&
-        !Root.Runtime.experiments.isEnabled(activatorExperiment)) {
+    if (activatorExperiment && !activatorExperiment.startsWith('!') && !experiments.isEnabled(activatorExperiment)) {
       return false;
     }
     const condition = descriptor['condition'];
@@ -297,15 +296,19 @@ export class Runtime {
       return true;
     }
 
-    return this._checkExtensionApplicability(extension, currentContextTypes ? isContextTypeKnown : null);
+    let callback = null;
 
-    /**
-     * @param {!Function} targetType
-     * @return {boolean}
-     */
-    function isContextTypeKnown(targetType) {
-      return currentContextTypes.has(targetType);
+    if (currentContextTypes) {
+      /**
+       * @param {!Function} targetType
+       * @return {boolean}
+       */
+      callback = targetType => {
+        return currentContextTypes.has(targetType);
+      };
     }
+
+    return this._checkExtensionApplicability(extension, callback);
   }
 
   /**
@@ -380,6 +383,7 @@ export class Runtime {
     if (!this._cachedTypeClasses[typeName]) {
       /** @type {!Array<string>} */
       const path = typeName.split('.');
+      /** @type {*} */
       let object = self;
       for (let i = 0; object && (i < path.length); ++i) {
         object = object[path[i]];
@@ -399,10 +403,12 @@ export class Runtime {
   sharedInstance(constructorFunction) {
     if (instanceSymbol in constructorFunction &&
         Object.getOwnPropertySymbols(constructorFunction).includes(instanceSymbol)) {
+      // @ts-ignore Usage of symbols
       return constructorFunction[instanceSymbol];
     }
 
     const instance = new constructorFunction();
+    // @ts-ignore Usage of symbols
     constructorFunction[instanceSymbol] = instance;
     return instance;
   }
@@ -439,6 +445,11 @@ export class ModuleDescriptor {
     this.modules;
 
     /**
+     * @type {!Array.<string>}
+     */
+    this.resources;
+
+    /**
      * @type {string|undefined}
      */
     this.condition;
@@ -447,6 +458,9 @@ export class ModuleDescriptor {
      * @type {boolean|undefined}
      */
     this.remote;
+
+    /** @type {string|null} */
+    this.experiment;
   }
 }
 
@@ -481,6 +495,21 @@ class RuntimeExtensionDescriptor {  // eslint-disable-line no-unused-vars
      * @type {string|undefined}
      */
     this.bindings;
+
+    /** @type {number} */
+    this.order;
+
+    /** @type {string|null} */
+    this.extension;
+
+    /** @type {string|null} */
+    this.actionId;
+
+    /** @type {string|null} */
+    this.experiment;
+
+    /** @type {string|null} */
+    this.condition;
   }
 }
 
@@ -604,12 +633,8 @@ export class Module {
     }
 
     const namespace = this._computeNamespace();
+    // @ts-ignore Legacy global namespace instantation
     self[namespace] = self[namespace] || {};
-
-    // TODO(crbug.com/680046): We are in a worker and we dont support modules yet
-    if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
-      return Promise.resolve();
-    }
 
     const legacyFileName = `${this._name}-legacy.js`;
     const fileName = this._descriptor.modules.includes(legacyFileName) ? legacyFileName : `${this._name}.js`;
@@ -627,6 +652,7 @@ export class Module {
     }
 
     const namespace = this._computeNamespace();
+    // @ts-ignore Legacy global namespace instantation
     self[namespace] = self[namespace] || {};
     return loadScriptsPromise(this._descriptor.scripts.map(this._modularizeURL, this), this._remoteBase());
   }
@@ -671,6 +697,11 @@ export class Module {
     const base = this._remoteBase() || '';
     return value.replace(/@url\(([^\)]*?)\)/g, convertURL.bind(this));
 
+    /**
+     * @param {string} match
+     * @param {string} url
+     * @this {Module}
+     */
     function convertURL(match, url) {
       return base + this._modularizeURL(url);
     }
@@ -700,7 +731,7 @@ export class Extension {
   }
 
   /**
-  * @return {!Object}
+  * @return {!RuntimeExtensionDescriptor}
   */
   descriptor() {
     return this._descriptor;
@@ -774,6 +805,7 @@ export class Extension {
   * @return {string}
   */
   title() {
+    // @ts-ignore Magic lookup for objects
     const title = this._descriptor['title-' + runtimePlatform] || this._descriptor['title'];
     if (title && l10nCallback) {
       return l10nCallback(title);
@@ -918,6 +950,7 @@ export class ExperimentsSupport {
 
   cleanUpStaleExperiments() {
     const experimentsSetting = Runtime._experimentsSetting();
+    /** @type {!Object<string,boolean>} */
     const cleanedUpExperimentSetting = {};
     for (let i = 0; i < this._experiments.length; ++i) {
       const experimentName = this._experiments[i].name;
@@ -998,7 +1031,7 @@ function internalLoadResourcePromise(url, asBinary) {
         return;
       }
 
-      const {response} = e.target;
+      const {response} = /** @type {*} */ (e.target);
 
       const text = asBinary ? new TextDecoder().decode(response) : response;
 
@@ -1150,3 +1183,6 @@ function getResourceURL(scriptName, base) {
 const baseUrl = self.location ? self.location.origin + self.location.pathname : '';
 importScriptPathPrefix = baseUrl.substring(0, baseUrl.lastIndexOf('/') + 1);
 })();
+
+// This must be constructed after the query parameters have been parsed.
+export const experiments = new ExperimentsSupport();

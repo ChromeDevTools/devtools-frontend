@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import * as ProtocolModule from '../protocol/protocol.js';
+import * as ProtocolModule from '../protocol_client/protocol_client.js';
 
 import {NameValue} from './NetworkRequest.js';               // eslint-disable-line no-unused-vars
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars

@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {NodeURL} from '/front_end/protocol/NodeURL.js';
+import {NodeURL} from '../../../../front_end/protocol_client/NodeURL.js';
 import {Platform} from '/front_end/host/host.js';
 
 describe.skip('NodeURL', () => {

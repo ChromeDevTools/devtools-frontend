@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
-import * as ProtocolModule from '../protocol/protocol.js';
+import * as ProtocolModule from '../protocol_client/protocol_client.js';
 
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.

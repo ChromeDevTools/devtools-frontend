@@ -27,7 +27,7 @@
  */
 
 import * as Common from '../common/common.js';
-import * as ProtocolModule from '../protocol/protocol.js';
+import * as ProtocolModule from '../protocol_client/protocol_client.js';
 import * as SDK from '../sdk/sdk.js';
 
 /**

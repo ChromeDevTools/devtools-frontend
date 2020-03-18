@@ -54,7 +54,7 @@
         "common",
         "sdk",
         "ui",
-        "protocol"
+        "protocol_client"
     ],
     "scripts": [],
     "modules": [

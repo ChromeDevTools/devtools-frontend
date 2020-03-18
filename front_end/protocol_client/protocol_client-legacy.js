@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as ProtocolModule from './protocol.js';
+import * as ProtocolModule from './protocol_client.js';
 
 self.Protocol = self.Protocol || {};
 Protocol = Protocol || {};

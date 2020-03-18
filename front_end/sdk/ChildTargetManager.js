@@ -4,7 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
-import * as ProtocolModule from '../protocol/protocol.js';  // eslint-disable-line no-unused-vars
+import * as ProtocolModule from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
 
 import {ParallelConnection} from './Connections.js';
 import {Capability, Events, SDKModel, Target, TargetManager, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars

@@ -368,6 +368,7 @@ def generate_namespace_externs(modules_by_name):
     namespaces.sort()
     namespace_externs_file = tempfile.NamedTemporaryFile(mode='wt', delete=False)
     try:
+        namespace_externs_file.write('var Protocol = {};\n')
         namespace_externs_file.write('var Root = {};\n')
         namespace_externs_file.write('var Runtime = {};\n')
         for namespace in namespaces:

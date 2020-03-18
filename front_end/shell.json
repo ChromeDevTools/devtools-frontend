@@ -10,7 +10,7 @@
     { "name": "main", "type": "autostart" },
     { "name": "persistence", "type": "autostart" },
     { "name": "platform", "type": "autostart" },
-    { "name": "protocol", "type": "autostart" },
+    { "name": "protocol_client", "type": "autostart" },
     { "name": "sdk", "type": "autostart" },
     { "name": "browser_sdk", "type": "autostart" },
     { "name": "root", "type": "autostart" },

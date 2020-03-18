@@ -45,7 +45,7 @@ module.exports = function(config) {
       './front_end/inline_editor/*.js': instrumenterPreprocessors,
       './front_end/persistence/*.js': instrumenterPreprocessors,
       './front_end/platform/*.js': instrumenterPreprocessors,
-      './front_end/protocol/*.js': instrumenterPreprocessors,
+      './front_end/protocol_client/*.js': instrumenterPreprocessors,
       './front_end/sdk/*.js': instrumenterPreprocessors,
       './front_end/text_utils/*.js': instrumenterPreprocessors,
       './front_end/ui/**/*.js': instrumenterPreprocessors,

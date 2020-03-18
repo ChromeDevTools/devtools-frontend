@@ -19,6 +19,7 @@
             "toggleWithRedColor": true,
             "className": "Input.InputTimeline.ActionDelegate",
             "category": "Inputs",
+            "experiment": "timelineReplayEvent",
             "options": [
                 {
                     "value": true,
@@ -37,6 +38,7 @@
             "toggleable": false,
             "className": "Input.InputTimeline.ActionDelegate",
             "category": "Inputs",
+            "experiment": "timelineReplayEvent",
             "options": [
                 {
                     "value": true,
@@ -52,6 +54,7 @@
             "toggledIconClass": "largeicon-resume",
             "className": "Input.InputTimeline.ActionDelegate",
             "category": "Inputs",
+            "experiment": "timelineReplayEvent",
             "options": [
                 {
                     "value": true,

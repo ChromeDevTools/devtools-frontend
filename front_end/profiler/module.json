@@ -50,6 +50,7 @@
             "toggleWithRedColor": true,
             "className": "Profiler.LiveHeapProfileView.ActionDelegate",
             "category": "Memory",
+            "experiment": "liveHeapProfile",
             "options": [
                 {
                     "value": true,
@@ -67,6 +68,7 @@
             "iconClass": "largeicon-refresh",
             "className": "Profiler.LiveHeapProfileView.ActionDelegate",
             "category": "Memory",
+            "experiment": "liveHeapProfile",
             "title": "Start recording heap allocations and reload the page"
         },
         {

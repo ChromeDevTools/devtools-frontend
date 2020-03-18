@@ -1,0 +1,23 @@
+{
+    "authors": "Kon <http://phyzkit.net/>",
+    "definitionFilename": "index.d.ts",
+    "libraryDependencies": [],
+    "moduleDependencies": [],
+    "libraryMajorVersion": "0",
+    "libraryMinorVersion": "0",
+    "libraryName": "File API: Writer",
+    "typingsPackageName": "filewriter",
+    "projectName": "http://www.w3.org/TR/file-writer-api/",
+    "sourceRepoURL": "https://www.github.com/DefinitelyTyped/DefinitelyTyped",
+    "sourceBranch": "types-2.0",
+    "kind": "Global",
+    "globals": [
+        "FileSaver"
+    ],
+    "declaredModules": [],
+    "files": [
+        "index.d.ts"
+    ],
+    "hasPackageJson": false,
+    "contentHash": "ca1aba6df1f6578186b88b98e0d8c4519997696df545dec3ef8c499079c769fa"
+}

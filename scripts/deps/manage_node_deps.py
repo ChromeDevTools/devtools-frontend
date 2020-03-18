@@ -31,6 +31,7 @@ LICENSES = [
 # List all DEPS here.
 DEPS = {
     "@types/chai": "4.2.0",
+    "@types/filesystem": "0.0.29",
     "@types/mocha": "5.2.7",
     "@types/puppeteer": "2.0.0",
     "@typescript-eslint/parser": "2.16.0",

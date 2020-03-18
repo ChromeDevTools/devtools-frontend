@@ -177,7 +177,7 @@ export class DebuggerLanguagePluginManager {
       rawModuleId: script.scriptId,
       // RawLocation.columnNumber is the byte offset in the full raw wasm module. Plugins expect the offset in the code
       // section, so subtract the offset of the code section in the module here.
-      codeOffset: rawLocation.columnNumber - script.columnOffset
+      codeOffset: rawLocation.columnNumber - script.codeOffset()
     };
     const sourceLocations = plugin.rawLocationToSourceLocation(pluginLocation);
 
@@ -204,18 +204,28 @@ export class DebuggerLanguagePluginManager {
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {!Promise<!Array<!SDK.DebuggerModel.Location>>}
+   * @return {!Promise<?Array<!SDK.DebuggerModel.Location>>} Returns null if this manager does not have a plugin for it.
    */
   async uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
     const locations = [];
-    for (const [sourceFile, script] of this._uiSourceCodes.get(uiSourceCode) || []) {
+    const mappedSourceFiles = this._uiSourceCodes.get(uiSourceCode);
+    if (!mappedSourceFiles) {
+      return null;
+    }
+
+    let hasPlugins = false;
+    for (const [sourceFile, script] of mappedSourceFiles) {
       const plugin = this._pluginForScriptId.get(script.scriptId);
       if (!plugin) {
         continue;
       }
+      hasPlugins = true;
       locations.push(...getLocations(this._debuggerModel, plugin, sourceFile, script));
     }
-    return locations;
+    if (hasPlugins) {
+      return locations;
+    }
+    return null;
 
     function getLocations(debuggerModel, plugin, sourceFile, script) {
       const pluginLocation =
@@ -228,7 +238,7 @@ export class DebuggerLanguagePluginManager {
 
       return rawLocations.map(
           m => new SDK.DebuggerModel.Location(
-              debuggerModel, script.scriptId, 0, Number(m.codeOffset) + script.columnOffset));
+              debuggerModel, script.scriptId, 0, Number(m.codeOffset) + script.codeOffset()));
     }
   }
 
@@ -404,7 +414,7 @@ export class DebuggerLanguagePluginManager {
     /** @type {!Map<string, !SourceScope>} */
     const scopes = new Map();
     const variables = await plugin.listVariablesInScope(
-        {'rawModuleId': script.scriptId, 'codeOffset': callFrame.location().columnNumber - script.columnOffset});
+        {'rawModuleId': script.scriptId, 'codeOffset': callFrame.location().columnNumber - script.codeOffset()});
     if (variables) {
       for (const variable of variables) {
         if (!scopes.has(variable.scope)) {

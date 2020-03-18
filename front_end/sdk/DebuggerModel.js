@@ -638,12 +638,14 @@ export class DebuggerModel extends SDKModel {
    * @param {boolean} hasSyntaxError
    * @param {number} length
    * @param {?Protocol.Runtime.StackTrace} originStackTrace
+   * @param {?number} codeOffset
+   * @param {?string} scriptLanguage
    * @return {!Script}
    */
   _parsedScriptSource(
       scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash,
-      executionContextAuxData, isLiveEdit, sourceMapURL, hasSourceURLComment, hasSyntaxError, length,
-      originStackTrace) {
+      executionContextAuxData, isLiveEdit, sourceMapURL, hasSourceURLComment, hasSyntaxError, length, originStackTrace,
+      codeOffset, scriptLanguage) {
     if (this._scripts.has(scriptId)) {
       return this._scripts.get(scriptId);
     }
@@ -655,7 +657,7 @@ export class DebuggerModel extends SDKModel {
     const script = new Script(
         this, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId,
         this._internString(hash), isContentScript, isLiveEdit, sourceMapURL, hasSourceURLComment, length,
-        originStackTrace);
+        originStackTrace, codeOffset, scriptLanguage);
     this._registerScript(script);
     this.dispatchEventToListeners(Events.ParsedScriptSource, script);
 
@@ -755,7 +757,7 @@ export class DebuggerModel extends SDKModel {
    * @param {!Script} script
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {?Location}
+   * @return {!Location}
    */
   createRawLocation(script, lineNumber, columnNumber) {
     return new Location(this, script.scriptId, lineNumber, columnNumber);
@@ -1100,13 +1102,17 @@ class DebuggerDispatcher {
    * @param {boolean=} isModule
    * @param {number=} length
    * @param {!Protocol.Runtime.StackTrace=} stackTrace
+   * @param {number=} codeOffset
+   * @param {string=} scriptLanguage
    */
   scriptParsed(
       scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash,
-      executionContextAuxData, isLiveEdit, sourceMapURL, hasSourceURL, isModule, length, stackTrace) {
+      executionContextAuxData, isLiveEdit, sourceMapURL, hasSourceURL, isModule, length, stackTrace, codeOffset,
+      scriptLanguage) {
     this._debuggerModel._parsedScriptSource(
         scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash,
-        executionContextAuxData, !!isLiveEdit, sourceMapURL, !!hasSourceURL, false, length || 0, stackTrace || null);
+        executionContextAuxData, !!isLiveEdit, sourceMapURL, !!hasSourceURL, false, length || 0, stackTrace || null,
+        codeOffset || null, scriptLanguage || null);
   }
 
   /**
@@ -1125,13 +1131,16 @@ class DebuggerDispatcher {
    * @param {boolean=} isModule
    * @param {number=} length
    * @param {!Protocol.Runtime.StackTrace=} stackTrace
+   * @param {number=} codeOffset
+   * @param {string=} scriptLanguage
    */
   scriptFailedToParse(
       scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash,
-      executionContextAuxData, sourceMapURL, hasSourceURL, isModule, length, stackTrace) {
+      executionContextAuxData, sourceMapURL, hasSourceURL, isModule, length, stackTrace, codeOffset, scriptLanguage) {
     this._debuggerModel._parsedScriptSource(
         scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash,
-        executionContextAuxData, false, sourceMapURL, !!hasSourceURL, true, length || 0, stackTrace || null);
+        executionContextAuxData, false, sourceMapURL, !!hasSourceURL, true, length || 0, stackTrace || null,
+        codeOffset || null, scriptLanguage || null);
   }
 
   /**

@@ -52,10 +52,12 @@ export class Script {
    * @param {boolean} hasSourceURL
    * @param {number} length
    * @param {?Protocol.Runtime.StackTrace} originStackTrace
+   * @param {?number} codeOffset
+   * @param {?string} scriptLanguage
    */
   constructor(
       debuggerModel, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash,
-      isContentScript, isLiveEdit, sourceMapURL, hasSourceURL, length, originStackTrace) {
+      isContentScript, isLiveEdit, sourceMapURL, hasSourceURL, length, originStackTrace, codeOffset, scriptLanguage) {
     this.debuggerModel = debuggerModel;
     this.scriptId = scriptId;
     this.sourceURL = sourceURL;
@@ -74,6 +76,8 @@ export class Script {
     this._originalContentProvider = null;
     this._originalSource = null;
     this.originStackTrace = originStackTrace;
+    this._codeOffset = codeOffset;
+    this._language = scriptLanguage;
     this._lineMap = null;
   }
 
@@ -108,9 +112,23 @@ export class Script {
   }
 
   /**
+   * @return {?number}
+   */
+  codeOffset() {
+    return this._codeOffset;
+  }
+
+  /**
    * @return {boolean}
    */
-  isWasmDisassembly() {
+  isWasm() {
+    return this._language === Protocol.Debugger.ScriptLanguage.WebAssembly;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  hasWasmDisassembly() {
     return !!this._lineMap && !this.sourceMapURL;
   }
 
@@ -340,7 +358,7 @@ export class Script {
    */
   isInlineScript() {
     const startsAtZero = !this.lineOffset && !this.columnOffset;
-    return !!this.sourceURL && !startsAtZero;
+    return !this.isWasm() && !!this.sourceURL && !startsAtZero;
   }
 
   /**

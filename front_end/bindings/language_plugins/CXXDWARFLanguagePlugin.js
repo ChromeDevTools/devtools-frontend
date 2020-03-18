@@ -67,7 +67,10 @@ export class CXXDWARFLanguagePlugin {
    * @return {boolean} True if this plugin should handle this script
    */
   handleScript(script) {
-    return script.sourceMapURL.startsWith('wasm://');
+    return script.isWasm() &&                       // Only handle wasm scripts
+        !script.sourceURL.startsWith('wasm://') &&  // Only handle scripts with valid response URL
+        (script.sourceMapURL === 'wasm://dwarf' ||  // Only handle scripts with either embedded dwarf ...
+         !script.sourceMapURL);                     // ... or no source map at all (look up symbols out of band).
   }
 
   /** Notify the plugin about a new script

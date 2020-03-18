@@ -121,7 +121,8 @@ export class ResourceScriptMapping {
     }
     let lineNumber = rawLocation.lineNumber - (script.isInlineScriptWithSourceURL() ? script.lineOffset : 0);
     let columnNumber = rawLocation.columnNumber || 0;
-    if (script.isWasmDisassembly()) {
+    if (script.hasWasmDisassembly()) {
+      // TODO(chromium:1056632) This produces the wrong result when the disassembly is not loaded yet.
       lineNumber = script.wasmDisassemblyLine(columnNumber);
       columnNumber = 0;
     } else if (script.isInlineScriptWithSourceURL() && !lineNumber && columnNumber) {
@@ -143,7 +144,7 @@ export class ResourceScriptMapping {
       return [];
     }
     const script = scriptFile._script;
-    if (script.isWasmDisassembly()) {
+    if (script.hasWasmDisassembly()) {
       return [script.wasmByteLocation(lineNumber)];
     }
     if (script.isInlineScriptWithSourceURL()) {

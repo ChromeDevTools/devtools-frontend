@@ -35,9 +35,17 @@ import {IsolatedFileSystem} from './IsolatedFileSystem.js';
 import {PlatformFileSystem} from './PlatformFileSystem.js';  // eslint-disable-line no-unused-vars
 
 /**
+ * @type {!IsolatedFileSystemManager}
+ */
+let isolatedFileSystemManagerInstance;
+
+/**
  * @unrestricted
  */
 export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrapper {
+  /**
+   * @private
+   */
   constructor() {
     super();
 
@@ -70,6 +78,18 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     /** @type {?function(?IsolatedFileSystem)} */
     this._fileSystemRequestResolve = null;
     this._fileSystemsLoadedPromise = this._requestFileSystems();
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!isolatedFileSystemManagerInstance || forceNew) {
+      isolatedFileSystemManagerInstance = new IsolatedFileSystemManager();
+    }
+
+    return isolatedFileSystemManagerInstance;
   }
 
   /**

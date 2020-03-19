@@ -206,7 +206,8 @@ export class OverridesNavigatorView extends NavigatorView {
   }
 
   async _setupNewWorkspace() {
-    const fileSystem = await self.Persistence.isolatedFileSystemManager.addFileSystem('overrides');
+    const fileSystem =
+        await Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addFileSystem('overrides');
     if (!fileSystem) {
       return;
     }
@@ -336,7 +337,7 @@ export class ActionDelegate {
         self.Snippets.project.createFile('', null, '').then(uiSourceCode => Common.Revealer.reveal(uiSourceCode));
         return true;
       case 'sources.add-folder-to-workspace':
-        self.Persistence.isolatedFileSystemManager.addFileSystem();
+        Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addFileSystem();
         return true;
     }
     return false;

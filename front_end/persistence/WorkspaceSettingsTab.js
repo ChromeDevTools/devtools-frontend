@@ -8,7 +8,7 @@ import * as UI from '../ui/ui.js';
 import {EditFileSystemView} from './EditFileSystemView.js';
 import {FileSystem} from './FileSystemWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
 import {IsolatedFileSystem} from './IsolatedFileSystem.js';
-import {Events} from './IsolatedFileSystemManager.js';
+import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
 import {PlatformFileSystem} from './PlatformFileSystem.js';  // eslint-disable-line no-unused-vars
 
 export class WorkspaceSettingsTab extends UI.Widget.VBox {
@@ -22,9 +22,9 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     this.containerElement = this.element.createChild('div', 'settings-container-wrapper')
                                 .createChild('div', 'settings-tab settings-content settings-container');
 
-    self.Persistence.isolatedFileSystemManager.addEventListener(
+    IsolatedFileSystemManager.instance().addEventListener(
         Events.FileSystemAdded, event => this._fileSystemAdded(/** @type {!PlatformFileSystem} */ (event.data)), this);
-    self.Persistence.isolatedFileSystemManager.addEventListener(
+    IsolatedFileSystemManager.instance().addEventListener(
         Events.FileSystemRemoved, event => this._fileSystemRemoved(/** @type {!PlatformFileSystem} */ (event.data)),
         this);
 
@@ -47,7 +47,7 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     /** @type {!Map<string, !EditFileSystemView>} */
     this._mappingViewByPath = new Map();
 
-    const fileSystems = self.Persistence.isolatedFileSystemManager.fileSystems();
+    const fileSystems = IsolatedFileSystemManager.instance().fileSystems();
     for (let i = 0; i < fileSystems.length; ++i) {
       this._addItem(fileSystems[i]);
     }
@@ -64,7 +64,7 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     UI.ARIAUtils.bindLabelToControl(labelElement, inputElement);
     p.appendChild(inputElement);
     inputElement.style.width = '270px';
-    const folderExcludeSetting = self.Persistence.isolatedFileSystemManager.workspaceFolderExcludePatternSetting();
+    const folderExcludeSetting = IsolatedFileSystemManager.instance().workspaceFolderExcludePatternSetting();
     const setValue =
         UI.UIUtils.bindInput(inputElement, folderExcludeSetting.set.bind(folderExcludeSetting), regexValidator, false);
     folderExcludeSetting.addChangeListener(() => setValue.call(null, folderExcludeSetting.get()));
@@ -96,7 +96,7 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     }
     const networkPersistenceProject = self.Persistence.networkPersistenceManager.project();
     if (networkPersistenceProject &&
-        self.Persistence.isolatedFileSystemManager.fileSystem(
+        IsolatedFileSystemManager.instance().fileSystem(
             /** @type {!FileSystem} */ (networkPersistenceProject).fileSystemPath()) === fileSystem) {
       return;
     }
@@ -144,11 +144,11 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
    * @param {!PlatformFileSystem} fileSystem
    */
   _removeFileSystemClicked(fileSystem) {
-    self.Persistence.isolatedFileSystemManager.removeFileSystem(fileSystem);
+    IsolatedFileSystemManager.instance().removeFileSystem(fileSystem);
   }
 
   _addFileSystemClicked() {
-    self.Persistence.isolatedFileSystemManager.addFileSystem();
+    IsolatedFileSystemManager.instance().addFileSystem();
   }
 
   /**

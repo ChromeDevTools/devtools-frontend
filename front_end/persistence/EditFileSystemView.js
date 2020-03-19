@@ -31,7 +31,7 @@
 import * as Common from '../common/common.js';
 import * as UI from '../ui/ui.js';
 
-import {Events} from './IsolatedFileSystemManager.js';
+import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
 
 /**
  * @implements {UI.ListWidget.Delegate}
@@ -47,8 +47,8 @@ export class EditFileSystemView extends UI.Widget.VBox {
     this._fileSystemPath = fileSystemPath;
 
     this._eventListeners = [
-      self.Persistence.isolatedFileSystemManager.addEventListener(Events.ExcludedFolderAdded, this._update, this),
-      self.Persistence.isolatedFileSystemManager.addEventListener(Events.ExcludedFolderRemoved, this._update, this)
+      IsolatedFileSystemManager.instance().addEventListener(Events.ExcludedFolderAdded, this._update, this),
+      IsolatedFileSystemManager.instance().addEventListener(Events.ExcludedFolderRemoved, this._update, this)
     ];
 
     const excludedFoldersHeader = this.contentElement.createChild('div', 'file-system-header');
@@ -78,7 +78,8 @@ export class EditFileSystemView extends UI.Widget.VBox {
 
     this._excludedFoldersList.clear();
     this._excludedFolders = [];
-    for (const folder of self.Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
+    for (const folder of IsolatedFileSystemManager.instance()
+             .fileSystem(this._fileSystemPath)
              .excludedFolders()
              .values()) {
       this._excludedFolders.push(folder);
@@ -111,7 +112,8 @@ export class EditFileSystemView extends UI.Widget.VBox {
    * @param {number} index
    */
   removeItemRequested(item, index) {
-    self.Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
+    IsolatedFileSystemManager.instance()
+        .fileSystem(this._fileSystemPath)
         .removeExcludedFolder(this._excludedFolders[index]);
   }
 
@@ -124,10 +126,12 @@ export class EditFileSystemView extends UI.Widget.VBox {
   commitEdit(item, editor, isNew) {
     this._muteUpdate = true;
     if (!isNew) {
-      self.Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
+      IsolatedFileSystemManager.instance()
+          .fileSystem(this._fileSystemPath)
           .removeExcludedFolder(/** @type {string} */ (item));
     }
-    self.Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
+    IsolatedFileSystemManager.instance()
+        .fileSystem(this._fileSystemPath)
         .addExcludedFolder(this._normalizePrefix(editor.control('pathPrefix').value));
     this._muteUpdate = false;
     this._update();
@@ -180,7 +184,7 @@ export class EditFileSystemView extends UI.Widget.VBox {
       }
 
       const configurableCount =
-          self.Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath).excludedFolders().size;
+          IsolatedFileSystemManager.instance().fileSystem(this._fileSystemPath).excludedFolders().size;
       for (let i = 0; i < configurableCount; ++i) {
         if (i !== index && this._excludedFolders[i] === prefix) {
           return {valid: false, errorMessage: ls`Enter a unique path`};

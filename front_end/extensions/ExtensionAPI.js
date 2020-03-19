@@ -842,7 +842,7 @@ self.injectedExtensionAPI = function(
 };
 
 /**
- * @param {!ExtensionDescriptor} extensionInfo
+ * @param {!{startPage: string, name: string, exposeExperimentalAPIs: boolean}} extensionInfo
  * @param {string} inspectedTabId
  * @param {string} themeName
  * @param {!Array<number>} keysToForward

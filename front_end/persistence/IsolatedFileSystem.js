@@ -43,7 +43,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
    * @param {!IsolatedFileSystemManager} manager
    * @param {string} path
    * @param {string} embedderPath
-   * @param {!DOMFileSystem} domFileSystem
+   * @param {!FileSystem} domFileSystem
    * @param {string} type
    */
   constructor(manager, path, embedderPath, domFileSystem, type) {

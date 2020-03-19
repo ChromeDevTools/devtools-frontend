@@ -106,7 +106,7 @@ export class UserMetrics {
   setLaunchPanel(panelName) {
     // Store the panel name that we should use for the launch histogram.
     // Other calls to panelLoaded will be ignored if the name does not match the one set here.
-    this._launchPanelName = panelName;
+    this._launchPanelName = /** @type {string} */ (panelName);
   }
 
   /**
@@ -164,6 +164,7 @@ export const Action = {
   CoverageStartedPerBlock: 35,
 };
 
+/** @type {!Object<string, number>} */
 export const PanelCodes = {
   elements: 1,
   resources: 2,
@@ -196,7 +197,7 @@ export const PanelCodes = {
   'drawer-network.blocked-urls': 28,
 };
 
-/** @enum {number} */
+/** @type {!Object<string, number>} */
 export const KeyboardShortcutAction = {
   OtherShortcut: 0,
   'commandMenu.show': 1,

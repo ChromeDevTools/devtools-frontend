@@ -30,8 +30,9 @@
 
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
+import * as Root from '../root/root.js';
 
-import {EventDescriptors, Events} from './InspectorFrontendHostAPI.js';
+import {ContextMenuDescriptor, EventDescriptors, Events, InspectorFrontendHostAPI, LoadNetworkResourceResult} from './InspectorFrontendHostAPI.js';  // eslint-disable-line no-unused-vars
 import {streamWrite as resourceLoaderStreamWrite} from './ResourceLoader.js';
 
 /**
@@ -44,7 +45,7 @@ export class InspectorFrontendHostStub {
    */
   constructor() {
     /**
-     * @param {!Event} event
+     * @param {!KeyboardEvent} event
      * @this {InspectorFrontendHostAPI}
      */
     function stopEventPropagation(event) {
@@ -54,7 +55,9 @@ export class InspectorFrontendHostStub {
         event.stopPropagation();
       }
     }
-    document.addEventListener('keydown', stopEventPropagation.bind(this), true);
+    document.addEventListener('keydown', event => {
+      stopEventPropagation.call(this, /** @type {!KeyboardEvent} */ (event));
+    }, true);
     /**
      * @type {!Map<string, !Array<string>>}
      */
@@ -105,7 +108,7 @@ export class InspectorFrontendHostStub {
   /**
    * @override
    * @param {boolean} isDocked
-   * @param {function()} callback
+   * @param {function():void} callback
    */
   setIsDocked(isDocked, callback) {
     setTimeout(callback, 0);
@@ -205,8 +208,10 @@ export class InspectorFrontendHostStub {
    */
   append(url, content) {
     const buffer = this._urlsBeingSaved.get(url);
-    buffer.push(content);
-    this.events.dispatchEventToListeners(Events.AppendedToURL, url);
+    if (buffer) {
+      buffer.push(content);
+      this.events.dispatchEventToListeners(Events.AppendedToURL, url);
+    }
   }
 
   /**
@@ -214,10 +219,10 @@ export class InspectorFrontendHostStub {
    * @param {string} url
    */
   close(url) {
-    const buffer = this._urlsBeingSaved.get(url);
+    const buffer = this._urlsBeingSaved.get(url) || [];
     this._urlsBeingSaved.delete(url);
     const fileName = url ? Platform.StringUtilities.trimURL(url).removeURLFragment() : '';
-    const link = createElement('a');
+    const link = document.createElement('a');
     link.download = fileName;
     const blob = new Blob([buffer.join('')], {type: 'text/plain'});
     link.href = URL.createObjectURL(blob);
@@ -280,7 +285,7 @@ export class InspectorFrontendHostStub {
    * @override
    * @param {string} fileSystemId
    * @param {string} registeredName
-   * @return {?DOMFileSystem}
+   * @return {?FileSystem}
    */
   isolatedFileSystem(fileSystemId, registeredName) {
     return null;
@@ -291,24 +296,39 @@ export class InspectorFrontendHostStub {
    * @param {string} url
    * @param {string} headers
    * @param {number} streamId
-   * @param {function(!InspectorFrontendHostAPI.LoadNetworkResourceResult)} callback
+   * @param {function(!LoadNetworkResourceResult):void} callback
    */
   loadNetworkResource(url, headers, streamId, callback) {
     Root.Runtime.loadResourcePromise(url)
         .then(function(text) {
           resourceLoaderStreamWrite(streamId, text);
-          callback({statusCode: 200});
+          callback({
+            statusCode: 200,
+            headers: undefined,
+            messageOverride: undefined,
+            netError: undefined,
+            netErrorName: undefined,
+            urlValid: undefined
+          });
         })
         .catch(function() {
-          callback({statusCode: 404});
+          callback({
+            statusCode: 404,
+            headers: undefined,
+            messageOverride: undefined,
+            netError: undefined,
+            netErrorName: undefined,
+            urlValid: undefined
+          });
         });
   }
 
   /**
    * @override
-   * @param {function(!Object<string, string>)} callback
+   * @param {function(!Object<string, string>):void} callback
    */
   getPreferences(callback) {
+    /** @type {!Object<string, string>} */
     const prefs = {};
     for (const name in window.localStorage) {
       prefs[name] = window.localStorage[name];
@@ -421,7 +441,7 @@ export class InspectorFrontendHostStub {
 
   /**
    * @override
-   * @param {function()} callback
+   * @param {function():void} callback
    */
   reattach(callback) {
   }
@@ -485,7 +505,7 @@ export class InspectorFrontendHostStub {
    * @override
    * @param {number} x
    * @param {number} y
-   * @param {!Array.<!InspectorFrontendHostAPI.ContextMenuDescriptor>} items
+   * @param {!Array.<!ContextMenuDescriptor>} items
    * @param {!Document} document
    */
   showContextMenuAtPoint(x, y, items, document) {
@@ -502,7 +522,7 @@ export class InspectorFrontendHostStub {
 
   /**
    * @override
-   * @param {function(!ExtensionDescriptor)} callback
+   * @param {function(!Root.Runtime.RuntimeExtensionDescriptor):void} callback
    */
   setAddExtensionCallback(callback) {
     // Extensions are not supported in hosted mode.
@@ -512,6 +532,7 @@ export class InspectorFrontendHostStub {
 /**
  * @type {!InspectorFrontendHostStub}
  */
+// @ts-ignore Global injected by devtools-compatibility.js
 export let InspectorFrontendHostInstance = window.InspectorFrontendHost;
 
 /**
@@ -519,11 +540,13 @@ export let InspectorFrontendHostInstance = window.InspectorFrontendHost;
  */
 class InspectorFrontendAPIImpl {
   constructor() {
-    this._debugFrontend = (self.Root && Root.Runtime && !!Root.Runtime.queryParam('debugFrontend')) ||
+    this._debugFrontend = (!!Root.Runtime.Runtime.queryParam('debugFrontend')) ||
+        // @ts-ignore Compatibility hacks
         (window['InspectorTest'] && window['InspectorTest']['debugTest']);
 
     const descriptors = EventDescriptors;
     for (let i = 0; i < descriptors.length; ++i) {
+      // @ts-ignore Dispatcher magic
       this[descriptors[i][1]] = this._dispatch.bind(this, descriptors[i][0], descriptors[i][2], descriptors[i][3]);
     }
   }
@@ -537,7 +560,7 @@ class InspectorFrontendAPIImpl {
     const params = Array.prototype.slice.call(arguments, 3);
 
     if (this._debugFrontend) {
-      setImmediate(innerDispatch);
+      setTimeout(() => innerDispatch(), 0);
     } else {
       innerDispatch();
     }
@@ -552,6 +575,7 @@ class InspectorFrontendAPIImpl {
         }
         return;
       }
+      /** @type {!Object<string, string>} */
       const data = {};
       for (let i = 0; i < signature.length; ++i) {
         data[signature[i]] = params[i];
@@ -576,21 +600,25 @@ class InspectorFrontendAPIImpl {
 (function() {
 
   function initializeInspectorFrontendHost() {
+    /** @type {*} */
     let proto;
     if (!InspectorFrontendHostInstance) {
       // Instantiate stub for web-hosted mode if necessary.
+      // @ts-ignore Global injected by devtools-compatibility.js
       window.InspectorFrontendHost = InspectorFrontendHostInstance = new InspectorFrontendHostStub();
     } else {
       // Otherwise add stubs for missing methods that are declared in the interface.
       proto = InspectorFrontendHostStub.prototype;
       for (const name of Object.getOwnPropertyNames(proto)) {
         const stub = proto[name];
+        // @ts-ignore Global injected by devtools-compatibility.js
         if (typeof stub !== 'function' || InspectorFrontendHostInstance[name]) {
           continue;
         }
 
         console.error(
             'Incompatible embedder: method Host.InspectorFrontendHost.' + name + ' is missing. Using stub instead.');
+        // @ts-ignore Global injected by devtools-compatibility.js
         InspectorFrontendHostInstance[name] = stub;
       }
     }
@@ -602,6 +630,7 @@ class InspectorFrontendAPIImpl {
   // FIXME: This file is included into both apps, since the devtools_app needs the InspectorFrontendHostAPI only,
   // so the host instance should not initialized there.
   initializeInspectorFrontendHost();
+  // @ts-ignore Global injected by devtools-compatibility.js
   window.InspectorFrontendAPI = new InspectorFrontendAPIImpl();
 })();
 
@@ -611,7 +640,7 @@ class InspectorFrontendAPIImpl {
  */
 export function isUnderTest(prefs) {
   // Integration tests rely on test queryParam.
-  if (Root.Runtime.queryParam('test')) {
+  if (Root.Runtime.Runtime.queryParam('test')) {
     return true;
   }
   // Browser tests rely on prefs.

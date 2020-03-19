@@ -30,6 +30,7 @@
 
 import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
 
+/** @type {string} */
 let _platform;
 
 /**
@@ -42,6 +43,7 @@ export function platform() {
   return _platform;
 }
 
+/** @type {boolean} */
 let _isMac;
 
 /**
@@ -55,6 +57,7 @@ export function isMac() {
   return _isMac;
 }
 
+/** @type {boolean} */
 let _isWin;
 
 /**
@@ -68,6 +71,7 @@ export function isWin() {
   return _isWin;
 }
 
+/** @type {boolean} */
 let _isCustomDevtoolsFrontend;
 
 /**
@@ -80,6 +84,7 @@ export function isCustomDevtoolsFrontend() {
   return _isCustomDevtoolsFrontend;
 }
 
+/** @type {string} */
 let _fontFamily;
 
 /**

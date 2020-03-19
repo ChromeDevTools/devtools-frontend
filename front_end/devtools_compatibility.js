@@ -626,7 +626,7 @@
      * @override
      * @param {string} fileSystemId
      * @param {string} registeredName
-     * @return {?DOMFileSystem}
+     * @return {?FileSystem}
      */
     isolatedFileSystem(fileSystemId, registeredName) {
       return DevToolsHost.isolatedFileSystem(fileSystemId, registeredName);

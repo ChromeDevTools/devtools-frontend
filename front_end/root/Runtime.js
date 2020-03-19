@@ -469,7 +469,7 @@ export class ModuleDescriptor {
 /**
  * @unrestricted
  */
-class RuntimeExtensionDescriptor {  // eslint-disable-line no-unused-vars
+export class RuntimeExtensionDescriptor {
   constructor() {
     /**
      * @type {string}
@@ -525,6 +525,12 @@ class RuntimeExtensionDescriptor {  // eslint-disable-line no-unused-vars
 
     /** @type {string|null} */
     this.userActionCondition;
+
+    /** @type {string|null} */
+    this.startPage;
+
+    /** @type {string|null} */
+    this.name;
   }
 }
 

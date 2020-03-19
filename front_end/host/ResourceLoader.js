@@ -5,6 +5,7 @@
 import * as Common from '../common/common.js';
 
 import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
+import {LoadNetworkResourceResult} from './InspectorFrontendHostAPI.js';  // eslint-disable-line no-unused-vars
 
 export const ResourceLoader = {};
 
@@ -46,12 +47,13 @@ export const streamWrite = function(id, chunk) {
     urlValid: (boolean|undefined),
     message: (string|undefined)
 }} */
+// @ts-ignore typedef.
 export let LoadErrorDescription;
 
 /**
  * @param {string} url
  * @param {?Object.<string, string>} headers
- * @param {function(boolean, !Object.<string, string>, string, !LoadErrorDescription)} callback
+ * @param {function(boolean, !Object.<string, string>, string, !LoadErrorDescription):void} callback
  */
 export let load = function(url, headers, callback) {
   const stream = new Common.StringOutputStream.StringOutputStream();
@@ -67,6 +69,9 @@ export let load = function(url, headers, callback) {
   }
 };
 
+/**
+ * @param {function(string, ?Object<string, string>, function(boolean, !Object<string, string>, string, !LoadErrorDescription): void): void} newLoad
+ */
 export function setLoadForTest(newLoad) {
   load = newLoad;
 }
@@ -116,7 +121,7 @@ function isHTTPError(netError) {
 }
 
 /**
- * @param {!InspectorFrontendHostAPI.LoadNetworkResourceResult} response
+ * @param {!LoadNetworkResourceResult} response
  * @returns {!{success:boolean, description: !LoadErrorDescription}}
  */
 function createErrorMessageFromResponse(response) {
@@ -161,7 +166,7 @@ const loadXHR = url => {
       }
       if (xhr.status !== 200) {
         xhr.onreadystatechange = null;
-        failureCallback(new Error(xhr.status));
+        failureCallback(new Error(String(xhr.status)));
         return;
       }
       xhr.onreadystatechange = null;
@@ -199,7 +204,7 @@ export const loadAsStream = function(url, headers, stream, callback) {
   InspectorFrontendHostInstance.loadNetworkResource(url, rawHeaders.join('\r\n'), streamId, finishedCallback);
 
   /**
-   * @param {!InspectorFrontendHostAPI.LoadNetworkResourceResult} response
+   * @param {!LoadNetworkResourceResult} response
    */
   function finishedCallback(response) {
     if (callback) {
@@ -214,12 +219,15 @@ export const loadAsStream = function(url, headers, stream, callback) {
    */
   function dataURLDecodeSuccessful(text) {
     streamWrite(streamId, text);
-    finishedCallback(/** @type {!InspectorFrontendHostAPI.LoadNetworkResourceResult} */ ({statusCode: 200}));
+    finishedCallback(/** @type {!LoadNetworkResourceResult} */ ({statusCode: 200}));
   }
 
+  /**
+   * @param {*} xhrStatus
+   */
   function dataURLDecodeFailed(xhrStatus) {
     const messageOverride = ls`Decoding Data URL failed`;
     finishedCallback(
-        /** @type {!InspectorFrontendHostAPI.LoadNetworkResourceResult} */ ({statusCode: 404, messageOverride}));
+        /** @type {!LoadNetworkResourceResult} */ ({statusCode: 404, messageOverride}));
   }
 };

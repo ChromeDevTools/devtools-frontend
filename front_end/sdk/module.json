@@ -340,19 +340,9 @@
               "value": "protanopia"
             },
             {
-              "title": "Emulate protanomaly",
-              "text": "Protanomaly",
-              "value": "protanomaly"
-            },
-            {
               "title": "Emulate deuteranopia",
               "text": "Deuteranopia",
               "value": "deuteranopia"
-            },
-            {
-              "title": "Emulate deuteranomaly",
-              "text": "Deuteranomaly",
-              "value": "deuteranomaly"
             },
             {
               "title": "Emulate tritanopia",
@@ -360,19 +350,9 @@
               "value": "tritanopia"
             },
             {
-              "title": "Emulate tritanomaly",
-              "text": "Tritanomaly",
-              "value": "tritanomaly"
-            },
-            {
               "title": "Emulate achromatopsia",
               "text": "Achromatopsia",
               "value": "achromatopsia"
-            },
-            {
-              "title": "Emulate achromatomaly",
-              "text": "Achromatomaly",
-              "value": "achromatomaly"
             }
           ],
           "tags": "query",

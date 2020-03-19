@@ -5,12 +5,10 @@
 import * as fs from 'fs';
 import {join} from 'path';
 
-import {mkdirp} from '../shared/helper.js';
-
 export const storeGeneratedResults = (file: string, content: string) => {
-  const pathParts = ['..', 'perf', '.generated'];
-  mkdirp(__dirname, pathParts);
+  const directory = join(__dirname, '../perf/.generated');
+  fs.mkdirSync(directory, {recursive: true});
 
-  const path = join(__dirname, ...pathParts, file);
-  fs.writeFileSync(path, content, {encoding: 'utf8'});
+  const filePath = join(directory, file);
+  fs.writeFileSync(filePath, content, {encoding: 'utf8'});
 };

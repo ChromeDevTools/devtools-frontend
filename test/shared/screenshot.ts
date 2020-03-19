@@ -13,20 +13,18 @@ import {join} from 'path';
 import * as puppeteer from 'puppeteer';
 import * as rimraf from 'rimraf';
 
-import {getBrowserAndPages, mkdirp, platform} from './helper.js';
+import {getBrowserAndPages, platform} from './helper.js';
 
-const goldensScreenshotFolderParts = ['..', 'screenshots', 'goldens', platform];
-const goldensScreenshotFolder = join(__dirname, ...goldensScreenshotFolderParts);
-const generatedScreenshotFolderParts = ['..', 'screenshots', '.generated', platform];
-const generatedScreenshotFolder = join(__dirname, ...generatedScreenshotFolderParts);
+const goldensScreenshotFolder = join(__dirname, `../screenshots/goldens/${platform}`);
+const generatedScreenshotFolder = join(__dirname, `../screenshots/.generated/${platform}`);
 
 // Delete and create the generated images.
 if (fs.existsSync(generatedScreenshotFolder)) {
   rimraf.sync(generatedScreenshotFolder);
 }
 
-mkdirp(__dirname, goldensScreenshotFolderParts);
-mkdirp(__dirname, generatedScreenshotFolderParts);
+fs.mkdirSync(goldensScreenshotFolder, {recursive: true});
+fs.mkdirSync(generatedScreenshotFolder, {recursive: true});
 
 const defaultScreenshotOpts: puppeteer.ScreenshotOptions = {
   type: 'png',
@@ -70,8 +68,8 @@ const assertScreenshotUnchanged =
     }
 
     return compare(goldensScreenshotPath, generatedScreenshotPath, fileName);
-  } catch (e) {
-    throw new Error(`Error occurred when comparing screenhots: ${e.stack}`);
+  } catch (error) {
+    throw new Error(`Error occurred when comparing screenhots: ${error.stack}`);
   }
 };
 
@@ -81,7 +79,7 @@ interface ImageDiff {
 }
 
 async function imageDiff(golden: string, generated: string, isInteractive = false) {
-  const imageDiffPath = join(__dirname, '..', 'screenshots', 'image_diff', platform, 'image_diff');
+  const imageDiffPath = join(__dirname, `../screenshots/image_diff/${platform}/image_diff`);
   return new Promise<ImageDiff>(async (resolve, reject) => {
     try {
       const imageDiff: ImageDiff = {rawMisMatchPercentage: 0, diffPath: ''};
@@ -101,8 +99,8 @@ async function imageDiff(golden: string, generated: string, isInteractive = fals
       }
 
       resolve(imageDiff);
-    } catch (e) {
-      reject(new Error(`Error when running image_diff: ${e.stack}`));
+    } catch (error) {
+      reject(new Error(`Error when running image_diff: ${error.stack}`));
     }
   });
 }
@@ -113,16 +111,16 @@ async function exec(cmd: string) {
     try {
       commandOutput = childProcess.execSync(cmd, {encoding: 'utf8'});
       resolve(commandOutput);
-    } catch (e) {
+    } catch (error) {
       // image_diff will exit with a status code of 1 if the diff is too big, so
       // this needs to be caught, but the outcome is the same - we want to send
       // back the string for processing.
-      if (e.stdout && e.stdout.indexOf('diff') === -1) {
-        reject(new Error(`Comparing diff failed. stdout: "${e.stdout}"`));
+      if (error.stdout && error.stdout.indexOf('diff') === -1) {
+        reject(new Error(`Comparing diff failed. stdout: "${error.stdout}"`));
         return;
       }
 
-      resolve(e.stdout);
+      resolve(error.stdout);
     }
   });
 }
@@ -140,7 +138,7 @@ async function compare(golden: string, generated: string, fileName: string) {
 
   // Interactively allow the user to choose.
   if (screenshot && diffPath) {
-    const root = join(__dirname, '..', '..');
+    const root = join(__dirname, '../..');
     const left = golden.replace(root, '');
     const right = generated.replace(root, '');
     const diff = diffPath.replace(root, '');

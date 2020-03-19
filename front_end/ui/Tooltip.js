@@ -5,7 +5,7 @@ import * as Platform from '../platform/platform.js';
 
 import {GlassPane} from './GlassPane.js';
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
-import {Events as ZoomManagerEvents} from './ZoomManager.js';
+import {Events as ZoomManagerEvents, ZoomManager} from './ZoomManager.js';
 
 /**
  * @unrestricted
@@ -23,7 +23,7 @@ export class Tooltip {
     doc.addEventListener('mousedown', this._hide.bind(this, true), true);
     doc.addEventListener('mouseleave', this._hide.bind(this, false), true);
     doc.addEventListener('keydown', this._hide.bind(this, true), true);
-    self.UI.zoomManager.addEventListener(ZoomManagerEvents.ZoomChanged, this._reset, this);
+    ZoomManager.instance().addEventListener(ZoomManagerEvents.ZoomChanged, this._reset, this);
     doc.defaultView.addEventListener('resize', this._reset.bind(this), false);
   }
 

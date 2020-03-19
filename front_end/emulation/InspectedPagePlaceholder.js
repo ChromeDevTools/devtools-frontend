@@ -11,7 +11,7 @@ export class InspectedPagePlaceholder extends UI.Widget.Widget {
   constructor() {
     super(true);
     this.registerRequiredCSS('emulation/inspectedPagePlaceholder.css');
-    self.UI.zoomManager.addEventListener(UI.ZoomManager.Events.ZoomChanged, this.onResize, this);
+    UI.ZoomManager.ZoomManager.instance().addEventListener(UI.ZoomManager.Events.ZoomChanged, this.onResize, this);
     this.restoreMinimumSize();
   }
 
@@ -34,7 +34,7 @@ export class InspectedPagePlaceholder extends UI.Widget.Widget {
   }
 
   _dipPageRect() {
-    const zoomFactor = self.UI.zoomManager.zoomFactor();
+    const zoomFactor = UI.ZoomManager.ZoomManager.instance().zoomFactor();
     const rect = this.element.getBoundingClientRect();
     const bodyRect = this.element.ownerDocument.body.getBoundingClientRect();
 

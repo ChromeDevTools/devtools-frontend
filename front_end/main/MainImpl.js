@@ -207,8 +207,8 @@ export class MainImpl {
     this._addMainEventListeners(document);
 
     const canDock = !!Root.Runtime.queryParam('can_dock');
-    self.UI.zoomManager =
-        new UI.ZoomManager.ZoomManager(window, Host.InspectorFrontendHost.InspectorFrontendHostInstance);
+    self.UI.zoomManager = UI.ZoomManager.ZoomManager.instance(
+        {forceNew: true, win: window, frontendHost: Host.InspectorFrontendHost.InspectorFrontendHostInstance});
     self.UI.inspectorView = UI.InspectorView.InspectorView.instance();
     UI.ContextMenu.ContextMenu.initialize();
     UI.ContextMenu.ContextMenu.installHandler(document);

@@ -38,7 +38,7 @@ import {Icon} from './Icon.js';
 import {Toolbar} from './Toolbar.js';
 import {installDragHandle, invokeOnceAfterBatchUpdate} from './UIUtils.js';
 import {VBox, Widget} from './Widget.js';  // eslint-disable-line no-unused-vars
-import {Events as ZoomManagerEvents} from './ZoomManager.js';
+import {Events as ZoomManagerEvents, ZoomManager} from './ZoomManager.js';
 
 /**
  * @unrestricted
@@ -70,7 +70,7 @@ export class TabbedPane extends VBox {
 
     this._triggerDropDownTimeout = null;
     this._dropDownButton = this._createDropDownButton();
-    self.UI.zoomManager.addEventListener(ZoomManagerEvents.ZoomChanged, this._zoomChanged, this);
+    ZoomManager.instance().addEventListener(ZoomManagerEvents.ZoomChanged, this._zoomChanged, this);
     this.makeTabSlider();
   }
 

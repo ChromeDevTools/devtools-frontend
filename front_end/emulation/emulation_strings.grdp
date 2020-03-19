@@ -192,9 +192,6 @@
   <message name="IDS_DEVTOOLS_8189965036f7d675e0b7af67a2a873a0" desc="Text in Sensors View of the Device Toolbar">
     Timezone ID
   </message>
-  <message name="IDS_DEVTOOLS_81c3744a7fe979d029d1e7b84afd613f" desc="Reload warning text content in Sensors View of the Device Toolbar">
-    *Requires reload
-  </message>
   <message name="IDS_DEVTOOLS_82a9b801e28c4dec617b1cabc329f5bd" desc="Title of an action in the emulation tool to capture screenshot">
     Capture screenshot
   </message>

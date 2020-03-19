@@ -266,6 +266,7 @@
             "settingName": "uiTheme",
             "settingType": "enum",
             "defaultValue": "systemPreferred",
+            "reloadRequired": true,
             "options": [
                 {
                     "title": "Switch to system preferred color theme",

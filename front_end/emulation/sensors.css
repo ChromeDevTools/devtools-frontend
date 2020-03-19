@@ -293,11 +293,6 @@ fieldset.device-orientation-override-section {
   background: #f1f1f1;
 }
 
-.reload-warning {
-  align-self: center;
-  margin-left: 10px;
-}
-
 button.text-button {
   margin: 0 10px;
 }

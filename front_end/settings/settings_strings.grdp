@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
-  <message name="IDS_DEVTOOLS_0f653ae68147586eb189d7baf37a696a" desc="Text of button in Settings Screen of the Settings">
-    Restore defaults and reload
-  </message>
   <message name="IDS_DEVTOOLS_2cce43a6505a5d1bdf7ea98bf7fd1bc8" desc="Blackbox label in Framework Blackbox Settings Tab of the Settings">
     Blackbox
   </message>
@@ -29,6 +26,9 @@
   </message>
   <message name="IDS_DEVTOOLS_89bacc9715d030658f2602ce65426a7f" desc="Warning text content in Settings Screen of the Settings">
     WARNING:
+  </message>
+  <message name="IDS_DEVTOOLS_a599915d2fc19385af5579f81ac713d5" desc="Text of button in Settings Screen of the Settings">
+    Restore defaults and reload DevTools
   </message>
   <message name="IDS_DEVTOOLS_ae25bc3ceebf44be4b59d0ade0e53f0b" desc="Placeholder text content in Framework Blackbox Settings Tab of the Settings">
     No blackboxed patterns

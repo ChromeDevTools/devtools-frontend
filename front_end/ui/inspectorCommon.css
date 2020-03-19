@@ -451,6 +451,11 @@ span[is=dt-icon-label] {
     background-color: #9e9e9e;
 }
 
+.reload-warning {
+    align-self: center;
+    margin-left: 10px;
+}
+
 button.link {
     border: none;
     background: none;

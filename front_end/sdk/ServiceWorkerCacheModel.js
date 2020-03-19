@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import * as ProtocolModule from '../protocol_client/protocol_client.js';
+import * as ProtocolClient from '../protocol_client/protocol_client.js';
 
 import {NameValue} from './NetworkRequest.js';               // eslint-disable-line no-unused-vars
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
@@ -77,9 +77,9 @@ export class ServiceWorkerCacheModel extends SDKModel {
    */
   async deleteCache(cache) {
     const response = await this._cacheAgent.invoke_deleteCache({cacheId: cache.cacheId});
-    if (response[ProtocolModule.InspectorBackend.ProtocolError]) {
+    if (response[ProtocolClient.InspectorBackend.ProtocolError]) {
       console.error(`ServiceWorkerCacheAgent error deleting cache ${cache.toString()}: ${
-          response[ProtocolModule.InspectorBackend.ProtocolError]}`);
+          response[ProtocolClient.InspectorBackend.ProtocolError]}`);
       return;
     }
     this._caches.delete(cache.cacheId);
@@ -93,12 +93,12 @@ export class ServiceWorkerCacheModel extends SDKModel {
    */
   async deleteCacheEntry(cache, request) {
     const response = await this._cacheAgent.invoke_deleteEntry({cacheId: cache.cacheId, request});
-    if (!response[ProtocolModule.InspectorBackend.ProtocolError]) {
+    if (!response[ProtocolClient.InspectorBackend.ProtocolError]) {
       return;
     }
     Common.Console.Console.instance().error(Common.UIString.UIString(
         'ServiceWorkerCacheAgent error deleting cache entry %s in cache: %s', cache.toString(),
-        response[ProtocolModule.InspectorBackend.ProtocolError]));
+        response[ProtocolClient.InspectorBackend.ProtocolError]));
   }
 
   /**
@@ -268,10 +268,10 @@ export class ServiceWorkerCacheModel extends SDKModel {
   async _requestEntries(cache, skipCount, pageSize, pathFilter, callback) {
     const response =
         await this._cacheAgent.invoke_requestEntries({cacheId: cache.cacheId, skipCount, pageSize, pathFilter});
-    if (response[ProtocolModule.InspectorBackend.ProtocolError]) {
+    if (response[ProtocolClient.InspectorBackend.ProtocolError]) {
       console.error(
           'ServiceWorkerCacheAgent error while requesting entries: ',
-          response[ProtocolModule.InspectorBackend.ProtocolError]);
+          response[ProtocolClient.InspectorBackend.ProtocolError]);
       return;
     }
     callback(response.cacheDataEntries, response.returnCount);
@@ -284,10 +284,10 @@ export class ServiceWorkerCacheModel extends SDKModel {
    */
   async _requestAllEntries(cache, pathFilter, callback) {
     const response = await this._cacheAgent.invoke_requestEntries({cacheId: cache.cacheId, pathFilter});
-    if (response[ProtocolModule.InspectorBackend.ProtocolError]) {
+    if (response[ProtocolClient.InspectorBackend.ProtocolError]) {
       console.error(
           'ServiceWorkerCacheAgent error while requesting entries: ',
-          response[ProtocolModule.InspectorBackend.ProtocolError]);
+          response[ProtocolClient.InspectorBackend.ProtocolError]);
       return;
     }
     callback(response.cacheDataEntries, response.returnCount);

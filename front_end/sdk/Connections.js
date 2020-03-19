@@ -4,12 +4,12 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
-import * as ProtocolModule from '../protocol_client/protocol_client.js';
+import * as ProtocolClient from '../protocol_client/protocol_client.js';
 
 import {TargetManager} from './SDKModel.js';
 
 /**
- * @implements {ProtocolModule.InspectorBackend.Connection}
+ * @implements {ProtocolClient.InspectorBackend.Connection}
  */
 export class MainConnection {
   constructor() {
@@ -96,7 +96,7 @@ export class MainConnection {
 }
 
 /**
- * @implements {ProtocolModule.InspectorBackend.Connection}
+ * @implements {ProtocolClient.InspectorBackend.Connection}
  */
 export class WebSocketConnection {
   /**
@@ -202,7 +202,7 @@ export class WebSocketConnection {
 }
 
 /**
- * @implements {ProtocolModule.InspectorBackend.Connection}
+ * @implements {ProtocolClient.InspectorBackend.Connection}
  */
 export class StubConnection {
   constructor() {
@@ -241,7 +241,7 @@ export class StubConnection {
     const messageObject = JSON.parse(message);
     const error = {
       message: 'This is a stub connection, can\'t dispatch message.',
-      code: ProtocolModule.InspectorBackend.DevToolsStubErrorCode,
+      code: ProtocolClient.InspectorBackend.DevToolsStubErrorCode,
       data: messageObject
     };
     if (this._onMessage) {
@@ -264,11 +264,11 @@ export class StubConnection {
 }
 
 /**
- * @implements {ProtocolModule.InspectorBackend.Connection}
+ * @implements {ProtocolClient.InspectorBackend.Connection}
  */
 export class ParallelConnection {
   /**
-   * @param {!ProtocolModule.InspectorBackend.Connection} connection
+   * @param {!ProtocolClient.InspectorBackend.Connection} connection
    * @param {string} sessionId
    */
   constructor(connection, sessionId) {
@@ -327,7 +327,7 @@ export class ParallelConnection {
  * @return {!Promise}
  */
 export async function initMainConnection(createMainTarget, websocketConnectionLost) {
-  ProtocolModule.InspectorBackend.Connection.setFactory(_createMainConnection.bind(null, websocketConnectionLost));
+  ProtocolClient.InspectorBackend.Connection.setFactory(_createMainConnection.bind(null, websocketConnectionLost));
   await createMainTarget();
   Host.InspectorFrontendHost.InspectorFrontendHostInstance.connectionReady();
   Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
@@ -340,7 +340,7 @@ export async function initMainConnection(createMainTarget, websocketConnectionLo
 
 /**
  * @param {function()} websocketConnectionLost
- * @return {!ProtocolModule.InspectorBackend.Connection}
+ * @return {!ProtocolClient.InspectorBackend.Connection}
  */
 export function _createMainConnection(websocketConnectionLost) {
   const wsParam = Root.Runtime.queryParam('ws');

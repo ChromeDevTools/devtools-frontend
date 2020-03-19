@@ -35,7 +35,7 @@ import * as Extensions from '../extensions/extensions.js';
 import * as Host from '../host/host.js';
 import * as Persistence from '../persistence/persistence.js';
 import * as Platform from '../platform/platform.js';
-import * as ProtocolModule from '../protocol_client/protocol_client.js';
+import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -752,7 +752,7 @@ export class PauseListener {
  */
 export function sendOverProtocol(method, params) {
   return new Promise((resolve, reject) => {
-    ProtocolModule.InspectorBackend.test.sendRawMessage(method, params, (err, ...results) => {
+    ProtocolClient.InspectorBackend.test.sendRawMessage(method, params, (err, ...results) => {
       if (err) {
         return reject(err);
       }

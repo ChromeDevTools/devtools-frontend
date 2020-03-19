@@ -24,7 +24,7 @@
  */
 
 import * as Common from '../common/common.js';
-import * as ProtocolModule from '../protocol_client/protocol_client.js';
+import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
 import {DebuggerModel, Location} from './DebuggerModel.js';  // eslint-disable-line no-unused-vars
@@ -274,7 +274,7 @@ export class Script {
 
   /**
    * @param {string} newSource
-   * @param {function(?ProtocolModule.InspectorBackend.ProtocolError, !Protocol.Runtime.ExceptionDetails=, !Array.<!Protocol.Debugger.CallFrame>=, !Protocol.Runtime.StackTrace=, !Protocol.Runtime.StackTraceId=, boolean=)} callback
+   * @param {function(?ProtocolClient.InspectorBackend.ProtocolError, !Protocol.Runtime.ExceptionDetails=, !Array.<!Protocol.Debugger.CallFrame>=, !Protocol.Runtime.StackTrace=, !Protocol.Runtime.StackTraceId=, boolean=)} callback
    */
   async editSource(newSource, callback) {
     newSource = Script._trimSourceURLComment(newSource);
@@ -294,13 +294,13 @@ export class Script {
     const response = await this.debuggerModel.target().debuggerAgent().invoke_setScriptSource(
         {scriptId: this.scriptId, scriptSource: newSource});
 
-    if (!response[ProtocolModule.InspectorBackend.ProtocolError] && !response.exceptionDetails) {
+    if (!response[ProtocolClient.InspectorBackend.ProtocolError] && !response.exceptionDetails) {
       this._source = newSource;
     }
 
     const needsStepIn = !!response.stackChanged;
     callback(
-        response[ProtocolModule.InspectorBackend.ProtocolError], response.exceptionDetails, response.callFrames,
+        response[ProtocolClient.InspectorBackend.ProtocolError], response.exceptionDetails, response.callFrames,
         response.asyncStackTrace, response.asyncStackTraceId, needsStepIn);
   }
 
@@ -382,7 +382,7 @@ export class Script {
   async setBlackboxedRanges(positions) {
     const response = await this.debuggerModel.target().debuggerAgent().invoke_setBlackboxedRanges(
         {scriptId: this.scriptId, positions});
-    return !response[ProtocolModule.InspectorBackend.ProtocolError];
+    return !response[ProtocolClient.InspectorBackend.ProtocolError];
   }
 
   containsLocation(lineNumber, columnNumber) {

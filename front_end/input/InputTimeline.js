@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Bindings from '../bindings/bindings.js';
-import * as ProtocolModule from '../protocol_client/protocol_client.js';
+import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Timeline from '../timeline/timeline.js';
 import * as UI from '../ui/ui.js';
@@ -190,8 +190,8 @@ export class InputTimeline extends UI.Widget.VBox {
         /** @type {!SDK.SDKModel.Target} */ (SDK.SDKModel.TargetManager.instance().mainTarget()), this);
 
     const response = await this._tracingClient.startRecording();
-    if (response[ProtocolModule.InspectorBackend.ProtocolError]) {
-      this._recordingFailed(response[ProtocolModule.InspectorBackend.ProtocolError]);
+    if (response[ProtocolClient.InspectorBackend.ProtocolError]) {
+      this._recordingFailed(response[ProtocolClient.InspectorBackend.ProtocolError]);
     } else {
       this._setState(State.Recording);
     }

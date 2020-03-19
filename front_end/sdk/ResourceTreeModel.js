@@ -29,7 +29,7 @@
  */
 
 import * as Common from '../common/common.js';
-import * as ProtocolModule from '../protocol_client/protocol_client.js';
+import * as ProtocolClient from '../protocol_client/protocol_client.js';
 
 import {DOMModel} from './DOMModel.js';
 import {Events as NetworkManagerEvents, NetworkManager} from './NetworkManager.js';
@@ -427,7 +427,7 @@ export class ResourceTreeModel extends SDKModel {
    */
   async navigationHistory() {
     const response = await this._agent.invoke_getNavigationHistory({});
-    if (response[ProtocolModule.InspectorBackend.ProtocolError]) {
+    if (response[ProtocolClient.InspectorBackend.ProtocolError]) {
       return null;
     }
     return {currentIndex: response.currentIndex, entries: response.entries};
@@ -445,7 +445,7 @@ export class ResourceTreeModel extends SDKModel {
    */
   async fetchAppManifest() {
     const response = await this._agent.invoke_getAppManifest({});
-    if (response[ProtocolModule.InspectorBackend.ProtocolError]) {
+    if (response[ProtocolClient.InspectorBackend.ProtocolError]) {
       return {url: response.url, data: null, errors: []};
     }
     return {url: response.url, data: response.data || null, errors: response.errors};

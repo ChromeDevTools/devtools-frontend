@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
-import * as ProtocolModule from '../protocol_client/protocol_client.js';
+import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -135,7 +135,7 @@ export class ActionDelegate {
                 /** @type {!Protocol.Page.Viewport} */ (JSON.parse(/** @type {string} */ (result.object.value)));
             const response = await node.domModel().target().pageAgent().invoke_getLayoutMetrics({});
             const page_zoom =
-                !response[ProtocolModule.InspectorBackend.ProtocolError] && response.visualViewport.zoom || 1;
+                !response[ProtocolClient.InspectorBackend.ProtocolError] && response.visualViewport.zoom || 1;
             clip.x *= page_zoom;
             clip.y *= page_zoom;
             clip.width *= page_zoom;

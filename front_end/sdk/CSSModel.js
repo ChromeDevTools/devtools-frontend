@@ -31,7 +31,7 @@
 import * as Common from '../common/common.js';
 import * as HostModule from '../host/host.js';
 import * as Platform from '../platform/platform.js';
-import * as ProtocolModule from '../protocol_client/protocol_client.js';
+import * as ProtocolClient from '../protocol_client/protocol_client.js';
 
 import {CSSMatchedStyles} from './CSSMatchedStyles.js';
 import {CSSMedia} from './CSSMedia.js';
@@ -305,7 +305,7 @@ export class CSSModel extends SDKModel {
   async matchedStylesPromise(nodeId) {
     const response = await this._agent.invoke_getMatchedStylesForNode({nodeId});
 
-    if (response[ProtocolModule.InspectorBackend.ProtocolError]) {
+    if (response[ProtocolClient.InspectorBackend.ProtocolError]) {
       return null;
     }
 
@@ -342,7 +342,7 @@ export class CSSModel extends SDKModel {
    */
   async backgroundColorsPromise(nodeId) {
     const response = this._agent.invoke_getBackgroundColors({nodeId});
-    if (response[ProtocolModule.InspectorBackend.ProtocolError]) {
+    if (response[ProtocolClient.InspectorBackend.ProtocolError]) {
       return null;
     }
 
@@ -388,7 +388,7 @@ export class CSSModel extends SDKModel {
   async inlineStylesPromise(nodeId) {
     const response = await this._agent.invoke_getInlineStylesForNode({nodeId});
 
-    if (response[ProtocolModule.InspectorBackend.ProtocolError] || !response.inlineStyle) {
+    if (response[ProtocolClient.InspectorBackend.ProtocolError] || !response.inlineStyle) {
       return null;
     }
     const inlineStyle = new CSSStyleDeclaration(this, null, response.inlineStyle, Type.Inline);

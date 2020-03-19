@@ -2,30 +2,30 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as ProtocolModule from './protocol_client.js';
+import * as ProtocolClient from './protocol_client.js';
 
 self.Protocol = self.Protocol || {};
 Protocol = Protocol || {};
 
-Protocol.DevToolsStubErrorCode = ProtocolModule.InspectorBackend.DevToolsStubErrorCode;
+Protocol.DevToolsStubErrorCode = ProtocolClient.InspectorBackend.DevToolsStubErrorCode;
 
-Protocol.SessionRouter = ProtocolModule.InspectorBackend.SessionRouter;
+Protocol.SessionRouter = ProtocolClient.InspectorBackend.SessionRouter;
 
 /** @constructor */
-Protocol.InspectorBackend = ProtocolModule.InspectorBackend.InspectorBackend;
+Protocol.InspectorBackend = ProtocolClient.InspectorBackend.InspectorBackend;
 
-Protocol.InspectorBackend.ProtocolError = ProtocolModule.InspectorBackend.ProtocolError;
+Protocol.InspectorBackend.ProtocolError = ProtocolClient.InspectorBackend.ProtocolError;
 
 /** @interface */
-Protocol.Connection = ProtocolModule.InspectorBackend.Connection;
+Protocol.Connection = ProtocolClient.InspectorBackend.Connection;
 
-/** @type {!ProtocolModule.InspectorBackend.InspectorBackend} */
-Protocol.inspectorBackend = ProtocolModule.inspectorBackend;
+/** @type {!ProtocolClient.InspectorBackend.InspectorBackend} */
+Protocol.inspectorBackend = ProtocolClient.inspectorBackend;
 
-Protocol.test = ProtocolModule.InspectorBackend.test;
-
-/** @constructor */
-Protocol.TargetBase = ProtocolModule.InspectorBackend.TargetBase;
+Protocol.test = ProtocolClient.InspectorBackend.test;
 
 /** @constructor */
-Protocol.NodeURL = ProtocolModule.NodeURL.NodeURL;
+Protocol.TargetBase = ProtocolClient.InspectorBackend.TargetBase;
+
+/** @constructor */
+Protocol.NodeURL = ProtocolClient.NodeURL.NodeURL;

@@ -50,7 +50,7 @@ export async function getMappings(namespace: string, mappings: Map<string, any>,
       const file = useExternalRefs ? externalModule : path.join(FRONT_END_FOLDER, src, rightSideParts[1] + '.js');
 
       if (rightSideParts[0] === 'Protocol') {
-        rightSideParts[0] = 'ProtocolModule';
+        rightSideParts[0] = 'ProtocolClient';
       }
 
       mappings.set(leftSide, {

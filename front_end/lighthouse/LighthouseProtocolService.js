@@ -3,13 +3,13 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import * as ProtocolModule from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
+import * as ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';
 
 export class ProtocolService extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
-    /** @type {?ProtocolModule.InspectorBackend.Connection} */
+    /** @type {?ProtocolClient.InspectorBackend.Connection} */
     this._rawConnection = null;
     /** @type {?Services.ServiceManager.Service} */
     this._backend = null;

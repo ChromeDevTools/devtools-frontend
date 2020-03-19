@@ -5,7 +5,7 @@
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
-import * as ProtocolModule from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
+import * as ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';
 
 /**
@@ -146,7 +146,7 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel {
 }
 
 /**
- * @implements {ProtocolModule.InspectorBackend.Connection}
+ * @implements {ProtocolClient.InspectorBackend.Connection}
  */
 export class NodeConnection {
   /**

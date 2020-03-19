@@ -30,7 +30,7 @@
 
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
-import * as ProtocolModule from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
+import * as ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -299,7 +299,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
     }
 
     /**
-     * @param {?ProtocolModule.InspectorBackend.ProtocolError} error
+     * @param {?ProtocolClient.InspectorBackend.ProtocolError} error
      * @param {!Protocol.DOM.NodeId} nodeId
      * @this {ElementsTreeOutline}
      */
@@ -940,7 +940,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
 
   /**
    * @param {boolean} wasExpanded
-   * @param {?ProtocolModule.InspectorBackend.ProtocolError} error
+   * @param {?ProtocolClient.InspectorBackend.ProtocolError} error
    * @param {?SDK.DOMModel.DOMNode} newNode
    * @return {?ElementsTreeElement} nodeId
    */

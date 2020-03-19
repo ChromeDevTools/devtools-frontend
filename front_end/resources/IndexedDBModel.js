@@ -29,7 +29,7 @@
  */
 
 import * as Common from '../common/common.js';
-import * as ProtocolModule from '../protocol_client/protocol_client.js';
+import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as SDK from '../sdk/sdk.js';
 
 /**
@@ -427,8 +427,8 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
       keyRange
     });
 
-    if (response[ProtocolModule.InspectorBackend.ProtocolError]) {
-      console.error('IndexedDBAgent error: ' + response[ProtocolModule.InspectorBackend.ProtocolError]);
+    if (response[ProtocolClient.InspectorBackend.ProtocolError]) {
+      console.error('IndexedDBAgent error: ' + response[ProtocolClient.InspectorBackend.ProtocolError]);
       return;
     }
 
@@ -459,8 +459,8 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
     const response =
         await this._indexedDBAgent.invoke_getMetadata({securityOrigin: databaseOrigin, databaseName, objectStoreName});
 
-    if (response[ProtocolModule.InspectorBackend.ProtocolError]) {
-      console.error('IndexedDBAgent error: ' + response[ProtocolModule.InspectorBackend.ProtocolError]);
+    if (response[ProtocolClient.InspectorBackend.ProtocolError]) {
+      console.error('IndexedDBAgent error: ' + response[ProtocolClient.InspectorBackend.ProtocolError]);
       return null;
     }
     return {entriesCount: response.entriesCount, keyGeneratorValue: response.keyGeneratorValue};

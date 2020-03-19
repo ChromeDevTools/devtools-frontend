@@ -4,7 +4,7 @@
 
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as Host from '../host/host.js';
-import * as ProtocolModule from '../protocol_client/protocol_client.js';
+import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as SDK from '../sdk/sdk.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as TextUtils from '../text_utils/text_utils.js';
@@ -190,11 +190,11 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
    */
   _setRecording(recording) {
     if (recording) {
-      ProtocolModule.InspectorBackend.test.onMessageSent = this._messageSent.bind(this);
-      ProtocolModule.InspectorBackend.test.onMessageReceived = this._messageRecieved.bind(this);
+      ProtocolClient.InspectorBackend.test.onMessageSent = this._messageSent.bind(this);
+      ProtocolClient.InspectorBackend.test.onMessageReceived = this._messageRecieved.bind(this);
     } else {
-      ProtocolModule.InspectorBackend.test.onMessageSent = null;
-      ProtocolModule.InspectorBackend.test.onMessageReceived = null;
+      ProtocolClient.InspectorBackend.test.onMessageSent = null;
+      ProtocolClient.InspectorBackend.test.onMessageReceived = null;
     }
   }
 
@@ -212,7 +212,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
 
   /**
    * @param {!Object} message
-   * @param {?ProtocolModule.InspectorBackend.TargetBase} target
+   * @param {?ProtocolClient.InspectorBackend.TargetBase} target
    */
   _messageRecieved(message, target) {
     if ('id' in message) {
@@ -246,7 +246,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
 
   /**
    * @param {{domain: string, method: string, params: !Object, id: number}} message
-   * @param {?ProtocolModule.InspectorBackend.TargetBase} target
+   * @param {?ProtocolClient.InspectorBackend.TargetBase} target
    */
   _messageSent(message, target) {
     const sdkTarget = /** @type {?SDK.SDKModel.Target} */ (target);

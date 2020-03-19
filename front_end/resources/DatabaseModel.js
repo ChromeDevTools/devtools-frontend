@@ -27,7 +27,7 @@
  */
 
 import * as Common from '../common/common.js';
-import * as ProtocolModule from '../protocol_client/protocol_client.js';
+import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as SDK from '../sdk/sdk.js';
 
 /**
@@ -99,7 +99,7 @@ export class Database {
    */
   async executeSql(query, onSuccess, onError) {
     const response = await this._model._agent.invoke_executeSQL({'databaseId': this._id, 'query': query});
-    const error = response[ProtocolModule.InspectorBackend.ProtocolError];
+    const error = response[ProtocolClient.InspectorBackend.ProtocolError];
     if (error) {
       onError(error);
       return;

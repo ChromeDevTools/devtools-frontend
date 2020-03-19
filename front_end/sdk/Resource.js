@@ -27,7 +27,7 @@
  */
 
 import * as Common from '../common/common.js';
-import * as ProtocolModule from '../protocol_client/protocol_client.js';
+import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
 import {Events, NetworkRequest} from './NetworkRequest.js';                   // eslint-disable-line no-unused-vars
@@ -276,10 +276,10 @@ export class Resource {
     } else {
       const response = await this._resourceTreeModel.target().pageAgent().invoke_getResourceContent(
           {frameId: this.frameId, url: this.url});
-      if (response[ProtocolModule.InspectorBackend.ProtocolError]) {
-        this._contentLoadError = response[ProtocolModule.InspectorBackend.ProtocolError];
+      if (response[ProtocolClient.InspectorBackend.ProtocolError]) {
+        this._contentLoadError = response[ProtocolClient.InspectorBackend.ProtocolError];
         this._content = null;
-        loadResult = {error: response[ProtocolModule.InspectorBackend.ProtocolError], isEncoded: false};
+        loadResult = {error: response[ProtocolClient.InspectorBackend.ProtocolError], isEncoded: false};
       } else {
         this._content = response.content;
         this._contentLoadError = null;

@@ -4,7 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
-import * as ProtocolModule from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
+import * as ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
 
 import {ParallelConnection} from './Connections.js';
 import {Capability, Events, SDKModel, Target, TargetManager, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars
@@ -31,7 +31,7 @@ export class ChildTargetManager extends SDKModel {
     /** @type {!Map<string, !Target>} */
     this._childTargets = new Map();
 
-    /** @type {!Map<string, !ProtocolModule.InspectorBackend.Connection>} */
+    /** @type {!Map<string, !ProtocolClient.InspectorBackend.Connection>} */
     this._parallelConnections = new Map();
 
     /** @type {string | null} */
@@ -200,7 +200,7 @@ export class ChildTargetManager extends SDKModel {
 
   /**
    * @param {function((!Object|string))} onMessage
-   * @return {!Promise<!ProtocolModule.InspectorBackend.Connection>}
+   * @return {!Promise<!ProtocolClient.InspectorBackend.Connection>}
    */
   async createParallelConnection(onMessage) {
     // The main Target id is actually just `main`, instead of the real targetId.
@@ -216,7 +216,7 @@ export class ChildTargetManager extends SDKModel {
   /**
    * @param {!Target} target
    * @param {string} targetId
-   * @return {!Promise<!{connection: !ProtocolModule.InspectorBackend.Connection, sessionId: string}>}
+   * @return {!Promise<!{connection: !ProtocolClient.InspectorBackend.Connection, sessionId: string}>}
    */
   async _createParallelConnectionAndSessionForTarget(target, targetId) {
     const targetAgent = target.targetAgent();

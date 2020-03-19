@@ -30,7 +30,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
-import * as ProtocolModule from '../protocol_client/protocol_client.js';
+import * as ProtocolClient from '../protocol_client/protocol_client.js';
 
 import {DebuggerModel, FunctionDetails} from './DebuggerModel.js';  // eslint-disable-line no-unused-vars
 import {HeapProfilerModel} from './HeapProfilerModel.js';
@@ -72,7 +72,7 @@ export class RuntimeModel extends SDKModel {
    * @return {boolean}
    */
   static isSideEffectFailure(response) {
-    const exceptionDetails = !response[ProtocolModule.InspectorBackend.ProtocolError] && response.exceptionDetails;
+    const exceptionDetails = !response[ProtocolClient.InspectorBackend.ProtocolError] && response.exceptionDetails;
     return !!(
         exceptionDetails && exceptionDetails.exception && exceptionDetails.exception.description &&
         exceptionDetails.exception.description.startsWith('EvalError: Possible side-effect in debug-evaluate'));
@@ -270,8 +270,8 @@ export class RuntimeModel extends SDKModel {
       executionContextId: executionContextId,
     });
 
-    if (response[ProtocolModule.InspectorBackend.ProtocolError]) {
-      console.error(response[ProtocolModule.InspectorBackend.ProtocolError]);
+    if (response[ProtocolClient.InspectorBackend.ProtocolError]) {
+      console.error(response[ProtocolClient.InspectorBackend.ProtocolError]);
       return null;
     }
     return {scriptId: response.scriptId, exceptionDetails: response.exceptionDetails};
@@ -302,7 +302,7 @@ export class RuntimeModel extends SDKModel {
       awaitPromise,
     });
 
-    const error = response[ProtocolModule.InspectorBackend.ProtocolError];
+    const error = response[ProtocolClient.InspectorBackend.ProtocolError];
     if (error) {
       console.error(error);
       return {error: error};
@@ -320,7 +320,7 @@ export class RuntimeModel extends SDKModel {
     }
     const response = await this._agent.invoke_queryObjects(
         {prototypeObjectId: /** @type {string} */ (prototype.objectId), objectGroup: 'console'});
-    const error = response[ProtocolModule.InspectorBackend.ProtocolError];
+    const error = response[ProtocolClient.InspectorBackend.ProtocolError];
     if (error) {
       console.error(error);
       return {error: error};
@@ -340,7 +340,7 @@ export class RuntimeModel extends SDKModel {
    */
   async heapUsage() {
     const result = await this._agent.invoke_getHeapUsage({});
-    return result[ProtocolModule.InspectorBackend.ProtocolError] ? null : result;
+    return result[ProtocolClient.InspectorBackend.ProtocolError] ? null : result;
   }
 
   /**
@@ -820,7 +820,7 @@ export class ExecutionContext {
       replMode: options.replMode,
     });
 
-    const error = response[ProtocolModule.InspectorBackend.ProtocolError];
+    const error = response[ProtocolClient.InspectorBackend.ProtocolError];
     if (error) {
       console.error(error);
       return {error: error};
@@ -833,7 +833,7 @@ export class ExecutionContext {
    */
   async globalLexicalScopeNames() {
     const response = await this.runtimeModel._agent.invoke_globalLexicalScopeNames({executionContextId: this.id});
-    return response[ProtocolModule.InspectorBackend.ProtocolError] ? [] : response.names;
+    return response[ProtocolClient.InspectorBackend.ProtocolError] ? [] : response.names;
   }
 
   /**
@@ -873,7 +873,7 @@ SDKModel.register(RuntimeModel, Capability.JS, true);
 /** @typedef {{
  *    object: (!RemoteObject|undefined),
  *    exceptionDetails: (!Protocol.Runtime.ExceptionDetails|undefined),
- *    error: (!ProtocolModule.InspectorBackend.ProtocolError|undefined)}
+ *    error: (!ProtocolClient.InspectorBackend.ProtocolError|undefined)}
  *  }}
  */
 export let EvaluationResult;
@@ -902,7 +902,7 @@ export let EvaluationOptions;
 
 /** @typedef {{
  *    objects: (!RemoteObject|undefined),
- *    error: (!ProtocolModule.InspectorBackend.ProtocolError|undefined)}
+ *    error: (!ProtocolClient.InspectorBackend.ProtocolError|undefined)}
  *  }}
  */
 export let QueryObjectResult;

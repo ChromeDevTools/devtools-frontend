@@ -32,7 +32,7 @@ import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
-import * as ProtocolModule from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
+import * as ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
@@ -972,7 +972,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     const treeOutline = this.treeOutline;
 
     /**
-     * @param {?ProtocolModule.InspectorBackend.ProtocolError=} error
+     * @param {?ProtocolClient.InspectorBackend.ProtocolError=} error
      * @this {ElementsTreeElement}
      */
     function moveToNextAttributeIfNeeded(error) {
@@ -1727,7 +1727,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     /**
-     * @param {?ProtocolModule.InspectorBackend.ProtocolError} error
+     * @param {?ProtocolClient.InspectorBackend.ProtocolError} error
      */
     function selectNode(error) {
       if (callback) {

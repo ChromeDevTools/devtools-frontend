@@ -4,7 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
-import * as ProtocolModule from '../protocol_client/protocol_client.js';
+import * as ProtocolClient from '../protocol_client/protocol_client.js';
 
 /** @type {!Map<function(new:SDKModel, !Target), !{capabilities: number, autostart: boolean}>} */
 const _registeredModels = new Map();
@@ -82,7 +82,7 @@ export class SDKModel extends Common.ObjectWrapper.ObjectWrapper {
 /**
  * @unrestricted
  */
-export class Target extends ProtocolModule.InspectorBackend.TargetBase {
+export class Target extends ProtocolClient.InspectorBackend.TargetBase {
   /**
    * @param {!TargetManager} targetManager
    * @param {string} id
@@ -91,7 +91,7 @@ export class Target extends ProtocolModule.InspectorBackend.TargetBase {
    * @param {?Target} parentTarget
    * @param {string} sessionId
    * @param {boolean} suspended
-   * @param {?ProtocolModule.InspectorBackend.Connection} connection
+   * @param {?ProtocolClient.InspectorBackend.Connection} connection
    */
   constructor(targetManager, id, name, type, parentTarget, sessionId, suspended, connection) {
     const needsNodeJSPatching = type === Type.Node;
@@ -543,7 +543,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
    * @param {?Target} parentTarget
    * @param {string=} sessionId
    * @param {boolean=} waitForDebuggerInPage
-   * @param {!ProtocolModule.InspectorBackend.Connection=} connection
+   * @param {!ProtocolClient.InspectorBackend.Connection=} connection
    * @return {!Target}
    */
   createTarget(id, name, type, parentTarget, sessionId, waitForDebuggerInPage, connection) {

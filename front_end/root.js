@@ -10,7 +10,6 @@ import './host/host-legacy.js';
 import './protocol_client/protocol_client-legacy.js';
 import './sdk/sdk-legacy.js';
 import './ui/ui-legacy.js';
-
 import './services/services-legacy.js';
 import './workspace/workspace-legacy.js';
 import './bindings/bindings-legacy.js';

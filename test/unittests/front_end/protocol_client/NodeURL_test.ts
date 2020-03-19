@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import {NodeURL} from '../../../../front_end/protocol_client/NodeURL.js';
-import {Platform} from '/front_end/host/host.js';
+import {Platform} from '../../../../front_end/host/host.js';
 
 describe.skip('NodeURL', () => {
   describe('platform detection for paths', () => {
@@ -27,7 +27,7 @@ describe.skip('NodeURL', () => {
     const patchedUrl = Platform.isWin() ? 'file:///c:/prog/foobar.js' : 'file:///usr/local/home/prog/foobar.js';
 
     it('does patch url fields', () => {
-      const object = {url};
+      const object = {url, result: null};
 
       NodeURL.patch(object);
 
@@ -36,6 +36,7 @@ describe.skip('NodeURL', () => {
 
     it('does not patch the url of the result', () => {
       const object = {
+        url: '',
         result: {
           result: {
             value: {url},
@@ -64,7 +65,7 @@ describe.skip('NodeURL', () => {
         },
       };
 
-      NodeURL.patch(object);
+      NodeURL.patch(object as any);
 
       assert.strictEqual(object.exceptionDetails.url, patchedUrl);
       assert.strictEqual(object.exceptionDetails.stackTrace.callFrames[0].url, patchedUrl);

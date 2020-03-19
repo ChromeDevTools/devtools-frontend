@@ -3,18 +3,17 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-
 import * as Host from '../host/host.js';
 
 export class NodeURL {
   /**
-   * @param {!Object} object
+   * @param {!{url: string}} object
    */
   static patch(object) {
     process(object, '');
 
     /**
-     * @param {!Object} object
+     * @param {!{url: string}} object
      * @param {string} path
      */
     function process(object, path) {
@@ -26,7 +25,7 @@ export class NodeURL {
         const value = entry[1];
         const entryPath = path + '.' + key;
         if (entryPath !== '.result.result.value' && value !== null && typeof value === 'object') {
-          process(value, entryPath);
+          process(/** @type {{url: string}} */ (value), entryPath);
         }
       }
     }

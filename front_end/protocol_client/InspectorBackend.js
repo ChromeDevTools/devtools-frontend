@@ -86,15 +86,18 @@ export class InspectorBackend {
       return this._agents[domain];
     }
 
+    // @ts-ignore Method code generation
     TargetBase.prototype[methodName] = agentGetter;
 
     /**
      * @this {TargetBase}
+     * @param {!_DispatcherPrototype} dispatcher
      */
     function registerDispatcher(dispatcher) {
       this.registerDispatcher(domain, dispatcher);
     }
 
+    // @ts-ignore Method code generation
     TargetBase.prototype['register' + domain + 'Dispatcher'] = registerDispatcher;
   }
 
@@ -108,7 +111,7 @@ export class InspectorBackend {
       this._addAgentGetterMethodToProtocolTargetPrototype(domain);
     }
 
-    return this._agentPrototypes.get(domain);
+    return /** @type {!_AgentPrototype} */ (this._agentPrototypes.get(domain));
   }
 
   /**
@@ -119,12 +122,12 @@ export class InspectorBackend {
     if (!this._dispatcherPrototypes.has(domain)) {
       this._dispatcherPrototypes.set(domain, new _DispatcherPrototype());
     }
-    return this._dispatcherPrototypes.get(domain);
+    return /** @type {!_DispatcherPrototype} */ (this._dispatcherPrototypes.get(domain));
   }
 
   /**
    * @param {string} method
-   * @param {!Array.<!Object>} signature
+   * @param {!Array.<!{name: string, type: string, optional: boolean}>} signature
    * @param {!Array.<string>} replyArgs
    * @param {boolean} hasErrorData
    */
@@ -141,10 +144,13 @@ export class InspectorBackend {
   registerEnum(type, values) {
     const domainAndName = type.split('.');
     const domain = domainAndName[0];
+    // @ts-ignore Protocol global namespace pollution
     if (!Protocol[domain]) {
+      // @ts-ignore Protocol global namespace pollution
       Protocol[domain] = {};
     }
 
+    // @ts-ignore Protocol global namespace pollution
     Protocol[domain][domainAndName[1]] = values;
     this._initialized = true;
   }
@@ -160,7 +166,7 @@ export class InspectorBackend {
   }
 
   /**
-   * @param {function(T)} clientCallback
+   * @param {function((T|undefined)):void} clientCallback
    * @param {string} errorPrefix
    * @param {function(new:T,S)=} constructor
    * @param {T=} defaultValue
@@ -180,8 +186,10 @@ export class InspectorBackend {
         return;
       }
       if (constructor) {
+        // @ts-ignore Special casting
         clientCallback(new constructor(value));
       } else {
+        // @ts-ignore Special casting
         clientCallback(value);
       }
     }
@@ -197,18 +205,18 @@ let _factory;
  */
 export class Connection {
   constructor() {
-    /** @type {?function(!Object)} */
+    /** @type {?function(!Object):void} */
     this._onMessage;
   }
 
   /**
-   * @param {function((!Object|string))} onMessage
+   * @param {function((!Object|string)):void} onMessage
    */
   setOnMessage(onMessage) {
   }
 
   /**
-   * @param {function(string)} onDisconnect
+   * @param {function(string):void} onDisconnect
    */
   setOnDisconnect(onDisconnect) {
   }
@@ -220,9 +228,10 @@ export class Connection {
   }
 
   /**
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   disconnect() {
+    throw new Error('not implemented');
   }
 
   /**
@@ -258,6 +267,7 @@ export const test = {
   /**
    * Sends a raw message over main connection.
    * ProtocolClient.test.sendRawMessage('Page.enable', {}, console.log)
+   * @type {?function(string, ?Object, ?function(...*):void):void}
    */
   sendRawMessage: null,
 
@@ -289,10 +299,10 @@ export class SessionRouter {
     this._pendingResponsesCount = 0;
     this._domainToLogger = new Map();
 
-    /** @type {!Map<string, {target: !TargetBase, callbacks: !Map<number, !_Callback>, proxyConnection: ?Connection}>} */
+    /** @type {!Map<string, {target: !TargetBase, callbacks: !Map<number, !_Callback>, proxyConnection: (?Connection|undefined)}>} */
     this._sessions = new Map();
 
-    /** @type {!Array<function()>} */
+    /** @type {!Array<function():void>} */
     this._pendingScripts = [];
 
     test.deprecatedRunAfterPendingDispatches = this._deprecatedRunAfterPendingDispatches.bind(this);
@@ -311,7 +321,7 @@ export class SessionRouter {
   /**
    * @param {!TargetBase} target
    * @param {string} sessionId
-   * @param {?Connection} proxyConnection
+   * @param {?Connection=} proxyConnection
    */
   registerSession(target, sessionId, proxyConnection) {
     // Only the Audits panel uses proxy connections. If it is ever possible to have multiple active at the
@@ -333,6 +343,9 @@ export class SessionRouter {
    */
   unregisterSession(sessionId) {
     const session = this._sessions.get(sessionId);
+    if (!session) {
+      return;
+    }
     for (const callback of session.callbacks.values()) {
       SessionRouter.dispatchConnectionError(callback);
     }
@@ -396,14 +409,18 @@ export class SessionRouter {
     }
 
     ++this._pendingResponsesCount;
-    this._sessions.get(sessionId).callbacks.set(messageId, callback);
+    const session = this._sessions.get(sessionId);
+    if (!session) {
+      return;
+    }
+    session.callbacks.set(messageId, callback);
     this._connection.sendRawMessage(JSON.stringify(messageObject));
   }
 
   /**
    * @param {string} method
    * @param {?Object} params
-   * @param {?function(...*)} callback
+   * @param {?function(...*):void} callback
    */
   _sendRawMessageForTesting(method, params, callback) {
     const domain = method.split('.')[0];
@@ -424,7 +441,9 @@ export class SessionRouter {
           /** @type {!Object} */ (messageObjectCopy), this._getTargetBySessionId(messageObjectCopy.sessionId));
     }
 
-    const messageObject = /** @type {!Object} */ ((typeof message === 'string') ? JSON.parse(message) : message);
+    const messageObject =
+        /** @type {!{sessionId: string, url: string, id: number, error: ?Object, result: ?Object}|!{sessionId: string, url: string, method: string, params: !Array<string>}} */
+        ((typeof message === 'string') ? JSON.parse(message) : message);
 
     // Send all messages to proxy connections.
     let suppressUnknownMessageErrors = false;
@@ -491,7 +510,8 @@ export class SessionRouter {
             messageObject);
         return;
       }
-      session.target._dispatchers[domainName].dispatch(method[1], messageObject);
+      session.target._dispatchers[domainName].dispatch(
+          method[1], /** @type {{method: string, params: ?Array<string>}} */ (messageObject));
     }
   }
 
@@ -553,24 +573,32 @@ export class TargetBase {
     if ((!parentTarget && connection) || (!parentTarget && sessionId) || (connection && sessionId)) {
       throw new Error('Either connection or sessionId (but not both) must be supplied for a child target');
     }
-    if (sessionId) {
-      this._router = parentTarget._router;
+
+    /** @type {!SessionRouter} */
+    let router;
+    if (sessionId && parentTarget && parentTarget._router) {
+      router = parentTarget._router;
     } else if (connection) {
-      this._router = new SessionRouter(connection);
+      router = new SessionRouter(connection);
     } else {
-      this._router = new SessionRouter(_factory());
+      router = new SessionRouter(_factory());
     }
 
-    this._router.registerSession(this, this._sessionId);
+    /** @type {?SessionRouter} */
+    this._router = router;
 
+    router.registerSession(this, this._sessionId);
+
+    /** @type {!Object<string,!_AgentPrototype>} */
     this._agents = {};
-    for (const [domain, agentPrototype] of ProtocolClient.inspectorBackend._agentPrototypes) {
+    for (const [domain, agentPrototype] of inspectorBackend._agentPrototypes) {
       this._agents[domain] = Object.create(/** @type {!_AgentPrototype} */ (agentPrototype));
       this._agents[domain]._target = this;
     }
 
+    /** @type {!Object<string,_DispatcherPrototype>} */
     this._dispatchers = {};
-    for (const [domain, dispatcherPrototype] of ProtocolClient.inspectorBackend._dispatcherPrototypes) {
+    for (const [domain, dispatcherPrototype] of inspectorBackend._dispatcherPrototypes) {
       this._dispatchers[domain] = Object.create(/** @type {!_DispatcherPrototype} */ (dispatcherPrototype));
       this._dispatchers[domain]._dispatchers = [];
     }
@@ -591,6 +619,9 @@ export class TargetBase {
    * @param {string} reason
    */
   dispose(reason) {
+    if (!this._router) {
+      return;
+    }
     this._router.unregisterSession(this._sessionId);
     this._router = null;
   }
@@ -607,7 +638,7 @@ export class TargetBase {
   }
 
   /**
-   * @return {!SessionRouter}
+   * @return {?SessionRouter}
    */
   router() {
     return this._router;
@@ -622,14 +653,18 @@ class _AgentPrototype {
    * @param {string} domain
    */
   constructor(domain) {
+    /** @type {!Object<string, !Array<string>>} */
     this._replyArgs = {};
+    /** @type {!Object<string, boolean>} */
     this._hasErrorData = {};
     this._domain = domain;
+    /** @type {!TargetBase} */
+    this._target;
   }
 
   /**
    * @param {string} methodName
-   * @param {!Array.<!Object>} signature
+   * @param {!Array.<!{name: string, type: string, optional: boolean}>} signature
    * @param {!Array.<string>} replyArgs
    * @param {boolean} hasErrorData
    */
@@ -646,17 +681,19 @@ class _AgentPrototype {
       return _AgentPrototype.prototype._sendMessageToBackendPromise.call(this, domainAndMethod, signature, params);
     }
 
+    // @ts-ignore Method code generation
     this[methodName] = sendMessagePromise;
 
     /**
      * @param {!Object} request
-     * @return {!Promise}
+     * @return {!Promise<?Object>}
      * @this {_AgentPrototype}
      */
     function invoke(request) {
       return this._invoke(domainAndMethod, request);
     }
 
+    // @ts-ignore Method code generation
     this['invoke_' + methodName] = invoke;
 
     this._replyArgs[domainAndMethod] = replyArgs;
@@ -667,12 +704,13 @@ class _AgentPrototype {
 
   /**
    * @param {string} method
-   * @param {!Array.<!Object>} signature
+   * @param {!Array.<!{name: string, type: string, optional: boolean}>} signature
    * @param {!Array.<*>} args
-   * @param {function(string)} errorCallback
+   * @param {function(string):void} errorCallback
    * @return {?Object}
    */
   _prepareParameters(method, signature, args, errorCallback) {
+    /** @type {!Object<string, *>} */
     const params = {};
     let hasParams = false;
 
@@ -714,7 +752,7 @@ class _AgentPrototype {
 
   /**
    * @param {string} method
-   * @param {!Array<!Object>} signature
+   * @param {!Array<!{name: string, type: string, optional: boolean}>} signature
    * @param {!Array<*>} args
    * @return {!Promise<?>}
    */
@@ -733,6 +771,10 @@ class _AgentPrototype {
     }
 
     return new Promise((resolve, reject) => {
+      /**
+       * @param {*} error
+       * @param {*} result
+       */
       const callback = (error, result) => {
         if (error) {
           if (!test.suppressRequestErrors && error.code !== DevToolsStubErrorCode && error.code !== _GenericError &&
@@ -765,6 +807,10 @@ class _AgentPrototype {
    */
   _invoke(method, request) {
     return new Promise(fulfill => {
+      /**
+       * @param {*} error
+       * @param {*} result
+       */
       const callback = (error, result) => {
         if (error && !test.suppressRequestErrors && error.code !== DevToolsStubErrorCode &&
             error.code !== _GenericError && error.code !== _ConnectionClosedErrorCode) {
@@ -795,7 +841,10 @@ class _AgentPrototype {
  */
 class _DispatcherPrototype {
   constructor() {
+    /** @type {!Object<string, *>} */
     this._eventArgs = {};
+    /** @type {!Array<*>} */
+    this._dispatchers;
   }
 
   /**
@@ -815,7 +864,7 @@ class _DispatcherPrototype {
 
   /**
    * @param {string} functionName
-   * @param {!Object} messageObject
+   * @param {!{method: string, params: ?Array<string>}} messageObject
    */
   dispatch(functionName, messageObject) {
     if (!this._dispatchers.length) {
@@ -847,6 +896,9 @@ class _DispatcherPrototype {
 
 /**
  * Takes error and result.
- * @typedef {function(?Object, ?Object)}
+ * @typedef {function(?Object, ?Object):void}
  */
+// @ts-ignore typedef
 export let _Callback;
+
+export const inspectorBackend = new InspectorBackend();

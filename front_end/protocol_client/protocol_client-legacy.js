@@ -20,7 +20,7 @@ ProtocolClient.InspectorBackend.ProtocolError = ProtocolClientModule.InspectorBa
 ProtocolClient.Connection = ProtocolClientModule.InspectorBackend.Connection;
 
 /** @type {!ProtocolClientModule.InspectorBackend.InspectorBackend} */
-ProtocolClient.inspectorBackend = ProtocolClientModule.inspectorBackend;
+ProtocolClient.inspectorBackend = ProtocolClientModule.InspectorBackend.inspectorBackend;
 
 ProtocolClient.test = ProtocolClientModule.InspectorBackend.test;
 

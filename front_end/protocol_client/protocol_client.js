@@ -13,8 +13,8 @@ export {
 
 // Create the global here because registering commands will involve putting
 // items onto the global.
+// @ts-ignore Global namespace instantiation
 self.Protocol = self.Protocol || {};
 
 // FIXME: This instance of InspectorBackend should not be a side effect of importing this module.
-export const inspectorBackend = new InspectorBackend.InspectorBackend();
-InspectorBackendCommands.registerCommands(inspectorBackend);
+InspectorBackendCommands.registerCommands(InspectorBackend.inspectorBackend);

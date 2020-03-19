@@ -924,6 +924,7 @@ devtools_typescript_deps = [
   "front_end/common:common",
   "front_end/formatter_worker",
   "front_end/host",
+  "front_end/protocol_client",
   "front_end/root",
   "front_end/sdk:sdk",
 ]

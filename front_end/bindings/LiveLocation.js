@@ -33,12 +33,11 @@ export class LiveLocation {
  */
 export class LiveLocationWithPool {
   /**
-   * @param {function(!LiveLocation)} updateDelegate
+   * @param {function(!LiveLocation):!Promise<void>} updateDelegate
    * @param {!LiveLocationPool} locationPool
    */
   constructor(updateDelegate, locationPool) {
-    // TODO(1032016): Set return type to {Promise<void>} once all update delegates are asyncified.
-    /** @type {?function(!LiveLocation)} */
+    /** @type {?function(!LiveLocation):!Promise<void>} */
     this._updateDelegate = updateDelegate;
     this._locationPool = locationPool;
     this._locationPool._add(this);

@@ -259,11 +259,11 @@ def generate_protocol_externs(output_path, file1, file2):
             uppercase_length += 1
 
         output_file.write("/** @return {!Protocol.%sAgent}*/\n" % domain_name)
-        output_file.write("Protocol.TargetBase.prototype.%s = function(){};\n" %
+        output_file.write("ProtocolClient.TargetBase.prototype.%s = function(){};\n" %
                           (domain_name[:uppercase_length].lower() + domain_name[uppercase_length:] + "Agent"))
 
         output_file.write("/**\n * @param {!Protocol.%sDispatcher} dispatcher\n */\n" % domain_name)
-        output_file.write("Protocol.TargetBase.prototype.register%sDispatcher = function(dispatcher) {}\n" % domain_name)
+        output_file.write("ProtocolClient.TargetBase.prototype.register%sDispatcher = function(dispatcher) {}\n" % domain_name)
 
     output_file.close()
 

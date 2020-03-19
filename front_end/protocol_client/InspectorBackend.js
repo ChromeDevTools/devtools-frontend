@@ -243,21 +243,21 @@ export class Connection {
 export const test = {
   /**
    * This will get called for every protocol message.
-   * Protocol.test.dumpProtocol = console.log
+   * ProtocolClient.test.dumpProtocol = console.log
    * @type {?function(string)}
    */
   dumpProtocol: null,
 
   /**
    * Runs a function when no protocol activity is present.
-   * Protocol.test.deprecatedRunAfterPendingDispatches(() => console.log('done'))
+   * ProtocolClient.test.deprecatedRunAfterPendingDispatches(() => console.log('done'))
    * @type {?function(function()=)}
    */
   deprecatedRunAfterPendingDispatches: null,
 
   /**
    * Sends a raw message over main connection.
-   * Protocol.test.sendRawMessage('Page.enable', {}, console.log)
+   * ProtocolClient.test.sendRawMessage('Page.enable', {}, console.log)
    */
   sendRawMessage: null,
 
@@ -564,13 +564,13 @@ export class TargetBase {
     this._router.registerSession(this, this._sessionId);
 
     this._agents = {};
-    for (const [domain, agentPrototype] of Protocol.inspectorBackend._agentPrototypes) {
+    for (const [domain, agentPrototype] of ProtocolClient.inspectorBackend._agentPrototypes) {
       this._agents[domain] = Object.create(/** @type {!_AgentPrototype} */ (agentPrototype));
       this._agents[domain]._target = this;
     }
 
     this._dispatchers = {};
-    for (const [domain, dispatcherPrototype] of Protocol.inspectorBackend._dispatcherPrototypes) {
+    for (const [domain, dispatcherPrototype] of ProtocolClient.inspectorBackend._dispatcherPrototypes) {
       this._dispatchers[domain] = Object.create(/** @type {!_DispatcherPrototype} */ (dispatcherPrototype));
       this._dispatchers[domain]._dispatchers = [];
     }

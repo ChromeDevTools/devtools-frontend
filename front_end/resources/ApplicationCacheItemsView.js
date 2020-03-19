@@ -265,7 +265,7 @@ export class ApplicationCacheItemsView extends UI.View.SimpleView {
 
   _deleteCallback(node) {
     // FIXME: Should we delete a single (selected) resource or all resources?
-    // Protocol.inspectorBackend.deleteCachedResource(...)
+    // ProtocolClient.inspectorBackend.deleteCachedResource(...)
     // this._update();
   }
 }

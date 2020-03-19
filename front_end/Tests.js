@@ -577,7 +577,7 @@
     this._waitForTargets(1, callback.bind(this));
 
     function callback() {
-      Protocol.test.deprecatedRunAfterPendingDispatches(this.releaseControl.bind(this));
+      ProtocolClient.test.deprecatedRunAfterPendingDispatches(this.releaseControl.bind(this));
     }
   };
 

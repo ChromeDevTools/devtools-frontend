@@ -22,22 +22,22 @@ export class CoverageDecorationManager {
     /** @type {!Platform.Multimap<!TextUtils.ContentProvider.ContentProvider, !Workspace.UISourceCode.UISourceCode>} */
     this._uiSourceCodeByContentProvider = new Platform.Multimap();
 
-    for (const uiSourceCode of self.Workspace.workspace.uiSourceCodes()) {
+    for (const uiSourceCode of Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodes()) {
       uiSourceCode.addLineDecoration(0, decoratorType, this);
     }
-    self.Workspace.workspace.addEventListener(
+    Workspace.Workspace.WorkspaceImpl.instance().addEventListener(
         Workspace.Workspace.Events.UISourceCodeAdded, this._onUISourceCodeAdded, this);
   }
 
   reset() {
-    for (const uiSourceCode of self.Workspace.workspace.uiSourceCodes()) {
+    for (const uiSourceCode of Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodes()) {
       uiSourceCode.removeDecorationsForType(decoratorType);
     }
   }
 
   dispose() {
     this.reset();
-    self.Workspace.workspace.removeEventListener(
+    Workspace.Workspace.WorkspaceImpl.instance().removeEventListener(
         Workspace.Workspace.Events.UISourceCodeAdded, this._onUISourceCodeAdded, this);
   }
 

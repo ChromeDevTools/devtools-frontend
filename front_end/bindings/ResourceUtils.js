@@ -62,7 +62,7 @@ export function displayNameForURL(url) {
     return resource.displayName;
   }
 
-  const uiSourceCode = self.Workspace.workspace.uiSourceCodeForURL(url);
+  const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url);
   if (uiSourceCode) {
     return uiSourceCode.displayName();
   }

@@ -641,8 +641,9 @@ export class Linkifier {
       url = uiLocation.uiSourceCode.contentURL();
     } else if (info.url) {
       url = info.url;
-      const uiSourceCode = self.Workspace.workspace.uiSourceCodeForURL(url) ||
-          self.Workspace.workspace.uiSourceCodeForURL(Common.ParsedURL.ParsedURL.urlWithoutHash(url));
+      const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url) ||
+          Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(
+              Common.ParsedURL.ParsedURL.urlWithoutHash(url));
       uiLocation = uiSourceCode ? uiSourceCode.uiLocation(info.lineNumber || 0, info.columnNumber || 0) : null;
     }
     const resource = url ? Bindings.ResourceUtils.resourceForURL(url) : null;

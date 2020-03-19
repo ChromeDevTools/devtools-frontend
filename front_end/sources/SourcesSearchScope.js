@@ -104,7 +104,7 @@ export class SourcesSearchScope {
     const searchInAnonymousAndContentScripts =
         Common.Settings.Settings.instance().moduleSetting('searchInAnonymousAndContentScripts').get();
 
-    return self.Workspace.workspace.projects().filter(project => {
+    return Workspace.Workspace.WorkspaceImpl.instance().projects().filter(project => {
       if (project.type() === Workspace.Workspace.projectTypes.Service) {
         return false;
       }

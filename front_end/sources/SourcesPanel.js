@@ -56,7 +56,7 @@ export class SourcesPanel extends UI.Panel.Panel {
         this.element, [UI.DropTarget.Type.Folder], Common.UIString.UIString('Drop workspace folder here'),
         this._handleDrop.bind(this));
 
-    this._workspace = self.Workspace.workspace;
+    this._workspace = Workspace.Workspace.WorkspaceImpl.instance();
 
     this._togglePauseAction =
         /** @type {!UI.Action.Action }*/ (self.UI.actionRegistry.action('debugger.toggle-pause'));

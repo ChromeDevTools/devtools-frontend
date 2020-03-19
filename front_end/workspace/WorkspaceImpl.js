@@ -381,14 +381,34 @@ export class ProjectStore {
 }
 
 /**
+ * @type {!WorkspaceImpl}
+ */
+let workspaceInstance;
+
+/**
  * @unrestricted
  */
 export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper {
+  /**
+   * @private
+   */
   constructor() {
     super();
     /** @type {!Map<string, !Project>} */
     this._projects = new Map();
     this._hasResourceContentTrackingExtensions = false;
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!workspaceInstance || forceNew) {
+      workspaceInstance = new WorkspaceImpl();
+    }
+
+    return workspaceInstance;
   }
 
   /**

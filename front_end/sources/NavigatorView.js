@@ -85,7 +85,7 @@ export class NavigatorView extends UI.Widget.VBox {
         SDK.SDKModel.Events.NameChanged, this._targetNameChanged, this);
 
     SDK.SDKModel.TargetManager.instance().observeTargets(this);
-    this._resetWorkspace(self.Workspace.workspace);
+    this._resetWorkspace(Workspace.Workspace.WorkspaceImpl.instance());
     this._workspace.uiSourceCodes().forEach(this._addUISourceCode.bind(this));
     Bindings.NetworkProject.NetworkProjectManager.instance().addEventListener(
         Bindings.NetworkProject.Events.FrameAttributionAdded, this._frameAttributionAdded, this);

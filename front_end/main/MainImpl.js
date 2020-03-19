@@ -228,30 +228,39 @@ export class MainImpl {
     self.UI.shortcutsScreen.section(Common.UIString.UIString('Console'));
 
     self.Workspace.fileManager = new Workspace.FileManager.FileManager();
-    self.Workspace.workspace = new Workspace.Workspace.WorkspaceImpl();
+    self.Workspace.workspace = Workspace.Workspace.WorkspaceImpl.instance();
 
     self.Bindings.networkProjectManager = Bindings.NetworkProject.NetworkProjectManager.instance();
-    self.Bindings.resourceMapping = Bindings.ResourceMapping.ResourceMapping.instance(
-        {forceNew: true, targetManager: SDK.SDKModel.TargetManager.instance(), workspace: self.Workspace.workspace});
+    self.Bindings.resourceMapping = Bindings.ResourceMapping.ResourceMapping.instance({
+      forceNew: true,
+      targetManager: SDK.SDKModel.TargetManager.instance(),
+      workspace: Workspace.Workspace.WorkspaceImpl.instance()
+    });
     new Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager();
-    self.Bindings.cssWorkspaceBinding = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance(
-        {forceNew: true, targetManager: SDK.SDKModel.TargetManager.instance(), workspace: self.Workspace.workspace});
-    self.Bindings.debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(
-        {forceNew: true, targetManager: SDK.SDKModel.TargetManager.instance(), workspace: self.Workspace.workspace});
+    self.Bindings.cssWorkspaceBinding = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance({
+      forceNew: true,
+      targetManager: SDK.SDKModel.TargetManager.instance(),
+      workspace: Workspace.Workspace.WorkspaceImpl.instance()
+    });
+    self.Bindings.debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+      forceNew: true,
+      targetManager: SDK.SDKModel.TargetManager.instance(),
+      workspace: Workspace.Workspace.WorkspaceImpl.instance()
+    });
     self.Bindings.breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance({
       forceNew: true,
-      workspace: self.Workspace.workspace,
+      workspace: Workspace.Workspace.WorkspaceImpl.instance(),
       targetManager: SDK.SDKModel.TargetManager.instance(),
       debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
     });
     self.Extensions.extensionServer = new Extensions.ExtensionServer.ExtensionServer();
 
     new Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding(
-        self.Persistence.isolatedFileSystemManager, self.Workspace.workspace);
+        self.Persistence.isolatedFileSystemManager, Workspace.Workspace.WorkspaceImpl.instance());
     self.Persistence.persistence = new Persistence.Persistence.PersistenceImpl(
-        self.Workspace.workspace, Bindings.BreakpointManager.BreakpointManager.instance());
-    self.Persistence.networkPersistenceManager =
-        new Persistence.NetworkPersistenceManager.NetworkPersistenceManager(self.Workspace.workspace);
+        Workspace.Workspace.WorkspaceImpl.instance(), Bindings.BreakpointManager.BreakpointManager.instance());
+    self.Persistence.networkPersistenceManager = new Persistence.NetworkPersistenceManager.NetworkPersistenceManager(
+        Workspace.Workspace.WorkspaceImpl.instance());
 
     new ExecutionContextSelector(SDK.SDKModel.TargetManager.instance(), self.UI.context);
     self.Bindings.blackboxManager = Bindings.BlackboxManager.BlackboxManager.instance({
@@ -400,7 +409,7 @@ export class MainImpl {
     const lineNumber = /** @type {number} */ (event.data['lineNumber']);
     const columnNumber = /** @type {number} */ (event.data['columnNumber']);
 
-    const uiSourceCode = self.Workspace.workspace.uiSourceCodeForURL(url);
+    const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url);
     if (uiSourceCode) {
       Common.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, columnNumber));
       return;
@@ -413,11 +422,13 @@ export class MainImpl {
       const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data);
       if (uiSourceCode.url() === url) {
         Common.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, columnNumber));
-        self.Workspace.workspace.removeEventListener(Workspace.Workspace.Events.UISourceCodeAdded, listener);
+        Workspace.Workspace.WorkspaceImpl.instance().removeEventListener(
+            Workspace.Workspace.Events.UISourceCodeAdded, listener);
       }
     }
 
-    self.Workspace.workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, listener);
+    Workspace.Workspace.WorkspaceImpl.instance().addEventListener(
+        Workspace.Workspace.Events.UISourceCodeAdded, listener);
   }
 
   _registerShortcuts() {

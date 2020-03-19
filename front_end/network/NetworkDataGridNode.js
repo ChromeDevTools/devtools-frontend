@@ -36,6 +36,7 @@ import * as Host from '../host/host.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
+import * as Workspace from '../workspace/workspace.js';
 
 import {Tabs as NetworkItemViewTabs} from './NetworkItemView.js';
 import {NetworkTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
@@ -1160,7 +1161,7 @@ export class NetworkRequestNode extends NetworkNode {
     switch (initiator.type) {
       case SDK.NetworkRequest.InitiatorType.Parser:
         cell.title = initiator.url + ':' + (initiator.lineNumber + 1);
-        const uiSourceCode = self.Workspace.workspace.uiSourceCodeForURL(initiator.url);
+        const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(initiator.url);
         cell.appendChild(Components.Linkifier.Linkifier.linkifyURL(initiator.url, {
           text: uiSourceCode ? uiSourceCode.displayName() : undefined,
           lineNumber: initiator.lineNumber,

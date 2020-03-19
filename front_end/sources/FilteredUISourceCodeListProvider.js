@@ -36,7 +36,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
   _populate(skipProject) {
     /** @type {!Array.<!Workspace.UISourceCode.UISourceCode>} */
     this._uiSourceCodes = [];
-    const projects = self.Workspace.workspace.projects().filter(this.filterProject.bind(this));
+    const projects = Workspace.Workspace.WorkspaceImpl.instance().projects().filter(this.filterProject.bind(this));
     for (let i = 0; i < projects.length; ++i) {
       if (skipProject && projects[i] === skipProject) {
         continue;
@@ -240,9 +240,10 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
    * @override
    */
   attach() {
-    self.Workspace.workspace.addEventListener(
+    Workspace.Workspace.WorkspaceImpl.instance().addEventListener(
         Workspace.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
-    self.Workspace.workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
+    Workspace.Workspace.WorkspaceImpl.instance().addEventListener(
+        Workspace.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
     this._populate();
   }
 
@@ -250,9 +251,10 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
    * @override
    */
   detach() {
-    self.Workspace.workspace.removeEventListener(
+    Workspace.Workspace.WorkspaceImpl.instance().removeEventListener(
         Workspace.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
-    self.Workspace.workspace.removeEventListener(Workspace.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
+    Workspace.Workspace.WorkspaceImpl.instance().removeEventListener(
+        Workspace.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
     this._queryLineNumberAndColumnNumber = '';
     this._defaultScores = null;
   }

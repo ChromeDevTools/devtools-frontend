@@ -183,7 +183,7 @@ export class EditingLocationHistoryEntry {
    */
   valid() {
     const position = this._positionHandle.resolve();
-    const uiSourceCode = self.Workspace.workspace.uiSourceCode(this._projectId, this._url);
+    const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCode(this._projectId, this._url);
     return !!(position && uiSourceCode);
   }
 
@@ -192,7 +192,7 @@ export class EditingLocationHistoryEntry {
    */
   reveal() {
     const position = this._positionHandle.resolve();
-    const uiSourceCode = self.Workspace.workspace.uiSourceCode(this._projectId, this._url);
+    const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCode(this._projectId, this._url);
     if (!position || !uiSourceCode) {
       return;
     }

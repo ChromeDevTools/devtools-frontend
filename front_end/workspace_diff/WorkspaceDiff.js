@@ -333,7 +333,7 @@ let _instance = null;
  */
 export function workspaceDiff() {
   if (!_instance) {
-    _instance = new WorkspaceDiffImpl(self.Workspace.workspace);
+    _instance = new WorkspaceDiffImpl(Workspace.Workspace.WorkspaceImpl.instance());
   }
   return _instance;
 }

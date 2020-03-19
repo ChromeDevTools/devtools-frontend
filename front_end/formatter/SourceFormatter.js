@@ -41,16 +41,17 @@ export class SourceFormatter {
   constructor() {
     this._projectId = 'formatter:';
     this._project = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(
-        self.Workspace.workspace, this._projectId, Workspace.Workspace.projectTypes.Formatter, 'formatter',
-        true /* isServiceProject */);
+        Workspace.Workspace.WorkspaceImpl.instance(), this._projectId, Workspace.Workspace.projectTypes.Formatter,
+        'formatter', true /* isServiceProject */);
 
     /** @type {!Map<!Workspace.UISourceCode.UISourceCode, !{promise: !Promise<!SourceFormatData>, formatData: ?SourceFormatData}>} */
     this._formattedSourceCodes = new Map();
     this._scriptMapping = new ScriptMapping();
     this._styleMapping = new StyleMapping();
-    self.Workspace.workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, event => {
-      this._onUISourceCodeRemoved(event);
-    }, this);
+    Workspace.Workspace.WorkspaceImpl.instance().addEventListener(
+        Workspace.Workspace.Events.UISourceCodeRemoved, event => {
+          this._onUISourceCodeRemoved(event);
+        }, this);
   }
 
   /**

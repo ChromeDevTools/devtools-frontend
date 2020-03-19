@@ -402,7 +402,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   _onOpenResource(message) {
-    const uiSourceCode = self.Workspace.workspace.uiSourceCodeForURL(message.url);
+    const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(message.url);
     if (uiSourceCode) {
       Common.Revealer.reveal(uiSourceCode.uiLocation(message.lineNumber, 0));
       return this._status.OK();
@@ -504,9 +504,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         resources.set(contentProvider.contentURL(), this._makeResource(contentProvider));
       }
     }
-    let uiSourceCodes = self.Workspace.workspace.uiSourceCodesForProjectType(Workspace.Workspace.projectTypes.Network);
-    uiSourceCodes = uiSourceCodes.concat(
-        self.Workspace.workspace.uiSourceCodesForProjectType(Workspace.Workspace.projectTypes.ContentScripts));
+    let uiSourceCodes = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodesForProjectType(
+        Workspace.Workspace.projectTypes.Network);
+    uiSourceCodes = uiSourceCodes.concat(Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodesForProjectType(
+        Workspace.Workspace.projectTypes.ContentScripts));
     uiSourceCodes.forEach(pushResourceData.bind(this));
     for (const resourceTreeModel of SDK.SDKModel.TargetManager.instance().models(
              SDK.ResourceTreeModel.ResourceTreeModel)) {
@@ -536,8 +537,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
 
   _onGetResourceContent(message, port) {
     const url = /** @type {string} */ (message.url);
-    const contentProvider =
-        self.Workspace.workspace.uiSourceCodeForURL(url) || Bindings.ResourceUtils.resourceForURL(url);
+    const contentProvider = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url) ||
+        Bindings.ResourceUtils.resourceForURL(url);
     if (!contentProvider) {
       return this._status.E_NOTFOUND(url);
     }
@@ -555,7 +556,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     }
 
     const url = /** @type {string} */ (message.url);
-    const uiSourceCode = self.Workspace.workspace.uiSourceCodeForURL(url);
+    const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url);
     if (!uiSourceCode || !uiSourceCode.contentType().isDocumentOrScriptOrStyleSheet()) {
       const resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(url);
       if (!resource) {
@@ -645,7 +646,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
 
   _initExtensions() {
     this._registerAutosubscriptionHandler(
-        Extensions.extensionAPI.Events.ResourceAdded, self.Workspace.workspace,
+        Extensions.extensionAPI.Events.ResourceAdded, Workspace.Workspace.WorkspaceImpl.instance(),
         Workspace.Workspace.Events.UISourceCodeAdded, this._notifyResourceAdded);
     this._registerAutosubscriptionTargetManagerHandler(
         Extensions.extensionAPI.Events.NetworkRequestFinished, SDK.NetworkManager.NetworkManager,
@@ -829,16 +830,17 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
      * @this {ExtensionServer}
      */
     function addFirstEventListener() {
-      self.Workspace.workspace.addEventListener(Workspace.Workspace.Events.WorkingCopyCommittedByUser, handler, this);
-      self.Workspace.workspace.setHasResourceContentTrackingExtensions(true);
+      Workspace.Workspace.WorkspaceImpl.instance().addEventListener(
+          Workspace.Workspace.Events.WorkingCopyCommittedByUser, handler, this);
+      Workspace.Workspace.WorkspaceImpl.instance().setHasResourceContentTrackingExtensions(true);
     }
 
     /**
      * @this {ExtensionServer}
      */
     function removeLastEventListener() {
-      self.Workspace.workspace.setHasResourceContentTrackingExtensions(false);
-      self.Workspace.workspace.removeEventListener(
+      Workspace.Workspace.WorkspaceImpl.instance().setHasResourceContentTrackingExtensions(false);
+      Workspace.Workspace.WorkspaceImpl.instance().removeEventListener(
           Workspace.Workspace.Events.WorkingCopyCommittedByUser, handler, this);
     }
 

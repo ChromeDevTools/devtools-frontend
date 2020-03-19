@@ -7,6 +7,7 @@ import * as DataGrid from '../data_grid/data_grid.js';
 import * as Formatter from '../formatter/formatter.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
+import * as Workspace from '../workspace/workspace.js';
 
 import {CoverageType, URLCoverageInfo} from './CoverageModel.js';  // eslint-disable-line no-unused-vars
 
@@ -144,7 +145,7 @@ export class CoverageListView extends UI.Widget.VBox {
       return;
     }
     const coverageInfo = /** @type {!GridNode} */ (node)._coverageInfo;
-    let sourceCode = self.Workspace.workspace.uiSourceCodeForURL(coverageInfo.url());
+    let sourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(coverageInfo.url());
     if (!sourceCode) {
       return;
     }

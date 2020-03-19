@@ -6,6 +6,7 @@ import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
+import * as Workspace from '../workspace/workspace.js';
 
 import {SamplingHeapProfileNode} from './HeapProfileView.js';  // eslint-disable-line no-unused-vars
 
@@ -218,7 +219,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
     if (!node || !node._url) {
       return;
     }
-    const sourceCode = self.Workspace.workspace.uiSourceCodeForURL(node._url);
+    const sourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(node._url);
     if (sourceCode) {
       Common.Revealer.reveal(sourceCode);
     }

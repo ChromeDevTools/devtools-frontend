@@ -85,22 +85,22 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     this._enabled = this._enabledSetting.get();
     if (this._enabled) {
       this._eventDescriptors = [
-        self.Workspace.workspace.addEventListener(
+        Workspace.Workspace.WorkspaceImpl.instance().addEventListener(
             Workspace.Workspace.Events.UISourceCodeRenamed,
             event => {
               this._uiSourceCodeRenamedListener(event);
             }),
-        self.Workspace.workspace.addEventListener(
+        Workspace.Workspace.WorkspaceImpl.instance().addEventListener(
             Workspace.Workspace.Events.UISourceCodeAdded,
             event => {
               this._uiSourceCodeAdded(event);
             }),
-        self.Workspace.workspace.addEventListener(
+        Workspace.Workspace.WorkspaceImpl.instance().addEventListener(
             Workspace.Workspace.Events.UISourceCodeRemoved,
             event => {
               this._uiSourceCodeRemovedListener(event);
             }),
-        self.Workspace.workspace.addEventListener(
+        Workspace.Workspace.WorkspaceImpl.instance().addEventListener(
             Workspace.Workspace.Events.WorkingCopyCommitted,
             event => this._onUISourceCodeWorkingCopyCommitted(
                 /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data.uiSourceCode)))

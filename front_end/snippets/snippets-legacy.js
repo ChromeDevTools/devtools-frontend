@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Workspace from '../workspace/workspace.js';
+
 import * as SnippetsModule from './snippets.js';
 
 self.Snippets = self.Snippets || {};
@@ -11,8 +13,9 @@ Snippets.evaluateScriptSnippet = SnippetsModule.ScriptSnippetFileSystem.evaluate
 Snippets.isSnippetsUISourceCode = SnippetsModule.ScriptSnippetFileSystem.isSnippetsUISourceCode;
 Snippets.isSnippetsProject = SnippetsModule.ScriptSnippetFileSystem.isSnippetsProject;
 
-Snippets.project = /** @type {!Workspace.Project} */ (
-    self.Workspace.workspace.projectsForType(Workspace.projectTypes.FileSystem)
+Snippets.project = /** @type {!Workspace.Workspace.Project} */ (
+    Workspace.Workspace.WorkspaceImpl.instance()
+        .projectsForType(Workspace.Workspace.projectTypes.FileSystem)
         .find(project => Persistence.FileSystemWorkspaceBinding.fileSystemType(project) === 'snippets'));
 
 /**

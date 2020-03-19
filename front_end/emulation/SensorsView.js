@@ -565,7 +565,7 @@ export class ShowActionDelegate {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    self.UI.viewManager.showView('sensors');
+    UI.ViewManager.ViewManager.instance().showView('sensors');
     return true;
   }
 }

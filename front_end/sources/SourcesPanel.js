@@ -88,8 +88,8 @@ export class SourcesPanel extends UI.Panel.Panel {
     this._splitWidget.setMainWidget(this.editorView);
 
     // Create navigator tabbed pane with toolbar.
-    this._navigatorTabbedLocation =
-        self.UI.viewManager.createTabbedLocation(this._revealNavigatorSidebar.bind(this), 'navigator-view', true);
+    this._navigatorTabbedLocation = UI.ViewManager.ViewManager.instance().createTabbedLocation(
+        this._revealNavigatorSidebar.bind(this), 'navigator-view', true);
     const tabbedPane = this._navigatorTabbedLocation.tabbedPane();
     tabbedPane.setMinimumSize(100, 25);
     tabbedPane.element.classList.add('navigator-tabbed-pane');
@@ -97,13 +97,13 @@ export class SourcesPanel extends UI.Panel.Panel {
     navigatorMenuButton.setTitle(Common.UIString.UIString('More options'));
     tabbedPane.rightToolbar().appendToolbarItem(navigatorMenuButton);
 
-    if (self.UI.viewManager.hasViewsForLocation('run-view-sidebar')) {
+    if (UI.ViewManager.ViewManager.instance().hasViewsForLocation('run-view-sidebar')) {
       const navigatorSplitWidget =
           new UI.SplitWidget.SplitWidget(false, true, 'sourcePanelNavigatorSidebarSplitViewState');
       navigatorSplitWidget.setMainWidget(tabbedPane);
-      const runViewTabbedPane =
-          self.UI.viewManager.createTabbedLocation(this._revealNavigatorSidebar.bind(this), 'run-view-sidebar')
-              .tabbedPane();
+      const runViewTabbedPane = UI.ViewManager.ViewManager.instance()
+                                    .createTabbedLocation(this._revealNavigatorSidebar.bind(this), 'run-view-sidebar')
+                                    .tabbedPane();
       navigatorSplitWidget.setSidebarWidget(runViewTabbedPane);
       navigatorSplitWidget.installResizer(runViewTabbedPane.headerElement());
       this.editorView.setSidebarWidget(navigatorSplitWidget);
@@ -119,7 +119,7 @@ export class SourcesPanel extends UI.Panel.Panel {
     this.editorView.setMainWidget(this._sourcesView);
 
     this._threadsSidebarPane = null;
-    this._watchSidebarPane = /** @type {!UI.View.View} */ (self.UI.viewManager.view('sources.watch'));
+    this._watchSidebarPane = /** @type {!UI.View.View} */ (UI.ViewManager.ViewManager.instance().view('sources.watch'));
     this._callstackPane = self.runtime.sharedInstance(CallStackSidebarPane);
 
     Common.Settings.Settings.instance()
@@ -206,7 +206,8 @@ export class SourcesPanel extends UI.Panel.Panel {
 
   _showThreadsIfNeeded() {
     if (ThreadsSidebarPane.shouldBeShown() && !this._threadsSidebarPane) {
-      this._threadsSidebarPane = /** @type {!UI.View.View} */ (self.UI.viewManager.view('sources.threads'));
+      this._threadsSidebarPane =
+          /** @type {!UI.View.View} */ (UI.ViewManager.ViewManager.instance().view('sources.threads'));
       if (this._sidebarPaneStack && this._threadsSidebarPane) {
         this._sidebarPaneStack.showView(
             this._threadsSidebarPane, this._splitWidget.isVertical() ? this._watchSidebarPane : this._callstackPane);
@@ -300,7 +301,7 @@ export class SourcesPanel extends UI.Panel.Panel {
     if (!self.UI.inspectorView.canSelectPanel('sources')) {
       return false;
     }
-    self.UI.viewManager.showView('sources');
+    UI.ViewManager.ViewManager.instance().showView('sources');
     return true;
   }
 
@@ -438,7 +439,7 @@ export class SourcesPanel extends UI.Panel.Panel {
           if (skipReveal) {
             this._navigatorTabbedLocation.tabbedPane().selectTab(viewId);
           } else {
-            self.UI.viewManager.showView(viewId);
+            UI.ViewManager.ViewManager.instance().showView(viewId);
           }
         }
       }
@@ -956,7 +957,8 @@ export class SourcesPanel extends UI.Panel.Panel {
     vbox.element.appendChild(this._debugToolbarDrawer);
 
     vbox.setMinimumAndPreferredSizes(minToolbarWidth, 25, minToolbarWidth, 100);
-    this._sidebarPaneStack = self.UI.viewManager.createStackLocation(this._revealDebuggerSidebar.bind(this));
+    this._sidebarPaneStack =
+        UI.ViewManager.ViewManager.instance().createStackLocation(this._revealDebuggerSidebar.bind(this));
     this._sidebarPaneStack.widget().element.classList.add('overflow-auto');
     this._sidebarPaneStack.widget().show(vbox.element);
     this._sidebarPaneStack.widget().element.appendChild(this._debuggerPausedMessage.element());
@@ -971,12 +973,14 @@ export class SourcesPanel extends UI.Panel.Panel {
     }
 
     this._sidebarPaneStack.showView(this._callstackPane);
-    const jsBreakpoints = /** @type {!UI.View.View} */ (self.UI.viewManager.view('sources.jsBreakpoints'));
+    const jsBreakpoints =
+        /** @type {!UI.View.View} */ (UI.ViewManager.ViewManager.instance().view('sources.jsBreakpoints'));
     const sourceScopeChainView = /** @type {?UI.View.View} */
         (Root.Runtime.experiments.isEnabled('wasmDWARFDebugging') ?
-             self.UI.viewManager.view('sources.sourceScopeChain') :
+             UI.ViewManager.ViewManager.instance().view('sources.sourceScopeChain') :
              null);
-    const scopeChainView = /** @type {!UI.View.View} */ (self.UI.viewManager.view('sources.scopeChain'));
+    const scopeChainView =
+        /** @type {!UI.View.View} */ (UI.ViewManager.ViewManager.instance().view('sources.scopeChain'));
 
     if (this._tabbedLocationHeader) {
       this._splitWidget.uninstallResizer(this._tabbedLocationHeader);
@@ -1000,7 +1004,8 @@ export class SourcesPanel extends UI.Panel.Panel {
       // Populate the left stack.
       this._sidebarPaneStack.showView(jsBreakpoints);
 
-      const tabbedLocation = self.UI.viewManager.createTabbedLocation(this._revealDebuggerSidebar.bind(this));
+      const tabbedLocation =
+          UI.ViewManager.ViewManager.instance().createTabbedLocation(this._revealDebuggerSidebar.bind(this));
       splitWidget.setSidebarWidget(tabbedLocation.tabbedPane());
       this._tabbedLocationHeader = tabbedLocation.tabbedPane().headerElement();
       this._splitWidget.installResizer(this._tabbedLocationHeader);
@@ -1028,7 +1033,7 @@ export class SourcesPanel extends UI.Panel.Panel {
    * @return {!Promise}
    */
   _setAsCurrentPanel() {
-    return self.UI.viewManager.showView('sources');
+    return UI.ViewManager.ViewManager.instance().showView('sources');
   }
 
   /**

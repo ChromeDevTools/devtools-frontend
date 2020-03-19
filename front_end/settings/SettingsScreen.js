@@ -53,8 +53,8 @@ export class SettingsScreen extends UI.Widget.VBox {
     UI.ARIAUtils.markAsHeading(settingsTitleElement, 1);
     settingsTitleElement.textContent = ls`Settings`;
 
-    this._tabbedLocation =
-        self.UI.viewManager.createTabbedLocation(() => SettingsScreen._showSettingsScreen(), 'settings-view');
+    this._tabbedLocation = UI.ViewManager.ViewManager.instance().createTabbedLocation(
+        () => SettingsScreen._showSettingsScreen(), 'settings-view');
     const tabbedPane = this._tabbedLocation.tabbedPane();
     tabbedPane.leftToolbar().appendToolbarItem(new UI.Toolbar.ToolbarItem(settingsLabelElement));
     tabbedPane.setShrinkableTabs(false);
@@ -105,7 +105,7 @@ export class SettingsScreen extends UI.Widget.VBox {
    * @param {string} name
    */
   _selectTab(name) {
-    self.UI.viewManager.showView(name);
+    UI.ViewManager.ViewManager.instance().showView(name);
   }
 }
 

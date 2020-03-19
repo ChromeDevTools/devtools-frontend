@@ -4,6 +4,7 @@
 
 import {TabbedPane} from './TabbedPane.js';  // eslint-disable-line no-unused-vars
 import {ItemsProvider, Toolbar, ToolbarItem, ToolbarMenuButton} from './Toolbar.js';  // eslint-disable-line no-unused-vars
+import {ViewManager} from './ViewManager.js';
 import {VBox, Widget} from './Widget.js';
 
 /**
@@ -127,7 +128,7 @@ export class SimpleView extends VBox {
    * @return {!Promise}
    */
   revealView() {
-    return self.UI.viewManager.revealView(this);
+    return ViewManager.instance().revealView(this);
   }
 
   /**

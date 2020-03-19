@@ -306,7 +306,7 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox {
     if (this._highlightedBreakpoint) {
       this._list.refreshItem(this._highlightedBreakpoint);
     }
-    self.UI.viewManager.showView('sources.domBreakpoints');
+    UI.ViewManager.ViewManager.instance().showView('sources.domBreakpoints');
   }
 }
 

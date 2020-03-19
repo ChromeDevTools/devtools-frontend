@@ -520,7 +520,7 @@ export class ElementsPanel extends UI.Panel.Panel {
   switchToAndFocus(node) {
     // Reset search restore.
     this._searchableView.cancelSearch();
-    self.UI.viewManager.showView('elements').then(() => this.selectDOMNode(node, true));
+    UI.ViewManager.ViewManager.instance().showView('elements').then(() => this.selectDOMNode(node, true));
   }
 
   /**
@@ -739,7 +739,7 @@ export class ElementsPanel extends UI.Panel.Panel {
       node.highlightForTwoSeconds();
     }
 
-    return self.UI.viewManager.showView('elements', false, !focus).then(() => {
+    return UI.ViewManager.ViewManager.instance().showView('elements', false, !focus).then(() => {
       this.selectDOMNode(node, focus);
       delete this._omitDefaultSelection;
 
@@ -877,7 +877,8 @@ export class ElementsPanel extends UI.Panel.Panel {
       }
     }
 
-    this.sidebarPaneView = self.UI.viewManager.createTabbedLocation(() => self.UI.viewManager.showView('elements'));
+    this.sidebarPaneView = UI.ViewManager.ViewManager.instance().createTabbedLocation(
+        () => UI.ViewManager.ViewManager.instance().showView('elements'));
     const tabbedPane = this.sidebarPaneView.tabbedPane();
     if (this._popoverHelper) {
       this._popoverHelper.hidePopover();

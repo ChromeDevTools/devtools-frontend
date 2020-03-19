@@ -550,8 +550,9 @@ export class TimelinePanel extends UI.Panel.Panel {
     };
 
     if (recordingOptions.startCoverage) {
-      await self.UI.viewManager.showView('coverage')
-          .then(() => self.UI.viewManager.view('coverage').widget())
+      await UI.ViewManager.ViewManager.instance()
+          .showView('coverage')
+          .then(() => UI.ViewManager.ViewManager.instance().view('coverage').widget())
           .then(widget => widget.ensureRecordingStarted());
     }
 
@@ -584,8 +585,9 @@ export class TimelinePanel extends UI.Panel.Panel {
     }
     this._setState(State.StopPending);
     if (this._startCoverage.get()) {
-      await self.UI.viewManager.showView('coverage')
-          .then(() => self.UI.viewManager.view('coverage').widget())
+      await UI.ViewManager.ViewManager.instance()
+          .showView('coverage')
+          .then(() => UI.ViewManager.ViewManager.instance().view('coverage').widget())
           .then(widget => widget.stopRecording());
     }
     const model = await this._controller.stopRecording();
@@ -853,8 +855,9 @@ export class TimelinePanel extends UI.Panel.Panel {
     this._historyManager.addRecording(this._performanceModel);
 
     if (this._startCoverage.get()) {
-      self.UI.viewManager.showView('coverage')
-          .then(() => self.UI.viewManager.view('coverage').widget())
+      UI.ViewManager.ViewManager.instance()
+          .showView('coverage')
+          .then(() => UI.ViewManager.ViewManager.instance().view('coverage').widget())
           .then(widget => widget.processBacklog())
           .then(() => this._updateOverviewControls());
     }
@@ -1298,7 +1301,7 @@ export class LoadTimelineHandler {
    * @param {string} value
    */
   handleQueryParam(value) {
-    self.UI.viewManager.showView('timeline').then(() => {
+    UI.ViewManager.ViewManager.instance().showView('timeline').then(() => {
       TimelinePanel.instance()._loadFromURL(window.decodeURIComponent(value));
     });
   }

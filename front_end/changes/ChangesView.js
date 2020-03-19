@@ -369,7 +369,7 @@ export class DiffUILocationRevealer {
     }
     /** @type {!ChangesView} */
     const changesView = self.runtime.sharedInstance(ChangesView);
-    await self.UI.viewManager.showView('changes.changes');
+    await UI.ViewManager.ViewManager.instance().showView('changes.changes');
     changesView._changesSidebar.selectUISourceCode(diffUILocation.uiSourceCode, omitFocus);
   }
 }

@@ -194,7 +194,7 @@ export class MainImpl {
   async _createAppUI() {
     MainImpl.time('Main._createAppUI');
 
-    self.UI.viewManager = new UI.ViewManager.ViewManager();
+    self.UI.viewManager = UI.ViewManager.ViewManager.instance();
 
     // Request filesystems early, we won't create connections until callback is fired. Things will happen in parallel.
     self.Persistence.isolatedFileSystemManager = new Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager();
@@ -715,7 +715,8 @@ export class MainMenuItem {
         continue;
       }
       moreTools.defaultSection().appendItem(
-          extension.title(), self.UI.viewManager.showView.bind(self.UI.viewManager, descriptor['id']));
+          extension.title(),
+          UI.ViewManager.ViewManager.instance().showView.bind(UI.ViewManager.ViewManager.instance(), descriptor['id']));
     }
 
     const helpSubMenu = contextMenu.footerSection().appendSubMenuItem(Common.UIString.UIString('Help'));

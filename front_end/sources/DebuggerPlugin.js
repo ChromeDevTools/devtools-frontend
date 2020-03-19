@@ -214,7 +214,8 @@ export class DebuggerPlugin extends Plugin {
           {text: ls`Unblackbox`, highlight: false, delegate: unblackbox, dismiss: true}, {
             text: ls`Configure`,
             highlight: false,
-            delegate: self.UI.viewManager.showView.bind(self.UI.viewManager, 'blackbox'),
+            delegate:
+                UI.ViewManager.ViewManager.instance().showView.bind(UI.ViewManager.ViewManager.instance(), 'blackbox'),
             dismiss: false
           }
         ]);

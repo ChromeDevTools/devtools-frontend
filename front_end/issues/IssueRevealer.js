@@ -18,8 +18,8 @@ export class IssueRevealer {
     if (!(issue instanceof SDK.Issue.Issue)) {
       throw new Error('Internal error: not a issue');
     }
-    await self.UI.viewManager.showView('issues-pane');
-    const issuesPane = await self.UI.viewManager.view('issues-pane').widget();
+    await UI.ViewManager.ViewManager.instance().showView('issues-pane');
+    const issuesPane = await UI.ViewManager.ViewManager.instance().view('issues-pane').widget();
     issuesPane.revealByCode(issue.code());
   }
 }

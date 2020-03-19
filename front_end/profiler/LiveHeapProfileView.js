@@ -331,8 +331,8 @@ export class ActionDelegate {
   handleAction(context, actionId) {
     (async () => {
       const profileViewId = 'live_heap_profile';
-      await self.UI.viewManager.showView(profileViewId);
-      const widget = await self.UI.viewManager.view(profileViewId).widget();
+      await UI.ViewManager.ViewManager.instance().showView(profileViewId);
+      const widget = await UI.ViewManager.ViewManager.instance().view(profileViewId).widget();
       this._innerHandleAction(/** @type {!LiveHeapProfileView} */ (widget), actionId);
     })();
     return true;

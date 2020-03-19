@@ -42,6 +42,7 @@ import {SplitWidget} from './SplitWidget.js';
 import {Events as TabbedPaneEvents} from './TabbedPane.js';
 import {ToolbarButton} from './Toolbar.js';
 import {View, ViewLocation, ViewLocationResolver} from './View.js';  // eslint-disable-line no-unused-vars
+import {ViewManager} from './ViewManager.js';
 import {VBox, WidgetFocusRestorer} from './Widget.js';
 
 /**
@@ -63,7 +64,7 @@ export class InspectorView extends VBox {
 
     // Create drawer tabbed pane.
     this._drawerTabbedLocation =
-        self.UI.viewManager.createTabbedLocation(this._showDrawer.bind(this, false), 'drawer-view', true, true);
+        ViewManager.instance().createTabbedLocation(this._showDrawer.bind(this, false), 'drawer-view', true, true);
     const moreTabsButton = this._drawerTabbedLocation.enableMoreTabsButton();
     moreTabsButton.setTitle(ls`More Tools`);
     this._drawerTabbedPane = this._drawerTabbedLocation.tabbedPane();
@@ -77,7 +78,7 @@ export class InspectorView extends VBox {
     this._drawerTabbedPane.rightToolbar().appendToolbarItem(closeDrawerButton);
 
     // Create main area tabbed pane.
-    this._tabbedLocation = self.UI.viewManager.createTabbedLocation(
+    this._tabbedLocation = ViewManager.instance().createTabbedLocation(
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront.bind(
             Host.InspectorFrontendHost.InspectorFrontendHostInstance),
         'panel', true, true, Root.Runtime.queryParam('panel'));
@@ -171,7 +172,7 @@ export class InspectorView extends VBox {
    */
   panel(panelName) {
     return (
-        /** @type {!Promise.<!Panel>} */ (self.UI.viewManager.view(panelName).widget()));
+        /** @type {!Promise.<!Panel>} */ (ViewManager.instance().view(panelName).widget()));
   }
 
   /**
@@ -197,7 +198,7 @@ export class InspectorView extends VBox {
    * @return {!Promise.<?Panel>}
    */
   showPanel(panelName) {
-    return self.UI.viewManager.showView(panelName);
+    return ViewManager.instance().showView(panelName);
   }
 
   /**
@@ -213,7 +214,7 @@ export class InspectorView extends VBox {
    */
   currentPanelDeprecated() {
     return (
-        /** @type {?Panel} */ (self.UI.viewManager.materializedWidget(this._tabbedPane.selectedTabId || '')));
+        /** @type {?Panel} */ (ViewManager.instance().materializedWidget(this._tabbedPane.selectedTabId || '')));
   }
 
   /**

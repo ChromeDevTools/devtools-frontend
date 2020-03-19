@@ -116,8 +116,8 @@ export class NetworkPanel extends UI.Panel.Panel {
     splitWidget.hideSidebar();
     splitWidget.enableShowModeSaving();
     splitWidget.show(this.element);
-    this._sidebarLocation = self.UI.viewManager.createTabbedLocation(async () => {
-      self.UI.viewManager.showView('network');
+    this._sidebarLocation = UI.ViewManager.ViewManager.instance().createTabbedLocation(async () => {
+      UI.ViewManager.ViewManager.instance().showView('network');
       splitWidget.showBoth();
     }, 'network-sidebar', true);
     const tabbedPane = this._sidebarLocation.tabbedPane();
@@ -195,7 +195,7 @@ export class NetworkPanel extends UI.Panel.Panel {
       filterString += `${filter.filterType}:${filter.filterValue} `;
     }
     panel._networkLogView.setTextFilterValue(filterString);
-    self.UI.viewManager.showView('network');
+    UI.ViewManager.ViewManager.instance().showView('network');
   }
 
   /**
@@ -479,7 +479,7 @@ export class NetworkPanel extends UI.Panel.Panel {
    * @return {!Promise<?NetworkItemView>}
    */
   async selectRequest(request) {
-    await self.UI.viewManager.showView('network');
+    await UI.ViewManager.ViewManager.instance().showView('network');
     this._networkLogView.selectRequest(request);
     return this._networkItemView;
   }
@@ -583,7 +583,10 @@ export class NetworkPanel extends UI.Panel.Panel {
      * @this {NetworkPanel}
      */
     function reveal(request) {
-      self.UI.viewManager.showView('network').then(this._networkLogView.resetFilter.bind(this._networkLogView)).then(this.revealAndHighlightRequest.bind(this, request));
+      UI.ViewManager.ViewManager.instance()
+          .showView('network')
+          .then(this._networkLogView.resetFilter.bind(this._networkLogView))
+          .then(this.revealAndHighlightRequest.bind(this, request));
     }
 
     /**
@@ -708,7 +711,8 @@ export class RequestRevealer {
       return Promise.reject(new Error('Internal error: not a network request'));
     }
     const panel = NetworkPanel._instance();
-    return self.UI.viewManager.showView('network').then(panel.revealAndHighlightRequest.bind(panel, request));
+    return UI.ViewManager.ViewManager.instance().showView('network').then(
+        panel.revealAndHighlightRequest.bind(panel, request));
   }
 }
 
@@ -892,7 +896,7 @@ export class SearchNetworkView extends Search.SearchView.SearchView {
    * @return {!Promise<!Search.SearchView.SearchView>}
    */
   static async openSearch(query, searchImmediately) {
-    await self.UI.viewManager.showView('network.search-network-tab');
+    await UI.ViewManager.ViewManager.instance().showView('network.search-network-tab');
     const searchView =
         /** @type {!SearchNetworkView} */ (self.runtime.sharedInstance(SearchNetworkView));
     searchView.toggle(query, !!searchImmediately);

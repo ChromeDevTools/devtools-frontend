@@ -13,9 +13,17 @@ import {ProvidedView, TabbedViewLocation, View, ViewLocation, ViewLocationResolv
 import {VBox, Widget} from './Widget.js';  // eslint-disable-line no-unused-vars
 
 /**
+ * @type {!ViewManager}
+ */
+let viewManagerInstance;
+
+/**
  * @unrestricted
  */
 export class ViewManager {
+  /**
+   * @private
+   */
   constructor() {
     /** @type {!Map<string, !View>} */
     this._views = new Map();
@@ -27,6 +35,18 @@ export class ViewManager {
       this._views.set(descriptor['id'], new ProvidedView(extension));
       this._locationNameByViewId.set(descriptor['id'], descriptor['location']);
     }
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!viewManagerInstance || forceNew) {
+      viewManagerInstance = new ViewManager();
+    }
+
+    return viewManagerInstance;
   }
 
   /**

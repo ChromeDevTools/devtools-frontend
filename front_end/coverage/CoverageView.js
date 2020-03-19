@@ -421,8 +421,9 @@ export class ActionDelegate {
    */
   handleAction(context, actionId) {
     const coverageViewId = 'coverage';
-    self.UI.viewManager.showView(coverageViewId, /** userGesture= */ false, /** omitFocus= */ true)
-        .then(() => self.UI.viewManager.view(coverageViewId).widget())
+    UI.ViewManager.ViewManager.instance()
+        .showView(coverageViewId, /** userGesture= */ false, /** omitFocus= */ true)
+        .then(() => UI.ViewManager.ViewManager.instance().view(coverageViewId).widget())
         .then(widget => this._innerHandleAction(/** @type !CoverageView} */ (widget), actionId));
 
     return true;
@@ -506,8 +507,9 @@ export class LineDecorator {
         return;
       }
       const coverageViewId = 'coverage';
-      self.UI.viewManager.showView(coverageViewId)
-          .then(() => self.UI.viewManager.view(coverageViewId).widget())
+      UI.ViewManager.ViewManager.instance()
+          .showView(coverageViewId)
+          .then(() => UI.ViewManager.ViewManager.instance().view(coverageViewId).widget())
           .then(widget => {
             const matchFormattedSuffix = url.match(/(.*):formatted$/);
             const urlWithoutFormattedSuffix = (matchFormattedSuffix && matchFormattedSuffix[1]) || url;

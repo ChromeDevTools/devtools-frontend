@@ -77,7 +77,8 @@ export class CommandMenu {
    */
   static createRevealViewCommand(extension, category) {
     const viewId = extension.descriptor()['id'];
-    const executeHandler = self.UI.viewManager.showView.bind(self.UI.viewManager, viewId);
+    const executeHandler =
+        UI.ViewManager.ViewManager.instance().showView.bind(UI.ViewManager.ViewManager.instance(), viewId);
     const tags = extension.descriptor()['tags'] || '';
     return CommandMenu.createCommand(
         category, tags, Common.UIString.UIString('Show %s', extension.title()), '', executeHandler);

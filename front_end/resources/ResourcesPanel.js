@@ -214,7 +214,7 @@ export class ResourceRevealer {
       return Promise.reject(new Error('Internal error: not a resource'));
     }
     const sidebar = ResourcesPanel._instance()._sidebar;
-    await self.UI.viewManager.showView('resources');
+    await UI.ViewManager.ViewManager.instance().showView('resources');
     await sidebar.showResource(resource);
   }
 }
@@ -234,7 +234,7 @@ export class CookieReferenceRevealer {
     }
 
     const sidebar = ResourcesPanel._instance()._sidebar;
-    await self.UI.viewManager.showView('resources');
+    await UI.ViewManager.ViewManager.instance().showView('resources');
     await sidebar.cookieListTreeElement.select();
 
     const contextUrl = cookie.contextUrl();

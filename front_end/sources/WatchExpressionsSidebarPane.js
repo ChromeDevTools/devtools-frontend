@@ -117,7 +117,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
   }
 
   async _addButtonClicked() {
-    await self.UI.viewManager.showView('sources.watch');
+    await UI.ViewManager.ViewManager.instance().showView('sources.watch');
     this._createWatchExpression(null).startEditing();
   }
 
@@ -225,7 +225,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
    * @param {string} expression
    */
   _focusAndAddExpressionToWatch(expression) {
-    self.UI.viewManager.showView('sources.watch');
+    UI.ViewManager.ViewManager.instance().showView('sources.watch');
     this.doUpdate();
     this._addExpressionToWatch(expression);
   }

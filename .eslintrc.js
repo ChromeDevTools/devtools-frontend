@@ -134,7 +134,7 @@ module.exports = {
   'overrides': [{
     'files': ['*.ts'],
     'rules': {
-      '@typescript-eslint/explicit-member-accessibility': [2, {'accessibility': 'no-public'}],
+      '@typescript-eslint/explicit-member-accessibility': [2, {'accessibility': 'explicit'}],
       'comma-dangle': [2, 'always-multiline'],
       '@typescript-eslint/no-unused-vars': [2],
     }

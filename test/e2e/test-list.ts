@@ -12,7 +12,6 @@ export const testList = [
   join(__dirname, '.', 'elements', 'pseudo-states.js'),
   join(__dirname, '.', 'elements', 'shadowroot-styles.js'),
   join(__dirname, '.', 'host', 'user-metrics.js'),
-  join(__dirname, '.', 'host', 'user-metrics.js'),
   join(__dirname, '.', 'network', 'network-datagrid.js'),
   join(__dirname, '.', 'rendering', 'vision-deficiencies.js'),
   join(__dirname, '.', 'snippets', 'context-menu.js'),

@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {ResourceType} from '/front_end/common/ResourceType.js';
-import {StaticContentProvider} from '/front_end/text_utils/StaticContentProvider.js';
+import {ResourceType} from '../../../../front_end/common/ResourceType.js';
+import {StaticContentProvider} from '../../../../front_end/text_utils/StaticContentProvider.js';
 
 const {assert} = chai;
 

@@ -6,6 +6,7 @@ import * as puppeteer from 'puppeteer';
 
 import {$, click, getBrowserAndPages, resourcesPath, typeText, waitFor} from '../../shared/helper.js';
 
+export const PAUSE_ON_EXCEPTION_BUTTON = '[aria-label="Pause on exceptions"]';
 export const PAUSE_BUTTON = '[aria-label="Pause script execution"]';
 export const RESUME_BUTTON = '[aria-label="Resume script execution"]';
 
@@ -47,14 +48,17 @@ export async function createNewSnippet(snippetName: string) {
   await frontend.keyboard.press('Enter');
 }
 
-export async function openSourceCodeEditorForFile(target: puppeteer.Page, sourceFile: string, testInput: string) {
-  await openFileInSourcesPanel(target, testInput);
-
+export async function openFileInEditor(target: puppeteer.Page, sourceFile: string) {
   // Open a particular file in the editor
   await doubleClickSourceTreeItem(`[aria-label="${sourceFile}, file"]`);
 
   // Wait for the file to be formattable, this process is async after opening a file
   await waitFor(`[aria-label="Pretty print ${sourceFile}"]`);
+}
+
+export async function openSourceCodeEditorForFile(target: puppeteer.Page, sourceFile: string, testInput: string) {
+  await openFileInSourcesPanel(target, testInput);
+  await openFileInEditor(target, sourceFile);
 }
 
 export async function getOpenSources() {

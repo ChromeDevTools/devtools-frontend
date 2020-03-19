@@ -55,7 +55,7 @@ function requestHandler(request, response) {
     }
 
     let encoding = 'utf8';
-    if (absoluteFilePath.endsWith('.png') || absoluteFilePath.endsWith('.jpg')) {
+    if (absoluteFilePath.endsWith('.wasm') || absoluteFilePath.endsWith('.png') || absoluteFilePath.endsWith('.jpg')) {
       encoding = 'binary';
     }
 

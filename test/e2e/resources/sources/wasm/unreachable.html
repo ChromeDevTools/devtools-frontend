@@ -1,0 +1,22 @@
+<script language="javascript">
+async function go() {
+  const importObj = {
+    env : {memory : new WebAssembly.Memory({initial : 1, maximum : 1}),
+      __memory_base : 1024,
+      table : new WebAssembly.Table({
+        initial : 2,
+        maximum : 2,
+        element : 'anyfunc',
+      }),
+      debugger: () => {
+        debugger;
+      },
+    }
+  };
+
+  const modulename = 'unreachable.wasm';
+  let instance = await WebAssembly.instantiateStreaming(fetch(modulename), importObj);
+  instance.instance.exports.Main();
+}
+go();
+</script>

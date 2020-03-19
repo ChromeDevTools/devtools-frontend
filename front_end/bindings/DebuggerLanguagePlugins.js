@@ -152,6 +152,10 @@ export class DebuggerLanguagePluginManager {
     ];
   }
 
+  clearPlugins() {
+    this._plugins = [];
+  }
+
   /**
    * @param {!DebuggerLanguagePlugin} plugin
    */
@@ -257,13 +261,10 @@ export class DebuggerLanguagePluginManager {
    * @return {!Promise<?Array<string>>}
    */
   async _getSourceFiles(script) {
-    if (!script.sourceMapURL) {
-      return null;
-    }
     for (const plugin of this._plugins) {
       if (plugin.handleScript(script)) {
         const rawModule = await this._getRawModule(script);
-        const sourceFiles = await plugin.addRawModule(script.scriptId, script.sourceMapURL, rawModule);
+        const sourceFiles = await plugin.addRawModule(script.scriptId, script.sourceMapURL || '', rawModule);
         if (!sourceFiles) {
           continue;
         }

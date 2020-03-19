@@ -103,6 +103,7 @@ export class TimelineController {
     const response = await this._startRecordingWithCategories(categoriesArray.join(','), options.enableJSSampling);
     if (response[ProtocolClient.InspectorBackend.ProtocolError]) {
       await this._waitForTracingToStop(false);
+      await SDK.SDKModel.TargetManager.instance().resumeAllTargets();
     }
     return response;
   }

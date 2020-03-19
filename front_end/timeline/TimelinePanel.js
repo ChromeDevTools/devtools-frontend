@@ -100,7 +100,6 @@ export class TimelinePanel extends UI.Panel.Panel {
       this._startCoverage.set(false);
     }
 
-
     this._showMemorySetting = Common.Settings.Settings.instance().createSetting('timelineShowMemory', false);
     this._showMemorySetting.setTitle(Common.UIString.UIString('Memory'));
     this._showMemorySetting.addChangeListener(this._onModeChanged, this);
@@ -604,14 +603,14 @@ export class TimelinePanel extends UI.Panel.Panel {
     if (this._statusPane) {
       this._statusPane.hide();
     }
-    this._statusPane = new StatusPane({description: error}, () => this.loadingComplete(null));
+    this._statusPane = new StatusPane(
+        {description: error, buttonText: ls`Close`, buttonDisabled: false}, () => this.loadingComplete(null));
     this._statusPane.showPane(this._statusPaneContainer);
     this._statusPane.updateStatus(ls`Recording failed`);
-    this._statusPane.updateButton(ls`Close`);
 
     this._setState(State.RecordingFailed);
     this._performanceModel = null;
-    this._setUIControlsEnabled(false);
+    this._setUIControlsEnabled(true);
     this._controller.dispose();
     this._controller = null;
   }
@@ -729,7 +728,7 @@ export class TimelinePanel extends UI.Panel.Panel {
     this._reset();
     this._setState(State.Recording);
     this._showRecordingStarted();
-    this._statusPane.enableAndFocusStopButton();
+    this._statusPane.enableAndFocusButton();
     this._statusPane.updateStatus(Common.UIString.UIString('Profiling…'));
     this._statusPane.updateProgressBar(Common.UIString.UIString('Buffer usage'), 0);
     this._statusPane.startTimer();
@@ -1172,14 +1171,16 @@ export class TimelineModeViewDelegate {
  */
 export class StatusPane extends UI.Widget.VBox {
   /**
-   * @param {!{showTimer: (boolean|undefined), showProgress: (boolean|undefined), description: (string|undefined)}} options - a collection of options controlling the appearance of the pane.
+   * @param {!{showTimer: (boolean|undefined), showProgress: (boolean|undefined), description: (string|undefined), buttonText: (string|undefined), buttonDisabled: (boolean|undefined)}} options - a collection of options controlling the appearance of the pane.
    *   The options object can have the following properties:
    *   - **showTimer** - `{boolean}` - Display seconds since dialog opened
    *   - **showProgress** - `{boolean}` - Display a progress bar
    *   - **description** - `{string}` - Display this string in a description line
-   * @param {function()} stopCallback
+   *   - **buttonText** - `{string}` - The localized text to display on the button
+   *   - **buttonDisabled** - `{string}` - Whether the button starts disabled or not - defaults to true
+   * @param {function(): undefined|function(): !Promise<undefined>} buttonCallback
    */
-  constructor(options, stopCallback) {
+  constructor(options, buttonCallback) {
     super(true);
     this.registerRequiredCSS('timeline/timelineStatusDialog.css');
     this.contentElement.classList.add('timeline-status-dialog');
@@ -1209,15 +1210,16 @@ export class StatusPane extends UI.Widget.VBox {
       this._description.innerText = options.description;
     }
 
-    this._stopButton = UI.UIUtils.createTextButton(Common.UIString.UIString('Stop'), stopCallback, '', true);
+    const buttonText = options.buttonText || ls`Stop`;
+    this._button = UI.UIUtils.createTextButton(buttonText, buttonCallback, '', true);
     // Profiling can't be stopped during initialization.
-    this._stopButton.disabled = true;
-    this.contentElement.createChild('div', 'stop-button').appendChild(this._stopButton);
+    this._button.disabled = !options.buttonDisabled === false;
+    this.contentElement.createChild('div', 'stop-button').appendChild(this._button);
   }
 
   finish() {
     this._stopTimer();
-    this._stopButton.disabled = true;
+    this._button.disabled = true;
   }
 
   hide() {
@@ -1233,9 +1235,9 @@ export class StatusPane extends UI.Widget.VBox {
     parent.classList.add('tinted');
   }
 
-  enableAndFocusStopButton() {
-    this._stopButton.disabled = false;
-    this._stopButton.focus();
+  enableAndFocusButton() {
+    this._button.disabled = false;
+    this._button.focus();
   }
 
   /**
@@ -1254,13 +1256,6 @@ export class StatusPane extends UI.Widget.VBox {
     this._progressBar.style.width = percent.toFixed(1) + '%';
     UI.ARIAUtils.setValueNow(this._progressBar, percent);
     this._updateTimer();
-  }
-
-  /**
-   * @param {string} caption
-   */
-  updateButton(caption) {
-    this._stopButton.innerText = caption;
   }
 
   startTimer() {

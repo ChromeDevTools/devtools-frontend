@@ -10,6 +10,7 @@ ts_library("sdk") {
     "CookieParser.js",
     "Issue.js",
     "SDKModel.js",
+    "TracingManager.js",
   ]
 
   deps = [

@@ -957,7 +957,7 @@ devtools_frontend_resources_data_test_deps = devtools_frontend_resources_deps
 # builds. Since we don't run these tests on Android any case, we disable
 # the generation of the tests on Android.
 if (!is_android) {
-  devtools_frontend_resources_data_test_deps += [ "test/unittests/front_end/" ]
+  devtools_frontend_resources_data_test_deps += [ "test" ]
 }
 
 group("devtools_frontend_resources") {

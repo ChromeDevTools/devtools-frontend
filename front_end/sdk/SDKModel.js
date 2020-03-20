@@ -4,6 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 
 /** @type {!Map<function(new:SDKModel, !Target), !{capabilities: number, autostart: boolean}>} */
@@ -32,7 +33,7 @@ export class SDKModel extends Common.ObjectWrapper.ObjectWrapper {
    * Override this method to perform tasks that are required to suspend the
    * model and that still need other models in an unsuspended state.
    * @param {string=} reason - optionally provide a reason, the model can respond accordingly
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   preSuspendModel(reason) {
     return Promise.resolve();
@@ -40,14 +41,14 @@ export class SDKModel extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {string=} reason - optionally provide a reason, the model can respond accordingly
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   suspendModel(reason) {
     return Promise.resolve();
   }
 
   /**
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   resumeModel() {
     return Promise.resolve();
@@ -56,7 +57,7 @@ export class SDKModel extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * Override this method to perform tasks that are required to after resuming
    * the model and that require all models already in an unsuspended state.
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   postResumeModel() {
     return Promise.resolve();
@@ -138,13 +139,19 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
     this._isSuspended = suspended;
   }
 
+  /**
+   * TODO(1011811): Replace type with !Set<function(new:SDKModel, !Target)> once we no longer type-check with closure.
+   * @param {*} required
+   */
   createModels(required) {
     this._creatingModels = true;
     // TODO(dgozman): fix this in bindings layer.
+    // @ts-ignore ResourceTreeModel inherits from SDKModel introducing a cyclic dependency. Use the global for now.
     this.model(SDK.ResourceTreeModel);
     const registered = Array.from(SDKModel.registeredModels.keys());
     for (const modelClass of registered) {
-      const info = SDKModel.registeredModels.get(modelClass);
+      const info =
+          /** @type {!{capabilities: number, autostart: boolean}} */ (SDKModel.registeredModels.get(modelClass));
       if (info.autostart || required.has(modelClass)) {
         this.model(modelClass);
       }
@@ -226,7 +233,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
   }
 
   /**
-   * @param {function(new:T, !Target)} modelClass
+   * @param {function(new:SDKModel, !Target)} modelClass
    * @return {?T}
    * @template T
    */
@@ -279,7 +286,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
 
   /**
    * @param {string=} reason - optionally provide a reason, so models can respond accordingly
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   async suspend(reason) {
     if (this._isSuspended) {
@@ -292,7 +299,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
   }
 
   /**
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   async resume() {
     if (!this._isSuspended) {
@@ -361,9 +368,9 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
     this._targets = new Set();
     /** @type {!Set.<!Observer>} */
     this._observers = new Set();
-    /** @type {!Platform.Multimap<symbol, !{modelClass: !Function, thisObject: (!Object|undefined), listener: function(!Common.EventTarget.EventTargetEvent)}>} */
+    /** @type {!Platform.Multimap<symbol, !{modelClass: function(new:SDKModel, !Target), thisObject: (!Object|undefined), listener: function(!Common.EventTarget.EventTargetEvent):void}>} */
     this._modelListeners = new Platform.Multimap();
-    /** @type {!Platform.Multimap<function(new:SDKModel, !Target), !SDKModelObserver>} */
+    /** @type {!Platform.Multimap<function(new:SDKModel, !Target), !SDKModelObserver<*>>} */
     this._modelObservers = new Platform.Multimap();
     this._isSuspended = false;
   }
@@ -381,29 +388,29 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {string=} reason - optionally provide a reason, so targets can respond accordingly
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
-  suspendAllTargets(reason) {
+  async suspendAllTargets(reason) {
     if (this._isSuspended) {
-      return Promise.resolve();
+      return;
     }
     this._isSuspended = true;
     this.dispatchEventToListeners(Events.SuspendStateChanged);
     const suspendPromises = Array.from(this._targets.values(), target => target.suspend(reason));
-    return Promise.all(suspendPromises);
+    await Promise.all(suspendPromises);
   }
 
   /**
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
-  resumeAllTargets() {
+  async resumeAllTargets() {
     if (!this._isSuspended) {
-      return Promise.resolve();
+      return;
     }
     this._isSuspended = false;
     this.dispatchEventToListeners(Events.SuspendStateChanged);
     const resumePromises = Array.from(this._targets.values(), target => target.resume());
-    return Promise.all(resumePromises);
+    await Promise.all(resumePromises);
   }
 
   /**
@@ -414,7 +421,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {function(new:T,!Target)} modelClass
+   * @param {function(new:SDKModel,!Target)} modelClass
    * @return {!Array<!T>}
    * @template T
    */
@@ -438,7 +445,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {function(new:T,!Target)} modelClass
+   * @param {function(new:SDKModel,!Target)} modelClass
    * @param {!SDKModelObserver<T>} observer
    * @template T
    */
@@ -451,7 +458,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {function(new:T,!Target)} modelClass
+   * @param {function(new:SDKModel,!Target)} modelClass
    * @param {!SDKModelObserver<T>} observer
    * @template T
    */
@@ -482,9 +489,9 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Function} modelClass
+   * @param {function(new:SDKModel,!Target)} modelClass
    * @param {symbol} eventType
-   * @param {function(!Common.EventTarget.EventTargetEvent)} listener
+   * @param {function(!Common.EventTarget.EventTargetEvent):void} listener
    * @param {!Object=} thisObject
    */
   addModelListener(modelClass, eventType, listener, thisObject) {
@@ -495,9 +502,9 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Function} modelClass
+   * @param {function(new:SDKModel,!Target)} modelClass
    * @param {symbol} eventType
-   * @param {function(!Common.EventTarget.EventTargetEvent)} listener
+   * @param {function(!Common.EventTarget.EventTargetEvent):void} listener
    * @param {!Object=} thisObject
    */
   removeModelListener(modelClass, eventType, listener, thisObject) {
@@ -550,6 +557,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
     const target =
         new Target(this, id, name, type, parentTarget, sessionId || '', this._isSuspended, connection || null);
     if (waitForDebuggerInPage) {
+      // @ts-ignore TODO(1063322): Find out where pageAgent() is set on Target/TargetBase.
       target.pageAgent().waitForDebugger();
     }
     target.createModels(new Set(this._modelObservers.keysArray()));
@@ -561,7 +569,8 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
     }
 
     for (const modelClass of target.models().keys()) {
-      this.modelAdded(target, modelClass, target.models().get(modelClass));
+      const model = /** @type {!SDKModel} */ (target.models().get(modelClass));
+      this.modelAdded(target, modelClass, model);
     }
 
     for (const key of this._modelListeners.keysArray()) {
@@ -586,7 +595,8 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
 
     this._targets.delete(target);
     for (const modelClass of target.models().keys()) {
-      this._modelRemoved(target, modelClass, target.models().get(modelClass));
+      const model = /** @type {!SDKModel} */ (target.models().get(modelClass));
+      this._modelRemoved(target, modelClass, model);
     }
 
     // Iterate over a copy. _observers might be modified during iteration.

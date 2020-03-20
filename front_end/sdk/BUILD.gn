@@ -9,5 +9,13 @@ ts_library("sdk") {
     "Cookie.js",
     "CookieParser.js",
     "Issue.js",
+    "SDKModel.js",
+  ]
+
+  deps = [
+    "../common",
+    "../host",
+    "../platform",
+    "../protocol_client",
   ]
 }

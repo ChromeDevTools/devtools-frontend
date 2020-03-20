@@ -140,7 +140,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
   }
 
   /**
-   * TODO(1011811): Replace type with !Set<new:SDKModel, !Target> once we no longer type-check with closure.
+   * TODO(1011811): Replace type with !Set<function(new:SDKModel, !Target)> once we no longer type-check with closure.
    * @param {*} required
    */
   createModels(required) {
@@ -557,7 +557,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
     const target =
         new Target(this, id, name, type, parentTarget, sessionId || '', this._isSuspended, connection || null);
     if (waitForDebuggerInPage) {
-      // @ts-ignore TODO: Find out where pageAgent() is set on Target/TargetBase.
+      // @ts-ignore TODO(1063322): Find out where pageAgent() is set on Target/TargetBase.
       target.pageAgent().waitForDebugger();
     }
     target.createModels(new Set(this._modelObservers.keysArray()));

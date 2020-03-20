@@ -39,19 +39,22 @@ export class ServerTiming {
             entry.name, entry.hasOwnProperty('dur') ? entry.dur : null, entry.hasOwnProperty('desc') ? entry.desc : '');
       }));
       return memo;
-    }, []);
+    }, /** @type {!Array<!ServerTiming>} */ ([]));
     serverTimings.sort((a, b) => a.metric.toLowerCase().compareTo(b.metric.toLowerCase()));
     return serverTimings;
   }
 
   /**
+   * TODO(crbug.com/1011811): Instead of using !Object<string, *> we should have a proper type
+   *                          with name, desc and dur properties.
    * @param {string} valueString
-   * @return {?Array<!Object>}
+   * @return {!Array<!Object<string, *>>}
    */
   static createFromHeaderValue(valueString) {
     function trimLeadingWhiteSpace() {
       valueString = valueString.replace(/^\s*/, '');
     }
+    /** @param {string} char */
     function consumeDelimiter(char) {
       console.assert(char.length === 1);
       trimLeadingWhiteSpace();
@@ -90,6 +93,9 @@ export class ServerTiming {
         //  -everything before the first " or \
         //  -everything else
         const result = /^([^"\\]*)(.*)/.exec(valueString);
+        if (!result) {
+          return null;  // not a valid quoted-string
+        }
         value += result[1];
         if (result[2].charAt(0) === '"') {
           // we have found our closing "
@@ -168,27 +174,37 @@ export class ServerTiming {
 
   /**
    * @param {string} paramName
-   * @return {?function(!Object, string)}
+   * @return {?function(!Object<string, *>, ?string)}
    */
   static getParserForParameter(paramName) {
     switch (paramName) {
       case 'dur':
-        return function(entry, paramValue) {
+        /**
+         * @param {!Object<string, *>} entry
+         * @param {*} paramValue
+         */
+        function durParser(entry, paramValue) {
           entry.dur = 0;
           if (paramValue !== null) {
             const duration = parseFloat(paramValue);
             if (isNaN(duration)) {
-              this.showWarning(ls`Unable to parse "${paramName}" value "${paramValue}".`);
+              ServerTiming.showWarning(ls`Unable to parse "${paramName}" value "${paramValue}".`);
               return;
             }
             entry.dur = duration;
           }
-        };
+        }
+        return durParser;
 
       case 'desc':
-        return function(entry, paramValue) {
+        /**
+         * @param {!Object<string, *>} entry
+         * @param {?string} paramValue
+         */
+        function descParser(entry, paramValue) {
           entry.desc = paramValue || '';
-        };
+        }
+        return descParser;
 
       default:
         return null;

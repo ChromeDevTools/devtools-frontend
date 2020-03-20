@@ -5,6 +5,7 @@ ts_library("sdk") {
   sources = [
     "Cookie_test.ts",
     "Issue_test.ts",
+    "ServerTiming_test.ts",
   ]
 
   deps = [ "../../../../front_end/sdk" ]

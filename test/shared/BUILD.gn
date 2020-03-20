@@ -2,10 +2,13 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-group("test") {
-  deps = [
-    "e2e",
-    "shared",
-    "unittests/front_end",
+import("../../third_party/typescript/typescript.gni")
+
+ts_library("shared") {
+  testonly = true
+  sources = [
+    "helper.ts",
+    "runner.ts",
+    "screenshot.ts",
   ]
 }

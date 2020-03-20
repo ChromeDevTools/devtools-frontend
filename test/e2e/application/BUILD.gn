@@ -2,11 +2,14 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../third_party/typescript/typescript.gni")
+import("../../../third_party/typescript/typescript.gni")
 
-ts_library("e2e") {
+ts_library("application") {
   testonly = true
-  sources = [ "test-list.ts" ]
+  sources = [
+    "session-storage.ts",
+    "websql-database.ts",
+  ]
 
-  deps = [ "application" ]
+  deps = [ "../../shared" ]
 }

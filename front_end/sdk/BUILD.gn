@@ -8,7 +8,6 @@ ts_library("sdk") {
   sources = [
     "Cookie.js",
     "CookieParser.js",
-    "Issue.js",
     "NetworkManager.js",
     "NetworkRequest.js",
     "SDKModel.js",

@@ -12,11 +12,10 @@ import {NetworkRequest,  // eslint-disable-line no-unused-vars
 import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
-const connectedIssuesSymbol = Symbol('issues');
+const connectedIssueSymbol = Symbol('issue');
 
 /**
  * @implements {Protocol.AuditsDispatcher}
- * @unrestricted
  */
 export class IssuesModel extends SDKModel {
   /**
@@ -25,10 +24,10 @@ export class IssuesModel extends SDKModel {
   constructor(target) {
     super(target);
     this._enabled = false;
-    this._issues = [];
-    this._browserIssues = [];
     this._browserIssuesByCode = new Map();
     this._cookiesModel = target.model(CookieModel);
+    /** @type {?*} */
+    this._auditsAgent = null;
 
     const networkManager = target.model(NetworkManager);
     if (networkManager) {
@@ -42,13 +41,14 @@ export class IssuesModel extends SDKModel {
     }
   }
 
-  _onMainFrameNavigated() {
-    this._clearIssues();
+  /**
+   * @param {!Common.EventTarget.EventTargetEvent} event
+   */
+  _onMainFrameNavigated(event) {
+    // TODO: Clear issues here once we solved crbug.com/1060628.
   }
 
   _clearIssues() {
-    this._issues = [];
-    this._browserIssues = [];
     this._browserIssuesByCode = new Map();
     this.dispatchEventToListeners(Events.AllIssuesCleared);
   }
@@ -66,21 +66,23 @@ export class IssuesModel extends SDKModel {
 
   /**
    * @override
-   * @param {!Protocol.Audits.Issue} payload
+   * @param {!*} inspectorIssue
    */
-  issueAdded(payload) {
-    if (!this._browserIssuesByCode.has(payload.code)) {
-      const issue = new Issue(payload.code);
-      this._browserIssuesByCode.set(payload.code, issue);
+  issueAdded(inspectorIssue) {
+    if (!this._browserIssuesByCode.has(inspectorIssue.code)) {
+      const issue = new Issue(inspectorIssue.code);
+      this._browserIssuesByCode.set(inspectorIssue.code, issue);
+      issue.addInstanceResources(inspectorIssue.resources);
       this.dispatchEventToListeners(Events.IssueAdded, issue);
     } else {
-      const issue = this._browserIssuesByCode.get(payload.code);
+      const issue = this._browserIssuesByCode.get(inspectorIssue.code);
+      issue.addInstanceResources(inspectorIssue.resources);
       this.dispatchEventToListeners(Events.IssueUpdated, issue);
     }
   }
 
   /**
-   * @returns {!Iterator<Issue>}
+   * @returns {!Iterable<Issue>}
    */
   issues() {
     return this._browserIssuesByCode.values();
@@ -102,22 +104,19 @@ export class IssuesModel extends SDKModel {
       return;
     }
 
-    if (!obj[connectedIssuesSymbol]) {
-      obj[connectedIssuesSymbol] = [];
+    if (!obj[connectedIssueSymbol]) {
+      obj[connectedIssueSymbol] = new Set();
     }
 
-    obj[connectedIssuesSymbol].push(issue);
+    obj[connectedIssueSymbol].add(issue);
   }
 
   /**
    * @param {!*} obj
+   * @returns {boolean}
    */
   static hasIssues(obj) {
-    if (!obj) {
-      return false;
-    }
-
-    return obj[connectedIssuesSymbol] && obj[connectedIssuesSymbol].length;
+    return !!obj && obj[connectedIssueSymbol] && obj[connectedIssueSymbol].size;
   }
 
   /**
@@ -138,18 +137,19 @@ export class IssuesModel extends SDKModel {
       IssuesModel.connectWithIssue(request, issue);
       IssuesModel.connectWithIssue(cookie, issue);
 
-      this._cookiesModel.addBlockedCookie(
-          cookie, blockedCookie.blockedReasons.map(blockedReason => ({
-                                                     attribute: setCookieBlockedReasonToAttribute(blockedReason),
-                                                     uiString: setCookieBlockedReasonToUiString(blockedReason)
-                                                   })));
+      if (this._cookiesModel) {
+        this._cookiesModel.addBlockedCookie(
+            cookie, blockedCookie.blockedReasons.map(blockedReason => ({
+                                                       attribute: setCookieBlockedReasonToAttribute(blockedReason),
+                                                       uiString: setCookieBlockedReasonToUiString(blockedReason)
+                                                     })));
+      }
     }
   }
 }
 
 /** @enum {symbol} */
 export const Events = {
-  Updated: Symbol('Updated'),
   IssueAdded: Symbol('IssueAdded'),
   IssueUpdated: Symbol('IssueUpdated'),
   AllIssuesCleared: Symbol('AllIssuesCleared'),

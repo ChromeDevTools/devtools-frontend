@@ -27,4 +27,7 @@
   <message name="IDS_DEVTOOLS_bf3d65060c91ba1d205face215fced7b" desc="Label for High Priority">
     High Priority
   </message>
+  <message name="IDS_DEVTOOLS_f3381712a92e82a64f61806f9fce503e" desc="Text in the Affected Resources Section of an Aggregated Issue">
+    <ph name="THIS__ISSUE_NUMBEROFCOOKIES__">$1s<ex>12</ex></ph> cookies
+  </message>
 </grit-part>

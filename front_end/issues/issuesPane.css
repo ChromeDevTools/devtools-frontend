@@ -119,3 +119,89 @@
 .issues-toolbar-right {
     padding-right: 6px;
 }
+
+.affected-resources-label {
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 2em;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.affected-resource {
+    background: #F8F9FA;
+    padding: 12px 3px 12px 20px;
+    position: relative;
+}
+
+.affected-resource::before {
+    transition: transform 200ms;
+    user-select: none;
+    -webkit-mask-image: url(Images/treeoutlineTriangles.svg);
+    -webkit-mask-size: 32px 24px;
+    content: "\00a0\00a0";
+    text-shadow: none;
+    margin-right: -2px;
+    height: 12px;
+    width: 13px;
+    background: #5F6368;
+    /* transform: rotate(90deg); */
+    transform-origin: 25% 50%;
+    position: absolute;
+    left: 8px;
+    top: 15px;
+}
+
+.affected-resource-label {
+    font-size: 14px;
+    line-height: 20px;
+    color: #202124;
+    position: relative;
+    cursor: pointer;
+}
+
+.affected-resource-wrapper {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height ease-in-out 200ms;
+}
+
+.affected-resource.expanded::before {
+    transform: rotate(90deg);
+}
+
+.affected-resource.expanded .affected-resource-wrapper {
+    max-height: 100vh;
+}
+
+.affected-resource-cookie {
+    font-size: 14px;
+    line-height: 20px;
+    color: #1967D2;
+    border: 0;
+    border-collapse: collapse;
+}
+
+.affected-resource-cookies {
+    border-spacing: 0;
+}
+
+.affected-resource-header {
+    font-size: 12px;
+    color:rgba(95, 99, 104, 0.5);
+}
+
+.affected-resource-header-info {
+    padding-left: 16px;
+}
+
+.affected-resource-cookie-info {
+    color: #9AA0A6;
+    padding-left: 16px;
+    opacity: 1;
+    transition: opacity 200ms;
+}
+
+.affected-resource-cookie:hover .affected-resource-cookie-info {
+    opacity: 1;
+}

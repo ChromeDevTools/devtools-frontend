@@ -5,18 +5,153 @@
 import * as UI from '../ui/ui.js';
 import * as SDK from '../sdk/sdk.js';
 
+class AffectedCookiesView {
+  /**
+   *
+   * @param {!IssueView} parent
+   * @param {!SDK.Issue.Issue} issue
+   */
+  constructor(parent, issue) {
+    /** @type {!IssueView} */
+    this._parent = parent;
+    /** @type {!SDK.Issue.Issue} */
+    this._issue = issue;
+    this._wrapper = createElementWithClass('div', 'affected-resource');
+    /** @type {!Element} */
+    this._affectedCookiesCounter = this.createAffectedCookiesCounter(this._wrapper);
+    /** @type {!Element} */
+    this._affectedCookies = this.createAffectedCookies(this._wrapper);
+    this._issue.addEventListener(SDK.Issue.Events.CookieAdded, this._handleCookieAdded, this);
+    this._cookiesCount = 0;
+  }
+
+  /**
+   * @param {!Element} wrapper
+   * @returns {!Element}
+   */
+  createAffectedCookiesCounter(wrapper) {
+    const counterLabel = createElementWithClass('div', 'affected-resource-label');
+    counterLabel.addEventListener('click', () => {
+      wrapper.classList.toggle('expanded');
+    });
+    wrapper.appendChild(counterLabel);
+    return counterLabel;
+  }
+
+  /**
+   * @param {!Element} wrapper
+   * @returns {!Element}
+   */
+  createAffectedCookies(wrapper) {
+    const body = createElementWithClass('div', 'affected-resource-wrapper');
+    const affectedCookies = createElementWithClass('table', 'affected-resource-cookies');
+    const header = createElementWithClass('tr');
+
+    const name = createElementWithClass('td', 'affected-resource-header');
+    name.textContent = 'Name';
+    header.appendChild(name);
+
+    const info = createElementWithClass('td', 'affected-resource-header affected-resource-header-info');
+    // Prepend a space to align them better with cookie domains starting with a "."
+    info.textContent = '\u2009Context';
+    header.appendChild(info);
+
+    affectedCookies.appendChild(header);
+    body.appendChild(affectedCookies);
+    wrapper.appendChild(body);
+
+    this._parent.appendAffectedResource(wrapper);
+    return affectedCookies;
+  }
+
+  /**
+   *
+   * @param {!Iterable<!*>} cookies
+   */
+  appendAffectedCookies(cookies) {
+    for (const cookie of cookies) {
+      this.appendAffectedCookie(/** @type{!{name:string,path:string,domain:string,siteForCookies:string}} */ (cookie));
+    }
+    this._updateAffectedCookiesCounter();
+  }
+
+  /**
+   *
+   * @param {!{name:string,path:string,domain:string,siteForCookies:string}} cookie
+   */
+  appendAffectedCookie(cookie) {
+    const element = createElementWithClass('tr', 'affected-resource-cookie');
+    const name = createElementWithClass('td', '');
+    name.appendChild(Components.Linkifier.linkifyRevealable(
+        new SDK.Cookie.CookieReference(cookie.name, cookie.domain, cookie.path, cookie.siteForCookies), cookie.name));
+    const info = createElementWithClass('td', 'affected-resource-cookie-info');
+
+    // Prepend a space for all domains not starting with a "." to align them better.
+    info.textContent = (cookie.domain[0] !== '.' ? '\u2008' : '') + cookie.domain + cookie.path;
+
+    element.appendChild(name);
+    element.appendChild(info);
+    this._affectedCookies.appendChild(element);
+  }
+
+  _updateAffectedCookiesCounter() {
+    this._cookiesCount = this._issue.numberOfCookies();
+    this._affectedCookiesCounter.textContent = ls`${this._cookiesCount} cookies`;
+    this._wrapper.style.display = this._cookiesCount === 0 ? 'none' : '';
+    this._parent.updateAffectedResourceVisibility();
+  }
+
+  update() {
+    this._affectedCookies.textContent = '';
+    this.appendAffectedCookies(this._issue.cookies());
+    this._updateAffectedCookiesCounter();
+  }
+
+  isEmpty() {
+    return this._cookiesCount === 0;
+  }
+
+  /**
+   * @param {!{data:*}} event
+   */
+  _handleCookieAdded(event) {
+    const cookie = /** @type {!{name:string,path:string,domain:string,siteForCookies:string}} */ (event.data);
+    this.appendAffectedCookie(cookie);
+  }
+
+  detach() {
+    this._issue.removeEventListener(SDK.Issue.Events.CookieAdded, this._handleCookieAdded, this);
+  }
+}
+
 class IssueView extends UI.Widget.Widget {
+  /**
+   *
+   * @param {!IssuesPaneImpl} parent
+   * @param {!SDK.Issue.Issue} issue
+   */
   constructor(parent, issue) {
     super(false);
     this._parent = parent;
     this._issue = issue;
-    this._details = issueDetails[issue.code];
+    this._details = issueDetails[issue.code()];
+    this.appendHeader();
+    this._body = this.createBody();
+    this._affectedResources = this.createAffectedResources(this._body);
+    this._affectedCookiesView = new AffectedCookiesView(this, this._issue);
+    this._affectedCookiesView.update();
 
     this.contentElement.classList.add('issue');
     this.contentElement.classList.add('collapsed');
 
-    this.appendHeader();
-    this.appendBody();
+    this.updateAffectedResourceVisibility();
+  }
+
+  /**
+   * @param {!Element} resource
+   */
+  appendAffectedResource(resource) {
+    this._affectedResources.appendChild(resource);
   }
 
   appendHeader() {
@@ -26,13 +161,13 @@ class IssueView extends UI.Widget.Widget {
     header.appendChild(icon);
 
     const title = createElementWithClass('div', 'title');
-    title.innerText = this._details.title;
+    title.textContent = this._details.title;
     header.appendChild(title);
 
     const priority = createElementWithClass('div', 'priority');
     switch (this._details.priority) {
       case Priority.High:
-        priority.innerText = ls`High Priority`;
+        priority.textContent = ls`High Priority`;
         break;
       default:
         console.warn('Unknown issue priority', this._details.priority);
@@ -41,15 +176,34 @@ class IssueView extends UI.Widget.Widget {
     this.contentElement.appendChild(header);
   }
 
-  appendBody() {
+  updateAffectedResourceVisibility() {
+    const noResources = !this._affectedCookiesView || this._affectedCookiesView.isEmpty();
+    this._affectedResources.style.display = noResources ? 'none' : '';
+  }
+
+  /**
+   *
+   * @param {!Element} body
+   * @returns {!Element}
+   */
+  createAffectedResources(body) {
+    const wrapper = createElementWithClass('div', 'affected-resources');
+    const label = createElementWithClass('div', 'affected-resources-label');
+    label.textContent = 'Affected Resources';
+    wrapper.appendChild(label);
+    body.appendChild(wrapper);
+    return wrapper;
+  }
+
+  createBody() {
     const body = createElementWithClass('div', 'body');
 
     const message = createElementWithClass('div', 'message');
-    message.innerText = this._details.message;
+    message.textContent = this._details.message;
     body.appendChild(message);
 
     const code = createElementWithClass('div', 'code');
-    code.innerText = this._issue.code;
+    code.textContent = this._issue.code();
     body.appendChild(code);
 
     const link = UI.XLink.XLink.create(this._details.link, 'Read more · ' + this._details.linkTitle, 'link');
@@ -61,6 +215,7 @@ class IssueView extends UI.Widget.Widget {
     const bodyWrapper = createElementWithClass('div', 'body-wrapper');
     bodyWrapper.appendChild(body);
     this.contentElement.appendChild(bodyWrapper);
+    return body;
   }
 
   _handleClick() {
@@ -82,6 +237,14 @@ class IssueView extends UI.Widget.Widget {
     this.toggle(true);
     this.contentElement.scrollIntoView(true);
   }
+
+  /**
+   * @override
+   */
+  detach() {
+    this._affectedCookiesView.detach();
+    super.detach();
+  }
 }
 
 export class IssuesPaneImpl extends UI.Widget.VBox {
@@ -90,13 +253,17 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     this.registerRequiredCSS('issues/issuesPane.css');
 
     const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
-    this._model = mainTarget.model(SDK.IssuesModel.IssuesModel);
-    this._model.addEventListener(SDK.IssuesModel.Events.IssueAdded, this._issueAdded, this);
-    this._model.addEventListener(SDK.IssuesModel.Events.AllIssuesCleared, this._issuesCleared, this);
-    this._model.ensureEnabled();
+    this._model = null;
+    if (mainTarget) {
+      this._model = mainTarget.model(SDK.IssuesModel.IssuesModel);
+      if (this._model) {
+        this._model.addEventListener(SDK.IssuesModel.Events.IssueAdded, this._issueAdded, this);
+        this._model.addEventListener(SDK.IssuesModel.Events.AllIssuesCleared, this._issuesCleared, this);
+        this._model.ensureEnabled();
+      }
+    }
 
     this._issueViews = new Map();
-    this._selectedIssue = null;
 
     const issuesToolbarContainer = this.contentElement.createChild('div', 'issues-toolbar-container');
     new UI.Toolbar.Toolbar('issues-toolbar-left', issuesToolbarContainer);
@@ -109,11 +276,17 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     this._updateIssuesCount();
     rightToolbar.appendToolbarItem(toolbarWarnings);
 
-    for (const issue of this._model.issues()) {
-      this._addIssueView(issue);
+    if (this._model) {
+      for (const issue of this._model.issues()) {
+        this._addIssueView(issue);
+      }
     }
   }
 
+  /**
+   *
+   * @param {!{data: !SDK.Issue.Issue}} event
+   */
   _issueAdded(event) {
     this._addIssueView(event.data);
   }
@@ -122,14 +295,14 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
    * @param {!SDK.Issue.Issue} issue
    */
   _addIssueView(issue) {
-    if (!(issue.code in issueDetails)) {
-      console.warn('Received issue with unknown code:', issue.code);
+    if (!(issue.code() in issueDetails)) {
+      console.warn('Received issue with unknown code:', issue.code());
       return;
     }
 
     const view = new IssueView(this, issue);
     view.show(this.contentElement);
-    this._issueViews.set(issue.code, view);
+    this._issueViews.set(issue.code(), view);
     this._updateIssuesCount();
   }
 
@@ -138,12 +311,12 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
       view.detach();
     }
     this._issueViews.clear();
-    this._selectedIssue = null;
     this._updateIssuesCount();
   }
 
   _updateIssuesCount() {
-    this._toolbarIssuesCount.textContent = this._model.size();
+    const count = this._model ? this._model.size() : 0;
+    this._toolbarIssuesCount.textContent = count;
   }
 
   /**
@@ -180,6 +353,14 @@ const issueDetails = {
     linkTitle: ls`SameSite cookies explained`,
   },
   'SameSiteCookies::SameSiteNoneMissingForThirdParty': {
+    title: ls`A Cookie in a third party context has been set without SameSite=None`,
+    message: ls
+    `In a future version of chrome, third party cookies will only be sent when marked as SameSite=None and Secure to prevent them from being accessed in a man in the middle szenario.`,
+    priority: Priority.High,
+    link: ls`https://web.dev/samesite-cookies-explained/`,
+    linkTitle: ls`SameSite cookies explained`,
+  },
+  'SameSiteCookieIssue': {
     title: ls`A Cookie in a third party context has been set without SameSite=None`,
     message: ls
     `In a future version of chrome, third party cookies will only be sent when marked as SameSite=None and Secure to prevent them from being accessed in a man in the middle szenario.`,

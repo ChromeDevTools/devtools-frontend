@@ -4,7 +4,6 @@ ts_library("sdk") {
   testonly = true
   sources = [
     "Cookie_test.ts",
-    "Issue_test.ts",
     "ServerTiming_test.ts",
   ]
 

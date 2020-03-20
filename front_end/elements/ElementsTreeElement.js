@@ -1655,7 +1655,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
       case Node.DOCUMENT_TYPE_NODE:
         const docTypeElement = titleDOM.createChild('span', 'webkit-html-doctype');
-        docTypeElement.createTextChild('<!doctype ' + node.nodeName());
+        docTypeElement.createTextChild('<!DOCTYPE ' + node.nodeName());
         if (node.publicId) {
           docTypeElement.createTextChild(' PUBLIC "' + node.publicId + '"');
           if (node.systemId) {

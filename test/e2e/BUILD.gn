@@ -8,5 +8,15 @@ ts_library("e2e") {
   testonly = true
   sources = [ "test-list.ts" ]
 
-  deps = [ "application" ]
+  deps = [
+    "application",
+    "console",
+    "elements",
+    "host",
+    "network",
+    "rendering",
+    "search",
+    "snippets",
+    "sources",
+  ]
 }

@@ -118,6 +118,12 @@ export async function retrieveTopCallFrameScriptLocation(script: string, target:
   return scriptLocation;
 }
 
+declare global {
+  interface Window {
+    __sourceFilesAddedEvents: string[];
+  }
+}
+
 export function listenForSourceFilesAdded(frontend: puppeteer.Page) {
   return frontend.evaluate(() => {
     window.__sourceFilesAddedEvents = [];

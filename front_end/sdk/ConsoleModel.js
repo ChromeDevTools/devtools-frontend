@@ -42,9 +42,17 @@ import {Observer, Target, TargetManager} from './SDKModel.js';  // eslint-disabl
 const _events = Symbol('SDK.ConsoleModel.events');
 
 /**
+ * @type {!ConsoleModel}
+ */
+let settingsInstance;
+
+/**
  * @implements {Observer}
  */
 export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
+  /**
+   * @private
+   */
   constructor() {
     super();
 
@@ -58,6 +66,18 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
     this._pageLoadSequenceNumber = 0;
 
     TargetManager.instance().observeTargets(this);
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!settingsInstance || forceNew) {
+      settingsInstance = new ConsoleModel();
+    }
+
+    return settingsInstance;
   }
 
   /**

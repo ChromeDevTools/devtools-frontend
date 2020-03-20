@@ -695,7 +695,7 @@ export class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode {
         if (!remoteObject) {
           Common.Console.Console.instance().error(ls`Preview is not available`);
         } else {
-          await self.SDK.consoleModel.saveToTempVariable(
+          await SDK.ConsoleModel.ConsoleModel.instance().saveToTempVariable(
               self.UI.context.flavor(SDK.RuntimeModel.ExecutionContext), remoteObject);
         }
       });

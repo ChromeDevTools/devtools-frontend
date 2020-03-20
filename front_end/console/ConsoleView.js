@@ -266,11 +266,15 @@ export class ConsoleView extends UI.Widget.VBox {
     this._messagesElement.addEventListener('touchend', this._updateStickToBottomOnPointerUp.bind(this), false);
     this._messagesElement.addEventListener('touchcancel', this._updateStickToBottomOnPointerUp.bind(this), false);
 
-    self.SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
-    self.SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageAdded, this._onConsoleMessageAdded, this);
-    self.SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageUpdated, this._onConsoleMessageUpdated, this);
-    self.SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.CommandEvaluated, this._commandEvaluated, this);
-    self.SDK.consoleModel.messages().forEach(this._addConsoleMessage, this);
+    SDK.ConsoleModel.ConsoleModel.instance().addEventListener(
+        SDK.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
+    SDK.ConsoleModel.ConsoleModel.instance().addEventListener(
+        SDK.ConsoleModel.Events.MessageAdded, this._onConsoleMessageAdded, this);
+    SDK.ConsoleModel.ConsoleModel.instance().addEventListener(
+        SDK.ConsoleModel.Events.MessageUpdated, this._onConsoleMessageUpdated, this);
+    SDK.ConsoleModel.ConsoleModel.instance().addEventListener(
+        SDK.ConsoleModel.Events.CommandEvaluated, this._commandEvaluated, this);
+    SDK.ConsoleModel.ConsoleModel.instance().messages().forEach(this._addConsoleMessage, this);
   }
 
   /**
@@ -284,7 +288,7 @@ export class ConsoleView extends UI.Widget.VBox {
   }
 
   static clearConsole() {
-    self.SDK.consoleModel.requestClearMessages();
+    SDK.ConsoleModel.ConsoleModel.instance().requestClearMessages();
   }
 
   _onFilterChanged() {
@@ -1018,7 +1022,7 @@ export class ConsoleView extends UI.Widget.VBox {
           result.runtimeModel(), exceptionDetails, SDK.ConsoleModel.MessageType.Result, undefined, undefined);
     }
     message.setOriginatingMessage(originatingConsoleMessage);
-    self.SDK.consoleModel.addMessage(message);
+    SDK.ConsoleModel.ConsoleModel.instance().addMessage(message);
   }
 
   /**

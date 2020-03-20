@@ -30,7 +30,7 @@
 
 import * as Common from '../common/common.js';
 
-import {ConsoleMessage, MessageLevel, MessageSource} from './ConsoleModel.js';
+import {ConsoleMessage, ConsoleModel, MessageLevel, MessageSource} from './ConsoleModel.js';
 import {Events as NetworkManagerEvents, Message, NetworkManager} from './NetworkManager.js';  // eslint-disable-line no-unused-vars
 import {Events as NetworkRequestEvents, InitiatorType, NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
 import {Events as ResourceTreeModelEvents, ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars
@@ -477,7 +477,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
         networkManager.target().model(RuntimeModel), MessageSource.Network,
         message.warning ? MessageLevel.Warning : MessageLevel.Info, message.message);
     this.associateConsoleMessageWithRequest(consoleMessage, message.requestId);
-    self.SDK.consoleModel.addMessage(consoleMessage);
+    ConsoleModel.instance().addMessage(consoleMessage);
   }
 
   /**

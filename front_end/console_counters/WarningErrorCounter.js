@@ -45,9 +45,11 @@ export class WarningErrorCounter {
     this._violationCount = -1;
     this._throttler = new Common.Throttler.Throttler(100);
 
-    self.SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.ConsoleCleared, this._update, this);
-    self.SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageAdded, this._update, this);
-    self.SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageUpdated, this._update, this);
+    SDK.ConsoleModel.ConsoleModel.instance().addEventListener(
+        SDK.ConsoleModel.Events.ConsoleCleared, this._update, this);
+    SDK.ConsoleModel.ConsoleModel.instance().addEventListener(SDK.ConsoleModel.Events.MessageAdded, this._update, this);
+    SDK.ConsoleModel.ConsoleModel.instance().addEventListener(
+        SDK.ConsoleModel.Events.MessageUpdated, this._update, this);
     this._update();
   }
 
@@ -90,9 +92,9 @@ export class WarningErrorCounter {
    * @return {!Promise}
    */
   _updateThrottled() {
-    const errors = self.SDK.consoleModel.errors();
-    const warnings = self.SDK.consoleModel.warnings();
-    const violations = self.SDK.consoleModel.violations();
+    const errors = SDK.ConsoleModel.ConsoleModel.instance().errors();
+    const warnings = SDK.ConsoleModel.ConsoleModel.instance().warnings();
+    const violations = SDK.ConsoleModel.ConsoleModel.instance().violations();
     if (errors === this._errorCount && warnings === this._warningCount && violations === this._violationCount) {
       return Promise.resolve();
     }

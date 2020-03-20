@@ -178,6 +178,16 @@ def remove_package_json_entries():
     return False
 
 
+def addClangFormat():
+    with open(path.join(devtools_paths.node_modules_path(), '.clang-format'), 'w+') as clang_format_file:
+        try:
+            clang_format_file.write('DisableFormat: true')
+        except:
+            print('Unable to write .clang-format file')
+            return True
+    return False
+
+
 def install_deps():
     for (name, version) in DEPS.items():
         if (version.find(u'^') == 0):
@@ -198,6 +208,9 @@ def install_deps():
         return True
 
     if remove_package_json_entries():
+        return True
+
+    if addClangFormat():
         return True
 
     return ensure_licenses()

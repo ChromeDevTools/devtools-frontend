@@ -4,6 +4,10 @@
 
 import {join} from 'path';
 
-export const testList = [
-  join(__dirname, '.', 'hello-world', 'hello-world.js'),
+const tests = [
+  'hello-world/hello-world.js',
 ];
+
+export const testList = tests.map(testPath => {
+  return join(__dirname, testPath);
+});

@@ -136,6 +136,8 @@ module.exports = {
     'rules': {
       '@typescript-eslint/explicit-member-accessibility': [2, {'accessibility': 'explicit'}],
       'comma-dangle': [2, 'always-multiline'],
+      // run just the TypeScript unused-vars rule, else we get duplicate errors
+      'no-unused-vars': 0,
       '@typescript-eslint/no-unused-vars': [2],
     }
   }]

@@ -249,25 +249,28 @@ export class Connection {
   }
 }
 
+/** @typedef {function(...*):void} */
+let SendRawMessageCallback;  // eslint-disable-line no-unused-vars
+
 export const test = {
   /**
    * This will get called for every protocol message.
    * ProtocolClient.test.dumpProtocol = console.log
-   * @type {?function(string)}
+   * @type {?function(string):void}
    */
   dumpProtocol: null,
 
   /**
    * Runs a function when no protocol activity is present.
    * ProtocolClient.test.deprecatedRunAfterPendingDispatches(() => console.log('done'))
-   * @type {?function(function()=)}
+   * @type {?function(function():void=):void}
    */
   deprecatedRunAfterPendingDispatches: null,
 
   /**
    * Sends a raw message over main connection.
    * ProtocolClient.test.sendRawMessage('Page.enable', {}, console.log)
-   * @type {?function(string, ?Object, ?function(...*):void):void}
+   * @type {?function(string, ?Object, ?SendRawMessageCallback):void}
    */
   sendRawMessage: null,
 
@@ -278,13 +281,13 @@ export const test = {
 
   /**
    * Set to get notified about any messages sent over protocol.
-   * @type {?function({domain: string, method: string, params: !Object, id: number}, ?TargetBase)}
+   * @type {?function({domain: string, method: string, params: !Object, id: number}, ?TargetBase):void}
    */
   onMessageSent: null,
 
   /**
    * Set to get notified about any messages received over protocol.
-   * @type {?function(!Object, ?TargetBase)}
+   * @type {?function(!Object, ?TargetBase):void}
    */
   onMessageReceived: null,
 };

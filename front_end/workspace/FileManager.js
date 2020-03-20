@@ -37,7 +37,7 @@ import * as Host from '../host/host.js';
 export class FileManager extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
-    /** @type {!Map<string, function(?{fileSystemPath: (string|undefined)})>} */
+    /** @type {!Map<string, function(?{fileSystemPath: (string|undefined)}):void>} */
     this._saveCallbacks = new Map();
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.SavedURL, this._savedURL, this);

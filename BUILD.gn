@@ -927,6 +927,7 @@ devtools_typescript_deps = [
   "front_end/protocol_client",
   "front_end/root",
   "front_end/sdk:sdk",
+  "front_end/workspace",
 ]
 
 devtools_frontend_resources_deps = devtools_typescript_deps + [

@@ -41,24 +41,28 @@ export class ProjectSearchConfig {
    * @return {string}
    */
   query() {
+    throw new Error('not implemented');
   }
 
   /**
    * @return {boolean}
    */
   ignoreCase() {
+    throw new Error('not implemented');
   }
 
   /**
    * @return {boolean}
    */
   isRegex() {
+    throw new Error('not implemented');
   }
 
   /**
    * @return {!Array.<string>}
    */
   queries() {
+    throw new Error('not implemented');
   }
 
   /**
@@ -66,6 +70,7 @@ export class ProjectSearchConfig {
    * @return {boolean}
    */
   filePathMatchesFileQuery(filePath) {
+    throw new Error('not implemented');
   }
 }
 
@@ -77,30 +82,35 @@ export class Project {
    * @return {!WorkspaceImpl}
    */
   workspace() {
+    throw new Error('not implemented');
   }
 
   /**
    * @return {string}
    */
   id() {
+    throw new Error('not implemented');
   }
 
   /**
    * @return {string}
    */
   type() {
+    throw new Error('not implemented');
   }
 
   /**
    * @return {boolean}
    */
   isServiceProject() {
+    throw new Error('not implemented');
   }
 
   /**
    * @return {string}
    */
   displayName() {
+    throw new Error('not implemented');
   }
 
   /**
@@ -108,28 +118,32 @@ export class Project {
    * @return {!Promise<?UISourceCodeMetadata>}
    */
   requestMetadata(uiSourceCode) {
+    throw new Error('not implemented');
   }
 
   /**
    * @param {!UISourceCode} uiSourceCode
-   * @returns {!Promise<!TextUtils.ContentProvider.DeferredContent>}
+   * @return {!Promise<!TextUtils.ContentProvider.DeferredContent>}
    */
   requestFileContent(uiSourceCode) {
+    throw new Error('not implemented');
   }
 
   /**
    * @return {boolean}
    */
   canSetFileContent() {
+    throw new Error('not implemented');
   }
 
   /**
    * @param {!UISourceCode} uiSourceCode
    * @param {string} newContent
    * @param {boolean} isBase64
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   setFileContent(uiSourceCode, newContent, isBase64) {
+    throw new Error('not implemented');
   }
 
   /**
@@ -137,6 +151,7 @@ export class Project {
    * @return {string}
    */
   fullDisplayName(uiSourceCode) {
+    throw new Error('not implemented');
   }
 
   /**
@@ -144,18 +159,20 @@ export class Project {
    * @return {string}
    */
   mimeType(uiSourceCode) {
+    throw new Error('not implemented');
   }
 
   /**
    * @return {boolean}
    */
   canRename() {
+    throw new Error('not implemented');
   }
 
   /**
    * @param {!UISourceCode} uiSourceCode
    * @param {string} newName
-   * @param {function(boolean, string=, string=, !Common.ResourceType.ResourceType=)} callback
+   * @param {function(boolean, string=, string=, !Common.ResourceType.ResourceType=):void} callback
    */
   rename(uiSourceCode, newName, callback) {
   }
@@ -171,6 +188,7 @@ export class Project {
    * @return {boolean}
    */
   canExcludeFolder(path) {
+    throw new Error('not implemented');
   }
 
   /**
@@ -181,12 +199,14 @@ export class Project {
    * @return {!Promise<?UISourceCode>}
    */
   createFile(path, name, content, isBase64) {
+    throw new Error('not implemented');
   }
 
   /**
    * @return {boolean}
    */
   canCreateFile() {
+    throw new Error('not implemented');
   }
 
   /**
@@ -206,6 +226,7 @@ export class Project {
    * @return {!Promise<!Array<!TextUtils.ContentProvider.SearchMatch>>}
    */
   searchInFileContent(uiSourceCode, query, caseSensitive, isRegex) {
+    throw new Error('not implemented');
   }
 
   /**
@@ -215,6 +236,7 @@ export class Project {
    * @return {!Promise<!Array<string>>}
    */
   findFilesMatchingSearchRequest(searchConfig, filesMathingFileQuery, progress) {
+    throw new Error('not implemented');
   }
 
   /**
@@ -228,12 +250,14 @@ export class Project {
    * @return {?UISourceCode}
    */
   uiSourceCodeForURL(url) {
+    throw new Error('not implemented');
   }
 
   /**
    * @return {!Array.<!UISourceCode>}
    */
   uiSourceCodes() {
+    throw new Error('not implemented');
   }
 }
 
@@ -270,7 +294,7 @@ export class ProjectStore {
     /** @type {!Array.<!UISourceCode>} */
     this._uiSourceCodesList = [];
 
-    this._project = /** @type {!Project} */ (this);
+    this._project = /** @type {!Project} */ (/** @type {*} */ (this));
   }
 
   /**
@@ -335,10 +359,15 @@ export class ProjectStore {
     }
 
     const entry = this._uiSourceCodesMap.get(url);
+    if (!entry) {
+      return;
+    }
     const movedUISourceCode = this._uiSourceCodesList[this._uiSourceCodesList.length - 1];
     this._uiSourceCodesList[entry.index] = movedUISourceCode;
     const movedEntry = this._uiSourceCodesMap.get(movedUISourceCode.url());
-    movedEntry.index = entry.index;
+    if (movedEntry) {
+      movedEntry.index = entry.index;
+    }
     this._uiSourceCodesList.splice(this._uiSourceCodesList.length - 1, 1);
     this._uiSourceCodesMap.delete(url);
     this._workspace.dispatchEventToListeners(Events.UISourceCodeRemoved, entry.uiSourceCode);
@@ -440,10 +469,11 @@ export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper {
    * @return {!Array.<!UISourceCode>}
    */
   uiSourceCodesForProjectType(type) {
-    let result = [];
+    /** @type {!Array<!UISourceCode>} */
+    const result = [];
     for (const project of this._projects.values()) {
       if (project.type() === type) {
-        result = result.concat(project.uiSourceCodes());
+        result.push(...project.uiSourceCodes());
       }
     }
     return result;
@@ -486,6 +516,9 @@ export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper {
    * @return {!Array.<!Project>}
    */
   projectsForType(type) {
+    /**
+     * @param {!Project} project
+     */
     function filterByType(project) {
       return project.type() === type;
     }
@@ -496,9 +529,10 @@ export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper {
    * @return {!Array.<!UISourceCode>}
    */
   uiSourceCodes() {
-    let result = [];
+    /** @type {!Array.<!UISourceCode>} */
+    const result = [];
     for (const project of this._projects.values()) {
-      result = result.concat(project.uiSourceCodes());
+      result.push(...project.uiSourceCodes());
     }
     return result;
   }

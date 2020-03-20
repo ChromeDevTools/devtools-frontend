@@ -29,6 +29,7 @@
  */
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
 import {Events as WorkspaceImplEvents, Project, projectTypes} from './WorkspaceImpl.js';  // eslint-disable-line no-unused-vars
@@ -46,6 +47,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
   constructor(project, url, contentType) {
     super();
     this._project = project;
+    /** @type {string} */
     this._url = url;
 
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(url);
@@ -164,6 +166,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
    * @return {!Promise<boolean>}
    */
   rename(newName) {
+    /** @type {function(boolean):void} */
     let fulfill;
     const promise = new Promise(x => fulfill = x);
     this._project.rename(this, newName, innerCallback.bind(this));
@@ -290,6 +293,9 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
 
     this._checkingContent = true;
     const updatedContent = await this._project.requestFileContent(this);
+    if ('error' in updatedContent) {
+      return;
+    }
     this._checkingContent = false;
     if (updatedContent.content === null) {
       const workingCopy = this.workingCopy();
@@ -301,7 +307,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
       return;
     }
 
-    if (this._content && this._content.content === updatedContent.content) {
+    if (this._content && 'content' in this._content && this._content.content === updatedContent.content) {
       this._lastAcceptedContent = null;
       return;
     }
@@ -384,7 +390,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
     if (this.isDirty()) {
       return /** @type {string} */ (this._workingCopy);
     }
-    return (this._content && this._content.content) || '';
+    return (this._content && 'content' in this._content && this._content.content) || '';
   }
 
   resetWorkingCopy() {
@@ -464,14 +470,14 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
    * @return {string}
    */
   content() {
-    return (this._content && this._content.content) || '';
+    return (this._content && 'content' in this._content && this._content.content) || '';
   }
 
   /**
    * @return {?string}
    */
   loadError() {
-    return (this._content && this._content.error);
+    return (this._content && 'error' in this._content && this._content.error) || null;
   }
 
   /**

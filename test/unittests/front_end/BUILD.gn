@@ -5,6 +5,7 @@
 group("front_end") {
   deps = [
     ":copy_karma_conf",
+    "bindings",
     "common",
     "formatter_worker",
     "platform",

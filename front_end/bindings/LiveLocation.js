@@ -10,12 +10,14 @@ export class LiveLocation {
    * @return {!Promise<void>}
    */
   update() {
+    throw new Error('not implemented');
   }
 
   /**
    * @return {!Promise<?Workspace.UISourceCode.UILocation>}
    */
   uiLocation() {
+    throw new Error('not implemented');
   }
 
   dispose() {
@@ -24,7 +26,9 @@ export class LiveLocation {
   /**
    * @return {!Promise<boolean>}
    */
-  isBlackboxed() {}
+  isBlackboxed() {
+    throw new Error('not implemented');
+  }
 }
 
 /**

@@ -921,6 +921,7 @@ group("devtools_all_files") {
 }
 
 devtools_typescript_deps = [
+  "front_end/bindings",
   "front_end/common:common",
   "front_end/formatter_worker",
   "front_end/host",

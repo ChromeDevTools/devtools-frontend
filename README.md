@@ -170,7 +170,7 @@ Please refer to the [overview document](https://docs.google.com/document/d/1c2KL
 * Contributing to DevTools: [bit.ly/devtools-contribution-guide](http://bit.ly/devtools-contribution-guide)
 * Contributing To Chrome DevTools Protocol: [docs.google.com](https://docs.google.com/document/d/1c-COD2kaK__5iMM5SEx-PzNA7HFmgttcYfOHHX0HaOM/edit?usp=sharing)
 * DevTools Design Review Guidelines:
-  [DESGN_GUIDELINES.MD](DESIGN_GUIDELINES.MD)
+  [DESIGN_GUIDELINES.md](DESIGN_GUIDELINES.md)
 
 ### Merges and Cherry-Picks
 

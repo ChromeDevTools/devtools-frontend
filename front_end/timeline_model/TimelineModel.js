@@ -494,7 +494,15 @@ export class TimelineModelImpl {
         return null;
       }
       cpuProfile = /** @type {!Protocol.Profiler.Profile} */ ({
-        startTime: cpuProfileEvent.args['data']['startTime'],
+        // Do not use |cpuProfileEvent.args['data']['startTime']| as it is in
+        // CLOCK_MONOTONIC domain, but use |profileEvent.startTime|
+        // (|ts| in the trace event) which has been translated to
+        // Perfetto's clock domain.
+        //
+        // |cpuProfileEvent.startTime| has been converted to milliseconds
+        // when the Event was loaded but |cpuProfile.timeDeltas| are
+        // expressed in microseconds.
+        startTime: cpuProfileEvent.startTime * 1000,
         endTime: 0,
         nodes: [],
         samples: [],
@@ -504,10 +512,23 @@ export class TimelineModelImpl {
       for (const profileEvent of profileGroup.children) {
         const eventData = profileEvent.args['data'];
         if ('startTime' in eventData) {
-          cpuProfile.startTime = eventData['startTime'];
+          // Do not use |eventData['startTime']| as it is in CLOCK_MONOTONIC domain,
+          // but use |profileEvent.startTime| (|ts| in the trace event) which has
+          // been translated to Perfetto's clock domain.
+          //
+          // Also convert from ms to us.
+          cpuProfile.startTime = profileEvent.startTime * 1000;
         }
         if ('endTime' in eventData) {
-          cpuProfile.endTime = eventData['endTime'];
+          // Do not use |eventData['endTime']| as it is in CLOCK_MONOTONIC domain,
+          // but use |profileEvent.startTime| (|ts| in the trace event) which has
+          // been translated to Perfetto's clock domain.
+          //
+          // Despite its name, |profileEvent.startTime| was recorded right after
+          // |eventData['endTime']| within v8 and is a reasonable substitute.
+          //
+          // Also convert from ms to us.
+          cpuProfile.endTime = profileEvent.startTime * 1000;
         }
         const nodesAndSamples = eventData['cpuProfile'] || {};
         const samples = nodesAndSamples['samples'] || [];

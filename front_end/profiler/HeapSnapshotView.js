@@ -1784,7 +1784,7 @@ export class HeapSnapshotStatisticsView extends UI.Widget.VBox {
    * @param {number} value
    */
   setTotal(value) {
-    this._pieChart.setTotal(value);
+    this._pieChart.initializeWithTotal(value);
   }
 
   /**

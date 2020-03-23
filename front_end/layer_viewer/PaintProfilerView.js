@@ -177,7 +177,7 @@ export class PaintProfilerView extends UI.Widget.HBox {
 
     if (!this._snapshot) {
       this._update();
-      this._pieChart.setTotal(0);
+      this._pieChart.initializeWithTotal(0);
       this._selectionWindow.setEnabled(false);
       return;
     }
@@ -305,7 +305,7 @@ export class PaintProfilerView extends UI.Widget.HBox {
         timeByCategory[category.color] += time;
       }
     }
-    this._pieChart.setTotal(totalTime / this._profiles.length);
+    this._pieChart.initializeWithTotal(totalTime / this._profiles.length);
     for (const color in timeByCategory) {
       this._pieChart.addSlice(timeByCategory[color] / this._profiles.length, color);
     }

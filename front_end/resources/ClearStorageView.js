@@ -272,7 +272,7 @@ export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
    * @param {number} total
    */
   _resetPieChart(total) {
-    this._pieChart.setTotal(total);
+    this._pieChart.initializeWithTotal(total);
   }
 
   /**

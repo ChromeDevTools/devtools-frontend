@@ -1726,7 +1726,7 @@ export class TimelineUIUtils {
       showLegend: true,
     });
     pieChart.element.classList.add('timeline-details-view-pie-chart');
-    pieChart.setTotal(total);
+    pieChart.initializeWithTotal(total);
     const pieChartContainer = element.createChild('div', 'vbox');
     pieChartContainer.appendChild(pieChart.element);
 

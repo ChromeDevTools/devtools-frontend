@@ -83,7 +83,6 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
     this._workingCopy = null;
     /** @type {?function() : string} */
     this._workingCopyGetter = null;
-    this._disableEdit = false;
   }
 
   /**
@@ -628,17 +627,6 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
    */
   decorationsForType(type) {
     return this._decorations ? this._decorations.get(type) : null;
-  }
-
-  disableEdit() {
-    this._disableEdit = true;
-  }
-
-  /**
-   * @return {boolean}
-   */
-  editDisabled() {
-    return this._disableEdit;
   }
 }
 

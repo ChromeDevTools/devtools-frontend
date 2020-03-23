@@ -15,6 +15,18 @@ async function validateSourceTabs() {
   assert.deepEqual(await getOpenSources(), ['multi-workers.js']);
 }
 
+async function validateBreakpoints(frontend: puppeteer.Page) {
+  assert.deepEqual(await getBreakpointDecorators(frontend), [6, 10]);
+  assert.deepEqual(await getBreakpointDecorators(frontend, true), [6]);
+}
+
+async function validateBreakpointsWithoutDisabled(frontend: puppeteer.Page) {
+  // Currently breakpoints do not get copied to workers if they are disabled.
+  // This behavior is enforced by a web test, which this test will replace.
+  // TODO(leese): Once breakpoint copying issue is fixed, remove this function.
+  assert.deepEqual(await getBreakpointDecorators(frontend), [10]);
+  assert.deepEqual(await getBreakpointDecorators(frontend, true), []);
+}
 
 describe('Multi-Workers', async () => {
   beforeEach(async () => {
@@ -34,13 +46,6 @@ describe('Multi-Workers', async () => {
     async function validateNavigationTree() {
       // Wait for 10th worker to exist.
       await waitFor(workerFileSelectors(10).rootSelector);
-    }
-
-    async function validateBreakpoints(frontend: puppeteer.Page) {
-      // TODO(crbug.com/1062308): Fix the source map so the breakpoint at 10 doesn't move
-      const bpLine = sourceMaps ? 9 : 10;
-      assert.deepEqual(await getBreakpointDecorators(frontend), [6, bpLine]);
-      assert.deepEqual(await getBreakpointDecorators(frontend, true), [6]);
     }
 
     it(`loads scripts exactly once on reload ${withOrWithout}`, async () => {
@@ -66,7 +71,8 @@ describe('Multi-Workers', async () => {
       await validateSourceTabs();
     });
 
-    it(`loads scripts exactly once on break ${withOrWithout}`, async () => {
+    // TODO(leese): Enable once chromium:670180 is fixed.
+    it.skip(`[crbug.com/670180]loads scripts exactly once on break ${withOrWithout}`, async () => {
       const {target, frontend} = getBrowserAndPages();
 
       // Have the target load the page.
@@ -108,54 +114,57 @@ describe('Multi-Workers', async () => {
       await validateSourceTabs();
     });
 
-    it(`copies breakpoints between workers ${withOrWithout}`, async () => {
-      const {target, frontend} = getBrowserAndPages();
+    // TODO(leese): Enable with source maps once chromium:670180 is fixed.
+    if (!sourceMaps) {
+      it(`copies breakpoints between workers ${withOrWithout}`, async () => {
+        const {target, frontend} = getBrowserAndPages();
 
-      // Have the target load the page.
-      await target.goto(targetPage);
+        // Have the target load the page.
+        await target.goto(targetPage);
 
-      await click('#tab-sources');
-      // Wait for all workers to load
-      await validateNavigationTree();
-      // Open file from second worker
-      await openNestedWorkerFile(workerFileSelectors(2));
-      // Set two breakpoints
-      await addBreakpointForLine(frontend, 6);
-      // Disable first breakpoint
-      const bpEntry = await waitFor('.breakpoint-entry');
-      const bpCheckbox = await waitFor('input', bpEntry);
-      if (!bpCheckbox) {
-        assert.fail('Could not find checkbox to disable breakpoint');
-        return;
-      }
-      await bpCheckbox.evaluate(n => (n as HTMLElement).click());
-      await frontend.waitFor('.cm-breakpoint-disabled');
-      // Add another breakpoint
-      await addBreakpointForLine(frontend, 10);
+        await click('#tab-sources');
+        // Wait for all workers to load
+        await validateNavigationTree();
+        // Open file from second worker
+        await openNestedWorkerFile(workerFileSelectors(2));
+        // Set two breakpoints
+        await addBreakpointForLine(frontend, 6);
+        // Disable first breakpoint
+        const bpEntry = await waitFor('.breakpoint-entry');
+        const bpCheckbox = await waitFor('input', bpEntry);
+        if (!bpCheckbox) {
+          assert.fail('Could not find checkbox to disable breakpoint');
+          return;
+        }
+        await bpCheckbox.evaluate(n => (n as HTMLElement).click());
+        await frontend.waitFor('.cm-breakpoint-disabled');
+        // Add another breakpoint
+        await addBreakpointForLine(frontend, 10);
 
-      // Check breakpoints
-      await validateBreakpoints(frontend);
+        // Check breakpoints
+        await validateBreakpoints(frontend);
 
-      // Close tab
-      await click('[aria-label="Close multi-workers.js"]');
+        // Close tab
+        await click('[aria-label="Close multi-workers.js"]');
 
-      // Open different worker
-      await openNestedWorkerFile(workerFileSelectors(3));
+        // Open different worker
+        await openNestedWorkerFile(workerFileSelectors(3));
 
-      // Check breakpoints
-      await validateBreakpoints(frontend);
+        // Check breakpoints
+        await validateBreakpointsWithoutDisabled(frontend);
 
-      // Close tab
-      await click('[aria-label="Close multi-workers.js"]');
+        // Close tab
+        await click('[aria-label="Close multi-workers.js"]');
 
-      // Reload
-      await target.goto(targetPage);
+        // Reload
+        await target.goto(targetPage);
 
-      // Open different worker
-      await openNestedWorkerFile(workerFileSelectors(4));
+        // Open different worker
+        await openNestedWorkerFile(workerFileSelectors(4));
 
-      // Check breakpoints
-      await validateBreakpoints(frontend);
-    });
+        // Check breakpoints
+        await validateBreakpointsWithoutDisabled(frontend);
+      });
+    }
   });
 });

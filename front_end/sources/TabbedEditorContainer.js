@@ -91,7 +91,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
 
     this._previouslyViewedFilesSetting = setting;
     this._history = History.fromObject(this._previouslyViewedFilesSetting.get());
-    this._uriToUISourceCode = new Map();
+    this._historyUriToUISourceCode = new Map();
   }
 
   /**
@@ -188,7 +188,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   showFile(uiSourceCode) {
-    this._innerShowFile(this._canonicalUISourceCode(uiSourceCode), true);
+    this._innerShowFile(uiSourceCode, true);
   }
 
   /**
@@ -213,7 +213,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
     const result = [];
     const uris = this._history._urls();
     for (const uri of uris) {
-      const uiSourceCode = this._uriToUISourceCode.get(uri);
+      const uiSourceCode = this._historyUriToUISourceCode.get(uri);
       if (uiSourceCode) {
         result.push(uiSourceCode);
       }
@@ -379,31 +379,10 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   * @return {!Workspace.UISourceCode.UISourceCode}
-   */
-  _canonicalUISourceCode(uiSourceCode) {
-    // Check if we have already a UISourceCode for this url
-    if (this._uriToUISourceCode.has(uiSourceCode.url())) {
-      // Ignore incoming uiSourceCode, we already have this file.
-      return this._uriToUISourceCode.get(uiSourceCode.url());
-    }
-    this._uriToUISourceCode.set(uiSourceCode.url(), uiSourceCode);
-    return uiSourceCode;
-  }
-
-  /**
-   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   addUISourceCode(uiSourceCode) {
-    const canonicalSourceCode = this._canonicalUISourceCode(uiSourceCode);
-    const duplicated = canonicalSourceCode !== uiSourceCode;
-    const binding = self.Persistence.persistence.binding(canonicalSourceCode);
-    uiSourceCode = binding ? binding.fileSystem : canonicalSourceCode;
-
-    if (duplicated) {
-      uiSourceCode.disableEdit();
-    }
-
+    const binding = self.Persistence.persistence.binding(uiSourceCode);
+    uiSourceCode = binding ? binding.fileSystem : uiSourceCode;
     if (this._currentFile === uiSourceCode) {
       return;
     }
@@ -413,6 +392,12 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
     if (index === -1) {
       return;
     }
+
+    // Check if we have already opened a tab for this uri....
+    if (this._historyUriToUISourceCode.has(uiSourceCode.url())) {
+      return;
+    }
+    this._historyUriToUISourceCode.set(uiSourceCode.url(), uiSourceCode);
 
     if (!this._tabIds.has(uiSourceCode)) {
       this._appendFileTab(uiSourceCode, false);
@@ -452,8 +437,8 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
       if (tabId) {
         tabIds.push(tabId);
       }
-      if (this._uriToUISourceCode.get(uiSourceCode.url()) === uiSourceCode) {
-        this._uriToUISourceCode.delete(uiSourceCode.url());
+      if (this._historyUriToUISourceCode.get(uiSourceCode.url()) === uiSourceCode) {
+        this._historyUriToUISourceCode.delete(uiSourceCode.url());
       }
     }
     this._tabbedPane.closeTabs(tabIds);

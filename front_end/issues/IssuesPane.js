@@ -112,7 +112,7 @@ class AffectedCookiesView extends AffectedResourcesView {
    * @param {!Iterable<*>} cookies
    */
   _appendAffectedCookies(cookies) {
-    let count = 1;
+    let count = 0;
     for (const cookie of cookies) {
       count++;
       this.appendAffectedCookie(/** @type{!{name:string,path:string,domain:string,siteForCookies:string}} */ (cookie));

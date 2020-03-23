@@ -105,18 +105,31 @@ const emitDescription = (description?: string) => {
   }
 };
 
-const getPropertyDef = (prop: Protocol.PropertyType): string => {
-  // Quote key if it has a . in it.
-  const propName = prop.name.includes('.') ? `'${prop.name}'` : prop.name;
-  return `${propName}${prop.optional ? '?' : ''}: ${getPropertyType(prop)}`;
+const isPropertyInlineEnum = (prop: Protocol.ProtocolType): boolean => {
+  if ('$ref' in prop) {
+    return false;
+  }
+  return prop.type === 'string' && prop.enum !== null && prop.enum !== undefined;
 };
 
-const getPropertyType = (prop: Protocol.ProtocolType): string => {
+const getPropertyDef = (interfaceName: string, prop: Protocol.PropertyType): string => {
+  // Quote key if it has a . in it.
+  const propName = prop.name.includes('.') ? `'${prop.name}'` : prop.name;
+  let type: string;
+  if (isPropertyInlineEnum(prop)) {
+    type = interfaceName + toTitleCase(prop.name);
+  } else {
+    type = getPropertyType(interfaceName, prop);
+  }
+  return `${propName}${prop.optional ? '?' : ''}: ${type}`;
+};
+
+const getPropertyType = (interfaceName: string, prop: Protocol.ProtocolType): string => {
   if ('$ref' in prop) {
     return prop.$ref;
   }
   if (prop.type === 'array') {
-    return `${getPropertyType(prop.items)}[]`;
+    return `${getPropertyType(interfaceName, prop.items)}[]`;
   }
   if (prop.type === 'object') {
     if (!prop.properties) {
@@ -126,25 +139,22 @@ const getPropertyType = (prop: Protocol.ProtocolType): string => {
     // hack: access indent, \n directly
     let objStr = '{\n';
     numIndents++;
-    objStr += prop.properties.map(p => `${getIndent()}${getPropertyDef(p)};\n`).join('');
+    objStr += prop.properties.map(p => `${getIndent()}${getPropertyDef(interfaceName, p)};\n`).join('');
     numIndents--;
     objStr += `${getIndent()}}`;
     return objStr;
   }
-  if (prop.type === 'string' && prop.enum) {
-    return '(' + prop.enum.map((v: string) => `'${v}'`).join(' | ') + ')';
-  }
   return prop.type;
 };
 
-const emitProperty = (prop: Protocol.PropertyType) => {
+const emitProperty = (interfaceName: string, prop: Protocol.PropertyType) => {
   emitDescription(prop.description);
-  emitLine(`${getPropertyDef(prop)};`);
+  emitLine(`${getPropertyDef(interfaceName, prop)};`);
 };
 
 const emitInterface = (interfaceName: string, props?: Protocol.PropertyType[]) => {
   emitOpenBlock(`export interface ${interfaceName}`);
-  props ? props.forEach(emitProperty) : emitLine('[key: string]: string;');
+  props ? props.forEach(prop => emitProperty(interfaceName, prop)) : emitLine('[key: string]: string;');
   emitCloseBlock();
 };
 
@@ -168,16 +178,49 @@ const fixCamelCase = (name: string): string => {
   return prefix + refined.replace(/HTML|XML|WML|API/i, match => match.toUpperCase());
 };
 
+const emitInlineEnumForDomainType = (type: Protocol.DomainType) => {
+  if (type.type === 'object') {
+    emitInlineEnums(type.id, type.properties);
+  }
+};
+
+const emitInlineEnumsForCommands = (command: Protocol.Command) => {
+  emitInlineEnums(toCmdRequestName(command.name), command.parameters);
+  emitInlineEnums(toCmdResponseName(command.name), command.returns);
+};
+
+const emitInlineEnumsForEvents = (event: Protocol.Event) => {
+  emitInlineEnums(toEventPayloadName(event.name), event.parameters);
+};
+
+const emitInlineEnums = (prefix: string, propertyTypes?: Protocol.PropertyType[]) => {
+  if (!propertyTypes) {
+    return;
+  }
+  for (const type of propertyTypes) {
+    if (isPropertyInlineEnum(type)) {
+      emitLine();
+      const enumName = prefix + toTitleCase(type.name);
+      emitEnum(enumName, (type as Protocol.StringType).enum);
+    }
+  }
+};
+
 const emitDomainType = (type: Protocol.DomainType) => {
+  // Check if this type is an object that declares inline enum types for some of its properties.
+  // These inline enums must be emitted first.
+  emitInlineEnumForDomainType(type);
+
   emitLine();
   emitDescription(type.description);
 
   if (type.type === 'object') {
     emitInterface(type.id, type.properties);
   } else if (type.type === 'string' && type.enum) {
+    // Explicit enums declared as separate types that inherit from 'string'.
     emitEnum(type.id, type.enum);
   } else {
-    emitLine(`export type ${type.id} = ${getPropertyType(type)};`);
+    emitLine(`export type ${type.id} = ${getPropertyType(type.id, type)};`);
   }
 };
 
@@ -188,6 +231,8 @@ const toCmdRequestName = (commandName: string) => `${toTitleCase(commandName)}Re
 const toCmdResponseName = (commandName: string) => `${toTitleCase(commandName)}Response`;
 
 const emitCommand = (command: Protocol.Command) => {
+  emitInlineEnumsForCommands(command);
+
   // TODO(bckenny): should description be emitted for params and return types?
   if (command.parameters) {
     emitLine();
@@ -206,6 +251,8 @@ const emitEvent = (event: Protocol.Event) => {
   if (!event.parameters) {
     return;
   }
+
+  emitInlineEnumsForEvents(event);
 
   emitLine();
   emitDescription(event.description);

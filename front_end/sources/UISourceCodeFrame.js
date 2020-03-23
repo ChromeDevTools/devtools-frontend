@@ -242,6 +242,9 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
     if (this.hasLoadError()) {
       return false;
     }
+    if (this._uiSourceCode.editDisabled()) {
+      return false;
+    }
     if (self.Persistence.persistence.binding(this._uiSourceCode)) {
       return true;
     }

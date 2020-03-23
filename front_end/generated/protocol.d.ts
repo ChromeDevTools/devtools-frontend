@@ -21,20 +21,51 @@ declare namespace Protocol {
     /**
      * Enum of possible property types.
      */
-    export type AXValueType =
-        ('boolean'|'tristate'|'booleanOrUndefined'|'idref'|'idrefList'|'integer'|'node'|'nodeList'|'number'|'string'|
-         'computedString'|'token'|'tokenList'|'domRelation'|'role'|'internalRole'|'valueUndefined');
+    export enum AXValueType {
+      Boolean = 'boolean',
+      Tristate = 'tristate',
+      BooleanOrUndefined = 'booleanOrUndefined',
+      Idref = 'idref',
+      IdrefList = 'idrefList',
+      Integer = 'integer',
+      Node = 'node',
+      NodeList = 'nodeList',
+      Number = 'number',
+      String = 'string',
+      ComputedString = 'computedString',
+      Token = 'token',
+      TokenList = 'tokenList',
+      DomRelation = 'domRelation',
+      Role = 'role',
+      InternalRole = 'internalRole',
+      ValueUndefined = 'valueUndefined',
+    }
 
     /**
      * Enum of possible property sources.
      */
-    export type AXValueSourceType = ('attribute'|'implicit'|'style'|'contents'|'placeholder'|'relatedElement');
+    export enum AXValueSourceType {
+      Attribute = 'attribute',
+      Implicit = 'implicit',
+      Style = 'style',
+      Contents = 'contents',
+      Placeholder = 'placeholder',
+      RelatedElement = 'relatedElement',
+    }
 
     /**
      * Enum of possible native property sources (as a subtype of a particular AXValueSourceType).
      */
-    export type AXValueNativeSourceType =
-        ('figcaption'|'label'|'labelfor'|'labelwrapped'|'legend'|'tablecaption'|'title'|'other');
+    export enum AXValueNativeSourceType {
+      Figcaption = 'figcaption',
+      Label = 'label',
+      Labelfor = 'labelfor',
+      Labelwrapped = 'labelwrapped',
+      Legend = 'legend',
+      Tablecaption = 'tablecaption',
+      Title = 'title',
+      Other = 'other',
+    }
 
     /**
      * A single source for a computed AX property.
@@ -134,12 +165,47 @@ declare namespace Protocol {
      * - from 'checked' to 'selected': states which apply to widgets
      * - from 'activedescendant' to 'owns' - relationships between elements other than parent/child/sibling.
      */
-    export type AXPropertyName =
-        ('busy'|'disabled'|'editable'|'focusable'|'focused'|'hidden'|'hiddenRoot'|'invalid'|'keyshortcuts'|'settable'|
-         'roledescription'|'live'|'atomic'|'relevant'|'root'|'autocomplete'|'hasPopup'|'level'|'multiselectable'|
-         'orientation'|'multiline'|'readonly'|'required'|'valuemin'|'valuemax'|'valuetext'|'checked'|'expanded'|'modal'|
-         'pressed'|'selected'|'activedescendant'|'controls'|'describedby'|'details'|'errormessage'|'flowto'|
-         'labelledby'|'owns');
+    export enum AXPropertyName {
+      Busy = 'busy',
+      Disabled = 'disabled',
+      Editable = 'editable',
+      Focusable = 'focusable',
+      Focused = 'focused',
+      Hidden = 'hidden',
+      HiddenRoot = 'hiddenRoot',
+      Invalid = 'invalid',
+      Keyshortcuts = 'keyshortcuts',
+      Settable = 'settable',
+      Roledescription = 'roledescription',
+      Live = 'live',
+      Atomic = 'atomic',
+      Relevant = 'relevant',
+      Root = 'root',
+      Autocomplete = 'autocomplete',
+      HasPopup = 'hasPopup',
+      Level = 'level',
+      Multiselectable = 'multiselectable',
+      Orientation = 'orientation',
+      Multiline = 'multiline',
+      Readonly = 'readonly',
+      Required = 'required',
+      Valuemin = 'valuemin',
+      Valuemax = 'valuemax',
+      Valuetext = 'valuetext',
+      Checked = 'checked',
+      Expanded = 'expanded',
+      Modal = 'modal',
+      Pressed = 'pressed',
+      Selected = 'selected',
+      Activedescendant = 'activedescendant',
+      Controls = 'controls',
+      Describedby = 'describedby',
+      Details = 'details',
+      Errormessage = 'errormessage',
+      Flowto = 'flowto',
+      Labelledby = 'labelledby',
+      Owns = 'owns',
+    }
 
     /**
      * A node in the accessibility tree.
@@ -637,8 +703,14 @@ declare namespace Protocol {
      * Every Background Service operates independently, but they share the same
      * API.
      */
-    export type ServiceName = ('backgroundFetch'|'backgroundSync'|'pushMessaging'|'notifications'|'paymentHandler'|
-                               'periodicBackgroundSync');
+    export enum ServiceName {
+      BackgroundFetch = 'backgroundFetch',
+      BackgroundSync = 'backgroundSync',
+      PushMessaging = 'pushMessaging',
+      Notifications = 'notifications',
+      PaymentHandler = 'paymentHandler',
+      PeriodicBackgroundSync = 'periodicBackgroundSync',
+    }
 
     /**
      * A key-value pair for additional event information to pass along.
@@ -725,7 +797,12 @@ declare namespace Protocol {
     /**
      * The state of the browser window.
      */
-    export type WindowState = ('normal'|'minimized'|'maximized'|'fullscreen');
+    export enum WindowState {
+      Normal = 'normal',
+      Minimized = 'minimized',
+      Maximized = 'maximized',
+      Fullscreen = 'fullscreen',
+    }
 
     /**
      * Browser window bounds information
@@ -753,13 +830,35 @@ declare namespace Protocol {
       windowState?: WindowState;
     }
 
-    export type PermissionType = ('accessibilityEvents'|'audioCapture'|'backgroundSync'|'backgroundFetch'|
-                                  'clipboardReadWrite'|'clipboardSanitizedWrite'|'durableStorage'|'flash'|'geolocation'|
-                                  'midi'|'midiSysex'|'nfc'|'notifications'|'paymentHandler'|'periodicBackgroundSync'|
-                                  'protectedMediaIdentifier'|'sensors'|'videoCapture'|'idleDetection'|'wakeLockScreen'|
-                                  'wakeLockSystem');
+    export enum PermissionType {
+      AccessibilityEvents = 'accessibilityEvents',
+      AudioCapture = 'audioCapture',
+      BackgroundSync = 'backgroundSync',
+      BackgroundFetch = 'backgroundFetch',
+      ClipboardReadWrite = 'clipboardReadWrite',
+      ClipboardSanitizedWrite = 'clipboardSanitizedWrite',
+      DurableStorage = 'durableStorage',
+      Flash = 'flash',
+      Geolocation = 'geolocation',
+      Midi = 'midi',
+      MidiSysex = 'midiSysex',
+      Nfc = 'nfc',
+      Notifications = 'notifications',
+      PaymentHandler = 'paymentHandler',
+      PeriodicBackgroundSync = 'periodicBackgroundSync',
+      ProtectedMediaIdentifier = 'protectedMediaIdentifier',
+      Sensors = 'sensors',
+      VideoCapture = 'videoCapture',
+      IdleDetection = 'idleDetection',
+      WakeLockScreen = 'wakeLockScreen',
+      WakeLockSystem = 'wakeLockSystem',
+    }
 
-    export type PermissionSetting = ('granted'|'denied'|'prompt');
+    export enum PermissionSetting {
+      Granted = 'granted',
+      Denied = 'denied',
+      Prompt = 'prompt',
+    }
 
     /**
      * Definition of PermissionDescriptor defined in the Permissions API:
@@ -1005,7 +1104,12 @@ declare namespace Protocol {
      * stylesheets, "inspector" for stylesheets created by the inspector (i.e. those holding the "via
      * inspector" rules), "regular" for regular stylesheets.
      */
-    export type StyleSheetOrigin = ('injected'|'user-agent'|'inspector'|'regular');
+    export enum StyleSheetOrigin {
+      Injected = 'injected',
+      UserAgent = 'user-agent',
+      Inspector = 'inspector',
+      Regular = 'regular',
+    }
 
     /**
      * CSS rule collection for a single pseudo style.
@@ -1793,7 +1897,14 @@ declare namespace Protocol {
     /**
      * type of HTTP response cached
      */
-    export type CachedResponseType = ('basic'|'cors'|'default'|'error'|'opaqueResponse'|'opaqueRedirect');
+    export enum CachedResponseType {
+      Basic = 'basic',
+      Cors = 'cors',
+      Default = 'default',
+      Error = 'error',
+      OpaqueResponse = 'opaqueResponse',
+      OpaqueRedirect = 'opaqueRedirect',
+    }
 
     /**
      * Data entry.
@@ -2041,14 +2152,33 @@ declare namespace Protocol {
     /**
      * Pseudo element type.
      */
-    export type PseudoType = ('first-line'|'first-letter'|'before'|'after'|'marker'|'backdrop'|'selection'|
-                              'first-line-inherited'|'scrollbar'|'scrollbar-thumb'|'scrollbar-button'|'scrollbar-track'|
-                              'scrollbar-track-piece'|'scrollbar-corner'|'resizer'|'input-list-button');
+    export enum PseudoType {
+      FirstLine = 'first-line',
+      FirstLetter = 'first-letter',
+      Before = 'before',
+      After = 'after',
+      Marker = 'marker',
+      Backdrop = 'backdrop',
+      Selection = 'selection',
+      FirstLineInherited = 'first-line-inherited',
+      Scrollbar = 'scrollbar',
+      ScrollbarThumb = 'scrollbar-thumb',
+      ScrollbarButton = 'scrollbar-button',
+      ScrollbarTrack = 'scrollbar-track',
+      ScrollbarTrackPiece = 'scrollbar-track-piece',
+      ScrollbarCorner = 'scrollbar-corner',
+      Resizer = 'resizer',
+      InputListButton = 'input-list-button',
+    }
 
     /**
      * Shadow root type.
      */
-    export type ShadowRootType = ('user-agent'|'open'|'closed');
+    export enum ShadowRootType {
+      UserAgent = 'user-agent',
+      Open = 'open',
+      Closed = 'closed',
+    }
 
     /**
      * DOM interaction is implemented in terms of mirror objects that represent the actual DOM nodes.
@@ -3099,7 +3229,11 @@ declare namespace Protocol {
     /**
      * DOM breakpoint type.
      */
-    export type DOMBreakpointType = ('subtree-modified'|'attribute-modified'|'node-removed');
+    export enum DOMBreakpointType {
+      SubtreeModified = 'subtree-modified',
+      AttributeModified = 'attribute-modified',
+      NodeRemoved = 'node-removed',
+    }
 
     /**
      * Object event listener.
@@ -3930,7 +4064,11 @@ declare namespace Protocol {
      * pauseIfNetworkFetchesPending: The virtual time base may not advance if there are any pending
      * resource fetches.
      */
-    export type VirtualTimePolicy = ('advance'|'pause'|'pauseIfNetworkFetchesPending');
+    export enum VirtualTimePolicy {
+      Advance = 'advance',
+      Pause = 'pause',
+      PauseIfNetworkFetchesPending = 'pauseIfNetworkFetchesPending',
+    }
 
     export interface CanEmulateResponse {
       /**
@@ -4633,9 +4771,20 @@ declare namespace Protocol {
       id?: number;
     }
 
-    export type GestureSourceType = ('default'|'touch'|'mouse');
+    export enum GestureSourceType {
+      Default = 'default',
+      Touch = 'touch',
+      Mouse = 'mouse',
+    }
 
-    export type MouseButton = ('none'|'left'|'middle'|'right'|'back'|'forward');
+    export enum MouseButton {
+      None = 'none',
+      Left = 'left',
+      Middle = 'middle',
+      Right = 'right',
+      Back = 'back',
+      Forward = 'forward',
+    }
 
     /**
      * UTC time in seconds, counted from January 1, 1970.
@@ -5318,7 +5467,10 @@ declare namespace Protocol {
     /**
      * Memory pressure level.
      */
-    export type PressureLevel = ('moderate'|'critical');
+    export enum PressureLevel {
+      Moderate = 'moderate',
+      Critical = 'critical',
+    }
 
     /**
      * Heap profile sample.
@@ -5422,9 +5574,24 @@ declare namespace Protocol {
     /**
      * Resource type as it was perceived by the rendering engine.
      */
-    export type ResourceType = ('Document'|'Stylesheet'|'Image'|'Media'|'Font'|'Script'|'TextTrack'|'XHR'|'Fetch'|
-                                'EventSource'|'WebSocket'|'Manifest'|'SignedExchange'|'Ping'|'CSPViolationReport'|
-                                'Other');
+    export enum ResourceType {
+      Document = 'Document',
+      Stylesheet = 'Stylesheet',
+      Image = 'Image',
+      Media = 'Media',
+      Font = 'Font',
+      Script = 'Script',
+      TextTrack = 'TextTrack',
+      XHR = 'XHR',
+      Fetch = 'Fetch',
+      EventSource = 'EventSource',
+      WebSocket = 'WebSocket',
+      Manifest = 'Manifest',
+      SignedExchange = 'SignedExchange',
+      Ping = 'Ping',
+      CSPViolationReport = 'CSPViolationReport',
+      Other = 'Other',
+    }
 
     /**
      * Unique loader identifier.
@@ -5444,9 +5611,22 @@ declare namespace Protocol {
     /**
      * Network level fetch failure reason.
      */
-    export type ErrorReason = ('Failed'|'Aborted'|'TimedOut'|'AccessDenied'|'ConnectionClosed'|'ConnectionReset'|
-                               'ConnectionRefused'|'ConnectionAborted'|'ConnectionFailed'|'NameNotResolved'|
-                               'InternetDisconnected'|'AddressUnreachable'|'BlockedByClient'|'BlockedByResponse');
+    export enum ErrorReason {
+      Failed = 'Failed',
+      Aborted = 'Aborted',
+      TimedOut = 'TimedOut',
+      AccessDenied = 'AccessDenied',
+      ConnectionClosed = 'ConnectionClosed',
+      ConnectionReset = 'ConnectionReset',
+      ConnectionRefused = 'ConnectionRefused',
+      ConnectionAborted = 'ConnectionAborted',
+      ConnectionFailed = 'ConnectionFailed',
+      NameNotResolved = 'NameNotResolved',
+      InternetDisconnected = 'InternetDisconnected',
+      AddressUnreachable = 'AddressUnreachable',
+      BlockedByClient = 'BlockedByClient',
+      BlockedByResponse = 'BlockedByResponse',
+    }
 
     /**
      * UTC time in seconds, counted from January 1, 1970.
@@ -5468,20 +5648,37 @@ declare namespace Protocol {
     /**
      * The underlying connection technology that the browser is supposedly using.
      */
-    export type ConnectionType = ('none'|'cellular2g'|'cellular3g'|'cellular4g'|'bluetooth'|'ethernet'|'wifi'|'wimax'|
-                                  'other');
+    export enum ConnectionType {
+      None = 'none',
+      Cellular2g = 'cellular2g',
+      Cellular3g = 'cellular3g',
+      Cellular4g = 'cellular4g',
+      Bluetooth = 'bluetooth',
+      Ethernet = 'ethernet',
+      Wifi = 'wifi',
+      Wimax = 'wimax',
+      Other = 'other',
+    }
 
     /**
      * Represents the cookie's 'SameSite' status:
      * https://tools.ietf.org/html/draft-west-first-party-cookies
      */
-    export type CookieSameSite = ('Strict'|'Lax'|'None');
+    export enum CookieSameSite {
+      Strict = 'Strict',
+      Lax = 'Lax',
+      None = 'None',
+    }
 
     /**
      * Represents the cookie's 'Priority' status:
      * https://tools.ietf.org/html/draft-west-cookie-priority-00
      */
-    export type CookiePriority = ('Low'|'Medium'|'High');
+    export enum CookiePriority {
+      Low = 'Low',
+      Medium = 'Medium',
+      High = 'High',
+    }
 
     /**
      * Timing information for the request.
@@ -5557,7 +5754,13 @@ declare namespace Protocol {
     /**
      * Loading priority of a resource request.
      */
-    export type ResourcePriority = ('VeryLow'|'Low'|'Medium'|'High'|'VeryHigh');
+    export enum ResourcePriority {
+      VeryLow = 'VeryLow',
+      Low = 'Low',
+      Medium = 'Medium',
+      High = 'High',
+      VeryHigh = 'VeryHigh',
+    }
 
     /**
      * HTTP request data.
@@ -5705,15 +5908,30 @@ declare namespace Protocol {
     /**
      * Whether the request complied with Certificate Transparency policy.
      */
-    export type CertificateTransparencyCompliance = ('unknown'|'not-compliant'|'compliant');
+    export enum CertificateTransparencyCompliance {
+      Unknown = 'unknown',
+      NotCompliant = 'not-compliant',
+      Compliant = 'compliant',
+    }
 
     /**
      * The reason why request was blocked.
      */
-    export type BlockedReason = ('other'|'csp'|'mixed-content'|'origin'|'inspector'|'subresource-filter'|'content-type'|
-                                 'collapsed-by-client'|'coep-frame-resource-needs-coep-header'|
-                                 'coop-sandboxed-iframe-cannot-navigate-to-coop-page'|'corp-not-same-origin'|
-                                 'corp-not-same-origin-after-defaulted-to-same-origin-by-coep'|'corp-not-same-site');
+    export enum BlockedReason {
+      Other = 'other',
+      Csp = 'csp',
+      MixedContent = 'mixed-content',
+      Origin = 'origin',
+      Inspector = 'inspector',
+      SubresourceFilter = 'subresource-filter',
+      ContentType = 'content-type',
+      CollapsedByClient = 'collapsed-by-client',
+      CoepFrameResourceNeedsCoepHeader = 'coep-frame-resource-needs-coep-header',
+      CoopSandboxedIframeCannotNavigateToCoopPage = 'coop-sandboxed-iframe-cannot-navigate-to-coop-page',
+      CorpNotSameOrigin = 'corp-not-same-origin',
+      CorpNotSameOriginAfterDefaultedToSameOriginByCoep = 'corp-not-same-origin-after-defaulted-to-same-origin-by-coep',
+      CorpNotSameSite = 'corp-not-same-site',
+    }
 
     /**
      * HTTP response data.
@@ -5959,16 +6177,35 @@ declare namespace Protocol {
     /**
      * Types of reasons why a cookie may not be stored from a response.
      */
-    export type SetCookieBlockedReason = ('SecureOnly'|'SameSiteStrict'|'SameSiteLax'|'SameSiteUnspecifiedTreatedAsLax'|
-                                          'SameSiteNoneInsecure'|'UserPreferences'|'SyntaxError'|'SchemeNotSupported'|
-                                          'OverwriteSecure'|'InvalidDomain'|'InvalidPrefix'|'UnknownError');
+    export enum SetCookieBlockedReason {
+      SecureOnly = 'SecureOnly',
+      SameSiteStrict = 'SameSiteStrict',
+      SameSiteLax = 'SameSiteLax',
+      SameSiteUnspecifiedTreatedAsLax = 'SameSiteUnspecifiedTreatedAsLax',
+      SameSiteNoneInsecure = 'SameSiteNoneInsecure',
+      UserPreferences = 'UserPreferences',
+      SyntaxError = 'SyntaxError',
+      SchemeNotSupported = 'SchemeNotSupported',
+      OverwriteSecure = 'OverwriteSecure',
+      InvalidDomain = 'InvalidDomain',
+      InvalidPrefix = 'InvalidPrefix',
+      UnknownError = 'UnknownError',
+    }
 
     /**
      * Types of reasons why a cookie may not be sent with a request.
      */
-    export type CookieBlockedReason = ('SecureOnly'|'NotOnPath'|'DomainMismatch'|'SameSiteStrict'|'SameSiteLax'|
-                                       'SameSiteUnspecifiedTreatedAsLax'|'SameSiteNoneInsecure'|'UserPreferences'|
-                                       'UnknownError');
+    export enum CookieBlockedReason {
+      SecureOnly = 'SecureOnly',
+      NotOnPath = 'NotOnPath',
+      DomainMismatch = 'DomainMismatch',
+      SameSiteStrict = 'SameSiteStrict',
+      SameSiteLax = 'SameSiteLax',
+      SameSiteUnspecifiedTreatedAsLax = 'SameSiteUnspecifiedTreatedAsLax',
+      SameSiteNoneInsecure = 'SameSiteNoneInsecure',
+      UserPreferences = 'UserPreferences',
+      UnknownError = 'UnknownError',
+    }
 
     /**
      * A cookie which was not stored from a response with the corresponding reason.
@@ -6100,7 +6337,10 @@ declare namespace Protocol {
      * Stages of the interception to begin intercepting. Request will intercept before the request is
      * sent. Response will intercept after the response is received.
      */
-    export type InterceptionStage = ('Request'|'HeadersReceived');
+    export enum InterceptionStage {
+      Request = 'Request',
+      HeadersReceived = 'HeadersReceived',
+    }
 
     /**
      * Request pattern for interception.
@@ -6194,8 +6434,14 @@ declare namespace Protocol {
     /**
      * Field type for a signed exchange related error.
      */
-    export type SignedExchangeErrorField = ('signatureSig'|'signatureIntegrity'|'signatureCertUrl'|
-                                            'signatureCertSha256'|'signatureValidityUrl'|'signatureTimestamps');
+    export enum SignedExchangeErrorField {
+      SignatureSig = 'signatureSig',
+      SignatureIntegrity = 'signatureIntegrity',
+      SignatureCertUrl = 'signatureCertUrl',
+      SignatureCertSha256 = 'signatureCertSha256',
+      SignatureValidityUrl = 'signatureValidityUrl',
+      SignatureTimestamps = 'signatureTimestamps',
+    }
 
     /**
      * Information about a signed exchange response.
@@ -7116,7 +7362,13 @@ declare namespace Protocol {
       cssGridColor?: DOM.RGBA;
     }
 
-    export type InspectMode = ('searchForNode'|'searchForUAShadowDOM'|'captureAreaScreenshot'|'showDistances'|'none');
+    export enum InspectMode {
+      SearchForNode = 'searchForNode',
+      SearchForUAShadowDOM = 'searchForUAShadowDOM',
+      CaptureAreaScreenshot = 'captureAreaScreenshot',
+      ShowDistances = 'showDistances',
+      None = 'none',
+    }
 
     export interface GetHighlightObjectForTestRequest {
       /**
@@ -7450,9 +7702,21 @@ declare namespace Protocol {
     /**
      * Transition type.
      */
-    export type TransitionType = ('link'|'typed'|'address_bar'|'auto_bookmark'|'auto_subframe'|'manual_subframe'|
-                                  'generated'|'auto_toplevel'|'form_submit'|'reload'|'keyword'|'keyword_generated'|
-                                  'other');
+    export enum TransitionType {
+      Link = 'link',
+      Typed = 'typed',
+      Address_bar = 'address_bar',
+      Auto_bookmark = 'auto_bookmark',
+      Auto_subframe = 'auto_subframe',
+      Manual_subframe = 'manual_subframe',
+      Generated = 'generated',
+      Auto_toplevel = 'auto_toplevel',
+      Form_submit = 'form_submit',
+      Reload = 'reload',
+      Keyword = 'keyword',
+      Keyword_generated = 'keyword_generated',
+      Other = 'other',
+    }
 
     /**
      * Navigation history entry.
@@ -7517,7 +7781,12 @@ declare namespace Protocol {
     /**
      * Javascript dialog type.
      */
-    export type DialogType = ('alert'|'confirm'|'prompt'|'beforeunload');
+    export enum DialogType {
+      Alert = 'alert',
+      Confirm = 'confirm',
+      Prompt = 'prompt',
+      Beforeunload = 'beforeunload',
+    }
 
     /**
      * Error while paring app manifest.
@@ -7685,9 +7954,16 @@ declare namespace Protocol {
       fixed?: integer;
     }
 
-    export type ClientNavigationReason = ('formSubmissionGet'|'formSubmissionPost'|'httpHeaderRefresh'|
-                                          'scriptInitiated'|'metaTagRefresh'|'pageBlockInterstitial'|'reload'|
-                                          'anchorClick');
+    export enum ClientNavigationReason {
+      FormSubmissionGet = 'formSubmissionGet',
+      FormSubmissionPost = 'formSubmissionPost',
+      HttpHeaderRefresh = 'httpHeaderRefresh',
+      ScriptInitiated = 'scriptInitiated',
+      MetaTagRefresh = 'metaTagRefresh',
+      PageBlockInterstitial = 'pageBlockInterstitial',
+      Reload = 'reload',
+      AnchorClick = 'anchorClick',
+    }
 
     export interface InstallabilityErrorArgument {
       /**
@@ -7717,8 +7993,16 @@ declare namespace Protocol {
     /**
      * The referring-policy used for the navigation.
      */
-    export type ReferrerPolicy = ('noReferrer'|'noReferrerWhenDowngrade'|'origin'|'originWhenCrossOrigin'|'sameOrigin'|
-                                  'strictOrigin'|'strictOriginWhenCrossOrigin'|'unsafeUrl');
+    export enum ReferrerPolicy {
+      NoReferrer = 'noReferrer',
+      NoReferrerWhenDowngrade = 'noReferrerWhenDowngrade',
+      Origin = 'origin',
+      OriginWhenCrossOrigin = 'originWhenCrossOrigin',
+      SameOrigin = 'sameOrigin',
+      StrictOrigin = 'strictOrigin',
+      StrictOriginWhenCrossOrigin = 'strictOriginWhenCrossOrigin',
+      UnsafeUrl = 'unsafeUrl',
+    }
 
     export interface AddScriptToEvaluateOnLoadRequest {
       scriptSource: string;
@@ -8680,12 +8964,23 @@ declare namespace Protocol {
      * A description of mixed content (HTTP resources on HTTPS pages), as defined by
      * https://www.w3.org/TR/mixed-content/#categories
      */
-    export type MixedContentType = ('blockable'|'optionally-blockable'|'none');
+    export enum MixedContentType {
+      Blockable = 'blockable',
+      OptionallyBlockable = 'optionally-blockable',
+      None = 'none',
+    }
 
     /**
      * The security level of a page or resource.
      */
-    export type SecurityState = ('unknown'|'neutral'|'insecure'|'secure'|'info'|'insecure-broken');
+    export enum SecurityState {
+      Unknown = 'unknown',
+      Neutral = 'neutral',
+      Insecure = 'insecure',
+      Secure = 'secure',
+      Info = 'info',
+      InsecureBroken = 'insecure-broken',
+    }
 
     /**
      * Details about the security state of the page certificate.
@@ -8765,7 +9060,10 @@ declare namespace Protocol {
       obsoleteSslSignature: boolean;
     }
 
-    export type SafetyTipStatus = ('badReputation'|'lookalike');
+    export enum SafetyTipStatus {
+      BadReputation = 'badReputation',
+      Lookalike = 'lookalike',
+    }
 
     export interface SafetyTipInfo {
       /**
@@ -8872,7 +9170,10 @@ declare namespace Protocol {
      * The action to take when a certificate error occurs. continue will continue processing the
      * request and cancel will cancel the request.
      */
-    export type CertificateErrorAction = ('continue'|'cancel');
+    export enum CertificateErrorAction {
+      Continue = 'continue',
+      Cancel = 'cancel',
+    }
 
     export interface SetIgnoreCertificateErrorsRequest {
       /**
@@ -8971,9 +9272,21 @@ declare namespace Protocol {
       isDeleted: boolean;
     }
 
-    export type ServiceWorkerVersionRunningStatus = ('stopped'|'starting'|'running'|'stopping');
+    export enum ServiceWorkerVersionRunningStatus {
+      Stopped = 'stopped',
+      Starting = 'starting',
+      Running = 'running',
+      Stopping = 'stopping',
+    }
 
-    export type ServiceWorkerVersionStatus = ('new'|'installing'|'installed'|'activating'|'activated'|'redundant');
+    export enum ServiceWorkerVersionStatus {
+      New = 'new',
+      Installing = 'installing',
+      Installed = 'installed',
+      Activating = 'activating',
+      Activated = 'activated',
+      Redundant = 'redundant',
+    }
 
     /**
      * ServiceWorker version.
@@ -9074,8 +9387,19 @@ declare namespace Protocol {
     /**
      * Enum of possible storage types.
      */
-    export type StorageType = ('appcache'|'cookies'|'file_systems'|'indexeddb'|'local_storage'|'shader_cache'|'websql'|
-                               'service_workers'|'cache_storage'|'all'|'other');
+    export enum StorageType {
+      Appcache = 'appcache',
+      Cookies = 'cookies',
+      File_systems = 'file_systems',
+      Indexeddb = 'indexeddb',
+      Local_storage = 'local_storage',
+      Shader_cache = 'shader_cache',
+      Websql = 'websql',
+      Service_workers = 'service_workers',
+      Cache_storage = 'cache_storage',
+      All = 'all',
+      Other = 'other',
+    }
 
     /**
      * Usage for a storage type.
@@ -9338,12 +9662,20 @@ declare namespace Protocol {
     /**
      * YUV subsampling type of the pixels of a given image.
      */
-    export type SubsamplingFormat = ('yuv420'|'yuv422'|'yuv444');
+    export enum SubsamplingFormat {
+      Yuv420 = 'yuv420',
+      Yuv422 = 'yuv422',
+      Yuv444 = 'yuv444',
+    }
 
     /**
      * Image format of a given image.
      */
-    export type ImageType = ('jpeg'|'webp'|'unknown');
+    export enum ImageType {
+      Jpeg = 'jpeg',
+      Webp = 'webp',
+      Unknown = 'unknown',
+    }
 
     /**
      * Describes a supported image decoding profile with its associated minimum and
@@ -9826,12 +10158,18 @@ declare namespace Protocol {
      * Data format of a trace. Can be either the legacy JSON format or the
      * protocol buffer format. Note that the JSON format will be deprecated soon.
      */
-    export type StreamFormat = ('json'|'proto');
+    export enum StreamFormat {
+      Json = 'json',
+      Proto = 'proto',
+    }
 
     /**
      * Compression type to use for traces returned via streams.
      */
-    export type StreamCompression = ('none'|'gzip');
+    export enum StreamCompression {
+      None = 'none',
+      Gzip = 'gzip',
+    }
 
     export interface GetCategoriesResponse {
       /**
@@ -9961,7 +10299,10 @@ declare namespace Protocol {
      * sent. Response will intercept after the response is received (but before response
      * body is received.
      */
-    export type RequestStage = ('Request'|'Response');
+    export enum RequestStage {
+      Request = 'Request',
+      Response = 'Response',
+    }
 
     export interface RequestPattern {
       /**
@@ -10235,12 +10576,19 @@ declare namespace Protocol {
     /**
      * Enum of BaseAudioContext types
      */
-    export type ContextType = ('realtime'|'offline');
+    export enum ContextType {
+      Realtime = 'realtime',
+      Offline = 'offline',
+    }
 
     /**
      * Enum of AudioContextState from the spec
      */
-    export type ContextState = ('suspended'|'running'|'closed');
+    export enum ContextState {
+      Suspended = 'suspended',
+      Running = 'running',
+      Closed = 'closed',
+    }
 
     /**
      * Enum of AudioNode types
@@ -10250,12 +10598,19 @@ declare namespace Protocol {
     /**
      * Enum of AudioNode::ChannelCountMode from the spec
      */
-    export type ChannelCountMode = ('clamped-max'|'explicit'|'max');
+    export enum ChannelCountMode {
+      ClampedMax = 'clamped-max',
+      Explicit = 'explicit',
+      Max = 'max',
+    }
 
     /**
      * Enum of AudioNode::ChannelInterpretation from the spec
      */
-    export type ChannelInterpretation = ('discrete'|'speakers');
+    export enum ChannelInterpretation {
+      Discrete = 'discrete',
+      Speakers = 'speakers',
+    }
 
     /**
      * Enum of AudioParam types
@@ -10265,7 +10620,10 @@ declare namespace Protocol {
     /**
      * Enum of AudioParam::AutomationRate from the spec
      */
-    export type AutomationRate = ('a-rate'|'k-rate');
+    export enum AutomationRate {
+      ARate = 'a-rate',
+      KRate = 'k-rate',
+    }
 
     /**
      * Fields in AudioContext that change in real-time.
@@ -10475,9 +10833,18 @@ declare namespace Protocol {
 
     export type AuthenticatorId = string;
 
-    export type AuthenticatorProtocol = ('u2f'|'ctap2');
+    export enum AuthenticatorProtocol {
+      U2f = 'u2f',
+      Ctap2 = 'ctap2',
+    }
 
-    export type AuthenticatorTransport = ('usb'|'nfc'|'ble'|'cable'|'internal');
+    export enum AuthenticatorTransport {
+      Usb = 'usb',
+      Nfc = 'nfc',
+      Ble = 'ble',
+      Cable = 'cable',
+      Internal = 'internal',
+    }
 
     export interface VirtualAuthenticatorOptions {
       protocol: AuthenticatorProtocol;
@@ -10599,7 +10966,11 @@ declare namespace Protocol {
     /**
      * Break out events into different types
      */
-    export type PlayerEventType = ('errorEvent'|'triggeredEvent'|'messageEvent');
+    export enum PlayerEventType {
+      ErrorEvent = 'errorEvent',
+      TriggeredEvent = 'triggeredEvent',
+      MessageEvent = 'messageEvent',
+    }
 
     export interface PlayerEvent {
       type: PlayerEventType;
@@ -10825,7 +11196,10 @@ declare namespace Protocol {
     /**
      * Enum of possible script languages.
      */
-    export type ScriptLanguage = ('JavaScript'|'WebAssembly');
+    export enum ScriptLanguage {
+      JavaScript = 'JavaScript',
+      WebAssembly = 'WebAssembly',
+    }
 
     export interface ContinueToLocationRequest {
       /**

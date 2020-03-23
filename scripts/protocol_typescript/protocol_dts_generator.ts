@@ -148,12 +148,34 @@ const emitInterface = (interfaceName: string, props?: Protocol.PropertyType[]) =
   emitCloseBlock();
 };
 
+const emitEnum = (enumName: string, enumValues: string[]) => {
+  emitOpenBlock(`export enum ${enumName}`);
+  enumValues.forEach(value => {
+    emitLine(`${fixCamelCase(value)} = '${value}',`);
+  });
+  emitCloseBlock();
+};
+
+// This is straight-up adopted from fix_camel_case in code_generator_frontend.py.
+const fixCamelCase = (name: string): string => {
+  let prefix = '';
+  let result = name;
+  if (name[0] === '-') {
+    prefix = 'Negative';
+    result = name.substring(1);
+  }
+  const refined = result.split('-').map(toTitleCase).join('');
+  return prefix + refined.replace(/HTML|XML|WML|API/i, match => match.toUpperCase());
+};
+
 const emitDomainType = (type: Protocol.DomainType) => {
   emitLine();
   emitDescription(type.description);
 
   if (type.type === 'object') {
     emitInterface(type.id, type.properties);
+  } else if (type.type === 'string' && type.enum) {
+    emitEnum(type.id, type.enum);
   } else {
     emitLine(`export type ${type.id} = ${getPropertyType(type)};`);
   }

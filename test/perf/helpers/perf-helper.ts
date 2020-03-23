@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import {join} from 'path';
 
 export const storeGeneratedResults = (file: string, content: string) => {
-  const directory = join(__dirname, '../perf/.generated');
+  const directory = join(__dirname, '..', '..', 'perf', '.generated');
   fs.mkdirSync(directory, {recursive: true});
 
   const filePath = join(directory, file);

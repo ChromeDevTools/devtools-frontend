@@ -4,7 +4,7 @@
 
 import {performance} from 'perf_hooks';
 import {resetPages} from '../../shared/helper.js';
-import {storeGeneratedResults} from '../perf-helper.js';
+import {storeGeneratedResults} from '../helpers/perf-helper.js';
 
 interface PerfTimings {
   [name: string]: number[]

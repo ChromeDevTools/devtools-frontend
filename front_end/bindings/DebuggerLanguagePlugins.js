@@ -183,7 +183,7 @@ export class DebuggerLanguagePluginManager {
       // section, so subtract the offset of the code section in the module here.
       codeOffset: rawLocation.columnNumber - script.codeOffset()
     };
-    const sourceLocations = plugin.rawLocationToSourceLocation(pluginLocation);
+    const sourceLocations = await plugin.rawLocationToSourceLocation(pluginLocation);
 
     if (!sourceLocations || sourceLocations.length === 0) {
       return null;
@@ -211,31 +211,32 @@ export class DebuggerLanguagePluginManager {
    * @return {!Promise<?Array<!SDK.DebuggerModel.Location>>} Returns null if this manager does not have a plugin for it.
    */
   async uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
-    const locations = [];
     const mappedSourceFiles = this._uiSourceCodes.get(uiSourceCode);
     if (!mappedSourceFiles) {
       return null;
     }
 
-    let hasPlugins = false;
+    const locationPromises = [];
     for (const [sourceFile, script] of mappedSourceFiles) {
       const plugin = this._pluginForScriptId.get(script.scriptId);
-      if (!plugin) {
-        continue;
+      if (plugin) {
+        locationPromises.push(getLocations(this._debuggerModel, plugin, sourceFile, script));
       }
-      hasPlugins = true;
-      locations.push(...getLocations(this._debuggerModel, plugin, sourceFile, script));
     }
-    if (hasPlugins) {
-      return locations;
-    }
-    return null;
 
-    function getLocations(debuggerModel, plugin, sourceFile, script) {
+    if (locationPromises.length === 0) {
+      return null;
+    }
+    return (await Promise.all(locationPromises)).flat();
+
+    /**
+     * @return {!Promise<!Array<!SDK.DebuggerModel.Location>>}
+     */
+    async function getLocations(debuggerModel, plugin, sourceFile, script) {
       const pluginLocation =
           {rawModuleId: script.scriptId, sourceFile: sourceFile, lineNumber: lineNumber, columnNumber: columnNumber};
 
-      const rawLocations = plugin.sourceLocationToRawLocation(pluginLocation);
+      const rawLocations = await plugin.sourceLocationToRawLocation(pluginLocation);
       if (!rawLocations || rawLocations.length === 0) {
         return [];
       }
@@ -500,21 +501,19 @@ export class DebuggerLanguagePlugin {
   }
 
   /** Find locations in raw modules from a location in a source file
-   * TODO(chromium:1032016): Make async once chromium:1032016 is complete.
    * @param {!SourceLocation} sourceLocation
-   * @return {!Array<!RawLocation>}
+   * @return {!Promise<!Array<!RawLocation>>}
    * @throws {DebuggerLanguagePluginError}
   */
-  /* async*/ sourceLocationToRawLocation(sourceLocation) {
+  async sourceLocationToRawLocation(sourceLocation) {
   }
 
   /** Find locations in source files from a location in a raw module
-   * TODO(chromium:1032016): Make async once chromium:1032016 is complete.
    * @param {!RawLocation} rawLocation
-   * @return {!Array<!SourceLocation>}
+   * @return {!Promise<!Array<!SourceLocation>>}
    * @throws {DebuggerLanguagePluginError}
   */
-  /* async*/ rawLocationToSourceLocation(rawLocation) {
+  async rawLocationToSourceLocation(rawLocation) {
   }
 
   /** List all variables in lexical scope at a given location in a raw module

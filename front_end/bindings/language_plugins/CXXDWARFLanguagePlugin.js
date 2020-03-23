@@ -38,23 +38,23 @@ let EvaluateVariableResponse;  // eslint-disable-line no-unused-vars
 /**
  * @param {string} method
  * @param {!Object} params
- * @return {!AddRawModuleResponse|!SourceLocationToRawLocationResponse|!RawLocationToSourceLocationResponse|!ListVariablesInScopeResponse|!EvaluateVariableResponse}
+ * @return {!Promise<!AddRawModuleResponse|!SourceLocationToRawLocationResponse|!RawLocationToSourceLocationResponse|!ListVariablesInScopeResponse|!EvaluateVariableResponse>}
  *
  */
-function _sendJsonRPC(method, params) {
-  const request = new XMLHttpRequest();
-  request.open('POST', 'http://localhost:8888', false);
-  request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+async function _sendJsonRPC(method, params) {
   const payload = JSON.stringify({jsonrpc: '2.0', method: method, params, id: 0});
-  request.send(payload);
-  if (request.status !== 200) {
-    throw new DebuggerLanguagePluginError(request.status.toString(), 'JSON-RPC request failed');
+  const request = new Request(
+      'http://localhost:8888',
+      {method: 'POST', headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}, body: payload});
+  const response = await fetch(request);
+  if (response.status !== 200) {
+    throw new DebuggerLanguagePluginError(response.status.toString(), 'JSON-RPC request failed');
   }
-  const response = JSON.parse(request.responseText).result;
-  if (response.error) {
-    throw new DebuggerLanguagePluginError(response.error.code, response.error.message);
+  const result = (await response.json()).result;
+  if (result.error) {
+    throw new DebuggerLanguagePluginError(result.error.code, result.error.message);
   }
-  return response;
+  return result;
 }
 
 /**
@@ -82,8 +82,8 @@ export class CXXDWARFLanguagePlugin {
    * @throws {DebuggerLanguagePluginError}
   */
   async addRawModule(rawModuleId, symbols, rawModule) {
-    return _sendJsonRPC(
-               'addRawModule', {rawModuleId: rawModuleId, symbols: symbols, rawModule: getProtocolModule(rawModule)})
+    return (await _sendJsonRPC(
+                'addRawModule', {rawModuleId: rawModuleId, symbols: symbols, rawModule: getProtocolModule(rawModule)}))
         .sources;
 
     function getProtocolModule(rawModule) {
@@ -103,25 +103,23 @@ export class CXXDWARFLanguagePlugin {
   }
 
   /** Find locations in raw modules from a location in a source file
-   * TODO(chromium:1032016): Make async once chromium:1032016 is complete.
    * @override
    * @param {!SourceLocation} sourceLocation
-   * @return {!Array<!RawLocation>}
+   * @return {!Promise<!Array<!RawLocation>>}
    * @throws {DebuggerLanguagePluginError}
   */
-  /* async */ sourceLocationToRawLocation(sourceLocation) {
-    return _sendJsonRPC('sourceLocationToRawLocation', sourceLocation).rawLocation;
+  async sourceLocationToRawLocation(sourceLocation) {
+    return (await _sendJsonRPC('sourceLocationToRawLocation', sourceLocation)).rawLocation;
   }
 
   /** Find locations in source files from a location in a raw module
-   * TODO(chromium:1032016): Make async once chromium:1032016 is complete.
    * @override
    * @param {!RawLocation} rawLocation
-   * @return {!Array<!SourceLocation>}
+   * @return {!Promise<!Array<!SourceLocation>>}
    * @throws {DebuggerLanguagePluginError}
   */
-  /* async */ rawLocationToSourceLocation(rawLocation) {
-    return _sendJsonRPC('rawLocationToSourceLocation', rawLocation).sourceLocation;
+  async rawLocationToSourceLocation(rawLocation) {
+    return (await _sendJsonRPC('rawLocationToSourceLocation', rawLocation)).sourceLocation;
   }
 
   /** List all variables in lexical scope at a given location in a raw module
@@ -131,7 +129,7 @@ export class CXXDWARFLanguagePlugin {
    * @throws {DebuggerLanguagePluginError}
   */
   async listVariablesInScope(rawLocation) {
-    return _sendJsonRPC('listVariablesInScope', rawLocation).variable;
+    return (await _sendJsonRPC('listVariablesInScope', rawLocation)).variable;
   }
 
   /** Evaluate the content of a variable in a given lexical scope

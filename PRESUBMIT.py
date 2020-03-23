@@ -210,6 +210,7 @@ def _CheckGeneratedFiles(input_api, output_api):
     blink_directory_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'third_party', 'blink')
     protocol_location = input_api.os_path.join(blink_directory_path, 'public', 'devtools_protocol')
     scripts_build_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'build')
+    scripts_generated_output_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end', 'generated')
 
     generated_aria_path = input_api.os_path.join(scripts_build_path, 'generate_aria.py')
     generated_supported_css_path = input_api.os_path.join(scripts_build_path, 'generate_supported_css.py')
@@ -225,7 +226,8 @@ def _CheckGeneratedFiles(input_api, output_api):
         generated_supported_css_path,
         concatenate_protocols_path,
         generated_protocol_path,
-    ], [], ['.pdl', '.json5', '.py'])
+        scripts_generated_output_path,
+    ], [], ['.pdl', '.json5', '.py', '.js'])
 
     if len(affected_files) == 0:
         return []

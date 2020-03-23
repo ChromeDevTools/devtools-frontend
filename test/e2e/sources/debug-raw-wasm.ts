@@ -68,7 +68,7 @@ describe('Raw-Wasm', async () => {
     const codeLine = await frontend.waitForSelector('.cm-execution-line pre');
     const codeText = await codeLine.evaluate(n => n.textContent);
 
-    assert.equal(codeText, '    call $import0');
+    assert.equal(codeText, '    call $bar');
 
     // Resume the evaluation
     await click(RESUME_BUTTON);

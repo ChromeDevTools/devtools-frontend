@@ -49,9 +49,13 @@ self.onmessage = async function(event) {
 
   const parser = new WasmParser.BinaryReader();
   parser.setData(data, 0, data.length);
+  const nameGenerator = new WasmDis.DevToolsNameGenerator();
+  nameGenerator.read(parser);
   const dis = new WasmDis.WasmDisassembler();
+  dis.nameResolver = nameGenerator.getNameResolver();
   dis.addOffsets = true;
   dis.maxLines = 1000000;
+  parser.setData(data, 0, data.length);
   dis.disassembleChunk(parser);
   const result = dis.getResult();
   this.postMessage({source: result.lines.join('\n'), offsets: result.offsets});

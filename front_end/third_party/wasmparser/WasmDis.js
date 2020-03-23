@@ -13,6 +13,9 @@
  * limitations under the License.
  */
 import { OperatorCodeNames, bytesToString, NULL_FUNCTION_INDEX } from './WasmParser.js';
+const NAME_SECTION_NAME = "name";
+const INVALID_NAME_SYMBOLS_REGEX = /[^0-9A-Za-z!#$%&'*+.:<=>?@^_`|~\/\-]/;
+const INVALID_NAME_SYMBOLS_REGEX_GLOBAL = new RegExp(INVALID_NAME_SYMBOLS_REGEX.source, "g");
 function typeToString(type) {
     switch (type) {
         case -1 /* i32 */: return 'i32';
@@ -31,7 +34,7 @@ function formatFloat32(n) {
     if (isFinite(n))
         return n.toString();
     if (!isNaN(n))
-        return n < 0 ? '-infinity' : 'infinity';
+        return n < 0 ? '-inf' : 'inf';
     var view = new DataView(new ArrayBuffer(8));
     view.setFloat32(0, n, true);
     var data = view.getInt32(0, true);
@@ -49,7 +52,7 @@ function formatFloat64(n) {
     if (isFinite(n))
         return n.toString();
     if (!isNaN(n))
-        return n < 0 ? '-infinity' : 'infinity';
+        return n < 0 ? '-inf' : 'inf';
     var view = new DataView(new ArrayBuffer(8));
     view.setFloat64(0, n, true);
     var data1 = view.getUint32(0, true);
@@ -67,6 +70,13 @@ function formatI32Array(bytes, count) {
     var result = [];
     for (var i = 0; i < count; i++)
         result.push(`0x${formatHex(dv.getInt32(i << 2, true), 8)}`);
+    return result.join(' ');
+}
+function formatI8Array(bytes, count) {
+    var dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+    var result = [];
+    for (var i = 0; i < count; i++)
+        result.push(`${dv.getInt8(i)}`);
     return result.join(' ');
 }
 function memoryAddressToString(address, code) {
@@ -212,6 +222,9 @@ function getOperatorName(code) {
     }
     return operatorCodeNamesCache[code];
 }
+function isValidName(name) {
+    return !INVALID_NAME_SYMBOLS_REGEX.test(name);
+}
 export class DefaultNameResolver {
     getTypeName(index, isRef) {
         return '$type' + index;
@@ -233,6 +246,46 @@ export class DefaultNameResolver {
     }
     getLabel(index) {
         return '$label' + index;
+    }
+}
+export class DevToolsNameResolver extends DefaultNameResolver {
+    constructor(functionNames, localNames, memoryNames, tableNames, globalNames) {
+        super();
+        this._functionNames = functionNames;
+        this._localNames = localNames;
+        this._memoryNames = memoryNames;
+        this._tableNames = tableNames;
+        this._globalNames = globalNames;
+    }
+    getTableName(index, isRef) {
+        const name = this._tableNames[index];
+        if (!name)
+            return super.getTableName(index, isRef);
+        return isRef ? `$${name}` : `$${name} (;${index};)`;
+    }
+    getMemoryName(index, isRef) {
+        const name = this._memoryNames[index];
+        if (!name)
+            return super.getMemoryName(index, isRef);
+        return isRef ? `$${name}` : `$${name} (;${index};)`;
+    }
+    getGlobalName(index, isRef) {
+        const name = this._globalNames[index];
+        if (!name)
+            return super.getGlobalName(index, isRef);
+        return isRef ? `$${name}` : `$${name} (;${index};)`;
+    }
+    getFunctionName(index, isImport, isRef) {
+        const name = this._functionNames[index];
+        if (!name)
+            return super.getFunctionName(index, isImport, isRef);
+        return isRef ? `$${name}` : `$${name} (;${index};)`;
+    }
+    getVariableName(funcIndex, index, isRef) {
+        const name = this._localNames[funcIndex] && this._localNames[funcIndex][index];
+        if (!name)
+            return super.getVariableName(funcIndex, index, isRef);
+        return isRef ? `$${name}` : `$${name} (;${index};)`;
     }
 }
 export class NumericNameResolver {
@@ -564,10 +617,10 @@ export class WasmDisassembler {
                 this.appendBuffer(` ${formatFloat64(operator.literal)}`);
                 break;
             case 64770 /* v128_const */:
-                this.appendBuffer(` i32 ${formatI32Array(operator.literal, 4)}`);
+                this.appendBuffer(` i32x4 ${formatI32Array(operator.literal, 4)}`);
                 break;
             case 64771 /* v8x16_shuffle */:
-                this.appendBuffer(` ${formatI32Array(operator.lines, 4)}`);
+                this.appendBuffer(` ${formatI8Array(operator.lines, 16)}`);
                 break;
             case 64773 /* i8x16_extract_lane_s */:
             case 64774 /* i8x16_extract_lane_u */:
@@ -602,7 +655,7 @@ export class WasmDisassembler {
                 {
                     let tableName = this._nameResolver.getTableName(operator.tableIndex, true);
                     let destinationName = this._nameResolver.getTableName(operator.destinationIndex, true);
-                    this.appendBuffer(` ${tableName} ${destinationName}`);
+                    this.appendBuffer(` ${destinationName} ${tableName}`);
                     break;
                 }
             case 64524 /* table_init */:
@@ -688,7 +741,7 @@ export class WasmDisassembler {
             throw new Error('Invalid state: disassembly process was already finished.');
         while (true) {
             if (this._maxLines && this._lines.length >= this._maxLines) {
-                this.appendBuffer(';; -- truncated --');
+                this.appendBuffer(';; -- text is truncated due to size --');
                 this.newLine();
                 return true;
             }
@@ -1034,7 +1087,7 @@ export class NameSectionReader {
                 case 3 /* BEGIN_SECTION */:
                     var sectionInfo = reader.result;
                     if (sectionInfo.id === 0 /* Custom */ &&
-                        bytesToString(sectionInfo.name) === "name") {
+                        bytesToString(sectionInfo.name) === NAME_SECTION_NAME) {
                         break;
                     }
                     if (sectionInfo.id === 3 /* Function */ ||
@@ -1091,7 +1144,7 @@ export class NameSectionReader {
             if (!name)
                 continue;
             const goodName = !(name in usedNameAt) &&
-                !/[^0-9A-Za-z!#$%&'*+.:<=>?@^_`|~\/\-]/.test(name) &&
+                isValidName(name) &&
                 name.indexOf(UNKNOWN_FUNCTION_PREFIX) !== 0;
             if (!goodName) {
                 if (usedNameAt[name] >= 0) {
@@ -1105,6 +1158,146 @@ export class NameSectionReader {
             usedNameAt[name] = i;
         }
         return new NameSectionNameResolver(functionNames, this._functionLocalNames);
+    }
+}
+export class DevToolsNameGenerator {
+    constructor() {
+        this._done = false;
+        this._functionImportsCount = 0;
+        this._memoryImportsCount = 0;
+        this._tableImportsCount = 0;
+        this._globalImportsCount = 0;
+        this._functionNames = null;
+        this._functionLocalNames = null;
+        this._memoryNames = null;
+        this._tableNames = null;
+        this._globalNames = null;
+    }
+    _generateExportName(field) {
+        return bytesToString(field).replace(INVALID_NAME_SYMBOLS_REGEX_GLOBAL, '_');
+    }
+    _generateImportName(moduleName, field) {
+        const name = bytesToString(moduleName) + '.' + bytesToString(field);
+        return name.replace(INVALID_NAME_SYMBOLS_REGEX_GLOBAL, '_');
+    }
+    _setName(names, index, name, isNameSectionName) {
+        if (!isValidName(name))
+            return;
+        if (isNameSectionName || !names[index])
+            names[index] = name;
+    }
+    read(reader) {
+        if (this._done)
+            throw new Error('Invalid state: disassembly process was already finished.');
+        while (true) {
+            if (!reader.read())
+                return false;
+            switch (reader.state) {
+                case 2 /* END_WASM */:
+                    if (!reader.hasMoreBytes()) {
+                        this._done = true;
+                        return true;
+                    }
+                    break;
+                case -1 /* ERROR */:
+                    throw reader.error;
+                case 1 /* BEGIN_WASM */:
+                    this._functionImportsCount = 0;
+                    this._memoryImportsCount = 0;
+                    this._tableImportsCount = 0;
+                    this._globalImportsCount = 0;
+                    this._functionNames = [];
+                    this._functionLocalNames = [];
+                    this._memoryNames = [];
+                    this._tableNames = [];
+                    this._globalNames = [];
+                    break;
+                case 4 /* END_SECTION */:
+                    break;
+                case 3 /* BEGIN_SECTION */:
+                    var sectionInfo = reader.result;
+                    if (sectionInfo.id === 0 /* Custom */ &&
+                        bytesToString(sectionInfo.name) === NAME_SECTION_NAME) {
+                        break;
+                    }
+                    switch (sectionInfo.id) {
+                        case 2 /* Import */:
+                        case 7 /* Export */:
+                            break; // reading known section;
+                        default:
+                            reader.skipSection();
+                            break;
+                    }
+                    break;
+                case 12 /* IMPORT_SECTION_ENTRY */:
+                    var importInfo = reader.result;
+                    const importName = this._generateImportName(importInfo.module, importInfo.field);
+                    if (!importName)
+                        continue;
+                    switch (importInfo.kind) {
+                        case 0 /* Function */:
+                            this._setName(this._functionNames, this._functionImportsCount++, importName, false);
+                            break;
+                        case 1 /* Table */:
+                            this._setName(this._tableNames, this._tableImportsCount++, importName, false);
+                            break;
+                        case 2 /* Memory */:
+                            this._setName(this._memoryNames, this._memoryImportsCount++, importName, false);
+                            break;
+                        case 3 /* Global */:
+                            this._setName(this._globalNames, this._globalImportsCount++, importName, false);
+                            break;
+                        default:
+                            throw new Error(`Unsupported export ${importInfo.kind}`);
+                    }
+                    break;
+                case 19 /* NAME_SECTION_ENTRY */:
+                    var nameInfo = reader.result;
+                    if (nameInfo.type === 1 /* Function */) {
+                        var functionNameInfo = nameInfo;
+                        functionNameInfo.names.forEach((naming) => {
+                            this._setName(this._functionNames, naming.index, bytesToString(naming.name), true);
+                        });
+                    }
+                    else if (nameInfo.type === 2 /* Local */) {
+                        var localNameInfo = nameInfo;
+                        localNameInfo.funcs.forEach(localName => {
+                            this._functionLocalNames[localName.index] = [];
+                            localName.locals.forEach((naming) => {
+                                this._functionLocalNames[localName.index][naming.index] = bytesToString(naming.name);
+                            });
+                        });
+                    }
+                    break;
+                case 17 /* EXPORT_SECTION_ENTRY */:
+                    var exportInfo = reader.result;
+                    const exportName = this._generateExportName(exportInfo.field);
+                    if (!exportName)
+                        continue;
+                    switch (exportInfo.kind) {
+                        case 0 /* Function */:
+                            this._setName(this._functionNames, exportInfo.index, exportName, false);
+                            break;
+                        case 1 /* Table */:
+                            this._setName(this._tableNames, exportInfo.index, exportName, false);
+                            break;
+                        case 2 /* Memory */:
+                            this._setName(this._memoryNames, exportInfo.index, exportName, false);
+                            break;
+                        case 3 /* Global */:
+                            this._setName(this._globalNames, exportInfo.index, exportName, false);
+                            break;
+                        default:
+                            throw new Error(`Unsupported export ${exportInfo.kind}`);
+                    }
+                    break;
+                default:
+                    throw new Error(`Expectected state: ${reader.state}`);
+            }
+        }
+    }
+    getNameResolver() {
+        return new DevToolsNameResolver(this._functionNames, this._functionLocalNames, this._memoryNames, this._tableNames, this._globalNames);
     }
 }
 //# sourceMappingURL=WasmDis.js.map

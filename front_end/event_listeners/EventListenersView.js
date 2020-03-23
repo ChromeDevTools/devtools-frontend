@@ -353,6 +353,9 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
       if (event.target !== linkElement) {
         menu.appendApplicableItems(linkElement);
       }
+      if (object.subtype === 'node') {
+        menu.defaultSection().appendItem(ls`Reveal in Elements panel`, () => Common.Revealer.reveal(object));
+      }
       menu.defaultSection().appendItem(
           ls`Delete event listener`, this._removeListener.bind(this), !this._eventListener.canRemove());
       menu.defaultSection().appendCheckboxItem(

@@ -60,9 +60,6 @@
   <message name="IDS_DEVTOOLS_2ce5967e3862c73a31059c4aa5847464" desc="Icon element title in Color Swatch Popover Icon of the Elements panel">
     Open shadow editor.
   </message>
-  <message name="IDS_DEVTOOLS_2ddaa8e6378b906b42429dc4003edbd3" desc="A context menu item in the Elements Panel of the Elements panel">
-    Reveal in Elements panel
-  </message>
   <message name="IDS_DEVTOOLS_2de42fbb00305f8282310f1b3e10ce9a" desc="Text in Metrics Sidebar Pane of the Elements panel">
     border
   </message>

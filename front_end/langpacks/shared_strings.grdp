@@ -112,6 +112,9 @@
   <message name="IDS_DEVTOOLS_2ce2fc341b0bd9219a3634ff43a90bde" desc="Generic text with two placeholders separated by a comma">
     <ph name="ITEM_LABEL">$1s<ex>1 613 680</ex></ph>, <ph name="CHECKEDSTATE">$2s<ex>44 %</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_2ddaa8e6378b906b42429dc4003edbd3" desc="A context menu item to reveal a node in the DOM tree of the Elements Panel">
+    Reveal in Elements panel
+  </message>
   <message name="IDS_DEVTOOLS_2f04f3e6eee339eeb0ddb6c39606424d" desc="Text for searching with regular expressinn">
     Use Regular Expression
   </message>

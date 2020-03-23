@@ -27,11 +27,13 @@ class AffectedResourcesView {
    * @returns {!Element}
    */
   createAffectedResourcesCounter(wrapper) {
-    const counterLabel = createElementWithClass('div', 'affected-resource-label');
-    counterLabel.addEventListener('click', () => {
+    const counterWrapper = createElementWithClass('div', 'affected-resource-label-wrapper');
+    counterWrapper.addEventListener('click', () => {
       wrapper.classList.toggle('expanded');
     });
-    wrapper.appendChild(counterLabel);
+    const counterLabel = createElementWithClass('div', 'affected-resource-label');
+    counterWrapper.appendChild(counterLabel);
+    wrapper.appendChild(counterWrapper);
     return counterLabel;
   }
 
@@ -40,7 +42,7 @@ class AffectedResourcesView {
    * @returns {!Element}
    */
   createAffectedResources(wrapper) {
-    const body = createElementWithClass('div', 'affected-resource-wrapper');
+    const body = createElementWithClass('div', 'affected-resource-list-wrapper');
     const affectedResources = createElementWithClass('table', 'affected-resource-list');
     const header = createElementWithClass('tr');
 
@@ -154,11 +156,12 @@ class AggregatedIssueView extends UI.Widget.Widget {
     this._parent = parent;
     this._issue = issue;
     this._details = issueDetails[issue.code()];
-    this.appendHeader();
-    this._body = this.createBody();
-    this._affectedResources = this.createAffectedResources(this._body);
+    this._appendHeader();
+    this._body = this._createBody();
+    this._affectedResources = this._createAffectedResources(this._body);
     this._affectedCookiesView = new AffectedCookiesView(this, this._issue);
     this._affectedCookiesView.update();
+    this._createReadMoreLink();
 
     this.contentElement.classList.add('issue');
     this.contentElement.classList.add('collapsed');
@@ -173,7 +176,7 @@ class AggregatedIssueView extends UI.Widget.Widget {
     this._affectedResources.appendChild(resource);
   }
 
-  appendHeader() {
+  _appendHeader() {
     const header = createElementWithClass('div', 'header');
     header.addEventListener('click', this._handleClick.bind(this));
     const icon = UI.Icon.Icon.create('largeicon-breaking-change', 'icon');
@@ -205,7 +208,7 @@ class AggregatedIssueView extends UI.Widget.Widget {
    * @param {!Element} body
    * @returns {!Element}
    */
-  createAffectedResources(body) {
+  _createAffectedResources(body) {
     const wrapper = createElementWithClass('div', 'affected-resources');
     const label = createElementWithClass('div', 'affected-resources-label');
     label.textContent = ls`Affected Resources`;
@@ -214,7 +217,7 @@ class AggregatedIssueView extends UI.Widget.Widget {
     return wrapper;
   }
 
-  createBody() {
+  _createBody() {
     const body = createElementWithClass('div', 'body');
 
     const message = createElementWithClass('div', 'message');
@@ -225,16 +228,17 @@ class AggregatedIssueView extends UI.Widget.Widget {
     code.textContent = this._issue.code();
     body.appendChild(code);
 
-    const link = UI.XLink.XLink.create(this._details.link, 'Read more · ' + this._details.linkTitle, 'link');
-    body.appendChild(link);
-
-    const linkIcon = UI.Icon.Icon.create('largeicon-link', 'link-icon');
-    link.prepend(linkIcon);
-
     const bodyWrapper = createElementWithClass('div', 'body-wrapper');
     bodyWrapper.appendChild(body);
     this.contentElement.appendChild(bodyWrapper);
     return body;
+  }
+
+  _createReadMoreLink() {
+    const link = UI.XLink.XLink.create(this._details.link, ls`Learn more: ${this._details.linkTitle}`, 'link');
+    const linkIcon = UI.Icon.Icon.create('largeicon-link', 'link-icon');
+    link.prepend(linkIcon);
+    this._body.appendChild(link);
   }
 
   _handleClick() {

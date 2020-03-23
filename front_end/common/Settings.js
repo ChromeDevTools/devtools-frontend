@@ -514,7 +514,7 @@ export class VersionController {
   }
 
   static get currentVersion() {
-    return 28;
+    return 29;
   }
 
   updateVersion() {

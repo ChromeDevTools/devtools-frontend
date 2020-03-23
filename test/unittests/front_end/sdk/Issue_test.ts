@@ -8,7 +8,7 @@ import {Issue} from '../../../../front_end/sdk/Issue.js';
 
 describe('Issue', () => {
   it('should always require a code', () => {
-    const issue = new Issue('code');
+    const issue = new Issue('code', undefined);
     assert.equal(issue.code(), 'code');
   });
 });

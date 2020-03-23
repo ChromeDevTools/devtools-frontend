@@ -8,20 +8,19 @@ import * as SDK from '../sdk/sdk.js';
 class AffectedCookiesView {
   /**
    *
-   * @param {!IssueView} parent
-   * @param {!SDK.Issue.Issue} issue
+   * @param {!AggregatedIssueView} parent
+   * @param {!SDK.Issue.AggregatedIssue} issue
    */
   constructor(parent, issue) {
-    /** @type {!IssueView} */
+    /** @type {!AggregatedIssueView} */
     this._parent = parent;
-    /** @type {!SDK.Issue.Issue} */
+    /** @type {!SDK.Issue.AggregatedIssue} */
     this._issue = issue;
     this._wrapper = createElementWithClass('div', 'affected-resource');
     /** @type {!Element} */
     this._affectedCookiesCounter = this.createAffectedCookiesCounter(this._wrapper);
     /** @type {!Element} */
     this._affectedCookies = this.createAffectedCookies(this._wrapper);
-    this._issue.addEventListener(SDK.Issue.Events.CookieAdded, this._handleCookieAdded, this);
     this._cookiesCount = 0;
   }
 
@@ -65,10 +64,10 @@ class AffectedCookiesView {
   }
 
   /**
-   *
-   * @param {!Iterable<!*>} cookies
+   * TODO(chromium:1063765): Strengthen types.
+   * @param {!Iterable<*>} cookies
    */
-  appendAffectedCookies(cookies) {
+  _appendAffectedCookies(cookies) {
     for (const cookie of cookies) {
       this.appendAffectedCookie(/** @type{!{name:string,path:string,domain:string,siteForCookies:string}} */ (cookie));
     }
@@ -103,32 +102,22 @@ class AffectedCookiesView {
 
   update() {
     this._affectedCookies.textContent = '';
-    this.appendAffectedCookies(this._issue.cookies());
-    this._updateAffectedCookiesCounter();
+    this._appendAffectedCookies(this._issue.cookies());
   }
 
   isEmpty() {
     return this._cookiesCount === 0;
   }
 
-  /**
-   * @param {!{data:*}} event
-   */
-  _handleCookieAdded(event) {
-    const cookie = /** @type {!{name:string,path:string,domain:string,siteForCookies:string}} */ (event.data);
-    this.appendAffectedCookie(cookie);
-  }
-
   detach() {
-    this._issue.removeEventListener(SDK.Issue.Events.CookieAdded, this._handleCookieAdded, this);
   }
 }
 
-class IssueView extends UI.Widget.Widget {
+class AggregatedIssueView extends UI.Widget.Widget {
   /**
    *
    * @param {!IssuesPaneImpl} parent
-   * @param {!SDK.Issue.Issue} issue
+   * @param {!SDK.Issue.AggregatedIssue} issue
    */
   constructor(parent, issue) {
     super(false);
@@ -222,6 +211,11 @@ class IssueView extends UI.Widget.Widget {
     this._parent.handleSelect(this);
   }
 
+  update() {
+    this._affectedCookiesView.update();
+  }
+
+
   /**
    * @param {(boolean|undefined)=} expand - Expands the issue if `true`, collapses if `false`, toggles collapse if undefined
    */
@@ -257,8 +251,8 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     if (mainTarget) {
       this._model = mainTarget.model(SDK.IssuesModel.IssuesModel);
       if (this._model) {
-        this._model.addEventListener(SDK.IssuesModel.Events.IssueAdded, this._issueAdded, this);
-        this._model.addEventListener(SDK.IssuesModel.Events.AllIssuesCleared, this._issuesCleared, this);
+        this._model.addEventListener(SDK.IssuesModel.Events.AggregatedIssueUpdated, this._aggregatedIssueUpdated, this);
+        this._model.addEventListener(SDK.IssuesModel.Events.FullUpdateRequired, this._fullUpdate, this);
         this._model.ensureEnabled();
       }
     }
@@ -273,54 +267,58 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     const breakingChangeIcon = UI.Icon.Icon.create('largeicon-breaking-change');
     toolbarWarnings.element.appendChild(breakingChangeIcon);
     this._toolbarIssuesCount = toolbarWarnings.element.createChild('span', 'warnings-count-label');
-    this._updateIssuesCount();
+    this._updateCounts();
     rightToolbar.appendToolbarItem(toolbarWarnings);
 
     if (this._model) {
-      for (const issue of this._model.issues()) {
-        this._addIssueView(issue);
+      for (const issue of this._model.aggregatedIssues()) {
+        this._updateAggregatedIssueView(issue);
       }
     }
   }
 
   /**
-   *
-   * @param {!{data: !SDK.Issue.Issue}} event
+   * @param {!{data: !SDK.Issue.AggregatedIssue}} event
    */
-  _issueAdded(event) {
-    this._addIssueView(event.data);
+  _aggregatedIssueUpdated(event) {
+    const aggregatedIssue = /** @type {!SDK.Issue.AggregatedIssue} */ (event.data);
+    this._updateAggregatedIssueView(aggregatedIssue);
   }
 
   /**
-   * @param {!SDK.Issue.Issue} issue
+   * @param {!SDK.Issue.AggregatedIssue} aggregatedIssue
    */
-  _addIssueView(issue) {
-    if (!(issue.code() in issueDetails)) {
-      console.warn('Received issue with unknown code:', issue.code());
+  _updateAggregatedIssueView(aggregatedIssue) {
+    if (!(aggregatedIssue.code() in issueDetails)) {
+      console.warn('Unknown issue code:', aggregatedIssue.code());
       return;
     }
-
-    const view = new IssueView(this, issue);
-    view.show(this.contentElement);
-    this._issueViews.set(issue.code(), view);
-    this._updateIssuesCount();
+    if (!this._issueViews.has(aggregatedIssue.code())) {
+      const view = new AggregatedIssueView(this, aggregatedIssue);
+      this._issueViews.set(aggregatedIssue.code(), view);
+      view.show(this.contentElement);
+    }
+    this._issueViews.get(aggregatedIssue.code()).update();
+    this._updateCounts();
   }
 
-  _issuesCleared() {
+  _fullUpdate() {
     for (const view of this._issueViews.values()) {
       view.detach();
     }
     this._issueViews.clear();
-    this._updateIssuesCount();
+    for (const aggregatedIssue of this._model.aggregatedIssues()) {
+      this._updateAggregatedIssueView(aggregatedIssue);
+    }
+    this._updateCounts();
   }
 
-  _updateIssuesCount() {
-    const count = this._model ? this._model.size() : 0;
-    this._toolbarIssuesCount.textContent = count;
+  _updateCounts() {
+    this._toolbarIssuesCount.textContent = this._model.numberOfAggregatedIssues();
   }
 
   /**
-   * @param {!IssueView} issueView
+   * @param {!AggregatedIssueView} issueView
    */
   handleSelect(issueView) {
     issueView.toggle();

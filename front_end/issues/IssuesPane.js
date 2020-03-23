@@ -5,30 +5,28 @@
 import * as UI from '../ui/ui.js';
 import * as SDK from '../sdk/sdk.js';
 
-class AffectedCookiesView {
+class AffectedResourcesView {
   /**
-   *
    * @param {!AggregatedIssueView} parent
-   * @param {!SDK.Issue.AggregatedIssue} issue
+   * @param {!{singular:string, plural:string}} resourceName - Singular and plural of the affected resource name.
    */
-  constructor(parent, issue) {
+  constructor(parent, resourceName) {
     /** @type {!AggregatedIssueView} */
     this._parent = parent;
-    /** @type {!SDK.Issue.AggregatedIssue} */
-    this._issue = issue;
+    this._resourceName = resourceName;
     this._wrapper = createElementWithClass('div', 'affected-resource');
     /** @type {!Element} */
-    this._affectedCookiesCounter = this.createAffectedCookiesCounter(this._wrapper);
+    this._affectedResourcesCountElement = this.createAffectedResourcesCounter(this._wrapper);
     /** @type {!Element} */
-    this._affectedCookies = this.createAffectedCookies(this._wrapper);
-    this._cookiesCount = 0;
+    this._affectedResources = this.createAffectedResources(this._wrapper);
+    this._affectedResourcesCount = 0;
   }
 
   /**
    * @param {!Element} wrapper
    * @returns {!Element}
    */
-  createAffectedCookiesCounter(wrapper) {
+  createAffectedResourcesCounter(wrapper) {
     const counterLabel = createElementWithClass('div', 'affected-resource-label');
     counterLabel.addEventListener('click', () => {
       wrapper.classList.toggle('expanded');
@@ -41,9 +39,9 @@ class AffectedCookiesView {
    * @param {!Element} wrapper
    * @returns {!Element}
    */
-  createAffectedCookies(wrapper) {
+  createAffectedResources(wrapper) {
     const body = createElementWithClass('div', 'affected-resource-wrapper');
-    const affectedCookies = createElementWithClass('table', 'affected-resource-cookies');
+    const affectedResources = createElementWithClass('table', 'affected-resource-list');
     const header = createElementWithClass('tr');
 
     const name = createElementWithClass('td', 'affected-resource-header');
@@ -55,12 +53,56 @@ class AffectedCookiesView {
     info.textContent = '\u2009Context';
     header.appendChild(info);
 
-    affectedCookies.appendChild(header);
-    body.appendChild(affectedCookies);
+    affectedResources.appendChild(header);
+    body.appendChild(affectedResources);
     wrapper.appendChild(body);
 
     this._parent.appendAffectedResource(wrapper);
-    return affectedCookies;
+    return affectedResources;
+  }
+
+  /**
+   *
+   * @param {number} count
+   */
+  getResourceName(count) {
+    if (count === 1) {
+      return this._resourceName.singular;
+    }
+    return this._resourceName.plural;
+  }
+
+  /**
+   * @param {number} count
+   */
+  updateAffectedResourceCount(count) {
+    this._affectedResourcesCount = count;
+    this._affectedResourcesCountElement.textContent = `${count} ${this.getResourceName(count)}`;
+    this._wrapper.style.display = this._affectedResourcesCount === 0 ? 'none' : '';
+    this._parent.updateAffectedResourceVisibility();
+  }
+
+  /**
+   * @returns {boolean}
+   */
+  isEmpty() {
+    return this._affectedResourcesCount === 0;
+  }
+
+  clear() {
+    this._affectedResources.textContent = '';
+  }
+}
+
+class AffectedCookiesView extends AffectedResourcesView {
+  /**
+   * @param {!AggregatedIssueView} parent
+   * @param {!SDK.Issue.AggregatedIssue} issue
+   */
+  constructor(parent, issue) {
+    super(parent, {singular: ls`cookie`, plural: ls`cookies`});
+    /** @type {!SDK.Issue.AggregatedIssue} */
+    this._issue = issue;
   }
 
   /**
@@ -68,10 +110,12 @@ class AffectedCookiesView {
    * @param {!Iterable<*>} cookies
    */
   _appendAffectedCookies(cookies) {
+    let count = 1;
     for (const cookie of cookies) {
+      count++;
       this.appendAffectedCookie(/** @type{!{name:string,path:string,domain:string,siteForCookies:string}} */ (cookie));
     }
-    this._updateAffectedCookiesCounter();
+    this.updateAffectedResourceCount(count);
   }
 
   /**
@@ -90,26 +134,12 @@ class AffectedCookiesView {
 
     element.appendChild(name);
     element.appendChild(info);
-    this._affectedCookies.appendChild(element);
-  }
-
-  _updateAffectedCookiesCounter() {
-    this._cookiesCount = this._issue.numberOfCookies();
-    this._affectedCookiesCounter.textContent = ls`${this._cookiesCount} cookies`;
-    this._wrapper.style.display = this._cookiesCount === 0 ? 'none' : '';
-    this._parent.updateAffectedResourceVisibility();
+    this._affectedResources.appendChild(element);
   }
 
   update() {
-    this._affectedCookies.textContent = '';
+    this.clear();
     this._appendAffectedCookies(this._issue.cookies());
-  }
-
-  isEmpty() {
-    return this._cookiesCount === 0;
-  }
-
-  detach() {
   }
 }
 
@@ -178,7 +208,7 @@ class AggregatedIssueView extends UI.Widget.Widget {
   createAffectedResources(body) {
     const wrapper = createElementWithClass('div', 'affected-resources');
     const label = createElementWithClass('div', 'affected-resources-label');
-    label.textContent = 'Affected Resources';
+    label.textContent = ls`Affected Resources`;
     wrapper.appendChild(label);
     body.appendChild(wrapper);
     return wrapper;
@@ -213,6 +243,7 @@ class AggregatedIssueView extends UI.Widget.Widget {
 
   update() {
     this._affectedCookiesView.update();
+    this.updateAffectedResourceVisibility();
   }
 
 
@@ -236,7 +267,6 @@ class AggregatedIssueView extends UI.Widget.Widget {
    * @override
    */
   detach() {
-    this._affectedCookiesView.detach();
     super.detach();
   }
 }

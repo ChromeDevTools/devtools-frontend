@@ -34,7 +34,7 @@ export const removePseudoState = async (pseudoState: string) => {
   await click(`[aria-label="${pseudoState}"]`);
 };
 
-export const obtainComputedStylesForDOMNode = async (elementSelector: string, styleAttribute: string) => {
+export const getComputedStylesForDomNode = async (elementSelector: string, styleAttribute: string) => {
   const {target} = getBrowserAndPages();
 
   return target.evaluate((elementSelector, styleAttribute) => {
@@ -46,7 +46,7 @@ export const obtainComputedStylesForDOMNode = async (elementSelector: string, st
   }, elementSelector, styleAttribute);
 };
 
-export const waitForDOMNodeToBeShown = async (elementSelector: string) => {
+export const waitForDomNodeToBeVisible = async (elementSelector: string) => {
   const {target} = getBrowserAndPages();
 
   // DevTools will force Blink to make the hover shown, so we have
@@ -54,11 +54,11 @@ export const waitForDOMNodeToBeShown = async (elementSelector: string) => {
   await target.waitForSelector(elementSelector, {visible: true});
 };
 
-export const waitForDOMNodeToBeHidden = async (elementSelector: string) => {
+export const waitForDomNodeToBeHidden = async (elementSelector: string) => {
   const {target} = getBrowserAndPages();
   await target.waitForSelector(elementSelector, {hidden: true});
 };
 
-export const ensureGutterDecorationForDOMNodeExists = async () => {
+export const assertGutterDecorationForDomNodeExists = async () => {
   await waitFor('.elements-gutter-decoration');
 };

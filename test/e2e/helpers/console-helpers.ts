@@ -13,7 +13,7 @@ export const LOG_LEVELS_SELECTOR = '[aria-label^="Log level: "]';
 export const LOG_LEVELS_VERBOSE_OPTION_SELECTOR = '[aria-label^="Verbose"]';
 export const CONSOLE_PROMPT_SELECTOR = '.console-prompt-editor-container';
 
-export async function obtainConsoleMessages(testName: string, callback?: (page: puppeteer.Page) => Promise<void>) {
+export async function getConsoleMessages(testName: string, callback?: (page: puppeteer.Page) => Promise<void>) {
   const {target, frontend} = getBrowserAndPages();
 
   // Have the target load the page.
@@ -21,7 +21,7 @@ export async function obtainConsoleMessages(testName: string, callback?: (page: 
 
   // Locate the button for switching to the console tab.
   await click(CONSOLE_TAB_SELECTOR);
-  // Obtain console messages that were logged
+  // Get console messages that were logged.
   await waitFor(CONSOLE_MESSAGES_SELECTOR);
 
   if (callback) {
@@ -73,6 +73,6 @@ export async function switchToTopExecutionContext(frontend: puppeteer.Page) {
   await dropdown.press('Space');
   await frontend.keyboard.press('Home');
   await frontend.keyboard.press('Space');
-  // Double check that it worked.
+  // Double-check that it worked.
   await waitFor('[aria-label="JavaScript context: top"]');
 }

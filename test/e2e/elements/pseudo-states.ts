@@ -6,12 +6,12 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
 import {debuggerStatement, getBrowserAndPages, resetPages, resourcesPath} from '../../shared/helper.js';
-import {assertContentOfSelectedElementsNode, ensureGutterDecorationForDOMNodeExists, forcePseudoState, obtainComputedStylesForDOMNode, removePseudoState, waitForDOMNodeToBeHidden, waitForDOMNodeToBeShown, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
+import {assertContentOfSelectedElementsNode, assertGutterDecorationForDomNodeExists, forcePseudoState, getComputedStylesForDomNode, removePseudoState, waitForDomNodeToBeHidden, waitForDomNodeToBeVisible, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
 
 const TARGET_SHOWN_ON_HOVER_SELECTOR = '.show-on-hover';
 const TARGET_SHOWN_ON_FOCUS_SELECTOR = '.show-on-focus';
 
-describe('The Elements Tab', async () => {
+describe('The Elements tab', async () => {
   beforeEach(async () => {
     await resetPages();
   });
@@ -31,10 +31,10 @@ describe('The Elements Tab', async () => {
     await assertContentOfSelectedElementsNode('<div id=\u200B"hover">\u200B…\u200B</div>\u200B');
 
     await forcePseudoState(':hover');
-    await ensureGutterDecorationForDOMNodeExists();
-    await waitForDOMNodeToBeShown(TARGET_SHOWN_ON_HOVER_SELECTOR);
+    await assertGutterDecorationForDomNodeExists();
+    await waitForDomNodeToBeVisible(TARGET_SHOWN_ON_HOVER_SELECTOR);
 
-    const displayComputedStyle = await obtainComputedStylesForDOMNode(TARGET_SHOWN_ON_HOVER_SELECTOR, 'display');
+    const displayComputedStyle = await getComputedStylesForDomNode(TARGET_SHOWN_ON_HOVER_SELECTOR, 'display');
     assert.equal(displayComputedStyle, 'inline');
   });
 
@@ -53,13 +53,13 @@ describe('The Elements Tab', async () => {
     await assertContentOfSelectedElementsNode('<div id=\u200B"focus" tabindex=\u200B"0">\u200B…\u200B</div>\u200B');
 
     await forcePseudoState(':focus');
-    await ensureGutterDecorationForDOMNodeExists();
-    await waitForDOMNodeToBeShown(TARGET_SHOWN_ON_FOCUS_SELECTOR);
+    await assertGutterDecorationForDomNodeExists();
+    await waitForDomNodeToBeVisible(TARGET_SHOWN_ON_FOCUS_SELECTOR);
 
-    const displayComputedStyle = await obtainComputedStylesForDOMNode(TARGET_SHOWN_ON_FOCUS_SELECTOR, 'display');
+    const displayComputedStyle = await getComputedStylesForDomNode(TARGET_SHOWN_ON_FOCUS_SELECTOR, 'display');
     assert.equal(displayComputedStyle, 'inline');
 
-    const backgroundColorComputedStyle = await obtainComputedStylesForDOMNode('#focus', 'backgroundColor');
+    const backgroundColorComputedStyle = await getComputedStylesForDomNode('#focus', 'backgroundColor');
     assert.equal(backgroundColorComputedStyle, 'rgb(0, 128, 0)');
   });
 
@@ -78,21 +78,21 @@ describe('The Elements Tab', async () => {
     await assertContentOfSelectedElementsNode('<div id=\u200B"focus" tabindex=\u200B"0">\u200B…\u200B</div>\u200B');
 
     await forcePseudoState(':focus');
-    await ensureGutterDecorationForDOMNodeExists();
-    await waitForDOMNodeToBeShown(TARGET_SHOWN_ON_FOCUS_SELECTOR);
+    await assertGutterDecorationForDomNodeExists();
+    await waitForDomNodeToBeVisible(TARGET_SHOWN_ON_FOCUS_SELECTOR);
 
-    const displayComputedStyle = await obtainComputedStylesForDOMNode(TARGET_SHOWN_ON_FOCUS_SELECTOR, 'display');
+    const displayComputedStyle = await getComputedStylesForDomNode(TARGET_SHOWN_ON_FOCUS_SELECTOR, 'display');
     assert.equal(displayComputedStyle, 'inline');
 
-    const backgroundColorComputedStyle = await obtainComputedStylesForDOMNode('#focus', 'backgroundColor');
+    const backgroundColorComputedStyle = await getComputedStylesForDomNode('#focus', 'backgroundColor');
     assert.equal(backgroundColorComputedStyle, 'rgb(0, 128, 0)');
 
     await removePseudoState(':focus');
-    await waitForDOMNodeToBeHidden(TARGET_SHOWN_ON_FOCUS_SELECTOR);
+    await waitForDomNodeToBeHidden(TARGET_SHOWN_ON_FOCUS_SELECTOR);
 
     await debuggerStatement(frontend);
 
-    const hiddenDisplayStyle = await obtainComputedStylesForDOMNode(TARGET_SHOWN_ON_FOCUS_SELECTOR, 'display');
+    const hiddenDisplayStyle = await getComputedStylesForDomNode(TARGET_SHOWN_ON_FOCUS_SELECTOR, 'display');
     assert.equal(hiddenDisplayStyle, 'none');
   });
 });

@@ -62,11 +62,25 @@ module.exports = {
 
     return {
       ImportDeclaration(node) {
+        const importPath = path.normalize(node.source.value);
+
+        if (!importPath.endsWith('.js')) {
+          context.report({
+            node,
+            message: 'Missing file extension for import "{{importPath}}"',
+            data: {
+              importPath,
+            },
+            fix(fixer) {
+              return fixer.replaceText(node.source, `'${node.source.value}.js'`);
+            }
+          });
+        }
+
         if (isSideEffectImportSpecifier(node.specifiers)) {
           return;
         }
 
-        const importPath = path.normalize(node.source.value);
         const exportingFileName = path.resolve(path.dirname(importingFileName), importPath);
 
         const importMatchesExemptThirdParty =

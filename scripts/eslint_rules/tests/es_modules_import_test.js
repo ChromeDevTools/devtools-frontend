@@ -79,6 +79,22 @@ ruleTester.run('es_modules_import', rule, {
             'Incorrect same-namespace import: "../common/common.js". Use "import { Symbol } from \'./relative-file.js\';" instead.'
       }],
     },
+    {
+      code: 'import * as Common from \'../common/common\';',
+      filename: 'front_end/elements/ElementsPanel.ts',
+      errors: [{
+        message: 'Missing file extension for import "../common/common"',
+      }],
+      output: 'import * as Common from \'../common/common.js\';'
+    },
+    {
+      code: 'import \'../common/common\';',
+      filename: 'front_end/elements/ElementsPanel.ts',
+      errors: [{
+        message: 'Missing file extension for import "../common/common"',
+      }],
+      output: 'import \'../common/common.js\';'
+    },
     // the `ls` helper is not an exception in a JS file
     {
       code: 'import {ls} from \'../common/ls.js\';',

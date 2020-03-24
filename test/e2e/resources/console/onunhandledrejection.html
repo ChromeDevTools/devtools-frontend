@@ -3,43 +3,33 @@
   Use of this source code is governed by a BSD-style license that can be
   found in the LICENSE file.
 -->
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Document</title>
-  </head>
-  <body>
-    <script type="module">
-      const promisePreventDefault = Promise.reject(new Error('e'));
-      window.onunhandledrejection = function(evt) {
-        console.log("onunhandledrejection1");
-        evt.preventDefault();
-      };
-      window.onrejectionhandled = function(evt) {
-        console.log("onrejectionhandled1");
+<script type="module">
+  const promisePreventDefault = Promise.reject(new Error('e'));
+  window.onunhandledrejection = function(evt) {
+    console.log('onunhandledrejection1');
+    evt.preventDefault();
+  };
+  window.onrejectionhandled = function(evt) {
+    console.log('onrejectionhandled1');
 
-        setTimeout(runSecondPromiseRejection, 0);
-      };
+    setTimeout(runSecondPromiseRejection, 0);
+  };
+
+  setTimeout(() => {
+    promisePreventDefault.then(function(){}, function(){});
+  }, 10);
+
+  function runSecondPromiseRejection() {
+    const rejectedPromise = Promise.reject(new Error('e'));
+    window.onunhandledrejection = function(evt) {
+      console.log('onunhandledrejection2');
 
       setTimeout(() => {
-        promisePreventDefault.then(function(){}, function(){});
-      }, 10);
-
-      function runSecondPromiseRejection() {
-        const rejectedPromise = Promise.reject(new Error('e'));
-        window.onunhandledrejection = function(evt) {
-          console.log("onunhandledrejection2");
-
-          setTimeout(() => {
-            rejectedPromise.then(function(){}, function(){});
-          }, 10)
-        };
-        window.onrejectionhandled = function(evt) {
-          console.log("onrejectionhandled2");
-        };
-      }
-    </script>
-  </body>
-</html>
+        rejectedPromise.then(function(){}, function(){});
+      }, 10)
+    };
+    window.onrejectionhandled = function(evt) {
+      console.log('onrejectionhandled2');
+    };
+  }
+</script>

@@ -3,50 +3,40 @@
   Use of this source code is governed by a BSD-style license that can be
   found in the LICENSE file.
 -->
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Document</title>
-  </head>
-  <body>
-    <script type="module">
-      Promise.reject(new Error("err1"))
-        .then()
-        .then()
-        .then(); // Last is unhandled.
+<script type="module">
+  Promise.reject(new Error('err1'))
+    .then()
+    .then()
+    .then(); // Last is unhandled.
 
-      let reject;
-      const m0 = new Promise(function(res, rej) { reject = rej; });
-      const m1 = m0.then(function() {});
-      const m2 = m0.then(function() {});
-      const m3 = m0.then(function() {});
-      let m4 = 0;
-      m0.catch(function() {
-        m2.catch(function() {
-          m1.catch(function() {
-            m4 = m3.then(function() {}); // Unhandled.
-          });
-        });
+  let reject;
+  const m0 = new Promise(function(res, rej) { reject = rej; });
+  const m1 = m0.then(function() {});
+  const m2 = m0.then(function() {});
+  const m3 = m0.then(function() {});
+  let m4 = 0;
+  m0.catch(function() {
+    m2.catch(function() {
+      m1.catch(function() {
+        m4 = m3.then(function() {}); // Unhandled.
       });
-      reject(new Error("err2"));
-    </script>
-    <script type="module">
-      let reject;
-      const p = new Promise(function(res, rej) {
-        reject = rej;
-      });
-      p.then().catch(function catcher() {
-        throwDOMException();
-      });
-      reject(new Error("FAIL: Should not be printed to console"));
+    });
+  });
+  reject(new Error('err2'));
+</script>
+<script type="module">
+  let reject;
+  const p = new Promise(function(res, rej) {
+    reject = rej;
+  });
+  p.then().catch(function catcher() {
+    throwDOMException();
+  });
+  reject(new Error('FAIL: Should not be printed to console'));
 
-      function throwDOMException() {
-        const a = document.createElement("div");
-        const b = document.createElement("div");
-        a.removeChild(b);
-      }
-    </script>
-  </body>
-</html>
+  function throwDOMException() {
+    const a = document.createElement('div');
+    const b = document.createElement('div');
+    a.removeChild(b);
+  }
+</script>

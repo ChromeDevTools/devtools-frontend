@@ -3,23 +3,13 @@
   Use of this source code is governed by a BSD-style license that can be
   found in the LICENSE file.
 -->
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Document</title>
-  </head>
-  <body>
-    <div id="host"></div>
-    <template id="tmpl">
-      <style> .red { color: red; } </style>
-      <div id="inner" class="red">hi!</div>
-    </template>
-    <script>
-      const template = document.querySelector('#tmpl');
-      const root = document.querySelector('#host').attachShadow({mode: 'open'});
-      root.appendChild(template.content.cloneNode(true));
-    </script>
-  </body>
-</html>
+<div id="host"></div>
+<template id="tmpl">
+  <style> .red { color: red; } </style>
+  <div id="inner" class="red">hi!</div>
+</template>
+<script>
+  const template = document.querySelector('#tmpl');
+  const root = document.querySelector('#host').attachShadow({mode: 'open'});
+  root.appendChild(template.content.cloneNode(true));
+</script>

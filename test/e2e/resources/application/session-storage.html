@@ -3,20 +3,10 @@
   Use of this source code is governed by a BSD-style license that can be
   found in the LICENSE file.
 -->
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Document</title>
-  </head>
-  <body>
-    <script>
-      window.sessionStorage['firstKey'] = 'firstValue';
-      window.sessionStorage.setItem('secondKey', JSON.stringify({
-        field: 'complexValue',
-        primitive: 2,
-      }));
-    </script>
-  </body>
-</html>
+<script>
+  window.sessionStorage['firstKey'] = 'firstValue';
+  window.sessionStorage.setItem('secondKey', JSON.stringify({
+    field: 'complexValue',
+    primitive: 2,
+  }));
+</script>

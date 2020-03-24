@@ -3,131 +3,121 @@
   Use of this source code is governed by a BSD-style license that can be
   found in the LICENSE file.
 -->
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Document</title>
-  </head>
-  <body>
-    <script type="module">
-      const regex1 = /^url\(\s*(?:(?:"(?:[^\\\"]|(?:\\[\da-f]{1,6}\s?|\.))*"|'(?:[^\\\']|(?:\\[\da-f]{1,6}\s?|\.))*')|(?:[!#$%&*-~\w]|(?:\\[\da-f]{1,6}\s?|\.))*)\s*\)/i;
-      console.log(regex1);
+<script type="module">
+  const regex1 = /^url\(\s*(?:(?:"(?:[^\\\"]|(?:\\[\da-f]{1,6}\s?|\.))*"|'(?:[^\\\']|(?:\\[\da-f]{1,6}\s?|\.))*')|(?:[!#$%&*-~\w]|(?:\\[\da-f]{1,6}\s?|\.))*)\s*\)/i;
+  console.log(regex1);
 
-      const regex2 = new RegExp("foo\\\\bar\\sbaz", "i");
-      console.log(regex2);
+  const regex2 = new RegExp("foo\\\\bar\\sbaz", "i");
+  console.log(regex2);
 
-      const error = new Error;
-      console.log(error);
+  const error = new Error;
+  console.log(error);
 
-      const errorWithMessage = new Error('My error message');
-      console.log(errorWithMessage);
+  const errorWithMessage = new Error('My error message');
+  console.log(errorWithMessage);
 
-      const errorWithMultilineMessage = new Error("my multiline\nerror message");
-      console.log(errorWithMultilineMessage);
+  const errorWithMultilineMessage = new Error("my multiline\nerror message");
+  console.log(errorWithMultilineMessage);
 
-      const func = function() { return 1; };
-      console.log(func);
+  const func = function() { return 1; };
+  console.log(func);
 
-      const multilinefunc = function() {
-        return 2;
-      };
-      console.log(multilinefunc);
+  const multilinefunc = function() {
+    return 2;
+  };
+  console.log(multilinefunc);
 
-      const arrayLikeFunction = function( /**/ foo/**/, /*/**/bar,
-      /**/baz) {};
-      arrayLikeFunction.splice = function() {};
-      console.log(arrayLikeFunction);
+  const arrayLikeFunction = function( /**/ foo/**/, /*/**/bar,
+  /**/baz) {};
+  arrayLikeFunction.splice = function() {};
+  console.log(arrayLikeFunction);
 
-      function generateArguments(foo, bar) {
-        return arguments;
-      }
-      console.log(generateArguments(1, "2"));
+  function generateArguments(foo, bar) {
+    return arguments;
+  }
+  console.log(generateArguments(1, "2"));
 
-      const tinyTypedArray = new Uint8Array([3]);
-      console.log(tinyTypedArray);
+  const tinyTypedArray = new Uint8Array([3]);
+  console.log(tinyTypedArray);
 
-      const smallTypedArray = new Uint8Array(new ArrayBuffer(400));
-      smallTypedArray["foo"] = "bar";
-      console.log(smallTypedArray);
+  const smallTypedArray = new Uint8Array(new ArrayBuffer(400));
+  smallTypedArray["foo"] = "bar";
+  console.log(smallTypedArray);
 
-      const bigTypedArray = new Uint8Array(new ArrayBuffer(400 * 1000 * 1000));
-      bigTypedArray["FAIL"] = "FAIL: Object.getOwnPropertyNames() should not have been run";
-      console.log(bigTypedArray);
+  const bigTypedArray = new Uint8Array(new ArrayBuffer(400 * 1000 * 1000));
+  bigTypedArray["FAIL"] = "FAIL: Object.getOwnPropertyNames() should not have been run";
+  console.log(bigTypedArray);
 
-      console.log(new Uint16Array([1, 2, 3]));
+  console.log(new Uint16Array([1, 2, 3]));
 
-      var promise = Promise.reject(-0);
-      promise.catch(function() {});
-      console.log(promise);
+  var promise = Promise.reject(-0);
+  promise.catch(function() {});
+  console.log(promise);
 
-      const promise2 = Promise.resolve(1);
-      console.log(promise2);
+  const promise2 = Promise.resolve(1);
+  console.log(promise2);
 
-      const promise3 = new Promise(() => {});
-      console.log(promise3);
+  const promise3 = new Promise(() => {});
+  console.log(promise3);
 
-      const symbol1 = Symbol();
-      console.log(symbol1);
+  const symbol1 = Symbol();
+  console.log(symbol1);
 
-      const symbol2 = Symbol("a");
-      console.log(symbol2);
+  const symbol2 = Symbol("a");
+  console.log(symbol2);
 
-      const obj = {
-          get getter() {}
-      };
-      obj["a"] = symbol1;
-      obj[symbol2] = 2;
-      console.log(obj);
+  const obj = {
+      get getter() {}
+  };
+  obj["a"] = symbol1;
+  obj[symbol2] = 2;
+  console.log(obj);
 
-      const map = new Map();
-      map.set(obj, {foo: 1});
-      console.log(map);
+  const map = new Map();
+  map.set(obj, {foo: 1});
+  console.log(map);
 
-      const weakMap = new WeakMap();
-      weakMap.set(obj, {foo: 1});
-      console.log(weakMap);
+  const weakMap = new WeakMap();
+  weakMap.set(obj, {foo: 1});
+  console.log(weakMap);
 
-      const set = new Set();
-      set.add(obj);
-      console.log(set);
+  const set = new Set();
+  set.add(obj);
+  console.log(set);
 
-      const weakSet = new WeakSet();
-      weakSet.add(obj);
-      console.log(weakSet);
+  const weakSet = new WeakSet();
+  weakSet.add(obj);
+  console.log(weakSet);
 
-      var nestedMap = new Map();
-      nestedMap.set(map, weakMap);
-      console.log(nestedMap);
+  var nestedMap = new Map();
+  nestedMap.set(map, weakMap);
+  console.log(nestedMap);
 
-      var nestedMapUniqueValues = new Map();
-      nestedMapUniqueValues.set(new Map(), new WeakMap());
-      console.log(nestedMapUniqueValues);
+  var nestedMapUniqueValues = new Map();
+  nestedMapUniqueValues.set(new Map(), new WeakMap());
+  console.log(nestedMapUniqueValues);
 
-      var nestedSet = new Set();
-      nestedSet.add(weakSet);
-      console.log(nestedSet);
+  var nestedSet = new Set();
+  nestedSet.add(weakSet);
+  console.log(nestedSet);
 
-      var nestedSetUniqueValues = new Set();
-      nestedSetUniqueValues.add(new WeakSet());
-      console.log(nestedSetUniqueValues);
+  var nestedSetUniqueValues = new Set();
+  nestedSetUniqueValues.add(new WeakSet());
+  console.log(nestedSetUniqueValues);
 
-      const bigmap = new Map();
-      bigmap.set(" from str ", " to str ");
-      bigmap.set(undefined, undefined);
-      bigmap.set(null, null);
-      bigmap.set(42, 42);
-      bigmap.set({foo:"from"}, {foo:"to"});
-      bigmap.set(["from"], ["to"]);
-      console.log(bigmap);
+  const bigmap = new Map();
+  bigmap.set(" from str ", " to str ");
+  bigmap.set(undefined, undefined);
+  bigmap.set(null, null);
+  bigmap.set(42, 42);
+  bigmap.set({foo:"from"}, {foo:"to"});
+  bigmap.set(["from"], ["to"]);
+  console.log(bigmap);
 
-      const genFunction = function *() {
-        yield 1;
-        yield 2;
-      }
-      const generator = genFunction();
-      console.log(generator);
-    </script>
-  </body>
-</html>
+  const genFunction = function *() {
+    yield 1;
+    yield 2;
+  }
+  const generator = genFunction();
+  console.log(generator);
+</script>

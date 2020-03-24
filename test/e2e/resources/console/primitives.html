@@ -3,48 +3,38 @@
   Use of this source code is governed by a BSD-style license that can be
   found in the LICENSE file.
 -->
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Document</title>
-  </head>
-  <body>
-    <script type="module">
-      console.log(null);
-      console.log(undefined);
-      console.log(NaN);
-      console.log({});
-      console.log([function() {}]);
-      console.log(Number.POSITIVE_INFINITY);
-      console.log(Number.NEGATIVE_INFINITY);
+<script type="module">
+  console.log(null);
+  console.log(undefined);
+  console.log(NaN);
+  console.log({});
+  console.log([function() {}]);
+  console.log(Number.POSITIVE_INFINITY);
+  console.log(Number.NEGATIVE_INFINITY);
 
-      console.log(new Number(42));
-      console.log(new String("abc"));
+  console.log(new Number(42));
+  console.log(new String('abc'));
 
-      const num = 1.2e-1;
-      console.log(num);
+  const num = 1.2e-1;
+  console.log(num);
 
-      const negZero = 1 / Number.NEGATIVE_INFINITY;
-      console.log(negZero);
+  const negZero = 1 / Number.NEGATIVE_INFINITY;
+  console.log(negZero);
 
-      const string = "test";
-      console.log(string);
+  const string = 'test';
+  console.log(string);
 
-      const linkify = "https://chromium.org";
-      console.log(linkify);
+  const linkify = 'https://chromium.org';
+  console.log(linkify);
 
-      const boxedNumberWithProps = new Number(42);
-      boxedNumberWithProps[1] = "foo";
-      boxedNumberWithProps["a"] = "bar";
-      console.log(boxedNumberWithProps);
+  const boxedNumberWithProps = new Number(42);
+  boxedNumberWithProps[1] = 'foo';
+  boxedNumberWithProps['a'] = 'bar';
+  console.log(boxedNumberWithProps);
 
-      const boxedStringWithProps = new String("abc");
-      boxedStringWithProps["01"] = "foo";
-      boxedStringWithProps[3] = "foo";
-      boxedStringWithProps["a"] = "bar";
-      console.log(boxedStringWithProps);
-    </script>
-  </body>
-</html>
+  const boxedStringWithProps = new String('abc');
+  boxedStringWithProps['01'] = 'foo';
+  boxedStringWithProps[3] = 'foo';
+  boxedStringWithProps['a'] = 'bar';
+  console.log(boxedStringWithProps);
+</script>

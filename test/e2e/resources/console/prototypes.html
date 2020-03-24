@@ -3,64 +3,54 @@
   Use of this source code is governed by a BSD-style license that can be
   found in the LICENSE file.
 -->
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Document</title>
-  </head>
-  <body>
-    <script type="module">
-      const objectWithNonEnumerables = Object.create({ foo: 1 }, {
-        __underscoreNonEnumerableProp: { value: 2, enumerable: false },
-        abc: { value: 3, enumerable: false },
-        getFoo: { value: function() { return this.foo; } },
-        bar: { get: function() { return this.bar; }, set: function(x) { this.bar = x; } }
-      });
-      objectWithNonEnumerables.enumerableProp = 4;
-      objectWithNonEnumerables.__underscoreEnumerableProp__ = 5;
-      console.log(objectWithNonEnumerables);
+<script type="module">
+  const objectWithNonEnumerables = Object.create({ foo: 1 }, {
+    __underscoreNonEnumerableProp: { value: 2, enumerable: false },
+    abc: { value: 3, enumerable: false },
+    getFoo: { value: function() { return this.foo; } },
+    bar: { get: function() { return this.bar; }, set: function(x) { this.bar = x; } }
+  });
+  objectWithNonEnumerables.enumerableProp = 4;
+  objectWithNonEnumerables.__underscoreEnumerableProp__ = 5;
+  console.log(objectWithNonEnumerables);
 
-      const namespace = {};
-      namespace.longSubNamespace = {};
-      namespace.longSubNamespace.x = {};
-      namespace.longSubNamespace.x.className = function(){};
-      console.log(namespace);
+  const namespace = {};
+  namespace.longSubNamespace = {};
+  namespace.longSubNamespace.x = {};
+  namespace.longSubNamespace.x.className = function(){};
+  console.log(namespace);
 
-      const instanceWithLongClassName = new namespace.longSubNamespace.x.className();
-      console.log(instanceWithLongClassName);
+  const instanceWithLongClassName = new namespace.longSubNamespace.x.className();
+  console.log(instanceWithLongClassName);
 
-      const throwingLengthGetter = {get length() { throw "Length called"; }};
-      console.log(throwingLengthGetter);
+  const throwingLengthGetter = {get length() { throw 'Length called'; }};
+  console.log(throwingLengthGetter);
 
-      function ArrayLike(length) {
-          this.length = length;
-      }
-      ArrayLike.prototype.splice = function() {};
+  function ArrayLike(length) {
+      this.length = length;
+  }
+  ArrayLike.prototype.splice = function() {};
 
-      console.log(new ArrayLike(5));
-      console.log(new ArrayLike(0xFFFFFFFF));
+  console.log(new ArrayLike(5));
+  console.log(new ArrayLike(0xFFFFFFFF));
 
-      // Array-like's with wrong length.
-      console.log(new ArrayLike(-5));
-      console.log(new ArrayLike(5.6));
-      console.log(new ArrayLike(NaN));
-      console.log(new ArrayLike(Infinity));
-      console.log(new ArrayLike(-0));
-      console.log(new ArrayLike(0xFFFFFFFF + 1));
+  // Array-like's with wrong length.
+  console.log(new ArrayLike(-5));
+  console.log(new ArrayLike(5.6));
+  console.log(new ArrayLike(NaN));
+  console.log(new ArrayLike(Infinity));
+  console.log(new ArrayLike(-0));
+  console.log(new ArrayLike(0xFFFFFFFF + 1));
 
-      function NonArrayWithLength() {
-        this.keys = [];
-      }
+  function NonArrayWithLength() {
+    this.keys = [];
+  }
 
-      NonArrayWithLength.prototype.__defineGetter__("length", function() {
-        console.log("FAIL: 'length' should not be called");
-        return this.keys.length;
-      });
+  NonArrayWithLength.prototype.__defineGetter__('length', function() {
+    console.log("FAIL: 'length' should not be called");
+    return this.keys.length;
+  });
 
-      const nonArray = new NonArrayWithLength();
-      console.log(nonArray);
-    </script>
-  </body>
-</html>
+  const nonArray = new NonArrayWithLength();
+  console.log(nonArray);
+</script>

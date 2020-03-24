@@ -1,7 +1,7 @@
-<!DOCTYPE html>
-<meta charset="utf-8">
-<title>Spans multiple workers</title>
+<title>Spawn multiple workers</title>
 <script>
-  var workers = new Array();
-  for (let i = 0; i < 10; ++i) workers.push(new Worker('multi-workers.js'));
+  const workers = [];
+  for (let i = 0; i < 10; ++i) {
+    workers.push(new Worker('multi-workers.js'));
+  }
 </script>

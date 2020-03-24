@@ -30,12 +30,12 @@ describe('The Console Tab', async () => {
 
     assert.deepEqual(messages, [
       `Uncaught (in promise) Error: err1
-    at uncaught-promise.html:15`,
+    at uncaught-promise.html:7`,
       `Uncaught (in promise) Error: err2
-    at uncaught-promise.html:33`,
+    at uncaught-promise.html:25`,
       `Uncaught (in promise) DOMException: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
-    at throwDOMException (http://localhost:8090/test/e2e/resources/console/uncaught-promise.html:48:11)
-    at catcher (http://localhost:8090/test/e2e/resources/console/uncaught-promise.html:41:9)`,
+    at throwDOMException (http://localhost:8090/test/e2e/resources/console/uncaught-promise.html:40:7)
+    at catcher (http://localhost:8090/test/e2e/resources/console/uncaught-promise.html:33:5)`,
     ]);
   });
 
@@ -77,19 +77,12 @@ describe('The Console Tab', async () => {
     assert.deepEqual(messages, [
       '/^url\\(\\s*(?:(?:\"(?:[^\\\\\\\"]|(?:\\\\[\\da-f]{1,6}\\s?|\\.))*\"|\'(?:[^\\\\\\\']|(?:\\\\[\\da-f]{1,6}\\s?|\\.))*\')|(?:[!#$%&*-~\\w]|(?:\\\\[\\da-f]{1,6}\\s?|\\.))*)\\s*\\)/i',
       '/foo\\\\bar\\sbaz/i',
-      `Error
-    at built-ins.html:21`,
-      `Error: My error message
-    at built-ins.html:24`,
-      `Error: my multiline
-error message
-    at built-ins.html:27`,
+      'Error\n    at built-ins.html:13',
+      'Error: My error message\n    at built-ins.html:16',
+      'Error: my multiline\nerror message\n    at built-ins.html:19',
       'ƒ () { return 1; }',
-      `ƒ () {
-        return 2;
-      }`,
-      `ƒ ( /**/ foo/**/, /*/**/bar,
-      /**/baz) {}`,
+      'ƒ () {\n    return 2;\n  }',
+      'ƒ ( /**/ foo/**/, /*/**/bar,\n  /**/baz) {}',
       'Arguments(2)\xA0[1, "2", callee: (...), Symbol(Symbol.iterator): ƒ]',
       'Uint8Array\xA0[3]',
       'Uint8Array(400)\xA0[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …]',
@@ -166,9 +159,9 @@ error message
       '',
       '#text',
       'HTMLCollection\xA0[select, sel: select]',
-      'HTMLCollection(3)\xA0[meta, meta, title, viewport: meta]',
+      'HTMLCollection\xA0[]',
       'HTMLOptionsCollection(2)\xA0[option, option, selectedIndex: 0]',
-      'HTMLAllCollection(15)\xA0[html, head, meta, meta, title, body, div#first-child.c1.c2.c3, div#p, form, select, option, option, input, input, script, viewport: meta, first-child: div#first-child.c1.c2.c3, p: div#p, sel: select, input: HTMLCollection(2)]',
+      'HTMLAllCollection(12)\xA0[html, head, body, div#first-child.c1.c2.c3, div#p, form, select, option, option, input, input, script, first-child: div#first-child.c1.c2.c3, p: div#p, sel: select, input: HTMLCollection(2)]',
       'HTMLFormControlsCollection(3)\xA0[select, input, input, sel: select, input: RadioNodeList(2)]',
       'RadioNodeList(2)\xA0[input, input, value: ""]',
       'DOMTokenList(3)\xA0["c1", "c2", "c3", value: "c1 c2 c3"]',
@@ -182,7 +175,7 @@ error message
     assert.deepEqual(messages, [
       `Uncaught ReferenceError: FAIL is not defined
     at foo (foo2.js:1)
-    at source-url-exceptions.html:17`,
+    at source-url-exceptions.html:9`,
     ]);
   });
 
@@ -221,7 +214,7 @@ error message
       'onrejectionhandled1',
       'onunhandledrejection2',
       `Uncaught (in promise) Error: e
-    at runSecondPromiseRejection (onunhandledrejection.html:31)`,
+    at runSecondPromiseRejection (onunhandledrejection.html:23)`,
       'onrejectionhandled2',
     ]);
   });

@@ -3,75 +3,65 @@
   Use of this source code is governed by a BSD-style license that can be
   found in the LICENSE file.
 -->
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Document</title>
-  </head>
-  <body>
-    <div id="first-child" class="c1 c2 c3"></div>
-    <div id="p"></div>
-    <form>
-      <select name="sel">
-          <option value="1">one</option>
-          <option value="2">two</option>
-      </select>
-      <input type="radio" name="input" value="input1" /> input1
-      <input type="radio" name="input" value="input2" /> input2
-    </form>
-    <script type="module">
-      const node = document.getElementById('p');
-      console.log(node);
+<div id="first-child" class="c1 c2 c3"></div>
+<div id="p"></div>
+<form>
+  <select name="sel">
+    <option value="1">one</option>
+    <option value="2">two</option>
+  </select>
+  <input type="radio" name="input" value="input1"> input1
+  <input type="radio" name="input" value="input2"> input2
+</form>
+<script type="module">
+  const node = document.getElementById('p');
+  console.log(node);
 
-      const valuelessAttribute = document.createAttribute('attr');
-      console.log(valuelessAttribute);
+  const valuelessAttribute = document.createAttribute('attr');
+  console.log(valuelessAttribute);
 
-      const valuedAttribute = document.createAttribute('attr');
-      valuedAttribute.value = "value";
-      console.log(valuelessAttribute);
+  const valuedAttribute = document.createAttribute('attr');
+  valuedAttribute.value = 'value';
+  console.log(valuelessAttribute);
 
-      const existingAttribute = document.getElementById('first-child').attributes[0];
-      console.log(existingAttribute);
+  const existingAttribute = document.getElementById('first-child').attributes[0];
+  console.log(existingAttribute);
 
-      const textNode = document.getElementById('first-child').nextSibling;
-      console.log(textNode);
+  const textNode = document.getElementById('first-child').nextSibling;
+  console.log(textNode);
 
-      const nodelist = document.getElementsByTagName('select');
-      console.log(nodelist);
+  const nodelist = document.getElementsByTagName('select');
+  console.log(nodelist);
 
-      const htmlcollection = document.head.children;
-      console.log(htmlcollection);
+  const htmlcollection = document.head.children;
+  console.log(htmlcollection);
 
-      const htmlOptionsCollection = document.getElementsByTagName('select')[0].options;
-      console.log(htmlOptionsCollection);
+  const htmlOptionsCollection = document.getElementsByTagName('select')[0].options;
+  console.log(htmlOptionsCollection);
 
-      const htmlAllCollection = document.all;
-      console.log(htmlAllCollection);
+  const htmlAllCollection = document.all;
+  console.log(htmlAllCollection);
 
-      const htmlFormControlsCollection = document.getElementsByTagName('form')[0].elements;
-      console.log(htmlFormControlsCollection);
+  const htmlFormControlsCollection = document.getElementsByTagName('form')[0].elements;
+  console.log(htmlFormControlsCollection);
 
-      const radioNodeList = document.getElementsByTagName('form')[0].input;
-      console.log(radioNodeList);
+  const radioNodeList = document.getElementsByTagName('form')[0].input;
+  console.log(radioNodeList);
 
-      const domTokenList = document.getElementsByTagName('div')[0];
-      console.log(domTokenList.classList);
+  const domTokenList = document.getElementsByTagName('div')[0];
+  console.log(domTokenList.classList);
 
-      function domException() {
-        let result = "FAIL";
-        try {
-          const a = document.createElement("div");
-          const b = document.createElement("div");
-          a.removeChild(b);
-        } catch(e) {
-          e.stack = "";
-          result = e;
-        }
-        return result;
-      }
-      console.log(domException());
-    </script>
-  </body>
-</html>
+  function domException() {
+    let result = 'FAIL';
+    try {
+      const a = document.createElement('div');
+      const b = document.createElement('div');
+      a.removeChild(b);
+    } catch (error) {
+      error.stack = '';
+      result = error;
+    }
+    return result;
+  }
+  console.log(domException());
+</script>

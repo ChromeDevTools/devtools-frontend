@@ -3,26 +3,16 @@
   Use of this source code is governed by a BSD-style license that can be
   found in the LICENSE file.
 -->
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Document</title>
-  </head>
-  <body>
-    <script type="module">
-      console.log("Test for zero \"%f\" in formatter", 0);
-      console.log("%% self-escape1", "dummy");
-      console.log("%%s self-escape2", "dummy");
-      console.log("%%ss self-escape3", "dummy");
-      console.log("%%s%s%%s self-escape4", "dummy");
-      console.log("%%%%% self-escape5", "dummy");
-      console.log("%%%s self-escape6", "dummy");
+<script type="module">
+  console.log('Test for zero "%f" in formatter', 0);
+  console.log('%% self-escape1', 'dummy');
+  console.log('%%s self-escape2', 'dummy');
+  console.log('%%ss self-escape3', 'dummy');
+  console.log('%%s%s%%s self-escape4', 'dummy');
+  console.log('%%%%% self-escape5', 'dummy');
+  console.log('%%%s self-escape6', 'dummy');
 
-      const array = ["test", "test2"];
-      console.log("%o", array);
-      console.log("%O", array);
-    </script>
-  </body>
-</html>
+  const array = ['test', 'test2'];
+  console.log('%o', array);
+  console.log('%O', array);
+</script>

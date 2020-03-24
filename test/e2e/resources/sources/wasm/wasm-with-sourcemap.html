@@ -1,22 +1,26 @@
-<script language="javascript">
+<script>
 async function go() {
   const importObj = {
-    env : {memory : new WebAssembly.Memory({initial : 1, maximum : 1}),
-      __memory_base : 1024,
-      table : new WebAssembly.Table({
-        initial : 2,
-        maximum : 2,
-        element : 'anyfunc',
+    env: {
+      memory: new WebAssembly.Memory({
+        initial: 1,
+        maximum: 1,
       }),
-      printf : function(s){console.log(s); },
-      printfI : function(s){console.log(s); }
+      __memory_base: 1024,
+      table: new WebAssembly.Table({
+        initial: 2,
+        maximum: 2,
+        element: 'anyfunc',
+      }),
+      printf: function(s) { console.log(s); },
+      printfI: function(s) { console.log(s); }
     }
   };
 
   const pagename = window.location.pathname.split('/').pop();
   const modulename = pagename.substr(0, pagename.length - 5) + '.wasm';
 
-  let instance = await WebAssembly.instantiateStreaming(fetch(modulename), importObj);
+  const instance = await WebAssembly.instantiateStreaming(fetch(modulename), importObj);
   window.main = instance.instance.exports.Main;
 }
 go();

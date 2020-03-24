@@ -4,8 +4,9 @@
   found in the LICENSE file.
 -->
 <!DOCTYPE html>
-<meta charset="utf-8">
-<title>Spans multiple workers</title>
+<title>Spawn multiple workers</title>
 <script>
-  for (let i = 0; i < 10; ++i) new Worker('multi-workers.js');
+  for (let i = 0; i < 10; ++i) {
+    new Worker('multi-workers.js');
+  }
 </script>

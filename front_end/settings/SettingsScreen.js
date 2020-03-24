@@ -213,8 +213,8 @@ export class GenericSettingsTab extends SettingsTab {
     this._appendSection().appendChild(
         UI.UIUtils.createTextButton(Common.UIString.UIString('Reload DevTools'), Components.Reload.reload));
 
-    this._appendSection().appendChild(UI.UIUtils.createTextButton(
-        Common.UIString.UIString('Restore defaults and reload DevTools'), restoreAndReload));
+    this._appendSection().appendChild(
+        UI.UIUtils.createTextButton(Common.UIString.UIString('Restore defaults and reload'), restoreAndReload));
 
     function restoreAndReload() {
       Common.Settings.Settings.instance().clearAll();

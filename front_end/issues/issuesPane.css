@@ -12,6 +12,10 @@
     background: #FFFFFF;
     border: 1px solid #E5E5E5;
     border-width: 0 0 1px;
+    --breaking-change-color: #F29900;
+    --issue-gray: #5F6368;
+    --issue-link: #1967D2;
+    --issue-black: #202124;
 }
 
 .header {
@@ -29,13 +33,12 @@
 .title {
     flex: 1;
     font-size: 14px;
-    color: #202124;
+    color: var(--issue-black);
+    font-weight: 450;
 }
 
-.priority {
-    font-size: 12px;
-    color: #C5221F;
-    margin-right: 10px;
+.issue.collapsed .title {
+    font-weight: normal;
 }
 
 .header::after {
@@ -48,7 +51,7 @@
     margin-right: -2px;
     height: 12px;
     width: 13px;
-    background: #5F6368;
+    background: var(--issue-gray);
     transform: rotate(90deg);
     transform-origin: 25% 50%;
 }
@@ -61,7 +64,7 @@
 .body {
     padding: 6px 0;
     margin-left: 9.5px;
-    border-left: 2px solid #F29900;
+    border-left: 2px solid var(--breaking-change-color);
     padding-left: 21px;
     margin-bottom: 20px;
 }
@@ -70,24 +73,39 @@
     max-width: 600px;
     line-height: 20px;
     font-size: 14px;
-    color: #5F6368;
+    color: var(--issue-gray);
     margin-bottom: 4px;
 }
 
-.code {
+.kind-code-line {
     font-size: 12px;
-    color:rgba(95, 99, 104, 0.5);
-    margin-bottom: 16px;
+    color: var(--issue-gray);
+    margin-bottom: 4px;
     user-select: text;
+}
+
+.separator::before {
+    content: '\B7';
+    padding-left: 1ex;
+    padding-right: 1ex;
+    user-select: none;
+}
+
+.issue-code {
+    color: rgba(95, 99, 104, 0.5);
+}
+
+.issue-kind {
+    color: var(--breaking-change-color);
 }
 
 .link {
     font-size: 14px;
-    color: #1967D2;
+    color: var(--issue-link);
 }
 
-.link-icon {
-
+.link-wrapper {
+    margin-top: 8px;
 }
 
 .issue.collapsed {
@@ -136,7 +154,7 @@
 
 .affected-resource-label-wrapper {
     position: relative;
-    margin-left: -10px;
+    margin-left: -12px;
     cursor: pointer;
 }
 
@@ -148,7 +166,7 @@
     -webkit-mask-position: -1px 1px;
     content: "\00a0\00a0";
     text-shadow: none;
-    background: #5F6368;
+    background: var(--issue-gray);
     transform-origin: center;
     position: absolute;
     top: 3px;
@@ -157,9 +175,9 @@
 .affected-resource-label {
     font-size: 14px;
     line-height: 20px;
-    color: #202124;
+    color: var(--issue-black);
     position: relative;
-    margin-left: 10px;
+    margin-left: 12px;
 }
 
 .affected-resource.expanded .affected-resource-label-wrapper::before {
@@ -169,7 +187,7 @@
 .affected-resource-cookie {
     font-size: 14px;
     line-height: 20px;
-    color: #1967D2;
+    color: var(--issue-link);
     border: 0;
     border-collapse: collapse;
 }
@@ -196,7 +214,7 @@
 
 .affected-resource-header {
     font-size: 12px;
-    color:rgba(95, 99, 104, 0.5);
+    color: rgba(95, 99, 104, 0.5);
 }
 
 .affected-resource-header-info {

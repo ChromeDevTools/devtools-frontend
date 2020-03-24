@@ -150,12 +150,14 @@ class AggregatedIssueView extends UI.Widget.Widget {
    *
    * @param {!IssuesPaneImpl} parent
    * @param {!SDK.Issue.AggregatedIssue} issue
+   * @param {!AggregatedIssueDescription} description
    */
-  constructor(parent, issue) {
+  constructor(parent, issue, description) {
     super(false);
     this._parent = parent;
     this._issue = issue;
-    this._details = issueDetails[issue.code()];
+    /** @type {!AggregatedIssueDescription} */
+    this._description = description;
     this._appendHeader();
     this._body = this._createBody();
     this._affectedResources = this._createAffectedResources(this._body);
@@ -183,18 +185,9 @@ class AggregatedIssueView extends UI.Widget.Widget {
     header.appendChild(icon);
 
     const title = createElementWithClass('div', 'title');
-    title.textContent = this._details.title;
+    title.textContent = this._description.title;
     header.appendChild(title);
 
-    const priority = createElementWithClass('div', 'priority');
-    switch (this._details.priority) {
-      case Priority.High:
-        priority.textContent = ls`High Priority`;
-        break;
-      default:
-        console.warn('Unknown issue priority', this._details.priority);
-    }
-    header.appendChild(priority);
     this.contentElement.appendChild(header);
   }
 
@@ -220,13 +213,18 @@ class AggregatedIssueView extends UI.Widget.Widget {
   _createBody() {
     const body = createElementWithClass('div', 'body');
 
-    const message = createElementWithClass('div', 'message');
-    message.textContent = this._details.message;
-    body.appendChild(message);
-
-    const code = createElementWithClass('div', 'code');
+    const kindAndCode = createElementWithClass('div', 'kind-code-line');
+    const kind = createElementWithClass('span', 'issue-kind');
+    kind.textContent = issueKindToString(this._description.issueKind);
+    kindAndCode.appendChild(kind);
+    kindAndCode.appendChild(createElementWithClass('span', 'separator'));
+    const code = createElementWithClass('span', 'issue-code');
     code.textContent = this._issue.code();
-    body.appendChild(code);
+    kindAndCode.appendChild(code);
+    body.appendChild(kindAndCode);
+
+    const message = this._description.message();
+    body.appendChild(message);
 
     const bodyWrapper = createElementWithClass('div', 'body-wrapper');
     bodyWrapper.appendChild(body);
@@ -235,10 +233,12 @@ class AggregatedIssueView extends UI.Widget.Widget {
   }
 
   _createReadMoreLink() {
-    const link = UI.XLink.XLink.create(this._details.link, ls`Learn more: ${this._details.linkTitle}`, 'link');
+    const link = UI.XLink.XLink.create(this._description.link, ls`Learn more: ${this._description.linkTitle}`, 'link');
     const linkIcon = UI.Icon.Icon.create('largeicon-link', 'link-icon');
     link.prepend(linkIcon);
-    this._body.appendChild(link);
+    const linkWrapper = createElementWithClass('div', 'link-wrapper');
+    linkWrapper.appendChild(link);
+    this._body.appendChild(linkWrapper);
   }
 
   _handleClick() {
@@ -329,12 +329,13 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
    * @param {!SDK.Issue.AggregatedIssue} aggregatedIssue
    */
   _updateAggregatedIssueView(aggregatedIssue) {
-    if (!(aggregatedIssue.code() in issueDetails)) {
-      console.warn('Unknown issue code:', aggregatedIssue.code());
+    const description = issueDescriptions.get(aggregatedIssue.code());
+    if (!description) {
+      console.warn('Could not find description for issue code:', aggregatedIssue.code());
       return;
     }
     if (!this._issueViews.has(aggregatedIssue.code())) {
-      const view = new AggregatedIssueView(this, aggregatedIssue);
+      const view = new AggregatedIssueView(this, aggregatedIssue, description);
       this._issueViews.set(aggregatedIssue.code(), view);
       view.show(this.contentElement);
     }
@@ -418,33 +419,68 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
   }
 }
 
+/**
+  * @param {string} text
+  * @return {!Element}
+  */
+function textOnlyMessage(text) {
+  const message = createElementWithClass('div', 'message');
+  message.textContent = text;
+  return message;
+}
+
 /** @enum {symbol} */
-export const Priority = {
-  High: Symbol('PriorityHigh'),
+const IssueKind = {
+  BreakingChange: Symbol('BreakingChange'),
 };
 
-const issueDetails = {
-  'SameSiteCookies::SameSiteNoneWithoutSecure':
-      {title: ls`A Cookie has been set with SameSite=None but without Secure`, message: ls
-    `In a future version of Chrome, third-party cookies will only be sent when marked as SameSite=None and Secure to prevent them from being accessed in a man-in-the-middle scenario.`,
-    priority: Priority.High,
+/**
+ * @param {!IssueKind} kind
+ * @return {string}
+ */
+function issueKindToString(kind) {
+  switch (kind) {
+    case IssueKind.BreakingChange:
+      return ls`Breaking change`;
+  }
+  return '';
+}
+
+/**
+ * @typedef {{
+  *            title:string,
+  *            message: (function():!Element),
+  *            issueKind: !IssueKind,
+  *            link: string,
+  *            linkTitle: string
+  *          }}
+  */
+let AggregatedIssueDescription;  // eslint-disable-line no-unused-vars
+
+/** @type {!Map<string, !AggregatedIssueDescription>} */
+const issueDescriptions = new Map([
+  ['SameSiteCookies::SameSiteNoneWithoutSecure',
+      {title: ls`A Cookie has been set with SameSite=None but without Secure`, message:
+        () => textOnlyMessage(ls
+    `In a future version of Chrome, third-party cookies will only be sent when marked as SameSite=None and Secure to prevent them from being accessed in a man-in-the-middle scenario.`),
+    issueKind: IssueKind.BreakingChange,
     link: ls`https://web.dev/samesite-cookies-explained/`,
     linkTitle: ls`SameSite cookies explained`,
-  },
-  'SameSiteCookies::SameSiteNoneMissingForThirdParty': {
+  }],
+  ['SameSiteCookies::SameSiteNoneMissingForThirdParty', {
     title: ls`A Cookie in a third-party context has been set without SameSite=None`,
-    message: ls
-    `In a future version of Chrome, third-party cookies will only be sent when marked as SameSite=None and Secure to prevent them from being accessed in a man-in-the-middle scenario.`,
-    priority: Priority.High,
+    message: () => textOnlyMessage(ls
+    `In a future version of Chrome, third-party cookies will only be sent when marked as SameSite=None and Secure to prevent them from being accessed in a man-in-the-middle scenario.`),
+    issueKind: IssueKind.BreakingChange,
     link: ls`https://web.dev/samesite-cookies-explained/`,
     linkTitle: ls`SameSite cookies explained`,
-  },
-  'SameSiteCookieIssue': {
+  }],
+  ['SameSiteCookieIssue', {
     title: ls`A Cookie in a third-party context has been set without SameSite=None`,
-    message: ls
-    `In a future version of Chrome, third-party cookies will only be sent when marked as SameSite=None and Secure to prevent them from being accessed in a man-in-the-middle scenario.`,
-    priority: Priority.High,
+    message: () => textOnlyMessage(ls
+    `In a future version of Chrome, third-party cookies will only be sent when marked as SameSite=None and Secure to prevent them from being accessed in a man-in-the-middle scenario.`),
+    issueKind: IssueKind.BreakingChange,
     link: ls`https://web.dev/samesite-cookies-explained/`,
     linkTitle: ls`SameSite cookies explained`,
-  },
-};
+  }],
+]);

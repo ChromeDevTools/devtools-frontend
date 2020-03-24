@@ -96,7 +96,7 @@ def main():
     found_errors, stderr = runTsc(tsconfig_location=tsconfig_output_location)
     if found_errors:
         print('')
-        print('TypeScript compilation failed. Used tsconfig %s' % tsconfig_output_location)
+        print('TypeScript compilation failed. Used tsconfig %s' % opts.tsconfig_output_location)
         print('')
         print(stderr)
         print('')

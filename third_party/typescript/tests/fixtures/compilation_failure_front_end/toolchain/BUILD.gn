@@ -2,10 +2,6 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-pool("action_pool") {
-  depth = 1
-}
-
 toolchain("default") {
   # These two are really entirely generic, but have to be repeated in
   # each toolchain because GN doesn't allow a template to be used here.
@@ -13,8 +9,5 @@ toolchain("default") {
   tool("stamp") {
     command = "touch {{output}}"
     description = "STAMP {{output}}"
-  }
-  tool("action") {
-    pool = ":action_pool($default_toolchain)"
   }
 }

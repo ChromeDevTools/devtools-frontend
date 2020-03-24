@@ -7,5 +7,4 @@ All tests are fixtures in the [fixtures/](fixtures/) directory, which are compil
 Each test fixture contains the following:
 - A `.gn` file which specifies this is a GN root, to run `gn gen` on the correct directory.
 - A `BUILDCONFIG.gn` which includes the minimal Chromium configuration to work with `autoninja`.
-
-All fixtures specify the (otherwise unused) toolchain defined in `toolchain/BUILD.gn`, as it is required by Ninja to succesfully run a build.
+- A `toolchain/BUILD.gn` which specifies an (otherwise unused) toolchain, as it is required by Ninja to succesfully run a build.

@@ -1,0 +1,8 @@
+ninja: Entering directory `./third_party/typescript/tests/out/fixtures/test_dep'
+[1/7] ACTION //front_end/module:dep(//toolchain:default)
+[2/7] STAMP obj/front_end/module/dep.stamp
+[3/7] ACTION //front_end/module:module(//toolchain:default)
+[4/7] STAMP obj/front_end/module/module.stamp
+[5/7] ACTION //test/module:module(//toolchain:default)
+[6/7] STAMP obj/test/module/module.stamp
+[7/7] STAMP obj/test_dep.stamp

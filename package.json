@@ -45,6 +45,7 @@
     "start": "node scripts/hosted_mode/start_chrome_and_server.js",
     "test": "node scripts/npm_test.js",
     "test-local": "node scripts/npm_test.js --layout-tests-directory=test/webtests/",
-    "unittest": "NO_TEXT_COVERAGE=1 python scripts/test/run_unittests.py"
+    "unittest": "NO_TEXT_COVERAGE=1 python scripts/test/run_unittests.py",
+    "ts_library-test": "./third_party/typescript/tests/verify_ts_libary.sh"
   }
 }

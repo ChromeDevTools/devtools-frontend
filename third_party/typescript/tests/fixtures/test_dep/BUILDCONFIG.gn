@@ -6,4 +6,4 @@ declare_args() {
   devtools_location = "../../../../../"
 }
 
-set_default_toolchain("../../toolchain:default")
+set_default_toolchain("//toolchain:default")

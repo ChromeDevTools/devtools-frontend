@@ -164,6 +164,34 @@ export class DebuggerLanguagePluginManager {
   }
 
   /**
+   * @param {!SDK.Script.Script} script
+   * @return {boolean}
+   */
+  hasPluginForScript(script) {
+    return this._pluginForScriptId.has(script.scriptId);
+  }
+
+  /**
+   * @param {!SDK.Script.Script} script
+   * @return {?DebuggerLanguagePlugin}
+   */
+  _getPluginForScript(script) {
+    const plugin = this._pluginForScriptId.get(script.scriptId);
+    if (plugin) {
+      return plugin;
+    }
+
+    for (const plugin of this._plugins) {
+      if (plugin.handleScript(script)) {
+        this._pluginForScriptId.set(script.scriptId, plugin);
+        return plugin;
+      }
+    }
+
+    return null;
+  }
+
+  /** TODO(chromium:1032016): Make async once chromium:1032016 is complete.
    * @param {!SDK.DebuggerModel.Location} rawLocation
    * @return {!Promise<?Workspace.UISourceCode.UILocation>}
    */
@@ -254,24 +282,26 @@ export class DebuggerLanguagePluginManager {
     if (!script.sourceURL.startsWith('wasm://')) {
       return {url: script.sourceURL};
     }
-    return {code: await script.getWasmBytecode()};
+    if (script.sourceMapURL === SDK.SourceMap.WasmSourceMap.FAKE_URL) {
+      return {code: await script.getWasmBytecode()};
+    }
+    return null;
   }
+
 
   /**
    * @param {!SDK.Script.Script} script
    * @return {!Promise<?Array<string>>}
    */
   async _getSourceFiles(script) {
-    for (const plugin of this._plugins) {
-      if (plugin.handleScript(script)) {
-        const rawModule = await this._getRawModule(script);
-        const sourceFiles = await plugin.addRawModule(script.scriptId, script.sourceMapURL || '', rawModule);
-        if (!sourceFiles) {
-          continue;
-        }
-        this._pluginForScriptId.set(script.scriptId, plugin);
-        return sourceFiles;
+    const plugin = this._pluginForScriptId.get(script.scriptId);
+    if (plugin) {
+      const rawModule = await this._getRawModule(script);
+      if (!rawModule) {
+        return null;
       }
+      const sourceFiles = await plugin.addRawModule(script.scriptId, script.sourceMapURL || '', rawModule);
+      return sourceFiles;
     }
     return null;
   }
@@ -359,6 +389,10 @@ export class DebuggerLanguagePluginManager {
    * @param {!SDK.Script.Script} script
    */
   async _newScriptSource(script) {
+    if (!this._getPluginForScript(script)) {
+      return;
+    }
+
     const sourceFiles = await this._getSourceFiles(script);
     if (!sourceFiles) {
       return;

@@ -36,7 +36,6 @@ import {GetPropertiesResult, RemoteObject, RemoteObjectImpl, ScopeRef} from './R
 import {EvaluationOptions, EvaluationResult, ExecutionContext, RuntimeModel} from './RuntimeModel.js';  // eslint-disable-line no-unused-vars
 import {Script} from './Script.js';
 import {Capability, SDKModel, Target, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars
-import {WasmSourceMap} from './SourceMap.js';
 import {SourceMapManager} from './SourceMapManager.js';
 
 /**
@@ -661,7 +660,8 @@ export class DebuggerModel extends SDKModel {
     this._registerScript(script);
     this.dispatchEventToListeners(Events.ParsedScriptSource, script);
 
-    if (!Root.Runtime.experiments.isEnabled('wasmDWARFDebugging') || script.sourceMapURL !== WasmSourceMap.FAKE_URL) {
+    const pluginManager = Bindings.debuggerWorkspaceBinding.getLanguagePluginManager(this);
+    if (!Root.Runtime.experiments.isEnabled('wasmDWARFDebugging') || !pluginManager.hasPluginForScript(script)) {
       const sourceMapId = DebuggerModel._sourceMapId(script.executionContextId, script.sourceURL, script.sourceMapURL);
       if (sourceMapId && !hasSyntaxError) {
         // Consecutive script evaluations in the same execution context with the same sourceURL

@@ -11,7 +11,6 @@
 const path = require('path');
 
 const FRONT_END_DIRECTORY = path.join(__dirname, '..', '..', '..', 'front_end');
-const EXEMPTED_EXPORTING_FILES = new Set([path.join(FRONT_END_DIRECTORY, 'ui', 'ARIAUtils.js')]);
 
 const EXEMPTED_THIRD_PARTY_MODULES = new Set([
   // lit-html is exempt as it doesn't expose all its modules from the root file
@@ -70,10 +69,6 @@ module.exports = {
         const importPath = path.normalize(node.source.value);
         const exportingFileName = path.resolve(path.dirname(importingFileName), importPath);
 
-        if (EXEMPTED_EXPORTING_FILES.has(exportingFileName)) {
-          return;
-        }
-
         const importMatchesExemptThirdParty =
             Array.from(EXEMPTED_THIRD_PARTY_MODULES)
                 .some(exemptModulePath => exportingFileName.startsWith(exemptModulePath));
@@ -94,7 +89,7 @@ module.exports = {
 
         if (isStarAsImportSpecifier(node.specifiers)) {
           if (computeTopLevelFolder(importingFileName) === computeTopLevelFolder(exportingFileName) &&
-              !isModuleEntrypoint(importingFileName)) {
+              !isModuleEntrypoint(importingFileName) && isModuleEntrypoint(exportingFileName)) {
             context.report({
               node,
               message:

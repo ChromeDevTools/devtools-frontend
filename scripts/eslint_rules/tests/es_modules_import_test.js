@@ -42,10 +42,13 @@ ruleTester.run('es_modules_import', rule, {
       code: 'import \'../../common/common.js\';',
       filename: 'front_end/formatter_worker/formatter_worker.js',
     },
-    // ARIAUtils.js is legacy and exempted from these rules
     {
       code: 'import * as ARIAUtils from \'./ARIAUtils.js\';',
       filename: 'front_end/ui/Toolbar.js',
+    },
+    {
+      code: 'import * as RelatedIssue from \'./RelatedIssue.js\';',
+      filename: 'front_end/sdk/IssuesModel.js',
     },
     // the `ls` helper is an exception in a TypeScript file
     {

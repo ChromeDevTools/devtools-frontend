@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import {assert} from 'chai';
 
-import {$, click, getBrowserAndPages, waitFor} from '../../shared/helper.js';
+import {$, $$, click, getBrowserAndPages, waitFor} from '../../shared/helper.js';
 
 const SELECTED_TREE_ELEMENT_SELECTOR = '.selected[role="treeitem"]';
 
@@ -61,4 +61,20 @@ export const waitForDomNodeToBeHidden = async (elementSelector: string) => {
 
 export const assertGutterDecorationForDomNodeExists = async () => {
   await waitFor('.elements-gutter-decoration');
+};
+
+const EVENT_LISTENERS_PANEL_LINK = '[aria-label="Event Listeners"]';
+const EVENT_LISTENERS_SELECTOR = '[aria-label$="event listener"]';
+
+export const openEventListenersPaneAndWaitForListeners = async () => {
+  await click(EVENT_LISTENERS_PANEL_LINK);
+  await waitFor(EVENT_LISTENERS_SELECTOR);
+};
+
+export const getDisplayedEventListenerNames = async(): Promise<string[]> => {
+  const eventListeners = await $$(EVENT_LISTENERS_SELECTOR);
+  const eventListenerNames = await eventListeners.evaluate(nodes => {
+    return nodes.map((listener: HTMLElement) => listener.textContent);
+  });
+  return eventListenerNames;
 };

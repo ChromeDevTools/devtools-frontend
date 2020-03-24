@@ -251,6 +251,7 @@ export class EventListenersTreeElement extends UI.TreeOutline.TreeElement {
     this.toggleOnClick = true;
     this._linkifier = linkifier;
     this._changeCallback = changeCallback;
+    UI.ARIAUtils.setAccessibleName(this.listItemElement, `${type}, event listener`);
   }
 
   /**

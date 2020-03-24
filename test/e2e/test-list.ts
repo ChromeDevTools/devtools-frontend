@@ -11,6 +11,7 @@ const tests = [
   'console/console-repl-mode.js',
   'elements/pseudo-states.js',
   'elements/shadowroot-styles.js',
+  'elements/sidebar-event-listeners.js',
   'host/user-metrics.js',
   'network/network-datagrid.js',
   'rendering/vision-deficiencies.js',

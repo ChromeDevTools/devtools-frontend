@@ -381,8 +381,8 @@ export const releaseNoteText = [
         link: 'https://developers.google.com/web/updates/2019/01/devtools#keyboard',
       },
       {
-        title: 'Save custom geolocation overrides',
-        subtitle: 'Click Manage in the Sensors tab or open Settings > Geolocations.',
+        title: 'Save custom location overrides',
+        subtitle: 'Click Manage in the Sensors tab or open Settings > Locations.',
         link: 'https://developers.google.com/web/updates/2019/01/devtools#geolocation',
       },
       {

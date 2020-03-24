@@ -9,24 +9,24 @@ import * as UI from '../ui/ui.js';
  * @implements {UI.ListWidget.Delegate}
  * @unrestricted
  */
-export class GeolocationsSettingsTab extends UI.Widget.VBox {
+export class LocationsSettingsTab extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('emulation/geolocationsSettingsTab.css');
+    this.registerRequiredCSS('emulation/locationsSettingsTab.css');
 
-    this.contentElement.createChild('div', 'header').textContent = Common.UIString.UIString('Custom Geolocations');
+    this.contentElement.createChild('div', 'header').textContent = Common.UIString.UIString('Custom locations');
 
     const addButton = UI.UIUtils.createTextButton(
-        Common.UIString.UIString('Add location...'), this._addButtonClicked.bind(this), 'add-geolocations-button');
+        Common.UIString.UIString('Add location\u2026'), this._addButtonClicked.bind(this), 'add-locations-button');
     this.contentElement.appendChild(addButton);
 
     this._list = new UI.ListWidget.ListWidget(this);
-    this._list.element.classList.add('geolocations-list');
-    this._list.registerRequiredCSS('emulation/geolocationsSettingsTab.css');
+    this._list.element.classList.add('locations-list');
+    this._list.registerRequiredCSS('emulation/locationsSettingsTab.css');
     this._list.show(this.contentElement);
 
-    this._customSetting = Common.Settings.Settings.instance().moduleSetting('emulation.geolocations');
-    this._customSetting.addChangeListener(this._geolocationsUpdated, this);
+    this._customSetting = Common.Settings.Settings.instance().moduleSetting('emulation.locations');
+    this._customSetting.addChangeListener(this._locationsUpdated, this);
 
     this.setDefaultFocusedElement(addButton);
   }
@@ -36,10 +36,10 @@ export class GeolocationsSettingsTab extends UI.Widget.VBox {
    */
   wasShown() {
     super.wasShown();
-    this._geolocationsUpdated();
+    this._locationsUpdated();
   }
 
-  _geolocationsUpdated() {
+  _locationsUpdated() {
     this._list.clear();
 
     const conditions = this._customSetting.get();
@@ -51,7 +51,7 @@ export class GeolocationsSettingsTab extends UI.Widget.VBox {
   }
 
   _addButtonClicked() {
-    this._list.addNewItem(this._customSetting.get().length, {title: '', lat: 0, long: 0, timezoneId: ''});
+    this._list.addNewItem(this._customSetting.get().length, {title: '', lat: 0, long: 0, timezoneId: '', locale: ''});
   }
 
   /**
@@ -61,18 +61,20 @@ export class GeolocationsSettingsTab extends UI.Widget.VBox {
    * @return {!Element}
    */
   renderItem(item, editable) {
-    const geolocation = /** @type {!Item} */ (item);
-    const element = createElementWithClass('div', 'geolocations-list-item');
-    const title = element.createChild('div', 'geolocations-list-text geolocations-list-title');
-    const titleText = title.createChild('div', 'geolocations-list-title-text');
-    titleText.textContent = geolocation.title;
-    titleText.title = geolocation.title;
-    element.createChild('div', 'geolocations-list-separator');
-    element.createChild('div', 'geolocations-list-text').textContent = geolocation.lat;
-    element.createChild('div', 'geolocations-list-separator');
-    element.createChild('div', 'geolocations-list-text').textContent = geolocation.long;
-    element.createChild('div', 'geolocations-list-separator');
-    element.createChild('div', 'geolocations-list-text').textContent = geolocation.timezoneId;
+    const location = /** @type {!Item} */ (item);
+    const element = createElementWithClass('div', 'locations-list-item');
+    const title = element.createChild('div', 'locations-list-text locations-list-title');
+    const titleText = title.createChild('div', 'locations-list-title-text');
+    titleText.textContent = location.title;
+    titleText.title = location.title;
+    element.createChild('div', 'locations-list-separator');
+    element.createChild('div', 'locations-list-text').textContent = location.lat;
+    element.createChild('div', 'locations-list-separator');
+    element.createChild('div', 'locations-list-text').textContent = location.long;
+    element.createChild('div', 'locations-list-separator');
+    element.createChild('div', 'locations-list-text locations-list-text-timezone').textContent = location.timezoneId;
+    element.createChild('div', 'locations-list-separator');
+    element.createChild('div', 'locations-list-text').textContent = location.locale;
     return element;
   }
 
@@ -94,18 +96,20 @@ export class GeolocationsSettingsTab extends UI.Widget.VBox {
    * @param {boolean} isNew
    */
   commitEdit(item, editor, isNew) {
-    const geolocation = /** @type {?Item} */ (item);
-    geolocation.title = editor.control('title').value.trim();
+    const location = /** @type {?Item} */ (item);
+    location.title = editor.control('title').value.trim();
     const lat = editor.control('lat').value.trim();
-    geolocation.lat = lat ? parseFloat(lat) : 0;
+    location.lat = lat ? parseFloat(lat) : 0;
     const long = editor.control('long').value.trim();
-    geolocation.long = long ? parseFloat(long) : 0;
+    location.long = long ? parseFloat(long) : 0;
     const timezoneId = editor.control('timezoneId').value.trim();
-    geolocation.timezoneId = timezoneId;
+    location.timezoneId = timezoneId;
+    const locale = editor.control('locale').value.trim();
+    location.locale = locale;
 
     const list = this._customSetting.get();
     if (isNew) {
-      list.push(geolocation);
+      list.push(location);
     }
     this._customSetting.set(list);
   }
@@ -116,12 +120,13 @@ export class GeolocationsSettingsTab extends UI.Widget.VBox {
    * @return {!UI.ListWidget.Editor}
    */
   beginEdit(item) {
-    const geolocation = /** @type {?Item} */ (item);
+    const location = /** @type {?Item} */ (item);
     const editor = this._createEditor();
-    editor.control('title').value = geolocation.title;
-    editor.control('lat').value = String(geolocation.lat);
-    editor.control('long').value = String(geolocation.long);
-    editor.control('timezoneId').value = String(geolocation.timezoneId);
+    editor.control('title').value = location.title;
+    editor.control('lat').value = String(location.lat);
+    editor.control('long').value = String(location.long);
+    editor.control('timezoneId').value = location.timezoneId;
+    editor.control('locale').value = location.locale;
     return editor;
   }
 
@@ -137,31 +142,36 @@ export class GeolocationsSettingsTab extends UI.Widget.VBox {
     this._editor = editor;
     const content = editor.contentElement();
 
-    const titles = content.createChild('div', 'geolocations-edit-row');
-    titles.createChild('div', 'geolocations-list-text geolocations-list-title').textContent =
+    const titles = content.createChild('div', 'locations-edit-row');
+    titles.createChild('div', 'locations-list-text locations-list-title').textContent =
         Common.UIString.UIString('Location name');
-    titles.createChild('div', 'geolocations-list-separator geolocations-list-separator-invisible');
-    titles.createChild('div', 'geolocations-list-text').textContent = Common.UIString.UIString('Lat');
-    titles.createChild('div', 'geolocations-list-separator geolocations-list-separator-invisible');
-    titles.createChild('div', 'geolocations-list-text').textContent = Common.UIString.UIString('Long');
-    titles.createChild('div', 'geolocations-list-separator geolocations-list-separator-invisible');
-    titles.createChild('div', 'geolocations-list-text').textContent = Common.UIString.UIString('Timezone ID');
+    titles.createChild('div', 'locations-list-separator locations-list-separator-invisible');
+    titles.createChild('div', 'locations-list-text').textContent = Common.UIString.UIString('Lat');
+    titles.createChild('div', 'locations-list-separator locations-list-separator-invisible');
+    titles.createChild('div', 'locations-list-text').textContent = Common.UIString.UIString('Long');
+    titles.createChild('div', 'locations-list-separator locations-list-separator-invisible');
+    titles.createChild('div', 'locations-list-text').textContent = Common.UIString.UIString('Timezone ID');
+    titles.createChild('div', 'locations-list-separator locations-list-separator-invisible');
+    titles.createChild('div', 'locations-list-text').textContent = Common.UIString.UIString('Locale');
 
-    const fields = content.createChild('div', 'geolocations-edit-row');
-    fields.createChild('div', 'geolocations-list-text geolocations-list-title')
+    const fields = content.createChild('div', 'locations-edit-row');
+    fields.createChild('div', 'locations-list-text locations-list-title')
         .appendChild(editor.createInput('title', 'text', ls`Location name`, titleValidator));
-    fields.createChild('div', 'geolocations-list-separator geolocations-list-separator-invisible');
+    fields.createChild('div', 'locations-list-separator locations-list-separator-invisible');
 
-    let cell = fields.createChild('div', 'geolocations-list-text');
+    let cell = fields.createChild('div', 'locations-list-text');
     cell.appendChild(editor.createInput('lat', 'text', ls`Latitude`, latValidator));
-    fields.createChild('div', 'geolocations-list-separator geolocations-list-separator-invisible');
+    fields.createChild('div', 'locations-list-separator locations-list-separator-invisible');
 
-    cell = fields.createChild('div', 'geolocations-list-text');
+    cell = fields.createChild('div', 'locations-list-text');
     cell.appendChild(editor.createInput('long', 'text', ls`Longitude`, longValidator));
-    fields.createChild('div', 'geolocations-list-separator geolocations-list-separator-invisible');
+    fields.createChild('div', 'locations-list-separator locations-list-separator-invisible');
 
-    cell = fields.createChild('div', 'geolocations-list-text');
+    cell = fields.createChild('div', 'locations-list-text');
     cell.appendChild(editor.createInput('timezoneId', 'text', ls`Timezone ID`, timezoneIdValidator));
+
+    cell = fields.createChild('div', 'locations-list-text');
+    cell.appendChild(editor.createInput('locale', 'text', ls`Locale`, localeValidator));
 
     return editor;
 
@@ -262,12 +272,34 @@ export class GeolocationsSettingsTab extends UI.Widget.VBox {
       // liberal in what it accepts. ICU does not simply use an allowlist
       // but instead tries to make sense of the input, even for
       // weird-looking timezone IDs. There's not much point in validating
-      // the input other than checking if it contains at least one alphabet.
-      // The empty string resets the override, and is accepted as well.
+      // the input other than checking if it contains at least one
+      // alphabetic character. The empty string resets the override,
+      // and is accepted as well.
       if (value === '' || /[a-zA-Z]/.test(value)) {
         return {valid: true};
       }
-      const errorMessage = ls`Timezone ID must contain alphabet letters`;
+      const errorMessage = ls`Timezone ID must contain alphabetic characters`;
+      return {valid: false, errorMessage};
+    }
+
+    /**
+     * @param {*} item
+     * @param {number} index
+     * @param {!HTMLInputElement|!HTMLSelectElement} input
+     * @return {!UI.ListWidget.ValidatorResult}
+     */
+    function localeValidator(item, index, input) {
+      const value = input.value.trim();
+      // Similarly to timezone IDs, there's not much point in validating
+      // input locales other than checking if it contains at least two
+      // alphabetic characters.
+      // https://unicode.org/reports/tr35/#Unicode_language_identifier
+      // The empty string resets the override, and is accepted as
+      // well.
+      if (value === '' || /[a-zA-Z]{2}/.test(value)) {
+        return {valid: true};
+      }
+      const errorMessage = ls`Locale must contain alphabetic characters`;
       return {valid: false, errorMessage};
     }
   }

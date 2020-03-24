@@ -121,9 +121,6 @@
   <message name="IDS_DEVTOOLS_31fde7b05ac8952dacf4af8a704074ec" desc="Text for previewing items">
     Preview
   </message>
-  <message name="IDS_DEVTOOLS_323d4eb70b252acb4a04eaf9e0882597" desc="Title for a group of cities">
-    Geolocation
-  </message>
   <message name="IDS_DEVTOOLS_340641a167ad6da1bcb4016357f4695d" desc="Title for a type of source files">
     Content scripts
   </message>
@@ -543,6 +540,9 @@
   </message>
   <message name="IDS_DEVTOOLS_c9cc8cce247e49bae79f15173ce97354" desc="Text to save something">
     Save
+  </message>
+  <message name="IDS_DEVTOOLS_ce5bf551379459c1c61d2a204061c455" desc="Title for a group of cities">
+    Location
   </message>
   <message name="IDS_DEVTOOLS_ce82e07fa1f0521f5cee30e368fe2e73" desc="Text that starts with a colon and includes a placeholder">
     : <ph name="AA_NUMBER">$1s<ex>3.0</ex></ph>

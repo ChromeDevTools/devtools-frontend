@@ -1068,8 +1068,8 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     if (this._extraHeaders) {
       networkAgent.setExtraHTTPHeaders(this._extraHeaders);
     }
-    if (this._currentUserAgent()) {
-      networkAgent.setUserAgentOverride(this._currentUserAgent());
+    if (this.currentUserAgent()) {
+      networkAgent.setUserAgentOverride(this.currentUserAgent());
     }
     if (this._effectiveBlockedURLs.length) {
       networkAgent.setBlockedURLs(this._effectiveBlockedURLs);
@@ -1158,12 +1158,12 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   /**
    * @return {string}
    */
-  _currentUserAgent() {
+  currentUserAgent() {
     return this._customUserAgent ? this._customUserAgent : this._userAgentOverride;
   }
 
   _updateUserAgentOverride() {
-    const userAgent = this._currentUserAgent();
+    const userAgent = this.currentUserAgent();
     for (const agent of this._agents) {
       agent.setUserAgentOverride(userAgent);
     }
@@ -1351,7 +1351,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   loadResource(url, callback) {
     const headers = {};
 
-    const currentUserAgent = this._currentUserAgent();
+    const currentUserAgent = this.currentUserAgent();
     if (currentUserAgent) {
       headers['User-Agent'] = currentUserAgent;
     }

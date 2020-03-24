@@ -6,9 +6,6 @@
   <message name="IDS_DEVTOOLS_2dccd1ab3e03990aea77359831c85ca2" desc="Label for number of affected resource indication in issue view">
     cookie
   </message>
-  <message name="IDS_DEVTOOLS_3ac50b50b2090885755631100cb73b51" desc="Message for the SameSiteCookies::SameSiteNoneWithoutSecure issue code">
-    In a future version of chrome, third party cookies will only be sent when marked as SameSite=None and Secure to prevent them from being accessed in a man in the middle scenario.
-  </message>
   <message name="IDS_DEVTOOLS_55e7dd3016ce4ac57b9a0f56af12f7c2" desc="Label for number of affected resource indication in issue view">
     cookies
   </message>
@@ -17,6 +14,9 @@
   </message>
   <message name="IDS_DEVTOOLS_b02478e52979ba9af8bffc41f342f4b6" desc="Header for the section listing affected resources">
     Affected Resources
+  </message>
+  <message name="IDS_DEVTOOLS_bb1be05a71dffef6cfe9564fa1fcf515" desc="Message for the SameSiteCookies::SameSiteNoneWithoutSecure issue code">
+    A Cookie in a third-party context has been set without SameSite=None
   </message>
   <message name="IDS_DEVTOOLS_ee02b74d0caebce3dabaf3b3e79b6a65" desc="The UI destination when right clicking an item that can be revealed">
     Issues view
@@ -30,11 +30,8 @@
   <message name="IDS_DEVTOOLS_8e6aefb01ad865cdce56f1992b317e4a" desc="Link for SameSiteCookies Issues">
     https://web.dev/samesite-cookies-explained/
   </message>
-  <message name="IDS_DEVTOOLS_9f47b91013372f367a71d5f6eabc7e67" desc="Title for the SameSiteCookies::SameSiteNoneMissingForThirdParty issue code">
-    A Cookie in a third party context has been set without SameSite=None
-  </message>
-  <message name="IDS_DEVTOOLS_bc25f01b7b9a256f417f28a44866ef07" desc="Message for the SameSiteCookies::SameSiteNoneMissingForThirdParty issue code">
-    In a future version of chrome, third party cookies will only be sent when marked as SameSite=None and Secure to prevent them from being accessed in a man in the middle szenario.
+  <message name="IDS_DEVTOOLS_0ed7212d68b6867bc1294244c9bc0b33" desc="Message for the SameSiteCookies::SameSiteNoneMissingForThirdParty issue code">
+    In a future version of Chrome, third-party cookies will only be sent when marked as SameSite=None and Secure to prevent them from being accessed in a man-in-the-middle scenario.
   </message>
   <message name="IDS_DEVTOOLS_bf3d65060c91ba1d205face215fced7b" desc="Label for High Priority">
     High Priority

@@ -426,23 +426,23 @@ export const Priority = {
 const issueDetails = {
   'SameSiteCookies::SameSiteNoneWithoutSecure':
       {title: ls`A Cookie has been set with SameSite=None but without Secure`, message: ls
-    `In a future version of chrome, third party cookies will only be sent when marked as SameSite=None and Secure to prevent them from being accessed in a man in the middle scenario.`,
+    `In a future version of Chrome, third-party cookies will only be sent when marked as SameSite=None and Secure to prevent them from being accessed in a man-in-the-middle scenario.`,
     priority: Priority.High,
     link: ls`https://web.dev/samesite-cookies-explained/`,
     linkTitle: ls`SameSite cookies explained`,
   },
   'SameSiteCookies::SameSiteNoneMissingForThirdParty': {
-    title: ls`A Cookie in a third party context has been set without SameSite=None`,
+    title: ls`A Cookie in a third-party context has been set without SameSite=None`,
     message: ls
-    `In a future version of chrome, third party cookies will only be sent when marked as SameSite=None and Secure to prevent them from being accessed in a man in the middle szenario.`,
+    `In a future version of Chrome, third-party cookies will only be sent when marked as SameSite=None and Secure to prevent them from being accessed in a man-in-the-middle scenario.`,
     priority: Priority.High,
     link: ls`https://web.dev/samesite-cookies-explained/`,
     linkTitle: ls`SameSite cookies explained`,
   },
   'SameSiteCookieIssue': {
-    title: ls`A Cookie in a third party context has been set without SameSite=None`,
+    title: ls`A Cookie in a third-party context has been set without SameSite=None`,
     message: ls
-    `In a future version of chrome, third party cookies will only be sent when marked as SameSite=None and Secure to prevent them from being accessed in a man in the middle szenario.`,
+    `In a future version of Chrome, third-party cookies will only be sent when marked as SameSite=None and Secure to prevent them from being accessed in a man-in-the-middle scenario.`,
     priority: Priority.High,
     link: ls`https://web.dev/samesite-cookies-explained/`,
     linkTitle: ls`SameSite cookies explained`,

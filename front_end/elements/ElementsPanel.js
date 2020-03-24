@@ -1033,8 +1033,10 @@ export class DOMNodeRevealer {
         // that the root node is the document itself. Any break implies
         // detachment.
         let currentNode = resolvedNode;
-        while (currentNode.parentNode) {
-          currentNode = currentNode.parentNode;
+        if (currentNode) {
+          while (currentNode.parentNode) {
+            currentNode = currentNode.parentNode;
+          }
         }
         const isDetached = !(currentNode instanceof SDK.DOMModel.DOMDocument);
 

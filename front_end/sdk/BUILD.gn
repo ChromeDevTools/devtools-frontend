@@ -10,6 +10,7 @@ ts_library("sdk") {
     "CookieParser.js",
     "NetworkManager.js",
     "NetworkRequest.js",
+    "RelatedIssue.js",
     "SDKModel.js",
     "SecurityOriginManager.js",
     "ServerTiming.js",

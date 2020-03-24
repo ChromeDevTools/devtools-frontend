@@ -7,10 +7,11 @@ import * as Common from '../common/common.js';  // eslint-disable-line no-unused
 import {CookieModel} from './CookieModel.js';
 import {AggregatedIssue, Issue} from './Issue.js';
 import {NetworkManager} from './NetworkManager.js';
+import {NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
+import * as RelatedIssue from './RelatedIssue.js';
 import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
-const connectedIssueSymbol = Symbol('issue');
 
 /**
  * @implements {Protocol.AuditsDispatcher}
@@ -43,7 +44,15 @@ export class IssuesModel extends SDKModel {
    */
   _onMainFrameNavigated(event) {
     const mainFrame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
-    this._issues = this._issues.filter(issue => issue.isAssociatedWithRequestId(mainFrame.loaderId));
+    const keptIssues = [];
+    for (const issue of this._issues) {
+      if (issue.isAssociatedWithRequestId(mainFrame.loaderId)) {
+        keptIssues.push(issue);
+      } else {
+        this._disconnectIssue(issue);
+      }
+    }
+    this._issues = keptIssues;
     this._aggregatedIssuesByCode.clear();
     for (const issue of this._issues) {
       this._aggregateIssue(issue);
@@ -83,8 +92,54 @@ export class IssuesModel extends SDKModel {
   issueAdded(inspectorIssue) {
     const issue = new Issue(inspectorIssue.code, inspectorIssue.resources);
     this._issues.push(issue);
+    this._connectIssue(issue);
     const aggregatedIssue = this._aggregateIssue(issue);
     this.dispatchEventToListeners(Events.AggregatedIssueUpdated, aggregatedIssue);
+  }
+
+  /**
+   *
+   * @param {!Issue} issue
+   */
+  _connectIssue(issue) {
+    const resources = issue.resources();
+    if (!resources) {
+      return;
+    }
+    if (resources.requests) {
+      for (const resourceRequest of resources.requests) {
+        const request =
+            /** @type {?NetworkRequest} */ (
+                self.SDK.networkLog.requests().find(r => r.requestId() === resourceRequest.requestId));
+        if (request) {
+          // Connect the real network request with this issue and vice versa.
+          RelatedIssue.connect(request, issue.getCategory(), issue);
+          resourceRequest.request = request;
+        }
+      }
+    }
+  }
+
+  /**
+   *
+   * @param {!Issue} issue
+   */
+  _disconnectIssue(issue) {
+    const resources = issue.resources();
+    if (!resources) {
+      return;
+    }
+    if (resources.requests) {
+      for (const resourceRequest of resources.requests) {
+        const request =
+            /** @type {?NetworkRequest} */ (
+                self.SDK.networkLog.requests().find(r => r.requestId() === resourceRequest.requestId));
+        if (request) {
+          // Disconnect the real network request from this issue;
+          RelatedIssue.disconnect(request, issue.getCategory(), issue);
+        }
+      }
+    }
   }
 
   /**
@@ -94,36 +149,11 @@ export class IssuesModel extends SDKModel {
     return this._aggregatedIssuesByCode.values();
   }
 
-   /**
+  /**
    * @return {number}
    */
   numberOfAggregatedIssues() {
     return this._aggregatedIssuesByCode.size;
-  }
-
-  /**
-   * @param {!*} obj
-   * TODO(chromium:1063765): Strengthen types.
-   * @param {!Issue} issue
-   */
-  static connectWithIssue(obj, issue) {
-    if (!obj) {
-      return;
-    }
-
-    if (!obj[connectedIssueSymbol]) {
-      obj[connectedIssueSymbol] = new Set();
-    }
-
-    obj[connectedIssueSymbol].add(issue);
-  }
-
-  /**
-   * @param {!*} obj
-   * @returns {boolean}
-   */
-  static hasIssues(obj) {
-    return !!obj && obj[connectedIssueSymbol] && obj[connectedIssueSymbol].size;
   }
 }
 
@@ -133,4 +163,4 @@ export const Events = {
   FullUpdateRequired: Symbol('FullUpdateRequired'),
 };
 
-SDKModel.register(IssuesModel, Capability.None, true);
+SDKModel.register(IssuesModel, Capability.Network, true);

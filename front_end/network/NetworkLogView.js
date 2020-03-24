@@ -1578,7 +1578,7 @@ export class NetworkLogView extends UI.Widget.VBox {
     if (this._dataURLFilterUI.checked() && (request.parsedURL.isDataURL() || request.parsedURL.isBlobURL())) {
       return false;
     }
-    if (this._onlyIssuesFilterUI.checked() && !SDK.IssuesModel.IssuesModel.hasIssues(request)) {
+    if (this._onlyIssuesFilterUI.checked() && !SDK.RelatedIssue.hasIssues(request)) {
       return false;
     }
     if (this._onlyBlockedRequestsUI.checked() && !request.wasBlocked()) {

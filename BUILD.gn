@@ -1404,6 +1404,7 @@ all_devtools_modules = [
   "sdk/IsolateManager.js",
   "sdk/Issue.js",
   "sdk/IssuesModel.js",
+  "sdk/RelatedIssue.js",
   "sdk/LayerTreeBase.js",
   "sdk/LogModel.js",
   "sdk/NetworkLog.js",

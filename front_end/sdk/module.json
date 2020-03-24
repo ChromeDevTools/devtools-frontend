@@ -420,6 +420,7 @@
         "ProfileTreeModel.js",
         "Issue.js",
         "IssuesModel.js",
+        "RelatedIssue.js",
         "ServerTiming.js",
         "CPUProfileDataModel.js",
         "CPUProfilerModel.js",

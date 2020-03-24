@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import {IssuesModel} from './IssuesModel.js';
+import {IssueCategory} from './RelatedIssue.js';
 
 /**
  * @unrestricted
@@ -51,6 +51,20 @@ export class Issue extends Common.ObjectWrapper.ObjectWrapper {
       }
     }
     return false;
+  }
+
+  /**
+   * @return {symbol}
+   */
+  getCategory() {
+    const code = this.code();
+    if (code === 'SameSiteCookieIssue') {
+      return IssueCategory.SameSiteCookie;
+    }
+    if (code.startsWith('CrossOriginEmbedderPolicy')) {
+      return IssueCategory.CrossOriginEmbedderPolicy;
+    }
+    return IssueCategory.Other;
   }
 }
 
@@ -107,7 +121,6 @@ export class AggregatedIssue extends Common.ObjectWrapper.ObjectWrapper {
     }
     if (resources.cookies) {
       for (const cookie of resources.cookies) {
-        IssuesModel.connectWithIssue(cookie, issue);
         const key = JSON.stringify(cookie);
         if (!this._cookies.has(key)) {
           this._cookies.set(key, cookie);

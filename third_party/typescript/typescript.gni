@@ -2,10 +2,12 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-if (defined(use_devtools_typescript) && use_devtools_typescript) {
-  devtools_location = ""
-} else {
-  devtools_location = "third_party/devtools-frontend/src"
+if (!defined(devtools_location)) {
+  if (defined(use_devtools_typescript) && use_devtools_typescript) {
+    devtools_location = ""
+  } else {
+    devtools_location = "third_party/devtools-frontend/src"
+  }
 }
 
 # Defines a target that compiles .ts files using TypeScript.

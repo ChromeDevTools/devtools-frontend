@@ -374,8 +374,6 @@ export const Priority = {
   High: Symbol('PriorityHigh'),
 };
 
-export default IssuesPaneImpl;
-
 const issueDetails = {
   'SameSiteCookies::SameSiteNoneWithoutSecure':
       {title: ls`A Cookie has been set with SameSite=None but without Secure`, message: ls

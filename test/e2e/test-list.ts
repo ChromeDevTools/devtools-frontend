@@ -23,6 +23,7 @@ const tests = [
   'sources/can-show-multiple-workers.js',
   'sources/debug-raw-wasm.js',
   'sources/debugger-language-plugins.js',
+  'sources/dwarf-cxx-language-plugin.js',
   'sources/script-in-multiple-workers.js',
 ];
 

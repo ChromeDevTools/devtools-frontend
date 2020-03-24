@@ -1,0 +1,19 @@
+<script language="javascript">
+async function go() {
+  const importObj = {
+    env : {memory : new WebAssembly.Memory({initial : 1, maximum : 1}),
+      __memory_base : 1024,
+      table : new WebAssembly.Table({
+        initial : 2,
+        maximum : 2,
+        element : 'anyfunc',
+      }),
+    }
+  };
+
+  const pagename = window.location.pathname.split('/').pop();
+  const modulename = pagename.slice(0, -5) + '.wasm';
+  let instance = await WebAssembly.instantiateStreaming(fetch(modulename), importObj);
+  window.main = instance.instance.exports.Main;
+}
+</script>

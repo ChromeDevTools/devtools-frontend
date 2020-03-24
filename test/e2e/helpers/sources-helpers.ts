@@ -136,10 +136,10 @@ export function listenForSourceFilesAdded(frontend: puppeteer.Page) {
   });
 }
 
-export function waitForAdditionalSourceFiles(frontend: puppeteer.Page) {
-  return frontend.waitForFunction(() => {
-    return window.__sourceFilesAddedEvents.length > 0;
-  });
+export function waitForAdditionalSourceFiles(frontend: puppeteer.Page, count = 1) {
+  return frontend.waitForFunction(count => {
+    return window.__sourceFilesAddedEvents.length >= count;
+  }, undefined, count);
 }
 
 export function retrieveSourceFilesAdded(frontend: puppeteer.Page) {

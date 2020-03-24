@@ -18,14 +18,14 @@
   <message name="IDS_DEVTOOLS_0edd9b471d32d5e3bbec7ca8df113568" desc="Title of an action in the emulation tool to toggle device mode">
     Toggle device toolbar
   </message>
+  <message name="IDS_DEVTOOLS_138d1a442ecb2e2fd3b083f1842658d0" desc="Text in Sensors View of the Device Toolbar">
+    Custom orientation...
+  </message>
   <message name="IDS_DEVTOOLS_14304bfef92cfbf9273517fb5725f8b2" desc="Error message in the Devices settings pane that declares the value of the height input must be a number">
     Height must be a number.
   </message>
   <message name="IDS_DEVTOOLS_146bdebb324a64d327b1dde22a07d0bd" desc="Text in Device Mode View of the Device Toolbar">
     Laptop
-  </message>
-  <message name="IDS_DEVTOOLS_89999eac57e5838aa3adb04ad831f5d3" desc="Text in Sensors View of the Device Toolbar">
-    Custom orientation
   </message>
   <message name="IDS_DEVTOOLS_19ada73af65f7c221bd28e78b2eda5cd" desc="A context menu item in the Device Mode Toolbar of the Device Toolbar">
     Edit…
@@ -39,7 +39,7 @@
   <message name="IDS_DEVTOOLS_1c7444be9626d149ab598fb79b639f96" desc="Text in Device Mode Toolbar of the Device Toolbar">
     Portrait
   </message>
-  <message name="IDS_DEVTOOLS_1ef9df27aa7a5f5c87af01dbcbb1e7fc" desc="Error message in the Locations settings pane that declares the maximum length of the location name">
+  <message name="IDS_DEVTOOLS_1ef9df27aa7a5f5c87af01dbcbb1e7fc" desc="Error message in the Geolocations settings pane that declares the maximum length of the location name">
     Location name must be less than <ph name="MAXLENGTH">$1s<ex>50</ex></ph> characters
   </message>
   <message name="IDS_DEVTOOLS_21e2bb42873eddcb9b476b8eafbe0c18" desc="A context menu item in the Device Mode Toolbar of the Device Toolbar">
@@ -69,13 +69,13 @@
   <message name="IDS_DEVTOOLS_32954654ac8fe66a1d09be19001de2d4" desc="Width input title in Device Mode Toolbar of the Device Toolbar">
     Width
   </message>
-  <message name="IDS_DEVTOOLS_5227036641f0fbc6257a4e00bd684382" desc="Aria-label for location manage button in Sensors View">
-    Manage the list of locations
+  <message name="IDS_DEVTOOLS_34a8ca19d04d2af1f2761370580a4b10" desc="Aria-label for geolocation manage button in Sensors View">
+    Manage the list of geolocations
   </message>
   <message name="IDS_DEVTOOLS_34e34c43ec6b943c10a3cc1a1a16fb11" desc="Text of button in Sensors View of the Device Toolbar">
     Manage
   </message>
-  <message name="IDS_DEVTOOLS_34fbcb0154374365e4a109c39b7dfe3a" desc="Error message in the Locations settings pane that declares the maximum value for the longitude input">
+  <message name="IDS_DEVTOOLS_34fbcb0154374365e4a109c39b7dfe3a" desc="Error message in the Geolocations settings pane that declares the maximum value for the longitude input">
     Longitude must be less than or equal to <ph name="MAXLONG">$1s<ex>180</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_36384a9ea3ec791e6bd4ab6b36f2ff2a" desc="Text in Device Mode View of the Device Toolbar">
@@ -102,10 +102,16 @@
   <message name="IDS_DEVTOOLS_414b730ab2cf9123d9230740864ffeec" desc="A context menu item in the Device Mode Toolbar of the Device Toolbar">
     Close <ph name="LOCKED_1">DevTools</ph>
   </message>
+  <message name="IDS_DEVTOOLS_45f80006d304f294d6c1de50c244856e" desc="Text of add geolocations button in Geolocations Settings Tab of the Device Toolbar">
+    Add location...
+  </message>
+  <message name="IDS_DEVTOOLS_505529fbaaa0767b9f5e8873f22b9176" desc="Error message in the Geolocations settings pane that declares timezone ID input invalid">
+    Timezone ID must contain alphabet letters
+  </message>
   <message name="IDS_DEVTOOLS_526d688f37a86d3c3f27d0c5016eb71d" desc="Text of orientation reset button in Sensors View of the Device Toolbar">
     Reset
   </message>
-  <message name="IDS_DEVTOOLS_5466ee572bcbc75830d044e66ab429bc" desc="City name in Locations Settings">
+  <message name="IDS_DEVTOOLS_5466ee572bcbc75830d044e66ab429bc" desc="City name in Geolocations Settings">
     Shanghai
   </message>
   <message name="IDS_DEVTOOLS_58cc7602635a11277aa7531e14b32c97" desc="Text in Sensors View of the Device Toolbar">
@@ -114,17 +120,14 @@
   <message name="IDS_DEVTOOLS_59c06928c1dcdb1a687bf21d73e53a09" desc="Text in Device Mode Toolbar of the Device Toolbar">
     Show device frame
   </message>
-  <message name="IDS_DEVTOOLS_59ead8d1e124ccfb79f3ace06f43e703" desc="City name in Locations Settings">
+  <message name="IDS_DEVTOOLS_59ead8d1e124ccfb79f3ace06f43e703" desc="City name in Geolocations Settings">
     London
   </message>
-  <message name="IDS_DEVTOOLS_5b4f1c0e2bd8bc1ba726cd51dd70c1a6" desc="City name in Locations Settings">
+  <message name="IDS_DEVTOOLS_5b4f1c0e2bd8bc1ba726cd51dd70c1a6" desc="City name in Geolocations Settings">
     Mountain View
   </message>
   <message name="IDS_DEVTOOLS_5cacd64cfc65b4f4ea83306b6cebf0be" desc="A tag of Sensors tool that can be searched in the command menu">
     timezones
-  </message>
-  <message name="IDS_DEVTOOLS_5e749079e5aedb5f24e7f0d03835bf1f" desc="A tag of Sensors tool that can be searched in the command menu">
-    locales
   </message>
   <message name="IDS_DEVTOOLS_614103b76fd0d9de068d69034fb6f987" desc="Text in Device Mode View of the Device Toolbar">
     (<ph name="THIS__MODEL_DEVICE___TITLE">$1s<ex>iPhone X</ex></ph>)
@@ -132,7 +135,7 @@
   <message name="IDS_DEVTOOLS_6149711fb8edc5e2adeea7aa63ee11ff" desc="Text in Device Mode Toolbar of the Device Toolbar">
     150%
   </message>
-  <message name="IDS_DEVTOOLS_62413a57c5e3dc51177995fa175d3286" desc="City name in Locations Settings">
+  <message name="IDS_DEVTOOLS_62413a57c5e3dc51177995fa175d3286" desc="City name in Geolocations Settings">
     Tokyo
   </message>
   <message name="IDS_DEVTOOLS_62759e0d418d7391bf2d54e70cbcc05d" desc="Text in Device Mode Toolbar of the Device Toolbar">
@@ -144,7 +147,7 @@
   <message name="IDS_DEVTOOLS_649676015173b6195516eed77e5aee60" desc="Text in Device Mode Toolbar of the Device Toolbar">
     125%
   </message>
-  <message name="IDS_DEVTOOLS_673a7b89eb57bf2bf891306c98cbecc3" desc="Error message in the Locations settings pane that declares that the value for the latitude input must be a number">
+  <message name="IDS_DEVTOOLS_673a7b89eb57bf2bf891306c98cbecc3" desc="Error message in the Geolocations settings pane that declares that the value for the latitude input must be a number">
     Latitude must be a number
   </message>
   <message name="IDS_DEVTOOLS_6bdb3457630d1a73c9cdc3a7db7062b9" desc="Message in the Sensors tool that is alerted (for screen readers) when  the device orientation setting is changed">
@@ -159,11 +162,8 @@
   <message name="IDS_DEVTOOLS_711da7870457fec714278672385be3d8" desc="Error message in the Devices settings pane that declares that the width input must be a number">
     Width must be a number.
   </message>
-  <message name="IDS_DEVTOOLS_741f22b07be0231ec5e3040ae4291710" desc="Error message in the Locations settings pane that declares the maximum value for the latitude input">
+  <message name="IDS_DEVTOOLS_741f22b07be0231ec5e3040ae4291710" desc="Error message in the Geolocations settings pane that declares the maximum value for the latitude input">
     Latitude must be less than or equal to <ph name="MAXLAT">$1s<ex>90</ex></ph>
-  </message>
-  <message name="IDS_DEVTOOLS_74710ff11394bbf95d4fa4a9d3dc241c" desc="Error message in the Locations settings pane that declares locale input invalid">
-    Locale must contain alphabetic characters
   </message>
   <message name="IDS_DEVTOOLS_75a37bfcbfe2678114513aef903c4ba5" desc="Text in Device Mode Toolbar of the Device Toolbar">
     Default: <ph name="DEFAULTVALUE">$1.1f<ex>4.3</ex></ph>
@@ -177,13 +177,13 @@
   <message name="IDS_DEVTOOLS_7b4b2de0aae3a60aa3cf502a19f9c748" desc="Error message in the Devices settings pane that declares that the device name input must not be empty">
     Device name cannot be empty.
   </message>
-  <message name="IDS_DEVTOOLS_7e35e74e610188414ad24235dd787c78" desc="City name in Locations Settings">
+  <message name="IDS_DEVTOOLS_7e35e74e610188414ad24235dd787c78" desc="City name in Geolocations Settings">
     Moscow
   </message>
   <message name="IDS_DEVTOOLS_7f163d0494446906a484df67e90c1d6b" desc="Text in Device Mode Toolbar of the Device Toolbar">
     Hide device frame
   </message>
-  <message name="IDS_DEVTOOLS_7fc2515293d99e95b1745e81d6abbdf4" desc="City name in Locations Settings">
+  <message name="IDS_DEVTOOLS_7fc2515293d99e95b1745e81d6abbdf4" desc="City name in Geolocations Settings">
     São Paulo
   </message>
   <message name="IDS_DEVTOOLS_815dff01257e5ef182b25d4c1ef0a7a0" desc="Text in Device Mode Toolbar of the Device Toolbar">
@@ -195,7 +195,7 @@
   <message name="IDS_DEVTOOLS_82a9b801e28c4dec617b1cabc329f5bd" desc="Title of an action in the emulation tool to capture screenshot">
     Capture screenshot
   </message>
-  <message name="IDS_DEVTOOLS_8394f0347c184cf156ac5924dccb773b" desc="Text in Locations Settings Tab of the Device Toolbar">
+  <message name="IDS_DEVTOOLS_8394f0347c184cf156ac5924dccb773b" desc="Text in Geolocations Settings Tab of the Device Toolbar">
     Long
   </message>
   <message name="IDS_DEVTOOLS_89e755205b0e07c218525b9ee9aa7cdd" desc="Error message in the Devices settings pane that declares the maximum length of the device name input">
@@ -207,19 +207,16 @@
   <message name="IDS_DEVTOOLS_8d7b5211545faceef57a041ee56a2f5e" desc="Title of an action in the emulation tool to capture full height screenshot">
     Capture full size screenshot
   </message>
-  <message name="IDS_DEVTOOLS_8ebaad59980c95ade797c903761fa815" desc="City name in Locations Settings">
+  <message name="IDS_DEVTOOLS_8ebaad59980c95ade797c903761fa815" desc="City name in Geolocations Settings">
     Mumbai
   </message>
   <message name="IDS_DEVTOOLS_901bc0a4714ff81c24943a50e620de71" desc="Text in Devices Settings Tab of the Device Toolbar">
     User agent string
   </message>
-  <message name="IDS_DEVTOOLS_911f0f24bdce6808f4614d6a263b143b" desc="Text in Sensors View of the Device Toolbar">
-    Locale
-  </message>
   <message name="IDS_DEVTOOLS_92394ac4969be25aa83d1c928f6a7dbc" desc="Label in the Devices settings pane for the device name input of a custom device">
     Device Name
   </message>
-  <message name="IDS_DEVTOOLS_9242eae40fda9aae67b37f9f3a7f4fdc" desc="Error message in the Locations settings pane that declares that the value for the longitude input must be a number">
+  <message name="IDS_DEVTOOLS_9242eae40fda9aae67b37f9f3a7f4fdc" desc="Error message in the Geolocations settings pane that declares that the value for the longitude input must be a number">
     Longitude must be a number
   </message>
   <message name="IDS_DEVTOOLS_95129d2a7de16087427f1632dc691287" desc="Text in Device Mode Toolbar of the Device Toolbar">
@@ -231,7 +228,7 @@
   <message name="IDS_DEVTOOLS_9b4dabc50f0b8ccba1c8981831abdad8" desc="Text in Sensors View of the Device Toolbar">
     Longitude
   </message>
-  <message name="IDS_DEVTOOLS_9d3d232f9353731108f5756ec4bfa4b6" desc="Error message in the Locations settings pane that declares the minimum value for the latitude input">
+  <message name="IDS_DEVTOOLS_9d3d232f9353731108f5756ec4bfa4b6" desc="Error message in the Geolocations settings pane that declares the minimum value for the latitude input">
     Latitude must be greater than or equal to <ph name="MINLAT">$1s<ex>-90</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_9fa08fa6b5a65fd3a2e14858a2559027" desc="Text in Sensors View of the Device Toolbar">
@@ -239,9 +236,6 @@
   </message>
   <message name="IDS_DEVTOOLS_9fd04ab471b39141991551708305ceb5" desc="Add custom button in Devices Settings Tab of the Device Toolbar">
     Add custom device...
-  </message>
-  <message name="IDS_DEVTOOLS_a01bb3348f97101b3f00dc59683c2613" desc="Text of add locations button in Locations Settings Tab of the Device Toolbar">
-    Add location…
   </message>
   <message name="IDS_DEVTOOLS_a043e816a2c42b9290b672b1aa22cb73" desc="Text in Device Mode View of the Device Toolbar">
     Mobile M
@@ -255,8 +249,8 @@
   <message name="IDS_DEVTOOLS_a7e2da1e5160847a88912b69027bca09" desc="Stage element title in Sensors View of the Device Toolbar">
     Enable orientation to rotate
   </message>
-  <message name="IDS_DEVTOOLS_eebd338ddbd547e41e4a1296de82963a" desc="Title of Locations settings">
-    Locations
+  <message name="IDS_DEVTOOLS_a88789aba0125292a7a2b8774a979b37" desc="Title of Geolocations settings">
+    Geolocations
   </message>
   <message name="IDS_DEVTOOLS_a9c9b04b4bb57da48b29b4f40ffb2e89" desc="A tag of Sensors tool that can be searched in the command menu">
     device orientation
@@ -297,13 +291,13 @@
   <message name="IDS_DEVTOOLS_c107e6e26d3b1b5eadbf9e842f6c0e05" desc="Text in Device Mode Toolbar of the Device Toolbar">
     Add device type
   </message>
-  <message name="IDS_DEVTOOLS_c23fc6f13afcbcd7dee750fe4f074421" desc="Text in Locations Settings Tab of the Device Toolbar">
+  <message name="IDS_DEVTOOLS_c23fc6f13afcbcd7dee750fe4f074421" desc="Text in Geolocations Settings Tab of the Device Toolbar">
     Lat
   </message>
-  <message name="IDS_DEVTOOLS_8b1f9e8e994eb2e2d2b1bde0401c5c40" desc="Text in Locations Settings Tab of the Device Toolbar">
-    Custom locations
+  <message name="IDS_DEVTOOLS_c3abc91ecb930fd1d8a6b1e738eb36be" desc="Text in Geolocations Settings Tab of the Device Toolbar">
+    Custom Geolocations
   </message>
-  <message name="IDS_DEVTOOLS_c3c3720080d9497b9df37fcd78994144" desc="Text in Locations Settings Tab of the Device Toolbar">
+  <message name="IDS_DEVTOOLS_c3c3720080d9497b9df37fcd78994144" desc="Text in Geolocations Settings Tab of the Device Toolbar">
     Location name
   </message>
   <message name="IDS_DEVTOOLS_c4ca4238a0b923820dcc509a6f75849b" desc="Text in Device Mode Toolbar of the Device Toolbar">
@@ -321,7 +315,7 @@
   <message name="IDS_DEVTOOLS_cb4ebbdb6a71353036b6f3b759ad7918" desc="Error message in the Devices settings pane that declares the maximum value for the height input">
     Height must be less than or equal to <ph name="EMULATION_DEVICEMODEMODEL_MAXDEVICESIZE">$1s<ex>9999</ex></ph>.
   </message>
-  <message name="IDS_DEVTOOLS_d0f57f3a1b5b308c6cd7af48b420eb03" desc="Error message in the Locations settings pane that declares the minimum value for the longitude input">
+  <message name="IDS_DEVTOOLS_d0f57f3a1b5b308c6cd7af48b420eb03" desc="Error message in the Geolocations settings pane that declares the minimum value for the longitude input">
     Longitude must be greater than or equal to <ph name="MINLONG">$1s<ex>-180</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_d15305d7a4e34e02489c74a5ef542f36" desc="Text in Sensors View of the Device Toolbar">
@@ -329,9 +323,6 @@
   </message>
   <message name="IDS_DEVTOOLS_da31f3ff326e70f6b08748520c553920" desc="Text in Sensors View of the Device Toolbar">
     γ (gamma)
-  </message>
-  <message name="IDS_DEVTOOLS_db30100c0700a5fd19b5fec10761a067" desc="Error message in the Locations settings pane that declares timezone ID input invalid">
-    Timezone ID must contain alphabetic characters
   </message>
   <message name="IDS_DEVTOOLS_decc67818f6be186e03a3c27c2eedc9e" desc="Bottom resizer element title in Device Mode View of the Device Toolbar">
     Double-click for full height
@@ -345,7 +336,7 @@
   <message name="IDS_DEVTOOLS_eccbc87e4b5ce2fe28308fd9f2a7baf3" desc="Text in Device Mode Toolbar of the Device Toolbar">
     3
   </message>
-  <message name="IDS_DEVTOOLS_ee1611b61f5688e70c12b40684dbb395" desc="City name in Locations Settings">
+  <message name="IDS_DEVTOOLS_ee1611b61f5688e70c12b40684dbb395" desc="City name in Geolocations Settings">
     Berlin
   </message>
   <message name="IDS_DEVTOOLS_ee1cab1975e28575b1631ee8fc4ea749" desc="Title of an action in the emulation tool to capture node screenshot">
@@ -357,20 +348,17 @@
   <message name="IDS_DEVTOOLS_eec6c4bdbd339edf8cbea68becb85244" desc="Label in the Devices settings pane for the height input of a custom device">
     Height
   </message>
-  <message name="IDS_DEVTOOLS_f01ee7fedba5e392f6f9adab7ec0c74a" desc="Error message in the Locations settings pane that declares the location name input must not be empty">
+  <message name="IDS_DEVTOOLS_f01ee7fedba5e392f6f9adab7ec0c74a" desc="Error message in the Geolocations settings pane that declares the location name input must not be empty">
     Location name cannot be empty
   </message>
   <message name="IDS_DEVTOOLS_f2a72a44f7b7d30829c0405ed2385345" desc="Text in Device Mode View of the Device Toolbar">
     Mobile S
   </message>
-  <message name="IDS_DEVTOOLS_f4334fdfa1c728eae375fe781e2e2d9d" desc="City name in Locations Settings">
+  <message name="IDS_DEVTOOLS_f4334fdfa1c728eae375fe781e2e2d9d" desc="City name in Geolocations Settings">
     San Francisco
   </message>
   <message name="IDS_DEVTOOLS_f819de81247be4a5428dc0e169de28b8" desc="Text in Device Mode Toolbar of the Device Toolbar">
     75%
-  </message>
-  <message name="IDS_DEVTOOLS_fb216d9e8791e63c8d12bdc420956839" desc="Text in Sensors View of the Device Toolbar">
-    locale
   </message>
   <message name="IDS_DEVTOOLS_fd0a6990abd15cd06c80309237b01262" desc="Text of a DOM element in Devices Settings Tab of the Device Toolbar">
     Emulated Devices

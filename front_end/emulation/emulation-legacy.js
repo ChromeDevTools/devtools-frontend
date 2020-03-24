@@ -58,7 +58,7 @@ Emulation.EmulatedDevicesList = EmulationModule.EmulatedDevices.EmulatedDevicesL
 /**
  * @constructor
  */
-Emulation.LocationsSettingsTab = EmulationModule.LocationsSettingsTab.LocationsSettingsTab;
+Emulation.GeolocationsSettingsTab = EmulationModule.GeolocationsSettingsTab.GeolocationsSettingsTab;
 
 /**
  * @constructor

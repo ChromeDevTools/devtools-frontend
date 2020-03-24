@@ -10,26 +10,26 @@
 
 .header {
   padding: 0 0 6px;
-  border-bottom: 1px solid #EEE;
+  border-bottom: 1px solid #EEEEEE;
   font-size: 18px;
   font-weight: normal;
   flex: none;
 }
 
-.add-locations-button {
+.add-geolocations-button {
   flex: none;
   margin: 10px 2px;
   min-width: 140px;
   align-self: flex-start;
 }
 
-.locations-list {
+.geolocations-list {
   max-width: 600px;
   min-width: 340px;
   flex: auto;
 }
 
-.locations-list-item {
+.geolocations-list-item {
   padding: 3px 5px 3px 5px;
   height: 30px;
   display: flex;
@@ -38,7 +38,7 @@
   flex: auto 1 1;
 }
 
-.locations-list-text {
+.geolocations-list-text {
   white-space: nowrap;
   text-overflow: ellipsis;
   flex: 0 0 70px;
@@ -48,44 +48,44 @@
   position: relative;
 }
 
-.locations-list-text-timezone {
-  flex-basis: 170px;
+.geolocations-list-text:last-child {
+  flex: 0 0 170px;
 }
 
-.locations-list-title {
+.geolocations-list-title {
   text-align: start;
   flex: auto;
   display: flex;
   align-items: flex-start;
 }
 
-.locations-list-title-text {
+.geolocations-list-title-text {
   overflow: hidden;
   flex: auto;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
-.locations-list-separator {
+.geolocations-list-separator {
   flex: 0 0 1px;
   background-color: rgb(231, 231, 231);
   height: 30px;
   margin: 0 4px;
 }
 
-.locations-list-separator-invisible {
+.geolocations-list-separator-invisible {
   visibility: hidden;
   height: 100% !important;
 }
 
-.locations-edit-row {
+.geolocations-edit-row {
   flex: none;
   display: flex;
   flex-direction: row;
   margin: 6px 5px;
 }
 
-.locations-edit-row input {
+.geolocations-edit-row input {
   width: 100%;
   text-align: inherit;
 }

@@ -16,10 +16,10 @@ export class SensorsView extends UI.Widget.VBox {
     this.registerRequiredCSS('emulation/sensors.css');
     this.contentElement.classList.add('sensors-view');
 
-    this._LocationSetting = Common.Settings.Settings.instance().createSetting('emulation.locationOverride', '');
-    this._Location = SDK.EmulationModel.Location.parseSetting(this._LocationSetting.get());
-    this._LocationOverrideEnabled = false;
-    this._createLocationSection(this._Location);
+    this._geolocationSetting = Common.Settings.Settings.instance().createSetting('emulation.geolocationOverride', '');
+    this._geolocation = SDK.EmulationModel.Geolocation.parseSetting(this._geolocationSetting.get());
+    this._geolocationOverrideEnabled = false;
+    this._createGeolocationSection(this._geolocation);
 
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
@@ -45,11 +45,11 @@ export class SensorsView extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!SDK.EmulationModel.Location} location
+   * @param {!SDK.EmulationModel.Geolocation} geolocation
    */
-  _createLocationSection(location) {
+  _createGeolocationSection(geolocation) {
     const geogroup = this.contentElement.createChild('section', 'sensors-group');
-    const geogroupTitle = UI.UIUtils.createLabel(ls`Location`, 'sensors-group-title');
+    const geogroupTitle = UI.UIUtils.createLabel(ls`Geolocation`, 'sensors-group-title');
     geogroup.appendChild(geogroupTitle);
     const fields = geogroup.createChild('div', 'geo-fields');
 
@@ -64,17 +64,17 @@ export class SensorsView extends UI.Widget.VBox {
     // Locations
     this._customLocationsGroup = this._locationSelectElement.createChild('optgroup');
     this._customLocationsGroup.label = ls`Overrides`;
-    const customLocations = Common.Settings.Settings.instance().moduleSetting('emulation.locations');
-    const manageButton = UI.UIUtils.createTextButton(ls`Manage`, () => Common.Revealer.reveal(customLocations));
-    UI.ARIAUtils.setAccessibleName(manageButton, ls`Manage the list of locations`);
+    const customGeolocations = Common.Settings.Settings.instance().moduleSetting('emulation.geolocations');
+    const manageButton = UI.UIUtils.createTextButton(ls`Manage`, () => Common.Revealer.reveal(customGeolocations));
+    UI.ARIAUtils.setAccessibleName(manageButton, ls`Manage the list of geolocations`);
     fields.appendChild(manageButton);
     const fillCustomSettings = () => {
       this._customLocationsGroup.removeChildren();
-      for (const location of customLocations.get()) {
-        this._customLocationsGroup.appendChild(new Option(location.title, JSON.stringify(location)));
+      for (const geolocation of customGeolocations.get()) {
+        this._customLocationsGroup.appendChild(new Option(geolocation.title, JSON.stringify(geolocation)));
       }
     };
-    customLocations.addChangeListener(fillCustomSettings);
+    customGeolocations.addChangeListener(fillCustomSettings);
     fillCustomSettings();
 
     // Other location
@@ -87,17 +87,16 @@ export class SensorsView extends UI.Widget.VBox {
     group.appendChild(new Option(ls`Location unavailable`, NonPresetOptions.Unavailable));
 
     this._locationSelectElement.selectedIndex = 0;
-    this._locationSelectElement.addEventListener('change', this._LocationSelectChanged.bind(this));
+    this._locationSelectElement.addEventListener('change', this._geolocationSelectChanged.bind(this));
 
     // Validated input fieldset.
     this._fieldsetElement = fields.createChild('fieldset');
-    this._fieldsetElement.disabled = !this._LocationOverrideEnabled;
-    this._fieldsetElement.id = 'location-override-section';
+    this._fieldsetElement.disabled = !this._geolocationOverrideEnabled;
+    this._fieldsetElement.id = 'geolocation-override-section';
 
     const latitudeGroup = this._fieldsetElement.createChild('div', 'latlong-group');
     const longitudeGroup = this._fieldsetElement.createChild('div', 'latlong-group');
     const timezoneGroup = this._fieldsetElement.createChild('div', 'latlong-group');
-    const localeGroup = this._fieldsetElement.createChild('div', 'latlong-group');
 
     const cmdOrCtrl = Host.Platform.isMac() ? '\u2318' : 'Ctrl';
     const modifierKeyMessage = ls`Adjust with mousewheel or up/down keys. ${cmdOrCtrl}: ±10, Shift: ±1, Alt: ±0.01`;
@@ -107,9 +106,9 @@ export class SensorsView extends UI.Widget.VBox {
     this._latitudeInput.setAttribute('step', 'any');
     this._latitudeInput.value = 0;
     this._latitudeSetter = UI.UIUtils.bindInput(
-        this._latitudeInput, this._applyLocationUserInput.bind(this), SDK.EmulationModel.Location.latitudeValidator,
-        true, 0.1);
-    this._latitudeSetter(String(location.latitude));
+        this._latitudeInput, this._applyGeolocationUserInput.bind(this),
+        SDK.EmulationModel.Geolocation.latitudeValidator, true, 0.1);
+    this._latitudeSetter(String(geolocation.latitude));
     this._latitudeInput.title = modifierKeyMessage;
     latitudeGroup.appendChild(UI.UIUtils.createLabel(ls`Latitude`, 'latlong-title', this._latitudeInput));
 
@@ -118,9 +117,9 @@ export class SensorsView extends UI.Widget.VBox {
     this._longitudeInput.setAttribute('step', 'any');
     this._longitudeInput.value = 0;
     this._longitudeSetter = UI.UIUtils.bindInput(
-        this._longitudeInput, this._applyLocationUserInput.bind(this), SDK.EmulationModel.Location.longitudeValidator,
-        true, 0.1);
-    this._longitudeSetter(String(location.longitude));
+        this._longitudeInput, this._applyGeolocationUserInput.bind(this),
+        SDK.EmulationModel.Geolocation.longitudeValidator, true, 0.1);
+    this._longitudeSetter(String(geolocation.longitude));
     this._longitudeInput.title = modifierKeyMessage;
     longitudeGroup.appendChild(UI.UIUtils.createLabel(ls`Longitude`, 'latlong-title', this._longitudeInput));
 
@@ -128,88 +127,71 @@ export class SensorsView extends UI.Widget.VBox {
     timezoneGroup.appendChild(this._timezoneInput);
     this._timezoneInput.value = 'Europe/Berlin';
     this._timezoneSetter = UI.UIUtils.bindInput(
-        this._timezoneInput, this._applyLocationUserInput.bind(this), SDK.EmulationModel.Location.timezoneIdValidator,
-        false);
-    this._timezoneSetter(location.timezoneId);
+        this._timezoneInput, this._applyGeolocationUserInput.bind(this),
+        SDK.EmulationModel.Geolocation.timezoneIdValidator, false);
+    this._timezoneSetter(String(geolocation.timezoneId));
     timezoneGroup.appendChild(UI.UIUtils.createLabel(ls`Timezone ID`, 'timezone-title', this._timezoneInput));
     this._timezoneError = timezoneGroup.createChild('div', 'timezone-error');
-
-    this._localeInput = UI.UIUtils.createInput('', 'text');
-    localeGroup.appendChild(this._localeInput);
-    this._localeInput.value = 'en-US';
-    this._localeSetter = UI.UIUtils.bindInput(
-        this._localeInput, this._applyLocationUserInput.bind(this), SDK.EmulationModel.Location.localeValidator, false);
-    this._localeSetter(location.locale);
-    localeGroup.appendChild(UI.UIUtils.createLabel(ls`Locale`, 'locale-title', this._localeInput));
-    this._localeError = localeGroup.createChild('div', 'locale-error');
   }
 
-  _LocationSelectChanged() {
+  _geolocationSelectChanged() {
     this._fieldsetElement.disabled = false;
     this._timezoneError.textContent = '';
     const value = this._locationSelectElement.options[this._locationSelectElement.selectedIndex].value;
     if (value === NonPresetOptions.NoOverride) {
-      this._LocationOverrideEnabled = false;
+      this._geolocationOverrideEnabled = false;
       this._fieldsetElement.disabled = true;
     } else if (value === NonPresetOptions.Custom) {
-      this._LocationOverrideEnabled = true;
-      const location = SDK.EmulationModel.Location.parseUserInput(
-          this._latitudeInput.value.trim(), this._longitudeInput.value.trim(), this._timezoneInput.value.trim(),
-          this._localeInput.value.trim());
-      if (!location) {
+      this._geolocationOverrideEnabled = true;
+      const geolocation = SDK.EmulationModel.Geolocation.parseUserInput(
+          this._latitudeInput.value.trim(), this._longitudeInput.value.trim(), this._timezoneInput.value.trim());
+      if (!geolocation) {
         return;
       }
-      this._Location = location;
+      this._geolocation = geolocation;
     } else if (value === NonPresetOptions.Unavailable) {
-      this._LocationOverrideEnabled = true;
-      this._Location = new SDK.EmulationModel.Location(0, 0, '', '', true);
+      this._geolocationOverrideEnabled = true;
+      this._geolocation = new SDK.EmulationModel.Geolocation(0, 0, '', true);
     } else {
-      this._LocationOverrideEnabled = true;
+      this._geolocationOverrideEnabled = true;
       const coordinates = JSON.parse(value);
-      this._Location = new SDK.EmulationModel.Location(
-          coordinates.lat, coordinates.long, coordinates.timezoneId, coordinates.locale, false);
+      this._geolocation =
+          new SDK.EmulationModel.Geolocation(coordinates.lat, coordinates.long, coordinates.timezoneId, false);
       this._latitudeSetter(coordinates.lat);
       this._longitudeSetter(coordinates.long);
       this._timezoneSetter(coordinates.timezoneId);
-      this._localeSetter(coordinates.locale);
     }
 
-    this._applyLocation();
+    this._applyGeolocation();
     if (value === NonPresetOptions.Custom) {
       this._latitudeInput.focus();
     }
   }
 
-  _applyLocationUserInput() {
-    const location = SDK.EmulationModel.Location.parseUserInput(
-        this._latitudeInput.value.trim(), this._longitudeInput.value.trim(), this._timezoneInput.value.trim(),
-        this._localeInput.value.trim());
-    if (!location) {
+  _applyGeolocationUserInput() {
+    const geolocation = SDK.EmulationModel.Geolocation.parseUserInput(
+        this._latitudeInput.value.trim(), this._longitudeInput.value.trim(), this._timezoneInput.value.trim());
+    if (!geolocation) {
       return;
     }
 
     this._timezoneError.textContent = '';
 
     this._setSelectElementLabel(this._locationSelectElement, NonPresetOptions.Custom);
-    this._Location = location;
-    this._applyLocation();
+    this._geolocation = geolocation;
+    this._applyGeolocation();
   }
 
-  _applyLocation() {
-    if (this._LocationOverrideEnabled) {
-      this._LocationSetting.set(this._Location.toSetting());
+  _applyGeolocation() {
+    if (this._geolocationOverrideEnabled) {
+      this._geolocationSetting.set(this._geolocation.toSetting());
     }
     for (const emulationModel of SDK.SDKModel.TargetManager.instance().models(SDK.EmulationModel.EmulationModel)) {
-      emulationModel.emulateLocation(this._LocationOverrideEnabled ? this._Location : null).catch(err => {
+      emulationModel.emulateGeolocation(this._geolocationOverrideEnabled ? this._geolocation : null).catch(err => {
         switch (err.type) {
-          case 'emulation-set-timezone': {
+          case 'emulation-set-timezone':
             this._timezoneError.textContent = err.message;
             break;
-          }
-          case 'emulation-set-locale': {
-            this._localeError.textContent = err.message;
-            break;
-          }
         }
       });
     }
@@ -224,8 +206,8 @@ export class SensorsView extends UI.Widget.VBox {
 
     const orientationOffOption = {title: Common.UIString.UIString('Off'), orientation: NonPresetOptions.NoOverride};
     const customOrientationOption = {
-      title: Common.UIString.UIString('Custom orientation'),
-      orientation: NonPresetOptions.Custom,
+      title: Common.UIString.UIString('Custom orientation...'),
+      orientation: NonPresetOptions.Custom
     };
     this._orientationSelectElement = this.contentElement.createChild('select', 'chrome-select');
     UI.ARIAUtils.bindLabelToControl(orientationTitle, this._orientationSelectElement);

@@ -147,33 +147,33 @@
             "persistence": "closeable",
             "order": 100,
             "className": "Emulation.SensorsView",
-            "tags": "geolocation, timezones, locale, locales, accelerometer, device orientation"
+            "tags": "geolocation, timezones, accelerometer, device orientation"
         },
         {
             "type": "setting",
-            "settingName": "emulation.locations",
+            "settingName": "emulation.geolocations",
             "settingType": "array",
             "defaultValue": [
-                {"title": "Berlin", "lat": 52.520007, "long": 13.404954, "timezoneId": "Europe/Berlin", "locale": "de_DE"},
-                {"title": "London", "lat": 51.507351, "long": -0.127758, "timezoneId": "Europe/London", "locale": "en_GB"},
-                {"title": "Moscow", "lat": 55.755826, "long": 37.617300, "timezoneId": "Europe/Moscow", "locale": "ru_RU"},
-                {"title": "Mountain View", "lat": 37.386052, "long": -122.083851, "timezoneId": "US/Pacific", "locale": "en_US"},
-                {"title": "Mumbai", "lat": 19.075984, "long": 72.877656, "timezoneId": "Asia/Kolkata", "locale": "mr_IN"},
-                {"title": "San Francisco", "lat": 37.774929, "long": -122.419416, "timezoneId": "US/Pacific", "locale": "en_US"},
-                {"title": "Shanghai", "lat": 31.230416, "long": 121.473701, "timezoneId": "Asia/Shanghai", "locale": "zh_Hans_CN"},
-                {"title": "São Paulo", "lat": -23.550520, "long": -46.633309, "timezoneId": "America/Sao_Paulo", "locale": "pt_BR"},
-                {"title": "Tokyo", "lat": 35.689487, "long": 139.691706, "timezoneId": "Asia/Tokyo", "locale": "ja_JP"}
+                {"title": "Berlin", "lat": 52.520007, "long": 13.404954, "timezoneId": "Europe/Berlin"},
+                {"title": "London", "lat": 51.507351, "long": -0.127758, "timezoneId": "Europe/London"},
+                {"title": "Moscow", "lat": 55.755826, "long": 37.617300, "timezoneId": "Europe/Moscow"},
+                {"title": "Mountain View", "lat": 37.386052, "long": -122.083851, "timezoneId": "US/Pacific"},
+                {"title": "Mumbai", "lat": 19.075984, "long": 72.877656, "timezoneId": "Asia/Kolkata"},
+                {"title": "San Francisco", "lat": 37.774929, "long": -122.419416, "timezoneId": "US/Pacific"},
+                {"title": "Shanghai", "lat": 31.230416, "long": 121.473701, "timezoneId": "Asia/Shanghai"},
+                {"title": "São Paulo", "lat": -23.550520, "long": -46.633309, "timezoneId": "America/Sao_Paulo"},
+                {"title": "Tokyo", "lat": 35.689487, "long": 139.691706, "timezoneId": "Asia/Tokyo"}
           ]
       },
       {
             "type": "view",
             "location": "settings-view",
-            "id": "emulation-locations",
-            "title": "Locations",
+            "id": "emulation-geolocations",
+            "title": "Geolocations",
             "order": 40,
-            "className": "Emulation.LocationsSettingsTab",
+            "className": "Emulation.GeolocationsSettingsTab",
             "settings": [
-                "emulation.locations"
+                "emulation.geolocations"
             ]
         }
     ],
@@ -189,23 +189,23 @@
         "emulation.js",
         "emulation-legacy.js",
         "AdvancedApp.js",
+        "EmulatedDevices.js",
+        "DevicesSettingsTab.js",
+        "InspectedPagePlaceholder.js",
+        "MediaQueryInspector.js",
+        "SensorsView.js",
         "DeviceModeModel.js",
         "DeviceModeToolbar.js",
         "DeviceModeView.js",
         "DeviceModeWrapper.js",
-        "DevicesSettingsTab.js",
-        "EmulatedDevices.js",
-        "InspectedPagePlaceholder.js",
-        "LocationsSettingsTab.js",
-        "MediaQueryInspector.js",
-        "SensorsView.js"
+        "GeolocationsSettingsTab.js"
     ],
     "resources": [
+        "devicesSettingsTab.css",
         "deviceModeToolbar.css",
         "deviceModeView.css",
-        "devicesSettingsTab.css",
+        "geolocationsSettingsTab.css",
         "inspectedPagePlaceholder.css",
-        "locationsSettingsTab.css",
         "mediaQueryInspector.css",
         "sensors.css"
     ]

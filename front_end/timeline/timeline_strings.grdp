@@ -816,6 +816,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_cdfb064314e94077caa817714d943c6f" desc="Text in Timeline UIUtils of the Performance panel">
     Elements Affected
   </message>
+  <message name="IDS_DEVTOOLS_ce5bf551379459c1c61d2a204061c455" desc="Text in Timeline UIUtils of the Performance panel">
+    Location
+  </message>
   <message name="IDS_DEVTOOLS_cf56f8ebb3727b1d4d5a17fb18d4df74" desc="Text in Timeline UIUtils of the Performance panel">
     Paint Setup
   </message>

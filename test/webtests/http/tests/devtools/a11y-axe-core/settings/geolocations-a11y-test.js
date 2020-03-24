@@ -3,24 +3,24 @@
 // found in the LICENSE file.
 
 (async function() {
-  TestRunner.addResult('Tests accessibility in the settings tool locations pane using the axe-core linter.');
+  TestRunner.addResult('Tests accessibility in the settings tool geolocations pane using the axe-core linter.');
 
   await TestRunner.loadModule('axe_core_test_runner');
-  await UI.viewManager.showView('emulation-locations');
-  const locationsWidget = await UI.viewManager.view('emulation-locations').widget();
+  await UI.viewManager.showView('emulation-geolocations');
+  const geolocationsWidget = await UI.viewManager.view('emulation-geolocations').widget();
 
   async function testAddLocation() {
-    const addLocationButton = locationsWidget._defaultFocusedElement;
+    const addLocationButton = geolocationsWidget._defaultFocusedElement;
     addLocationButton.click();
 
-    const newLocationInputs = locationsWidget._list._editor._controls;
+    const newLocationInputs = geolocationsWidget._list._editor._controls;
     TestRunner.addResult(`Opened input box: ${!!newLocationInputs}`);
 
-    await AxeCoreTestRunner.runValidation(locationsWidget.contentElement);
+    await AxeCoreTestRunner.runValidation(geolocationsWidget.contentElement);
   }
 
   async function testNewLocationError() {
-    const locationsEditor = locationsWidget._list._editor;
+    const locationsEditor = geolocationsWidget._list._editor;
     const newLocationInputs = locationsEditor._controls;
     const nameInput = newLocationInputs[0];
     const latitudeInput = newLocationInputs[1];
@@ -46,7 +46,7 @@
     errorMessage = locationsEditor._errorMessageContainer.textContent;
     TestRunner.addResult(`Error message: ${errorMessage}`);
 
-    await AxeCoreTestRunner.runValidation(locationsWidget.contentElement);
+    await AxeCoreTestRunner.runValidation(geolocationsWidget.contentElement);
   }
 
   TestRunner.runAsyncTestSuite([testAddLocation, testNewLocationError]);

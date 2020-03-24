@@ -941,7 +941,7 @@
       'emulation.deviceScaleFactor',
       'emulation.deviceUA',
       'emulation.deviceWidth',
-      'emulation.locationOverride',
+      'emulation.geolocationOverride',
       'emulation.showDeviceMode',
       'emulation.showRulers',
       'enableAsyncStackTraces',

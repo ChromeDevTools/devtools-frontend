@@ -9,7 +9,7 @@ import {AggregatedIssue, Issue} from './Issue.js';
 import {NetworkManager} from './NetworkManager.js';
 import {NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
 import * as RelatedIssue from './RelatedIssue.js';
-import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';
+import {Events as ResourceTreeModelEvents, ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 
@@ -30,6 +30,7 @@ export class IssuesModel extends SDKModel {
     this._cookiesModel = target.model(CookieModel);
     /** @type {*} */
     this._auditsAgent = null;
+    this._hasSeenMainFrameNavigated = false;
 
     this._networkManager = target.model(NetworkManager);
     const resourceTreeModel = /** @type {?ResourceTreeModel} */ (target.model(ResourceTreeModel));
@@ -43,7 +44,7 @@ export class IssuesModel extends SDKModel {
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onMainFrameNavigated(event) {
-    const mainFrame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
+    const mainFrame = /** @type {!ResourceTreeFrame} */ (event.data);
     const keptIssues = [];
     for (const issue of this._issues) {
       if (issue.isAssociatedWithRequestId(mainFrame.loaderId)) {
@@ -57,7 +58,18 @@ export class IssuesModel extends SDKModel {
     for (const issue of this._issues) {
       this._aggregateIssue(issue);
     }
+    this._hasSeenMainFrameNavigated = true;
     this.dispatchEventToListeners(Events.FullUpdateRequired);
+  }
+
+  /**
+   * The `IssuesModel` requires at least one `MainFrameNavigated` event. Receiving
+   * one implies that we have all the information for accurate issues.
+   *
+   * @return {boolean}
+   */
+  reloadForAccurateInformationRequired() {
+    return !this._hasSeenMainFrameNavigated;
   }
 
   ensureEnabled() {

@@ -39,4 +39,7 @@
   <message name="IDS_DEVTOOLS_bf3d65060c91ba1d205face215fced7b" desc="Label for High Priority">
     High Priority
   </message>
+  <message name="IDS_DEVTOOLS_fbf5a685e313dad7d780b63bdb5dd2fb" desc="Explanatory message why a reload of the inspected page is required. Next to reload button.">
+    Some issues might be missing or incomplete, reload the inspected page to get full information
+  </message>
 </grit-part>

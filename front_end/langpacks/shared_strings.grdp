@@ -544,6 +544,9 @@
   <message name="IDS_DEVTOOLS_ce5bf551379459c1c61d2a204061c455" desc="Title for a group of cities">
     Location
   </message>
+  <message name="IDS_DEVTOOLS_cb835af5f855f79e8611dd3f8fec6aac" desc="Title of an action in the inspector main tool to reload">
+    Reload page
+  </message>
   <message name="IDS_DEVTOOLS_ce82e07fa1f0521f5cee30e368fe2e73" desc="Text that starts with a colon and includes a placeholder">
     : <ph name="AA_NUMBER">$1s<ex>3.0</ex></ph>
   </message>

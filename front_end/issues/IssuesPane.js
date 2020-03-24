@@ -293,9 +293,9 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
 
     this._issueViews = new Map();
 
-    const issuesToolbarContainer = this.contentElement.createChild('div', 'issues-toolbar-container');
-    new UI.Toolbar.Toolbar('issues-toolbar-left', issuesToolbarContainer);
-    const rightToolbar = new UI.Toolbar.Toolbar('issues-toolbar-right', issuesToolbarContainer);
+    this._issuesToolbarContainer = this.contentElement.createChild('div', 'issues-toolbar-container');
+    new UI.Toolbar.Toolbar('issues-toolbar-left', this._issuesToolbarContainer);
+    const rightToolbar = new UI.Toolbar.Toolbar('issues-toolbar-right', this._issuesToolbarContainer);
     rightToolbar.appendSeparator();
     const toolbarWarnings = new UI.Toolbar.ToolbarItem(createElement('div'));
     const breakingChangeIcon = UI.Icon.Icon.create('largeicon-breaking-change');
@@ -309,6 +309,12 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
         this._updateAggregatedIssueView(issue);
       }
     }
+
+    /** @type {?UI.Infobar.Infobar} */
+    this._reloadInfobar = null;
+    /** @type {?Element} */
+    this._infoBarDiv = null;
+    this._showReloadInfobarIfNeeded();
   }
 
   /**
@@ -337,6 +343,7 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
   }
 
   _fullUpdate() {
+    this._hideReloadInfoBar();
     for (const view of this._issueViews.values()) {
       view.detach();
     }
@@ -365,6 +372,48 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     const issueView = this._issueViews.get(code);
     if (issueView) {
       issueView.reveal();
+    }
+  }
+
+  _showReloadInfobarIfNeeded() {
+    if (!this._model || !this._model.reloadForAccurateInformationRequired()) {
+      return;
+    }
+
+    function reload() {
+      const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
+      if (mainTarget) {
+        const resourceModel = mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
+        if (resourceModel) {
+          resourceModel.reloadPage();
+        }
+      }
+    }
+
+    const infobar = new UI.Infobar.Infobar(
+        UI.Infobar.Type.Warning,
+        ls`Some issues might be missing or incomplete, reload the inspected page to get full information`,
+        [{text: ls`Reload page`, highlight: false, delegate: reload, dismiss: true}]);
+
+    this._reloadInfobar = infobar;
+    this._attachReloadInfoBar(infobar);
+  }
+
+  /** @param {!UI.Infobar.Infobar} infobar */
+  _attachReloadInfoBar(infobar) {
+    if (!this._infoBarDiv) {
+      this._infoBarDiv = createElementWithClass('div', 'flex-none');
+      this.contentElement.insertBefore(this._infoBarDiv, this._issuesToolbarContainer.nextSibling);
+    }
+    this._infoBarDiv.appendChild(infobar.element);
+    infobar.setParentView(this);
+    this.doResize();
+  }
+
+  _hideReloadInfoBar() {
+    if (this._reloadInfobar) {
+      this._reloadInfobar.dispose();
+      this._reloadInfobar = null;
     }
   }
 }

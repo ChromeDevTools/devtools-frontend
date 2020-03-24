@@ -2,6 +2,9 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-group("fixtures") {
-  deps = [ "simple_dep" ]
+group("test_dep") {
+  deps = [
+    "front_end/module",
+    "test/module",
+  ]
 }

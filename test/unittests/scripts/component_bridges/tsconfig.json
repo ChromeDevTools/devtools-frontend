@@ -1,0 +1,9 @@
+{
+  "extends": "../../../../scripts/component_bridges/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./gen"
+  },
+  "include": [
+    "*_test.ts"
+  ]
+}

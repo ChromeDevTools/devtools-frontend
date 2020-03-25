@@ -49,3 +49,6 @@ test/screenshots/.generated
 test/perf/.generated
 test/perf/**/*.js
 test/perf/**/*.tsbuildinfo
+test/unittests/scripts/component_bridges/gen/*
+test/unittests/scripts/component_bridges/fixtures/*_bridge.js
+scripts/component_bridges/gen/*.js

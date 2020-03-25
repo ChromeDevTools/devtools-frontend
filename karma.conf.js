@@ -31,7 +31,7 @@ module.exports = function(config) {
 
     files: [
       {pattern: 'front_end/**/*.js', included: false, served: true},
-      {pattern: 'test/unittests/**/*.ts', type: 'module'},
+      {pattern: 'test/unittests/front_end/**/*.ts', type: 'module'},
       {pattern: 'front_end/**/*.svg', included: false, served: true},
       {pattern: 'front_end/**/*.png', included: false, served: true},
     ],
@@ -39,7 +39,7 @@ module.exports = function(config) {
     reporters: enabledKarmaReporters,
 
     preprocessors: {
-      './test/unittests/**/*.ts': ['karma-typescript'],
+      './test/unittests/front_end/**/*.ts': ['karma-typescript'],
       './front_end/common/*.js': instrumenterPreprocessors,
       './front_end/formatter_worker/*.js': instrumenterPreprocessors,
       './front_end/inline_editor/*.js': instrumenterPreprocessors,
@@ -63,7 +63,7 @@ module.exports = function(config) {
         baseUrl: '.',
       },
       coverageOptions: {instrumentation: false},
-      include: {mode: 'replace', values: ['test/unittests/**/*.ts']},
+      include: {mode: 'replace', values: ['test/unittests/front_end/**/*.ts']},
     },
 
     proxies: {

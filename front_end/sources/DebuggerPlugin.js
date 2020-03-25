@@ -478,6 +478,13 @@ export class DebuggerPlugin extends Plugin {
       return null;
     }
 
+    // Block popover eager evaluation for Wasm frames for now. We don't have
+    // a way to Debug-Evaluate Wasm yet, and the logic below assumes JavaScript
+    // source code. See https://crbug.com/1063875 for details.
+    if (selectedCallFrame.script.isWasm()) {
+      return null;
+    }
+
     if (textSelection && !textSelection.isEmpty()) {
       if (textSelection.startLine !== textSelection.endLine || textSelection.startLine !== mouseLine ||
           mouseColumn < textSelection.startColumn || mouseColumn > textSelection.endColumn) {

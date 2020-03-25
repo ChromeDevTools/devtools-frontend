@@ -181,6 +181,9 @@
   <message name="IDS_DEVTOOLS_47bda3033cb8fe0e76c45c293db011b5" desc="Text to indicate there are no breakpoints">
     No breakpoints
   </message>
+  <message name="IDS_DEVTOOLS_4909c5e867e2322253bef625307a85a8" desc="Text in Headers View of the Network panel">
+    Only choose this option if an arbitrary website including this resource does not impose a security risk.
+  </message>
   <message name="IDS_DEVTOOLS_49ee3087348e8d44e1feda1917443987" desc="Text for the name of something">
     Name
   </message>
@@ -534,6 +537,9 @@
   </message>
   <message name="IDS_DEVTOOLS_c7892ebbb139886662c6f2fc8c450710" desc="Text that refers to the subject of a security certificate">
     Subject
+  </message>
+  <message name="IDS_DEVTOOLS_c823a983a972cfb5ee4b8bf1918080d3" desc="Text in Headers View of the Network panel">
+    Choose this option if the resource and the document are served from the same site.
   </message>
   <message name="IDS_DEVTOOLS_c949475bc69a57c419ac976fe8870652" desc="Text to search by matching case of the input">
     Match Case

@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_044e523024944672d1d5aa5b2538ba5c" desc="Description for an issue in the issues view">
+    The resource was loaded in a context that is not same-origin and that enables the cross-origin embedder policy. The resource specified a cross-origin resource policy that allows only same-origin usage, and was hence blocked.
+  To use this resource from a different origin, the server may relax the cross-origin resource policy response header:
+  </message>
   <message name="IDS_DEVTOOLS_0c94f752d037fd8475e98b0711b543a6" desc="Label for the link for SameSiteCookies Issues">
     SameSite cookies explained
   </message>
@@ -9,20 +13,49 @@
   <message name="IDS_DEVTOOLS_3298f13049d19cffaa37ca931dd4d421" desc="Label for number of affected resource indication in issue view">
     requests
   </message>
+  <message name="IDS_DEVTOOLS_40bf79d4fb1a6c55040a72b7eab1b7aa" desc="Title for an issue in the issues view">
+    An <ph name="LOCKED_1">iframe</ph> navigation to a document with a cross-origin opener policy was blocked
+  </message>
   <message name="IDS_DEVTOOLS_55e7dd3016ce4ac57b9a0f56af12f7c2" desc="Label for number of affected resource indication in issue view">
     cookies
+  </message>
+  <message name="IDS_DEVTOOLS_59a88821ae1cfa9637365d5fa2b46242" desc="Description for an issue in the issues view">
+    An <ph name="LOCKED_1">iframe</ph> was emdbedded on a site which enables the cross-origin embedder policy, but the response headers for the document of the <ph name="LOCKED_1">iframe</ph> did not specify a cross-origin embedder policy, which causes the <ph name="LOCKED_1">iframe</ph> to get blocked.
+  To allow embedding of the <ph name="LOCKED_1">iframe</ph>, the response needs to enable the cross-origin embedder policy for the <ph name="LOCKED_1">iframe</ph> by specifying the following response header:
   </message>
   <message name="IDS_DEVTOOLS_6011ea0969680deba3975ac5bd0e153e" desc="Title for a link to further information in issue view">
     Learn more: <ph name="THIS__DETAILS_LINKTITLE">$1s<ex>SameSite Cookies Explained</ex></ph>
   </message>
-  <message name="IDS_DEVTOOLS_a08f2685b9b1a561a133769715321e40" desc="Label for issue kind in issue view">
+  <message name="IDS_DEVTOOLS_738529c4dc85873f31f579e2fe21736b" desc="Title for an issue in the issues view">
+    An <ph name="LOCKED_1">iframe</ph> was blocked because it did not specify a cross-origin embedder policy
+  </message>
+  <message name="IDS_DEVTOOLS_77df128d7d124446c107c9bf445eed0c" desc="Description for an issue in the issues view">
+    The resource was loaded in a context that is not same-site and that enables the cross-origin embedder policy. The resource specified a cross-origin resource policy that allows only same-site usage, and was hence blocked.
+  To allow usage of the resource from a different site, the server may relax the cross-origin resource policy response header:
+  </message>
+  <message name="IDS_DEVTOOLS_8aa85d8015c515cde89fade0983df424" desc="Description for an issue in the issues view">
+    A document was blocked from loading in an <ph name="LOCKED_1">iframe</ph> with a <ph name="LOCKED_1">sandbox</ph> attribute because the document specified a cross-origin opener policy.
+  </message>
+  <message name="IDS_DEVTOOLS_9bd335d81da7fb52ceab31f45df228cb" desc="Title for an issue in the issues view">
+    A resource was blocked because its cross-origin resource policy only allows same-site usage
+  </message>
+  <message name="IDS_DEVTOOLS_9d9dd3883d9d33b88cede92d18217dd8" desc="Title for an issue in the issues view">
+    A resource was blocked because its cross-origin resource policy only allows same-origin usage
+  </message>
+  <message name="IDS_DEVTOOLS_a08f2685b9b1a561a133769715321e40" desc="Label for the issue kind in the issues view">
     Breaking change
   </message>
   <message name="IDS_DEVTOOLS_b02478e52979ba9af8bffc41f342f4b6" desc="Header for the section listing affected resources">
     Affected Resources
   </message>
-  <message name="IDS_DEVTOOLS_bb1be05a71dffef6cfe9564fa1fcf515" desc="Message for the SameSiteCookies::SameSiteNoneWithoutSecure issue code">
+  <message name="IDS_DEVTOOLS_bb1be05a71dffef6cfe9564fa1fcf515" desc="Title of an issue in the issues view">
     A Cookie in a third-party context has been set without SameSite=None
+  </message>
+  <message name="IDS_DEVTOOLS_d3330d895eefdef1b6272db5775fd351" desc="Title for an issue in the issues view">
+    A resource was blocked because it is missing a cross-origin resource policy
+  </message>
+  <message name="IDS_DEVTOOLS_ec9d50650ce0ffbe688e453377198b95" desc="Title for a link in the issues view">
+    Enable powerful features with COOP and COEP
   </message>
   <message name="IDS_DEVTOOLS_ee02b74d0caebce3dabaf3b3e79b6a65" desc="The UI destination when right clicking an item that can be revealed">
     Issues view
@@ -39,7 +72,15 @@
   <message name="IDS_DEVTOOLS_0ed7212d68b6867bc1294244c9bc0b33" desc="Message for the SameSiteCookies::SameSiteNoneMissingForThirdParty issue code">
     In a future version of Chrome, third-party cookies will only be sent when marked as SameSite=None and Secure to prevent them from being accessed in a man-in-the-middle scenario.
   </message>
+  <message name="IDS_DEVTOOLS_eeb7bd647d3fade40ab848754327dd63" desc="Description for an issue in the issues view">
+    The resource is not a same-origin resource, and the response headers for the resource did not specify any cross-origin resource policy.
+     The cross-origin resource policy was defaulted to same-origin, because the resource was used in a context that enables the cross-origin embedder policy.
+     To use this resource from a different origin, the server needs to specify a cross-origin resource policy in the response headers:
+  </message>
   <message name="IDS_DEVTOOLS_fbf5a685e313dad7d780b63bdb5dd2fb" desc="Explanatory message why a reload of the inspected page is required. Next to reload button.">
     Some issues might be missing or incomplete, reload the inspected page to get full information
+  </message>
+  <message name="IDS_DEVTOOLS_f63631e200b8b3ba73fe9ea65dcd2d3a" desc="A link to more information in the issues view">
+    https://web.dev/coop-coep/
   </message>
 </grit-part>

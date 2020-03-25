@@ -909,6 +909,7 @@ export class StylePropertiesSection {
 
     const rule = style.parentRule;
     this.element = createElementWithClass('div', 'styles-section matched-styles monospace');
+    UI.ARIAUtils.setAccessibleName(this.element, `${this._headerText()}, css selector`);
     this.element.tabIndex = -1;
     UI.ARIAUtils.markAsTreeitem(this.element);
     this.element.addEventListener('keydown', this._onKeyDown.bind(this), false);

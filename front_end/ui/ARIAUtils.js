@@ -479,7 +479,7 @@ const _descriptionMap = new WeakMap();
  * @param {string} description
  */
 export function setDescription(element, description) {
-  // Nodes in the accesesibility tree are made up of a core
+  // Nodes in the accessibility tree are made up of a core
   // triplet of "name", "value", "description"
   // The "description" field is taken from either
   // 1. The title html attribute

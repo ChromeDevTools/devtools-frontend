@@ -103,24 +103,32 @@ export class EmulationModel extends SDKModel {
   }
 
   /**
-   * @param {?Geolocation} geolocation
+   * @param {?Location} location
    */
-  async emulateGeolocation(geolocation) {
-    if (!geolocation) {
+  async emulateLocation(location) {
+    if (!location) {
       this._emulationAgent.clearGeolocationOverride();
       this._emulationAgent.setTimezoneOverride('');
+      this._emulationAgent.setLocaleOverride('');
+      this._emulationAgent.setUserAgentOverride(SDK.multitargetNetworkManager.currentUserAgent());
     }
 
-    if (geolocation.error) {
+    if (location.error) {
       this._emulationAgent.setGeolocationOverride();
       this._emulationAgent.setTimezoneOverride('');
+      this._emulationAgent.setLocaleOverride('');
+      this._emulationAgent.setUserAgentOverride(SDK.multitargetNetworkManager.currentUserAgent());
     } else {
       return Promise.all([
         this._emulationAgent
-            .setGeolocationOverride(geolocation.latitude, geolocation.longitude, Geolocation.DefaultMockAccuracy)
-            .catch(err => Promise.reject({type: 'emulation-set-geolocation', message: err.message})),
-        this._emulationAgent.setTimezoneOverride(geolocation.timezoneId)
-            .catch(err => Promise.reject({type: 'emulation-set-timezone', message: err.message}))
+            .setGeolocationOverride(location.latitude, location.longitude, Location.DefaultGeoMockAccuracy)
+            .catch(err => Promise.reject({type: 'emulation-set-location', message: err.message})),
+        this._emulationAgent.setTimezoneOverride(location.timezoneId)
+            .catch(err => Promise.reject({type: 'emulation-set-timezone', message: err.message})),
+        this._emulationAgent.setLocaleOverride(location.locale)
+            .catch(err => Promise.reject({type: 'emulation-set-locale', message: err.message})),
+        this._emulationAgent.setUserAgentOverride(SDK.multitargetNetworkManager.currentUserAgent(), location.locale)
+            .catch(err => Promise.reject({type: 'emulation-set-user-agent', message: err.message})),
       ]);
     }
   }
@@ -223,45 +231,47 @@ export class EmulationModel extends SDKModel {
   }
 }
 
-export class Geolocation {
+export class Location {
   /**
    * @param {number} latitude
    * @param {number} longitude
    * @param {string} timezoneId
+   * @param {string} locale
    * @param {boolean} error
    */
-  constructor(latitude, longitude, timezoneId, error) {
+  constructor(latitude, longitude, timezoneId, locale, error) {
     this.latitude = latitude;
     this.longitude = longitude;
     this.timezoneId = timezoneId;
+    this.locale = locale;
     this.error = error;
   }
 
   /**
-   * @return {!Geolocation}
+   * @return {!Location}
    */
   static parseSetting(value) {
     if (value) {
-      const [position, timezoneId, error] = value.split(':');
+      const [position, timezoneId, locale, error] = value.split(':');
       const [latitude, longitude] = position.split('@');
-      return new Geolocation(parseFloat(latitude), parseFloat(longitude), timezoneId, Boolean(error));
+      return new Location(parseFloat(latitude), parseFloat(longitude), timezoneId, locale, Boolean(error));
     }
-    return new Geolocation(0, 0, '', false);
+    return new Location(0, 0, '', '', false);
   }
 
   /**
    * @param {string} latitudeString
    * @param {string} longitudeString
    * @param {string} timezoneId
-   * @return {?Geolocation}
+   * @return {?Location}
    */
-  static parseUserInput(latitudeString, longitudeString, timezoneId) {
+  static parseUserInput(latitudeString, longitudeString, timezoneId, locale) {
     if (!latitudeString && !longitudeString) {
       return null;
     }
 
-    const {valid: isLatitudeValid} = Geolocation.latitudeValidator(latitudeString);
-    const {valid: isLongitudeValid} = Geolocation.longitudeValidator(longitudeString);
+    const {valid: isLatitudeValid} = Location.latitudeValidator(latitudeString);
+    const {valid: isLongitudeValid} = Location.longitudeValidator(longitudeString);
 
     if (!isLatitudeValid && !isLongitudeValid) {
       return null;
@@ -269,7 +279,7 @@ export class Geolocation {
 
     const latitude = isLatitudeValid ? parseFloat(latitudeString) : -1;
     const longitude = isLongitudeValid ? parseFloat(longitudeString) : -1;
-    return new Geolocation(latitude, longitude, timezoneId, false);
+    return new Location(latitude, longitude, timezoneId, locale, false);
   }
 
   /**
@@ -308,14 +318,29 @@ export class Geolocation {
   }
 
   /**
+   * @param {string} value
+   * @return {{valid: boolean, errorMessage: (string|undefined)}}
+   */
+  static localeValidator(value) {
+    // Similarly to timezone IDs, there's not much point in validating
+    // input locales other than checking if it contains at least two
+    // alphabetic characters.
+    // https://unicode.org/reports/tr35/#Unicode_language_identifier
+    // The empty string resets the override, and is accepted as
+    // well.
+    const valid = value === '' || /[a-zA-Z]{2}/.test(value);
+    return {valid};
+  }
+
+  /**
    * @return {string}
    */
   toSetting() {
-    return `${this.latitude}@${this.longitude}:${this.timezoneId}:${this.error || ''}`;
+    return `${this.latitude}@${this.longitude}:${this.timezoneId}:${this.locale}:${this.error || ''}`;
   }
 }
 
-Geolocation.DefaultMockAccuracy = 150;
+Location.DefaultGeoMockAccuracy = 150;
 
 export class DeviceOrientation {
   /**

@@ -15,6 +15,7 @@ const tests = [
   'host/user-metrics.js',
   'network/network-datagrid.js',
   'rendering/vision-deficiencies.js',
+  'sensors/location.js',
   'snippets/context-menu.js',
   'sources/can-break-with-wasm-sourcemaps.js',
   'sources/can-format-sourcecode.js',

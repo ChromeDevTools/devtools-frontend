@@ -1,4 +1,4 @@
-Tests accessibility in the settings tool geolocations pane using the axe-core linter.
+Tests accessibility in the settings tool locations pane using the axe-core linter.
 
 Running: testAddLocation
 Opened input box: true

@@ -220,10 +220,10 @@ SDK.DebuggerPausedDetails = SDKModule.DebuggerModel.DebuggerPausedDetails;
 SDK.EmulationModel = SDKModule.EmulationModel.EmulationModel;
 
 /** @constructor */
-SDK.EmulationModel.Geolocation = SDKModule.EmulationModel.Geolocation;
+SDK.EmulationModel.DeviceOrientation = SDKModule.EmulationModel.DeviceOrientation;
 
 /** @constructor */
-SDK.EmulationModel.DeviceOrientation = SDKModule.EmulationModel.DeviceOrientation;
+SDK.EmulationModel.Location = SDKModule.EmulationModel.Location;
 
 /** @constructor */
 SDK.FilmStripModel = SDKModule.FilmStripModel.FilmStripModel;

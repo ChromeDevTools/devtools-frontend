@@ -81,6 +81,9 @@
   <message name="IDS_DEVTOOLS_2d4f58197f03de72c0472189fd18c162" desc="Title of a setting under the Rendering drawer">
     Emulate vision deficiencies
   </message>
+  <message name="IDS_DEVTOOLS_323d4eb70b252acb4a04eaf9e0882597" desc="Title for a group of cities">
+    Geolocation
+  </message>
   <message name="IDS_DEVTOOLS_3bd3beb3fb5c78e8e85ad06d749bea78" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Emulate protanopia
   </message>

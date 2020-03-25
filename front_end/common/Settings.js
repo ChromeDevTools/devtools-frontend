@@ -93,13 +93,13 @@ export class Settings {
     const defaultValue = descriptor['defaultValue'];
     let storageType;
     switch (descriptor['storageType']) {
-      case ('local'):
+      case 'local':
         storageType = SettingStorageType.Local;
         break;
-      case ('session'):
+      case 'session':
         storageType = SettingStorageType.Session;
         break;
-      case ('global'):
+      case 'global':
         storageType = SettingStorageType.Global;
         break;
       default:
@@ -528,9 +528,9 @@ export class VersionController {
       return;
     }
     const methodsToRun = this._methodsToRunToUpdateVersion(oldVersion, currentVersion);
-    for (let i = 0; i < methodsToRun.length; ++i) {
+    for (const method of methodsToRun) {
       // @ts-ignore Special version method matching
-      this[methodsToRun[i]].call(this);
+      this[method].call(this);
     }
     versionSetting.set(currentVersion);
   }

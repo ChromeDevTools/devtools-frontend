@@ -2,8 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as UI from '../ui/ui.js';
+import * as Network from '../network/network.js';
 import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
 
 class AffectedResourcesView {
   /**
@@ -127,8 +128,18 @@ class AffectedCookiesView extends AffectedResourcesView {
   appendAffectedCookie(cookie) {
     const element = createElementWithClass('tr', 'affected-resource-cookie');
     const name = createElementWithClass('td', '');
-    name.appendChild(Components.Linkifier.linkifyRevealable(
-        new SDK.Cookie.CookieReference(cookie.name, cookie.domain, cookie.path, cookie.siteForCookies), cookie.name));
+    name.appendChild(UI.UIUtils.createTextButton(cookie.name, () => {
+      Network.NetworkPanel.NetworkPanel.revealAndFilter([
+        {
+          filterType: 'cookie-domain',
+          filterValue: cookie.domain,
+        },
+        {
+          filterType: 'cookie-name',
+          filterValue: cookie.name,
+        }
+      ]);
+    }, 'link-style devtools-link'));
     const info = createElementWithClass('td', 'affected-resource-cookie-info');
 
     // Prepend a space for all domains not starting with a "." to align them better.

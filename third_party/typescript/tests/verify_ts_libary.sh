@@ -10,10 +10,13 @@ failed=0
 
 run_fixture() {
   local fixture_name="$1"
+  local should_regen="${2:-1}"
   local build_output_file="$ROOT_DIRECTORY/fixtures/$fixture_name/build_output.txt"
 
-  echo "Generating Ninja build files for $fixture_name"
-  gn gen --root=$ROOT_DIRECTORY/fixtures/$fixture_name $ROOT_DIRECTORY/out/fixtures/$fixture_name
+  if [[ $should_regen -eq 1 ]]; then
+    echo "Generating Ninja build files for $fixture_name"
+    gn gen --root=$ROOT_DIRECTORY/fixtures/$fixture_name $ROOT_DIRECTORY/out/fixtures/$fixture_name
+  fi
 
   echo "Compiling with Ninja for $fixture_name"
   autoninja -C $ROOT_DIRECTORY/out/fixtures/$fixture_name $fixture_name > "$build_output_file"
@@ -21,7 +24,13 @@ run_fixture() {
   # Replace the absolute python library path to make sure we can diff on different machines
   sed -i "" "s/$TS_LIBRARY_PATH/ts_library.py/g" $build_output_file
 
-  diff_output=$(diff "$build_output_file.expected" "$build_output_file")
+  local expected_build_output_file="$build_output_file.expected"
+
+  if [[ $should_regen -eq 0 ]]; then
+    expected_build_output_file="$expected_build_output_file.regen"
+  fi
+
+  diff_output=$(diff "$expected_build_output_file" "$build_output_file")
 
   if [[ "$diff_output" != "" ]]; then
     echo "Diff output for $fixture_name:"
@@ -33,5 +42,11 @@ run_fixture() {
 run_fixture "simple_dep"
 run_fixture "test_dep"
 run_fixture "compilation_failure_front_end"
+
+# Test that compiling after a change works with dependencies
+run_fixture "recompile"
+sed -i "" "s/42/43/" $ROOT_DIRECTORY/fixtures/recompile/test/module/exporting_test.ts
+run_fixture "recompile" 0
+sed -i "" "s/43/42/" $ROOT_DIRECTORY/fixtures/recompile/test/module/exporting_test.ts
 
 exit $failed

@@ -337,7 +337,7 @@ export function argumentsList(content) {
   const expression = parsed.body[0].expression;
   let params = null;
   switch (expression.type) {
-    case 'ClassExpression':
+    case 'ClassExpression': {
       if (!expression.body.body) {
         break;
       }
@@ -346,16 +346,19 @@ export function argumentsList(content) {
         params = constructor.value.params;
       }
       break;
-    case 'ObjectExpression':
+    }
+    case 'ObjectExpression': {
       if (!expression.properties[0] || !expression.properties[0].value) {
         break;
       }
       params = expression.properties[0].value.params;
       break;
+    }
     case 'FunctionExpression':
-    case 'ArrowFunctionExpression':
+    case 'ArrowFunctionExpression': {
       params = expression.params;
       break;
+    }
   }
   if (!params) {
     return [];

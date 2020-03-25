@@ -904,64 +904,83 @@ export class NetworkRequestNode extends NetworkNode {
    */
   renderCell(cell, columnId) {
     switch (columnId) {
-      case 'name':
+      case 'name': {
         this._renderPrimaryCell(cell, columnId);
         break;
-      case 'path':
+      }
+      case 'path': {
         this._renderPrimaryCell(cell, columnId, this._request.pathname);
         break;
-      case 'url':
+      }
+      case 'url': {
         this._renderPrimaryCell(cell, columnId, this._request.url());
         break;
-      case 'method':
+      }
+      case 'method': {
         this._setTextAndTitle(cell, this._request.requestMethod);
         break;
-      case 'status':
+      }
+      case 'status': {
         this._renderStatusCell(cell);
         break;
-      case 'protocol':
+      }
+      case 'protocol': {
         this._setTextAndTitle(cell, this._request.protocol);
         break;
-      case 'scheme':
+      }
+      case 'scheme': {
         this._setTextAndTitle(cell, this._request.scheme);
         break;
-      case 'domain':
+      }
+      case 'domain': {
         this._setTextAndTitle(cell, this._request.domain);
         break;
-      case 'remoteaddress':
+      }
+      case 'remoteaddress': {
         this._setTextAndTitle(cell, this._request.remoteAddress());
         break;
-      case 'cookies':
+      }
+      case 'cookies': {
         this._setTextAndTitle(cell, this._arrayLength(this._request.requestCookies));
         break;
-      case 'setcookies':
+      }
+      case 'setcookies': {
         this._setTextAndTitle(cell, this._arrayLength(this._request.responseCookies));
         break;
-      case 'priority':
+      }
+      case 'priority': {
         const priority = this._request.priority();
         this._setTextAndTitle(cell, priority ? PerfUI.NetworkPriorities.uiLabelForNetworkPriority(priority) : '');
         break;
-      case 'connectionid':
+      }
+      case 'connectionid': {
         this._setTextAndTitle(cell, this._request.connectionId);
         break;
-      case 'type':
+      }
+      case 'type': {
         this._setTextAndTitle(cell, this.displayType());
         break;
-      case 'initiator':
+      }
+      case 'initiator': {
         this._renderInitiatorCell(cell);
         break;
-      case 'size':
+      }
+      case 'size': {
         this._renderSizeCell(cell);
         break;
-      case 'time':
+      }
+      case 'time': {
         this._renderTimeCell(cell);
         break;
-      case 'timeline':
+      }
+      case 'timeline': {
         this._setTextAndTitle(cell, '');
         break;
-      default:
+      }
+      default: {
         this._setTextAndTitle(cell, this._request.responseHeaderValue(columnId) || '');
         break;
+      }
     }
   }
 
@@ -1159,7 +1178,7 @@ export class NetworkRequestNode extends NetworkNode {
       cell.appendChild(createTextNode(Common.UIString.UIString('Push / ')));
     }
     switch (initiator.type) {
-      case SDK.NetworkRequest.InitiatorType.Parser:
+      case SDK.NetworkRequest.InitiatorType.Parser: {
         cell.title = initiator.url + ':' + (initiator.lineNumber + 1);
         const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(initiator.url);
         cell.appendChild(Components.Linkifier.Linkifier.linkifyURL(initiator.url, {
@@ -1169,8 +1188,9 @@ export class NetworkRequestNode extends NetworkNode {
         }));
         this._appendSubtitle(cell, Common.UIString.UIString('Parser'));
         break;
+      }
 
-      case SDK.NetworkRequest.InitiatorType.Redirect:
+      case SDK.NetworkRequest.InitiatorType.Redirect: {
         cell.title = initiator.url;
         const redirectSource = /** @type {!SDK.NetworkRequest.NetworkRequest} */ (request.redirectSource());
         console.assert(redirectSource);
@@ -1182,8 +1202,9 @@ export class NetworkRequestNode extends NetworkNode {
         }
         this._appendSubtitle(cell, Common.UIString.UIString('Redirect'));
         break;
+      }
 
-      case SDK.NetworkRequest.InitiatorType.Script:
+      case SDK.NetworkRequest.InitiatorType.Script: {
         const networkManager = SDK.NetworkManager.NetworkManager.forRequest(request);
         /**
          * @type {!Components.Linkifier.Linkifier}
@@ -1204,22 +1225,26 @@ export class NetworkRequestNode extends NetworkNode {
         cell.classList.add('network-script-initiated');
         cell.request = request;
         break;
+      }
 
-      case SDK.NetworkRequest.InitiatorType.Preload:
+      case SDK.NetworkRequest.InitiatorType.Preload: {
         cell.title = Common.UIString.UIString('Preload');
         cell.classList.add('network-dim-cell');
         cell.appendChild(createTextNode(Common.UIString.UIString('Preload')));
         break;
+      }
 
-      case SDK.NetworkRequest.InitiatorType.SignedExchange:
+      case SDK.NetworkRequest.InitiatorType.SignedExchange: {
         cell.appendChild(Components.Linkifier.Linkifier.linkifyURL(initiator.url));
         this._appendSubtitle(cell, Common.UIString.UIString('signed-exchange'));
         break;
+      }
 
-      default:
+      default: {
         cell.title = Common.UIString.UIString('Other');
         cell.classList.add('network-dim-cell');
         cell.appendChild(createTextNode(Common.UIString.UIString('Other')));
+      }
     }
   }
 

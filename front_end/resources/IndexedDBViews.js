@@ -498,7 +498,7 @@ export class IDBDataGridNode extends DataGrid.DataGrid.DataGridNode {
     const value = /** @type {!SDK.RemoteObject.RemoteObject} */ (this.data[columnIdentifier]);
 
     switch (columnIdentifier) {
-      case 'value':
+      case 'value': {
         cell.removeChildren();
         const objectPropSection =
             ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.defaultObjectPropertiesSection(
@@ -506,14 +506,17 @@ export class IDBDataGridNode extends DataGrid.DataGrid.DataGridNode {
         cell.appendChild(objectPropSection.element);
         this.valueObjectPresentation = objectPropSection;
         break;
+      }
       case 'key':
-      case 'primaryKey':
+      case 'primaryKey': {
         cell.removeChildren();
         const objectElement = ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.defaultObjectPresentation(
             value, undefined /* linkifier */, true /* skipProto */, true /* readOnly */);
         cell.appendChild(objectElement);
         break;
-      default:
+      }
+      default: {
+      }
     }
 
     return cell;

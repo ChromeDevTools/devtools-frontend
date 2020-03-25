@@ -669,9 +669,11 @@ export class TimelineUIUtils {
       case recordType.WebSocketCreate:
       case recordType.WebSocketSendHandshakeRequest:
       case recordType.WebSocketReceiveHandshakeResponse:
-      case recordType.WebSocketDestroy:
+      case recordType.WebSocketDestroy: {
         detailsText = await TimelineUIUtils.buildDetailsTextForTraceEvent(event, target);
         break;
+      }
+
       case recordType.PaintImage:
       case recordType.DecodeImage:
       case recordType.ResizeImage:
@@ -689,8 +691,9 @@ export class TimelineUIUtils {
         }
         break;
       }
+
       case recordType.FunctionCall:
-      case recordType.JSFrame:
+      case recordType.JSFrame: {
         details = createElement('span');
         details.createTextChild(TimelineUIUtils.frameDisplayName(eventData));
         const location = linkifyLocation(
@@ -700,9 +703,13 @@ export class TimelineUIUtils {
           details.appendChild(location);
         }
         break;
-      case recordType.CompileModule:
+      }
+
+      case recordType.CompileModule: {
         details = linkifyLocation('', event.args['fileName'], 0, 0);
         break;
+      }
+
       case recordType.CompileScript:
       case recordType.EvaluateScript: {
         const url = eventData['url'];
@@ -711,6 +718,7 @@ export class TimelineUIUtils {
         }
         break;
       }
+
       case recordType.StreamingCompileScript: {
         const url = eventData['url'];
         if (url) {
@@ -718,13 +726,15 @@ export class TimelineUIUtils {
         }
         break;
       }
-      default:
+
+      default: {
         if (event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.Console)) {
           detailsText = null;
         } else {
           details = linkifyTopCallFrame();
         }
         break;
+      }
     }
 
     if (!details && detailsText) {
@@ -868,34 +878,42 @@ export class TimelineUIUtils {
     switch (event.name) {
       case recordTypes.GCEvent:
       case recordTypes.MajorGC:
-      case recordTypes.MinorGC:
+      case recordTypes.MinorGC: {
         const delta = event.args['usedHeapSizeBefore'] - event.args['usedHeapSizeAfter'];
         contentHelper.appendTextRow(ls`Collected`, Number.bytesToString(delta));
         break;
+      }
+
       case recordTypes.JSFrame:
-      case recordTypes.FunctionCall:
+      case recordTypes.FunctionCall: {
         const detailsNode = await TimelineUIUtils.buildDetailsNodeForTraceEvent(event, model.targetByEvent(event), linkifier);
         if (detailsNode) {
           contentHelper.appendElementRow(ls`Function`, detailsNode);
         }
         break;
+      }
+
       case recordTypes.TimerFire:
       case recordTypes.TimerInstall:
-      case recordTypes.TimerRemove:
+      case recordTypes.TimerRemove: {
         contentHelper.appendTextRow(ls`Timer ID`, eventData['timerId']);
         if (event.name === recordTypes.TimerInstall) {
           contentHelper.appendTextRow(ls`Timeout`, Number.millisToString(eventData['timeout']));
           contentHelper.appendTextRow(ls`Repeats`, !eventData['singleShot']);
         }
         break;
-      case recordTypes.FireAnimationFrame:
+      }
+
+      case recordTypes.FireAnimationFrame: {
         contentHelper.appendTextRow(ls`Callback ID`, eventData['id']);
         break;
+      }
+
       case recordTypes.ResourceWillSendRequest:
       case recordTypes.ResourceSendRequest:
       case recordTypes.ResourceReceiveResponse:
       case recordTypes.ResourceReceivedData:
-      case recordTypes.ResourceFinish:
+      case recordTypes.ResourceFinish: {
         url = timelineData.url;
         if (url) {
           contentHelper.appendElementRow(ls`Resource`, Components.Linkifier.Linkifier.linkifyURL(url, {tabStop: true}));
@@ -920,10 +938,14 @@ export class TimelineUIUtils {
           contentHelper.appendTextRow(ls`Decoded Body`, ls`${eventData['decodedBodyLength']} Bytes`);
         }
         break;
-      case recordTypes.CompileModule:
+      }
+
+      case recordTypes.CompileModule: {
         contentHelper.appendLocationRow(ls`Module`, event.args['fileName'], 0);
         break;
-      case recordTypes.CompileScript:
+      }
+
+      case recordTypes.CompileScript: {
         url = eventData && eventData['url'];
         if (url) {
           contentHelper.appendLocationRow(ls`Script`, url, eventData['lineNumber'], eventData['columnNumber']);
@@ -940,17 +962,21 @@ export class TimelineUIUtils {
           contentHelper.appendTextRow(ls`Cache Rejected`, eventData['cacheRejected']);
         }
         break;
-      case recordTypes.EvaluateScript:
+      }
+
+      case recordTypes.EvaluateScript: {
         url = eventData && eventData['url'];
         if (url) {
           contentHelper.appendLocationRow(ls`Script`, url, eventData['lineNumber'], eventData['columnNumber']);
         }
         break;
+      }
+
       case recordTypes.WasmStreamFromResponseCallback:
       case recordTypes.WasmCompiledModule:
       case recordTypes.WasmCachedModule:
       case recordTypes.WasmModuleCacheHit:
-      case recordTypes.WasmModuleCacheInvalid:
+      case recordTypes.WasmModuleCacheInvalid: {
         if (eventData) {
           url = event.args['url'];
           if (url) {
@@ -966,24 +992,29 @@ export class TimelineUIUtils {
           }
         }
         break;
-      case recordTypes.Paint:
+      }
+
+      case recordTypes.Paint: {
         const clip = eventData['clip'];
         contentHelper.appendTextRow(ls`Location`, ls`(${clip[0]}, ${clip[1]})`);
         const clipWidth = TimelineUIUtils.quadWidth(clip);
         const clipHeight = TimelineUIUtils.quadHeight(clip);
         contentHelper.appendTextRow(ls`Dimensions`, ls`${clipWidth} × ${clipHeight}`);
         // Fall-through intended.
+      }
 
       case recordTypes.PaintSetup:
       case recordTypes.Rasterize:
-      case recordTypes.ScrollLayer:
+      case recordTypes.ScrollLayer: {
         relatedNodeLabel = ls`Layer Root`;
         break;
+      }
+
       case recordTypes.PaintImage:
       case recordTypes.DecodeLazyPixelRef:
       case recordTypes.DecodeImage:
       case recordTypes.ResizeImage:
-      case recordTypes.DrawLazyPixelRef:
+      case recordTypes.DrawLazyPixelRef: {
         relatedNodeLabel = ls`Owner Element`;
         url = timelineData.url;
         if (url) {
@@ -991,30 +1022,40 @@ export class TimelineUIUtils {
               ls`Image URL`, Components.Linkifier.Linkifier.linkifyURL(url, {tabStop: true}));
         }
         break;
-      case recordTypes.ParseAuthorStyleSheet:
+      }
+
+      case recordTypes.ParseAuthorStyleSheet: {
         url = eventData['styleSheetUrl'];
         if (url) {
           contentHelper.appendElementRow(
               ls`Stylesheet URL`, Components.Linkifier.Linkifier.linkifyURL(url, {tabStop: true}));
         }
         break;
+      }
+
       case recordTypes.UpdateLayoutTree:  // We don't want to see default details.
-      case recordTypes.RecalculateStyles:
+      case recordTypes.RecalculateStyles: {
         contentHelper.appendTextRow(ls`Elements Affected`, event.args['elementCount']);
         break;
-      case recordTypes.Layout:
+      }
+
+      case recordTypes.Layout: {
         const beginData = event.args['beginData'];
         contentHelper.appendTextRow(
             ls`Nodes That Need Layout`, ls`${beginData['dirtyObjects']} of ${beginData['totalObjects']}`);
         relatedNodeLabel = ls`Layout root`;
         break;
-      case recordTypes.ConsoleTime:
+      }
+
+      case recordTypes.ConsoleTime: {
         contentHelper.appendTextRow(ls`Message`, event.name);
         break;
+      }
+
       case recordTypes.WebSocketCreate:
       case recordTypes.WebSocketSendHandshakeRequest:
       case recordTypes.WebSocketReceiveHandshakeResponse:
-      case recordTypes.WebSocketDestroy:
+      case recordTypes.WebSocketDestroy: {
         const initiatorData = initiator ? initiator.args['data'] : eventData;
         if (typeof initiatorData['webSocketURL'] !== 'undefined') {
           contentHelper.appendTextRow(ls`URL`, initiatorData['webSocketURL']);
@@ -1026,14 +1067,20 @@ export class TimelineUIUtils {
           contentHelper.appendTextRow(ls`Message`, eventData['message']);
         }
         break;
-      case recordTypes.EmbedderCallback:
+      }
+
+      case recordTypes.EmbedderCallback: {
         contentHelper.appendTextRow(ls`Callback Function`, eventData['callbackName']);
         break;
-      case recordTypes.Animation:
+      }
+
+      case recordTypes.Animation: {
         if (event.phase === SDK.TracingModel.Phase.NestableAsyncInstant) {
           contentHelper.appendTextRow(ls`State`, eventData['state']);
         }
         break;
+      }
+
       case recordTypes.ParseHTML: {
         const beginData = event.args['beginData'];
         const startLine = beginData['startLine'] - 1;
@@ -1045,32 +1092,39 @@ export class TimelineUIUtils {
         break;
       }
 
-      case recordTypes.FireIdleCallback:
+      case recordTypes.FireIdleCallback: {
         contentHelper.appendTextRow(ls`Allotted Time`, Number.millisToString(eventData['allottedMilliseconds']));
         contentHelper.appendTextRow(ls`Invoked by Timeout`, eventData['timedOut']);
         // Fall-through intended.
+      }
 
       case recordTypes.RequestIdleCallback:
-      case recordTypes.CancelIdleCallback:
+      case recordTypes.CancelIdleCallback: {
         contentHelper.appendTextRow(ls`Callback ID`, eventData['id']);
         break;
-      case recordTypes.EventDispatch:
+      }
+
+      case recordTypes.EventDispatch: {
         contentHelper.appendTextRow(ls`Type`, eventData['type']);
         break;
+      }
 
-      case recordTypes.MarkLCPCandidate:
+      case recordTypes.MarkLCPCandidate: {
         contentHelper.appendTextRow(ls`Type`, String(eventData['type']));
         contentHelper.appendTextRow(ls`Size`, String(eventData['size']));
         // Fall-through intended.
+      }
+
       case recordTypes.MarkFirstPaint:
       case recordTypes.MarkFCP:
       case recordTypes.MarkFMP:
       case recordTypes.MarkLoad:
-      case recordTypes.MarkDOMContent:
+      case recordTypes.MarkDOMContent: {
         contentHelper.appendTextRow(
             ls`Timestamp`, Number.preciseMillisToString(event.startTime - model.minimumRecordTime(), 1));
         contentHelper.appendElementRow(ls`Details`, TimelineUIUtils.buildDetailsNodeForPerformanceEvent(event));
         break;
+      }
 
       default: {
         const detailsNode = await TimelineUIUtils.buildDetailsNodeForTraceEvent(event, model.targetByEvent(event), linkifier);
@@ -2018,36 +2072,49 @@ export class TimelineUIUtils {
 
     switch (warning) {
       case warnings.ForcedStyle:
-      case warnings.ForcedLayout:
+      case warnings.ForcedLayout: {
         const forcedReflowLink = UI.UIUtils.createDocumentationLink(
             '../../fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts',
             ls`Forced reflow`);
         span.appendChild(UI.UIUtils.formatLocalized('%s is a likely performance bottleneck.', [forcedReflowLink]));
         break;
-      case warnings.IdleDeadlineExceeded:
+      }
+
+      case warnings.IdleDeadlineExceeded: {
         const exceededMs = Number.millisToString(event.duration - eventData['allottedMilliseconds'], true);
         span.textContent = ls`Idle callback execution extended beyond deadline by ${exceededMs}`;
         break;
-      case warnings.LongHandler:
+      }
+
+      case warnings.LongHandler: {
         span.textContent = Common.UIString.UIString('Handler took %s', Number.millisToString(event.duration, true));
         break;
-      case warnings.LongRecurringHandler:
+      }
+
+      case warnings.LongRecurringHandler: {
         span.textContent =
             Common.UIString.UIString('Recurring handler took %s', Number.millisToString(event.duration, true));
         break;
-      case warnings.LongTask:
+      }
+
+      case warnings.LongTask: {
         const longTaskLink = UI.UIUtils.createDocumentationLink(
             '../../fundamentals/performance/rail#goals-and-guidelines', ls`Long task`);
         span.appendChild(
             UI.UIUtils.formatLocalized('%s took %s.', [longTaskLink, Number.millisToString(event.duration, true)]));
         break;
-      case warnings.V8Deopt:
+      }
+
+      case warnings.V8Deopt: {
         span.appendChild(UI.XLink.XLink.create(
             'https://github.com/GoogleChrome/devtools-docs/issues/53', Common.UIString.UIString('Not optimized')));
         span.createTextChild(Common.UIString.UIString(': %s', eventData['deoptReason']));
         break;
-      default:
+      }
+
+      default: {
         console.assert(false, 'Unhandled TimelineModel.WarningType');
+      }
     }
     return span;
   }

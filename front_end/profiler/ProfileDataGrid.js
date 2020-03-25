@@ -166,17 +166,19 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode {
   createCell(columnId) {
     let cell;
     switch (columnId) {
-      case 'self':
+      case 'self': {
         cell = this._createValueCell(this.self, this.selfPercent, columnId);
         cell.classList.toggle('highlight', this._searchMatchedSelfColumn);
         break;
+      }
 
-      case 'total':
+      case 'total': {
         cell = this._createValueCell(this.total, this.totalPercent, columnId);
         cell.classList.toggle('highlight', this._searchMatchedTotalColumn);
         break;
+      }
 
-      case 'function':
+      case 'function': {
         cell = this.createTD(columnId);
         cell.classList.toggle('highlight', this._searchMatchedFunctionColumn);
         if (this._deoptReason) {
@@ -197,10 +199,12 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode {
         cell.appendChild(urlElement);
         this.linkElement = urlElement;
         break;
+      }
 
-      default:
+      default: {
         cell = super.createCell(columnId);
         break;
+      }
     }
     return cell;
   }

@@ -162,12 +162,13 @@ export class TimelineDetailsView extends UI.Widget.VBox {
       return;
     }
     switch (this._selection.type()) {
-      case TimelineSelection.Type.TraceEvent:
+      case TimelineSelection.Type.TraceEvent: {
         const event = /** @type {!SDK.TracingModel.Event} */ (this._selection.object());
         TimelineUIUtils.buildTraceEventDetails(event, this._model.timelineModel(), this._detailsLinkifier, true)
             .then(fragment => this._appendDetailsTabsForTraceEventAndShowDetails(event, fragment));
         break;
-      case TimelineSelection.Type.Frame:
+      }
+      case TimelineSelection.Type.Frame: {
         const frame = /** @type {!TimelineModel.TimelineFrameModel.TimelineFrame} */ (this._selection.object());
         const filmStripFrame = this._model.filmStripModelFrame(frame);
         this._setContent(TimelineUIUtils.generateDetailsContentForFrame(frame, filmStripFrame));
@@ -179,14 +180,17 @@ export class TimelineDetailsView extends UI.Widget.VBox {
           }
         }
         break;
-      case TimelineSelection.Type.NetworkRequest:
+      }
+      case TimelineSelection.Type.NetworkRequest: {
         const request = /** @type {!TimelineModel.TimelineModel.NetworkRequest} */ (this._selection.object());
         TimelineUIUtils.buildNetworkRequestDetails(request, this._model.timelineModel(), this._detailsLinkifier)
             .then(this._setContent.bind(this));
         break;
-      case TimelineSelection.Type.Range:
+      }
+      case TimelineSelection.Type.Range: {
         this._updateSelectedRangeStats(this._selection.startTime(), this._selection.endTime());
         break;
+      }
     }
 
     this._updateContents();

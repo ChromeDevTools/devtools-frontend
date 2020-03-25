@@ -327,23 +327,28 @@ function parseLocalizableStringFromNode(node, filePath) {
   const locCase = localizationUtils.getLocalizationCase(node);
   switch (locCase) {
     case 'Common.UIString':
-    case 'Common.UIStringFormat':
+    case 'Common.UIStringFormat': {
       handleCommonUIString(node, filePath);
       break;
-    case 'UI.formatLocalized':
+    }
+    case 'UI.formatLocalized': {
       if (node.arguments !== undefined && node.arguments[1] !== undefined && node.arguments[1].elements !== undefined) {
         handleCommonUIString(node, filePath, node.arguments[1].elements);
       }
       break;
-    case 'Tagged Template':
+    }
+    case 'Tagged Template': {
       handleTemplateLiteral(node.quasi, escodegen.generate(node), filePath);
       break;
-    case null:
+    }
+    case null: {
       break;
-    default:
+    }
+    default: {
       throw new Error(
           `${filePath}${localizationUtils.getLocationMessage(node.loc)}: unexpected localization case for node: ${
               escodegen.generate(node)}`);
+    }
   }
 
   for (const key of objKeys) {
@@ -358,15 +363,18 @@ function handleCommonUIString(node, filePath, argumentNodes) {
   }
   const firstArgType = node.arguments[0].type;
   switch (firstArgType) {
-    case esprimaTypes.LITERAL:
+    case esprimaTypes.LITERAL: {
       const message = node.arguments[0].value;
       addString(message, escodegen.generate(node), filePath, node.loc, argumentNodes);
       break;
-    case esprimaTypes.TEMP_LITERAL:
+    }
+    case esprimaTypes.TEMP_LITERAL: {
       handleTemplateLiteral(node.arguments[0], escodegen.generate(node), filePath, argumentNodes);
       break;
-    default:
+    }
+    default: {
       break;
+    }
   }
 }
 

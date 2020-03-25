@@ -577,44 +577,51 @@ export class Color {
     }
 
     switch (format) {
-      case Format.Original:
+      case Format.Original: {
         return this._originalText;
-      case Format.RGB:
+      }
+      case Format.RGB: {
         if (this.hasAlpha()) {
           return null;
         }
         return Platform.StringUtilities.sprintf(
             'rgb(%d, %d, %d)', toRgbValue(this._rgba[0]), toRgbValue(this._rgba[1]), toRgbValue(this._rgba[2]));
-      case Format.RGBA:
+      }
+      case Format.RGBA: {
         return Platform.StringUtilities.sprintf(
             'rgba(%d, %d, %d, %f)', toRgbValue(this._rgba[0]), toRgbValue(this._rgba[1]), toRgbValue(this._rgba[2]),
             this._rgba[3]);
-      case Format.HSL:
+      }
+      case Format.HSL: {
         if (this.hasAlpha()) {
           return null;
         }
         const hsl = this.hsla();
         return Platform.StringUtilities.sprintf(
             'hsl(%d, %d%, %d%)', Math.round(hsl[0] * 360), Math.round(hsl[1] * 100), Math.round(hsl[2] * 100));
-      case Format.HSLA:
+      }
+      case Format.HSLA: {
         const hsla = this.hsla();
         return Platform.StringUtilities.sprintf(
             'hsla(%d, %d%, %d%, %f)', Math.round(hsla[0] * 360), Math.round(hsla[1] * 100), Math.round(hsla[2] * 100),
             hsla[3]);
-      case Format.HEXA:
+      }
+      case Format.HEXA: {
         return Platform.StringUtilities
             .sprintf(
                 '#%s%s%s%s', toHexValue(this._rgba[0]), toHexValue(this._rgba[1]), toHexValue(this._rgba[2]),
                 toHexValue(this._rgba[3]))
             .toLowerCase();
-      case Format.HEX:
+      }
+      case Format.HEX: {
         if (this.hasAlpha()) {
           return null;
         }
         return Platform.StringUtilities
             .sprintf('#%s%s%s', toHexValue(this._rgba[0]), toHexValue(this._rgba[1]), toHexValue(this._rgba[2]))
             .toLowerCase();
-      case Format.ShortHEXA:
+      }
+      case Format.ShortHEXA: {
         const hexFormat = this.detectHEXFormat();
         if (hexFormat !== Format.ShortHEXA && hexFormat !== Format.ShortHEX) {
           return null;
@@ -624,7 +631,8 @@ export class Color {
                 '#%s%s%s%s', toShortHexValue(this._rgba[0]), toShortHexValue(this._rgba[1]),
                 toShortHexValue(this._rgba[2]), toShortHexValue(this._rgba[3]))
             .toLowerCase();
-      case Format.ShortHEX:
+      }
+      case Format.ShortHEX: {
         if (this.hasAlpha()) {
           return null;
         }
@@ -636,8 +644,10 @@ export class Color {
                 '#%s%s%s', toShortHexValue(this._rgba[0]), toShortHexValue(this._rgba[1]),
                 toShortHexValue(this._rgba[2]))
             .toLowerCase();
-      case Format.Nickname:
+      }
+      case Format.Nickname: {
         return this.nickname();
+      }
     }
 
     return this._originalText;

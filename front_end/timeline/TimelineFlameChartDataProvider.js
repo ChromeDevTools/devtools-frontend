@@ -294,28 +294,36 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     let rasterCount = 0;
     for (const track of tracks) {
       switch (track.type) {
-        case TimelineModel.TimelineModel.TrackType.Input:
+        case TimelineModel.TimelineModel.TrackType.Input: {
           this._appendAsyncEventsGroup(
               track, ls`Input`, track.asyncEvents, this._interactionsHeaderLevel2, eventEntryType,
               false /* selectable */);
           break;
-        case TimelineModel.TimelineModel.TrackType.Animation:
+        }
+
+        case TimelineModel.TimelineModel.TrackType.Animation: {
           this._appendAsyncEventsGroup(
               track, ls`Animation`, track.asyncEvents, this._interactionsHeaderLevel2, eventEntryType,
               false /* selectable */);
           break;
-        case TimelineModel.TimelineModel.TrackType.Timings:
+        }
+
+        case TimelineModel.TimelineModel.TrackType.Timings: {
           const group = this._appendHeader(ls`Timings`, this._timingsHeader, true /* selectable */);
           group._track = track;
           this._appendPageMetrics();
           this._appendAsyncEventsGroup(
               track, null, track.asyncEvents, this._timingsHeader, eventEntryType, true /* selectable */);
           break;
-        case TimelineModel.TimelineModel.TrackType.Console:
+        }
+
+        case TimelineModel.TimelineModel.TrackType.Console: {
           this._appendAsyncEventsGroup(
               track, ls`Console`, track.asyncEvents, this._headerLevel1, eventEntryType, true /* selectable */);
           break;
-        case TimelineModel.TimelineModel.TrackType.MainThread:
+        }
+
+        case TimelineModel.TimelineModel.TrackType.MainThread: {
           if (track.forMainFrame) {
             const group = this._appendSyncEvents(
                 track, track.events, track.url ? ls`Main \u2014 ${track.url}` : ls`Main`, this._headerLevel1,
@@ -329,12 +337,16 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
                 eventEntryType, true /* selectable */);
           }
           break;
-        case TimelineModel.TimelineModel.TrackType.Worker:
+        }
+
+        case TimelineModel.TimelineModel.TrackType.Worker: {
           this._appendSyncEvents(
               track, track.events, track.url ? ls`Worker \u2014 ${track.url}` : ls`Dedicated Worker`,
               this._headerLevel1, eventEntryType, true /* selectable */);
           break;
-        case TimelineModel.TimelineModel.TrackType.Raster:
+        }
+
+        case TimelineModel.TimelineModel.TrackType.Raster: {
           if (!rasterCount) {
             this._appendHeader(ls`Raster`, this._headerLevel1, false /* selectable */);
           }
@@ -343,16 +355,21 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
               track, track.events, ls`Rasterizer Thread ${rasterCount}`, this._headerLevel2, eventEntryType,
               true /* selectable */);
           break;
-        case TimelineModel.TimelineModel.TrackType.GPU:
+        }
+
+        case TimelineModel.TimelineModel.TrackType.GPU: {
           this._appendSyncEvents(
               track, track.events, ls`GPU`, this._headerLevel1, eventEntryType, true /* selectable */);
           break;
-        case TimelineModel.TimelineModel.TrackType.Other:
+        }
+
+        case TimelineModel.TimelineModel.TrackType.Other: {
           this._appendSyncEvents(
               track, track.events, track.name || ls`Thread`, this._headerLevel1, eventEntryType, true /* selectable */);
           this._appendAsyncEventsGroup(
               track, track.name, track.asyncEvents, this._headerLevel1, eventEntryType, true /* selectable */);
           break;
+        }
       }
     }
     if (this._timelineData.selectedGroup) {

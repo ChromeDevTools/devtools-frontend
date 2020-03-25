@@ -835,17 +835,19 @@ export class ActionDelegate {
     const panel = self.UI.context.flavor(NetworkPanel);
     console.assert(panel && panel instanceof NetworkPanel);
     switch (actionId) {
-      case 'network.toggle-recording':
+      case 'network.toggle-recording': {
         panel._toggleRecording();
         return true;
-      case 'network.hide-request-details':
+      }
+      case 'network.hide-request-details': {
         if (!panel._networkItemView) {
           return false;
         }
         panel._hideRequestPanel();
         panel._networkLogView.resetFocus();
         return true;
-      case 'network.search':
+      }
+      case 'network.search': {
         const selection = self.UI.inspectorView.element.window().getSelection();
         let queryCandidate = '';
         if (selection.rangeCount) {
@@ -853,6 +855,7 @@ export class ActionDelegate {
         }
         SearchNetworkView.openSearch(queryCandidate);
         return true;
+      }
     }
     return false;
   }

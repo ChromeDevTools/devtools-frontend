@@ -798,17 +798,19 @@ export class TimelineModelImpl {
 
     switch (event.name) {
       case recordTypes.ResourceSendRequest:
-      case recordTypes.WebSocketCreate:
+      case recordTypes.WebSocketCreate: {
         timelineData.setInitiator(eventStack.peekLast() || null);
         timelineData.url = eventData['url'];
         break;
+      }
 
-      case recordTypes.ScheduleStyleRecalculation:
+      case recordTypes.ScheduleStyleRecalculation: {
         this._lastScheduleStyleRecalculation[eventData['frame']] = event;
         break;
+      }
 
       case recordTypes.UpdateLayoutTree:
-      case recordTypes.RecalculateStyles:
+      case recordTypes.RecalculateStyles: {
         this._invalidationTracker.didRecalcStyle(event);
         if (event.args['beginData']) {
           timelineData.setInitiator(this._lastScheduleStyleRecalculation[event.args['beginData']['frame']]);
@@ -818,13 +820,15 @@ export class TimelineModelImpl {
           this._currentTaskLayoutAndRecalcEvents.push(event);
         }
         break;
+      }
 
       case recordTypes.ScheduleStyleInvalidationTracking:
       case recordTypes.StyleRecalcInvalidationTracking:
       case recordTypes.StyleInvalidatorInvalidationTracking:
-      case recordTypes.LayoutInvalidationTracking:
+      case recordTypes.LayoutInvalidationTracking: {
         this._invalidationTracker.addInvalidation(new InvalidationTrackingEvent(event));
         break;
+      }
 
       case recordTypes.InvalidateLayout: {
         // Consider style recalculation as a reason for layout invalidation,
@@ -854,26 +858,29 @@ export class TimelineModelImpl {
         break;
       }
 
-      case recordTypes.Task:
+      case recordTypes.Task: {
         if (event.duration > TimelineModelImpl.Thresholds.LongTask) {
           timelineData.warning = TimelineModelImpl.WarningType.LongTask;
         }
         break;
+      }
 
-      case recordTypes.EventDispatch:
+      case recordTypes.EventDispatch: {
         if (event.duration > TimelineModelImpl.Thresholds.RecurringHandler) {
           timelineData.warning = TimelineModelImpl.WarningType.LongHandler;
         }
         break;
+      }
 
       case recordTypes.TimerFire:
-      case recordTypes.FireAnimationFrame:
+      case recordTypes.FireAnimationFrame: {
         if (event.duration > TimelineModelImpl.Thresholds.RecurringHandler) {
           timelineData.warning = TimelineModelImpl.WarningType.LongRecurringHandler;
         }
         break;
+      }
 
-      case recordTypes.FunctionCall:
+      case recordTypes.FunctionCall: {
         // Compatibility with old format.
         if (typeof eventData['scriptName'] === 'string') {
           eventData['url'] = eventData['scriptName'];
@@ -881,29 +888,30 @@ export class TimelineModelImpl {
         if (typeof eventData['scriptLine'] === 'number') {
           eventData['lineNumber'] = eventData['scriptLine'];
         }
-
-      // Fallthrough.
+        // Fallthrough intended.
+      }
 
       case recordTypes.EvaluateScript:
-      case recordTypes.CompileScript:
+      case recordTypes.CompileScript: {
         if (typeof eventData['lineNumber'] === 'number') {
           --eventData['lineNumber'];
         }
         if (typeof eventData['columnNumber'] === 'number') {
           --eventData['columnNumber'];
         }
+        // Fallthrough intended.
+      }
 
-      // Fallthrough intended.
-
-      case recordTypes.RunMicrotasks:
+      case recordTypes.RunMicrotasks: {
         // Microtasks technically are not necessarily scripts, but for purpose of
         // forced sync style recalc or layout detection they are.
         if (!this._currentScriptEvent) {
           this._currentScriptEvent = event;
         }
         break;
+      }
 
-      case recordTypes.SetLayerTreeId:
+      case recordTypes.SetLayerTreeId: {
         // This is to support old traces.
         if (this._sessionId && eventData['sessionId'] && this._sessionId === eventData['sessionId']) {
           this._mainFrameLayerTreeId = eventData['layerTreeId'];
@@ -918,6 +926,7 @@ export class TimelineModelImpl {
         }
         this._mainFrameLayerTreeId = eventData['layerTreeId'];
         break;
+      }
 
       case recordTypes.Paint: {
         this._invalidationTracker.didPaint(event);
@@ -945,14 +954,16 @@ export class TimelineModelImpl {
         break;
       }
 
-      case recordTypes.ScrollLayer:
+      case recordTypes.ScrollLayer: {
         timelineData.backendNodeId = eventData['nodeId'];
         break;
+      }
 
-      case recordTypes.PaintImage:
+      case recordTypes.PaintImage: {
         timelineData.backendNodeId = eventData['nodeId'];
         timelineData.url = eventData['url'];
         break;
+      }
 
       case recordTypes.DecodeImage:
       case recordTypes.ResizeImage: {
@@ -983,15 +994,17 @@ export class TimelineModelImpl {
         break;
       }
 
-      case recordTypes.FrameStartedLoading:
+      case recordTypes.FrameStartedLoading: {
         if (timelineData.frameId !== event.args['frame']) {
           return false;
         }
         break;
+      }
 
-      case recordTypes.MarkLCPCandidate:
+      case recordTypes.MarkLCPCandidate: {
         timelineData.backendNodeId = eventData['nodeId'];
         break;
+      }
 
       case recordTypes.MarkDOMContent:
       case recordTypes.MarkLoad: {
@@ -1030,11 +1043,12 @@ export class TimelineModelImpl {
         break;
       }
 
-      case recordTypes.FireIdleCallback:
+      case recordTypes.FireIdleCallback: {
         if (event.duration > eventData['allottedMilliseconds'] + TimelineModelImpl.Thresholds.IdleCallbackAddon) {
           timelineData.warning = TimelineModelImpl.WarningType.IdleDeadlineExceeded;
         }
         break;
+      }
     }
     return true;
   }

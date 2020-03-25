@@ -246,20 +246,24 @@ export class TracingModel {
     }
 
     switch (payload.name) {
-      case MetadataEvent.ProcessSortIndex:
+      case MetadataEvent.ProcessSortIndex: {
         process._setSortIndex(payload.args['sort_index']);
         break;
-      case MetadataEvent.ProcessName:
+      }
+      case MetadataEvent.ProcessName: {
         const processName = payload.args['name'];
         process._setName(processName);
         this._processByName.set(processName, process);
         break;
-      case MetadataEvent.ThreadSortIndex:
+      }
+      case MetadataEvent.ThreadSortIndex: {
         process.threadById(payload.tid)._setSortIndex(payload.args['sort_index']);
         break;
-      case MetadataEvent.ThreadName:
+      }
+      case MetadataEvent.ThreadName: {
         process.threadById(payload.tid)._setName(payload.args['name']);
         break;
+      }
     }
   }
 
@@ -371,7 +375,7 @@ export class TracingModel {
     let openEventsStack = this._openNestableAsyncEvents.get(key);
 
     switch (event.phase) {
-      case phase.NestableAsyncBegin:
+      case phase.NestableAsyncBegin: {
         if (!openEventsStack) {
           openEventsStack = [];
           this._openNestableAsyncEvents.set(key, openEventsStack);
@@ -380,14 +384,16 @@ export class TracingModel {
         openEventsStack.push(asyncEvent);
         event.thread._addAsyncEvent(asyncEvent);
         break;
+      }
 
-      case phase.NestableAsyncInstant:
+      case phase.NestableAsyncInstant: {
         if (openEventsStack && openEventsStack.length) {
           openEventsStack.peekLast()._addStep(event);
         }
         break;
+      }
 
-      case phase.NestableAsyncEnd:
+      case phase.NestableAsyncEnd: {
         if (!openEventsStack || !openEventsStack.length) {
           break;
         }
@@ -398,6 +404,7 @@ export class TracingModel {
           break;
         }
         top._addStep(event);
+      }
     }
   }
 
@@ -927,7 +934,7 @@ export class Thread extends NamedObject {
       const e = this._events[i];
       e.ordinal = i;
       switch (e.phase) {
-        case phases.End:
+        case phases.End: {
           this._events[i] = null;  // Mark for removal.
           // Quietly ignore unbalanced close events, they're legit (we could have missed start one).
           if (!stack.length) {
@@ -942,9 +949,11 @@ export class Thread extends NamedObject {
             top._complete(e);
           }
           break;
-        case phases.Begin:
+        }
+        case phases.Begin: {
           stack.push(e);
           break;
+        }
       }
     }
     while (stack.length) {

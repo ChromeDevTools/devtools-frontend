@@ -241,11 +241,12 @@ export class StylesSidebarPane extends ElementsSidebarPane {
 
     switch (event.key) {
       case 'ArrowUp':
-      case 'ArrowLeft':
+      case 'ArrowLeft': {
         const sectionToFocus = section.previousSibling() || section.lastSibling();
         sectionToFocus.element.focus();
         event.consume(true);
         break;
+      }
       case 'ArrowDown':
       case 'ArrowRight': {
         const sectionToFocus = section.nextSibling() || section.firstSibling();
@@ -253,14 +254,16 @@ export class StylesSidebarPane extends ElementsSidebarPane {
         event.consume(true);
         break;
       }
-      case 'Home':
+      case 'Home': {
         section.firstSibling().element.focus();
         event.consume(true);
         break;
-      case 'End':
+      }
+      case 'End': {
         section.lastSibling().element.focus();
         event.consume(true);
         break;
+      }
     }
   }
 
@@ -1413,10 +1416,11 @@ export class StylePropertiesSection {
       const mediaTextElement = mediaContainerElement.createChild('span', 'media-text');
       switch (media.source) {
         case SDK.CSSMedia.Source.LINKED_SHEET:
-        case SDK.CSSMedia.Source.INLINE_SHEET:
-          mediaTextElement.textContent = 'media="' + media.text + '"';
+        case SDK.CSSMedia.Source.INLINE_SHEET: {
+          mediaTextElement.textContent = `media="${media.text}"`;
           break;
-        case SDK.CSSMedia.Source.MEDIA_RULE:
+        }
+        case SDK.CSSMedia.Source.MEDIA_RULE: {
           const decoration = mediaContainerElement.createChild('span');
           mediaContainerElement.insertBefore(decoration, mediaTextElement);
           decoration.textContent = '@media ';
@@ -1427,9 +1431,11 @@ export class StylePropertiesSection {
                 'click', this._handleMediaRuleClick.bind(this, media, mediaTextElement), false);
           }
           break;
-        case SDK.CSSMedia.Source.IMPORT_RULE:
-          mediaTextElement.textContent = '@import ' + media.text;
+        }
+        case SDK.CSSMedia.Source.IMPORT_RULE: {
+          mediaTextElement.textContent = `@import ${media.text}`;
           break;
+        }
       }
     }
   }

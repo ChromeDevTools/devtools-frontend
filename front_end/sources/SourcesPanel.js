@@ -1198,25 +1198,31 @@ export class DebuggingActionDelegate {
   handleAction(context, actionId) {
     const panel = SourcesPanel.instance();
     switch (actionId) {
-      case 'debugger.step-over':
+      case 'debugger.step-over': {
         panel._stepOver();
         return true;
-      case 'debugger.step-into':
+      }
+      case 'debugger.step-into': {
         panel._stepIntoAsync();
         return true;
-      case 'debugger.step':
+      }
+      case 'debugger.step': {
         panel._stepInto();
         return true;
-      case 'debugger.step-out':
+      }
+      case 'debugger.step-out': {
         panel._stepOut();
         return true;
-      case 'debugger.run-snippet':
+      }
+      case 'debugger.run-snippet': {
         panel._runSnippet();
         return true;
-      case 'debugger.toggle-breakpoints-active':
+      }
+      case 'debugger.toggle-breakpoints-active': {
         panel._toggleBreakpointsActive();
         return true;
-      case 'debugger.evaluate-selection':
+      }
+      case 'debugger.evaluate-selection': {
         const frame = self.UI.context.flavor(UISourceCodeFrame);
         if (frame) {
           let text = frame.textEditor.text(frame.textEditor.selection());
@@ -1229,6 +1235,7 @@ export class DebuggingActionDelegate {
           }
         }
         return true;
+      }
     }
     return false;
   }

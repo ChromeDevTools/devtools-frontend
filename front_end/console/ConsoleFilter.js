@@ -91,12 +91,13 @@ export class ConsoleFilter {
         }
       } else {
         switch (filter.key) {
-          case FilterType.Context:
+          case FilterType.Context: {
             if (!passesFilter(filter, message.context, false /* exactMatch */)) {
               return false;
             }
             break;
-          case FilterType.Source:
+          }
+          case FilterType.Source: {
             const sourceNameForMessage = message.source ?
                 SDK.ConsoleModel.MessageSourceDisplayName.get(
                     /** @type {!SDK.ConsoleModel.MessageSource} */ (message.source)) :
@@ -105,11 +106,13 @@ export class ConsoleFilter {
               return false;
             }
             break;
-          case FilterType.Url:
+          }
+          case FilterType.Url: {
             if (!passesFilter(filter, message.url, false /* exactMatch */)) {
               return false;
             }
             break;
+          }
         }
       }
     }

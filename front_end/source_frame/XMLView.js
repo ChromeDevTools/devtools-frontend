@@ -313,7 +313,7 @@ export class XMLViewNode extends UI.TreeOutline.TreeElement {
   _updateTitle() {
     const node = this._node;
     switch (node.nodeType) {
-      case 1:  // ELEMENT
+      case 1: {  // ELEMENT
         const tag = node.tagName;
         if (this._closeTag) {
           this._setTitle(['</' + tag + '>', 'shadow-xml-view-tag']);
@@ -343,20 +343,25 @@ export class XMLViewNode extends UI.TreeOutline.TreeElement {
         titleItems.push('>', 'shadow-xml-view-tag');
         this._setTitle(titleItems);
         return;
-      case 3:  // TEXT
+      }
+      case 3: {  // TEXT
         this._setTitle([node.nodeValue, 'shadow-xml-view-text']);
         return;
-      case 4:  // CDATA
+      }
+      case 4: {  // CDATA
         this._setTitle([
           '<![CDATA[', 'shadow-xml-view-cdata', node.nodeValue, 'shadow-xml-view-text', ']]>', 'shadow-xml-view-cdata'
         ]);
         return;
-      case 7:  // PROCESSING_INSTRUCTION
+      }
+      case 7: {  // PROCESSING_INSTRUCTION
         this._setTitle(['<?' + node.nodeName + ' ' + node.nodeValue + '?>', 'shadow-xml-view-processing-instruction']);
         return;
-      case 8:  // COMMENT
+      }
+      case 8: {  // COMMENT
         this._setTitle(['<!--' + node.nodeValue + '-->', 'shadow-xml-view-comment']);
         return;
+      }
     }
   }
 

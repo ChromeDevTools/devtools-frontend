@@ -62,13 +62,15 @@ export class HeapSnapshotWorkerDispatcher {
     const response = {callId: data.callId};
     try {
       switch (data.disposition) {
-        case 'create':
+        case 'create': {
           const constructorFunction = this._findFunction(data.methodName);
           this._objects[data.objectId] = new constructorFunction(this);
           break;
-        case 'dispose':
+        }
+        case 'dispose': {
           delete this._objects[data.objectId];
           break;
+        }
         case 'getter': {
           const object = this._objects[data.objectId];
           const result = object[data.methodName];
@@ -89,17 +91,18 @@ export class HeapSnapshotWorkerDispatcher {
           response.result = object[data.methodName].apply(object, data.methodArguments);
           break;
         }
-        case 'evaluateForTest':
+        case 'evaluateForTest': {
           try {
             response.result = self.eval(data.source);
-          } catch (e) {
-            response.result = e.toString();
+          } catch (error) {
+            response.result = error.toString();
           }
           break;
+        }
       }
-    } catch (e) {
-      response.error = e.toString();
-      response.errorCallStack = e.stack;
+    } catch (error) {
+      response.error = error.toString();
+      response.errorCallStack = error.stack;
       if (data.methodName) {
         response.errorMethodName = data.methodName;
       }

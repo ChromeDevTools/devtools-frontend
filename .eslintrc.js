@@ -49,6 +49,7 @@ module.exports = {
 
     // anti-patterns
     'no-caller': 2,
+    'no-case-declarations': 2,
     'no-cond-assign': 2,
     'no-console': [2, {'allow': ['assert', 'context', 'error', 'timeStamp', 'time', 'timeEnd', 'warn']}],
     'no-debugger': 2,

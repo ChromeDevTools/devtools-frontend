@@ -335,29 +335,33 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     let tabTitle = '';
 
     switch (type) {
-      case 'color':
+      case 'color': {
         const {section, color} = evt.data;
         id = `${section}-${color}`;
         tabTitle = `${color.toUpperCase()} (${section})`;
         break;
+      }
 
-      case 'unused-declarations':
+      case 'unused-declarations': {
         const {declaration} = evt.data;
         id = `${declaration}`;
         tabTitle = `${declaration}`;
         break;
+      }
 
-      case 'media-queries':
+      case 'media-queries': {
         const {text} = evt.data;
         id = `${text}`;
         tabTitle = `${text}`;
         break;
+      }
 
-      case 'font-info':
+      case 'font-info': {
         const {name} = evt.data;
         id = `${name}`;
         tabTitle = `${name}`;
         break;
+      }
     }
 
     let view = this._viewMap.get(id);

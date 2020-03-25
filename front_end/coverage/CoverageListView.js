@@ -292,7 +292,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
   createCell(columnId) {
     const cell = this.createTD(columnId);
     switch (columnId) {
-      case 'url':
+      case 'url': {
         cell.title = this._url;
         const outer = cell.createChild('div', 'url-outer');
         const prefix = outer.createChild('div', 'url-prefix');
@@ -305,7 +305,8 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
         }
         this.setCellAccessibleName(this._url, cell, columnId);
         break;
-      case 'type':
+      }
+      case 'type': {
         cell.textContent = CoverageListView._typeToString(this._coverageInfo.type());
         if (this._coverageInfo.type() & CoverageType.JavaScriptPerFunction) {
           cell.title = ls
@@ -315,14 +316,16 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
           `JS coverage with per block granularity: Once a block of JavaScript was executed, that block is marked as covered.`;
         }
         break;
-      case 'size':
+      }
+      case 'size': {
         const sizeSpan = cell.createChild('span');
         sizeSpan.textContent = Number.withThousandsSeparator(this._coverageInfo.size() || 0);
         const sizeAccessibleName =
             (this._coverageInfo.size() === 1) ? ls`1 byte` : ls`${this._coverageInfo.size() || 0} bytes`;
         this.setCellAccessibleName(sizeAccessibleName, cell, columnId);
         break;
-      case 'unusedSize':
+      }
+      case 'unusedSize': {
         const unusedSize = this._coverageInfo.unusedSize() || 0;
         const unusedSizeSpan = cell.createChild('span');
         const unusedPercentsSpan = cell.createChild('span', 'percent-value');
@@ -333,7 +336,8 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
                                                           ls`${unusedSize} bytes, ${unusedPercentFormatted}`;
         this.setCellAccessibleName(unusedAccessibleName, cell, columnId);
         break;
-      case 'bars':
+      }
+      case 'bars': {
         const barContainer = cell.createChild('div', 'bar-container');
         const unusedPercent = this._percentageString(this._coverageInfo.unusedPercentage());
         const usedPercent = this._percentageString(this._coverageInfo.usedPercentage());
@@ -361,6 +365,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
         }
         this.setCellAccessibleName(
             ls`${unusedPercent} % of file unused, ${usedPercent} % of file used`, cell, columnId);
+      }
     }
     return cell;
   }

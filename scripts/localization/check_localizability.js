@@ -195,7 +195,7 @@ function analyzeNode(parentNode, node, filePath, errors) {
   const code = escodegen.generate(node);
   switch (locCase) {
     case 'Common.UIString':
-    case 'UI.formatLocalized':
+    case 'UI.formatLocalized': {
       const firstArgType = node.arguments[0].type;
       if (firstArgType !== esprimaTypes.LITERAL && firstArgType !== esprimaTypes.TEMP_LITERAL &&
           firstArgType !== esprimaTypes.IDENTIFIER && !excludeErrors.includes(code)) {
@@ -212,7 +212,9 @@ function analyzeNode(parentNode, node, filePath, errors) {
             errors);
       }
       break;
-    case 'Tagged Template':
+    }
+
+    case 'Tagged Template': {
       if (includesConditionalExpression(node.quasi.expressions)) {
         addError(
             `${localizationUtils.getRelativeFilePathFromSrc(filePath)}${
@@ -221,10 +223,13 @@ function analyzeNode(parentNode, node, filePath, errors) {
             errors);
       }
       break;
-    default:
+    }
+
+    default: {
       // String concatenation to localization call(s) should be changed
       checkConcatenation(parentNode, node, filePath, errors);
       break;
+    }
   }
 
   for (const key of objKeys) {

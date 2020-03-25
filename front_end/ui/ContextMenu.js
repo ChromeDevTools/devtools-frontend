@@ -88,7 +88,7 @@ export class Item {
    */
   _buildDescriptor() {
     switch (this._type) {
-      case 'item':
+      case 'item': {
         const result = {type: 'item', id: this._id, label: this._label, enabled: !this._disabled};
         if (this._customElement) {
           result.element = this._customElement;
@@ -97,10 +97,13 @@ export class Item {
           result.shortcut = this._shortcut;
         }
         return result;
-      case 'separator':
+      }
+      case 'separator': {
         return {type: 'separator'};
-      case 'checkbox':
+      }
+      case 'checkbox': {
         return {type: 'checkbox', id: this._id, label: this._label, checked: !!this._checked, enabled: !this._disabled};
+      }
     }
     throw new Error('Invalid item type:' + this._type);
   }

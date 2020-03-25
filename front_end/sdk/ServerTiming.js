@@ -178,7 +178,7 @@ export class ServerTiming {
    */
   static getParserForParameter(paramName) {
     switch (paramName) {
-      case 'dur':
+      case 'dur': {
         /**
          * @param {!Object<string, *>} entry
          * @param {*} paramValue
@@ -195,8 +195,9 @@ export class ServerTiming {
           }
         }
         return durParser;
+      }
 
-      case 'desc':
+      case 'desc': {
         /**
          * @param {!Object<string, *>} entry
          * @param {?string} paramValue
@@ -205,9 +206,11 @@ export class ServerTiming {
           entry.desc = paramValue || '';
         }
         return descParser;
+      }
 
-      default:
+      default: {
         return null;
+      }
     }
   }
 

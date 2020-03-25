@@ -73,11 +73,12 @@ export class CoverageView extends UI.Widget.VBox {
     toolbar.appendToolbarItem(this._clearButton);
 
     toolbar.appendSeparator();
-    const saveButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Export...'), 'largeicon-download');
-    saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, event => {
+    this._saveButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Export...'), 'largeicon-download');
+    this._saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, event => {
       this._exportReport();
     });
-    toolbar.appendToolbarItem(saveButton);
+    toolbar.appendToolbarItem(this._saveButton);
+    this._saveButton.setEnabled(false);
 
     /** @type {?RegExp} */
     this._textFilterRegExp = null;
@@ -171,6 +172,7 @@ export class CoverageView extends UI.Widget.VBox {
     this._statusMessageElement.textContent = '';
     this._filterInput.setEnabled(false);
     this._filterByTypeComboBox.setEnabled(false);
+    this._saveButton.setEnabled(false);
   }
 
   _toggleRecording() {
@@ -328,6 +330,7 @@ export class CoverageView extends UI.Widget.VBox {
   _updateViews(updatedEntries) {
     this._updateStats();
     this._listView.update(this._model.entries());
+    this._saveButton.setEnabled(this._model.entries().length > 0);
     this._decorationManager.update(updatedEntries);
   }
 

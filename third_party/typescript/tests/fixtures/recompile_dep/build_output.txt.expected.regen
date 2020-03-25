@@ -1,0 +1,6 @@
+ninja: Entering directory `./third_party/typescript/tests/out/fixtures/recompile_dep'
+[1/5] ACTION //front_end/module:module(//toolchain:default)
+[2/5] STAMP obj/front_end/module/module.stamp
+[3/5] ACTION //test/module:module(//toolchain:default)
+[4/5] STAMP obj/test/module/module.stamp
+[5/5] STAMP obj/recompile_dep.stamp

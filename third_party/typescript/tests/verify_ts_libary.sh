@@ -47,6 +47,12 @@ run_fixture "compilation_failure_front_end"
 run_fixture "recompile"
 sed -i "" "s/42/43/" $ROOT_DIRECTORY/fixtures/recompile/test/module/exporting_test.ts
 run_fixture "recompile" 0
-sed -i "" "s/43/42/" $ROOT_DIRECTORY/fixtures/recompile/test/module/exporting_test.ts
+sed -i "" "s/43/42/g" $ROOT_DIRECTORY/fixtures/recompile/test/module/exporting_test.ts
+
+# Test that compiling after a change in a dependency rebuilds only relevant libraries
+run_fixture "recompile_dep"
+sed -i "" "s/42/43/" $ROOT_DIRECTORY/fixtures/recompile_dep/front_end/module/module.ts
+run_fixture "recompile_dep" 0
+sed -i "" "s/43/42/" $ROOT_DIRECTORY/fixtures/recompile_dep/front_end/module/module.ts
 
 exit $failed

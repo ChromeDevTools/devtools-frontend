@@ -192,6 +192,14 @@
     border-collapse: collapse;
 }
 
+.affected-resource-request {
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--issue-link);
+    border: 0;
+    border-collapse: collapse;
+}
+
 .affected-resource-list-wrapper {
     max-height: 0;
     overflow: hidden;

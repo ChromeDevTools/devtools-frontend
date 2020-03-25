@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+
+import {NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
 import {IssueCategory} from './RelatedIssue.js';
 
 /**
@@ -85,7 +87,7 @@ export class AggregatedIssue extends Common.ObjectWrapper.ObjectWrapper {
     this._resources = [];
     /** @type {!Map<string, *>} */
     this._cookies = new Map();
-    /** @type {!Map<string, *>} */
+    /** @type {!Map<string, !NetworkRequest>} */
     this._requests = new Map();
   }
 
@@ -105,10 +107,10 @@ export class AggregatedIssue extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @returns {number}
+   * @returns {!Iterable<!NetworkRequest>}
    */
-  numberOfCookies() {
-    return this._cookies.size;
+  requests() {
+    return this._requests.values();
   }
 
   /**
@@ -125,6 +127,12 @@ export class AggregatedIssue extends Common.ObjectWrapper.ObjectWrapper {
         if (!this._cookies.has(key)) {
           this._cookies.set(key, cookie);
         }
+      }
+    }
+
+    if (resources.requests) {
+      for (const request of resources.requests) {
+        this._requests.set(request.requestId, request.request);
       }
     }
   }

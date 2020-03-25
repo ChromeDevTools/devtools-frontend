@@ -34,6 +34,9 @@
   <message name="IDS_DEVTOOLS_105078d294d30c978ca2badf7f376934" desc="The action to scroll">
     Scroll
   </message>
+  <message name="IDS_DEVTOOLS_10573b873d2fa5a365d558a45e328e47" desc="A tag of Enable Local Overrides setting that can be searched in the command menu">
+    request
+  </message>
   <message name="IDS_DEVTOOLS_105b296a83f9c105355403f3332af50f" desc="Text of an item that pause the running task">
     Pause
   </message>

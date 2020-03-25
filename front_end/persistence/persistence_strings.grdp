@@ -9,9 +9,6 @@
   <message name="IDS_DEVTOOLS_03ad5ac9c1a313e19064670f92981353" desc="Text of the add button in Workspace Settings Tab of the Workspace settings in Settings">
     Add folder…
   </message>
-  <message name="IDS_DEVTOOLS_10573b873d2fa5a365d558a45e328e47" desc="A tag of Enable Local Overrides setting that can be searched in the command menu">
-    request
-  </message>
   <message name="IDS_DEVTOOLS_14f221497f99c10993cd293628adeefd" desc="A context menu item in the Persistence Actions of the Workspace settings in Settings">
     Open in containing folder
   </message>

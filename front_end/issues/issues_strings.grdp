@@ -6,6 +6,9 @@
   <message name="IDS_DEVTOOLS_2dccd1ab3e03990aea77359831c85ca2" desc="Label for number of affected resource indication in issue view">
     cookie
   </message>
+  <message name="IDS_DEVTOOLS_3298f13049d19cffaa37ca931dd4d421" desc="Label for number of affected resource indication in issue view">
+    requests
+  </message>
   <message name="IDS_DEVTOOLS_55e7dd3016ce4ac57b9a0f56af12f7c2" desc="Label for number of affected resource indication in issue view">
     cookies
   </message>

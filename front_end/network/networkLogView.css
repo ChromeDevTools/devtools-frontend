@@ -41,7 +41,7 @@
     border: 1px solid rgb(204, 204, 204);
 }
 
-#network-container.no-node-selected:focus-within {
+#network-container.grid-focused.no-node-selected:focus-within {
     border: 1px solid var(--accent-color);
 }
 

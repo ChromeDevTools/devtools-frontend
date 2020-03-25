@@ -782,8 +782,8 @@ export class NetworkLogView extends UI.Widget.VBox {
         event.consume(true);
       }
     });
-    this._dataGrid.element.addEventListener('focus', this.updateNodeBackground.bind(this), true);
-    this._dataGrid.element.addEventListener('blur', this.updateNodeBackground.bind(this), true);
+    this._dataGrid.element.addEventListener('focus', this._onDataGridFocus.bind(this), true);
+    this._dataGrid.element.addEventListener('blur', this._onDataGridBlur.bind(this), true);
     return this._dataGrid;
   }
 
@@ -1071,6 +1071,16 @@ export class NetworkLogView extends UI.Widget.VBox {
    */
   flatNodesList() {
     return this._dataGrid.rootNode().flatChildren();
+  }
+
+  _onDataGridFocus() {
+    this.element.classList.add('grid-focused');
+    this.updateNodeBackground();
+  }
+
+  _onDataGridBlur() {
+    this.element.classList.remove('grid-focused');
+    this.updateNodeBackground();
   }
 
   /** @override */

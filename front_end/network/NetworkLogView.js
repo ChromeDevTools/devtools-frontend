@@ -410,6 +410,15 @@ export class NetworkLogView extends UI.Widget.VBox {
    * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @return {boolean}
    */
+  static _requestCookiePathFilter(value, request) {
+    return request.allCookiesIncludingBlockedOnes().some(cookie => cookie.path() === value);
+  }
+
+  /**
+   * @param {string} value
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
+   * @return {boolean}
+   */
   static _requestCookieValueFilter(value, request) {
     return request.allCookiesIncludingBlockedOnes().some(cookie => cookie.value() === value);
   }
@@ -1305,6 +1314,7 @@ export class NetworkLogView extends UI.Widget.VBox {
     for (const cookie of request.allCookiesIncludingBlockedOnes()) {
       this._suggestionBuilder.addItem(FilterType.CookieDomain, cookie.domain());
       this._suggestionBuilder.addItem(FilterType.CookieName, cookie.name());
+      this._suggestionBuilder.addItem(FilterType.CookiePath, cookie.path());
       this._suggestionBuilder.addItem(FilterType.CookieValue, cookie.value());
     }
 
@@ -1675,6 +1685,9 @@ export class NetworkLogView extends UI.Widget.VBox {
 
       case FilterType.CookieName:
         return NetworkLogView._requestCookieNameFilter.bind(null, value);
+
+      case FilterType.CookiePath:
+        return NetworkLogView._requestCookiePathFilter.bind(null, value);
 
       case FilterType.CookieValue:
         return NetworkLogView._requestCookieValueFilter.bind(null, value);
@@ -2135,6 +2148,7 @@ export const FilterType = {
   SetCookieValue: 'set-cookie-value',
   CookieDomain: 'cookie-domain',
   CookieName: 'cookie-name',
+  CookiePath: 'cookie-path',
   CookieValue: 'cookie-value',
   StatusCode: 'status-code'
 };

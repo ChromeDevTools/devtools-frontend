@@ -137,6 +137,10 @@ class AffectedCookiesView extends AffectedResourcesView {
         {
           filterType: 'cookie-name',
           filterValue: cookie.name,
+        },
+        {
+          filterType: 'cookie-path',
+          filterValue: cookie.path,
         }
       ]);
     }, 'link-style devtools-link'));

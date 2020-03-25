@@ -1795,6 +1795,13 @@ export class ThemeSupport {
   }
 
   /**
+   * @return {boolean}
+   */
+  isForcedColorsMode() {
+    return window.matchMedia('(forced-colors: active)').matches;
+  }
+
+  /**
    * @param {string} sheetText
    */
   addCustomStylesheet(sheetText) {
@@ -1805,7 +1812,7 @@ export class ThemeSupport {
    * @param {!Document} document
    */
   applyTheme(document) {
-    if (!this.hasTheme()) {
+    if (!this.hasTheme() || this.isForcedColorsMode()) {
       return;
     }
 
@@ -1832,7 +1839,7 @@ export class ThemeSupport {
    * @suppressGlobalPropertiesCheck
    */
   themeStyleSheet(id, text) {
-    if (!this.hasTheme() || this._injectingStyleSheet) {
+    if (!this.hasTheme() || this._injectingStyleSheet || this.isForcedColorsMode()) {
       return '';
     }
 

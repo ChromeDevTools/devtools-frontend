@@ -21,6 +21,10 @@ if (envDebug) {
   envJobs = 1;
 }
 
+// Lock to one worker to avoid flakiness.
+// TODO: unlock when it's clear why there are flakes.
+envJobs = 1;
+
 const workerCount = envJobs;
 const taskList: string[] = [];
 const ports = new Map<cluster.Worker, number>();

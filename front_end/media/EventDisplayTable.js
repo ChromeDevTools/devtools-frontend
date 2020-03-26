@@ -123,26 +123,13 @@ export class PlayerEventsView extends UI.Widget.VBox {
    * @param {!Event} event
    */
   addEvent(event) {
-    if (event.type === 'triggeredEvent') {
-      // New-style events have 'triggeredEvent' as their type, where older ones
-      // use 'systemEvent'.
-      const stringified = /** @type {string} */ (event.value);
-      const json = JSON.parse(stringified);
-      event.event = json.event;
-      delete json['event'];
-      event.value = json;
-      const node = new EventNode(event);
-      this._dataGrid.rootNode().appendChild(node);
-    }
-
-    if (event.type === 'systemEvent') {
-      // TODO(tmathmeyer) delete this block when
-      // https://chromium-review.googlesource.com/c/chromium/src/+/2006249
-      // is merged.
-      event.event = event.name;
-      const node = new EventNode(event);
-      this._dataGrid.rootNode().appendChild(node);
-    }
+    const stringified = /** @type {string} */ (event.value);
+    const json = JSON.parse(stringified);
+    event.event = json.event;
+    delete json['event'];
+    event.value = json;
+    const node = new EventNode(event);
+    this._dataGrid.rootNode().appendChild(node);
   }
 
   /**

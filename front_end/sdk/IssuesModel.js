@@ -109,6 +109,7 @@ export class IssuesModel extends SDKModel {
         ResourceTreeModelEvents.MainFrameNavigated, this._onMainFrameNavigated, this);
     }
     this._networkIssueDetector = null;
+    this.ensureEnabled();
   }
 
   /**
@@ -247,4 +248,4 @@ export const Events = {
   FullUpdateRequired: Symbol('FullUpdateRequired'),
 };
 
-SDKModel.register(IssuesModel, Capability.Network, true);
+SDKModel.register(IssuesModel, Capability.Audits, true);

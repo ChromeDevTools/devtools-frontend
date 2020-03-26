@@ -71,10 +71,31 @@ export const openEventListenersPaneAndWaitForListeners = async () => {
   await waitFor(EVENT_LISTENERS_SELECTOR);
 };
 
-export const getDisplayedEventListenerNames = async(): Promise<string[]> => {
+export const getDisplayedEventListenerNames = async () => {
   const eventListeners = await $$(EVENT_LISTENERS_SELECTOR);
   const eventListenerNames = await eventListeners.evaluate(nodes => {
     return nodes.map((listener: HTMLElement) => listener.textContent);
   });
-  return eventListenerNames;
+  return eventListenerNames as string[];
+};
+
+export const getEventListenerProperties = async (selector: string) => {
+  const clickEventProperties = await $$(selector);
+
+  const propertiesOutput = await clickEventProperties.evaluate(nodes => {
+    return nodes.map((node: HTMLElement) => {
+      const nameNode = node.querySelector('.name');
+      const valueNode = node.querySelector('.value');
+
+      if (!nameNode || !valueNode) {
+        throw new Error('Could not find a name and value node for event listener properties.');
+      }
+
+      const key = nameNode.textContent;
+      const value = valueNode.textContent;
+      return [key, value];
+    });
+  });
+
+  return propertiesOutput as Array<string[]>;
 };

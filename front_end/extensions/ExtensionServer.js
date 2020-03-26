@@ -58,7 +58,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     this._subscribers = new Map();
     this._subscriptionStartHandlers = {};
     this._subscriptionStopHandlers = {};
-    this._extraHeaders = {};
+    /** @type {!Map<string, !Map<string, *>>} */
+    this._extraHeaders = new Map();
     this._requests = {};
     this._lastRequestId = 0;
     this._registeredExtensions = {};
@@ -233,20 +234,19 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     if (typeof id !== 'string') {
       return this._status.E_BADARGTYPE('extensionId', typeof id, 'string');
     }
-    let extensionHeaders = this._extraHeaders[id];
+    let extensionHeaders = this._extraHeaders.get(id);
     if (!extensionHeaders) {
-      extensionHeaders = {};
-      this._extraHeaders[id] = extensionHeaders;
+      extensionHeaders = new Map();
+      this._extraHeaders.set(id, extensionHeaders);
     }
     for (const name in message.headers) {
-      extensionHeaders[name] = message.headers[name];
+      extensionHeaders.set(name, message.headers[name]);
     }
     const allHeaders = /** @type {!Protocol.Network.Headers} */ ({});
-    for (const extension in this._extraHeaders) {
-      const headers = this._extraHeaders[extension];
-      for (const name in headers) {
-        if (typeof headers[name] === 'string') {
-          allHeaders[name] = headers[name];
+    for (const headers of this._extraHeaders.values()) {
+      for (const name of headers.keys()) {
+        if (typeof headers.get(name) === 'string') {
+          allHeaders[name] = headers.get(name);
         }
       }
     }

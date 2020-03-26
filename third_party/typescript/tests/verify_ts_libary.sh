@@ -45,15 +45,17 @@ run_fixture "compilation_failure_front_end"
 
 # Test that compiling after a change works with dependencies
 run_fixture "recompile"
-sed -i "" "s/42/43/" $ROOT_DIRECTORY/fixtures/recompile/test/module/exporting_test.ts
+touch $ROOT_DIRECTORY/fixtures/recompile/test/module/exporting_test.ts
+# We need to force read from this directory to make sure autoninja actually picks up the change
+(find $ROOT_DIRECTORY/fixtures/recompile/ > /dev/null)
 run_fixture "recompile" 0
-sed -i "" "s/43/42/g" $ROOT_DIRECTORY/fixtures/recompile/test/module/exporting_test.ts
 
 # Test that compiling after a change in a dependency rebuilds only relevant libraries
 run_fixture "recompile_dep"
-sed -i "" "s/42/43/" $ROOT_DIRECTORY/fixtures/recompile_dep/front_end/module/module.ts
+touch $ROOT_DIRECTORY/fixtures/recompile_dep/front_end/module/module.ts
+# We need to force read from this directory to make sure autoninja actually picks up the change
+(find $ROOT_DIRECTORY/fixtures/recompile_dep/ > /dev/null)
 run_fixture "recompile_dep" 0
-sed -i "" "s/43/42/" $ROOT_DIRECTORY/fixtures/recompile_dep/front_end/module/module.ts
 
 # Test that ninja clean properly cleans all files
 (cd $ROOT_DIRECTORY/out/fixtures/simple_dep && ninja -t clean)
@@ -62,6 +64,21 @@ files=$(find $ROOT_DIRECTORY/out/fixtures/simple_dep/gen -type f)
 if [[ "$files" != "" ]]; then
   echo "Did not properly clean with \"ninja -t clean\". Unexpected files:"
   echo "$files"
+  failed=1
+fi
+
+# Test that the .tsbuildinfo is deterministic
+(cd $ROOT_DIRECTORY/out/fixtures/recompile_dep && ninja -t clean)
+run_fixture "recompile_dep"
+
+generated_tsbuildinfo="$ROOT_DIRECTORY/out/fixtures/recompile_dep/gen/test/module/module-tsconfig.json.tsbuildinfo"
+expected_tsbuildinfo="$ROOT_DIRECTORY/fixtures/recompile_dep/expected.tsbuildinfo"
+
+tsbuildinfo_diff_output=$(diff "$generated_tsbuildinfo" "$expected_tsbuildinfo")
+
+if [[ "$tsbuildinfo_diff_output" != "" ]]; then
+  echo ".tsbuildinfo is non-deterministic (crbug.com/1054494)"
+  echo "$tsbuildinfo_diff_output"
   failed=1
 fi
 

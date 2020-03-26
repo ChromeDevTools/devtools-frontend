@@ -45,7 +45,6 @@ from build import modular_build
 from build import special_case_namespaces
 
 import devtools_paths
-import utils
 
 try:
     import simplejson as json

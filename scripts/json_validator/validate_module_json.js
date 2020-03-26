@@ -5,16 +5,14 @@
 const fs = require('fs');
 const path = require('path');
 
-const utils = require('../utils');
-
 const FRONTEND_PATH = path.resolve(__dirname, '..', '..', 'front_end');
 
 const modules = [];
 for (const dir of fs.readdirSync(FRONTEND_PATH)) {
-  if (!utils.isDir(path.resolve(FRONTEND_PATH, dir))) {
+  if (!fs.lstatSync(path.resolve(FRONTEND_PATH, dir)).isDirectory()) {
     continue;
   }
-  if (utils.isFile(path.resolve(FRONTEND_PATH, dir, 'module.json'))) {
+  if (fs.existsSync(path.resolve(FRONTEND_PATH, dir, 'module.json'))) {
     modules.push(dir);
   }
 }

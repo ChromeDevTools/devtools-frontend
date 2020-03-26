@@ -14,8 +14,6 @@ for (const config
   manifestModules.push(...require(path.resolve(FRONTEND_PATH, config)).modules);
 }
 
-const utils = require('./utils');
-
 const gnPath = path.resolve(__dirname, '..', 'BUILD.gn');
 const gnFile = fs.readFileSync(gnPath, 'utf-8');
 const gnLines = gnFile.split('\n');
@@ -56,7 +54,7 @@ function checkNonAutostartNonRemoteModules() {
   const text = lines.join('\n');
   const modules = manifestModules.filter(m => m.type !== 'autostart' && m.type !== 'remote').map(m => m.name);
 
-  const missingModules = modules.filter(m => !utils.includes(text, `${m}/${m}_module.js`));
+  const missingModules = modules.filter(m => !text.includes(`${m}/${m}_module.js`));
   if (missingModules.length) {
     errors.push(`Check that you've included [${missingModules.join(', ')}] modules in: ` + gnVariable);
   }
@@ -64,7 +62,7 @@ function checkNonAutostartNonRemoteModules() {
   // e.g. "$resources_out_dir/lighthouse/lighthouse_module.js" => "lighthouse"
   const mapLineToModuleName = line => line.split('/')[2].split('_module')[0];
 
-  const extraneousModules = lines.map(mapLineToModuleName).filter(module => !utils.includes(modules, module));
+  const extraneousModules = lines.map(mapLineToModuleName).filter(module => !modules.includes(module));
   if (extraneousModules.length) {
     errors.push(`Found extraneous modules [${extraneousModules.join(', ')}] in: ` + gnVariable);
   }
@@ -147,7 +145,7 @@ function checkGNVariable(gnVariable, obtainFiles, obtainRelativePath) {
       return;
     }
     const moduleJSONPath = path.join(folderName, 'module.json');
-    if (utils.isFile(moduleJSONPath)) {
+    if (fs.existsSync(moduleJSONPath)) {
       addModuleFilesForDirectory(moduleJSONPath, buildGNPath, path.basename(folderName));
     }
 

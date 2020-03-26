@@ -5,8 +5,8 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {$, click, resetPages} from '../../shared/helper.js';
-import {getDisplayedEventListenerNames, loadEventListenersAndSelectButtonNode, openEventListenersPaneAndWaitForListeners} from '../helpers/event-listeners-helpers.js';
+import {click, resetPages} from '../../shared/helper.js';
+import {getDisplayedEventListenerNames, getFirstNodeForEventListener, loadEventListenersAndSelectButtonNode, openEventListenersPaneAndWaitForListeners} from '../helpers/event-listeners-helpers.js';
 
 describe('Removing event listeners in the elements sidebar', async () => {
   beforeEach(async () => {
@@ -16,22 +16,17 @@ describe('Removing event listeners in the elements sidebar', async () => {
 
   it('shows "Remove" by each node for a given event', async () => {
     await openEventListenersPaneAndWaitForListeners();
-
-    const clickListenerSelector = '[aria-label="click, event listener"]';
-    await click(clickListenerSelector);
-
-    const buttonClickEventSelector = `${clickListenerSelector} + ol>li`;
-    const buttonClickEvent = await $(buttonClickEventSelector);
-    const buttonClickEventText = await buttonClickEvent.evaluate(button => {
-      return button.textContent;
-    });
+    const {
+      firstListenerText,
+      listenerSelector,
+    } = await getFirstNodeForEventListener('[aria-label="click, event listener"]');
 
     // check that we have the right event for the right element
     // and that it has the "Remove" button within it
-    assert.include(buttonClickEventText, 'button#test-button');
-    assert.include(buttonClickEventText, 'Remove');
+    assert.include(firstListenerText, 'button#test-button');
+    assert.include(firstListenerText, 'Remove');
 
-    const removeButtonSelector = `${buttonClickEventSelector} .event-listener-button`;
+    const removeButtonSelector = `${listenerSelector} .event-listener-button`;
     await click(removeButtonSelector);
 
     // now we can check that the 'click' event is gone

@@ -118,6 +118,19 @@ export const click = async (
   await frontend.mouse.click(clickableElement.x, clickableElement.y, options && options.clickOptions);
 };
 
+export const doubleClick =
+    async (selector: string, options?: {root?: puppeteer.JSHandle, clickOptions?: puppeteer.ClickOptions}) => {
+  const passedClickOptions = options && options.clickOptions || {};
+  const clickOptionsWithDoubleClick: puppeteer.ClickOptions = {
+    ...passedClickOptions,
+    clickCount: 2,
+  };
+  return click(selector, {
+    ...options,
+    clickOptions: clickOptionsWithDoubleClick,
+  });
+};
+
 export const typeText = async (text: string) => {
   const frontend: puppeteer.Page = globalThis[frontEndPage];
   if (!frontend) {

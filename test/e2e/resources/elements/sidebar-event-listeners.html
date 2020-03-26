@@ -19,7 +19,7 @@
         button.addEventListener("click", () => {}, false);
         button.addEventListener("hover", () => {}, false);
 
-        document.body.addEventListener("custom event", () => {}, { capture: true, once: true });
+        document.body.addEventListener("custom event", () => console.log('test'), { capture: true, once: true });
       }
       setupEventListeners();
     </script>

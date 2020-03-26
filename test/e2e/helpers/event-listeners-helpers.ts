@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {$$, click, getBrowserAndPages, resourcesPath, waitFor} from '../../shared/helper';
+import {$, $$, click, getBrowserAndPages, resourcesPath, waitFor} from '../../shared/helper';
 
 import {assertContentOfSelectedElementsNode, waitForElementsStyleSection} from './elements-helpers';
 
@@ -57,4 +57,19 @@ export const getEventListenerProperties = async (selector: string) => {
   });
 
   return propertiesOutput as Array<string[]>;
+};
+
+export const getFirstNodeForEventListener = async (listenerTypeSelector: string) => {
+  await click(listenerTypeSelector);
+
+  const listenerNodesSelector = `${listenerTypeSelector} + ol>li`;
+  const firstListenerNode = await $(listenerNodesSelector);
+  const firstListenerText = await firstListenerNode.evaluate((node: HTMLElement) => {
+    return node.textContent || '';
+  });
+
+  return {
+    firstListenerText: firstListenerText,
+    listenerSelector: listenerNodesSelector,
+  };
 };

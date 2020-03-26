@@ -68,8 +68,10 @@ function rewriteSource(refactoringNamespace: string, source: string) {
                 `grep --include=\*module.json -r ${fullName} ${FRONT_END_FOLDER} || true`, {encoding: 'utf8'});
             const usedInLayoutTests =
                 !!child_process.execSync(`grep -r ${fullName} ${TEST_FOLDER} || true`, {encoding: 'utf8'});
+            const usedInLayoutTestRunners = !!child_process.execSync(
+                `grep --include=\*test_runner\*.js -r ${fullName} ${FRONT_END_FOLDER} || true`, {encoding: 'utf8'});
 
-            if (!usedInModuleJson && !usedInLayoutTests) {
+            if (!usedInModuleJson && !usedInLayoutTests && !usedInLayoutTestRunners) {
               removedExports.push(assignment.right.name);
               return b.emptyStatement();
             }

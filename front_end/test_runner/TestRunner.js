@@ -4,6 +4,7 @@
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as ProtocolClientModule from '../protocol_client/protocol_client.js';
+import * as Workspace from '../workspace/workspace.js';
 
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
@@ -1307,19 +1308,19 @@ export function dumpLoadedModules(relativeTo) {
 
 /**
  * @param {string} urlSuffix
- * @param {!Workspace.projectTypes=} projectType
+ * @param {!Workspace.Workspace.projectTypes=} projectType
  * @return {!Promise}
  */
 export function waitForUISourceCode(urlSuffix, projectType) {
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {boolean}
    */
   function matches(uiSourceCode) {
     if (projectType && uiSourceCode.project().type() !== projectType) {
       return false;
     }
-    if (!projectType && uiSourceCode.project().type() === Workspace.projectTypes.Service) {
+    if (!projectType && uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Service) {
       return false;
     }
     if (urlSuffix && !uiSourceCode.url().endsWith(urlSuffix)) {

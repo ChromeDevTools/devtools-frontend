@@ -3,6 +3,9 @@
   <message name="IDS_DEVTOOLS_0f653ae68147586eb189d7baf37a696a" desc="Text of button in Settings Screen of the Settings">
     Restore defaults and reload
   </message>
+  <message name="IDS_DEVTOOLS_004bf6c9a40003140292e97330236c53" desc="Column header in the custom keyboard shortcuts settings tab for the action column">
+    Action
+  </message>
   <message name="IDS_DEVTOOLS_2cce43a6505a5d1bdf7ea98bf7fd1bc8" desc="Blackbox label in Framework Blackbox Settings Tab of the Settings">
     Blackbox
   </message>
@@ -21,8 +24,14 @@
   <message name="IDS_DEVTOOLS_57391192dfa1f247ad015a0fe2eca48e" desc="Aria accessible name in Framework Blackbox Settings Tab of the Settings">
     Pattern
   </message>
+  <message name="IDS_DEVTOOLS_5b66a8c94102f25f01dd96889754deca" desc="Title of the custom keyboard shortcuts settings tab">
+    Custom keyboard shortcuts
+  </message>
   <message name="IDS_DEVTOOLS_7c3ebe810fd87afa74649e8230167a75" desc="Message text content in Settings Screen of the Settings">
     These experiments are particularly unstable. Enable at your own risk.
+  </message>
+  <message name="IDS_DEVTOOLS_7c8cd1a8f31536cf63b618b65f347250" desc="Header of a column in the custom keyboard shortcuts settings containing the keyboard shortcuts (e.g. Ctrl+Shift+P)">
+    Keyboard input
   </message>
   <message name="IDS_DEVTOOLS_87ae3156c118350d6b13cdebc37485e9" desc="Error message in Framework Blackbox settings pane that declares pattern must be a valid regular expression">
     Pattern must be a valid regular expression
@@ -53,6 +62,9 @@
   </message>
   <message name="IDS_DEVTOOLS_dd08f9d5ae3e9ba421754fd31db1a44a" desc="Error message in Framework Blackbox settings pane that declares pattern already exits">
     Pattern already exists
+  </message>
+  <message name="IDS_DEVTOOLS_dd9d37c902c417ff340e28a19e2ff00d" desc="Tab header for the custom keyboard shortcuts settings tab">
+    Custom Shortcuts
   </message>
   <message name="IDS_DEVTOOLS_e3b2f7d0af9c89f5ea504968ffcd2ef0" desc="Message text content in Settings Screen of the Settings">
     These experiments could be dangerous and may require restart.

@@ -22,6 +22,7 @@ export class ListWidget extends VBox {
     this._delegate = delegate;
 
     this._list = this.contentElement.createChild('div', 'list');
+    this._list.addEventListener('keydown', event => this._onKeyDown(event));
 
     this._lastSeparator = false;
     /** @type {?ElementFocusRestorer} */
@@ -38,6 +39,7 @@ export class ListWidget extends VBox {
     this._editItem = null;
     /** @type {?Element} */
     this._editElement = null;
+    this._selectedIndex = -1;
 
     /** @type {?Element} */
     this._emptyPlaceholder = null;
@@ -74,7 +76,15 @@ export class ListWidget extends VBox {
       element.classList.add('editable');
       element.appendChild(this._createControls(item, element));
     }
+    const index = this._items.length - 1;
+    element.addEventListener('click', () => {
+      this._select(index, /* takeFocus */ true);
+    });
     this._elements.push(element);
+    if (this._selectedIndex === -1 || this._selectedIndex === index) {
+      this._select(index, /* takeFocus */ false);
+    }
+
     this._updatePlaceholder();
   }
 
@@ -106,6 +116,10 @@ export class ListWidget extends VBox {
     }
     element.remove();
 
+    if (this._selectedIndex === index) {
+      this._selectNext();
+    }
+
     this._elements.splice(index, 1);
     this._items.splice(index, 1);
     this._editable.splice(index, 1);
@@ -127,6 +141,65 @@ export class ListWidget extends VBox {
     this._emptyPlaceholder = element;
     this._updatePlaceholder();
   }
+
+  /**
+   * @param {!Event} event
+   */
+  _onKeyDown(event) {
+    if (this._editor || this._elements.length < 1) {
+      return;
+    }
+
+    if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+      if (this._selectedIndex < 0) {
+        return;
+      }
+
+      const offset = event.key === 'ArrowUp' ? -1 : 1;
+      const newIndex = this._selectedIndex + offset;
+      if (newIndex < 0 || newIndex >= this._elements.length) {
+        return;
+      }
+
+      this._select(newIndex, /* takeFocus */ true);
+      event.consume(true);
+    }
+  }
+
+  /**
+   * @param {number} index
+   * @param {boolean} takeFocus
+   */
+  _select(index, takeFocus) {
+    if (index < 0 || index >= this._elements.length) {
+      return;
+    }
+
+    if (this._selectedIndex >= 0) {
+      const oldSelectedElement = this._elements[this._selectedIndex].firstElementChild;
+      oldSelectedElement.tabIndex = -1;
+    }
+
+    const newSelectedElement = this._elements[index].firstElementChild;
+    newSelectedElement.tabIndex = 0;
+    this._selectedIndex = index;
+
+    if (takeFocus) {
+      newSelectedElement.focus();
+    }
+  }
+
+  _selectNext() {
+    if (this._selectedIndex < 0 || this._list.length === 0) {
+      return;
+    }
+
+    const offset = this._selectedIndex < this._list.length ? 1 : -1;
+    const nextIndex = this._selectedIndex + offset;
+
+    this._select(nextIndex, /* takeFocus */ false);
+  }
+
 
   /**
    * @param {!T} item

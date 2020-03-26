@@ -1,0 +1,82 @@
+/*
+ * Copyright 2020 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+header {
+    padding: 0 0 6px;
+    border-bottom: 1px solid #EEEEEE;
+    flex: none;
+    margin-bottom: 25px;
+}
+
+h1 {
+    font-size: 18px;
+    font-weight: normal;
+    padding-bottom: 3px;
+    margin: 0;
+}
+
+.keybinds-key {
+    padding: 0.1em 0.6em;
+    border: 1px solid #ccc;
+    font-size: 11px;
+    background-color: #f7f7f7;
+    color: #333;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 2px #fff inset;
+    border-radius: 3px;
+    display: inline-block;
+    margin: 0 0.1em;
+    text-shadow: 0 1px 0 #fff;
+    line-height: 1.5;
+    white-space: nowrap;
+}
+
+.keybinds-list-item {
+    padding: 3px 5px 3px 5px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    flex: auto 1 1;
+}
+
+.keybinds-list-item:focus[data-keyboard-focus="true"] {
+    background-color: var(--focus-bg-color);
+}
+
+.keybinds-list-text {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    flex: 1 0 150px;
+    -webkit-user-select: none;
+    color: #222;
+    text-align: start;
+    position: relative;
+    margin-right: 0;
+}
+
+.keybinds-list-separator {
+    flex: 0 0 1px;
+    background-color: rgb(231, 231, 231);
+    height: 30px;
+    margin: 0 4px;
+}
+
+.keybinds-header {
+    min-height: 30px;
+    margin: 0 18px 0 1px;
+}
+
+.keybinds-category-header {
+    font-weight: bold;
+}
+
+.list-item:not(:first-child) .keybinds-category-header {
+    border-top: 1px solid rgb(231, 231, 231);
+}
+
+.keybinds-category-header:hover {
+    background-color: white;
+}

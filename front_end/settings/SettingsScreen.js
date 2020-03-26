@@ -59,10 +59,12 @@ export class SettingsScreen extends UI.Widget.VBox {
     tabbedPane.leftToolbar().appendToolbarItem(new UI.Toolbar.ToolbarItem(settingsLabelElement));
     tabbedPane.setShrinkableTabs(false);
     tabbedPane.makeVerticalTabLayout();
-    const shortcutsView = new UI.View.SimpleView(ls`Shortcuts`);
-    self.UI.shortcutsScreen.createShortcutsTabView().show(shortcutsView.element);
-    this._tabbedLocation.appendView(shortcutsView);
 
+    if (!Root.Runtime.experiments.isEnabled('customKeyboardShortcuts')) {
+      const shortcutsView = new UI.View.SimpleView(ls`Shortcuts`);
+      self.UI.shortcutsScreen.createShortcutsTabView().show(shortcutsView.element);
+      this._tabbedLocation.appendView(shortcutsView);
+    }
     tabbedPane.show(this.contentElement);
     tabbedPane.selectTab('preferences');
     tabbedPane.addEventListener(UI.TabbedPane.Events.TabInvoked, this._tabInvoked, this);
@@ -359,6 +361,7 @@ export class ActionDelegate {
    * @return {boolean}
    */
   handleAction(context, actionId) {
+    let screen;
     switch (actionId) {
       case 'settings.show':
         SettingsScreen._showSettingsScreen({focusTabHeader: true});
@@ -369,7 +372,11 @@ export class ActionDelegate {
         return true;
       case 'settings.shortcuts':
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.SettingsOpenedFromMenu);
-        SettingsScreen._showSettingsScreen({name: ls`Shortcuts`, focusTabHeader: true});
+        screen = {name: ls`Shortcuts`, focusTabHeader: true};
+        if (Root.Runtime.experiments.isEnabled('customKeyboardShortcuts')) {
+          screen = {name: 'keybinds', focusTabHeader: true};
+        }
+        SettingsScreen._showSettingsScreen(screen);
         return true;
     }
     return false;

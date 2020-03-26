@@ -45,6 +45,14 @@ export class ShortcutRegistry {
   }
 
   /**
+   * @param {string} action
+   * @return {!Array.<!KeyboardShortcut>}
+   */
+  shortcutsForAction(action) {
+    return [...this._actionToShortcut.get(action)];
+  }
+
+  /**
    * @return {!Array<number>}
    */
   globalShortcutKeys() {

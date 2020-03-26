@@ -47,6 +47,13 @@ export class ActionRegistry {
   }
 
   /**
+   * @return {!Array.<!Action>}
+   */
+  actions() {
+    return [...this._actionsById.values()];
+  }
+
+  /**
    * @param {!Array.<string>} actionIds
    * @param {!Context} context
    * @return {!Array.<!Action>}

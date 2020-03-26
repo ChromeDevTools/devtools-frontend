@@ -40,3 +40,8 @@ Settings.GenericSettingsTab = SettingsModule.SettingsScreen.GenericSettingsTab;
  * @constructor
  */
 Settings.ExperimentsSettingsTab = SettingsModule.SettingsScreen.ExperimentsSettingsTab;
+
+/**
+ * @constructor
+ */
+Settings.KeybindsSettingsTab = SettingsModule.KeybindsSettingsTab.KeybindsSettingsTab;

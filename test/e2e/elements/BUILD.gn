@@ -9,7 +9,6 @@ ts_library("elements") {
   sources = [
     "pseudo-states.ts",
     "shadowroot-styles.ts",
-    "style-pane-properties.ts",
   ]
 
   deps = [

@@ -40,6 +40,9 @@ run_fixture() {
 }
 
 run_fixture "simple_dep"
+# Verify that compiling again with no changes results in "no work to do"
+run_fixture "simple_dep" 0
+
 run_fixture "test_dep"
 run_fixture "compilation_failure_front_end"
 

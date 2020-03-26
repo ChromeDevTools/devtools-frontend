@@ -4,23 +4,13 @@
 
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
-import {$, click, getBrowserAndPages, resetPages, resourcesPath} from '../../shared/helper.js';
-import {assertContentOfSelectedElementsNode, getDisplayedEventListenerNames, getEventListenerProperties, openEventListenersPaneAndWaitForListeners, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
+import {$, click, resetPages} from '../../shared/helper.js';
+import {getDisplayedEventListenerNames, getEventListenerProperties, loadEventListenersAndSelectButtonNode, openEventListenersPaneAndWaitForListeners} from '../helpers/event-listeners-helpers.js';
 
 describe('Event listeners in the elements sidebar', async () => {
   beforeEach(async () => {
     await resetPages();
-
-    const {target, frontend} = getBrowserAndPages();
-    await target.goto(`${resourcesPath}/elements/sidebar-event-listeners.html`);
-    await waitForElementsStyleSection();
-
-    // Sanity check to make sure we have the correct node selected after opening a file
-    await assertContentOfSelectedElementsNode('<body>\u200B');
-
-    // Select the button that has the events and make sure it's selected
-    await frontend.keyboard.press('ArrowRight');
-    await assertContentOfSelectedElementsNode('<button id=\u200B"test-button">\u200Bhello world\u200B</button>\u200B');
+    await loadEventListenersAndSelectButtonNode();
   });
 
   it('lists the active event listeners on the page', async () => {

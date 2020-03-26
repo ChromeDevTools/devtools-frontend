@@ -192,8 +192,10 @@ function formatTestResult(suiteTitle: string, timeout: number, testResult: TestR
   output += '\n';
 
   if (testResult.err) {
-    const {message, stack} = testResult.err;
-    output += `\n${color(capitalize(message), TextColor.RED)}\n${stack}`;
+    const {message, stack, actual, expected} = testResult.err;
+    output += `\n${color(capitalize(message), TextColor.RED)}\n${stack}\n\n`;
+    output += color(`Actual: ${actual}\n\n`, TextColor.RED);
+    output += color(`Expected: ${expected}\n`, TextColor.GREEN);
   }
 
   return output;

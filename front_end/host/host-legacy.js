@@ -31,12 +31,6 @@ Host.ResourceLoader = HostModule.ResourceLoader.ResourceLoader;
  */
 Host.ResourceLoader.load = HostModule.ResourceLoader.load;
 
-/**
- * @param {string} url
- * @param {?Object.<string, string>} headers
- * @param {!Common.OutputStream} stream
- * @param {function(boolean, !Object.<string, string>, !HostModule.ResourceLoader.LoadErrorDescription)=} callback
- */
 Host.ResourceLoader.loadAsStream = HostModule.ResourceLoader.loadAsStream;
 
 /** @constructor */

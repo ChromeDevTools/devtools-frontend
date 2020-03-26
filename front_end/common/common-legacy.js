@@ -20,26 +20,13 @@ Common.AppProvider = CommonModule.AppProvider.AppProvider;
 /**
  * @constructor
  */
-Common.CharacterIdMap = CommonModule.CharacterIdMap.CharacterIdMap;
-
-/**
- * @constructor
- */
 Common.Color = CommonModule.Color.Color;
-
-Common.Color.Regex = CommonModule.Color.Regex;
 
 /**
  * @enum {string}
  */
 Common.Color.Format = CommonModule.Color.Format;
 Common.Color.Nicknames = CommonModule.Color.Nicknames;
-Common.Color.PageHighlight = CommonModule.Color.PageHighlight;
-
-/**
- * @constructor
- */
-Common.Color.Generator = CommonModule.Color.Generator;
 
 Common.console = CommonModule.Console.Console.instance();
 
@@ -47,19 +34,6 @@ Common.console = CommonModule.Console.Console.instance();
  * @constructor
  */
 Common.Console = CommonModule.Console.Console;
-
-/** @enum {symbol} */
-Common.Console.Events = CommonModule.Console.Events;
-
-/**
- * @enum {string}
- */
-Common.Console.MessageLevel = CommonModule.Console.MessageLevel;
-
-/**
- * @constructor
- */
-Common.Console.Message = CommonModule.Console.Message;
 
 /**
  * @interface
@@ -97,11 +71,6 @@ Common.Progress = CommonModule.Progress.Progress;
 Common.CompositeProgress = CommonModule.Progress.CompositeProgress;
 
 /**
- * @constructor
- */
-Common.ProgressProxy = CommonModule.Progress.ProgressProxy;
-
-/**
  * @interface
  */
 Common.QueryParamHandler = CommonModule.QueryParamHandler.QueryParamHandler;
@@ -112,27 +81,11 @@ Common.QueryParamHandler = CommonModule.QueryParamHandler.QueryParamHandler;
 Common.resourceTypes = CommonModule.ResourceType.resourceTypes;
 
 /**
- * @enum {!ResourceCategory}
- */
-Common.resourceCategories = CommonModule.ResourceType.resourceCategories;
-
-/**
- * @constructor
- */
-Common.ResourceType = CommonModule.ResourceType.ResourceType;
-
-/**
  * @interface
  */
 Common.Revealer = CommonModule.Revealer.Revealer;
 Common.Revealer.reveal = CommonModule.Revealer.reveal;
 Common.Revealer.setRevealForTest = CommonModule.Revealer.setRevealForTest;
-Common.Revealer.revealDestination = CommonModule.Revealer.revealDestination;
-
-/**
- * @interface
- */
-Common.Runnable = CommonModule.Runnable.Runnable;
 
 /**
  * @constructor
@@ -154,11 +107,6 @@ Common.Settings.detectColorFormat = CommonModule.Settings.detectColorFormat;
 /**
  * @constructor
  */
-Common.SettingsStorage = CommonModule.Settings.SettingsStorage;
-
-/**
- * @constructor
- */
 Common.Setting = CommonModule.Settings.Setting;
 
 Common.settingForTest = CommonModule.Settings.settingForTest;
@@ -169,37 +117,14 @@ Common.settingForTest = CommonModule.Settings.settingForTest;
 Common.VersionController = CommonModule.Settings.VersionController;
 Common.moduleSetting = CommonModule.Settings.moduleSetting;
 
-/**
- * @enum {symbol}
- */
-Common.SettingStorageType = CommonModule.Settings.SettingStorageType;
-
-/**
- * @interface
- */
-Common.OutputStream = CommonModule.StringOutputStream.OutputStream;
 Common.StringOutputStream = CommonModule.StringOutputStream.StringOutputStream;
-
-Common.TextDictionary = CommonModule.TextDictionary.TextDictionary;
 
 Common.Throttler = CommonModule.Throttler.Throttler;
 
 Common.Trie = CommonModule.Trie.Trie;
 
-/**
- * @constructor
- */
-Common.UIStringFormat = CommonModule.UIString.UIStringFormat;
-
 Common.UIString = CommonModule.UIString.UIString;
-Common.serializeUIString = CommonModule.UIString.serializeUIString;
-Common.deserializeUIString = CommonModule.UIString.deserializeUIString;
 Common.localize = CommonModule.UIString.localize;
-
-/**
- * @constructor
- */
-Common.Worker = CommonModule.Worker.WorkerWrapper;
 
 /**
  * @type {!Common.Settings}

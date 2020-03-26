@@ -94,7 +94,7 @@ body.inactive .profile-launcher-view-content button.running:not(.toolbar-item) {
 }
 
 .profile-memory-usage-item-trend {
-    width: 80px;
+    min-width: 5em;
     color: green;
 }
 

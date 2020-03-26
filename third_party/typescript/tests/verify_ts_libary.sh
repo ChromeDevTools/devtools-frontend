@@ -55,4 +55,14 @@ sed -i "" "s/42/43/" $ROOT_DIRECTORY/fixtures/recompile_dep/front_end/module/mod
 run_fixture "recompile_dep" 0
 sed -i "" "s/43/42/" $ROOT_DIRECTORY/fixtures/recompile_dep/front_end/module/module.ts
 
+# Test that ninja clean properly cleans all files
+(cd $ROOT_DIRECTORY/out/fixtures/simple_dep && ninja -t clean)
+files=$(find $ROOT_DIRECTORY/out/fixtures/simple_dep/gen -type f)
+
+if [[ "$files" != "" ]]; then
+  echo "Did not properly clean with \"ninja -t clean\". Unexpected files:"
+  echo "$files"
+  failed=1
+fi
+
 exit $failed

@@ -12,6 +12,7 @@ const tests = [
   'elements/pseudo-states.js',
   'elements/shadowroot-styles.js',
   'elements/sidebar-event-listeners.js',
+  'elements/style-pane-properties.js',
   'host/user-metrics.js',
   'network/network-datagrid.js',
   'rendering/vision-deficiencies.js',

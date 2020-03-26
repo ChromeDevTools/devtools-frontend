@@ -6,6 +6,7 @@ import {assert} from 'chai';
 import {$, $$, click, getBrowserAndPages, waitFor} from '../../shared/helper.js';
 
 const SELECTED_TREE_ELEMENT_SELECTOR = '.selected[role="treeitem"]';
+const CSS_PROPERTY_NAME_SELECTOR = '.webkit-css-property';
 
 export const assertContentOfSelectedElementsNode = async (expectedTextContent: string) => {
   const selectedNode = await $(SELECTED_TREE_ELEMENT_SELECTOR);
@@ -77,4 +78,19 @@ export const getDisplayedEventListenerNames = async(): Promise<string[]> => {
     return nodes.map((listener: HTMLElement) => listener.textContent);
   });
   return eventListenerNames;
+};
+
+export const getAriaLabelSelectorFromPropertiesSelector = (selectorForProperties: string) =>
+    `[aria-label="${selectorForProperties}, css selector"]`;
+
+export const getDisplayedCSSPropertyNames = async (selectorForProperties: string) => {
+  const listNodesContent = (nodes: Element[]) => {
+    const rawContent = nodes.map(node => node.textContent);
+    const filteredContent = rawContent.filter(content => !!content);
+    return filteredContent;
+  };
+  const propertiesSection = await $(getAriaLabelSelectorFromPropertiesSelector(selectorForProperties));
+  const cssPropertyNames = await $$(CSS_PROPERTY_NAME_SELECTOR, propertiesSection);
+  const propertyNamesText = await cssPropertyNames.evaluate(listNodesContent);
+  return propertyNamesText;
 };

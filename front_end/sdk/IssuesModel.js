@@ -175,11 +175,33 @@ export class IssuesModel extends SDKModel {
    * @param {*} inspectorIssue
    */
   issueAdded(inspectorIssue) {
-    const issue = new Issue(inspectorIssue.code, inspectorIssue.resources);
-    this._issues.push(issue);
-    this._connectIssue(issue);
-    const aggregatedIssue = this._aggregateIssue(issue);
-    this.dispatchEventToListeners(Events.AggregatedIssueUpdated, aggregatedIssue);
+    const issues = this._createIssuesFromProtocolIssue(inspectorIssue);
+    this._issues.push(...issues);
+
+    for (const issue of issues) {
+      this._connectIssue(issue);
+      const aggregatedIssue = this._aggregateIssue(issue);
+      this.dispatchEventToListeners(Events.AggregatedIssueUpdated, aggregatedIssue);
+    }
+  }
+
+  /**
+   * Each issue reported by the backend can result in multiple {!Issue} instances.
+   * Handlers are simple functions hard-coded into a map. If no handler is found for
+   * a given Issue code, the default behavior creates one {!Issue} per incoming backend
+   * issue.
+   * TODO(chromium:1063765): Strengthen types.
+   * @param {*} inspectorIssue} inspectorIssue
+   * @return {!Array<!Issue>}
+   */
+  _createIssuesFromProtocolIssue(inspectorIssue) {
+    const handler = issueCodeHandlers.get(inspectorIssue.code);
+    if (handler) {
+      // TODO(chromium:1063765): Pass the details object here, not the full inspector issue.
+      return handler(this, inspectorIssue);
+    }
+
+    return [new Issue(inspectorIssue.code, inspectorIssue.resources)];
   }
 
   /**
@@ -241,6 +263,14 @@ export class IssuesModel extends SDKModel {
     return this._aggregatedIssuesByCode.size;
   }
 }
+
+/**
+ * TODO(chromium:1063765): Change the type (once the protocol/backend changes have landed) to:
+ *   !Map<!Protocol.Audits.InspectorIssueCode, function(!IssuesModel, !Protocol.Audits.InspectorIssueDetails):!Array<!Issue>>
+ *
+ * @type {!Map<string, function(!IssuesModel, *):!Array<!Issue>>}
+ */
+const issueCodeHandlers = new Map([]);
 
 /** @enum {symbol} */
 export const Events = {

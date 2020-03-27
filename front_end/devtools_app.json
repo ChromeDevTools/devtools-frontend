@@ -14,6 +14,7 @@
     { "name": "devices" },
     { "name": "elements" },
     { "name": "emulated_devices" , "type": "remote" },
+    { "name": "issues" },
     { "name": "har_importer" },
     { "name": "help" },
     { "name": "layers" },

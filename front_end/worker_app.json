@@ -8,6 +8,7 @@
     { "name": "elements" },
     { "name": "har_importer" },
     { "name": "help" },
+    { "name": "issues" },
     { "name": "layer_viewer" },
     { "name": "network" },
     { "name": "resources" },

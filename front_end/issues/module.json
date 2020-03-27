@@ -19,7 +19,7 @@
         "className": "Issues.IssueRevealer"
       }
     ],
-    "dependencies": ["platform", "ui", "host", "components", "sdk"],
+    "dependencies": ["platform", "ui", "host", "components", "sdk", "network"],
     "scripts": [],
     "modules": [
       "issues.js",

@@ -6,15 +6,20 @@
 // no-console disabled here as this is a test runner and expects to output to the console
 
 import * as cluster from 'cluster';
+import {getEnvVar} from './config.js';
+import {color, TextColor} from './text-color.js';
 
 const role = cluster.isMaster ? './master' : './worker';
 const roleImpl = require(role);
 roleImpl.init();
 
-const envNoShuffle = !!process.env['NO_SHUFFLE'];
-const testListPath = process.env['TEST_LIST'];
-const envTestFile = process.env['TEST_FILE'];
-const envDebug = !!process.env['DEBUG'];
+const envNoShuffle = getEnvVar('NO_SHUFFLE', false);
+const testListPath = getEnvVar('TEST_LIST');
+const envTestFile = getEnvVar('TEST_FILE');
+const envDebug = getEnvVar('DEBUG', false);
+const envStressTest = getEnvVar('STRESS', false);
+let envIterations = getEnvVar('ITERATIONS', envStressTest ? 37 : 1);
+
 if (!testListPath) {
   throw new Error('Must specify a list of tests in the "TEST_LIST" environment variable.');
 }
@@ -54,6 +59,10 @@ async function runTests() {
 
   const shuffledTests = shuffleTestFiles(testList);
 
+  if (envIterations > 1) {
+    console.log(`${color('Iterations:', TextColor.MAGENTA)} ${envIterations}`);
+  }
+
   do {
     if (envDebug) {
       logHelp();
@@ -61,13 +70,13 @@ async function runTests() {
     }
 
     roleImpl.enqueue(shuffledTests);
-  } while (envDebug);
+  } while (envDebug || --envIterations > 0);
 }
 
 function logHelp() {
-  console.log('Running in debug mode.');
-  console.log(' - Press any key to run the test suite.');
-  console.log(' - Press ctrl + c to quit.');
+  console.log(color('Running in debug mode.', TextColor.MAGENTA));
+  console.log(color(' - Press any key to run the test suite.', TextColor.MAGENTA));
+  console.log(color(' - Press ctrl + c to quit.', TextColor.MAGENTA));
 }
 
 async function waitForInput() {

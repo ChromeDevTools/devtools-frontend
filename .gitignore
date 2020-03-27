@@ -39,6 +39,7 @@ test/shared/**/runner.d.ts
 test/shared/**/master.d.ts
 test/shared/**/worker-task.d.ts
 test/shared/**/worker.d.ts
+test/shared/**/config.d.ts
 test/shared/**/text-color.d.ts
 test/shared/**/screenshot.d.ts
 test/shared/**/*.tsbuildinfo

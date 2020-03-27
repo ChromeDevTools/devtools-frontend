@@ -5,10 +5,11 @@
 /* eslint-disable no-console */
 // no-console disabled here as this is a test runner and expects to output to the console.
 
+import {getEnvVar} from './config.js';
 import {WorkerMessage} from './worker-message.js';
 import {cancelTest, initBrowser, runTest} from './worker-task.js';
 
-const envVerbose = !!process.env['VERBOSE'];
+const envVerbose = getEnvVar('VERBOSE');
 function log(msg: string) {
   if (!envVerbose) {
     return;

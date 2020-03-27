@@ -190,8 +190,9 @@ class AffectedRequestsView extends AffectedResourcesView {
   appendAffectedRequest(request) {
     const nameText = request.name().trimMiddle(100);
     const nameElement = createElementWithClass('td', '');
-    nameElement.appendChild(Components.Linkifier.linkifyRevealable(request, nameText));
-
+    nameElement.appendChild(UI.UIUtils.createTextButton(nameText, () => {
+      Network.NetworkPanel.NetworkPanel.selectAndShowRequest(request, Network.NetworkItemView.Tabs.Headers);
+    }, 'link-style devtools-link'));
     const element = createElementWithClass('tr', 'affected-resource-request');
     element.appendChild(nameElement);
     this._affectedResources.appendChild(element);

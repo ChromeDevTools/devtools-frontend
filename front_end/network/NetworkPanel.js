@@ -199,6 +199,18 @@ export class NetworkPanel extends UI.Panel.Panel {
   }
 
   /**
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
+   * @param {!NetworkItemViewTabs} tab
+   */
+  static async selectAndShowRequest(request, tab) {
+    const panel = NetworkPanel._instance();
+    const itemView = await panel.selectRequest(request);
+    if (!itemView) {
+      panel._networkLogView.dispatchEventToListeners(Events.RequestActivated, {showPanel: true, tab: tab});
+    }
+  }
+
+  /**
    * @return {!NetworkPanel}
    */
   static _instance() {

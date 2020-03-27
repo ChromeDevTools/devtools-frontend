@@ -77,6 +77,11 @@ export function init() {
     worker.on('message', onWorkerMessage);
     worker.on('exit', onWorkerDisconnect);
 
+    // Pipe through all errors.
+    if (worker.process.stderr) {
+      worker.process.stderr.pipe(process.stderr);
+    }
+
     ports.set(worker, 9222 + w);
   }
 

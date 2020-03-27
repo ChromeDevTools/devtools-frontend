@@ -239,6 +239,17 @@ export const debuggerStatement = (frontend: puppeteer.Page) => {
   });
 };
 
+export const logToStdOut = (msg: string) => {
+  if (!process.send) {
+    return;
+  }
+
+  process.send({
+    pid: process.pid,
+    details: msg,
+  });
+};
+
 export const store =
     (browser: puppeteer.Browser, target: puppeteer.Page, frontend: puppeteer.Page, screenshot: puppeteer.Page | undefined,
      reset: ResetPages) => {

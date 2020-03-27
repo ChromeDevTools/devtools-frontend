@@ -330,10 +330,6 @@
     padding: 2px;
 }
 
-:host-context(.-theme-with-dark-background) .spectrum-switcher {
-    -webkit-filter: invert(60%);
-}
-
 .spectrum-display-switcher {
     top: 72px;
     position: absolute;
@@ -341,7 +337,7 @@
 }
 
 .spectrum-switcher:hover {
-    background-color: #EEEEEE;
+    background-color: #DDDDDD;
 }
 
 .spectrum-switcher[data-keyboard-focus="true"]:focus {

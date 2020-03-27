@@ -12,7 +12,7 @@ import {ElementFocusRestorer, markBeingEdited} from './UIUtils.js';
 export class InplaceEditor {
   /**
    * @param {!Element} element
-   * @param {!InplaceEditor.Config=} config
+   * @param {!Config=} config
    * @return {?Controller}
    */
   static startEditing(element, config) {
@@ -85,7 +85,7 @@ export class InplaceEditor {
 
   /**
    * @param {!Element} element
-   * @param {!InplaceEditor.Config=} config
+   * @param {!Config=} config
    * @return {?Controller}
    */
   startEditing(element, config) {
@@ -93,7 +93,7 @@ export class InplaceEditor {
       return null;
     }
 
-    config = config || new InplaceEditor.Config(function() {}, function() {});
+    config = config || new Config(function() {}, function() {});
     const editingContext = {element: element, config: config};
     const committedCallback = config.commitHandler;
     const cancelledCallback = config.cancelHandler;

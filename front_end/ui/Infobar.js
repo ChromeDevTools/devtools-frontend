@@ -3,6 +3,9 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+
+import * as ARIAUtils from './ARIAUtils.js';
+import {Keys} from './KeyboardShortcut.js';
 import {createTextButton} from './UIUtils.js';
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
 import {Widget} from './Widget.js';  // eslint-disable-line no-unused-vars
@@ -31,7 +34,7 @@ export class Infobar {
     this._infoMessage.createChild('div', type + '-icon icon');
     this._infoText = this._infoMessage.createChild('div', 'infobar-info-text');
     this._infoText.textContent = text;
-    UI.ARIAUtils.markAsAlert(this._infoText);
+    ARIAUtils.markAsAlert(this._infoText);
 
     this._actionContainer = this._infoContainer.createChild('div', 'infobar-info-actions');
     if (actions) {
@@ -60,13 +63,13 @@ export class Infobar {
     this._closeContainer.appendChild(this._toggleElement);
     this._closeButton = this._closeContainer.createChild('div', 'close-button', 'dt-close-button');
     this._closeButton.setTabbable(true);
-    UI.ARIAUtils.setDescription(this._closeButton, ls`Close`);
+    ARIAUtils.setDescription(this._closeButton, ls`Close`);
     self.onInvokeElement(this._closeButton, this.dispose.bind(this));
 
     this._contentElement.tabIndex = 0;
-    UI.ARIAUtils.setAccessibleName(this._contentElement, text);
+    ARIAUtils.setAccessibleName(this._contentElement, text);
     this._contentElement.addEventListener('keydown', event => {
-      if (event.keyCode === UI.KeyboardShortcut.Keys.Esc.code) {
+      if (event.keyCode === Keys.Esc.code) {
         this.dispose();
         event.consume();
         return;

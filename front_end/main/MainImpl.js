@@ -439,23 +439,26 @@ export class MainImpl {
     const shortcut = UI.KeyboardShortcut.KeyboardShortcut;
     const section = self.UI.shortcutsScreen.section(Common.UIString.UIString('All Panels'));
     let keys = [
-      shortcut.makeDescriptor('[', shortcut.Modifiers.CtrlOrMeta),
-      shortcut.makeDescriptor(']', shortcut.Modifiers.CtrlOrMeta)
+      shortcut.makeDescriptor('[', UI.KeyboardShortcut.Modifiers.CtrlOrMeta),
+      shortcut.makeDescriptor(']', UI.KeyboardShortcut.Modifiers.CtrlOrMeta)
     ];
     section.addRelatedKeys(keys, Common.UIString.UIString('Go to the panel to the left/right'));
 
     const toggleConsoleLabel = Common.UIString.UIString('Show console');
-    section.addKey(shortcut.makeDescriptor(shortcut.Keys.Tilde, shortcut.Modifiers.Ctrl), toggleConsoleLabel);
-    section.addKey(shortcut.makeDescriptor(shortcut.Keys.Esc), Common.UIString.UIString('Toggle drawer'));
+    section.addKey(
+        shortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Tilde, UI.KeyboardShortcut.Modifiers.Ctrl),
+        toggleConsoleLabel);
+    section.addKey(shortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Esc), Common.UIString.UIString('Toggle drawer'));
     if (self.Components.dockController.canDock()) {
       section.addKey(
-          shortcut.makeDescriptor('M', shortcut.Modifiers.CtrlOrMeta | shortcut.Modifiers.Shift),
+          shortcut.makeDescriptor('M', UI.KeyboardShortcut.Modifiers.CtrlOrMeta | UI.KeyboardShortcut.Modifiers.Shift),
           Common.UIString.UIString('Toggle device mode'));
       section.addKey(
-          shortcut.makeDescriptor('D', shortcut.Modifiers.CtrlOrMeta | shortcut.Modifiers.Shift),
+          shortcut.makeDescriptor('D', UI.KeyboardShortcut.Modifiers.CtrlOrMeta | UI.KeyboardShortcut.Modifiers.Shift),
           Common.UIString.UIString('Toggle dock side'));
     }
-    section.addKey(shortcut.makeDescriptor('f', shortcut.Modifiers.CtrlOrMeta), Common.UIString.UIString('Search'));
+    section.addKey(
+        shortcut.makeDescriptor('f', UI.KeyboardShortcut.Modifiers.CtrlOrMeta), Common.UIString.UIString('Search'));
 
     const advancedSearchShortcutModifier = Host.Platform.isMac() ?
         UI.KeyboardShortcut.Modifiers.Meta | UI.KeyboardShortcut.Modifiers.Alt :
@@ -475,8 +478,8 @@ export class MainImpl {
 
     if (Host.Platform.isMac()) {
       keys = [
-        shortcut.makeDescriptor('g', shortcut.Modifiers.Meta),
-        shortcut.makeDescriptor('g', shortcut.Modifiers.Meta | shortcut.Modifiers.Shift)
+        shortcut.makeDescriptor('g', UI.KeyboardShortcut.Modifiers.Meta),
+        shortcut.makeDescriptor('g', UI.KeyboardShortcut.Modifiers.Meta | UI.KeyboardShortcut.Modifiers.Shift)
       ];
       section.addRelatedKeys(keys, Common.UIString.UIString('Find next/previous'));
     }

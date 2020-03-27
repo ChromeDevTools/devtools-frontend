@@ -119,7 +119,7 @@ export class GlassPane {
   }
 
   /**
-   * @param {!GlassPane.AnchorBehavior} behavior
+   * @param {!AnchorBehavior} behavior
    */
   setAnchorBehavior(behavior) {
     this._anchorBehavior = behavior;
@@ -217,19 +217,19 @@ export class GlassPane {
       let behavior = this._anchorBehavior;
       this._arrowElement.classList.remove('arrow-none', 'arrow-top', 'arrow-bottom', 'arrow-left', 'arrow-right');
 
-      if (behavior === GlassPane.AnchorBehavior.PreferTop || behavior === GlassPane.AnchorBehavior.PreferBottom) {
+      if (behavior === AnchorBehavior.PreferTop || behavior === AnchorBehavior.PreferBottom) {
         const top = anchorBox.y - 2 * gutterSize;
         const bottom = containerHeight - anchorBox.y - anchorBox.height - 2 * gutterSize;
-        if (behavior === GlassPane.AnchorBehavior.PreferTop && top < height && bottom > top) {
-          behavior = GlassPane.AnchorBehavior.PreferBottom;
+        if (behavior === AnchorBehavior.PreferTop && top < height && bottom > top) {
+          behavior = AnchorBehavior.PreferBottom;
         }
-        if (behavior === GlassPane.AnchorBehavior.PreferBottom && bottom < height && top > bottom) {
-          behavior = GlassPane.AnchorBehavior.PreferTop;
+        if (behavior === AnchorBehavior.PreferBottom && bottom < height && top > bottom) {
+          behavior = AnchorBehavior.PreferTop;
         }
 
         let arrowY;
         let enoughHeight = true;
-        if (behavior === GlassPane.AnchorBehavior.PreferTop) {
+        if (behavior === AnchorBehavior.PreferTop) {
           positionY = Math.max(gutterSize, anchorBox.y - height - gutterSize);
           const spaceTop = anchorBox.y - positionY - gutterSize;
           if (this._sizeBehavior === SizeBehavior.MeasureContent) {
@@ -277,16 +277,16 @@ export class GlassPane {
       } else {
         const left = anchorBox.x - 2 * gutterSize;
         const right = containerWidth - anchorBox.x - anchorBox.width - 2 * gutterSize;
-        if (behavior === GlassPane.AnchorBehavior.PreferLeft && left < width && right > left) {
-          behavior = GlassPane.AnchorBehavior.PreferRight;
+        if (behavior === AnchorBehavior.PreferLeft && left < width && right > left) {
+          behavior = AnchorBehavior.PreferRight;
         }
-        if (behavior === GlassPane.AnchorBehavior.PreferRight && right < width && left > right) {
-          behavior = GlassPane.AnchorBehavior.PreferLeft;
+        if (behavior === AnchorBehavior.PreferRight && right < width && left > right) {
+          behavior = AnchorBehavior.PreferLeft;
         }
 
         let arrowX;
         let enoughWidth = true;
-        if (behavior === GlassPane.AnchorBehavior.PreferLeft) {
+        if (behavior === AnchorBehavior.PreferLeft) {
           positionX = Math.max(gutterSize, anchorBox.x - width - gutterSize);
           const spaceLeft = anchorBox.x - positionX - gutterSize;
           if (this._sizeBehavior === SizeBehavior.MeasureContent) {

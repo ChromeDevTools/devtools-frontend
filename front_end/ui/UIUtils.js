@@ -53,6 +53,8 @@ import {XLink} from './XLink.js';
 export const highlightedSearchResultClassName = 'highlighted-search-result';
 export const highlightedCurrentSearchResultClassName = 'current-search-result';
 
+export {markAsFocusedByKeyboard} from './utils/focus-changed.js';
+
 /**
  * @param {!Element} element
  * @param {?function(!MouseEvent): boolean} elementDragStart
@@ -798,11 +800,6 @@ function _windowBlurred(document, event) {
   if (event.target.document.nodeType === Node.DOCUMENT_NODE) {
     document.body.classList.add('inactive');
   }
-}
-
-export function markAsFocusedByKeyboard(element) {
-  element.setAttribute('data-keyboard-focus', 'true');
-  element.addEventListener('blur', () => element.removeAttribute('data-keyboard-focus'), {once: true, capture: true});
 }
 
 /**

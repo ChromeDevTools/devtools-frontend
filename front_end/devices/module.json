@@ -12,7 +12,9 @@
       }
   ],
   "dependencies": ["platform", "ui", "host", "components"],
-  "scripts": [
+  "scripts": [],
+  "modules": [
+      "devices.js",
       "DevicesView.js"
   ]
 }

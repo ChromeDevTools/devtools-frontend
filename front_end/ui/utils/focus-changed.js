@@ -17,5 +17,10 @@ export function focusChanged(event) {
     return;
   }
 
-  UI.markAsFocusedByKeyboard(element);
+  markAsFocusedByKeyboard(element);
+}
+
+export function markAsFocusedByKeyboard(element) {
+  element.setAttribute('data-keyboard-focus', 'true');
+  element.addEventListener('blur', () => element.removeAttribute('data-keyboard-focus'), {once: true, capture: true});
 }

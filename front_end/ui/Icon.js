@@ -48,7 +48,7 @@ export class Icon extends HTMLSpanElement {
       this._descriptor = null;
       this._spriteSheet = null;
     }
-    const descriptor = Icon.Descriptors[iconType] || null;
+    const descriptor = Descriptors[iconType] || null;
     if (descriptor) {
       this._iconType = iconType;
       this._descriptor = descriptor;

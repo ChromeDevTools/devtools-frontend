@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as UI from '../../ui/ui.js';
+
 import {BottomPaddingWithoutParam, BottomPaddingWithParam, LeftMarginOfText, LeftSideTopPadding, NodeCreationData, NodeLabelFontStyle, NodeLayout, ParamLabelFontStyle, Port, PortTypes, RightMarginOfText, TotalInputPortHeight, TotalOutputPortHeight, TotalParamPortHeight} from './GraphStyle.js';  // eslint-disable-line no-unused-vars
 import {calculateInputPortXY, calculateOutputPortXY, calculateParamPortXY} from './NodeRendererUtility.js';
 
@@ -253,7 +255,7 @@ export const measureTextWidth = (text, fontStyle) => {
   const context = _contextForFontTextMeasuring;
   context.save();
   context.font = fontStyle;
-  const width = UI.measureTextWidth(context, text);
+  const width = UI.UIUtils.measureTextWidth(context, text);
   context.restore();
   return width;
 };

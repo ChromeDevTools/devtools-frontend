@@ -489,7 +489,7 @@ export class SplitWidget extends Widget {
     this._showMode = showMode;
     this._saveShowModeToSettings();
     this._updateShowHideSidebarButton();
-    this.dispatchEventToListeners(SplitWidget.Events.ShowModeChanged, showMode);
+    this.dispatchEventToListeners(Events.ShowModeChanged, showMode);
     this.invalidateConstraints();
   }
 
@@ -564,7 +564,7 @@ export class SplitWidget extends Widget {
     } else {
       // No need to recalculate this._sidebarSizeDIP and this._totalSizeDIP again.
       this.doResize();
-      this.dispatchEventToListeners(SplitWidget.Events.SidebarSizeChanged, this.sidebarSize());
+      this.dispatchEventToListeners(Events.SidebarSizeChanged, this.sidebarSize());
     }
   }
 
@@ -625,7 +625,7 @@ export class SplitWidget extends Widget {
         if (this._mainWidget) {
           this._mainWidget.doResize();
         }
-        this.dispatchEventToListeners(SplitWidget.Events.SidebarSizeChanged, this.sidebarSize());
+        this.dispatchEventToListeners(Events.SidebarSizeChanged, this.sidebarSize());
         return;
       }
       this._animationFrameHandle = this.contentElement.window().requestAnimationFrame(boundAnimationFrame);

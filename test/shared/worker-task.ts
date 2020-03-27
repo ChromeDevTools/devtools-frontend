@@ -19,6 +19,14 @@ interface DevToolsTarget {
 const envChromeBinary = process.env['CHROME_BIN'];
 const envInteractive = !!process.env['INTERACTIVE'];
 const envDebug = !!process.env['DEBUG'];
+let envTimeout = Number(process.env['TIMEOUT']);
+if (Number.isNaN(envTimeout) || envTimeout < 1) {
+  if (envDebug || envInteractive) {
+    envTimeout = 300000;
+  } else {
+    envTimeout = 4000;
+  }
+}
 
 const interactivePage = 'http://localhost:8090/test/screenshots/interactive/index.html';
 const blankPage = 'data:text/html,';
@@ -194,8 +202,11 @@ function formatTestResult(suiteTitle: string, timeout: number, testResult: TestR
   if (testResult.err) {
     const {message, stack, actual, expected} = testResult.err;
     output += `\n${color(capitalize(message), TextColor.RED)}\n${stack}\n\n`;
-    output += color(`Actual: ${actual}\n\n`, TextColor.RED);
-    output += color(`Expected: ${expected}\n`, TextColor.GREEN);
+
+    if (actual && expected) {
+      output += color(`Actual: ${actual}\n\n`, TextColor.RED);
+      output += color(`Expected: ${expected}\n`, TextColor.GREEN);
+    }
   }
 
   return output;
@@ -205,13 +216,12 @@ export async function runTest(test: string): Promise<{code: number, output: stri
   let output = color(`Worker (${process.pid}): ${test}\n`, TextColor.DIM);
   let suiteTitle = '';
   let code = 0;
-  const timeout = (envDebug || envInteractive) ? 300000 : 4000;
   return new Promise(resolve => {
     const mocha = new Mocha();
     mocha.addFile(test);
     mocha.ui('bdd');
     mocha.reporter('list');
-    mocha.timeout(timeout);
+    mocha.timeout(envTimeout);
 
     mochaRun = mocha.run();
     mochaRun.on('end', () => {
@@ -224,7 +234,7 @@ export async function runTest(test: string): Promise<{code: number, output: stri
     });
 
     mochaRun.on('test end', (testResult: TestResult) => {
-      output += formatTestResult(suiteTitle, timeout, testResult);
+      output += formatTestResult(suiteTitle, envTimeout, testResult);
     });
 
     mochaRun.on('fail', (testResult: TestResult) => {

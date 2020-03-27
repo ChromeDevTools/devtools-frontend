@@ -125,7 +125,7 @@ export class Layer {
   }
 
   /**
-   * @return {?Layer.StickyPositionConstraint}
+   * @return {?StickyPositionConstraint}
    */
   stickyPositionConstraint() {
   }

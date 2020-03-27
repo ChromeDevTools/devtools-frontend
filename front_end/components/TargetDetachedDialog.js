@@ -2,14 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 /**
  * @implements {Protocol.InspectorDispatcher}
  */
-export class TargetDetachedDialog extends SDK.SDKModel {
+export class TargetDetachedDialog extends SDK.SDKModel.SDKModel {
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.SDKModel.Target} target
    */
   constructor(target) {
     super(target);
@@ -60,4 +61,4 @@ export class TargetDetachedDialog extends SDK.SDKModel {
   }
 }
 
-SDK.SDKModel.register(TargetDetachedDialog, SDK.Target.Capability.Inspector, true);
+SDK.SDKModel.SDKModel.register(TargetDetachedDialog, SDK.SDKModel.Capability.Inspector, true);

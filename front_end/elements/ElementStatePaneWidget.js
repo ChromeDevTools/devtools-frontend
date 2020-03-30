@@ -18,6 +18,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
     this.contentElement.className = 'styles-element-state-pane';
     this.contentElement.createChild('div').createTextChild(Common.UIString.UIString('Force element state'));
     const table = createElementWithClass('table', 'source-code');
+    UI.ARIAUtils.markAsPresentation(table);
 
     const inputs = [];
     this._inputs = inputs;

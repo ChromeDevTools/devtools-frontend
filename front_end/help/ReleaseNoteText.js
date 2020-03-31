@@ -17,6 +17,72 @@ const commandMenuShortcut = Host.Platform.isMac() ? 'Command+Shift+P' : 'Control
 /** @type {!Array<!ReleaseNote>} */
 export const releaseNoteText = [
   {
+    version: 25,
+    header: 'Highlights from the Chrome 83 update',
+    highlights: [
+      {
+        title: 'Emulate vision deficiencies from the Rendering tab',
+        subtitle: 'Get a visual approximation of how people with vision deficiencies might experience your site.',
+        link: 'https://developers.google.com/web/updates/2020/03/devtools#vision-deficiences',
+      },
+      {
+        title: 'Emulate locales from the Sensors tab or Console',
+        subtitle:
+            'Emulating locales enables you to change the Accept-Language HTTP header that\'s sent with network requests.',
+        link: 'https://developers.google.com/web/updates/2020/03/devtools#locales',
+      },
+      {
+        title: 'Cross-Origin Opener Policy (COOP) and Cross-Origin Embedder Policy (COEP) debugging',
+        subtitle:
+            'Use the Status column and Response Headers section in the Network panel to debug COOP and COEP issues.',
+        link: 'https://developers.google.com/web/updates/2020/03/devtools#COOP-COEP',
+      },
+      {
+        title: 'New icons for breakpoints, conditional breakpoints, and logpoints',
+        subtitle:
+            'The new icons are more consistent with other GUI debugging tools and make it easier to distinguish between the 3 features at a glance.',
+        link: 'https://developers.google.com/web/updates/2020/03/devtools#debugging-icons',
+      },
+      {
+        title: 'View network requests that set a specific cookie path',
+        subtitle:
+            'Use the new "cookie-path" filter keyword to focus on the network requests that set a specific cookie path.',
+        link: 'https://developers.google.com/web/updates/2020/03/devtools#cookie-path',
+      },
+      {
+        title: 'Dock to left from the Command Menu',
+        subtitle: 'Run the "Dock to left" command to quickly move DevTools to the left of your viewport.',
+        link: 'https://developers.google.com/web/updates/2020/03/devtools#dock-to-left',
+      },
+      {
+        title: 'The Settings option in the Main Menu has moved',
+        subtitle: 'The option for opening Settings can now be found under "More Tools".',
+        link: 'https://developers.google.com/web/updates/2020/03/devtools#settings',
+      },
+      {
+        title: 'The Audits panel is now the Lighthouse panel',
+        subtitle: 'Same features. New name.',
+        link: 'https://developers.google.com/web/updates/2020/03/devtools#lighthouse',
+      },
+      {
+        title: 'Delete all Local Overrides in a folder',
+        subtitle: 'Right-click a folder from the Overrides tab and select "Delete all overrides".',
+        link: 'https://developers.google.com/web/updates/2020/03/devtools#overrides',
+      },
+      {
+        title: 'Updated Long Tasks UI',
+        subtitle: 'In the Performance panel Long Tasks now have a striped red background.',
+        link: 'https://developers.google.com/web/updates/2020/03/devtools#long-tasks',
+      },
+      {
+        title: 'Maskable icon support in the Manifest pane',
+        subtitle: 'Enable the "Show only the minimum safe area for maskable icons" checkbox.',
+        link: 'https://developers.google.com/web/updates/2020/03/devtools#maskable-icons',
+      },
+    ],
+    link: 'https://developers.google.com/web/updates/2020/03/devtools',
+  },
+  {
     version: 24,
     header: 'Highlights from the Chrome 82 update',
     highlights: [

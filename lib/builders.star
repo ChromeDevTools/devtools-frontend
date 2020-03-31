@@ -41,7 +41,7 @@ dimensions=struct(
   },
   mac={
     "cpu":"x86-64",
-    "os":"Mac-10.13",
+    "os":"Mac-10.14",
   }
 )
 

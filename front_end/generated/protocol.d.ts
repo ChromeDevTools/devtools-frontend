@@ -11403,6 +11403,7 @@ declare namespace Protocol {
       Script = 'script',
       Eval = 'eval',
       Module = 'module',
+      WasmExpressionStack = 'wasm-expression-stack',
     }
 
     /**
@@ -12628,6 +12629,7 @@ declare namespace Protocol {
       Boolean = 'boolean',
       Symbol = 'symbol',
       Bigint = 'bigint',
+      Wasm = 'wasm',
     }
 
     export enum RemoteObjectSubtype {
@@ -12648,6 +12650,11 @@ declare namespace Protocol {
       Typedarray = 'typedarray',
       Arraybuffer = 'arraybuffer',
       Dataview = 'dataview',
+      I32 = 'i32',
+      I64 = 'i64',
+      F32 = 'f32',
+      F64 = 'f64',
+      V128 = 'v128',
     }
 
     /**
@@ -12659,7 +12666,7 @@ declare namespace Protocol {
        */
       type: RemoteObjectType;
       /**
-       * Object subtype hint. Specified for `object` type values only.
+       * Object subtype hint. Specified for `object` or `wasm` type values only.
        */
       subtype?: RemoteObjectSubtype;
       /**

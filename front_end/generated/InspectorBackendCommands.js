@@ -2212,7 +2212,8 @@ export function registerCommands(inspectorBackend) {
     Block: 'block',
     Script: 'script',
     Eval: 'eval',
-    Module: 'module'
+    Module: 'module',
+    WasmExpressionStack: 'wasm-expression-stack'
   });
   inspectorBackend.registerEnum(
       'Debugger.BreakLocationType', {DebuggerStatement: 'debuggerStatement', Call: 'call', Return: 'return'});
@@ -2438,7 +2439,8 @@ export function registerCommands(inspectorBackend) {
     Number: 'number',
     Boolean: 'boolean',
     Symbol: 'symbol',
-    Bigint: 'bigint'
+    Bigint: 'bigint',
+    Wasm: 'wasm'
   });
   inspectorBackend.registerEnum('Runtime.RemoteObjectSubtype', {
     Array: 'array',
@@ -2457,7 +2459,12 @@ export function registerCommands(inspectorBackend) {
     Promise: 'promise',
     Typedarray: 'typedarray',
     Arraybuffer: 'arraybuffer',
-    Dataview: 'dataview'
+    Dataview: 'dataview',
+    I32: 'i32',
+    I64: 'i64',
+    F32: 'f32',
+    F64: 'f64',
+    V128: 'v128'
   });
   inspectorBackend.registerEnum('Runtime.ObjectPreviewType', {
     Object: 'object',

@@ -16828,7 +16828,8 @@
                                 "block",
                                 "script",
                                 "eval",
-                                "module"
+                                "module",
+                                "wasm-expression-stack"
                             ]
                         },
                         {
@@ -18664,12 +18665,13 @@
                                 "number",
                                 "boolean",
                                 "symbol",
-                                "bigint"
+                                "bigint",
+                                "wasm"
                             ]
                         },
                         {
                             "name": "subtype",
-                            "description": "Object subtype hint. Specified for `object` type values only.",
+                            "description": "Object subtype hint. Specified for `object` or `wasm` type values only.",
                             "optional": true,
                             "type": "string",
                             "enum": [
@@ -18689,7 +18691,12 @@
                                 "promise",
                                 "typedarray",
                                 "arraybuffer",
-                                "dataview"
+                                "dataview",
+                                "i32",
+                                "i64",
+                                "f32",
+                                "f64",
+                                "v128"
                             ]
                         },
                         {

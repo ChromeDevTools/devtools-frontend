@@ -1485,6 +1485,8 @@ export class Scope {
         return Common.UIString.UIString('Global');
       case Protocol.Debugger.ScopeType.Module:
         return Common.UIString.UIString('Module');
+      case Protocol.Debugger.ScopeType.WasmExpressionStack:
+        return Common.UIString.UIString('Stack');
     }
     return '';
   }

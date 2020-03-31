@@ -60,6 +60,9 @@
   <message name="IDS_DEVTOOLS_212af9ab36fa426a9e52bc1ebfd8665b" desc="Text in DOMDebugger Model">
     Drag / drop
   </message>
+  <message name="IDS_DEVTOOLS_2187e1021a911b3807cc1bea2eb1a9ca" desc="Text for a stack, the programming concept">
+    Stack
+  </message>
   <message name="IDS_DEVTOOLS_22af645d1859cb5ca6da0c484f1f37ea" desc="Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel">
     new
   </message>

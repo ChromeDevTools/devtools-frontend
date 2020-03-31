@@ -28,6 +28,7 @@ export class PlayerEntryTreeElement extends UI.TreeOutline.TreeElement {
     this._playerStatus = playerStatus;
     this._displayContainer = displayContainer;
     this.setLeadingIcons([UI.Icon.Icon.create('smallicon-videoplayer-playing', 'media-player')]);
+    this.listItemElement.classList.add('player-entry-tree-element');
   }
 
   /**
@@ -66,6 +67,7 @@ export class PlayerListView extends UI.Widget.VBox {
 
     // Players active in this tab.
     this._playerList = this._addListSection(Common.UIString('Players'));
+    this._playerList.listItemElement.classList.add('player-entry-header');
   }
 
   /**

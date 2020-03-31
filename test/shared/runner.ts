@@ -54,7 +54,15 @@ async function runTests() {
 
   let {testList} = await import(testListPath!);
   if (envTestFile) {
-    testList = testList.filter((testFile: string) => testFile === envTestFile);
+    let filterFile = envTestFile;
+    if (filterFile.endsWith('.ts'))  // users might get confused and try to filter the ts file
+    {
+      filterFile = filterFile.replace(/\.[^.]+$/, '.js');
+    } else if (!filterFile.endsWith('.js'))  // Maybe the user left the .js off?
+    {
+      filterFile += '.js';
+    }
+    testList = testList.filter((testFile: string) => testFile.endsWith(filterFile));
   }
 
   const shuffledTests = shuffleTestFiles(testList);

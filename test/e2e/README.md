@@ -11,6 +11,15 @@ The tests therefore have a dual purpose:
 1. Verify that core user stories are working as intended and are not broken by a particular DevTools frontend change.
 1. Serve as documentation and reference point for how DevTools is intended to be used.
 
+## Running tests
+All tests: `npm run e2etest` (note, this requires python2 to be the default python binary!)
+Some additional, optional, helpful flags:
+`npm run e2etest -- --test-file=[FILTER] --chrome-binary=[LOCATION] --chrome-features=[FEATURES]`
+FILTER is the name of the test file, such as `media-tab.ts` or `network-datagrid.ts`.
+LOCATION is a path to the chrome executable
+FEATURES is a comma separated list of chrome features passed as `--enable-features=[FEATURES]` to the chrome binary.
+
+
 ## General implementation details
 
 To that end, the "what" from the "how" are separate in end-to-end tests.

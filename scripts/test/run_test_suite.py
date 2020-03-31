@@ -26,6 +26,10 @@ def parse_options(cli_args):
     parser.add_argument('--chrome-binary', dest='chrome_binary', help='path to Chromium binary')
     parser.add_argument('--test-suite', dest='test_suite', help='path to test suite')
     parser.add_argument('--test-file', dest='test_file', help='an absolute path for the file to test')
+    parser.add_argument(
+        '--chrome-features',
+        dest='chrome_features',
+        help='comma separated list of strings passed to --enable-features on the chromium commandline')
     return parser.parse_args(cli_args)
 
 
@@ -40,10 +44,12 @@ def compile_typescript(typescript_targets):
     return False
 
 
-def run_tests(chrome_binary, test_suite_list_path, test_file=None):
+def run_tests(chrome_binary, chrome_features, test_suite_list_path, test_file=None):
     env = os.environ.copy()
     env['CHROME_BIN'] = chrome_binary
     env['TEST_LIST'] = test_suite_list_path
+    if chrome_features:
+        env['CHROME_FEATURES'] = chrome_features
 
     if test_file is not None:
         env['TEST_FILE'] = test_file
@@ -64,6 +70,7 @@ def run_test():
     is_cygwin = sys.platform == 'cygwin'
     chrome_binary = None
     test_suite = None
+    chrome_features = None
 
     # Default to the downloaded / pinned Chromium binary
     downloaded_chrome_binary = devtools_paths.downloaded_chrome_binary_path()
@@ -77,6 +84,9 @@ def run_test():
             print('Unable to find a Chrome binary at \'%s\'' % chrome_binary)
             sys.exit(1)
 
+    if OPTIONS.chrome_features:
+        chrome_features = '--enable-features=%s' % OPTIONS.chrome_features
+
     if (chrome_binary is None):
         print('Unable to run, no Chrome binary provided')
         sys.exit(1)
@@ -88,7 +98,7 @@ def run_test():
     test_suite = OPTIONS.test_suite
     test_file = OPTIONS.test_file
 
-    print('Using Chromium binary (%s)\n' % chrome_binary)
+    print('Using Chromium binary ({}{})\n'.format(chrome_binary, ' ' + chrome_features if chrome_features else ''))
     print('Using Test Suite (%s)\n' % test_suite)
 
     if test_file is not None:
@@ -114,7 +124,7 @@ def run_test():
         if (errors_found):
             raise Exception('Typescript failed to compile')
         test_suite_list_path = os.path.join(test_suite_path, 'test-list.js')
-        errors_found = run_tests(chrome_binary, test_suite_list_path, test_file=test_file)
+        errors_found = run_tests(chrome_binary, chrome_features, test_suite_list_path, test_file=test_file)
     except Exception as err:
         print(err)
 

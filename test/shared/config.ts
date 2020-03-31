@@ -3,19 +3,20 @@
 // found in the LICENSE file.
 
 interface SupportedEnvVars {
-  NO_SHUFFLE: boolean;   // Whether or not to shuffle tests.
-  STRESS: boolean;       // Stress test (slowdown CPU; multiple iterations)
-  VERBOSE: boolean;      // Log stdout from the workers.
-  THROTTLE: number;      // CPU throttle multiplier.
-  TEST_LIST: string;     // Absolute path to the test list.
-  TEST_FILE: string;     // Absolute path to the test file from the test list to run in isolation.
-  DEBUG: boolean;        // Debug mode. When enabled, has longer timeouts and runs Chrome in head mode.
-  ITERATIONS: number;    // Number of test iterations.
-  JOBS: number;          // Number of workers to use.
-  SLOWMO: number;        // Number of milliseconds between actions. Recommended value: 50.
-  CHROME_BIN: string;    // Absolute path to the Chrome binary.
-  INTERACTIVE: boolean;  // [Unused]: Placeholder for screenshot diffing.
-  TIMEOUT: number;       // The timeout in ms to wait for tests.
+  NO_SHUFFLE: boolean;      // Whether or not to shuffle tests.
+  STRESS: boolean;          // Stress test (slowdown CPU; multiple iterations)
+  VERBOSE: boolean;         // Log stdout from the workers.
+  THROTTLE: number;         // CPU throttle multiplier.
+  TEST_LIST: string;        // Absolute path to the test list.
+  TEST_FILE: string;        // Absolute path to the test file from the test list to run in isolation.
+  DEBUG: boolean;           // Debug mode. When enabled, has longer timeouts and runs Chrome in head mode.
+  ITERATIONS: number;       // Number of test iterations.
+  JOBS: number;             // Number of workers to use.
+  SLOWMO: number;           // Number of milliseconds between actions. Recommended value: 50.
+  CHROME_BIN: string;       // Absolute path to the Chrome binary.
+  INTERACTIVE: boolean;     // [Unused]: Placeholder for screenshot diffing.
+  TIMEOUT: number;          // The timeout in ms to wait for tests.
+  CHROME_FEATURES: string;  // --enable-features={} for the Chrome binary.
 }
 
 export function getEnvVar<Key extends keyof SupportedEnvVars>(

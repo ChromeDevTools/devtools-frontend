@@ -9,6 +9,7 @@ ts_library("helpers") {
   sources = [
     "console-helpers.ts",
     "elements-helpers.ts",
+    "media-helpers.ts",
     "quick_open-helpers.ts",
     "search-helpers.ts",
     "settings-helpers.ts",

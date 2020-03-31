@@ -22,6 +22,7 @@ const envSlowMo = getEnvVar('SLOWMO', envStress ? 50 : undefined);
 const envChromeBinary = getEnvVar('CHROME_BIN');
 const envInteractive = getEnvVar('INTERACTIVE');
 const envDebug = getEnvVar('DEBUG');
+const envChromeFeatures = getEnvVar('CHROME_FEATURES');
 
 let defaultTimeout = 5000;
 if (envDebug || envInteractive) {
@@ -58,6 +59,10 @@ export async function initBrowser(port: number) {
     opts.defaultViewport = {width, height};
   } else {
     launchArgs.push(`--window-size=${width},${height}`);
+  }
+
+  if (envChromeFeatures !== undefined) {
+    launchArgs.push(envChromeFeatures);
   }
 
   opts.args = launchArgs;

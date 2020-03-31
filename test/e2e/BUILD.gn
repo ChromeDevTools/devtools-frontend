@@ -13,6 +13,7 @@ ts_library("e2e") {
     "console",
     "elements",
     "host",
+    "media",
     "network",
     "rendering",
     "search",

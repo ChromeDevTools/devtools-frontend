@@ -82,11 +82,14 @@ export async function addBreakpointForLine(frontend: puppeteer.Page, index: numb
     };
   }, index);
 
+  const currentBreakpointCount = await frontend.$$eval('.cm-breakpoint', nodes => nodes.length);
+
   await frontend.mouse.click(breakpointLineNumber.x, breakpointLineNumber.y);
 
-  await frontend.waitForFunction(() => {
-    return document.querySelectorAll('.cm-breakpoint').length !== 0;
-  });
+  await frontend.waitForFunction(bpCount => {
+    return document.querySelectorAll('.cm-breakpoint').length > bpCount &&
+        document.querySelectorAll('.cm-breakpoint-unbound').length === 0;
+  }, undefined, currentBreakpointCount);
 }
 
 export async function getBreakpointDecorators(frontend: puppeteer.Page, disabledOnly = false) {

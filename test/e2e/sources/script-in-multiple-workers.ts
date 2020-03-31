@@ -43,7 +43,7 @@ describe('Multi-Workers', async () => {
       assert.deepEqual(await getBreakpointDecorators(frontend, true), [6]);
     }
 
-    it.skip(`loads scripts exactly once on reload ${withOrWithout}`, async () => {
+    it(`loads scripts exactly once on reload ${withOrWithout}`, async () => {
       const {target} = getBrowserAndPages();
 
       // Have the target load the page.
@@ -66,7 +66,7 @@ describe('Multi-Workers', async () => {
       await validateSourceTabs();
     });
 
-    it.skip(`[crbug.com/1064581] loads scripts exactly once on break ${withOrWithout}`, async () => {
+    it(`loads scripts exactly once on break ${withOrWithout}`, async () => {
       const {target, frontend} = getBrowserAndPages();
 
       // Have the target load the page.
@@ -108,7 +108,7 @@ describe('Multi-Workers', async () => {
       await validateSourceTabs();
     });
 
-    it.skip(`[crbug.com/1064581] copies breakpoints between workers ${withOrWithout}`, async () => {
+    it(`copies breakpoints between workers ${withOrWithout}`, async () => {
       const {target, frontend} = getBrowserAndPages();
 
       // Have the target load the page.

@@ -156,6 +156,12 @@ export class JavaScriptFormatter {
       }
       return node.argument ? 'ts' : 't';
     }
+    if (node.type === 'AwaitExpression') {
+      if (AT.punctuator(token, ';')) {
+        return 't';
+      }
+      return node.argument ? 'ts' : 't';
+    }
     if (node.type === 'Property') {
       if (AT.punctuator(token, ':')) {
         return 'ts';

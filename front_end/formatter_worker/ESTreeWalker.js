@@ -102,7 +102,7 @@ export class ESTreeWalker {
 
 /** @enum {!Array.<string>} */
 const _walkOrder = {
-  'AwaitExpression': ['arguments'],
+  'AwaitExpression': ['argument'],
   'ArrayExpression': ['elements'],
   'ArrayPattern': ['elements'],
   'ArrowFunctionExpression': ['params', 'body'],

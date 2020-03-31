@@ -67,7 +67,6 @@ module.exports = function(config) {
     },
 
     proxies: {
-      '/front_end': '/base/front_end',
       '/Images': '/base/front_end/Images',
     },
 

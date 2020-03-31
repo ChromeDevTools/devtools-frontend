@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {SyntaxHighlighter} from '/front_end/ui/SyntaxHighlighter.js';
+import {SyntaxHighlighter} from '../../../../front_end/ui/SyntaxHighlighter.js';
 
 describe('SyntaxHighlighter', () => {
   it('can be instantiated correctly', () => {

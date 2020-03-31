@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 // FIXME: Convert to pure functions as these utilities have side effects.
-import '/front_end/platform/utilities.js';
+import '../../../../front_end/platform/utilities.js';
 
 declare global {
   interface Array<T> {

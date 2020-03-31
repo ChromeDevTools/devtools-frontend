@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {TracingModel} from '/front_end/sdk/TracingModel.js';
+import {TracingModel} from '../../../../front_end/sdk/TracingModel.js';
 
 // TODO(crbug.com/1061125): Requires common/ to be typechecked
 describe.skip('TracingModel', () => {

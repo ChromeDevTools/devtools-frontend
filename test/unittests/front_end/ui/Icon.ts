@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {Icon} from '/front_end/ui/Icon.js';
+import {Icon} from '../../../../front_end/ui/Icon.js';
 
 describe('Icon', () => {
   it('can create an empty instance without issues', () => {

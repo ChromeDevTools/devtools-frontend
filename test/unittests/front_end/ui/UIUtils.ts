@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {addReferrerToURLIfNecessary, addReferrerToURL} from '/front_end/ui/UIUtils.js';
+import {addReferrerToURLIfNecessary, addReferrerToURL} from '../../../../front_end/ui/UIUtils.js';
 
 describe('addReferrerToURL', () => {
   it('correctly adds referrer info to URLs', () => {

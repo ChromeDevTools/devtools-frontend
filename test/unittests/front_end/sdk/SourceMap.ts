@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {SourceMapEntry,TextSourceMap} from '/front_end/sdk/SourceMap.js';
+import {SourceMapEntry, TextSourceMap} from '../../../../front_end/sdk/SourceMap.js';
 
 // TODO(crbug.com/1061125): Requires common/ to be typechecked
 describe.skip('SourceMapEntry', () => {

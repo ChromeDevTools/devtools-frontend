@@ -124,12 +124,17 @@ export class PlayerEventsView extends UI.Widget.VBox {
    */
   addEvent(event) {
     const stringified = /** @type {string} */ (event.value);
-    const json = JSON.parse(stringified);
-    event.event = json.event;
-    delete json['event'];
-    event.value = json;
-    const node = new EventNode(event);
-    this._dataGrid.rootNode().appendChild(node);
+    try {
+      const json = JSON.parse(stringified);
+      event.event = json.event;
+      delete json['event'];
+      event.value = json;
+      const node = new EventNode(event);
+      this._dataGrid.rootNode().appendChild(node);
+    } catch (e) {
+      // If this is a legacy message event, ignore it for now until they
+      // are handled.
+    }
   }
 
   /**

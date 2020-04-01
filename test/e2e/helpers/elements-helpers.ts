@@ -24,16 +24,15 @@ export const getContentOfSelectedNode = async () => {
   return await selectedNode.evaluate(node => node.textContent);
 };
 
-export const waitForSelectedNodeChange = async (maxTotalTimeout = 1000) => {
+export const waitForSelectedNodeChange = async (initialValue: string, maxTotalTimeout = 1000) => {
   if (maxTotalTimeout === 0) {
     maxTotalTimeout = Number.POSITIVE_INFINITY;
   }
 
   const start = performance.now();
-  const initialNodeContent = await getContentOfSelectedNode();
   do {
     const currentContent = await getContentOfSelectedNode();
-    if (currentContent !== initialNodeContent) {
+    if (currentContent !== initialValue) {
       return currentContent;
     }
 

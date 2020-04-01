@@ -5,14 +5,14 @@
 import {describe, it} from 'mocha';
 
 import {click, getBrowserAndPages, resetPages, resourcesPath, waitFor, waitForElementWithTextContent} from '../../shared/helper.js';
-import {assertContentOfSelectedElementsNode, expandSelectedNodeRecursively, waitForSelectedNodeChange} from '../helpers/elements-helpers.js';
+import {assertContentOfSelectedElementsNode, expandSelectedNodeRecursively, getContentOfSelectedNode, waitForSelectedNodeChange} from '../helpers/elements-helpers.js';
 
 describe('The Elements tab', async () => {
   beforeEach(async () => {
     await resetPages();
   });
 
-  it('can delete stuff', async () => {
+  it('can delete elements in the tree', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await target.goto(`${resourcesPath}/elements/selection-after-delete.html`);
@@ -40,10 +40,9 @@ describe('The Elements tab', async () => {
     do {
       const nextVal = expected.shift() || '';
 
-      // Start watching for the node change before hitting backspace.
-      const elementChanged = waitForSelectedNodeChange();
+      const initialValue = await getContentOfSelectedNode();
       await frontend.keyboard.press('Backspace');
-      await elementChanged;
+      await waitForSelectedNodeChange(initialValue);
 
       await assertContentOfSelectedElementsNode(nextVal);
     } while (expected.length);

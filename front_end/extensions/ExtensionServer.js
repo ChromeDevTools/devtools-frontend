@@ -70,6 +70,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     this._traceProviders = [];
     /** @type {!Map<string, !TracingSession>} */
     this._traceSessions = new Map();
+    // TODO(caseq): properly unload extensions when we disable them.
+    this._extensionsEnabled = true;
 
     const commands = Extensions.extensionAPI.Commands;
 
@@ -155,6 +157,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   _inspectedURLChanged(event) {
+    if (!this._canInspectURL(event.data.inspectedURL())) {
+      this._disableExtensions();
+      return;
+    }
     if (event.data !== SDK.SDKModel.TargetManager.instance().mainTarget()) {
       return;
     }
@@ -193,6 +199,9 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
    * @param {...*} vararg
    */
   _postNotification(type, vararg) {
+    if (!this._extensionsEnabled) {
+      return;
+    }
     const subscribers = this._subscribers.get(type);
     if (!subscribers) {
       return;
@@ -728,6 +737,13 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     const startPage = extensionInfo.startPage;
     const name = extensionInfo.name;
 
+    const inspectedURL = SDK.SDKModel.TargetManager.instance().mainTarget().inspectedURL();
+    if (!this._canInspectURL(inspectedURL)) {
+      this._disableExtensions();
+    }
+    if (!this._extensionsEnabled) {
+      return;
+    }
     try {
       const originMatch = urlOriginRegExp.exec(startPage);
       if (!originMatch) {
@@ -779,10 +795,12 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     const message = event.data;
     let result;
 
-    if (message.command in this._handlers) {
-      result = await this._handlers[message.command](message, event.target);
-    } else {
+    if (!(message.command in this._handlers)) {
       result = this._status.E_NOTSUPPORTED(message.command);
+    } else if (!this._extensionsEnabled) {
+      result = this._status.E_FAILED('Permission denied');
+    } else {
+      result = await this._handlers[message.command](message, event.target);
     }
 
     if (result && message.requestId) {
@@ -922,6 +940,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
       }
       return this._status.E_NOTFOUND(options.frameURL || '<top>');
     }
+    // We shouldn't get here if the top frame can't be inspected by an extension, but
+    // let's double check for subframes.
+    if (!this._canInspectURL(frame.url)) {
+      return this._status.E_FAILED('Permission denied');
+    }
 
     let contextSecurityOrigin;
     if (options.useContentScriptContext) {
@@ -955,6 +978,9 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         return this._status.E_FAILED(frame.url + ' has no execution context');
       }
     }
+    if (!this._canInspectURL(context.origin)) {
+      return this._status.E_FAILED('Permission denied');
+    }
 
     context
         .evaluate(
@@ -979,6 +1005,33 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
       }
       callback(null, result.object || null, !!result.exceptionDetails);
     }
+  }
+
+  /**
+   *
+   * @param {string} url
+   */
+  _canInspectURL(url) {
+    let parsedURL;
+    // This is only to work around invalid URLs we're occasionally getting from some tests.
+    // TODO(caseq): make sure tests supply valid URLs or we specifically handle invalid ones.
+    try {
+      parsedURL = new URL(url);
+    } catch (exception) {
+      return false;
+    }
+    if (parsedURL.protocol === 'chrome:' || parsedURL.protocol === 'devtools:') {
+      return false;
+    }
+    if (parsedURL.protocol.startsWith('http') && parsedURL.hostname === 'chrome.google.com' &&
+        parsedURL.pathname.startsWith('/webstore')) {
+      return false;
+    }
+    return true;
+  }
+
+  _disableExtensions() {
+    this._extensionsEnabled = false;
   }
 }
 

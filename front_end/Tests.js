@@ -1165,6 +1165,23 @@
     this.takeControl();
   };
 
+  TestSuite.prototype.waitForTestResultsAsMessage = function() {
+    const onMessage = event => {
+      if (!event.data.testOutput) {
+        return;
+      }
+      top.removeEventListener('message', onMessage);
+      const text = event.data.testOutput;
+      if (text === 'PASS') {
+        this.releaseControl();
+      } else {
+        this.fail(text);
+      }
+    };
+    top.addEventListener('message', onMessage);
+    this.takeControl();
+  };
+
   TestSuite.prototype._overrideMethod = function(receiver, methodName, override) {
     const original = receiver[methodName];
     if (typeof original !== 'function') {

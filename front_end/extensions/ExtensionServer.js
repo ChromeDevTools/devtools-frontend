@@ -43,6 +43,8 @@ import * as Workspace from '../workspace/workspace.js';
 import {ExtensionButton, ExtensionPanel, ExtensionSidebarPane} from './ExtensionPanel.js';
 import {ExtensionTraceProvider, TracingSession} from './ExtensionTraceProvider.js';  // eslint-disable-line no-unused-vars
 
+const extensionOriginSymbol = Symbol('extensionOrigin');
+
 /**
  * @unrestricted
  */
@@ -62,7 +64,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     this._extraHeaders = new Map();
     this._requests = {};
     this._lastRequestId = 0;
-    this._registeredExtensions = {};
+    /** @type {!Map<string, !{name: string}>} */
+    this._registeredExtensions = new Map();
     this._status = new ExtensionStatus();
     /** @type {!Array<!ExtensionSidebarPane>} */
     this._sidebarPanes = [];
@@ -122,7 +125,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
    * @return {boolean}
    */
   hasExtensions() {
-    return !!Object.keys(this._registeredExtensions).length;
+    return !!this._registeredExtensions.size;
   }
 
   /**
@@ -254,7 +257,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     const allHeaders = /** @type {!Protocol.Network.Headers} */ ({});
     for (const headers of this._extraHeaders.values()) {
       for (const name of headers.keys()) {
-        if (typeof headers.get(name) === 'string') {
+        if (name !== '__proto__' && typeof headers.get(name) === 'string') {
           allHeaders[name] = headers.get(name);
         }
       }
@@ -292,8 +295,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
       return this._status.E_EXISTS(id);
     }
 
-    const page = this._expandResourcePath(port._extensionOrigin, message.page);
-    let persistentId = port._extensionOrigin + message.title;
+    const page = this._expandResourcePath(port[extensionOriginSymbol], message.page);
+    let persistentId = port[extensionOriginSymbol] + message.title;
     persistentId = persistentId.replace(/\s/g, '');
     const panelView =
         new ExtensionServerPanelView(persistentId, message.title, new ExtensionPanel(this, persistentId, id, page));
@@ -317,7 +320,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
       return this._status.E_NOTFOUND(message.panel);
     }
     const button = new ExtensionButton(
-        this, message.id, this._expandResourcePath(port._extensionOrigin, message.icon), message.tooltip,
+        this, message.id, this._expandResourcePath(port[extensionOriginSymbol], message.icon), message.tooltip,
         message.disabled);
     this._clientObjects[message.id] = button;
 
@@ -338,7 +341,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     if (!button || !(button instanceof ExtensionButton)) {
       return this._status.E_NOTFOUND(message.id);
     }
-    button.update(this._expandResourcePath(port._extensionOrigin, message.icon), message.tooltip, message.disabled);
+    button.update(
+        this._expandResourcePath(port[extensionOriginSymbol], message.icon), message.tooltip, message.disabled);
     return this._status.OK();
   }
 
@@ -398,7 +402,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     }
     if (message.evaluateOnPage) {
       return sidebar.setExpression(
-          message.expression, message.rootTitle, message.evaluateOptions, port._extensionOrigin, callback.bind(this));
+          message.expression, message.rootTitle, message.evaluateOptions, port[extensionOriginSymbol],
+          callback.bind(this));
     }
     sidebar.setObject(message.expression, message.rootTitle, callback.bind(this));
   }
@@ -408,7 +413,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     if (!sidebar) {
       return this._status.E_NOTFOUND(message.id);
     }
-    sidebar.setPage(this._expandResourcePath(port._extensionOrigin, message.page));
+    sidebar.setPage(this._expandResourcePath(port[extensionOriginSymbol], message.page));
   }
 
   _onOpenResource(message) {
@@ -434,7 +439,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   _onSetOpenResourceHandler(message, port) {
-    const name = this._registeredExtensions[port._extensionOrigin].name || ('Extension ' + port._extensionOrigin);
+    const name = this._registeredExtensions.get(port[extensionOriginSymbol]).name;
     if (message.handlerPresent) {
       Components.Linkifier.Linkifier.registerLinkHandler(name, this._handleOpenURL.bind(this, port));
     } else {
@@ -480,7 +485,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
       this._dispatchCallback(message.requestId, port, result);
     }
     return this.evaluate(
-        message.expression, true, true, message.evaluateOptions, port._extensionOrigin, callback.bind(this));
+        message.expression, true, true, message.evaluateOptions, port[extensionOriginSymbol], callback.bind(this));
   }
 
   async _onGetHAR() {
@@ -598,8 +603,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!MessagePort} port
    */
   _onAddTraceProvider(message, port) {
-    const provider =
-        new ExtensionTraceProvider(port._extensionOrigin, message.id, message.categoryName, message.categoryTooltip);
+    const provider = new ExtensionTraceProvider(
+        port[extensionOriginSymbol], message.id, message.categoryName, message.categoryTooltip);
     this._clientObjects[message.id] = provider;
     this._traceProviders.push(provider);
     this.dispatchEventToListeners(Events.TraceProviderAdded, provider);
@@ -733,9 +738,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
    * @suppressGlobalPropertiesCheck
    */
   _addExtension(extensionInfo) {
-    const urlOriginRegExp = new RegExp('([^:]+:\/\/[^/]*)\/');  // Can't use regexp literal here, MinJS chokes on it.
     const startPage = extensionInfo.startPage;
-    const name = extensionInfo.name;
 
     const inspectedURL = SDK.SDKModel.TargetManager.instance().mainTarget().inspectedURL();
     if (!this._canInspectURL(inspectedURL)) {
@@ -745,13 +748,9 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
       return;
     }
     try {
-      const originMatch = urlOriginRegExp.exec(startPage);
-      if (!originMatch) {
-        console.error('Skipping extension with invalid URL: ' + startPage);
-        return false;
-      }
-      const extensionOrigin = originMatch[1];
-      if (!this._registeredExtensions[extensionOrigin]) {
+      const startPageURL = new URL(/** @type {string} */ (startPage));
+      const extensionOrigin = startPageURL.origin;
+      if (!this._registeredExtensions.get(extensionOrigin)) {
         // See ExtensionAPI.js for details.
         const injectedAPI = self.buildExtensionAPIInjectedScript(
             /** @type {!{startPage: string, name: string, exposeExperimentalAPIs: boolean}} */ (extensionInfo),
@@ -759,7 +758,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
             self.Extensions.extensionServer['_extensionAPITestHook']);
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.setInjectedScriptForOrigin(
             extensionOrigin, injectedAPI);
-        this._registeredExtensions[extensionOrigin] = {name: name};
+        const name = extensionInfo.name || `Extension ${extensionOrigin}`;
+        this._registeredExtensions.set(extensionOrigin, {name});
       }
       const iframe = createElement('iframe');
       iframe.src = startPage;
@@ -773,14 +773,13 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   _registerExtension(origin, port) {
-    if (!this._registeredExtensions.hasOwnProperty(origin)) {
-      if (origin !== window.location.origin)  // Just ignore inspector frames.
-      {
+    if (!this._registeredExtensions.has(origin)) {
+      if (origin !== window.location.origin) {  // Just ignore inspector frames.
         console.error('Ignoring unauthorized client request from ' + origin);
       }
       return;
     }
-    port._extensionOrigin = origin;
+    port[extensionOriginSymbol] = origin;
     port.addEventListener('message', this._onmessage.bind(this), false);
     port.start();
   }

@@ -395,14 +395,14 @@ export class Breakpoint {
   addUISourceCode(uiSourceCode) {
     if (!this._uiSourceCodes.has(uiSourceCode)) {
       this._uiSourceCodes.add(uiSourceCode);
-      if (!this.bound()) {
+      if (!this._isBound()) {
         this._breakpointManager._uiLocationAdded(this, this._defaultUILocation(uiSourceCode));
       }
     }
   }
 
   clearUISourceCodes() {
-    if (!this.bound()) {
+    if (!this._isBound()) {
       this._removeAllUnboundLocations();
     }
     this._uiSourceCodes.clear();
@@ -414,13 +414,13 @@ export class Breakpoint {
   removeUISourceCode(uiSourceCode) {
     if (this._uiSourceCodes.has(uiSourceCode)) {
       this._uiSourceCodes.delete(uiSourceCode);
-      if (!this.bound()) {
+      if (!this._isBound()) {
         this._breakpointManager._uiLocationRemoved(this, this._defaultUILocation(uiSourceCode));
       }
     }
 
     // Do we need to do this? Not sure if bound locations will leak...
-    if (this.bound()) {
+    if (this._isBound()) {
       for (const uiLocation of this._uiLocations) {
         if (uiLocation.uiSourceCode === uiSourceCode) {
           this._uiLocations.delete(uiLocation);
@@ -428,7 +428,7 @@ export class Breakpoint {
         }
       }
 
-      if (!this.bound() && !this._isRemoved) {
+      if (!this._isBound() && !this._isRemoved) {
         // Switch to unbound locations
         this._addAllUnboundLocations();
       }
@@ -463,7 +463,7 @@ export class Breakpoint {
     if (this._isRemoved) {
       return;
     }
-    if (!this.bound()) {
+    if (!this._isBound()) {
       // This is our first bound location; remove all unbound locations
       this._removeAllUnboundLocations();
     }
@@ -478,7 +478,7 @@ export class Breakpoint {
     if (this._uiLocations.has(uiLocation)) {
       this._uiLocations.delete(uiLocation);
       this._breakpointManager._uiLocationRemoved(this, uiLocation);
-      if (!this.bound() && !this._isRemoved) {
+      if (!this._isBound() && !this._isRemoved) {
         this._addAllUnboundLocations();
       }
     }
@@ -489,13 +489,6 @@ export class Breakpoint {
    */
   enabled() {
     return this._enabled;
-  }
-
-  /**
-   * @return {boolean}
-   */
-  bound() {
-    return this._uiLocations.size !== 0;
   }
 
   /**
@@ -534,7 +527,7 @@ export class Breakpoint {
   }
 
   _updateBreakpoint() {
-    if (!this.bound()) {
+    if (!this._isBound()) {
       this._removeAllUnboundLocations();
       if (!this._isRemoved) {
         this._addAllUnboundLocations();
@@ -573,6 +566,13 @@ export class Breakpoint {
     for (const modelBreakpoint of this._modelBreakpoints.values()) {
       modelBreakpoint._resetLocations();
     }
+  }
+
+  /**
+   * @return {boolean}
+   */
+  _isBound() {
+    return this._uiLocations.size !== 0;
   }
 
   /**

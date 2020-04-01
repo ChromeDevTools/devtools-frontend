@@ -182,37 +182,34 @@
     padding-top: 1px;
 }
 
-.breakpoint-element::before {
+.breakpoint-element:before {
     content: "\00AD";
 }
 
-.cm-breakpoint .breakpoint-element::before {
+.cm-breakpoint .breakpoint-element:before {
     content: url(Images/breakpoint.svg);
 }
 
-.breakpoints-deactivated .cm-breakpoint .breakpoint-element::before,
-.cm-breakpoint-unbound .breakpoint-element::before,
-.cm-breakpoint-disabled .breakpoint-element::before {
+.breakpoints-deactivated .cm-breakpoint .breakpoint-element:before,
+.cm-breakpoint-disabled .breakpoint-element:before {
     content: url(Images/breakpoint-disabled.svg);
 }
 
-.cm-breakpoint.cm-breakpoint-conditional .breakpoint-element::before {
+.cm-breakpoint.cm-breakpoint-conditional .breakpoint-element:before {
     content: url(Images/breakpoint-conditional.svg);
 }
 
-.cm-breakpoint-disabled.cm-breakpoint-conditional .breakpoint-element::before,
-.cm-breakpoint-unbound.cm-breakpoint-conditional .breakpoint-element::before,
-.breakpoints-deactivated .cm-breakpoint.cm-breakpoint-conditional .breakpoint-element::before {
+.cm-breakpoint-disabled.cm-breakpoint-conditional .breakpoint-element:before,
+.breakpoints-deactivated .cm-breakpoint.cm-breakpoint-conditional .breakpoint-element:before {
     content: url(Images/breakpoint-conditional-disabled.svg);
 }
 
-.cm-breakpoint.cm-breakpoint-logpoint .breakpoint-element::before {
+.cm-breakpoint.cm-breakpoint-logpoint .breakpoint-element:before {
     content: url(Images/logpoint.svg);
 }
 
-.cm-breakpoint-disabled.cm-breakpoint-logpoint .breakpoint-element::before,
-.cm-breakpoint-unbound.cm-breakpoint-logpoint .breakpoint-element::before,
-.breakpoints-deactivated .cm-breakpoint.cm-breakpoint-logpoint .breakpoint-element::before {
+.cm-breakpoint-disabled.cm-breakpoint-logpoint .breakpoint-element:before,
+.breakpoints-deactivated .cm-breakpoint.cm-breakpoint-logpoint .breakpoint-element:before {
     content: url(Images/logpoint-disabled.svg);
 }
 
@@ -222,39 +219,39 @@
     cursor: pointer;
 }
 
-.cm-inline-breakpoint::before {
+.cm-inline-breakpoint:before {
     content: url(Images/breakpoint.svg);
 }
 
-.cm-inline-breakpoint.cm-inline-disabled::before {
+.cm-inline-breakpoint.cm-inline-disabled:before {
     content: url(Images/breakpoint-disabled.svg);
 }
 
-.breakpoints-deactivated .cm-inline-breakpoint::before {
+.breakpoints-deactivated .cm-inline-breakpoint:before {
     content: url(Images/breakpoint-disabled.svg);
 }
 
-.cm-inline-breakpoint.cm-inline-breakpoint-conditional::before {
+.cm-inline-breakpoint.cm-inline-breakpoint-conditional:before {
     content: url(Images/breakpoint-conditional.svg);
 }
 
-.cm-inline-breakpoint.cm-inline-breakpoint-conditional.cm-inline-disabled::before {
+.cm-inline-breakpoint.cm-inline-breakpoint-conditional.cm-inline-disabled:before {
     content: url(Images/breakpoint-conditional-disabled.svg);
 }
 
-.breakpoints-deactivated .cm-inline-breakpoint.cm-inline-breakpoint-conditional::before {
+.breakpoints-deactivated .cm-inline-breakpoint.cm-inline-breakpoint-conditional:before {
     content: url(Images/breakpoint-conditional-disabled.svg);
 }
 
-.cm-inline-breakpoint.cm-inline-logpoint::before {
+.cm-inline-breakpoint.cm-inline-logpoint:before {
     content: url(Images/logpoint.svg);
 }
 
-.cm-inline-breakpoint.cm-inline-logpoint.cm-inline-disabled::before {
+.cm-inline-breakpoint.cm-inline-logpoint.cm-inline-disabled:before {
     content: url(Images/logpoint-disabled.svg);
 }
 
-.breakpoints-deactivated .cm-inline-breakpoint.cm-inline-logpoint::before {
+.breakpoints-deactivated .cm-inline-breakpoint.cm-inline-logpoint:before {
     content: url(Images/logpoint-disabled.svg);
 }
 
@@ -326,7 +323,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
     position: relative;
 }
 
-.cm-tab::before {
+.cm-tab:before {
     display: none;
     content: ".";
     color: transparent;
@@ -337,7 +334,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
     left: 5%;
 }
 
-.show-whitespaces .CodeMirror .cm-tab::before {
+.show-whitespaces .CodeMirror .cm-tab:before {
     display: block !important;
 }
 
@@ -372,7 +369,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
     position: relative;
 }
 
-.cm-token-highlight::before {
+.cm-token-highlight:before {
     position: absolute;
     border: 1px solid gray;
     border-radius: 3px;
@@ -383,7 +380,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
     content: "";
 }
 
-.cm-line-with-selection .cm-column-with-selection::before {
+.cm-line-with-selection .cm-column-with-selection:before {
     border: none;
 }
 
@@ -391,7 +388,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
     position: relative;
 }
 
-.cm-search-highlight::before {
+.cm-search-highlight:before {
     position: absolute;
     border-top-style: solid;
     border-bottom-style: solid;
@@ -406,12 +403,12 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
     content: "";
 }
 
-.cm-search-highlight-full::before {
+.cm-search-highlight-full:before {
     border: 1px solid gray;
     border-radius: 3px;
 }
 
-.cm-search-highlight-start::before {
+.cm-search-highlight-start:before {
     border-left-width: 1px;
     border-top-left-radius: 2px;
     border-bottom-left-radius: 2px;
@@ -419,7 +416,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
     border-left-color: gray;
 }
 
-.cm-search-highlight-end::before {
+.cm-search-highlight-end:before {
     border-right-width: 1px;
     border-top-right-radius: 2px;
     border-bottom-right-radius: 2px;
@@ -427,28 +424,28 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
     border-right-color: gray;
 }
 
-.cm-line-with-selection .cm-column-with-selection.cm-search-highlight-full::before {
+.cm-line-with-selection .cm-column-with-selection.cm-search-highlight-full:before {
     border-radius: 1px;
 }
 
-.cm-line-with-selection .cm-column-with-selection.cm-search-highlight-start::before {
+.cm-line-with-selection .cm-column-with-selection.cm-search-highlight-start:before {
     border-top-left-radius: 1px;
     border-bottom-left-radius: 1px;
 }
 
-.cm-line-with-selection .cm-column-with-selection.cm-search-highlight-end::before {
+.cm-line-with-selection .cm-column-with-selection.cm-search-highlight-end:before {
     border-top-right-radius: 1px;
     border-bottom-right-radius: 1px;
 }
 
-.cm-line-with-selection .cm-column-with-selection.cm-search-highlight::before {
+.cm-line-with-selection .cm-column-with-selection.cm-search-highlight:before {
     margin: -1px -1px -1px -1px;
     background-color: rgb(241, 234, 0);
     z-index: -1;
 }
 
-:host-context(.-theme-with-dark-background) .cm-line-with-selection .cm-column-with-selection.cm-search-highlight::before,
-.-theme-with-dark-background .cm-line-with-selection .cm-column-with-selection.cm-search-highlight::before {
+:host-context(.-theme-with-dark-background) .cm-line-with-selection .cm-column-with-selection.cm-search-highlight:before,
+.-theme-with-dark-background .cm-line-with-selection .cm-column-with-selection.cm-search-highlight:before {
     background-color: hsl(133, 100%, 30%);
 }
 
@@ -682,7 +679,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 }
 
 @media (forced-colors: active) {
-    .cm-token-highlight::before {
+    .cm-token-highlight:before {
         forced-color-adjust: none;
         border-color: Highlight;
     }

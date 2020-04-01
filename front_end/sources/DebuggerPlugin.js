@@ -1281,7 +1281,6 @@ export class DebuggerPlugin extends Plugin {
     function updateGutter(editorLineNumber, decorations) {
       this._textEditor.toggleLineClass(editorLineNumber, 'cm-breakpoint', false);
       this._textEditor.toggleLineClass(editorLineNumber, 'cm-breakpoint-disabled', false);
-      this._textEditor.toggleLineClass(editorLineNumber, 'cm-breakpoint-unbound', false);
       this._textEditor.toggleLineClass(editorLineNumber, 'cm-breakpoint-conditional', false);
       this._textEditor.toggleLineClass(editorLineNumber, 'cm-breakpoint-logpoint', false);
 
@@ -1289,12 +1288,10 @@ export class DebuggerPlugin extends Plugin {
         decorations.sort(BreakpointDecoration.mostSpecificFirst);
         const isDisabled = !decorations[0].enabled || this._muted;
         const isLogpoint = decorations[0].condition.includes(LogpointPrefix);
-        const isUnbound = !decorations[0].bound;
         const isConditionalBreakpoint = !!decorations[0].condition && !isLogpoint;
 
         this._textEditor.toggleLineClass(editorLineNumber, 'cm-breakpoint', true);
         this._textEditor.toggleLineClass(editorLineNumber, 'cm-breakpoint-disabled', isDisabled);
-        this._textEditor.toggleLineClass(editorLineNumber, 'cm-breakpoint-unbound', isUnbound && !isDisabled);
         this._textEditor.toggleLineClass(editorLineNumber, 'cm-breakpoint-logpoint', isLogpoint);
         this._textEditor.toggleLineClass(editorLineNumber, 'cm-breakpoint-conditional', isConditionalBreakpoint);
       }
@@ -1438,8 +1435,8 @@ export class DebuggerPlugin extends Plugin {
       decoration.enabled = breakpoint.enabled();
     } else {
       const handle = this._textEditor.textEditorPositionHandle(editorLocation[0], editorLocation[1]);
-      decoration = new BreakpointDecoration(
-          this._textEditor, handle, breakpoint.condition(), breakpoint.enabled(), breakpoint.bound(), breakpoint);
+      decoration =
+          new BreakpointDecoration(this._textEditor, handle, breakpoint.condition(), breakpoint.enabled(), breakpoint);
       decoration.element.addEventListener('click', this._inlineBreakpointClick.bind(this, decoration), true);
       decoration.element.addEventListener(
           'contextmenu', this._inlineBreakpointContextMenu.bind(this, decoration), true);
@@ -1491,8 +1488,7 @@ export class DebuggerPlugin extends Plugin {
           continue;
         }
         const handle = this._textEditor.textEditorPositionHandle(editorLocation[0], editorLocation[1]);
-        const decoration = new BreakpointDecoration(
-            this._textEditor, handle, '', /** enabled */ false, /** bound */ false, /** breakpoint */ null);
+        const decoration = new BreakpointDecoration(this._textEditor, handle, '', false, null);
         decoration.element.addEventListener('click', this._inlineBreakpointClick.bind(this, decoration), true);
         decoration.element.addEventListener(
             'contextmenu', this._inlineBreakpointContextMenu.bind(this, decoration), true);
@@ -1838,15 +1834,13 @@ export class BreakpointDecoration {
    * @param {!TextEditor.CodeMirrorTextEditor.TextEditorPositionHandle} handle
    * @param {string} condition
    * @param {boolean} enabled
-   * @param {boolean} bound
    * @param {?Bindings.BreakpointManager.Breakpoint} breakpoint
    */
-  constructor(textEditor, handle, condition, enabled, bound, breakpoint) {
+  constructor(textEditor, handle, condition, enabled, breakpoint) {
     this._textEditor = textEditor;
     this.handle = handle;
     this.condition = condition;
     this.enabled = enabled;
-    this.bound = bound;
     this.breakpoint = breakpoint;
     this.element = createElement('span');
     this.element.classList.toggle('cm-inline-breakpoint', true);
@@ -1863,9 +1857,6 @@ export class BreakpointDecoration {
   static mostSpecificFirst(decoration1, decoration2) {
     if (decoration1.enabled !== decoration2.enabled) {
       return decoration1.enabled ? -1 : 1;
-    }
-    if (decoration1.bound !== decoration2.bound) {
-      return decoration1.bound ? -1 : 1;
     }
     if (!!decoration1.condition !== !!decoration2.condition) {
       return !!decoration1.condition ? -1 : 1;
@@ -1907,7 +1898,6 @@ export class BreakpointDecoration {
     if (location) {
       this._textEditor.toggleLineClass(location.lineNumber, 'cm-breakpoint', false);
       this._textEditor.toggleLineClass(location.lineNumber, 'cm-breakpoint-disabled', false);
-      this._textEditor.toggleLineClass(location.lineNumber, 'cm-breakpoint-unbound', false);
       this._textEditor.toggleLineClass(location.lineNumber, 'cm-breakpoint-conditional', false);
       this._textEditor.toggleLineClass(location.lineNumber, 'cm-breakpoint-logpoint', false);
     }

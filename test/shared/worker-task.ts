@@ -9,7 +9,7 @@ import * as Mocha from 'mocha';
 import * as puppeteer from 'puppeteer';
 
 import {getEnvVar} from './config.js';
-import {logToStdOut, store} from './helper.js';
+import {logFailure, logToStdOut, store} from './helper.js';
 import {color, TextColor} from './text-color.js';
 
 interface DevToolsTarget {
@@ -109,11 +109,13 @@ export async function initBrowser(port: number) {
     frontend.on('error', err => {
       console.error(color('Error in Frontend', TextColor.RED));
       console.error(err);
+      logFailure();
     });
 
     frontend.on('pageerror', err => {
       console.error(color('Page Error in Frontend', TextColor.RED));
       console.error(err);
+      logFailure();
     });
 
     const resetPages =

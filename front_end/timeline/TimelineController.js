@@ -65,9 +65,14 @@ export class TimelineController {
       return 'disabled-by-default-' + category;
     }
     const categoriesArray = [
-      '-*', 'devtools.timeline', disabledByDefault('devtools.timeline'), disabledByDefault('devtools.timeline.frame'),
-      'v8.execute', TimelineModel.TimelineModel.TimelineModelImpl.Category.Console,
-      TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming
+      '-*',
+      'devtools.timeline',
+      disabledByDefault('devtools.timeline'),
+      disabledByDefault('devtools.timeline.frame'),
+      'v8.execute',
+      TimelineModel.TimelineModel.TimelineModelImpl.Category.Console,
+      TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming,
+      TimelineModel.TimelineModel.TimelineModelImpl.Category.Loading,
     ];
     categoriesArray.push(TimelineModel.TimelineModel.TimelineModelImpl.Category.LatencyInfo);
 

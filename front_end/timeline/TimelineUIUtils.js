@@ -57,6 +57,7 @@ export class TimelineUIUtils {
     const rendering = categories['rendering'];
     const scripting = categories['scripting'];
     const loading = categories['loading'];
+    const experience = categories['experience'];
     const painting = categories['painting'];
     const other = categories['other'];
     const idle = categories['idle'];
@@ -155,6 +156,8 @@ export class TimelineUIUtils {
     eventStyles[type.CryptoDoVerifyReply] = new TimelineRecordStyle(ls`Verify Reply`, scripting);
 
     eventStyles[type.AsyncTask] = new TimelineRecordStyle(ls`Async Task`, categories['async']);
+
+    eventStyles[type.LayoutShift] = new TimelineRecordStyle(ls`Layout Shift`, experience);
 
     TimelineUIUtils._eventStylesMap = eventStyles;
     return eventStyles;
@@ -839,6 +842,12 @@ export class TimelineUIUtils {
     }
 
     const recordTypes = TimelineModel.TimelineModel.RecordType;
+
+    if (event.name === recordTypes.LayoutShift) {
+      // Ensure that there are no pie charts or extended info for layout shifts.
+      detailed = false;
+    }
+
     // This message may vary per event.name;
     let relatedNodeLabel;
 
@@ -1123,6 +1132,18 @@ export class TimelineUIUtils {
         contentHelper.appendTextRow(
             ls`Timestamp`, Number.preciseMillisToString(event.startTime - model.minimumRecordTime(), 1));
         contentHelper.appendElementRow(ls`Details`, TimelineUIUtils.buildDetailsNodeForPerformanceEvent(event));
+        break;
+      }
+
+      case recordTypes.LayoutShift: {
+        const warning = createElement('span');
+        const clsLink = UI.UIUtils.createWebDevLink('cls/', ls`Cumulative Layout Shifts`);
+        warning.appendChild(UI.UIUtils.formatLocalized('%s can result in poor user experiences.', [clsLink]));
+        contentHelper.appendElementRow(ls`Warning`, warning, true);
+
+        contentHelper.appendTextRow(ls`Score`, eventData['score'].toPrecision(4));
+        contentHelper.appendTextRow(ls`Cumulative Score`, eventData['cumulative_score'].toPrecision(4));
+        contentHelper.appendTextRow(ls`Had recent input`, eventData['had_recent_input'] ? ls`Yes` : ls`No`);
         break;
       }
 
@@ -1724,6 +1745,7 @@ export class TimelineUIUtils {
     }
     TimelineUIUtils._categories = {
       loading: new TimelineCategory('loading', ls`Loading`, true, 'hsl(214, 67%, 74%)', 'hsl(214, 67%, 66%)'),
+      experience: new TimelineCategory('experience', ls`Experience`, true, 'hsl(5, 80%, 74%)', 'hsl(5, 80%, 66%)'),
       scripting: new TimelineCategory('scripting', ls`Scripting`, true, 'hsl(43, 83%, 72%)', 'hsl(43, 83%, 64%) '),
       rendering: new TimelineCategory('rendering', ls`Rendering`, true, 'hsl(256, 67%, 76%)', 'hsl(256, 67%, 70%)'),
       painting: new TimelineCategory('painting', ls`Painting`, true, 'hsl(109, 33%, 64%)', 'hsl(109, 33%, 55%)'),

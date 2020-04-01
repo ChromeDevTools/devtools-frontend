@@ -124,6 +124,14 @@ export class TimelineModelImpl {
    * @param {!SDK.TracingModel.Event} event
    * @return {boolean}
    */
+  isLayoutShiftEvent(event) {
+    return event.name === RecordType.LayoutShift;
+  }
+
+  /**
+   * @param {!SDK.TracingModel.Event} event
+   * @return {boolean}
+   */
   isLCPCandidateEvent(event) {
     return event.name === RecordType.MarkLCPCandidate && !!event.args['data']['isMainFrame'];
   }
@@ -188,6 +196,11 @@ export class TimelineModelImpl {
     this._minimumRecordTime = tracingModel.minimumRecordTime();
     this._maximumRecordTime = tracingModel.maximumRecordTime();
 
+    // Remove LayoutShift events from the main thread list of events because they are
+    // represented in the experience track. This is done prior to the main thread being processed for its own events.
+    const layoutShiftEvents =
+        tracingModel.extractEventsFromThreadByName('Renderer', 'CrRendererMain', RecordType.LayoutShift);
+
     this._processSyncBrowserEvents(tracingModel);
     if (this._browserFrameTracking) {
       this._processThreadsForBrowserFrames(tracingModel);
@@ -205,6 +218,7 @@ export class TimelineModelImpl {
     this._inspectedTargetEvents.sort(SDK.TracingModel.Event.compareStartTime);
     this._processAsyncBrowserEvents(tracingModel);
     this._buildGPUEvents(tracingModel);
+    this._buildLoadingEvents(tracingModel, layoutShiftEvents);
     this._resetProcessingState();
   }
 
@@ -445,6 +459,27 @@ export class TimelineModelImpl {
     const track = this._ensureNamedTrack(TrackType.GPU);
     track.thread = thread;
     track.events = thread.events().filter(event => event.name === gpuEventName);
+  }
+
+  /**
+   * @param {!SDK.TracingModel.TracingModel} tracingModel
+   * @param {!Array<!SDK.TracingModel.Event>} events
+   */
+  _buildLoadingEvents(tracingModel, events) {
+    const thread = tracingModel.threadByName('Renderer', 'CrRendererMain');
+    if (!thread) {
+      return;
+    }
+    const experienceCategory = 'experience';
+    const track = this._ensureNamedTrack(TrackType.Experience);
+    track.thread = thread;
+    track.events = events;
+
+    // Even though the event comes from 'loading', in order to color it differently we
+    // rename its category.
+    for (const trackEvent of track.events) {
+      trackEvent.categoriesString = experienceCategory;
+    }
   }
 
   _resetProcessingState() {
@@ -1359,6 +1394,7 @@ export const RecordType = {
   UpdateLayoutTree: 'UpdateLayoutTree',
   InvalidateLayout: 'InvalidateLayout',
   Layout: 'Layout',
+  LayoutShift: 'LayoutShift',
   UpdateLayer: 'UpdateLayer',
   UpdateLayerTree: 'UpdateLayerTree',
   PaintSetup: 'PaintSetup',
@@ -1491,7 +1527,8 @@ export const RecordType = {
 TimelineModelImpl.Category = {
   Console: 'blink.console',
   UserTiming: 'blink.user_timing',
-  LatencyInfo: 'latencyInfo'
+  LatencyInfo: 'latencyInfo',
+  Loading: 'loading',
 };
 
 /**
@@ -1595,6 +1632,7 @@ export const TrackType = {
   Console: Symbol('Console'),
   Raster: Symbol('Raster'),
   GPU: Symbol('GPU'),
+  Experience: Symbol('Experience'),
   Other: Symbol('Other'),
 };
 

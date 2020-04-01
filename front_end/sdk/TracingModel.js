@@ -335,6 +335,21 @@ export class TracingModel {
     return process && process.threadByName(threadName);
   }
 
+  /**
+   * @param {string} processName
+   * @param {string} threadName
+   * @param {string} eventName
+   * @return {!Array<!Event>}
+   */
+  extractEventsFromThreadByName(processName, threadName, eventName) {
+    const thread = this.threadByName(processName, threadName);
+    if (!thread) {
+      return [];
+    }
+
+    return thread.removeEventsByName(eventName);
+  }
+
   _processPendingAsyncEvents() {
     this._asyncEvents.sort(Event.compareStartTime);
     for (let i = 0; i < this._asyncEvents.length; ++i) {
@@ -590,11 +605,15 @@ export class Event {
   }
 
   /**
-   * @param {!Event} a
-   * @param {!Event} b
+   * @param {?Event} a
+   * @param {?Event} b
    * @return {number}
    */
   static compareStartTime(a, b) {
+    if (!a || !b) {
+      return 0;
+    }
+
     return a.startTime - b.startTime;
   }
 
@@ -920,6 +939,10 @@ export class Thread extends NamedObject {
   constructor(process, id) {
     super(process._model, id);
     this._process = process;
+
+    /**
+     * @type {!Array<?Event>};
+     */
     this._events = [];
     this._asyncEvents = [];
     this._lastTopLevelEvent = null;
@@ -1022,5 +1045,29 @@ export class Thread extends NamedObject {
    */
   asyncEvents() {
     return this._asyncEvents;
+  }
+
+  /**
+   * @param {string} name
+   */
+  removeEventsByName(name) {
+    /**
+     * @type {!Array<!Event>}
+     */
+    const extracted = [];
+    this._events = this._events.filter(e => {
+      if (!e) {
+        return false;
+      }
+
+      if (e.name !== name) {
+        return true;
+      }
+
+      extracted.push(e);
+      return false;
+    });
+
+    return extracted;
   }
 }

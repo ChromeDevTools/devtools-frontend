@@ -2017,6 +2017,15 @@ export function createDocumentationLink(article, title) {
 }
 
 /**
+ * @param {string} article
+ * @param {string} title
+ * @return {!Element}
+ */
+export function createWebDevLink(article, title) {
+  return XLink.create('https://web.dev/' + article, title);
+}
+
+/**
  * Adds a 'utm_source=devtools' as query parameter to the url.
  * @param {string} url
  * @return {string}

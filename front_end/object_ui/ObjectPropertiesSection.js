@@ -1648,7 +1648,9 @@ export class ExpandableTextPropertyValue extends ObjectPropertyValue {
     this._expandElement = container.createChild('span');
     this._maxDisplayableTextLength = 10000000;
 
-    const totalBytes = Number.bytesToString(2 * text.length);
+    const encoder = new TextEncoder();
+    const buffer = encoder.encode(text);
+    const totalBytes = Number.bytesToString(buffer.byteLength);
     if (this._text.length < this._maxDisplayableTextLength) {
       this._expandElementText = ls`Show more (${totalBytes})`;
       this._expandElement.setAttribute('data-text', this._expandElementText);

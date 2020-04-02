@@ -36,19 +36,13 @@ export class Action extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @return {!Promise.<boolean>}
    */
-  execute() {
-    return this._extension.instance().then(handleAction.bind(this));
-
-    /**
-     * @param {!Object} actionDelegate
-     * @return {boolean}
-     * @this {Action}
-     */
-    function handleAction(actionDelegate) {
-      const actionId = this._extension.descriptor()['actionId'];
-      const delegate = /** @type {!ActionDelegate} */ (actionDelegate);
-      return delegate.handleAction(self.UI.context, actionId);
+  async execute() {
+    if (!this._extension.canInstantiate()) {
+      return false;
     }
+    const delegate = /** @type {!ActionDelegate} */ (await this._extension.instance());
+    const actionId = this.id();
+    return delegate.handleAction(self.UI.context, actionId);
   }
 
   /**

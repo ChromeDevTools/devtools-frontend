@@ -23,9 +23,6 @@ export class ActionRegistry {
      * @this {ActionRegistry}
      */
     function registerExtension(extension) {
-      if (!extension.canInstantiate()) {
-        return;
-      }
       const actionId = extension.descriptor()['actionId'];
       console.assert(actionId);
       console.assert(!this._actionsById.get(actionId));

@@ -90,6 +90,9 @@
   <message name="IDS_DEVTOOLS_45a921ffccbc28c2ff80adada350224f" desc="Text in DOMLinkifier of the Elements panel">
     &lt;node&gt;
   </message>
+  <message name="IDS_DEVTOOLS_46b7ee2bd02deb8df11b66d8c535cb2f" desc="Screen reader announcement string when adding a class via the Classes Pane Widget.">
+    Classes <ph name="ANNOUNCEMENTSTRING">$1s<ex>vbox flex-auto</ex></ph> added.
+  </message>
   <message name="IDS_DEVTOOLS_46dbb18ed3ab2bf6a5e3be93674b5a31" desc="Context menu item for style property in edit mode">
     Toggle property and continue editing
   </message>
@@ -269,6 +272,9 @@
   </message>
   <message name="IDS_DEVTOOLS_eeb9a8e813f34f5f036332efc0257246" desc="Title of an action in the elements tool to capture area screenshot">
     Capture area screenshot
+  </message>
+  <message name="IDS_DEVTOOLS_f0e82f268931d7aed566ed41457fceb4" desc="Screen reader announcement string when adding a class via the Classes Pane Widget.">
+    Class <ph name="ANNOUNCEMENTSTRING">$1s<ex>title-container</ex></ph> added.
   </message>
   <message name="IDS_DEVTOOLS_f2a70e3a6d14a56de7ebbb5b748ed127" desc="Tooltip text that appears when hovering over the largeicon foreground color button in the Styles Sidebar Pane of the Elements panel">
     Add color

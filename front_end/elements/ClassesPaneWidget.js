@@ -85,9 +85,20 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
     }
 
     const classNames = this._splitTextIntoClasses(text);
+    if (!classNames.length) {
+      return;
+    }
+
     for (const className of classNames) {
       this._toggleClass(node, className, true);
     }
+
+    // annoucementString is used for screen reader to announce that the class(es) has been added successfully.
+    const joinClassString = classNames.join(' ');
+    const announcementString =
+        classNames.length > 1 ? ls`Classes ${joinClassString} added.` : ls`Class ${joinClassString} added.`;
+    UI.ARIAUtils.alert(announcementString, this.contentElement);
+
     this._installNodeClasses(node);
     this._update();
   }

@@ -250,7 +250,7 @@ export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
       this._quotaRow.appendChild(UI.Icon.Icon.create('smallicon-info'));
     }
 
-    if (!this._quotaUsage || this._quotaUsage !== response.usage) {
+    if (this._quotaUsage === null || this._quotaUsage !== response.usage) {
       this._quotaUsage = response.usage;
       this._resetPieChart(response.usage);
       for (const usageForType of response.usageBreakdown.sort((a, b) => b.usage - a.usage)) {

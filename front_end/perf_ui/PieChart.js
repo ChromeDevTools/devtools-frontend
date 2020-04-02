@@ -246,7 +246,6 @@ export class PieChart {
     if (legendElement) {
       legendElement.classList.add('selected');
       legendElement.tabIndex = 0;
-      legendElement.focus();
     }
     // make the active slice the last one so it draws on top
     if (this._activeElement.classList.contains('slice')) {

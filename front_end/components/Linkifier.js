@@ -181,7 +181,8 @@ export class Linkifier {
     let rawLocation;
     if (scriptId) {
       rawLocation = debuggerModel.createRawLocationByScriptId(scriptId, lineNumber, columnNumber);
-    } else {
+    }
+    if (!rawLocation) {
       rawLocation = debuggerModel.createRawLocationByURL(sourceURL, lineNumber, columnNumber);
     }
 
@@ -241,7 +242,9 @@ export class Linkifier {
    * @return {?Element}
    */
   maybeLinkifyConsoleCallFrame(target, callFrame, options) {
-    return this.maybeLinkifyScriptLocation(target, callFrame.scriptId, callFrame.url, callFrame.lineNumber, options);
+    return this.maybeLinkifyScriptLocation(
+        target, callFrame.scriptId, callFrame.url, callFrame.lineNumber,
+        {columnNumber: callFrame.columnNumber, ...options});
   }
 
   /**

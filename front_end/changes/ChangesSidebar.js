@@ -15,6 +15,7 @@ export class ChangesSidebar extends UI.Widget.Widget {
   constructor(workspaceDiff) {
     super();
     this._treeoutline = new UI.TreeOutline.TreeOutlineInShadow();
+    this._treeoutline.setFocusable(false);
     this._treeoutline.registerRequiredCSS('changes/changesSidebar.css');
     this._treeoutline.setComparator((a, b) => a.titleAsText().compareTo(b.titleAsText()));
     this._treeoutline.addEventListener(UI.TreeOutline.Events.ElementSelected, this._selectionChanged, this);
@@ -81,6 +82,9 @@ export class ChangesSidebar extends UI.Widget.Widget {
     }
     this._treeoutline.removeChild(treeElement);
     treeElement.dispose();
+    if (this._treeoutline.rootElement().childCount() === 0) {
+      this._treeoutline.setFocusable(false);
+    }
   }
 
   /**
@@ -89,6 +93,7 @@ export class ChangesSidebar extends UI.Widget.Widget {
   _addUISourceCode(uiSourceCode) {
     const treeElement = new UISourceCodeTreeElement(uiSourceCode);
     this._treeElements.set(uiSourceCode, treeElement);
+    this._treeoutline.setFocusable(true);
     this._treeoutline.appendChild(treeElement);
     if (!this._treeoutline.selectedTreeElement) {
       treeElement.select(true);

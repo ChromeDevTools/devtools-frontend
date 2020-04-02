@@ -204,6 +204,7 @@ export class MainImpl {
 
     const themeSetting = Common.Settings.Settings.instance().createSetting('uiTheme', 'systemPreferred');
     UI.UIUtils.initializeUIUtils(document, themeSetting);
+    themeSetting.addChangeListener(Components.Reload.reload.bind(Components));
 
     UI.UIUtils.installComponentRootStyles(/** @type {!Element} */ (document.body));
 

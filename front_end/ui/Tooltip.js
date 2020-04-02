@@ -38,7 +38,7 @@ export class Tooltip {
    * @param {!Element} element
    * @param {?Element|string} tooltipContent
    * @param {string=} actionId
-   * @param {!Object=} options
+   * @param {?TooltipOptions=} options
    */
   static install(element, tooltipContent, actionId, options) {
     if (!tooltipContent) {
@@ -88,18 +88,67 @@ export class Tooltip {
    * @param {!Element} anchorElement
    * @param {!Event} event
    */
+  _reposition(anchorElement, event) {
+    // Reposition to ensure text doesn't overflow unnecessarily.
+    this._tooltipElement.positionAt(0, 0);
+    // Get container element.
+    const container = GlassPane.container(/** @type {!Document} */ (anchorElement.ownerDocument));
+    // Position tooltip based on the anchor element.
+    const containerBox = container.boxInWindow(this.element.window());
+    const anchorBox = this._anchorElement.boxInWindow(this.element.window());
+    const anchorOffset = 2;
+    const pageMargin = 2;
+    const cursorOffset = 10;
+    this._tooltipElement.classList.toggle('tooltip-breakword', !this._tooltipElement.textContent.match('\\s'));
+    this._tooltipElement.style.maxWidth = (containerBox.width - pageMargin * 2) + 'px';
+    this._tooltipElement.style.maxHeight = '';
+    const tooltipWidth = this._tooltipElement.offsetWidth;
+    const tooltipHeight = this._tooltipElement.offsetHeight;
+    const anchorTooltipAtElement = this._anchorTooltipAtElement();
+    let tooltipX = anchorTooltipAtElement ? anchorBox.x : event.x + cursorOffset;
+    tooltipX = Platform.NumberUtilities.clamp(
+        tooltipX, containerBox.x + pageMargin, containerBox.x + containerBox.width - tooltipWidth - pageMargin);
+    let tooltipY;
+    if (!anchorTooltipAtElement) {
+      tooltipY = event.y + cursorOffset + tooltipHeight < containerBox.y + containerBox.height ?
+          event.y + cursorOffset :
+          event.y - tooltipHeight - 1;
+    } else {
+      const onBottom =
+          anchorBox.y + anchorOffset + anchorBox.height + tooltipHeight < containerBox.y + containerBox.height;
+      tooltipY = onBottom ? anchorBox.y + anchorBox.height + anchorOffset : anchorBox.y - tooltipHeight - anchorOffset;
+    }
+    this._tooltipElement.positionAt(tooltipX, tooltipY);
+  }
+
+  /**
+   * @returns {boolean}
+   */
+  _anchorTooltipAtElement() {
+    const tooltip = this._anchorElement[_symbol];
+
+    if (tooltip.options.anchorTooltipAtElement !== undefined) {
+      return tooltip.options.anchorTooltipAtElement;
+    }
+
+    // default legacy behavior; better to explicitly configure tooltip placement via options
+    return this._anchorElement.nodeName === 'BUTTON' || this._anchorElement.nodeName === 'LABEL';
+  }
+
+  /**
+   * @param {!Element} anchorElement
+   * @param {!Event} event
+   */
   _show(anchorElement, event) {
     const tooltip = anchorElement[_symbol];
     this._anchorElement = anchorElement;
     this._tooltipElement.removeChildren();
 
     // Check if native tooltips should be used.
-    for (const element of _nativeOverrideContainer) {
-      if (this._anchorElement.isSelfOrDescendant(element)) {
-        Object.defineProperty(this._anchorElement, 'title', /** @type {!Object} */ (_nativeTitle));
-        this._anchorElement.title = tooltip.content;
-        return;
-      }
+    if (this._shouldUseNativeTooltips()) {
+      Object.defineProperty(this._anchorElement, 'title', /** @type {!Object} */ (_nativeTitle));
+      this._anchorElement.title = tooltip.content;
+      return;
     }
 
     if (typeof tooltip.content === 'string') {
@@ -116,45 +165,26 @@ export class Tooltip {
       }
     }
 
-    this._tooltipElement.classList.add('shown');
-    // Reposition to ensure text doesn't overflow unnecessarily.
-    this._tooltipElement.positionAt(0, 0);
-
     // Show tooltip instantly if a tooltip was shown recently.
     const now = Date.now();
     const instant = (this._tooltipLastClosed && now - this._tooltipLastClosed < Timing.InstantThreshold);
     this._tooltipElement.classList.toggle('instant', instant);
     this._tooltipLastOpened = instant ? now : now + Timing.OpeningDelay;
 
-    // Get container element.
-    const container = GlassPane.container(/** @type {!Document} */ (anchorElement.ownerDocument));
-    // Position tooltip based on the anchor element.
-    const containerBox = container.boxInWindow(this.element.window());
-    const anchorBox = this._anchorElement.boxInWindow(this.element.window());
-    const anchorOffset = 2;
-    const pageMargin = 2;
-    const cursorOffset = 10;
-    this._tooltipElement.classList.toggle('tooltip-breakword', !this._tooltipElement.textContent.match('\\s'));
-    this._tooltipElement.style.maxWidth = (containerBox.width - pageMargin * 2) + 'px';
-    this._tooltipElement.style.maxHeight = '';
-    const tooltipWidth = this._tooltipElement.offsetWidth;
-    const tooltipHeight = this._tooltipElement.offsetHeight;
-    const anchorTooltipAtElement =
-        this._anchorElement.nodeName === 'BUTTON' || this._anchorElement.nodeName === 'LABEL';
-    let tooltipX = anchorTooltipAtElement ? anchorBox.x : event.x + cursorOffset;
-    tooltipX = Platform.NumberUtilities.clamp(
-        tooltipX, containerBox.x + pageMargin, containerBox.x + containerBox.width - tooltipWidth - pageMargin);
-    let tooltipY;
-    if (!anchorTooltipAtElement) {
-      tooltipY = event.y + cursorOffset + tooltipHeight < containerBox.y + containerBox.height ?
-          event.y + cursorOffset :
-          event.y - tooltipHeight - 1;
-    } else {
-      const onBottom =
-          anchorBox.y + anchorOffset + anchorBox.height + tooltipHeight < containerBox.y + containerBox.height;
-      tooltipY = onBottom ? anchorBox.y + anchorBox.height + anchorOffset : anchorBox.y - tooltipHeight - anchorOffset;
+    this._reposition(anchorElement, event);
+    this._tooltipElement.classList.add('shown');
+  }
+
+  /**
+   * @return {boolean}
+   */
+  _shouldUseNativeTooltips() {
+    for (const element of _nativeOverrideContainer) {
+      if (this._anchorElement.isSelfOrDescendant(element)) {
+        return true;
+      }
     }
-    this._tooltipElement.positionAt(tooltipX, tooltipY);
+    return false;
   }
 
   /**
@@ -178,6 +208,13 @@ export class Tooltip {
     this._tooltipElement.style.maxHeight = '0';
   }
 }
+
+/**
+ * @typedef {{
+ * anchorTooltipAtElement: (boolean|undefined)
+ * }}
+ */
+export let TooltipOptions;
 
 const Timing = {
   // Max time between tooltips showing that no opening delay is required.

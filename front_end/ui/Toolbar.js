@@ -211,7 +211,9 @@ export class Toolbar {
     function makeButton() {
       const button = new ToolbarButton(action.title(), action.icon());
       if (action.title()) {
-        Tooltip.install(button.element, action.title(), action.id());
+        Tooltip.install(button.element, action.title(), action.id(), {
+          anchorTooltipAtElement: true,
+        });
       }
       return button;
     }
@@ -230,7 +232,9 @@ export class Toolbar {
         toggleButton.setToggled(action.toggled());
         if (action.title()) {
           toggleButton.setTitle(action.title());
-          Tooltip.install(toggleButton.element, action.title(), action.id());
+          Tooltip.install(toggleButton.element, action.title(), action.id(), {
+            anchorTooltipAtElement: true,
+          });
         }
       }
     }
@@ -446,7 +450,9 @@ export class ToolbarItem extends Common.ObjectWrapper.ObjectWrapper {
     }
     this._title = title;
     ARIAUtils.setAccessibleName(this.element, title);
-    Tooltip.install(this.element, title);
+    Tooltip.install(this.element, title, undefined, {
+      anchorTooltipAtElement: true,
+    });
   }
 
   /**
@@ -1119,7 +1125,9 @@ export class ToolbarCheckbox extends ToolbarItem {
     this.element.classList.add('checkbox');
     this.inputElement = this.element.checkboxElement;
     if (tooltip) {
-      this.element.title = tooltip;
+      Tooltip.install(this.element, tooltip, undefined, {
+        anchorTooltipAtElement: true,
+      });
     }
     if (listener) {
       this.inputElement.addEventListener('click', listener, false);

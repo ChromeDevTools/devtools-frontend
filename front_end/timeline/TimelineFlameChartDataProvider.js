@@ -70,7 +70,10 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this._headerLevel2 = this._buildGroupStyle({padding: 2, nestingLevel: 1, collapsible: false});
     this._staticHeader = this._buildGroupStyle({collapsible: false});
     this._framesHeader = this._buildGroupStyle({useFirstLineForOverview: true});
-    this._timingsHeader = this._buildGroupStyle({shareHeaderLine: true, useFirstLineForOverview: true});
+    this._collapsibleTimingsHeader =
+        this._buildGroupStyle({shareHeaderLine: true, useFirstLineForOverview: true, collapsible: true});
+    this._timingsHeader =
+        this._buildGroupStyle({shareHeaderLine: true, useFirstLineForOverview: true, collapsible: false});
     this._screenshotsHeader =
         this._buildGroupStyle({useFirstLineForOverview: true, nestingLevel: 1, collapsible: false, itemsHeight: 150});
     this._interactionsHeaderLevel1 = this._buildGroupStyle({useFirstLineForOverview: true});
@@ -312,11 +315,11 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         }
 
         case TimelineModel.TimelineModel.TrackType.Timings: {
-          const group = this._appendHeader(ls`Timings`, this._timingsHeader, true /* selectable */);
+          const style = track.asyncEvents.length > 0 ? this._collapsibleTimingsHeader : this._timingsHeader;
+          const group = this._appendHeader(ls`Timings`, style, true /* selectable */);
           group._track = track;
           this._appendPageMetrics();
-          this._appendAsyncEventsGroup(
-              track, null, track.asyncEvents, this._timingsHeader, eventEntryType, true /* selectable */);
+          this._appendAsyncEventsGroup(track, null, track.asyncEvents, style, eventEntryType, true /* selectable */);
           break;
         }
 

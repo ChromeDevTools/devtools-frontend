@@ -82,11 +82,14 @@ export async function addBreakpointForLine(frontend: puppeteer.Page, index: numb
     };
   }, index);
 
+  const currentBreakpointCount = await frontend.$$eval('.cm-breakpoint', nodes => nodes.length);
+
   await frontend.mouse.click(breakpointLineNumber.x, breakpointLineNumber.y);
 
-  await frontend.waitForFunction(() => {
-    return document.querySelectorAll('.cm-breakpoint').length !== 0;
-  });
+  await frontend.waitForFunction(bpCount => {
+    return document.querySelectorAll('.cm-breakpoint').length > bpCount &&
+        document.querySelectorAll('.cm-breakpoint-unbound').length === 0;
+  }, undefined, currentBreakpointCount);
 }
 
 export async function getBreakpointDecorators(frontend: puppeteer.Page, disabledOnly = false) {
@@ -170,11 +173,21 @@ export function createSelectorsForWorkerFile(
   };
 }
 
+async function expandSourceTreeItem(selector: string) {
+  const sourceTreeItem = await waitFor(selector, undefined, 1000);
+  const isExpanded = await sourceTreeItem.asElement()!.evaluate(element => {
+    return element.getAttribute('aria-expanded') === 'true';
+  });
+  if (!isExpanded) {
+    await doubleClickSourceTreeItem(selector);
+  }
+}
+
 export async function expandFileTree(selectors: NestedFileSelector) {
-  await doubleClickSourceTreeItem(selectors.rootSelector);
-  await doubleClickSourceTreeItem(selectors.domainSelector);
-  await doubleClickSourceTreeItem(selectors.folderSelector);
-  return await waitFor(selectors.fileSelector);
+  await expandSourceTreeItem(selectors.rootSelector);
+  await expandSourceTreeItem(selectors.domainSelector);
+  await expandSourceTreeItem(selectors.folderSelector);
+  return await waitFor(selectors.fileSelector, undefined, 1000);
 }
 
 export async function openNestedWorkerFile(selectors: NestedFileSelector) {

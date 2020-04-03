@@ -7,7 +7,6 @@ import {describe, it} from 'mocha';
 import * as puppeteer from 'puppeteer';
 
 import {click, getBrowserAndPages, resetPages, resourcesPath, waitFor} from '../../shared/helper.js';
-import {focusConsolePrompt, switchToTopExecutionContext, typeIntoConsole} from '../helpers/console-helpers.js';
 import {addBreakpointForLine, createSelectorsForWorkerFile, getBreakpointDecorators, getOpenSources, openNestedWorkerFile, PAUSE_BUTTON, RESUME_BUTTON} from '../helpers/sources-helpers.js';
 
 async function validateSourceTabs() {
@@ -43,7 +42,7 @@ describe('Multi-Workers', async () => {
       assert.deepEqual(await getBreakpointDecorators(frontend, true), [6]);
     }
 
-    it.skip(`loads scripts exactly once on reload ${withOrWithout}`, async () => {
+    it(`loads scripts exactly once on reload ${withOrWithout}`, async () => {
       const {target} = getBrowserAndPages();
 
       // Have the target load the page.
@@ -66,8 +65,8 @@ describe('Multi-Workers', async () => {
       await validateSourceTabs();
     });
 
-    it.skip(`[crbug.com/1064581] loads scripts exactly once on break ${withOrWithout}`, async () => {
-      const {target, frontend} = getBrowserAndPages();
+    it(`loads scripts exactly once on break ${withOrWithout}`, async () => {
+      const {target} = getBrowserAndPages();
 
       // Have the target load the page.
       await target.goto(targetPage);
@@ -76,11 +75,8 @@ describe('Multi-Workers', async () => {
 
       await validateNavigationTree();
 
-      // Open console tab
-      await click('#tab-console');
-
-      // Send message to a worker by evaluating in the console
-      await typeIntoConsole(frontend, 'workers[3].postMessage({});');
+      // Send message to a worker to trigger break
+      await target.evaluate('workers[3].postMessage({});');
 
       // Should automatically switch to sources tab.
 
@@ -95,11 +91,7 @@ describe('Multi-Workers', async () => {
       // Verify that we have resumed.
       await waitFor(PAUSE_BUTTON);
 
-      await click('#tab-console');
-      await switchToTopExecutionContext(frontend);
-      await focusConsolePrompt();
-      // Send message to a different worker
-      await typeIntoConsole(frontend, 'workers[7].postMessage({});');
+      await target.evaluate('workers[7].postMessage({});');
 
       // Validate that we are paused
       await waitFor(RESUME_BUTTON);
@@ -108,7 +100,7 @@ describe('Multi-Workers', async () => {
       await validateSourceTabs();
     });
 
-    it.skip(`[crbug.com/1064581] copies breakpoints between workers ${withOrWithout}`, async () => {
+    it(`copies breakpoints between workers ${withOrWithout}`, async () => {
       const {target, frontend} = getBrowserAndPages();
 
       // Have the target load the page.
@@ -156,6 +148,6 @@ describe('Multi-Workers', async () => {
 
       // Check breakpoints
       await validateBreakpoints(frontend);
-    });
+    }).timeout(10000);
   });
 });

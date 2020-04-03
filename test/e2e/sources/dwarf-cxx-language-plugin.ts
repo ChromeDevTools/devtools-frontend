@@ -59,7 +59,7 @@ describe('The CXX DWARF Language Plugin', async () => {
   });
 
   // Resolve the location for a breakpoint.
-  it.skip('[http://crbug.com/1063864] resolve locations for breakpoints correctly', async () => {
+  it('resolves locations for breakpoints correctly', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await openFileInSourcesPanel(target, 'wasm/global_variable_with_dwarf.html');

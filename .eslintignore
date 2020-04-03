@@ -23,3 +23,5 @@ scripts/protocol_typescript/*.js
 scripts/migration/**/*.js
 scripts/component_bridges/gen/*
 node_modules
+
+*.d.ts

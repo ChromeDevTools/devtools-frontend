@@ -9,7 +9,7 @@ import * as UI from '../ui/ui.js';
  * @implements {Common.App.App}
  * @unrestricted
  */
-export default class SimpleApp {
+export class SimpleApp {
   /**
    * @override
    * @param {!Document} document

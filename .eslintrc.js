@@ -13,6 +13,7 @@ module.exports = {
     '@typescript-eslint',
     'mocha',
     'rulesdir',
+    'import',
   ],
 
   'parserOptions': {'ecmaVersion': 9, 'sourceType': 'module'},
@@ -127,6 +128,9 @@ module.exports = {
     'mocha/no-pending-tests': 2,
     // errors on {describe, it}.only
     'mocha/no-exclusive-tests': 2,
+
+    // Closure does not properly typecheck default exports
+    'import/no-default-export': 2,
 
     // DevTools specific rules
     'rulesdir/es_modules_import': 2,

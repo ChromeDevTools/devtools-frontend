@@ -1644,15 +1644,14 @@ export class ExpandableTextPropertyValue extends ObjectPropertyValue {
     this._text = text;
     this._maxLength = maxLength;
     container.textContent = text.slice(0, maxLength);
-    container.title = `${text.slice(0, maxLength)}...`;
+    container.title = `${text.slice(0, maxLength)}…`;
     this._expandElement = container.createChild('span');
     this._maxDisplayableTextLength = 10000000;
 
-    const encoder = new TextEncoder();
-    const buffer = encoder.encode(text);
-    const totalBytes = Number.bytesToString(buffer.byteLength);
+    const byteCount = Platform.StringUtilities.countWtf8Bytes(text);
+    const totalBytesText = Number.bytesToString(byteCount);
     if (this._text.length < this._maxDisplayableTextLength) {
-      this._expandElementText = ls`Show more (${totalBytes})`;
+      this._expandElementText = ls`Show more (${totalBytesText})`;
       this._expandElement.setAttribute('data-text', this._expandElementText);
       this._expandElement.classList.add('expandable-inline-button');
       this._expandElement.addEventListener('click', this._expandText.bind(this));
@@ -1662,9 +1661,8 @@ export class ExpandableTextPropertyValue extends ObjectPropertyValue {
         }
       });
       UI.ARIAUtils.markAsButton(this._expandElement);
-
     } else {
-      this._expandElement.setAttribute('data-text', ls`long text was truncated (${totalBytes})`);
+      this._expandElement.setAttribute('data-text', ls`long text was truncated (${totalBytesText})`);
       this._expandElement.classList.add('undisplayable-text');
     }
 

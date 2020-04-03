@@ -135,4 +135,19 @@ describe('StringUtilities', () => {
       assert.equal(inputString, outputString);
     });
   });
+
+  describe('countWtf8Bytes', () => {
+    it('produces the correct WTF-8 byte size', () => {
+      assert.equal(StringUtilities.countWtf8Bytes('a'), 1);
+      assert.equal(StringUtilities.countWtf8Bytes('\x7F'), 1);
+      assert.equal(StringUtilities.countWtf8Bytes('\u07FF'), 2);
+      assert.equal(StringUtilities.countWtf8Bytes('\uD800'), 3);
+      assert.equal(StringUtilities.countWtf8Bytes('\uDBFF'), 3);
+      assert.equal(StringUtilities.countWtf8Bytes('\uDC00'), 3);
+      assert.equal(StringUtilities.countWtf8Bytes('\uDFFF'), 3);
+      assert.equal(StringUtilities.countWtf8Bytes('\uFFFF'), 3);
+      assert.equal(StringUtilities.countWtf8Bytes('\u{10FFFF}'), 4);
+      assert.equal(StringUtilities.countWtf8Bytes('Iñtërnâtiônàlizætiøn☃💩'), 34);
+    });
+  });
 });

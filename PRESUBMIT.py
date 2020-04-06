@@ -150,6 +150,7 @@ def _CheckDevtoolsStyle(input_api, output_api):
     default_linted_directories = [front_end_directory, test_directory, scripts_directory]
 
     eslint_related_files = [
+        input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules', 'eslint'),
         input_api.os_path.join(input_api.PresubmitLocalPath(), '.eslintrc.js'),
         input_api.os_path.join(input_api.PresubmitLocalPath(), '.eslintignore'),
         input_api.os_path.join(scripts_directory, 'test', 'run_lint_check.py'),

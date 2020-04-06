@@ -166,7 +166,6 @@ export class IssuesModel extends SDKModel {
     }
     const aggregatedIssue = this._aggregatedIssuesByCode.get(issue.code());
     aggregatedIssue.addInstance(issue);
-    this.dispatchEventToListeners(Events.AggregatedIssueUpdated, aggregatedIssue);
     return aggregatedIssue;
   }
 
@@ -181,7 +180,8 @@ export class IssuesModel extends SDKModel {
 
     for (const issue of issues) {
       this._connectIssue(issue);
-      this._aggregateIssue(issue);
+      const aggregatedIssue = this._aggregateIssue(issue);
+      this.dispatchEventToListeners(Events.AggregatedIssueUpdated, aggregatedIssue);
     }
   }
 

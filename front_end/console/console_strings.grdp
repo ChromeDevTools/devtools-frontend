@@ -147,17 +147,11 @@
   <message name="IDS_DEVTOOLS_a092483ed730ed040e5df5776dca49e5" desc="Title of a setting under the Console category in Settings">
     Log XMLHttpRequests
   </message>
-  <message name="IDS_DEVTOOLS_a0f3a1128287d0daedd86605ace4b8cd" desc="Infobar text about what the issues panel is">
-    Issues detected. The new issues panel displays information about deprecations, breaking changes and other potential problems.
-  </message>
   <message name="IDS_DEVTOOLS_a1948ddb50d0bbd31e36f1fbc45479a0" desc="Title of a setting under the Console category that can be invoked through the Command Menu">
     Autocomplete from history
   </message>
   <message name="IDS_DEVTOOLS_a1a6657be79cc0fc1e9b23b9e108f043" desc="Text in Console Pin Pane of the Console panel">
     Expression
-  </message>
-  <message name="IDS_DEVTOOLS_a334d07d578235272cd75c7a8bd5690d" desc="Label for button linking to issues panel">
-    Go to Issues
   </message>
   <message name="IDS_DEVTOOLS_a3eb3c95c4cb8e06fd3682c1f0d70bc0" desc="Tooltip text that appears on the setting when hovering over it in Console View of the Console panel">
     Only show messages from the current context (top, iframe, worker, extension)

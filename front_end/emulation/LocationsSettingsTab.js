@@ -72,7 +72,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox {
     element.createChild('div', 'locations-list-separator');
     element.createChild('div', 'locations-list-text').textContent = location.long;
     element.createChild('div', 'locations-list-separator');
-    element.createChild('div', 'locations-list-text locations-list-text-timezone').textContent = location.timezoneId;
+    element.createChild('div', 'locations-list-text').textContent = location.timezoneId;
     element.createChild('div', 'locations-list-separator');
     element.createChild('div', 'locations-list-text').textContent = location.locale;
     return element;
@@ -163,12 +163,13 @@ export class LocationsSettingsTab extends UI.Widget.VBox {
     cell.appendChild(editor.createInput('lat', 'text', ls`Latitude`, latValidator));
     fields.createChild('div', 'locations-list-separator locations-list-separator-invisible');
 
-    cell = fields.createChild('div', 'locations-list-text');
+    cell = fields.createChild('div', 'locations-list-text locations-list-text-longitude');
     cell.appendChild(editor.createInput('long', 'text', ls`Longitude`, longValidator));
     fields.createChild('div', 'locations-list-separator locations-list-separator-invisible');
 
     cell = fields.createChild('div', 'locations-list-text');
     cell.appendChild(editor.createInput('timezoneId', 'text', ls`Timezone ID`, timezoneIdValidator));
+    fields.createChild('div', 'locations-list-separator locations-list-separator-invisible');
 
     cell = fields.createChild('div', 'locations-list-text');
     cell.appendChild(editor.createInput('locale', 'text', ls`Locale`, localeValidator));

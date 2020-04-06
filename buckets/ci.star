@@ -27,7 +27,7 @@ generate_ci_configs(
       ),
       config_section(
         name="beta",
-        branch='refs/heads/chromium/4085',
+        branch='refs/heads/chromium/4103',
       ),
       config_section(
         name="stable",

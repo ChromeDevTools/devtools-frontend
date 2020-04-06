@@ -6,7 +6,23 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
 import {$, click, getBrowserAndPages, resetPages, resourcesPath} from '../../shared/helper.js';
-import {RESUME_BUTTON} from '../helpers/sources-helpers.js';
+import {addBreakpointForLine, openSourceCodeEditorForFile, RESUME_BUTTON, retrieveTopCallFrameScriptLocation} from '../helpers/sources-helpers.js';
+
+describe('Source Tab', async () => {
+  beforeEach(async () => {
+    await resetPages();
+  });
+
+  it('can add a breakpoint in raw wasm', async () => {
+    const {target, frontend} = getBrowserAndPages();
+
+    await openSourceCodeEditorForFile(target, 'add.wasm', 'wasm/call-to-add-wasm.html');
+    await addBreakpointForLine(frontend, 5);
+
+    const scriptLocation = await retrieveTopCallFrameScriptLocation('main();', target);
+    assert.deepEqual(scriptLocation, 'add.wasm:5');
+  });
+});
 
 describe('Raw-Wasm', async () => {
   beforeEach(async () => {

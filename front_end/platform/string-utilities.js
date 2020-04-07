@@ -367,14 +367,14 @@ export const countWtf8Bytes = inputString => {
       count++;
     } else if (c <= 0x07FF) {
       count += 2;
-    } else if (c < 0xD800 || c > 0xDFFF) {
+    } else if (c < 0xD800 || 0xDFFF < c) {
       count += 3;
     } else {
-      // The current character is a leading surrogate, and there is a
-      // next character.
       if (c <= 0xDBFF && i + 1 < inputString.length) {
+        // The current character is a leading surrogate, and there is a
+        // next character.
         const next = inputString.charCodeAt(i + 1);
-        if (next >= 0xDC00 && next <= 0xDFFF) {
+        if (0xDC00 <= next && next <= 0xDFFF) {
           // The next character is a trailing surrogate, meaning this
           // is a surrogate pair.
           count += 4;

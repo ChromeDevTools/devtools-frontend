@@ -148,6 +148,15 @@ describe('StringUtilities', () => {
       assert.equal(StringUtilities.countWtf8Bytes('\uFFFF'), 3);
       assert.equal(StringUtilities.countWtf8Bytes('\u{10FFFF}'), 4);
       assert.equal(StringUtilities.countWtf8Bytes('Iñtërnâtiônàlizætiøn☃💩'), 34);
+
+      // An arbitrary lead surrogate (D800..DBFF).
+      const leadSurrogate = '\uDABC';
+      // An arbitrary trail surrogate (DC00..DFFF).
+      const trailSurrogate = '\uDEF0';
+      assert.equal(StringUtilities.countWtf8Bytes(`${leadSurrogate}${trailSurrogate}`), 4);
+      assert.equal(StringUtilities.countWtf8Bytes(`${trailSurrogate}${leadSurrogate}`), 6);
+      assert.equal(StringUtilities.countWtf8Bytes(`${leadSurrogate}`), 3);
+      assert.equal(StringUtilities.countWtf8Bytes(`${trailSurrogate}`), 3);
     });
   });
 });

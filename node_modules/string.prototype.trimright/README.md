@@ -10,7 +10,7 @@ String.prototype.trimRight <sup>[![Version Badge][npm-version-svg]][package-url]
 
 [![browser support][testling-svg]][testling-url]
 
-A spec-proposal-compliant `String.prototype.trimRight` shim. Invoke its "shim" method to shim `String.prototype.trimRight` if it is unavailable.
+A ES2019-spec-compliant `String.prototype.trimRight` shim. Invoke its "shim" method to shim `String.prototype.trimRight` if it is unavailable.
 
 This package implements the [es-shim API](https://github.com/es-shims/api) interface. It works in an ES3-supported environment and complies with the [spec](http://www.ecma-international.org/ecma-262/6.0/#sec-object.assign). In an ES6 environment, it will also work properly with `Symbol`s.
 

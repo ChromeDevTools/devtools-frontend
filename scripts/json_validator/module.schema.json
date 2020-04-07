@@ -25,6 +25,21 @@
           "properties": {"type": {"const": "action"}}
         },
         "then": {
+          "properties": {
+            "bindings": {
+              "type": "array",
+              "items": {
+                "required": ["shortcut"],
+                "properties": {
+                  "shortcut": {
+                    "type": "string",
+                    "pattern": "^[^ ]+$"
+                  },
+                  "platform": {"type": "string"}
+                }
+              }
+            }
+          },
           "anyOf": [
             {
               "required": ["title"]

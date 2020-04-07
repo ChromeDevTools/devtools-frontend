@@ -48,12 +48,11 @@
             "className": "Console.ConsoleView.ActionDelegate",
             "bindings": [
                 {
-                    "platform": "windows,linux",
                     "shortcut": "Ctrl+L"
                 },
                 {
                     "platform": "mac",
-                    "shortcut": "Ctrl+L Meta+K"
+                    "shortcut": "Meta+K"
                 }
             ]
         },

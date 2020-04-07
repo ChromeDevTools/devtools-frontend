@@ -14,7 +14,11 @@
             "bindings": [
                 {
                     "platform": "windows,linux",
-                    "shortcut": "Ctrl+R F5"
+                    "shortcut": "Ctrl+R"
+                },
+                {
+                    "platform": "windows,linux",
+                    "shortcut": "F5"
                 },
                 {
                     "platform": "mac",
@@ -31,7 +35,19 @@
             "bindings": [
                 {
                     "platform": "windows,linux",
-                    "shortcut": "Shift+Ctrl+R Shift+F5 Ctrl+F5 Ctrl+Shift+F5"
+                    "shortcut": "Shift+Ctrl+R"
+                },
+                {
+                    "platform": "windows,linux",
+                    "shortcut": "Shift+F5"
+                },
+                {
+                    "platform": "windows,linux",
+                    "shortcut": "Ctrl+F5"
+                },
+                {
+                    "platform": "windows,linux",
+                    "shortcut": "Ctrl+Shift+F5"
                 },
                 {
                     "platform": "mac",

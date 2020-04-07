@@ -43,11 +43,19 @@
             "bindings": [
                 {
                     "platform": "mac",
-                    "shortcut": "Meta+P Meta+O"
+                    "shortcut": "Meta+P"
+                },
+                {
+                    "platform": "mac",
+                    "shortcut": "Meta+O"
                 },
                 {
                     "platform": "windows,linux",
-                    "shortcut": "Ctrl+P Ctrl+O"
+                    "shortcut": "Ctrl+P"
+                },
+                {
+                    "platform": "windows,linux",
+                    "shortcut": "Ctrl+O"
                 }
             ]
         },

@@ -237,14 +237,11 @@ export class ShortcutRegistry {
         if (!platformMatches(bindings[i].platform)) {
           continue;
         }
-        const shortcuts = bindings[i].shortcut.split(/\s+/);
-        shortcuts.forEach(shortcut => {
-          const shortcutDescriptor = KeyboardShortcut.makeDescriptorFromBindingShortcut(shortcut);
-          if (shortcutDescriptor) {
-            this._registerShortcut(new KeyboardShortcut(
-                shortcutDescriptor, /** @type {string} */ (descriptor.actionId), Type.DefaultShortcut));
-          }
-        });
+        const shortcutDescriptor = KeyboardShortcut.makeDescriptorFromBindingShortcut(bindings[i].shortcut);
+        if (shortcutDescriptor) {
+          this._registerShortcut(new KeyboardShortcut(
+              shortcutDescriptor, /** @type {string} */ (descriptor.actionId), Type.DefaultShortcut));
+        }
       }
     }
 

@@ -9,7 +9,10 @@
             "iconClass": "largeicon-settings-gear",
             "bindings": [
                 {
-                    "shortcut": "F1 Shift+?"
+                    "shortcut": "F1"
+                },
+                {
+                    "shortcut": "Shift+?"
                 }
             ]
         },

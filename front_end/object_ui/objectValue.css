@@ -53,6 +53,15 @@
     color: rgb(196, 26, 22);
 }
 
+.-theme-with-dark-background .object-value-string,
+:host-context(.-theme-with-dark-background) .object-value-string,
+.-theme-with-dark-background .object-value-regexp,
+:host-context(.-theme-with-dark-background) .object-value-regexp,
+.-theme-with-dark-background .object-value-symbol,
+:host-context(.-theme-with-dark-background) .object-value-symbol {
+    color: rgb(242, 139, 84);
+}
+
 .object-value-string-quote {
     color: #222;
 }

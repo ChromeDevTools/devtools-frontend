@@ -144,6 +144,8 @@ export const Descriptors = {
   'smallicon-videoplayer-paused': {position: 'f6', spritesheet: 'smallicons', isMask: true},
   'smallicon-videoplayer-playing': {position: 'g6', spritesheet: 'smallicons', isMask: true},
   'smallicon-videoplayer-destroyed': {position: 'g5', spritesheet: 'smallicons', isMask: true},
+  'smallicon-issue-yellow-text': {position: 'g1', spritesheet: 'smallicons'},
+  'smallicon-issue-blue-text': {position: 'g2', spritesheet: 'smallicons'},
 
   'mediumicon-clear-storage': {position: 'a4', spritesheet: 'mediumicons', isMask: true},
   'mediumicon-cookie': {position: 'b4', spritesheet: 'mediumicons', isMask: true},

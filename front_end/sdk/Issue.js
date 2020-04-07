@@ -129,10 +129,11 @@ export class AggregatedIssue extends Common.ObjectWrapper.ObjectWrapper {
         }
       }
     }
-
     if (resources.requests) {
       for (const request of resources.requests) {
-        this._requests.set(request.requestId, request.request);
+        if (request.request) {
+          this._requests.set(request.requestId, request.request);
+        }
       }
     }
   }

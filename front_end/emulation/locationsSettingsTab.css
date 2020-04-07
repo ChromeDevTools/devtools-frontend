@@ -46,6 +46,7 @@
   color: #222;
   text-align: end;
   position: relative;
+  overflow: hidden;
 }
 
 .locations-list-title {

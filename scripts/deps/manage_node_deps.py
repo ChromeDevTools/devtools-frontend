@@ -39,6 +39,7 @@ DEPS = {
     "chai": "4.2.0",
     "escodegen": "1.12.0",
     "eslint": "6.8.0",
+    "eslint-plugin-import": "2.20.2",
     "eslint-plugin-mocha": "6.2.2",
     "eslint-plugin-rulesdir": "0.1.0",
     "esprima": "git+https://git@github.com/ChromeDevTools/esprima.git#4d0f0e18bd8d3731e5f931bf573af3394cbf7cbe",

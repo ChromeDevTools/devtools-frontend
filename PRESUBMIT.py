@@ -108,6 +108,12 @@ def _CheckJSON(input_api, output_api):
 
 
 def _CheckFormat(input_api, output_api):
+    node_modules_affected_files = _getAffectedFiles(input_api, [input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules')], [], [])
+
+    # TODO(crbug.com/1068198): Remove once `git cl format --js` can handle large CLs.
+    if (len(node_modules_affected_files) > 0):
+        return [output_api.PresubmitNotifyResult('Skipping Format Checks because `node_modules` files are affected.')]
+
     results = [output_api.PresubmitNotifyResult('Running Format Checks:')]
 
     return _ExecuteSubProcess(input_api, output_api, ['git', 'cl', 'format', '--js'], [], results)
@@ -333,9 +339,8 @@ def _getAffectedFiles(input_api, parent_directories, excluded_actions, accepted_
         f.AbsoluteLocalPath() for f in input_api.AffectedFiles() if all(f.Action() != action for action in excluded_actions)
     ]
     affected_files = [
-        file_name for file_name in local_paths
-        if any(parent_directory in file_name for parent_directory in parent_directories) and any(
-            file_name.endswith(accepted_ending) for accepted_ending in accepted_endings)
+        file_name for file_name in local_paths if any(parent_directory in file_name for parent_directory in parent_directories) and
+        (len(accepted_endings) is 0 or any(file_name.endswith(accepted_ending) for accepted_ending in accepted_endings))
     ]
     return affected_files
 

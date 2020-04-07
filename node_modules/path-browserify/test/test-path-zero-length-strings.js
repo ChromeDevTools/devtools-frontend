@@ -21,7 +21,7 @@ tape('path.join zero-length', function (t) {
   t.end();
 });
 
-tape('path.join zero-length', function (t) {
+tape('path.normalize zero-length', function (t) {
   // normalize will return '.' if the input is a zero-length string
   t.strictEqual(path.posix.normalize(''), '.');
   if (path.win32) t.strictEqual(path.win32.normalize(''), '.');

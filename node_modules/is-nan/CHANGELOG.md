@@ -1,3 +1,18 @@
+1.3.0 / 2019-12-15
+=================
+  * [New] add "auto" entry point
+  * [readme] fix repo URLs
+  * [docs] clean up README links/formatting
+  * [Deps] update `define-properties`
+  * [meta] add `funding` field; FUNDING.yml
+  * [meta] Only apps should have lockfiles
+  * [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `covert`, `es5-shim`, `tape`, `@es-shims/api`
+  * [Tests] use shared travis-ci configs
+  * [Tests] use `npx aud` instead of `nsp` or `npm audit` with hoops
+  * [Tests] use `functions-have-names`
+  * [Tests] remove `jscs`
+  * [actions] add automatic rebasing / merge commit blocking
+
 1.2.1 / 2015-08-16
 =================
   * [Docs] Update readme

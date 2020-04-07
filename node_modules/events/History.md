@@ -1,3 +1,22 @@
+# 3.1.0 (2020-01-08)
+
+`events` now matches the Node.js 11.12.0 API.
+
+  - pass through return value in wrapped `emitter.once()` listeners
+
+    Now, this works:
+    ```js
+    emitter.once('myevent', function () { return 1; });
+    var listener = emitter.rawListeners('myevent')[0]
+    assert(listener() === 1);
+    ```
+    Previously, `listener()` would return undefined regardless of the implementation.
+
+    Ported from https://github.com/nodejs/node/commit/acc506c2d2771dab8d7bba6d3452bc5180dff7cf
+
+  - Reduce code duplication in listener type check ([#67](https://github.com/Gozala/events/pull/67) by [@friederbluemle](https://github.com/friederbluemle)).
+  - Improve `emitter.once()` performance in some engines
+
 # 3.0.0 (2018-05-25)
 
 **This version drops support for IE8.** `events` no longer includes polyfills

@@ -4,7 +4,7 @@
 
 This implements the Node.js [`events`](http://nodejs.org/api/events.html) module for environments that do not have it, like browsers.
 
-> `events` currently matches the **Node.js 10.1** API.
+> `events` currently matches the **Node.js 11.12.0** API.
 
 Note that the `events` module uses ES5 features. If you need to support very old browsers like IE8, use a shim like [`es5-shim`](https://www.npmjs.com/package/es5-shim). You need both the shim and the sham versions of `es5-shim`.
 
@@ -34,7 +34,7 @@ ee.emit('message', 'hello world')
 
 ## API
 
-See the [Node.js EventEmitter docs](http://nodejs.org/api/events.html). `events` currently matches the Node.js 10.1 API.
+See the [Node.js EventEmitter docs](http://nodejs.org/api/events.html). `events` currently matches the Node.js 11.12.0 API.
 
 ## Contributing
 

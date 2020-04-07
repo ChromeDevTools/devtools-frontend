@@ -7,6 +7,10 @@ var getPolyfill = require('./polyfill');
 
 module.exports = function shimNumberIsNaN() {
 	var polyfill = getPolyfill();
-	define(Number, { isNaN: polyfill }, { isNaN: function () { return Number.isNaN !== polyfill; } });
+	define(Number, { isNaN: polyfill }, {
+		isNaN: function testIsNaN() {
+			return Number.isNaN !== polyfill;
+		}
+	});
 	return polyfill;
 };

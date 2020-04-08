@@ -16,10 +16,10 @@ const ROOT_DIRECTORY = path.join(GEN_DIRECTORY, '..', '..', '..');
 
 const browsers = DEBUG_ENABLED ? ['Chrome'] : ['ChromeHeadless'];
 
-const coverageReporters = COVERAGE_ENABLED ? ['coverage-istanbul'] : [];
-const coveragePreprocessors = COVERAGE_ENABLED ? ['karma-coverage-istanbul-instrumenter'] : [];
-const commonIstanbulReporters = ['html', 'json-summary'];
-const istanbulReportOutputs = TEXT_COVERAGE_ENABLED ? ['text', ...commonIstanbulReporters] : commonIstanbulReporters;
+const coverageReporters = COVERAGE_ENABLED ? ['coverage'] : [];
+const coveragePreprocessors = COVERAGE_ENABLED ? ['coverage'] : [];
+const commonIstanbulReporters = [{type: 'html'}, {type: 'json-summary'}];
+const istanbulReportOutputs = TEXT_COVERAGE_ENABLED ? [{type: 'text'}, ...commonIstanbulReporters] : commonIstanbulReporters;
 
 module.exports = function(config) {
   const options = {
@@ -48,8 +48,7 @@ module.exports = function(config) {
       require('karma-mocha'),
       require('karma-chai'),
       require('karma-sourcemap-loader'),
-      require('karma-coverage-istanbul-instrumenter'),
-      require('karma-coverage-istanbul-reporter'),
+      require('karma-coverage'),
     ],
 
     preprocessors: {
@@ -57,12 +56,9 @@ module.exports = function(config) {
       [path.join(GEN_DIRECTORY, 'front_end/**/*.js')]: [...coveragePreprocessors],
     },
 
-    coverageIstanbulInstrumenter: {esModules: true},
-
-    coverageIstanbulReporter: {
-      reports: istanbulReportOutputs,
+    coverageReporter: {
       dir: 'karma-coverage',
-      skipFilesWithNoCoverage: true,
+      reporters: istanbulReportOutputs,
     },
 
     singleRun: !DEBUG_ENABLED,

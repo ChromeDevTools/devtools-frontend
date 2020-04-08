@@ -88,10 +88,6 @@ const EXCLUDED_FILES = [
   // FIXME: Acorn bundles must be moved to third_party
   'formatter_worker/acorn/acorn.js',
   'formatter_worker/acorn/acorn_loose.js',
-  // Breaks esprima
-  'components/Linkifier.js',
-  'coverage/CoverageView.js',
-  'network/NetworkLogView.js',
 ];
 
 const OTHER_LICENSE_HEADERS = [
@@ -145,6 +141,7 @@ const OTHER_LICENSE_HEADERS = [
   'main/MainImpl.js',
   'network/HARWriter.js',
   'network/NetworkDataGridNode.js',
+  'network/NetworkLogView.js',
   'network/NetworkPanel.js',
   'network/NetworkTimeCalculator.js',
   'network/RequestHeadersView.js',

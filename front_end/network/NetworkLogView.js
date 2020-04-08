@@ -1747,6 +1747,13 @@ export class NetworkLogView extends UI.Widget.VBox {
     if (!node || !node.dataGrid) {
       return null;
     }
+    // Viewport datagrid nodes do not reveal if not in the root node
+    // list of flatChildren. For children of grouped frame nodes:
+    // reveal and expand parent to ensure child is revealable.
+    if (node.parent && node.parent instanceof NetworkGroupNode) {
+      node.parent.reveal();
+      node.parent.expand();
+    }
     node.reveal();
     return node;
   }

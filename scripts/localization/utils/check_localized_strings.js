@@ -15,8 +15,8 @@ const writeFileAsync = promisify(fs.writeFile);
 const renameFileAsync = promisify(fs.rename);
 const localizationUtils = require('./localization_utils');
 const escodegen = localizationUtils.escodegen;
-const esprimaTypes = localizationUtils.esprimaTypes;
-const esprima = localizationUtils.esprima;
+const espreeTypes = localizationUtils.espreeTypes;
+const espree = localizationUtils.espree;
 const extensionStringKeys = ['category', 'destination', 'title', 'title-mac'];
 const {parseLocalizableStringFromTypeScriptFile} = require('./parse_typescript_files');
 
@@ -254,7 +254,7 @@ async function parseLocalizableStringsFromFile(filePath) {
 
   let ast;
   try {
-    ast = esprima.parseModule(fileContent, {loc: true});
+    ast = espree.parse(fileContent, {ecmaVersion: 11, sourceType: 'module', range: true, loc: true});
   } catch (e) {
     throw new Error(
         `DevTools localization parser failed:\n${localizationUtils.getRelativeFilePathFromSrc(filePath)}: ${
@@ -363,12 +363,12 @@ function handleCommonUIString(node, filePath, argumentNodes) {
   }
   const firstArgType = node.arguments[0].type;
   switch (firstArgType) {
-    case esprimaTypes.LITERAL: {
+    case espreeTypes.LITERAL: {
       const message = node.arguments[0].value;
       addString(message, escodegen.generate(node), filePath, node.loc, argumentNodes);
       break;
     }
-    case esprimaTypes.TEMP_LITERAL: {
+    case espreeTypes.TEMP_LITERAL: {
       handleTemplateLiteral(node.arguments[0], escodegen.generate(node), filePath, argumentNodes);
       break;
     }

@@ -51,8 +51,6 @@
 
 .locations-list-title {
   text-align: start;
-  display: flex;
-  align-items: flex-start;
 }
 
 .locations-list-title-text {
@@ -83,4 +81,8 @@
 .locations-edit-row input {
   width: 100%;
   text-align: inherit;
+}
+
+.locations-input-container {
+  padding: 1px;
 }

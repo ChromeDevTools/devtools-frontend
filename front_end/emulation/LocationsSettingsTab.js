@@ -155,23 +155,23 @@ export class LocationsSettingsTab extends UI.Widget.VBox {
     titles.createChild('div', 'locations-list-text').textContent = Common.UIString.UIString('Locale');
 
     const fields = content.createChild('div', 'locations-edit-row');
-    fields.createChild('div', 'locations-list-text locations-list-title')
+    fields.createChild('div', 'locations-list-text locations-list-title locations-input-container')
         .appendChild(editor.createInput('title', 'text', ls`Location name`, titleValidator));
     fields.createChild('div', 'locations-list-separator locations-list-separator-invisible');
 
-    let cell = fields.createChild('div', 'locations-list-text');
+    let cell = fields.createChild('div', 'locations-list-text locations-input-container');
     cell.appendChild(editor.createInput('lat', 'text', ls`Latitude`, latValidator));
     fields.createChild('div', 'locations-list-separator locations-list-separator-invisible');
 
-    cell = fields.createChild('div', 'locations-list-text locations-list-text-longitude');
+    cell = fields.createChild('div', 'locations-list-text locations-list-text-longitude locations-input-container');
     cell.appendChild(editor.createInput('long', 'text', ls`Longitude`, longValidator));
     fields.createChild('div', 'locations-list-separator locations-list-separator-invisible');
 
-    cell = fields.createChild('div', 'locations-list-text');
+    cell = fields.createChild('div', 'locations-list-text locations-input-container');
     cell.appendChild(editor.createInput('timezoneId', 'text', ls`Timezone ID`, timezoneIdValidator));
     fields.createChild('div', 'locations-list-separator locations-list-separator-invisible');
 
-    cell = fields.createChild('div', 'locations-list-text');
+    cell = fields.createChild('div', 'locations-list-text locations-input-container');
     cell.appendChild(editor.createInput('locale', 'text', ls`Locale`, localeValidator));
 
     return editor;

@@ -387,3 +387,7 @@ export const countWtf8Bytes = inputString => {
   }
   return count;
 };
+
+export const stripLineBreaks = inputStr => {
+  return inputStr.replace(/(\r)?\n/g, '');
+};

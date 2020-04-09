@@ -159,4 +159,11 @@ describe('StringUtilities', () => {
       assert.equal(StringUtilities.countWtf8Bytes(`${trailSurrogate}`), 3);
     });
   });
+
+  describe('stripLineBreaks', () => {
+    it('strips linebreaks from strings', () => {
+      assert.equal(StringUtilities.stripLineBreaks('a\nb'), 'ab');
+      assert.equal(StringUtilities.stripLineBreaks('a\r\nb'), 'ab');
+    });
+  });
 });

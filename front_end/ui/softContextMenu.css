@@ -36,7 +36,6 @@
 .soft-context-menu-item {
     display: flex;
     width: 100%;
-    line-height: 14px;
     font-size: 12px;
     border-top: 1px solid transparent;
     border-bottom: 1px solid transparent;

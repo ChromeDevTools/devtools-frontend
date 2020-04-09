@@ -204,10 +204,7 @@ export class NetworkPanel extends UI.Panel.Panel {
    */
   static async selectAndShowRequest(request, tab) {
     const panel = NetworkPanel._instance();
-    const itemView = await panel.selectRequest(request);
-    if (!itemView) {
-      panel._networkLogView.dispatchEventToListeners(Events.RequestActivated, {showPanel: true, tab: tab});
-    }
+    await panel.selectAndActivateRequest(request, tab);
   }
 
   /**
@@ -488,11 +485,13 @@ export class NetworkPanel extends UI.Panel.Panel {
 
   /**
    * @param {!SDK.NetworkRequest.NetworkRequest} request
+   * @param {!NetworkItemViewTabs=} shownTab
    * @return {!Promise<?NetworkItemView>}
    */
-  async selectRequest(request) {
+  async selectAndActivateRequest(request, shownTab) {
     await UI.ViewManager.ViewManager.instance().showView('network');
     this._networkLogView.selectRequest(request);
+    this._showRequestPanel(shownTab);
     return this._networkItemView;
   }
 
@@ -884,7 +883,7 @@ export class RequestLocationRevealer {
    */
   async reveal(match) {
     const location = /** @type {!UIRequestLocation} */ (match);
-    const view = await NetworkPanel._instance().selectRequest(location.request);
+    const view = await NetworkPanel._instance().selectAndActivateRequest(location.request);
     if (!view) {
       return;
     }

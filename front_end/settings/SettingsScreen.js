@@ -102,10 +102,12 @@ export class SettingsScreen extends UI.Widget.VBox {
     const settingsScreen = SettingsScreen._revealSettingsScreen();
 
     settingsScreen._selectTab(name || 'preferences');
+    const tabbedPane = settingsScreen._tabbedLocation.tabbedPane();
+    await tabbedPane.waitForTabElementUpdate();
     if (focusTabHeader) {
-      const tabbedPane = settingsScreen._tabbedLocation.tabbedPane();
-      await tabbedPane.waitForTabElementUpdate();
       tabbedPane.focusSelectedTabHeader();
+    } else {
+      tabbedPane.focus();
     }
   }
 

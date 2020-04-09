@@ -54,6 +54,7 @@ export class NavigatorView extends UI.Widget.VBox {
     this._scriptsTree = new UI.TreeOutline.TreeOutlineInShadow();
     this._scriptsTree.registerRequiredCSS('sources/navigatorTree.css');
     this._scriptsTree.setComparator(NavigatorView._treeElementsCompare);
+    this._scriptsTree.setFocusable(false);
     this.contentElement.appendChild(this._scriptsTree.element);
     this.setDefaultFocusedElement(this._scriptsTree.element);
 
@@ -236,6 +237,32 @@ export class NavigatorView extends UI.Widget.VBox {
    */
   focus() {
     this._scriptsTree.focus();
+  }
+
+  /**
+   * Central place to add elements to the tree to
+   * enable focus if the tree has elements
+   *
+   * @param {!UI.TreeOutline.TreeElement} parent
+   * @param {!UI.TreeOutline.TreeElement} child
+   */
+  appendChild(parent, child) {
+    this._scriptsTree.setFocusable(true);
+    parent.appendChild(child);
+  }
+
+  /**
+   * Central place to remove elements from the tree to
+   * disable focus if the tree is empty
+   *
+   * @param {!UI.TreeOutline.TreeElement} parent
+   * @param {!UI.TreeOutline.TreeElement} child
+   */
+  removeChild(parent, child) {
+    parent.removeChild(child);
+    if (this._scriptsTree.rootElement().childCount() === 0) {
+      this._scriptsTree.setFocusable(false);
+    }
   }
 
   /**
@@ -718,6 +745,7 @@ export class NavigatorView extends UI.Widget.VBox {
     }
 
     this._scriptsTree.removeChildren();
+    this._scriptsTree.setFocusable(false);
     this._uiSourceCodeNodes.clear();
     this._subfolderNodes.clear();
     this._frameNodes.clear();
@@ -1271,11 +1299,13 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
  */
 export class NavigatorTreeNode {
   /**
+   * @param {!NavigatorView} navigatorView
    * @param {string} id
    * @param {string} type
    */
-  constructor(id, type) {
+  constructor(navigatorView, id, type) {
     this.id = id;
+    this._navigatorView = navigatorView;
     this._type = type;
     /** @type {!Map.<string, !NavigatorTreeNode>} */
     this._children = new Map();
@@ -1329,7 +1359,8 @@ export class NavigatorTreeNode {
   wasPopulated() {
     const children = this.children();
     for (let i = 0; i < children.length; ++i) {
-      this.treeNode().appendChild(/** @type {!UI.TreeOutline.TreeElement} */ (children[i].treeNode()));
+      this._navigatorView.appendChild(
+          this.treeNode(), /** @type {!UI.TreeOutline.TreeElement} */ (children[i].treeNode()));
     }
   }
 
@@ -1338,7 +1369,7 @@ export class NavigatorTreeNode {
    */
   didAddChild(node) {
     if (this.isPopulated()) {
-      this.treeNode().appendChild(/** @type {!UI.TreeOutline.TreeElement} */ (node.treeNode()));
+      this._navigatorView.appendChild(this.treeNode(), /** @type {!UI.TreeOutline.TreeElement} */ (node.treeNode()));
     }
   }
 
@@ -1347,7 +1378,7 @@ export class NavigatorTreeNode {
    */
   willRemoveChild(node) {
     if (this.isPopulated()) {
-      this.treeNode().removeChild(/** @type {!UI.TreeOutline.TreeElement} */ (node.treeNode()));
+      this._navigatorView.removeChild(this.treeNode(), /** @type {!UI.TreeOutline.TreeElement} */ (node.treeNode()));
     }
   }
 
@@ -1412,8 +1443,7 @@ export class NavigatorRootTreeNode extends NavigatorTreeNode {
    * @param {!NavigatorView} navigatorView
    */
   constructor(navigatorView) {
-    super('', Types.Root);
-    this._navigatorView = navigatorView;
+    super(navigatorView, '', Types.Root);
   }
 
   /**
@@ -1443,8 +1473,7 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
    * @param {?SDK.ResourceTreeModel.ResourceTreeFrame} frame
    */
   constructor(navigatorView, uiSourceCode, frame) {
-    super(uiSourceCode.project().id() + ':' + uiSourceCode.url(), Types.File);
-    this._navigatorView = navigatorView;
+    super(navigatorView, uiSourceCode.project().id() + ':' + uiSourceCode.url(), Types.File);
     this._uiSourceCode = uiSourceCode;
     this._treeElement = null;
     this._eventListeners = [];
@@ -1610,8 +1639,7 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
    * @param {string} title
    */
   constructor(navigatorView, project, id, type, folderPath, title) {
-    super(id, type);
-    this._navigatorView = navigatorView;
+    super(navigatorView, id, type);
     this._project = project;
     this._folderPath = folderPath;
     this._title = title;
@@ -1742,18 +1770,18 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
       for (let i = 0; i < mergedToNodes.length; ++i) {
         mergedToNodes[i]._treeElement = treeElement;
       }
-      oldTreeElement.parent.appendChild(treeElement);
+      this._navigatorView.appendChild(oldTreeElement.parent, treeElement);
 
       oldTreeElement.setNode(nodes[nodes.length - 1]);
       oldTreeElement.title = nodes.map(titleForNode).join('/');
-      oldTreeElement.parent.removeChild(oldTreeElement);
-      this._treeElement.appendChild(oldTreeElement);
+      this._navigatorView.removeChild(oldTreeElement.parent, oldTreeElement);
+      this._navigatorView.appendChild(this._treeElement, oldTreeElement);
       if (oldTreeElement.expanded) {
         treeElement.expand();
       }
     }
     if (this.isPopulated()) {
-      this._treeElement.appendChild(node.treeNode());
+      this._navigatorView.appendChild(this._treeElement, node.treeNode());
     }
   }
 
@@ -1765,7 +1793,7 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
     if (node._isMerged || !this.isPopulated()) {
       return;
     }
-    this._treeElement.removeChild(node._treeElement);
+    this._navigatorView.removeChild(this._treeElement, node._treeElement);
   }
 }
 
@@ -1781,9 +1809,8 @@ export class NavigatorGroupTreeNode extends NavigatorTreeNode {
    * @param {string} title
    */
   constructor(navigatorView, project, id, type, title) {
-    super(id, type);
+    super(navigatorView, id, type);
     this._project = project;
-    this._navigatorView = navigatorView;
     this._title = title;
     this.populate();
   }

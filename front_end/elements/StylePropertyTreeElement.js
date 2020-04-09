@@ -645,12 +645,11 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
      * @return {string}
      */
     function restoreURLs(fieldValue, modelValue) {
-      const urlRegex = /\b(url\([^)]*\))/g;
-      const splitFieldValue = fieldValue.split(urlRegex);
+      const splitFieldValue = fieldValue.split(SDK.CSSMetadata.URLRegex);
       if (splitFieldValue.length === 1) {
         return fieldValue;
       }
-      const modelUrlRegex = new RegExp(urlRegex);
+      const modelUrlRegex = new RegExp(SDK.CSSMetadata.URLRegex);
       for (let i = 1; i < splitFieldValue.length; i += 2) {
         const match = modelUrlRegex.exec(modelValue);
         if (match) {

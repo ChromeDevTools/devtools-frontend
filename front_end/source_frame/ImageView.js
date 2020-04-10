@@ -43,7 +43,7 @@ export class ImageView extends UI.View.SimpleView {
   constructor(mimeType, contentProvider) {
     super(Common.UIString.UIString('Image'));
     this.registerRequiredCSS('source_frame/imageView.css');
-    this.element.tabIndex = 0;
+    this.element.tabIndex = -1;
     this.element.classList.add('image-view');
     this._url = contentProvider.contentURL();
     this._parsedURL = new Common.ParsedURL.ParsedURL(this._url);

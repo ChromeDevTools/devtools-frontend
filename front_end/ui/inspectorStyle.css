@@ -36,6 +36,7 @@
     --accent-color: #1a73e8;
     --accent-fg-color: #1a73e8;
     --accent-color-hover: #3b86e8;
+    --accent-fg-color-hover: #1567D3;
     --active-control-bg-color: #5a5a5a;
     --focus-bg-color: hsl(214, 40%, 92%);
     --focus-ring-inactive-shadow-color: #e0e0e0;
@@ -59,6 +60,7 @@
 .-theme-with-dark-background {
     --accent-color: #0e639c;
     --accent-fg-color: #cccccc;
+    --accent-fg-color-hover: #cccccc;
     --accent-color-hover: rgb(17, 119, 187);
     --active-control-bg-color: #cdcdcd;
     --focus-bg-color: hsl(214, 19%, 27%);

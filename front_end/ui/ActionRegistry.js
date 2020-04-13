@@ -33,6 +33,9 @@ export class ActionRegistry {
       } else {
         console.error(`Category actions require a title for command menu: ${actionId}`);
       }
+      if (!extension.canInstantiate()) {
+        action.setEnabled(false);
+      }
     }
   }
 
@@ -59,7 +62,7 @@ export class ActionRegistry {
     const extensions = [];
     actionIds.forEach(function(actionId) {
       const action = this._actionsById.get(actionId);
-      if (action) {
+      if (action && action.enabled()) {
         extensions.push(action.extension());
       }
     }, this);

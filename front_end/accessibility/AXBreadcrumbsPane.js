@@ -145,9 +145,8 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
     } else if ((event.key === 'ArrowDown') && !event.altKey) {
       handled = this._preselectNext();
     } else if (event.key === 'ArrowLeft' && !event.altKey) {
-      if (this._preselectedBreadcrumb.parentBreadcrumb() && this._preselectedBreadcrumb.hasExpandedChildren()) {
-        this._collapsingBreadcrumbId = this._preselectedBreadcrumb.axNode().backendDOMNodeId();
-        this._inspectDOMNode(this._preselectedBreadcrumb.parentBreadcrumb().axNode());
+      if (this._preselectedBreadcrumb.hasExpandedChildren()) {
+        this._collapseBreadcrumb(this._preselectedBreadcrumb);
       } else {
         handled = this._preselectParent();
       }
@@ -222,6 +221,17 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
   }
 
   /**
+   * @param {!AXBreadcrumb} breadcrumb
+   */
+  _collapseBreadcrumb(breadcrumb) {
+    if (!breadcrumb.parentBreadcrumb()) {
+      return;
+    }
+    this._collapsingBreadcrumbId = breadcrumb.axNode().backendDOMNodeId();
+    this._inspectDOMNode(breadcrumb.parentBreadcrumb().axNode());
+  }
+
+  /**
    * @param {!Event} event
    */
   _onMouseLeave(event) {
@@ -265,8 +275,8 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
     }
     const breadcrumb = breadcrumbElement.breadcrumb;
     if (breadcrumb.inspected()) {
-      // If the user is clicking the inspected breadcrumb, they probably want to
-      // focus it.
+      // This will collapse and preselect/focus the breadcrumb.
+      this._collapseBreadcrumb(breadcrumb);
       breadcrumb.nodeElement().focus();
       return;
     }

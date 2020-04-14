@@ -914,12 +914,150 @@
             ],
             "types": [
                 {
-                    "id": "Issue",
+                    "id": "AffectedCookie",
+                    "description": "Information about a cookie that is affected by an inspector issue.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "name",
+                            "description": "The following three properties uniquely identify a cookie",
+                            "type": "string"
+                        },
+                        {
+                            "name": "path",
+                            "type": "string"
+                        },
+                        {
+                            "name": "domain",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "id": "AffectedRequest",
+                    "description": "Information about a request that is affected by an inspector issue.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "requestId",
+                            "description": "The unique request id.",
+                            "$ref": "Network.RequestId"
+                        },
+                        {
+                            "name": "url",
+                            "optional": true,
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "id": "SameSiteCookieExclusionReason",
+                    "type": "string",
+                    "enum": [
+                        "ExcludeSameSiteUnspecifiedTreatedAsLax",
+                        "ExcludeSameSiteNoneInsecure"
+                    ]
+                },
+                {
+                    "id": "SameSiteCookieWarningReason",
+                    "type": "string",
+                    "enum": [
+                        "WarnSameSiteUnspecifiedCrossSiteContext",
+                        "WarnSameSiteNoneInsecure",
+                        "WarnSameSiteUnspecifiedLaxAllowUnsafe",
+                        "WarnSameSiteCrossSchemeSecureUrlMethodUnsafe",
+                        "WarnSameSiteCrossSchemeSecureUrlLax",
+                        "WarnSameSiteCrossSchemeSecureUrlStrict",
+                        "WarnSameSiteCrossSchemeInsecureUrlMethodUnsafe",
+                        "WarnSameSiteCrossSchemeInsecureUrlLax",
+                        "WarnSameSiteCrossSchemeInsecureUrlStrict"
+                    ]
+                },
+                {
+                    "id": "SameSiteCookieOperation",
+                    "type": "string",
+                    "enum": [
+                        "SetCookie",
+                        "ReadCookie"
+                    ]
+                },
+                {
+                    "id": "SameSiteCookieIssueDetails",
+                    "description": "This information is currently necessary, as the front-end has a difficult\ntime finding a specific cookie. With this, we can convey specific error\ninformation without the cookie.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "cookie",
+                            "$ref": "AffectedCookie"
+                        },
+                        {
+                            "name": "cookieWarningReasons",
+                            "type": "array",
+                            "items": {
+                                "$ref": "SameSiteCookieWarningReason"
+                            }
+                        },
+                        {
+                            "name": "cookieExclusionReasons",
+                            "type": "array",
+                            "items": {
+                                "$ref": "SameSiteCookieExclusionReason"
+                            }
+                        },
+                        {
+                            "name": "operation",
+                            "description": "Optionally identifies the site-for-cookies and the cookie url, which\nmay be used by the front-end as additional context.",
+                            "$ref": "SameSiteCookieOperation"
+                        },
+                        {
+                            "name": "siteForCookies",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "cookieUrl",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "request",
+                            "optional": true,
+                            "$ref": "AffectedRequest"
+                        }
+                    ]
+                },
+                {
+                    "id": "InspectorIssueCode",
+                    "description": "A unique identifier for the type of issue. Each type may use one of the\noptional fields in InspectorIssueDetails to convey more specific\ninformation about the kind of issue.",
+                    "type": "string",
+                    "enum": [
+                        "SameSiteCookieIssue"
+                    ]
+                },
+                {
+                    "id": "InspectorIssueDetails",
+                    "description": "This struct holds a list of optional fields with additional information\nspecific to the kind of issue. When adding a new issue code, please also\nadd a new optional field to this type.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "sameSiteCookieIssueDetails",
+                            "optional": true,
+                            "$ref": "SameSiteCookieIssueDetails"
+                        }
+                    ]
+                },
+                {
+                    "id": "InspectorIssue",
+                    "description": "An inspector issue reported from the back-end.",
                     "type": "object",
                     "properties": [
                         {
                             "name": "code",
-                            "type": "string"
+                            "$ref": "InspectorIssueCode"
+                        },
+                        {
+                            "name": "details",
+                            "$ref": "InspectorIssueDetails"
                         }
                     ]
                 }
@@ -991,7 +1129,7 @@
                     "parameters": [
                         {
                             "name": "issue",
-                            "$ref": "Issue"
+                            "$ref": "InspectorIssue"
                         }
                     ]
                 }

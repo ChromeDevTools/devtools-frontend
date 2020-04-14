@@ -166,6 +166,23 @@ export function registerCommands(inspectorBackend) {
       ['manifestURL'], false);
 
   // Audits.
+  inspectorBackend.registerEnum('Audits.SameSiteCookieExclusionReason', {
+    ExcludeSameSiteUnspecifiedTreatedAsLax: 'ExcludeSameSiteUnspecifiedTreatedAsLax',
+    ExcludeSameSiteNoneInsecure: 'ExcludeSameSiteNoneInsecure'
+  });
+  inspectorBackend.registerEnum('Audits.SameSiteCookieWarningReason', {
+    WarnSameSiteUnspecifiedCrossSiteContext: 'WarnSameSiteUnspecifiedCrossSiteContext',
+    WarnSameSiteNoneInsecure: 'WarnSameSiteNoneInsecure',
+    WarnSameSiteUnspecifiedLaxAllowUnsafe: 'WarnSameSiteUnspecifiedLaxAllowUnsafe',
+    WarnSameSiteCrossSchemeSecureUrlMethodUnsafe: 'WarnSameSiteCrossSchemeSecureUrlMethodUnsafe',
+    WarnSameSiteCrossSchemeSecureUrlLax: 'WarnSameSiteCrossSchemeSecureUrlLax',
+    WarnSameSiteCrossSchemeSecureUrlStrict: 'WarnSameSiteCrossSchemeSecureUrlStrict',
+    WarnSameSiteCrossSchemeInsecureUrlMethodUnsafe: 'WarnSameSiteCrossSchemeInsecureUrlMethodUnsafe',
+    WarnSameSiteCrossSchemeInsecureUrlLax: 'WarnSameSiteCrossSchemeInsecureUrlLax',
+    WarnSameSiteCrossSchemeInsecureUrlStrict: 'WarnSameSiteCrossSchemeInsecureUrlStrict'
+  });
+  inspectorBackend.registerEnum('Audits.SameSiteCookieOperation', {SetCookie: 'SetCookie', ReadCookie: 'ReadCookie'});
+  inspectorBackend.registerEnum('Audits.InspectorIssueCode', {SameSiteCookieIssue: 'SameSiteCookieIssue'});
   inspectorBackend.registerEvent('Audits.issueAdded', ['issue']);
   inspectorBackend.registerCommand(
       'Audits.getEncodedResponse',

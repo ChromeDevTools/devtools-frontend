@@ -656,8 +656,94 @@ declare namespace Protocol {
    */
   export namespace Audits {
 
-    export interface Issue {
-      code: string;
+    /**
+     * Information about a cookie that is affected by an inspector issue.
+     */
+    export interface AffectedCookie {
+      /**
+       * The following three properties uniquely identify a cookie
+       */
+      name: string;
+      path: string;
+      domain: string;
+    }
+
+    /**
+     * Information about a request that is affected by an inspector issue.
+     */
+    export interface AffectedRequest {
+      /**
+       * The unique request id.
+       */
+      requestId: Network.RequestId;
+      url?: string;
+    }
+
+    export enum SameSiteCookieExclusionReason {
+      ExcludeSameSiteUnspecifiedTreatedAsLax = 'ExcludeSameSiteUnspecifiedTreatedAsLax',
+      ExcludeSameSiteNoneInsecure = 'ExcludeSameSiteNoneInsecure',
+    }
+
+    export enum SameSiteCookieWarningReason {
+      WarnSameSiteUnspecifiedCrossSiteContext = 'WarnSameSiteUnspecifiedCrossSiteContext',
+      WarnSameSiteNoneInsecure = 'WarnSameSiteNoneInsecure',
+      WarnSameSiteUnspecifiedLaxAllowUnsafe = 'WarnSameSiteUnspecifiedLaxAllowUnsafe',
+      WarnSameSiteCrossSchemeSecureUrlMethodUnsafe = 'WarnSameSiteCrossSchemeSecureUrlMethodUnsafe',
+      WarnSameSiteCrossSchemeSecureUrlLax = 'WarnSameSiteCrossSchemeSecureUrlLax',
+      WarnSameSiteCrossSchemeSecureUrlStrict = 'WarnSameSiteCrossSchemeSecureUrlStrict',
+      WarnSameSiteCrossSchemeInsecureUrlMethodUnsafe = 'WarnSameSiteCrossSchemeInsecureUrlMethodUnsafe',
+      WarnSameSiteCrossSchemeInsecureUrlLax = 'WarnSameSiteCrossSchemeInsecureUrlLax',
+      WarnSameSiteCrossSchemeInsecureUrlStrict = 'WarnSameSiteCrossSchemeInsecureUrlStrict',
+    }
+
+    export enum SameSiteCookieOperation {
+      SetCookie = 'SetCookie',
+      ReadCookie = 'ReadCookie',
+    }
+
+    /**
+     * This information is currently necessary, as the front-end has a difficult
+     * time finding a specific cookie. With this, we can convey specific error
+     * information without the cookie.
+     */
+    export interface SameSiteCookieIssueDetails {
+      cookie: AffectedCookie;
+      cookieWarningReasons: SameSiteCookieWarningReason[];
+      cookieExclusionReasons: SameSiteCookieExclusionReason[];
+      /**
+       * Optionally identifies the site-for-cookies and the cookie url, which
+       * may be used by the front-end as additional context.
+       */
+      operation: SameSiteCookieOperation;
+      siteForCookies?: string;
+      cookieUrl?: string;
+      request?: AffectedRequest;
+    }
+
+    /**
+     * A unique identifier for the type of issue. Each type may use one of the
+     * optional fields in InspectorIssueDetails to convey more specific
+     * information about the kind of issue.
+     */
+    export enum InspectorIssueCode {
+      SameSiteCookieIssue = 'SameSiteCookieIssue',
+    }
+
+    /**
+     * This struct holds a list of optional fields with additional information
+     * specific to the kind of issue. When adding a new issue code, please also
+     * add a new optional field to this type.
+     */
+    export interface InspectorIssueDetails {
+      sameSiteCookieIssueDetails?: SameSiteCookieIssueDetails;
+    }
+
+    /**
+     * An inspector issue reported from the back-end.
+     */
+    export interface InspectorIssue {
+      code: InspectorIssueCode;
+      details: InspectorIssueDetails;
     }
 
     export enum GetEncodedResponseRequestEncoding {
@@ -701,7 +787,7 @@ declare namespace Protocol {
     }
 
     export interface IssueAddedEvent {
-      issue: Issue;
+      issue: InspectorIssue;
     }
   }
 

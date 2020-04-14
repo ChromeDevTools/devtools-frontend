@@ -447,9 +447,77 @@ experimental domain ApplicationCache
 experimental domain Audits
   depends on Network
 
-  type Issue extends object
+  # Information about a cookie that is affected by an inspector issue.
+  type AffectedCookie extends object
     properties
-      string code
+      # The following three properties uniquely identify a cookie
+      string name
+      string path
+      string domain
+
+  # Information about a request that is affected by an inspector issue.
+  type AffectedRequest extends object
+    properties
+      # The unique request id.
+      Network.RequestId requestId
+      optional string url
+
+  type SameSiteCookieExclusionReason extends string
+    enum
+      ExcludeSameSiteUnspecifiedTreatedAsLax
+      ExcludeSameSiteNoneInsecure
+
+  type SameSiteCookieWarningReason extends string
+    enum
+      WarnSameSiteUnspecifiedCrossSiteContext
+      WarnSameSiteNoneInsecure
+      WarnSameSiteUnspecifiedLaxAllowUnsafe
+      WarnSameSiteCrossSchemeSecureUrlMethodUnsafe
+      WarnSameSiteCrossSchemeSecureUrlLax
+      WarnSameSiteCrossSchemeSecureUrlStrict
+      WarnSameSiteCrossSchemeInsecureUrlMethodUnsafe
+      WarnSameSiteCrossSchemeInsecureUrlLax
+      WarnSameSiteCrossSchemeInsecureUrlStrict
+
+  type SameSiteCookieOperation extends string
+    enum
+      SetCookie
+      ReadCookie
+
+  # This information is currently necessary, as the front-end has a difficult
+  # time finding a specific cookie. With this, we can convey specific error
+  # information without the cookie.
+  type SameSiteCookieIssueDetails extends object
+    properties
+      AffectedCookie cookie
+      array of SameSiteCookieWarningReason cookieWarningReasons
+      array of SameSiteCookieExclusionReason cookieExclusionReasons
+      # Optionally identifies the site-for-cookies and the cookie url, which
+      # may be used by the front-end as additional context.
+      SameSiteCookieOperation operation
+      optional string siteForCookies
+      optional string cookieUrl
+      optional AffectedRequest request
+
+  # A unique identifier for the type of issue. Each type may use one of the
+  # optional fields in InspectorIssueDetails to convey more specific
+  # information about the kind of issue.
+  type InspectorIssueCode extends string
+    enum
+      SameSiteCookieIssue
+
+  # This struct holds a list of optional fields with additional information
+  # specific to the kind of issue. When adding a new issue code, please also
+  # add a new optional field to this type.
+  type InspectorIssueDetails extends object
+    properties
+      optional SameSiteCookieIssueDetails sameSiteCookieIssueDetails
+
+  # An inspector issue reported from the back-end.
+  type InspectorIssue extends object
+    properties
+      InspectorIssueCode code
+      InspectorIssueDetails details
 
   # Returns the response body and size if it were re-encoded with the specified settings. Only
   # applies to images.
@@ -483,7 +551,7 @@ experimental domain Audits
 
   event issueAdded
     parameters
-      Issue issue
+      InspectorIssue issue
 
 # Defines events for background web platform features.
 experimental domain BackgroundService

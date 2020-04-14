@@ -147,7 +147,7 @@ def _CheckDevtoolsLocalization(input_api, output_api, check_all_files=False):  #
 
 def _CheckDevtoolsStyle(input_api, output_api):
     results = [output_api.PresubmitNotifyResult('Running Devtools Style Check:')]
-    lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'test', 'run_lint_check.py')
+    lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'test', 'run_lint_check.js')
 
     front_end_directory = input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end')
     test_directory = input_api.os_path.join(input_api.PresubmitLocalPath(), 'test')
@@ -160,6 +160,7 @@ def _CheckDevtoolsStyle(input_api, output_api):
         input_api.os_path.join(input_api.PresubmitLocalPath(), '.eslintrc.js'),
         input_api.os_path.join(input_api.PresubmitLocalPath(), '.eslintignore'),
         input_api.os_path.join(scripts_directory, 'test', 'run_lint_check.py'),
+        input_api.os_path.join(scripts_directory, 'test', 'run_lint_check.js'),
         input_api.os_path.join(scripts_directory, '.eslintrc.js'),
         input_api.os_path.join(scripts_directory, 'eslint_rules'),
     ]
@@ -180,7 +181,8 @@ def _CheckDevtoolsStyle(input_api, output_api):
             results.append(output_api.PresubmitNotifyResult('No affected files for ESLint check'))
             return results
 
-    return _ExecuteSubProcess(input_api, output_api, lint_path, affected_files, results)
+    results.extend(_checkWithNodeScript(input_api, output_api, lint_path, affected_files))
+    return results
 
 
 def _CheckOptimizeSVGHashes(input_api, output_api):

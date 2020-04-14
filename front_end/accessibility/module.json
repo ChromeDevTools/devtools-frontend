@@ -1,33 +1,35 @@
 {
-    "extensions": [
-        {
-            "type": "view",
-            "location": "elements-sidebar",
-            "id": "accessibility.view",
-            "title": "Accessibility",
-            "order": 10,
-            "persistence": "permanent",
-            "className": "Accessibility.AccessibilitySidebarView"
-        }
-    ],
-    "dependencies": ["elements"],
-    "scripts": [],
-    "modules": [
-        "../generated/ARIAProperties.js",
-        "accessibility.js",
-        "accessibility-legacy.js",
-        "AccessibilityModel.js",
-        "AccessibilitySidebarView.js",
-        "AccessibilityNodeView.js",
-        "AccessibilityStrings.js",
-        "AccessibilitySubPane.js",
-        "ARIAAttributesView.js",
-        "ARIAMetadata.js",
-        "AXBreadcrumbsPane.js"
-    ],
-    "resources": [
-        "accessibilityNode.css",
-        "accessibilityProperties.css",
-        "axBreadcrumbs.css"
-    ]
+  "extensions": [
+    {
+      "type": "view",
+      "location": "elements-sidebar",
+      "id": "accessibility.view",
+      "title": "Accessibility",
+      "order": 10,
+      "persistence": "permanent",
+      "className": "Accessibility.AccessibilitySidebarView"
+    }
+  ],
+  "dependencies": [
+    "elements"
+  ],
+  "scripts": [],
+  "modules": [
+    "../generated/ARIAProperties.js",
+    "accessibility.js",
+    "accessibility-legacy.js",
+    "AccessibilityModel.js",
+    "AccessibilitySidebarView.js",
+    "AccessibilityNodeView.js",
+    "AccessibilityStrings.js",
+    "AccessibilitySubPane.js",
+    "ARIAAttributesView.js",
+    "ARIAMetadata.js",
+    "AXBreadcrumbsPane.js"
+  ],
+  "resources": [
+    "accessibilityNode.css",
+    "accessibilityProperties.css",
+    "axBreadcrumbs.css"
+  ]
 }

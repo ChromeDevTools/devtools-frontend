@@ -1,12 +1,12 @@
 {
-    "dependencies": [
-        "common",
-        "host"
-    ],
-    "scripts": [],
-    "modules": [
-        "services.js",
-        "services-legacy.js",
-        "ServiceManager.js"
-    ]
+  "dependencies": [
+    "common",
+    "host"
+  ],
+  "scripts": [],
+  "modules": [
+    "services.js",
+    "services-legacy.js",
+    "ServiceManager.js"
+  ]
 }

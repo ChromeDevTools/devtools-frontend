@@ -1,112 +1,112 @@
 {
-    "extensions": [
+  "extensions": [
+    {
+      "type": "action",
+      "category": "Settings",
+      "actionId": "settings.show",
+      "title": "Settings",
+      "className": "Settings.SettingsScreen.ActionDelegate",
+      "iconClass": "largeicon-settings-gear",
+      "bindings": [
         {
-            "type": "action",
-            "category": "Settings",
-            "actionId": "settings.show",
-            "title": "Settings",
-            "className": "Settings.SettingsScreen.ActionDelegate",
-            "iconClass": "largeicon-settings-gear",
-            "bindings": [
-                {
-                    "shortcut": "F1"
-                },
-                {
-                    "shortcut": "Shift+?"
-                }
-            ]
+          "shortcut": "F1"
         },
         {
-            "type": "action",
-            "category": "Settings",
-            "actionId": "settings.documentation",
-            "title": "Documentation",
-            "className": "Settings.SettingsScreen.ActionDelegate"
-        },
-        {
-            "type": "action",
-            "category": "Settings",
-            "actionId": "settings.shortcuts",
-            "title": "Shortcuts",
-            "className": "Settings.SettingsScreen.ActionDelegate"
-        },
-        {
-            "type": "@Common.Revealer",
-            "contextTypes": [
-                "Common.Setting"
-            ],
-            "className": "Settings.SettingsScreen.Revealer"
-        },
-        {
-            "type": "context-menu-item",
-            "location": "mainMenu/footer",
-            "actionId": "settings.shortcuts"
-        },
-        {
-            "type": "context-menu-item",
-            "location": "mainMenuHelp/default",
-            "actionId": "settings.documentation"
-        },
-        {
-            "type": "view",
-            "id": "settings-default",
-            "title": "Settings"
-        },
-        {
-            "type": "view",
-            "location": "settings-view",
-            "id": "preferences",
-            "title": "Preferences",
-            "order": 0,
-            "className": "Settings.GenericSettingsTab"
-        },
-        {
-            "type": "view",
-            "location": "settings-view",
-            "id": "experiments",
-            "title": "Experiments",
-            "order": 3,
-            "experiment": "*",
-            "className": "Settings.ExperimentsSettingsTab"
-        },
-        {
-            "type": "view",
-            "location": "settings-view",
-            "id": "blackbox",
-            "title": "Blackboxing",
-            "order": 4,
-            "className": "Settings.FrameworkBlackboxSettingsTab"
-        },
-        {
-            "type": "view",
-            "location": "settings-view",
-            "id": "keybinds",
-            "title": "Custom Shortcuts",
-            "order": 100,
-            "experiment": "customKeyboardShortcuts",
-            "className": "Settings.KeybindsSettingsTab"
-        },
-        {
-            "type": "@UI.ViewLocationResolver",
-            "name": "settings-view",
-            "category": "Settings",
-            "className": "Settings.SettingsScreen"
+          "shortcut": "Shift+?"
         }
-    ],
-    "dependencies": [
-        "components"
-    ],
-    "scripts": [],
-    "modules": [
-        "settings.js",
-        "settings-legacy.js",
-        "SettingsScreen.js",
-        "FrameworkBlackboxSettingsTab.js",
-        "KeybindsSettingsTab.js"
-    ],
-    "resources": [
-        "frameworkBlackboxSettingsTab.css",
-        "settingsScreen.css",
-        "keybindsSettingsTab.css"
-    ]
+      ]
+    },
+    {
+      "type": "action",
+      "category": "Settings",
+      "actionId": "settings.documentation",
+      "title": "Documentation",
+      "className": "Settings.SettingsScreen.ActionDelegate"
+    },
+    {
+      "type": "action",
+      "category": "Settings",
+      "actionId": "settings.shortcuts",
+      "title": "Shortcuts",
+      "className": "Settings.SettingsScreen.ActionDelegate"
+    },
+    {
+      "type": "@Common.Revealer",
+      "contextTypes": [
+        "Common.Setting"
+      ],
+      "className": "Settings.SettingsScreen.Revealer"
+    },
+    {
+      "type": "context-menu-item",
+      "location": "mainMenu/footer",
+      "actionId": "settings.shortcuts"
+    },
+    {
+      "type": "context-menu-item",
+      "location": "mainMenuHelp/default",
+      "actionId": "settings.documentation"
+    },
+    {
+      "type": "view",
+      "id": "settings-default",
+      "title": "Settings"
+    },
+    {
+      "type": "view",
+      "location": "settings-view",
+      "id": "preferences",
+      "title": "Preferences",
+      "order": 0,
+      "className": "Settings.GenericSettingsTab"
+    },
+    {
+      "type": "view",
+      "location": "settings-view",
+      "id": "experiments",
+      "title": "Experiments",
+      "order": 3,
+      "experiment": "*",
+      "className": "Settings.ExperimentsSettingsTab"
+    },
+    {
+      "type": "view",
+      "location": "settings-view",
+      "id": "blackbox",
+      "title": "Blackboxing",
+      "order": 4,
+      "className": "Settings.FrameworkBlackboxSettingsTab"
+    },
+    {
+      "type": "view",
+      "location": "settings-view",
+      "id": "keybinds",
+      "title": "Custom Shortcuts",
+      "order": 100,
+      "experiment": "customKeyboardShortcuts",
+      "className": "Settings.KeybindsSettingsTab"
+    },
+    {
+      "type": "@UI.ViewLocationResolver",
+      "name": "settings-view",
+      "category": "Settings",
+      "className": "Settings.SettingsScreen"
+    }
+  ],
+  "dependencies": [
+    "components"
+  ],
+  "scripts": [],
+  "modules": [
+    "settings.js",
+    "settings-legacy.js",
+    "SettingsScreen.js",
+    "FrameworkBlackboxSettingsTab.js",
+    "KeybindsSettingsTab.js"
+  ],
+  "resources": [
+    "frameworkBlackboxSettingsTab.css",
+    "settingsScreen.css",
+    "keybindsSettingsTab.css"
+  ]
 }

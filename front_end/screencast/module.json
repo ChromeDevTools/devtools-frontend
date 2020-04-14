@@ -1,36 +1,36 @@
 {
-    "extensions": [
-        {
-            "type": "@Common.AppProvider",
-            "className": "Screencast.ScreencastAppProvider",
-            "order": 1
-        },
-        {
-            "type": "@UI.ToolbarItem.Provider",
-            "className": "Screencast.ScreencastApp.ToolbarButtonProvider",
-            "order": 1,
-            "location": "main-toolbar-left"
-        },
-        {
-            "type": "context-menu-item",
-            "location": "mainMenu",
-            "order": 10,
-            "actionId": "components.request-app-banner"
-        }
-    ],
-    "dependencies": [
-        "components",
-        "emulation"
-    ],
-    "scripts": [],
-    "modules": [
-        "screencast.js",
-        "screencast-legacy.js",
-        "InputModel.js",
-        "ScreencastApp.js",
-        "ScreencastView.js"
-    ],
-    "resources": [
-        "screencastView.css"
-    ]
+  "extensions": [
+    {
+      "type": "@Common.AppProvider",
+      "className": "Screencast.ScreencastAppProvider",
+      "order": 1
+    },
+    {
+      "type": "@UI.ToolbarItem.Provider",
+      "className": "Screencast.ScreencastApp.ToolbarButtonProvider",
+      "order": 1,
+      "location": "main-toolbar-left"
+    },
+    {
+      "type": "context-menu-item",
+      "location": "mainMenu",
+      "order": 10,
+      "actionId": "components.request-app-banner"
+    }
+  ],
+  "dependencies": [
+    "components",
+    "emulation"
+  ],
+  "scripts": [],
+  "modules": [
+    "screencast.js",
+    "screencast-legacy.js",
+    "InputModel.js",
+    "ScreencastApp.js",
+    "ScreencastView.js"
+  ],
+  "resources": [
+    "screencastView.css"
+  ]
 }

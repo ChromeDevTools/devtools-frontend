@@ -1,17 +1,17 @@
 {
-    "dependencies": [
-        "ui"
-    ],
-    "scripts": [],
-    "resources": [
-        "dataGrid.css"
-    ],
-    "modules": [
-        "data_grid.js",
-        "data_grid-legacy.js",
-        "DataGrid.js",
-        "ViewportDataGrid.js",
-        "SortableDataGrid.js",
-        "ShowMoreDataGridNode.js"
-    ]
+  "dependencies": [
+    "ui"
+  ],
+  "scripts": [],
+  "resources": [
+    "dataGrid.css"
+  ],
+  "modules": [
+    "data_grid.js",
+    "data_grid-legacy.js",
+    "DataGrid.js",
+    "ViewportDataGrid.js",
+    "SortableDataGrid.js",
+    "ShowMoreDataGridNode.js"
+  ]
 }

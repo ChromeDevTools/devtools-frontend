@@ -1,163 +1,163 @@
 {
-    "extensions": [
+  "extensions": [
+    {
+      "type": "view",
+      "location": "panel",
+      "id": "heap_profiler",
+      "title": "Memory",
+      "order": 60,
+      "className": "Profiler.HeapProfilerPanel"
+    },
+    {
+      "type": "view",
+      "location": "drawer-view",
+      "id": "live_heap_profile",
+      "title": "Live Heap Profile",
+      "persistence": "closeable",
+      "className": "Profiler.LiveHeapProfileView",
+      "order": 100,
+      "experiment": "liveHeapProfile"
+    },
+    {
+      "type": "@UI.ContextMenu.Provider",
+      "contextTypes": [
+        "SDK.RemoteObject"
+      ],
+      "className": "Profiler.HeapProfilerPanel"
+    },
+    {
+      "type": "setting",
+      "category": "Performance",
+      "title": "High resolution CPU profiling",
+      "settingName": "highResolutionCpuProfiling",
+      "settingType": "boolean",
+      "defaultValue": true
+    },
+    {
+      "type": "setting",
+      "category": "Performance",
+      "title": "Show native functions in JS Profile",
+      "settingName": "showNativeFunctionsInJSProfile",
+      "settingType": "boolean",
+      "defaultValue": true
+    },
+    {
+      "type": "action",
+      "actionId": "live-heap-profile.toggle-recording",
+      "iconClass": "largeicon-start-recording",
+      "toggleable": true,
+      "toggledIconClass": "largeicon-stop-recording",
+      "toggleWithRedColor": true,
+      "className": "Profiler.LiveHeapProfileView.ActionDelegate",
+      "category": "Memory",
+      "experiment": "liveHeapProfile",
+      "options": [
         {
-            "type": "view",
-            "location": "panel",
-            "id": "heap_profiler",
-            "title": "Memory",
-            "order": 60,
-            "className": "Profiler.HeapProfilerPanel"
+          "value": true,
+          "title": "Start recording heap allocations"
         },
         {
-            "type": "view",
-            "location": "drawer-view",
-            "id": "live_heap_profile",
-            "title": "Live Heap Profile",
-            "persistence": "closeable",
-            "className": "Profiler.LiveHeapProfileView",
-            "order": 100,
-            "experiment": "liveHeapProfile"
-        },
-        {
-            "type": "@UI.ContextMenu.Provider",
-            "contextTypes": [
-                "SDK.RemoteObject"
-            ],
-            "className": "Profiler.HeapProfilerPanel"
-        },
-        {
-            "type": "setting",
-            "category": "Performance",
-            "title": "High resolution CPU profiling",
-            "settingName": "highResolutionCpuProfiling",
-            "settingType": "boolean",
-            "defaultValue": true
-        },
-        {
-            "type": "setting",
-            "category": "Performance",
-            "title": "Show native functions in JS Profile",
-            "settingName": "showNativeFunctionsInJSProfile",
-            "settingType": "boolean",
-            "defaultValue": true
-        },
-        {
-            "type": "action",
-            "actionId": "live-heap-profile.toggle-recording",
-            "iconClass": "largeicon-start-recording",
-            "toggleable": true,
-            "toggledIconClass": "largeicon-stop-recording",
-            "toggleWithRedColor": true,
-            "className": "Profiler.LiveHeapProfileView.ActionDelegate",
-            "category": "Memory",
-            "experiment": "liveHeapProfile",
-            "options": [
-                {
-                    "value": true,
-                    "title": "Start recording heap allocations"
-                },
-                {
-                    "value": false,
-                    "title": "Stop recording heap allocations"
-                }
-            ]
-        },
-        {
-            "type": "action",
-            "actionId": "live-heap-profile.start-with-reload",
-            "iconClass": "largeicon-refresh",
-            "className": "Profiler.LiveHeapProfileView.ActionDelegate",
-            "category": "Memory",
-            "experiment": "liveHeapProfile",
-            "title": "Start recording heap allocations and reload the page"
-        },
-        {
-            "type": "action",
-            "actionId": "profiler.heap-toggle-recording",
-            "category": "Memory",
-            "iconClass": "largeicon-start-recording",
-            "title": "Start/stop recording",
-            "toggleable": true,
-            "toggledIconClass": "largeicon-stop-recording",
-            "toggleWithRedColor": true,
-            "contextTypes": [
-                "Profiler.HeapProfilerPanel"
-            ],
-            "className": "Profiler.HeapProfilerPanel",
-            "bindings": [
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "Ctrl+E"
-                },
-                {
-                    "platform": "mac",
-                    "shortcut": "Meta+E"
-                }
-            ]
-        },
-        {
-            "type": "action",
-            "actionId": "profiler.js-toggle-recording",
-            "category": "JavaScript Profiler",
-            "title": "Start/stop recording",
-            "iconClass": "largeicon-start-recording",
-            "toggleable": true,
-            "toggledIconClass": "largeicon-stop-recording",
-            "toggleWithRedColor": true,
-            "contextTypes": [
-                "Profiler.JSProfilerPanel"
-            ],
-            "className": "Profiler.JSProfilerPanel",
-            "bindings": [
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "Ctrl+E"
-                },
-                {
-                    "platform": "mac",
-                    "shortcut": "Meta+E"
-                }
-            ]
+          "value": false,
+          "title": "Stop recording heap allocations"
         }
-    ],
-    "dependencies": [
-        "components",
-        "perf_ui",
-        "data_grid",
-        "heap_snapshot_model",
-        "object_ui"
-    ],
-    "scripts": [],
-    "modules": [
-        "profiler.js",
-        "profiler-legacy.js",
-        "ProfileHeader.js",
-        "ProfilesPanel.js",
-        "ProfileView.js",
-        "ProfileDataGrid.js",
-        "ProfileSidebarTreeElement.js",
-        "BottomUpProfileDataGrid.js",
-        "TopDownProfileDataGrid.js",
-        "ChildrenProvider.js",
-        "CPUProfileFlameChart.js",
-        "CPUProfileView.js",
-        "HeapProfileView.js",
-        "HeapProfilerPanel.js",
-        "HeapSnapshotProxy.js",
-        "HeapSnapshotDataGrids.js",
-        "HeapSnapshotGridNodes.js",
-        "HeapSnapshotView.js",
-        "HeapTimelineOverview.js",
-        "IsolateSelector.js",
-        "LiveHeapProfileView.js",
-        "ProfileLauncherView.js",
-        "ProfileTypeRegistry.js"
-    ],
-    "resources": [
-        "heapProfiler.css",
-        "liveHeapProfile.css",
-        "profileLauncherView.css",
-        "profilesPanel.css",
-        "profilesSidebarTree.css"
-    ]
+      ]
+    },
+    {
+      "type": "action",
+      "actionId": "live-heap-profile.start-with-reload",
+      "iconClass": "largeicon-refresh",
+      "className": "Profiler.LiveHeapProfileView.ActionDelegate",
+      "category": "Memory",
+      "experiment": "liveHeapProfile",
+      "title": "Start recording heap allocations and reload the page"
+    },
+    {
+      "type": "action",
+      "actionId": "profiler.heap-toggle-recording",
+      "category": "Memory",
+      "iconClass": "largeicon-start-recording",
+      "title": "Start/stop recording",
+      "toggleable": true,
+      "toggledIconClass": "largeicon-stop-recording",
+      "toggleWithRedColor": true,
+      "contextTypes": [
+        "Profiler.HeapProfilerPanel"
+      ],
+      "className": "Profiler.HeapProfilerPanel",
+      "bindings": [
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+E"
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+E"
+        }
+      ]
+    },
+    {
+      "type": "action",
+      "actionId": "profiler.js-toggle-recording",
+      "category": "JavaScript Profiler",
+      "title": "Start/stop recording",
+      "iconClass": "largeicon-start-recording",
+      "toggleable": true,
+      "toggledIconClass": "largeicon-stop-recording",
+      "toggleWithRedColor": true,
+      "contextTypes": [
+        "Profiler.JSProfilerPanel"
+      ],
+      "className": "Profiler.JSProfilerPanel",
+      "bindings": [
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+E"
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+E"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    "components",
+    "perf_ui",
+    "data_grid",
+    "heap_snapshot_model",
+    "object_ui"
+  ],
+  "scripts": [],
+  "modules": [
+    "profiler.js",
+    "profiler-legacy.js",
+    "ProfileHeader.js",
+    "ProfilesPanel.js",
+    "ProfileView.js",
+    "ProfileDataGrid.js",
+    "ProfileSidebarTreeElement.js",
+    "BottomUpProfileDataGrid.js",
+    "TopDownProfileDataGrid.js",
+    "ChildrenProvider.js",
+    "CPUProfileFlameChart.js",
+    "CPUProfileView.js",
+    "HeapProfileView.js",
+    "HeapProfilerPanel.js",
+    "HeapSnapshotProxy.js",
+    "HeapSnapshotDataGrids.js",
+    "HeapSnapshotGridNodes.js",
+    "HeapSnapshotView.js",
+    "HeapTimelineOverview.js",
+    "IsolateSelector.js",
+    "LiveHeapProfileView.js",
+    "ProfileLauncherView.js",
+    "ProfileTypeRegistry.js"
+  ],
+  "resources": [
+    "heapProfiler.css",
+    "liveHeapProfile.css",
+    "profileLauncherView.css",
+    "profilesPanel.css",
+    "profilesSidebarTree.css"
+  ]
 }

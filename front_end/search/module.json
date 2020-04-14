@@ -1,17 +1,17 @@
 {
-    "dependencies": [
-        "components"
-    ],
-    "scripts": [],
-    "modules": [
-        "search.js",
-        "search-legacy.js",
-        "SearchView.js",
-        "SearchConfig.js",
-        "SearchResultsPane.js"
-    ],
-    "resources": [
-        "searchResultsPane.css",
-        "searchView.css"
-    ]
+  "dependencies": [
+    "components"
+  ],
+  "scripts": [],
+  "modules": [
+    "search.js",
+    "search-legacy.js",
+    "SearchView.js",
+    "SearchConfig.js",
+    "SearchResultsPane.js"
+  ],
+  "resources": [
+    "searchResultsPane.css",
+    "searchView.css"
+  ]
 }

@@ -1,31 +1,31 @@
 {
-    "extensions": [
-        {
-            "type": "@TextUtils.TokenizerFactory",
-            "className": "TextEditor.CodeMirrorUtils.TokenizerFactory"
-        },
-        {
-            "type": "@UI.TextEditorFactory",
-            "className": "TextEditor.CodeMirrorTextEditorFactory"
-        }
-    ],
-    "dependencies": [
-        "ui",
-        "platform",
-        "common",
-        "cm",
-        "cm_web_modes"
-    ],
-    "scripts": [],
-    "modules": [
-        "text_editor.js",
-        "text_editor-legacy.js",
-        "CodeMirrorUtils.js",
-        "TextEditorAutocompleteController.js",
-        "CodeMirrorTextEditor.js"
-    ],
-    "resources": [
-        "autocompleteTooltip.css",
-        "cmdevtools.css"
-    ]
+  "extensions": [
+    {
+      "type": "@TextUtils.TokenizerFactory",
+      "className": "TextEditor.CodeMirrorUtils.TokenizerFactory"
+    },
+    {
+      "type": "@UI.TextEditorFactory",
+      "className": "TextEditor.CodeMirrorTextEditorFactory"
+    }
+  ],
+  "dependencies": [
+    "ui",
+    "platform",
+    "common",
+    "cm",
+    "cm_web_modes"
+  ],
+  "scripts": [],
+  "modules": [
+    "text_editor.js",
+    "text_editor-legacy.js",
+    "CodeMirrorUtils.js",
+    "TextEditorAutocompleteController.js",
+    "CodeMirrorTextEditor.js"
+  ],
+  "resources": [
+    "autocompleteTooltip.css",
+    "cmdevtools.css"
+  ]
 }

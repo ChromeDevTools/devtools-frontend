@@ -1,471 +1,471 @@
 {
-    "dependencies": [
-        "common",
-        "host",
-        "platform",
-        "protocol_client"
-    ],
-    "extensions": [
+  "dependencies": [
+    "common",
+    "host",
+    "platform",
+    "protocol_client"
+  ],
+  "extensions": [
+    {
+      "type": "setting",
+      "settingName": "skipStackFramesPattern",
+      "settingType": "regex",
+      "defaultValue": ""
+    },
+    {
+      "type": "setting",
+      "settingName": "skipContentScripts",
+      "settingType": "boolean",
+      "defaultValue": false
+    },
+    {
+      "type": "setting",
+      "category": "Console",
+      "title": "Preserve log upon navigation",
+      "settingName": "preserveConsoleLog",
+      "settingType": "boolean",
+      "defaultValue": false,
+      "options": [
         {
-            "type": "setting",
-            "settingName": "skipStackFramesPattern",
-            "settingType": "regex",
-            "defaultValue": ""
+          "value": true,
+          "title": "Preserve log upon navigation"
         },
         {
-            "type": "setting",
-            "settingName": "skipContentScripts",
-            "settingType": "boolean",
-            "defaultValue": false
-        },
-        {
-            "type": "setting",
-            "category": "Console",
-            "title": "Preserve log upon navigation",
-            "settingName": "preserveConsoleLog",
-            "settingType": "boolean",
-            "defaultValue": false,
-            "options": [
-                {
-                    "value": true,
-                    "title": "Preserve log upon navigation"
-                },
-                {
-                    "value": false,
-                    "title": "Do not preserve log upon navigation"
-                }
-            ]
-        },
-        {
-            "type": "setting",
-            "category": "Debugger",
-            "settingName": "pauseOnExceptionEnabled",
-            "settingType": "boolean",
-            "defaultValue": false,
-            "options": [
-                {
-                    "value": true,
-                    "title": "Pause on exceptions"
-                },
-                {
-                    "value": false,
-                    "title": "Do not pause on exceptions"
-                }
-            ]
-        },
-        {
-            "type": "setting",
-            "settingName": "pauseOnCaughtException",
-            "settingType": "boolean",
-            "defaultValue": false
-        },
-        {
-            "type": "setting",
-            "category": "Debugger",
-            "title": "Disable JavaScript",
-            "settingName": "javaScriptDisabled",
-            "settingType": "boolean",
-            "storageType": "session",
-            "order": 1,
-            "defaultValue": false,
-            "options": [
-                {
-                    "value": true,
-                    "title": "Disable JavaScript"
-                },
-                {
-                    "value": false,
-                    "title": "Enable JavaScript"
-                }
-            ]
-        },
-        {
-            "type": "setting",
-            "category": "Debugger",
-            "title": "Disable async stack traces",
-            "settingName": "disableAsyncStackTraces",
-            "settingType": "boolean",
-            "defaultValue": false,
-            "order": 2,
-            "options": [
-                {
-                    "value": true,
-                    "title": "Do not capture async stack traces"
-                },
-                {
-                    "value": false,
-                    "title": "Capture async stack traces"
-                }
-            ]
-        },
-        {
-            "type": "setting",
-            "category": "Debugger",
-            "settingName": "breakpointsActive",
-            "settingType": "boolean",
-            "storageType": "session",
-            "defaultValue": true
-        },
-        {
-            "type": "setting",
-            "category": "Elements",
-            "title": "Show rulers",
-            "settingName": "showMetricsRulers",
-            "settingType": "boolean",
-            "defaultValue": false
-        },
-        {
-            "type": "setting",
-            "category": "Rendering",
-            "settingName": "showPaintRects",
-            "settingType": "boolean",
-            "storageType": "session",
-            "options": [
-                {
-                    "value": true,
-                    "title": "Show paint flashing rectangles"
-                },
-                {
-                    "value": false,
-                    "title": "Hide paint flashing rectangles"
-                }
-            ],
-            "defaultValue": false
-        },
-        {
-            "type": "setting",
-            "category": "Rendering",
-            "settingName": "showLayoutShiftRegions",
-            "settingType": "boolean",
-            "storageType": "session",
-            "options": [
-                {
-                    "value": true,
-                    "title": "Show layout shift regions"
-                },
-                {
-                    "value": false,
-                    "title": "Hide layout shift regions"
-                }
-            ],
-            "defaultValue": false
-        },
-        {
-            "type": "setting",
-            "category": "Rendering",
-            "settingName": "showAdHighlights",
-            "settingType": "boolean",
-            "storageType": "session",
-            "options": [
-                {
-                    "value": true,
-                    "title": "Highlight ad frames"
-                },
-                {
-                    "value": false,
-                    "title": "Do not highlight ad frames"
-                }
-            ],
-            "defaultValue": false
-        },
-        {
-            "type": "setting",
-            "category": "Rendering",
-            "settingName": "showDebugBorders",
-            "settingType": "boolean",
-            "storageType": "session",
-            "options": [
-                {
-                    "value": true,
-                    "title": "Show layer borders"
-                },
-                {
-                    "value": false,
-                    "title": "Hide layer borders"
-                }
-            ],
-            "defaultValue": false
-        },
-        {
-            "type": "setting",
-            "category": "Rendering",
-            "settingName": "showFPSCounter",
-            "settingType": "boolean",
-            "storageType": "session",
-            "options": [
-                {
-                    "value": true,
-                    "title": "Show frames per second (FPS) meter"
-                },
-                {
-                    "value": false,
-                    "title": "Hide frames per second (FPS) meter"
-                }
-            ],
-            "defaultValue": false
-        },
-        {
-            "type": "setting",
-            "category": "Rendering",
-            "settingName": "showScrollBottleneckRects",
-            "settingType": "boolean",
-            "storageType": "session",
-            "options": [
-                {
-                    "value": true,
-                    "title": "Show scroll performance bottlenecks"
-                },
-                {
-                    "value": false,
-                    "title": "Hide scroll performance bottlenecks"
-                }
-            ],
-            "defaultValue": false
-        },
-        {
-            "type": "setting",
-            "category": "Rendering",
-            "settingName": "showHitTestBorders",
-            "settingType": "boolean",
-            "storageType": "session",
-            "options": [
-                {
-                    "value": true,
-                    "title": "Show hit-test borders"
-                },
-                {
-                    "value": false,
-                    "title": "Hide hit-test borders"
-                }
-            ],
-            "defaultValue": false
-        },
-        {
-            "type": "setting",
-            "category": "Rendering",
-            "settingName": "emulatedCSSMedia",
-            "settingType": "enum",
-            "storageType": "session",
-            "defaultValue": "",
-            "options": [
-                {
-                    "title": "Do not emulate CSS media type",
-                    "text": "No emulation",
-                    "value": ""
-                },
-                {
-                    "title": "Emulate CSS print media type",
-                    "text": "print",
-                    "value": "print"
-                },
-                {
-                    "title": "Emulate CSS screen media type",
-                    "text": "screen",
-                    "value": "screen"
-                }
-            ],
-            "tags": "query",
-            "title": "Emulate CSS media type"
-        },
-        {
-            "type": "setting",
-            "category": "Rendering",
-            "settingName": "emulatedCSSMediaFeaturePrefersColorScheme",
-            "settingType": "enum",
-            "storageType": "session",
-            "defaultValue": "",
-            "options": [
-                {
-                    "title": "Do not emulate CSS prefers-color-scheme",
-                    "text": "No emulation",
-                    "value": ""
-                },
-                {
-                    "title": "Emulate CSS prefers-color-scheme: light",
-                    "text": "prefers-color-scheme: light",
-                    "value": "light"
-                },
-                {
-                  "title": "Emulate CSS prefers-color-scheme: dark",
-                  "text": "prefers-color-scheme: dark",
-                  "value": "dark"
-                }
-            ],
-            "tags": "query",
-            "title": "Emulate CSS media feature prefers-color-scheme"
-        },
-        {
-          "type": "setting",
-          "category": "Rendering",
-          "settingName": "emulatedCSSMediaFeaturePrefersReducedMotion",
-          "settingType": "enum",
-          "storageType": "session",
-          "defaultValue": "",
-          "options": [
-            {
-              "title": "Do not emulate CSS prefers-reduced-motion",
-              "text": "No emulation",
-              "value": ""
-            },
-            {
-              "title": "Emulate CSS prefers-reduced-motion: reduce",
-              "text": "prefers-reduced-motion: reduce",
-              "value": "reduce"
-            }
-          ],
-          "tags": "query",
-          "title": "Emulate CSS media feature prefers-reduced-motion"
-        },
-        {
-          "type": "setting",
-          "category": "Rendering",
-          "settingName": "emulatedVisionDeficiency",
-          "settingType": "enum",
-          "storageType": "session",
-          "defaultValue": "",
-          "options": [
-            {
-              "title": "Do not emulate any vision deficiency",
-              "text": "No emulation",
-              "value": "none"
-            },
-            {
-              "title": "Emulate blurred vision",
-              "text": "Blurred vision",
-              "value": "blurredVision"
-            },
-            {
-              "title": "Emulate protanopia",
-              "text": "Protanopia",
-              "value": "protanopia"
-            },
-            {
-              "title": "Emulate deuteranopia",
-              "text": "Deuteranopia",
-              "value": "deuteranopia"
-            },
-            {
-              "title": "Emulate tritanopia",
-              "text": "Tritanopia",
-              "value": "tritanopia"
-            },
-            {
-              "title": "Emulate achromatopsia",
-              "text": "Achromatopsia",
-              "value": "achromatopsia"
-            }
-          ],
-          "tags": "query",
-          "title": "Emulate vision deficiencies"
-        },
-        {
-            "type": "setting",
-            "category": "Console",
-            "title": "Enable custom formatters",
-            "settingName": "customFormatters",
-            "settingType": "boolean",
-            "defaultValue": false
-        },
-        {
-            "type": "setting",
-            "category": "Network",
-            "title": "Enable request blocking",
-            "settingName": "requestBlockingEnabled",
-            "settingType": "boolean",
-            "storageType": "session",
-            "defaultValue": false,
-            "options": [
-                {
-                    "value": true,
-                    "title": "Enable request blocking"
-                },
-                {
-                    "value": false,
-                    "title": "Disable request blocking"
-                }
-            ]
-        },
-        {
-            "type": "setting",
-            "category": "Network",
-            "title": "Disable cache (while DevTools is open)",
-            "settingName": "cacheDisabled",
-            "settingType": "boolean",
-            "order": 0,
-            "defaultValue": false,
-            "userActionCondition": "hasOtherClients",
-            "options": [
-                {
-                    "value": true,
-                    "title": "Disable cache (while DevTools is open)"
-                },
-                {
-                    "value": false,
-                    "title": "Enable cache"
-                }
-            ]
+          "value": false,
+          "title": "Do not preserve log upon navigation"
         }
-    ],
-    "scripts": [],
-    "modules": [
-        "../generated/SupportedCSSProperties.js",
-        "sdk.js",
-        "sdk-legacy.js",
-        "SDKModel.js",
-        "Connections.js",
-        "CompilerSourceMappingContentProvider.js",
-        "Cookie.js",
-        "CookieModel.js",
-        "CookieParser.js",
-        "ProfileTreeModel.js",
-        "Issue.js",
-        "IssuesModel.js",
-        "RelatedIssue.js",
-        "ServerTiming.js",
-        "CPUProfileDataModel.js",
-        "CPUProfilerModel.js",
-        "CSSMatchedStyles.js",
-        "CSSMedia.js",
-        "CSSMetadata.js",
-        "CSSModel.js",
-        "CSSProperty.js",
-        "CSSRule.js",
-        "CSSStyleDeclaration.js",
-        "CSSStyleSheetHeader.js",
-        "ChildTargetManager.js",
-        "DOMDebuggerModel.js",
-        "DOMModel.js",
-        "DebuggerModel.js",
-        "EmulationModel.js",
-        "HARLog.js",
-        "LayerTreeBase.js",
-        "LogModel.js",
-        "ServiceWorkerManager.js",
-        "TracingManager.js",
-        "TracingModel.js",
-        "OverlayModel.js",
-        "RuntimeModel.js",
-        "IsolateManager.js",
-        "ScreenCaptureModel.js",
-        "Script.js",
-        "ServiceWorkerCacheModel.js",
-        "RemoteObject.js",
-        "Resource.js",
-        "ResourceTreeModel.js",
-        "SecurityOriginManager.js",
-        "SourceMap.js",
-        "SourceMapManager.js",
-        "NetworkManager.js",
-        "NetworkLog.js",
-        "NetworkRequest.js",
-        "PaintProfiler.js",
-        "HeapProfilerModel.js",
-        "PerformanceMetricsModel.js",
-        "FilmStripModel.js",
-        "ConsoleModel.js",
-        "wasm_source_map/pkg/wasm_source_map.js"
-    ],
-    "skip_compilation": [
-        "wasm_source_map/pkg/wasm_source_map.js"
-    ]
+      ]
+    },
+    {
+      "type": "setting",
+      "category": "Debugger",
+      "settingName": "pauseOnExceptionEnabled",
+      "settingType": "boolean",
+      "defaultValue": false,
+      "options": [
+        {
+          "value": true,
+          "title": "Pause on exceptions"
+        },
+        {
+          "value": false,
+          "title": "Do not pause on exceptions"
+        }
+      ]
+    },
+    {
+      "type": "setting",
+      "settingName": "pauseOnCaughtException",
+      "settingType": "boolean",
+      "defaultValue": false
+    },
+    {
+      "type": "setting",
+      "category": "Debugger",
+      "title": "Disable JavaScript",
+      "settingName": "javaScriptDisabled",
+      "settingType": "boolean",
+      "storageType": "session",
+      "order": 1,
+      "defaultValue": false,
+      "options": [
+        {
+          "value": true,
+          "title": "Disable JavaScript"
+        },
+        {
+          "value": false,
+          "title": "Enable JavaScript"
+        }
+      ]
+    },
+    {
+      "type": "setting",
+      "category": "Debugger",
+      "title": "Disable async stack traces",
+      "settingName": "disableAsyncStackTraces",
+      "settingType": "boolean",
+      "defaultValue": false,
+      "order": 2,
+      "options": [
+        {
+          "value": true,
+          "title": "Do not capture async stack traces"
+        },
+        {
+          "value": false,
+          "title": "Capture async stack traces"
+        }
+      ]
+    },
+    {
+      "type": "setting",
+      "category": "Debugger",
+      "settingName": "breakpointsActive",
+      "settingType": "boolean",
+      "storageType": "session",
+      "defaultValue": true
+    },
+    {
+      "type": "setting",
+      "category": "Elements",
+      "title": "Show rulers",
+      "settingName": "showMetricsRulers",
+      "settingType": "boolean",
+      "defaultValue": false
+    },
+    {
+      "type": "setting",
+      "category": "Rendering",
+      "settingName": "showPaintRects",
+      "settingType": "boolean",
+      "storageType": "session",
+      "options": [
+        {
+          "value": true,
+          "title": "Show paint flashing rectangles"
+        },
+        {
+          "value": false,
+          "title": "Hide paint flashing rectangles"
+        }
+      ],
+      "defaultValue": false
+    },
+    {
+      "type": "setting",
+      "category": "Rendering",
+      "settingName": "showLayoutShiftRegions",
+      "settingType": "boolean",
+      "storageType": "session",
+      "options": [
+        {
+          "value": true,
+          "title": "Show layout shift regions"
+        },
+        {
+          "value": false,
+          "title": "Hide layout shift regions"
+        }
+      ],
+      "defaultValue": false
+    },
+    {
+      "type": "setting",
+      "category": "Rendering",
+      "settingName": "showAdHighlights",
+      "settingType": "boolean",
+      "storageType": "session",
+      "options": [
+        {
+          "value": true,
+          "title": "Highlight ad frames"
+        },
+        {
+          "value": false,
+          "title": "Do not highlight ad frames"
+        }
+      ],
+      "defaultValue": false
+    },
+    {
+      "type": "setting",
+      "category": "Rendering",
+      "settingName": "showDebugBorders",
+      "settingType": "boolean",
+      "storageType": "session",
+      "options": [
+        {
+          "value": true,
+          "title": "Show layer borders"
+        },
+        {
+          "value": false,
+          "title": "Hide layer borders"
+        }
+      ],
+      "defaultValue": false
+    },
+    {
+      "type": "setting",
+      "category": "Rendering",
+      "settingName": "showFPSCounter",
+      "settingType": "boolean",
+      "storageType": "session",
+      "options": [
+        {
+          "value": true,
+          "title": "Show frames per second (FPS) meter"
+        },
+        {
+          "value": false,
+          "title": "Hide frames per second (FPS) meter"
+        }
+      ],
+      "defaultValue": false
+    },
+    {
+      "type": "setting",
+      "category": "Rendering",
+      "settingName": "showScrollBottleneckRects",
+      "settingType": "boolean",
+      "storageType": "session",
+      "options": [
+        {
+          "value": true,
+          "title": "Show scroll performance bottlenecks"
+        },
+        {
+          "value": false,
+          "title": "Hide scroll performance bottlenecks"
+        }
+      ],
+      "defaultValue": false
+    },
+    {
+      "type": "setting",
+      "category": "Rendering",
+      "settingName": "showHitTestBorders",
+      "settingType": "boolean",
+      "storageType": "session",
+      "options": [
+        {
+          "value": true,
+          "title": "Show hit-test borders"
+        },
+        {
+          "value": false,
+          "title": "Hide hit-test borders"
+        }
+      ],
+      "defaultValue": false
+    },
+    {
+      "type": "setting",
+      "category": "Rendering",
+      "settingName": "emulatedCSSMedia",
+      "settingType": "enum",
+      "storageType": "session",
+      "defaultValue": "",
+      "options": [
+        {
+          "title": "Do not emulate CSS media type",
+          "text": "No emulation",
+          "value": ""
+        },
+        {
+          "title": "Emulate CSS print media type",
+          "text": "print",
+          "value": "print"
+        },
+        {
+          "title": "Emulate CSS screen media type",
+          "text": "screen",
+          "value": "screen"
+        }
+      ],
+      "tags": "query",
+      "title": "Emulate CSS media type"
+    },
+    {
+      "type": "setting",
+      "category": "Rendering",
+      "settingName": "emulatedCSSMediaFeaturePrefersColorScheme",
+      "settingType": "enum",
+      "storageType": "session",
+      "defaultValue": "",
+      "options": [
+        {
+          "title": "Do not emulate CSS prefers-color-scheme",
+          "text": "No emulation",
+          "value": ""
+        },
+        {
+          "title": "Emulate CSS prefers-color-scheme: light",
+          "text": "prefers-color-scheme: light",
+          "value": "light"
+        },
+        {
+          "title": "Emulate CSS prefers-color-scheme: dark",
+          "text": "prefers-color-scheme: dark",
+          "value": "dark"
+        }
+      ],
+      "tags": "query",
+      "title": "Emulate CSS media feature prefers-color-scheme"
+    },
+    {
+      "type": "setting",
+      "category": "Rendering",
+      "settingName": "emulatedCSSMediaFeaturePrefersReducedMotion",
+      "settingType": "enum",
+      "storageType": "session",
+      "defaultValue": "",
+      "options": [
+        {
+          "title": "Do not emulate CSS prefers-reduced-motion",
+          "text": "No emulation",
+          "value": ""
+        },
+        {
+          "title": "Emulate CSS prefers-reduced-motion: reduce",
+          "text": "prefers-reduced-motion: reduce",
+          "value": "reduce"
+        }
+      ],
+      "tags": "query",
+      "title": "Emulate CSS media feature prefers-reduced-motion"
+    },
+    {
+      "type": "setting",
+      "category": "Rendering",
+      "settingName": "emulatedVisionDeficiency",
+      "settingType": "enum",
+      "storageType": "session",
+      "defaultValue": "",
+      "options": [
+        {
+          "title": "Do not emulate any vision deficiency",
+          "text": "No emulation",
+          "value": "none"
+        },
+        {
+          "title": "Emulate blurred vision",
+          "text": "Blurred vision",
+          "value": "blurredVision"
+        },
+        {
+          "title": "Emulate protanopia",
+          "text": "Protanopia",
+          "value": "protanopia"
+        },
+        {
+          "title": "Emulate deuteranopia",
+          "text": "Deuteranopia",
+          "value": "deuteranopia"
+        },
+        {
+          "title": "Emulate tritanopia",
+          "text": "Tritanopia",
+          "value": "tritanopia"
+        },
+        {
+          "title": "Emulate achromatopsia",
+          "text": "Achromatopsia",
+          "value": "achromatopsia"
+        }
+      ],
+      "tags": "query",
+      "title": "Emulate vision deficiencies"
+    },
+    {
+      "type": "setting",
+      "category": "Console",
+      "title": "Enable custom formatters",
+      "settingName": "customFormatters",
+      "settingType": "boolean",
+      "defaultValue": false
+    },
+    {
+      "type": "setting",
+      "category": "Network",
+      "title": "Enable request blocking",
+      "settingName": "requestBlockingEnabled",
+      "settingType": "boolean",
+      "storageType": "session",
+      "defaultValue": false,
+      "options": [
+        {
+          "value": true,
+          "title": "Enable request blocking"
+        },
+        {
+          "value": false,
+          "title": "Disable request blocking"
+        }
+      ]
+    },
+    {
+      "type": "setting",
+      "category": "Network",
+      "title": "Disable cache (while DevTools is open)",
+      "settingName": "cacheDisabled",
+      "settingType": "boolean",
+      "order": 0,
+      "defaultValue": false,
+      "userActionCondition": "hasOtherClients",
+      "options": [
+        {
+          "value": true,
+          "title": "Disable cache (while DevTools is open)"
+        },
+        {
+          "value": false,
+          "title": "Enable cache"
+        }
+      ]
+    }
+  ],
+  "scripts": [],
+  "modules": [
+    "../generated/SupportedCSSProperties.js",
+    "sdk.js",
+    "sdk-legacy.js",
+    "SDKModel.js",
+    "Connections.js",
+    "CompilerSourceMappingContentProvider.js",
+    "Cookie.js",
+    "CookieModel.js",
+    "CookieParser.js",
+    "ProfileTreeModel.js",
+    "Issue.js",
+    "IssuesModel.js",
+    "RelatedIssue.js",
+    "ServerTiming.js",
+    "CPUProfileDataModel.js",
+    "CPUProfilerModel.js",
+    "CSSMatchedStyles.js",
+    "CSSMedia.js",
+    "CSSMetadata.js",
+    "CSSModel.js",
+    "CSSProperty.js",
+    "CSSRule.js",
+    "CSSStyleDeclaration.js",
+    "CSSStyleSheetHeader.js",
+    "ChildTargetManager.js",
+    "DOMDebuggerModel.js",
+    "DOMModel.js",
+    "DebuggerModel.js",
+    "EmulationModel.js",
+    "HARLog.js",
+    "LayerTreeBase.js",
+    "LogModel.js",
+    "ServiceWorkerManager.js",
+    "TracingManager.js",
+    "TracingModel.js",
+    "OverlayModel.js",
+    "RuntimeModel.js",
+    "IsolateManager.js",
+    "ScreenCaptureModel.js",
+    "Script.js",
+    "ServiceWorkerCacheModel.js",
+    "RemoteObject.js",
+    "Resource.js",
+    "ResourceTreeModel.js",
+    "SecurityOriginManager.js",
+    "SourceMap.js",
+    "SourceMapManager.js",
+    "NetworkManager.js",
+    "NetworkLog.js",
+    "NetworkRequest.js",
+    "PaintProfiler.js",
+    "HeapProfilerModel.js",
+    "PerformanceMetricsModel.js",
+    "FilmStripModel.js",
+    "ConsoleModel.js",
+    "wasm_source_map/pkg/wasm_source_map.js"
+  ],
+  "skip_compilation": [
+    "wasm_source_map/pkg/wasm_source_map.js"
+  ]
 }

@@ -1,19 +1,19 @@
 {
-    "dependencies": [
-        "worker_service"
-    ],
-    "extensions": [
-        {
-            "type": "@Service",
-            "factoryName": "LighthouseService",
-            "name": "LighthouseService"
-        }
-    ],
-    "scripts": [
-        "../third_party/lighthouse/lighthouse-dt-bundle.js",
-        "LighthouseService.js"
-    ],
-    "skip_compilation": [
-        "../third_party/lighthouse/lighthouse-dt-bundle.js"
-    ]
+  "dependencies": [
+    "worker_service"
+  ],
+  "extensions": [
+    {
+      "type": "@Service",
+      "factoryName": "LighthouseService",
+      "name": "LighthouseService"
+    }
+  ],
+  "scripts": [
+    "../third_party/lighthouse/lighthouse-dt-bundle.js",
+    "LighthouseService.js"
+  ],
+  "skip_compilation": [
+    "../third_party/lighthouse/lighthouse-dt-bundle.js"
+  ]
 }

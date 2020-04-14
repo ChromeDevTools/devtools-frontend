@@ -1,25 +1,25 @@
 {
-    "dependencies": [
-        "components",
-        "sdk",
-        "timeline_model",
-        "ui",
-        "perf_ui"
-    ],
-    "scripts": [],
-    "modules": [
-        "layer_viewer.js",
-        "layer_viewer-legacy.js",
-        "LayerDetailsView.js",
-        "LayerTreeOutline.js",
-        "LayerViewHost.js",
-        "Layers3DView.js",
-        "PaintProfilerView.js",
-        "TransformController.js"
-    ],
-    "resources": [
-        "layers3DView.css",
-        "paintProfiler.css",
-        "layerDetailsView.css"
-    ]
+  "dependencies": [
+    "components",
+    "sdk",
+    "timeline_model",
+    "ui",
+    "perf_ui"
+  ],
+  "scripts": [],
+  "modules": [
+    "layer_viewer.js",
+    "layer_viewer-legacy.js",
+    "LayerDetailsView.js",
+    "LayerTreeOutline.js",
+    "LayerViewHost.js",
+    "Layers3DView.js",
+    "PaintProfilerView.js",
+    "TransformController.js"
+  ],
+  "resources": [
+    "layers3DView.css",
+    "paintProfiler.css",
+    "layerDetailsView.css"
+  ]
 }

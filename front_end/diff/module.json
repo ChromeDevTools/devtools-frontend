@@ -1,15 +1,15 @@
 {
-    "dependencies": [
-        "common"
-    ],
-    "scripts": [],
-    "modules": [
-        "diff.js",
-        "diff-legacy.js",
-        "DiffWrapper.js",
-        "diff_match_patch.js"
-    ],
-    "skip_compilation": [
-        "diff_match_patch.js"
-    ]
+  "dependencies": [
+    "common"
+  ],
+  "scripts": [],
+  "modules": [
+    "diff.js",
+    "diff-legacy.js",
+    "DiffWrapper.js",
+    "diff_match_patch.js"
+  ],
+  "skip_compilation": [
+    "diff_match_patch.js"
+  ]
 }

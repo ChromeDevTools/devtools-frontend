@@ -1,20 +1,25 @@
 {
   "extensions": [
-      {
-          "type": "view",
-          "location": "drawer-view",
-          "id": "remote-devices",
-          "title": "Remote devices",
-          "persistence": "closeable",
-          "order": 50,
-          "className": "Devices.DevicesView",
-          "tags": "usb, android, mobile"
-      }
+    {
+      "type": "view",
+      "location": "drawer-view",
+      "id": "remote-devices",
+      "title": "Remote devices",
+      "persistence": "closeable",
+      "order": 50,
+      "className": "Devices.DevicesView",
+      "tags": "usb, android, mobile"
+    }
   ],
-  "dependencies": ["platform", "ui", "host", "components"],
+  "dependencies": [
+    "platform",
+    "ui",
+    "host",
+    "components"
+  ],
   "scripts": [],
   "modules": [
-      "devices.js",
-      "DevicesView.js"
+    "devices.js",
+    "DevicesView.js"
   ]
 }

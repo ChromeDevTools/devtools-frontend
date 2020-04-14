@@ -1,18 +1,18 @@
 {
-    "extensions": [
-        {
-            "type": "early-initialization",
-            "className": "WorkerMain.WorkerMain"
-        }
-    ],
-    "dependencies": [
-        "components",
-        "mobile_throttling"
-    ],
-    "scripts": [],
-    "modules": [
-        "worker_main.js",
-        "worker_main-legacy.js",
-        "WorkerMain.js"
-    ]
+  "extensions": [
+    {
+      "type": "early-initialization",
+      "className": "WorkerMain.WorkerMain"
+    }
+  ],
+  "dependencies": [
+    "components",
+    "mobile_throttling"
+  ],
+  "scripts": [],
+  "modules": [
+    "worker_main.js",
+    "worker_main-legacy.js",
+    "WorkerMain.js"
+  ]
 }

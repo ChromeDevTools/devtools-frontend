@@ -1,84 +1,84 @@
 {
-    "extensions": [
+  "extensions": [
+    {
+      "type": "@QuickOpen.FilteredListWidget.Provider",
+      "title": "Run command",
+      "prefix": ">",
+      "className": "QuickOpen.CommandMenuProvider"
+    },
+    {
+      "type": "@QuickOpen.FilteredListWidget.Provider",
+      "prefix": "?",
+      "className": "QuickOpen.HelpQuickOpen"
+    },
+    {
+      "type": "action",
+      "actionId": "commandMenu.show",
+      "category": "Global",
+      "title": "Run command",
+      "className": "QuickOpen.CommandMenu.ShowActionDelegate",
+      "bindings": [
         {
-            "type": "@QuickOpen.FilteredListWidget.Provider",
-            "title": "Run command",
-            "prefix": ">",
-            "className": "QuickOpen.CommandMenuProvider"
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+Shift+P"
         },
         {
-            "type": "@QuickOpen.FilteredListWidget.Provider",
-            "prefix": "?",
-            "className": "QuickOpen.HelpQuickOpen"
-        },
-        {
-            "type": "action",
-            "actionId": "commandMenu.show",
-            "category": "Global",
-            "title": "Run command",
-            "className": "QuickOpen.CommandMenu.ShowActionDelegate",
-            "bindings": [
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "Ctrl+Shift+P"
-                },
-                {
-                    "platform": "mac",
-                    "shortcut": "Meta+Shift+P"
-                }
-            ]
-        },
-        {
-            "type": "context-menu-item",
-            "location": "mainMenu/default",
-            "actionId": "commandMenu.show"
-        },
-        {
-            "type": "action",
-            "actionId": "quickOpen.show",
-            "category": "Global",
-            "title": "Open file",
-            "className": "QuickOpen.QuickOpen.ShowActionDelegate",
-            "order": 100,
-            "bindings": [
-                {
-                    "platform": "mac",
-                    "shortcut": "Meta+P"
-                },
-                {
-                    "platform": "mac",
-                    "shortcut": "Meta+O"
-                },
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "Ctrl+P"
-                },
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "Ctrl+O"
-                }
-            ]
-        },
-        {
-            "type": "context-menu-item",
-            "location": "mainMenu/default",
-            "actionId": "quickOpen.show"
+          "platform": "mac",
+          "shortcut": "Meta+Shift+P"
         }
-    ],
-    "dependencies": [
-        "ui",
-        "diff"
-    ],
-    "scripts": [],
-    "modules": [
-        "quick_open.js",
-        "quick_open-legacy.js",
-        "FilteredListWidget.js",
-        "QuickOpen.js",
-        "CommandMenu.js",
-        "HelpQuickOpen.js"
-    ],
-    "resources": [
-        "filteredListWidget.css"
-    ]
+      ]
+    },
+    {
+      "type": "context-menu-item",
+      "location": "mainMenu/default",
+      "actionId": "commandMenu.show"
+    },
+    {
+      "type": "action",
+      "actionId": "quickOpen.show",
+      "category": "Global",
+      "title": "Open file",
+      "className": "QuickOpen.QuickOpen.ShowActionDelegate",
+      "order": 100,
+      "bindings": [
+        {
+          "platform": "mac",
+          "shortcut": "Meta+P"
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+O"
+        },
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+P"
+        },
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+O"
+        }
+      ]
+    },
+    {
+      "type": "context-menu-item",
+      "location": "mainMenu/default",
+      "actionId": "quickOpen.show"
+    }
+  ],
+  "dependencies": [
+    "ui",
+    "diff"
+  ],
+  "scripts": [],
+  "modules": [
+    "quick_open.js",
+    "quick_open-legacy.js",
+    "FilteredListWidget.js",
+    "QuickOpen.js",
+    "CommandMenu.js",
+    "HelpQuickOpen.js"
+  ],
+  "resources": [
+    "filteredListWidget.css"
+  ]
 }

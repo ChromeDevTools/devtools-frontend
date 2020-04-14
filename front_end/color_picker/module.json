@@ -1,18 +1,18 @@
 {
-    "dependencies": [
-        "ui",
-        "sdk"
-    ],
-    "scripts": [],
-    "modules": [
-        "color_picker.js",
-        "color_picker-legacy.js",
-        "ContrastInfo.js",
-        "ContrastOverlay.js",
-        "ContrastDetails.js",
-        "Spectrum.js"
-    ],
-    "resources": [
-        "spectrum.css"
-    ]
+  "dependencies": [
+    "ui",
+    "sdk"
+  ],
+  "scripts": [],
+  "modules": [
+    "color_picker.js",
+    "color_picker-legacy.js",
+    "ContrastInfo.js",
+    "ContrastOverlay.js",
+    "ContrastDetails.js",
+    "Spectrum.js"
+  ],
+  "resources": [
+    "spectrum.css"
+  ]
 }

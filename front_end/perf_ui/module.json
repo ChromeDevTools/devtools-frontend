@@ -1,99 +1,99 @@
 {
-    "extensions": [
+  "extensions": [
+    {
+      "type": "late-initialization",
+      "className": "PerfUI.LiveHeapProfile",
+      "experiment": "liveHeapProfile",
+      "setting": "memoryLiveHeapProfile"
+    },
+    {
+      "type": "@SourceFrame.LineDecorator",
+      "className": "PerfUI.LineLevelProfile.LineDecorator",
+      "decoratorType": "performance"
+    },
+    {
+      "type": "@SourceFrame.LineDecorator",
+      "className": "PerfUI.LineLevelProfile.LineDecorator",
+      "decoratorType": "memory"
+    },
+    {
+      "type": "setting",
+      "category": "Performance",
+      "title": "Flamechart mouse wheel action:",
+      "settingName": "flamechartMouseWheelAction",
+      "settingType": "enum",
+      "defaultValue": "zoom",
+      "options": [
         {
-            "type": "late-initialization",
-            "className": "PerfUI.LiveHeapProfile",
-            "experiment": "liveHeapProfile",
-            "setting": "memoryLiveHeapProfile"
+          "title": "Scroll",
+          "text": "Scroll",
+          "value": "scroll"
         },
         {
-            "type": "@SourceFrame.LineDecorator",
-            "className": "PerfUI.LineLevelProfile.LineDecorator",
-            "decoratorType": "performance"
-        },
-        {
-            "type": "@SourceFrame.LineDecorator",
-            "className": "PerfUI.LineLevelProfile.LineDecorator",
-            "decoratorType": "memory"
-        },
-        {
-            "type": "setting",
-            "category": "Performance",
-            "title": "Flamechart mouse wheel action:",
-            "settingName": "flamechartMouseWheelAction",
-            "settingType": "enum",
-            "defaultValue": "zoom",
-            "options": [
-                {
-                    "title": "Scroll",
-                    "text": "Scroll",
-                    "value": "scroll"
-                },
-                {
-                    "title": "Zoom",
-                    "text": "Zoom",
-                    "value": "zoom"
-                }
-            ]
-        },
-        {
-            "type": "setting",
-            "category": "Memory",
-            "experiment": "liveHeapProfile",
-            "title": "Live memory allocation annotations",
-            "settingName": "memoryLiveHeapProfile",
-            "settingType": "boolean",
-            "defaultValue": false,
-            "options": [
-                {
-                    "value": true,
-                    "title": "Show live memory allocation annotations"
-                },
-                {
-                    "value": false,
-                    "title": "Hide live memory allocation annotations"
-                }
-            ]
-        },
-        {
-            "type": "action",
-            "actionId": "components.collect-garbage",
-            "category": "Performance",
-            "title": "Collect garbage",
-            "iconClass": "largeicon-trash-bin",
-            "className": "PerfUI.GCActionDelegate"
+          "title": "Zoom",
+          "text": "Zoom",
+          "value": "zoom"
         }
-    ],
-    "dependencies": [
-        "ui",
-        "sdk",
-        "bindings",
-        "source_frame",
-        "text_editor"
-    ],
-    "scripts": [],
-    "modules": [
-        "perf_ui.js",
-        "perf_ui-legacy.js",
-        "ChartViewport.js",
-        "FilmStripView.js",
-        "FlameChart.js",
-        "GCActionDelegate.js",
-        "LineLevelProfile.js",
-        "LiveHeapProfile.js",
-        "NetworkPriorities.js",
-        "OverviewGrid.js",
-        "PieChart.js",
-        "TimelineGrid.js",
-        "TimelineOverviewPane.js"
-    ],
-    "resources": [
-        "chartViewport.css",
-        "filmStripView.css",
-        "flameChart.css",
-        "overviewGrid.css",
-        "pieChart.css",
-        "timelineGrid.css",
-        "timelineOverviewInfo.css"
-    ]
+      ]
+    },
+    {
+      "type": "setting",
+      "category": "Memory",
+      "experiment": "liveHeapProfile",
+      "title": "Live memory allocation annotations",
+      "settingName": "memoryLiveHeapProfile",
+      "settingType": "boolean",
+      "defaultValue": false,
+      "options": [
+        {
+          "value": true,
+          "title": "Show live memory allocation annotations"
+        },
+        {
+          "value": false,
+          "title": "Hide live memory allocation annotations"
+        }
+      ]
+    },
+    {
+      "type": "action",
+      "actionId": "components.collect-garbage",
+      "category": "Performance",
+      "title": "Collect garbage",
+      "iconClass": "largeicon-trash-bin",
+      "className": "PerfUI.GCActionDelegate"
+    }
+  ],
+  "dependencies": [
+    "ui",
+    "sdk",
+    "bindings",
+    "source_frame",
+    "text_editor"
+  ],
+  "scripts": [],
+  "modules": [
+    "perf_ui.js",
+    "perf_ui-legacy.js",
+    "ChartViewport.js",
+    "FilmStripView.js",
+    "FlameChart.js",
+    "GCActionDelegate.js",
+    "LineLevelProfile.js",
+    "LiveHeapProfile.js",
+    "NetworkPriorities.js",
+    "OverviewGrid.js",
+    "PieChart.js",
+    "TimelineGrid.js",
+    "TimelineOverviewPane.js"
+  ],
+  "resources": [
+    "chartViewport.css",
+    "filmStripView.css",
+    "flameChart.css",
+    "overviewGrid.css",
+    "pieChart.css",
+    "timelineGrid.css",
+    "timelineOverviewInfo.css"
+  ]
 }

@@ -1,85 +1,84 @@
 {
-    "extensions": [
+  "extensions": [
+    {
+      "type": "view",
+      "location": "drawer-view",
+      "id": "Inputs",
+      "title": "Inputs",
+      "persistence": "closeable",
+      "order": 7,
+      "className": "Input.InputTimeline",
+      "experiment": "timelineReplayEvent"
+    },
+    {
+      "type": "action",
+      "actionId": "input.toggle-recording",
+      "iconClass": "largeicon-start-recording",
+      "toggleable": true,
+      "toggledIconClass": "largeicon-stop-recording",
+      "toggleWithRedColor": true,
+      "className": "Input.InputTimeline.ActionDelegate",
+      "category": "Inputs",
+      "experiment": "timelineReplayEvent",
+      "options": [
         {
-            "type": "view",
-            "location": "drawer-view",
-            "id": "Inputs",
-            "title": "Inputs",
-            "persistence": "closeable",
-            "order": 7,
-            "className": "Input.InputTimeline",
-            "experiment": "timelineReplayEvent"
+          "value": true,
+          "title": "Start recording"
         },
         {
-            "type": "action",
-            "actionId": "input.toggle-recording",
-            "iconClass": "largeicon-start-recording",
-            "toggleable": true,
-            "toggledIconClass": "largeicon-stop-recording",
-            "toggleWithRedColor": true,
-            "className": "Input.InputTimeline.ActionDelegate",
-            "category": "Inputs",
-            "experiment": "timelineReplayEvent",
-            "options": [
-                {
-                    "value": true,
-                    "title": "Start recording"
-                },
-                {
-                    "value": false,
-                    "title": "Stop recording"
-                }
-            ]
-        },
-        {
-            "type": "action",
-            "actionId": "input.start-replaying",
-            "iconClass": "largeicon-play",
-            "toggleable": false,
-            "className": "Input.InputTimeline.ActionDelegate",
-            "category": "Inputs",
-            "experiment": "timelineReplayEvent",
-            "options": [
-                {
-                    "value": true,
-                    "title": "Start replaying"
-                }
-            ]
-        },
-        {
-            "type": "action",
-            "actionId": "input.toggle-pause",
-            "iconClass": "largeicon-pause",
-            "toggleable": true,
-            "toggledIconClass": "largeicon-resume",
-            "className": "Input.InputTimeline.ActionDelegate",
-            "category": "Inputs",
-            "experiment": "timelineReplayEvent",
-            "options": [
-                {
-                    "value": true,
-                    "title": "Pause"
-                },
-                {
-                    "value": false,
-                    "title": "Resume"
-                }
-            ]
+          "value": false,
+          "title": "Stop recording"
         }
-    ],
-    "dependencies": [
-        "sdk",
-        "ui"
-    ],
-    "scripts": [],
-    "modules": [
-        "input.js",
-        "input-legacy.js",
-        "InputModel.js",
-        "InputTimeline.js"
-    ],
-    "resources": [
-        "inputTimeline.css"
-    ]
+      ]
+    },
+    {
+      "type": "action",
+      "actionId": "input.start-replaying",
+      "iconClass": "largeicon-play",
+      "toggleable": false,
+      "className": "Input.InputTimeline.ActionDelegate",
+      "category": "Inputs",
+      "experiment": "timelineReplayEvent",
+      "options": [
+        {
+          "value": true,
+          "title": "Start replaying"
+        }
+      ]
+    },
+    {
+      "type": "action",
+      "actionId": "input.toggle-pause",
+      "iconClass": "largeicon-pause",
+      "toggleable": true,
+      "toggledIconClass": "largeicon-resume",
+      "className": "Input.InputTimeline.ActionDelegate",
+      "category": "Inputs",
+      "experiment": "timelineReplayEvent",
+      "options": [
+        {
+          "value": true,
+          "title": "Pause"
+        },
+        {
+          "value": false,
+          "title": "Resume"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    "sdk",
+    "ui"
+  ],
+  "scripts": [],
+  "modules": [
+    "input.js",
+    "input-legacy.js",
+    "InputModel.js",
+    "InputTimeline.js"
+  ],
+  "resources": [
+    "inputTimeline.css"
+  ]
 }
-

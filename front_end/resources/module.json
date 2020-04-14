@@ -1,116 +1,116 @@
 {
-    "extensions": [
+  "extensions": [
+    {
+      "type": "view",
+      "location": "panel",
+      "id": "resources",
+      "title": "Application",
+      "order": 70,
+      "className": "Resources.ResourcesPanel",
+      "tags": "pwa"
+    },
+    {
+      "type": "@Common.Revealer",
+      "contextTypes": [
+        "SDK.Resource"
+      ],
+      "destination": "Application panel",
+      "className": "Resources.ResourcesPanel.ResourceRevealer"
+    },
+    {
+      "type": "@Common.Revealer",
+      "contextTypes": [
+        "SDK.CookieReference"
+      ],
+      "destination": "Application panel",
+      "className": "Resources.ResourcesPanel.CookieReferenceRevealer"
+    },
+    {
+      "type": "action",
+      "category": "Resources",
+      "actionId": "resources.clear",
+      "title": "Clear site data",
+      "className": "Resources.ClearStorageView.ActionDelegate"
+    },
+    {
+      "type": "action",
+      "actionId": "background-service.toggle-recording",
+      "iconClass": "largeicon-start-recording",
+      "toggleable": true,
+      "toggledIconClass": "largeicon-stop-recording",
+      "toggleWithRedColor": true,
+      "contextTypes": [
+        "Resources.BackgroundServiceView"
+      ],
+      "className": "Resources.BackgroundServiceView.ActionDelegate",
+      "category": "Background Services",
+      "options": [
         {
-            "type": "view",
-            "location": "panel",
-            "id": "resources",
-            "title": "Application",
-            "order": 70,
-            "className": "Resources.ResourcesPanel",
-            "tags": "pwa"
+          "value": true,
+          "title": "Start recording events"
         },
         {
-            "type": "@Common.Revealer",
-            "contextTypes": [
-                "SDK.Resource"
-            ],
-            "destination": "Application panel",
-            "className": "Resources.ResourcesPanel.ResourceRevealer"
-        },
-        {
-            "type": "@Common.Revealer",
-            "contextTypes": [
-                "SDK.CookieReference"
-            ],
-            "destination": "Application panel",
-            "className": "Resources.ResourcesPanel.CookieReferenceRevealer"
-        },
-        {
-            "type": "action",
-            "category": "Resources",
-            "actionId": "resources.clear",
-            "title": "Clear site data",
-            "className": "Resources.ClearStorageView.ActionDelegate"
-        },
-        {
-          "type": "action",
-          "actionId": "background-service.toggle-recording",
-          "iconClass": "largeicon-start-recording",
-          "toggleable": true,
-          "toggledIconClass": "largeicon-stop-recording",
-          "toggleWithRedColor": true,
-          "contextTypes": [
-              "Resources.BackgroundServiceView"
-          ],
-          "className": "Resources.BackgroundServiceView.ActionDelegate",
-          "category": "Background Services",
-          "options": [
-              {
-                  "value": true,
-                  "title": "Start recording events"
-              },
-              {
-                  "value": false,
-                  "title": "Stop recording events"
-              }
-          ],
-          "bindings": [
-              {
-                  "platform": "windows,linux",
-                  "shortcut": "Ctrl+E"
-              },
-              {
-                  "platform": "mac",
-                  "shortcut": "Meta+E"
-              }
-          ]
+          "value": false,
+          "title": "Stop recording events"
         }
-    ],
-    "dependencies": [
-        "source_frame",
-        "cookie_table",
-        "inline_editor",
-        "data_grid",
-        "components",
-        "object_ui",
-        "perf_ui",
-        "mobile_throttling",
-        "network",
-        "sources"
-    ],
-    "scripts": [],
-    "modules": [
-        "resources.js",
-        "resources-legacy.js",
-        "ApplicationCacheModel.js",
-        "AppManifestView.js",
-        "ApplicationCacheItemsView.js",
-        "BackgroundServiceModel.js",
-        "BackgroundServiceView.js",
-        "ClearStorageView.js",
-        "StorageItemsView.js",
-        "CookieItemsView.js",
-        "DatabaseModel.js",
-        "DOMStorageModel.js",
-        "DOMStorageItemsView.js",
-        "DatabaseQueryView.js",
-        "DatabaseTableView.js",
-        "IndexedDBModel.js",
-        "IndexedDBViews.js",
-        "ResourcesPanel.js",
-        "ApplicationPanelSidebar.js",
-        "ServiceWorkerCacheViews.js",
-        "ServiceWorkersView.js"
-    ],
-    "resources": [
-        "appManifestView.css",
-        "backgroundServiceView.css",
-        "clearStorageView.css",
-        "indexedDBViews.css",
-        "resourcesPanel.css",
-        "resourcesSidebar.css",
-        "serviceWorkerCacheViews.css",
-        "serviceWorkersView.css",
-        "cookieItemsView.css"
-    ]
+      ],
+      "bindings": [
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+E"
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+E"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    "source_frame",
+    "cookie_table",
+    "inline_editor",
+    "data_grid",
+    "components",
+    "object_ui",
+    "perf_ui",
+    "mobile_throttling",
+    "network",
+    "sources"
+  ],
+  "scripts": [],
+  "modules": [
+    "resources.js",
+    "resources-legacy.js",
+    "ApplicationCacheModel.js",
+    "AppManifestView.js",
+    "ApplicationCacheItemsView.js",
+    "BackgroundServiceModel.js",
+    "BackgroundServiceView.js",
+    "ClearStorageView.js",
+    "StorageItemsView.js",
+    "CookieItemsView.js",
+    "DatabaseModel.js",
+    "DOMStorageModel.js",
+    "DOMStorageItemsView.js",
+    "DatabaseQueryView.js",
+    "DatabaseTableView.js",
+    "IndexedDBModel.js",
+    "IndexedDBViews.js",
+    "ResourcesPanel.js",
+    "ApplicationPanelSidebar.js",
+    "ServiceWorkerCacheViews.js",
+    "ServiceWorkersView.js"
+  ],
+  "resources": [
+    "appManifestView.css",
+    "backgroundServiceView.css",
+    "clearStorageView.css",
+    "indexedDBViews.css",
+    "resourcesPanel.css",
+    "resourcesSidebar.css",
+    "serviceWorkerCacheViews.css",
+    "serviceWorkersView.css",
+    "cookieItemsView.css"
+  ]
 }

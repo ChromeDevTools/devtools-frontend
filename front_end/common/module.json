@@ -1,34 +1,34 @@
 {
-    "dependencies": [
-        "platform"
-    ],
-    "modules": [
-        "common.js",
-        "common-legacy.js",
-        "EventTarget.js",
-        "Object.js",
-        "Worker.js",
-        "TextDictionary.js",
-        "Color.js",
-        "Console.js",
-        "ParsedURL.js",
-        "Progress.js",
-        "UIString.js",
-        "ResourceType.js",
-        "Settings.js",
-        "SegmentedRange.js",
-        "Throttler.js",
-        "Trie.js",
-        "Revealer.js",
-        "App.js",
-        "AppProvider.js",
-        "JavaScriptMetaData.js",
-        "Linkifier.js",
-        "QueryParamHandler.js",
-        "Revealer.js",
-        "Runnable.js",
-        "StringOutputStream.js",
-        "CharacterIdMap.js"
-    ],
-    "scripts": []
+  "dependencies": [
+    "platform"
+  ],
+  "modules": [
+    "common.js",
+    "common-legacy.js",
+    "EventTarget.js",
+    "Object.js",
+    "Worker.js",
+    "TextDictionary.js",
+    "Color.js",
+    "Console.js",
+    "ParsedURL.js",
+    "Progress.js",
+    "UIString.js",
+    "ResourceType.js",
+    "Settings.js",
+    "SegmentedRange.js",
+    "Throttler.js",
+    "Trie.js",
+    "Revealer.js",
+    "App.js",
+    "AppProvider.js",
+    "JavaScriptMetaData.js",
+    "Linkifier.js",
+    "QueryParamHandler.js",
+    "Revealer.js",
+    "Runnable.js",
+    "StringOutputStream.js",
+    "CharacterIdMap.js"
+  ],
+  "scripts": []
 }

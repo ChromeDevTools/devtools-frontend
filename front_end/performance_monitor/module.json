@@ -1,27 +1,27 @@
 {
-    "extensions": [
-        {
-            "type": "view",
-            "location": "drawer-view",
-            "id": "performance.monitor",
-            "title": "Performance monitor",
-            "persistence": "closeable",
-            "order": 100,
-            "className": "PerformanceMonitor.PerformanceMonitor",
-            "tags": "performance, system monitor, monitor, activity, metrics"
-        }
-    ],
-    "dependencies": [
-        "sdk",
-        "ui"
-    ],
-    "scripts": [],
-    "modules": [
-        "performance_monitor.js",
-        "performance_monitor-legacy.js",
-        "PerformanceMonitor.js"
-    ],
-    "resources": [
-        "performanceMonitor.css"
-    ]
+  "extensions": [
+    {
+      "type": "view",
+      "location": "drawer-view",
+      "id": "performance.monitor",
+      "title": "Performance monitor",
+      "persistence": "closeable",
+      "order": 100,
+      "className": "PerformanceMonitor.PerformanceMonitor",
+      "tags": "performance, system monitor, monitor, activity, metrics"
+    }
+  ],
+  "dependencies": [
+    "sdk",
+    "ui"
+  ],
+  "scripts": [],
+  "modules": [
+    "performance_monitor.js",
+    "performance_monitor-legacy.js",
+    "PerformanceMonitor.js"
+  ],
+  "resources": [
+    "performanceMonitor.css"
+  ]
 }

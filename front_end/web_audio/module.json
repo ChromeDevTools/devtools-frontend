@@ -1,38 +1,38 @@
 {
   "extensions": [
-      {
-          "type": "view",
-          "location": "drawer-view",
-          "id": "web-audio",
-          "title": "WebAudio",
-          "persistence": "closeable",
-          "order": 100,
-          "className": "WebAudio.WebAudioView",
-          "tags": "audio"
-      }
+    {
+      "type": "view",
+      "location": "drawer-view",
+      "id": "web-audio",
+      "title": "WebAudio",
+      "persistence": "closeable",
+      "order": 100,
+      "className": "WebAudio.WebAudioView",
+      "tags": "audio"
+    }
   ],
   "dependencies": [
-      "components",
-      "sdk",
-      "ui"
+    "components",
+    "sdk",
+    "ui"
   ],
   "scripts": [],
   "modules": [
-      "web_audio.js",
-      "web_audio-legacy.js",
-      "graph_visualizer/GraphStyle.js",
-      "graph_visualizer/GraphManager.js",
-      "graph_visualizer/NodeRendererUtility.js",
-      "graph_visualizer/NodeView.js",
-      "graph_visualizer/EdgeView.js",
-      "graph_visualizer/GraphView.js",
-      "WebAudioModel.js",
-      "AudioContextSelector.js",
-      "AudioContextContentBuilder.js",
-      "WebAudioView.js"
+    "web_audio.js",
+    "web_audio-legacy.js",
+    "graph_visualizer/GraphStyle.js",
+    "graph_visualizer/GraphManager.js",
+    "graph_visualizer/NodeRendererUtility.js",
+    "graph_visualizer/NodeView.js",
+    "graph_visualizer/EdgeView.js",
+    "graph_visualizer/GraphView.js",
+    "WebAudioModel.js",
+    "AudioContextSelector.js",
+    "AudioContextContentBuilder.js",
+    "WebAudioView.js"
   ],
   "resources": [
-      "webAudio.css",
-      "audioContextSelector.css"
+    "webAudio.css",
+    "audioContextSelector.css"
   ]
 }

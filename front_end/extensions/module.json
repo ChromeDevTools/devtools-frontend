@@ -1,17 +1,17 @@
 {
-    "dependencies": [
-        "components",
-        "browser_sdk",
-        "common"
-    ],
-    "scripts": [],
-    "modules": [
-        "extensions.js",
-        "extensions-legacy.js",
-        "ExtensionAPI.js",
-        "ExtensionTraceProvider.js",
-        "ExtensionServer.js",
-        "ExtensionPanel.js",
-        "ExtensionView.js"
-    ]
+  "dependencies": [
+    "components",
+    "browser_sdk",
+    "common"
+  ],
+  "scripts": [],
+  "modules": [
+    "extensions.js",
+    "extensions-legacy.js",
+    "ExtensionAPI.js",
+    "ExtensionTraceProvider.js",
+    "ExtensionServer.js",
+    "ExtensionPanel.js",
+    "ExtensionView.js"
+  ]
 }

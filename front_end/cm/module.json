@@ -1,33 +1,33 @@
 {
-    "scripts": [],
-    "modules": [
-        "cm.js",
-        "codemirror.js",
-        "multiplex.js",
-        "matchbrackets.js",
-        "closebrackets.js",
-        "mark-selection.js",
-        "comment.js",
-        "overlay.js",
-        "active-line.js",
-        "foldcode.js",
-        "foldgutter.js",
-        "brace-fold.js"
-    ],
-    "skip_compilation": [
-        "codemirror.js",
-        "multiplex.js",
-        "matchbrackets.js",
-        "closebrackets.js",
-        "mark-selection.js",
-        "comment.js",
-        "overlay.js",
-        "active-line.js",
-        "foldcode.js",
-        "foldgutter.js",
-        "brace-fold.js"
-    ],
-    "resources": [
-        "codemirror.css"
-    ]
+  "scripts": [],
+  "modules": [
+    "cm.js",
+    "codemirror.js",
+    "multiplex.js",
+    "matchbrackets.js",
+    "closebrackets.js",
+    "mark-selection.js",
+    "comment.js",
+    "overlay.js",
+    "active-line.js",
+    "foldcode.js",
+    "foldgutter.js",
+    "brace-fold.js"
+  ],
+  "skip_compilation": [
+    "codemirror.js",
+    "multiplex.js",
+    "matchbrackets.js",
+    "closebrackets.js",
+    "mark-selection.js",
+    "comment.js",
+    "overlay.js",
+    "active-line.js",
+    "foldcode.js",
+    "foldgutter.js",
+    "brace-fold.js"
+  ],
+  "resources": [
+    "codemirror.css"
+  ]
 }

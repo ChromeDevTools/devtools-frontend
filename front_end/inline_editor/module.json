@@ -1,25 +1,24 @@
 {
-    "dependencies": [
-        "ui"
-    ],
-    "scripts": [
-    ],
-    "modules": [
-        "inline_editor.js",
-        "inline_editor-legacy.js",
-        "BezierEditor.js",
-        "BezierUI.js",
-        "ColorSwatch.js",
-        "CSSShadowEditor.js",
-        "SwatchPopoverHelper.js",
-        "CSSShadowModel.js"
-    ],
-    "resources": [
-        "bezierEditor.css",
-        "colorSwatch.css",
-        "bezierSwatch.css",
-        "cssShadowSwatch.css",
-        "cssShadowEditor.css",
-        "swatchPopover.css"
-    ]
+  "dependencies": [
+    "ui"
+  ],
+  "scripts": [],
+  "modules": [
+    "inline_editor.js",
+    "inline_editor-legacy.js",
+    "BezierEditor.js",
+    "BezierUI.js",
+    "ColorSwatch.js",
+    "CSSShadowEditor.js",
+    "SwatchPopoverHelper.js",
+    "CSSShadowModel.js"
+  ],
+  "resources": [
+    "bezierEditor.css",
+    "colorSwatch.css",
+    "bezierSwatch.css",
+    "cssShadowSwatch.css",
+    "cssShadowEditor.css",
+    "swatchPopover.css"
+  ]
 }

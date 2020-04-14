@@ -1,33 +1,40 @@
 {
-    "extensions": [
-      {
-          "type": "view",
-          "location": "drawer-view",
-          "id": "issues-pane",
-          "title": "Issues",
-          "order": 100,
-          "persistence": "closeable",
-          "className": "Issues.IssuesPane",
-          "experiment": "issuesPane"
-      },
-      {
-        "type": "@Common.Revealer",
-        "contextTypes": [
-            "SDK.Issue"
-        ],
-        "destination": "Issues view",
-        "className": "Issues.IssueRevealer"
-      }
-    ],
-    "dependencies": ["platform", "ui", "host", "components", "sdk", "network"],
-    "scripts": [],
-    "modules": [
-      "issues.js",
-      "issues-legacy.js",
-      "IssuesPane.js",
-      "IssueRevealer.js"
-    ],
-    "resources": [
-      "issuesPane.css"
-    ]
-  }
+  "extensions": [
+    {
+      "type": "view",
+      "location": "drawer-view",
+      "id": "issues-pane",
+      "title": "Issues",
+      "order": 100,
+      "persistence": "closeable",
+      "className": "Issues.IssuesPane",
+      "experiment": "issuesPane"
+    },
+    {
+      "type": "@Common.Revealer",
+      "contextTypes": [
+        "SDK.Issue"
+      ],
+      "destination": "Issues view",
+      "className": "Issues.IssueRevealer"
+    }
+  ],
+  "dependencies": [
+    "platform",
+    "ui",
+    "host",
+    "components",
+    "sdk",
+    "network"
+  ],
+  "scripts": [],
+  "modules": [
+    "issues.js",
+    "issues-legacy.js",
+    "IssuesPane.js",
+    "IssueRevealer.js"
+  ],
+  "resources": [
+    "issuesPane.css"
+  ]
+}

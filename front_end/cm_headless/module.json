@@ -1,10 +1,10 @@
 {
-    "scripts": [],
-    "modules": [
-        "cm_headless.js",
-        "headlesscodemirror.js"
-    ],
-    "skip_compilation": [
-        "headlesscodemirror.js"
-    ]
+  "scripts": [],
+  "modules": [
+    "cm_headless.js",
+    "headlesscodemirror.js"
+  ],
+  "skip_compilation": [
+    "headlesscodemirror.js"
+  ]
 }

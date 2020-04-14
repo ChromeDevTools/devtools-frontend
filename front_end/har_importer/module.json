@@ -1,12 +1,12 @@
 {
-    "dependencies": [
-        "common",
-        "browser_sdk"
-    ],
-    "modules": [
-        "har_importer.js",
-        "har_importer-legacy.js",
-        "HARFormat.js",
-        "HARImporter.js"
-    ]
+  "dependencies": [
+    "common",
+    "browser_sdk"
+  ],
+  "modules": [
+    "har_importer.js",
+    "har_importer-legacy.js",
+    "HARFormat.js",
+    "HARImporter.js"
+  ]
 }

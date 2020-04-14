@@ -1,489 +1,489 @@
 {
-    "extensions": [
+  "extensions": [
+    {
+      "type": "@Common.AppProvider",
+      "className": "Main.SimpleAppProvider",
+      "order": 10
+    },
+    {
+      "type": "@UI.ContextMenu.Provider",
+      "contextTypes": [
+        "Workspace.UISourceCode",
+        "SDK.Resource",
+        "SDK.NetworkRequest"
+      ],
+      "className": "Components.Linkifier.ContentProviderContextMenuProvider"
+    },
+    {
+      "type": "@UI.ContextMenu.Provider",
+      "contextTypes": [
+        "Node"
+      ],
+      "className": "UI.XLink.ContextMenuProvider"
+    },
+    {
+      "type": "@UI.ContextMenu.Provider",
+      "contextTypes": [
+        "Node"
+      ],
+      "className": "Components.Linkifier.LinkContextMenuProvider"
+    },
+    {
+      "type": "action",
+      "category": "Drawer",
+      "actionId": "inspector_main.focus-debuggee",
+      "className": "InspectorMain.FocusDebuggeeActionDelegate",
+      "order": 100,
+      "title": "Focus debuggee"
+    },
+    {
+      "type": "action",
+      "category": "Drawer",
+      "actionId": "main.toggle-drawer",
+      "className": "UI.InspectorView.ActionDelegate",
+      "order": 101,
+      "title": "Toggle drawer",
+      "bindings": [
         {
-            "type": "@Common.AppProvider",
-            "className": "Main.SimpleAppProvider",
-            "order": 10
-        },
-        {
-            "type": "@UI.ContextMenu.Provider",
-            "contextTypes": [
-                "Workspace.UISourceCode",
-                "SDK.Resource",
-                "SDK.NetworkRequest"
-            ],
-            "className": "Components.Linkifier.ContentProviderContextMenuProvider"
-        },
-        {
-            "type": "@UI.ContextMenu.Provider",
-            "contextTypes": [
-                "Node"
-            ],
-            "className": "UI.XLink.ContextMenuProvider"
-        },
-        {
-            "type": "@UI.ContextMenu.Provider",
-            "contextTypes": [
-                "Node"
-            ],
-            "className": "Components.Linkifier.LinkContextMenuProvider"
-        },
-        {
-            "type": "action",
-            "category": "Drawer",
-            "actionId": "inspector_main.focus-debuggee",
-            "className": "InspectorMain.FocusDebuggeeActionDelegate",
-            "order": 100,
-            "title": "Focus debuggee"
-        },
-        {
-            "type": "action",
-            "category": "Drawer",
-            "actionId": "main.toggle-drawer",
-            "className": "UI.InspectorView.ActionDelegate",
-            "order": 101,
-            "title": "Toggle drawer",
-            "bindings": [
-                {
-                    "shortcut": "Esc"
-                }
-            ]
-        },
-        {
-            "type": "action",
-            "actionId": "main.next-tab",
-            "category": "Global",
-            "title": "Next panel",
-            "className": "UI.InspectorView.ActionDelegate",
-            "bindings": [
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "Ctrl+]"
-                },
-                {
-                    "platform": "mac",
-                    "shortcut": "Meta+]"
-                }
-            ]
-        },
-        {
-            "type": "action",
-            "actionId": "main.previous-tab",
-            "category": "Global",
-            "title": "Previous panel",
-            "className": "UI.InspectorView.ActionDelegate",
-            "bindings": [
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "Ctrl+["
-                },
-                {
-                    "platform": "mac",
-                    "shortcut": "Meta+["
-                }
-            ]
-        },
-        {
-            "type": "action",
-            "actionId": "main.debug-reload",
-            "category": "Global",
-            "title": "Reload DevTools",
-            "className": "Main.ReloadActionDelegate",
-            "bindings": [
-                {
-                    "shortcut": "Alt+R"
-                }
-            ]
-        },
-        {
-            "type": "action",
-            "category": "Global",
-            "title": "Restore last dock position",
-            "actionId": "main.toggle-dock",
-            "className": "Components.DockController.ToggleDockActionDelegate",
-            "bindings": [
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "Ctrl+Shift+D"
-                },
-                {
-                    "platform": "mac",
-                    "shortcut": "Meta+Shift+D"
-                }
-            ]
-        },
-        {
-            "type": "action",
-            "actionId": "main.zoom-in",
-            "category": "Global",
-            "title": "Zoom in",
-            "className": "Main.Main.ZoomActionDelegate",
-            "bindings": [
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "Ctrl+Plus"
-                },
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "Ctrl+Shift+Plus"
-                },
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "Ctrl+NumpadPlus"
-                },
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "Ctrl+Shift+NumpadPlus"
-                },
-                {
-                    "platform": "mac",
-                    "shortcut": "Meta+Plus"
-                },
-                {
-                    "platform": "mac",
-                    "shortcut": "Meta+Shift+Plus"
-                },
-                {
-                    "platform": "mac",
-                    "shortcut": "Meta+NumpadPlus"
-                },
-                {
-                    "platform": "mac",
-                    "shortcut": "Meta+Shift+NumpadPlus"
-                }
-            ]
-        },
-        {
-            "type": "action",
-            "actionId": "main.zoom-out",
-            "category": "Global",
-            "title": "Zoom out",
-            "className": "Main.Main.ZoomActionDelegate",
-            "bindings": [
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "Ctrl+Minus"
-                },
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "Ctrl+Shift+Minus"
-                },
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "Ctrl+NumpadMinus"
-                },
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "Ctrl+Shift+NumpadMinus"
-                },
-                {
-                    "platform": "mac",
-                    "shortcut": "Meta+Minus"
-                },
-                {
-                    "platform": "mac",
-                    "shortcut": "Meta+Shift+Minus"
-                },
-                {
-                    "platform": "mac",
-                    "shortcut": "Meta+NumpadMinus"
-                },
-                {
-                    "platform": "mac",
-                    "shortcut": "Meta+Shift+NumpadMinus"
-                }
-            ]
-        },
-        {
-            "type": "action",
-            "actionId": "main.zoom-reset",
-            "category": "Global",
-            "title": "Reset zoom level",
-            "className": "Main.Main.ZoomActionDelegate",
-            "bindings": [
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "Ctrl+0"
-                },
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "Ctrl+Numpad0"
-                },
-                {
-                    "platform": "mac",
-                    "shortcut": "Meta+Numpad0"
-                },
-                {
-                    "platform": "mac",
-                    "shortcut": "Meta+0"
-                }
-            ]
-        },
-        {
-            "type": "action",
-            "actionId": "main.search-in-panel.find",
-            "category": "Global",
-            "title": "Search in panel",
-            "className": "Main.Main.SearchActionDelegate",
-            "bindings": [
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "Ctrl+F"
-                },
-                {
-                    "platform": "mac",
-                    "shortcut": "Meta+F"
-                },
-                {
-                    "platform": "mac",
-                    "shortcut": "F3"
-                }
-            ]
-        },
-        {
-            "type": "action",
-            "actionId": "main.search-in-panel.cancel",
-            "category": "Global",
-            "title": "Cancel search",
-            "className": "Main.Main.SearchActionDelegate",
-            "order": 10,
-            "bindings": [
-                {
-                    "shortcut": "Esc"
-                }
-            ]
-        },
-        {
-            "type": "action",
-            "actionId": "main.search-in-panel.find-next",
-            "category": "Global",
-            "title": "Find next result",
-            "className": "Main.Main.SearchActionDelegate",
-            "bindings": [
-                {
-                    "platform": "mac",
-                    "shortcut": "Meta+G"
-                },
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "Ctrl+G"
-                },
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "F3"
-                }
-            ]
-        },
-        {
-            "type": "action",
-            "actionId": "main.search-in-panel.find-previous",
-            "category": "Global",
-            "title": "Find previous result",
-            "className": "Main.Main.SearchActionDelegate",
-            "bindings": [
-                {
-                    "platform": "mac",
-                    "shortcut": "Meta+Shift+G"
-                },
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "Ctrl+Shift+G"
-                },
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "Shift+F3"
-                }
-            ]
-        },
-        {
-            "type": "@UI.ToolbarItem.Provider",
-            "separator": true,
-            "location": "main-toolbar-left",
-            "order": 100
-        },
-        {
-            "type": "@UI.ToolbarItem.Provider",
-            "separator": true,
-            "order": 97,
-            "location": "main-toolbar-right"
-        },
-        {
-            "type": "@UI.ToolbarItem.Provider",
-            "className": "Main.Main.SettingsButtonProvider",
-            "order": 98,
-            "location": "main-toolbar-right"
-        },
-        {
-            "type": "@UI.ToolbarItem.Provider",
-            "className": "Main.Main.MainMenuItem",
-            "order": 99,
-            "location": "main-toolbar-right"
-        },
-        {
-            "type": "@UI.ToolbarItem.Provider",
-            "className": "Components.DockController.CloseButtonProvider",
-            "order": 100,
-            "location": "main-toolbar-right"
-        },
-        {
-            "type": "setting",
-            "category": "Appearance",
-            "title": "Theme:",
-            "settingName": "uiTheme",
-            "settingType": "enum",
-            "defaultValue": "systemPreferred",
-            "options": [
-                {
-                    "title": "Switch to system preferred color theme",
-                    "text": "System preference",
-                    "value": "systemPreferred"
-                },
-                {
-                    "title": "Switch to light theme",
-                    "text": "Light",
-                    "value": "default"
-                },
-                {
-                    "title": "Switch to dark theme",
-                    "text": "Dark",
-                    "value": "dark"
-                }
-            ],
-            "tags": "dark, light"
-        },
-        {
-            "type": "setting",
-            "category": "Appearance",
-            "title": "Panel layout:",
-            "settingName": "sidebarPosition",
-            "settingType": "enum",
-            "defaultValue": "auto",
-            "options": [
-                {
-                    "title": "Use horizontal panel layout",
-                    "text": "horizontal",
-                    "value": "bottom"
-                },
-                {
-                    "title": "Use vertical panel layout",
-                    "text": "vertical",
-                    "value": "right"
-                },
-                {
-                    "title": "Use automatic panel layout",
-                    "text": "auto",
-                    "value": "auto"
-                }
-            ]
-        },
-        {
-            "type": "setting",
-            "category": "Appearance",
-            "title": "Color format:",
-            "settingName": "colorFormat",
-            "settingType": "enum",
-            "defaultValue": "original",
-            "options": [
-                {
-                    "title": "Set color format as authored",
-                    "text": "As authored",
-                    "value": "original"
-                },
-                {
-                    "title": "Set color format to HEX",
-                    "text": "HEX: #dac0de",
-                    "value": "hex",
-                    "raw": true
-                },
-                {
-                    "title": "Set color format to RGB",
-                    "text": "RGB: rgb(128, 255, 255)",
-                    "value": "rgb",
-                    "raw": true
-                },
-                {
-                    "title": "Set color format to HSL",
-                    "text": "HSL: hsl(300, 80%, 90%)",
-                    "value": "hsl",
-                    "raw": true
-                }
-            ]
-        },
-        {
-            "type": "setting",
-            "category": "Appearance",
-            "title": "Enable Ctrl + 1-9 shortcut to switch panels",
-            "title-mac": "Enable \u2318 + 1-9 shortcut to switch panels",
-            "settingName": "shortcutPanelSwitch",
-            "settingType": "boolean",
-            "defaultValue": false
-        },
-        {
-            "type": "@UI.SettingUI",
-            "category": "Extensions",
-            "className": "Components.Linkifier.LinkHandlerSettingUI"
-        },
-        {
-            "type": "setting",
-            "category": "Global",
-            "settingName": "currentDockState",
-            "settingType": "enum",
-            "defaultValue": "right",
-            "options": [
-                {
-                    "value": "right",
-                    "text": "Right",
-                    "title": "Dock to right"
-                },
-                {
-                    "value": "bottom",
-                    "text": "Bottom",
-                    "title": "Dock to bottom"
-                },
-                {
-                    "value": "left",
-                    "text": "Left",
-                    "title": "Dock to left"
-                },
-                {
-                    "value": "undocked",
-                    "text": "Undocked",
-                    "title": "Undock into separate window"
-                }
-            ]
-        },
-        {
-            "type": "@UI.ViewLocationResolver",
-            "name": "drawer-view",
-            "category": "Drawer",
-            "className": "UI.InspectorView"
-        },
-        {
-            "type": "@UI.ViewLocationResolver",
-            "name": "drawer-sidebar",
-            "category": "Drawer sidebar",
-            "className": "UI.InspectorView"
-        },
-        {
-            "type": "@UI.ViewLocationResolver",
-            "name": "panel",
-            "category": "Panel",
-            "className": "UI.InspectorView"
+          "shortcut": "Esc"
         }
-    ],
-    "dependencies": [
-        "extensions",
-        "host",
-        "platform",
-        "sdk",
-        "persistence"
-    ],
-    "scripts": [],
-    "modules": [
-        "main.js",
-        "main-legacy.js",
-        "SimpleApp.js",
-        "ExecutionContextSelector.js",
-        "MainImpl.js"
-    ]
+      ]
+    },
+    {
+      "type": "action",
+      "actionId": "main.next-tab",
+      "category": "Global",
+      "title": "Next panel",
+      "className": "UI.InspectorView.ActionDelegate",
+      "bindings": [
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+]"
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+]"
+        }
+      ]
+    },
+    {
+      "type": "action",
+      "actionId": "main.previous-tab",
+      "category": "Global",
+      "title": "Previous panel",
+      "className": "UI.InspectorView.ActionDelegate",
+      "bindings": [
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+["
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+["
+        }
+      ]
+    },
+    {
+      "type": "action",
+      "actionId": "main.debug-reload",
+      "category": "Global",
+      "title": "Reload DevTools",
+      "className": "Main.ReloadActionDelegate",
+      "bindings": [
+        {
+          "shortcut": "Alt+R"
+        }
+      ]
+    },
+    {
+      "type": "action",
+      "category": "Global",
+      "title": "Restore last dock position",
+      "actionId": "main.toggle-dock",
+      "className": "Components.DockController.ToggleDockActionDelegate",
+      "bindings": [
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+Shift+D"
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+Shift+D"
+        }
+      ]
+    },
+    {
+      "type": "action",
+      "actionId": "main.zoom-in",
+      "category": "Global",
+      "title": "Zoom in",
+      "className": "Main.Main.ZoomActionDelegate",
+      "bindings": [
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+Plus"
+        },
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+Shift+Plus"
+        },
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+NumpadPlus"
+        },
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+Shift+NumpadPlus"
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+Plus"
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+Shift+Plus"
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+NumpadPlus"
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+Shift+NumpadPlus"
+        }
+      ]
+    },
+    {
+      "type": "action",
+      "actionId": "main.zoom-out",
+      "category": "Global",
+      "title": "Zoom out",
+      "className": "Main.Main.ZoomActionDelegate",
+      "bindings": [
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+Minus"
+        },
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+Shift+Minus"
+        },
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+NumpadMinus"
+        },
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+Shift+NumpadMinus"
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+Minus"
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+Shift+Minus"
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+NumpadMinus"
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+Shift+NumpadMinus"
+        }
+      ]
+    },
+    {
+      "type": "action",
+      "actionId": "main.zoom-reset",
+      "category": "Global",
+      "title": "Reset zoom level",
+      "className": "Main.Main.ZoomActionDelegate",
+      "bindings": [
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+0"
+        },
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+Numpad0"
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+Numpad0"
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+0"
+        }
+      ]
+    },
+    {
+      "type": "action",
+      "actionId": "main.search-in-panel.find",
+      "category": "Global",
+      "title": "Search in panel",
+      "className": "Main.Main.SearchActionDelegate",
+      "bindings": [
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+F"
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+F"
+        },
+        {
+          "platform": "mac",
+          "shortcut": "F3"
+        }
+      ]
+    },
+    {
+      "type": "action",
+      "actionId": "main.search-in-panel.cancel",
+      "category": "Global",
+      "title": "Cancel search",
+      "className": "Main.Main.SearchActionDelegate",
+      "order": 10,
+      "bindings": [
+        {
+          "shortcut": "Esc"
+        }
+      ]
+    },
+    {
+      "type": "action",
+      "actionId": "main.search-in-panel.find-next",
+      "category": "Global",
+      "title": "Find next result",
+      "className": "Main.Main.SearchActionDelegate",
+      "bindings": [
+        {
+          "platform": "mac",
+          "shortcut": "Meta+G"
+        },
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+G"
+        },
+        {
+          "platform": "windows,linux",
+          "shortcut": "F3"
+        }
+      ]
+    },
+    {
+      "type": "action",
+      "actionId": "main.search-in-panel.find-previous",
+      "category": "Global",
+      "title": "Find previous result",
+      "className": "Main.Main.SearchActionDelegate",
+      "bindings": [
+        {
+          "platform": "mac",
+          "shortcut": "Meta+Shift+G"
+        },
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+Shift+G"
+        },
+        {
+          "platform": "windows,linux",
+          "shortcut": "Shift+F3"
+        }
+      ]
+    },
+    {
+      "type": "@UI.ToolbarItem.Provider",
+      "separator": true,
+      "location": "main-toolbar-left",
+      "order": 100
+    },
+    {
+      "type": "@UI.ToolbarItem.Provider",
+      "separator": true,
+      "order": 97,
+      "location": "main-toolbar-right"
+    },
+    {
+      "type": "@UI.ToolbarItem.Provider",
+      "className": "Main.Main.SettingsButtonProvider",
+      "order": 98,
+      "location": "main-toolbar-right"
+    },
+    {
+      "type": "@UI.ToolbarItem.Provider",
+      "className": "Main.Main.MainMenuItem",
+      "order": 99,
+      "location": "main-toolbar-right"
+    },
+    {
+      "type": "@UI.ToolbarItem.Provider",
+      "className": "Components.DockController.CloseButtonProvider",
+      "order": 100,
+      "location": "main-toolbar-right"
+    },
+    {
+      "type": "setting",
+      "category": "Appearance",
+      "title": "Theme:",
+      "settingName": "uiTheme",
+      "settingType": "enum",
+      "defaultValue": "systemPreferred",
+      "options": [
+        {
+          "title": "Switch to system preferred color theme",
+          "text": "System preference",
+          "value": "systemPreferred"
+        },
+        {
+          "title": "Switch to light theme",
+          "text": "Light",
+          "value": "default"
+        },
+        {
+          "title": "Switch to dark theme",
+          "text": "Dark",
+          "value": "dark"
+        }
+      ],
+      "tags": "dark, light"
+    },
+    {
+      "type": "setting",
+      "category": "Appearance",
+      "title": "Panel layout:",
+      "settingName": "sidebarPosition",
+      "settingType": "enum",
+      "defaultValue": "auto",
+      "options": [
+        {
+          "title": "Use horizontal panel layout",
+          "text": "horizontal",
+          "value": "bottom"
+        },
+        {
+          "title": "Use vertical panel layout",
+          "text": "vertical",
+          "value": "right"
+        },
+        {
+          "title": "Use automatic panel layout",
+          "text": "auto",
+          "value": "auto"
+        }
+      ]
+    },
+    {
+      "type": "setting",
+      "category": "Appearance",
+      "title": "Color format:",
+      "settingName": "colorFormat",
+      "settingType": "enum",
+      "defaultValue": "original",
+      "options": [
+        {
+          "title": "Set color format as authored",
+          "text": "As authored",
+          "value": "original"
+        },
+        {
+          "title": "Set color format to HEX",
+          "text": "HEX: #dac0de",
+          "value": "hex",
+          "raw": true
+        },
+        {
+          "title": "Set color format to RGB",
+          "text": "RGB: rgb(128, 255, 255)",
+          "value": "rgb",
+          "raw": true
+        },
+        {
+          "title": "Set color format to HSL",
+          "text": "HSL: hsl(300, 80%, 90%)",
+          "value": "hsl",
+          "raw": true
+        }
+      ]
+    },
+    {
+      "type": "setting",
+      "category": "Appearance",
+      "title": "Enable Ctrl + 1-9 shortcut to switch panels",
+      "title-mac": "Enable ⌘ + 1-9 shortcut to switch panels",
+      "settingName": "shortcutPanelSwitch",
+      "settingType": "boolean",
+      "defaultValue": false
+    },
+    {
+      "type": "@UI.SettingUI",
+      "category": "Extensions",
+      "className": "Components.Linkifier.LinkHandlerSettingUI"
+    },
+    {
+      "type": "setting",
+      "category": "Global",
+      "settingName": "currentDockState",
+      "settingType": "enum",
+      "defaultValue": "right",
+      "options": [
+        {
+          "value": "right",
+          "text": "Right",
+          "title": "Dock to right"
+        },
+        {
+          "value": "bottom",
+          "text": "Bottom",
+          "title": "Dock to bottom"
+        },
+        {
+          "value": "left",
+          "text": "Left",
+          "title": "Dock to left"
+        },
+        {
+          "value": "undocked",
+          "text": "Undocked",
+          "title": "Undock into separate window"
+        }
+      ]
+    },
+    {
+      "type": "@UI.ViewLocationResolver",
+      "name": "drawer-view",
+      "category": "Drawer",
+      "className": "UI.InspectorView"
+    },
+    {
+      "type": "@UI.ViewLocationResolver",
+      "name": "drawer-sidebar",
+      "category": "Drawer sidebar",
+      "className": "UI.InspectorView"
+    },
+    {
+      "type": "@UI.ViewLocationResolver",
+      "name": "panel",
+      "category": "Panel",
+      "className": "UI.InspectorView"
+    }
+  ],
+  "dependencies": [
+    "extensions",
+    "host",
+    "platform",
+    "sdk",
+    "persistence"
+  ],
+  "scripts": [],
+  "modules": [
+    "main.js",
+    "main-legacy.js",
+    "SimpleApp.js",
+    "ExecutionContextSelector.js",
+    "MainImpl.js"
+  ]
 }

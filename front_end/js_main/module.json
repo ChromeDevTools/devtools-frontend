@@ -1,17 +1,17 @@
 {
-    "extensions": [
-        {
-            "type": "early-initialization",
-            "className": "JsMain.JsMain"
-        }
-    ],
-    "dependencies": [
-        "components"
-    ],
-    "scripts": [],
-    "modules": [
-        "js_main.js",
-        "js_main-legacy.js",
-        "JsMain.js"
-    ]
+  "extensions": [
+    {
+      "type": "early-initialization",
+      "className": "JsMain.JsMain"
+    }
+  ],
+  "dependencies": [
+    "components"
+  ],
+  "scripts": [],
+  "modules": [
+    "js_main.js",
+    "js_main-legacy.js",
+    "JsMain.js"
+  ]
 }

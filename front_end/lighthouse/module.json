@@ -1,50 +1,50 @@
 {
-    "extensions": [
-        {
-            "type": "view",
-            "location": "panel",
-            "id": "lighthouse",
-            "title": "Lighthouse",
-            "order": 90,
-            "className": "Lighthouse.LighthousePanel",
-            "tags": "lighthouse, pwa"
-        }
-    ],
-    "dependencies": [
-        "components",
-        "emulation",
-        "timeline",
-        "inspector_main",
-        "sdk",
-        "services",
-        "ui"
-    ],
-    "scripts": [],
-    "modules": [
-        "../third_party/lighthouse/report-assets/report.js",
-        "../third_party/lighthouse/report-assets/report-generator.js",
-        "lighthouse.js",
-        "lighthouse-legacy.js",
-        "RadioSetting.js",
-        "LighthousePanel.js",
-        "LighthouseController.js",
-        "LighthouseReportSelector.js",
-        "LighthouseReportRenderer.js",
-        "LighthouseStartView.js",
-        "LighthouseStatusView.js",
-        "LighthouseProtocolService.js"
-    ],
-    "resources": [
-        "../third_party/lighthouse/report-assets/template.html",
-        "../third_party/lighthouse/report-assets/templates.html",
-        "../third_party/lighthouse/report-assets/report.css",
-        "../third_party/lighthouse/report-assets/report.js",
-        "lighthouseDialog.css",
-        "lighthousePanel.css",
-        "lighthouseStartView.css"
-    ],
-    "skip_compilation": [
-      "../third_party/lighthouse/report-assets/report.js",
-      "../third_party/lighthouse/report-assets/report-generator.js"
+  "extensions": [
+    {
+      "type": "view",
+      "location": "panel",
+      "id": "lighthouse",
+      "title": "Lighthouse",
+      "order": 90,
+      "className": "Lighthouse.LighthousePanel",
+      "tags": "lighthouse, pwa"
+    }
+  ],
+  "dependencies": [
+    "components",
+    "emulation",
+    "timeline",
+    "inspector_main",
+    "sdk",
+    "services",
+    "ui"
+  ],
+  "scripts": [],
+  "modules": [
+    "../third_party/lighthouse/report-assets/report.js",
+    "../third_party/lighthouse/report-assets/report-generator.js",
+    "lighthouse.js",
+    "lighthouse-legacy.js",
+    "RadioSetting.js",
+    "LighthousePanel.js",
+    "LighthouseController.js",
+    "LighthouseReportSelector.js",
+    "LighthouseReportRenderer.js",
+    "LighthouseStartView.js",
+    "LighthouseStatusView.js",
+    "LighthouseProtocolService.js"
+  ],
+  "resources": [
+    "../third_party/lighthouse/report-assets/template.html",
+    "../third_party/lighthouse/report-assets/templates.html",
+    "../third_party/lighthouse/report-assets/report.css",
+    "../third_party/lighthouse/report-assets/report.js",
+    "lighthouseDialog.css",
+    "lighthousePanel.css",
+    "lighthouseStartView.css"
+  ],
+  "skip_compilation": [
+    "../third_party/lighthouse/report-assets/report.js",
+    "../third_party/lighthouse/report-assets/report-generator.js"
   ]
 }

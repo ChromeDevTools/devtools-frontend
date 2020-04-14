@@ -1,17 +1,17 @@
 {
-    "dependencies": [
-        "sdk"
-    ],
-    "scripts": [],
-    "modules": [
-        "timeline_model.js",
-        "timeline_model-legacy.js",
-        "TimelineModelFilter.js",
-        "TracingLayerTree.js",
-        "TimelineModel.js",
-        "TimelineIRModel.js",
-        "TimelineJSProfile.js",
-        "TimelineFrameModel.js",
-        "TimelineProfileTree.js"
-    ]
+  "dependencies": [
+    "sdk"
+  ],
+  "scripts": [],
+  "modules": [
+    "timeline_model.js",
+    "timeline_model-legacy.js",
+    "TimelineModelFilter.js",
+    "TracingLayerTree.js",
+    "TimelineModel.js",
+    "TimelineIRModel.js",
+    "TimelineJSProfile.js",
+    "TimelineFrameModel.js",
+    "TimelineProfileTree.js"
+  ]
 }

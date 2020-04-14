@@ -1,32 +1,32 @@
 {
-    "dependencies": [
-        "sdk",
-        "platform",
-        "services",
-        "workspace"
-    ],
-    "scripts": [],
-    "modules": [
-        "bindings.js",
-        "bindings-legacy.js",
-        "LiveLocation.js",
-        "ResourceMapping.js",
-        "CompilerScriptMapping.js",
-        "ResourceScriptMapping.js",
-        "SASSSourceMapping.js",
-        "StylesSourceMapping.js",
-        "CSSWorkspaceBinding.js",
-        "DebuggerWorkspaceBinding.js",
-        "DebuggerLanguagePlugins.js",
-        "language_plugins/CXXDWARFLanguagePlugin.js",
-        "BreakpointManager.js",
-        "ContentProviderBasedProject.js",
-        "DefaultScriptMapping.js",
-        "FileUtils.js",
-        "BlackboxManager.js",
-        "NetworkProject.js",
-        "PresentationConsoleMessageHelper.js",
-        "ResourceUtils.js",
-        "TempFile.js"
-    ]
+  "dependencies": [
+    "sdk",
+    "platform",
+    "services",
+    "workspace"
+  ],
+  "scripts": [],
+  "modules": [
+    "bindings.js",
+    "bindings-legacy.js",
+    "LiveLocation.js",
+    "ResourceMapping.js",
+    "CompilerScriptMapping.js",
+    "ResourceScriptMapping.js",
+    "SASSSourceMapping.js",
+    "StylesSourceMapping.js",
+    "CSSWorkspaceBinding.js",
+    "DebuggerWorkspaceBinding.js",
+    "DebuggerLanguagePlugins.js",
+    "language_plugins/CXXDWARFLanguagePlugin.js",
+    "BreakpointManager.js",
+    "ContentProviderBasedProject.js",
+    "DefaultScriptMapping.js",
+    "FileUtils.js",
+    "BlackboxManager.js",
+    "NetworkProject.js",
+    "PresentationConsoleMessageHelper.js",
+    "ResourceUtils.js",
+    "TempFile.js"
+  ]
 }

@@ -1,22 +1,24 @@
 {
-    "extensions": [
-        {
-            "type": "view",
-            "location": "panel",
-            "id": "layers",
-            "title": "Layers",
-            "order": 100,
-            "persistence": "closeable",
-            "className": "Layers.LayersPanel"
-        }
-    ],
-    "dependencies": ["layer_viewer"],
-    "scripts": [],
-    "modules": [
-        "layers.js",
-        "layers-legacy.js",
-        "LayerPaintProfilerView.js",
-        "LayerTreeModel.js",
-        "LayersPanel.js"
-    ]
+  "extensions": [
+    {
+      "type": "view",
+      "location": "panel",
+      "id": "layers",
+      "title": "Layers",
+      "order": 100,
+      "persistence": "closeable",
+      "className": "Layers.LayersPanel"
+    }
+  ],
+  "dependencies": [
+    "layer_viewer"
+  ],
+  "scripts": [],
+  "modules": [
+    "layers.js",
+    "layers-legacy.js",
+    "LayerPaintProfilerView.js",
+    "LayerTreeModel.js",
+    "LayersPanel.js"
+  ]
 }

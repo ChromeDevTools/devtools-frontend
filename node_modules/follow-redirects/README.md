@@ -137,8 +137,8 @@ Pull Requests are always welcome. Please [file an issue](https://github.com/foll
 ## Authors
 
 - [Ruben Verborgh](https://ruben.verborgh.org/)
-- Olivier Lalonde (olalonde@gmail.com)
-- James Talmage (james@talmage.io)
+- [Olivier Lalonde](mailto:olalonde@gmail.com)
+- [James Talmage](mailto:james@talmage.io)
 
 ## License
 

@@ -1,4 +1,4 @@
-Copyright (c) 2017 Garen J. Torikian
+Copyright (c) 2019 Garen J. Torikian
 
 MIT License
 

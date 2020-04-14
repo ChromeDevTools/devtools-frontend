@@ -582,7 +582,6 @@ export class TabbedPane extends VBox {
         this._placeholderContainerElement.appendChild(this._placeholderElement);
         if (this._focusedPlaceholderElement) {
           this.setDefaultFocusedElement(this._focusedPlaceholderElement);
-          this.focus();
         }
       }
     } else {

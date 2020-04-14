@@ -184,11 +184,13 @@ WriteStream.prototype.destroy = function() {
 };
 
 util.inherits(BufferSlicer, EventEmitter);
-function BufferSlicer(buffer) {
+function BufferSlicer(buffer, options) {
   EventEmitter.call(this);
 
+  options = options || {};
   this.refCount = 0;
   this.buffer = buffer;
+  this.maxChunkSize = options.maxChunkSize || Number.MAX_SAFE_INTEGER;
 }
 
 BufferSlicer.prototype.read = function(buffer, offset, length, position, callback) {
@@ -211,11 +213,28 @@ BufferSlicer.prototype.write = function(buffer, offset, length, position, callba
 BufferSlicer.prototype.createReadStream = function(options) {
   options = options || {};
   var readStream = new PassThrough(options);
+  readStream.destroyed = false;
   readStream.start = options.start || 0;
   readStream.endOffset = options.end;
-  readStream.pos = readStream.endOffset || this.buffer.length; // yep, we're already done
-  readStream.destroyed = false;
-  readStream.write(this.buffer.slice(readStream.start, readStream.pos));
+  // by the time this function returns, we'll be done.
+  readStream.pos = readStream.endOffset || this.buffer.length;
+
+  // respect the maxChunkSize option to slice up the chunk into smaller pieces.
+  var entireSlice = this.buffer.slice(readStream.start, readStream.pos);
+  var offset = 0;
+  while (true) {
+    var nextOffset = offset + this.maxChunkSize;
+    if (nextOffset >= entireSlice.length) {
+      // last chunk
+      if (offset < entireSlice.length) {
+        readStream.write(entireSlice.slice(offset, entireSlice.length));
+      }
+      break;
+    }
+    readStream.write(entireSlice.slice(offset, nextOffset));
+    offset = nextOffset;
+  }
+
   readStream.end();
   readStream.destroy = function() {
     readStream.destroyed = true;
@@ -268,8 +287,8 @@ BufferSlicer.prototype.unref = function() {
   }
 };
 
-function createFromBuffer(buffer) {
-  return new BufferSlicer(buffer);
+function createFromBuffer(buffer, options) {
+  return new BufferSlicer(buffer, options);
 }
 
 function createFromFd(fd, options) {

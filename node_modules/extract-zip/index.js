@@ -32,6 +32,12 @@ module.exports = function (zipPath, opts, cb) {
 
       var cancelled = false
 
+      zipfile.on('error', function (err) {
+        if (err) {
+          cancelled = true
+          return cb(err)
+        }
+      })
       zipfile.readEntry()
 
       zipfile.on('close', function () {

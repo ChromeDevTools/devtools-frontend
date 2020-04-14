@@ -24,10 +24,9 @@ describe('Multi-Workers', async () => {
     const withOrWithout = sourceMaps ? 'with source maps' : 'without source maps';
     const targetPage = sourceMaps ? `${resourcesPath}/sources/multi-workers-sourcemap.html` :
                                     `${resourcesPath}/sources/multi-workers.html`;
+    const scriptFile = sourceMaps ? 'multi-workers.min.js' : 'multi-workers.js';
     function workerFileSelectors(workerIndex: number) {
-      return createSelectorsForWorkerFile(
-          sourceMaps ? 'multi-workers.min.js' : 'multi-workers.js', 'test/e2e/resources/sources', 'multi-workers.js',
-          workerIndex);
+      return createSelectorsForWorkerFile(scriptFile, 'test/e2e/resources/sources', 'multi-workers.js', workerIndex);
     }
 
     async function validateNavigationTree() {
@@ -36,9 +35,7 @@ describe('Multi-Workers', async () => {
     }
 
     async function validateBreakpoints(frontend: puppeteer.Page) {
-      // TODO(crbug.com/1062308): Fix the source map so the breakpoint at 10 doesn't move
-      const bpLine = sourceMaps ? 9 : 10;
-      assert.deepEqual(await getBreakpointDecorators(frontend), [6, bpLine]);
+      assert.deepEqual(await getBreakpointDecorators(frontend), [6, 12]);
       assert.deepEqual(await getBreakpointDecorators(frontend, true), [6]);
     }
 
@@ -76,7 +73,7 @@ describe('Multi-Workers', async () => {
       await validateNavigationTree();
 
       // Send message to a worker to trigger break
-      await target.evaluate('workers[3].postMessage({});');
+      await target.evaluate('workers[3].postMessage({command:"break"});');
 
       // Should automatically switch to sources tab.
 
@@ -91,7 +88,7 @@ describe('Multi-Workers', async () => {
       // Verify that we have resumed.
       await waitFor(PAUSE_BUTTON);
 
-      await target.evaluate('workers[7].postMessage({});');
+      await target.evaluate('workers[7].postMessage({command:"break"});');
 
       // Validate that we are paused
       await waitFor(RESUME_BUTTON);
@@ -123,7 +120,7 @@ describe('Multi-Workers', async () => {
       await bpCheckbox.evaluate(n => (n as HTMLElement).click());
       await frontend.waitFor('.cm-breakpoint-disabled');
       // Add another breakpoint
-      await addBreakpointForLine(frontend, 10);
+      await addBreakpointForLine(frontend, 12);
 
       // Check breakpoints
       await validateBreakpoints(frontend);
@@ -149,5 +146,43 @@ describe('Multi-Workers', async () => {
       // Check breakpoints
       await validateBreakpoints(frontend);
     }).timeout(10000);
+
+    it(`hits breakpoints added to workers ${withOrWithout}`, async () => {
+      const {target, frontend} = getBrowserAndPages();
+
+      // Have the target load the page.
+      await target.goto(targetPage);
+
+      await click('#tab-sources');
+
+      await validateNavigationTree();
+      // Open file from second worker
+      await openNestedWorkerFile(workerFileSelectors(2));
+      // Set breakpoint
+      await addBreakpointForLine(frontend, 6);
+
+      // Send message to a worker to trigger break
+      await target.evaluate('workers[5].postMessage({});');
+
+      // Validate that we are paused by locating the resume button
+      await waitFor(RESUME_BUTTON);
+
+      // Look at source tabs
+      await validateSourceTabs();
+
+      // Continue
+      await click(RESUME_BUTTON);
+      // Verify that we have resumed.
+      await waitFor(PAUSE_BUTTON);
+
+      // Launch a new worker and make it hit breakpoint
+      await target.evaluate(`new Worker('${scriptFile}').postMessage({});`);
+
+      // Validate that we are paused
+      await waitFor(RESUME_BUTTON);
+
+      // Look at source tabs
+      await validateSourceTabs();
+    });
   });
 });

@@ -33,7 +33,7 @@ describe('Raw-Wasm', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     // Have the target load the page.
-    await target.goto(`${resourcesPath}/pages/callstack-wasm-to-js.html`);
+    await target.goto(`${resourcesPath}/sources/wasm/callstack-wasm-to-js.html`);
 
     // This page automatically enters debugging.
     const messageElement = await frontend.waitForSelector('.paused-message');

@@ -3,10 +3,10 @@
 // found in the LICENSE file.
 import {assert} from 'chai';
 
-import {generateClosureBridge, generateClosureClass, generateCreatorFunction, generateInterfaces} from '../../../../scripts/component_bridges/generate_closure';
-import {WalkerState, walkTree} from '../../../../scripts/component_bridges/walk_tree';
+import {generateClosureBridge, generateClosureClass, generateCreatorFunction, generateInterfaces} from '../../../../scripts/component_bridges/generate_closure.js';
+import {WalkerState, walkTree} from '../../../../scripts/component_bridges/walk_tree.js';
 
-import {createTypeScriptSourceFile} from './test_utils';
+import {createTypeScriptSourceFile} from './test_utils.js';
 
 
 const parseCode = (code: string): WalkerState => {

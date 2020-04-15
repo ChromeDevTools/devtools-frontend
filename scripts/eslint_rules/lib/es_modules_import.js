@@ -42,6 +42,26 @@ function computeTopLevelFolder(fileName) {
   return namespaceName.substring(0, namespaceName.indexOf(path.sep));
 }
 
+function checkImportExtension(importPath, context, node) {
+  // import * as fs from 'fs';
+  if (!node.source.value.startsWith('.')) {
+    return;
+  }
+
+  if (!importPath.endsWith('.js')) {
+    context.report({
+      node,
+      message: 'Missing file extension for import "{{importPath}}"',
+      data: {
+        importPath,
+      },
+      fix(fixer) {
+        return fixer.replaceText(node.source, `'${node.source.value}.js'`);
+      }
+    });
+  }
+}
+
 module.exports = {
   meta: {
     type: 'problem',
@@ -56,25 +76,14 @@ module.exports = {
   create: function(context) {
     const importingFileName = path.resolve(context.getFilename());
 
-    if (!importingFileName.startsWith(FRONT_END_DIRECTORY)) {
-      return {};
-    }
-
     return {
       ImportDeclaration(node) {
         const importPath = path.normalize(node.source.value);
 
-        if (!importPath.endsWith('.js')) {
-          context.report({
-            node,
-            message: 'Missing file extension for import "{{importPath}}"',
-            data: {
-              importPath,
-            },
-            fix(fixer) {
-              return fixer.replaceText(node.source, `'${node.source.value}.js'`);
-            }
-          });
+        checkImportExtension(importPath, context, node);
+
+        if (!importingFileName.startsWith(FRONT_END_DIRECTORY)) {
+          return;
         }
 
         if (isSideEffectImportSpecifier(node.specifiers)) {

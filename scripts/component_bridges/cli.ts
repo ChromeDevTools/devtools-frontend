@@ -4,8 +4,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import {generateClosureBridge, GeneratedCode} from './generate_closure';
-import {filePathToTypeScriptSourceFile, walkTree} from './walk_tree';
+import {generateClosureBridge, GeneratedCode} from './generate_closure.js';
+import {filePathToTypeScriptSourceFile, walkTree} from './walk_tree.js';
 
 const chromeLicense = `// Copyright ${new Date().getFullYear()} The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be

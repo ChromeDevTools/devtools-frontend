@@ -6,9 +6,9 @@ import {assert} from 'chai';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import {parseTypeScriptComponent} from '../../../../scripts/component_bridges/cli';
+import {parseTypeScriptComponent} from '../../../../scripts/component_bridges/cli.js';
 
-import {pathForFixture} from './test_utils';
+import {pathForFixture} from './test_utils.js';
 
 
 const runFixtureTestAndAssertMatch = (fixtureName: string) => {

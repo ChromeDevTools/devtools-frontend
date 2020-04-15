@@ -64,6 +64,10 @@ ruleTester.run('es_modules_import', rule, {
       code: 'import {classMap} from \'../third_party/lit-html/package/directives/class-map.js\';',
       filename: 'front_end/elements/ElementsBreadcrumbs.ts',
     },
+    {
+      code: 'import * as fs from \'fs\';',
+      filename: 'test/unittests/front_end/Unit_test.ts',
+    },
   ],
 
   invalid: [
@@ -105,6 +109,14 @@ ruleTester.run('es_modules_import', rule, {
         message: 'Missing file extension for import "../common/common"',
       }],
       output: 'import \'../common/common.js\';'
+    },
+    {
+      code: 'import \'../../../../front_end/common/common\';',
+      filename: 'test/unittests/front_end/common/Unit_test.ts',
+      errors: [{
+        message: 'Missing file extension for import "../../../../front_end/common/common"',
+      }],
+      output: 'import \'../../../../front_end/common/common.js\';'
     },
     // the `ls` helper is not an exception in a JS file
     {

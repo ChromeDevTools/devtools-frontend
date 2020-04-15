@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 import * as ts from 'typescript';
 
-import {nodeIsPrimitive, valueForTypeNode} from './value_for_type_node';
-import {WalkerState} from './walk_tree';
+import {nodeIsPrimitive, valueForTypeNode} from './value_for_type_node.js';
+import {WalkerState} from './walk_tree.js';
 
 export const generateCreatorFunction = (state: WalkerState): string[] => {
   if (!state.componentClass || !state.componentClass.name || !state.customElementsDefineCall) {

@@ -5,9 +5,9 @@ import {assert} from 'chai';
 import * as path from 'path';
 import * as ts from 'typescript';
 
-import {walkTree} from '../../../../scripts/component_bridges/walk_tree';
+import {walkTree} from '../../../../scripts/component_bridges/walk_tree.js';
 
-import {createTypeScriptSourceFile, createTypeScriptSourceFromFilePath} from './test_utils';
+import {createTypeScriptSourceFile, createTypeScriptSourceFromFilePath} from './test_utils.js';
 
 const fixturesPath = path.join(process.cwd(), 'test', 'unittests', 'scripts', 'component_bridges', 'fixtures');
 

@@ -4,7 +4,7 @@
 import {assert} from 'chai';
 import * as ts from 'typescript';
 
-import {valueForTypeNode} from '../../../../scripts/component_bridges/value_for_type_node';
+import {valueForTypeNode} from '../../../../scripts/component_bridges/value_for_type_node.js';
 
 const createNode = (type: ts.SyntaxKind): ts.TypeNode => {
   const node = ts.createNode(type);

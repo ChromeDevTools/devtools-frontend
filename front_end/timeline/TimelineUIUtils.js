@@ -1758,7 +1758,7 @@ export class TimelineUIUtils {
     }
     TimelineUIUtils._categories = {
       loading: new TimelineCategory('loading', ls`Loading`, true, 'hsl(214, 67%, 74%)', 'hsl(214, 67%, 66%)'),
-      experience: new TimelineCategory('experience', ls`Experience`, true, 'hsl(5, 80%, 74%)', 'hsl(5, 80%, 66%)'),
+      experience: new TimelineCategory('experience', ls`Experience`, false, 'hsl(5, 80%, 74%)', 'hsl(5, 80%, 66%)'),
       scripting: new TimelineCategory('scripting', ls`Scripting`, true, 'hsl(43, 83%, 72%)', 'hsl(43, 83%, 64%) '),
       rendering: new TimelineCategory('rendering', ls`Rendering`, true, 'hsl(256, 67%, 76%)', 'hsl(256, 67%, 70%)'),
       painting: new TimelineCategory('painting', ls`Painting`, true, 'hsl(109, 33%, 64%)', 'hsl(109, 33%, 55%)'),

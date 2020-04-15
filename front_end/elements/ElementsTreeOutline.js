@@ -1278,12 +1278,12 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
 
   /**
    * @param {!SDK.DOMModel.DOMNode} node
-   * @param {boolean=} closingTag
+   * @param {boolean=} isClosingTag
    * @return {!ElementsTreeElement}
    */
-  _createElementTreeElement(node, closingTag) {
-    const treeElement = new ElementsTreeElement(node, closingTag);
-    treeElement.setExpandable(!closingTag && this._hasVisibleChildren(node));
+  _createElementTreeElement(node, isClosingTag) {
+    const treeElement = new ElementsTreeElement(node, isClosingTag);
+    treeElement.setExpandable(!isClosingTag && this._hasVisibleChildren(node));
     if (node.nodeType() === Node.ELEMENT_NODE && node.parentNode && node.parentNode.nodeType() === Node.DOCUMENT_NODE &&
         !node.parentNode.parentNode) {
       treeElement.setCollapsible(false);
@@ -1455,11 +1455,11 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
    * @param {!ElementsTreeElement} treeElement
    * @param {!SDK.DOMModel.DOMNode} child
    * @param {number} index
-   * @param {boolean=} closingTag
+   * @param {boolean=} isClosingTag
    * @return {!Elements.ElementsTreeElement}
    */
-  insertChildElement(treeElement, child, index, closingTag) {
-    const newElement = this._createElementTreeElement(child, closingTag);
+  insertChildElement(treeElement, child, index, isClosingTag) {
+    const newElement = this._createElementTreeElement(child, isClosingTag);
     treeElement.insertChild(newElement, index);
     return newElement;
   }

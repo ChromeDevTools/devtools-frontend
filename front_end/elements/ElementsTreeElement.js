@@ -47,9 +47,9 @@ import {MarkerDecorator} from './MarkerDecorator.js';
 export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   /**
    * @param {!SDK.DOMModel.DOMNode} node
-   * @param {boolean=} elementCloseTag
+   * @param {boolean=} isClosingTag
    */
-  constructor(node, elementCloseTag) {
+  constructor(node, isClosingTag) {
     // The title will be updated in onattach.
     super();
     this._node = node;
@@ -60,9 +60,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     this._gutterContainer.appendChild(gutterMenuIcon);
     this._decorationsElement = this._gutterContainer.createChild('div', 'hidden');
 
-    this._elementCloseTag = elementCloseTag;
+    this._isClosingTag = isClosingTag;
 
-    if (this._node.nodeType() === Node.ELEMENT_NODE && !elementCloseTag) {
+    if (this._node.nodeType() === Node.ELEMENT_NODE && !isClosingTag) {
       this._canAddAttributes = true;
     }
     this._searchQuery = null;
@@ -159,7 +159,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
    * @return {boolean}
    */
   isClosingTag() {
-    return !!this._elementCloseTag;
+    return !!this._isClosingTag;
   }
 
   /**
@@ -290,7 +290,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
    * @override
    */
   onbind() {
-    if (!this._elementCloseTag) {
+    if (!this._isClosingTag) {
       this._node[this.treeOutline.treeElementSymbol()] = this;
     }
   }
@@ -337,7 +337,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
    * @override
    */
   onexpand() {
-    if (this._elementCloseTag) {
+    if (this._isClosingTag) {
       return;
     }
 
@@ -348,7 +348,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
    * @override
    */
   oncollapse() {
-    if (this._elementCloseTag) {
+    if (this._isClosingTag) {
       return;
     }
 
@@ -434,7 +434,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
    * @return {boolean}
    */
   ondblclick(event) {
-    if (this._editing || this._elementCloseTag) {
+    if (this._editing || this._isClosingTag) {
       return false;
     }
 
@@ -516,7 +516,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
    */
   populateTagContextMenu(contextMenu, event) {
     // Add attribute-related actions.
-    const treeElement = this._elementCloseTag ? this.treeOutline.findTreeElement(this._node) : this;
+    const treeElement = this._isClosingTag ? this.treeOutline.findTreeElement(this._node) : this;
     contextMenu.editSection().appendItem(
         Common.UIString.UIString('Add attribute'), treeElement._addNewAttribute.bind(treeElement));
 
@@ -1582,7 +1582,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         }
 
         const tagName = node.nodeNameInCorrectCase();
-        if (this._elementCloseTag) {
+        if (this._isClosingTag) {
           this._buildTagDOM(titleDOM, tagName, true, true, updateRecord);
           break;
         }

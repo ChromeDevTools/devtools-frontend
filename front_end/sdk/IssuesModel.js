@@ -5,11 +5,13 @@
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 
 import {CookieModel} from './CookieModel.js';
-import {AggregatedIssue, Issue} from './Issue.js';
+import {CrossOriginEmbedderPolicyIssue} from './CrossOriginEmbedderPolicyIssue.js';
+import {AggregatedIssue, Issue} from './Issue.js';  // eslint-disable-line no-unused-vars
 import {Events as NetworkManagerEvents, NetworkManager} from './NetworkManager.js';
 import {NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
 import * as RelatedIssue from './RelatedIssue.js';
 import {Events as ResourceTreeModelEvents, ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars
+import {SameSiteCookieIssue} from './SameSiteCookieIssue.js';
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 
@@ -41,9 +43,7 @@ export class NetworkIssueDetector {
     const request = /** @type {!NetworkRequest} */ (event.data);
     const blockedReason = getCoepBlockedReason(request);
     if (blockedReason) {
-      const resources = {requests: [{requestId: request.requestId()}]};
-      const code = `CrossOriginEmbedderPolicy::${this._toCamelCase(blockedReason)}`;
-      this._issuesModel.issueAdded({code, resources});
+      this._issuesModel.addIssue(new CrossOriginEmbedderPolicyIssue(blockedReason, request.requestId()));
     }
 
     /**
@@ -70,15 +70,6 @@ export class NetworkIssueDetector {
     if (this._networkManager) {
       this._networkManager.removeEventListener(NetworkManagerEvents.RequestFinished, this._handleRequestFinished, this);
     }
-  }
-
-  /**
-   * @param {string} string
-   * @return {string}
-   */
-  _toCamelCase(string) {
-    const result = string.replace(/-\p{ASCII}/gu, match => match.substr(1).toUpperCase());
-    return result.replace(/^./, match => match.toUpperCase());
   }
 }
 
@@ -179,12 +170,18 @@ export class IssuesModel extends SDKModel {
    */
   issueAdded(inspectorIssue) {
     const issues = this._createIssuesFromProtocolIssue(inspectorIssue);
-    this._issues.push(...issues);
-
     for (const issue of issues) {
-      this._connectIssue(issue);
-      this._aggregateIssue(issue);
+      this.addIssue(issue);
     }
+  }
+
+  /**
+   * @param {!Issue} issue
+   */
+  addIssue(issue) {
+    this._issues.push(issue);
+    this._connectIssue(issue);
+    this._aggregateIssue(issue);
   }
 
   /**
@@ -199,11 +196,11 @@ export class IssuesModel extends SDKModel {
   _createIssuesFromProtocolIssue(inspectorIssue) {
     const handler = issueCodeHandlers.get(inspectorIssue.code);
     if (handler) {
-      // TODO(chromium:1063765): Pass the details object here, not the full inspector issue.
-      return handler(this, inspectorIssue);
+      return handler(this, inspectorIssue.details);
     }
 
-    return [new Issue(inspectorIssue.code, inspectorIssue.resources)];
+    console.warn(`No handler registered for issue code ${inspectorIssue.code}`);
+    return [];
   }
 
   /**
@@ -211,19 +208,13 @@ export class IssuesModel extends SDKModel {
    * @param {!Issue} issue
    */
   _connectIssue(issue) {
-    const resources = issue.resources();
-    if (!resources) {
-      return;
-    }
-    if (resources.requests) {
-      for (const resourceRequest of resources.requests) {
-        const request =
-            /** @type {?NetworkRequest} */ (
-                self.SDK.networkLog.requests().find(r => r.requestId() === resourceRequest.requestId));
-        if (request) {
-          // Connect the real network request with this issue and vice versa.
-          RelatedIssue.connect(request, issue.getCategory(), issue);
-        }
+    for (const resourceRequest of issue.requests()) {
+      const request =
+          /** @type {?NetworkRequest} */ (
+              self.SDK.networkLog.requests().find(r => r.requestId() === resourceRequest.requestId));
+      if (request) {
+        // Connect the real network request with this issue.
+        RelatedIssue.connect(request, issue.getCategory(), issue);
       }
     }
   }
@@ -233,19 +224,13 @@ export class IssuesModel extends SDKModel {
    * @param {!Issue} issue
    */
   _disconnectIssue(issue) {
-    const resources = issue.resources();
-    if (!resources) {
-      return;
-    }
-    if (resources.requests) {
-      for (const resourceRequest of resources.requests) {
-        const request =
-            /** @type {?NetworkRequest} */ (
-                self.SDK.networkLog.requests().find(r => r.requestId() === resourceRequest.requestId));
-        if (request) {
-          // Disconnect the real network request from this issue;
-          RelatedIssue.disconnect(request, issue.getCategory(), issue);
-        }
+    for (const resourceRequest of issue.requests()) {
+      const request =
+          /** @type {?NetworkRequest} */ (
+              self.SDK.networkLog.requests().find(r => r.requestId() === resourceRequest.requestId));
+      if (request) {
+        // Disconnect the real network request from this issue;
+        RelatedIssue.disconnect(request, issue.getCategory(), issue);
       }
     }
   }
@@ -271,7 +256,15 @@ export class IssuesModel extends SDKModel {
  *
  * @type {!Map<string, function(!IssuesModel, *):!Array<!Issue>>}
  */
-const issueCodeHandlers = new Map([]);
+const issueCodeHandlers = new Map([
+  [
+    'SameSiteCookieIssue',
+    (model, details) => {
+      const issue = new SameSiteCookieIssue('SameSiteCookieIssue', details.sameSiteCookieIssueDetails);
+      return [issue];
+    }
+  ],
+]);
 
 /** @enum {symbol} */
 export const Events = {

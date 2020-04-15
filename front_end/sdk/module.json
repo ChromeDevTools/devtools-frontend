@@ -420,6 +420,8 @@
     "ProfileTreeModel.js",
     "Issue.js",
     "IssuesModel.js",
+    "SameSiteCookieIssue.js",
+    "CrossOriginEmbedderPolicyIssue.js",
     "RelatedIssue.js",
     "ServerTiming.js",
     "CPUProfileDataModel.js",

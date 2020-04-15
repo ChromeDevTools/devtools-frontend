@@ -5,22 +5,34 @@
 import * as Common from '../common/common.js';
 
 import {NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
-import {IssueCategory} from './RelatedIssue.js';
+
+/** @enum {symbol} */
+export const IssueKind = {
+  BreakingChange: Symbol('BreakingChange'),
+};
 
 /**
- * @unrestricted
+ * @typedef {{
+  *            title:string,
+  *            message: (function():!Element),
+  *            issueKind: !IssueKind,
+  *            link: string,
+  *            linkTitle: string
+  *          }}
+  */
+export let IssueDescription;  // eslint-disable-line no-unused-vars
+
+/**
+ * @abstract
  */
 export class Issue extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {string} code
-   * @param {*} resources
    */
-  constructor(code, resources) {
+  constructor(code) {
     super();
     /** @type {string} */
     this._code = code;
-    /** @type {*} */
-    this._resources = resources;
   }
 
   /**
@@ -31,10 +43,17 @@ export class Issue extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @returns {*}
+   * @returns {!Iterable<Protocol.Audits.AffectedCookie>}
    */
-  resources() {
-    return this._resources;
+  cookies() {
+    return [];
+  }
+
+  /**
+   * @returns {!Iterable<Protocol.Audits.AffectedRequest>}
+   */
+  requests() {
+    return [];
   }
 
   /**
@@ -42,31 +61,26 @@ export class Issue extends Common.ObjectWrapper.ObjectWrapper {
    * @returns {boolean}
    */
   isAssociatedWithRequestId(requestId) {
-    if (!this._resources) {
-      return false;
-    }
-    if (this._resources.requests) {
-      for (const request of this._resources.requests) {
-        if (request.requestId === requestId) {
-          return true;
-        }
+    for (const request of this.requests()) {
+      if (request.requestId === requestId) {
+        return true;
       }
     }
     return false;
   }
 
   /**
+   * @abstract
+   * @returns {?IssueDescription}
+   */
+  getDescription() {
+  }
+
+  /**
+   * @abstract
    * @return {symbol}
    */
   getCategory() {
-    const code = this.code();
-    if (code === 'SameSiteCookieIssue') {
-      return IssueCategory.SameSiteCookie;
-    }
-    if (code.startsWith('CrossOriginEmbedderPolicy')) {
-      return IssueCategory.CrossOriginEmbedderPolicy;
-    }
-    return IssueCategory.Other;
   }
 }
 
@@ -82,13 +96,12 @@ export class AggregatedIssue extends Common.ObjectWrapper.ObjectWrapper {
   constructor(code) {
     super();
     this._code = code;
-    // TODO(chromium:1063765): Strengthen types.
-    /** @type {!Array<*>} */
-    this._resources = [];
-    /** @type {!Map<string, *>} */
+    /** @type {!Map<string, !Protocol.Audits.AffectedCookie>} */
     this._cookies = new Map();
     /** @type {!Set<string>} */
     this._requests = new Set();
+    /** @type {?Issue} */
+    this._representative = null;
   }
 
   /**
@@ -99,8 +112,7 @@ export class AggregatedIssue extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * TODO(chromium:1063765): Strengthen types.
-   * @returns {!Iterable<*>}
+   * @returns {!Iterable<Protocol.Audits.AffectedCookie>}
    */
   cookies() {
     return this._cookies.values();
@@ -113,26 +125,28 @@ export class AggregatedIssue extends Common.ObjectWrapper.ObjectWrapper {
     return self.SDK.networkLog.requests().filter(r => this._requests.has(r.requestId()));
   }
 
+  getDescription() {
+    if (this._representative) {
+      return this._representative.getDescription();
+    }
+    return null;
+  }
+
   /**
    * @param {!Issue} issue
    */
   addInstance(issue) {
-    const resources = issue.resources();
-    if (!resources) {
-      return;
+    if (!this._representative) {
+      this._representative = issue;
     }
-    if (resources.cookies) {
-      for (const cookie of resources.cookies) {
-        const key = JSON.stringify(cookie);
-        if (!this._cookies.has(key)) {
-          this._cookies.set(key, cookie);
-        }
+    for (const cookie of issue.cookies()) {
+      const key = JSON.stringify(cookie);
+      if (!this._cookies.has(key)) {
+        this._cookies.set(key, cookie);
       }
     }
-    if (resources.requests) {
-      for (const request of resources.requests) {
-        this._requests.add(request.requestId);
-      }
+    for (const request of issue.requests()) {
+      this._requests.add(request.requestId);
     }
   }
 }

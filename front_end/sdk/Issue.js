@@ -87,8 +87,8 @@ export class AggregatedIssue extends Common.ObjectWrapper.ObjectWrapper {
     this._resources = [];
     /** @type {!Map<string, *>} */
     this._cookies = new Map();
-    /** @type {!Map<string, !NetworkRequest>} */
-    this._requests = new Map();
+    /** @type {!Set<string>} */
+    this._requests = new Set();
   }
 
   /**
@@ -110,7 +110,7 @@ export class AggregatedIssue extends Common.ObjectWrapper.ObjectWrapper {
    * @returns {!Iterable<!NetworkRequest>}
    */
   requests() {
-    return this._requests.values();
+    return self.SDK.networkLog.requests().filter(r => this._requests.has(r.requestId()));
   }
 
   /**
@@ -131,9 +131,7 @@ export class AggregatedIssue extends Common.ObjectWrapper.ObjectWrapper {
     }
     if (resources.requests) {
       for (const request of resources.requests) {
-        if (request.request) {
-          this._requests.set(request.requestId, request.request);
-        }
+        this._requests.add(request.requestId);
       }
     }
   }

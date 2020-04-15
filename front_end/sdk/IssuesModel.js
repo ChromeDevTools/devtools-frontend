@@ -223,7 +223,6 @@ export class IssuesModel extends SDKModel {
         if (request) {
           // Connect the real network request with this issue and vice versa.
           RelatedIssue.connect(request, issue.getCategory(), issue);
-          resourceRequest.request = request;
         }
       }
     }

@@ -61,6 +61,8 @@ export class CoverageView extends UI.Widget.VBox {
     const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
     const mainTargetSupportsRecordOnReload = mainTarget && mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
     if (mainTargetSupportsRecordOnReload) {
+      /** @type {?Element} */
+      this._inlineReloadButton = null;
       const startWithReloadAction =
           /** @type {!UI.Action.Action }*/ (self.UI.actionRegistry.action('coverage.start-with-reload'));
       this._startWithReloadButton = UI.Toolbar.Toolbar.createActionButton(startWithReloadAction);
@@ -139,10 +141,10 @@ export class CoverageView extends UI.Widget.VBox {
     const widget = new UI.Widget.VBox();
     let message;
     if (this._startWithReloadButton) {
-      const reloadButton =
+      this._inlineReloadButton =
           UI.UIUtils.createInlineButton(UI.Toolbar.Toolbar.createActionButtonForId('coverage.start-with-reload'));
       message = UI.UIUtils.formatLocalized(
-          'Click the reload button %s to reload and start capturing coverage.', [reloadButton]);
+          'Click the reload button %s to reload and start capturing coverage.', [this._inlineReloadButton]);
     } else {
       const recordButton =
           UI.UIUtils.createInlineButton(UI.Toolbar.Toolbar.createActionButton(this._toggleRecordAction));
@@ -223,7 +225,8 @@ export class CoverageView extends UI.Widget.VBox {
    */
   async _startRecording(options) {
     let hadFocus, reloadButtonFocused;
-    if (this._startWithReloadButton && this._startWithReloadButton.element.hasFocus()) {
+    if ((this._startWithReloadButton && this._startWithReloadButton.element.hasFocus()) ||
+        (this._inlineReloadButton && this._inlineReloadButton.hasFocus())) {
       reloadButtonFocused = true;
     } else if (this.hasFocus()) {
       hadFocus = true;

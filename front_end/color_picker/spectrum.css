@@ -605,6 +605,16 @@ div.palette-preview {
     margin: -2px;
 }
 
+.no-contrast-info-available {
+    border-top: var(--divider-border);
+    position: relative;
+    width: 100%;
+    padding: 10px;
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+}
+
 @media (forced-colors: active) {
     :host {
         border: 1px solid CanvasText !important;

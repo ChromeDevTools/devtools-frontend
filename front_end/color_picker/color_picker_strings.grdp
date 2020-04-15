@@ -57,6 +57,9 @@
   <message name="IDS_DEVTOOLS_c5bdbf2fd625704541f51288fd37b726" desc="Label for close button in Color Picker">
     Return to color picker
   </message>
+  <message name="IDS_DEVTOOLS_cac2bcb3559b2d76c69b22df4004a0a0" desc="Label for when no contrast information is available in the color picker">
+    No contrast information available
+  </message>
   <message name="IDS_DEVTOOLS_d1e2107b34fa404fabd54bcce4fd858f" desc="Tooltip text that appears when hovering over the largeicon add button in the Spectrum of the Color Picker">
     Add to palette
   </message>

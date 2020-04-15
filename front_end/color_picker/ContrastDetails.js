@@ -43,6 +43,13 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
     /** @type {boolean} */
     this._visible = false;
 
+    // No contrast info message is created to show if it's not possible to provide the extended details.
+
+    /** @type {!Element} */
+    this._noContrastInfoAvailable = contentElement.createChild('div', 'no-contrast-info-available');
+    this._noContrastInfoAvailable.textContent = ls`No contrast information available`;
+    this._noContrastInfoAvailable.classList.add('hidden');
+
     const contrastValueRow = this._element.createChild('div');
     contrastValueRow.addEventListener('click', this._topRowClicked.bind(this));
     const contrastValueRowContents = contrastValueRow.createChild('div', 'container');
@@ -96,13 +103,23 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
     this._contrastInfo.addEventListener(ContrastInfoEvents.ContrastInfoUpdated, this._update.bind(this));
   }
 
+  _showNoContrastInfoAvailableMessage() {
+    this._noContrastInfoAvailable.classList.remove('hidden');
+  }
+
+  _hideNoContrastInfoAvailableMessage() {
+    this._noContrastInfoAvailable.classList.add('hidden');
+  }
+
   _update() {
     if (this._contrastInfo.isNull()) {
+      this._showNoContrastInfoAvailableMessage();
       this.setVisible(false);
       return;
     }
 
     this.setVisible(true);
+    this._hideNoContrastInfoAvailableMessage();
 
     const contrastRatio = this._contrastInfo.contrastRatio();
     const fgColor = this._contrastInfo.color();
@@ -113,6 +130,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
       this._contrastValueBubble.classList.add('contrast-unknown');
       this._chooseBgColor.classList.remove('hidden');
       this._contrastThresholds.classList.add('hidden');
+      this._showNoContrastInfoAvailableMessage();
       return;
     }
 

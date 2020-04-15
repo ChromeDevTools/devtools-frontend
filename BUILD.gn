@@ -1519,6 +1519,7 @@ all_devtools_modules = [
   "timeline/ExtensionTracingSession.js",
   "timeline/EventsTimelineTreeView.js",
   "timeline/CountersGraph.js",
+  "timeline/CLSLinkifier.js",
   "timeline_model/TimelineFrameModel.js",
   "timeline_model/TimelineIRModel.js",
   "timeline_model/TimelineJSProfile.js",

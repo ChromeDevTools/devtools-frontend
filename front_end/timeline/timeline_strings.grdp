@@ -196,6 +196,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_2b66d07a14b9e6da66cde6baab473e92" desc="Text in Timeline UIUtils of the Performance panel">
     <ph name="SELFCATEGORY_TITLE">$1s<ex>blink.console</ex></ph> (children)
   </message>
+  <message name="IDS_DEVTOOLS_2b912aa1a87361a536122b08c7d08829" desc="Label for Cumulative Layout records, indicating where they moved to">
+    Moved to
+  </message>
   <message name="IDS_DEVTOOLS_2d2af0b530003b552681f91e29c509d1" desc="Stack label in Timeline UIUtils of the Performance panel">
     Recalculation Forced
   </message>
@@ -641,6 +644,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_956f8281d37fdceec7698094b6236870" desc="Text in Timeline UIUtils of the Performance panel">
     ''' (from cache)
+  </message>
+  <message name="IDS_DEVTOOLS_959b4cf9228d142eef8ca6e735b0150e" desc="Label for Cumulative Layout records, indicating where they moved from">
+    Moved from
   </message>
   <message name="IDS_DEVTOOLS_9669f96ca9d2e20feda07d349d3cac86" desc="Text in Timeline UIUtils of the Performance panel">
     Key Up

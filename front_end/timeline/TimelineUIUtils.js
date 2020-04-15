@@ -38,6 +38,7 @@ import * as SDK from '../sdk/sdk.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';
 import * as UI from '../ui/ui.js';
 
+import {CLSRect} from './CLSLinkifier.js';
 import {TimelinePanel, TimelineSelection} from './TimelinePanel.js';
 
 /**
@@ -1144,6 +1145,18 @@ export class TimelineUIUtils {
         contentHelper.appendTextRow(ls`Score`, eventData['score'].toPrecision(4));
         contentHelper.appendTextRow(ls`Cumulative Score`, eventData['cumulative_score'].toPrecision(4));
         contentHelper.appendTextRow(ls`Had recent input`, eventData['had_recent_input'] ? ls`Yes` : ls`No`);
+
+        for (const impactedNode of eventData['impacted_nodes']) {
+          const oldRect = new CLSRect(impactedNode['old_rect']);
+          const newRect = new CLSRect(impactedNode['new_rect']);
+
+          const linkedOldRect = await Common.Linkifier.Linkifier.linkify(oldRect);
+          const linkedNewRect = await Common.Linkifier.Linkifier.linkify(newRect);
+
+          contentHelper.appendElementRow(ls`Moved from`, linkedOldRect);
+          contentHelper.appendElementRow(ls`Moved to`, linkedNewRect);
+        }
+
         break;
       }
 

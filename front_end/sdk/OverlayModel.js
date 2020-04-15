@@ -10,6 +10,16 @@ import {RemoteObject} from './RemoteObject.js';                    // eslint-dis
 import {Capability, SDKModel, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 /**
+ * @typedef {{r: number, g: number, b: number, a: number}}
+ */
+export let HighlightColor;
+
+/**
+ * @typedef {{x: number, y: number, width: number, height: number, color: HighlightColor, outlineColor: HighlightColor}}
+ */
+export let HighlightRect;
+
+/**
  * @implements {Protocol.OverlayDispatcher}
  */
 export class OverlayModel extends SDKModel {
@@ -84,6 +94,39 @@ export class OverlayModel extends SDKModel {
 
   static async unmuteHighlight() {
     return Promise.all(TargetManager.instance().models(OverlayModel).map(model => model.resumeModel()));
+  }
+
+  /**
+   * @param {!HighlightRect} rect
+   */
+  static highlightRect(rect) {
+    for (const overlayModel of TargetManager.instance().models(OverlayModel)) {
+      overlayModel.highlightRect(rect);
+    }
+  }
+
+  static clearHighlight() {
+    for (const overlayModel of TargetManager.instance().models(OverlayModel)) {
+      overlayModel.clearHighlight();
+    }
+  }
+
+  /**
+   * @param {!HighlightRect} rect
+   * @return {!Promise}
+   */
+  highlightRect({x, y, width, height, color, outlineColor}) {
+    const highlightColor = color || {r: 255, g: 0, b: 255, a: 0.3};
+    const highlightOutlineColor = outlineColor || {r: 255, g: 0, b: 255, a: 0.5};
+    return this._overlayAgent.invoke_highlightRect(
+        {x, y, width, height, color: highlightColor, outlineColor: highlightOutlineColor});
+  }
+
+  /**
+   * @return {!Promise}
+   */
+  clearHighlight() {
+    return this._overlayAgent.invoke_hideHighlight({});
   }
 
   /**

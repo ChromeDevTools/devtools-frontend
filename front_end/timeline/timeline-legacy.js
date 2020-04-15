@@ -7,6 +7,14 @@ import * as TimelineModule from './timeline.js';
 self.Timeline = self.Timeline || {};
 Timeline = Timeline || {};
 
+Timeline.CLSLinkifier = Timeline.CLSLinkifier || {};
+
+/** @constructor */
+Timeline.CLSLinkifier.CLSRect = TimelineModule.CLSLinkifier.CLSRect;
+
+/** @constructor */
+Timeline.CLSLinkifier.Linkifier = TimelineModule.CLSLinkifier.Linkifier;
+
 /** @constructor */
 Timeline.CountersGraph = TimelineModule.CountersGraph.CountersGraph;
 

@@ -593,16 +593,10 @@ export class ToolbarButton extends ToolbarItem {
     this.element.classList.add('dark-text');
   }
 
-  /**
-   * @param {number=} width
-   */
-  turnIntoSelect(width) {
+  turnIntoSelect() {
     this.element.classList.add('toolbar-has-dropdown');
     const dropdownArrowIcon = Icon.create('smallicon-triangle-down', 'toolbar-dropdown-arrow');
     this.element.appendChild(dropdownArrowIcon);
-    if (width) {
-      this.element.style.width = width + 'px';
-    }
   }
 
   /**

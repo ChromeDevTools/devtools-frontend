@@ -262,7 +262,7 @@ def find_java():
         check_server_proc.communicate()
         if check_server_proc.returncode != 0:
             # Not all Java installs have server JVMs.
-            exec_command = exec_command.remove('-server')
+            exec_command.remove('-server')
             has_server_jvm = False
 
     if not is_ok:

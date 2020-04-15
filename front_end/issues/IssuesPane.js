@@ -109,8 +109,7 @@ class AffectedCookiesView extends AffectedResourcesView {
   }
 
   /**
-   * TODO(chromium:1063765): Strengthen types.
-   * @param {!Iterable<*>} cookies
+   * @param {!Iterable<!Protocol.Audits.AffectedCookie>} cookies
    */
   _appendAffectedCookies(cookies) {
     let count = 0;

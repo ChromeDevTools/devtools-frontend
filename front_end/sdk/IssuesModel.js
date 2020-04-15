@@ -165,8 +165,7 @@ export class IssuesModel extends SDKModel {
 
   /**
    * @override
-   * TODO(chromium:1063765): Strengthen types.
-   * @param {*} inspectorIssue
+   * @param {!Protocol.Audits.InspectorIssue} inspectorIssue
    */
   issueAdded(inspectorIssue) {
     const issues = this._createIssuesFromProtocolIssue(inspectorIssue);
@@ -189,8 +188,7 @@ export class IssuesModel extends SDKModel {
    * Handlers are simple functions hard-coded into a map. If no handler is found for
    * a given Issue code, the default behavior creates one {!Issue} per incoming backend
    * issue.
-   * TODO(chromium:1063765): Strengthen types.
-   * @param {*} inspectorIssue} inspectorIssue
+   * @param {!Protocol.Audits.InspectorIssue} inspectorIssue} inspectorIssue
    * @return {!Array<!Issue>}
    */
   _createIssuesFromProtocolIssue(inspectorIssue) {
@@ -251,10 +249,7 @@ export class IssuesModel extends SDKModel {
 }
 
 /**
- * TODO(chromium:1063765): Change the type (once the protocol/backend changes have landed) to:
- *   !Map<!Protocol.Audits.InspectorIssueCode, function(!IssuesModel, !Protocol.Audits.InspectorIssueDetails):!Array<!Issue>>
- *
- * @type {!Map<string, function(!IssuesModel, *):!Array<!Issue>>}
+ * @type {!Map<!Protocol.Audits.InspectorIssueCode, function(!IssuesModel, !Protocol.Audits.InspectorIssueDetails):!Array<!Issue>>}
  */
 const issueCodeHandlers = new Map([
   [

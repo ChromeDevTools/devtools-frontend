@@ -50,6 +50,10 @@ ruleTester.run('es_modules_import', rule, {
       code: 'import * as RelatedIssue from \'./RelatedIssue.js\';',
       filename: 'front_end/sdk/IssuesModel.js',
     },
+    {
+      code: 'import {appendStyle} from \'./append-style.js\';',
+      filename: 'front_end/ui/utils/utils.js',
+    },
     // the `ls` helper is an exception in a TypeScript file
     {
       code: 'import {ls} from \'../common/ls.js\';',
@@ -77,6 +81,13 @@ ruleTester.run('es_modules_import', rule, {
       errors: [{
         message:
             'Incorrect same-namespace import: "../common/common.js". Use "import { Symbol } from \'./relative-file.js\';" instead.'
+      }],
+    },
+    {
+      code: 'import { Exporting } from \'./Exporting.js\';',
+      filename: 'front_end/common/common.js',
+      errors: [{
+        message: 'Incorrect same-namespace import: "Exporting.js". Use "import * as File from \'./File.js\';" instead.'
       }],
     },
     {

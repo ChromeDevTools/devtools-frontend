@@ -31,7 +31,7 @@ function isSideEffectImportSpecifier(specifiers) {
 
 function isModuleEntrypoint(fileName) {
   const fileNameWithoutExtension = path.basename(fileName).replace(path.extname(fileName), '');
-  const directoryName = path.basename(path.dirname(fileName));
+  const directoryName = computeTopLevelFolder(fileName);
 
   // TODO(crbug.com/1011811): remove -legacy fallback
   return directoryName === fileNameWithoutExtension || `${directoryName}-legacy` === fileNameWithoutExtension;
@@ -133,6 +133,15 @@ module.exports = {
               data: {
                 importPath,
               },
+            });
+          } else if (isModuleEntrypoint(importingFileName)) {
+            context.report({
+              node,
+              message:
+                  'Incorrect same-namespace import: "{{importPath}}". Use "import * as File from \'./File.js\';" instead.',
+              data: {
+                importPath,
+              }
             });
           }
         }

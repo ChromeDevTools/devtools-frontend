@@ -10,6 +10,7 @@ ts_library("helpers") {
     "application-helpers.ts",
     "console-helpers.ts",
     "elements-helpers.ts",
+    "event-listeners-helpers.ts",
     "lighthouse-helpers.ts",
     "media-helpers.ts",
     "quick_open-helpers.ts",

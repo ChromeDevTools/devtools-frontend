@@ -54,7 +54,7 @@ describe('The Sources Tab', async () => {
       '    }',
       '}',
       ';notFormattedFunction();',
-      ​'\u200B',
+      ​ '\u200B',
     ];
     let expectedTextContent = '';
 

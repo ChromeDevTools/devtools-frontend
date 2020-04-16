@@ -7,9 +7,13 @@ import("../../../third_party/typescript/typescript.gni")
 ts_library("elements") {
   testonly = true
   sources = [
-    "pseudo-states.ts",
-    "shadowroot-styles.ts",
-    "style-pane-properties.ts",
+    "element-breadcrumbs_test.ts",
+    "pseudo-states_test.ts",
+    "selection-after-delete_test.ts",
+    "shadowroot-styles_test.ts",
+    "sidebar-event-listeners-remove_test.ts",
+    "sidebar-event-listeners_test.ts",
+    "style-pane-properties_test.ts",
   ]
 
   deps = [

@@ -6,7 +6,7 @@ import("../../../third_party/typescript/typescript.gni")
 
 ts_library("rendering") {
   testonly = true
-  sources = [ "vision-deficiencies.ts" ]
+  sources = [ "vision-deficiencies_test.ts" ]
 
   deps = [
     "../../shared",

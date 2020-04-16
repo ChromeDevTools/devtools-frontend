@@ -7,8 +7,8 @@ import("../../../third_party/typescript/typescript.gni")
 ts_library("console") {
   testonly = true
   sources = [
-    "console-message-format.ts",
-    "console-repl-mode.ts",
+    "console-message-format_test.ts",
+    "console-repl-mode_test.ts",
   ]
 
   deps = [

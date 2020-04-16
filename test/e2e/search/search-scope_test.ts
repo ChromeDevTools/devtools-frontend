@@ -56,7 +56,8 @@ describe('The Search Panel', async () => {
     }));
 
     assert.deepEqual(files, [
-      {fileName: 'search.css', matchesCount: '3'}, {fileName: 'search.js', matchesCount: '5'},
+      {fileName: 'search.css', matchesCount: '3'},
+      {fileName: 'search.js', matchesCount: '5'},
       {fileName: 'search.html', matchesCount: '4'},
     ]);
 
@@ -68,17 +69,19 @@ describe('The Search Panel', async () => {
 
       return {
         line: value.querySelector(SEARCH_MATCH_LINE_NUMBER)!.textContent,
-            content: value.querySelector(SEARCH_MATCH_CONTENT)!.textContent,
+        content: value.querySelector(SEARCH_MATCH_CONTENT)!.textContent,
       };
     }));
 
     assert.deepEqual(entries, [
-      {line: '1', content: 'div.searchTestUniqueString {'}, {line: '5', content: 'div.searchTestUniqueString:hover {'},
+      {line: '1', content: 'div.searchTestUniqueString {'},
+      {line: '5', content: 'div.searchTestUniqueString:hover {'},
       {line: '6', content: '/* another searchTestUniqueString occurence */'},
       {line: '1', content: 'function searchTestUniqueString() {'},
       {line: '3', content: '// searchTestUniqueString two occurences on the same line searchTestUniqueString'},
       {line: '4', content: '// searchTestUniqueString on the next line.'},
-      {line: '9', content: 'searchTestUniqueString();'}, {line: '10', content: '// SEARCHTestUniqueString();'},
+      {line: '9', content: 'searchTestUniqueString();'},
+      {line: '10', content: '// SEARCHTestUniqueString();'},
       {line: '5', content: '…eval("function searchTestUniqueString() {}");</script>'},
       {line: '7', content: '<div>searchTestUniqueString</div>'},
       {line: '9', content: '<!-- searchTestUniqueString -->'},

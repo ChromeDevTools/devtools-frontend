@@ -32,11 +32,7 @@ declare global {
     __panelShown: (evt: Event) => void;
     __actionTaken: (evt: Event) => void;
     __keyboardShortcutFired: (evt: Event) => void;
-    Host: {
-      UserMetrics: UserMetrics;
-      userMetrics:
-          {actionTaken(name: number): void;}
-    };
+    Host: {UserMetrics: UserMetrics; userMetrics: {actionTaken(name: number): void;}};
     UI: {inspectorView: {_showDrawer(show: boolean): void; showView(name: string): void;}};
   }
 }
@@ -135,14 +131,16 @@ describe('User Metrics', () => {
     await frontend.keyboard.press('Escape');
     await frontend.waitForSelector('.console-view');
 
-    await assertCapturedEvents([{
-      name: 'DevTools.PanelShown',
-      value: 10,  // drawer-console-view.
-    },
-    {
-      name: 'DevTools.KeyboardShortcutFired',
-      value: 17,  // main.toggle-drawer
-    }]);
+    await assertCapturedEvents([
+      {
+        name: 'DevTools.PanelShown',
+        value: 10,  // drawer-console-view.
+      },
+      {
+        name: 'DevTools.KeyboardShortcutFired',
+        value: 17,  // main.toggle-drawer
+      },
+    ]);
   });
 
   it('dispatches events for views', async () => {

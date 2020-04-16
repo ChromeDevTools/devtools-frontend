@@ -6,7 +6,7 @@ import("../../../third_party/typescript/typescript.gni")
 
 ts_library("network") {
   testonly = true
-  sources = [ "network-datagrid.ts" ]
+  sources = [ "network-datagrid_test.ts" ]
 
   deps = [ "../../shared" ]
 }

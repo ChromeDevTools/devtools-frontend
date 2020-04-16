@@ -6,7 +6,7 @@ import("../../../third_party/typescript/typescript.gni")
 
 ts_library("sensors") {
   testonly = true
-  sources = [ "location.ts" ]
+  sources = [ "location_test.ts" ]
 
   deps = [
     "../../shared",

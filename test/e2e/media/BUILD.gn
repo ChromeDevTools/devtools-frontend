@@ -6,7 +6,7 @@ import("../../../third_party/typescript/typescript.gni")
 
 ts_library("media") {
   testonly = true
-  sources = [ "media-tab.ts" ]
+  sources = [ "media-tab_test.ts" ]
 
   deps = [
     "../../shared",

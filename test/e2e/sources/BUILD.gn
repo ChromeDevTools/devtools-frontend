@@ -7,13 +7,13 @@ import("../../../third_party/typescript/typescript.gni")
 ts_library("sources") {
   testonly = true
   sources = [
-    "can-break-with-wasm-sourcemaps.ts",
-    "can-format-sourcecode.ts",
-    "can-show-files-after-loading.ts",
-    "can-show-multiple-workers.ts",
-    "debug-raw-wasm.ts",
-    "debugger-language-plugins.ts",
-    "script-in-multiple-workers.ts",
+    "can-break-with-wasm-sourcemaps_test.ts",
+    "can-format-sourcecode_test.ts",
+    "can-show-files-after-loading_test.ts",
+    "can-show-multiple-workers_test.ts",
+    "debug-raw-wasm_test.ts",
+    "debugger-language-plugins_test.ts",
+    "script-in-multiple-workers_test.ts",
   ]
 
   deps = [

@@ -207,7 +207,9 @@ export class CookieItemsView extends StorageItemsView {
    */
   filter(items, keyFunction) {
     return super.filter(items, keyFunction)
-        .filter(cookie => !this._onlyIssuesFilterUI.checked() || SDK.RelatedIssue.hasIssues(cookie));
+        .filter(
+            cookie => !this._onlyIssuesFilterUI.checked() ||
+                SDK.RelatedIssue.hasIssues(/** @type {!SDK.Cookie.Cookie} */ (cookie)));
   }
 
   /**

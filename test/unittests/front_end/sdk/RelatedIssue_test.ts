@@ -4,90 +4,78 @@
 
 const {assert} = chai;
 
-import {connect, disconnect, hasIssues, hasIssueOfCategory, IssueCategory} from '../../../../front_end/sdk/RelatedIssue.js';
+import {NetworkRequest} from '../../../../front_end/sdk/NetworkRequest.js';
+import {issuesAssociatedWith} from '../../../../front_end/sdk/RelatedIssue.js';
+import {Issue} from '../../../../front_end/sdk/Issue.js';
+import {Cookie} from '../../../../front_end/sdk/Cookie.js';
 
-describe('hasIssues', () => {
-  it('should be false for fresh objects', () => {
-    const obj = {};
-    assert.isFalse(hasIssues(obj), 'obj should not have an issue');
-  });
-});
+class StubIssue extends Issue {
+  private requestIds: string[];
+  private cookieNames: string[];
 
-describe('connect', () => {
-  it('should cause object to have issues', () => {
-    const obj = {};
-    const issue = {};  // Use a dummy object;
-    connect(obj, IssueCategory.Other, issue);
-    assert.isTrue(hasIssues(obj), 'obj should have an issue');
-  });
+  constructor(requestIds: string[], cookieNames: string[]) {
+    super('StubIssue');
+    this.requestIds = requestIds;
+    this.cookieNames = cookieNames;
+  }
 
-  it('should cause object to have a issue of a specific category', () => {
-    const obj = {};
-    const issue = {};  // Use a dummy object;
-    connect(obj, IssueCategory.Other, issue);
-    assert.isTrue(hasIssueOfCategory(obj, IssueCategory.Other), 'obj should have an issue of the specified category');
-    assert.isFalse(
-        hasIssueOfCategory(obj, IssueCategory.CrossOriginEmbedderPolicy),
-        'obj should not have an issue of a different category');
-  });
+  requests() {
+    return this.requestIds.map(id => {
+      return {requestId: id, url: ''};
+    });
+  }
 
-  it('should cause object to have a issue after being called twice', () => {
-    const obj = {};
-    const issue = {};  // Use a dummy object;
-    connect(obj, IssueCategory.Other, issue);
-    connect(obj, IssueCategory.Other, issue);
-    assert.isTrue(hasIssues(obj), 'obj should have an issue');
-    assert.isTrue(hasIssueOfCategory(obj, IssueCategory.Other), 'obj should have an issue of the specified category');
-    assert.isFalse(
-        hasIssueOfCategory(obj, IssueCategory.CrossOriginEmbedderPolicy),
-        'obj should not have an issue of a different category');
-  });
-});
+  cookies() {
+    return this.cookieNames.map(name => {
+      return {name, domain: '', path: ''};
+    });
+  }
+}
 
-describe('disconnect', () => {
-  it('should remove an issue', () => {
-    const obj = {};
-    const issue = {};  // Use a dummy object;
-    connect(obj, IssueCategory.Other, issue);
-    assert.isTrue(hasIssues(obj), 'obj should have an issue');
-    disconnect(obj, IssueCategory.Other, issue);
-    assert.isFalse(hasIssues(obj), 'obj should not have an issue');
+describe('issuesAssociatedWith', () => {
+  it('should return no issues if no issues exist', () => {
+    const request = new NetworkRequest('', '', '', '', '', null);
+    assert.strictEqual(issuesAssociatedWith([], request).length, 0);
   });
 
-  it('should remove an issue of a specific category', () => {
-    const obj = {};
-    const issue = {};  // Use a dummy object;
-    connect(obj, IssueCategory.Other, issue);
-    connect(obj, IssueCategory.CrossOriginEmbedderPolicy, issue);
-    assert.isTrue(hasIssueOfCategory(obj, IssueCategory.Other), 'obj should have an issue of this category');
-    assert.isTrue(
-        hasIssueOfCategory(obj, IssueCategory.CrossOriginEmbedderPolicy),
-        'obj should not have an issue of this category');
-    disconnect(obj, IssueCategory.Other, issue);
-    assert.isFalse(hasIssueOfCategory(obj, IssueCategory.Other), 'obj should no longer have an issue of this category');
-    assert.isTrue(
-        hasIssueOfCategory(obj, IssueCategory.CrossOriginEmbedderPolicy),
-        'obj should still have an issue of this category');
+  it('should return no issues if issues dont affect any resources', () => {
+    const issue = new Issue('code');
+    const request = new NetworkRequest('', '', '', '', '', null);
+
+    assert.strictEqual(issuesAssociatedWith([issue], request).length, 0);
   });
 
-  it('should remove an issue even if connected twice', () => {
-    const obj = {};
-    const issue = {};  // Use a dummy object;
-    connect(obj, IssueCategory.Other, issue);
-    connect(obj, IssueCategory.Other, issue);
-    disconnect(obj, IssueCategory.Other, issue);
-    assert.isFalse(hasIssues(obj), 'obj should not have an issue');
-    assert.isFalse(hasIssueOfCategory(obj, IssueCategory.Other), 'obj should not have an issue');
+  it('should correctly filter issues associated with a given request id', () => {
+    const issue1 = new StubIssue(['id1', 'id2'], []);
+    const issue2 = new StubIssue(['id1'], []);
+    const issues = [issue1, issue2];
+
+    const request1 = new NetworkRequest('id1', '', '', '', '', null);
+    const request2 = new NetworkRequest('id2', '', '', '', '', null);
+
+    assert.deepStrictEqual(issuesAssociatedWith(issues, request1), issues);
+    assert.deepStrictEqual(issuesAssociatedWith(issues, request2), [issue1]);
   });
 
-  it('should remove only the specified issue', () => {
-    const obj = {};
-    const issue1 = {};  // Use a dummy object;
-    const issue2 = {};  // Use a dummy object;
-    connect(obj, IssueCategory.Other, issue1);
-    connect(obj, IssueCategory.Other, issue2);
-    disconnect(obj, IssueCategory.Other, issue1);
-    assert.isTrue(hasIssues(obj), 'obj should still have an issue');
-    assert.isTrue(hasIssueOfCategory(obj, IssueCategory.Other), 'obj should still have an issue');
+  function createTestCookie(name: string): Cookie {
+    const cookie = new Cookie(name, '');
+    cookie.addAttribute('domain', '');
+    cookie.addAttribute('path', '');
+    return cookie;
+  }
+
+  it('should correctly filter issues associated with a cookie', () => {
+    const issue1 = new StubIssue([], ['c1', 'c2']);
+    const issue2 = new StubIssue([], ['c3']);
+    const issue3 = new StubIssue([], ['c1']);
+    const issues = [issue1, issue2, issue3];
+
+    const cookie1 = createTestCookie('c1');
+    const cookie2 = createTestCookie('c2');
+    const cookie3 = createTestCookie('c3');
+
+    assert.deepStrictEqual(issuesAssociatedWith(issues, cookie1), [issue1, issue3]);
+    assert.deepStrictEqual(issuesAssociatedWith(issues, cookie2), [issue1]);
+    assert.deepStrictEqual(issuesAssociatedWith(issues, cookie3), [issue2]);
   });
 });

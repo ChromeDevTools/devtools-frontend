@@ -9,7 +9,6 @@ import {CrossOriginEmbedderPolicyIssue} from './CrossOriginEmbedderPolicyIssue.j
 import {AggregatedIssue, Issue} from './Issue.js';  // eslint-disable-line no-unused-vars
 import {Events as NetworkManagerEvents, NetworkManager} from './NetworkManager.js';
 import {NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
-import * as RelatedIssue from './RelatedIssue.js';
 import {Events as ResourceTreeModelEvents, ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars
 import {SameSiteCookieIssue} from './SameSiteCookieIssue.js';
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
@@ -112,8 +111,6 @@ export class IssuesModel extends SDKModel {
     for (const issue of this._issues) {
       if (issue.isAssociatedWithRequestId(mainFrame.loaderId)) {
         keptIssues.push(issue);
-      } else {
-        this._disconnectIssue(issue);
       }
     }
     this._issues = keptIssues;
@@ -179,8 +176,14 @@ export class IssuesModel extends SDKModel {
    */
   addIssue(issue) {
     this._issues.push(issue);
-    this._connectIssue(issue);
     this._aggregateIssue(issue);
+  }
+
+  /**
+   * @return {!Array<!Issue>}
+   */
+  issues() {
+    return this._issues;
   }
 
   /**
@@ -199,38 +202,6 @@ export class IssuesModel extends SDKModel {
 
     console.warn(`No handler registered for issue code ${inspectorIssue.code}`);
     return [];
-  }
-
-  /**
-   *
-   * @param {!Issue} issue
-   */
-  _connectIssue(issue) {
-    for (const resourceRequest of issue.requests()) {
-      const request =
-          /** @type {?NetworkRequest} */ (
-              self.SDK.networkLog.requests().find(r => r.requestId() === resourceRequest.requestId));
-      if (request) {
-        // Connect the real network request with this issue.
-        RelatedIssue.connect(request, issue.getCategory(), issue);
-      }
-    }
-  }
-
-  /**
-   *
-   * @param {!Issue} issue
-   */
-  _disconnectIssue(issue) {
-    for (const resourceRequest of issue.requests()) {
-      const request =
-          /** @type {?NetworkRequest} */ (
-              self.SDK.networkLog.requests().find(r => r.requestId() === resourceRequest.requestId));
-      if (request) {
-        // Disconnect the real network request from this issue;
-        RelatedIssue.disconnect(request, issue.getCategory(), issue);
-      }
-    }
   }
 
   /**

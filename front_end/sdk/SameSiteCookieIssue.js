@@ -3,6 +3,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {ls} from '../common/common.js';  // eslint-disable-line rulesdir/es_modules_import
+
 import {Issue, IssueDescription, IssueKind} from './Issue.js';  // eslint-disable-line no-unused-vars
 import {IssueCategory} from './RelatedIssue.js';
 

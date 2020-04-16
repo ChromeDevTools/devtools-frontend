@@ -4,7 +4,11 @@
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 
-const connectedIssueSymbol = Symbol('issue');
+import {Cookie} from './Cookie.js';
+import {Issue} from './Issue.js';  // eslint-disable-line no-unused-vars
+import {IssuesModel} from './IssuesModel.js';
+import {NetworkRequest} from './NetworkRequest.js';
+import {TargetManager} from './SDKModel.js';
 
 export const IssueCategory = {
   CrossOriginEmbedderPolicy: Symbol('CrossOriginEmbedderPolicy'),
@@ -13,95 +17,98 @@ export const IssueCategory = {
 };
 
 /**
- * @param {*} obj
- * @param {symbol} category
- * @param {*} issue
+ * @typedef {!NetworkRequest | !Cookie}
  */
-export function connect(obj, category, issue) {
-  if (!obj) {
-    return;
+// @ts-ignore typedef
+export let IssuesAssociatable;
+
+/**
+ * @return {!Array<!Issue>}
+ */
+function issues() {
+  const mainTarget = TargetManager.instance().mainTarget();
+  if (mainTarget) {
+    const model = /** @type {!IssuesModel} */ (mainTarget.model(IssuesModel));
+    return model ? model.issues() : [];
   }
-  if (!obj[connectedIssueSymbol]) {
-    obj[connectedIssueSymbol] = new Map();
-  }
-  const map = obj[connectedIssueSymbol];
-  if (!map.has(category)) {
-    map.set(category, new Set());
-  }
-  const set = map.get(category);
-  set.add(issue);
+  return [];
 }
 
 /**
- * @param {*} obj
- * @param {symbol} category
- * @param {*} issue
+ * @param {!Array<!Issue>} issues
+ * @param {!NetworkRequest} request
+ * @return {!Array<!Issue>}
  */
-export function disconnect(obj, category, issue) {
-  if (!obj || !obj[connectedIssueSymbol]) {
-    return;
-  }
-  const map = obj[connectedIssueSymbol];
-  if (!map.has(category)) {
-    return;
-  }
-  const set = map.get(category);
-  set.delete(issue);
+function issuesAssociatedWithNetworkRequest(issues, request) {
+  return issues.filter(issue => {
+    for (const affectedRequest of issue.requests()) {
+      if (affectedRequest.requestId === request.requestId()) {
+        return true;
+      }
+    }
+    return false;
+  });
 }
 
 /**
- * @param {*} obj
+ * @param {!Array<!Issue>} issues
+ * @param {string} domain
+ * @param {string} name
+ * @param {string} path
+ * @return {!Array<!Issue>}
+ */
+function issuesAssociatedWithCookie(issues, domain, name, path) {
+  return issues.filter(issue => {
+    for (const cookie of issue.cookies()) {
+      if (cookie.domain === domain && cookie.name === name && cookie.path === path) {
+        return true;
+      }
+    }
+    return false;
+  });
+}
+
+/**
+ * @param {!Array<!Issue>} issues
+ * @param {!IssuesAssociatable} obj
+ * @return {!Array<!Issue>}
+ * @throws In case obj has an unsupported type (i.e. not part of the IssuesAssociatble union).
+ */
+export function issuesAssociatedWith(issues, obj) {
+  if (obj instanceof NetworkRequest) {
+    return issuesAssociatedWithNetworkRequest(issues, obj);
+  }
+  if (obj instanceof Cookie) {
+    return issuesAssociatedWithCookie(issues, obj.domain(), obj.name(), obj.path());
+  }
+  throw new Error(`issues can not be associated with ${obj}`);
+}
+
+/**
+ * @param {!IssuesAssociatable} obj
  * @return {boolean}
  */
 export function hasIssues(obj) {
-  if (!obj || !obj[connectedIssueSymbol]) {
-    return false;
-  }
-  const map = obj[connectedIssueSymbol];
-  if (map.size === 0) {
-    return false;
-  }
-  for (const set of map.values()) {
-    if (set.size > 0) {
-      return true;
-    }
-  }
-  return false;
+  return issuesAssociatedWith(issues(), obj).length > 0;
 }
 
 /**
- * @param {*} obj
+ * @param {!IssuesAssociatable} obj
  * @param {symbol} category
  * @return {boolean}
  */
 export function hasIssueOfCategory(obj, category) {
-  if (!obj || !obj[connectedIssueSymbol]) {
-    return false;
-  }
-  const map = obj[connectedIssueSymbol];
-  if (!map.has(category)) {
-    return false;
-  }
-  const set = map.get(category);
-  return set.size > 0;
+  return issuesAssociatedWith(issues(), obj).some(issue => issue.getCategory() === category);
 }
 
 /**
- * @param {*} obj
+ * @param {!IssuesAssociatable} obj
  * @param {symbol} category
- * @return {!Promise<undefined>}
+ * @return {!Promise<undefined | void>}
  */
 export async function reveal(obj, category) {
-  if (!obj || !obj[connectedIssueSymbol]) {
-    return;
+  const candidates = issuesAssociatedWith(issues(), obj).filter(issue => issue.getCategory() === category);
+  if (candidates.length > 0) {
+    return Common.Revealer.reveal(candidates[0]);
   }
-  const map = obj[connectedIssueSymbol];
-  if (!map.has(category)) {
-    return;
-  }
-  const set = map.get(category);
-  if (set.size === 0) {
-    return;
-  }
-  return Common.Revealer.reveal(set.values().next().value);
 }

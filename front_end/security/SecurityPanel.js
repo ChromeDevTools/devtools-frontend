@@ -1152,6 +1152,7 @@ export class SecurityOriginView extends UI.Widget.VBox {
 
     const originNetworkDiv = titleSection.createChild('div', 'view-network-button');
     const originNetworkLink = originNetworkDiv.createChild('span', 'devtools-link origin-button');
+    originNetworkLink.tabIndex = 0;
     originNetworkLink.textContent = ls`View requests in Network Panel`;
     originNetworkLink.addEventListener('click', e => {
       e.consume();

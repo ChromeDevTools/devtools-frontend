@@ -56,6 +56,9 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     this._appendTab(tabIds.EventLog, Common.UIString.UIString('Event Log'), eventsView);
     this._rangeDetailViews.set(tabIds.EventLog, eventsView);
 
+    this._additionalMetricsToolbar = new UI.Toolbar.Toolbar('timeline-additional-metrics');
+    this.element.appendChild(this._additionalMetricsToolbar.element);
+
     this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._tabSelected, this);
   }
 
@@ -81,6 +84,22 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     this._lazyPaintProfilerView = null;
     this._lazyLayersView = null;
     this.setSelection(null);
+
+    // Add TBT info to the footer.
+    this._additionalMetricsToolbar.removeToolbarItems();
+    if (model && model.timelineModel()) {
+      let message = ls`Total blocking time: Unavailable`;
+      if (model.timelineModel().totalBlockingTime() !== -1) {
+        message = ls`Total blocking time: ${model.timelineModel().totalBlockingTime().toFixed(2)}ms`;
+      }
+
+      const warning = createElement('span');
+      const clsLink = UI.UIUtils.createWebDevLink('tbt/', ls`Learn more`);
+      warning.appendChild(UI.UIUtils.formatLocalized('%s', [clsLink]));
+
+      this._additionalMetricsToolbar.appendText(message);
+      this._additionalMetricsToolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(warning));
+    }
   }
 
   /**

@@ -124,6 +124,14 @@ export class TimelineModelImpl {
    * @param {!SDK.TracingModel.Event} event
    * @return {boolean}
    */
+  isInteractiveTimeEvent(event) {
+    return event.name === RecordType.InteractiveTime;
+  }
+
+  /**
+   * @param {!SDK.TracingModel.Event} event
+   * @return {boolean}
+   */
   isLayoutShiftEvent(event) {
     return event.name === RecordType.LayoutShift;
   }
@@ -172,6 +180,13 @@ export class TimelineModelImpl {
    */
   cpuProfiles() {
     return this._cpuProfiles;
+  }
+
+  /**
+   * @return {number}
+   */
+  totalBlockingTime() {
+    return this._totalBlockingTime;
   }
 
   /**
@@ -651,6 +666,12 @@ export class TimelineModelImpl {
         if (event.startTime >= range.to) {
           break;
         }
+
+        // There may be several TTI events, only take the first one.
+        if (this.isInteractiveTimeEvent(event) && this._totalBlockingTime === -1) {
+          this._totalBlockingTime = event.args['args']['total_blocking_time_ms'];
+        }
+
         while (eventStack.length && eventStack.peekLast().endTime <= event.startTime) {
           eventStack.pop();
         }
@@ -1243,6 +1264,8 @@ export class TimelineModelImpl {
 
     this._minimumRecordTime = 0;
     this._maximumRecordTime = 0;
+
+    this._totalBlockingTime = -1;
   }
 
   /**
@@ -1404,6 +1427,7 @@ export const RecordType = {
   RasterTask: 'RasterTask',
   ScrollLayer: 'ScrollLayer',
   CompositeLayers: 'CompositeLayers',
+  InteractiveTime: 'InteractiveTime',
 
   ScheduleStyleInvalidationTracking: 'ScheduleStyleInvalidationTracking',
   StyleRecalcInvalidationTracking: 'StyleRecalcInvalidationTracking',

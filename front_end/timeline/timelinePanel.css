@@ -617,3 +617,12 @@
         border-bottom-color: HighlightText;
     }
 }
+
+.timeline-additional-metrics {
+    display: flex;
+    flex: 0 0 27px;
+    background-color: var(--toolbar-bg-color);
+    border-top: var(--divider-border);
+    overflow: hidden;
+    z-index: 0;
+}

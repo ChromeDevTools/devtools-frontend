@@ -470,10 +470,15 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
     for (let i = 0; i < events.length; ++i) {
       const e = events[i];
-      // Skip Layout Shifts when dealing with the main thread.
-      if (track && track.type === TimelineModel.TimelineModel.TrackType.MainThread && this._performanceModel &&
-          this._performanceModel.timelineModel().isLayoutShiftEvent(e)) {
-        continue;
+      // Skip Layout Shifts and TTI events when dealing with the main thread.
+      if (this._performanceModel) {
+        const isInteractiveTime = this._performanceModel.timelineModel().isInteractiveTimeEvent(e);
+        const isLayoutShift = this._performanceModel.timelineModel().isLayoutShiftEvent(e);
+        const skippableEvent = isInteractiveTime || isLayoutShift;
+
+        if (track && track.type === TimelineModel.TimelineModel.TrackType.MainThread && skippableEvent) {
+          continue;
+        }
       }
 
       if (this._performanceModel && this._performanceModel.timelineModel().isLayoutShiftEvent(e)) {

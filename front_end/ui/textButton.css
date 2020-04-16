@@ -58,6 +58,7 @@
 .text-button.primary-button:not(:disabled):hover,
 .text-button.primary-button:not(:disabled):active, -theme-preserve {
     background-color: var(--accent-color-hover);
+    color: #fff;
 }
 
 .-theme-with-dark-background .text-button:not(.primary-button):not(:disabled):focus,

@@ -233,6 +233,7 @@ all_devtools_files = [
   "front_end/profiler/profilesSidebarTree.css",
   "front_end/issues/module.json",
   "front_end/issues/issuesPane.css",
+  "front_end/issues/issuesTree.css",
   "front_end/protocol_monitor/module.json",
   "front_end/protocol_monitor/protocolMonitor.css",
   "front_end/protocol_client/module.json",

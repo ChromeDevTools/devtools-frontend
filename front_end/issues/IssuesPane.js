@@ -6,44 +6,38 @@ import * as Network from '../network/network.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-class AffectedResourcesView {
+class AffectedResourcesView extends UI.TreeOutline.TreeElement {
   /**
    * @param {!AggregatedIssueView} parent
    * @param {!{singular:string, plural:string}} resourceName - Singular and plural of the affected resource name.
    */
   constructor(parent, resourceName) {
+    super();
+    this.toggleOnClick = true;
     /** @type {!AggregatedIssueView} */
     this._parent = parent;
     this._resourceName = resourceName;
-    this._wrapper = createElementWithClass('div', 'affected-resource');
     /** @type {!Element} */
-    this._affectedResourcesCountElement = this.createAffectedResourcesCounter(this._wrapper);
+    this._affectedResourcesCountElement = this.createAffectedResourcesCounter();
     /** @type {!Element} */
-    this._affectedResources = this.createAffectedResources(this._wrapper);
+    this._affectedResources = this.createAffectedResources();
     this._affectedResourcesCount = 0;
   }
 
   /**
-   * @param {!Element} wrapper
    * @returns {!Element}
    */
-  createAffectedResourcesCounter(wrapper) {
-    const counterWrapper = createElementWithClass('div', 'affected-resource-label-wrapper');
-    counterWrapper.addEventListener('click', () => {
-      wrapper.classList.toggle('expanded');
-    });
+  createAffectedResourcesCounter() {
     const counterLabel = createElementWithClass('div', 'affected-resource-label');
-    counterWrapper.appendChild(counterLabel);
-    wrapper.appendChild(counterWrapper);
+    this.listItemElement.appendChild(counterLabel);
     return counterLabel;
   }
 
   /**
-   * @param {!Element} wrapper
    * @returns {!Element}
    */
-  createAffectedResources(wrapper) {
-    const body = createElementWithClass('div', 'affected-resource-list-wrapper');
+  createAffectedResources() {
+    const body = new UI.TreeOutline.TreeElement();
     const affectedResources = createElementWithClass('table', 'affected-resource-list');
     const header = createElementWithClass('tr');
 
@@ -57,10 +51,9 @@ class AffectedResourcesView {
     header.appendChild(info);
 
     affectedResources.appendChild(header);
-    body.appendChild(affectedResources);
-    wrapper.appendChild(body);
+    body.listItemElement.appendChild(affectedResources);
+    this.appendChild(body);
 
-    this._parent.appendAffectedResource(wrapper);
     return affectedResources;
   }
 
@@ -81,7 +74,7 @@ class AffectedResourcesView {
   updateAffectedResourceCount(count) {
     this._affectedResourcesCount = count;
     this._affectedResourcesCountElement.textContent = `${count} ${this.getResourceName(count)}`;
-    this._wrapper.style.display = this._affectedResourcesCount === 0 ? 'none' : '';
+    this.hidden = this._affectedResourcesCount === 0;
     this._parent.updateAffectedResourceVisibility();
   }
 
@@ -204,7 +197,7 @@ class AffectedRequestsView extends AffectedResourcesView {
 }
 
 
-class AggregatedIssueView extends UI.Widget.Widget {
+class AggregatedIssueView extends UI.TreeOutline.TreeElement {
   /**
    *
    * @param {!IssuesPaneImpl} parent
@@ -212,28 +205,39 @@ class AggregatedIssueView extends UI.Widget.Widget {
    * @param {!SDK.Issue.IssueDescription} description
    */
   constructor(parent, issue, description) {
-    super(false);
+    super();
     this._parent = parent;
     this._issue = issue;
     /** @type {!SDK.Issue.IssueDescription} */
     this._description = description;
-    this._appendHeader();
-    this._body = this._createBody();
-    this._affectedResources = this._createAffectedResources(this._body);
+
+    this.toggleOnClick = true;
+    this.listItemElement.classList.add('issue');
+    this.childrenListElement.classList.add('body');
+
+    this._affectedResources = this._createAffectedResources();
     this._affectedCookiesView = new AffectedCookiesView(this, this._issue);
-    this._affectedCookiesView.update();
     this._affectedRequestsView = new AffectedRequestsView(this, this._issue);
+  }
+
+  /**
+   * @override
+   */
+  onattach() {
+    this._appendHeader();
+    this._createBody();
+    this.appendChild(this._affectedResources);
+    this.appendAffectedResource(this._affectedCookiesView);
+    this._affectedCookiesView.update();
+    this.appendAffectedResource(this._affectedRequestsView);
     this._affectedRequestsView.update();
     this._createReadMoreLink();
-
-    this.contentElement.classList.add('issue');
-    this.contentElement.classList.add('collapsed');
 
     this.updateAffectedResourceVisibility();
   }
 
   /**
-   * @param {!Element} resource
+   * @param {!UI.TreeOutline.TreeElement} resource
    */
   appendAffectedResource(resource) {
     this._affectedResources.appendChild(resource);
@@ -241,7 +245,6 @@ class AggregatedIssueView extends UI.Widget.Widget {
 
   _appendHeader() {
     const header = createElementWithClass('div', 'header');
-    header.addEventListener('click', this._handleClick.bind(this));
     const icon = UI.Icon.Icon.create('largeicon-breaking-change', 'icon');
     header.appendChild(icon);
 
@@ -249,63 +252,64 @@ class AggregatedIssueView extends UI.Widget.Widget {
     title.textContent = this._description.title;
     header.appendChild(title);
 
-    this.contentElement.appendChild(header);
+    this.listItemElement.appendChild(header);
   }
 
   updateAffectedResourceVisibility() {
     const noCookies = !this._affectedCookiesView || this._affectedCookiesView.isEmpty();
     const noRequests = !this._affectedRequestsView || this._affectedRequestsView.isEmpty();
     const noResources = noCookies && noRequests;
-    this._affectedResources.style.display = noResources ? 'none' : '';
+    this._affectedResources.hidden = noResources;
   }
 
   /**
    *
-   * @param {!Element} body
-   * @returns {!Element}
+   * @returns {!UI.TreeOutline.TreeElement}
    */
-  _createAffectedResources(body) {
-    const wrapper = createElementWithClass('div', 'affected-resources');
-    const label = createElementWithClass('div', 'affected-resources-label');
-    label.textContent = ls`Affected Resources`;
-    wrapper.appendChild(label);
-    body.appendChild(wrapper);
+  _createAffectedResources() {
+    const wrapper = new UI.TreeOutline.TreeElement();
+    wrapper.setCollapsible(false);
+    wrapper.setExpandable(true);
+    wrapper.expand();
+    wrapper.selectable = false;
+    wrapper.listItemElement.classList.add('affected-resources-label');
+    wrapper.listItemElement.textContent = ls`Affected Resources`;
+    wrapper.childrenListElement.classList.add('affected-resources');
     return wrapper;
   }
 
   _createBody() {
-    const body = createElementWithClass('div', 'body');
-
-    const kindAndCode = createElementWithClass('div', 'kind-code-line');
+    const kindAndCode = new UI.TreeOutline.TreeElement();
+    kindAndCode.setCollapsible(false);
+    kindAndCode.selectable = false;
+    kindAndCode.listItemElement.classList.add('kind-code-line');
     const kind = createElementWithClass('span', 'issue-kind');
     kind.textContent = issueKindToString(this._description.issueKind);
-    kindAndCode.appendChild(kind);
-    kindAndCode.appendChild(createElementWithClass('span', 'separator'));
+    kindAndCode.listItemElement.appendChild(kind);
+    kindAndCode.listItemElement.appendChild(createElementWithClass('span', 'separator'));
     const code = createElementWithClass('span', 'issue-code');
     code.textContent = this._issue.code();
-    kindAndCode.appendChild(code);
-    body.appendChild(kindAndCode);
+    kindAndCode.listItemElement.appendChild(code);
 
+    this.appendChild(kindAndCode);
+
+    const messageElement = new UI.TreeOutline.TreeElement();
+    messageElement.setCollapsible(false);
+    messageElement.selectable = false;
     const message = this._description.message();
-    body.appendChild(message);
-
-    const bodyWrapper = createElementWithClass('div', 'body-wrapper');
-    bodyWrapper.appendChild(body);
-    this.contentElement.appendChild(bodyWrapper);
-    return body;
+    messageElement.listItemElement.appendChild(message);
+    this.appendChild(messageElement);
   }
 
   _createReadMoreLink() {
     const link = UI.XLink.XLink.create(this._description.link, ls`Learn more: ${this._description.linkTitle}`, 'link');
     const linkIcon = UI.Icon.Icon.create('largeicon-link', 'link-icon');
     link.prepend(linkIcon);
-    const linkWrapper = createElementWithClass('div', 'link-wrapper');
-    linkWrapper.appendChild(link);
-    this._body.appendChild(linkWrapper);
-  }
-
-  _handleClick() {
-    this._parent.handleSelect(this);
+    const linkWrapper = new UI.TreeOutline.TreeElement();
+    linkWrapper.setCollapsible(false);
+    linkWrapper.listItemElement.classList.add('link-wrapper');
+    linkWrapper.listItemElement.appendChild(link);
+    this.appendChild(linkWrapper);
   }
 
   update() {
@@ -319,23 +323,11 @@ class AggregatedIssueView extends UI.Widget.Widget {
    * @param {(boolean|undefined)=} expand - Expands the issue if `true`, collapses if `false`, toggles collapse if undefined
    */
   toggle(expand) {
-    if (expand === undefined) {
-      this.contentElement.classList.toggle('collapsed');
+    if (expand || (expand === undefined && !this.expanded)) {
+      this.expand();
     } else {
-      this.contentElement.classList.toggle('collapsed', !expand);
+      this.collapse();
     }
-  }
-
-  reveal() {
-    this.toggle(true);
-    this.contentElement.scrollIntoView(true);
-  }
-
-  /**
-   * @override
-   */
-  detach() {
-    super.detach();
   }
 }
 
@@ -354,6 +346,12 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     toolbarWarnings.element.appendChild(breakingChangeIcon);
     this._toolbarIssuesCount = toolbarWarnings.element.createChild('span', 'warnings-count-label');
     rightToolbar.appendToolbarItem(toolbarWarnings);
+
+    this._issuesTree = new UI.TreeOutline.TreeOutlineInShadow();
+    this._issuesTree.registerRequiredCSS('issues/issuesTree.css');
+    this._issuesTree.setShowSelectionOnKeyboardFocus(true);
+    this._issuesTree.contentElement.classList.add('issues');
+    this.contentElement.appendChild(this._issuesTree.element);
 
     const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
     this._model = null;
@@ -400,7 +398,7 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     if (!this._issueViews.has(aggregatedIssue.code())) {
       const view = new AggregatedIssueView(this, aggregatedIssue, description);
       this._issueViews.set(aggregatedIssue.code(), view);
-      view.show(this.contentElement);
+      this._issuesTree.appendChild(view);
     }
     this._issueViews.get(aggregatedIssue.code()).update();
     this._updateCounts();
@@ -409,7 +407,7 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
   _fullUpdate() {
     this._hideReloadInfoBar();
     for (const view of this._issueViews.values()) {
-      view.detach();
+      this._issuesTree.removeChild(view);
     }
     this._issueViews.clear();
     for (const aggregatedIssue of this._model.aggregatedIssues()) {
@@ -420,13 +418,6 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
 
   _updateCounts() {
     this._toolbarIssuesCount.textContent = this._model.numberOfAggregatedIssues();
-  }
-
-  /**
-   * @param {!AggregatedIssueView} issueView
-   */
-  handleSelect(issueView) {
-    issueView.toggle();
   }
 
   /**

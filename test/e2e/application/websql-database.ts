@@ -4,24 +4,13 @@
 
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
-import * as puppeteer from 'puppeteer';
 
-import {$, click, getBrowserAndPages, resetPages, resourcesPath, waitFor, debuggerStatement} from '../../shared/helper.js';
+import {$, debuggerStatement, getBrowserAndPages, resetPages, waitFor} from '../../shared/helper.js';
+
+import {doubleClickSourceTreeItem, navigateToApplicationTab} from '../helpers/application-helpers.js';
 
 const WEB_SQL_SELECTOR = '[aria-label="Web SQL"]';
 const DATABASES_SELECTOR = `${WEB_SQL_SELECTOR} + ol`;
-
-async function navigateToApplicationTab(target: puppeteer.Page, testName: string) {
-  await target.goto(`${resourcesPath}/application/${testName}.html`);
-  await click('#tab-resources');
-  // Make sure the application navigation list is shown
-  await waitFor('.storage-group-list-item');
-}
-
-async function doubleClickSourceTreeItem(selector: string) {
-  await waitFor(selector);
-  await click(selector, {clickOptions: {clickCount: 2}});
-}
 
 describe('The Application Tab', async () => {
   beforeEach(async () => {

@@ -4,13 +4,9 @@
 
 import("../../../third_party/typescript/typescript.gni")
 
-ts_library("application") {
+ts_library("lighthouse") {
   testonly = true
-  sources = [
-    "cookies.ts",
-    "session-storage.ts",
-    "websql-database.ts",
-  ]
+  sources = [ "generate-report.ts" ]
 
   deps = [
     "../../shared",

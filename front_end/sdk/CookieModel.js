@@ -105,6 +105,12 @@ export class CookieModel extends SDKModel {
     }
     const resourceTreeModel = this.target().model(ResourceTreeModel);
     if (resourceTreeModel) {
+      // In case the current frame was unreachable, add it's cookies
+      // because they might help to debug why the frame was unreachable.
+      if (resourceTreeModel.mainFrame.unreachableUrl()) {
+        resourceURLs.push(resourceTreeModel.mainFrame.unreachableUrl());
+      }
+
       resourceTreeModel.forAllResources(populateResourceURLs);
     }
     return this.getCookies(resourceURLs);

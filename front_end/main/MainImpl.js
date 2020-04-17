@@ -182,6 +182,7 @@ export class MainImpl {
       'backgroundServicesNotifications',
       'backgroundServicesPushMessaging',
       'backgroundServicesPaymentHandler',
+      'issuesPane',
     ]);
 
     if (Host.InspectorFrontendHost.isUnderTest() &&

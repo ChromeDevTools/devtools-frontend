@@ -1293,7 +1293,7 @@ export class TimelineUIUtils {
           statsArrays = {time: [], value: []};
           aggregatedStats[category] = statsArrays;
         }
-        if (statsArrays.time.length && statsArrays.time.peekLast() === time) {
+        if (statsArrays.time.length && statsArrays.time.peekLast() === time || lastTime > time) {
           return;
         }
         const lastValue = statsArrays.value.length ? statsArrays.value.peekLast() : 0;

@@ -220,16 +220,44 @@ export class IssuesModel extends SDKModel {
 }
 
 /**
+ * @param {!IssuesModel} issuesModel
+ * @param {!Protocol.Audits.InspectorIssueDetails} inspectorDetails
+ * @return {!Array<!Issue>}
+ */
+function createIssuesForSameSiteCookieIssue(issuesModel, inspectorDetails) {
+  const sameSiteDetails = inspectorDetails.sameSiteCookieIssueDetails;
+  if (!sameSiteDetails) {
+    console.warn('SameSite issue without details received');
+    return [];
+  }
+
+  /** @type {!Array<!Issue>} */
+  const issues = [];
+
+  // Exclusion reasons have priority. It means a cookie was blocked. Create an issue
+  // for every exclusion reason but ignore warning reasons if the cookie was blocked.
+  if (sameSiteDetails.cookieExclusionReasons && sameSiteDetails.cookieExclusionReasons.length > 0) {
+    for (const exclusionReason of sameSiteDetails.cookieExclusionReasons) {
+      const code = SameSiteCookieIssue.codeForSameSiteDetails(exclusionReason, sameSiteDetails.operation);
+      issues.push(new SameSiteCookieIssue(code, sameSiteDetails));
+    }
+    return issues;
+  }
+
+  if (sameSiteDetails.cookieWarningReasons) {
+    for (const warningReason of sameSiteDetails.cookieWarningReasons) {
+      const code = SameSiteCookieIssue.codeForSameSiteDetails(warningReason, sameSiteDetails.operation);
+      issues.push(new SameSiteCookieIssue(code, sameSiteDetails));
+    }
+  }
+  return issues;
+}
+
+/**
  * @type {!Map<!Protocol.Audits.InspectorIssueCode, function(!IssuesModel, !Protocol.Audits.InspectorIssueDetails):!Array<!Issue>>}
  */
 const issueCodeHandlers = new Map([
-  [
-    'SameSiteCookieIssue',
-    (model, details) => {
-      const issue = new SameSiteCookieIssue('SameSiteCookieIssue', details.sameSiteCookieIssueDetails);
-      return [issue];
-    }
-  ],
+  [Protocol.Audits.InspectorIssueCode.SameSiteCookieIssue, createIssuesForSameSiteCookieIssue],
 ]);
 
 /** @enum {symbol} */

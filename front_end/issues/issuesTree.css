@@ -166,12 +166,27 @@
   margin-top: 8px;
 }
 
-.affected-resources-label {
+.affected-resources-label,
+.resolutions-label {
   font-size: 10px;
   font-weight: 500;
   line-height: 2em;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+
+.resolutions-list {
+  list-style-type: circle;
+}
+
+/* We inherit all the styles from treeoutline, but these are simple text <li>, so we override some styles */
+.resolutions-list li::before {
+  content: none;
+  -webkit-mask-image: none;
+}
+
+.resolutions-list li {
+  display: list-item;
 }
 
 .affected-resources {

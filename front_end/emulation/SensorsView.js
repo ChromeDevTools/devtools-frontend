@@ -52,6 +52,7 @@ export class SensorsView extends UI.Widget.VBox {
     const geogroupTitle = UI.UIUtils.createLabel(ls`Location`, 'sensors-group-title');
     geogroup.appendChild(geogroupTitle);
     const fields = geogroup.createChild('div', 'geo-fields');
+    let selectedIndex = 0;
 
     const noOverrideOption = {title: Common.UIString.UIString('No override'), location: NonPresetOptions.NoOverride};
 
@@ -70,8 +71,12 @@ export class SensorsView extends UI.Widget.VBox {
     fields.appendChild(manageButton);
     const fillCustomSettings = () => {
       this._customLocationsGroup.removeChildren();
-      for (const location of customLocations.get()) {
-        this._customLocationsGroup.appendChild(new Option(location.title, JSON.stringify(location)));
+      for (const [i, customLocation] of customLocations.get().entries()) {
+        this._customLocationsGroup.appendChild(new Option(customLocation.title, JSON.stringify(customLocation)));
+        if (location.latitude === customLocation.lat && location.longitude === customLocation.long) {
+          // If the location coming from settings matches the custom location, use its index to select the option
+          selectedIndex = i + 1;
+        }
       }
     };
     customLocations.addChangeListener(fillCustomSettings);
@@ -86,7 +91,7 @@ export class SensorsView extends UI.Widget.VBox {
     group.label = ls`Error`;
     group.appendChild(new Option(ls`Location unavailable`, NonPresetOptions.Unavailable));
 
-    this._locationSelectElement.selectedIndex = 0;
+    this._locationSelectElement.selectedIndex = selectedIndex;
     this._locationSelectElement.addEventListener('change', this._LocationSelectChanged.bind(this));
 
     // Validated input fieldset.
@@ -150,6 +155,7 @@ export class SensorsView extends UI.Widget.VBox {
     const value = this._locationSelectElement.options[this._locationSelectElement.selectedIndex].value;
     if (value === NonPresetOptions.NoOverride) {
       this._LocationOverrideEnabled = false;
+      this._clearFieldsetElementInputs();
       this._fieldsetElement.disabled = true;
     } else if (value === NonPresetOptions.Custom) {
       this._LocationOverrideEnabled = true;
@@ -198,6 +204,8 @@ export class SensorsView extends UI.Widget.VBox {
   _applyLocation() {
     if (this._LocationOverrideEnabled) {
       this._LocationSetting.set(this._Location.toSetting());
+    } else {
+      this._LocationSetting.remove();
     }
     for (const emulationModel of SDK.SDKModel.TargetManager.instance().models(SDK.EmulationModel.EmulationModel)) {
       emulationModel.emulateLocation(this._LocationOverrideEnabled ? this._Location : null).catch(err => {
@@ -213,6 +221,13 @@ export class SensorsView extends UI.Widget.VBox {
         }
       });
     }
+  }
+
+  _clearFieldsetElementInputs() {
+    this._latitudeSetter(0);
+    this._longitudeSetter(0);
+    this._timezoneSetter('');
+    this._localeSetter('');
   }
 
   _createDeviceOrientationSection() {

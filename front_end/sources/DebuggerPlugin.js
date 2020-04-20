@@ -1628,6 +1628,10 @@ export class DebuggerPlugin extends Plugin {
     let formatterCallback = null;
     for (const editorAction of editorActions) {
       if (editorAction instanceof Sources.ScriptFormatterEditorAction) {
+        // Check if the source code is formattable the same way the pretty print button does
+        if (!editorAction.isCurrentUISourceCodeFormatable()) {
+          return;
+        }
         formatterCallback = editorAction.toggleFormatScriptSource.bind(editorAction);
         break;
       }

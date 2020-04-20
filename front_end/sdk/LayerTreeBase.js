@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// @ts-nocheck
+// TODO(crbug.com/1011811): Enable TypeScript compiler checks
+
 import {DOMModel, DOMNode} from './DOMModel.js';      // eslint-disable-line no-unused-vars
 import {SnapshotWithRect} from './PaintProfiler.js';  // eslint-disable-line no-unused-vars
 import {Target} from './SDKModel.js';                 // eslint-disable-line no-unused-vars

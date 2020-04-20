@@ -134,6 +134,9 @@
   <message name="IDS_DEVTOOLS_5e53467e9b005376370c28e92b42b6f5" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Emulate CSS prefers-reduced-motion: reduce
   </message>
+  <message name="IDS_DEVTOOLS_67370b3edd8beefab5b4d3603172c6be" desc="Description of an issue in the issues panel">
+    A cookie without a valid SameSite attribute was sent in a cross-site request. In the future, a cookie will only be sent in a cross-site request if the cookie has both the &apos;SameSite=None and &apos;Secure&apos; attributes.
+  </message>
   <message name="IDS_DEVTOOLS_6793fd007147c0f5ad833ed1ceb89a2e" desc="Tooltip to explain why a cookie was blocked">
     This cookie was blocked because it had the &quot;Secure&quot; attribute and the connection was not secure.
   </message>
@@ -226,6 +229,9 @@
   </message>
   <message name="IDS_DEVTOOLS_6617a779f50f7afb7949c7ea3ad52b28" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Show hit-test borders
+  </message>
+  <message name="IDS_DEVTOOLS_68a533725701759155b01979f1a6afd0" desc="Title of an issue in the issues view">
+    A cookie will not be sent in the future, because the cookie was set without the &apos;SameSite&apos; attribute
   </message>
   <message name="IDS_DEVTOOLS_6948a469c79f7dd5426e4f291cba3db1" desc="Text in Network Log">
     <ph name="LOCKED_1">Chrome Data Saver</ph>

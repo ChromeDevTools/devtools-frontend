@@ -6,7 +6,7 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 import * as puppeteer from 'puppeteer';
 
-import {click, getBrowserAndPages, resetPages, resourcesPath, waitFor} from '../../shared/helper.js';
+import {click, getBrowserAndPages, resourcesPath, waitFor} from '../../shared/helper.js';
 import {addBreakpointForLine, createSelectorsForWorkerFile, getBreakpointDecorators, getOpenSources, openNestedWorkerFile, PAUSE_BUTTON, RESUME_BUTTON} from '../helpers/sources-helpers.js';
 
 async function validateSourceTabs() {
@@ -15,10 +15,9 @@ async function validateSourceTabs() {
 }
 
 
-describe('Multi-Workers', async () => {
-  beforeEach(async () => {
-    await resetPages();
-  });
+describe('Multi-Workers', async function() {
+  // The tests in this suite are particularly slow, as they perform a lot of actions
+  this.timeout(10000);
 
   [false, true].forEach(sourceMaps => {
     const withOrWithout = sourceMaps ? 'with source maps' : 'without source maps';
@@ -145,7 +144,7 @@ describe('Multi-Workers', async () => {
 
       // Check breakpoints
       await validateBreakpoints(frontend);
-    }).timeout(10000);
+    });
 
     it(`hits breakpoints added to workers ${withOrWithout}`, async () => {
       const {target, frontend} = getBrowserAndPages();

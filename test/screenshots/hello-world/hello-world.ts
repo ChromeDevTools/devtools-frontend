@@ -3,14 +3,11 @@
 // found in the LICENSE file.
 
 import {describe, it} from 'mocha';
-import {click, getBrowserAndPages, resetPages, resourcesPath} from '../../shared/helper.js';
-import {assertPageScreenshotUnchanged, assertElementScreenshotUnchanged} from '../../shared/screenshot.js';
+
+import {click, getBrowserAndPages, resourcesPath} from '../../shared/helper.js';
+import {assertElementScreenshotUnchanged, assertPageScreenshotUnchanged} from '../../shared/screenshot.js';
 
 describe('hello world', () => {
-  beforeEach(async () => {
-    await resetPages();
-  });
-
   it('takes a screenshot', async () => {
     const {target, frontend} = getBrowserAndPages();
     await target.goto(`${resourcesPath}/console/built-ins.html`);

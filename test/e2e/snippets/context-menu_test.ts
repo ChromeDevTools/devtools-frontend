@@ -5,15 +5,11 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {getBrowserAndPages, resetPages, typeText} from '../../shared/helper.js';
+import {getBrowserAndPages, typeText} from '../../shared/helper.js';
 import {getAvailableSnippets, openCommandMenu, showSnippetsAutocompletion} from '../helpers/quick_open-helpers.js';
 import {createNewSnippet, openSnippetsSubPane, openSourcesPanel} from '../helpers/sources-helpers.js';
 
 describe('Snippets subpane', () => {
-  beforeEach(async () => {
-    await resetPages();
-  });
-
   it('can show newly created snippets show up in command menu', async () => {
     const {frontend} = getBrowserAndPages();
 

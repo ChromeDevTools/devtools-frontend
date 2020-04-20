@@ -14,7 +14,7 @@ export async function triggerFindDialog(frontend: puppeteer.Page) {
       break;
 
     default:
-      await frontend.keyboard.down('Ctrl');
+      await frontend.keyboard.down('Control');
       await frontend.keyboard.down('Shift');
   }
 
@@ -27,7 +27,7 @@ export async function triggerFindDialog(frontend: puppeteer.Page) {
       break;
 
     default:
-      await frontend.keyboard.up('Ctrl');
+      await frontend.keyboard.up('Control');
       await frontend.keyboard.up('Shift');
   }
 }

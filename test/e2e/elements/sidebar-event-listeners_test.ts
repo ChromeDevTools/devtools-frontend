@@ -5,12 +5,11 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {doubleClick, resetPages} from '../../shared/helper.js';
+import {doubleClick} from '../../shared/helper.js';
 import {getDisplayedEventListenerNames, getEventListenerProperties, getFirstNodeForEventListener, loadEventListenersAndSelectButtonNode, openEventListenersPaneAndWaitForListeners} from '../helpers/event-listeners-helpers.js';
 
 describe('Event listeners in the elements sidebar', async () => {
   beforeEach(async () => {
-    await resetPages();
     await loadEventListenersAndSelectButtonNode();
   });
 

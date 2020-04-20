@@ -7,10 +7,5 @@
     "checkJs": false,
     "allowJs": false
   },
-  "references": [
-    {
-      "path": "../conductor"
-    }
-  ],
-  "extends": "../../tsconfig.base.json",
+  "extends": "../../tsconfig.base.json"
 }

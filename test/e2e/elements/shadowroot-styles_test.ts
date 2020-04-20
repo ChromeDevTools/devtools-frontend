@@ -5,14 +5,10 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {$$, getBrowserAndPages, resetPages, resourcesPath, waitFor, waitForFunction} from '../../shared/helper.js';
+import {$$, getBrowserAndPages, resourcesPath, waitFor, waitForFunction} from '../../shared/helper.js';
 import {assertContentOfSelectedElementsNode, waitForChildrenOfSelectedElementNode} from '../helpers/elements-helpers.js';
 
 describe('The Elements Tab', async () => {
-  beforeEach(async () => {
-    await resetPages();
-  });
-
   it('can show styles in shadow roots', async () => {
     const {target, frontend} = getBrowserAndPages();
 

@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {$, debuggerStatement, getBrowserAndPages, resetPages, waitFor} from '../../shared/helper.js';
+import {$, debuggerStatement, getBrowserAndPages, waitFor} from '../../shared/helper.js';
 
 import {doubleClickSourceTreeItem, navigateToApplicationTab} from '../helpers/application-helpers.js';
 
@@ -13,10 +13,6 @@ const WEB_SQL_SELECTOR = '[aria-label="Web SQL"]';
 const DATABASES_SELECTOR = `${WEB_SQL_SELECTOR} + ol`;
 
 describe('The Application Tab', async () => {
-  beforeEach(async () => {
-    await resetPages();
-  });
-
   it('shows WebSQL database', async () => {
     const {target, frontend} = getBrowserAndPages();
     await navigateToApplicationTab(target, 'websql-database');

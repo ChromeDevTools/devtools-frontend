@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {getBrowserAndPages, resetPages} from '../../shared/helper.js';
+import {getBrowserAndPages} from '../../shared/helper.js';
 
 import {doubleClickSourceTreeItem, getDataGridData, navigateToApplicationTab} from '../helpers/application-helpers.js';
 
@@ -13,10 +13,6 @@ const SESSION_STORAGE_SELECTOR = '[aria-label="Session Storage"]';
 const DOMAIN_SELECTOR = `${SESSION_STORAGE_SELECTOR} + ol > [aria-label="http://localhost:8090"]`;
 
 describe('The Application Tab', async () => {
-  beforeEach(async () => {
-    await resetPages();
-  });
-
   it('shows Session Storage keys and values', async () => {
     const {target} = getBrowserAndPages();
     await navigateToApplicationTab(target, 'session-storage');

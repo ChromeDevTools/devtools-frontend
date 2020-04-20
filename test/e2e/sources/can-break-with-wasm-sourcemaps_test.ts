@@ -5,15 +5,11 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {getBrowserAndPages, resetPages} from '../../shared/helper.js';
+import {getBrowserAndPages} from '../../shared/helper.js';
 
 import {addBreakpointForLine, openSourceCodeEditorForFile, retrieveTopCallFrameScriptLocation} from '../helpers/sources-helpers.js';
 
 describe('The Sources Tab', async () => {
-  beforeEach(async () => {
-    await resetPages();
-  });
-
   it('can add breakpoint for a sourcemapped wasm module', async () => {
     const {target, frontend} = getBrowserAndPages();
 

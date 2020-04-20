@@ -4,12 +4,11 @@
 
 import("../../third_party/typescript/typescript.gni")
 
-ts_library("shared") {
+ts_library("conductor") {
   testonly = true
   sources = [
-    "config.ts",
-    "helper.ts",
-    "text-color.ts",
+    "hooks.ts",
+    "mocha_hooks.ts",
+    "puppeteer-state.ts",
   ]
-  deps = [ "../conductor" ]
 }

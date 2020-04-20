@@ -5,17 +5,13 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {debuggerStatement, getBrowserAndPages, resetPages, resourcesPath} from '../../shared/helper.js';
+import {debuggerStatement, getBrowserAndPages, resourcesPath} from '../../shared/helper.js';
 import {assertContentOfSelectedElementsNode, assertGutterDecorationForDomNodeExists, forcePseudoState, getComputedStylesForDomNode, removePseudoState, waitForDomNodeToBeHidden, waitForDomNodeToBeVisible, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
 
 const TARGET_SHOWN_ON_HOVER_SELECTOR = '.show-on-hover';
 const TARGET_SHOWN_ON_FOCUS_SELECTOR = '.show-on-focus';
 
 describe('The Elements tab', async () => {
-  beforeEach(async () => {
-    await resetPages();
-  });
-
   it('can force :hover state for selected DOM node', async () => {
     const {target, frontend} = getBrowserAndPages();
 

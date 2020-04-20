@@ -4,14 +4,16 @@
 
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
-import {click, getBrowserAndPages, resetPages, resourcesPath, waitForElementWithTextContent} from '../../shared/helper.js';
-import {assertContentOfSelectedElementsNode, assertSelectedElementsNodeTextIncludes, expandSelectedNodeRecursively, getBreadcrumbsTextContent, getSelectedBreadcrumbTextContent, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
 
+import {click, getBrowserAndPages, resourcesPath, waitForElementWithTextContent} from '../../shared/helper.js';
+import {assertContentOfSelectedElementsNode, assertSelectedElementsNodeTextIncludes, expandSelectedNodeRecursively, getBreadcrumbsTextContent, getSelectedBreadcrumbTextContent, waitForElementsStyleSection, waitForSelectedTreeElementSelectorWithTextcontent} from '../helpers/elements-helpers.js';
+
+const EXPECTED_TEXT_CONTENT = `<div class=\u200B"div2">\u200B
+          last child
+        \u200B</div>\u200B`;
 
 describe('Element breadcrumbs', async () => {
-  beforeEach(async () => {
-    await resetPages();
-
+  beforeEach(async function() {
     const {target} = getBrowserAndPages();
     await target.goto(`${resourcesPath}/elements/element-breadcrumbs.html`);
     await waitForElementsStyleSection();
@@ -21,11 +23,11 @@ describe('Element breadcrumbs', async () => {
 
     // expand the tree and then navigate down to the target node
     await expandSelectedNodeRecursively();
-    const targetChildNode = await waitForElementWithTextContent('div2');
+    const targetChildNode = await waitForElementWithTextContent(EXPECTED_TEXT_CONTENT);
     await click(targetChildNode);
 
     // double check we got to the node we expect
-    await assertSelectedElementsNodeTextIncludes('<div class=\u200B"div2">\u200B');
+    await waitForSelectedTreeElementSelectorWithTextcontent(EXPECTED_TEXT_CONTENT);
     await assertSelectedElementsNodeTextIncludes('last child');
   });
 

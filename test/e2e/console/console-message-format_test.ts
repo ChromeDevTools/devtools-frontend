@@ -5,14 +5,9 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {resetPages} from '../../shared/helper.js';
 import {getConsoleMessages, showVerboseMessages} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', async () => {
-  beforeEach(async () => {
-    await resetPages();
-  });
-
   it('shows BigInts formatted', async () => {
     const messages = await getConsoleMessages('big-int');
 

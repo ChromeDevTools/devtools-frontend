@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {getBrowserAndPages, resetPages, resourcesPath} from '../../shared/helper.js';
+import {getBrowserAndPages, resourcesPath} from '../../shared/helper.js';
 
 import {doubleClickSourceTreeItem, getDataGridData, navigateToApplicationTab} from '../helpers/application-helpers.js';
 
@@ -13,10 +13,6 @@ const COOKIES_SELECTOR = '[aria-label="Cookies"]';
 const DOMAIN_SELECTOR = `${COOKIES_SELECTOR} + ol > [aria-label="http://localhost:8090"]`;
 
 describe('The Application Tab', async () => {
-  beforeEach(async () => {
-    await resetPages();
-  });
-
   afterEach(async () => {
     const {target} = getBrowserAndPages();
     await target.deleteCookie({name: 'foo'});

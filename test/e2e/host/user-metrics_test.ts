@@ -6,7 +6,7 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 import * as puppeteer from 'puppeteer';
 
-import {click, getBrowserAndPages, platform, resetPages, waitFor} from '../../shared/helper.js';
+import {click, getBrowserAndPages, platform, reloadDevTools, waitFor} from '../../shared/helper.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 interface UserMetric {
@@ -97,7 +97,6 @@ async function assertCapturedEvents(expected: UserMetric[]) {
 
 describe('User Metrics', () => {
   beforeEach(async () => {
-    await resetPages();
     const {frontend} = getBrowserAndPages();
     await beginCatchEvents(frontend);
   });
@@ -233,16 +232,17 @@ describe('User Metrics', () => {
     ]);
   });
 
-  it('tracks panel loading', async () => {
+  it.skip('[crbug.com/1071850]: tracks panel loading', async () => {
     // We specify the selected panel here because the default behavior is to go to the
     // elements panel, but this means we won't get the PanelLoaded event. Instead we
     // request that the resetPages helper sets the timeline as the target panel, and
     // we wait for the timeline in the test. This means, in turn, we get the PanelLoaded
     // event.
-    await resetPages({selectedPanel: {name: 'timeline'}});
+    await reloadDevTools({selectedPanel: {name: 'timeline'}});
     const {frontend} = getBrowserAndPages();
 
     await beginCatchEvents(frontend);
+
     await waitFor('.timeline');
 
     await assertCapturedEvents([

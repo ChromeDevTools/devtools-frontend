@@ -5,12 +5,12 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {$, click, getBrowserAndPages, resetPages, resourcesPath, waitFor, waitForFunction} from '../../shared/helper.js';
+import {$, click, enableExperiment, getBrowserAndPages, resourcesPath, waitFor, waitForFunction} from '../../shared/helper.js';
 import {addBreakpointForLine, listenForSourceFilesAdded, openFileInEditor, openFileInSourcesPanel, openSourcesPanel, PAUSE_ON_EXCEPTION_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
 
 describe('The CXX DWARF Language Plugin', async () => {
   beforeEach(async () => {
-    await resetPages({'enabledExperiments': ['wasmDWARFDebugging']});
+    await enableExperiment('wasmDWARFDebugging');
   });
 
   beforeEach(function() {

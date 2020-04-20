@@ -5,12 +5,11 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {click, resetPages} from '../../shared/helper.js';
+import {click} from '../../shared/helper.js';
 import {getDisplayedEventListenerNames, getFirstNodeForEventListener, loadEventListenersAndSelectButtonNode, openEventListenersPaneAndWaitForListeners} from '../helpers/event-listeners-helpers.js';
 
 describe('Removing event listeners in the elements sidebar', async () => {
   beforeEach(async () => {
-    await resetPages();
     await loadEventListenersAndSelectButtonNode();
   });
 

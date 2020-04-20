@@ -4,13 +4,12 @@
 
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
-import {click, getBrowserAndPages, resetPages, typeText, waitFor, waitForNone} from '../../shared/helper.js';
+import {click, getBrowserAndPages, typeText, waitFor, waitForNone} from '../../shared/helper.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
 
-describe('The Console Tab', async () => {
-  beforeEach(async () => {
-    await resetPages();
-  });
+describe('The Console Tab', async function() {
+  // The tests in this suite are particularly slow, as they perform a lot of actions
+  this.timeout(10000);
 
   it('allows re-declaration of let variables', async () => {
     const {frontend} = getBrowserAndPages();

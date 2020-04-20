@@ -14,11 +14,16 @@ from subprocess import Popen
 import sys
 import signal
 
-scripts_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT_DIRECTORY = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..')
+scripts_path = os.path.join(ROOT_DIRECTORY, 'scripts')
 sys.path.append(scripts_path)
 
 import devtools_paths
 import test_helpers
+
+CONDUCTOR_DIRECTORY = os.path.join(ROOT_DIRECTORY, 'test', 'conductor')
+CONDUCTOR_HOOKS = os.path.join(CONDUCTOR_DIRECTORY, 'mocha_hooks.js')
+E2E_TEST_LOCATION = os.path.join(ROOT_DIRECTORY, 'test', 'e2e', '**/*_test.js')
 
 
 def parse_options(cli_args):
@@ -44,7 +49,7 @@ def compile_typescript(typescript_targets):
     return False
 
 
-def run_tests(chrome_binary, chrome_features, test_suite_list_path, test_file=None):
+def run_tests(chrome_binary, chrome_features, test_suite, test_suite_list_path, test_file=None):
     env = os.environ.copy()
     env['CHROME_BIN'] = chrome_binary
     env['TEST_LIST'] = test_suite_list_path
@@ -55,8 +60,15 @@ def run_tests(chrome_binary, chrome_features, test_suite_list_path, test_file=No
         env['TEST_FILE'] = test_file
 
     cwd = devtools_paths.devtools_root_path()
-    runner_path = os.path.join(cwd, 'test', 'shared', 'runner.js')
-    exec_command = [devtools_paths.node_path(), runner_path]
+    if test_suite == 'e2e':
+        exec_command = [
+            devtools_paths.node_path(),
+            devtools_paths.mocha_path(), '--file', CONDUCTOR_HOOKS,
+            '"%s"' % E2E_TEST_LOCATION
+        ]
+    else:
+        runner_path = os.path.join(cwd, 'test', 'shared', 'runner.js')
+        exec_command = [devtools_paths.node_path(), runner_path]
 
     exit_code = test_helpers.popen(exec_command, cwd=cwd, env=env)
     if exit_code != 0:
@@ -107,16 +119,16 @@ def run_test():
     cwd = devtools_paths.devtools_root_path()
     shared_path = os.path.join(cwd, 'test', 'shared')
     test_suite_path = os.path.join(cwd, 'test', test_suite)
-    typescript_paths = [
-      {
+    typescript_paths = [{
+        'name': 'conductor',
+        'path': CONDUCTOR_DIRECTORY
+    }, {
         'name': 'shared',
         'path': shared_path
-      },
-      {
+    }, {
         'name': 'suite',
         'path': test_suite_path
-      }
-    ]
+    }]
 
     errors_found = False
     try:
@@ -124,7 +136,7 @@ def run_test():
         if (errors_found):
             raise Exception('Typescript failed to compile')
         test_suite_list_path = os.path.join(test_suite_path, 'test-list.js')
-        errors_found = run_tests(chrome_binary, chrome_features, test_suite_list_path, test_file=test_file)
+        errors_found = run_tests(chrome_binary, chrome_features, test_suite, test_suite_list_path, test_file=test_file)
     except Exception as err:
         print(err)
 

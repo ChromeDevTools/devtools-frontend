@@ -3,7 +3,8 @@
 // found in the LICENSE file.
 
 import {performance} from 'perf_hooks';
-import {resetPages} from '../../shared/helper.js';
+
+import {reloadDevTools} from '../../shared/helper.js';
 import {storeGeneratedResults} from '../helpers/perf-helper.js';
 
 interface PerfTimings {
@@ -11,17 +12,13 @@ interface PerfTimings {
 }
 
 describe('Boot performance', () => {
-  beforeEach(async () => {
-    await resetPages();
-  });
-
   it('runs 37 times', async () => {
     const times: PerfTimings = {
       bootperf: [],
     };
     for (let run = 0; run < 37; run++) {
       const start = performance.now();
-      await resetPages();
+      await reloadDevTools();
 
       // Ensure only 2 decimal places.
       const timeTaken = (performance.now() - start).toFixed(2);

@@ -5,14 +5,10 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {getBrowserAndPages, resetPages, resourcesPath} from '../../shared/helper.js';
+import {getBrowserAndPages, resourcesPath} from '../../shared/helper.js';
 import {isGenerateReportButtonDisabled, navigateToLighthouseTab} from '../helpers/lighthouse-helpers.js';
 
 describe('The Lighthouse Tab', async () => {
-  beforeEach(async () => {
-    await resetPages();
-  });
-
   it('shows a button to generate a new report', async () => {
     const {target} = getBrowserAndPages();
     await navigateToLighthouseTab(target, 'empty');

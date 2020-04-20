@@ -5,7 +5,7 @@ import {assert} from 'chai';
 import {performance} from 'perf_hooks';
 import * as puppeteer from 'puppeteer';
 
-import {$, $$, click, getBrowserAndPages, timeout, waitFor} from '../../shared/helper.js';
+import {$, $$, click, getBrowserAndPages, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
 
 const SELECTED_TREE_ELEMENT_SELECTOR = '.selected[role="treeitem"]';
 const CSS_PROPERTY_NAME_SELECTOR = '.webkit-css-property';
@@ -47,6 +47,14 @@ export const assertSelectedElementsNodeTextIncludes = async (expectedTextContent
   const selectedNode = await $(SELECTED_TREE_ELEMENT_SELECTOR);
   const selectedTextContent = await selectedNode.evaluate(node => node.textContent);
   assert.include(selectedTextContent, expectedTextContent);
+};
+
+export const waitForSelectedTreeElementSelectorWithTextcontent = async (expectedTextContent: string) => {
+  await waitForFunction(async () => {
+    const selectedNode = await $(SELECTED_TREE_ELEMENT_SELECTOR);
+    const selectedTextContent = await selectedNode.evaluate(node => node.textContent);
+    return selectedTextContent === expectedTextContent;
+  }, 'Did not find a select elements tree element with textcontent');
 };
 
 export const waitForChildrenOfSelectedElementNode = async () => {

@@ -6,7 +6,7 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 import * as puppeteer from 'puppeteer';
 
-import {click, getBrowserAndPages, resetPages, waitFor} from '../../shared/helper.js';
+import {click, getBrowserAndPages, waitFor} from '../../shared/helper.js';
 import {addBreakpointForLine, openSourceCodeEditorForFile, retrieveTopCallFrameScriptLocation} from '../helpers/sources-helpers.js';
 
 const PRETTY_PRINT_BUTTON = '[aria-label="Pretty print minified-sourcecode.js"]';
@@ -27,10 +27,9 @@ async function prettyPrintMinifiedFile(frontend: puppeteer.Page) {
 }
 
 
-describe('The Sources Tab', async () => {
-  beforeEach(async () => {
-    await resetPages();
-  });
+describe('The Sources Tab', async function() {
+  // The tests in this suite are particularly slow, as they perform a lot of actions
+  this.timeout(10000);
 
   it('can format a JavaScript file', async () => {
     const {target, frontend} = getBrowserAndPages();

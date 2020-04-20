@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {$, click, getBrowserAndPages, resetPages, resourcesPath, waitFor} from '../../shared/helper.js';
+import {$, click, enableExperiment, getBrowserAndPages, resourcesPath, waitFor} from '../../shared/helper.js';
 import {addBreakpointForLine, listenForSourceFilesAdded, openFileInEditor, openFileInSourcesPanel, openSourcesPanel, PAUSE_ON_EXCEPTION_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
 
 // TODO: Remove once Chromium updates its version of Node.js to 12+.
@@ -23,7 +23,8 @@ declare global {
 // plugins as of yet.
 describe('The Debugger Language Plugins', async () => {
   beforeEach(async () => {
-    await resetPages({'enabledExperiments': ['wasmDWARFDebugging', 'protocolMonitor']});
+    await enableExperiment('wasmDWARFDebugging');
+
     const {frontend} = getBrowserAndPages();
     await frontend.evaluate(() => {
       /* eslint-disable @typescript-eslint/no-unused-vars */

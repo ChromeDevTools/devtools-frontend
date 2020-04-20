@@ -6,7 +6,7 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 import * as puppeteer from 'puppeteer';
 
-import {click, getBrowserAndPages, resetPages, resourcesPath, waitFor} from '../../shared/helper.js';
+import {click, getBrowserAndPages, resourcesPath, waitFor} from '../../shared/helper.js';
 import {assertContentOfSelectedElementsNode, getAriaLabelSelectorFromPropertiesSelector, getDisplayedCSSPropertyNames, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
 
 const PROPERTIES_TO_DELETE_SELECTOR = '#properties-to-delete';
@@ -22,10 +22,6 @@ const deletePropertyByBackspace = async (selector: string, root?: puppeteer.JSHa
 };
 
 describe('The Elements Tab', async () => {
-  beforeEach(async () => {
-    await resetPages();
-  });
-
   it('can remove a CSS property when its name or value is deleted', async () => {
     const {target, frontend} = getBrowserAndPages();
 

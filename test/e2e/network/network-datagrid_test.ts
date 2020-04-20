@@ -6,7 +6,7 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 import * as puppeteer from 'puppeteer';
 
-import {$, click, getBrowserAndPages, resetPages, resourcesPath, waitFor} from '../../shared/helper.js';
+import {$, click, getBrowserAndPages, resourcesPath, waitFor} from '../../shared/helper.js';
 
 async function navigateToNetworkTab(target: puppeteer.Page, testName: string) {
   await target.goto(`${resourcesPath}/network/${testName}`);
@@ -16,10 +16,6 @@ async function navigateToNetworkTab(target: puppeteer.Page, testName: string) {
 }
 
 describe('The Network Tab', async () => {
-  beforeEach(async () => {
-    await resetPages();
-  });
-
   it('can click on checkbox label to toggle checkbox', async () => {
     const {target} = getBrowserAndPages();
     await navigateToNetworkTab(target, 'resources-from-cache.html');

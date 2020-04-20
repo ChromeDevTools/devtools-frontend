@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {getBrowserAndPages, resetPages} from '../../shared/helper.js';
+import {getBrowserAndPages} from '../../shared/helper.js';
 
 import {listenForSourceFilesAdded, openFileInSourcesPanel, retrieveSourceFilesAdded, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
 
@@ -16,10 +16,6 @@ declare global {
 }
 
 describe('The Sources Tab', async () => {
-  beforeEach(async () => {
-    await resetPages();
-  });
-
   it('can show JavaScript files after dynamic loading', async () => {
     const {target, frontend} = getBrowserAndPages();
 

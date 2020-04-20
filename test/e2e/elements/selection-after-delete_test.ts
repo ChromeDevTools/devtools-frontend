@@ -4,21 +4,17 @@
 
 import {describe, it} from 'mocha';
 
-import {click, getBrowserAndPages, resetPages, resourcesPath, waitFor, waitForElementWithTextContent} from '../../shared/helper.js';
-import {assertContentOfSelectedElementsNode, expandSelectedNodeRecursively, getContentOfSelectedNode, waitForSelectedNodeChange} from '../helpers/elements-helpers.js';
+import {click, getBrowserAndPages, resourcesPath, waitForElementWithTextContent} from '../../shared/helper.js';
+import {assertContentOfSelectedElementsNode, expandSelectedNodeRecursively, getContentOfSelectedNode, waitForElementsStyleSection, waitForSelectedNodeChange} from '../helpers/elements-helpers.js';
 
 describe('The Elements tab', async () => {
-  beforeEach(async () => {
-    await resetPages();
-  });
-
-  it('can delete elements in the tree', async () => {
+  it.skip('[crbug.com/1071851]: can delete elements in the tree', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await target.goto(`${resourcesPath}/elements/selection-after-delete.html`);
 
     // Wait for the file to be loaded and selectors to be shown
-    await waitFor('.styles-selector');
+    await waitForElementsStyleSection();
 
     // Sanity check to make sure we have the correct node selected after opening a file
     await assertContentOfSelectedElementsNode('<body>\u200B');

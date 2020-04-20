@@ -4,14 +4,10 @@
 
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
-import {$, $$, getBrowserAndPages, resetPages, resourcesPath, waitFor} from '../../shared/helper.js';
+import {$, $$, getBrowserAndPages, resourcesPath, waitFor} from '../../shared/helper.js';
 import {triggerFindDialog} from '../helpers/search-helpers.js';
 
 describe('The Search Panel', async () => {
-  beforeEach(async () => {
-    await resetPages();
-  });
-
   it('provides results across scopes', async () => {
     const {target, frontend} = getBrowserAndPages();
     const SEARCH_QUERY = '[aria-label="Search Query"]';
@@ -74,18 +70,18 @@ describe('The Search Panel', async () => {
     }));
 
     assert.deepEqual(entries, [
-      {line: '1', content: 'div.searchTestUniqueString {'},
-      {line: '5', content: 'div.searchTestUniqueString:hover {'},
-      {line: '6', content: '/* another searchTestUniqueString occurence */'},
-      {line: '1', content: 'function searchTestUniqueString() {'},
-      {line: '3', content: '// searchTestUniqueString two occurences on the same line searchTestUniqueString'},
-      {line: '4', content: '// searchTestUniqueString on the next line.'},
-      {line: '9', content: 'searchTestUniqueString();'},
-      {line: '10', content: '// SEARCHTestUniqueString();'},
-      {line: '5', content: '…eval("function searchTestUniqueString() {}");</script>'},
-      {line: '7', content: '<div>searchTestUniqueString</div>'},
-      {line: '9', content: '<!-- searchTestUniqueString -->'},
-      {line: '11', content: '<div id="searchTestUniqueString">div text</div>'},
+      {line: '7', content: 'div.searchTestUniqueString {'},
+      {line: '11', content: 'div.searchTestUniqueString:hover {'},
+      {line: '12', content: '/* another searchTestUniqueString occurence */'},
+      {line: '4', content: 'function searchTestUniqueString() {'},
+      {line: '6', content: '// searchTestUniqueString two occurences on the same line searchTestUniqueString'},
+      {line: '7', content: '// searchTestUniqueString on the next line.'},
+      {line: '12', content: 'searchTestUniqueString();'},
+      {line: '13', content: '// SEARCHTestUniqueString();'},
+      {line: '8', content: '…eval(\'function searchTestUniqueString() {}\');</script>'},
+      {line: '10', content: '<div>searchTestUniqueString</div>'},
+      {line: '12', content: '<!-- searchTestUniqueString -->'},
+      {line: '14', content: '<div id="searchTestUniqueString">div text</div>'},
     ]);
   });
 });

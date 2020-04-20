@@ -5,14 +5,10 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {$, resetPages} from '../../shared/helper.js';
+import {$} from '../../shared/helper.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 describe('Rendering pane', () => {
-  beforeEach(async () => {
-    await resetPages();
-  });
-
   it('includes UI for simulating vision deficiencies', async () => {
     await openPanelViaMoreTools('Rendering');
 

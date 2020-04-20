@@ -5,14 +5,10 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {$, click, getBrowserAndPages, resetPages, resourcesPath} from '../../shared/helper.js';
+import {$, click, getBrowserAndPages, resourcesPath} from '../../shared/helper.js';
 import {addBreakpointForLine, openSourceCodeEditorForFile, RESUME_BUTTON, retrieveTopCallFrameScriptLocation} from '../helpers/sources-helpers.js';
 
 describe('Source Tab', async () => {
-  beforeEach(async () => {
-    await resetPages();
-  });
-
   it('can add a breakpoint in raw wasm', async () => {
     const {target, frontend} = getBrowserAndPages();
 
@@ -25,10 +21,6 @@ describe('Source Tab', async () => {
 });
 
 describe('Raw-Wasm', async () => {
-  beforeEach(async () => {
-    await resetPages();
-  });
-
   it('displays correct location in Wasm source', async () => {
     const {target, frontend} = getBrowserAndPages();
 

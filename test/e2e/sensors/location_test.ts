@@ -5,12 +5,11 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {$, resetPages} from '../../shared/helper.js';
+import {$} from '../../shared/helper.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 describe('Sensors panel', () => {
   beforeEach(async () => {
-    await resetPages();
     await openPanelViaMoreTools('Sensors');
   });
 

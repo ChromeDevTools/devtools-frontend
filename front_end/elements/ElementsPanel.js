@@ -969,12 +969,12 @@ export class DOMNodeRevealer {
       if (node instanceof SDK.DOMModel.DOMNode) {
         onNodeResolved(/** @type {!SDK.DOMModel.DOMNode} */ (node));
       } else if (node instanceof SDK.DOMModel.DeferredDOMNode) {
-        (/** @type {!SDK.DOMModel.DeferredDOMNode} */ (node)).resolve(onNodeResolved);
+        (/** @type {!SDK.DOMModel.DeferredDOMNode} */ (node)).resolve(checkDeferredDOMNodeThenReveal);
       } else if (node instanceof SDK.RemoteObject.RemoteObject) {
         const domModel =
             /** @type {!SDK.RemoteObject.RemoteObject} */ (node).runtimeModel().target().model(SDK.DOMModel.DOMModel);
         if (domModel) {
-          domModel.pushObjectAsNodeToFrontend(node).then(onNodeResolved);
+          domModel.pushObjectAsNodeToFrontend(node).then(checkRemoteObjectThenReveal);
         } else {
           reject(new Error('Could not resolve a node to reveal.'));
         }
@@ -984,7 +984,7 @@ export class DOMNodeRevealer {
       }
 
       /**
-       * @param {?SDK.DOMModel.DOMNode} resolvedNode
+       * @param {!SDK.DOMModel.DOMNode} resolvedNode
        */
       function onNodeResolved(resolvedNode) {
         panel._pendingNodeReveal = false;
@@ -994,10 +994,8 @@ export class DOMNodeRevealer {
         // that the root node is the document itself. Any break implies
         // detachment.
         let currentNode = resolvedNode;
-        if (currentNode) {
-          while (currentNode.parentNode) {
-            currentNode = currentNode.parentNode;
-          }
+        while (currentNode.parentNode) {
+          currentNode = currentNode.parentNode;
         }
         const isDetached = !(currentNode instanceof SDK.DOMModel.DOMDocument);
 
@@ -1014,6 +1012,32 @@ export class DOMNodeRevealer {
           return;
         }
         reject(new Error('Could not resolve node to reveal.'));
+      }
+
+      /**
+       * @param {?SDK.DOMModel.DOMNode} resolvedNode
+       */
+      function checkRemoteObjectThenReveal(resolvedNode) {
+        if (!resolvedNode) {
+          const msg = ls`The remote object could not be resolved into a valid node.`;
+          Common.Console.Console.instance().warn(msg);
+          reject(new Error(msg));
+          return;
+        }
+        onNodeResolved(resolvedNode);
+      }
+
+      /**
+       * @param {?SDK.DOMModel.DOMNode} resolvedNode
+       */
+      function checkDeferredDOMNodeThenReveal(resolvedNode) {
+        if (!resolvedNode) {
+          const msg = ls`The deferred DOM Node could not be resolved into a valid node.`;
+          Common.Console.Console.instance().warn(msg);
+          reject(new Error(msg));
+          return;
+        }
+        onNodeResolved(resolvedNode);
       }
     }
   }

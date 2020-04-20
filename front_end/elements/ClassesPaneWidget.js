@@ -48,9 +48,7 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
    * @return {!Array.<string>}
    */
   _splitTextIntoClasses(text) {
-    return text.split(/[.,\s]/)
-      .map(className => className.trim())
-      .filter(className => className.length);
+    return text.split(/[,\s]/).map(className => className.trim()).filter(className => className.length);
   }
 
   /**
@@ -312,7 +310,7 @@ export class ClassNamePrompt extends UI.TextPrompt.TextPrompt {
    * @param {!SDK.DOMModel.DOMNode} selectedNode
    * @return {!Promise.<!Array.<string>>}
    */
-  _getClassNames(selectedNode) {
+  async _getClassNames(selectedNode) {
     const promises = [];
     const completions = new Set();
     this._selectedFrameId = selectedNode.frameId();
@@ -323,15 +321,22 @@ export class ClassNamePrompt extends UI.TextPrompt.TextPrompt {
       if (stylesheet.frameId !== this._selectedFrameId) {
         continue;
       }
-      const cssPromise = cssModel.classNamesPromise(stylesheet.id).then(classes => completions.addAll(classes));
+      const cssPromise = cssModel.classNamesPromise(stylesheet.id).then(classes => {
+        for (const className of classes) {
+          completions.add(className);
+        }
+      });
       promises.push(cssPromise);
     }
 
-    const domPromise = selectedNode.domModel()
-                           .classNamesPromise(selectedNode.ownerDocument.id)
-                           .then(classes => completions.addAll(classes));
+    const domPromise = selectedNode.domModel().classNamesPromise(selectedNode.ownerDocument.id).then(classes => {
+      for (const className of classes) {
+        completions.add(className);
+      }
+    });
     promises.push(domPromise);
-    return Promise.all(promises).then(() => [...completions]);
+    await Promise.all(promises);
+    return [...completions];
   }
 
   /**

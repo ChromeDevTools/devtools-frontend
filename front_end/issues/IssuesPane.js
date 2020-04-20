@@ -337,15 +337,9 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     this.registerRequiredCSS('issues/issuesPane.css');
     this._issueViews = new Map();
 
-    this._issuesToolbarContainer = this.contentElement.createChild('div', 'issues-toolbar-container');
-    new UI.Toolbar.Toolbar('issues-toolbar-left', this._issuesToolbarContainer);
-    const rightToolbar = new UI.Toolbar.Toolbar('issues-toolbar-right', this._issuesToolbarContainer);
-    rightToolbar.appendSeparator();
-    const toolbarWarnings = new UI.Toolbar.ToolbarItem(createElement('div'));
-    const breakingChangeIcon = UI.Icon.Icon.create('largeicon-breaking-change');
-    toolbarWarnings.element.appendChild(breakingChangeIcon);
-    this._toolbarIssuesCount = toolbarWarnings.element.createChild('span', 'warnings-count-label');
-    rightToolbar.appendToolbarItem(toolbarWarnings);
+    const {toolbarContainer, updateToolbarIssuesCount} = this._createToolbars();
+    this._issuesToolbarContainer = toolbarContainer;
+    this._updateToolbarIssuesCount = updateToolbarIssuesCount;
 
     this._issuesTree = new UI.TreeOutline.TreeOutlineInShadow();
     this._issuesTree.registerRequiredCSS('issues/issuesTree.css');
@@ -376,6 +370,27 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     /** @type {?Element} */
     this._infoBarDiv = null;
     this._showReloadInfobarIfNeeded();
+  }
+
+  /**
+   * @returns {!{toolbarContainer: !Element, updateToolbarIssuesCount: function(number):void}}
+   */
+  _createToolbars() {
+    const toolbarContainer = this.contentElement.createChild('div', 'issues-toolbar-container');
+    new UI.Toolbar.Toolbar('issues-toolbar-left', toolbarContainer);
+    const rightToolbar = new UI.Toolbar.Toolbar('issues-toolbar-right', toolbarContainer);
+    rightToolbar.appendSeparator();
+    const toolbarWarnings = createElementWithClass('div', 'toolbar-warnings');
+    const breakingChangeIcon = UI.Icon.Icon.create('largeicon-breaking-change');
+    toolbarWarnings.appendChild(breakingChangeIcon);
+    const toolbarIssuesCount = toolbarWarnings.createChild('span', 'warnings-count-label');
+    const toolbarIssuesItem = new UI.Toolbar.ToolbarItem(toolbarWarnings);
+    rightToolbar.appendToolbarItem(toolbarIssuesItem);
+    /** @param {number} count */
+    const updateToolbarIssuesCount = count => {
+      toolbarIssuesCount.textContent = `${count}`;
+    };
+    return {toolbarContainer, updateToolbarIssuesCount};
   }
 
   /**
@@ -417,7 +432,7 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
   }
 
   _updateCounts() {
-    this._toolbarIssuesCount.textContent = this._model.numberOfAggregatedIssues();
+    this._updateToolbarIssuesCount(this._model.numberOfAggregatedIssues());
   }
 
   /**

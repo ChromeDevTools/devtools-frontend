@@ -10,5 +10,5 @@ export function reload() {
   if (self.Components.dockController.canDock() && self.Components.dockController.dockSide() === State.Undocked) {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.setIsDocked(true, function() {});
   }
-  window.location.reload();
+  Host.InspectorFrontendHost.InspectorFrontendHostInstance.reattach(() => window.location.reload());
 }

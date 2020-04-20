@@ -333,6 +333,8 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('issues/issuesPane.css');
+    this.contentElement.classList.add('issues-pane');
+
     this._issueViews = new Map();
 
     const {toolbarContainer, updateToolbarIssuesCount} = this._createToolbars();

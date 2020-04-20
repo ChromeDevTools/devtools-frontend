@@ -283,10 +283,8 @@ class AggregatedIssueView extends UI.TreeOutline.TreeElement {
     kindAndCode.setCollapsible(false);
     kindAndCode.selectable = false;
     kindAndCode.listItemElement.classList.add('kind-code-line');
-    const kind = createElementWithClass('span', 'issue-kind');
-    kind.textContent = issueKindToString(this._description.issueKind);
-    kindAndCode.listItemElement.appendChild(kind);
-    kindAndCode.listItemElement.appendChild(createElementWithClass('span', 'separator'));
+    // TODO(chromium:1072331): Re-enable rendering of the issue kind once there is more than a
+    //                         single kind and all issue codes are properly classified post-MVP launch.
     const code = createElementWithClass('span', 'issue-code');
     code.textContent = this._issue.code();
     kindAndCode.listItemElement.appendChild(code);
@@ -486,16 +484,4 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
       this._reloadInfobar = null;
     }
   }
-}
-
-/**
- * @param {!SDK.Issue.IssueKind} kind
- * @return {string}
- */
-function issueKindToString(kind) {
-  switch (kind) {
-    case SDK.Issue.IssueKind.BreakingChange:
-      return ls`Breaking change`;
-  }
-  return '';
 }

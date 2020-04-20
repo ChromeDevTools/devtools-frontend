@@ -12,9 +12,6 @@
   <message name="IDS_DEVTOOLS_6011ea0969680deba3975ac5bd0e153e" desc="Title for a link to further information in issue view">
     Learn more: <ph name="THIS__DETAILS_LINKTITLE">$1s<ex>SameSite Cookies Explained</ex></ph>
   </message>
-  <message name="IDS_DEVTOOLS_a08f2685b9b1a561a133769715321e40" desc="Label for the issue kind in the issues view">
-    Breaking change
-  </message>
   <message name="IDS_DEVTOOLS_b02478e52979ba9af8bffc41f342f4b6" desc="Header for the section listing affected resources">
     Affected Resources
   </message>

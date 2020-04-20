@@ -4,8 +4,7 @@
 
 import {ls} from '../common/common.js';  // eslint-disable-line rulesdir/es_modules_import
 
-import {Issue, IssueDescription, IssueKind} from './Issue.js';  // eslint-disable-line no-unused-vars
-import {IssueCategory} from './RelatedIssue.js';
+import {Issue, IssueCategory, IssueDescription, IssueKind} from './Issue.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @param {string} string

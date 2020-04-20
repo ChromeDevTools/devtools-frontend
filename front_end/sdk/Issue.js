@@ -4,7 +4,12 @@
 
 import * as Common from '../common/common.js';
 
-import {NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
+/** @enum {symbol} */
+export const IssueCategory = {
+  CrossOriginEmbedderPolicy: Symbol('CrossOriginEmbedderPolicy'),
+  SameSiteCookie: Symbol('SameSiteCookie'),
+  Other: Symbol('Other')
+};
 
 /** @enum {symbol} */
 export const IssueKind = {
@@ -43,14 +48,14 @@ export class Issue extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @returns {!Iterable<Protocol.Audits.AffectedCookie>}
+   * @returns {!Iterable<!Protocol.Audits.AffectedCookie>}
    */
   cookies() {
     return [];
   }
 
   /**
-   * @returns {!Iterable<Protocol.Audits.AffectedRequest>}
+   * @returns {!Iterable<!Protocol.Audits.AffectedRequest>}
    */
   requests() {
     return [];
@@ -89,47 +94,55 @@ export class Issue extends Common.ObjectWrapper.ObjectWrapper {
  * issue code, is supported. The class provides helpers to support displaying of all resources that are affected by
  * the aggregated issues.
  */
-export class AggregatedIssue extends Common.ObjectWrapper.ObjectWrapper {
+export class AggregatedIssue extends Issue {
   /**
    * @param {string} code
    */
   constructor(code) {
-    super();
-    this._code = code;
+    super(code);
     /** @type {!Map<string, !Protocol.Audits.AffectedCookie>} */
     this._cookies = new Map();
-    /** @type {!Set<string>} */
+    /** @type {!Set<!Protocol.Audits.AffectedRequest>} */
     this._requests = new Set();
     /** @type {?Issue} */
     this._representative = null;
   }
 
   /**
-   * @returns {string}
-   */
-  code() {
-    return this._code;
-  }
-
-  /**
-   * @returns {!Iterable<Protocol.Audits.AffectedCookie>}
+   * @override
+   * @returns {!Iterable<!Protocol.Audits.AffectedCookie>}
    */
   cookies() {
     return this._cookies.values();
   }
 
   /**
-   * @returns {!Iterable<!NetworkRequest>}
+   * @override
+   * @returns {!Iterable<!Protocol.Audits.AffectedRequest>}
    */
   requests() {
-    return self.SDK.networkLog.requests().filter(r => this._requests.has(r.requestId()));
+    return this._requests;
   }
 
+  /**
+   * @override
+   */
   getDescription() {
     if (this._representative) {
       return this._representative.getDescription();
     }
     return null;
+  }
+
+  /**
+   * @override
+   * @return {symbol}
+   */
+  getCategory() {
+    if (this._representative) {
+      return this._representative.getCategory();
+    }
+    return IssueCategory.Other;
   }
 
   /**
@@ -146,7 +159,7 @@ export class AggregatedIssue extends Common.ObjectWrapper.ObjectWrapper {
       }
     }
     for (const request of issue.requests()) {
-      this._requests.add(request.requestId);
+      this._requests.add(request);
     }
   }
 }

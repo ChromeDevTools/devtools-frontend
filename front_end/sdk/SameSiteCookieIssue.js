@@ -5,8 +5,7 @@
 
 import {ls} from '../common/common.js';  // eslint-disable-line rulesdir/es_modules_import
 
-import {Issue, IssueDescription, IssueKind} from './Issue.js';  // eslint-disable-line no-unused-vars
-import {IssueCategory} from './RelatedIssue.js';
+import {Issue, IssueCategory, IssueDescription, IssueKind} from './Issue.js';  // eslint-disable-line no-unused-vars
 
 export class SameSiteCookieIssue extends Issue {
   /**
@@ -31,7 +30,7 @@ export class SameSiteCookieIssue extends Issue {
 
   /**
    * @override
-   * @returns {!Iterable<Protocol.Audits.AffectedCookie>}
+   * @returns {!Iterable<!Protocol.Audits.AffectedCookie>}
    */
   cookies() {
     return [this._issueDetails.cookie];
@@ -39,7 +38,7 @@ export class SameSiteCookieIssue extends Issue {
 
   /**
    * @override
-   * @returns {!Iterable<Protocol.Audits.AffectedRequest>}
+   * @returns {!Iterable<!Protocol.Audits.AffectedRequest>}
    */
   requests() {
     if (this._issueDetails.request) {

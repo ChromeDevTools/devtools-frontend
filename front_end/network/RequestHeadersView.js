@@ -161,11 +161,10 @@ export class RequestHeadersView extends UI.Widget.VBox {
       }
 
       if (Root.Runtime.experiments.isEnabled('issuesPane') &&
-          SDK.RelatedIssue.hasIssueOfCategory(
-              this._request, SDK.RelatedIssue.IssueCategory.CrossOriginEmbedderPolicy)) {
+          SDK.RelatedIssue.hasIssueOfCategory(this._request, SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy)) {
         const link = createElementWithClass('div', 'devtools-link');
         link.onclick = () => {
-          SDK.RelatedIssue.reveal(this._request, SDK.RelatedIssue.IssueCategory.CrossOriginEmbedderPolicy);
+          SDK.RelatedIssue.reveal(this._request, SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy);
         };
         const text = createElementWithClass('span', 'devtools-link');
         text.textContent = 'Learn more in the issues panel';

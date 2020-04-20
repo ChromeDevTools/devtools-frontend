@@ -8,13 +8,13 @@ import * as UI from '../ui/ui.js';
 
 class AffectedResourcesView extends UI.TreeOutline.TreeElement {
   /**
-   * @param {!AggregatedIssueView} parent
+   * @param {!IssueView} parent
    * @param {!{singular:string, plural:string}} resourceName - Singular and plural of the affected resource name.
    */
   constructor(parent, resourceName) {
     super();
     this.toggleOnClick = true;
-    /** @type {!AggregatedIssueView} */
+    /** @type {!IssueView} */
     this._parent = parent;
     this._resourceName = resourceName;
     /** @type {!Element} */
@@ -92,12 +92,12 @@ class AffectedResourcesView extends UI.TreeOutline.TreeElement {
 
 class AffectedCookiesView extends AffectedResourcesView {
   /**
-   * @param {!AggregatedIssueView} parent
-   * @param {!SDK.Issue.AggregatedIssue} issue
+   * @param {!IssueView} parent
+   * @param {!SDK.Issue.Issue} issue
    */
   constructor(parent, issue) {
     super(parent, {singular: ls`cookie`, plural: ls`cookies`});
-    /** @type {!SDK.Issue.AggregatedIssue} */
+    /** @type {!SDK.Issue.Issue} */
     this._issue = issue;
   }
 
@@ -154,23 +154,25 @@ class AffectedCookiesView extends AffectedResourcesView {
 
 class AffectedRequestsView extends AffectedResourcesView {
   /**
-   * @param {!AggregatedIssueView} parent
-   * @param {!SDK.Issue.AggregatedIssue} issue
+   * @param {!IssueView} parent
+   * @param {!SDK.Issue.Issue} issue
    */
   constructor(parent, issue) {
     super(parent, {singular: ls`request`, plural: ls`requests`});
-    /** @type {!SDK.Issue.AggregatedIssue} */
+    /** @type {!SDK.Issue.Issue} */
     this._issue = issue;
   }
 
   /**
-   * @param {!Iterable<!SDK.NetworkRequest.NetworkRequest>} requests
+   * @param {!Iterable<!Protocol.Audits.AffectedRequest>} affectedRequests
    */
-  _appendAffectedRequests(requests) {
+  _appendAffectedRequests(affectedRequests) {
     let count = 0;
-    for (const request of requests) {
-      count++;
-      this.appendAffectedRequest(request);
+    for (const affectedRequest of affectedRequests) {
+      for (const request of self.SDK.networkLog.requestsForId(affectedRequest.requestId)) {
+        count++;
+        this._appendNetworkRequest(request);
+      }
     }
     this.updateAffectedResourceCount(count);
   }
@@ -179,7 +181,7 @@ class AffectedRequestsView extends AffectedResourcesView {
    *
    * @param {!SDK.NetworkRequest.NetworkRequest} request
    */
-  appendAffectedRequest(request) {
+  _appendNetworkRequest(request) {
     const nameText = request.name().trimMiddle(100);
     const nameElement = createElementWithClass('td', '');
     nameElement.appendChild(UI.UIUtils.createTextButton(nameText, () => {
@@ -197,11 +199,11 @@ class AffectedRequestsView extends AffectedResourcesView {
 }
 
 
-class AggregatedIssueView extends UI.TreeOutline.TreeElement {
+class IssueView extends UI.TreeOutline.TreeElement {
   /**
    *
    * @param {!IssuesPaneImpl} parent
-   * @param {!SDK.Issue.AggregatedIssue} issue
+   * @param {!SDK.Issue.Issue} issue
    * @param {!SDK.Issue.IssueDescription} description
    */
   constructor(parent, issue, description) {
@@ -352,7 +354,7 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     if (mainTarget) {
       this._model = mainTarget.model(SDK.IssuesModel.IssuesModel);
       if (this._model) {
-        this._model.addEventListener(SDK.IssuesModel.Events.AggregatedIssueUpdated, this._aggregatedIssueUpdated, this);
+        this._model.addEventListener(SDK.IssuesModel.Events.AggregatedIssueUpdated, this._issueUpdated, this);
         this._model.addEventListener(SDK.IssuesModel.Events.FullUpdateRequired, this._fullUpdate, this);
         this._model.ensureEnabled();
       }
@@ -360,7 +362,7 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
 
     if (this._model) {
       for (const issue of this._model.aggregatedIssues()) {
-        this._updateAggregatedIssueView(issue);
+        this._updateIssueView(issue);
       }
     }
     this._updateCounts();
@@ -394,28 +396,28 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!{data: !SDK.Issue.AggregatedIssue}} event
+   * @param {!{data: !SDK.Issue.Issue}} event
    */
-  _aggregatedIssueUpdated(event) {
-    const aggregatedIssue = /** @type {!SDK.Issue.AggregatedIssue} */ (event.data);
-    this._updateAggregatedIssueView(aggregatedIssue);
+  _issueUpdated(event) {
+    const issue = /** @type {!SDK.Issue.Issue} */ (event.data);
+    this._updateIssueView(issue);
   }
 
   /**
-   * @param {!SDK.Issue.AggregatedIssue} aggregatedIssue
+   * @param {!SDK.Issue.Issue} issue
    */
-  _updateAggregatedIssueView(aggregatedIssue) {
-    const description = aggregatedIssue.getDescription();
+  _updateIssueView(issue) {
+    const description = issue.getDescription();
     if (!description) {
-      console.warn('Could not find description for issue code:', aggregatedIssue.code());
+      console.warn('Could not find description for issue code:', issue.code());
       return;
     }
-    if (!this._issueViews.has(aggregatedIssue.code())) {
-      const view = new AggregatedIssueView(this, aggregatedIssue, description);
-      this._issueViews.set(aggregatedIssue.code(), view);
+    if (!this._issueViews.has(issue.code())) {
+      const view = new IssueView(this, issue, description);
+      this._issueViews.set(issue.code(), view);
       this._issuesTree.appendChild(view);
     }
-    this._issueViews.get(aggregatedIssue.code()).update();
+    this._issueViews.get(issue.code()).update();
     this._updateCounts();
   }
 
@@ -425,8 +427,8 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
       this._issuesTree.removeChild(view);
     }
     this._issueViews.clear();
-    for (const aggregatedIssue of this._model.aggregatedIssues()) {
-      this._updateAggregatedIssueView(aggregatedIssue);
+    for (const issue of this._model.aggregatedIssues()) {
+      this._updateIssueView(issue);
     }
     this._updateCounts();
   }

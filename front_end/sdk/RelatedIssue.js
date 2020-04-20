@@ -5,16 +5,10 @@
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 
 import {Cookie} from './Cookie.js';
-import {Issue} from './Issue.js';  // eslint-disable-line no-unused-vars
+import {Issue, IssueCategory} from './Issue.js';  // eslint-disable-line no-unused-vars
 import {IssuesModel} from './IssuesModel.js';
 import {NetworkRequest} from './NetworkRequest.js';
 import {TargetManager} from './SDKModel.js';
-
-export const IssueCategory = {
-  CrossOriginEmbedderPolicy: Symbol('CrossOriginEmbedderPolicy'),
-  SameSiteCookie: Symbol('SameSiteCookie'),
-  Other: Symbol('Other')
-};
 
 /**
  * @typedef {!NetworkRequest | !Cookie}

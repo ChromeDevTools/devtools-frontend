@@ -37,7 +37,7 @@ import * as UI from '../ui/ui.js';
 
 import {ComputedStyleWidget} from './ComputedStyleWidget.js';
 import {ElementsBreadcrumbs, Events} from './ElementsBreadcrumbs.js';
-import {ElementsTreeElement, HrefSymbol} from './ElementsTreeElement.js';  // eslint-disable-line no-unused-vars
+import {ElementsTreeElement} from './ElementsTreeElement.js';  // eslint-disable-line no-unused-vars
 import {ElementsTreeElementHighlighter} from './ElementsTreeElementHighlighter.js';
 import {ElementsTreeOutline} from './ElementsTreeOutline.js';
 import {MarkerDecorator} from './MarkerDecorator.js';  // eslint-disable-line no-unused-vars
@@ -306,9 +306,6 @@ export class ElementsPanel extends UI.Panel.Panel {
         this._contentElement.removeChild(header);
       }
     }
-    if (this._popoverHelper) {
-      this._popoverHelper.hidePopover();
-    }
     super.willHide();
     self.UI.context.setFlavor(ElementsPanel, null);
   }
@@ -521,36 +518,6 @@ export class ElementsPanel extends UI.Panel.Panel {
     // Reset search restore.
     this._searchableView.cancelSearch();
     UI.ViewManager.ViewManager.instance().showView('elements').then(() => this.selectDOMNode(node, true));
-  }
-
-  /**
-   * @param {!Event} event
-   * @return {?UI.PopoverRequest}
-   */
-  _getPopoverRequest(event) {
-    let link = event.target;
-    while (link && !link[HrefSymbol]) {
-      link = link.parentElementOrShadowHost();
-    }
-    if (!link) {
-      return null;
-    }
-
-    return {
-      box: link.boxInWindow(),
-      show: async popover => {
-        const node = this.selectedDOMNode();
-        if (!node) {
-          return false;
-        }
-        const preview =
-            await Components.ImagePreview.ImagePreview.build(node.domModel().target(), link[HrefSymbol], true);
-        if (preview) {
-          popover.contentElement.appendChild(preview);
-        }
-        return !!preview;
-      }
-    };
   }
 
   _jumpToSearchResult(index) {
@@ -880,12 +847,6 @@ export class ElementsPanel extends UI.Panel.Panel {
     this.sidebarPaneView = UI.ViewManager.ViewManager.instance().createTabbedLocation(
         () => UI.ViewManager.ViewManager.instance().showView('elements'));
     const tabbedPane = this.sidebarPaneView.tabbedPane();
-    if (this._popoverHelper) {
-      this._popoverHelper.hidePopover();
-    }
-    this._popoverHelper = new UI.PopoverHelper.PopoverHelper(tabbedPane.element, this._getPopoverRequest.bind(this));
-    this._popoverHelper.setHasPadding(true);
-    this._popoverHelper.setTimeout(0);
 
     if (this._splitMode !== _splitMode.Vertical) {
       this._splitWidget.installResizer(tabbedPane.headerElement());

@@ -323,7 +323,8 @@
     "ElementsPanel.js",
     "ClassesPaneWidget.js",
     "ElementStatePaneWidget.js",
-    "ElementsTreeElementHighlighter.js"
+    "ElementsTreeElementHighlighter.js",
+    "ImagePreviewPopover.js"
   ],
   "resources": [
     "breadcrumbs.css",

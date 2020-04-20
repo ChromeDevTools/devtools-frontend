@@ -39,6 +39,7 @@ import * as UI from '../ui/ui.js';
 import {ColorSwatchPopoverIcon, ShadowSwatchPopoverHelper} from './ColorSwatchPopoverIcon.js';
 import {linkifyDeferredNodeReference} from './DOMLinkifier.js';
 import {ElementsSidebarPane} from './ElementsSidebarPane.js';
+import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {StylePropertyHighlighter} from './StylePropertyHighlighter.js';
 import {StylePropertyTreeElement} from './StylePropertyTreeElement.js';
 import {Context} from './StylePropertyTreeElement.js';  // eslint-disable-line no-unused-vars
@@ -90,6 +91,14 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     self.UI.context.addFlavorChangeListener(SDK.DOMModel.DOMNode, this.forceUpdate, this);
     this.contentElement.addEventListener('copy', this._clipboardCopy.bind(this));
     this._resizeThrottler = new Common.Throttler.Throttler(100);
+
+    this._imagePreviewPopover = new ImagePreviewPopover(this.contentElement, event => {
+      const link = event.composedPath()[0];
+      if (link instanceof Element) {
+        return link;
+      }
+      return null;
+    }, () => this.node());
   }
 
   /**
@@ -707,6 +716,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
    */
   willHide() {
     this._swatchPopoverHelper.hide();
+    this._imagePreviewPopover.hide();
     super.willHide();
   }
 
@@ -2704,15 +2714,18 @@ export class StylesSidebarPropertyRenderer {
     } else if (this._node) {
       hrefUrl = this._node.resolveURL(url);
     }
-    container.appendChild(Components.Linkifier.Linkifier.linkifyURL(hrefUrl || url, {
-      text: url,
-      preventClick: true,
-      // crbug.com/1027168
-      // We rely on CSS text-overflow: ellipsis to hide long URLs in the Style panel,
-      // so that we don't have to keep two versions (original vs. trimmed) of URL
-      // at the same time, which complicates both StylesSidebarPane and StylePropertyTreeElement.
-      bypassURLTrimming: true,
-    }));
+    const link = ImagePreviewPopover.setImageUrl(
+        Components.Linkifier.Linkifier.linkifyURL(hrefUrl || url, {
+          text: url,
+          preventClick: true,
+          // crbug.com/1027168
+          // We rely on CSS text-overflow: ellipsis to hide long URLs in the Style panel,
+          // so that we don't have to keep two versions (original vs. trimmed) of URL
+          // at the same time, which complicates both StylesSidebarPane and StylePropertyTreeElement.
+          bypassURLTrimming: true,
+        }),
+        url);
+    container.appendChild(link);
     container.createTextChild(')');
     return container;
   }

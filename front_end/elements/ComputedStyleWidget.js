@@ -34,6 +34,7 @@ import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {ComputedStyle, ComputedStyleModel, Events} from './ComputedStyleModel.js';  // eslint-disable-line no-unused-vars
+import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {PlatformFontsWidget} from './PlatformFontsWidget.js';
 import {StylePropertiesSection, StylesSidebarPane, StylesSidebarPropertyRenderer} from './StylesSidebarPane.js';
 
@@ -77,6 +78,14 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     this.contentElement.appendChild(this._propertiesOutline.element);
 
     this._linkifier = new Components.Linkifier.Linkifier(_maxLinkLength);
+
+    this._imagePreviewPopover = new ImagePreviewPopover(this.contentElement, event => {
+      const link = event.composedPath()[0];
+      if (link instanceof Element) {
+        return link;
+      }
+      return null;
+    }, () => this._computedStyleModel.node());
 
     /**
      * @param {?RegExp} regex
@@ -164,6 +173,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
       expandedProperties.add(propertyName);
     }
     const hadFocus = this._propertiesOutline.element.hasFocus();
+    this._imagePreviewPopover.hide();
     this._propertiesOutline.removeChildren();
     this._linkifier.reset();
     const cssModel = this._computedStyleModel.cssModel();

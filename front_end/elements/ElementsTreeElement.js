@@ -39,6 +39,7 @@ import * as UI from '../ui/ui.js';
 
 import {canGetJSPath, cssPath, jsPath, xPath} from './DOMPath.js';
 import {MappedCharToEntity, UpdateRecord} from './ElementsTreeOutline.js';  // eslint-disable-line no-unused-vars
+import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {MarkerDecorator} from './MarkerDecorator.js';
 
 /**
@@ -1410,8 +1411,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       const link = node.nodeName().toLowerCase() === 'a' ?
           UI.XLink.XLink.create(rewrittenHref, value, '', true /* preventClick */) :
           Components.Linkifier.Linkifier.linkifyURL(rewrittenHref, {text: value, preventClick: true});
-      link[HrefSymbol] = rewrittenHref;
-      return link;
+      return ImagePreviewPopover.setImageUrl(link, rewrittenHref);
     }
 
     const nodeName = node ? node.nodeName().toLowerCase() : '';
@@ -1838,7 +1838,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 }
 
-export const HrefSymbol = Symbol('ElementsTreeElement.Href');
 export const InitialChildrenLimit = 500;
 
 // A union of HTML4 and HTML5-Draft elements that explicitly

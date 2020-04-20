@@ -29,13 +29,13 @@
  */
 
 import * as Common from '../common/common.js';
-import * as Components from '../components/components.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {linkifyDeferredNodeReference} from './DOMLinkifier.js';
-import {ElementsTreeElement, HrefSymbol, InitialChildrenLimit} from './ElementsTreeElement.js';
+import {ElementsTreeElement, InitialChildrenLimit} from './ElementsTreeElement.js';
+import {HrefSymbol, ImagePreviewPopover} from './ImagePreviewPopover.js';
 
 /**
  * @unrestricted
@@ -88,9 +88,22 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
 
     this._visible = false;
 
-    this._popoverHelper = new UI.PopoverHelper.PopoverHelper(this._element, this._getPopoverRequest.bind(this));
-    this._popoverHelper.setHasPadding(true);
-    this._popoverHelper.setTimeout(0, 100);
+    this._imagePreviewPopover = new ImagePreviewPopover(
+        this.contentElement,
+        event => {
+          let link = event.target;
+          while (link && !link[HrefSymbol]) {
+            link = link.parentElementOrShadowHost();
+          }
+          return link;
+        },
+        link => {
+          const listItem = link.enclosingNodeOrSelfWithNodeName('li');
+          if (!listItem) {
+            return null;
+          }
+          return /** @type {!ElementsTreeElement} */ (listItem.treeElement).node();
+        });
 
     /** @type {!Map<!SDK.DOMModel.DOMNode, !UpdateRecord>} */
     this._updateRecords = new Map();
@@ -324,7 +337,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
     }
     this._visible = visible;
     if (!this._visible) {
-      this._popoverHelper.hidePopover();
+      this._imagePreviewPopover.hide();
       if (this._multilineEditing) {
         this._multilineEditing.cancel();
       }
@@ -572,38 +585,6 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
     }
 
     return element;
-  }
-
-  /**
-   * @param {!Event} event
-   * @return {?UI.PopoverRequest}
-   */
-  _getPopoverRequest(event) {
-    let link = event.target;
-    while (link && !link[HrefSymbol]) {
-      link = link.parentElementOrShadowHost();
-    }
-    if (!link) {
-      return null;
-    }
-
-    return {
-      box: link.boxInWindow(),
-      show: async popover => {
-        const listItem = link.enclosingNodeOrSelfWithNodeName('li');
-        if (!listItem) {
-          return false;
-        }
-        const node = /** @type {!ElementsTreeElement} */ (listItem.treeElement).node();
-        const precomputedFeatures = await Components.ImagePreview.ImagePreview.loadDimensionsForNode(node);
-        const preview = await Components.ImagePreview.ImagePreview.build(
-            node.domModel().target(), link[HrefSymbol], true, {precomputedFeatures});
-        if (preview) {
-          popover.contentElement.appendChild(preview);
-        }
-        return !!preview;
-      }
-    };
   }
 
   /**
@@ -1047,7 +1028,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
   _reset() {
     this.rootDOMNode = null;
     this.selectDOMNode(null, false);
-    this._popoverHelper.hidePopover();
+    this._imagePreviewPopover.hide();
     delete this._clipboardNodeData;
     SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
     this._updateRecords.clear();

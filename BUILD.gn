@@ -1167,6 +1167,7 @@ all_devtools_modules = [
   "elements/ElementsTreeElementHighlighter.js",
   "elements/ElementsTreeOutline.js",
   "elements/EventListenersWidget.js",
+  "elements/ImagePreviewPopover.js",
   "elements/InspectElementModeController.js",
   "elements/MarkerDecorator.js",
   "elements/MetricsSidebarPane.js",

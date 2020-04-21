@@ -197,3 +197,14 @@ export async function openNestedWorkerFile(selectors: NestedFileSelector) {
   await expandFileTree(selectors);
   await click(selectors.fileSelector);
 }
+
+export async function clickOnContextMenu(selector: string, label: string) {
+  // Find the selected node, right click.
+  const selectedNode = await $(selector);
+  await click(selectedNode, {clickOptions: {button: 'right'}});
+
+  // Wait for the context menu option, and click it.
+  const labelSelector = `[aria-label="${label}"]`;
+  await waitFor(labelSelector);
+  await click(labelSelector);
+}

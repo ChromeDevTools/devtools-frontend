@@ -30,6 +30,7 @@ const tests = [
   'sources/debugger-language-plugins_test.js',
   'sources/dwarf-cxx-language-plugin_test.js',
   'sources/script-in-multiple-workers_test.js',
+  'sources/navigation_test.js',
 ];
 
 export const testList = tests.map(testPath => {

@@ -13,6 +13,7 @@ ts_library("sources") {
     "can-show-multiple-workers_test.ts",
     "debug-raw-wasm_test.ts",
     "debugger-language-plugins_test.ts",
+    "navigation_test.ts",
     "script-in-multiple-workers_test.ts",
   ]
 

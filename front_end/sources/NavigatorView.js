@@ -871,10 +871,9 @@ export class NavigatorView extends UI.Widget.VBox {
     const project = node._project;
 
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    NavigatorView.appendSearchItem(contextMenu, path);
 
     if (project.type() === Workspace.Workspace.projectTypes.FileSystem) {
-      NavigatorView.appendSearchItem(contextMenu, path);
-
       const folderPath = Common.ParsedURL.ParsedURL.urlToPlatformPath(
           Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.completeURL(project, path),
           Host.Platform.isWin());

@@ -769,7 +769,7 @@ export class DebuggerPlugin extends Plugin {
   async _executionLineChanged(liveLocation) {
     this._clearExecutionLine();
     const uiLocation = await liveLocation.uiLocation();
-    if (!uiLocation || uiLocation.uiSourceCode !== this._uiSourceCode) {
+    if (!uiLocation || uiLocation.uiSourceCode.url() !== this._uiSourceCode.url()) {
       this._executionLocation = null;
       return;
     }
@@ -1023,8 +1023,9 @@ export class DebuggerPlugin extends Plugin {
             callFrame.location());
     const [functionUILocation, executionUILocation] =
         await Promise.all([functionUILocationPromise, executionUILocationPromise]);
-    if (!functionUILocation || !executionUILocation || functionUILocation.uiSourceCode !== this._uiSourceCode ||
-        executionUILocation.uiSourceCode !== this._uiSourceCode) {
+    if (!functionUILocation || !executionUILocation ||
+        functionUILocation.uiSourceCode.url() !== this._uiSourceCode.url() ||
+        executionUILocation.uiSourceCode.url() !== this._uiSourceCode.url()) {
       return;
     }
 

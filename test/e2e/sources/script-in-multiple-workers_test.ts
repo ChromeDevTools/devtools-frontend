@@ -7,7 +7,7 @@ import {describe, it} from 'mocha';
 import * as puppeteer from 'puppeteer';
 
 import {click, getBrowserAndPages, resourcesPath, waitFor} from '../../shared/helper.js';
-import {addBreakpointForLine, createSelectorsForWorkerFile, getBreakpointDecorators, getOpenSources, openNestedWorkerFile, PAUSE_BUTTON, RESUME_BUTTON} from '../helpers/sources-helpers.js';
+import {addBreakpointForLine, createSelectorsForWorkerFile, getBreakpointDecorators, getExecutionLine, getOpenSources, openNestedWorkerFile, PAUSE_BUTTON, RESUME_BUTTON} from '../helpers/sources-helpers.js';
 
 async function validateSourceTabs() {
   // Verifies there is exactly one source open.
@@ -175,6 +175,9 @@ describe('Multi-Workers', async function() {
         // Validate that we are paused by locating the resume button
         await waitFor(RESUME_BUTTON);
 
+        // Validate that the source line is highlighted
+        assert.equal(await getExecutionLine(), 6);
+
         // Look at source tabs
         await validateSourceTabs();
       });
@@ -187,6 +190,9 @@ describe('Multi-Workers', async function() {
 
         // Validate that we are paused
         await waitFor(RESUME_BUTTON);
+
+        // Validate that the source line is highlighted
+        assert.equal(await getExecutionLine(), 6);
 
         // Look at source tabs
         await validateSourceTabs();

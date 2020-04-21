@@ -100,6 +100,11 @@ export async function getBreakpointDecorators(frontend: puppeteer.Page, disabled
   return await frontend.$$eval(selector, nodes => nodes.map(n => parseInt(n.textContent!, 10)));
 }
 
+export async function getExecutionLine() {
+  const activeLine = await waitFor('.cm-execution-line-outline', undefined, 1000);
+  return await activeLine.asElement()!.evaluate(n => parseInt(n.textContent!, 10));
+}
+
 export async function retrieveTopCallFrameScriptLocation(script: string, target: puppeteer.Page) {
   // The script will run into a breakpoint, which means that it will not actually
   // finish the evaluation, until we continue executing.

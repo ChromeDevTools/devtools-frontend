@@ -31,8 +31,21 @@ before(async function() {
   }
 });
 
-after(async () => {
+let hasShutdown = false;
+
+async function shutdown() {
+  if (hasShutdown) {
+    return;
+  }
+  hasShutdown = true;
   await globalTeardown();
+}
+
+process.on('beforeExit', shutdown);
+process.on('SIGINT', shutdown);
+
+after(async () => {
+  await shutdown();
 });
 
 beforeEach(async function() {

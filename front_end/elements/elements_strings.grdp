@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_034119b03fc07deec5fcb28a85957fdc" desc="Explanation of elements reference in PropertiesWidget deprecation message">
+    ($0 is a reference to the currently selected DOM node in the elements tree.)
+  </message>
   <message name="IDS_DEVTOOLS_068bc495b79facfaa7918369fa9909eb" desc="Text in Elements Tree Element of the Elements panel">
     Cut element
+  </message>
+  <message name="IDS_DEVTOOLS_07ac88884a74a656722bb8041d5c828e" desc="Deprecation message for the Properties subpane in the Elements panel">
+    This panel has been deprecated in favor of executing the following in the console:
   </message>
   <message name="IDS_DEVTOOLS_07f01edb2a05909a9c0d04031d7c43e1" desc="Aria accessible name in Styles Sidebar Pane of the Elements panel">
     Filter Styles

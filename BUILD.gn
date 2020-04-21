@@ -114,7 +114,6 @@ all_devtools_files = [
   "front_end/elements/module.json",
   "front_end/elements/nodeStackTraceWidget.css",
   "front_end/elements/platformFontsWidget.css",
-  "front_end/elements/propertiesWidget.css",
   "front_end/elements/stylesSectionTree.css",
   "front_end/elements/stylesSidebarPane.css",
   "front_end/emulated_devices/module.json",

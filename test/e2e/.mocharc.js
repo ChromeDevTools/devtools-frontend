@@ -11,7 +11,12 @@ const glob = require('glob');
 // to instruct Mocha to run the output JavaScript file.
 const testFiles = glob.sync(path.join(__dirname, '**/*_test.ts')).map(fileName => fileName.replace(/\.ts$/, '.js'));
 
+// When we are debugging, we don't want to timeout any test. This allows to inspect the state
+// of the application at the moment of the timeout. Here, 0 denotes "indefinite timeout".
+const timeout = process.env['DEBUG'] ? 0 : undefined;
+
 module.exports = {
   file: path.join(__dirname, '..', 'conductor', 'mocha_hooks.js'),
   spec: testFiles,
+  timeout,
 }

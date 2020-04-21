@@ -439,12 +439,12 @@ export class NetworkPanel extends UI.Panel.Panel {
   }
 
   _resetFilmStripView() {
-    const reloadShortcutDescriptor = self.UI.shortcutRegistry.shortcutDescriptorsForAction('inspector_main.reload')[0];
+    const reloadShortcut = self.UI.shortcutRegistry.shortcutsForAction('inspector_main.reload')[0];
 
     this._filmStripView.reset();
-    if (reloadShortcutDescriptor) {
+    if (reloadShortcut) {
       this._filmStripView.setStatusText(
-          Common.UIString.UIString('Hit %s to reload and capture filmstrip.', reloadShortcutDescriptor.name));
+          Common.UIString.UIString('Hit %s to reload and capture filmstrip.', reloadShortcut.title()));
     }
   }
 

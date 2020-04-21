@@ -68,11 +68,15 @@ export class ShortcutRegistry {
   }
 
   /**
+   * @deprecated this function is obsolete and will be removed in the
+   * future along with the legacy shortcuts settings tab
+   * crbug.com/174309
+   *
    * @param {string} actionId
    * @return {!Array.<!Descriptor>}
    */
   shortcutDescriptorsForAction(actionId) {
-    return [...this._actionToShortcut.get(actionId)].map(shortcut => shortcut.descriptor);
+    return [...this._actionToShortcut.get(actionId)].map(shortcut => shortcut.descriptors[0]);
   }
 
   /**
@@ -80,14 +84,10 @@ export class ShortcutRegistry {
    * @return {!Array.<number>}
    */
   keysForActions(actionIds) {
-    const result = [];
-    for (let i = 0; i < actionIds.length; ++i) {
-      const descriptors = this.shortcutDescriptorsForAction(actionIds[i]);
-      for (let j = 0; j < descriptors.length; ++j) {
-        result.push(descriptors[j].key);
-      }
-    }
-    return result;
+    const keys = actionIds.flatMap(
+        action => [...this._actionToShortcut.get(action)].flatMap(
+            shortcut => shortcut.descriptors.map(descriptor => descriptor.key)));
+    return [...(new Set(keys))];
   }
 
   /**
@@ -95,9 +95,9 @@ export class ShortcutRegistry {
    * @return {string|undefined}
    */
   shortcutTitleForAction(actionId) {
-    const descriptors = this.shortcutDescriptorsForAction(actionId);
-    if (descriptors.length) {
-      return descriptors[0].name;
+    const shortcuts = this._actionToShortcut.get(actionId);
+    if (shortcuts.size) {
+      return shortcuts.firstValue().title();
     }
   }
 
@@ -116,7 +116,7 @@ export class ShortcutRegistry {
   eventMatchesAction(event, actionId) {
     console.assert(this._actionToShortcut.has(actionId), 'Unknown action ' + actionId);
     const key = KeyboardShortcut.makeKeyFromEvent(event);
-    return [...this._actionToShortcut.get(actionId)].some(shortcut => shortcut.descriptor.key === key);
+    return [...this._actionToShortcut.get(actionId)].some(shortcut => shortcut.descriptors[0].key === key);
   }
 
   /**
@@ -219,7 +219,7 @@ export class ShortcutRegistry {
    */
   _registerShortcut(shortcut) {
     this._actionToShortcut.set(shortcut.action, shortcut);
-    this._keyToShortcut.set(shortcut.descriptor.key, shortcut);
+    this._keyToShortcut.set(shortcut.descriptors[0].key, shortcut);
   }
 
   _registerBindings() {
@@ -240,7 +240,7 @@ export class ShortcutRegistry {
         const shortcutDescriptor = KeyboardShortcut.makeDescriptorFromBindingShortcut(bindings[i].shortcut);
         if (shortcutDescriptor) {
           this._registerShortcut(new KeyboardShortcut(
-              shortcutDescriptor, /** @type {string} */ (descriptor.actionId), Type.DefaultShortcut));
+              [shortcutDescriptor], /** @type {string} */ (descriptor.actionId), Type.DefaultShortcut));
         }
       }
     }

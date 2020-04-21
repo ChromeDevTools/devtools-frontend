@@ -54,7 +54,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox {
       itemElement.createChild('div', 'keybinds-list-text').textContent = item.title();
       const keysElement = itemElement.createChild('div', 'keybinds-list-text');
       self.UI.shortcutRegistry.shortcutsForAction(item.id()).forEach(
-          shortcut => keysElement.createChild('span', 'keybinds-key').textContent = shortcut.descriptor.name);
+          shortcut => keysElement.createChild('span', 'keybinds-key').textContent = shortcut.title());
     }
 
     return itemElement;

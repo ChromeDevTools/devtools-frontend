@@ -34,14 +34,21 @@ import * as Host from '../host/host.js';
  */
 export class KeyboardShortcut {
   /**
-   * @param {!Descriptor} descriptor
+   * @param {!Array.<!Descriptor>} descriptors
    * @param {string} action
    * @param {!Type=} type
    */
-  constructor(descriptor, action, type) {
-    this.descriptor = descriptor;
+  constructor(descriptors, action, type) {
+    this.descriptors = descriptors;
     this.action = action;
     this.type = type || Type.UserShortcut;
+  }
+
+  /**
+   * @return {string}
+   */
+  title() {
+    return this.descriptors.map(descriptor => descriptor.name).join(' ');
   }
 
   /**

@@ -627,9 +627,10 @@ export class MainMenuItem {
       dockItemElement.tabIndex = -1;
       const titleElement = dockItemElement.createChild('span', 'flex-auto');
       titleElement.textContent = Common.UIString.UIString('Dock side');
-      const toggleDockSideShorcuts = self.UI.shortcutRegistry.shortcutDescriptorsForAction('main.toggle-dock');
+      const toggleDockSideShorcuts = self.UI.shortcutRegistry.shortcutsForAction('main.toggle-dock');
       titleElement.title = Common.UIString.UIString(
-          'Placement of DevTools relative to the page. (%s to restore last position)', toggleDockSideShorcuts[0].name);
+          'Placement of DevTools relative to the page. (%s to restore last position)',
+          toggleDockSideShorcuts[0].title());
       dockItemElement.appendChild(titleElement);
       const dockItemToolbar = new UI.Toolbar.Toolbar('', dockItemElement);
       if (Host.Platform.isMac() && !self.UI.themeSupport.hasTheme()) {

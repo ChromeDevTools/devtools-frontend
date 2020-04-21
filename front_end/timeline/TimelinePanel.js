@@ -764,9 +764,9 @@ export class TimelinePanel extends UI.Panel.Panel {
         Common.UIString.UIString('Learn\xa0more'));
 
     const recordKey =
-        encloseWithTag('b', self.UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.toggle-recording')[0].name);
+        encloseWithTag('b', self.UI.shortcutRegistry.shortcutsForAction('timeline.toggle-recording')[0].title());
     const reloadKey =
-        encloseWithTag('b', self.UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.record-reload')[0].name);
+        encloseWithTag('b', self.UI.shortcutRegistry.shortcutsForAction('timeline.record-reload')[0].title());
     const navigateNode = encloseWithTag('b', Common.UIString.UIString('WASD'));
 
     this._landingPage = new UI.Widget.VBox();

@@ -212,7 +212,8 @@ export const PanelCodes = {
   'settings-devices': 33,
   'settings-throttling-conditions': 34,
   'settings-emulation-geolocations': 35,
-  'settings-shortcuts': 36
+  'settings-shortcuts': 36,
+  'drawer-issues-pane': 37
 };
 
 /** @type {!Object<string, number>} */

@@ -170,6 +170,21 @@ describe('User Metrics', () => {
     ]);
   });
 
+  it('dispatches event for issues drawer', async () => {
+    await openPanelViaMoreTools('Issues');
+
+    await assertCapturedEvents([
+      {
+        name: 'DevTools.PanelShown',
+        value: 10,  // 'drawer-console-view'.
+      },
+      {
+        name: 'DevTools.PanelShown',
+        value: 37,  // 'drawer-issues-pane'.
+      },
+    ]);
+  });
+
   it('dispatches an event when F1 is used to open settings', async () => {
     const {frontend} = getBrowserAndPages();
 

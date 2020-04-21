@@ -110,24 +110,22 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
    */
   renderItem(item, editable) {
     const device = /** @type {!EmulatedDevice} */ (item);
-    const element = createElementWithClass('div', 'devices-list-item');
-    const checkbox = element.createChild('input', 'devices-list-checkbox');
+    const label = createElementWithClass('label', 'devices-list-item');
+    const checkbox = label.createChild('input', 'devices-list-checkbox');
     checkbox.type = 'checkbox';
     checkbox.checked = device.show();
-    checkbox.addEventListener('click', event => event.consume(), false);
-    element.createChild('div', 'devices-list-title').textContent = device.title;
-    element.addEventListener('click', onItemClicked.bind(this), false);
-    return element;
+    checkbox.addEventListener('click', onItemClicked.bind(this), false);
+    label.appendChild(document.createTextNode(device.title));
+    return label;
 
     /**
      * @param {!Event} event
      * @this {DevicesSettingsTab}
      */
     function onItemClicked(event) {
-      const show = !checkbox.checked;
+      const show = checkbox.checked;
       device.setShow(show);
       this._muteAndSaveDeviceList(editable);
-      checkbox.checked = show;
       event.consume();
     }
   }

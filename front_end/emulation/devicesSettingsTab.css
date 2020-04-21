@@ -35,27 +35,23 @@
     align-items: center;
     flex: auto 1 1;
     cursor: pointer;
+    overflow: hidden;
+    color: #222;
+    user-select: none;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .devices-list-checkbox {
     height: 12px;
     width: 12px;
-    margin: 3px 5px 2px 2px;
+    margin: 2px 5px 2px 2px;
     flex: none;
     pointer-events: none;
 }
 
 .devices-list-checkbox:focus {
     outline: auto 5px -webkit-focus-ring-color;
-}
-
-.devices-list-title {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    flex: auto;
-    user-select: none;
-    color: #222;
 }
 
 .devices-edit-fields {

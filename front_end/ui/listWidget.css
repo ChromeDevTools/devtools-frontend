@@ -25,6 +25,7 @@
     overflow: hidden;
 }
 
+.list-item:focus-within,
 .list-item:hover {
     background: hsl(0, 0%, 96%);
 }
@@ -46,6 +47,7 @@
     flex: 0 1 50px;
 }
 
+.list-item:focus-within .controls-gradient,
 .list-item:hover .controls-gradient {
     background-image: linear-gradient(90deg, transparent, hsl(0, 0%, 96%));
 }
@@ -59,6 +61,7 @@
     visibility: hidden;
 }
 
+.list-item:focus-within .controls-buttons,
 .list-item:hover .controls-buttons {
     background-color: hsl(0, 0%, 96%);
     visibility: visible;
@@ -103,16 +106,20 @@
 }
 
 @media (forced-colors: active) {
+    .list-item:focus-within .controls-buttons,
     .list-item:hover .controls-buttons {
         background-color: Canvas;
     }
+    .list-item:focus-within,
     .list-item:hover {
         forced-color-adjust: none;
         background: Highlight;
     }
+    .list-item:focus-within *,
     .list-item:hover * {
         color: HighlightText;
     }
+    .list-item:focus-within .controls-gradient,
     .list-item:hover .controls-gradient {
         background-image: unset;
     }

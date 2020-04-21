@@ -1298,6 +1298,23 @@
     this.releaseControl();
   };
 
+  TestSuite.prototype.testNewWindowFromBrowserContext = async function(url) {
+    this.takeControl();
+    // Create a BrowserContext.
+    const targetAgent = self.SDK.targetManager.mainTarget().targetAgent();
+    const {browserContextId} = await targetAgent.invoke_createBrowserContext();
+
+    // Cause a Browser to be created with the temp profile.
+    const {targetId} =
+        await targetAgent.invoke_createTarget({url: 'data:text/html,', browserContextId, newWindow: true});
+    await targetAgent.invoke_attachToTarget({targetId, flatten: true});
+
+    // Destroy the temp profile.
+    await targetAgent.invoke_disposeBrowserContext({browserContextId});
+
+    this.releaseControl();
+  };
+
   TestSuite.prototype.testCreateBrowserContext = async function(url) {
     this.takeControl();
     const browserContextIds = [];

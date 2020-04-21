@@ -29,7 +29,7 @@ describe('The Network Tab', async () => {
     assert.equal(checked, true, 'The disable cache checkbox should be checked');
   });
 
-  it('shows Last-Modified', async () => {
+  it.skip('[crbug.com/1066813] shows Last-Modified', async () => {
     const {target, frontend} = getBrowserAndPages();
     await navigateToNetworkTab(target, 'last-modified.html');
 

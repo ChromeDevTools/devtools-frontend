@@ -324,6 +324,9 @@
   <message name="IDS_DEVTOOLS_9108ae673b7efa9620aec771edc9d4de" desc="Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel">
     setTimeout fired
   </message>
+  <message name="IDS_DEVTOOLS_927e05f6c7e58e3fd950f4423f25554e" desc="Description of an issue in the issues panel">
+    A cookie was defaulted to &apos;SameSite=Lax&apos; because the cookie&apos;s SameSite attribute was not set or invalid. The cookie was not set because the default behavior for &apos;SameSite=Lax&apos; prevents this cookie from being set in a cross-site response. This issue can only be resolved if you can change the cross-site page from which this cookie originated.
+  </message>
   <message name="IDS_DEVTOOLS_92907ecce0019f3a10f867cfd53dad0c" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Show layout shift regions
   </message>
@@ -443,6 +446,9 @@
   </message>
   <message name="IDS_DEVTOOLS_ca4fbb6d710463b20755b9a024d841c1" desc="Error message when failing to load a source map text">
     DevTools failed to load SourceMap: <ph name="ERROR_MESSAGE"><ex>An error occured</ex>$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_cad025a69663813eef4aa3176d982a18" desc="Title of an issue in the issues panel">
+    A cookie was blocked, because the cookie&apos;s &apos;SameSite&apos; attribute was defaulted to &apos;SameSite=Lax&apos;
   </message>
   <message name="IDS_DEVTOOLS_ccab918ce9f085b521a52ac13f653c0b" desc="Tooltip to explain why a cookie was blocked">
     An unknown error was encountered when trying to send this cookie.

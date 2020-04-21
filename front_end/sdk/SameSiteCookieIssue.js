@@ -110,6 +110,18 @@ const issueDescriptions = new Map([
     }
   ],
   [
+    'SameSiteCookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::SetCookie', {
+      title: ls `A cookie was blocked, because the cookie's 'SameSite' attribute was defaulted to 'SameSite=Lax'`,
+      message: () => textMessageWithResolutions(
+        ls`A cookie was defaulted to 'SameSite=Lax' because the cookie's SameSite attribute was not set or invalid. The cookie was not set because the default behavior for 'SameSite=Lax' prevents this cookie from being set in a cross-site response. This issue can only be resolved if you can change the cross-site page from which this cookie originated.`, [ls`If the cookie is intended for third parties, mark the cookie as 'SameSite=None; Secure'.`,
+        ls
+        `If the cookie is not intended for third parties, consider explicitly marking the cookie as 'SameSite=Strict' or 'SameSite=Lax' to make your intent clear and provide a consistent experience across browsers.`,]),
+      issueKind: IssueKind.BreakingChange,
+      link: ls`https://web.dev/samesite-cookies-explained/`,
+      linkTitle: ls`SameSite cookies explained`,
+    }
+  ],
+  [
     'SameSiteCookieIssue::ExcludeSameSiteNoneInsecure::SetCookie', {
       title: ls`A cookie was blocked, because the cookie specified 'SameSite=None' without 'Secure'`,
       message: () => textMessageWithResolutions(

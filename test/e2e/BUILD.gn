@@ -6,7 +6,6 @@ import("../../third_party/typescript/typescript.gni")
 
 ts_library("e2e") {
   testonly = true
-  sources = [ "test-list.ts" ]
 
   deps = [
     "application",

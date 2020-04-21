@@ -32,6 +32,7 @@ npm-debug.log
 
 test/e2e/**/*.js
 !test/e2e/resources/**/*.js
+!test/e2e/.mocharc.js
 test/e2e/**/*.tsbuildinfo
 test/shared/**/*.js
 test/shared/**/helper.d.ts

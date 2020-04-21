@@ -22,8 +22,7 @@ import devtools_paths
 import test_helpers
 
 CONDUCTOR_DIRECTORY = os.path.join(ROOT_DIRECTORY, 'test', 'conductor')
-CONDUCTOR_HOOKS = os.path.join(CONDUCTOR_DIRECTORY, 'mocha_hooks.js')
-E2E_TEST_LOCATION = os.path.join(ROOT_DIRECTORY, 'test', 'e2e', '**/*_test.js')
+E2E_MOCHA_CONFIGURATION_LOCATION = os.path.join(ROOT_DIRECTORY, 'test', 'e2e', '.mocharc.js')
 
 
 def parse_options(cli_args):
@@ -63,8 +62,9 @@ def run_tests(chrome_binary, chrome_features, test_suite, test_suite_list_path, 
     if test_suite == 'e2e':
         exec_command = [
             devtools_paths.node_path(),
-            devtools_paths.mocha_path(), '--file', CONDUCTOR_HOOKS,
-            '"%s"' % E2E_TEST_LOCATION
+            devtools_paths.mocha_path(),
+            '--config',
+            E2E_MOCHA_CONFIGURATION_LOCATION,
         ]
     else:
         runner_path = os.path.join(cwd, 'test', 'shared', 'runner.js')

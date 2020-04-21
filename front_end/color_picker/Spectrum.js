@@ -110,6 +110,7 @@ export class Spectrum extends UI.Widget.VBox {
       inputValue.addEventListener('keydown', this._inputChanged.bind(this), false);
       inputValue.addEventListener('input', this._inputChanged.bind(this), false);
       inputValue.addEventListener('mousewheel', this._inputChanged.bind(this), false);
+      inputValue.addEventListener('paste', this._pasted.bind(this), false);
     }
 
     this._textLabels = this._displayContainer.createChild('div', 'spectrum-text-label');
@@ -123,6 +124,7 @@ export class Spectrum extends UI.Widget.VBox {
     this._hexValue.addEventListener('keydown', this._inputChanged.bind(this), false);
     this._hexValue.addEventListener('input', this._inputChanged.bind(this), false);
     this._hexValue.addEventListener('mousewheel', this._inputChanged.bind(this), false);
+    this._hexValue.addEventListener('paste', this._pasted.bind(this), false);
 
     const label = this._hexContainer.createChild('div', 'spectrum-text-label');
     label.textContent = ls`HEX`;
@@ -1035,6 +1037,23 @@ export class Spectrum extends UI.Widget.VBox {
       format = (this._originalFormat === cf.ShortHEX || this._originalFormat === cf.ShortHEXA) ? cf.ShortHEX : cf.HEX;
     }
     this._innerSetColor(undefined, '', undefined /* colorName */, format, ChangeSource.Other);
+  }
+
+  /**
+   * If the pasted input is parsable as a color, applies it converting to the current user format
+   * @param {!Event} event
+   */
+  _pasted(/** @type {!ClipboardEvent} */ event) {
+    if (!event.clipboardData) {
+      return;
+    }
+    const text = event.clipboardData.getData('text');
+    const color = Common.Color.Color.parse(text);
+    if (!color) {
+      return;
+    }
+    this._innerSetColor(color.hsva(), text, undefined /* colorName */, undefined /* colorFormat */, ChangeSource.Other);
+    event.preventDefault();
   }
 
   /**

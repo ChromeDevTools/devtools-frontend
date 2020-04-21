@@ -583,6 +583,22 @@ export function setActiveDescendant(element, activedescendant) {
 
 /**
  * @param {!Element} element
+ * @param {number} size
+ */
+export function setSetSize(element, size) {
+  element.setAttribute('aria-setsize', size);
+}
+
+/**
+ * @param {!Element} element
+ * @param {number} position
+ */
+export function setPositionInSet(element, position) {
+  element.setAttribute('aria-posinset', position);
+}
+
+/**
+ * @param {!Element} element
  */
 function hideFromLayout(element) {
   element.style.position = 'absolute';

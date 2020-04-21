@@ -449,12 +449,33 @@ export class ListControl {
     let element = this._itemToElement.get(item);
     if (!element) {
       element = this._delegate.createElementForItem(item);
-      if (!ARIAUtils.hasRole(element)) {
-        ARIAUtils.markAsOption(element);
-      }
       this._itemToElement.set(item, element);
+      this._updateElementARIA(element, index);
     }
     return element;
+  }
+
+  _refreshARIA() {
+    for (let index = this._firstIndex; index <= this._lastIndex; index++) {
+      const item = this._model.at(index);
+      if (!this._itemToElement.has(item)) {
+        continue;
+      }
+
+      this._updateElementARIA(this._itemToElement.get(item), index);
+    }
+  }
+
+  /**
+   * @param {!Element} element
+   * @param {number} index
+   */
+  _updateElementARIA(element, index) {
+    if (!ARIAUtils.hasRole(element)) {
+      ARIAUtils.markAsOption(element);
+    }
+    ARIAUtils.setSetSize(element, this._model.length);
+    ARIAUtils.setPositionInSet(element, index + 1);
   }
 
   /**
@@ -630,6 +651,7 @@ export class ListControl {
     // when invalidating after firstIndex but before first visible element.
     this._clearViewport();
     this._updateViewport(Platform.NumberUtilities.clamp(scrollTop, 0, totalHeight - viewportHeight), viewportHeight);
+    this._refreshARIA();
   }
 
   /**

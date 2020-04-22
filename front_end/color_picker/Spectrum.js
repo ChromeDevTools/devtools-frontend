@@ -933,21 +933,28 @@ export class Spectrum extends UI.Widget.VBox {
     }
     const cf = Common.Color.Format;
     const color = this._color();
-    let colorString = color.asString(this._colorFormat);
+
+    // TODO (crbug.com/1073350) once asString is updated to produce
+    // the whitespace separated notation by default, these options can be removed
+    const formatOptions = {
+      whitespaceSeparated: true,
+    };
+
+    let colorString = color.asString(this._colorFormat, formatOptions);
     if (colorString) {
       return colorString;
     }
 
     if (this._colorFormat === cf.Nickname) {
-      colorString = color.asString(color.hasAlpha() ? cf.HEXA : cf.HEX);
+      colorString = color.asString(color.hasAlpha() ? cf.HEXA : cf.HEX, formatOptions);
     } else if (this._colorFormat === cf.ShortHEX) {
-      colorString = color.asString(color.detectHEXFormat());
+      colorString = color.asString(color.detectHEXFormat(), formatOptions);
     } else if (this._colorFormat === cf.HEX) {
-      colorString = color.asString(cf.HEXA);
+      colorString = color.asString(cf.HEXA, formatOptions);
     } else if (this._colorFormat === cf.HSL) {
-      colorString = color.asString(cf.HSLA);
+      colorString = color.asString(cf.HSLA, formatOptions);
     } else {
-      colorString = color.asString(cf.RGBA);
+      colorString = color.asString(cf.RGBA, formatOptions);
     }
 
     console.assert(colorString);
@@ -1082,9 +1089,10 @@ export class Spectrum extends UI.Widget.VBox {
     if (this._colorFormat === cf.Nickname || this._colorFormat === cf.HEX || this._colorFormat === cf.ShortHEX) {
       colorString = this._hexValue.value;
     } else {
-      const format = this._colorFormat === cf.RGB ? 'rgba' : 'hsla';
-      const values = this._textValues.map(elementValue).join(', ');
-      colorString = Platform.StringUtilities.sprintf('%s(%s)', format, values);
+      const format = this._colorFormat === cf.RGB ? 'rgb' : 'hsl';
+      const values = this._textValues.slice(0, -1).map(elementValue).join(' ');
+      const alpha = this._textValues.slice(-1).map(elementValue).join(' ');
+      colorString = Platform.StringUtilities.sprintf('%s(%s)', format, [values, alpha].join(' / '));
     }
 
     const color = Common.Color.Color.parse(colorString);

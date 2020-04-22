@@ -240,10 +240,22 @@ describe('Color', () => {
     assert.equal(result, 'rgb(255, 0, 0)', 'color was not converted to a string correctly');
   });
 
+  it('returns the RGB value in whitespace-separated notation given whitespaceSeparated = true', () => {
+    const color = new Color.Color([1, 0, 0, 1], 'rgb', 'testColor');
+    const result = color.asString(undefined, {whitespaceSeparated: true});
+    assert.equal(result, 'rgb(255 0 0)', 'color was not converted to a string correctly');
+  });
+
   it('returns the RGBA value when turned into a strong if its format was "rgba"', () => {
     const color = new Color.Color([1, 0, 0, 1], 'rgba', 'testColor');
     const result = color.asString();
     assert.equal(result, 'rgba(255, 0, 0, 1)', 'color was not converted to a string correctly');
+  });
+
+  it('returns the RGBA value in whitespace-separated notation given whitespaceSeparated = true', () => {
+    const color = new Color.Color([1, 0, 0, 1], 'rgba', 'testColor');
+    const result = color.asString(undefined, {whitespaceSeparated: true});
+    assert.equal(result, 'rgb(255 0 0 / 1)', 'color was not converted to a string correctly');
   });
 
   it('returns the HSL value when turned into a strong if its format was "hsl"', () => {
@@ -252,10 +264,22 @@ describe('Color', () => {
     assert.equal(result, 'hsl(0, 100%, 50%)', 'color was not converted to a string correctly');
   });
 
+  it('returns the HSL value in whitespace-separated notation given whitespaceSeparated = true', () => {
+    const color = new Color.Color([1, 0, 0, 1], 'hsl', 'testColor');
+    const result = color.asString(undefined, {whitespaceSeparated: true});
+    assert.equal(result, 'hsl(0 100% 50%)', 'color was not converted to a string correctly');
+  });
+
   it('returns the HSLA value when turned into a strong if its format was "hsla"', () => {
     const color = new Color.Color([1, 0, 0, 1], 'hsla', 'testColor');
     const result = color.asString();
     assert.equal(result, 'hsla(0, 100%, 50%, 1)', 'color was not converted to a string correctly');
+  });
+
+  it('returns the HSLA value in whitespace-separated notation given whitespaceSeparated = true', () => {
+    const color = new Color.Color([1, 0, 0, 1], 'hsla', 'testColor');
+    const result = color.asString(undefined, {whitespaceSeparated: true});
+    assert.equal(result, 'hsl(0 100% 50% / 1)', 'color was not converted to a string correctly');
   });
 
   it('is able to return a color in a different format than the one the color was originally set with', () => {

@@ -66,8 +66,8 @@ describe('Cookie', () => {
     assert.equal(cookie.getCookieLine(), undefined);
   });
 
-  // TODO(crbug.com/1061125): The jsdoc states that the fields are required, not optional
-  it.skip('can be created from a protocol Cookie with no optional fields set', () => {
+  // The jsdoc states that the fields are required, not optional
+  it.skip('[crbug.com/1061125] can be created from a protocol Cookie with no optional fields set', () => {
     const cookie = Cookie.fromProtocolCookie({
       domain: '.example.com',
       name: 'name',

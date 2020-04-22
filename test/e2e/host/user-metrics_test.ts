@@ -247,6 +247,7 @@ describe('User Metrics', () => {
     ]);
   });
 
+  // Flaky test
   it.skip('[crbug.com/1071850]: tracks panel loading', async () => {
     // We specify the selected panel here because the default behavior is to go to the
     // elements panel, but this means we won't get the PanelLoaded event. Instead we

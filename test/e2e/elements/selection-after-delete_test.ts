@@ -8,6 +8,7 @@ import {click, getBrowserAndPages, resourcesPath, waitForElementWithTextContent}
 import {assertContentOfSelectedElementsNode, expandSelectedNodeRecursively, getContentOfSelectedNode, waitForElementsStyleSection, waitForSelectedNodeChange} from '../helpers/elements-helpers.js';
 
 describe('The Elements tab', async () => {
+  // Flaky test
   it.skip('[crbug.com/1071851]: can delete elements in the tree', async () => {
     const {target, frontend} = getBrowserAndPages();
 

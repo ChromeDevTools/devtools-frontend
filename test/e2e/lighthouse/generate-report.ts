@@ -17,6 +17,7 @@ describe('The Lighthouse Tab', async () => {
     assert.isFalse(disabled, 'The Generate Report button should not be disabled');
   });
 
+  // Broken on non-debug runs
   it.skip('[crbug.com/1057948] shows generate report button even when navigating to an unreachable page', async () => {
     const {target} = getBrowserAndPages();
     await navigateToLighthouseTab(target, 'empty');

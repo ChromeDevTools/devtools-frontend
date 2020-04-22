@@ -36,7 +36,7 @@ export class CrossOriginEmbedderPolicyIssue extends Issue {
 
   /**
    * @override
-   * @return {symbol}
+   * @return {!IssueCategory}
    */
   getCategory() {
     return IssueCategory.CrossOriginEmbedderPolicy;

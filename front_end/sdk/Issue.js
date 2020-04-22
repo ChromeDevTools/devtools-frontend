@@ -83,7 +83,7 @@ export class Issue extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @abstract
-   * @return {symbol}
+   * @return {!IssueCategory}
    */
   getCategory() {
   }
@@ -136,7 +136,7 @@ export class AggregatedIssue extends Issue {
 
   /**
    * @override
-   * @return {symbol}
+   * @return {!IssueCategory}
    */
   getCategory() {
     if (this._representative) {

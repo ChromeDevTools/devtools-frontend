@@ -184,8 +184,9 @@ class AffectedRequestsView extends AffectedResourcesView {
   _appendNetworkRequest(request) {
     const nameText = request.name().trimMiddle(100);
     const nameElement = createElementWithClass('td', '');
+    const tab = issueTypeToNetworkHeaderMap.get(this._issue.getCategory()) || Network.NetworkItemView.Tabs.Headers;
     nameElement.appendChild(UI.UIUtils.createTextButton(nameText, () => {
-      Network.NetworkPanel.NetworkPanel.selectAndShowRequest(request, Network.NetworkItemView.Tabs.Headers);
+      Network.NetworkPanel.NetworkPanel.selectAndShowRequest(request, tab);
     }, 'link-style devtools-link'));
     const element = createElementWithClass('tr', 'affected-resource-request');
     element.appendChild(nameElement);
@@ -198,6 +199,11 @@ class AffectedRequestsView extends AffectedResourcesView {
   }
 }
 
+/** @type {!Map<!SDK.Issue.IssueCategory, !Network.NetworkItemView.Tabs>} */
+const issueTypeToNetworkHeaderMap = new Map([
+  [SDK.Issue.IssueCategory.SameSiteCookie, Network.NetworkItemView.Tabs.Cookies],
+  [SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy, Network.NetworkItemView.Tabs.Headers]
+]);
 
 class IssueView extends UI.TreeOutline.TreeElement {
   /**

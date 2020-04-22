@@ -88,7 +88,7 @@ export function hasIssues(obj) {
 
 /**
  * @param {!IssuesAssociatable} obj
- * @param {symbol} category
+ * @param {!IssueCategory} category
  * @return {boolean}
  */
 export function hasIssueOfCategory(obj, category) {
@@ -97,7 +97,7 @@ export function hasIssueOfCategory(obj, category) {
 
 /**
  * @param {!IssuesAssociatable} obj
- * @param {symbol} category
+ * @param {!IssueCategory} category
  * @return {!Promise<undefined | void>}
  */
 export async function reveal(obj, category) {

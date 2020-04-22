@@ -49,7 +49,7 @@ export class SameSiteCookieIssue extends Issue {
 
   /**
    * @override
-   * @return {symbol}
+   * @return {!IssueCategory}
    */
   getCategory() {
     return IssueCategory.SameSiteCookie;

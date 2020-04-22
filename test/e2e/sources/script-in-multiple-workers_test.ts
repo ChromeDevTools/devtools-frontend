@@ -176,7 +176,7 @@ describe('Multi-Workers', async function() {
         await waitFor(RESUME_BUTTON);
 
         // Validate that the source line is highlighted
-        assert.equal(await getExecutionLine(), 6);
+        assert.strictEqual(await getExecutionLine(), 6);
 
         // Look at source tabs
         await validateSourceTabs();
@@ -192,7 +192,7 @@ describe('Multi-Workers', async function() {
         await waitFor(RESUME_BUTTON);
 
         // Validate that the source line is highlighted
-        assert.equal(await getExecutionLine(), 6);
+        assert.strictEqual(await getExecutionLine(), 6);
 
         // Look at source tabs
         await validateSourceTabs();

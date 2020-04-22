@@ -29,6 +29,6 @@ describe('Media Tab', () => {
     const entryName = await getPlayerButtonText();
 
     // Names are glitched right now, and display 32-character unguessable tokens.
-    assert.equal(entryName.length, 32);
+    assert.strictEqual(entryName.length, 32);
   });
 });

@@ -9,88 +9,88 @@ import {FilterParser, BalancedJSONTokenizer, isMinified, Utils} from '../../../.
 describe('Utils Object', () => {
   describe('isStopChar', () => {
     it('returns the correct result for various inputs', () => {
-      assert.equal(Utils.isStopChar('\0'), false, 'null was a stop char');
-      assert.equal(Utils.isStopChar(' '), false, 'space was a stop char');
-      assert.equal(Utils.isStopChar('!'), true, '! was not a stop char');
-      assert.equal(Utils.isStopChar('/'), true, '/ was not a stop char');
-      assert.equal(Utils.isStopChar('0'), false, '0 was a stop char');
-      assert.equal(Utils.isStopChar('9'), false, '9 was a stop char');
-      assert.equal(Utils.isStopChar('@'), true, '@ was not a stop char');
-      assert.equal(Utils.isStopChar('A'), false, 'A was a stop char');
-      assert.equal(Utils.isStopChar('B'), false, 'B was a stop char');
-      assert.equal(Utils.isStopChar('Z'), false, 'Z was a stop char');
-      assert.equal(Utils.isStopChar('['), true, '[ was not a stop char');
-      assert.equal(Utils.isStopChar('_'), false, '_ was a stop char');
-      assert.equal(Utils.isStopChar('`'), true, '` was not a stop char');
-      assert.equal(Utils.isStopChar('a'), false, 'a was a stop char');
-      assert.equal(Utils.isStopChar('b'), false, 'b was a stop char');
-      assert.equal(Utils.isStopChar('z'), false, 'z was a stop char');
-      assert.equal(Utils.isStopChar('{'), true, '{ was not a stop char');
+      assert.strictEqual(Utils.isStopChar('\0'), false, 'null was a stop char');
+      assert.strictEqual(Utils.isStopChar(' '), false, 'space was a stop char');
+      assert.strictEqual(Utils.isStopChar('!'), true, '! was not a stop char');
+      assert.strictEqual(Utils.isStopChar('/'), true, '/ was not a stop char');
+      assert.strictEqual(Utils.isStopChar('0'), false, '0 was a stop char');
+      assert.strictEqual(Utils.isStopChar('9'), false, '9 was a stop char');
+      assert.strictEqual(Utils.isStopChar('@'), true, '@ was not a stop char');
+      assert.strictEqual(Utils.isStopChar('A'), false, 'A was a stop char');
+      assert.strictEqual(Utils.isStopChar('B'), false, 'B was a stop char');
+      assert.strictEqual(Utils.isStopChar('Z'), false, 'Z was a stop char');
+      assert.strictEqual(Utils.isStopChar('['), true, '[ was not a stop char');
+      assert.strictEqual(Utils.isStopChar('_'), false, '_ was a stop char');
+      assert.strictEqual(Utils.isStopChar('`'), true, '` was not a stop char');
+      assert.strictEqual(Utils.isStopChar('a'), false, 'a was a stop char');
+      assert.strictEqual(Utils.isStopChar('b'), false, 'b was a stop char');
+      assert.strictEqual(Utils.isStopChar('z'), false, 'z was a stop char');
+      assert.strictEqual(Utils.isStopChar('{'), true, '{ was not a stop char');
     });
   });
   describe('isWordChar', () => {
     it('returns the correct result for various inputs', () => {
-      assert.equal(Utils.isWordChar(' '), false, 'space was a word char');
-      assert.equal(Utils.isWordChar('\t'), false, 'tab was a word char');
-      assert.equal(Utils.isWordChar('a'), true, 'a was not a word char');
-      assert.equal(Utils.isWordChar('A'), true, 'A was not a word char');
-      assert.equal(Utils.isWordChar('_'), true, '_ was not a word char');
+      assert.strictEqual(Utils.isWordChar(' '), false, 'space was a word char');
+      assert.strictEqual(Utils.isWordChar('\t'), false, 'tab was a word char');
+      assert.strictEqual(Utils.isWordChar('a'), true, 'a was not a word char');
+      assert.strictEqual(Utils.isWordChar('A'), true, 'A was not a word char');
+      assert.strictEqual(Utils.isWordChar('_'), true, '_ was not a word char');
     });
   });
   describe('isSpaceChar', () => {
     it('returns the correct result for various inputs', () => {
-      assert.equal(Utils.isSpaceChar(' '), true, 'space was not a space char');
-      assert.equal(Utils.isSpaceChar('\t'), true, 'tab was not a space char');
-      assert.equal(Utils.isSpaceChar('\f'), true, 'formfeed was not a space char');
-      assert.equal(Utils.isSpaceChar('\r'), true, 'return was not a space char');
-      assert.equal(Utils.isSpaceChar('\v'), true, 'vertical tab was not a space char');
-      assert.equal(Utils.isSpaceChar('\xA0'), true, 'non-breaking space was not a space char');
-      assert.equal(Utils.isSpaceChar('\0'), false, 'null was a space char');
-      assert.equal(Utils.isSpaceChar('a'), false, 'a was a space char');
-      assert.equal(Utils.isSpaceChar('A'), false, 'A was a space char');
+      assert.strictEqual(Utils.isSpaceChar(' '), true, 'space was not a space char');
+      assert.strictEqual(Utils.isSpaceChar('\t'), true, 'tab was not a space char');
+      assert.strictEqual(Utils.isSpaceChar('\f'), true, 'formfeed was not a space char');
+      assert.strictEqual(Utils.isSpaceChar('\r'), true, 'return was not a space char');
+      assert.strictEqual(Utils.isSpaceChar('\v'), true, 'vertical tab was not a space char');
+      assert.strictEqual(Utils.isSpaceChar('\xA0'), true, 'non-breaking space was not a space char');
+      assert.strictEqual(Utils.isSpaceChar('\0'), false, 'null was a space char');
+      assert.strictEqual(Utils.isSpaceChar('a'), false, 'a was a space char');
+      assert.strictEqual(Utils.isSpaceChar('A'), false, 'A was a space char');
     });
   });
   describe('isWord', () => {
     it('returns the correct result for various inputs', () => {
-      assert.equal(Utils.isWord(''), true, 'empty string was not a word');
-      assert.equal(Utils.isWord('_'), true, '_ string was not a word');
-      assert.equal(Utils.isWord('a'), true, 'a string was not a word');
-      assert.equal(Utils.isWord('abc'), true, 'abc string was not a word');
-      assert.equal(Utils.isWord('a{'), false, 'a{ string was a word');
-      assert.equal(Utils.isWord('a`'), false, 'a` string was a word');
-      assert.equal(Utils.isWord(' '), false, 'space string was a word');
+      assert.strictEqual(Utils.isWord(''), true, 'empty string was not a word');
+      assert.strictEqual(Utils.isWord('_'), true, '_ string was not a word');
+      assert.strictEqual(Utils.isWord('a'), true, 'a string was not a word');
+      assert.strictEqual(Utils.isWord('abc'), true, 'abc string was not a word');
+      assert.strictEqual(Utils.isWord('a{'), false, 'a{ string was a word');
+      assert.strictEqual(Utils.isWord('a`'), false, 'a` string was a word');
+      assert.strictEqual(Utils.isWord(' '), false, 'space string was a word');
     });
   });
   describe('isOpeningBraceChar', () => {
     it('returns the correct result for various inputs', () => {
-      assert.equal(Utils.isOpeningBraceChar('{'), true, '{ was not an opening brace');
-      assert.equal(Utils.isOpeningBraceChar('('), true, '( was not an opening brace');
-      assert.equal(Utils.isOpeningBraceChar('['), false, '[ was an opening brace');
-      assert.equal(Utils.isOpeningBraceChar('<'), false, '< was an opening brace');
-      assert.equal(Utils.isOpeningBraceChar('}'), false, '} was an opening brace');
-      assert.equal(Utils.isOpeningBraceChar(')'), false, ') was an opening brace');
+      assert.strictEqual(Utils.isOpeningBraceChar('{'), true, '{ was not an opening brace');
+      assert.strictEqual(Utils.isOpeningBraceChar('('), true, '( was not an opening brace');
+      assert.strictEqual(Utils.isOpeningBraceChar('['), false, '[ was an opening brace');
+      assert.strictEqual(Utils.isOpeningBraceChar('<'), false, '< was an opening brace');
+      assert.strictEqual(Utils.isOpeningBraceChar('}'), false, '} was an opening brace');
+      assert.strictEqual(Utils.isOpeningBraceChar(')'), false, ') was an opening brace');
     });
   });
   describe('isClosingBraceChar', () => {
     it('returns the correct result for various inputs', () => {
-      assert.equal(Utils.isClosingBraceChar('}'), true, '} was not a closing brace');
-      assert.equal(Utils.isClosingBraceChar(')'), true, ') was not a closing brace');
-      assert.equal(Utils.isClosingBraceChar(']'), false, '] was a closing brace');
-      assert.equal(Utils.isClosingBraceChar('>'), false, '> was a closing brace');
-      assert.equal(Utils.isClosingBraceChar('{'), false, '{} was a closing brace');
-      assert.equal(Utils.isClosingBraceChar('('), false, '() was a closing brace');
+      assert.strictEqual(Utils.isClosingBraceChar('}'), true, '} was not a closing brace');
+      assert.strictEqual(Utils.isClosingBraceChar(')'), true, ') was not a closing brace');
+      assert.strictEqual(Utils.isClosingBraceChar(']'), false, '] was a closing brace');
+      assert.strictEqual(Utils.isClosingBraceChar('>'), false, '> was a closing brace');
+      assert.strictEqual(Utils.isClosingBraceChar('{'), false, '{} was a closing brace');
+      assert.strictEqual(Utils.isClosingBraceChar('('), false, '() was a closing brace');
     });
   });
   describe('isBraceChar', () => {
     it('returns the correct result for various inputs', () => {
-      assert.equal(Utils.isBraceChar('{'), true, '{ was not a brace');
-      assert.equal(Utils.isBraceChar('('), true, '( was not a brace');
-      assert.equal(Utils.isBraceChar('}'), true, '} was not a brace');
-      assert.equal(Utils.isBraceChar(')'), true, ') was not a brace');
-      assert.equal(Utils.isBraceChar('['), false, '[ was a brace');
-      assert.equal(Utils.isBraceChar('<'), false, '< was a brace');
-      assert.equal(Utils.isBraceChar(']'), false, '] was a brace');
-      assert.equal(Utils.isBraceChar('>'), false, '> was a brace');
+      assert.strictEqual(Utils.isBraceChar('{'), true, '{ was not a brace');
+      assert.strictEqual(Utils.isBraceChar('('), true, '( was not a brace');
+      assert.strictEqual(Utils.isBraceChar('}'), true, '} was not a brace');
+      assert.strictEqual(Utils.isBraceChar(')'), true, ') was not a brace');
+      assert.strictEqual(Utils.isBraceChar('['), false, '[ was a brace');
+      assert.strictEqual(Utils.isBraceChar('<'), false, '< was a brace');
+      assert.strictEqual(Utils.isBraceChar(']'), false, '] was a brace');
+      assert.strictEqual(Utils.isBraceChar('>'), false, '> was a brace');
     });
   });
   describe('textToWords', () => {
@@ -101,107 +101,107 @@ describe('Utils Object', () => {
         words.push(word);
       };
       Utils.textToWords('', isWordChar, callback);
-      assert.equal(words.length, 0, 'words was not empty');
+      assert.strictEqual(words.length, 0, 'words was not empty');
       Utils.textToWords(' a', isWordChar, callback);
-      assert.equal(words.length, 1, 'words had wrong length');
-      assert.equal(words[0], 'a');
+      assert.strictEqual(words.length, 1, 'words had wrong length');
+      assert.strictEqual(words[0], 'a');
       Utils.textToWords(' a _', isWordChar, callback);
-      assert.equal(words.length, 3, 'words had wrong length');
-      assert.equal(words[1], 'a');
-      assert.equal(words[2], '_');
+      assert.strictEqual(words.length, 3, 'words had wrong length');
+      assert.strictEqual(words[1], 'a');
+      assert.strictEqual(words[2], '_');
     });
   });
   describe('lineIndent', () => {
     it('returns the correct result for various inputs', () => {
-      assert.equal(Utils.lineIndent(''), '', 'indent was not empty');
-      assert.equal(Utils.lineIndent('\tabc'), '\t', 'indent should have one tab');
-      assert.equal(Utils.lineIndent(' \t abc'), ' \t ', 'indent was wrong');
+      assert.strictEqual(Utils.lineIndent(''), '', 'indent was not empty');
+      assert.strictEqual(Utils.lineIndent('\tabc'), '\t', 'indent should have one tab');
+      assert.strictEqual(Utils.lineIndent(' \t abc'), ' \t ', 'indent was wrong');
     });
   });
   describe('isUpperCase', () => {
     it('returns the correct result for various inputs', () => {
-      assert.equal(Utils.isUpperCase('a'), false, 'a was upper case');
-      assert.equal(Utils.isUpperCase('A'), true, 'A was not upper case');
-      assert.equal(Utils.isUpperCase('_'), true, '_ was not upper case');
-      assert.equal(Utils.isUpperCase('!'), true, '! was not upper case');
-      assert.equal(Utils.isUpperCase('@'), true, '@ was not upper case');
+      assert.strictEqual(Utils.isUpperCase('a'), false, 'a was upper case');
+      assert.strictEqual(Utils.isUpperCase('A'), true, 'A was not upper case');
+      assert.strictEqual(Utils.isUpperCase('_'), true, '_ was not upper case');
+      assert.strictEqual(Utils.isUpperCase('!'), true, '! was not upper case');
+      assert.strictEqual(Utils.isUpperCase('@'), true, '@ was not upper case');
     });
   });
   describe('isLowerCase', () => {
     it('returns the correct result for various inputs', () => {
-      assert.equal(Utils.isLowerCase('a'), true, 'a was lower case');
-      assert.equal(Utils.isLowerCase('A'), false, 'A was not lower case');
-      assert.equal(Utils.isLowerCase('_'), true, '_ was not lower case');
-      assert.equal(Utils.isLowerCase('!'), true, '! was not lower case');
-      assert.equal(Utils.isLowerCase('@'), true, '@ was not lower case');
+      assert.strictEqual(Utils.isLowerCase('a'), true, 'a was lower case');
+      assert.strictEqual(Utils.isLowerCase('A'), false, 'A was not lower case');
+      assert.strictEqual(Utils.isLowerCase('_'), true, '_ was not lower case');
+      assert.strictEqual(Utils.isLowerCase('!'), true, '! was not lower case');
+      assert.strictEqual(Utils.isLowerCase('@'), true, '@ was not lower case');
     });
   });
   describe('splitStringByRegexes', () => {
     it('returns the correct result for a single regex', () => {
       let result = Utils.splitStringByRegexes('', [/a/]);
-      assert.equal(result.length, 0, 'length was wrong');
+      assert.strictEqual(result.length, 0, 'length was wrong');
 
       result = Utils.splitStringByRegexes('a', [/a/]);
-      assert.equal(result.length, 1, 'length was wrong');
-      assert.equal(result[0].value, 'a', 'value was wrong');
-      assert.equal(result[0].position, 0, 'position was wrong');
-      assert.equal(result[0].regexIndex, 0, 'regex index was wrong');
+      assert.strictEqual(result.length, 1, 'length was wrong');
+      assert.strictEqual(result[0].value, 'a', 'value was wrong');
+      assert.strictEqual(result[0].position, 0, 'position was wrong');
+      assert.strictEqual(result[0].regexIndex, 0, 'regex index was wrong');
       assert.deepEqual(result[0].captureGroups, [], 'capture groups was not empty');
 
       result = Utils.splitStringByRegexes('ba b', [/a/]);
-      assert.equal(result.length, 3, 'length was wrong');
-      assert.equal(result[0].value, 'b', 'value was wrong');
-      assert.equal(result[0].position, 0, 'position was wrong');
-      assert.equal(result[0].regexIndex, -1, 'regex index was wrong');
+      assert.strictEqual(result.length, 3, 'length was wrong');
+      assert.strictEqual(result[0].value, 'b', 'value was wrong');
+      assert.strictEqual(result[0].position, 0, 'position was wrong');
+      assert.strictEqual(result[0].regexIndex, -1, 'regex index was wrong');
       assert.deepEqual(result[0].captureGroups, [], 'capture groups was not empty');
-      assert.equal(result[1].value, 'a', 'value was wrong');
-      assert.equal(result[1].position, 1, 'position was wrong');
-      assert.equal(result[1].regexIndex, 0, 'regex index was wrong');
+      assert.strictEqual(result[1].value, 'a', 'value was wrong');
+      assert.strictEqual(result[1].position, 1, 'position was wrong');
+      assert.strictEqual(result[1].regexIndex, 0, 'regex index was wrong');
       assert.deepEqual(result[1].captureGroups, [], 'capture groups was not empty');
-      assert.equal(result[2].value, ' b', 'value was wrong');
-      assert.equal(result[2].position, 2, 'position was wrong');
-      assert.equal(result[2].regexIndex, -1, 'regex index was wrong');
+      assert.strictEqual(result[2].value, ' b', 'value was wrong');
+      assert.strictEqual(result[2].position, 2, 'position was wrong');
+      assert.strictEqual(result[2].regexIndex, -1, 'regex index was wrong');
       assert.deepEqual(result[2].captureGroups, [], 'capture groups was not empty');
     });
     it('returns the correct result for a multiple regexs', () => {
       let result = Utils.splitStringByRegexes('', [/a/, /b/]);
-      assert.equal(result.length, 0, 'length was wrong');
+      assert.strictEqual(result.length, 0, 'length was wrong');
 
       result = Utils.splitStringByRegexes('a', [/a/, /b/]);
-      assert.equal(result.length, 1, 'length was wrong');
-      assert.equal(result[0].value, 'a', 'value was wrong');
-      assert.equal(result[0].position, 0, 'position was wrong');
-      assert.equal(result[0].regexIndex, 0, 'regex index was wrong');
+      assert.strictEqual(result.length, 1, 'length was wrong');
+      assert.strictEqual(result[0].value, 'a', 'value was wrong');
+      assert.strictEqual(result[0].position, 0, 'position was wrong');
+      assert.strictEqual(result[0].regexIndex, 0, 'regex index was wrong');
       assert.deepEqual(result[0].captureGroups, [], 'capture groups was not empty');
 
       result = Utils.splitStringByRegexes('ba b', [/a/, /b/]);
-      assert.equal(result.length, 4, 'length was wrong');
-      assert.equal(result[0].value, 'b', 'value was wrong');
-      assert.equal(result[0].position, 0, 'position was wrong');
-      assert.equal(result[0].regexIndex, 1, 'regex index was wrong');
+      assert.strictEqual(result.length, 4, 'length was wrong');
+      assert.strictEqual(result[0].value, 'b', 'value was wrong');
+      assert.strictEqual(result[0].position, 0, 'position was wrong');
+      assert.strictEqual(result[0].regexIndex, 1, 'regex index was wrong');
       assert.deepEqual(result[0].captureGroups, [], 'capture groups was not empty');
-      assert.equal(result[1].value, 'a', 'value was wrong');
-      assert.equal(result[1].position, 1, 'position was wrong');
-      assert.equal(result[1].regexIndex, 0, 'regex index was wrong');
+      assert.strictEqual(result[1].value, 'a', 'value was wrong');
+      assert.strictEqual(result[1].position, 1, 'position was wrong');
+      assert.strictEqual(result[1].regexIndex, 0, 'regex index was wrong');
       assert.deepEqual(result[1].captureGroups, [], 'capture groups was not empty');
-      assert.equal(result[2].value, ' ', 'value was wrong');
-      assert.equal(result[2].position, 2, 'position was wrong');
-      assert.equal(result[2].regexIndex, -1, 'regex index was wrong');
+      assert.strictEqual(result[2].value, ' ', 'value was wrong');
+      assert.strictEqual(result[2].position, 2, 'position was wrong');
+      assert.strictEqual(result[2].regexIndex, -1, 'regex index was wrong');
       assert.deepEqual(result[2].captureGroups, [], 'capture groups was not empty');
-      assert.equal(result[3].value, 'b', 'value was wrong');
-      assert.equal(result[3].position, 3, 'position was wrong');
-      assert.equal(result[3].regexIndex, 1, 'regex index was wrong');
+      assert.strictEqual(result[3].value, 'b', 'value was wrong');
+      assert.strictEqual(result[3].position, 3, 'position was wrong');
+      assert.strictEqual(result[3].regexIndex, 1, 'regex index was wrong');
       assert.deepEqual(result[3].captureGroups, [], 'capture groups was not empty');
     });
     it('returns the correct result for global regexs', () => {
       let result = Utils.splitStringByRegexes('', [/a/g, /b/g]);
-      assert.equal(result.length, 0, 'length was wrong');
+      assert.strictEqual(result.length, 0, 'length was wrong');
 
       result = Utils.splitStringByRegexes('a', [/a/g, /b/g]);
-      assert.equal(result.length, 1, 'length was wrong');
-      assert.equal(result[0].value, 'a', 'value was wrong');
-      assert.equal(result[0].position, 0, 'position was wrong');
-      assert.equal(result[0].regexIndex, 0, 'regex index was wrong');
+      assert.strictEqual(result.length, 1, 'length was wrong');
+      assert.strictEqual(result[0].value, 'a', 'value was wrong');
+      assert.strictEqual(result[0].position, 0, 'position was wrong');
+      assert.strictEqual(result[0].regexIndex, 0, 'regex index was wrong');
       assert.deepEqual(result[0].captureGroups, [], 'capture groups was not empty');
     });
   });
@@ -212,8 +212,8 @@ describe('FilterParser', () => {
     const testVal = 'TestVal1';
     const filterParser = new FilterParser(['TestVal1']);
     const result = filterParser.parse(testVal);
-    assert.equal(result[0].text, testVal, 'text value was not returned correctly');
-    assert.equal(result[0].negative, false, 'negative value was not returned correctly');
+    assert.strictEqual(result[0].text, testVal, 'text value was not returned correctly');
+    assert.strictEqual(result[0].negative, false, 'negative value was not returned correctly');
   });
 });
 
@@ -222,7 +222,7 @@ describe('BalancedJSONTokenizer', () => {
     const callback = () => {};
     const findMultiple = false;
     const tokenizer = new BalancedJSONTokenizer(callback, findMultiple);
-    assert.equal(tokenizer.remainder(), '', 'remainder was not empty');
+    assert.strictEqual(tokenizer.remainder(), '', 'remainder was not empty');
   });
 
   it('can balance simple patterns', () => {
@@ -234,11 +234,11 @@ describe('BalancedJSONTokenizer', () => {
     const tokenizer = new BalancedJSONTokenizer(callback, findMultiple);
 
     let result = tokenizer.write('a');
-    assert.equal(result, true, 'return value was incorrect');
+    assert.strictEqual(result, true, 'return value was incorrect');
     assert.deepEqual(callbackResults, [], 'callback was called');
 
     result = tokenizer.write('{}');
-    assert.equal(result, true, 'return value was incorrect');
+    assert.strictEqual(result, true, 'return value was incorrect');
     assert.deepEqual(callbackResults, ['a{}'], 'callback had unexpected results');
   });
 
@@ -251,9 +251,9 @@ describe('BalancedJSONTokenizer', () => {
     const tokenizer = new BalancedJSONTokenizer(callback, findMultiple);
 
     const result = tokenizer.write('{}}');
-    assert.equal(result, true, 'return value was incorrect');
+    assert.strictEqual(result, true, 'return value was incorrect');
     assert.deepEqual(callbackResults, ['{}'], 'callback had unexpected results');
-    assert.equal(tokenizer.remainder(), '}', 'remainder was incorrect');
+    assert.strictEqual(tokenizer.remainder(), '}', 'remainder was incorrect');
   });
 
   it('can find simple unbalanced quote patterns', () => {
@@ -265,9 +265,9 @@ describe('BalancedJSONTokenizer', () => {
     const tokenizer = new BalancedJSONTokenizer(callback, findMultiple);
 
     const result = tokenizer.write('"""');
-    assert.equal(result, true, 'return value was incorrect');
+    assert.strictEqual(result, true, 'return value was incorrect');
     assert.deepEqual(callbackResults, [], 'callback had unexpected results');
-    assert.equal(tokenizer.remainder(), '"""', 'remainder was incorrect');
+    assert.strictEqual(tokenizer.remainder(), '"""', 'remainder was incorrect');
   });
 
   it('can find unbalanced patterns that start with }', () => {
@@ -279,9 +279,9 @@ describe('BalancedJSONTokenizer', () => {
     const tokenizer = new BalancedJSONTokenizer(callback, findMultiple);
 
     const result = tokenizer.write('}}');
-    assert.equal(result, false, 'return value was incorrect');
+    assert.strictEqual(result, false, 'return value was incorrect');
     assert.deepEqual(callbackResults, [], 'callback had unexpected results');
-    assert.equal(tokenizer.remainder(), '}}', 'remainder was incorrect');
+    assert.strictEqual(tokenizer.remainder(), '}}', 'remainder was incorrect');
   });
 
   describe('parse', () => {
@@ -472,10 +472,10 @@ describe('BalancedJSONTokenizer', () => {
     const filter = {key: 'a', text: 'b', regex: /a/, negative: true};
     const cloned = FilterParser.cloneFilter(filter);
 
-    assert.equal(cloned.key, 'a', 'key was incorrect');
-    assert.equal(cloned.text, 'b', 'text was incorrect');
+    assert.strictEqual(cloned.key, 'a', 'key was incorrect');
+    assert.strictEqual(cloned.text, 'b', 'text was incorrect');
     assert.deepEqual(cloned.regex, /a/, 'regex was incorrect');
-    assert.equal(cloned.negative, true, 'negative was incorrect');
+    assert.strictEqual(cloned.negative, true, 'negative was incorrect');
   });
 });
 
@@ -484,7 +484,7 @@ describe('BalancedJSONTokenizer', () => {
     const callback = () => {};
     const findMultiple = false;
     const tokenizer = new BalancedJSONTokenizer(callback, findMultiple);
-    assert.equal(tokenizer.remainder(), '', 'remainder was not empty');
+    assert.strictEqual(tokenizer.remainder(), '', 'remainder was not empty');
   });
 
   it('can balance simple patterns', () => {
@@ -496,11 +496,11 @@ describe('BalancedJSONTokenizer', () => {
     const tokenizer = new BalancedJSONTokenizer(callback, findMultiple);
 
     let result = tokenizer.write('a');
-    assert.equal(result, true, 'return value was incorrect');
+    assert.strictEqual(result, true, 'return value was incorrect');
     assert.deepEqual(callbackResults, [], 'callback was called');
 
     result = tokenizer.write('{}');
-    assert.equal(result, true, 'return value was incorrect');
+    assert.strictEqual(result, true, 'return value was incorrect');
     assert.deepEqual(callbackResults, ['a{}'], 'callback had unexpected results');
   });
 
@@ -513,9 +513,9 @@ describe('BalancedJSONTokenizer', () => {
     const tokenizer = new BalancedJSONTokenizer(callback, findMultiple);
 
     const result = tokenizer.write('{}}');
-    assert.equal(result, true, 'return value was incorrect');
+    assert.strictEqual(result, true, 'return value was incorrect');
     assert.deepEqual(callbackResults, ['{}'], 'callback had unexpected results');
-    assert.equal(tokenizer.remainder(), '}', 'remainder was incorrect');
+    assert.strictEqual(tokenizer.remainder(), '}', 'remainder was incorrect');
   });
 
   it('can find simple unbalanced quote patterns', () => {
@@ -527,9 +527,9 @@ describe('BalancedJSONTokenizer', () => {
     const tokenizer = new BalancedJSONTokenizer(callback, findMultiple);
 
     const result = tokenizer.write('"""');
-    assert.equal(result, true, 'return value was incorrect');
+    assert.strictEqual(result, true, 'return value was incorrect');
     assert.deepEqual(callbackResults, [], 'callback had unexpected results');
-    assert.equal(tokenizer.remainder(), '"""', 'remainder was incorrect');
+    assert.strictEqual(tokenizer.remainder(), '"""', 'remainder was incorrect');
   });
 
   it('can find unbalanced patterns that start with }', () => {
@@ -541,9 +541,9 @@ describe('BalancedJSONTokenizer', () => {
     const tokenizer = new BalancedJSONTokenizer(callback, findMultiple);
 
     const result = tokenizer.write('}}');
-    assert.equal(result, false, 'return value was incorrect');
+    assert.strictEqual(result, false, 'return value was incorrect');
     assert.deepEqual(callbackResults, [], 'callback had unexpected results');
-    assert.equal(tokenizer.remainder(), '}}', 'remainder was incorrect');
+    assert.strictEqual(tokenizer.remainder(), '}}', 'remainder was incorrect');
   });
 
   it('can find unbalanced patterns that start with ]', () => {
@@ -555,25 +555,25 @@ describe('BalancedJSONTokenizer', () => {
     const tokenizer = new BalancedJSONTokenizer(callback, findMultiple);
 
     const result = tokenizer.write(']]');
-    assert.equal(result, false, 'return value was incorrect');
+    assert.strictEqual(result, false, 'return value was incorrect');
     assert.deepEqual(callbackResults, [], 'callback had unexpected results');
-    assert.equal(tokenizer.remainder(), ']]', 'remainder was incorrect');
+    assert.strictEqual(tokenizer.remainder(), ']]', 'remainder was incorrect');
   });
 });
 
 describe('isMinified', () => {
   it('handles empty string', () => {
     const result = isMinified('');
-    assert.equal(result, false, 'was minified');
+    assert.strictEqual(result, false, 'was minified');
   });
 
   it('handles 500+ char string', () => {
     const result = isMinified('a'.repeat(501) + '\n');
-    assert.equal(result, true, 'was not minified');
+    assert.strictEqual(result, true, 'was not minified');
   });
 
   it('handles big multiline string with 500+ char string at end', () => {
     const result = isMinified('a\n'.repeat(20) + 'b'.repeat(501) + '\n');
-    assert.equal(result, true, 'was not minified');
+    assert.strictEqual(result, true, 'was not minified');
   });
 });

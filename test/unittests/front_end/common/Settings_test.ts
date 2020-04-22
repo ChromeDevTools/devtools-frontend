@@ -10,7 +10,7 @@ describe('SettingsStorage class', () => {
   it('is able to set a name', () => {
     const settingsStorage = new SettingsStorage({});
     settingsStorage.set('Test Name', 'Test Value');
-    assert.equal(settingsStorage.get('Test Name'), 'Test Value', 'Name was not retrieve correctly');
+    assert.strictEqual(settingsStorage.get('Test Name'), 'Test Value', 'Name was not retrieve correctly');
   });
 
   it('is able to check if a name that it has exists', () => {

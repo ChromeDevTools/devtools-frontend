@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const { assert } = chai;
+const {assert} = chai;
 
 import {Console, Events, MessageLevel} from '../../../../front_end/common/Console.js';
 
@@ -15,8 +15,8 @@ describe('Console', () => {
   it('adds messages', () => {
     consoleImpl.addMessage('Foo', MessageLevel.Info, true);
     const messages = consoleImpl.messages();
-    assert.equal(messages.length, 1);
-    assert.equal(messages[0].text, 'Foo');
+    assert.strictEqual(messages.length, 1);
+    assert.strictEqual(messages[0].text, 'Foo');
   });
 
   it('adds handles messages of all types', () => {
@@ -35,10 +35,10 @@ describe('Console', () => {
 
       // Now read the message back and check it.
       const messages = consoleImpl.messages();
-      assert.equal(messages.length, 1);
-      assert.equal(messages[0].text, type);
+      assert.strictEqual(messages.length, 1);
+      assert.strictEqual(messages[0].text, type);
       // @ts-ignore
-      assert.equal(messages[0].level, MessageLevel[type]);
+      assert.strictEqual(messages[0].level, MessageLevel[type]);
     }
   });
 
@@ -48,13 +48,13 @@ describe('Console', () => {
     consoleImpl.addMessage('Bar', MessageLevel.Error, true);
     consoleImpl.addMessage('Donkey', MessageLevel.Info, true);
     const messages = consoleImpl.messages();
-    assert.equal(messages.length, 4);
+    assert.strictEqual(messages.length, 4);
   });
 
   it('dispatches events to listeners', done => {
     const callback = ({data}: {data: {text: string}}) => {
       consoleImpl.removeEventListener(Events.MessageAdded, callback);
-      assert.equal(data.text, 'Foo');
+      assert.strictEqual(data.text, 'Foo');
       done();
     };
 

@@ -87,7 +87,7 @@ describe('walkTree', () => {
         return;
       }
 
-      assert.equal(result.componentClass.name.escapedText.toString(), 'Breadcrumbs');
+      assert.strictEqual(result.componentClass.name.escapedText.toString(), 'Breadcrumbs');
     });
 
     it('finds any public functions on the class', () => {

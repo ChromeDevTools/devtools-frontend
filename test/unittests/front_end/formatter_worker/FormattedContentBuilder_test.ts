@@ -10,14 +10,14 @@ describe('FormattedContentBuilder', () => {
   it('can add a token successfully', () => {
     const formattedContentBuilder = new FormattedContentBuilder('  ');
     formattedContentBuilder.addToken('Test Script', 0);
-    assert.equal(formattedContentBuilder.content(), 'Test Script');
+    assert.strictEqual(formattedContentBuilder.content(), 'Test Script');
   });
 
   it('returns the previous enforceSpaceBetweenWords value', () => {
     const formattedContentBuilder = new FormattedContentBuilder('  ');
     formattedContentBuilder.setEnforceSpaceBetweenWords(false);
     const result = formattedContentBuilder.setEnforceSpaceBetweenWords(true);
-    assert.equal(result, false);
+    assert.strictEqual(result, false);
   });
 
   it('should squash new lines by default', () => {
@@ -27,7 +27,7 @@ describe('FormattedContentBuilder', () => {
     builder.addNewLine();
     builder.addToken('Token 2', 0);
 
-    assert.equal(builder.content(), 'Token 1\nToken 2');
+    assert.strictEqual(builder.content(), 'Token 1\nToken 2');
   });
 
   it('should respect the noSquash parameter', () => {
@@ -37,7 +37,7 @@ describe('FormattedContentBuilder', () => {
     builder.addNewLine(true);
     builder.addToken('Token 2', 0);
 
-    assert.equal(builder.content(), 'Token 1\n\nToken 2');
+    assert.strictEqual(builder.content(), 'Token 1\n\nToken 2');
   });
 
   it('should avoid leading newlines', () => {
@@ -45,7 +45,7 @@ describe('FormattedContentBuilder', () => {
     builder.addNewLine();
     builder.addToken('Token', 0);
 
-    assert.equal(builder.content(), 'Token');
+    assert.strictEqual(builder.content(), 'Token');
   });
 
   it('not add more than one newline at the end', () => {
@@ -54,7 +54,7 @@ describe('FormattedContentBuilder', () => {
     builder.addNewLine();
     builder.addNewLine(true);
 
-    assert.equal(builder.content(), 'Token\n');
+    assert.strictEqual(builder.content(), 'Token\n');
   });
 
   it('should not collapse hard spaces', () => {
@@ -65,7 +65,7 @@ describe('FormattedContentBuilder', () => {
     builder.addHardSpace();
     builder.addToken('Token 2', 0);
 
-    assert.equal(builder.content(), 'Token 1   Token 2', 'expected three spaces between the tokens');
+    assert.strictEqual(builder.content(), 'Token 1   Token 2', 'expected three spaces between the tokens');
   });
 
   it('should collapse soft spaces', () => {
@@ -76,7 +76,7 @@ describe('FormattedContentBuilder', () => {
     builder.addSoftSpace();
     builder.addToken('Token 2', 0);
 
-    assert.equal(builder.content(), 'Token 1 Token 2', 'expected a single space between the tokens');
+    assert.strictEqual(builder.content(), 'Token 1 Token 2', 'expected a single space between the tokens');
   });
 
   it('should ignore a soft space after a hard space', () => {
@@ -86,7 +86,7 @@ describe('FormattedContentBuilder', () => {
     builder.addSoftSpace();
     builder.addToken('Token 2', 0);
 
-    assert.equal(builder.content(), 'Token 1 Token 2', 'expected a single space between the tokens');
+    assert.strictEqual(builder.content(), 'Token 1 Token 2', 'expected a single space between the tokens');
   });
 
   it('should ignore a soft space before a hard space', () => {
@@ -96,7 +96,7 @@ describe('FormattedContentBuilder', () => {
     builder.addHardSpace();
     builder.addToken('Token 2', 0);
 
-    assert.equal(builder.content(), 'Token 1 Token 2', 'expected a single space between the tokens');
+    assert.strictEqual(builder.content(), 'Token 1 Token 2', 'expected a single space between the tokens');
   });
 
   it('should handle the nesting level correctly', () => {
@@ -118,7 +118,7 @@ describe('FormattedContentBuilder', () => {
     builder.decreaseNestingLevel();
     builder.addToken('Token 6', 0);
 
-    assert.equal(builder.content(), 'Token 1\n  Token 2\n    Token 3\n  Token 4\nToken 5\nToken 6');
+    assert.strictEqual(builder.content(), 'Token 1\n  Token 2\n    Token 3\n  Token 4\nToken 5\nToken 6');
   });
 
   it('should allow mapping from unformatted source positions to formatted ones', () => {
@@ -141,7 +141,7 @@ describe('FormattedContentBuilder', () => {
     const {original, formatted} = builder.mapping();
     assert.deepEqual(original, [0, 5, 6, 17]);
     assert.deepEqual(formatted, [0, 6, 10, 22]);
-    assert.equal(builder.content(), '#main {\n  color: red;\n}\n');
+    assert.strictEqual(builder.content(), '#main {\n  color: red;\n}\n');
   });
 
   it('should not cache the identation for more than 20 nesting levels', () => {
@@ -159,12 +159,12 @@ describe('FormattedContentBuilder', () => {
     builder.addNewLine();
     builder.addToken('Token 2', 0);
 
-    assert.equal(builder.content(), 'Token 1\n012345678910111213141516171819Token 2');
+    assert.strictEqual(builder.content(), 'Token 1\n012345678910111213141516171819Token 2');
 
     builder.addNewLine();
     builder.addToken('Token 3', 0);
 
-    assert.equal(
+    assert.strictEqual(
         builder.content(), 'Token 1\n012345678910111213141516171819Token 2\n012345678910111213141516171819Token 3');
 
     builder.increaseNestingLevel();
@@ -172,7 +172,7 @@ describe('FormattedContentBuilder', () => {
     builder.addNewLine();
     builder.addToken('Token 4', 0);
 
-    assert.equal(
+    assert.strictEqual(
         builder.content(),
         'Token 1\n012345678910111213141516171819Token 2\n012345678910111213141516171819Token 3\n202122232425262728293031323334353637383940Token 4');
   });

@@ -13,7 +13,7 @@ const CSS_PROPERTY_NAME_SELECTOR = '.webkit-css-property';
 export const assertContentOfSelectedElementsNode = async (expectedTextContent: string) => {
   const selectedNode = await $(SELECTED_TREE_ELEMENT_SELECTOR);
   const selectedTextContent = await selectedNode.evaluate(node => node.textContent);
-  assert.equal(selectedTextContent, expectedTextContent);
+  assert.strictEqual(selectedTextContent, expectedTextContent);
 };
 
 /**

@@ -9,7 +9,7 @@ import {Context} from '../../../../front_end/ui/Context.js';
 describe('Context', () => {
   it('can be instantiated without issues', () => {
     const context = new Context();
-    assert.equal(context.flavors().size, 0, 'context should not have any flavors upon instantiation');
+    assert.strictEqual(context.flavors().size, 0, 'context should not have any flavors upon instantiation');
   });
 
   // TODO continue writing tests here or use another describe block

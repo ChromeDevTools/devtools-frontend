@@ -10,12 +10,12 @@ import {SourceMapEntry, TextSourceMap} from '../../../../front_end/sdk/SourceMap
 describe.skip('SourceMapEntry', () => {
   it('can be instantiated correctly', () => {
     const sourceMapEntry = new SourceMapEntry(1, 1, 'http://www.example.com/', 1, 1, 'example');
-    assert.equal(sourceMapEntry.lineNumber, 1,'line number was not set correctly');
-    assert.equal(sourceMapEntry.columnNumber, 1,'column number was not set correctly');
-    assert.equal(sourceMapEntry.sourceURL, 'http://www.example.com/','source URL was not set correctly');
-    assert.equal(sourceMapEntry.sourceLineNumber, 1,'source line number was not set correctly');
-    assert.equal(sourceMapEntry.sourceColumnNumber, 1,'source column number was not set correctly');
-    assert.equal(sourceMapEntry.name, 'example','name was not set correctly');
+    assert.strictEqual(sourceMapEntry.lineNumber, 1, 'line number was not set correctly');
+    assert.strictEqual(sourceMapEntry.columnNumber, 1, 'column number was not set correctly');
+    assert.strictEqual(sourceMapEntry.sourceURL, 'http://www.example.com/', 'source URL was not set correctly');
+    assert.strictEqual(sourceMapEntry.sourceLineNumber, 1, 'source line number was not set correctly');
+    assert.strictEqual(sourceMapEntry.sourceColumnNumber, 1, 'source column number was not set correctly');
+    assert.strictEqual(sourceMapEntry.name, 'example', 'name was not set correctly');
   });
 
   describe('comparison', () => {
@@ -34,7 +34,7 @@ describe.skip('SourceMapEntry', () => {
     it('works for equal SourceMapEntries', () => {
       const sourceMapEntry1 = new SourceMapEntry(2, 5, '<foo>', 1, 5, 'foo');
       const sourceMapEntry2 = new SourceMapEntry(2, 5, '<foo>', 1, 5, 'foo');
-      assert.equal(SourceMapEntry.compare(sourceMapEntry1, sourceMapEntry2), 0);
+      assert.strictEqual(SourceMapEntry.compare(sourceMapEntry1, sourceMapEntry2), 0);
     });
   });
 });
@@ -51,17 +51,17 @@ describe('TextSourceMap', () => {
 
     it('peeks the next character', () => {
       const empty_iterator = new TextSourceMap.StringCharIterator('');
-      assert.equal(empty_iterator.peek(), '');
+      assert.strictEqual(empty_iterator.peek(), '');
 
       const iterator = new TextSourceMap.StringCharIterator('foo');
-      assert.equal(iterator.peek(), 'f');
+      assert.strictEqual(iterator.peek(), 'f');
     });
 
     it('advances when {next} is called', () => {
       const iterator = new TextSourceMap.StringCharIterator('bar');
-      assert.equal(iterator.next(), 'b');
-      assert.equal(iterator.next(), 'a');
-      assert.equal(iterator.next(), 'r');
+      assert.strictEqual(iterator.next(), 'b');
+      assert.strictEqual(iterator.next(), 'a');
+      assert.strictEqual(iterator.next(), 'r');
       assert.isFalse(iterator.hasNext());
     });
   });
@@ -70,16 +70,16 @@ describe('TextSourceMap', () => {
       actual: SourceMapEntry|null, expectedSourceURL: string|undefined, expectedSourceLineNumber: number|undefined,
       expectedSourceColumnNumber: number|undefined) {
     assert.isNotNull(actual, 'expected SourceMapEntry to be present');
-    assert.equal(actual!.sourceURL, expectedSourceURL, 'unexpected source URL');
-    assert.equal(actual!.sourceLineNumber, expectedSourceLineNumber, 'unexpected source line number');
-    assert.equal(actual!.sourceColumnNumber, expectedSourceColumnNumber, 'unexpected source column number');
+    assert.strictEqual(actual!.sourceURL, expectedSourceURL, 'unexpected source URL');
+    assert.strictEqual(actual!.sourceLineNumber, expectedSourceLineNumber, 'unexpected source line number');
+    assert.strictEqual(actual!.sourceColumnNumber, expectedSourceColumnNumber, 'unexpected source column number');
   }
 
   function assertReverseMapping(
       actual: SourceMapEntry|null, expectedCompiledLineNumber: number, expectedCompiledColumnNumber: number) {
     assert.isNotNull(actual, 'expected SourceMapEntry to be present');
-    assert.equal(actual!.lineNumber, expectedCompiledLineNumber, 'unexpected compiled line number');
-    assert.equal(actual!.columnNumber, expectedCompiledColumnNumber, 'unexpected compiled column number');
+    assert.strictEqual(actual!.lineNumber, expectedCompiledLineNumber, 'unexpected compiled line number');
+    assert.strictEqual(actual!.columnNumber, expectedCompiledColumnNumber, 'unexpected compiled column number');
   }
 
   // FIXME(szuend): The following tests are a straight-up port from a corresponding layout test.

@@ -45,6 +45,6 @@ describe('Element breadcrumbs', async () => {
 
   it('correctly highlights the active node', async () => {
     const selectedCrumbText = await getSelectedBreadcrumbTextContent();
-    assert.equal(selectedCrumbText, 'div.div2');
+    assert.strictEqual(selectedCrumbText, 'div.div2');
   });
 });

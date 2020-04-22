@@ -20,7 +20,7 @@ const runFixtureTestAndAssertMatch = (fixtureName: string) => {
   const actualCode = fs.readFileSync(output, {encoding: 'utf8'});
   const expectedCode = fs.readFileSync(expectedPath, {encoding: 'utf8'});
 
-  assert.equal(actualCode, expectedCode, `Fixture did not match expected: ${fixtureName}`);
+  assert.strictEqual(actualCode, expectedCode, `Fixture did not match expected: ${fixtureName}`);
 
   return {actualCode, expectedCode};
 };

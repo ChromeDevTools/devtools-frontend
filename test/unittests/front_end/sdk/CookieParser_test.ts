@@ -21,8 +21,8 @@ describe('CookieParser', () => {
       const cookies = CookieParser.parseCookie(cookie);
       if (ensureCookiesExistOrFailTest(cookies)) {
         assert.lengthOf(cookies, 1);
-        assert.equal(cookies[0].name(), 'foo');
-        assert.equal(cookies[0].value(), 'bar');
+        assert.strictEqual(cookies[0].name(), 'foo');
+        assert.strictEqual(cookies[0].value(), 'bar');
       }
     });
 
@@ -31,10 +31,10 @@ describe('CookieParser', () => {
       const cookies = CookieParser.parseCookie(cookie);
       if (ensureCookiesExistOrFailTest(cookies)) {
         assert.lengthOf(cookies, 2);
-        assert.equal(cookies[0].name(), 'one');
-        assert.equal(cookies[0].value(), 'jack');
-        assert.equal(cookies[1].name(), 'two');
-        assert.equal(cookies[1].value(), 'tim');
+        assert.strictEqual(cookies[0].name(), 'one');
+        assert.strictEqual(cookies[0].value(), 'jack');
+        assert.strictEqual(cookies[1].name(), 'two');
+        assert.strictEqual(cookies[1].value(), 'tim');
       }
     });
   });
@@ -45,8 +45,8 @@ describe('CookieParser', () => {
       const cookies = CookieParser.parseSetCookie(cookie);
       if (ensureCookiesExistOrFailTest(cookies)) {
         assert.lengthOf(cookies, 1);
-        assert.equal(cookies[0].name(), 'foo');
-        assert.equal(cookies[0].value(), 'bar');
+        assert.strictEqual(cookies[0].name(), 'foo');
+        assert.strictEqual(cookies[0].value(), 'bar');
       }
     });
 
@@ -55,9 +55,9 @@ describe('CookieParser', () => {
       const cookies = CookieParser.parseSetCookie(cookie);
       if (ensureCookiesExistOrFailTest(cookies)) {
         assert.lengthOf(cookies, 1);
-        assert.equal(cookies[0].name(), 'foo');
-        assert.equal(cookies[0].value(), 'bar');
-        assert.equal(cookies[0].expires().toString(), 'Wed, 21 Oct 2015 07:28:00 GMT');
+        assert.strictEqual(cookies[0].name(), 'foo');
+        assert.strictEqual(cookies[0].value(), 'bar');
+        assert.strictEqual(cookies[0].expires().toString(), 'Wed, 21 Oct 2015 07:28:00 GMT');
       }
     });
   });

@@ -38,9 +38,9 @@ describe('The Sources Tab', async function() {
     await waitFor('.navigator-file-tree-item');
 
     const worker1FileName = await openNestedWorkerFile(WORKER1_SELECTORS);
-    assert.equal(worker1FileName, 'worker1.js');
+    assert.strictEqual(worker1FileName, 'worker1.js');
 
     const worker2FileName = await openNestedWorkerFile(WORKER2_SELECTORS);
-    assert.equal(worker2FileName, 'worker2.js');
+    assert.strictEqual(worker2FileName, 'worker2.js');
   });
 });

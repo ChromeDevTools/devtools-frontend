@@ -287,7 +287,7 @@ describe('generateClosure', () => {
 
       const interfaces = generateInterfaces(state);
 
-      assert.equal(interfaces.length, 1);
+      assert.strictEqual(interfaces.length, 1);
       assert.isTrue(interfaces[0].join('').includes('export let Person'));
     });
 
@@ -310,7 +310,7 @@ describe('generateClosure', () => {
 
       const interfaces = generateInterfaces(state);
 
-      assert.equal(interfaces.length, 1);
+      assert.strictEqual(interfaces.length, 1);
       assert.isTrue(interfaces[0].join('').includes('export let Person'));
     });
 
@@ -326,7 +326,7 @@ describe('generateClosure', () => {
 
       const interfaces = generateInterfaces(state);
 
-      assert.equal(interfaces.length, 1);
+      assert.strictEqual(interfaces.length, 1);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
 * name:string
 * age:number
@@ -344,7 +344,7 @@ describe('generateClosure', () => {
 
       const interfaces = generateInterfaces(state);
 
-      assert.equal(interfaces.length, 1);
+      assert.strictEqual(interfaces.length, 1);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
 * name:(string|undefined)
 * }}`);
@@ -363,7 +363,7 @@ describe('generateClosure', () => {
 
       const interfaces = generateInterfaces(state);
 
-      assert.equal(interfaces.length, 1);
+      assert.strictEqual(interfaces.length, 1);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
 * pet:(!Pet|undefined)
 * }}`);
@@ -381,7 +381,7 @@ describe('generateClosure', () => {
 
       const interfaces = generateInterfaces(state);
 
-      assert.equal(interfaces.length, 1);
+      assert.strictEqual(interfaces.length, 1);
       assert.include(interfaces[0].join('\n'), `// @ts-ignore we export this for Closure not TS
 export let Person`);
     });

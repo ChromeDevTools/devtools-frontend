@@ -9,8 +9,8 @@ import {ResourceType, ResourceCategory} from '../../../../front_end/common/Resou
 describe('ResourceCategory class', () => {
   it('is able to be instantiated successfully', () => {
     const resourceCategory = new ResourceCategory('Test Title', 'Test Short Title');
-    assert.equal(resourceCategory.title, 'Test Title', 'title is not correct');
-    assert.equal(resourceCategory.shortTitle, 'Test Short Title', 'short title is not correct');
+    assert.strictEqual(resourceCategory.title, 'Test Title', 'title is not correct');
+    assert.strictEqual(resourceCategory.shortTitle, 'Test Short Title', 'short title is not correct');
   });
 });
 
@@ -18,111 +18,111 @@ describe('ResourceType class', () => {
   it('is able to be instantiated successfully', () => {
     const testResourceCategory = new ResourceCategory('Category Test Title', 'Category Test Short Title');
     const resourceType = new ResourceType('Type Test Name', 'Type Test Title', testResourceCategory, true);
-    assert.equal(resourceType.name(), 'Type Test Name', 'name was not set correctly');
-    assert.equal(resourceType.title(), 'Type Test Title', 'title was not set correctly');
-    assert.equal(resourceType.category().title, 'Category Test Title', 'category title was not set correctly');
-    assert.equal(
+    assert.strictEqual(resourceType.name(), 'Type Test Name', 'name was not set correctly');
+    assert.strictEqual(resourceType.title(), 'Type Test Title', 'title was not set correctly');
+    assert.strictEqual(resourceType.category().title, 'Category Test Title', 'category title was not set correctly');
+    assert.strictEqual(
         resourceType.category().shortTitle, 'Category Test Short Title', 'category short title was not set correctly');
-    assert.equal(resourceType.isTextType(), true, 'isTextType was not set correctly');
+    assert.strictEqual(resourceType.isTextType(), true, 'isTextType was not set correctly');
   });
 
   it('is able to return a document resource from the string "text/html"', () => {
     const result = ResourceType.fromMimeType('text/html');
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
-    assert.equal(result.name(), 'document', 'name was not set correctly');
-    assert.equal(result.title(), 'Document', 'title was not set correctly');
-    assert.equal(result.category().title, 'Documents', 'category title was not set correctly');
-    assert.equal(result.category().shortTitle, 'Doc', 'category short title was not set correctly');
+    assert.strictEqual(result.name(), 'document', 'name was not set correctly');
+    assert.strictEqual(result.title(), 'Document', 'title was not set correctly');
+    assert.strictEqual(result.category().title, 'Documents', 'category title was not set correctly');
+    assert.strictEqual(result.category().shortTitle, 'Doc', 'category short title was not set correctly');
     assert.isTrue(result.isTextType(), 'isTextType was not set correctly');
   });
 
   it('is able to return a stylesheet resource from the string "text/css"', () => {
     const result = ResourceType.fromMimeType('text/css');
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
-    assert.equal(result.name(), 'stylesheet', 'name was not set correctly');
-    assert.equal(result.title(), 'Stylesheet', 'title was not set correctly');
-    assert.equal(result.category().title, 'Stylesheets', 'category title was not set correctly');
-    assert.equal(result.category().shortTitle, 'CSS', 'category short title was not set correctly');
+    assert.strictEqual(result.name(), 'stylesheet', 'name was not set correctly');
+    assert.strictEqual(result.title(), 'Stylesheet', 'title was not set correctly');
+    assert.strictEqual(result.category().title, 'Stylesheets', 'category title was not set correctly');
+    assert.strictEqual(result.category().shortTitle, 'CSS', 'category short title was not set correctly');
     assert.isTrue(result.isTextType(), 'isTextType was not set correctly');
   });
 
   it('is able to return an image resource from the string "image/"', () => {
     const result = ResourceType.fromMimeType('image/');
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
-    assert.equal(result.name(), 'image', 'name was not set correctly');
-    assert.equal(result.title(), 'Image', 'title was not set correctly');
-    assert.equal(result.category().title, 'Images', 'category title was not set correctly');
-    assert.equal(result.category().shortTitle, 'Img', 'category short title was not set correctly');
+    assert.strictEqual(result.name(), 'image', 'name was not set correctly');
+    assert.strictEqual(result.title(), 'Image', 'title was not set correctly');
+    assert.strictEqual(result.category().title, 'Images', 'category title was not set correctly');
+    assert.strictEqual(result.category().shortTitle, 'Img', 'category short title was not set correctly');
     assert.isFalse(result.isTextType(), 'isTextType was not set correctly');
   });
 
   it('is able to return a script resource from the string "text/"', () => {
     const result = ResourceType.fromMimeType('text/');
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
-    assert.equal(result.name(), 'script', 'name was not set correctly');
-    assert.equal(result.title(), 'Script', 'title was not set correctly');
-    assert.equal(result.category().title, 'Scripts', 'category title was not set correctly');
-    assert.equal(result.category().shortTitle, 'JS', 'category short title was not set correctly');
+    assert.strictEqual(result.name(), 'script', 'name was not set correctly');
+    assert.strictEqual(result.title(), 'Script', 'title was not set correctly');
+    assert.strictEqual(result.category().title, 'Scripts', 'category title was not set correctly');
+    assert.strictEqual(result.category().shortTitle, 'JS', 'category short title was not set correctly');
     assert.isTrue(result.isTextType(), 'isTextType was not set correctly');
   });
 
   it('is able to return a font resource from the string "font"', () => {
     const result = ResourceType.fromMimeType('font');
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
-    assert.equal(result.name(), 'font', 'name was not set correctly');
-    assert.equal(result.title(), 'Font', 'title was not set correctly');
-    assert.equal(result.category().title, 'Fonts', 'category title was not set correctly');
-    assert.equal(result.category().shortTitle, 'Font', 'category short title was not set correctly');
+    assert.strictEqual(result.name(), 'font', 'name was not set correctly');
+    assert.strictEqual(result.title(), 'Font', 'title was not set correctly');
+    assert.strictEqual(result.category().title, 'Fonts', 'category title was not set correctly');
+    assert.strictEqual(result.category().shortTitle, 'Font', 'category short title was not set correctly');
     assert.isFalse(result.isTextType(), 'isTextType was not set correctly');
   });
 
   it('is able to return a script resource from the string "script"', () => {
     const result = ResourceType.fromMimeType('script');
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
-    assert.equal(result.name(), 'script', 'name was not set correctly');
-    assert.equal(result.title(), 'Script', 'title was not set correctly');
-    assert.equal(result.category().title, 'Scripts', 'category title was not set correctly');
-    assert.equal(result.category().shortTitle, 'JS', 'category short title was not set correctly');
+    assert.strictEqual(result.name(), 'script', 'name was not set correctly');
+    assert.strictEqual(result.title(), 'Script', 'title was not set correctly');
+    assert.strictEqual(result.category().title, 'Scripts', 'category title was not set correctly');
+    assert.strictEqual(result.category().shortTitle, 'JS', 'category short title was not set correctly');
     assert.isTrue(result.isTextType(), 'isTextType was not set correctly');
   });
 
   it('is able to return an octet resource from the string "octet"', () => {
     const result = ResourceType.fromMimeType('octet');
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
-    assert.equal(result.name(), 'other', 'name was not set correctly');
-    assert.equal(result.title(), 'Other', 'title was not set correctly');
-    assert.equal(result.category().title, 'Other', 'category title was not set correctly');
-    assert.equal(result.category().shortTitle, 'Other', 'category short title was not set correctly');
+    assert.strictEqual(result.name(), 'other', 'name was not set correctly');
+    assert.strictEqual(result.title(), 'Other', 'title was not set correctly');
+    assert.strictEqual(result.category().title, 'Other', 'category title was not set correctly');
+    assert.strictEqual(result.category().shortTitle, 'Other', 'category short title was not set correctly');
     assert.isFalse(result.isTextType(), 'isTextType was not set correctly');
   });
 
   it('is able to return an application resource from the string "application"', () => {
     const result = ResourceType.fromMimeType('application');
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
-    assert.equal(result.name(), 'script', 'name was not set correctly');
-    assert.equal(result.title(), 'Script', 'title was not set correctly');
-    assert.equal(result.category().title, 'Scripts', 'category title was not set correctly');
-    assert.equal(result.category().shortTitle, 'JS', 'category short title was not set correctly');
+    assert.strictEqual(result.name(), 'script', 'name was not set correctly');
+    assert.strictEqual(result.title(), 'Script', 'title was not set correctly');
+    assert.strictEqual(result.category().title, 'Scripts', 'category title was not set correctly');
+    assert.strictEqual(result.category().shortTitle, 'JS', 'category short title was not set correctly');
     assert.isTrue(result.isTextType(), 'isTextType was not set correctly');
   });
 
   it('is able to return a resource of type other from the string "test/resource"', () => {
     const result = ResourceType.fromMimeType('test/resource');
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
-    assert.equal(result.name(), 'other', 'name was not set correctly');
-    assert.equal(result.title(), 'Other', 'title was not set correctly');
-    assert.equal(result.category().title, 'Other', 'category title was not set correctly');
-    assert.equal(result.category().shortTitle, 'Other', 'category short title was not set correctly');
+    assert.strictEqual(result.name(), 'other', 'name was not set correctly');
+    assert.strictEqual(result.title(), 'Other', 'title was not set correctly');
+    assert.strictEqual(result.category().title, 'Other', 'category title was not set correctly');
+    assert.strictEqual(result.category().shortTitle, 'Other', 'category short title was not set correctly');
     assert.isFalse(result.isTextType(), 'isTextType was not set correctly');
   });
 
   it('is able to return a resource type from a URL that contains a mapped extension', () => {
     const result = ResourceType.fromURL('http://www.example.com/test/testFile.js')!;
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
-    assert.equal(result.name(), 'script', 'name was not set correctly');
-    assert.equal(result.title(), 'Script', 'title was not set correctly');
-    assert.equal(result.category().title, 'Scripts', 'category title was not set correctly');
-    assert.equal(result.category().shortTitle, 'JS', 'category short title was not set correctly');
+    assert.strictEqual(result.name(), 'script', 'name was not set correctly');
+    assert.strictEqual(result.title(), 'Script', 'title was not set correctly');
+    assert.strictEqual(result.category().title, 'Scripts', 'category title was not set correctly');
+    assert.strictEqual(result.category().shortTitle, 'JS', 'category short title was not set correctly');
     assert.isTrue(result.isTextType(), 'isTextType was not set correctly');
   });
 
@@ -134,10 +134,10 @@ describe('ResourceType class', () => {
   it('is able to return a resource type from a mapped name', () => {
     const result = ResourceType.fromName('script')!;
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
-    assert.equal(result.name(), 'script', 'name was not set correctly');
-    assert.equal(result.title(), 'Script', 'title was not set correctly');
-    assert.equal(result.category().title, 'Scripts', 'category title was not set correctly');
-    assert.equal(result.category().shortTitle, 'JS', 'category short title was not set correctly');
+    assert.strictEqual(result.name(), 'script', 'name was not set correctly');
+    assert.strictEqual(result.title(), 'Script', 'title was not set correctly');
+    assert.strictEqual(result.category().title, 'Scripts', 'category title was not set correctly');
+    assert.strictEqual(result.category().shortTitle, 'JS', 'category short title was not set correctly');
     assert.isTrue(result.isTextType(), 'isTextType was not set correctly');
   });
 
@@ -148,7 +148,7 @@ describe('ResourceType class', () => {
 
   it('is able to return a mime from URL that contains a mapped extension', () => {
     const result = ResourceType.mimeFromURL('http://www.example.com/test/path.html');
-    assert.equal(result, 'text/html', 'mime returned was not correct');
+    assert.strictEqual(result, 'text/html', 'mime returned was not correct');
   });
 
   it('is able to return a mime from URL that contains an unmapped extension', () => {
@@ -158,12 +158,12 @@ describe('ResourceType class', () => {
 
   it('is able to return a mime from URL that contains a mapped name', () => {
     const result = ResourceType.mimeFromURL('http://www.example.com/test/Cakefile');
-    assert.equal(result, 'text/x-coffeescript', 'mime returned was not correct');
+    assert.strictEqual(result, 'text/x-coffeescript', 'mime returned was not correct');
   });
 
   it('is able to return a mime from a mapped extension', () => {
     const result = ResourceType.mimeFromExtension('html');
-    assert.equal(result, 'text/html', 'mime returned was not correct');
+    assert.strictEqual(result, 'text/html', 'mime returned was not correct');
   });
 
   it('is able to return a mime from an unmapped extension', () => {
@@ -174,7 +174,7 @@ describe('ResourceType class', () => {
   it('is able to return its title successfully', () => {
     const testResourceCategory = new ResourceCategory('Category Test Title', 'Category Test Short Title');
     const resourceType = new ResourceType('Type Test Name', 'Type Test Title', testResourceCategory, true);
-    assert.equal(resourceType.title(), 'Type Test Title', 'title was not returned correctly');
+    assert.strictEqual(resourceType.title(), 'Type Test Title', 'title was not returned correctly');
   });
 
   it('is able to return its isTextType value successfully', () => {
@@ -292,32 +292,34 @@ describe('ResourceType class', () => {
   it('is able to be converted to a string by returning its name', () => {
     const testResourceCategory = new ResourceCategory('Category Test Title', 'Category Test Short Title');
     const resourceType = new ResourceType('Type Test Name', 'Type Test Title', testResourceCategory, true);
-    assert.equal(
+    assert.strictEqual(
         resourceType.toString(), 'Type Test Name', 'the resource type was not converted to a string correctly');
   });
 
   it('is able to return the canonical mime type of a document', () => {
     const testResourceCategory = new ResourceCategory('Category Test Title', 'Category Test Short Title');
     const resourceType = new ResourceType('document', 'Type Test Title', testResourceCategory, true);
-    assert.equal(resourceType.canonicalMimeType(), 'text/html', 'the canonical mime type was not returned correctly');
+    assert.strictEqual(
+        resourceType.canonicalMimeType(), 'text/html', 'the canonical mime type was not returned correctly');
   });
 
   it('is able to return the canonical mime type of a script', () => {
     const testResourceCategory = new ResourceCategory('Category Test Title', 'Category Test Short Title');
     const resourceType = new ResourceType('script', 'Type Test Title', testResourceCategory, true);
-    assert.equal(
+    assert.strictEqual(
         resourceType.canonicalMimeType(), 'text/javascript', 'the canonical mime type was not returned correctly');
   });
 
   it('is able to return the canonical mime type of a stylesheet', () => {
     const testResourceCategory = new ResourceCategory('Category Test Title', 'Category Test Short Title');
     const resourceType = new ResourceType('stylesheet', 'Type Test Title', testResourceCategory, true);
-    assert.equal(resourceType.canonicalMimeType(), 'text/css', 'the canonical mime type was not returned correctly');
+    assert.strictEqual(
+        resourceType.canonicalMimeType(), 'text/css', 'the canonical mime type was not returned correctly');
   });
 
   it('returns an empty string as a canonical mime type if it was not a document, a script or a stylesheet', () => {
     const testResourceCategory = new ResourceCategory('Category Test Title', 'Category Test Short Title');
     const resourceType = new ResourceType('Type Test Name', 'Type Test Title', testResourceCategory, true);
-    assert.equal(resourceType.canonicalMimeType(), '', 'the canonical mime type was not returned correctly');
+    assert.strictEqual(resourceType.canonicalMimeType(), '', 'the canonical mime type was not returned correctly');
   });
 });

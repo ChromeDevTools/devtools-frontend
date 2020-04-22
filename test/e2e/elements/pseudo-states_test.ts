@@ -31,7 +31,7 @@ describe('The Elements tab', async () => {
     await waitForDomNodeToBeVisible(TARGET_SHOWN_ON_HOVER_SELECTOR);
 
     const displayComputedStyle = await getComputedStylesForDomNode(TARGET_SHOWN_ON_HOVER_SELECTOR, 'display');
-    assert.equal(displayComputedStyle, 'inline');
+    assert.strictEqual(displayComputedStyle, 'inline');
   });
 
   it('can force :focus state for selected DOM node', async () => {
@@ -53,10 +53,10 @@ describe('The Elements tab', async () => {
     await waitForDomNodeToBeVisible(TARGET_SHOWN_ON_FOCUS_SELECTOR);
 
     const displayComputedStyle = await getComputedStylesForDomNode(TARGET_SHOWN_ON_FOCUS_SELECTOR, 'display');
-    assert.equal(displayComputedStyle, 'inline');
+    assert.strictEqual(displayComputedStyle, 'inline');
 
     const backgroundColorComputedStyle = await getComputedStylesForDomNode('#focus', 'backgroundColor');
-    assert.equal(backgroundColorComputedStyle, 'rgb(0, 128, 0)');
+    assert.strictEqual(backgroundColorComputedStyle, 'rgb(0, 128, 0)');
   });
 
   it('can remove :focus state', async () => {
@@ -78,10 +78,10 @@ describe('The Elements tab', async () => {
     await waitForDomNodeToBeVisible(TARGET_SHOWN_ON_FOCUS_SELECTOR);
 
     const displayComputedStyle = await getComputedStylesForDomNode(TARGET_SHOWN_ON_FOCUS_SELECTOR, 'display');
-    assert.equal(displayComputedStyle, 'inline');
+    assert.strictEqual(displayComputedStyle, 'inline');
 
     const backgroundColorComputedStyle = await getComputedStylesForDomNode('#focus', 'backgroundColor');
-    assert.equal(backgroundColorComputedStyle, 'rgb(0, 128, 0)');
+    assert.strictEqual(backgroundColorComputedStyle, 'rgb(0, 128, 0)');
 
     await removePseudoState(':focus');
     await waitForDomNodeToBeHidden(TARGET_SHOWN_ON_FOCUS_SELECTOR);
@@ -89,6 +89,6 @@ describe('The Elements tab', async () => {
     await debuggerStatement(frontend);
 
     const hiddenDisplayStyle = await getComputedStylesForDomNode(TARGET_SHOWN_ON_FOCUS_SELECTOR, 'display');
-    assert.equal(hiddenDisplayStyle, 'none');
+    assert.strictEqual(hiddenDisplayStyle, 'none');
   });
 });

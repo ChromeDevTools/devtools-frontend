@@ -10,7 +10,7 @@ import {StubIssue} from './StubIssue.js';
 describe('Issue', () => {
   it('should always require a code', () => {
     const issue = new Issue('code');
-    assert.equal(issue.code(), 'code');
+    assert.strictEqual(issue.code(), 'code');
   });
 });
 

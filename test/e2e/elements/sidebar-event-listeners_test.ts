@@ -28,7 +28,7 @@ describe('Event listeners in the elements sidebar', async () => {
     } = await getFirstNodeForEventListener('[aria-label="click, event listener"]');
 
     // check that we have the right event for the right element
-    // we can't use assert.equal() as the text also includes the "Remove" button
+    // we can't use assert.strictEqual() as the text also includes the "Remove" button
     assert.include(firstListenerText, 'button#test-button');
 
     // we have to double click on the event to expand it
@@ -54,7 +54,7 @@ describe('Event listeners in the elements sidebar', async () => {
     } = await getFirstNodeForEventListener('[aria-label="custom event, event listener"]');
 
     // check that we have the right event for the right element
-    // we can't use assert.equal() as the text also includes the "Remove" button
+    // we can't use assert.strictEqual() as the text also includes the "Remove" button
     assert.include(firstListenerText, 'body');
 
     // we have to double click on the event to expand it

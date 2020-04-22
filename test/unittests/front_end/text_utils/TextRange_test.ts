@@ -16,19 +16,21 @@ interface ExpectedTextRange {
 function assertIsTextRangeAndEqualsRange(range: TextRange, expectedRange: ExpectedTextRange, description: string) {
   const prefix = description.length ? `${description}, but ` : '';
   assert.isTrue(range instanceof TextRange, `${prefix}range is not a TextRange`);
-  assert.equal(range.startLine, expectedRange.startLine, `${prefix}range's startLine differs from expectation`);
-  assert.equal(range.startColumn, expectedRange.startColumn, `${prefix}range's startColumn differs from expectation`);
-  assert.equal(range.endLine, expectedRange.endLine, `${prefix}range's endLine differs from expectation`);
-  assert.equal(range.endColumn, expectedRange.endColumn, `${prefix}range's endColumn differs from expectation`);
+  assert.strictEqual(range.startLine, expectedRange.startLine, `${prefix}range's startLine differs from expectation`);
+  assert.strictEqual(
+      range.startColumn, expectedRange.startColumn, `${prefix}range's startColumn differs from expectation`);
+  assert.strictEqual(range.endLine, expectedRange.endLine, `${prefix}range's endLine differs from expectation`);
+  assert.strictEqual(range.endColumn, expectedRange.endColumn, `${prefix}range's endColumn differs from expectation`);
 }
 
 function assertIsUnitTextRange(range: TextRange, line: number, column: number, description: string) {
   const prefix = description.length ? `${description}, but ` : '';
   assert.isTrue(range instanceof TextRange, `${prefix}range is not a TextRange`);
-  assert.equal(range.startLine, range.endLine, `${prefix}the range is not a unit range: start/end lines differ`);
-  assert.equal(range.startColumn, range.endColumn, `${prefix}the range is not a unit range: start/end columns differ`);
-  assert.equal(range.startLine, line, `${prefix}the line was not set correctly`);
-  assert.equal(range.startColumn, column, `${prefix}the column was not set correctly`);
+  assert.strictEqual(range.startLine, range.endLine, `${prefix}the range is not a unit range: start/end lines differ`);
+  assert.strictEqual(
+      range.startColumn, range.endColumn, `${prefix}the range is not a unit range: start/end columns differ`);
+  assert.strictEqual(range.startLine, line, `${prefix}the line was not set correctly`);
+  assert.strictEqual(range.startColumn, column, `${prefix}the column was not set correctly`);
 }
 
 describe('TextRange', () => {
@@ -38,10 +40,10 @@ describe('TextRange', () => {
     const endLine = 3;
     const endColumn = 4;
     const textRange = new TextRange(startLine, startColumn, endLine, endColumn);
-    assert.equal(textRange.startLine, startLine, 'the start line was not set or retrieved correctly');
-    assert.equal(textRange.startColumn, startColumn, 'the start column was not set or retrieved correctly');
-    assert.equal(textRange.endLine, endLine, 'the end line was not set or retrieved correctly');
-    assert.equal(textRange.endColumn, endColumn, 'the end column was not set or retrieved correctly');
+    assert.strictEqual(textRange.startLine, startLine, 'the start line was not set or retrieved correctly');
+    assert.strictEqual(textRange.startColumn, startColumn, 'the start column was not set or retrieved correctly');
+    assert.strictEqual(textRange.endLine, endLine, 'the end line was not set or retrieved correctly');
+    assert.strictEqual(textRange.endColumn, endColumn, 'the end column was not set or retrieved correctly');
   });
 
   it('can be created from a location', () => {
@@ -115,9 +117,9 @@ describe('TextRange', () => {
     const textRangeA = TextRange.fromObject({startLine: 1, startColumn: 2, endLine: 1, endColumn: 2});
     const textRangeB = TextRange.fromObject({startLine: 1, startColumn: 2, endLine: 2, endColumn: 2});
     const textRangeC = TextRange.fromObject({startLine: 1, startColumn: 2, endLine: 12, endColumn: 2});
-    assert.equal(textRangeA.linesCount, 0, 'line count was wrong');
-    assert.equal(textRangeB.linesCount, 1, 'line count was wrong');
-    assert.equal(textRangeC.linesCount, 11, 'line count was wrong');
+    assert.strictEqual(textRangeA.linesCount, 0, 'line count was wrong');
+    assert.strictEqual(textRangeB.linesCount, 1, 'line count was wrong');
+    assert.strictEqual(textRangeC.linesCount, 11, 'line count was wrong');
   });
 
   it('can be collapsed to start', () => {
@@ -189,13 +191,13 @@ describe('TextRange', () => {
     const textRangeC = TextRange.fromObject({startLine: 2, startColumn: 2, endLine: 3, endColumn: 4});
     const textRangeD = TextRange.fromObject({startLine: 3, startColumn: 1, endLine: 3, endColumn: 4});
 
-    assert.equal(textRangeA.compareTo(textRangeA), 0, 'A should be equal to itself');
-    assert.equal(textRangeA.compareTo(textRangeB), -1, 'A should be before B');
-    assert.equal(textRangeB.compareTo(textRangeA), 1, 'B should be after A');
-    assert.equal(textRangeA.compareTo(textRangeC), -1, 'A should be before C');
-    assert.equal(textRangeC.compareTo(textRangeA), 1, 'C should be after A');
-    assert.equal(textRangeC.compareTo(textRangeD), -1, 'C should be before D');
-    assert.equal(textRangeD.compareTo(textRangeC), 1, 'D should be after C');
+    assert.strictEqual(textRangeA.compareTo(textRangeA), 0, 'A should be equal to itself');
+    assert.strictEqual(textRangeA.compareTo(textRangeB), -1, 'A should be before B');
+    assert.strictEqual(textRangeB.compareTo(textRangeA), 1, 'B should be after A');
+    assert.strictEqual(textRangeA.compareTo(textRangeC), -1, 'A should be before C');
+    assert.strictEqual(textRangeC.compareTo(textRangeA), 1, 'C should be after A');
+    assert.strictEqual(textRangeC.compareTo(textRangeD), -1, 'C should be before D');
+    assert.strictEqual(textRangeD.compareTo(textRangeC), 1, 'D should be after C');
   });
 
   it('can be compared with TextRange.comparator', () => {
@@ -204,24 +206,24 @@ describe('TextRange', () => {
     const textRangeC = TextRange.fromObject({startLine: 2, startColumn: 2, endLine: 3, endColumn: 4});
     const textRangeD = TextRange.fromObject({startLine: 3, startColumn: 1, endLine: 3, endColumn: 4});
 
-    assert.equal(TextRange.comparator(textRangeA, textRangeA), 0, 'A should be equal to itself');
-    assert.equal(TextRange.comparator(textRangeA, textRangeB), -1, 'A should be before B');
-    assert.equal(TextRange.comparator(textRangeB, textRangeA), 1, 'B should be after A');
-    assert.equal(TextRange.comparator(textRangeA, textRangeC), -1, 'A should be before C');
-    assert.equal(TextRange.comparator(textRangeC, textRangeA), 1, 'C should be after A');
-    assert.equal(TextRange.comparator(textRangeC, textRangeD), -1, 'C should be before D');
-    assert.equal(TextRange.comparator(textRangeD, textRangeC), 1, 'D should be after C');
+    assert.strictEqual(TextRange.comparator(textRangeA, textRangeA), 0, 'A should be equal to itself');
+    assert.strictEqual(TextRange.comparator(textRangeA, textRangeB), -1, 'A should be before B');
+    assert.strictEqual(TextRange.comparator(textRangeB, textRangeA), 1, 'B should be after A');
+    assert.strictEqual(TextRange.comparator(textRangeA, textRangeC), -1, 'A should be before C');
+    assert.strictEqual(TextRange.comparator(textRangeC, textRangeA), 1, 'C should be after A');
+    assert.strictEqual(TextRange.comparator(textRangeC, textRangeD), -1, 'C should be before D');
+    assert.strictEqual(TextRange.comparator(textRangeD, textRangeC), 1, 'D should be after C');
   });
 
   it('can be compared to a position', () => {
     const textRangeA = TextRange.fromObject({startLine: 1, startColumn: 2, endLine: 3, endColumn: 4});
-    assert.equal(textRangeA.compareToPosition(0, 3), -1, 'position before range should compare less');
-    assert.equal(textRangeA.compareToPosition(1, 1), -1, 'position before range should compare less');
-    assert.equal(textRangeA.compareToPosition(1, 2), 0, 'start position should compare equal');
-    assert.equal(textRangeA.compareToPosition(1, 4), 0, 'position in range should compare equal');
-    assert.equal(textRangeA.compareToPosition(3, 4), 0, 'end position should compare equal');
-    assert.equal(textRangeA.compareToPosition(3, 5), 1, 'position after range should compare greater');
-    assert.equal(textRangeA.compareToPosition(4, 4), 1, 'position after range should compare greater');
+    assert.strictEqual(textRangeA.compareToPosition(0, 3), -1, 'position before range should compare less');
+    assert.strictEqual(textRangeA.compareToPosition(1, 1), -1, 'position before range should compare less');
+    assert.strictEqual(textRangeA.compareToPosition(1, 2), 0, 'start position should compare equal');
+    assert.strictEqual(textRangeA.compareToPosition(1, 4), 0, 'position in range should compare equal');
+    assert.strictEqual(textRangeA.compareToPosition(3, 4), 0, 'end position should compare equal');
+    assert.strictEqual(textRangeA.compareToPosition(3, 5), 1, 'position after range should compare greater');
+    assert.strictEqual(textRangeA.compareToPosition(4, 4), 1, 'position after range should compare greater');
   });
 
   it('can be adjusted relative to a position', () => {

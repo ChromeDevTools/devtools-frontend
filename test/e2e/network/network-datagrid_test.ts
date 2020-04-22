@@ -26,7 +26,7 @@ describe('The Network Tab', async () => {
     const checkbox = await $('[aria-label="Disable cache"]');
     const checked = await checkbox.evaluate(box => box.checked);
 
-    assert.equal(checked, true, 'The disable cache checkbox should be checked');
+    assert.strictEqual(checked, true, 'The disable cache checkbox should be checked');
   });
 
   // Flaky test
@@ -80,7 +80,7 @@ describe('The Network Tab', async () => {
     const codeMirrorEditor = await $('.CodeMirror-code');
     const htmlRawResponse = await codeMirrorEditor.evaluate(editor => editor.textContent);
 
-    assert.equal(
+    assert.strictEqual(
         htmlRawResponse,
         '1<html><body>The following word is written using cyrillic letters and should look like "SUCCESS": SU\u0421\u0421\u0415SS.</body></html>');
   });

@@ -39,7 +39,7 @@ describe('Raw-Wasm', async () => {
 
     const pauseMessage = await statusMainElement.evaluate(n => n.textContent);
 
-    assert.equal(pauseMessage, 'Debugger paused');
+    assert.strictEqual(pauseMessage, 'Debugger paused');
 
     const sidebar = await messageElement.evaluateHandle(n => n.parentElement);
 
@@ -65,8 +65,8 @@ describe('Raw-Wasm', async () => {
 
     const location = await callFrameLocation.evaluate(n => n.textContent);
 
-    assert.equal(title, 'foo');
-    assert.equal(location, 'callstack-wasm-to-js.wasm:1');
+    assert.strictEqual(title, 'foo');
+    assert.strictEqual(location, 'callstack-wasm-to-js.wasm:1');
 
     // Select next call frame.
     await callFrame.press('ArrowDown');
@@ -76,7 +76,7 @@ describe('Raw-Wasm', async () => {
     const codeLine = await frontend.waitForSelector('.cm-execution-line pre');
     const codeText = await codeLine.evaluate(n => n.textContent);
 
-    assert.equal(codeText, '    call $bar');
+    assert.strictEqual(codeText, '    call $bar');
 
     // Resume the evaluation
     await click(RESUME_BUTTON);

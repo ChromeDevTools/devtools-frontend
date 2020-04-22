@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const { assert } = chai;
+const {assert} = chai;
 
 import {ObjectWrapper} from '../../../../front_end/common/Object.js';
 
@@ -48,19 +48,19 @@ describe('ObjectWrapper', () => {
       obj.addEventListener('foo', callback);
       obj.dispatchEventToListeners('foo');
       obj.dispatchEventToListeners('foo');
-      assert.equal(count, 2);
+      assert.strictEqual(count, 2);
     });
 
     it('fires event listeners with data', done => {
       const count = 0;
       const callback = (evt: {data: {bar: string}}) => {
-        assert.equal(evt.data.bar, 'baz');
+        assert.strictEqual(evt.data.bar, 'baz');
         done();
       };
 
       obj.addEventListener('foo', callback);
-      obj.dispatchEventToListeners('foo', { bar: 'baz' });
-      assert.equal(count, 2);
+      obj.dispatchEventToListeners('foo', {bar: 'baz'});
+      assert.strictEqual(count, 2);
     });
 
     it('handles removal of non-existent listener', () => {

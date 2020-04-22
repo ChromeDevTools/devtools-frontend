@@ -19,7 +19,7 @@ describe('The Sources Tab', async () => {
       const element = await waitFor('[aria-label="Search Query"]');
       const value = await element.evaluate(input => input.value);
 
-      assert.equal(value, 'file:test/e2e/resources/sources/navigation');
+      assert.strictEqual(value, 'file:test/e2e/resources/sources/navigation');
     });
   });
 });

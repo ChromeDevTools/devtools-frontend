@@ -10,9 +10,9 @@ import {ServerTiming} from '../../../../front_end/sdk/ServerTiming.js';
 describe.skip('ServerTiming', () => {
   it('can be instantiated correctly', () => {
     const serverTiming = new ServerTiming('example metric', 1, 'example description');
-    assert.equal(serverTiming.metric, 'example metric', 'metric was not set correctly');
-    assert.equal(serverTiming.value, 1, 'value was not set correctly');
-    assert.equal(serverTiming.description, 'example description', 'description was not set correctly');
+    assert.strictEqual(serverTiming.metric, 'example metric', 'metric was not set correctly');
+    assert.strictEqual(serverTiming.value, 1, 'value was not set correctly');
+    assert.strictEqual(serverTiming.description, 'example description', 'description was not set correctly');
   });
 });
 

@@ -13,14 +13,14 @@ describe('StringUtilities', () => {
       const charsToEscape = '\'';
       const outputString = StringUtilities.escapeCharacters(inputString, charsToEscape);
 
-      assert.equal(outputString, 'My string with a single quote \\\' in the middle');
+      assert.strictEqual(outputString, 'My string with a single quote \\\' in the middle');
     });
 
     it('leaves the string alone if the characters are not found', () => {
       const inputString = 'Just a boring string';
       const charsToEscape = '\'';
       const outputString = StringUtilities.escapeCharacters(inputString, charsToEscape);
-      assert.equal(outputString, inputString);
+      assert.strictEqual(outputString, inputString);
     });
   });
 
@@ -37,7 +37,8 @@ describe('StringUtilities', () => {
         ['\u0444\u5555\u6666\u7777', '0YTllZXmmabnnbc='],
       ]);
       for (const [inputString, encodedString] of fixtures) {
-        assert.equal(encodedString, StringUtilities.toBase64(inputString), `failed to encode ${inputString} correctly`);
+        assert.strictEqual(
+            encodedString, StringUtilities.toBase64(inputString), `failed to encode ${inputString} correctly`);
       }
     });
   });
@@ -81,7 +82,7 @@ describe('StringUtilities', () => {
         ['https://example.com/foo[]', 'example.com/foo[]'],
       ]);
       for (const [url, expected] of fixtures) {
-        assert.equal(StringUtilities.trimURL(url, baseURLDomain), expected, url);
+        assert.strictEqual(StringUtilities.trimURL(url, baseURLDomain), expected, url);
       }
     });
   });
@@ -90,24 +91,24 @@ describe('StringUtilities', () => {
     it('collapses consecutive whitespace chars down to a single one', () => {
       const inputString = 'look                at this!';
       const outputString = StringUtilities.collapseWhitespace(inputString);
-      assert.equal(outputString, 'look at this!');
+      assert.strictEqual(outputString, 'look at this!');
     });
 
     it('matches globally and collapses all whitespace sections', () => {
       const inputString = 'a     b           c';
       const outputString = StringUtilities.collapseWhitespace(inputString);
-      assert.equal(outputString, 'a b c');
+      assert.strictEqual(outputString, 'a b c');
     });
   });
 
   describe('reverse', () => {
     it('reverses the string', () => {
       const inputString = 'abc';
-      assert.equal(StringUtilities.reverse(inputString), 'cba');
+      assert.strictEqual(StringUtilities.reverse(inputString), 'cba');
     });
 
     it('does nothing to an empty string', () => {
-      assert.equal('', StringUtilities.reverse(''));
+      assert.strictEqual('', StringUtilities.reverse(''));
     });
   });
 
@@ -126,44 +127,44 @@ describe('StringUtilities', () => {
 
       const replacementCharacter = '\uFFFD';
       const expectedString = charsThatShouldBeEscaped.fill(replacementCharacter).join('');
-      assert.equal(outputString, expectedString);
+      assert.strictEqual(outputString, expectedString);
     });
 
     it('does not replace \n \t or \r', () => {
       const inputString = '\nhello world\t\r';
       const outputString = StringUtilities.replaceControlCharacters(inputString);
-      assert.equal(inputString, outputString);
+      assert.strictEqual(inputString, outputString);
     });
   });
 
   describe('countWtf8Bytes', () => {
     it('produces the correct WTF-8 byte size', () => {
-      assert.equal(StringUtilities.countWtf8Bytes('a'), 1);
-      assert.equal(StringUtilities.countWtf8Bytes('\x7F'), 1);
-      assert.equal(StringUtilities.countWtf8Bytes('\u07FF'), 2);
-      assert.equal(StringUtilities.countWtf8Bytes('\uD800'), 3);
-      assert.equal(StringUtilities.countWtf8Bytes('\uDBFF'), 3);
-      assert.equal(StringUtilities.countWtf8Bytes('\uDC00'), 3);
-      assert.equal(StringUtilities.countWtf8Bytes('\uDFFF'), 3);
-      assert.equal(StringUtilities.countWtf8Bytes('\uFFFF'), 3);
-      assert.equal(StringUtilities.countWtf8Bytes('\u{10FFFF}'), 4);
-      assert.equal(StringUtilities.countWtf8Bytes('Iñtërnâtiônàlizætiøn☃💩'), 34);
+      assert.strictEqual(StringUtilities.countWtf8Bytes('a'), 1);
+      assert.strictEqual(StringUtilities.countWtf8Bytes('\x7F'), 1);
+      assert.strictEqual(StringUtilities.countWtf8Bytes('\u07FF'), 2);
+      assert.strictEqual(StringUtilities.countWtf8Bytes('\uD800'), 3);
+      assert.strictEqual(StringUtilities.countWtf8Bytes('\uDBFF'), 3);
+      assert.strictEqual(StringUtilities.countWtf8Bytes('\uDC00'), 3);
+      assert.strictEqual(StringUtilities.countWtf8Bytes('\uDFFF'), 3);
+      assert.strictEqual(StringUtilities.countWtf8Bytes('\uFFFF'), 3);
+      assert.strictEqual(StringUtilities.countWtf8Bytes('\u{10FFFF}'), 4);
+      assert.strictEqual(StringUtilities.countWtf8Bytes('Iñtërnâtiônàlizætiøn☃💩'), 34);
 
       // An arbitrary lead surrogate (D800..DBFF).
       const leadSurrogate = '\uDABC';
       // An arbitrary trail surrogate (DC00..DFFF).
       const trailSurrogate = '\uDEF0';
-      assert.equal(StringUtilities.countWtf8Bytes(`${leadSurrogate}${trailSurrogate}`), 4);
-      assert.equal(StringUtilities.countWtf8Bytes(`${trailSurrogate}${leadSurrogate}`), 6);
-      assert.equal(StringUtilities.countWtf8Bytes(`${leadSurrogate}`), 3);
-      assert.equal(StringUtilities.countWtf8Bytes(`${trailSurrogate}`), 3);
+      assert.strictEqual(StringUtilities.countWtf8Bytes(`${leadSurrogate}${trailSurrogate}`), 4);
+      assert.strictEqual(StringUtilities.countWtf8Bytes(`${trailSurrogate}${leadSurrogate}`), 6);
+      assert.strictEqual(StringUtilities.countWtf8Bytes(`${leadSurrogate}`), 3);
+      assert.strictEqual(StringUtilities.countWtf8Bytes(`${trailSurrogate}`), 3);
     });
   });
 
   describe('stripLineBreaks', () => {
     it('strips linebreaks from strings', () => {
-      assert.equal(StringUtilities.stripLineBreaks('a\nb'), 'ab');
-      assert.equal(StringUtilities.stripLineBreaks('a\r\nb'), 'ab');
+      assert.strictEqual(StringUtilities.stripLineBreaks('a\nb'), 'ab');
+      assert.strictEqual(StringUtilities.stripLineBreaks('a\r\nb'), 'ab');
     });
   });
 });

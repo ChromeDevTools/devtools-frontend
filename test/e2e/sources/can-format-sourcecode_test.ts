@@ -62,7 +62,7 @@ describe('The Sources Tab', async function() {
     }
 
     const updatedTextContent = await frontend.evaluate(retrieveCodeMirrorEditorContent);
-    assert.equal(updatedTextContent, expectedTextContent);
+    assert.strictEqual(updatedTextContent, expectedTextContent);
   });
 
   it('causes the correct line number to show up in the console panel', async () => {

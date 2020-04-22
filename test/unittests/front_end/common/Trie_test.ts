@@ -50,9 +50,9 @@ describe('Trie', () => {
     trie.add('supercar');
 
     // Longest non-word prefix match.
-    assert.equal(trie.longestPrefix('supercalifragilisticexpialidocious', false), 'superca');
+    assert.strictEqual(trie.longestPrefix('supercalifragilisticexpialidocious', false), 'superca');
 
     // Longest word prefix match.
-    assert.equal(trie.longestPrefix('supercalifragilisticexpialidocious', true), 'super');
+    assert.strictEqual(trie.longestPrefix('supercalifragilisticexpialidocious', true), 'super');
   });
 });

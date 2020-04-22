@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {getBrowserAndPages} from '../../shared/helper.js';
+import {getBrowserAndPages, step} from '../../shared/helper.js';
 
 import {doubleClickSourceTreeItem, getDataGridData, navigateToApplicationTab} from '../helpers/application-helpers.js';
 
@@ -15,25 +15,32 @@ const DOMAIN_SELECTOR = `${SESSION_STORAGE_SELECTOR} + ol > [aria-label="http://
 describe('The Application Tab', async () => {
   it('shows Session Storage keys and values', async () => {
     const {target} = getBrowserAndPages();
-    await navigateToApplicationTab(target, 'session-storage');
 
-    await doubleClickSourceTreeItem(SESSION_STORAGE_SELECTOR);
-    await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
+    await step('navigate to session-storage resource and open Application tab', async () => {
+      await navigateToApplicationTab(target, 'session-storage');
+    });
 
-    const dataGridRowValues = await getDataGridData('.storage-view table', ['key', 'value']);
-    assert.deepEqual(dataGridRowValues, [
-      {
-        key: 'firstKey',
-        value: 'firstValue',
-      },
-      {
-        key: 'secondKey',
-        value: '{"field":"complexValue","primitive":2}',
-      },
-      {
-        key: '',
-        value: '',
-      },
-    ]);
+    await step('open the domain storage', async () => {
+      await doubleClickSourceTreeItem(SESSION_STORAGE_SELECTOR);
+      await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
+    });
+
+    await step('check that storage data values are correct', async () => {
+      const dataGridRowValues = await getDataGridData('.storage-view table', ['key', 'value']);
+      assert.deepEqual(dataGridRowValues, [
+        {
+          key: 'firstKey',
+          value: 'firstValue',
+        },
+        {
+          key: 'secondKey',
+          value: '{"field":"complexValue","primitive":2}',
+        },
+        {
+          key: '',
+          value: '',
+        },
+      ]);
+    });
   });
 });

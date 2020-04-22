@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {AssertionError} from 'chai';
 import * as os from 'os';
 import {performance} from 'perf_hooks';
 import * as puppeteer from 'puppeteer';
@@ -269,6 +270,24 @@ export const enableExperiment = async (experiment: string) => {
   }, experiment);
 
   await reloadDevTools();
+};
+
+export const step = async (description: string, step: Function) => {
+  try {
+    // eslint-disable-next-line no-console
+    console.log(`     Running step "${description}"`);
+    return await step();
+  } catch (error) {
+    if (error instanceof AssertionError) {
+      throw new AssertionError(
+          `Unexpected Result in Step "${description}"
+      ${error.message}`,
+          error);
+    } else {
+      error.message += ` in Step "${description}"`;
+      throw error;
+    }
+  }
 };
 
 export {getBrowserAndPages, reloadDevTools};

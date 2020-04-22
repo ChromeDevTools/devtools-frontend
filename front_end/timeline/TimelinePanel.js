@@ -866,7 +866,8 @@ export class TimelinePanel extends UI.Panel.Panel {
     if (this._statusPane) {
       return;
     }
-    this._statusPane = new StatusPane({showTimer: true, showProgress: true}, this._stopRecording.bind(this));
+    this._statusPane =
+        new StatusPane({showTimer: true, showProgress: true, buttonDisabled: true}, this._stopRecording.bind(this));
     this._statusPane.showPane(this._statusPaneContainer);
     this._statusPane.updateStatus(Common.UIString.UIString('Initializing profiler…'));
   }

@@ -82,6 +82,12 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
     let shouldShowView = false;
     const promises = [];
     const breakpoints = [];
+    // Use a cache to share the Text objects between all breakpoints. This way
+    // we share the cached line ending information that Text calculates. This
+    // was very slow to calculate with a lot of breakpoints in the same very
+    // large source file.
+    /** @type {!Map<string, !TextUtils.Text.Text>} */
+    const contentToTextMap = new Map();
     let itemToSelect;
     for (const descriptor of locationForEntry.keysArray()) {
       const locations = Array.from(locationForEntry.get(descriptor));
@@ -93,8 +99,16 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
           breakpointEntriesForLine.get(`${uiLocation.uiSourceCode.url()}:${uiLocation.lineNumber}`).size > 1;
 
       const content = uiLocation.uiSourceCode.requestContent();
-      promises.push(content);
-      const item = {breakpointLocation, locations, isSelected, showColumn, content};
+      const contentAsText = content.then(content => {
+        if (contentToTextMap.has(content.content)) {
+          return contentToTextMap.get(content.content);
+        }
+        const text = new TextUtils.Text.Text(content.content || '');
+        contentToTextMap.set(content.content, text);
+        return text;
+      });
+      promises.push(contentAsText);
+      const item = {breakpointLocation, locations, isSelected, showColumn, contentAsText};
       breakpoints.push(item);
       if (this._list.selectedItem() &&
           this._list.selectedItem().breakpointLocation.breakpoint === breakpointLocation.breakpoint) {
@@ -160,9 +174,8 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
     });
 
     const snippetElement = element.createChild('div', 'source-text monospace');
-    item.content.then(content => {
+    item.contentAsText.then(text => {
       const lineNumber = uiLocation.lineNumber;
-      const text = new TextUtils.Text.Text(content.content || '');
       if (lineNumber < text.lineCount()) {
         const lineText = text.lineAt(lineNumber);
         const maxSnippetLength = 200;
@@ -375,7 +388,7 @@ export let Breakpoint;
  * locations: !Array.<!Breakpoint>,
  * showColumn: boolean,
  * isSelected: boolean,
- * content: !Promise.<?string>
+ * contentAsText: !Promise.<TextUtils.Text.Text>
  * }}
  */
 export let BreakpointItem;

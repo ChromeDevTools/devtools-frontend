@@ -434,9 +434,9 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
     const deleteButton = UI.Icon.Icon.create('smallicon-cross', 'watch-expression-delete-button');
     deleteButton.title = ls`Delete watch expression`;
     deleteButton.addEventListener('click', this._deleteWatchExpression.bind(this), false);
-    headerElement.appendChild(deleteButton);
 
     const titleElement = headerElement.createChild('div', 'watch-expression-title tree-element-title');
+    titleElement.appendChild(deleteButton);
     this._nameElement = ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.createNameElement(this._expression);
     if (!!exceptionDetails || !expressionValue) {
       this._valueElement = createElementWithClass('span', 'watch-expression-error value');

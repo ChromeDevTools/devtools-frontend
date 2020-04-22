@@ -32,6 +32,7 @@ Host.ResourceLoader = HostModule.ResourceLoader.ResourceLoader;
 Host.ResourceLoader.load = HostModule.ResourceLoader.load;
 
 Host.ResourceLoader.loadAsStream = HostModule.ResourceLoader.loadAsStream;
+Host.ResourceLoader.setLoadForTest = HostModule.ResourceLoader.setLoadForTest;
 
 /** @constructor */
 Host.UserMetrics = HostModule.UserMetrics.UserMetrics;

@@ -102,8 +102,8 @@ export class AggregatedIssue extends Issue {
     super(code);
     /** @type {!Map<string, !Protocol.Audits.AffectedCookie>} */
     this._cookies = new Map();
-    /** @type {!Set<!Protocol.Audits.AffectedRequest>} */
-    this._requests = new Set();
+    /** @type {!Map<string, !Protocol.Audits.AffectedRequest>} */
+    this._requests = new Map();
     /** @type {?Issue} */
     this._representative = null;
   }
@@ -121,7 +121,7 @@ export class AggregatedIssue extends Issue {
    * @returns {!Iterable<!Protocol.Audits.AffectedRequest>}
    */
   requests() {
-    return this._requests;
+    return this._requests.values();
   }
 
   /**
@@ -159,7 +159,9 @@ export class AggregatedIssue extends Issue {
       }
     }
     for (const request of issue.requests()) {
-      this._requests.add(request);
+      if (!this._requests.has(request.requestId)) {
+        this._requests.set(request.requestId, request);
+      }
     }
   }
 }

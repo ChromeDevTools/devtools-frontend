@@ -9,28 +9,7 @@ import {issuesAssociatedWith} from '../../../../front_end/sdk/RelatedIssue.js';
 import {Issue} from '../../../../front_end/sdk/Issue.js';
 import {Cookie} from '../../../../front_end/sdk/Cookie.js';
 
-class StubIssue extends Issue {
-  private requestIds: string[];
-  private cookieNames: string[];
-
-  constructor(requestIds: string[], cookieNames: string[]) {
-    super('StubIssue');
-    this.requestIds = requestIds;
-    this.cookieNames = cookieNames;
-  }
-
-  requests() {
-    return this.requestIds.map(id => {
-      return {requestId: id, url: ''};
-    });
-  }
-
-  cookies() {
-    return this.cookieNames.map(name => {
-      return {name, domain: '', path: ''};
-    });
-  }
-}
+import {StubIssue} from './StubIssue.js';
 
 describe('issuesAssociatedWith', () => {
   it('should return no issues if no issues exist', () => {

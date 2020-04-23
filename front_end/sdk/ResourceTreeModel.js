@@ -1089,6 +1089,12 @@ export class PageDispatcher {
    */
   downloadWillBegin(frameId, url) {
   }
+
+  /**
+   * @override
+   */
+  downloadProgress() {
+  }
 }
 
 SDKModel.register(ResourceTreeModel, Capability.DOM, true);

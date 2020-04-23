@@ -182,7 +182,42 @@ export function registerCommands(inspectorBackend) {
     WarnSameSiteCrossSchemeInsecureUrlStrict: 'WarnSameSiteCrossSchemeInsecureUrlStrict'
   });
   inspectorBackend.registerEnum('Audits.SameSiteCookieOperation', {SetCookie: 'SetCookie', ReadCookie: 'ReadCookie'});
-  inspectorBackend.registerEnum('Audits.InspectorIssueCode', {SameSiteCookieIssue: 'SameSiteCookieIssue'});
+  inspectorBackend.registerEnum('Audits.MixedContentResolutionStatus', {
+    MixedContentBlocked: 'MixedContentBlocked',
+    MixedContentAutomaticallyUpgraded: 'MixedContentAutomaticallyUpgraded',
+    MixedContentWarning: 'MixedContentWarning'
+  });
+  inspectorBackend.registerEnum('Audits.MixedContentResourceType', {
+    Audio: 'Audio',
+    Beacon: 'Beacon',
+    CSPReport: 'CSPReport',
+    Download: 'Download',
+    EventSource: 'EventSource',
+    Favicon: 'Favicon',
+    Font: 'Font',
+    Form: 'Form',
+    Frame: 'Frame',
+    Image: 'Image',
+    Import: 'Import',
+    Manifest: 'Manifest',
+    Ping: 'Ping',
+    PluginData: 'PluginData',
+    PluginResource: 'PluginResource',
+    Prefetch: 'Prefetch',
+    Resource: 'Resource',
+    Script: 'Script',
+    ServiceWorker: 'ServiceWorker',
+    SharedWorker: 'SharedWorker',
+    Stylesheet: 'Stylesheet',
+    Track: 'Track',
+    Video: 'Video',
+    Worker: 'Worker',
+    XMLHttpRequest: 'XMLHttpRequest',
+    XSLT: 'XSLT'
+  });
+  inspectorBackend.registerEnum(
+      'Audits.InspectorIssueCode',
+      {SameSiteCookieIssue: 'SameSiteCookieIssue', MixedContentIssue: 'MixedContentIssue'});
   inspectorBackend.registerEvent('Audits.issueAdded', ['issue']);
   inspectorBackend.registerCommand(
       'Audits.getEncodedResponse',
@@ -252,22 +287,30 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand(
       'Browser.setPermission',
       [
-        {'name': 'origin', 'type': 'string', 'optional': false},
         {'name': 'permission', 'type': 'object', 'optional': false},
         {'name': 'setting', 'type': 'string', 'optional': false},
+        {'name': 'origin', 'type': 'string', 'optional': true},
         {'name': 'browserContextId', 'type': 'string', 'optional': true}
       ],
       [], false);
   inspectorBackend.registerCommand(
       'Browser.grantPermissions',
       [
-        {'name': 'origin', 'type': 'string', 'optional': false},
         {'name': 'permissions', 'type': 'object', 'optional': false},
+        {'name': 'origin', 'type': 'string', 'optional': true},
         {'name': 'browserContextId', 'type': 'string', 'optional': true}
       ],
       [], false);
   inspectorBackend.registerCommand(
       'Browser.resetPermissions', [{'name': 'browserContextId', 'type': 'string', 'optional': true}], [], false);
+  inspectorBackend.registerCommand(
+      'Browser.setDownloadBehavior',
+      [
+        {'name': 'behavior', 'type': 'string', 'optional': false},
+        {'name': 'browserContextId', 'type': 'string', 'optional': true},
+        {'name': 'downloadPath', 'type': 'string', 'optional': true}
+      ],
+      [], false);
   inspectorBackend.registerCommand('Browser.close', [], [], false);
   inspectorBackend.registerCommand('Browser.crash', [], [], false);
   inspectorBackend.registerCommand('Browser.crashGpuProcess', [], [], false);
@@ -1581,7 +1624,8 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEvent('Page.frameScheduledNavigation', ['frameId', 'delay', 'reason', 'url']);
   inspectorBackend.registerEvent('Page.frameStartedLoading', ['frameId']);
   inspectorBackend.registerEvent('Page.frameStoppedLoading', ['frameId']);
-  inspectorBackend.registerEvent('Page.downloadWillBegin', ['frameId', 'url']);
+  inspectorBackend.registerEvent('Page.downloadWillBegin', ['frameId', 'guid', 'url']);
+  inspectorBackend.registerEvent('Page.downloadProgress', ['guid', 'totalBytes', 'receivedBytes', 'state']);
   inspectorBackend.registerEvent('Page.interstitialHidden', []);
   inspectorBackend.registerEvent('Page.interstitialShown', []);
   inspectorBackend.registerEvent('Page.javascriptDialogClosed', ['result', 'userInput']);

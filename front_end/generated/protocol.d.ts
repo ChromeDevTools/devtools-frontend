@@ -679,6 +679,13 @@ declare namespace Protocol {
       url?: string;
     }
 
+    /**
+     * Information about the frame affected by an inspector issue.
+     */
+    export interface AffectedFrame {
+      frameId: Page.FrameId;
+    }
+
     export enum SameSiteCookieExclusionReason {
       ExcludeSameSiteUnspecifiedTreatedAsLax = 'ExcludeSameSiteUnspecifiedTreatedAsLax',
       ExcludeSameSiteNoneInsecure = 'ExcludeSameSiteNoneInsecure',
@@ -720,6 +727,72 @@ declare namespace Protocol {
       request?: AffectedRequest;
     }
 
+    export enum MixedContentResolutionStatus {
+      MixedContentBlocked = 'MixedContentBlocked',
+      MixedContentAutomaticallyUpgraded = 'MixedContentAutomaticallyUpgraded',
+      MixedContentWarning = 'MixedContentWarning',
+    }
+
+    export enum MixedContentResourceType {
+      Audio = 'Audio',
+      Beacon = 'Beacon',
+      CSPReport = 'CSPReport',
+      Download = 'Download',
+      EventSource = 'EventSource',
+      Favicon = 'Favicon',
+      Font = 'Font',
+      Form = 'Form',
+      Frame = 'Frame',
+      Image = 'Image',
+      Import = 'Import',
+      Manifest = 'Manifest',
+      Ping = 'Ping',
+      PluginData = 'PluginData',
+      PluginResource = 'PluginResource',
+      Prefetch = 'Prefetch',
+      Resource = 'Resource',
+      Script = 'Script',
+      ServiceWorker = 'ServiceWorker',
+      SharedWorker = 'SharedWorker',
+      Stylesheet = 'Stylesheet',
+      Track = 'Track',
+      Video = 'Video',
+      Worker = 'Worker',
+      XMLHttpRequest = 'XMLHttpRequest',
+      XSLT = 'XSLT',
+    }
+
+    export interface MixedContentIssueDetails {
+      /**
+       * The type of resource causing the mixed content issue (css, js, iframe,
+       * form,...). Marked as optional because it is mapped to from
+       * blink::mojom::RequestContextType, which will be replaced
+       * by network::mojom::RequestDestination
+       */
+      resourceType?: MixedContentResourceType;
+      /**
+       * The way the mixed content issue is being resolved.
+       */
+      resolutionStatus: MixedContentResolutionStatus;
+      /**
+       * The unsafe http url causing the mixed content issue.
+       */
+      insecureURL: string;
+      /**
+       * The url responsible for the call to an unsafe url.
+       */
+      mainResourceURL: string;
+      /**
+       * The mixed content request.
+       * Does not always exist (e.g. for unsafe form submission urls).
+       */
+      request?: AffectedRequest;
+      /**
+       * Optional because not every mixed content issue is necessarily linked to a frame.
+       */
+      frame?: AffectedFrame;
+    }
+
     /**
      * A unique identifier for the type of issue. Each type may use one of the
      * optional fields in InspectorIssueDetails to convey more specific
@@ -727,6 +800,7 @@ declare namespace Protocol {
      */
     export enum InspectorIssueCode {
       SameSiteCookieIssue = 'SameSiteCookieIssue',
+      MixedContentIssue = 'MixedContentIssue',
     }
 
     /**
@@ -736,6 +810,7 @@ declare namespace Protocol {
      */
     export interface InspectorIssueDetails {
       sameSiteCookieIssueDetails?: SameSiteCookieIssueDetails;
+      mixedContentIssueDetails?: MixedContentIssueDetails;
     }
 
     /**
@@ -1029,10 +1104,6 @@ declare namespace Protocol {
 
     export interface SetPermissionRequest {
       /**
-       * Origin the permission applies to.
-       */
-      origin: string;
-      /**
        * Descriptor of permission to override.
        */
       permission: PermissionDescriptor;
@@ -1041,14 +1112,21 @@ declare namespace Protocol {
        */
       setting: PermissionSetting;
       /**
+       * Origin the permission applies to, all origins if not specified.
+       */
+      origin?: string;
+      /**
        * Context to override. When omitted, default browser context is used.
        */
       browserContextId?: BrowserContextID;
     }
 
     export interface GrantPermissionsRequest {
-      origin: string;
       permissions: PermissionType[];
+      /**
+       * Origin the permission applies to, all origins if not specified.
+       */
+      origin?: string;
       /**
        * BrowserContext to override permissions. When omitted, default browser context is used.
        */
@@ -1060,6 +1138,31 @@ declare namespace Protocol {
        * BrowserContext to reset permissions. When omitted, default browser context is used.
        */
       browserContextId?: BrowserContextID;
+    }
+
+    export enum SetDownloadBehaviorRequestBehavior {
+      Deny = 'deny',
+      Allow = 'allow',
+      AllowAndName = 'allowAndName',
+      Default = 'default',
+    }
+
+    export interface SetDownloadBehaviorRequest {
+      /**
+       * Whether to allow all or deny all download requests, or use default Chrome behavior if
+       * available (otherwise deny). |allowAndName| allows download and names files according to
+       * their dowmload guids.
+       */
+      behavior: SetDownloadBehaviorRequestBehavior;
+      /**
+       * BrowserContext to set download behavior. When omitted, default browser context is used.
+       */
+      browserContextId?: BrowserContextID;
+      /**
+       * The default path to save downloaded files to. This is requred if behavior is set to 'allow'
+       * or 'allowAndName'.
+       */
+      downloadPath?: string;
     }
 
     export interface GetVersionResponse {
@@ -4307,14 +4410,10 @@ declare namespace Protocol {
 
     export enum SetEmulatedVisionDeficiencyRequestType {
       None = 'none',
-      Achromatomaly = 'achromatomaly',
       Achromatopsia = 'achromatopsia',
       BlurredVision = 'blurredVision',
-      Deuteranomaly = 'deuteranomaly',
       Deuteranopia = 'deuteranopia',
-      Protanomaly = 'protanomaly',
       Protanopia = 'protanopia',
-      Tritanomaly = 'tritanomaly',
       Tritanopia = 'tritanopia',
     }
 
@@ -9038,9 +9137,41 @@ declare namespace Protocol {
        */
       frameId: FrameId;
       /**
+       * Global unique identifier of the download.
+       */
+      guid: string;
+      /**
        * URL of the resource being downloaded.
        */
       url: string;
+    }
+
+    export enum DownloadProgressEventState {
+      InProgress = 'inProgress',
+      Completed = 'completed',
+      Canceled = 'canceled',
+    }
+
+    /**
+     * Fired when download makes progress. Last call has |done| == true.
+     */
+    export interface DownloadProgressEvent {
+      /**
+       * Global unique identifier of the download.
+       */
+      guid: string;
+      /**
+       * Total expected bytes to download.
+       */
+      totalBytes: number;
+      /**
+       * Total bytes received.
+       */
+      receivedBytes: number;
+      /**
+       * Download status.
+       */
+      state: DownloadProgressEventState;
     }
 
     /**
@@ -10766,7 +10897,7 @@ declare namespace Protocol {
        */
       postData?: string;
       /**
-       * If set, overrides the request headrts.
+       * If set, overrides the request headers.
        */
       headers?: HeaderEntry[];
     }

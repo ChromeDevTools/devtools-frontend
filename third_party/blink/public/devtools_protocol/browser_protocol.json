@@ -736,6 +736,9 @@
         {
             "domain": "ApplicationCache",
             "experimental": true,
+            "dependencies": [
+                "Page"
+            ],
             "types": [
                 {
                     "id": "ApplicationCacheResource",
@@ -951,6 +954,17 @@
                     ]
                 },
                 {
+                    "id": "AffectedFrame",
+                    "description": "Information about the frame affected by an inspector issue.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "frameId",
+                            "$ref": "Page.FrameId"
+                        }
+                    ]
+                },
+                {
                     "id": "SameSiteCookieExclusionReason",
                     "type": "string",
                     "enum": [
@@ -1027,11 +1041,92 @@
                     ]
                 },
                 {
+                    "id": "MixedContentResolutionStatus",
+                    "type": "string",
+                    "enum": [
+                        "MixedContentBlocked",
+                        "MixedContentAutomaticallyUpgraded",
+                        "MixedContentWarning"
+                    ]
+                },
+                {
+                    "id": "MixedContentResourceType",
+                    "type": "string",
+                    "enum": [
+                        "Audio",
+                        "Beacon",
+                        "CSPReport",
+                        "Download",
+                        "EventSource",
+                        "Favicon",
+                        "Font",
+                        "Form",
+                        "Frame",
+                        "Image",
+                        "Import",
+                        "Manifest",
+                        "Ping",
+                        "PluginData",
+                        "PluginResource",
+                        "Prefetch",
+                        "Resource",
+                        "Script",
+                        "ServiceWorker",
+                        "SharedWorker",
+                        "Stylesheet",
+                        "Track",
+                        "Video",
+                        "Worker",
+                        "XMLHttpRequest",
+                        "XSLT"
+                    ]
+                },
+                {
+                    "id": "MixedContentIssueDetails",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "resourceType",
+                            "description": "The type of resource causing the mixed content issue (css, js, iframe,\nform,...). Marked as optional because it is mapped to from\nblink::mojom::RequestContextType, which will be replaced\nby network::mojom::RequestDestination",
+                            "optional": true,
+                            "$ref": "MixedContentResourceType"
+                        },
+                        {
+                            "name": "resolutionStatus",
+                            "description": "The way the mixed content issue is being resolved.",
+                            "$ref": "MixedContentResolutionStatus"
+                        },
+                        {
+                            "name": "insecureURL",
+                            "description": "The unsafe http url causing the mixed content issue.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "mainResourceURL",
+                            "description": "The url responsible for the call to an unsafe url.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "request",
+                            "description": "The mixed content request.\nDoes not always exist (e.g. for unsafe form submission urls).",
+                            "optional": true,
+                            "$ref": "AffectedRequest"
+                        },
+                        {
+                            "name": "frame",
+                            "description": "Optional because not every mixed content issue is necessarily linked to a frame.",
+                            "optional": true,
+                            "$ref": "AffectedFrame"
+                        }
+                    ]
+                },
+                {
                     "id": "InspectorIssueCode",
                     "description": "A unique identifier for the type of issue. Each type may use one of the\noptional fields in InspectorIssueDetails to convey more specific\ninformation about the kind of issue.",
                     "type": "string",
                     "enum": [
-                        "SameSiteCookieIssue"
+                        "SameSiteCookieIssue",
+                        "MixedContentIssue"
                     ]
                 },
                 {
@@ -1043,6 +1138,11 @@
                             "name": "sameSiteCookieIssueDetails",
                             "optional": true,
                             "$ref": "SameSiteCookieIssueDetails"
+                        },
+                        {
+                            "name": "mixedContentIssueDetails",
+                            "optional": true,
+                            "$ref": "MixedContentIssueDetails"
                         }
                     ]
                 },
@@ -1487,11 +1587,6 @@
                     "experimental": true,
                     "parameters": [
                         {
-                            "name": "origin",
-                            "description": "Origin the permission applies to.",
-                            "type": "string"
-                        },
-                        {
                             "name": "permission",
                             "description": "Descriptor of permission to override.",
                             "$ref": "PermissionDescriptor"
@@ -1500,6 +1595,12 @@
                             "name": "setting",
                             "description": "Setting of the permission.",
                             "$ref": "PermissionSetting"
+                        },
+                        {
+                            "name": "origin",
+                            "description": "Origin the permission applies to, all origins if not specified.",
+                            "optional": true,
+                            "type": "string"
                         },
                         {
                             "name": "browserContextId",
@@ -1515,15 +1616,17 @@
                     "experimental": true,
                     "parameters": [
                         {
-                            "name": "origin",
-                            "type": "string"
-                        },
-                        {
                             "name": "permissions",
                             "type": "array",
                             "items": {
                                 "$ref": "PermissionType"
                             }
+                        },
+                        {
+                            "name": "origin",
+                            "description": "Origin the permission applies to, all origins if not specified.",
+                            "optional": true,
+                            "type": "string"
                         },
                         {
                             "name": "browserContextId",
@@ -1543,6 +1646,36 @@
                             "description": "BrowserContext to reset permissions. When omitted, default browser context is used.",
                             "optional": true,
                             "$ref": "BrowserContextID"
+                        }
+                    ]
+                },
+                {
+                    "name": "setDownloadBehavior",
+                    "description": "Set the behavior when downloading a file.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "behavior",
+                            "description": "Whether to allow all or deny all download requests, or use default Chrome behavior if\navailable (otherwise deny). |allowAndName| allows download and names files according to\ntheir dowmload guids.",
+                            "type": "string",
+                            "enum": [
+                                "deny",
+                                "allow",
+                                "allowAndName",
+                                "default"
+                            ]
+                        },
+                        {
+                            "name": "browserContextId",
+                            "description": "BrowserContext to set download behavior. When omitted, default browser context is used.",
+                            "optional": true,
+                            "$ref": "BrowserContextID"
+                        },
+                        {
+                            "name": "downloadPath",
+                            "description": "The default path to save downloaded files to. This is requred if behavior is set to 'allow'\nor 'allowAndName'.",
+                            "optional": true,
+                            "type": "string"
                         }
                     ]
                 },
@@ -1746,7 +1879,8 @@
             "description": "This domain exposes CSS read/write operations. All CSS objects (stylesheets, rules, and styles)\nhave an associated `id` used in subsequent operations on the related object. Each object type has\na specific `id` structure, and those are not interchangeable between objects of different kinds.\nCSS objects can be loaded using the `get*ForNode()` calls (which accept a DOM node id). A client\ncan also keep track of stylesheets via the `styleSheetAdded`/`styleSheetRemoved` events and\nsubsequently load the required stylesheet contents using the `getStyleSheet[Text]()` methods.",
             "experimental": true,
             "dependencies": [
-                "DOM"
+                "DOM",
+                "Page"
             ],
             "types": [
                 {
@@ -6472,14 +6606,10 @@
                             "type": "string",
                             "enum": [
                                 "none",
-                                "achromatomaly",
                                 "achromatopsia",
                                 "blurredVision",
-                                "deuteranomaly",
                                 "deuteranopia",
-                                "protanomaly",
                                 "protanopia",
-                                "tritanomaly",
                                 "tritanopia"
                             ]
                         }
@@ -12757,6 +12887,7 @@
                     "name": "setDownloadBehavior",
                     "description": "Set the behavior when downloading a file.",
                     "experimental": true,
+                    "deprecated": true,
                     "parameters": [
                         {
                             "name": "behavior",
@@ -13162,9 +13293,46 @@
                             "$ref": "FrameId"
                         },
                         {
+                            "name": "guid",
+                            "description": "Global unique identifier of the download.",
+                            "type": "string"
+                        },
+                        {
                             "name": "url",
                             "description": "URL of the resource being downloaded.",
                             "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "downloadProgress",
+                    "description": "Fired when download makes progress. Last call has |done| == true.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "guid",
+                            "description": "Global unique identifier of the download.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "totalBytes",
+                            "description": "Total expected bytes to download.",
+                            "type": "number"
+                        },
+                        {
+                            "name": "receivedBytes",
+                            "description": "Total bytes received.",
+                            "type": "number"
+                        },
+                        {
+                            "name": "state",
+                            "description": "Download status.",
+                            "type": "string",
+                            "enum": [
+                                "inProgress",
+                                "completed",
+                                "canceled"
+                            ]
                         }
                     ]
                 },
@@ -13877,6 +14045,9 @@
         {
             "domain": "ServiceWorker",
             "experimental": true,
+            "dependencies": [
+                "Target"
+            ],
             "types": [
                 {
                     "id": "RegistrationID",
@@ -15772,7 +15943,7 @@
                         },
                         {
                             "name": "headers",
-                            "description": "If set, overrides the request headrts.",
+                            "description": "If set, overrides the request headers.",
                             "optional": true,
                             "type": "array",
                             "items": {

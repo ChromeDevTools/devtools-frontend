@@ -303,6 +303,10 @@ export namespace ProtocolMapping {
      */
     'Page.downloadWillBegin': [Protocol.Page.DownloadWillBeginEvent];
     /**
+     * Fired when download makes progress. Last call has |done| == true.
+     */
+    'Page.downloadProgress': [Protocol.Page.DownloadProgressEvent];
+    /**
      * Fired when interstitial page was hidden
      */
     'Page.interstitialHidden': [];
@@ -733,6 +737,10 @@ export namespace ProtocolMapping {
      * Reset all permission management for all origins.
      */
     'Browser.resetPermissions': {paramsType: [Protocol.Browser.ResetPermissionsRequest?]; returnType: void;};
+    /**
+     * Set the behavior when downloading a file.
+     */
+    'Browser.setDownloadBehavior': {paramsType: [Protocol.Browser.SetDownloadBehaviorRequest]; returnType: void;};
     /**
      * Close browser gracefully.
      */

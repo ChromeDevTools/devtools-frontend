@@ -366,6 +366,7 @@ experimental domain Animation
       Animation animation
 
 experimental domain ApplicationCache
+  depends on Page
 
   # Detailed application cache resource information.
   type ApplicationCacheResource extends object
@@ -462,6 +463,11 @@ experimental domain Audits
       Network.RequestId requestId
       optional string url
 
+  # Information about the frame affected by an inspector issue.
+  type AffectedFrame extends object
+    properties
+      Page.FrameId frameId
+
   type SameSiteCookieExclusionReason extends string
     enum
       ExcludeSameSiteUnspecifiedTreatedAsLax
@@ -499,12 +505,67 @@ experimental domain Audits
       optional string cookieUrl
       optional AffectedRequest request
 
+  type MixedContentResolutionStatus extends string
+    enum
+      MixedContentBlocked
+      MixedContentAutomaticallyUpgraded
+      MixedContentWarning
+
+  type MixedContentResourceType extends string
+    enum
+      Audio
+      Beacon
+      CSPReport
+      Download
+      EventSource
+      Favicon
+      Font
+      Form
+      Frame
+      Image
+      Import
+      Manifest
+      Ping
+      PluginData
+      PluginResource
+      Prefetch
+      Resource
+      Script
+      ServiceWorker
+      SharedWorker
+      Stylesheet
+      Track
+      Video
+      Worker
+      XMLHttpRequest
+      XSLT
+
+  type MixedContentIssueDetails extends object
+    properties
+      # The type of resource causing the mixed content issue (css, js, iframe,
+      # form,...). Marked as optional because it is mapped to from
+      # blink::mojom::RequestContextType, which will be replaced
+      # by network::mojom::RequestDestination
+      optional MixedContentResourceType resourceType
+      # The way the mixed content issue is being resolved.
+      MixedContentResolutionStatus resolutionStatus
+      # The unsafe http url causing the mixed content issue.
+      string insecureURL
+      # The url responsible for the call to an unsafe url.
+      string mainResourceURL
+      # The mixed content request.
+      # Does not always exist (e.g. for unsafe form submission urls).
+      optional AffectedRequest request
+      # Optional because not every mixed content issue is necessarily linked to a frame.
+      optional AffectedFrame frame
+
   # A unique identifier for the type of issue. Each type may use one of the
   # optional fields in InspectorIssueDetails to convey more specific
   # information about the kind of issue.
   type InspectorIssueCode extends string
     enum
       SameSiteCookieIssue
+      MixedContentIssue
 
   # This struct holds a list of optional fields with additional information
   # specific to the kind of issue. When adding a new issue code, please also
@@ -512,6 +573,7 @@ experimental domain Audits
   type InspectorIssueDetails extends object
     properties
       optional SameSiteCookieIssueDetails sameSiteCookieIssueDetails
+      optional MixedContentIssueDetails mixedContentIssueDetails
 
   # An inspector issue reported from the back-end.
   type InspectorIssue extends object
@@ -700,20 +762,21 @@ domain Browser
   # Set permission settings for given origin.
   experimental command setPermission
     parameters
-      # Origin the permission applies to.
-      string origin
       # Descriptor of permission to override.
       PermissionDescriptor permission
       # Setting of the permission.
       PermissionSetting setting
+      # Origin the permission applies to, all origins if not specified.
+      optional string origin
       # Context to override. When omitted, default browser context is used.
       optional BrowserContextID browserContextId
 
   # Grant specific permissions to the given origin and reject all others.
   experimental command grantPermissions
     parameters
-      string origin
       array of PermissionType permissions
+      # Origin the permission applies to, all origins if not specified.
+      optional string origin
       # BrowserContext to override permissions. When omitted, default browser context is used.
       optional BrowserContextID browserContextId
 
@@ -723,6 +786,22 @@ domain Browser
       # BrowserContext to reset permissions. When omitted, default browser context is used.
       optional BrowserContextID browserContextId
 
+  # Set the behavior when downloading a file.
+  experimental command setDownloadBehavior
+    parameters
+      # Whether to allow all or deny all download requests, or use default Chrome behavior if
+      # available (otherwise deny). |allowAndName| allows download and names files according to
+      # their dowmload guids.
+      enum behavior
+        deny
+        allow
+        allowAndName
+        default
+      # BrowserContext to set download behavior. When omitted, default browser context is used.
+      optional BrowserContextID browserContextId
+      # The default path to save downloaded files to. This is requred if behavior is set to 'allow'
+      # or 'allowAndName'.
+      optional string downloadPath
 
   # Close browser gracefully.
   command close
@@ -847,6 +926,7 @@ domain Browser
 # subsequently load the required stylesheet contents using the `getStyleSheet[Text]()` methods.
 experimental domain CSS
   depends on DOM
+  depends on Page
 
   type StyleSheetId extends string
 
@@ -2919,14 +2999,10 @@ domain Emulation
       # Vision deficiency to emulate.
       enum type
         none
-        achromatomaly
         achromatopsia
         blurredVision
-        deuteranomaly
         deuteranopia
-        protanomaly
         protanopia
-        tritanomaly
         tritanopia
 
   # Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position
@@ -5872,7 +5948,7 @@ domain Page
       string html
 
   # Set the behavior when downloading a file.
-  experimental command setDownloadBehavior
+  experimental deprecated command setDownloadBehavior
     parameters
       # Whether to allow all or deny all download requests, or use default Chrome behavior if
       # available (otherwise deny).
@@ -6073,8 +6149,25 @@ domain Page
     parameters
       # Id of the frame that caused download to begin.
       FrameId frameId
+      # Global unique identifier of the download.
+      string guid
       # URL of the resource being downloaded.
       string url
+
+  # Fired when download makes progress. Last call has |done| == true.
+  experimental event downloadProgress
+    parameters
+      # Global unique identifier of the download.
+      string guid
+      # Total expected bytes to download.
+      number totalBytes
+      # Total bytes received.
+      number receivedBytes
+      # Download status.
+      enum state
+        inProgress
+        completed
+        canceled
 
   # Fired when interstitial page was hidden
   event interstitialHidden
@@ -6409,6 +6502,8 @@ domain Security
       optional string summary
 
 experimental domain ServiceWorker
+  depends on Target
+
   type RegistrationID extends string
 
   # ServiceWorker registration.
@@ -7272,7 +7367,7 @@ experimental domain Fetch
       optional string method
       # If set, overrides the post data in the request.
       optional string postData
-      # If set, overrides the request headrts.
+      # If set, overrides the request headers.
       optional array of HeaderEntry headers
 
   # Continues a request supplying authChallengeResponse following authRequired event.

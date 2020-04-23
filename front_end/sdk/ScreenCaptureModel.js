@@ -261,6 +261,12 @@ export class ScreenCaptureModel extends SDKModel {
    */
   downloadWillBegin(frameId, url) {
   }
+
+  /**
+   * @override
+   */
+  downloadProgress() {
+  }
 }
 
 SDKModel.register(ScreenCaptureModel, Capability.ScreenCapture, false);

@@ -303,6 +303,11 @@ declare namespace ProtocolProxyApi {
     resetPermissions(params: Protocol.Browser.ResetPermissionsRequest): Promise<void>;
 
     /**
+     * Set the behavior when downloading a file.
+     */
+    setDownloadBehavior(params: Protocol.Browser.SetDownloadBehaviorRequest): Promise<void>;
+
+    /**
      * Close browser gracefully.
      */
     close(): Promise<void>;
@@ -2192,6 +2197,11 @@ declare namespace ProtocolProxyApi {
      * Fired when page is about to start a download.
      */
     on(event: 'downloadWillBegin', listener: (params: Protocol.Page.DownloadWillBeginEvent) => void): void;
+
+    /**
+     * Fired when download makes progress. Last call has |done| == true.
+     */
+    on(event: 'downloadProgress', listener: (params: Protocol.Page.DownloadProgressEvent) => void): void;
 
     /**
      * Fired when interstitial page was hidden

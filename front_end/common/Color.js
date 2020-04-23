@@ -540,10 +540,9 @@ export class Color {
 
   /**
    * @param {?string=} format
-   * @param {!FormatOptions=} options
    * @return {?string}
    */
-  asString(format, options = {whitespaceSeparated: false}) {
+  asString(format) {
     if (format === this._format && this._originalTextIsValid) {
       return this._originalText;
     }
@@ -585,29 +584,27 @@ export class Color {
         if (this.hasAlpha()) {
           return null;
         }
-        const template = options.whitespaceSeparated ? 'rgb(%d %d %d)' : 'rgb(%d, %d, %d)';
         return Platform.StringUtilities.sprintf(
-            template, toRgbValue(this._rgba[0]), toRgbValue(this._rgba[1]), toRgbValue(this._rgba[2]));
+            'rgb(%d %d %d)', toRgbValue(this._rgba[0]), toRgbValue(this._rgba[1]), toRgbValue(this._rgba[2]));
       }
       case Format.RGBA: {
-        const template = options.whitespaceSeparated ? 'rgb(%d %d %d / %f)' : 'rgba(%d, %d, %d, %f)';
         return Platform.StringUtilities.sprintf(
-            template, toRgbValue(this._rgba[0]), toRgbValue(this._rgba[1]), toRgbValue(this._rgba[2]), this._rgba[3]);
+            'rgb(%d %d %d / %f)', toRgbValue(this._rgba[0]), toRgbValue(this._rgba[1]), toRgbValue(this._rgba[2]),
+            this._rgba[3]);
       }
       case Format.HSL: {
         if (this.hasAlpha()) {
           return null;
         }
         const hsl = this.hsla();
-        const template = options.whitespaceSeparated ? 'hsl(%d %d% %d%)' : 'hsl(%d, %d%, %d%)';
         return Platform.StringUtilities.sprintf(
-            template, Math.round(hsl[0] * 360), Math.round(hsl[1] * 100), Math.round(hsl[2] * 100));
+            'hsl(%d %d% %d%)', Math.round(hsl[0] * 360), Math.round(hsl[1] * 100), Math.round(hsl[2] * 100));
       }
       case Format.HSLA: {
         const hsla = this.hsla();
-        const template = options.whitespaceSeparated ? 'hsl(%d %d% %d% / %f)' : 'hsla(%d, %d%, %d%, %f)';
         return Platform.StringUtilities.sprintf(
-            template, Math.round(hsla[0] * 360), Math.round(hsla[1] * 100), Math.round(hsla[2] * 100), hsla[3]);
+            'hsl(%d %d% %d% / %f)', Math.round(hsla[0] * 360), Math.round(hsla[1] * 100), Math.round(hsla[2] * 100),
+            hsla[3]);
       }
       case Format.HEXA: {
         return Platform.StringUtilities
@@ -739,10 +736,6 @@ export class Color {
     return new Color(rgba, Format.RGBA);
   }
 }
-
-/** @typedef {{whitespaceSeparated: (boolean|undefined)}} */
-// @ts-ignore typedef.
-export let FormatOptions;
 
 /** @type {!RegExp} */
 export const Regex = /((?:rgb|hsl)a?\([^)]+\)|#[0-9a-fA-F]{8}|#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3,4}|\b[a-zA-Z]+\b(?!-))/g;
@@ -979,7 +972,7 @@ export class Generator {
     const s = this._indexToValueInSpace(hash >> 8, this._satSpace);
     const l = this._indexToValueInSpace(hash >> 16, this._lightnessSpace);
     const a = this._indexToValueInSpace(hash >> 24, this._alphaSpace);
-    return `hsla(${h}, ${s}%, ${l}%, ${a})`;
+    return `hsl(${h} ${s}% ${l}% / ${a})`;
   }
 
   /**

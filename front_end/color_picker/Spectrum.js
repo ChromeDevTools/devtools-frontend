@@ -934,27 +934,21 @@ export class Spectrum extends UI.Widget.VBox {
     const cf = Common.Color.Format;
     const color = this._color();
 
-    // TODO (crbug.com/1073350) once asString is updated to produce
-    // the whitespace separated notation by default, these options can be removed
-    const formatOptions = {
-      whitespaceSeparated: true,
-    };
-
-    let colorString = color.asString(this._colorFormat, formatOptions);
+    let colorString = color.asString(this._colorFormat);
     if (colorString) {
       return colorString;
     }
 
     if (this._colorFormat === cf.Nickname) {
-      colorString = color.asString(color.hasAlpha() ? cf.HEXA : cf.HEX, formatOptions);
+      colorString = color.asString(color.hasAlpha() ? cf.HEXA : cf.HEX);
     } else if (this._colorFormat === cf.ShortHEX) {
-      colorString = color.asString(color.detectHEXFormat(), formatOptions);
+      colorString = color.asString(color.detectHEXFormat());
     } else if (this._colorFormat === cf.HEX) {
-      colorString = color.asString(cf.HEXA, formatOptions);
+      colorString = color.asString(cf.HEXA);
     } else if (this._colorFormat === cf.HSL) {
-      colorString = color.asString(cf.HSLA, formatOptions);
+      colorString = color.asString(cf.HSLA);
     } else {
-      colorString = color.asString(cf.RGBA, formatOptions);
+      colorString = color.asString(cf.RGBA);
     }
 
     console.assert(colorString);

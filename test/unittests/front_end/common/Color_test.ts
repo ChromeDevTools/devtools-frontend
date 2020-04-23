@@ -31,7 +31,7 @@ describe('Color', () => {
   it('is able to create a color class from an HSVA value', () => {
     const color = Color.Color.fromHSVA([0.5, 0.5, 0.5, 100]);
     assert.deepEqual(color.rgba(), [0.25, 0.49999999999999994, 0.5, 1], 'RGBA array was not set correctly');
-    assert.strictEqual(color.asString(), 'hsla(180, 33%, 38%, 1)', 'original text was not set correctly');
+    assert.strictEqual(color.asString(), 'hsl(180 33% 38% / 1)', 'original text was not set correctly');
     assert.strictEqual(color.format(), 'hsla', 'format was not set correctly');
   });
 
@@ -124,6 +124,9 @@ describe('Color', () => {
 
     const colorThree = Color.Color.parse('hsla(50deg 100% 100% / 50%)')!;
     assert.deepEqual(colorThree.rgba(), [1, 1, 1, 0.5]);
+
+    const colorFour = Color.Color.parse('hsl(0 100% 50% / 0.5)')!;
+    assert.deepEqual(colorFour.rgba(), [1, 0, 0, 0.5]);
   });
 
   it('handles invalid values', () => {
@@ -237,48 +240,24 @@ describe('Color', () => {
   it('returns the RGB value when turned into a strong if its format was "rgb"', () => {
     const color = new Color.Color([1, 0, 0, 1], 'rgb', 'testColor');
     const result = color.asString();
-    assert.strictEqual(result, 'rgb(255, 0, 0)', 'color was not converted to a string correctly');
-  });
-
-  it('returns the RGB value in whitespace-separated notation given whitespaceSeparated = true', () => {
-    const color = new Color.Color([1, 0, 0, 1], 'rgb', 'testColor');
-    const result = color.asString(undefined, {whitespaceSeparated: true});
     assert.strictEqual(result, 'rgb(255 0 0)', 'color was not converted to a string correctly');
   });
 
   it('returns the RGBA value when turned into a strong if its format was "rgba"', () => {
     const color = new Color.Color([1, 0, 0, 1], 'rgba', 'testColor');
     const result = color.asString();
-    assert.strictEqual(result, 'rgba(255, 0, 0, 1)', 'color was not converted to a string correctly');
-  });
-
-  it('returns the RGBA value in whitespace-separated notation given whitespaceSeparated = true', () => {
-    const color = new Color.Color([1, 0, 0, 1], 'rgba', 'testColor');
-    const result = color.asString(undefined, {whitespaceSeparated: true});
     assert.strictEqual(result, 'rgb(255 0 0 / 1)', 'color was not converted to a string correctly');
   });
 
   it('returns the HSL value when turned into a strong if its format was "hsl"', () => {
     const color = new Color.Color([1, 0, 0, 1], 'hsl', 'testColor');
     const result = color.asString();
-    assert.strictEqual(result, 'hsl(0, 100%, 50%)', 'color was not converted to a string correctly');
-  });
-
-  it('returns the HSL value in whitespace-separated notation given whitespaceSeparated = true', () => {
-    const color = new Color.Color([1, 0, 0, 1], 'hsl', 'testColor');
-    const result = color.asString(undefined, {whitespaceSeparated: true});
     assert.strictEqual(result, 'hsl(0 100% 50%)', 'color was not converted to a string correctly');
   });
 
   it('returns the HSLA value when turned into a strong if its format was "hsla"', () => {
     const color = new Color.Color([1, 0, 0, 1], 'hsla', 'testColor');
     const result = color.asString();
-    assert.strictEqual(result, 'hsla(0, 100%, 50%, 1)', 'color was not converted to a string correctly');
-  });
-
-  it('returns the HSLA value in whitespace-separated notation given whitespaceSeparated = true', () => {
-    const color = new Color.Color([1, 0, 0, 1], 'hsla', 'testColor');
-    const result = color.asString(undefined, {whitespaceSeparated: true});
     assert.strictEqual(result, 'hsl(0 100% 50% / 1)', 'color was not converted to a string correctly');
   });
 
@@ -298,6 +277,6 @@ describe('Generator', () => {
 
   it('able to return the color for an ID that was not set', () => {
     const generator = new Color.Generator();
-    assert.strictEqual(generator.colorForID('r'), 'hsla(133, 67%, 80%, 1)', 'color was not generated correctly');
+    assert.strictEqual(generator.colorForID('r'), 'hsl(133 67% 80% / 1)', 'color was not generated correctly');
   });
 });

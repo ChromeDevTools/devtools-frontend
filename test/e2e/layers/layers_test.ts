@@ -18,7 +18,7 @@ describe('The Layers Panel', async () => {
     await openPanelViaMoreTools('Layers');
 
     const url = await getCurrentUrl();
-    assert.equal(url, targetUrl);
+    assert.strictEqual(url, targetUrl);
   });
 
   it('[crbug.com/1053901] should update the layers view when going offline', async () => {
@@ -28,7 +28,7 @@ describe('The Layers Panel', async () => {
     const targetUrl = `${resourcesPath}/layers/default.html`;
     await target.goto(targetUrl);
     await waitFor('[aria-label="layers"]:not([test-current-url=""])');
-    assert.equal(await getCurrentUrl(), targetUrl);
+    assert.strictEqual(await getCurrentUrl(), targetUrl);
 
     const session = await target.target().createCDPSession();
     await session.send('Network.emulateNetworkConditions', {
@@ -39,6 +39,6 @@ describe('The Layers Panel', async () => {
     });
     await target.reload();
     await waitFor(`[aria-label="layers"]:not([test-current-url="${targetUrl}"])`);
-    assert.equal(await getCurrentUrl(), 'chrome-error://chromewebdata/');
+    assert.strictEqual(await getCurrentUrl(), 'chrome-error://chromewebdata/');
   });
 });

@@ -87,7 +87,7 @@ CodeMirror.defineMode("markdown", function(cmCfg, modeCfg) {
   ,   listRE = /^(?:[*\-+]|^[0-9]+([.)]))\s+/
   ,   taskListRE = /^\[(x| )\](?=\s)/i // Must follow listRE
   ,   atxHeaderRE = modeCfg.allowAtxHeaderWithoutSpace ? /^(#+)/ : /^(#+)(?: |$)/
-  ,   setextHeaderRE = /^ *(?:\={1,}|-{1,})\s*$/
+  ,   setextHeaderRE = /^ {0,3}(?:\={1,}|-{2,})\s*$/
   ,   textRE = /^[^#!\[\]*_\\<>` "'(~:]+/
   ,   fencedCodeRE = /^(~~~+|```+)[ \t]*([\w+#-]*)[^\n`]*$/
   ,   linkDefRE = /^\s*\[[^\]]+?\]:.*$/ // naive link-definition
@@ -162,12 +162,6 @@ CodeMirror.defineMode("markdown", function(cmCfg, modeCfg) {
     if (state.indentationDiff === null) {
       state.indentationDiff = state.indentation;
       if (prevLineIsList) {
-        // Reset inline styles which shouldn't propagate aross list items
-        state.em = false;
-        state.strong = false;
-        state.code = false;
-        state.strikethrough = false;
-
         state.list = null;
         // While this list item's marker's indentation is less than the deepest
         //  list item's content's indentation,pop the deepest list item
@@ -226,6 +220,11 @@ CodeMirror.defineMode("markdown", function(cmCfg, modeCfg) {
 
       // Add this list item's content's indentation to the stack
       state.listStack.push(state.indentation);
+      // Reset inline styles which shouldn't propagate aross list items
+      state.em = false;
+      state.strong = false;
+      state.code = false;
+      state.strikethrough = false;
 
       if (modeCfg.taskLists && stream.match(taskListRE, false)) {
         state.taskList = true;

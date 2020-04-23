@@ -83,7 +83,8 @@
   cursor: text;
   min-height: 1px; /* prevents collapsing before first draw */
 }
-.CodeMirror pre {
+.CodeMirror pre.CodeMirror-line,
+.CodeMirror pre.CodeMirror-line-like {
   /* Reset some styles that the rest of the page might have set */
   -moz-border-radius: 0; -webkit-border-radius: 0; border-radius: 0;
   border-width: 0;
@@ -102,7 +103,8 @@
   -webkit-font-variant-ligatures: contextual;
   font-variant-ligatures: contextual;
 }
-.CodeMirror-wrap pre {
+.CodeMirror-wrap pre.CodeMirror-line,
+.CodeMirror-wrap pre.CodeMirror-line-like {
   word-wrap: break-word;
   white-space: pre-wrap;
   word-break: normal;

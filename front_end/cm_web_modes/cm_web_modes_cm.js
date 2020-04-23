@@ -9,3 +9,4 @@ import './javascript.js';
 import './xml.js';
 import './htmlmixed.js';
 import './htmlembedded.js';
+import './wast.js';

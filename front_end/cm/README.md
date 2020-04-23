@@ -6,11 +6,11 @@ Every once in a while, the CodeMirror dependency (which is located in Source/dev
 
 ## Updating CodeMirror
 
-Run `python devtools/scripts/roll_codemirror.js <codemirror_dir> <devtools_dir>`
+Run `python ./scripts/deps/roll_codemirror.py <codemirror_dir> <devtools_dir>`
 
 ## Manual steps
 This requires the following steps to be done:
-1. File `headlesscodemirror.js` is a `runmode-standalone.js` file from CodeMirror distribution, but wrapped in `(function(window) { ... }(this))`
+1. File `headlesscodemirror.js` is a `runmode-standalone.js` file from CodeMirror distribution, but wrapped in `(function(window) { ... }(self))`
 construction. This is needed to support in web workers.
 2. File `codemirror.css` contains both the default theme of CodeMirror and structural css required for it to work. Discard everything in the file up to the word `/* STOP */`.
 3. All other files in `front_end/cm/` folder should be substituted with their newer versions from the upstream.

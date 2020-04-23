@@ -87,7 +87,7 @@ def copy_cm_files(options):
     target_dir = os.path.join(options.devtools_dir, 'front_end', 'cm')
 
     def cm_filter(f):
-        return f.endswith('.js') and f != 'codemirror.js'
+        return f.endswith('.js') and f != 'codemirror.js' and f != 'cm.js'
 
     find_and_copy_js_files(source_dir, target_dir, cm_filter)
 
@@ -97,7 +97,7 @@ def copy_cm_modes_files(options):
     target_dir = os.path.join(options.devtools_dir, 'front_end', 'cm_modes')
 
     def cm_modes_filter(f):
-        return f.endswith('.js') and f != 'DefaultCodeMirrorMimeMode.js'
+        return f.endswith('.js') and f != 'DefaultCodeMirrorMimeMode.js' and f != 'cm_modes.js'
 
     find_and_copy_js_files(source_dir, target_dir, cm_modes_filter)
 
@@ -107,7 +107,7 @@ def copy_cm_web_modes_files(options):
     target_dir = os.path.join(options.devtools_dir, 'front_end', 'cm_web_modes')
 
     def cm_web_modes_filter(f):
-        return f.endswith('.js')
+        return f.endswith('.js') and not f.startswith('cm_web_modes')
 
     find_and_copy_js_files(source_dir, target_dir, cm_web_modes_filter)
 

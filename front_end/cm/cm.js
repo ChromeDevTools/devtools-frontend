@@ -13,3 +13,4 @@ import './active-line.js';
 import './foldcode.js';
 import './foldgutter.js';
 import './brace-fold.js';
+import './simple.js';

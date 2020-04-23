@@ -66,6 +66,7 @@ const EXCLUDED_FILES = [
   'cm/matchbrackets.js',
   'cm/multiplex.js',
   'cm/overlay.js',
+  'cm/simple.js',
   'cm_headless/headlesscodemirror.js',
   'cm_modes/clike.js',
   'cm_modes/clojure.js',
@@ -80,6 +81,7 @@ const EXCLUDED_FILES = [
   'cm_web_modes/htmlembedded.js',
   'cm_web_modes/htmlmixed.js',
   'cm_web_modes/javascript.js',
+  'cm_web_modes/wast.js',
   'cm_web_modes/xml.js',
   // FIXME: Dagre bundles must be moved to third_party
   'dagre_layout/dagre.js',

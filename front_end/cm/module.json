@@ -12,7 +12,8 @@
     "active-line.js",
     "foldcode.js",
     "foldgutter.js",
-    "brace-fold.js"
+    "brace-fold.js",
+    "simple.js"
   ],
   "skip_compilation": [
     "codemirror.js",
@@ -25,7 +26,8 @@
     "active-line.js",
     "foldcode.js",
     "foldgutter.js",
-    "brace-fold.js"
+    "brace-fold.js",
+    "simple.js"
   ],
   "resources": [
     "codemirror.css"

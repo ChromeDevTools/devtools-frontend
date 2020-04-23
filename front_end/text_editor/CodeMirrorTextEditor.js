@@ -56,7 +56,7 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox {
         Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get());
 
     this._codeMirror = new CodeMirror(this.element, {
-      devtoolsAccessibleName: options.devtoolsAccessibleName,
+      screenReaderLabel: options.devtoolsAccessibleName || ls`Code editor`,
       lineNumbers: options.lineNumbers,
       matchBrackets: true,
       smartIndent: true,
@@ -1876,7 +1876,6 @@ CodeMirror.inputStyles.devToolsAccessibleTextArea = class extends CodeMirror.inp
    */
   init(display) {
     super.init(display);
-    UI.ARIAUtils.setAccessibleName(this.textarea, this.cm.options.devtoolsAccessibleName || ls`Code editor`);
     this.textarea.addEventListener('compositionstart', this._onCompositionStart.bind(this));
   }
 

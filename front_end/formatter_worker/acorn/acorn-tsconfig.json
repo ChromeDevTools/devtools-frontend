@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "composite": true
+  },
+  "files": [
+    "acorn.js",
+    "acorn_loose.js"
+  ]
+}

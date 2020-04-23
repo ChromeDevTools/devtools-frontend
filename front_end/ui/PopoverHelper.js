@@ -28,6 +28,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// @ts-nocheck
+// TODO(crbug.com/1011811): Enable TypeScript compiler checks
+
 import {GlassPane, MarginBehavior, SizeBehavior} from './GlassPane.js';
 
 export class PopoverHelper {
@@ -40,7 +43,7 @@ export class PopoverHelper {
     this._hasPadding = false;
     this._getRequest = getRequest;
     this._scheduledRequest = null;
-    /** @type {?function()} */
+    /** @type {?function():void} */
     this._hidePopoverCallback = null;
     this._container = container;
     this._showTimeout = 0;

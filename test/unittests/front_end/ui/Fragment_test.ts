@@ -4,6 +4,8 @@
 
 const {assert} = chai;
 
+import '../../../../front_end/dom_extension/DOMExtension.js';
+
 import {Fragment} from '../../../../front_end/ui/Fragment.js';
 
 describe('Fragment', () => {

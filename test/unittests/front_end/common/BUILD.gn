@@ -14,6 +14,7 @@ ts_library("common") {
     "Settings_test.ts",
     "StringOutputStream_test.ts",
     "TextDictionary_test.ts",
+    "Throttler_test.ts",
     "Trie_test.ts",
     "UIString_test.ts",
   ]

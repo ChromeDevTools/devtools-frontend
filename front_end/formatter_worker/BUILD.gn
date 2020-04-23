@@ -5,9 +5,16 @@
 import("../../third_party/typescript/typescript.gni")
 
 ts_library("formatter_worker") {
-  deps = [ ":formatted_content_builder" ]
-}
+  sources = [
+    "AcornTokenizer.js",
+    "ESTreeWalker.js",
+    "FormattedContentBuilder.js",
+    "JavaScriptFormatter.js",
+  ]
 
-ts_library("formatted_content_builder") {
-  sources = [ "FormattedContentBuilder.js" ]
+  deps = [
+    "../platform",
+    "../text_utils",
+    "acorn",
+  ]
 }

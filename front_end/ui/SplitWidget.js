@@ -28,6 +28,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// @ts-nocheck
+// TODO(crbug.com/1011811): Enable TypeScript compiler checks
+
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 
@@ -84,7 +87,7 @@ export class SplitWidget extends Widget {
     /** @type {?Widget} */
     this._sidebarWidget = null;
     this._animationFrameHandle = 0;
-    /** @type {?function()} */
+    /** @type {?function():void} */
     this._animationCallback = null;
     this._showHideSidebarButtonTitle = '';
     /** @type {?ToolbarButton} */

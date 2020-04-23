@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// @ts-nocheck
+// TODO(crbug.com/1011811): Enable TypeScript compiler checks
+
 import {appendStyle} from './utils/append-style.js';
 import {XElement} from './XElement.js';
 
@@ -24,11 +27,11 @@ export class XWidget extends XElement {
     this._defaultFocusedElement = null;
     /** @type {!Array<!Element>} */
     this._elementsToRestoreScrollPositionsFor = [];
-    /** @type {?function()} */
+    /** @type {?function():void} */
     this._onShownCallback;
-    /** @type {?function()} */
+    /** @type {?function():void} */
     this._onHiddenCallback;
-    /** @type {?function()} */
+    /** @type {?function():void} */
     this._onResizedCallback;
 
     if (!XWidget._observer) {
@@ -43,23 +46,6 @@ export class XWidget extends XElement {
     XWidget._observer.observe(this);
 
     this.setElementsToRestoreScrollPositionsFor([this]);
-  }
-
-  /**
-   * @param {?Node} node
-   */
-  static focusWidgetForNode(node) {
-    node = node && node.parentNodeOrShadowHost();
-    let widget = null;
-    while (node) {
-      if (node instanceof XWidget) {
-        if (widget) {
-          node._defaultFocusedElement = widget;
-        }
-        widget = node;
-      }
-      node = node.parentNodeOrShadowHost();
-    }
   }
 
   /**
@@ -197,3 +183,4 @@ export class XWidget extends XElement {
 }
 
 self.customElements.define('x-widget', XWidget);
+self.XWidget = XWidget;

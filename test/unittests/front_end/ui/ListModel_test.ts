@@ -54,7 +54,9 @@ describe('ListModel', () => {
   });
 
   it('supports replacing list elements in place', () => {
-    const model = new ListModel([0, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 4, 5, 6, 27, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 28, 29]);
+    const model = new ListModel([
+      0, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 4, 5, 6, 27, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 28, 29,
+    ]);
     model.replaceRange(0, 29, []);
     assert.deepEqual([...model], [29]);
   });

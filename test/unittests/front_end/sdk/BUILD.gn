@@ -5,7 +5,12 @@ ts_library("sdk") {
   sources = [
     "CookieParser_test.ts",
     "Cookie_test.ts",
+    "Issue_test.ts",
+    "RelatedIssue_test.ts",
     "ServerTiming_test.ts",
+    "SourceMap_test.ts",
+    "StubIssue.ts",
+    "TracingModel_test.ts",
   ]
 
   deps = [

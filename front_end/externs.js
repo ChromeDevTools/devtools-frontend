@@ -1507,3 +1507,51 @@ class ServicePort {
 }
 
 const fabric = {};
+
+class AnchorBox {
+  /**
+   * @param {number=} x
+   * @param {number=} y
+   * @param {number=} width
+   * @param {number=} height
+   */
+  constructor(x, y, width, height) {
+    /** @type {number} */
+    this.x;
+    /** @type {number} */
+    this.y;
+    /** @type {number} */
+    this.width;
+    /** @type {number} */
+    this.height;
+  }
+
+  /**
+   * @param {number} x
+   * @param {number} y
+   * @return {boolean}
+   */
+  contains(x, y) {
+  }
+
+  /**
+   * @param {!AnchorBox} box
+   * @return {!AnchorBox}
+   */
+  relativeTo(box) {
+  }
+
+  /**
+   * @param {!Element} element
+   * @return {!AnchorBox}
+   */
+  relativeToElement(element) {
+  }
+
+  /**
+   * @param {?AnchorBox} anchorBox
+   * @return {boolean}
+   */
+  equals(anchorBox) {
+  }
+}

@@ -29,6 +29,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// @ts-nocheck
+// TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
@@ -1138,6 +1140,9 @@ export class LongClickController extends Common.ObjectWrapper.ObjectWrapper {
     this._callback = callback;
     this._editKey = isEditKeyFunc;
     this._enable();
+
+    /** @type {{mouseUp: function(!Event):void, mouseDown: function(!Event):void, reset: function():void }} */
+    this._longClickData;
   }
 
   reset() {

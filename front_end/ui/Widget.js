@@ -24,6 +24,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// @ts-nocheck
+// TODO(crbug.com/1011811): Enable TypeScript compiler checks
+
 import * as Common from '../common/common.js';
 import {Constraints, Size} from './Geometry.js';
 import {appendStyle} from './utils/append-style.js';
@@ -87,27 +90,6 @@ export class Widget extends Common.ObjectWrapper.ObjectWrapper {
   static __assert(condition, message) {
     if (!condition) {
       throw new Error(message);
-    }
-  }
-
-  /**
-   * @param {?Node} node
-   */
-  static focusWidgetForNode(node) {
-    while (node) {
-      if (node.__widget) {
-        break;
-      }
-      node = node.parentNodeOrShadowHost();
-    }
-    if (!node) {
-      return;
-    }
-
-    let widget = node.__widget;
-    while (widget._parentWidget) {
-      widget._parentWidget._defaultFocusedChild = widget;
-      widget = widget._parentWidget;
     }
   }
 

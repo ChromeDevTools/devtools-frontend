@@ -28,6 +28,8 @@ declare namespace Runtime {
   const cachedResources: {[cachePath: string]: string};
 }
 
+declare class AnchorBox {}
+
 declare namespace Adb {
   interface Page {
     id: string;

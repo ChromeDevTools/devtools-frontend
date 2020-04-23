@@ -4,10 +4,10 @@
 
 const {assert} = chai;
 
+import * as Platform from '../../../../front_end/platform/platform.js';
+
 import '../../../../front_end/formatter_worker/acorn/acorn.js';
 import '../../../../front_end/formatter_worker/acorn/acorn_loose.js';
-
-import * as Platform from '../../../../front_end/platform/platform.js';
 
 import {FormattedContentBuilder} from '../../../../front_end/formatter_worker/FormattedContentBuilder.js';
 import {JavaScriptFormatter} from '../../../../front_end/formatter_worker/JavaScriptFormatter.js';

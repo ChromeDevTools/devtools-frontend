@@ -7,11 +7,15 @@ group("front_end") {
     ":copy_karma_conf",
     "bindings",
     "common",
+    "dom_extension",
     "formatter_worker",
+    "inline_editor",
+    "persistence",
     "platform",
     "protocol_client",
     "sdk",
     "text_utils",
+    "ui",
   ]
 }
 

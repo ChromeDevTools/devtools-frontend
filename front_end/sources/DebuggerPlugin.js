@@ -85,6 +85,41 @@ export class DebuggerPlugin extends Plugin {
     this._boundPopoverHelperHide = this._popoverHelper.hidePopover.bind(this._popoverHelper);
     this._scriptsPanel.element.addEventListener('scroll', this._boundPopoverHelperHide, true);
 
+    const shortcutHandlers = {
+      'debugger.toggle-breakpoint': async () => {
+        const selection = this._textEditor.selection();
+        if (!selection) {
+          return false;
+        }
+        await this._toggleBreakpoint(selection.startLine, false);
+        return true;
+      },
+      'debugger.toggle-breakpoint-enabled': async () => {
+        const selection = this._textEditor.selection();
+        if (!selection) {
+          return false;
+        }
+        await this._toggleBreakpoint(selection.startLine, true);
+        return true;
+      },
+      'debugger.breakpoint-input-window': async () => {
+        const selection = this._textEditor.selection();
+        if (!selection) {
+          return false;
+        }
+        const breakpoints = this._lineBreakpointDecorations(selection.startLine)
+                                .map(decoration => decoration.breakpoint)
+                                .filter(breakpoint => !!breakpoint);
+        let breakpoint;
+        if (breakpoints.length) {
+          breakpoint = breakpoints[0];
+        }
+        const isLogpoint = breakpoint ? breakpoint.condition().includes(LogpointPrefix) : false;
+        this._editBreakpointCondition(selection.startLine, breakpoint, null, isLogpoint);
+        return true;
+      }
+    };
+    self.UI.shortcutRegistry.addShortcutListener(this._textEditor.element, shortcutHandlers);
     this._boundKeyDown = /** @type {function(!Event)} */ (this._onKeyDown.bind(this));
     this._textEditor.element.addEventListener('keydown', this._boundKeyDown, true);
     this._boundKeyUp = /** @type {function(!Event)} */ (this._onKeyUp.bind(this));
@@ -599,42 +634,6 @@ export class DebuggerPlugin extends Plugin {
         this._popoverHelper.hidePopover();
         event.consume();
       }
-      return;
-    }
-
-    if (self.UI.shortcutRegistry.eventMatchesAction(event, 'debugger.toggle-breakpoint')) {
-      const selection = this._textEditor.selection();
-      if (!selection) {
-        return;
-      }
-      await this._toggleBreakpoint(selection.startLine, false);
-      event.consume(true);
-      return;
-    }
-    if (self.UI.shortcutRegistry.eventMatchesAction(event, 'debugger.toggle-breakpoint-enabled')) {
-      const selection = this._textEditor.selection();
-      if (!selection) {
-        return;
-      }
-      await this._toggleBreakpoint(selection.startLine, true);
-      event.consume(true);
-      return;
-    }
-    if (self.UI.shortcutRegistry.eventMatchesAction(event, 'debugger.breakpoint-input-window')) {
-      const selection = this._textEditor.selection();
-      if (!selection) {
-        return;
-      }
-      const breakpoints = this._lineBreakpointDecorations(selection.startLine)
-                              .map(decoration => decoration.breakpoint)
-                              .filter(breakpoint => !!breakpoint);
-      let breakpoint;
-      if (breakpoints.length) {
-        breakpoint = breakpoints[0];
-      }
-      const isLogpoint = breakpoint ? breakpoint.condition().includes(LogpointPrefix) : false;
-      this._editBreakpointCondition(selection.startLine, breakpoint, null, isLogpoint);
-      event.consume(true);
       return;
     }
 

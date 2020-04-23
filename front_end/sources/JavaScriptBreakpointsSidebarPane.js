@@ -39,96 +39,163 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
   }
 
   /**
-   * @override
-   * @return {!Promise<?>}
+   * @returns {!Array<!BreakpointLocation>}
    */
-  async doUpdate() {
-    const hadFocus = this.hasFocus();
-    const breakpointLocations = this._breakpointManager.allBreakpointLocations().filter(
+  _getBreakpointLocations() {
+    const locations = this._breakpointManager.allBreakpointLocations().filter(
         breakpointLocation =>
             breakpointLocation.uiLocation.uiSourceCode.project().type() !== Workspace.Workspace.projectTypes.Debugger);
-    if (!breakpointLocations.length) {
-      this._list.element.classList.add('hidden');
-      this._emptyElement.classList.remove('hidden');
-      this._breakpoints.replaceAll([]);
-      this._didUpdateForTest();
-      return Promise.resolve();
-    }
 
+    locations.sort((item1, item2) => item1.uiLocation.compareTo(item2.uiLocation));
+
+    return locations;
+  }
+
+  _hideList() {
+    this._list.element.classList.add('hidden');
+    this._emptyElement.classList.remove('hidden');
+  }
+
+  _ensureListShown() {
     this._list.element.classList.remove('hidden');
     this._emptyElement.classList.add('hidden');
+  }
 
-    breakpointLocations.sort((item1, item2) => item1.uiLocation.compareTo(item2.uiLocation));
-
-    /** @type {!Platform.Multimap<string, string>} */
-    const breakpointEntriesForLine = new Platform.Multimap();
-
-    /** @type {!Platform.Multimap<string, !{breakpoint: !Bindings.BreakpointManager.Breakpoint, uiLocation: !Workspace.UISourceCode.UILocation}>} */
-    const locationForEntry = new Platform.Multimap();
+  /**
+   * @param {!Array<!BreakpointLocation>} breakpointLocations
+   * @return {!Array<!Array<!BreakpointLocation>>}
+   */
+  _groupBreakpointLocationsById(breakpointLocations) {
+    /** @type {!Platform.Multimap<string, !BreakpointLocation>} */
+    const map = new Platform.Multimap();
     for (const breakpointLocation of breakpointLocations) {
       const uiLocation = breakpointLocation.uiLocation;
-      const entryDescriptor = `${uiLocation.uiSourceCode.url()}:${uiLocation.lineNumber}:${uiLocation.columnNumber}`;
-      locationForEntry.set(entryDescriptor, breakpointLocation);
-      const lineDescriptor = `${uiLocation.uiSourceCode.url()}:${uiLocation.lineNumber}`;
-      breakpointEntriesForLine.set(lineDescriptor, entryDescriptor);
+      map.set(uiLocation.id(), breakpointLocation);
+    }
+    /** @type {!Array<!Array<!BreakpointLocation>>} */
+    const arr = [];
+    for (const id of map.keysArray()) {
+      const locations = Array.from(map.get(id));
+      if (locations.length) {
+        arr.push(locations);
+      }
+    }
+    return arr;
+  }
+
+  /**
+   * @param {!Array<!BreakpointLocation>} breakpointLocations
+   * @return {!Platform.Multimap<string, string>}
+   */
+  _getLocationIdsByLineId(breakpointLocations) {
+    /** @type {!Platform.Multimap<string, string>} */
+    const result = new Platform.Multimap();
+
+    for (const breakpointLocation of breakpointLocations) {
+      const uiLocation = breakpointLocation.uiLocation;
+      result.set(uiLocation.lineId(), uiLocation.id());
     }
 
-    const details = self.UI.context.flavor(SDK.DebuggerModel.DebuggerPausedDetails);
-    const selectedUILocation = details && details.callFrames.length ?
-        await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(
-            details.callFrames[0].location()) :
-        null;
+    return result;
+  }
 
-    let shouldShowView = false;
-    const promises = [];
-    const breakpoints = [];
+  /**
+   * @return {!Promise<?Workspace.UISourceCode.UILocation>}
+   */
+  async _getSelectedUILocation() {
+    const details = self.UI.context.flavor(SDK.DebuggerModel.DebuggerPausedDetails);
+    if (details && details.callFrames.length) {
+      return await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(
+          details.callFrames[0].location());
+    }
+    return null;
+  }
+
+  /**
+   * @param {!Array<!Array<!BreakpointLocation>>} locations
+   */
+  async _getContent(locations) {
     // Use a cache to share the Text objects between all breakpoints. This way
     // we share the cached line ending information that Text calculates. This
     // was very slow to calculate with a lot of breakpoints in the same very
     // large source file.
     /** @type {!Map<string, !TextUtils.Text.Text>} */
     const contentToTextMap = new Map();
-    let itemToSelect;
-    for (const descriptor of locationForEntry.keysArray()) {
-      const locations = Array.from(locationForEntry.get(descriptor));
+
+    return Promise.all(locations.map(async ([breakpointLocation]) => {
+      const content = await breakpointLocation.uiLocation.uiSourceCode.requestContent();
+      if (contentToTextMap.has(content.content)) {
+        return contentToTextMap.get(content.content);
+      }
+      const text = new TextUtils.Text.Text(content.content || '');
+      contentToTextMap.set(content.content, text);
+      return text;
+    }));
+  }
+
+  /**
+   * @override
+   * @return {!Promise<?>}
+   */
+  async doUpdate() {
+    const hadFocus = this.hasFocus();
+    const breakpointLocations = this._getBreakpointLocations();
+    if (!breakpointLocations.length) {
+      this._hideList();
+      this._setBreakpointItems([]);
+      return this._didUpdateForTest();
+    }
+    this._ensureListShown();
+
+    const locationsGroupedById = this._groupBreakpointLocationsById(breakpointLocations);
+    const locationIdsByLineId = this._getLocationIdsByLineId(breakpointLocations);
+    const content = await this._getContent(locationsGroupedById);
+    const selectedUILocation = await this._getSelectedUILocation();
+    const breakpoints = [];
+    for (let idx = 0; idx < locationsGroupedById.length; idx++) {
+      const locations = locationsGroupedById[idx];
       const breakpointLocation = locations[0];
       const uiLocation = breakpointLocation.uiLocation;
       const isSelected =
           !!selectedUILocation && locations.some(location => location.uiLocation.id() === selectedUILocation.id());
-      const showColumn =
-          breakpointEntriesForLine.get(`${uiLocation.uiSourceCode.url()}:${uiLocation.lineNumber}`).size > 1;
-
-      const content = uiLocation.uiSourceCode.requestContent();
-      const contentAsText = content.then(content => {
-        if (contentToTextMap.has(content.content)) {
-          return contentToTextMap.get(content.content);
-        }
-        const text = new TextUtils.Text.Text(content.content || '');
-        contentToTextMap.set(content.content, text);
-        return text;
-      });
-      promises.push(contentAsText);
-      const item = {breakpointLocation, locations, isSelected, showColumn, contentAsText};
-      breakpoints.push(item);
-      if (this._list.selectedItem() &&
-          this._list.selectedItem().breakpointLocation.breakpoint === breakpointLocation.breakpoint) {
-        itemToSelect = item;
-      }
-      if (isSelected) {
-        shouldShowView = true;
-      }
+      const showColumn = locationIdsByLineId.get(uiLocation.lineId()).size > 1;
+      const text = /** @type {!TextUtils.Text.Text} */ (content[idx]);
+      breakpoints.push(new BreakpointItem(locations, text, isSelected, showColumn));
     }
-    if (shouldShowView) {
+
+    if (breakpoints.some(breakpoint => breakpoint.isSelected)) {
       UI.ViewManager.ViewManager.instance().showView('sources.jsBreakpoints');
     }
+
     this._list.element.classList.toggle(
         'breakpoints-list-deactivated', !Common.Settings.Settings.instance().moduleSetting('breakpointsActive').get());
-    this._breakpoints.replaceAll(breakpoints);
-    this._list.selectItem(itemToSelect || this._breakpoints.at(0));
+
+    this._setBreakpointItems(breakpoints);
+
     if (hadFocus) {
       this.focus();
     }
-    return Promise.all(promises).then(() => this._didUpdateForTest());
+
+    return this._didUpdateForTest();
+  }
+
+  /**
+   * If the number of breakpoint items is the same,
+   * we expect only minor changes and it implies that only
+   * few items should be updated
+   *
+   * @param {!Array<!BreakpointItem>} breakpointItems
+   */
+  _setBreakpointItems(breakpointItems) {
+    if (this._breakpoints.length === breakpointItems.length) {
+      for (let i = 0; i < this._breakpoints.length; i++) {
+        if (!this._breakpoints.at(i).isSimilar(breakpointItems[i])) {
+          this._breakpoints.replace(i, breakpointItems[i]);
+        }
+      }
+    } else {
+      this._breakpoints.replaceAll(breakpointItems);
+    }
   }
 
   /**
@@ -174,15 +241,14 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
     });
 
     const snippetElement = element.createChild('div', 'source-text monospace');
-    item.contentAsText.then(text => {
-      const lineNumber = uiLocation.lineNumber;
-      if (lineNumber < text.lineCount()) {
-        const lineText = text.lineAt(lineNumber);
-        const maxSnippetLength = 200;
-        snippetElement.textContent =
-            lineText.substring(item.showColumn ? uiLocation.columnNumber : 0).trimEndWithMaxLength(maxSnippetLength);
-      }
-    });
+    const lineNumber = uiLocation.lineNumber;
+
+    if (item.text && lineNumber < item.text.lineCount()) {
+      const lineText = item.text.lineAt(lineNumber);
+      const maxSnippetLength = 200;
+      snippetElement.textContent =
+          lineText.substring(item.showColumn ? uiLocation.columnNumber : 0).trimEndWithMaxLength(maxSnippetLength);
+    }
 
     element[breakpointLocationsSymbol] = item.locations;
     element[locationSymbol] = uiLocation;
@@ -270,7 +336,7 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
     for (const breakpoint of breakpoints) {
       breakpoint.setEnabled(newState);
       const item =
-          this._breakpoints.find(breakpointItem => breakpointItem.breakpointLocation.breakpoint === breakpoint);
+          this._breakpoints.find(breakpointItem => breakpointItem.locations.some(loc => loc.breakpoint === breakpoint));
       if (item) {
         this._list.refreshItem(item);
       }
@@ -374,21 +440,38 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
   }
 }
 
+class BreakpointItem {
+  /**
+   * @param {!Array<!BreakpointLocation>} locations
+   * @param {?TextUtils.Text.Text} text
+   * @param {boolean} isSelected
+   * @param {boolean} showColumn
+   */
+  constructor(locations, text, isSelected, showColumn) {
+    this.locations = locations;
+    this.text = text;
+    this.isSelected = isSelected;
+    this.showColumn = showColumn;
+  }
+
+  /**
+   * Checks if this item has not changed compared with the other
+   * Used to cache model items between re-renders
+   * @param {!BreakpointItem} other
+   */
+  isSimilar(other) {
+    return this.locations.length === other.locations.length &&
+        this.locations.every((l, idx) => l.uiLocation === other.locations[idx].uiLocation) &&
+        this.locations.every((l, idx) => l.breakpoint === other.locations[idx].breakpoint) &&
+        ((this.text === other.text) || (this.text && other.text && this.text.value() === other.text.value())) &&
+        this.isSelected === other.isSelected && this.showColumn === other.showColumn;
+  }
+}
+
 export const locationSymbol = Symbol('location');
 export const checkboxLabelSymbol = Symbol('checkbox-label');
 export const snippetElementSymbol = Symbol('snippet-element');
 export const breakpointLocationsSymbol = Symbol('locations');
 
 /** @typedef {{breakpoint: !Bindings.BreakpointManager.Breakpoint, uiLocation: !Workspace.UISourceCode.UILocation}} */
-export let Breakpoint;
-
-/**
- * @typedef {{
- * breakpointLocation: !Breakpoint,
- * locations: !Array.<!Breakpoint>,
- * showColumn: boolean,
- * isSelected: boolean,
- * contentAsText: !Promise.<TextUtils.Text.Text>
- * }}
- */
-export let BreakpointItem;
+export let BreakpointLocation;

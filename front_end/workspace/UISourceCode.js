@@ -691,6 +691,13 @@ export class UILocation {
   /**
    * @return {string}
    */
+  lineId() {
+    return this.uiSourceCode.project().id() + ':' + this.uiSourceCode.url() + ':' + this.lineNumber;
+  }
+
+  /**
+   * @return {string}
+   */
   toUIString() {
     return this.uiSourceCode.url() + ':' + (this.lineNumber + 1);
   }

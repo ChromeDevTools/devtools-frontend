@@ -43,7 +43,6 @@ import {Events, LayerTreeModel} from './LayerTreeModel.js';
 export class LayersPanel extends UI.Panel.PanelWithSidebar {
   constructor() {
     super('layers', 225);
-
     /** @type {?LayerTreeModel} */
     this._model = null;
 
@@ -147,6 +146,9 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar {
   _update() {
     if (this._model) {
       this._layerViewHost.setLayerTree(this._model.layerTree());
+      const url = this._model.target().model(SDK.ResourceTreeModel.ResourceTreeModel).mainFrame.url;
+      // Add the currently visualized url as an attribute to make it accessibles to e2e tests
+      this.element.setAttribute('test-current-url', url);
     }
     return Promise.resolve();
   }

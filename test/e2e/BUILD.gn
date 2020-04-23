@@ -12,6 +12,7 @@ ts_library("e2e") {
     "console",
     "elements",
     "host",
+    "layers",
     "lighthouse",
     "media",
     "network",

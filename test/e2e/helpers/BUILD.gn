@@ -11,6 +11,7 @@ ts_library("helpers") {
     "console-helpers.ts",
     "elements-helpers.ts",
     "event-listeners-helpers.ts",
+    "layers-helpers.ts",
     "lighthouse-helpers.ts",
     "media-helpers.ts",
     "quick_open-helpers.ts",

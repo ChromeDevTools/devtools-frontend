@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 const path = require('path');
+const glob = require('glob');
 
 // true by default
 const COVERAGE_ENABLED = !process.env['NOCOVERAGE'];
@@ -21,14 +22,28 @@ const coveragePreprocessors = COVERAGE_ENABLED ? ['coverage'] : [];
 const commonIstanbulReporters = [{type: 'html'}, {type: 'json-summary'}];
 const istanbulReportOutputs = TEXT_COVERAGE_ENABLED ? [{type: 'text'}, ...commonIstanbulReporters] : commonIstanbulReporters;
 
+const UNIT_TESTS_FOLDER = path.join(ROOT_DIRECTORY, 'test', 'unittests', 'front_end');
+const TEST_SOURCES = path.join(UNIT_TESTS_FOLDER, '**/*.ts');
+
+// To make sure that any leftover JavaScript files (e.g. that were outputs from now-removed tests)
+// aren't incorrectly included, we glob for the TypeScript files instead and use that
+// to instruct Mocha to run the output JavaScript file.
+const TEST_FILES = glob.sync(TEST_SOURCES).map(fileName => {
+  const jsFile = fileName.replace(/\.ts$/, '.js');
+
+  return path.join(__dirname, path.relative(UNIT_TESTS_FOLDER, jsFile));
+});
+
+const TEST_FILES_SOURCE_MAPS = TEST_FILES.map(fileName => `${fileName}.map`);
+
 module.exports = function(config) {
   const options = {
     basePath: ROOT_DIRECTORY,
 
     files: [
-      {pattern: path.join(__dirname, '**/*_test.js'), type: 'module'},
-      {pattern: path.join(__dirname, '**/*_test.js.map'), served: true, included: false},
-      {pattern: path.join(ROOT_DIRECTORY, 'test/unittests/**/*_test.ts'), served: true, included: false},
+      ...TEST_FILES.map(pattern => ({pattern, type: 'module'})),
+      ...TEST_FILES_SOURCE_MAPS.map(pattern => ({pattern, served: true, included: false})),
+      {pattern: TEST_SOURCES, served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.js'), served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.js.map'), served: true, included: false},
       {pattern: path.join(ROOT_DIRECTORY, 'front_end/**/*.ts'), served: true, included: false},

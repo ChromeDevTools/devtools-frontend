@@ -120,13 +120,15 @@ Test are available by running scripts in `scripts/test/`.
 ##### Create a change
 Usual [steps](https://chromium.googlesource.com/chromium/src/+/master/docs/contributing.md#creating-a-change) for creating a change work out of the box.
 
+</details>
+
 ##### Managing dependencies
+**Note that this will only work with the above two workflows**
 - To sync dependencies from Chromium to DevTools frontend, use `scripts/deps/roll_deps.py && npm run generate-protocol-resources`.
 
 The following scripts run as AutoRollers, but can be manually invoked if desired:
 - To roll the HEAD commit of DevTools frontend into Chromium, use `scripts/deps/roll_to_chromium.py`.
 - To update DevTools frontend's DEPS, use `roll-dep`.
-</details>
 
 #### Chromium workflow (discouraged)
 

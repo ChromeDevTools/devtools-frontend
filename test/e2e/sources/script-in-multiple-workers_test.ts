@@ -6,12 +6,13 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 import * as puppeteer from 'puppeteer';
 
-import {click, getBrowserAndPages, resourcesPath, waitFor} from '../../shared/helper.js';
+import {click, getBrowserAndPages, resourcesPath, step, waitFor} from '../../shared/helper.js';
 import {addBreakpointForLine, createSelectorsForWorkerFile, getBreakpointDecorators, getExecutionLine, getOpenSources, openNestedWorkerFile, PAUSE_BUTTON, RESUME_BUTTON} from '../helpers/sources-helpers.js';
 
 async function validateSourceTabs() {
-  // Verifies there is exactly one source open.
-  assert.deepEqual(await getOpenSources(), ['multi-workers.js']);
+  await step('Validate exactly one source file is open', async () => {
+    assert.deepEqual(await getOpenSources(), ['multi-workers.js']);
+  });
 }
 
 
@@ -29,8 +30,9 @@ describe('Multi-Workers', async function() {
     }
 
     async function validateNavigationTree() {
-      // Wait for 10th worker to exist.
-      await waitFor(workerFileSelectors(10).rootSelector);
+      await step('Ensure 10 works exist', async () => {
+        await waitFor(workerFileSelectors(10).rootSelector);
+      });
     }
 
     async function validateBreakpoints(frontend: puppeteer.Page) {
@@ -158,13 +160,19 @@ describe('Multi-Workers', async function() {
         // Have the target load the page.
         await target.goto(targetPage);
 
-        await click('#tab-sources');
+        await step('Open sources panel', async () => {
+          await click('#tab-sources');
+        });
 
         await validateNavigationTree();
-        // Open file from second worker
-        await openNestedWorkerFile(workerFileSelectors(2));
-        // Set breakpoint
-        await addBreakpointForLine(frontend, 6);
+
+        await step('Open second worker file', async () => {
+          await openNestedWorkerFile(workerFileSelectors(2));
+        });
+
+        await step('Set breakpoint', async () => {
+          await addBreakpointForLine(frontend, 6);
+        });
       });
 
       it('for pre-loaded workers', async () => {
@@ -182,19 +190,20 @@ describe('Multi-Workers', async function() {
         await validateSourceTabs();
       });
 
-      // Flaky test
-      it.skip('[crbug.com/1073406] for newly created workers', async () => {
+      it('for newly created workers', async () => {
         const {target} = getBrowserAndPages();
-        // Launch a new worker and make it hit breakpoint
-        await target.evaluate(`new Worker('${scriptFile}').postMessage({});`);
+        await step('Launch new worker to hit breakpoint', async () => {
+          await target.evaluate(`new Worker('${scriptFile}').postMessage({});`);
+        });
 
-        // Validate that we are paused
-        await waitFor(RESUME_BUTTON);
+        await step('Validate that we are paused', async () => {
+          await waitFor(RESUME_BUTTON);
+        });
 
-        // Validate that the source line is highlighted
-        assert.strictEqual(await getExecutionLine(), 6);
+        await step('Validate source line is highlighted', async () => {
+          assert.strictEqual(await getExecutionLine(), 6);
+        });
 
-        // Look at source tabs
         await validateSourceTabs();
       });
     });

@@ -69,7 +69,9 @@ export class ResourceTreeModel extends SDKModel {
     /** @type {?ResourceTreeFrame} */
     this.mainFrame = null;
 
-    this._agent.getResourceTree().then(this._processCachedResources.bind(this));
+    this._agent.getResourceTree()
+        .then(this._processCachedResources.bind(this))
+        .catch(() => this._processCachedResources(null));
   }
 
   /**

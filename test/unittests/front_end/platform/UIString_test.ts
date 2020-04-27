@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import * as UIString from '../../../../front_end/common/UIString.js';
+import * as UIString from '../../../../front_end/platform/UIString.js';
 
 describe('UIString', () => {
   it('serializes UI strings', () => {

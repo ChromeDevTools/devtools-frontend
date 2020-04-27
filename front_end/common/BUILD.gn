@@ -27,7 +27,6 @@ ts_library("common") {
     "TextDictionary.js",
     "Throttler.js",
     "Trie.js",
-    "UIString.js",
     "Worker.js",
     "common.js",
   ]

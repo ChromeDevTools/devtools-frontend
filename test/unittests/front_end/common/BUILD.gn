@@ -16,7 +16,6 @@ ts_library("common") {
     "TextDictionary_test.ts",
     "Throttler_test.ts",
     "Trie_test.ts",
-    "UIString_test.ts",
   ]
 
   deps = [ "../../../../front_end/common" ]

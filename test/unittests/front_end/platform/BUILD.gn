@@ -6,6 +6,7 @@ ts_library("platform") {
     "ArrayUtilities_test.ts",
     "NumberUtilities_test.ts",
     "StringUtilities_test.ts",
+    "UIString_test.ts",
     "Utilities_test.ts",
   ]
 

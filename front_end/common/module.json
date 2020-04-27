@@ -13,7 +13,6 @@
     "Console.js",
     "ParsedURL.js",
     "Progress.js",
-    "UIString.js",
     "ResourceType.js",
     "Settings.js",
     "SegmentedRange.js",

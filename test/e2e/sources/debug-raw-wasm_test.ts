@@ -4,11 +4,32 @@
 
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
+import * as puppeteer from 'puppeteer';
 
 import {$, click, getBrowserAndPages, resourcesPath} from '../../shared/helper.js';
-import {addBreakpointForLine, openSourceCodeEditorForFile, RESUME_BUTTON, retrieveTopCallFrameScriptLocation} from '../helpers/sources-helpers.js';
+import {addBreakpointForLine, clearSourceFilesAdded, listenForSourceFilesAdded, openSourceCodeEditorForFile, openSourcesPanel, RESUME_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
 
 describe('Source Tab', async () => {
+  it('shows the correct wasm source on load and reload', async () => {
+    async function checkSources(frontend: puppeteer.Page) {
+      await waitForAdditionalSourceFiles(frontend);
+      const capturedFileNames = await retrieveSourceFilesAdded(frontend);
+      assert.deepEqual(
+          capturedFileNames,
+          ['/test/e2e/resources/sources/wasm/call-to-add-wasm.html', '/test/e2e/resources/sources/wasm/add.wasm']);
+    }
+    const {target, frontend} = getBrowserAndPages();
+    await openSourcesPanel();
+
+    await listenForSourceFilesAdded(frontend);
+    await target.goto(`${resourcesPath}/sources/wasm/call-to-add-wasm.html`);
+    await checkSources(frontend);
+
+    await clearSourceFilesAdded(frontend);
+    await target.reload();
+    await checkSources(frontend);
+  });
+
   it('can add a breakpoint in raw wasm', async () => {
     const {target, frontend} = getBrowserAndPages();
 

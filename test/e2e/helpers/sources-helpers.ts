@@ -153,6 +153,10 @@ export function waitForAdditionalSourceFiles(frontend: puppeteer.Page, count = 1
   }, undefined, count);
 }
 
+export function clearSourceFilesAdded(frontend: puppeteer.Page) {
+  return frontend.evaluate(() => window.__sourceFilesAddedEvents = []);
+}
+
 export function retrieveSourceFilesAdded(frontend: puppeteer.Page) {
   // Strip hostname, to make it agnostic of which server port we use
   return frontend.evaluate(() => window.__sourceFilesAddedEvents.map(file => new URL(`http://${file}`).pathname));

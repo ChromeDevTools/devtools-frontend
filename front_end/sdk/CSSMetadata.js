@@ -330,7 +330,7 @@ export class CSSMetadata {
    * @return {!Array<string>}
    */
   propertyValues(propertyName) {
-    const acceptedKeywords = ['inherit', 'initial', 'unset'];
+    const acceptedKeywords = ['inherit', 'initial', 'revert', 'unset'];
     propertyName = propertyName.toLowerCase();
     acceptedKeywords.push(...this._specificPropertyValues(propertyName));
     if (this.isColorAwareProperty(propertyName)) {

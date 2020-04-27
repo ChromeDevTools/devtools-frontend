@@ -2894,6 +2894,16 @@ declare namespace ProtocolProxyApi {
     on(event: 'playerEventsAdded', listener: (params: Protocol.Media.PlayerEventsAddedEvent) => void): void;
 
     /**
+     * Send a list of any messages that need to be delivered.
+     */
+    on(event: 'playerMessagesLogged', listener: (params: Protocol.Media.PlayerMessagesLoggedEvent) => void): void;
+
+    /**
+     * Send a list of any errors that need to be delivered.
+     */
+    on(event: 'playerErrorsRaised', listener: (params: Protocol.Media.PlayerErrorsRaisedEvent) => void): void;
+
+    /**
      * Called whenever a player is created, or when a new agent joins and recieves
      * a list of active players. If an agent is restored, it will recieve the full
      * list of player ids and all events again.

@@ -8311,6 +8311,13 @@ declare namespace Protocol {
       AnchorClick = 'anchorClick',
     }
 
+    export enum ClientNavigationDisposition {
+      CurrentTab = 'currentTab',
+      NewTab = 'newTab',
+      NewWindow = 'newWindow',
+      Download = 'download',
+    }
+
     export interface InstallabilityErrorArgument {
       /**
        * Argument name (e.g. name:'minimum-icon-size-in-pixels').
@@ -9083,6 +9090,10 @@ declare namespace Protocol {
        * The destination URL for the requested navigation.
        */
       url: string;
+      /**
+       * The disposition for the navigation.
+       */
+      disposition: ClientNavigationDisposition;
     }
 
     /**
@@ -11406,32 +11417,67 @@ declare namespace Protocol {
 
     export type Timestamp = number;
 
+    export enum PlayerMessageLevel {
+      Error = 'error',
+      Warning = 'warning',
+      Info = 'info',
+      Debug = 'debug',
+    }
+
     /**
-     * Player Property type
+     * Have one type per entry in MediaLogRecord::Type
+     * Corresponds to kMessage
+     */
+    export interface PlayerMessage {
+      /**
+       * Keep in sync with MediaLogMessageLevel
+       * We are currently keeping the message level 'error' separate from the
+       * PlayerError type because right now they represent different things,
+       * this one being a DVLOG(ERROR) style log message that gets printed
+       * based on what log level is selected in the UI, and the other is a
+       * representation of a media::PipelineStatus object. Soon however we're
+       * going to be moving away from using PipelineStatus for errors and
+       * introducing a new error type which should hopefully let us integrate
+       * the error log level into the PlayerError type.
+       */
+      level: PlayerMessageLevel;
+      message: string;
+    }
+
+    /**
+     * Corresponds to kMediaPropertyChange
      */
     export interface PlayerProperty {
       name: string;
-      value?: string;
+      value: string;
     }
 
     /**
-     * Break out events into different types
+     * Corresponds to kMediaEventTriggered
      */
-    export enum PlayerEventType {
-      ErrorEvent = 'errorEvent',
-      TriggeredEvent = 'triggeredEvent',
-      MessageEvent = 'messageEvent',
+    export interface PlayerEvent {
+      timestamp: Timestamp;
+      value: string;
     }
 
-    export interface PlayerEvent {
-      type: PlayerEventType;
+    export enum PlayerErrorType {
+      Pipeline_error = 'pipeline_error',
+      Media_error = 'media_error',
+    }
+
+    /**
+     * Corresponds to kMediaError
+     */
+    export interface PlayerError {
+      type: PlayerErrorType;
       /**
-       * Events are timestamped relative to the start of the player creation
-       * not relative to the start of playback.
+       * When this switches to using media::Status instead of PipelineStatus
+       * we can remove "errorCode" and replace it with the fields from
+       * a Status instance. This also seems like a duplicate of the error
+       * level enum - there is a todo bug to have that level removed and
+       * use this instead. (crbug.com/1068454)
        */
-      timestamp: Timestamp;
-      name: string;
-      value: string;
+      errorCode: string;
     }
 
     /**
@@ -11450,6 +11496,22 @@ declare namespace Protocol {
     export interface PlayerEventsAddedEvent {
       playerId: PlayerId;
       events: PlayerEvent[];
+    }
+
+    /**
+     * Send a list of any messages that need to be delivered.
+     */
+    export interface PlayerMessagesLoggedEvent {
+      playerId: PlayerId;
+      messages: PlayerMessage[];
+    }
+
+    /**
+     * Send a list of any errors that need to be delivered.
+     */
+    export interface PlayerErrorsRaisedEvent {
+      playerId: PlayerId;
+      errors: PlayerError[];
     }
 
     /**
@@ -12872,6 +12934,7 @@ declare namespace Protocol {
       F32 = 'f32',
       F64 = 'f64',
       V128 = 'v128',
+      Anyref = 'anyref',
     }
 
     /**

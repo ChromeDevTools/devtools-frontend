@@ -68,7 +68,7 @@ builder(
     bucket="ci",
     mastername="client.devtools-frontend.integration",
     service_account='devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com',
-    schedule="0 4 * * *",
+    schedule="0 6 * * *",
     recipe_name="v8/auto_roll_v8_deps",
     dimensions=dimensions.default_ubuntu,
     execution_timeout=2 * time.hour

@@ -26,7 +26,7 @@ function issues() {
   const mainTarget = TargetManager.instance().mainTarget();
   if (mainTarget) {
     const model = /** @type {!IssuesModel} */ (mainTarget.model(IssuesModel));
-    return model ? model.issues() : [];
+    return model ? Array.from(model.issues()) : [];
   }
   return [];
 }

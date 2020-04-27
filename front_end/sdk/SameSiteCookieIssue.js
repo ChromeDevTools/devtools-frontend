@@ -21,6 +21,16 @@ export class SameSiteCookieIssue extends Issue {
   }
 
   /**
+   * @override
+   */
+  primaryKey() {
+    const {domain, path, name} = this._issueDetails.cookie;
+    const cookieId = `${domain};${path};${name}`;
+    const requestId = this._issueDetails.request ? this._issueDetails.request.requestId : 'no-request';
+    return `${this.code()}-(${cookieId})-(${requestId})`;
+  }
+
+  /**
    * Calculates an issue code from a reason and an operation. All these together
    * can uniquely identify a specific SameSite cookie issue.
    *

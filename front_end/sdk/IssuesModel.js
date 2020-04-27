@@ -86,8 +86,8 @@ export class IssuesModel extends SDKModel {
   constructor(target) {
     super(target);
     this._enabled = false;
-    /** @type {!Array<!Issue>} */
-    this._issues = [];
+    /** @type {!Map<string, !Issue>} */
+    this._issues = new Map();
     /** @type {!Map<string, !AggregatedIssue>} */
     this._aggregatedIssuesByCode = new Map();
     this._cookiesModel = target.model(CookieModel);
@@ -110,15 +110,15 @@ export class IssuesModel extends SDKModel {
    */
   _onMainFrameNavigated(event) {
     const mainFrame = /** @type {!ResourceTreeFrame} */ (event.data);
-    const keptIssues = [];
-    for (const issue of this._issues) {
+    const keptIssues = new Map();
+    for (const [key, issue] of this._issues.entries()) {
       if (issue.isAssociatedWithRequestId(mainFrame.loaderId)) {
-        keptIssues.push(issue);
+        keptIssues.set(key, issue);
       }
     }
     this._issues = keptIssues;
     this._aggregatedIssuesByCode.clear();
-    for (const issue of this._issues) {
+    for (const issue of this._issues.values()) {
       this._aggregateIssue(issue);
     }
     this._hasSeenMainFrameNavigated = true;
@@ -159,7 +159,6 @@ export class IssuesModel extends SDKModel {
     const aggregatedIssue = this._aggregatedIssuesByCode.get(issue.code());
     aggregatedIssue.addInstance(issue);
     this.dispatchEventToListeners(Events.AggregatedIssueUpdated, aggregatedIssue);
-    this.dispatchEventToListeners(Events.IssuesCountUpdated);
     return aggregatedIssue;
   }
 
@@ -178,15 +177,24 @@ export class IssuesModel extends SDKModel {
    * @param {!Issue} issue
    */
   addIssue(issue) {
-    this._issues.push(issue);
+    // Ignore issues without proper description; they are invisible to the user and will only cause confusion.
+    if (!issue.getDescription()) {
+      return;
+    }
+    const primaryKey = issue.primaryKey();
+    if (this._issues.has(primaryKey)) {
+      return;
+    }
+    this._issues.set(primaryKey, issue);
     this._aggregateIssue(issue);
+    this.dispatchEventToListeners(Events.IssuesCountUpdated);
   }
 
   /**
-   * @return {!Array<!Issue>}
+   * @return {!Iterable<!Issue>}
    */
   issues() {
-    return this._issues;
+    return this._issues.values();
   }
 
   /**
@@ -217,8 +225,8 @@ export class IssuesModel extends SDKModel {
   /**
    * @return {number}
    */
-  numberOfAggregatedIssues() {
-    return this._aggregatedIssuesByCode.size;
+  numberOfIssues() {
+    return this._issues.size;
   }
 }
 

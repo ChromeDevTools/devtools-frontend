@@ -139,7 +139,7 @@ export class WarningErrorCounter {
     const errors = SDK.ConsoleModel.ConsoleModel.instance().errors();
     const warnings = SDK.ConsoleModel.ConsoleModel.instance().warnings();
     const violations = SDK.ConsoleModel.ConsoleModel.instance().violations();
-    const issues = (this._issuesModel && this._issuesModel.numberOfAggregatedIssues()) || 0;
+    const issues = (this._issuesModel && this._issuesModel.numberOfIssues()) || 0;
     if (errors === this._errorCount && warnings === this._warningCount && violations === this._violationCount &&
         issues === this._issuesCount) {
       return Promise.resolve();

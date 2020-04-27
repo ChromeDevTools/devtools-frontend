@@ -15,10 +15,13 @@
   <message name="IDS_DEVTOOLS_b02478e52979ba9af8bffc41f342f4b6" desc="Header for the section listing affected resources">
     Affected Resources
   </message>
+  <message name="IDS_DEVTOOLS_ce7668534c7b08cd0b81dfa574d681f8" desc="Toolip shown for the issues count in the issues pane">
+    Issues pertaining to <ph name="COUNT">$1s<ex>13</ex></ph> operations detected.
+  </message>
   <message name="IDS_DEVTOOLS_ee02b74d0caebce3dabaf3b3e79b6a65" desc="The UI destination when right clicking an item that can be revealed">
     Issues view
   </message>
-  <message name="IDS_DEVTOOLS_80b768b15c3693e345a436b9dc0ea36f" desc="Label for the issues Pane">
+  <message name="IDS_DEVTOOLS_80b768b15c3693e345a436b9dc0ea36f" desc="Label for the issues pane">
     Issues
   </message>
   <message name="IDS_DEVTOOLS_fbf5a685e313dad7d780b63bdb5dd2fb" desc="Explanatory message why a reload of the inspected page is required. Next to reload button.">

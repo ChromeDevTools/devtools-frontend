@@ -281,10 +281,11 @@ export class ConsoleView extends UI.Widget.VBox {
       if (mainTarget) {
         const issuesModel = mainTarget.model(SDK.IssuesModel.IssuesModel);
         if (issuesModel) {
-          issuesModel.addEventListener(SDK.IssuesModel.Events.AggregatedIssueUpdated, this._onIssueAdded.bind(this));
+          issuesModel.addEventListener(
+              SDK.IssuesModel.Events.IssuesCountUpdated, this._onIssuesCountChanged.bind(this));
           issuesModel.ensureEnabled();
-          if (issuesModel.numberOfAggregatedIssues()) {
-            this._onIssueAdded();
+          if (issuesModel.numberOfIssues()) {
+            this._onIssuesCountChanged();
           }
         }
         const resourceTreeModel = mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
@@ -296,7 +297,7 @@ export class ConsoleView extends UI.Widget.VBox {
     }
   }
 
-  _onIssueAdded() {
+  _onIssuesCountChanged() {
     if (!this._issueBarDiv) {
       this._issueBarDiv = createElementWithClass('div', 'flex-none');
       const issueBar = new UI.Infobar.Infobar(

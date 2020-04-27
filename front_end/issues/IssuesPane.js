@@ -397,6 +397,7 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     /** @param {number} count */
     const updateToolbarIssuesCount = count => {
       toolbarIssuesCount.textContent = `${count}`;
+      toolbarIssuesItem.setTitle(ls`Issues pertaining to ${count} operations detected.`);
     };
     return {toolbarContainer, updateToolbarIssuesCount};
   }
@@ -440,7 +441,7 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
   }
 
   _updateCounts() {
-    this._updateToolbarIssuesCount(this._model.numberOfAggregatedIssues());
+    this._updateToolbarIssuesCount(this._model.numberOfIssues());
   }
 
   /**

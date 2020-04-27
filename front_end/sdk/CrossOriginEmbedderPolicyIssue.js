@@ -31,6 +31,13 @@ export class CrossOriginEmbedderPolicyIssue extends Issue {
 
   /**
    * @override
+   */
+  primaryKey() {
+    return `${this.code()}-(${this._affectedRequest.requestId})`;
+  }
+
+  /**
+   * @override
    * @returns {!Iterable<Protocol.Audits.AffectedRequest>}
    */
   requests() {

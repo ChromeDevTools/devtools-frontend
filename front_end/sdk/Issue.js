@@ -51,6 +51,13 @@ export class Issue extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
+   * @abstract
+   * @returns {string}
+   */
+  primaryKey() {
+  }
+
+  /**
    * @returns {!Iterable<!Protocol.Audits.AffectedCookie>}
    */
   cookies() {
@@ -109,6 +116,14 @@ export class AggregatedIssue extends Issue {
     this._requests = new Map();
     /** @type {?Issue} */
     this._representative = null;
+  }
+
+  /**
+   * @override
+   */
+  primaryKey() {
+    // There should only be one aggregated issue per code.
+    return this.code();
   }
 
   /**

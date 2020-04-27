@@ -304,6 +304,7 @@
     "InspectElementModeController.js",
     "ColorSwatchPopoverIcon.js",
     "ComputedStyleModel.js",
+    "Adorner.js",
     "DOMLinkifier.js",
     "DOMPath.js",
     "ElementsBreadcrumbs.js",

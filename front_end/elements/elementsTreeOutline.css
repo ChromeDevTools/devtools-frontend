@@ -345,3 +345,17 @@ li.selected:not(.always-parent) + ol.children {
         forced-color-adjust: none;
     }
 }
+
+/** Adorner */
+.adorner-container {
+    display: inline-block;
+}
+
+.adorner-container.hidden {
+    display: none;
+}
+
+.adorner-container devtools-adorner {
+    margin-left: 3px;
+    vertical-align: middle;
+}

@@ -8,6 +8,7 @@ group("front_end") {
     "bindings",
     "common",
     "dom_extension",
+    "elements",
     "formatter_worker",
     "inline_editor",
     "persistence",

@@ -48,7 +48,6 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
    */
   constructor(omitRootDOMNode, selectEnabled, hideGutter) {
     super();
-
     this._treeElementSymbol = Symbol('treeElement');
     const shadowContainer = createElement('div');
     this._shadowRoot = UI.Utils.createShadowRootWithCoreStyles(shadowContainer, 'elements/elementsTreeOutline.css');
@@ -1532,7 +1531,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
       delete treeElement.expandAllButtonElement;
     }
 
-    // Insert shortcuts to distrubuted children.
+    // Insert shortcuts to distributed children.
     if (node.isInsertionPoint()) {
       for (const distributedNode of node.distributedNodes()) {
         treeElement.appendChild(new ShortcutTreeElement(distributedNode));

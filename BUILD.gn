@@ -924,6 +924,7 @@ group("devtools_all_files") {
 devtools_typescript_deps = [
   "front_end/bindings",
   "front_end/common:common",
+  "front_end/elements",
   "front_end/formatter_worker",
   "front_end/host",
   "front_end/protocol_client",
@@ -1157,6 +1158,7 @@ all_devtools_modules = [
   "elements/ColorSwatchPopoverIcon.js",
   "elements/ComputedStyleModel.js",
   "elements/ComputedStyleWidget.js",
+  "elements/Adorner.js",
   "elements/DOMLinkifier.js",
   "elements/DOMPath.js",
   "elements/ElementsBreadcrumbs.js",

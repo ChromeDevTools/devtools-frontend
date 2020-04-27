@@ -37,6 +37,7 @@ import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
+import {Adorner, AdornerCategories} from './Adorner.js';
 import {canGetJSPath, cssPath, jsPath, xPath} from './DOMPath.js';
 import {MappedCharToEntity, UpdateRecord} from './ElementsTreeOutline.js';  // eslint-disable-line no-unused-vars
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
@@ -69,6 +70,11 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     this._searchQuery = null;
     this._expandedChildrenLimit = InitialChildrenLimit;
     this._decorationsThrottler = new Common.Throttler.Throttler(100);
+
+    this._adornerContainer = this.listItemElement.createChild('div', 'adorner-container hidden');
+    /** @type {!Array<!Adorner>} */
+    this._adorners = [];
+    this._adornersThrottler = new Common.Throttler.Throttler(100);
 
     /**
      * @type {!Element|undefined}
@@ -1173,9 +1179,11 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       const highlightElement = createElement('span');
       highlightElement.className = 'highlight';
       highlightElement.appendChild(nodeInfo);
+      // fixme: make it clear that `this.title = x` is a setter with significant side effects
       this.title = highlightElement;
       this.updateDecorations();
       this.listItemElement.insertBefore(this._gutterContainer, this.listItemElement.firstChild);
+      this.listItemElement.appendChild(this._adornerContainer);
       delete this._highlightResult;
       delete this.selectionElement;
       delete this._hintElement;
@@ -1836,6 +1844,74 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     const promise = Common.Revealer.reveal(this.node());
     promise.then(() => self.UI.actionRegistry.action('elements.edit-as-html').execute());
   }
+
+  /**
+   *
+   * @param {string} text
+   * @param {!AdornerCategories} category
+   * @return {!Adorner}
+   */
+  adornText(text, category) {
+    const adornerContent = /** @type {!HTMLElement} */ (document.createElement('span'));
+    adornerContent.textContent = text;
+    const options = {
+      category,
+    };
+    const adorner = Adorner.create(adornerContent, text, options);
+    this._adorners.push(adorner);
+    this._updateAdorners();
+    return adorner;
+  }
+
+  /**
+   *
+   * @param {!Adorner} adornerToRemove
+   */
+  removeAdorner(adornerToRemove) {
+    const adorners = this._adorners;
+    adornerToRemove.remove();
+    for (let i = 0; i < adorners.length; ++i) {
+      if (adorners[i] === adornerToRemove) {
+        adorners.splice(i, 1);
+        this._updateAdorners();
+        return;
+      }
+    }
+  }
+
+  removeAllAdorners() {
+    for (const adorner of this._adorners) {
+      adorner.remove();
+    }
+
+    this._adorners = [];
+    this._updateAdorners();
+  }
+
+  _updateAdorners() {
+    this._adornersThrottler.schedule(this._updateAdornersInternal.bind(this));
+  }
+
+  /**
+   * @return {!Promise<void>}
+   */
+  _updateAdornersInternal() {
+    const adorners = this._adorners;
+    const adornerContainer = this._adornerContainer;
+    if (adorners.length === 0) {
+      adornerContainer.classList.add('hidden');
+      return Promise.resolve();
+    }
+
+    adorners.sort(adornerComparator);
+
+    adornerContainer.removeChildren();
+    for (const adorner of adorners) {
+      adornerContainer.appendChild(adorner);
+    }
+    adornerContainer.classList.remove('hidden');
+    return Promise.resolve();
+  }
 }
 
 export const InitialChildrenLimit = 500;
@@ -1849,3 +1925,26 @@ export const ForbiddenClosingTagElements = new Set([
 
 // These tags we do not allow editing their tag name.
 export const EditTagBlacklist = new Set(['html', 'head', 'body']);
+
+const OrderedAdornerCategories = [
+  AdornerCategories.Security,
+  AdornerCategories.Layout,
+  AdornerCategories.Default,
+];
+const AdornerCategoryOrder = new Map(OrderedAdornerCategories.map((category, i) => [category, i]));
+
+/**
+ *
+ * @param {!Adorner} adornerA
+ * @param {!Adorner} adornerB
+ * @return {number}
+ */
+function adornerComparator(adornerA, adornerB) {
+  const orderA = AdornerCategoryOrder.get(adornerA.category) || Number.POSITIVE_INFINITY;
+  const orderB = AdornerCategoryOrder.get(adornerB.category) || Number.POSITIVE_INFINITY;
+  if (orderA === orderB) {
+    return adornerA.name.localeCompare(adornerB.name);
+  }
+
+  return orderA - orderB;
+}

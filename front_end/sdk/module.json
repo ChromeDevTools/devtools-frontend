@@ -3,7 +3,8 @@
     "common",
     "host",
     "platform",
-    "protocol_client"
+    "protocol_client",
+    "text_utils"
   ],
   "extensions": [
     {

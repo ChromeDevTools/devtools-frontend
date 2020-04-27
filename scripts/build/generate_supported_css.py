@@ -57,12 +57,12 @@ def properties_from_file(file_name):
     properties = []
     property_names = {}
     property_values = {}
-    aliases_for = {}
+    aliases_for = []
     for entry in doc["data"]:
         if type(entry) is str:
             entry = {"name": entry}
         if "alias_for" in entry:
-            aliases_for[entry["name"]] = entry["alias_for"]
+            aliases_for.append([entry["name"], entry["alias_for"]])
             continue
         properties.append(_keep_only_required_keys(entry))
         property_names[entry["name"]] = entry
@@ -70,6 +70,7 @@ def properties_from_file(file_name):
             property_values[entry["name"]] = {"values": entry["keywords"]}
 
     properties.sort(key=lambda entry: entry["name"])
+    aliases_for.sort(key=lambda entry: entry[0])
 
     # Filter out unsupported longhands.
     for property in properties:
@@ -103,4 +104,4 @@ with open(GENERATED_LOCATION, "w+") as f:
     f.write("export const generatedProperties = %s;\n" % json.dumps(properties))
     # sort keys to ensure entries are generated in a deterministic way to avoid inconsistencies across different OS
     f.write("export const generatedPropertyValues = %s;\n" % json.dumps(property_values, sort_keys=True))
-    f.write("export const generatedAliasesFor = new Map(Object.entries(%s));\n" % json.dumps(aliases_for, sort_keys=True))
+    f.write("export const generatedAliasesFor = new Map(%s);\n" % json.dumps(aliases_for))

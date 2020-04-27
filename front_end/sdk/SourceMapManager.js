@@ -6,6 +6,7 @@
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 
 import {Events as TargetManagerEvents, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 import {SourceMap, TextSourceMap, WasmSourceMap} from './SourceMap.js';  // eslint-disable-line no-unused-vars

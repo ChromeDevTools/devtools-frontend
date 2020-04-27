@@ -117,6 +117,7 @@ def generate_protocol_externs(output_path, file1, file2):
     load_schema(file1, domains)
     load_schema(file2, domains)
     output_file = open(output_path, "w")
+    output_file.write("var ProtocolProxyApi = {};\n")
 
     for domain in domains:
         domain_name = domain["domain"]
@@ -131,6 +132,8 @@ def generate_protocol_externs(output_path, file1, file2):
         output_file.write("Protocol.%s = {};\n" % domain_name)
         output_file.write("\n\n/**\n * @constructor\n*/\n")
         output_file.write("Protocol.%sAgent = function(){};\n" % domain_name)
+        output_file.write("\n\n/**\n * @constructor\n*/\n")
+        output_file.write("ProtocolProxyApi.%sApi = Protocol.%sAgent;\n" % (domain_name, domain_name))
 
         if "commands" in domain:
             for command in domain["commands"]:

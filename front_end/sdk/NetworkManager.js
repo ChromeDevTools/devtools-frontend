@@ -286,8 +286,8 @@ export class NetworkDispatcher {
    */
   constructor(manager) {
     this._manager = manager;
-    /** @type {!Object<!Protocol.Network.RequestId, !NetworkRequest>} */
-    this._inflightRequestsById = {};
+    /** @type {!Map<!Protocol.Network.RequestId, !NetworkRequest>} */
+    this._inflightRequestsById = new Map();
     /** @type {!Object<string, !NetworkRequest>} */
     this._inflightRequestsByURL = {};
     /** @type {!Map<string, !RedirectExtraInfoBuilder>} */
@@ -427,7 +427,7 @@ export class NetworkDispatcher {
    * @param {!Protocol.Network.MonotonicTime} timestamp
    */
   resourceChangedPriority(requestId, newPriority, timestamp) {
-    const networkRequest = this._inflightRequestsById[requestId];
+    const networkRequest = this._inflightRequestsById.get(requestId);
     if (networkRequest) {
       networkRequest.setPriority(newPriority);
     }
@@ -448,7 +448,7 @@ export class NetworkDispatcher {
     // 3. The second requestWillBeSent is sent with the generated redirect
     //    response and a new redirected request which URL is the inner request
     //    URL of the signed exchange.
-    let networkRequest = this._inflightRequestsById[requestId];
+    let networkRequest = this._inflightRequestsById.get(requestId);
     // |requestId| is available only for navigation requests. If the request was
     // sent from a renderer process for prefetching, it is not available. In the
     // case, need to fallback to look for the URL.
@@ -483,7 +483,7 @@ export class NetworkDispatcher {
    */
   requestWillBeSent(
       requestId, loaderId, documentURL, request, time, wallTime, initiator, redirectResponse, resourceType, frameId) {
-    let networkRequest = this._inflightRequestsById[requestId];
+    let networkRequest = this._inflightRequestsById.get(requestId);
     if (networkRequest) {
       // FIXME: move this check to the backend.
       if (!redirectResponse) {
@@ -519,7 +519,7 @@ export class NetworkDispatcher {
    * @param {!Protocol.Network.RequestId} requestId
    */
   requestServedFromCache(requestId) {
-    const networkRequest = this._inflightRequestsById[requestId];
+    const networkRequest = this._inflightRequestsById.get(requestId);
     if (!networkRequest) {
       return;
     }
@@ -537,7 +537,7 @@ export class NetworkDispatcher {
    * @param {!Protocol.Page.FrameId=} frameId
    */
   responseReceived(requestId, loaderId, time, resourceType, response, frameId) {
-    const networkRequest = this._inflightRequestsById[requestId];
+    const networkRequest = this._inflightRequestsById.get(requestId);
     const lowercaseHeaders = NetworkManager.lowercaseHeaders(response.headers);
     if (!networkRequest) {
       // We missed the requestWillBeSent.
@@ -585,7 +585,7 @@ export class NetworkDispatcher {
    * @param {number} encodedDataLength
    */
   dataReceived(requestId, time, dataLength, encodedDataLength) {
-    let networkRequest = this._inflightRequestsById[requestId];
+    let networkRequest = this._inflightRequestsById.get(requestId);
     if (!networkRequest) {
       networkRequest = this._maybeAdoptMainResourceRequest(requestId);
     }
@@ -610,7 +610,7 @@ export class NetworkDispatcher {
    * @param {boolean=} shouldReportCorbBlocking
    */
   loadingFinished(requestId, finishTime, encodedDataLength, shouldReportCorbBlocking) {
-    let networkRequest = this._inflightRequestsById[requestId];
+    let networkRequest = this._inflightRequestsById.get(requestId);
     if (!networkRequest) {
       networkRequest = this._maybeAdoptMainResourceRequest(requestId);
     }
@@ -632,7 +632,7 @@ export class NetworkDispatcher {
    * @param {!Protocol.Network.BlockedReason=} blockedReason
    */
   loadingFailed(requestId, time, resourceType, localizedDescription, canceled, blockedReason) {
-    const networkRequest = this._inflightRequestsById[requestId];
+    const networkRequest = this._inflightRequestsById.get(requestId);
     if (!networkRequest) {
       return;
     }
@@ -674,7 +674,7 @@ export class NetworkDispatcher {
    * @param {!Protocol.Network.WebSocketRequest} request
    */
   webSocketWillSendHandshakeRequest(requestId, time, wallTime, request) {
-    const networkRequest = this._inflightRequestsById[requestId];
+    const networkRequest = this._inflightRequestsById.get(requestId);
     if (!networkRequest) {
       return;
     }
@@ -693,7 +693,7 @@ export class NetworkDispatcher {
    * @param {!Protocol.Network.WebSocketResponse} response
    */
   webSocketHandshakeResponseReceived(requestId, time, response) {
-    const networkRequest = this._inflightRequestsById[requestId];
+    const networkRequest = this._inflightRequestsById.get(requestId);
     if (!networkRequest) {
       return;
     }
@@ -721,7 +721,7 @@ export class NetworkDispatcher {
    * @param {!Protocol.Network.WebSocketFrame} response
    */
   webSocketFrameReceived(requestId, time, response) {
-    const networkRequest = this._inflightRequestsById[requestId];
+    const networkRequest = this._inflightRequestsById.get(requestId);
     if (!networkRequest) {
       return;
     }
@@ -739,7 +739,7 @@ export class NetworkDispatcher {
    * @param {!Protocol.Network.WebSocketFrame} response
    */
   webSocketFrameSent(requestId, time, response) {
-    const networkRequest = this._inflightRequestsById[requestId];
+    const networkRequest = this._inflightRequestsById.get(requestId);
     if (!networkRequest) {
       return;
     }
@@ -757,7 +757,7 @@ export class NetworkDispatcher {
    * @param {string} errorMessage
    */
   webSocketFrameError(requestId, time, errorMessage) {
-    const networkRequest = this._inflightRequestsById[requestId];
+    const networkRequest = this._inflightRequestsById.get(requestId);
     if (!networkRequest) {
       return;
     }
@@ -774,7 +774,7 @@ export class NetworkDispatcher {
    * @param {!Protocol.Network.MonotonicTime} time
    */
   webSocketClosed(requestId, time) {
-    const networkRequest = this._inflightRequestsById[requestId];
+    const networkRequest = this._inflightRequestsById.get(requestId);
     if (!networkRequest) {
       return;
     }
@@ -790,7 +790,7 @@ export class NetworkDispatcher {
    * @param {string} data
    */
   eventSourceMessageReceived(requestId, time, eventName, eventId, data) {
-    const networkRequest = this._inflightRequestsById[requestId];
+    const networkRequest = this._inflightRequestsById.get(requestId);
     if (!networkRequest) {
       return;
     }
@@ -891,7 +891,7 @@ export class NetworkDispatcher {
    * @return {!NetworkRequest}
    */
   _appendRedirect(requestId, time, redirectURL) {
-    const originalNetworkRequest = this._inflightRequestsById[requestId];
+    const originalNetworkRequest = this._inflightRequestsById.get(requestId);
     let redirectCount = 0;
     for (let redirect = originalNetworkRequest.redirectSource(); redirect; redirect = redirect.redirectSource()) {
       redirectCount++;
@@ -917,9 +917,9 @@ export class NetworkDispatcher {
       return null;
     }
     const oldDispatcher = NetworkManager.forRequest(request)._dispatcher;
-    delete oldDispatcher._inflightRequestsById[requestId];
+    oldDispatcher._inflightRequestsById.delete(requestId);
     delete oldDispatcher._inflightRequestsByURL[request.url()];
-    this._inflightRequestsById[requestId] = request;
+    this._inflightRequestsById.set(requestId, request);
     this._inflightRequestsByURL[request.url()] = request;
     request[_networkManagerForRequestSymbol] = this._manager;
     return request;
@@ -929,7 +929,7 @@ export class NetworkDispatcher {
    * @param {!NetworkRequest} networkRequest
    */
   _startNetworkRequest(networkRequest) {
-    this._inflightRequestsById[networkRequest.requestId()] = networkRequest;
+    this._inflightRequestsById.set(networkRequest.requestId(), networkRequest);
     this._inflightRequestsByURL[networkRequest.url()] = networkRequest;
     // The following relies on the fact that loaderIds and requestIds are
     // globally unique and that the main request has them equal.
@@ -967,7 +967,7 @@ export class NetworkDispatcher {
       }
     }
     this._manager.dispatchEventToListeners(Events.RequestFinished, networkRequest);
-    delete this._inflightRequestsById[networkRequest.requestId()];
+    this._inflightRequestsById.delete(networkRequest.requestId());
     delete this._inflightRequestsByURL[networkRequest.url()];
     self.SDK.multitargetNetworkManager._inflightMainResourceRequests.delete(networkRequest.requestId());
 
@@ -1021,13 +1021,13 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   constructor() {
     super();
     this._userAgentOverride = '';
-    /** @type {!Set<!Protocol.NetworkAgent>} */
+    /** @type {!Set<!ProtocolProxyApi.NetworkApi>} */
     this._agents = new Set();
     /** @type {!Map<string, !NetworkRequest>} */
     this._inflightMainResourceRequests = new Map();
     /** @type {!Conditions} */
     this._networkConditions = NoThrottlingConditions;
-    /** @type {?Promise} */
+    /** @type {?Promise<void>} */
     this._updatingInterceptionPatternsPromise = null;
 
     // TODO(allada) Remove these and merge it with request interception.
@@ -1499,7 +1499,7 @@ class RedirectExtraInfoBuilder {
     this._finished = false;
     /** @type {boolean} */
     this._hasExtraInfo = false;
-    /** @type {function()} */
+    /** @type {function():void} */
     this._deleteCallback = deleteCallback;
   }
 

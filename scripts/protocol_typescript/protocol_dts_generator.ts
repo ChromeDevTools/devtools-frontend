@@ -374,7 +374,7 @@ const emitApi = (moduleName: string, protocolModuleName: string, domains: Protoc
   emitOpenBlock(`declare namespace ${moduleName}`);
 
   emitLine();
-  emitOpenBlock('declare interface ProtocolApi');
+  emitOpenBlock('export interface ProtocolApi');
   domains.forEach(d => {
     emitLine(`${d.domain}: ${d.domain}Api;`);
     emitLine();

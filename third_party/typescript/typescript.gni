@@ -51,6 +51,7 @@ template("ts_library") {
       "//$devtools_location/node_modules/typescript/lib/tsc.js",
       "//$devtools_location/front_end/legacy/legacy-defs.d.ts",
       "//$devtools_location/front_end/generated/protocol.d.ts",
+      "//$devtools_location/front_end/generated/protocol-proxy-api.d.ts",
       "//$devtools_location/node_modules/@types/filesystem/index.d.ts",
     ]
 

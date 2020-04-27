@@ -20,9 +20,9 @@ export class ScreenCaptureModel extends SDKModel {
   constructor(target) {
     super(target);
     this._agent = target.pageAgent();
-    /** @type {?function(string, !Protocol.Page.ScreencastFrameMetadata)} */
+    /** @type {?function(string, !Protocol.Page.ScreencastFrameMetadata):void} */
     this._onScreencastFrame = null;
-    /** @type {?function(boolean)} */
+    /** @type {?function(boolean):void} */
     this._onScreencastVisibilityChanged = null;
     target.registerPageDispatcher(this);
   }

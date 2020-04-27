@@ -12,7 +12,7 @@
  * API generated from Protocol commands and events.
  */
 declare namespace ProtocolProxyApi {
-  declare interface ProtocolApi {
+  export interface ProtocolApi {
     Accessibility: AccessibilityApi;
 
     Animation: AnimationApi;

@@ -50,7 +50,7 @@ export class CPUProfilerModel extends SDKModel {
     this._nextAnonymousConsoleProfileNumber = 1;
     this._anonymousConsoleProfileIdToTitle = new Map();
     this._profilerAgent = target.profilerAgent();
-    /** @type {?function(number, string, !Array<!Protocol.Profiler.ScriptCoverage>)} */
+    /** @type {?function(number, string, !Array<!Protocol.Profiler.ScriptCoverage>):void} */
     this._preciseCoverageDeltaUpdateCallback = null;
     target.registerProfilerDispatcher(this);
     this._profilerAgent.enable();

@@ -29,7 +29,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
         UI.UIUtils.createTextButton(Common.UIString.UIString('Add custom device...'), this._addCustomDevice.bind(this));
     buttonsRow.appendChild(this._addCustomButton);
 
-    this._list = new UI.ListWidget.ListWidget(this);
+    this._list = new UI.ListWidget.ListWidget(this, false /* delegatesFocus */);
     this._list.registerRequiredCSS('emulation/devicesSettingsTab.css');
     this._list.element.classList.add('devices-list');
     this._list.show(this.containerElement);

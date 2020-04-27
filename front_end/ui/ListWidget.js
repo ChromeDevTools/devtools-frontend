@@ -18,9 +18,10 @@ import {VBox} from './Widget.js';
 export class ListWidget extends VBox {
   /**
    * @param {!Delegate<T>} delegate
+   * @param {boolean=} delegatesFocus
    */
-  constructor(delegate) {
-    super(true, true /* delegatesFocus */);
+  constructor(delegate, delegatesFocus = true) {
+    super(true, delegatesFocus);
     this.registerRequiredCSS('ui/listWidget.css');
     this._delegate = delegate;
 

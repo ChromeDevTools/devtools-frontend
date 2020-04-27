@@ -33,12 +33,6 @@ import './utilities.js';
 import * as ArrayUtilities from './array-utilities.js';
 import * as NumberUtilities from './number-utilities.js';
 import * as StringUtilities from './string-utilities.js';
-import * as UIString from './UIString.js';
-
-/* We expose `ls` directly to make importing + referring to it easy
- * as it's such a commonly referenced and used utility.
- */
-export const {ls} = UIString;
 
 export {Multimap} from './utilities.js';
-export {ArrayUtilities, NumberUtilities, StringUtilities, UIString};
+export {ArrayUtilities, NumberUtilities, StringUtilities};

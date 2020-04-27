@@ -6,7 +6,6 @@
     "utilities.js",
     "string-utilities.js",
     "number-utilities.js",
-    "array-utilities.js",
-    "UIString.js"
+    "array-utilities.js"
   ]
 }

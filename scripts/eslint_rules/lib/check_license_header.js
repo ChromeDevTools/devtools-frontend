@@ -128,6 +128,7 @@ const OTHER_LICENSE_HEADERS = [
   // IBM Corp
   'sources/WatchExpressionsSidebarPane.js',
   // Multiple authors
+  'common/UIString.js',
   'components/JSPresentationUtils.js',
   'console/ConsoleView.js',
   'console/ConsoleViewMessage.js',
@@ -149,7 +150,6 @@ const OTHER_LICENSE_HEADERS = [
   'object_ui/ObjectPropertiesSection.js',
   'perf_ui/TimelineGrid.js',
   'platform/utilities.js',
-  'platform/UIString.js',
   'resources/ApplicationPanelSidebar.js',
   'resources/CookieItemsView.js',
   'resources/DOMStorageItemsView.js',

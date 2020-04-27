@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Platform from '../platform/platform.js';
+import '../platform/platform.js';
 
 import * as App from './App.js';
 import * as AppProvider from './AppProvider.js';
@@ -25,16 +25,10 @@ import * as StringOutputStream from './StringOutputStream.js';
 import * as TextDictionary from './TextDictionary.js';
 import * as Throttler from './Throttler.js';
 import * as Trie from './Trie.js';
+import * as UIString from './UIString.js';
 import * as Worker from './Worker.js';
 
-/* This is re-exported here because we moved UIString into platform from
- * common and wanted to avoid a huge rename of imports. A future CL will
- * update all references to `Common.UIString` to `Platform.UIString`.
- */
-export {UIString} from '../platform/platform.js';
-
-export const ls = Platform.UIString.ls;
-
+export const ls = UIString.ls;
 
 /**
  * @type {!Settings.Settings}
@@ -63,5 +57,6 @@ export {
   TextDictionary,
   Throttler,
   Trie,
+  UIString,
   Worker,
 };

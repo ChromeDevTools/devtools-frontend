@@ -62,10 +62,6 @@ function checkImportExtension(importPath, context, node) {
   }
 }
 
-function nodeSpecifiersImportLsOnly(specifiers) {
-  return specifiers.length === 1 && specifiers[0].type === 'ImportSpecifier' && specifiers[0].imported.name === 'ls';
-}
-
 module.exports = {
   meta: {
     type: 'problem',
@@ -118,8 +114,10 @@ module.exports = {
           return;
         }
 
-        if (importPath.endsWith(path.join('platform', 'platform.js')) && nodeSpecifiersImportLsOnly(node.specifiers)) {
-          /* We allow direct importing of the ls utility as it's so frequently used. */
+        if (importPath.endsWith(path.join('common', 'ls.js')) && path.extname(importingFileName) === '.ts') {
+          /* We allow TypeScript files to import the ls module directly.
+           * See common/ls.ts for more detail.
+           */
           return;
         }
 

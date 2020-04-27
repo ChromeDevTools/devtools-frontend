@@ -44,7 +44,7 @@ function computeTopLevelFolder(fileName) {
 
 function checkImportExtension(importPath, context, node) {
   // import * as fs from 'fs';
-  if (!node.source.value.startsWith('.')) {
+  if (!importPath.startsWith('.')) {
     return;
   }
 
@@ -56,7 +56,7 @@ function checkImportExtension(importPath, context, node) {
         importPath,
       },
       fix(fixer) {
-        return fixer.replaceText(node.source, `'${node.source.value}.js'`);
+        return fixer.replaceText(node.source, `'${importPath}.js'`);
       }
     });
   }
@@ -77,6 +77,17 @@ module.exports = {
     const importingFileName = path.resolve(context.getFilename());
 
     return {
+      ExportNamedDeclaration(node) {
+        // Any export in a file is called an `ExportNamedDeclaration`, but
+        // only directly-exporting-from-import declarations have the
+        // `node.source` set.
+        if (!node.source) {
+          return;
+        }
+        const importPath = path.normalize(node.source.value);
+
+        checkImportExtension(importPath, context, node);
+      },
       ImportDeclaration(node) {
         const importPath = path.normalize(node.source.value);
 

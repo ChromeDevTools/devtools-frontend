@@ -68,6 +68,14 @@ ruleTester.run('es_modules_import', rule, {
       code: 'import * as fs from \'fs\';',
       filename: 'test/unittests/front_end/Unit_test.ts',
     },
+    {
+      code: 'export {UIString} from \'../platform/platform.js\';',
+      filename: 'front_end/common/common.js',
+    },
+    {
+      code: 'export async function foo() {};',
+      filename: 'front_end/common/common.js',
+    }
   ],
 
   invalid: [
@@ -117,6 +125,14 @@ ruleTester.run('es_modules_import', rule, {
         message: 'Missing file extension for import "../../../../front_end/common/common"',
       }],
       output: 'import \'../../../../front_end/common/common.js\';'
+    },
+    {
+      code: 'export {UIString} from \'../platform/platform\';',
+      filename: 'front_end/common/common.js',
+      errors: [{
+        message: 'Missing file extension for import "../platform/platform"',
+      }],
+      output: 'export {UIString} from \'../platform/platform.js\';'
     },
     // the `ls` helper is not an exception in a JS file
     {

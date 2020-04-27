@@ -54,9 +54,9 @@ ruleTester.run('es_modules_import', rule, {
       code: 'import {appendStyle} from \'./append-style.js\';',
       filename: 'front_end/ui/utils/utils.js',
     },
-    // the `ls` helper is an exception in a TypeScript file
+    // the `ls` helper from Platform is an exception
     {
-      code: 'import {ls} from \'../common/ls.js\';',
+      code: 'import {ls} from \'../platform/platform.js\';',
       filename: 'front_end/elements/ElementsBreadcrumbs.ts',
     },
     // lit-html is exempt from any rules
@@ -133,15 +133,6 @@ ruleTester.run('es_modules_import', rule, {
         message: 'Missing file extension for import "../platform/platform"',
       }],
       output: 'export {UIString} from \'../platform/platform.js\';'
-    },
-    // the `ls` helper is not an exception in a JS file
-    {
-      code: 'import {ls} from \'../common/ls.js\';',
-      filename: 'front_end/elements/ElementsPanel.js',
-      errors: [{
-        message:
-            'Incorrect cross-namespace import: "../common/ls.js". Use "import * as Namespace from \'../namespace/namespace.js\';" instead. You may only import common/ls.js directly from TypeScript source files.'
-      }],
     },
     // third-party modules are not exempt by default
     {

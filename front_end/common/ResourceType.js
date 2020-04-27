@@ -27,8 +27,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {ls} from '../platform/platform.js';
+
 import {ParsedURL} from './ParsedURL.js';
-import {ls} from './UIString.js';
 
 /**
  * @unrestricted

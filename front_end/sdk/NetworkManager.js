@@ -35,10 +35,14 @@ import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
+import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 
 import {Cookie} from './Cookie.js';
 import {ContentData, Events as NetworkRequestEvents, ExtraRequestInfo, ExtraResponseInfo, NameValue, NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
 import {Capability, SDKModel, SDKModelObserver, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+
+/** @type {!WeakMap<!NetworkRequest, !NetworkManager>} */
+const requestToManagerMap = new WeakMap();
 
 /**
  * @unrestricted
@@ -53,10 +57,10 @@ export class NetworkManager extends SDKModel {
     this._networkAgent = target.networkAgent();
     target.registerNetworkDispatcher(this._dispatcher);
     if (Common.Settings.Settings.instance().moduleSetting('cacheDisabled').get()) {
-      this._networkAgent.setCacheDisabled(true);
+      this._networkAgent.invoke_setCacheDisabled({cacheDisabled: true});
     }
 
-    this._networkAgent.enable(undefined, undefined, MAX_EAGER_POST_REQUEST_BODY_LENGTH);
+    this._networkAgent.invoke_enable({maxPostDataSize: MAX_EAGER_POST_REQUEST_BODY_LENGTH});
 
     this._bypassServiceWorkerSetting = Common.Settings.Settings.instance().createSetting('bypassServiceWorker', false);
     if (this._bypassServiceWorkerSetting.get()) {
@@ -74,7 +78,7 @@ export class NetworkManager extends SDKModel {
    * @return {?NetworkManager}
    */
   static forRequest(request) {
-    return request[_networkManagerForRequestSymbol];
+    return requestToManagerMap.get(request) || null;
   }
 
   /**
@@ -82,19 +86,18 @@ export class NetworkManager extends SDKModel {
    * @return {boolean}
    */
   static canReplayRequest(request) {
-    return !!request[_networkManagerForRequestSymbol] &&
-        request.resourceType() === Common.ResourceType.resourceTypes.XHR;
+    return !!requestToManagerMap.get(request) && request.resourceType() === Common.ResourceType.resourceTypes.XHR;
   }
 
   /**
    * @param {!NetworkRequest} request
    */
   static replayRequest(request) {
-    const manager = request[_networkManagerForRequestSymbol];
+    const manager = requestToManagerMap.get(request);
     if (!manager) {
       return;
     }
-    manager._networkAgent.replayXHR(request.requestId());
+    manager._networkAgent.invoke_replayXHR({requestId: request.requestId()});
   }
 
   /**
@@ -130,7 +133,7 @@ export class NetworkManager extends SDKModel {
       return {error: 'No network manager for request', content: null, encoded: false};
     }
     const response = await manager._networkAgent.invoke_getResponseBody({requestId: request.requestId()});
-    const error = response[ProtocolClient.InspectorBackend.ProtocolError] || null;
+    const error = response.getError() || null;
     return {error: error, content: error ? null : response.body, encoded: response.base64Encoded};
   }
 
@@ -138,10 +141,16 @@ export class NetworkManager extends SDKModel {
    * @param {!NetworkRequest} request
    * @return {!Promise<?string>}
    */
-  static requestPostData(request) {
+  static async requestPostData(request) {
     const manager = NetworkManager.forRequest(request);
     if (manager) {
-      return manager._networkAgent.getRequestPostData(request.backendRequestId());
+      try {
+        const {postData} =
+            await manager._networkAgent.invoke_getRequestPostData({requestId: request.backendRequestId()});
+        return postData;
+      } catch (e) {
+        return e.message;
+      }
     }
     console.error('No network manager for request');
     return /** @type {!Promise<?string>} */ (Promise.resolve(null));
@@ -273,7 +282,6 @@ export const Fast3GConditions = {
   latency: 150 * 3.75,
 };
 
-const _networkManagerForRequestSymbol = Symbol('NetworkManager');
 const MAX_EAGER_POST_REQUEST_BODY_LENGTH = 64 * 1024;  // bytes
 
 /**
@@ -661,7 +669,7 @@ export class NetworkDispatcher {
    */
   webSocketCreated(requestId, requestURL, initiator) {
     const networkRequest = new NetworkRequest(requestId, requestURL, '', '', '', initiator || null);
-    networkRequest[_networkManagerForRequestSymbol] = this._manager;
+    requestToManagerMap.set(networkRequest, this._manager);
     networkRequest.setResourceType(Common.ResourceType.resourceTypes.WebSocket);
     this._startNetworkRequest(networkRequest);
   }
@@ -921,7 +929,7 @@ export class NetworkDispatcher {
     delete oldDispatcher._inflightRequestsByURL[request.url()];
     this._inflightRequestsById.set(requestId, request);
     this._inflightRequestsByURL[request.url()] = request;
-    request[_networkManagerForRequestSymbol] = this._manager;
+    requestToManagerMap.set(request, this._manager);
     return request;
   }
 
@@ -1008,7 +1016,7 @@ export class NetworkDispatcher {
    */
   _createNetworkRequest(requestId, frameId, loaderId, url, documentURL, initiator) {
     const request = new NetworkRequest(requestId, url, documentURL, frameId, loaderId, initiator);
-    request[_networkManagerForRequestSymbol] = this._manager;
+    requestToManagerMap.set(request, this._manager);
     return request;
   }
 }

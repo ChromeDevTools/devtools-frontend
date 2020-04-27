@@ -48,6 +48,7 @@ async function loadTargetPageAndDevToolsFrontend() {
     headless,
     executablePath: envChromeBinary,
     defaultViewport: null,
+    dumpio: !headless,
     slowMo: envSlowMo,
   };
 

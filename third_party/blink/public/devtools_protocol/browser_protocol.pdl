@@ -5542,13 +5542,6 @@ domain Page
       reload
       anchorClick
 
-  experimental type ClientNavigationDisposition extends string
-    enum
-      currentTab
-      newTab
-      newWindow
-      download
-
   experimental type InstallabilityErrorArgument extends object
     properties
       # Argument name (e.g. name:'minimum-icon-size-in-pixels').
@@ -6125,8 +6118,6 @@ domain Page
       ClientNavigationReason reason
       # The destination URL for the requested navigation.
       string url
-      # The disposition for the navigation.
-      ClientNavigationDisposition disposition
 
   # Fired when frame schedules a potential navigation.
   deprecated event frameScheduledNavigation
@@ -7782,51 +7773,27 @@ experimental domain Media
 
   type Timestamp extends number
 
-  # Have one type per entry in MediaLogRecord::Type
-  # Corresponds to kMessage
-  type PlayerMessage extends object
-    properties
-      # Keep in sync with MediaLogMessageLevel
-      # We are currently keeping the message level 'error' separate from the
-      # PlayerError type because right now they represent different things,
-      # this one being a DVLOG(ERROR) style log message that gets printed
-      # based on what log level is selected in the UI, and the other is a
-      # representation of a media::PipelineStatus object. Soon however we're
-      # going to be moving away from using PipelineStatus for errors and
-      # introducing a new error type which should hopefully let us integrate
-      # the error log level into the PlayerError type.
-      enum level
-        error
-        warning
-        info
-        debug
-      string message
-
-  # Corresponds to kMediaPropertyChange
+  # Player Property type
   type PlayerProperty extends object
     properties
       string name
-      string value
+      optional string value
 
-  # Corresponds to kMediaEventTriggered
+  # Break out events into different types
+  type PlayerEventType extends string
+    enum
+      errorEvent
+      triggeredEvent
+      messageEvent
+
   type PlayerEvent extends object
     properties
+      PlayerEventType type
+      # Events are timestamped relative to the start of the player creation
+      # not relative to the start of playback.
       Timestamp timestamp
+      string name
       string value
-
-  # Corresponds to kMediaError
-  type PlayerError extends object
-    properties
-      enum type
-        # Compatability until we switch to media_error
-        pipeline_error
-        media_error
-      # When this switches to using media::Status instead of PipelineStatus
-      # we can remove "errorCode" and replace it with the fields from
-      # a Status instance. This also seems like a duplicate of the error
-      # level enum - there is a todo bug to have that level removed and
-      # use this instead. (crbug.com/1068454)
-      string errorCode
 
   # This can be called multiple times, and can be used to set / override /
   # remove player properties. A null propValue indicates removal.
@@ -7841,18 +7808,6 @@ experimental domain Media
     parameters
       PlayerId playerId
       array of PlayerEvent events
-
-  # Send a list of any messages that need to be delivered.
-  event playerMessagesLogged
-    parameters
-      PlayerId playerId
-      array of PlayerMessage messages
-
-  # Send a list of any errors that need to be delivered.
-  event playerErrorsRaised
-    parameters
-      PlayerId playerId
-      array of PlayerError errors
 
   # Called whenever a player is created, or when a new agent joins and recieves
   # a list of active players. If an agent is restored, it will recieve the full

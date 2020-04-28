@@ -6,6 +6,7 @@ import * as UI from '../ui/ui.js';
 
 import {TriggerDispatcher} from './MainView.js';  // eslint-disable-line no-unused-vars
 import {PlayerEvent} from './MediaModel.js';      // eslint-disable-line no-unused-vars
+import {PlayerPropertyKeys} from './PlayerPropertiesView.js';
 
 /**
  * @typedef {{playerTitle: string, playerID: string, exists: boolean, playing: boolean, titleEdited: boolean}}
@@ -129,11 +130,14 @@ export class PlayerListView extends UI.Widget.VBox {
    * @param {!Protocol.Media.PlayerProperty} property
    */
   onProperty(playerID, property) {
-    if (property.name === 'frame_title' && property.value) {
+    // Sometimes the title will be an empty string, since this is provided
+    // by the website. We don't want to swap title to an empty string.
+    if (property.name === PlayerPropertyKeys.kFrameTitle && property.value) {
       this.setMediaElementPlayerTitle(playerID, /** @type {string} */ (property.value), false);
     }
 
-    if (property.name === 'frame_url') {
+    // Url always has a value.
+    if (property.name === PlayerPropertyKeys.kFrameUrl) {
       const url_path_component = property.value.substring(property.value.lastIndexOf('/') + 1);
       this.setMediaElementPlayerTitle(playerID, url_path_component, true);
     }

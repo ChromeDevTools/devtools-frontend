@@ -3,10 +3,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
-import {ls} from '../common/common.js';  // eslint-disable-line rulesdir/es_modules_import
+import {ls} from '../platform/platform.js';
 
 import {Issue, IssueCategory, IssueDescription, IssueKind} from './Issue.js';  // eslint-disable-line no-unused-vars
 
@@ -87,17 +84,29 @@ export class SameSiteCookieIssue extends Issue {
  * @return {!Element}
  */
 function textMessageWithResolutions(text, resolutions) {
-  const message = createElementWithClass('div', 'message');
-  message.createChild('p').textContent = text;
+  const message = document.createElement('div');
+  message.classList.add('message');
+  const messageContent = document.createElement('p');
+  messageContent.textContent = text;
+  message.append(messageContent);
 
   if (resolutions.length > 0) {
-    const resolutionParagraph = message.createChild('p');
-    resolutionParagraph.createChild('span', 'resolutions-label').textContent = ls`Resolve by`;
-    const resolutionList = createElementWithClass('ul', 'resolutions-list');
-    resolutionParagraph.appendChild(resolutionList);
+    const resolutionParagraph = document.createElement('p');
+    message.append(resolutionParagraph);
+
+    const resolutionParagraphTextContent = document.createElement('span');
+    resolutionParagraphTextContent.classList.add('resolutions-label');
+    resolutionParagraphTextContent.textContent = ls`Resolve by`;
+    resolutionParagraph.append(resolutionParagraphTextContent);
+
+    const resolutionList = document.createElement('ul');
+    resolutionList.classList.add('resolutions-list');
+    resolutionParagraph.append(resolutionList);
 
     for (const resolution of resolutions) {
-      resolutionList.createChild('li').textContent = resolution;
+      const listItem = document.createElement('li');
+      listItem.textContent = resolution;
+      resolutionList.append(listItem);
     }
   }
 

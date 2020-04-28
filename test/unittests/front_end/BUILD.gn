@@ -11,6 +11,7 @@ group("front_end") {
     "elements",
     "formatter_worker",
     "inline_editor",
+    "issues",
     "persistence",
     "platform",
     "protocol_client",

@@ -8,13 +8,13 @@ export class StubIssue extends Issue {
   private requestIds: string[];
   private cookieNames: string[];
 
-  constructor(requestIds: string[], cookieNames: string[]) {
-    super('StubIssue');
+  constructor(code: string, requestIds: string[], cookieNames: string[]) {
+    super(code);
     this.requestIds = requestIds;
     this.cookieNames = cookieNames;
   }
 
-  primaryKey() {
+  primaryKey(): string {
     return `${this.code()}-(${this.cookieNames.join(';')})-(${this.requestIds.join(';')})`;
   }
 
@@ -28,5 +28,13 @@ export class StubIssue extends Issue {
     return this.cookieNames.map(name => {
       return {name, domain: '', path: ''};
     });
+  }
+
+  static createFromRequestIds(requestIds: string[]) {
+    return new StubIssue('StubIssue', requestIds, []);
+  }
+
+  static createFromCookieNames(cookieNames: string[]) {
+    return new StubIssue('StubIssue', [], cookieNames);
   }
 }

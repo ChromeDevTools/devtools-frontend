@@ -9,7 +9,7 @@ import * as Common from '../common/common.js';  // eslint-disable-line no-unused
 
 import {CookieModel} from './CookieModel.js';
 import {CrossOriginEmbedderPolicyIssue} from './CrossOriginEmbedderPolicyIssue.js';
-import {AggregatedIssue, Issue} from './Issue.js';  // eslint-disable-line no-unused-vars
+import {Issue} from './Issue.js';  // eslint-disable-line no-unused-vars
 import {Events as NetworkManagerEvents, NetworkManager} from './NetworkManager.js';
 import {NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
 import {Events as ResourceTreeModelEvents, ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars
@@ -88,8 +88,6 @@ export class IssuesModel extends SDKModel {
     this._enabled = false;
     /** @type {!Map<string, !Issue>} */
     this._issues = new Map();
-    /** @type {!Map<string, !AggregatedIssue>} */
-    this._aggregatedIssuesByCode = new Map();
     this._cookiesModel = target.model(CookieModel);
     /** @type {*} */
     this._auditsAgent = null;
@@ -117,10 +115,6 @@ export class IssuesModel extends SDKModel {
       }
     }
     this._issues = keptIssues;
-    this._aggregatedIssuesByCode.clear();
-    for (const issue of this._issues.values()) {
-      this._aggregateIssue(issue);
-    }
     this._hasSeenMainFrameNavigated = true;
     this.dispatchEventToListeners(Events.FullUpdateRequired);
     this.dispatchEventToListeners(Events.IssuesCountUpdated);
@@ -149,20 +143,6 @@ export class IssuesModel extends SDKModel {
   }
 
   /**
-   * @param {!Issue} issue
-   * @returns {!AggregatedIssue}
-   */
-  _aggregateIssue(issue) {
-    if (!this._aggregatedIssuesByCode.has(issue.code())) {
-      this._aggregatedIssuesByCode.set(issue.code(), new AggregatedIssue(issue.code()));
-    }
-    const aggregatedIssue = this._aggregatedIssuesByCode.get(issue.code());
-    aggregatedIssue.addInstance(issue);
-    this.dispatchEventToListeners(Events.AggregatedIssueUpdated, aggregatedIssue);
-    return aggregatedIssue;
-  }
-
-  /**
    * @override
    * @param {!Protocol.Audits.InspectorIssue} inspectorIssue
    */
@@ -186,7 +166,7 @@ export class IssuesModel extends SDKModel {
       return;
     }
     this._issues.set(primaryKey, issue);
-    this._aggregateIssue(issue);
+    this.dispatchEventToListeners(Events.IssueAdded, {issuesModel: this, issue});
     this.dispatchEventToListeners(Events.IssuesCountUpdated);
   }
 
@@ -213,13 +193,6 @@ export class IssuesModel extends SDKModel {
 
     console.warn(`No handler registered for issue code ${inspectorIssue.code}`);
     return [];
-  }
-
-  /**
-   * @returns {!Iterable<AggregatedIssue>}
-   */
-  aggregatedIssues() {
-    return this._aggregatedIssuesByCode.values();
   }
 
   /**
@@ -274,7 +247,7 @@ const issueCodeHandlers = new Map([
 /** @enum {symbol} */
 export const Events = {
   IssuesCountUpdated: Symbol('IssuesCountUpdated'),
-  AggregatedIssueUpdated: Symbol('AggregatedIssueUpdated'),
+  IssueAdded: Symbol('IssueAdded'),
   FullUpdateRequired: Symbol('FullUpdateRequired'),
 };
 

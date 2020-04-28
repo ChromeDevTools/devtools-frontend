@@ -2,7 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as IssueAggregator from './IssueAggregator.js';
 import * as IssueRevealer from './IssueRevealer.js';
 import * as IssuesPane from './IssuesPane.js';
 
-export {IssueRevealer, IssuesPane};
+export {IssueAggregator, IssueRevealer, IssuesPane};

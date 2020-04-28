@@ -25,8 +25,8 @@ describe('issuesAssociatedWith', () => {
   });
 
   it('should correctly filter issues associated with a given request id', () => {
-    const issue1 = new StubIssue(['id1', 'id2'], []);
-    const issue2 = new StubIssue(['id1'], []);
+    const issue1 = StubIssue.createFromRequestIds(['id1', 'id2']);
+    const issue2 = StubIssue.createFromRequestIds(['id1']);
     const issues = [issue1, issue2];
 
     const request1 = new NetworkRequest('id1', '', '', '', '', null);
@@ -44,9 +44,9 @@ describe('issuesAssociatedWith', () => {
   }
 
   it('should correctly filter issues associated with a cookie', () => {
-    const issue1 = new StubIssue([], ['c1', 'c2']);
-    const issue2 = new StubIssue([], ['c3']);
-    const issue3 = new StubIssue([], ['c1']);
+    const issue1 = StubIssue.createFromCookieNames(['c1', 'c2']);
+    const issue2 = StubIssue.createFromCookieNames(['c3']);
+    const issue3 = StubIssue.createFromCookieNames(['c1']);
     const issues = [issue1, issue2, issue3];
 
     const cookie1 = createTestCookie('c1');

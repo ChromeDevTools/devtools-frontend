@@ -212,6 +212,7 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox {
     if (options.placeholder) {
       this._placeholderElement = createElement('pre');
       this._placeholderElement.classList.add('placeholder-text');
+      this._placeholderElement.classList.add('CodeMirror-line-like');
       this._placeholderElement.textContent = options.placeholder;
       this._updatePlaceholder();
     }
@@ -424,6 +425,7 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox {
     if (!this._placeholderElement) {
       this._placeholderElement = createElement('pre');
       this._placeholderElement.classList.add('placeholder-text');
+      this._placeholderElement.classList.add('CodeMirror-line-like');
     }
     this._placeholderElement.textContent = placeholder || '';
     this._updatePlaceholder();

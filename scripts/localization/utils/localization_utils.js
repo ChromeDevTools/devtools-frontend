@@ -84,6 +84,14 @@ function isNodeCommonUIStringCall(node) {
   return isNodeCallOnObject(node, 'Common', 'UIString') || isNodeCallOnNestedObject(node, 'Common', 'UIString', 'UIString');
 }
 
+function isNodePlatformUIStringCall(node) {
+  return isNodeCallOnNestedObject(node, 'Platform', 'UIString', 'UIString');
+}
+
+function isNodeUIStringDirectCall(node) {
+  return node.type === espreeTypes.CALL_EXPR && node.callee.type === 'Identifier' && node.callee.name === 'UIString';
+}
+
 function isNodeCommonUIStringFormat(node) {
   return node && node.type === espreeTypes.NEW_EXPR &&
       (verifyCallExpressionCallee(node.callee, 'Common', 'UIStringFormat') ||
@@ -134,11 +142,15 @@ function getLocalizationCase(node) {
   if (isNodeUIformatLocalized(node)) {
     return 'UI.formatLocalized';
   }
+  if (isNodePlatformUIStringCall(node) || isNodeUIStringDirectCall(node)) {
+    return 'Platform.UIString';
+  }
   return null;
 }
 
 function isLocalizationCall(node) {
-  return isNodeCommonUIStringCall(node) || isNodelsTaggedTemplateExpression(node) || isNodeUIformatLocalized(node);
+  return isNodeCommonUIStringCall(node) || isNodelsTaggedTemplateExpression(node) || isNodeUIformatLocalized(node) ||
+      isNodePlatformUIStringCall(node) || isNodeUIStringDirectCall(node);
 }
 
 /**

@@ -327,6 +327,7 @@ function parseLocalizableStringFromNode(node, filePath) {
   const locCase = localizationUtils.getLocalizationCase(node);
   switch (locCase) {
     case 'Common.UIString':
+    case 'Platform.UIString':
     case 'Common.UIStringFormat': {
       handleCommonUIString(node, filePath);
       break;

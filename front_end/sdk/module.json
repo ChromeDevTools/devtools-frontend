@@ -422,6 +422,7 @@
     "Issue.js",
     "IssuesModel.js",
     "SameSiteCookieIssue.js",
+    "MixedContentIssue.js",
     "CrossOriginEmbedderPolicyIssue.js",
     "RelatedIssue.js",
     "ServerTiming.js",

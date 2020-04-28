@@ -1418,6 +1418,7 @@ all_devtools_modules = [
   "sdk/RelatedIssue.js",
   "sdk/LayerTreeBase.js",
   "sdk/LogModel.js",
+  "sdk/MixedContentIssue.js",
   "sdk/NetworkLog.js",
   "sdk/NetworkManager.js",
   "sdk/NetworkRequest.js",

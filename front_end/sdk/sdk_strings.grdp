@@ -46,6 +46,9 @@
   <message name="IDS_DEVTOOLS_17ef39d79c395cc2274bf685b1d70b2c" desc="Name of a color vision deficiency that can be emulated via the Rendering drawer">
     Achromatopsia
   </message>
+  <message name="IDS_DEVTOOLS_18253f5cc6e0814eb6f9bc2fb560ce82" desc="The kind of resolution for a mixed content issue">
+    automatically upgraded
+  </message>
   <message name="IDS_DEVTOOLS_1826966037c093803f9bd475b362057d" desc="Tooltip to explain why a cookie was blocked">
     This Set-Cookie was blocked because it was not sent over a secure connection and would have overwritten a cookie with the Secure attribute.
   </message>
@@ -91,6 +94,9 @@
   <message name="IDS_DEVTOOLS_2973958e77629e3a167a1a4c60dd5c5f" desc="Text in Network Manager">
     Slow 3G
   </message>
+  <message name="IDS_DEVTOOLS_2ca5bc4c75fa0bac63906eac6cb0c265" desc="Link for mixed content issues">
+    https://developers.google.com/web/fundamentals/security/prevent-mixed-content/fixing-mixed-content
+  </message>
   <message name="IDS_DEVTOOLS_2d4f58197f03de72c0472189fd18c162" desc="Title of a setting under the Rendering drawer">
     Emulate vision deficiencies
   </message>
@@ -115,6 +121,9 @@
   <message name="IDS_DEVTOOLS_43fde213dddc0ce31eca48a551757f41" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Emulate blurred vision
   </message>
+  <message name="IDS_DEVTOOLS_47ff9951b01a6b094431ff82dc68e266" desc="The kind of resolution for a mixed content issue">
+    warned
+  </message>
   <message name="IDS_DEVTOOLS_534a6087ddb75adb6dccea8139b18fd2" desc="Tooltip to explain why a cookie was blocked">
     This Set-Cookie was blocked because it had the &quot;SameSite=None&quot; attribute but did not have the &quot;Secure&quot; attribute, which is required in order to use &quot;SameSite=None&quot;.
   </message>
@@ -133,6 +142,9 @@
   </message>
   <message name="IDS_DEVTOOLS_5e53467e9b005376370c28e92b42b6f5" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Emulate CSS prefers-reduced-motion: reduce
+  </message>
+  <message name="IDS_DEVTOOLS_61326117ed4a9ddf3f754e71e119e5b3" desc="The kind of resolution for a mixed content issue">
+    blocked
   </message>
   <message name="IDS_DEVTOOLS_67370b3edd8beefab5b4d3603172c6be" desc="Description of an issue in the issues panel">
     A cookie without a valid SameSite attribute was sent in a cross-site request. In the future, a cookie will only be sent in a cross-site request if the cookie has both the &apos;SameSite=None and &apos;Secure&apos; attributes.
@@ -282,6 +294,9 @@
   <message name="IDS_DEVTOOLS_79d147ddfc61cd5ac1cdc1ae6d7e4feb" desc="Name of a vision deficiency that can be emulated via the Rendering drawer">
     Blurred vision
   </message>
+  <message name="IDS_DEVTOOLS_7bfa1dc546d200c059f2a57aecc91f67" desc="Title for the MixedContentIssue issue code">
+    Mixed content: Not all of the page&apos;s resources are being loaded over HTTPS.
+  </message>
   <message name="IDS_DEVTOOLS_7c2bc755363ab11a1611bfa369654ff8" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Show frames per second (FPS) meter
   </message>
@@ -305,6 +320,9 @@
   </message>
   <message name="IDS_DEVTOOLS_8685061f9e660f88b9b27870ccfee597" desc="Description of an issue in the issues panel">
     A cookie was received with the &apos;SameSite=None&apos; attribute, marking it as available for third-party use, but did not have the &apos;Secure&apos; attribute. Cookies with &apos;SameSite=None&apos; will not be set unless they also have the &apos;Secure&apos; attribute.
+  </message>
+  <message name="IDS_DEVTOOLS_85b5ab7421eb24d42906b321a49aeb12" desc="Message for the MixedContentIssue issue code">
+    The initial HTML is loaded over a secure HTTPS connection, but some other resources are loaded over an insecure HTTP connection.
   </message>
   <message name="IDS_DEVTOOLS_8aa85d8015c515cde89fade0983df424" desc="Description for an issue in the issues view">
     A document was blocked from loading in an <ph name="LOCKED_1">iframe</ph> with a <ph name="LOCKED_1">sandbox</ph> attribute because the document specified a cross-origin opener policy.
@@ -410,6 +428,9 @@
   </message>
   <message name="IDS_DEVTOOLS_ba50636875d999db0c9218b48b23027d" desc="Title of a setting under the Debugger category that can be invoked through the Command Menu">
     Do not capture async stack traces
+  </message>
+  <message name="IDS_DEVTOOLS_ba76fecd860f5cf4a97da9177080fc1c" desc="Label for the link for Mixed Content Issues">
+    Preventing mixed content
   </message>
   <message name="IDS_DEVTOOLS_be06029749b376cc5dec53b60a0cf135" desc="Title of a media query that can be emulated via the Rendering drawer">
     prefers-reduced-motion: reduce

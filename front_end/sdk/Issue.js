@@ -10,6 +10,7 @@ import * as Common from '../common/common.js';
 /** @enum {symbol} */
 export const IssueCategory = {
   CrossOriginEmbedderPolicy: Symbol('CrossOriginEmbedderPolicy'),
+  MixedContent: Symbol('MixedContent'),
   SameSiteCookie: Symbol('SameSiteCookie'),
   Other: Symbol('Other')
 };
@@ -61,6 +62,13 @@ export class Issue extends Common.ObjectWrapper.ObjectWrapper {
    * @returns {!Iterable<!Protocol.Audits.AffectedCookie>}
    */
   cookies() {
+    return [];
+  }
+
+  /**
+   * @returns {!Iterable<!Protocol.Audits.MixedContentIssueDetails>}
+   */
+  mixedContents() {
     return [];
   }
 

@@ -36,6 +36,7 @@ ts_library("sdk") {
     "IssuesModel.js",
     "LayerTreeBase.js",
     "LogModel.js",
+    "MixedContentIssue.js",
     "NetworkLog.js",
     "NetworkManager.js",
     "NetworkRequest.js",

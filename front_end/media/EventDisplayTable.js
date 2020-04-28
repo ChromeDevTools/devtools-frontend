@@ -5,7 +5,7 @@
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as UI from '../ui/ui.js';
 
-import {Event, MediaChangeTypeKeys} from './MediaModel.js';  // eslint-disable-line no-unused-vars
+import {PlayerEvent} from './MediaModel.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @typedef {{
@@ -105,24 +105,14 @@ export class PlayerEventsView extends UI.Widget.VBox {
   }
 
   /**
-   * @param {string} playerID
-   * @param {!Array.<!Event>} changes
-   * @param {!MediaChangeTypeKeys} change_type
+   * @param {!PlayerEvent} event
    */
-  renderChanges(playerID, changes, change_type) {
-    if (this._firstEventTime === 0 && changes.length > 0) {
-      this._firstEventTime = changes[0].timestamp;
+  onEvent(event) {
+    if (this._firstEventTime === 0) {
+      this._firstEventTime = event.timestamp;
     }
+    event = this._subtractFirstEventTime(event);
 
-    for (const event of changes) {
-      this.addEvent(this._subtractFirstEventTime(event));
-    }
-  }
-
-  /**
-   * @param {!Event} event
-   */
-  addEvent(event) {
     const stringified = /** @type {string} */ (event.value);
     try {
       const json = JSON.parse(stringified);
@@ -138,7 +128,7 @@ export class PlayerEventsView extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Event} event
+   * @param {!PlayerEvent} event
    */
   _subtractFirstEventTime(event) {
     event.displayTimestamp = (event.timestamp - this._firstEventTime).toFixed(3);

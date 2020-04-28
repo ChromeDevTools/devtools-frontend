@@ -4,15 +4,24 @@
 
 import * as SDK from '../sdk/sdk.js';
 
+// We extend Protocol.Media.PlayerEvent here to allow for displayTimestamp.
 /**
  * @typedef {{
- *     name: string,
  *     value: *,
  *     timestamp: (number|string|undefined),
  *     displayTimestamp: string
  * }}
  */
-export let Event;
+export let PlayerEvent;
+
+/** @enum {symbol} */
+export const ProtocolTriggers = {
+  PlayerPropertiesChanged: Symbol('PlayerPropertiesChanged'),
+  PlayerEventsAdded: Symbol('PlayerEventsAdded'),
+  PlayerMessagesLogged: Symbol('PlayerMessagesLogged'),
+  PlayerErrorsRaised: Symbol('PlayerErrorsRaised'),
+  PlayersCreated: Symbol('PlayersCreated')
+};
 
 /**
  * @implements {Protocol.MediaDispatcher}
@@ -53,7 +62,7 @@ export class MediaModel extends SDK.SDKModel.SDKModel {
    */
   playerPropertiesChanged(playerId, properties) {
     this.dispatchEventToListeners(
-        Events.PlayerPropertiesChanged, {playerId: playerId, properties: properties});
+        ProtocolTriggers.PlayerPropertiesChanged, {playerId: playerId, properties: properties});
   }
 
   /**
@@ -62,7 +71,7 @@ export class MediaModel extends SDK.SDKModel.SDKModel {
    * @override
    */
   playerEventsAdded(playerId, events) {
-    this.dispatchEventToListeners(Events.PlayerEventsAdded, {playerId: playerId, events: events});
+    this.dispatchEventToListeners(ProtocolTriggers.PlayerEventsAdded, {playerId: playerId, events: events});
   }
 
   /**
@@ -71,7 +80,7 @@ export class MediaModel extends SDK.SDKModel.SDKModel {
    * @override
    */
   playerMessagesLogged(playerId, messages) {
-    this.dispatchEventToListeners(Events.PlayerMessagesLogged, {playerId: playerId, messages: messages});
+    this.dispatchEventToListeners(ProtocolTriggers.PlayerMessagesLogged, {playerId: playerId, messages: messages});
   }
 
   /**
@@ -80,7 +89,7 @@ export class MediaModel extends SDK.SDKModel.SDKModel {
    * @override
    */
   playerErrorsRaised(playerId, errors) {
-    this.dispatchEventToListeners(Events.PlayerErrorsRaised, {playerId: playerId, errors: errors});
+    this.dispatchEventToListeners(ProtocolTriggers.PlayerErrorsRaised, {playerId: playerId, errors: errors});
   }
 
   /**
@@ -88,23 +97,8 @@ export class MediaModel extends SDK.SDKModel.SDKModel {
    * @override
    */
   playersCreated(playerIds) {
-    this.dispatchEventToListeners(Events.PlayersCreated, playerIds);
+    this.dispatchEventToListeners(ProtocolTriggers.PlayersCreated, playerIds);
   }
 }
 
 SDK.SDKModel.SDKModel.register(MediaModel, SDK.SDKModel.Capability.DOM, false);
-
-/** @enum {symbol} */
-export const Events = {
-  PlayerPropertiesChanged: Symbol('PlayerPropertiesChanged'),
-  PlayerEventsAdded: Symbol('PlayerEventsAdded'),
-  PlayerMessagesLogged: Symbol('PlayerMessagesLogged'),
-  PlayerErrorsRaised: Symbol('PlayerErrorsRaised'),
-  PlayersCreated: Symbol('PlayersCreated'),
-};
-
-/** @enum {string} */
-export const MediaChangeTypeKeys = {
-  Event: 'Events',
-  Property: 'Properties'
-};

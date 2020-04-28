@@ -6,7 +6,6 @@ import * as Common from '../common/common.js';
 import * as UI from '../ui/ui.js';
 
 import {ChevronTabbedPanel} from './ChevronTabbedPanel.js';
-import {Event, MediaChangeTypeKeys} from './MediaModel.js';  // eslint-disable-line no-unused-vars
 
 /** @enum {string} */
 export const PlayerPropertyKeys = {
@@ -269,19 +268,14 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
   }
 
   /**
-   * @param {string} playerID
-   * @param {!Array.<!Event>} changes
-   * @param {!MediaChangeTypeKeys} changeType
+   * @param {!Protocol.Media.PlayerProperty} property
    */
-  renderChanges(playerID, changes, changeType) {
-    for (const change of changes) {
-      const renderer = this._attributeMap.get(change.name);
-      if (renderer) {
-        renderer.updateData(change.name, change.value);
-      } else {
-        throw new Error(`PlayerProperty ${change.name} not supported.`);
-      }
+  onProperty(property) {
+    const renderer = this._attributeMap.get(property.name);
+    if (!renderer) {
+      throw new Error(`PlayerProperty ${property.name} not supported.`);
     }
+    renderer.updateData(property.name, property.value);
   }
 
   formatKbps(bitsPerSecond) {

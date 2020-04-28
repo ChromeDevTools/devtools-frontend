@@ -6,7 +6,8 @@ import * as Common from '../common/common.js';
 import * as UI from '../ui/ui.js';
 
 import {PlayerEventsView} from './EventDisplayTable.js';
-import {Event, MediaChangeTypeKeys} from './MediaModel.js';  // eslint-disable-line no-unused-vars
+import {TriggerHandler} from './MainView.js';  // eslint-disable-line no-unused-vars
+import {PlayerEvent} from './MediaModel.js';   // eslint-disable-line no-unused-vars
 import {PlayerPropertiesView} from './PlayerPropertiesView.js';
 
 /**
@@ -19,33 +20,51 @@ export const PlayerDetailViewTabs = {
 
 /**
  * @unrestricted
+ * @implements TriggerHandler
  */
 export class PlayerDetailView extends UI.TabbedPane.TabbedPane {
   constructor() {
     super();
 
-    const eventView = new PlayerEventsView();
-    const propertyView = new PlayerPropertiesView();
-
-    // maps handler type to a list of panels that support rendering changes.
-    this._panels = new Map([[MediaChangeTypeKeys.Property, [propertyView]], [MediaChangeTypeKeys.Event, [eventView]]]);
+    this._eventView = new PlayerEventsView();
+    this._propertyView = new PlayerPropertiesView();
 
     this.appendTab(
-        PlayerDetailViewTabs.Properties, Common.UIString.UIString('Properties'), propertyView,
+        PlayerDetailViewTabs.Properties, Common.UIString.UIString('Properties'), this._propertyView,
         Common.UIString.UIString('Player properties'));
 
     this.appendTab(
-        PlayerDetailViewTabs.Events, Common.UIString.UIString('Events'), eventView, Common.UIString.UIString('Player events'));
+        PlayerDetailViewTabs.Events, Common.UIString.UIString('Events'), this._eventView,
+        Common.UIString.UIString('Player events'));
   }
 
   /**
-   * @param {string} playerID
-   * @param {!Array.<!Event>} changes
-   * @param {!MediaChangeTypeKeys} changeType
+   * @override
+   * @param {!Protocol.Media.PlayerProperty} property
    */
-  renderChanges(playerID, changes, changeType) {
-    for (const panel of this._panels.get(changeType)) {
-      panel.renderChanges(playerID, changes, changeType);
-    }
+  onProperty(property) {
+    this._propertyView.onProperty(property);
+  }
+
+  /**
+   * @override
+   * @param {!Protocol.Media.PlayerError} error
+   */
+  onError(error) {
+  }
+
+  /**
+   * @override
+   * @param {!Protocol.Media.PlayerMessage} message
+   */
+  onMessage(message) {
+  }
+
+  /**
+   * @override
+   * @param {!PlayerEvent} event
+   */
+  onEvent(event) {
+    this._eventView.onEvent(event);
   }
 }

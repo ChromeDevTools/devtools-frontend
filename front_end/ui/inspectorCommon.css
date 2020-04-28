@@ -176,6 +176,7 @@ input::placeholder {
     padding: 3px 6px;
     height: 24px;
     border: none;
+    box-shadow: var(--focus-ring-inactive-shadow);
 }
 
 .harmony-input:not([type]):not(.error-input):not(:invalid):hover,

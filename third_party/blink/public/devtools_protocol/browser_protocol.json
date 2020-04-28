@@ -16805,50 +16805,73 @@
                     "type": "number"
                 },
                 {
-                    "id": "PlayerProperty",
-                    "description": "Player Property type",
+                    "id": "PlayerMessage",
+                    "description": "Have one type per entry in MediaLogRecord::Type\nCorresponds to kMessage",
                     "type": "object",
                     "properties": [
                         {
-                            "name": "name",
-                            "type": "string"
+                            "name": "level",
+                            "description": "Keep in sync with MediaLogMessageLevel\nWe are currently keeping the message level 'error' separate from the\nPlayerError type because right now they represent different things,\nthis one being a DVLOG(ERROR) style log message that gets printed\nbased on what log level is selected in the UI, and the other is a\nrepresentation of a media::PipelineStatus object. Soon however we're\ngoing to be moving away from using PipelineStatus for errors and\nintroducing a new error type which should hopefully let us integrate\nthe error log level into the PlayerError type.",
+                            "type": "string",
+                            "enum": [
+                                "error",
+                                "warning",
+                                "info",
+                                "debug"
+                            ]
                         },
                         {
-                            "name": "value",
-                            "optional": true,
+                            "name": "message",
                             "type": "string"
                         }
                     ]
                 },
                 {
-                    "id": "PlayerEventType",
-                    "description": "Break out events into different types",
-                    "type": "string",
-                    "enum": [
-                        "errorEvent",
-                        "triggeredEvent",
-                        "messageEvent"
-                    ]
-                },
-                {
-                    "id": "PlayerEvent",
+                    "id": "PlayerProperty",
+                    "description": "Corresponds to kMediaPropertyChange",
                     "type": "object",
                     "properties": [
-                        {
-                            "name": "type",
-                            "$ref": "PlayerEventType"
-                        },
-                        {
-                            "name": "timestamp",
-                            "description": "Events are timestamped relative to the start of the player creation\nnot relative to the start of playback.",
-                            "$ref": "Timestamp"
-                        },
                         {
                             "name": "name",
                             "type": "string"
                         },
                         {
                             "name": "value",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "id": "PlayerEvent",
+                    "description": "Corresponds to kMediaEventTriggered",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "timestamp",
+                            "$ref": "Timestamp"
+                        },
+                        {
+                            "name": "value",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "id": "PlayerError",
+                    "description": "Corresponds to kMediaError",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "type",
+                            "type": "string",
+                            "enum": [
+                                "pipeline_error",
+                                "media_error"
+                            ]
+                        },
+                        {
+                            "name": "errorCode",
+                            "description": "When this switches to using media::Status instead of PipelineStatus\nwe can remove \"errorCode\" and replace it with the fields from\na Status instance. This also seems like a duplicate of the error\nlevel enum - there is a todo bug to have that level removed and\nuse this instead. (crbug.com/1068454)",
                             "type": "string"
                         }
                     ]
@@ -16885,6 +16908,40 @@
                             "type": "array",
                             "items": {
                                 "$ref": "PlayerEvent"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "playerMessagesLogged",
+                    "description": "Send a list of any messages that need to be delivered.",
+                    "parameters": [
+                        {
+                            "name": "playerId",
+                            "$ref": "PlayerId"
+                        },
+                        {
+                            "name": "messages",
+                            "type": "array",
+                            "items": {
+                                "$ref": "PlayerMessage"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "playerErrorsRaised",
+                    "description": "Send a list of any errors that need to be delivered.",
+                    "parameters": [
+                        {
+                            "name": "playerId",
+                            "$ref": "PlayerId"
+                        },
+                        {
+                            "name": "errors",
+                            "type": "array",
+                            "items": {
+                                "$ref": "PlayerError"
                             }
                         }
                     ]

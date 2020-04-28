@@ -2255,10 +2255,13 @@ export function registerCommands(inspectorBackend) {
 
   // Media.
   inspectorBackend.registerEnum(
-      'Media.PlayerEventType',
-      {ErrorEvent: 'errorEvent', TriggeredEvent: 'triggeredEvent', MessageEvent: 'messageEvent'});
+      'Media.PlayerMessageLevel', {Error: 'error', Warning: 'warning', Info: 'info', Debug: 'debug'});
+  inspectorBackend.registerEnum(
+      'Media.PlayerErrorType', {Pipeline_error: 'pipeline_error', Media_error: 'media_error'});
   inspectorBackend.registerEvent('Media.playerPropertiesChanged', ['playerId', 'properties']);
   inspectorBackend.registerEvent('Media.playerEventsAdded', ['playerId', 'events']);
+  inspectorBackend.registerEvent('Media.playerMessagesLogged', ['playerId', 'messages']);
+  inspectorBackend.registerEvent('Media.playerErrorsRaised', ['playerId', 'errors']);
   inspectorBackend.registerEvent('Media.playersCreated', ['players']);
   inspectorBackend.registerCommand('Media.enable', [], [], false);
   inspectorBackend.registerCommand('Media.disable', [], [], false);

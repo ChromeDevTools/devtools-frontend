@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-
 /**
  * @param {string} inputString
  * @param {string} charsToEscape
@@ -34,33 +32,67 @@ export const escapeCharacters = (inputString, charsToEscape) => {
 };
 
 /**
+ * @enum {string}
+ */
+const FORMATTER_TYPES = {
+  STRING: 'string',
+  SPECIFIER: 'specifier',
+};
+
+/** @typedef {{type: !FORMATTER_TYPES, value: (string|{description: string}|undefined), specifier: (string|undefined), precision: (number|undefined), substitutionIndex: (number|undefined)}} */
+// @ts-ignore typedef
+export let FORMATTER_TOKEN;
+
+/**
  * @param {string} formatString
- * @param {!Object.<string, function(string, ...):*>} formatters
- * @return {!Array.<!Object>}
+ * @param {!Object.<string, function(string, ...*):*>} formatters
+ * @return {!Array.<!FORMATTER_TOKEN>}
  */
 export const tokenizeFormatString = function(formatString, formatters) {
+  /** @type {!Array<!FORMATTER_TOKEN>} */
   const tokens = [];
 
+  /**
+   * @param {string} str
+   */
   function addStringToken(str) {
     if (!str) {
       return;
     }
-    if (tokens.length && tokens[tokens.length - 1].type === 'string') {
+    if (tokens.length && tokens[tokens.length - 1].type === FORMATTER_TYPES.STRING) {
       tokens[tokens.length - 1].value += str;
     } else {
-      tokens.push({type: 'string', value: str});
+      tokens.push({
+        type: FORMATTER_TYPES.STRING,
+        value: str,
+        specifier: undefined,
+        precision: undefined,
+        substitutionIndex: undefined
+      });
     }
   }
 
+  /**
+   * @param {string} specifier
+   * @param {number} precision
+   * @param {number} substitutionIndex
+   */
   function addSpecifierToken(specifier, precision, substitutionIndex) {
-    tokens.push({type: 'specifier', specifier: specifier, precision: precision, substitutionIndex: substitutionIndex});
+    tokens.push({type: FORMATTER_TYPES.SPECIFIER, specifier, precision, substitutionIndex, value: undefined});
   }
 
+  /**
+   * @param {number} code
+   */
   function addAnsiColor(code) {
+    /**
+     * @type {!Object<number, string>}
+     */
     const types = {3: 'color', 9: 'colorLight', 4: 'bgColor', 10: 'bgColorLight'};
     const colorCodes = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'lightGray', '', 'default'];
     const colorCodesLight =
         ['darkGray', 'lightRed', 'lightGreen', 'lightYellow', 'lightBlue', 'lightMagenta', 'lightCyan', 'white', ''];
+    /** @type {!Object<string, !Array<string>>} */
     const colors = {color: colorCodes, colorLight: colorCodesLight, bgColor: colorCodes, bgColorLight: colorCodesLight};
     const type = types[Math.floor(code / 10)];
     if (!type) {
@@ -71,9 +103,11 @@ export const tokenizeFormatString = function(formatString, formatters) {
       return;
     }
     tokens.push({
-      type: 'specifier',
+      type: FORMATTER_TYPES.SPECIFIER,
       specifier: 'c',
-      value: {description: (type.startsWith('bg') ? 'background : ' : 'color: ') + color}
+      value: {description: (type.startsWith('bg') ? 'background : ' : 'color: ') + color},
+      precision: undefined,
+      substitutionIndex: undefined,
     });
   }
 
@@ -110,13 +144,13 @@ export const tokenizeFormatString = function(formatString, formatters) {
 
 /**
  * @param {string} formatString
- * @param {?ArrayLike} substitutions
- * @param {!Object.<string, function(string, ...):Q>} formatters
+ * @param {?ArrayLike<*>} substitutions
+ * @param {!Object.<string, function(string, ...*):*>} formatters
  * @param {!T} initialValue
- * @param {function(T, Q): T|undefined} append
+ * @param {function(T, *): T} append
  * @param {!Array.<!Object>=} tokenizedFormat
- * @return {!{formattedResult: T, unusedSubstitutions: ?ArrayLike}};
- * @template T, Q
+ * @return {!{formattedResult: T, unusedSubstitutions: ?ArrayLike<*>}};
+ * @template T
  */
 export const format = function(formatString, substitutions, formatters, initialValue, append, tokenizedFormat) {
   if (!formatString || ((!substitutions || !substitutions.length) && formatString.search(/\u001b\[(\d+)m/) === -1)) {
@@ -127,61 +161,79 @@ export const format = function(formatString, substitutions, formatters, initialV
     return 'String.format("' + formatString + '", "' + Array.prototype.join.call(substitutions, '", "') + '")';
   }
 
+  /**
+   * @param {string} msg
+   */
   function warn(msg) {
     console.warn(prettyFunctionName() + ': ' + msg);
   }
 
+  /**
+   * @param {string} msg
+   */
   function error(msg) {
     console.error(prettyFunctionName() + ': ' + msg);
   }
 
   let result = initialValue;
   const tokens = tokenizedFormat || tokenizeFormatString(formatString, formatters);
+  /** @type {!Object<number, boolean>} */
   const usedSubstitutionIndexes = {};
+  /** @type {!ArrayLike<*>} */
+  const actualSubstitutions = substitutions || [];
 
   for (let i = 0; i < tokens.length; ++i) {
     const token = tokens[i];
 
-    if (token.type === 'string') {
+    if (token.type === FORMATTER_TYPES.STRING) {
       result = append(result, token.value);
       continue;
     }
 
-    if (token.type !== 'specifier') {
+    if (token.type !== FORMATTER_TYPES.SPECIFIER) {
       error('Unknown token type "' + token.type + '" found.');
       continue;
     }
 
-    if (!token.value && token.substitutionIndex >= substitutions.length) {
+    if (!token.value && token.substitutionIndex !== undefined &&
+        token.substitutionIndex >= actualSubstitutions.length) {
       // If there are not enough substitutions for the current substitutionIndex
       // just output the format specifier literally and move on.
       error(
-          'not enough substitution arguments. Had ' + substitutions.length + ' but needed ' +
+          'not enough substitution arguments. Had ' + actualSubstitutions.length + ' but needed ' +
           (token.substitutionIndex + 1) + ', so substitution was skipped.');
-      result = append(result, '%' + (token.precision > -1 ? token.precision : '') + token.specifier);
+      result = append(
+          result,
+          '%' + ((token.precision !== undefined && token.precision > -1) ? token.precision : '') + token.specifier);
       continue;
     }
 
-    if (!token.value) {
+    if (!token.value && token.substitutionIndex !== undefined) {
       usedSubstitutionIndexes[token.substitutionIndex] = true;
     }
 
-    if (!(token.specifier in formatters)) {
+    if (token.specifier === undefined || !(token.specifier in formatters)) {
       // Encountered an unsupported format character, treat as a string.
       warn('unsupported format character \u201C' + token.specifier + '\u201D. Treating as a string.');
-      result = append(result, token.value ? '' : substitutions[token.substitutionIndex]);
+      result = append(
+          result,
+          (token.value || token.substitutionIndex === undefined) ? '' : actualSubstitutions[token.substitutionIndex]);
       continue;
     }
 
-    result = append(result, formatters[token.specifier](token.value || substitutions[token.substitutionIndex], token));
+    result = append(
+        result,
+        formatters[token.specifier](
+            token.value || (token.substitutionIndex !== undefined && actualSubstitutions[token.substitutionIndex]),
+            token));
   }
 
   const unusedSubstitutions = [];
-  for (let i = 0; i < substitutions.length; ++i) {
+  for (let i = 0; i < actualSubstitutions.length; ++i) {
     if (i in usedSubstitutionIndexes) {
       continue;
     }
-    unusedSubstitutions.push(substitutions[i]);
+    unusedSubstitutions.push(actualSubstitutions[i]);
   }
 
   return {formattedResult: result, unusedSubstitutions: unusedSubstitutions};
@@ -189,27 +241,32 @@ export const format = function(formatString, substitutions, formatters, initialV
 
 export const standardFormatters = {
   /**
+   * @param {*} substitution
    * @return {number}
    */
   d: function(substitution) {
-    return !isNaN(substitution) ? substitution : 0;
+    return /** @type {number} */ (!isNaN(substitution) ? substitution : 0);
   },
 
   /**
+   * @param {*} substitution
+   * @param {!FORMATTER_TOKEN} token
    * @return {number}
    */
   f: function(substitution, token) {
-    if (substitution && token.precision > -1) {
+    if (substitution && token.precision !== undefined && token.precision > -1) {
       substitution = substitution.toFixed(token.precision);
     }
-    return !isNaN(substitution) ? substitution : (token.precision > -1 ? Number(0).toFixed(token.precision) : 0);
+    const precision = (token.precision !== undefined && token.precision > -1) ? Number(0).toFixed(token.precision) : 0;
+    return /** @type number} */ (!isNaN(substitution) ? substitution : precision);
   },
 
   /**
+   * @param {*} substitution
    * @return {string}
    */
   s: function(substitution) {
-    return substitution;
+    return /** @type {string} */ (substitution);
   }
 };
 
@@ -219,6 +276,7 @@ export const standardFormatters = {
  * @return {string}
  */
 export const vsprintf = function(formatString, substitutions) {
+  // @ts-ignore
   return format(formatString, substitutions, standardFormatters, '', function(a, b) {
            return a + b;
          }).formattedResult;
@@ -388,6 +446,9 @@ export const countWtf8Bytes = inputString => {
   return count;
 };
 
+/**
+ * @param {string} inputStr
+ */
 export const stripLineBreaks = inputStr => {
   return inputStr.replace(/(\r)?\n/g, '');
 };

@@ -28,6 +28,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Common from '../common/common.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
 import * as SDK from '../sdk/sdk.js';
@@ -161,10 +162,11 @@ export class RequestHeadersView extends UI.Widget.VBox {
       }
 
       if (Root.Runtime.experiments.isEnabled('issuesPane') &&
-          SDK.RelatedIssue.hasIssueOfCategory(this._request, SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy)) {
+          BrowserSDK.RelatedIssue.hasIssueOfCategory(
+              this._request, SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy)) {
         const link = createElementWithClass('div', 'devtools-link');
         link.onclick = () => {
-          SDK.RelatedIssue.reveal(this._request, SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy);
+          BrowserSDK.RelatedIssue.reveal(this._request, SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy);
         };
         const text = createElementWithClass('span', 'devtools-link');
         text.textContent = 'Learn more in the issues panel';

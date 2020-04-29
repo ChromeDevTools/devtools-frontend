@@ -182,7 +182,8 @@
     "browser_sdk",
     "mobile_throttling",
     "har_importer",
-    "persistence"
+    "persistence",
+    "browser_sdk"
   ],
   "scripts": [],
   "modules": [

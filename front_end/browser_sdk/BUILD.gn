@@ -4,11 +4,15 @@
 
 import("../../third_party/typescript/typescript.gni")
 
-ts_library("issues") {
-  sources = [ "IssueAggregator.js" ]
+ts_library("browser_sdk") {
+  sources = [
+    "IssuesManager.js",
+    "LogManager.js",
+    "RelatedIssue.js",
+    "browser_sdk.js",
+  ]
 
   deps = [
-    "../browser_sdk",
     "../common",
     "../sdk",
   ]

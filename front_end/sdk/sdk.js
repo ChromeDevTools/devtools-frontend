@@ -50,7 +50,6 @@ import * as OverlayModel from './OverlayModel.js';
 import * as PaintProfiler from './PaintProfiler.js';
 import * as PerformanceMetricsModel from './PerformanceMetricsModel.js';
 import * as ProfileTreeModel from './ProfileTreeModel.js';
-import * as RelatedIssue from './RelatedIssue.js';
 import * as RemoteObject from './RemoteObject.js';
 import * as Resource from './Resource.js';
 import * as ResourceTreeModel from './ResourceTreeModel.js';
@@ -104,7 +103,6 @@ export {
   PaintProfiler,
   PerformanceMetricsModel,
   ProfileTreeModel,
-  RelatedIssue,
   RemoteObject,
   Resource,
   ResourceTreeModel,

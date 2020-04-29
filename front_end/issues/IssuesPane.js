@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Network from '../network/network.js';
 import * as MixedContentIssue from '../sdk/MixedContentIssue.js';
@@ -467,25 +468,14 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     this._issuesTree.contentElement.classList.add('issues');
     this.contentElement.appendChild(this._issuesTree.element);
 
-    const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
-    /** @type {?SDK.IssuesModel.IssuesModel} */
-    this._model = null;
-    /** @type {?IssueAggregator} */
-    this._aggregator = null;
-    if (mainTarget) {
-      this._model = mainTarget.model(SDK.IssuesModel.IssuesModel);
-      if (this._model) {
-        this._aggregator = new IssueAggregator(this._model);
-        this._model.ensureEnabled();
-      }
-    }
-
-    if (this._aggregator) {
-      this._aggregator.addEventListener(IssueAggregatorEvents.AggregatedIssueUpdated, this._issueUpdated, this);
-      this._aggregator.addEventListener(IssueAggregatorEvents.FullUpdateRequired, this._fullUpdate, this);
-      for (const issue of this._aggregator.aggregatedIssues()) {
-        this._updateIssueView(issue);
-      }
+    /** @type {!BrowserSDK.IssuesManager.IssuesManager} */
+    this._issuesManager = BrowserSDK.IssuesManager.IssuesManager.instance();
+    /** @type {!IssueAggregator} */
+    this._aggregator = new IssueAggregator(this._issuesManager);
+    this._aggregator.addEventListener(IssueAggregatorEvents.AggregatedIssueUpdated, this._issueUpdated, this);
+    this._aggregator.addEventListener(IssueAggregatorEvents.FullUpdateRequired, this._fullUpdate, this);
+    for (const issue of this._aggregator.aggregatedIssues()) {
+      this._updateIssueView(issue);
     }
     this._updateCounts();
 
@@ -559,7 +549,7 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
   }
 
   _updateCounts() {
-    const count = this._model ? this._model.numberOfIssues() : 0;
+    const count = this._issuesManager.numberOfIssues();
     this._updateToolbarIssuesCount(count);
   }
 
@@ -574,7 +564,7 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
   }
 
   _showReloadInfobarIfNeeded() {
-    if (!this._model || !this._model.reloadForAccurateInformationRequired()) {
+    if (!this._issuesManager.reloadForAccurateInformationRequired()) {
       return;
     }
 

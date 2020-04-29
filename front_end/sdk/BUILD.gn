@@ -44,7 +44,6 @@ ts_library("sdk") {
     "PaintProfiler.js",
     "PerformanceMetricsModel.js",
     "ProfileTreeModel.js",
-    "RelatedIssue.js",
     "RemoteObject.js",
     "Resource.js",
     "ResourceTreeModel.js",

@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as IssuesManager from './IssuesManager.js';
 import * as LogManager from './LogManager.js';
+import * as RelatedIssue from './RelatedIssue.js';
 
 export const logManager = new LogManager.LogManager();
+// We need to force creation of the IssueManger early to make sure no issues are missed.
+IssuesManager.IssuesManager.instance();
 
-export {
-  LogManager,
-};
+export {LogManager, IssuesManager, RelatedIssue};

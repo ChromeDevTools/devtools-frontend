@@ -26,7 +26,8 @@
     "host",
     "components",
     "sdk",
-    "network"
+    "network",
+    "browser_sdk"
   ],
   "scripts": [],
   "modules": [

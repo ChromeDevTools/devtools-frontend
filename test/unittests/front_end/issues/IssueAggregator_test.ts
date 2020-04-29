@@ -6,8 +6,8 @@ const {assert} = chai;
 
 import {IssueAggregator, AggregatedIssue} from '../../../../front_end/issues/IssueAggregator.js';
 import {StubIssue} from '../sdk/StubIssue.js';
-import * as Common from '../../../../front_end/common/common.js';
-import * as SDK from '../../../../front_end/sdk/sdk.js';
+import {MockIssuesModel} from '../sdk/MockIssuesModel.js';
+import * as BrowserSDK from '../../../../front_end/browser_sdk/browser_sdk.js';
 
 describe('AggregatedIssue', () => {
   it('deduplicates network requests across issues', () => {
@@ -37,27 +37,17 @@ describe('AggregatedIssue', () => {
   });
 });
 
-class MockModel extends Common.ObjectWrapper.ObjectWrapper {
-  _issues: Iterable<SDK.Issue.Issue>;
-
-  constructor(issues: Iterable<SDK.Issue.Issue>) {
-    super();
-    this._issues = issues;
-  }
-  issues() {
-    return this._issues;
-  }
-}
-
 describe('IssueAggregator', () => {
   it('deduplicates issues with the same code', () => {
     const issue1 = StubIssue.createFromRequestIds(['id1']);
     const issue2 = StubIssue.createFromRequestIds(['id2']);
 
-    const mockModel = new MockModel([]);
-    const aggregator = new IssueAggregator((mockModel as unknown) as SDK.IssuesModel.IssuesModel);
-    mockModel.dispatchEventToListeners(SDK.IssuesModel.Events.IssueAdded, {issuesModel: mockModel, issue: issue1});
-    mockModel.dispatchEventToListeners(SDK.IssuesModel.Events.IssueAdded, {issuesModel: mockModel, issue: issue2});
+    const mockModel = new MockIssuesModel([]);
+    const aggregator = new IssueAggregator((mockModel as unknown) as BrowserSDK.IssuesManager.IssuesManager);
+    mockModel.dispatchEventToListeners(
+        BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue1});
+    mockModel.dispatchEventToListeners(
+        BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue2});
 
     const issues = Array.from(aggregator.aggregatedIssues());
     assert.strictEqual(issues.length, 1);
@@ -71,10 +61,12 @@ describe('IssueAggregator', () => {
     const issue1_2 = StubIssue.createFromRequestIds(['id1']);  // Duplicate id.
     const issue3 = StubIssue.createFromRequestIds(['id3']);
 
-    const mockModel = new MockModel([issue1_2, issue3]);
-    const aggregator = new IssueAggregator((mockModel as unknown) as SDK.IssuesModel.IssuesModel);
-    mockModel.dispatchEventToListeners(SDK.IssuesModel.Events.IssueAdded, {issuesModel: mockModel, issue: issue1});
-    mockModel.dispatchEventToListeners(SDK.IssuesModel.Events.IssueAdded, {issuesModel: mockModel, issue: issue2});
+    const mockModel = new MockIssuesModel([issue1_2, issue3]);
+    const aggregator = new IssueAggregator((mockModel as unknown) as BrowserSDK.IssuesManager.IssuesManager);
+    mockModel.dispatchEventToListeners(
+        BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue1});
+    mockModel.dispatchEventToListeners(
+        BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue2});
 
     const issues = Array.from(aggregator.aggregatedIssues());
     assert.strictEqual(issues.length, 1);
@@ -88,10 +80,12 @@ describe('IssueAggregator', () => {
     const issue1_2 = new StubIssue('codeC', ['id1'], []);
     const issue3 = new StubIssue('codeA', ['id1'], []);
 
-    const mockModel = new MockModel([issue1_2, issue3]);
-    const aggregator = new IssueAggregator((mockModel as unknown) as SDK.IssuesModel.IssuesModel);
-    mockModel.dispatchEventToListeners(SDK.IssuesModel.Events.IssueAdded, {issuesModel: mockModel, issue: issue1});
-    mockModel.dispatchEventToListeners(SDK.IssuesModel.Events.IssueAdded, {issuesModel: mockModel, issue: issue2});
+    const mockModel = new MockIssuesModel([issue1_2, issue3]);
+    const aggregator = new IssueAggregator((mockModel as unknown) as BrowserSDK.IssuesManager.IssuesManager);
+    mockModel.dispatchEventToListeners(
+        BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue1});
+    mockModel.dispatchEventToListeners(
+        BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue2});
 
     const issues = Array.from(aggregator.aggregatedIssues());
     assert.strictEqual(issues.length, 3);

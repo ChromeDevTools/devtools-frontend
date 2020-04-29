@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 /**
  * @implements {UI.Toolbar.Provider}
- * @implements {SDK.SDKModel.Observer}
  * @unrestricted
  */
 export class WarningErrorCounter {
@@ -65,40 +65,14 @@ export class WarningErrorCounter {
     SDK.ConsoleModel.ConsoleModel.instance().addEventListener(
         SDK.ConsoleModel.Events.MessageUpdated, this._update, this);
 
-    this._issuesModel = null;
-    // This class is created before any target exists, so attach to the main target when it gets created.
-    SDK.SDKModel.TargetManager.instance().observeTargets(this);
+    BrowserSDK.IssuesManager.IssuesManager.instance().addEventListener(
+        BrowserSDK.IssuesManager.Events.IssuesCountUpdated, this._update, this);
 
     this._update();
   }
 
   _updatedForTest() {
     // Sniffed in tests.
-  }
-
-  /**
-   * @override
-   * @param {!SDK.SDKModel.Target} target
-   */
-  targetAdded(target) {
-    if (this._issuesModel) {
-      return;
-    }
-    const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
-    if (mainTarget) {
-      this._issuesModel = mainTarget.model(SDK.IssuesModel.IssuesModel);
-      if (this._issuesModel) {
-        this._issuesModel.addEventListener(SDK.IssuesModel.Events.IssuesCountUpdated, this._update, this);
-      }
-    }
-    this._update();
-  }
-
-  /**
-   * @override
-   * @param {!SDK.SDKModel.Target} target
-   */
-  targetRemoved(target) {
   }
 
   /**
@@ -139,7 +113,7 @@ export class WarningErrorCounter {
     const errors = SDK.ConsoleModel.ConsoleModel.instance().errors();
     const warnings = SDK.ConsoleModel.ConsoleModel.instance().warnings();
     const violations = SDK.ConsoleModel.ConsoleModel.instance().violations();
-    const issues = (this._issuesModel && this._issuesModel.numberOfIssues()) || 0;
+    const issues = BrowserSDK.IssuesManager.IssuesManager.instance().numberOfIssues();
     if (errors === this._errorCount && warnings === this._warningCount && violations === this._violationCount &&
         issues === this._issuesCount) {
       return Promise.resolve();

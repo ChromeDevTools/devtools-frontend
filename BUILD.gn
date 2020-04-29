@@ -923,6 +923,7 @@ group("devtools_all_files") {
 
 devtools_typescript_deps = [
   "front_end/bindings",
+  "front_end/browser_sdk",
   "front_end/common:common",
   "front_end/elements",
   "front_end/formatter_worker",
@@ -1057,6 +1058,8 @@ all_devtools_modules = [
   "browser_debugger/ObjectEventListenersSidebarPane.js",
   "browser_debugger/XHRBreakpointsSidebarPane.js",
   "browser_sdk/LogManager.js",
+  "browser_sdk/IssuesManager.js",
+  "browser_sdk/RelatedIssue.js",
   "changes/ChangesHighlighter.js",
   "changes/ChangesSidebar.js",
   "changes/ChangesTextEditor.js",
@@ -1416,7 +1419,6 @@ all_devtools_modules = [
   "sdk/SameSiteCookieIssue.js",
   "sdk/CrossOriginEmbedderPolicyIssue.js",
   "sdk/IssuesModel.js",
-  "sdk/RelatedIssue.js",
   "sdk/LayerTreeBase.js",
   "sdk/LogModel.js",
   "sdk/MixedContentIssue.js",

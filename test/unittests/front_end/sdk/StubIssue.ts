@@ -14,6 +14,10 @@ export class StubIssue extends Issue {
     this.cookieNames = cookieNames;
   }
 
+  getDescription() {
+    return ({} as any);
+  }
+
   primaryKey(): string {
     return `${this.code()}-(${this.cookieNames.join(';')})-(${this.requestIds.join(';')})`;
   }

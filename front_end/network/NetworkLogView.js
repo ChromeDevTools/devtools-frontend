@@ -29,6 +29,7 @@
  */
 
 import * as Bindings from '../bindings/bindings.js';
+import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as DataGrid from '../data_grid/data_grid.js';
@@ -1603,7 +1604,7 @@ export class NetworkLogView extends UI.Widget.VBox {
     if (this._dataURLFilterUI.checked() && (request.parsedURL.isDataURL() || request.parsedURL.isBlobURL())) {
       return false;
     }
-    if (this._onlyIssuesFilterUI.checked() && !SDK.RelatedIssue.hasIssues(request)) {
+    if (this._onlyIssuesFilterUI.checked() && !BrowserSDK.RelatedIssue.hasIssues(request)) {
       return false;
     }
     if (this._onlyBlockedRequestsUI.checked() && !request.wasBlocked()) {

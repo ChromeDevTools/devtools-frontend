@@ -5,11 +5,11 @@
 const {assert} = chai;
 
 import {NetworkRequest} from '../../../../front_end/sdk/NetworkRequest.js';
-import {issuesAssociatedWith} from '../../../../front_end/sdk/RelatedIssue.js';
+import {issuesAssociatedWith} from '../../../../front_end/browser_sdk/RelatedIssue.js';
 import {Issue} from '../../../../front_end/sdk/Issue.js';
 import {Cookie} from '../../../../front_end/sdk/Cookie.js';
 
-import {StubIssue} from './StubIssue.js';
+import {StubIssue} from '../sdk/StubIssue.js';
 
 describe('issuesAssociatedWith', () => {
   it('should return no issues if no issues exist', () => {

@@ -47,7 +47,7 @@ ruleTester.run('es_modules_import', rule, {
       filename: 'front_end/ui/Toolbar.js',
     },
     {
-      code: 'import * as RelatedIssue from \'./RelatedIssue.js\';',
+      code: 'import * as Issue from \'./Issue.js\';',
       filename: 'front_end/sdk/IssuesModel.js',
     },
     {

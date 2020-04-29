@@ -76,7 +76,8 @@
     "perf_ui",
     "mobile_throttling",
     "network",
-    "sources"
+    "sources",
+    "browser_sdk"
   ],
   "scripts": [],
   "modules": [

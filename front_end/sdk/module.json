@@ -424,7 +424,6 @@
     "SameSiteCookieIssue.js",
     "MixedContentIssue.js",
     "CrossOriginEmbedderPolicyIssue.js",
-    "RelatedIssue.js",
     "ServerTiming.js",
     "CPUProfileDataModel.js",
     "CPUProfilerModel.js",

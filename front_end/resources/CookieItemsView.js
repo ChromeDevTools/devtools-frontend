@@ -27,6 +27,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
@@ -209,7 +210,7 @@ export class CookieItemsView extends StorageItemsView {
     return super.filter(items, keyFunction)
         .filter(
             cookie => !this._onlyIssuesFilterUI.checked() ||
-                SDK.RelatedIssue.hasIssues(/** @type {!SDK.Cookie.Cookie} */ (cookie)));
+                BrowserSDK.RelatedIssue.hasIssues(/** @type {!SDK.Cookie.Cookie} */ (cookie)));
   }
 
   /**

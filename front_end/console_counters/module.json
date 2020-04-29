@@ -10,7 +10,8 @@
   "dependencies": [
     "common",
     "ui",
-    "sdk"
+    "sdk",
+    "browser_sdk"
   ],
   "scripts": [],
   "modules": [

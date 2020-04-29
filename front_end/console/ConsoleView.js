@@ -28,6 +28,7 @@
  */
 
 import * as Bindings from '../bindings/bindings.js';
+import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
@@ -277,23 +278,8 @@ export class ConsoleView extends UI.Widget.VBox {
     SDK.ConsoleModel.ConsoleModel.instance().messages().forEach(this._addConsoleMessage, this);
 
     if (Root.Runtime.experiments.isEnabled('issuesPane')) {
-      const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
-      if (mainTarget) {
-        const issuesModel = mainTarget.model(SDK.IssuesModel.IssuesModel);
-        if (issuesModel) {
-          issuesModel.addEventListener(
-              SDK.IssuesModel.Events.IssuesCountUpdated, this._onIssuesCountChanged.bind(this));
-          issuesModel.ensureEnabled();
-          if (issuesModel.numberOfIssues()) {
-            this._onIssuesCountChanged();
-          }
-        }
-        const resourceTreeModel = mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
-        if (resourceTreeModel) {
-          resourceTreeModel.addEventListener(
-              SDK.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated.bind(this));
-        }
-      }
+      BrowserSDK.IssuesManager.IssuesManager.instance().addEventListener(
+          BrowserSDK.IssuesManager.Events.IssuesCountUpdated, this._onIssuesCountChanged.bind(this));
     }
   }
 

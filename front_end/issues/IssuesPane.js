@@ -37,6 +37,10 @@ class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     /** @type {!Element} */
     this._affectedResources = this.createAffectedResources();
     this._affectedResourcesCount = 0;
+    /** @type {?Common.EventTarget.EventDescriptor} */
+    this._listener = null;
+    /** @type {!Set<string>} */
+    this._unresolvedRequestIds = new Set();
   }
 
   /**
@@ -90,6 +94,51 @@ class AffectedResourcesView extends UI.TreeOutline.TreeElement {
 
   clear() {
     this._affectedResources.textContent = '';
+  }
+
+
+  /**
+   * This function resolves a requestId to network requests. If the requestId does not resolve, a listener is installed
+   * that takes care of updating the view if the network request is added. This is useful if the issue is added before
+   * the network request gets reported.
+   * @param {string} requestId
+   * @return {!Array<!SDK.NetworkRequest.NetworkRequest>}
+   */
+  _resolveRequestId(requestId) {
+    const requests = self.SDK.networkLog.requestsForId(requestId);
+    if (!requests.length) {
+      this._unresolvedRequestIds.add(requestId);
+      if (!this._listener) {
+        this._listener =
+            self.SDK.networkLog.addEventListener(SDK.NetworkLog.Events.RequestAdded, this._onRequestAdded, this);
+      }
+    }
+    return requests;
+  }
+
+  /**
+   *
+   * @param {!Common.EventTarget.EventTargetEvent} event
+   */
+  _onRequestAdded(event) {
+    const request = /** @type {!SDK.NetworkRequest.NetworkRequest} */ (event.data);
+    const requestWasUnresolved = this._unresolvedRequestIds.delete(request.requestId());
+    if (this._unresolvedRequestIds.size === 0 && this._listener) {
+      // Stop listening once all requests are resolved.
+      Common.EventTarget.EventTarget.removeEventListeners([this._listener]);
+      this._listener = null;
+    }
+    if (requestWasUnresolved) {
+      this.update();
+    }
+  }
+
+  /**
+   * @virtual
+   * @return {void}
+   */
+  update() {
+    throw new Error('This should never be called, did you forget to override?');
   }
 }
 
@@ -162,6 +211,9 @@ class AffectedCookiesView extends AffectedResourcesView {
     this._affectedResources.appendChild(element);
   }
 
+  /**
+   * @override
+   */
   update() {
     this.clear();
     this._appendAffectedCookies(this._issue.cookies());
@@ -185,7 +237,7 @@ class AffectedRequestsView extends AffectedResourcesView {
   _appendAffectedRequests(affectedRequests) {
     let count = 0;
     for (const affectedRequest of affectedRequests) {
-      for (const request of self.SDK.networkLog.requestsForId(affectedRequest.requestId)) {
+      for (const request of this._resolveRequestId(affectedRequest.requestId)) {
         count++;
         this._appendNetworkRequest(request);
       }
@@ -209,6 +261,9 @@ class AffectedRequestsView extends AffectedResourcesView {
     this._affectedResources.appendChild(element);
   }
 
+  /**
+   * @override
+   */
   update() {
     this.clear();
     this._appendAffectedRequests(this._issue.requests());
@@ -259,7 +314,7 @@ class AffectedMixedContentView extends AffectedResourcesView {
     let count = 0;
     for (const mixedContent of mixedContents) {
       if (mixedContent.request) {
-        self.SDK.networkLog.requestsForId(mixedContent.request.requestId).forEach(networkRequest => {
+        this._resolveRequestId(mixedContent.request.requestId).forEach(networkRequest => {
           this.appendAffectedMixedContent(mixedContent, networkRequest);
           count++;
         });
@@ -308,6 +363,9 @@ class AffectedMixedContentView extends AffectedResourcesView {
     this._affectedResources.appendChild(element);
   }
 
+  /**
+   * @override
+   */
   update() {
     this.clear();
     this._appendAffectedMixedContents(this._issue.mixedContents());

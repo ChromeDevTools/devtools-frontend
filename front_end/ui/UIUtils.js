@@ -1757,6 +1757,21 @@ export class ThemeSupport {
     this._cachedThemePatches = new Map();
     this._setting = setting;
     this._customSheets = new Set();
+    this._computedRoot = Common.Lazy.lazy(() => window.getComputedStyle(document.documentElement));
+  }
+
+  /**
+   * @param {string} variableName
+   * @returns {string}
+   */
+  getComputedValue(variableName) {
+    const computedRoot = this._computedRoot();
+
+    if (typeof computedRoot === 'symbol') {
+      throw new Error(`Computed value for property (${variableName}) could not be found on :root.`);
+    }
+
+    return computedRoot.getPropertyValue(variableName);
   }
 
   /**

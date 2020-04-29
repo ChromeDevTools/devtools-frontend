@@ -1103,6 +1103,7 @@ all_devtools_modules = [
   "common/Console.js",
   "common/EventTarget.js",
   "common/JavaScriptMetaData.js",
+  "common/Lazy.js",
   "common/Linkifier.js",
   "common/Object.js",
   "common/ParsedURL.js",

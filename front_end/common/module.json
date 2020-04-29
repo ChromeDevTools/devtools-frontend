@@ -27,7 +27,8 @@
     "Revealer.js",
     "Runnable.js",
     "StringOutputStream.js",
-    "CharacterIdMap.js"
+    "CharacterIdMap.js",
+    "Lazy.js"
   ],
   "scripts": []
 }

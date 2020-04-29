@@ -11,6 +11,7 @@ import * as Color from './Color.js';
 import * as Console from './Console.js';
 import * as EventTarget from './EventTarget.js';
 import * as JavaScriptMetaData from './JavaScriptMetaData.js';
+import * as Lazy from './Lazy.js';
 import * as Linkifier from './Linkifier.js';
 import * as ObjectWrapper from './Object.js';
 import * as ParsedURL from './ParsedURL.js';
@@ -49,6 +50,7 @@ export {
   Console,
   EventTarget,
   JavaScriptMetaData,
+  Lazy,
   Linkifier,
   ObjectWrapper,
   ParsedURL,

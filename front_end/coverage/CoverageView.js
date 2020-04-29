@@ -5,6 +5,7 @@
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as TextEditor from '../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
@@ -350,9 +351,9 @@ export class CoverageView extends UI.Widget.VBox {
 
     const used = total - unused;
     const percentUsed = total ? Math.round(100 * used / total) : 0;
-    this._statusMessageElement.textContent =
-        ls`${Number.bytesToString(used)} of ${Number.bytesToString(total)} (${percentUsed}%) used so far.
-        ${Number.bytesToString(unused)} unused.`;
+    this._statusMessageElement.textContent = ls`${Platform.NumberUtilities.bytesToString(used)} of ${
+        Platform.NumberUtilities.bytesToString(total)} (${percentUsed}%) used so far.
+        ${Platform.NumberUtilities.bytesToString(unused)} unused.`;
   }
 
   _onFilterChanged() {

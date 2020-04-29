@@ -36,6 +36,7 @@ import * as HeapSnapshotModel from '../heap_snapshot_model/heap_snapshot_model.j
 import * as Host from '../host/host.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -330,7 +331,7 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     const minId = event.data.minId;
     const maxId = event.data.maxId;
     this._selectedSizeText.setText(
-        Common.UIString.UIString('Selected size: %s', Number.bytesToString(event.data.size)));
+        Common.UIString.UIString('Selected size: %s', Platform.NumberUtilities.bytesToString(event.data.size)));
     if (this._constructorsDataGrid.snapshot) {
       this._constructorsDataGrid.setSelectionRange(minId, maxId);
     }
@@ -1644,7 +1645,7 @@ export class HeapProfileHeader extends ProfileHeader {
     if (!this._snapshotProxy) {
       return;
     }
-    this.updateStatus(Number.bytesToString(this._snapshotProxy.totalSize), false);
+    this.updateStatus(Platform.NumberUtilities.bytesToString(this._snapshotProxy.totalSize), false);
   }
 
   /**

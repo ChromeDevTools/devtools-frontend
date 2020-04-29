@@ -51,6 +51,7 @@
       <part file="../perf_ui/perf_ui_strings.grdp" />
       <part file="../performance_monitor/performance_monitor_strings.grdp" />
       <part file="../persistence/persistence_strings.grdp" />
+      <part file="../platform/platform_strings.grdp" />
       <part file="../profiler/profiler_strings.grdp" />
       <part file="../issues/issues_strings.grdp" />
       <part file="../protocol_monitor/protocol_monitor_strings.grdp" />

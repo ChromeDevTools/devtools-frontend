@@ -6,9 +6,6 @@
   <message name="IDS_DEVTOOLS_0118d8300f0ad71843ef9f47acca779f" desc="Text on a menu option to close other drawers when right click on a drawer title">
     Close others
   </message>
-  <message name="IDS_DEVTOOLS_02b411e36e8eaa1f554ca176a106a79d" desc="Text to show how many megabytes the data size is. The number has 0 digit decimal point">
-    <ph name="MEGABYTES">$1.0f<ex>2</ex></ph> MB
-  </message>
   <message name="IDS_DEVTOOLS_03342349032c8ef8f5898c49a088de55" desc="Text in the Shortcuts page in settings to explain a keyboard shortcut in the Console Section">
     Accept suggestion
   </message>
@@ -54,9 +51,6 @@
   <message name="IDS_DEVTOOLS_2d56db467b153fe19f6f059f7f29be97" desc="Hours format in UIUtils">
     <ph name="PH1">$1.1f<ex>2.2</ex></ph> hrs
   </message>
-  <message name="IDS_DEVTOOLS_2dfef1e9ae6e4da36eb0bbeea94742b9" desc="Text to show how many megabytes the data size is. The number has 1 digit decimal point">
-    <ph name="MEGABYTES">$1.1f<ex>2.2</ex></ph> MB
-  </message>
   <message name="IDS_DEVTOOLS_2ea54663ae9e3a586132a34a98d85ccf" desc="Text for the title of asynchronous function calls group in Call Stack">
     Async Call
   </message>
@@ -81,9 +75,6 @@
   <message name="IDS_DEVTOOLS_3f9eccbca028a6949c39933d13f82e56" desc="Text in the Shortcuts page to explain a keyboard shortcut (step out of a function in debugger)">
     Step out
   </message>
-  <message name="IDS_DEVTOOLS_4348f6b35ee6cfc6eb04cb351e4213c9" desc="Text to show how many kilobytes the data size is. The number has 0 digit decimal point">
-    <ph name="KILOBYTES">$1.0f<ex>8</ex></ph> kB
-  </message>
   <message name="IDS_DEVTOOLS_44ac014b674d7d86a04702e6fd1fa858" desc="Text in a dialog box showing how to reconnect to DevTools when remote debugging has been terminated">
     Reconnect when ready by reopening <ph name="LOCKED_1">DevTools</ph>.
   </message>
@@ -95,9 +86,6 @@
   </message>
   <message name="IDS_DEVTOOLS_47e0270ab1827aab8faa1c85d89bd48f" desc="Text that appears when hover over the All button in the Network tool">
     <ph name="UI_KEYBOARDSHORTCUT_SHORTCUTTOSTRING_____UI_KEYBOARDSHORTCUT_MODIFIERS_CTRLORMETA_">$1s<ex>Ctrl + </ex></ph>Click to select multiple types
-  </message>
-  <message name="IDS_DEVTOOLS_4819fdb79641baf4a4c8a2ca2159a312" desc="Text to show how many bytes the data size is. The number has 0 digit decimal point">
-    <ph name="BYTES">$1.0f<ex>2</ex></ph> B
   </message>
   <message name="IDS_DEVTOOLS_48f12760504bf8e958a4bdde56d4fa46" desc="Text to indicate search result for the ctrl+F search bar">
     1 match
@@ -260,9 +248,6 @@
   </message>
   <message name="IDS_DEVTOOLS_d06337cfbcc777e0a7caa50ef1a9986a" desc="The aria label for the button to open more tabs at the right tabbed pane in Elements tools">
     More tabs
-  </message>
-  <message name="IDS_DEVTOOLS_d4c2a940947d6e71ed20e1bb31f0c8a2" desc="Text to show how many kilobytes the data size is. The number has 1 digit decimal point">
-    <ph name="KILOBYTES">$1.1f<ex>8.1</ex></ph> kB
   </message>
   <message name="IDS_DEVTOOLS_d916eea6390ddc39ee5fbc5c984e940c" desc="Seconds format in UIUtils">
     <ph name="PH1">$1.2f<ex>2.14</ex></ph> s

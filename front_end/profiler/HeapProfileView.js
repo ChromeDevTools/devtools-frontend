@@ -5,6 +5,7 @@
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -71,7 +72,7 @@ export class HeapProfileView extends ProfileView {
   _onIdsRangeChanged(event) {
     const minId = /** @type {number} */ (event.data.minId);
     const maxId = /** @type {number} */ (event.data.maxId);
-    this._selectedSizeText.setText(ls`Selected size: ${Number.bytesToString(event.data.size)}`);
+    this._selectedSizeText.setText(ls`Selected size: ${Platform.NumberUtilities.bytesToString(event.data.size)}`);
     this._setSelectionRange(minId, maxId);
   }
 
@@ -866,8 +867,8 @@ export class HeapFlameChartDataProvider extends ProfileFlameChartDataProvider {
       entryInfo.push({title: title, value: value});
     }
     pushEntryInfoRow(ls`Name`, UI.UIUtils.beautifyFunctionName(node.functionName));
-    pushEntryInfoRow(ls`Self size`, Number.bytesToString(node.self));
-    pushEntryInfoRow(ls`Total size`, Number.bytesToString(node.total));
+    pushEntryInfoRow(ls`Self size`, Platform.NumberUtilities.bytesToString(node.self));
+    pushEntryInfoRow(ls`Total size`, Platform.NumberUtilities.bytesToString(node.total));
     const linkifier = new Components.Linkifier.Linkifier();
     const link = linkifier.maybeLinkifyConsoleCallFrame(
         this._heapProfilerModel ? this._heapProfilerModel.target() : null, node.callFrame);

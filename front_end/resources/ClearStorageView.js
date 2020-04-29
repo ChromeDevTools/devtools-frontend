@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
@@ -52,7 +53,7 @@ export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
     learnMoreRow.appendChild(learnMore);
     this._quotaUsage = null;
     this._pieChart = new PerfUI.PieChart(
-        {chartName: ls`Storage Usage`, size: 110, formatter: Number.bytesToString, showLegend: true});
+        {chartName: ls`Storage Usage`, size: 110, formatter: Platform.NumberUtilities.bytesToString, showLegend: true});
     const usageBreakdownRow = quota.appendRow();
     usageBreakdownRow.classList.add('usage-breakdown-row');
     usageBreakdownRow.appendChild(this._pieChart.element);
@@ -243,8 +244,8 @@ export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
       return;
     }
     this._quotaRow.textContent = Common.UIString.UIString(
-        '%s used out of %s storage quota.\xA0', Number.bytesToString(response.usage),
-        Number.bytesToString(response.quota));
+        '%s used out of %s storage quota.\xA0', Platform.NumberUtilities.bytesToString(response.usage),
+        Platform.NumberUtilities.bytesToString(response.quota));
     if (response.quota < 125829120) {  // 120 MB
       this._quotaRow.title = ls`Storage quota is limited in Incognito mode`;
       this._quotaRow.appendChild(UI.Icon.Icon.create('smallicon-info'));

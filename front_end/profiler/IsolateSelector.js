@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -125,7 +126,7 @@ export class IsolateSelector extends UI.Widget.VBox {
       total += isolate.usedHeapSize();
       trend += isolate.usedHeapSizeGrowRate();
     }
-    this._totalValueDiv.textContent = Number.bytesToString(total);
+    this._totalValueDiv.textContent = Platform.NumberUtilities.bytesToString(total);
     IsolateSelector._formatTrendElement(trend, this._totalTrendDiv);
   }
 
@@ -139,7 +140,7 @@ export class IsolateSelector extends UI.Widget.VBox {
     if (Math.abs(changeRateBytesPerSecond) < changeRateThresholdBytesPerSecond) {
       return;
     }
-    const changeRateText = Number.bytesToString(Math.abs(changeRateBytesPerSecond));
+    const changeRateText = Platform.NumberUtilities.bytesToString(Math.abs(changeRateBytesPerSecond));
     let changeText, changeLabel;
     if (changeRateBytesPerSecond > 0) {
       changeText = ls`\u2B06${changeRateText}/s`;
@@ -248,7 +249,7 @@ export class ListItem {
   }
 
   updateStats() {
-    this._heapDiv.textContent = Number.bytesToString(this._isolate.usedHeapSize());
+    this._heapDiv.textContent = Platform.NumberUtilities.bytesToString(this._isolate.usedHeapSize());
     IsolateSelector._formatTrendElement(this._isolate.usedHeapSizeGrowRate(), this._trendDiv);
   }
 

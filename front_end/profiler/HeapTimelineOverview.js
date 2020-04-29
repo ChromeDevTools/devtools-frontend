@@ -173,7 +173,7 @@ export class HeapTimelineOverview extends UI.Widget.VBox {
     context.closePath();
 
     if (gridValue) {
-      const label = Number.bytesToString(gridValue);
+      const label = Platform.NumberUtilities.bytesToString(gridValue);
       const labelPadding = 4;
       const labelX = 0;
       const labelY = gridY - 0.5;

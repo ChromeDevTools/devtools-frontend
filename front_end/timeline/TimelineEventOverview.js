@@ -699,7 +699,8 @@ export class TimelineEventOverviewMemory extends TimelineEventOverview {
     ctx.stroke();
 
     this._heapSizeLabel.textContent = Common.UIString.UIString(
-        '%s \u2013 %s', Number.bytesToString(minUsedHeapSize), Number.bytesToString(maxUsedHeapSize));
+        '%s \u2013 %s', Platform.NumberUtilities.bytesToString(minUsedHeapSize),
+        Platform.NumberUtilities.bytesToString(maxUsedHeapSize));
   }
 }
 

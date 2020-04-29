@@ -495,7 +495,7 @@ export class TimelineUIUtils {
       case recordType.MajorGC:
       case recordType.MinorGC: {
         const delta = event.args['usedHeapSizeBefore'] - event.args['usedHeapSizeAfter'];
-        detailsText = Common.UIString.UIString('%s collected', Number.bytesToString(delta));
+        detailsText = Common.UIString.UIString('%s collected', Platform.NumberUtilities.bytesToString(delta));
         break;
       }
       case recordType.FunctionCall:
@@ -890,13 +890,14 @@ export class TimelineUIUtils {
       case recordTypes.MajorGC:
       case recordTypes.MinorGC: {
         const delta = event.args['usedHeapSizeBefore'] - event.args['usedHeapSizeAfter'];
-        contentHelper.appendTextRow(ls`Collected`, Number.bytesToString(delta));
+        contentHelper.appendTextRow(ls`Collected`, Platform.NumberUtilities.bytesToString(delta));
         break;
       }
 
       case recordTypes.JSFrame:
       case recordTypes.FunctionCall: {
-        const detailsNode = await TimelineUIUtils.buildDetailsNodeForTraceEvent(event, model.targetByEvent(event), linkifier);
+        const detailsNode =
+            await TimelineUIUtils.buildDetailsNodeForTraceEvent(event, model.targetByEvent(event), linkifier);
         if (detailsNode) {
           contentHelper.appendElementRow(ls`Function`, detailsNode);
         }
@@ -1161,7 +1162,8 @@ export class TimelineUIUtils {
       }
 
       default: {
-        const detailsNode = await TimelineUIUtils.buildDetailsNodeForTraceEvent(event, model.targetByEvent(event), linkifier);
+        const detailsNode =
+            await TimelineUIUtils.buildDetailsNodeForTraceEvent(event, model.targetByEvent(event), linkifier);
         if (detailsNode) {
           contentHelper.appendElementRow(ls`Details`, detailsNode);
         }
@@ -1402,11 +1404,11 @@ export class TimelineUIUtils {
       lengthText += ls` (from service worker)`;
     }
     if (request.encodedDataLength || !lengthText) {
-      lengthText = `${Number.bytesToString(request.encodedDataLength)}${lengthText}`;
+      lengthText = `${Platform.NumberUtilities.bytesToString(request.encodedDataLength)}${lengthText}`;
     }
     contentHelper.appendTextRow(ls`Encoded Data`, lengthText);
     if (request.decodedBodyLength) {
-      contentHelper.appendTextRow(ls`Decoded Body`, Number.bytesToString(request.decodedBodyLength));
+      contentHelper.appendTextRow(ls`Decoded Body`, Platform.NumberUtilities.bytesToString(request.decodedBodyLength));
     }
     const title = ls`Initiator`;
     const sendRequest = request.children[0];
@@ -2604,8 +2606,7 @@ export class TimelineDetailsContentHelper {
       return;
     }
     locationContent.appendChild(link);
-    locationContent.createTextChild(
-        Platform.StringUtilities.sprintf(' [%s…%s]', startLine + 1, endLine + 1 || ''));
+    locationContent.createTextChild(Platform.StringUtilities.sprintf(' [%s…%s]', startLine + 1, endLine + 1 || ''));
     this.appendElementRow(title, locationContent);
   }
 

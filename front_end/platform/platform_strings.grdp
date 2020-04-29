@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_02b411e36e8eaa1f554ca176a106a79d" desc="Text to show how many megabytes the data size is. The number has 0 digit decimal point">
+    <ph name="MEGABYTES">$1.0f<ex>2</ex></ph> MB
+  </message>
+  <message name="IDS_DEVTOOLS_2dfef1e9ae6e4da36eb0bbeea94742b9" desc="Text to show how many megabytes the data size is. The number has 1 digit decimal point">
+    <ph name="MEGABYTES">$1.1f<ex>2.1</ex></ph> MB
+  </message>
+  <message name="IDS_DEVTOOLS_4348f6b35ee6cfc6eb04cb351e4213c9" desc="Text to show how many kilobytes the data size is. The number has 0 digit decimal point">
+    <ph name="KILOBYTES">$1.0f<ex>8</ex></ph> kB
+  </message>
+  <message name="IDS_DEVTOOLS_4819fdb79641baf4a4c8a2ca2159a312" desc="Text to show how many bytes the data size is. The number has 0 digit decimal point">
+    <ph name="BYTES">$1.0f<ex>2</ex></ph> B
+  </message>
+  <message name="IDS_DEVTOOLS_d4c2a940947d6e71ed20e1bb31f0c8a2" desc="Text to show how many kilobytes the data size is. The number has 1 digit decimal point">
+    <ph name="KILOBYTES">$1.1f<ex>5.1</ex></ph> kB
+  </message>
+</grit-part>

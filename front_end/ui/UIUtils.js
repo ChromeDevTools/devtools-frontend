@@ -663,30 +663,6 @@ Number.secondsToString = function(seconds, higherResolution) {
 };
 
 /**
- * @param {number} bytes
- * @return {string}
- */
-Number.bytesToString = function(bytes) {
-  if (bytes < 1000) {
-    return Common.UIString.UIString('%.0f\xA0B', bytes);
-  }
-
-  const kilobytes = bytes / 1000;
-  if (kilobytes < 100) {
-    return Common.UIString.UIString('%.1f\xA0kB', kilobytes);
-  }
-  if (kilobytes < 1000) {
-    return Common.UIString.UIString('%.0f\xA0kB', kilobytes);
-  }
-
-  const megabytes = kilobytes / 1000;
-  if (megabytes < 100) {
-    return Common.UIString.UIString('%.1f\xA0MB', megabytes);
-  }
-  return Common.UIString.UIString('%.0f\xA0MB', megabytes);
-};
-
-/**
  * @param {number} num
  * @return {string}
  */
@@ -1233,7 +1209,7 @@ LongClickController.TIME_MS = 200;
 
 function _trackKeyboardFocus() {
   UI._keyboardFocus = true;
-  document.defaultView.requestAnimationFrame(() => void(UI._keyboardFocus = false));
+  document.defaultView.requestAnimationFrame(() => void (UI._keyboardFocus = false));
 }
 
 /**
@@ -1800,11 +1776,11 @@ export class ThemeSupport {
     this._injectingStyleSheet = false;
   }
 
-   /**
+  /**
    * @param {!Element|!ShadowRoot} element
    */
   injectCustomStyleSheets(element) {
-    for (const sheet of this._customSheets){
+    for (const sheet of this._customSheets) {
       const styleElement = createElement('style');
       styleElement.textContent = sheet;
       element.appendChild(styleElement);

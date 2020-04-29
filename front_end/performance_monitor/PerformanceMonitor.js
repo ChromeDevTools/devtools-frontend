@@ -551,7 +551,7 @@ export class MetricIndicator {
       case Format.Percent:
         return MetricIndicator._percentFormatter.format(value);
       case Format.Bytes:
-        return Number.bytesToString(value);
+        return Platform.NumberUtilities.bytesToString(value);
       default:
         return MetricIndicator._numberFormatter.format(value);
     }

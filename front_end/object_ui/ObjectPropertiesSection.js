@@ -655,13 +655,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
    * @param {?string=} emptyPlaceholder
    */
   static populateWithProperties(
-      treeNode,
-      properties,
-      internalProperties,
-      skipProto,
-      value,
-      linkifier,
-      emptyPlaceholder) {
+      treeNode, properties, internalProperties, skipProto, value, linkifier, emptyPlaceholder) {
     properties.sort(ObjectPropertiesSection.CompareProperties);
     internalProperties = internalProperties || [];
 
@@ -1649,7 +1643,7 @@ export class ExpandableTextPropertyValue extends ObjectPropertyValue {
     this._maxDisplayableTextLength = 10000000;
 
     const byteCount = Platform.StringUtilities.countWtf8Bytes(text);
-    const totalBytesText = Number.bytesToString(byteCount);
+    const totalBytesText = Platform.NumberUtilities.bytesToString(byteCount);
     if (this._text.length < this._maxDisplayableTextLength) {
       this._expandElementText = ls`Show more (${totalBytesText})`;
       this._expandElement.setAttribute('data-text', this._expandElementText);

@@ -8,6 +8,7 @@ import * as Components from '../components/components.js';
 import * as DataGrid from '../data_grid/data_grid.js';  // eslint-disable-line no-unused-vars
 import * as Host from '../host/host.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
@@ -495,15 +496,16 @@ export class WritableProfileHeader extends ProfileHeader {
    * @param {!Bindings.FileUtils.ChunkedReader} reader
    */
   _onChunkTransferred(reader) {
-    this.updateStatus(
-        Common.UIString.UIString('Loading… %d%%', Number.bytesToString(this._jsonifiedProfile.length)));
+    this.updateStatus(Common.UIString.UIString(
+        'Loading… %d%%', Platform.NumberUtilities.bytesToString(this._jsonifiedProfile.length)));
   }
 
   /**
    * @param {!Bindings.FileUtils.ChunkedReader} reader
    */
   _onError(reader) {
-    this.updateStatus(Common.UIString.UIString('File \'%s\' read error: %s', reader.fileName(), reader.error().message));
+    this.updateStatus(
+        Common.UIString.UIString('File \'%s\' read error: %s', reader.fileName(), reader.error().message));
   }
 
   /**

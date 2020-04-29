@@ -35,7 +35,7 @@ import * as TimelineModel from '../timeline_model/timeline_model.js';
 import * as UI from '../ui/ui.js';
 
 import {Events, PerformanceModel, Window} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
-import {TimelineModeViewDelegate} from './TimelinePanel.js';     // eslint-disable-line no-unused-vars
+import {TimelineModeViewDelegate} from './TimelinePanel.js';             // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
@@ -82,7 +82,7 @@ export class CountersGraph extends UI.Widget.VBox {
     this._countersByName = {};
     this._countersByName['jsHeapSizeUsed'] = this._createCounter(
         Common.UIString.UIString('JS Heap'), Common.UIString.UIString('JS Heap: %s'), 'hsl(220, 90%, 43%)',
-        Number.bytesToString);
+        Platform.NumberUtilities.bytesToString);
     this._countersByName['documents'] = this._createCounter(
         Common.UIString.UIString('Documents'), Common.UIString.UIString('Documents: %s'), 'hsl(0, 90%, 43%)');
     this._countersByName['nodes'] = this._createCounter(
@@ -91,7 +91,7 @@ export class CountersGraph extends UI.Widget.VBox {
         Common.UIString.UIString('Listeners'), Common.UIString.UIString('Listeners: %s'), 'hsl(38, 90%, 43%)');
     this._gpuMemoryCounter = this._createCounter(
         Common.UIString.UIString('GPU Memory'), Common.UIString.UIString('GPU Memory [KB]: %s'), 'hsl(300, 90%, 43%)',
-        Number.bytesToString);
+        Platform.NumberUtilities.bytesToString);
     this._countersByName['gpuMemoryUsedKB'] = this._gpuMemoryCounter;
   }
 

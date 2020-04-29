@@ -34,6 +34,7 @@ import * as Components from '../components/components.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as Host from '../host/host.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -1252,7 +1253,7 @@ export class NetworkRequestNode extends NetworkNode {
    * @param {!Element} cell
    */
   _renderSizeCell(cell) {
-    const resourceSize = Number.bytesToString(this._request.resourceSize);
+    const resourceSize = Platform.NumberUtilities.bytesToString(this._request.resourceSize);
 
     if (this._request.cachedInMemory()) {
       cell.createTextChild(ls`(memory cache)`);
@@ -1277,7 +1278,7 @@ export class NetworkRequestNode extends NetworkNode {
       cell.title = ls`Served from disk cache, resource size: ${resourceSize}`;
       cell.classList.add('network-dim-cell');
     } else {
-      const transferSize = Number.bytesToString(this._request.transferSize);
+      const transferSize = Platform.NumberUtilities.bytesToString(this._request.transferSize);
       cell.createTextChild(transferSize);
       cell.title = `${transferSize} transferred over network, resource size: ${resourceSize}`;
     }

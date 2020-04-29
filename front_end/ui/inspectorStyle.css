@@ -110,6 +110,7 @@
     --selection-bg-color: var(--accent-color);
     --divider-border: 1px solid var(--divider-color);
     --item-hover-color: rgba(56, 121, 217, 0.1);
+    --network-frame-divider-color: #fccc49;
 }
 
 body {

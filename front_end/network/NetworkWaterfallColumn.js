@@ -84,9 +84,6 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     this._pathForStyle = new Map();
     /** @type {!Array<!_TextLayer>} */
     this._textLayers = [];
-
-    /** @type {?CSSStyleDeclaration} */
-    this._computedDatagridStyle = null;
   }
 
   /**
@@ -659,18 +656,10 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
    * @param {number} y
    */
   _decorateRow(context, node, y) {
-    if (!this._computedDatagridStyle && node.dataGrid) {
-      // Get BackgroundColor for Waterfall from css variable on datagrid
-      this._computedDatagridStyle = window.getComputedStyle(node.dataGrid.element);
-    }
-    if (!this._computedDatagridStyle) {
-      context.restore();
-      return;
-    }
-    const nodeBgColor = node.backgroundColor();
+    const nodeBgColorId = node.backgroundColor();
     context.save();
     context.beginPath();
-    context.fillStyle = this._computedDatagridStyle.getPropertyValue(nodeBgColor);
+    context.fillStyle = self.UI.themeSupport.getComputedValue(nodeBgColorId);
     context.rect(0, y, this._offsetWidth, this._rowHeight);
     context.fill();
     context.restore();

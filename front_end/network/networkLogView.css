@@ -45,34 +45,6 @@
     border: 1px solid var(--accent-color);
 }
 
-.network-log-grid {
-    --network-grid-default-color: rgba(255, 255, 255, 1.0);
-    --network-grid-stripe-color: rgba(245, 245, 245, 1.0);
-    --network-grid-navigation-color: rgba(221, 238, 255, 1.0);
-    --network-grid-hovered-color: rgba(235, 242, 252, 0.7);
-    --network-grid-initiator-path-color: rgba(58, 217, 58, 0.4);
-    --network-grid-initiated-path-color: rgba(217, 58, 58, 0.4);
-    --network-grid-selected-color: rgba(219, 219, 219, .6);
-    --network-grid-focus-selected-color: var(--selection-bg-color);
-    --network-grid-focus-selected-color-has-error: rgb(255, 240, 240, 1.0);
-    --network-grid-from-frame-color: rgba(224, 247, 250, .4);
-    --network-grid-is-product-color: rgba(255, 252, 225, .6);
-}
-
-.-theme-with-dark-background .network-log-grid {
-    --network-grid-default-color: rgba(36, 36, 36, 1.0);
-    --network-grid-stripe-color: rgba(41, 41, 41, 1.0);
-    --network-grid-navigation-color: rgba(221, 238, 255, 1.0);
-    --network-grid-hovered-color: rgba(20, 37, 63, 0.7);
-    --network-grid-initiator-path-color: rgba(58, 217, 58, 0.4);
-    --network-grid-initiated-path-color: rgba(217, 58, 58, 0.4);
-    --network-grid-selected-color: rgba(57, 57, 57, .6);
-    --network-grid-focus-selected-color: var(--selection-bg-color);
-    --network-grid-focus-selected-color-has-error: rgba(217, 58, 58, 0.15);
-    --network-grid-from-frame-color: rgba(224, 247, 250, .4);
-    --network-grid-is-product-color: rgba(255, 252, 225, .6);
-}
-
 .network-summary-bar {
     flex: 0 0 27px;
     line-height: 27px;

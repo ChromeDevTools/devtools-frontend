@@ -173,14 +173,13 @@ class AffectedCookiesView extends AffectedResourcesView {
     let count = 0;
     for (const cookie of cookies) {
       count++;
-      this.appendAffectedCookie(/** @type{!{name:string,path:string,domain:string,siteForCookies:string}} */ (cookie));
+      this.appendAffectedCookie(cookie);
     }
     this.updateAffectedResourceCount(count);
   }
 
   /**
-   *
-   * @param {!{name:string,path:string,domain:string,siteForCookies:string}} cookie
+   * @param {!Protocol.Audits.AffectedCookie} cookie
    */
   appendAffectedCookie(cookie) {
     const element = createElementWithClass('tr', 'affected-resource-cookie');

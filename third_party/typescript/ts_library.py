@@ -95,6 +95,13 @@ def main():
             print('Encountered error while writing generated tsconfig in location %s:' % tsconfig_output_location)
             print(e)
             return 1
+
+    # If there are no sources to compile, we can bail out and don't call tsc.
+    # That's because tsc can successfully compile dependents solely on the
+    # the tsconfig.json
+    if len(sources) == 0:
+        return 0
+
     found_errors, stderr = runTsc(tsconfig_location=tsconfig_output_location)
     if found_errors:
         print('')

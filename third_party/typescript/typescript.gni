@@ -92,13 +92,12 @@ template("ts_library") {
       args += [ "--test-only" ]
     }
 
-    output_files = [
-      "$target_gen_dir/$target_name-tsconfig.json",
-      "$target_gen_dir/$target_name-tsconfig.json.tsbuildinfo",
-    ]
+    output_files = [ "$target_gen_dir/$target_name-tsconfig.json" ]
 
     if (defined(sources)) {
       args += [ "--sources" ] + rebase_path(sources, root_build_dir)
+      output_files +=
+          [ "$target_gen_dir/$target_name-tsconfig.json.tsbuildinfo" ]
 
       foreach(src, sources) {
         _extension = get_path_info(src, "extension")

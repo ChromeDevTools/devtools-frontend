@@ -580,31 +580,24 @@ export class Color {
       case Format.Original: {
         return this._originalText;
       }
-      case Format.RGB: {
-        if (this.hasAlpha()) {
-          return null;
-        }
-        return Platform.StringUtilities.sprintf(
-            'rgb(%d %d %d)', toRgbValue(this._rgba[0]), toRgbValue(this._rgba[1]), toRgbValue(this._rgba[2]));
-      }
+      case Format.RGB:
       case Format.RGBA: {
-        return Platform.StringUtilities.sprintf(
-            'rgb(%d %d %d / %f)', toRgbValue(this._rgba[0]), toRgbValue(this._rgba[1]), toRgbValue(this._rgba[2]),
-            this._rgba[3]);
-      }
-      case Format.HSL: {
+        const start = Platform.StringUtilities.sprintf(
+            'rgb(%d %d %d', toRgbValue(this._rgba[0]), toRgbValue(this._rgba[1]), toRgbValue(this._rgba[2]));
         if (this.hasAlpha()) {
-          return null;
+          return start + Platform.StringUtilities.sprintf(' / %d%)', Math.round(this._rgba[3] * 100));
         }
-        const hsl = this.hsla();
-        return Platform.StringUtilities.sprintf(
-            'hsl(%d %d% %d%)', Math.round(hsl[0] * 360), Math.round(hsl[1] * 100), Math.round(hsl[2] * 100));
+        return start + ')';
       }
+      case Format.HSL:
       case Format.HSLA: {
         const hsla = this.hsla();
-        return Platform.StringUtilities.sprintf(
-            'hsl(%d %d% %d% / %f)', Math.round(hsla[0] * 360), Math.round(hsla[1] * 100), Math.round(hsla[2] * 100),
-            hsla[3]);
+        const start = Platform.StringUtilities.sprintf(
+            'hsl(%ddeg %d% %d%', Math.round(hsla[0] * 360), Math.round(hsla[1] * 100), Math.round(hsla[2] * 100));
+        if (this.hasAlpha()) {
+          return start + Platform.StringUtilities.sprintf(' / %d%)', Math.round(hsla[3] * 100));
+        }
+        return start + ')';
       }
       case Format.HEXA: {
         return Platform.StringUtilities
@@ -972,7 +965,11 @@ export class Generator {
     const s = this._indexToValueInSpace(hash >> 8, this._satSpace);
     const l = this._indexToValueInSpace(hash >> 16, this._lightnessSpace);
     const a = this._indexToValueInSpace(hash >> 24, this._alphaSpace);
-    return `hsl(${h} ${s}% ${l}% / ${a})`;
+    const start = `hsl(${h}deg ${s}% ${l}%`;
+    if (a !== 1) {
+      return `${start} / ${Math.floor(a * 100)}%)`;
+    }
+    return `${start})`;
   }
 
   /**

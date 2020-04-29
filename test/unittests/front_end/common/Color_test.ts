@@ -31,7 +31,7 @@ describe('Color', () => {
   it('is able to create a color class from an HSVA value', () => {
     const color = Color.Color.fromHSVA([0.5, 0.5, 0.5, 100]);
     assert.deepEqual(color.rgba(), [0.25, 0.49999999999999994, 0.5, 1], 'RGBA array was not set correctly');
-    assert.strictEqual(color.asString(), 'hsl(180 33% 38% / 1)', 'original text was not set correctly');
+    assert.strictEqual(color.asString(), 'hsl(180deg 33% 38%)', 'original text was not set correctly');
     assert.strictEqual(color.format(), 'hsla', 'format was not set correctly');
   });
 
@@ -113,6 +113,9 @@ describe('Color', () => {
 
     const colorFive = Color.Color.parse('rgb(10% 10% 10% / 0.4)')!;
     assert.deepEqual(colorFive.rgba(), [0.1, 0.1, 0.1, 0.4]);
+
+    const colorSix = Color.Color.parse('rgb(10% 10% 10% / 40%)')!;
+    assert.deepEqual(colorSix.rgba(), [0.1, 0.1, 0.1, 0.4]);
   });
 
   it('parses hsl(a) values', () => {
@@ -127,6 +130,12 @@ describe('Color', () => {
 
     const colorFour = Color.Color.parse('hsl(0 100% 50% / 0.5)')!;
     assert.deepEqual(colorFour.rgba(), [1, 0, 0, 0.5]);
+
+    const colorFive = Color.Color.parse('hsl(0 100% 50% / 50%)')!;
+    assert.deepEqual(colorFive.rgba(), [1, 0, 0, 0.5]);
+
+    const colorSix = Color.Color.parse('hsl(0deg 100% 50% / 50%)')!;
+    assert.deepEqual(colorSix.rgba(), [1, 0, 0, 0.5]);
   });
 
   it('handles invalid values', () => {
@@ -201,64 +210,76 @@ describe('Color', () => {
     assert.deepEqual(result, [0.5, 0, 0.5, 0.75], 'color was not blended correctly');
   });
 
-  it('returns the original text when turned into a strong if its format was "original"', () => {
+  it('returns the original text when turned into a string if its format was "original"', () => {
     const color = new Color.Color([1, 0, 0, 1], 'original', 'testColor');
     const result = color.asString();
     assert.strictEqual(result, 'testColor', 'color was not converted to a string correctly');
   });
 
-  it('returns the nickname when turned into a strong if its format was "nickname"', () => {
+  it('returns the nickname when turned into a string if its format was "nickname"', () => {
     const color = new Color.Color([1, 0, 0, 1], 'nickname', 'testColor');
     const result = color.asString();
     assert.strictEqual(result, 'red', 'color was not converted to a string correctly');
   });
 
-  it('returns the HEX value when turned into a strong if its format was "hex"', () => {
+  it('returns the HEX value when turned into a string if its format was "hex"', () => {
     const color = new Color.Color([1, 0, 0, 1], 'hex', 'testColor');
     const result = color.asString();
     assert.strictEqual(result, '#ff0000', 'color was not converted to a string correctly');
   });
 
-  it('returns the short HEX value when turned into a strong if its format was "shorthex"', () => {
+  it('returns the short HEX value when turned into a string if its format was "shorthex"', () => {
     const color = new Color.Color([1, 0, 0, 1], 'shorthex', 'testColor');
     const result = color.asString();
     assert.strictEqual(result, '#f00', 'color was not converted to a string correctly');
   });
 
-  it('returns the HEXA value when turned into a strong if its format was "hexa"', () => {
+  it('returns the HEXA value when turned into a string if its format was "hexa"', () => {
     const color = new Color.Color([1, 0, 0, 1], 'hexa', 'testColor');
     const result = color.asString();
     assert.strictEqual(result, '#ff0000ff', 'color was not converted to a string correctly');
   });
 
-  it('returns the short HEXA value when turned into a strong if its format was "shorthexa"', () => {
+  it('returns the short HEXA value when turned into a string if its format was "shorthexa"', () => {
     const color = new Color.Color([1, 0, 0, 1], 'shorthexa', 'testColor');
     const result = color.asString();
     assert.strictEqual(result, '#f00f', 'color was not converted to a string correctly');
   });
 
-  it('returns the RGB value when turned into a strong if its format was "rgb"', () => {
+  it('returns the RGB value when turned into a string if its format was "rgb"', () => {
     const color = new Color.Color([1, 0, 0, 1], 'rgb', 'testColor');
     const result = color.asString();
     assert.strictEqual(result, 'rgb(255 0 0)', 'color was not converted to a string correctly');
   });
 
-  it('returns the RGBA value when turned into a strong if its format was "rgba"', () => {
+  it('returns the RGBA value when turned into a string if its format was "rgba"', () => {
+    const color = new Color.Color([1, 0, 0, 0.42], 'rgba', 'testColor');
+    const result = color.asString();
+    assert.strictEqual(result, 'rgb(255 0 0 / 42%)', 'color was not converted to a string correctly');
+  });
+
+  it('omits the alpha value when it’s 100% if its format was "rgba"', () => {
     const color = new Color.Color([1, 0, 0, 1], 'rgba', 'testColor');
     const result = color.asString();
-    assert.strictEqual(result, 'rgb(255 0 0 / 1)', 'color was not converted to a string correctly');
+    assert.strictEqual(result, 'rgb(255 0 0)', 'color was not converted to a string correctly');
   });
 
-  it('returns the HSL value when turned into a strong if its format was "hsl"', () => {
+  it('returns the HSL value when turned into a string if its format was "hsl"', () => {
     const color = new Color.Color([1, 0, 0, 1], 'hsl', 'testColor');
     const result = color.asString();
-    assert.strictEqual(result, 'hsl(0 100% 50%)', 'color was not converted to a string correctly');
+    assert.strictEqual(result, 'hsl(0deg 100% 50%)', 'color was not converted to a string correctly');
   });
 
-  it('returns the HSLA value when turned into a strong if its format was "hsla"', () => {
+  it('returns the HSLA value when turned into a string if its format was "hsla"', () => {
+    const color = new Color.Color([1, 0, 0, 0.42], 'hsla', 'testColor');
+    const result = color.asString();
+    assert.strictEqual(result, 'hsl(0deg 100% 50% / 42%)', 'color was not converted to a string correctly');
+  });
+
+  it('omits the alpha value when it’s 100% if its format was "hsla"', () => {
     const color = new Color.Color([1, 0, 0, 1], 'hsla', 'testColor');
     const result = color.asString();
-    assert.strictEqual(result, 'hsl(0 100% 50% / 1)', 'color was not converted to a string correctly');
+    assert.strictEqual(result, 'hsl(0deg 100% 50%)', 'color was not converted to a string correctly');
   });
 
   it('is able to return a color in a different format than the one the color was originally set with', () => {
@@ -277,6 +298,6 @@ describe('Generator', () => {
 
   it('able to return the color for an ID that was not set', () => {
     const generator = new Color.Generator();
-    assert.strictEqual(generator.colorForID('r'), 'hsl(133 67% 80% / 1)', 'color was not generated correctly');
+    assert.strictEqual(generator.colorForID('r'), 'hsl(133deg 67% 80%)', 'color was not generated correctly');
   });
 });

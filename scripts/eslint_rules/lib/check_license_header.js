@@ -67,7 +67,6 @@ const EXCLUDED_FILES = [
   'cm/multiplex.js',
   'cm/overlay.js',
   'cm/simple.js',
-  'cm_headless/headlesscodemirror.js',
   'cm_modes/clike.js',
   'cm_modes/clojure.js',
   'cm_modes/coffeescript.js',

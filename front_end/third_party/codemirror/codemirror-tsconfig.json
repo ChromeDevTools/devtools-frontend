@@ -3,6 +3,7 @@
     "composite": true
   },
   "files": [
+    "package/addon/runmode/runmode-standalone.js",
     "package/src/modes.js",
     "package/src/measurement",
     "package/src/measurement/position_measurement.js",

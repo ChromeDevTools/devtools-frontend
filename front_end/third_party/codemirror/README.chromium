@@ -16,3 +16,6 @@ To update this package, run the following command (replace version number with u
 ```bash
 wget -qO- https://registry.npmjs.org/codemirror/-/codemirror-5.53.2.tgz | tar xzf -
 ```
+
+Local changes applied:
+- `package/addon/runmode/runmode-standalone.js` change `window.CodeMirror` to `globalThis.CodeMirror`

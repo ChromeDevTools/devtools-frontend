@@ -5,6 +5,7 @@
 copy("codemirror") {
   sources = [
     "codemirror-tsconfig.json",
+    "package/addon/runmode/runmode-standalone.js",
     "package/src/codemirror.js",
     "package/src/display/Display.js",
     "package/src/display/focus.js",

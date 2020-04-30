@@ -4,6 +4,7 @@
 
 const path = require('path');
 const glob = require('glob');
+const fs = require('fs');
 
 // true by default
 const COVERAGE_ENABLED = !process.env['NOCOVERAGE'];
@@ -30,8 +31,13 @@ const TEST_SOURCES = path.join(UNIT_TESTS_FOLDER, '**/*.ts');
 // to instruct Mocha to run the output JavaScript file.
 const TEST_FILES = glob.sync(TEST_SOURCES).map(fileName => {
   const jsFile = fileName.replace(/\.ts$/, '.js');
+  const generatedJsFile = path.join(__dirname, path.relative(UNIT_TESTS_FOLDER, jsFile));
 
-  return path.join(__dirname, path.relative(UNIT_TESTS_FOLDER, jsFile));
+  if (!fs.existsSync(generatedJsFile)) {
+    throw new Error(`Test file ${fileName} is not included in a BUILD.gn and therefore will not be run.`);
+  }
+
+  return generatedJsFile;
 });
 
 const TEST_FILES_SOURCE_MAPS = TEST_FILES.map(fileName => `${fileName}.map`);

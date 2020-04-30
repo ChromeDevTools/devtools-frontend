@@ -298,6 +298,7 @@ export class OverlayModel extends SDKModel {
    */
   _buildHighlightConfig(mode = 'all', showStyles = false) {
     const showRulers = Common.Settings.Settings.instance().moduleSetting('showMetricsRulers').get();
+    const colorFormat = Common.Settings.Settings.instance().moduleSetting('colorFormat').get();
     const highlightConfig =
         {showInfo: mode === 'all', showRulers: showRulers, showStyles, showExtensionLines: showRulers};
     if (mode === 'all' || mode === 'content') {
@@ -324,6 +325,13 @@ export class OverlayModel extends SDKModel {
 
     if (mode === 'all') {
       highlightConfig.cssGridColor = Common.Color.PageHighlight.CssGrid.toProtocolRGBA();
+    }
+
+    // the backend does not support the 'original' format because
+    // it currently cannot retrieve the original format using computed styles
+    const supportedColorFormats = new Set(['rgb', 'hsl', 'hex']);
+    if (supportedColorFormats.has(colorFormat)) {
+      highlightConfig.colorFormat = colorFormat;
     }
 
     return highlightConfig;

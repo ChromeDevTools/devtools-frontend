@@ -4,6 +4,7 @@
 
 import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as Components from '../components/components.js';
 import * as Network from '../network/network.js';
 import * as MixedContentIssue from '../sdk/MixedContentIssue.js';
 import * as SDK from '../sdk/sdk.js';
@@ -269,6 +270,54 @@ class AffectedRequestsView extends AffectedResourcesView {
   }
 }
 
+class AffectedSourcesView extends AffectedResourcesView {
+  /**
+   * @param {!IssueView} parent
+   * @param {!SDK.Issue.Issue} issue
+   */
+  constructor(parent, issue) {
+    super(parent, {singular: ls`source`, plural: ls`sources`});
+    /** @type {!SDK.Issue.Issue} */
+    this._issue = issue;
+  }
+
+  /**
+   * @param {!Iterable<!SDK.Issue.AffectedSource>} affectedSources
+   */
+  _appendAffectedSources(affectedSources) {
+    let count = 0;
+    for (const source of affectedSources) {
+      this._appendAffectedSource(source);
+      count++;
+    }
+    this.updateAffectedResourceCount(count);
+  }
+
+  /**
+   * @param {!SDK.Issue.AffectedSource} source
+   */
+  _appendAffectedSource({url, lineNumber, columnNumber}) {
+    const cellElement = createElementWithClass('td', '');
+    // TODO(chromium:1072331): Check feasibility of plumping through scriptId for `linkifyScriptLocation`
+    //                         to support source maps and formatted scripts.
+    const linkifierURLOptions =
+        /** @type {!Components.Linkifier.LinkifyURLOptions} */ ({columnNumber, lineNumber, tabStop: true});
+    const anchorElement = Components.Linkifier.Linkifier.linkifyURL(url, linkifierURLOptions);
+    cellElement.appendChild(anchorElement);
+    const rowElement = createElementWithClass('tr', '');
+    rowElement.appendChild(cellElement);
+    this._affectedResources.appendChild(rowElement);
+  }
+
+  /**
+   * @override
+   */
+  update() {
+    this.clear();
+    this._appendAffectedSources(this._issue.sources());
+  }
+}
+
 /** @type {!Map<!SDK.Issue.IssueCategory, !Network.NetworkItemView.Tabs>} */
 const issueTypeToNetworkHeaderMap = new Map([
   [SDK.Issue.IssueCategory.SameSiteCookie, Network.NetworkItemView.Tabs.Cookies],
@@ -393,6 +442,7 @@ class IssueView extends UI.TreeOutline.TreeElement {
     this._affectedCookiesView = new AffectedCookiesView(this, this._issue);
     this._affectedRequestsView = new AffectedRequestsView(this, this._issue);
     this._affectedMixedContentView = new AffectedMixedContentView(this, this._issue);
+    this._affectedSourcesView = new AffectedSourcesView(this, this._issue);
   }
 
   /**
@@ -408,6 +458,8 @@ class IssueView extends UI.TreeOutline.TreeElement {
     this._affectedRequestsView.update();
     this.appendAffectedResource(this._affectedMixedContentView);
     this._affectedMixedContentView.update();
+    this.appendAffectedResource(this._affectedSourcesView);
+    this._affectedSourcesView.update();
     this._createReadMoreLink();
 
     this.updateAffectedResourceVisibility();
@@ -436,7 +488,8 @@ class IssueView extends UI.TreeOutline.TreeElement {
     const noCookies = !this._affectedCookiesView || this._affectedCookiesView.isEmpty();
     const noRequests = !this._affectedRequestsView || this._affectedRequestsView.isEmpty();
     const noMixedContent = !this._affectedMixedContentView || this._affectedMixedContentView.isEmpty();
-    const noResources = noCookies && noRequests && noMixedContent;
+    const noSources = !this._affectedSourcesView || this._affectedSourcesView.isEmpty();
+    const noResources = noCookies && noRequests && noMixedContent && noSources;
     this._affectedResources.hidden = noResources;
   }
 
@@ -492,6 +545,7 @@ class IssueView extends UI.TreeOutline.TreeElement {
     this._affectedCookiesView.update();
     this._affectedRequestsView.update();
     this._affectedMixedContentView.update();
+    this._affectedSourcesView.update();
     this.updateAffectedResourceVisibility();
   }
 

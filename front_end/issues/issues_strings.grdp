@@ -9,6 +9,9 @@
   <message name="IDS_DEVTOOLS_55b558c7ef820e6e00e5993b9e55d93b" desc="Label for number of affected resources indication in issue view">
     resources
   </message>
+  <message name="IDS_DEVTOOLS_36cd38f49b9afa08222c0dc9ebfe35eb" desc="Singular label for number of affected source resource indication in issue view">
+    source
+  </message>
   <message name="IDS_DEVTOOLS_55e7dd3016ce4ac57b9a0f56af12f7c2" desc="Label for number of affected resources indication in issue view">
     cookies
   </message>
@@ -29,6 +32,9 @@
   </message>
   <message name="IDS_DEVTOOLS_80b768b15c3693e345a436b9dc0ea36f" desc="Label for the issues pane">
     Issues
+  </message>
+  <message name="IDS_DEVTOOLS_f2ab5fb218da8b84623f45579aa4ba11" desc="Plural label for number of affected source resource indication in issue view">
+    sources
   </message>
   <message name="IDS_DEVTOOLS_fbf5a685e313dad7d780b63bdb5dd2fb" desc="Explanatory message why a reload of the inspected page is required. Next to reload button.">
     Some issues might be missing or incomplete, reload the inspected page to get full information

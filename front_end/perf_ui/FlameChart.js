@@ -1036,7 +1036,7 @@ export class FlameChart extends UI.Widget.VBox {
       }
     }
 
-    /** @type {!Map<string, {indexes: !Array<number>, showLongDurations: boolean}>} */
+    /** @type {!Map<string, {indexes: !Array<number>}>} */
     const colorBuckets = new Map();
     for (let level = minVisibleBarLevel; level < this._dataProvider.maxStackDepth(); ++level) {
       if (this._levelToOffset(level) > top + height) {
@@ -1083,7 +1083,7 @@ export class FlameChart extends UI.Widget.VBox {
         const color = this._entryColorsCache[entryIndex];
         let bucket = colorBuckets.get(color);
         if (!bucket) {
-          bucket = {indexes: [], showLongDurations: level === mainThreadTopLevel};
+          bucket = {indexes: []};
           colorBuckets.set(color, bucket);
         }
         bucket.indexes.push(entryIndex);
@@ -1102,7 +1102,7 @@ export class FlameChart extends UI.Widget.VBox {
       });
       context.restore();
 
-      for (const [color, {indexes, showLongDurations}] of colorBuckets) {
+      for (const [color, {indexes}] of colorBuckets) {
         context.beginPath();
         for (let i = 0; i < indexes.length; ++i) {
           const entryIndex = indexes[i];
@@ -1127,16 +1127,13 @@ export class FlameChart extends UI.Widget.VBox {
         for (let i = 0; i < indexes.length; ++i) {
           const entryIndex = indexes[i];
           const duration = entryTotalTimes[entryIndex];
+          const showLongDurations = entryLevels[entryIndex] === mainThreadTopLevel;
 
           if (!showLongDurations) {
             continue;
           }
 
-          if (isNaN(duration)) {
-            continue;
-          }
-
-          if (duration < 50) {
+          if (isNaN(duration) || duration < 50) {
             continue;
           }
 

@@ -137,11 +137,6 @@ Sources.OpenFileQuickOpen = SourcesModule.OpenFileQuickOpen.OpenFileQuickOpen;
 Sources.OutlineQuickOpen = SourcesModule.OutlineQuickOpen.OutlineQuickOpen;
 
 /** @constructor */
-Sources.SourceScopeChainSidebarPane = SourcesModule.ScopeChainSidebarPane.SourceScopeChainSidebarPane;
-
-Sources.SourceScopeChainSidebarPane._pathSymbol = SourcesModule.ScopeChainSidebarPane.pathSymbol;
-
-/** @constructor */
 Sources.ScopeChainSidebarPane = SourcesModule.ScopeChainSidebarPane.ScopeChainSidebarPane;
 
 Sources.ScopeChainSidebarPane._pathSymbol = SourcesModule.ScopeChainSidebarPane.pathSymbol;

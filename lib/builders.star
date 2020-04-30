@@ -31,8 +31,8 @@ dimensions=struct(
     'host_class':'default',
     'os':'Ubuntu-16.04',
   },
-  baremetal_ubuntu={
-    "host_class":"baremetal",
+  beefy_ubuntu={
+    "host_class":"beefy",
     "os":"Ubuntu-16.04",
   },
   win10={

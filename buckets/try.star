@@ -66,7 +66,7 @@ try_builder(
 try_builder(
   name="devtools_frontend_linux_blink_light_rel",
   recipe_name="chromium_trybot",
-  dimensions=dimensions.baremetal_ubuntu,
+  dimensions=dimensions.beefy_ubuntu,
   execution_timeout=2 * time.hour,
   build_numbers=True,
 )

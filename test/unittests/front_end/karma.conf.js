@@ -44,6 +44,7 @@ module.exports = function(config) {
       ...TEST_FILES.map(pattern => ({pattern, type: 'module'})),
       ...TEST_FILES_SOURCE_MAPS.map(pattern => ({pattern, served: true, included: false})),
       {pattern: TEST_SOURCES, served: true, included: false},
+      {pattern: path.join(GEN_DIRECTORY, 'front_end/Images/*.{svg,png}'), served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.js'), served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.js.map'), served: true, included: false},
       {pattern: path.join(ROOT_DIRECTORY, 'front_end/**/*.ts'), served: true, included: false},
@@ -70,6 +71,8 @@ module.exports = function(config) {
       '**/*.js': ['sourcemap'],
       [path.join(GEN_DIRECTORY, 'front_end/**/*.js')]: [...coveragePreprocessors],
     },
+
+    proxies: {'/Images': 'front_end/Images'},
 
     coverageReporter: {
       dir: 'karma-coverage',

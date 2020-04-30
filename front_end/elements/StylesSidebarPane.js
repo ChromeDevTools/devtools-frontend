@@ -2724,7 +2724,7 @@ export class StylesSidebarPropertyRenderer {
           // at the same time, which complicates both StylesSidebarPane and StylePropertyTreeElement.
           bypassURLTrimming: true,
         }),
-        url);
+        hrefUrl || url);
     container.appendChild(link);
     container.createTextChild(')');
     return container;

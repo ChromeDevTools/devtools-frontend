@@ -1,0 +1,20 @@
+[{
+  "method": "addRawModule",
+  "params": {
+    "rawModuleId": "0",
+    "rawModule": {
+      "url": "%(unit_inputs)s/string.wasm"
+    }
+  }
+},
+ {
+   "method" : "evaluateVariable",
+   "params" : {
+     "name" : "String",
+     "location" : {
+       "rawModuleId" : "0",
+       "codeOffset" : 17
+     }
+   }
+ },
+ {"method" : "quit"}]

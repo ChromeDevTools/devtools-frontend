@@ -15,6 +15,10 @@ vars = {
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
   'inspector_protocol_revision': 'b7cda08cd6e522df2159413ba5f29d2a953cc1c4',
 
+  'llvm_url': 'https://chromium.googlesource.com/external/github.com/llvm/llvm-project/',
+  'llvm_revision': '302e11cd974255eafd80ee4fdf52054a00b3e4be',
+  'build_symbol_server': False,
+
   'clang_format_url': 'https://chromium.googlesource.com/chromium/llvm-project/cfe/tools/clang-format.git',
   'clang_format_revision': '96636aa0e9f047f17447f2d45a094d0b59ed7917',
 
@@ -77,6 +81,11 @@ deps = {
     Var('depot_tools_url') + '@' + Var('depot_tools_revision'),
   'devtools-frontend/third_party/inspector_protocol':
     Var('inspector_protocol_url') + '@' + Var('inspector_protocol_revision'),
+
+  'devtools-frontend/back_end/CXXDWARFSymbols/third_party/llvm': {
+    'url': Var('llvm_url') + '@' + Var('llvm_revision'),
+    'condition': 'build_symbol_server'
+  }
 }
 
 hooks = [

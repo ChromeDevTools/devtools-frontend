@@ -1,0 +1,94 @@
+// Copyright 2020 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+syntax = "proto3";
+
+package symbol_server.protocol;
+
+service DebuggingPlugin {
+  rpc addRawModule(AddRawModuleRequest) returns (AddRawModuleResponse);
+  rpc sourceLocationToRawLocation(SourceLocation)
+      returns (SourceLocationToRawLocationResponse);
+  rpc rawLocationToSourceLocation(RawLocation)
+      returns (RawLocationToSourceLocationResponse);
+  rpc listVariablesInScope(RawLocation) returns (ListVariablesInScopeResponse);
+  rpc evaluateVariable(EvaluateVariableRequest)
+      returns (EvaluateVariableResponse);
+}
+
+message Error {
+  enum Code {
+    INTERNAL_ERROR = 0;
+    NOT_FOUND = 1;
+    DUPLICATE_MODULE_ID = 2;
+    PROTOCOL_ERROR = 3;
+  }
+  Code code = 1;
+  string message = 2;
+}
+
+message RawModule {
+  string url = 1;
+  bytes code = 2;
+}
+
+message RawLocation {
+  string rawModuleId = 1;
+  int32 codeOffset = 2;
+}
+
+message SourceLocation {
+  string rawModuleId = 1;
+  string sourceFile = 2;
+  int32 lineNumber = 3;
+  int32 columnNumber = 4;
+}
+
+message Variable {
+  enum Scope {
+    UNKNOWN = 0;
+    LOCAL = 1;
+    PARAMETER = 2;
+    GLOBAL = 3;
+  }
+  Scope scope = 1;
+  string name = 2;
+  string type = 3;
+}
+
+message AddRawModuleRequest {
+  string rawModuleId = 1;
+  string symbols = 2;
+  RawModule rawModule = 3;
+}
+
+message AddRawModuleResponse {
+  repeated string sources = 1;
+  Error error = 2;
+}
+
+message SourceLocationToRawLocationResponse {
+  repeated RawLocation rawLocation = 1;
+  Error error = 2;
+}
+
+message RawLocationToSourceLocationResponse {
+  repeated SourceLocation sourceLocation = 1;
+  Error error = 2;
+}
+
+message ListVariablesInScopeResponse {
+  repeated Variable variable = 1;
+  Error error = 2;
+}
+
+message EvaluateVariableRequest {
+  string name = 1;
+  RawLocation location = 2;
+}
+
+message EvaluateVariableResponse {
+  RawModule value = 1;
+  Error error = 2;
+}

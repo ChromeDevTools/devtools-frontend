@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {FORMATTER_TOKEN} from 'front_end/platform/string-utilities.js';
+
 import {StringUtilities} from '../../../../front_end/platform/platform.js';
 
 const {assert} = chai;
@@ -165,6 +167,354 @@ describe('StringUtilities', () => {
     it('strips linebreaks from strings', () => {
       assert.strictEqual(StringUtilities.stripLineBreaks('a\nb'), 'ab');
       assert.strictEqual(StringUtilities.stripLineBreaks('a\r\nb'), 'ab');
+    });
+  });
+
+  describe('tokenizeFormatString', () => {
+    it('deals with tokenizers that return undefined', () => {
+      const tokens = StringUtilities.tokenizeFormatString('%c%s', {
+        c: () => {},
+        s: () => {},
+      });
+      assert.deepEqual(tokens, [
+        {
+          value: undefined,
+          precision: -1,
+          specifier: 'c',
+          substitutionIndex: 0,
+          type: 'specifier',
+        },
+        {
+          value: undefined,
+          precision: -1,
+          specifier: 's',
+          substitutionIndex: 1,
+          type: 'specifier',
+        },
+      ]);
+    });
+
+    it('deals with ANSI colors', () => {
+      const types = [3, 9, 4, 10];
+      const colors = [];
+      for (const type of types) {
+        for (let i = 0; i < 10; ++i) {
+          colors.push(type * 10 + i);
+        }
+      }
+
+      const tokens = StringUtilities.tokenizeFormatString(colors.map(c => `\u001b[${c}m`).join(''), {c: () => {}});
+
+      const expectedTokens: FORMATTER_TOKEN[] = [
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'color: black',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'color: red',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'color: green',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'color: yellow',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'color: blue',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'color: magenta',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'color: cyan',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'color: lightGray',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'color: default',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'color: darkGray',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'color: lightRed',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'color: lightGreen',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'color: lightYellow',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'color: lightBlue',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'color: lightMagenta',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'color: lightCyan',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'color: white',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'background : black',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'background : red',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'background : green',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'background : yellow',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'background : blue',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'background : magenta',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'background : cyan',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'background : lightGray',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'background : default',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'background : darkGray',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'background : lightRed',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'background : lightGreen',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'background : lightYellow',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'background : lightBlue',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'background : lightMagenta',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'background : lightCyan',
+          },
+        },
+        {
+          precision: undefined,
+          substitutionIndex: undefined,
+          specifier: 'c',
+          type: 'specifier',
+          value: {
+            description: 'background : white',
+          },
+        },
+      ];
+
+      assert.deepEqual(tokens, expectedTokens);
     });
   });
 });

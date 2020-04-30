@@ -383,6 +383,10 @@ input[is=history-input]:not(:placeholder-shown) {
     .toolbar-text {
         color: ButtonText;
     }
+    .toolbar-button.toolbar-state-on .toolbar-text {
+      forced-color-adjust: none;
+      color: Highlight;
+    }
     .toolbar-input {
         forced-color-adjust: none;
         background: Canvas;

@@ -10,7 +10,8 @@ import {getCurrentUrl} from '../helpers/layers-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 describe('The Layers Panel', async () => {
-  it('should keep the currently inspected url as an attribute', async () => {
+  // FIXME: This test is crashing on some bots. https://crbug.com/1076763
+  it.skip('[crbug.com/1076763] should keep the currently inspected url as an attribute', async () => {
     const {target} = getBrowserAndPages();
     const targetUrl = `${resourcesPath}/layers/default.html`;
     await target.goto(targetUrl);

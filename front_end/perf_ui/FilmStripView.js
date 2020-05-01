@@ -62,7 +62,8 @@ export class FilmStripView extends UI.Widget.HBox {
    */
   createFrameElement(frame) {
     const time = frame.timestamp;
-    const element = createElementWithClass('div', 'frame');
+    const element = document.createElement('div');
+    element.classList.add('frame');
     element.title = Common.UIString.UIString('Doubleclick to zoom image. Click to view preceding requests.');
     element.createChild('div', 'time').textContent = Number.millisToString(time - this._zeroTime);
     const imageElement = element.createChild('div', 'thumbnail').createChild('img');

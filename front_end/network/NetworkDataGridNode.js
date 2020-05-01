@@ -891,7 +891,8 @@ export class NetworkRequestNode extends NetworkNode {
   _setTextAndTitleAndLink(element, cellText, linkText, handler) {
     element.createTextChild(cellText);
     element.createChild('span', 'separator-in-cell');
-    const link = createElementWithClass('span', 'devtools-link');
+    const link = document.createElement('span');
+    link.classList.add('devtools-link');
     link.textContent = linkText;
     link.addEventListener('click', handler);
     element.appendChild(link);
@@ -1051,14 +1052,17 @@ export class NetworkRequestNode extends NetworkNode {
       });
       let iconElement;
       if (this._request.resourceType() === Common.ResourceType.resourceTypes.Image) {
-        const previewImage = createElementWithClass('img', 'image-network-icon-preview');
+        const previewImage = document.createElement('img');
+        previewImage.classList.add('image-network-icon-preview');
         previewImage.alt = this._request.resourceType().title();
         this._request.populateImageSource(previewImage);
 
-        iconElement = createElementWithClass('div', 'icon');
+        iconElement = document.createElement('div');
+        iconElement.classList.add('icon');
         iconElement.appendChild(previewImage);
       } else {
-        iconElement = createElementWithClass('img', 'icon');
+        iconElement = document.createElement('img');
+        iconElement.classList.add('icon');
         iconElement.alt = this._request.resourceType().title();
       }
       iconElement.classList.add(this._request.resourceType().name());

@@ -62,7 +62,8 @@ export class LocationsSettingsTab extends UI.Widget.VBox {
    */
   renderItem(item, editable) {
     const location = /** @type {!Item} */ (item);
-    const element = createElementWithClass('div', 'locations-list-item');
+    const element = document.createElement('div');
+    element.classList.add('locations-list-item');
     const title = element.createChild('div', 'locations-list-text locations-list-title');
     const titleText = title.createChild('div', 'locations-list-title-text');
     titleText.textContent = location.title;

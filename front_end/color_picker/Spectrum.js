@@ -416,7 +416,8 @@ export class Spectrum extends UI.Widget.VBox {
    * @return {!Element}
    */
   _createPaletteColor(colorText, colorName, animationDelay) {
-    const element = createElementWithClass('div', 'spectrum-palette-color');
+    const element = document.createElement('div');
+    element.classList.add('spectrum-palette-color');
     element.style.background =
         Platform.StringUtilities.sprintf('linear-gradient(%s, %s), url(Images/checker.png)', colorText, colorText);
     if (animationDelay) {
@@ -680,7 +681,8 @@ export class Spectrum extends UI.Widget.VBox {
    */
   _createPreviewPaletteElement(palette) {
     const colorsPerPreviewRow = 5;
-    const previewElement = createElementWithClass('div', 'palette-preview');
+    const previewElement = document.createElement('div');
+    previewElement.classList.add('palette-preview');
     UI.ARIAUtils.markAsButton(previewElement);
     previewElement.tabIndex = 0;
     const titleElement = previewElement.createChild('div', 'palette-preview-title');

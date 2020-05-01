@@ -21,7 +21,8 @@ export class ConsolePrompt extends UI.Widget.Widget {
     this._initialText = '';
     /** @type {?UI.TextEditor.TextEditor} */
     this._editor = null;
-    this._eagerPreviewElement = createElementWithClass('div', 'console-eager-preview');
+    this._eagerPreviewElement = document.createElement('div');
+    this._eagerPreviewElement.classList.add('console-eager-preview');
     this._textChangeThrottler = new Common.Throttler.Throttler(150);
     this._formatter = new ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter();
     this._requestPreviewBound = this._requestPreview.bind(this);

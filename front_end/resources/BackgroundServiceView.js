@@ -344,7 +344,8 @@ export class BackgroundServiceView extends UI.Widget.VBox {
     } else {
       const landingRecordButton = UI.Toolbar.Toolbar.createActionButton(this._recordAction);
 
-      const recordKey = createElementWithClass('b', 'background-service-shortcut');
+      const recordKey = document.createElement('b');
+      recordKey.classList.add('background-service-shortcut');
       recordKey.textContent =
           self.UI.shortcutRegistry.shortcutsForAction('background-service.toggle-recording')[0].title();
 
@@ -397,7 +398,8 @@ export class EventDataNode extends DataGrid.DataGrid.DataGridNode {
     preview.element.classList.add('background-service-metadata');
 
     for (const entry of this._eventMetadata) {
-      const div = createElementWithClass('div', 'background-service-metadata-entry');
+      const div = document.createElement('div');
+      div.classList.add('background-service-metadata-entry');
       div.createChild('div', 'background-service-metadata-name').textContent = entry.key + ': ';
       if (entry.value) {
         div.createChild('div', 'background-service-metadata-value source-code').textContent = entry.value;
@@ -409,7 +411,8 @@ export class EventDataNode extends DataGrid.DataGrid.DataGridNode {
     }
 
     if (!preview.element.children.length) {
-      const div = createElementWithClass('div', 'background-service-metadata-entry');
+      const div = document.createElement('div');
+      div.classList.add('background-service-metadata-entry');
       div.createChild('div', 'background-service-metadata-name').textContent = ls`No metadata for this event`;
       preview.element.appendChild(div);
     }

@@ -305,7 +305,8 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper {
    */
   constructor(items, setting) {
     super();
-    this._filtersElement = createElementWithClass('div', 'filter-bitset-filter');
+    this._filtersElement = document.createElement('div');
+    this._filtersElement.classList.add('filter-bitset-filter');
     ARIAUtils.markAsListBox(this._filtersElement);
     ARIAUtils.markAsMultiSelectable(this._filtersElement);
     this._filtersElement.title = Common.UIString.UIString(
@@ -496,7 +497,8 @@ export class CheckboxFilterUI extends Common.ObjectWrapper.ObjectWrapper {
    */
   constructor(className, title, activeWhenChecked, setting) {
     super();
-    this._filterElement = createElementWithClass('div', 'filter-checkbox-filter');
+    this._filterElement = document.createElement('div');
+    this._filterElement.classList.add('filter-checkbox-filter');
     this._activeWhenChecked = !!activeWhenChecked;
     this._label = CheckboxLabel.create(title);
     this._filterElement.appendChild(this._label);

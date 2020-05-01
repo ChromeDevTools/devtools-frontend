@@ -40,7 +40,8 @@ export class ThreadsSidebarPane extends UI.Widget.VBox {
    * @return {!Element}
    */
   createElementForItem(debuggerModel) {
-    const element = createElementWithClass('div', 'thread-item');
+    const element = document.createElement('div');
+    element.classList.add('thread-item');
     const title = element.createChild('div', 'thread-item-title');
     const pausedState = element.createChild('div', 'thread-item-paused-state');
     element.appendChild(UI.Icon.Icon.create('smallicon-thick-right-arrow', 'selected-thread-icon'));

@@ -226,7 +226,8 @@ export class TimelineHistoryManager {
    * @return {!Element}
    */
   _buildScreenshotThumbnail(performanceModel) {
-    const container = createElementWithClass('div', 'screenshot-thumb');
+    const container = document.createElement('div');
+    container.classList.add('screenshot-thumb');
     const thumbnailAspectRatio = 3 / 2;
     container.style.width = this._totalHeight * thumbnailAspectRatio + 'px';
     container.style.height = this._totalHeight + 'px';

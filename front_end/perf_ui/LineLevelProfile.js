@@ -254,7 +254,8 @@ export class LineDecorator {
    * @return {!Element}
    */
   _createElement(type, value) {
-    const element = createElementWithClass('div', 'text-editor-line-marker-text');
+    const element = document.createElement('div');
+    element.classList.add('text-editor-line-marker-text');
     if (type === 'performance') {
       const intensity = Platform.NumberUtilities.clamp(Math.log10(1 + 10 * value) / 5, 0.02, 1);
       element.textContent = Common.UIString.UIString('%.1f', value);

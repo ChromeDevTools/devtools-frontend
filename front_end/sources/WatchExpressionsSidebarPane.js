@@ -448,7 +448,8 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
               expressionValue, !!exceptionDetails, false /* showPreview */, titleElement, this._linkifier);
       this._valueElement = propertyValue.element;
     }
-    const separatorElement = createElementWithClass('span', 'watch-expressions-separator');
+    const separatorElement = document.createElement('span');
+    separatorElement.classList.add('watch-expressions-separator');
     separatorElement.textContent = ': ';
     titleElement.appendChildren(this._nameElement, separatorElement, this._valueElement);
 

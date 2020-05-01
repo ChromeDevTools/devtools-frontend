@@ -14,7 +14,8 @@ export class AnimationGroupPreviewUI {
    */
   constructor(model) {
     this._model = model;
-    this.element = createElementWithClass('div', 'animation-buffer-preview');
+    this.element = document.createElement('div');
+    this.element.classList.add('animation-buffer-preview');
     this.element.createChild('div', 'animation-paused fill');
     this._removeButton = this.element.createChild('div', 'animation-remove-button');
     this._removeButton.textContent = '\u2715';

@@ -157,7 +157,8 @@ export class BezierEditor extends UI.Widget.VBox {
    * @return {!PresetCategory}
    */
   _createCategory(presetGroup) {
-    const presetElement = createElementWithClass('div', 'bezier-preset-category');
+    const presetElement = document.createElement('div');
+    presetElement.classList.add('bezier-preset-category');
     const iconElement = presetElement.createSVGChild('svg', 'bezier-preset monospace');
     const category = {presets: presetGroup, presetIndex: 0, icon: presetElement};
     this._presetUI.drawCurve(UI.Geometry.CubicBezier.parse(category.presets[0].value), iconElement);

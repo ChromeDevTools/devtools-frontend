@@ -59,7 +59,8 @@ export class EditFileSystemView extends UI.Widget.VBox {
     this._excludedFoldersList = new UI.ListWidget.ListWidget(this);
     this._excludedFoldersList.element.classList.add('file-system-list');
     this._excludedFoldersList.registerRequiredCSS('persistence/editFileSystemView.css');
-    const excludedFoldersPlaceholder = createElementWithClass('div', 'file-system-list-empty');
+    const excludedFoldersPlaceholder = document.createElement('div');
+    excludedFoldersPlaceholder.classList.add('file-system-list-empty');
     excludedFoldersPlaceholder.textContent = Common.UIString.UIString('None');
     this._excludedFoldersList.setEmptyPlaceholder(excludedFoldersPlaceholder);
     this._excludedFoldersList.show(this.contentElement);
@@ -98,7 +99,8 @@ export class EditFileSystemView extends UI.Widget.VBox {
    * @return {!Element}
    */
   renderItem(item, editable) {
-    const element = createElementWithClass('div', 'file-system-list-item');
+    const element = document.createElement('div');
+    element.classList.add('file-system-list-item');
     const pathPrefix = /** @type {string} */ (editable ? item : Common.UIString.UIString('%s (via .devtools)', item));
     const pathPrefixElement = element.createChild('div', 'file-system-value');
     pathPrefixElement.textContent = pathPrefix;

@@ -752,7 +752,8 @@ export class LinkContextMenuProvider {
  */
 export class LinkHandlerSettingUI {
   constructor() {
-    this._element = createElementWithClass('select', 'chrome-select');
+    this._element = document.createElement('select');
+    this._element.classList.add('chrome-select');
     this._element.addEventListener('change', this._onChange.bind(this), false);
     this._update();
   }

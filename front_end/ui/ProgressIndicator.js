@@ -40,7 +40,8 @@ import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-co
  */
 export class ProgressIndicator {
   constructor() {
-    this.element = createElementWithClass('div', 'progress-indicator');
+    this.element = document.createElement('div');
+    this.element.classList.add('progress-indicator');
     this._shadowRoot = createShadowRootWithCoreStyles(this.element, 'ui/progressIndicator.css');
     this._contentElement = this._shadowRoot.createChild('div', 'progress-indicator-shadow-container');
 

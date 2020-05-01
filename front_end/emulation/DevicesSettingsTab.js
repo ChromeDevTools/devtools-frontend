@@ -110,7 +110,8 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
    */
   renderItem(item, editable) {
     const device = /** @type {!EmulatedDevice} */ (item);
-    const label = createElementWithClass('label', 'devices-list-item');
+    const label = document.createElement('label');
+    label.classList.add('devices-list-item');
     const checkbox = label.createChild('input', 'devices-list-checkbox');
     checkbox.type = 'checkbox';
     checkbox.checked = device.show();

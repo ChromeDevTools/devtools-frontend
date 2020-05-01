@@ -656,7 +656,8 @@ export class RowMessage {
   constructor(message) {
     this._message = message;
     this._repeatCount = 1;
-    this.element = createElementWithClass('div', 'text-editor-row-message');
+    this.element = document.createElement('div');
+    this.element.classList.add('text-editor-row-message');
     this._icon = this.element.createChild('label', '', 'dt-icon-label');
     this._icon.type = iconClassPerLevel[message.level()];
     this._repeatCountElement =
@@ -710,14 +711,16 @@ export class RowMessageBucket {
     this._sourceFrame = sourceFrame;
     this.textEditor = textEditor;
     this._lineHandle = textEditor.textEditorPositionHandle(editorLineNumber, 0);
-    this._decoration = createElementWithClass('div', 'text-editor-line-decoration');
+    this._decoration = document.createElement('div');
+    this._decoration.classList.add('text-editor-line-decoration');
     this._decoration._messageBucket = this;
     this._wave = this._decoration.createChild('div', 'text-editor-line-decoration-wave');
     this._icon = this._wave.createChild('span', 'text-editor-line-decoration-icon', 'dt-icon-label');
     /** @type {?number} */
     this._decorationStartColumn = null;
 
-    this._messagesDescriptionElement = createElementWithClass('div', 'text-editor-messages-description-container');
+    this._messagesDescriptionElement = document.createElement('div');
+    this._messagesDescriptionElement.classList.add('text-editor-messages-description-container');
     /** @type {!Array.<!RowMessage>} */
     this._messages = [];
 

@@ -213,7 +213,8 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
       propertyNameElement.classList.add('property-name');
       propertyElement.appendChild(propertyNameElement);
 
-      const colon = createElementWithClass('span', 'delimeter');
+      const colon = document.createElement('span');
+      colon.classList.add('delimeter');
       colon.textContent = ': ';
       propertyNameElement.appendChild(colon);
 
@@ -223,7 +224,8 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
       propertyValueText.classList.add('property-value-text');
       propertyValueElement.appendChild(propertyValueText);
 
-      const semicolon = createElementWithClass('span', 'delimeter');
+      const semicolon = document.createElement('span');
+      semicolon.classList.add('delimeter');
       semicolon.textContent = ';';
       propertyValueElement.appendChild(semicolon);
 

@@ -138,7 +138,8 @@ export class CookieItemsView extends StorageItemsView {
       return;
     }
 
-    const value = createElementWithClass('div', 'cookie-value');
+    const value = document.createElement('div');
+    value.classList.add('cookie-value');
     value.textContent = cookie.value();
     value.addEventListener('dblclick', handleDblClickOnCookieValue);
 

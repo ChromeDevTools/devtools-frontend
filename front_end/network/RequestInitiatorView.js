@@ -48,7 +48,8 @@ export class RequestInitiatorView extends UI.Widget.VBox {
    * @param {boolean} expanded
    */
   _appendExpandableSection(sectionContent, title, expanded) {
-    const section = createElementWithClass('div', 'request-initiator-view-section');
+    const section = document.createElement('div');
+    section.classList.add('request-initiator-view-section');
     const icon = UI.Icon.Icon.create('smallicon-triangle-right');
     const clickableElement = section.createChild('div', 'request-initiator-view-section-title');
     clickableElement.appendChild(icon);

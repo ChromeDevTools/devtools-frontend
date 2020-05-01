@@ -38,7 +38,8 @@ export class DeviceModeToolbar {
     /** @type {!Map<!EmulatedDevice, !Mode>} */
     this._lastMode = new Map();
 
-    this._element = createElementWithClass('div', 'device-mode-toolbar');
+    this._element = document.createElement('div');
+    this._element.classList.add('device-mode-toolbar');
 
     const leftContainer = this._element.createChild('div', 'device-mode-toolbar-spacer');
     leftContainer.createChild('div', 'device-mode-toolbar-spacer');
@@ -108,7 +109,8 @@ export class DeviceModeToolbar {
     this._widthItem = this._wrapToolbarItem(widthInput);
     toolbar.appendToolbarItem(this._widthItem);
 
-    const xElement = createElementWithClass('div', 'device-mode-x');
+    const xElement = document.createElement('div');
+    xElement.classList.add('device-mode-x');
     xElement.textContent = '×';
     this._xItem = this._wrapToolbarItem(xElement);
     toolbar.appendToolbarItem(this._xItem);

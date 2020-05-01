@@ -204,7 +204,8 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
    * @return {!Element}
    */
   createElementForItem(item) {
-    const element = createElementWithClass('div', 'breakpoint-entry');
+    const element = document.createElement('div');
+    element.classList.add('breakpoint-entry');
     UI.ARIAUtils.markAsListitem(element);
     element.tabIndex = this._list.selectedItem() === item ? 0 : -1;
     element.addEventListener('contextmenu', this._breakpointContextMenu.bind(this), true);

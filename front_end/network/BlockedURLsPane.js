@@ -85,7 +85,8 @@ export class BlockedURLsPane extends UI.Widget.VBox {
    */
   renderItem(pattern, editable) {
     const count = this._blockedRequestsCount(pattern.url);
-    const element = createElementWithClass('div', 'blocked-url');
+    const element = document.createElement('div');
+    element.classList.add('blocked-url');
     const checkbox = element.createChild('input', 'blocked-url-checkbox');
     checkbox.type = 'checkbox';
     checkbox.checked = pattern.enabled;

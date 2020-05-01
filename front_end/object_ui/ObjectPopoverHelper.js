@@ -75,7 +75,8 @@ export class ObjectPopoverHelper {
         customPreviewComponent.expandIfPossible();
         popoverContentElement = customPreviewComponent.element;
       } else {
-        popoverContentElement = createElementWithClass('div', 'object-popover-content');
+        popoverContentElement = document.createElement('div');
+        popoverContentElement.classList.add('object-popover-content');
         UI.Utils.appendStyle(popoverContentElement, 'object_ui/objectPopover.css');
         const titleElement = popoverContentElement.createChild('div', 'monospace object-popover-title');
         titleElement.createChild('span').textContent = description;
@@ -115,7 +116,8 @@ export class ObjectPopoverHelper {
       return null;
     }
 
-    const container = createElementWithClass('div', 'object-popover-container');
+    const container = document.createElement('div');
+    container.classList.add('object-popover-container');
     const title = container.createChild('div', 'function-popover-title source-code');
     const functionName = title.createChild('span', 'function-name');
     functionName.textContent = UI.UIUtils.beautifyFunctionName(response.functionName);

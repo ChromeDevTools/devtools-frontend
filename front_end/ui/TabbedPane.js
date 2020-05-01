@@ -56,7 +56,8 @@ export class TabbedPane extends VBox {
     this.setDefaultFocusedElement(this.contentElement);
     this._headerElement = this.contentElement.createChild('div', 'tabbed-pane-header');
     this._headerContentsElement = this._headerElement.createChild('div', 'tabbed-pane-header-contents');
-    this._tabSlider = createElementWithClass('div', 'tabbed-pane-tab-slider');
+    this._tabSlider = document.createElement('div');
+    this._tabSlider.classList.add('tabbed-pane-tab-slider');
     this._tabsElement = this._headerContentsElement.createChild('div', 'tabbed-pane-header-tabs');
     this._tabsElement.setAttribute('role', 'tablist');
     this._tabsElement.addEventListener('keydown', this._keyDown.bind(this), false);
@@ -624,7 +625,8 @@ export class TabbedPane extends VBox {
   }
 
   _createDropDownButton() {
-    const dropDownContainer = createElementWithClass('div', 'tabbed-pane-header-tabs-drop-down-container');
+    const dropDownContainer = document.createElement('div');
+    dropDownContainer.classList.add('tabbed-pane-header-tabs-drop-down-container');
     const chevronIcon = Icon.create('largeicon-chevron', 'chevron-icon');
     ARIAUtils.markAsMenuButton(dropDownContainer);
     ARIAUtils.setAccessibleName(dropDownContainer, ls`More tabs`);
@@ -1212,7 +1214,8 @@ export class TabbedPaneTab {
       return;
     }
 
-    const iconContainer = createElementWithClass('span', 'tabbed-pane-header-tab-icon');
+    const iconContainer = document.createElement('span');
+    iconContainer.classList.add('tabbed-pane-header-tab-icon');
     const iconNode = measuring ? this._icon.cloneNode(true) : this._icon;
     iconContainer.appendChild(iconNode);
     tabElement.insertBefore(iconContainer, titleElement);
@@ -1224,7 +1227,8 @@ export class TabbedPaneTab {
    * @return {!Element}
    */
   _createTabElement(measuring) {
-    const tabElement = createElementWithClass('div', 'tabbed-pane-header-tab');
+    const tabElement = document.createElement('div');
+    tabElement.classList.add('tabbed-pane-header-tab');
     tabElement.id = 'tab-' + this._id;
     ARIAUtils.markAsTab(tabElement);
     ARIAUtils.setSelected(tabElement, false);

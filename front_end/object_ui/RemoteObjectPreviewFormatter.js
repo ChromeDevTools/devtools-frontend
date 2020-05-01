@@ -247,7 +247,8 @@ export class RemoteObjectPreviewFormatter {
    * @return {!Element}
    */
   _renderDisplayName(name) {
-    const result = createElementWithClass('span', 'name');
+    const result = document.createElement('span');
+    result.classList.add('name');
     const needsQuotes = /^\s|\s$|^$|\n/.test(name);
     result.textContent = needsQuotes ? '"' + name.replace(/\n/g, '\u21B5') + '"' : name;
     return result;

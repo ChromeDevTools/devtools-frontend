@@ -81,7 +81,8 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox {
    * @return {!Element}
    */
   createElementForItem(item) {
-    const element = createElementWithClass('div', 'breakpoint-entry');
+    const element = document.createElement('div');
+    element.classList.add('breakpoint-entry');
     element.addEventListener('contextmenu', this._contextMenu.bind(this, item), true);
     UI.ARIAUtils.markAsListitem(element);
     element.tabIndex = this._list.selectedItem() === item ? 0 : -1;
@@ -93,7 +94,8 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox {
     UI.ARIAUtils.markAsHidden(checkboxLabel);
     element.appendChild(checkboxLabel);
 
-    const labelElement = createElementWithClass('div', 'dom-breakpoint');
+    const labelElement = document.createElement('div');
+    labelElement.classList.add('dom-breakpoint');
     element.appendChild(labelElement);
     element.addEventListener('keydown', event => {
       if (event.key === ' ') {

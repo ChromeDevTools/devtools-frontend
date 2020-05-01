@@ -165,7 +165,8 @@ export class ElementsBreadcrumbs extends UI.Widget.HBox {
         continue;
       }
 
-      crumb = createElementWithClass('span', 'crumb');
+      crumb = document.createElement('span');
+      crumb.classList.add('crumb');
       crumb[this._nodeSymbol] = current;
       crumb.addEventListener('mousedown', this._onClickCrumb.bind(this), false);
 

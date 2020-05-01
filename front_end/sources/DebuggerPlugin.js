@@ -208,7 +208,8 @@ export class DebuggerPlugin extends Plugin {
     // so that the contextMenu event handler can determine which row was clicked on.
     this._textEditor.installGutter(breakpointsGutterType, true);
     for (let i = 0; i < this._textEditor.linesCount; ++i) {
-      const gutterElement = createElementWithClass('div', 'breakpoint-element');
+      const gutterElement = document.createElement('div');
+      gutterElement.classList.add('breakpoint-element');
       this._textEditor.setGutterDecoration(i, breakpointsGutterType, gutterElement);
     }
   }
@@ -1094,7 +1095,8 @@ export class DebuggerPlugin extends Plugin {
         continue;
       }
 
-      const widget = createElementWithClass('div', 'text-editor-value-decoration');
+      const widget = document.createElement('div');
+      widget.classList.add('text-editor-value-decoration');
       const base = this._textEditor.cursorPositionToCoordinates(i, 0);
       const offset = this._textEditor.cursorPositionToCoordinates(i, this._textEditor.line(i).length);
       const codeMirrorLinesLeftPadding = 4;

@@ -364,20 +364,24 @@ export class AXBreadcrumb {
     /** @type {!AccessibilityNode} */
     this._axNode = axNode;
 
-    this._element = createElementWithClass('div', 'ax-breadcrumb');
+    this._element = document.createElement('div');
+    this._element.classList.add('ax-breadcrumb');
     this._element.breadcrumb = this;
 
-    this._nodeElement = createElementWithClass('div', 'ax-node');
+    this._nodeElement = document.createElement('div');
+    this._nodeElement.classList.add('ax-node');
     UI.ARIAUtils.markAsTreeitem(this._nodeElement);
     this._nodeElement.tabIndex = -1;
     this._element.appendChild(this._nodeElement);
-    this._nodeWrapper = createElementWithClass('div', 'wrapper');
+    this._nodeWrapper = document.createElement('div');
+    this._nodeWrapper.classList.add('wrapper');
     this._nodeElement.appendChild(this._nodeWrapper);
 
     this._selectionElement = createElementWithClass('div', 'selection fill');
     this._nodeElement.appendChild(this._selectionElement);
 
-    this._childrenGroupElement = createElementWithClass('div', 'children');
+    this._childrenGroupElement = document.createElement('div');
+    this._childrenGroupElement.classList.add('children');
     UI.ARIAUtils.markAsGroup(this._childrenGroupElement);
     this._element.appendChild(this._childrenGroupElement);
 
@@ -570,7 +574,8 @@ export class AXBreadcrumb {
       return;
     }
 
-    const roleElement = createElementWithClass('span', 'monospace');
+    const roleElement = document.createElement('span');
+    roleElement.classList.add('monospace');
     roleElement.classList.add(RoleStyles[role.type]);
     roleElement.setTextContentTruncatedIfNeeded(role.value || '');
 
@@ -578,7 +583,8 @@ export class AXBreadcrumb {
   }
 
   _appendIgnoredNodeElement() {
-    const ignoredNodeElement = createElementWithClass('span', 'monospace');
+    const ignoredNodeElement = document.createElement('span');
+    ignoredNodeElement.classList.add('monospace');
     ignoredNodeElement.textContent = ls`Ignored`;
     ignoredNodeElement.classList.add('ax-breadcrumbs-ignored-node');
     this._nodeWrapper.appendChild(ignoredNodeElement);

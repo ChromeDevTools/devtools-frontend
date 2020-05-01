@@ -1465,7 +1465,8 @@ registerCustomElement('span', 'dt-slider', class extends HTMLSpanElement {
   constructor() {
     super();
     const root = createShadowRootWithCoreStyles(this, 'ui/slider.css');
-    this.sliderElement = createElementWithClass('input', 'dt-range-input');
+    this.sliderElement = document.createElement('input');
+    this.sliderElement.classList.add('dt-range-input');
     this.sliderElement.type = 'range';
     root.appendChild(this.sliderElement);
   }

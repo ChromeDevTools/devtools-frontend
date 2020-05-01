@@ -32,7 +32,8 @@ export class SoftDropDown {
 
     this._placeholderText = ls`(no item selected)`;
 
-    this.element = createElementWithClass('button', 'soft-dropdown');
+    this.element = document.createElement('button');
+    this.element.classList.add('soft-dropdown');
     appendStyle(this.element, 'ui/softDropDownButton.css');
     this._titleElement = this.element.createChild('span', 'title');
     const dropdownArrowIcon = Icon.create('smallicon-triangle-down');
@@ -263,7 +264,8 @@ export class SoftDropDown {
    * @return {!Element}
    */
   createElementForItem(item) {
-    const element = createElementWithClass('div', 'item');
+    const element = document.createElement('div');
+    element.classList.add('item');
     element.addEventListener('mousemove', e => {
       if ((e.movementX || e.movementY) && this._delegate.isItemSelectable(item)) {
         this._list.selectItem(item, false, /* Don't scroll */ true);

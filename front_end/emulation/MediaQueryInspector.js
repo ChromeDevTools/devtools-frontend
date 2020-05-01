@@ -279,7 +279,8 @@ export class MediaQueryInspector extends UI.Widget.Widget {
     const zoomFactor = this._zoomFactor();
     const minWidthValue = model.minWidthExpression() ? model.minWidthExpression().computedLength() / zoomFactor : 0;
     const maxWidthValue = model.maxWidthExpression() ? model.maxWidthExpression().computedLength() / zoomFactor : 0;
-    const result = createElementWithClass('div', 'media-inspector-bar');
+    const result = document.createElement('div');
+    result.classList.add('media-inspector-bar');
 
     if (model.section() === Section.Max) {
       result.createChild('div', 'media-inspector-marker-spacer');

@@ -29,7 +29,8 @@ export class EventListenersView extends UI.Widget.VBox {
     this._treeOutline.setShowSelectionOnKeyboardFocus(true);
     this._treeOutline.setFocusable(true);
     this.element.appendChild(this._treeOutline.element);
-    this._emptyHolder = createElementWithClass('div', 'gray-info-message');
+    this._emptyHolder = document.createElement('div');
+    this._emptyHolder.classList.add('gray-info-message');
     this._emptyHolder.textContent = Common.UIString.UIString('No event listeners');
     this._emptyHolder.tabIndex = -1;
     this._linkifier = new Components.Linkifier.Linkifier();

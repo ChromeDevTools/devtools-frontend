@@ -70,11 +70,13 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar {
     this.profileViews.classList.add('vbox');
     mainContainer.element.appendChild(this.profileViews);
 
-    this._toolbarElement = createElementWithClass('div', 'profiles-toolbar');
+    this._toolbarElement = document.createElement('div');
+    this._toolbarElement.classList.add('profiles-toolbar');
     mainContainer.element.insertBefore(this._toolbarElement, mainContainer.element.firstChild);
 
     this.panelSidebarElement().classList.add('profiles-tree-sidebar');
-    const toolbarContainerLeft = createElementWithClass('div', 'profiles-toolbar');
+    const toolbarContainerLeft = document.createElement('div');
+    toolbarContainerLeft.classList.add('profiles-toolbar');
     this.panelSidebarElement().insertBefore(toolbarContainerLeft, this.panelSidebarElement().firstChild);
     const toolbar = new UI.Toolbar.Toolbar('', toolbarContainerLeft);
 

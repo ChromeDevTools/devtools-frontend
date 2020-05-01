@@ -48,7 +48,8 @@ export class PlatformFontsWidget extends UI.ThrottledWidget.ThrottledWidget {
     this._sharedModel = sharedModel;
     this._sharedModel.addEventListener(Events.ComputedStyleChanged, this.update, this);
 
-    this._sectionTitle = createElementWithClass('div', 'title');
+    this._sectionTitle = document.createElement('div');
+    this._sectionTitle.classList.add('title');
     this.contentElement.classList.add('platform-fonts');
     this.contentElement.appendChild(this._sectionTitle);
     this._sectionTitle.textContent = Common.UIString.UIString('Rendered Fonts');

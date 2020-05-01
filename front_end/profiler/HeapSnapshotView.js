@@ -130,7 +130,8 @@ export class HeapSnapshotView extends UI.View.SimpleView {
       splitWidgetResizer = this._tabbedPane.headerElement();
       this._objectDetailsView = this._tabbedPane;
     } else {
-      const retainmentViewHeader = createElementWithClass('div', 'heap-snapshot-view-resizer');
+      const retainmentViewHeader = document.createElement('div');
+      retainmentViewHeader.classList.add('heap-snapshot-view-resizer');
       const retainingPathsTitleDiv = retainmentViewHeader.createChild('div', 'title');
       const retainingPathsTitle = retainingPathsTitleDiv.createChild('span');
       retainingPathsTitle.textContent = Common.UIString.UIString('Retainers');
@@ -1002,7 +1003,8 @@ export class AllocationPerspective extends Perspective {
     heapSnapshotView._splitWidget.setSidebarWidget(heapSnapshotView._objectDetailsView);
 
     const allocatedObjectsView = new UI.Widget.VBox();
-    const resizer = createElementWithClass('div', 'heap-snapshot-view-resizer');
+    const resizer = document.createElement('div');
+    resizer.classList.add('heap-snapshot-view-resizer');
     const title = resizer.createChild('div', 'title').createChild('span');
     title.textContent = Common.UIString.UIString('Live objects');
     this._allocationSplitWidget.hideDefaultResizer();

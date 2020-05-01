@@ -69,7 +69,8 @@ export class NodeConnectionsView extends UI.Widget.VBox {
     this._list = new UI.ListWidget.ListWidget(this);
     this._list.registerRequiredCSS('node_main/nodeConnectionsPanel.css');
     this._list.element.classList.add('network-discovery-list');
-    const placeholder = createElementWithClass('div', 'network-discovery-list-empty');
+    const placeholder = document.createElement('div');
+    placeholder.classList.add('network-discovery-list-empty');
     placeholder.textContent = Common.UIString.UIString('No connections specified');
     this._list.setEmptyPlaceholder(placeholder);
     this._list.show(this.element);
@@ -116,7 +117,8 @@ export class NodeConnectionsView extends UI.Widget.VBox {
    * @return {!Element}
    */
   renderItem(rule, editable) {
-    const element = createElementWithClass('div', 'network-discovery-list-item');
+    const element = document.createElement('div');
+    element.classList.add('network-discovery-list-item');
     element.createChild('div', 'network-discovery-value network-discovery-address').textContent = rule.address;
     return element;
   }

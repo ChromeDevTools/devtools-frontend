@@ -1163,7 +1163,8 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
   updateIcon() {
     const binding = self.Persistence.persistence.binding(this._uiSourceCode);
     if (binding) {
-      const container = createElementWithClass('span', 'icon-stack');
+      const container = document.createElement('span');
+      container.classList.add('icon-stack');
       let iconType = 'largeicon-navigator-file-sync';
       if (Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(binding.fileSystem)) {
         iconType = 'largeicon-navigator-snippet';

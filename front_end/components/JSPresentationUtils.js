@@ -42,7 +42,8 @@ import {Linkifier} from './Linkifier.js';
  */
 export function buildStackTracePreviewContents(target, linkifier, options = {}) {
   const {stackTrace, contentUpdated, tabStops} = options;
-  const element = createElementWithClass('span', 'monospace');
+  const element = document.createElement('span');
+  element.classList.add('monospace');
   element.style.display = 'inline-block';
   const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(element, 'components/jsUtils.css');
   const contentElement = shadowRoot.createChild('table', 'stack-preview-container');

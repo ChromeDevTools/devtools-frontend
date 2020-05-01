@@ -20,7 +20,8 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar {
 
     this._mainView = new SecurityMainView(this);
 
-    const title = createElementWithClass('span', 'title');
+    const title = document.createElement('span');
+    title.classList.add('title');
     title.textContent = Common.UIString.UIString('Overview');
     this._sidebarMainViewElement = new SecurityPanelSidebarTreeElement(
         title, this._setVisibleView.bind(this, this._mainView), 'security-main-view-sidebar-tree-item', 'lock-icon');

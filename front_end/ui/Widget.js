@@ -43,7 +43,8 @@ export class Widget extends Common.ObjectWrapper.ObjectWrapper {
    */
   constructor(isWebComponent, delegatesFocus) {
     super();
-    this.contentElement = createElementWithClass('div', 'widget');
+    this.contentElement = document.createElement('div');
+    this.contentElement.classList.add('widget');
     if (isWebComponent) {
       this.element = createElementWithClass('div', 'vbox flex-auto');
       this._shadowRoot = createShadowRootWithCoreStyles(this.element, undefined, delegatesFocus);

@@ -264,7 +264,8 @@ export class _ExpandableContainerWidget extends VBox {
     this.element.classList.add('flex-none');
     this.registerRequiredCSS('ui/viewContainers.css');
 
-    this._titleElement = createElementWithClass('div', 'expandable-view-title');
+    this._titleElement = document.createElement('div');
+    this._titleElement.classList.add('expandable-view-title');
     ARIAUtils.markAsButton(this._titleElement);
     this._titleExpandIcon = Icon.create('smallicon-triangle-right', 'title-expand-icon');
     this._titleElement.appendChild(this._titleExpandIcon);

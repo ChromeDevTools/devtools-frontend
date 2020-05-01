@@ -51,7 +51,8 @@ export class NetworkConfigView extends UI.Widget.VBox {
     otherUserAgentElement.required = true;
     UI.ARIAUtils.setAccessibleName(otherUserAgentElement, otherUserAgentElement.placeholder);
 
-    const errorElement = createElementWithClass('div', 'network-config-input-validation-error');
+    const errorElement = document.createElement('div');
+    errorElement.classList.add('network-config-input-validation-error');
     UI.ARIAUtils.markAsAlert(errorElement);
     if (!otherUserAgentElement.value) {
       errorElement.textContent = ls`Custom user agent field is required`;

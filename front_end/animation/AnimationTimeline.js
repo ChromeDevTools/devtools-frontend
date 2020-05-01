@@ -816,7 +816,8 @@ export class NodeUI {
    * @param {!AnimationEffect} animationEffect
    */
   constructor(animationEffect) {
-    this.element = createElementWithClass('div', 'animation-node-row');
+    this.element = document.createElement('div');
+    this.element.classList.add('animation-node-row');
     this._description = this.element.createChild('div', 'animation-node-description');
     this._description.tabIndex = 0;
     this._timelineElement = this.element.createChild('div', 'animation-node-timeline');

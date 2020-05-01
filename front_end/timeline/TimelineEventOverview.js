@@ -491,7 +491,8 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
      * @return {?Element}
      */
     function createFrameElement(image) {
-      const element = createElementWithClass('div', 'frame');
+      const element = document.createElement('div');
+      element.classList.add('frame');
       if (image) {
         element.createChild('div', 'thumbnail').appendChild(image);
       }

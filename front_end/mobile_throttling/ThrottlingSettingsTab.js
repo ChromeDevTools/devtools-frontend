@@ -65,7 +65,8 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
    */
   renderItem(item, editable) {
     const conditions = /** @type {!SDK.NetworkManager.Conditions} */ (item);
-    const element = createElementWithClass('div', 'conditions-list-item');
+    const element = document.createElement('div');
+    element.classList.add('conditions-list-item');
     const title = element.createChild('div', 'conditions-list-text conditions-list-title');
     const titleText = title.createChild('div', 'conditions-list-title-text');
     titleText.textContent = conditions.title;

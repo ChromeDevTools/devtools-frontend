@@ -1500,7 +1500,8 @@ export class TimelineUIUtils {
       const delay = event.startTime - initiator.startTime;
       contentHelper.appendTextRow(ls`Pending for`, Number.preciseMillisToString(delay, 1));
 
-      const link = createElementWithClass('span', 'devtools-link');
+      const link = document.createElement('span');
+      link.classList.add('devtools-link');
       UI.ARIAUtils.markAsLink(link);
       link.tabIndex = 0;
       link.textContent = ls`Reveal`;
@@ -1720,7 +1721,8 @@ export class TimelineUIUtils {
    * @return {!Element}
    */
   static createEventDivider(event, zeroTime) {
-    const eventDivider = createElementWithClass('div', 'resources-event-divider');
+    const eventDivider = document.createElement('div');
+    eventDivider.classList.add('resources-event-divider');
     const startTime = Number.millisToString(event.startTime - zeroTime);
     eventDivider.title = Common.UIString.UIString('%s at %s', TimelineUIUtils.eventTitle(event), startTime);
     const style = TimelineUIUtils.markerStyleForEvent(event);
@@ -1876,7 +1878,8 @@ export class TimelineUIUtils {
     contentHelper.appendTextRow(ls`FPS`, Math.floor(1000 / durationInMillis));
     contentHelper.appendTextRow(ls`CPU time`, Number.millisToString(frame.cpuTime, true));
     if (filmStripFrame) {
-      const filmStripPreview = createElementWithClass('div', 'timeline-filmstrip-preview');
+      const filmStripPreview = document.createElement('div');
+      filmStripPreview.classList.add('timeline-filmstrip-preview');
       filmStripFrame.imageDataPromise()
           .then(data => UI.UIUtils.loadImageFromData(data))
           .then(image => image && filmStripPreview.appendChild(image));
@@ -2235,7 +2238,8 @@ export class InvalidationsGroupElement extends UI.TreeOutline.TreeElement {
     const title = UI.UIUtils.formatLocalized('%s for %s', [reason, truncatedNodesElement]);
 
     if (topFrame && this._contentHelper.linkifier()) {
-      const stack = createElementWithClass('span', 'monospace');
+      const stack = document.createElement('span');
+      stack.classList.add('monospace');
       const completeTitle = UI.UIUtils.formatLocalized('%s. %s', [title, stack]);
       stack.createChild('span').textContent = TimelineUIUtils.frameDisplayName(topFrame);
       const link = this._contentHelper.linkifier().maybeLinkifyConsoleCallFrame(target, topFrame);
@@ -2254,7 +2258,8 @@ export class InvalidationsGroupElement extends UI.TreeOutline.TreeElement {
    * @returns {!Promise}
    */
   async onpopulate() {
-    const content = createElementWithClass('div', 'content');
+    const content = document.createElement('div');
+    content.classList.add('content');
 
     const first = this._invalidations[0];
     if (first.cause.stackTrace) {
@@ -2502,7 +2507,8 @@ export class TimelineDetailsContentHelper {
     this._linkifier = linkifier;
     this._target = target;
 
-    this.element = createElementWithClass('div', 'timeline-details-view-block');
+    this.element = document.createElement('div');
+    this.element.classList.add('timeline-details-view-block');
     this._tableElement = this.element.createChild('div', 'vbox timeline-details-chip-body');
     this.fragment.appendChild(this.element);
   }
@@ -2515,7 +2521,8 @@ export class TimelineDetailsContentHelper {
     if (!this._tableElement.hasChildNodes()) {
       this.element.removeChildren();
     } else {
-      this.element = createElementWithClass('div', 'timeline-details-view-block');
+      this.element = document.createElement('div');
+      this.element.classList.add('timeline-details-view-block');
       this.fragment.appendChild(this.element);
     }
 

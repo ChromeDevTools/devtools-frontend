@@ -56,7 +56,8 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
     this._previousText = '';
     this._currentSuggestion = null;
     this._completionRequestId = 0;
-    this._ghostTextElement = createElementWithClass('span', 'auto-complete-text');
+    this._ghostTextElement = document.createElement('span');
+    this._ghostTextElement.classList.add('auto-complete-text');
     this._ghostTextElement.setAttribute('contenteditable', 'false');
     /**
      * @type {!Array<number>}

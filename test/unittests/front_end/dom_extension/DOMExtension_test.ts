@@ -34,7 +34,8 @@ function createChild(parent: HTMLElement, tagName: string, name?: string, text =
 // TODO(crbug.com/1061125): re-enable once dom-extension typechecks with TypeScript
 describe.skip('DataGrid', () => {
   it('Traverse Node with Children', () => {
-    const component1 = createElementWithClass('div', 'component1');
+    const component1 = document.createElement('div');
+    component1.classList.add('component1');
     createChild(component1, 'div', 'component1-content', 'text 1');
     createChild(component1, 'div', 'component2-content', 'text 2');
     createChild(component1, 'span', undefined, 'text 3');
@@ -50,7 +51,7 @@ describe.skip('DataGrid', () => {
         */
 
 
-    let node = component1;
+    let node: HTMLElement = component1;
     assert.strictEqual(node.nodeValue, null, 'root node value is incorrect');
     assert.strictEqual(node.nodeName, 'DIV', 'root node name is incorrect');
     assert.strictEqual(node.className, 'component1', 'root node class is incorrect');
@@ -85,13 +86,16 @@ describe.skip('DataGrid', () => {
   });
 
   it('Traverse Node with Shadows', () => {
-    const component1 = createElementWithClass('div', 'component1');
+    const component1 = document.createElement('div');
+    component1.classList.add('component1');
     const shadow1 = component1.attachShadow({mode: 'open'});
-    const shadow1Content = createElementWithClass('div', 'shadow-component1');
+    const shadow1Content = document.createElement('div');
+    shadow1Content.classList.add('shadow-component1');
     shadow1.appendChild(shadow1Content);
     const component2 = shadow1Content.createChild('div', 'component2');
     const shadow2 = component2.attachShadow({mode: 'open'});
-    const shadow2Content = createElementWithClass('div', 'shadow-component1');
+    const shadow2Content = document.createElement('div');
+    shadow2Content.classList.add('shadow-component1');
     shadow2.appendChild(shadow2Content);
     const midDiv = createChild(shadow2Content, 'div', 'mid-div');
     createChild(midDiv, 'div', undefined, 'component2-text');
@@ -103,7 +107,7 @@ describe.skip('DataGrid', () => {
         * <div class="shadow-component1"><div class="mid-div" slot="mid-div"><div>component2-text</div></div></div>
         */
 
-    let node = component1;
+    let node: HTMLElement = component1;
     assert.strictEqual(node.nodeName, 'DIV', 'root node name is incorrect');
     assert.strictEqual(node.className, 'component1', 'root node class is incorrect');
 
@@ -139,9 +143,11 @@ describe.skip('DataGrid', () => {
   });
 
   it('Traverse Node with Slots', () => {
-    const component1 = createElementWithClass('div', 'component1');
+    const component1 = document.createElement('div');
+    component1.classList.add('component1');
     const shadow1 = component1.attachShadow({mode: 'open'});
-    const shadow1Content = createElementWithClass('div', 'shadow-component1');
+    const shadow1Content = document.createElement('div');
+    shadow1Content.classList.add('shadow-component1');
     shadow1.appendChild(shadow1Content);
     createSlot(shadow1Content, 'component1-content');
     createSlot(shadow1Content);
@@ -149,7 +155,8 @@ describe.skip('DataGrid', () => {
     const shadow2 = component2.attachShadow({mode: 'open'});
     createSlot(component2, 'component2-content');
     createChild(component2, 'div', 'component2-content', 'component2 light dom text');
-    const shadow2Content = createElementWithClass('div', 'shadow-component1');
+    const shadow2Content = document.createElement('div');
+    shadow2Content.classList.add('shadow-component1');
     shadow2.appendChild(shadow2Content);
     const midDiv = createChild(shadow2Content, 'div', 'mid-div');
     createChild(midDiv, 'div', undefined, 'component2-text');
@@ -176,7 +183,7 @@ describe.skip('DataGrid', () => {
         * </div>
         */
 
-    let node = component1;
+    let node: HTMLElement = component1;
     assert.strictEqual(node.nodeName, 'DIV', 'root node name is incorrect');
     assert.strictEqual(node.className, 'component1', 'root node class is incorrect');
 

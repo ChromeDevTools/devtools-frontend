@@ -16,7 +16,8 @@ export class CustomPreviewSection {
    * @param {!SDK.RemoteObject.RemoteObject} object
    */
   constructor(object) {
-    this._sectionElement = createElementWithClass('span', 'custom-expandable-section');
+    this._sectionElement = document.createElement('span');
+    this._sectionElement.classList.add('custom-expandable-section');
     this._object = object;
     this._expanded = false;
     this._cachedContent = null;
@@ -235,7 +236,8 @@ export class CustomPreviewComponent {
   constructor(object) {
     this._object = object;
     this._customPreviewSection = new CustomPreviewSection(object);
-    this.element = createElementWithClass('span', 'source-code');
+    this.element = document.createElement('span');
+    this.element.classList.add('source-code');
     const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(this.element, 'object_ui/customPreviewComponent.css');
     this.element.addEventListener('contextmenu', this._contextMenuEventFired.bind(this), false);
     shadowRoot.appendChild(this._customPreviewSection.element());

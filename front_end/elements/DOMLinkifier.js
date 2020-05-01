@@ -72,7 +72,8 @@ export const linkifyNodeReference = function(node, options = {}) {
     return createTextNode(Common.UIString.UIString('<node>'));
   }
 
-  const root = createElementWithClass('span', 'monospace');
+  const root = document.createElement('span');
+  root.classList.add('monospace');
   const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(root, 'elements/domLinkifier.css');
   const link = shadowRoot.createChild('div', 'node-link');
 

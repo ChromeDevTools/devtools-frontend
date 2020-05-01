@@ -45,7 +45,8 @@ export class KeybindsSettingsTab extends UI.Widget.VBox {
    * @return {!Element}
    */
   renderItem(item) {
-    const itemElement = createElementWithClass('div', 'keybinds-list-item');
+    const itemElement = document.createElement('div');
+    itemElement.classList.add('keybinds-list-item');
 
     if (typeof item === 'string') {
       itemElement.classList.add('keybinds-category-header');

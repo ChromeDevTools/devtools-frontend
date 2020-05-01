@@ -285,7 +285,8 @@ export class ConsoleView extends UI.Widget.VBox {
 
   _onIssuesCountChanged() {
     if (!this._issueBarDiv) {
-      this._issueBarDiv = createElementWithClass('div', 'flex-none');
+      this._issueBarDiv = document.createElement('div');
+      this._issueBarDiv.classList.add('flex-none');
       const issueBar = new UI.Infobar.Infobar(
           UI.Infobar.Type.Warning,
           ls
@@ -1506,13 +1507,15 @@ export class ConsoleCommand extends ConsoleViewMessage {
    */
   contentElement() {
     if (!this._contentElement) {
-      this._contentElement = createElementWithClass('div', 'console-user-command');
+      this._contentElement = document.createElement('div');
+      this._contentElement.classList.add('console-user-command');
       const icon = UI.Icon.Icon.create('smallicon-user-command', 'command-result-icon');
       this._contentElement.appendChild(icon);
 
       this._contentElement.message = this;
 
-      this._formattedCommand = createElementWithClass('span', 'source-code');
+      this._formattedCommand = document.createElement('span');
+      this._formattedCommand.classList.add('source-code');
       this._formattedCommand.textContent = Platform.StringUtilities.replaceControlCharacters(this.text);
       this._contentElement.appendChild(this._formattedCommand);
 

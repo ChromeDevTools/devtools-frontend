@@ -24,7 +24,8 @@ export class Infobar {
    * @param {!Common.Settings.Setting=} disableSetting
    */
   constructor(type, text, actions, disableSetting) {
-    this.element = createElementWithClass('div', 'flex-none');
+    this.element = document.createElement('div');
+    this.element.classList.add('flex-none');
     this._shadowRoot = createShadowRootWithCoreStyles(this.element, 'ui/infobar.css');
     this._contentElement = this._shadowRoot.createChild('div', 'infobar infobar-' + type);
 

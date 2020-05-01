@@ -510,7 +510,9 @@ export class ToolbarText extends ToolbarItem {
    * @param {string=} text
    */
   constructor(text) {
-    super(createElementWithClass('div', 'toolbar-text'));
+    const element = document.createElement('div');
+    element.classList.add('toolbar-text');
+    super(element);
     this.element.classList.add('toolbar-text');
     this.setText(text || '');
   }
@@ -540,7 +542,9 @@ export class ToolbarButton extends ToolbarItem {
    * @param {string=} text
    */
   constructor(title, glyph, text) {
-    super(createElementWithClass('button', 'toolbar-button'));
+    const element = document.createElement('button');
+    element.classList.add('toolbar-button');
+    super(element);
     this.element.addEventListener('click', this._clicked.bind(this), false);
     this.element.addEventListener('mousedown', this._mouseDown.bind(this), false);
 
@@ -639,7 +643,9 @@ export class ToolbarInput extends ToolbarItem {
    * @param {(function(string, string, boolean=):!Promise<!Suggestions>)=} completions
    */
   constructor(placeholder, accessiblePlaceholder, growFactor, shrinkFactor, tooltip, completions) {
-    super(createElementWithClass('div', 'toolbar-input'));
+    const element = document.createElement('div');
+    element.classList.add('toolbar-input');
+    super(element);
 
     const internalPromptElement = this.element.createChild('div', 'toolbar-input-prompt');
     internalPromptElement.addEventListener('focus', () => this.element.classList.add('focused'));
@@ -919,7 +925,9 @@ export class ToolbarComboBox extends ToolbarItem {
    * @param {string=} className
    */
   constructor(changeHandler, title, className) {
-    super(createElementWithClass('span', 'toolbar-select-container'));
+    const element = document.createElement('span');
+    element.classList.add('toolbar-select-container');
+    super(element);
 
     this._selectElement = this.element.createChild('select', 'toolbar-item');
     const dropdownArrowIcon = Icon.create('smallicon-triangle-down', 'toolbar-dropdown-arrow');

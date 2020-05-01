@@ -476,7 +476,9 @@ export class ToolbarButton extends UI.Toolbar.ToolbarItem {
    * @param {!UI.Action.Action} action
    */
   constructor(action) {
-    super(createElementWithClass('button', 'history-dropdown-button'));
+    const element = document.createElement('button');
+    element.classList.add('history-dropdown-button');
+    super(element);
     UI.Utils.appendStyle(this.element, 'timeline/historyToolbarButton.css');
     this._contentElement = this.element.createChild('span', 'content');
     const dropdownArrowIcon = UI.Icon.Icon.create('smallicon-triangle-down');

@@ -236,6 +236,9 @@ export class AnimationTimeline extends UI.Widget.VBox {
           }
         }
         console.assert(animGroup);
+        if (!animGroup) {
+          return Promise.resolve(false);
+        }
         const screenshots = animGroup.screenshots();
         if (!screenshots.length) {
           return Promise.resolve(false);

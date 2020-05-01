@@ -1055,7 +1055,7 @@ export class NetworkRequestNode extends NetworkNode {
         const previewImage = document.createElement('img');
         previewImage.classList.add('image-network-icon-preview');
         previewImage.alt = this._request.resourceType().title();
-        this._request.populateImageSource(previewImage);
+        this._request.populateImageSource(/** @type {!HTMLImageElement} */ (previewImage));
 
         iconElement = document.createElement('div');
         iconElement.classList.add('icon');

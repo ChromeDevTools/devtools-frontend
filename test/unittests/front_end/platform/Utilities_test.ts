@@ -22,7 +22,6 @@ declare global {
   interface String {
     trimMiddle(maxLength: number): string;
     repeat(length: number): string;
-    escapeForRegExp(): string;
   }
 
   interface StringConstructor {

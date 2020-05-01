@@ -158,7 +158,7 @@ class AffectedCookiesView extends AffectedResourcesView {
    * @param {!Iterable<!Protocol.Audits.AffectedCookie>} cookies
    */
   _appendAffectedCookies(cookies) {
-    const header = createElementWithClass('tr');
+    const header = document.createElement('tr');
 
     const name = createElementWithClass('td', 'affected-resource-header');
     name.textContent = 'Name';
@@ -339,7 +339,7 @@ class AffectedMixedContentView extends AffectedResourcesView {
    * @param {!Iterable<!Protocol.Audits.MixedContentIssueDetails>} mixedContents
    */
   _appendAffectedMixedContents(mixedContents) {
-    const header = createElementWithClass('tr');
+    const header = document.createElement('tr');
 
     const name = createElementWithClass('td', 'affected-resource-header');
     name.textContent = 'Name';
@@ -382,7 +382,7 @@ class AffectedMixedContentView extends AffectedResourcesView {
     const element = createElementWithClass('tr', 'affected-resource-mixed-content');
     const filename = extractShortPath(mixedContent.insecureURL);
 
-    const name = createElementWithClass('td');
+    const name = document.createElement('td');
     if (maybeRequest) {
       const request = maybeRequest;  // re-assignment to make type checker happy
       name.appendChild(UI.UIUtils.createTextButton(filename, () => {

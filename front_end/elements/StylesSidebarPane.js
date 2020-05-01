@@ -183,7 +183,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
    * @return {!Element}
    */
   static createPropertyFilterElement(placeholder, container, filterCallback) {
-    const input = createElementWithClass('input');
+    const input = document.createElement('input');
     input.placeholder = placeholder;
 
     function searchHandler() {

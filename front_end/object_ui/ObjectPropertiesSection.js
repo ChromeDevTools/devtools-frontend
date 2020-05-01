@@ -352,7 +352,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
      * @return {!Element}
      */
     function createUnknownInternalLocationElement() {
-      const valueElement = createElementWithClass('span');
+      const valueElement = document.createElement('span');
       valueElement.textContent = '<' + Common.UIString.UIString('unknown') + '>';
       valueElement.title = description || '';
       return valueElement;

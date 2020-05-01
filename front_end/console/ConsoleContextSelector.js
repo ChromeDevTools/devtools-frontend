@@ -236,7 +236,7 @@ export class ConsoleContextSelector {
    * @return {!Element}
    */
   createElementForItem(item) {
-    const element = createElementWithClass('div');
+    const element = document.createElement('div');
     const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(element, 'console/consoleContextSelector.css');
     const title = shadowRoot.createChild('div', 'title');
     title.createTextChild(this.titleFor(item).trimEndWithMaxLength(100));

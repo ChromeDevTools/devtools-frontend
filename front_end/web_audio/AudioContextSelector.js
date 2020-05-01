@@ -87,7 +87,7 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper {
    * @return {!Element}
    */
   createElementForItem(item) {
-    const element = createElementWithClass('div');
+    const element = document.createElement('div');
     const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(element, 'web_audio/audioContextSelector.css');
     const title = shadowRoot.createChild('div', 'title');
     title.createTextChild(this.titleFor(item).trimEndWithMaxLength(100));

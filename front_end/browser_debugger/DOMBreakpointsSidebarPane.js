@@ -105,7 +105,7 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox {
     const description = createElement('div');
     const breakpointTypeLabel = BreakpointTypeLabels.get(item.type);
     description.textContent = breakpointTypeLabel;
-    const linkifiedNode = createElementWithClass('monospace');
+    const linkifiedNode = document.createElement('monospace');
     linkifiedNode.style.display = 'block';
     labelElement.appendChild(linkifiedNode);
     Common.Linkifier.Linkifier.linkify(item.node, {preventKeyboardFocus: true}).then(linkified => {

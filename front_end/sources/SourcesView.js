@@ -125,7 +125,7 @@ export class SourcesView extends UI.Widget.VBox {
       {actionId: 'sources.add-folder-to-workspace', description: ls`Drop in a folder to add to workspace`}
     ];
 
-    const element = createElementWithClass('div');
+    const element = document.createElement('div');
     const list = element.createChild('div', 'tabbed-pane-placeholder');
     list.addEventListener('keydown', this._placeholderOnKeyDown.bind(this), false);
     UI.ARIAUtils.markAsList(list);

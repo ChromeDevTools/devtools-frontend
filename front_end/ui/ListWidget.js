@@ -65,7 +65,9 @@ export class ListWidget extends VBox {
    */
   appendItem(item, editable) {
     if (this._lastSeparator && this._items.length) {
-      this._list.appendChild(createElementWithClass('div', 'list-separator'));
+      const element = document.createElement('div');
+      element.classList.add('list-separator');
+      this._list.appendChild(element);
     }
     this._lastSeparator = false;
 
@@ -374,7 +376,8 @@ export class Editor {
    * @return {!HTMLSelectElement}
    */
   createSelect(name, options, validator, title) {
-    const select = /** @type {!HTMLSelectElement} */ (createElementWithClass('select', 'chrome-select'));
+    const select = /** @type {!HTMLSelectElement} */ (document.createElement('select'));
+    select.classList.add('chrome-select');
     for (let index = 0; index < options.length; ++index) {
       const option = select.createChild('option');
       option.value = options[index];

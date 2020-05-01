@@ -84,11 +84,19 @@ export class DeviceModeToolbar {
   }
 
   /**
+   * @return {!Element}
+   */
+  _createEmptyToolbarElement() {
+    const element = document.createElement('div');
+    element.classList.add('device-mode-empty-toolbar-element');
+    return element;
+  }
+
+  /**
    * @param {!UI.Toolbar.Toolbar} toolbar
    */
   _fillLeftToolbar(toolbar) {
-    toolbar.appendToolbarItem(
-        this._wrapToolbarItem(createElementWithClass('div', 'device-mode-empty-toolbar-element')));
+    toolbar.appendToolbarItem(this._wrapToolbarItem(this._createEmptyToolbarElement()));
     this._deviceSelectItem = new UI.Toolbar.ToolbarMenuButton(this._appendDeviceMenuItems.bind(this));
     this._deviceSelectItem.setGlyph('');
     this._deviceSelectItem.turnIntoSelect();
@@ -155,8 +163,7 @@ export class DeviceModeToolbar {
    * @param {!UI.Toolbar.Toolbar} toolbar
    */
   _fillRightToolbar(toolbar) {
-    toolbar.appendToolbarItem(
-        this._wrapToolbarItem(createElementWithClass('div', 'device-mode-empty-toolbar-element')));
+    toolbar.appendToolbarItem(this._wrapToolbarItem(this._createEmptyToolbarElement()));
     this._scaleItem = new UI.Toolbar.ToolbarMenuButton(this._appendScaleMenuItems.bind(this));
     this._scaleItem.setTitle(Common.UIString.UIString('Zoom'));
     this._scaleItem.setGlyph('');
@@ -164,8 +171,7 @@ export class DeviceModeToolbar {
     this._scaleItem.setDarkText();
     toolbar.appendToolbarItem(this._scaleItem);
 
-    toolbar.appendToolbarItem(
-        this._wrapToolbarItem(createElementWithClass('div', 'device-mode-empty-toolbar-element')));
+    toolbar.appendToolbarItem(this._wrapToolbarItem(this._createEmptyToolbarElement()));
     this._deviceScaleItem = new UI.Toolbar.ToolbarMenuButton(this._appendDeviceScaleMenuItems.bind(this));
     this._deviceScaleItem.setVisible(this._showDeviceScaleFactorSetting.get());
     this._deviceScaleItem.setTitle(Common.UIString.UIString('Device pixel ratio'));
@@ -174,8 +180,7 @@ export class DeviceModeToolbar {
     this._deviceScaleItem.setDarkText();
     toolbar.appendToolbarItem(this._deviceScaleItem);
 
-    toolbar.appendToolbarItem(
-        this._wrapToolbarItem(createElementWithClass('div', 'device-mode-empty-toolbar-element')));
+    toolbar.appendToolbarItem(this._wrapToolbarItem(this._createEmptyToolbarElement()));
     this._uaItem = new UI.Toolbar.ToolbarMenuButton(this._appendUserAgentMenuItems.bind(this));
     this._uaItem.setVisible(this._showUserAgentTypeSetting.get());
     this._uaItem.setTitle(Common.UIString.UIString('Device type'));
@@ -193,8 +198,7 @@ export class DeviceModeToolbar {
    * @param {!UI.Toolbar.Toolbar} toolbar
    */
   _fillModeToolbar(toolbar) {
-    toolbar.appendToolbarItem(
-        this._wrapToolbarItem(createElementWithClass('div', 'device-mode-empty-toolbar-element')));
+    toolbar.appendToolbarItem(this._wrapToolbarItem(this._createEmptyToolbarElement()));
     this._modeButton = new UI.Toolbar.ToolbarButton('', 'largeicon-rotate-screen');
     this._modeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._modeMenuClicked, this);
     toolbar.appendToolbarItem(this._modeButton);
@@ -204,8 +208,7 @@ export class DeviceModeToolbar {
    * @param {!UI.Toolbar.Toolbar} toolbar
    */
   _fillOptionsToolbar(toolbar) {
-    toolbar.appendToolbarItem(
-        this._wrapToolbarItem(createElementWithClass('div', 'device-mode-empty-toolbar-element')));
+    toolbar.appendToolbarItem(this._wrapToolbarItem(this._createEmptyToolbarElement()));
     const moreOptionsButton = new UI.Toolbar.ToolbarMenuButton(this._appendOptionsMenuItems.bind(this));
     moreOptionsButton.setTitle(Common.UIString.UIString('More options'));
     toolbar.appendToolbarItem(moreOptionsButton);

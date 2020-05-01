@@ -891,7 +891,9 @@ export class ToolbarSeparator extends ToolbarItem {
    * @param {boolean=} spacer
    */
   constructor(spacer) {
-    super(createElementWithClass('div', spacer ? 'toolbar-spacer' : 'toolbar-divider'));
+    const element = document.createElement('div');
+    element.classList.add(spacer ? 'toolbar-spacer' : 'toolbar-divider');
+    super(element);
   }
 }
 

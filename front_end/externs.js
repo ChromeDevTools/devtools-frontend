@@ -840,14 +840,6 @@ const createElement = function(tagName, customElementType) {};
 const createTextNode = function(data) {};
 
 /**
- * @param {string} elementName
- * @param {string=} className
- * @param {string=} customElementType
- * @return {!Element}
- */
-const createElementWithClass = function(elementName, className, customElementType) {};
-
-/**
  * @param {string} childType
  * @param {string=} className
  * @return {!Element}

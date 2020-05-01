@@ -169,7 +169,9 @@ export class ElementsPanel extends UI.Panel.Panel {
       new ElementsTreeElementHighlighter(treeOutline);
       this._treeOutlines.add(treeOutline);
       if (domModel.target().parentTarget()) {
-        this._treeOutlineHeaders.set(treeOutline, createElementWithClass('div', 'elements-tree-header'));
+        const element = document.createElement('div');
+        element.classList.add('elements-tree-header');
+        this._treeOutlineHeaders.set(treeOutline, element);
         this._targetNameChanged(domModel.target());
       }
     }

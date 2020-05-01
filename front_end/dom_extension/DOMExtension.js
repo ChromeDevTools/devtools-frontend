@@ -383,17 +383,6 @@ Document.prototype.createElementWithClass = function(elementName, className, cus
 };
 
 /**
- * @param {string} elementName
- * @param {string=} className
- * @param {string=} customElementType
- * @return {!Element}
- * @suppressGlobalPropertiesCheck
- */
-self.createElementWithClass = function(elementName, className, customElementType) {
-  return document.createElementWithClass(elementName, className, customElementType);
-};
-
-/**
  * @param {string} childType
  * @param {string=} className
  * @return {!Element}

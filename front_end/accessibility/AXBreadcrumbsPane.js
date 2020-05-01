@@ -377,7 +377,9 @@ export class AXBreadcrumb {
     this._nodeWrapper.classList.add('wrapper');
     this._nodeElement.appendChild(this._nodeWrapper);
 
-    this._selectionElement = createElementWithClass('div', 'selection fill');
+    this._selectionElement = document.createElement('div');
+    this._selectionElement.classList.add('selection');
+    this._selectionElement.classList.add('fill');
     this._nodeElement.appendChild(this._selectionElement);
 
     this._childrenGroupElement = document.createElement('div');

@@ -114,7 +114,9 @@ export class AnimationTimeline extends UI.Widget.VBox {
    * @return {!Element} element
    */
   _createScrubber() {
-    this._timelineScrubber = createElementWithClass('div', 'animation-scrubber hidden');
+    this._timelineScrubber = document.createElement('div');
+    this._timelineScrubber.classList.add('animation-scrubber');
+    this._timelineScrubber.classList.add('hidden');
     this._timelineScrubberLine = this._timelineScrubber.createChild('div', 'animation-scrubber-line');
     this._timelineScrubberLine.createChild('div', 'animation-scrubber-head');
     this._timelineScrubber.createChild('div', 'animation-time-overlay');

@@ -343,7 +343,9 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     }
 
     if (wasThrown) {
-      const wrapperElement = createElementWithClass('span', 'error value');
+      const wrapperElement = document.createElement('span');
+      wrapperElement.classList.add('error');
+      wrapperElement.classList.add('value');
       wrapperElement.appendChild(UI.UIUtils.formatLocalized('[Exception: %s]', [propertyValue.element]));
       propertyValue.element = wrapperElement;
     }

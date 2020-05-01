@@ -12,7 +12,9 @@ import * as UI from '../ui/ui.js';
  */
 export class DebuggerPausedMessage {
   constructor() {
-    this._element = createElementWithClass('div', 'paused-message flex-none');
+    this._element = document.createElement('div');
+    this._element.classList.add('paused-message');
+    this._element.classList.add('flex-none');
     const root = UI.Utils.createShadowRootWithCoreStyles(this._element, 'sources/debuggerPausedMessage.css');
     this._contentElement = root.createChild('div');
     UI.ARIAUtils.markAsPoliteLiveRegion(this._element, false);

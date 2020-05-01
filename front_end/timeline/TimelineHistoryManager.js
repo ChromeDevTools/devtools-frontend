@@ -191,7 +191,9 @@ export class TimelineHistoryManager {
     this._nextNumberByDomain.set(domain, sequenceNumber + 1);
     const timeElement = createElement('span');
 
-    const preview = createElementWithClass('div', 'preview-item vbox');
+    const preview = document.createElement('div');
+    preview.classList.add('preview-item');
+    preview.classList.add('vbox');
     const data = {preview: preview, title: title, time: timeElement, lastUsed: Date.now()};
     performanceModel[previewDataSymbol] = data;
 
@@ -209,7 +211,9 @@ export class TimelineHistoryManager {
    * @return {!Element}
    */
   _buildTextDetails(performanceModel, title, timeElement) {
-    const container = createElementWithClass('div', 'text-details hbox');
+    const container = document.createElement('div');
+    container.classList.add('text-details');
+    container.classList.add('hbox');
     const nameSpan = container.createChild('span', 'name');
     nameSpan.textContent = title;
     UI.ARIAUtils.setAccessibleName(nameSpan, title);

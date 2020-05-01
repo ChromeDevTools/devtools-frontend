@@ -27,7 +27,9 @@ export class IsolateSelector extends UI.Widget.VBox {
     /** @type {!Map<!SDK.IsolateManager.Isolate, !ListItem>} */
     this._itemByIsolate = new Map();
 
-    this._totalElement = createElementWithClass('div', 'profile-memory-usage-item hbox');
+    this._totalElement = document.createElement('div');
+    this._totalElement.classList.add('profile-memory-usage-item');
+    this._totalElement.classList.add('hbox');
     this._totalValueDiv = this._totalElement.createChild('div', 'profile-memory-usage-item-size');
     this._totalTrendDiv = this._totalElement.createChild('div', 'profile-memory-usage-item-trend');
     this._totalElement.createChild('div').textContent = ls`Total JS heap size`;
@@ -231,7 +233,9 @@ export class ListItem {
   constructor(isolate) {
     this._isolate = isolate;
     const trendIntervalMinutes = Math.round(SDK.IsolateManager.MemoryTrendWindowMs / 60e3);
-    this.element = createElementWithClass('div', 'profile-memory-usage-item hbox');
+    this.element = document.createElement('div');
+    this.element.classList.add('profile-memory-usage-item');
+    this.element.classList.add('hbox');
     UI.ARIAUtils.markAsOption(this.element);
     this._heapDiv = this.element.createChild('div', 'profile-memory-usage-item-size');
     this._heapDiv.title = ls`Heap size in use by live JS objects.`;

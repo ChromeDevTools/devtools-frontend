@@ -45,10 +45,14 @@ export class ChangesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
       const row = diffRows[lineNumber];
       let gutterMarker;
       if (row.type === RowType.Deletion) {
-        gutterMarker = createElementWithClass('div', 'deletion changes-diff-gutter-marker');
+        gutterMarker = document.createElement('div');
+        gutterMarker.classList.add('deletion');
+        gutterMarker.classList.add('changes-diff-gutter-marker');
         gutterMarker.textContent = '-';
       } else if (row.type === RowType.Addition) {
-        gutterMarker = createElementWithClass('div', 'addition changes-diff-gutter-marker');
+        gutterMarker = document.createElement('div');
+        gutterMarker.classList.add('addition');
+        gutterMarker.classList.add('changes-diff-gutter-marker');
         gutterMarker.textContent = '+';
       }
       if (gutterMarker) {

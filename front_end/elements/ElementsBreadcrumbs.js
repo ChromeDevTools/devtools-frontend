@@ -227,7 +227,9 @@ export class ElementsBreadcrumbs extends UI.Widget.HBox {
 
     // Layout 1: Measure total and normal crumb sizes at the same time as a
     // dummy element for the collapsed size.
-    const collapsedElement = createElementWithClass('span', 'crumb collapsed');
+    const collapsedElement = document.createElement('span');
+    collapsedElement.classList.add('crumb');
+    collapsedElement.classList.add('collapsed');
     crumbs.insertBefore(collapsedElement, crumbs.firstChild);
 
     const available = crumbs.offsetWidth;

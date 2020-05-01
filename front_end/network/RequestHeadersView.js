@@ -263,7 +263,9 @@ export class RequestHeadersView extends UI.Widget.VBox {
     const text = (sourceText || '').trim();
     const trim = text.length > max_len;
 
-    const sourceTextElement = createElementWithClass('span', 'header-value source-code');
+    const sourceTextElement = document.createElement('span');
+    sourceTextElement.classList.add('header-value');
+    sourceTextElement.classList.add('source-code');
     sourceTextElement.textContent = trim ? text.substr(0, max_len) : text;
 
     const sourceTreeElement = new UI.TreeOutline.TreeElement(sourceTextElement);

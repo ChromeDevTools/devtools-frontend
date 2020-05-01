@@ -1811,7 +1811,9 @@ export class TimelineUIUtils {
       total += aggregatedStats[categoryName];
     }
 
-    const element = createElementWithClass('div', 'timeline-details-view-pie-chart-wrapper hbox');
+    const element = document.createElement('div');
+    element.classList.add('timeline-details-view-pie-chart-wrapper');
+    element.classList.add('hbox');
     const pieChart = new PerfUI.PieChart.PieChart({
       chartName: ls`Time spent in rendering`,
       size: 110,

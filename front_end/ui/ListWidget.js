@@ -139,7 +139,9 @@ export class ListWidget extends VBox {
    * @return {!Element}
    */
   _createControls(item, element) {
-    const controls = createElementWithClass('div', 'controls-container fill');
+    const controls = document.createElement('div');
+    controls.classList.add('controls-container');
+    controls.classList.add('fill');
     controls.createChild('div', 'controls-gradient');
 
     const buttons = controls.createChild('div', 'controls-buttons');

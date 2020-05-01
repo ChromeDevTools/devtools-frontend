@@ -948,7 +948,9 @@ export class TreeElement {
       return;
     }
     if (!this._selectionElement) {
-      this._selectionElement = createElementWithClass('div', 'selection fill');
+      this._selectionElement = document.createElement('div');
+      this._selectionElement.classList.add('selection');
+      this._selectionElement.classList.add('fill');
     }
     this._listItemNode.insertBefore(this._selectionElement, this.listItemElement.firstChild);
   }

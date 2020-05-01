@@ -47,7 +47,6 @@ copy("codemirror") {
     "package/src/line/saw_special_spans.js",
     "package/src/line/spans.js",
     "package/src/line/utils_line.js",
-    "package/src/measurement",
     "package/src/measurement/position_measurement.js",
     "package/src/measurement/widgets.js",
     "package/src/model/Doc.js",

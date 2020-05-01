@@ -811,7 +811,7 @@ export class NetworkDispatcher {
   requestIntercepted(
       interceptionId, request, frameId, resourceType, isNavigationRequest, isDownload, redirectUrl, authChallenge,
       responseErrorReason, responseStatusCode, responseHeaders, requestId) {
-    self.SDK.multitargetNetworkManager._requestIntercepted(new InterceptedRequest(
+    MultitargetNetworkManager.instance()._requestIntercepted(new InterceptedRequest(
         this._manager.target().networkAgent(), interceptionId, request, frameId, resourceType, isNavigationRequest,
         isDownload, redirectUrl, authChallenge, responseErrorReason, responseStatusCode, responseHeaders, requestId));
   }
@@ -908,7 +908,7 @@ export class NetworkDispatcher {
    * @return {?NetworkRequest}
    */
   _maybeAdoptMainResourceRequest(requestId) {
-    const request = self.SDK.multitargetNetworkManager._inflightMainResourceRequests.get(requestId);
+    const request = MultitargetNetworkManager.instance()._inflightMainResourceRequests.get(requestId);
     if (!request) {
       return null;
     }
@@ -930,7 +930,8 @@ export class NetworkDispatcher {
     // The following relies on the fact that loaderIds and requestIds are
     // globally unique and that the main request has them equal.
     if (networkRequest.loaderId === networkRequest.requestId()) {
-      self.SDK.multitargetNetworkManager._inflightMainResourceRequests.set(networkRequest.requestId(), networkRequest);
+      MultitargetNetworkManager.instance()._inflightMainResourceRequests.set(
+          networkRequest.requestId(), networkRequest);
     }
 
     this._manager.dispatchEventToListeners(Events.RequestStarted, networkRequest);
@@ -965,7 +966,7 @@ export class NetworkDispatcher {
     this._manager.dispatchEventToListeners(Events.RequestFinished, networkRequest);
     this._inflightRequestsById.delete(networkRequest.requestId());
     delete this._inflightRequestsByURL[networkRequest.url()];
-    self.SDK.multitargetNetworkManager._inflightMainResourceRequests.delete(networkRequest.requestId());
+    MultitargetNetworkManager.instance()._inflightMainResourceRequests.delete(networkRequest.requestId());
 
     if (shouldReportCorbBlocking) {
       const message = Common.UIString.UIString(
@@ -1010,6 +1011,11 @@ export class NetworkDispatcher {
 }
 
 /**
+ * @type {?MultitargetNetworkManager}
+ */
+let multiTargetNetworkManagerInstance;
+
+/**
  * @implements {SDKModelObserver<!NetworkManager>}
  * @unrestricted
  */
@@ -1036,6 +1042,19 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     this._urlsForRequestInterceptor = new Platform.Multimap();
 
     TargetManager.instance().observeModels(NetworkManager, this);
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   * @return {!MultitargetNetworkManager}
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!multiTargetNetworkManagerInstance || forceNew) {
+      multiTargetNetworkManagerInstance = new MultitargetNetworkManager();
+    }
+
+    return multiTargetNetworkManagerInstance;
   }
 
   /**

@@ -35,6 +35,7 @@ import * as Common from '../common/common.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
 import {CompilerSourceMappingContentProvider} from './CompilerSourceMappingContentProvider.js';
+import {MultitargetNetworkManager} from './NetworkManager.js';
 
 /**
  * @interface
@@ -233,14 +234,15 @@ export class TextSourceMap {
    */
   static async load(sourceMapURL, compiledURL) {
     let content = await new Promise((resolve, reject) => {
-      self.SDK.multitargetNetworkManager.loadResource(sourceMapURL, (success, _headers, content, errorDescription) => {
-        if (!content || !success) {
-          const error = new Error(ls`Could not load content for ${sourceMapURL}: ${errorDescription.message}`);
-          reject(error);
-        } else {
-          resolve(content);
-        }
-      });
+      MultitargetNetworkManager.instance().loadResource(
+          sourceMapURL, (success, _headers, content, errorDescription) => {
+            if (!content || !success) {
+              const error = new Error(ls`Could not load content for ${sourceMapURL}: ${errorDescription.message}`);
+              reject(error);
+            } else {
+              resolve(content);
+            }
+          });
     });
 
     if (content.slice(0, 3) === ')]}') {

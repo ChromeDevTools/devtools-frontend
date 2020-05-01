@@ -220,7 +220,7 @@ export class MainImpl {
     UI.Tooltip.Tooltip.installHandler(document);
     self.SDK.consoleModel = SDK.ConsoleModel.ConsoleModel.instance();
     self.Components.dockController = new Components.DockController.DockController(canDock);
-    self.SDK.multitargetNetworkManager = new SDK.NetworkManager.MultitargetNetworkManager();
+    self.SDK.multitargetNetworkManager = SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});
     self.SDK.domDebuggerManager = new SDK.DOMDebuggerModel.DOMDebuggerManager();
     SDK.SDKModel.TargetManager.instance().addEventListener(
         SDK.SDKModel.Events.SuspendStateChanged, this._onSuspendStateChanged.bind(this));

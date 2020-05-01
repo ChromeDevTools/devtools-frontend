@@ -29,10 +29,11 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
     /** @type {!SDK.NetworkManager.Conditions} */
     this._lastNetworkThrottlingConditions;
 
-    self.SDK.multitargetNetworkManager.addEventListener(
+    SDK.NetworkManager.MultitargetNetworkManager.instance().addEventListener(
         SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, () => {
           this._lastNetworkThrottlingConditions = this._currentNetworkThrottlingConditions;
-          this._currentNetworkThrottlingConditions = self.SDK.multitargetNetworkManager.networkConditions();
+          this._currentNetworkThrottlingConditions =
+              SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions();
         });
 
     SDK.SDKModel.TargetManager.instance().observeModels(SDK.EmulationModel.EmulationModel, this);
@@ -102,25 +103,29 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
     const checkbox = new UI.Toolbar.ToolbarCheckbox(
         Common.UIString.UIString('Offline'), Common.UIString.UIString('Force disconnected from network'),
         forceOffline.bind(this));
-    self.SDK.multitargetNetworkManager.addEventListener(
+    SDK.NetworkManager.MultitargetNetworkManager.instance().addEventListener(
         SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, networkConditionsChanged);
     checkbox.setChecked(
-        self.SDK.multitargetNetworkManager.networkConditions() === SDK.NetworkManager.OfflineConditions);
+        SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions() ===
+        SDK.NetworkManager.OfflineConditions);
 
     /**
      * @this {!ThrottlingManager}
      */
     function forceOffline() {
       if (checkbox.checked()) {
-        self.SDK.multitargetNetworkManager.setNetworkConditions(SDK.NetworkManager.OfflineConditions);
+        SDK.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(
+            SDK.NetworkManager.OfflineConditions);
       } else {
-        self.SDK.multitargetNetworkManager.setNetworkConditions(this._lastNetworkThrottlingConditions);
+        SDK.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(
+            this._lastNetworkThrottlingConditions);
       }
     }
 
     function networkConditionsChanged() {
       checkbox.setChecked(
-          self.SDK.multitargetNetworkManager.networkConditions() === SDK.NetworkManager.OfflineConditions);
+          SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions() ===
+          SDK.NetworkManager.OfflineConditions);
     }
 
     return checkbox;
@@ -272,19 +277,21 @@ export class ActionDelegate {
    */
   handleAction(context, actionId) {
     if (actionId === 'network-conditions.network-online') {
-      self.SDK.multitargetNetworkManager.setNetworkConditions(SDK.NetworkManager.NoThrottlingConditions);
+      SDK.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(
+          SDK.NetworkManager.NoThrottlingConditions);
       return true;
     }
     if (actionId === 'network-conditions.network-low-end-mobile') {
-      self.SDK.multitargetNetworkManager.setNetworkConditions(SDK.NetworkManager.Slow3GConditions);
+      SDK.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(SDK.NetworkManager.Slow3GConditions);
       return true;
     }
     if (actionId === 'network-conditions.network-mid-tier-mobile') {
-      self.SDK.multitargetNetworkManager.setNetworkConditions(SDK.NetworkManager.Fast3GConditions);
+      SDK.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(SDK.NetworkManager.Fast3GConditions);
       return true;
     }
     if (actionId === 'network-conditions.network-offline') {
-      self.SDK.multitargetNetworkManager.setNetworkConditions(SDK.NetworkManager.OfflineConditions);
+      SDK.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(
+          SDK.NetworkManager.OfflineConditions);
       return true;
     }
     return false;

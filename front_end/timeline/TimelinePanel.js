@@ -283,7 +283,7 @@ export class TimelinePanel extends UI.Panel.Panel {
         Common.Settings.Settings.instance().createSetting('timelineShowSettingsToolbar', false);
     this._showSettingsPaneButton = new UI.Toolbar.ToolbarSettingToggle(
         this._showSettingsPaneSetting, 'largeicon-settings-gear', Common.UIString.UIString('Capture settings'));
-    self.SDK.multitargetNetworkManager.addEventListener(
+    SDK.NetworkManager.MultitargetNetworkManager.instance().addEventListener(
         SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, this._updateShowSettingsToolbarButton,
         this);
     MobileThrottling.ThrottlingManager.throttlingManager().addEventListener(
@@ -506,7 +506,7 @@ export class TimelinePanel extends UI.Panel.Panel {
     if (MobileThrottling.ThrottlingManager.throttlingManager().cpuThrottlingRate() !== 1) {
       messages.push(Common.UIString.UIString('- CPU throttling is enabled'));
     }
-    if (self.SDK.multitargetNetworkManager.isThrottling()) {
+    if (SDK.NetworkManager.MultitargetNetworkManager.instance().isThrottling()) {
       messages.push(Common.UIString.UIString('- Network throttling is enabled'));
     }
     if (this._captureLayersAndPicturesSetting.get()) {

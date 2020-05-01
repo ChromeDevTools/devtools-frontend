@@ -392,7 +392,8 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
      */
     function innerUpdateInterceptionPatterns() {
       if (!this._active) {
-        return self.SDK.multitargetNetworkManager.setInterceptionHandlerForPatterns([], this._interceptionHandlerBound);
+        return SDK.NetworkManager.MultitargetNetworkManager.instance().setInterceptionHandlerForPatterns(
+            [], this._interceptionHandlerBound);
       }
       const patterns = new Set();
       const indexFileName = 'index.html';
@@ -404,7 +405,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
         }
       }
 
-      return self.SDK.multitargetNetworkManager.setInterceptionHandlerForPatterns(
+      return SDK.NetworkManager.MultitargetNetworkManager.instance().setInterceptionHandlerForPatterns(
           Array.from(patterns).map(
               pattern =>
                   ({urlPattern: pattern, interceptionStage: Protocol.Network.InterceptionStage.HeadersReceived})),

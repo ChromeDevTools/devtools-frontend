@@ -610,7 +610,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
    * @param {string} userAgent
    */
   _applyUserAgent(userAgent) {
-    self.SDK.multitargetNetworkManager.setUserAgentOverride(userAgent);
+    SDK.NetworkManager.MultitargetNetworkManager.instance().setUserAgentOverride(userAgent);
   }
 
   /**

@@ -43,11 +43,20 @@
       ],
       "bindings": [
         {
-          "shortcut": "F8"
+          "shortcut": "F8",
+          "keybindSets": ["devToolsDefault"]
         },
         {
           "platform": "windows,linux",
           "shortcut": "Ctrl+\\"
+        },
+        {
+          "shortcut": "F5",
+          "keybindSets": ["vsCode"]
+        },
+        {
+          "shortcut": "Shift+F5",
+          "keybindSets": ["vsCode"]
         },
         {
           "platform": "mac",
@@ -67,7 +76,8 @@
       ],
       "bindings": [
         {
-          "shortcut": "F10"
+          "shortcut": "F10",
+          "keybindSets": ["devToolsDefault", "vsCode"]
         },
         {
           "platform": "windows,linux",
@@ -91,7 +101,8 @@
       ],
       "bindings": [
         {
-          "shortcut": "F11"
+          "shortcut": "F11",
+          "keybindSets": ["devToolsDefault", "vsCode"]
         },
         {
           "platform": "windows,linux",
@@ -115,7 +126,8 @@
       ],
       "bindings": [
         {
-          "shortcut": "F9"
+          "shortcut": "F9",
+          "keybindSets": ["devToolsDefault"]
         }
       ]
     },
@@ -131,7 +143,8 @@
       ],
       "bindings": [
         {
-          "shortcut": "Shift+F11"
+          "shortcut": "Shift+F11",
+          "keybindSets": ["devToolsDefault", "vsCode"]
         },
         {
           "platform": "windows,linux",
@@ -672,6 +685,14 @@
       "bindings": [
         {
           "shortcut": "Alt+w"
+        },
+        {
+          "shortcut": "Ctrl+W",
+          "keybindSets": ["vsCode"]
+        },
+        {
+          "shortcut": "Ctrl+F4",
+          "keybindSets": ["vsCode"]
         }
       ]
     },
@@ -686,7 +707,8 @@
       ],
       "bindings": [
         {
-          "shortcut": "Ctrl+g"
+          "shortcut": "Ctrl+g",
+          "keybindSets": ["devToolsDefault", "vsCode"]
         }
       ]
     },
@@ -702,11 +724,21 @@
       "bindings": [
         {
           "platform": "windows,linux",
-          "shortcut": "Ctrl+Shift+o"
+          "shortcut": "Ctrl+Shift+o",
+          "keybindSets": ["devToolsDefault", "vsCode"]
         },
         {
           "platform": "mac",
-          "shortcut": "Meta+Shift+o"
+          "shortcut": "Meta+Shift+o",
+          "keybindSets": ["devToolsDefault", "vsCode"]
+        },
+        {
+          "shortcut": "Ctrl+T",
+          "keybindSets": ["vsCode"]
+        },
+        {
+          "shortcut": "F12",
+          "keybindSets": ["vsCode"]
         }
       ]
     },
@@ -723,6 +755,10 @@
         {
           "platform": "mac",
           "shortcut": "Meta+b"
+        },
+        {
+          "shortcut": "F9",
+          "keybindSets": ["vsCode"]
         }
       ]
     },
@@ -730,7 +766,7 @@
       "type": "action",
       "actionId": "debugger.toggle-breakpoint-enabled",
       "category": "Debugger",
-      "title": "Toggle breakpoint",
+      "title": "Toggle breakpoint enabled",
       "bindings": [
         {
           "platform": "windows,linux",
@@ -770,11 +806,13 @@
       "bindings": [
         {
           "platform": "windows,linux",
-          "shortcut": "Ctrl+s"
+          "shortcut": "Ctrl+s",
+          "keybindSets": ["devToolsDefault", "vsCode"]
         },
         {
           "platform": "mac",
-          "shortcut": "Meta+s"
+          "shortcut": "Meta+s",
+          "keybindSets": ["devToolsDefault", "vsCode"]
         }
       ]
     },
@@ -795,6 +833,10 @@
         {
           "platform": "mac",
           "shortcut": "Meta+Alt+s"
+        },
+        {
+          "shortcut": "Ctrl+K S",
+          "keybindSets": ["vsCode"]
         }
       ]
     },
@@ -953,7 +995,12 @@
         },
         {
           "platform": "windows,linux",
-          "shortcut": "Ctrl+Shift+F"
+          "shortcut": "Ctrl+Shift+F",
+          "keybindSets": ["devToolsDefault", "vsCode"]
+        },
+        {
+          "shortcut": "Ctrl+Shift+J",
+          "keybindSets": ["vsCode"]
         }
       ]
     },

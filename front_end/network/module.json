@@ -163,11 +163,13 @@
       "bindings": [
         {
           "platform": "mac",
-          "shortcut": "Meta+F"
+          "shortcut": "Meta+F",
+          "keybindSets": ["devToolsDefault", "vsCode"]
         },
         {
           "platform": "windows,linux",
-          "shortcut": "Ctrl+F"
+          "shortcut": "Ctrl+F",
+          "keybindSets": ["devToolsDefault", "vsCode"]
         }
       ]
     }

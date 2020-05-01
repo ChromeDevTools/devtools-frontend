@@ -121,7 +121,8 @@
       "bindings": [
         {
           "platform": "windows,linux",
-          "shortcut": "Ctrl+Plus"
+          "shortcut": "Ctrl+Plus",
+          "keybindSets": ["devToolsDefault", "vsCode"]
         },
         {
           "platform": "windows,linux",
@@ -137,7 +138,8 @@
         },
         {
           "platform": "mac",
-          "shortcut": "Meta+Plus"
+          "shortcut": "Meta+Plus",
+          "keybindSets": ["devToolsDefault", "vsCode"]
         },
         {
           "platform": "mac",
@@ -162,7 +164,8 @@
       "bindings": [
         {
           "platform": "windows,linux",
-          "shortcut": "Ctrl+Minus"
+          "shortcut": "Ctrl+Minus",
+          "keybindSets": ["devToolsDefault", "vsCode"]
         },
         {
           "platform": "windows,linux",
@@ -178,7 +181,8 @@
         },
         {
           "platform": "mac",
-          "shortcut": "Meta+Minus"
+          "shortcut": "Meta+Minus",
+          "keybindSets": ["devToolsDefault", "vsCode"]
         },
         {
           "platform": "mac",
@@ -228,11 +232,13 @@
       "bindings": [
         {
           "platform": "windows,linux",
-          "shortcut": "Ctrl+F"
+          "shortcut": "Ctrl+F",
+          "keybindSets": ["devToolsDefault", "vsCode"]
         },
         {
           "platform": "mac",
-          "shortcut": "Meta+F"
+          "shortcut": "Meta+F",
+          "keybindSets": ["devToolsDefault", "vsCode"]
         },
         {
           "platform": "mac",
@@ -270,7 +276,8 @@
         },
         {
           "platform": "windows,linux",
-          "shortcut": "F3"
+          "shortcut": "F3",
+          "keybindSets": ["devToolsDefault", "vsCode"]
         }
       ]
     },
@@ -283,7 +290,8 @@
       "bindings": [
         {
           "platform": "mac",
-          "shortcut": "Meta+Shift+G"
+          "shortcut": "Meta+Shift+G",
+          "keybindSets": ["devToolsDefault", "vsCode"]
         },
         {
           "platform": "windows,linux",
@@ -291,7 +299,8 @@
         },
         {
           "platform": "windows,linux",
-          "shortcut": "Shift+F3"
+          "shortcut": "Shift+F3",
+          "keybindSets": ["devToolsDefault", "vsCode"]
         }
       ]
     },
@@ -449,6 +458,24 @@
           "value": "undocked",
           "text": "Undocked",
           "title": "Undock into separate window"
+        }
+      ]
+    },
+    {
+      "type": "setting",
+      "settingName": "activeKeybindSet",
+      "settingType": "enum",
+      "defaultValue": "devToolsDefault",
+      "options": [
+        {
+          "value": "devToolsDefault",
+          "title": "DevTools (Default)",
+          "text": "DevTools (Default)"
+        },
+        {
+          "value": "vsCode",
+          "title": "Visual Studio Code",
+          "text": "Visual Studio Code"
         }
       ]
     },

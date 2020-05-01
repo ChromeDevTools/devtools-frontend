@@ -144,6 +144,9 @@
   <message name="IDS_DEVTOOLS_d33bf99e0756e1d5008cb78902e38ca9" desc="Text in Main">
     All Panels
   </message>
+  <message name="IDS_DEVTOOLS_d51a768a01445deddc409dc4b3c07517" desc="Name of a set of keyboard shortcuts from Visual Studio Code">
+    Visual Studio Code
+  </message>
   <message name="IDS_DEVTOOLS_d838bef326860912aa08d977cf3a5f8b" desc="A drop-down menu option to set color format to hex">
     HEX: #dac0de
   </message>
@@ -164,6 +167,9 @@
   </message>
   <message name="IDS_DEVTOOLS_eafbab965ec3970b0e97705882ebf8d0" desc="Text in Main">
     Show console drawer
+  </message>
+  <message name="IDS_DEVTOOLS_ed7cf3cf8d1d5b0f3f8d20a064e96eb9" desc="Name of the default set of DevTools keyboard shortcuts">
+    DevTools (Default)
   </message>
   <message name="IDS_DEVTOOLS_efb65a57c36ab02c0ad64a800d6f2dee" desc="Title of an action that navigates to the previous panel">
     Previous panel

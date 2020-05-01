@@ -32,7 +32,8 @@
       "className": "Console.ConsoleView.ActionDelegate",
       "bindings": [
         {
-          "shortcut": "Ctrl+`"
+          "shortcut": "Ctrl+`",
+          "keybindSets": ["devToolsDefault", "vsCode"]
         }
       ]
     },

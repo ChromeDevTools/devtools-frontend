@@ -28,12 +28,16 @@ export class KeybindsSettingsTab extends UI.Widget.VBox {
     });
 
     const header = this.contentElement.createChild('header');
-    header.createChild('h1').textContent = ls`Custom keyboard shortcuts`;
+    header.createChild('h1').textContent = ls`Shortcuts`;
+    const keybindsSetSetting = self.Common.settings.moduleSetting('activeKeybindSet');
+    keybindsSetSetting.addChangeListener(this.update, this);
+    const keybindsSetSelect =
+        UI.SettingsUI.createControlForSetting(keybindsSetSetting, ls`Match shortcuts from preset`);
+    keybindsSetSelect.classList.add('keybinds-set-select');
+    this.contentElement.appendChild(keybindsSetSelect);
 
-    const listHeader = this.contentElement.createChild('div', 'keybinds-list-item keybinds-header');
-    listHeader.createChild('div', 'keybinds-list-text').textContent = ls`Action`;
-    listHeader.createChild('div', 'keybinds-list-text').textContent = ls`Keyboard input`;
     this._list = new UI.ListWidget.ListWidget(this);
+    UI.ARIAUtils.markAsList(this._list.element);
     this._list.registerRequiredCSS('settings/keybindsSettingsTab.css');
     this._list.show(this.contentElement);
     this.update();
@@ -47,15 +51,19 @@ export class KeybindsSettingsTab extends UI.Widget.VBox {
   renderItem(item) {
     const itemElement = document.createElement('div');
     itemElement.classList.add('keybinds-list-item');
+    UI.ARIAUtils.markAsListitem(itemElement);
 
     if (typeof item === 'string') {
       itemElement.classList.add('keybinds-category-header');
       itemElement.textContent = item;
     } else {
-      itemElement.createChild('div', 'keybinds-list-text').textContent = item.title();
-      const keysElement = itemElement.createChild('div', 'keybinds-list-text');
-      self.UI.shortcutRegistry.shortcutsForAction(item.id()).forEach(
-          shortcut => keysElement.createChild('span', 'keybinds-key').textContent = shortcut.title());
+      itemElement.createChild('div', 'keybinds-action-name keybinds-list-text').textContent = item.title();
+      const shortcuts = self.UI.shortcutRegistry.shortcutsForAction(item.id());
+      shortcuts.forEach((shortcut, index) => {
+        const shortcutElement = itemElement.createChild('div', 'keybinds-shortcut keybinds-list-text');
+        const keys = shortcut.descriptors.flatMap(descriptor => descriptor.name.split(' + '));
+        keys.forEach(key => shortcutElement.createChild('span', 'keybinds-key').textContent = key);
+      });
     }
 
     return itemElement;

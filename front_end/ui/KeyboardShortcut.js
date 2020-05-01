@@ -39,12 +39,14 @@ export class KeyboardShortcut {
   /**
    * @param {!Array.<!Descriptor>} descriptors
    * @param {string} action
-   * @param {!Type=} type
+   * @param {!Type} type
+   * @param {string=} keybindSet
    */
-  constructor(descriptors, action, type) {
+  constructor(descriptors, action, type, keybindSet) {
     this.descriptors = descriptors;
     this.action = action;
-    this.type = type || Type.UserShortcut;
+    this.type = type;
+    this.keybindSet = keybindSet;
   }
 
   /**
@@ -316,6 +318,7 @@ export const Type = {
   DefaultShortcut: Symbol('DefaultShortcut'),
   DisabledDefault: Symbol('DisabledDefault'),
   UnsetShortcut: Symbol('UnsetShortcut'),
+  KeybindSetShortcut: Symbol('KeybindSetShortcut'),
 };
 
 export const KeyBindings = {};

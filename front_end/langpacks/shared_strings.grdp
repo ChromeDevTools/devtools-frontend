@@ -355,6 +355,9 @@
   <message name="IDS_DEVTOOLS_888a77f5ac0748b6c8001822417df8b6" desc="Text for security or network protocol">
     Protocol
   </message>
+  <message name="IDS_DEVTOOLS_89345110b204ed302eddff2ddbd0f4d9" desc="Text in the Shortcuts page to explain a keyboard shortcut (enable toggle breakpoint shortcut in debugger)">
+    Toggle breakpoint enabled
+  </message>
   <message name="IDS_DEVTOOLS_8d9da4bc0e49a50e09ac9f7e56789d39" desc="Text to indicate the network connectivity is offline">
     Offline
   </message>

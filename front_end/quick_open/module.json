@@ -20,11 +20,17 @@
       "bindings": [
         {
           "platform": "windows,linux",
-          "shortcut": "Ctrl+Shift+P"
+          "shortcut": "Ctrl+Shift+P",
+          "keybindSets": ["devToolsDefault", "vsCode"]
         },
         {
           "platform": "mac",
-          "shortcut": "Meta+Shift+P"
+          "shortcut": "Meta+Shift+P",
+          "keybindSets": ["devToolsDefault", "vsCode"]
+        },
+        {
+          "shortcut": "F1",
+          "keybindSets": ["vsCode"]
         }
       ]
     },
@@ -43,19 +49,23 @@
       "bindings": [
         {
           "platform": "mac",
-          "shortcut": "Meta+P"
+          "shortcut": "Meta+P",
+          "keybindSets": ["devToolsDefault", "vsCode"]
         },
         {
           "platform": "mac",
-          "shortcut": "Meta+O"
+          "shortcut": "Meta+O",
+          "keybindSets": ["devToolsDefault", "vsCode"]
         },
         {
           "platform": "windows,linux",
-          "shortcut": "Ctrl+P"
+          "shortcut": "Ctrl+P",
+          "keybindSets": ["devToolsDefault", "vsCode"]
         },
         {
           "platform": "windows,linux",
-          "shortcut": "Ctrl+O"
+          "shortcut": "Ctrl+O",
+          "keybindSets": ["devToolsDefault", "vsCode"]
         }
       ]
     },

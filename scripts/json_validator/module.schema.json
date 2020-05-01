@@ -35,7 +35,14 @@
                     "type": "string",
                     "pattern": "^[\\S]+(\\s[\\S]+)?$"
                   },
-                  "platform": {"type": "string"}
+                  "platform": {"type": "string"},
+                  "keybindSets": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": ["devToolsDefault", "vsCode"]
+                    }
+                  }
                 }
               }
             }

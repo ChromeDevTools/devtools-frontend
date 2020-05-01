@@ -492,7 +492,12 @@ export class RuntimeExtensionDescriptor {
     this.contextTypes;
 
     /**
-     * @type {string|undefined}
+     * @type {!Array.<!{
+     *   shortcut: string,
+     *   platform: (string|undefined),
+     *   keybindSets: (!Array.<string>|undefined)
+     * }>|
+     * undefined}
      */
     this.bindings;
 

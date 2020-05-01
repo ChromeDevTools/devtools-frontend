@@ -9,10 +9,15 @@
       "iconClass": "largeicon-settings-gear",
       "bindings": [
         {
-          "shortcut": "F1"
+          "shortcut": "F1",
+          "keybindSets": ["devToolsDefault"]
         },
         {
           "shortcut": "Shift+?"
+        },
+        {
+          "shortcut": "Ctrl+,",
+          "keybindSets": ["vsCode"]
         }
       ]
     },
@@ -28,7 +33,13 @@
       "category": "Settings",
       "actionId": "settings.shortcuts",
       "title": "Shortcuts",
-      "className": "Settings.SettingsScreen.ActionDelegate"
+      "className": "Settings.SettingsScreen.ActionDelegate",
+      "bindings": [
+        {
+          "shortcut": "Ctrl+K Ctrl+S",
+          "keybindSets": ["vsCode"]
+        }
+      ]
     },
     {
       "type": "@Common.Revealer",
@@ -81,7 +92,7 @@
       "type": "view",
       "location": "settings-view",
       "id": "keybinds",
-      "title": "Custom Shortcuts",
+      "title": "Shortcuts",
       "order": 100,
       "experiment": "customKeyboardShortcuts",
       "className": "Settings.KeybindsSettingsTab"

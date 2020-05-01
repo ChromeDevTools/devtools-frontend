@@ -1,3 +1,7 @@
+// Copyright 2020 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 /*
  * Copyright (C) 2007 Apple Inc.  All rights reserved.
  *
@@ -359,7 +363,33 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper {
      * @this {TreeOutline}
      */
     function deferredScrollIntoView() {
-      this._treeElementToScrollIntoView.listItemElement.scrollIntoViewIfNeeded(this._centerUponScrollIntoView);
+      // This function no longer uses scrollIntoViewIfNeeded because users were bothered
+      // by the fact that it always scrolls in both direction even if only one is necessary
+      // to bring the item into view.
+
+      const itemRect = this._treeElementToScrollIntoView.listItemElement.getBoundingClientRect();
+      const treeRect = this.contentElement.getBoundingClientRect();
+      const viewRect = this.element.getBoundingClientRect();
+
+      const currentScrollX = viewRect.left - treeRect.left;
+      const currentScrollY = viewRect.top - treeRect.top;
+
+      // Only scroll into view on each axis if the item is not visible at all
+      // but if we do scroll and _centerUponScrollIntoView is true
+      // then we center the top left corner of the item in view.
+      let deltaLeft = itemRect.left - treeRect.left;
+      if (deltaLeft > currentScrollX && deltaLeft < currentScrollX + viewRect.width) {
+        deltaLeft = currentScrollX;
+      } else if (this._centerUponScrollIntoView) {
+        deltaLeft = deltaLeft - viewRect.width / 2;
+      }
+      let deltaTop = itemRect.top - treeRect.top;
+      if (deltaTop > currentScrollY && deltaTop < currentScrollY + viewRect.height) {
+        deltaTop = currentScrollY;
+      } else if (this._centerUponScrollIntoView) {
+        deltaTop = deltaTop - viewRect.height / 2;
+      }
+      this.element.scrollTo(deltaLeft, deltaTop);
       delete this._treeElementToScrollIntoView;
       delete this._centerUponScrollIntoView;
     }

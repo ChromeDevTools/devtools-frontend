@@ -41,6 +41,32 @@ import {NetworkManager} from './NetworkManager.js';
 import {Type} from './SDKModel.js';
 import {ServerTiming} from './ServerTiming.js';
 
+/** @enum {string} */
+export const MIME_TYPE = {
+  HTML: 'text/html',
+  XML: 'text/xml',
+  PLAIN: 'text/plain',
+  XHTML: 'application/xhtml+xml',
+  SVG: 'image/svg+xml',
+  CSS: 'text/css',
+  XSL: 'text/xsl',
+  VTT: 'text/vtt',
+  PDF: 'application/pdf',
+};
+
+/** @type {!Map<!MIME_TYPE, *>} */
+export const MIME_TYPE_TO_RESOURCE_TYPE = new Map([
+  [MIME_TYPE.HTML, {'document': true}],
+  [MIME_TYPE.XML, {'document': true}],
+  [MIME_TYPE.PLAIN, {'document': true}],
+  [MIME_TYPE.XHTML, {'document': true}],
+  [MIME_TYPE.SVG, {'document': true}],
+  [MIME_TYPE.CSS, {'stylesheet': true}],
+  [MIME_TYPE.XSL, {'stylesheet': true}],
+  [MIME_TYPE.VTT, {'texttrack': true}],
+  [MIME_TYPE.PDF, {'document': true}],
+]);
+
 /**
  * @implements {TextUtils.ContentProvider.ContentProvider}
  * @unrestricted
@@ -122,6 +148,10 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
 
     /** @type {string} */
     this.connectionId = '0';
+    /** @type {boolean} */
+    this.connectionReused = false;
+    /** @type {boolean} */
+    this.hasNetworkData = false;
     /** @type {?Promise<?Array.<!NameValue>>} */
     this._formParametersPromise = null;
     // Assume no body initially
@@ -570,14 +600,14 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @return {string}
+   * @return {!MIME_TYPE}
    */
   get mimeType() {
     return this._mimeType;
   }
 
   /**
-   * @param {string} x
+   * @param {!MIME_TYPE} x
    */
   set mimeType(x) {
     this._mimeType = x;

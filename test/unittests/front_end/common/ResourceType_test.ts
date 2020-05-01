@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {ResourceType, ResourceCategory} from '../../../../front_end/common/ResourceType.js';
+import {ResourceType, ResourceCategory, resourceTypes} from '../../../../front_end/common/ResourceType.js';
 
 describe('ResourceCategory class', () => {
   it('is able to be instantiated successfully', () => {
@@ -321,5 +321,17 @@ describe('ResourceType class', () => {
     const testResourceCategory = new ResourceCategory('Category Test Title', 'Category Test Short Title');
     const resourceType = new ResourceType('Type Test Name', 'Type Test Title', testResourceCategory, true);
     assert.strictEqual(resourceType.canonicalMimeType(), '', 'the canonical mime type was not returned correctly');
+  });
+
+  it('treats a Ping as Other', () => {
+    const resourceType = resourceTypes.Ping;
+    assert.strictEqual(resourceType.isTextType(), false, 'A ping is not a text type');
+    assert.strictEqual(resourceType.canonicalMimeType(), '', 'A ping does not have an associated mime type');
+  });
+
+  it('treats a CSPViolationsReport as Other', () => {
+    const resourceType = resourceTypes.CSPViolationReport;
+    assert.strictEqual(resourceType.isTextType(), false, 'A ping is not a text type');
+    assert.strictEqual(resourceType.canonicalMimeType(), '', 'A ping does not have an associated mime type');
   });
 });

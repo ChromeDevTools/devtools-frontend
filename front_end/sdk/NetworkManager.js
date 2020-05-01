@@ -38,11 +38,20 @@ import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 
 import {Cookie} from './Cookie.js';
-import {ContentData, Events as NetworkRequestEvents, ExtraRequestInfo, ExtraResponseInfo, NameValue, NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
+import {ContentData, Events as NetworkRequestEvents, ExtraRequestInfo, ExtraResponseInfo, MIME_TYPE, MIME_TYPE_TO_RESOURCE_TYPE, NameValue, NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
 import {Capability, SDKModel, SDKModelObserver, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 /** @type {!WeakMap<!NetworkRequest, !NetworkManager>} */
 const requestToManagerMap = new WeakMap();
+
+const CONNECTION_TYPES = new Map([
+  ['2g', Protocol.Network.ConnectionType.Cellular2g],
+  ['3g', Protocol.Network.ConnectionType.Cellular3g],
+  ['4g', Protocol.Network.ConnectionType.Cellular4g],
+  ['bluetooth', Protocol.Network.ConnectionType.Bluetooth],
+  ['wifi', Protocol.Network.ConnectionType.Wifi],
+  ['wimax', Protocol.Network.ConnectionType.Wimax],
+]);
 
 /**
  * @unrestricted
@@ -165,30 +174,21 @@ export class NetworkManager extends SDKModel {
     if (!conditions.download && !conditions.upload) {
       return Protocol.Network.ConnectionType.None;
     }
-    let types = NetworkManager._connectionTypes;
-    if (!types) {
-      NetworkManager._connectionTypes = [];
-      types = NetworkManager._connectionTypes;
-      types.push(['2g', Protocol.Network.ConnectionType.Cellular2g]);
-      types.push(['3g', Protocol.Network.ConnectionType.Cellular3g]);
-      types.push(['4g', Protocol.Network.ConnectionType.Cellular4g]);
-      types.push(['bluetooth', Protocol.Network.ConnectionType.Bluetooth]);
-      types.push(['wifi', Protocol.Network.ConnectionType.Wifi]);
-      types.push(['wimax', Protocol.Network.ConnectionType.Wimax]);
-    }
-    for (const type of types) {
-      if (conditions.title.toLowerCase().indexOf(type[0]) !== -1) {
-        return type[1];
+    const title = conditions.title.toLowerCase();
+    for (const [name, protocolType] of CONNECTION_TYPES) {
+      if (title.includes(name)) {
+        return protocolType;
       }
     }
     return Protocol.Network.ConnectionType.Other;
   }
 
   /**
-   * @param {!Object} headers
+   * @param {!Object<string,string>} headers
    * @return {!Object<string, string>}
    */
   static lowercaseHeaders(headers) {
+    /** @type {!Object<string, string>} */
     const newHeaders = {};
     for (const headerName in headers) {
       newHeaders[headerName.toLowerCase()] = headers[headerName];
@@ -209,7 +209,7 @@ export class NetworkManager extends SDKModel {
    */
   _cacheDisabledSettingChanged(event) {
     const enabled = /** @type {boolean} */ (event.data);
-    this._networkAgent.setCacheDisabled(enabled);
+    this._networkAgent.invoke_setCacheDisabled({cacheDisabled: enabled});
   }
 
   /**
@@ -222,7 +222,7 @@ export class NetworkManager extends SDKModel {
   }
 
   _bypassServiceWorkerChanged() {
-    this._networkAgent.setBypassServiceWorker(this._bypassServiceWorkerSetting.get());
+    this._networkAgent.invoke_setBypassServiceWorker({bypass: this._bypassServiceWorkerSetting.get()});
   }
 }
 
@@ -236,18 +236,6 @@ export const Events = {
   MessageGenerated: Symbol('MessageGenerated'),
   RequestRedirected: Symbol('RequestRedirected'),
   LoadingFinished: Symbol('LoadingFinished'),
-};
-
-const _MIMETypes = {
-  'text/html': {'document': true},
-  'text/xml': {'document': true},
-  'text/plain': {'document': true},
-  'application/xhtml+xml': {'document': true},
-  'image/svg+xml': {'document': true},
-  'text/css': {'stylesheet': true},
-  'text/xsl': {'stylesheet': true},
-  'text/vtt': {'texttrack': true},
-  'application/pdf': {'document': true},
 };
 
 /** @type {!Conditions} */
@@ -332,13 +320,13 @@ export class NetworkDispatcher {
 
   /**
    * @param {!NetworkRequest} networkRequest
-   * @param {!Protocol.Network.Response=} response
+   * @param {!Protocol.Network.Response} response
    */
   _updateNetworkRequestWithResponse(networkRequest, response) {
     if (response.url && networkRequest.url() !== response.url) {
       networkRequest.setUrl(response.url);
     }
-    networkRequest.mimeType = response.mimeType;
+    networkRequest.mimeType = /** @type {!MIME_TYPE} */ (response.mimeType);
     networkRequest.statusCode = response.status;
     networkRequest.statusText = response.statusText;
     if (!networkRequest.hasExtraResponseInfo()) {
@@ -421,8 +409,8 @@ export class NetworkDispatcher {
       return true;
     }  // Might be not known for cached resources with null responses.
 
-    if (networkRequest.mimeType in _MIMETypes) {
-      return resourceType.name() in _MIMETypes[networkRequest.mimeType];
+    if (MIME_TYPE_TO_RESOURCE_TYPE.has(networkRequest.mimeType)) {
+      return resourceType.name() in MIME_TYPE_TO_RESOURCE_TYPE.get(networkRequest.mimeType);
     }
 
     return false;
@@ -515,7 +503,7 @@ export class NetworkDispatcher {
     this._updateNetworkRequestWithRequest(networkRequest, request);
     networkRequest.setIssueTime(time, wallTime);
     networkRequest.setResourceType(
-        resourceType ? Common.ResourceType.resourceTypes[resourceType] : Protocol.Network.ResourceType.Other);
+        resourceType ? Common.ResourceType.resourceTypes[resourceType] : Common.ResourceType.resourceTypes.Other);
 
     this._getExtraInfoBuilder(requestId).addRequest(networkRequest);
 

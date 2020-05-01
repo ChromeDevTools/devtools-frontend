@@ -85,7 +85,7 @@ export class Importer {
 
     // Response data.
     if (entry.response.content.mimeType && entry.response.content.mimeType !== 'x-unknown') {
-      request.mimeType = entry.response.content.mimeType;
+      request.mimeType = /** @type {!SDK.NetworkRequest.MIME_TYPE} */ (entry.response.content.mimeType);
     }
     request.responseHeaders = entry.response.headers;
     request.statusCode = entry.response.status;

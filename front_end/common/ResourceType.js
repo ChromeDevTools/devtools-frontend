@@ -251,7 +251,7 @@ export const resourceCategories = {
   Document: new ResourceCategory(ls`Documents`, ls`Doc`),
   WebSocket: new ResourceCategory(ls`WebSockets`, ls`WS`),
   Manifest: new ResourceCategory(ls`Manifest`, ls`Manifest`),
-  Other: new ResourceCategory(ls`Other`, ls`Other`)
+  Other: new ResourceCategory(ls`Other`, ls`Other`),
 };
 
 /**
@@ -259,22 +259,24 @@ export const resourceCategories = {
  * @enum {!ResourceType}
  */
 export const resourceTypes = {
-  XHR: new ResourceType('xhr', ls`XHR`, resourceCategories.XHR, true),
-  Fetch: new ResourceType('fetch', ls`Fetch`, resourceCategories.XHR, true),
-  EventSource: new ResourceType('eventsource', ls`EventSource`, resourceCategories.XHR, true),
-  Script: new ResourceType('script', ls`Script`, resourceCategories.Script, true),
+  Document: new ResourceType('document', ls`Document`, resourceCategories.Document, true),
   Stylesheet: new ResourceType('stylesheet', ls`Stylesheet`, resourceCategories.Stylesheet, true),
   Image: new ResourceType('image', ls`Image`, resourceCategories.Image, false),
   Media: new ResourceType('media', ls`Media`, resourceCategories.Media, false),
   Font: new ResourceType('font', ls`Font`, resourceCategories.Font, false),
-  Document: new ResourceType('document', ls`Document`, resourceCategories.Document, true),
+  Script: new ResourceType('script', ls`Script`, resourceCategories.Script, true),
   TextTrack: new ResourceType('texttrack', ls`TextTrack`, resourceCategories.Other, true),
+  XHR: new ResourceType('xhr', ls`XHR`, resourceCategories.XHR, true),
+  Fetch: new ResourceType('fetch', ls`Fetch`, resourceCategories.XHR, true),
+  EventSource: new ResourceType('eventsource', ls`EventSource`, resourceCategories.XHR, true),
   WebSocket: new ResourceType('websocket', ls`WebSocket`, resourceCategories.WebSocket, false),
+  Manifest: new ResourceType('manifest', ls`Manifest`, resourceCategories.Manifest, true),
+  SignedExchange: new ResourceType('signed-exchange', ls`SignedExchange`, resourceCategories.Other, false),
+  Ping: new ResourceType('ping', ls`Ping`, resourceCategories.Other, false),
+  CSPViolationReport: new ResourceType('csp-violation-report', ls`CSPViolationReport`, resourceCategories.Other, false),
   Other: new ResourceType('other', ls`Other`, resourceCategories.Other, false),
   SourceMapScript: new ResourceType('sm-script', ls`Script`, resourceCategories.Script, true),
   SourceMapStyleSheet: new ResourceType('sm-stylesheet', ls`Stylesheet`, resourceCategories.Stylesheet, true),
-  Manifest: new ResourceType('manifest', ls`Manifest`, resourceCategories.Manifest, true),
-  SignedExchange: new ResourceType('signed-exchange', ls`SignedExchange`, resourceCategories.Other, false)
 };
 
 

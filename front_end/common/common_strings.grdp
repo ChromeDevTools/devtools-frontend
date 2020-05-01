@@ -39,6 +39,9 @@
   <message name="IDS_DEVTOOLS_a83f1ca5ad00b39773d9e6a26b0e70b2" desc="Text that appears in a tooltip for the JavaScript types filter.">
     Scripts
   </message>
+  <message name="IDS_DEVTOOLS_b85815d04cec053ce6deb8021f2df1b8" desc="Name of a network resource type">
+    Ping
+  </message>
   <message name="IDS_DEVTOOLS_bef61d7d03206d267fdbab45fdca247d" desc="Name of a network resource type">
     SignedExchange
   </message>
@@ -47,6 +50,9 @@
   </message>
   <message name="IDS_DEVTOOLS_c350bb18c3cdfbd4e5444faa63be6586" desc="Name of a network resource type">
     Stylesheet
+  </message>
+  <message name="IDS_DEVTOOLS_d4d96ef85bcd85156baa07069a5fcec8" desc="Name of a network resource type">
+    CSPViolationReport
   </message>
   <message name="IDS_DEVTOOLS_fff0d600f8a0b5e19e88bfb821dd1157" desc="Text that appears in a tooltip for the image types filter.">
     Images

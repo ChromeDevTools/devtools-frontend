@@ -167,6 +167,9 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     this._blockedRequestCookies = [];
     /** @type {!Array<!BlockedSetCookieWithReason>} */
     this._blockedResponseCookies = [];
+
+    /** @type {?string} */
+    this.localizedFailDescription = null;
   }
 
   /**

@@ -695,11 +695,11 @@ class _AgentPrototype {
     this[methodName] = sendMessagePromise;
 
     /**
-     * @param {!Object} request
+     * @param {!Object=} request
      * @return {!Promise<?Object>}
      * @this {_AgentPrototype}
      */
-    function invoke(request) {
+    function invoke(request = {}) {
       return this._invoke(domainAndMethod, request);
     }
 

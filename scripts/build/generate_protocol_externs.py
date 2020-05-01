@@ -210,7 +210,7 @@ def generate_protocol_externs(output_path, file1, file2):
                 output_file.write("%s;\n" % response_type)
 
                 output_file.write("/**\n")
-                output_file.write(" * @param {!%s} obj\n" % request_type)
+                output_file.write(" * @param {!%s=} obj\n" % request_type)
                 output_file.write(" * @return {!Promise<!%s>}" % response_type)
                 output_file.write(" */\n")
                 output_file.write("Protocol.%sAgent.prototype.invoke_%s = function(obj) {};\n" % (domain_name, command["name"]))

@@ -33,7 +33,7 @@ export let IssueDescription;  // eslint-disable-line no-unused-vars
  * @typedef {{
  *            columnNumber: (number|undefined),
  *            lineNumber: number,
- *            url:string
+ *            url: string
  *          }}
  */
 // @ts-ignore typedef

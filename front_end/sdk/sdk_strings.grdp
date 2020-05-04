@@ -86,7 +86,7 @@
     Do not emulate CSS prefers-color-scheme
   </message>
   <message name="IDS_DEVTOOLS_26bfd72a61c0d4cb1bcac0e217f7f8a8" desc="Description for an issue in the issues view">
-    A cookie was defaulted to &apos;SameSite=Lax&apos; because the cookie&apos;s &apos;SameSite&apos; attribute was not set or invalid. The cookie was not sent because the default behavior for &apos;SameSite=Lax&apos; prevents this cookie from beeing sent in cross-site requests.
+    A cookie was defaulted to &apos;SameSite=Lax&apos; because the cookie&apos;s &apos;SameSite&apos; attribute was not set or invalid. The cookie was not sent because the default behavior for &apos;SameSite=Lax&apos; prevents this cookie from being sent in cross-site requests.
   </message>
   <message name="IDS_DEVTOOLS_28e486be4b3bad598b6e9eaa34ebec76" desc="Text in Network Manager">
     Set-Cookie header is ignored in response from url: <ph name="RESPONSE_URL">$1s<ex>https://example.com</ex></ph>. Cookie length should be less than or equal to 4096 characters.
@@ -131,7 +131,7 @@
     Emulate achromatopsia
   </message>
   <message name="IDS_DEVTOOLS_59a88821ae1cfa9637365d5fa2b46242" desc="Description for an issue in the issues view">
-    An <ph name="LOCKED_1">iframe</ph> was emdbedded on a site which enables the cross-origin embedder policy, but the response headers for the document of the <ph name="LOCKED_1">iframe</ph> did not specify a cross-origin embedder policy, which causes the iframe to get blocked.
+    An <ph name="LOCKED_1">iframe</ph> was embedded on a site which enables the cross-origin embedder policy, but the response headers for the document of the <ph name="LOCKED_1">iframe</ph> did not specify a cross-origin embedder policy, which causes the iframe to get blocked.
   To allow embedding of the <ph name="LOCKED_1">iframe</ph>, the response needs to enable the cross-origin embedder policy for the <ph name="LOCKED_1">iframe</ph> by specifying the following response header:
   </message>
   <message name="IDS_DEVTOOLS_5b8188656e56f6cf2436f90188533934" desc="Description how an issue can be resolved">
@@ -466,7 +466,7 @@
     Window
   </message>
   <message name="IDS_DEVTOOLS_ca4fbb6d710463b20755b9a024d841c1" desc="Error message when failing to load a source map text">
-    DevTools failed to load SourceMap: <ph name="ERROR_MESSAGE"><ex>An error occured</ex>$1s</ph>
+    DevTools failed to load SourceMap: <ph name="ERROR_MESSAGE"><ex>An error occurred</ex>$1s</ph>
   </message>
   <message name="IDS_DEVTOOLS_cad025a69663813eef4aa3176d982a18" desc="Title of an issue in the issues panel">
     A cookie was blocked, because the cookie&apos;s &apos;SameSite&apos; attribute was defaulted to &apos;SameSite=Lax&apos;
@@ -561,7 +561,7 @@
     print
   </message>
   <message name="IDS_DEVTOOLS_b507642e29a193b6853843992eef8c10" desc="Error message when failing to load a source map text via the network">
-    Could not load content for <ph name="SOURCEMAPURL">$1s<ex>https://example.com/sourcemap.map</ex></ph>: <ph name="ERRORMESSAGE">$2s<ex>A certificate error occured</ex></ph>
+    Could not load content for <ph name="SOURCEMAPURL">$1s<ex>https://example.com/sourcemap.map</ex></ph>: <ph name="ERRORMESSAGE">$2s<ex>A certificate error occurred</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_f9778c8e7464e4bb037ec2463879588f" desc="Text in DOMDebugger Model">
     DOM Mutation

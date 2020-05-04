@@ -633,7 +633,11 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     /** @param {number} count */
     const updateToolbarIssuesCount = count => {
       toolbarIssuesCount.textContent = `${count}`;
-      toolbarIssuesItem.setTitle(ls`Issues pertaining to ${count} operations detected.`);
+      if (count === 1) {
+        toolbarIssuesItem.setTitle(ls`Issues pertaining to ${count} operation detected.`);
+      } else {
+        toolbarIssuesItem.setTitle(ls`Issues pertaining to ${count} operations detected.`);
+      }
     };
     return {toolbarContainer, updateToolbarIssuesCount};
   }

@@ -160,9 +160,9 @@ export class WarningErrorCounter {
     if (Root.Runtime.experiments.isEnabled('issuesPane')) {
       let issuesCountTitle = '';
       if (issues === 1) {
-        issuesCountTitle = ls`${issues} issue`;
+        issuesCountTitle = ls`Issues pertaining to ${issues} operation detected.`;
       } else {
-        issuesCountTitle = ls`${issues} issues`;
+        issuesCountTitle = ls`Issues pertaining to ${issues} operations detected.`;
       }
       this._updateItem(this._issues, issues, true);
       this._issuesCounter.title = issuesCountTitle;

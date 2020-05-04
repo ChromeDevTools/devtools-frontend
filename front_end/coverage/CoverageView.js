@@ -498,7 +498,8 @@ export class LineDecorator {
         continue;
       }
       const className = lineUsage[line] ? 'text-editor-coverage-used-marker' : 'text-editor-coverage-unused-marker';
-      const gutterElement = createElementWithClass('div', className);
+      const gutterElement = document.createElement('div');
+      gutterElement.classList.add(className);
       textEditor.setGutterDecoration(line, gutterType, gutterElement);
     }
   }

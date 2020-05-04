@@ -396,7 +396,10 @@ export class Linkifier {
     const maxLength = options.maxLength || UI.UIUtils.MaxLengthForDisplayedURLs;
     const bypassURLTrimming = options.bypassURLTrimming;
     if (!url || url.trim().toLowerCase().startsWith('javascript:')) {
-      const element = createElementWithClass('span', className);
+      const element = document.createElement('span');
+      if (className) {
+        element.className = className;
+      }
       element.textContent = text || url || Common.UIString.UIString('(unknown)');
       return element;
     }
@@ -439,7 +442,10 @@ export class Linkifier {
   static _createLink(text, className, options) {
     options = options || {};
     const {maxLength, title, href, preventClick, tabStop, bypassURLTrimming} = options;
-    const link = createElementWithClass('span', className);
+    const link = document.createElement('span');
+    if (className) {
+      link.className = className;
+    }
     link.classList.add('devtools-link');
     if (title) {
       link.title = title;

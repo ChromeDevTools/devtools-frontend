@@ -325,7 +325,8 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
         parentElement.classList.add('hbox');
       }
     } else {
-      const valueElement = createElementWithClass('span', 'object-value-' + (subtype || type));
+      const valueElement = document.createElement('span');
+      valueElement.classList.add('object-value-' + (subtype || type));
       if (value.preview && showPreview) {
         const previewFormatter = new RemoteObjectPreviewFormatter();
         previewFormatter.appendObjectPreview(valueElement, value.preview, false /* isEntry */);

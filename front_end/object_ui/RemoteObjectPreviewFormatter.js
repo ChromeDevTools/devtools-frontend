@@ -270,7 +270,8 @@ export class RemoteObjectPreviewFormatter {
    * @return {!Element}
    */
   renderPropertyPreview(type, subtype, description) {
-    const span = createElementWithClass('span', 'object-value-' + (subtype || type));
+    const span = document.createElement('span');
+    span.classList.add('object-value-' + (subtype || type));
     description = description || '';
 
     if (type === 'accessor') {

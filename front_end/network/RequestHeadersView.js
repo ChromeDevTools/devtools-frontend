@@ -203,7 +203,10 @@ export class RequestHeadersView extends UI.Widget.VBox {
         }
       }
     }
-    const div = createElementWithClass('div', className);
+    const div = document.createElement('div');
+    if (className) {
+      div.className = className;
+    }
     if (value === '') {
       div.classList.add('empty-value');
     }

@@ -1254,7 +1254,10 @@ export function beautifyFunctionName(name) {
  * @return {!Element}
  */
 export function createTextButton(text, clickHandler, className, primary) {
-  const element = createElementWithClass('button', className || '');
+  const element = document.createElement('button');
+  if (className) {
+    element.className = className;
+  }
   element.textContent = text;
   element.classList.add('text-button');
   if (primary) {
@@ -1273,7 +1276,10 @@ export function createTextButton(text, clickHandler, className, primary) {
  * @return {!Element}
  */
 export function createInput(className, type) {
-  const element = createElementWithClass('input', className || '');
+  const element = document.createElement('input');
+  if (className) {
+    element.className = className;
+  }
   element.spellcheck = false;
   element.classList.add('harmony-input');
   if (type) {
@@ -1289,7 +1295,10 @@ export function createInput(className, type) {
  * @return {!Element}
  */
 export function createLabel(title, className, associatedControl) {
-  const element = createElementWithClass('label', className || '');
+  const element = document.createElement('label');
+  if (className) {
+    element.className = className;
+  }
   element.textContent = title;
   if (associatedControl) {
     ARIAUtils.bindLabelToControl(element, associatedControl);

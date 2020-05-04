@@ -278,13 +278,22 @@ export class ConsoleView extends UI.Widget.VBox {
     SDK.ConsoleModel.ConsoleModel.instance().messages().forEach(this._addConsoleMessage, this);
 
     if (Root.Runtime.experiments.isEnabled('issuesPane')) {
-      BrowserSDK.IssuesManager.IssuesManager.instance().addEventListener(
+      const issuesManager = BrowserSDK.IssuesManager.IssuesManager.instance();
+      issuesManager.addEventListener(
           BrowserSDK.IssuesManager.Events.IssuesCountUpdated, this._onIssuesCountChanged.bind(this));
+      if (issuesManager.numberOfIssues()) {
+        this._onIssuesCountChanged();
+      }
     }
   }
 
   _onIssuesCountChanged() {
-    if (!this._issueBarDiv) {
+    if (BrowserSDK.IssuesManager.IssuesManager.instance().numberOfIssues() === 0) {
+      if (this._issueBarDiv) {
+        this._issueBarDiv.remove();
+        this._issueBarDiv = null;
+      }
+    } else if (!this._issueBarDiv) {
       this._issueBarDiv = document.createElement('div');
       this._issueBarDiv.classList.add('flex-none');
       const issueBarAction = /** @type {!UI.Infobar.InfobarAction} */ ({
@@ -304,13 +313,6 @@ export class ConsoleView extends UI.Widget.VBox {
       this._issueBarDiv.appendChild(issueBar.element);
       issueBar.setParentView(this);
       this.doResize();
-    }
-  }
-
-  _onMainFrameNavigated() {
-    if (this._issueBarDiv) {
-      this._issueBarDiv.remove();
-      this._issueBarDiv = null;
     }
   }
 

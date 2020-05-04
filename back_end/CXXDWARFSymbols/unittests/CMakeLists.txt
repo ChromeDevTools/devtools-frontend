@@ -22,10 +22,24 @@ else()
   set(LLVM_OPTIONAL_SOURCES VariablePrinting.cc)
 endif()
 
-add_lldb_unittest(SymbolServerTests
-  ${sources}
+set(LLVM_LINK_COMPONENTS
+  Support
+  Core
+  Linker
+  Analysis
+  IRReader
+  Target
+  WebAssembly
+  TransformUtils
+  Passes
+  )
 
-  LINK_LIBS
+add_llvm_unittest(SymbolServerTests
+  ${sources}
+  )
+
+target_link_libraries(SymbolServerTests
+  PRIVATE
   DWARFSymbolServerObjects
   lldbBase
   lldbHost
@@ -40,17 +54,6 @@ add_lldb_unittest(SymbolServerTests
   ${LLDB_SYSTEM_LIBS}
   lldDriver
   lldWasm
-
-  LINK_COMPONENTS
-  Support
-  Core
-  Linker
-  Analysis
-  IRReader
-  Target
-  WebAssembly
-  TransformUtils
-  Passes
   )
 
 include_what_you_use(SymbolServerTests)

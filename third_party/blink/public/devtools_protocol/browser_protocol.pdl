@@ -5146,6 +5146,24 @@ experimental domain Overlay
       optional DOM.RGBA shapeMarginColor
       # The grid layout color (default: transparent).
       optional DOM.RGBA cssGridColor
+      # The color format used to format color styles (default: hex).
+      optional ColorFormat colorFormat
+
+  type ColorFormat extends string
+    enum
+      rgb
+      hsl
+      hex
+
+  # Configuration for dual screen hinge
+  type HingeConfig extends object
+    properties
+      # A rectangle represent hinge
+      DOM.Rect rect
+      # The content box highlight fill color (default: a dark color).
+      optional DOM.RGBA contentColor
+      # The content box highlight outline color (default: transparent).
+      optional DOM.RGBA outlineColor
 
   type InspectMode extends string
     enum
@@ -5170,6 +5188,8 @@ experimental domain Overlay
       optional boolean includeDistance
       # Whether to include style info.
       optional boolean includeStyle
+      # The color format to get config with (default: hex)
+      optional ColorFormat colorFormat
     returns
       # Highlight data for the node.
       object highlight
@@ -5290,6 +5310,12 @@ experimental domain Overlay
     parameters
       # Whether to paint size or not.
       boolean show
+
+  # Add a dual screen device hinge
+  command setShowHinge
+    parameters
+      # hinge data, null means hideHinge
+      optional HingeConfig hingeConfig
 
   # Fired when the node should be inspected. This happens after call to `setInspectMode` or when
   # user manually inspects an element.
@@ -5541,6 +5567,13 @@ domain Page
       pageBlockInterstitial
       reload
       anchorClick
+
+  experimental type ClientNavigationDisposition extends string
+    enum
+      currentTab
+      newTab
+      newWindow
+      download
 
   experimental type InstallabilityErrorArgument extends object
     properties
@@ -6118,6 +6151,8 @@ domain Page
       ClientNavigationReason reason
       # The destination URL for the requested navigation.
       string url
+      # The disposition for the navigation.
+      ClientNavigationDisposition disposition
 
   # Fired when frame schedules a potential navigation.
   deprecated event frameScheduledNavigation

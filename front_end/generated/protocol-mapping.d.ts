@@ -1849,6 +1849,10 @@ export namespace ProtocolMapping {
     'Overlay.setShowViewportSizeOnResize':
         {paramsType: [Protocol.Overlay.SetShowViewportSizeOnResizeRequest]; returnType: void;};
     /**
+     * Add a dual screen device hinge
+     */
+    'Overlay.setShowHinge': {paramsType: [Protocol.Overlay.SetShowHingeRequest?]; returnType: void;};
+    /**
      * Deprecated, please use addScriptToEvaluateOnNewDocument instead.
      */
     'Page.addScriptToEvaluateOnLoad': {

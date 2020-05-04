@@ -342,6 +342,7 @@ export const generatedProperties = [
   {'name': 'contain', 'keywords': ['none', 'strict', 'content', 'size', 'layout', 'style', 'paint']},
   {'name': 'contain-intrinsic-size', 'keywords': ['auto']},
   {'name': 'content'},
+  {'name': 'content-visibility', 'keywords': ['visible', 'auto', 'hidden', 'hidden-matchable']},
   {'name': 'counter-increment', 'keywords': ['none']},
   {'name': 'counter-reset', 'keywords': ['none']},
   {
@@ -770,7 +771,6 @@ export const generatedProperties = [
   {'name': 'stroke-miterlimit', 'svg': true, 'inherited': true},
   {'svg': true, 'inherited': true, 'name': 'stroke-opacity'},
   {'svg': true, 'inherited': true, 'name': 'stroke-width'},
-  {'name': 'subtree-visibility', 'keywords': ['visible', 'auto', 'hidden', 'hidden-matchable']},
   {'name': 'syntax'},
   {'name': 'tab-size', 'inherited': true},
   {'name': 'table-layout', 'keywords': ['auto', 'fixed']},
@@ -804,6 +804,7 @@ export const generatedProperties = [
   {'name': 'text-shadow', 'inherited': true, 'keywords': ['none']},
   {'name': 'text-size-adjust', 'inherited': true, 'keywords': ['none', 'auto']},
   {'name': 'text-transform', 'inherited': true, 'keywords': ['capitalize', 'uppercase', 'lowercase', 'none']},
+  {'name': 'text-underline-offset', 'inherited': true, 'keywords': ['auto']},
   {'name': 'text-underline-position', 'inherited': true, 'keywords': ['auto', 'from-font', 'under', 'left', 'right']},
   {'name': 'top', 'keywords': ['auto']},
   {
@@ -949,6 +950,7 @@ export const generatedPropertyValues = {
   'column-width': {'values': ['auto']},
   'contain': {'values': ['none', 'strict', 'content', 'size', 'layout', 'style', 'paint']},
   'contain-intrinsic-size': {'values': ['auto']},
+  'content-visibility': {'values': ['visible', 'auto', 'hidden', 'hidden-matchable']},
   'counter-increment': {'values': ['none']},
   'counter-reset': {'values': ['none']},
   'cursor': {
@@ -1198,7 +1200,6 @@ export const generatedPropertyValues = {
   'stroke-dasharray': {'values': ['none']},
   'stroke-linecap': {'values': ['butt', 'round', 'square']},
   'stroke-linejoin': {'values': ['miter', 'bevel', 'round']},
-  'subtree-visibility': {'values': ['visible', 'auto', 'hidden', 'hidden-matchable']},
   'table-layout': {'values': ['auto', 'fixed']},
   'text-align': {
     'values': ['left', 'right', 'center', 'justify', '-webkit-left', '-webkit-right', '-webkit-center', 'start', 'end']
@@ -1217,6 +1218,7 @@ export const generatedPropertyValues = {
   'text-shadow': {'values': ['none']},
   'text-size-adjust': {'values': ['none', 'auto']},
   'text-transform': {'values': ['capitalize', 'uppercase', 'lowercase', 'none']},
+  'text-underline-offset': {'values': ['auto']},
   'text-underline-position': {'values': ['auto', 'from-font', 'under', 'left', 'right']},
   'top': {'values': ['auto']},
   'touch-action': {

@@ -11157,6 +11157,45 @@
                             "description": "The grid layout color (default: transparent).",
                             "optional": true,
                             "$ref": "DOM.RGBA"
+                        },
+                        {
+                            "name": "colorFormat",
+                            "description": "The color format used to format color styles (default: hex).",
+                            "optional": true,
+                            "$ref": "ColorFormat"
+                        }
+                    ]
+                },
+                {
+                    "id": "ColorFormat",
+                    "type": "string",
+                    "enum": [
+                        "rgb",
+                        "hsl",
+                        "hex"
+                    ]
+                },
+                {
+                    "id": "HingeConfig",
+                    "description": "Configuration for dual screen hinge",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "rect",
+                            "description": "A rectangle represent hinge",
+                            "$ref": "DOM.Rect"
+                        },
+                        {
+                            "name": "contentColor",
+                            "description": "The content box highlight fill color (default: a dark color).",
+                            "optional": true,
+                            "$ref": "DOM.RGBA"
+                        },
+                        {
+                            "name": "outlineColor",
+                            "description": "The content box highlight outline color (default: transparent).",
+                            "optional": true,
+                            "$ref": "DOM.RGBA"
                         }
                     ]
                 },
@@ -11201,6 +11240,12 @@
                             "description": "Whether to include style info.",
                             "optional": true,
                             "type": "boolean"
+                        },
+                        {
+                            "name": "colorFormat",
+                            "description": "The color format to get config with (default: hex)",
+                            "optional": true,
+                            "$ref": "ColorFormat"
                         }
                     ],
                     "returns": [
@@ -11447,6 +11492,18 @@
                             "name": "show",
                             "description": "Whether to paint size or not.",
                             "type": "boolean"
+                        }
+                    ]
+                },
+                {
+                    "name": "setShowHinge",
+                    "description": "Add a dual screen device hinge",
+                    "parameters": [
+                        {
+                            "name": "hingeConfig",
+                            "description": "hinge data, null means hideHinge",
+                            "optional": true,
+                            "$ref": "HingeConfig"
                         }
                     ]
                 }
@@ -12004,6 +12061,17 @@
                         "pageBlockInterstitial",
                         "reload",
                         "anchorClick"
+                    ]
+                },
+                {
+                    "id": "ClientNavigationDisposition",
+                    "experimental": true,
+                    "type": "string",
+                    "enum": [
+                        "currentTab",
+                        "newTab",
+                        "newWindow",
+                        "download"
                     ]
                 },
                 {
@@ -13228,6 +13296,11 @@
                             "name": "url",
                             "description": "The destination URL for the requested navigation.",
                             "type": "string"
+                        },
+                        {
+                            "name": "disposition",
+                            "description": "The disposition for the navigation.",
+                            "$ref": "ClientNavigationDisposition"
                         }
                     ]
                 },
@@ -19062,7 +19135,8 @@
                                 "i64",
                                 "f32",
                                 "f64",
-                                "v128"
+                                "v128",
+                                "anyref"
                             ]
                         },
                         {

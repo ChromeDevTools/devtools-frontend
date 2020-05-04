@@ -1493,6 +1493,7 @@ export function registerCommands(inspectorBackend) {
       [], false);
 
   // Overlay.
+  inspectorBackend.registerEnum('Overlay.ColorFormat', {Rgb: 'rgb', Hsl: 'hsl', Hex: 'hex'});
   inspectorBackend.registerEnum('Overlay.InspectMode', {
     SearchForNode: 'searchForNode',
     SearchForUAShadowDOM: 'searchForUAShadowDOM',
@@ -1511,7 +1512,8 @@ export function registerCommands(inspectorBackend) {
       [
         {'name': 'nodeId', 'type': 'number', 'optional': false},
         {'name': 'includeDistance', 'type': 'boolean', 'optional': true},
-        {'name': 'includeStyle', 'type': 'boolean', 'optional': true}
+        {'name': 'includeStyle', 'type': 'boolean', 'optional': true},
+        {'name': 'colorFormat', 'type': 'string', 'optional': true}
       ],
       ['highlight'], false);
   inspectorBackend.registerCommand('Overlay.hideHighlight', [], [], false);
@@ -1574,6 +1576,8 @@ export function registerCommands(inspectorBackend) {
       'Overlay.setShowHitTestBorders', [{'name': 'show', 'type': 'boolean', 'optional': false}], [], false);
   inspectorBackend.registerCommand(
       'Overlay.setShowViewportSizeOnResize', [{'name': 'show', 'type': 'boolean', 'optional': false}], [], false);
+  inspectorBackend.registerCommand(
+      'Overlay.setShowHinge', [{'name': 'hingeConfig', 'type': 'object', 'optional': true}], [], false);
 
   // Page.
   inspectorBackend.registerEnum('Page.TransitionType', {
@@ -1603,6 +1607,9 @@ export function registerCommands(inspectorBackend) {
     Reload: 'reload',
     AnchorClick: 'anchorClick'
   });
+  inspectorBackend.registerEnum(
+      'Page.ClientNavigationDisposition',
+      {CurrentTab: 'currentTab', NewTab: 'newTab', NewWindow: 'newWindow', Download: 'download'});
   inspectorBackend.registerEnum('Page.ReferrerPolicy', {
     NoReferrer: 'noReferrer',
     NoReferrerWhenDowngrade: 'noReferrerWhenDowngrade',
@@ -1620,7 +1627,7 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEvent('Page.frameDetached', ['frameId']);
   inspectorBackend.registerEvent('Page.frameNavigated', ['frame']);
   inspectorBackend.registerEvent('Page.frameResized', []);
-  inspectorBackend.registerEvent('Page.frameRequestedNavigation', ['frameId', 'reason', 'url']);
+  inspectorBackend.registerEvent('Page.frameRequestedNavigation', ['frameId', 'reason', 'url', 'disposition']);
   inspectorBackend.registerEvent('Page.frameScheduledNavigation', ['frameId', 'delay', 'reason', 'url']);
   inspectorBackend.registerEvent('Page.frameStartedLoading', ['frameId']);
   inspectorBackend.registerEvent('Page.frameStoppedLoading', ['frameId']);
@@ -2528,7 +2535,8 @@ export function registerCommands(inspectorBackend) {
     I64: 'i64',
     F32: 'f32',
     F64: 'f64',
-    V128: 'v128'
+    V128: 'v128',
+    Anyref: 'anyref'
   });
   inspectorBackend.registerEnum('Runtime.ObjectPreviewType', {
     Object: 'object',

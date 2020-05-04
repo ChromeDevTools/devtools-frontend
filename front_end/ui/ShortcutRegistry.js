@@ -172,8 +172,16 @@ export class ShortcutRegistry {
    */
   async handleKey(key, domKey, event, handlers) {
     const keyModifiers = key >> 8;
-    if (((!handlers && !this._activePrefixKey) && (isPossiblyInputKey() || Dialog.hasInstance())) ||
+    const hasHandlersOrPrefixKey = !!handlers || !!this._activePrefixKey;
+    const maybeHasActions = !!(this._activePrefixKey || this._keyMap).getNode(key);
+    if ((!hasHandlersOrPrefixKey && isPossiblyInputKey()) || !maybeHasActions ||
         KeyboardShortcut.isModifier(KeyboardShortcut.keyCodeAndModifiersFromKey(key).keyCode)) {
+      return;
+    }
+    if (event) {
+      event.consume(true);
+    }
+    if (!hasHandlersOrPrefixKey && Dialog.hasInstance()) {
       return;
     }
 
@@ -191,9 +199,6 @@ export class ShortcutRegistry {
     }
     const keyMapNode = this._keyMap.getNode(key);
     if (keyMapNode && keyMapNode.hasChords()) {
-      if (event) {
-        event.consume(true);
-      }
       this._activePrefixKey = keyMapNode;
       this._consumePrefix = async () => {
         this._activePrefixKey = null;
@@ -261,9 +266,6 @@ export class ShortcutRegistry {
       const actions = this._applicableActions(key, handlers);
       if (!actions.length) {
         return false;
-      }
-      if (event) {
-        event.consume(true);
       }
       for (const action of actions) {
         let handled;

@@ -921,7 +921,10 @@ export class StylePropertiesSection {
     this._originalPropertiesCount = style.leadingProperties().length;
 
     const rule = style.parentRule;
-    this.element = createElementWithClass('div', 'styles-section matched-styles monospace');
+    this.element = document.createElement('div');
+    this.element.classList.add('styles-section');
+    this.element.classList.add('matched-styles');
+    this.element.classList.add('monospace');
     UI.ARIAUtils.setAccessibleName(this.element, `${this._headerText()}, css selector`);
     this.element.tabIndex = -1;
     UI.ARIAUtils.markAsTreeitem(this.element);

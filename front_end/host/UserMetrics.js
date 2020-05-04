@@ -125,6 +125,15 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordEnumeratedHistogram('DevTools.KeyboardShortcutFired', action, size);
     Common.EventTarget.fireEvent('DevTools.KeyboardShortcutFired', {value: action});
   }
+
+  /**
+   * @param {!IssueOpener} issueOpener
+   */
+  issuesPanelOpenedFrom(issueOpener) {
+    const size = Object.keys(IssueOpener).length + 1;
+    InspectorFrontendHostInstance.recordEnumeratedHistogram('DevTools.IssuesPanelOpenedFrom', issueOpener, size);
+    Common.EventTarget.fireEvent('DevTools.IssuesPanelOpenedFrom', {value: issueOpener});
+  }
 }
 
 // Codes below are used to collect UMA histograms in the Chromium port.
@@ -242,4 +251,13 @@ export const KeyboardShortcutAction = {
   'quickOpen.show': 21,
   'settings.show': 22,
   'sources.search': 23,
+};
+
+/** @enum {number} */
+export const IssueOpener = {
+  ConsoleInfoBar: 0,
+  LearnMoreLinkCOEP: 1,
+  StatusBarIssuesCounter: 2,
+  HamburgerMenu: 3,
+  Adorner: 4
 };

@@ -8,10 +8,11 @@
     }
   ],
   "dependencies": [
+    "browser_sdk",
     "common",
-    "ui",
+    "host",
     "sdk",
-    "browser_sdk"
+    "ui"
   ],
   "scripts": [],
   "modules": [

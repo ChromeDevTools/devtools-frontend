@@ -287,20 +287,23 @@ export class ConsoleView extends UI.Widget.VBox {
     if (!this._issueBarDiv) {
       this._issueBarDiv = document.createElement('div');
       this._issueBarDiv.classList.add('flex-none');
+      const issueBarAction = /** @type {!UI.Infobar.InfobarAction} */ ({
+        text: ls`Go to Issues`,
+        highlight: false,
+        delegate: () => {
+          Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.ConsoleInfoBar);
+          UI.ViewManager.ViewManager.instance().showView('issues-pane');
+        },
+        dismiss: true,
+      });
       const issueBar = new UI.Infobar.Infobar(
           UI.Infobar.Type.Warning,
-          ls
-          `Issues detected. The new issues panel displays information about deprecations, breaking changes and other potential problems.`,
-          [{
-            text: ls`Go to Issues`,
-            highlight: false,
-            delegate: () => UI.ViewManager.ViewManager.instance().showView('issues-pane'),
-            dismiss: true,
-          }]);
-          this.element.insertBefore(this._issueBarDiv, this._consoleToolbarContainer.nextSibling);
-          this._issueBarDiv.appendChild(issueBar.element);
-          issueBar.setParentView(this);
-          this.doResize();
+          ls`Issues detected. The new issues panel displays information about deprecations, breaking changes and other potential problems.`,
+          [issueBarAction]);
+      this.element.insertBefore(this._issueBarDiv, this._consoleToolbarContainer.nextSibling);
+      this._issueBarDiv.appendChild(issueBar.element);
+      issueBar.setParentView(this);
+      this.doResize();
     }
   }
 

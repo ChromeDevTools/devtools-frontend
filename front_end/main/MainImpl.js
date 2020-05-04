@@ -729,6 +729,14 @@ export class MainMenuItem {
         continue;
       }
 
+      if (descriptor['id'] === 'issues-pane') {
+        moreTools.defaultSection().appendItem(extension.title(), () => {
+          Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.HamburgerMenu);
+          UI.ViewManager.ViewManager.instance().showView('issues-pane', /* userGesture */ true);
+        });
+        continue;
+      }
+
       if (descriptor['persistence'] !== 'closeable') {
         continue;
       }

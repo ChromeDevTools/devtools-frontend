@@ -6,8 +6,9 @@
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';
-import * as ARIAUtils from './ARIAUtils.js';
+import * as Host from '../host/host.js';
 
+import * as ARIAUtils from './ARIAUtils.js';
 import {ContextMenu} from './ContextMenu.js';  // eslint-disable-line no-unused-vars
 import {Icon} from './Icon.js';
 import {Events as TabbedPaneEvents, TabbedPane} from './TabbedPane.js';
@@ -520,6 +521,15 @@ export class _TabbedLocation extends _Location {
     views.sort((viewa, viewb) => viewa.title().localeCompare(viewb.title()));
     for (const view of views) {
       const title = Common.UIString.UIString(view.title());
+
+      if (view.viewId() === 'issues-pane') {
+        contextMenu.defaultSection().appendItem(title, () => {
+          Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.HamburgerMenu);
+          this.showView(view, undefined, true);
+        });
+        continue;
+      }
+
       contextMenu.defaultSection().appendItem(title, this.showView.bind(this, view, undefined, true));
     }
   }

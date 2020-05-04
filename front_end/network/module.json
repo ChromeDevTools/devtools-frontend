@@ -175,17 +175,21 @@
     }
   ],
   "dependencies": [
-    "search",
-    "source_frame",
+    "browser_sdk",
+    "common",
     "components",
-    "perf_ui",
     "cookie_table",
     "data_grid",
-    "browser_sdk",
-    "mobile_throttling",
     "har_importer",
+    "host",
+    "mobile_throttling",
+    "object_ui",
+    "perf_ui",
     "persistence",
-    "browser_sdk"
+    "sdk",
+    "search",
+    "source_frame",
+    "ui"
   ],
   "scripts": [],
   "modules": [

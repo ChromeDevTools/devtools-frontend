@@ -32,6 +32,7 @@ declare global {
     __panelShown: (evt: Event) => void;
     __actionTaken: (evt: Event) => void;
     __keyboardShortcutFired: (evt: Event) => void;
+    __issuesPanelOpenedFrom: (evt: Event) => void;
     Host: {UserMetrics: UserMetrics; userMetrics: {actionTaken(name: number): void;}};
     UI: {inspectorView: {_showDrawer(show: boolean): void; showView(name: string): void;}};
   }
@@ -59,12 +60,18 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.__caughtEvents.push({name: 'DevTools.KeyboardShortcutFired', value: customEvt.detail.value});
     };
 
+    window.__issuesPanelOpenedFrom = (evt: Event) => {
+      const customEvt = evt as CustomEvent;
+      window.__caughtEvents.push({name: 'DevTools.IssuesPanelOpenedFrom', value: customEvt.detail.value});
+    };
+
     window.__caughtEvents = [];
     window.__beginCatchEvents = () => {
       window.addEventListener('DevTools.PanelShown', window.__panelShown);
       window.addEventListener('DevTools.PanelLoaded', window.__panelLoaded);
       window.addEventListener('DevTools.ActionTaken', window.__actionTaken);
       window.addEventListener('DevTools.KeyboardShortcutFired', window.__keyboardShortcutFired);
+      window.addEventListener('DevTools.IssuesPanelOpenedFrom', window.__issuesPanelOpenedFrom);
     };
 
     window.__endCatchEvents = () => {
@@ -72,6 +79,7 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.removeEventListener('DevTools.PanelLoaded', window.__panelLoaded);
       window.removeEventListener('DevTools.ActionTaken', window.__actionTaken);
       window.removeEventListener('DevTools.KeyboardShortcutFired', window.__keyboardShortcutFired);
+      window.removeEventListener('DevTools.IssuesPanelOpenedFrom', window.__issuesPanelOpenedFrom);
     };
 
     window.__beginCatchEvents();
@@ -170,10 +178,14 @@ describe('User Metrics', () => {
     ]);
   });
 
-  it('dispatches event for issues drawer', async () => {
+  it('dispatches events for opening issues drawer via hamburger menu', async () => {
     await openPanelViaMoreTools('Issues');
 
     await assertCapturedEvents([
+      {
+        name: 'DevTools.IssuesPanelOpenedFrom',
+        value: 3,  // 'HamburgerMenu'.
+      },
       {
         name: 'DevTools.PanelShown',
         value: 10,  // 'drawer-console-view'.

@@ -3,7 +3,7 @@
     {
       "type": "@TextEditor.CodeMirrorMimeMode",
       "className": "CmModes.DefaultCodeMirrorMimeMode",
-      "fileName": "clike.js",
+      "fileName": "../third_party/codemirror/package/mode/clike/clike.js",
       "mimeTypes": [
         "text/x-csrc",
         "text/x-c",
@@ -20,7 +20,7 @@
     {
       "type": "@TextEditor.CodeMirrorMimeMode",
       "className": "CmModes.DefaultCodeMirrorMimeMode",
-      "fileName": "coffeescript.js",
+      "fileName": "../third_party/codemirror/package/mode/coffeescript/coffeescript.js",
       "mimeTypes": [
         "text/x-coffeescript"
       ]
@@ -28,7 +28,7 @@
     {
       "type": "@TextEditor.CodeMirrorMimeMode",
       "className": "CmModes.DefaultCodeMirrorMimeMode",
-      "fileName": "markdown.js",
+      "fileName": "../third_party/codemirror/package/mode/markdown/markdown.js",
       "mimeTypes": [
         "text/markdown",
         "text/x-markdown"
@@ -37,7 +37,7 @@
     {
       "type": "@TextEditor.CodeMirrorMimeMode",
       "className": "CmModes.DefaultCodeMirrorMimeMode",
-      "fileName": "php.js",
+      "fileName": "../third_party/codemirror/package/mode/php/php.js",
       "dependencies": [
         "clike.js"
       ],
@@ -50,7 +50,7 @@
     {
       "type": "@TextEditor.CodeMirrorMimeMode",
       "className": "CmModes.DefaultCodeMirrorMimeMode",
-      "fileName": "python.js",
+      "fileName": "../third_party/codemirror/package/mode/python/python.js",
       "mimeTypes": [
         "text/x-python",
         "text/x-cython"
@@ -59,7 +59,7 @@
     {
       "type": "@TextEditor.CodeMirrorMimeMode",
       "className": "CmModes.DefaultCodeMirrorMimeMode",
-      "fileName": "shell.js",
+      "fileName": "../third_party/codemirror/package/mode/shell/shell.js",
       "mimeTypes": [
         "text/x-sh"
       ]
@@ -67,7 +67,7 @@
     {
       "type": "@TextEditor.CodeMirrorMimeMode",
       "className": "CmModes.DefaultCodeMirrorMimeMode",
-      "fileName": "livescript.js",
+      "fileName": "../third_party/codemirror/package/mode/livescript/livescript.js",
       "mimeTypes": [
         "text/x-livescript"
       ]
@@ -75,7 +75,7 @@
     {
       "type": "@TextEditor.CodeMirrorMimeMode",
       "className": "CmModes.DefaultCodeMirrorMimeMode",
-      "fileName": "clojure.js",
+      "fileName": "../third_party/codemirror/package/mode/clojure/clojure.js",
       "mimeTypes": [
         "text/x-clojure"
       ]
@@ -83,7 +83,7 @@
     {
       "type": "@TextEditor.CodeMirrorMimeMode",
       "className": "CmModes.DefaultCodeMirrorMimeMode",
-      "fileName": "jsx.js",
+      "fileName": "../third_party/codemirror/package/mode/jsx/jsx.js",
       "mimeTypes": [
         "text/jsx",
         "text/typescript-jsx"
@@ -91,30 +91,31 @@
     }
   ],
   "dependencies": [
+    "cm",
     "text_editor"
   ],
   "modules": [
     "cm_modes.js",
     "DefaultCodeMirrorMimeMode.js",
-    "clike.js",
-    "coffeescript.js",
-    "php.js",
-    "python.js",
-    "shell.js",
-    "livescript.js",
-    "markdown.js",
-    "clojure.js",
-    "jsx.js"
+    "../third_party/codemirror/package/mode/clike/clike.js",
+    "../third_party/codemirror/package/mode/coffeescript/coffeescript.js",
+    "../third_party/codemirror/package/mode/php/php.js",
+    "../third_party/codemirror/package/mode/python/python.js",
+    "../third_party/codemirror/package/mode/shell/shell.js",
+    "../third_party/codemirror/package/mode/livescript/livescript.js",
+    "../third_party/codemirror/package/mode/markdown/markdown.js",
+    "../third_party/codemirror/package/mode/clojure/clojure.js",
+    "../third_party/codemirror/package/mode/jsx/jsx.js"
   ],
   "skip_compilation": [
-    "clike.js",
-    "coffeescript.js",
-    "php.js",
-    "python.js",
-    "shell.js",
-    "livescript.js",
-    "markdown.js",
-    "clojure.js",
-    "jsx.js"
+    "../third_party/codemirror/package/mode/clike/clike.js",
+    "../third_party/codemirror/package/mode/coffeescript/coffeescript.js",
+    "../third_party/codemirror/package/mode/php/php.js",
+    "../third_party/codemirror/package/mode/python/python.js",
+    "../third_party/codemirror/package/mode/shell/shell.js",
+    "../third_party/codemirror/package/mode/livescript/livescript.js",
+    "../third_party/codemirror/package/mode/markdown/markdown.js",
+    "../third_party/codemirror/package/mode/clojure/clojure.js",
+    "../third_party/codemirror/package/mode/jsx/jsx.js"
   ]
 }

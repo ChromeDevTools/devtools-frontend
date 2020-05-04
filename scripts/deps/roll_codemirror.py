@@ -78,16 +78,6 @@ def copy_cm_files(options):
     find_and_copy_js_files(source_dir, target_dir, cm_filter)
 
 
-def copy_cm_modes_files(options):
-    source_dir = os.path.join(options.cm_dir, 'mode')
-    target_dir = os.path.join(options.devtools_dir, 'front_end', 'cm_modes')
-
-    def cm_modes_filter(f):
-        return f.endswith('.js') and f != 'DefaultCodeMirrorMimeMode.js' and f != 'cm_modes.js'
-
-    find_and_copy_js_files(source_dir, target_dir, cm_modes_filter)
-
-
 def copy_cm_web_modes_files(options):
     source_dir = os.path.join(options.cm_dir, 'mode')
     target_dir = os.path.join(options.devtools_dir, 'front_end', 'cm_web_modes')
@@ -102,7 +92,6 @@ if __name__ == '__main__':
     OPTIONS = parse_options(sys.argv[1:])
     run_npm(OPTIONS)
     copy_cm_files(OPTIONS)
-    copy_cm_modes_files(OPTIONS)
     copy_cm_web_modes_files(OPTIONS)
     VERSION = copy_lib_files(OPTIONS)
     print VERSION

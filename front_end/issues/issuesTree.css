@@ -167,12 +167,14 @@ p {
 
 .affected-resources-label,
 .resolutions-label {
+  margin-top: 5px;
   font-size: 10px;
   font-weight: 500;
   line-height: 2em;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--issue-black);
+  display: inline-block;
 }
 
 .resolutions-list {
@@ -192,7 +194,7 @@ p {
 
 .affected-resources {
   background: var(--affected-resource-background);
-  padding: 12px 3px 12px 20px;
+  padding: 9px 3px 12px 20px;
   position: relative;
   user-select: text;
 }
@@ -248,4 +250,8 @@ p {
 .affected-resource-mixed-content-info {
   color: var(--issue-gray);
   padding: 2px;
+}
+
+.affected-resources > .parent {
+  margin-top: 3px;
 }

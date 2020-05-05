@@ -77,13 +77,13 @@
     --active-control-bg-color: #cdcdcd;
     --focus-bg-color: hsl(214, 19%, 27%);
     --focus-ring-inactive-shadow-color: #5a5a5a;
-    --toolbar-bg-color: #333333;
+    --toolbar-bg-color: #292a2d; /* --google-grey-900-white-4-percent */
     --toolbar-hover-bg-color: #202020;
     --selection-fg-color: #cdcdcd;
     --selection-inactive-fg-color: #cdcdcd;
     --selection-inactive-bg-color: hsl(0, 0%, 28%);
     --tab-selected-fg-color: #eaeaea;
-    --tab-selected-bg-color: black;
+    --tab-selected-bg-color: #000;
     --drop-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2),
                    0 2px 4px 2px rgba(0, 0, 0, 0.2),
                    0 2px 6px 2px rgba(0, 0, 0, 0.1);

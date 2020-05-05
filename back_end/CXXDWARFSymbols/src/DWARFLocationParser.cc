@@ -103,7 +103,7 @@ llvm::Error symbol_server::DWARFLocationParser::ParseOver() {
 
 llvm::Error symbol_server::DWARFLocationParser::ParsePick() {
   uint8_t index = opcodes_.GetU8(&offset_);
-  CHECK_STACK(DW_OP_pick, index);
+  CHECK_STACK(DW_OP_pick, operand_stack_.size() - 1 - index);
   operand_stack_.push_back(operand_stack_[operand_stack_.size() - 1 - index]);
   return llvm::Error::success();
 }
@@ -529,6 +529,11 @@ symbol_server::DWARFLocationParser::ConsumeOpcodes() {
     if (auto e = ParseOpcode(op)) {
       return std::move(e);
     }
+  }
+  if (operand_stack_.empty()) {
+    return llvm::createStringError(
+        llvm::inconvertibleErrorCode(),
+        "Expression stack empty at the end of expression parsing");
   }
   return operand_stack_.pop_back_val();
 }

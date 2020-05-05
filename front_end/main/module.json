@@ -406,13 +406,13 @@
         },
         {
           "title": "Set color format to RGB",
-          "text": "RGB: rgb(128, 255, 255)",
+          "text": "RGB: rgb(128 255 255)",
           "value": "rgb",
           "raw": true
         },
         {
           "title": "Set color format to HSL",
-          "text": "HSL: hsl(300, 80%, 90%)",
+          "text": "HSL: hsl(300deg 80% 90%)",
           "value": "hsl",
           "raw": true
         }

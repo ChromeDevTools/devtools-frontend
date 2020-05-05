@@ -21,6 +21,9 @@
   <message name="IDS_DEVTOOLS_1b1ac1c7a54457ce73ddd25a5b51c47d" desc="A title of the 'Drawer sidebar' @UI.ViewLocationResolver category">
     Drawer sidebar
   </message>
+  <message name="IDS_DEVTOOLS_1bbf48778926222bae025707b1c4f070" desc="A drop-down menu option to set the color format to rgb">
+    RGB: rgb(128 255 255)
+  </message>
   <message name="IDS_DEVTOOLS_1cf59b16fd253d6ff4bbee7c237cea0d" desc="Title of an action that shows the console.">
     Show console
   </message>
@@ -99,9 +102,6 @@
   <message name="IDS_DEVTOOLS_956853d02d2c6947b6c15515e669dfad" desc="Title of a setting under the Appearance category that can be invoked through the Command Menu">
     Set color format to RGB
   </message>
-  <message name="IDS_DEVTOOLS_9835cebf3cf1d09803b6e2c02bc71401" desc="A drop-down menu option to set color format to hsl">
-    HSL: hsl(300, 80%, 90%)
-  </message>
   <message name="IDS_DEVTOOLS_9914a0ce04a7b7b6a8e39bec55064b82" desc="A drop-down menu option to switch to light theme">
     Light
   </message>
@@ -123,6 +123,9 @@
   <message name="IDS_DEVTOOLS_b3bf148a3dc8b3367191419e52380982" desc="Title of a setting under the Appearance category that can be invoked through the Command Menu">
     Use vertical panel layout
   </message>
+  <message name="IDS_DEVTOOLS_b5109d1d6943a47dc1feff4e0680fb2f" desc="A drop-down menu option to set the color format to hsl">
+    HSL: hsl(300deg 80% 90%)
+  </message>
   <message name="IDS_DEVTOOLS_b8da6df14bf06283cbf588df6998722e" desc="A title of the 'Panel' @UI.ViewLocationResolver category">
     Panel
   </message>
@@ -137,9 +140,6 @@
   </message>
   <message name="IDS_DEVTOOLS_c63621d0ad5163e8c643bb65c65b5aee" desc="Title of a setting under the Appearance category that can be invoked through the Command Menu">
     Set color format to HEX
-  </message>
-  <message name="IDS_DEVTOOLS_c8466ef18413aebb4d6ebfce4e1f739d" desc="A drop-down menu option to set color format to rgb">
-    RGB: rgb(128, 255, 255)
   </message>
   <message name="IDS_DEVTOOLS_d33bf99e0756e1d5008cb78902e38ca9" desc="Text in Main">
     All Panels

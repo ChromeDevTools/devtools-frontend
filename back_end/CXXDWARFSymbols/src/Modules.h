@@ -10,6 +10,7 @@
 #include "lldb/lldb-forward.h"
 #include "lldb/lldb-types.h"
 #include "llvm/ADT/Optional.h"
+#include "llvm/ADT/SmallSet.h"
 #include "llvm/ADT/SmallString.h"
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/ADT/StringMap.h"
@@ -26,6 +27,8 @@ struct SourceLocation {
   std::string file;
   uint32_t line;
   uint16_t column;
+
+  friend bool operator==(const SourceLocation&, const SourceLocation&);
 };
 
 struct Variable {
@@ -35,6 +38,8 @@ struct Variable {
   std::string name;
   lldb::ValueType scope;
   std::string type;
+
+  friend bool operator==(const Variable&, const Variable&);
 };
 
 struct ModuleSource {
@@ -74,14 +79,14 @@ class WasmModule {
   bool Valid() const;
   llvm::StringRef Id() const { return id_; }
 
-  llvm::SmallVector<std::string, 1> GetSourceScripts() const;
-  llvm::SmallVector<SourceLocation, 1> GetSourceLocationFromOffset(
+  llvm::SmallSet<std::string, 1> GetSourceScripts() const;
+  llvm::SmallSet<SourceLocation, 1> GetSourceLocationFromOffset(
       lldb::addr_t offset) const;
-  llvm::SmallVector<lldb::addr_t, 1> GetOffsetFromSourceLocation(
+  llvm::SmallSet<lldb::addr_t, 1> GetOffsetFromSourceLocation(
       const SourceLocation& source_loc) const;
-  llvm::SmallVector<MemoryLocation, 1> GetVariablesInScope(
+  llvm::SmallSet<MemoryLocation, 1> GetVariablesInScope(
       const SourceLocation& source_loc) const;
-  llvm::SmallVector<Variable, 1> GetVariablesInScope(lldb::addr_t offset) const;
+  llvm::SmallSet<Variable, 1> GetVariablesInScope(lldb::addr_t offset) const;
   llvm::Expected<Binary> GetVariableFormatScript(
       llvm::StringRef name,
       lldb::addr_t frame_offset,

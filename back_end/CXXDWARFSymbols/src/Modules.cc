@@ -43,7 +43,37 @@ llvm::cl::list<std::string> search_directories("I");
 
 llvm::cl::opt<bool> keep_temporaries("keep-temp-modules");
 
+namespace std {
+template <>
+struct less<symbol_server::SourceLocation> {
+  bool operator()(const symbol_server::SourceLocation& a,
+                  const symbol_server::SourceLocation& b) {
+    return std::make_tuple(a.file, a.line, a.column) <
+           std::make_tuple(b.file, b.line, b.column);
+  }
+};
+
+template <>
+struct less<symbol_server::Variable> {
+  bool operator()(const symbol_server::Variable& a,
+                  const symbol_server::Variable& b) {
+    return std::make_tuple(a.name, a.type, a.scope) <
+           std::make_tuple(b.name, b.type, b.scope);
+  }
+};
+}  // namespace std
+
 namespace symbol_server {
+bool operator==(const SourceLocation& a, const SourceLocation& b) {
+  return std::make_tuple(a.file, a.line, a.column) ==
+         std::make_tuple(b.file, b.line, b.column);
+}
+
+bool operator==(const symbol_server::Variable& a,
+                const symbol_server::Variable& b) {
+  return std::make_tuple(a.name, a.type, a.scope) ==
+         std::make_tuple(b.name, b.type, b.scope);
+}
 
 std::shared_ptr<WasmModule> WasmModule::CreateFromFile(llvm::StringRef id,
                                                        llvm::StringRef path) {
@@ -112,8 +142,8 @@ bool WasmModule::Valid() const {
   return module_ && module_->GetNumCompileUnits() > 0;
 }
 
-llvm::SmallVector<std::string, 1> WasmModule::GetSourceScripts() const {
-  llvm::SmallVector<std::string, 1> compile_units;
+llvm::SmallSet<std::string, 1> WasmModule::GetSourceScripts() const {
+  llvm::SmallSet<std::string, 1> compile_units;
   llvm::SmallSet<std::pair<llvm::StringRef, llvm::StringRef>, 1> all_files;
   for (size_t idx = 0; idx < module_->GetNumCompileUnits(); idx++) {
     auto compile_unit = module_->GetCompileUnitAtIndex(idx);
@@ -126,7 +156,7 @@ llvm::SmallVector<std::string, 1> WasmModule::GetSourceScripts() const {
       if (!all_files.insert(std::make_pair(dir, filename)).second) {
         continue;
       }
-      compile_units.emplace_back(f.GetPath());
+      compile_units.insert(f.GetPath());
     }
   }
   return compile_units;
@@ -173,9 +203,9 @@ lldb::VariableSP FindVariableAtOffset(lldb_private::Module* module,
 }
 }  // namespace
 
-llvm::SmallVector<SourceLocation, 1> WasmModule::GetSourceLocationFromOffset(
+llvm::SmallSet<SourceLocation, 1> WasmModule::GetSourceLocationFromOffset(
     lldb::addr_t offset) const {
-  llvm::SmallVector<SourceLocation, 1> lines;
+  llvm::SmallSet<SourceLocation, 1> lines;
 
   for (lldb::CompUnitSP cu : Indexed(*module_)) {
     lldb_private::LineTable* lt = cu->GetLineTable();
@@ -186,16 +216,16 @@ llvm::SmallVector<SourceLocation, 1> WasmModule::GetSourceLocationFromOffset(
     lldb_private::Address addr(section, offset);
     if (lt->FindLineEntryByAddress(addr, le)) {
       if (le.line > 0 && le.column > 0) {
-        lines.emplace_back(le.file.GetPath(), le.line, le.column);
+        lines.insert({le.file.GetPath(), le.line, le.column});
       }
     }
   }
   return lines;
 }
 
-llvm::SmallVector<lldb::addr_t, 1> WasmModule::GetOffsetFromSourceLocation(
+llvm::SmallSet<lldb::addr_t, 1> WasmModule::GetOffsetFromSourceLocation(
     const SourceLocation& source_loc) const {
-  llvm::SmallVector<lldb::addr_t, 1> locations;
+  llvm::SmallSet<lldb::addr_t, 1> locations;
   std::vector<lldb_private::Address> output_local, output_extern;
 
   for (lldb::CompUnitSP cu : Indexed(*module_)) {
@@ -211,7 +241,7 @@ llvm::SmallVector<lldb::addr_t, 1> WasmModule::GetOffsetFromSourceLocation(
                                 << sc.line_entry.is_terminal_entry << ")"
                                 << "\n");
         if (sc.line_entry.line == source_loc.line) {
-          locations.push_back(sc.line_entry.range.GetBaseAddress().GetOffset());
+          locations.insert(sc.line_entry.range.GetBaseAddress().GetOffset());
         }
       }
     }
@@ -352,9 +382,9 @@ ModuleCache::FindModulesContainingSourceScript(llvm::StringRef file) const {
   return found_modules;
 }
 
-llvm::SmallVector<Variable, 1> WasmModule::GetVariablesInScope(
+llvm::SmallSet<Variable, 1> WasmModule::GetVariablesInScope(
     lldb::addr_t offset) const {
-  llvm::SmallVector<Variable, 1> variables;
+  llvm::SmallSet<Variable, 1> variables;
   lldb_private::VariableList var_list;
   GetVariablesFromOffset(&*module_, offset, &var_list);
   LLVM_DEBUG(llvm::dbgs() << "Found " << var_list.GetSize()
@@ -363,8 +393,8 @@ llvm::SmallVector<Variable, 1> WasmModule::GetVariablesInScope(
                                var_list);
   LLVM_DEBUG(llvm::dbgs() << var_list.GetSize() << " globals\n.");
   for (auto var : Indexed(var_list)) {
-    variables.emplace_back(var->GetName().GetStringRef(), var->GetScope(),
-                           var->GetType()->GetQualifiedName().GetStringRef());
+    variables.insert({var->GetName().GetStringRef(), var->GetScope(),
+                      var->GetType()->GetQualifiedName().GetStringRef()});
   }
   return variables;
 }

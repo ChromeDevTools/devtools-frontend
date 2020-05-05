@@ -260,7 +260,7 @@ class AffectedRequestsView extends AffectedResourcesView {
     const nameElement = document.createElement('td');
     const tab = issueTypeToNetworkHeaderMap.get(this._issue.getCategory()) || Network.NetworkItemView.Tabs.Headers;
     nameElement.appendChild(UI.UIUtils.createTextButton(nameText, () => {
-      Network.NetworkPanel.NetworkPanel.selectAndShowRequestTab(request, tab);
+      Network.NetworkPanel.NetworkPanel.selectAndShowRequest(request, tab);
     }, 'link-style devtools-link'));
     const element = document.createElement('tr');
     element.classList.add('affected-resource-request');
@@ -328,7 +328,8 @@ class AffectedSourcesView extends AffectedResourcesView {
 /** @type {!Map<!SDK.Issue.IssueCategory, !Network.NetworkItemView.Tabs>} */
 const issueTypeToNetworkHeaderMap = new Map([
   [SDK.Issue.IssueCategory.SameSiteCookie, Network.NetworkItemView.Tabs.Cookies],
-  [SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy, Network.NetworkItemView.Tabs.Headers]
+  [SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy, Network.NetworkItemView.Tabs.Headers],
+  [SDK.Issue.IssueCategory.MixedContent, Network.NetworkItemView.Tabs.Headers]
 ]);
 
 class AffectedMixedContentView extends AffectedResourcesView {
@@ -397,8 +398,9 @@ class AffectedMixedContentView extends AffectedResourcesView {
     const name = document.createElement('td');
     if (maybeRequest) {
       const request = maybeRequest;  // re-assignment to make type checker happy
+      const tab = issueTypeToNetworkHeaderMap.get(this._issue.getCategory()) || Network.NetworkItemView.Tabs.Headers;
       name.appendChild(UI.UIUtils.createTextButton(filename, () => {
-        Network.NetworkPanel.NetworkPanel.selectAndShowRequest(request);
+        Network.NetworkPanel.NetworkPanel.selectAndShowRequest(request, tab);
       }, 'link-style devtools-link'));
     } else {
       name.classList.add('affected-resource-mixed-content-info');

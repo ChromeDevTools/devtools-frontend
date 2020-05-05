@@ -222,7 +222,8 @@ export const PanelCodes = {
   'settings-throttling-conditions': 34,
   'settings-emulation-geolocations': 35,
   'settings-shortcuts': 36,
-  'drawer-issues-pane': 37
+  'drawer-issues-pane': 37,
+  'settings-keybinds': 38
 };
 
 /** @type {!Object<string, number>} */

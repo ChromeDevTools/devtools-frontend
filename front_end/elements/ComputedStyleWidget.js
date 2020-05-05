@@ -159,6 +159,24 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   /**
+   * @param {string} text
+   * @return {!Node}
+   */
+  _processComputedColor(text) {
+    const color = Common.Color.Color.parse(text);
+    if (!color) {
+      return createTextNode(text);
+    }
+    const swatch = InlineEditor.ColorSwatch.ColorSwatch.create();
+    // computed styles don't provide the original format
+    // therefore, switching to RGB
+    color.setFormat(Common.Color.Format.RGB);
+    swatch.setColor(color);
+    swatch.setFormat(Common.Color.Format.RGB);
+    return swatch;
+  }
+
+  /**
    * @param {?ComputedStyle} nodeStyle
    * @param {?SDK.CSSMatchedStyles.CSSMatchedStyles} matchedStyles
    */
@@ -208,7 +226,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
       propertyElement.classList.toggle('computed-style-property-inherited', inherited);
       const renderer =
           new StylesSidebarPropertyRenderer(null, nodeStyle.node, propertyName, /** @type {string} */ (propertyValue));
-      renderer.setColorHandler(this._processColor.bind(this));
+      renderer.setColorHandler(this._processComputedColor.bind(this));
       const propertyNameElement = renderer.renderName();
       propertyNameElement.classList.add('property-name');
       propertyElement.appendChild(propertyNameElement);

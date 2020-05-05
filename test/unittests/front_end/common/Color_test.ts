@@ -287,6 +287,12 @@ describe('Color', () => {
     const result = color.asString('nickname');
     assert.strictEqual(result, 'red', 'color was not converted to a string correctly');
   });
+
+  it('is able to change color format', () => {
+    const color = new Color.Color([1, 0, 0, 1], 'rgb');
+    color.setFormat('hsl');
+    assert.strictEqual(color.asString(), 'hsl(0deg 100% 50%)', 'format was not set correctly');
+  });
 });
 
 describe('Generator', () => {

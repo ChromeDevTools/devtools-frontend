@@ -63,7 +63,7 @@ module.exports = {
     const re = /smaller than initial ([0-9]+),/;
     const imports = {
       'env': {
-        sbrk: sbrkDefaultApi.bind(this, 2 << 16),
+        __sbrk: sbrkDefaultApi.bind(this, 2 << 16),
         __getMemory: getMemory || nopDefaultApi,
         __getLocal: getLocal || nopDefaultApi,
         __debug: debug || nopDefaultApi

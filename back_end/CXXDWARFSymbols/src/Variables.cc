@@ -83,6 +83,13 @@ llvm::FunctionCallee GetGetLocalCallback(llvm::Module* m) {
       b.getInt32Ty(), b.getInt8PtrTy());
 }
 
+// void* __sbrk(intptr_t increment);
+llvm::FunctionCallee GetSBrk(llvm::Module* m) {
+  llvm::IRBuilder<> b(m->getContext());
+  return m->getOrInsertFunction("__sbrk", GetImportModuleAttr(&m->getContext()),
+                                b.getInt8PtrTy(), b.getInt32Ty());
+}
+
 // int format_begin_array(const char* ArrayName, const char *ElementType,
 //                        char *Buffer, int Size);
 llvm::FunctionCallee GetArrayBeginFormatter(llvm::Module* m) {
@@ -97,13 +104,6 @@ llvm::FunctionCallee GetGetScratchPadSize(llvm::Module* m) {
   llvm::IRBuilder<> b(m->getContext());
   return m->getOrInsertFunction("get_scratch_pad_size", b.getInt32Ty(),
                                 b.getInt8PtrTy(), b.getInt8PtrTy());
-}
-
-// void* sbrk(intptr_t increment);
-llvm::FunctionCallee GetSBrk(llvm::Module* m) {
-  llvm::IRBuilder<> b(m->getContext());
-  return m->getOrInsertFunction("sbrk", GetImportModuleAttr(&m->getContext()),
-                                b.getInt8PtrTy(), b.getInt32Ty());
 }
 
 // int format_sep(char *Buffer, int Size);

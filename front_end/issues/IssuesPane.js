@@ -527,19 +527,6 @@ class IssueView extends UI.TreeOutline.TreeElement {
   }
 
   _createBody() {
-    const kindAndCode = new UI.TreeOutline.TreeElement();
-    kindAndCode.setCollapsible(false);
-    kindAndCode.selectable = false;
-    kindAndCode.listItemElement.classList.add('kind-code-line');
-    // TODO(chromium:1072331): Re-enable rendering of the issue kind once there is more than a
-    //                         single kind and all issue codes are properly classified post-MVP launch.
-    const code = document.createElement('span');
-    code.classList.add('issue-code');
-    code.textContent = this._issue.code();
-    kindAndCode.listItemElement.appendChild(code);
-
-    this.appendChild(kindAndCode);
-
     const messageElement = new UI.TreeOutline.TreeElement();
     messageElement.setCollapsible(false);
     messageElement.selectable = false;

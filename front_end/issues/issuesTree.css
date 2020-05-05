@@ -149,27 +149,10 @@ p {
    content: ' — ';
 }
 
-.kind-code-line {
-  font-size: 12px;
-  color: var(--issue-gray);
-  margin-bottom: 4px;
-  user-select: none;
-}
-
 .separator::before {
   content: '·';
   padding-left: 1ex;
   padding-right: 1ex;
-}
-
-.issue-code {
-  color: rgba(95, 99, 104, 0.5);
-  user-select: text;
-  cursor: text;
-}
-
-.issue-kind {
-  color: var(--breaking-change-color);
 }
 
 .link {

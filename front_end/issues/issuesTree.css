@@ -97,6 +97,7 @@ p {
   font-size: 14px;
   color: var(--issue-black);
   font-weight: normal;
+  user-select: text;
 }
 
 .issue.expanded .title {
@@ -129,6 +130,7 @@ p {
   font-size: 14px;
   color: var(--issue-gray);
   margin-bottom: 4px;
+  user-select: text;
 }
 
 .message .example {
@@ -177,6 +179,7 @@ p {
 
 .link-wrapper {
   margin-top: 8px;
+  user-select: text;
 }
 
 .affected-resources-label,
@@ -208,6 +211,7 @@ p {
   background: var(--affected-resource-background);
   padding: 12px 3px 12px 20px;
   position: relative;
+  user-select: text;
 }
 
 .affected-resource-label {

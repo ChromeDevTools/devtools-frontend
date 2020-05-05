@@ -14,5 +14,6 @@ ts_library("formatter_worker") {
     "../../../../front_end/formatter_worker",
     "../../../../front_end/formatter_worker/acorn",
     "../../../../front_end/platform",
+    "../../../../front_end/third_party/acorn",
   ]
 }

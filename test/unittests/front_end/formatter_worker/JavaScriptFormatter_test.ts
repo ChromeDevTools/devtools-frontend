@@ -6,7 +6,7 @@ const {assert} = chai;
 
 import * as Platform from '../../../../front_end/platform/platform.js';
 
-import '../../../../front_end/formatter_worker/acorn/acorn.js';
+import '../../../../front_end/third_party/acorn/package/dist/acorn.js';
 import '../../../../front_end/formatter_worker/acorn/acorn_loose.js';
 
 import {FormattedContentBuilder} from '../../../../front_end/formatter_worker/FormattedContentBuilder.js';

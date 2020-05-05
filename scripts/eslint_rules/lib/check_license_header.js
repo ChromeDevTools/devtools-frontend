@@ -78,7 +78,6 @@ const EXCLUDED_FILES = [
   // FIXME: Diff bundles must be moved to third_party
   'diff/diff_match_patch.js',
   // FIXME: Acorn bundles must be moved to third_party
-  'formatter_worker/acorn/acorn.js',
   'formatter_worker/acorn/acorn_loose.js',
 ];
 

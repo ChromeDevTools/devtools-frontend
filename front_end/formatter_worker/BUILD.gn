@@ -15,6 +15,7 @@ ts_library("formatter_worker") {
   deps = [
     "../platform",
     "../text_utils",
+    "../third_party/acorn",
     "acorn",
   ]
 }

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './acorn/acorn.js';
+import '../third_party/acorn/package/dist/acorn.js';
 import './acorn/acorn_loose.js';
 import '../cm_web_modes/cm_web_modes_headless.js';
 

@@ -11,7 +11,7 @@
     "formatter_worker-legacy.js",
     "ESTreeWalker.js",
     "FormatterWorker.js",
-    "acorn/acorn.js",
+    "../third_party/acorn/package/dist/acorn.js",
     "acorn/acorn_loose.js",
     "CSSFormatter.js",
     "AcornTokenizer.js",
@@ -24,7 +24,7 @@
     "RelaxedJSONParser.js"
   ],
   "skip_compilation": [
-    "acorn/acorn.js",
+    "../third_party/acorn/package/dist/acorn.js",
     "acorn/acorn_loose.js"
   ]
 }

@@ -5,8 +5,6 @@
 copy("acorn") {
   sources = [
     "acorn-tsconfig.json",
-    "acorn.d.ts",
-    "acorn.js",
     "acorn_loose.d.ts",
     "acorn_loose.js",
   ]

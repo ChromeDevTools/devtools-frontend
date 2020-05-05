@@ -10,7 +10,7 @@ import * as MixedContentIssue from '../sdk/MixedContentIssue.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-import {Events as IssueAggregatorEvents, IssueAggregator} from './IssueAggregator.js';
+import {AggregatedIssue, Events as IssueAggregatorEvents, IssueAggregator} from './IssueAggregator.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @param {string} path
@@ -148,16 +148,16 @@ class AffectedResourcesView extends UI.TreeOutline.TreeElement {
 class AffectedCookiesView extends AffectedResourcesView {
   /**
    * @param {!IssueView} parent
-   * @param {!SDK.Issue.Issue} issue
+   * @param {!AggregatedIssue} issue
    */
   constructor(parent, issue) {
     super(parent, {singular: ls`cookie`, plural: ls`cookies`});
-    /** @type {!SDK.Issue.Issue} */
+    /** @type {!AggregatedIssue} */
     this._issue = issue;
   }
 
   /**
-   * @param {!Iterable<!Protocol.Audits.AffectedCookie>} cookies
+   * @param {!Iterable<!{cookie: !Protocol.Audits.AffectedCookie, hasRequest: boolean}>} cookies
    */
   _appendAffectedCookies(cookies) {
     const header = document.createElement('tr');
@@ -178,34 +178,39 @@ class AffectedCookiesView extends AffectedResourcesView {
     let count = 0;
     for (const cookie of cookies) {
       count++;
-      this.appendAffectedCookie(cookie);
+      this.appendAffectedCookie(cookie.cookie, cookie.hasRequest);
     }
     this.updateAffectedResourceCount(count);
   }
 
   /**
    * @param {!Protocol.Audits.AffectedCookie} cookie
+   * @param {boolean} hasAssociatedRequest
    */
-  appendAffectedCookie(cookie) {
+  appendAffectedCookie(cookie, hasAssociatedRequest) {
     const element = document.createElement('tr');
     element.classList.add('affected-resource-cookie');
     const name = document.createElement('td');
-    name.appendChild(UI.UIUtils.createTextButton(cookie.name, () => {
-      Network.NetworkPanel.NetworkPanel.revealAndFilter([
-        {
-          filterType: 'cookie-domain',
-          filterValue: cookie.domain,
-        },
-        {
-          filterType: 'cookie-name',
-          filterValue: cookie.name,
-        },
-        {
-          filterType: 'cookie-path',
-          filterValue: cookie.path,
-        }
-      ]);
-    }, 'link-style devtools-link'));
+    if (hasAssociatedRequest) {
+      name.appendChild(UI.UIUtils.createTextButton(cookie.name, () => {
+        Network.NetworkPanel.NetworkPanel.revealAndFilter([
+          {
+            filterType: 'cookie-domain',
+            filterValue: cookie.domain,
+          },
+          {
+            filterType: 'cookie-name',
+            filterValue: cookie.name,
+          },
+          {
+            filterType: 'cookie-path',
+            filterValue: cookie.path,
+          }
+        ]);
+      }, 'link-style devtools-link'));
+    } else {
+      name.textContent = cookie.name;
+    }
     const info = document.createElement('td');
     info.classList.add('affected-resource-cookie-info');
 
@@ -222,7 +227,7 @@ class AffectedCookiesView extends AffectedResourcesView {
    */
   update() {
     this.clear();
-    this._appendAffectedCookies(this._issue.cookies());
+    this._appendAffectedCookies(this._issue.cookiesWithRequestIndicator());
   }
 }
 
@@ -441,7 +446,7 @@ class IssueView extends UI.TreeOutline.TreeElement {
   /**
    *
    * @param {!IssuesPaneImpl} parent
-   * @param {!SDK.Issue.Issue} issue
+   * @param {!AggregatedIssue} issue
    * @param {!SDK.Issue.IssueDescription} description
    */
   constructor(parent, issue, description) {
@@ -635,12 +640,12 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _issueUpdated(event) {
-    const issue = /** @type {!SDK.Issue.Issue} */ (event.data);
+    const issue = /** @type {!AggregatedIssue} */ (event.data);
     this._updateIssueView(issue);
   }
 
   /**
-   * @param {!SDK.Issue.Issue} issue
+   * @param {!AggregatedIssue} issue
    */
   _updateIssueView(issue) {
     const description = issue.getDescription();

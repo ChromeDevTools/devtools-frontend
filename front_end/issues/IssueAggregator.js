@@ -17,7 +17,7 @@ export class AggregatedIssue extends SDK.Issue.Issue {
    */
   constructor(code) {
     super(code);
-    /** @type {!Map<string, !Protocol.Audits.AffectedCookie>} */
+    /** @type {!Map<string, !{cookie: !Protocol.Audits.AffectedCookie, hasRequest: boolean}>} */
     this._cookies = new Map();
     /** @type {!Map<string, !Protocol.Audits.AffectedRequest>} */
     this._requests = new Map();
@@ -40,6 +40,13 @@ export class AggregatedIssue extends SDK.Issue.Issue {
    * @returns {!Iterable<!Protocol.Audits.AffectedCookie>}
    */
   cookies() {
+    return Array.from(this._cookies.values()).map(x => x.cookie);
+  }
+
+  /**
+   * @returns {!Iterable<!{cookie: !Protocol.Audits.AffectedCookie, hasRequest: boolean}>}
+   */
+  cookiesWithRequestIndicator() {
     return this._cookies.values();
   }
 
@@ -81,21 +88,33 @@ export class AggregatedIssue extends SDK.Issue.Issue {
   }
 
   /**
+   * Produces a primary key for a cookie. Use this instead of `JSON.stringify` in
+   * case new fields are added to `AffectedCookie`.
+   * @param {!Protocol.Audits.AffectedCookie} cookie
+   */
+  _keyForCookie(cookie) {
+    const {domain, path, name} = cookie;
+    return `${domain};${path};${name}`;
+  }
+
+  /**
    * @param {!SDK.Issue.Issue} issue
    */
   addInstance(issue) {
     if (!this._representative) {
       this._representative = issue;
     }
-    for (const cookie of issue.cookies()) {
-      const key = JSON.stringify(cookie);
-      if (!this._cookies.has(key)) {
-        this._cookies.set(key, cookie);
-      }
-    }
+    let hasRequest = false;
     for (const request of issue.requests()) {
+      hasRequest = true;
       if (!this._requests.has(request.requestId)) {
         this._requests.set(request.requestId, request);
+      }
+    }
+    for (const cookie of issue.cookies()) {
+      const key = this._keyForCookie(cookie);
+      if (!this._cookies.has(key)) {
+        this._cookies.set(key, {cookie, hasRequest});
       }
     }
     for (const mixedContent of issue.mixedContents()) {

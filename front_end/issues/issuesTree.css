@@ -203,7 +203,6 @@ p {
 .affected-resource-cookie {
   font-size: 14px;
   line-height: 20px;
-  color: var(--issue-link);
   border: 0;
   border-collapse: collapse;
 }
@@ -211,7 +210,6 @@ p {
 .affected-resource-mixed-content {
   font-size: 14px;
   line-height: 20px;
-  color: var(--issue-link);
   border: 0;
   border-collapse: collapse;
 }
@@ -219,7 +217,6 @@ p {
 .affected-resource-request {
   font-size: 14px;
   line-height: 20px;
-  color: var(--issue-link);
   border: 0;
   border-collapse: collapse;
 }

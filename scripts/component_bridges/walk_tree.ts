@@ -18,6 +18,8 @@ export interface WalkerState {
   publicMethods: Set<ts.MethodDeclaration>;
   customElementsDefineCall?: ts.ExpressionStatement;
   imports: Set<ExternalImport>;
+  getters: Set<ts.GetAccessorDeclaration>;
+  setters: Set<ts.SetAccessorDeclaration>;
 }
 
 const classExtendsHTMLElement = (classNode: ts.ClassDeclaration): boolean => {
@@ -35,6 +37,33 @@ const classExtendsHTMLElement = (classNode: ts.ClassDeclaration): boolean => {
   });
 };
 
+/* takes a type and checks if it's either an array of interfaces or an interface
+ * e.g, we're looking for: Array<Foo> or Foo
+ * and not for primitives like string, number, etc
+ *
+ * This is so we gather a list of all user defined type references that we might need
+ * to convert into Closure typedefs.
+ */
+const findInterfacesFromType = (node: ts.Node): Set<string> => {
+  const foundInterfaces = new Set<string>();
+
+  if (ts.isArrayTypeNode(node) && ts.isTypeReferenceNode(node.elementType) &&
+      ts.isIdentifier(node.elementType.typeName)) {
+    foundInterfaces.add(node.elementType.typeName.escapedText.toString());
+
+  } else {
+    if (ts.isTypeReferenceNode(node) && ts.isIdentifier(node.typeName)) {
+      foundInterfaces.add(node.typeName.escapedText.toString());
+    }
+  }
+
+  return foundInterfaces;
+};
+
+const isPrivate = (node: ts.MethodDeclaration|ts.GetAccessorDeclaration|ts.SetAccessorDeclaration): boolean => {
+  return node.modifiers && node.modifiers.some(modifier => modifier.kind === ts.SyntaxKind.PrivateKeyword) || false;
+};
+
 const walkNode = (node: ts.Node, startState?: WalkerState): WalkerState => {
   const state: WalkerState = startState || {
     foundInterfaces: new Set(),
@@ -43,6 +72,8 @@ const walkNode = (node: ts.Node, startState?: WalkerState): WalkerState => {
     componentClass: undefined,
     customElementsDefineCall: undefined,
     imports: new Set(),
+    getters: new Set(),
+    setters: new Set(),
 
   };
 
@@ -54,10 +85,7 @@ const walkNode = (node: ts.Node, startState?: WalkerState): WalkerState => {
       // now we know this is the component, hunt for its public methods
       node.members.forEach(member => {
         if (ts.isMethodDeclaration(member)) {
-          const isPrivate =
-              member.modifiers && member.modifiers.some(modifier => modifier.kind === ts.SyntaxKind.PrivateKeyword);
-
-          if (isPrivate) {
+          if (isPrivate(member)) {
             return;
           }
           state.publicMethods.add(member);
@@ -71,16 +99,36 @@ const walkNode = (node: ts.Node, startState?: WalkerState): WalkerState => {
             if (!param.type) {
               return;
             }
-            if (ts.isArrayTypeNode(param.type) && ts.isTypeReferenceNode(param.type.elementType) &&
-                ts.isIdentifier(param.type.elementType.typeName)) {
-              state.interfaceNamesToConvert.add(param.type.elementType.typeName.escapedText.toString());
 
-            } else {
-              if (ts.isTypeReferenceNode(param.type) && ts.isIdentifier(param.type.typeName)) {
-                state.interfaceNamesToConvert.add(param.type.typeName.escapedText.toString());
-              }
-            }
+            const foundInterfaces = findInterfacesFromType(param.type);
+            foundInterfaces.forEach(i => state.interfaceNamesToConvert.add(i));
           });
+        } else if (ts.isGetAccessorDeclaration(member)) {
+          if (isPrivate(member)) {
+            return;
+          }
+
+          state.getters.add(member);
+
+          if (member.type) {
+            const foundInterfaces = findInterfacesFromType(member.type);
+            foundInterfaces.forEach(i => state.interfaceNamesToConvert.add(i));
+          }
+        } else if (ts.isSetAccessorDeclaration(member)) {
+          if (isPrivate(member)) {
+            return;
+          }
+
+          state.setters.add(member);
+
+          if (member.parameters[0]) {
+            const setterParamType = member.parameters[0].type;
+
+            if (setterParamType) {
+              const foundInterfaces = findInterfacesFromType(setterParamType);
+              foundInterfaces.forEach(i => state.interfaceNamesToConvert.add(i));
+            }
+          }
         }
       });
     }

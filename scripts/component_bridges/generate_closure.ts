@@ -45,6 +45,96 @@ const paramIsMarkedAsOptionalOrRequired = (param: string) => {
   return startChars.some(c => param.startsWith(c));
 };
 
+interface TypeNodeToJSDocOptions {
+  paramName: string;
+  nodeIsOptional: boolean;
+  docType: 'param'|'return';
+}
+
+const typeNodeToJSDocClosureType = (node: ts.TypeNode, options: TypeNodeToJSDocOptions): string => {
+  const paramValue = valueForTypeNode(node, true);
+  const {nodeIsOptional, paramName, docType} = options;
+
+  const paramNameIfRequired = docType === 'param' ? ` ${paramName}` : '';
+
+  /* the rules for ? or ! inside params are subtle when we are given
+   * an interface that's optional in TypeScript land we need to tell
+   * Closure that it's optional _but not nullable_.?Foo in Closure
+   * would let Foo be null so instead we go for {!Foo=} which states
+   * it's optional but not nullable. but note that if we pass a
+   * union of Foo | Null, that should become {?Foo}, which is dealt
+   * with within valueForTypeNode().
+   *
+   * additionally, primitive optionals in TS aren't as
+   * straightforward as throwing a ? on it as that makes it
+   * nullable, not optional
+   *
+   * we also don't need a ! at the start of primitive non-optional
+   * types, but do need the ! at the start of non-optional
+   * interfaces
+   *
+   * TS                    <|> Closure
+   * person?: Person       <|> {!Person=}
+   * person: Person | null <|> {?Person}
+   * name?: string         <|> {(string|undefined)=}
+   */
+
+  if (ts.isTypeReferenceNode(node)) {
+    const paramString = ['!', paramValue, nodeIsOptional ? '=' : ''].join('');
+    return `* @${docType} {${paramString}}${paramNameIfRequired}`;
+  }
+
+  if (ts.isArrayTypeNode(node)) {
+    /* a required array = !Array.<!Foo>
+     * an optional array = (!Array.<!Foo>|undefined)=
+     * so we first construct the param as if it was required
+     * because if it's optional we just add |undefined and wrap in braces
+     */
+
+    let output = '!Array.<';
+
+    const internalType = node.elementType;
+    if (nodeIsPrimitive(internalType)) {
+      output += valueForTypeNode(internalType, true);
+    } else if (ts.isTypeReferenceNode(internalType)) {
+      // interfaces need the ! so they are non-nullable in Closure land
+      output += `!${valueForTypeNode(internalType, true)}`;
+    } else {
+      throw new Error(`Unsupported Array<X> type: ${ts.SyntaxKind[internalType.kind]}`);
+    }
+    output += '>';
+
+    if (nodeIsOptional) {
+      output = `(${output}|undefined)=`;
+    }
+
+    return `* @${docType} {${output}}${paramNameIfRequired}`;
+  }
+
+
+  // valueForTypeNode() may have added a ! or ? in which case we don't need to.
+  const needsOptionalModifier = paramIsMarkedAsOptionalOrRequired(paramValue) === false;
+
+  if (nodeIsOptional) {
+    const paramString = ['(', paramValue, '|', 'undefined', ')='].join('');
+    return `* @${docType} {${paramString}}${paramNameIfRequired}`;
+  }
+
+  let paramOptionalModifier = '';
+  if (needsOptionalModifier) {
+    if (nodeIsOptional) {
+      paramOptionalModifier = '?';
+    } else if (nodeIsPrimitive(node)) {
+      // as noted above, primitive types don't need an explicit ! when they are required
+      paramOptionalModifier = '';
+    } else {
+      paramOptionalModifier = '!';
+    }
+  }
+
+  return `* @${docType} {${paramOptionalModifier}${paramValue}}${paramNameIfRequired}`;
+};
+
 export const generateClosureClass = (state: WalkerState): string[] => {
   const customElementClass = state.componentClass;
   if (!customElementClass) {
@@ -75,89 +165,13 @@ export const generateClosureClass = (state: WalkerState): string[] => {
         return;
       }
       const paramName = (param.name as ts.Identifier).escapedText.toString();
-      const paramValue = valueForTypeNode(param.type, true);
+      const parsedParam = typeNodeToJSDocClosureType(param.type, {
+        paramName,
+        nodeIsOptional: !!param.questionToken,
+        docType: 'param',
+      });
 
-      /* the rules for ? or ! inside params are subtle when we are given
-       * an interface that's optional in TypeScript land we need to tell
-       * Closure that it's optional _but not nullable_.?Foo in Closure
-       * would let Foo be null so instead we go for {!Foo=} which states
-       * it's optional but not nullable. but note that if we pass a
-       * union of Foo | Null, that should become {?Foo}, which is dealt
-       * with within valueForTypeNode().
-       *
-       * additionally, primitive optionals in TS aren't as
-       * straightforward as throwing a ? on it as that makes it
-       * nullable, not optional
-       *
-       * we also don't need a ! at the start of primitive non-optional
-       * types, but do need the ! at the start of non-optional
-       * interfaces
-       *
-       * TS                    <|> Closure
-       * person?: Person       <|> {!Person=}
-       * person: Person | null <|> {?Person}
-       * name?: string         <|> {(string|undefined)=}
-       */
-
-      if (ts.isTypeReferenceNode(param.type)) {
-        const paramOptional = !!param.questionToken;
-        const paramString = ['!', paramValue, paramOptional ? '=' : ''].join('');
-        jsDocForFunc.push(`* @param {${paramString}} ${paramName}`);
-      } else if (ts.isArrayTypeNode(param.type)) {
-        const arrayParamOptional = !!param.questionToken;
-
-        /* a required array = !Array.<!Foo>
-         * an optional array = (!Array.<!Foo>|undefined)=
-         * so we first construct the param as if it was required
-         * because if it's optional we just add |undefined and wrap in braces
-         */
-
-        let output = '!Array.<';
-
-        const internalType = param.type.elementType;
-        if (nodeIsPrimitive(internalType)) {
-          output += valueForTypeNode(internalType, true);
-        } else if (ts.isTypeReferenceNode(internalType)) {
-          // interfaces need the ! so they are non-nullable in Closure land
-          output += `!${valueForTypeNode(internalType, true)}`;
-        } else {
-          throw new Error(`Unsupported Array<X> type: ${ts.SyntaxKind[internalType.kind]}`);
-        }
-        output += '>';
-
-        if (arrayParamOptional) {
-          output = `(${output}|undefined)=`;
-        }
-
-        jsDocForFunc.push(`* @param {${output}} ${paramName}`);
-      } else {
-        /* valueForTypeNode() may have added a ! or ?
-       * in which case we don't need to
-       */
-        const needsOptionalModifier = paramIsMarkedAsOptionalOrRequired(paramValue) === false;
-
-        const paramIsOptional = !!param.questionToken;
-
-        if (paramIsOptional) {
-          const paramString = ['(', paramValue, '|', 'undefined', ')='].join('');
-          jsDocForFunc.push(`* @param {${paramString}} ${paramName}`);
-        } else {
-          let paramOptionalModifier = '';
-          if (needsOptionalModifier) {
-            if (!!param.questionToken) {
-              paramOptionalModifier = '?';
-            } else if (nodeIsPrimitive(param.type)) {
-              // as noted above, primitive types don't need an explicit !
-              // when they are required
-              paramOptionalModifier = '';
-            } else {
-              paramOptionalModifier = '!';
-            }
-          }
-
-          jsDocForFunc.push(`* @param {${paramOptionalModifier}${paramValue}} ${paramName}`);
-        }
-      }
+      jsDocForFunc.push(parsedParam);
     });
 
     jsDocForFunc.push('*/');
@@ -166,6 +180,61 @@ export const generateClosureClass = (state: WalkerState): string[] => {
     output.push(jsDocForFunc.join('\n'));
     output.push(indent(`${methodName}(${argsForFunc}) {}`, 2));
   });
+
+  state.getters.forEach(getter => {
+    let jsDocForFunc = ['/**'];
+    const getterName = (getter.name as ts.Identifier).escapedText.toString();
+
+    if (!getter.type) {
+      throw new Error(`Found invalid getter with no return type: ${getterName}`);
+    }
+
+    const returnTypeClosure = typeNodeToJSDocClosureType(getter.type, {
+      paramName: getterName,
+      /* return types in TypeScript are never optional
+       * you can do Foo | null but that's not optional, that's a union type
+       */
+      nodeIsOptional: false,
+      docType: 'return',
+    });
+
+    jsDocForFunc.push(returnTypeClosure);
+    jsDocForFunc.push('*/');
+    jsDocForFunc = jsDocForFunc.map(line => indent(line, 2));
+
+    output.push(jsDocForFunc.join('\n'));
+    output.push(indent(`get ${getterName}() {}`, 2));
+  });
+
+  state.setters.forEach(setter => {
+    let jsDocForFunc = ['/**'];
+    const setterName = (setter.name as ts.Identifier).escapedText.toString();
+
+    if (setter.parameters.length === 0) {
+      throw new Error(`Found invalid setter with no parameter: ${setterName}`);
+    }
+
+    const setterParamName = (setter.parameters[0].name as ts.Identifier).escapedText.toString();
+    const setterParamType = setter.parameters[0].type;
+
+    if (!setterParamType) {
+      throw new Error(`Found invalid setter with no explicit parameter type: ${setterName}`);
+    }
+
+    const parsedType = typeNodeToJSDocClosureType(setterParamType, {
+      docType: 'param',
+      nodeIsOptional: !!setter.parameters[0].questionToken,
+      paramName: setterParamName,
+    });
+
+    jsDocForFunc.push(parsedType);
+    jsDocForFunc.push('*/');
+    jsDocForFunc = jsDocForFunc.map(line => indent(line, 2));
+    output.push(jsDocForFunc.join('\n'));
+
+    output.push(indent(`set ${setterName}(${setterParamName}) {}`, 2));
+  });
+
   output.push('}');
   return output;
 };

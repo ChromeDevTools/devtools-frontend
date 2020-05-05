@@ -116,6 +116,62 @@ describe('walkTree', () => {
       assert.deepEqual(publicMethodNames, ['update']);
     });
 
+    it('finds any public getter functions on the class and notes its return interface', () => {
+      const code = `interface Person {}
+
+      class Breadcrumbs extends HTMLElement {
+
+        private render() {
+          console.log('render')
+        }
+
+        public get person(): Person {
+        }
+      }`;
+
+      const source = createTypeScriptSourceFile(code);
+      const result = walkTree(source, 'test.ts');
+
+      if (!result.componentClass) {
+        assert.fail('No component class was found');
+      }
+
+      const getterNames = Array.from(result.getters, method => {
+        return (method.name as ts.Identifier).escapedText as string;
+      });
+
+      assert.deepEqual(getterNames, ['person']);
+      assert.deepEqual(Array.from(result.interfaceNamesToConvert), ['Person']);
+    });
+
+    it('finds any public setters and the interfaces they take', () => {
+      const code = `interface Person{}
+
+      class Breadcrumbs extends HTMLElement {
+
+        private render() {
+          console.log('render')
+        }
+
+        public set foo(x: Person) {
+        }
+      }`;
+
+      const source = createTypeScriptSourceFile(code);
+      const result = walkTree(source, 'test.ts');
+
+      if (!result.componentClass) {
+        assert.fail('No component class was found');
+      }
+
+      const setterNames = Array.from(result.setters, method => {
+        return (method.name as ts.Identifier).escapedText as string;
+      });
+
+      assert.deepEqual(setterNames, ['foo']);
+      assert.deepEqual(Array.from(result.interfaceNamesToConvert), ['Person']);
+    });
+
     it('finds the custom elements define call', () => {
       const code = `class Breadcrumbs extends HTMLElement {
 

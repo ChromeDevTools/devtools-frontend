@@ -52,9 +52,6 @@
   <message name="IDS_DEVTOOLS_1826966037c093803f9bd475b362057d" desc="Tooltip to explain why a cookie was blocked">
     This Set-Cookie was blocked because it was not sent over a secure connection and would have overwritten a cookie with the Secure attribute.
   </message>
-  <message name="IDS_DEVTOOLS_185bf49541541933dc3fd1fb89d3fea3" desc="Title of a setting under the Console category in Settings">
-    Enable custom formatters
-  </message>
   <message name="IDS_DEVTOOLS_1985576209a186984f171efd81e91e3d" desc="Text in Network Log">
     &lt;anonymous&gt;
   </message>
@@ -550,6 +547,9 @@
   </message>
   <message name="IDS_DEVTOOLS_f2a47c6809d88e175dade0ef7b16aa13" desc="Text in DOMDebugger Model">
     Mouse
+  </message>
+  <message name="IDS_DEVTOOLS_f45d84159df792235cfe12839b868a26" desc="Title of a setting under the Console category in Settings">
+    Temporarily enable deprecated custom formatters
   </message>
   <message name="IDS_DEVTOOLS_f6137609f4decf877ede5bd3a3125629" desc="Text in CPUProfile Data Model">
     <ph name="LOCKED_1">DevTools</ph>: CPU profile parser is fixing <ph name="COUNT">$1s<ex>2</ex></ph> missing samples.

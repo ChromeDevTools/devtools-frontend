@@ -362,7 +362,7 @@
     {
       "type": "setting",
       "category": "Console",
-      "title": "Enable custom formatters",
+      "title": "Temporarily enable deprecated custom formatters",
       "settingName": "customFormatters",
       "settingType": "boolean",
       "defaultValue": false

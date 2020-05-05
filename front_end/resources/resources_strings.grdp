@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_0181d023aa926bdfcb0f7b504eb491b5" desc="Text for filter in Cookies View of the Application panel">
+    Only show cookies with an issue
+  </message>
   <message name="IDS_DEVTOOLS_01abfc750a0c942167651c40d088531d" desc="Text in Background Service View of the Application panel">
     #
   </message>
@@ -35,9 +38,6 @@
   </message>
   <message name="IDS_DEVTOOLS_10a77618ffc0466753fde85f9bec01fd" desc="Text for button in Service Workers View of the Application panel that dispatches a periodicsync event">
     Periodic Sync
-  </message>
-  <message name="IDS_DEVTOOLS_12229cc5cc9800582536a4542be4a33a" desc="Text for filter in Cookies Panel">
-    Only blocked
   </message>
   <message name="IDS_DEVTOOLS_1351a3eaa0f925dad980e83905bc1230" desc="Text of a DOM element in Service Workers View of the Application panel">
     Worker: <ph name="TARGETINFO_URL">$1s<ex>example.com</ex></ph>
@@ -81,9 +81,6 @@ table is empty.
   </message>
   <message name="IDS_DEVTOOLS_2e9d8504b07d0bdf4887f27c070cbbb6" desc="Text in Application Panel Sidebar of the Application panel">
     autoIncrement
-  </message>
-  <message name="IDS_DEVTOOLS_2f46140dd3ce5e85a4d152a5e2f75a65" desc="Label for filter in Cookies Panel">
-    Only show blocked Cookies
   </message>
   <message name="IDS_DEVTOOLS_301addf2037879acf2a972b157d2f4a7" desc="Text in Application Panel Sidebar of the Application panel">
     Local Files
@@ -135,6 +132,9 @@ table is empty.
   </message>
   <message name="IDS_DEVTOOLS_45e035baf33a8e403766a606457f8b10" desc="Text in App Manifest View of the Application panel">
     Theme color
+  </message>
+  <message name="IDS_DEVTOOLS_4e2c9304fbfcf372640326c445711323" desc="Title for filter in the Cookies View of the Application panel">
+    Only show cookies which have an associated issue
   </message>
   <message name="IDS_DEVTOOLS_4f36f645368158bc46346b8902fc2566" desc="Text in Service Workers View of the Application panel">
     #<ph name="ACTIVE_ID">$1s<ex>1</ex></ph> activated and is <ph name="ACTIVE_RUNNINGSTATUS">$2s<ex>stopped</ex></ph>

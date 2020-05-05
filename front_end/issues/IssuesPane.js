@@ -693,6 +693,7 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
   revealByCode(code) {
     const issueView = this._issueViews.get(code);
     if (issueView) {
+      issueView.expand();
       issueView.reveal();
     }
   }

@@ -83,12 +83,12 @@ export function hasIssueOfCategory(obj, category) {
 
 /**
  * @param {!IssuesAssociatable} obj
- * @param {!SDK.Issue.IssueCategory} category
+ * @param {!SDK.Issue.IssueCategory=} category
  * @return {!Promise<undefined | void>}
  */
 export async function reveal(obj, category) {
   const issues = Array.from(IssuesManager.instance().issues());
-  const candidates = issuesAssociatedWith(issues, obj).filter(issue => issue.getCategory() === category);
+  const candidates = issuesAssociatedWith(issues, obj).filter(issue => !category || issue.getCategory() === category);
   if (candidates.length > 0) {
     return Common.Revealer.reveal(candidates[0]);
   }

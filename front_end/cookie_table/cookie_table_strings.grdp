@@ -15,6 +15,9 @@
   <message name="IDS_DEVTOOLS_84f004ea65433d60be066863ae5cc2d1" desc="Text for Context Menu entry">
     Show Requests With This Cookie
   </message>
+  <message name="IDS_DEVTOOLS_9030ca721083262e6c25d18a7062b854" desc="Text for Context Menu entry">
+    Show issue associated with this cookie
+  </message>
   <message name="IDS_DEVTOOLS_9f8e4d5e9b6d7a439dc6b5ebc5eedca4" desc="Text in Cookies Table of the Cookies table in the Application panel">
     SameSite
   </message>

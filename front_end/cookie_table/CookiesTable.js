@@ -28,6 +28,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as Network from '../network/network.js';
@@ -165,7 +166,7 @@ export class CookiesTable extends UI.Widget.VBox {
    * @param {!Map<!SDK.Cookie.Cookie, !Array<!SDK.CookieModel.BlockedReason>>=} cookieToBlockedReasons
    */
   setCookies(cookies, cookieToBlockedReasons) {
-    this.setCookieFolders([{cookies: cookies}], cookieToBlockedReasons);
+    this.setCookieFolders([{cookies: cookies, folderName: null}], cookieToBlockedReasons);
   }
 
   /**
@@ -618,6 +619,12 @@ export class CookiesTable extends UI.Widget.VBox {
         }
       ]);
     });
+    if (BrowserSDK.RelatedIssue.hasIssues(cookie)) {
+      contextMenu.revealSection().appendItem(ls`Show issue associated with this cookie`, () => {
+        // TODO(chromium:1077719): Just filter for the cookie instead of revealing one of the associated issues.
+        BrowserSDK.RelatedIssue.reveal(cookie);
+      });
+    }
   }
 }
 

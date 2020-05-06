@@ -584,7 +584,12 @@ export class ElementsPanel extends UI.Panel.Panel {
       // No data for slot, request it.
       searchResult.domModel.searchResult(searchResult.index).then(node => {
         searchResult.node = node;
-        this._highlightCurrentSearchResult();
+
+        // If any of these properties are undefined, this means the search/highlight request is outdated.
+        const highlightRequestValid = this._searchConfig && this._currentSearchResultIndex && this._searchResults;
+        if (highlightRequestValid) {
+          this._highlightCurrentSearchResult();
+        }
       });
       return;
     }

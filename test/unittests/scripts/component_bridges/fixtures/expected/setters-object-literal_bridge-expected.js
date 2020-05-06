@@ -11,15 +11,15 @@
 
 /**
 * @typedef {{
-* name:string
-* isGoodDog:boolean
+* name:string,
+* isGoodDog:boolean,
 * }}
 */
 // @ts-ignore we export this for Closure not TS
 export let Dog;
 /**
 * @typedef {{
-* name:string
+* name:string,
 * }}
 */
 // @ts-ignore we export this for Closure not TS

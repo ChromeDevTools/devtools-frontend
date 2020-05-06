@@ -26,12 +26,14 @@ describe('valueForTypeNode', () => {
     const stringNode = createNode(ts.SyntaxKind.StringKeyword);
     const numberNode = createNode(ts.SyntaxKind.NumberKeyword);
     const booleanNode = createNode(ts.SyntaxKind.BooleanKeyword);
-
     const voidNode = createNode(ts.SyntaxKind.VoidKeyword);
+    const undefinedNode = createNode(ts.SyntaxKind.UndefinedKeyword);
+
     assert.strictEqual(valueForTypeNode(stringNode), 'string');
     assert.strictEqual(valueForTypeNode(numberNode), 'number');
     assert.strictEqual(valueForTypeNode(booleanNode), 'boolean');
     assert.strictEqual(valueForTypeNode(voidNode), 'void');
+    assert.strictEqual(valueForTypeNode(undefinedNode), 'undefined');
   });
 
   it('converts union types', () => {
@@ -141,6 +143,17 @@ describe('valueForTypeNode', () => {
       const node = ts.createFunctionTypeNode([], [stringParam], returnTypeNode);
 
       assert.strictEqual(valueForTypeNode(node), 'function(string): string');
+    });
+
+    it('can convert functions that return primitives or undefined', () => {
+      const stringNode = createNode(ts.SyntaxKind.StringKeyword);
+      const undefinedNode = createNode(ts.SyntaxKind.UndefinedKeyword);
+      const returnUnionNode = ts.createUnionTypeNode([stringNode, undefinedNode]);
+
+      const stringParam = ts.createParameter(
+          [], [], undefined, ts.createIdentifier('foo'), undefined, createNode(ts.SyntaxKind.StringKeyword));
+      const node = ts.createFunctionTypeNode([], [stringParam], returnUnionNode);
+      assert.strictEqual(valueForTypeNode(node), 'function(string): (string|undefined)');
     });
   });
 });

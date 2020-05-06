@@ -468,8 +468,8 @@ describe('generateClosure', () => {
 
       assert.strictEqual(interfaces.length, 1);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
-* name:string
-* age:number
+* name:string,
+* age:number,
 * }}`);
     });
 
@@ -486,7 +486,7 @@ describe('generateClosure', () => {
 
       assert.strictEqual(interfaces.length, 1);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
-* name:(string|undefined)
+* name:(string|undefined),
 * }}`);
     });
 
@@ -505,7 +505,7 @@ describe('generateClosure', () => {
 
       assert.strictEqual(interfaces.length, 1);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
-* pet:(!Pet|undefined)
+* pet:(!Pet|undefined),
 * }}`);
     });
 

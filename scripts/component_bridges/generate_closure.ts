@@ -264,7 +264,7 @@ const generateInterfaceMembers = (members: ts.NodeArray<ts.TypeElement>): string
         }
       }
 
-      output.push(`* ${keyName}:${nodeValue}`);
+      output.push(`* ${keyName}:${nodeValue},`);
     }
   });
 

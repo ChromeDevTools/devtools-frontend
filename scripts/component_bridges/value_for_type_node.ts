@@ -29,6 +29,8 @@ export const valueForTypeNode = (node: ts.TypeNode, isFunctionParam: boolean = f
     value = 'string';
   } else if (node.kind === ts.SyntaxKind.BooleanKeyword) {
     value = 'boolean';
+  } else if (node.kind === ts.SyntaxKind.UndefinedKeyword) {
+    value = 'undefined';
   } else if (node.kind === ts.SyntaxKind.UnknownKeyword || node.kind === ts.SyntaxKind.AnyKeyword) {
     value = '*';
   } else if (node.kind === ts.SyntaxKind.VoidKeyword) {
@@ -64,7 +66,16 @@ export const valueForTypeNode = (node: ts.TypeNode, isFunctionParam: boolean = f
     const parts = node.types.map(n => valueForTypeNode(n, isFunctionParam));
     return parts.join('|');
   } else if (ts.isFunctionTypeNode(node)) {
-    const returnType = valueForTypeNode(node.type);
+    let returnType = valueForTypeNode(node.type);
+
+    /* If the function returns a union, and we are in a function param, we need to wrap it in parens to satisfy the Closure parser
+     * e.g. it wants: someFunc: function(string): (string|undefined)
+     *   rather than: someFunc: function(string): string|undefined
+     */
+    if (returnType.includes('|')) {
+      returnType = `(${returnType})`;
+    }
+
     const params = node.parameters
                        .map(param => {
                          if (!param.type) {

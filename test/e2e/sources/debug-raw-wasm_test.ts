@@ -7,7 +7,7 @@ import {describe, it} from 'mocha';
 import * as puppeteer from 'puppeteer';
 
 import {$, click, getBrowserAndPages, resourcesPath} from '../../shared/helper.js';
-import {addBreakpointForLine, clearSourceFilesAdded, listenForSourceFilesAdded, openSourceCodeEditorForFile, openSourcesPanel, RESUME_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
+import {addBreakpointForLine, clearSourceFilesAdded, getBreakpointDecorators, getNonBreakableLines, listenForSourceFilesAdded, openSourceCodeEditorForFile, openSourcesPanel, RESUME_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
 
 describe('Source Tab', async () => {
   it('shows the correct wasm source on load and reload', async () => {
@@ -38,6 +38,25 @@ describe('Source Tab', async () => {
 
     const scriptLocation = await retrieveTopCallFrameScriptLocation('main();', target);
     assert.deepEqual(scriptLocation, 'add.wasm:5');
+  });
+
+  it('cannot set a breakpoint on non-breakable line in raw wasm', async () => {
+    const {target, frontend} = getBrowserAndPages();
+
+    await openSourceCodeEditorForFile(target, 'add.wasm', 'wasm/call-to-add-wasm.html');
+    assert.deepEqual(await getNonBreakableLines(frontend), [
+      1,
+      2,
+      3,
+      4,
+      9,
+    ]);
+    // Line 3 is non-breakable.
+    await addBreakpointForLine(frontend, 3, true);
+    assert.deepEqual(await getBreakpointDecorators(frontend), []);
+    // Line 5 is breakable.
+    await addBreakpointForLine(frontend, 5);
+    assert.deepEqual(await getBreakpointDecorators(frontend), [5]);
   });
 });
 

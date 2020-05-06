@@ -174,7 +174,7 @@
     to { background-color: #14522b; }
 }
 
-.cm-line-without-source-mapping .CodeMirror-linenumber {
+.cm-non-breakable-line .CodeMirror-linenumber {
     color: rgba(128, 128, 128, 0.4);
 }
 

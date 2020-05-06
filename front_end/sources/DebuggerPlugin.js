@@ -1541,21 +1541,44 @@ export class DebuggerPlugin extends Plugin {
     }
   }
 
+  _getScriptForCurrentUISourceCode() {
+    for (const scriptFile of this._scriptFileForDebuggerModel.values()) {
+      if (!scriptFile) {
+        continue;
+      }
+      if (scriptFile.uiSourceCode === this._uiSourceCode) {
+        return scriptFile.script;
+      }
+    }
+    return;
+  }
+
   _updateLinesWithoutMappingHighlight() {
     const isSourceMapSource =
         !!Bindings.CompilerScriptMapping.CompilerScriptMapping.uiSourceCodeOrigin(this._uiSourceCode);
-    if (!isSourceMapSource) {
+    if (isSourceMapSource) {
+      const linesCount = this._textEditor.linesCount;
+      for (let i = 0; i < linesCount; ++i) {
+        const lineHasMapping =
+            Bindings.CompilerScriptMapping.CompilerScriptMapping.uiLineHasMapping(this._uiSourceCode, i);
+        if (!lineHasMapping) {
+          this._hasLineWithoutMapping = true;
+        }
+        if (this._hasLineWithoutMapping) {
+          this._textEditor.toggleLineClass(i, 'cm-non-breakable-line', !lineHasMapping);
+        }
+      }
       return;
     }
-    const linesCount = this._textEditor.linesCount;
-    for (let i = 0; i < linesCount; ++i) {
-      const lineHasMapping =
-          Bindings.CompilerScriptMapping.CompilerScriptMapping.uiLineHasMapping(this._uiSourceCode, i);
-      if (!lineHasMapping) {
-        this._hasLineWithoutMapping = true;
-      }
-      if (this._hasLineWithoutMapping) {
-        this._textEditor.toggleLineClass(i, 'cm-line-without-source-mapping', !lineHasMapping);
+
+    // Check to see if it is Wasm Disassembly.
+    const script = this._getScriptForCurrentUISourceCode();
+    if (script && script.hasWasmDisassembly()) {
+      const linesCount = this._textEditor.linesCount;
+      for (let i = 0; i < linesCount; ++i) {
+        if (!script.isWasmDisassemblyBreakableLine(i)) {
+          this._textEditor.toggleLineClass(i, 'cm-non-breakable-line', true);
+        }
       }
     }
   }
@@ -1738,6 +1761,12 @@ export class DebuggerPlugin extends Plugin {
    */
   async _setBreakpoint(lineNumber, columnNumber, condition, enabled) {
     if (!Bindings.CompilerScriptMapping.CompilerScriptMapping.uiLineHasMapping(this._uiSourceCode, lineNumber)) {
+      return;
+    }
+
+    // Check to see if it is Wasm Disassembly.
+    const script = this._getScriptForCurrentUISourceCode();
+    if (script && script.hasWasmDisassembly() && !script.isWasmDisassemblyBreakableLine(lineNumber)) {
       return;
     }
 

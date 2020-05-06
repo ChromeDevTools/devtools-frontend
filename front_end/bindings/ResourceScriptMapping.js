@@ -468,6 +468,20 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper {
   hasSourceMapURL() {
     return this._script && !!this._script.sourceMapURL;
   }
+
+  /**
+   * @return {!SDK.Script.Script}
+   */
+  get script() {
+    return this._script;
+  }
+
+  /**
+   * @return {!Workspace.UISourceCode.UISourceCode}
+   */
+  get uiSourceCode() {
+    return this._uiSourceCode;
+  }
 }
 
 /** @enum {symbol} */

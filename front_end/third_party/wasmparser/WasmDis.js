@@ -329,6 +329,9 @@ export class WasmDisassembler {
         this._currentPosition = 0;
         this._nameResolver = new DefaultNameResolver();
         this._labelMode = LabelMode.WhenUsed;
+        this._functionBodyOffsets = [];
+        this._currentFunctionBodyOffset = null;
+        this._logFirstInstruction = false;
         this._reset();
     }
     _reset() {
@@ -379,6 +382,20 @@ export class WasmDisassembler {
             this._offsets.push(this._currentPosition);
         this._lines.push(this._buffer);
         this._buffer = '';
+    }
+    logStartOfFunctionBodyOffset() {
+        if (this.addOffsets) {
+            this._currentFunctionBodyOffset = {
+                start: this._currentPosition,
+            };
+        }
+    }
+    logEndOfFunctionBodyOffset() {
+        if (this.addOffsets && this._currentFunctionBodyOffset) {
+            this._currentFunctionBodyOffset.end = this._currentPosition;
+            this._functionBodyOffsets.push(this._currentFunctionBodyOffset);
+            this._currentFunctionBodyOffset = null;
+        }
     }
     printFuncType(typeIndex) {
         var type = this._types[typeIndex];
@@ -694,6 +711,7 @@ export class WasmDisassembler {
         let result = lines.join('\n');
         this._lines.length = 0;
         this._offsets.length = 0;
+        this._functionBodyOffsets.length = 0;
         return result;
     }
     getResult() {
@@ -711,6 +729,7 @@ export class WasmDisassembler {
                 lines: [],
                 offsets: this._addOffsets ? [] : undefined,
                 done: this._done,
+                functionBodyOffsets: this._addOffsets ? [] : undefined,
             };
         }
         if (linesReady === this._lines.length) {
@@ -718,16 +737,20 @@ export class WasmDisassembler {
                 lines: this._lines,
                 offsets: this._addOffsets ? this._offsets : undefined,
                 done: this._done,
+                functionBodyOffsets: this._addOffsets ? this._functionBodyOffsets : undefined,
             };
             this._lines = [];
-            if (this._addOffsets)
+            if (this._addOffsets) {
                 this._offsets = [];
+                this._functionBodyOffsets = [];
+            }
             return result;
         }
         let result = {
             lines: this._lines.splice(0, linesReady),
             offsets: this._addOffsets ? this._offsets.splice(0, linesReady) : undefined,
             done: false,
+            functionBodyOffsets: this._addOffsets ? this._functionBodyOffsets : undefined,
         };
         if (this._backrefLabels) {
             this._backrefLabels.forEach((backrefLabel) => {
@@ -993,8 +1016,13 @@ export class WasmDisassembler {
                     this._indentLevel = 0;
                     this._labelIndex = 0;
                     this._backrefLabels = this._labelMode === LabelMode.Depth ? null : [];
+                    this._logFirstInstruction = true;
                     break;
                 case 30 /* CODE_OPERATOR */:
+                    if (this._logFirstInstruction) {
+                        this.logStartOfFunctionBodyOffset();
+                        this._logFirstInstruction = false;
+                    }
                     var operator = reader.result;
                     if (operator.code == 11 /* end */ && this._indentLevel == 0) {
                         // reached of the function, closing function body
@@ -1023,6 +1051,7 @@ export class WasmDisassembler {
                 case 31 /* END_FUNCTION_BODY */:
                     this._funcIndex++;
                     this._backrefLabels = null;
+                    this.logEndOfFunctionBodyOffset();
                     // See case BinaryReaderState.CODE_OPERATOR for closing of body
                     break;
                 default:

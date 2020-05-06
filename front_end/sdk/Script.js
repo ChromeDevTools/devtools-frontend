@@ -82,6 +82,7 @@ export class Script {
     this._codeOffset = codeOffset;
     this._language = scriptLanguage;
     this._lineMap = null;
+    this._functionBodyOffsets = null;
   }
 
   /**
@@ -199,15 +200,18 @@ export class Script {
         this._source = '';
         if (sourceOrBytecode.bytecode) {
           const worker = new Common.Worker.WorkerWrapper('wasmparser_worker_entrypoint');
+          /** @type {!Promise<!MessageEvent>} */
           const promise = new Promise(function(resolve, reject) {
             worker.onmessage = resolve;
             worker.onerror = reject;
           });
           worker.postMessage({method: 'disassemble', params: {content: sourceOrBytecode.bytecode}});
 
-          const result = await promise;
-          this._source = result.data.source;
-          this._lineMap = result.data.offsets;
+          /** @type {{source: string, offsets: ?Array<number>, functionBodyOffsets: ?Array<?{start: number, end: number}>}} */
+          const data = (await promise).data;
+          this._source = data.source;
+          this._lineMap = data.offsets;
+          this._functionBodyOffsets = data.functionBodyOffsets;
           this.endLine = this._lineMap.length;
         }
       }
@@ -341,6 +345,44 @@ export class Script {
       line++;
     }
     return line;
+  }
+
+  /**
+   * @param {number} lineNumber
+   * @return {boolean}
+   */
+  isWasmDisassemblyBreakableLine(lineNumber) {
+    if (!this._functionBodyOffsets || this._functionBodyOffsets.length === 0) {
+      return false;
+    }
+    const location = this.wasmByteLocation(lineNumber);
+    if (!location) {
+      return false;
+    }
+    const byteOffset = location.columnNumber;
+
+    // Here, this._functionBodyOffsets is [{start:s0, end:e0}, {start:s1, end:e1}, ...].
+    // Also, we have s0 < e0 < s1 < e1 ... and the breakable lines are defined by the union of [a0,b0), [a1,b1), ...
+    let first = 0;
+    let last = this._functionBodyOffsets.length - 1;
+    // Quick return if it is outside of code section.
+    if (byteOffset < this._functionBodyOffsets[first].start || byteOffset >= this._functionBodyOffsets[last].end) {
+      return false;
+    }
+    // Binary search.
+    while (first <= last) {
+      const mid = (first + last) >> 1;
+      const functionBodyOffset = this._functionBodyOffsets[mid];
+      if (byteOffset < functionBodyOffset.start) {
+        last = mid - 1;
+      } else if (byteOffset >= functionBodyOffset.end) {
+        first = mid + 1;
+      } else {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /**

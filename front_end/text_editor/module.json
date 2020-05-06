@@ -13,16 +13,27 @@
     "ui",
     "platform",
     "common",
-    "cm",
-    "cm_web_modes"
+    "cm"
   ],
   "scripts": [],
   "modules": [
     "text_editor.js",
     "text_editor-legacy.js",
+    "../third_party/codemirror/package/mode/css/css.js",
+    "../third_party/codemirror/package/mode/javascript/javascript.js",
+    "../third_party/codemirror/package/mode/xml/xml.js",
+    "../third_party/codemirror/package/mode/htmlmixed/htmlmixed.js",
+    "../third_party/codemirror/package/mode/htmlembedded/htmlembedded.js",
     "CodeMirrorUtils.js",
     "TextEditorAutocompleteController.js",
     "CodeMirrorTextEditor.js"
+  ],
+  "skip_compilation": [
+    "../third_party/codemirror/package/mode/css/css.js",
+    "../third_party/codemirror/package/mode/javascript/javascript.js",
+    "../third_party/codemirror/package/mode/xml/xml.js",
+    "../third_party/codemirror/package/mode/htmlmixed/htmlmixed.js",
+    "../third_party/codemirror/package/mode/htmlembedded/htmlembedded.js"
   ],
   "resources": [
     "autocompleteTooltip.css",

@@ -14,7 +14,6 @@ This requires the following steps to be done:
 construction. This is needed to support in web workers.
 2. File `codemirror.css` contains both the default theme of CodeMirror and structural css required for it to work. Discard everything in the file up to the word `/* STOP */`.
 3. All other files in `front_end/cm/` folder should be substituted with their newer versions from the upstream.
-4. All files in `front_end/cm_web_modes/` should be updated with newer versions from upstream.
 
 ## Testing
 DevTools wrap CodeMirror via `CodeMirrorTextEditor.js` and `cmdevtools.css` files.

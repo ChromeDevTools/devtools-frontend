@@ -67,12 +67,6 @@ const EXCLUDED_FILES = [
   'cm/multiplex.js',
   'cm/overlay.js',
   'cm/simple.js',
-  'cm_web_modes/css.js',
-  'cm_web_modes/htmlembedded.js',
-  'cm_web_modes/htmlmixed.js',
-  'cm_web_modes/javascript.js',
-  'cm_web_modes/wast.js',
-  'cm_web_modes/xml.js',
   // FIXME: Dagre bundles must be moved to third_party
   'dagre_layout/dagre.js',
   // FIXME: Diff bundles must be moved to third_party

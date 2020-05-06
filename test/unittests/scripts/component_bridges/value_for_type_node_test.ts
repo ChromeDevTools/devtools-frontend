@@ -81,6 +81,38 @@ describe('valueForTypeNode', () => {
     assert.strictEqual(valueForTypeNode(node), 'ExampleInterface');
   });
 
+  describe('converting type literals', () => {
+    it('converts objects into closure type objects', () => {
+      const node = ts.createTypeLiteralNode([
+        ts.createPropertySignature(
+            undefined, 'x', undefined, ts.createTypeReferenceNode(ts.createIdentifier('ExampleInterface'), []),
+            undefined),
+        ts.createPropertySignature(undefined, 'y', undefined, createNode(ts.SyntaxKind.StringKeyword), undefined),
+      ]);
+      assert.strictEqual(valueForTypeNode(node), '{x: !ExampleInterface, y: string}');
+    });
+
+    it('converts union types of type refs and null correctly', () => {
+      const nullNode = createNode(ts.SyntaxKind.NullKeyword);
+      const typeRefNode = ts.createTypeReferenceNode(ts.createIdentifier('ExampleInterface'), []);
+      const unionNode = ts.createUnionTypeNode([typeRefNode, nullNode]);
+      const node = ts.createTypeLiteralNode([
+        ts.createPropertySignature(undefined, 'x', undefined, unionNode, undefined),
+      ]);
+      assert.strictEqual(valueForTypeNode(node), '{x: !ExampleInterface|null}');
+    });
+
+    it('converts union types of type refs and null correctly when in function parameters', () => {
+      const nullNode = createNode(ts.SyntaxKind.NullKeyword);
+      const typeRefNode = ts.createTypeReferenceNode(ts.createIdentifier('ExampleInterface'), []);
+      const unionNode = ts.createUnionTypeNode([typeRefNode, nullNode]);
+      const node = ts.createTypeLiteralNode([
+        ts.createPropertySignature(undefined, 'x', undefined, unionNode, undefined),
+      ]);
+      assert.strictEqual(valueForTypeNode(node, true), '{x: ?ExampleInterface}');
+    });
+  });
+
   describe('converting arrays', () => {
     it('converts primitive types without the non-null !', () => {
       const node = ts.createArrayTypeNode(createNode(ts.SyntaxKind.StringKeyword));

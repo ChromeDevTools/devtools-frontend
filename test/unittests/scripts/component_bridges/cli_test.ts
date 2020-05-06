@@ -41,4 +41,8 @@ describe('bridges CLI fixture tests', () => {
   it('correctly pulls out getters and setters into the public interface', () => {
     runFixtureTestAndAssertMatch('getters-setters-component');
   });
+
+  it('can handle setters with object literal data parameter', () => {
+    runFixtureTestAndAssertMatch('setters-object-literal');
+  });
 });

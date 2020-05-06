@@ -75,6 +75,30 @@ export const valueForTypeNode = (node: ts.TypeNode, isFunctionParam: boolean = f
                        .join(', ');
 
     value = `function(${params}): ${returnType}`;
+  } else if (ts.isTypeLiteralNode(node)) {
+    const members = node.members
+                        .map(member => {
+                          if (ts.isPropertySignature(member) && member.type) {
+                            let requiredOptionalFlag = '';
+
+                            if (ts.isTypeReferenceNode(member.type) || ts.isArrayTypeNode(member.type)) {
+                              requiredOptionalFlag = !!member.questionToken ? '?' : '!';
+                            }
+                            return {
+                              name: (member.name as ts.Identifier).escapedText.toString(),
+                              value: requiredOptionalFlag + valueForTypeNode(member.type, isFunctionParam),
+                            };
+                          }
+
+                          return null;
+                        })
+                        .map(member => {
+                          return member ? `${member.name}: ${member.value}` : null;
+                        })
+                        .filter(Boolean)
+                        .join(', ');
+
+    return `{${members}}`;
   } else {
     throw new Error(`Unsupported node kind: ${ts.SyntaxKind[node.kind]}`);
   }

@@ -384,6 +384,27 @@ describe('generateClosure', () => {
 
       assert.include(classOutput.join('\n'), 'set person(person) {}');
     });
+
+    it('handles object parameters in setters', () => {
+      const state = parseCode(`interface Person {
+        name: string
+        age: number
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public set data(data: { person: Person, somethingElse: number }) {
+        }
+      }`);
+
+      const classOutput = generateClosureClass(state);
+
+      assert.include(classOutput.join('\n'), `
+  /**
+  * @param {{person: !Person, somethingElse: number}} data
+  */`);
+
+      assert.include(classOutput.join('\n'), 'set data(data) {}');
+    });
   });
 
   describe('generateInterfaces', () => {

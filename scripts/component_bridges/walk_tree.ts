@@ -51,10 +51,18 @@ const findInterfacesFromType = (node: ts.Node): Set<string> => {
       ts.isIdentifier(node.elementType.typeName)) {
     foundInterfaces.add(node.elementType.typeName.escapedText.toString());
 
-  } else {
-    if (ts.isTypeReferenceNode(node) && ts.isIdentifier(node.typeName)) {
-      foundInterfaces.add(node.typeName.escapedText.toString());
-    }
+  } else if (ts.isTypeReferenceNode(node) && ts.isIdentifier(node.typeName)) {
+    foundInterfaces.add(node.typeName.escapedText.toString());
+  } else if (ts.isTypeLiteralNode(node)) {
+    /* type literal here means it's an object: data: { x: string; y: number, z: SomeInterface , ... }
+     * so we loop over each member and recurse to find any references we need
+     */
+    node.members.forEach(member => {
+      if (ts.isPropertySignature(member) && member.type) {
+        const extraInterfaces = findInterfacesFromType(member.type);
+        extraInterfaces.forEach(i => foundInterfaces.add(i));
+      }
+    });
   }
 
   return foundInterfaces;

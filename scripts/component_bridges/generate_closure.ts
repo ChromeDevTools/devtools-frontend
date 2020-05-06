@@ -124,8 +124,10 @@ const typeNodeToJSDocClosureType = (node: ts.TypeNode, options: TypeNodeToJSDocO
   if (needsOptionalModifier) {
     if (nodeIsOptional) {
       paramOptionalModifier = '?';
-    } else if (nodeIsPrimitive(node)) {
-      // as noted above, primitive types don't need an explicit ! when they are required
+    } else if (nodeIsPrimitive(node) || ts.isTypeLiteralNode(node)) {
+      /* primitive types don't need an explicit ! when they are required
+       * and type literals (object literals) don't either.
+       */
       paramOptionalModifier = '';
     } else {
       paramOptionalModifier = '!';

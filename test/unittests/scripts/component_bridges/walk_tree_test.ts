@@ -172,6 +172,38 @@ describe('walkTree', () => {
       assert.deepEqual(Array.from(result.interfaceNamesToConvert), ['Person']);
     });
 
+    it('deals with setters that take an object and pulls out the interfaces', () => {
+      const code = `interface Person { name: string }
+
+      interface Dog {
+        name: string
+      }
+
+      class Breadcrumbs extends HTMLElement {
+
+        private render() {
+          console.log('render')
+        }
+
+        public set data(data: {x: Person, y: Dog) {
+        }
+      }`;
+
+      const source = createTypeScriptSourceFile(code);
+      const result = walkTree(source, 'test.ts');
+
+      if (!result.componentClass) {
+        assert.fail('No component class was found');
+      }
+
+      const setterNames = Array.from(result.setters, method => {
+        return (method.name as ts.Identifier).escapedText as string;
+      });
+
+      assert.deepEqual(setterNames, ['data']);
+      assert.deepEqual(Array.from(result.interfaceNamesToConvert), ['Person', 'Dog']);
+    });
+
     it('finds the custom elements define call', () => {
       const code = `class Breadcrumbs extends HTMLElement {
 

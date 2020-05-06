@@ -15,8 +15,8 @@
 #include "gtest/gtest.h"
 #include "lldb/Host/FileSystem.h"  // IWYU pragma: keep
 #include "lldb/lldb-types.h"
+#include "llvm/ADT/SmallSet.h"
 #include "llvm/ADT/SmallString.h"
-#include "llvm/ADT/SmallVector.h"
 #include "llvm/ADT/StringRef.h"
 #include "llvm/Support/Error.h"
 #include "llvm/Support/Path.h"
@@ -84,7 +84,7 @@ TEST_F(SymbolServerTest, HelloSourceToRawLocation) {
     return;
   }
 
-  const llvm::SmallVectorImpl<lldb::addr_t>& raw_locations =
+  auto raw_locations =
       modules.front()->GetOffsetFromSourceLocation(source_location);
   EXPECT_EQ(raw_locations.size(), 1u);
   EXPECT_THAT(raw_locations,
@@ -100,9 +100,10 @@ TEST_F(SymbolServerTest, HelloRawToSourceLocation) {
   if (loc.empty()) {
     return;
   }
-  EXPECT_EQ(loc.front().file, "hello.c");
-  EXPECT_EQ(loc.front().column, 3u);
-  EXPECT_EQ(loc.front().line, 4u);
+  const symbol_server::SourceLocation& front_location = *loc.begin();
+  EXPECT_EQ(front_location.file, "hello.c");
+  EXPECT_EQ(front_location.column, 3u);
+  EXPECT_EQ(front_location.line, 4u);
 }
 
 TEST_F(SymbolServerTest, InlineSourceToRawLocation) {
@@ -119,7 +120,7 @@ TEST_F(SymbolServerTest, InlineSourceToRawLocation) {
     return;
   }
 
-  const llvm::SmallVectorImpl<lldb::addr_t>& raw_locations =
+  auto raw_locations =
       modules.front()->GetOffsetFromSourceLocation(source_location);
   EXPECT_EQ(raw_locations.size(), 8u);
   EXPECT_THAT(raw_locations,
@@ -143,9 +144,10 @@ TEST_F(SymbolServerTest, InlineRawToSourceLocation) {
     if (loc.empty()) {
       return;
     }
-    EXPECT_EQ(loc.front().file, "inline.cc");
-    EXPECT_EQ(loc.front().column, 18u);
-    EXPECT_EQ(loc.front().line, 4u);
+    const symbol_server::SourceLocation& front_location = *loc.begin();
+    EXPECT_EQ(front_location.file, "inline.cc");
+    EXPECT_EQ(front_location.column, 18u);
+    EXPECT_EQ(front_location.line, 4u);
   }
   {
     auto loc = m->GetSourceLocationFromOffset(0x19F - code_section_start);
@@ -153,9 +155,10 @@ TEST_F(SymbolServerTest, InlineRawToSourceLocation) {
     if (loc.empty()) {
       return;
     }
-    EXPECT_EQ(loc.front().file, "inline.cc");
-    EXPECT_EQ(loc.front().column, 18u);
-    EXPECT_EQ(loc.front().line, 4u);
+    const symbol_server::SourceLocation& front_location = *loc.begin();
+    EXPECT_EQ(front_location.file, "inline.cc");
+    EXPECT_EQ(front_location.column, 18u);
+    EXPECT_EQ(front_location.line, 4u);
   }
   {
     auto loc = m->GetSourceLocationFromOffset(0x1BB - code_section_start);
@@ -163,9 +166,10 @@ TEST_F(SymbolServerTest, InlineRawToSourceLocation) {
     if (loc.empty()) {
       return;
     }
-    EXPECT_EQ(loc.front().file, "inline.cc");
-    EXPECT_EQ(loc.front().column, 7u);
-    EXPECT_EQ(loc.front().line, 10u);
+    const symbol_server::SourceLocation& front_location = *loc.begin();
+    EXPECT_EQ(front_location.file, "inline.cc");
+    EXPECT_EQ(front_location.column, 7u);
+    EXPECT_EQ(front_location.line, 10u);
   }
   {
     auto loc = m->GetSourceLocationFromOffset(0x1DC - code_section_start);
@@ -173,9 +177,10 @@ TEST_F(SymbolServerTest, InlineRawToSourceLocation) {
     if (loc.empty()) {
       return;
     }
-    EXPECT_EQ(loc.front().file, "inline.cc");
-    EXPECT_EQ(loc.front().column, 3u);
-    EXPECT_EQ(loc.front().line, 16u);
+    const symbol_server::SourceLocation& front_location = *loc.begin();
+    EXPECT_EQ(front_location.file, "inline.cc");
+    EXPECT_EQ(front_location.column, 3u);
+    EXPECT_EQ(front_location.line, 16u);
   }
 }
 
@@ -312,8 +317,9 @@ TEST_F(SymbolServerTest, Arrays) {
   llvm::SmallVector<std::pair<llvm::StringRef, llvm::StringRef>, 1> names;
   EXPECT_EQ(variables.size(), 1u);
   if (variables.size() > 0) {
-    EXPECT_EQ(variables.front().name, "A");
-    EXPECT_EQ(variables.front().type, "int [4]");
+    const symbol_server::Variable& front_variable = *variables.begin();
+    EXPECT_EQ(front_variable.name, "A");
+    EXPECT_EQ(front_variable.type, "int [4]");
   }
 
 #ifdef SYMBOL_SERVER_BUILD_FORMATTERS

@@ -145,6 +145,54 @@ class AffectedResourcesView extends UI.TreeOutline.TreeElement {
   }
 }
 
+class AffectedElementsView extends AffectedResourcesView {
+  /**
+   * @param {!IssueView} parent
+   * @param {!SDK.Issue.Issue} issue
+   */
+  constructor(parent, issue) {
+    super(parent, {singular: ls`element`, plural: ls`elements`});
+    /** @type {!SDK.Issue.Issue} */
+    this._issue = issue;
+  }
+
+  /**
+   * @param {!Iterable<!SDK.Issue.AffectedElement>} affectedElements
+   */
+  async _appendAffectedElements(affectedElements) {
+    let count = 0;
+    for (const element of affectedElements) {
+      await this._appendAffectedElement(element);
+      count++;
+    }
+    this.updateAffectedResourceCount(count);
+  }
+
+  /**
+   * @param {!SDK.Issue.AffectedElement} element
+   */
+  async _appendAffectedElement({backendNodeId, nodeName}) {
+    const mainTarget = /** @type {!SDK.SDKModel.Target} */ (SDK.SDKModel.TargetManager.instance().mainTarget());
+    const deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(mainTarget, backendNodeId);
+    const anchorElement = await Common.Linkifier.Linkifier.linkify(deferredDOMNode);
+    anchorElement.textContent = nodeName;
+    const cellElement = document.createElement('td');
+    cellElement.classList.add('affected-resource-element', 'devtools-link');
+    cellElement.appendChild(anchorElement);
+    const rowElement = document.createElement('tr');
+    rowElement.appendChild(cellElement);
+    this._affectedResources.appendChild(rowElement);
+  }
+
+  /**
+   * @override
+   */
+  update() {
+    this.clear();
+    this._appendAffectedElements(this._issue.elements());
+  }
+}
+
 class AffectedCookiesView extends AffectedResourcesView {
   /**
    * @param {!IssueView} parent
@@ -462,6 +510,7 @@ class IssueView extends UI.TreeOutline.TreeElement {
 
     this._affectedResources = this._createAffectedResources();
     this._affectedCookiesView = new AffectedCookiesView(this, this._issue);
+    this._affectedElementsView = new AffectedElementsView(this, this._issue);
     this._affectedRequestsView = new AffectedRequestsView(this, this._issue);
     this._affectedMixedContentView = new AffectedMixedContentView(this, this._issue);
     this._affectedSourcesView = new AffectedSourcesView(this, this._issue);
@@ -476,6 +525,8 @@ class IssueView extends UI.TreeOutline.TreeElement {
     this.appendChild(this._affectedResources);
     this.appendAffectedResource(this._affectedCookiesView);
     this._affectedCookiesView.update();
+    this.appendAffectedResource(this._affectedElementsView);
+    this._affectedElementsView.update();
     this.appendAffectedResource(this._affectedRequestsView);
     this._affectedRequestsView.update();
     this.appendAffectedResource(this._affectedMixedContentView);
@@ -510,10 +561,11 @@ class IssueView extends UI.TreeOutline.TreeElement {
 
   updateAffectedResourceVisibility() {
     const noCookies = !this._affectedCookiesView || this._affectedCookiesView.isEmpty();
+    const noElements = !this._affectedElementsView || this._affectedElementsView.isEmpty();
     const noRequests = !this._affectedRequestsView || this._affectedRequestsView.isEmpty();
     const noMixedContent = !this._affectedMixedContentView || this._affectedMixedContentView.isEmpty();
     const noSources = !this._affectedSourcesView || this._affectedSourcesView.isEmpty();
-    const noResources = noCookies && noRequests && noMixedContent && noSources;
+    const noResources = noCookies && noElements && noRequests && noMixedContent && noSources;
     this._affectedResources.hidden = noResources;
   }
 

@@ -207,6 +207,14 @@ p {
   border-collapse: collapse;
 }
 
+.affected-resource-element {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--issue-link);
+  border: 0;
+  border-collapse: collapse;
+}
+
 .affected-resource-mixed-content {
   font-size: 14px;
   line-height: 20px;

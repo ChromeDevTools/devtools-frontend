@@ -4289,6 +4289,27 @@ declare namespace Protocol {
       PauseIfNetworkFetchesPending = 'pauseIfNetworkFetchesPending',
     }
 
+    /**
+     * Used to specify User Agent Cient Hints to emulate. See https://wicg.github.io/ua-client-hints
+     */
+    export interface UserAgentBrandVersion {
+      brand: string;
+      version: string;
+    }
+
+    /**
+     * Used to specify User Agent Cient Hints to emulate. See https://wicg.github.io/ua-client-hints
+     */
+    export interface UserAgentMetadata {
+      brands: UserAgentBrandVersion[];
+      fullVersion: string;
+      platform: string;
+      platformVersion: string;
+      architecture: string;
+      model: string;
+      mobile: boolean;
+    }
+
     export interface CanEmulateResponse extends ProtocolResponseWithError {
       /**
        * True if emulation is supported.
@@ -4545,6 +4566,10 @@ declare namespace Protocol {
        * The platform navigator.platform should return.
        */
       platform?: string;
+      /**
+       * To be sent in Sec-CH-UA-* headers and returned in navigator.userAgentData
+       */
+      userAgentMetadata?: UserAgentMetadata;
     }
   }
 
@@ -7191,6 +7216,10 @@ declare namespace Protocol {
        * The platform navigator.platform should return.
        */
       platform?: string;
+      /**
+       * To be sent in Sec-CH-UA-* headers and returned in navigator.userAgentData
+       */
+      userAgentMetadata?: Emulation.UserAgentMetadata;
     }
 
     /**

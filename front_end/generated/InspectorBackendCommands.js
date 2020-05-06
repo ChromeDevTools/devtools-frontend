@@ -942,7 +942,8 @@ export function registerCommands(inspectorBackend) {
       [
         {'name': 'userAgent', 'type': 'string', 'optional': false},
         {'name': 'acceptLanguage', 'type': 'string', 'optional': true},
-        {'name': 'platform', 'type': 'string', 'optional': true}
+        {'name': 'platform', 'type': 'string', 'optional': true},
+        {'name': 'userAgentMetadata', 'type': 'object', 'optional': true}
       ],
       [], false);
 
@@ -1488,7 +1489,8 @@ export function registerCommands(inspectorBackend) {
       [
         {'name': 'userAgent', 'type': 'string', 'optional': false},
         {'name': 'acceptLanguage', 'type': 'string', 'optional': true},
-        {'name': 'platform', 'type': 'string', 'optional': true}
+        {'name': 'platform', 'type': 'string', 'optional': true},
+        {'name': 'userAgentMetadata', 'type': 'object', 'optional': true}
       ],
       [], false);
 

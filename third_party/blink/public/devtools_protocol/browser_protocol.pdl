@@ -2899,6 +2899,23 @@ domain Emulation
       pause
       pauseIfNetworkFetchesPending
 
+  # Used to specify User Agent Cient Hints to emulate. See https://wicg.github.io/ua-client-hints
+  experimental type UserAgentBrandVersion extends object
+    properties
+      string brand
+      string version
+
+  # Used to specify User Agent Cient Hints to emulate. See https://wicg.github.io/ua-client-hints
+  experimental type UserAgentMetadata extends object
+    properties
+      array of UserAgentBrandVersion brands
+      string fullVersion
+      string platform
+      string platformVersion
+      string architecture
+      string model
+      boolean mobile
+
   # Tells whether emulation is supported.
   command canEmulate
     returns
@@ -3098,6 +3115,8 @@ domain Emulation
       optional string acceptLanguage
       # The platform navigator.platform should return.
       optional string platform
+      # To be sent in Sec-CH-UA-* headers and returned in navigator.userAgentData
+      experimental optional UserAgentMetadata userAgentMetadata
 
 # This domain provides experimental commands only supported in headless mode.
 experimental domain HeadlessExperimental
@@ -4853,6 +4872,9 @@ domain Network
       optional string acceptLanguage
       # The platform navigator.platform should return.
       optional string platform
+      # To be sent in Sec-CH-UA-* headers and returned in navigator.userAgentData
+      experimental optional Emulation.UserAgentMetadata userAgentMetadata
+
 
   # Fired when data chunk was received over the network.
   event dataReceived

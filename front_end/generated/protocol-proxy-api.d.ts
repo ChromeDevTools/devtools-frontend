@@ -2989,6 +2989,12 @@ declare namespace ProtocolProxyApi {
         Promise<Protocol.Debugger.EvaluateOnCallFrameResponse>;
 
     /**
+     * Execute a Wasm Evaluator module on a given call frame.
+     */
+    invoke_executeWasmEvaluator(params: Protocol.Debugger.ExecuteWasmEvaluatorRequest):
+        Promise<Protocol.Debugger.ExecuteWasmEvaluatorResponse>;
+
+    /**
      * Returns possible locations for breakpoint. scriptId in start and end range locations should be
      * the same.
      */

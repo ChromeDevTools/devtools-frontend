@@ -17352,6 +17352,30 @@
                         "JavaScript",
                         "WebAssembly"
                     ]
+                },
+                {
+                    "id": "DebugSymbols",
+                    "description": "Debug symbols available for a wasm script.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "type",
+                            "description": "Type of the debug symbols.",
+                            "type": "string",
+                            "enum": [
+                                "None",
+                                "SourceMap",
+                                "EmbeddedDWARF",
+                                "ExternalDWARF"
+                            ]
+                        },
+                        {
+                            "name": "externalURL",
+                            "description": "URL of the external symbol source.",
+                            "optional": true,
+                            "type": "string"
+                        }
+                    ]
                 }
             ],
             "commands": [
@@ -17450,6 +17474,43 @@
                             "description": "Whether to throw an exception if side effect cannot be ruled out during evaluation.",
                             "optional": true,
                             "type": "boolean"
+                        },
+                        {
+                            "name": "timeout",
+                            "description": "Terminate execution after timing out (number of milliseconds).",
+                            "experimental": true,
+                            "optional": true,
+                            "$ref": "Runtime.TimeDelta"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "result",
+                            "description": "Object wrapper for the evaluation result.",
+                            "$ref": "Runtime.RemoteObject"
+                        },
+                        {
+                            "name": "exceptionDetails",
+                            "description": "Exception details.",
+                            "optional": true,
+                            "$ref": "Runtime.ExceptionDetails"
+                        }
+                    ]
+                },
+                {
+                    "name": "executeWasmEvaluator",
+                    "description": "Execute a Wasm Evaluator module on a given call frame.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "callFrameId",
+                            "description": "WebAssembly call frame identifier to evaluate on.",
+                            "$ref": "CallFrameId"
+                        },
+                        {
+                            "name": "evaluator",
+                            "description": "Code of the evaluator module.",
+                            "type": "binary"
                         },
                         {
                             "name": "timeout",
@@ -18296,6 +18357,13 @@
                             "experimental": true,
                             "optional": true,
                             "$ref": "Debugger.ScriptLanguage"
+                        },
+                        {
+                            "name": "debugSymbols",
+                            "description": "If the scriptLanguage is WebASsembly, the source of debug symbols for the module.",
+                            "experimental": true,
+                            "optional": true,
+                            "$ref": "Debugger.DebugSymbols"
                         }
                     ]
                 }

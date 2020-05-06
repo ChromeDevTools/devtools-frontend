@@ -2289,6 +2289,9 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEnum(
       'Debugger.BreakLocationType', {DebuggerStatement: 'debuggerStatement', Call: 'call', Return: 'return'});
   inspectorBackend.registerEnum('Debugger.ScriptLanguage', {JavaScript: 'JavaScript', WebAssembly: 'WebAssembly'});
+  inspectorBackend.registerEnum(
+      'Debugger.DebugSymbolsType',
+      {None: 'None', SourceMap: 'SourceMap', EmbeddedDWARF: 'EmbeddedDWARF', ExternalDWARF: 'ExternalDWARF'});
   inspectorBackend.registerEvent('Debugger.breakpointResolved', ['breakpointId', 'location']);
   inspectorBackend.registerEvent('Debugger.paused', [
     'callFrames', 'reason', 'data', 'hitBreakpoints', 'asyncStackTrace', 'asyncStackTraceId', 'asyncCallStackTraceId'
@@ -2302,7 +2305,7 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEvent('Debugger.scriptParsed', [
     'scriptId', 'url', 'startLine', 'startColumn', 'endLine', 'endColumn', 'executionContextId', 'hash',
     'executionContextAuxData', 'isLiveEdit', 'sourceMapURL', 'hasSourceURL', 'isModule', 'length', 'stackTrace',
-    'codeOffset', 'scriptLanguage'
+    'codeOffset', 'scriptLanguage', 'debugSymbols'
   ]);
   inspectorBackend.registerCommand(
       'Debugger.continueToLocation',
@@ -2325,6 +2328,14 @@ export function registerCommands(inspectorBackend) {
         {'name': 'returnByValue', 'type': 'boolean', 'optional': true},
         {'name': 'generatePreview', 'type': 'boolean', 'optional': true},
         {'name': 'throwOnSideEffect', 'type': 'boolean', 'optional': true},
+        {'name': 'timeout', 'type': 'number', 'optional': true}
+      ],
+      ['result', 'exceptionDetails'], false);
+  inspectorBackend.registerCommand(
+      'Debugger.executeWasmEvaluator',
+      [
+        {'name': 'callFrameId', 'type': 'string', 'optional': false},
+        {'name': 'evaluator', 'type': 'string', 'optional': false},
         {'name': 'timeout', 'type': 'number', 'optional': true}
       ],
       ['result', 'exceptionDetails'], false);

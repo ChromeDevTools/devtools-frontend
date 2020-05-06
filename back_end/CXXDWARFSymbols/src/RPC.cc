@@ -7,6 +7,7 @@
 #include "Modules.h"
 #include "Transport.h"
 #include "Util.h"
+#include "symbol-server-config.h"
 #include "symbol_server.pb.h"
 
 #include <google/protobuf/message.h>
@@ -177,6 +178,11 @@ protocol::EvaluateVariableResponse DoEvaluateVariables(
     ModuleCache* mc,
     const protocol::EvaluateVariableRequest& request) {
   protocol::EvaluateVariableResponse response;
+#ifndef SYMBOL_SERVER_BUILD_FORMATTERS
+  return *SetError(&response,
+                   MakeError(protocol::Error_Code::Error_Code_INTERNAL_ERROR,
+                             "Formatter library not available"));
+#else
   auto* mod = mc->FindModule(request.location().rawmoduleid());
   if (!mod) {
     return *SetError(&response,
@@ -192,6 +198,7 @@ protocol::EvaluateVariableResponse DoEvaluateVariables(
   response.set_allocated_value(new protocol::RawModule());
   *response.mutable_value()->mutable_code() = *format_script;
   return response;
+#endif
 }
 
 template <typename T>

@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {DebuggerLanguagePlugin, DebuggerLanguagePluginError, RawLocation, RawModule, SourceLocation, Variable} from '../DebuggerLanguagePlugins.js';  // eslint-disable-line no-unused-vars
+import * as SDK from '../../sdk/sdk.js';
+import {DebuggerLanguagePlugin, DebuggerLanguagePluginError, RawLocation, RawModule, SourceLocation, Variable, VariableValue} from '../DebuggerLanguagePlugins.js';  // eslint-disable-line no-unused-vars
+
 
 /**
  * @typedef {{
@@ -63,7 +65,7 @@ async function _sendJsonRPC(method, params) {
 export class CXXDWARFLanguagePlugin {
   /**
    * @override
-   * @param {!SDK.Script} script
+   * @param {!SDK.Script.Script} script
    * @return {boolean} True if this plugin should handle this script
    */
   handleScript(script) {
@@ -140,12 +142,70 @@ export class CXXDWARFLanguagePlugin {
    * @throws {DebuggerLanguagePluginError}
   */
   async evaluateVariable(name, location) {
-    return null;
+    return (await _sendJsonRPC('evaluateVariable', {name: name, location: location})).value;
   }
 
   /**
    * @override
    */
   dispose() {
+  }
+
+  /** Get the representation when value contains a string
+   * @param {!VariableValue} value
+   */
+  _reprString(value) {
+    return value.value;
+  }
+
+  /** Get the representation when value contains a number
+   * @param {!VariableValue} value
+   */
+  _reprNumber(value) {
+    return Number(value.value);
+  }
+
+  /** Get the representation when value is a compound value
+   * @param {!VariableValue} value
+   */
+  _reprCompound(value) {
+    const result = {};
+    for (const property of value.value) {
+      result[property.name] = this._repr(property);
+    }
+    return result;
+  }
+
+  /** Get the representation when value contains an array of values
+   * @param {!VariableValue} value
+   */
+  _reprArray(value) {
+    if (value.value.length > 0 && value.value[0].name && value.value[0].name.endsWith(']')) {
+      return value.value.map(v => this._repr(v));
+    }
+    return this._reprCompound(value);
+  }
+
+  /** Get the representation for a variable value
+   * @param {!VariableValue} value
+   */
+  _repr(value) {
+    if (Array.isArray(value.value)) {
+      return this._reprArray(value);
+    }
+    switch (value.type) {
+      case 'int':
+        return this._reprNumber(value);
+    }
+    return this._reprString(value);
+  }
+
+  /** Produce a language specific representation of a variable value
+   * @override
+   * @param {!VariableValue} value
+   * @return {!Promise<!SDK.RemoteObject.RemoteObject>}
+   */
+  async getRepresentation(value) {
+    return new SDK.RemoteObject.LocalJSONObject(this._repr(value));
   }
 }

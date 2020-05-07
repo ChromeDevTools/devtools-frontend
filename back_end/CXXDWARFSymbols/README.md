@@ -77,3 +77,8 @@ back_end/CXXDWARFSymbols/tools/symbol-server.py out/SymbolServer/bin/DWARFSymbol
 
 To avoid having to download lots of symbol modules, the tool accepts `-I`
 arguments pointing to file system directories containing the symbol modules.
+
+### Showing Variable Values
+There is experimental support for showing contents for integer and
+C-string variables. To enable this feature, chrome needs to be started with
+`--js-flags=--wasm-expose-debug-eval`.

@@ -3,18 +3,36 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
 
-class SourceScopeRemoteObject extends SDK.RemoteObject.RemoteObjectImpl {
+class SourceVariable extends SDK.RemoteObject.RemoteObjectImpl {
   /**
-   * @param {!SDK.RuntimeModel.RuntimeModel} runtimeModel
-   * @param {string} type
+   * @param {!SDK.DebuggerModel.CallFrame} callFrame
+   * @param {!Variable} variable
+   * @param {!DebuggerLanguagePlugin} plugin
+   * @param {!RawLocation} location
    */
-  constructor(runtimeModel, type) {
-    super(runtimeModel, undefined, 'object', undefined, null);
-    /** @type {!Array<!Variable>} */
-    this.variables = [];
+  constructor(callFrame, variable, plugin, location) {
+    super(
+        callFrame.debuggerModel.runtimeModel(), /* objectId=*/ undefined, /* type=*/ variable.type,
+        /* subtype=*/ undefined, /* value=*/ null, /* unserializableValue=*/ undefined,
+        /* customPreview=*/ variable.type);
+    this._variable = variable;
+    this._callFrame = callFrame;
+    this._plugin = plugin;
+    this._location = location;
+    this._hasChildren = true;
+    this._evaluator = plugin.evaluateVariable(variable.name, location);
+  }
+
+  /**
+   * @override
+   * @return {string}
+   */
+  get type() {
+    return this._variable.type;
   }
 
   /**
@@ -29,28 +47,89 @@ class SourceScopeRemoteObject extends SDK.RemoteObject.RemoteObjectImpl {
       return /** @type {!SDK.RemoteObject.GetPropertiesResult} */ ({properties: [], internalProperties: []});
     }
 
-    const variableObjects = this.variables.map(
-        v => new SDK.RemoteObject.RemoteObjectProperty(
-            v.name, new SDK.RemoteObject.LocalJSONObject('(type: ' + v.type + ')'), false, false, true, false));
+    const repr = await getRepr(this._evaluator, this._callFrame, this._plugin);
+    return /** @type {!SDK.RemoteObject.GetPropertiesResult} */ ({
+      properties: [new SDK.RemoteObject.RemoteObjectProperty(
+          'value', repr, /* enumerable=*/ false, /* writable=*/ false, /* isOwn=*/ true, /* wasThrown=*/ false)],
+      internalProperties: []
+    });
 
+    async function getRepr(evaluatorPromise, callFrame, plugin) {
+      try {
+        const evaluator = await evaluatorPromise;
+        const evaluateResponse = await callFrame.debuggerModel._agent.invoke_executeWasmEvaluator(
+            {callFrameId: callFrame.id, evaluator: evaluator.code});
+        if (evaluateResponse[ProtocolClient.InspectorBackend.ProtocolError] || evaluateResponse.exceptionDetails) {
+          console.error(
+              evaluateResponse[ProtocolClient.InspectorBackend.ProtocolError] ||
+              evaluateResponse.exceptionDetails.exception.description);
+          return null;
+        }
 
-    return /** @type {!SDK.RemoteObject.GetPropertiesResult} */ ({properties: variableObjects, internalProperties: []});
+        const value = JSON.parse(evaluateResponse.result.value);
+        return await plugin.getRepresentation(value);
+      } catch (error) {
+        if (!(error instanceof DebuggerLanguagePluginError)) {
+          throw error;
+        }
+        console.error('Error in debugger language plugin: ' + error.message + ' (' + error.code + ')');
+        return null;
+      }
+    }
+  }
+}
+
+class SourceScopeRemoteObject extends SDK.RemoteObject.RemoteObjectImpl {
+  /**
+   * @param {!SDK.DebuggerModel.CallFrame} callFrame
+   * @param {!DebuggerLanguagePlugin} plugin
+   * @param {!RawLocation} location
+   */
+  constructor(callFrame, plugin, location) {
+    super(callFrame.debuggerModel.runtimeModel(), undefined, 'object', undefined, null);
+    /** @type {!Array<!Variable>} */
+    this.variables = [];
+    this._callFrame = callFrame;
+    this._plugin = plugin;
+    this._location = location;
+  }
+
+  /**
+   * @override
+   * @param {boolean} ownProperties
+   * @param {boolean} accessorPropertiesOnly
+   * @param {boolean} generatePreview
+   * @return {!Promise<!SDK.RemoteObject.GetPropertiesResult>}
+   */
+  async doGetProperties(ownProperties, accessorPropertiesOnly, generatePreview) {
+    if (accessorPropertiesOnly) {
+      return /** @type {!SDK.RemoteObject.GetPropertiesResult} */ ({properties: [], internalProperties: []});
+    }
+
+    const properties = this.variables.map(
+        variable => new SDK.RemoteObject.RemoteObjectProperty(
+            variable.name, new SourceVariable(this._callFrame, variable, this._plugin, this._location),
+            /* enumerable=*/ false, /* writable=*/ false, /* isOwn=*/ true, /* wasThrown=*/ false));
+
+    return /** @type {!SDK.RemoteObject.GetPropertiesResult} */ ({properties: properties, internalProperties: []});
   }
 }
 
 /**
  * @unrestricted
- * TODO rename Scope to RawScope and add an interface
+ * TODO rename Scope to RawScope and add a common interface
  */
 class SourceScope {
   /**
    * @param {!SDK.DebuggerModel.CallFrame} callFrame
-   * @param {string} type Scope type.
+   * @param {string} type
+   * @param {!DebuggerLanguagePlugin} plugin
+   * @param {!RawLocation} location
    */
-  constructor(callFrame, type) {
+  constructor(callFrame, type, plugin, location) {
     this._callFrame = callFrame;
     this._type = type;
-    this._object = new SourceScopeRemoteObject(callFrame.debuggerModel.runtimeModel(), type);
+    this._object = new SourceScopeRemoteObject(callFrame, plugin, location);
     this._name = type;
     /** @type {?Location} */
     this._startLocation = null;
@@ -441,6 +520,9 @@ export class DebuggerLanguagePluginManager {
    * @return {!Promise<?Array<!SourceScope>>}
    */
   async resolveScopeChain(callFrame) {
+    if (!callFrame) {
+      return null;
+    }
     const script = callFrame.script;
     /** @type {?DebuggerLanguagePlugin} */
     const plugin = this._pluginForScriptId.get(script.scriptId);
@@ -449,12 +531,16 @@ export class DebuggerLanguagePluginManager {
     }
     /** @type {!Map<string, !SourceScope>} */
     const scopes = new Map();
-    const variables = await plugin.listVariablesInScope(
-        {'rawModuleId': script.scriptId, 'codeOffset': callFrame.location().columnNumber - script.codeOffset()});
+    /** @type {!RawLocation}} */
+    const location = {
+      'rawModuleId': script.scriptId,
+      'codeOffset': callFrame.location().columnNumber - script.codeOffset()
+    };
+    const variables = await plugin.listVariablesInScope(location);
     if (variables) {
       for (const variable of variables) {
         if (!scopes.has(variable.scope)) {
-          scopes.set(variable.scope, new SourceScope(callFrame, variable.scope));
+          scopes.set(variable.scope, new SourceScope(callFrame, variable.scope, plugin, location));
         }
         scopes.get(variable.scope).object().variables.push(variable);
       }
@@ -508,6 +594,15 @@ export let SourceLocation;
  *          }}
  */
 export let Variable;
+
+/** The value of a source language variable
+ * @typedef {{
+ *            value: (string|!Array<!VariableValue>),
+ *            type: string,
+ *            name: string
+ *          }}
+ */
+export let VariableValue;
 
 
 /**
@@ -565,5 +660,12 @@ export class DebuggerLanguagePlugin {
    * @throws {DebuggerLanguagePluginError}
   */
   async evaluateVariable(name, location) {
+  }
+
+  /** Produce a language specific representation of a variable value
+   * @param {!VariableValue} value
+   * @return {!Promise<!SDK.RemoteObject.RemoteObject>}
+   */
+  async getRepresentation(value) {
   }
 }

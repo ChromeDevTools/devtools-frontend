@@ -1,7 +1,7 @@
 language: node_js
 node_js:
   - node
-  - 0.10
+  - lts/*
 script:
   - npm run lint
   # test-coverage will also run the tests, but does not print helpful output upon test failure.

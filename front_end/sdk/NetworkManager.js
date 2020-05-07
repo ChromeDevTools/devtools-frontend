@@ -818,28 +818,19 @@ export class NetworkDispatcher {
   /**
    * @override
    * @param {!Protocol.Network.RequestId} requestId
-   * @param {!Array<!Protocol.Network.BlockedCookieWithReason>} blockedCookies
-   * @param {!Protocol.Network.Headers} headers
    * @param {!Array<!Protocol.Network.BlockedCookieWithReason>} associatedCookies
+   * @param {!Protocol.Network.Headers} headers
    */
-  requestWillBeSentExtraInfo(requestId, blockedCookies, headers, associatedCookies) {
+  requestWillBeSentExtraInfo(requestId, associatedCookies, headers) {
     /** @type {!Array<!BlockedCookieWithReason>} */
-    let blockedRequestCookies = [];
+    const blockedRequestCookies = [];
     const requestCookies = [];
-    // Note that the types are not accurate during the protocol change; we get `undefined` for
-    // `associatedCookies` (before the back-end change) and for `blockedCookies` (after the back-end change).
-    if (associatedCookies) {
-      for (const {blockedReasons, cookie} of associatedCookies) {
-        if (blockedReasons.length === 0) {
-          requestCookies.push({blockedReasons, cookie: Cookie.fromProtocolCookie(cookie)});
-        } else {
-          blockedRequestCookies.push({blockedReasons, cookie: Cookie.fromProtocolCookie(cookie)});
-        }
+    for (const {blockedReasons, cookie} of associatedCookies) {
+      if (blockedReasons.length === 0) {
+        requestCookies.push({blockedReasons, cookie: Cookie.fromProtocolCookie(cookie)});
+      } else {
+        blockedRequestCookies.push({blockedReasons, cookie: Cookie.fromProtocolCookie(cookie)});
       }
-    } else if (blockedCookies) {
-      blockedRequestCookies = blockedCookies.map(blockedCookie => {
-        return {blockedReasons: blockedCookie.blockedReasons, cookie: Cookie.fromProtocolCookie(blockedCookie.cookie)};
-      });
     }
     const extraRequestInfo = {
       blockedRequestCookies,

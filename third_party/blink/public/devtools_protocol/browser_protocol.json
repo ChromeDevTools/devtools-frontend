@@ -11093,8 +11093,8 @@
                             "$ref": "RequestId"
                         },
                         {
-                            "name": "blockedCookies",
-                            "description": "A list of cookies which will not be sent with this request along with corresponding reasons\nfor blocking.",
+                            "name": "associatedCookies",
+                            "description": "A list of cookies potentially associated to the requested URL. This includes both cookies sent with\nthe request and the ones not sent; the latter are distinguished by having blockedReason field set.",
                             "type": "array",
                             "items": {
                                 "$ref": "BlockedCookieWithReason"
@@ -11104,14 +11104,6 @@
                             "name": "headers",
                             "description": "Raw request headers as they will be sent over the wire.",
                             "$ref": "Headers"
-                        },
-                        {
-                            "name": "associatedCookies",
-                            "description": "Temporary hack to get back-end changes landed.",
-                            "type": "array",
-                            "items": {
-                                "$ref": "BlockedCookieWithReason"
-                            }
                         }
                     ]
                 },

@@ -11104,6 +11104,14 @@
                             "name": "headers",
                             "description": "Raw request headers as they will be sent over the wire.",
                             "$ref": "Headers"
+                        },
+                        {
+                            "name": "associatedCookies",
+                            "description": "Temporary hack to get back-end changes landed.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "BlockedCookieWithReason"
+                            }
                         }
                     ]
                 },

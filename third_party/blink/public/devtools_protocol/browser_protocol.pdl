@@ -5117,6 +5117,8 @@ domain Network
       array of BlockedCookieWithReason blockedCookies
       # Raw request headers as they will be sent over the wire.
       Headers headers
+      # Temporary hack to get back-end changes landed.
+      array of BlockedCookieWithReason associatedCookies
 
   # Fired when additional information about a responseReceived event is available from the network
   # stack. Not every responseReceived event will have an additional responseReceivedExtraInfo for

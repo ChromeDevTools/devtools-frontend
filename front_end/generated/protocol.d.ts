@@ -7652,6 +7652,10 @@ declare namespace Protocol {
        * Raw request headers as they will be sent over the wire.
        */
       headers: Headers;
+      /**
+       * Temporary hack to get back-end changes landed.
+       */
+      associatedCookies: BlockedCookieWithReason[];
     }
 
     /**

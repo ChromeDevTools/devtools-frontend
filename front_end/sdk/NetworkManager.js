@@ -34,7 +34,7 @@ import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 
 import {Cookie} from './Cookie.js';
-import {ContentData, Events as NetworkRequestEvents, ExtraRequestInfo, ExtraResponseInfo, MIME_TYPE, MIME_TYPE_TO_RESOURCE_TYPE, NameValue, NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
+import {BlockedCookieWithReason, ContentData, Events as NetworkRequestEvents, ExtraRequestInfo, ExtraResponseInfo, MIME_TYPE, MIME_TYPE_TO_RESOURCE_TYPE, NameValue, NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
 import {Capability, SDKModel, SDKModelObserver, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 /** @type {!WeakMap<!NetworkRequest, !NetworkManager>} */
@@ -820,13 +820,30 @@ export class NetworkDispatcher {
    * @param {!Protocol.Network.RequestId} requestId
    * @param {!Array<!Protocol.Network.BlockedCookieWithReason>} blockedCookies
    * @param {!Protocol.Network.Headers} headers
+   * @param {!Array<!Protocol.Network.BlockedCookieWithReason>} associatedCookies
    */
-  requestWillBeSentExtraInfo(requestId, blockedCookies, headers) {
-    /** @type {!ExtraRequestInfo} */
-    const extraRequestInfo = {
-      blockedRequestCookies: blockedCookies.map(blockedCookie => {
+  requestWillBeSentExtraInfo(requestId, blockedCookies, headers, associatedCookies) {
+    /** @type {!Array<!BlockedCookieWithReason>} */
+    let blockedRequestCookies = [];
+    const requestCookies = [];
+    // Note that the types are not accurate during the protocol change; we get `undefined` for
+    // `associatedCookies` (before the back-end change) and for `blockedCookies` (after the back-end change).
+    if (associatedCookies) {
+      for (const {blockedReasons, cookie} of associatedCookies) {
+        if (blockedReasons.length === 0) {
+          requestCookies.push({blockedReasons, cookie: Cookie.fromProtocolCookie(cookie)});
+        } else {
+          blockedRequestCookies.push({blockedReasons, cookie: Cookie.fromProtocolCookie(cookie)});
+        }
+      }
+    } else if (blockedCookies) {
+      blockedRequestCookies = blockedCookies.map(blockedCookie => {
         return {blockedReasons: blockedCookie.blockedReasons, cookie: Cookie.fromProtocolCookie(blockedCookie.cookie)};
-      }),
+      });
+    }
+    const extraRequestInfo = {
+      blockedRequestCookies,
+      requestCookies,
       requestHeaders: this._headersMapToHeadersArray(headers)
     };
     this._getExtraInfoBuilder(requestId).addRequestExtraInfo(extraRequestInfo);

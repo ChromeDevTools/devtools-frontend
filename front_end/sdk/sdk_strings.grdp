@@ -3,10 +3,6 @@
   <message name="IDS_DEVTOOLS_0203e27fe44545283879b18e7084391b" desc="Error message when failing to load a script source text">
     Unable to fetch script source.
   </message>
-  <message name="IDS_DEVTOOLS_044e523024944672d1d5aa5b2538ba5c" desc="Description for an issue in the issues view">
-    The resource was loaded in a context that is not same-origin and that enables the cross-origin embedder policy. The resource specified a cross-origin resource policy that allows only same-origin usage, and was hence blocked.
-  To use this resource from a different origin, the server may relax the cross-origin resource policy response header:
-  </message>
   <message name="IDS_DEVTOOLS_05dfd3a2f7eebfad702620a4a7e182eb" desc="Tooltip to explain why a cookie was blocked">
     This Set-Cookie was blocked because it had the &quot;SameSite=Strict&quot; attribute but came from a cross-site response which was not the response to a top-level navigation.
   </message>
@@ -57,6 +53,9 @@
   </message>
   <message name="IDS_DEVTOOLS_1ccfb518c1eb59a48fa9b2c578073557" desc="Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel">
     redundant
+  </message>
+  <message name="IDS_DEVTOOLS_1e20b296e8d4ce166160272060b60448" desc="Part of an explenatory text describing an issue in the issues view">
+    To solve this, add the following to the embedded frame’s HTML response header:
   </message>
   <message name="IDS_DEVTOOLS_1ee85f6c60017a7f0646ba8dc5824de6" desc="Service worker running status displayed in the Service Workers view in the Application panel">
     starting
@@ -109,11 +108,18 @@
   <message name="IDS_DEVTOOLS_3cbd091fd9522762ed01c1b305a8beda" desc="Tooltip to explain why a cookie was blocked">
     This cookie didn&apos;t specify a &quot;SameSite&quot; attribute when it was stored and was defaulted to &quot;SameSite=Lax,&quot; and was blocked because the request was made from a different site and was not initiated by a top-level navigation. The cookie had to have been set with &quot;SameSite=None&quot; to enable cross-site usage.
   </message>
+  <message name="IDS_DEVTOOLS_3d504c272eab842eee1c2a347a87674b" desc="Part of a text describing an issue">
+    To solve this, add the following to the resource’s HTML response header:
+  </message>
   <message name="IDS_DEVTOOLS_3f23f0e9da2803d48c2d67aa09f01bf5" desc="Tooltip to explain why a cookie was blocked">
     This Set-Cookie didn&apos;t specify a &quot;SameSite&quot; attribute and was defaulted to &quot;SameSite=Lax,&quot; and was blocked because it came from a cross-site response which was not the response to a top-level navigation. The Set-Cookie had to have been set with &quot;SameSite=None&quot; to enable cross-site usage.
   </message>
   <message name="IDS_DEVTOOLS_40bf79d4fb1a6c55040a72b7eab1b7aa" desc="Title for an issue in the issues view">
     An <ph name="LOCKED_1">iframe</ph> navigation to a document with a cross-origin opener policy was blocked
+  </message>
+  <message name="IDS_DEVTOOLS_42b8b59fcc5afb9886bc5ee81bfb6762" desc="Title for an issue in the issues view">
+    A document with a cross-origin opener policy (COOP) was blocked from loading in an iframe, because the iframe specifies a sandbox attribute.
+  This protects COOP-enabled documents from inheriting properties from its opener.
   </message>
   <message name="IDS_DEVTOOLS_43fde213dddc0ce31eca48a551757f41" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Emulate blurred vision
@@ -127,9 +133,9 @@
   <message name="IDS_DEVTOOLS_53cd1fbc07fe37544e195e5ad3746175" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Emulate achromatopsia
   </message>
-  <message name="IDS_DEVTOOLS_59a88821ae1cfa9637365d5fa2b46242" desc="Description for an issue in the issues view">
-    An <ph name="LOCKED_1">iframe</ph> was emdbedded on a site which enables the cross-origin embedder policy, but the response headers for the document of the <ph name="LOCKED_1">iframe</ph> did not specify a cross-origin embedder policy, which causes the iframe to get blocked.
-  To allow embedding of the <ph name="LOCKED_1">iframe</ph>, the response needs to enable the cross-origin embedder policy for the <ph name="LOCKED_1">iframe</ph> by specifying the following response header:
+  <message name="IDS_DEVTOOLS_56f2cb62c3190165d2136d025b70af21" desc="Part of a text describing an issue in the issues view">
+    Because your site has the cross-origin embedder policy (COEP) enabled, each embedded iframe must also specify this policy.
+  This behavior protects private data from being exposed to untrusted third party sites.
   </message>
   <message name="IDS_DEVTOOLS_5b8188656e56f6cf2436f90188533934" desc="Description how an issue can be resolved">
     If the cookie is intended for third parties, mark the cookie as &apos;SameSite=None; Secure&apos;.
@@ -142,6 +148,10 @@
   </message>
   <message name="IDS_DEVTOOLS_61326117ed4a9ddf3f754e71e119e5b3" desc="The kind of resolution for a mixed content issue">
     blocked
+  </message>
+  <message name="IDS_DEVTOOLS_658f254bbf18be3fb45877de2eb0547d" desc="Part of a text describing an issue in the issues view">
+    Your site tries to access an external resource that only allows same-site usage.
+  This behavior prevents a document from loading any non-same-site resources which don&apos;t explicitly grant permission to be loaded.
   </message>
   <message name="IDS_DEVTOOLS_67370b3edd8beefab5b4d3603172c6be" desc="Description of an issue in the issues panel">
     A cookie without a valid SameSite attribute was sent in a cross-site request. In the future, a cookie will only be sent in a cross-site request if the cookie has both the &apos;SameSite=None and &apos;Secure&apos; attributes.
@@ -242,6 +252,9 @@
   <message name="IDS_DEVTOOLS_68a533725701759155b01979f1a6afd0" desc="Title of an issue in the issues view">
     A cookie will not be sent in the future, because the cookie was set without the &apos;SameSite&apos; attribute
   </message>
+  <message name="IDS_DEVTOOLS_68ce8538fce11a7b3038afffe81fc67f" desc="Part of a text describing an issue in the issues view">
+    Specify a cross-origin embedder policy to prevent this frame from being blocked
+  </message>
   <message name="IDS_DEVTOOLS_6948a469c79f7dd5426e4f291cba3db1" desc="Text in Network Log">
     <ph name="LOCKED_1">Chrome Data Saver</ph>
   </message>
@@ -266,24 +279,26 @@
   <message name="IDS_DEVTOOLS_716ddf802d9b9ee6899a47025e38bff7" desc="Error message when failing to fetch a resource referenced in a source map">
     Could not load content for <ph name="THIS__SOURCEURL">$1s<ex>https://example.com/sourcemap.map</ex></ph> (<ph name="ERRORMESSAGE">$2s<ex>An error occurred</ex></ph>)
   </message>
+  <message name="IDS_DEVTOOLS_71be081ed6d31a6b93a0f9e5a0f474cc" desc="Part of a text describing an issue in the issues view">
+    Specify a cross-origin resource policy to prevent a resource from being blocked
+  </message>
   <message name="IDS_DEVTOOLS_720bffbd392bad37272a7c1202250bb9" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Emulate deuteranopia
   </message>
   <message name="IDS_DEVTOOLS_73329564760013a7824ff9d5d1af91ff" desc="Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel">
     installed
   </message>
-  <message name="IDS_DEVTOOLS_738529c4dc85873f31f579e2fe21736b" desc="Title for an issue in the issues view">
-    An <ph name="LOCKED_1">iframe</ph> was blocked because it did not specify a cross-origin embedder policy
-  </message>
   <message name="IDS_DEVTOOLS_75101dcdfc88455bcafc9e53e0b06689" desc="Service worker running status displayed in the Service Workers view in the Application panel">
     running
+  </message>
+  <message name="IDS_DEVTOOLS_7565c99d85e9dceea0b0a3c538ab7239" desc="Part of a text describing an issue in the issues view.">
+    if the resource and your site are served from the same site.
   </message>
   <message name="IDS_DEVTOOLS_75ce94bc789367b63d0fc1c8daa996df" desc="Error message for when a CSS file can't be loaded">
     Could not find the original style sheet.
   </message>
-  <message name="IDS_DEVTOOLS_77df128d7d124446c107c9bf445eed0c" desc="Description for an issue in the issues view">
-    The resource was loaded in a context that is not same-site and that enables the cross-origin embedder policy. The resource specified a cross-origin resource policy that allows only same-site usage, and was hence blocked.
-  To allow usage of the resource from a different site, the server may relax the cross-origin resource policy response header:
+  <message name="IDS_DEVTOOLS_75de1c4537bc13ba7dbb940295c2403e" desc="Part of a text describing an issue in the issues view">
+    To solve this, add the following to the resource’s response header:
   </message>
   <message name="IDS_DEVTOOLS_794f64c7f20487f6e13679201deeab3d" desc="Text in DOMDebugger Model">
     Picture-in-Picture
@@ -306,6 +321,9 @@
   <message name="IDS_DEVTOOLS_8022a7ceb04a413d242483f01407dfba" desc="Name of a color vision deficiency that can be emulated via the Rendering drawer">
     Protanopia
   </message>
+  <message name="IDS_DEVTOOLS_8186f0d9076262cae346db9adabf643e" desc="Description how an issue can be fixed">
+    if the resource is served from another location than your website. ⚠️If you set this header, any website can embed this resource.
+  </message>
   <message name="IDS_DEVTOOLS_81961fe251f4d1cb4df131561dedf319" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Hide layer borders
   </message>
@@ -320,9 +338,6 @@
   </message>
   <message name="IDS_DEVTOOLS_85b5ab7421eb24d42906b321a49aeb12" desc="Message for the MixedContentIssue issue code">
     The initial HTML is loaded over a secure HTTPS connection, but some other resources are loaded over an insecure HTTP connection.
-  </message>
-  <message name="IDS_DEVTOOLS_8aa85d8015c515cde89fade0983df424" desc="Description for an issue in the issues view">
-    A document was blocked from loading in an <ph name="LOCKED_1">iframe</ph> with a <ph name="LOCKED_1">sandbox</ph> attribute because the document specified a cross-origin opener policy.
   </message>
   <message name="IDS_DEVTOOLS_8bfd98e44c95f20aecceb52930b2c300" desc="Description of an issue in the issues panel">
     A cookie was received with the &apos;SameSite=None&apos; attribute, marking it as available for third-party use, but did not have the &apos;Secure&apos; attribute. Cookies with &apos;SameSite=None&apos; are not set unless they also have the &apos;Secure&apos; attribute.
@@ -357,6 +372,10 @@
   <message name="IDS_DEVTOOLS_96d008db67fc0b5551a926842bbb6a71" desc="Text in DOMDebugger Model">
     Notification
   </message>
+  <message name="IDS_DEVTOOLS_9829644f81a0154c4ffd9c9c93df7698" desc="Part of a text describing an issue in the issues view">
+    Your site tries to access an external resource that only allows same-origin usage.
+  This behavior prevents a document from loading any non-same-origin resources which don&apos;t explicitly grant permission to be loaded.
+  </message>
   <message name="IDS_DEVTOOLS_982c177a1c47f2180a62c1a16858a734" desc="Name of a color vision deficiency that can be emulated via the Rendering drawer">
     Deuteranopia
   </message>
@@ -365,12 +384,6 @@
   </message>
   <message name="IDS_DEVTOOLS_9ac0a2bb2dca80c697322837cbbdbaab" desc="Title for an issue in the issues view">
     A cookie was blocked, because the cookie specified &apos;SameSite=None&apos; without &apos;Secure&apos;
-  </message>
-  <message name="IDS_DEVTOOLS_9bd335d81da7fb52ceab31f45df228cb" desc="Title for an issue in the issues view">
-    A resource was blocked because its cross-origin resource policy only allows same-site usage
-  </message>
-  <message name="IDS_DEVTOOLS_9d9dd3883d9d33b88cede92d18217dd8" desc="Title for an issue in the issues view">
-    A resource was blocked because its cross-origin resource policy only allows same-origin usage
   </message>
   <message name="IDS_DEVTOOLS_9dd7b9f5cc1c19a830f153c3e8f1ad89" desc="Text in Network Manager">
     Fast 3G
@@ -386,6 +399,9 @@
   </message>
   <message name="IDS_DEVTOOLS_a269876ed9865d2b5c54b5c12ee1c26b" desc="Label for a list of possible solutions for a given issue">
     Resolve by
+  </message>
+  <message name="IDS_DEVTOOLS_a29ae5ccb7b13d3a9ddbb9171213e9cc" desc="Part of a text describing an issue in the issues view">
+    ⚠️If you set this header, any website can embed this resource.
   </message>
   <message name="IDS_DEVTOOLS_a2b7a2f1bb0d832325c673c5bc858576" desc="Tooltip to explain why a cookie was blocked">
     This cookie was blocked because its path was not an exact match for or a superdirectory of the request url&apos;s path.
@@ -441,6 +457,10 @@
   <message name="IDS_DEVTOOLS_beff15b1acf49b84bf1080cceb920ebf" desc="Title of a media query that can be emulated via the Rendering drawer">
     prefers-color-scheme: dark
   </message>
+  <message name="IDS_DEVTOOLS_bf034e7663c8989342d04652767088c1" desc="Part of a text describing an issue in the issues view">
+    Because your site has the cross-origin embedder policy (COEP) enabled, each resource must specify a suitable cross-origin resource policy (CORP).
+   This behavior prevents a document from loading cross-origin resources which don&apos;t explicitly grant permission to be loaded.
+  </message>
   <message name="IDS_DEVTOOLS_c0268b9746e0b5ce4e2eea936371222f" desc="Title for an issue in the issues view">
     A cookie was not sent because the cookie&apos;s &apos;SameSite&apos; attribute was defaulted to &apos;SameSite=Lax&apos;
   </message>
@@ -462,6 +482,9 @@
   <message name="IDS_DEVTOOLS_c89686a387d2b12b3c729ce35a0bcb5b" desc="Text in DOMDebugger Model">
     Window
   </message>
+  <message name="IDS_DEVTOOLS_c9d5135171a5ebdf8e5d6d1247bc7b31" desc="Link text for a link to external documentation">
+    COOP and COEP
+  </message>
   <message name="IDS_DEVTOOLS_ca4fbb6d710463b20755b9a024d841c1" desc="Error message when failing to load a source map text">
     DevTools failed to load SourceMap: <ph name="ERROR_MESSAGE"><ex>An error occured</ex>$1s</ph>
   </message>
@@ -482,9 +505,6 @@
   </message>
   <message name="IDS_DEVTOOLS_d24a22fef757966373800aa9795458dc" desc="Text in Source Map">
     ? [sm]
-  </message>
-  <message name="IDS_DEVTOOLS_d3330d895eefdef1b6272db5775fd351" desc="Title for an issue in the issues view">
-    A resource was blocked because it is missing a cross-origin resource policy
   </message>
   <message name="IDS_DEVTOOLS_d4fad802fc7bf0248d34c685533bd56f" desc="Title of a setting under the Network category that can be invoked through the Command Menu">
     Disable request blocking
@@ -513,22 +533,17 @@
   <message name="IDS_DEVTOOLS_e8e741c8bebb2da4dc93e5f9c1cecd8c" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Emulate CSS prefers-color-scheme: light
   </message>
+  <message name="IDS_DEVTOOLS_e9c9a62c061402881b6efbc3f2dc4ddb" desc="Title text of an issue in the issues view">
+    Specify a more permissive cross-origin resource policy to prevent a resource from being blocked
+  </message>
   <message name="IDS_DEVTOOLS_eb6ff454fb651bb604121a229e5baec3" desc="Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel">
     <ph name="LABEL">$1s<ex>sw.js</ex></ph> #<ph name="VERSION_ID">$2s<ex>117</ex></ph> (<ph name="STATUS">$3s<ex>activated</ex></ph>)
-  </message>
-  <message name="IDS_DEVTOOLS_ec9d50650ce0ffbe688e453377198b95" desc="Title for a link in the issues view">
-    Enable powerful features with COOP and COEP
   </message>
   <message name="IDS_DEVTOOLS_edb020d2175281d94054136e09a3e132" desc="Title of a setting under the Debugger category that can be invoked through the Command Menu">
     Do not pause on exceptions
   </message>
   <message name="IDS_DEVTOOLS_ee0846ee1be3e5b8861db3956ae9981e" desc="Tooltip to explain why a cookie was blocked">
     This Set-Cookie was blocked because it used the &quot;__Secure-&quot; or &quot;__Host-&quot; prefix in its name and broke the additional rules applied to cookies with these prefixes as defined in https://tools.ietf.org/html/draft-west-cookie-prefixes-05.
-  </message>
-  <message name="IDS_DEVTOOLS_eeb7bd647d3fade40ab848754327dd63" desc="Description for an issue in the issues view">
-    The resource is not a same-origin resource, and the response headers for the resource did not specify any cross-origin resource policy.
-     The cross-origin resource policy was defaulted to same-origin, because the resource was used in a context that enables the cross-origin embedder policy.
-     To use this resource from a different origin, the server needs to specify a cross-origin resource policy in the response headers:
   </message>
   <message name="IDS_DEVTOOLS_efa547f7d0b9924fdc7b301838c99fad" desc="A drop-down menu option to do not emulate css media type">
     No emulation

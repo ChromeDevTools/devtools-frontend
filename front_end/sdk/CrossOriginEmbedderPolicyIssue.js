@@ -71,22 +71,25 @@ export class CrossOriginEmbedderPolicyIssue extends Issue {
 function CorpNotSameOriginAfterDefaultedToSameOriginByCoepMessage() {
   const message = document.createElement('div');
   message.classList.add('message');
-  message.textContent = ls
-  `The resource is not a same-origin resource, and the response headers for the resource did not specify any cross-origin resource policy.
-     The cross-origin resource policy was defaulted to same-origin, because the resource was used in a context that enables the cross-origin embedder policy.
-     To use this resource from a different origin, the server needs to specify a cross-origin resource policy in the response headers:`;
-  const example1 = document.createElement('div');
-  example1.classList.add('example');
+
+  message.createChild('p').textContent = ls
+  `Because your site has the cross-origin embedder policy (COEP) enabled, each resource must specify a suitable cross-origin resource policy (CORP).
+   This behavior prevents a document from loading cross-origin resources which don't explicitly grant permission to be loaded.`;
+
+  const solveBy = message.createChild('p');
+  solveBy.createChild('span').textContent = ls`To solve this, add the following to the resource’s response header:`;
+  const list = solveBy.createChild('ul', 'resolutions-list');
+
+  const example1 = list.createChild('li');
   example1.createChild('code').textContent = 'Cross-Origin-Resource-Policy: same-site';
-  example1.createChild('span', 'comment').textContent =
-      ls`Choose this option if the resource and the document are served from the same site.`;
-  message.appendChild(example1);
-  const example2 = document.createElement('div');
-  example2.classList.add('example');
+  example1.createChild('span').textContent = ' ';
+  example1.createChild('span').textContent = ls`if the resource and your site are served from the same site.`;
+
+  const example2 = list.createChild('li');
   example2.createChild('code').textContent = 'Cross-Origin-Resource-Policy: cross-origin';
-  example2.createChild('span', 'comment').textContent =
-      ls`Only choose this option if an arbitrary website including this resource does not impose a security risk.`;
-  message.appendChild(example2);
+  example2.createChild('span').textContent = ' ';
+  example2.createChild('span').textContent =
+      ls`if the resource is served from another location than your website. ⚠️If you set this header, any website can embed this resource.`;
   return message;
 }
 
@@ -96,13 +99,18 @@ function CorpNotSameOriginAfterDefaultedToSameOriginByCoepMessage() {
 function CoepFrameResourceNeedsCoepHeaderMessage() {
   const message = document.createElement('div');
   message.classList.add('message');
-  message.textContent = ls
-  `An iframe was emdbedded on a site which enables the cross-origin embedder policy, but the response headers for the document of the iframe did not specify a cross-origin embedder policy, which causes the iframe to get blocked.
-  To allow embedding of the iframe, the response needs to enable the cross-origin embedder policy for the iframe by specifying the following response header:`;
-  const example1 = document.createElement('div');
-  example1.classList.add('example');
-  example1.createChild('code').textContent = 'Cross-Origin-Embedder-Policy: require-corp';
-  message.appendChild(example1);
+
+  message.createChild('p').textContent = ls
+  `Because your site has the cross-origin embedder policy (COEP) enabled, each embedded iframe must also specify this policy.
+  This behavior protects private data from being exposed to untrusted third party sites.`;
+
+  const solvedBy = message.createChild('p');
+  solvedBy.createChild('span').textContent = ls
+  `To solve this, add the following to the embedded frame’s HTML response header:` +
+      ' ';
+
+  solvedBy.createChild('code').textContent = 'Cross-Origin-Embedder-Policy: require-corp';
+
   return message;
 }
 
@@ -112,15 +120,19 @@ function CoepFrameResourceNeedsCoepHeaderMessage() {
 function CorpNotSameSiteMessage() {
   const message = document.createElement('div');
   message.classList.add('message');
-  message.textContent = ls
-  `The resource was loaded in a context that is not same-site and that enables the cross-origin embedder policy. The resource specified a cross-origin resource policy that allows only same-site usage, and was hence blocked.
-  To allow usage of the resource from a different site, the server may relax the cross-origin resource policy response header:`;
-  const example = document.createElement('div');
-  example.classList.add('example');
-  example.createChild('code').textContent = 'Cross-Origin-Resource-Policy: cross-origin';
-  example.createChild('span', 'comment').textContent =
-      ls`Only choose this option if an arbitrary website including this resource does not impose a security risk.`;
-  message.appendChild(example);
+
+  message.createChild('p').textContent = ls
+  `Your site tries to access an external resource that only allows same-site usage.
+  This behavior prevents a document from loading any non-same-site resources which don't explicitly grant permission to be loaded.`;
+
+  const solvedBy = message.createChild('p');
+  solvedBy.createChild('span').textContent =
+      ls`To solve this, add the following to the resource’s HTML response header:` +
+      ' ';
+  solvedBy.createChild('code').textContent = 'Cross-Origin-Embedder-Policy: cross-origin';
+  solvedBy.createChild('span').textContent =
+      ' ' + ls`⚠️If you set this header, any website can embed this resource.`;
+
   return message;
 }
 
@@ -130,21 +142,27 @@ function CorpNotSameSiteMessage() {
 function CorpNotSameOriginMessage() {
   const message = document.createElement('div');
   message.classList.add('message');
-  message.textContent = ls
-  `The resource was loaded in a context that is not same-origin and that enables the cross-origin embedder policy. The resource specified a cross-origin resource policy that allows only same-origin usage, and was hence blocked.
-  To use this resource from a different origin, the server may relax the cross-origin resource policy response header:`;
-  const example1 = document.createElement('div');
-  example1.classList.add('example');
+
+  message.createChild('p').textContent = ls
+  `Your site tries to access an external resource that only allows same-origin usage.
+  This behavior prevents a document from loading any non-same-origin resources which don't explicitly grant permission to be loaded.`;
+
+  const solveBy = message.createChild('p');
+  solveBy.createChild('span').textContent =
+      ls`To solve this, add the following to the resource’s HTML response header:`;
+  const list = solveBy.createChild('ul', 'resolutions-list');
+
+  const example1 = list.createChild('li');
   example1.createChild('code').textContent = 'Cross-Origin-Resource-Policy: same-site';
-  example1.createChild('span', 'comment').textContent =
-      ls`Choose this option if the resource and the document are served from the same site.`;
-  message.appendChild(example1);
-  const example2 = document.createElement('div');
-  example2.classList.add('example');
+  example1.createChild('span').textContent = ' ';
+  example1.createChild('span').textContent = ls`if the resource and your site are served from the same site.`;
+
+  const example2 = list.createChild('li');
   example2.createChild('code').textContent = 'Cross-Origin-Resource-Policy: cross-origin';
-  example2.createChild('span', 'comment').textContent =
-      ls`Only choose this option if an arbitrary website including this resource does not impose a security risk.`;
-  message.appendChild(example2);
+  example2.createChild('span').textContent = ' ';
+  example2.createChild('span').textContent =
+      ls`if the resource is served from another location than your website. ⚠️If you set this header, any website can embed this resource.`;
+
   return message;
 }
 
@@ -162,39 +180,40 @@ function textOnlyMessage(text) {
 /** @type {!Map<string, !IssueDescription>} */
 const issueDescriptions = new Map([
 ['CrossOriginEmbedderPolicy::CorpNotSameOriginAfterDefaultedToSameOriginByCoep', {
-  title: ls`A resource was blocked because it is missing a cross-origin resource policy`,
+  title: ls`Specify a cross-origin resource policy to prevent a resource from being blocked`,
   message: CorpNotSameOriginAfterDefaultedToSameOriginByCoepMessage,
   issueKind: IssueKind.BreakingChange,
   link: ls`https://web.dev/coop-coep/`,
-  linkTitle: ls`Enable powerful features with COOP and COEP`,
+  linkTitle: ls`COOP and COEP`,
 }],
 ['CrossOriginEmbedderPolicy::CoepFrameResourceNeedsCoepHeader',  {
-  title: ls`An iframe was blocked because it did not specify a cross-origin embedder policy`,
+  title: ls`Specify a cross-origin embedder policy to prevent this frame from being blocked`,
   message: CoepFrameResourceNeedsCoepHeaderMessage,
    issueKind: IssueKind.BreakingChange,
   link: ls`https://web.dev/coop-coep/`,
-  linkTitle: ls`Enable powerful features with COOP and COEP`,
+  linkTitle: ls`COOP and COEP`,
 }],
 ['CrossOriginEmbedderPolicy::CoopSandboxedIframeCannotNavigateToCoopPage',  {
   title: ls`An iframe navigation to a document with a cross-origin opener policy was blocked`,
   message: () => textOnlyMessage(ls
-  `A document was blocked from loading in an iframe with a sandbox attribute because the document specified a cross-origin opener policy.`),
+  `A document with a cross-origin opener policy (COOP) was blocked from loading in an iframe, because the iframe specifies a sandbox attribute.
+  This protects COOP-enabled documents from inheriting properties from its opener.`),
   issueKind: IssueKind.BreakingChange,
   link: ls`https://web.dev/coop-coep/`,
-  linkTitle: ls`Enable powerful features with COOP and COEP`,
+  linkTitle: ls`COOP and COEP`,
 }],
 ['CrossOriginEmbedderPolicy::CorpNotSameSite',  {
-  title: ls`A resource was blocked because its cross-origin resource policy only allows same-site usage`,
+  title: ls`Specify a more permissive cross-origin resource policy to prevent a resource from being blocked`,
   message: CorpNotSameSiteMessage,
   issueKind: IssueKind.BreakingChange,
   link: ls`https://web.dev/coop-coep/`,
-  linkTitle: ls`Enable powerful features with COOP and COEP`,
+  linkTitle: ls`COOP and COEP`,
 }],
 ['CrossOriginEmbedderPolicy::CorpNotSameOrigin',  {
-  title: ls`A resource was blocked because its cross-origin resource policy only allows same-origin usage`,
+  title: ls`Specify a more permissive cross-origin resource policy to prevent a resource from being blocked`,
   message: CorpNotSameOriginMessage,
   issueKind: IssueKind.BreakingChange,
   link: ls`https://web.dev/coop-coep/`,
-  linkTitle: ls`Enable powerful features with COOP and COEP`,
+  linkTitle: ls`COOP and COEP`,
 }],
 ]);

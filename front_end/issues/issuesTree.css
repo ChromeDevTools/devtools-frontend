@@ -17,12 +17,14 @@
   --issue-gray: #5F6368;
   --issue-link: #1967D2;
   --issue-black: #202124;
+  --issue-code: #F0F0F0;
   --affected-resource-background: #F8F9FA;
 }
 
 :host-context(.-theme-with-dark-background) .issues {
   --issue-gray: #A09C97;
   --issue-black: #DFDEDB;
+  --issue-code: #0F0F0F;
   --affected-resource-background: #070605;
 }
 
@@ -126,20 +128,25 @@ p {
   user-select: text;
 }
 
-.message .example {
-  margin-top: 2px;
-  margin-bottom: 2px;
+.message p {
+  margin-bottom: 16px;
 }
 
-.message .example code {
+.message li {
+  margin-top: 8px;
+}
+
+/* Add some space between the arrow and the first child of <li> */
+.message li > *:first-child {
+  margin-left: 5px;
+}
+
+.message code {
   color: var(--issue-black);
   font-size: 90%;
   user-select: text;
   cursor: text;
-}
-
-.message .example .comment::before {
-   content: ' — ';
+  background: var(--issue-code);
 }
 
 .separator::before {
@@ -171,8 +178,9 @@ p {
 }
 
 .resolutions-list {
-  list-style-type: circle;
-  padding-inline-start: 20px;
+  list-style-type: "→";
+  list-style-position: inside;
+  padding-inline-start: 0px;
 }
 
 /* We inherit all the styles from treeoutline, but these are simple text <li>, so we override some styles */

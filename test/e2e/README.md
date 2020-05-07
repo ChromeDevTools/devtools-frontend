@@ -3,6 +3,7 @@
 This directory hosts the end-to-end tests we run on DevTools.
 These tests open a target page and a DevTools frontend page, for which the DevTools frontend connects to the target page over CDP.
 We use [Puppeteer] to talk over CDP and all functionality of Puppeteer is available to you as well when writing end-to-end tests.
+We use [Mocha] as testing framework.
 
 The goal of these end-to-end tests is to implement core user journeys throughout the application.
 As such, the tests you write should read like a little story that you can read, even if you don't know how it is implemented.
@@ -18,6 +19,7 @@ Some additional, optional, helpful flags:
 LOCATION is a path to the chrome executable
 FEATURES is a comma separated list of chrome features passed as `--enable-features=[FEATURES]` to the chrome binary.
 
+If you only want to run a single test or testsuite, use respectively `it.only` or `describe.only`.
 
 ## General implementation details
 
@@ -116,3 +118,4 @@ In general, the e2e/helpers make use of the shared helpers.
 See [../shared/README.md](../shared/README.md) for more documentation on the shared helpers.
 
 [Puppeteer]: https://pptr.dev/
+[Mocha]: https://mochajs.org

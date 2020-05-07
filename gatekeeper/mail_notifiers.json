@@ -1,0 +1,26 @@
+{
+  "comment": ["This is a configuration file for gatekeeper_ng.py",
+              "Look at that for documentation on this file's format."],
+  "masters": {
+    "https://build.chromium.org/p/client.devtools-frontend.integration": [
+      {
+        "builders": {
+          "Auto-roll - devtools deps": {
+            "comment": [
+              "forgive_all below prevents closing tree and sending to ",
+              "blamelist, i.e. only addresses in tree_notify are emailed"
+            ],
+            "forgive_all": "true",
+            "tree_notify": [
+              "devtools-waterfall-sheriff-onduty@grotations.appspotmail.com"
+            ],
+            "closing_optional": [
+              "*"
+            ],
+            "status_template": "Auto-roller failure in %(project_name)s on %(builder_name)s, %(unsatisfied)s"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -28,6 +28,8 @@ export const PlayerPropertyKeys = {
   kIsAudioDecryptingDemuxerStream: 'kIsAudioDecryptingDemuxerStream',
   kAudioTracks: 'kAudioTracks',
   kVideoTracks: 'kVideoTracks',
+  kFramerate: 'kFramerate',
+  kVideoPlaybackRoughness: 'kVideoPlaybackRoughness',
 };
 
 /**
@@ -355,6 +357,14 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
     const rangeHeaders = new PropertyRenderer(ls`Range Header Support`);
     this._mediaElements.push(rangeHeaders);
     this._attributeMap.set(PlayerPropertyKeys.kIsRangeHeaderSupported, rangeHeaders);
+
+    const frameRate = new PropertyRenderer(ls`Frame Rate`);
+    this._mediaElements.push(frameRate);
+    this._attributeMap.set(PlayerPropertyKeys.kFramerate, frameRate);
+
+    const roughness = new PropertyRenderer(ls`Video Playback Roughness`);
+    this._mediaElements.push(roughness);
+    this._attributeMap.set(PlayerPropertyKeys.kVideoPlaybackRoughness, roughness);
 
     /* Video Decoder Properties */
     const decoderName = new DefaultPropertyRenderer(ls`Decoder Name`, ls`No Decoder`);

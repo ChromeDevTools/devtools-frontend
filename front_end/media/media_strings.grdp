@@ -3,6 +3,9 @@
   <message name="IDS_DEVTOOLS_421b47ffd946ca083b65cd668c6b17e6" desc="Video player">
     video
   </message>
+  <message name="IDS_DEVTOOLS_42895832ab7605d00676bebb0521991f" desc="Media property giving the distance of the playback quality from the ideal playback.">
+    Video Playback Roughness
+  </message>
   <message name="IDS_DEVTOOLS_62933a2951ef01f4eafd9bdf4d3cd2f0" desc="Media player">
     media
   </message>
@@ -14,6 +17,9 @@
   </message>
   <message name="IDS_DEVTOOLS_87f9f735a1d36793ceaecd4e47124b63" desc="Button text for viewing events.">
     Events
+  </message>
+  <message name="IDS_DEVTOOLS_9cb334507c95e83a9c863f5014ab317e" desc="Media property giving the media file frame rate">
+    Frame Rate
   </message>
   <message name="IDS_DEVTOOLS_cf6523ecab64a91c7a9b3d83b58f9e61" desc="Hover text for the Events button.">
     Player events

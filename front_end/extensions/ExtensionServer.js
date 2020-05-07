@@ -456,7 +456,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     const options = /** @type {!ExtensionReloadOptions} */ (message.options || {});
 
     SDK.NetworkManager.MultitargetNetworkManager.instance().setUserAgentOverride(
-        typeof options.userAgent === 'string' ? options.userAgent : '');
+        typeof options.userAgent === 'string' ? options.userAgent : '', null);
     let injectedScript;
     if (options.injectedScript) {
       injectedScript = '(function(){' + options.injectedScript + '})()';

@@ -521,7 +521,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
           this._mode.orientation === Horizontal ? Protocol.Emulation.ScreenOrientationType.LandscapePrimary :
                                                   Protocol.Emulation.ScreenOrientationType.PortraitPrimary,
           resetPageScaleFactor);
-      this._applyUserAgent(this._device.userAgent);
+      this._applyUserAgent(this._device.userAgent, this._device.userAgentMetadata);
       this._applyTouch(this._device.touch(), mobile);
     } else if (this._type === Type.None) {
       this._fitScale = this._calculateFitScale(this._availableSize.width, this._availableSize.height);
@@ -529,7 +529,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
       this._applyDeviceMetrics(
           this._availableSize, new UI.Geometry.Insets(0, 0, 0, 0), new UI.Geometry.Insets(0, 0, 0, 0), 1, 0, mobile,
           null, resetPageScaleFactor);
-      this._applyUserAgent('');
+      this._applyUserAgent('', null);
       this._applyTouch(false, false);
     } else if (this._type === Type.Responsive) {
       let screenWidth = this._widthSetting.get();
@@ -550,7 +550,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
           screenHeight >= screenWidth ? Protocol.Emulation.ScreenOrientationType.PortraitPrimary :
                                         Protocol.Emulation.ScreenOrientationType.LandscapePrimary,
           resetPageScaleFactor);
-      this._applyUserAgent(mobile ? _defaultMobileUserAgent : '');
+      this._applyUserAgent(mobile ? _defaultMobileUserAgent : '', mobile ? _defaultMobileUserAgentMetadata : null);
       this._applyTouch(
           this._uaSetting.get() === UA.DesktopTouch || this._uaSetting.get() === UA.Mobile,
           this._uaSetting.get() === UA.Mobile);
@@ -608,9 +608,10 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {string} userAgent
+   * @param {?Protocol.Emulation.UserAgentMetadata} userAgentMetadata
    */
-  _applyUserAgent(userAgent) {
-    SDK.NetworkManager.MultitargetNetworkManager.instance().setUserAgentOverride(userAgent);
+  _applyUserAgent(userAgent, userAgentMetadata) {
+    SDK.NetworkManager.MultitargetNetworkManager.instance().setUserAgentOverride(userAgent, userAgentMetadata);
   }
 
   /**
@@ -806,4 +807,14 @@ const _mobileUserAgent =
     'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36';
 export const _defaultMobileUserAgent =
     SDK.NetworkManager.MultitargetNetworkManager.patchUserAgentWithChromeVersion(_mobileUserAgent);
+
+export const _defaultMobileUserAgentMetadata = {
+  brands: SDK.NetworkManager.MultitargetNetworkManager.getChromeBrands(),
+  fullVersion: SDK.NetworkManager.MultitargetNetworkManager.getChromeVersion(),
+  platform: 'Android',
+  platformVersion: '6.0',
+  architecture: 'arm',
+  model: 'Nexus 5',
+  mobile: true
+};
 export const defaultMobileScaleFactor = 2;

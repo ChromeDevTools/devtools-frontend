@@ -355,6 +355,13 @@
           "mobile"
         ],
         "user-agent": "Mozilla/5.0 (Linux; Android 4.4.2; Nexus 4 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+        "user-agent-metadata": {
+          "platform": "Android",
+          "platformVersion": "4.4.2",
+          "architecture": "arm",
+          "model": "Nexus 4",
+          "mobile": true
+        },
         "type": "phone",
         "modes": [
           {
@@ -386,6 +393,13 @@
         "title": "Nexus 5",
         "type": "phone",
         "user-agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+        "user-agent-metadata": {
+          "platform": "Android",
+          "platformVersion": "6.0",
+          "architecture": "arm",
+          "model": "Nexus 5",
+          "mobile": true
+        },
         "capabilities": [
           "touch",
           "mobile"
@@ -478,6 +492,13 @@
         "title": "Nexus 5X",
         "type": "phone",
         "user-agent": "Mozilla/5.0 (Linux; Android 8.0.0; Nexus 5X Build/OPR4.170623.006) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+        "user-agent-metadata": {
+          "platform": "Android",
+          "platformVersion": "8.0.0",
+          "architecture": "arm",
+          "model": "Nexus 5X",
+          "mobile": true
+        },
         "capabilities": [
           "touch",
           "mobile"
@@ -603,6 +624,13 @@
           "mobile"
         ],
         "user-agent": "Mozilla/5.0 (Linux; Android 7.1.1; Nexus 6 Build/N6F26U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+        "user-agent-metadata": {
+          "platform": "Android",
+          "platformVersion": "7.1.1",
+          "architecture": "arm",
+          "model": "Nexus 6",
+          "mobile": true
+        },
         "type": "phone",
         "modes": [
           {
@@ -667,6 +695,13 @@
           "mobile"
         ],
         "user-agent": "Mozilla/5.0 (Linux; Android 8.0.0; Nexus 6P Build/OPP3.170518.006) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+        "user-agent-metadata": {
+          "platform": "Android",
+          "platformVersion": "8.0.0",
+          "architecture": "arm",
+          "model": "Nexus 6P",
+          "mobile": true
+        },
         "type": "phone",
         "modes": [
           {
@@ -714,6 +749,13 @@
           "mobile"
         ],
         "user-agent": "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+        "user-agent-metadata": {
+          "platform": "Android",
+          "platformVersion": "8.0",
+          "architecture": "arm",
+          "model": "Pixel 2",
+          "mobile": true
+        },
         "type": "phone",
         "modes": [
           {
@@ -761,6 +803,13 @@
           "mobile"
         ],
         "user-agent": "Mozilla/5.0 (Linux; Android 8.0.0; Pixel 2 XL Build/OPD1.170816.004) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+        "user-agent-metadata": {
+          "platform": "Android",
+          "platformVersion": "8.0.0",
+          "architecture": "arm",
+          "model": "Pixel 2 XL",
+          "mobile": true
+        },
         "type": "phone",
         "modes": [
           {
@@ -807,6 +856,13 @@
           "mobile"
         ],
         "user-agent": "Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; LGMS323 Build/KOT49I.MS32310c) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/%s Mobile Safari/537.36",
+        "user-agent-metadata": {
+          "platform": "Android",
+          "platformVersion": "4.4.2",
+          "architecture": "arm",
+          "model": "LGMS323",
+          "mobile": true
+        },
         "type": "phone",
         "modes": [
           {
@@ -1037,6 +1093,13 @@
           "mobile"
         ],
         "user-agent": "Mozilla/5.0 (Linux; U; Android 4.0; en-us; GT-I9300 Build/IMM76D) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
+        "user-agent-metadata": {
+          "platform": "Android",
+          "platformVersion": "4.0",
+          "architecture": "arm",
+          "model": "GT-I9300",
+          "mobile": true
+        },
         "type": "phone",
         "modes": [
           {
@@ -1084,6 +1147,13 @@
           "mobile"
         ],
         "user-agent": "Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+        "user-agent-metadata": {
+          "platform": "Android",
+          "platformVersion": "5.0",
+          "architecture": "arm",
+          "model": "SM-G900P",
+          "mobile": true
+        },
         "type": "phone",
         "modes": [
           {
@@ -1427,6 +1497,13 @@
           "mobile"
         ],
         "user-agent": "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 10 Build/MOB31T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36",
+        "user-agent-metadata": {
+          "platform": "Android",
+          "platformVersion": "6.0.1",
+          "architecture": "arm",
+          "model": "Nexus 10",
+          "mobile": false
+        },
         "type": "tablet",
         "modes": [
           {
@@ -1473,6 +1550,13 @@
           "mobile"
         ],
         "user-agent": "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 7 Build/MOB30X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36",
+        "user-agent-metadata": {
+          "platform": "Android",
+          "platformVersion": "6.0.1",
+          "architecture": "arm",
+          "model": "Nexus 7",
+          "mobile": false
+        },
         "type": "tablet",
         "modes": [
           {
@@ -1519,6 +1603,13 @@
           "mobile"
         ],
         "user-agent": "Mozilla/5.0 (Linux; U; Android 4.3; en-us; SM-N900T Build/JSS15J) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
+        "user-agent-metadata": {
+            "platform": "Android",
+            "platformVersion": "4.3",
+            "architecture": "arm",
+            "model": "SM-N900T",
+            "mobile": true
+        },
         "type": "phone",
         "modes": [
           {
@@ -1565,6 +1656,13 @@
           "mobile"
         ],
         "user-agent": "Mozilla/5.0 (Linux; U; Android 4.1; en-us; GT-N7100 Build/JRO03C) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
+        "user-agent-metadata": {
+          "platform": "Android",
+          "platformVersion": "4.1",
+          "architecture": "arm",
+          "model": "GT-N7100",
+          "mobile": true
+        },
         "type": "phone",
         "modes": [
           {
@@ -1730,6 +1828,13 @@
           "mobile"
         ],
         "user-agent": "Mozilla/5.0 (Linux; Android 6.0.1; Moto G (4)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+        "user-agent-metadata": {
+          "platform": "Android",
+          "platformVersion": "6.0.1",
+          "architecture": "arm",
+          "model": "Moto G (4)",
+          "mobile": true
+        },
         "type": "phone",
         "modes": [
           {

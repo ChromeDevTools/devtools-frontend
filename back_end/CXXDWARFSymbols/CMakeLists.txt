@@ -14,6 +14,7 @@ set(LLVM_TARGETS_TO_BUILD "WebAssembly" CACHE STRING "")
 set(LLVM_ENABLE_PROJECTS "clang;clang-tools-extra;lldb;lld" CACHE STRING "")
 set(LLVM_DEFAULT_EXTERNAL_LIT
   ${CMAKE_CURRENT_BINARY_DIR}/third_party/llvm/llvm/bin/llvm-lit CACHE STRING "")
+set(LLDB_INCLUDE_TESTS "OFF" CACHE STRING "")
 add_subdirectory(third_party/llvm/llvm)
 set_property(DIRECTORY third_party/llvm/llvm
   PROPERTY EXCLUDE_FROM_ALL TRUE)

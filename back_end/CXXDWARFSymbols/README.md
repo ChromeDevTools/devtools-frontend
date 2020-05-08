@@ -68,6 +68,23 @@ ninja
 ninja check-symbol-server # Run unit and integration tests
 ```
 
+#### Building with Goma
+
+You can use Goma to speed up building significantly. For this you'll need
+a recent checkout of depot_tools as well as a v8 checkout.
+```bash
+mkdir -p out/SymbolServer && cd out/SymbolServer
+cmake -GNinja \
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+  -DCMAKE_CXX_COMPILER_LAUNCHER=/path/to/depot_tools/.cipd_bin/gomacc \
+  -DCMAKE_C_COMPILER_LAUNCHER=/path/to/depot_tools/.cipd_bin/gomacc \
+  -DCMAKE_C_COMPILER=/path/to/v8/third_party/llvm-build/Release+Asserts/bin/clang \
+  -DCMAKE_CXX_COMPILER=/path/to/v8/third_party/llvm-build/Release+Asserts/bin/clang++ \
+  -DLLDB_INCLUDE_TESTS=OFF \
+  ../../back_end/CXXDWARFSymbols
+ninja -j100
+```
+
 ### Running the server
 
 To run the, use the runner tool:

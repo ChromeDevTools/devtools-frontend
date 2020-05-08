@@ -162,7 +162,7 @@ p {
 }
 
 .link-wrapper {
-  margin-top: 8px;
+  margin-top: 16px;
   user-select: text;
 }
 
@@ -178,6 +178,12 @@ p {
   display: inline-block;
 }
 
+.link-list {
+  list-style-type: none;
+  list-style-position: inside;
+  padding-inline-start: 0px;
+}
+
 .resolutions-list {
   list-style-type: "→";
   list-style-position: inside;
@@ -185,9 +191,15 @@ p {
 }
 
 /* We inherit all the styles from treeoutline, but these are simple text <li>, so we override some styles */
+.link-list li::before,
 .resolutions-list li::before {
   content: none;
   -webkit-mask-image: none;
+}
+
+.link-list li {
+  display: list-item;
+  margin-top: 4px;
 }
 
 .resolutions-list li {

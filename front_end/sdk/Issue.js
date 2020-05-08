@@ -22,8 +22,7 @@ export const IssueKind = {
   *            title:string,
   *            message: (function():!Element),
   *            issueKind: !IssueKind,
-  *            link: string,
-  *            linkTitle: string
+  *            links: !Array<!{link: string, linkTitle: string}>
   *          }}
   */
 // @ts-ignore typedef

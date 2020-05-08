@@ -62,8 +62,10 @@ export class MixedContentIssue extends Issue {
         ls`To resolve this issue load all resources over a secure HTTPS connection.`
       ]),
       issueKind: IssueKind.BreakingChange,
-      link: ls`https://developers.google.com/web/fundamentals/security/prevent-mixed-content/fixing-mixed-content`,
-      linkTitle: ls`Preventing mixed content`,
+      links: [{
+        link: ls`https://developers.google.com/web/fundamentals/security/prevent-mixed-content/fixing-mixed-content`,
+        linkTitle: ls`Preventing mixed content`
+      }],
     };
   }
 

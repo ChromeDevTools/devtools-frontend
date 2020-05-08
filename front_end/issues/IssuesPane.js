@@ -512,7 +512,7 @@ class IssueView extends UI.TreeOutline.TreeElement {
     this._affectedMixedContentView.update();
     this.appendAffectedResource(this._affectedSourcesView);
     this._affectedSourcesView.update();
-    this._createReadMoreLink();
+    this._createReadMoreLinks();
 
     this.updateAffectedResourceVisibility();
   }
@@ -573,14 +573,20 @@ class IssueView extends UI.TreeOutline.TreeElement {
     this.appendChild(messageElement);
   }
 
-  _createReadMoreLink() {
-    const link = UI.XLink.XLink.create(this._description.link, ls`Learn more: ${this._description.linkTitle}`, 'link');
-    const linkIcon = UI.Icon.Icon.create('largeicon-link', 'link-icon');
-    link.prepend(linkIcon);
+  _createReadMoreLinks() {
     const linkWrapper = new UI.TreeOutline.TreeElement();
     linkWrapper.setCollapsible(false);
     linkWrapper.listItemElement.classList.add('link-wrapper');
-    linkWrapper.listItemElement.appendChild(link);
+
+    const linkList = linkWrapper.listItemElement.createChild('ul', 'link-list');
+    for (const description of this._description.links) {
+      const link = UI.XLink.XLink.create(description.link, ls`Learn more: ${description.linkTitle}`, 'link');
+      const linkIcon = UI.Icon.Icon.create('largeicon-link', 'link-icon');
+      link.prepend(linkIcon);
+
+      const linkListItem = linkList.createChild('li');
+      linkListItem.appendChild(link);
+    }
     this.appendChild(linkWrapper);
   }
 

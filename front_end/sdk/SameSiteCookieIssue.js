@@ -127,8 +127,8 @@ const issueDescriptions = new Map([
             `If the cookie is not intended for third parties, consider explicitly marking the cookie as 'SameSite=Strict' or 'SameSite=Lax' to make your intent clear and provide a consistent experience across browsers.`,
           ]),
       issueKind: IssueKind.BreakingChange,
-      link: ls`https://web.dev/samesite-cookies-explained/`,
-      linkTitle: ls`SameSite cookies explained`,
+      links: [{link: ls`https://web.dev/samesite-cookies-explained/`,
+      linkTitle: ls`SameSite cookies explained`}],
     }
   ],
   [
@@ -139,8 +139,8 @@ const issueDescriptions = new Map([
         ls
         `If the cookie is not intended for third parties, consider explicitly marking the cookie as 'SameSite=Strict' or 'SameSite=Lax' to make your intent clear and provide a consistent experience across browsers.`,]),
       issueKind: IssueKind.BreakingChange,
-      link: ls`https://web.dev/samesite-cookies-explained/`,
-      linkTitle: ls`SameSite cookies explained`,
+      links: [{link: ls`https://web.dev/samesite-cookies-explained/`,
+      linkTitle: ls`SameSite cookies explained`}],
     }
   ],
   [
@@ -155,8 +155,8 @@ const issueDescriptions = new Map([
             `If the cookie is not intended for third parties, consider explicitly marking the cookie as 'SameSite=Strict' or 'SameSite=Lax' to make your intent clear and provide a consistent experience across browsers.`,
           ]),
       issueKind: IssueKind.BreakingChange,
-      link: ls`https://web.dev/samesite-cookies-explained/`,
-      linkTitle: ls`SameSite cookies explained`,
+      links: [{link: ls`https://web.dev/samesite-cookies-explained/`,
+      linkTitle: ls`SameSite cookies explained`}],
     }
   ],
   [
@@ -172,8 +172,8 @@ const issueDescriptions = new Map([
             `If the cookie is not intended for third parties, consider explicitly marking the cookie as 'SameSite=Strict' or 'SameSite=Lax' to make your intent clear and provide a consistent experience across browsers.`,
           ]),
       issueKind: IssueKind.BreakingChange,
-      link: ls`https://web.dev/samesite-cookies-explained/`,
-      linkTitle: ls`SameSite cookies explained`,
+      links: [{link: ls`https://web.dev/samesite-cookies-explained/`,
+      linkTitle: ls`SameSite cookies explained`}],
     }
   ],
   [
@@ -184,8 +184,8 @@ const issueDescriptions = new Map([
         ls
         `If the cookie is not intended for third parties, consider explicitly marking the cookie as 'SameSite=Strict' or 'SameSite=Lax' to make your intent clear and provide a consistent experience across browsers.`,]),
       issueKind: IssueKind.BreakingChange,
-      link: ls`https://web.dev/samesite-cookies-explained/`,
-      linkTitle: ls`SameSite cookies explained`,
+      links: [{link: ls`https://web.dev/samesite-cookies-explained/`,
+      linkTitle: ls`SameSite cookies explained`}],
     }
   ]
 ]);

@@ -183,15 +183,21 @@ const issueDescriptions = new Map([
   title: ls`Specify a cross-origin resource policy to prevent a resource from being blocked`,
   message: CorpNotSameOriginAfterDefaultedToSameOriginByCoepMessage,
   issueKind: IssueKind.BreakingChange,
-  link: ls`https://web.dev/coop-coep/`,
-  linkTitle: ls`COOP and COEP`,
+  links: [
+    {link: ls`https://web.dev/coop-coep/`,
+     linkTitle: ls`COOP and COEP`},
+    {link: ls`https://web.dev/same-site-same-origin/`,
+     linkTitle: ls`Same-Site and Same-Origin`},
+  ],
 }],
 ['CrossOriginEmbedderPolicy::CoepFrameResourceNeedsCoepHeader',  {
   title: ls`Specify a cross-origin embedder policy to prevent this frame from being blocked`,
   message: CoepFrameResourceNeedsCoepHeaderMessage,
-   issueKind: IssueKind.BreakingChange,
-  link: ls`https://web.dev/coop-coep/`,
-  linkTitle: ls`COOP and COEP`,
+  issueKind: IssueKind.BreakingChange,
+  links: [
+    {link: ls`https://web.dev/coop-coep/`,
+     linkTitle: ls`COOP and COEP`},
+  ],
 }],
 ['CrossOriginEmbedderPolicy::CoopSandboxedIframeCannotNavigateToCoopPage',  {
   title: ls`An iframe navigation to a document with a cross-origin opener policy was blocked`,
@@ -199,21 +205,31 @@ const issueDescriptions = new Map([
   `A document with a cross-origin opener policy (COOP) was blocked from loading in an iframe, because the iframe specifies a sandbox attribute.
   This protects COOP-enabled documents from inheriting properties from its opener.`),
   issueKind: IssueKind.BreakingChange,
-  link: ls`https://web.dev/coop-coep/`,
-  linkTitle: ls`COOP and COEP`,
+  links: [
+    {link: ls`https://web.dev/coop-coep/`,
+     linkTitle: ls`COOP and COEP`},
+  ],
 }],
 ['CrossOriginEmbedderPolicy::CorpNotSameSite',  {
   title: ls`Specify a more permissive cross-origin resource policy to prevent a resource from being blocked`,
   message: CorpNotSameSiteMessage,
   issueKind: IssueKind.BreakingChange,
-  link: ls`https://web.dev/coop-coep/`,
-  linkTitle: ls`COOP and COEP`,
+  links: [
+    {link: ls`https://web.dev/coop-coep/`,
+     linkTitle: ls`COOP and COEP`},
+    {link: ls`https://web.dev/same-site-same-origin/`,
+     linkTitle: ls`Same-Site and Same-Origin`},
+  ],
 }],
 ['CrossOriginEmbedderPolicy::CorpNotSameOrigin',  {
   title: ls`Specify a more permissive cross-origin resource policy to prevent a resource from being blocked`,
   message: CorpNotSameOriginMessage,
   issueKind: IssueKind.BreakingChange,
-  link: ls`https://web.dev/coop-coep/`,
-  linkTitle: ls`COOP and COEP`,
+  links: [
+    {link: ls`https://web.dev/coop-coep/`,
+     linkTitle: ls`COOP and COEP`},
+    {link: ls`https://web.dev/same-site-same-origin/`,
+     linkTitle: ls`Same-Site and Same-Origin`},
+  ],
 }],
 ]);

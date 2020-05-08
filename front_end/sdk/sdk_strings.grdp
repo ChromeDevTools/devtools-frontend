@@ -108,6 +108,9 @@
   <message name="IDS_DEVTOOLS_323d4eb70b252acb4a04eaf9e0882597" desc="Title for a group of cities">
     Geolocation
   </message>
+  <message name="IDS_DEVTOOLS_378803262ee085f9f247171a28618827" desc="A link to more information in the issues view">
+    https://web.dev/same-site-same-origin/
+  </message>
   <message name="IDS_DEVTOOLS_3bd3beb3fb5c78e8e85ad06d749bea78" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Emulate protanopia
   </message>
@@ -538,6 +541,9 @@
   </message>
   <message name="IDS_DEVTOOLS_e9c9a62c061402881b6efbc3f2dc4ddb" desc="Title text of an issue in the issues view">
     Specify a more permissive cross-origin resource policy to prevent a resource from being blocked
+  </message>
+  <message name="IDS_DEVTOOLS_ea9de21c426731035828b2e46709391c" desc="Title for an external link to more information in the issues view">
+    Same-Site and Same-Origin
   </message>
   <message name="IDS_DEVTOOLS_eb6ff454fb651bb604121a229e5baec3" desc="Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel">
     <ph name="LABEL">$1s<ex>sw.js</ex></ph> #<ph name="VERSION_ID">$2s<ex>117</ex></ph> (<ph name="STATUS">$3s<ex>activated</ex></ph>)

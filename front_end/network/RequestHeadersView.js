@@ -32,6 +32,7 @@ import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
+import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 

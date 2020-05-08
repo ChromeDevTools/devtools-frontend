@@ -32,6 +32,7 @@ import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as Network from '../network/network.js';
+import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -619,7 +620,7 @@ export class CookiesTable extends UI.Widget.VBox {
         }
       ]);
     });
-    if (BrowserSDK.RelatedIssue.hasIssues(cookie)) {
+    if (Root.Runtime.experiments.isEnabled('issuesPane') && BrowserSDK.RelatedIssue.hasIssues(cookie)) {
       contextMenu.revealSection().appendItem(ls`Show issue associated with this cookie`, () => {
         // TODO(chromium:1077719): Just filter for the cookie instead of revealing one of the associated issues.
         BrowserSDK.RelatedIssue.reveal(cookie);

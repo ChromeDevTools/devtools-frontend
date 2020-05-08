@@ -51,6 +51,9 @@
   <message name="IDS_DEVTOOLS_1985576209a186984f171efd81e91e3d" desc="Text in Network Log">
     &lt;anonymous&gt;
   </message>
+  <message name="IDS_DEVTOOLS_1b6164cca79eeac4716c6b056dae437a" desc="Suggestion for resolution of MixedContentIssue">
+    To resolve this issue load all resources over a secure HTTPS connection.
+  </message>
   <message name="IDS_DEVTOOLS_1ccfb518c1eb59a48fa9b2c578073557" desc="Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel">
     redundant
   </message>
@@ -98,6 +101,9 @@
   </message>
   <message name="IDS_DEVTOOLS_2e966edb219bcf996289aed9c757039d" desc="Description how an issue can be resolved">
     If the cookie is intended for third parties, mark the cookie as &apos;Secure&apos;.
+  </message>
+  <message name="IDS_DEVTOOLS_301c6a898ab412749bfb0e72381d91d2" desc="Title for the MixedContentIssue issue code">
+    Mixed content: load all resources via HTTPS to improve the security of your site
   </message>
   <message name="IDS_DEVTOOLS_323d4eb70b252acb4a04eaf9e0882597" desc="Title for a group of cities">
     Geolocation
@@ -306,9 +312,6 @@
   <message name="IDS_DEVTOOLS_79d147ddfc61cd5ac1cdc1ae6d7e4feb" desc="Name of a vision deficiency that can be emulated via the Rendering drawer">
     Blurred vision
   </message>
-  <message name="IDS_DEVTOOLS_7bfa1dc546d200c059f2a57aecc91f67" desc="Title for the MixedContentIssue issue code">
-    Mixed content: Not all of the page&apos;s resources are being loaded over HTTPS.
-  </message>
   <message name="IDS_DEVTOOLS_7c2bc755363ab11a1611bfa369654ff8" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Show frames per second (FPS) meter
   </message>
@@ -335,9 +338,6 @@
   </message>
   <message name="IDS_DEVTOOLS_8685061f9e660f88b9b27870ccfee597" desc="Description of an issue in the issues panel">
     A cookie was received with the &apos;SameSite=None&apos; attribute, marking it as available for third-party use, but did not have the &apos;Secure&apos; attribute. Cookies with &apos;SameSite=None&apos; will not be set unless they also have the &apos;Secure&apos; attribute.
-  </message>
-  <message name="IDS_DEVTOOLS_85b5ab7421eb24d42906b321a49aeb12" desc="Message for the MixedContentIssue issue code">
-    The initial HTML is loaded over a secure HTTPS connection, but some other resources are loaded over an insecure HTTP connection.
   </message>
   <message name="IDS_DEVTOOLS_8bfd98e44c95f20aecceb52930b2c300" desc="Description of an issue in the issues panel">
     A cookie was received with the &apos;SameSite=None&apos; attribute, marking it as available for third-party use, but did not have the &apos;Secure&apos; attribute. Cookies with &apos;SameSite=None&apos; are not set unless they also have the &apos;Secure&apos; attribute.
@@ -420,6 +420,9 @@
   </message>
   <message name="IDS_DEVTOOLS_ac4aac1ba23d844f4976e9fcd1fd4a61" desc="Text in DOMDebugger Model">
     WebGL Error Fired (<ph name="ERRORNAME">$1s<ex>Snag Error</ex></ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_ae40945c5cb26d80b9e396ea9e333ee9" desc="Message for the MixedContentIssue issue code">
+    Even though the initial HTML page is loaded over a secure HTTPS connection, some resources like images, stylesheets or scripts are being accessed over an insecure HTTP connection. Usage of insecure resources is restricted to strengthen the security of your entire site.
   </message>
   <message name="IDS_DEVTOOLS_aec445acc1539341cf9a79c3a336131d" desc="Tooltip to explain why a cookie was blocked">
     This cookie was blocked due to user preferences.

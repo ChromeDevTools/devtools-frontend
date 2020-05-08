@@ -50,16 +50,17 @@ export class MixedContentIssue extends Issue {
     return IssueCategory.MixedContent;
   }
 
-
   /**
    * @override
    * @returns {!IssueDescription}
    */
   getDescription() {
     return {
-      title: ls`Mixed content: Not all of the page's resources are being loaded over HTTPS.`,
-      message: () => textOnlyMessage(ls
-      `The initial HTML is loaded over a secure HTTPS connection, but some other resources are loaded over an insecure HTTP connection.`),
+      title: ls`Mixed content: load all resources via HTTPS to improve the security of your site`,
+      message: () => paragraphedMessage([
+        ls`Even though the initial HTML page is loaded over a secure HTTPS connection, some resources like images, stylesheets or scripts are being accessed over an insecure HTTP connection. Usage of insecure resources is restricted to strengthen the security of your entire site.`,
+        ls`To resolve this issue load all resources over a secure HTTPS connection.`
+      ]),
       issueKind: IssueKind.BreakingChange,
       link: ls`https://developers.google.com/web/fundamentals/security/prevent-mixed-content/fixing-mixed-content`,
       linkTitle: ls`Preventing mixed content`,
@@ -75,13 +76,18 @@ export class MixedContentIssue extends Issue {
 }
 
 /**
-  * @param {string} text
-  * @return {!Element}
-  */
-function textOnlyMessage(text) {
+ * @param {!Array<string>} paragraphs
+ * @return {!Element}
+ */
+function paragraphedMessage(paragraphs) {
   const message = document.createElement('div');
   message.classList.add('message');
-  message.textContent = text;
+
+  for (const paragraph of paragraphs) {
+    const paragraphElement = document.createElement('p');
+    paragraphElement.textContent = paragraph;
+    message.appendChild(paragraphElement);
+  }
   return message;
 }
 

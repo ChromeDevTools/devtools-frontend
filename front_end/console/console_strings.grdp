@@ -147,8 +147,8 @@
   <message name="IDS_DEVTOOLS_a092483ed730ed040e5df5776dca49e5" desc="Title of a setting under the Console category in Settings">
     Log XMLHttpRequests
   </message>
-  <message name="IDS_DEVTOOLS_a0f3a1128287d0daedd86605ace4b8cd" desc="Infobar text about what the issues panel is">
-    Issues detected. The new issues panel displays information about deprecations, breaking changes and other potential problems.
+  <message name="IDS_DEVTOOLS_f099c14051044967fd0ed9d76cbbbdc8" desc="Infobar text about what the issues panel is">
+    Issues detected. The new Issues panel displays information about deprecations, breaking changes and other potential problems.
   </message>
   <message name="IDS_DEVTOOLS_a1948ddb50d0bbd31e36f1fbc45479a0" desc="Title of a setting under the Console category that can be invoked through the Command Menu">
     Autocomplete from history

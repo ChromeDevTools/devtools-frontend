@@ -22,10 +22,11 @@
 }
 
 :host-context(.-theme-with-dark-background) .issues {
-  --issue-gray: #A09C97;
-  --issue-black: #DFDEDB;
+  --issue-gray: #FFFFFFDE;
+  --issue-link: #8AB4F8;
+  --issue-black: #FFFFFF;
   --issue-code: #0F0F0F;
-  --affected-resource-background: #070605;
+  --affected-resource-background: #FFFFFF12;
 }
 
 /* Override whitespace behavior for tree items to allow wrapping */

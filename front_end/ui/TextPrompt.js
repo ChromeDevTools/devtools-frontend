@@ -268,6 +268,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
   _startEditing(blurListener) {
     this._isEditing = true;
     this._contentElement.classList.add('text-prompt-editing');
+    this._focusRestorer = new ElementFocusRestorer(this._element);
     if (blurListener) {
       this._blurListener = blurListener;
       this._element.addEventListener('blur', this._blurListener, false);
@@ -276,7 +277,6 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
     if (this._element.tabIndex < 0) {
       this._element.tabIndex = 0;
     }
-    this._focusRestorer = new ElementFocusRestorer(this._element);
     if (!this.text()) {
       this.autoCompleteSoon();
     }

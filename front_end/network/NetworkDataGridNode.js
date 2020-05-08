@@ -612,8 +612,8 @@ export class NetworkRequestNode extends NetworkNode {
     if (!aRequest || !bRequest) {
       return !aRequest ? -1 : 1;
     }
-    const aScore = aRequest.requestCookies.length;
-    const bScore = bRequest.requestCookies.length;
+    const aScore = aRequest.includedRequestCookies().length;
+    const bScore = bRequest.includedRequestCookies().length;
     return (aScore - bScore) || aRequest.indentityCompare(bRequest);
   }
 
@@ -943,7 +943,7 @@ export class NetworkRequestNode extends NetworkNode {
         break;
       }
       case 'cookies': {
-        this._setTextAndTitle(cell, this._arrayLength(this._request.requestCookies));
+        this._setTextAndTitle(cell, this._arrayLength(this._request.includedRequestCookies()));
         break;
       }
       case 'setcookies': {

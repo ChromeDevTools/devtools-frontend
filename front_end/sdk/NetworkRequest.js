@@ -162,6 +162,8 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
 
     /** @type {!Array<!BlockedCookieWithReason>} */
     this._blockedRequestCookies = [];
+    /** @type {!Array<!Cookie>} */
+    this._includedRequestCookies = [];
     /** @type {!Array<!BlockedSetCookieWithReason>} */
     this._blockedResponseCookies = [];
 
@@ -957,7 +959,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
    */
   allCookiesIncludingBlockedOnes() {
     return /** @type {!Array.<!Cookie>} */ ([
-      ...this.requestCookies, ...this.responseCookies,
+      ...this.includedRequestCookies(), ...this.responseCookies,
       ...this.blockedRequestCookies().map(blockedRequestCookie => blockedRequestCookie.cookie),
       ...this.blockedResponseCookies().map(blockedResponseCookie => blockedResponseCookie.cookie),
       // blockedRequestCookie or blockedResponseCookie might not contain a cookie in case of SyntaxErrors:
@@ -1442,6 +1444,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
    */
   addExtraRequestInfo(extraRequestInfo) {
     this._blockedRequestCookies = extraRequestInfo.blockedRequestCookies;
+    this._includedRequestCookies = extraRequestInfo.includedRequestCookies;
     this.setRequestHeaders(extraRequestInfo.requestHeaders);
     this._hasExtraRequestInfo = true;
     this.setRequestHeadersText('');  // Mark request headers as non-provisional
@@ -1459,6 +1462,20 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
    */
   blockedRequestCookies() {
     return this._blockedRequestCookies;
+  }
+
+  /**
+   * @return {!Array<!Cookie>}
+   */
+  includedRequestCookies() {
+    return this._includedRequestCookies;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  hasRequestCookies() {
+    return this._includedRequestCookies.length > 0 || this._blockedRequestCookies.length > 0;
   }
 
   /**
@@ -1698,7 +1715,8 @@ export let EventSourceMessage;
 /**
   * @typedef {!{
   *   blockedRequestCookies: !Array<!BlockedCookieWithReason>,
-  *   requestHeaders: !Array<!NameValue>
+  *   requestHeaders: !Array<!NameValue>,
+  *   includedRequestCookies: !Array<!Cookie>
   * }}
   */
 // @ts-ignore typedef

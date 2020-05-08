@@ -824,17 +824,17 @@ export class NetworkDispatcher {
   requestWillBeSentExtraInfo(requestId, associatedCookies, headers) {
     /** @type {!Array<!BlockedCookieWithReason>} */
     const blockedRequestCookies = [];
-    const requestCookies = [];
+    const includedRequestCookies = [];
     for (const {blockedReasons, cookie} of associatedCookies) {
       if (blockedReasons.length === 0) {
-        requestCookies.push({blockedReasons, cookie: Cookie.fromProtocolCookie(cookie)});
+        includedRequestCookies.push(Cookie.fromProtocolCookie(cookie));
       } else {
         blockedRequestCookies.push({blockedReasons, cookie: Cookie.fromProtocolCookie(cookie)});
       }
     }
     const extraRequestInfo = {
       blockedRequestCookies,
-      requestCookies,
+      includedRequestCookies,
       requestHeaders: this._headersMapToHeadersArray(headers)
     };
     this._getExtraInfoBuilder(requestId).addRequestExtraInfo(extraRequestInfo);

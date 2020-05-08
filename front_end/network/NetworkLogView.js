@@ -1870,8 +1870,8 @@ export class NetworkLogView extends UI.Widget.VBox {
       headers[headerArray[0]] = headerArray[1];
     }
 
-    const credentials =
-        request.requestCookies.length || requestHeaders.some(({name}) => credentialHeaders[name.toLowerCase()]) ?
+    const credentials = request.includedRequestCookies().length ||
+            requestHeaders.some(({name}) => credentialHeaders[name.toLowerCase()]) ?
         'include' :
         'omit';
 

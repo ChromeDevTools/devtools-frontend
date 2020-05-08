@@ -525,7 +525,7 @@ export class NetworkPanel extends UI.Panel.Panel {
   _onRequestActivated(event) {
     const eventData = /** @type {!{showPanel: boolean, tab: !NetworkItemViewTabs}} */ (event.data);
     if (eventData.showPanel) {
-      this._showRequestPanel(eventData.tab);
+      this._showRequestPanel(eventData.tab, /* takeFocus */ true);
     } else {
       this._hideRequestPanel();
     }
@@ -533,11 +533,15 @@ export class NetworkPanel extends UI.Panel.Panel {
 
   /**
    * @param {!NetworkItemViewTabs=} shownTab
+   * @param {boolean=} takeFocus
    */
-  _showRequestPanel(shownTab) {
+  _showRequestPanel(shownTab, takeFocus) {
     this._clearNetworkItemView();
     if (this._currentRequest) {
-      this._createNetworkItemView(shownTab);
+      const networkItemView = this._createNetworkItemView(shownTab);
+      if (takeFocus) {
+        networkItemView.focus();
+      }
     }
     this._updateUI();
   }
@@ -564,6 +568,7 @@ export class NetworkPanel extends UI.Panel.Panel {
   }
   /**
    * @param {!NetworkItemViewTabs=} initialTab
+   * @returns {(!NetworkItemView|undefined)}
    */
   _createNetworkItemView(initialTab) {
     if (!this._currentRequest) {
@@ -574,6 +579,7 @@ export class NetworkPanel extends UI.Panel.Panel {
     this._networkItemView.leftToolbar().appendToolbarItem(new UI.Toolbar.ToolbarItem(this._closeButtonElement));
     this._networkItemView.show(this._detailsWidget.element);
     this._splitWidget.showBoth();
+    return this._networkItemView;
   }
 
   _updateUI() {

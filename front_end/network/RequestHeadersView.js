@@ -69,6 +69,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
     const generalCategory = new Category(root, 'general', Common.UIString.UIString('General'));
     generalCategory.hidden = false;
     this._root = generalCategory;
+    this.setDefaultFocusedElement(this._root.listItemElement);
     this._urlItem = generalCategory.createLeaf();
     this._requestMethodItem = generalCategory.createLeaf();
     this._statusCodeItem = generalCategory.createLeaf();

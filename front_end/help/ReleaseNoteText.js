@@ -32,10 +32,9 @@ export const releaseNoteText = [
         link: 'https://developers.google.com/web/updates/2020/03/devtools#locales',
       },
       {
-        title: 'Cross-Origin Opener Policy (COOP) and Cross-Origin Embedder Policy (COEP) debugging',
-        subtitle:
-            'Use the Status column and Response Headers section in the Network panel to debug COOP and COEP issues.',
-        link: 'https://developers.google.com/web/updates/2020/03/devtools#COOP-COEP',
+        title: 'Cross-Origin Embedder Policy (COEP) debugging',
+        subtitle: 'Use the Status column and Response Headers section in the Network panel to debug COEP issues.',
+        link: 'https://developers.google.com/web/updates/2020/03/devtools#COEP',
       },
       {
         title: 'New icons for breakpoints, conditional breakpoints, and logpoints',

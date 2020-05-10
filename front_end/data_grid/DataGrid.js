@@ -597,7 +597,8 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     }
     const column = this._columns[columnId];
     const cellIndex = this.visibleColumnsArray.indexOf(column);
-    const textBeforeEditing = /** @type {string} */ (this._editingNode.data[columnId]);
+    const valueBeforeEditing = /** @type {string|boolean} */ (
+        this._editingNode.data[columnId] === null ? '' : this._editingNode.data[columnId]);
     const currentEditingNode = this._editingNode;
 
     /**
@@ -653,7 +654,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     // Show trimmed text after editing.
     this.setElementContent(element, newText);
 
-    if (textBeforeEditing === newText) {
+    if (valueBeforeEditing === newText) {
       this._editingCancelled(element);
       moveToNextIfNeeded.call(this, false);
       return;
@@ -664,7 +665,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
 
     // Make the callback - expects an editing node (table row), the column number that is being edited,
     // the text that used to be there, and the new text.
-    this._editCallback(this._editingNode, columnId, textBeforeEditing, newText);
+    this._editCallback(this._editingNode, columnId, valueBeforeEditing, newText);
 
     if (this._editingNode.isCreationNode) {
       this.addCreationNode(false);

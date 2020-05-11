@@ -9,7 +9,7 @@ import * as puppeteer from 'puppeteer';
 import {$, click, getBrowserAndPages, resourcesPath} from '../../shared/helper.js';
 import {addBreakpointForLine, clearSourceFilesAdded, getBreakpointDecorators, getNonBreakableLines, listenForSourceFilesAdded, openSourceCodeEditorForFile, openSourcesPanel, RESUME_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
 
-describe('Source Tab', async () => {
+describe.skip('[crbug.com/1081150] Source Tab', async () => {
   it('shows the correct wasm source on load and reload', async () => {
     async function checkSources(frontend: puppeteer.Page) {
       await waitForAdditionalSourceFiles(frontend);

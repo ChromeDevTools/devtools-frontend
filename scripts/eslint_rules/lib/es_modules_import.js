@@ -97,6 +97,21 @@ module.exports = {
 
         checkImportExtension(importPath, context, node);
 
+        // Accidental relative URL:
+        // import * as Root from 'front_end/root/root.js';
+        //
+        // Should ignore named imports:
+        // import * as fs from 'fs';
+        //
+        // Don't use `importPath` here, as `path.normalize` removes
+        // the `./` from same-folder import paths.
+        if (!node.source.value.startsWith('.') && !/^\w+$/.test(node.source.value)) {
+          context.report({
+            node,
+            message: 'Invalid relative URL import. An import should start with either "../" or "./".',
+          });
+        }
+
         if (!importingFileName.startsWith(FRONT_END_DIRECTORY)) {
           return;
         }

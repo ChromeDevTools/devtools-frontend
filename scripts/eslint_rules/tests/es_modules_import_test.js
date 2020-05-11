@@ -103,6 +103,11 @@ ruleTester.run('es_modules_import', rule, {
       }],
     },
     {
+      code: 'import * as Exporting from \'front_end/exporting/exporting.js\';',
+      filename: 'front_end/common/common.js',
+      errors: [{message: 'Invalid relative URL import. An import should start with either "../" or "./".'}],
+    },
+    {
       code: 'import * as Common from \'../common/common\';',
       filename: 'front_end/elements/ElementsPanel.ts',
       errors: [{

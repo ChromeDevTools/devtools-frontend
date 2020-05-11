@@ -43,6 +43,7 @@ import * as Issue from './Issue.js';
 import * as IssuesModel from './IssuesModel.js';
 import * as LayerTreeBase from './LayerTreeBase.js';
 import * as LogModel from './LogModel.js';
+import * as MixedContentIssue from './MixedContentIssue.js';
 import * as NetworkLog from './NetworkLog.js';
 import * as NetworkManager from './NetworkManager.js';
 import * as NetworkRequest from './NetworkRequest.js';
@@ -96,6 +97,7 @@ export {
   IssuesModel,
   LayerTreeBase,
   LogModel,
+  MixedContentIssue,
   NetworkLog,
   NetworkManager,
   NetworkRequest,

@@ -6,7 +6,6 @@ import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Components from '../components/components.js';
 import * as Network from '../network/network.js';
-import * as MixedContentIssue from '../sdk/MixedContentIssue.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -454,7 +453,7 @@ class AffectedMixedContentView extends AffectedResourcesView {
 
     const status = document.createElement('td');
     status.classList.add('affected-resource-mixed-content-info');
-    status.textContent = MixedContentIssue.MixedContentIssue.translateStatus(mixedContent.resolutionStatus);
+    status.textContent = SDK.MixedContentIssue.MixedContentIssue.translateStatus(mixedContent.resolutionStatus);
     element.appendChild(status);
 
     this._affectedResources.appendChild(element);

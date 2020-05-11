@@ -65,6 +65,10 @@ ruleTester.run('es_modules_import', rule, {
       filename: 'front_end/elements/ElementsBreadcrumbs.ts',
     },
     {
+      code: 'import * as WasmDis from \'../third_party/wasmparser/WasmDis.js\';',
+      filename: 'front_end/wasmparser_worker/WasmParserWorker.js',
+    },
+    {
       code: 'import * as fs from \'fs\';',
       filename: 'test/unittests/front_end/Unit_test.ts',
     },
@@ -85,6 +89,14 @@ ruleTester.run('es_modules_import', rule, {
       errors: [{
         message:
             'Incorrect cross-namespace import: "../namespace/Exporting.js". Use "import * as Namespace from \'../namespace/namespace.js\';" instead.'
+      }],
+    },
+    {
+      code: 'import * as TextUtils from \'../text_utils/TextRange.js\';',
+      filename: 'front_end/sdk/CSSMedia.js',
+      errors: [{
+        message:
+            'Incorrect cross-namespace import: "../text_utils/TextRange.js". Use "import * as Namespace from \'../namespace/namespace.js\';" instead.'
       }],
     },
     {

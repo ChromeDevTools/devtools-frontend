@@ -15,7 +15,12 @@ const FRONT_END_DIRECTORY = path.join(__dirname, '..', '..', '..', 'front_end');
 const EXEMPTED_THIRD_PARTY_MODULES = new Set([
   // lit-html is exempt as it doesn't expose all its modules from the root file
   path.join(FRONT_END_DIRECTORY, 'third_party', 'lit-html'),
+  // wasmparser is exempt as it doesn't expose all its modules from the root file
+  path.join(FRONT_END_DIRECTORY, 'third_party', 'wasmparser'),
 ]);
+
+const CROSS_NAMESPACE_MESSAGE =
+    'Incorrect cross-namespace import: "{{importPath}}". Use "import * as Namespace from \'../namespace/namespace.js\';" instead.';
 
 // ------------------------------------------------------------------------------
 // Rule Definition
@@ -64,6 +69,45 @@ function checkImportExtension(importPath, context, node) {
 
 function nodeSpecifiersImportLsOnly(specifiers) {
   return specifiers.length === 1 && specifiers[0].type === 'ImportSpecifier' && specifiers[0].imported.name === 'ls';
+}
+
+function checkStarImport(context, node, importPath, importingFileName, exportingFileName) {
+  if (isModuleEntrypoint(importingFileName)) {
+    return;
+  }
+
+  // The generated code is typically part of a different folder. Therefore,
+  // it is allowed to directly import these files, as they are only
+  // imported in 1 place at a time.
+  if (computeTopLevelFolder(exportingFileName) === 'generated') {
+    return;
+  }
+
+  const isSameFolder = computeTopLevelFolder(importingFileName) === computeTopLevelFolder(exportingFileName);
+
+  const invalidSameFolderUsage = isSameFolder && isModuleEntrypoint(exportingFileName);
+  const invalidCrossFolderUsage = !isSameFolder && !isModuleEntrypoint(exportingFileName);
+
+  if (invalidSameFolderUsage) {
+    context.report({
+      node,
+      message:
+          'Incorrect same-namespace import: "{{importPath}}". Use "import { Symbol } from \'./relative-file.js\';" instead.',
+      data: {
+        importPath,
+      },
+    });
+  }
+
+  if (invalidCrossFolderUsage) {
+    context.report({
+      node,
+      message: CROSS_NAMESPACE_MESSAGE,
+      data: {
+        importPath,
+      },
+    });
+  }
 }
 
 module.exports = {
@@ -139,21 +183,10 @@ module.exports = {
         }
 
         if (isStarAsImportSpecifier(node.specifiers)) {
-          if (computeTopLevelFolder(importingFileName) === computeTopLevelFolder(exportingFileName) &&
-              !isModuleEntrypoint(importingFileName) && isModuleEntrypoint(exportingFileName)) {
-            context.report({
-              node,
-              message:
-                  'Incorrect same-namespace import: "{{importPath}}". Use "import { Symbol } from \'./relative-file.js\';" instead.',
-              data: {
-                importPath,
-              },
-            });
-          }
+          checkStarImport(context, node, importPath, importingFileName, exportingFileName);
         } else {
           if (computeTopLevelFolder(importingFileName) !== computeTopLevelFolder(exportingFileName)) {
-            let message =
-                'Incorrect cross-namespace import: "{{importPath}}". Use "import * as Namespace from \'../namespace/namespace.js\';" instead.';
+            let message = CROSS_NAMESPACE_MESSAGE;
 
             if (importPath.endsWith(path.join('common', 'ls.js'))) {
               message += ' You may only import common/ls.js directly from TypeScript source files.';

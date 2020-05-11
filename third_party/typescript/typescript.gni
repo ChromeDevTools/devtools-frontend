@@ -92,6 +92,10 @@ template("ts_library") {
       args += [ "--test-only" ]
     }
 
+    if (is_debug) {
+      args += [ "--skip-lib-check" ]
+    }
+
     output_files = [ "$target_gen_dir/$target_name-tsconfig.json" ]
 
     if (defined(sources)) {

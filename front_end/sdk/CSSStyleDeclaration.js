@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as TextUtils from '../text_utils/text_utils.js';
 import {cssMetadata} from './CSSMetadata.js';
 import {CSSModel, Edit} from './CSSModel.js';  // eslint-disable-line no-unused-vars
@@ -120,6 +117,9 @@ export class CSSStyleDeclaration {
      */
     function parseUnusedText(cssText, startLine, startColumn, endLine, endColumn) {
       const tr = new TextUtils.TextRange.TextRange(startLine, startColumn, endLine, endColumn);
+      if (!this.range) {
+        return;
+      }
       const missingText = cssText.extract(tr.relativeTo(this.range.startLine, this.range.startColumn));
 
       // Try to fit the malformed css into properties.
@@ -275,7 +275,8 @@ export class CSSStyleDeclaration {
   }
 
   _computeInactiveProperties() {
-    const activeProperties = {};
+    /** @type {!Map<string, !CSSProperty>} */
+    const activeProperties = new Map();
     for (let i = 0; i < this._allProperties.length; ++i) {
       const property = this._allProperties[i];
       if (property.disabled || !property.parsedOk) {
@@ -283,12 +284,12 @@ export class CSSStyleDeclaration {
         continue;
       }
       const canonicalName = cssMetadata().canonicalPropertyName(property.name);
-      const activeProperty = activeProperties[canonicalName];
+      const activeProperty = activeProperties.get(canonicalName);
       if (!activeProperty) {
-        activeProperties[canonicalName] = property;
+        activeProperties.set(canonicalName, property);
       } else if (!activeProperty.important || property.important) {
         activeProperty.setActive(false);
-        activeProperties[canonicalName] = property;
+        activeProperties.set(canonicalName, property);
       } else {
         property.setActive(false);
       }
@@ -362,7 +363,13 @@ export class CSSStyleDeclaration {
    */
   _insertionRange(index) {
     const property = this.propertyAt(index);
-    return property && property.range ? property.range.collapseToStart() : this.range.collapseToEnd();
+    if (property && property.range) {
+      return property.range.collapseToStart();
+    }
+    if (!this.range) {
+      throw new Error('CSSStyleDeclaration.range is null');
+    }
+    return this.range.collapseToEnd();
   }
 
   /**

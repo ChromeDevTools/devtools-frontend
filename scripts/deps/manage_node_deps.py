@@ -49,7 +49,7 @@ DEPS = {
     "karma-chrome-launcher": "3.1.0",
     "karma-coverage":
     "git+https://git@github.com/karma-runner/karma-coverage.git#27822c91afe597322667211e0f9d2d36670b8323",
-    "karma-mocha": "1.3.0",
+    "karma-mocha": "2.0.1",
     "karma-sourcemap-loader": "0.3.0",
     "license-checker": "25.0.1",
     "mocha": "7.1.1",

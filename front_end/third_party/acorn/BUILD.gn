@@ -6,6 +6,7 @@ copy("acorn") {
   sources = [
     "acorn-tsconfig.json",
     "package/dist/acorn.d.ts",
+    "package/dist/acorn.js",
     "package/dist/acorn.mjs",
     "package/dist/acorn.mjs.map",
   ]

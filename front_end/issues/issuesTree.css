@@ -137,11 +137,6 @@ p {
   margin-top: 8px;
 }
 
-/* Add some space between the arrow and the first child of <li> */
-.message li > *:first-child {
-  margin-left: 5px;
-}
-
 .message code {
   color: var(--issue-black);
   font-size: 90%;
@@ -185,16 +180,23 @@ p {
 }
 
 .resolutions-list {
-  list-style-type: "→";
+  list-style-type: none;
   list-style-position: inside;
   padding-inline-start: 0px;
 }
 
 /* We inherit all the styles from treeoutline, but these are simple text <li>, so we override some styles */
-.link-list li::before,
-.resolutions-list li::before {
+.link-list li::before {
   content: none;
   -webkit-mask-image: none;
+}
+
+.resolutions-list li::before {
+  content: "→";
+  -webkit-mask-image: none;
+  padding-right: 5px;
+  position: relative;
+  top: -1px;
 }
 
 .link-list li {

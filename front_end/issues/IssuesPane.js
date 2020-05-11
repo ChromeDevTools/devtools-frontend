@@ -746,7 +746,7 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
 
     const infobar = new UI.Infobar.Infobar(
         UI.Infobar.Type.Warning,
-        ls`Some issues might be missing or incomplete, reload the inspected page to get full information`,
+        ls`Some issues might be missing or incomplete, reload the inspected page to get the full information.`,
         [{text: ls`Reload page`, highlight: false, delegate: reload, dismiss: true}]);
 
     this._reloadInfobar = infobar;

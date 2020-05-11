@@ -84,9 +84,6 @@
   <message name="IDS_DEVTOOLS_242dd6b02f1ff7db7cbba7f7226abb4a" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Do not emulate CSS prefers-color-scheme
   </message>
-  <message name="IDS_DEVTOOLS_26bfd72a61c0d4cb1bcac0e217f7f8a8" desc="Description for an issue in the issues view">
-    A cookie was defaulted to &apos;SameSite=Lax&apos; because the cookie&apos;s &apos;SameSite&apos; attribute was not set or invalid. The cookie was not sent because the default behavior for &apos;SameSite=Lax&apos; prevents this cookie from beeing sent in cross-site requests.
-  </message>
   <message name="IDS_DEVTOOLS_28e486be4b3bad598b6e9eaa34ebec76" desc="Text in Network Manager">
     Set-Cookie header is ignored in response from url: <ph name="RESPONSE_URL">$1s<ex>https://example.com</ex></ph>. Cookie length should be less than or equal to 4096 characters.
   </message>
@@ -111,6 +108,9 @@
   <message name="IDS_DEVTOOLS_378803262ee085f9f247171a28618827" desc="A link to more information in the issues view">
     https://web.dev/same-site-same-origin/
   </message>
+  <message name="IDS_DEVTOOLS_37b2c194f5aaf6a38e0dc67b90ab3760" desc="Title for an issue in the issues view">
+    An <ph name="LOCKED_1">iframe</ph> navigation to a document with a Cross-Origin Opener Policy was blocked
+  </message>
   <message name="IDS_DEVTOOLS_3bd3beb3fb5c78e8e85ad06d749bea78" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Emulate protanopia
   </message>
@@ -123,13 +123,6 @@
   <message name="IDS_DEVTOOLS_3f23f0e9da2803d48c2d67aa09f01bf5" desc="Tooltip to explain why a cookie was blocked">
     This Set-Cookie didn&apos;t specify a &quot;SameSite&quot; attribute and was defaulted to &quot;SameSite=Lax,&quot; and was blocked because it came from a cross-site response which was not the response to a top-level navigation. The Set-Cookie had to have been set with &quot;SameSite=None&quot; to enable cross-site usage.
   </message>
-  <message name="IDS_DEVTOOLS_40bf79d4fb1a6c55040a72b7eab1b7aa" desc="Title for an issue in the issues view">
-    An <ph name="LOCKED_1">iframe</ph> navigation to a document with a cross-origin opener policy was blocked
-  </message>
-  <message name="IDS_DEVTOOLS_42b8b59fcc5afb9886bc5ee81bfb6762" desc="Title for an issue in the issues view">
-    A document with a cross-origin opener policy (COOP) was blocked from loading in an iframe, because the iframe specifies a sandbox attribute.
-  This protects COOP-enabled documents from inheriting properties from its opener.
-  </message>
   <message name="IDS_DEVTOOLS_43fde213dddc0ce31eca48a551757f41" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Emulate blurred vision
   </message>
@@ -141,10 +134,6 @@
   </message>
   <message name="IDS_DEVTOOLS_53cd1fbc07fe37544e195e5ad3746175" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Emulate achromatopsia
-  </message>
-  <message name="IDS_DEVTOOLS_56f2cb62c3190165d2136d025b70af21" desc="Part of a text describing an issue in the issues view">
-    Because your site has the cross-origin embedder policy (COEP) enabled, each embedded iframe must also specify this policy.
-  This behavior protects private data from being exposed to untrusted third party sites.
   </message>
   <message name="IDS_DEVTOOLS_5b8188656e56f6cf2436f90188533934" desc="Description how an issue can be resolved">
     If the cookie is intended for third parties, mark the cookie as &apos;SameSite=None; Secure&apos;.
@@ -261,9 +250,6 @@
   <message name="IDS_DEVTOOLS_68a533725701759155b01979f1a6afd0" desc="Title of an issue in the issues view">
     A cookie will not be sent in the future, because the cookie was set without the &apos;SameSite&apos; attribute
   </message>
-  <message name="IDS_DEVTOOLS_68ce8538fce11a7b3038afffe81fc67f" desc="Part of a text describing an issue in the issues view">
-    Specify a cross-origin embedder policy to prevent this frame from being blocked
-  </message>
   <message name="IDS_DEVTOOLS_6948a469c79f7dd5426e4f291cba3db1" desc="Text in Network Log">
     <ph name="LOCKED_1">Chrome Data Saver</ph>
   </message>
@@ -279,6 +265,9 @@
   <message name="IDS_DEVTOOLS_6ea5359e01a41842884943125518289b" desc="Text in DOMDebugger Model">
     Canvas
   </message>
+  <message name="IDS_DEVTOOLS_6f875586a9fb4baa1f025dc50d99aabf" desc="Title for an issue in the issues view">
+    Specify a Cross-Origin Embedder Policy to prevent this frame from being blocked
+  </message>
   <message name="IDS_DEVTOOLS_6fdb8f0232e380cf106312e7b880d8d2" desc="Title of a setting under the Console category that can be invoked through the Command Menu">
     Preserve log upon navigation
   </message>
@@ -287,9 +276,6 @@
   </message>
   <message name="IDS_DEVTOOLS_716ddf802d9b9ee6899a47025e38bff7" desc="Error message when failing to fetch a resource referenced in a source map">
     Could not load content for <ph name="THIS__SOURCEURL">$1s<ex>https://example.com/sourcemap.map</ex></ph> (<ph name="ERRORMESSAGE">$2s<ex>An error occurred</ex></ph>)
-  </message>
-  <message name="IDS_DEVTOOLS_71be081ed6d31a6b93a0f9e5a0f474cc" desc="Part of a text describing an issue in the issues view">
-    Specify a cross-origin resource policy to prevent a resource from being blocked
   </message>
   <message name="IDS_DEVTOOLS_720bffbd392bad37272a7c1202250bb9" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Emulate deuteranopia
@@ -345,6 +331,9 @@
   <message name="IDS_DEVTOOLS_8bfd98e44c95f20aecceb52930b2c300" desc="Description of an issue in the issues panel">
     A cookie was received with the &apos;SameSite=None&apos; attribute, marking it as available for third-party use, but did not have the &apos;Secure&apos; attribute. Cookies with &apos;SameSite=None&apos; are not set unless they also have the &apos;Secure&apos; attribute.
   </message>
+  <message name="IDS_DEVTOOLS_8e25939ed027992ec3229fb82c8635a9" desc="Title for an issue in the issues view">
+    Specify a Cross-Origin Resource Policy to prevent a resource from being blocked
+  </message>
   <message name="IDS_DEVTOOLS_8e6aefb01ad865cdce56f1992b317e4a" desc="Link for SameSiteCookies Issues">
     https://web.dev/samesite-cookies-explained/
   </message>
@@ -366,6 +355,10 @@
   <message name="IDS_DEVTOOLS_930c85a96d7227c515891c4f86a17c30" desc="Title of a setting under the Debugger category that can be invoked through the Command Menu">
     Disable JavaScript
   </message>
+  <message name="IDS_DEVTOOLS_93719ccb3d91b79c94f45b3effff45a6" desc="Description for an issue in the issues view">
+    A document with a Cross-Origin Opener Policy (COOP) was blocked from loading in an iframe, because the iframe specifies a sandbox attribute.
+  This protects COOP-enabled documents from inheriting properties from its opener.
+  </message>
   <message name="IDS_DEVTOOLS_93dee6366d66361f36985cf5c88346aa" desc="Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel">
     Create AudioContext
   </message>
@@ -384,6 +377,10 @@
   </message>
   <message name="IDS_DEVTOOLS_9850063efe194af1c63d2aa61ef94c62" desc="Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel">
     Create canvas context
+  </message>
+  <message name="IDS_DEVTOOLS_98564a5f5fc6b68f2a9b4bbf0a79f63a" desc="Part of a text describing an issue in the issues view">
+    Because your site has the Cross-Origin Embedder Policy (COEP) enabled, each resource must specify a suitable Cross-Origin Resource Policy (CORP).
+   This behavior prevents a document from loading cross-origin resources which don&apos;t explicitly grant permission to be loaded.
   </message>
   <message name="IDS_DEVTOOLS_9ac0a2bb2dca80c697322837cbbdbaab" desc="Title for an issue in the issues view">
     A cookie was blocked, because the cookie specified &apos;SameSite=None&apos; without &apos;Secure&apos;
@@ -463,10 +460,6 @@
   <message name="IDS_DEVTOOLS_beff15b1acf49b84bf1080cceb920ebf" desc="Title of a media query that can be emulated via the Rendering drawer">
     prefers-color-scheme: dark
   </message>
-  <message name="IDS_DEVTOOLS_bf034e7663c8989342d04652767088c1" desc="Part of a text describing an issue in the issues view">
-    Because your site has the cross-origin embedder policy (COEP) enabled, each resource must specify a suitable cross-origin resource policy (CORP).
-   This behavior prevents a document from loading cross-origin resources which don&apos;t explicitly grant permission to be loaded.
-  </message>
   <message name="IDS_DEVTOOLS_c0268b9746e0b5ce4e2eea936371222f" desc="Title for an issue in the issues view">
     A cookie was not sent because the cookie&apos;s &apos;SameSite&apos; attribute was defaulted to &apos;SameSite=Lax&apos;
   </message>
@@ -485,6 +478,10 @@
   <message name="IDS_DEVTOOLS_c64d5c0d5233c7d6e85a41c6dd3c3a3f" desc="Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel">
     Resume AudioContext
   </message>
+  <message name="IDS_DEVTOOLS_c8248dd944c695896afa7366b88ca168" desc="Part of a text describing an issue in the issues view">
+    Because your site has the Cross-Origin Embedder Policy (COEP) enabled, each embedded iframe must also specify this policy.
+  This behavior protects private data from being exposed to untrusted third party sites.
+  </message>
   <message name="IDS_DEVTOOLS_c89686a387d2b12b3c729ce35a0bcb5b" desc="Text in DOMDebugger Model">
     Window
   </message>
@@ -492,7 +489,7 @@
     COOP and COEP
   </message>
   <message name="IDS_DEVTOOLS_ca4fbb6d710463b20755b9a024d841c1" desc="Error message when failing to load a source map text">
-    DevTools failed to load SourceMap: <ph name="ERROR_MESSAGE"><ex>An error occured</ex>$1s</ph>
+    DevTools failed to load SourceMap: <ph name="ERROR_MESSAGE"><ex>An error occurred</ex>$1s</ph>
   </message>
   <message name="IDS_DEVTOOLS_cad025a69663813eef4aa3176d982a18" desc="Title of an issue in the issues panel">
     A cookie was blocked, because the cookie&apos;s &apos;SameSite&apos; attribute was defaulted to &apos;SameSite=Lax&apos;
@@ -533,14 +530,17 @@
   <message name="IDS_DEVTOOLS_e485c975c1d6c17d9dfd81128b83f63a" desc="Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel">
     Set innerHTML
   </message>
+  <message name="IDS_DEVTOOLS_e4c1f2ef033361198393911f58287b40" desc="Description for an issue in the issues view">
+    A cookie was defaulted to &apos;SameSite=Lax&apos; because the cookie&apos;s &apos;SameSite&apos; attribute was not set or invalid. The cookie was not sent because the default behavior for &apos;SameSite=Lax&apos; prevents this cookie from being sent in cross-site requests.
+  </message>
   <message name="IDS_DEVTOOLS_e69d85cd1acdf030f0cede48b61d7720" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Hide scroll performance bottlenecks
   </message>
+  <message name="IDS_DEVTOOLS_e7c7efe6752cbf2c7519913a1636deaa" desc="Title text of an issue in the issues view">
+    Specify a more permissive Cross-Origin Resource Policy to prevent a resource from being blocked
+  </message>
   <message name="IDS_DEVTOOLS_e8e741c8bebb2da4dc93e5f9c1cecd8c" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Emulate CSS prefers-color-scheme: light
-  </message>
-  <message name="IDS_DEVTOOLS_e9c9a62c061402881b6efbc3f2dc4ddb" desc="Title text of an issue in the issues view">
-    Specify a more permissive cross-origin resource policy to prevent a resource from being blocked
   </message>
   <message name="IDS_DEVTOOLS_ea9de21c426731035828b2e46709391c" desc="Title for an external link to more information in the issues view">
     Same-Site and Same-Origin
@@ -585,7 +585,7 @@
     print
   </message>
   <message name="IDS_DEVTOOLS_b507642e29a193b6853843992eef8c10" desc="Error message when failing to load a source map text via the network">
-    Could not load content for <ph name="SOURCEMAPURL">$1s<ex>https://example.com/sourcemap.map</ex></ph>: <ph name="ERRORMESSAGE">$2s<ex>A certificate error occured</ex></ph>
+    Could not load content for <ph name="SOURCEMAPURL">$1s<ex>https://example.com/sourcemap.map</ex></ph>: <ph name="ERRORMESSAGE">$2s<ex>A certificate error occurred</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_f9778c8e7464e4bb037ec2463879588f" desc="Text in DOMDebugger Model">
     DOM Mutation

@@ -120,7 +120,7 @@ const issueDescriptions = new Map([
       title: ls`A cookie was not sent because the cookie's 'SameSite' attribute was defaulted to 'SameSite=Lax'`,
       message: () => textMessageWithResolutions(
           ls
-          `A cookie was defaulted to 'SameSite=Lax' because the cookie's 'SameSite' attribute was not set or invalid. The cookie was not sent because the default behavior for 'SameSite=Lax' prevents this cookie from beeing sent in cross-site requests.`,
+          `A cookie was defaulted to 'SameSite=Lax' because the cookie's 'SameSite' attribute was not set or invalid. The cookie was not sent because the default behavior for 'SameSite=Lax' prevents this cookie from being sent in cross-site requests.`,
           [
             ls`If the cookie is intended for third parties, mark the cookie as 'SameSite=None; Secure'.`,
             ls

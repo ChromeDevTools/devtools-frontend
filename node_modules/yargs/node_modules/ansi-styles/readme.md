@@ -6,13 +6,11 @@ You probably want the higher-level [chalk](https://github.com/chalk/chalk) modul
 
 <img src="screenshot.svg" width="900">
 
-
 ## Install
 
 ```
 $ npm install ansi-styles
 ```
-
 
 ## Usage
 
@@ -35,7 +33,6 @@ console.log(style.color.ansi16m.hex('#abcdef') + 'Hello world!' + style.color.cl
 ## API
 
 Each style has an `open` and `close` property.
-
 
 ## Styles
 
@@ -88,7 +85,6 @@ Each style has an `open` and `close` property.
 - `bgCyanBright`
 - `bgWhiteBright`
 
-
 ## Advanced usage
 
 By default, you get a map of styles, but the styles are also available as groups. They are non-enumerable so they don't show up unless you access them explicitly. This makes it easier to expose only a subset in a higher-level module.
@@ -111,7 +107,6 @@ Raw escape codes (i.e. without the CSI escape prefix `\u001B[` and render mode p
 console.log(style.codes.get(36));
 //=> 39
 ```
-
 
 ## [256 / 16 million (TrueColor) support](https://gist.github.com/XVilka/8346728)
 
@@ -141,17 +136,14 @@ style.color.ansi16m.hex('#C0FFEE'); // Hex (RGB) to 16 million color foreground 
 style.bgColor.ansi16m.hex('#C0FFEE'); // Hex (RGB) to 16 million color background code
 ```
 
-
 ## Related
 
 - [ansi-escapes](https://github.com/sindresorhus/ansi-escapes) - ANSI escape codes for manipulating the terminal
-
 
 ## Maintainers
 
 - [Sindre Sorhus](https://github.com/sindresorhus)
 - [Josh Junon](https://github.com/qix-)
-
 
 ---
 

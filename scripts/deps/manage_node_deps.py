@@ -58,7 +58,7 @@ DEPS = {
     "rimraf": "3.0.2",
     "rollup": "2.3.3",
     "typescript": "3.8.3",
-    "yargs": "15.0.2"
+    "yargs": "15.3.1"
 }
 
 def exec_command(cmd):

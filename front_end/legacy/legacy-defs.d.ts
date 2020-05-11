@@ -78,3 +78,7 @@ declare namespace Adb {
   }
   type NetworkDiscoveryConfig = string[];
 }
+
+interface HTMLElement {
+  createChild(tagName: string, className?: string, content?: string): HTMLElement;
+}

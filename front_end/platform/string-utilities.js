@@ -452,3 +452,11 @@ export const countWtf8Bytes = inputString => {
 export const stripLineBreaks = inputStr => {
   return inputStr.replace(/(\r)?\n/g, '');
 };
+
+/**
+ * @param {string} inputStr
+ * @return {string}
+ */
+export const toTitleCase = inputStr => {
+  return inputStr.substring(0, 1).toUpperCase() + inputStr.substring(1);
+};

@@ -143,7 +143,7 @@ export class PaintProfilerView extends UI.Widget.HBox {
    * @return {!PaintProfilerCategory}
    */
   static _categoryForLogItem(logItem) {
-    const method = logItem.method.toTitleCase();
+    const method = Platform.StringUtilities.toTitleCase(logItem.method);
 
     const logItemCategories = PaintProfilerView._initLogItemCategories();
     let result = logItemCategories[method];

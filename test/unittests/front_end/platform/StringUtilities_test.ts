@@ -516,4 +516,11 @@ describe('StringUtilities', () => {
       assert.deepEqual(tokens, expectedTokens);
     });
   });
+
+  describe('toTitleCase', () => {
+    it('converts a string to title case', () => {
+      const output = StringUtilities.toTitleCase('foo bar baz');
+      assert.strictEqual(output, 'Foo bar baz');
+    });
+  });
 });

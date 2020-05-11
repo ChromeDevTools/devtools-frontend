@@ -2,8 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
+import * as TextUtils from '../text_utils/text_utils.js';
 
 import {CSSLocation, CSSModel, Edit} from './CSSModel.js';     // eslint-disable-line no-unused-vars
 import {CSSStyleSheetHeader} from './CSSStyleSheetHeader.js';  // eslint-disable-line no-unused-vars
@@ -17,6 +16,7 @@ export class CSSMediaQuery {
    */
   constructor(payload) {
     this._active = payload.active;
+    /** @type {?Array<!CSSMediaQueryExpression>} */
     this._expressions = [];
     for (let j = 0; j < payload.expressions.length; ++j) {
       this._expressions.push(CSSMediaQueryExpression.parsePayload(payload.expressions[j]));
@@ -39,7 +39,7 @@ export class CSSMediaQuery {
   }
 
   /**
-   * @return {!Array.<!CSSMediaQueryExpression>}
+   * @return {?Array<!CSSMediaQueryExpression>}
    */
   expressions() {
     return this._expressions;
@@ -58,7 +58,8 @@ export class CSSMediaQueryExpression {
     this._value = payload.value;
     this._unit = payload.unit;
     this._feature = payload.feature;
-    this._valueRange = payload.valueRange ? TextUtils.TextRange.fromObject(payload.valueRange) : null;
+    /** @type {?TextUtils.TextRange.TextRange} */
+    this._valueRange = payload.valueRange ? TextUtils.TextRange.TextRange.fromObject(payload.valueRange) : null;
     this._computedLength = payload.computedLength || null;
   }
 
@@ -92,7 +93,7 @@ export class CSSMediaQueryExpression {
   }
 
   /**
-   * @return {?TextUtils.TextRange}
+   * @return {?TextUtils.TextRange.TextRange}
    */
   valueRange() {
     return this._valueRange;
@@ -149,8 +150,10 @@ export class CSSMedia {
     this.text = payload.text;
     this.source = payload.source;
     this.sourceURL = payload.sourceURL || '';
-    this.range = payload.range ? TextUtils.TextRange.fromObject(payload.range) : null;
+    /** @type {?TextUtils.TextRange.TextRange} */
+    this.range = payload.range ? TextUtils.TextRange.TextRange.fromObject(payload.range) : null;
     this.styleSheetId = payload.styleSheetId;
+    /** @type {?Array<!CSSMediaQuery>} */
     this.mediaList = null;
     if (payload.mediaList) {
       this.mediaList = [];
@@ -252,5 +255,5 @@ export const Source = {
   LINKED_SHEET: 'linkedSheet',
   INLINE_SHEET: 'inlineSheet',
   MEDIA_RULE: 'mediaRule',
-  IMPORT_RULE: 'importRule'
+  IMPORT_RULE: 'importRule',
 };

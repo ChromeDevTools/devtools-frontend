@@ -1880,7 +1880,8 @@ export class StylePropertiesSection {
     this._parentPane.setUserOperation(true);
     const cssModel = this._parentPane.cssModel();
     if (cssModel) {
-      cssModel.setMediaText(media.styleSheetId, media.range, newContent).then(userCallback.bind(this));
+      cssModel.setMediaText(media.styleSheetId, /** @type {!TextUtils.TextRange.TextRange} */ (media.range), newContent)
+          .then(userCallback.bind(this));
     }
   }
 

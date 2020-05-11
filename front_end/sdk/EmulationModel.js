@@ -122,16 +122,41 @@ export class EmulationModel extends SDKModel {
       this._emulationAgent.setLocaleOverride('');
       this._emulationAgent.setUserAgentOverride(SDK.multitargetNetworkManager.currentUserAgent());
     } else {
+      const processEmulationResult = (errorType, result) => {
+        const errorMessage = result.getError();
+        if (errorMessage) {
+          return Promise.reject({
+            type: errorType,
+            message: errorMessage,
+          });
+        }
+        return Promise.resolve(result);
+      };
+
       return Promise.all([
         this._emulationAgent
-            .setGeolocationOverride(location.latitude, location.longitude, Location.DefaultGeoMockAccuracy)
-            .catch(err => Promise.reject({type: 'emulation-set-location', message: err.message})),
-        this._emulationAgent.setTimezoneOverride(location.timezoneId)
-            .catch(err => Promise.reject({type: 'emulation-set-timezone', message: err.message})),
-        this._emulationAgent.setLocaleOverride(location.locale)
-            .catch(err => Promise.reject({type: 'emulation-set-locale', message: err.message})),
-        this._emulationAgent.setUserAgentOverride(SDK.multitargetNetworkManager.currentUserAgent(), location.locale)
-            .catch(err => Promise.reject({type: 'emulation-set-user-agent', message: err.message})),
+            .invoke_setGeolocationOverride({
+              latitude: location.latitude,
+              longitude: location.longitude,
+              accuracy: Location.DefaultGeoMockAccuracy,
+            })
+            .then(result => processEmulationResult('emulation-set-location', result)),
+        this._emulationAgent
+            .invoke_setTimezoneOverride({
+              timezoneId: location.timezoneId,
+            })
+            .then(result => processEmulationResult('emulation-set-timezone', result)),
+        this._emulationAgent
+            .invoke_setLocaleOverride({
+              locale: location.locale,
+            })
+            .then(result => processEmulationResult('emulation-set-locale', result)),
+        this._emulationAgent
+            .invoke_setUserAgentOverride({
+              userAgent: SDK.multitargetNetworkManager.currentUserAgent(),
+              acceptLanguage: location.locale,
+            })
+            .then(result => processEmulationResult('emulation-set-user-agent', result)),
       ]);
     }
   }

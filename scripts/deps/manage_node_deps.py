@@ -51,7 +51,6 @@ DEPS = {
     "git+https://git@github.com/karma-runner/karma-coverage.git#27822c91afe597322667211e0f9d2d36670b8323",
     "karma-mocha": "1.3.0",
     "karma-sourcemap-loader": "0.3.0",
-    "karma-typescript": "5.0.2",
     "license-checker": "25.0.1",
     "mocha": "7.1.1",
     "puppeteer": "3.0.3",

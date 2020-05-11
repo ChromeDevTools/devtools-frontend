@@ -193,9 +193,13 @@ export class CXXDWARFLanguagePlugin {
     if (Array.isArray(value.value)) {
       return this._reprArray(value);
     }
-    switch (value.type) {
-      case 'int':
-        return this._reprNumber(value);
+    console.error(`Repr for type ${value.type}`);
+    const numberTypes = [
+      'int8_t', 'int16_t', 'int32_t', 'int64_t', 'uint8_t', 'uint16_t', 'uint32_t', 'uint64_t', 'float', 'double',
+      'long double'
+    ];
+    if (numberTypes.indexOf(value.type) > -1) {
+      return this._reprNumber(value);
     }
     return this._reprString(value);
   }

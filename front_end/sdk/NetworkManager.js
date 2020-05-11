@@ -1095,7 +1095,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     const chromeVersion = MultitargetNetworkManager.getChromeVersion();
     if (chromeVersion.length > 0) {
       const majorVersion = chromeVersion.split('.', 1)[0];
-      return [{brand: 'Chromium', version: majorVersion}, {brand: 'Chrome', version: majorVersion}];
+      return [{brand: 'Chromium', version: majorVersion}, {brand: 'Google Chrome', version: majorVersion}];
     }
     return [];
   }

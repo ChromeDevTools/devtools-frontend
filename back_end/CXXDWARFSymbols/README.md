@@ -80,7 +80,6 @@ cmake -GNinja \
   -DCMAKE_C_COMPILER_LAUNCHER=/path/to/depot_tools/.cipd_bin/gomacc \
   -DCMAKE_C_COMPILER=/path/to/v8/third_party/llvm-build/Release+Asserts/bin/clang \
   -DCMAKE_CXX_COMPILER=/path/to/v8/third_party/llvm-build/Release+Asserts/bin/clang++ \
-  -DLLDB_INCLUDE_TESTS=OFF \
   ../../back_end/CXXDWARFSymbols
 ninja -j100
 ```

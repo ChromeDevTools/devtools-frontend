@@ -178,10 +178,6 @@
     color: rgba(128, 128, 128, 0.4);
 }
 
-.breakpoint-element {
-    padding-top: 1px;
-}
-
 .breakpoint-element::before {
     content: "\00AD";
 }
@@ -217,9 +213,11 @@
 }
 
 .cm-inline-breakpoint {
+    cursor: pointer;
+    padding-left: 1px;
+    padding-right: 2px;
     position:relative;
     top: 1px;
-    cursor: pointer;
 }
 
 .cm-inline-breakpoint::before {

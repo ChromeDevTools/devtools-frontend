@@ -575,16 +575,6 @@ Set.prototype.firstValue = function() {
 };
 
 /**
- * @param {!Iterable<T>|!Array<!T>} iterable
- * @template T
- */
-Set.prototype.addAll = function(iterable) {
-  for (const e of iterable) {
-    this.add(e);
-  }
-};
-
-/**
  * @return {!Platform.Multimap<!KEY, !VALUE>}
  */
 Map.prototype.inverse = function() {

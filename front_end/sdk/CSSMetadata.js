@@ -32,6 +32,7 @@
 
 import * as Common from '../common/common.js';
 import * as SupportedCSSProperties from '../generated/SupportedCSSProperties.js';
+import * as Platform from '../platform/platform.js';
 
 /**
  * @unrestricted
@@ -97,7 +98,7 @@ export class CSSMetadata {
     // and add manually maintained map of extra prop-value pairs
     for (const [propertyName, extraValueObj] of Object.entries(_extraPropertyValues)) {
       if (propertyValueSets.has(propertyName)) {
-        propertyValueSets.get(propertyName).addAll(extraValueObj.values);
+        Platform.SetUtilities.addAll(propertyValueSets.get(propertyName), extraValueObj.values);
       } else {
         propertyValueSets.set(propertyName, new Set(extraValueObj.values));
       }

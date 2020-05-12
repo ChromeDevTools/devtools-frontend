@@ -913,7 +913,7 @@ export class ConsoleView extends UI.Widget.VBox {
   }
 
   _addGroupableMessagesToEnd() {
-    /** @type {!Set<!SDK.ConsoleModel.ConsoleMessage>} */
+    /** @type {!Set<(!SDK.ConsoleModel.ConsoleMessage|!ConsoleViewMessage)>} */
     const alreadyAdded = new Set();
     /** @type {!Set<string>} */
     const processedGroupKeys = new Set();
@@ -945,7 +945,7 @@ export class ConsoleView extends UI.Widget.VBox {
 
       if (!viewMessagesInGroup.find(x => this._shouldMessageBeVisible(x))) {
         // Optimize for speed.
-        alreadyAdded.addAll(viewMessagesInGroup);
+        Platform.SetUtilities.addAll(alreadyAdded, viewMessagesInGroup);
         processedGroupKeys.add(key);
         continue;
       }

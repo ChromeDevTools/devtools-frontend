@@ -32,6 +32,7 @@
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 
 import {ConsoleMessage, ConsoleModel, MessageLevel, MessageSource} from './ConsoleModel.js';
 import {Events as NetworkManagerEvents, Message, NetworkManager} from './NetworkManager.js';  // eslint-disable-line no-unused-vars
@@ -282,7 +283,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
     do {
       this._initializeInitiatorSymbolIfNeeded(checkRequest);
       if (checkRequest[_initiatorDataSymbol].chain) {
-        initiatorChainCache.addAll(checkRequest[_initiatorDataSymbol].chain);
+        Platform.SetUtilities.addAll(initiatorChainCache, checkRequest[_initiatorDataSymbol].chain);
         break;
       }
       if (initiatorChainCache.has(checkRequest)) {

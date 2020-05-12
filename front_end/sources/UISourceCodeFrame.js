@@ -30,6 +30,7 @@
 
 import * as Common from '../common/common.js';
 import * as Persistence from '../persistence/persistence.js';  // eslint-disable-line no-unused-vars
+import * as Platform from '../platform/platform.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as TextEditor from '../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
 import * as TextUtils from '../text_utils/text_utils.js';
@@ -301,7 +302,7 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
   _allMessages() {
     if (this._persistenceBinding) {
       const combinedSet = this._persistenceBinding.network.messages();
-      combinedSet.addAll(this._persistenceBinding.fileSystem.messages());
+      Platform.SetUtilities.addAll(combinedSet, this._persistenceBinding.fileSystem.messages());
       return combinedSet;
     }
     return this._uiSourceCode.messages();

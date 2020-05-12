@@ -1416,7 +1416,7 @@ export class DOMModel extends SDKModel {
    * @param {!Array<!Protocol.DOM.NodeId>} nodeIds
    */
   _inlineStyleInvalidated(nodeIds) {
-    this._attributeLoadNodeIds.addAll(nodeIds);
+    Platform.SetUtilities.addAll(this._attributeLoadNodeIds, nodeIds);
     if (!this._loadNodeAttributesTimeout) {
       this._loadNodeAttributesTimeout = setTimeout(this._loadNodeAttributes.bind(this), 20);
     }

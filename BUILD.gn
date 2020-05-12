@@ -1317,6 +1317,7 @@ all_devtools_modules = [
   "persistence/PlatformFileSystem.js",
   "persistence/WorkspaceSettingsTab.js",
   "platform/utilities.js",
+  "platform/set-utilities.js",
   "platform/string-utilities.js",
   "platform/number-utilities.js",
   "platform/array-utilities.js",

@@ -73,7 +73,7 @@ TEST_F(SymbolServerTest, HelloAddScript) {
 TEST_F(SymbolServerTest, HelloSourceToRawLocation) {
   auto* module = GetModule("hello.wasm");
   ASSERT_TRUE(module);
-  symbol_server::SourceLocation source_location(MakeFile("hello.c"), 4, 3);
+  symbol_server::SourceLocation source_location(MakeFile("hello.c"), 8, 3);
 
   lldb::addr_t code_section_start = 0xf2;
 
@@ -103,13 +103,13 @@ TEST_F(SymbolServerTest, HelloRawToSourceLocation) {
   const symbol_server::SourceLocation& front_location = *loc.begin();
   EXPECT_EQ(front_location.file, "hello.c");
   EXPECT_EQ(front_location.column, 3u);
-  EXPECT_EQ(front_location.line, 4u);
+  EXPECT_EQ(front_location.line, 8u);
 }
 
 TEST_F(SymbolServerTest, InlineSourceToRawLocation) {
   auto* module = GetModule("inline.wasm");
   ASSERT_TRUE(module);
-  symbol_server::SourceLocation source_location(MakeFile("inline.cc"), 4, 18);
+  symbol_server::SourceLocation source_location(MakeFile("inline.cc"), 8, 18);
 
   lldb::addr_t code_section_start = 0x102;
 
@@ -147,7 +147,7 @@ TEST_F(SymbolServerTest, InlineRawToSourceLocation) {
     const symbol_server::SourceLocation& front_location = *loc.begin();
     EXPECT_EQ(front_location.file, "inline.cc");
     EXPECT_EQ(front_location.column, 18u);
-    EXPECT_EQ(front_location.line, 4u);
+    EXPECT_EQ(front_location.line, 8u);
   }
   {
     auto loc = m->GetSourceLocationFromOffset(0x19F - code_section_start);
@@ -158,7 +158,7 @@ TEST_F(SymbolServerTest, InlineRawToSourceLocation) {
     const symbol_server::SourceLocation& front_location = *loc.begin();
     EXPECT_EQ(front_location.file, "inline.cc");
     EXPECT_EQ(front_location.column, 18u);
-    EXPECT_EQ(front_location.line, 4u);
+    EXPECT_EQ(front_location.line, 8u);
   }
   {
     auto loc = m->GetSourceLocationFromOffset(0x1BB - code_section_start);
@@ -169,7 +169,7 @@ TEST_F(SymbolServerTest, InlineRawToSourceLocation) {
     const symbol_server::SourceLocation& front_location = *loc.begin();
     EXPECT_EQ(front_location.file, "inline.cc");
     EXPECT_EQ(front_location.column, 7u);
-    EXPECT_EQ(front_location.line, 10u);
+    EXPECT_EQ(front_location.line, 14u);
   }
   {
     auto loc = m->GetSourceLocationFromOffset(0x1DC - code_section_start);
@@ -180,7 +180,7 @@ TEST_F(SymbolServerTest, InlineRawToSourceLocation) {
     const symbol_server::SourceLocation& front_location = *loc.begin();
     EXPECT_EQ(front_location.file, "inline.cc");
     EXPECT_EQ(front_location.column, 3u);
-    EXPECT_EQ(front_location.line, 16u);
+    EXPECT_EQ(front_location.line, 20u);
   }
 }
 

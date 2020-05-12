@@ -16,9 +16,16 @@ The server is part of the Chrome DevTools frontend that is available on
 ### Prerequisites
 
 Building the server requires
-[depot_tools](https://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up)
-to fetch dependencies. The dependencies are not fetched by `gclient sync` in
-DevTools by default. To enable it, run
+[depot_tools](https://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up).
+To check out the source for the DevTools frontend, including the symbol server, follow these steps:
+
+```bash
+mkdir devtools
+cd devtools
+fetch devtools-frontend
+```
+
+The dependencies for the symbol server are not fetched by `gclient sync` in DevTools by default. To enable it, run
 ```bash
 vim $(gclient root)/.gclient
 ```
@@ -26,7 +33,8 @@ In the `custom_vars` section, insert this line:
 ```python
 "build_symbol_server": True,
 ```
-Then run `glient sync` to fetch the dependencies.
+Then run `glient sync` to fetch the dependencies. To update with the latest upstream changes, simply run `git pull`
+followed by `gclient sync` again later.
 
 Building and running the server further require these dependencies:
 * CMake

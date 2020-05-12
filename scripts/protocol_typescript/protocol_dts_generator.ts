@@ -342,7 +342,8 @@ const emitApiCommand = (command: Protocol.Command, domainName: string, modulePre
   const prefix = `${modulePrefix}.${domainName}.`;
   emitDescription(command.description);
   const params = command.parameters ? `params: ${prefix}${toCmdRequestName(command.name)}` : '';
-  const response = command.returns ? `${prefix}${toCmdResponseName(command.name)}` : 'void';
+  const response =
+      command.returns ? `${prefix}${toCmdResponseName(command.name)}` : 'Protocol.ProtocolResponseWithError';
   emitLine(`invoke_${command.name}(${params}): Promise<${response}>;`);
   emitLine();
 };

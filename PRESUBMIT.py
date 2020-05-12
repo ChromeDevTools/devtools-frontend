@@ -176,7 +176,7 @@ def _CheckDevtoolsStyle(input_api, output_api):
         affected_files = _getAffectedFiles(input_api, default_linted_directories, ['D'], ['.js', '.ts'])
 
         # If we have not changed any lintable files, then we should bail out.
-        # Otherwise, `run_lint_check.py` will lint *all* files.
+        # Otherwise, `run_lint_check.js` will lint *all* files.
         if len(affected_files) is 0:
             results.append(output_api.PresubmitNotifyResult('No affected files for ESLint check'))
             return results

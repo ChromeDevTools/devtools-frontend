@@ -14,6 +14,7 @@ ts_library("helpers") {
     "layers-helpers.ts",
     "lighthouse-helpers.ts",
     "media-helpers.ts",
+    "profiler-helpers.ts",
     "quick_open-helpers.ts",
     "search-helpers.ts",
     "settings-helpers.ts",

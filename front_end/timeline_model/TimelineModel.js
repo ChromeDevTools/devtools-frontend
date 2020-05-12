@@ -650,6 +650,7 @@ export class TimelineModelImpl {
     } else if (isWorker) {
       track.type = TrackType.Worker;
       track.url = url;
+      track.name = track.url ? ls`Worker — ${track.url}` : ls`Dedicated Worker`;
     } else if (thread.name().startsWith('CompositorTileWorker')) {
       track.type = TrackType.Raster;
     }
@@ -658,6 +659,17 @@ export class TimelineModelImpl {
     const events = this._injectJSFrameEvents(tracingModel, thread);
     this._eventStack = [];
     const eventStack = this._eventStack;
+
+    // Get the worker name from the target.
+    if (isWorker) {
+      const cpuProfileEvent = events.find(event => event.name === RecordType.Profile);
+      if (cpuProfileEvent) {
+        const target = this.targetByEvent(cpuProfileEvent);
+        if (target) {
+          track.name = ls`Worker: ${target.name()} — ${track.url}`;
+        }
+      }
+    }
 
     for (const range of ranges) {
       let i = events.lowerBound(range.from, (time, event) => time - event.startTime);

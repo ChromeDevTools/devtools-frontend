@@ -666,9 +666,6 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_9bedd08947719ccd339c3493e6701d4b" desc="Text in Timeline UIUtils of the Performance panel">
     Request Main Thread Frame
   </message>
-  <message name="IDS_DEVTOOLS_9c80c1f042e925ffbb94db9a17eb03df" desc="Text in Timeline Flame Chart Data Provider of the Performance panel">
-    Dedicated Worker
-  </message>
   <message name="IDS_DEVTOOLS_9d07f3bb674a88ea26f10e6b7589e000" desc="Text in Timeline UIUtils of the Performance panel">
     Aggregated Time
   </message>
@@ -701,9 +698,6 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_aa40d845ecb78d5bd01ff8b0cc9e213e" desc="Text in Timeline UIUtils of the Performance panel">
     Receive Data
-  </message>
-  <message name="IDS_DEVTOOLS_aa49e59ec25c5938e9629495e54b913a" desc="Text in Timeline Flame Chart Data Provider of the Performance panel">
-    Worker — <ph name="TRACK_URL">$1s<ex>https://example.com</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_ab0b54125d50a09e75f3829e7e90b8ea" desc="Text in Timeline UIUtils of the Performance panel">
     WebSocket Protocol

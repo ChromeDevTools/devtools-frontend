@@ -347,8 +347,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
         case TimelineModel.TimelineModel.TrackType.Worker: {
           this._appendSyncEvents(
-              track, track.events, track.url ? ls`Worker \u2014 ${track.url}` : ls`Dedicated Worker`,
-              this._headerLevel1, eventEntryType, true /* selectable */);
+              track, track.events, track.name, this._headerLevel1, eventEntryType, true /* selectable */);
           break;
         }
 

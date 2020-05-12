@@ -15,6 +15,5 @@
     { "name": "timeline" },
     { "name": "timeline_model" }
   ],
-  "extends": "shell",
-  "has_html": true
+  "extends": "shell"
 }

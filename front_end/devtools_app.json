@@ -28,6 +28,5 @@
     { "name": "web_audio" },
     { "name": "media" }
   ],
-  "extends": "shell",
-  "has_html": true
+  "extends": "shell"
 }

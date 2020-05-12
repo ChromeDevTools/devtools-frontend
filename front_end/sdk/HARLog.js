@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 // See http://www.softwareishard.com/blog/har-12-spec/
 // for HAR specification.
 
@@ -57,8 +54,8 @@ export class HARLog {
   }
 
   /**
-   * @param {!Array.<!NetworkRequest>} requests
-   * @return {!Promise<!Object>}
+   * @param {!Array<!NetworkRequest>} requests
+   * @return {!Promise<!HARLogDTO>}
    */
   static async build(requests) {
     const log = new HARLog();
@@ -70,6 +67,9 @@ export class HARLog {
     return {version: '1.2', creator: log._creator(), pages: log._buildPages(requests), entries: entries};
   }
 
+  /**
+   * @return {!Creator}
+   */
   _creator() {
     const webKitVersion = /AppleWebKit\/([^ ]+)/.exec(window.navigator.userAgent);
 
@@ -77,19 +77,20 @@ export class HARLog {
   }
 
   /**
-   * @param {!Array.<!NetworkRequest>} requests
-   * @return {!Array.<!Object>}
+   * @param {!Array<!NetworkRequest>} requests
+   * @return {!Array<!Page>}
    */
   _buildPages(requests) {
-    const seenIdentifiers = {};
+    /** @type {!Map<number, boolean>} */
+    const seenIdentifiers = new Map();
     const pages = [];
     for (let i = 0; i < requests.length; ++i) {
       const request = requests[i];
       const page = PageLoad.forRequest(request);
-      if (!page || seenIdentifiers[page.id]) {
+      if (!page || seenIdentifiers.get(page.id)) {
         continue;
       }
-      seenIdentifiers[page.id] = true;
+      seenIdentifiers.set(page.id, true);
       pages.push(this._convertPage(page, request));
     }
     return pages;
@@ -98,7 +99,7 @@ export class HARLog {
   /**
    * @param {!PageLoad} page
    * @param {!NetworkRequest} request
-   * @return {!Object}
+   * @return {!Page}
    */
   _convertPage(page, request) {
     return {
@@ -147,7 +148,7 @@ export class Entry {
 
   /**
    * @param {!NetworkRequest} request
-   * @return {!Promise<!Object>}
+   * @return {!Promise<!EntryDTO>}
    */
   static async build(request) {
     const harEntry = new Entry(request);
@@ -165,45 +166,63 @@ export class Entry {
     }
 
     const initiator = harEntry._request.initiator();
-    const exportedInitiator = {};
-    exportedInitiator.type = initiator.type;
-    if (initiator.url !== undefined) {
-      exportedInitiator.url = initiator.url;
-    }
-    if (initiator.lineNumber !== undefined) {
-      exportedInitiator.lineNumber = initiator.lineNumber;
-    }
-    if (initiator.stack) {
-      exportedInitiator.stack = initiator.stack;
+    /** @type {?Protocol.Network.Initiator} */
+    let exportedInitiator = null;
+    if (initiator) {
+      exportedInitiator = {
+        type: initiator.type,
+      };
+      if (initiator.url !== undefined) {
+        exportedInitiator.url = initiator.url;
+      }
+      if (initiator.lineNumber !== undefined) {
+        exportedInitiator.lineNumber = initiator.lineNumber;
+      }
+      if (initiator.stack) {
+        exportedInitiator.stack = initiator.stack;
+      }
     }
 
+    /**
+     * @type {!EntryDTO}
+     */
     const entry = {
-      startedDateTime: HARLog.pseudoWallTime(harEntry._request, harEntry._request.issueTime()).toJSON(),
-      time: time,
-      request: await harEntry._buildRequest(),
-      response: harEntry._buildResponse(),
-      cache: {},  // Not supported yet.
-      timings: timings,
-      // IPv6 address should not have square brackets per (https://tools.ietf.org/html/rfc2373#section-2.2).
-      serverIPAddress: ipAddress.replace(/\[\]/g, ''),
+      _fromCache: undefined,
       _initiator: exportedInitiator,
       _priority: harEntry._request.priority(),
-      _resourceType: harEntry._request.resourceType().name()
+      _resourceType: harEntry._request.resourceType().name(),
+      _webSocketMessages: undefined,
+      cache: {},  // Not supported yet.
+      connection: undefined,
+      pageref: undefined,
+      request: await harEntry._buildRequest(),
+      response: harEntry._buildResponse(),
+      // IPv6 address should not have square brackets per (https://tools.ietf.org/html/rfc2373#section-2.2).
+      serverIPAddress: ipAddress.replace(/\[\]/g, ''),
+      startedDateTime: HARLog.pseudoWallTime(harEntry._request, harEntry._request.issueTime()).toJSON(),
+      time: time,
+      timings: timings,
     };
 
     // Chrome specific.
 
     if (harEntry._request.cached()) {
       entry._fromCache = harEntry._request.cachedInMemory() ? 'memory' : 'disk';
+    } else {
+      delete entry._fromCache;
     }
 
     if (harEntry._request.connectionId !== '0') {
       entry.connection = harEntry._request.connectionId;
+    } else {
+      delete entry.connection;
     }
 
     const page = PageLoad.forRequest(harEntry._request);
     if (page) {
       entry.pageref = 'page_' + page.id;
+    } else {
+      delete entry.pageref;
     }
 
     if (harEntry._request.resourceType() === Common.ResourceType.resourceTypes.WebSocket) {
@@ -212,16 +231,19 @@ export class Entry {
         messages.push({type: message.type, time: message.time, opcode: message.opCode, data: message.text});
       }
       entry._webSocketMessages = messages;
+    } else {
+      delete entry._webSocketMessages;
     }
 
     return entry;
   }
 
   /**
-   * @return {!Promise<!Object>}
+   * @return {!Promise<!Request>}
    */
   async _buildRequest() {
     const headersText = this._request.requestHeadersText();
+    /** @type {!Request} */
     const res = {
       method: this._request.requestMethod,
       url: this._buildRequestURL(this._request.url()),
@@ -230,18 +252,21 @@ export class Entry {
       queryString: this._buildParameters(this._request.queryParameters || []),
       cookies: this._buildCookies(this._request.requestCookies),
       headersSize: headersText ? headersText.length : -1,
-      bodySize: await this._requestBodySize()
+      bodySize: await this._requestBodySize(),
+      postData: undefined,
     };
     const postData = await this._buildPostData();
     if (postData) {
       res.postData = postData;
+    } else {
+      delete res.postData;
     }
 
     return res;
   }
 
   /**
-   * @return {!Object}
+   * @return {!Response}
    */
   _buildResponse() {
     const headersText = this._request.responseHeadersText;
@@ -261,17 +286,21 @@ export class Entry {
   }
 
   /**
-   * @return {!Object}
+   * @return {!Content}
    */
   _buildContent() {
+    /** @type {!Content} */
     const content = {
       size: this._request.resourceSize,
       mimeType: this._request.mimeType || 'x-unknown',
+      compression: undefined,
       // text: this._request.content // TODO: pull out into a boolean flag, as content can be huge (and needs to be requested with an async call)
     };
     const compression = this.responseCompression;
     if (typeof compression === 'number') {
       content.compression = compression;
+    } else {
+      delete content.compression;
     }
     return content;
   }
@@ -285,7 +314,18 @@ export class Entry {
     const issueTime = this._request.issueTime();
     const startTime = this._request.startTime;
 
-    const result = {blocked: -1, dns: -1, ssl: -1, connect: -1, send: 0, wait: 0, receive: 0, _blocked_queueing: -1};
+    /** @type {!Timing} */
+    const result = {
+      blocked: -1,
+      dns: -1,
+      ssl: -1,
+      connect: -1,
+      send: 0,
+      wait: 0,
+      receive: 0,
+      _blocked_queueing: -1,
+      _blocked_proxy: undefined
+    };
 
     const queuedTime = (issueTime < startTime) ? startTime - issueTime : -1;
     result.blocked = Entry._toMilliseconds(queuedTime);
@@ -357,24 +397,27 @@ export class Entry {
   }
 
   /**
-   * @return {!Promise<?Object>}
+   * @return {!Promise<?PostData>}
    */
   async _buildPostData() {
     const postData = await this._request.requestFormData();
     if (!postData) {
       return null;
     }
-    const res = {mimeType: this._request.requestContentType() || '', text: postData};
+    /** @type {!PostData} */
+    const res = {mimeType: this._request.requestContentType() || '', text: postData, params: undefined};
     const formParameters = await this._request.formParameters();
     if (formParameters) {
       res.params = this._buildParameters(formParameters);
+    } else {
+      delete res.params;
     }
     return res;
   }
 
   /**
-   * @param {!Array.<!Object>} parameters
-   * @return {!Array.<!Object>}
+   * @param {!Array<!Parameter>} parameters
+   * @return {!Array<!Parameter>}
    */
   _buildParameters(parameters) {
     return parameters.slice();
@@ -389,8 +432,8 @@ export class Entry {
   }
 
   /**
-   * @param {!Array.<!Cookie>} cookies
-   * @return {!Array.<!Object>}
+   * @param {!Array<!Cookie>} cookies
+   * @return {!Array<!CookieDTO>}
    */
   _buildCookies(cookies) {
     return cookies.map(this._buildCookie.bind(this));
@@ -398,9 +441,10 @@ export class Entry {
 
   /**
    * @param {!Cookie} cookie
-   * @return {!Object}
+   * @return {!CookieDTO}
    */
   _buildCookie(cookie) {
+    /** @type {!CookieDTO} */
     const c = {
       name: cookie.name(),
       value: cookie.value(),
@@ -408,10 +452,13 @@ export class Entry {
       domain: cookie.domain(),
       expires: cookie.expiresDate(HARLog.pseudoWallTime(this._request, this._request.startTime)),
       httpOnly: cookie.httpOnly(),
-      secure: cookie.secure()
+      secure: cookie.secure(),
+      sameSite: undefined
     };
     if (cookie.sameSite()) {
       c.sameSite = cookie.sameSite();
+    } else {
+      delete c.sameSite;
     }
     return c;
   }
@@ -429,7 +476,7 @@ export class Entry {
     // TODO(jarhar): This will be wrong if the underlying encoding is not UTF-8. NetworkRequest.requestFormData is
     //   assumed to be UTF-8 because the backend decodes post data to a UTF-8 string regardless of the provided
     //   content-type/charset in InspectorNetworkAgent::FormDataToString
-    return new TextEncoder('utf-8').encode(postData).length;
+    return new TextEncoder().encode(postData).length;
   }
 
   /**
@@ -460,14 +507,128 @@ export class Entry {
 }
 
 /** @typedef {!{
- blocked: number,
- dns: number,
- ssl: number,
- connect: number,
- send: number,
- wait: number,
- receive: number,
- _blocked_queueing: number,
- _blocked_proxy: (number|undefined)
+  blocked: number,
+  dns: number,
+  ssl: number,
+  connect: number,
+  send: number,
+  wait: number,
+  receive: number,
+  _blocked_queueing: number,
+  _blocked_proxy: (number|undefined)
 }} */
+// @ts-ignore typedef
 export let Timing;
+
+/** @typedef {{
+  name: string,
+  value: string,
+}} */
+// @ts-ignore typedef
+export let Parameter;
+
+/** @typedef {{
+  size: number,
+  mimeType: string,
+  compression: (number|undefined),
+}} */
+// @ts-ignore typedef
+export let Content;
+
+/** @typedef {!{
+  method: string,
+  url: string,
+  httpVersion: string,
+  headers: !Object,
+  queryString: !Array<!Parameter>,
+  cookies: !Array<!CookieDTO>,
+  headersSize: number,
+  bodySize: number,
+  postData: (PostData|undefined),
+}} */
+// @ts-ignore typedef
+export let Request;
+
+/** @typedef {!{
+  status: number,
+  statusText: string,
+  httpVersion: string,
+  headers: !Object,
+  cookies: !Array<!CookieDTO>,
+  content: !Content,
+  redirectURL: string,
+  headersSize: number,
+  bodySize: number,
+  _transferSize: number,
+  _error: ?string,
+}} */
+// @ts-ignore typedef
+export let Response;
+
+/** @typedef {!{
+  _fromCache: (string|undefined),
+  _initiator: ?Protocol.Network.Initiator,
+  _priority: ?Protocol.Network.ResourcePriority,
+  _resourceType: string,
+  _webSocketMessages: (!Array<!Object>|undefined),
+  cache: !Object,
+  connection: (string|undefined),
+  pageref: (string|undefined),
+  request: !Request,
+  response: !Response,
+  serverIPAddress: string,
+  startedDateTime: (!Object|string),
+  time: number,
+  timings: !Timing,
+}} */
+// @ts-ignore typedef
+export let EntryDTO;
+
+/** @typedef {!{
+  mimeType: string,
+  params: (!Array<!Parameter>|undefined),
+  text: string,
+}} */
+// @ts-ignore typedef
+export let PostData;
+
+/** @typedef {!{
+  name: string,
+  value: string,
+  path: string,
+  domain: string,
+  expires: ?Date,
+  httpOnly: boolean,
+  secure: boolean,
+  sameSite: (Protocol.Network.CookieSameSite|undefined),
+}} */
+// @ts-ignore typedef
+export let CookieDTO;
+
+/** @typedef {!{
+  startedDateTime: (!Object|string),
+  id: string,
+  title: string,
+  pageTimings: !{
+  onContentLoad: number,
+  onLoad: number,
+  }
+}} */
+// @ts-ignore typedef
+export let Page;
+
+/** @typedef {!{
+  version: string,
+  name: string,
+}} */
+// @ts-ignore typedef
+export let Creator;
+
+/** @typedef {!{
+  version: string,
+  creator: !Creator,
+  pages: !Array<!Page>,
+  entries: !Array<!EntryDTO>,
+}} */
+// @ts-ignore typedef
+export let HARLogDTO;

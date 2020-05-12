@@ -84,10 +84,6 @@ p {
   width: 100%;
 }
 
-.icon {
-  margin-right: 4px;
-}
-
 .title {
   flex: 1;
   font-size: 14px;
@@ -139,7 +135,7 @@ p {
 
 .message code {
   color: var(--issue-black);
-  font-size: 90%;
+  font-size: 12px;
   user-select: text;
   cursor: text;
   background: var(--issue-code);
@@ -289,4 +285,8 @@ p {
   background: var(--affected-resource-background);
   padding: 6px 0 9px 5px;
   margin-bottom: 10px;
+}
+
+.aggregated-issues-count {
+  padding-right: 7px;
 }

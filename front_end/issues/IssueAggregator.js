@@ -25,6 +25,7 @@ export class AggregatedIssue extends SDK.Issue.Issue {
     this._representative = null;
     /** @type {!Map<string, !Protocol.Audits.MixedContentIssueDetails>} */
     this._mixedContents = new Map();
+    this._aggregatedIssuesCount = 0;
   }
 
   /**
@@ -88,6 +89,13 @@ export class AggregatedIssue extends SDK.Issue.Issue {
   }
 
   /**
+   * @return {number}
+  */
+  getAggregatedIssuesCount() {
+    return this._aggregatedIssuesCount;
+  }
+
+  /**
    * Produces a primary key for a cookie. Use this instead of `JSON.stringify` in
    * case new fields are added to `AffectedCookie`.
    * @param {!Protocol.Audits.AffectedCookie} cookie
@@ -101,6 +109,7 @@ export class AggregatedIssue extends SDK.Issue.Issue {
    * @param {!SDK.Issue.Issue} issue
    */
   addInstance(issue) {
+    this._aggregatedIssuesCount++;
     if (!this._representative) {
       this._representative = issue;
     }

@@ -58,8 +58,9 @@
     width: 23px;
 }
 
-.screencast-navigation button:hover {
-    border-color: #ccc;
+.screencast-navigation button:hover,
+.screencast-navigation button:focus {
+    border-color: var(--accent-color-hover);
 }
 
 .screencast-navigation button:active {

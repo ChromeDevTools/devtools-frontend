@@ -270,7 +270,7 @@ export class DebuggerLanguagePluginManager {
     return null;
   }
 
-  /** TODO(chromium:1032016): Make async once chromium:1032016 is complete.
+  /**
    * @param {!SDK.DebuggerModel.Location} rawLocation
    * @return {!Promise<?Workspace.UISourceCode.UILocation>}
    */

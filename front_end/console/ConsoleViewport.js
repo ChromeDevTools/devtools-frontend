@@ -240,7 +240,7 @@ export class ConsoleViewport {
         this.setStickToBottom(false);
         this._renderedItems[this._virtualSelectedIndex - this._firstActiveIndex].focusLastChildOrSelf();
       } else if (!selectedElement.hasFocus()) {
-        focusWithoutScroll(selectedElement);
+        selectedElement.focus({preventScroll: true});
       }
     }
     if (this._itemCount && !this._contentElement.hasFocus()) {
@@ -249,15 +249,6 @@ export class ConsoleViewport {
       this._contentElement.tabIndex = -1;
     }
     this._lastSelectedElement = selectedElement;
-
-    /**
-     * @suppress {checkTypes}
-     * @param {!Element} element
-     */
-    function focusWithoutScroll(element) {
-      // TODO(luoe): Closure has an outdated typedef for Element.prototype.focus.
-      element.focus({preventScroll: true});
-    }
   }
 
   /**

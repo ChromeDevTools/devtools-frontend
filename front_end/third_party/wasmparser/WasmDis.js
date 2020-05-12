@@ -503,10 +503,12 @@ export class WasmDisassembler {
                 }
                 break;
             case 16 /* call */:
+            case 18 /* return_call */:
                 var funcName = this._nameResolver.getFunctionName(operator.funcIndex, operator.funcIndex < this._importCount, true);
                 this.appendBuffer(` ${funcName}`);
                 break;
             case 17 /* call_indirect */:
+            case 19 /* return_call_indirect */:
                 var typeName = this._nameResolver.getTypeName(operator.typeIndex, true);
                 this.appendBuffer(` (type ${typeName})`);
                 break;

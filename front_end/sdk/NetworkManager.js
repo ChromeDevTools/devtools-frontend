@@ -1343,7 +1343,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
    * @return {!Promise<void>}
    */
   setInterceptionHandlerForPatterns(patterns, requestInterceptor) {
-    // Note: requestInterceptors may recieve interception requests for patterns they did not subscribe to.
+    // Note: requestInterceptors may receive interception requests for patterns they did not subscribe to.
     this._urlsForRequestInterceptor.deleteAll(requestInterceptor);
     for (const newPattern of patterns) {
       this._urlsForRequestInterceptor.set(requestInterceptor, newPattern);

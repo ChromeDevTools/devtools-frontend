@@ -264,6 +264,11 @@ p {
 .affected-resource-cookie-info {
   color: var(--issue-gray);
   padding: 2px;
+  text-align: right;
+}
+
+.affected-resource-cookie-info-header {
+  text-align: right;
 }
 
 .affected-resource-mixed-content-info {

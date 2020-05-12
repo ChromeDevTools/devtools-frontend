@@ -80,14 +80,45 @@ export class SameSiteCookieIssue extends Issue {
 
 /**
  * @param {string} text
+ * @param {string} resolveMessage
  * @param {!Array<string>} resolutions
  * @return {!Element}
  */
-function textMessageWithResolutions(text, resolutions) {
+function textMessageWithResolutions(text, resolveMessage, resolutions) {
+  /**
+   * Inserts <code> tags for substrings of `message` that are enclosed
+   * by |, i.e. "Hello |code|" causes code get enclosed in a <code> tag.
+   * This is not an injection risk, as it only use `textContent` and only
+   * programmatically creates <span> and <code> elements.
+   * @param {!Element} element
+   * @param {string} message
+   */
+  const appendStyled = (element, message) => {
+    let lastIndex = 0;
+    // Closure doesn't know String.p.matchAll exists.
+    /** @suppress {missingProperties} */
+    const matches = message.matchAll(/\|(.*?)\|/g);
+    for (const match of matches) {  //
+      if (match.index !== undefined) {
+        const span = document.createElement('span');
+        span.textContent = message.substring(lastIndex, match.index);
+        element.appendChild(span);
+        const code = document.createElement('code');
+        code.textContent = match[1];
+        lastIndex = match.index + match[0].length;
+        element.appendChild(code);
+      }
+    }
+    if (lastIndex < message.length) {
+      const span = document.createElement('span');
+      span.textContent = message.substring(lastIndex, message.length);
+      element.appendChild(span);
+    }
+  };
   const message = document.createElement('div');
   message.classList.add('message');
   const messageContent = document.createElement('p');
-  messageContent.textContent = text;
+  appendStyled(messageContent, text);
   message.append(messageContent);
 
   if (resolutions.length > 0) {
@@ -95,8 +126,7 @@ function textMessageWithResolutions(text, resolutions) {
     message.append(resolutionParagraph);
 
     const resolutionParagraphTextContent = document.createElement('span');
-    resolutionParagraphTextContent.classList.add('resolutions-label');
-    resolutionParagraphTextContent.textContent = ls`Resolve by`;
+    appendStyled(resolutionParagraphTextContent, resolveMessage);
     resolutionParagraph.append(resolutionParagraphTextContent);
 
     const resolutionList = document.createElement('ul');
@@ -105,7 +135,7 @@ function textMessageWithResolutions(text, resolutions) {
 
     for (const resolution of resolutions) {
       const listItem = document.createElement('li');
-      listItem.textContent = resolution;
+      appendStyled(listItem, resolution);
       resolutionList.append(listItem);
     }
   }
@@ -113,79 +143,110 @@ function textMessageWithResolutions(text, resolutions) {
   return message;
 }
 
+const resolutionsRead = [
+  ls`Specify |SameSite=None| and |Secure| if the cookie should be sent in cross-site requests. This enables third-party use.`,
+  ls`Specify |SameSite=Strict| or |SameSite=Lax| if the cookie should not be sent in cross-site requests`,
+];
+
+const resolutionsSet = [
+  ls`Specify |SameSite=None| and |Secure| if the cookie is intended to be set in cross-site contexts. Note that only cookies sent over HTTPS may use the |Secure| attribute.`,
+  ls`Specify |SameSite=Strict| or |SameSite=Lax| if the cookie should not be set by cross-site requests`,
+];
+
+const resolveBySentence = ls`Resolve this issue by updating the attributes of the cookie:`;
+
+const sameSiteUnspecifiedErrorRead = {
+  title: ls`Indicate whether to send a cookie in a cross-site request by specifying its SameSite attribute`,
+  message: () => textMessageWithResolutions(
+      ls`Because a cookie's |SameSite| attribute was not set or is invalid, it defaults to |SameSite=Lax|, which prevents the cookie from being sent in a cross-site request.
+       This behavior protects user data from accidentally leaking to third parties and cross-site request forgery.`,
+      resolveBySentence, resolutionsRead),
+  issueKind: IssueKind.BreakingChange,
+  links: [{link: ls`https://web.dev/samesite-cookies-explained/`, linkTitle: ls`SameSite cookies explained`}],
+};
+
+const sameSiteUnspecifiedErrorSet = {
+  title:
+      ls`Indicate whether a cookie is intended to be set in a cross-site context by specifying its SameSite attribute`,
+  message: () => textMessageWithResolutions(
+      ls`Because a cookie's |SameSite| attribute  was not set or is invalid, it defaults to |SameSite=Lax|, which prevents the cookie from being set in a cross-site context.
+       This behavior protects user data from accidentally leaking to third parties and cross-site request forgery.`,
+      resolveBySentence, resolutionsSet),
+  issueKind: IssueKind.BreakingChange,
+  links: [{link: ls`https://web.dev/samesite-cookies-explained/`, linkTitle: ls`SameSite cookies explained`}],
+};
+
+const sameSiteUnspecifiedWarnRead = {
+  title: ls`Indicate whether to send a cookie in a cross-site request by specifying its SameSite attribute`,
+  message: () => textMessageWithResolutions(
+      ls`Because a cookie's |SameSite| attribute was not set or is invalid, it defaults to |SameSite=Lax|, which will prevent the cookie from being sent in a cross-site request in a future version of the browser.
+       This behavior protects user data from accidentally leaking to third parties and cross-site request forgery.`,
+      resolveBySentence, resolutionsRead),
+  issueKind: IssueKind.BreakingChange,
+  links: [{link: ls`https://web.dev/samesite-cookies-explained/`, linkTitle: ls`SameSite cookies explained`}],
+};
+
+const sameSiteUnspecifiedWarnSet = {
+  title: ls`Indicate whether a cookie is intended to be set in cross-site context by specifying its SameSite attribute`,
+  message: () => textMessageWithResolutions(
+      ls`Because a cookie's |SameSite| attribute was not set or is invalid, it defaults to |SameSite=Lax|, which will prevents the cookie from being set in a cross-site context in a future version of the browser.
+       This behavior protects user data from accidentally leaking to third parties and cross-site request forgery.`,
+      resolveBySentence, resolutionsSet),
+  issueKind: IssueKind.BreakingChange,
+  links: [{link: ls`https://web.dev/samesite-cookies-explained/`, linkTitle: ls`SameSite cookies explained`}],
+};
+
+const sameSiteNoneInsecureErrorRead = {
+  title: ls`Mark cross-site cookies as Secure to allow them to be sent in cross-site requests`,
+  message: () => textMessageWithResolutions(
+      ls`Cookies marked with |SameSite=None| must also be marked with |Secure| to get sent in cross-site requests.
+       This behavior protects user data from being sent over an insecure connection.`,
+      resolveBySentence, resolutionsRead),
+  issueKind: IssueKind.BreakingChange,
+  links: [{link: ls`https://web.dev/samesite-cookies-explained/`, linkTitle: ls`SameSite cookies explained`}],
+};
+
+const sameSiteNoneInsecureErrorSet = {
+  title: ls`Mark cross-site cookies as Secure to allow setting them in cross-site contexts`,
+  message: () => textMessageWithResolutions(
+      ls`Cookies marked with |SameSite=None| must also be marked with |Secure| to allow setting them in a cross-site context.
+       This behavior protects user data from being sent over an insecure connection.`,
+      resolveBySentence, resolutionsSet),
+  issueKind: IssueKind.BreakingChange,
+  links: [{link: ls`https://web.dev/samesite-cookies-explained/`, linkTitle: ls`SameSite cookies explained`}],
+};
+
+const sameSiteNoneInsecureWarnRead = {
+  title: ls`Mark cross-site cookies as Secure to allow them to be sent in cross-site requests`,
+  message: () => textMessageWithResolutions(
+      ls`In a future version of the browser, cookies marked with |SameSite=None| must also be marked with |Secure| to get sent in cross-site requests.
+       This behavior protects user data from being sent over an insecure connection.`,
+      resolveBySentence, resolutionsRead),
+  issueKind: IssueKind.BreakingChange,
+  links: [{link: ls`https://web.dev/samesite-cookies-explained/`, linkTitle: ls`SameSite cookies explained`}],
+};
+
+const sameSiteNoneInsecureWarnSet = {
+  title: ls`Mark cross-site cookies as Secure to allow setting them in cross-site contexts`,
+  message: () => textMessageWithResolutions(
+      ls`In a future version of the browser, cookies marked with |SameSite=None| must also be marked with |Secure| to allow setting them in a cross-site context.
+       This behavior protects user data from being sent over an insecure connection.`,
+      resolveBySentence, resolutionsSet),
+  issueKind: IssueKind.BreakingChange,
+  links: [{link: ls`https://web.dev/samesite-cookies-explained/`, linkTitle: ls`SameSite cookies explained`}],
+};
+
 /** @type {!Map<string, !IssueDescription>} */
 const issueDescriptions = new Map([
-  [
-    'SameSiteCookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::ReadCookie', {
-      title: ls`A cookie was not sent because the cookie's 'SameSite' attribute was defaulted to 'SameSite=Lax'`,
-      message: () => textMessageWithResolutions(
-          ls
-          `A cookie was defaulted to 'SameSite=Lax' because the cookie's 'SameSite' attribute was not set or invalid. The cookie was not sent because the default behavior for 'SameSite=Lax' prevents this cookie from being sent in cross-site requests.`,
-          [
-            ls`If the cookie is intended for third parties, mark the cookie as 'SameSite=None; Secure'.`,
-            ls
-            `If the cookie is not intended for third parties, consider explicitly marking the cookie as 'SameSite=Strict' or 'SameSite=Lax' to make your intent clear and provide a consistent experience across browsers.`,
-          ]),
-      issueKind: IssueKind.BreakingChange,
-      links: [{link: ls`https://web.dev/samesite-cookies-explained/`,
-      linkTitle: ls`SameSite cookies explained`}],
-    }
-  ],
-  [
-    'SameSiteCookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::SetCookie', {
-      title: ls `A cookie was blocked, because the cookie's 'SameSite' attribute was defaulted to 'SameSite=Lax'`,
-      message: () => textMessageWithResolutions(
-        ls`A cookie was defaulted to 'SameSite=Lax' because the cookie's SameSite attribute was not set or invalid. The cookie was not set because the default behavior for 'SameSite=Lax' prevents this cookie from being set in a cross-site response. This issue can only be resolved if you can change the cross-site page from which this cookie originated.`, [ls`If the cookie is intended for third parties, mark the cookie as 'SameSite=None; Secure'.`,
-        ls
-        `If the cookie is not intended for third parties, consider explicitly marking the cookie as 'SameSite=Strict' or 'SameSite=Lax' to make your intent clear and provide a consistent experience across browsers.`,]),
-      issueKind: IssueKind.BreakingChange,
-      links: [{link: ls`https://web.dev/samesite-cookies-explained/`,
-      linkTitle: ls`SameSite cookies explained`}],
-    }
-  ],
-  [
-    'SameSiteCookieIssue::ExcludeSameSiteNoneInsecure::SetCookie', {
-      title: ls`A cookie was blocked, because the cookie specified 'SameSite=None' without 'Secure'`,
-      message: () => textMessageWithResolutions(
-          ls
-          `A cookie was received with the 'SameSite=None' attribute, marking it as available for third-party use, but did not have the 'Secure' attribute. Cookies with 'SameSite=None' are not set unless they also have the 'Secure' attribute.`,
-          [
-            ls`If the cookie is intended for third parties, mark the cookie as 'Secure'.`,
-            ls
-            `If the cookie is not intended for third parties, consider explicitly marking the cookie as 'SameSite=Strict' or 'SameSite=Lax' to make your intent clear and provide a consistent experience across browsers.`,
-          ]),
-      issueKind: IssueKind.BreakingChange,
-      links: [{link: ls`https://web.dev/samesite-cookies-explained/`,
-      linkTitle: ls`SameSite cookies explained`}],
-    }
-  ],
-  [
-    'SameSiteCookieIssue::WarnSameSiteNoneInsecure::SetCookie', {
-      title: ls
-      `A cookie will be blocked in the future, because the cookie specified 'SameSite=None' without 'Secure'`,
-      message: () => textMessageWithResolutions(
-          ls
-          `A cookie was received with the 'SameSite=None' attribute, marking it as available for third-party use, but did not have the 'Secure' attribute. Cookies with 'SameSite=None' will not be set unless they also have the 'Secure' attribute.`,
-          [
-            ls`If the cookie is intended for third parties, mark the cookie as 'Secure'.`,
-            ls
-            `If the cookie is not intended for third parties, consider explicitly marking the cookie as 'SameSite=Strict' or 'SameSite=Lax' to make your intent clear and provide a consistent experience across browsers.`,
-          ]),
-      issueKind: IssueKind.BreakingChange,
-      links: [{link: ls`https://web.dev/samesite-cookies-explained/`,
-      linkTitle: ls`SameSite cookies explained`}],
-    }
-  ],
-  [
-    'SameSiteCookieIssue::WarnSameSiteUnspecifiedCrossSiteContext::ReadCookie', {
-      title: ls `A cookie will not be sent in the future, because the cookie was set without the 'SameSite' attribute`,
-      message: () => textMessageWithResolutions(
-        ls`A cookie without a valid SameSite attribute was sent in a cross-site request. In the future, a cookie will only be sent in a cross-site request if the cookie has both the 'SameSite=None and 'Secure' attributes.`, [ls`If the cookie is intended for third parties, mark the cookie as 'SameSite=None; Secure'.`,
-        ls
-        `If the cookie is not intended for third parties, consider explicitly marking the cookie as 'SameSite=Strict' or 'SameSite=Lax' to make your intent clear and provide a consistent experience across browsers.`,]),
-      issueKind: IssueKind.BreakingChange,
-      links: [{link: ls`https://web.dev/samesite-cookies-explained/`,
-      linkTitle: ls`SameSite cookies explained`}],
-    }
-  ]
+  ['SameSiteCookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::ReadCookie', sameSiteUnspecifiedErrorRead],
+  ['SameSiteCookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::SetCookie', sameSiteUnspecifiedErrorSet],
+  // These two don't have a deprecation date yet, but they need to be fixed eventually.
+  ['SameSiteCookieIssue::WarnSameSiteUnspecifiedLaxAllowUnsafe::ReadCookie', sameSiteUnspecifiedWarnRead],
+  ['SameSiteCookieIssue::WarnSameSiteUnspecifiedLaxAllowUnsafe::SetCookie', sameSiteUnspecifiedWarnSet],
+  ['SameSiteCookieIssue::ExcludeSameSiteNoneInsecure::ReadCookie', sameSiteNoneInsecureErrorRead],
+  ['SameSiteCookieIssue::ExcludeSameSiteNoneInsecure::SetCookie', sameSiteNoneInsecureErrorSet],
+  ['SameSiteCookieIssue::WarnSameSiteNoneInsecure::ReadCookie', sameSiteNoneInsecureWarnRead],
+  ['SameSiteCookieIssue::WarnSameSiteNoneInsecure::SetCookie', sameSiteNoneInsecureWarnSet],
+  ['SameSiteCookieIssue::WarnSameSiteUnspecifiedCrossSiteContext::ReadCookie', sameSiteUnspecifiedWarnRead],
+  ['SameSiteCookieIssue::WarnSameSiteUnspecifiedCrossSiteContext::SetCookie', sameSiteUnspecifiedWarnSet]
 ]);

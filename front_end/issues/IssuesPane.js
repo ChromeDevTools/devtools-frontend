@@ -216,8 +216,9 @@ class AffectedCookiesView extends AffectedResourcesView {
 
     const info = document.createElement('td');
     info.classList.add('affected-resource-header');
-    // Prepend a space to align them better with cookie domains starting with a "."
-    info.textContent = '\u2009Context';
+    info.classList.add('affected-resource-cookie-info-header');
+    info.textContent = ls`Domain` +
+        ' & ' + ls`Path`;
     header.appendChild(info);
 
     this._affectedResources.appendChild(header);
@@ -260,9 +261,7 @@ class AffectedCookiesView extends AffectedResourcesView {
     }
     const info = document.createElement('td');
     info.classList.add('affected-resource-cookie-info');
-
-    // Prepend a space for all domains not starting with a "." to align them better.
-    info.textContent = (cookie.domain[0] !== '.' ? '\u2008' : '') + cookie.domain + cookie.path;
+    info.textContent = `${cookie.domain}${cookie.path}`;
 
     element.appendChild(name);
     element.appendChild(info);

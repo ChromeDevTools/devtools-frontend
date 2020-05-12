@@ -194,10 +194,12 @@ lldb::VariableSP FindVariableAtOffset(lldb_private::Module* module,
     }
   }
   var_list.Clear();
-  module->FindGlobalVariables(lldb_private::RegularExpression(name), 1,
+  module->FindGlobalVariables(lldb_private::RegularExpression(".*"), -1,
                               var_list);
-  if (!var_list.Empty()) {
-    return var_list.GetVariableAtIndex(0);
+  for (auto var : Indexed(var_list)) {
+    if (var->GetName().GetStringRef() == name) {
+      return var;
+    }
   }
   return {};
 }

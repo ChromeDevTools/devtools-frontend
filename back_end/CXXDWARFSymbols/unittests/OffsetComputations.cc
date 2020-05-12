@@ -217,7 +217,8 @@ TEST_F(SymbolServerTest, ClassStaticVariable) {
   EXPECT_THAT(names, testing::UnorderedElementsAre("MyClass::I"));
 
 #ifdef SYMBOL_SERVER_BUILD_FORMATTERS
-  auto snippet = module->GetVariableFormatScript("I", 0x10, cache.Printer());
+  auto snippet =
+      module->GetVariableFormatScript("MyClass::I", 0x10, cache.Printer());
   EXPECT_TRUE(!!snippet);
   EXPECT_FALSE(snippet->empty());
 #endif

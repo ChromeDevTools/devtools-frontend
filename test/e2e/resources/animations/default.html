@@ -1,0 +1,32 @@
+<!--
+  Copyright 2020 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<html>
+
+<head>
+    <style type="text/css">
+        @keyframes rotate {
+            0% { transform: rotateY(-90deg); }
+            100% {
+                transform: rotateY(-270deg) rotateX(90deg);
+                background: #0FF;
+            }
+        }
+
+        div {
+            animation: rotate ease-in-out infinite 2s;
+            width: 200px;
+            height: 100px;
+            background: #00F;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div></div>
+</body>
+
+</html>

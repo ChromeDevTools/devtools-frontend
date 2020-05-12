@@ -8,6 +8,7 @@ ts_library("e2e") {
   testonly = true
 
   deps = [
+    "animations",
     "application",
     "console",
     "elements",

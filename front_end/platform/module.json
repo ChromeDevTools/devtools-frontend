@@ -4,6 +4,7 @@
   "modules": [
     "platform.js",
     "utilities.js",
+    "date-utilities.js",
     "string-utilities.js",
     "number-utilities.js",
     "array-utilities.js",

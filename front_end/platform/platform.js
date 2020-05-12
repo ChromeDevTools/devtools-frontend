@@ -31,6 +31,7 @@
 import './utilities.js';
 
 import * as ArrayUtilities from './array-utilities.js';
+import * as DateUtilities from './date-utilities.js';
 import * as NumberUtilities from './number-utilities.js';
 import * as StringUtilities from './string-utilities.js';
 import * as UIString from './UIString.js';
@@ -41,4 +42,4 @@ import * as UIString from './UIString.js';
 export const {ls} = UIString;
 
 export {Multimap} from './utilities.js';
-export {ArrayUtilities, NumberUtilities, StringUtilities, UIString};
+export {ArrayUtilities, NumberUtilities, DateUtilities, StringUtilities, UIString};

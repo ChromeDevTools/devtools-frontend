@@ -30,6 +30,7 @@
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';
+import * as Platfrom from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
@@ -64,7 +65,7 @@ export class Resource {
     this._type = type || Common.ResourceType.resourceTypes.Other;
     this._mimeType = mimeType;
 
-    this._lastModified = lastModified && lastModified.isValid() ? lastModified : null;
+    this._lastModified = lastModified && Platfrom.DateUtilities.isValid(lastModified) ? lastModified : null;
     this._contentSize = contentSize;
 
     /** @type {?string} */ this._content;
@@ -85,7 +86,7 @@ export class Resource {
     }
     const lastModifiedHeader = this._request.responseLastModified();
     const date = lastModifiedHeader ? new Date(lastModifiedHeader) : null;
-    this._lastModified = date && date.isValid() ? date : null;
+    this._lastModified = date && Platfrom.DateUtilities.isValid(date) ? date : null;
     return this._lastModified;
   }
 

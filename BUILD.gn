@@ -1314,6 +1314,7 @@ all_devtools_modules = [
   "platform/string-utilities.js",
   "platform/number-utilities.js",
   "platform/array-utilities.js",
+  "platform/date-utilities.js",
   "platform/UIString.js",
   "profiler/TopDownProfileDataGrid.js",
   "profiler/ProfileView.js",

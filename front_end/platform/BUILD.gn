@@ -8,6 +8,7 @@ ts_library("platform") {
   sources = [
     "UIString.js",
     "array-utilities.js",
+    "date-utilities.js",
     "number-utilities.js",
     "platform.js",
     "string-utilities.js",

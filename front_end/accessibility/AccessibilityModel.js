@@ -199,33 +199,6 @@ export class AccessibilityNode {
 
     return !this._childIds.some(id => this._accessibilityModel.axNodeForId(id) !== undefined);
   }
-
-  /**
-   * TODO(aboxhall): Remove once protocol is stable.
-   * @param {!AccessibilityNode} inspectedNode
-   * @param {string=} leadingSpace
-   * @return {string}
-   */
-  printSelfAndChildren(inspectedNode, leadingSpace) {
-    let string = leadingSpace || '';
-    if (this._role) {
-      string += this._role.value;
-    } else {
-      string += '<no role>';
-    }
-    string += (this._name ? ' ' + this._name.value : '');
-    string += ' ' + this._id;
-    if (this._domNode) {
-      string += ' (' + this._domNode.nodeName() + ')';
-    }
-    if (this === inspectedNode) {
-      string += ' *';
-    }
-    for (const child of this.children()) {
-      string += '\n' + child.printSelfAndChildren(inspectedNode, (leadingSpace || '') + '  ');
-    }
-    return string;
-  }
 }
 
 /**
@@ -302,18 +275,6 @@ export class AccessibilityModel extends SDK.SDKModel.SDKModel {
    */
   _setAXNodeForBackendDOMNodeId(backendDOMNodeId, axNode) {
     this._backendDOMNodeIdToAXNode.set(backendDOMNodeId, axNode);
-  }
-
-  // TODO(aboxhall): Remove once protocol is stable.
-  /**
-   * @param {!SDK.DOMModel.DOMNode} inspectedNode
-   */
-  logTree(inspectedNode) {
-    let rootNode = inspectedNode;
-    while (rootNode.parentNode()) {
-      rootNode = rootNode.parentNode();
-    }
-    console.log(rootNode.printSelfAndChildren(inspectedNode));  // eslint-disable-line no-console
   }
 }
 

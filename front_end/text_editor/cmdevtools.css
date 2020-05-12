@@ -1,4 +1,13 @@
 .CodeMirror {
+    --breakpoint-background-red: #FF4E4226;
+}
+
+:host-context(.-theme-with-dark-background) .CodeMirror,
+.-theme-with-dark-background .CodeMirror {
+    --breakpoint-background-red: #FF4E4233;
+}
+
+.CodeMirror {
     line-height: 1.2em !important;
     background-color: transparent !important;
     color: #222;
@@ -178,8 +187,16 @@
     color: rgba(128, 128, 128, 0.4);
 }
 
+.breakpoint-element {
+    padding-top: 1.5px;
+}
+
 .breakpoint-element::before {
     content: "\00AD";
+}
+
+.CodeMirror-gutter-background.cm-breakpoint {
+    background-color: var(--breakpoint-background-red);
 }
 
 .cm-breakpoint .breakpoint-element::before {

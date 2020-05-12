@@ -175,7 +175,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
         };
         const text = document.createElement('span');
         text.classList.add('devtools-link');
-        text.textContent = 'Learn more in the issues panel';
+        text.textContent = ls`Learn more in the issues tab`;
         link.appendChild(text);
         link.prepend(UI.Icon.Icon.create('largeicon-breaking-change', 'icon'));
         callToActionBody.appendChild(link);

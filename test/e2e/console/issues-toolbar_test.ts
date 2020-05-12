@@ -8,7 +8,7 @@ import {describe, it} from 'mocha';
 import {$, click, getBrowserAndPages, resourcesPath, waitFor} from '../../shared/helper.js';
 
 describe('The Console Tab', async () => {
-  it('shows infobar with button linking to issues panel', async () => {
+  it('shows infobar with button linking to issues tab', async () => {
     const {target} = getBrowserAndPages();
 
     // navigate to page which causes a SameSiteCookieIssue

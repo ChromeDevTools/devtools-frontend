@@ -441,6 +441,9 @@
   <message name="IDS_DEVTOOLS_d0ba1750af6bfca9c78ae8105e2d2c96" desc="Tooltip for a filter in the Network panel">
     Only show blocked requests
   </message>
+  <message name="IDS_DEVTOOLS_d3a5ba3be76f23c067151787387512d2" desc="Text for a link to the issues panel">
+    Learn more in the issues tab
+  </message>
   <message name="IDS_DEVTOOLS_d55df13c735b6066e930b3e66c4588ab" desc="Text for toggling header data (e.g. query string parameters) from decoded to encoded in the headers tab">
     View URL encoded
   </message>

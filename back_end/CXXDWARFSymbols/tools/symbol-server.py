@@ -17,19 +17,21 @@ import time
 from threading import Timer
 import urllib
 
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
-
 parser = argparse.ArgumentParser()
 parser.add_argument('-port', default=8888, type=int)
 parser.add_argument('tool', default='/abs/path/to/DWARFSymbolServer')
 parser.add_argument('-I', nargs='*', default=[])
+parser.add_argument(
+    '-watch',
+    help="watch symbol server for changes and restart automatically",
+    action="store_true")
 options = parser.parse_args()
 PORT = 8888
 SymbolServer = [
     options.tool, *itertools.chain.from_iterable(
         ('-I', '{0}'.format(subst)) for subst in options.I)
 ]
+Watchdog = None
 
 print('Executing {0}'.format(' '.join(SymbolServer)))
 LC = subprocess.Popen(
@@ -53,19 +55,6 @@ def restartLC():
         SymbolServer, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     StdIn = LC.stdin
     StdOut = LC.stdout
-
-
-class ToolWatchdog(FileSystemEventHandler):
-    def __init__(self):
-        self.timer = None
-
-    def on_any_event(self, event):
-        if event.src_path == options.tool and os.access(
-                event.src_path, os.X_OK):
-            if self.timer:
-                self.timer.cancel()
-            self.timer = Timer(2, restartLC)
-            self.timer.start()
 
 
 def DownloadResources(Input):
@@ -146,10 +135,28 @@ class SymbolServerServerHandler(http.server.SimpleHTTPRequestHandler):
         http.server.SimpleHTTPRequestHandler.end_headers(self)
 
 
-Tool = Observer()
-Tool.schedule(
-    ToolWatchdog(), path=os.path.dirname(options.tool), recursive=False)
-Tool.start()
+if options.watch:
+    from watchdog.observers import Observer
+    from watchdog.events import FileSystemEventHandler
+
+    class ToolWatchdog(FileSystemEventHandler):
+        def __init__(self):
+            self.timer = None
+
+        def on_any_event(self, event):
+            if event.src_path == options.tool and os.access(
+                    event.src_path, os.X_OK):
+                if self.timer:
+                    self.timer.cancel()
+                self.timer = Timer(2, restartLC)
+                self.timer.start()
+
+    Watchdog = Observer()
+    Watchdog.schedule(ToolWatchdog(),
+                      path=os.path.dirname(options.tool),
+                      recursive=False)
+    print('Watchdog started for', options.tool)
+    Watchdog.start()
 
 while True:
     try:

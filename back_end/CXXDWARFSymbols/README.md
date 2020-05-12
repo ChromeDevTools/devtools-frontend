@@ -33,13 +33,13 @@ Building and running the server further require these dependencies:
 * Python3
 * libprotobuf and protoc
 * Swig (for building lldb)
-* The watchdog python package
+* The watchdog python package (optional)
 * XCode and XCode developer tools (MacOS)
 * brew (MacOs)
 
 On Debian, install the dependencies by running
 ```bash
-apt install cmake python3 libprotobuf-dev protobuf-compiler swig python-watchdog
+apt install cmake python3 libprotobuf-dev protobuf-compiler swig
 ```
 
 On MacOS, install the dependencies by
@@ -55,7 +55,6 @@ xcode-select --install
 * cmake, python3, swig, protobuf
 ```bash
 brew install cmake python3 swig protobuf
-pip3 install --user watchdog
 ```
 
 ### Building
@@ -93,6 +92,11 @@ back_end/CXXDWARFSymbols/tools/symbol-server.py out/SymbolServer/bin/DWARFSymbol
 
 To avoid having to download lots of symbol modules, the tool accepts `-I`
 arguments pointing to file system directories containing the symbol modules.
+
+You can also pass `-watch` when developing the symbol server, which makes
+the Python script watch the symbol server binary for changes and automatically
+restart it when changes are detected. For this to work, you need to install
+the `python3-watchdog` package on Debian.
 
 ### Showing Variable Values
 There is experimental support for showing contents for integer and

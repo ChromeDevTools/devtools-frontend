@@ -174,12 +174,11 @@ export function registerCommands(inspectorBackend) {
     WarnSameSiteUnspecifiedCrossSiteContext: 'WarnSameSiteUnspecifiedCrossSiteContext',
     WarnSameSiteNoneInsecure: 'WarnSameSiteNoneInsecure',
     WarnSameSiteUnspecifiedLaxAllowUnsafe: 'WarnSameSiteUnspecifiedLaxAllowUnsafe',
-    WarnSameSiteCrossSchemeSecureUrlMethodUnsafe: 'WarnSameSiteCrossSchemeSecureUrlMethodUnsafe',
-    WarnSameSiteCrossSchemeSecureUrlLax: 'WarnSameSiteCrossSchemeSecureUrlLax',
-    WarnSameSiteCrossSchemeSecureUrlStrict: 'WarnSameSiteCrossSchemeSecureUrlStrict',
-    WarnSameSiteCrossSchemeInsecureUrlMethodUnsafe: 'WarnSameSiteCrossSchemeInsecureUrlMethodUnsafe',
-    WarnSameSiteCrossSchemeInsecureUrlLax: 'WarnSameSiteCrossSchemeInsecureUrlLax',
-    WarnSameSiteCrossSchemeInsecureUrlStrict: 'WarnSameSiteCrossSchemeInsecureUrlStrict'
+    WarnSameSiteStrictLaxDowngradeStrict: 'WarnSameSiteStrictLaxDowngradeStrict',
+    WarnSameSiteStrictCrossDowngradeStrict: 'WarnSameSiteStrictCrossDowngradeStrict',
+    WarnSameSiteStrictCrossDowngradeLax: 'WarnSameSiteStrictCrossDowngradeLax',
+    WarnSameSiteLaxCrossDowngradeStrict: 'WarnSameSiteLaxCrossDowngradeStrict',
+    WarnSameSiteLaxCrossDowngradeLax: 'WarnSameSiteLaxCrossDowngradeLax'
   });
   inspectorBackend.registerEnum('Audits.SameSiteCookieOperation', {SetCookie: 'SetCookie', ReadCookie: 'ReadCookie'});
   inspectorBackend.registerEnum('Audits.MixedContentResolutionStatus', {

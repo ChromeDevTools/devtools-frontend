@@ -478,12 +478,11 @@ experimental domain Audits
       WarnSameSiteUnspecifiedCrossSiteContext
       WarnSameSiteNoneInsecure
       WarnSameSiteUnspecifiedLaxAllowUnsafe
-      WarnSameSiteCrossSchemeSecureUrlMethodUnsafe
-      WarnSameSiteCrossSchemeSecureUrlLax
-      WarnSameSiteCrossSchemeSecureUrlStrict
-      WarnSameSiteCrossSchemeInsecureUrlMethodUnsafe
-      WarnSameSiteCrossSchemeInsecureUrlLax
-      WarnSameSiteCrossSchemeInsecureUrlStrict
+      WarnSameSiteStrictLaxDowngradeStrict
+      WarnSameSiteStrictCrossDowngradeStrict
+      WarnSameSiteStrictCrossDowngradeLax
+      WarnSameSiteLaxCrossDowngradeStrict
+      WarnSameSiteLaxCrossDowngradeLax
 
   type SameSiteCookieOperation extends string
     enum

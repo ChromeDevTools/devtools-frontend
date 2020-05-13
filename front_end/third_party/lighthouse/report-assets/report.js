@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2017 Google Inc. All Rights Reserved.
+ * Copyright 2017 The Lighthouse Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
 'use strict';
 
 /* globals self, URL */
+
+/** @typedef {import('./i18n')} I18n */
 
 const ELLIPSIS = '\u2026';
 const NBSP = '\xa0';
@@ -93,12 +95,6 @@ class Util {
       }
     }
 
-    // Set locale for number/date formatting and grab localized renderer strings from the LHR.
-    Util.setNumberDateLocale(clone.configSettings.locale);
-    if (clone.i18n && clone.i18n.rendererFormattedStrings) {
-      Util.updateAllUIStrings(clone.i18n.rendererFormattedStrings);
-    }
-
     // For convenience, smoosh all AuditResults into their auditRef (which has just weight & group)
     if (typeof clone.categories !== 'object') throw new Error('No categories provided.');
     for (const category of Object.values(clone.categories)) {
@@ -123,17 +119,6 @@ class Util {
     }
 
     return clone;
-  }
-
-
-  /**
-   * @param {LH.I18NRendererStrings} rendererFormattedStrings
-   */
-  static updateAllUIStrings(rendererFormattedStrings) {
-    // TODO(i18n): don't mutate these here but on the LHR and pass that around everywhere
-    for (const [key, value] of Object.entries(rendererFormattedStrings)) {
-      Util.UIStrings[key] = value;
-    }
   }
 
   /**
@@ -182,101 +167,6 @@ class Util {
       rating = RATINGS.AVERAGE.label;
     }
     return rating;
-  }
-
-  /**
-   * Format number.
-   * @param {number} number
-   * @param {number=} granularity Number of decimal places to include. Defaults to 0.1.
-   * @return {string}
-   */
-  static formatNumber(number, granularity = 0.1) {
-    const coarseValue = Math.round(number / granularity) * granularity;
-    return Util.numberFormatter.format(coarseValue);
-  }
-
-  /**
-   * @param {number} size
-   * @param {number=} granularity Controls how coarse the displayed value is, defaults to .01
-   * @return {string}
-   */
-  static formatBytesToKB(size, granularity = 0.1) {
-    const kbs = Util.numberFormatter.format(Math.round(size / 1024 / granularity) * granularity);
-    return `${kbs}${NBSP}KB`;
-  }
-
-  /**
-   * @param {number} ms
-   * @param {number=} granularity Controls how coarse the displayed value is, defaults to 10
-   * @return {string}
-   */
-  static formatMilliseconds(ms, granularity = 10) {
-    const coarseTime = Math.round(ms / granularity) * granularity;
-    return `${Util.numberFormatter.format(coarseTime)}${NBSP}ms`;
-  }
-
-  /**
-   * @param {number} ms
-   * @param {number=} granularity Controls how coarse the displayed value is, defaults to 0.1
-   * @return {string}
-   */
-  static formatSeconds(ms, granularity = 0.1) {
-    const coarseTime = Math.round(ms / 1000 / granularity) * granularity;
-    return `${Util.numberFormatter.format(coarseTime)}${NBSP}s`;
-  }
-
-  /**
-   * Format time.
-   * @param {string} date
-   * @return {string}
-   */
-  static formatDateTime(date) {
-    /** @type {Intl.DateTimeFormatOptions} */
-    const options = {
-      month: 'short', day: 'numeric', year: 'numeric',
-      hour: 'numeric', minute: 'numeric', timeZoneName: 'short',
-    };
-    let formatter = new Intl.DateTimeFormat(Util.numberDateLocale, options);
-
-    // Force UTC if runtime timezone could not be detected.
-    // See https://github.com/GoogleChrome/lighthouse/issues/1056
-    const tz = formatter.resolvedOptions().timeZone;
-    if (!tz || tz.toLowerCase() === 'etc/unknown') {
-      options.timeZone = 'UTC';
-      formatter = new Intl.DateTimeFormat(Util.numberDateLocale, options);
-    }
-    return formatter.format(new Date(date));
-  }
-  /**
-   * Converts a time in milliseconds into a duration string, i.e. `1d 2h 13m 52s`
-   * @param {number} timeInMilliseconds
-   * @return {string}
-   */
-  static formatDuration(timeInMilliseconds) {
-    let timeInSeconds = timeInMilliseconds / 1000;
-    if (Math.round(timeInSeconds) === 0) {
-      return 'None';
-    }
-
-    /** @type {Array<string>} */
-    const parts = [];
-    const unitLabels = /** @type {Object<string, number>} */ ({
-      d: 60 * 60 * 24,
-      h: 60 * 60,
-      m: 60,
-      s: 1,
-    });
-
-    Object.keys(unitLabels).forEach(label => {
-      const unit = unitLabels[label];
-      const numberOfUnits = Math.floor(timeInSeconds / unit);
-      if (numberOfUnits > 0) {
-        timeInSeconds -= numberOfUnits * unit;
-        parts.push(`${numberOfUnits}\xa0${label}`);
-      }
-    });
-
-    return parts.join(' ');
   }
 
   /**
@@ -432,7 +322,7 @@ class Util {
 
   /**
    * @param {string|URL} value
-   * @return {URL}
+   * @return {!URL}
    */
   static createOrReturnURL(value) {
     if (value instanceof URL) {
@@ -477,22 +367,22 @@ class Util {
 
   /**
    * @param {LH.Config.Settings} settings
-   * @return {Array<{name: string, description: string}>}
+   * @return {!Array<{name: string, description: string}>}
    */
   static getEnvironmentDisplayValues(settings) {
     const emulationDesc = Util.getEmulationDescriptions(settings);
 
     return [
       {
-        name: 'Device',
+        name: Util.i18n.strings.runtimeSettingsDevice,
         description: emulationDesc.deviceEmulation,
       },
       {
-        name: 'Network throttling',
+        name: Util.i18n.strings.runtimeSettingsNetworkThrottling,
         description: emulationDesc.networkThrottling,
       },
       {
-        name: 'CPU throttling',
+        name: Util.i18n.strings.runtimeSettingsCPUThrottling,
         description: emulationDesc.cpuThrottling,
       },
     ];
@@ -500,66 +390,51 @@ class Util {
 
   /**
    * @param {LH.Config.Settings} settings
-   * @return {{deviceEmulation: string, networkThrottling: string, cpuThrottling: string, summary: string}}
+   * @return {{deviceEmulation: string, networkThrottling: string, cpuThrottling: string}}
    */
   static getEmulationDescriptions(settings) {
     let cpuThrottling;
     let networkThrottling;
-    let summary;
 
     const throttling = settings.throttling;
 
     switch (settings.throttlingMethod) {
       case 'provided':
-        cpuThrottling = 'Provided by environment';
-        networkThrottling = 'Provided by environment';
-        summary = 'No throttling applied';
+        cpuThrottling = Util.i18n.strings.throttlingProvided;
+        networkThrottling = Util.i18n.strings.throttlingProvided;
         break;
       case 'devtools': {
         const {cpuSlowdownMultiplier, requestLatencyMs} = throttling;
-        cpuThrottling = `${Util.formatNumber(cpuSlowdownMultiplier)}x slowdown (DevTools)`;
-        networkThrottling = `${Util.formatNumber(requestLatencyMs)}${NBSP}ms HTTP RTT, ` +
-          `${Util.formatNumber(throttling.downloadThroughputKbps)}${NBSP}Kbps down, ` +
-          `${Util.formatNumber(throttling.uploadThroughputKbps)}${NBSP}Kbps up (DevTools)`;
-        summary = 'Throttled Slow 4G network';
+        cpuThrottling = `${Util.i18n.formatNumber(cpuSlowdownMultiplier)}x slowdown (DevTools)`;
+        networkThrottling = `${Util.i18n.formatNumber(requestLatencyMs)}${NBSP}ms HTTP RTT, ` +
+          `${Util.i18n.formatNumber(throttling.downloadThroughputKbps)}${NBSP}Kbps down, ` +
+          `${Util.i18n.formatNumber(throttling.uploadThroughputKbps)}${NBSP}Kbps up (DevTools)`;
         break;
       }
       case 'simulate': {
         const {cpuSlowdownMultiplier, rttMs, throughputKbps} = throttling;
-        cpuThrottling = `${Util.formatNumber(cpuSlowdownMultiplier)}x slowdown (Simulated)`;
-        networkThrottling = `${Util.formatNumber(rttMs)}${NBSP}ms TCP RTT, ` +
-          `${Util.formatNumber(throughputKbps)}${NBSP}Kbps throughput (Simulated)`;
-        summary = 'Simulated Slow 4G network';
+        cpuThrottling = `${Util.i18n.formatNumber(cpuSlowdownMultiplier)}x slowdown (Simulated)`;
+        networkThrottling = `${Util.i18n.formatNumber(rttMs)}${NBSP}ms TCP RTT, ` +
+          `${Util.i18n.formatNumber(throughputKbps)}${NBSP}Kbps throughput (Simulated)`;
         break;
       }
       default:
-        cpuThrottling = 'Unknown';
-        networkThrottling = 'Unknown';
-        summary = 'Unknown';
+        cpuThrottling = Util.i18n.strings.runtimeUnknown;
+        networkThrottling = Util.i18n.strings.runtimeUnknown;
     }
 
-    let deviceEmulation = 'No emulation';
-    if (settings.emulatedFormFactor === 'mobile') deviceEmulation = 'Emulated Nexus 5X';
-    if (settings.emulatedFormFactor === 'desktop') deviceEmulation = 'Emulated Desktop';
+    let deviceEmulation = Util.i18n.strings.runtimeNoEmulation;
+    if (settings.emulatedFormFactor === 'mobile') {
+      deviceEmulation = Util.i18n.strings.runtimeMobileEmulation;
+    } else if (settings.emulatedFormFactor === 'desktop') {
+      deviceEmulation = Util.i18n.strings.runtimeDesktopEmulation;
+    }
 
     return {
       deviceEmulation,
       cpuThrottling,
       networkThrottling,
-      summary: `${deviceEmulation}, ${summary}`,
     };
-  }
-
-  /**
-   * Set the locale to be used for Util's number and date formatting functions.
-   * @param {LH.Locale} locale
-   */
-  static setNumberDateLocale(locale) {
-    // When testing, use a locale with more exciting numeric formatting
-    if (locale === 'en-XA') locale = 'de';
-
-    Util.numberDateLocale = locale;
-    Util.numberFormatter = new Intl.NumberFormat(locale);
   }
 
   /**
@@ -612,25 +487,16 @@ class Util {
   }
 }
 
-/**
- * This value is updated on each run to the locale of the report
- * @type {LH.Locale}
- */
-Util.numberDateLocale = 'en';
-
-/**
- * This value stays in sync with Util.numberDateLocale.
- * @type {Intl.NumberFormat}
- */
-Util.numberFormatter = new Intl.NumberFormat(Util.numberDateLocale);
+/** @type {I18n} */
+// @ts-ignore: Is set in report renderer.
+Util.i18n = null;
 
 /**
  * Report-renderer-specific strings.
- * @type {LH.I18NRendererStrings}
  */
 Util.UIStrings = {
   /** Disclaimer shown to users below the metric values (First Contentful Paint, Time to Interactive, etc) to warn them that the numbers they see will likely change slightly the next time they run Lighthouse. */
-  varianceDisclaimer: 'Values are estimated and may vary. The performance score is [based only on these metrics](https://github.com/GoogleChrome/lighthouse/blob/d2ec9ffbb21de9ad1a0f86ed24575eda32c796f0/docs/scoring.md#how-are-the-scores-weighted).',
+  varianceDisclaimer: 'Values are estimated and may vary. The [performance score is calculated](https://web.dev/performance-scoring/) directly from these metrics.',
   /** Column heading label for the listing of opportunity audits. Each audit title represents an opportunity. There are only 2 columns, so no strict character limit.  */
   opportunityResourceColumnLabel: 'Opportunity',
   /** Column heading label for the estimated page load savings of opportunity audits. Estimated Savings is the total amount of time (in seconds) that Lighthouse computed could be reduced from the total page load time, if the suggested action is taken. There are only 2 columns, so no strict character limit. */
@@ -673,6 +539,59 @@ Util.UIStrings = {
 
   /** This label is for a checkbox above a table of items loaded by a web page. The checkbox is used to show or hide third-party (or "3rd-party") resources in the table, where "third-party resources" refers to items loaded by a web page from URLs that aren't controlled by the owner of the web page. */
   thirdPartyResourcesLabel: 'Show 3rd-party resources',
+
+  /** Option in a dropdown menu that opens a small, summary report in a print dialog.  */
+  dropdownPrintSummary: 'Print Summary',
+  /** Option in a dropdown menu that opens a full Lighthouse report in a print dialog.  */
+  dropdownPrintExpanded: 'Print Expanded',
+  /** Option in a dropdown menu that copies the Lighthouse JSON object to the system clipboard. */
+  dropdownCopyJSON: 'Copy JSON',
+  /** Option in a dropdown menu that saves the Lighthouse report HTML locally to the system as a '.html' file. */
+  dropdownSaveHTML: 'Save as HTML',
+  /** Option in a dropdown menu that saves the Lighthouse JSON object to the local system as a '.json' file. */
+  dropdownSaveJSON: 'Save as JSON',
+  /** Option in a dropdown menu that opens the current report in the Lighthouse Viewer Application. */
+  dropdownViewer: 'Open in Viewer',
+  /** Option in a dropdown menu that saves the current report as a new Github Gist. */
+  dropdownSaveGist: 'Save as Gist',
+  /** Option in a dropdown menu that toggles the themeing of the report between Light(default) and Dark themes. */
+  dropdownDarkTheme: 'Toggle Dark Theme',
+
+  /** Title of the Runtime settings table in a Lighthouse report.  Runtime settings are the environment configurations that a specific report used at auditing time. */
+  runtimeSettingsTitle: 'Runtime Settings',
+  /** Label for a row in a table that shows the URL that was audited during a Lighthouse run. */
+  runtimeSettingsUrl: 'URL',
+  /** Label for a row in a table that shows the time at which a Lighthouse run was conducted; formatted as a timestamp, e.g. Jan 1, 1970 12:00 AM UTC. */
+  runtimeSettingsFetchTime: 'Fetch Time',
+  /** Label for a row in a table that describes the kind of device that was emulated for the Lighthouse run.  Example values for row elements: 'No Emulation', 'Emulated Desktop', etc. */
+  runtimeSettingsDevice: 'Device',
+  /** Label for a row in a table that describes the network throttling conditions that were used during a Lighthouse run, if any. */
+  runtimeSettingsNetworkThrottling: 'Network throttling',
+  /** Label for a row in a table that describes the CPU throttling conditions that were used during a Lighthouse run, if any.*/
+  runtimeSettingsCPUThrottling: 'CPU throttling',
+  /** Label for a row in a table that shows in what tool Lighthouse is being run (e.g. The lighthouse CLI, Chrome DevTools, Lightrider, WebPageTest, etc). */
+  runtimeSettingsChannel: 'Channel',
+  /** Label for a row in a table that shows the User Agent that was detected on the Host machine that ran Lighthouse. */
+  runtimeSettingsUA: 'User agent (host)',
+  /** Label for a row in a table that shows the User Agent that was used to send out all network requests during the Lighthouse run. */
+  runtimeSettingsUANetwork: 'User agent (network)',
+  /** Label for a row in a table that shows the estimated CPU power of the machine running Lighthouse. Example row values: 532, 1492, 783. */
+  runtimeSettingsBenchmark: 'CPU/Memory Power',
+
+  /** Label for button to create an issue against the Lighthouse Github project. */
+  footerIssue: 'File an issue',
+
+  /** Descriptive explanation for emulation setting when no device emulation is set. */
+  runtimeNoEmulation: 'No emulation',
+  /** Descriptive explanation for emulation setting when emulating a Moto G4 mobile device. */
+  runtimeMobileEmulation: 'Emulated Moto G4',
+  /** Descriptive explanation for emulation setting when emulating a generic desktop form factor, as opposed to a mobile-device like form factor. */
+  runtimeDesktopEmulation: 'Emulated Desktop',
+  /** Descriptive explanation for a runtime setting that is set to an unknown value. */
+  runtimeUnknown: 'Unknown',
+
+  /** Descriptive explanation for environment throttling that was provided by the runtime environment instead of provided by Lighthouse throttling. */
+  throttlingProvided: 'Provided by environment',
 };
 
 if (typeof module !== 'undefined' && module.exports) {
@@ -683,7 +602,7 @@ if (typeof module !== 'undefined' && module.exports) {
 ;
 /**
  * @license
- * Copyright 2017 Google Inc. All Rights Reserved.
+ * Copyright 2017 The Lighthouse Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -738,7 +657,7 @@ class DOM {
   }
 
   /**
-   * @return {DocumentFragment}
+   * @return {!DocumentFragment}
    */
   createFragment() {
     return this._document.createDocumentFragment();
@@ -763,7 +682,7 @@ class DOM {
   /**
    * @param {string} selector
    * @param {ParentNode} context
-   * @return {DocumentFragment} A clone of the template content.
+   * @return {!DocumentFragment} A clone of the template content.
    * @throws {Error}
    */
   cloneTemplate(selector, context) {
@@ -875,7 +794,7 @@ class DOM {
    * nothing matches query.
    * @param {string} query
    * @param {ParentNode} context
-   * @return {HTMLElement}
+   * @return {!HTMLElement}
    */
   find(query, context) {
     /** @type {?HTMLElement} */
@@ -890,7 +809,7 @@ class DOM {
    * Helper for context.querySelectorAll. Returns an Array instead of a NodeList.
    * @param {string} query
    * @param {ParentNode} context
-   * @return {Array<HTMLElement>}
+   * @return {!Array<HTMLElement>}
    */
   findAll(query, context) {
     return Array.from(context.querySelectorAll(query));
@@ -1100,7 +1019,7 @@ Copyright © 2019 Javan Makhmali
 ;
 /**
  * @license
- * Copyright 2017 Google Inc. All Rights Reserved.
+ * Copyright 2017 The Lighthouse Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1127,7 +1046,6 @@ class DetailsRenderer {
    * @param {DOM} dom
    */
   constructor(dom) {
-    /** @type {DOM} */
     this._dom = dom;
     /** @type {ParentNode} */
     this._templateContext; // eslint-disable-line no-unused-expressions
@@ -1176,7 +1094,7 @@ class DetailsRenderer {
    */
   _renderBytes(details) {
     // TODO: handle displayUnit once we have something other than 'kb'
-    const value = Util.formatBytesToKB(details.value, details.granularity);
+    const value = Util.i18n.formatBytesToKB(details.value, details.granularity);
     return this._renderText(value);
   }
 
@@ -1185,9 +1103,9 @@ class DetailsRenderer {
    * @return {Element}
    */
   _renderMilliseconds(details) {
-    let value = Util.formatMilliseconds(details.value, details.granularity);
+    let value = Util.i18n.formatMilliseconds(details.value, details.granularity);
     if (details.displayUnit === 'duration') {
-      value = Util.formatDuration(details.value);
+      value = Util.i18n.formatDuration(details.value);
     }
 
     return this._renderText(value);
@@ -1269,6 +1187,8 @@ class DetailsRenderer {
    * @return {Element}
    */
   _renderNumeric(text) {
+    // TODO: this should probably accept a number and call `formatNumber` instead of being identical
+    // to _renderText.
     const element = this._dom.createElement('div', 'lh-numeric');
     element.textContent = text;
     return element;
@@ -1308,7 +1228,7 @@ class DetailsRenderer {
    * Render a details item value for embedding in a table. Renders the value
    * based on the heading's valueType, unless the value itself has a `type`
    * property to override it.
-   * @param {LH.Audit.Details.TableItem[string] | LH.Audit.Details.OpportunityItem[string]} value
+   * @param {LH.Audit.Details.ItemValue} value
    * @param {LH.Audit.Details.OpportunityColumnHeading} heading
    * @return {Element|null}
    */
@@ -1330,6 +1250,9 @@ class DetailsRenderer {
         case 'node': {
           return this.renderNode(value);
         }
+        case 'source-location': {
+          return this.renderSourceLocation(value);
+        }
         case 'url': {
           return this.renderTextURL(value.value);
         }
@@ -1343,7 +1266,7 @@ class DetailsRenderer {
     switch (heading.valueType) {
       case 'bytes': {
         const numValue = Number(value);
-        return this._renderBytes({value: numValue, granularity: 1});
+        return this._renderBytes({value: numValue, granularity: heading.granularity});
       }
       case 'code': {
         const strValue = String(value);
@@ -1393,22 +1316,59 @@ class DetailsRenderer {
    * OpportunityColumnHeading type until we have all details use the same
    * heading format.
    * @param {LH.Audit.Details.Table|LH.Audit.Details.Opportunity} tableLike
-   * @return {Array<LH.Audit.Details.OpportunityColumnHeading>} header
+   * @return {Array<LH.Audit.Details.OpportunityColumnHeading>}
    */
-  _getCanonicalizedTableHeadings(tableLike) {
+  _getCanonicalizedHeadingsFromTable(tableLike) {
     if (tableLike.type === 'opportunity') {
       return tableLike.headings;
     }
 
-    return tableLike.headings.map(heading => {
-      return {
-        key: heading.key,
-        label: heading.text,
-        valueType: heading.itemType,
-        displayUnit: heading.displayUnit,
-        granularity: heading.granularity,
-      };
-    });
+    return tableLike.headings.map(heading => this._getCanonicalizedHeading(heading));
+  }
+
+  /**
+   * Get the headings of a table-like details object, converted into the
+   * OpportunityColumnHeading type until we have all details use the same
+   * heading format.
+   * @param {LH.Audit.Details.TableColumnHeading} heading
+   * @return {LH.Audit.Details.OpportunityColumnHeading}
+   */
+  _getCanonicalizedHeading(heading) {
+    let subRows;
+    if (heading.subRows) {
+      // @ts-ignore: It's ok that there is no text.
+      subRows = this._getCanonicalizedHeading(heading.subRows);
+      if (!subRows.key) {
+        // eslint-disable-next-line no-console
+        console.warn('key should not be null');
+      }
+      subRows = {...subRows, key: subRows.key || ''};
+    }
+
+    return {
+      key: heading.key,
+      valueType: heading.itemType,
+      subRows,
+      label: heading.text,
+      displayUnit: heading.displayUnit,
+      granularity: heading.granularity,
+    };
+  }
+
+  /**
+   * @param {LH.Audit.Details.ItemValue[]} values
+   * @param {LH.Audit.Details.OpportunityColumnHeading} heading
+   * @return {Element}
+   */
+  _renderSubRows(values, heading) {
+    const subRowsElement = this._dom.createElement('div', 'lh-sub-rows');
+    for (const childValue of values) {
+      const subRowElement = this._renderTableValue(childValue, heading);
+      if (!subRowElement) continue;
+      subRowElement.classList.add('lh-sub-row');
+      subRowsElement.appendChild(subRowElement);
+    }
+    return subRowsElement;
   }
 
   /**
@@ -1422,7 +1382,7 @@ class DetailsRenderer {
     const theadElem = this._dom.createChildOf(tableElem, 'thead');
     const theadTrElem = this._dom.createChildOf(theadElem, 'tr');
 
-    const headings = this._getCanonicalizedTableHeadings(details);
+    const headings = this._getCanonicalizedHeadingsFromTable(details);
 
     for (const heading of headings) {
       const valueType = heading.valueType || 'text';
@@ -1436,12 +1396,42 @@ class DetailsRenderer {
     for (const row of details.items) {
       const rowElem = this._dom.createChildOf(tbodyElem, 'tr');
       for (const heading of headings) {
-        const value = row[heading.key];
-        const valueElement = this._renderTableValue(value, heading);
+        const valueFragment = this._dom.createFragment();
 
-        if (valueElement) {
+        if (heading.key === null && !heading.subRows) {
+          // eslint-disable-next-line no-console
+          console.warn('A header with a null `key` should define `subRows`.');
+        }
+
+        if (heading.key === null) {
+          const emptyElement = this._dom.createElement('div');
+          emptyElement.innerHTML = '&nbsp;';
+          valueFragment.appendChild(emptyElement);
+        } else {
+          const value = row[heading.key];
+          const valueElement =
+            value !== undefined && !Array.isArray(value) && this._renderTableValue(value, heading);
+          if (valueElement) valueFragment.appendChild(valueElement);
+        }
+
+        if (heading.subRows) {
+          const subRowsHeading = {
+            key: heading.subRows.key,
+            valueType: heading.subRows.valueType || heading.valueType,
+            granularity: heading.subRows.granularity || heading.granularity,
+            displayUnit: heading.subRows.displayUnit || heading.displayUnit,
+            label: '',
+          };
+          const values = row[subRowsHeading.key];
+          if (Array.isArray(values)) {
+            const subRowsElement = this._renderSubRows(values, subRowsHeading);
+            valueFragment.appendChild(subRowsElement);
+          }
+        }
+
+        if (valueFragment.childElementCount) {
           const classes = `lh-table-column--${heading.valueType}`;
-          this._dom.createChildOf(rowElem, 'td', classes).appendChild(valueElement);
+          this._dom.createChildOf(rowElem, 'td', classes).appendChild(valueFragment);
         } else {
           this._dom.createChildOf(rowElem, 'td', 'lh-table-column--empty');
         }
@@ -1468,7 +1458,6 @@ class DetailsRenderer {
   /**
    * @param {LH.Audit.Details.NodeValue} item
    * @return {Element}
-   * @protected
    */
   renderNode(item) {
     const element = this._dom.createElement('span', 'lh-node');
@@ -1490,6 +1479,36 @@ class DetailsRenderer {
     if (item.selector) element.setAttribute('data-selector', item.selector);
     if (item.snippet) element.setAttribute('data-snippet', item.snippet);
 
+    return element;
+  }
+
+  /**
+   * @param {LH.Audit.Details.SourceLocationValue} item
+   * @return {Element|null}
+   * @protected
+   */
+  renderSourceLocation(item) {
+    if (!item.url) {
+      return null;
+    }
+
+    // Lines are shown as one-indexed.
+    const line = item.line + 1;
+    const column = item.column;
+
+    let element;
+    if (item.urlProvider === 'network') {
+      element = this.renderTextURL(item.url);
+      this._dom.find('a', element).textContent += `:${line}:${column}`;
+    } else {
+      element = this._renderText(`${item.url}:${line}:${column} (from sourceURL)`);
+    }
+
+    element.classList.add('lh-source-location');
+    element.setAttribute('data-source-url', item.url);
+    // DevTools expects zero-indexed lines.
+    element.setAttribute('data-source-line', String(item.line));
+    element.setAttribute('data-source-column', String(item.column));
     return element;
   }
 
@@ -1529,7 +1548,7 @@ if (typeof module !== 'undefined' && module.exports) {
 ;
 /**
  * @license
- * Copyright 2017 Google Inc. All Rights Reserved.
+ * Copyright 2017 The Lighthouse Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1553,6 +1572,7 @@ if (typeof module !== 'undefined' && module.exports) {
 /* globals self Util */
 
 /** @typedef {import('./dom.js')} DOM */
+/** @typedef {import('./details-renderer.js')} DetailsRenderer */
 
 class CriticalRequestChainRenderer {
   /**
@@ -1658,9 +1678,9 @@ class CriticalRequestChainRenderer {
     if (!segment.hasChildren) {
       const {startTime, endTime, transferSize} = segment.node.request;
       const span = dom.createElement('span', 'crc-node__chain-duration');
-      span.textContent = ' - ' + Util.formatMilliseconds((endTime - startTime) * 1000) + ', ';
+      span.textContent = ' - ' + Util.i18n.formatMilliseconds((endTime - startTime) * 1000) + ', ';
       const span2 = dom.createElement('span', 'crc-node__chain-duration');
-      span2.textContent = Util.formatBytesToKB(transferSize, 0.01);
+      span2.textContent = Util.i18n.formatBytesToKB(transferSize, 0.01);
 
       treevalEl.appendChild(span);
       treevalEl.appendChild(span2);
@@ -1701,11 +1721,11 @@ class CriticalRequestChainRenderer {
     const containerEl = dom.find('.lh-crc', tmpl);
 
     // Fill in top summary.
-    dom.find('.crc-initial-nav', tmpl).textContent = Util.UIStrings.crcInitialNavigation;
+    dom.find('.crc-initial-nav', tmpl).textContent = Util.i18n.strings.crcInitialNavigation;
     dom.find('.lh-crc__longest_duration_label', tmpl).textContent =
-        Util.UIStrings.crcLongestDurationLabel;
+        Util.i18n.strings.crcLongestDurationLabel;
     dom.find('.lh-crc__longest_duration', tmpl).textContent =
-        Util.formatMilliseconds(details.longestChain.duration);
+        Util.i18n.formatMilliseconds(details.longestChain.duration);
 
     // Construct visual tree.
     const root = CRCRenderer.initTree(details.chains);
@@ -1739,7 +1759,7 @@ if (typeof module !== 'undefined' && module.exports) {
  */
 ;
 /**
- * @license Copyright 2019 Google Inc. All Rights Reserved.
+ * @license Copyright 2019 The Lighthouse Authors. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
@@ -1748,6 +1768,7 @@ if (typeof module !== 'undefined' && module.exports) {
 /* globals self, Util */
 
 /** @typedef {import('./details-renderer')} DetailsRenderer */
+/** @typedef {import('./dom')} DOM */
 
 /** @enum {number} */
 const LineVisibility = {
@@ -1845,7 +1866,7 @@ class SnippetRenderer {
     const {
       snippetCollapseButtonLabel,
       snippetExpandButtonLabel,
-    } = Util.UIStrings;
+    } = Util.i18n.strings;
     dom.find(
       '.lh-snippet__btn-label-collapse',
       header
@@ -2076,7 +2097,7 @@ class SnippetRenderer {
    * @param {ParentNode} templateContext
    * @param {LH.Audit.Details.SnippetValue} details
    * @param {DetailsRenderer} detailsRenderer
-   * @return {Element}
+   * @return {!Element}
    */
   static render(dom, templateContext, details, detailsRenderer) {
     const tmpl = dom.cloneTemplate('#tmpl-lh-snippet', templateContext);
@@ -2104,7 +2125,7 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 ;
 /**
- * @license Copyright 2017 Google Inc. All Rights Reserved.
+ * @license Copyright 2017 The Lighthouse Authors. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
@@ -2148,7 +2169,7 @@ if (typeof module !== 'undefined' && module.exports) {
 ;
 /**
  * @license
- * Copyright 2017 Google Inc. All Rights Reserved.
+ * Copyright 2017 The Lighthouse Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2230,7 +2251,7 @@ if (typeof module !== 'undefined' && module.exports) {
 ;
 /**
  * @license
- * Copyright 2017 Google Inc. All Rights Reserved.
+ * Copyright 2017 The Lighthouse Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2254,6 +2275,8 @@ if (typeof module !== 'undefined' && module.exports) {
  */
 
 /* globals getFilenamePrefix Util */
+
+/** @typedef {import('./dom')} DOM */
 
 /**
  * @param {HTMLTableElement} tableEl
@@ -2366,6 +2389,14 @@ class ReportUIFeatures {
         this._dom.find('.lh-metrics-toggle__input', this._document));
       toggleInputEl.checked = true;
     }
+
+    // Fill in all i18n data.
+    for (const node of this._dom.findAll('[data-i18n]', this._dom.document())) {
+      // These strings are guaranteed to (at least) have a default English string in Util.UIStrings,
+      // so this cannot be undefined as long as `report-ui-features.data-i18n` test passes.
+      const i18nAttr = /** @type {keyof LH.I18NRendererStrings} */ (node.getAttribute('data-i18n'));
+      node.textContent = Util.i18n.strings[i18nAttr];
+    }
   }
 
   /**
@@ -2438,12 +2469,18 @@ class ReportUIFeatures {
       // This audit deals explicitly with third party resources.
       'uses-rel-preconnect',
     ];
+    // Some audits should hide third party by default.
+    const thirdPartyFilterAuditHideByDefault = [
+      // Only first party resources are actionable.
+      'legacy-javascript',
+    ];
 
     // Get all tables with a text url column.
     /** @type {Array<HTMLTableElement>} */
     const tables = Array.from(this._document.querySelectorAll('.lh-table'));
     const tablesWithUrls = tables
-      .filter(el => el.querySelector('td.lh-table-column--url'))
+      .filter(el =>
+        el.querySelector('td.lh-table-column--url, td.lh-table-column--source-location'))
       .filter(el => {
         const containingAudit = el.closest('.lh-audit');
         if (!containingAudit) throw new Error('.lh-table not within audit');
@@ -2451,8 +2488,8 @@ class ReportUIFeatures {
       });
 
     tablesWithUrls.forEach((tableEl, index) => {
-      const urlItems = this._getUrlItems(tableEl);
-      const thirdPartyRows = this._getThirdPartyRows(tableEl, urlItems, this.json.finalUrl);
+      const rowEls = getTableRows(tableEl);
+      const thirdPartyRows = this._getThirdPartyRows(rowEls, this.json.finalUrl);
 
       // create input box
       const filterTemplate = this._dom.cloneTemplate('#tmpl-lh-3p-filter', this._templateContext);
@@ -2481,45 +2518,54 @@ class ReportUIFeatures {
       this._dom.find('.lh-3p-filter-count', filterTemplate).textContent =
           `${thirdPartyRows.size}`;
       this._dom.find('.lh-3p-ui-string', filterTemplate).textContent =
-          Util.UIStrings.thirdPartyResourcesLabel;
+          Util.i18n.strings.thirdPartyResourcesLabel;
+
+      const allThirdParty = thirdPartyRows.size === rowEls.length;
+      const allFirstParty = !thirdPartyRows.size;
 
       // If all or none of the rows are 3rd party, disable the checkbox.
-      if (thirdPartyRows.size === urlItems.length || !thirdPartyRows.size) {
+      if (allThirdParty || allFirstParty) {
         filterInput.disabled = true;
-        filterInput.checked = thirdPartyRows.size === urlItems.length;
+        filterInput.checked = allThirdParty;
       }
 
-      // Finally, add checkbox to the DOM.
+      // Add checkbox to the DOM.
       if (!tableEl.parentNode) return; // Keep tsc happy.
       tableEl.parentNode.insertBefore(filterTemplate, tableEl);
+
+      // Hide third-party rows for some audits by default.
+      const containingAudit = tableEl.closest('.lh-audit');
+      if (!containingAudit) throw new Error('.lh-table not within audit');
+      if (thirdPartyFilterAuditHideByDefault.includes(containingAudit.id) && !allThirdParty) {
+        filterInput.click();
+      }
     });
   }
 
   /**
    * From a table with URL entries, finds the rows containing third-party URLs
    * and returns a Map of those rows, mapping from row index to row Element.
-   * @param {HTMLTableElement} el
+   * @param {HTMLElement[]} rowEls
    * @param {string} finalUrl
-   * @param {Array<HTMLElement>} urlItems
-   * @return {Map<number, HTMLTableRowElement>}
+   * @return {Map<number, HTMLElement>}
    */
-  _getThirdPartyRows(el, urlItems, finalUrl) {
+  _getThirdPartyRows(rowEls, finalUrl) {
+    /** @type {Map<number, HTMLElement>} */
+    const thirdPartyRows = new Map();
     const finalUrlRootDomain = Util.getRootDomain(finalUrl);
 
-    /** @type {Map<number, HTMLTableRowElement>} */
-    const thirdPartyRows = new Map();
-    for (const urlItem of urlItems) {
-      const datasetUrl = urlItem.dataset.url;
-      if (!datasetUrl) continue;
-      const isThirdParty = Util.getRootDomain(datasetUrl) !== finalUrlRootDomain;
-      if (!isThirdParty) continue;
+    rowEls.forEach((rowEl, rowPosition) => {
+      /** @type {HTMLElement|null} */
+      const urlItem = rowEl.querySelector('.lh-text__url');
+      if (!urlItem) return;
 
-      const urlRowEl = urlItem.closest('tr');
-      if (urlRowEl) {
-        const rowPosition = getTableRows(el).indexOf(urlRowEl);
-        thirdPartyRows.set(rowPosition, urlRowEl);
-      }
-    }
+      const datasetUrl = urlItem.dataset.url;
+      if (!datasetUrl) return;
+      const isThirdParty = Util.getRootDomain(datasetUrl) !== finalUrlRootDomain;
+      if (!isThirdParty) return;
+
+      thirdPartyRows.set(Number(rowPosition), rowEl);
+    });
 
     return thirdPartyRows;
   }
@@ -2849,6 +2895,7 @@ class DropDown {
     this.onDocumentKeyDown = this.onDocumentKeyDown.bind(this);
     this.onToggleClick = this.onToggleClick.bind(this);
     this.onToggleKeydown = this.onToggleKeydown.bind(this);
+    this.onMenuFocusOut = this.onMenuFocusOut.bind(this);
     this.onMenuKeydown = this.onMenuKeydown.bind(this);
 
     this._getNextMenuItem = this._getNextMenuItem.bind(this);
@@ -2876,6 +2923,7 @@ class DropDown {
       // Refocus on the tools button if the drop down last had focus
       this._toggleEl.focus();
     }
+    this._menuEl.removeEventListener('focusout', this.onMenuFocusOut);
     this._dom.document().removeEventListener('keydown', this.onDocumentKeyDown);
   }
 
@@ -2895,6 +2943,7 @@ class DropDown {
 
     this._toggleEl.classList.add('active');
     this._toggleEl.setAttribute('aria-expanded', 'true');
+    this._menuEl.addEventListener('focusout', this.onMenuFocusOut);
     this._dom.document().addEventListener('keydown', this.onDocumentKeyDown);
   }
 
@@ -2974,6 +3023,21 @@ class DropDown {
   }
 
   /**
+   * Focus out handler for the drop down menu.
+   * @param {Event} e
+   */
+  onMenuFocusOut(e) {
+    // TODO: The focusout event is not supported in our current version of typescript (3.5.3)
+    // https://github.com/microsoft/TypeScript/issues/30716
+    const focusEvent = /** @type {FocusEvent} */ (e);
+    const focusedEl = /** @type {?HTMLElement} */ (focusEvent.relatedTarget);
+
+    if (!this._menuEl.contains(focusedEl)) {
+      this.close();
+    }
+  }
+
+  /**
    * @param {Array<Node>} allNodes
    * @param {?Node=} startNode
    * @returns {Node}
@@ -3032,7 +3096,7 @@ if (typeof module !== 'undefined' && module.exports) {
 ;
 /**
  * @license
- * Copyright 2017 Google Inc. All Rights Reserved.
+ * Copyright 2017 The Lighthouse Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3077,10 +3141,10 @@ class CategoryRenderer {
    */
   get _clumpTitles() {
     return {
-      warning: Util.UIStrings.warningAuditsGroupTitle,
-      manual: Util.UIStrings.manualAuditsGroupTitle,
-      passed: Util.UIStrings.passedAuditsGroupTitle,
-      notApplicable: Util.UIStrings.notApplicableAuditsGroupTitle,
+      warning: Util.i18n.strings.warningAuditsGroupTitle,
+      manual: Util.i18n.strings.manualAuditsGroupTitle,
+      passed: Util.i18n.strings.passedAuditsGroupTitle,
+      notApplicable: Util.i18n.strings.notApplicableAuditsGroupTitle,
     };
   }
 
@@ -3097,9 +3161,10 @@ class CategoryRenderer {
    * Populate an DOM tree with audit details. Used by renderAudit and renderOpportunity
    * @param {LH.ReportResult.AuditRef} audit
    * @param {DocumentFragment} tmpl
-   * @return {Element}
+   * @return {!Element}
    */
   populateAuditValues(audit, tmpl) {
+    const strings = Util.i18n.strings;
     const auditEl = this.dom.find('.lh-audit', tmpl);
     auditEl.id = audit.result.id;
     const scoreDisplayMode = audit.result.scoreDisplayMode;
@@ -3147,10 +3212,10 @@ class CategoryRenderer {
     if (audit.result.scoreDisplayMode === 'error') {
       auditEl.classList.add(`lh-audit--error`);
       const textEl = this.dom.find('.lh-audit__display-text', auditEl);
-      textEl.textContent = Util.UIStrings.errorLabel;
+      textEl.textContent = strings.errorLabel;
       textEl.classList.add('tooltip-boundary');
       const tooltip = this.dom.createChildOf(textEl, 'div', 'tooltip tooltip--error');
-      tooltip.textContent = audit.result.errorMessage || Util.UIStrings.errorMissingAuditInfo;
+      tooltip.textContent = audit.result.errorMessage || strings.errorMissingAuditInfo;
     } else if (audit.result.explanation) {
       const explEl = this.dom.createChildOf(titleEl, 'div', 'lh-audit-explanation');
       explEl.textContent = audit.result.explanation;
@@ -3159,8 +3224,9 @@ class CategoryRenderer {
     if (!warnings || warnings.length === 0) return auditEl;
 
     // Add list of warnings or singular warning
-    const warningsEl = this.dom.createChildOf(titleEl, 'div', 'lh-warnings');
-    this.dom.createChildOf(warningsEl, 'span').textContent = Util.UIStrings.warningHeader;
+    const summaryEl = this.dom.find('summary', header);
+    const warningsEl = this.dom.createChildOf(summaryEl, 'div', 'lh-warnings');
+    this.dom.createChildOf(warningsEl, 'span').textContent = strings.warningHeader;
     if (warnings.length === 1) {
       warningsEl.appendChild(this.dom.document().createTextNode(warnings.join('')));
     } else {
@@ -3186,7 +3252,7 @@ class CategoryRenderer {
    * @param {Element} element DOM node to populate with values.
    * @param {number|null} score
    * @param {string} scoreDisplayMode
-   * @return {Element}
+   * @return {!Element}
    */
   _setRatingClass(element, score, scoreDisplayMode) {
     const rating = Util.calculateRating(score, scoreDisplayMode);
@@ -3307,7 +3373,7 @@ class CategoryRenderer {
    * in a collapsed state.
    * @param {Exclude<TopLevelClumpId, 'failed'>} clumpId
    * @param {{auditRefs: Array<LH.ReportResult.AuditRef>, description?: string}} clumpOpts
-   * @return {Element}
+   * @return {!Element}
    */
   renderClump(clumpId, {auditRefs, description}) {
     const clumpTmpl = this.dom.cloneTemplate('#tmpl-lh-clump', this.templateContext);
@@ -3319,7 +3385,7 @@ class CategoryRenderer {
 
     const summaryInnerEl = this.dom.find('.lh-audit-group__summary', clumpElement);
     const chevronEl = summaryInnerEl.appendChild(this._createChevron());
-    chevronEl.title = Util.UIStrings.auditGroupExpandTooltip;
+    chevronEl.title = Util.i18n.strings.auditGroupExpandTooltip;
 
     const headerEl = this.dom.find('.lh-audit-group__header', clumpElement);
     const title = this._clumpTitles[clumpId];
@@ -3367,25 +3433,44 @@ class CategoryRenderer {
     // Cast `null` to 0
     const numericScore = Number(category.score);
     const gauge = this.dom.find('.lh-gauge', tmpl);
-    // 352 is ~= 2 * Math.PI * gauge radius (56)
-    // https://codepen.io/xgad/post/svg-radial-progress-meters
-    // score of 50: `stroke-dasharray: 176 352`;
     /** @type {?SVGCircleElement} */
     const gaugeArc = gauge.querySelector('.lh-gauge-arc');
-    if (gaugeArc) {
-      gaugeArc.style.strokeDasharray = `${numericScore * 352} 352`;
-    }
+
+    if (gaugeArc) this._setGaugeArc(gaugeArc, numericScore);
 
     const scoreOutOf100 = Math.round(numericScore * 100);
     const percentageEl = this.dom.find('.lh-gauge__percentage', tmpl);
     percentageEl.textContent = scoreOutOf100.toString();
     if (category.score === null) {
       percentageEl.textContent = '?';
-      percentageEl.title = Util.UIStrings.errorLabel;
+      percentageEl.title = Util.i18n.strings.errorLabel;
     }
 
     this.dom.find('.lh-gauge__label', tmpl).textContent = category.title;
     return tmpl;
+  }
+
+  /**
+   * Define the score arc of the gauge
+   * Credit to xgad for the original technique: https://codepen.io/xgad/post/svg-radial-progress-meters
+   * @param {SVGCircleElement} arcElem
+   * @param {number} percent
+   */
+  _setGaugeArc(arcElem, percent) {
+    const circumferencePx = 2 * Math.PI * Number(arcElem.getAttribute('r'));
+    // The rounded linecap of the stroke extends the arc past its start and end.
+    // First, we tweak the -90deg rotation to start exactly at the top of the circle.
+    const strokeWidthPx = Number(arcElem.getAttribute('stroke-width'));
+    const rotationalAdjustmentPercent = 0.25 * strokeWidthPx / circumferencePx;
+    arcElem.style.transform = `rotate(${-90 + rotationalAdjustmentPercent * 360}deg)`;
+
+    // Then, we terminate the line a little early as well.
+    let arcLengthPx = percent * circumferencePx - strokeWidthPx / 2;
+    // Special cases. No dot for 0, and full ring if 100
+    if (percent === 0) arcElem.style.opacity = '0';
+    if (percent === 1) arcLengthPx = circumferencePx;
+
+    arcElem.style.strokeDasharray = `${Math.max(arcLengthPx, 0)} ${circumferencePx}`;
   }
 
   /**
@@ -3500,7 +3585,7 @@ if (typeof module !== 'undefined' && module.exports) {
 ;
 /**
  * @license
- * Copyright 2018 Google Inc. All Rights Reserved.
+ * Copyright 2018 The Lighthouse Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3523,7 +3608,7 @@ if (typeof module !== 'undefined' && module.exports) {
 class PerformanceCategoryRenderer extends CategoryRenderer {
   /**
    * @param {LH.ReportResult.AuditRef} audit
-   * @return {Element}
+   * @return {!Element}
    */
   _renderMetric(audit) {
     const tmpl = this.dom.cloneTemplate('#tmpl-lh-metric', this.templateContext);
@@ -3554,7 +3639,7 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
   /**
    * @param {LH.ReportResult.AuditRef} audit
    * @param {number} scale
-   * @return {Element}
+   * @return {!Element}
    */
   _renderOpportunity(audit, scale) {
     const oppTmpl = this.dom.cloneTemplate('#tmpl-lh-opportunity', this.templateContext);
@@ -3573,7 +3658,7 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
     const displayEl = this.dom.find('.lh-audit__display-text', element);
     const sparklineWidthPct = `${details.overallSavingsMs / scale * 100}%`;
     this.dom.find('.lh-sparkline__bar', element).style.width = sparklineWidthPct;
-    displayEl.textContent = Util.formatSeconds(details.overallSavingsMs, 0.01);
+    displayEl.textContent = Util.i18n.formatSeconds(details.overallSavingsMs, 0.01);
 
     // Set [title] tooltips
     if (audit.result.displayValue) {
@@ -3612,6 +3697,7 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
    * @override
    */
   render(category, groups, environment) {
+    const strings = Util.i18n.strings;
     const element = this.dom.createElement('div', 'lh-category');
     if (environment === 'PSI') {
       const gaugeEl = this.dom.createElement('div', 'lh-score__gauge');
@@ -3631,8 +3717,9 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
     metricAuditsEl.append(..._toggleEl.childNodes);
 
     const metricAudits = category.auditRefs.filter(audit => audit.group === 'metrics');
-    const keyMetrics = metricAudits.filter(a => a.weight >= 3);
-    const otherMetrics = metricAudits.filter(a => a.weight < 3);
+
+    const keyMetrics = metricAudits.slice(0, 3);
+    const otherMetrics = metricAudits.slice(3);
 
     const metricsBoxesEl = this.dom.createChildOf(metricAuditsEl, 'div', 'lh-columns');
     const metricsColumn1El = this.dom.createChildOf(metricsBoxesEl, 'div', 'lh-column');
@@ -3648,7 +3735,7 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
     // 'Values are estimated and may vary' is used as the category description for PSI
     if (environment !== 'PSI') {
       const estValuesEl = this.dom.createChildOf(metricAuditsEl, 'div', 'lh-metrics__disclaimer');
-      const disclaimerEl = this.dom.convertMarkdownLinkSnippets(Util.UIStrings.varianceDisclaimer);
+      const disclaimerEl = this.dom.convertMarkdownLinkSnippets(strings.varianceDisclaimer);
       estValuesEl.appendChild(disclaimerEl);
     }
 
@@ -3666,17 +3753,24 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
     }
 
     // Budgets
-    const budgetAudit = category.auditRefs.find(audit => audit.id === 'performance-budget');
-    if (budgetAudit && budgetAudit.result.details) {
-      const table = this.detailsRenderer.render(budgetAudit.result.details);
-      if (table) {
-        table.id = budgetAudit.id;
-        table.classList.add('lh-audit');
-        const budgetsGroupEl = this.renderAuditGroup(groups.budgets);
-        budgetsGroupEl.appendChild(table);
-        budgetsGroupEl.classList.add('lh-audit-group--budgets');
-        element.appendChild(budgetsGroupEl);
+    /** @type {Array<Element>} */
+    const budgetTableEls = [];
+    ['performance-budget', 'timing-budget'].forEach((id) => {
+      const audit = category.auditRefs.find(audit => audit.id === id);
+      if (audit && audit.result.details) {
+        const table = this.detailsRenderer.render(audit.result.details);
+        if (table) {
+          table.id = id;
+          table.classList.add('lh-audit');
+          budgetTableEls.push(table);
+        }
       }
+    });
+    if (budgetTableEls.length > 0) {
+      const budgetsGroupEl = this.renderAuditGroup(groups.budgets);
+      budgetTableEls.forEach(table => budgetsGroupEl.appendChild(table));
+      budgetsGroupEl.classList.add('lh-audit-group--budgets');
+      element.appendChild(budgetsGroupEl);
     }
 
     // Opportunities
@@ -3694,9 +3788,9 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
       const tmpl = this.dom.cloneTemplate('#tmpl-lh-opportunity-header', this.templateContext);
 
       this.dom.find('.lh-load-opportunity__col--one', tmpl).textContent =
-        Util.UIStrings.opportunityResourceColumnLabel;
+        strings.opportunityResourceColumnLabel;
       this.dom.find('.lh-load-opportunity__col--two', tmpl).textContent =
-        Util.UIStrings.opportunitySavingsColumnLabel;
+        strings.opportunitySavingsColumnLabel;
 
       const headerEl = this.dom.find('.lh-load-opportunity__header', tmpl);
       groupEl.appendChild(headerEl);
@@ -3746,7 +3840,7 @@ if (typeof module !== 'undefined' && module.exports) {
 ;
 /**
  * @license
- * Copyright 2018 Google Inc. All Rights Reserved.
+ * Copyright 2018 The Lighthouse Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3842,7 +3936,7 @@ class PwaCategoryRenderer extends CategoryRenderer {
   /**
    * Returns the group IDs found in auditRefs.
    * @param {Array<LH.ReportResult.AuditRef>} auditRefs
-   * @return {Set<string>}
+   * @return {!Set<string>}
    */
   _getGroupIds(auditRefs) {
     const groupIds = auditRefs.map(ref => ref.group).filter(/** @return {g is string} */ g => !!g);
@@ -3950,7 +4044,7 @@ if (typeof module !== 'undefined' && module.exports) {
 ;
 /**
  * @license
- * Copyright 2017 Google Inc. All Rights Reserved.
+ * Copyright 2017 The Lighthouse Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3973,9 +4067,10 @@ if (typeof module !== 'undefined' && module.exports) {
  * Dummy text for ensuring report robustness: </script> pre$`post %%LIGHTHOUSE_JSON%%
  */
 
+/** @typedef {import('./category-renderer')} CategoryRenderer */
 /** @typedef {import('./dom.js')} DOM */
 
-/* globals self, Util, DetailsRenderer, CategoryRenderer, PerformanceCategoryRenderer, PwaCategoryRenderer */
+/* globals self, Util, DetailsRenderer, CategoryRenderer, I18n, PerformanceCategoryRenderer, PwaCategoryRenderer */
 
 class ReportRenderer {
   /**
@@ -3991,21 +4086,15 @@ class ReportRenderer {
   /**
    * @param {LH.Result} result
    * @param {Element} container Parent element to render the report into.
-   * @return {Element}
+   * @return {!Element}
    */
   renderReport(result, container) {
-    // Mutate the UIStrings if necessary (while saving originals)
-    const originalUIStrings = JSON.parse(JSON.stringify(Util.UIStrings));
-
     this._dom.setLighthouseChannel(result.configSettings.channel || 'unknown');
 
     const report = Util.prepareReportResult(result);
 
     container.textContent = ''; // Remove previous report.
     container.appendChild(this._renderReport(report));
-
-    // put the UIStrings back into original state
-    Util.updateAllUIStrings(originalUIStrings);
 
     return container;
   }
@@ -4051,15 +4140,19 @@ class ReportRenderer {
 
     const env = this._dom.find('.lh-env__items', footer);
     env.id = 'runtime-settings';
+    this._dom.find('.lh-env__title', footer).textContent = Util.i18n.strings.runtimeSettingsTitle;
+
     const envValues = Util.getEnvironmentDisplayValues(report.configSettings || {});
     [
-      {name: 'URL', description: report.finalUrl},
-      {name: 'Fetch time', description: Util.formatDateTime(report.fetchTime)},
+      {name: Util.i18n.strings.runtimeSettingsUrl, description: report.finalUrl},
+      {name: Util.i18n.strings.runtimeSettingsFetchTime,
+        description: Util.i18n.formatDateTime(report.fetchTime)},
       ...envValues,
-      {name: 'User agent (host)', description: report.userAgent},
-      {name: 'User agent (network)', description: report.environment &&
+      {name: Util.i18n.strings.runtimeSettingsChannel, description: report.configSettings.channel},
+      {name: Util.i18n.strings.runtimeSettingsUA, description: report.userAgent},
+      {name: Util.i18n.strings.runtimeSettingsUANetwork, description: report.environment &&
         report.environment.networkUserAgent},
-      {name: 'CPU/Memory Power', description: report.environment &&
+      {name: Util.i18n.strings.runtimeSettingsBenchmark, description: report.environment &&
         report.environment.benchmarkIndex.toFixed(0)},
     ].forEach(runtime => {
       if (!runtime.description) return;
@@ -4070,6 +4163,7 @@ class ReportRenderer {
       env.appendChild(item);
     });
 
+    this._dom.find('.lh-footer__version_issue', footer).textContent = Util.i18n.strings.footerIssue;
     this._dom.find('.lh-footer__version', footer).textContent = report.lighthouseVersion;
     return footer;
   }
@@ -4086,7 +4180,7 @@ class ReportRenderer {
 
     const container = this._dom.cloneTemplate('#tmpl-lh-warnings--toplevel', this._templateContext);
     const message = this._dom.find('.lh-warnings__msg', container);
-    message.textContent = Util.UIStrings.toplevelWarningsMessage;
+    message.textContent = Util.i18n.strings.toplevelWarningsMessage;
 
     const warnings = this._dom.find('ul', container);
     for (const warningString of report.runWarnings) {
@@ -4101,7 +4195,7 @@ class ReportRenderer {
    * @param {LH.ReportResult} report
    * @param {CategoryRenderer} categoryRenderer
    * @param {Record<string, CategoryRenderer>} specificCategoryRenderers
-   * @return {DocumentFragment[]}
+   * @return {!DocumentFragment[]}
    */
   _renderScoreGauges(report, categoryRenderer, specificCategoryRenderers) {
     // Group gauges in this order: default, pwa, plugins.
@@ -4132,9 +4226,16 @@ class ReportRenderer {
 
   /**
    * @param {LH.ReportResult} report
-   * @return {DocumentFragment}
+   * @return {!DocumentFragment}
    */
   _renderReport(report) {
+    const i18n = new I18n(report.configSettings.locale, {
+      // Set missing renderer strings to default (english) values.
+      ...Util.UIStrings,
+      ...report.i18n.rendererFormattedStrings,
+    });
+    Util.i18n = i18n;
+
     const detailsRenderer = new DetailsRenderer(this._dom);
     const categoryRenderer = new CategoryRenderer(this._dom, detailsRenderer);
     categoryRenderer.setTemplateContext(this._templateContext);
@@ -4199,11 +4300,140 @@ class ReportRenderer {
   }
 }
 
-/** @type {LH.I18NRendererStrings} */
-ReportRenderer._UIStringsStash = {};
-
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = ReportRenderer;
 } else {
   self.ReportRenderer = ReportRenderer;
+}
+;
+/**
+ * @license Copyright 2020 The Lighthouse Authors. All Rights Reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ */
+'use strict';
+
+/* globals self, URL */
+
+// Not named `NBSP` because that creates a duplicate identifier (util.js).
+const NBSP2 = '\xa0';
+
+class I18n {
+  /**
+   * @param {LH.Locale} locale
+   * @param {LH.I18NRendererStrings=} strings
+   */
+  constructor(locale, strings) {
+    // When testing, use a locale with more exciting numeric formatting.
+    if (locale === 'en-XA') locale = 'de';
+
+    this._numberDateLocale = locale;
+    this._numberFormatter = new Intl.NumberFormat(locale);
+    this._strings = /** @type {LH.I18NRendererStrings} */ (strings || {});
+  }
+
+  get strings() {
+    return this._strings;
+  }
+
+  /**
+   * Format number.
+   * @param {number} number
+   * @param {number=} granularity Number of decimal places to include. Defaults to 0.1.
+   * @return {string}
+   */
+  formatNumber(number, granularity = 0.1) {
+    const coarseValue = Math.round(number / granularity) * granularity;
+    return this._numberFormatter.format(coarseValue);
+  }
+
+  /**
+   * @param {number} size
+   * @param {number=} granularity Controls how coarse the displayed value is, defaults to 0.1
+   * @return {string}
+   */
+  formatBytesToKB(size, granularity = 0.1) {
+    const kbs = this._numberFormatter.format(Math.round(size / 1024 / granularity) * granularity);
+    return `${kbs}${NBSP2}KB`;
+  }
+
+  /**
+   * @param {number} ms
+   * @param {number=} granularity Controls how coarse the displayed value is, defaults to 10
+   * @return {string}
+   */
+  formatMilliseconds(ms, granularity = 10) {
+    const coarseTime = Math.round(ms / granularity) * granularity;
+    return `${this._numberFormatter.format(coarseTime)}${NBSP2}ms`;
+  }
+
+  /**
+   * @param {number} ms
+   * @param {number=} granularity Controls how coarse the displayed value is, defaults to 0.1
+   * @return {string}
+   */
+  formatSeconds(ms, granularity = 0.1) {
+    const coarseTime = Math.round(ms / 1000 / granularity) * granularity;
+    return `${this._numberFormatter.format(coarseTime)}${NBSP2}s`;
+  }
+
+  /**
+   * Format time.
+   * @param {string} date
+   * @return {string}
+   */
+  formatDateTime(date) {
+    /** @type {Intl.DateTimeFormatOptions} */
+    const options = {
+      month: 'short', day: 'numeric', year: 'numeric',
+      hour: 'numeric', minute: 'numeric', timeZoneName: 'short',
+    };
+    let formatter = new Intl.DateTimeFormat(this._numberDateLocale, options);
+
+    // Force UTC if runtime timezone could not be detected.
+    // See https://github.com/GoogleChrome/lighthouse/issues/1056
+    const tz = formatter.resolvedOptions().timeZone;
+    if (!tz || tz.toLowerCase() === 'etc/unknown') {
+      options.timeZone = 'UTC';
+      formatter = new Intl.DateTimeFormat(this._numberDateLocale, options);
+    }
+    return formatter.format(new Date(date));
+  }
+  /**
+   * Converts a time in milliseconds into a duration string, i.e. `1d 2h 13m 52s`
+   * @param {number} timeInMilliseconds
+   * @return {string}
+   */
+  formatDuration(timeInMilliseconds) {
+    let timeInSeconds = timeInMilliseconds / 1000;
+    if (Math.round(timeInSeconds) === 0) {
+      return 'None';
+    }
+
+    /** @type {Array<string>} */
+    const parts = [];
+    const unitLabels = /** @type {Object<string, number>} */ ({
+      d: 60 * 60 * 24,
+      h: 60 * 60,
+      m: 60,
+      s: 1,
+    });
+
+    Object.keys(unitLabels).forEach(label => {
+      const unit = unitLabels[label];
+      const numberOfUnits = Math.floor(timeInSeconds / unit);
+      if (numberOfUnits > 0) {
+        timeInSeconds -= numberOfUnits * unit;
+        parts.push(`${numberOfUnits}\xa0${label}`);
+      }
+    });
+
+    return parts.join(' ');
+  }
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = I18n;
+} else {
+  self.I18n = I18n;
 }

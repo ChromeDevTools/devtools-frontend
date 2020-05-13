@@ -15,6 +15,7 @@ Generate report: enabled visible
 =============== Audits run ===============
 bootup-time
 critical-request-chains
+cumulative-layout-shift
 diagnostics
 dom-size
 efficient-animated-content
@@ -25,6 +26,9 @@ first-cpu-idle
 first-meaningful-paint
 font-display
 interactive
+largest-contentful-paint
+largest-contentful-paint-element
+layout-shift-elements
 main-thread-tasks
 mainthread-work-breakdown
 max-potential-fid
@@ -32,23 +36,28 @@ metrics
 network-requests
 network-rtt
 network-server-latency
+no-document-write
 offscreen-images
 performance-budget
 redirects
 render-blocking-resources
 resource-summary
 screenshot-thumbnails
+server-response-time
 speed-index
 third-party-summary
-time-to-first-byte
+timing-budget
 total-blocking-time
 total-byte-weight
 unminified-css
 unminified-javascript
 unused-css-rules
+unused-javascript
 user-timings
+uses-http2
 uses-long-cache-ttl
 uses-optimized-images
+uses-passive-event-listeners
 uses-rel-preconnect
 uses-rel-preload
 uses-responsive-images

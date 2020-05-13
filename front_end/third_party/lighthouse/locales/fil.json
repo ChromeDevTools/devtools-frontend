@@ -17,6 +17,33 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "Tumutugma ang mga attribute na `[aria-*]` sa mga tungkulin ng mga ito"
   },
+  "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
+    "message": "Ang mga pantulong na teknolohiya, tulad ng mga screen reader, ay hindi tuloy-tuloy na gumagana kapag nakatakda ang `aria-hidden=\"true\"` sa dokumentong `<body>`. [Matuto pa](https://web.dev/aria-hidden-body/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-body.js | failureTitle": {
+    "message": "May `[aria-hidden=\"true\"]` sa dokumentong `<body>`"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-body.js | title": {
+    "message": "Walang `[aria-hidden=\"true\"]` sa dokumentong `<body>`"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-focus.js | description": {
+    "message": "Pinipigilan ng mga nafo-focus na descendent sa isang element na `[aria-hidden=\"true\"]`ang mga interactive na element na maging available sa mga user ng mga pantulong na teknolohiya tulad ng mga screen reader. [Matuto pa](https://web.dev/aria-hidden-focus/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-focus.js | failureTitle": {
+    "message": "May mga nafo-focus na descendent ang mga element na `[aria-hidden=\"true\"]`"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-focus.js | title": {
+    "message": "Walang nafo-focus na descendent ang mga element na `[aria-hidden=\"true\"]`"
+  },
+  "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
+    "message": "Kapag walang naa-access na pangalan ang isang field ng input, iaanunsyo ito ng mga screen reader gamit ang generic na pangalan, kaya hindi ito magagamit ng mga user na umaasa sa mga screen reader. [Matuto pa](https://web.dev/aria-input-field-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
+    "message": "Walang naa-access na pangalan ang mga field ng input ng ARIA"
+  },
+  "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
+    "message": "May mga naa-access na pangalan ang mga field ng input ng ARIA"
+  },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "Ang ilang tungkulin ng ARIA ay may mga kinakailangang attribute na naglalarawan sa status ng element sa mga screen reader. [Matuto pa](https://web.dev/aria-required-attr/)."
   },
@@ -53,6 +80,15 @@
   "lighthouse-core/audits/accessibility/aria-roles.js | title": {
     "message": "Valid ang mga value ng `[role]`"
   },
+  "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
+    "message": "Kapag walang naa-access na pangalan ang isang toggle field, iaanunsyo ito ng mga screen reader gamit ang generic na pangalan, kaya hindi ito magagamit ng mga user na umaasa sa mga screen reader. [Matuto pa](https://web.dev/aria-toggle-field-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
+    "message": "Walang naa-access na pangalan ang mga toggle field ng ARIA"
+  },
+  "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
+    "message": "May mga naa-access na pangalan ang mga toggle field ng ARIA"
+  },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "Hindi mauunawaan ng mga nakakatulong na teknolohiya, gaya ng mga screen reader, ang mga attribute ng ARIA na may mga invalid na value. [Matuto pa](https://web.dev/aria-valid-attr-value/)."
   },
@@ -70,15 +106,6 @@
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr.js | title": {
     "message": "Valid at hindi mali ang spelling ng mga attribute na `[aria-*]`"
-  },
-  "lighthouse-core/audits/accessibility/audio-caption.js | description": {
-    "message": "Ginagawang kapaki-pakinabang ng mga caption ang mga element ng audio para sa mga user na bingi o may problema sa pandinig, nagbibigay ng mahalagang impormasyon gaya ng kung sino ang nagsasalita, ano ang kanilang sinasabi, at iba pang hindi binibigkas na impormasyon. [Matuto pa](https://web.dev/audio-caption/)."
-  },
-  "lighthouse-core/audits/accessibility/audio-caption.js | failureTitle": {
-    "message": "May kulang na element na `<track>` na may `[kind=\"captions\"]` ang mga element na `<audio>`"
-  },
-  "lighthouse-core/audits/accessibility/audio-caption.js | title": {
-    "message": "Naglalaman ng element na `<track>` na may `[kind=\"captions\"]` ang mga element na `<audio>`"
   },
   "lighthouse-core/audits/accessibility/axe-audit.js | failingElementsHeader": {
     "message": "Mga Hindi Nakapasang Element"
@@ -114,10 +141,10 @@
     "message": "Kapag hindi naka-mark up nang maayos ang mga listahan ng kahulugan, puwedeng gumawa ng nakakalito o hindi tumpak na output ang mga screen reader. [Matuto pa](https://web.dev/definition-list/)."
   },
   "lighthouse-core/audits/accessibility/definition-list.js | failureTitle": {
-    "message": "Hindi naglalaman ang `<dl>` ng mga nakaayos lang na pangkat na `<dt>` at `<dd>`, mga element na `<script>` o `<template>`."
+    "message": "Hindi lang mga grupo ng `<dt>` at `<dd>`, at mga element na `<script>`, `<template>` o `<div>` na nakaayos nang tama ang nilalaman ng `<dl>`."
   },
   "lighthouse-core/audits/accessibility/definition-list.js | title": {
-    "message": "Naglalaman ang `<dl>` ng mga nakaayos lang na `<dt>` at mga `<dd>` na pangkat, `<script>` o mga `<template>` na element."
+    "message": "Mga grupo lang ng `<dt>` at `<dd>`, at mga element na `<script>`, `<template>` o `<div>` na nakaayos nang tama ang nilalaman ng `<dl>`."
   },
   "lighthouse-core/audits/accessibility/dlitem.js | description": {
     "message": "Nakapaloob dapat ang mga item sa listahan ng kahulugan (`<dt>` at `<dd>`) sa isang parent element na `<dl>` para matiyak na maayos na maiaanunsyo ng mga screen reader ang mga ito. [Matuto pa](https://web.dev/dlitem/)."
@@ -137,14 +164,32 @@
   "lighthouse-core/audits/accessibility/document-title.js | title": {
     "message": "May `<title>` na element ang dokumento"
   },
-  "lighthouse-core/audits/accessibility/duplicate-id.js | description": {
-    "message": "Natatangi dapat ang value ng id attribute para hindi makaligtaan ng mga nakakatulong na teknolohiya ang iba pang instance. [Matuto pa](https://web.dev/duplicate-id/)."
+  "lighthouse-core/audits/accessibility/duplicate-id-active.js | description": {
+    "message": "Ang lahat ng nafo-focus na element ay dapat na may natatanging `id` para matiyak na nakikita ang mga ito ng mga pantulong na teknolohiya. [Matuto pa](https://web.dev/duplicate-id-active/)."
   },
-  "lighthouse-core/audits/accessibility/duplicate-id.js | failureTitle": {
-    "message": "Hindi natatangi ang mga attribute na `[id]`"
+  "lighthouse-core/audits/accessibility/duplicate-id-active.js | failureTitle": {
+    "message": "Hindi natatangi ang mga attribute na `[id]` sa aktibo at nafo-focus na element"
   },
-  "lighthouse-core/audits/accessibility/duplicate-id.js | title": {
-    "message": "Natatangi ang mga attribute na `[id]` sa page"
+  "lighthouse-core/audits/accessibility/duplicate-id-active.js | title": {
+    "message": "Natatangi ang mga attribute na `[id]` sa mga aktibo at nafo-focus na element"
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id-aria.js | description": {
+    "message": "Dapat ay natatangi ang value ng isang ARIA ID para hindi makaligtaan ng mga pantulong na teknolohiya ang iba pang instance. [Matuto pa](https://web.dev/duplicate-id-aria/)."
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id-aria.js | failureTitle": {
+    "message": "Hindi natatangi ang mga ARIA ID"
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id-aria.js | title": {
+    "message": "Natatangi ang mga ARIA ID"
+  },
+  "lighthouse-core/audits/accessibility/form-field-multiple-labels.js | description": {
+    "message": "Ang mga field ng form na may maraming label ay puwedeng hindi sinasadyang ianunsyo ng mga pantulong na teknolohiya tulad ng mga screen reader na ginagamit ang una, huli, o lahat ng label. [Matuto pa](https://web.dev/form-field-multiple-labels/)."
+  },
+  "lighthouse-core/audits/accessibility/form-field-multiple-labels.js | failureTitle": {
+    "message": "May maraming label ang mga field ng form"
+  },
+  "lighthouse-core/audits/accessibility/form-field-multiple-labels.js | title": {
+    "message": "Walang field ng form ang may maraming label"
   },
   "lighthouse-core/audits/accessibility/frame-title.js | description": {
     "message": "Umaasa ang mga user ng screen reader sa mga pamagat ng frame para ilarawan ang mga content ng mga frame. [Matuto pa](https://web.dev/frame-title/)."
@@ -154,6 +199,15 @@
   },
   "lighthouse-core/audits/accessibility/frame-title.js | title": {
     "message": "May pamagat ang mga elemento na`<frame>` o `<iframe>`"
+  },
+  "lighthouse-core/audits/accessibility/heading-order.js | description": {
+    "message": "Ipinaparating ng mga mahusay na nakaayos na heading na hindi lumalaktaw ng mga antas ang semantic na istruktura ng page, na mas pinapadali ang pag-navigate at pag-unawa kapag gumagamit ng mga pantulong na teknolohiya. [Matuto pa](https://web.dev/heading-order/)."
+  },
+  "lighthouse-core/audits/accessibility/heading-order.js | failureTitle": {
+    "message": "Hindi sunod-sunod na pababa ang pagkakaayos ng mga heading element"
+  },
+  "lighthouse-core/audits/accessibility/heading-order.js | title": {
+    "message": "Lumalabas ang mga heading element nang sunod-sunod na pababa"
   },
   "lighthouse-core/audits/accessibility/html-has-lang.js | description": {
     "message": "Kung hindi tutukoy ng lang attribute ang isang page, ipagpapalagay ng screen reader na ang page ay nasa default na wikang pinili ng user noong sine-set up ang screen reader. Kung wala talaga sa default na wika ang page, puwedeng hindi maianunsyo nang tama ng screen reader ang text ng page. [Matuto pa](https://web.dev/html-has-lang/)."
@@ -350,6 +404,12 @@
   "lighthouse-core/audits/bootup-time.js | title": {
     "message": "Bilis ng pagpapagana ng JavaScript"
   },
+  "lighthouse-core/audits/byte-efficiency/duplicated-javascript.js | description": {
+    "message": "Alisin ang mga malaki at duplicate na module ng JavaScript mula sa mga bundle para mabawasan ang mga hindi kinakailangang byte na nakokonsumo ng aktibidad ng network. "
+  },
+  "lighthouse-core/audits/byte-efficiency/duplicated-javascript.js | title": {
+    "message": "Alisin ang mga duplicate na module sa mga bundle ng JavaScript"
+  },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | description": {
     "message": "Hindi mahusay ang malalaking GIF sa paghahatid ng animated na content. Pag-isipang gumamit ng mga MPEG4/WebM na video para sa mga animation at PNG/WebP para sa mga static na larawan sa halip na GIF para makatipid ng mga byte ng network. [Matuto pa](https://web.dev/efficient-animated-content)"
   },
@@ -399,7 +459,7 @@
     "message": "Alisin ang hindi ginagamit na CSS"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "Alisin ang hindi nagamit na JavaScript para mabawasan ang mga byte na nakokonsumo ng aktibidad sa network."
+    "message": "Alisin ang hindi nagamit na JavaScript para mabawasan ang mga byte na nakokonsumo ng aktibidad sa network. [Matuto pa](https://web.dev/remove-unused-code/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
     "message": "Alisin ang hindi nagamit na JavaScript"
@@ -459,7 +519,7 @@
     "message": "{itemCount,plural, =1{Nakakita ng 1 chain}one{Nakakita ng # chain}other{Nakakita ng # na chain}}"
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
-    "message": "I-minimize ang Lalim ng Mahahalagang Kahilingan"
+    "message": "Iwasan ang pagsusunod-sunod ng mga kritikal na kahilingan"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "Paghinto sa Paggamit / Babala"
@@ -491,6 +551,15 @@
   "lighthouse-core/audits/dobetterweb/appcache-manifest.js | title": {
     "message": "Iniiwasan ang Application Cache"
   },
+  "lighthouse-core/audits/dobetterweb/charset.js | description": {
+    "message": "Kailangang mag-declare ng pag-encode ng character. Magagawa ito gamit ang isang <meta> tag sa unang 1024 na byte ng HTML o sa header ng sagot ng HTTP na Uri ng Content. [Matuto pa](https://www.w3.org/International/questions/qa-html-encoding-declarations)."
+  },
+  "lighthouse-core/audits/dobetterweb/charset.js | failureTitle": {
+    "message": "Walang na-declare na charset o sa bandang dulo na ng HTML lumilitaw"
+  },
+  "lighthouse-core/audits/dobetterweb/charset.js | title": {
+    "message": "Maayos na tinutukoy ang charset"
+  },
   "lighthouse-core/audits/dobetterweb/doctype.js | description": {
     "message": "Ang pagtukoy ng doctype ay pumipigil sa browser na lumipat sa quirks-mode. [Matuto pa](https://web.dev/doctype)."
   },
@@ -512,9 +581,6 @@
   "lighthouse-core/audits/dobetterweb/doctype.js | title": {
     "message": "May HTML na doctype ang page"
   },
-  "lighthouse-core/audits/dobetterweb/dom-size.js | columnElement": {
-    "message": "Elemento"
-  },
   "lighthouse-core/audits/dobetterweb/dom-size.js | columnStatistic": {
     "message": "Istatistika"
   },
@@ -522,7 +588,7 @@
     "message": "Value"
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | description": {
-    "message": "Inirerekomenda ng mga engineer ng browser ang mga page na naglalaman ng mas kaunti sa ~1,500 element ng DOM. Ang pinakamainam ay isang lalim ng tree na < 32 element at mas kaunti sa 60 child/parent na element. Kapag malaki ang DOM, puwedeng tumaas ang paggamit ng memory, magdulot ng mas mahahabang [pagkalkula ng istilo](https://developers.google.com/web/fundamentals/performance/rendering/reduce-the-scope-and-complexity-of-style-calculations), at makagawa ng mamahaling [mga reflow ng layout](https://developers.google.com/speed/articles/reflow). [Matuto pa](https://web.dev/dom-size)."
+    "message": "Kapag malaki ang DOM, madaragdagan ang paggamit ng memory, magkakaroon ng mas mahahabang [pagkalkula ng istilo](https://developers.google.com/web/fundamentals/performance/rendering/reduce-the-scope-and-complexity-of-style-calculations), at lilikha ito ng mga magastos na [reflow ng layout](https://developers.google.com/speed/articles/reflow). [Matuto pa](https://web.dev/dom-size)."
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | displayValue": {
     "message": "{itemCount,plural, =1{1 element}one{# element}other{# na element}}"
@@ -542,11 +608,8 @@
   "lighthouse-core/audits/dobetterweb/dom-size.js | title": {
     "message": "Umiiwas sa masyadong malaking DOM"
   },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnRel": {
-    "message": "Rel"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnTarget": {
-    "message": "Target"
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnFailingAnchors": {
+    "message": "Mga Hindi Nakapasang Anchor"
   },
   "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
     "message": "Idagdag ang `rel=\"noopener\"` o `rel=\"noreferrer\"` sa anumang external na link para pahusayin ang performance at pigilan ang mga kahinaan sa seguridad. [Matuto pa](https://web.dev/external-anchors-use-rel-noopener)."
@@ -582,7 +645,7 @@
     "message": "Para sa mga user na may mabagal na koneksyon, puwedeng maantala ang pag-load ng page dahil sa mga external na script na dynamic na inilagay sa pamamagitan ng `document.write()`. [Matuto pa](https://web.dev/no-document-write)."
   },
   "lighthouse-core/audits/dobetterweb/no-document-write.js | failureTitle": {
-    "message": "Gumagamit ng `document.write()`"
+    "message": "Iwasan ang `document.write()`"
   },
   "lighthouse-core/audits/dobetterweb/no-document-write.js | title": {
     "message": "Umiiwas sa `document.write()`"
@@ -704,6 +767,24 @@
   "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
     "message": "Invalid ang laki ng larawan ng impormasyon {url}"
   },
+  "lighthouse-core/audits/image-size-responsive.js | columnActual": {
+    "message": "Aktwal na laki"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | columnDisplayed": {
+    "message": "Ipinapakitang laki"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | columnExpected": {
+    "message": "Inaasahang laki"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | description": {
+    "message": "Dapat ay kasukat ng mga natural na dimensyon ng larawan ang laki ng display at ratio ng pixel para ma-maximize ang pagiging malinaw ng larawan. [Matuto pa](https://web.dev/image-size-responsive)."
+  },
+  "lighthouse-core/audits/image-size-responsive.js | failureTitle": {
+    "message": "Nagpapakita ng mga larawang mali ang laki"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | title": {
+    "message": "Nagpapakita ng mga larawang may tamang laki"
+  },
   "lighthouse-core/audits/installable-manifest.js | description": {
     "message": "Puwedeng proactive na i-prompt ng mga browser ang mga user na idagdag ang iyong app sa kanilang homescreen, na puwedeng magresulta sa mas maraming pakikipag-ugnayan. [Matuto pa](https://web.dev/installable-manifest)."
   },
@@ -727,6 +808,12 @@
   },
   "lighthouse-core/audits/is-on-https.js | title": {
     "message": "Gumagamit ng HTTPS"
+  },
+  "lighthouse-core/audits/legacy-javascript.js | description": {
+    "message": "Nagbibigay-daan ang mga polyfill at transform na magamit ng mga legacy na browser ang mga bagong feature ng JavaScript. Gayunpaman, marami ang hindi kinakailangan para sa mga modernong browser. Para sa iyong naka-bundle na JavaScript, gumamit ng modernong diskarte sa deployment ng script gamit ang pag-detect ng feature na module/nomodule para mabawasan ang dami ng code na ipinapadala sa mga modernong browser, habang pinapanatili ang suporta para sa mga legacy na browser. [Matuto Pa](https://philipwalton.com/articles/deploying-es2015-code-in-production-today/)"
+  },
+  "lighthouse-core/audits/legacy-javascript.js | title": {
+    "message": "Legacy na JavaScript"
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
     "message": "Kapag mabilis ang pag-load ng page sa cellular network, nagkakaroon ng magandang karanasan ng user sa mobile. [Matuto pa](https://web.dev/load-fast-enough-for-pwa)."
@@ -776,53 +863,44 @@
   "lighthouse-core/audits/manual/pwa-page-transitions.js | title": {
     "message": "Mukhang hindi nagba-block sa network ang mga transition ng page"
   },
+  "lighthouse-core/audits/maskable-icon.js | description": {
+    "message": "Tinitiyak ng nama-mask na icon na nasasakop ng larawan ang buong hugis nang hindi nagiging naka-letterbox habang ini-install ang app sa isang device. [Matuto pa](https://web.dev/maskable-icon/)."
+  },
+  "lighthouse-core/audits/maskable-icon.js | failureTitle": {
+    "message": "Walang nama-mask na icon ang manifest"
+  },
+  "lighthouse-core/audits/maskable-icon.js | title": {
+    "message": "May nama-mask na icon ang manifest"
+  },
+  "lighthouse-core/audits/metrics/cumulative-layout-shift.js | description": {
+    "message": "Sinusukat ng Cumulative Layout Shift ang paggalaw ng mga nakikitang element sa loob ng viewport. [Matuto pa](https://web.dev/cls)."
+  },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
     "message": "Ang Tinantyang Latency ng Input ay isang pagtatantya ng bilis ng pagtugon ng iyong app sa input ng user, na nasa millisecond, sa pinakaabalang 5 segundong palugit ng pag-load ng page. Kung mas mataas kaysa sa 50 ms ang iyong latency, puwedeng ituring ng mga user na mabagal ang app mo. [Matuto pa](https://web.dev/estimated-input-latency)."
-  },
-  "lighthouse-core/audits/metrics/estimated-input-latency.js | title": {
-    "message": "Tinatayang Latency ng Input"
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
     "message": "Minamarkahan ng First Contentful Paint ang tagal bago ma-paint ang unang text o larawan. [Matuto pa](https://web.dev/first-contentful-paint)."
   },
-  "lighthouse-core/audits/metrics/first-contentful-paint.js | title": {
-    "message": "First Contentful Paint"
-  },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
     "message": "Minamarkahan ng First CPU Idle ang unang beses kung kailan hindi abala ang pangunahing thread ng page at puwede itong mangasiwa ng input.  [Matuto pa](https://web.dev/first-cpu-idle)."
-  },
-  "lighthouse-core/audits/metrics/first-cpu-idle.js | title": {
-    "message": "First CPU Idle"
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "Sinusukat ng First Meaningful Paint ang bilis ng pagpapakita ng pangunahing content ng isang page. [Matuto pa](https://web.dev/first-meaningful-paint)."
   },
-  "lighthouse-core/audits/metrics/first-meaningful-paint.js | title": {
-    "message": "First Meaningful Paint"
-  },
   "lighthouse-core/audits/metrics/interactive.js | description": {
     "message": "Ang oras bago maging interactive ay ang haba ng oras na inaabot bago maging ganap na interactive ang page. [Matuto pa](https://web.dev/interactive)."
   },
-  "lighthouse-core/audits/metrics/interactive.js | title": {
-    "message": "Time to Interactive"
+  "lighthouse-core/audits/metrics/largest-contentful-paint.js | description": {
+    "message": "Minamarkahan ng Largest Contentful Paint ang tagal bago ma-paint ang pinakamalaking text o larawan. [Matuto Pa](https://web.dev/lighthouse-largest-contentful-paint)"
   },
   "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
-    "message": "Ang maximum na potensyal na First Input Delay na puwedeng maranasan ng iyong mga user ay ang tagal, na nasa millisecond, ng pinakamahabang gawain. [Matuto pa](https://developers.google.com/web/updates/2018/05/first-input-delay)."
-  },
-  "lighthouse-core/audits/metrics/max-potential-fid.js | title": {
-    "message": "Max na Potensyal na First Input Delay"
+    "message": "Ang maximum na potensyal na First Input Delay na puwedeng maranasan ng iyong mga user ay ang tagal ng pinakamahabang gawain. [Matuto pa](https://web.dev/lighthouse-max-potential-fid)."
   },
   "lighthouse-core/audits/metrics/speed-index.js | description": {
     "message": "Ipinapakita ng Speed Index ang bilis ng nakikitang pag-populate ng mga content ng isang page. [Matuto pa](https://web.dev/speed-index)."
   },
-  "lighthouse-core/audits/metrics/speed-index.js | title": {
-    "message": "Speed Index"
-  },
   "lighthouse-core/audits/metrics/total-blocking-time.js | description": {
-    "message": "Kabuuan ng lahat ng yugto ng panahon sa pagitan ng FCP at Oras bago maging Interactive, kapag lumampas ang haba ng gawain sa 50ms, ipinahayag sa milliseconds."
-  },
-  "lighthouse-core/audits/metrics/total-blocking-time.js | title": {
-    "message": "Kabuuang Oras ng Pag-block"
+    "message": "Kabuuan ng lahat ng yugto ng panahon sa pagitan ng FCP at Oras bago maging Interactive, kapag lumampas ang haba ng gawain sa 50ms, na ipinapahayag sa milliseconds. [Matuto pa](https://web.dev/lighthouse-total-blocking-time)."
   },
   "lighthouse-core/audits/network-rtt.js | description": {
     "message": "Malaki ang epekto ng mga round trip time (RTT) ng network sa performance. Kung mataas ang RTT sa isang pinagmulan, isa itong palatandaan na mapapahusay ng mga server na malapit sa user ang performance. [Matuto pa](https://hpbn.co/primer-on-latency-and-bandwidth/)."
@@ -839,6 +917,9 @@
   "lighthouse-core/audits/offline-start-url.js | description": {
     "message": "Ine-enable ng isang service worker ang iyong web app para maging maaasahan sa mga pabagu-bagong kundisyon ng network. [Matuto pa](https://web.dev/offline-start-url)."
   },
+  "lighthouse-core/audits/offline-start-url.js | errorLoading": {
+    "message": "Nagkaroon ng error sa pag-load ng {url} sa Service Worker, nakakuha ng status code na {statusCode}"
+  },
   "lighthouse-core/audits/offline-start-url.js | failureTitle": {
     "message": "Hindi tumutugon ang `start_url` gamit ang 200 kapag offline"
   },
@@ -847,9 +928,6 @@
   },
   "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
     "message": "Hindi mabasa ng Lighthouse ang `start_url` na galing sa manifest. Dahil dito, ipinagpapalagay na `start_url` ang URL ng dokumento. Mensahe ng error: '{manifestWarning}.'"
-  },
-  "lighthouse-core/audits/performance-budget.js | columnOverBudget": {
-    "message": "Lampas sa Badyet"
   },
   "lighthouse-core/audits/performance-budget.js | description": {
     "message": "Panatilihin ang dami at laki ng mga kahilingan sa network sa ilalim ng mga target na itinakda ng ibinigay na badyet sa performance. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
@@ -919,9 +997,6 @@
   },
   "lighthouse-core/audits/seo/font-size.js | explanationViewport": {
     "message": "Hindi nababasa ang text dahil walang viewport meta tag na naka-optimize para sa mga screen ng mobile."
-  },
-  "lighthouse-core/audits/seo/font-size.js | explanationWithDisclaimer": {
-    "message": "Masyadong maliit ang {decimalProportion, number, extendedPercent} ng text (batay sa sample na {decimalProportionVisited, number, extendedPercent})."
   },
   "lighthouse-core/audits/seo/font-size.js | failureTitle": {
     "message": "Hindi gumagamit ng mga nababasang laki ng font ang dokumento"
@@ -1089,19 +1164,19 @@
     "message": "Bawasan ang epekto ng code ng third party"
   },
   "lighthouse-core/audits/third-party-summary.js | title": {
-    "message": "Paggamit ng Third Party"
+    "message": "Bawasan ang paggamit ng third-party"
   },
-  "lighthouse-core/audits/time-to-first-byte.js | description": {
-    "message": "Tinutukoy ng Time To First Byte ang tagal bago makapagpadala ng tugon ang iyong server. [Matuto pa](https://web.dev/time-to-first-byte)."
+  "lighthouse-core/audits/timing-budget.js | columnMeasurement": {
+    "message": "Pagsukat"
   },
-  "lighthouse-core/audits/time-to-first-byte.js | displayValue": {
-    "message": "Inabot nang {timeInMs, number, milliseconds} ms ang root na dokumento"
+  "lighthouse-core/audits/timing-budget.js | columnTimingMetric": {
+    "message": "Sukatan"
   },
-  "lighthouse-core/audits/time-to-first-byte.js | failureTitle": {
-    "message": "Pabilisin ang pagtugon ng server (TTFB)"
+  "lighthouse-core/audits/timing-budget.js | description": {
+    "message": "Magtakda ng badyet sa timing para matulungan kang subaybayan ang performance ng iyong site. Mabilis na naglo-load ang mga site na maayos na gumagana at mabilis na tumutugon ang mga ito sa mga input event ng user. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
   },
-  "lighthouse-core/audits/time-to-first-byte.js | title": {
-    "message": "Masyadong matagal ang pagtugon ng server (TTFB)"
+  "lighthouse-core/audits/timing-budget.js | title": {
+    "message": "Badyet sa timing"
   },
   "lighthouse-core/audits/user-timings.js | columnDuration": {
     "message": "Tagal"
@@ -1130,6 +1205,9 @@
   "lighthouse-core/audits/uses-rel-preconnect.js | title": {
     "message": "Mag-preconnect sa mga kinakailangang origin"
   },
+  "lighthouse-core/audits/uses-rel-preconnect.js | tooManyPreconnectLinksWarning": {
+    "message": "Mahigit 2 preconnect link ang nakita. Bihira lang dapat gamitin ang mga preconnect link at tanging sa mga pinakamahalagang pinagmulan lang."
+  },
   "lighthouse-core/audits/uses-rel-preload.js | crossoriginWarning": {
     "message": "May nakitang preload na <link> para sa \"{preloadURL}\" pero hindi ito ginamit ng browser. Tingnan kung ginagamit mo nang maayos ang attribute na `crossorigin`."
   },
@@ -1152,7 +1230,7 @@
     "message": "May tag na `<meta name=\"viewport\">` na may `width` o `initial-scale`"
   },
   "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "Dapat magpakita ng ilang content ang iyong app kapag naka-disable ang JavaScript, kahit isang babala lang sa user na kinakailangan ang Javascript para magamit ang app. [Matuto pa](https://web.dev/without-javascript)."
+    "message": "Dapat magpakita ng ilang content ang iyong app kapag naka-disable ang JavaScript, kahit isang babala lang sa user na kinakailangan ang JavaScript para magamit ang app. [Matuto pa](https://web.dev/without-javascript)."
   },
   "lighthouse-core/audits/without-javascript.js | explanation": {
     "message": "Dapat mag-render ng ilang content ang nilalaman ng page kung hindi available ang mga script nito."
@@ -1316,6 +1394,12 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Pang-mobile"
   },
+  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
+    "message": "Posibleng hindi naglo-load ang page gaya ng inaasahan dahil na-redirect ang iyong pansubok na URL ({requested}) sa {final}. Direktang subukan ang pangalawang URL."
+  },
+  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
+    "message": "Masyadong matagal ang pag-load ng page para matapos sa inilaang limitasyon sa oras. Posibleng hindi kumpleto ang mga resulta."
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "TTL ng Cache"
   },
@@ -1325,14 +1409,23 @@
   "lighthouse-core/lib/i18n/i18n.js | columnName": {
     "message": "Pangalan"
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnOverBudget": {
+    "message": "Lampas sa Badyet"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnRequests": {
     "message": "Mga Kahilingan"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnResourceSize": {
+    "message": "Laki ng Resource"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnResourceType": {
     "message": "Uri ng Resource"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnSize": {
     "message": "Laki"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnSource": {
+    "message": "Pinagmulan"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnTimeSpent": {
     "message": "Oras na Ginugol"
@@ -1349,6 +1442,9 @@
   "lighthouse-core/lib/i18n/i18n.js | columnWastedMs": {
     "message": "Puwedeng Matipid"
   },
+  "lighthouse-core/lib/i18n/i18n.js | cumulativeLayoutShiftMetric": {
+    "message": "Pinagsama-samang Pagbabago ng Layout"
+  },
   "lighthouse-core/lib/i18n/i18n.js | displayValueByteSavings": {
     "message": "Puwedeng makatipid ng {wastedBytes, number, bytes} KB"
   },
@@ -1358,11 +1454,32 @@
   "lighthouse-core/lib/i18n/i18n.js | documentResourceType": {
     "message": "Dokumento"
   },
+  "lighthouse-core/lib/i18n/i18n.js | estimatedInputLatencyMetric": {
+    "message": "Tinatayang Latency ng Input"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | firstCPUIdleMetric": {
+    "message": "First CPU Idle"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | firstContentfulPaintMetric": {
+    "message": "First Contentful Paint"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | firstMeaningfulPaintMetric": {
+    "message": "First Meaningful Paint"
+  },
   "lighthouse-core/lib/i18n/i18n.js | fontResourceType": {
     "message": "Font"
   },
   "lighthouse-core/lib/i18n/i18n.js | imageResourceType": {
     "message": "Larawan"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | interactiveMetric": {
+    "message": "Time to Interactive"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | largestContentfulPaintMetric": {
+    "message": "Largest Contentful Paint"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | maxPotentialFIDMetric": {
+    "message": "Max na Potensyal na First Input Delay"
   },
   "lighthouse-core/lib/i18n/i18n.js | mediaResourceType": {
     "message": "Media"
@@ -1379,11 +1496,17 @@
   "lighthouse-core/lib/i18n/i18n.js | seconds": {
     "message": "{timeInMs, number, seconds} s"
   },
+  "lighthouse-core/lib/i18n/i18n.js | speedIndexMetric": {
+    "message": "Speed Index"
+  },
   "lighthouse-core/lib/i18n/i18n.js | stylesheetResourceType": {
     "message": "Stylesheet"
   },
   "lighthouse-core/lib/i18n/i18n.js | thirdPartyResourceType": {
     "message": "Third-party"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | totalBlockingTimeMetric": {
+    "message": "Kabuuang Oras ng Pag-block"
   },
   "lighthouse-core/lib/i18n/i18n.js | totalResourceType": {
     "message": "Kabuuan"
@@ -1448,11 +1571,38 @@
   "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
     "message": "Maximum na latency ng critical path:"
   },
+  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
+    "message": "Kopyahin ang JSON"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
+    "message": "I-toggle ang Madilim na Tema"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
+    "message": "Pinalawak ang Pag-print"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
+    "message": "Buod sa Pag-print"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
+    "message": "I-save bilang Gist"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
+    "message": "I-save bilang HTML"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
+    "message": "I-save bilang JSON"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
+    "message": "Buksan sa Viewer"
+  },
   "lighthouse-core/report/html/renderer/util.js | errorLabel": {
     "message": "Nagka-error!"
   },
   "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
     "message": "Error sa ulat: walang impormasyon sa pag-audit"
+  },
+  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
+    "message": "Mag-file ng isyu"
   },
   "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
     "message": "Data ng Lab"
@@ -1475,6 +1625,48 @@
   "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
     "message": "Mga pumasang pag-audit"
   },
+  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "Na-emulate na Desktop"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
+    "message": "Na-emulate na Moto G4"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
+    "message": "Walang pag-emulate"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "Power ng CPU/Memory"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "Pag-throttle ng CPU"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
+    "message": "Channel"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
+    "message": "Device"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "Oras ng Pagkuha"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "Pag-throttle ng network"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
+    "message": "Mga Setting ng Runtime"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
+    "message": "User agent (host)"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "User agent (network)"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
+    "message": "URL"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
+    "message": "Hindi alam"
+  },
   "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
     "message": "I-collapse ang snippet"
   },
@@ -1483,6 +1675,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
     "message": "Ipakita ang mga resource ng 3rd party"
+  },
+  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
+    "message": "Ibinigay ng environment"
   },
   "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
     "message": "May mga isyung nakakaapekto sa pagpapatakbong ito ng Lighthouse:"
@@ -1496,6 +1691,93 @@
   "lighthouse-core/report/html/renderer/util.js | warningHeader": {
     "message": "Mga Babala: "
   },
+  "stack-packs/packs/amp.js | efficient_animated_content": {
+    "message": "Para sa animated na content, gamitin ang [amp-anim](https://amp.dev/documentation/components/amp-anim/) para mabawasan ang paggamit ng CPU habang nananatiling offscreen ang content."
+  },
+  "stack-packs/packs/amp.js | offscreen_images": {
+    "message": "Tiyaking mga valid na tag ng `amp-img` ang ginagamit mo para sa iyong mga imaheng awtomatikong nagle-lazy load sa labas ng unang viewport. [Matuto pa](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)."
+  },
+  "stack-packs/packs/amp.js | render_blocking_resources": {
+    "message": "Gumamit ng mga tool na gaya ng [Optimizer ng AMP](https://github.com/ampproject/amp-toolbox/tree/master/packages/optimizer) para [ma-render sa server-side ang mga layout ng AMP](https://amp.dev/documentation/guides-and-tutorials/optimize-and-measure/server-side-rendering/)."
+  },
+  "stack-packs/packs/amp.js | unminified_css": {
+    "message": "Sumangguni sa [dokumentasyon ng AMP](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/style_pages/) para matiyak na sinusuportahan ang lahat ng iyong istilo."
+  },
+  "stack-packs/packs/amp.js | uses_responsive_images": {
+    "message": "Sinusuportahan ng element na `amp-img` ang attribute na `srcset` para tukuyin kung aling mga asset ng imahe ang gagamitin batay sa laki ng screen.  [Matuto pa](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/art_direction/)."
+  },
+  "stack-packs/packs/amp.js | uses_webp_images": {
+    "message": "Pag-isipang ipakita ang lahat ng bahagi ng iyong `amp-img` sa mga WebP na format habang tumutukoy ng naaangkop na fallback para sa iba pang browser. [Matuto pa](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)."
+  },
+  "stack-packs/packs/angular.js | dom_size": {
+    "message": "Pag-isipan ang virtual na pag-scroll sa Component Dev Kit (CDK) kung napakalaki ng mga listahang nire-render. [Matuto pa](https://web.dev/virtualize-lists-with-angular-cdk/)."
+  },
+  "stack-packs/packs/angular.js | total_byte_weight": {
+    "message": "Ilapat ang [paghati ng code sa antas ng ruta](https://web.dev/route-level-code-splitting-in-angular/) para mabawasan ang laki ng iyong mga bundle ng JavaScript. Gayundin, pag-isipang i-precache ang mga asset sa pamamagitan ng [service worker sa Angular](https://web.dev/precaching-with-the-angular-service-worker/)."
+  },
+  "stack-packs/packs/angular.js | unminified_warning": {
+    "message": "Kung gumagamit ka ng Angular CLI, tiyaking binubuo ang mga build sa production mode. [Matuto pa](https://angular.io/guide/deployment#enable-runtime-production-mode)."
+  },
+  "stack-packs/packs/angular.js | unused_javascript": {
+    "message": "Kung gumagamit ka ng Angular CLI, magsama ng mga mapa ng source sa build ng iyong produksyon para masuri ang mga bundle mo. [Matuto pa](https://angular.io/guide/deployment#inspect-the-bundles)."
+  },
+  "stack-packs/packs/angular.js | uses_rel_preload": {
+    "message": "I-preload ang mga ruta nang maaga para mapabilis ang pag-navigate. [Matuto pa](https://web.dev/route-preloading-in-angular/)."
+  },
+  "stack-packs/packs/angular.js | uses_responsive_images": {
+    "message": "Pag-isipang gamitin ang utility na `BreakpointObserver` sa Component Dev Kit (CDK) para pamahalaan ang mga breakpoint ng imahe. [Matuto pa](https://material.angular.io/cdk/layout/overview)."
+  },
+  "stack-packs/packs/magento.js | critical_request_chains": {
+    "message": "Kung hindi mo iba-bundle ang iyong mga asset ng JavaScript, pag-isipang gamitin ang [baler](https://github.com/magento/baler)."
+  },
+  "stack-packs/packs/magento.js | disable_bundling": {
+    "message": "I-disable ang built-in na [pag-bundle at pagpapaliit ng JavaScript](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html) ng Magento, at pag-isipang gamitin na lang ang [baler](https://github.com/magento/baler/)."
+  },
+  "stack-packs/packs/magento.js | font_display": {
+    "message": "Tukuyin ang `@font-display` kapag [tumutukoy ng mga custom na font](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/css-topics/using-fonts.html)."
+  },
+  "stack-packs/packs/magento.js | offscreen_images": {
+    "message": "Pag-isipang baguhin ang iyong mga template ng produkto at catalog para magamit ang feature na [pag-lazy load](https://web.dev/native-lazy-loading) ng web platform."
+  },
+  "stack-packs/packs/magento.js | unminified_css": {
+    "message": "I-enable ang opsyong \"Paliitin ang Mga CSS File\" sa mga setting ng Developer ng iyong store. [Matuto pa](https://devdocs.magento.com/guides/v2.3/performance-best-practices/configuration.html?itm_source=devdocs&itm_medium=search_page&itm_campaign=federated_search&itm_term=minify%20css%20files)."
+  },
+  "stack-packs/packs/magento.js | unminified_javascript": {
+    "message": "Gamitin ang [Terser](https://www.npmjs.com/package/terser) para mapaliit ang lahat ng asset ng JavaScript mula sa deployment ng static na content, at i-disable ang built-in na feature ng pagpapaliit."
+  },
+  "stack-packs/packs/magento.js | unused_javascript": {
+    "message": "I-disable ang built-in na [pag-bundle ng JavaScript](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html) ng Magento."
+  },
+  "stack-packs/packs/magento.js | uses_optimized_images": {
+    "message": "Pag-isipang maghanap sa [Marketplace ng Magento](https://marketplace.magento.com/catalogsearch/result/?q=optimize%20image) para sa iba't ibang third party na extension para ma-optimize ang mga imahe."
+  },
+  "stack-packs/packs/magento.js | uses_rel_preconnect": {
+    "message": "Maidaragdag ang mga hint sa resource na preconnect o dns-prefetch sa pamamagitan ng [pagbabago ng layout ng tema](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  },
+  "stack-packs/packs/magento.js | uses_rel_preload": {
+    "message": "Maidaragdag ang mga tag ng `<link rel=preload>` sa pamamagitan ng [pagbabago ng layout ng tema](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  },
+  "stack-packs/packs/magento.js | uses_webp_images": {
+    "message": "Pag-isipang maghanap sa [Marketplace ng Magento](https://marketplace.magento.com/catalogsearch/result/?q=webp) para sa iba't ibang third-party na extension para magamit ang mga mas bagong format ng imahe."
+  },
+  "stack-packs/packs/react.js | dom_size": {
+    "message": "Pag-isipang gumamit ng “windowing” library na tulad ng `react-window` para mabawasan ang bilang ng mga node ng DOM na nagagawa kung nagre-render ka ng maraming umuulit na element sa page. [Matuto pa](https://web.dev/virtualize-long-lists-react-window/). Gayundin, bawasan ang mga hindi kinakailangang pag-render ulit gamit ang [shouldComponentUpdate](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [PureComponent](https://reactjs.org/docs/react-api.html#reactpurecomponent), o [React.memo](https://reactjs.org/docs/react-api.html#reactmemo) at [laktawan lang ang mga effect](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) hanggang sa may ilang partikular na dependency na magbago kung ginagamit mo ang hook na Effect para mapahusay ang performance ng runtime."
+  },
+  "stack-packs/packs/react.js | redirects": {
+    "message": "Kung gumagamit ka ng Router ng React, bawasan ang paggamit ng bahaging `<Redirect>` para sa [mga pag-navigate sa ruta](https://reacttraining.com/react-router/web/api/Redirect)."
+  },
+  "stack-packs/packs/react.js | unminified_css": {
+    "message": "Kung awtomatikong pinapaliit ng system ng build ang iyong mga CSS file, tiyaking ide-deploy mo ang build ng produksyon ng iyong application. Puwede mo itong suriin sa pamamagitan ng extension na Mga Tool ng Developer ng React. [Matuto pa](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
+  },
+  "stack-packs/packs/react.js | unminified_javascript": {
+    "message": "Kung awtomatikong pinapaliit ng system ng build ang iyong mga JS file, tiyaking ide-deploy mo ang build ng produksyon ng iyong application. Puwede mo itong suriin sa pamamagitan ng extension na Mga Tool ng Developer ng React. [Matuto pa](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
+  },
+  "stack-packs/packs/react.js | unused_javascript": {
+    "message": "Kung hindi ka nagre-render sa server-side, [hatiin ang iyong mga bundle ng JavaScript](https://web.dev/code-splitting-suspense/) gamit ang `React.lazy()`. Kung hindi naman, hatiin ang code gamit ang isang third-party na library na gaya ng [loadable-components](https://www.smooth-code.com/open-source/loadable-components/docs/getting-started/)."
+  },
+  "stack-packs/packs/react.js | user_timings": {
+    "message": "Gamitin ang React DevTools Profiler, na gumagamit ng Profiler API para sukatin ang performance sa pag-render ng iyong mga bahagi. [Matuto pa.](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
+  },
   "stack-packs/packs/wordpress.js | efficient_animated_content": {
     "message": "Pag-isipang i-upload ang iyong GIF sa isang serbisyo kung saan gagawin itong available para i-embed bilang HTML5 video."
   },
@@ -1504,9 +1786,6 @@
   },
   "stack-packs/packs/wordpress.js | render_blocking_resources": {
     "message": "May ilang plugin sa WordPress na makakatulong sa iyong [i-inline ang mahahalagang asset](https://wordpress.org/plugins/search/critical+css/) o [ipagpaliban ang hindi masyadong mahahalagang resource](https://wordpress.org/plugins/search/defer+css+javascript/). Tandaang puwedeng makasira sa mga feature ng iyong tema o mga plugin ang mga pag-optimize na mula sa mga plugin na ito, kaya malamang na kakailanganin mong gumawa ng mga pagbabago sa code."
-  },
-  "stack-packs/packs/wordpress.js | time_to_first_byte": {
-    "message": "Nakakaapekto ang mga tema, plugin, at detalye ng server sa oras ng pagtugon ng server. Pag-isipang maghanap ng mas naka-optimize na tema, maingat na pumili ng plugin sa pag-optimize, at/o i-upgrade ang iyong server."
   },
   "stack-packs/packs/wordpress.js | total_byte_weight": {
     "message": "Pag-isipang magpakita ng mga sipi sa iyong mga listahan ng post (hal. sa pamamagitan ng tag na higit pa), bawasan ang bilang ng post na ipinapakita sa isang page, hatiin ang mahahaba mong post sa maraming page, o gumamit ng plugin sa mga lazy-load na komento."
@@ -1524,13 +1803,13 @@
     "message": "Pag-isipang bawasan, o baguhin, ang bilang ng [mga plugin sa WordPress](https://wordpress.org/plugins/) na naglo-load ng mga hindi ginagamit na JavaScript sa iyong page. Para tukuyin ang mga plugin na nagdaragdag ng mga hindi nauugnay na JS, subukang patakbuhin ang [sakop ng code](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) sa Chrome DevTools. Puwede mong tukuyin ang tema/plugin na sanhi nito mula sa URL ng script. Abangan ang mga plugin na maraming script sa listahang may maraming pula sa sakop ng code. Dapat lang i-enqueue ng plugin ang isang script kung talagang ginagamit ito sa page."
   },
   "stack-packs/packs/wordpress.js | uses_long_cache_ttl": {
-    "message": "Magbasa tungkol sa [Pag-cache ng Browser sa WordPress](https://codex.wordpress.org/WordPress_Optimization#Browser_Caching)."
+    "message": "Magbasa tungkol sa [Pag-cache ng Browser sa WordPress](https://wordpress.org/support/article/optimization/#browser-caching)."
   },
   "stack-packs/packs/wordpress.js | uses_optimized_images": {
     "message": "Pag-isipang gumamit ng [plugin sa WordPress para sa pag-optimize ng larawan](https://wordpress.org/plugins/search/optimize+images/) na nagko-compress ng iyong mga larawan habang pinapanatili ang kalidad."
   },
   "stack-packs/packs/wordpress.js | uses_responsive_images": {
-    "message": "Direktang i-upload ang mga larawan sa pamamagitan ng [library ng media](https://codex.wordpress.org/Media_Library_Screen) para tiyaking available ang mga kinakailangang laki ng larawan, at pagkatapos ay ilagay ang mga ito mula sa library ng media o gamitin ang widget ng larawan para tiyaking ginagamit ang mga pinakaangkop na laki ng larawan (kabilang ang para sa mga tumutugong breakpoint). Iwasang gamitin ang mga larawang nasa `Full Size` maliban kung sapat ang mga dimensyon para sa paggamit ng mga ito. [Matuto Pa](https://codex.wordpress.org/Inserting_Images_into_Posts_and_Pages#Image_Size)."
+    "message": "Direktang i-upload ang mga larawan sa pamamagitan ng [library ng media](https://wordpress.org/support/article/media-library-screen/) para tiyaking available ang mga kinakailangang laki ng larawan, at pagkatapos ay ilagay ang mga ito mula sa library ng media o gamitin ang widget ng larawan para tiyaking ginagamit ang mga pinakaangkop na laki ng larawan (kabilang ang para sa mga tumutugong breakpoint). Iwasang gamitin ang mga larawang nasa `Full Size` maliban kung sapat ang mga dimensyon para sa paggamit ng mga ito. [Matuto Pa](https://wordpress.org/support/article/inserting-images-into-posts-and-pages/)."
   },
   "stack-packs/packs/wordpress.js | uses_text_compression": {
     "message": "Puwede mong i-enable ang pag-compress ng text sa configuration ng iyong server sa web."

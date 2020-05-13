@@ -1,6 +1,6 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}(g.Lighthouse || (g.Lighthouse = {})).ReportGenerator = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({"./html/html-report-assets.js":[function(require,module,exports){
 /**
- * @license Copyright 2019 Google Inc. All Rights Reserved.
+ * @license Copyright 2019 The Lighthouse Authors. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
@@ -8,12 +8,14 @@
 
 /**
  * @fileoverview Instead of loading report assets form the filesystem, in Devtools we must load
- * them via self.Runtime.cachedResources. We use this module to shim
+ * them via Runtime.cachedResources. We use this module to shim
  * lighthouse-core/report/html/html-report-assets.js in Devtools.
  */
 
-// @ts-ignore: self.Runtime exists in Devtools.
-const cachedResources = self.Runtime.cachedResources;
+/* global Runtime */
+
+// @ts-ignore: Runtime.cachedResources exists in Devtools. https://source.chromium.org/chromium/chromium/src/+/master:third_party/devtools-frontend/src/front_end/root/Runtime.js;l=1169
+const cachedResources = Runtime.cachedResources;
 
 // Getters are necessary because the DevTools bundling processes
 // resources after this module is resolved. These properties are not
@@ -36,7 +38,7 @@ module.exports = {
 
 },{}],1:[function(require,module,exports){
 /**
- * @license Copyright 2017 Google Inc. All Rights Reserved.
+ * @license Copyright 2017 The Lighthouse Authors. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
@@ -105,13 +107,14 @@ class ReportGenerator {
     const escape = value => `"${value.replace(/"/g, '""')}"`;
 
     // Possible TODO: tightly couple headers and row values
-    const header = ['category', 'name', 'title', 'type', 'score'];
+    const header = ['requestedUrl', 'finalUrl', 'category', 'name', 'title', 'type', 'score'];
     const table = Object.values(lhr.categories).map(category => {
       return category.auditRefs.map(auditRef => {
         const audit = lhr.audits[auditRef.id];
         // CSV validator wants all scores to be numeric, use -1 for now
         const numericScore = audit.score === null ? -1 : audit.score;
-        return [category.title, audit.id, audit.title, audit.scoreDisplayMode, numericScore]
+        return [lhr.requestedUrl, lhr.finalUrl, category.title, audit.id, audit.title,
+          audit.scoreDisplayMode, numericScore]
           .map(value => value.toString())
           .map(escape);
       });

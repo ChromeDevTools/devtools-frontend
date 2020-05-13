@@ -23,11 +23,13 @@ Resetting state with about:blank
 Getting browser version
 Benchmarking machine
 Initializing…
+Running defaultPass pass
 Resetting state with about:blank
 Setting up network for the pass trace
 Cleaning browser cache
 Running beforePass methods
 Gathering setup: CSSUsage
+Gathering setup: JsUsage
 Gathering setup: ViewportDimensions
 Gathering setup: RuntimeExceptions
 Gathering setup: ConsoleMessages
@@ -36,6 +38,7 @@ Gathering setup: ImageElements
 Gathering setup: LinkElements
 Gathering setup: MetaElements
 Gathering setup: ScriptElements
+Gathering setup: MainDocumentContent
 Gathering setup: AppCacheManifest
 Gathering setup: Doctype
 Gathering setup: DOMStats
@@ -48,11 +51,13 @@ Gathering setup: EmbeddedContent
 Gathering setup: RobotsTxt
 Gathering setup: TapTargets
 Gathering setup: Accessibility
+Gathering setup: TraceElements
 Beginning devtoolsLog and trace
 Getting browser version
 Loading page & waiting for onload
 Running pass methods
 Gathering in-page: CSSUsage
+Gathering in-page: JsUsage
 Gathering in-page: ViewportDimensions
 Gathering in-page: RuntimeExceptions
 Gathering in-page: ConsoleMessages
@@ -61,6 +66,7 @@ Gathering in-page: ImageElements
 Gathering in-page: LinkElements
 Gathering in-page: MetaElements
 Gathering in-page: ScriptElements
+Gathering in-page: MainDocumentContent
 Gathering in-page: AppCacheManifest
 Gathering in-page: Doctype
 Gathering in-page: DOMStats
@@ -73,10 +79,12 @@ Gathering in-page: EmbeddedContent
 Gathering in-page: RobotsTxt
 Gathering in-page: TapTargets
 Gathering in-page: Accessibility
+Gathering in-page: TraceElements
 Gathering trace
 Gathering devtoolsLog & network records
 Running afterPass methods
 Gathering: CSSUsage
+Gathering: JsUsage
 Gathering: ViewportDimensions
 Gathering: RuntimeExceptions
 Gathering: ConsoleMessages
@@ -85,6 +93,7 @@ Gathering: ImageElements
 Gathering: LinkElements
 Gathering: MetaElements
 Gathering: ScriptElements
+Gathering: MainDocumentContent
 Gathering: AppCacheManifest
 Gathering: Doctype
 Gathering: DOMStats
@@ -97,6 +106,8 @@ Gathering: EmbeddedContent
 Gathering: RobotsTxt
 Gathering: TapTargets
 Gathering: Accessibility
+Gathering: TraceElements
+Running offlinePass pass
 Resetting state with about:blank
 Setting up network for the pass trace
 Running beforePass methods
@@ -114,6 +125,7 @@ Running afterPass methods
 Gathering: ServiceWorker
 Gathering: Offline
 Gathering: StartUrl
+Running redirectPass pass
 Resetting state with about:blank
 Setting up network for the pass trace
 Running beforePass methods
@@ -145,6 +157,9 @@ Computing artifact: LanternFirstContentfulPaint
 Computing artifact: PageDependencyGraph
 Computing artifact: LoadSimulator
 Computing artifact: NetworkAnalysis
+Auditing: Largest Contentful Paint
+Computing artifact: LargestContentfulPaint
+Computing artifact: LanternLargestContentfulPaint
 Auditing: First Meaningful Paint
 Computing artifact: FirstMeaningfulPaint
 Computing artifact: LanternFirstMeaningfulPaint
@@ -167,8 +182,10 @@ Computing artifact: LanternTotalBlockingTime
 Auditing: Max Potential First Input Delay
 Computing artifact: MaxPotentialFID
 Computing artifact: LanternMaxPotentialFID
+Auditing: Cumulative Layout Shift
+Computing artifact: CumulativeLayoutShift
 Auditing: No browser errors logged to the console
-Auditing: Server response times are low (TTFB)
+Auditing: Initial server response time was short
 Computing artifact: MainResource
 Auditing: First CPU Idle
 Computing artifact: FirstCPUIdle
@@ -183,9 +200,13 @@ Auditing: Web app manifest meets the installability requirements
 Computing artifact: ManifestValues
 Auditing: Provides a valid `apple-touch-icon`
 Auditing: Configured for a custom splash screen
+Computing artifact: ManifestValues
 Auditing: Sets a theme color for the address bar.
+Computing artifact: ManifestValues
+Auditing: Manifest has a maskable icon
 Auditing: Content is sized correctly for the viewport
 Auditing: Displays images with correct aspect ratio
+Auditing: Displays images with appropriate size
 Auditing: Avoids deprecated APIs
 Auditing: Minimizes main-thread work
 Computing artifact: MainThreadTasks
@@ -200,31 +221,41 @@ Auditing: Network Round Trip Times
 Auditing: Server Backend Latencies
 Auditing: Tasks
 Auditing: Metrics
+Computing artifact: TimingSummary
 Auditing: `start_url` responds with a 200 when offline
 Auditing: Performance budget
 Computing artifact: ResourceSummary
+Auditing: Timing budget
 Auditing: Keep request counts low and transfer sizes small
 Auditing: Minimize third-party usage
+Auditing: Largest Contentful Paint element
+Auditing: Avoid large layout shifts
 Auditing: Site works cross-browser
 Auditing: Page transitions don't feel like they block on the network
 Auditing: Each page has a URL
 Auditing: `[accesskey]` values are unique
 Auditing: `[aria-*]` attributes match their roles
+Auditing: `[aria-hidden="true"]` is not present on the document `<body>`
+Auditing: `[aria-hidden="true"]` elements do not contain focusable descendents
+Auditing: ARIA input fields have accessible names
 Auditing: `[role]`s have all required `[aria-*]` attributes
 Auditing: Elements with an ARIA `[role]` that require children to contain a specific `[role]` have all required children.
 Auditing: `[role]`s are contained by their required parent element
 Auditing: `[role]` values are valid
+Auditing: ARIA toggle fields have accessible names
 Auditing: `[aria-*]` attributes have valid values
 Auditing: `[aria-*]` attributes are valid and not misspelled
-Auditing: `<audio>` elements contain a `<track>` element with `[kind="captions"]`
 Auditing: Buttons have an accessible name
 Auditing: The page contains a heading, skip link, or landmark region
 Auditing: Background and foreground colors have a sufficient contrast ratio
-Auditing: `<dl>`'s contain only properly-ordered `<dt>` and `<dd>` groups, `<script>` or `<template>` elements.
+Auditing: `<dl>`'s contain only properly-ordered `<dt>` and `<dd>` groups, `<script>`, `<template>` or `<div>` elements.
 Auditing: Definition list items are wrapped in `<dl>` elements
 Auditing: Document has a `<title>` element
-Auditing: `[id]` attributes on the page are unique
+Auditing: `[id]` attributes on active, focusable elements are unique
+Auditing: ARIA IDs are unique
+Auditing: No form fields have multiple labels
 Auditing: `<frame>` or `<iframe>` elements have a title
+Auditing: Heading elements appear in a sequentially-descending order
 Auditing: `<html>` element has a `[lang]` attribute
 Auditing: `<html>` element has a valid value for its `[lang]` attribute
 Auditing: Image elements have `[alt]` attributes
@@ -247,7 +278,6 @@ Auditing: Custom controls have associated labels
 Auditing: Custom controls have ARIA roles
 Auditing: User focus is not accidentally trapped in a region
 Auditing: Interactive controls are keyboard focusable
-Auditing: Headings don't skip levels
 Auditing: Interactive elements indicate their purpose and state
 Auditing: The page has a logical tab order
 Auditing: The user's focus is directed to new content added to the page
@@ -258,11 +288,13 @@ Auditing: Uses efficient cache policy on static assets
 Auditing: Avoids enormous network payloads
 Auditing: Defer offscreen images
 Auditing: Eliminate render-blocking resources
+Computing artifact: UnusedCSS
 Computing artifact: FirstContentfulPaint
 Computing artifact: LanternFirstContentfulPaint
 Auditing: Minify CSS
 Auditing: Minify JavaScript
 Auditing: Remove unused CSS
+Auditing: Remove unused JavaScript
 Auditing: Serve images in next-gen formats
 Auditing: Efficiently encode images
 Auditing: Enable text compression
@@ -270,6 +302,7 @@ Auditing: Properly size images
 Auditing: Use video formats for animated content
 Auditing: Avoids Application Cache
 Auditing: Page has the HTML doctype
+Auditing: Properly defines charset
 Auditing: Avoids an excessive DOM size
 Auditing: Links to cross-origin destinations are safe
 Auditing: Avoids requesting the geolocation permission on page load
@@ -295,14 +328,14 @@ Generating results...
 
 =============== Lighthouse Results ===============
 URL: http://127.0.0.1:8000/devtools/lighthouse/resources/lighthouse-basic.html
-Version: 5.7.1
+Version: 6.0.0-rc.0
 TestedAsMobileDevice: true
 ViewportDimensions: {
-  "innerWidth": 981,
-  "innerHeight": 1570,
-  "outerWidth": 412,
-  "outerHeight": 660,
-  "devicePixelRatio": 2.625
+  "innerWidth": 980,
+  "innerHeight": 1743,
+  "outerWidth": 360,
+  "outerHeight": 640,
+  "devicePixelRatio": 3
 }
 
 
@@ -310,20 +343,25 @@ accesskeys: notApplicable
 appcache-manifest: pass
 apple-touch-icon: fail
 aria-allowed-attr: notApplicable
+aria-hidden-body: pass
+aria-hidden-focus: notApplicable
+aria-input-field-name: notApplicable
 aria-required-attr: notApplicable
 aria-required-children: notApplicable
 aria-required-parent: notApplicable
 aria-roles: notApplicable
+aria-toggle-field-name: notApplicable
 aria-valid-attr: notApplicable
 aria-valid-attr-value: notApplicable
-audio-caption: notApplicable
 bootup-time: flaky
 button-name: notApplicable
 bypass: notApplicable
 canonical: notApplicable
+charset: fail
 color-contrast: pass
 content-width: fail
 critical-request-chains: notApplicable
+cumulative-layout-shift: numeric
 custom-controls-labels: manual
 custom-controls-roles: manual
 definition-list: notApplicable
@@ -333,7 +371,8 @@ dlitem: notApplicable
 doctype: pass
 document-title: fail
 dom-size: numeric
-duplicate-id: notApplicable
+duplicate-id-active: notApplicable
+duplicate-id-aria: notApplicable
 efficient-animated-content: flaky
 errors-in-console: pass
 estimated-input-latency: flaky
@@ -346,15 +385,17 @@ focus-traps: manual
 focusable-controls: manual
 font-display: pass
 font-size: fail
+form-field-multiple-labels: notApplicable
 frame-title: notApplicable
 geolocation-on-start: pass
-heading-levels: manual
+heading-order: notApplicable
 hreflang: pass
 html-has-lang: fail
 html-lang-valid: notApplicable
 http-status-code: pass
 image-alt: notApplicable
 image-aspect-ratio: pass
+image-size-responsive: pass
 input-image-alt: notApplicable
 installable-manifest: fail
 interactive: flaky
@@ -363,6 +404,9 @@ is-crawlable: pass
 is-on-https: pass
 js-libraries: pass
 label: notApplicable
+largest-contentful-paint: numeric
+largest-contentful-paint-element: informative
+layout-shift-elements: informative
 layout-table: notApplicable
 link-name: notApplicable
 link-text: pass
@@ -373,6 +417,7 @@ logical-tab-order: manual
 main-thread-tasks: informative
 mainthread-work-breakdown: numeric
 managed-focus: manual
+maskable-icon: fail
 max-potential-fid: numeric
 meta-description: fail
 meta-refresh: notApplicable
@@ -400,6 +445,7 @@ render-blocking-resources: flaky
 resource-summary: informative
 robots-txt: notApplicable
 screenshot-thumbnails: flaky
+server-response-time: pass
 service-worker: fail
 speed-index: flaky
 splash-screen: fail
@@ -410,12 +456,13 @@ td-headers-attr: notApplicable
 th-has-data-cells: notApplicable
 themed-omnibox: fail
 third-party-summary: notApplicable
-time-to-first-byte: pass
+timing-budget: ERROR Chrome didn't collect any screenshots during the page load. Please make sure there is content visible on the page, and then try re-running Lighthouse. (NO_SCREENSHOTS)
 total-blocking-time: numeric
 total-byte-weight: numeric
 unminified-css: flaky
 unminified-javascript: flaky
 unused-css-rules: flaky
+unused-javascript: numeric
 use-landmarks: manual
 user-timings: flaky
 uses-http2: fail
@@ -435,5 +482,5 @@ visual-order-follows-dom: manual
 without-javascript: pass
 works-offline: fail
 
-# of .lh-audit divs: 115
+# of .lh-audit divs: 126
 

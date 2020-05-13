@@ -17,6 +17,33 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "`[aria-*]`-kenmerken komen overeen met hun rollen"
   },
+  "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
+    "message": "Ondersteunende technologieën, zoals schermlezers, werken inconsistent als `aria-hidden=\"true\"` is ingesteld in het document `<body>`. [Meer informatie](https://web.dev/aria-hidden-body/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-body.js | failureTitle": {
+    "message": "`[aria-hidden=\"true\"]` is aanwezig in het document `<body>`"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-body.js | title": {
+    "message": "`[aria-hidden=\"true\"]` is niet aanwezig in het document `<body>`"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-focus.js | description": {
+    "message": "Focusbare onderliggende elementen in een `[aria-hidden=\"true\"]`-element voorkomen dat die interactieve elementen beschikbaar zijn voor gebruikers van ondersteunende technologieën, zoals schermlezers. [Meer informatie](https://web.dev/aria-hidden-focus/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-focus.js | failureTitle": {
+    "message": "`[aria-hidden=\"true\"]`-elementen bevatten focusbare onderliggende elementen"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-focus.js | title": {
+    "message": "`[aria-hidden=\"true\"]`-elementen bevatten geen focusbare onderliggende elementen"
+  },
+  "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
+    "message": "Als een invoerveld geen toegankelijke naam heeft, kondigen schermlezers dit aan met een generieke naam, waardoor het veld onbruikbaar wordt voor gebruikers die afhankelijk zijn van schermlezers. [Meer informatie](https://web.dev/aria-input-field-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
+    "message": "ARIA-invoervelden hebben geen toegankelijke namen"
+  },
+  "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
+    "message": "ARIA-invoervelden hebben toegankelijke namen"
+  },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "Sommige ARIA-rollen hebben vereiste kenmerken die de status van het element beschrijven voor schermlezers. [Meer informatie](https://web.dev/aria-required-attr/)"
   },
@@ -53,6 +80,15 @@
   "lighthouse-core/audits/accessibility/aria-roles.js | title": {
     "message": "`[role]`-waarden zijn geldig"
   },
+  "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
+    "message": "Als een schakelveld geen toegankelijke naam heeft, kondigen schermlezers dit aan met een generieke naam, waardoor het veld onbruikbaar wordt voor gebruikers die afhankelijk zijn van schermlezers. [Meer informatie](https://web.dev/aria-toggle-field-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
+    "message": "ARIA-schakelvelden hebben geen toegankelijke namen"
+  },
+  "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
+    "message": "ARIA-schakelvelden hebben toegankelijke namen"
+  },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "ARIA-kenmerken met ongeldige waarden kunnen niet worden geïnterpreteerd door hulptechnologieën, zoals schermlezers. [Meer informatie](https://web.dev/aria-valid-attr-value/)"
   },
@@ -70,15 +106,6 @@
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr.js | title": {
     "message": "`[aria-*]`-kenmerken zijn geldig en niet verkeerd gespeld"
-  },
-  "lighthouse-core/audits/accessibility/audio-caption.js | description": {
-    "message": "Ondertiteling maakt audio-elementen bruikbaar voor doven en slechthorenden en geeft essentiële informatie zoals wie praat, wat de persoon zegt en andere niet-gesproken informatie. [Meer informatie](https://web.dev/audio-caption/)"
-  },
-  "lighthouse-core/audits/accessibility/audio-caption.js | failureTitle": {
-    "message": "Voor `<audio>`-elementen ontbreekt een `<track>`-element met `[kind=\"captions\"]`."
-  },
-  "lighthouse-core/audits/accessibility/audio-caption.js | title": {
-    "message": "`<audio>`-elementen bevatten een `<track>`-element met `[kind=\"captions\"]`"
   },
   "lighthouse-core/audits/accessibility/axe-audit.js | failingElementsHeader": {
     "message": "Mislukte elementen"
@@ -114,10 +141,10 @@
     "message": "Wanneer definitielijsten niet juist zijn opgemaakt, kunnen schermlezers verwarrende of onjuiste uitvoer produceren. [Meer informatie](https://web.dev/definition-list/)"
   },
   "lighthouse-core/audits/accessibility/definition-list.js | failureTitle": {
-    "message": "`<dl>`-elementen bevatten niet alleen juist geordende `<dt>`- en `<dd>`-groepen, `<script>` of `<template>`-elementen."
+    "message": "`<dl>`-elementen bevatten niet alleen juist geordende `<dt>`- en `<dd>`-groepen, `<script>`-, `<template>`- of `<div>`-elementen."
   },
   "lighthouse-core/audits/accessibility/definition-list.js | title": {
-    "message": "`<dl>`-elementen bevatten alleen juist geordende`<dt>`- en `<dd>`-groepen,`<script>` of `<template>`-elementen."
+    "message": "`<dl>`-elementen bevatten alleen juist geordende `<dt>`- en `<dd>`-groepen, `<script>`-, `<template>`- of `<div>`-elementen."
   },
   "lighthouse-core/audits/accessibility/dlitem.js | description": {
     "message": "Definitielijstitems (`<dt>` en `<dd>`) moeten zijn verpakt in een bovenliggend `<dl>`-element om ervoor te zorgen dat schermlezers ze juist kunnen aankondigen. [Meer informatie](https://web.dev/dlitem/)"
@@ -137,14 +164,32 @@
   "lighthouse-core/audits/accessibility/document-title.js | title": {
     "message": "Document bevat een `<title>`-element"
   },
-  "lighthouse-core/audits/accessibility/duplicate-id.js | description": {
-    "message": "De waarde van een id-kenmerk moet uniek zijn om te voorkomen dat andere instanties over het hoofd worden gezien door hulptechnologieën. [Meer informatie](https://web.dev/duplicate-id/)"
+  "lighthouse-core/audits/accessibility/duplicate-id-active.js | description": {
+    "message": "Alle focusbare elementen moeten een unieke `id` hebben om ervoor te zorgen dat ze zichtbaar zijn voor ondersteunende technologieën. [Meer informatie](https://web.dev/duplicate-id-active/)"
   },
-  "lighthouse-core/audits/accessibility/duplicate-id.js | failureTitle": {
-    "message": "De `[id]`-kenmerken op de pagina zijn niet uniek"
+  "lighthouse-core/audits/accessibility/duplicate-id-active.js | failureTitle": {
+    "message": "`[id]`-kenmerken voor actieve, focusbare elementen zijn niet uniek"
   },
-  "lighthouse-core/audits/accessibility/duplicate-id.js | title": {
-    "message": "De `[id]`-kenmerken op de pagina zijn uniek"
+  "lighthouse-core/audits/accessibility/duplicate-id-active.js | title": {
+    "message": "`[id]`-kenmerken voor actieve, focusbare elementen zijn uniek"
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id-aria.js | description": {
+    "message": "De waarde van een ARIA-ID moet uniek zijn om te voorkomen dat andere instanties over het hoofd worden gezien door ondersteunende technologieën. [Meer informatie](https://web.dev/duplicate-id-aria/)"
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id-aria.js | failureTitle": {
+    "message": "ARIA-ID's zijn niet uniek"
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id-aria.js | title": {
+    "message": "ARIA-ID's zijn uniek"
+  },
+  "lighthouse-core/audits/accessibility/form-field-multiple-labels.js | description": {
+    "message": "Formuliervelden met meerdere labels kunnen verwarrend worden aangekondigd door ondersteunende technologieën, zoals schermlezers, die het eerste label, het laatste label of alle labels gebruiken. [Meer informatie](https://web.dev/form-field-multiple-labels/)"
+  },
+  "lighthouse-core/audits/accessibility/form-field-multiple-labels.js | failureTitle": {
+    "message": "Er zijn formuliervelden met meerdere labels"
+  },
+  "lighthouse-core/audits/accessibility/form-field-multiple-labels.js | title": {
+    "message": "Er zijn geen formuliervelden met meerdere labels"
   },
   "lighthouse-core/audits/accessibility/frame-title.js | description": {
     "message": "Gebruikers van een schermlezer zijn afhankelijk van frametitels die de content van de frames beschrijven. [Meer informatie](https://web.dev/frame-title/)"
@@ -154,6 +199,15 @@
   },
   "lighthouse-core/audits/accessibility/frame-title.js | title": {
     "message": "`<frame>`- of `<iframe>`-elementen hebben een titel"
+  },
+  "lighthouse-core/audits/accessibility/heading-order.js | description": {
+    "message": "Correct geordende koppen die geen niveaus overslaan, brengen de semantische structuur van de pagina over. Zo kan er beter op de pagina worden genavigeerd en kan de pagina beter worden geïnterpreteerd door ondersteunende technologieën. [Meer informatie](https://web.dev/heading-order/)"
+  },
+  "lighthouse-core/audits/accessibility/heading-order.js | failureTitle": {
+    "message": "Kopelementen worden niet weergegeven in aflopende volgorde"
+  },
+  "lighthouse-core/audits/accessibility/heading-order.js | title": {
+    "message": "Kopelementen worden weergegeven in aflopende volgorde"
   },
   "lighthouse-core/audits/accessibility/html-has-lang.js | description": {
     "message": "Als de pagina geen lang-kenmerk specificeert, neemt een schermlezer aan dat de pagina is geschreven in de standaardtaal die de gebruiker heeft gekozen toen de schermlezer werd ingesteld. Als de pagina niet in de standaardtaal is geschreven, kan de schermlezer de tekst van de pagina mogelijk niet juist aankondigen. [Meer informatie](https://web.dev/html-has-lang/)"
@@ -350,6 +404,12 @@
   "lighthouse-core/audits/bootup-time.js | title": {
     "message": "JavaScript-uitvoeringstijd"
   },
+  "lighthouse-core/audits/byte-efficiency/duplicated-javascript.js | description": {
+    "message": "Verwijder grote, dubbele JavaScript-modules uit bundels, zodat er minder onnodige bytes worden verbruikt door netwerkactiviteit. "
+  },
+  "lighthouse-core/audits/byte-efficiency/duplicated-javascript.js | title": {
+    "message": "Dubbele modules verwijderen uit JavaScript-bundels"
+  },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | description": {
     "message": "Grote gif's zijn niet efficiënt om content met animaties te leveren. Overweeg het gebruik van MPEG4-/WebM-video's voor animaties en PNG/WebP voor statische afbeeldingen in plaats van gif's om netwerkbytes te besparen. [Meer informatie](https://web.dev/efficient-animated-content)"
   },
@@ -399,7 +459,7 @@
     "message": "Ongebruikte css verwijderen"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "Verwijder ongebruikt JavaScript om het aantal bytes te verminderen dat wordt verbruikt door netwerkactiviteit."
+    "message": "Verwijder ongebruikt JavaScript om het aantal bytes te verminderen dat wordt verbruikt door netwerkactiviteit. [Meer informatie](https://web.dev/remove-unused-code/)"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
     "message": "Verwijder ongebruikt JavaScript"
@@ -459,7 +519,7 @@
     "message": "{itemCount,plural, =1{1 keten gevonden}other{# ketens gevonden}}"
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
-    "message": "Minimaliseer de diepte van kritieke verzoeken"
+    "message": "Doorlinken van kritieke verzoeken voorkomen"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "Beëindiging / Waarschuwing"
@@ -491,6 +551,15 @@
   "lighthouse-core/audits/dobetterweb/appcache-manifest.js | title": {
     "message": "Vermijdt applicatiecache"
   },
+  "lighthouse-core/audits/dobetterweb/charset.js | description": {
+    "message": "Een declaratie voor tekencodering is vereist. Los dit op door de tag <meta> te gebruiken in de eerste 1024 bytes van de html of in de HTTP-reactiekop voor het contenttype. [Meer informatie](https://www.w3.org/International/questions/qa-html-encoding-declarations)"
+  },
+  "lighthouse-core/audits/dobetterweb/charset.js | failureTitle": {
+    "message": "Tekensetdeclaratie ontbreekt of komt te laat in de html"
+  },
+  "lighthouse-core/audits/dobetterweb/charset.js | title": {
+    "message": "Definieert tekenset correct"
+  },
   "lighthouse-core/audits/dobetterweb/doctype.js | description": {
     "message": "Door een doctype op te geven, voorkom je dat de browser overschakelt naar de quirks-modus. [Meer informatie](https://web.dev/doctype)"
   },
@@ -512,9 +581,6 @@
   "lighthouse-core/audits/dobetterweb/doctype.js | title": {
     "message": "Pagina bevat html-doctype"
   },
-  "lighthouse-core/audits/dobetterweb/dom-size.js | columnElement": {
-    "message": "Element"
-  },
   "lighthouse-core/audits/dobetterweb/dom-size.js | columnStatistic": {
     "message": "Statistiek"
   },
@@ -522,7 +588,7 @@
     "message": "Waarde"
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | description": {
-    "message": "Ontwikkelaars van browsers raden aan dat pagina's minder dan ~1.500 DOM-elementen bevatten. De ideale hoeveelheid bestaat uit vertakkingen met < 32 elementen en minder dan 60 onder-/bovenliggende elementen. Een grote DOM kan het geheugengebruik vergroten, en [stijlberekeningen](https://developers.google.com/web/fundamentals/performance/rendering/reduce-the-scope-and-complexity-of-style-calculations) en kostbare [dynamische aanpassingen in de vormgeving](https://developers.google.com/speed/articles/reflow) veroorzaken. [Meer informatie](https://web.dev/dom-size)"
+    "message": "Een grote DOM vergroot het geheugengebruik, en veroorzaakt [stijlberekeningen](https://developers.google.com/web/fundamentals/performance/rendering/reduce-the-scope-and-complexity-of-style-calculations) en dure [dynamische aanpassingen in de vormgeving](https://developers.google.com/speed/articles/reflow). [Meer informatie](https://web.dev/dom-size)"
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | displayValue": {
     "message": "{itemCount,plural, =1{1 element}other{# elementen}}"
@@ -542,11 +608,8 @@
   "lighthouse-core/audits/dobetterweb/dom-size.js | title": {
     "message": "Vermijdt een overmatige grote DOM"
   },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnRel": {
-    "message": "Rel"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnTarget": {
-    "message": "Doel"
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnFailingAnchors": {
+    "message": "Mislukte ankers"
   },
   "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
     "message": "Voeg `rel=\"noopener\"` of `rel=\"noreferrer\"` toe aan eventuele externe links om de prestaties te verbeteren en kwetsbaarheden in de beveiliging te voorkomen. [Meer informatie](https://web.dev/external-anchors-use-rel-noopener)"
@@ -582,7 +645,7 @@
     "message": "Externe scripts die dynamisch worden geïnjecteerd via `document.write()` kunnen bij gebruikers met een langzame verbinding het laden van de pagina met tientallen seconden vertragen. [Meer informatie](https://web.dev/no-document-write)"
   },
   "lighthouse-core/audits/dobetterweb/no-document-write.js | failureTitle": {
-    "message": "Gebruikt `document.write()`"
+    "message": "Vermijd `document.write()`"
   },
   "lighthouse-core/audits/dobetterweb/no-document-write.js | title": {
     "message": "Vermijdt `document.write()`"
@@ -704,6 +767,24 @@
   "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
     "message": "Ongeldige informatie over afbeeldingsformaat {url}"
   },
+  "lighthouse-core/audits/image-size-responsive.js | columnActual": {
+    "message": "Werkelijk formaat"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | columnDisplayed": {
+    "message": "Weergegeven formaat"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | columnExpected": {
+    "message": "Verwacht formaat"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | description": {
+    "message": "De natuurlijke afmetingen van de afbeelding moeten in verhouding zijn tot het weergaveformaat en de pixelratio om de helderheid van de afbeelding te maximaliseren. [Meer informatie](https://web.dev/image-size-responsive)"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | failureTitle": {
+    "message": "Hiermee worden afbeeldingen met een onjuist formaat weergegeven"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | title": {
+    "message": "Hiermee worden afbeeldingen met het juiste formaat weergegeven"
+  },
   "lighthouse-core/audits/installable-manifest.js | description": {
     "message": "Browsers kunnen gebruikers proactief vragen je app aan hun startscherm toe te voegen. Dit kan leiden tot grotere betrokkenheid. [Meer informatie](https://web.dev/installable-manifest)"
   },
@@ -728,6 +809,12 @@
   "lighthouse-core/audits/is-on-https.js | title": {
     "message": "Gebruikt HTTPS"
   },
+  "lighthouse-core/audits/legacy-javascript.js | description": {
+    "message": "Met polyfills en transformaties kunnen verouderde browsers nieuwe JavaScript-functies gebruiken. Voor moderne browsers is dit meestal niet nodig. Volg voor je gebundelde JavaScript een implementatiestrategie voor moderne scripts op basis van module/nomodule-detectie. Dan beperk je namelijk de hoeveelheid code die naar moderne browsers wordt gestuurd, terwijl oudere browsers ondersteund blijven. [Meer informatie](https://philipwalton.com/articles/deploying-es2015-code-in-production-today/)"
+  },
+  "lighthouse-core/audits/legacy-javascript.js | title": {
+    "message": "Verouderde JavaScript-code"
+  },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
     "message": "Snel laden van een pagina via een mobiel netwerk zorgt voor een goede mobiele gebruikerservaring. [Meer informatie](https://web.dev/load-fast-enough-for-pwa)"
   },
@@ -750,7 +837,7 @@
     "message": "Categorie"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | description": {
-    "message": "Overweeg de tijd te verminderen die aan parseren, compileren en uitvoeren van JS wordt besteed. Het leveren van kleinere JS-payloads kan hierbij helpen. [Meer informatie](https://web.dev/mainthread-work-breakdown)"
+    "message": "Overweeg de tijd te verminderen die aan het parseren, compileren en uitvoeren van JS wordt besteed. Het leveren van kleinere JS-payloads kan hierbij helpen. [Meer informatie](https://web.dev/mainthread-work-breakdown)"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | failureTitle": {
     "message": "Primaire threadbewerkingen minimaliseren"
@@ -776,53 +863,44 @@
   "lighthouse-core/audits/manual/pwa-page-transitions.js | title": {
     "message": "Paginaovergangen voelen niet alsof ze vastlopen op het netwerk"
   },
+  "lighthouse-core/audits/maskable-icon.js | description": {
+    "message": "Een maskeerbaar icoon zorgt ervoor dat de afbeelding de hele vorm uitvult zonder horizontale zwarte balken als een app wordt geïnstalleerd op het apparaat. [Meer informatie](https://web.dev/maskable-icon/)"
+  },
+  "lighthouse-core/audits/maskable-icon.js | failureTitle": {
+    "message": "Manifest heeft geen maskeerbaar icoon"
+  },
+  "lighthouse-core/audits/maskable-icon.js | title": {
+    "message": "Manifest heeft een maskeerbaar icoon"
+  },
+  "lighthouse-core/audits/metrics/cumulative-layout-shift.js | description": {
+    "message": "Cumulatieve indelingsverschuiving (CLS) meet de beweging van zichtbare elementen binnen het kijkvenster. [Meer informatie](https://web.dev/cls)"
+  },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
     "message": "Geschatte wachttijd voor invoer is een schatting van de tijd die je app nodig heeft om te reageren op gebruikersinvoer (in milliseconden) gemeten voor de drukste periode van 5 seconden tijdens het laden van de pagina. Als de wachttijd langer dan 50 ms is, kunnen gebruikers je app als traag beschouwen. [Meer informatie](https://web.dev/estimated-input-latency)"
-  },
-  "lighthouse-core/audits/metrics/estimated-input-latency.js | title": {
-    "message": "Geschatte invoerwachttijd"
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
     "message": "'Eerste tekenbewerking met content' (FCP) geeft het tijdstip aan waarop de eerste tekst of afbeelding wordt weergegeven. [Meer informatie](https://web.dev/first-contentful-paint)"
   },
-  "lighthouse-core/audits/metrics/first-contentful-paint.js | title": {
-    "message": "Eerste weergave met content (FCP)"
-  },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
     "message": "'Eerste keer dat CPU inactief was' geeft de eerste keer aan dat de primaire thread van de pagina rustig genoeg was om invoer te verwerken.  [Meer informatie](https://web.dev/first-cpu-idle)."
-  },
-  "lighthouse-core/audits/metrics/first-cpu-idle.js | title": {
-    "message": "Eerste keer dat CPU inactief was"
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "'Eerste nuttige weergave' (FMP) meet wanneer de primaire content van een pagina zichtbaar is. [Meer informatie](https://web.dev/first-meaningful-paint)"
   },
-  "lighthouse-core/audits/metrics/first-meaningful-paint.js | title": {
-    "message": "Eerste nuttige weergave (FMP)"
-  },
   "lighthouse-core/audits/metrics/interactive.js | description": {
     "message": "Tijd tot interactief is de hoeveelheid tijd die nodig is voordat een pagina volledig interactief is. [Meer informatie](https://web.dev/interactive)"
   },
-  "lighthouse-core/audits/metrics/interactive.js | title": {
-    "message": "Tijd tot interactief"
+  "lighthouse-core/audits/metrics/largest-contentful-paint.js | description": {
+    "message": "'Grootste tekenbewerking met content' (LCP) geeft het tijdstip aan waarop de grootste tekst of afbeelding is weergegeven. [Meer informatie](https://web.dev/lighthouse-largest-contentful-paint)"
   },
   "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
-    "message": "De maximale potentiële vertraging voor de eerste invoer die gebruikers kunnen ervaren, is de duur (in milliseconden) van de langste taak. [Meer informatie](https://developers.google.com/web/updates/2018/05/first-input-delay)"
-  },
-  "lighthouse-core/audits/metrics/max-potential-fid.js | title": {
-    "message": "Max. potentiële eerste invoervertraging"
+    "message": "De maximale potentiële vertraging voor de eerste invoer die gebruikers kunnen ervaren, is de duur van de langste taak. [Meer informatie](https://web.dev/lighthouse-max-potential-fid)"
   },
   "lighthouse-core/audits/metrics/speed-index.js | description": {
     "message": "Snelheidsindex laat zien hoe snel de content van een pagina zichtbaar is. [Meer informatie](https://web.dev/speed-index)"
   },
-  "lighthouse-core/audits/metrics/speed-index.js | title": {
-    "message": "Snelheidsindex"
-  },
   "lighthouse-core/audits/metrics/total-blocking-time.js | description": {
-    "message": "Som van alle perioden tussen 'Eerste tekenbewerking met content' (FCP) en 'Tijd tot interactief', wanneer de taaklengte langer duurt dan 50 ms, aangegeven in milliseconden."
-  },
-  "lighthouse-core/audits/metrics/total-blocking-time.js | title": {
-    "message": "Totale geblokkeerde tijd"
+    "message": "Som van alle perioden tussen 'Eerste tekenbewerking met content' (FCP) en 'Tijd tot interactief', wanneer de taaklengte langer duurt dan 50 ms, aangegeven in milliseconden. [Meer informatie](https://web.dev/lighthouse-total-blocking-time)"
   },
   "lighthouse-core/audits/network-rtt.js | description": {
     "message": "Retourtijden (RTT) van netwerken hebben een grote invloed op de prestaties. Een hoge RTT naar een beginpunt geeft aan dat de prestaties van servers dichter bij de gebruiker kunnen worden verbeterd. [Meer informatie](https://hpbn.co/primer-on-latency-and-bandwidth/)"
@@ -839,6 +917,9 @@
   "lighthouse-core/audits/offline-start-url.js | description": {
     "message": "Met een service worker kan je web-app betrouwbaar functioneren bij onvoorspelbare netwerkomstandigheden. [Meer informatie](https://web.dev/offline-start-url)"
   },
+  "lighthouse-core/audits/offline-start-url.js | errorLoading": {
+    "message": "Fout bij laden van {url} in Service Worker, statuscode {statusCode} is ontvangen"
+  },
   "lighthouse-core/audits/offline-start-url.js | failureTitle": {
     "message": "`start_url` retourneert geen 200-statuscode wanneer de pagina offline is"
   },
@@ -847,9 +928,6 @@
   },
   "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
     "message": "Lighthouse kan de `start_url` in het manifest niet lezen. Daarom is aangenomen dat de `start_url` de URL van het document is. Foutmelding: '{manifestWarning}'."
-  },
-  "lighthouse-core/audits/performance-budget.js | columnOverBudget": {
-    "message": "Over het budget"
   },
   "lighthouse-core/audits/performance-budget.js | description": {
     "message": "Houd de hoeveelheid en grootte van netwerkverzoeken onder de door het verstrekte prestatiebudget ingestelde doelen. [Meer informatie](https://developers.google.com/web/tools/lighthouse/audits/budgets)"
@@ -919,9 +997,6 @@
   },
   "lighthouse-core/audits/seo/font-size.js | explanationViewport": {
     "message": "Tekst is onleesbaar omdat er geen kijkvenstermetatag is geoptimaliseerd voor mobiele schermen."
-  },
-  "lighthouse-core/audits/seo/font-size.js | explanationWithDisclaimer": {
-    "message": "{decimalProportion, number, extendedPercent} van de tekst is te klein (op basis van een voorbeeld van {decimalProportionVisited, number, extendedPercent})."
   },
   "lighthouse-core/audits/seo/font-size.js | failureTitle": {
     "message": "Document gebruikt geen leesbare lettergrootten"
@@ -1089,19 +1164,19 @@
     "message": "De impact van code van derden beperken"
   },
   "lighthouse-core/audits/third-party-summary.js | title": {
-    "message": "Gebruik door derden"
+    "message": "Gebruik door derden minimaliseren"
   },
-  "lighthouse-core/audits/time-to-first-byte.js | description": {
-    "message": "'Tijd tot eerste byte' identificeert het tijdstip waarop je server een reactie stuurt. [Meer informatie](https://web.dev/time-to-first-byte)"
+  "lighthouse-core/audits/timing-budget.js | columnMeasurement": {
+    "message": "Meting"
   },
-  "lighthouse-core/audits/time-to-first-byte.js | displayValue": {
-    "message": "Hoofddocument duurde {timeInMs, number, milliseconds} ms"
+  "lighthouse-core/audits/timing-budget.js | columnTimingMetric": {
+    "message": "Statistiek"
   },
-  "lighthouse-core/audits/time-to-first-byte.js | failureTitle": {
-    "message": "Beperk serverreactietijden (TTFB)"
+  "lighthouse-core/audits/timing-budget.js | description": {
+    "message": "Stel een timingbudget in om de prestaties van je site in de gaten te houden. Sites die goed presteren, worden snel geladen en reageren snel op gebruikersinvoer. [Meer informatie](https://developers.google.com/web/tools/lighthouse/audits/budgets)"
   },
-  "lighthouse-core/audits/time-to-first-byte.js | title": {
-    "message": "Serverreactietijden zijn laag (TTFB)"
+  "lighthouse-core/audits/timing-budget.js | title": {
+    "message": "Timingbudget"
   },
   "lighthouse-core/audits/user-timings.js | columnDuration": {
     "message": "Duur"
@@ -1129,6 +1204,9 @@
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | title": {
     "message": "Maak vooraf verbinding met vereiste herkomsten"
+  },
+  "lighthouse-core/audits/uses-rel-preconnect.js | tooManyPreconnectLinksWarning": {
+    "message": "Er zijn meer dan twee links voor vooraf verbinden gevonden. Gebruik niet te veel links voor vooraf verbinden en alleen links naar de belangrijkste herkomsten."
   },
   "lighthouse-core/audits/uses-rel-preload.js | crossoriginWarning": {
     "message": "Er is een <link> voor vooraf laden gevonden voor {preloadURL} maar deze is niet gebruikt door de browser. Controleer of je het `crossorigin`-kenmerk juist gebruikt."
@@ -1316,6 +1394,12 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Geschikt voor mobiele apparaten"
   },
+  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
+    "message": "De pagina wordt mogelijk niet geladen zoals verwacht omdat je test-URL ({requested}) is omgeleid naar {final}. Probeer de tweede URL rechtstreeks te testen."
+  },
+  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
+    "message": "De pagina is te langzaam geladen om binnen de tijdslimiet te voltooien. De resultaten kunnen onvolledig zijn."
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "Cache-TTL"
   },
@@ -1325,14 +1409,23 @@
   "lighthouse-core/lib/i18n/i18n.js | columnName": {
     "message": "Naam"
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnOverBudget": {
+    "message": "Over het budget"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnRequests": {
     "message": "Verzoeken"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnResourceSize": {
+    "message": "Brongrootte"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnResourceType": {
     "message": "Brontype"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnSize": {
     "message": "Formaat"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnSource": {
+    "message": "Bron"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnTimeSpent": {
     "message": "Bestede tijd"
@@ -1349,6 +1442,9 @@
   "lighthouse-core/lib/i18n/i18n.js | columnWastedMs": {
     "message": "Potentiële besparingen"
   },
+  "lighthouse-core/lib/i18n/i18n.js | cumulativeLayoutShiftMetric": {
+    "message": "Cumulatieve indelingsverschuiving"
+  },
   "lighthouse-core/lib/i18n/i18n.js | displayValueByteSavings": {
     "message": "Potentiële besparing van {wastedBytes, number, bytes} KB"
   },
@@ -1358,11 +1454,32 @@
   "lighthouse-core/lib/i18n/i18n.js | documentResourceType": {
     "message": "Document"
   },
+  "lighthouse-core/lib/i18n/i18n.js | estimatedInputLatencyMetric": {
+    "message": "Geschatte invoerwachttijd"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | firstCPUIdleMetric": {
+    "message": "Eerste keer dat CPU inactief was"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | firstContentfulPaintMetric": {
+    "message": "Eerste weergave met content (FCP)"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | firstMeaningfulPaintMetric": {
+    "message": "Eerste nuttige weergave (FMP)"
+  },
   "lighthouse-core/lib/i18n/i18n.js | fontResourceType": {
     "message": "Lettertype"
   },
   "lighthouse-core/lib/i18n/i18n.js | imageResourceType": {
     "message": "Afbeelding"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | interactiveMetric": {
+    "message": "Tijd tot interactief"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | largestContentfulPaintMetric": {
+    "message": "Grootste weergave met content (LCP)"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | maxPotentialFIDMetric": {
+    "message": "Max. potentiële eerste invoervertraging"
   },
   "lighthouse-core/lib/i18n/i18n.js | mediaResourceType": {
     "message": "Media"
@@ -1379,11 +1496,17 @@
   "lighthouse-core/lib/i18n/i18n.js | seconds": {
     "message": "{timeInMs, number, seconds} s"
   },
+  "lighthouse-core/lib/i18n/i18n.js | speedIndexMetric": {
+    "message": "Snelheidsindex"
+  },
   "lighthouse-core/lib/i18n/i18n.js | stylesheetResourceType": {
     "message": "Stylesheet"
   },
   "lighthouse-core/lib/i18n/i18n.js | thirdPartyResourceType": {
     "message": "Derden"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | totalBlockingTimeMetric": {
+    "message": "Totale geblokkeerde tijd"
   },
   "lighthouse-core/lib/i18n/i18n.js | totalResourceType": {
     "message": "Totaal"
@@ -1448,11 +1571,38 @@
   "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
     "message": "Maximum wachttijd voor kritiek pad:"
   },
+  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
+    "message": "Json kopiëren"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
+    "message": "Donker thema in-/uitschakelen"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
+    "message": "Afdrukvenster uitvouwen"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
+    "message": "Afdrukoverzicht"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
+    "message": "Opslaan als gist"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
+    "message": "Opslaan als html"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
+    "message": "Opslaan als json"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
+    "message": "Openen in viewer"
+  },
   "lighthouse-core/report/html/renderer/util.js | errorLabel": {
     "message": "Fout"
   },
   "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
     "message": "Rapportfout: geen controlegegevens"
+  },
+  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
+    "message": "Een probleem melden"
   },
   "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
     "message": "Labgegevens"
@@ -1475,6 +1625,48 @@
   "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
     "message": "Geslaagde controles"
   },
+  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "Desktopemulatie"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
+    "message": "Emulatie van Moto G4"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
+    "message": "Geen emulatie"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "CPU/geheugen"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "CPU-throttling"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
+    "message": "Kanaal"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
+    "message": "Apparaat"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "Ophaaltijd"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "Netwerkbeperking"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
+    "message": "Runtime-instellingen"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
+    "message": "User-agent (host)"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "User-agent (netwerk)"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
+    "message": "URL"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
+    "message": "Onbekend"
+  },
   "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
     "message": "Fragment samenvouwen"
   },
@@ -1483,6 +1675,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
     "message": "Bronnen van derden weergeven"
+  },
+  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
+    "message": "Bepaald door omgeving"
   },
   "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
     "message": "Er zijn problemen opgetreden bij deze uitvoering van Lighthouse:"
@@ -1496,6 +1691,93 @@
   "lighthouse-core/report/html/renderer/util.js | warningHeader": {
     "message": "Waarschuwingen: "
   },
+  "stack-packs/packs/amp.js | efficient_animated_content": {
+    "message": "Gebruik in het geval van content met animatie [amp-anim](https://amp.dev/documentation/components/amp-anim/) om het CPU-gebruik te minimaliseren terwijl de content buiten het scherm blijft."
+  },
+  "stack-packs/packs/amp.js | offscreen_images": {
+    "message": "Zorg ervoor dat je geldige `amp-img`-tags voor je afbeeldingen gebruikt die automatisch buiten het eerste kijkvenster via lazy loading worden geladen. [Meer informatie](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)"
+  },
+  "stack-packs/packs/amp.js | render_blocking_resources": {
+    "message": "Gebruik tools zoals [AMP Optimizer](https://github.com/ampproject/amp-toolbox/tree/master/packages/optimizer) om [AMP-lay-outs aan de serverzijde te renderen](https://amp.dev/documentation/guides-and-tutorials/optimize-and-measure/server-side-rendering/)."
+  },
+  "stack-packs/packs/amp.js | unminified_css": {
+    "message": "Raadpleeg de [AMP-documentatie](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/style_pages/) om ervoor te zorgen dat al je stijlen worden ondersteund."
+  },
+  "stack-packs/packs/amp.js | uses_responsive_images": {
+    "message": "Het `amp-img`-element ondersteunt het `srcset`-kenmerk om te specificeren welke afbeeldingsitems moeten worden gebruikt op basis van schermformaat.  [Meer informatie](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/art_direction/)"
+  },
+  "stack-packs/packs/amp.js | uses_webp_images": {
+    "message": "Overweeg al je `amp-img`-componenten weer te geven in WebP-indelingen, terwijl je een toepasselijke back-up specificeert voor andere browsers. [Meer informatie](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)"
+  },
+  "stack-packs/packs/angular.js | dom_size": {
+    "message": "Overweeg virtueel scrollen met de Component Dev Kit (CDK) als er zeer grote lijsten worden weergegeven. [Meer informatie](https://web.dev/virtualize-lists-with-angular-cdk/)"
+  },
+  "stack-packs/packs/angular.js | total_byte_weight": {
+    "message": "Pas [codesplitsing op routeniveau](https://web.dev/route-level-code-splitting-in-angular/) toe om de grootte van je JavaScript-bundels te minimaliseren. Je kunt ook vooraf items cachen met de [Angular-service worker](https://web.dev/precaching-with-the-angular-service-worker/)."
+  },
+  "stack-packs/packs/angular.js | unminified_warning": {
+    "message": "Als je Angular CLI gebruikt, moet je ervoor zorgen dat de builds worden gegenereerd in de productiemodus. [Meer informatie](https://angular.io/guide/deployment#enable-runtime-production-mode)"
+  },
+  "stack-packs/packs/angular.js | unused_javascript": {
+    "message": "Als je Angular CLI gebruikt, moet je bronkaarten opnemen in je productiebuild om je bundels te inspecteren. [Meer informatie](https://angular.io/guide/deployment#inspect-the-bundles)"
+  },
+  "stack-packs/packs/angular.js | uses_rel_preload": {
+    "message": "Laad routes vooraf om de navigatie te versnellen. [Meer informatie](https://web.dev/route-preloading-in-angular/)"
+  },
+  "stack-packs/packs/angular.js | uses_responsive_images": {
+    "message": "Overweeg het hulpprogramma `BreakpointObserver` in de Component Dev Kit (CDK) te gebruiken voor beheer van breakpoints in afbeeldingen. [Meer informatie](https://material.angular.io/cdk/layout/overview)"
+  },
+  "stack-packs/packs/magento.js | critical_request_chains": {
+    "message": "Als je je JavaScript-items niet bundelt, kun je [baler](https://github.com/magento/baler) gebruiken."
+  },
+  "stack-packs/packs/magento.js | disable_bundling": {
+    "message": "Schakel de ingebouwde [JavaScript-bundeling en -verkleining](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html) van Magento uit en overweeg in plaats daarvan [baler](https://github.com/magento/baler/) te gebruiken."
+  },
+  "stack-packs/packs/magento.js | font_display": {
+    "message": "Specificeer `@font-display` als je [aangepaste lettertypen definieert](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/css-topics/using-fonts.html)."
+  },
+  "stack-packs/packs/magento.js | offscreen_images": {
+    "message": "Overweeg om je product- en catalogustemplates te wijzigen voor gebruik van de functie van het webplatform voor [lazy loading](https://web.dev/native-lazy-loading)."
+  },
+  "stack-packs/packs/magento.js | unminified_css": {
+    "message": "Schakel de optie 'Css-bestanden verkleinen' in de ontwikkelaarsinstellingen van je winkel in. [Meer informatie](https://devdocs.magento.com/guides/v2.3/performance-best-practices/configuration.html?itm_source=devdocs&itm_medium=search_page&itm_campaign=federated_search&itm_term=minify%20css%20files)"
+  },
+  "stack-packs/packs/magento.js | unminified_javascript": {
+    "message": "Gebruik [Terser](https://www.npmjs.com/package/terser) om alle JavaScript-items van implementaties van statische content te verkleinen en de ingebouwde verkleiningsfunctie uit te schakelen."
+  },
+  "stack-packs/packs/magento.js | unused_javascript": {
+    "message": "Schakel de ingebouwde [JavaScript-bundeling](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html) van Magento uit."
+  },
+  "stack-packs/packs/magento.js | uses_optimized_images": {
+    "message": "Je kunt in de [Magento-marktplaats](https://marketplace.magento.com/catalogsearch/result/?q=optimize%20image) zoeken naar verschillende extensies van derden om afbeeldingen te optimaliseren."
+  },
+  "stack-packs/packs/magento.js | uses_rel_preconnect": {
+    "message": "Preconnect- of dns-prefetch-resourcehints kunnen worden toegevoegd door [de lay-out van een thema te wijzigen](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  },
+  "stack-packs/packs/magento.js | uses_rel_preload": {
+    "message": "`<link rel=preload>`-tags kunnen worden toegevoegd door [de lay-out van een thema te wijzigen](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  },
+  "stack-packs/packs/magento.js | uses_webp_images": {
+    "message": "Overweeg te zoeken in de [Magento-marktplaats](https://marketplace.magento.com/catalogsearch/result/?q=webp) voor verschillende extensies van derden om nieuwere afbeeldingsindelingen te gebruiken."
+  },
+  "stack-packs/packs/react.js | dom_size": {
+    "message": "Overweeg het gebruik van een vensterbibliotheek zoals `react-window` om het aantal gemaakte DOM-nodes te minimaliseren als je veel herhaalde elementen op de pagina weergeeft. [Meer informatie](https://web.dev/virtualize-long-lists-react-window/) Minimaliseer daarnaast onnodige nieuwe weergaven van [shouldComponentUpdate](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [PureComponent](https://reactjs.org/docs/react-api.html#reactpurecomponent) of [React.memo](https://reactjs.org/docs/react-api.html#reactmemo) en [effecten voor overslaan](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) alleen totdat bepaalde afhankelijkheden zijn gewijzigd als je de effecthook gebruikt om de runtime-prestaties te verbeteren."
+  },
+  "stack-packs/packs/react.js | redirects": {
+    "message": "Als je React Router gebruikt, moet je het gebruik van de `<Redirect>`-component voor [routenavigatie](https://reacttraining.com/react-router/web/api/Redirect) minimaliseren."
+  },
+  "stack-packs/packs/react.js | unminified_css": {
+    "message": "Als je buildsysteem je css-bestanden automatisch verkleint, moet je ervoor zorgen dat je de productiebuild van je app implementeert. Je kunt dit controleren via de React Developer Tools-extensie. [Meer informatie](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)"
+  },
+  "stack-packs/packs/react.js | unminified_javascript": {
+    "message": "Als je buildsysteem je JS-bestanden automatisch verkleint, moet je ervoor zorgen dat je de productiebuild van je app implementeert. Je kunt dit controleren via de React Developer Tools-extensie. [Meer informatie](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)"
+  },
+  "stack-packs/packs/react.js | unused_javascript": {
+    "message": "Als er niet aan de serverzijde wordt gerenderd, kun je [je JavaScript-bundels splitsen](https://web.dev/code-splitting-suspense/) met `React.lazy()`. In andere gevallen kun je de code splitsen via een externe bibliotheek, zoals [loadable-components](https://www.smooth-code.com/open-source/loadable-components/docs/getting-started/)."
+  },
+  "stack-packs/packs/react.js | user_timings": {
+    "message": "Gebruik de React DevTools Profiler, die gebruikmaakt van de Profiler API, om de weergaveprestaties van je componenten te meten. [Meer informatie.](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
+  },
   "stack-packs/packs/wordpress.js | efficient_animated_content": {
     "message": "Overweeg je gif te uploaden naar een service waarmee het mogelijk is de gif in te sluiten als html5-video."
   },
@@ -1504,9 +1786,6 @@
   },
   "stack-packs/packs/wordpress.js | render_blocking_resources": {
     "message": "Er zijn een aantal WordPress-plug-ins om [kritieke items inline te plaatsen](https://wordpress.org/plugins/search/critical+css/) of [minder belangrijke bronnen uit te stellen](https://wordpress.org/plugins/search/defer+css+javascript/). Bedenk wel dat de optimalisatie die deze plug-ins bieden, bepaalde functies van je thema of plug-ins kunnen verstoren. Het is daarom goed mogelijk dat je de code moet wijzigen."
-  },
-  "stack-packs/packs/wordpress.js | time_to_first_byte": {
-    "message": "Thema's, plug-ins en serverspecificaties zijn allemaal van invloed op de reactietijd van de server. Overweeg een thema te gebruiken dat beter is geoptimaliseerd, kies met zorg een optimalisatieplug-in en/of upgrade je server."
   },
   "stack-packs/packs/wordpress.js | total_byte_weight": {
     "message": "Overweeg fragmenten te tonen in je postlijsten (bijvoorbeeld via de tag 'more'), zodat er per pagina minder posts worden weergegeven. Ook kun je lange posts verdelen over meerdere pagina's of een plug-in voor lazy loading van reacties gebruiken."
@@ -1524,13 +1803,13 @@
     "message": "Overweeg gebruik te maken van minder of andere [WordPress-plug-ins](https://wordpress.org/plugins/) die ongebruikt JavaScript laden op je pagina. Voer [codedekking](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) uit in Chrome DevTools als je plug-ins wilt identificeren die extra JS toevoegen. Via de URL van het script kun je identificeren welk thema/welke plug-in verantwoordelijk is. Ga in de lijst op zoek naar plug-ins met veel scripts en veel rood in de codedekking. Een plug-in zou een script alleen in de wachtrij moeten plaatsen als het daadwerkelijk wordt gebruikt op de pagina."
   },
   "stack-packs/packs/wordpress.js | uses_long_cache_ttl": {
-    "message": "Lees meer over [browsercaching in WordPress](https://codex.wordpress.org/WordPress_Optimization#Browser_Caching)."
+    "message": "Lees meer over [browsercaching in WordPress](https://wordpress.org/support/article/optimization/#browser-caching)."
   },
   "stack-packs/packs/wordpress.js | uses_optimized_images": {
     "message": "Overweeg een [beeldoptimalisatieplug-in voor WordPress](https://wordpress.org/plugins/search/optimize+images/) te gebruiken om je afbeeldingen te comprimeren terwijl de beeldkwaliteit behouden blijft."
   },
   "stack-packs/packs/wordpress.js | uses_responsive_images": {
-    "message": "Upload afbeeldingen rechtstreeks via de [mediabibliotheek](https://codex.wordpress.org/Media_Library_Screen) om er zeker van te zijn dat de vereiste afbeeldingsformaten beschikbaar zijn. Voeg de afbeeldingen vervolgens in vanuit de mediabibliotheek. Ook kun je de afbeeldingswidget gebruiken om ervoor te zorgen dat de optimale afbeeldingsformaten worden gebruikt (inclusief voor responsieve breakpoints). Vermijd `Full Size`-afbeeldingen, tenzij de afmetingen geschikt zijn voor waar ze worden geplaatst. [Meer informatie](https://codex.wordpress.org/Inserting_Images_into_Posts_and_Pages#Image_Size)"
+    "message": "Upload afbeeldingen rechtstreeks via de [mediabibliotheek](https://wordpress.org/support/article/media-library-screen/) om er zeker van te zijn dat de vereiste afbeeldingsformaten beschikbaar zijn. Voeg de afbeeldingen vervolgens in vanuit de mediabibliotheek. Ook kun je de afbeeldingswidget gebruiken om ervoor te zorgen dat de optimale afbeeldingsformaten worden gebruikt (inclusief voor responsieve breakpoints). Vermijd `Full Size`-afbeeldingen, tenzij de afmetingen geschikt zijn voor waar ze worden geplaatst. [Meer informatie](https://wordpress.org/support/article/inserting-images-into-posts-and-pages/)"
   },
   "stack-packs/packs/wordpress.js | uses_text_compression": {
     "message": "Je kunt tekstcompressie inschakelen bij je webserverinstellingen."

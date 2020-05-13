@@ -52,7 +52,17 @@ class LighthouseService {  // eslint-disable-line
     });
 
     return Promise.resolve()
-        .then(_ => self.runLighthouseInWorker(this, params.url, params.flags, params.categoryIDs))
+        .then(_ => {
+          const flags = params.flags;
+          flags.logLevel = flags.logLevel || 'info';
+          flags.channel = 'devtools';
+
+          const connection = self.setUpWorkerConnection(this);
+          const config = self.createConfig(params.categoryIDs, flags.emulatedFormFactor);
+          const url = params.url;
+
+          return self.runLighthouse(url, flags, config, connection);
+        })
         .then(/** @type {!ReportRenderer.RunnerResult} */ result => {
           // Keep all artifacts on the result, no trimming
           return result;

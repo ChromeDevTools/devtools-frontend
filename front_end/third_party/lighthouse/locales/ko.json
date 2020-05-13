@@ -17,6 +17,33 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "`[aria-*]` 속성이 역할과 일치함"
   },
+  "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
+    "message": "스크린 리더와 같은 보조 기술은 `aria-hidden=\"true\"`이(가) 문서 `<body>`에 설정된 경우 일관성 없게 작동합니다. [자세히 알아보기](https://web.dev/aria-hidden-body/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-body.js | failureTitle": {
+    "message": "`[aria-hidden=\"true\"]`이(가) 문서 `<body>`에 있음"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-body.js | title": {
+    "message": "`[aria-hidden=\"true\"]`이(가) 문서 `<body>`에 없음"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-focus.js | description": {
+    "message": "`[aria-hidden=\"true\"]` 요소 내 포커스할 수 있는 하위 요소는 스크린 리더와 같은 보조 기술 사용자가 상호 작용 가능한 요소를 사용하지 못하게 합니다. [자세히 알아보기](https://web.dev/aria-hidden-focus/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-focus.js | failureTitle": {
+    "message": "`[aria-hidden=\"true\"]` 요소에 포커스할 수 있는 하위 요소가 있음"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-focus.js | title": {
+    "message": "`[aria-hidden=\"true\"]` 요소에 포커스할 수 있는 하위 요소가 없음"
+  },
+  "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
+    "message": "입력란에 접근 가능한 이름이 없는 경우 스크린 리더에서 일반 이름으로 읽기 때문에 스크린 리더에 의존하는 사용자는 사용할 수 없게 됩니다. [자세히 알아보기](https://web.dev/aria-input-field-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
+    "message": "ARIA 입력란에 접근 가능한 이름이 없음"
+  },
+  "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
+    "message": "ARIA 입력란에 접근 가능한 이름이 있음"
+  },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "일부 ARIA 역할에는 스크린 리더에 관한 요소의 상태를 설명하는 속성이 필요합니다. [자세히 알아보기](https://web.dev/aria-required-attr/)"
   },
@@ -53,6 +80,15 @@
   "lighthouse-core/audits/accessibility/aria-roles.js | title": {
     "message": "`[role]` 값이 유효함"
   },
+  "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
+    "message": "토글 입력란에 접근 가능한 이름이 없는 경우 스크린 리더에서 일반적인 이름으로 읽기 때문에 스크린 리더에 의존하는 사용자는 사용할 수 없게 됩니다. [자세히 알아보기](https://web.dev/aria-toggle-field-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
+    "message": "ARIA 토글 입력란에 접근 가능한 이름이 없음"
+  },
+  "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
+    "message": "ARIA 토글 입력란에 접근 가능한 이름이 있음"
+  },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "스크린 리더와 같은 보조 기술은 잘못된 값이 있는 ARIA 속성을 해석하지 못합니다. [자세히 알아보기](https://web.dev/aria-valid-attr-value/)"
   },
@@ -70,15 +106,6 @@
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr.js | title": {
     "message": "`[aria-*]` 속성이 유효하며 맞춤법 오류가 없음"
-  },
-  "lighthouse-core/audits/accessibility/audio-caption.js | description": {
-    "message": "자막이 있으면 청각장애인이나 청각에 문제가 있는 사용자도 오디오 요소를 사용할 수 있게 되며 말하고 있는 사람, 말하는 내용, 기타 비음성적 정보와 같은 중요 정보가 제공됩니다. [자세히 알아보기](https://web.dev/audio-caption/)"
-  },
-  "lighthouse-core/audits/accessibility/audio-caption.js | failureTitle": {
-    "message": "`<audio>` 요소에서 `[kind=\"captions\"]` 지원 `<track>` 요소가 누락됨"
-  },
-  "lighthouse-core/audits/accessibility/audio-caption.js | title": {
-    "message": "`<audio>` 요소에 `[kind=\"captions\"]` 지원 `<track>` 요소가 포함됨"
   },
   "lighthouse-core/audits/accessibility/axe-audit.js | failingElementsHeader": {
     "message": "통과하지 못한 요소"
@@ -114,10 +141,10 @@
     "message": "정의 목록이 올바르게 표시되지 않으면 스크린 리더에서 혼란스럽거나 정확하지 않은 내용을 말할 수 있습니다. [자세히 알아보기](https://web.dev/definition-list/)"
   },
   "lighthouse-core/audits/accessibility/definition-list.js | failureTitle": {
-    "message": "`<dl>`에 순서가 올바른 `<dt>` 및 `<dd>` 그룹, `<script>` 또는 `<template>` 요소만 포함되지 않음"
+    "message": "`<dl>`에 순서가 올바른 `<dt>` 및 `<dd>` 그룹, `<script>`, `<template>` 또는 `<div>` 요소만 포함되어 있지 않음"
   },
   "lighthouse-core/audits/accessibility/definition-list.js | title": {
-    "message": "`<dl>`에 순서가 올바른 `<dt>` 및 `<dd>` 그룹, `<script>` 또는 `<template>` 요소만 포함됨"
+    "message": "`<dl>`에 순서가 올바른 `<dt>` 및 `<dd>` 그룹, `<script>`, `<template>` 또는 `<div>` 요소만 포함되어 있음"
   },
   "lighthouse-core/audits/accessibility/dlitem.js | description": {
     "message": "스크린 리더에서 정의 목록 항목(`<dt>` 및 `<dd>`)을 올바르게 읽으려면 정의 목록 항목이 상위 `<dl>` 요소에 래핑되어 있어야 합니다. [자세히 알아보기](https://web.dev/dlitem/)"
@@ -137,14 +164,32 @@
   "lighthouse-core/audits/accessibility/document-title.js | title": {
     "message": "문서에 `<title>` 요소가 있음"
   },
-  "lighthouse-core/audits/accessibility/duplicate-id.js | description": {
-    "message": "보조 기술에서 다른 인스턴스를 놓치지 않도록 하려면 ID 속성값이 고유해야 합니다. [자세히 알아보기](https://web.dev/duplicate-id/)"
+  "lighthouse-core/audits/accessibility/duplicate-id-active.js | description": {
+    "message": "포커스할 수 있는 모든 요소에는 고유한 `id`이(가) 있어 보조 기술에 올바르게 표시되어야 합니다. [자세히 알아보기](https://web.dev/duplicate-id-active/)"
   },
-  "lighthouse-core/audits/accessibility/duplicate-id.js | failureTitle": {
-    "message": "페이지에 있는 `[id]` 속성이 고유하지 않음"
+  "lighthouse-core/audits/accessibility/duplicate-id-active.js | failureTitle": {
+    "message": "포커스할 수 있는 활성 요소에 중복되는 `[id]` 속성이 있음"
   },
-  "lighthouse-core/audits/accessibility/duplicate-id.js | title": {
-    "message": "페이지에 있는 `[id]` 속성이 고유함"
+  "lighthouse-core/audits/accessibility/duplicate-id-active.js | title": {
+    "message": "포커스할 수 있는 활성 요소에 중복되는 `[id]` 속성이 없음"
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id-aria.js | description": {
+    "message": "중복되는 ARIA ID 값이 없어야 보조 기술이 다른 인스턴스를 놓치지 않습니다. [자세히 알아보기](https://web.dev/duplicate-id-aria/)"
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id-aria.js | failureTitle": {
+    "message": "중복되는 ARIA ID가 있음"
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id-aria.js | title": {
+    "message": "중복되는 ARIA ID가 없음"
+  },
+  "lighthouse-core/audits/accessibility/form-field-multiple-labels.js | description": {
+    "message": "라벨이 여러 개인 양식 입력란은 첫 번째, 마지막 또는 모든 라벨을 사용하는 스크린 리더와 같은 보조 기술에서 잘못 읽을 수 있습니다. [자세히 알아보기](https://web.dev/form-field-multiple-labels/)"
+  },
+  "lighthouse-core/audits/accessibility/form-field-multiple-labels.js | failureTitle": {
+    "message": "양식 입력란에 라벨이 여러 개 있음"
+  },
+  "lighthouse-core/audits/accessibility/form-field-multiple-labels.js | title": {
+    "message": "양식 입력란에 라벨이 여러 개가 아님"
   },
   "lighthouse-core/audits/accessibility/frame-title.js | description": {
     "message": "스크린 리더 사용자는 프레임 콘텐츠를 설명해 주는 프레임 제목을 사용합니다. [자세히 알아보기](https://web.dev/frame-title/)"
@@ -154,6 +199,15 @@
   },
   "lighthouse-core/audits/accessibility/frame-title.js | title": {
     "message": "`<frame>` 또는 `<iframe>` 요소에 제목이 있음"
+  },
+  "lighthouse-core/audits/accessibility/heading-order.js | description": {
+    "message": "레벨을 건너뛰지 않고 제대로 정렬된 제목은 페이지의 시맨틱 구조를 포함하여, 보조 기술을 사용할 때 더 쉽게 이동하고 이해하는 데 도움이 됩니다. [자세히 알아보기](https://web.dev/heading-order/)"
+  },
+  "lighthouse-core/audits/accessibility/heading-order.js | failureTitle": {
+    "message": "제목 요소가 내림차순으로 표시되지 않음"
+  },
+  "lighthouse-core/audits/accessibility/heading-order.js | title": {
+    "message": "제목 요소가 내림차순으로 표시됨"
   },
   "lighthouse-core/audits/accessibility/html-has-lang.js | description": {
     "message": "페이지에서 lang 속성을 지정하지 않는 경우 스크린 리더는 사용자가 스크린 리더를 설정할 때 선택한 기본 언어로 페이지가 작성되어 있다고 가정합니다. 페이지가 기본 언어로 작성되어 있지 않으면 스크린 리더에서 페이지에 있는 텍스트를 제대로 읽어줄 수 없습니다. [자세히 알아보기](https://web.dev/html-has-lang/)"
@@ -350,6 +404,12 @@
   "lighthouse-core/audits/bootup-time.js | title": {
     "message": "자바스크립트 실행 시간"
   },
+  "lighthouse-core/audits/byte-efficiency/duplicated-javascript.js | description": {
+    "message": "번들에서 큰 중복 자바스크립트 모듈을 삭제하여 네트워크 활동이 소비하는 불필요한 바이트 수를 줄입니다. "
+  },
+  "lighthouse-core/audits/byte-efficiency/duplicated-javascript.js | title": {
+    "message": "자바스크립트 번들에서 중복 모듈 삭제"
+  },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | description": {
     "message": "대용량의 GIF는 애니메이션 콘텐츠를 전달하는 데 비효율적입니다. 애니메이션에는 MPEG4/WebM 동영상을, 정적인 이미지에는 GIF 대신 PNG/WebP를 사용하여 네트워크 바이트를 절약하세요. [자세히 알아보기](https://web.dev/efficient-animated-content)"
   },
@@ -399,7 +459,7 @@
     "message": "사용하지 않는 CSS 제거"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "사용하지 않는 자바스크립트를 삭제하고 네트워크 활동에 소비되는 바이트를 줄이세요."
+    "message": "사용하지 않는 자바스크립트를 삭제하여 네트워크 활동에 소비되는 바이트를 줄입니다. [자세히 알아보기](https://web.dev/remove-unused-code/)"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
     "message": "사용하지 않는 자바스크립트 삭제하기"
@@ -459,7 +519,7 @@
     "message": "{itemCount,plural, =1{1개 체인 발견됨}other{#개 체인 발견됨}}"
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
-    "message": "중요 요청 깊이 최소화하기"
+    "message": "중요 요청 체이닝 차단"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "지원 중단/경고"
@@ -491,6 +551,15 @@
   "lighthouse-core/audits/dobetterweb/appcache-manifest.js | title": {
     "message": "애플리케이션 캐시 사용하지 않기"
   },
+  "lighthouse-core/audits/dobetterweb/charset.js | description": {
+    "message": "문자 인코딩 선언이 필요합니다. HTML의 첫 1,024바이트 또는 Content-Type HTTP 응답 헤더에서 <meta> 태그를 사용하여 선언할 수 있습니다. [자세히 알아보기](https://www.w3.org/International/questions/qa-html-encoding-declarations)"
+  },
+  "lighthouse-core/audits/dobetterweb/charset.js | failureTitle": {
+    "message": "문자 집합 선언이 없거나 HTML에서 너무 뒤에 있음"
+  },
+  "lighthouse-core/audits/dobetterweb/charset.js | title": {
+    "message": "문자 집합을 제대로 정의함"
+  },
   "lighthouse-core/audits/dobetterweb/doctype.js | description": {
     "message": "Doctype을 지정하면 브라우저가 쿼크 모드로 전환할 수 없습니다. [자세히 알아보기](https://web.dev/doctype)"
   },
@@ -512,9 +581,6 @@
   "lighthouse-core/audits/dobetterweb/doctype.js | title": {
     "message": "페이지에 HTML Doctype 있음"
   },
-  "lighthouse-core/audits/dobetterweb/dom-size.js | columnElement": {
-    "message": "요소"
-  },
   "lighthouse-core/audits/dobetterweb/dom-size.js | columnStatistic": {
     "message": "통계"
   },
@@ -522,7 +588,7 @@
     "message": "값"
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | description": {
-    "message": "브라우저 엔지니어들은 페이지에 1,500개 미만의 DOM 요소를 포함하는 것을 권장합니다. 최적값은 트리 깊이가 요소 32개 미만이고 하위/상위 요소 60개 미만일 때입니다. DOM이 크면 메모리 사용량이 늘어나고 [스타일 계산](https://developers.google.com/web/fundamentals/performance/rendering/reduce-the-scope-and-complexity-of-style-calculations) 시간이 길어질 수 있으며 큰 비용이 드는 [레이아웃 리플로우](https://developers.google.com/speed/articles/reflow)가 발생할 수 있습니다. [자세히 알아보기](https://web.dev/dom-size)"
+    "message": "DOM이 크면 메모리 사용량이 늘어나고 [스타일 계산](https://developers.google.com/web/fundamentals/performance/rendering/reduce-the-scope-and-complexity-of-style-calculations) 시간이 길어질 수 있으며 큰 비용이 드는 [레이아웃 리플로우](https://developers.google.com/speed/articles/reflow)가 발생할 수 있습니다. [자세히 알아보기](https://web.dev/dom-size)"
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | displayValue": {
     "message": "{itemCount,plural, =1{요소 1개}other{요소 #개}}"
@@ -542,11 +608,8 @@
   "lighthouse-core/audits/dobetterweb/dom-size.js | title": {
     "message": "과도한 DOM 크기 지양하기"
   },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnRel": {
-    "message": "Rel"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnTarget": {
-    "message": "타겟"
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnFailingAnchors": {
+    "message": "통과하지 못한 앵커"
   },
   "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
     "message": "성능을 개선하고 보안 취약점을 예방하려면 `rel=\"noopener\"` 또는 `rel=\"noreferrer\"`을(를) 외부 링크에 추가합니다. [자세히 알아보기](https://web.dev/external-anchors-use-rel-noopener)"
@@ -582,7 +645,7 @@
     "message": "연결이 느린 사용자의 경우 `document.write()`에서 동적으로 삽입된 외부 스크립트로 인해 페이지 로드가 몇십 초까지 지연될 수 있습니다. [자세히 알아보기](https://web.dev/no-document-write)"
   },
   "lighthouse-core/audits/dobetterweb/no-document-write.js | failureTitle": {
-    "message": "`document.write()`을(를) 사용함"
+    "message": "`document.write()` 피하기"
   },
   "lighthouse-core/audits/dobetterweb/no-document-write.js | title": {
     "message": "`document.write()` 지양하기"
@@ -704,6 +767,24 @@
   "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
     "message": "잘못된 이미지 크기 정보 {url}"
   },
+  "lighthouse-core/audits/image-size-responsive.js | columnActual": {
+    "message": "실제 크기"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | columnDisplayed": {
+    "message": "표시된 크기"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | columnExpected": {
+    "message": "예상 크기"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | description": {
+    "message": "이미지의 본래 크기가 표시 크기와 픽셀 비율에 비례해야 이미지가 가장 선명하게 보입니다. [자세히 알아보기](https://web.dev/image-size-responsive)"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | failureTitle": {
+    "message": "잘못된 크기의 이미지 표시"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | title": {
+    "message": "올바른 크기의 이미지 표시"
+  },
   "lighthouse-core/audits/installable-manifest.js | description": {
     "message": "브라우저는 사용자에게 홈 화면에 앱을 추가하라는 메시지를 사전에 표시할 수 있으며 이렇게 하면 참여도가 높아질 수 있습니다. [자세히 알아보기](https://web.dev/installable-manifest)"
   },
@@ -727,6 +808,12 @@
   },
   "lighthouse-core/audits/is-on-https.js | title": {
     "message": "HTTPS 사용"
+  },
+  "lighthouse-core/audits/legacy-javascript.js | description": {
+    "message": "Polyfill 및 변환을 통해 레거시 브라우저에서 새로운 자바스크립트 기능을 사용할 수 있습니다. 하지만 최신 브라우저에서는 대부분 필요하지 않습니다. 번들로 포함된 자바스크립트의 경우, module/nomodule 기능 감지를 사용하는 최신 스크립트 배포 전략을 채택하여 최신 브라우저에 적용되는 코드를 줄이고 레거시 브라우저 지원을 유지할 수 있습니다. [자세히 알아보기](https://philipwalton.com/articles/deploying-es2015-code-in-production-today/)"
+  },
+  "lighthouse-core/audits/legacy-javascript.js | title": {
+    "message": "레거시 자바스크립트"
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
     "message": "셀룰러 네트워크에서 페이지 로드가 빠르면 우수한 모바일 사용자 환경을 제공할 수 있습니다. [자세히 알아보기](https://web.dev/load-fast-enough-for-pwa)"
@@ -771,58 +858,49 @@
     "message": "페이지마다 URL이 있음"
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | description": {
-    "message": "탭을 했을 때 느린 네트워크에서도 전환이 빠르게 느껴져야 합니다. 이 환경은 사용자가 체감하는 성능의 핵심입니다. [자세히 알아보기](https://web.dev/pwa-page-transitions)"
+    "message": "탭을 했을 때 느린 네트워크에서도 전환이 빠르게 느껴져야 합니다. 이 전환 경험이야말로 사용자의 성능에 대한 인식에 중요한 영향을 미칩니다. [자세히 알아보기](https://web.dev/pwa-page-transitions)"
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | title": {
     "message": "페이지 전환 시 네트워크에서 막히는 느낌이 들지 않음"
   },
+  "lighthouse-core/audits/maskable-icon.js | description": {
+    "message": "마스크 가능한 아이콘은 앱을 기기에 설치할 때 레터박스 없이 이미지가 도형 전체를 채울 수 있게 합니다. [자세히 알아보기](https://web.dev/maskable-icon/)"
+  },
+  "lighthouse-core/audits/maskable-icon.js | failureTitle": {
+    "message": "매니페스트에 마스크 가능한 아이콘이 없음"
+  },
+  "lighthouse-core/audits/maskable-icon.js | title": {
+    "message": "매니페스트에 마스크 가능한 아이콘이 있음"
+  },
+  "lighthouse-core/audits/metrics/cumulative-layout-shift.js | description": {
+    "message": "누적 레이아웃 변경은 표시 영역 안에 보이는 요소의 이동을 측정합니다. [자세히 알아보기](https://web.dev/cls)"
+  },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
     "message": "예상 입력 대기시간은 페이지 로드가 가장 많은 5초 동안 앱이 사용자 입력에 응답하는 데 걸리는 시간(밀리초)의 추정치입니다. 지연 시간이 50밀리초보다 길면 사용자가 앱이 느리다고 인식할 수 있습니다. [자세히 알아보기](https://web.dev/estimated-input-latency)"
-  },
-  "lighthouse-core/audits/metrics/estimated-input-latency.js | title": {
-    "message": "예상 입력 대기시간"
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
     "message": "콘텐츠가 포함된 첫 페인트는 첫 번째 텍스트 또는 이미지가 표시되는 시간을 나타냅니다. [자세히 알아보기](https://web.dev/first-contentful-paint)"
   },
-  "lighthouse-core/audits/metrics/first-contentful-paint.js | title": {
-    "message": "최초 만족 페인트"
-  },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
     "message": "최초 CPU 유휴 상태는 페이지의 기본 스레드가 입력을 처리할 수 있을 만큼 조용한 상태가 된 첫 번째 시간을 표시합니다.  [자세히 알아보기](https://web.dev/first-cpu-idle)"
-  },
-  "lighthouse-core/audits/metrics/first-cpu-idle.js | title": {
-    "message": "최초 CPU 유휴 상태"
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "유의미한 첫 페인트는 페이지의 기본 콘텐츠가 표시되는 경우를 측정합니다. [자세히 알아보기](https://web.dev/first-meaningful-paint)"
   },
-  "lighthouse-core/audits/metrics/first-meaningful-paint.js | title": {
-    "message": "최초 유의미 페인트"
-  },
   "lighthouse-core/audits/metrics/interactive.js | description": {
     "message": "사용할 수 있을 때까지 걸리는 시간은 완전히 페이지와 상호작용할 수 있게 될 때까지 걸리는 시간입니다. [자세히 알아보기](https://web.dev/interactive)"
   },
-  "lighthouse-core/audits/metrics/interactive.js | title": {
-    "message": "상호작용 시간"
+  "lighthouse-core/audits/metrics/largest-contentful-paint.js | description": {
+    "message": "콘텐츠가 포함된 최대 페인트는 최대 텍스트 또는 이미지가 표시되는 시간을 나타냅니다. [자세히 알아보기](https://web.dev/lighthouse-largest-contentful-paint)"
   },
   "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
-    "message": "사용자가 경험할 수 있는 최대 첫 입력 지연 예상 시간은 가장 긴 작업의 길이(밀리초)입니다. [자세히 알아보기](https://developers.google.com/web/updates/2018/05/first-input-delay)"
-  },
-  "lighthouse-core/audits/metrics/max-potential-fid.js | title": {
-    "message": "최대 첫 입력 지연 예상 시간"
+    "message": "사용자가 경험할 수 있는 최대 첫 입력 지연 예상 시간은 가장 긴 작업의 길이입니다. [자세히 알아보기](https://web.dev/lighthouse-max-potential-fid)"
   },
   "lighthouse-core/audits/metrics/speed-index.js | description": {
     "message": "속도 색인은 페이지 콘텐츠가 얼마나 빨리 표시되는지 보여줍니다. [자세히 알아보기](https://web.dev/speed-index)"
   },
-  "lighthouse-core/audits/metrics/speed-index.js | title": {
-    "message": "속도 색인"
-  },
   "lighthouse-core/audits/metrics/total-blocking-time.js | description": {
-    "message": "FCP와 상호작용 시간 사이의 모든 시간의 합으로 작업 지속 시간이 50ms를 넘으면 밀리초 단위로 표현됩니다."
-  },
-  "lighthouse-core/audits/metrics/total-blocking-time.js | title": {
-    "message": "총 차단 시간"
+    "message": "FCP와 상호작용 시간 사이의 모든 시간의 합으로 작업 지속 시간이 50ms를 넘으면 밀리초 단위로 표현됩니다. [자세히 알아보기](https://web.dev/lighthouse-total-blocking-time)"
   },
   "lighthouse-core/audits/network-rtt.js | description": {
     "message": "네트워크 왕복 시간(RTT)이 성능에 큰 영향을 줍니다. 출발지로의 RTT가 크면 서버가 사용자에게 가까울 때 성능이 향상될 수 있음을 나타냅니다. [자세히 알아보기](https://hpbn.co/primer-on-latency-and-bandwidth/)"
@@ -839,6 +917,9 @@
   "lighthouse-core/audits/offline-start-url.js | description": {
     "message": "서비스 워커를 사용하면 예측 불가능한 네트워크 상태에서도 웹 앱이 안정적으로 작동할 수 있습니다. [자세히 알아보기](https://web.dev/offline-start-url)"
   },
+  "lighthouse-core/audits/offline-start-url.js | errorLoading": {
+    "message": "서비스 워커에서 {url}을(를) 로드하는 중 오류 발생, {statusCode} 상태 코드 받기"
+  },
   "lighthouse-core/audits/offline-start-url.js | failureTitle": {
     "message": "`start_url`이(가) 오프라인 시 200으로 응답하지 않음"
   },
@@ -847,9 +928,6 @@
   },
   "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
     "message": "Lighthouse가 매니페스트에서 `start_url`을(를) 읽지 못했습니다. 그 결과 `start_url`은(는) 문서 URL인 것으로 간주되었습니다. 오류 메시지는 '{manifestWarning}'입니다."
-  },
-  "lighthouse-core/audits/performance-budget.js | columnOverBudget": {
-    "message": "예산 초과"
   },
   "lighthouse-core/audits/performance-budget.js | description": {
     "message": "네트워크 요청의 양과 크기는 제공된 성능 예산에 따라 설정된 목표치 아래로 유지하세요. [자세히 알아보기](https://developers.google.com/web/tools/lighthouse/audits/budgets)"
@@ -919,9 +997,6 @@
   },
   "lighthouse-core/audits/seo/font-size.js | explanationViewport": {
     "message": "모바일 화면에 최적화된 표시 영역 메타 태그가 없어서 텍스트를 알아볼 수 없음"
-  },
-  "lighthouse-core/audits/seo/font-size.js | explanationWithDisclaimer": {
-    "message": "텍스트의 {decimalProportion, number, extendedPercent} 값이 너무 작습니다({decimalProportionVisited, number, extendedPercent} 샘플 기준)."
   },
   "lighthouse-core/audits/seo/font-size.js | failureTitle": {
     "message": "문서에서 읽기 쉬운 글꼴 크기를 사용하지 않음"
@@ -1089,19 +1164,19 @@
     "message": "타사 코드의 영향을 줄임"
   },
   "lighthouse-core/audits/third-party-summary.js | title": {
-    "message": "타사 사용"
+    "message": "타사 사용량 최소화"
   },
-  "lighthouse-core/audits/time-to-first-byte.js | description": {
-    "message": "Time To First Byte는 서버가 응답을 보내는 시간을 식별합니다. [자세히 알아보기](https://web.dev/time-to-first-byte)"
+  "lighthouse-core/audits/timing-budget.js | columnMeasurement": {
+    "message": "측정값"
   },
-  "lighthouse-core/audits/time-to-first-byte.js | displayValue": {
-    "message": "루트 문서에 {timeInMs, number, milliseconds} ms 소요됨"
+  "lighthouse-core/audits/timing-budget.js | columnTimingMetric": {
+    "message": "측정항목"
   },
-  "lighthouse-core/audits/time-to-first-byte.js | failureTitle": {
-    "message": "서버 응답 시간(TTFB) 단축"
+  "lighthouse-core/audits/timing-budget.js | description": {
+    "message": "시기 예산을 설정하면 사이트 실적을 확인하는 데 도움이 됩니다. 성능 기준에 맞는 사이트는 빠르게 로드되고 사용자 입력 이벤트에 빠르게 응답합니다. [자세히 알아보기](https://developers.google.com/web/tools/lighthouse/audits/budgets)"
   },
-  "lighthouse-core/audits/time-to-first-byte.js | title": {
-    "message": "서버 응답 시간 낮음(TTFB)"
+  "lighthouse-core/audits/timing-budget.js | title": {
+    "message": "시기 예산"
   },
   "lighthouse-core/audits/user-timings.js | columnDuration": {
     "message": "시간"
@@ -1129,6 +1204,9 @@
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | title": {
     "message": "필수 원본 미리 연결하기"
+  },
+  "lighthouse-core/audits/uses-rel-preconnect.js | tooManyPreconnectLinksWarning": {
+    "message": "사전 연결 링크가 3개 이상 발견되었습니다. 사전 연결 링크는 가장 중요한 원본에 한해 조금만 사용해야 합니다."
   },
   "lighthouse-core/audits/uses-rel-preload.js | crossoriginWarning": {
     "message": "'{preloadURL}'에 사전 로드 <link>가 있으나 브라우저에서 사용되지 않습니다. `crossorigin` 속성을 올바르게 사용하고 있는지 확인하세요."
@@ -1316,6 +1394,12 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "모바일 친화적"
   },
+  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
+    "message": "테스트 URL({requested})이 {final}(으)로 리디렉션되었기 때문에 페이지가 예상대로 로드되지 않을 수 있습니다. 두 번째 URL을 직접 테스트해 보세요."
+  },
+  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
+    "message": "페이지 로드가 너무 느려 시간 제한 내에 완료되지 않았습니다. 결과가 불완전할 수 있습니다."
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "캐시 TTL"
   },
@@ -1325,14 +1409,23 @@
   "lighthouse-core/lib/i18n/i18n.js | columnName": {
     "message": "이름"
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnOverBudget": {
+    "message": "예산 초과"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnRequests": {
     "message": "요청"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnResourceSize": {
+    "message": "리소스 크기"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnResourceType": {
     "message": "리소스 유형"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnSize": {
     "message": "크기"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnSource": {
+    "message": "소스"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnTimeSpent": {
     "message": "소요 시간"
@@ -1349,6 +1442,9 @@
   "lighthouse-core/lib/i18n/i18n.js | columnWastedMs": {
     "message": "가능한 절감 효과"
   },
+  "lighthouse-core/lib/i18n/i18n.js | cumulativeLayoutShiftMetric": {
+    "message": "누적 레이아웃 변경"
+  },
   "lighthouse-core/lib/i18n/i18n.js | displayValueByteSavings": {
     "message": "절감 가능치: {wastedBytes, number, bytes} KB"
   },
@@ -1358,11 +1454,32 @@
   "lighthouse-core/lib/i18n/i18n.js | documentResourceType": {
     "message": "문서"
   },
+  "lighthouse-core/lib/i18n/i18n.js | estimatedInputLatencyMetric": {
+    "message": "예상 입력 대기시간"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | firstCPUIdleMetric": {
+    "message": "최초 CPU 유휴 상태"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | firstContentfulPaintMetric": {
+    "message": "최초 만족 페인트"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | firstMeaningfulPaintMetric": {
+    "message": "최초 유의미 페인트"
+  },
   "lighthouse-core/lib/i18n/i18n.js | fontResourceType": {
     "message": "글꼴"
   },
   "lighthouse-core/lib/i18n/i18n.js | imageResourceType": {
     "message": "이미지"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | interactiveMetric": {
+    "message": "상호작용 시간"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | largestContentfulPaintMetric": {
+    "message": "콘텐츠가 포함된 최대 페인트"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | maxPotentialFIDMetric": {
+    "message": "최대 첫 입력 지연 예상 시간"
   },
   "lighthouse-core/lib/i18n/i18n.js | mediaResourceType": {
     "message": "미디어"
@@ -1379,11 +1496,17 @@
   "lighthouse-core/lib/i18n/i18n.js | seconds": {
     "message": "{timeInMs, number, seconds} 초"
   },
+  "lighthouse-core/lib/i18n/i18n.js | speedIndexMetric": {
+    "message": "속도 색인"
+  },
   "lighthouse-core/lib/i18n/i18n.js | stylesheetResourceType": {
     "message": "스타일시트"
   },
   "lighthouse-core/lib/i18n/i18n.js | thirdPartyResourceType": {
     "message": "타사"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | totalBlockingTimeMetric": {
+    "message": "총 차단 시간"
   },
   "lighthouse-core/lib/i18n/i18n.js | totalResourceType": {
     "message": "합계"
@@ -1448,11 +1571,38 @@
   "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
     "message": "최상 경로 최대 지연 시간:"
   },
+  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
+    "message": "JSON 복사"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
+    "message": "어두운 테마 전환"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
+    "message": "인쇄 확장됨"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
+    "message": "인쇄 요약"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
+    "message": "Gist로 저장"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
+    "message": "HTML로 저장"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
+    "message": "JSON으로 저장"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
+    "message": "뷰어에서 열기"
+  },
   "lighthouse-core/report/html/renderer/util.js | errorLabel": {
     "message": "오류!"
   },
   "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
     "message": "보고 오류: 감사 정보 없음"
+  },
+  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
+    "message": "문제 신고"
   },
   "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
     "message": "실험실 데이터"
@@ -1475,6 +1625,48 @@
   "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
     "message": "통과한 감사"
   },
+  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "에뮬레이션된 데스크톱"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
+    "message": "에뮬레이션된 Moto G4"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
+    "message": "에뮬레이션 없음"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "CPU/메모리 성능"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "CPU 제한"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
+    "message": "채널"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
+    "message": "기기"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "가져온 시간"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "네트워크 제한"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
+    "message": "런타임 설정"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
+    "message": "사용자 에이전트(호스트)"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "사용자 에이전트(네트워크)"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
+    "message": "URL"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
+    "message": "알 수 없음"
+  },
   "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
     "message": "스니펫 접기"
   },
@@ -1483,6 +1675,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
     "message": "타사 리소스 표시"
+  },
+  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
+    "message": "런타임 환경을 통해 제공"
   },
   "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
     "message": "Lighthouse 실행에 영향을 미치는 문제가 발생했습니다."
@@ -1496,6 +1691,93 @@
   "lighthouse-core/report/html/renderer/util.js | warningHeader": {
     "message": "경고: "
   },
+  "stack-packs/packs/amp.js | efficient_animated_content": {
+    "message": "애니메이션 콘텐츠의 경우 [amp-anim](https://amp.dev/documentation/components/amp-anim/)을 사용하여 콘텐츠가 화면에 표시되지 않을 때 CPU 사용량을 최소화하세요."
+  },
+  "stack-packs/packs/amp.js | offscreen_images": {
+    "message": "첫 표시 영역의 외부에서 자동으로 지연 로드하는 이미지에 유효한 `amp-img` 태그를 사용하는지 확인하세요. [자세히 알아보기](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)"
+  },
+  "stack-packs/packs/amp.js | render_blocking_resources": {
+    "message": "[AMP 최적화 도구](https://github.com/ampproject/amp-toolbox/tree/master/packages/optimizer)와 같은 도구를 사용하여 [서버 측에서 AMP 레이아웃을 렌더링](https://amp.dev/documentation/guides-and-tutorials/optimize-and-measure/server-side-rendering/)합니다."
+  },
+  "stack-packs/packs/amp.js | unminified_css": {
+    "message": "[AMP 도움말](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/style_pages/)을 참조하여 모든 스타일이 지원되는지 확인하세요."
+  },
+  "stack-packs/packs/amp.js | uses_responsive_images": {
+    "message": "`amp-img` 구성요소는 `srcset` 속성을 지원하여 화면 크기를 바탕으로 어떤 이미지 애셋을 사용할지 지정합니다.  [자세히 알아보기](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/art_direction/)"
+  },
+  "stack-packs/packs/amp.js | uses_webp_images": {
+    "message": "WebP 형식의 모든 `amp-img` 구성요소를 표시하면서 다른 브라우저의 적절한 대체 텍스트를 지정해 보세요. [자세히 알아보기](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)"
+  },
+  "stack-packs/packs/angular.js | dom_size": {
+    "message": "너무 큰 목록을 렌더링하는 경우 구성요소 개발자 키트(CDK)로 가상 스크롤을 고려해 보세요. [자세히 알아보기](https://web.dev/virtualize-lists-with-angular-cdk/)"
+  },
+  "stack-packs/packs/angular.js | total_byte_weight": {
+    "message": "[경로 수준 코드 분할](https://web.dev/route-level-code-splitting-in-angular/)을 적용하여 자바스크립트 번들의 크기를 최소화합니다. 또한 [Angular 서비스 워커](https://web.dev/precaching-with-the-angular-service-worker/)로 애셋을 미리 캐시해 보세요."
+  },
+  "stack-packs/packs/angular.js | unminified_warning": {
+    "message": "Angular CLI를 사용하는 경우 빌드가 프로덕션 모드에서 생성되었는지 확인하세요. [자세히 알아보기](https://angular.io/guide/deployment#enable-runtime-production-mode)"
+  },
+  "stack-packs/packs/angular.js | unused_javascript": {
+    "message": "Angular CLI를 사용하는 경우 소스 맵을 프로덕션 빌드에 포함하여 번들을 검사하세요. [자세히 알아보기](https://angular.io/guide/deployment#inspect-the-bundles)"
+  },
+  "stack-packs/packs/angular.js | uses_rel_preload": {
+    "message": "미리 경로를 로드하여 탐색 속도를 높입니다. [자세히 알아보기](https://web.dev/route-preloading-in-angular/)"
+  },
+  "stack-packs/packs/angular.js | uses_responsive_images": {
+    "message": "구성요소 개발자 키트(CDK)에서 `BreakpointObserver` 유틸리티를 사용하여 이미지 중단점을 관리해 보세요. [자세히 알아보기](https://material.angular.io/cdk/layout/overview)"
+  },
+  "stack-packs/packs/magento.js | critical_request_chains": {
+    "message": "자바스크립트 애셋을 번들로 구성하지 않는 경우 [baler](https://github.com/magento/baler)를 사용해 보세요."
+  },
+  "stack-packs/packs/magento.js | disable_bundling": {
+    "message": "Magento의 내장 [자바스크립트 번들 구성 및 축소](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html)를 사용 중지하고 대신 [baler](https://github.com/magento/baler/)를 사용하세요."
+  },
+  "stack-packs/packs/magento.js | font_display": {
+    "message": "[맞춤 글꼴을 정의](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/css-topics/using-fonts.html)할 때 `@font-display`을(를) 지정합니다."
+  },
+  "stack-packs/packs/magento.js | offscreen_images": {
+    "message": "제품과 카탈로그 템플릿을 수정하여 웹 플랫폼의 [지연 로드](https://web.dev/native-lazy-loading) 기능을 활용해 보세요."
+  },
+  "stack-packs/packs/magento.js | unminified_css": {
+    "message": "스토어의 개발자 설정에서 'CSS 파일 축소' 옵션을 사용 설정하세요. [자세히 알아보기](https://devdocs.magento.com/guides/v2.3/performance-best-practices/configuration.html?itm_source=devdocs&itm_medium=search_page&itm_campaign=federated_search&itm_term=minify%20css%20files)"
+  },
+  "stack-packs/packs/magento.js | unminified_javascript": {
+    "message": "[Terser](https://www.npmjs.com/package/terser)를 사용하여 정적 콘텐츠 배포에서 모든 자바스크립트 애셋을 축소하고 내장 축소 기능을 사용 중지합니다."
+  },
+  "stack-packs/packs/magento.js | unused_javascript": {
+    "message": "Magento의 내장 [자바스크립트 번들 구성](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html)을 사용 중지합니다."
+  },
+  "stack-packs/packs/magento.js | uses_optimized_images": {
+    "message": "[Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=optimize%20image)에서 이미지를 최적화하는 다양한 타사 확장 프로그램을 검색해 보세요."
+  },
+  "stack-packs/packs/magento.js | uses_rel_preconnect": {
+    "message": "[테마의 레이아웃을 수정](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)하여 사전 연결 또는 DNS 프리페치 리소스 힌트를 추가할 수 있습니다."
+  },
+  "stack-packs/packs/magento.js | uses_rel_preload": {
+    "message": "[테마의 레이아웃을 수정](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)하여 `<link rel=preload>` 태그를 추가할 수 있습니다."
+  },
+  "stack-packs/packs/magento.js | uses_webp_images": {
+    "message": "[Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=webp)에서 새 이미지 형식을 활용하는 다양한 타사 확장 프로그램을 검색해 보세요."
+  },
+  "stack-packs/packs/react.js | dom_size": {
+    "message": "페이지에서 많은 반복 구성요소를 렌더링하는 경우 `react-window`과(와) 같은 '창' 라이브러리를 사용하여 생성된 DOM 노드의 수를 최소화해 보세요. [자세히 알아보기](https://web.dev/virtualize-long-lists-react-window/) 또한 런타임 성능을 개선하기 위해 Effect 후크를 사용하는 경우 [shouldComponentUpdate](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [PureComponent](https://reactjs.org/docs/react-api.html#reactpurecomponent), [React.memo](https://reactjs.org/docs/react-api.html#reactmemo)를 사용하여 불필요한 재렌더링을 최소화하고 특정 종속성이 변경될 때까지만 [효과를 건너뛰어](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) 보세요."
+  },
+  "stack-packs/packs/react.js | redirects": {
+    "message": "React Router를 사용하는 경우 [경로 탐색](https://reacttraining.com/react-router/web/api/Redirect)의 `<Redirect>` 구성요소 사용량을 축소합니다."
+  },
+  "stack-packs/packs/react.js | unminified_css": {
+    "message": "빌드가 CSS 파일을 자동으로 축소하는 경우 애플리케이션의 프로덕션 빌드를 배포하고 있는지 확인하세요. 이는 React 개발자 도구 확장 프로그램으로 확인할 수 있습니다. [자세히 알아보기](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)"
+  },
+  "stack-packs/packs/react.js | unminified_javascript": {
+    "message": "빌드가 JS 파일을 자동으로 축소하는 경우 애플리케이션의 프로덕션 빌드를 배포하고 있는지 확인하세요. 이는 React 개발자 도구 확장 프로그램으로 확인할 수 있습니다. [자세히 알아보기](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)"
+  },
+  "stack-packs/packs/react.js | unused_javascript": {
+    "message": "서버 측에서 렌더링하지 않는 경우 `React.lazy()`(으)로 [자바스크립트 번들을 분할](https://web.dev/code-splitting-suspense/)해 보세요. 또는 [로드 가능한 구성요소](https://www.smooth-code.com/open-source/loadable-components/docs/getting-started/)와 같은 타사 라이브러리를 사용하여 코드를 분할하세요."
+  },
+  "stack-packs/packs/react.js | user_timings": {
+    "message": "Profiler API를 활용하는 React 개발자 도구 프로파일러를 사용하여 구성요소의 렌더링 성능을 측정합니다. [자세히 알아보기](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
+  },
   "stack-packs/packs/wordpress.js | efficient_animated_content": {
     "message": "GIF를 HTML5 동영상으로 삽입할 수 있게 해주는 서비스에 GIF를 업로드하는 것이 좋습니다."
   },
@@ -1504,9 +1786,6 @@
   },
   "stack-packs/packs/wordpress.js | render_blocking_resources": {
     "message": "[중요한 애셋을 인라인](https://wordpress.org/plugins/search/critical+css/)하거나 [덜 중요한 리소스를 지연](https://wordpress.org/plugins/search/defer+css+javascript/)할 수 있게 도와주는 다양한 WordPress 플러그인이 있습니다. 이러한 플러그인에서 제공하는 최적화로 인해 내가 사용하는 테마 또는 플러그인의 기능이 깨질 수 있으므로 코드를 변경해야 할 가능성이 큽니다."
-  },
-  "stack-packs/packs/wordpress.js | time_to_first_byte": {
-    "message": "테마, 플러그인, 서버 사양은 모두 서버 응답 시간을 길어지게 만듭니다. 보다 최적화된 테마를 찾고, 최적화 플러그인을 신중하게 선택하고, 서버 업그레이드를 고려해 보세요."
   },
   "stack-packs/packs/wordpress.js | total_byte_weight": {
     "message": "게시물 목록에 발췌문을 표시하거나(예: 더 많은 태그 사용), 특정 페이지에 표시되는 게시물의 개수를 줄이거나, 길이가 긴 게시물을 여러 페이지로 나누거나, 플러그인을 사용하여 댓글을 지연 로드하는 것이 좋습니다."
@@ -1524,13 +1803,13 @@
     "message": "페이지에서 사용되지 않는 JavaScript를 로드하는 [WordPress 플러그인](https://wordpress.org/plugins/) 개수를 줄이거나 전환하는 것이 좋습니다. 과도한 JS를 부가하는 플러그인이 무엇인지 확인하려면 Chrome DevTools의 [코드 범위](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage)를 실행해 보세요. 스크립트의 URL에서 관련 테마 또는 플러그인을 확인할 수 있습니다. 목록에서 코드 범위에 빨간색이 길게 표시된 스크립트가 있는 플러그인을 찾아보세요. 실제로 페이지에서 사용되는 플러그인은 대기열에 하나의 스크립트만 포함해야 합니다."
   },
   "stack-packs/packs/wordpress.js | uses_long_cache_ttl": {
-    "message": "[WordPress 브라우저 캐싱](https://codex.wordpress.org/WordPress_Optimization#Browser_Caching)에 관해 자세히 알아보세요."
+    "message": "[WordPress 브라우저 캐싱](https://wordpress.org/support/article/optimization/#browser-caching)에 관해 자세히 알아보세요."
   },
   "stack-packs/packs/wordpress.js | uses_optimized_images": {
     "message": "품질은 그대로 유지하면서 이미지를 압축해주는 [이미지 최적화 WordPress 플러그인](https://wordpress.org/plugins/search/optimize+images/)을 사용해 보세요."
   },
   "stack-packs/packs/wordpress.js | uses_responsive_images": {
-    "message": "필수 이미지 크기를 사용할 수 있도록 [미디어 라이브러리](https://codex.wordpress.org/Media_Library_Screen)에서 직접 이미지를 업로드하세요. 그런 다음 미디어 라이브러리에서 이미지를 삽입하거나 이미지 위젯을 사용하여 최적의 이미지 크기를 사용하는지 확인하세요(반응형 중단점용 이미지 포함). 이미지 크기가 용도에 적합하지 않다면 `Full Size` 이미지는 사용하지 않는 것이 좋습니다. [자세히 알아보기](https://codex.wordpress.org/Inserting_Images_into_Posts_and_Pages#Image_Size)"
+    "message": "필수 이미지 크기를 사용할 수 있도록 [미디어 라이브러리](https://wordpress.org/support/article/media-library-screen/)에서 직접 이미지를 업로드하세요. 그런 다음 미디어 라이브러리에서 이미지를 삽입하거나 이미지 위젯을 사용하여 최적의 이미지 크기를 사용하는지 확인하세요(반응형 중단점용 이미지 포함). 이미지 크기가 용도에 적합하지 않다면 `Full Size` 이미지는 사용하지 않는 것이 좋습니다. [자세히 알아보기](https://wordpress.org/support/article/inserting-images-into-posts-and-pages/)"
   },
   "stack-packs/packs/wordpress.js | uses_text_compression": {
     "message": "웹 서버 구성에서 텍스트 압축을 사용 설정할 수 있습니다."

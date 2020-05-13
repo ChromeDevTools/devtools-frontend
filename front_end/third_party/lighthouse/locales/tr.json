@@ -17,6 +17,33 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "`[aria-*]` özellikleri rolleriyle eşleşiyor"
   },
+  "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
+    "message": "Ekran okuyucular gibi yardımcı teknolojiler, `aria-hidden=\"true\"` öğesi dokümanın `<body>` kısmında ayarlandığında tutarsız çalışır. [Daha fazla bilgi](https://web.dev/aria-hidden-body/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-body.js | failureTitle": {
+    "message": "Dokümanın `<body>` kısmında `[aria-hidden=\"true\"]` mevcut"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-body.js | title": {
+    "message": "Dokümanın `<body>` kısmında `[aria-hidden=\"true\"]` mevcut değil"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-focus.js | description": {
+    "message": "`[aria-hidden=\"true\"]` öğesi içindeki odaklanabilir alt öğeler, bu etkileşimli öğelerin ekran okuyucu gibi yardımcı teknolojilerin kullanıcılarına sunulmasını engeller. [Daha fazla bilgi](https://web.dev/aria-hidden-focus/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-focus.js | failureTitle": {
+    "message": "`[aria-hidden=\"true\"]` öğelerinde odaklanabilir alt öğe bulunuyor"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-focus.js | title": {
+    "message": "`[aria-hidden=\"true\"]` öğelerinde odaklanabilir alt öğe bulunmuyor"
+  },
+  "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
+    "message": "Bir giriş alanının erişilebilir özellikli bir adı yoksa ekran okuyucular bu alanı genel adla okuyacağı için bu, ekran okuyuculardan yararlanan kullanıcılar için yararlı olmaz. [Daha fazla bilgi](https://web.dev/aria-input-field-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
+    "message": "ARIA giriş alanlarının erişilebilir özellikli adı yok"
+  },
+  "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
+    "message": "ARIA giriş alanları erişilebilir özellikli ada sahip"
+  },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "Bazı ARIA rolleri, öğenin durumunu ekran okuyuculara açıklayan gerekli özelliklere sahiptir. [Daha fazla bilgi](https://web.dev/aria-required-attr/)."
   },
@@ -53,6 +80,15 @@
   "lighthouse-core/audits/accessibility/aria-roles.js | title": {
     "message": "`[role]` değerleri geçerli"
   },
+  "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
+    "message": "Bir açma/kapatma alanının erişilebilir özellikli bir adı yoksa ekran okuyucular bu alanı genel adla okuyacağı için bu, ekran okuyuculardan yararlanan kullanıcılar için yararlı olmaz. [Daha fazla bilgi](https://web.dev/aria-toggle-field-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
+    "message": "ARIA açma/kapatma alanlarının erişilebilir özellikli adı yok"
+  },
+  "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
+    "message": "ARIA açma/kapatma alanları erişilebilir özellikli ada sahip"
+  },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "Ekran okuyucular gibi yardımcı teknolojiler geçersiz değerlere sahip ARIA özelliklerini yorumlayamaz. [Daha fazla bilgi](https://web.dev/aria-valid-attr-value/)."
   },
@@ -70,15 +106,6 @@
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr.js | title": {
     "message": "`[aria-*]` özellikleri geçerli ve yanlış yazılmamış"
-  },
-  "lighthouse-core/audits/accessibility/audio-caption.js | description": {
-    "message": "Altyazılar kimin konuştuğu, neler dediği gibi önemli bilgiler ve konuşma dışında başka bilgiler sağlayarak ses öğelerinin işitme engelli veya işitme zorluğuna sahip kullanıcılar tarafından kullanılabilmesini sağlar. [Daha fazla bilgi](https://web.dev/audio-caption/)."
-  },
-  "lighthouse-core/audits/accessibility/audio-caption.js | failureTitle": {
-    "message": "`<audio>` öğelerinde `[kind=\"captions\"]` içeren bir `<track>` öğesi bulunmuyor."
-  },
-  "lighthouse-core/audits/accessibility/audio-caption.js | title": {
-    "message": "`<audio>` öğelerinde `[kind=\"captions\"]`içeren bir `<track>` öğesi bulunuyor"
   },
   "lighthouse-core/audits/accessibility/axe-audit.js | failingElementsHeader": {
     "message": "Başarısız Öğeler"
@@ -114,10 +141,10 @@
     "message": "Tanım listeleri gerektiği gibi işaretlenmediğinde ekran okuyucular kafa karışıklığına yol açan veya yanlış çıkışlar sunabilir. [Daha fazla bilgi](https://web.dev/definition-list/)."
   },
   "lighthouse-core/audits/accessibility/definition-list.js | failureTitle": {
-    "message": "`<dl>` öğeleri yalnızca gerektiği gibi sıralanmış `<dt>` ve `<dd>` gruplarını,`<script>` veya `<template>` öğelerini içermiyor."
+    "message": "`<dl>` öğeleri yalnızca gerektiği gibi sıralanmış `<dt>` ve `<dd>` gruplarını, `<script>`, `<template>` veya `<div>` öğelerini içermiyor."
   },
   "lighthouse-core/audits/accessibility/definition-list.js | title": {
-    "message": "`<dl>` öğeleri yalnızca gerektiği gibi sıralanmış `<dt>` ve `<dd>` gruplarını, `<script>` veya `<template>` öğelerini içeriyor."
+    "message": "`<dl>` öğeleri yalnızca gerektiği gibi sıralanmış `<dt>` ve `<dd>` gruplarını, `<script>`, `<template>` veya `<div>` öğelerini içeriyor."
   },
   "lighthouse-core/audits/accessibility/dlitem.js | description": {
     "message": "Tanım listesi öğelerinin (`<dt>` ve `<dd>`) ekran okuyucular tarafından düzgün bir şekilde duyurulabilmesi için üst `<dl>` öğesinin içine yerleştirilmesi gerekir. [Daha fazla bilgi](https://web.dev/dlitem/)."
@@ -137,14 +164,32 @@
   "lighthouse-core/audits/accessibility/document-title.js | title": {
     "message": "Doküman geçerli bir `<title>` öğesi içeriyor"
   },
-  "lighthouse-core/audits/accessibility/duplicate-id.js | description": {
-    "message": "Kimlik özelliğinin değeri benzersiz olmalıdır. Bunun nedeni, yardımcı teknolojilerin farkına varmadan diğer örnekleri atlamasını önlemektir. [Daha fazla bilgi](https://web.dev/duplicate-id/)."
+  "lighthouse-core/audits/accessibility/duplicate-id-active.js | description": {
+    "message": "Odaklanabilir tüm öğelerde yardımcı teknolojilere görünür olmalarını sağlamak için benzersiz bir `id` olmalıdır. [Daha fazla bilgi](https://web.dev/duplicate-id-active/)."
   },
-  "lighthouse-core/audits/accessibility/duplicate-id.js | failureTitle": {
-    "message": "Sayfadaki `[id]` özellikleri benzersiz değil"
+  "lighthouse-core/audits/accessibility/duplicate-id-active.js | failureTitle": {
+    "message": "Etkin, odaklanabilir öğelerdeki `[id]` özellikleri benzersiz değil"
   },
-  "lighthouse-core/audits/accessibility/duplicate-id.js | title": {
-    "message": "Sayfadaki `[id]` özellikleri benzersiz"
+  "lighthouse-core/audits/accessibility/duplicate-id-active.js | title": {
+    "message": "Etkin, odaklanabilir öğelerdeki `[id]` özellikleri benzersiz"
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id-aria.js | description": {
+    "message": "ARIA kimliğinin değeri benzersiz olmalıdır. Bunun nedeni, yardımcı teknolojilerin farkına varmadan diğer örnekleri atlamasını önlemektir. [Daha fazla bilgi](https://web.dev/duplicate-id-aria/)."
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id-aria.js | failureTitle": {
+    "message": "ARIA kimlikleri benzersiz değil"
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id-aria.js | title": {
+    "message": "ARIA kimlikleri benzersiz"
+  },
+  "lighthouse-core/audits/accessibility/form-field-multiple-labels.js | description": {
+    "message": "Birden çok etikete sahip form alanları etiketlerin ilkini, sonuncusunu veya tümünü kullanan ekran okuyucular gibi yardımcı teknolojiler tarafından karışıklık yaratacak şekilde okunabilir. [Daha fazla bilgi](https://web.dev/form-field-multiple-labels/)."
+  },
+  "lighthouse-core/audits/accessibility/form-field-multiple-labels.js | failureTitle": {
+    "message": "Form alanlarında birden çok etiket var"
+  },
+  "lighthouse-core/audits/accessibility/form-field-multiple-labels.js | title": {
+    "message": "Hiçbir form alanının birden fazla etiketi yok"
   },
   "lighthouse-core/audits/accessibility/frame-title.js | description": {
     "message": "Ekran okuyucu kullanıcıları, çerçevelerin içeriklerinin açıklanması için çerçeve başlıklarından yararlanır. [Daha fazla bilgi](https://web.dev/frame-title/)."
@@ -154,6 +199,15 @@
   },
   "lighthouse-core/audits/accessibility/frame-title.js | title": {
     "message": "`<frame>` veya `<iframe>` öğesi bir başlığa sahip"
+  },
+  "lighthouse-core/audits/accessibility/heading-order.js | description": {
+    "message": "Düzey atlamayan gerektiği gibi sıralanmış başlıklar sayfanın anlamsal yapısını iletir. Bu şekilde yardımcı teknolojileri kullanırken gezinmeyi ve anlamayı kolaylaştırır. [Daha fazla bilgi](https://web.dev/heading-order/)."
+  },
+  "lighthouse-core/audits/accessibility/heading-order.js | failureTitle": {
+    "message": "Başlık öğeleri sırayla azalan düzende sıralı değil"
+  },
+  "lighthouse-core/audits/accessibility/heading-order.js | title": {
+    "message": "Başlık öğeleri sırayla azalan düzende sıralanmış görüntülenir"
   },
   "lighthouse-core/audits/accessibility/html-has-lang.js | description": {
     "message": "Sayfa bir lang özelliği belirtmezse ekran okuyucu, sayfanın kullanıcı ekran okuyucuyu kurarken seçtiği varsayılan dilde olduğunu varsayar. Sayfa aslında varsayılan dilde değilse ekran okuyucu, sayfanın metnini doğru bir şekilde duyurmayabilir. [Daha fazla bilgi](https://web.dev/html-has-lang/)."
@@ -350,6 +404,12 @@
   "lighthouse-core/audits/bootup-time.js | title": {
     "message": "JavaScript yürütme süresi"
   },
+  "lighthouse-core/audits/byte-efficiency/duplicated-javascript.js | description": {
+    "message": "Ağ etkinliğinin kullandığı bayt sayısını azaltmak için paketlerden büyük, yinelenen JavaScript modüllerini kaldırın. "
+  },
+  "lighthouse-core/audits/byte-efficiency/duplicated-javascript.js | title": {
+    "message": "JavaScript paketlerindeki yinelenen modülleri kaldırın"
+  },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | description": {
     "message": "Büyük GIF'ler, animasyonlu içeriğin sunulmasında verimli olmaz. Ağ veri miktarından tasarruf etmek üzere animasyonlar için MPEG4/WebM videoları ve statik resimler için GIF yerine PNG/WebP kullanma seçeneğini değerlendirin. [Daha fazla bilgi](https://web.dev/efficient-animated-content)"
   },
@@ -399,7 +459,7 @@
     "message": "Kullanılmayan CSS'yi kaldırın"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "Ağ etkinliğinin kullandığı bayt sayısını azaltmak için kullanılmayan JavaScript'i kaldırın."
+    "message": "Ağ etkinliğinin kullandığı bayt sayısını azaltmak için kullanılmayan JavaScript'i kaldırın. [Daha fazla bilgi](https://web.dev/remove-unused-code/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
     "message": "Kullanılmayan JavaScript'i kaldırın"
@@ -459,7 +519,7 @@
     "message": "{itemCount,plural, =1{1 zincir bulundu}other{# zincir bulundu}}"
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
-    "message": "Kritik İsteklerin Derinliğini En Aza İndirin"
+    "message": "Kritik istek zinciri oluşturmaktan kaçın"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "Kullanımdan Kaldırma / Uyarı"
@@ -491,6 +551,15 @@
   "lighthouse-core/audits/dobetterweb/appcache-manifest.js | title": {
     "message": "Uygulama Önbelleği Kullanılmıyor"
   },
+  "lighthouse-core/audits/dobetterweb/charset.js | description": {
+    "message": "Karakter kodlama tanımlaması gerekiyor. Bu, HTML'nin ilk 1.024 baytı içinde veya İçerik Türü HTTP yanıt başlığında bir <meta> etiketi ile yapılabilir. [Daha fazla bilgi](https://www.w3.org/International/questions/qa-html-encoding-declarations)."
+  },
+  "lighthouse-core/audits/dobetterweb/charset.js | failureTitle": {
+    "message": "Karakter kümesi tanımlaması eksik veya HTML'de çok geç gerçekleşiyor"
+  },
+  "lighthouse-core/audits/dobetterweb/charset.js | title": {
+    "message": "Karakter kümesini düzgün şekilde tanımlıyor"
+  },
   "lighthouse-core/audits/dobetterweb/doctype.js | description": {
     "message": "Bir DOCTYPE belirlemek, tarayıcının Quirks moduna geçmesini önler. [Daha fazla bilgi](https://web.dev/doctype)."
   },
@@ -512,9 +581,6 @@
   "lighthouse-core/audits/dobetterweb/doctype.js | title": {
     "message": "Sayfa HTML DOCTYPE içeriyor"
   },
-  "lighthouse-core/audits/dobetterweb/dom-size.js | columnElement": {
-    "message": "Öğe"
-  },
   "lighthouse-core/audits/dobetterweb/dom-size.js | columnStatistic": {
     "message": "İstatistik"
   },
@@ -522,7 +588,7 @@
     "message": "Değer"
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | description": {
-    "message": "Tarayıcı mühendisleri, sayfaların yaklaşık olarak 1.500'den az DOM öğesi içermesini önerir. En iyisi, 32 öğeden ve 60 alt/üst öğeden az olan bir ağaç derinliğidir. Büyük bir DOM, bellek kullanımını artırarak daha uzun [stil hesaplamalarına](https://developers.google.com/web/fundamentals/performance/rendering/reduce-the-scope-and-complexity-of-style-calculations), yol açabilir ve yüksek maliyetli [düzen yeniden düzenlemeleri](https://developers.google.com/speed/articles/reflow). [Daha fazla bilgi](https://web.dev/dom-size)."
+    "message": "Büyük bir DOM, bellek kullanımını artırarak daha uzun [stil hesaplamalarına](https://developers.google.com/web/fundamentals/performance/rendering/reduce-the-scope-and-complexity-of-style-calculations), neden olabilir ve yüksek maliyetli [düzen yeniden düzenlemeleri](https://developers.google.com/speed/articles/reflow) üretebilir. [Daha fazla bilgi](https://web.dev/dom-size)."
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | displayValue": {
     "message": "{itemCount,plural, =1{1 öğe}other{# öğe}}"
@@ -542,11 +608,8 @@
   "lighthouse-core/audits/dobetterweb/dom-size.js | title": {
     "message": "Aşırı büyük bir DOM boyutunu önler"
   },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnRel": {
-    "message": "Rel"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnTarget": {
-    "message": "Hedef"
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnFailingAnchors": {
+    "message": "Başarısız Bağlantılar"
   },
   "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
     "message": "Performansı artırmak ve güvenlik açıklarını önlemek için harici bağlantılara `rel=\"noopener\"` veya `rel=\"noreferrer\"` ekleyin. [Daha fazla bilgi](https://web.dev/external-anchors-use-rel-noopener)."
@@ -582,7 +645,7 @@
     "message": "`document.write()` aracılığıyla dinamik olarak enjekte edilen harici komut dosyaları, yavaş bağlantıdaki kullanıcılar için sayfa yüklemeyi onlarca saniye geciktirebilir. [Daha fazla bilgi](https://web.dev/no-document-write)."
   },
   "lighthouse-core/audits/dobetterweb/no-document-write.js | failureTitle": {
-    "message": "`document.write()` öğesini kullanıyor"
+    "message": "`document.write()` kullanmaktan kaçının"
   },
   "lighthouse-core/audits/dobetterweb/no-document-write.js | title": {
     "message": "`document.write()` öğesinden kaçınıyor"
@@ -704,6 +767,24 @@
   "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
     "message": "Geçersiz resim boyutlandırma bilgileri {url}"
   },
+  "lighthouse-core/audits/image-size-responsive.js | columnActual": {
+    "message": "Gerçek boyut"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | columnDisplayed": {
+    "message": "Görüntülenen boyut"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | columnExpected": {
+    "message": "Beklenen boyut"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | description": {
+    "message": "Resmin doğal boyutları, resmin netliğini en üst düzeye çıkarmak için görüntü boyutu ve piksel oranı ile orantılı olmalıdır. [Daha fazla bilgi](https://web.dev/image-size-responsive)."
+  },
+  "lighthouse-core/audits/image-size-responsive.js | failureTitle": {
+    "message": "Boyutu uygun olmayan resimleri görüntüler"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | title": {
+    "message": "Boyutu uygun olan resimleri görüntüler"
+  },
   "lighthouse-core/audits/installable-manifest.js | description": {
     "message": "Tarayıcılar proaktif olarak kullanıcılardan uygulamanızı ana ekranlarına eklemelerini isteyebilirler ve bu da daha yüksek etkileşim sağlayabilir. [Daha fazla bilgi](https://web.dev/installable-manifest)."
   },
@@ -728,6 +809,12 @@
   "lighthouse-core/audits/is-on-https.js | title": {
     "message": "HTTPS kullanıyor"
   },
+  "lighthouse-core/audits/legacy-javascript.js | description": {
+    "message": "Çoklu dolgular ve dönüşümler, eski tarayıcıların yeni JavaScript özelliklerini kullanmasını sağlar. Ancak, çoğu modern tarayıcılar için gerekli değildir. Eski tarayıcılara verilen desteği tutarken, modern tarayıcılara gönderilen kod miktarını azaltmak üzere modüllü/modülsüz özellik algılamayı kullanarak JavaScript paketiniz için modern bir komut dosyası dağıtım stratejisi kullanın. [Daha Fazla Bilgi](https://philipwalton.com/articles/deploying-es2015-code-in-production-today/)"
+  },
+  "lighthouse-core/audits/legacy-javascript.js | title": {
+    "message": "Eski JavaScript"
+  },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
     "message": "Sayfaların hücresel ağ üzerinden hızlı bir şekilde yüklenmesi, mobil cihaz kullanıcılarının iyi bir deneyim yaşamalarını sağlar. [Daha fazla bilgi](https://web.dev/load-fast-enough-for-pwa)."
   },
@@ -750,7 +837,7 @@
     "message": "Kategori"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | description": {
-    "message": "JS'yi ayrıştırma, derleme ve yürütme için harcanan zamanı kısaltmayı düşünün. Daha küçük JS yüklerinin sağlanması bu konuda yardımcı olabilir. [Daha fazla bilgi](https://web.dev/mainthread-work-breakdown)"
+    "message": "JS'yi ayrıştırma, derleme ve yürütme için harcanan zamanı kısaltabilirsiniz. Daha küçük JS yüklerinin sağlanması bu konuda yardımcı olabilir. [Daha fazla bilgi](https://web.dev/mainthread-work-breakdown)"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | failureTitle": {
     "message": "Ana iş parçacığı çalışmasını en aza indir"
@@ -776,53 +863,44 @@
   "lighthouse-core/audits/manual/pwa-page-transitions.js | title": {
     "message": "Sayfa geçişleri ağda takılıyorlarmış gibi hissedilmiyor"
   },
+  "lighthouse-core/audits/maskable-icon.js | description": {
+    "message": "Maskelenebilir simge, uygulama bir cihaza yüklenirken resmin sinemaskop hale gelmeden tüm şekli doldurmasını sağlar. [Daha fazla bilgi](https://web.dev/maskable-icon/)."
+  },
+  "lighthouse-core/audits/maskable-icon.js | failureTitle": {
+    "message": "Manifest dosyası maskelenebilir bir simge içermiyor"
+  },
+  "lighthouse-core/audits/maskable-icon.js | title": {
+    "message": "Manifest dosyası maskelenebilir simge içeriyor"
+  },
+  "lighthouse-core/audits/metrics/cumulative-layout-shift.js | description": {
+    "message": "Cumulative Layout Shift, görüntü alanı içindeki görünür öğelerin hareketini ölçer. [Daha fazla bilgi](https://web.dev/cls)."
+  },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
     "message": "Tahmini Giriş Gecikmesi, sayfa yüklemesinin en yoğun olduğu 5 saniyelik zaman aralığında uygulamanızın kullanıcı girişine kaç milisaniye içinde yanıt vereceğine dair bir tahmindir. Gecikmeniz 50 ms.nin üzerinde olursa kullanıcılar uygulamanızın durakladığını düşünebilir. [Daha fazla bilgi](https://web.dev/estimated-input-latency)."
-  },
-  "lighthouse-core/audits/metrics/estimated-input-latency.js | title": {
-    "message": "Tahmini Giriş Gecikmesi"
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
     "message": "İlk Zengin İçerikli Boyama, ilk metnin veya resmin boyandığı zamanı işaret eder. [Daha fazla bilgi](https://web.dev/first-contentful-paint)."
   },
-  "lighthouse-core/audits/metrics/first-contentful-paint.js | title": {
-    "message": "İlk Zengin İçerikli Boya"
-  },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
     "message": "İlk CPU Boşta metriği, sayfanın ana iş parçacığının girişi işlemek için yeterli olduğu ilk anı işaret eder.  [Daha fazla bilgi](https://web.dev/first-cpu-idle)."
-  },
-  "lighthouse-core/audits/metrics/first-cpu-idle.js | title": {
-    "message": "İlk CPU Boşta"
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "İlk Anlamlı Boyama, bir sayfanın ana içeriğinin ne zaman görünür hale geldiğini ölçer. [Daha fazla bilgi](https://web.dev/first-meaningful-paint)."
   },
-  "lighthouse-core/audits/metrics/first-meaningful-paint.js | title": {
-    "message": "İlk Anlamlı Boya"
-  },
   "lighthouse-core/audits/metrics/interactive.js | description": {
     "message": "Etkileşime hazır olma süresi, sayfanın tamamen etkileşime hazır hale gelmesi için geçmesi gereken süreyi ifade eder. [Daha fazla bilgi](https://web.dev/interactive)."
   },
-  "lighthouse-core/audits/metrics/interactive.js | title": {
-    "message": "Etkileşim Süresi"
+  "lighthouse-core/audits/metrics/largest-contentful-paint.js | description": {
+    "message": "Largest Contentful Paint, en büyük metnin veya resmin ekranda belirdiği zamanı işaret eder. [Daha Fazla Bilgi](https://web.dev/lighthouse-largest-contentful-paint)"
   },
   "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
-    "message": "Kullanıcılarınızın karşılaşabileceği olası maksimum İlk Giriş Gecikmesi, en uzun görevin milisaniye cinsinden süresidir. [Daha fazla bilgi](https://developers.google.com/web/updates/2018/05/first-input-delay)."
-  },
-  "lighthouse-core/audits/metrics/max-potential-fid.js | title": {
-    "message": "Maksimum Olası İlk Giriş Gecikmesi"
+    "message": "Kullanıcılarınızın karşılaşabileceği olası maksimum İlk Giriş Gecikmesi, en uzun görevin süresidir. [Daha fazla bilgi](https://web.dev/lighthouse-max-potential-fid)."
   },
   "lighthouse-core/audits/metrics/speed-index.js | description": {
     "message": "Hız Endeksi, bir sayfa içeriğinin görsel olarak ne kadar hızlı doldurulabildiğini gösterir. [Daha fazla bilgi](https://web.dev/speed-index)."
   },
-  "lighthouse-core/audits/metrics/speed-index.js | title": {
-    "message": "Hız İndeksi"
-  },
   "lighthouse-core/audits/metrics/total-blocking-time.js | description": {
-    "message": "Görev süresi 50 ms.yi aştığında, FCP ile Etkileşime Hazır Olma Süresi arasındaki tüm dönemlerin milisaniye cinsinden toplamı."
-  },
-  "lighthouse-core/audits/metrics/total-blocking-time.js | title": {
-    "message": "Toplam Engellenme Süresi"
+    "message": "Görev süresi 50 ms.yi aştığında, FCP ile Etkileşime Hazır Olma Süresi arasındaki tüm dönemlerin milisaniye cinsinden toplamı. [Daha fazla bilgi](https://web.dev/lighthouse-total-blocking-time)."
   },
   "lighthouse-core/audits/network-rtt.js | description": {
     "message": "Ağ gidiş dönüş sürelerinin (RTT) performans üzerinde büyük bir etkisi vardır. Kaynağa RTT'nin fazla olması, kullanıcıya daha yakın olan sunucuların performansı iyileştirebileceğinin göstergesidir. [Daha fazla bilgi](https://hpbn.co/primer-on-latency-and-bandwidth/)."
@@ -839,6 +917,9 @@
   "lighthouse-core/audits/offline-start-url.js | description": {
     "message": "Hizmet çalışanı web uygulamanızın öngörülemeyen ağ koşullarında güvenilir olmasını sağlar. [Daha fazla bilgi](https://web.dev/offline-start-url)."
   },
+  "lighthouse-core/audits/offline-start-url.js | errorLoading": {
+    "message": "Hizmet Çalışanında {url} sitesi yüklenirken hata oluştu, {statusCode} durum kodu alındı"
+  },
   "lighthouse-core/audits/offline-start-url.js | failureTitle": {
     "message": "`start_url` çevrimdışıyken 200 koduyla yanıt vermiyor"
   },
@@ -847,9 +928,6 @@
   },
   "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
     "message": "Lighthouse, manifest dosyasından `start_url` öğesini okuyamadı. Bu yüzden `start_url` dokümanın URL'si olarak kabul edildi. Hata mesajı: \"{manifestWarning}\"."
-  },
-  "lighthouse-core/audits/performance-budget.js | columnOverBudget": {
-    "message": "Bütçe Aşımı"
   },
   "lighthouse-core/audits/performance-budget.js | description": {
     "message": "Ağ isteklerinin miktarını ve büyüklüğünü, performans bütçesi tarafından belirlenen hedeflerin altında tutun. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
@@ -919,9 +997,6 @@
   },
   "lighthouse-core/audits/seo/font-size.js | explanationViewport": {
     "message": "Mobil ekranlar için optimize edilmiş görüntü alanı meta etiketi olmadığından metin okunaklı değil."
-  },
-  "lighthouse-core/audits/seo/font-size.js | explanationWithDisclaimer": {
-    "message": "Metnin {decimalProportion, number, extendedPercent} kadarı çok küçük ({decimalProportionVisited, number, extendedPercent} örneği baz alınarak)."
   },
   "lighthouse-core/audits/seo/font-size.js | failureTitle": {
     "message": "Dokümanda okunabilir yazı tipi boyutları kullanılmıyor"
@@ -1089,19 +1164,19 @@
     "message": "Üçüncü taraf kodun etkisini azaltın"
   },
   "lighthouse-core/audits/third-party-summary.js | title": {
-    "message": "Üçüncü Taraf Kullanımı"
+    "message": "Üçüncü taraf kullanımını en aza indirme"
   },
-  "lighthouse-core/audits/time-to-first-byte.js | description": {
-    "message": "İlk Bayt Zamanı, sunucunuzun yanıt gönderme zamanını tanımlar. [Daha fazla bilgi](https://web.dev/time-to-first-byte)."
+  "lighthouse-core/audits/timing-budget.js | columnMeasurement": {
+    "message": "Ölçüm"
   },
-  "lighthouse-core/audits/time-to-first-byte.js | displayValue": {
-    "message": "Root doküman {timeInMs, number, milliseconds} ms. sürdü"
+  "lighthouse-core/audits/timing-budget.js | columnTimingMetric": {
+    "message": "Metrik"
   },
-  "lighthouse-core/audits/time-to-first-byte.js | failureTitle": {
-    "message": "Sunucu yanıt sürelerini kısaltın (TTFB)"
+  "lighthouse-core/audits/timing-budget.js | description": {
+    "message": "Sitenizin performansını takip etmenize yardımcı olması için zamanlama bütçesi belirleyin. Performanslı siteler hızlı yüklenir ve kullanıcı giriş etkinliklerine hızlı yanıt verir. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
   },
-  "lighthouse-core/audits/time-to-first-byte.js | title": {
-    "message": "Sunucu yanıt süreleri düşük (TTFB)"
+  "lighthouse-core/audits/timing-budget.js | title": {
+    "message": "Zamanlama bütçesi"
   },
   "lighthouse-core/audits/user-timings.js | columnDuration": {
     "message": "Süre"
@@ -1129,6 +1204,9 @@
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | title": {
     "message": "Gerekli kaynaklara önceden bağlan"
+  },
+  "lighthouse-core/audits/uses-rel-preconnect.js | tooManyPreconnectLinksWarning": {
+    "message": "2'den fazla önceden bağlan bağlantısı bulundu. Önceden bağlanma bağlantıları az kullanılmalı ve sadece en önemli kaynaklar için tercih edilmelidir."
   },
   "lighthouse-core/audits/uses-rel-preload.js | crossoriginWarning": {
     "message": "\"{preloadURL}\" için bir önceden yükleme <link> bulundu ancak tarayıcı tarafından kullanılmadı. `crossorigin` özelliğini gerektiği gibi kullandığınızdan emin olun."
@@ -1316,6 +1394,12 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Mobil Uyumlu"
   },
+  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
+    "message": "Sayfa, test URL'niz ({requested}) {final} adresine yönlendirildiğinden beklendiği gibi yüklenmiyor olabilir. İkinci URL'yi doğrudan test etmeyi deneyin."
+  },
+  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
+    "message": "Sayfa, zaman sınırı içinde bitmeyecek kadar yavaş yüklendi. Sonuçlar eksik olabilir."
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "TTL'yi Önbelleğe Alma"
   },
@@ -1325,14 +1409,23 @@
   "lighthouse-core/lib/i18n/i18n.js | columnName": {
     "message": "Ad"
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnOverBudget": {
+    "message": "Bütçe Aşımı"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnRequests": {
     "message": "İstek Sayısı"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnResourceSize": {
+    "message": "Kaynak Boyutu"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnResourceType": {
     "message": "Kaynak Türü"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnSize": {
     "message": "Boyut"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnSource": {
+    "message": "Kaynak"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnTimeSpent": {
     "message": "Harcanan Süre"
@@ -1349,6 +1442,9 @@
   "lighthouse-core/lib/i18n/i18n.js | columnWastedMs": {
     "message": "Potansiyel Tasarruflar"
   },
+  "lighthouse-core/lib/i18n/i18n.js | cumulativeLayoutShiftMetric": {
+    "message": "Kümülatif Düzen Kayması"
+  },
   "lighthouse-core/lib/i18n/i18n.js | displayValueByteSavings": {
     "message": "{wastedBytes, number, bytes} KB potansiyel tasarruf"
   },
@@ -1358,11 +1454,32 @@
   "lighthouse-core/lib/i18n/i18n.js | documentResourceType": {
     "message": "Doküman"
   },
+  "lighthouse-core/lib/i18n/i18n.js | estimatedInputLatencyMetric": {
+    "message": "Tahmini Giriş Gecikmesi"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | firstCPUIdleMetric": {
+    "message": "İlk CPU Boşta"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | firstContentfulPaintMetric": {
+    "message": "İlk Zengin İçerikli Boya"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | firstMeaningfulPaintMetric": {
+    "message": "İlk Anlamlı Boya"
+  },
   "lighthouse-core/lib/i18n/i18n.js | fontResourceType": {
     "message": "Yazı tipi"
   },
   "lighthouse-core/lib/i18n/i18n.js | imageResourceType": {
     "message": "Resim"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | interactiveMetric": {
+    "message": "Etkileşim Süresi"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | largestContentfulPaintMetric": {
+    "message": "Largest Contentful Paint"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | maxPotentialFIDMetric": {
+    "message": "Maksimum Olası İlk Giriş Gecikmesi"
   },
   "lighthouse-core/lib/i18n/i18n.js | mediaResourceType": {
     "message": "Medya"
@@ -1379,11 +1496,17 @@
   "lighthouse-core/lib/i18n/i18n.js | seconds": {
     "message": "{timeInMs, number, seconds} sn."
   },
+  "lighthouse-core/lib/i18n/i18n.js | speedIndexMetric": {
+    "message": "Hız İndeksi"
+  },
   "lighthouse-core/lib/i18n/i18n.js | stylesheetResourceType": {
     "message": "Stil Sayfası"
   },
   "lighthouse-core/lib/i18n/i18n.js | thirdPartyResourceType": {
     "message": "Üçüncü taraf"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | totalBlockingTimeMetric": {
+    "message": "Toplam Engellenme Süresi"
   },
   "lighthouse-core/lib/i18n/i18n.js | totalResourceType": {
     "message": "Toplam"
@@ -1448,11 +1571,38 @@
   "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
     "message": "Maksimum kritik yol gecikmesi:"
   },
+  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
+    "message": "JSON nesnesini kopyala"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
+    "message": "Koyu Temayı aç/kapat"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
+    "message": "Yazdırma Genişletmesi"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
+    "message": "Yazdırma Özeti"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
+    "message": "Gist olarak kaydet"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
+    "message": "HTML olarak kaydet"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
+    "message": "JSON nesnesi olarak kaydet"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
+    "message": "Görüntüleyicide aç"
+  },
   "lighthouse-core/report/html/renderer/util.js | errorLabel": {
     "message": "Hata!"
   },
   "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
     "message": "Bildirme hatası: denetim bilgisi yok"
+  },
+  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
+    "message": "Sorun bildir"
   },
   "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
     "message": "Test Verileri"
@@ -1475,6 +1625,48 @@
   "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
     "message": "Başarılı denetimler"
   },
+  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "Emülasyonlu Masaüstü"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
+    "message": "Emülasyonlu Moto G4"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
+    "message": "Emülasyon yok"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "CPU/Bellek Gücü"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "CPU kısıtlaması"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
+    "message": "Kanal"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
+    "message": "Cihaz"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "Alınma Zamanı"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "Ağ sınırlama"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
+    "message": "Çalışma Zamanı Ayarları"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
+    "message": "Kullanıcı aracısı (ana makine)"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "Kullanıcı aracısı (ağ)"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
+    "message": "URL"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
+    "message": "Bilinmiyor"
+  },
   "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
     "message": "Snippet'i daralt"
   },
@@ -1483,6 +1675,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
     "message": "3. taraf kaynaklarını göster"
+  },
+  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
+    "message": "Ortam tarafından sağlandı"
   },
   "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
     "message": "Şu Lighthouse çalışmasını etkileyen sorunlar vardı:"
@@ -1496,6 +1691,93 @@
   "lighthouse-core/report/html/renderer/util.js | warningHeader": {
     "message": "Uyarılar: "
   },
+  "stack-packs/packs/amp.js | efficient_animated_content": {
+    "message": "Animasyonlu içerik için içerik ekran dışında kalırken CPU kullanımını en aza indirmek amacıyla [amp-anim](https://amp.dev/documentation/components/amp-anim/) kullanın."
+  },
+  "stack-packs/packs/amp.js | offscreen_images": {
+    "message": "İlk görüntü alanının dışında otomatik olarak geç yüklenen görüntüleriniz için geçerli `amp-img` etiketleri kullandığınızdan emin olun. [Daha fazla bilgi](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)."
+  },
+  "stack-packs/packs/amp.js | render_blocking_resources": {
+    "message": "[Sunucu tarafı oluşturucu AMP düzenleri](https://amp.dev/documentation/guides-and-tutorials/optimize-and-measure/server-side-rendering/) için [AMP Optimize Edici](https://github.com/ampproject/amp-toolbox/tree/master/packages/optimizer) gibi araçları kullanın."
+  },
+  "stack-packs/packs/amp.js | unminified_css": {
+    "message": "Tüm stillerinizin desteklendiğinden emin olmak için [AMP belgelerine](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/style_pages/) bakın."
+  },
+  "stack-packs/packs/amp.js | uses_responsive_images": {
+    "message": "`amp-img` öğesi, ekran boyutuna göre kullanılacak görüntü öğelerini belirtmek için `srcset` özelliğini destekler.  [Daha fazla bilgi](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/art_direction/)."
+  },
+  "stack-packs/packs/amp.js | uses_webp_images": {
+    "message": "Diğer tarayıcılar için uygun bir yedek belirtirken tüm `amp-img` bileşenlerinizin WebP biçimlerinde görüntülenmesi seçeneğini değerlendirin. [Daha fazla bilgi](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)."
+  },
+  "stack-packs/packs/angular.js | dom_size": {
+    "message": "Çok büyük listeler oluşturuluyorsa Bileşen Geliştirme Kiti (CDK) ile sanal kaydırma seçeneğini düşünün. [Daha fazla bilgi](https://web.dev/virtualize-lists-with-angular-cdk/)."
+  },
+  "stack-packs/packs/angular.js | total_byte_weight": {
+    "message": "JavaScript paketlerinizin boyutunu en aza indirmek için [rota düzeyinde kod bölmeyi](https://web.dev/route-level-code-splitting-in-angular/) uygulayın. Ayrıca, [Angular hizmet çalışanı](https://web.dev/precaching-with-the-angular-service-worker/) ile öğeleri önbelleğe alma seçeneğini değerlendirin."
+  },
+  "stack-packs/packs/angular.js | unminified_warning": {
+    "message": "Angular KSA kullanıyorsanız derlemelerin üretim modunda oluşturulduğundan emin olun. [Daha fazla bilgi](https://angular.io/guide/deployment#enable-runtime-production-mode)."
+  },
+  "stack-packs/packs/angular.js | unused_javascript": {
+    "message": "Angular KSA kullanıyorsanız paketlerinizi incelemek için üretim derlemenize kaynak eşlemelerini ekleyin. [Daha fazla bilgi](https://angular.io/guide/deployment#inspect-the-bundles)."
+  },
+  "stack-packs/packs/angular.js | uses_rel_preload": {
+    "message": "Gezinmeyi hızlandırmak için rotaları önceden yükleyin. [Daha fazla bilgi](https://web.dev/route-preloading-in-angular/)."
+  },
+  "stack-packs/packs/angular.js | uses_responsive_images": {
+    "message": "Görüntü ayrılma noktalarını yönetmek için Bileşen Geliştirme Kiti'nde (CDK) `BreakpointObserver` yardımcı programını kullanmayı düşünün. [Daha fazla bilgi](https://material.angular.io/cdk/layout/overview)."
+  },
+  "stack-packs/packs/magento.js | critical_request_chains": {
+    "message": "JavaScript öğelerinizi grupluyorsanız [gruplayıcı](https://github.com/magento/baler) kullanmayı düşünün."
+  },
+  "stack-packs/packs/magento.js | disable_bundling": {
+    "message": "Magento'nun yerleşik [JavaScript gruplama ve küçültme](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html) özelliğini devre dışı bırakın ve bunun yerine [gruplayıcı](https://github.com/magento/baler/) kullanmayı düşünün."
+  },
+  "stack-packs/packs/magento.js | font_display": {
+    "message": "[Özel yazı tipleri tanımlarken](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/css-topics/using-fonts.html) `@font-display` öğesini belirtin."
+  },
+  "stack-packs/packs/magento.js | offscreen_images": {
+    "message": "Ürün ve katalog şablonlarınızı, web platformunun [geç yükleme](https://web.dev/native-lazy-loading) özelliğinden yararlanacak şekilde değiştirme seçeneğini değerlendirin."
+  },
+  "stack-packs/packs/magento.js | unminified_css": {
+    "message": "Mağazanızın Geliştirici ayarlarında \"CSS Dosyalarını Küçült\" seçeneğini etkinleştirin. [Daha fazla bilgi](https://devdocs.magento.com/guides/v2.3/performance-best-practices/configuration.html?itm_source=devdocs&itm_medium=search_page&itm_campaign=federated_search&itm_term=minify%20css%20files)."
+  },
+  "stack-packs/packs/magento.js | unminified_javascript": {
+    "message": "Statik içerik dağıtımından oluşturulan tüm JavaScript öğelerini küçültmek ve yerleşik küçültme özelliğini devre dışı bırakmak için [Terser](https://www.npmjs.com/package/terser)'ı kullanın."
+  },
+  "stack-packs/packs/magento.js | unused_javascript": {
+    "message": "Magento'nun yerleşik [JavaScript gruplama](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html) özelliğini devre dışı bırakın."
+  },
+  "stack-packs/packs/magento.js | uses_optimized_images": {
+    "message": "Görüntüleri optimize etmek için [Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=optimize%20image)'te çeşitli üçüncü taraf uzantılarını arama seçeneğini değerlendirin."
+  },
+  "stack-packs/packs/magento.js | uses_rel_preconnect": {
+    "message": "Önceden bağlanma veya DNS önceden getirme kaynak ipuçları, [bir temanın düzeni değiştirilerek](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html) eklenebilir."
+  },
+  "stack-packs/packs/magento.js | uses_rel_preload": {
+    "message": "`<link rel=preload>` etiketleri, [bir temanın düzeni değiştirilerek](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html) eklenebilir."
+  },
+  "stack-packs/packs/magento.js | uses_webp_images": {
+    "message": "Daha yeni görüntü biçimlerinden yararlanmak için [Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=webp)'te çeşitli üçüncü taraf uzantılarını arama seçeneğini değerlendirin."
+  },
+  "stack-packs/packs/react.js | dom_size": {
+    "message": "Sayfada çok sayıda yinelenen öğe oluşturuyorsanız, oluşturulan DOM düğümlerinin sayısını en aza indirmek için `react-window` gibi bir \"pencereleme\" kitaplığı ı düşünün. [Daha fazla bilgi](https://web.dev/virtualize-long-lists-react-window/). Ayrıca, çalışma zamanı performansını iyileştirmek için Efekt kancası kullanıyorsanız bazı bağımlılıklar değişinceye kadar [shouldComponentUpdate](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [PureComponent](https://reactjs.org/docs/react-api.html#reactpurecomponent) veya [React.memo](https://reactjs.org/docs/react-api.html#reactmemo) ve [atlama efektleri](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) kullanarak gereksiz yeniden oluşturma sayısını en aza indirin."
+  },
+  "stack-packs/packs/react.js | redirects": {
+    "message": "React Router kullanıyorsanız [rota gezinmeleri](https://reacttraining.com/react-router/web/api/Redirect) için `<Redirect>` bileşeninin kullanımını en aza indirin."
+  },
+  "stack-packs/packs/react.js | unminified_css": {
+    "message": "Derleme sisteminiz CSS dosyalarını otomatik olarak küçültüyorsa uygulamanızın üretim derlemesini dağıttığınızdan emin olun. Bunu React Geliştirici Araçları uzantısıyla kontrol edebilirsiniz. [Daha fazla bilgi](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
+  },
+  "stack-packs/packs/react.js | unminified_javascript": {
+    "message": "Derleme sisteminiz JS dosyalarını otomatik olarak küçültüyorsa uygulamanızın üretim derlemesini dağıttığınızdan emin olun. Bunu React Geliştirici Araçları uzantısıyla kontrol edebilirsiniz. [Daha fazla bilgi](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
+  },
+  "stack-packs/packs/react.js | unused_javascript": {
+    "message": "Sunucu tarafında oluşturmuyorsanız `React.lazy()` ile [JavaScript paketlerinizi bölün](https://web.dev/code-splitting-suspense/). Aksi halde, [loadable-components](https://www.smooth-code.com/open-source/loadable-components/docs/getting-started/) gibi bir üçüncü taraf kitaplığı kullanarak kodu bölün."
+  },
+  "stack-packs/packs/react.js | user_timings": {
+    "message": "Bileşenlerinizin oluşturma performansını ölçmek için Profil Oluşturucu API'sinden yararlanan React Geliştirme Araçları Profil Oluşturucu'yu kullanın. [Daha fazla bilgi](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
+  },
   "stack-packs/packs/wordpress.js | efficient_animated_content": {
     "message": "GIF dosyanızı, HTML5 videosu olarak katıştırmak için kullanılabilmesini sağlayacak bir hizmete yüklemeyi düşünün."
   },
@@ -1504,9 +1786,6 @@
   },
   "stack-packs/packs/wordpress.js | render_blocking_resources": {
     "message": "[Kritik öğeleri satır içi yapmanıza](https://wordpress.org/plugins/search/critical+css/) veya [daha az önemli kaynakları ertelemenize](https://wordpress.org/plugins/search/defer+css+javascript/) yardımcı olabilecek çeşitli WordPress eklentileri vardır. Bu eklentilerin sağlayacağı optimizasyonların tema veya eklentilerinizin özelliklerini bozabileceğine dikkat edin. Bunu engellemek için muhtemelen kodda değişiklik yapmanız gerekecektir."
-  },
-  "stack-packs/packs/wordpress.js | time_to_first_byte": {
-    "message": "Temalar, eklentiler ve sunucu özellikleri öğelerinin tümü sunucunun yanıt süresini etkiler. Bir optimizayon eklentisini dikkatle seçerek ve/veya sunucunuzu yeni sürüme geçirerek, daha ileri düzeyde optimize edilmiş bir tema bulmayı düşünün."
   },
   "stack-packs/packs/wordpress.js | total_byte_weight": {
     "message": "Yayın listelerinizde alıntılar göstermeyi (ör. daha fazla etiket kullanarak), belirli bir sayfada gösterilen yayınların sayısını azaltmayı, uzun yayınlarınızı birden fazla sayfaya bölmeyi veya yorumların geç yüklenmesi için bir eklenti kullanmayı düşünün."
@@ -1524,13 +1803,13 @@
     "message": "Sayfanızda kullanılmayan JavaScript'ler yükleyen [WordPress eklentilerinin](https://wordpress.org/plugins/) sayısını azaltmayı veya değiştirmeyi değerlendirin. Gereksiz JS ekleyen eklentileri belirlemek için Chrome Geliştirme Araçlarında [kod kapsamını](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) çalıştırmayı düşünün. Sorumlu temayı/eklentiyi komut dosyasının URL'sinden belirleyebilirsiniz. Listede çok sayıda komut dosyasına sahip olan ve kod kapsamında çok sayıda kırmızı işaret taşıyan eklentileri arayın. Bir eklenti sadece sayfada gerçekten kullanılan bir komut dosyasını kuyruğa almalıdır."
   },
   "stack-packs/packs/wordpress.js | uses_long_cache_ttl": {
-    "message": "[WordPress'te Tarayıcı Önbelleği](https://codex.wordpress.org/WordPress_Optimization#Browser_Caching) ile ilgili bilgi edinin."
+    "message": "[WordPress'te Tarayıcı Önbelleği](https://wordpress.org/support/article/optimization/#browser-caching) ile ilgili bilgi edinin."
   },
   "stack-packs/packs/wordpress.js | uses_optimized_images": {
     "message": "Kaliteden ödün vermeden resimlerinizi sıkıştıran bir [resim optimizasyonu WordPress eklentisi](https://wordpress.org/plugins/search/optimize+images/) kullanmayı değerlendirin."
   },
   "stack-packs/packs/wordpress.js | uses_responsive_images": {
-    "message": "Gerekli resim boyutlarının kullanılabilmesi için resimleri doğrudan [medya kitaplığından](https://codex.wordpress.org/Media_Library_Screen) yükleyin, ardından ideal resim boyutlarının kullanıldığından (esnek ayrılma noktası için olanlar dahil) emin olmak için resimleri medya kitaplığından ekleyin veya resim widget'ını kullanın. Boyutları kullanım için yeterli değilse `Full Size` resimler kullanmaktan kaçının. [Daha fazla bilgi](https://codex.wordpress.org/Inserting_Images_into_Posts_and_Pages#Image_Size)."
+    "message": "Gerekli resim boyutlarının kullanılabilmesi için resimleri doğrudan [medya kitaplığından](https://wordpress.org/support/article/media-library-screen/) yükleyin, ardından ideal resim boyutlarının kullanıldığından (esnek ayrılma noktası için olanlar dahil) emin olmak için resimleri medya kitaplığından ekleyin veya resim widget'ını kullanın. Boyutları kullanım için yeterli değilse `Full Size` resimler kullanmaktan kaçının. [Daha fazla bilgi](https://wordpress.org/support/article/inserting-images-into-posts-and-pages/)."
   },
   "stack-packs/packs/wordpress.js | uses_text_compression": {
     "message": "Web sunucunuzun yapılandırmasında metin sıkıştırmayı etkinleştirebilirsiniz."

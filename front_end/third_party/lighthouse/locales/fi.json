@@ -17,6 +17,33 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "`[aria-*]`-määritteet vastaavat roolejaan"
   },
+  "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
+    "message": "Näytönlukuohjelmat ja muut avustavat teknologiat toimivat arvaamattomasti, kun `aria-hidden=\"true\"` asetetaan dokumentin kohdassa `<body>`. [Lue lisää](https://web.dev/aria-hidden-body/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-body.js | failureTitle": {
+    "message": "`[aria-hidden=\"true\"]` on dokumentin kohdassa `<body>`"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-body.js | title": {
+    "message": "`[aria-hidden=\"true\"]` ei ole dokumentin kohdassa `<body>`"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-focus.js | description": {
+    "message": "Jos `[aria-hidden=\"true\"]`-elementillä on tarkennettavia alaosia, näytönlukuohjelmat ja muut avustavat teknologiat eivät löydä niitä. [Lue lisää](https://web.dev/aria-hidden-focus/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-focus.js | failureTitle": {
+    "message": "`[aria-hidden=\"true\"]`-elementeissä on tarkennettavia alaosia"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-focus.js | title": {
+    "message": "`[aria-hidden=\"true\"]`-elementeissä ei ole tarkennettavia alaosia"
+  },
+  "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
+    "message": "Jos syötekentän nimi ei ole esteetön, näytönlukuohjelmat sanovat sen kohdalla geneerisen nimen, jolloin näytönlukuohjelmien käyttäjät eivät voi käyttää sitä. [Lue lisää](https://web.dev/aria-input-field-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
+    "message": "ARIA-syötekenttien nimet eivät ole esteettömiä"
+  },
+  "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
+    "message": "ARIA-syötekenttien nimet ovat esteettömiä"
+  },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "Joillakin ARIA-rooleilla on pakollisia määritteitä, jotka kuvaavat elementin tilaa näytönlukuohjelmille. [Lue lisää](https://web.dev/aria-required-attr/)."
   },
@@ -53,6 +80,15 @@
   "lighthouse-core/audits/accessibility/aria-roles.js | title": {
     "message": "`[role]`-arvot ovat kelvollisia"
   },
+  "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
+    "message": "Jos päälle/pois-kentän nimi ei ole esteetön, näytönlukuohjelmat sanovat sen kohdalla geneerisen nimen, jolloin näytönlukuohjelmien käyttäjät eivät voi käyttää sitä. [Lue lisää](https://web.dev/aria-toggle-field-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
+    "message": "ARIAn päälle/pois-kenttien nimet eivät ole esteettömiä"
+  },
+  "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
+    "message": "ARIAn päälle/pois-kenttien nimet ovat esteettömiä"
+  },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "Avustustekniikat (kuten näytönlukuohjelmat) eivät voi tulkita ARIA-määritteitä, joissa on virheelliset arvot. [Lue lisää](https://web.dev/aria-valid-attr-value/)."
   },
@@ -70,15 +106,6 @@
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr.js | title": {
     "message": "`[aria-*]`-määritteet ovat kelvollisia eivätkä sisällä kirjoitusvirheitä"
-  },
-  "lighthouse-core/audits/accessibility/audio-caption.js | description": {
-    "message": "Tekstitykset tekevät äänielementeistä merkittäviä kuuroille tai heikkokuuloisille kertomalla, kuka puhuu ja mitä, sekä antamalla muita kuin puheeseen liittyviä tietoja. [Lue lisää](https://web.dev/audio-caption/)."
-  },
-  "lighthouse-core/audits/accessibility/audio-caption.js | failureTitle": {
-    "message": "`<audio>`-elementeistä puuttuu `<track>`-elementti, jossa on `[kind=\"captions\"]`"
-  },
-  "lighthouse-core/audits/accessibility/audio-caption.js | title": {
-    "message": "`<audio>`-elementit sisältävät `<track>`-elementin, jossa on `[kind=\"captions\"]`"
   },
   "lighthouse-core/audits/accessibility/axe-audit.js | failingElementsHeader": {
     "message": "Hylätyt elementit"
@@ -114,10 +141,10 @@
     "message": "Kun määritelmäluetteloita ei ole merkitty kunnolla, näytönlukuohjelmien tuottama sisältö voi olla sekavaa tai epätarkkaa. [Lue lisää](https://web.dev/definition-list/)."
   },
   "lighthouse-core/audits/accessibility/definition-list.js | failureTitle": {
-    "message": "`<dl>`-elementit eivät sisällä vain oikein järjestettyjä `<dt>`- ja `<dd>`-ryhmiä ja `<script>`- tai `<template>`-elementtejä"
+    "message": "`<dl>`-elementit eivät sisällä vain oikein järjestettyjä `<dt>`- ja `<dd>`-ryhmiä ja `<script>`-, `<template>`- tai `<div>`-elementtejä."
   },
   "lighthouse-core/audits/accessibility/definition-list.js | title": {
-    "message": "`<dl>`-elementit sisältävät vain oikein järjestettyjä `<dt>`- ja `<dd>`-ryhmiä ja `<script>`- tai `<template>`-elementtejä"
+    "message": "`<dl>`-elementit sisältävät vain oikein järjestettyjä `<dt>`- ja `<dd>`-ryhmiä ja `<script>`-, `<template>` tai `<div>`-elementtejä"
   },
   "lighthouse-core/audits/accessibility/dlitem.js | description": {
     "message": "Määritelmien luettelokohdat (`<dt>` ja `<dd>`) on yhdistettävä ylätason `<dl>`-elementtiin, jotta näytönlukuohjelmat voivat varmasti lukea ne oikein. [Lue lisää](https://web.dev/dlitem/)."
@@ -137,14 +164,32 @@
   "lighthouse-core/audits/accessibility/document-title.js | title": {
     "message": "Dokumentissa on `<title>`-elementti"
   },
-  "lighthouse-core/audits/accessibility/duplicate-id.js | description": {
-    "message": "Tunnusmääritteen arvon on oltava yksilöllinen, jotta avustustekniikat eivät jätä muita esiintymiä huomioimatta. [Lue lisää](https://web.dev/duplicate-id/)."
+  "lighthouse-core/audits/accessibility/duplicate-id-active.js | description": {
+    "message": "Tarkentamista tukevilla elementeillä on oltava yksilöllinen `id`, jotta avustava teknologia havaitsee ne. [Lue lisää](https://web.dev/duplicate-id-active/)."
   },
-  "lighthouse-core/audits/accessibility/duplicate-id.js | failureTitle": {
-    "message": "Sivulla olevat `[id]`-määritteet eivät ole yksilöllisiä"
+  "lighthouse-core/audits/accessibility/duplicate-id-active.js | failureTitle": {
+    "message": "Aktiivisten, tarkennettavien elementtien `[id]`-määritteet eivät ole yksilöllisiä"
   },
-  "lighthouse-core/audits/accessibility/duplicate-id.js | title": {
-    "message": "Sivulla olevat `[id]`-määritteet ovat yksilöllisiä"
+  "lighthouse-core/audits/accessibility/duplicate-id-active.js | title": {
+    "message": "Aktiivisten, tarkennettavien elementtien `[id]`-määritteet ovat yksilöllisiä"
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id-aria.js | description": {
+    "message": "ARIA-tunnisteen on oltava yksilöllinen, jotta avustavat teknologiat eivät jätä muita esiintymiä huomioimatta. [Lue lisää](https://web.dev/duplicate-id-aria/)."
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id-aria.js | failureTitle": {
+    "message": "ARIA-tunnisteet eivät ole yksilöllisiä"
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id-aria.js | title": {
+    "message": "ARIA-tunnisteet ovat yksilöllisiä"
+  },
+  "lighthouse-core/audits/accessibility/form-field-multiple-labels.js | description": {
+    "message": "Jos lomakekentillä on useita tunnisteita, näytönlukuohjelmat ja muut avustavat teknologiat saattavat viitata niihin hämmentävästi käyttäen ensimmäistä, viimeistä tai jokaista tunnistetta. [Lue lisää](https://web.dev/form-field-multiple-labels/)."
+  },
+  "lighthouse-core/audits/accessibility/form-field-multiple-labels.js | failureTitle": {
+    "message": "Lomakekentillä on useita tunnisteita"
+  },
+  "lighthouse-core/audits/accessibility/form-field-multiple-labels.js | title": {
+    "message": "Lomakekentillä ei ole useita tunnisteita"
   },
   "lighthouse-core/audits/accessibility/frame-title.js | description": {
     "message": "Näytönlukuohjelman käyttäjät saavat tietää kehysten sisällöt vain kehysten nimien avulla. [Lue lisää](https://web.dev/frame-title/)."
@@ -154,6 +199,15 @@
   },
   "lighthouse-core/audits/accessibility/frame-title.js | title": {
     "message": "`<frame>`- tai `<iframe>`-elementeillä on nimi"
+  },
+  "lighthouse-core/audits/accessibility/heading-order.js | description": {
+    "message": "Loogisesti järjestetyt ja kaikki tasot käsittävät otsikot kertovat sivun semanttisesta rakenteesta, jolloin sen selaaminen ja ymmärtäminen avustavilla teknologioilla on helpompaa. [Lue lisää](https://web.dev/heading-order/)."
+  },
+  "lighthouse-core/audits/accessibility/heading-order.js | failureTitle": {
+    "message": "Otsikkoelementit eivät ole laskevassa järjestyksessä"
+  },
+  "lighthouse-core/audits/accessibility/heading-order.js | title": {
+    "message": "Otsikkoelementit ovat laskevassa järjestyksessä"
   },
   "lighthouse-core/audits/accessibility/html-has-lang.js | description": {
     "message": "Jos sivulla ei ole kielimääritettä, näytönlukuohjelma arvioi kieleksi oletuskielen, jonka käyttäjä valitsi ottaessaan näytönlukuohjelman käyttöön. Jos oletuskieli ei ole käytössä sivulla, näytönlukuohjelma voi ilmoittaa sivun tekstin väärin. [Lue lisää](https://web.dev/html-has-lang/)."
@@ -350,6 +404,12 @@
   "lighthouse-core/audits/bootup-time.js | title": {
     "message": "JavaScriptin suorittamiseen kuluva aika"
   },
+  "lighthouse-core/audits/byte-efficiency/duplicated-javascript.js | description": {
+    "message": "Poista suuret, kopioidut JavaScript-moduulit paketeista pienentääksesi verkkotoiminnan tarpeetonta tavunkulutusta. "
+  },
+  "lighthouse-core/audits/byte-efficiency/duplicated-javascript.js | title": {
+    "message": "Poista kaksoismoduulit JavaScript-paketeista"
+  },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | description": {
     "message": "Suuret GIFit eivät ole tehokas tapa jaella animoitua sisältöä. Voit pienentää ladattavien tavujen määrää jakelemalla animaatioita MPEG4- tai WebM-muodossa ja staattisia kuvia PNG- tai WebP-muodossa. [Lue lisää](https://web.dev/efficient-animated-content)"
   },
@@ -399,7 +459,7 @@
     "message": "Poista käyttämätön CSS"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "Poista käyttämättömät JavaScript-osat, jotta voit vähentää verkkotoiminnan kuluttamia tavuja."
+    "message": "Poista tarpeeton JavaScript pienentääksesi verkkotoiminnan tavunkulutusta. [Lue lisää](https://web.dev/remove-unused-code/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
     "message": "Poista käyttämätön JavaScript"
@@ -459,7 +519,7 @@
     "message": "{itemCount,plural, =1{1 ketju löydetty}other{# ketjua löydetty}}"
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
-    "message": "Minimoi kriittisten pyyntöjen syvyys"
+    "message": "Vältä kriittisten pyyntöjen ketjuttamista"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "Käytöstä poistaminen / varoitus"
@@ -491,6 +551,15 @@
   "lighthouse-core/audits/dobetterweb/appcache-manifest.js | title": {
     "message": "Välttää sovellusvälimuistia"
   },
+  "lighthouse-core/audits/dobetterweb/charset.js | description": {
+    "message": "Merkistökoodausilmoitus vaaditaan. Sen voi tehdä <meta>-tagilla HTML:n ensimmäisen 1 024 tavun sisällä tai HTTP:n vastauksen otsikon sisältötyyppi-kohdassa. [Lue lisää](https://www.w3.org/International/questions/qa-html-encoding-declarations)."
+  },
+  "lighthouse-core/audits/dobetterweb/charset.js | failureTitle": {
+    "message": "Merkistöilmoitus puuttuu tai näkyy liian myöhään HTML:ssä"
+  },
+  "lighthouse-core/audits/dobetterweb/charset.js | title": {
+    "message": "Merkistö määritelty oikein"
+  },
   "lighthouse-core/audits/dobetterweb/doctype.js | description": {
     "message": "Dokumenttityypin määrittäminen estää selainta siirtymästä quirks-tilaan. [Lue lisää](https://web.dev/doctype)."
   },
@@ -512,9 +581,6 @@
   "lighthouse-core/audits/dobetterweb/doctype.js | title": {
     "message": "Sivulla on HTML-dokumenttityyppi"
   },
-  "lighthouse-core/audits/dobetterweb/dom-size.js | columnElement": {
-    "message": "Elementti"
-  },
   "lighthouse-core/audits/dobetterweb/dom-size.js | columnStatistic": {
     "message": "Tilastotieto"
   },
@@ -522,7 +588,7 @@
     "message": "Arvo"
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | description": {
-    "message": "Selainten kehittäjät suosittelevat käyttämään sivulla enintään noin 1 500:aa DOM-elementtiä. Sopiva puun syvyys on alle 32 elementtiä ja alle 60 ala- ja ylätason elementtiä. Suuri DOM voi lisätä muistin käyttöä, pidentää [tyylilaskelmia](https://developers.google.com/web/fundamentals/performance/rendering/reduce-the-scope-and-complexity-of-style-calculations) ja aiheuttaa työläitä [asettelun uudelleenjuoksutuksia](https://developers.google.com/speed/articles/reflow). [Lue lisää](https://web.dev/dom-size)."
+    "message": "Suuri DOM lisää muistin käyttöä, pidentää [tyylilaskelmia](https://developers.google.com/web/fundamentals/performance/rendering/reduce-the-scope-and-complexity-of-style-calculations) ja aiheuttaa työläitä [asettelun uudelleenjuoksutuksia](https://developers.google.com/speed/articles/reflow). [Lue lisää](https://web.dev/dom-size)."
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | displayValue": {
     "message": "{itemCount,plural, =1{1 elementti}other{# elementtiä}}"
@@ -542,11 +608,8 @@
   "lighthouse-core/audits/dobetterweb/dom-size.js | title": {
     "message": "Välttää liian suurta DOM:ää"
   },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnRel": {
-    "message": "Rel"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnTarget": {
-    "message": "Kohde"
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnFailingAnchors": {
+    "message": "Hylätyt ankkurit"
   },
   "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
     "message": "Lisää ulkoisiin linkkeihin `rel=\"noopener\"` tai `rel=\"noreferrer\"` parantaaksesi tehokkuutta ja estääksesi tietoturvahaavoittuvuuksia. [Lue lisää](https://web.dev/external-anchors-use-rel-noopener)."
@@ -582,7 +645,7 @@
     "message": "Hitaiden yhteyksien käyttäjien kohdalla `document.write()`-komennolla dynaamisesti lisätyt ulkoiset skriptit voivat hidastaa sivun latausta kymmenillä sekunneilla. [Lue lisää](https://web.dev/no-document-write)."
   },
   "lighthouse-core/audits/dobetterweb/no-document-write.js | failureTitle": {
-    "message": "`document.write()` on käytössä"
+    "message": "Vältä: `document.write()`"
   },
   "lighthouse-core/audits/dobetterweb/no-document-write.js | title": {
     "message": "Vältetty: `document.write()`"
@@ -675,7 +738,7 @@
     "message": "Konsoliin ei kirjattu selainvirheitä"
   },
   "lighthouse-core/audits/font-display.js | description": {
-    "message": "Käytä CSS:n kirjasimennäyttöominaisuutta, jotta voit varmistaa, että käyttäjä näkee tekstin myös verkkofonttien lataamisen aikana. [Lue lisää](https://web.dev/font-display)."
+    "message": "Käytä CSS:n fontinnäyttöominaisuutta, jotta voit varmistaa, että käyttäjä näkee tekstin myös verkkofonttien lataamisen aikana. [Lue lisää](https://web.dev/font-display)."
   },
   "lighthouse-core/audits/font-display.js | failureTitle": {
     "message": "Varmista, että teksti pysyy näkyvissä verkkofontin lataamisen aikana"
@@ -684,7 +747,7 @@
     "message": "Kaikki teksti pysyy näkyvissä verkkofontin lataamisen aikana"
   },
   "lighthouse-core/audits/font-display.js | undeclaredFontURLWarning": {
-    "message": "Lighthouse ei pystynyt tarkistamaan seuraavan URL-osoitteen kirjasimennäyttöarvoa automaattisesti: {fontURL}."
+    "message": "Lighthouse ei pystynyt tarkistamaan seuraavan URL-osoitteen fontinnäyttöarvoa automaattisesti: {fontURL}."
   },
   "lighthouse-core/audits/image-aspect-ratio.js | columnActual": {
     "message": "Kuvasuhde (todellinen)"
@@ -703,6 +766,24 @@
   },
   "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
     "message": "Virheelliset kuvan kokotiedot: {url}"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | columnActual": {
+    "message": "Todellinen koko"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | columnDisplayed": {
+    "message": "Näkyvä koko"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | columnExpected": {
+    "message": "Odotettu koko"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | description": {
+    "message": "Kuvan luonnollisten mittojen pitäisi olla suhteutettu näytön kokoon ja pikselisuhteeseen, jotta kuva on mahdollisimman selkeä. [Lue lisää](https://web.dev/image-size-responsive)."
+  },
+  "lighthouse-core/audits/image-size-responsive.js | failureTitle": {
+    "message": "Näyttää väärän kokoiset kuvat"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | title": {
+    "message": "Näyttää oikean kokoiset kuvat"
   },
   "lighthouse-core/audits/installable-manifest.js | description": {
     "message": "Selain voi aktiivisesti suositella käyttäjille sovelluksesi lisäämistä aloitusnäytölle, mikä voi edistää aktivoitumista. [Lue lisää](https://web.dev/installable-manifest)."
@@ -727,6 +808,12 @@
   },
   "lighthouse-core/audits/is-on-https.js | title": {
     "message": "Käyttää HTTPS:ää"
+  },
+  "lighthouse-core/audits/legacy-javascript.js | description": {
+    "message": "Polyfill- ja transform-merkintöjen avulla vanhat selaimet voivat käyttää uusia JavaScript-ominaisuuksia. Monia ei kuitenkaan tarvita nykyaikaisissa selaimissa. Käytä JavaScript-paketissasi nykyaikaista käyttöönottostrategiaa, jossa havaitaan moduuli/ei-moduuli-ominaisuus, minkä avulla vähennetään nykyaikaisiin selaimiin lähetetyn koodin määrää mutta säilytetään silti vanhojen selaimien tuki. [Lue lisää](https://philipwalton.com/articles/deploying-es2015-code-in-production-today/)."
+  },
+  "lighthouse-core/audits/legacy-javascript.js | title": {
+    "message": "Vanha JavaScript"
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
     "message": "Nopea sivun lataus mobiiliverkon kautta varmistaa hyvän mobiilikäyttökokemuksen. [Lue lisää](https://web.dev/load-fast-enough-for-pwa)."
@@ -776,53 +863,44 @@
   "lighthouse-core/audits/manual/pwa-page-transitions.js | title": {
     "message": "Verkko ei estä sivujen välisiä siirtymiä"
   },
+  "lighthouse-core/audits/maskable-icon.js | description": {
+    "message": "Peitettävällä kuvakkeella varmistetaan, että kuva täyttää koko muodon ilman vaakapalkkien käyttöä, kun sovellusta asennetaan laitteelle. [Lue lisää](https://web.dev/maskable-icon/)."
+  },
+  "lighthouse-core/audits/maskable-icon.js | failureTitle": {
+    "message": "Teknisissä tiedoissa ei ole peitettävää kuvaketta"
+  },
+  "lighthouse-core/audits/maskable-icon.js | title": {
+    "message": "Teknisissä tiedoissa on peitettävä kuvake"
+  },
+  "lighthouse-core/audits/metrics/cumulative-layout-shift.js | description": {
+    "message": "Kumulatiivinen asettelumuutos mittaa näkymässä olevien elementtien liikettä. [Lue lisää](https://web.dev/cls)."
+  },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
     "message": "Arvioitu syöttöviive on millisekunteina annettu arvio siitä, kuinka kauan sovelluksellasi kestää vastata käyttäjän syötteeseen sivun lataamisen kiireisimmän, viiden sekunnin mittaisen jakson aikana. Jos viive on yli 50 ms, sovelluksesi voi toimia käyttäjien mielestä hitaasti. [Lue lisää](https://web.dev/estimated-input-latency)."
-  },
-  "lighthouse-core/audits/metrics/estimated-input-latency.js | title": {
-    "message": "Arvioitu syöttöviive"
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
     "message": "Ensimmäinen sisällön renderöinti kertoo, milloin ensimmäinen tekstikohde tai kuva renderöidään. [Lue lisää](https://web.dev/first-contentful-paint)."
   },
-  "lighthouse-core/audits/metrics/first-contentful-paint.js | title": {
-    "message": "Ensimmäinen sisällön renderöinti"
-  },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
     "message": "CPU:n ensimmäinen toimettomuusjakso kertoo, milloin sivun pääsäikeen tilanne sallii syötteiden käsittelyn.  [Lue lisää](https://web.dev/first-cpu-idle)."
-  },
-  "lighthouse-core/audits/metrics/first-cpu-idle.js | title": {
-    "message": "CPU:n ensimmäinen toimettomuusjakso"
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "Ensimmäinen merkityksellinen renderöinti kertoo, milloin sivun ensisijainen sisältö tulee näkyviin. [Lue lisää](https://web.dev/first-meaningful-paint)."
   },
-  "lighthouse-core/audits/metrics/first-meaningful-paint.js | title": {
-    "message": "Ensimmäinen merkityksellinen renderöinti"
-  },
   "lighthouse-core/audits/metrics/interactive.js | description": {
     "message": "Interaktiivisuutta edeltävä aika tarkoittaa aikaa, joka sivulla kestää siihen, että se on täysin interaktiivinen. [Lue lisää](https://web.dev/interactive)."
   },
-  "lighthouse-core/audits/metrics/interactive.js | title": {
-    "message": "Interaktiivisuutta edeltävä aika"
+  "lighthouse-core/audits/metrics/largest-contentful-paint.js | description": {
+    "message": "Suurimman sisällön renderöinti mittaa suurimman tekstikohteen tai kuvan renderöintiaikaa. [Lue lisää](https://web.dev/lighthouse-largest-contentful-paint)"
   },
   "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
-    "message": "Käyttäjiesi suurin mahdollinen ensimmäisen toiminnon viive on pisimmän tehtävän kesto millisekunneissa. [Lue lisää](https://developers.google.com/web/updates/2018/05/first-input-delay)."
-  },
-  "lighthouse-core/audits/metrics/max-potential-fid.js | title": {
-    "message": "Suurin mahdollinen ensimmäisen toiminnon viive"
+    "message": "Käyttäjien ensitoiminnon suurin mahdollinen viive on sama kuin pisimmän tehtävän kesto. [Lue lisää](https://web.dev/lighthouse-max-potential-fid)."
   },
   "lighthouse-core/audits/metrics/speed-index.js | description": {
     "message": "Nopeusindeksi kertoo, kuinka nopeasti sivun sisältö tulee näkyviin. [Lue lisää](https://web.dev/speed-index)."
   },
-  "lighthouse-core/audits/metrics/speed-index.js | title": {
-    "message": "Nopeusindeksi"
-  },
   "lighthouse-core/audits/metrics/total-blocking-time.js | description": {
-    "message": "Kaikkien FCP:n ja interaktiivisuutta edeltävän ajan väliset ajanjaksot yhteenlaskettuna, kun tehtävän pituus on yli 50 ms (ilmoitettu millisekunteina)"
-  },
-  "lighthouse-core/audits/metrics/total-blocking-time.js | title": {
-    "message": "Estoaika yhteensä"
+    "message": "Kaikkien FCP:n ja interaktiivisuutta edeltävän ajan väliset ajanjaksot yhteenlaskettuna, kun tehtävän pituus on yli 50 ms (ilmoitettu millisekunteina). [Lue lisää](https://web.dev/lighthouse-total-blocking-time)."
   },
   "lighthouse-core/audits/network-rtt.js | description": {
     "message": "Verkon meno-paluuajoilla (RTT) on suuri vaikutus suorituskykyyn. Jos RTT lähtöpaikkaan on korkea, se on merkki siitä, että käyttäjää lähellä olevien palvelimien suorituskyvyssä on parantamisen varaa. [Lue lisää](https://hpbn.co/primer-on-latency-and-bandwidth/)."
@@ -839,6 +917,9 @@
   "lighthouse-core/audits/offline-start-url.js | description": {
     "message": "Service worker auttaa tekemään verkkosovelluksesta luotettavan, jos verkko-olosuhteet ovat vaikeita ennustaa. [Lue lisää](https://web.dev/offline-start-url)."
   },
+  "lighthouse-core/audits/offline-start-url.js | errorLoading": {
+    "message": "Virhe, kun {url} ladattiin Service Workerissa, tuloksena tilakoodi {statusCode}"
+  },
   "lighthouse-core/audits/offline-start-url.js | failureTitle": {
     "message": "`start_url` ei vastaa 200-viestillä offline-tilassa"
   },
@@ -847,9 +928,6 @@
   },
   "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
     "message": "`start_url` ei ollut Lighthousen luettavissa luettelossa. Siksi oletimme, että `start_url` on dokumentin URL-osoite. Virheilmoitus: {manifestWarning}"
-  },
-  "lighthouse-core/audits/performance-budget.js | columnOverBudget": {
-    "message": "Ylittää budjetin"
   },
   "lighthouse-core/audits/performance-budget.js | description": {
     "message": "Pidä verkkopyyntöjen määrä ja koko tehokkuusbudjetissa määritettyjen tavoitteiden rajoissa. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
@@ -912,7 +990,7 @@
     "message": "Dokumentissa on kelvollinen `rel=canonical`"
   },
   "lighthouse-core/audits/seo/font-size.js | description": {
-    "message": "Alle 12 pikselin kirjasinkoot ovat liian pieniä luettavaksi ja edellyttävät mobiilivierailijoiden zoomaavan nipistämällä voidakseen lukea. Pyri siihen, että >60 % sivun tekstistä on ≥12 px. [Lue lisää](https://web.dev/font-size)."
+    "message": "Alle 12 pikselin fonttikoot ovat liian pieniä luettavaksi ja edellyttävät mobiilivierailijoiden zoomaavan nipistämällä voidakseen lukea. Pyri siihen, että >60 % sivun tekstistä on ≥12 px. [Lue lisää](https://web.dev/font-size)."
   },
   "lighthouse-core/audits/seo/font-size.js | displayValue": {
     "message": "{decimalProportion, number, extendedPercent} lukukelpoista tekstiä"
@@ -920,14 +998,11 @@
   "lighthouse-core/audits/seo/font-size.js | explanationViewport": {
     "message": "Teksti on lukukelvotonta, koska näkymän sisällönkuvauskenttää ei ole optimoitu mobiilinäytöille."
   },
-  "lighthouse-core/audits/seo/font-size.js | explanationWithDisclaimer": {
-    "message": "{decimalProportion, number, extendedPercent} tekstistä on liian pientä (perustuen {decimalProportionVisited, number, extendedPercent}:n näytteeseen)."
-  },
   "lighthouse-core/audits/seo/font-size.js | failureTitle": {
-    "message": "Dokumentissa ei käytetä lukukelpoisia kirjasinkokoja"
+    "message": "Dokumentissa ei käytetä lukukelpoisia fonttikokoja"
   },
   "lighthouse-core/audits/seo/font-size.js | title": {
-    "message": "Dokumentti käyttää lukukelpoisia kirjasinkokoja"
+    "message": "Dokumentti käyttää lukukelpoisia fonttikokoja"
   },
   "lighthouse-core/audits/seo/hreflang.js | description": {
     "message": "hreflang-linkit kertovat hakukoneille, mikä sivuversio niiden pitäisi lisätä tietyn kielen tai alueen hakutuloksiin. [Lue lisää](https://web.dev/hreflang)."
@@ -1089,19 +1164,19 @@
     "message": "Vähennä kolmannen osapuolen koodin vaikutusta"
   },
   "lighthouse-core/audits/third-party-summary.js | title": {
-    "message": "Kolmannen osapuolen käyttö"
+    "message": "Minimoi kolmannen osapuolen käyttö"
   },
-  "lighthouse-core/audits/time-to-first-byte.js | description": {
-    "message": "Ensimmäistä tavua edeltävä aika kertoo, kuinka kauan kestää, ennen kuin palvelimesi lähettää vastauksen. [Lue lisää](https://web.dev/time-to-first-byte)."
+  "lighthouse-core/audits/timing-budget.js | columnMeasurement": {
+    "message": "Arvo"
   },
-  "lighthouse-core/audits/time-to-first-byte.js | displayValue": {
-    "message": "Päädokumentti käytti {timeInMs, number, milliseconds} ms"
+  "lighthouse-core/audits/timing-budget.js | columnTimingMetric": {
+    "message": "Mittari"
   },
-  "lighthouse-core/audits/time-to-first-byte.js | failureTitle": {
-    "message": "Lyhennä palvelimen vastausaikoja (ensimmäistä tavua edeltävä aika)"
+  "lighthouse-core/audits/timing-budget.js | description": {
+    "message": "Aseta aikabudjetti, niin voit seurata sivustosi nopeutta. Kun sivusto toimii oikein, sen latausaika on lyhyt ja se vastaa käyttäjän syötteisiin nopeasti. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
   },
-  "lighthouse-core/audits/time-to-first-byte.js | title": {
-    "message": "Palvelimen vastausajat ovat lyhyitä (ensimmäistä tavua edeltävä aika)"
+  "lighthouse-core/audits/timing-budget.js | title": {
+    "message": "Aikabudjetti"
   },
   "lighthouse-core/audits/user-timings.js | columnDuration": {
     "message": "Kesto"
@@ -1129,6 +1204,9 @@
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | title": {
     "message": "Muodosta yhteydet pakollisiin kohteisiin etukäteen"
+  },
+  "lighthouse-core/audits/uses-rel-preconnect.js | tooManyPreconnectLinksWarning": {
+    "message": "Yhteyttä edeltäviä linkkejä löytyi enemmän kuin kaksi. Yhteyttä edeltäviä linkkejä on käytettävä säästeliäästi ja vain tärkeimpiin alkuperiin."
   },
   "lighthouse-core/audits/uses-rel-preload.js | crossoriginWarning": {
     "message": "Esilatauslinkki <link> löytyi osoitteelle {preloadURL}, mutta selain ei käyttänyt sitä. Varmista, että käytät eri lähteiden `crossorigin`-määritettä oikein."
@@ -1316,6 +1394,12 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Mobiiliystävällinen"
   },
+  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
+    "message": "Sivun lataus ei ehkä onnistu odotetusti, koska testi-URL ({requested}) ohjattiin uudelleen osoitteeseen {final}. Kokeile suoraan toista URL-osoitetta."
+  },
+  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
+    "message": "Sivu ei ehtinyt latautua loppuun aikarajan sisällä. Tuloksista voi puuttua osa."
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "Välimuistin käyttöikä"
   },
@@ -1325,14 +1409,23 @@
   "lighthouse-core/lib/i18n/i18n.js | columnName": {
     "message": "Nimi"
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnOverBudget": {
+    "message": "Ylittää budjetin"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnRequests": {
     "message": "Pyynnöt"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnResourceSize": {
+    "message": "Resurssin koko"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnResourceType": {
     "message": "Resurssin tyyppi"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnSize": {
     "message": "Koko"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnSource": {
+    "message": "Lähde"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnTimeSpent": {
     "message": "Käytetty aika"
@@ -1349,6 +1442,9 @@
   "lighthouse-core/lib/i18n/i18n.js | columnWastedMs": {
     "message": "Potentiaalinen säästö"
   },
+  "lighthouse-core/lib/i18n/i18n.js | cumulativeLayoutShiftMetric": {
+    "message": "Kumulatiivinen asettelun muutos"
+  },
   "lighthouse-core/lib/i18n/i18n.js | displayValueByteSavings": {
     "message": "Potentiaalinen säästö: {wastedBytes, number, bytes} kt"
   },
@@ -1358,11 +1454,32 @@
   "lighthouse-core/lib/i18n/i18n.js | documentResourceType": {
     "message": "Dokumentti"
   },
+  "lighthouse-core/lib/i18n/i18n.js | estimatedInputLatencyMetric": {
+    "message": "Arvioitu syöttöviive"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | firstCPUIdleMetric": {
+    "message": "CPU:n ensimmäinen toimettomuusjakso"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | firstContentfulPaintMetric": {
+    "message": "Ensimmäinen sisällön renderöinti"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | firstMeaningfulPaintMetric": {
+    "message": "Ensimmäinen merkityksellinen renderöinti"
+  },
   "lighthouse-core/lib/i18n/i18n.js | fontResourceType": {
-    "message": "Kirjasin"
+    "message": "Fontti"
   },
   "lighthouse-core/lib/i18n/i18n.js | imageResourceType": {
     "message": "Kuva"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | interactiveMetric": {
+    "message": "Interaktiivisuutta edeltävä aika"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | largestContentfulPaintMetric": {
+    "message": "Suurimman sisällön renderöinti"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | maxPotentialFIDMetric": {
+    "message": "Suurin mahdollinen ensimmäisen toiminnon viive"
   },
   "lighthouse-core/lib/i18n/i18n.js | mediaResourceType": {
     "message": "Media"
@@ -1379,11 +1496,17 @@
   "lighthouse-core/lib/i18n/i18n.js | seconds": {
     "message": "{timeInMs, number, seconds} s"
   },
+  "lighthouse-core/lib/i18n/i18n.js | speedIndexMetric": {
+    "message": "Nopeusindeksi"
+  },
   "lighthouse-core/lib/i18n/i18n.js | stylesheetResourceType": {
     "message": "Tyylisivu"
   },
   "lighthouse-core/lib/i18n/i18n.js | thirdPartyResourceType": {
     "message": "Kolmas osapuoli"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | totalBlockingTimeMetric": {
+    "message": "Estoaika yhteensä"
   },
   "lighthouse-core/lib/i18n/i18n.js | totalResourceType": {
     "message": "Yhteensä"
@@ -1448,11 +1571,38 @@
   "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
     "message": "Kriittisen polun enimmäisviive:"
   },
+  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
+    "message": "Kopioi JSON"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
+    "message": "Tumma teema päälle/pois"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
+    "message": "Laajennettu tulostus"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
+    "message": "Tulosta yhteenveto"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
+    "message": "Tallenna Gistinä"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
+    "message": "Tallenna HTML-muodossa"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
+    "message": "Tallenna JSON-tiedostona"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
+    "message": "Avaa katseluohjelmassa"
+  },
   "lighthouse-core/report/html/renderer/util.js | errorLabel": {
     "message": "Virhe!"
   },
   "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
     "message": "Raporttivirhe: ei tarkastustietoja"
+  },
+  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
+    "message": "Ilmoita ongelmasta"
   },
   "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
     "message": "Laboratoriodata"
@@ -1475,6 +1625,48 @@
   "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
     "message": "Hyväksytyt tarkastukset"
   },
+  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "Emuloitu työpöytä"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
+    "message": "Emuloitu Moto G4"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
+    "message": "Ei emulointia"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "Suorittimen/muistin teho"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "Suorittimen rajoittaminen"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
+    "message": "Kanava"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
+    "message": "Laite"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "Noutoaika"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "Verkon hidastaminen"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
+    "message": "Suoritusajan asetukset"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
+    "message": "Käyttäjäagentti (isäntä)"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "Käyttäjäagentti (verkko)"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
+    "message": "URL-osoite"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
+    "message": "Ei tietoa"
+  },
   "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
     "message": "Tiivistä koodinpätkä"
   },
@@ -1483,6 +1675,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
     "message": "Näytä kolmannen osapuolen resurssit"
+  },
+  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
+    "message": "Ympäristön tarjoama"
   },
   "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
     "message": "Lighthousen suorituksessa havaittiin ongelmia:"
@@ -1496,6 +1691,93 @@
   "lighthouse-core/report/html/renderer/util.js | warningHeader": {
     "message": "Varoitukset: "
   },
+  "stack-packs/packs/amp.js | efficient_animated_content": {
+    "message": "Käytä animoidun sisällön kanssa [amp-anim](https://amp.dev/documentation/components/amp-anim/)-ominaisuutta, joka minimoi suoritinkäytön, kun sisältö ei ole näytöllä."
+  },
+  "stack-packs/packs/amp.js | offscreen_images": {
+    "message": "Varmista, että käytät kuviin oikeanlaisia `amp-img`-tageja, jotka lykkäävät lataamista automaattisesti ensinäkymän ulkopuolella. [Lue lisää](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)."
+  },
+  "stack-packs/packs/amp.js | render_blocking_resources": {
+    "message": "Käytä [AMP-optimoijaa](https://github.com/ampproject/amp-toolbox/tree/master/packages/optimizer) ja muita työkaluja [AMP-asettelujen palvelinpuolen renderöintiin](https://amp.dev/documentation/guides-and-tutorials/optimize-and-measure/server-side-rendering/)."
+  },
+  "stack-packs/packs/amp.js | unminified_css": {
+    "message": "Lue [AMP-dokumentaatio](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/style_pages/) ja varmista, että kaikkia tyylejäsi tuetaan."
+  },
+  "stack-packs/packs/amp.js | uses_responsive_images": {
+    "message": "`amp-img`-elementti tukee `srcset`-attribuuttia, jolla määritetään käytettävä kuvasisältö näytön koon perusteella.  [Lue lisää](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/art_direction/)."
+  },
+  "stack-packs/packs/amp.js | uses_webp_images": {
+    "message": "Harkitse kaikkien `amp-img`-komponenttien näyttämistä WebP-muodoissa ja lisää sen lisäksi muita selaimia varten varavaihtoehto. [Lue lisää](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)."
+  },
+  "stack-packs/packs/angular.js | dom_size": {
+    "message": "Harkitse virtuaalivieritystä Component Dev Kitissä (CDK), jos laajoja listoja renderöidään. [Lue lisää](https://web.dev/virtualize-lists-with-angular-cdk/)."
+  },
+  "stack-packs/packs/angular.js | total_byte_weight": {
+    "message": "Minimoi JavaScript-nippujen koko [reittitason koodinjakamisella](https://web.dev/route-level-code-splitting-in-angular/). Harkitse myös sisällön tallentamista välimuistiin etukäteen [Angular-service workerilla](https://web.dev/precaching-with-the-angular-service-worker/)."
+  },
+  "stack-packs/packs/angular.js | unminified_warning": {
+    "message": "Jos käytät Angular CLI:tä, varmista että versiot luodaan tuotantotilassa. [Lue lisää](https://angular.io/guide/deployment#enable-runtime-production-mode)."
+  },
+  "stack-packs/packs/angular.js | unused_javascript": {
+    "message": "Jos käytät Angular CLI:tä, lisää tuotantoversioosi lähdekartat nippujen tarkistamista varten. [Lue lisää](https://angular.io/guide/deployment#inspect-the-bundles)."
+  },
+  "stack-packs/packs/angular.js | uses_rel_preload": {
+    "message": "Lataa reittejä ennalta navigoinnin nopeuttamiseksi. [Lue lisää](https://web.dev/route-preloading-in-angular/)."
+  },
+  "stack-packs/packs/angular.js | uses_responsive_images": {
+    "message": "Harkitse `BreakpointObserver` ‑avustajan käyttöä Component Dev Kitissä (CDK) kuvien raja-arvojen hallintaan. [Lue lisää](https://material.angular.io/cdk/layout/overview)."
+  },
+  "stack-packs/packs/magento.js | critical_request_chains": {
+    "message": "Jos et vielä kokoa JavaScript-sisältöä nipuiksi, harkitse[niputtajan (baler)](https://github.com/magento/baler) käyttöä."
+  },
+  "stack-packs/packs/magento.js | disable_bundling": {
+    "message": "Poista käytöstä Magenton sisäänrakennettu [JavaScriptin niputus ja pienennys](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html) ja harkitse sen sijaan [niputtajan](https://github.com/magento/baler/) käyttöä."
+  },
+  "stack-packs/packs/magento.js | font_display": {
+    "message": "Valitse `@font-display`, kun[määrität omia kirjasimia](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/css-topics/using-fonts.html)."
+  },
+  "stack-packs/packs/magento.js | offscreen_images": {
+    "message": "Muokkaa tuote- ja kuvastomalleja niin, että ne hyödyntävät verkkoalustan [lykätty lataus](https://web.dev/native-lazy-loading) ‑ominaisuutta."
+  },
+  "stack-packs/packs/magento.js | unminified_css": {
+    "message": "Ota kaupan kehittäjäasetuksista käyttöön vaihtoehto Pienennä CSS-tiedostot. [Lue lisää](https://devdocs.magento.com/guides/v2.3/performance-best-practices/configuration.html?itm_source=devdocs&itm_medium=search_page&itm_campaign=federated_search&itm_term=minify%20css%20files)."
+  },
+  "stack-packs/packs/magento.js | unminified_javascript": {
+    "message": "Minimoi kaikki JavaScript-sisältö [Terserillä](https://www.npmjs.com/package/terser) staattisen julkaisun vaiheesta ja poista sisäänrakennettu minimointiominaisuus käytöstä."
+  },
+  "stack-packs/packs/magento.js | unused_javascript": {
+    "message": "Poista käytöstä Magenton sisäänrakennettu [JavaScript-niputus](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html)."
+  },
+  "stack-packs/packs/magento.js | uses_optimized_images": {
+    "message": "Etsi [Magento Marketplacesta](https://marketplace.magento.com/catalogsearch/result/?q=optimize%20image) erilaisia kolmannen osapuolen laajennuksia kuvien optimointiin."
+  },
+  "stack-packs/packs/magento.js | uses_rel_preconnect": {
+    "message": "Preconnect- tai dns-prefetch-resurssivihjeitä voidaan lisätä [muuttamalla teeman asettelua](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  },
+  "stack-packs/packs/magento.js | uses_rel_preload": {
+    "message": "`<link rel=preload>`-tagit voidaan lisätä [muuttamalla teeman asettelua](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  },
+  "stack-packs/packs/magento.js | uses_webp_images": {
+    "message": "Etsi [Magento Marketplacesta](https://marketplace.magento.com/catalogsearch/result/?q=webp) erilaisia kolmannen osapuolen laajennuksia uusien kuvamuotojen hyödyntämiseksi."
+  },
+  "stack-packs/packs/react.js | dom_size": {
+    "message": "Harkitse windowing-kirjaston (esim. `react-window`) käyttöä minimoidaksesi DOM-säikeiden määrän, kun renderöit sivulla monia toistuvia elementtejä. [Lue lisää](https://web.dev/virtualize-long-lists-react-window/). Lisäksi [shouldComponentUpdate](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [PureComponent](https://reactjs.org/docs/react-api.html#reactpurecomponent) tai [React.memo](https://reactjs.org/docs/react-api.html#reactmemo) voi minimoida tarpeettomat uudelleenrenderöinnit ja [tehosteita voi ohittaa](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) vain tiettyjen riippuvuuksien muuttumiseen asti, jos parannat suoritusaikaista toimintaa Effect-koukulla."
+  },
+  "stack-packs/packs/react.js | redirects": {
+    "message": "Jos käytät React Routeria, minimoi `<Redirect>`-komponentin käyttö [reittinavigoinnissa](https://reacttraining.com/react-router/web/api/Redirect)."
+  },
+  "stack-packs/packs/react.js | unminified_css": {
+    "message": "Jos versiojärjestelmäsi kutistaa CSS-tiedostoja automaattisesti, varmista että käyttöönotto koskee sovelluksen tuotantoversiota. Voit tarkistaa tämän Reactin kehittäjätyökalut ‑laajennuksella. [Lue lisää](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
+  },
+  "stack-packs/packs/react.js | unminified_javascript": {
+    "message": "Jos versiojärjestelmäsi kutistaa JS-tiedostoja automaattisesti, varmista että käyttöönotto koskee sovelluksen tuotantoversiota. Voit tarkistaa tämän Reactin kehittäjätyökalut ‑laajennuksella. [Lue lisää](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
+  },
+  "stack-packs/packs/react.js | unused_javascript": {
+    "message": "Jos et vielä renderöi palvelinpuolella, [jaa JavaScript-niput osiin](https://web.dev/code-splitting-suspense/) – `React.lazy()` voi auttaa. Jaa muussa tapauksessa koodi osiin kolmannen osapuolen kirjastolla, esimerkiksi [loadable-components](https://www.smooth-code.com/open-source/loadable-components/docs/getting-started/)."
+  },
+  "stack-packs/packs/react.js | user_timings": {
+    "message": "Käytä React DevTools Profileria, joka käyttää React-sovellusliittymää, komponenttien renderöinnin mittaamiseen. [Lue lisää.](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
+  },
   "stack-packs/packs/wordpress.js | efficient_animated_content": {
     "message": "GIF kannattaa ehkä ladata palveluun, jonka avulla se voidaan upottaa HTML5-videona."
   },
@@ -1504,9 +1786,6 @@
   },
   "stack-packs/packs/wordpress.js | render_blocking_resources": {
     "message": "Monet WordPress-laajennukset voivat [tuoda tärkeää materiaalia sivun sisälle](https://wordpress.org/plugins/search/critical+css/) tai [lykätä vähemmän tärkeiden resurssien lataamista](https://wordpress.org/plugins/search/defer+css+javascript/). Huomaa, että näiden laajennusten tuomat optimoinnit voivat rikkoa teeman tai laajennusten toimintoja, joten sinun on todennäköisesti muutettava koodia."
-  },
-  "stack-packs/packs/wordpress.js | time_to_first_byte": {
-    "message": "Teemat, laajennukset ja palvelinasetukset vaikuttavat kaikki palvelimen vastausaikaan. Sinun kannattaa ehkä etsiä optimoidumpi teema, valita optimointilaajennus tai päivittää palvelimesi."
   },
   "stack-packs/packs/wordpress.js | total_byte_weight": {
     "message": "Sinun kannattaa ehkä näyttää postausluettelossa katkelmia (esim. more-tagin avulla), näyttää yhdellä sivulla vähemmän postauksia, jakaa pitkät postaukset usealle sivulle tai käyttää kommenttien lazy load ‑laajennusta."
@@ -1524,13 +1803,13 @@
     "message": "Sinun kannattaa ehkä poistaa tai vaihtaa toisiin [WordPress-laajennuksia](https://wordpress.org/plugins/), jotka lataavat sivulla käyttämätöntä JavaScriptiä. Etsi tarpeetonta JS:ää lisääviä laajennuksia [tutkimalla koodin testikattavuutta](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) Chromen DevToolsissa. Löydät syynä olevan teeman tai laajennuksen skriptin URL-osoitteen avulla. Etsi laajennuksia, joilla on monia skriptejä luettelossa ja paljon punaista koodin testikattavuudessa. Laajennuksen pitäisi lisätä skripti jonoon vain, jos sitä todella käytetään sivulla."
   },
   "stack-packs/packs/wordpress.js | uses_long_cache_ttl": {
-    "message": "Lue lisää [selaimen välimuistin käytöstä WordPressissä](https://codex.wordpress.org/WordPress_Optimization#Browser_Caching)."
+    "message": "Lue lisää [selaimen välimuistin käytöstä WordPressissä](https://wordpress.org/support/article/optimization/#browser-caching)."
   },
   "stack-packs/packs/wordpress.js | uses_optimized_images": {
     "message": "Harkitse [WordPressin kuvaoptimointilaajennusta](https://wordpress.org/plugins/search/optimize+images/), joka pakkaa kuvat mutta säilyttää niiden laadun."
   },
   "stack-packs/packs/wordpress.js | uses_responsive_images": {
-    "message": "Lataa kuvat suoraan [mediakirjastosta](https://codex.wordpress.org/Media_Library_Screen), jolloin oikeat kuvakoot ovat varmasti saatavilla, ja lisää ne kuvakirjastosta tai varmista oikeiden kuvakokojen käyttö kuva-widgetillä (myös responsiivisuuden raja-arvojen kohdalla). Älä käytä kuvia, joiden koko on `Full Size`, paitsi jos sivun koko on riittävä. [Lue lisää](https://codex.wordpress.org/Inserting_Images_into_Posts_and_Pages#Image_Size)."
+    "message": "Lataa kuvat suoraan [mediakirjastosta](https://wordpress.org/support/article/media-library-screen/), jolloin oikeat kuvakoot ovat varmasti saatavilla, ja lisää ne kuvakirjastosta tai varmista oikeiden kuvakokojen käyttö kuva-widgetillä (myös responsiivisuuden raja-arvojen kohdalla). Älä käytä kuvia, joiden koko on `Full Size`, paitsi jos sivun koko on riittävä. [Lue lisää](https://wordpress.org/support/article/inserting-images-into-posts-and-pages/)."
   },
   "stack-packs/packs/wordpress.js | uses_text_compression": {
     "message": "Voit ottaa tekstin pakkaamisen käyttöön palvelimen määrityksistä."

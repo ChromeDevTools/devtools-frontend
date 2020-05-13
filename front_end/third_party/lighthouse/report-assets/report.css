@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2017 Google Inc. All Rights Reserved.
+ * Copyright 2017 The Lighthouse Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,6 +51,7 @@
   --color-gray: #000000;
   --color-green-700: #018642;
   --color-green: #0CCE6B;
+  --color-orange-50: #FFF3E0;
   --color-orange-700: #D04900;
   --color-orange: #FFA400;
   --color-red-700: #EB0F00;
@@ -63,10 +64,10 @@
   --color-average: var(--color-orange);
   --color-fail-secondary: var(--color-red-700);
   --color-fail: var(--color-red);
+  --color-hover: var(--color-gray-50);
   --color-informative: var(--color-blue-900);
   --color-pass-secondary: var(--color-green-700);
   --color-pass: var(--color-green);
-  --color-hover: var(--color-gray-50);
 
   /* Component variables */
   --audit-description-padding-left: calc(var(--score-icon-size) + var(--score-icon-margin-left) + var(--score-icon-margin-right));
@@ -112,6 +113,7 @@
   --report-font-family-monospace: 'Roboto Mono', 'Menlo', 'dejavu sans mono', 'Consolas', 'Lucida Console', monospace;
   --report-font-family: Roboto, Helvetica, Arial, sans-serif;
   --report-font-size: 16px;
+  --report-monospace-font-size: calc(var(--report-font-size) * 0.85);
   --report-line-height: 24px;
   --report-min-width: 400px;
   --report-text-color-secondary: var(--color-gray-800);
@@ -128,7 +130,7 @@
   --scorescale-width: 18px;
   --section-padding-vertical: 12px;
   --snippet-background-color: var(--color-gray-50);
-  --snippet-color: var(--color-gray-800);
+  --snippet-color: #0938C2;
   --sparkline-height: 5px;
   --stackpack-padding-horizontal: 10px;
   --sticky-header-background-color: var(--report-background-color);
@@ -139,7 +141,10 @@
   --topbar-height: 32px;
   --topbar-logo-size: 24px;
   --topbar-padding: 0 8px;
-  --toplevel-warning-padding: 22px;
+  --toplevel-warning-background-color: var(--color-orange-50);
+  --toplevel-warning-message-text-color: #BD4200;
+  --toplevel-warning-padding: 18px;
+  --toplevel-warning-text-color: var(--report-text-color);
 
   /* SVGs */
   --plugin-icon-url-dark: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="%23FFFFFF"><path d="M0 0h24v24H0z" fill="none"/><path d="M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7 1.49 0 2.7 1.21 2.7 2.7V22H17c1.1 0 2-.9 2-2v-4h1.5c1.38 0 2.5-1.12 2.5-2.5S21.88 11 20.5 11z"/></svg>');
@@ -167,6 +172,7 @@
     /* Pallete */
     --color-gray-200: var(--color-gray-800);
     --color-gray-400: var(--color-gray-600);
+    --color-gray-700: var(--color-gray-400);
     --color-gray-50: #757575;
     --color-gray-600: var(--color-gray-500);
     --color-green-700: var(--color-green);
@@ -185,7 +191,11 @@
     --report-border-color-secondary: var(--color-gray-200);
     --report-text-color-secondary: var(--color-gray-400);
     --report-text-color: var(--color-gray-100);
+    --snippet-color: var(--color-cyan-500);
     --topbar-background-color: var(--color-gray);
+  	--toplevel-warning-background-color: #544B40;
+  	--toplevel-warning-message-text-color: var(--color-orange-700);
+	--toplevel-warning-text-color: var(--color-gray-100);
 
     /* SVGs */
     --plugin-icon-url: var(--plugin-icon-url-dark);
@@ -312,6 +322,10 @@
   display: none !important;
 }
 
+.lh-root pre {
+  margin: 0;
+}
+
 .lh-root details > summary {
   cursor: pointer;
 }
@@ -340,7 +354,8 @@
 .lh-audit-group a,
 .lh-category-header__description a,
 .lh-audit__description a,
-.lh-footer a {
+.lh-footer a,
+.lh-table-column--link a {
   color: var(--color-informative);
 }
 
@@ -407,9 +422,9 @@
 /* Node */
 .lh-node__snippet {
   font-family: var(--report-font-family-monospace);
-  color: var(--color-teal-600);
-  font-size: 12px;
-  line-height: 1.5em;
+  color: var(--snippet-color);
+  font-size: var(--report-monospace-font-size);
+  line-height: 20px;
 }
 
 /* Score */
@@ -490,6 +505,11 @@
 
 .lh-audit__title-and-text {
   flex: 1;
+}
+
+.lh-audit__title-and-text code {
+  color: var(--snippet-color);
+  font-size: var(--report-monospace-font-size);
 }
 
 /* Prepend display text with em dash separator. But not in Opportunities. */
@@ -859,8 +879,9 @@
 }
 
 /* Style the "over budget" columns red. */
-.lh-audit-group--budgets .lh-table tbody tr td:nth-child(4),
-.lh-audit-group--budgets .lh-table tbody tr td:nth-child(5){
+.lh-audit-group--budgets #performance-budget tbody tr td:nth-child(4),
+.lh-audit-group--budgets #performance-budget tbody tr td:nth-child(5),
+.lh-audit-group--budgets #timing-budget tbody tr td:nth-child(3) {
   color: var(--color-red-700);
 }
 
@@ -871,6 +892,7 @@
 
 .lh-audit-group--budgets .lh-table {
   width: 100%;
+  margin: 16px 0px 16px 0px;
 }
 
 .lh-audit-group--pwa-fast-reliable .lh-audit-group__header::before {
@@ -987,14 +1009,14 @@
 .lh-code {
   white-space: normal;
   margin-top: 0;
-  font-size: 85%;
+  font-size: var(--report-monospace-font-size);
 }
 
 .lh-warnings {
   --item-margin: calc(var(--report-line-height) / 6);
   color: var(--color-average);
   margin: var(--audit-padding-vertical) 0;
-  padding: calc(var(--audit-padding-vertical) / 2) var(--audit-padding-vertical);
+  padding: calc(var(--audit-padding-vertical) / 2) calc(var(--audit-description-padding-left));
 }
 .lh-warnings span {
   font-weight: bold;
@@ -1002,16 +1024,21 @@
 
 .lh-warnings--toplevel {
   --item-margin: calc(var(--header-line-height) / 4);
-  color: var(--report-text-color-secondary);
+  color: var(--toplevel-warning-text-color);
   margin-left: auto;
   margin-right: auto;
   max-width: calc(var(--report-width) - var(--category-padding) * 2);
-  background-color: var(--color-amber-50);
+  background-color: var(--toplevel-warning-background-color);
   padding: var(--toplevel-warning-padding);
+  border-radius: 8px;
+}
+
+.lh-warnings__msg {
+  color: var(--toplevel-warning-message-text-color);
+  margin: 0;
 }
 
 .lh-warnings ul {
-  padding-left: calc(var(--category-padding) * 2);
   margin: 0;
 }
 .lh-warnings li {
@@ -1064,13 +1091,12 @@
 .lh-gauge-base {
     opacity: 0.1;
     stroke: var(--circle-background);
-    stroke-width: var(--circle-border-width);
 }
 
 .lh-gauge-arc {
     fill: none;
     stroke: var(--circle-color);
-    stroke-width: var(--circle-border-width);
+    transform-origin: 50% 50%;
     animation: load-gauge var(--transition-length) ease forwards;
     animation-delay: 250ms;
 }
@@ -1134,7 +1160,6 @@
   text-decoration: none;
   padding: var(--score-container-padding);
 
-  --circle-border-width: 8;
   --transition-length: 1s;
 
   /* Contain the layout style paint & layers during animation*/
@@ -1333,8 +1358,13 @@
   padding-right: 0;
 }
 
+.lh-table tr {
+  vertical-align: baseline;
+}
+
 /* Looks unnecessary, but mostly for keeping the <th>s left-aligned */
 .lh-table-column--text,
+.lh-table-column--source-location,
 .lh-table-column--url,
 /* .lh-table-column--thumbnail, */
 /* .lh-table-column--empty,*/
@@ -1360,6 +1390,10 @@
 
 .lh-table-column--url {
   min-width: 250px;
+}
+
+.lh-table-column--text {
+  min-width: 80px;
 }
 
 /* Keep columns narrow if they follow the URL column */
@@ -1402,6 +1436,14 @@
 
 .lh-text__url > a:hover {
   text-decoration: underline dotted #999;
+}
+
+.lh-sub-rows:not(:first-child) .lh-sub-row {
+  margin-left: 20px;
+  color: var(--color-gray-700);
+}
+.lh-sub-row {
+  margin-bottom: 0;
 }
 
 /* Chevron
@@ -1507,3 +1549,5 @@
   75% { opacity: 1; }
   100% { opacity: 1;  filter: drop-shadow(1px 0px 1px #aaa) drop-shadow(0px 2px 4px hsla(206, 6%, 25%, 0.15)); pointer-events: auto; }
 }
+
+/*# sourceURL=report-styles.css */

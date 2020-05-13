@@ -357,7 +357,7 @@ export class LighthousePanel extends UI.Panel.Panel {
       emulationModel.deviceOutlineSetting().set(true);
 
       for (const device of Emulation.EmulatedDevices.EmulatedDevicesList.instance().standard()) {
-        if (device.title === 'Nexus 5X') {
+        if (device.title === 'Moto G4') {
           emulationModel.emulate(Emulation.DeviceModeModel.Type.Device, device, device.modes[0], 1);
         }
       }

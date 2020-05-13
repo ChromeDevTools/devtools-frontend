@@ -17,6 +17,33 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "Atribūti `[aria-*]` atbilst savām lomām"
   },
+  "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
+    "message": "Atbalsta tehnoloģijas, piemēram, ekrāna lasītāji, darbojas nekonsekventi, kad `aria-hidden=\"true\"` ir iestatīts dokumentam `<body>`. [Uzziniet vairāk](https://web.dev/aria-hidden-body/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-body.js | failureTitle": {
+    "message": "`[aria-hidden=\"true\"]` ir dokumentā `<body>`"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-body.js | title": {
+    "message": "`[aria-hidden=\"true\"]` nav dokumentā `<body>`"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-focus.js | description": {
+    "message": "Fokusējami pēcteči `[aria-hidden=\"true\"]` elementā novērš to interaktīvo elementu pieejamību atbalsta tehnoloģiju, piemēram, ekrāna lasītāju, lietotājiem. [Uzziniet vairāk](https://web.dev/aria-hidden-focus/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-focus.js | failureTitle": {
+    "message": "`[aria-hidden=\"true\"]` elementi satur fokusējamus pēctečus"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-focus.js | title": {
+    "message": "`[aria-hidden=\"true\"]` elementos nav fokusējamu pēcteču"
+  },
+  "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
+    "message": "Ja ievades laukam nav pieejama nosaukuma, ekrāna lasītāji nolasa to ar vispārīgu nosaukumu, padarot to nelietojamu ekrāna lasītāju lietotājiem. [Uzziniet vairāk](https://web.dev/aria-input-field-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
+    "message": "ARIA ievades laukiem nav pieejamu nosaukumu"
+  },
+  "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
+    "message": "ARIA ievades laukiem ir pieejami nosaukumi"
+  },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "Dažām ARIA lomām ir obligāti atribūti, kas ekrāna lasītājiem norāda elementa statusu. [Uzziniet vairāk](https://web.dev/aria-required-attr/)."
   },
@@ -53,6 +80,15 @@
   "lighthouse-core/audits/accessibility/aria-roles.js | title": {
     "message": "Atribūta `[role]` vērtības ir derīgas"
   },
+  "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
+    "message": "Ja pārslēgšanas laukam nav pieejama nosaukuma, ekrāna lasītāji nolasa to ar vispārīgu nosaukumu, padarot to nelietojamu ekrāna lasītāju lietotājiem. [Uzziniet vairāk](https://web.dev/aria-toggle-field-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
+    "message": "ARIA pārslēgšanas laukiem nav pieejamu nosaukumu"
+  },
+  "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
+    "message": "ARIA pārslēgšanas laukiem ir pieejami nosaukumi"
+  },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "Palīgtehnoloģijas, piemēram, ekrāna lasītāji, nevar interpretēt ARIA atribūtus ar nederīgām vērtībām. [Uzziniet vairāk](https://web.dev/aria-valid-attr-value/)."
   },
@@ -70,15 +106,6 @@
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr.js | title": {
     "message": "Atribūti `[aria-*]` ir derīgi un pareizi uzrakstīti"
-  },
-  "lighthouse-core/audits/accessibility/audio-caption.js | description": {
-    "message": "Izmantojot subtitrus, nedzirdīgi lietotāji vai lietotāji ar dzirdes traucējumiem var piekļūt audio elementiem, kuri nodrošina būtisku informāciju, piemēram, runātājus, sarunu saturu, kā arī citu informāciju, kas nav sarunas. [Uzziniet vairāk](https://web.dev/audio-caption/)."
-  },
-  "lighthouse-core/audits/accessibility/audio-caption.js | failureTitle": {
-    "message": "Elementos `<audio>` trūkst elementu `<track>` ar parametru `[kind=\"captions\"]`"
-  },
-  "lighthouse-core/audits/accessibility/audio-caption.js | title": {
-    "message": "Elementi `<audio>` ietver elementu `<track>` ar parametru `[kind=\"captions\"]`"
   },
   "lighthouse-core/audits/accessibility/axe-audit.js | failingElementsHeader": {
     "message": "Nederīgi elementi"
@@ -114,10 +141,10 @@
     "message": "Ja definīciju saraksti nav marķēti pareizi, ekrāna lasītāju atskaņotais saturs var būt mulsinošs vai neprecīzs. [Uzziniet vairāk](https://web.dev/definition-list/)."
   },
   "lighthouse-core/audits/accessibility/definition-list.js | failureTitle": {
-    "message": "Atribūtā `<dl>` nav ietvertas tikai pareizā secībā sakārtotas elementu `<dt>` un `<dd>` grupas, elements `<script>` vai elements `<template>`"
+    "message": "Atribūtā `<dl>` nav ietvertas tikai pareizā secībā sakārtotas elementu `<dt>` un `<dd>` grupas, elements `<script>`, `<template>` vai `<div>`."
   },
   "lighthouse-core/audits/accessibility/definition-list.js | title": {
-    "message": "Atribūtā `<dl>` ir ietvertas tikai pareizā secībā sakārtotas elementu `<dt>` un `<dd>` grupas, elements `<script>` vai elements `<template>`"
+    "message": "Atribūtā `<dl>` ir ietvertas tikai pareizā secībā sakārtotas elementu`<dt>` un `<dd>` grupas, elements `<script>`, `<template>` vai `<div>`."
   },
   "lighthouse-core/audits/accessibility/dlitem.js | description": {
     "message": "Definīciju saraksta vienumiem (`<dt>` un `<dd>`) ir jābūt ietvertiem vecākelementā `<dl>`, lai ekrāna lasītāji tos varētu pareizi atskaņot. [Uzziniet vairāk](https://web.dev/dlitem/)."
@@ -137,14 +164,32 @@
   "lighthouse-core/audits/accessibility/document-title.js | title": {
     "message": "Dokumentā ir ietverts elements `<title>`"
   },
-  "lighthouse-core/audits/accessibility/duplicate-id.js | description": {
-    "message": "ID atribūta vērtībai ir jābūt unikālai, lai palīgtehnoloģijas neizlaistu citas instances. [Uzziniet vairāk](https://web.dev/duplicate-id/)."
+  "lighthouse-core/audits/accessibility/duplicate-id-active.js | description": {
+    "message": "Visiem fokusējamiem elementiem ir jābūt unikālam `id`, lai tie būtu redzami atbalsta tehnoloģijām. [Uzziniet vairāk](https://web.dev/duplicate-id-active/)."
   },
-  "lighthouse-core/audits/accessibility/duplicate-id.js | failureTitle": {
-    "message": "Atribūti `[id]` lapā nav unikāli"
+  "lighthouse-core/audits/accessibility/duplicate-id-active.js | failureTitle": {
+    "message": "`[id]` atribūti aktīvos, fokusējamos elementos nav unikāli"
   },
-  "lighthouse-core/audits/accessibility/duplicate-id.js | title": {
-    "message": "Atribūti `[id]` lapā ir unikāli"
+  "lighthouse-core/audits/accessibility/duplicate-id-active.js | title": {
+    "message": "`[id]` atribūti aktīvos, fokusējamos elementos ir unikāli"
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id-aria.js | description": {
+    "message": "ARIA ID vērtībai ir jābūt unikālai, lai atbalsta tehnoloģijas neizlaistu citas instances. [Uzziniet vairāk](https://web.dev/duplicate-id-aria/)."
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id-aria.js | failureTitle": {
+    "message": "ARIA identifikatori nav unikāli"
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id-aria.js | title": {
+    "message": "ARIA identifikatori ir unikāli"
+  },
+  "lighthouse-core/audits/accessibility/form-field-multiple-labels.js | description": {
+    "message": "Veidlapas laukus ar vairākām iezīmēm var nepareizi nolasīt atbalsta tehnoloģijas, piemēram, ekrāna lasītāji, kuri izmanto pirmo, pēdējo vai visas iezīmes. [Uzziniet vairāk](https://web.dev/form-field-multiple-labels/)."
+  },
+  "lighthouse-core/audits/accessibility/form-field-multiple-labels.js | failureTitle": {
+    "message": "Veidlapas laukiem ir vairākas iezīmes"
+  },
+  "lighthouse-core/audits/accessibility/form-field-multiple-labels.js | title": {
+    "message": "Nevienā veidlapas laukā nav vairāku iezīmju"
   },
   "lighthouse-core/audits/accessibility/frame-title.js | description": {
     "message": "Ekrāna lasītāji izmanto ietvaru nosaukumus, lai raksturotu ietvaru saturu. [Uzziniet vairāk](https://web.dev/frame-title/)."
@@ -154,6 +199,15 @@
   },
   "lighthouse-core/audits/accessibility/frame-title.js | title": {
     "message": "Elementiem `<frame>` vai `<iframe>` ir nosaukums"
+  },
+  "lighthouse-core/audits/accessibility/heading-order.js | description": {
+    "message": "Virsraksti, kas ir sakārtoti pareizi un neizlaižot līmeņus, atveido lapas semantisko struktūru, tādējādi atvieglojot navigāciju un izpratni atbalsta tehnoloģiju lietotājiem. [Uzziniet vairāk](https://web.dev/heading-order/)."
+  },
+  "lighthouse-core/audits/accessibility/heading-order.js | failureTitle": {
+    "message": "Virsrakstu elementi nav atveidoti secīgi dilstošā secībā"
+  },
+  "lighthouse-core/audits/accessibility/heading-order.js | title": {
+    "message": "Virsrakstu elementi ir atveidoti secīgi dilstošā secībā"
   },
   "lighthouse-core/audits/accessibility/html-has-lang.js | description": {
     "message": "Ja lapā nav norādīts atribūts “lang”, ekrāna lasītājā tiek pieņemts, ka lapas saturs ir noklusējuma valodā, kuru lietotājs izvēlējās, iestatot ekrāna lasītāju. Ja lapas saturs nav noklusējuma valodā, iespējams, ekrāna lasītājs tekstu neatskaņos pareizi. [Uzziniet vairāk](https://web.dev/html-has-lang/)."
@@ -350,6 +404,12 @@
   "lighthouse-core/audits/bootup-time.js | title": {
     "message": "JavaScript izpildes laiks"
   },
+  "lighthouse-core/audits/byte-efficiency/duplicated-javascript.js | description": {
+    "message": "Noņemiet lielus, dublētus JavaScript moduļus no pakām, lai samazinātu nevajadzīgu baitu apjomu, ko patērē tīkla darbība. "
+  },
+  "lighthouse-core/audits/byte-efficiency/duplicated-javascript.js | title": {
+    "message": "Noņemiet dublētos moduļus JavaScript pakās"
+  },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | description": {
     "message": "Lieli GIF attēli nav efektīvi animēta satura rādīšanai. Animācijām ieteicams izmantot MPEG4/WebM video, bet statiskiem attēliem — PNG/WebP, nevis GIF, lai samazinātu tīkla lietojumu (baitos). [Uzziniet vairāk](https://web.dev/efficient-animated-content)."
   },
@@ -399,7 +459,7 @@
     "message": "Noņemt neizmantoto CSS"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "Noņemiet neizmantoto JavaScript, lai samazinātu tīkla aktivitātes izmantoto baitu apjomu."
+    "message": "Noņemiet neizmantoto JavaScript, lai samazinātu tīkla aktivitātes izmantoto baitu apjomu. [Uzziniet vairāk](https://web.dev/remove-unused-code/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
     "message": "Noņemiet neizmantoto JavaScript"
@@ -459,7 +519,7 @@
     "message": "{itemCount,plural, =1{Atrasta 1 ķēde}zero{Atrastas # ķēdes}one{Atrasta # ķēde}other{Atrastas # ķēdes}}"
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
-    "message": "Kritisko pieprasījumu dziļuma samazināšana"
+    "message": "Novērsiet kritisko pieprasījumu ķēdes"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "Pārtraukšana/brīdinājums"
@@ -491,6 +551,15 @@
   "lighthouse-core/audits/dobetterweb/appcache-manifest.js | title": {
     "message": "Netiek izmantota lietojumprogrammas kešatmiņa"
   },
+  "lighthouse-core/audits/dobetterweb/charset.js | description": {
+    "message": "Ir nepieciešama rakstzīmju kodēšanas deklarācija. To var ietvert tagā <meta> HTML koda pirmajos 1024 baitos vai satura veida HTTP atbildes galvenē. [Uzziniet vairāk](https://www.w3.org/International/questions/qa-html-encoding-declarations)."
+  },
+  "lighthouse-core/audits/dobetterweb/charset.js | failureTitle": {
+    "message": "Trūkst rakstzīmju kopuma deklarācijas, vai HTML kodā tā ir ietverta par tālu"
+  },
+  "lighthouse-core/audits/dobetterweb/charset.js | title": {
+    "message": "Pareizi definēta rakstzīmju kopa"
+  },
   "lighthouse-core/audits/dobetterweb/doctype.js | description": {
     "message": "Ja norādāt DOCTYPE, pārlūkprogramma nevar pārslēgties uz saderības režīmu. [Uzziniet vairāk](https://web.dev/doctype)."
   },
@@ -512,9 +581,6 @@
   "lighthouse-core/audits/dobetterweb/doctype.js | title": {
     "message": "Lapā ir HTML DOCTYPE"
   },
-  "lighthouse-core/audits/dobetterweb/dom-size.js | columnElement": {
-    "message": "Elements"
-  },
   "lighthouse-core/audits/dobetterweb/dom-size.js | columnStatistic": {
     "message": "Statistikas dati"
   },
@@ -522,7 +588,7 @@
     "message": "Vērtība"
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | description": {
-    "message": "Pārlūkprogrammas inženieri iesaka, lai lapā nebūtu vairāk par 1500 DOM elementiem. Ieteicams, lai koka dziļums nepārsniegtu 32 elementus un 60 bērnelementus/vecākelementus. Liels DOM elements var palielināt atmiņas lietojumu, radīt ilgākus [stila aprēķinus](https://developers.google.com/web/fundamentals/performance/rendering/reduce-the-scope-and-complexity-of-style-calculations) un izraisīt [izkārtojuma plūduma sakārtošanu](https://developers.google.com/speed/articles/reflow). [Uzziniet vairāk](https://web.dev/dom-size)."
+    "message": "Liels DOM koks palielina atmiņas lietojumu, paildzina [stila aprēķinus](https://developers.google.com/web/fundamentals/performance/rendering/reduce-the-scope-and-complexity-of-style-calculations) un izraisa dārgu [izkārtojuma plūduma sakārtošanu](https://developers.google.com/speed/articles/reflow). [Uzziniet vairāk](https://web.dev/dom-size)."
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | displayValue": {
     "message": "{itemCount,plural, =1{1 elements}zero{# elementu}one{# elements}other{# elementi}}"
@@ -542,11 +608,8 @@
   "lighthouse-core/audits/dobetterweb/dom-size.js | title": {
     "message": "Nepieļauj pārāk lielus DOM izmērus"
   },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnRel": {
-    "message": "Rel"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnTarget": {
-    "message": "Mērķis"
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnFailingAnchors": {
+    "message": "Nederīgi enkuri"
   },
   "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
     "message": "Pievienojiet parametru `rel=\"noopener\"` vai `rel=\"noreferrer\"` jebkurām ārējām saitēm, lai uzlabotu veiktspēju un novērstu drošības ievainojamību. [Uzziniet vairāk](https://web.dev/external-anchors-use-rel-noopener)."
@@ -582,7 +645,7 @@
     "message": "Lietotājiem, kuriem ir lēns savienojums, ārējie skripti, kas ir dinamiski ievadīti, izmantojot elementu “`document.write()`”, var ievērojami aizkavēt lapas ielādi. [Uzziniet vairāk](https://web.dev/no-document-write)."
   },
   "lighthouse-core/audits/dobetterweb/no-document-write.js | failureTitle": {
-    "message": "Tiek izmantots elements “`document.write()`”"
+    "message": "Izvairieties no: `document.write()`"
   },
   "lighthouse-core/audits/dobetterweb/no-document-write.js | title": {
     "message": "Netiek izmantots elements “`document.write()`”"
@@ -704,6 +767,24 @@
   "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
     "message": "Nederīga attēla lieluma informācija: {url}"
   },
+  "lighthouse-core/audits/image-size-responsive.js | columnActual": {
+    "message": "Faktiskie izmēri"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | columnDisplayed": {
+    "message": "Attēlojuma izmēri"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | columnExpected": {
+    "message": "Paredzamie izmēri"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | description": {
+    "message": "Lai attēls būtu pēc iespējas skaidrāks, tā sākotnējiem izmēriem ir jābūt proporcionāliem attēlojuma lielumam un pikseļu attiecībai. [Uzziniet vairāk](https://web.dev/image-size-responsive)."
+  },
+  "lighthouse-core/audits/image-size-responsive.js | failureTitle": {
+    "message": "Tiek rādīti neatbilstošu izmēru attēli"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | title": {
+    "message": "Tiek rādīti attēli ar atbilstošiem izmēriem"
+  },
   "lighthouse-core/audits/installable-manifest.js | description": {
     "message": "Pārlūkprogrammās var aktīvi rādīt lietotājiem uzvednes ar ierosinājumu pievienot jūsu lietotni sākuma ekrānam. Tādējādi var izdoties palielināt iesaisti. [Uzziniet vairāk](https://web.dev/installable-manifest)."
   },
@@ -727,6 +808,12 @@
   },
   "lighthouse-core/audits/is-on-https.js | title": {
     "message": "Tiek izmantots protokols HTTPS"
+  },
+  "lighthouse-core/audits/legacy-javascript.js | description": {
+    "message": "Polyfill elementi un pārveidošana ļauj mantotajās pārlūkprogrammās izmantot jaunas JavaScript funkcijas. Tomēr modernās pārlūkprogrammās daudzi no tiem nav nepieciešami. JavaScript pakai pielāgojiet modernu skripta izvietošanas stratēģiju, izmantojot moduļa/bez moduļa funkcijas noteikšanu, lai samazinātu uz modernām pārlūkprogrammām nosūtīta koda apjomu, vienlaikus nodrošinot atbalstu mantotām pārlūkprogrammām. [Uzziniet vairāk](https://philipwalton.com/articles/deploying-es2015-code-in-production-today/)."
+  },
+  "lighthouse-core/audits/legacy-javascript.js | title": {
+    "message": "Mantotais JavaScript kods"
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
     "message": "Ātra lapas ielāde, izmantojot mobilo datu tīklu, nodrošina labu pieredzi mobilo ierīču lietotājiem. [Uzziniet vairāk](https://web.dev/load-fast-enough-for-pwa)."
@@ -776,53 +863,44 @@
   "lighthouse-core/audits/manual/pwa-page-transitions.js | title": {
     "message": "Tīklā nerodas sajūta, ka lēna ielāde bloķētu pārejas starp lapām"
   },
+  "lighthouse-core/audits/maskable-icon.js | description": {
+    "message": "Maskējama ikona nodrošina, ka attēls aizpilda visu formu, nepielāgojot to standarta platumam, kad lietotne tiek instalēta ierīcē. [Uzziniet vairāk](https://web.dev/maskable-icon/)."
+  },
+  "lighthouse-core/audits/maskable-icon.js | failureTitle": {
+    "message": "Manifestam nav maskējamas ikonas"
+  },
+  "lighthouse-core/audits/maskable-icon.js | title": {
+    "message": "Manifestā ir maskējama ikona"
+  },
+  "lighthouse-core/audits/metrics/cumulative-layout-shift.js | description": {
+    "message": "Kopējā izkārtojuma nobīde norāda redzamo elementu kustību skatvietā. [Uzziniet vairāk](https://web.dev/cls)."
+  },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
     "message": "Paredzētais ievades latentums aptuveni norāda, pēc cik ilga laika (milisekundēs) uz lietotāja ievadi reaģēs jūsu lietotne aizņemtākajā lapas ielādes 5 s periodā. Ja latentums pārsniedz 50 ms, iespējams, lietotājiem liksies, ka jūsu lietotne strādā ar traucējumiem. [Uzziniet vairāk](https://web.dev/estimated-input-latency)."
-  },
-  "lighthouse-core/audits/metrics/estimated-input-latency.js | title": {
-    "message": "Paredzētais ievades latentums"
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
     "message": "Metrika \"Pirmais satura marķējums\" atzīmē laiku, kad tiek marķēts pirmais teksts vai attēls. [Uzziniet vairāk](https://web.dev/first-contentful-paint)."
   },
-  "lighthouse-core/audits/metrics/first-contentful-paint.js | title": {
-    "message": "Pirmais saturīgais satura atveidojums"
-  },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
     "message": "Metrika “Pirmā CPU dīkstāve” norāda laiku, kad lapas galvenais pavediens ir kļuvis pietiekami mazs, lai varētu apstrādāt ievadi.  [Uzziniet vairāk](https://web.dev/first-cpu-idle)."
-  },
-  "lighthouse-core/audits/metrics/first-cpu-idle.js | title": {
-    "message": "Pirmā CPU dīkstāve"
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "Metrika “Pirmais nozīmīgais satura atveidojums” norāda, kad kļūst redzams lapas galvenais saturs. [Uzziniet vairāk](https://web.dev/first-meaningful-paint)."
   },
-  "lighthouse-core/audits/metrics/first-meaningful-paint.js | title": {
-    "message": "Pirmais nozīmīgais satura atveidojums"
-  },
   "lighthouse-core/audits/metrics/interactive.js | description": {
     "message": "Laiks līdz interaktivitātei ir laika apjoms, kas nepieciešams, lai lapa kļūtu pilnībā interaktīva. [Uzziniet vairāk](https://web.dev/interactive)."
   },
-  "lighthouse-core/audits/metrics/interactive.js | title": {
-    "message": "Laiks līdz interaktivitātei"
+  "lighthouse-core/audits/metrics/largest-contentful-paint.js | description": {
+    "message": "Lielākais satura marķējums norāda laiku, kurā tiek atveidots apjomīgākais teksts vai attēls. [Uzziniet vairāk](https://web.dev/lighthouse-largest-contentful-paint)."
   },
   "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
-    "message": "Iespējamā maksimālā pirmās ievades aizkave, ar ko jūsu lietotāji var saskarties, ir ilgākā uzdevuma ilgums milisekundēs. [Uzziniet vairāk](https://developers.google.com/web/updates/2018/05/first-input-delay)."
-  },
-  "lighthouse-core/audits/metrics/max-potential-fid.js | title": {
-    "message": "Maks. potenciālā pirmā ievades aizkave"
+    "message": "Iespējamā maksimālā pirmās ievades aizkave, ar ko jūsu lietotāji var saskarties, ir ilgākā uzdevuma ilgums. [Uzziniet vairāk](https://web.dev/lighthouse-max-potential-fid)."
   },
   "lighthouse-core/audits/metrics/speed-index.js | description": {
     "message": "Ātruma rādītājs norāda, cik ātri tiek parādīts lapas saturs. [Uzziniet vairāk](https://web.dev/speed-index)."
   },
-  "lighthouse-core/audits/metrics/speed-index.js | title": {
-    "message": "Ātruma rādītājs"
-  },
   "lighthouse-core/audits/metrics/total-blocking-time.js | description": {
-    "message": "Visu laika periodu summa (no PSM līdz “Laiks līdz interaktivitātei”), kad uzdevuma ilgums pārsniedz 50 ms (izteikts milisekundēs)."
-  },
-  "lighthouse-core/audits/metrics/total-blocking-time.js | title": {
-    "message": "Kopējais bloķēšanas laiks"
+    "message": "Visu laika periodu summa (no PSM līdz “Laiks līdz interaktivitātei”), kad uzdevuma ilgums pārsniedz 50 ms (izteikts milisekundēs). [Uzziniet vairāk](https://web.dev/lighthouse-total-blocking-time)."
   },
   "lighthouse-core/audits/network-rtt.js | description": {
     "message": "Tīkla aprites laiks (RTT) spēcīgi ietekmē veiktspēju. Ja aprites laiks uz sākumpunktu ir augsts, tas norāda, ka serveru veiktspēja, kas atrodas tuvāk lietotājam, var tikt uzlabota. [Uzziniet vairāk](https://hpbn.co/primer-on-latency-and-bandwidth/)."
@@ -839,6 +917,9 @@
   "lighthouse-core/audits/offline-start-url.js | description": {
     "message": "Izmantojot pakalpojumu skriptu, varat nodrošināt uzticamu tīmekļa lietotnes darbību neparedzamos tīkla apstākļos. [Uzziniet vairāk](https://web.dev/offline-start-url)."
   },
+  "lighthouse-core/audits/offline-start-url.js | errorLoading": {
+    "message": "Ielādējot {url} pakalpojumu skriptā, radās kļūda. Statusa kods: {statusCode}."
+  },
   "lighthouse-core/audits/offline-start-url.js | failureTitle": {
     "message": "`start_url` bezsaistē nereaģē ar statusa kodu 200"
   },
@@ -847,9 +928,6 @@
   },
   "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
     "message": "Rīkā Lighthouse neizdevās no manifesta nolasīt `start_url`. Tāpēc tika pieņemts, ka `start_url` ir dokumenta URL. Kļūdas ziņojums: “{manifestWarning}”."
-  },
-  "lighthouse-core/audits/performance-budget.js | columnOverBudget": {
-    "message": "Pārsniegts budžets"
   },
   "lighthouse-core/audits/performance-budget.js | description": {
     "message": "Saglabājiet tīkla pieprasījumu daudzumu un lielumu zem mērķiem, kas noteikti sniegtajā izpildes budžetā. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
@@ -919,9 +997,6 @@
   },
   "lighthouse-core/audits/seo/font-size.js | explanationViewport": {
     "message": "Teksts nav salasāms, jo mobilo ierīču ekrāniem nav optimizēts skatvietas metatags."
-  },
-  "lighthouse-core/audits/seo/font-size.js | explanationWithDisclaimer": {
-    "message": "{decimalProportion, number, extendedPercent} ir pārāk mazs teksta izmērs (pamatojoties uz {decimalProportionVisited, number, extendedPercent} paraugu)."
   },
   "lighthouse-core/audits/seo/font-size.js | failureTitle": {
     "message": "Dokumentā netiek izmantoti salasāmi fonta izmēri"
@@ -1089,19 +1164,19 @@
     "message": "Samaziniet trešo pušu koda ietekmi"
   },
   "lighthouse-core/audits/third-party-summary.js | title": {
-    "message": "Trešo pušu lietojums"
+    "message": "Samaziniet trešās puses koda lietojumu"
   },
-  "lighthouse-core/audits/time-to-first-byte.js | description": {
-    "message": "Metrika “Laiks līdz pirmajam baitam” norāda laiku, kad jūsu serveris nosūta atbildi. [Uzziniet vairāk](https://web.dev/time-to-first-byte)."
+  "lighthouse-core/audits/timing-budget.js | columnMeasurement": {
+    "message": "Mērījums"
   },
-  "lighthouse-core/audits/time-to-first-byte.js | displayValue": {
-    "message": "Saknes dokumentam nepieciešamais laiks: {timeInMs, number, milliseconds} ms"
+  "lighthouse-core/audits/timing-budget.js | columnTimingMetric": {
+    "message": "Metriskā sistēma"
   },
-  "lighthouse-core/audits/time-to-first-byte.js | failureTitle": {
-    "message": "Servera atbildes laika samazināšana (TTFB)"
+  "lighthouse-core/audits/timing-budget.js | description": {
+    "message": "Iestatiet laika budžetu, lai uzraudzītu savas vietnes veiktspēju. Vietnes ar labu veiktspēju tiek ātri ielādētas un ātri reaģē uz lietotāju ievades notikumiem. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
   },
-  "lighthouse-core/audits/time-to-first-byte.js | title": {
-    "message": "Servera atbildes laiks ir mazs (TTFB)"
+  "lighthouse-core/audits/timing-budget.js | title": {
+    "message": "Laika budžets"
   },
   "lighthouse-core/audits/user-timings.js | columnDuration": {
     "message": "Ilgums"
@@ -1129,6 +1204,9 @@
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | title": {
     "message": "Veiciet iepriekšēju pieslēgšanu obligātajiem sākumpunktiem"
+  },
+  "lighthouse-core/audits/uses-rel-preconnect.js | tooManyPreconnectLinksWarning": {
+    "message": "Tika atrastas vairāk nekā divas iepriekšējas pieslēgšanas saites. Iepriekšējas pieslēgšanas saites ir jāizmanto ierobežoti un tikai svarīgākajos avotos."
   },
   "lighthouse-core/audits/uses-rel-preload.js | crossoriginWarning": {
     "message": "Saitei “{preloadURL}” tika atrasts iepriekšējas ielādes parametrs <link>, taču pārlūkprogramma to neizmantoja. Pārbaudiet, vai pareizi izmantojat atribūtu “`crossorigin`”."
@@ -1316,6 +1394,12 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Piemērota mobilajām ierīcēm"
   },
+  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
+    "message": "Iespējams, lapa netiek ielādēta, kā paredzēts, jo jūsu testa URL ({requested}) tika novirzīts uz: {final}. Mēģiniet tieši testēt otro URL."
+  },
+  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
+    "message": "Lapa tika ielādēta pārāk lēni, lai ielāde tiktu pabeigta noteiktajā laika ierobežojumā. Rezultāti var būt nepilnīgi."
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "Kešatmiņas TTL vērtība"
   },
@@ -1325,14 +1409,23 @@
   "lighthouse-core/lib/i18n/i18n.js | columnName": {
     "message": "Vārds"
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnOverBudget": {
+    "message": "Pārsniegts budžets"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnRequests": {
     "message": "Pieprasījumi"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnResourceSize": {
+    "message": "Resursa izmēri"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnResourceType": {
     "message": "Resursu veids"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnSize": {
     "message": "Izmērs"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnSource": {
+    "message": "Avots"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnTimeSpent": {
     "message": "Iztērētais laiks"
@@ -1349,6 +1442,9 @@
   "lighthouse-core/lib/i18n/i18n.js | columnWastedMs": {
     "message": "Potenciālie ietaupījumi"
   },
+  "lighthouse-core/lib/i18n/i18n.js | cumulativeLayoutShiftMetric": {
+    "message": "Kopējā izkārtojuma nobīde"
+  },
   "lighthouse-core/lib/i18n/i18n.js | displayValueByteSavings": {
     "message": "Potenciālais ietaupījums: {wastedBytes, number, bytes} KB"
   },
@@ -1358,11 +1454,32 @@
   "lighthouse-core/lib/i18n/i18n.js | documentResourceType": {
     "message": "Dokuments"
   },
+  "lighthouse-core/lib/i18n/i18n.js | estimatedInputLatencyMetric": {
+    "message": "Paredzētais ievades latentums"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | firstCPUIdleMetric": {
+    "message": "Pirmā CPU dīkstāve"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | firstContentfulPaintMetric": {
+    "message": "Pirmais saturīgais satura atveidojums"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | firstMeaningfulPaintMetric": {
+    "message": "Pirmais nozīmīgais satura atveidojums"
+  },
   "lighthouse-core/lib/i18n/i18n.js | fontResourceType": {
     "message": "Fonts"
   },
   "lighthouse-core/lib/i18n/i18n.js | imageResourceType": {
     "message": "Attēls"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | interactiveMetric": {
+    "message": "Laiks līdz interaktivitātei"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | largestContentfulPaintMetric": {
+    "message": "Lielākais satura marķējums"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | maxPotentialFIDMetric": {
+    "message": "Maks. potenciālā pirmā ievades aizkave"
   },
   "lighthouse-core/lib/i18n/i18n.js | mediaResourceType": {
     "message": "Multivide"
@@ -1379,11 +1496,17 @@
   "lighthouse-core/lib/i18n/i18n.js | seconds": {
     "message": "{timeInMs, number, seconds} s"
   },
+  "lighthouse-core/lib/i18n/i18n.js | speedIndexMetric": {
+    "message": "Ātruma rādītājs"
+  },
   "lighthouse-core/lib/i18n/i18n.js | stylesheetResourceType": {
     "message": "Stilu lapa"
   },
   "lighthouse-core/lib/i18n/i18n.js | thirdPartyResourceType": {
     "message": "Trešā puse"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | totalBlockingTimeMetric": {
+    "message": "Kopējais bloķēšanas laiks"
   },
   "lighthouse-core/lib/i18n/i18n.js | totalResourceType": {
     "message": "Kopā"
@@ -1448,11 +1571,38 @@
   "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
     "message": "Maksimālais kritiskais ceļa latentums:"
   },
+  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
+    "message": "Kopēt JSON"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
+    "message": "Pārslēgt tumšo motīvu"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
+    "message": "Drukājamā kopija izvērsta"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
+    "message": "Drukāt kopsavilkumu"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
+    "message": "Saglabāt kā Gist"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
+    "message": "Saglabāt kā HTML"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
+    "message": "Saglabāt kā JSON"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
+    "message": "Atvērt skatītājā"
+  },
   "lighthouse-core/report/html/renderer/util.js | errorLabel": {
     "message": "Kļūda!"
   },
   "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
     "message": "Pārskata kļūda: nav pārbaudes informācijas"
+  },
+  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
+    "message": "Iesniegt problēmu"
   },
   "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
     "message": "Laboratorijas dati"
@@ -1475,6 +1625,48 @@
   "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
     "message": "Izpildītās pārbaudes"
   },
+  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "Emulēts dators"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
+    "message": "Emulēts tālrunis Moto G4"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
+    "message": "Nav emulācijas"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "Centrālā procesora/atmiņas jauda"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "Centrālā procesora ierobežošana"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
+    "message": "Kanāls"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
+    "message": "Ierīce"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "Izgūšanas laiks"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "Tīkla ierobežošana"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
+    "message": "Izpildlaika iestatījumi"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
+    "message": "Lietotāja aģents (saimniekdators)"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "Lietotāja aģents (tīkls)"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
+    "message": "URL"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
+    "message": "Nezināms"
+  },
   "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
     "message": "Sakļaut fragmentu"
   },
@@ -1483,6 +1675,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
     "message": "Parādīt trešās puses resursus"
+  },
+  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
+    "message": "Nodrošināts atbilstoši videi"
   },
   "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
     "message": "Radās problēmas, kas ietekmēja šo Lighthouse palaišanu:"
@@ -1496,6 +1691,93 @@
   "lighthouse-core/report/html/renderer/util.js | warningHeader": {
     "message": "Brīdinājumi: "
   },
+  "stack-packs/packs/amp.js | efficient_animated_content": {
+    "message": "Animētam saturam izmantojiet komponentu [amp-anim](https://amp.dev/documentation/components/amp-anim/), lai samazinātu centrālā procesora lietojumu, kamēr saturs nav redzams ekrānā."
+  },
+  "stack-packs/packs/amp.js | offscreen_images": {
+    "message": "Pārbaudiet, vai tiek izmantoti derīgi `amp-img` tagi attēliem, kuriem tiek automātiski veikta lēna ielāde ārpus pirmās skatvietas. [Uzziniet vairāk](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)."
+  },
+  "stack-packs/packs/amp.js | render_blocking_resources": {
+    "message": "Izmantojiet tādus rīkus kā [AMP Optimizer](https://github.com/ampproject/amp-toolbox/tree/master/packages/optimizer), lai [servera pusē renderētu AMP izkārtojumus](https://amp.dev/documentation/guides-and-tutorials/optimize-and-measure/server-side-rendering/)."
+  },
+  "stack-packs/packs/amp.js | unminified_css": {
+    "message": "Skatiet [AMP dokumentāciju](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/style_pages/), lai pārliecinātos, vai visi jūsu stili tiek atbalstīti."
+  },
+  "stack-packs/packs/amp.js | uses_responsive_images": {
+    "message": "Elements `amp-img` atbalsta atribūtu `srcset`, lai varētu norādīt, kurus attēlu līdzekļus izmantot atkarībā no attēla izmēra.  [Uzziniet vairāk](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/art_direction/)."
+  },
+  "stack-packs/packs/amp.js | uses_webp_images": {
+    "message": "Apsveriet iespēju attēlot visus `amp-img` komponentus WebP formātos un norādīt piemērotu atkāpšanās formātu citām pārlūkprogrammām. [Uzziniet vairāk](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)."
+  },
+  "stack-packs/packs/angular.js | dom_size": {
+    "message": "Ja tiek renderēti ļoti lieli saraksti, apsveriet iespēju izmantot virtuālo ritināšanu ar komponentu izstrādes komplektu (Component Dev Kit — CDK). [Uzziniet vairāk](https://web.dev/virtualize-lists-with-angular-cdk/)."
+  },
+  "stack-packs/packs/angular.js | total_byte_weight": {
+    "message": "Lietojiet [koda dalīšanu maršruta līmenī](https://web.dev/route-level-code-splitting-in-angular/), lai samazinātu JavaScript paku lielumu. Apsveriet arī iespēju iepriekš saglabāt līdzekļus kešatmiņā, izmantojot [Angular pakalpojumu skriptu](https://web.dev/precaching-with-the-angular-service-worker/)."
+  },
+  "stack-packs/packs/angular.js | unminified_warning": {
+    "message": "Ja izmantojat Angular CLI, būvējumi jāģenerē produkcijas režīmā. [Uzziniet vairāk](https://angular.io/guide/deployment#enable-runtime-production-mode)."
+  },
+  "stack-packs/packs/angular.js | unused_javascript": {
+    "message": "Ja izmantojat Angular CLI, iekļaujiet produkcijas būvējumā avota kartes, lai pārbaudītu pakas. [Uzziniet vairāk](https://angular.io/guide/deployment#inspect-the-bundles)."
+  },
+  "stack-packs/packs/angular.js | uses_rel_preload": {
+    "message": "Iepriekš ielādējiet maršrutus, lai paātrinātu navigāciju. [Uzziniet vairāk](https://web.dev/route-preloading-in-angular/)."
+  },
+  "stack-packs/packs/angular.js | uses_responsive_images": {
+    "message": "Lai pārvaldītu attēlu robežvērtības, varat izmantot utilītprogrammu `BreakpointObserver`, kas ir pieejama komponentu izstrādes komplektā (Component Dev Kit — CDK). [Uzziniet vairāk](https://material.angular.io/cdk/layout/overview)."
+  },
+  "stack-packs/packs/magento.js | critical_request_chains": {
+    "message": "Ja negrupējat JavaScript līdzekļus, apsveriet iespēju izmantot programmu [baler](https://github.com/magento/baler)."
+  },
+  "stack-packs/packs/magento.js | disable_bundling": {
+    "message": "Atspējojiet Magento iebūvēto [JavaScript grupēšanu un samazināšanu](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html) un apsveriet iespēju izmantot programmu [baler](https://github.com/magento/baler/)."
+  },
+  "stack-packs/packs/magento.js | font_display": {
+    "message": "[Definējot pielāgotus fontus](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/css-topics/using-fonts.html), norādiet mainīgo `@font-display`."
+  },
+  "stack-packs/packs/magento.js | offscreen_images": {
+    "message": "Apsveriet iespēju modificēt produktu un katalogu veidnes, lai izmantotu tīmekļa platformas [lēnas ielādes](https://web.dev/native-lazy-loading) funkciju."
+  },
+  "stack-packs/packs/magento.js | unminified_css": {
+    "message": "Veikala izstrādātāja iestatījumos iespējojiet opciju Minify CSS Files (Samazināt CSS failus). [Uzziniet vairāk](https://devdocs.magento.com/guides/v2.3/performance-best-practices/configuration.html?itm_source=devdocs&itm_medium=search_page&itm_campaign=federated_search&itm_term=minify%20css%20files)."
+  },
+  "stack-packs/packs/magento.js | unminified_javascript": {
+    "message": "Varat izmantot rīkkopu [Terser](https://www.npmjs.com/package/terser), lai samazinātu visus JavaScript līdzekļus no statiskas satura izvietošanas un atspējotu iebūvēto samazināšanas funkciju."
+  },
+  "stack-packs/packs/magento.js | unused_javascript": {
+    "message": "Atspējojiet Magento iebūvēto [JavaScript grupēšanu](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html)."
+  },
+  "stack-packs/packs/magento.js | uses_optimized_images": {
+    "message": "Veikalā [Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=optimize%20image) varat atrast dažādus trešo pušu paplašinājumus attēlu optimizācijai."
+  },
+  "stack-packs/packs/magento.js | uses_rel_preconnect": {
+    "message": "Varat pievienot norādes par iepriekšēju pieslēgšanu vai DNS sākotnējo datu iegūšanas resursu, [modificējot motīva izkārtojumu](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  },
+  "stack-packs/packs/magento.js | uses_rel_preload": {
+    "message": "Varat pievienot `<link rel=preload>` tagus, [modificējot motīva izkārtojumu](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  },
+  "stack-packs/packs/magento.js | uses_webp_images": {
+    "message": "Veikalā [Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=webp) varat atrast dažādus trešo pušu paplašinājumus jaunāku attēlu formātu izmantošanai."
+  },
+  "stack-packs/packs/react.js | dom_size": {
+    "message": "Ja lapā renderējat daudzus atkārtotus elementus, apsveriet iespēju izmantot logošanas bibliotēku, piemēram, `react-window`, lai samazinātu izveidoto DOM mezglu skaitu. [Uzziniet vairāk](https://web.dev/virtualize-long-lists-react-window/). Ja izmantojat Effect aizķeri izpildlaika veiktspējas uzlabošanai, samaziniet lieku atkārtotu renderēšanu, izmantojot [shouldComponentUpdate](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [PureComponent](https://reactjs.org/docs/react-api.html#reactpurecomponent) vai [React.memo](https://reactjs.org/docs/react-api.html#reactmemo) un [izlaišanas efektus](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) tikai līdz noteiktu atkarību maiņas brīdim."
+  },
+  "stack-packs/packs/react.js | redirects": {
+    "message": "Ja izmantojat bibliotēku React Router, samaziniet komponenta `<Redirect>` lietojumu [maršrutu navigācijai](https://reacttraining.com/react-router/web/api/Redirect)."
+  },
+  "stack-packs/packs/react.js | unminified_css": {
+    "message": "Ja būvējuma sistēmā CSS faili tiek automātiski samazināti, pārbaudiet, vai ir izvietots jūsu lietojumprogrammas produkcijas būvējums. To var pārbaudīt, izmantojot paplašinājumu React Developer Tools. [Uzziniet vairāk](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
+  },
+  "stack-packs/packs/react.js | unminified_javascript": {
+    "message": "Ja būvējuma sistēmā JavaScript faili tiek automātiski samazināti, pārbaudiet, vai ir izvietots jūsu lietojumprogrammas produkcijas būvējums. To var pārbaudīt, izmantojot paplašinājumu React Developer Tools. [Uzziniet vairāk](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
+  },
+  "stack-packs/packs/react.js | unused_javascript": {
+    "message": "Ja neveicat renderēšanu servera pusē, [sadaliet JavaScript pakas](https://web.dev/code-splitting-suspense/), izmantojot `React.lazy()`. Pretējā gadījumā sadaliet kodu, izmantojot trešās puses bibliotēku, piemēram, [loadable-components](https://www.smooth-code.com/open-source/loadable-components/docs/getting-started/)."
+  },
+  "stack-packs/packs/react.js | user_timings": {
+    "message": "Varat mērīt komponentu renderēšanas veiktspēju ar spraudni React DevTools Profiler, kurā tiek izmantots Profiler API. [Uzziniet vairāk.](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
+  },
   "stack-packs/packs/wordpress.js | efficient_animated_content": {
     "message": "Apsveriet iespēju augšupielādēt GIF attēlu pakalpojumā, kuru varēs izmantot, lai iegultu GIF attēlu kā HTML5 videoklipu."
   },
@@ -1504,9 +1786,6 @@
   },
   "stack-packs/packs/wordpress.js | render_blocking_resources": {
     "message": "Ir vairāki WordPress spraudņi, kas var palīdzēt [iekļaut būtiskus līdzekļus](https://wordpress.org/plugins/search/critical+css/) vai [atlikt mazāk svarīgus resursus](https://wordpress.org/plugins/search/defer+css+javascript/). Ņemiet vērā, ka šo spraudņu nodrošinātā optimizācija var traucēt funkciju darbībai jūsu motīvā vai spraudņos, tādēļ, visticamāk, jums būs jāveic koda izmaiņas."
-  },
-  "stack-packs/packs/wordpress.js | time_to_first_byte": {
-    "message": "Motīvi, spraudņi un servera specifikācijas ietekmē servera atbildes laiku. Apsveriet iespēju atrast optimizētāku motīvu, rūpīgi izvēlēties optimizācijas spraudni un/vai jaunināt serveri."
   },
   "stack-packs/packs/wordpress.js | total_byte_weight": {
     "message": "Apsveriet iespēju rādīt fragmentus ziņu sarakstos (piemēram, izmantojot tagu “more”), samazināt attiecīgajā lapā rādāmo ziņu skaitu, sadalīt garas ziņas vairākās lapās vai izmantot spraudni, lai atliktu komentāru ielādi."
@@ -1524,13 +1803,13 @@
     "message": "Ieteicams samazināt vai mainīt tādu [WordPress spraudņu](https://wordpress.org/plugins/) skaitu, kuri ielādē nelietotu JavaScript kodu jūsu lapā. Lai identificētu spraudņus, kuri pievieno lieku JS kodu, mēģiniet izpildīt [koda pārklājumu](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage), izmantojot Chrome DevTools. Saistīto motīvu/spraudni varat identificēt skripta vietrādī URL. Meklējiet spraudņus, kuriem sarakstā ir daudz skriptu ar daudz sarkanām atzīmēm koda pārklājumā. Spraudnim ir jāievieto rindā skripts tikai tad, ja tas faktiski tiek izmantots lapā."
   },
   "stack-packs/packs/wordpress.js | uses_long_cache_ttl": {
-    "message": "Uzziniet par [pārlūkprogrammas datu saglabāšanu kešatmiņā programmatūrā WordPress](https://codex.wordpress.org/WordPress_Optimization#Browser_Caching)."
+    "message": "Uzziniet par [pārlūkprogrammas datu saglabāšanu kešatmiņā programmatūrā WordPress](https://wordpress.org/support/article/optimization/#browser-caching)."
   },
   "stack-packs/packs/wordpress.js | uses_optimized_images": {
     "message": "Ieteicams izmantot [attēlu optimizācijas WordPress spraudni](https://wordpress.org/plugins/search/optimize+images/), kas saspiež attēlus, vienlaikus saglabājot kvalitāti."
   },
   "stack-packs/packs/wordpress.js | uses_responsive_images": {
-    "message": "Tieši augšupielādējiet attēlus, izmantojot [multivides bibliotēku](https://codex.wordpress.org/Media_Library_Screen), lai nodrošinātu nepieciešamo attēlu lielumu pieejamību. Pēc tam ievietojiet attēlus no multivides bibliotēkas vai izmantojiet attēlu logrīku, lai tiktu izmantoti optimāli attēlu lielumi (tostarp reaģējošām robežvērtībām paredzētie). Neizmantojiet `Full Size` attēlus, ja to izmēri neatbilst to lietojumam. [Uzziniet vairāk](https://codex.wordpress.org/Inserting_Images_into_Posts_and_Pages#Image_Size)."
+    "message": "Tieši augšupielādējiet attēlus, izmantojot [multivides bibliotēku](https://wordpress.org/support/article/media-library-screen/), lai nodrošinātu nepieciešamo attēlu lielumu pieejamību. Pēc tam ievietojiet attēlus no multivides bibliotēkas vai izmantojiet attēlu logrīku, lai tiktu izmantoti optimāli attēlu lielumi (tostarp reaģējošām robežvērtībām paredzētie). Neizmantojiet `Full Size` attēlus, ja to izmēri neatbilst to lietojumam. [Uzziniet vairāk](https://wordpress.org/support/article/inserting-images-into-posts-and-pages/)."
   },
   "stack-packs/packs/wordpress.js | uses_text_compression": {
     "message": "Varat iespējot teksta saspiešanu tīmekļa servera konfigurācijā."

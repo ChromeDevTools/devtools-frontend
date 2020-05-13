@@ -17,6 +17,33 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "`[aria-*]` 屬性與其角色相符"
   },
+  "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
+    "message": "在 `<body>` 文件上設定 `aria-hidden=\"true\"` 時，輔助技術 (例如螢幕閱讀器) 無法一致地進行作業。[瞭解詳情](https://web.dev/aria-hidden-body/)。"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-body.js | failureTitle": {
+    "message": "`<body>` 文件中出現 `[aria-hidden=\"true\"]`"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-body.js | title": {
+    "message": "`<body>` 文件中並未出現 `[aria-hidden=\"true\"]`"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-focus.js | description": {
+    "message": "`[aria-hidden=\"true\"]` 元素中的可聚焦子系會禁止輔助技術 (例如螢幕閱讀器) 的使用者存取這些互動元素。[瞭解詳情](https://web.dev/aria-hidden-focus/)。"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-focus.js | failureTitle": {
+    "message": "`[aria-hidden=\"true\"]` 元素包含可聚焦的子系"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-focus.js | title": {
+    "message": "`[aria-hidden=\"true\"]` 元素不包含可聚焦的子系"
+  },
+  "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
+    "message": "如果沒有可解讀的輸入欄位名稱，螢幕閱讀器只會讀出通用名稱，這樣仰賴螢幕閱讀器的使用者就無法知道這個輸入欄位的用途。[瞭解詳情](https://web.dev/aria-input-field-name/)。"
+  },
+  "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
+    "message": "ARIA 輸入欄位沒有可解讀的名稱"
+  },
+  "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
+    "message": "ARIA 輸入欄位具有可解讀的名稱"
+  },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "部分 ARIA 角色的必要屬性會向螢幕閱讀器的使用者說明元素狀態。[瞭解詳情](https://web.dev/aria-required-attr/)。"
   },
@@ -53,6 +80,15 @@
   "lighthouse-core/audits/accessibility/aria-roles.js | title": {
     "message": "`[role]` 具備有效的值"
   },
+  "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
+    "message": "如果沒有可解讀的切換欄位名稱，螢幕閱讀器只會讀出通用名稱，這樣仰賴螢幕閱讀器的使用者就無法知道這個切換欄位的用途。[瞭解詳情](https://web.dev/aria-toggle-field-name/)。"
+  },
+  "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
+    "message": "ARIA 切換欄位沒有可解讀的名稱"
+  },
+  "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
+    "message": "ARIA 切換欄位具有可解讀的名稱"
+  },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "輔助技術 (例如螢幕閱讀器) 無法解讀數值無效的 ARIA 屬性。[瞭解詳情](https://web.dev/aria-valid-attr-value/)。"
   },
@@ -70,15 +106,6 @@
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr.js | title": {
     "message": "`[aria-*]` 屬性有效且拼字正確"
-  },
-  "lighthouse-core/audits/accessibility/audio-caption.js | description": {
-    "message": "字幕可提供說話者身分、說話內容等關鍵資訊以及其他非口語資訊，方便失聰或聽障使用者使用音訊元素。[瞭解詳情](https://web.dev/audio-caption/)。"
-  },
-  "lighthouse-core/audits/accessibility/audio-caption.js | failureTitle": {
-    "message": "`<audio>` 元素缺少帶有 `[kind=\"captions\"]` 的 `<track>` 元素。"
-  },
-  "lighthouse-core/audits/accessibility/audio-caption.js | title": {
-    "message": "`<audio>` 元素包含帶有 `[kind=\"captions\"]` 的 `<track>` 元素"
   },
   "lighthouse-core/audits/accessibility/axe-audit.js | failingElementsHeader": {
     "message": "未通過稽核的元素"
@@ -114,10 +141,10 @@
     "message": "如果定義清單的標記不正確，螢幕閱讀器可能會輸出令人混淆或不正確的內容。[瞭解詳情](https://web.dev/definition-list/)。"
   },
   "lighthouse-core/audits/accessibility/definition-list.js | failureTitle": {
-    "message": "`<dl>` 所含項目不只有排序正確的 `<dt>` 和 `<dd>` 群組、`<script>` 或 `<template>` 元素。"
+    "message": "`<dl>` 並非只包含排序正確的 `<dt>` 和 `<dd>` 群組，以及 `<script>`、`<template>` 或 `<div>` 元素。"
   },
   "lighthouse-core/audits/accessibility/definition-list.js | title": {
-    "message": "`<dl>` 所含項目只有排序正確的 `<dt>` 和 `<dd>` 群組、`<script>` 或 `<template>` 元素。"
+    "message": "`<dl>` 只包含排序正確的 `<dt>` 和 `<dd>` 群組，以及 `<script>`、`<template>` 或 `<div>` 元素。"
   },
   "lighthouse-core/audits/accessibility/dlitem.js | description": {
     "message": "定義清單項目 (`<dt>` 和 `<dd>`) 必須納入在父項 `<dl>` 元素中，才能確保螢幕閱讀器正確朗讀這些項目。[瞭解詳情](https://web.dev/dlitem/)。"
@@ -137,14 +164,32 @@
   "lighthouse-core/audits/accessibility/document-title.js | title": {
     "message": "文件具有 `<title>` 元素"
   },
-  "lighthouse-core/audits/accessibility/duplicate-id.js | description": {
-    "message": "ID 屬性的值不得重複，以免輔助技術忽略其他重複的值。[瞭解詳情](https://web.dev/duplicate-id/)。"
+  "lighthouse-core/audits/accessibility/duplicate-id-active.js | description": {
+    "message": "所有可聚焦的元素都必須擁有專屬的 `id`，以確保輔助技術可查看這些元素。[瞭解詳情](https://web.dev/duplicate-id-active/)。"
   },
-  "lighthouse-core/audits/accessibility/duplicate-id.js | failureTitle": {
-    "message": "網頁中的 `[id]` 屬性重複"
+  "lighthouse-core/audits/accessibility/duplicate-id-active.js | failureTitle": {
+    "message": "已啟用的可聚焦元素有重複的 `[id]` 屬性"
   },
-  "lighthouse-core/audits/accessibility/duplicate-id.js | title": {
-    "message": "網頁中的 `[id]` 屬性沒有重複"
+  "lighthouse-core/audits/accessibility/duplicate-id-active.js | title": {
+    "message": "已啟用的可聚焦元素沒有重複的 `[id]` 屬性"
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id-aria.js | description": {
+    "message": "ARIA ID 的值不得重複，以免輔助技術忽略其他重複的值。[瞭解詳情](https://web.dev/duplicate-id-aria/)。"
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id-aria.js | failureTitle": {
+    "message": "ARIA ID 重複"
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id-aria.js | title": {
+    "message": "沒有重複的 ARIA ID"
+  },
+  "lighthouse-core/audits/accessibility/form-field-multiple-labels.js | description": {
+    "message": "如果表單欄位含有多個標籤，可能會造成螢幕閱讀器等輔助技術無法判斷該讀出第一個、最後一個或所有標籤。[瞭解詳情](https://web.dev/form-field-multiple-labels/)。"
+  },
+  "lighthouse-core/audits/accessibility/form-field-multiple-labels.js | failureTitle": {
+    "message": "表單欄位包含多個標籤"
+  },
+  "lighthouse-core/audits/accessibility/form-field-multiple-labels.js | title": {
+    "message": "沒有任何表單欄位包含多個標籤"
   },
   "lighthouse-core/audits/accessibility/frame-title.js | description": {
     "message": "螢幕閱讀器需使用頁框標題才能說明頁框內容。[瞭解詳情](https://web.dev/frame-title/)。"
@@ -154,6 +199,15 @@
   },
   "lighthouse-core/audits/accessibility/frame-title.js | title": {
     "message": "`<frame>` 或 `<iframe>` 元素包含名稱"
+  },
+  "lighthouse-core/audits/accessibility/heading-order.js | description": {
+    "message": "排序正確且未略過層級的標題可傳達網頁的語意結構，讓使用者在運用輔助技術時更容易瀏覽及理解。[瞭解詳情](https://web.dev/heading-order/)。"
+  },
+  "lighthouse-core/audits/accessibility/heading-order.js | failureTitle": {
+    "message": "標題元素未依遞減順序顯示"
+  },
+  "lighthouse-core/audits/accessibility/heading-order.js | title": {
+    "message": "標題元素已依遞減順序顯示"
   },
   "lighthouse-core/audits/accessibility/html-has-lang.js | description": {
     "message": "如果網頁未指定 [lang] 屬性，螢幕閱讀器會假設網頁採用的是使用者在設定螢幕閱讀器時所選擇的預設語言。如果網頁實際採用的語言並非預設語言，那麼螢幕閱讀器可能無法正確朗讀網頁文字。[瞭解詳情](https://web.dev/html-has-lang/)。"
@@ -350,6 +404,12 @@
   "lighthouse-core/audits/bootup-time.js | title": {
     "message": "JavaScript 執行時間"
   },
+  "lighthouse-core/audits/byte-efficiency/duplicated-javascript.js | description": {
+    "message": "從套件中移除重複的大型 JavaScript 模組，盡量避免網路活動消耗不必要的流量。 "
+  },
+  "lighthouse-core/audits/byte-efficiency/duplicated-javascript.js | title": {
+    "message": "請移除 JavaScript 套件中重複的模組"
+  },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | description": {
     "message": "使用大型 GIF 檔案呈現動畫內容會降低網路傳輸效率。建議你改用 MPEG4/WebM 影片格式呈現動畫內容，或是使用 PNG/WebP 格式顯示靜態圖片，以減少網路傳輸的資料量。[瞭解詳情](https://web.dev/efficient-animated-content)"
   },
@@ -399,7 +459,7 @@
     "message": "移除未使用的 CSS"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "移除未使用的 JavaScript，減少網路活動消耗的流量。"
+    "message": "移除未使用的 JavaScript，減少網路活動消耗的流量。[瞭解詳情](https://web.dev/remove-unused-code/)。"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
     "message": "移除未使用的 JavaScript"
@@ -459,7 +519,7 @@
     "message": "{itemCount,plural, =1{找到 1 個鏈結}other{找到 # 個鏈結}}"
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
-    "message": "將關鍵要求層級降至最低"
+    "message": "避免鏈結關鍵要求"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "淘汰/警告"
@@ -491,6 +551,15 @@
   "lighthouse-core/audits/dobetterweb/appcache-manifest.js | title": {
     "message": "避免使用應用程式快取"
   },
+  "lighthouse-core/audits/dobetterweb/charset.js | description": {
+    "message": "必須定義字元編碼宣告。你可以在 HTML 的前 1024 個位元組中使用 <meta> 標記定義，或在 Content-Type HTTP 回應標頭中定義。[瞭解詳情](https://www.w3.org/International/questions/qa-html-encoding-declarations)。"
+  },
+  "lighthouse-core/audits/dobetterweb/charset.js | failureTitle": {
+    "message": "字元集宣告遺失或在 HTML 中太晚出現"
+  },
+  "lighthouse-core/audits/dobetterweb/charset.js | title": {
+    "message": "正確定義字元集"
+  },
   "lighthouse-core/audits/dobetterweb/doctype.js | description": {
     "message": "指定 DOCTYPE 能防止瀏覽器切換至相容模式。[瞭解詳情](https://web.dev/doctype)。"
   },
@@ -512,9 +581,6 @@
   "lighthouse-core/audits/dobetterweb/doctype.js | title": {
     "message": "網頁含有 HTML DOCTYPE"
   },
-  "lighthouse-core/audits/dobetterweb/dom-size.js | columnElement": {
-    "message": "元素"
-  },
   "lighthouse-core/audits/dobetterweb/dom-size.js | columnStatistic": {
     "message": "統計資料"
   },
@@ -522,7 +588,7 @@
     "message": "值"
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | description": {
-    "message": "瀏覽器工程師建議網頁包含的 DOM 元素數量應少於 1,500 個左右。最理想的情況是樹狀結構深度包含的元素少於 32 個，且子項/父項元素少於 60 個。大型 DOM 會增加記憶體用量、延長[樣式運算](https://developers.google.com/web/fundamentals/performance/rendering/reduce-the-scope-and-complexity-of-style-calculations)的時間，並產生費工的[版面配置重排](https://developers.google.com/speed/articles/reflow)。[瞭解詳情](https://web.dev/dom-size)。"
+    "message": "大型 DOM 會增加記憶體用量、延長[樣式運算](https://developers.google.com/web/fundamentals/performance/rendering/reduce-the-scope-and-complexity-of-style-calculations)的時間，並產生費工的[版面配置重排](https://developers.google.com/speed/articles/reflow)。[瞭解詳情](https://web.dev/dom-size)。"
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | displayValue": {
     "message": "{itemCount,plural, =1{1 個元素}other{# 個元素}}"
@@ -542,11 +608,8 @@
   "lighthouse-core/audits/dobetterweb/dom-size.js | title": {
     "message": "避免 DOM 過大"
   },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnRel": {
-    "message": "Rel"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnTarget": {
-    "message": "目標"
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnFailingAnchors": {
+    "message": "未通過稽核的錨點"
   },
   "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
     "message": "將 `rel=\"noopener\"` 或 `rel=\"noreferrer\"` 新增至所有外部連結，可提升效能並防範安全漏洞。[瞭解詳情](https://web.dev/external-anchors-use-rel-noopener)。"
@@ -582,7 +645,7 @@
     "message": "對於連線速度較慢的使用者，透過 `document.write()` 動態置入的外部指令碼可能會導致網頁延遲數十秒載入。[瞭解詳情](https://web.dev/no-document-write)。"
   },
   "lighthouse-core/audits/dobetterweb/no-document-write.js | failureTitle": {
-    "message": "使用 `document.write()`"
+    "message": "避免使用 `document.write()`"
   },
   "lighthouse-core/audits/dobetterweb/no-document-write.js | title": {
     "message": "避免使用 `document.write()`"
@@ -704,6 +767,24 @@
   "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
     "message": "圖片大小資訊無效 ({url})"
   },
+  "lighthouse-core/audits/image-size-responsive.js | columnActual": {
+    "message": "實際大小"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | columnDisplayed": {
+    "message": "顯示大小"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | columnExpected": {
+    "message": "預期大小"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | description": {
+    "message": "圖片的實際尺寸應與顯示大小和像素比例成正比，才能呈現最清晰的圖片效果。[瞭解詳情](https://web.dev/image-size-responsive)。"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | failureTitle": {
+    "message": "顯示的圖片大小不適當"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | title": {
+    "message": "顯示的圖片大小適當"
+  },
   "lighthouse-core/audits/installable-manifest.js | description": {
     "message": "瀏覽器可以主動提示使用者，建議他們將你的應用程式新增到主螢幕，藉此提高參與度。[瞭解詳情](https://web.dev/installable-manifest)。"
   },
@@ -727,6 +808,12 @@
   },
   "lighthouse-core/audits/is-on-https.js | title": {
     "message": "使用 HTTPS"
+  },
+  "lighthouse-core/audits/legacy-javascript.js | description": {
+    "message": "Polyfill 和轉換作業可讓舊版瀏覽器使用新版 JavaScript 的功能。不過這些功能對於新型瀏覽器而言，有很多都是不必要的。如果是 JavaScript 套件，請採用具備模組/非模組功能偵測機制的新型指令碼部署策略，以減少新型瀏覽器所需要的程式碼，同時保留對舊版瀏覽器的支援。[瞭解詳情](https://philipwalton.com/articles/deploying-es2015-code-in-production-today/)"
+  },
+  "lighthouse-core/audits/legacy-javascript.js | title": {
+    "message": "舊版 JavaScript"
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
     "message": "如果網頁能透過行動網路快速載入，就可確保行動裝置使用者獲得良好的使用體驗。[瞭解詳情](https://web.dev/load-fast-enough-for-pwa)。"
@@ -776,53 +863,44 @@
   "lighthouse-core/audits/manual/pwa-page-transitions.js | title": {
     "message": "使用者在切換頁面時不會覺得網路速度緩慢"
   },
+  "lighthouse-core/audits/maskable-icon.js | description": {
+    "message": "在裝置上安裝應用程式時，可遮蓋的圖示可確保圖片會填滿整個形狀，圖片的上方和下方不會加上黑邊。[瞭解詳情](https://web.dev/maskable-icon/)。"
+  },
+  "lighthouse-core/audits/maskable-icon.js | failureTitle": {
+    "message": "資訊清單未包含可遮蓋的圖示"
+  },
+  "lighthouse-core/audits/maskable-icon.js | title": {
+    "message": "資訊清單包含可遮蓋的圖示"
+  },
+  "lighthouse-core/audits/metrics/cumulative-layout-shift.js | description": {
+    "message": "「累計版面配置轉移」指標是用於測量可見元素在可視區域內的移動情形。[瞭解詳情](https://web.dev/cls)。"
+  },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
     "message": "預估輸入延遲時間是指在頁面載入作業最忙碌的 5 秒中，應用程式對於使用者輸入動作的預估回應時間 (以毫秒為單位)。如果延遲時間超過 50 毫秒，使用者可能會覺得應用程式的速度很慢。[瞭解詳情](https://web.dev/estimated-input-latency)。"
-  },
-  "lighthouse-core/audits/metrics/estimated-input-latency.js | title": {
-    "message": "預估輸入延遲"
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
     "message": "首次顯示內容所需時間是指瀏覽器首次顯示文字或圖片的時間。[瞭解詳情](https://web.dev/first-contentful-paint)。"
   },
-  "lighthouse-core/audits/metrics/first-contentful-paint.js | title": {
-    "message": "首次內容繪製"
-  },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
     "message": "首次 CPU 閒置時間是指網頁的主要執行緒已不再忙碌，且有能力處理輸入內容的最早時間。[瞭解詳情](https://web.dev/first-cpu-idle)。"
-  },
-  "lighthouse-core/audits/metrics/first-cpu-idle.js | title": {
-    "message": "首次 CPU 閒置"
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "畫面首次有效顯示所需時間是指網頁顯示主要內容的時間。[瞭解詳情](https://web.dev/first-meaningful-paint)。"
   },
-  "lighthouse-core/audits/metrics/first-meaningful-paint.js | title": {
-    "message": "首次有效繪製"
-  },
   "lighthouse-core/audits/metrics/interactive.js | description": {
     "message": "互動準備時間是網頁進入完整互動狀態前花費的時間。[瞭解詳情](https://web.dev/interactive)。"
   },
-  "lighthouse-core/audits/metrics/interactive.js | title": {
-    "message": "可互動時間"
+  "lighthouse-core/audits/metrics/largest-contentful-paint.js | description": {
+    "message": "「最大內容繪製」是指繪製最大的文字或圖片所需時間。[瞭解詳情](https://web.dev/lighthouse-largest-contentful-paint)"
   },
   "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
-    "message": "使用者可能要等待的最長「首次輸入延遲時間」就是耗時最久的工作所需要的處理時間 (以毫秒為單位)。[瞭解詳情](https://developers.google.com/web/updates/2018/05/first-input-delay)。"
-  },
-  "lighthouse-core/audits/metrics/max-potential-fid.js | title": {
-    "message": "首次輸入延遲時間最長預估值"
+    "message": "使用者可能會遇到的最長「首次輸入延遲時間」就是耗時最久的工作持續時間。[瞭解詳情](https://web.dev/lighthouse-max-potential-fid)。"
   },
   "lighthouse-core/audits/metrics/speed-index.js | description": {
     "message": "速度指數會顯示網頁可見內容的填入速度。[瞭解詳情](https://web.dev/speed-index)。"
   },
-  "lighthouse-core/audits/metrics/speed-index.js | title": {
-    "message": "速度指數"
-  },
   "lighthouse-core/audits/metrics/total-blocking-time.js | description": {
-    "message": "當工作長度超過 50 毫秒時，從 FCP 到互動準備時間的時間範圍總計 (以毫秒為單位)。"
-  },
-  "lighthouse-core/audits/metrics/total-blocking-time.js | title": {
-    "message": "封鎖時間總計"
+    "message": "當工作長度超過 50 毫秒時，從 FCP 到互動準備時間的時間範圍總計 (以毫秒為單位)。[瞭解詳情](https://web.dev/lighthouse-total-blocking-time)。"
   },
   "lighthouse-core/audits/network-rtt.js | description": {
     "message": "網路封包往返時間 (RTT) 對效能有很大的影響。如果將封包傳送到某個來源的 RTT 很高，表示靠近使用者端的伺服器在效能方面有改善空間。[瞭解詳情](https://hpbn.co/primer-on-latency-and-bandwidth/)。"
@@ -839,6 +917,9 @@
   "lighthouse-core/audits/offline-start-url.js | description": {
     "message": "Service Worker 可讓你的網路應用程式即使在連線不穩定時依然維持正常運作。[瞭解詳情](https://web.dev/offline-start-url)。"
   },
+  "lighthouse-core/audits/offline-start-url.js | errorLoading": {
+    "message": "在 Service Worker 中載入 {url} 時發生錯誤，狀態碼為 {statusCode}"
+  },
   "lighthouse-core/audits/offline-start-url.js | failureTitle": {
     "message": "`start_url` 在離線時不會傳回狀態碼 200 的回應"
   },
@@ -847,9 +928,6 @@
   },
   "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
     "message": "Lighthouse 無法從資訊清單中讀取 `start_url`，因此將 `start_url` 假設為文件的網址。錯誤訊息：「{manifestWarning}」。"
-  },
-  "lighthouse-core/audits/performance-budget.js | columnOverBudget": {
-    "message": "超過預算"
   },
   "lighthouse-core/audits/performance-budget.js | description": {
     "message": "讓網路要求的數量和大小低於使用者根據效能預算所設定的目標。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/budgets)。"
@@ -919,9 +997,6 @@
   },
   "lighthouse-core/audits/seo/font-size.js | explanationViewport": {
     "message": "文字難以辨識，這是因為網頁沒有針對行動裝置螢幕設定合適的可視區域中繼標記。"
-  },
-  "lighthouse-core/audits/seo/font-size.js | explanationWithDisclaimer": {
-    "message": "{decimalProportion, number, extendedPercent} 的文字過小 (根據 {decimalProportionVisited, number, extendedPercent} 的取樣結果)。"
   },
   "lighthouse-core/audits/seo/font-size.js | failureTitle": {
     "message": "文件使用的字型大小難以辨識"
@@ -1089,19 +1164,19 @@
     "message": "降低第三方程式碼的影響"
   },
   "lighthouse-core/audits/third-party-summary.js | title": {
-    "message": "第三方程式碼使用情形"
+    "message": "盡量減少第三方程式碼的使用量"
   },
-  "lighthouse-core/audits/time-to-first-byte.js | description": {
-    "message": "第一個位元組時間會指出你的伺服器傳送回應的時間。[瞭解詳情](https://web.dev/time-to-first-byte)。"
+  "lighthouse-core/audits/timing-budget.js | columnMeasurement": {
+    "message": "測量值"
   },
-  "lighthouse-core/audits/time-to-first-byte.js | displayValue": {
-    "message": "根文件回應時間為 {timeInMs, number, milliseconds} 毫秒"
+  "lighthouse-core/audits/timing-budget.js | columnTimingMetric": {
+    "message": "指標"
   },
-  "lighthouse-core/audits/time-to-first-byte.js | failureTitle": {
-    "message": "減少伺服器回應時間 (TTFB)"
+  "lighthouse-core/audits/timing-budget.js | description": {
+    "message": "設定時間預算可協助你隨時留意網站的效能。效能穩定的網站能快速載入網頁，並迅速回應使用者的輸入操作。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/budgets)。"
   },
-  "lighthouse-core/audits/time-to-first-byte.js | title": {
-    "message": "伺服器回應時間低 (TTFB)"
+  "lighthouse-core/audits/timing-budget.js | title": {
+    "message": "時間預算"
   },
   "lighthouse-core/audits/user-timings.js | columnDuration": {
     "message": "時間長度"
@@ -1129,6 +1204,9 @@
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | title": {
     "message": "預先連上必要來源"
+  },
+  "lighthouse-core/audits/uses-rel-preconnect.js | tooManyPreconnectLinksWarning": {
+    "message": "已找到 2 個以上預先連線的連結。請盡量避免使用預先連線的連結，除非是最重要的來源。"
   },
   "lighthouse-core/audits/uses-rel-preload.js | crossoriginWarning": {
     "message": "「{preloadURL}」有預先載入的 <link>，但未獲瀏覽器使用。請檢查你使用 `crossorigin` 屬性的方式是否正確。"
@@ -1316,6 +1394,12 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "適合透過行動裝置瀏覽"
   },
+  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
+    "message": "你的測試網址 ({requested}) 已重新導向至 {final}，因此頁面可能無法如預期載入。請直接測試第二個網址。"
+  },
+  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
+    "message": "頁面載入速度過慢，無法在時限內完成，因此結果可能不完整。"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "快取 TTL"
   },
@@ -1325,14 +1409,23 @@
   "lighthouse-core/lib/i18n/i18n.js | columnName": {
     "message": "名稱"
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnOverBudget": {
+    "message": "超過預算"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnRequests": {
     "message": "要求"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnResourceSize": {
+    "message": "資源大小"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnResourceType": {
     "message": "資源類型"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnSize": {
     "message": "大小"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnSource": {
+    "message": "來源"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnTimeSpent": {
     "message": "花費的時間"
@@ -1349,6 +1442,9 @@
   "lighthouse-core/lib/i18n/i18n.js | columnWastedMs": {
     "message": "可節省的時間"
   },
+  "lighthouse-core/lib/i18n/i18n.js | cumulativeLayoutShiftMetric": {
+    "message": "累計版面配置轉移"
+  },
   "lighthouse-core/lib/i18n/i18n.js | displayValueByteSavings": {
     "message": "可減少 {wastedBytes, number, bytes} KB"
   },
@@ -1358,11 +1454,32 @@
   "lighthouse-core/lib/i18n/i18n.js | documentResourceType": {
     "message": "文件"
   },
+  "lighthouse-core/lib/i18n/i18n.js | estimatedInputLatencyMetric": {
+    "message": "預估輸入延遲"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | firstCPUIdleMetric": {
+    "message": "首次 CPU 閒置"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | firstContentfulPaintMetric": {
+    "message": "首次內容繪製"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | firstMeaningfulPaintMetric": {
+    "message": "首次有效繪製"
+  },
   "lighthouse-core/lib/i18n/i18n.js | fontResourceType": {
     "message": "字型"
   },
   "lighthouse-core/lib/i18n/i18n.js | imageResourceType": {
     "message": "圖片"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | interactiveMetric": {
+    "message": "可互動時間"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | largestContentfulPaintMetric": {
+    "message": "最大內容繪製"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | maxPotentialFIDMetric": {
+    "message": "首次輸入延遲時間最長預估值"
   },
   "lighthouse-core/lib/i18n/i18n.js | mediaResourceType": {
     "message": "媒體"
@@ -1379,11 +1496,17 @@
   "lighthouse-core/lib/i18n/i18n.js | seconds": {
     "message": "{timeInMs, number, seconds} 秒"
   },
+  "lighthouse-core/lib/i18n/i18n.js | speedIndexMetric": {
+    "message": "速度指數"
+  },
   "lighthouse-core/lib/i18n/i18n.js | stylesheetResourceType": {
     "message": "樣式表"
   },
   "lighthouse-core/lib/i18n/i18n.js | thirdPartyResourceType": {
     "message": "第三方"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | totalBlockingTimeMetric": {
+    "message": "封鎖時間總計"
   },
   "lighthouse-core/lib/i18n/i18n.js | totalResourceType": {
     "message": "總計"
@@ -1448,11 +1571,38 @@
   "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
     "message": "關鍵路徑延遲時間上限："
   },
+  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
+    "message": "複製 JSON"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
+    "message": "切換深色主題"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
+    "message": "已展開列印"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
+    "message": "列印摘要"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
+    "message": "另存為 Gist"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
+    "message": "另存為 HTML"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
+    "message": "另存為 JSON"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
+    "message": "在檢視器中開啟"
+  },
   "lighthouse-core/report/html/renderer/util.js | errorLabel": {
     "message": "發生錯誤！"
   },
   "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
     "message": "回報錯誤：無稽核資訊"
+  },
+  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
+    "message": "回報問題"
   },
   "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
     "message": "研究資料"
@@ -1475,6 +1625,48 @@
   "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
     "message": "通過稽核項目"
   },
+  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "模擬電腦"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
+    "message": "模擬 Moto G4"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
+    "message": "沒有任何模擬的裝置"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "CPU/記憶體效能"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "CPU 溫控降頻"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
+    "message": "管道"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
+    "message": "裝置"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "擷取時間"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "網路節流"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
+    "message": "執行階段設定"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
+    "message": "使用者代理程式 (主機)"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "使用者代理程式 (網路)"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
+    "message": "網址"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
+    "message": "不明"
+  },
   "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
     "message": "收合程式碼片段"
   },
@@ -1483,6 +1675,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
     "message": "顯示第三方資源"
+  },
+  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
+    "message": "由執行階段環境提供"
   },
   "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
     "message": "有問題導致 Lighthouse 無法順利執行這項作業："
@@ -1496,6 +1691,93 @@
   "lighthouse-core/report/html/renderer/util.js | warningHeader": {
     "message": "警告： "
   },
+  "stack-packs/packs/amp.js | efficient_animated_content": {
+    "message": "你可以對動畫內容使用 [amp-anim](https://amp.dev/documentation/components/amp-anim/) 標記，這樣一來，畫面外的內容即會盡量節省 CPU 用量。"
+  },
+  "stack-packs/packs/amp.js | offscreen_images": {
+    "message": "請確認你的圖片具備有效的 `amp-img` 標記，可以讓圖片在首要可視區域外自動延遲載入。[瞭解詳情](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)。"
+  },
+  "stack-packs/packs/amp.js | render_blocking_resources": {
+    "message": "使用 [AMP 最佳化工具](https://github.com/ampproject/amp-toolbox/tree/master/packages/optimizer)或類似工具，在[伺服器端轉譯 AMP 版面配置](https://amp.dev/documentation/guides-and-tutorials/optimize-and-measure/server-side-rendering/)。"
+  },
+  "stack-packs/packs/amp.js | unminified_css": {
+    "message": "請參閱 [AMP 說明文件](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/style_pages/)，確保你的所有樣式都受到支援。"
+  },
+  "stack-packs/packs/amp.js | uses_responsive_images": {
+    "message": "`amp-img` 元素支援 `srcset` 屬性，可根據螢幕大小指定要使用的圖片素材資源。[瞭解詳情](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/art_direction/)。"
+  },
+  "stack-packs/packs/amp.js | uses_webp_images": {
+    "message": "建議你以 WebP 格式顯示所有 `amp-img` 元件，同時為其他瀏覽器指定適當的備用格式。[瞭解詳情](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)。"
+  },
+  "stack-packs/packs/angular.js | dom_size": {
+    "message": "如果要轉譯超大型清單，建議使用元件開發套件 (CDK) 進行虛擬捲動。[瞭解詳情](https://web.dev/virtualize-lists-with-angular-cdk/)。"
+  },
+  "stack-packs/packs/angular.js | total_byte_weight": {
+    "message": "套用[路徑層級的程式碼分割](https://web.dev/route-level-code-splitting-in-angular/)，盡可能減少你的 JavaScript 套件大小。此外，建議你使用 [Angular Service Worker](https://web.dev/precaching-with-the-angular-service-worker/) 來預先快取素材資源。"
+  },
+  "stack-packs/packs/angular.js | unminified_warning": {
+    "message": "如果你使用 Angular CLI，請確認你是在正式版模式中產生版本。[瞭解詳情](https://angular.io/guide/deployment#enable-runtime-production-mode)。"
+  },
+  "stack-packs/packs/angular.js | unused_javascript": {
+    "message": "如果你使用 Angular CLI，請在正式版本中包含來源對應功能，以檢查你的套件。[瞭解詳情](https://angular.io/guide/deployment#inspect-the-bundles)。"
+  },
+  "stack-packs/packs/angular.js | uses_rel_preload": {
+    "message": "在瀏覽前預先載入路徑以加快瀏覽速度。[瞭解詳情](https://web.dev/route-preloading-in-angular/)。"
+  },
+  "stack-packs/packs/angular.js | uses_responsive_images": {
+    "message": "建議你使用元件開發套件 (CDK) 中的 `BreakpointObserver` 公用程式來管理圖片中斷點。[瞭解詳情](https://material.angular.io/cdk/layout/overview)。"
+  },
+  "stack-packs/packs/magento.js | critical_request_chains": {
+    "message": "如果你不是在統合 JavaScript 素材資源，建議你使用 [baler](https://github.com/magento/baler)。"
+  },
+  "stack-packs/packs/magento.js | disable_bundling": {
+    "message": "停用 Magento 內建的 [JavaScript 統合及壓縮功能](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html)，考慮改用 [baler](https://github.com/magento/baler/)。"
+  },
+  "stack-packs/packs/magento.js | font_display": {
+    "message": "在[定義自訂字型](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/css-topics/using-fonts.html)時指定 `@font-display`。"
+  },
+  "stack-packs/packs/magento.js | offscreen_images": {
+    "message": "建議你修改產品和目錄範本，以使用網路平台的[延遲載入](https://web.dev/native-lazy-loading)功能。"
+  },
+  "stack-packs/packs/magento.js | unminified_css": {
+    "message": "在商店的開發人員設定中啟用 [Minify CSS Files] 選項。[瞭解詳情](https://devdocs.magento.com/guides/v2.3/performance-best-practices/configuration.html?itm_source=devdocs&itm_medium=search_page&itm_campaign=federated_search&itm_term=minify%20css%20files)。"
+  },
+  "stack-packs/packs/magento.js | unminified_javascript": {
+    "message": "如果 JavaScript 素材資源是來自靜態內容部署作業，建議你使用 [Terser](https://www.npmjs.com/package/terser) 來進行壓縮，並停用內建的壓縮功能。"
+  },
+  "stack-packs/packs/magento.js | unused_javascript": {
+    "message": "停用 Magento 的內建 [JavaScript 統合功能](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html)。"
+  },
+  "stack-packs/packs/magento.js | uses_optimized_images": {
+    "message": "建議你在 [Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=optimize%20image) 搜尋多種的第三方擴充功能，以進行圖片最佳化。"
+  },
+  "stack-packs/packs/magento.js | uses_rel_preconnect": {
+    "message": "你可以透過[修改主題的版面配置](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)，新增 preconnect 或 dns-prefetch 資源提示。"
+  },
+  "stack-packs/packs/magento.js | uses_rel_preload": {
+    "message": "你可以透過[修改主題版面配置](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)來新增 `<link rel=preload>` 標記。"
+  },
+  "stack-packs/packs/magento.js | uses_webp_images": {
+    "message": "建議你在 [Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=webp) 搜尋多種第三方擴充功能，以運用較新的圖片格式。"
+  },
+  "stack-packs/packs/react.js | dom_size": {
+    "message": "如果你要在網頁上轉譯許多重複的元素，建議你使用「視窗化」程式庫 (例如 `react-window`)，盡可能減少系統建立的 DOM 節點數量。[瞭解詳情](https://web.dev/virtualize-long-lists-react-window/)。此外，如果你使用 Effect Hook 來改善執行階段的效能，請使用 [shouldComponentUpdate](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action)、[PureComponent](https://reactjs.org/docs/react-api.html#reactpurecomponent) 或 [React.memo](https://reactjs.org/docs/react-api.html#reactmemo) 以及[略過效果](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects)，盡量減少不必要的重新轉譯，但某些相依性已變更時除外。"
+  },
+  "stack-packs/packs/react.js | redirects": {
+    "message": "如果使用 React Router，請盡量避免在[路徑導航](https://reacttraining.com/react-router/web/api/Redirect)中使用 `<Redirect>` 元件。"
+  },
+  "stack-packs/packs/react.js | unminified_css": {
+    "message": "如果你的版本系統會自動壓縮 CSS 檔案，請確定你部署的應用程式為正式版本。你可以使用 React Developer Tools 擴充功能進行檢查。[瞭解詳情](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)。"
+  },
+  "stack-packs/packs/react.js | unminified_javascript": {
+    "message": "如果你的版本系統會自動壓縮 JavaScript 檔案，請確定你部署的應用程式為正式版本。你可以使用 React Developer Tools 擴充功能進行檢查。[瞭解詳情](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)。"
+  },
+  "stack-packs/packs/react.js | unused_javascript": {
+    "message": "如果你不是在伺服器端進行轉譯，請以 `React.lazy()` [分割你的 JavaScript 套件](https://web.dev/code-splitting-suspense/)。否則請使用 [loadable-components](https://www.smooth-code.com/open-source/loadable-components/docs/getting-started/) 等第三方程式庫來分割程式碼。"
+  },
+  "stack-packs/packs/react.js | user_timings": {
+    "message": "使用 React DevTools Profiler，這項工具會採用 Profiler API 來測量你的元件轉譯效能。[瞭解詳情](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)。"
+  },
   "stack-packs/packs/wordpress.js | efficient_animated_content": {
     "message": "建議你將 GIF 上傳到可將 GIF 做為 HTML5 影片嵌入的服務。"
   },
@@ -1504,9 +1786,6 @@
   },
   "stack-packs/packs/wordpress.js | render_blocking_resources": {
     "message": "有些 WordPress 外掛程式能協助你[內嵌重要的素材資源](https://wordpress.org/plugins/search/critical+css/)或[延後載入較不重要的資源](https://wordpress.org/plugins/search/defer+css+javascript/)。請注意，這些外掛程式的最佳化設定可能會對現有主題或外掛程式的功能有不良影響，因此你可能需要變更程式碼。"
-  },
-  "stack-packs/packs/wordpress.js | time_to_first_byte": {
-    "message": "主題、外掛程式和伺服器規格都會影響伺服器回應時間。建議你尋找經過最佳化調整的主題、謹慎選擇最佳化外掛程式，並 (或) 升級伺服器。"
   },
   "stack-packs/packs/wordpress.js | total_byte_weight": {
     "message": "建議你在文章清單中顯示摘錄 (例如加入更多標記)、減少特定頁面顯示的文章數量、將較長的文章分為多個頁面，或使用可延遲載入留言的外掛程式。"
@@ -1524,13 +1803,13 @@
     "message": "有些 [WordPress 外掛程式](https://wordpress.org/plugins/)會在網頁中載入未使用的 JavaScript，建議你減少這類外掛程式的數量，或改用其他外掛程式。如要找出會新增多餘 JavaScript 的外掛程式，請嘗試在 Chrome DevTools 中執行[程式碼涵蓋率](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage)功能。你可以透過指令碼網址找出有問題的主題/外掛程式。請留意在清單中包含許多指令碼，且程式碼涵蓋率中有許多紅色標示的外掛程式。外掛程式只應將網頁實際使用的指令碼加入佇列。"
   },
   "stack-packs/packs/wordpress.js | uses_long_cache_ttl": {
-    "message": "瞭解 [WordPress 的瀏覽器快取功能](https://codex.wordpress.org/WordPress_Optimization#Browser_Caching)。"
+    "message": "瞭解 [WordPress 的瀏覽器快取功能](https://wordpress.org/support/article/optimization/#browser-caching)。"
   },
   "stack-packs/packs/wordpress.js | uses_optimized_images": {
     "message": "建議你使用壓縮圖片時不會影響到畫質的[圖片最佳化 WordPress 外掛程式](https://wordpress.org/plugins/search/optimize+images/)。"
   },
   "stack-packs/packs/wordpress.js | uses_responsive_images": {
-    "message": "你可以直接透過[媒體庫](https://codex.wordpress.org/Media_Library_Screen)上傳圖片，確保你可以使用所需的圖片大小，然後透過從媒體庫插入圖片，或使用圖片小工具來確保你使用的是最佳圖片大小 (包括回應式中斷點適用的圖片大小)。除非圖片尺寸符合使用目的，否則請避免使用`Full Size`圖片。[瞭解詳情](https://codex.wordpress.org/Inserting_Images_into_Posts_and_Pages#Image_Size)。"
+    "message": "你可以直接透過[媒體庫](https://wordpress.org/support/article/media-library-screen/)上傳圖片，確保你可以使用所需的圖片大小，然後透過從媒體庫插入圖片，或使用圖片小工具來確保你使用的是最佳圖片大小 (包括回應式中斷點適用的圖片大小)。除非圖片尺寸符合使用目的，否則請避免使用`Full Size`圖片。[瞭解詳情](https://wordpress.org/support/article/inserting-images-into-posts-and-pages/)。"
   },
   "stack-packs/packs/wordpress.js | uses_text_compression": {
     "message": "你可以在網路伺服器設定中啟用文字壓縮功能。"

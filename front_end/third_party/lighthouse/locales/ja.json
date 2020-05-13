@@ -17,6 +17,33 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "`[aria-*]` 属性は役割と一致しています"
   },
+  "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
+    "message": "スクリーン リーダーなどの支援技術は、ドキュメントの `<body>` に `aria-hidden=\"true\"` が設定されていると、正常に動作しません。[詳細](https://web.dev/aria-hidden-body/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-body.js | failureTitle": {
+    "message": "ドキュメントの `<body>` に `[aria-hidden=\"true\"]` が設定されています"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-body.js | title": {
+    "message": "ドキュメントの `<body>` に `[aria-hidden=\"true\"]` は設定されていません"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-focus.js | description": {
+    "message": "`[aria-hidden=\"true\"]` 要素内にフォーカス可能な子要素がある場合、スクリーン リーダーなどの支援技術を使用するユーザーはこれらの操作可能な要素を使用できません。[詳細](https://web.dev/aria-hidden-focus/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-focus.js | failureTitle": {
+    "message": "`[aria-hidden=\"true\"]` 要素にフォーカス可能な子要素が含まれています"
+  },
+  "lighthouse-core/audits/accessibility/aria-hidden-focus.js | title": {
+    "message": "`[aria-hidden=\"true\"]` 要素にフォーカス可能な子要素は含まれていません"
+  },
+  "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
+    "message": "入力フィールドにユーザー補助機能向けの名前が設定されていない場合、スクリーン リーダーでは一般名で読み上げられるため、スクリーン リーダーのみを使用するユーザーには用途がわかりません。[詳細](https://web.dev/aria-input-field-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
+    "message": "ARIA 入力フィールドにユーザー補助機能向けの名前が設定されていません"
+  },
+  "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
+    "message": "ARIA 入力フィールドにユーザー補助機能向けの名前が設定されています"
+  },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "一部の ARIA 役割には、スクリーン リーダーに要素の状態を伝える必須の属性があります。[詳細](https://web.dev/aria-required-attr/)"
   },
@@ -30,10 +57,10 @@
     "message": "目的のユーザー補助機能を実行するには、一部の ARIA 親役割に特定の子役割を含める必要があります。[詳細](https://web.dev/aria-required-children/)"
   },
   "lighthouse-core/audits/accessibility/aria-required-children.js | failureTitle": {
-    "message": "Elements with an ARIA `[role]` that require children to contain a specific `[role]` are missing some or all of those required children."
+    "message": "ARIA `[role]` が指定されている要素には、特定の `[role]` を含む子を指定する必要がありますが、その一部またはすべてが指定されていません。"
   },
   "lighthouse-core/audits/accessibility/aria-required-children.js | title": {
-    "message": "Elements with an ARIA `[role]` that require children to contain a specific `[role]` have all required children."
+    "message": "ARIA `[role]` が指定されている要素に、特定の `[role]` を含む必要な子がすべて指定されています。"
   },
   "lighthouse-core/audits/accessibility/aria-required-parent.js | description": {
     "message": "目的のユーザー補助機能を正しく実行するには、一部の ARIA 子役割を特定の親役割に含める必要があります。[詳細](https://web.dev/aria-required-parent/)"
@@ -53,6 +80,15 @@
   "lighthouse-core/audits/accessibility/aria-roles.js | title": {
     "message": "`[role]` の値は有効です"
   },
+  "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
+    "message": "切り替えフィールドにユーザー補助機能向けの名前が設定されていない場合、スクリーン リーダーでは一般名で読み上げられるため、スクリーン リーダーのみを使用するユーザーには使えません。[詳細](https://web.dev/aria-toggle-field-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
+    "message": "ARIA 切り替えフィールドにユーザー補助機能向けの名前が設定されていません"
+  },
+  "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
+    "message": "ARIA 切り替えフィールドにユーザー補助機能向けの名前が設定されています"
+  },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "支援技術（スクリーン リーダーなど）で、無効な値が指定された ARIA 属性を解釈できません。[詳細](https://web.dev/aria-valid-attr-value/)"
   },
@@ -70,15 +106,6 @@
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr.js | title": {
     "message": "`[aria-*]` 属性は有効で、スペルミスもありません"
-  },
-  "lighthouse-core/audits/accessibility/audio-caption.js | description": {
-    "message": "字幕を使用すると、聴覚障がいのあるユーザーが音声要素を利用できるようになります。話している人物やその内容、その他の会話以外の情報など、重要な情報を字幕で伝えることができます。[詳細](https://web.dev/audio-caption/)"
-  },
-  "lighthouse-core/audits/accessibility/audio-caption.js | failureTitle": {
-    "message": "`<audio>` 要素に `[kind=\"captions\"]` が指定された `<track>` 要素がありません。"
-  },
-  "lighthouse-core/audits/accessibility/audio-caption.js | title": {
-    "message": "`<audio>` 要素に `[kind=\"captions\"]` が指定された `<track>` 要素が含まれています"
   },
   "lighthouse-core/audits/accessibility/axe-audit.js | failingElementsHeader": {
     "message": "問題のある要素"
@@ -114,10 +141,10 @@
     "message": "定義リストが適切にマークアップされていないと、スクリーン リーダーで、誤解を招く内容や不正確な内容が読み上げられる可能性があります。[詳細](https://web.dev/definition-list/)"
   },
   "lighthouse-core/audits/accessibility/definition-list.js | failureTitle": {
-    "message": "`<dl>` には、正しく順序付けられた `<dt>` および `<dd>` グループ、`<script>` または `<template>` 要素以外も含まれています。"
+    "message": "`<dl>` には、正しく順序付けられた `<dt>` および `<dd>` グループ、`<script>`、`<template>`、または `<div>` 要素以外も含まれています。"
   },
   "lighthouse-core/audits/accessibility/definition-list.js | title": {
-    "message": "`<dl>` には、正しく順序付けられた `<dt>` および `<dd>` グループ、`<script>` または `<template>` 要素のみが含まれています。"
+    "message": "`<dl>` には、正しく順序付けられた `<dt>` および `<dd>` グループ、`<script>`、`<template>`、または `<div>` 要素のみが含まれています。"
   },
   "lighthouse-core/audits/accessibility/dlitem.js | description": {
     "message": "スクリーン リーダーで正しく読み上げられるようにするには、定義リストの項目（`<dt>` と `<dd>`）を親の `<dl>` 要素でラップする必要があります。[詳細](https://web.dev/dlitem/)"
@@ -137,14 +164,32 @@
   "lighthouse-core/audits/accessibility/document-title.js | title": {
     "message": "ドキュメントに `<title>` 要素が指定されています"
   },
-  "lighthouse-core/audits/accessibility/duplicate-id.js | description": {
-    "message": "他のインスタンスが支援技術によって見落とされることのないように、id 属性の値は一意にする必要があります。[詳細](https://web.dev/duplicate-id/)"
+  "lighthouse-core/audits/accessibility/duplicate-id-active.js | description": {
+    "message": "支援技術で認識できるように、フォーカス可能な要素にはすべて一意の `id` を設定する必要があります。[詳細](https://web.dev/duplicate-id-active/)"
   },
-  "lighthouse-core/audits/accessibility/duplicate-id.js | failureTitle": {
-    "message": "ページの `[id]` 属性が一意ではありません"
+  "lighthouse-core/audits/accessibility/duplicate-id-active.js | failureTitle": {
+    "message": "`[id]` 属性が有効でフォーカス可能な要素の ID が一意ではありません"
   },
-  "lighthouse-core/audits/accessibility/duplicate-id.js | title": {
-    "message": "ページの `[id]` 属性は一意です"
+  "lighthouse-core/audits/accessibility/duplicate-id-active.js | title": {
+    "message": "`[id]` 属性が有効でフォーカス可能な要素の ID はすべて一意です"
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id-aria.js | description": {
+    "message": "他のインスタンスが支援技術によって見落とされることのないように、ARIA ID の値は一意にする必要があります。[詳細](https://web.dev/duplicate-id-aria/)"
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id-aria.js | failureTitle": {
+    "message": "ARIA ID が一意ではありません"
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id-aria.js | title": {
+    "message": "ARIA ID は一意です"
+  },
+  "lighthouse-core/audits/accessibility/form-field-multiple-labels.js | description": {
+    "message": "フォーム フィールドに複数のラベルが設定されている場合、スクリーン リーダーなどの支援技術で最初または最後のラベルだけ、もしくはすべてのラベルが読み上げられるため、混乱が生じる可能性があります。[詳細](https://web.dev/form-field-multiple-labels/)"
+  },
+  "lighthouse-core/audits/accessibility/form-field-multiple-labels.js | failureTitle": {
+    "message": "フォーム フィールドに複数のラベルが設定されています"
+  },
+  "lighthouse-core/audits/accessibility/form-field-multiple-labels.js | title": {
+    "message": "複数のラベルが設定されたフォーム フィールドはありません"
   },
   "lighthouse-core/audits/accessibility/frame-title.js | description": {
     "message": "スクリーン リーダーでは、フレームのコンテンツを説明するためにフレームのタイトルが使用されます。[詳細](https://web.dev/frame-title/)"
@@ -154,6 +199,15 @@
   },
   "lighthouse-core/audits/accessibility/frame-title.js | title": {
     "message": "`<frame>` または `<iframe>` の要素にタイトルが指定されています"
+  },
+  "lighthouse-core/audits/accessibility/heading-order.js | description": {
+    "message": "見出しを適切なレベルの順序で配置すると、ページのセマンティック構造を伝えることができ、支援技術を使用した操作やコンテンツの把握が簡単になります。[詳細](https://web.dev/heading-order/)"
+  },
+  "lighthouse-core/audits/accessibility/heading-order.js | failureTitle": {
+    "message": "見出し要素は降順になっていません"
+  },
+  "lighthouse-core/audits/accessibility/heading-order.js | title": {
+    "message": "見出し要素は降順になっています"
   },
   "lighthouse-core/audits/accessibility/html-has-lang.js | description": {
     "message": "ページで lang 属性が指定されていない場合、スクリーン リーダーは、スクリーン リーダーの設定時にユーザーが選択したデフォルト言語がページで使用されているものと見なします。そのページでデフォルト言語が実際には使用されていない場合、スクリーン リーダーはページのテキストを正しく読み上げられない可能性があります。[詳細](https://web.dev/html-has-lang/)"
@@ -276,10 +330,10 @@
     "message": "スクリーン リーダーには、表内の移動を補助する機能があります。`[headers]` 属性を使用している `<td>` セルが同じ表の他のセルのみを参照するように設定すると、スクリーン リーダーの利便性が向上する可能性があります。[詳細](https://web.dev/td-headers-attr/)"
   },
   "lighthouse-core/audits/accessibility/td-headers-attr.js | failureTitle": {
-    "message": "Cells in a `<table>` element that use the `[headers]` attribute refer to an element `id` not found within the same table."
+    "message": "`<table>` 要素で `[headers]` 属性を使用しているセルが、同じ表内にない要素 `id` を参照しています。"
   },
   "lighthouse-core/audits/accessibility/td-headers-attr.js | title": {
-    "message": "Cells in a `<table>` element that use the `[headers]` attribute refer to table cells within the same table."
+    "message": "`<table>` 要素で `[headers]` 属性を使用しているセルは、同じ表内の表セルを参照しています。"
   },
   "lighthouse-core/audits/accessibility/th-has-data-cells.js | description": {
     "message": "スクリーン リーダーには、表内の移動を補助する機能があります。表のヘッダーが常に一部のセルを参照するように設定すると、スクリーン リーダーの利便性が向上する可能性があります。[詳細](https://web.dev/th-has-data-cells/)"
@@ -350,6 +404,12 @@
   "lighthouse-core/audits/bootup-time.js | title": {
     "message": "JavaScript の実行にかかる時間"
   },
+  "lighthouse-core/audits/byte-efficiency/duplicated-javascript.js | description": {
+    "message": "重複する大きい JavaScript モジュールをバンドルから削除すると、データ通信量を減らすことができます。 "
+  },
+  "lighthouse-core/audits/byte-efficiency/duplicated-javascript.js | title": {
+    "message": "JavaScript バンドル内の重複モジュールを削除する"
+  },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | description": {
     "message": "サイズの大きい GIF は、アニメーション コンテンツの配信方法として効率的ではありません。ネットワークの通信量を抑えるため、GIF を使用する代わりに、アニメーションには MPEG4/WebM 動画、静止画像には PNG/WebP を使用することをご検討ください。[詳細](https://web.dev/efficient-animated-content)"
   },
@@ -399,7 +459,7 @@
     "message": "使用していない CSS を削除してください"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "使用していない JavaScript を削除して、データ通信量を減らしてください。"
+    "message": "使用していない JavaScript を削除して、データ通信量を減らしてください。[詳細](https://web.dev/remove-unused-code/)"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
     "message": "使用していない JavaScript の削除"
@@ -459,7 +519,7 @@
     "message": "{itemCount,plural, =1{1 件のチェーンが見つかりました}other{# 件のチェーンが見つかりました}}"
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
-    "message": "クリティカルなリクエストの深さの最小化"
+    "message": "クリティカル リクエスト チェーンを回避してください"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "非推奨 / 警告"
@@ -491,6 +551,15 @@
   "lighthouse-core/audits/dobetterweb/appcache-manifest.js | title": {
     "message": "アプリケーション キャッシュは使用していません"
   },
+  "lighthouse-core/audits/dobetterweb/charset.js | description": {
+    "message": "文字エンコードの宣言が必要です。これには、HTML の最初の 1,024 バイトか Content-Type HTTP レスポンス ヘッダーの中で <meta> タグを使用します。[詳細](https://www.w3.org/International/questions/qa-html-encoding-declarations)"
+  },
+  "lighthouse-core/audits/dobetterweb/charset.js | failureTitle": {
+    "message": "文字セットが宣言されていないか、HTML での宣言が遅すぎます"
+  },
+  "lighthouse-core/audits/dobetterweb/charset.js | title": {
+    "message": "文字セットを適切に定義する"
+  },
   "lighthouse-core/audits/dobetterweb/doctype.js | description": {
     "message": "doctype を指定すると、ブラウザは後方互換モードに切り替えることができなくなります。[詳細](https://web.dev/doctype)"
   },
@@ -512,9 +581,6 @@
   "lighthouse-core/audits/dobetterweb/doctype.js | title": {
     "message": "ページに HTML doctype が指定されています"
   },
-  "lighthouse-core/audits/dobetterweb/dom-size.js | columnElement": {
-    "message": "要素"
-  },
   "lighthouse-core/audits/dobetterweb/dom-size.js | columnStatistic": {
     "message": "統計情報"
   },
@@ -522,7 +588,7 @@
     "message": "値"
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | description": {
-    "message": "ブラウザ エンジニアは、ページに含まれる DOM の要素数が 1,500 個を超えないようにすることを推奨しています。ツリーの深さは 32 要素まで、子や親の要素数は 60 個までにするのが最適です。DOM サイズが大きいと、メモリの使用量が増え、[スタイルの計算](https://developers.google.com/web/fundamentals/performance/rendering/reduce-the-scope-and-complexity-of-style-calculations)に時間がかかり、[レイアウトのリフロー](https://developers.google.com/speed/articles/reflow)というコストが発生する可能性があります。[詳細](https://web.dev/dom-size)"
+    "message": "DOM サイズが大きいと、メモリの使用量が増え、[スタイルの計算](https://developers.google.com/web/fundamentals/performance/rendering/reduce-the-scope-and-complexity-of-style-calculations)に時間がかかり、[レイアウトのリフロー](https://developers.google.com/speed/articles/reflow)というコストが発生します。[詳細](https://web.dev/dom-size)"
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | displayValue": {
     "message": "{itemCount,plural, =1{1 件の要素}other{# 件の要素}}"
@@ -542,11 +608,8 @@
   "lighthouse-core/audits/dobetterweb/dom-size.js | title": {
     "message": "過大な DOM サイズの回避"
   },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnRel": {
-    "message": "rel"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnTarget": {
-    "message": "リンク先"
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnFailingAnchors": {
+    "message": "問題のあるアンカー"
   },
   "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
     "message": "パフォーマンスを向上し、セキュリティの脆弱性が生じないようにするには、`rel=\"noopener\"` または `rel=\"noreferrer\"` を外部リンクに追加します。[詳細](https://web.dev/external-anchors-use-rel-noopener)"
@@ -582,7 +645,7 @@
     "message": "接続速度が遅い環境のユーザーの場合、`document.write()` で動的に挿入される外部スクリプトによってページの読み込みが数十秒遅れる可能性があります。[詳細](https://web.dev/no-document-write)"
   },
   "lighthouse-core/audits/dobetterweb/no-document-write.js | failureTitle": {
-    "message": "`document.write()` が使用されています"
+    "message": "`document.write()` を使用しない"
   },
   "lighthouse-core/audits/dobetterweb/no-document-write.js | title": {
     "message": "`document.write()` は使用されていません"
@@ -704,6 +767,24 @@
   "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
     "message": "画像サイズに関する情報（{url}）が正しくありません"
   },
+  "lighthouse-core/audits/image-size-responsive.js | columnActual": {
+    "message": "実サイズ"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | columnDisplayed": {
+    "message": "表示されるサイズ"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | columnExpected": {
+    "message": "適切なサイズ"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | description": {
+    "message": "画像をできるだけ鮮明に表示するには、画像の実サイズを、表示するサイズとピクセル比に比例させる必要があります。[詳細](https://web.dev/image-size-responsive)"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | failureTitle": {
+    "message": "不適切なサイズの画像表示"
+  },
+  "lighthouse-core/audits/image-size-responsive.js | title": {
+    "message": "適切なサイズの画像表示"
+  },
   "lighthouse-core/audits/installable-manifest.js | description": {
     "message": "ブラウザではホーム画面へのアプリの追加を促すメッセージを事前にユーザーに表示できます。これによりエンゲージメントが向上します。[詳細](https://web.dev/installable-manifest)"
   },
@@ -728,6 +809,12 @@
   "lighthouse-core/audits/is-on-https.js | title": {
     "message": "HTTPS を使用しています"
   },
+  "lighthouse-core/audits/legacy-javascript.js | description": {
+    "message": "ポリフィルと変換を使用すると、従来のブラウザで新しい JavaScript 機能を使用できるようになります。ただし、その機能の多くは最新ブラウザでは必要ありません。バンドルされた JavaScript の場合、モジュールあり / モジュールなしの機能検出を使用する最新スクリプトの導入戦略を採用することにより、従来のブラウザに対するサポートを維持しながら、最新ブラウザに送るコード量を減らすことができます。[詳細](https://philipwalton.com/articles/deploying-es2015-code-in-production-today/)"
+  },
+  "lighthouse-core/audits/legacy-javascript.js | title": {
+    "message": "従来の JavaScript"
+  },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
     "message": "モバイル ネットワークでのページ読み込みを速くすることで、優れたモバイル ユーザー エクスペリエンスが実現されます。[詳細](https://web.dev/load-fast-enough-for-pwa)"
   },
@@ -750,7 +837,7 @@
     "message": "カテゴリ"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | description": {
-    "message": "Consider reducing the time spent parsing, compiling and executing JS. You may find delivering smaller JS payloads helps with this. [Learn more](https://web.dev/mainthread-work-breakdown)"
+    "message": "JavaScript の解析、コンパイル、実行にかかる時間を短縮することをご検討ください。JavaScript ペイロードのサイズを抑えるなどの方法があります。[詳細](https://web.dev/mainthread-work-breakdown)"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | failureTitle": {
     "message": "メインスレッド処理の最小化"
@@ -771,58 +858,49 @@
     "message": "ページごとに 1 つの URL を使用している"
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | description": {
-    "message": "Transitions should feel snappy as you tap around, even on a slow network. This experience is key to a user's perception of performance. [Learn more](https://web.dev/pwa-page-transitions)."
+    "message": "遅いネットワークであってもタップしたときに画面がすばやく切り替われば、ユーザーはパフォーマンスの遅さを感じにくくなります。[詳細](https://web.dev/pwa-page-transitions)"
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | title": {
     "message": "ページの切り替え時、ネットワークが遅いという印象を与えない"
   },
+  "lighthouse-core/audits/maskable-icon.js | description": {
+    "message": "マスク可能なアイコンでは、アプリをデバイスにインストールする際に、画像がレターボックス化されることなく図形全体が埋められます。[詳細](https://web.dev/maskable-icon/)"
+  },
+  "lighthouse-core/audits/maskable-icon.js | failureTitle": {
+    "message": "マニフェストにマスク可能なアイコンは含まれていません"
+  },
+  "lighthouse-core/audits/maskable-icon.js | title": {
+    "message": "マニフェストにマスク可能なアイコンが含まれています"
+  },
+  "lighthouse-core/audits/metrics/cumulative-layout-shift.js | description": {
+    "message": "Cumulative Layout Shift はビューポート内の視覚要素がどのくらい移動しているかを測定する指標です。[詳細](https://web.dev/cls)"
+  },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
     "message": "入力の推定待ち時間とは、ページ読み込みの最もビジーな 5 秒間における、ユーザーの入力に対するアプリの推定応答時間（ミリ秒単位）です。待ち時間が 50 ミリ秒より長い場合、ユーザーはアプリの反応が悪いと感じる可能性があります。[詳細](https://web.dev/estimated-input-latency)"
-  },
-  "lighthouse-core/audits/metrics/estimated-input-latency.js | title": {
-    "message": "入力の推定待ち時間"
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
     "message": "First Contentful Paint は、テキストまたは画像が初めてペイントされるまでにかかった時間です。[詳細](https://web.dev/first-contentful-paint)"
   },
-  "lighthouse-core/audits/metrics/first-contentful-paint.js | title": {
-    "message": "First Contentful Paint"
-  },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
-    "message": "First CPU Idle marks the first time at which the page's main thread is quiet enough to handle input.  [Learn more](https://web.dev/first-cpu-idle)."
-  },
-  "lighthouse-core/audits/metrics/first-cpu-idle.js | title": {
-    "message": "CPU の初回アイドル"
+    "message": "CPU の初回アイドルは、ページのメインスレッド処理が静止し、初めて入力の処理が可能になるまでにかかった時間です。[詳細](https://web.dev/first-cpu-idle)"
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "First Meaningful Paint は、ページの主要なコンテンツが可視化されるまでにかかった時間です。[詳細](https://web.dev/first-meaningful-paint)"
   },
-  "lighthouse-core/audits/metrics/first-meaningful-paint.js | title": {
-    "message": "First Meaningful Paint"
-  },
   "lighthouse-core/audits/metrics/interactive.js | description": {
     "message": "操作可能になるまでの時間とは、ページが完全に操作可能になるのに要する時間です。[詳細](https://web.dev/interactive)"
   },
-  "lighthouse-core/audits/metrics/interactive.js | title": {
-    "message": "インタラクティブになるまでの時間"
+  "lighthouse-core/audits/metrics/largest-contentful-paint.js | description": {
+    "message": "最大コンテンツの描画は、最も大きなテキストまたは画像が描画されるまでにかかった時間です。[詳細](https://web.dev/lighthouse-largest-contentful-paint)"
   },
   "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
-    "message": "ユーザーに発生する可能性がある初回入力遅延の最大推定時間とは、最も長いタスクの時間（ミリ秒単位）です。[詳細](https://developers.google.com/web/updates/2018/05/first-input-delay)"
-  },
-  "lighthouse-core/audits/metrics/max-potential-fid.js | title": {
-    "message": "初回入力遅延の最大推定時間"
+    "message": "初回入力遅延の最大推定時間は、ユーザーが最も長いタスクを行うのにかかると推定される時間です。[詳細](https://web.dev/lighthouse-max-potential-fid)"
   },
   "lighthouse-core/audits/metrics/speed-index.js | description": {
     "message": "速度インデックスは、ページのコンテンツが取り込まれて表示される速さを表します。[詳細](https://web.dev/speed-index)"
   },
-  "lighthouse-core/audits/metrics/speed-index.js | title": {
-    "message": "速度インデックス"
-  },
   "lighthouse-core/audits/metrics/total-blocking-time.js | description": {
-    "message": "タスクの時間が 50 ミリ秒を上回った場合の、コンテンツの初回ペイントから操作可能になるまでのすべての時間の合計を、ミリ秒単位で表します。"
-  },
-  "lighthouse-core/audits/metrics/total-blocking-time.js | title": {
-    "message": "合計ブロック時間"
+    "message": "タスクの処理時間が 50 ミリ秒を上回った場合の、コンテンツの初回描画から操作可能になるまでの合計時間（ミリ秒）です。[詳細](https://web.dev/lighthouse-total-blocking-time)"
   },
   "lighthouse-core/audits/network-rtt.js | description": {
     "message": "ネットワークのラウンドトリップ時間（RTT）はパフォーマンスに大きく影響します。発信元への RTT が高い場合は、サーバーの場所をユーザーの近くにするとパフォーマンスを改善できることを示しています。[詳細](https://hpbn.co/primer-on-latency-and-bandwidth/)"
@@ -839,6 +917,9 @@
   "lighthouse-core/audits/offline-start-url.js | description": {
     "message": "Service Worker によって、ネットワークが予期しない状態になったときでもウェブアプリの安定した動作が可能になります。[詳細](https://web.dev/offline-start-url)"
   },
+  "lighthouse-core/audits/offline-start-url.js | errorLoading": {
+    "message": "Service Worker で {url} の読み込み中にエラーが発生しました。ステータス コード: {statusCode}"
+  },
   "lighthouse-core/audits/offline-start-url.js | failureTitle": {
     "message": "`start_url` は、オフライン時にステータス 200 の応答を返しません"
   },
@@ -847,9 +928,6 @@
   },
   "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
     "message": "Lighthouse でマニフェストから `start_url` を読み取れませんでした。その結果、`start_url` はドキュメントの URL と認識されています。エラー メッセージ: 「{manifestWarning}」。"
-  },
-  "lighthouse-core/audits/performance-budget.js | columnOverBudget": {
-    "message": "予算超過"
   },
   "lighthouse-core/audits/performance-budget.js | description": {
     "message": "ネットワーク リクエストの数とサイズが、指定したパフォーマンス予算の設定目標内に収まるよう維持します。[詳細](https://developers.google.com/web/tools/lighthouse/audits/budgets)"
@@ -919,9 +997,6 @@
   },
   "lighthouse-core/audits/seo/font-size.js | explanationViewport": {
     "message": "テキストが判読できません。モバイル スクリーン向けに最適化されたビューポート メタタグがありません。"
-  },
-  "lighthouse-core/audits/seo/font-size.js | explanationWithDisclaimer": {
-    "message": "{decimalProportion, number, extendedPercent} のテキストが小さすぎます（{decimalProportionVisited, number, extendedPercent} のサンプルを基準とします）。"
   },
   "lighthouse-core/audits/seo/font-size.js | failureTitle": {
     "message": "ドキュメントで判読可能なフォントサイズが使用されていません"
@@ -1089,19 +1164,19 @@
     "message": "第三者コードの影響を抑えてください"
   },
   "lighthouse-core/audits/third-party-summary.js | title": {
-    "message": "第三者コードの利用"
+    "message": "第三者の使用の最小化"
   },
-  "lighthouse-core/audits/time-to-first-byte.js | description": {
-    "message": "最初の 1 バイトまでの時間は、サーバーが応答を返すまでにかかった時間を表しています。[詳細](https://web.dev/time-to-first-byte)"
+  "lighthouse-core/audits/timing-budget.js | columnMeasurement": {
+    "message": "測定値"
   },
-  "lighthouse-core/audits/time-to-first-byte.js | displayValue": {
-    "message": "ルート ドキュメントの読み込みに {timeInMs, number, milliseconds} ミリ秒かかりました"
+  "lighthouse-core/audits/timing-budget.js | columnTimingMetric": {
+    "message": "指標"
   },
-  "lighthouse-core/audits/time-to-first-byte.js | failureTitle": {
-    "message": "サーバー応答時間の短縮（TTFB）"
+  "lighthouse-core/audits/timing-budget.js | description": {
+    "message": "タイミング予算を設定すると、サイトのパフォーマンス管理に役立ちます。パフォーマンスが高いサイトは読み込みが早く、ユーザーの入力イベントにすばやく応答できます。[詳細](https://developers.google.com/web/tools/lighthouse/audits/budgets)"
   },
-  "lighthouse-core/audits/time-to-first-byte.js | title": {
-    "message": "サーバーの応答時間が遅い（TTFB）"
+  "lighthouse-core/audits/timing-budget.js | title": {
+    "message": "タイミング予算"
   },
   "lighthouse-core/audits/user-timings.js | columnDuration": {
     "message": "継続時間"
@@ -1129,6 +1204,9 @@
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | title": {
     "message": "必須のドメインへの事前接続"
+  },
+  "lighthouse-core/audits/uses-rel-preconnect.js | tooManyPreconnectLinksWarning": {
+    "message": "事前接続のリンクが 3 個以上見つかりました。事前接続のリンクは控えめに、最も重要なリンク元にのみ使用する必要があります。"
   },
   "lighthouse-core/audits/uses-rel-preload.js | crossoriginWarning": {
     "message": "「{preloadURL}」のプリロード <link> が見つかりましたが、ブラウザで使用されませんでした。`crossorigin` 属性を適切に使用していることをご確認ください。"
@@ -1316,6 +1394,12 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "スマホ対応"
   },
+  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
+    "message": "テスト URL（{requested}）が「{final}」にリダイレクトされているため、このページは想定どおりに読み込まれない可能性があります。2 番目の URL を直接テストしてみてください。"
+  },
+  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
+    "message": "ページの読み込みに時間がかかり、制限時間内に完了できませんでした。結果は不完全な場合があります。"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "キャッシュの TTL"
   },
@@ -1325,14 +1409,23 @@
   "lighthouse-core/lib/i18n/i18n.js | columnName": {
     "message": "名前"
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnOverBudget": {
+    "message": "予算超過"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnRequests": {
     "message": "リクエスト"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnResourceSize": {
+    "message": "リソースのサイズ"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnResourceType": {
     "message": "リソースの種類"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnSize": {
     "message": "サイズ"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnSource": {
+    "message": "ソース"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnTimeSpent": {
     "message": "かかった時間"
@@ -1349,6 +1442,9 @@
   "lighthouse-core/lib/i18n/i18n.js | columnWastedMs": {
     "message": "短縮できる時間"
   },
+  "lighthouse-core/lib/i18n/i18n.js | cumulativeLayoutShiftMetric": {
+    "message": "累積レイアウト変更"
+  },
   "lighthouse-core/lib/i18n/i18n.js | displayValueByteSavings": {
     "message": "{wastedBytes, number, bytes} KB 減らせます"
   },
@@ -1358,11 +1454,32 @@
   "lighthouse-core/lib/i18n/i18n.js | documentResourceType": {
     "message": "ドキュメント"
   },
+  "lighthouse-core/lib/i18n/i18n.js | estimatedInputLatencyMetric": {
+    "message": "入力の推定待ち時間"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | firstCPUIdleMetric": {
+    "message": "CPU の初回アイドル"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | firstContentfulPaintMetric": {
+    "message": "First Contentful Paint"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | firstMeaningfulPaintMetric": {
+    "message": "First Meaningful Paint"
+  },
   "lighthouse-core/lib/i18n/i18n.js | fontResourceType": {
     "message": "フォント"
   },
   "lighthouse-core/lib/i18n/i18n.js | imageResourceType": {
     "message": "画像"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | interactiveMetric": {
+    "message": "インタラクティブになるまでの時間"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | largestContentfulPaintMetric": {
+    "message": "最大コンテンツの描画"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | maxPotentialFIDMetric": {
+    "message": "初回入力遅延の最大推定時間"
   },
   "lighthouse-core/lib/i18n/i18n.js | mediaResourceType": {
     "message": "メディア"
@@ -1379,11 +1496,17 @@
   "lighthouse-core/lib/i18n/i18n.js | seconds": {
     "message": "{timeInMs, number, seconds} 秒"
   },
+  "lighthouse-core/lib/i18n/i18n.js | speedIndexMetric": {
+    "message": "速度インデックス"
+  },
   "lighthouse-core/lib/i18n/i18n.js | stylesheetResourceType": {
     "message": "スタイルシート"
   },
   "lighthouse-core/lib/i18n/i18n.js | thirdPartyResourceType": {
     "message": "第三者"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | totalBlockingTimeMetric": {
+    "message": "合計ブロック時間"
   },
   "lighthouse-core/lib/i18n/i18n.js | totalResourceType": {
     "message": "合計"
@@ -1448,11 +1571,38 @@
   "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
     "message": "クリティカル パスの最大待ち時間:"
   },
+  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
+    "message": "JSON をコピー"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
+    "message": "ダークテーマの切り替え"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
+    "message": "完全版を印刷"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
+    "message": "概要を印刷"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
+    "message": "Gist 形式で保存"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
+    "message": "HTML 形式で保存"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
+    "message": "JSON 形式で保存"
+  },
+  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
+    "message": "ビューアで開く"
+  },
   "lighthouse-core/report/html/renderer/util.js | errorLabel": {
     "message": "エラー"
   },
   "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
     "message": "レポートエラー: 監査情報はありません"
+  },
+  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
+    "message": "問題を提出"
   },
   "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
     "message": "ラボデータ"
@@ -1475,6 +1625,48 @@
   "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
     "message": "合格した監査"
   },
+  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "デスクトップのエミュレーション"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
+    "message": "Moto G4 のエミュレーション"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
+    "message": "エミュレーションなし"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "CPU / メモリの処理能力"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "CPU スロットリング"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
+    "message": "チャネル"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
+    "message": "デバイス"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "取得日時"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "ネットワーク スロットリング"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
+    "message": "ランタイム設定"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
+    "message": "ユーザー エージェント（ホスト）"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "ユーザー エージェント（ネットワーク）"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
+    "message": "URL"
+  },
+  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
+    "message": "不明"
+  },
   "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
     "message": "スニペットを折りたたむ"
   },
@@ -1483,6 +1675,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
     "message": "第三者リソースを表示"
+  },
+  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
+    "message": "環境により提供"
   },
   "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
     "message": "Lighthouse の実行に影響する問題が発生しました。"
@@ -1496,6 +1691,93 @@
   "lighthouse-core/report/html/renderer/util.js | warningHeader": {
     "message": "警告: "
   },
+  "stack-packs/packs/amp.js | efficient_animated_content": {
+    "message": "アニメーション コンテンツの場合は、[amp-anim](https://amp.dev/documentation/components/amp-anim/) を使用して、コンテンツをオフスクリーンにしたまま CPU 使用量を最小限に抑えることができます。"
+  },
+  "stack-packs/packs/amp.js | offscreen_images": {
+    "message": "最初のビューポートの外側で自動的に遅延読み込みされる画像に対し、有効な `amp-img` タグを使用していることを確認します。[詳細](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)"
+  },
+  "stack-packs/packs/amp.js | render_blocking_resources": {
+    "message": "[AMP Optimizer](https://github.com/ampproject/amp-toolbox/tree/master/packages/optimizer) などのツールを使用して、[AMP レイアウトをサーバーサイドでレンダリング](https://amp.dev/documentation/guides-and-tutorials/optimize-and-measure/server-side-rendering/)します。"
+  },
+  "stack-packs/packs/amp.js | unminified_css": {
+    "message": "[AMP のドキュメント](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/style_pages/)で、使用しているスタイルがすべてサポートされているか確認します。"
+  },
+  "stack-packs/packs/amp.js | uses_responsive_images": {
+    "message": "`amp-img` 要素では `srcset` 属性を使用して、画面サイズに応じてどの画像アセットを使用するかを指定できます。[詳細](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/art_direction/)"
+  },
+  "stack-packs/packs/amp.js | uses_webp_images": {
+    "message": "すべての `amp-img` コンポーネントを WebP 形式で表示し、他のブラウザには適切な代替画像を表示することを検討してください。[詳細](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)"
+  },
+  "stack-packs/packs/angular.js | dom_size": {
+    "message": "大きなリストをレンダリングする場合は、Component Dev Kit（CDK）で仮想スクロールを行うことを検討してください。[詳細](https://web.dev/virtualize-lists-with-angular-cdk/)"
+  },
+  "stack-packs/packs/angular.js | total_byte_weight": {
+    "message": "JavaScript バンドルのサイズを最小限に抑えるには、[ルートレベルのコード分割](https://web.dev/route-level-code-splitting-in-angular/)を適用します。また、[Angular Service Worker](https://web.dev/precaching-with-the-angular-service-worker/) でアセットを事前キャッシュすることも検討してください。"
+  },
+  "stack-packs/packs/angular.js | unminified_warning": {
+    "message": "Angular CLI を使用している場合は、本番環境モードでビルドを生成していることを確認します。[詳細](https://angular.io/guide/deployment#enable-runtime-production-mode)"
+  },
+  "stack-packs/packs/angular.js | unused_javascript": {
+    "message": "Angular CLI を使用している場合は、ソースマップを本番環境用ビルドに含め、バンドルを調べられるようにします。[詳細](https://angular.io/guide/deployment#inspect-the-bundles)"
+  },
+  "stack-packs/packs/angular.js | uses_rel_preload": {
+    "message": "ナビゲーションの速度を上げるにはルートをプリロードします。[詳細](https://web.dev/route-preloading-in-angular/)"
+  },
+  "stack-packs/packs/angular.js | uses_responsive_images": {
+    "message": "画像のブレークポイントを管理するには、Component Dev Kit（CDK）の `BreakpointObserver` ユーティリティを使用することを検討してください。[詳細](https://material.angular.io/cdk/layout/overview)"
+  },
+  "stack-packs/packs/magento.js | critical_request_chains": {
+    "message": "JavaScript アセットをバンドルしていない場合は、[baler](https://github.com/magento/baler) の使用を検討してください。"
+  },
+  "stack-packs/packs/magento.js | disable_bundling": {
+    "message": "Magento の組み込みの [JavaScript バンドルと圧縮](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html)を無効にします。代わりに [baler](https://github.com/magento/baler/) の使用を検討してください。"
+  },
+  "stack-packs/packs/magento.js | font_display": {
+    "message": "[カスタム フォントを定義](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/css-topics/using-fonts.html)する際に `@font-display` を指定します。"
+  },
+  "stack-packs/packs/magento.js | offscreen_images": {
+    "message": "ウェブ プラットフォームの[遅延読み込み](https://web.dev/native-lazy-loading)機能を活用できるように、ご使用のサービスとカタログのテンプレートを編集することを検討してください。"
+  },
+  "stack-packs/packs/magento.js | unminified_css": {
+    "message": "ストアのデベロッパー設定で [CSS ファイルを圧縮] オプションを有効にします。[詳細](https://devdocs.magento.com/guides/v2.3/performance-best-practices/configuration.html?itm_source=devdocs&itm_medium=search_page&itm_campaign=federated_search&itm_term=minify%20css%20files)"
+  },
+  "stack-packs/packs/magento.js | unminified_javascript": {
+    "message": "[Terser](https://www.npmjs.com/package/terser) を使用して静的なコンテンツ実装からの JavaScript アセットをすべて圧縮するとともに、組み込みの圧縮機能を無効にします。"
+  },
+  "stack-packs/packs/magento.js | unused_javascript": {
+    "message": "Magento の組み込みの [JavaScript バンドル](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html)を無効にします。"
+  },
+  "stack-packs/packs/magento.js | uses_optimized_images": {
+    "message": "画像を最適化するには、[Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=optimize%20image) にさまざまな第三者の拡張機能がありますので、検索してみてください。"
+  },
+  "stack-packs/packs/magento.js | uses_rel_preconnect": {
+    "message": "[テーマのレイアウトを編集](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)して、事前接続または DNS プリフェッチのリソースヒントを追加できます。"
+  },
+  "stack-packs/packs/magento.js | uses_rel_preload": {
+    "message": "[テーマのレイアウトを編集](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)して、`<link rel=preload>` タグを追加できます。"
+  },
+  "stack-packs/packs/magento.js | uses_webp_images": {
+    "message": "より新しい画像形式を活用するには、[Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=webp) にさまざまな第三者の拡張機能がありますので、検索してみてください。"
+  },
+  "stack-packs/packs/react.js | dom_size": {
+    "message": "ページに多くの繰り返し要素をレンダリングする場合は、作成される DOM ノードの数が最小限で済むように、`react-window` などの「ウィンドウ設定」用のライブラリを使用することを検討してください。[詳細](https://web.dev/virtualize-long-lists-react-window/)また、ランタイム パフォーマンスの向上に Effect フックを使用している場合は、[shouldComponentUpdate](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action)、[PureComponent](https://reactjs.org/docs/react-api.html#reactpurecomponent)、[React.memo](https://reactjs.org/docs/react-api.html#reactmemo) を使用した不要な再レンダリングを抑えるとともに、特定の依存関係が変化するところまでのみ[効果をスキップ](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects)します。"
+  },
+  "stack-packs/packs/react.js | redirects": {
+    "message": "React Router を使用している場合、`<Redirect>` コンポーネントを使った[ナビゲーションのルーティング](https://reacttraining.com/react-router/web/api/Redirect)は最小限にします。"
+  },
+  "stack-packs/packs/react.js | unminified_css": {
+    "message": "ご使用のビルドシステムで CSS ファイルが自動的に圧縮される場合は、アプリケーションの本番環境用ビルドをデプロイしていることを確認します。確認には React Developer Tools 拡張機能を使用できます。[詳細](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)"
+  },
+  "stack-packs/packs/react.js | unminified_javascript": {
+    "message": "ご使用のビルドシステムで JS ファイルが自動的に圧縮される場合は、アプリケーションの本番環境用ビルドをデプロイしていることを確認します。確認には React Developer Tools 拡張機能を使用できます。[詳細](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)"
+  },
+  "stack-packs/packs/react.js | unused_javascript": {
+    "message": "サーバーサイドのレンダリングを行わない場合は、`React.lazy()` で [JavaScript バンドルを分割](https://web.dev/code-splitting-suspense/)します。それ以外は、[loadable-components](https://www.smooth-code.com/open-source/loadable-components/docs/getting-started/) などの第三者ライブラリを使用してコードを分割します。"
+  },
+  "stack-packs/packs/react.js | user_timings": {
+    "message": "Profiler API を採用している React DevTools Profiler を使用して、コンポーネントのレンダリング性能を測定します。[詳細](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
+  },
   "stack-packs/packs/wordpress.js | efficient_animated_content": {
     "message": "GIF を HTML5 動画として埋め込み可能なサービスにアップロードすることをご検討ください。"
   },
@@ -1504,9 +1786,6 @@
   },
   "stack-packs/packs/wordpress.js | render_blocking_resources": {
     "message": "[重要なアセットをインラインで読み込む](https://wordpress.org/plugins/search/critical+css/)または[重要度が低いリソースの読み込みを遅らせる](https://wordpress.org/plugins/search/defer+css+javascript/)ために役立つ、さまざまな WordPress プラグインがあります。ただし、これらのプラグインの最適化処理によって、テーマやプラグインの機能が阻害されることがあります。その場合は、コードを変更する必要があります。"
-  },
-  "stack-packs/packs/wordpress.js | time_to_first_byte": {
-    "message": "テーマ、プラグイン、サーバー仕様はすべてサーバーの応答時間に影響します。より最適化されたテーマを探す、最適化プラグインを慎重に選ぶ、サーバーをアップグレードすることをおすすめします。"
   },
   "stack-packs/packs/wordpress.js | total_byte_weight": {
     "message": "「詳しく読む」タグなどを使用して投稿リストに抜粋を表示する、ページに表示する投稿の数を減らす、長い投稿を複数のページに分けて表示する、またはコメントを遅延読み込みするプラグインを使用することをご検討ください。"
@@ -1524,13 +1803,13 @@
     "message": "ページで使用されていない JavaScript を読み込む [WordPress プラグイン](https://wordpress.org/plugins/)の数を減らすか、他のプラグインに切り替えることをご検討ください。不要な JavaScript を読み込んでいるプラグインを特定するには、Chrome DevTools で[コードの Coverage](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) を確認します。スクリプトの URL から、該当のテーマやプラグインを特定できます。多くのスクリプトを使用しているプラグイン（コードの Coverage で赤色の部分が多いもの）をリストで探します。プラグインによってキューに追加されるスクリプトは、実際にページで使用されるもののみにする必要があります。"
   },
   "stack-packs/packs/wordpress.js | uses_long_cache_ttl": {
-    "message": "[WordPress のブラウザ キャッシング](https://codex.wordpress.org/WordPress_Optimization#Browser_Caching)についてご確認ください。"
+    "message": "[WordPress のブラウザ キャッシング](https://wordpress.org/support/article/optimization/#browser-caching)についてご確認ください。"
   },
   "stack-packs/packs/wordpress.js | uses_optimized_images": {
     "message": "画質を落とさずに画像を圧縮できる [WordPress の画像最適化プラグイン](https://wordpress.org/plugins/search/optimize+images/)の使用をご検討ください。"
   },
   "stack-packs/packs/wordpress.js | uses_responsive_images": {
-    "message": "[メディア ライブラリ](https://codex.wordpress.org/Media_Library_Screen)から直接画像をアップロードして必要な画像サイズを利用できるようにしたうえで、メディア ライブラリから挿入するか、画像ウィジェットを使用して、最適な画像サイズ（レスポンシブ ブレークポイントのサイズを含む）が使用されるようにします。「`Full Size`」の画像は、十分なスペースがある場合を除いて使用しないようにします。[詳細](https://codex.wordpress.org/Inserting_Images_into_Posts_and_Pages#Image_Size)"
+    "message": "[メディア ライブラリ](https://wordpress.org/support/article/media-library-screen/)から直接画像をアップロードして必要な画像サイズを利用できるようにしたうえで、メディア ライブラリから挿入するか、画像ウィジェットを使用して、最適な画像サイズ（レスポンシブ ブレークポイントのサイズを含む）が使用されるようにします。「`Full Size`」の画像は、十分なスペースがある場合を除いて使用しないようにします。[詳細](https://wordpress.org/support/article/inserting-images-into-posts-and-pages/)"
   },
   "stack-packs/packs/wordpress.js | uses_text_compression": {
     "message": "ウェブサーバーの設定でテキスト圧縮を有効にできます。"

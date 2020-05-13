@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import {Event, ObjectSnapshot, TracingModel} from './TracingModel.js';  // eslint-disable-line no-unused-vars
 
 /**
@@ -16,6 +13,13 @@ export class FilmStripModel {
    * @param {number=} zeroTime
    */
   constructor(tracingModel, zeroTime) {
+    /** @type {!Array<!Frame>} */
+    this._frames = [];
+    /** @type {number} */
+    this._zeroTime = 0;
+    /** @type {number} */
+    this._spanTime = 0;
+
     this.reset(tracingModel, zeroTime);
   }
 

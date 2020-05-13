@@ -244,7 +244,7 @@ export class TimelineUIUtils {
     return regExp.test(tokens.join('|'));
 
     /**
-     * @param {!Object} object
+     * @param {!*} object
      * @param {number} depth
      */
     function appendObjectProperties(object, depth) {

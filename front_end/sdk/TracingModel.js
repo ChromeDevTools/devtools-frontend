@@ -575,7 +575,7 @@ export class Event {
     this.startTime = startTime;
     /** @type {!Thread} */
     this.thread = thread;
-    /** @type {!Object} */
+    /** @type {!*} */
     this.args = {};
 
     /** @type {number} */
@@ -653,7 +653,7 @@ export class Event {
   }
 
   /**
-   * @param {!Object} args
+   * @param {!*} args
    */
   addArgs(args) {
     // Shallow copy args to avoid modifying original payload which may be saved to file.

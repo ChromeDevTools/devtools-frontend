@@ -202,7 +202,8 @@ export class ResourceScriptMapping {
     const scriptFile = new ResourceScriptFile(this, uiSourceCode, [script]);
     this._uiSourceCodeToScriptFile.set(uiSourceCode, scriptFile);
 
-    project.addUISourceCodeWithProvider(uiSourceCode, originalContentProvider, metadata, 'text/javascript');
+    const mimeType = script.isWasm() ? 'text/webassembly' : 'text/javascript';
+    project.addUISourceCodeWithProvider(uiSourceCode, originalContentProvider, metadata, mimeType);
     await this._debuggerWorkspaceBinding.updateLocations(script);
   }
 

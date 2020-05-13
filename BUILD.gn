@@ -1513,6 +1513,7 @@ all_devtools_modules = [
   "third_party/codemirror/package/mode/xml/xml.js",
   "third_party/codemirror/package/mode/htmlmixed/htmlmixed.js",
   "third_party/codemirror/package/mode/htmlembedded/htmlembedded.js",
+  "third_party/codemirror/package/mode/wast/wast.js",
   "third_party/wasmparser/WasmDis.js",
   "third_party/wasmparser/WasmParser.js",
   "timeline/UIDevtoolsUtils.js",

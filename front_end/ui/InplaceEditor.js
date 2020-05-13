@@ -15,7 +15,7 @@ import {ElementFocusRestorer, markBeingEdited} from './UIUtils.js';
 export class InplaceEditor {
   /**
    * @param {!Element} element
-   * @param {!Config=} config
+   * @param {!Config<?>=} config
    * @return {?Controller}
    */
   static startEditing(element, config) {

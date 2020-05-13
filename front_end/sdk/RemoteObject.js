@@ -297,9 +297,10 @@ export class RemoteObject {
   }
 
   /**
-   * @param {function(this:Object, ...):*} functionDeclaration
+   * @param {function(this:Object, ...):T} functionDeclaration
    * @param {!Array<!Protocol.Runtime.CallArgument>=} args
    * @return {!Promise<!CallFunctionResult>}
+   * @template T
    */
   callFunction(functionDeclaration, args) {
     throw 'Not implemented';
@@ -634,9 +635,10 @@ export class RemoteObjectImpl extends RemoteObject {
 
   /**
    * @override
-   * @param {function(this:Object, ...):*} functionDeclaration
+   * @param {function(this:Object, ...):T} functionDeclaration
    * @param {!Array<!Protocol.Runtime.CallArgument>=} args
    * @return {!Promise<!CallFunctionResult>}
+   * @template T
    */
   async callFunction(functionDeclaration, args) {
     const response = await this._runtimeAgent.invoke_callFunctionOn(
@@ -1089,9 +1091,10 @@ export class LocalJSONObject extends RemoteObject {
 
   /**
    * @override
-   * @param {function(this:Object, ...):*} functionDeclaration
+   * @param {function(this:Object, ...):T} functionDeclaration
    * @param {!Array<!Protocol.Runtime.CallArgument>=} args
    * @return {!Promise<!CallFunctionResult>}
+   * @template T
    */
   callFunction(functionDeclaration, args) {
     const target = /** @type {?Object} */ (this._value);

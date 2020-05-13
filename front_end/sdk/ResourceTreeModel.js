@@ -421,7 +421,7 @@ export class ResourceTreeModel extends SDKModel {
 
   /**
    * @param {string} url
-   * @return {!Promise}
+   * @return {!Promise<?>}
    */
   navigate(url) {
     return this._agent.navigate(url);

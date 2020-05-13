@@ -50,7 +50,7 @@ export class ChildTargetManager extends SDKModel {
   }
 
   /**
-   * @param {function({target: !Target, waitingForDebugger: boolean}):!Promise=} attachCallback
+   * @param {function({target: !Target, waitingForDebugger: boolean}):!Promise<?>=} attachCallback
    */
   static install(attachCallback) {
     _attachCallback = attachCallback;
@@ -59,7 +59,7 @@ export class ChildTargetManager extends SDKModel {
 
   /**
    * @override
-   * @return {!Promise}
+   * @return {!Promise<?>}
    */
   suspendModel() {
     return this._targetAgent.invoke_setAutoAttach({autoAttach: true, waitForDebuggerOnStart: false, flatten: true});
@@ -67,7 +67,7 @@ export class ChildTargetManager extends SDKModel {
 
   /**
    * @override
-   * @return {!Promise}
+   * @return {!Promise<?>}
    */
   resumeModel() {
     return this._targetAgent.invoke_setAutoAttach({autoAttach: true, waitForDebuggerOnStart: true, flatten: true});

@@ -334,7 +334,7 @@ export class CSSMatchedStyles {
 
   /**
    * @param {!CSSStyleRule} rule
-   * @return {!Promise}
+   * @return {!Promise<?>}
    */
   recomputeMatchingSelectors(rule) {
     const node = this.nodeForStyle(rule.style);
@@ -372,7 +372,7 @@ export class CSSMatchedStyles {
   /**
    * @param {!CSSStyleRule} rule
    * @param {!DOMNode} node
-   * @return {!Promise}
+   * @return {!Promise<?>}
    */
   addNewRule(rule, node) {
     this._addedStyles.set(rule.style, node);

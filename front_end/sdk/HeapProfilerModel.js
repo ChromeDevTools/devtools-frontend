@@ -251,7 +251,6 @@ export const Events = {
 };
 
 /**
- * @implements {Protocol.Profiler.Profile}
  * @extends {Protocol.HeapProfiler.SamplingHeapProfile}
  */
 class NativeHeapProfile {

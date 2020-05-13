@@ -267,7 +267,7 @@ export class CSSModel extends SDKModel {
   }
 
   /**
-   * @return {!Promise}
+   * @return {!Promise<?>}
    */
   stopCoverage() {
     this._isRuleUsageTrackingEnabled = false;
@@ -290,7 +290,7 @@ export class CSSModel extends SDKModel {
   }
 
   /**
-   * @return {!Promise}
+   * @return {!Promise<?>}
    */
   async _enable() {
     await this._agent.enable();
@@ -697,7 +697,7 @@ export class CSSModel extends SDKModel {
 
   /**
    * @override
-   * @return {!Promise}
+   * @return {!Promise<?>}
    */
   suspendModel() {
     this._isEnabled = false;
@@ -706,7 +706,7 @@ export class CSSModel extends SDKModel {
 
   /**
    * @override
-   * @return {!Promise}
+   * @return {!Promise<?>}
    */
   async resumeModel() {
     return this._enable();

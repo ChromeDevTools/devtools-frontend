@@ -51,7 +51,7 @@ export class View {
   }
 
   /**
-   * @return {!Promise<void>|undefined}
+   * @return {!Promise<void>|void}
    */
   disposeView() {}
 }

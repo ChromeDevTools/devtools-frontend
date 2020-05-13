@@ -81,7 +81,7 @@ export class EmulationModel extends SDKModel {
   }
 
   /**
-   * @return {!Promise}
+   * @return {!Promise<?>}
    */
   resetPageScaleFactor() {
     return this._emulationAgent.resetPageScaleFactor();
@@ -89,7 +89,7 @@ export class EmulationModel extends SDKModel {
 
   /**
    * @param {?Protocol.PageAgent.SetDeviceMetricsOverrideRequest} metrics
-   * @return {!Promise}
+   * @return {!Promise<?>}
    */
   emulateDevice(metrics) {
     if (metrics) {

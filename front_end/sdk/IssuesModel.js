@@ -159,7 +159,8 @@ function createIssuesForSameSiteCookieIssue(issuesModel, inspectorDetails) {
   // for every exclusion reason but ignore warning reasons if the cookie was blocked.
   if (sameSiteDetails.cookieExclusionReasons && sameSiteDetails.cookieExclusionReasons.length > 0) {
     for (const exclusionReason of sameSiteDetails.cookieExclusionReasons) {
-      const code = SameSiteCookieIssue.codeForSameSiteDetails(exclusionReason, sameSiteDetails.operation);
+      const code = SameSiteCookieIssue.codeForSameSiteDetails(
+          exclusionReason, sameSiteDetails.operation, sameSiteDetails.cookieUrl);
       issues.push(new SameSiteCookieIssue(code, sameSiteDetails));
     }
     return issues;
@@ -167,7 +168,8 @@ function createIssuesForSameSiteCookieIssue(issuesModel, inspectorDetails) {
 
   if (sameSiteDetails.cookieWarningReasons) {
     for (const warningReason of sameSiteDetails.cookieWarningReasons) {
-      const code = SameSiteCookieIssue.codeForSameSiteDetails(warningReason, sameSiteDetails.operation);
+      const code = SameSiteCookieIssue.codeForSameSiteDetails(
+          warningReason, sameSiteDetails.operation, sameSiteDetails.cookieUrl);
       issues.push(new SameSiteCookieIssue(code, sameSiteDetails));
     }
   }

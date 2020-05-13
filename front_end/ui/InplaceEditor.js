@@ -88,7 +88,7 @@ export class InplaceEditor {
 
   /**
    * @param {!Element} element
-   * @param {!Config=} config
+   * @param {!Config<*>=} config
    * @return {?Controller}
    */
   startEditing(element, config) {

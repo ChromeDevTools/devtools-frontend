@@ -92,7 +92,7 @@ export class ServiceWorkerCacheModel extends SDKModel {
   /**
    * @param {!Cache} cache
    * @param {string} request
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   async deleteCacheEntry(cache, request) {
     const response = await this._cacheAgent.invoke_deleteEntry({cacheId: cache.cacheId, request});
@@ -196,7 +196,7 @@ export class ServiceWorkerCacheModel extends SDKModel {
 
   /**
    * @param {string} securityOrigin
-   * @param {!Array} cachesJson
+   * @param {!Array<*>} cachesJson
    */
   _updateCacheNames(securityOrigin, cachesJson) {
     /**

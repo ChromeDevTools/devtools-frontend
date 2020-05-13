@@ -301,7 +301,7 @@ export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper {
 export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!Array.<!Item>} items
-   * @param {!Common.Settings.Setting=} setting
+   * @param {!Common.Settings.Setting<*>=} setting
    */
   constructor(items, setting) {
     super();
@@ -493,7 +493,7 @@ export class CheckboxFilterUI extends Common.ObjectWrapper.ObjectWrapper {
    * @param {string} className
    * @param {string} title
    * @param {boolean=} activeWhenChecked
-   * @param {!Common.Settings.Setting=} setting
+   * @param {!Common.Settings.Setting<*>=} setting
    */
   constructor(className, title, activeWhenChecked, setting) {
     super();

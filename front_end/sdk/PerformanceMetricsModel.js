@@ -30,14 +30,14 @@ export class PerformanceMetricsModel extends SDKModel {
   }
 
   /**
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   enable() {
     return this._agent.enable();
   }
 
   /**
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   disable() {
     return this._agent.disable();

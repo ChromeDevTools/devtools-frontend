@@ -21,7 +21,7 @@ export class Infobar {
    * @param {!Type} type
    * @param {string} text
    * @param {!Array<!InfobarAction>=} actions
-   * @param {!Common.Settings.Setting=} disableSetting
+   * @param {!Common.Settings.Setting<*>=} disableSetting
    */
   constructor(type, text, actions, disableSetting) {
     this.element = document.createElement('div');
@@ -98,7 +98,7 @@ export class Infobar {
    * @param {!Type} type
    * @param {string} text
    * @param {!Array<!InfobarAction>=} actions
-   * @param {!Common.Settings.Setting=} disableSetting
+   * @param {!Common.Settings.Setting<*>=} disableSetting
    * @return {?Infobar}
    */
   static create(type, text, actions, disableSetting) {

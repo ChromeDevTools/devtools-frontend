@@ -278,7 +278,7 @@ export class ServiceWorkerManager extends SDKModel {
   }
 
   /**
-   * @return {!Common.Settings.Setting}
+   * @return {!Common.Settings.Setting<*>}
    */
   forceUpdateOnReloadSetting() {
     return this._forceUpdateSetting;

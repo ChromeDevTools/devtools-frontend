@@ -297,7 +297,7 @@ export class LayerTreeBase {
 
   /**
    * @param {!Set<number>} requestedNodeIds
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   async resolveBackendNodeIds(requestedNodeIds) {
     if (!requestedNodeIds.size || !this._domModel) {

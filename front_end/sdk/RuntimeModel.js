@@ -535,7 +535,7 @@ export class RuntimeModel extends SDKModel {
   }
 
   /**
-   * @return {!Promise}
+   * @return {!Promise<*>}
    */
   terminateExecution() {
     return this._agent.invoke_terminateExecution({});

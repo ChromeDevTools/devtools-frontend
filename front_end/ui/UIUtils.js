@@ -677,7 +677,7 @@ Number.withThousandsSeparator = function(num) {
 
 /**
  * @param {string} format
- * @param {?ArrayLike} substitutions
+ * @param {?ArrayLike<*>} substitutions
  * @return {!Element}
  */
 export function formatLocalized(format, substitutions) {
@@ -1214,7 +1214,7 @@ function _trackKeyboardFocus() {
 
 /**
  * @param {!Document} document
- * @param {!Common.Settings.Setting} themeSetting
+ * @param {!Common.Settings.Setting<string>} themeSetting
  */
 export function initializeUIUtils(document, themeSetting) {
   document.body.classList.toggle('inactive', !document.hasFocus());
@@ -1729,7 +1729,7 @@ export function measureTextWidth(context, text) {
  */
 export class ThemeSupport {
   /**
-   * @param {!Common.Settings.Setting} setting
+   * @param {!Common.Settings.Setting<string>} setting
    */
   constructor(setting) {
     const systemPreferredTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default';
@@ -2110,7 +2110,7 @@ export class MessageDialog {
   /**
    * @param {string} message
    * @param {!Document|!Element=} where
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   static async show(message, where) {
     const dialog = new Dialog();

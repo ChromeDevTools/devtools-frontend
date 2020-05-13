@@ -51,7 +51,7 @@ export class View {
   }
 
   /**
-   * @return {!Promise|undefined}
+   * @return {!Promise<void>|undefined}
    */
   disposeView() {}
 }
@@ -128,7 +128,7 @@ export class SimpleView extends VBox {
   }
 
   /**
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   revealView() {
     return ViewManager.instance().revealView(this);
@@ -250,7 +250,7 @@ export class ViewLocation {
    * @param {!View} view
    * @param {?View=} insertBefore
    * @param {boolean=} userGesture
-   * @return {!Promise}
+   * @return {!Promise<*>}
    */
   showView(view, insertBefore, userGesture) {
   }

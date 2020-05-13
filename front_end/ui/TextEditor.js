@@ -126,7 +126,7 @@ export const Events = {
 
 /**
  * @typedef {{
-  *  bracketMatchingSetting: (!Common.Settings.Setting|undefined),
+  *  bracketMatchingSetting: (!Common.Settings.Setting<*>|undefined),
   *  devtoolsAccessibleName: (string|undefined),
   *  lineNumbers: boolean,
   *  lineWrapping: boolean,

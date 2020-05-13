@@ -116,7 +116,7 @@ export class OverlayModel extends SDKModel {
 
   /**
    * @param {!HighlightRect} rect
-   * @return {!Promise}
+   * @return {!Promise<*>}
    */
   highlightRect({x, y, width, height, color, outlineColor}) {
     const highlightColor = color || {r: 255, g: 0, b: 255, a: 0.3};
@@ -126,14 +126,14 @@ export class OverlayModel extends SDKModel {
   }
 
   /**
-   * @return {!Promise}
+   * @return {!Promise<*>}
    */
   clearHighlight() {
     return this._overlayAgent.invoke_hideHighlight({});
   }
 
   /**
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   _wireAgentToSettings() {
     this._registeredListeners = [
@@ -182,7 +182,7 @@ export class OverlayModel extends SDKModel {
 
   /**
    * @override
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   suspendModel() {
     Common.EventTarget.EventTarget.removeEventListeners(this._registeredListeners);
@@ -191,7 +191,7 @@ export class OverlayModel extends SDKModel {
 
   /**
    * @override
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   resumeModel() {
     this._overlayAgent.enable();
@@ -230,7 +230,7 @@ export class OverlayModel extends SDKModel {
   /**
    * @param {!Protocol.Overlay.InspectMode} mode
    * @param {boolean=} showStyles
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   async setInspectMode(mode, showStyles = true) {
     await this._domModel.requestDocument();
@@ -412,7 +412,7 @@ export class Highlighter {
   /**
    * @param {!Protocol.Overlay.InspectMode} mode
    * @param {!Protocol.Overlay.HighlightConfig} config
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   setInspectMode(mode, config) {
   }
@@ -455,7 +455,7 @@ class DefaultHighlighter {
    * @override
    * @param {!Protocol.Overlay.InspectMode} mode
    * @param {!Protocol.Overlay.HighlightConfig} config
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   setInspectMode(mode, config) {
     return this._model._overlayAgent.setInspectMode(mode, config);

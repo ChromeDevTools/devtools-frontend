@@ -540,7 +540,7 @@ export class DOMNode {
 
   /**
    * @param {string} name
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   async removeAttribute(name) {
     const response = await this._agent.invoke_removeAttribute({nodeId: this.id, name});
@@ -1749,7 +1749,7 @@ export class DOMModel extends SDKModel {
 
   /**
    * @override
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   suspendModel() {
     return this._agent.disable().then(() => this._setDocument(null));
@@ -1757,7 +1757,7 @@ export class DOMModel extends SDKModel {
 
   /**
    * @override
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   resumeModel() {
     return this._agent.enable();
@@ -1972,7 +1972,7 @@ export class DOMModelUndoStack {
   }
 
   /**
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   undo() {
     if (this._index === 0) {
@@ -1984,7 +1984,7 @@ export class DOMModelUndoStack {
   }
 
   /**
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   redo() {
     if (this._index >= this._stack.length) {

@@ -148,7 +148,7 @@ export class HeapProfilerModel extends SDKModel {
   }
 
   /**
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   collectGarbage() {
     return this._heapProfilerAgent.collectGarbage();
@@ -174,7 +174,7 @@ export class HeapProfilerModel extends SDKModel {
 
   /**
    * @param {string} snapshotObjectId
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   addInspectedHeapObject(snapshotObjectId) {
     return this._heapProfilerAgent.addInspectedHeapObject(snapshotObjectId);
@@ -183,7 +183,7 @@ export class HeapProfilerModel extends SDKModel {
   /**
    * @param {boolean} reportProgress
    * @param {boolean} treatGlobalObjectsAsRoots
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   takeHeapSnapshot(reportProgress, treatGlobalObjectsAsRoots) {
     return this._heapProfilerAgent.takeHeapSnapshot(reportProgress, treatGlobalObjectsAsRoots);
@@ -191,7 +191,7 @@ export class HeapProfilerModel extends SDKModel {
 
   /**
    * @param {boolean} recordAllocationStacks
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   startTrackingHeapObjects(recordAllocationStacks) {
     return this._heapProfilerAgent.startTrackingHeapObjects(recordAllocationStacks);
@@ -199,7 +199,7 @@ export class HeapProfilerModel extends SDKModel {
 
   /**
    * @param {boolean} reportProgress
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   stopTrackingHeapObjects(reportProgress) {
     return this._heapProfilerAgent.stopTrackingHeapObjects(reportProgress);

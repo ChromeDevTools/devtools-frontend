@@ -136,7 +136,7 @@ export class DebuggerModel extends SDKModel {
   }
 
   /**
-   * @return {!Promise}
+   * @return {!Promise<?string>}
    */
   _enableDebugger() {
     if (this._debuggerEnabled) {
@@ -190,7 +190,7 @@ export class DebuggerModel extends SDKModel {
   }
 
   /**
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   async _disableDebugger() {
     if (!this._debuggerEnabled) {
@@ -285,7 +285,7 @@ export class DebuggerModel extends SDKModel {
 
   /**
    * @param {!Protocol.Runtime.StackTraceId} parentStackTraceId
-   * @return {!Promise}
+   * @return {!Promise<!Object>}
    */
   _pauseOnAsyncCall(parentStackTraceId) {
     return this._agent.invoke_pauseOnAsyncCall({parentStackTraceId: parentStackTraceId});
@@ -381,7 +381,7 @@ export class DebuggerModel extends SDKModel {
 
   /**
    * @param {!Protocol.Debugger.BreakpointId} breakpointId
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   async removeBreakpoint(breakpointId) {
     const response = await this._agent.invoke_removeBreakpoint({breakpointId});
@@ -979,7 +979,7 @@ export class DebuggerModel extends SDKModel {
 
   /**
    * @override
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   async suspendModel() {
     await this._disableDebugger();
@@ -987,7 +987,7 @@ export class DebuggerModel extends SDKModel {
 
   /**
    * @override
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   async resumeModel() {
     await this._enableDebugger();

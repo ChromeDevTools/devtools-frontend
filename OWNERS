@@ -1,38 +1,16 @@
 file://ENG_REVIEW_OWNERS
 
-per-file .clang-format=file:INFRA_OWNERS
-per-file .gitattributes=file:INFRA_OWNERS
-per-file .gitignore=file:INFRA_OWNERS
-per-file .gn=file:INFRA_OWNERS
-per-file DEPS=file:INFRA_OWNERS
-per-file PRESUBMIT.py=file:INFRA_OWNERS
-per-file build_overrides=file:INFRA_OWNERS
-per-file codereview.settings=file:INFRA_OWNERS
+per-file .clang-format=file://INFRA_OWNERS
+per-file .gitattributes=file://INFRA_OWNERS
+per-file .gitignore=file://INFRA_OWNERS
+per-file .gn=file://INFRA_OWNERS
+per-file DEPS=file://INFRA_OWNERS
+per-file PRESUBMIT.py=file://INFRA_OWNERS
+per-file codereview.settings=file://INFRA_OWNERS
+per-file package.json=file://INFRA_OWNERS
+per-file package-lock.json=file://INFRA_OWNERS
+per-file karma.conf.json=file://INFRA_OWNERS
+per-file tsconfig.json=file://INFRA_OWNERS
+per-file tsconfig.base.json=file://INFRA_OWNERS
+per-file htaccess=file://INFRA_OWNERS
 
-aerotwist@chromium.org
-bmeurer@chromium.org
-brgoddar@microsoft.com
-changhaohan@chromium.org
-dgozman@chromium.org
-einbinder@chromium.org
-fabio.rocha@microsoft.com
-jacktfranklin@chromium.org
-jalissia@microsoft.com
-janscheffler@chromium.org
-John.Emau@microsoft.com
-kahinds@microsoft.com
-leese@chromium.org
-lomitch@microsoft.com
-luoe@chromium.org
-lushnikov@chromium.org
-mathias@chromium.org
-mjackson@microsoft.com
-petermarshall@chromium.org
-pfaffe@chromium.org
-pfeldman@chromium.org
-Rob.Paveza@microsoft.com
-sigurds@chromium.org
-szuend@chromium.org
-tvanderlippe@chromium.org
-vidorteg@microsoft.com
-yangguo@chromium.org

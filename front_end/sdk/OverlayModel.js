@@ -22,6 +22,9 @@ export let HighlightColor;
  */
 export let HighlightRect;
 
+/** @typedef {!{width: number, height: number, x: number, y: number, contentColor:HighlightColor, outlineColor: HighlightColor}} */
+export let Hinge;
+
 /**
  * @implements {Protocol.OverlayDispatcher}
  */
@@ -289,6 +292,20 @@ export class OverlayModel extends SDKModel {
       this._hideHighlightTimeout = null;
     }
     this._highlighter.highlightFrame(frameId);
+  }
+
+  /**
+   * @param {boolean} show
+   * @param {?Hinge} hinge
+   */
+  showHingeForDualScreen(show, hinge = null) {
+    if (show) {
+      const {x, y, width, height, contentColor, outlineColor} = hinge;
+      this._overlayAgent.setShowHinge(
+          {rect: {x: x, y: y, width: width, height: height}, contentColor: contentColor, outlineColor: outlineColor});
+    } else {
+      this._overlayAgent.setShowHinge();
+    }
   }
 
   /**

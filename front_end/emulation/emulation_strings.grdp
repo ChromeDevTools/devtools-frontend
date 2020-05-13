@@ -24,6 +24,9 @@
   <message name="IDS_DEVTOOLS_146bdebb324a64d327b1dde22a07d0bd" desc="Text in Device Mode View of the Device Toolbar">
     Laptop
   </message>
+  <message name="IDS_DEVTOOLS_391e4e3cd855d914f85f3a4e1b9a00ea" desc="Title of the rotate/screen orientation button">
+    Screen orientation options
+  </message>
   <message name="IDS_DEVTOOLS_89999eac57e5838aa3adb04ad831f5d3" desc="Text in Sensors View of the Device Toolbar">
     Custom orientation
   </message>
@@ -258,6 +261,9 @@
   <message name="IDS_DEVTOOLS_a7e2da1e5160847a88912b69027bca09" desc="Stage element title in Sensors View of the Device Toolbar">
     Enable orientation to rotate
   </message>
+  <message name="IDS_DEVTOOLS_c15b53cb50624f0e86e1a9ef5a9dd120" desc="Title of the span/un-span button">
+    Toggle dual-screen mode
+  </message>
   <message name="IDS_DEVTOOLS_eebd338ddbd547e41e4a1296de82963a" desc="Title of Locations settings">
     Locations
   </message>
@@ -353,9 +359,6 @@
   </message>
   <message name="IDS_DEVTOOLS_ee1cab1975e28575b1631ee8fc4ea749" desc="Title of an action in the emulation tool to capture node screenshot">
     Capture node screenshot
-  </message>
-  <message name="IDS_DEVTOOLS_ee4cf994f6defec5951824b44f8047b1" desc="Text in Device Mode Toolbar of the Device Toolbar">
-    Screen options
   </message>
   <message name="IDS_DEVTOOLS_eec6c4bdbd339edf8cbea68becb85244" desc="Label in the Devices settings pane for the height input of a custom device">
     Height

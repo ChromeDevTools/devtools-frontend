@@ -7,7 +7,7 @@ import * as Host from '../host/host.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-import {EmulatedDevice, Horizontal, Mode} from './EmulatedDevices.js';  // eslint-disable-line no-unused-vars
+import {EmulatedDevice, Horizontal, Mode, Orientation} from './EmulatedDevices.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.EmulationModel.EmulationModel>}
@@ -25,6 +25,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     this._appliedDeviceSize = new UI.Geometry.Size(1, 1);
     this._appliedDeviceScaleFactor = window.devicePixelRatio;
     this._appliedUserAgentType = UA.Desktop;
+    this._experimentDualScreenSupport = Root.Runtime.experiments.isEnabled('dualScreenSupport');
 
     this._scaleSetting = Common.Settings.Settings.instance().createSetting('emulation.deviceScale', 1);
     // We've used to allow zero before.
@@ -412,6 +413,10 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
         this._onModelAvailable = null;
         callback();
       }
+      const resourceTreeModel = emulationModel.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
+      if (resourceTreeModel) {
+        resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameResized, this._onFrameResized, this);
+      }
     } else {
       emulationModel.emulateTouch(this._touchEnabled, this._touchMobile);
     }
@@ -432,6 +437,18 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
    */
   inspectedURL() {
     return this._emulationModel ? this._emulationModel.target().inspectedURL() : null;
+  }
+
+  _onFrameResized() {
+    const overlayModel = this._emulationModel ? this._emulationModel.overlayModel() : null;
+    if (!overlayModel || !this._type) {
+      return;
+    }
+
+    if (this._type === Type.Device) {
+      const orientation = this._device.orientationByName(this._mode.orientation);
+      this._showHingeIfApplicable(overlayModel, orientation);
+    }
   }
 
   _scaleSettingChanged() {
@@ -505,6 +522,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
       this._onModelAvailable = this._calculateAndEmulate.bind(this, resetPageScaleFactor);
     }
     const mobile = this._isMobile();
+    const overlayModel = this._emulationModel ? this._emulationModel.overlayModel() : null;
     if (this._type === Type.Device) {
       const orientation = this._device.orientationByName(this._mode.orientation);
       const outline = this._currentOutline();
@@ -514,6 +532,9 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
         this._appliedUserAgentType = this._device.touch() ? UA.Mobile : UA.MobileNoTouch;
       } else {
         this._appliedUserAgentType = this._device.touch() ? UA.DesktopTouch : UA.Desktop;
+      }
+      if (overlayModel) {
+        this._showHingeIfApplicable(overlayModel, orientation);
       }
       this._applyDeviceMetrics(
           new UI.Geometry.Size(orientation.width, orientation.height), insets, outline, this._scaleSetting.get(),
@@ -555,7 +576,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
           this._uaSetting.get() === UA.DesktopTouch || this._uaSetting.get() === UA.Mobile,
           this._uaSetting.get() === UA.Mobile);
     }
-    const overlayModel = this._emulationModel ? this._emulationModel.overlayModel() : null;
+
     if (overlayModel) {
       overlayModel.setShowViewportSizeOnResize(this._type === Type.None);
     }
@@ -701,6 +722,13 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
+  exitHingeMode() {
+    const overlayModel = this._emulationModel ? this._emulationModel.overlayModel() : null;
+    if (overlayModel) {
+      overlayModel.showHingeForDualScreen(false);
+    }
+  }
+
   /**
    * @param {boolean} fullSize
    * @param {!Protocol.Page.Viewport=} clip
@@ -773,6 +801,21 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     this._touchMobile = mobile;
     for (const emulationModel of SDK.SDKModel.TargetManager.instance().models(SDK.EmulationModel.EmulationModel)) {
       emulationModel.emulateTouch(touchEnabled, mobile);
+    }
+  }
+
+  /**
+   * @param {!SDK.OverlayModel.OverlayModel} overlayModel
+   * @param {!Orientation} orientation
+   */
+  _showHingeIfApplicable(overlayModel, orientation) {
+    if (!this._experimentDualScreenSupport) {
+      return;
+    }
+    if (orientation.hinge) {
+      overlayModel.showHingeForDualScreen(/* show*/ true, orientation.hinge);
+    } else {
+      overlayModel.showHingeForDualScreen(false);
     }
   }
 }

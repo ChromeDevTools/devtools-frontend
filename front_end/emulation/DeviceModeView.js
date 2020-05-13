@@ -191,6 +191,12 @@ export class DeviceModeView extends UI.Widget.VBox {
     }
   }
 
+  exitHingeMode() {
+    if (this._model) {
+      this._model.exitHingeMode();
+    }
+  }
+
   /**
    * @param {!Common.EventTarget.EventTargetEvent} event
    */

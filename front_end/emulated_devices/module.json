@@ -1859,6 +1859,142 @@
           }
         ]
       }
+    },
+    {
+      "type": "emulated-device",
+      "order": 45,
+      "device": {
+          "show-by-default": true,
+          "dual-screen": true,
+          "title": "Surface Duo",
+          "screen": {
+              "horizontal": {
+                  "width": 600,
+                  "height": 450
+              },
+              "device-pixel-ratio": 2.5,
+              "vertical": {
+                  "width": 450,
+                  "height": 600
+              },
+              "vertical-spanned": {
+                  "width": 928,
+                  "height": 600,
+                  "hinge": {
+                      "width": 28,
+                      "height": 600,
+                      "x": 450,
+                      "y": 0,
+                      "contentColor": {
+                          "r": 38,
+                          "g": 38,
+                          "b": 38,
+                          "a": 1
+                      }
+                  }
+              },
+              "horizontal-spanned": {
+                  "width": 600,
+                  "height": 928,
+                  "hinge": {
+                      "width": 600,
+                      "height": 28,
+                      "x": 0,
+                      "y": 450,
+                      "contentColor": {
+                        "r": 38,
+                        "g": 38,
+                        "b": 38,
+                        "a": 1
+                      }
+                  }
+              }
+          },
+          "capabilities": [
+              "touch",
+              "mobile"
+          ],
+          "user-agent": "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+          "type": "phone",
+          "modes": [
+              {
+                  "title": "default",
+                  "orientation": "vertical",
+                  "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+              },
+              {
+                  "title": "default",
+                  "orientation": "horizontal",
+                  "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+              },
+              {
+                  "title": "spanned",
+                  "orientation": "vertical-spanned",
+                  "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+              },
+              {
+                  "title": "spanned",
+                  "orientation": "horizontal-spanned",
+                  "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+              }
+          ]
+      }
+    },
+    {
+      "type": "emulated-device",
+      "order": 46,
+      "device": {
+          "show-by-default": true,
+          "dual-screen": true,
+          "title": "Galaxy Fold",
+          "screen": {
+              "horizontal": {
+                  "width": 653,
+                  "height": 280
+              },
+              "device-pixel-ratio": 3,
+              "vertical": {
+                  "width": 280,
+                  "height": 653
+              },
+              "vertical-spanned": {
+                  "width": 717,
+                  "height": 512
+              },
+              "horizontal-spanned": {
+                  "width": 512,
+                  "height": 717
+              }
+          },
+          "capabilities": [
+              "touch",
+              "mobile"
+          ],
+          "user-agent": "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+          "type": "phone",
+          "modes": [
+              {
+                  "title": "default",
+                  "orientation": "vertical",
+                  "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+              },
+              {
+                  "title": "default",
+                  "orientation": "horizontal",
+                  "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+              },
+              {
+                  "title": "spanned",
+                  "orientation": "vertical-spanned",
+                  "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+              },
+              {
+                  "title": "spanned",
+                  "orientation": "horizontal-spanned",
+                  "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+              }
+          ]
+      }
     }
   ],
   "dependencies": [

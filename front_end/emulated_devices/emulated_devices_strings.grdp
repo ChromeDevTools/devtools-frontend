@@ -54,6 +54,9 @@
   <message name="IDS_DEVTOOLS_8d0c6a99bcfbb75724c123476d683d3f" desc="Title of the iPhone 4 device">
     <ph name="LOCKED_1">iPhone 4</ph>
   </message>
+  <message name="IDS_DEVTOOLS_a79fd12275784c46cd8eb5a3e84bd65b" desc="Title of the Galaxy Fold device">
+    <ph name="LOCKED_1">Galaxy Fold</ph>
+  </message>
   <message name="IDS_DEVTOOLS_99d1a0f994cdce14eea8b6ae823d5a76" desc="Title of the Galaxy S III device">
     <ph name="LOCKED_1">Galaxy S III</ph>
   </message>
@@ -101,5 +104,8 @@
   </message>
   <message name="IDS_DEVTOOLS_f8896f769d62b6102e48039154c4ca5e" desc="Title of the Galaxy S5 device">
     <ph name="LOCKED_1">Galaxy S5</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_d79ebf44864cc4dde48342f0da49214c" desc="Title of the Microsoft Surface Duo device">
+    <ph name="LOCKED_1">Surface Duo</ph>
   </message>
 </grit-part>

@@ -253,6 +253,8 @@ export const Descriptors = {
   'largeicon-waterfall': {position: 'h8', spritesheet: 'largeicons', isMask: true},
   'largeicon-breaking-change': {position: 'h3', spritesheet: 'largeicons'},
   'largeicon-link': {position: 'i1', spritesheet: 'largeicons'},
+  'largeicon-dual-screen': {position: 'i2', spritesheet: 'largeicons', isMask: true},
+  'largeicon-experimental-api': {position: 'i3', spritesheet: 'largeicons', isMask: true},
 
   'mediumicon-arrow-top': {position: 'a4', spritesheet: 'arrowicons'},
   'mediumicon-arrow-bottom': {position: 'a3', spritesheet: 'arrowicons'},

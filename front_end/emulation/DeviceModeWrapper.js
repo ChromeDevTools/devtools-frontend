@@ -88,6 +88,7 @@ export class DeviceModeWrapper extends UI.Widget.VBox {
       this._inspectedPagePlaceholder.show(this._deviceModeView.element);
     } else {
       if (this._deviceModeView) {
+        this._deviceModeView.exitHingeMode();
         this._deviceModeView.detach();
       }
       this._inspectedPagePlaceholder.restoreMinimumSize();

@@ -8,7 +8,7 @@ import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as UI from '../ui/ui.js';
 
 import {defaultMobileScaleFactor, DeviceModeModel, Type, UA} from './DeviceModeModel.js';
-import {EmulatedDevice, EmulatedDevicesList, Events, Horizontal, Mode, Vertical} from './EmulatedDevices.js';  // eslint-disable-line no-unused-vars
+import {EmulatedDevice, EmulatedDevicesList, Events, Horizontal, HorizontalSpanned, Mode, Vertical, VerticalSpanned} from './EmulatedDevices.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
@@ -23,6 +23,8 @@ export class DeviceModeToolbar {
     this._model = model;
     this._showMediaInspectorSetting = showMediaInspectorSetting;
     this._showRulersSetting = showRulersSetting;
+
+    this._experimentDualScreenSupport = Root.Runtime.experiments.isEnabled('dualScreenSupport');
 
     this._deviceOutlineSetting = this._model.deviceOutlineSetting();
     this._showDeviceScaleFactorSetting =
@@ -202,6 +204,12 @@ export class DeviceModeToolbar {
     this._modeButton = new UI.Toolbar.ToolbarButton('', 'largeicon-rotate-screen');
     this._modeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._modeMenuClicked, this);
     toolbar.appendToolbarItem(this._modeButton);
+
+    if (this._experimentDualScreenSupport) {
+      this._spanButton = new UI.Toolbar.ToolbarButton('', 'largeicon-dual-screen');
+      this._spanButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._spanClicked, this);
+      toolbar.appendToolbarItem(this._spanButton);
+    }
   }
 
   /**
@@ -467,6 +475,25 @@ export class DeviceModeToolbar {
   /**
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
+  _spanClicked(event) {
+    const device = this._model.device();
+
+    if (!device.isDualScreen) {
+      return;
+    }
+
+    const scale = this._autoAdjustScaleSetting.get() ? undefined : this._model.scaleSetting().get();
+    const newMode = device.getSpanPartner(this._model.mode());
+    if (!newMode) {
+      return;
+    }
+    this._model.emulate(this._model.type(), device, newMode, scale);
+    return;
+  }
+
+  /**
+   * @param {!Common.EventTarget.EventTargetEvent} event
+   */
   _modeMenuClicked(event) {
     const device = this._model.device();
     const model = this._model;
@@ -483,10 +510,10 @@ export class DeviceModeToolbar {
       return;
     }
 
-    if (device.modes.length === 2 && device.modes[0].orientation !== device.modes[1].orientation) {
+    if ((device.isDualScreen || device.modes.length === 2) &&
+        device.modes[0].orientation !== device.modes[1].orientation) {
       const scale = autoAdjustScaleSetting.get() ? undefined : model.scaleSetting().get();
-      model.emulate(
-          model.type(), model.device(), model.mode() === device.modes[0] ? device.modes[1] : device.modes[0], scale);
+      model.emulate(model.type(), model.device(), device.getRotationPartner(model.mode()), scale);
       return;
     }
 
@@ -546,6 +573,10 @@ export class DeviceModeToolbar {
       this._heightInput.disabled = this._model.type() !== Type.Responsive;
       this._deviceScaleItem.setEnabled(this._model.type() === Type.Responsive);
       this._uaItem.setEnabled(this._model.type() === Type.Responsive);
+
+      if (this._experimentDualScreenSupport) {
+        this._spanButton.setEnabled(false);
+      }
       if (this._model.type() === Type.Responsive) {
         this._modeButton.setEnabled(true);
         this._modeButton.setTitle(ls`Rotate`);
@@ -592,7 +623,14 @@ export class DeviceModeToolbar {
         const modeCount = device ? device.modes.length : 0;
         this._modeButton.setEnabled(modeCount >= 2);
         this._modeButton.setTitle(
-            modeCount === 2 ? Common.UIString.UIString('Rotate') : Common.UIString.UIString('Screen options'));
+            modeCount === 2 ? Common.UIString.UIString('Rotate') :
+                              Common.UIString.UIString('Screen orientation options'));
+        if (this._experimentDualScreenSupport) {
+          if (device.isDualScreen) {
+            this._spanButton.setEnabled(true);
+          }
+          this._spanButton.setTitle(Common.UIString.UIString('Toggle dual-screen mode'));
+        }
       }
       this._cachedModelDevice = device;
     }

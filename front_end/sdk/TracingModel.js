@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 
 import {EventPayload} from './TracingManager.js';  // eslint-disable-line no-unused-vars
@@ -21,9 +18,11 @@ export class TracingModel {
     this._processById = new Map();
     this._processByName = new Map();
     this._minimumRecordTime = 0;
+    /** @type {number} */
     this._maximumRecordTime = 0;
-    this._devToolsMetadataEvents = [];
     /** @type {!Array<!Event>} */
+    this._devToolsMetadataEvents = [];
+    /** @type {!Array<!AsyncEvent>} */
     this._asyncEvents = [];
     /** @type {!Map<string, !AsyncEvent>} */
     this._openAsyncEvents = new Map();
@@ -94,6 +93,7 @@ export class TracingModel {
     }
     console.error(
         `Unexpected id2 field at ${payload.ts / 1000}, one and only one of 'local' and 'global' should be present.`);
+    return undefined;
   }
 
   /**
@@ -135,14 +135,14 @@ export class TracingModel {
   }
 
   /**
-   * @return {!Array.<!Event>}
+   * @return {!Array<!Event>}
    */
   devToolsMetadataEvents() {
     return this._devToolsMetadataEvents;
   }
 
   /**
-   * @param {!Array.<!EventPayload>} events
+   * @param {!Array<!EventPayload>} events
    */
   addEvents(events) {
     for (let i = 0; i < events.length; ++i) {
@@ -237,7 +237,7 @@ export class TracingModel {
     // chronological order. However, also add individual async events to the thread flow (above), so we can easily
     // display them on the same chart as other events, should we choose so.
     if (TracingModel.isAsyncPhase(payload.ph)) {
-      this._asyncEvents.push(event);
+      this._asyncEvents.push(/** @type {!AsyncEvent} */ (event));
     }
     event._setBackingStorage(backingStorage);
     if (event.hasCategory(DevToolsMetadataEventCategory)) {
@@ -306,10 +306,10 @@ export class TracingModel {
   }
 
   /**
-   * @return {!Array.<!Process>}
+   * @return {!Array<!Process>}
    */
   sortedProcesses() {
-    return NamedObject._sort([...this._processById.values()]);
+    return Sorter.sort([...this._processById.values()]);
   }
 
   /**
@@ -378,7 +378,11 @@ export class TracingModel {
 
     for (const eventStack of this._openNestableAsyncEvents.values()) {
       while (eventStack.length) {
-        eventStack.pop().setEndTime(this._maximumRecordTime);
+        const event = eventStack.pop();
+        if (!event) {
+          continue;
+        }
+        event.setEndTime(this._maximumRecordTime);
       }
     }
     this._openNestableAsyncEvents.clear();
@@ -406,7 +410,10 @@ export class TracingModel {
 
       case phase.NestableAsyncInstant: {
         if (openEventsStack && openEventsStack.length) {
-          openEventsStack.peekLast()._addStep(event);
+          const event = openEventsStack.peekLast();
+          if (event) {
+            event._addStep(event);
+          }
         }
         break;
       }
@@ -416,6 +423,9 @@ export class TracingModel {
           break;
         }
         const top = openEventsStack.pop();
+        if (!top) {
+          break;
+        }
         if (top.name !== event.name) {
           console.error(
               `Begin/end event mismatch for nestable async event, ${top.name} vs. ${event.name}, key: ${key}`);
@@ -455,7 +465,7 @@ export class TracingModel {
     }
     if (event.phase === phase.AsyncStepInto || event.phase === phase.AsyncStepPast) {
       const lastStep = asyncEvent.steps.peekLast();
-      if (lastStep.phase !== phase.AsyncBegin && lastStep.phase !== event.phase) {
+      if (lastStep && lastStep.phase !== phase.AsyncBegin && lastStep.phase !== event.phase) {
         console.assert(
             false, 'Async event step phase mismatch: ' + lastStep.phase + ' at ' + lastStep.startTime + ' vs. ' +
                 event.phase + ' at ' + event.startTime);
@@ -540,9 +550,10 @@ export class BackingStorage {
 
   /**
    * @param {string} string
-   * @return {function():!Promise.<?string>}
+   * @return {function():!Promise<?string>}
    */
   appendAccessibleString(string) {
+    throw new Error('Not implemented yet');
   }
 
   finishWriting() {
@@ -550,6 +561,9 @@ export class BackingStorage {
 
   reset() {}
 }
+
+/** @typedef {*} */
+let Args;  // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
@@ -575,8 +589,14 @@ export class Event {
     this.startTime = startTime;
     /** @type {!Thread} */
     this.thread = thread;
-    /** @type {!*} */
+    /** @type {!Args} */
     this.args = {};
+    /** @type {?string} */
+    this.id;
+    /** @type {?string} */
+    this.bind_id;
+    /** @type {number} */
+    this.ordinal = 0;
 
     /** @type {number} */
     this.selfTime = 0;
@@ -653,7 +673,7 @@ export class Event {
   }
 
   /**
-   * @param {!*} args
+   * @param {!Args} args
    */
   addArgs(args) {
     // Shallow copy args to avoid modifying original payload which may be saved to file.
@@ -661,7 +681,9 @@ export class Event {
       if (name in this.args) {
         console.error('Same argument name (' + name + ') is used for begin and end phases of ' + this.name);
       }
-      this.args[name] = args[name];
+      /** @typedef {Object<string, string|number|ObjectSnapshot>} */
+      let BlackboxArgs;  // eslint-disable-line no-unused-vars
+      /** @type {!BlackboxArgs} */ (this.args)[name] = /** @type {!BlackboxArgs} */ (args)[name];
     }
   }
 
@@ -725,15 +747,19 @@ export class ObjectSnapshot extends Event {
   }
 
   /**
-   * @param {function(?):void} callback
+   * @param {function(?ObjectSnapshot):void} callback
    */
   requestObject(callback) {
     const snapshot = this.args['snapshot'];
     if (snapshot) {
-      callback(snapshot);
+      callback(/** @type {!ObjectSnapshot} */ (snapshot));
       return;
     }
-    this._backingStorage().then(onRead, callback.bind(null, null));
+    const storage = this._backingStorage;
+    if (storage) {
+      storage().then(onRead, callback.bind(null, null));
+    }
+
     /**
      * @param {?string} result
      */
@@ -821,6 +847,33 @@ class ProfileEventsGroup {
     this.children.push(event);
   }
 }
+/**
+  @typedef {{
+    _sortIndex: number,
+    name: function():string,
+  }}
+ */
+let Sortable;  // eslint-disable-line no-unused-vars
+
+class Sorter {
+  /**
+   * @template Item
+   * @param {!Array<!Item>} array
+   * @return {!Array<!Item>}
+   */
+  static sort(array) {
+    /**
+     * @param {!Sortable} a
+     * @param {!Sortable} b
+     */
+    function comparator(a, b) {
+      return a._sortIndex !== b._sortIndex ? a._sortIndex - b._sortIndex : a.name().localeCompare(b.name());
+    }
+    // TODO(crbug.com/1082064): In TS the definition would be `param {!Array<Item & Sortable>} array`.
+    // But Closure compiler does not support that, therefore, a cast is needed.
+    return (/** @type {?} */ (array)).sort(comparator);
+  }
+}
 
 class NamedObject {
   /**
@@ -832,20 +885,6 @@ class NamedObject {
     this._id = id;
     this._name = '';
     this._sortIndex = 0;
-  }
-
-  /**
-   * @param {!Array.<!NamedObject>} array
-   */
-  static _sort(array) {
-    /**
-     * @param {!NamedObject} a
-     * @param {!NamedObject} b
-     */
-    function comparator(a, b) {
-      return a._sortIndex !== b._sortIndex ? a._sortIndex - b._sortIndex : a.name().localeCompare(b.name());
-    }
-    return array.sort(comparator);
   }
 
   /**
@@ -927,10 +966,10 @@ export class Process extends NamedObject {
   }
 
   /**
-   * @return {!Array.<!Thread>}
+   * @return {!Array<!Thread>}
    */
   sortedThreads() {
-    return NamedObject._sort([...this._threads.values()]);
+    return Sorter.sort([...this._threads.values()]);
   }
 }
 
@@ -944,9 +983,12 @@ export class Thread extends NamedObject {
     this._process = process;
 
     /**
-     * @type {!Array<?Event>};
+     * @type {!Array<!Event>};
      */
     this._events = [];
+    /**
+     * @type {!Array<!AsyncEvent>};
+     */
     this._asyncEvents = [];
     this._lastTopLevelEvent = null;
   }
@@ -956,17 +998,22 @@ export class Thread extends NamedObject {
     this._events.sort(Event.compareStartTime);
     const phases = Phase;
     const stack = [];
+    /** @type {!Set<number>} */
+    const toDelete = new Set();
     for (let i = 0; i < this._events.length; ++i) {
       const e = this._events[i];
       e.ordinal = i;
       switch (e.phase) {
         case phases.End: {
-          this._events[i] = null;  // Mark for removal.
+          toDelete.add(i);  // Mark for removal.
           // Quietly ignore unbalanced close events, they're legit (we could have missed start one).
           if (!stack.length) {
             continue;
           }
           const top = stack.pop();
+          if (!top) {
+            continue;
+          }
           if (top.name !== e.name || top.categoriesString !== e.categoriesString) {
             console.error(
                 'B/E events mismatch at ' + top.startTime + ' (' + top.name + ') vs. ' + e.startTime + ' (' + e.name +
@@ -983,9 +1030,12 @@ export class Thread extends NamedObject {
       }
     }
     while (stack.length) {
-      stack.pop().setEndTime(this._model.maximumRecordTime());
+      const event = stack.pop();
+      if (event) {
+        event.setEndTime(this._model.maximumRecordTime());
+      }
     }
-    this._events = this._events.filter(event => event !== null);
+    this._events = this._events.filter((_, idx) => !toDelete.has(idx));
   }
 
   /**
@@ -997,7 +1047,8 @@ export class Thread extends NamedObject {
                                                         Event.fromPayload(payload, this);
     if (TracingModel.isTopLevelEvent(event)) {
       // Discard nested "top-level" events.
-      if (this._lastTopLevelEvent && this._lastTopLevelEvent.endTime > event.startTime) {
+      const lastTopLevelEvent = this._lastTopLevelEvent;
+      if (lastTopLevelEvent && (lastTopLevelEvent.endTime || 0) > event.startTime) {
         return null;
       }
       this._lastTopLevelEvent = event;
@@ -1037,14 +1088,14 @@ export class Thread extends NamedObject {
   }
 
   /**
-   * @return {!Array.<!Event>}
+   * @return {!Array<!Event>}
    */
   events() {
     return this._events;
   }
 
   /**
-   * @return {!Array.<!AsyncEvent>}
+   * @return {!Array<!AsyncEvent>}
    */
   asyncEvents() {
     return this._asyncEvents;

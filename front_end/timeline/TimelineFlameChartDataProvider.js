@@ -1124,17 +1124,23 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       timelineData.flowEndLevels[flowIndex] = level;
     }
 
+    const eventId = event.id;
+
+    if (!eventId) {
+      return;
+    }
+
     switch (event.phase) {
       case SDK.TracingModel.Phase.FlowBegin:
-        this._flowEventIndexById.set(event.id, pushStartFlow(event));
+        this._flowEventIndexById.set(eventId, pushStartFlow(event));
         break;
       case SDK.TracingModel.Phase.FlowStep:
-        pushEndFlow(event, this._flowEventIndexById.get(event.id));
-        this._flowEventIndexById.set(event.id, pushStartFlow(event));
+        pushEndFlow(event, this._flowEventIndexById.get(eventId));
+        this._flowEventIndexById.set(eventId, pushStartFlow(event));
         break;
       case SDK.TracingModel.Phase.FlowEnd:
-        pushEndFlow(event, this._flowEventIndexById.get(event.id));
-        this._flowEventIndexById.delete(event.id);
+        pushEndFlow(event, this._flowEventIndexById.get(eventId));
+        this._flowEventIndexById.delete(eventId);
         break;
     }
   }

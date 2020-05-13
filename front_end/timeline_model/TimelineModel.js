@@ -1127,7 +1127,7 @@ export class TimelineModelImpl {
   _processBrowserEvent(event) {
     if (event.name === RecordType.LatencyInfoFlow) {
       const frameId = event.args['frameTreeNodeId'];
-      if (typeof frameId === 'number' && frameId === this._mainFrameNodeId) {
+      if (typeof frameId === 'number' && frameId === this._mainFrameNodeId && event.bind_id) {
         this._knownInputEvents.add(event.bind_id);
       }
       return;

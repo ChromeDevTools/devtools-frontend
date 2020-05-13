@@ -813,7 +813,7 @@ export const _defaultMobileUserAgentMetadata = {
   fullVersion: SDK.NetworkManager.MultitargetNetworkManager.getChromeVersion(),
   platform: 'Android',
   platformVersion: '6.0',
-  architecture: 'arm',
+  architecture: '',
   model: 'Nexus 5',
   mobile: true
 };

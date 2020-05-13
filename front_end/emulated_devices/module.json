@@ -358,7 +358,7 @@
         "user-agent-metadata": {
           "platform": "Android",
           "platformVersion": "4.4.2",
-          "architecture": "arm",
+          "architecture": "",
           "model": "Nexus 4",
           "mobile": true
         },
@@ -396,7 +396,7 @@
         "user-agent-metadata": {
           "platform": "Android",
           "platformVersion": "6.0",
-          "architecture": "arm",
+          "architecture": "",
           "model": "Nexus 5",
           "mobile": true
         },
@@ -495,7 +495,7 @@
         "user-agent-metadata": {
           "platform": "Android",
           "platformVersion": "8.0.0",
-          "architecture": "arm",
+          "architecture": "",
           "model": "Nexus 5X",
           "mobile": true
         },
@@ -627,7 +627,7 @@
         "user-agent-metadata": {
           "platform": "Android",
           "platformVersion": "7.1.1",
-          "architecture": "arm",
+          "architecture": "",
           "model": "Nexus 6",
           "mobile": true
         },
@@ -698,7 +698,7 @@
         "user-agent-metadata": {
           "platform": "Android",
           "platformVersion": "8.0.0",
-          "architecture": "arm",
+          "architecture": "",
           "model": "Nexus 6P",
           "mobile": true
         },
@@ -752,7 +752,7 @@
         "user-agent-metadata": {
           "platform": "Android",
           "platformVersion": "8.0",
-          "architecture": "arm",
+          "architecture": "",
           "model": "Pixel 2",
           "mobile": true
         },
@@ -806,7 +806,7 @@
         "user-agent-metadata": {
           "platform": "Android",
           "platformVersion": "8.0.0",
-          "architecture": "arm",
+          "architecture": "",
           "model": "Pixel 2 XL",
           "mobile": true
         },
@@ -859,7 +859,7 @@
         "user-agent-metadata": {
           "platform": "Android",
           "platformVersion": "4.4.2",
-          "architecture": "arm",
+          "architecture": "",
           "model": "LGMS323",
           "mobile": true
         },
@@ -1096,7 +1096,7 @@
         "user-agent-metadata": {
           "platform": "Android",
           "platformVersion": "4.0",
-          "architecture": "arm",
+          "architecture": "",
           "model": "GT-I9300",
           "mobile": true
         },
@@ -1150,7 +1150,7 @@
         "user-agent-metadata": {
           "platform": "Android",
           "platformVersion": "5.0",
-          "architecture": "arm",
+          "architecture": "",
           "model": "SM-G900P",
           "mobile": true
         },
@@ -1500,7 +1500,7 @@
         "user-agent-metadata": {
           "platform": "Android",
           "platformVersion": "6.0.1",
-          "architecture": "arm",
+          "architecture": "",
           "model": "Nexus 10",
           "mobile": false
         },
@@ -1553,7 +1553,7 @@
         "user-agent-metadata": {
           "platform": "Android",
           "platformVersion": "6.0.1",
-          "architecture": "arm",
+          "architecture": "",
           "model": "Nexus 7",
           "mobile": false
         },
@@ -1606,7 +1606,7 @@
         "user-agent-metadata": {
             "platform": "Android",
             "platformVersion": "4.3",
-            "architecture": "arm",
+            "architecture": "",
             "model": "SM-N900T",
             "mobile": true
         },
@@ -1659,7 +1659,7 @@
         "user-agent-metadata": {
           "platform": "Android",
           "platformVersion": "4.1",
-          "architecture": "arm",
+          "architecture": "",
           "model": "GT-N7100",
           "mobile": true
         },
@@ -1831,7 +1831,7 @@
         "user-agent-metadata": {
           "platform": "Android",
           "platformVersion": "6.0.1",
-          "architecture": "arm",
+          "architecture": "",
           "model": "Moto G (4)",
           "mobile": true
         },

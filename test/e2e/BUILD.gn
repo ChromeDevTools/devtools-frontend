@@ -16,6 +16,7 @@ ts_library("e2e") {
     "layers",
     "lighthouse",
     "media",
+    "memory",
     "network",
     "profiler",
     "rendering",

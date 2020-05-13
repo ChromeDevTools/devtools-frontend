@@ -224,6 +224,19 @@ TEST_F(SymbolServerTest, ClassStaticVariable) {
 #endif
 }
 
+TEST_F(SymbolServerTest, NamespacedGlobalVariables) {
+  auto* m = GetModule("namespaces.wasm");
+  ASSERT_TRUE(m);
+  lldb::addr_t code_section_start = 0x139;
+  auto variables = m->GetVariablesInScope(0x19c - code_section_start);
+  llvm::SmallVector<llvm::StringRef, 5> names;
+  for (auto& v : variables)
+    names.push_back(v.name);
+  EXPECT_THAT(names, testing::UnorderedElementsAre("L", "n1::n2::I", "n1::I",
+                                                   "n1::MyClass::I",
+                                                   "(anonymous namespace)::K"));
+}
+
 TEST_F(SymbolServerTest, InlineLocalVariable) {
   auto* m = GetModule("inline.wasm");
   ASSERT_TRUE(m);
@@ -231,7 +244,7 @@ TEST_F(SymbolServerTest, InlineLocalVariable) {
   {
     const int location = 0x167 - code_section_start;
     auto variables = m->GetVariablesInScope(location);
-    llvm::SmallVector<llvm::StringRef, 1> names;
+    llvm::SmallVector<llvm::StringRef, 2> names;
     for (auto& v : variables) {
       names.push_back(v.name);
     }
@@ -247,7 +260,7 @@ TEST_F(SymbolServerTest, InlineLocalVariable) {
   {
     const int location = 0x19F - code_section_start;
     auto variables = m->GetVariablesInScope(location);
-    llvm::SmallVector<llvm::StringRef, 1> names;
+    llvm::SmallVector<llvm::StringRef, 2> names;
     for (auto& v : variables) {
       names.push_back(v.name);
     }
@@ -263,7 +276,7 @@ TEST_F(SymbolServerTest, InlineLocalVariable) {
   {
     const int location = 0x1BB - code_section_start;
     auto variables = m->GetVariablesInScope(location);
-    llvm::SmallVector<llvm::StringRef, 1> names;
+    llvm::SmallVector<llvm::StringRef, 3> names;
     for (auto& v : variables) {
       names.push_back(v.name);
     }

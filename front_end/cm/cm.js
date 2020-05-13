@@ -2,15 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './codemirror.js';
-import './multiplex.js';
-import './matchbrackets.js';
-import './closebrackets.js';
-import './mark-selection.js';
-import './comment.js';
-import './overlay.js';
-import './active-line.js';
-import './foldcode.js';
-import './foldgutter.js';
-import './brace-fold.js';
-import './simple.js';
+import '../third_party/codemirror/package/lib/codemirror.js';
+import '../third_party/codemirror/package/addon/comment/comment.js';
+import '../third_party/codemirror/package/addon/edit/closebrackets.js';
+import '../third_party/codemirror/package/addon/edit/matchbrackets.js';
+import '../third_party/codemirror/package/addon/mode/multiplex.js';
+import '../third_party/codemirror/package/addon/mode/overlay.js';
+import '../third_party/codemirror/package/addon/mode/simple.js';
+import '../third_party/codemirror/package/addon/selection/active-line.js';
+import '../third_party/codemirror/package/addon/selection/mark-selection.js';
+import '../third_party/codemirror/package/addon/fold/foldcode.js';
+import '../third_party/codemirror/package/addon/fold/foldgutter.js';
+import '../third_party/codemirror/package/addon/fold/brace-fold.js';

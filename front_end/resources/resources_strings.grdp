@@ -211,6 +211,9 @@ table is empty.
   <message name="IDS_DEVTOOLS_7ed01b26177166f3627e29da31bc7e28" desc="Text in Application Cache Items View of the Application panel">
     No Application Cache information available.
   </message>
+  <message name="IDS_DEVTOOLS_820896cf2e3ec9d7731c43cdad4b8943" desc="Text in App Manifest View of the Application panel">
+    Shortcut #<ph name="SHORTCUTINDEX">$1s<ex>1</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_83b33e9633245178cb76ecb91dd424d8" desc="Text in DOMStorage Items View of the Application panel">
     Select a value to preview
   </message>

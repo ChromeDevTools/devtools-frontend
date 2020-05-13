@@ -185,7 +185,7 @@ const loadXHR = url => {
  * @param {string} url
  * @param {?Object.<string, string>} headers
  * @param {!Common.StringOutputStream.OutputStream} stream
- * @param {function(boolean, !Object.<string, string>, !LoadErrorDescription)=} callback
+ * @param {function(boolean, !Object.<string, string>, !LoadErrorDescription):void=} callback
  */
 export const loadAsStream = function(url, headers, stream, callback) {
   const streamId = _bindOutputStream(stream);

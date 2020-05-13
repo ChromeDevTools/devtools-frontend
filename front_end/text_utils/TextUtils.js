@@ -361,7 +361,7 @@ export class BalancedJSONTokenizer {
 export class TokenizerFactory {
   /**
    * @param {string} mimeType
-   * @return {function(string, function(string, ?string, number, number)):void}
+   * @return {function(string, function(string, ?string, number, number):void):void}
    */
   createTokenizer(mimeType) {
     throw new Error('not implemented');

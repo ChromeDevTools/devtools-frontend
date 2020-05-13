@@ -168,9 +168,9 @@ export class InspectorBackend {
   /**
    * @param {function((T|undefined)):void} clientCallback
    * @param {string} errorPrefix
-   * @param {function(new:T,S)=} constructor
+   * @param {function(new:T,S):void=} constructor
    * @param {T=} defaultValue
-   * @return {function(?string, S)}
+   * @return {function(?string, S):void}
    * @template T,S
    */
   wrapClientCallback(clientCallback, errorPrefix, constructor, defaultValue) {
@@ -519,7 +519,7 @@ export class SessionRouter {
   }
 
   /**
-   * @param {function()=} script
+   * @param {function():void=} script
    */
   _deprecatedRunAfterPendingDispatches(script) {
     if (script) {

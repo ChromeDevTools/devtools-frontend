@@ -350,11 +350,11 @@ export class Color {
    * @param {!Array<number>} out_rgba
    */
   static hsva2rgba(hsva, out_rgba) {
-    Color._hsva2hsla(hsva, Color.hsva2rgba._tmpHSLA);
-    Color.hsl2rgb(Color.hsva2rgba._tmpHSLA, out_rgba);
+    Color._hsva2hsla(hsva, _tmpHSLA);
+    Color.hsl2rgb(_tmpHSLA, out_rgba);
 
-    for (let i = 0; i < Color.hsva2rgba._tmpHSLA.length; i++) {
-      Color.hsva2rgba._tmpHSLA[i] = 0;
+    for (let i = 0; i < _tmpHSLA.length; i++) {
+      _tmpHSLA[i] = 0;
     }
   }
 
@@ -400,14 +400,14 @@ export class Color {
    * @return {number}
    */
   static calculateContrastRatio(fgRGBA, bgRGBA) {
-    Color.blendColors(fgRGBA, bgRGBA, Color.calculateContrastRatio._blendedFg);
+    Color.blendColors(fgRGBA, bgRGBA, _blendedFg);
 
-    const fgLuminance = Color.luminance(Color.calculateContrastRatio._blendedFg);
+    const fgLuminance = Color.luminance(_blendedFg);
     const bgLuminance = Color.luminance(bgRGBA);
     const contrastRatio = (Math.max(fgLuminance, bgLuminance) + 0.05) / (Math.min(fgLuminance, bgLuminance) + 0.05);
 
-    for (let i = 0; i < Color.calculateContrastRatio._blendedFg.length; i++) {
-      Color.calculateContrastRatio._blendedFg[i] = 0;
+    for (let i = 0; i < _blendedFg.length; i++) {
+      _blendedFg[i] = 0;
     }
 
     return contrastRatio;
@@ -994,7 +994,5 @@ export class Generator {
   }
 }
 
-/** @type {!Array<number>} */
-Color.hsva2rgba._tmpHSLA = [0, 0, 0, 0];
-
-Color.calculateContrastRatio._blendedFg = [0, 0, 0, 0];
+const _tmpHSLA = [0, 0, 0, 0];
+const _blendedFg = [0, 0, 0, 0];

@@ -211,9 +211,9 @@ export class Settings {
 export class SettingsStorage {
   /**
    * @param {!Object<string,string>} object
-   * @param {function(string, string)=} setCallback
-   * @param {function(string)=} removeCallback
-   * @param {function(string=)=} removeAllCallback
+   * @param {function(string, string):void=} setCallback
+   * @param {function(string):void=} removeCallback
+   * @param {function(string=):void=} removeAllCallback
    * @param {string=} storagePrefix
    */
   constructor(object, setCallback, removeCallback, removeAllCallback, storagePrefix) {

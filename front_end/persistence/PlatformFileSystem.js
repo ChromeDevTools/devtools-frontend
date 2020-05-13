@@ -107,7 +107,7 @@ export class PlatformFileSystem {
   /**
    * @param {string} path
    * @param {string} newName
-   * @param {function(boolean, string=)} callback
+   * @param {function(boolean, string=):void} callback
    */
   renameFile(path, newName, callback) {
     callback(false);

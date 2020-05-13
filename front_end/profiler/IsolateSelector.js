@@ -19,7 +19,6 @@ export class IsolateSelector extends UI.Widget.VBox {
     this._items = new UI.ListModel.ListModel();
     /** @type {!UI.ListControl.ListControl<!ListItem>} */
     this._list = new UI.ListControl.ListControl(this._items, this, UI.ListControl.ListMode.NonViewport);
-    this._list.element.tabIndex = 0;
     this._list.element.classList.add('javascript-vm-instances-list');
     UI.ARIAUtils.setAccessibleName(this._list.element, ls`JavaScript VM instances`);
     this.contentElement.appendChild(this._list.element);
@@ -62,6 +61,7 @@ export class IsolateSelector extends UI.Widget.VBox {
    * @param {!SDK.IsolateManager.Isolate} isolate
    */
   isolateAdded(isolate) {
+    this._list.element.tabIndex = 0;
     const item = new ListItem(isolate);
     const index = item.model().target() === SDK.SDKModel.TargetManager.instance().mainTarget() ? 0 : this._items.length;
     this._items.insert(index, item);
@@ -90,6 +90,9 @@ export class IsolateSelector extends UI.Widget.VBox {
     const item = this._itemByIsolate.get(isolate);
     this._items.remove(this._items.indexOf(item));
     this._itemByIsolate.delete(isolate);
+    if (this._items.length === 0) {
+      this._list.element.tabIndex = -1;
+    }
     this._update();
   }
 

@@ -148,7 +148,7 @@ export class ViewManager {
   }
 
   /**
-   * @param {function()=} revealCallback
+   * @param {function():void=} revealCallback
    * @param {string=} location
    * @param {boolean=} restoreSelection
    * @param {boolean=} allowReorder
@@ -160,7 +160,7 @@ export class ViewManager {
   }
 
   /**
-   * @param {function()=} revealCallback
+   * @param {function():void=} revealCallback
    * @param {string=} location
    * @return {!ViewLocation}
    */
@@ -382,7 +382,7 @@ class _Location {
   /**
    * @param {!ViewManager} manager
    * @param {!Widget} widget
-   * @param {function()=} revealCallback
+   * @param {function():void=} revealCallback
    */
   constructor(manager, widget, revealCallback) {
     this._manager = manager;
@@ -413,7 +413,7 @@ _Location.symbol = Symbol('location');
 export class _TabbedLocation extends _Location {
   /**
    * @param {!ViewManager} manager
-   * @param {function()=} revealCallback
+   * @param {function():void=} revealCallback
    * @param {string=} location
    * @param {boolean=} restoreSelection
    * @param {boolean=} allowReorder
@@ -679,7 +679,7 @@ _TabbedLocation.orderStep = 10;  // Keep in sync with descriptors.
 class _StackLocation extends _Location {
   /**
    * @param {!ViewManager} manager
-   * @param {function()=} revealCallback
+   * @param {function():void=} revealCallback
    * @param {string=} location
    */
   constructor(manager, revealCallback, location) {

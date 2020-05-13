@@ -10,7 +10,7 @@ import {Suggestions} from './SuggestBox.js';  // eslint-disable-line no-unused-v
 export class FilterSuggestionBuilder {
   /**
    * @param {!Array<string>} keys
-   * @param {function(string, !Array<string>)=} valueSorter
+   * @param {function(string, !Array<string>):void=} valueSorter
    */
   constructor(keys, valueSorter) {
     this._keys = keys;

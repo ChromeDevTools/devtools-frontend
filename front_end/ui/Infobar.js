@@ -90,7 +90,7 @@ export class Infobar {
       }
     });
 
-    /** @type {?function():void} */
+    /** @type {?function():*} */
     this._closeCallback = null;
   }
 
@@ -125,7 +125,7 @@ export class Infobar {
   }
 
   /**
-   * @param {?function()} callback
+   * @param {?function():*} callback
    */
   setCloseCallback(callback) {
     this._closeCallback = callback;
@@ -140,7 +140,7 @@ export class Infobar {
 
   /**
    * @param {!InfobarAction} action
-   * @returns {!function()}
+   * @returns {!function():void}
    */
   _actionCallbackFactory(action) {
     if (!action.delegate) {
@@ -191,7 +191,7 @@ export class Infobar {
 /** @typedef {{
  *        text: !string,
  *        highlight: !boolean,
- *        delegate: ?function(),
+ *        delegate: ?function():void,
  *        dismiss: !boolean
  * }}
  */

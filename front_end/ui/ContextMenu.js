@@ -134,7 +134,7 @@ export class Section {
 
   /**
    * @param {string} label
-   * @param {function(?)} handler
+   * @param {function(?):*} handler
    * @param {boolean=} disabled
    * @return {!Item}
    */
@@ -202,7 +202,7 @@ export class Section {
 
   /**
    * @param {string} label
-   * @param {function()} handler
+   * @param {function():*} handler
    * @param {boolean=} checked
    * @param {boolean=} disabled
    * @return {!Item}
@@ -510,7 +510,7 @@ export class ContextMenu extends SubMenu {
 
   /**
    * @param {number} id
-   * @param {function(?)} handler
+   * @param {function(?):*} handler
    */
   _setHandler(id, handler) {
     if (handler) {

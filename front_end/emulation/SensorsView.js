@@ -275,9 +275,9 @@ export class SensorsView extends UI.Widget.VBox {
     this._boxElement.createChild('section', 'orientation-right orientation-element');
     this._boxElement.createChild('section', 'orientation-bottom orientation-element');
 
-    UI.UIUtils.installDragHandle(
-        this._stageElement, this._onBoxDragStart.bind(this), this._onBoxDrag.bind(this), null, '-webkit-grabbing',
-        '-webkit-grab');
+    UI.UIUtils.installDragHandle(this._stageElement, this._onBoxDragStart.bind(this), event => {
+      this._onBoxDrag(event);
+    }, null, '-webkit-grabbing', '-webkit-grab');
 
     fields.appendChild(this._deviceOrientationFieldset);
     this._enableOrientationFields(true);

@@ -219,8 +219,8 @@ export class InplaceEditor {
  */
 export class Config {
   /**
-   * @param {function(!Element,string,string,T,string)} commitHandler
-   * @param {function(!Element,T)} cancelHandler
+   * @param {function(!Element,string,string,T,string):void} commitHandler
+   * @param {function(!Element,T):void} cancelHandler
    * @param {T=} context
    * @param {function(!Element,!Event):boolean=} blurHandler
    */
@@ -254,6 +254,6 @@ export class Config {
 }
 
 /**
- * @typedef {{cancel: function(), commit: function()}}
+ * @typedef {{cancel: function():void, commit: function():void}}
  */
 export let Controller;

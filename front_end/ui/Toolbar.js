@@ -794,7 +794,7 @@ export class ToolbarToggle extends ToolbarButton {
  */
 export class ToolbarMenuButton extends ToolbarButton {
   /**
-   * @param {function(!ContextMenu)} contextMenuHandler
+   * @param {function(!ContextMenu):void} contextMenuHandler
    * @param {boolean=} useSoftMenu
    */
   constructor(contextMenuHandler, useSoftMenu) {
@@ -922,7 +922,7 @@ export class ItemsProvider {
  */
 export class ToolbarComboBox extends ToolbarItem {
   /**
-   * @param {?function(!Event)} changeHandler
+   * @param {?function(!Event):void} changeHandler
    * @param {string} title
    * @param {string=} className
    */
@@ -1125,7 +1125,7 @@ export class ToolbarCheckbox extends ToolbarItem {
   /**
    * @param {string} text
    * @param {string=} tooltip
-   * @param {function()=} listener
+   * @param {function():void=} listener
    */
   constructor(text, tooltip, listener) {
     super(CheckboxLabel.create(text));

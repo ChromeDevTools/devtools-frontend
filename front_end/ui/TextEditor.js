@@ -81,7 +81,7 @@ export class TextEditor extends Common.EventTarget.EventTarget {
   }
 
   /**
-   * @param {function(!KeyboardEvent)} handler
+   * @param {function(!KeyboardEvent):void} handler
    */
   addKeyDownHandler(handler) {
   }

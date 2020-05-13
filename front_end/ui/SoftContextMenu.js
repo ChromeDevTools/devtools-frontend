@@ -44,7 +44,7 @@ import {ElementFocusRestorer} from './UIUtils.js';
 export class SoftContextMenu {
   /**
    * @param {!Array.<!InspectorFrontendHostAPI.ContextMenuDescriptor>} items
-   * @param {function(string)} itemSelectedCallback
+   * @param {function(string):void} itemSelectedCallback
    * @param {!SoftContextMenu=} parentMenu
    */
   constructor(items, itemSelectedCallback, parentMenu) {

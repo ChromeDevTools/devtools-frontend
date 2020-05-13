@@ -8,8 +8,8 @@
 /**
  * @param {string} localName
  * @param {string} typeExtension
- * @param {function(new:HTMLElement, *)} definition
- * @return {function()}
+ * @param {function(new:HTMLElement, *):void} definition
+ * @return {function():void}
  * @suppressGlobalPropertiesCheck
  */
 export function registerCustomElement(localName, typeExtension, definition) {

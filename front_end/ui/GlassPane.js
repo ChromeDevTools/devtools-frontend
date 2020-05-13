@@ -79,7 +79,7 @@ export class GlassPane {
   }
 
   /**
-   * @param {?function(!Event)} callback
+   * @param {?function(!Event):void} callback
    */
   setOutsideClickCallback(callback) {
     this._onClickOutsideCallback = callback;

@@ -315,7 +315,7 @@ export class Editor {
 
     /**
      * @param {function(!Event):boolean} predicate
-     * @param {function()} callback
+     * @param {function():void} callback
      * @param {!Event} event
      */
     function onKeyDown(predicate, callback, event) {
@@ -433,8 +433,8 @@ export class Editor {
    * @param {!T} item
    * @param {number} index
    * @param {string} commitButtonTitle
-   * @param {function()} commit
-   * @param {function()} cancel
+   * @param {function():void} commit
+   * @param {function():void} cancel
    */
   beginEdit(item, index, commitButtonTitle, commit, cancel) {
     this._commit = commit;

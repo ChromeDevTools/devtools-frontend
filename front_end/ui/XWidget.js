@@ -63,21 +63,21 @@ export class XWidget extends XElement {
   }
 
   /**
-   * @param {?function()} callback
+   * @param {?function():void} callback
    */
   setOnShown(callback) {
     this._onShownCallback = callback;
   }
 
   /**
-   * @param {?function()} callback
+   * @param {?function():void} callback
    */
   setOnHidden(callback) {
     this._onHiddenCallback = callback;
   }
 
   /**
-   * @param {?function()} callback
+   * @param {?function():void} callback
    */
   setOnResized(callback) {
     this._onResizedCallback = callback;

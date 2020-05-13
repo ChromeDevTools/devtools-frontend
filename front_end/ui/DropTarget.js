@@ -15,7 +15,7 @@ export class DropTarget {
    * @param {!Element} element
    * @param {!Array<{kind: string, type: !RegExp}>} transferTypes
    * @param {string} messageText
-   * @param {function(!DataTransfer)} handleDrop
+   * @param {function(!DataTransfer):*} handleDrop
    */
   constructor(element, transferTypes, messageText, handleDrop) {
     element.addEventListener('dragenter', this._onDragEnter.bind(this), true);

@@ -60,8 +60,8 @@ export {markAsFocusedByKeyboard} from './utils/focus-changed.js';
 /**
  * @param {!Element} element
  * @param {?function(!MouseEvent): boolean} elementDragStart
- * @param {function(!MouseEvent)} elementDrag
- * @param {?function(!MouseEvent)} elementDragEnd
+ * @param {function(!MouseEvent):void} elementDrag
+ * @param {?function(!MouseEvent):void} elementDragEnd
  * @param {?string} cursor
  * @param {?string=} hoverCursor
  * @param {number=} startDelay
@@ -102,8 +102,8 @@ export function installDragHandle(
 /**
  * @param {!Element} targetElement
  * @param {?function(!MouseEvent):boolean} elementDragStart
- * @param {function(!MouseEvent)} elementDrag
- * @param {?function(!MouseEvent)} elementDragEnd
+ * @param {function(!MouseEvent):void} elementDrag
+ * @param {?function(!MouseEvent):void} elementDragEnd
  * @param {?string} cursor
  * @param {!Event} event
  */
@@ -147,8 +147,8 @@ class DragHandler {
   /**
    * @param {!Element} targetElement
    * @param {?function(!MouseEvent):boolean} elementDragStart
-   * @param {function(!MouseEvent)} elementDrag
-   * @param {?function(!MouseEvent)} elementDragEnd
+   * @param {function(!MouseEvent):void} elementDrag
+   * @param {?function(!MouseEvent):void} elementDragEnd
    * @param {?string} cursor
    * @param {!Event} event
    */
@@ -508,8 +508,8 @@ export function createReplacementString(wordString, event, customNumberHandler) 
 /**
  * @param {!Event} event
  * @param {!Element} element
- * @param {function(string,string)=} finishHandler
- * @param {function(string)=} suggestionHandler
+ * @param {function(string,string):void=} finishHandler
+ * @param {(function(string):*)=} suggestionHandler
  * @param {function(string, number, string):string=} customNumberHandler
  * @return {boolean}
  */
@@ -1011,7 +1011,7 @@ class InvokeOnceHandlers {
 
   /**
    * @param {!Object} object
-   * @param {function()} method
+   * @param {function():void} method
    */
   add(object, method) {
     if (!this._handlers) {
@@ -1067,7 +1067,7 @@ export function endBatchUpdate() {
 
 /**
  * @param {!Object} object
- * @param {function()} method
+ * @param {function():void} method
  */
 export function invokeOnceAfterBatchUpdate(object, method) {
   if (!_postUpdateHandlers) {
@@ -1081,8 +1081,8 @@ export function invokeOnceAfterBatchUpdate(object, method) {
  * @param {!Function} func
  * @param {!Array.<{from:number, to:number}>} params
  * @param {number} duration
- * @param {function()=} animationComplete
- * @return {function()}
+ * @param {function():*=} animationComplete
+ * @return {function():void}
  */
 export function animateFunction(window, func, params, duration, animationComplete) {
   const start = window.performance.now();
@@ -1107,8 +1107,8 @@ export function animateFunction(window, func, params, duration, animationComplet
 export class LongClickController extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!Element} element
-   * @param {function(!Event)} callback
-   * @param {function(!Event)} isEditKeyFunc
+   * @param {function(!Event):void} callback
+   * @param {function(!Event):void} isEditKeyFunc
    */
   constructor(element, callback, isEditKeyFunc = event => isEnterOrSpaceKey(event)) {
     super();
@@ -1248,7 +1248,7 @@ export function beautifyFunctionName(name) {
 
 /**
  * @param {string} text
- * @param {function(!Event)=} clickHandler
+ * @param {function(!Event):*=} clickHandler
  * @param {string=} className
  * @param {boolean=} primary
  * @return {!Element}
@@ -1567,11 +1567,11 @@ registerCustomElement('div', 'dt-close-button', class extends HTMLDivElement {
 
 /**
  * @param {!Element} input
- * @param {function(string)} apply
+ * @param {function(string):void} apply
  * @param {function(string):{valid: boolean, errorMessage: (string|undefined)}} validate
  * @param {boolean} numeric
  * @param {number=} modifierMultiplier
- * @return {function(string)}
+ * @return {function(string):void}
  */
 export function bindInput(input, apply, validate, numeric, modifierMultiplier) {
   input.addEventListener('change', onChange, false);
@@ -2085,7 +2085,7 @@ export function loadImageFromData(data) {
 }
 
 /**
- * @param {function(!File)} callback
+ * @param {function(!File):*} callback
  * @return {!Node}
  */
 export function createFileSelectorElement(callback) {

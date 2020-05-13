@@ -10,7 +10,7 @@ import {VBox} from './Widget.js';
 
 export class TargetCrashedScreen extends VBox {
   /**
-   * @param {function()} hideCallback
+   * @param {function():*} hideCallback
    */
   constructor(hideCallback) {
     super(true);

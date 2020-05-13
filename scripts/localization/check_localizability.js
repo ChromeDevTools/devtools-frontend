@@ -279,6 +279,9 @@ function auditGrdpFile(filePath, fileContent, errors) {
 
 async function auditFileForLocalizability(filePath, errors) {
   const fileContent = await localizationUtils.parseFileContent(filePath);
+  if (path.extname(filePath) === '.grd') {
+    return;
+  }
   if (path.extname(filePath) === '.grdp') {
     return auditGrdpFile(filePath, fileContent, errors);
   }

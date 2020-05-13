@@ -13,6 +13,7 @@ group("front_end") {
     "elements",
     "formatter_worker",
     "inline_editor",
+    "inspector_overlay",
     "issues",
     "persistence",
     "platform",

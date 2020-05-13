@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grit latest_public_release="0" current_release="1" output_all_resource_defines="false">
+  <outputs>
+    <output filename="grit/inspector_overlay_resources_map.h" type="rc_header">
+      <emit emit_type="prepend"></emit>
+    </output>
+    <output filename="inspector_overlay_resources.pak" type="data_package" />
+  </outputs>
+  <release seq="1">
+    <includes>
+      <include name="IDR_INSPECT_COMMON_CSS" file="common.css" type="BINDATA" compress="gzip"/>
+      <include name="IDR_INSPECT_TOOL_HIGHLIGHT_JS" file="tool_highlight.js" type="BINDATA" compress="gzip"/>
+    </includes>
+  </release>
+</grit>

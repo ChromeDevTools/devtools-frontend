@@ -930,6 +930,7 @@ devtools_typescript_deps = [
   "front_end/elements",
   "front_end/formatter_worker",
   "front_end/host",
+  "front_end/inspector_overlay:inspector_overlay",
   "front_end/issues:issues",
   "front_end/protocol_client",
   "front_end/root",
@@ -970,6 +971,10 @@ if (!is_android) {
 
 group("devtools_frontend_resources") {
   public_deps = devtools_frontend_resources_deps
+}
+
+group("devtools_inspector_overlay_resources") {
+  public_deps = [ "front_end/inspector_overlay:build_inspector_overlay" ]
 }
 
 # Do not use this unless you need unpacked devtools at runtime.

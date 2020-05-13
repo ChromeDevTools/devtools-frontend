@@ -28,6 +28,7 @@ npm-debug.log
 /third_party/*
 !/third_party/axe-core
 !/third_party/blink
+!/third_party/i18n
 !/third_party/pyjson5
 !/third_party/typescript
 

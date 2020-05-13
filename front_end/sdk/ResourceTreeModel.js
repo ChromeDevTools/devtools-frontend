@@ -316,7 +316,7 @@ export class ResourceTreeModel extends SDKModel {
   }
 
   /**
-   * @param {function(!Resource)} callback
+   * @param {function(!Resource):void} callback
    * @return {boolean}
    */
   forAllResources(callback) {
@@ -852,7 +852,7 @@ export class ResourceTreeFrame {
   }
 
   /**
-   * @param {function(!Resource)} callback
+   * @param {function(!Resource):void} callback
    * @return {boolean}
    */
   _callForFrameResources(callback) {

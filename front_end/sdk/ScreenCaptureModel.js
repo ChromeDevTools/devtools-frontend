@@ -33,8 +33,8 @@ export class ScreenCaptureModel extends SDKModel {
    * @param {number|undefined} width
    * @param {number|undefined} height
    * @param {number|undefined} everyNthFrame
-   * @param {function(string, !Protocol.Page.ScreencastFrameMetadata)} onFrame
-   * @param {function(boolean)} onVisibilityChanged
+   * @param {function(string, !Protocol.Page.ScreencastFrameMetadata):void} onFrame
+   * @param {function(boolean):void} onVisibilityChanged
    */
   startScreencast(format, quality, width, height, everyNthFrame, onFrame, onVisibilityChanged) {
     this._onScreencastFrame = onFrame;

@@ -725,7 +725,7 @@ export class ObjectSnapshot extends Event {
   }
 
   /**
-   * @param {function(?)} callback
+   * @param {function(?):void} callback
    */
   requestObject(callback) {
     const snapshot = this.args['snapshot'];

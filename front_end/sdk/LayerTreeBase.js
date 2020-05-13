@@ -273,9 +273,9 @@ export class LayerTreeBase {
   }
 
   /**
-   * @param {function(!Layer)} callback
+   * @param {function(!Layer):*} callback
    * @param {?Layer=} root
-   * @return {boolean}
+   * @return {*}
    */
   forEachLayer(callback, root) {
     if (!root) {

@@ -32,7 +32,7 @@ import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
 
-import {BreakpointManager} from './BreakpointManager.js';
+import {Breakpoint, BreakpointManager} from './BreakpointManager.js';  // eslint-disable-line no-unused-vars
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
 import {DebuggerSourceMapping, DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
 import {NetworkProject} from './NetworkProject.js';
@@ -355,35 +355,38 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper {
                             .breakpointLocationsForUISourceCode(this._uiSourceCode)
                             .map(breakpointLocation => breakpointLocation.breakpoint);
     const source = this._uiSourceCode.workingCopy();
-    debuggerModel.setScriptSource(this._script.scriptId, source, scriptSourceWasSet.bind(this));
+    debuggerModel.setScriptSource(this._script.scriptId, source, (error, exceptionDetails) => {
+      this.scriptSourceWasSet(source, breakpoints, error, exceptionDetails);
+    });
+  }
 
-    /**
-     * @param {?string} error
-     * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
-     * @this {ResourceScriptFile}
-     */
-    async function scriptSourceWasSet(error, exceptionDetails) {
-      if (!error && !exceptionDetails) {
-        this._scriptSource = source;
-      }
-      await this._update();
-
-      if (!error && !exceptionDetails) {
-        // Live edit can cause breakpoints to be in the wrong position, or to be lost altogether.
-        // If any breakpoints were in the pre-live edit script, they need to be re-added.
-        await Promise.all(breakpoints.map(breakpoint => breakpoint.refreshInDebugger()));
-        return;
-      }
-      if (!exceptionDetails) {
-        Common.Console.Console.instance().addMessage(
-            Common.UIString.UIString('LiveEdit failed: %s', error), Common.Console.MessageLevel.Warning);
-        return;
-      }
-      const messageText = Common.UIString.UIString('LiveEdit compile failed: %s', exceptionDetails.text);
-      this._uiSourceCode.addLineMessage(
-          Workspace.UISourceCode.Message.Level.Error, messageText, exceptionDetails.lineNumber,
-          exceptionDetails.columnNumber);
+  /**
+   * @param {string} source
+   * @param {!Array<!Breakpoint>} breakpoints
+   * @param {?string} error
+   * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
+   */
+  async scriptSourceWasSet(source, breakpoints, error, exceptionDetails) {
+    if (!error && !exceptionDetails) {
+      this._scriptSource = source;
     }
+    await this._update();
+
+    if (!error && !exceptionDetails) {
+      // Live edit can cause breakpoints to be in the wrong position, or to be lost altogether.
+      // If any breakpoints were in the pre-live edit script, they need to be re-added.
+      await Promise.all(breakpoints.map(breakpoint => breakpoint.refreshInDebugger()));
+      return;
+    }
+    if (!exceptionDetails) {
+      Common.Console.Console.instance().addMessage(
+          Common.UIString.UIString('LiveEdit failed: %s', error), Common.Console.MessageLevel.Warning);
+      return;
+    }
+    const messageText = Common.UIString.UIString('LiveEdit compile failed: %s', exceptionDetails.text);
+    this._uiSourceCode.addLineMessage(
+        Workspace.UISourceCode.Message.Level.Error, messageText, exceptionDetails.lineNumber,
+        exceptionDetails.columnNumber);
   }
 
   async _update() {

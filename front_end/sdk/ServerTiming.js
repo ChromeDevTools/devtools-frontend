@@ -174,7 +174,7 @@ export class ServerTiming {
 
   /**
    * @param {string} paramName
-   * @return {?function(!Object<string, *>, ?string)}
+   * @return {?function(!Object<string, *>, ?string):void}
    */
   static getParserForParameter(paramName) {
     switch (paramName) {

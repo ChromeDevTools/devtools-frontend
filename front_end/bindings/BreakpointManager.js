@@ -773,7 +773,11 @@ export class ModelBreakpoint {
     }
 
     this._debuggerId = breakpointId;
-    this._debuggerModel.addBreakpointListener(this._debuggerId, this._breakpointResolved, this);
+    this._debuggerModel.addBreakpointListener(
+        this._debuggerId, /**
+      * @param {!Common.EventTarget.EventTargetEvent} event
+      */
+        event => this._breakpointResolved(event), this);
     for (const location of locations) {
       if (!(await this._addResolvedLocation(location))) {
         break;
@@ -789,7 +793,11 @@ export class ModelBreakpoint {
     }
 
     this._resetLocations();
-    this._debuggerModel.removeBreakpointListener(this._debuggerId, this._breakpointResolved, this);
+    this._debuggerModel.removeBreakpointListener(
+        this._debuggerId, /**
+      * @param {!Common.EventTarget.EventTargetEvent} event
+      */
+        event => this._breakpointResolved(event), this);
     delete this._debuggerId;
   }
 

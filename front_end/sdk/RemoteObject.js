@@ -297,7 +297,7 @@ export class RemoteObject {
   }
 
   /**
-   * @param {function(this:Object, ...)} functionDeclaration
+   * @param {function(this:Object, ...):*} functionDeclaration
    * @param {!Array<!Protocol.Runtime.CallArgument>=} args
    * @return {!Promise<!CallFunctionResult>}
    */
@@ -634,7 +634,7 @@ export class RemoteObjectImpl extends RemoteObject {
 
   /**
    * @override
-   * @param {function(this:Object, ...)} functionDeclaration
+   * @param {function(this:Object, ...):*} functionDeclaration
    * @param {!Array<!Protocol.Runtime.CallArgument>=} args
    * @return {!Promise<!CallFunctionResult>}
    */
@@ -967,7 +967,7 @@ export class LocalJSONObject extends RemoteObject {
   /**
    * @param {string} prefix
    * @param {string} suffix
-   * @param {function(!RemoteObjectProperty)} formatProperty
+   * @param {function(!RemoteObjectProperty):string} formatProperty
    * @return {string}
    */
   _concatenate(prefix, suffix, formatProperty) {
@@ -1089,7 +1089,7 @@ export class LocalJSONObject extends RemoteObject {
 
   /**
    * @override
-   * @param {function(this:Object, ...)} functionDeclaration
+   * @param {function(this:Object, ...):*} functionDeclaration
    * @param {!Array<!Protocol.Runtime.CallArgument>=} args
    * @return {!Promise<!CallFunctionResult>}
    */

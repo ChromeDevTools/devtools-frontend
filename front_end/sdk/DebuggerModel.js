@@ -487,7 +487,7 @@ export class DebuggerModel extends SDKModel {
   /**
    * @param {!Protocol.Runtime.ScriptId} scriptId
    * @param {string} newSource
-   * @param {function(?ProtocolClient.InspectorBackend.ProtocolError, !Protocol.Runtime.ExceptionDetails=)} callback
+   * @param {function(?ProtocolClient.InspectorBackend.ProtocolError, !Protocol.Runtime.ExceptionDetails=):void} callback
    */
   setScriptSource(scriptId, newSource, callback) {
     this._scripts.get(scriptId).editSource(
@@ -497,7 +497,7 @@ export class DebuggerModel extends SDKModel {
   /**
    * @param {!Protocol.Runtime.ScriptId} scriptId
    * @param {string} newSource
-   * @param {function(?ProtocolClient.InspectorBackend.ProtocolError, !Protocol.Runtime.ExceptionDetails=)} callback
+   * @param {function(?ProtocolClient.InspectorBackend.ProtocolError, !Protocol.Runtime.ExceptionDetails=):void} callback
    * @param {?ProtocolClient.InspectorBackend.ProtocolError} error
    * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
    * @param {!Array.<!Protocol.Debugger.CallFrame>=} callFrames
@@ -931,7 +931,7 @@ export class DebuggerModel extends SDKModel {
 
   /**
    * @param {!Protocol.Debugger.BreakpointId} breakpointId
-   * @param {function(!Common.EventTarget.EventTargetEvent)} listener
+   * @param {function(!Common.EventTarget.EventTargetEvent):void} listener
    * @param {!Object=} thisObject
    */
   addBreakpointListener(breakpointId, listener, thisObject) {
@@ -940,7 +940,7 @@ export class DebuggerModel extends SDKModel {
 
   /**
    * @param {!Protocol.Debugger.BreakpointId} breakpointId
-   * @param {function(!Common.EventTarget.EventTargetEvent)} listener
+   * @param {function(!Common.EventTarget.EventTargetEvent):void} listener
    * @param {!Object=} thisObject
    */
   removeBreakpointListener(breakpointId, listener, thisObject) {
@@ -1198,7 +1198,7 @@ export class Location {
   }
 
   /**
-   * @param {function()=} pausedCallback
+   * @param {function():void=} pausedCallback
    */
   continueToLocation(pausedCallback) {
     if (pausedCallback) {
@@ -1208,7 +1208,7 @@ export class Location {
   }
 
   /**
-   * @param {function()|undefined} pausedCallback
+   * @param {function():void|undefined} pausedCallback
    * @param {!DebuggerPausedDetails} debuggerPausedDetails
    * @return {boolean}
    */

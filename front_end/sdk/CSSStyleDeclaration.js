@@ -398,7 +398,7 @@ export class CSSStyleDeclaration {
    * @param {number} index
    * @param {string} name
    * @param {string} value
-   * @param {function(boolean)=} userCallback
+   * @param {function(boolean):void=} userCallback
    */
   insertPropertyAt(index, name, value, userCallback) {
     this.newBlankProperty(index).setText(name + ': ' + value + ';', false, true).then(userCallback);
@@ -407,7 +407,7 @@ export class CSSStyleDeclaration {
   /**
    * @param {string} name
    * @param {string} value
-   * @param {function(boolean)=} userCallback
+   * @param {function(boolean):void=} userCallback
    */
   appendProperty(name, value, userCallback) {
     this.insertPropertyAt(this.allProperties().length, name, value, userCallback);

@@ -55,7 +55,7 @@ export class CookieModel extends SDKModel {
 
   /**
    * @param {!Cookie} cookie
-   * @param {function()=} callback
+   * @param {function():void=} callback
    */
   deleteCookie(cookie, callback) {
     this._deleteAll([cookie], callback);
@@ -63,7 +63,7 @@ export class CookieModel extends SDKModel {
 
   /**
    * @param {string=} domain
-   * @param {function()=} callback
+   * @param {function():void=} callback
    */
   clear(domain, callback) {
     this.getCookiesForDomain(domain || null).then(cookies => this._deleteAll(cookies, callback));
@@ -121,7 +121,7 @@ export class CookieModel extends SDKModel {
 
   /**
    * @param {!Array<!Cookie>} cookies
-   * @param {function()=} callback
+   * @param {function():void=} callback
    */
   _deleteAll(cookies, callback) {
     const networkAgent = this.target().networkAgent();

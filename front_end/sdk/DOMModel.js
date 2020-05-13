@@ -552,7 +552,7 @@ export class DOMNode {
   }
 
   /**
-   * @param {function(?Array<!DOMNode>)} callback
+   * @param {function(?Array<!DOMNode>):void} callback
    */
   getChildNodes(callback) {
     if (this._children) {
@@ -919,7 +919,7 @@ export class DOMNode {
   }
 
   /**
-   * @param {function(!DOMNode, string)} visitor
+   * @param {function(!DOMNode, string):void} visitor
    */
   traverseMarkers(visitor) {
     /**
@@ -1117,7 +1117,7 @@ export class DeferredDOMNode {
   }
 
   /**
-   * @param {function(?DOMNode)} callback
+   * @param {function(?DOMNode):void} callback
    */
   resolve(callback) {
     this.resolvePromise().then(callback);
@@ -1365,8 +1365,8 @@ export class DOMModel extends SDKModel {
   }
 
   /**
-   * @param {function(?T)} callback
-   * @return {function(?ProtocolClient.InspectorBackend.ProtocolError, !T=)}
+   * @param {function(?T):void} callback
+   * @return {function(?ProtocolClient.InspectorBackend.ProtocolError, !T=):void}
    * @template T
    */
   _wrapClientCallback(callback) {

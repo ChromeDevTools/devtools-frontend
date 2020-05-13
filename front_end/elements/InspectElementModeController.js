@@ -138,7 +138,7 @@ export class InspectElementModeController {
   /**
    * @param {!SDK.DOMModel.DOMNode} node
    */
-  async _inspectNode(node) {
+  _inspectNode(node) {
     ElementsPanel.instance().revealAndSelectNode(node, true, true);
   }
 

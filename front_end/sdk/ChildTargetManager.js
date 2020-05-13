@@ -202,7 +202,7 @@ export class ChildTargetManager extends SDKModel {
   }
 
   /**
-   * @param {function((!Object|string))} onMessage
+   * @param {function((!Object|string)):void} onMessage
    * @return {!Promise<!ProtocolClient.InspectorBackend.Connection>}
    */
   async createParallelConnection(onMessage) {

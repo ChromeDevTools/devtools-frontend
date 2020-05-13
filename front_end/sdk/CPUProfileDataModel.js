@@ -342,8 +342,8 @@ export class CPUProfileDataModel extends ProfileTreeModel {
   }
 
   /**
-   * @param {function(number, !CPUProfileNode, number)} openFrameCallback
-   * @param {function(number, !CPUProfileNode, number, number, number)} closeFrameCallback
+   * @param {function(number, !CPUProfileNode, number):void} openFrameCallback
+   * @param {function(number, !CPUProfileNode, number, number, number):void} closeFrameCallback
    * @param {number=} startTime
    * @param {number=} stopTime
    */

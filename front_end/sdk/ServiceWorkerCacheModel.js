@@ -109,7 +109,7 @@ export class ServiceWorkerCacheModel extends SDKModel {
    * @param {number} skipCount
    * @param {number} pageSize
    * @param {string} pathFilter
-   * @param {function(!Array.<!Protocol.CacheStorage.DataEntry>, number)} callback
+   * @param {function(!Array.<!Protocol.CacheStorage.DataEntry>, number):void} callback
    */
   loadCacheData(cache, skipCount, pageSize, pathFilter, callback) {
     this._requestEntries(cache, skipCount, pageSize, pathFilter, callback);
@@ -118,7 +118,7 @@ export class ServiceWorkerCacheModel extends SDKModel {
   /**
    * @param {!Cache} cache
    * @param {string} pathFilter
-   * @param {function(!Array.<!Protocol.CacheStorage.DataEntry>, number)} callback
+   * @param {function(!Array.<!Protocol.CacheStorage.DataEntry>, number):void} callback
    */
   loadAllCacheData(cache, pathFilter, callback) {
     this._requestAllEntries(cache, pathFilter, callback);
@@ -266,7 +266,7 @@ export class ServiceWorkerCacheModel extends SDKModel {
    * @param {number} skipCount
    * @param {number} pageSize
    * @param {string} pathFilter
-   * @param {function(!Array<!Protocol.CacheStorage.DataEntry>, number)} callback
+   * @param {function(!Array<!Protocol.CacheStorage.DataEntry>, number):void} callback
    */
   async _requestEntries(cache, skipCount, pageSize, pathFilter, callback) {
     const response =
@@ -283,7 +283,7 @@ export class ServiceWorkerCacheModel extends SDKModel {
   /**
    * @param {!Cache} cache
    * @param {string} pathFilter
-   * @param {function(!Array<!Protocol.CacheStorage.DataEntry>, number)} callback
+   * @param {function(!Array<!Protocol.CacheStorage.DataEntry>, number):void} callback
    */
   async _requestAllEntries(cache, pathFilter, callback) {
     const response = await this._cacheAgent.invoke_requestEntries({cacheId: cache.cacheId, pathFilter});

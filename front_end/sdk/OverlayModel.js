@@ -349,7 +349,7 @@ export class OverlayModel extends SDKModel {
   }
 
   /**
-   * @param {function(!DOMNode)} handler
+   * @param {function(!DOMNode):void} handler
    */
   static setInspectNodeHandler(handler) {
     OverlayModel._inspectNodeHandler = handler;

@@ -303,7 +303,7 @@ export class CSSProperty {
    * @param {string} newValue
    * @param {boolean} majorChange
    * @param {boolean} overwrite
-   * @param {function(boolean)=} userCallback
+   * @param {function(boolean):void=} userCallback
    */
   setValue(newValue, majorChange, overwrite, userCallback) {
     const text = this.name + ': ' + newValue + (this.important ? ' !important' : '') + ';';

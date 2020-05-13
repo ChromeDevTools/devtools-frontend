@@ -57,7 +57,7 @@ DEPS = {
     "recast": "0.18.2",
     "rimraf": "3.0.2",
     "rollup": "2.3.3",
-    "typescript": "3.8.3",
+    "typescript": "3.9.2-insiders.20200509",
     "yargs": "15.3.1"
 }
 

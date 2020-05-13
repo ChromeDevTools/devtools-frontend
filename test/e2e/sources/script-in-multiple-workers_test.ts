@@ -190,7 +190,8 @@ describe('Multi-Workers', async function() {
         await validateSourceTabs();
       });
 
-      it('for newly created workers', async () => {
+      // Flaky test
+      it.skip('[crbug.com/1073406] for newly created workers', async () => {
         const {target} = getBrowserAndPages();
         await step('Launch new worker to hit breakpoint', async () => {
           await target.evaluate(`new Worker('${scriptFile}').postMessage({});`);

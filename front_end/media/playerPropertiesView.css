@@ -20,6 +20,7 @@
 .media-property-renderer-contents {
   position: absolute;
   left: 200px;
+  overflow: hidden;
 }
 .media-property-renderer:nth-child(even) {
   background: hsl(214, 70%, 97%);

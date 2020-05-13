@@ -487,6 +487,13 @@ class Util {
   }
 }
 
+/**
+ * Some parts of the report renderer require data found on the LHR. Instead of wiring it
+ * through, we have this global.
+ * @type {LH.ReportResult | null}
+ */
+Util.reportJson = null;
+
 /** @type {I18n} */
 // @ts-ignore: Is set in report renderer.
 Util.i18n = null;
@@ -497,6 +504,8 @@ Util.i18n = null;
 Util.UIStrings = {
   /** Disclaimer shown to users below the metric values (First Contentful Paint, Time to Interactive, etc) to warn them that the numbers they see will likely change slightly the next time they run Lighthouse. */
   varianceDisclaimer: 'Values are estimated and may vary. The [performance score is calculated](https://web.dev/performance-scoring/) directly from these metrics.',
+  /** Text link pointing to an interactive calculator that explains Lighthouse scoring. The link text should be fairly short. */
+  calculatorLink: 'See calculator.',
   /** Column heading label for the listing of opportunity audits. Each audit title represents an opportunity. There are only 2 columns, so no strict character limit.  */
   opportunityResourceColumnLabel: 'Opportunity',
   /** Column heading label for the estimated page load savings of opportunity audits. Estimated Savings is the total amount of time (in seconds) that Lighthouse computed could be reduced from the total page load time, if the suggested action is taken. There are only 2 columns, so no strict character limit. */
@@ -3690,6 +3699,36 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
   }
 
   /**
+   * Get a link to the interactive scoring calculator with the metric values.
+   * @param {LH.ReportResult.AuditRef[]} auditRefs
+   * @return {string}
+   */
+  _getScoringCalculatorHref(auditRefs) {
+    const v5andv6metrics = auditRefs.filter(audit => audit.group === 'metrics');
+    const fci = auditRefs.find(audit => audit.id === 'first-cpu-idle');
+    const fmp = auditRefs.find(audit => audit.id === 'first-meaningful-paint');
+    if (fci) v5andv6metrics.push(fci);
+    if (fmp) v5andv6metrics.push(fmp);
+
+    const metricPairs = v5andv6metrics.map(audit => {
+      const value = typeof audit.result.numericValue !== 'undefined' ?
+        audit.result.numericValue.toString() : 'null';
+      return [audit.id, value];
+    });
+    const paramPairs = [...metricPairs];
+
+    if (Util.reportJson) {
+      paramPairs.push(['device', Util.reportJson.configSettings.emulatedFormFactor]);
+      paramPairs.push(['version', Util.reportJson.lighthouseVersion]);
+    }
+
+    const params = new URLSearchParams(paramPairs);
+    const url = new URL('https://googlechrome.github.io/lighthouse/scorecalc/');
+    url.hash = params.toString();
+    return url.href;
+  }
+
+  /**
    * @param {LH.ReportResult.Category} category
    * @param {Object<string, LH.Result.ReportGroup>} groups
    * @param {'PSI'=} environment 'PSI' and undefined are the only valid values
@@ -3737,6 +3776,12 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
       const estValuesEl = this.dom.createChildOf(metricAuditsEl, 'div', 'lh-metrics__disclaimer');
       const disclaimerEl = this.dom.convertMarkdownLinkSnippets(strings.varianceDisclaimer);
       estValuesEl.appendChild(disclaimerEl);
+
+      // Add link to score calculator.
+      const calculatorLink = this.dom.createChildOf(estValuesEl, 'a', 'lh-calclink');
+      calculatorLink.target = '_blank';
+      calculatorLink.textContent = strings.calculatorLink;
+      calculatorLink.href = this._getScoringCalculatorHref(category.auditRefs);
     }
 
     metricAuditsEl.classList.add('lh-audit-group--metrics');
@@ -4235,6 +4280,7 @@ class ReportRenderer {
       ...report.i18n.rendererFormattedStrings,
     });
     Util.i18n = i18n;
+    Util.reportJson = report;
 
     const detailsRenderer = new DetailsRenderer(this._dom);
     const categoryRenderer = new CategoryRenderer(this._dom, detailsRenderer);

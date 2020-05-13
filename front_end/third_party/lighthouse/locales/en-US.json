@@ -1610,6 +1610,9 @@
   "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
     "message": "Show audits"
   },
+  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
+    "message": "See calculator."
+  },
   "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
     "message": "Initial Navigation"
   },

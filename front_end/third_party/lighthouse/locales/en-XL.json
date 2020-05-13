@@ -1610,6 +1610,9 @@
   "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
     "message": "Ŝh́ôẃ âúd̂ít̂ś"
   },
+  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
+    "message": "Ŝéê ćâĺĉúl̂át̂ór̂."
+  },
   "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
     "message": "Îńît́îál̂ Ńâv́îǵât́îón̂"
   },

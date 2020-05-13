@@ -1,4 +1,4 @@
-// lighthouse, browserified. 6.0.0-rc.0 (074ca8c481eb12095b6b3e62fcf2d6f713f4f749)
+// lighthouse, browserified. 6.0.0-rc.1 (0d6f7e7996cd0ce5aa1993ab17aced917113c561)
 // @ts-nocheck
 require=function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a;}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r);},p,p.exports,r,e,n,t);}return n[i].exports;}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o;}return r;}()({"../audits/accessibility/accesskeys":[function(require,module,exports){
 (function(__filename){
@@ -9430,7 +9430,7 @@ id:'largest-contentful-paint',
 title:str_(i18n.UIStrings.largestContentfulPaintMetric),
 description:str_(UIStrings.description),
 scoreDisplayMode:Audit.SCORING_MODES.NUMERIC,
-requiredArtifacts:['traces','devtoolsLogs']};
+requiredArtifacts:['traces','devtoolsLogs','TestedAsMobileDevice']};
 
 }
 
@@ -9439,12 +9439,30 @@ requiredArtifacts:['traces','devtoolsLogs']};
 
 static get defaultOptions(){
 return{
+mobile:{
 
 
 
 
+scoring:{
 p10:2500,
-median:4000};
+median:4000}},
+
+
+desktop:{
+
+
+
+
+
+
+
+
+scoring:{
+p10:1200,
+median:2400}}};
+
+
 
 }
 
@@ -9459,9 +9477,12 @@ const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
 const metricComputationData={trace,devtoolsLog,settings:context.settings};
 const metricResult=await ComputedLcp.request(metricComputationData,context);
 
+const isDesktop=artifacts.TestedAsMobileDevice===false;
+const options=isDesktop?context.options.desktop:context.options.mobile;
+
 return{
 score:Audit.computeLogNormalScore(
-{p10:context.options.p10,median:context.options.median},
+options.scoring,
 metricResult.timing),
 
 numericValue:metricResult.timing,
@@ -9674,7 +9695,7 @@ id:'total-blocking-time',
 title:str_(i18n.UIStrings.totalBlockingTimeMetric),
 description:str_(UIStrings.description),
 scoreDisplayMode:Audit.SCORING_MODES.NUMERIC,
-requiredArtifacts:['traces','devtoolsLogs']};
+requiredArtifacts:['traces','devtoolsLogs','TestedAsMobileDevice']};
 
 }
 
@@ -9683,14 +9704,32 @@ requiredArtifacts:['traces','devtoolsLogs']};
 
 static get defaultOptions(){
 return{
+mobile:{
 
 
 
 
 
 
-median:600,
-p10:287};
+scoring:{
+p10:287,
+median:600}},
+
+
+desktop:{
+
+
+
+
+
+
+
+
+scoring:{
+p10:150,
+median:350}}};
+
+
 
 }
 
@@ -9712,9 +9751,12 @@ const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
 const metricComputationData={trace,devtoolsLog,settings:context.settings};
 const metricResult=await ComputedTBT.request(metricComputationData,context);
 
+const isDesktop=artifacts.TestedAsMobileDevice===false;
+const options=isDesktop?context.options.desktop:context.options.mobile;
+
 return{
 score:Audit.computeLogNormalScore(
-{p10:context.options.p10,median:context.options.median},
+options.scoring,
 metricResult.timing),
 
 numericValue:metricResult.timing,
@@ -17889,7 +17931,7 @@ settings.throttling=desktopDense4G;
 
 return{
 extends:'lighthouse:default',
-plugins:['lighthouse-plugin-publisher-ads-alphaignore'],
+plugins:['lighthouse-plugin-publisher-ads'],
 settings};
 
 }
@@ -37805,6 +37847,13 @@ return categoryId.startsWith('lighthouse-plugin-');
 
 
 
+
+
+
+Util.reportJson=null;
+
+
+
 Util.i18n=null;
 
 
@@ -37813,6 +37862,8 @@ Util.i18n=null;
 Util.UIStrings={
 
 varianceDisclaimer:'Values are estimated and may vary. The [performance score is calculated](https://web.dev/performance-scoring/) directly from these metrics.',
+
+calculatorLink:'See calculator.',
 
 opportunityResourceColumnLabel:'Opportunity',
 
@@ -38692,23 +38743,23 @@ return this;
 format(){
 const tokens=[];
 
-if(typeof this.maxAge==='number'){
+if(this.maxAge){
 tokens.push(`${STRINGS.maxAge}=${this.maxAge}`);
 }
 
-if(typeof this.sharedMaxAge==='number'){
+if(this.sharedMaxAge){
 tokens.push(`${STRINGS.sharedMaxAge}=${this.sharedMaxAge}`);
 }
 
 if(this.maxStale){
-if(typeof this.maxStaleDuration==='number'){
+if(this.maxStaleDuration){
 tokens.push(`${STRINGS.maxStale}=${this.maxStaleDuration}`);
 }else{
 tokens.push(STRINGS.maxStale);
 }
 }
 
-if(typeof this.minFresh==='number'){
+if(this.minFresh){
 tokens.push(`${STRINGS.minFresh}=${this.minFresh}`);
 }
 
@@ -58090,7 +58141,10 @@ endTime:timing.endTime,
 duration:timing.duration,
 selfTime:timing.duration,
 attributableURLs:Array.from(node.getEvaluateScriptURLs()),
-children:[]});
+children:[],
+parent:node.parent,
+unbounded:node.unbounded,
+group:node.group});
 
 }
 return tasks;
@@ -58319,7 +58373,7 @@ AdsBestPractices:str_(UIStrings.GROUPS__ADS_BEST_PRACTICES)};
 module.exports={auditNotApplicable,runWarning,auditError,group};
 module.exports.UIStrings=UIStrings;
 
-}).call(this,"/node_modules/lighthouse-plugin-publisher-ads-alphaignore/messages/common-strings.js");
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/messages/common-strings.js");
 },{"lighthouse/lighthouse-core/lib/i18n/i18n":77}],145:[function(require,module,exports){
 
 
@@ -72302,7 +72356,7 @@ arguments[4][106][0].apply(exports,arguments);
 arguments[4][107][0].apply(exports,arguments);
 },{"./support/isBuffer":203,"_process":170,"dup":107,"inherits":123}],205:[function(require,module,exports){
 module.exports={
-"version":"6.0.0-rc.0"};
+"version":"6.0.0-rc.1"};
 
 },{}],206:[function(require,module,exports){
 
@@ -72688,7 +72742,8 @@ module.exports={
 {"id":"npm:highcharts:20180225","severity":"high","semver":{"vulnerable":["<6.1.0"]}}],
 
 "jquery":[
-{"id":"SNYK-JS-JQUERY-565129","severity":"medium","semver":{"vulnerable":[">=2.2.0 <3.5.0"]}},
+{"id":"SNYK-JS-JQUERY-567880","severity":"medium","semver":{"vulnerable":[">=1.2.0 <3.5.0"]}},
+{"id":"SNYK-JS-JQUERY-565129","severity":"medium","semver":{"vulnerable":[">=1.0.3 <3.5.0"]}},
 {"id":"SNYK-JS-JQUERY-174006","severity":"medium","semver":{"vulnerable":["<3.4.0"]}},
 {"id":"npm:jquery:20160529","severity":"low","semver":{"vulnerable":[">=3.0.0-rc1 <3.0.0"]}},
 {"id":"npm:jquery:20150627","severity":"medium","semver":{"vulnerable":["<1.12.2",">=1.12.3 <2.2.2",">=2.2.3 <3.0.0"]}},
@@ -72710,6 +72765,7 @@ module.exports={
 {"id":"npm:knockout:20130701","severity":"medium","semver":{"vulnerable":[">=2.1.0-pre <3.0.0"]}}],
 
 "lodash":[
+{"id":"SNYK-JS-LODASH-567746","severity":"medium","semver":{"vulnerable":["<=4.17.15"]}},
 {"id":"SNYK-JS-LODASH-450202","severity":"high","semver":{"vulnerable":["<4.17.12"]}},
 {"id":"SNYK-JS-LODASH-73639","severity":"medium","semver":{"vulnerable":["<4.17.11"]}},
 {"id":"SNYK-JS-LODASH-73638","severity":"high","semver":{"vulnerable":["<4.17.11"]}},
@@ -72723,6 +72779,14 @@ module.exports={
 "mustache":[
 {"id":"npm:mustache:20151207","severity":"medium","semver":{"vulnerable":["<2.2.1"]}},
 {"id":"npm:mustache:20110814","severity":"medium","semver":{"vulnerable":["< 0.3.1"]}}],
+
+"next":[
+{"id":"SNYK-JS-NEXT-561584","severity":"medium","semver":{"vulnerable":["<9.3.2"]}},
+{"id":"SNYK-JS-NEXT-174590","severity":"high","semver":{"vulnerable":["<2.4.1"]}},
+{"id":"SNYK-JS-NEXT-72454","severity":"medium","semver":{"vulnerable":[">=7.0.0 <7.0.2"]}},
+{"id":"npm:next:20180124","severity":"high","semver":{"vulnerable":["<4.2.3"]}},
+{"id":"npm:next:20170607","severity":"medium","semver":{"vulnerable":["<2.4.3"]}},
+{"id":"npm:next:20170601","severity":"high","semver":{"vulnerable":["<2.4.1",">=3.0.0-beta1 <3.0.0-beta7"]}}],
 
 "react":[
 {"id":"npm:react:20150318","severity":"high","semver":{"vulnerable":[">=0.0.1 <0.14.0"]}},
@@ -72750,7 +72814,7 @@ module.exports={
 
 
 
-},{}],"lighthouse-plugin-publisher-ads-alphaignore/audits/ad-blocking-tasks":[function(require,module,exports){
+},{}],"lighthouse-plugin-publisher-ads/audits/ad-blocking-tasks":[function(require,module,exports){
 (function(__filename){
 
 
@@ -72916,6 +72980,7 @@ const failed=filteredBlocking.length>0;
 return{
 score:failed?0:1,
 numericValue:blockedTime,
+numericUnit:'millisecond',
 displayValue:failed?
 str_(UIStrings.failureDisplayValue,{timeInMs:blockedTime}):
 '',
@@ -72930,8 +72995,8 @@ rawBlocking:blocking}};
 module.exports=AdBlockingTasks;
 module.exports.UIStrings=UIStrings;
 
-}).call(this,"/node_modules/lighthouse-plugin-publisher-ads-alphaignore/audits/ad-blocking-tasks.js");
-},{"../computed/ad-request-time":140,"../computed/long-tasks":142,"../messages/common-strings":144,"../utils/resource-classification":152,"../utils/tasks":153,"lighthouse":62,"lighthouse/lighthouse-core/lib/i18n/i18n":77,"url":"url"}],"lighthouse-plugin-publisher-ads-alphaignore/audits/ad-render-blocking-resources":[function(require,module,exports){
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/ad-blocking-tasks.js");
+},{"../computed/ad-request-time":140,"../computed/long-tasks":142,"../messages/common-strings":144,"../utils/resource-classification":152,"../utils/tasks":153,"lighthouse":62,"lighthouse/lighthouse-core/lib/i18n/i18n":77,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/ad-render-blocking-resources":[function(require,module,exports){
 (function(__filename){
 
 
@@ -73091,6 +73156,7 @@ const failed=tableView.length>0&&opportunity>THRESHOLD_MS;
 return{
 score:failed?0:1,
 numericValue:tableView.length,
+numericUnit:'unitless',
 displayValue,
 details:{
 opportunity,
@@ -73103,8 +73169,8 @@ opportunity,
 module.exports=AdRenderBlockingResources;
 module.exports.UIStrings=UIStrings;
 
-}).call(this,"/node_modules/lighthouse-plugin-publisher-ads-alphaignore/audits/ad-render-blocking-resources.js");
-},{"../messages/common-strings":144,"../utils/network-timing":150,"../utils/resource-classification":152,"lighthouse":62,"lighthouse/lighthouse-core/computed/network-records":39,"lighthouse/lighthouse-core/lib/i18n/i18n":77,"url":"url"}],"lighthouse-plugin-publisher-ads-alphaignore/audits/ad-request-critical-path":[function(require,module,exports){
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/ad-render-blocking-resources.js");
+},{"../messages/common-strings":144,"../utils/network-timing":150,"../utils/resource-classification":152,"lighthouse":62,"lighthouse/lighthouse-core/computed/network-records":39,"lighthouse/lighthouse-core/lib/i18n/i18n":77,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/ad-request-critical-path":[function(require,module,exports){
 (function(__filename){
 
 
@@ -73274,6 +73340,7 @@ const totalIdleTime=idleTimes.reduce((total,time)=>total+time,0);
 
 return{
 numericValue:depth,
+numericUnit:'unitless',
 score:failed?0:1,
 displayValue:str_(UIStrings.displayValue,{serialResources:depth}),
 details:{
@@ -73290,8 +73357,8 @@ totalIdleTime,
 module.exports=AdRequestCriticalPath;
 module.exports.UIStrings=UIStrings;
 
-}).call(this,"/node_modules/lighthouse-plugin-publisher-ads-alphaignore/audits/ad-request-critical-path.js");
-},{"../computed/ad-request-time":140,"../messages/common-strings":144,"../utils/graph":149,"lighthouse":62,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads-alphaignore/audits/ad-request-from-page-start":[function(require,module,exports){
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/ad-request-critical-path.js");
+},{"../computed/ad-request-time":140,"../messages/common-strings":144,"../utils/graph":149,"lighthouse":62,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads/audits/ad-request-from-page-start":[function(require,module,exports){
 (function(__filename){
 
 
@@ -73352,18 +73419,13 @@ requiredArtifacts:['devtoolsLogs','traces']};
 
 static get defaultOptions(){
 return{
-
 simulate:{
-scorePODR:3500,
-scoreMedian:8000,
-
-p10:4350},
+p10:4350,
+median:8000},
 
 provided:{
-scorePODR:1500,
-scoreMedian:3500,
-
-p10:1900}};
+p10:1900,
+median:3500}};
 
 
 }
@@ -73394,7 +73456,7 @@ return{
 numericValue:timing*1e-3,
 numericUnit:'millisecond',
 score:Audit.computeLogNormalScore(
-{p10:scoreOptions.p10,median:scoreOptions.scoreMedian},
+scoreOptions,
 timing),
 
 displayValue:str_(UIStrings.displayValue,{timeInMs:timing})};
@@ -73405,8 +73467,8 @@ displayValue:str_(UIStrings.displayValue,{timeInMs:timing})};
 module.exports=AdRequestFromPageStart;
 module.exports.UIStrings=UIStrings;
 
-}).call(this,"/node_modules/lighthouse-plugin-publisher-ads-alphaignore/audits/ad-request-from-page-start.js");
-},{"../computed/ad-request-time":140,"../messages/common-strings":144,"lighthouse":62,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads-alphaignore/audits/ad-top-of-viewport":[function(require,module,exports){
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/ad-request-from-page-start.js");
+},{"../computed/ad-request-time":140,"../messages/common-strings":144,"lighthouse":62,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads/audits/ad-top-of-viewport":[function(require,module,exports){
 (function(__filename){
 
 
@@ -73503,6 +73565,7 @@ const score=inViewport&&topSlot.midpoint<SCROLL_PX_THRESHOLD?0:1;
 return{
 score,
 numericValue:topSlot.midpoint,
+numericUnit:'unitless',
 
 displayValue:score?'':
 str_(UIStrings.failureDisplayValue,{valueInPx:topSlot.midpoint}),
@@ -73517,8 +73580,8 @@ score?[]:[{slot:topSlot.id}])};
 module.exports=AdTopOfViewport;
 module.exports.UIStrings=UIStrings;
 
-}).call(this,"/node_modules/lighthouse-plugin-publisher-ads-alphaignore/audits/ad-top-of-viewport.js");
-},{"../messages/common-strings":144,"../utils/resource-classification":152,"lighthouse":62,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads-alphaignore/audits/ads-in-viewport":[function(require,module,exports){
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/ad-top-of-viewport.js");
+},{"../messages/common-strings":144,"../utils/resource-classification":152,"lighthouse":62,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads/audits/ads-in-viewport":[function(require,module,exports){
 (function(__filename){
 
 
@@ -73606,6 +73669,7 @@ const visibleCount=slots.length-nonvisible.length;
 
 return{
 numericValue:visibleCount/slots.length,
+numericUnit:'unitless',
 score:nonvisible.length>3?0:1,
 displayValue:nonvisible.length?
 str_(UIStrings.failureDisplayValue,{hiddenAds:nonvisible.length}):
@@ -73618,8 +73682,8 @@ details:AdsInViewport.makeTableDetails(HEADINGS,nonvisible)};
 module.exports=AdsInViewport;
 module.exports.UIStrings=UIStrings;
 
-}).call(this,"/node_modules/lighthouse-plugin-publisher-ads-alphaignore/audits/ads-in-viewport.js");
-},{"../messages/common-strings":144,"../utils/geometry":148,"../utils/resource-classification":152,"lighthouse":62,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads-alphaignore/audits/async-ad-tags":[function(require,module,exports){
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/ads-in-viewport.js");
+},{"../messages/common-strings":144,"../utils/geometry":148,"../utils/resource-classification":152,"lighthouse":62,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads/audits/async-ad-tags":[function(require,module,exports){
 (function(__filename){
 
 
@@ -73706,7 +73770,8 @@ const numSync=array.count(tagReqs,isAsync)-tagReqs.length;
 const passed=numSync===0;
 return{
 score:Number(passed),
-numericValue:numSync};
+numericValue:numSync,
+numericUnit:'unitless'};
 
 }}
 
@@ -73714,8 +73779,8 @@ numericValue:numSync};
 module.exports=AsyncAdTags;
 module.exports.UIStrings=UIStrings;
 
-}).call(this,"/node_modules/lighthouse-plugin-publisher-ads-alphaignore/audits/async-ad-tags.js");
-},{"../messages/common-strings":144,"../utils/array.js":145,"../utils/resource-classification":152,"lighthouse":62,"lighthouse/lighthouse-core/computed/main-resource":12,"lighthouse/lighthouse-core/computed/network-records":39,"lighthouse/lighthouse-core/lib/i18n/i18n":77,"url":"url"}],"lighthouse-plugin-publisher-ads-alphaignore/audits/bid-request-from-page-start":[function(require,module,exports){
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/async-ad-tags.js");
+},{"../messages/common-strings":144,"../utils/array.js":145,"../utils/resource-classification":152,"lighthouse":62,"lighthouse/lighthouse-core/computed/main-resource":12,"lighthouse/lighthouse-core/computed/network-records":39,"lighthouse/lighthouse-core/lib/i18n/i18n":77,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/bid-request-from-page-start":[function(require,module,exports){
 (function(__filename){
 
 
@@ -73778,17 +73843,12 @@ requiredArtifacts:['devtoolsLogs','traces']};
 static get defaultOptions(){
 return{
 simulate:{
-
-scorePODR:7500,
-scoreMedian:15500,
-
-p10:8900},
+p10:8900,
+median:15500},
 
 provided:{
-scorePODR:1500,
-scoreMedian:3500,
-
-p10:1900}};
+p10:1900,
+median:3500}};
 
 
 }
@@ -73815,8 +73875,9 @@ return auditNotApplicable.NoBids;
 
 return{
 numericValue:timing*1e-3,
+numericUnit:'millisecond',
 score:Audit.computeLogNormalScore(
-{p10:scoreOptions.p10,median:scoreOptions.scoreMedian},
+scoreOptions,
 timing),
 
 displayValue:str_(UIStrings.displayValue,{timeInMs:timing})};
@@ -73827,8 +73888,8 @@ displayValue:str_(UIStrings.displayValue,{timeInMs:timing})};
 module.exports=BidRequestFromPageStart;
 module.exports.UIStrings=UIStrings;
 
-}).call(this,"/node_modules/lighthouse-plugin-publisher-ads-alphaignore/audits/bid-request-from-page-start.js");
-},{"../computed/bid-request-time":141,"../messages/common-strings":144,"lighthouse":62,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads-alphaignore/audits/blocking-load-events":[function(require,module,exports){
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/bid-request-from-page-start.js");
+},{"../computed/bid-request-time":141,"../messages/common-strings":144,"lighthouse":62,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads/audits/blocking-load-events":[function(require,module,exports){
 (function(__filename){
 
 
@@ -74069,6 +74130,7 @@ blockedTime=Math.min(...blockingEvents.map(e=>e.blockedTime));
 }
 return{
 numericValue:blockingEvents.length,
+numericUnit:'unitless',
 score:failed?0:1,
 displayValue:failed&&blockedTime?
 str_(UIStrings.displayValue,{timeInMs:blockedTime}):
@@ -74081,8 +74143,8 @@ details:BlockingLoadEvents.makeTableDetails(HEADINGS,blockingEvents)};
 module.exports=BlockingLoadEvents;
 module.exports.UIStrings=UIStrings;
 
-}).call(this,"/node_modules/lighthouse-plugin-publisher-ads-alphaignore/audits/blocking-load-events.js");
-},{"../messages/common-strings":144,"../utils/graph":149,"../utils/network-timing":150,"lighthouse":62,"lighthouse/lighthouse-core/computed/network-records":39,"lighthouse/lighthouse-core/computed/trace-of-tab":44,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads-alphaignore/audits/bottleneck-requests":[function(require,module,exports){
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/blocking-load-events.js");
+},{"../messages/common-strings":144,"../utils/graph":149,"../utils/network-timing":150,"lighthouse":62,"lighthouse/lighthouse-core/computed/network-records":39,"lighthouse/lighthouse-core/computed/trace-of-tab":44,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads/audits/bottleneck-requests":[function(require,module,exports){
 (function(__filename){
 
 
@@ -74206,6 +74268,7 @@ delete row.record;
 }
 return{
 numericValue:criticalRequests.length,
+numericUnit:'unitless',
 score:failed?0:1,
 displayValue:failed?str_(UIStrings.displayValue,{blockedTime}):'',
 details:
@@ -74217,8 +74280,8 @@ BottleneckRequests.makeTableDetails(HEADINGS,criticalRequests)};
 module.exports=BottleneckRequests;
 module.exports.UIStrings=UIStrings;
 
-}).call(this,"/node_modules/lighthouse-plugin-publisher-ads-alphaignore/audits/bottleneck-requests.js");
-},{"../messages/common-strings":144,"../utils/graph":149,"lighthouse":62,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads-alphaignore/audits/duplicate-tags":[function(require,module,exports){
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/bottleneck-requests.js");
+},{"../messages/common-strings":144,"../utils/graph":149,"lighthouse":62,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads/audits/duplicate-tags":[function(require,module,exports){
 (function(__filename){
 
 
@@ -74329,6 +74392,7 @@ dups.push({script,numReqs});
 
 return{
 numericValue:dups.length,
+numericUnit:'unitless',
 score:dups.length?0:1,
 details:DuplicateTags.makeTableDetails(HEADINGS,dups),
 displayValue:dups.length?
@@ -74341,9 +74405,9 @@ str_(UIStrings.failureDisplayValue,{duplicateTags:dups.length}):
 module.exports=DuplicateTags;
 module.exports.UIStrings=UIStrings;
 
-}).call(this,"/node_modules/lighthouse-plugin-publisher-ads-alphaignore/audits/duplicate-tags.js");
-},{"../messages/common-strings":144,"../utils/resource-classification":152,"lighthouse":62,"lighthouse/lighthouse-core/computed/main-resource":12,"lighthouse/lighthouse-core/computed/network-records":39,"lighthouse/lighthouse-core/lib/i18n/i18n":77,"lighthouse/lighthouse-core/lib/network-request":86,"url":"url"}],"lighthouse-plugin-publisher-ads-alphaignore/audits/first-ad-render":[function(require,module,exports){
-(function(global,__filename){
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/duplicate-tags.js");
+},{"../messages/common-strings":144,"../utils/resource-classification":152,"lighthouse":62,"lighthouse/lighthouse-core/computed/main-resource":12,"lighthouse/lighthouse-core/computed/network-records":39,"lighthouse/lighthouse-core/lib/i18n/i18n":77,"lighthouse/lighthouse-core/lib/network-request":86,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/first-ad-render":[function(require,module,exports){
+(function(__filename){
 
 
 
@@ -74403,33 +74467,15 @@ requiredArtifacts:['devtoolsLogs','traces']};
 
 
 
-
-
 static get defaultOptions(){
 return{
 simulate:{
-default:{
-scorePODR:8500,
-scoreMedian:15000,
-
-p10:9400},
-
-
-
-
-
-lightrider:{
-scorePODR:11000,
-scoreMedian:22000,
-
-p10:12900}},
-
+p10:12900,
+median:22000},
 
 provided:{
-scorePODR:2700,
-scoreMedian:3700,
-
-p10:2750}};
+p10:2750,
+median:3700}};
 
 
 
@@ -74455,21 +74501,17 @@ naAuditProduct.runWarnings=[runWarning.NoAdRendered];
 return naAuditProduct;
 }
 
-let scoreOptions=context.options[
+const scoreOptions=context.options[
 context.settings.throttlingMethod=='provided'?
 'provided':
 'simulate'];
 
-if(scoreOptions.lightrider){
-scoreOptions=
-scoreOptions[global.isLightrider?'lightrider':'default'];
-}
 
 return{
 numericValue:timing*1e-3,
 numericUnit:'millisecond',
 score:Audit.computeLogNormalScore(
-{p10:scoreOptions.p10,median:scoreOptions.scoreMedian},
+scoreOptions,
 timing),
 
 displayValue:
@@ -74480,8 +74522,8 @@ str_(UIStrings.displayValue,{timeInMs:timing})};
 module.exports=FirstAdRender;
 module.exports.UIStrings=UIStrings;
 
-}).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{},"/node_modules/lighthouse-plugin-publisher-ads-alphaignore/audits/first-ad-render.js");
-},{"../computed/ad-render-time":139,"../messages/common-strings":144,"lighthouse":62,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads-alphaignore/audits/full-width-slots":[function(require,module,exports){
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/first-ad-render.js");
+},{"../computed/ad-render-time":139,"../messages/common-strings":144,"lighthouse":62,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads/audits/full-width-slots":[function(require,module,exports){
 (function(__filename){
 
 
@@ -74577,6 +74619,7 @@ const score=pctUnoccupied>.25?0:1;
 return{
 score,
 numericValue:pctUnoccupied,
+numericUnit:'unitless',
 
 displayValue:score?
 '':
@@ -74588,8 +74631,8 @@ str_(UIStrings.failureDisplayValue,{percentUnused:pctUnoccupied})};
 module.exports=FullWidthSlots;
 module.exports.UIStrings=UIStrings;
 
-}).call(this,"/node_modules/lighthouse-plugin-publisher-ads-alphaignore/audits/full-width-slots.js");
-},{"../messages/common-strings":144,"../utils/resource-classification":152,"lighthouse":62,"lighthouse/lighthouse-core/computed/network-records":39,"lighthouse/lighthouse-core/lib/i18n/i18n":77,"url":"url"}],"lighthouse-plugin-publisher-ads-alphaignore/audits/gpt-bids-parallel":[function(require,module,exports){
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/full-width-slots.js");
+},{"../messages/common-strings":144,"../utils/resource-classification":152,"lighthouse":62,"lighthouse/lighthouse-core/computed/network-records":39,"lighthouse/lighthouse-core/lib/i18n/i18n":77,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/gpt-bids-parallel":[function(require,module,exports){
 
 
 
@@ -74707,6 +74750,7 @@ duration:endTime-startTime});
 const failed=tableView.length>0;
 return{
 numericValue:tableView.length,
+numericUnit:'unitless',
 score:failed?0:1,
 details:failed?
 GptBidsInParallel.makeTableDetails(HEADINGS,tableView):undefined};
@@ -74717,7 +74761,7 @@ GptBidsInParallel.makeTableDetails(HEADINGS,tableView):undefined};
 module.exports=GptBidsInParallel;
 module.exports.UIStrings=UIStrings;
 
-},{"../messages/common-strings":144,"../utils/asserts":146,"../utils/graph":149,"../utils/network-timing":150,"../utils/resource-classification":152,"lighthouse":62,"lighthouse/lighthouse-core/computed/network-records":39}],"lighthouse-plugin-publisher-ads-alphaignore/audits/loads-ad-tag-over-https":[function(require,module,exports){
+},{"../messages/common-strings":144,"../utils/asserts":146,"../utils/graph":149,"../utils/network-timing":150,"../utils/resource-classification":152,"lighthouse":62,"lighthouse/lighthouse-core/computed/network-records":39}],"lighthouse-plugin-publisher-ads/audits/loads-ad-tag-over-https":[function(require,module,exports){
 (function(__filename){
 
 
@@ -74822,8 +74866,8 @@ details};
 module.exports=LoadsAdTagOverHttps;
 module.exports.UIStrings=UIStrings;
 
-}).call(this,"/node_modules/lighthouse-plugin-publisher-ads-alphaignore/audits/loads-ad-tag-over-https.js");
-},{"../messages/common-strings":144,"../utils/resource-classification":152,"lighthouse":62,"lighthouse/lighthouse-core/computed/network-records":39,"lighthouse/lighthouse-core/lib/i18n/i18n":77,"url":"url"}],"lighthouse-plugin-publisher-ads-alphaignore/audits/loads-gpt-from-sgdn":[function(require,module,exports){
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/loads-ad-tag-over-https.js");
+},{"../messages/common-strings":144,"../utils/resource-classification":152,"lighthouse":62,"lighthouse/lighthouse-core/computed/network-records":39,"lighthouse/lighthouse-core/lib/i18n/i18n":77,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/loads-gpt-from-sgdn":[function(require,module,exports){
 (function(__filename){
 
 
@@ -74893,7 +74937,8 @@ return auditNotApplicable.NoGpt;
 const passed=gptUrl.host==='securepubads.g.doubleclick.net';
 return{
 score:Number(passed),
-numericValue:Number(!passed)};
+numericValue:Number(!passed),
+numericUnit:'unitless'};
 
 }}
 
@@ -74901,8 +74946,8 @@ numericValue:Number(!passed)};
 module.exports=LoadsGptFromSgdn;
 module.exports.UIStrings=UIStrings;
 
-}).call(this,"/node_modules/lighthouse-plugin-publisher-ads-alphaignore/audits/loads-gpt-from-sgdn.js");
-},{"../messages/common-strings":144,"../utils/resource-classification":152,"lighthouse":62,"lighthouse/lighthouse-core/computed/network-records":39,"lighthouse/lighthouse-core/lib/i18n/i18n":77,"url":"url"}],"lighthouse-plugin-publisher-ads-alphaignore/audits/script-injected-tags":[function(require,module,exports){
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/loads-gpt-from-sgdn.js");
+},{"../messages/common-strings":144,"../utils/resource-classification":152,"lighthouse":62,"lighthouse/lighthouse-core/computed/network-records":39,"lighthouse/lighthouse-core/lib/i18n/i18n":77,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/script-injected-tags":[function(require,module,exports){
 (function(__filename){
 
 
@@ -75085,6 +75130,7 @@ displayValue:failed?
 str_(UIStrings.failureDisplayValue,{tags:tableView.length}):'',
 score:Number(!failed),
 numericValue:tableView.length,
+numericUnit:'unitless',
 details:StaticAdTags.makeTableDetails(HEADINGS,tableView)};
 
 }}
@@ -75093,8 +75139,8 @@ details:StaticAdTags.makeTableDetails(HEADINGS,tableView)};
 module.exports=StaticAdTags;
 module.exports.UIStrings=UIStrings;
 
-}).call(this,"/node_modules/lighthouse-plugin-publisher-ads-alphaignore/audits/script-injected-tags.js");
-},{"../messages/common-strings":144,"../utils/array.js":145,"../utils/graph":149,"../utils/network-timing":150,"lighthouse":62,"lighthouse/lighthouse-core/computed/page-dependency-graph":40,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads-alphaignore/audits/serial-header-bidding":[function(require,module,exports){
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/script-injected-tags.js");
+},{"../messages/common-strings":144,"../utils/array.js":145,"../utils/graph":149,"../utils/network-timing":150,"lighthouse":62,"lighthouse/lighthouse-core/computed/page-dependency-graph":40,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads/audits/serial-header-bidding":[function(require,module,exports){
 (function(__filename){
 
 
@@ -75333,6 +75379,7 @@ serialBids=Array.from(new Set(serialBids));
 const hasSerialHeaderBidding=serialBids.length>1;
 return{
 numericValue:Number(hasSerialHeaderBidding),
+numericUnit:'unitless',
 score:hasSerialHeaderBidding?0:1,
 details:hasSerialHeaderBidding?
 SerialHeaderBidding.makeTableDetails(HEADINGS,serialBids):undefined};
@@ -75343,8 +75390,8 @@ SerialHeaderBidding.makeTableDetails(HEADINGS,serialBids):undefined};
 module.exports=SerialHeaderBidding;
 module.exports.UIStrings=UIStrings;
 
-}).call(this,"/node_modules/lighthouse-plugin-publisher-ads-alphaignore/audits/serial-header-bidding.js");
-},{"../computed/ad-request-time":140,"../messages/common-strings":144,"../utils/array":145,"../utils/network":151,"../utils/network-timing":150,"../utils/resource-classification":152,"lighthouse":62,"lighthouse/lighthouse-core/computed/main-resource":12,"lighthouse/lighthouse-core/computed/network-records":39,"lighthouse/lighthouse-core/lib/i18n/i18n":77,"url":"url"}],"lighthouse-plugin-publisher-ads-alphaignore/audits/tag-load-time":[function(require,module,exports){
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/serial-header-bidding.js");
+},{"../computed/ad-request-time":140,"../messages/common-strings":144,"../utils/array":145,"../utils/network":151,"../utils/network-timing":150,"../utils/resource-classification":152,"lighthouse":62,"lighthouse/lighthouse-core/computed/main-resource":12,"lighthouse/lighthouse-core/computed/network-records":39,"lighthouse/lighthouse-core/lib/i18n/i18n":77,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/tag-load-time":[function(require,module,exports){
 (function(__filename){
 
 
@@ -75406,17 +75453,12 @@ requiredArtifacts:['devtoolsLogs','traces']};
 static get defaultOptions(){
 return{
 simulate:{
-
-scorePODR:6000,
-scoreMedian:10000,
-
-p10:6500},
+p10:6500,
+median:10000},
 
 provided:{
-scorePODR:1000,
-scoreMedian:2000,
-
-p10:1200}};
+p10:1200,
+median:2000}};
 
 
 }
@@ -75449,7 +75491,7 @@ return{
 numericValue:timing*1e-3,
 numericUnit:'millisecond',
 score:Audit.computeLogNormalScore(
-{p10:scoreOptions.p10,median:scoreOptions.scoreMedian},
+scoreOptions,
 timing),
 
 displayValue:str_(UIStrings.displayValue,{timeInMs:timing})};
@@ -75459,8 +75501,8 @@ displayValue:str_(UIStrings.displayValue,{timeInMs:timing})};
 module.exports=TagLoadTime;
 module.exports.UIStrings=UIStrings;
 
-}).call(this,"/node_modules/lighthouse-plugin-publisher-ads-alphaignore/audits/tag-load-time.js");
-},{"../computed/tag-load-time":143,"../messages/common-strings":144,"lighthouse":62,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads-alphaignore/audits/viewport-ad-density":[function(require,module,exports){
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/tag-load-time.js");
+},{"../computed/tag-load-time":143,"../messages/common-strings":144,"lighthouse":62,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads/audits/viewport-ad-density":[function(require,module,exports){
 (function(__filename){
 
 
@@ -75544,6 +75586,7 @@ const score=adDensity>0.3?0:1;
 return{
 score,
 numericValue:adArea/viewArea,
+numericUnit:'unitless',
 displayValue:str_(UIStrings.displayValue,{adDensity})};
 
 }}
@@ -75552,8 +75595,8 @@ displayValue:str_(UIStrings.displayValue,{adDensity})};
 module.exports=ViewportAdDensity;
 module.exports.UIStrings=UIStrings;
 
-}).call(this,"/node_modules/lighthouse-plugin-publisher-ads-alphaignore/audits/viewport-ad-density.js");
-},{"../messages/common-strings":144,"../utils/geometry":148,"../utils/resource-classification":152,"lighthouse":62,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads-alphaignore":[function(require,module,exports){
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/viewport-ad-density.js");
+},{"../messages/common-strings":144,"../utils/geometry":148,"../utils/resource-classification":152,"lighthouse":62,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads":[function(require,module,exports){
 (function(__filename){
 
 
@@ -75572,7 +75615,7 @@ module.exports.UIStrings=UIStrings;
 const i18n=require('lighthouse/lighthouse-core/lib/i18n/i18n');
 const{group}=require('./messages/common-strings');
 
-const PLUGIN_PATH='lighthouse-plugin-publisher-ads-alphaignore';
+const PLUGIN_PATH='lighthouse-plugin-publisher-ads';
 
 const UIStrings={
 categoryDescription:'A Lighthouse plugin to improve ad speed and overall quality that is targeted at sites using GPT or AdSense tag. '+
@@ -75653,7 +75696,7 @@ enumerable:false,
 get:()=>UIStrings});
 
 
-}).call(this,"/node_modules/lighthouse-plugin-publisher-ads-alphaignore/plugin.js");
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/plugin.js");
 },{"./messages/common-strings":144,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"url":[function(require,module,exports){
 
 

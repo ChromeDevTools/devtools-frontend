@@ -622,6 +622,10 @@
   color: var(--color-gray-700);
 }
 
+.lh-calclink {
+  padding-left: calc(1ex / 3);
+}
+
 .lh-metric__description {
   display: none;
   grid-column-start: 2;

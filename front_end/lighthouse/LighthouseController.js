@@ -243,7 +243,7 @@ export const Presets = [
   {
     setting: Common.Settings.Settings.instance().createSetting('lighthouse.cat_pubads', false),
     plugin: true,
-    configID: 'lighthouse-plugin-publisher-ads-alphaignore',
+    configID: 'lighthouse-plugin-publisher-ads',
     title: ls`Publisher Ads`,
     description: ls`Is this page optimized for ad speed and quality`
   },

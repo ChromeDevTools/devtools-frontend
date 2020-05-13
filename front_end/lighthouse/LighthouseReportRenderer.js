@@ -25,16 +25,16 @@ export class LighthouseReportRenderer extends ReportRenderer {
     }
 
     const container = el.querySelector('.lh-audit-group');
-    const columnsEl = container.querySelector('.lh-columns');
-    // There will be no columns if just the PWA category.
-    if (!columnsEl) {
+    const disclaimerEl = container.querySelector('.lh-metrics__disclaimer');
+    // If it was a PWA-only run, we'd have a trace but no perf category to add the button to
+    if (!disclaimerEl) {
       return;
     }
 
     const defaultPassTrace = artifacts.traces.defaultPass;
     const timelineButton =
         UI.UIUtils.createTextButton(Common.UIString.UIString('View Trace'), onViewTraceClick, 'view-trace');
-    container.insertBefore(timelineButton, columnsEl.nextSibling);
+    container.insertBefore(timelineButton, disclaimerEl.nextSibling);
 
     async function onViewTraceClick() {
       HostModule.userMetrics.actionTaken(Host.UserMetrics.Action.LighthouseViewTrace);

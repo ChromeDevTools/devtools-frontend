@@ -10,6 +10,10 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${SYMBOL_SERVER_LIBRARY_DIR})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${SYMBOL_SERVER_LIBRARY_DIR})
 set(PROTO_SOURCES)
 
+set(ADDITIONAL_LIBS)
+if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+  list(APPEND ADDITIONAL_LIBS $ENV{VSINSTALLDIR}VC\\Tools\\MSVC\\$ENV{VCToolsVersion}\\lib\\onecore\\$ENV{VSCMD_ARG_TGT_ARCH}\\diaguids.lib)
+endif()
 
 function(add_proto name)
   set(PROTO_HDRS
@@ -94,6 +98,7 @@ add_lldb_tool(DWARFSymbolServer
   lldbPluginObjectFileELF
   lldbPluginSymbolVendorWasm
   ${LLDB_SYSTEM_LIBS}
+  ${ADDITIONAL_LIBS}
 
   LINK_COMPONENTS
   Support

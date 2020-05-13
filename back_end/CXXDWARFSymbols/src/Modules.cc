@@ -47,7 +47,7 @@ namespace std {
 template <>
 struct less<symbol_server::SourceLocation> {
   bool operator()(const symbol_server::SourceLocation& a,
-                  const symbol_server::SourceLocation& b) {
+                  const symbol_server::SourceLocation& b) const {
     return std::make_tuple(a.file, a.line, a.column) <
            std::make_tuple(b.file, b.line, b.column);
   }
@@ -56,7 +56,7 @@ struct less<symbol_server::SourceLocation> {
 template <>
 struct less<symbol_server::Variable> {
   bool operator()(const symbol_server::Variable& a,
-                  const symbol_server::Variable& b) {
+                  const symbol_server::Variable& b) const {
     return std::make_tuple(a.name, a.type, a.scope) <
            std::make_tuple(b.name, b.type, b.scope);
   }

@@ -65,15 +65,36 @@ xcode-select --install
 brew install cmake python3 swig protobuf
 ```
 
+On Windows, the build requires both Clang and Microsoft Visual Studio 2019 (or higher)
+* Install [CMake](https://cmake.org/download/), [Python3](https://www.python.org/downloads/release)
+* Install [protobuf](https://github.com/protocolbuffers/protobuf/blob/master/src/README.md) with [vcpkg](https://github.com/microsoft/vcpkg)
+
+```
+vcpkg install protobuf protobuf:x64-windows
+```
+* Install [Clang/LLVM](https://releases.llvm.org/download.html)
+
 ### Building
 
-The project uses CMake. To build it, run
+The project uses CMake. To build it, on Linux/MacOS run
 ```bash
 mkdir -p out/SymbolServer && cd out/SymbolServer
 cmake -GNinja ../../back_end/CXXDWARFSymbols
 ninja
 ninja check-symbol-server # Run unit and integration tests
 ```
+
+On Windows:
+
+run CMake in a Visual Studio Command Prompt, specifying the paths of the Clang compiler and of the vcpkg toolchain file
+```bash
+cmake -GNinja ../../back_end/CXXDWARFSymbols -DCMAKE_TOOLCHAIN_FILE=c:\vcpkg\scripts\buildsystems\vcpkg.cmake -Wno-dev -D CMAKE_CXX_COMPILER="C:/Program Files/LLVM/bin/clang-cl.exe" -D CMAKE_C_COMPILER="C:/Program Files/LLVM/bin/clang-cl.exe"
+
+ninja
+ninja check-symbol-server # Run unit and integration tests
+```
+(replace _c:\vcpkg_ and the _C:/Program Files/LLVM_ with the actual installation folders)
+
 
 #### Building with Goma
 

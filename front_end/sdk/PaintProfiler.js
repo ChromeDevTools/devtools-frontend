@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 export class PaintProfilerModel extends SDKModel {
@@ -43,16 +40,16 @@ export class PaintProfilerModel extends SDKModel {
   }
 
   /**
-   * @param {!Array.<!PictureFragment>} fragments
+   * @param {!Array.<!Protocol.LayerTree.PictureTile>} tiles
    * @return {!Promise<?PaintProfilerSnapshot>}
    */
-  async loadSnapshotFromFragments(fragments) {
-    const snapshotId = await this._layerTreeAgent.loadSnapshot(fragments);
-    return snapshotId && new PaintProfilerSnapshot(this, snapshotId);
+  async loadSnapshotFromFragments(tiles) {
+    const {snapshotId} = await this._layerTreeAgent.invoke_loadSnapshot({tiles});
+    return snapshotId ? new PaintProfilerSnapshot(this, snapshotId) : null;
   }
 
   /**
-   * @param {string} encodedPicture
+   * @param {!Protocol.binary} encodedPicture
    * @return {!Promise<?PaintProfilerSnapshot>}
    */
   loadSnapshot(encodedPicture) {
@@ -61,19 +58,19 @@ export class PaintProfilerModel extends SDKModel {
   }
 
   /**
-   * @param {string} layerId
+   * @param {!Protocol.LayerTree.LayerId} layerId
    * @return {!Promise<?PaintProfilerSnapshot>}
    */
   async makeSnapshot(layerId) {
-    const snapshotId = await this._layerTreeAgent.makeSnapshot(layerId);
-    return snapshotId && new PaintProfilerSnapshot(this, snapshotId);
+    const {snapshotId} = await this._layerTreeAgent.invoke_makeSnapshot({layerId});
+    return snapshotId ? new PaintProfilerSnapshot(this, snapshotId) : null;
   }
 }
 
 export class PaintProfilerSnapshot {
   /**
    * @param {!PaintProfilerModel} paintProfilerModel
-   * @param {string} snapshotId
+   * @param {!Protocol.LayerTree.SnapshotId} snapshotId
    */
   constructor(paintProfilerModel, snapshotId) {
     this._paintProfilerModel = paintProfilerModel;
@@ -84,7 +81,7 @@ export class PaintProfilerSnapshot {
   release() {
     console.assert(this._refCount > 0, 'release is already called on the object');
     if (!--this._refCount) {
-      this._paintProfilerModel._layerTreeAgent.releaseSnapshot(this._id);
+      this._paintProfilerModel._layerTreeAgent.invoke_releaseSnapshot({snapshotId: this._id});
     }
   }
 
@@ -95,29 +92,37 @@ export class PaintProfilerSnapshot {
 
   /**
    * @param {number=} scale
-   * @param {number=} firstStep
-   * @param {number=} lastStep
+   * @param {number=} fromStep
+   * @param {number=} toStep
    * @return {!Promise<?string>}
    */
-  replay(scale, firstStep, lastStep) {
-    return this._paintProfilerModel._layerTreeAgent.replaySnapshot(this._id, firstStep, lastStep, scale || 1.0);
+  async replay(scale, fromStep, toStep) {
+    const response = await this._paintProfilerModel._layerTreeAgent.invoke_replaySnapshot(
+        {snapshotId: this._id, fromStep, toStep, scale: scale || 1.0});
+    return response.dataURL;
   }
 
   /**
    * @param {?Protocol.DOM.Rect} clipRect
    * @return {!Promise<?Array<!Protocol.LayerTree.PaintProfile>>}
    */
-  profile(clipRect) {
-    return this._paintProfilerModel._layerTreeAgent.profileSnapshot(this._id, 5, 1, clipRect || undefined);
+  async profile(clipRect) {
+    const response = await this._paintProfilerModel._layerTreeAgent.invoke_profileSnapshot(
+        {snapshotId: this._id, minRepeatCount: 5, minDuration: 1, clipRect: clipRect || undefined});
+
+    return response.timings;
   }
 
   /**
    * @return {!Promise<?Array<!PaintProfilerLogItem>>}
    */
   async commandLog() {
-    const log = await this._paintProfilerModel._layerTreeAgent.snapshotCommandLog(this._id);
-    return log &&
-        log.map((entry, index) => new PaintProfilerLogItem(/** @type {!RawPaintProfilerLogItem} */ (entry), index));
+    const response = await this._paintProfilerModel._layerTreeAgent.invoke_snapshotCommandLog({snapshotId: this._id});
+
+    return response.commandLog ?
+        response.commandLog.map(
+            (entry, index) => new PaintProfilerLogItem(/** @type {!RawPaintProfilerLogItem} */ (entry), index)) :
+        null;
   }
 }
 
@@ -143,14 +148,17 @@ SDKModel.register(PaintProfilerModel, Capability.DOM, false);
         snapshot: !PaintProfilerSnapshot
     }}
 */
+// @ts-ignore typedef
 export let SnapshotWithRect;
 
 /**
  * @typedef {!{x: number, y: number, picture: string}}
  */
+// @ts-ignore typedef
 export let PictureFragment;
 
 /**
  * @typedef {!{method: string, params: ?Object<string, *>}}
  */
+// @ts-ignore typedef
 export let RawPaintProfilerLogItem;

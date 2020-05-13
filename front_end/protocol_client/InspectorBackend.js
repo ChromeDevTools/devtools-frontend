@@ -653,6 +653,13 @@ export class TargetBase {
   networkAgent() {
     throw new Error('Implemented in InspectorBackend.js');
   }
+
+  /**
+   * @return {!ProtocolProxyApi.LayerTreeApi}
+   */
+  layerTreeAgent() {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
 }
 
 /**

@@ -118,6 +118,8 @@ def generate_protocol_externs(output_path, file1, file2):
     load_schema(file2, domains)
     output_file = open(output_path, "w")
     output_file.write("var ProtocolProxyApi = {};\n")
+    output_file.write("/** @typedef {string} */")
+    output_file.write("Protocol.binary;")
 
     for domain in domains:
         domain_name = domain["domain"]

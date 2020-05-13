@@ -960,7 +960,6 @@
       'hideCollectedPromises',
       'hideNetworkMessages',
       'highlightNodeOnHoverInOverlay',
-      'highResolutionCpuProfiling',
       'inlineVariableValues',
       'Inspector.drawerSplitView',
       'Inspector.drawerSplitViewState',

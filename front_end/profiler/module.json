@@ -28,14 +28,6 @@
     {
       "type": "setting",
       "category": "Performance",
-      "title": "High resolution CPU profiling",
-      "settingName": "highResolutionCpuProfiling",
-      "settingType": "boolean",
-      "defaultValue": true
-    },
-    {
-      "type": "setting",
-      "category": "Performance",
       "title": "Show native functions in JS Profile",
       "settingName": "showNativeFunctionsInJSProfile",
       "settingType": "boolean",

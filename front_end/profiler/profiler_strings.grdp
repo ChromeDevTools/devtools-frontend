@@ -129,9 +129,6 @@
   <message name="IDS_DEVTOOLS_435eaeed5b69a2dfb7f343e28d109ce6" desc="Text in Heap Snapshot Data Grids of a profiler tool">
     Distance from window object
   </message>
-  <message name="IDS_DEVTOOLS_4715ae2a2790290ba123375faa3a53f2" desc="Title of a setting under the Performance category in Settings">
-    High resolution CPU profiling
-  </message>
   <message name="IDS_DEVTOOLS_491af3e52ebf8affd3f23d48b6767fe0" desc="Data grid name for Heap Profile data grids">
     Heap Profile
   </message>

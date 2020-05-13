@@ -85,9 +85,6 @@ export class TimelineController {
     }
     if (!Root.Runtime.queryParam('timelineTracingJSProfileDisabled') && options.enableJSSampling) {
       categoriesArray.push(disabledByDefault('v8.cpu_profiler'));
-      if (Common.Settings.Settings.instance().moduleSetting('highResolutionCpuProfiling').get()) {
-        categoriesArray.push(disabledByDefault('v8.cpu_profiler.hires'));
-      }
     }
     categoriesArray.push(disabledByDefault('devtools.timeline.stack'));
     if (Root.Runtime.experiments.isEnabled('timelineInvalidationTracking')) {

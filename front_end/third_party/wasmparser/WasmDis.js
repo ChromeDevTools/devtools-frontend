@@ -512,14 +512,14 @@ export class WasmDisassembler {
                 var typeName = this._nameResolver.getTypeName(operator.typeIndex, true);
                 this.appendBuffer(` (type ${typeName})`);
                 break;
-            case 32 /* get_local */:
-            case 33 /* set_local */:
-            case 34 /* tee_local */:
+            case 32 /* local_get */:
+            case 33 /* local_set */:
+            case 34 /* local_tee */:
                 var paramName = this._nameResolver.getVariableName(this._funcIndex, operator.localIndex, true);
                 this.appendBuffer(` ${paramName}`);
                 break;
-            case 35 /* get_global */:
-            case 36 /* set_global */:
+            case 35 /* global_get */:
+            case 36 /* global_set */:
                 var globalName = this._nameResolver.getGlobalName(operator.globalIndex, true);
                 this.appendBuffer(` ${globalName}`);
                 break;

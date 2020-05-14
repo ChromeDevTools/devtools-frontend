@@ -136,7 +136,12 @@ export class ResourceTreeModel extends SDKModel {
    * @param {?Protocol.Page.FrameResourceTree} mainFramePayload
    */
   _processCachedResources(mainFramePayload) {
-    if (mainFramePayload) {
+    // TODO(caseq): the url check below is a mergeable, conservative
+    // workaround for a problem caused by us requesting resources from a
+    // subtarget frame before it has committed. The proper fix is likely
+    // to be too complicated to be safely merged.
+    // See https://crbug.com/1081270 for details.
+    if (mainFramePayload && mainFramePayload.frame.url !== ':') {
       this.dispatchEventToListeners(Events.WillLoadCachedResources);
       this._addFramesRecursively(null, mainFramePayload);
       this.target().setInspectedURL(mainFramePayload.frame.url);

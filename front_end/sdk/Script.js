@@ -58,7 +58,7 @@ export class Script {
   constructor(
       debuggerModel, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash,
       isContentScript, isLiveEdit, sourceMapURL, hasSourceURL, length, originStackTrace, codeOffset, scriptLanguage) {
-    /** @type {string} */
+    /** @type {?string} */
     this._source;
 
     this.debuggerModel = debuggerModel;
@@ -230,7 +230,7 @@ export class Script {
    */
   async getWasmBytecode() {
     const base64 = await this.debuggerModel.target().debuggerAgent().invoke_getWasmBytecode({scriptId: this.scriptId});
-    const response = await fetch(`data:application/wasm;base64,${base64}`);
+    const response = await fetch(`data:application/wasm;base64,${base64.bytecode}`);
     return response.arrayBuffer();
   }
 

@@ -49,13 +49,21 @@ def run_tests(chrome_binary, target, no_text_coverage):
     return False
 
 
-def run_unit_tests_on_ninja_build_target(target, no_text_coverage=True):
-    chrome_binary = None
+def run_unit_tests_on_ninja_build_target(target,
+                                         no_text_coverage=True,
+                                         chrome_binary=None):
+    if chrome_binary and not test_helpers.check_chrome_binary(chrome_binary):
+        print(
+            'Chrome binary argument path does not exist or is not executable, reverting to downloaded binary'
+        )
+        chrome_binary = None
 
-    # Default to the downloaded / pinned Chromium binary
-    downloaded_chrome_binary = devtools_paths.downloaded_chrome_binary_path()
-    if test_helpers.check_chrome_binary(downloaded_chrome_binary):
-        chrome_binary = downloaded_chrome_binary
+    if not chrome_binary:
+        # Default to the downloaded / pinned Chromium binary
+        downloaded_chrome_binary = devtools_paths.downloaded_chrome_binary_path(
+        )
+        if test_helpers.check_chrome_binary(downloaded_chrome_binary):
+            chrome_binary = downloaded_chrome_binary
 
     if (chrome_binary is None):
         print('Unable to run, no Chrome binary provided')
@@ -75,9 +83,13 @@ def main():
         '--target', '-t', default='Default', dest='target', help='The name of the Ninja output directory. Defaults to "Default"')
     parser.add_argument(
         '--no-text-coverage', action='store_true', default=False, dest='no_text_coverage', help='Whether to output text coverage')
+    parser.add_argument('--chrome-binary',
+                        dest='chrome_binary',
+                        help='Path to Chromium binary')
     args = parser.parse_args(sys.argv[1:])
 
-    run_unit_tests_on_ninja_build_target(args.target, args.no_text_coverage)
+    run_unit_tests_on_ninja_build_target(args.target, args.no_text_coverage,
+                                         args.chrome_binary)
 
 
 if __name__ == '__main__':

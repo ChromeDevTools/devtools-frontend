@@ -1,4 +1,4 @@
-// lighthouse, browserified. 6.0.0-rc.1 (0d6f7e7996cd0ce5aa1993ab17aced917113c561)
+// lighthouse, browserified. 6.0.0 (7e4fa5587f4290be6e7a103fef6ca13a23e41806)
 // @ts-nocheck
 require=function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a;}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r);},p,p.exports,r,e,n,t);}return n[i].exports;}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o;}return r;}()({"../audits/accessibility/accesskeys":[function(require,module,exports){
 (function(__filename){
@@ -38497,7 +38497,7 @@ const fileList=[
 ...["accessibility","apple-touch-icon.js","audit.js","bootup-time.js","byte-efficiency","content-width.js","critical-request-chains.js","deprecations.js","diagnostics.js","dobetterweb","errors-in-console.js","final-screenshot.js","font-display.js","image-aspect-ratio.js","image-size-responsive.js","installable-manifest.js","is-on-https.js","largest-contentful-paint-element.js","layout-shift-elements.js","legacy-javascript.js","load-fast-enough-for-pwa.js","main-thread-tasks.js","mainthread-work-breakdown.js","manual","maskable-icon.js","metrics","metrics.js","multi-check-audit.js","network-requests.js","network-rtt.js","network-server-latency.js","offline-start-url.js","performance-budget.js","predictive-perf.js","redirects-http.js","redirects.js","resource-summary.js","screenshot-thumbnails.js","seo","server-response-time.js","service-worker.js","splash-screen.js","themed-omnibox.js","third-party-summary.js","timing-budget.js","user-timings.js","uses-rel-preconnect.js","uses-rel-preload.js","viewport.js","violation-audit.js","without-javascript.js","works-offline.js"],
 ...["appcache-manifest.js","charset.js","doctype.js","dom-size.js","external-anchors-use-rel-noopener.js","geolocation-on-start.js","js-libraries.js","no-document-write.js","no-vulnerable-libraries.js","notification-on-start.js","password-inputs-can-be-pasted-into.js","uses-http2.js","uses-passive-event-listeners.js"].map(f=>`dobetterweb/${f}`),
 ...["cumulative-layout-shift.js","estimated-input-latency.js","first-contentful-paint-3g.js","first-contentful-paint.js","first-cpu-idle.js","first-meaningful-paint.js","interactive.js","largest-contentful-paint.js","max-potential-fid.js","speed-index.js","total-blocking-time.js"].map(f=>`metrics/${f}`),
-...["Untitled-3","canonical.js","font-size.js","hreflang.js","http-status-code.js","is-crawlable.js","link-text.js","manual","meta-description.js","plugins.js","robots-txt.js","tap-targets.js"].map(f=>`seo/${f}`),
+...["canonical.js","font-size.js","hreflang.js","http-status-code.js","is-crawlable.js","link-text.js","manual","meta-description.js","plugins.js","robots-txt.js","tap-targets.js"].map(f=>`seo/${f}`),
 ...["structured-data.js"].map(f=>`seo/manual/${f}`),
 ...["accesskeys.js","aria-allowed-attr.js","aria-hidden-body.js","aria-hidden-focus.js","aria-input-field-name.js","aria-required-attr.js","aria-required-children.js","aria-required-parent.js","aria-roles.js","aria-toggle-field-name.js","aria-valid-attr-value.js","aria-valid-attr.js","axe-audit.js","button-name.js","bypass.js","color-contrast.js","definition-list.js","dlitem.js","document-title.js","duplicate-id-active.js","duplicate-id-aria.js","form-field-multiple-labels.js","frame-title.js","heading-order.js","html-has-lang.js","html-lang-valid.js","image-alt.js","input-image-alt.js","label.js","layout-table.js","link-name.js","list.js","listitem.js","manual","meta-refresh.js","meta-viewport.js","object-alt.js","tabindex.js","td-headers-attr.js","th-has-data-cells.js","valid-lang.js","video-caption.js","video-description.js"].
 map(f=>`accessibility/${f}`),
@@ -72356,7 +72356,7 @@ arguments[4][106][0].apply(exports,arguments);
 arguments[4][107][0].apply(exports,arguments);
 },{"./support/isBuffer":203,"_process":170,"dup":107,"inherits":123}],205:[function(require,module,exports){
 module.exports={
-"version":"6.0.0-rc.1"};
+"version":"6.0.0"};
 
 },{}],206:[function(require,module,exports){
 

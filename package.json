@@ -12,7 +12,7 @@
     "blink",
     "debugger"
   ],
-  "license": "SEE LICENSE IN https://chromium.googlesource.com/chromium/src/+/master/LICENSE",
+  "license": "BSD-3-Clause",
   "name": "chrome-devtools-frontend",
   "repository": {
     "type": "git",

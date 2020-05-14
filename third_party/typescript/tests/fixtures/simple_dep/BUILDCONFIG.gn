@@ -4,6 +4,7 @@
 
 declare_args() {
   devtools_location = "../../../../../"
+  is_debug = false
 }
 
 set_default_toolchain("//toolchain:default")

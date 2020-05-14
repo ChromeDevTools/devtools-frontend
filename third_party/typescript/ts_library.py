@@ -114,11 +114,6 @@ def main():
         print('')
         return 1
 
-    # The .tsbuildinfo is non-deterministic (https://github.com/microsoft/TypeScript/issues/37156)
-    # To make sure the output remains the same for consecutive invocations, we have to manually
-    # re-order the "json"-like output.
-    fix_non_determinism_in_ts_buildinfo(path.join(tsconfig_output_directory, tsbuildinfo_name))
-
     if not opts.test_only:
         # We are currently still loading devtools from out/<NAME>/resources/inspector
         # but we generate our sources in out/<NAME>/gen/ (which is the proper location).
@@ -127,29 +122,6 @@ def main():
         copy_all_typescript_sources(sources, path.dirname(tsconfig_output_location))
 
     return 0
-
-
-def order_arrays_and_dicts_recursively(obj):
-    ordered_obj = collections.OrderedDict()
-    for key in sorted(obj):
-        value = obj[key]
-        if isinstance(value, dict):
-            ordered_obj[key] = order_arrays_and_dicts_recursively(value)
-        else:
-            if isinstance(value, list):
-                value.sort()
-            ordered_obj[key] = value
-    return ordered_obj
-
-
-def fix_non_determinism_in_ts_buildinfo(tsbuildinfo_location):
-    with open(tsbuildinfo_location, 'rt') as input:
-        tsbuildinfo_content = input.read()
-
-    tsbuildinfo_ordered = order_arrays_and_dicts_recursively(json.loads(tsbuildinfo_content))
-
-    with open(tsbuildinfo_location, 'wt') as output:
-        output.write(json.dumps(tsbuildinfo_ordered, indent=2))
 
 
 def copy_all_typescript_sources(sources, output_directory):

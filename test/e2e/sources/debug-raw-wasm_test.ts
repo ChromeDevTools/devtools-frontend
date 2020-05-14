@@ -61,7 +61,7 @@ describe('Source Tab', async () => {
 });
 
 // Disabled to the Chromium binary -> DevTools roller working again.
-describe.skip('[crbug.com/1079328] Raw-Wasm', async () => {
+describe('Raw-Wasm', async () => {
   it('displays correct location in Wasm source', async () => {
     const {target, frontend} = getBrowserAndPages();
 

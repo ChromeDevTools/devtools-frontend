@@ -98,7 +98,7 @@ describe('The Debugger Language Plugins', async () => {
 
   // Resolve a single code offset to a source line to test the correctness of offset computations.
   // Disabled to the Chromium binary -> DevTools roller working again.
-  it.skip('[crbug.com/1079328] use correct code offsets to interpret raw locations', async () => {
+  it('use correct code offsets to interpret raw locations', async () => {
     const {target, frontend} = getBrowserAndPages();
     await frontend.evaluate(() => {
       class LocationMappingPlugin extends globalThis.MockLanguagePluginBase {

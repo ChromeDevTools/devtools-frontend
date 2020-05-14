@@ -90,6 +90,13 @@ function includesConditionalExpression(listOfElements) {
   return listOfElements.filter(ele => ele !== undefined && ele.type === espreeTypes.COND_EXPR).length > 0;
 }
 
+function includesGritPlaceholders(cookedValue) {
+  // $[0-9] is a GRIT placeholder for Chromium l10n, unfortunately it cannot be escaped.
+  // https://chromium-review.googlesource.com/c/chromium/src/+/1405148
+  const regexPattern = /\$[0-9]+/g;
+  return regexPattern.test(cookedValue);
+}
+
 function addError(error, errors) {
   if (!errors.includes(error)) {
     errors.push(error);
@@ -211,6 +218,15 @@ function analyzeNode(parentNode, node, filePath, errors) {
                 code}. Please extract conditional(s) out of the localization call.`,
             errors);
       }
+
+      if (node.arguments[0].type === espreeTypes.LITERAL && includesGritPlaceholders(node.arguments[0].value)) {
+        addError(
+            `${localizationUtils.getRelativeFilePathFromSrc(filePath)}${
+                localizationUtils.getLocationMessage(node.loc)}: possible placeholder(s) found in  ${
+                code}. Please extract placeholders(s) out of the localization call.`,
+            errors);
+      }
+
       break;
     }
 
@@ -220,6 +236,14 @@ function analyzeNode(parentNode, node, filePath, errors) {
             `${localizationUtils.getRelativeFilePathFromSrc(filePath)}${
                 localizationUtils.getLocationMessage(node.loc)}: conditional(s) found in ${
                 code}. Please extract conditional(s) out of the localization call.`,
+            errors);
+      }
+
+      if (includesGritPlaceholders(node.quasi.quasis[0].value.cooked)) {
+        addError(
+            `${localizationUtils.getRelativeFilePathFromSrc(filePath)}${
+                localizationUtils.getLocationMessage(node.loc)}: possible placeholder(s) found in  ${
+                code}. Please extract placeholders(s) out of the localization call.`,
             errors);
       }
       break;

@@ -55,7 +55,7 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
     codeSnippet.innerText = 'console.dir($0)';
     deprecationMessage.append(codeSnippet);
 
-    deprecationMessage.append(
-        UI.UIUtils.formatLocalized('($0 is a reference to the currently selected DOM node in the elements tree.)', []));
+    deprecationMessage.append(UI.UIUtils.formatLocalized(
+        '(%s is a reference to the currently selected DOM node in the elements tree.)', ['$0']));
   }
 }

@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
-  <message name="IDS_DEVTOOLS_034119b03fc07deec5fcb28a85957fdc" desc="Explanation of elements reference in PropertiesWidget deprecation message">
-    ($0 is a reference to the currently selected DOM node in the elements tree.)
-  </message>
   <message name="IDS_DEVTOOLS_068bc495b79facfaa7918369fa9909eb" desc="Text in Elements Tree Element of the Elements panel">
     Cut element
   </message>
@@ -152,6 +149,9 @@
   </message>
   <message name="IDS_DEVTOOLS_605e072850e19521394f8bad7082acf4" desc="Text of a DOM element in Element State Pane Widget of the Elements panel">
     Force element state
+  </message>
+  <message name="IDS_DEVTOOLS_685db349070d4d06c11a83153b7ed4c0" desc="Text that describes the console placeholder used to to reference the currently selected element in the DOM tree">
+    (<ph name="DOLLAR_ZERO"><ex>DollarSignZero</ex>$1s</ph> is a reference to the currently selected DOM node in the elements tree.)
   </message>
   <message name="IDS_DEVTOOLS_686676f33cf19ca00788564f43b992cb" desc="Aria accessible name in Computed Style Widget of the Elements panel">
     Filter Computed Styles

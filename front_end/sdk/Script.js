@@ -54,10 +54,12 @@ export class Script {
    * @param {?Protocol.Runtime.StackTrace} originStackTrace
    * @param {?number} codeOffset
    * @param {?string} scriptLanguage
+   * @param {?Protocol.Debugger.DebugSymbols} debugSymbols
    */
   constructor(
       debuggerModel, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash,
-      isContentScript, isLiveEdit, sourceMapURL, hasSourceURL, length, originStackTrace, codeOffset, scriptLanguage) {
+      isContentScript, isLiveEdit, sourceMapURL, hasSourceURL, length, originStackTrace, codeOffset, scriptLanguage,
+      debugSymbols) {
     /** @type {?string} */
     this._source;
 
@@ -74,6 +76,11 @@ export class Script {
     this._isContentScript = isContentScript;
     this._isLiveEdit = isLiveEdit;
     this.sourceMapURL = sourceMapURL;
+    if (!sourceMapURL && debugSymbols && debugSymbols.type === 'EmbeddedDWARF') {
+      // TODO(chromium:1064248) Remove this once we either drop gimli or support DebugSymbols all the way down.
+      this.sourceMapURL = 'wasm://dwarf';
+    }
+    this.debugSymbols = debugSymbols;
     this.hasSourceURL = hasSourceURL;
     this.contentLength = length;
     this._originalContentProvider = null;

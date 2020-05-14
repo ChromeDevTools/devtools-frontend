@@ -141,6 +141,9 @@ export class NetworkProject {
     }
     const attributionInfo = frameAttribution.get(frameId);
     console.assert(attributionInfo, 'Failed to remove frame attribution for url: ' + uiSourceCode.url());
+    if (!attributionInfo) {
+      return;
+    }
     attributionInfo.count -= 1;
     if (attributionInfo.count > 0) {
       return;

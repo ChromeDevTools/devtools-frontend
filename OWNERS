@@ -1,16 +1,16 @@
 file://ENG_REVIEW_OWNERS
 
-per-file .clang-format=file://INFRA_OWNERS
-per-file .gitattributes=file://INFRA_OWNERS
-per-file .gitignore=file://INFRA_OWNERS
-per-file .gn=file://INFRA_OWNERS
+per-file .*=file://INFRA_OWNERS
+per-file AUTHORS=file://COMMON_OWNERS
+per-file BUILD.gn=file://INFRA_OWNERS
 per-file DEPS=file://INFRA_OWNERS
 per-file PRESUBMIT.py=file://INFRA_OWNERS
+per-file README=file://COMMON_OWNERS
+per-file WATCHLISTS=file://INFRA_OWNERS
 per-file codereview.settings=file://INFRA_OWNERS
-per-file package.json=file://INFRA_OWNERS
-per-file package-lock.json=file://INFRA_OWNERS
-per-file karma.conf.json=file://INFRA_OWNERS
-per-file tsconfig.json=file://INFRA_OWNERS
-per-file tsconfig.base.json=file://INFRA_OWNERS
 per-file htaccess=file://INFRA_OWNERS
-
+per-file karma.conf.json=file://INFRA_OWNERS
+per-file package-lock.json=file://INFRA_OWNERS
+per-file package.json=file://INFRA_OWNERS
+per-file tsconfig.base.json=file://INFRA_OWNERS
+per-file tsconfig.json=file://INFRA_OWNERS

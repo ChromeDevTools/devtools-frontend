@@ -831,7 +831,7 @@ ElementsTestRunner.dumpDOMUpdateHighlights = function(rootNode, callback, depth)
         if (classList.contains('webkit-html-attribute-name')) {
           xpath += '/@' + element.textContent + ' (empty)';
         } else if (classList.contains('webkit-html-attribute-value')) {
-          name = element.parentElement.querySelector('.webkit-html-attribute-name').textContent;
+          const name = element.parentElement.querySelector('.webkit-html-attribute-name').textContent;
           xpath += '/@' + name + ' ' + element.textContent;
         } else if (classList.contains('webkit-html-text-node')) {
           xpath += '/text() "' + element.textContent + '"';

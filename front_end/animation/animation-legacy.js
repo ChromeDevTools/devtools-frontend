@@ -5,6 +5,7 @@
 import * as AnimationModule from './animation.js';
 
 self.Animation = self.Animation || {};
+/* global Animation:writable */
 Animation = Animation || {};
 
 /**

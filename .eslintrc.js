@@ -58,6 +58,7 @@ module.exports = {
     'no-duplicate-case': 2,
     'no-else-return': [2, {'allowElseIf': false}],
     'no-empty-character-class': 2,
+    'no-global-assign': 2,
     'no-implied-eval': 2,
     'no-labels': 2,
     'no-multi-str': 2,

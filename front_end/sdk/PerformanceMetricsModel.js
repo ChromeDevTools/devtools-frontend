@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Platform from '../platform/platform.js';
 
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
@@ -30,36 +27,36 @@ export class PerformanceMetricsModel extends SDKModel {
   }
 
   /**
-   * @return {!Promise<void>}
+   * @return {!Promise<!Object>}
    */
   enable() {
-    return this._agent.enable();
+    return this._agent.invoke_enable({});
   }
 
   /**
-   * @return {!Promise<void>}
+   * @return {!Promise<!Object>}
    */
   disable() {
-    return this._agent.disable();
+    return this._agent.invoke_disable();
   }
 
   /**
    * @return {!Promise<!{metrics: !Map<string, number>, timestamp: number}>}
    */
   async requestMetrics() {
-    const rawMetrics = await this._agent.getMetrics() || [];
+    const rawMetrics = await this._agent.invoke_getMetrics() || [];
     const metrics = new Map();
     const timestamp = performance.now();
-    for (const metric of rawMetrics) {
+    for (const metric of rawMetrics.metrics) {
       let data = this._metricData.get(metric.name);
       if (!data) {
-        data = {};
+        data = {lastValue: undefined, lastTimestamp: undefined};
         this._metricData.set(metric.name, data);
       }
       let value;
       switch (this._metricModes.get(metric.name)) {
         case MetricMode.CumulativeTime:
-          value = data.lastTimestamp ?
+          value = (data.lastTimestamp && data.lastValue) ?
               Platform.NumberUtilities.clamp(
                   (metric.value - data.lastValue) * 1000 / (timestamp - data.lastTimestamp), 0, 1) :
               0;
@@ -67,7 +64,7 @@ export class PerformanceMetricsModel extends SDKModel {
           data.lastTimestamp = timestamp;
           break;
         case MetricMode.CumulativeCount:
-          value = data.lastTimestamp ?
+          value = (data.lastTimestamp && data.lastValue) ?
               Math.max(0, (metric.value - data.lastValue) * 1000 / (timestamp - data.lastTimestamp)) :
               0;
           data.lastValue = metric.value;

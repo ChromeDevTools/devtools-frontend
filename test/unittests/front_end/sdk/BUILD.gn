@@ -7,6 +7,7 @@ ts_library("sdk") {
     "Cookie_test.ts",
     "Issue_test.ts",
     "MockIssuesModel.ts",
+    "NetworkManager_test.ts",
     "ServerTiming_test.ts",
     "SourceMap_test.ts",
     "StubIssue.ts",

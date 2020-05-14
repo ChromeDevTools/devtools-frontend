@@ -400,7 +400,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
     const binding = self.Persistence.persistence.binding(canonicalSourceCode);
     uiSourceCode = binding ? binding.fileSystem : canonicalSourceCode;
 
-    if (duplicated) {
+    if (duplicated && uiSourceCode.project().type() !== Workspace.Workspace.projectTypes.FileSystem) {
       uiSourceCode.disableEdit();
     }
 

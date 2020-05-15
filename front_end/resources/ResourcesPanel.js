@@ -188,11 +188,11 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
    * @param {string} cookieDomain
    */
   clearCookies(target, cookieDomain) {
-    const model = target.model(SDK.CookieModel.CookieModel);
+    const model = /** @type {?SDK.CookieModel.CookieModel} */ (target.model(SDK.CookieModel.CookieModel));
     if (!model) {
       return;
     }
-    model.clear(cookieDomain, () => {
+    model.clear(cookieDomain).then(() => {
       if (this._cookieView) {
         this._cookieView.refreshItems();
       }

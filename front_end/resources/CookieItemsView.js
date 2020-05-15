@@ -47,6 +47,7 @@ export class CookieItemsView extends StorageItemsView {
     this.registerRequiredCSS('resources/cookieItemsView.css');
     this.element.classList.add('storage-view');
 
+    /** @type {!SDK.CookieModel.CookieModel} */
     this._model = model;
     this._cookieDomain = cookieDomain;
 
@@ -172,12 +173,9 @@ export class CookieItemsView extends StorageItemsView {
    * @param {?SDK.Cookie.Cookie} oldCookie
    * @return {!Promise<boolean>}
    */
-  _saveCookie(newCookie, oldCookie) {
-    if (!this._model) {
-      return Promise.resolve(false);
-    }
+  async _saveCookie(newCookie, oldCookie) {
     if (oldCookie && newCookie.key() !== oldCookie.key()) {
-      this._model.deleteCookie(oldCookie);
+      await this._model.deleteCookie(oldCookie);
     }
     return this._model.saveCookie(newCookie);
   }
@@ -187,7 +185,7 @@ export class CookieItemsView extends StorageItemsView {
    * @param {function():void} callback
    */
   _deleteCookie(cookie, callback) {
-    this._model.deleteCookie(cookie, callback);
+    this._model.deleteCookie(cookie).then(callback);
   }
 
   /**
@@ -234,7 +232,7 @@ export class CookieItemsView extends StorageItemsView {
    * @override
    */
   deleteAllItems() {
-    this._model.clear(this._cookieDomain, () => this.refreshItems());
+    this._model.clear(this._cookieDomain).then(() => this.refreshItems());
   }
 
   /**
@@ -243,7 +241,7 @@ export class CookieItemsView extends StorageItemsView {
   deleteSelectedItem() {
     const selectedCookie = this._cookiesTable.selectedCookie();
     if (selectedCookie) {
-      this._model.deleteCookie(selectedCookie, () => this.refreshItems());
+      this._model.deleteCookie(selectedCookie).then(() => this.refreshItems());
     }
   }
 

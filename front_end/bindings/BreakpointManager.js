@@ -499,6 +499,18 @@ export class Breakpoint {
   }
 
   /**
+   * @return {boolean}
+   */
+  hasBoundScript() {
+    for (const uiSourceCode of this._uiSourceCodes) {
+      if (uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Network) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
    * @param {boolean} enabled
    */
   setEnabled(enabled) {

@@ -11,6 +11,7 @@ export async function waitForAnimationsPanelToLoad() {
   // Open panel and wait for content
   await openPanelViaMoreTools('Animations');
   await waitFor('div[aria-label="Animations panel"]');
+  await waitFor('div.animations-timeline');
 }
 
 export async function navigateToSiteWithAnimation(target: puppeteer.Page) {

@@ -7,7 +7,7 @@ import {describe, it} from 'mocha';
 import {getBrowserAndPages} from '../../shared/helper.js';
 import {navigateToSiteWithAnimation, waitForAnimationContent, waitForAnimationsPanelToLoad} from '../helpers/animations-helpers.js';
 
-describe.skip('[crbug.com/1082735] The Animations Panel', async () => {
+describe('The Animations Panel', async () => {
   it('Listens for animation in webpage', async () => {
     const {target} = getBrowserAndPages();
     await waitForAnimationsPanelToLoad();

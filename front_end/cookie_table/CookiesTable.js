@@ -606,7 +606,11 @@ export class CookiesTable extends UI.Widget.VBox {
    * @param {!DataGrid.DataGrid.DataGridNode} gridNode
    */
   _populateContextMenu(contextMenu, gridNode) {
-    const cookie = /** @type {!SDK.Cookie.Cookie} */ (gridNode.cookie);
+    const maybeCookie = /** @type {?SDK.Cookie.Cookie} */ (gridNode.cookie);
+    if (!maybeCookie) {
+      return;
+    }
+    const cookie = maybeCookie;
 
     contextMenu.revealSection().appendItem(ls`Show Requests With This Cookie`, () => {
       Network.NetworkPanel.NetworkPanel.revealAndFilter([

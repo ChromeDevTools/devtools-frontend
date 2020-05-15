@@ -1,19 +1,19 @@
 {
     "securityIcons.svg": "27676f7c1f1542659c7c49a8052259dc",
     "accelerometer-back.svg": "342973eb940ef43b409b28c2c6b0d520",
+    "largeIcons.svg": "6759e866432b54ddd12ac040fd385285",
     "logpoint-disabled.svg": "bebf96aa9aba77cb4d58a4b3b41c11a8",
     "checkboxCheckmark.svg": "f039bf85cee42ad5c30ca3bfdce7912a",
     "breakpoint-conditional.svg": "e28b1dac70c4c68595393221025695e0",
     "smallIcons.svg": "9766952cdadc20d67d60a2bc9adef17b",
-    "mediumIcons.svg": "9cb32f670ba43a7ab424eab281043e6b",
     "breakpoint-conditional-disabled.svg": "7fac907a22df1f4d0d8b7d1084544e89",
     "errorWave.svg": "e183fa242a22ed4784a92f6becbc2c45",
-    "logpoint.svg": "8b11b4846c696d919493e35749ac967a",
+    "mediumIcons.svg": "9cb32f670ba43a7ab424eab281043e6b",
     "breakpoint.svg": "f67728ea4b4402269d1396f80926e428",
-    "breakpoint-disabled.svg": "0eb7bb51cfc42aa367a4108b37bb095f",
     "treeoutlineTriangles.svg": "2d26ab85d919f83d5021f2f385dffd0b",
-    "largeIcons.svg": "33a967ab1fc091fc4afaf5c61d0ef16e",
+    "logpoint.svg": "8b11b4846c696d919493e35749ac967a",
+    "lighthouse_logo.svg": "b889aaf8631e71e3427eb96d3433e319",
     "chevrons.svg": "79b4b527771e30b6388ce664077b3409",
     "accelerometer-front.svg": "a4dcdac47131aa923346c15e01bc644a",
-    "lighthouse_logo.svg": "b889aaf8631e71e3427eb96d3433e319"
+    "breakpoint-disabled.svg": "0eb7bb51cfc42aa367a4108b37bb095f"
 }

@@ -8,12 +8,16 @@ import * as puppeteer from 'puppeteer';
 import {$$, click, resourcesPath, waitFor, waitForNone} from '../../shared/helper.js';
 
 const NEW_HEAP_SNAPSHOT_BUTTON = 'button[aria-label="Take heap snapshot"]';
+const MEMORY_PANEL_CONTENT = 'div[aria-label="Memory panel"]';
+const PROFILE_TREE_SIDEBAR = 'div.profiles-tree-sidebar';
+const MEMORY_TAB_ID = '#tab-heap_profiler';
 
 export async function navigateToMemoryTab(target: puppeteer.Page) {
   const targetUrl = `${resourcesPath}/memory/default.html`;
   await target.goto(targetUrl);
-  await click('#tab-heap_profiler');
-  await waitFor('[aria-label="heap_profiler"]');
+  await click(MEMORY_TAB_ID);
+  await waitFor(MEMORY_PANEL_CONTENT);
+  await waitFor(PROFILE_TREE_SIDEBAR);
 }
 
 export async function takeHeapSnapshot() {

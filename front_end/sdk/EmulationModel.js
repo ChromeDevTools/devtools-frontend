@@ -92,7 +92,7 @@ export class EmulationModel extends SDKModel {
   }
 
   /**
-   * @param {?Protocol.PageAgent.SetDeviceMetricsOverrideRequest} metrics
+   * @param {?Protocol.Page.SetDeviceMetricsOverrideRequest} metrics
    * @return {!Promise<?>}
    */
   emulateDevice(metrics) {

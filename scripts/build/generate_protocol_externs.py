@@ -212,7 +212,8 @@ def generate_protocol_externs(output_path, file1, file2):
                     "Protocol.%sAgent.prototype.%s = function(%s) {};\n" % (domain_name, command["name"], ", ".join(params)))
 
                 request_object_properties = []
-                request_type = "Protocol.%sAgent.%sRequest" % (domain_name, to_title_case(command["name"]))
+                request_type = "Protocol.%s.%sRequest" % (
+                    domain_name, to_title_case(command["name"]))
                 for param in in_param_to_type:
                     request_object_properties.append("%s: %s" % (param, in_param_to_type[param]))
                 if request_object_properties:
@@ -222,7 +223,8 @@ def generate_protocol_externs(output_path, file1, file2):
                 output_file.write("%s;\n" % request_type)
 
                 response_object_properties = []
-                response_type = "Protocol.%sAgent.%sResponse" % (domain_name, to_title_case(command["name"]))
+                response_type = "Protocol.%s.%sResponse" % (
+                    domain_name, to_title_case(command["name"]))
                 for param in out_param_to_type:
                     response_object_properties.append("%s: %s" % (param, out_param_to_type[param]))
                 if response_object_properties:

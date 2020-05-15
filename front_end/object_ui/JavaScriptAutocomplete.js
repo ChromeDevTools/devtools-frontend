@@ -314,7 +314,10 @@ export class JavaScriptAutocomplete {
       return [];
     }
     let expression;
-    if (fullText.endsWith('.') || fullText.endsWith('[')) {
+    if (fullText.endsWith('?.')) {
+      expression = await Formatter.FormatterWorkerPool.formatterWorkerPool().findLastExpression(
+          fullText.substring(0, fullText.length - 2));
+    } else if (fullText.endsWith('.') || fullText.endsWith('[')) {
       expression = await Formatter.FormatterWorkerPool.formatterWorkerPool().findLastExpression(
           fullText.substring(0, fullText.length - 1));
     }

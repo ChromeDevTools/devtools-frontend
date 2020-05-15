@@ -220,6 +220,14 @@ class Generator:
 
             if "commands" in json_domain:
                 for json_command in json_domain["commands"]:
+                    if "parameters" in json_command:
+                        for param in json_command["parameters"]:
+                            if "enum" in param:
+                                enum_name = "%s.%sRequest%s" % (
+                                    domain_name,
+                                    to_title_case(json_command["name"]),
+                                    to_title_case(param["name"]))
+                                Generator.process_enum(param, enum_name)
                     Generator.process_command(json_command, domain_name)
 
             Generator.backend_js_domain_initializer_list.append("\n")

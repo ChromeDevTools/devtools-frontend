@@ -218,6 +218,7 @@ export function registerCommands(inspectorBackend) {
       'Audits.InspectorIssueCode',
       {SameSiteCookieIssue: 'SameSiteCookieIssue', MixedContentIssue: 'MixedContentIssue'});
   inspectorBackend.registerEvent('Audits.issueAdded', ['issue']);
+  inspectorBackend.registerEnum('Audits.GetEncodedResponseRequestEncoding', {Webp: 'webp', Jpeg: 'jpeg', Png: 'png'});
   inspectorBackend.registerCommand(
       'Audits.getEncodedResponse',
       [
@@ -302,6 +303,9 @@ export function registerCommands(inspectorBackend) {
       [], false);
   inspectorBackend.registerCommand(
       'Browser.resetPermissions', [{'name': 'browserContextId', 'type': 'string', 'optional': true}], [], false);
+  inspectorBackend.registerEnum(
+      'Browser.SetDownloadBehaviorRequestBehavior',
+      {Deny: 'deny', Allow: 'allow', AllowAndName: 'allowAndName', Default: 'default'});
   inspectorBackend.registerCommand(
       'Browser.setDownloadBehavior',
       [
@@ -885,6 +889,8 @@ export function registerCommands(inspectorBackend) {
       'Emulation.setScrollbarsHidden', [{'name': 'hidden', 'type': 'boolean', 'optional': false}], [], false);
   inspectorBackend.registerCommand(
       'Emulation.setDocumentCookieDisabled', [{'name': 'disabled', 'type': 'boolean', 'optional': false}], [], false);
+  inspectorBackend.registerEnum(
+      'Emulation.SetEmitTouchEventsForMouseRequestConfiguration', {Mobile: 'mobile', Desktop: 'desktop'});
   inspectorBackend.registerCommand(
       'Emulation.setEmitTouchEventsForMouse',
       [
@@ -896,6 +902,14 @@ export function registerCommands(inspectorBackend) {
       'Emulation.setEmulatedMedia',
       [{'name': 'media', 'type': 'string', 'optional': true}, {'name': 'features', 'type': 'object', 'optional': true}],
       [], false);
+  inspectorBackend.registerEnum('Emulation.SetEmulatedVisionDeficiencyRequestType', {
+    None: 'none',
+    Achromatopsia: 'achromatopsia',
+    BlurredVision: 'blurredVision',
+    Deuteranopia: 'deuteranopia',
+    Protanopia: 'protanopia',
+    Tritanopia: 'tritanopia'
+  });
   inspectorBackend.registerCommand(
       'Emulation.setEmulatedVisionDeficiency', [{'name': 'type', 'type': 'string', 'optional': false}], [], false);
   inspectorBackend.registerCommand(
@@ -1039,6 +1053,9 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEnum(
       'Input.MouseButton',
       {None: 'none', Left: 'left', Middle: 'middle', Right: 'right', Back: 'back', Forward: 'forward'});
+  inspectorBackend.registerEnum(
+      'Input.DispatchKeyEventRequestType',
+      {KeyDown: 'keyDown', KeyUp: 'keyUp', RawKeyDown: 'rawKeyDown', Char: 'char'});
   inspectorBackend.registerCommand(
       'Input.dispatchKeyEvent',
       [
@@ -1058,6 +1075,13 @@ export function registerCommands(inspectorBackend) {
       [], false);
   inspectorBackend.registerCommand(
       'Input.insertText', [{'name': 'text', 'type': 'string', 'optional': false}], [], false);
+  inspectorBackend.registerEnum('Input.DispatchMouseEventRequestType', {
+    MousePressed: 'mousePressed',
+    MouseReleased: 'mouseReleased',
+    MouseMoved: 'mouseMoved',
+    MouseWheel: 'mouseWheel'
+  });
+  inspectorBackend.registerEnum('Input.DispatchMouseEventRequestPointerType', {Mouse: 'mouse', Pen: 'pen'});
   inspectorBackend.registerCommand(
       'Input.dispatchMouseEvent',
       [
@@ -1070,6 +1094,9 @@ export function registerCommands(inspectorBackend) {
         {'name': 'pointerType', 'type': 'string', 'optional': true}
       ],
       [], false);
+  inspectorBackend.registerEnum(
+      'Input.DispatchTouchEventRequestType',
+      {TouchStart: 'touchStart', TouchEnd: 'touchEnd', TouchMove: 'touchMove', TouchCancel: 'touchCancel'});
   inspectorBackend.registerCommand(
       'Input.dispatchTouchEvent',
       [
@@ -1079,6 +1106,12 @@ export function registerCommands(inspectorBackend) {
         {'name': 'timestamp', 'type': 'number', 'optional': true}
       ],
       [], false);
+  inspectorBackend.registerEnum('Input.EmulateTouchFromMouseEventRequestType', {
+    MousePressed: 'mousePressed',
+    MouseReleased: 'mouseReleased',
+    MouseMoved: 'mouseMoved',
+    MouseWheel: 'mouseWheel'
+  });
   inspectorBackend.registerCommand(
       'Input.emulateTouchFromMouseEvent',
       [
@@ -1657,6 +1690,7 @@ export function registerCommands(inspectorBackend) {
       ],
       ['identifier'], false);
   inspectorBackend.registerCommand('Page.bringToFront', [], [], false);
+  inspectorBackend.registerEnum('Page.CaptureScreenshotRequestFormat', {Jpeg: 'jpeg', Png: 'png'});
   inspectorBackend.registerCommand(
       'Page.captureScreenshot',
       [
@@ -1665,6 +1699,7 @@ export function registerCommands(inspectorBackend) {
         {'name': 'fromSurface', 'type': 'boolean', 'optional': true}
       ],
       ['data'], false);
+  inspectorBackend.registerEnum('Page.CaptureSnapshotRequestFormat', {MHTML: 'mhtml'});
   inspectorBackend.registerCommand(
       'Page.captureSnapshot', [{'name': 'format', 'type': 'string', 'optional': true}], ['data'], false);
   inspectorBackend.registerCommand('Page.clearDeviceMetricsOverride', [], [], false);
@@ -1719,6 +1754,8 @@ export function registerCommands(inspectorBackend) {
       ['frameId', 'loaderId', 'errorText'], false);
   inspectorBackend.registerCommand(
       'Page.navigateToHistoryEntry', [{'name': 'entryId', 'type': 'number', 'optional': false}], [], false);
+  inspectorBackend.registerEnum(
+      'Page.PrintToPDFRequestTransferMode', {ReturnAsBase64: 'ReturnAsBase64', ReturnAsStream: 'ReturnAsStream'});
   inspectorBackend.registerCommand(
       'Page.printToPDF',
       [
@@ -1797,6 +1834,8 @@ export function registerCommands(inspectorBackend) {
       'Page.setDocumentContent',
       [{'name': 'frameId', 'type': 'string', 'optional': false}, {'name': 'html', 'type': 'string', 'optional': false}],
       [], false);
+  inspectorBackend.registerEnum(
+      'Page.SetDownloadBehaviorRequestBehavior', {Deny: 'deny', Allow: 'allow', Default: 'default'});
   inspectorBackend.registerCommand(
       'Page.setDownloadBehavior',
       [
@@ -1814,6 +1853,8 @@ export function registerCommands(inspectorBackend) {
       [], false);
   inspectorBackend.registerCommand(
       'Page.setLifecycleEventsEnabled', [{'name': 'enabled', 'type': 'boolean', 'optional': false}], [], false);
+  inspectorBackend.registerEnum(
+      'Page.SetTouchEmulationEnabledRequestConfiguration', {Mobile: 'mobile', Desktop: 'desktop'});
   inspectorBackend.registerCommand(
       'Page.setTouchEmulationEnabled',
       [
@@ -1821,6 +1862,7 @@ export function registerCommands(inspectorBackend) {
         {'name': 'configuration', 'type': 'string', 'optional': true}
       ],
       [], false);
+  inspectorBackend.registerEnum('Page.StartScreencastRequestFormat', {Jpeg: 'jpeg', Png: 'png'});
   inspectorBackend.registerCommand(
       'Page.startScreencast',
       [
@@ -1833,6 +1875,7 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand('Page.stopLoading', [], [], false);
   inspectorBackend.registerCommand('Page.crash', [], [], false);
   inspectorBackend.registerCommand('Page.close', [], [], false);
+  inspectorBackend.registerEnum('Page.SetWebLifecycleStateRequestState', {Frozen: 'frozen', Active: 'active'});
   inspectorBackend.registerCommand(
       'Page.setWebLifecycleState', [{'name': 'state', 'type': 'string', 'optional': false}], [], false);
   inspectorBackend.registerCommand('Page.stopScreencast', [], [], false);
@@ -1854,8 +1897,12 @@ export function registerCommands(inspectorBackend) {
   // Performance.
   inspectorBackend.registerEvent('Performance.metrics', ['metrics', 'title']);
   inspectorBackend.registerCommand('Performance.disable', [], [], false);
+  inspectorBackend.registerEnum(
+      'Performance.EnableRequestTimeDomain', {TimeTicks: 'timeTicks', ThreadTicks: 'threadTicks'});
   inspectorBackend.registerCommand(
       'Performance.enable', [{'name': 'timeDomain', 'type': 'string', 'optional': true}], [], false);
+  inspectorBackend.registerEnum(
+      'Performance.SetTimeDomainRequestTimeDomain', {TimeTicks: 'timeTicks', ThreadTicks: 'threadTicks'});
   inspectorBackend.registerCommand(
       'Performance.setTimeDomain', [{'name': 'timeDomain', 'type': 'string', 'optional': false}], [], false);
   inspectorBackend.registerCommand('Performance.getMetrics', [], ['metrics'], false);
@@ -2108,6 +2155,8 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand(
       'Tracing.requestMemoryDump', [{'name': 'deterministic', 'type': 'boolean', 'optional': true}],
       ['dumpGuid', 'success'], false);
+  inspectorBackend.registerEnum(
+      'Tracing.StartRequestTransferMode', {ReportEvents: 'ReportEvents', ReturnAsStream: 'ReturnAsStream'});
   inspectorBackend.registerCommand(
       'Tracing.start',
       [
@@ -2308,6 +2357,7 @@ export function registerCommands(inspectorBackend) {
     'executionContextAuxData', 'isLiveEdit', 'sourceMapURL', 'hasSourceURL', 'isModule', 'length', 'stackTrace',
     'codeOffset', 'scriptLanguage', 'debugSymbols'
   ]);
+  inspectorBackend.registerEnum('Debugger.ContinueToLocationRequestTargetCallFrames', {Any: 'any', Current: 'current'});
   inspectorBackend.registerCommand(
       'Debugger.continueToLocation',
       [
@@ -2391,6 +2441,10 @@ export function registerCommands(inspectorBackend) {
         {'name': 'condition', 'type': 'string', 'optional': true}
       ],
       ['breakpointId', 'actualLocation'], false);
+  inspectorBackend.registerEnum('Debugger.SetInstrumentationBreakpointRequestInstrumentation', {
+    BeforeScriptExecution: 'beforeScriptExecution',
+    BeforeScriptWithSourceMapExecution: 'beforeScriptWithSourceMapExecution'
+  });
   inspectorBackend.registerCommand(
       'Debugger.setInstrumentationBreakpoint', [{'name': 'instrumentation', 'type': 'string', 'optional': false}],
       ['breakpointId'], false);
@@ -2413,6 +2467,8 @@ export function registerCommands(inspectorBackend) {
       ['breakpointId'], false);
   inspectorBackend.registerCommand(
       'Debugger.setBreakpointsActive', [{'name': 'active', 'type': 'boolean', 'optional': false}], [], false);
+  inspectorBackend.registerEnum(
+      'Debugger.SetPauseOnExceptionsRequestState', {None: 'none', Uncaught: 'uncaught', All: 'all'});
   inspectorBackend.registerCommand(
       'Debugger.setPauseOnExceptions', [{'name': 'state', 'type': 'string', 'optional': false}], [], false);
   inspectorBackend.registerCommand(

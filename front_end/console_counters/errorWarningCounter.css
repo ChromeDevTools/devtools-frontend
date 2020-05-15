@@ -5,19 +5,19 @@
  */
 
 :host {
-    cursor: pointer;
-    padding: 0 2px;
-    min-width: 26px;
+  cursor: pointer;
+  padding: 0 2px;
+  min-width: 26px;
 }
 
 :host:hover {
-    color: #333;
+  color: #333;
 }
 
 .counter-item {
-    margin-left: 6px;
+  margin-left: 6px;
 }
 
 .counter-item.counter-item-first {
-    margin-left: 0;
+  margin-left: 0;
 }

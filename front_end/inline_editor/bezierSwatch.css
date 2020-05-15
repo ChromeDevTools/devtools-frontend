@@ -5,20 +5,20 @@
  */
 
 :host {
-    white-space: nowrap;
+  white-space: nowrap;
 }
 
 .bezier-swatch-icon {
-    position: relative;
-    margin-left: 1px;
-    margin-right: 2px;
-    top: 1px;
-    user-select: none;
-    line-height: 10px;
-    background-color: #9C27B0;
-    cursor: default;
+  position: relative;
+  margin-left: 1px;
+  margin-right: 2px;
+  top: 1px;
+  user-select: none;
+  line-height: 10px;
+  background-color: #9c27b0;
+  cursor: default;
 }
 
 .bezier-swatch-icon:hover {
-    background-color: #800080;
+  background-color: #800080;
 }

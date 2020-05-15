@@ -5,19 +5,19 @@
  */
 
 :host {
-    padding: 10px;
+  padding: 10px;
 }
 
 .widget {
-    align-items: center;
+  align-items: center;
 }
 
 label {
-    white-space: nowrap;
+  white-space: nowrap;
 }
 
 input[type=text].add-source-map {
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
-    font-size: inherit;
-    margin: 0 8px 0 5px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
+  font-size: inherit;
+  margin: 0 8px 0 5px;
 }

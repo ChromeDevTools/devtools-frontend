@@ -3,44 +3,47 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
+
 button.soft-dropdown {
-    height: 26px;
-    text-align: left;
-    position: relative;
-    border: none;
-    background: none;
+  height: 26px;
+  text-align: left;
+  position: relative;
+  border: none;
+  background: none;
 }
 
 button.soft-dropdown[disabled] {
-    opacity: .5;
+  opacity: 0.5;
 }
 
 button.soft-dropdown > .title {
-    padding-right: 5px;
-    width: 120px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  padding-right: 5px;
+  width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 button.soft-dropdown[data-keyboard-focus="true"]:focus::before {
-    content: "";
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    right: 2px;
-    bottom: 2px;
-    border-radius: 2px;
-    background: rgba(0, 0, 0, 0.08);
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.08);
 }
 
 @media (forced-colors: active) {
-    button.soft-dropdown {
-        border: 1px solid ButtonText;
-    }
-    button.soft-dropdown[disabled] {
-        opacity: 1;
-    }
-    button.soft-dropdown:disabled > .smallicon-triangle-down {
-        background-color: GrayText;
-    }
+  button.soft-dropdown {
+    border: 1px solid ButtonText;
+  }
+
+  button.soft-dropdown[disabled] {
+    opacity: 1;
+  }
+
+  button.soft-dropdown:disabled > .smallicon-triangle-down {
+    background-color: GrayText;
+  }
 }

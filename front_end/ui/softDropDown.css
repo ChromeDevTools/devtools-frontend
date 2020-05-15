@@ -5,33 +5,35 @@
  */
 
 .item.disabled {
-    opacity: 0.5;
+  opacity: 0.5;
 }
 
 .item-list {
-    background-color: white;
-    box-shadow: var(--drop-shadow);
-    overflow-x: hidden;
-    overflow-y: auto;
-    width: 100%;
+  background-color: white;
+  box-shadow: var(--drop-shadow);
+  overflow-x: hidden;
+  overflow-y: auto;
+  width: 100%;
 }
 
 .item.highlighted {
-    color: var(--selection-fg-color);
-    background-color: var(--selection-bg-color);
+  color: var(--selection-fg-color);
+  background-color: var(--selection-bg-color);
 }
 
 @media (forced-colors: active) {
-    .item.disabled {
-        opacity: 1;
-    }
-    .item-list {
-        border: 1px solid ButtonText;
-        background-color: ButtonFace;
-    }
-    .item.highlighted {
-        forced-color-adjust: none;
-        color: HighlightText;
-        background-color: Highlight;
-    }
+  .item.disabled {
+    opacity: 1;
+  }
+
+  .item-list {
+    border: 1px solid ButtonText;
+    background-color: ButtonFace;
+  }
+
+  .item.highlighted {
+    forced-color-adjust: none;
+    color: HighlightText;
+    background-color: Highlight;
+  }
 }

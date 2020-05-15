@@ -5,87 +5,89 @@
  */
 
 .tree-outline-disclosure li {
-    padding: 2px 0 0 5px;
-    overflow: hidden;
-    display: flex;
-    min-height: 17px;
-    align-items: baseline;
+  padding: 2px 0 0 5px;
+  overflow: hidden;
+  display: flex;
+  min-height: 17px;
+  align-items: baseline;
 }
 
 .tree-outline-disclosure > li {
-    border-top: 1px solid #f0f0f0;
+  border-top: 1px solid #f0f0f0;
 }
 
 .tree-outline-disclosure > li:first-of-type {
-    border-top: none;
+  border-top: none;
 }
 
 .tree-outline-disclosure {
-    padding-left: 0 !important;
-    padding-right: 3px;
+  padding-left: 0 !important;
+  padding-right: 3px;
 }
 
 .tree-outline-disclosure li.parent::before {
-    top: 0 !important;
+  top: 0 !important;
 }
 
 .tree-outline-disclosure .name {
-    color: rgb(136, 19, 145);
+  color: rgb(136, 19, 145);
 }
 
 .tree-outline-disclosure .object-value-node {
-    overflow: hidden;
-    text-overflow: ellipsis;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .event-listener-details {
-    display: flex;
+  display: flex;
 }
 
 .event-listener-tree-subtitle {
-    float: right;
-    margin-left: 5px;
-    flex-shrink: 0;
+  float: right;
+  margin-left: 5px;
+  flex-shrink: 0;
 }
 
 .event-listener-button {
-    padding: 0 3px;
-    background-color: #f2f2f2;
-    border-radius: 3px;
-    border: 1px solid #c3c3c3;
-    margin-left: 10px;
-    display: block;
-    cursor: pointer;
-    opacity: 0.8;
-    flex-shrink: 0;
+  padding: 0 3px;
+  background-color: #f2f2f2;
+  border-radius: 3px;
+  border: 1px solid #c3c3c3;
+  margin-left: 10px;
+  display: block;
+  cursor: pointer;
+  opacity: 0.8;
+  flex-shrink: 0;
 }
 
 .event-listener-button:hover {
-    background-color: #e0e0e0;
-    opacity: 1;
+  background-color: #e0e0e0;
+  opacity: 1;
 }
 
 .tree-outline-disclosure li:hover .event-listener-button {
-    display: inline;
+  display: inline;
 }
 
 @media (forced-colors: active) {
-    .event-listener-details .event-listener-button {
-        forced-color-adjust: none;
-        opacity: 1;
-        background: ButtonFace;
-        color: ButtonText;
-        border-color: ButtonText;
-    }
-    .event-listener-button:hover {
-        background-color: Highlight !important;
-        color: HighlightText;
-        border-color: ButtonText;
-    }
-    .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] .event-listener-button,
-    .tree-outline-disclosure li[data-keyboard-focus="true"]:focus .gray-info-message {
-        background-color: Highlight;
-        color: HighlightText;
-        border-color: HighlightText;
-    }
+  .event-listener-details .event-listener-button {
+    forced-color-adjust: none;
+    opacity: 1;
+    background: ButtonFace;
+    color: ButtonText;
+    border-color: ButtonText;
+  }
+
+  .event-listener-button:hover {
+    background-color: Highlight !important;
+    color: HighlightText;
+    border-color: ButtonText;
+  }
+
+  .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] .event-listener-button,
+  .tree-outline-disclosure li[data-keyboard-focus="true"]:focus .gray-info-message {
+    background-color: Highlight;
+    color: HighlightText;
+    border-color: HighlightText;
+  }
 }

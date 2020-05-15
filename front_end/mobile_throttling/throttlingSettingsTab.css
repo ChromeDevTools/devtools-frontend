@@ -5,90 +5,90 @@
  */
 
 :host {
-    overflow:hidden;
+  overflow: hidden;
 }
 
 .header {
-    padding: 0 0 6px;
-    border-bottom: 1px solid #EEEEEE;
-    font-size: 18px;
-    font-weight: normal;
-    flex: none;
+  padding: 0 0 6px;
+  border-bottom: 1px solid #eee;
+  font-size: 18px;
+  font-weight: normal;
+  flex: none;
 }
 
 .add-conditions-button {
-    flex: none;
-    margin: 10px 2px;
-    min-width: 140px;
-    align-self: flex-start;
+  flex: none;
+  margin: 10px 2px;
+  min-width: 140px;
+  align-self: flex-start;
 }
 
 .conditions-list {
-    max-width: 500px;
-    min-width: 340px;
-    flex: auto;
+  max-width: 500px;
+  min-width: 340px;
+  flex: auto;
 }
 
 .conditions-list-item {
-    padding: 3px 5px 3px 5px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    position: relative;
-    flex: auto 1 1;
+  padding: 3px 5px 3px 5px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  flex: auto 1 1;
 }
 
 .conditions-list-text {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    flex: 0 0 70px;
-    user-select: none;
-    color: #222;
-    text-align: end;
-    position: relative;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  flex: 0 0 70px;
+  user-select: none;
+  color: #222;
+  text-align: end;
+  position: relative;
 }
 
 .conditions-list-title {
-    text-align: start;
-    flex: auto;
-    display: flex;
-    align-items: flex-start;
+  text-align: start;
+  flex: auto;
+  display: flex;
+  align-items: flex-start;
 }
 
 .conditions-list-title-text {
-    overflow: hidden;
-    flex: auto;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+  overflow: hidden;
+  flex: auto;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .conditions-list-separator {
-    flex: 0 0 1px;
-    background-color: rgb(231, 231, 231);
-    height: 30px;
-    margin: 0 4px;
+  flex: 0 0 1px;
+  background-color: rgb(231, 231, 231);
+  height: 30px;
+  margin: 0 4px;
 }
 
 .conditions-list-separator-invisible {
-    visibility: hidden;
-    height: 100% !important;
+  visibility: hidden;
+  height: 100% !important;
 }
 
 .conditions-edit-row {
-    flex: none;
-    display: flex;
-    flex-direction: row;
-    margin: 6px 5px;
+  flex: none;
+  display: flex;
+  flex-direction: row;
+  margin: 6px 5px;
 }
 
 .conditions-edit-row input {
-    width: 100%;
-    text-align: inherit;
+  width: 100%;
+  text-align: inherit;
 }
 
 .conditions-edit-optional {
-    position: absolute;
-    bottom: -20px;
-    right: 0;
-    color: rgb(128, 128, 128);
+  position: absolute;
+  bottom: -20px;
+  right: 0;
+  color: rgb(128, 128, 128);
 }

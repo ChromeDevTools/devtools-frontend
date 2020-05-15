@@ -4,7 +4,6 @@
  * found in the LICENSE file.
  */
 
-
 .playerlist-sidebar {
   display: flex;
   flex-direction: column;
@@ -14,11 +13,11 @@
 .playerlist-sidebar-header {
   font-size: 22px;
   padding: 8px 20px;
-  border-bottom:1px solid var(--divider-color);
+  border-bottom: 1px solid var(--divider-color);
 }
 
-.playerlist-entry-title>pre {
-  margin: 0px;
+.playerlist-entry-title > pre {
+  margin: 0;
 }
 
 .playerlist-entry-title {

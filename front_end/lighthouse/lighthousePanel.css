@@ -5,29 +5,33 @@
  */
 
 .toolbar {
-    background-color: var(--toolbar-bg-color);
-    border-bottom: var(--divider-border);
+  background-color: var(--toolbar-bg-color);
+  border-bottom: var(--divider-border);
 }
 
 .lh-root {
   --report-menu-width: 0;
+
   user-select: text;
 }
 
 /* for View Trace button */
+
 .lh-audit-group {
   position: relative;
 }
+
 button.view-trace {
   margin: 10px;
 }
 
 .lighthouse-results-container {
-    position: relative;
+  position: relative;
 }
 
 /** `window.opener` is null for windows opened from DevTools. This breaks
     the LH viewer app, so disable this feature. */
+
 .lh-tools--viewer {
   display: none !important;
 }

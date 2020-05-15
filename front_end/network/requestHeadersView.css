@@ -5,25 +5,25 @@
  */
 
 .request-headers-view {
-    user-select: text;
-    overflow: auto;
+  user-select: text;
+  overflow: auto;
 }
 
 .resource-status-image {
-    margin-top: -2px;
-    margin-right: 3px;
+  margin-top: -2px;
+  margin-right: 3px;
 }
 
 .request-headers-tree {
-    flex-grow: 1;
-    overflow-y: auto;
-    margin: 0;
+  flex-grow: 1;
+  overflow-y: auto;
+  margin: 0;
 }
 
 .header-decode-error {
-    color: red;
+  color: red;
 }
 
 .-theme-with-dark-background .header-decode-error {
-    color: hsl(0, 100%, 65%);
+  color: hsl(0, 100%, 65%);
 }

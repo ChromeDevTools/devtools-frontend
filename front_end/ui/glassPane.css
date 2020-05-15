@@ -5,57 +5,57 @@
  */
 
 :host {
-    position: absolute !important;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    overflow: hidden;
-    contain: strict;
-    background-color: transparent;
+  position: absolute !important;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  contain: strict;
+  background-color: transparent;
 }
 
 :host-context(.dimmed-pane) {
-    background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.5);
 }
 
 :host-context(.no-pointer-events) {
-    pointer-events: none;
+  pointer-events: none;
 }
 
 .widget {
-    display: flex;
-    background-color: transparent;
-    pointer-events: auto;
-    flex: none;
+  display: flex;
+  background-color: transparent;
+  pointer-events: auto;
+  flex: none;
 }
 
 .no-pointer-events {
-    pointer-events: none;
+  pointer-events: none;
 }
 
 .arrow-top {
-    margin-top: -19px;
-    margin-left: -9px;
+  margin-top: -19px;
+  margin-left: -9px;
 }
 
 .arrow-bottom {
-    margin-left: -9px;
+  margin-left: -9px;
 }
 
 .arrow-left {
-    margin-left: -19px;
-    margin-top: -9px;
+  margin-left: -19px;
+  margin-top: -9px;
 }
 
 .arrow-right {
-    margin-top: -9px;
+  margin-top: -9px;
 }
 
 .arrow-none {
-    display: none;
+  display: none;
 }
 
 :host-context(.-theme-with-dark-background) .arrow {
-    -webkit-filter: invert(80%);
+  -webkit-filter: invert(80%);
 }

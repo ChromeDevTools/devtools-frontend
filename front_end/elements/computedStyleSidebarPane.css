@@ -5,40 +5,40 @@
  */
 
 .computed-properties {
-    user-select: text;
-    flex-shrink: 0;
+  user-select: text;
+  flex-shrink: 0;
 }
 
 .styles-sidebar-pane-toolbar {
-    border-bottom: 1px solid #eee;
-    flex-shrink: 0;
+  border-bottom: 1px solid #eee;
+  flex-shrink: 0;
 }
 
 .styles-sidebar-pane-filter-box {
-    flex: auto;
-    display: flex;
+  flex: auto;
+  display: flex;
 }
 
 .styles-sidebar-pane-filter-box > input {
-    outline: none !important;
-    border: none;
-    width: 100%;
-    background: white;
-    padding-left: 4px;
-    margin: 3px;
+  outline: none !important;
+  border: none;
+  width: 100%;
+  background: white;
+  padding-left: 4px;
+  margin: 3px;
 }
 
 .styles-sidebar-pane-filter-box > input:focus,
 .styles-sidebar-pane-filter-box > input:not(:placeholder-shown) {
-    box-shadow: var(--focus-ring-active-shadow);
+  box-shadow: var(--focus-ring-active-shadow);
 }
 
 .styles-sidebar-pane-filter-box > input::placeholder {
-    color: rgba(0, 0, 0, 0.54);
+  color: rgba(0, 0, 0, 0.54);
 }
 
 @media (forced-colors: active) {
-    .styles-sidebar-pane-filter-box > input {
-        border: 1px solid ButtonText;
-    }
+  .styles-sidebar-pane-filter-box > input {
+    border: 1px solid ButtonText;
+  }
 }

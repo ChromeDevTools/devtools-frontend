@@ -5,17 +5,17 @@
  */
 
 .overview-info:not(:empty) {
-    display: flex;
-    background: white;
-    box-shadow: var(--drop-shadow);
-    padding: 3px;
+  display: flex;
+  background: white;
+  box-shadow: var(--drop-shadow);
+  padding: 3px;
 }
 
 .overview-info .frame .time {
-    display: none;
+  display: none;
 }
 
 .overview-info .frame .thumbnail img {
-    max-width: 50vw;
-    max-height: 50vh;
+  max-width: 50vw;
+  max-height: 50vh;
 }

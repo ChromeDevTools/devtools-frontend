@@ -5,18 +5,18 @@
  */
 
 .data-grid {
-    border: none;
+  border: none;
 }
 
 .data-grid td .size-units {
-    margin-left: 4px;
-    font-size: 75%;
+  margin-left: 4px;
+  font-size: 75%;
 }
 
 .data-grid tr:not(.selected) td .size-units {
-    color: #999;
+  color: #999;
 }
 
 .toolbar {
-    border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
 }

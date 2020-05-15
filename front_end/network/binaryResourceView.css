@@ -6,7 +6,7 @@
 
 .panel.network .toolbar.binary-view-toolbar {
   border-top: 1px solid #ccc;
-  border-bottom: 0px;
+  border-bottom: 0;
   padding-left: 5px;
 }
 

@@ -5,20 +5,21 @@
  */
 
 .widget {
-    padding: 20px;
+  padding: 20px;
 }
 
-.message, .button {
-    font-size: larger;
-    white-space: pre;
-    margin: 5px;
+.message,
+.button {
+  font-size: larger;
+  white-space: pre;
+  margin: 5px;
 }
 
 .button {
-    text-align: center;
-    margin-top: 10px;
+  text-align: center;
+  margin-top: 10px;
 }
 
 .reason {
-    color: #8b0000;
+  color: #8b0000;
 }

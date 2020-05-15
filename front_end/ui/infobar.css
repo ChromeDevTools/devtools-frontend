@@ -5,92 +5,92 @@
  */
 
 .infobar {
-    color: rgb(34, 34, 34);
-    display: flex;
-    flex: auto;
-    border-bottom: 1px solid rgb(171, 171, 171);
-    flex-direction: column;
-    position: relative;
-    padding: 1px 6px 1px;
+  color: rgb(34, 34, 34);
+  display: flex;
+  flex: auto;
+  border-bottom: 1px solid rgb(171, 171, 171);
+  flex-direction: column;
+  position: relative;
+  padding: 1px 6px 1px;
 }
 
 .infobar:focus {
-    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2) inset;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2) inset;
 }
 
 .infobar-warning {
-    background-color: rgb(253, 242, 192);
+  background-color: rgb(253, 242, 192);
 }
 
 .infobar-info {
-    background-color: rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
 }
 
 .infobar-main-row {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    min-height: 25px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  min-height: 25px;
 }
 
 .infobar-info-container {
-    display: flex;
-    align-items: center;
-    flex-grow: 1;
-    flex-wrap: wrap;
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  flex-wrap: wrap;
 }
 
 .infobar-info-message {
-    display: flex;
-    margin: 5px 0;
+  display: flex;
+  margin: 5px 0;
 }
 
 .infobar-info-text {
-    display: flex;
-    align-items: center;
-    margin: 0 4px;
+  display: flex;
+  align-items: center;
+  margin: 0 4px;
 }
 
 .infobar-details-rows {
-    padding: 5px 5px 0 5px;
+  padding: 5px 5px 0 5px;
 }
 
 .infobar-details-row {
-    display: flex;
-    flex-direction: column;
-    line-height: 18px;
-    padding-bottom: 6px;
+  display: flex;
+  flex-direction: column;
+  line-height: 18px;
+  padding-bottom: 6px;
 }
 
 .infobar-close-container {
-    display: flex;
-    flex-shrink: 0;
-    align-items: center;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
 }
 
 .infobar-close-container > .infobar-button.link-style {
-    margin: 4px;
+  margin: 4px;
 }
 
 .infobar-button {
-    color: #757575;
-    cursor: pointer;
-    padding: 0 4px;
+  color: #757575;
+  cursor: pointer;
+  padding: 0 4px;
 }
 
 .info-icon {
-    -webkit-mask-image: url(Images/ic_info_black_18dp.svg);
-    background-color: hsl(214, 92%, 50%);
+  -webkit-mask-image: url(Images/ic_info_black_18dp.svg);
+  background-color: hsl(214, 92%, 50%);
 }
 
 .warning-icon {
-    -webkit-mask-image: url(Images/ic_warning_black_18dp.svg);
-    background-color: hsl(44, 92%, 50%);
+  -webkit-mask-image: url(Images/ic_warning_black_18dp.svg);
+  background-color: hsl(44, 92%, 50%);
 }
 
 .icon {
-    -webkit-mask-size: 18px 18px;
-    width: 18px;
-    height: 18px;
-    flex-shrink: 0;
+  -webkit-mask-size: 18px 18px;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
 }

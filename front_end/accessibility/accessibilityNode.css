@@ -74,6 +74,7 @@ span.ax-value-undefined {
   .ax-value-source-unused {
     opacity: 1;
   }
+
   .tree-outline-disclosure:hover li.parent::before {
     background-color: ButtonText;
   }

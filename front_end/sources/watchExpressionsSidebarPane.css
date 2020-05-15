@@ -5,124 +5,127 @@
  */
 
 .watch-expression-delete-button {
-    position: absolute;
-    top: 5px;
-    right: 6px;
-    cursor: pointer;
-    opacity: 0;
-    min-width: 20px;
+  position: absolute;
+  top: 5px;
+  right: 6px;
+  cursor: pointer;
+  opacity: 0;
+  min-width: 20px;
 }
 
 .watch-expression-header:hover .watch-expression-delete-button {
-    opacity: 0.5;
+  opacity: 0.5;
 }
 
 .watch-expression-header:hover .watch-expression-delete-button:hover {
-    opacity: 1;
+  opacity: 1;
 }
 
 .watch-expression-title:hover {
-    padding-right: 26px;
+  padding-right: 26px;
 }
 
 .watch-expressions {
-    overflow-x: hidden;
-    min-height: 26px;
+  overflow-x: hidden;
+  min-height: 26px;
 }
 
 .watch-expression-title {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    line-height: 20px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  line-height: 20px;
 }
 
 .watch-expression-object-header .watch-expression-title {
-    margin-left: 1px;
+  margin-left: 1px;
 }
 
 .watch-expression {
-    position: relative;
-    flex: auto;
-    min-height: 20px;
+  position: relative;
+  flex: auto;
+  min-height: 20px;
 }
 
 .watch-expressions .name {
-    color: rgb(136, 19, 145);
-    flex: none;
-    white-space: nowrap;
-    text-overflow: ellipsis ;
-    overflow: hidden;
+  color: rgb(136, 19, 145);
+  flex: none;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .watch-expression-error {
-    color: red;
+  color: red;
 }
 
 :host-context(.-theme-with-dark-background) .watch-expression-error {
-    color: hsl(0, 100%, 65%);
+  color: hsl(0, 100%, 65%);
 }
 
 .watch-expressions-separator {
-    flex: none;
+  flex: none;
 }
 
 .watch-expressions .value {
-    white-space: nowrap;
-    display: inline;
+  white-space: nowrap;
+  display: inline;
 }
 
 .watch-expression .text-prompt {
-    text-overflow: clip;
-    overflow: hidden;
-    white-space: nowrap;
-    padding-left: 4px;
-    min-height: 18px;
-    line-height: 18px;
-    user-select: text;
+  text-overflow: clip;
+  overflow: hidden;
+  white-space: nowrap;
+  padding-left: 4px;
+  min-height: 18px;
+  line-height: 18px;
+  user-select: text;
 }
 
 .watch-expression-text-prompt-proxy {
-    margin: 2px 12px 2px -4px;
-    padding-bottom: 3px;
+  margin: 2px 12px 2px -4px;
+  padding-bottom: 3px;
 }
 
 .watch-expression-header {
-    flex: auto;
-    margin-left: -16px;
-    padding-left: 15px;
+  flex: auto;
+  margin-left: -16px;
+  padding-left: 15px;
 }
 
 li.watch-expression-tree-item:hover {
-    background-color: #F0F0F0;
+  background-color: #f0f0f0;
 }
 
 li.watch-expression-tree-item {
-    padding-left: 4px;
+  padding-left: 4px;
 }
 
 .watch-expression-header:focus[data-keyboard-focus="true"] {
-    background: var(--focus-bg-color);
+  background: var(--focus-bg-color);
 }
 
 li.watch-expression-editing::before {
-    background-color: transparent;
+  background-color: transparent;
 }
 
 @media (forced-colors: active) {
-    .watch-expression-header:hover .watch-expression-delete-button,
-    .watch-expressions .dimmed {
-        opacity: 1;
-    }
-    li.watch-expression-tree-item * {
-        forced-color-adjust: none;
-        color: ButtonText;
-    }
-    li.watch-expression-tree-item:hover {
-        forced-color-adjust: none;
-        background-color: Highlight;
-    }
-    li.watch-expression-tree-item:hover * {
-        color: HighlightText;
-    }
+  .watch-expression-header:hover .watch-expression-delete-button,
+  .watch-expressions .dimmed {
+    opacity: 1;
+  }
+
+  li.watch-expression-tree-item * {
+    forced-color-adjust: none;
+    color: ButtonText;
+  }
+
+  li.watch-expression-tree-item:hover {
+    forced-color-adjust: none;
+    background-color: Highlight;
+  }
+
+  li.watch-expression-tree-item:hover * {
+    color: HighlightText;
+  }
 }

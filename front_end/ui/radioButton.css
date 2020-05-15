@@ -5,13 +5,14 @@
  */
 
 ::slotted(input.dt-radio-button) {
-  --gradient-start: #FCFCFC;
-  --gradient-end: #DFDFDF;
+  --gradient-start: #fcfcfc;
+  --gradient-end: #dfdfdf;
   --radio-dot: url(Images/radioDot.png);
+
   height: 17px;
   width: 17px;
   min-width: 17px;
-  border: 1px solid #A5A5A5;
+  border: 1px solid #a5a5a5;
   background-image: linear-gradient(to bottom, var(--gradient-start), var(--gradient-end));
   border-radius: 8px;
   -webkit-appearance: none;
@@ -20,8 +21,9 @@
 }
 
 ::slotted(input.dt-radio-button:checked) {
-  background: var(--radio-dot) center no-repeat,
-              linear-gradient(to bottom, var(--gradient-start), var(--gradient-end));
+  background:
+    var(--radio-dot) center no-repeat,
+    linear-gradient(to bottom, var(--gradient-start), var(--gradient-end));
 }
 
 ::slotted(input.dt-radio-button:focus) {
@@ -36,13 +38,13 @@
 
 ::slotted(input.dt-radio-button:checked:active),
 ::slotted(input.dt-radio-button:active:not(:disabled)) {
-  --gradient-start: #C2C2C2;
-  --gradient-end: #EFEFEF;
+  --gradient-start: #c2c2c2;
+  --gradient-end: #efefef;
 }
 
 :host-context(.-theme-with-dark-background) ::slotted(input.dt-radio-button:checked:active),
 :host-context(.-theme-with-dark-background) ::slotted(input.dt-radio-button:active:not(:disabled)) {
-  --gradient-start: #3D3D3D;
+  --gradient-start: #3d3d3d;
   --gradient-end: #101010;
 }
 
@@ -51,6 +53,7 @@
     --gradient-start: ButtonFace;
     --gradient-end: ButtonFace;
   }
+
   ::slotted(input.dt-radio-button:checked) {
     --gradient-start: Highlight;
     --gradient-end: Highlight;

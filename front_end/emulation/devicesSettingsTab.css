@@ -5,72 +5,72 @@
  */
 
 .devices-settings-tab .settings-tab.settings-content {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    height: 100%;
-    margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  height: 100%;
+  margin: 0;
 }
 
 .devices-settings-tab .devices-button-row {
-    flex: none;
-    display: flex;
+  flex: none;
+  display: flex;
 }
 
 .devices-settings-tab .devices-button-row button {
-    margin-right: 10px;
-    min-width: 120px;
-    flex: none;
+  margin-right: 10px;
+  min-width: 120px;
+  flex: none;
 }
 
 .devices-settings-tab .devices-list {
-    width: 350px;
-    margin-top: 10px;
+  width: 350px;
+  margin-top: 10px;
 }
 
 .devices-list-item {
-    padding: 3px 5px 3px 5px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    flex: auto 1 1;
-    cursor: pointer;
-    overflow: hidden;
-    color: #222;
-    user-select: none;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+  padding: 3px 5px 3px 5px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  flex: auto 1 1;
+  cursor: pointer;
+  overflow: hidden;
+  color: #222;
+  user-select: none;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .devices-list-checkbox {
-    height: 12px;
-    width: 12px;
-    margin: 2px 5px 2px 2px;
-    flex: none;
-    pointer-events: none;
+  height: 12px;
+  width: 12px;
+  margin: 2px 5px 2px 2px;
+  flex: none;
+  pointer-events: none;
 }
 
 .devices-list-checkbox:focus {
-    outline: auto 5px -webkit-focus-ring-color;
+  outline: auto 5px -webkit-focus-ring-color;
 }
 
 .devices-edit-fields {
-    flex: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    margin-bottom: 5px;
+  flex: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin-bottom: 5px;
 }
 
 .devices-edit-fields input {
-    flex: auto;
-    margin: 8px 5px 0 5px;
+  flex: auto;
+  margin: 8px 5px 0 5px;
 }
 
 .devices-edit-fields .device-edit-fixed {
-    flex: 0 0 140px;
+  flex: 0 0 140px;
 }
 
 .devices-edit-fields select {
-    margin: 8px 5px 0 5px;
+  margin: 8px 5px 0 5px;
 }

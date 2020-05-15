@@ -29,72 +29,72 @@
  */
 
 :host {
-    display: flex;
-    flex: auto;
+  display: flex;
+  flex: auto;
 }
 
 .suggest-box {
-    flex: auto;
-    background-color: #FFFFFF;
-    pointer-events: auto;
-    margin-left: -3px;
-    box-shadow: var(--drop-shadow);
-    overflow-x: hidden;
+  flex: auto;
+  background-color: #fff;
+  pointer-events: auto;
+  margin-left: -3px;
+  box-shadow: var(--drop-shadow);
+  overflow-x: hidden;
 }
 
 .suggest-box-content-item {
-    padding: 1px 0 1px 1px;
-    margin: 0;
-    border: 1px solid transparent;
-    white-space: nowrap;
-    display: flex;
+  padding: 1px 0 1px 1px;
+  margin: 0;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  display: flex;
 }
 
 .suggest-box-content-item.secondary {
-    background-color: #f9f9f9;
+  background-color: #f9f9f9;
 }
 
 .suggestion-title {
-    overflow: hidden;
-    text-overflow: ellipsis;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .suggestion-title span {
-    white-space: pre;
+  white-space: pre;
 }
 
 .suggestion-subtitle {
-    flex: auto;
-    text-align: right;
-    color: #999;
-    margin-right: 3px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  flex: auto;
+  text-align: right;
+  color: #999;
+  margin-right: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .suggestion-icon {
-    user-select: none;
-    align-self: center;
-    flex-shrink: 0;
+  user-select: none;
+  align-self: center;
+  flex-shrink: 0;
 }
 
 .suggest-box-content-item .query {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .suggest-box-content-item .spacer {
-    display: inline-block;
-    width: 20px;
+  display: inline-block;
+  width: 20px;
 }
 
 .suggest-box-content-item.selected {
-    background-color: var(--selection-bg-color);
+  background-color: var(--selection-bg-color);
 }
 
 .suggest-box-content-item.selected > span {
-    color: var(--selection-fg-color);
+  color: var(--selection-fg-color);
 }
 
 .suggest-box-content-item:hover:not(.selected) {
-    background-color: var(--item-hover-color);
+  background-color: var(--item-hover-color);
 }

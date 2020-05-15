@@ -6,6 +6,7 @@
 
 /* Remove container padding from TreeOutline.
  * Allows issues to touch the edges of the container. */
+
 :host,
 .issues {
   padding: 0;
@@ -13,37 +14,41 @@
 }
 
 .issues {
-  --breaking-change-color: #F29900;
-  --issue-gray: #5F6368;
-  --issue-link: #1967D2;
+  --breaking-change-color: #f29900;
+  --issue-gray: #5f6368;
+  --issue-link: #1967d2;
   --issue-black: #202124;
-  --issue-code: #F0F0F0;
-  --affected-resource-background: #F8F9FA;
+  --issue-code: #f0f0f0;
+  --affected-resource-background: #f8f9fa;
 }
 
 :host-context(.-theme-with-dark-background) .issues {
-  --issue-gray: #FFFFFFDE;
-  --issue-link: #8AB4F8;
-  --issue-black: #FFFFFF;
-  --issue-code: #0F0F0F;
-  --affected-resource-background: #FFFFFF12;
+  --issue-gray: #ffffffde;
+  --issue-link: #8ab4f8;
+  --issue-black: #fff;
+  --issue-code: #0f0f0f;
+  --affected-resource-background: #ffffff12;
 }
 
 /* Override whitespace behavior for tree items to allow wrapping */
+
 .issues li {
   white-space: normal;
 }
 
 /* Hide toggle for tree items which cannot be collapsed */
+
 .issues .always-parent::before {
   display: none;
 }
 
 /* Override TreeOutline toggle switching to allow animation */
+
 .issues li.parent::before {
   transition: transform 200ms;
   transform-origin: 25% 50%;
 }
+
 .issues li.parent.expanded::before {
   -webkit-mask-position: 0 0;
   transform: rotate(90deg);
@@ -54,13 +59,13 @@
   overflow: hidden;
   flex: none;
   transition: background-color 200ms;
-  background: #F3F3F3;
-  border: 1px solid #E5E5E5;
+  background: #f3f3f3;
+  border: 1px solid #e5e5e5;
   border-width: 0 0 1px;
 }
 
 .issue.expanded {
-  background: #FFFFFF;
+  background: #fff;
   border-width: 0;
 }
 
@@ -70,6 +75,7 @@ p {
 }
 
 /* Override selected tree item styles for issues to avoid changing width. */
+
 .tree-outline-disclosure:not(.tree-outline-disclosure-hide-overflow) .tree-outline.hide-selection-when-blurred .issue.selected:focus[data-keyboard-focus="true"] {
   width: auto;
   padding-right: 8px;
@@ -97,7 +103,7 @@ p {
 }
 
 .body.children {
-  border-bottom: 1px solid #E5E5E5;
+  border-bottom: 1px solid #e5e5e5;
   padding: 6px 0;
   position: relative;
   padding-left: 51px;
@@ -106,6 +112,7 @@ p {
 }
 
 /* Show a colored border on the left side of opened issues. */
+
 .body::before {
   content: '';
   display: block;
@@ -171,16 +178,17 @@ p {
 .link-list {
   list-style-type: none;
   list-style-position: inside;
-  padding-inline-start: 0px;
+  padding-inline-start: 0;
 }
 
 .resolutions-list {
   list-style-type: none;
   list-style-position: inside;
-  padding-inline-start: 0px;
+  padding-inline-start: 0;
 }
 
 /* We inherit all the styles from treeoutline, but these are simple text <li>, so we override some styles */
+
 .link-list li::before {
   content: none;
   -webkit-mask-image: none;
@@ -273,8 +281,8 @@ p {
 }
 
 .affected-resources > .parent {
-  margin-top: 0px;
-  padding: 2px 5px 0px 5px;
+  margin-top: 0;
+  padding: 2px 5px 0 5px;
 }
 
 .affected-resources > .parent.expanded {

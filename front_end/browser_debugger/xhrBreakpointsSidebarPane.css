@@ -5,65 +5,66 @@
  */
 
 .breakpoint-list {
-    padding-bottom: 3px;
+  padding-bottom: 3px;
 }
 
 .breakpoint-list .editing.being-edited {
-    overflow: hidden;
-    white-space: nowrap;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .breakpoint-condition {
-    display: block;
-    margin-top: 4px;
-    margin-bottom: 4px;
-    margin-left: 23px;
-    margin-right: 8px;
+  display: block;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  margin-left: 23px;
+  margin-right: 8px;
 }
 
 .breakpoint-condition-input {
-    display: block;
-    margin-left: 0;
-    margin-right: 0;
-    outline: none !important;
-    border: 1px solid rgb(66%, 66%, 66%);
+  display: block;
+  margin-left: 0;
+  margin-right: 0;
+  outline: none !important;
+  border: 1px solid rgb(66%, 66%, 66%);
 }
 
 .breakpoint-entry {
-    white-space: nowrap;
-    padding: 2px 0;
+  white-space: nowrap;
+  padding: 2px 0;
 }
 
 .breakpoint-list .breakpoint-entry:hover {
-    background-color: #eee;
+  background-color: #eee;
 }
 
 .breakpoint-list .breakpoint-entry[data-keyboard-focus="true"] {
-    background-color: var(--focus-bg-color);
+  background-color: var(--focus-bg-color);
 }
 
 .breakpoint-entry [is=dt-checkbox] {
-    max-width: 100%;
+  max-width: 100%;
 }
 
 .breakpoint-hit {
-    background-color: rgb(255, 255, 194);
-    border-right: 3px solid rgb(107, 97, 48);
+  background-color: rgb(255, 255, 194);
+  border-right: 3px solid rgb(107, 97, 48);
 }
 
 :host-context(.-theme-with-dark-background) .breakpoint-hit {
-    background-color: hsl(46, 98%, 22%);
-    color: #ccc;
+  background-color: hsl(46, 98%, 22%);
+  color: #ccc;
 }
 
 @media (forced-colors: active) {
-    .breakpoint-list .breakpoint-entry:hover,
-    .breakpoint-list .breakpoint-entry[data-keyboard-focus="true"] {
-        forced-color-adjust: none;
-        background-color: Highlight;
-    }
-    .breakpoint-list .breakpoint-entry:hover *,
-    .breakpoint-list .breakpoint-entry[data-keyboard-focus="true"] * {
-        color: HighlightText;
-    }
+  .breakpoint-list .breakpoint-entry:hover,
+  .breakpoint-list .breakpoint-entry[data-keyboard-focus="true"] {
+    forced-color-adjust: none;
+    background-color: Highlight;
+  }
+
+  .breakpoint-list .breakpoint-entry:hover *,
+  .breakpoint-list .breakpoint-entry[data-keyboard-focus="true"] * {
+    color: HighlightText;
+  }
 }

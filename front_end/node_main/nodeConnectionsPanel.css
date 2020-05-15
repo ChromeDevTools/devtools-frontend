@@ -5,122 +5,122 @@
  */
 
 .add-network-target-button {
-    margin: 10px 25px;
-    align-self: flex-start;
+  margin: 10px 25px;
+  align-self: flex-start;
 }
 
 .network-discovery-list {
-    margin: 10px 0 0 25px;
-    max-width: 500px;
-    flex: none;
+  margin: 10px 0 0 25px;
+  max-width: 500px;
+  flex: none;
 }
 
 .network-discovery-list-empty {
-    flex: auto;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  flex: auto;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .network-discovery-list-item {
-    padding: 3px 5px 3px 5px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    position: relative;
-    flex: auto 1 1;
+  padding: 3px 5px 3px 5px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  flex: auto 1 1;
 }
 
 .list-item .network-discovery-value {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    user-select: none;
-    color: #222;
-    overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  user-select: none;
+  color: #222;
+  overflow: hidden;
 }
 
 .network-discovery-value {
-    flex: 3 1 0;
+  flex: 3 1 0;
 }
 
 .network-discovery-edit-row {
-    flex: none;
-    display: flex;
-    flex-direction: row;
-    margin: 6px 5px;
-    align-items: center;
+  flex: none;
+  display: flex;
+  flex-direction: row;
+  margin: 6px 5px;
+  align-items: center;
 }
 
 .network-discovery-edit-row input {
-    width: 100%;
-    text-align: inherit;
+  width: 100%;
+  text-align: inherit;
 }
 
 .network-discovery-footer {
-    overflow: hidden;
-    margin: 15px 0 0 25px;
-    max-width: 500px;
+  overflow: hidden;
+  margin: 15px 0 0 25px;
+  max-width: 500px;
 }
 
 .network-discovery-footer > * {
-    white-space: pre-wrap;
+  white-space: pre-wrap;
 }
 
 .node-panel {
-    align-items: center;
-    justify-content: flex-start;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .network-discovery-view {
-    min-width: 400px;
-    flex: auto;
+  min-width: 400px;
+  flex: auto;
 }
 
 .add-network-target-button {
-    align-self: center;
+  align-self: center;
 }
 
 :host-context(.node-frontend) .network-discovery-list-empty {
-    height: 40px;
+  height: 40px;
 }
 
 :host-context(.node-frontend) .network-discovery-list-item {
-    padding: 3px 15px;
-    height: 40px;
+  padding: 3px 15px;
+  height: 40px;
 }
 
 .network-discovery-list {
-    margin: 20px 0 5px 0;
-    max-width: 600px;
-    max-height: 202px;
+  margin: 20px 0 5px 0;
+  max-width: 600px;
+  max-height: 202px;
 }
 
 .network-discovery-footer {
-    margin: 0;
+  margin: 0;
 }
 
 .node-panel-center {
-    display: flex;
-    align-items: stretch;
-    justify-content: center;
-    max-width: 600px;
-    flex-direction: column;
-    padding-top: 50px;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  max-width: 600px;
+  flex-direction: column;
+  padding-top: 50px;
 }
 
 .node-panel-logo {
-    align-self: center;
-    width: 400px;
-    margin-bottom: 50px;
-    flex: none;
+  align-self: center;
+  width: 400px;
+  margin-bottom: 50px;
+  flex: none;
 }
 
 :host-context(.node-frontend) .network-discovery-edit-row input {
-    height: 30px;
-    padding-left: 5px;
+  height: 30px;
+  padding-left: 5px;
 }
 
 :host-context(.node-frontend) .network-discovery-edit-row {
-    margin: 6px 9px;
+  margin: 6px 9px;
 }

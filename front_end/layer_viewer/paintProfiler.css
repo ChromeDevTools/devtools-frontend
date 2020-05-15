@@ -5,30 +5,30 @@
  */
 
 .paint-profiler-overview {
-    background-color: #eee;
+  background-color: #eee;
 }
 
 .paint-profiler-canvas-container {
-    flex: auto;
-    position: relative;
+  flex: auto;
+  position: relative;
 }
 
 .paint-profiler-pie-chart {
-    width: 60px !important;
-    height: 60px !important;
-    padding: 2px;
-    overflow: hidden;
-    font-size: 10px;
+  width: 60px !important;
+  height: 60px !important;
+  padding: 2px;
+  overflow: hidden;
+  font-size: 10px;
 }
 
 .paint-profiler-canvas-container canvas {
-    z-index: 200;
-    background-color: white;
-    opacity: 0.95;
-    height: 100%;
-    width: 100%;
+  z-index: 200;
+  background-color: white;
+  opacity: 0.95;
+  height: 100%;
+  width: 100%;
 }
 
 .paint-profiler-canvas-container .overview-grid-window-resizer {
-    z-index: 2000;
+  z-index: 2000;
 }

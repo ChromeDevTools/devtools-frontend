@@ -5,27 +5,27 @@
  */
 
 .device-mode-size-input {
-    width: 41px;
-    max-height: 18px;
-    margin: 0 2px;
-    text-align: center;
+  width: 41px;
+  max-height: 18px;
+  margin: 0 2px;
+  text-align: center;
 }
 
 .device-mode-size-input:focus::-webkit-input-placeholder {
-    color: transparent;
+  color: transparent;
 }
 
 .device-mode-size-input:disabled {
-    background: transparent;
-    user-select: none;
-    opacity: 0.6;
+  background: transparent;
+  user-select: none;
+  opacity: 0.6;
 }
 
 .device-mode-x {
-    margin: 0 1px;
-    font-size: 16px;
+  margin: 0 1px;
+  font-size: 16px;
 }
 
 .device-mode-empty-toolbar-element {
-    width: 0;
+  width: 0;
 }

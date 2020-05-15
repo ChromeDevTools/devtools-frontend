@@ -5,21 +5,22 @@
  */
 
 .metrics {
-    padding: 8px;
-    font-size: 10px;
-    text-align: center;
-    white-space: nowrap;
-    min-height: var(--metrics-height);
-    display: flex;
-    flex-direction: column;
-    -webkit-align-items: center;
-    -webkit-justify-content: center;
+  padding: 8px;
+  font-size: 10px;
+  text-align: center;
+  white-space: nowrap;
+  min-height: var(--metrics-height);
+  display: flex;
+  flex-direction: column;
+  -webkit-align-items: center;
+  -webkit-justify-content: center;
 }
 
 :host {
-    --metrics-height: 190px;
-    height: var(--metrics-height);
-    contain: strict;
+  --metrics-height: 190px;
+
+  height: var(--metrics-height);
+  contain: strict;
 }
 
 /* All computed layout attributes except position have a quite light
@@ -27,11 +28,12 @@
  * mode is very low contrast. Therefore we swap back to a dark font by
  * default in dark mode because the background colours are lighter.
  */
+
 :host-context(.-theme-with-dark-background) .metrics .margin,
 :host-context(.-theme-with-dark-background) .metrics .border,
 :host-context(.-theme-with-dark-background) .metrics .padding,
 :host-context(.-theme-with-dark-background) .metrics .content {
-    color: #222;
+  color: #222;
 }
 
 /* When you hover over margin the rest of the items get given a black
@@ -40,8 +42,9 @@
  * color of the text for all the children to light. This also fixes
  * hovering over anything within margin such as border/padding.
  */
+
 :host-context(.-theme-with-dark-background) .metrics .margin:hover div {
-    color: #ccc;
+  color: #ccc;
 }
 
 /* In dark mode the hover colour that is used when hovering on border
@@ -51,93 +54,93 @@
  */
 
 :host-context(.-theme-with-dark-background) .metrics .border:hover > div:not(.padding) {
-    color: #222;
+  color: #222;
 }
 
 .metrics .label {
-    position: absolute;
-    font-size: 10px;
-    margin-left: 3px;
-    padding-left: 2px;
-    padding-right: 2px;
+  position: absolute;
+  font-size: 10px;
+  margin-left: 3px;
+  padding-left: 2px;
+  padding-right: 2px;
 }
 
 .metrics .position {
-    border: 1px rgb(66%, 66%, 66%) dotted;
-    background-color: white;
-    display: inline-block;
-    text-align: center;
-    padding: 3px;
-    margin: 3px;
+  border: 1px rgb(66%, 66%, 66%) dotted;
+  background-color: white;
+  display: inline-block;
+  text-align: center;
+  padding: 3px;
+  margin: 3px;
 }
 
 .metrics .margin {
-    border: 1px dashed;
-    background-color: white;
-    display: inline-block;
-    text-align: center;
-    vertical-align: middle;
-    padding: 3px 6px;
-    margin: 3px;
+  border: 1px dashed;
+  background-color: white;
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  padding: 3px 6px;
+  margin: 3px;
 }
 
 .metrics .border {
-    border: 1px black solid;
-    background-color: white;
-    display: inline-block;
-    text-align: center;
-    vertical-align: middle;
-    padding: 3px 6px;
-    margin: 3px;
+  border: 1px black solid;
+  background-color: white;
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  padding: 3px 6px;
+  margin: 3px;
 }
 
 .metrics .padding {
-    border: 1px grey dashed;
-    background-color: white;
-    display: inline-block;
-    text-align: center;
-    vertical-align: middle;
-    padding: 3px 6px;
-    margin: 3px;
+  border: 1px grey dashed;
+  background-color: white;
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  padding: 3px 6px;
+  margin: 3px;
 }
 
 .metrics .content {
-    position: static;
-    border: 1px gray solid;
-    background-color: white;
-    display: inline-block;
-    text-align: center;
-    vertical-align: middle;
-    padding: 3px;
-    margin: 3px;
-    min-width: 80px;
-    overflow: visible;
+  position: static;
+  border: 1px gray solid;
+  background-color: white;
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  padding: 3px;
+  margin: 3px;
+  min-width: 80px;
+  overflow: visible;
 }
 
 .metrics .content span {
-    display: inline-block;
+  display: inline-block;
 }
 
 .metrics .editing {
-    position: relative;
-    z-index: 100;
-    cursor: text;
+  position: relative;
+  z-index: 100;
+  cursor: text;
 }
 
 .metrics .left {
-    display: inline-block;
-    vertical-align: middle;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .metrics .right {
-    display: inline-block;
-    vertical-align: middle;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .metrics .top {
-    display: inline-block;
+  display: inline-block;
 }
 
 .metrics .bottom {
-    display: inline-block;
+  display: inline-block;
 }

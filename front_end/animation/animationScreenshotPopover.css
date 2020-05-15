@@ -5,14 +5,14 @@
  */
 
 img {
-    max-height: 300px;
-    border-radius: 2px;
+  max-height: 300px;
+  border-radius: 2px;
 }
 
 .animation-progress {
-    position: absolute;
-    height: 2px;
-    bottom: 0;
-    left: 0;
-    background: var(--selection-bg-color);
+  position: absolute;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background: var(--selection-bg-color);
 }

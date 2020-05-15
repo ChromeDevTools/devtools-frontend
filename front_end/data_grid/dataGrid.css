@@ -1,321 +1,327 @@
 .data-grid {
-    position: relative;
-    border: 1px solid rgb(204, 204, 204) !important;
-    line-height: 120%;
+  position: relative;
+  border: 1px solid rgb(204, 204, 204) !important;
+  line-height: 120%;
 }
 
 .data-grid table {
-    table-layout: fixed;
-    border-spacing: 0;
-    border-collapse: separate;
-    height: 100%;
-    width: 100%;
+  table-layout: fixed;
+  border-spacing: 0;
+  border-collapse: separate;
+  height: 100%;
+  width: 100%;
 }
 
 .data-grid .header-container,
 .data-grid .data-container {
-    position: absolute;
-    left: 0;
-    right: 0;
-    overflow-x: hidden;
+  position: absolute;
+  left: 0;
+  right: 0;
+  overflow-x: hidden;
 }
 
 .data-grid .header-container {
-    top: 0;
-    height: 21px;
+  top: 0;
+  height: 21px;
 }
 
 .data-grid .data-container {
-    top: 21px;
-    bottom: 0;
-    overflow-y: overlay;
-    transform: translateZ(0);
+  top: 21px;
+  bottom: 0;
+  overflow-y: overlay;
+  transform: translateZ(0);
 }
 
 .data-grid .aria-live-label {
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
 }
 
 .data-grid.inline .header-container,
 .data-grid.inline .data-container {
-    position: static;
+  position: static;
 }
 
 .data-grid.inline .corner {
-    display: none;
+  display: none;
 }
 
 .platform-mac .data-grid .corner,
 .data-grid.data-grid-fits-viewport .corner {
-    display: none;
+  display: none;
 }
 
 .data-grid .corner {
-    width: 14px;
-    padding-right: 0;
-    padding-left: 0;
-    border-left: 0 none transparent !important;
+  width: 14px;
+  padding-right: 0;
+  padding-left: 0;
+  border-left: 0 none transparent !important;
 }
 
 .data-grid .top-filler-td,
 .data-grid .bottom-filler-td {
-    height: auto !important;
-    padding: 0 !important;
+  height: auto !important;
+  padding: 0 !important;
 }
 
 .data-grid table.data {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    border-top: 0 none transparent;
-    table-layout: fixed;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  border-top: 0 none transparent;
+  table-layout: fixed;
 }
 
 .data-grid.inline table.data {
-    position: static;
+  position: static;
 }
 
 .data-grid table.data tr {
-    display: none;
-    height: 20px;
+  display: none;
+  height: 20px;
 }
 
 .data-grid table.data tr.revealed {
-    display: table-row;
+  display: table-row;
 }
 
 .striped-data-grid .revealed.data-grid-data-grid-node:nth-child(odd),
 .striped-data-grid-starts-with-odd .revealed.data-grid-data-grid-node:nth-child(even) {
-    background-color: hsl(214, 70%, 97%);
+  background-color: hsl(214, 70%, 97%);
 }
 
 .data-grid td,
 .data-grid th {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    line-height: 18px;
-    height: 18px;
-    border-left: 1px solid #aaa;
-    padding: 1px 4px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  line-height: 18px;
+  height: 18px;
+  border-left: 1px solid #aaa;
+  padding: 1px 4px;
 }
 
 .data-grid th:first-child,
 .data-grid td:first-child {
-    border-left: none !important;
+  border-left: none !important;
 }
 
 .data-grid td {
-    vertical-align: top;
-    user-select: text;
+  vertical-align: top;
+  user-select: text;
 }
 
 .data-grid th {
-    text-align: left;
-    background-color: var(--toolbar-bg-color);
-    border-bottom: 1px solid #aaa;
-    font-weight: normal;
-    vertical-align: middle;
+  text-align: left;
+  background-color: var(--toolbar-bg-color);
+  border-bottom: 1px solid #aaa;
+  font-weight: normal;
+  vertical-align: middle;
 }
 
 .data-grid td > div,
 .data-grid th > div {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .data-grid td.editing > div {
-    text-overflow: clip;
+  text-overflow: clip;
 }
 
 .data-grid .center {
-    text-align: center;
+  text-align: center;
 }
 
 .data-grid .right {
-    text-align: right;
+  text-align: right;
 }
 
 .data-grid th.sortable {
-    position: relative;
+  position: relative;
 }
 
 .data-grid th.sortable:active::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.15);
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.15);
 }
 
 .data-grid th .sort-order-icon-container {
-    position: absolute;
-    top: 1px;
-    right: 0;
-    bottom: 1px;
-    display: flex;
-    align-items: center;
+  position: absolute;
+  top: 1px;
+  right: 0;
+  bottom: 1px;
+  display: flex;
+  align-items: center;
 }
 
 .data-grid th .sort-order-icon {
-    margin-right: 4px;
-    margin-bottom: -2px;
-    display: none;
+  margin-right: 4px;
+  margin-bottom: -2px;
+  display: none;
 }
 
 .data-grid th.sort-ascending .sort-order-icon,
 .data-grid th.sort-descending .sort-order-icon {
-    display: block;
+  display: block;
 }
 
 .data-grid th.sortable:hover {
-    background-color: hsla(0, 0%, 90%, 1);
+  background-color: hsla(0, 0%, 90%, 1);
 }
 
 .data-grid .top-filler-td {
-    border-bottom: 0 none transparent;
-    line-height: 0;
+  border-bottom: 0 none transparent;
+  line-height: 0;
 }
 
 .data-grid button {
-    line-height: 18px;
-    color: inherit;
+  line-height: 18px;
+  color: inherit;
 }
 
 .data-grid td.disclosure::before {
-    user-select: none;
-    -webkit-mask-image: url(Images/treeoutlineTriangles.svg);
-    -webkit-mask-position: 0 0;
-    -webkit-mask-size: 32px 24px;
-    float: left;
-    width: 8px;
-    height: 12px;
-    margin-right: 2px;
-    content: "";
-    position: relative;
-    top: 3px;
-    background-color: rgb(110, 110, 110);
+  user-select: none;
+  -webkit-mask-image: url(Images/treeoutlineTriangles.svg);
+  -webkit-mask-position: 0 0;
+  -webkit-mask-size: 32px 24px;
+  float: left;
+  width: 8px;
+  height: 12px;
+  margin-right: 2px;
+  content: "";
+  position: relative;
+  top: 3px;
+  background-color: rgb(110, 110, 110);
 }
 
 .data-grid tr:not(.parent) td.disclosure::before {
-    background-color: transparent;
+  background-color: transparent;
 }
 
-
 .data-grid tr.expanded td.disclosure::before {
-    -webkit-mask-position: -16px 0;
+  -webkit-mask-position: -16px 0;
 }
 
 .data-grid table.data tr.revealed.selected {
-    background-color: rgb(212, 212, 212);
-    color: inherit;
+  background-color: rgb(212, 212, 212);
+  color: inherit;
 }
 
 .data-grid.no-selection[data-keyboard-focus="true"]:focus {
-    border: 1px solid var(--accent-color) !important;
+  border: 1px solid var(--accent-color) !important;
 }
 
 .data-grid:focus table.data tr.selected {
-    background-color: var(--selection-bg-color);
-    color: var(--selection-fg-color);
+  background-color: var(--selection-bg-color);
+  color: var(--selection-fg-color);
 }
 
 .data-grid:focus tr.selected .devtools-link {
-    color: var(--selection-fg-color);
+  color: var(--selection-fg-color);
 }
 
 .data-grid:focus tr.parent.selected td.disclosure::before {
-    background-color: var(--selection-fg-color);
-    -webkit-mask-position: 0 0;
+  background-color: var(--selection-fg-color);
+  -webkit-mask-position: 0 0;
 }
 
 .data-grid:focus tr.expanded.selected td.disclosure::before {
-    background-color: var(--selection-fg-color);
-    -webkit-mask-position: -16px 0;
+  background-color: var(--selection-fg-color);
+  -webkit-mask-position: -16px 0;
 }
 
 .data-grid tr.inactive {
-    color: rgb(128, 128, 128);
-    font-style: italic;
+  color: rgb(128, 128, 128);
+  font-style: italic;
 }
 
 .data-grid tr.dirty {
-    background-color: hsl(0, 100%, 92%);
-    color: red;
-    font-style: normal;
+  background-color: hsl(0, 100%, 92%);
+  color: red;
+  font-style: normal;
 }
 
 .data-grid:focus tr.selected.dirty {
-    background-color: hsl(0, 100%, 70%);
+  background-color: hsl(0, 100%, 70%);
 }
 
 .data-grid td.show-more {
-    white-space: normal;
+  white-space: normal;
 }
 
 .data-grid td.show-more::before {
-    display: none;
+  display: none;
 }
 
 .data-grid-resizer {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 5px;
-    z-index: 500;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  z-index: 500;
 }
 
 @media (forced-colors: active) {
-    .sort-order-icon-container [is=ui-icon].icon-mask,
-    .data-grid td.disclosure::before {
-        forced-color-adjust: none;
-        background-color: ButtonText;
-    }
-    .data-grid th.sortable:hover .sort-order-icon-container [is=ui-icon].icon-mask,
-    .data-grid table.data tr.parent.revealed:hover td.disclosure::before,
-    .data-grid:focus tr.parent.selected td.disclosure::before,
-    .data-grid tr.parent.selected td.disclosure::before {
-        background-color: HighlightText;
-    }
-    .data-grid th.sortable:hover,
-    .data-grid table.data tr.revealed:hover,
-    .data-grid table.data tr.revealed.selected,
-    .striped-data-grid .revealed:hover.data-grid-data-grid-node:nth-child(odd),
-    .striped-data-grid-starts-with-odd .revealed:hover.data-grid-data-grid-node:nth-child(even),
-    .request-cookies-view tr.revealed:hover.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(2n),
-    .cookies-table tr.revealed:hover.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(odd) {
-        forced-color-adjust: none;
-        background-color: Highlight;
-    }
-    .data-grid th.sortable:hover *,
-    .data-grid table.data tr.revealed:hover *,
-    .data-grid table.data tr.revealed.selected *,
-    .data-grid table.data tr.revealed:focus *,
-    .data-grid table.data tr.revealed:hover .heap-object-tag {
-        color: HighlightText;
-    }
-    .data-grid.no-selection[data-keyboard-focus="true"]:focus {
-        forced-color-adjust: none;
-        border-color: Highlight;
-    }
-    .data-grid.no-selection[data-keyboard-focus="true"]:focus * {
-        color: ButtonText;
-    }
-    .data-grid th {
-        background-color: Canvas;
-        border-color: Highlight;
-    }
-    .striped-data-grid .revealed.data-grid-data-grid-node:nth-child(odd),
-    .striped-data-grid-starts-with-odd .revealed.data-grid-data-grid-node:nth-child(even),
-    .request-cookies-view tr.revealed.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(2n),
-    .cookies-table tr.revealed.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(odd) {
-        background-color: Canvas;
-    }
+  .sort-order-icon-container [is=ui-icon].icon-mask,
+  .data-grid td.disclosure::before {
+    forced-color-adjust: none;
+    background-color: ButtonText;
+  }
+
+  .data-grid th.sortable:hover .sort-order-icon-container [is=ui-icon].icon-mask,
+  .data-grid table.data tr.parent.revealed:hover td.disclosure::before,
+  .data-grid:focus tr.parent.selected td.disclosure::before,
+  .data-grid tr.parent.selected td.disclosure::before {
+    background-color: HighlightText;
+  }
+
+  .data-grid th.sortable:hover,
+  .data-grid table.data tr.revealed:hover,
+  .data-grid table.data tr.revealed.selected,
+  .striped-data-grid .revealed:hover.data-grid-data-grid-node:nth-child(odd),
+  .striped-data-grid-starts-with-odd .revealed:hover.data-grid-data-grid-node:nth-child(even),
+  .request-cookies-view tr.revealed:hover.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(2n),
+  .cookies-table tr.revealed:hover.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(odd) {
+    forced-color-adjust: none;
+    background-color: Highlight;
+  }
+
+  .data-grid th.sortable:hover *,
+  .data-grid table.data tr.revealed:hover *,
+  .data-grid table.data tr.revealed.selected *,
+  .data-grid table.data tr.revealed:focus *,
+  .data-grid table.data tr.revealed:hover .heap-object-tag {
+    color: HighlightText;
+  }
+
+  .data-grid.no-selection[data-keyboard-focus="true"]:focus {
+    forced-color-adjust: none;
+    border-color: Highlight;
+  }
+
+  .data-grid.no-selection[data-keyboard-focus="true"]:focus * {
+    color: ButtonText;
+  }
+
+  .data-grid th {
+    background-color: canvas;
+    border-color: Highlight;
+  }
+
+  .striped-data-grid .revealed.data-grid-data-grid-node:nth-child(odd),
+  .striped-data-grid-starts-with-odd .revealed.data-grid-data-grid-node:nth-child(even),
+  .request-cookies-view tr.revealed.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(2n),
+  .cookies-table tr.revealed.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(odd) {
+    background-color: canvas;
+  }
 }

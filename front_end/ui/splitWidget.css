@@ -27,69 +27,70 @@
  */
 
 :host {
-    overflow: hidden;
+  overflow: hidden;
 }
 
 .shadow-split-widget {
-    display: flex;
-    overflow: hidden;
+  display: flex;
+  overflow: hidden;
 }
 
 .shadow-split-widget-contents {
-    display: flex;
-    position: relative;
-    flex-direction: column;
-    contain: layout size style;
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  contain: layout size style;
 }
 
 .shadow-split-widget-sidebar {
-    flex: none;
+  flex: none;
 }
 
-.shadow-split-widget-main, .shadow-split-widget-sidebar.maximized {
-    flex: auto;
+.shadow-split-widget-main,
+.shadow-split-widget-sidebar.maximized {
+  flex: auto;
 }
 
 .shadow-split-widget.hbox > .shadow-split-widget-resizer {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 6px;
-    z-index: 500;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  z-index: 500;
 }
 
 .shadow-split-widget.vbox > .shadow-split-widget-resizer {
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 6px;
-    z-index: 500;
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 6px;
+  z-index: 500;
 }
 
 .shadow-split-widget.vbox > .shadow-split-widget-sidebar.no-default-splitter {
-    border: 0 !important;
+  border: 0 !important;
 }
 
 .shadow-split-widget.vbox > .shadow-split-widget-sidebar:not(.maximized) {
-    border: 0;
-    border-top: 1px solid var(--divider-color);
+  border: 0;
+  border-top: 1px solid var(--divider-color);
 }
 
 .shadow-split-widget.vbox > .shadow-split-widget-sidebar:first-child:not(.maximized) {
-    border: 0;
-    border-bottom: 1px solid var(--divider-color);
+  border: 0;
+  border-bottom: 1px solid var(--divider-color);
 }
 
 .shadow-split-widget.hbox > .shadow-split-widget-sidebar:not(.maximized) {
-    border: 0;
-    border-left: 1px solid var(--divider-color);
+  border: 0;
+  border-left: 1px solid var(--divider-color);
 }
 
 .shadow-split-widget.hbox > .shadow-split-widget-sidebar:first-child:not(.maximized) {
-    border: 0;
-    border-right: 1px solid var(--divider-color);
+  border: 0;
+  border-right: 1px solid var(--divider-color);
 }
 
 :host-context(.disable-resizer-for-elements-hack) .shadow-split-widget-resizer {
-    pointer-events: none;
+  pointer-events: none;
 }

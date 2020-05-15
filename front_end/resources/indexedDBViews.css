@@ -29,67 +29,67 @@
  */
 
 .indexed-db-data-view .data-view-toolbar {
-    position: relative;
-    background-color: #eee;
-    border-bottom: 1px solid #ccc;
+  position: relative;
+  background-color: #eee;
+  border-bottom: 1px solid #ccc;
 }
 
 .indexed-db-data-view .data-grid {
-    flex: auto;
+  flex: auto;
 }
 
 .indexed-db-data-view .data-grid .data-container tr:nth-last-child(1) {
-    background-color: white;
+  background-color: white;
 }
 
 .indexed-db-data-view .data-grid .data-container tr:nth-last-child(1) td {
-    border: 0;
+  border: 0;
 }
 
 .indexed-db-data-view .data-grid .data-container tr:nth-last-child(2) td {
-    border-bottom: 1px solid #aaa;
+  border-bottom: 1px solid #aaa;
 }
 
 .indexed-db-data-view .data-grid:focus .data-container tr.selected {
-    background-color: #cdddf5;
-    color: inherit;
+  background-color: #cdddf5;
+  color: inherit;
 }
 
 .indexed-db-data-view .section,
 .indexed-db-data-view .section > .header,
 .indexed-db-data-view .section > .header .title {
-    margin: 0;
-    min-height: inherit;
-    line-height: inherit;
+  margin: 0;
+  min-height: inherit;
+  line-height: inherit;
 }
 
 .indexed-db-data-view .data-grid .data-container td .section .header .title {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .indexed-db-key-path {
-    color: rgb(196, 26, 22);
-    white-space: pre-wrap;
-    unicode-bidi: -webkit-isolate;
+  color: rgb(196, 26, 22);
+  white-space: pre-wrap;
+  unicode-bidi: -webkit-isolate;
 }
 
 .source-code.indexed-db-key-path {
-    font-size: unset !important;
+  font-size: unset !important;
 }
 
 .resources-toolbar {
-    padding-right: 10px;
+  padding-right: 10px;
 }
 
 .object-store-summary-bar {
-    flex: 0 0 27px;
-    line-height: 27px;
-    padding-left: 5px;
-    background-color: #eee;
-    border-top: 1px solid #ccc;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+  flex: 0 0 27px;
+  line-height: 27px;
+  padding-left: 5px;
+  background-color: #eee;
+  border-top: 1px solid #ccc;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }

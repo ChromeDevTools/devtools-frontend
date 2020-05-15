@@ -22,7 +22,7 @@
 }
 
 .segmented-button-segment:hover {
-  background-color: #F4F4F4;
+  background-color: #f4f4f4;
   color: #333;
 }
 
@@ -40,15 +40,16 @@
 .segmented-button-segment.segmented-button-segment-selected {
   background-color: hsl(218, 81%, 59%);
   border-color: transparent;
-  color: #FAFAFA;
+  color: #fafafa;
 }
 
 .segmented-button-segment.segmented-button-segment-selected:hover {
   background-color: hsl(218, 81%, 62%);
-  color: #FFF;
+  color: #fff;
 }
 
 /* Remove a border between the selected button and its siblin */
+
 .segmented-button-segment-selected + .segmented-button-segment {
   border-left-color: transparent;
 }

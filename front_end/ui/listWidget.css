@@ -5,122 +5,125 @@
  */
 
 .list {
-    flex: auto 0 1;
-    overflow-y: auto;
-    border: 1px solid rgb(231, 231, 231);
-    flex-direction: column;
+  flex: auto 0 1;
+  overflow-y: auto;
+  border: 1px solid rgb(231, 231, 231);
+  flex-direction: column;
 }
 
 .list-separator {
-    background: rgb(231, 231, 231);
-    height: 1px;
+  background: rgb(231, 231, 231);
+  height: 1px;
 }
 
 .list-item {
-    flex: none;
-    min-height: 30px;
-    display: flex;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
+  flex: none;
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
 }
 
 .list-item:focus-within,
 .list-item:hover {
-    background: hsl(0, 0%, 96%);
+  background: hsl(0, 0%, 96%);
 }
 
 .list-widget-input-validation-error {
-    color: var(--input-validation-error);
-    margin: 0 5px;
+  color: var(--input-validation-error);
+  margin: 0 5px;
 }
 
 .controls-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    align-items: stretch;
-    pointer-events: none;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: stretch;
+  pointer-events: none;
 }
 
 .controls-gradient {
-    flex: 0 1 50px;
+  flex: 0 1 50px;
 }
 
 .list-item:focus-within .controls-gradient,
 .list-item:hover .controls-gradient {
-    background-image: linear-gradient(90deg, transparent, hsl(0, 0%, 96%));
+  background-image: linear-gradient(90deg, transparent, hsl(0, 0%, 96%));
 }
 
 .controls-buttons {
-    flex: none;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    pointer-events: auto;
-    visibility: hidden;
+  flex: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  pointer-events: auto;
+  visibility: hidden;
 }
 
 .list-item:focus-within .controls-buttons,
 .list-item:hover .controls-buttons {
-    background-color: hsl(0, 0%, 96%);
-    visibility: visible;
+  background-color: hsl(0, 0%, 96%);
+  visibility: visible;
 }
 
 .editor-container {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    flex: none;
-    background: hsl(0, 0%, 96%);
-    overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex: none;
+  background: hsl(0, 0%, 96%);
+  overflow: hidden;
 }
 
 .editor-content {
-    flex: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
+  flex: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
 
 .editor-buttons {
-    flex: none;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 5px;
+  flex: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 5px;
 }
 
 .editor-buttons > button {
-    flex: none;
-    margin-right: 10px;
+  flex: none;
+  margin-right: 10px;
 }
 
 .editor-content input {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 .editor-content input.error-input {
-    background-color: white;
+  background-color: white;
 }
 
 @media (forced-colors: active) {
-    .list-item:focus-within .controls-buttons,
-    .list-item:hover .controls-buttons {
-        background-color: Canvas;
-    }
-    .list-item:focus-within,
-    .list-item:hover {
-        forced-color-adjust: none;
-        background: Highlight;
-    }
-    .list-item:focus-within *,
-    .list-item:hover * {
-        color: HighlightText;
-    }
-    .list-item:focus-within .controls-gradient,
-    .list-item:hover .controls-gradient {
-        background-image: unset;
-    }
+  .list-item:focus-within .controls-buttons,
+  .list-item:hover .controls-buttons {
+    background-color: canvas;
+  }
+
+  .list-item:focus-within,
+  .list-item:hover {
+    forced-color-adjust: none;
+    background: Highlight;
+  }
+
+  .list-item:focus-within *,
+  .list-item:hover * {
+    color: HighlightText;
+  }
+
+  .list-item:focus-within .controls-gradient,
+  .list-item:hover .controls-gradient {
+    background-image: unset;
+  }
 }

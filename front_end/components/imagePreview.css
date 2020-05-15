@@ -5,20 +5,20 @@
  */
 
 .image-preview-container {
-    background: transparent;
-    text-align: center;
-    border-spacing: 0;
+  background: transparent;
+  text-align: center;
+  border-spacing: 0;
 }
 
 .image-preview-container img {
-    margin: 2px auto;
-    max-width: 100px;
-    max-height: 100px;
-    background-image: url(Images/checker.png);
-    user-select: text;
-    -webkit-user-drag: auto;
+  margin: 2px auto;
+  max-width: 100px;
+  max-height: 100px;
+  background-image: url(Images/checker.png);
+  user-select: text;
+  -webkit-user-drag: auto;
 }
 
 .image-container {
-    padding: 0;
+  padding: 0;
 }

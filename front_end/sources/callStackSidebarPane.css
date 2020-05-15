@@ -5,126 +5,127 @@
  */
 
 .blackboxed-message {
-    text-align: center;
-    font-style: italic;
-    padding: 4px;
-    color: #888;
-    background-color: #FFFFC2;
+  text-align: center;
+  font-style: italic;
+  padding: 4px;
+  color: #888;
+  background-color: #ffffc2;
 }
 
 .blackboxed-message > .link {
-    margin-left: 5px;
+  margin-left: 5px;
 }
 
 .blackboxed-message > .link:focus {
-    outline-width: unset;
+  outline-width: unset;
 }
 
 .show-more-message {
-    text-align: center;
-    font-style: italic;
-    padding: 4px;
-    border-top: 1px solid #d8d8d8;
+  text-align: center;
+  font-style: italic;
+  padding: 4px;
+  border-top: 1px solid #d8d8d8;
 }
 
 .show-more-message > .link {
-    margin-left: 5px;
+  margin-left: 5px;
 }
 
 .call-frame-item {
-    padding: 3px 8px 3px 20px;
-    position: relative;
-    min-height: 18px;
-    line-height: 15px;
-    display: flex;
-    flex-wrap: wrap;
+  padding: 3px 8px 3px 20px;
+  position: relative;
+  min-height: 18px;
+  line-height: 15px;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .call-frame-title-text {
-    text-overflow: ellipsis;
-    overflow: hidden;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .call-frame-item:not(.async-header) {
-    border-top: 1px solid #efefef;
+  border-top: 1px solid #efefef;
 }
 
 .call-frame-item:not(.async-header):hover {
-    background-color: #eee;
+  background-color: #eee;
 }
 
 .call-frame-item[data-keyboard-focus="true"]:focus,
 .call-frame-item.async-header[data-keyboard-focus="true"]:focus .call-frame-item-title {
-    background-color: var(--focus-bg-color);
+  background-color: var(--focus-bg-color);
 }
 
 .async-header + .call-frame-item {
-    border-top: 0;
+  border-top: 0;
 }
 
 .call-frame-item-title,
 .call-frame-location {
-    display: flex;
-    white-space: nowrap;
+  display: flex;
+  white-space: nowrap;
 }
 
 .call-frame-location {
-    color: #888;
-    margin-left: auto;
-    padding: 0 10px 0 10px;
+  color: #888;
+  margin-left: auto;
+  padding: 0 10px 0 10px;
 }
 
 .async-header::before {
-    content: " ";
-    width: 100%;
-    border-top: 1px solid #d8d8d8;
-    margin-top: 8px;
-    position: absolute;
-    left: 0;
+  content: " ";
+  width: 100%;
+  border-top: 1px solid #d8d8d8;
+  margin-top: 8px;
+  position: absolute;
+  left: 0;
 }
 
 .async-header .call-frame-item-title {
-    font-weight: bold;
-    color: #999;
-    background-color: white;
-    margin-left: -5px;
-    padding: 0 5px;
-    z-index: 1;
+  font-weight: bold;
+  color: #999;
+  background-color: white;
+  margin-left: -5px;
+  padding: 0 5px;
+  z-index: 1;
 }
 
 .blackboxed-call-frame {
-    opacity: 0.6;
-    font-style: italic;
+  opacity: 0.6;
+  font-style: italic;
 }
 
 .selected-call-frame-icon {
-    display: none;
-    position: absolute;
-    top: 5px;
-    left: 4px;
+  display: none;
+  position: absolute;
+  top: 5px;
+  left: 4px;
 }
 
 .call-frame-item.selected .selected-call-frame-icon {
-    display: block;
+  display: block;
 }
 
 :host-context(.-theme-with-dark-background) .blackboxed-message {
-    background-color: hsl(46, 98%, 22%);
-    color: #aaa;
+  background-color: hsl(46, 98%, 22%);
+  color: #aaa;
 }
 
 :host-context(.-theme-with-dark-background) .blackboxed-message > .link {
-    color: hsl(0, 0%, 67%);
+  color: hsl(0, 0%, 67%);
 }
 
 @media (forced-colors: active) {
-    .call-frame-item:not(.async-header):hover,
-    .call-frame-item[data-keyboard-focus="true"]:focus {
-        forced-color-adjust: none;
-        background-color: Highlight;
-    }
-    .call-frame-item:not(.async-header):hover *,
-    .call-frame-item[data-keyboard-focus="true"]:focus * {
-        color: HighlightText;
-    }
+  .call-frame-item:not(.async-header):hover,
+  .call-frame-item[data-keyboard-focus="true"]:focus {
+    forced-color-adjust: none;
+    background-color: Highlight;
+  }
+
+  .call-frame-item:not(.async-header):hover *,
+  .call-frame-item[data-keyboard-focus="true"]:focus * {
+    color: HighlightText;
+  }
 }

@@ -5,12 +5,12 @@
  */
 
 .service-worker {
-    padding: 5px 5px 5px 8px;
-    border-bottom: 1px solid #aaa;
-    display: flex;
-    align-items: center;
+  padding: 5px 5px 5px 8px;
+  border-bottom: 1px solid #aaa;
+  display: flex;
+  align-items: center;
 }
 
 .service-worker:last-child {
-    border-bottom: none;
+  border-bottom: none;
 }

@@ -5,20 +5,20 @@
  */
 
 .node-icon {
-    width: 28px;
-    height: 26px;
-    background-image: url(Images/nodeIcon.png);
-    background-size: 17px 17px;
-    background-repeat: no-repeat;
-    background-position: center;
-    opacity: 0.8;
-    cursor: auto;
+  width: 28px;
+  height: 26px;
+  background-image: url(Images/nodeIcon.png);
+  background-size: 17px 17px;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.8;
+  cursor: auto;
 }
 
 .node-icon:hover {
-    opacity: 1.0;
+  opacity: 1;
 }
 
 .node-icon.inactive {
-    filter: grayscale(100%);
+  filter: grayscale(100%);
 }

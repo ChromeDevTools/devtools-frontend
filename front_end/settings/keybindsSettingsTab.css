@@ -5,102 +5,102 @@
  */
 
 header {
-    padding: 0 0 6px;
-    border-bottom: 1px solid #EEEEEE;
-    flex: none;
-    margin-bottom: 25px;
+  padding: 0 0 6px;
+  border-bottom: 1px solid #eee;
+  flex: none;
+  margin-bottom: 25px;
 }
 
 h1 {
-    font-size: 18px;
-    font-weight: normal;
-    padding-bottom: 3px;
-    margin: 0;
+  font-size: 18px;
+  font-weight: normal;
+  padding-bottom: 3px;
+  margin: 0;
 }
 
 .keybinds-key {
-    padding: 0.1em 0.6em;
-    border: 1px solid #ccc;
-    font-size: 11px;
-    background-color: #f7f7f7;
-    color: #333;
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 2px #fff inset;
-    border-radius: 3px;
-    display: inline-block;
-    margin: 0 0.1em;
-    text-shadow: 0 1px 0 #fff;
-    line-height: 1.5;
-    white-space: nowrap;
+  padding: 0.1em 0.6em;
+  border: 1px solid #ccc;
+  font-size: 11px;
+  background-color: #f7f7f7;
+  color: #333;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 2px #fff inset;
+  border-radius: 3px;
+  display: inline-block;
+  margin: 0 0.1em;
+  text-shadow: 0 1px 0 #fff;
+  line-height: 1.5;
+  white-space: nowrap;
 }
 
 .keybinds-list-item {
-    padding: 0 5px;
-    min-height: 30px;
-    display: grid;
-    grid-auto-rows: 30px;
-    grid-template-columns: 1fr 30px 1fr;
-    flex: auto 1 1;
+  padding: 0 5px;
+  min-height: 30px;
+  display: grid;
+  grid-auto-rows: 30px;
+  grid-template-columns: 1fr 30px 1fr;
+  flex: auto 1 1;
 }
 
 .keybinds-list-item:focus[data-keyboard-focus="true"] {
-    background-color: var(--focus-bg-color);
+  background-color: var(--focus-bg-color);
 }
 
 .keybinds-list-item:not(.keybinds-category-header) {
-    padding-left: 20px;
+  padding-left: 20px;
 }
 
 .keybinds-action-name {
-    grid-row: 1 / span 1;
-    grid-column: 1 / span 1;
+  grid-row: 1 / span 1;
+  grid-column: 1 / span 1;
 }
 
 .keybinds-shortcut {
-    grid-row: auto;
-    grid-column: 3 / span 1;
+  grid-row: auto;
+  grid-column: 3 / span 1;
 }
 
 .keybinds-modified {
-    grid-column: 2 / span 1;
+  grid-column: 2 / span 1;
 }
 
 .keybinds-list-text {
-    padding: 3px 0;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    -webkit-user-select: none;
-    color: #222;
-    text-align: start;
-    position: relative;
-    margin-right: 0;
+  padding: 3px 0;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  -webkit-user-select: none;
+  color: #222;
+  text-align: start;
+  position: relative;
+  margin-right: 0;
 }
 
 .keybinds-category-header {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .list-item:not(:first-child) .keybinds-category-header {
-    border-top: 1px solid rgb(231, 231, 231);
+  border-top: 1px solid rgb(231, 231, 231);
 }
 
 .keybinds-category-header:hover {
-    background-color: white;
+  background-color: white;
 }
 
 .keybinds-set-select {
-    text-align: right;
-    margin-bottom: 25px;
+  text-align: right;
+  margin-bottom: 25px;
 }
 
 .keybinds-set-select label p {
-    display: inline;
-    color: #222;
+  display: inline;
+  color: #222;
 }
 
 .keybinds-set-select select {
-    margin-left: 6px;
+  margin-left: 6px;
 }
 
 .list {
-    border: none;
+  border: none;
 }

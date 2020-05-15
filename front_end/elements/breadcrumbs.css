@@ -5,40 +5,41 @@
  */
 
 .crumbs {
-    display: inline-block;
-    pointer-events: auto;
-    cursor: default;
-    white-space: nowrap;
+  display: inline-block;
+  pointer-events: auto;
+  cursor: default;
+  white-space: nowrap;
 }
 
 .crumbs .crumb {
-    display: inline-block;
-    padding: 0 7px;
-    line-height: 23px;
-    white-space: nowrap;
+  display: inline-block;
+  padding: 0 7px;
+  line-height: 23px;
+  white-space: nowrap;
 }
 
 .crumbs .crumb.collapsed > * {
-    display: none;
+  display: none;
 }
 
 .crumbs .crumb.collapsed::before {
-    content: "\2026";
-    font-weight: bold;
+  content: "\2026";
+  font-weight: bold;
 }
 
 .crumbs .crumb.compact .extra {
-    display: none;
+  display: none;
 }
 
-.crumb.selected, .crumb:hover {
-    background-color: var(--toolbar-bg-color);
+.crumb.selected,
+.crumb:hover {
+  background-color: var(--toolbar-bg-color);
 }
 
 .crumb:not(.selected) .node-label-name {
-    color: var(--dom-tag-name-color);
+  color: var(--dom-tag-name-color);
 }
 
 .crumb:not(.selected) .node-label-class {
-    color: var(--dom-attribute-name-color);
+  color: var(--dom-attribute-name-color);
 }

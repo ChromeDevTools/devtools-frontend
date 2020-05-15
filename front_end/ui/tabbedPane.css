@@ -29,301 +29,308 @@
  */
 
 .tabbed-pane {
-    flex: auto;
-    overflow: hidden;
+  flex: auto;
+  overflow: hidden;
 }
 
 .tabbed-pane-content {
-    position: relative;
-    overflow: auto;
-    flex: auto;
-    display: flex;
-    flex-direction: column;
+  position: relative;
+  overflow: auto;
+  flex: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .tabbed-pane-content.has-no-tabs {
-    background-color: lightgray;
+  background-color: lightgray;
 }
 
 .tabbed-pane-placeholder {
-    font-size: 14px;
-    text-align: center;
-    width: fit-content;
-    margin: 20px auto 0px;
-    text-shadow: rgba(255, 255, 255, 0.75) 0 1px 0;
-    line-height: 28px;
-    overflow: hidden;
+  font-size: 14px;
+  text-align: center;
+  width: fit-content;
+  margin: 20px auto 0;
+  text-shadow: rgba(255, 255, 255, 0.75) 0 1px 0;
+  line-height: 28px;
+  overflow: hidden;
 }
 
 .tabbed-pane-placeholder-row {
-    display: flex;
-    white-space: nowrap;
-    padding: 0 5px;
-    margin: 2px;
+  display: flex;
+  white-space: nowrap;
+  padding: 0 5px;
+  margin: 2px;
 }
 
 .tabbed-pane-placeholder-row[data-keyboard-focus="true"]:focus {
-    outline-width: unset;
+  outline-width: unset;
 }
 
 .tabbed-pane-placeholder-key {
-    flex: 1;
-    text-align: right;
-    padding-right: 14px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  flex: 1;
+  text-align: right;
+  padding-right: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .tabbed-pane-no-shortcut {
-    flex: 1;
-    text-align: center;
+  flex: 1;
+  text-align: center;
 }
 
 .tabbed-pane-placeholder-value {
-    flex: 1;
-    text-align: left;
-    padding-left: 14px;
+  flex: 1;
+  text-align: left;
+  padding-left: 14px;
 }
 
 .tabbed-pane-header {
-    display: flex;
-    flex: 0 0 27px;
-    border-bottom: 1px solid #ccc;
-    overflow: visible;
-    width: 100%;
-    background-color: var(--toolbar-bg-color);
+  display: flex;
+  flex: 0 0 27px;
+  border-bottom: 1px solid #ccc;
+  overflow: visible;
+  width: 100%;
+  background-color: var(--toolbar-bg-color);
 }
 
 .tabbed-pane-header-contents {
-    flex: auto;
-    pointer-events: none;
-    margin-left: 0;
-    position: relative;
+  flex: auto;
+  pointer-events: none;
+  margin-left: 0;
+  position: relative;
 }
 
 .tabbed-pane-header-contents > * {
-    pointer-events: initial;
+  pointer-events: initial;
 }
 
 .tabbed-pane-header-tab-icon {
-    min-width: 14px;
-    display: flex;
-    align-items: center;
-    margin-right: 2px;
+  min-width: 14px;
+  display: flex;
+  align-items: center;
+  margin-right: 2px;
 }
 
 .tabbed-pane-header-tab {
-    float: left;
-    padding: 2px 0.8em;
-    height: 26px;
-    line-height: 15px;
-    white-space: nowrap;
-    cursor: default;
-    display: flex;
-    align-items: center;
-    color: #5a5a5a;
+  float: left;
+  padding: 2px 0.8em;
+  height: 26px;
+  line-height: 15px;
+  white-space: nowrap;
+  cursor: default;
+  display: flex;
+  align-items: center;
+  color: #5a5a5a;
 }
 
 .tabbed-pane-header-tab.closeable {
-    padding-right: 4px;
+  padding-right: 4px;
 }
 
 .tabbed-pane-header-tab:hover,
 .tabbed-pane-shadow .tabbed-pane-header-tab[data-keyboard-focus="true"]:focus {
-    color: #333;
-    background-color: var(--toolbar-hover-bg-color);
+  color: #333;
+  background-color: var(--toolbar-hover-bg-color);
 }
 
 .tabbed-pane-header-tab-title {
-    text-overflow: ellipsis;
-    overflow: hidden;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .tabbed-pane-header-tab.measuring {
-    visibility: hidden;
+  visibility: hidden;
 }
 
 .tabbed-pane-header-tab.selected {
-    border-bottom: none;
+  border-bottom: none;
 }
 
 .tabbed-pane-header-tab.selected {
-    background-color: var(--tab-selected-bg-color);
-    color: var(--tab-selected-fg-color);
+  background-color: var(--tab-selected-bg-color);
+  color: var(--tab-selected-fg-color);
 }
 
 .tabbed-pane-header-tab.dragging {
-    position: relative;
-    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.37);
-    background-color: #e5e5e5;
+  position: relative;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.37);
+  background-color: #e5e5e5;
 }
 
 .tabbed-pane-header-tab .tabbed-pane-close-button {
-    margin: 0 -3px 0 4px;
-    visibility: hidden;
+  margin: 0 -3px 0 4px;
+  visibility: hidden;
 }
 
 .tabbed-pane-header-tab:hover .tabbed-pane-close-button,
 .tabbed-pane-header-tab.selected .tabbed-pane-close-button {
-    visibility: visible;
+  visibility: visible;
 }
 
 .tabbed-pane-header-tabs-drop-down-container {
-    float: left;
-    opacity: 0.8;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    height: 100%;
+  float: left;
+  opacity: 0.8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  height: 100%;
 }
 
 .tabbed-pane-header-tabs-drop-down-container > .chevron-icon {
-    background-color: hsla(0,0%,20%,1);
-    display: block;
+  background-color: hsla(0, 0%, 20%, 1);
+  display: block;
 }
 
 .tabbed-pane-header-tabs-drop-down-container:hover,
 .tabbed-pane-header-tabs-drop-down-container[data-keyboard-focus="true"]:focus {
-    background-color: rgba(0, 0, 0, 0.08);
+  background-color: rgba(0, 0, 0, 0.08);
 }
 
 .tabbed-pane-header-tabs-drop-down-container.measuring {
-    visibility: hidden;
+  visibility: hidden;
 }
 
 .tabbed-pane-header-tabs-drop-down-container:active {
-    opacity: 0.8;
+  opacity: 0.8;
 }
 
 /* Web page style */
 
 .tabbed-pane-shadow.vertical-tab-layout {
-    flex-direction: row !important;
+  flex-direction: row !important;
 }
 
 .tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-header {
-    background-color: transparent;
-    border: none transparent !important;
-    width: auto;
-    flex: 0 0 auto;
-    flex-direction: column;
-    padding-top: 10px;
-    overflow: hidden;
+  background-color: transparent;
+  border: none transparent !important;
+  width: auto;
+  flex: 0 0 auto;
+  flex-direction: column;
+  padding-top: 10px;
+  overflow: hidden;
 }
 
 .tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-content {
-    padding: 10px 10px 10px 0;
-    overflow-x: hidden;
+  padding: 10px 10px 10px 0;
+  overflow-x: hidden;
 }
 
 .tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-header-contents {
-    margin: 0;
-    flex: none;
+  margin: 0;
+  flex: none;
 }
 
 .tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-header-tabs {
-    display: flex;
-    flex-direction: column;
-    width: 120px;
+  display: flex;
+  flex-direction: column;
+  width: 120px;
 }
 
 .tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-header-tab {
-    background-color: transparent;
-    border: none transparent;
-    font-weight: normal;
-    text-shadow: none;
-    color: #777;
-    height: 26px;
-    padding-left: 10px;
-    border-left: 6px solid transparent;
-    margin: 0;
-    display: flex;
-    align-items: center;
+  background-color: transparent;
+  border: none transparent;
+  font-weight: normal;
+  text-shadow: none;
+  color: #777;
+  height: 26px;
+  padding-left: 10px;
+  border-left: 6px solid transparent;
+  margin: 0;
+  display: flex;
+  align-items: center;
 }
 
 .tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-header-tab:not(.selected) {
-    cursor: pointer !important;
+  cursor: pointer !important;
 }
 
 .tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-header-tab.selected {
-    color: inherit;
-    border: none transparent;
-    border-left: 6px solid #666;
+  color: inherit;
+  border: none transparent;
+  border-left: 6px solid #666;
 }
 
 .tabbed-pane-tab-slider {
-    height: 2px;
-    position: absolute;
-    bottom: -1px;
-    background-color: var(--accent-color);
-    left: 0;
-    z-index: 50;
-    transform-origin: 0 100%;
-    transition: transform 150ms cubic-bezier(0, 0, 0.2, 1);
-    visibility: hidden;
+  height: 2px;
+  position: absolute;
+  bottom: -1px;
+  background-color: var(--accent-color);
+  left: 0;
+  z-index: 50;
+  transform-origin: 0 100%;
+  transition: transform 150ms cubic-bezier(0, 0, 0.2, 1);
+  visibility: hidden;
 }
 
 :host-context(.-theme-with-dark-background) .tabbed-pane-tab-slider {
-    display: none;
+  display: none;
 }
 
 @media (-webkit-min-device-pixel-ratio: 1.1) {
-    .tabbed-pane-tab-slider {
-        border-top: none;
-    }
+  .tabbed-pane-tab-slider {
+    border-top: none;
+  }
 }
 
 .tabbed-pane-tab-slider.enabled {
-    visibility: visible;
+  visibility: visible;
 }
 
 .tabbed-pane-header-tab.disabled {
-    opacity: 0.5;
-    pointer-events: none;
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .tabbed-pane-left-toolbar {
-    margin-right: -4px;
-    flex: none;
+  margin-right: -4px;
+  flex: none;
 }
 
 .tabbed-pane-right-toolbar {
-    margin-left: -4px;
-    flex: none;
+  margin-left: -4px;
+  flex: none;
 }
 
 @media (forced-colors: active) {
-    .tabbed-pane-tab-slider {
-        forced-color-adjust: none;
-        background-color: Highlight;
-    }
-    .tabbed-pane-header {
-        forced-color-adjust: none;
-        border-bottom: 1px solid transparent;
-        background-color: ButtonFace;
-    }
-    .tabbed-pane-header-tab,
-    .tabbed-pane-header-tab.selected {
-        background: ButtonFace;
-        color: ButtonText;
-    }
-    .tabbed-pane-header-tab:hover,
-    .tabbed-pane-shadow .tabbed-pane-header-tab[data-keyboard-focus="true"]:focus {
-        background-color: Highlight;
-        color: HighlightText;
-    }
-    .tabbed-pane-header-tabs-drop-down-container {
-        opacity: 1;
-    }
-    .tabbed-pane-header-tabs-drop-down-container:hover,
-    .tabbed-pane-header-tabs-drop-down-container[data-keyboard-focus="true"]:focus {
-        background-color: Highlight;
-    }
-    .tabbed-pane-header-tabs-drop-down-container > .chevron-icon {
-        background-color: ButtonText;
-    }
-    .tabbed-pane-header-tabs-drop-down-container:hover > .chevron-icon,
-    .tabbed-pane-header-tabs-drop-down-container[data-keyboard-focus="true"]:focus > .chevron-icon {
-        background-color: HighlightText;
-    }
+  .tabbed-pane-tab-slider {
+    forced-color-adjust: none;
+    background-color: Highlight;
+  }
+
+  .tabbed-pane-header {
+    forced-color-adjust: none;
+    border-bottom: 1px solid transparent;
+    background-color: ButtonFace;
+  }
+
+  .tabbed-pane-header-tab,
+  .tabbed-pane-header-tab.selected {
+    background: ButtonFace;
+    color: ButtonText;
+  }
+
+  .tabbed-pane-header-tab:hover,
+  .tabbed-pane-shadow .tabbed-pane-header-tab[data-keyboard-focus="true"]:focus {
+    background-color: Highlight;
+    color: HighlightText;
+  }
+
+  .tabbed-pane-header-tabs-drop-down-container {
+    opacity: 1;
+  }
+
+  .tabbed-pane-header-tabs-drop-down-container:hover,
+  .tabbed-pane-header-tabs-drop-down-container[data-keyboard-focus="true"]:focus {
+    background-color: Highlight;
+  }
+
+  .tabbed-pane-header-tabs-drop-down-container > .chevron-icon {
+    background-color: ButtonText;
+  }
+
+  .tabbed-pane-header-tabs-drop-down-container:hover > .chevron-icon,
+  .tabbed-pane-header-tabs-drop-down-container[data-keyboard-focus="true"]:focus > .chevron-icon {
+    background-color: HighlightText;
+  }
 }

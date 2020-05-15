@@ -1,68 +1,68 @@
 .background-service-toolbar {
-    background-color: var(--toolbar-bg-color);
-    border-bottom: var(--divider-border);
+  background-color: var(--toolbar-bg-color);
+  border-bottom: var(--divider-border);
 }
 
 .data-grid {
-    flex: auto;
-    border: none;
+  flex: auto;
+  border: none;
 }
 
 .background-service-preview {
-    position: absolute;
-    background-color: white;
-    justify-content: center;
-    align-items: center;
-    overflow: auto;
-    font-size: 13px;
-    color: #777;
+  position: absolute;
+  background-color: white;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+  font-size: 13px;
+  color: #777;
 }
 
 .background-service-preview > div {
-    max-width: 450px;
-    margin: 10px;
-    text-align: center;
+  max-width: 450px;
+  margin: 10px;
+  text-align: center;
 }
 
 .background-service-preview > div > p {
-    flex: none;
-    white-space: pre-line;
+  flex: none;
+  white-space: pre-line;
 }
 
 .background-service-shortcut {
-    color: hsla(0, 0%, 50%, 1);
+  color: hsla(0, 0%, 50%, 1);
 }
 
 .background-service-metadata {
-    padding-left: 5px;
-    padding-top: 10px;
+  padding-left: 5px;
+  padding-top: 10px;
 }
 
 .background-service-metadata-entry {
-    padding-left: 10px;
-    padding-bottom: 5px;
+  padding-left: 10px;
+  padding-bottom: 5px;
 }
 
 .background-service-metadata-name {
-    color: rgb(33%, 33%, 33%);
-    display: inline-block;
-    margin-right: 0.25em;
-    font-weight: bold;
+  color: rgb(33%, 33%, 33%);
+  display: inline-block;
+  margin-right: 0.25em;
+  font-weight: bold;
 }
 
 .background-service-metadata-value {
-    display: inline;
-    margin-right: 1em;
-    white-space: pre-wrap;
-    word-break: break-all;
-    user-select: text;
+  display: inline;
+  margin-right: 1em;
+  white-space: pre-wrap;
+  word-break: break-all;
+  user-select: text;
 }
 
 .background-service-empty-value {
-    color: #888;
-    font-style: italic;
+  color: #888;
+  font-style: italic;
 }
 
 .background-service-record-inline-button {
-    margin-bottom: 6px;
+  margin-bottom: 6px;
 }

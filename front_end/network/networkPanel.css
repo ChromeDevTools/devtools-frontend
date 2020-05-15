@@ -27,117 +27,117 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- .panel.network .toolbar {
-    background-color: var(--toolbar-bg-color);
-    border-bottom: var(--divider-border);
+.panel.network .toolbar {
+  background-color: var(--toolbar-bg-color);
+  border-bottom: var(--divider-border);
 }
 
 .network-details-view {
-    background: rgb(203, 203, 203);
+  background: rgb(203, 203, 203);
 }
 
 .network-details-view-tall-header {
-    border-top: 4px solid var(--toolbar-bg-color);
+  border-top: 4px solid var(--toolbar-bg-color);
 }
 
 .network-item-view {
-    display: flex;
-    background: white;
+  display: flex;
+  background: white;
 }
 
 .network-item-preview-toolbar {
-    border-top: 1px solid #ccc;
-    background-color: #eee;
+  border-top: 1px solid #ccc;
+  background-color: #eee;
 }
 
 .resource-timing-view {
-    display: block;
-    margin: 6px;
-    color: rgb(30%, 30%, 30%);
+  display: block;
+  margin: 6px;
+  color: rgb(30%, 30%, 30%);
 }
 
 .resource-timing-table {
-    width: 100% !important;
+  width: 100% !important;
 }
 
 #network-overview-panel {
-    flex: none;
-    position: relative;
+  flex: none;
+  position: relative;
 }
 
 #network-overview-container {
-    overflow: hidden;
-    flex: auto;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    border-bottom: 1px solid #CDCDCD;
+  overflow: hidden;
+  flex: auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border-bottom: 1px solid #cdcdcd;
 }
 
 #network-overview-container canvas {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 #network-overview-grid .resources-dividers-label-bar {
-    pointer-events: auto;
+  pointer-events: auto;
 }
 
 .network .network-overview {
-    flex: 0 0 60px;
+  flex: 0 0 60px;
 }
 
 .network-overview .resources-dividers-label-bar {
-    background-color: rgba(255, 255, 255, 0.95);
+  background-color: rgba(255, 255, 255, 0.95);
 }
 
 .network-overview .resources-dividers-label-bar .resources-divider {
-    background-color: transparent;
+  background-color: transparent;
 }
 
 .network-overview .resources-dividers {
-    z-index: 250;
+  z-index: 250;
 }
 
 .request-view.html iframe {
-    width: 100%;
-    height: 100%;
-    position: absolute;
+  width: 100%;
+  height: 100%;
+  position: absolute;
 }
 
 .network-film-strip {
-    border-bottom: solid 1px #cdcdcd;
-    flex: none !important;
+  border-bottom: solid 1px #cdcdcd;
+  flex: none !important;
 }
 
 .network-film-strip-placeholder {
-    flex-shrink: 0;
+  flex-shrink: 0;
 }
 
 .network-tabbed-pane {
-    background-color: var(--toolbar-bg-color);
+  background-color: var(--toolbar-bg-color);
 }
 
 .network-settings-pane {
-    flex: none;
-    background-color: var(--toolbar-bg-color);
+  flex: none;
+  background-color: var(--toolbar-bg-color);
 }
 
 .network-settings-pane .toolbar {
-    flex: 1 1;
+  flex: 1 1;
 }
 
 .network-toolbar-container {
-    display: flex;
-    flex: none;
+  display: flex;
+  flex: none;
 }
 
 .network-toolbar-container > :first-child {
-    flex: 1 1 auto;
+  flex: 1 1 auto;
 }
 
 @media (forced-colors: active) {
-    .panel.network .toolbar {
-        background-color: Canvas;
-    }
+  .panel.network .toolbar {
+    background-color: canvas;
+  }
 }

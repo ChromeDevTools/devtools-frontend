@@ -8,117 +8,118 @@
 }
 
 .hbox {
-    overflow-y: auto;
-    overflow-x: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .release-note-top-section {
-    height: 27px;
-    line-height: 27px;
-    padding: 0 15px;
-    flex: none;
-    background-color: var(--toolbar-bg-color);
-    border-bottom: var(--divider-border);
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+  height: 27px;
+  line-height: 27px;
+  padding: 0 15px;
+  flex: none;
+  background-color: var(--toolbar-bg-color);
+  border-bottom: var(--divider-border);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 :host-context(.-theme-with-dark-background) .release-note-top-section {
-    color: white;
+  color: white;
 }
 
 .release-note-container {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .release-note-container ul {
-    display: flex;
-    padding: 10px 16px;
-    flex-direction: column;
-    flex: none;
-    margin: 4px 12px 0 2px;
-    max-width: 600px;
+  display: flex;
+  padding: 10px 16px;
+  flex-direction: column;
+  flex: none;
+  margin: 4px 12px 0 2px;
+  max-width: 600px;
 }
 
 .release-note-container li {
-    display: flex;
-    flex-direction:column;
-    flex: none;
-    line-height: 24px;
-    font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  line-height: 24px;
+  font-size: 14px;
 }
 
-
 .release-note-container li:hover {
-    color: #039be5;
+  color: #039be5;
 }
 
 .release-note-container .release-note-link {
-    border: 1px solid rgba(0, 0, 0, .2);
-    padding-left: 8px;
-    padding-right: 8px;
-    margin-bottom: 4px;
-    text-decoration: none;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  padding-left: 8px;
+  padding-right: 8px;
+  margin-bottom: 4px;
+  text-decoration: none;
 }
 
 .release-note-container .release-note-link:hover {
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, .5) inset;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5) inset;
 }
 
 .release-note-title,
 .release-note-subtitle {
-    color: inherit;
-    text-decoration: none;
+  color: inherit;
+  text-decoration: none;
 }
 
 .release-note-subtitle {
-    font-size: 13px;
-    line-height: 13px;
-    padding-bottom: 8px;
+  font-size: 13px;
+  line-height: 13px;
+  padding-bottom: 8px;
 }
 
 .release-note-container li:not(:hover) .release-note-subtitle {
-    color: #999;
+  color: #999;
 }
 
 .release-note-action-container > button {
-    margin: 10px 0 20px 20px;
-    color: #757575;
+  margin: 10px 0 20px 20px;
+  color: #757575;
 }
 
 .release-note-action-container {
-    flex: none;
+  flex: none;
 }
 
 .release-note-image {
-    flex-shrink: 2;
+  flex-shrink: 2;
 }
 
 img {
-    margin: 20px;
-    width: 260px;
-    height: 200px;
-    flex: none;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, .3);
+  margin: 20px;
+  width: 260px;
+  height: 200px;
+  flex: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 img:hover {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, .5);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 @media (forced-colors: active) {
-    .release-note-container .release-note-link {
-        border-color: ButtonText;
-    }
-    .release-note-container .release-note-link:hover {
-        forced-color-adjust: none;
-        border-color: Highlight;
-    }
-    .release-note-container li .release-note-title,
-    .release-note-container li:not(:hover) .release-note-subtitle {
-        forced-color-adjust: none;
-        color: LinkText;
-    }
+  .release-note-container .release-note-link {
+    border-color: ButtonText;
+  }
+
+  .release-note-container .release-note-link:hover {
+    forced-color-adjust: none;
+    border-color: Highlight;
+  }
+
+  .release-note-container li .release-note-title,
+  .release-note-container li:not(:hover) .release-note-subtitle {
+    forced-color-adjust: none;
+    color: linktext;
+  }
 }

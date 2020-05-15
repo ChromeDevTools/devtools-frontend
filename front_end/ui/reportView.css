@@ -36,7 +36,8 @@
   font-size: 15px;
 }
 
-.report-url, .report-subtitle {
+.report-url,
+.report-subtitle {
   font-size: 12px;
   margin-top: 10px;
 }
@@ -100,7 +101,8 @@
   user-select: text;
 }
 
-.image-wrapper, .image-wrapper img {
+.image-wrapper,
+.image-wrapper img {
   max-width: 200px;
   max-height: 200px;
   display: block;

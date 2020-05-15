@@ -4,12 +4,12 @@
  * found in the LICENSE file.
  */
 
-.no-border-top-datagrid>.data-grid {
+.no-border-top-datagrid > .data-grid {
   /* make sure there is no top border, it ruins the menu view */
-  border-top: 0px;
+  border-top: 0;
 }
 
-.event-display-table-contents-table-container>.widget>.data-grid {
+.event-display-table-contents-table-container > .widget > .data-grid {
   height: 100%;
 }
 

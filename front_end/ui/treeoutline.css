@@ -5,210 +5,217 @@
  */
 
 :host {
-    flex: 1 1 auto;
-    padding: 2px 0 0 0;
+  flex: 1 1 auto;
+  padding: 2px 0 0 0;
 }
 
 .tree-outline-disclosure:not(.tree-outline-disclosure-hide-overflow) {
-    min-width: 100%;
-    display: inline-block;
+  min-width: 100%;
+  display: inline-block;
 }
 
 .tree-outline {
-    padding: 0 0 4px 4px;
-    margin: 0;
-    z-index: 0;
-    position: relative;
+  padding: 0 0 4px 4px;
+  margin: 0;
+  z-index: 0;
+  position: relative;
 }
 
 .tree-outline[data-keyboard-focus="true"] {
-    box-shadow: 0px 0px 0px 2px var(--accent-color) inset;
+  box-shadow: 0 0 0 2px var(--accent-color) inset;
 }
 
 .tree-outline:not(.hide-selection-when-blurred) li.hovered:not(.selected) .selection {
-    display: block;
-    left: 3px;
-    right: 3px;
-    background-color: var(--item-hover-color);
-    border-radius: 5px;
+  display: block;
+  left: 3px;
+  right: 3px;
+  background-color: var(--item-hover-color);
+  border-radius: 5px;
 }
 
 .tree-outline li .selection {
-    display: none;
-    z-index: -1;
-    margin-left: -10000px;
+  display: none;
+  z-index: -1;
+  margin-left: -10000px;
 }
 
 .tree-outline:not(.hide-selection-when-blurred) li.selected {
-    color: var(--selection-inactive-fg-color);
+  color: var(--selection-inactive-fg-color);
 }
 
 .tree-outline:not(.hide-selection-when-blurred) li.selected .selection {
-    display: block;
-    background-color: var(--selection-inactive-bg-color);
+  display: block;
+  background-color: var(--selection-inactive-bg-color);
 }
 
 .tree-outline:not(.hide-selection-when-blurred) li.in-clipboard .highlight {
-    outline: 1px dotted darkgrey;
+  outline: 1px dotted darkgrey;
 }
 
 .tree-outline:not(.hide-selection-when-blurred) li.elements-drag-over .selection {
-    display: block;
-    margin-top: -2px;
-    border-top: 2px solid;
-    border-top-color: var(--selection-bg-color);
+  display: block;
+  margin-top: -2px;
+  border-top: 2px solid;
+  border-top-color: var(--selection-bg-color);
 }
 
 ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection {
-    background-color: var(--selection-bg-color);
+  background-color: var(--selection-bg-color);
 }
 
 ol.tree-outline:not(.hide-selection-when-blurred) li.parent.selected:focus::before {
-    background-color: var(--selection-fg-color);
+  background-color: var(--selection-fg-color);
 }
 
 ol.tree-outline,
 .tree-outline ol {
-    list-style-type: none;
+  list-style-type: none;
 }
 
 .tree-outline ol {
-    padding-left: 12px;
+  padding-left: 12px;
 }
 
 .tree-outline li {
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    position: relative;
-    display: flex;
-    align-items: center;
-    min-height: 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 16px;
 }
 
 ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
-    color: var(--selection-fg-color);
+  color: var(--selection-fg-color);
 }
 
 ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus * {
-    color: inherit;
+  color: inherit;
 }
 
 .tree-outline li .icons-container {
-    align-self: center;
-    display: flex;
-    align-items: center;
+  align-self: center;
+  display: flex;
+  align-items: center;
 }
 
 .tree-outline li .leading-icons {
-    margin-right: 4px;
+  margin-right: 4px;
 }
 
 .tree-outline li .trailing-icons {
-    margin-left: 4px;
+  margin-left: 4px;
 }
 
 .tree-outline li::before {
-    user-select: none;
-    -webkit-mask-image: url(Images/treeoutlineTriangles.svg);
-    -webkit-mask-size: 32px 24px;
-    content: "\00a0\00a0";
-    text-shadow: none;
-    margin-right: -2px;
-    height: 12px;
-    width: 13px;
+  user-select: none;
+  -webkit-mask-image: url(Images/treeoutlineTriangles.svg);
+  -webkit-mask-size: 32px 24px;
+  content: "\00a0\00a0";
+  text-shadow: none;
+  margin-right: -2px;
+  height: 12px;
+  width: 13px;
 }
 
 .tree-outline li:not(.parent)::before {
-    background-color: transparent;
+  background-color: transparent;
 }
 
 .tree-outline li::before {
-    -webkit-mask-position: 0 0;
-    background-color: #727272;
+  -webkit-mask-position: 0 0;
+  background-color: #727272;
 }
 
 .tree-outline li.parent.expanded::before {
-    -webkit-mask-position: -16px 0;
+  -webkit-mask-position: -16px 0;
 }
 
 .tree-outline ol.children {
-    display: none;
+  display: none;
 }
 
 .tree-outline ol.children.expanded {
-    display: block;
+  display: block;
 }
 
 .tree-outline.tree-outline-dense li {
-    margin-top: 1px;
-    min-height: 12px;
+  margin-top: 1px;
+  min-height: 12px;
 }
 
 .tree-outline.tree-outline-dense li.parent {
-    margin-top: 0;
+  margin-top: 0;
 }
 
 .tree-outline.tree-outline-dense li.parent::before {
-    top: 0;
+  top: 0;
 }
 
 .tree-outline.tree-outline-dense ol {
-    padding-left: 10px;
+  padding-left: 10px;
 }
 
 .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] {
-    background: var(--focus-bg-color);
-    border-radius: 2px;
+  background: var(--focus-bg-color);
+  border-radius: 2px;
 }
 
 .tree-outline-disclosure:not(.tree-outline-disclosure-hide-overflow) .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] {
-    width: fit-content;
-    padding-right: 3px;
+  width: fit-content;
+  padding-right: 3px;
 }
 
 @media (forced-colors: active) {
-    .tree-outline li:not(.parent)::before,
-    .tree-outline li:not(.parent):hover::before,
-    .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"]:not(.parent)::before {
-        forced-color-adjust: none;
-        background-color: transparent;
-    }
-    .tree-outline-disclosure li.parent::before,
-    .tree-outline:not(.hide-selection-when-blurred) li.parent:not(.selected)::before,
-    .tree-outline li [is=ui-icon].icon-mask {
-        forced-color-adjust: none;
-        background-color: ButtonText;
-    }
-    .tree-outline-disclosure li.parent:hover:not(.selected)::before,
-    .tree-outline:not(.hide-selection-when-blurred) li.parent:hover:not(.selected)::before {
-        background-color: ButtonText;
-    }
-    ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection,
-    .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] {
-        forced-color-adjust: none;
-        background-color: Highlight;
-    }
-    .tree-outline:not(.hide-selection-when-blurred) li.selected .selection {
-        forced-color-adjust: none;
-        background-color: ButtonText;
-    }
-    ol.tree-outline:not(.hide-selection-when-blurred) li.parent.selected::before,
-    ol.tree-outline:not(.hide-selection-when-blurred) li.parent.selected:focus::before,
-    .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"]::before {
-        background-color: HighlightText;
-    }
-    .tree-outline li.selected [is=ui-icon].icon-mask,
-    .tree-outline li.selected:focus [is=ui-icon]:not(.icon-mask) {
-        background-color: HighlightText !important;
-    }
-    ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus,
-    .tree-outline:not(.hide-selection-when-blurred) li.selected:focus .tree-element-title,
-    .tree-outline:not(.hide-selection-when-blurred) li[data-keyboard-focus="true"]:focus .tree-element-title,
-    .tree-outline:not(.hide-selection-when-blurred) li.selected .tree-element-title,
-    .tree-outline:not(.hide-selection-when-blurred) li.selected,
-    .tree-outline:not(.hide-selection-when-blurred) li.selected span,
-    .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] span {
-        forced-color-adjust: none;
-        color: HighlightText;
-    }
+  .tree-outline li:not(.parent)::before,
+  .tree-outline li:not(.parent):hover::before,
+  .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"]:not(.parent)::before {
+    forced-color-adjust: none;
+    background-color: transparent;
+  }
+
+  .tree-outline-disclosure li.parent::before,
+  .tree-outline:not(.hide-selection-when-blurred) li.parent:not(.selected)::before,
+  .tree-outline li [is=ui-icon].icon-mask {
+    forced-color-adjust: none;
+    background-color: ButtonText;
+  }
+
+  .tree-outline-disclosure li.parent:hover:not(.selected)::before,
+  .tree-outline:not(.hide-selection-when-blurred) li.parent:hover:not(.selected)::before {
+    background-color: ButtonText;
+  }
+
+  ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection,
+  .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] {
+    forced-color-adjust: none;
+    background-color: Highlight;
+  }
+
+  .tree-outline:not(.hide-selection-when-blurred) li.selected .selection {
+    forced-color-adjust: none;
+    background-color: ButtonText;
+  }
+
+  ol.tree-outline:not(.hide-selection-when-blurred) li.parent.selected::before,
+  ol.tree-outline:not(.hide-selection-when-blurred) li.parent.selected:focus::before,
+  .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"]::before {
+    background-color: HighlightText;
+  }
+
+  .tree-outline li.selected [is=ui-icon].icon-mask,
+  .tree-outline li.selected:focus [is=ui-icon]:not(.icon-mask) {
+    background-color: HighlightText !important;
+  }
+
+  ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus,
+  .tree-outline:not(.hide-selection-when-blurred) li.selected:focus .tree-element-title,
+  .tree-outline:not(.hide-selection-when-blurred) li[data-keyboard-focus="true"]:focus .tree-element-title,
+  .tree-outline:not(.hide-selection-when-blurred) li.selected .tree-element-title,
+  .tree-outline:not(.hide-selection-when-blurred) li.selected,
+  .tree-outline:not(.hide-selection-when-blurred) li.selected span,
+  .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] span {
+    forced-color-adjust: none;
+    color: HighlightText;
+  }
 }

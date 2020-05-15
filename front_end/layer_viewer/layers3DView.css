@@ -5,17 +5,17 @@
  */
 
 .layers-3d-view {
-    overflow: hidden;
-    user-select: none;
+  overflow: hidden;
+  user-select: none;
 }
 
 .toolbar {
-    background-color: var(--toolbar-bg-color);
-    border-bottom: var(--divider-border);
+  background-color: var(--toolbar-bg-color);
+  border-bottom: var(--divider-border);
 }
 
 canvas {
-    flex: 1 1;
+  flex: 1 1;
 }
 
 .layers-3d-view > canvas[data-keyboard-focus="true"]:focus {

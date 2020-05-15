@@ -5,38 +5,41 @@
  */
 
 .close-button {
-    width: 14px;
-    height: 14px;
-    cursor: default;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  width: 14px;
+  height: 14px;
+  cursor: default;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.hover-icon, .active-icon {
-    display: none;
+.hover-icon,
+.active-icon {
+  display: none;
 }
 
-.close-button:hover .default-icon, .close-button:active .default-icon {
-    display: none;
+.close-button:hover .default-icon,
+.close-button:active .default-icon {
+  display: none;
 }
 
 .close-button:hover .hover-icon {
-    display: block;
+  display: block;
 }
 
-.close-button[data-keyboard-focus="true"]:focus .default-icon, .close-button:active .default-icon {
-    display: none;
+.close-button[data-keyboard-focus="true"]:focus .default-icon,
+.close-button:active .default-icon {
+  display: none;
 }
 
 .close-button[data-keyboard-focus="true"]:focus .hover-icon {
-    display: block;
+  display: block;
 }
 
 .close-button:active .hover-icon {
-    display: none !important;
+  display: none !important;
 }
 
 .close-button:active .active-icon {
-    display: block;
+  display: block;
 }

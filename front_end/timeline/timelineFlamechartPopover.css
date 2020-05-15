@@ -5,25 +5,25 @@
  */
 
 .timeline-flamechart-popover {
-    overflow: hidden;
+  overflow: hidden;
 }
 
 .timeline-flamechart-popover span {
-    margin-right: 5px;
+  margin-right: 5px;
 }
 
 .timeline-flamechart-popover span.timeline-info-network-time {
-    color: #009;
+  color: #009;
 }
 
 .timeline-flamechart-popover span.timeline-info-time {
-    color: #282;
+  color: #282;
 }
 
 .timeline-flamechart-popover span.timeline-info-warning {
-    color: #e44;
+  color: #e44;
 }
 
 .timeline-flamechart-popover span.timeline-info-warning * {
-    color: inherit;
+  color: inherit;
 }

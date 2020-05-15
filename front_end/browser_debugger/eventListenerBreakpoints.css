@@ -5,49 +5,49 @@
  */
 
 :host {
-    margin: 0;
-    padding: 2px 4px;
-    min-height: 18px;
+  margin: 0;
+  padding: 2px 4px;
+  min-height: 18px;
 }
 
 .tree-outline {
-    padding: 0;
+  padding: 0;
 }
 
 .tree-outline li {
-    margin-left: 14px;
-    user-select: text;
-    cursor: default;
+  margin-left: 14px;
+  user-select: text;
+  cursor: default;
 }
 
 .tree-outline li.parent {
-    margin-left: 1px;
+  margin-left: 1px;
 }
 
 .tree-outline li:not(.parent)::before {
-    display: none;
+  display: none;
 }
 
 .breakpoint-hit {
-    background-color: rgb(255, 255, 194);
+  background-color: rgb(255, 255, 194);
 }
 
 :host-context(.-theme-with-dark-background) .breakpoint-hit {
-    background-color: hsl(46, 98%, 22%);
-    color: #ccc;
+  background-color: hsl(46, 98%, 22%);
+  color: #ccc;
 }
 
 .breakpoint-hit .breakpoint-hit-marker {
-    background-color: rgb(255, 255, 194);
-    border-right: 3px solid rgb(107, 97, 48);
-    height: 18px;
-    left: 0;
-    margin-left: -30px;
-    position: absolute;
-    right: -4px;
-    z-index: -1;
+  background-color: rgb(255, 255, 194);
+  border-right: 3px solid rgb(107, 97, 48);
+  height: 18px;
+  left: 0;
+  margin-left: -30px;
+  position: absolute;
+  right: -4px;
+  z-index: -1;
 }
 
 :host-context(.-theme-with-dark-background) .breakpoint-hit .breakpoint-hit-marker {
-    background-color: hsl(46, 98%, 22%);
+  background-color: hsl(46, 98%, 22%);
 }

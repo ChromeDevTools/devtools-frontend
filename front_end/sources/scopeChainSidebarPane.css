@@ -5,24 +5,24 @@
  */
 
 .scope-chain-sidebar-pane-section-header {
-    flex: auto;
+  flex: auto;
 }
 
 .scope-chain-sidebar-pane-section-subtitle {
-    float: right;
-    margin-left: 5px;
-    max-width: 55%;
-    text-overflow: ellipsis;
-    overflow: hidden;
+  float: right;
+  margin-left: 5px;
+  max-width: 55%;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .scope-chain-sidebar-pane-section-title {
-    font-weight: normal;
-    word-wrap: break-word;
-    white-space: normal;
+  font-weight: normal;
+  word-wrap: break-word;
+  white-space: normal;
 }
 
 .scope-chain-sidebar-pane-section {
-    padding: 2px 4px;
-    flex: none;
+  padding: 2px 4px;
+  flex: none;
 }

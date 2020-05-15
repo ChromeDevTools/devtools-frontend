@@ -6,6 +6,7 @@
 
 .overview-completed-view {
   overflow: auto;
+
   --overview-default-padding: 28px;
   --overview-icon-padding: 32px;
 }
@@ -65,6 +66,7 @@
 }
 
 /** Ensure links are rendered at the correct height */
+
 .unused-rules-grid .monospace {
   display: block;
   height: 18px;
@@ -95,7 +97,7 @@
 
 .results-section {
   flex-shrink: 0;
-  border-bottom: 1px solid #E6E6E6;
+  border-bottom: 1px solid #e6e6e6;
   padding: var(--overview-default-padding) 0 var(--overview-default-padding) 0;
 }
 
@@ -241,7 +243,7 @@
 .overview-completed-view .unused-declarations button:focus .bar {
   background-color: var(--accent-color-hover);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(66, 133, 244, 0.4);
-  color: #FFF;
+  color: #fff;
 }
 
 .overview-completed-view .font-info .font-metric {
@@ -280,7 +282,7 @@
 }
 
 .overview-completed-view .font-family:nth-child(2n+1) {
-  background: #FAFAFA;
+  background: #fafafa;
 }
 
 .overview-completed-view .font-family:first-of-type {

@@ -5,24 +5,24 @@
  */
 
 .report-row {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .clear-storage-button .report-row {
-    margin: 0 0 0 17px;
-    display: flex;
+  margin: 0 0 0 17px;
+  display: flex;
 }
 
 .link {
-    margin-left: 10px;
-    display: none;
+  margin-left: 10px;
+  display: none;
 }
 
 .report-row:hover .link {
-    display: inline;
+  display: inline;
 }
 
 .usage-breakdown-row {
-    min-width: fit-content;
+  min-width: fit-content;
 }

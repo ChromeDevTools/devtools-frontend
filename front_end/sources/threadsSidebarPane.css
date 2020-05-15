@@ -5,58 +5,59 @@
  */
 
 .thread-item {
-    padding: 3px 8px 3px 20px;
-    position: relative;
-    min-height: 18px;
-    line-height: 15px;
-    display: flex;
-    flex-wrap: wrap;
+  padding: 3px 8px 3px 20px;
+  position: relative;
+  min-height: 18px;
+  line-height: 15px;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .thread-item + .thread-item {
-    border-top: 1px solid #efefef;
+  border-top: 1px solid #efefef;
 }
 
 .thread-item:hover {
-    background-color: #eee;
+  background-color: #eee;
 }
 
 .thread-item[data-keyboard-focus="true"] {
-    background-color: var(--focus-bg-color);
+  background-color: var(--focus-bg-color);
 }
 
 .thread-item-title,
 .thread-item-paused-state {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .thread-item-paused-state {
-    color: #888;
-    margin-left: auto;
-    padding: 0 10px 0 10px;
+  color: #888;
+  margin-left: auto;
+  padding: 0 10px 0 10px;
 }
 
 .selected-thread-icon {
-    display: none;
-    position: absolute;
-    top: 5px;
-    left: 4px;
+  display: none;
+  position: absolute;
+  top: 5px;
+  left: 4px;
 }
 
 .thread-item.selected .selected-thread-icon {
-    display: block;
+  display: block;
 }
 
 @media (forced-colors: active) {
-    .thread-item:hover,
-    .thread-item[data-keyboard-focus="true"] {
-        forced-color-adjust: none;
-        background-color: Highlight;
-    }
-    .thread-item:hover > div,
-    .thread-item[data-keyboard-focus="true"] > div {
-        color: HighlightText;
-    }
+  .thread-item:hover,
+  .thread-item[data-keyboard-focus="true"] {
+    forced-color-adjust: none;
+    background-color: Highlight;
+  }
+
+  .thread-item:hover > div,
+  .thread-item[data-keyboard-focus="true"] > div {
+    color: HighlightText;
+  }
 }

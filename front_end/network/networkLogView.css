@@ -29,408 +29,418 @@
  */
 
 .network-log-grid.data-grid {
-    border: none !important;
-    flex: auto;
+  border: none !important;
+  flex: auto;
 }
 
 .network-log-grid.data-grid.no-selection[data-keyboard-focus="true"]:focus {
-    border: none !important;
+  border: none !important;
 }
 
 #network-container {
-    border: 1px solid rgb(204, 204, 204);
+  border: 1px solid rgb(204, 204, 204);
 }
 
 #network-container.grid-focused.no-node-selected:focus-within {
-    border: 1px solid var(--accent-color);
+  border: 1px solid var(--accent-color);
 }
 
 .network-summary-bar {
-    flex: 0 0 27px;
-    line-height: 27px;
-    padding-left: 5px;
-    background-color: #eee;
-    border-top: 1px solid #ccc;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    user-select: text;
+  flex: 0 0 27px;
+  line-height: 27px;
+  padding-left: 5px;
+  background-color: #eee;
+  border-top: 1px solid #ccc;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  user-select: text;
 }
 
 .panel.network .toolbar.network-summary-bar {
-    border-bottom: 0px;
+  border-bottom: 0;
 }
 
 .network-summary-bar span[is=dt-icon-label] {
-    margin-right: 6px;
+  margin-right: 6px;
 }
 
 .network-summary-bar > * {
-    flex: none;
+  flex: none;
 }
 
 .network-log-grid.data-grid table.data {
-    background: transparent;
+  background: transparent;
 }
 
 .network-log-grid.data-grid td {
-    height: 41px;
-    border-left: 1px solid #e1e1e1;
-    vertical-align: middle;
+  height: 41px;
+  border-left: 1px solid #e1e1e1;
+  vertical-align: middle;
 }
 
 .network-log-grid.data-grid .corner {
-    display: none;
+  display: none;
 }
 
 .network-log-grid.data-grid.small td {
-    height: 21px;
+  height: 21px;
 }
 
-.network-waterfall-header, .network-log-grid.data-grid th {
-    border-bottom: 1px solid rgb(205, 205, 205);
-    border-left: 1px solid rgb(205, 205, 205);
+.network-waterfall-header,
+.network-log-grid.data-grid th {
+  border-bottom: 1px solid rgb(205, 205, 205);
+  border-left: 1px solid rgb(205, 205, 205);
 }
 
 .network-log-grid.data-grid table.data th {
-    border-bottom: none;
+  border-bottom: none;
 }
 
-.network-waterfall-header, .network-log-grid.data-grid .header-container {
-    height: 31px;
-    background-color: var(--toolbar-bg-color);
+.network-waterfall-header,
+.network-log-grid.data-grid .header-container {
+  height: 31px;
+  background-color: var(--toolbar-bg-color);
 }
 
 .network-log-grid.data-grid .data-container {
-    top: 31px;
+  top: 31px;
 }
 
-.network-waterfall-header.small, .network-log-grid.data-grid.small .header-container {
-    height: 27px;
+.network-waterfall-header.small,
+.network-log-grid.data-grid.small .header-container {
+  height: 27px;
 }
 
 .network-log-grid.data-grid.small .data-container {
-    top: 27px;
+  top: 27px;
 }
 
 .network-log-grid.data-grid select {
-    -webkit-appearance: none;
-    border: none;
-    width: 100%;
-    color: inherit;
+  -webkit-appearance: none;
+  border: none;
+  width: 100%;
+  color: inherit;
 }
 
 .network-log-grid.data-grid .name-column {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .network-log-grid.data-grid .waterfall-column {
-    padding: 1px 0;
+  padding: 1px 0;
 }
 
 .network-log-grid.data-grid .waterfall-column .sort-order-icon-container {
-    right: 15px;
-    pointer-events: none;
+  right: 15px;
+  pointer-events: none;
 }
 
 .network-log-grid.data-grid th.sortable:active {
-    background-image: none !important;
+  background-image: none !important;
 }
 
 .network-cell-subtitle {
-    font-weight: normal;
-    color: gray;
+  font-weight: normal;
+  color: gray;
 }
 
 .network-badge {
-    margin-right: 4px;
+  margin-right: 4px;
 }
 
 .network-error-row,
-.network-error-row .network-cell-subtitle ,
+.network-error-row .network-cell-subtitle,
 .network-log-grid.data-grid tr.selected.network-error-row,
 .network-log-grid.data-grid tr.selected.network-error-row .network-cell-subtitle,
 .network-log-grid.data-grid tr.selected.network-error-row .network-dim-cell {
-    color: rgb(230, 0, 0) !important;
+  color: rgb(230, 0, 0) !important;
 }
 
 .network-log-grid.data-grid:focus tr.selected.network-error-row,
 .network-log-grid.data-grid:focus tr.selected.network-error-row .network-cell-subtitle,
 .network-log-grid.data-grid:focus tr.selected.network-error-row .network-dim-cell {
-    color: rgb(230, 0, 0) !important;
+  color: rgb(230, 0, 0) !important;
 }
+
 .initiator-column .devtools-link {
-    color: inherit;
+  color: inherit;
 }
 
 .network-log-grid.data-grid tr.selected,
 .network-log-grid.data-grid tr.selected .network-cell-subtitle,
 .network-log-grid.data-grid tr.selected .network-dim-cell {
-    color: inherit;
+  color: inherit;
 }
 
 .network-log-grid.data-grid:focus tr.selected,
 .network-log-grid.data-grid:focus tr.selected .network-cell-subtitle,
 .network-log-grid.data-grid:focus tr.selected .network-dim-cell {
-    color: var(--selection-fg-color);
+  color: var(--selection-fg-color);
 }
 
 .network-log-grid tr.highlighted-row {
-    -webkit-animation: network-row-highlight-fadeout 2s 0s;
+  -webkit-animation: network-row-highlight-fadeout 2s 0s;
 }
 
 @-webkit-keyframes network-row-highlight-fadeout {
-    from {background-color: rgba(255, 255, 120, 1); }
-    to { background-color: rgba(255, 255, 120, 0); }
+  from { background-color: rgba(255, 255, 120, 1); }
+  to { background-color: rgba(255, 255, 120, 0); }
 }
 
 .network-header-subtitle {
-    color: gray;
+  color: gray;
 }
 
 .network-log-grid.data-grid.small .network-cell-subtitle,
 .network-log-grid.data-grid.small .network-header-subtitle {
-    display: none;
+  display: none;
 }
 
 .network-log-grid.data-grid.small tr.selected .network-cell-subtitle-show-inline-when-selected {
-    display: inline;
-    margin-left: 4px;
+  display: inline;
+  margin-left: 4px;
 }
 
 /* Resource preview icons */
 
 .network-log-grid.data-grid .icon {
-    content: url(Images/resourcePlainIcon.png);
+  content: url(Images/resourcePlainIcon.png);
 }
 
 .network-log-grid.data-grid.small .icon {
-    content: url(Images/resourcePlainIconSmall.png);
+  content: url(Images/resourcePlainIconSmall.png);
 }
 
 .network-log-grid.data-grid .icon.script {
-    content: url(Images/resourceJSIcon.png);
+  content: url(Images/resourceJSIcon.png);
 }
 
 .network-log-grid.data-grid.small .icon.script {
-    content: url(Images/resourceDocumentIconSmall.png);
+  content: url(Images/resourceDocumentIconSmall.png);
 }
 
 .network-log-grid.data-grid .icon.document {
-    content: url(Images/resourceDocumentIcon.png);
+  content: url(Images/resourceDocumentIcon.png);
 }
 
 .network-log-grid.data-grid.small .icon.document {
-    content: url(Images/resourceDocumentIconSmall.png);
+  content: url(Images/resourceDocumentIconSmall.png);
 }
 
 .network-log-grid.data-grid .icon.stylesheet {
-    content: url(Images/resourceCSSIcon.png);
+  content: url(Images/resourceCSSIcon.png);
 }
 
 .network-log-grid.data-grid.small .icon.stylesheet {
-    content: url(Images/resourceDocumentIconSmall.png);
+  content: url(Images/resourceDocumentIconSmall.png);
 }
 
 .network-log-grid.data-grid .icon.media {
-    content: url(Images/resourcePlainIcon.png); /* FIXME: media icon */
+  content: url(Images/resourcePlainIcon.png); /* FIXME: media icon */
 }
 
 .network-log-grid.data-grid.small .icon.media {
-    content: url(Images/resourcePlainIconSmall.png); /* FIXME: media icon */
+  content: url(Images/resourcePlainIconSmall.png); /* FIXME: media icon */
 }
+
 .network-log-grid.data-grid .icon.texttrack {
-    content: url(Images/resourcePlainIcon.png); /* FIXME: vtt icon */
+  content: url(Images/resourcePlainIcon.png); /* FIXME: vtt icon */
 }
 
 .network-log-grid.data-grid.small .icon.texttrack {
-    content: url(Images/resourcePlainIconSmall.png); /* FIXME: vtt icon */
+  content: url(Images/resourcePlainIconSmall.png); /* FIXME: vtt icon */
 }
 
 .network-log-grid.data-grid .icon.image {
-    position: relative;
-    background-image: url(Images/resourcePlainIcon.png);
-    background-repeat: no-repeat;
-    content: "";
+  position: relative;
+  background-image: url(Images/resourcePlainIcon.png);
+  background-repeat: no-repeat;
+  content: "";
 }
 
 .network-log-grid.data-grid.small .icon.image {
-    background-image: url(Images/resourcePlainIconSmall.png);
-    content: "";
+  background-image: url(Images/resourcePlainIconSmall.png);
+  content: "";
 }
 
 .network-log-grid.data-grid .icon {
-    float: left;
-    width: 32px;
-    height: 32px;
-    margin-top: 1px;
-    margin-right: 3px;
+  float: left;
+  width: 32px;
+  height: 32px;
+  margin-top: 1px;
+  margin-right: 3px;
 }
 
 .network-log-grid.data-grid.small .icon {
-    width: 16px;
-    height: 16px;
+  width: 16px;
+  height: 16px;
 }
 
 .network-log-grid.data-grid .image-network-icon-preview {
-    position: absolute;
-    margin: auto;
-    top: 3px;
-    bottom: 4px;
-    left: 5px;
-    right: 5px;
-    max-width: 18px;
-    max-height: 21px;
-    min-width: 1px;
-    min-height: 1px;
+  position: absolute;
+  margin: auto;
+  top: 3px;
+  bottom: 4px;
+  left: 5px;
+  right: 5px;
+  max-width: 18px;
+  max-height: 21px;
+  min-width: 1px;
+  min-height: 1px;
 }
 
 .network-log-grid.data-grid.small .image-network-icon-preview {
-    top: 2px;
-    bottom: 1px;
-    left: 3px;
-    right: 3px;
-    max-width: 8px;
-    max-height: 11px;
+  top: 2px;
+  bottom: 1px;
+  left: 3px;
+  right: 3px;
+  max-width: 8px;
+  max-height: 11px;
 }
 
 .network-dim-cell {
-    color: grey;
+  color: grey;
 }
 
 .network-frame-divider {
-    width: 2px;
-    background-color: #FCCC49;
-    z-index: 10;
-    visibility: hidden;
+  width: 2px;
+  background-color: #fccc49;
+  z-index: 10;
+  visibility: hidden;
 }
 
 #network-container:not(.brief-mode) .data-container {
-    overflow: hidden;
+  overflow: hidden;
 }
 
 .network-log-grid.data-grid .resources-dividers {
-    z-index: 0;
+  z-index: 0;
 }
 
 .network-log-grid.data-grid .resources-dividers-label-bar {
-    background-color: transparent;
-    border: none;
-    height: 30px;
-    pointer-events: none;
+  background-color: transparent;
+  border: none;
+  height: 30px;
+  pointer-events: none;
 }
 
 .network-log-grid.data-grid span.separator-in-cell {
-    user-select: none;
-    min-width: 1ex;
-    display: inline-block;
+  user-select: none;
+  min-width: 1ex;
+  display: inline-block;
 }
 
 #network-container {
-    overflow: hidden;
+  overflow: hidden;
 }
 
 .network-status-pane {
-    color: #777;
-    background-color: white;
-    z-index: 500;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 0 20px;
-    overflow: auto;
+  color: #777;
+  background-color: white;
+  z-index: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 0 20px;
+  overflow: auto;
 }
 
 .network-status-pane > .recording-hint {
-    font-size: 14px;
-    text-align: center;
-    line-height: 28px;
+  font-size: 14px;
+  text-align: center;
+  line-height: 28px;
 }
 
 .network-waterfall-header {
-    position: absolute;
-    border-left: 0px;
-    width: 100%;
-    display: table;
-    z-index: 200;
+  position: absolute;
+  border-left: 0;
+  width: 100%;
+  display: table;
+  z-index: 200;
 }
 
 .network-waterfall-header:hover {
-    background-color: hsla(0, 0%, 10%, 0.1);
+  background-color: hsla(0, 0%, 10%, 0.1);
 }
 
 .network-waterfall-header div {
-    display: table-cell;
-    line-height: 14px;
-    margin: auto 0px;
-    vertical-align: middle;
-    text-align: left;
-    font-weight: normal;
-    padding: 0px 4px;
+  display: table-cell;
+  line-height: 14px;
+  margin: auto 0;
+  vertical-align: middle;
+  text-align: left;
+  font-weight: normal;
+  padding: 0 4px;
 }
 
 .network-waterfall-header .sort-order-icon-container {
-    position: absolute;
-    top: 1px;
-    right: 0;
-    bottom: 1px;
-    display: flex;
-    align-items: center;
+  position: absolute;
+  top: 1px;
+  right: 0;
+  bottom: 1px;
+  display: flex;
+  align-items: center;
 }
 
 .network-waterfall-header .sort-order-icon {
-    align-items: center;
-    margin-right: 4px;
-    margin-bottom: -2px;
+  align-items: center;
+  margin-right: 4px;
+  margin-bottom: -2px;
 }
 
 .network-frame-group-icon {
-    display: inline-block;
-    margin: -8px -2px;
+  display: inline-block;
+  margin: -8px -2px;
 }
 
 .network-frame-group-badge {
-    margin-right: 4px;
+  margin-right: 4px;
 }
 
 @media (forced-colors: active) {
-    .network-status-pane > .recording-hint {
-        color: CanvasText;
-    }
-    .network-log-grid.data-grid table.data tr.revealed.selected,
-    .network-log-grid.data-grid:focus table.data tr.revealed.selected,
-    .network-log-grid.data-grid:focus tr.selected .network-dim-cell,
-    .network-log-grid.data-grid tr.selected .network-dim-cell,
-    .network-log-grid.data-grid:focus tr.selected .initiator-column .devtools-link,
-    .network-log-grid.data-grid tr.selected .initiator-column .devtools-link,
-    .network-waterfall-header:hover * {
-        color: HighlightText;
-    }
-    .network-log-grid {
-        --network-grid-default-color: Canvas;
-        --network-grid-stripe-color: Canvas;
-        --network-grid-hovered-color: Highlight;
-        --network-grid-selected-color: ButtonText;
-        --network-grid-focus-selected-color: Highlight;
-    }
-    #network-container.no-node-selected:focus-within,
-    .network-status-pane {
-        forced-color-adjust: none;
-        border-color: Highlight;
-        background-color: Canvas !important;
-    }
-    .network-waterfall-header.small,
-    .network-log-grid.data-grid.small .header-container
-    .network-waterfall-header,
-    .network-log-grid.data-grid .header-container {
-        background-color: Canvas;
-    }
-    .network-waterfall-header:hover {
-        forced-color-adjust: none;
-        background-color: Highlight;
-    }
-    .network-waterfall-header:hover .sort-order-icon-container [is=ui-icon].icon-mask {
-        background-color: HighlightText;
-    }
+  .network-status-pane > .recording-hint {
+    color: canvastext;
+  }
+
+  .network-log-grid.data-grid table.data tr.revealed.selected,
+  .network-log-grid.data-grid:focus table.data tr.revealed.selected,
+  .network-log-grid.data-grid:focus tr.selected .network-dim-cell,
+  .network-log-grid.data-grid tr.selected .network-dim-cell,
+  .network-log-grid.data-grid:focus tr.selected .initiator-column .devtools-link,
+  .network-log-grid.data-grid tr.selected .initiator-column .devtools-link,
+  .network-waterfall-header:hover * {
+    color: HighlightText;
+  }
+
+  .network-log-grid {
+    --network-grid-default-color: canvas;
+    --network-grid-stripe-color: canvas;
+    --network-grid-hovered-color: Highlight;
+    --network-grid-selected-color: ButtonText;
+    --network-grid-focus-selected-color: Highlight;
+  }
+
+  #network-container.no-node-selected:focus-within,
+  .network-status-pane {
+    forced-color-adjust: none;
+    border-color: Highlight;
+    background-color: canvas !important;
+  }
+
+  .network-waterfall-header.small,
+  .network-log-grid.data-grid.small .header-container .network-waterfall-header,
+  .network-log-grid.data-grid .header-container {
+    background-color: canvas;
+  }
+
+  .network-waterfall-header:hover {
+    forced-color-adjust: none;
+    background-color: Highlight;
+  }
+
+  .network-waterfall-header:hover .sort-order-icon-container [is=ui-icon].icon-mask {
+    background-color: HighlightText;
+  }
 }

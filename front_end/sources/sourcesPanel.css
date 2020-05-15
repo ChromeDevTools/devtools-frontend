@@ -28,42 +28,42 @@
  */
 
 .scripts-debug-toolbar {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    background-color: var(--toolbar-bg-color);
-    border-bottom: 1px solid #ccc;
-    overflow: hidden;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  background-color: var(--toolbar-bg-color);
+  border-bottom: 1px solid #ccc;
+  overflow: hidden;
 }
 
 .scripts-debug-toolbar-drawer {
-    flex: 0 0 52px;
-    -webkit-transition: margin-top 0.1s ease-in-out;
-    margin-top: -26px;
-    padding-top: 25px;
-    background-color: white;
-    overflow: hidden;
-    white-space: nowrap;
+  flex: 0 0 52px;
+  -webkit-transition: margin-top 0.1s ease-in-out;
+  margin-top: -26px;
+  padding-top: 25px;
+  background-color: white;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .scripts-debug-toolbar-drawer.expanded {
-    margin-top: 0;
+  margin-top: 0;
 }
 
 .scripts-debug-toolbar-drawer > [is=dt-checkbox] {
-    display: none;
-    padding-left: 3px;
-    height: 28px;
+  display: none;
+  padding-left: 3px;
+  height: 28px;
 }
 
 .scripts-debug-toolbar-drawer.expanded > [is=dt-checkbox] {
-    display: flex;
+  display: flex;
 }
 
 .cursor-auto {
-    cursor: auto;
+  cursor: auto;
 }
 
 .navigator-tabbed-pane {
-    background-color: var(--toolbar-bg-color);
+  background-color: var(--toolbar-bg-color);
 }

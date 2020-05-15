@@ -5,9 +5,9 @@
  */
 
 .font-view {
-    font-size: 60px;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    text-align: center;
-    padding: 15px;
+  font-size: 60px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  text-align: center;
+  padding: 15px;
 }

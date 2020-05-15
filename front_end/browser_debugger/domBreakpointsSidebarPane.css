@@ -5,48 +5,49 @@
  */
 
 .breakpoint-list {
-    padding-bottom: 3px;
+  padding-bottom: 3px;
 }
 
 .breakpoint-list .dom-breakpoint > div {
-    overflow: hidden;
-    text-overflow: ellipsis;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .breakpoint-entry {
-    display: flex;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    padding: 2px 0;
+  display: flex;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  padding: 2px 0;
 }
 
 .breakpoint-entry[data-keyboard-focus="true"] {
-    background-color: var(--focus-bg-color);
+  background-color: var(--focus-bg-color);
 }
 
 .breakpoint-list .breakpoint-entry:hover {
-    background-color: #eee;
+  background-color: #eee;
 }
 
 .breakpoint-hit {
-    background-color: rgb(255, 255, 194);
-    border-right: 3px solid rgb(107, 97, 48);
+  background-color: rgb(255, 255, 194);
+  border-right: 3px solid rgb(107, 97, 48);
 }
 
 :host-context(.-theme-with-dark-background) .breakpoint-hit {
-    background-color: hsl(46, 98%, 22%);
-    color: #ccc;
+  background-color: hsl(46, 98%, 22%);
+  color: #ccc;
 }
 
 @media (forced-colors: active) {
-    .breakpoint-list .breakpoint-entry:hover,
-    .breakpoint-entry[data-keyboard-focus="true"] {
-        forced-color-adjust: none;
-        background-color: Highlight;
-    }
-    .breakpoint-list .breakpoint-entry:hover *,
-    .breakpoint-entry[data-keyboard-focus="true"] * {
-        color: HighlightText;
-    }
+  .breakpoint-list .breakpoint-entry:hover,
+  .breakpoint-entry[data-keyboard-focus="true"] {
+    forced-color-adjust: none;
+    background-color: Highlight;
+  }
+
+  .breakpoint-list .breakpoint-entry:hover *,
+  .breakpoint-entry[data-keyboard-focus="true"] * {
+    color: HighlightText;
+  }
 }

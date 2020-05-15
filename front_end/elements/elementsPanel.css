@@ -28,47 +28,47 @@
  */
 
 #elements-content {
-    flex: 1 1;
-    overflow: auto;
-    padding: 2px 0 0 0;
+  flex: 1 1;
+  overflow: auto;
+  padding: 2px 0 0 0;
 }
 
 #elements-content:not(.elements-wrap) > div {
-    display: inline-block;
-    min-width: 100%;
+  display: inline-block;
+  min-width: 100%;
 }
 
 #elements-content.elements-wrap {
-    overflow-x: hidden;
+  overflow-x: hidden;
 }
 
 #elements-crumbs {
-    flex: 0 0 23px;
-    background-color: white;
-    border-top: 1px solid var(--divider-color);
-    overflow: hidden;
-    width: 100%;
+  flex: 0 0 23px;
+  background-color: white;
+  border-top: 1px solid var(--divider-color);
+  overflow: hidden;
+  width: 100%;
 }
 
 .style-panes-wrapper {
-    overflow: hidden auto;
+  overflow: hidden auto;
 }
 
 .style-panes-wrapper > div:not(:first-child) {
-    border-top: 1px solid var(--divider-color);
+  border-top: 1px solid var(--divider-color);
 }
 
 .elements-tree-header {
-    height: 24px;
-    border-top: 1px solid var(--divider-color);
-    border-bottom: 1px solid var(--divider-color);
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  height: 24px;
+  border-top: 1px solid var(--divider-color);
+  border-bottom: 1px solid var(--divider-color);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .elements-tree-header-frame {
-    margin-left: 6px;
-    margin-right: 6px;
-    flex: none;
+  margin-left: 6px;
+  margin-right: 6px;
+  flex: none;
 }

@@ -3,17 +3,18 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
+
 .autocomplete-tooltip {
   pointer-events: none;
   margin-left: -3px;
 }
 
 .autocomplete-tooltip > div > * {
-  padding: 0px 4px;
+  padding: 0 4px;
   white-space: nowrap;
   vertical-align: middle;
   line-height: 20px;
   box-shadow: var(--drop-shadow);
-  background-color: #FFFFFF;
+  background-color: #fff;
   width: fit-content;
 }

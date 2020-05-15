@@ -5,105 +5,106 @@
 
 .lock-icon,
 .security-property {
-    height: 16px;
-    width: 16px;
-
-    -webkit-mask-image: url(Images/securityIcons.svg);
-    -webkit-mask-size: 80px 32px;
-
-    background-color: #888;
+  height: 16px;
+  width: 16px;
+  -webkit-mask-image: url(Images/securityIcons.svg);
+  -webkit-mask-size: 80px 32px;
+  background-color: #888;
 }
 
 .lock-icon-secure {
-    -webkit-mask-position: 0px 0px;
-    background-color: #0B8043;
+  -webkit-mask-position: 0 0;
+  background-color: #0b8043;
 }
 
 .lock-icon-unknown,
 .lock-icon-neutral {
-    -webkit-mask-position: -16px 0px;
-    background-color: #000000; /* Black for clarity on lower DPI screens */
+  -webkit-mask-position: -16px 0;
+  background-color: #000; /* Black for clarity on lower DPI screens */
 }
 
 @media (-webkit-min-device-pixel-ratio: 1.1) {
-    .lock-icon-unknown,
-    .lock-icon-neutral {
-        background-color: #5A5A5A; /* Gray for hiDPI screens */
-    }
+  .lock-icon-unknown,
+  .lock-icon-neutral {
+    background-color: #5a5a5a; /* Gray for hiDPI screens */
+  }
 }
 
 .lock-icon-insecure {
-    -webkit-mask-position: -32px 0px;
-    background-color: #5A5A5A;
+  -webkit-mask-position: -32px 0;
+  background-color: #5a5a5a;
 }
 
 .lock-icon-insecure-broken {
-    -webkit-mask-position: -32px 0px;
-    background-color: #C63626;
+  -webkit-mask-position: -32px 0;
+  background-color: #c63626;
 }
 
 .security-property-secure {
-    -webkit-mask-position: 0px -16px;
-    background-color: #0B8043;
+  -webkit-mask-position: 0 -16px;
+  background-color: #0b8043;
 }
 
 .security-property-neutral {
-    -webkit-mask-position: -16px -16px;
-    background-color: #C63626;
+  -webkit-mask-position: -16px -16px;
+  background-color: #c63626;
 }
 
 .security-property-insecure {
-    -webkit-mask-position: -32px -16px;
-    background-color: #C63626;
+  -webkit-mask-position: -32px -16px;
+  background-color: #c63626;
 }
 
 .security-property-insecure-broken {
-    -webkit-mask-position: -32px -16px;
-    background-color: #C63626;
+  -webkit-mask-position: -32px -16px;
+  background-color: #c63626;
 }
 
 .security-property-info {
-    -webkit-mask-position: -48px -16px;
-    background-color: rgba(0, 0, 0, 0.5);
+  -webkit-mask-position: -48px -16px;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .security-property-unknown {
-    -webkit-mask-position: -64px -16px;
-    background-color: rgba(0, 0, 0, 0.5);
+  -webkit-mask-position: -64px -16px;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .url-scheme-secure {
-    color: #0b8043;
+  color: #0b8043;
 }
 
 .url-scheme-neutral,
 .url-scheme-insecure,
 .url-scheme-insecure-broken {
-    color: #cb3626;
+  color: #cb3626;
 }
 
 .url-scheme-separator {
-    color: #8a8a8a;
+  color: #8a8a8a;
 }
 
 @media (forced-colors: active) {
-    .lock-icon,
-    .security-property,
-    .url-scheme-neutral,
-    .url-scheme-insecure,
-    .url-scheme-insecure-broken {
-        forced-color-adjust: none;
-    }
-    .lock-icon-unknown,
-    .lock-icon-neutral {
-        background-color: Highlight;
-    }
-    .tree-outline:not(.hide-selection-when-blurred) li.selected .security-property-info,
-    .tree-outline:not(.hide-selection-when-blurred) li.selected .security-property-unknown {
-        background-color: HighlightText;
-    }
-    .security-property-info,
-    .security-property-unknown {
-        background-color: CanvasText;
-    }
+  .lock-icon,
+  .security-property,
+  .url-scheme-neutral,
+  .url-scheme-insecure,
+  .url-scheme-insecure-broken {
+    forced-color-adjust: none;
+  }
+
+  .lock-icon-unknown,
+  .lock-icon-neutral {
+    background-color: Highlight;
+  }
+
+  .tree-outline:not(.hide-selection-when-blurred) li.selected .security-property-info,
+  .tree-outline:not(.hide-selection-when-blurred) li.selected .security-property-unknown {
+    background-color: HighlightText;
+  }
+
+  .security-property-info,
+  .security-property-unknown {
+    background-color: canvastext;
+  }
 }

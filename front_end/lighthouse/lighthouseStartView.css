@@ -9,12 +9,13 @@
   font-size: var(--font-size);
   line-height: 18px;
 
-  --color-blue: #0535C1;
+  --color-blue: #0535c1;
+
   /* for buttons */
   --accent-color: var(--color-blue);
   --color-bg: white;
   --font-size: 14px;
-  --report-font-family: Roboto, Helvetica, Arial, sans-serif;
+  --report-font-family: roboto, helvetica, arial, sans-serif;
 }
 
 .lighthouse-start-view header {
@@ -25,12 +26,12 @@
 }
 
 .lighthouse-logo {
-    width: 75px;
-    height: 75px;
-    flex-shrink: 0;
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-image: url(Images/lighthouse_logo.svg);
+  width: 75px;
+  height: 75px;
+  flex-shrink: 0;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-image: url(Images/lighthouse_logo.svg);
 }
 
 .lighthouse-start-view-text {
@@ -89,6 +90,7 @@ input[type="radio"]:focus {
   font-weight: 500;
   font-size: var(--font-size);
 }
+
 .lighthouse-start-button-container button:disabled {
   cursor: not-allowed;
 }

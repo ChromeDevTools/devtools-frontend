@@ -28,151 +28,151 @@
  */
 
 :root {
-    height: 100%;
-    overflow: hidden;
+  height: 100%;
+  overflow: hidden;
 }
 
 :root {
-    --accent-color: #1a73e8;
-    --accent-fg-color: #1a73e8;
-    --accent-color-hover: #3b86e8;
-    --accent-fg-color-hover: #1567D3;
-    --active-control-bg-color: #5a5a5a;
-    --focus-bg-color: hsl(214, 40%, 92%);
-    --focus-ring-inactive-shadow-color: #e0e0e0;
-    --input-validation-error: #db1600;
-    --toolbar-bg-color: #f3f3f3;
-    --toolbar-hover-bg-color: #eaeaea;
-    --selection-fg-color: white;
-    --selection-inactive-fg-color: #5a5a5a;
-    --selection-inactive-bg-color: #dadada;
-    --tab-selected-fg-color: #333;
-    --tab-selected-bg-color: var(--toolbar-bg-color);
-    --drop-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05),
-                   0 2px 4px rgba(0, 0, 0, 0.2),
-                   0 2px 6px rgba(0, 0, 0, 0.1);
-    --divider-color: #d0d0d0;
-    --focus-ring-inactive-shadow: 0 0 0 1px var(--focus-ring-inactive-shadow-color);
-    --item-selection-bg-color: #cfe8fc;
-    --item-selection-inactive-bg-color: #e0e0e0;
-
-    --network-grid-default-color: rgba(255, 255, 255, 1.0);
-    --network-grid-stripe-color: rgba(245, 245, 245, 1.0);
-    --network-grid-navigation-color: rgba(221, 238, 255, 1.0);
-    --network-grid-hovered-color: rgba(235, 242, 252, 0.7);
-    --network-grid-initiator-path-color: rgba(58, 217, 58, 0.4);
-    --network-grid-initiated-path-color: rgba(217, 58, 58, 0.4);
-    --network-grid-selected-color: rgba(219, 219, 219, .6);
-    --network-grid-focus-selected-color: var(--selection-bg-color);
-    --network-grid-focus-selected-color-has-error: rgb(255, 240, 240, 1.0);
-    --network-grid-from-frame-color: rgba(224, 247, 250, .4);
-    --network-grid-is-product-color: rgba(255, 252, 225, .6);
+  --accent-color: #1a73e8;
+  --accent-fg-color: #1a73e8;
+  --accent-color-hover: #3b86e8;
+  --accent-fg-color-hover: #1567d3;
+  --active-control-bg-color: #5a5a5a;
+  --focus-bg-color: hsl(214, 40%, 92%);
+  --focus-ring-inactive-shadow-color: #e0e0e0;
+  --input-validation-error: #db1600;
+  --toolbar-bg-color: #f3f3f3;
+  --toolbar-hover-bg-color: #eaeaea;
+  --selection-fg-color: white;
+  --selection-inactive-fg-color: #5a5a5a;
+  --selection-inactive-bg-color: #dadada;
+  --tab-selected-fg-color: #333;
+  --tab-selected-bg-color: var(--toolbar-bg-color);
+  --drop-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.05),
+    0 2px 4px rgba(0, 0, 0, 0.2),
+    0 2px 6px rgba(0, 0, 0, 0.1);
+  --divider-color: #d0d0d0;
+  --focus-ring-inactive-shadow: 0 0 0 1px var(--focus-ring-inactive-shadow-color);
+  --item-selection-bg-color: #cfe8fc;
+  --item-selection-inactive-bg-color: #e0e0e0;
+  --network-grid-default-color: rgba(255, 255, 255, 1);
+  --network-grid-stripe-color: rgba(245, 245, 245, 1);
+  --network-grid-navigation-color: rgba(221, 238, 255, 1);
+  --network-grid-hovered-color: rgba(235, 242, 252, 0.7);
+  --network-grid-initiator-path-color: rgba(58, 217, 58, 0.4);
+  --network-grid-initiated-path-color: rgba(217, 58, 58, 0.4);
+  --network-grid-selected-color: rgba(219, 219, 219, 0.6);
+  --network-grid-focus-selected-color: var(--selection-bg-color);
+  --network-grid-focus-selected-color-has-error: rgb(255, 240, 240, 1);
+  --network-grid-from-frame-color: rgba(224, 247, 250, 0.4);
+  --network-grid-is-product-color: rgba(255, 252, 225, 0.6);
 }
 
 .-theme-with-dark-background {
-    --accent-color: #0e639c;
-    --accent-fg-color: #cccccc;
-    --accent-fg-color-hover: #cccccc;
-    --accent-color-hover: rgb(17, 119, 187);
-    --active-control-bg-color: #cdcdcd;
-    --focus-bg-color: hsl(214, 19%, 27%);
-    --focus-ring-inactive-shadow-color: #5a5a5a;
-    --toolbar-bg-color: #292a2d; /* --google-grey-900-white-4-percent */
-    --toolbar-hover-bg-color: #202020;
-    --selection-fg-color: #cdcdcd;
-    --selection-inactive-fg-color: #cdcdcd;
-    --selection-inactive-bg-color: hsl(0, 0%, 28%);
-    --tab-selected-fg-color: #eaeaea;
-    --tab-selected-bg-color: #000;
-    --drop-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2),
-                   0 2px 4px 2px rgba(0, 0, 0, 0.2),
-                   0 2px 6px 2px rgba(0, 0, 0, 0.1);
-    --divider-color: #525252;
-    --focus-ring-inactive-shadow: 0 0 0 1px var(--focus-ring-inactive-shadow-color);
-    --item-selection-bg-color: hsl(207, 88%, 22%);
-    --item-selection-inactive-bg-color: #454545;
-
-    --network-grid-default-color: rgba(36, 36, 36, 1.0);
-    --network-grid-stripe-color: rgba(41, 41, 41, 1.0);
-    --network-grid-navigation-color: rgba(221, 238, 255, 1.0);
-    --network-grid-hovered-color: rgba(20, 37, 63, 0.7);
-    --network-grid-initiator-path-color: rgba(58, 217, 58, 0.4);
-    --network-grid-initiated-path-color: rgba(217, 58, 58, 0.4);
-    --network-grid-selected-color: rgba(57, 57, 57, .6);
-    --network-grid-focus-selected-color: var(--selection-bg-color);
-    --network-grid-focus-selected-color-has-error: rgba(217, 58, 58, 0.15);
-    --network-grid-from-frame-color: rgba(224, 247, 250, .4);
-    --network-grid-is-product-color: rgba(255, 252, 225, .6);
+  --accent-color: #0e639c;
+  --accent-fg-color: #ccc;
+  --accent-fg-color-hover: #ccc;
+  --accent-color-hover: rgb(17, 119, 187);
+  --active-control-bg-color: #cdcdcd;
+  --focus-bg-color: hsl(214, 19%, 27%);
+  --focus-ring-inactive-shadow-color: #5a5a5a;
+  --toolbar-bg-color: #292a2d; /* --google-grey-900-white-4-percent */
+  --toolbar-hover-bg-color: #202020;
+  --selection-fg-color: #cdcdcd;
+  --selection-inactive-fg-color: #cdcdcd;
+  --selection-inactive-bg-color: hsl(0, 0%, 28%);
+  --tab-selected-fg-color: #eaeaea;
+  --tab-selected-bg-color: #000;
+  --drop-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.2),
+    0 2px 4px 2px rgba(0, 0, 0, 0.2),
+    0 2px 6px 2px rgba(0, 0, 0, 0.1);
+  --divider-color: #525252;
+  --focus-ring-inactive-shadow: 0 0 0 1px var(--focus-ring-inactive-shadow-color);
+  --item-selection-bg-color: hsl(207, 88%, 22%);
+  --item-selection-inactive-bg-color: #454545;
+  --network-grid-default-color: rgba(36, 36, 36, 1);
+  --network-grid-stripe-color: rgba(41, 41, 41, 1);
+  --network-grid-navigation-color: rgba(221, 238, 255, 1);
+  --network-grid-hovered-color: rgba(20, 37, 63, 0.7);
+  --network-grid-initiator-path-color: rgba(58, 217, 58, 0.4);
+  --network-grid-initiated-path-color: rgba(217, 58, 58, 0.4);
+  --network-grid-selected-color: rgba(57, 57, 57, 0.6);
+  --network-grid-focus-selected-color: var(--selection-bg-color);
+  --network-grid-focus-selected-color-has-error: rgba(217, 58, 58, 0.15);
+  --network-grid-from-frame-color: rgba(224, 247, 250, 0.4);
+  --network-grid-is-product-color: rgba(255, 252, 225, 0.6);
 }
 
 :root {
-    --focus-ring-active-shadow: 0 0 0 1px var(--accent-color);
-    --selection-bg-color: var(--accent-color);
-    --divider-border: 1px solid var(--divider-color);
-    --item-hover-color: rgba(56, 121, 217, 0.1);
-    --network-frame-divider-color: #fccc49;
+  --focus-ring-active-shadow: 0 0 0 1px var(--accent-color);
+  --selection-bg-color: var(--accent-color);
+  --divider-border: 1px solid var(--divider-color);
+  --item-hover-color: rgba(56, 121, 217, 0.1);
+  --network-frame-divider-color: #fccc49;
 }
 
 body {
-    height: 100%;
-    width: 100%;
-    position: relative;
-    overflow: hidden;
-    margin: 0;
-    cursor: default;
-    font-family: '.SFNSDisplay-Regular', 'Helvetica Neue', 'Lucida Grande', sans-serif;
-    font-size: 12px;
-    tab-size: 4;
-    user-select: none;
-    color: #222;
-    background: white;
+  height: 100%;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  cursor: default;
+  font-family: '.SFNSDisplay-Regular', 'Helvetica Neue', 'Lucida Grande', sans-serif;
+  font-size: 12px;
+  tab-size: 4;
+  user-select: none;
+  color: #222;
+  background: white;
 }
 
 .platform-linux {
-    color: rgb(48, 57, 66);
-    font-family: Roboto, Ubuntu, Arial, sans-serif;
+  color: rgb(48, 57, 66);
+  font-family: Roboto, Ubuntu, Arial, sans-serif;
 }
 
 .platform-mac {
-    color: rgb(48, 57, 66);
-    font-family: '.SFNSDisplay-Regular', 'Helvetica Neue', 'Lucida Grande', sans-serif;
+  color: rgb(48, 57, 66);
+  font-family: '.SFNSDisplay-Regular', 'Helvetica Neue', 'Lucida Grande', sans-serif;
 }
 
 .platform-windows {
-    font-family: 'Segoe UI', Tahoma, sans-serif;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
 }
 
 .panel {
-    display: flex;
-    overflow: hidden;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 0;
-    background-color: white;
+  display: flex;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  background-color: white;
 }
 
 .panel-sidebar {
-    overflow-x: hidden;
-    background-color: var(--toolbar-bg-color);
+  overflow-x: hidden;
+  background-color: var(--toolbar-bg-color);
 }
 
 iframe.extension {
-    flex: auto;
-    width: 100%;
-    height: 100%;
+  flex: auto;
+  width: 100%;
+  height: 100%;
 }
 
 iframe.panel.extension {
-    display: block;
-    height: 100%;
+  display: block;
+  height: 100%;
 }
 
 @media (forced-colors: active) {
-    :root {
-        --accent-color: Highlight;
-        --focus-ring-inactive-shadow-color: ButtonText
-    }
+  :root {
+    --accent-color: Highlight;
+    --focus-ring-inactive-shadow-color: ButtonText;
+  }
 }

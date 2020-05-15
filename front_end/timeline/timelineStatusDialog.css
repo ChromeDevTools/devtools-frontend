@@ -5,64 +5,66 @@
  */
 
 .timeline-status-dialog {
-    display: flex;
-    flex-direction: column;
-    padding: 16px 16px 12px 16px;
-    align-self: center;
-    background-color: white;
-    box-shadow: var(--drop-shadow);
+  display: flex;
+  flex-direction: column;
+  padding: 16px 16px 12px 16px;
+  align-self: center;
+  background-color: white;
+  box-shadow: var(--drop-shadow);
 }
 
 .status-dialog-line {
-    margin: 2px;
-    height: 14px;
-    display: flex;
-    align-items: baseline;
+  margin: 2px;
+  height: 14px;
+  display: flex;
+  align-items: baseline;
 }
 
 .status-dialog-line .label {
-    display: inline-block;
-    width: 80px;
-    text-align: right;
-    color: #aaa;
-    margin-right: 10px;
+  display: inline-block;
+  width: 80px;
+  text-align: right;
+  color: #aaa;
+  margin-right: 10px;
 }
 
 .timeline-status-dialog .progress .indicator-container {
-    display: inline-block;
-    width: 200px;
-    height: 8px;
-    background-color: #f4f4f4;
-    display: inline-block;
+  display: inline-block;
+  width: 200px;
+  height: 8px;
+  background-color: #f4f4f4;
+  display: inline-block;
 }
 
 .timeline-status-dialog .progress .indicator {
-    background-color: rgb(112, 166, 255);
-    height: 100%;
-    width: 0;
-    margin: 0;
+  background-color: rgb(112, 166, 255);
+  height: 100%;
+  width: 0;
+  margin: 0;
 }
 
 .timeline-status-dialog .stop-button {
-    margin-top: 8px;
-    height: 100%;
-    align-self: flex-end;
+  margin-top: 8px;
+  height: 100%;
+  align-self: flex-end;
 }
 
 .timeline-status-dialog .stop-button button {
-    min-width: 80px;
+  min-width: 80px;
 }
 
 @media (forced-colors: active) {
-    .timeline-status-dialog {
-        border: 1px solid CanvasText;
-    }
-    .timeline-status-dialog .progress .indicator-container {
-        border: 1px solid ButtonText;
-        background-color: ButtonFace;
-    }
-    .timeline-status-dialog .progress .indicator {
-        forced-color-adjust: none;
-        background-color: ButtonText;
-    }
+  .timeline-status-dialog {
+    border: 1px solid canvastext;
+  }
+
+  .timeline-status-dialog .progress .indicator-container {
+    border: 1px solid ButtonText;
+    background-color: ButtonFace;
+  }
+
+  .timeline-status-dialog .progress .indicator {
+    forced-color-adjust: none;
+    background-color: ButtonText;
+  }
 }

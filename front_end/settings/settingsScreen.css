@@ -5,196 +5,196 @@
  */
 
 .settings-window-main {
-    color: rgb(48, 57, 66);
-    background-color: white;
-    padding: 11px 0 0 0;
+  color: rgb(48, 57, 66);
+  background-color: white;
+  padding: 11px 0 0 0;
 }
 
 .settings-content {
-    overflow-y: auto;
-    overflow-x: hidden;
-    margin: 8px 8px 8px 0;
-    padding: 0 4px;
-    flex: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin: 8px 8px 8px 0;
+  padding: 0 4px;
+  flex: auto;
 }
 
 .settings-footnote {
-    border-top: 1px solid #EEEEEE;
-    margin: 0;
-    padding: 12px;
+  border-top: 1px solid #eee;
+  margin: 0;
+  padding: 12px;
 }
 
 .settings-container {
-    width: 100%;
-    -webkit-column-width: 288px;
+  width: 100%;
+  -webkit-column-width: 288px;
 }
 
 .settings-block {
-    display: block;
-    padding-bottom: 9px;
-    width: 288px;
-    -webkit-column-break-inside: avoid;
+  display: block;
+  padding-bottom: 9px;
+  width: 288px;
+  -webkit-column-break-inside: avoid;
 }
 
 .settings-tab.settings-container {
-    -webkit-column-width: 308px;
+  -webkit-column-width: 308px;
 }
 
 .settings-tab .settings-block {
-    margin-left: 20px;
+  margin-left: 20px;
 }
 
 .settings-line {
-    padding-bottom: 5px;
-    margin-bottom: 5px;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
 }
 
 .settings-key-cell {
-    display: inline-block;
-    width: 153px;
-    white-space: nowrap;
-    text-align: right;
-    vertical-align: middle;
-    padding-right: 6px;
+  display: inline-block;
+  width: 153px;
+  white-space: nowrap;
+  text-align: right;
+  vertical-align: middle;
+  padding-right: 6px;
 }
 
 .settings-cell {
-    display: inline-block;
-    width: 135px;
-    vertical-align: middle;
+  display: inline-block;
+  width: 135px;
+  vertical-align: middle;
 }
 
 .settings-section-title {
-    font-size: 120%;
-    text-align: left;
+  font-size: 120%;
+  text-align: left;
 }
 
 .settings-key {
-    padding: 0.1em 0.6em;
-    border: 1px solid #ccc;
-    font-size: 11px;
-    background-color: #f7f7f7;
-    color: #333;
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 2px #ffffff inset;
-    border-radius: 3px;
-    display: inline-block;
-    margin: 0 0.1em;
-    text-shadow: 0 1px 0 #fff;
-    line-height: 1.5;
-    white-space: nowrap;
+  padding: 0.1em 0.6em;
+  border: 1px solid #ccc;
+  font-size: 11px;
+  background-color: #f7f7f7;
+  color: #333;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 2px #fff inset;
+  border-radius: 3px;
+  display: inline-block;
+  margin: 0 0.1em;
+  text-shadow: 0 1px 0 #fff;
+  line-height: 1.5;
+  white-space: nowrap;
 }
 
 .settings-combine-keys,
 .settings-key-delimiter {
-    font-size: 9px;
+  font-size: 9px;
 }
 
 .settings-combine-keys {
-    margin: 0 0.3em;
+  margin: 0 0.3em;
 }
 
 .settings-key-delimiter {
-    margin: 0 0.5em;
-    display: none;
+  margin: 0 0.5em;
+  display: none;
 }
 
 fieldset {
-    margin: 0;
-    padding: 0;
-    border: none;
+  margin: 0;
+  padding: 0;
+  border: none;
 }
 
 .settings-tab label {
-    padding-right: 4px;
-    display: inline-flex;
-    flex-shrink: 0;
+  padding-right: 4px;
+  display: inline-flex;
+  flex-shrink: 0;
 }
 
 .settings-block p p {
-    padding-left: 30px;
+  padding-left: 30px;
 }
 
 .settings-experiments-warning-subsection-warning {
-    color: rgb(200, 0, 0);
+  color: rgb(200, 0, 0);
 }
 
 .settings-experiments-warning-subsection-message {
-    color: inherit;
+  color: inherit;
 }
 
 .settings-content input[type=checkbox] {
-    margin: 1px 7px 1px 2px;
+  margin: 1px 7px 1px 2px;
 }
 
 .settings-window-title {
-    font-size: 18px;
-    color: rgb(48, 57, 66);
-    padding: 0 0 5px 13px;
+  font-size: 18px;
+  color: rgb(48, 57, 66);
+  padding: 0 0 5px 13px;
 }
 
 .settings-container-wrapper {
-    position: absolute;
-    top: 31px;
-    left: 0px;
-    right: 0;
-    bottom: 0;
-    overflow: auto;
-    padding-top: 9px;
+  position: absolute;
+  top: 31px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+  padding-top: 9px;
 }
 
 .settings-tab.settings-content {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 .settings-tab-container {
-    flex: auto;
-    overflow: hidden;
+  flex: auto;
+  overflow: hidden;
 }
 
 .settings-tab-container header {
-    padding: 0 0 6px;
-    border-bottom: 1px solid #EEEEEE;
+  padding: 0 0 6px;
+  border-bottom: 1px solid #eee;
 }
 
 #experiments-tab-content .settings-container {
-    -webkit-column-width: 470px;
+  -webkit-column-width: 470px;
 }
 
 #experiments-tab-content .settings-block {
-    width: 470px;
-    margin-left: 0;
+  width: 470px;
+  margin-left: 0;
 }
 
 .settings-tab-container header > h1 {
-    font-size: 18px;
-    font-weight: normal;
-    margin: 0;
-    padding-bottom: 3px;
+  font-size: 18px;
+  font-weight: normal;
+  margin: 0;
+  padding-bottom: 3px;
 }
 
 .settings-tab .settings-section-title {
-    margin-left: -20px;
-    color: #222;
+  margin-left: -20px;
+  color: #222;
 }
 
 .settings-tab .settings-block fieldset:disabled label:hover {
-    color: inherit;
+  color: inherit;
 }
 
 .settings-tab .settings-block label:hover {
-    color: #222;
+  color: #222;
 }
 
 .settings-tab p {
-    margin: 12px 0;
+  margin: 12px 0;
 }
 
 .settings-tab select {
-    margin-left: 10px;
+  margin-left: 10px;
 }
 
 .settings-experiment-unstable {
-    display: block;
-    color: #888;
+  display: block;
+  color: #888;
 }

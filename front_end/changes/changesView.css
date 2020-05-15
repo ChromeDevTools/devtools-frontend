@@ -3,76 +3,79 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-[slot=insertion-point-main]{
-    flex-direction: column;
-    display: flex;
+
+[slot=insertion-point-main] {
+  flex-direction: column;
+  display: flex;
 }
 
 [slot=insertion-point-sidebar] {
-    overflow: auto;
+  overflow: auto;
 }
 
-.editor-container{
-    flex: 1;
+.editor-container {
+  flex: 1;
 }
 
 :focus.selected {
-    background-color: var(--selection-bg-color);
-    color: #FFF;
+  background-color: var(--selection-bg-color);
+  color: #fff;
 }
 
 .CodeMirror-lines:not(:active) {
-    cursor: default !important;
+  cursor: default !important;
 }
 
 .CodeMirror-line:hover {
-    cursor: default !important;
-    background-color: rgba(0,0,255,0.05);
+  cursor: default !important;
+  background-color: rgba(0, 0, 255, 0.05);
 }
 
 .CodeMirror .CodeMirror-linebackground.spacer {
-    text-align: center;
-    color: rgba(0, 0, 0, 0.5);
-    background-color: rgba(0, 0, 255, 0.1);
+  text-align: center;
+  color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 255, 0.1);
 }
 
 .CodeMirror .equal > span > span {
-    opacity: .5;
+  opacity: 0.5;
 }
 
 .CodeMirror .CodeMirror-selectedtext:not(.CodeMirror-persist-highlight) {
-    opacity: 1.0;
+  opacity: 1;
 }
 
 .CodeMirror .CodeMirror-linebackground.addition,
 -theme-preserve,
 .changes-diff-gutter-marker.addition {
-    background-color: hsla(144, 55%, 49%, .2);
+  background-color: hsla(144, 55%, 49%, 0.2);
 }
 
 .CodeMirror .CodeMirror-linebackground.deletion,
 -theme-preserve,
 .changes-diff-gutter-marker.deletion {
-    background-color: rgba(255, 0, 0, .2);
+  background-color: rgba(255, 0, 0, 0.2);
 }
 
-.CodeMirror .addition .cm-inner-diff:not(.CodeMirror-selectedtext), -theme-preserve {
-    background-color: hsla(144, 55%, 49%, .3);
+.CodeMirror .addition .cm-inner-diff:not(.CodeMirror-selectedtext),
+-theme-preserve {
+  background-color: hsla(144, 55%, 49%, 0.3);
 }
 
-.CodeMirror .deletion .cm-inner-diff:not(.CodeMirror-selectedtext), -theme-preserve {
-    background-color: rgba(255, 0, 0, .3);
+.CodeMirror .deletion .cm-inner-diff:not(.CodeMirror-selectedtext),
+-theme-preserve {
+  background-color: rgba(255, 0, 0, 0.3);
 }
 
 .changes-toolbar {
-    background-color: var(--toolbar-bg-color);
-    border-top: var(--divider-border);
+  background-color: var(--toolbar-bg-color);
+  border-top: var(--divider-border);
 }
 
 .changes-diff-gutter {
-    width: 20px;
+  width: 20px;
 }
 
 .changes-diff-gutter-marker {
-    text-align: center;
+  text-align: center;
 }

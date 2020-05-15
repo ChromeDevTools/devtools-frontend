@@ -28,50 +28,50 @@
  */
 
 .expandable-view-title {
-    display: flex;
-    align-items: center;
-    background-color: var(--toolbar-bg-color);
-    height: 22px;
-    padding: 0 5px;
-    border-top: var(--divider-border);
-    white-space: nowrap;
-    overflow: hidden;
-    position: relative;
-    border-bottom: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  background-color: var(--toolbar-bg-color);
+  height: 22px;
+  padding: 0 5px;
+  border-top: var(--divider-border);
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+  border-bottom: 1px solid transparent;
 }
 
 .expandable-view-title.expanded,
 .expandable-view-title:last-child {
-    border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
 }
 
 .expandable-view-title .toolbar {
-    margin-top: -3px;
+  margin-top: -3px;
 }
 
 .expandable-view-title:not(.expanded) .toolbar {
-    display: none;
+  display: none;
 }
 
 .title-expand-icon {
-    margin-right: 2px;
-    margin-bottom: -2px;
+  margin-right: 2px;
+  margin-bottom: -2px;
 }
 
 .expandable-view-title[data-keyboard-focus="true"]:focus {
-    background-color: var(--focus-bg-color);
+  background-color: var(--focus-bg-color);
 }
 
 .expandable-view-title > .toolbar {
-    position: absolute;
-    right: 0;
-    top: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 
 @media (forced-colors: active) {
-    .expandable-view-title[data-keyboard-focus="true"]:focus {
-        forced-color-adjust: none;
-        background: Canvas !important;
-        box-shadow: 0 0 0 2px Highlight inset;
-    }
+  .expandable-view-title[data-keyboard-focus="true"]:focus {
+    forced-color-adjust: none;
+    background: canvas !important;
+    box-shadow: 0 0 0 2px Highlight inset;
+  }
 }

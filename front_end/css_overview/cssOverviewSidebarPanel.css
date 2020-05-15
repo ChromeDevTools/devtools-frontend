@@ -7,7 +7,7 @@
 .overview-sidebar-panel {
   overflow: auto;
   display: flex;
-  background: #F3F3F3;
+  background: #f3f3f3;
 }
 
 .overview-sidebar-panel-item {
@@ -24,8 +24,8 @@
 }
 
 .overview-sidebar-panel-item.selected {
-  background: #1A73E8;
-  color: #FFFFFF;
+  background: #1a73e8;
+  color: #fff;
 }
 
 .overview-toolbar {

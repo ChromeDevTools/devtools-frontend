@@ -8,6 +8,7 @@
   max-height: 200px;
   overflow-y: auto;
   background: var(--toolbar-bg-color);
+
   --error-background-color: hsl(0, 100%, 97%);
   --error-border-color: hsl(0, 100%, 92%);
   --error-text-color: red;

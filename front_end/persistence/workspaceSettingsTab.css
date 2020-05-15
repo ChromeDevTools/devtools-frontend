@@ -5,112 +5,112 @@
  */
 
 header {
-    padding: 0 0 6px;
-    border-bottom: 1px solid #EEEEEE;
+  padding: 0 0 6px;
+  border-bottom: 1px solid #eee;
 }
 
 header > h1 {
-    font-size: 18px;
-    font-weight: normal;
-    margin: 0;
-    padding-bottom: 3px;
+  font-size: 18px;
+  font-weight: normal;
+  margin: 0;
+  padding-bottom: 3px;
 }
 
 .settings-content {
-    overflow-y: auto;
-    overflow-x: hidden;
-    margin: 8px 8px 8px 0;
-    padding: 0 4px;
-    flex: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin: 8px 8px 8px 0;
+  padding: 0 4px;
+  flex: auto;
 }
 
 .settings-container {
-    width: 100%;
-    -webkit-column-width: 288px;
+  width: 100%;
+  -webkit-column-width: 288px;
 }
 
-
 .settings-tab.settings-container {
-    -webkit-column-width: 308px;
+  -webkit-column-width: 308px;
 }
 
 .settings-tab label {
-    padding-right: 4px;
-    display: inline-flex;
+  padding-right: 4px;
+  display: inline-flex;
 }
 
 .settings-container-wrapper {
-    position: absolute;
-    top: 31px;
-    left: 0px;
-    right: 0;
-    bottom: 0;
-    overflow: auto;
-    padding-top: 9px;
+  position: absolute;
+  top: 31px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+  padding-top: 9px;
 }
 
 .settings-tab.settings-content {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 .settings-tab p {
-    margin: 12px 0;
+  margin: 12px 0;
 }
 
 p.folder-exclude-pattern {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 p.folder-exclude-pattern > input {
-    flex: auto;
+  flex: auto;
 }
 
 .settings-tab .file-system-container {
-    border-top: 1px solid #aaa;
-    padding: 19px 0 10px;
-    margin: 20px 0;
+  border-top: 1px solid #aaa;
+  padding: 19px 0 10px;
+  margin: 20px 0;
 }
 
 .settings-tab .file-system-header {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .settings-tab .file-system-name {
-    font-weight: bold;
-    flex: none;
-    margin-right: 10px;
-    font-size: 15px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 70%;
+  font-weight: bold;
+  flex: none;
+  margin-right: 10px;
+  font-size: 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70%;
 }
 
 .settings-tab .file-system-path {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex: auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: auto;
 }
 
 .settings-info-message {
-    background-color: #eee;
-    padding: 10px;
-    margin: 20px 0;
+  background-color: #eee;
+  padding: 10px;
+  margin: 20px 0;
 }
 
 .settings-tab.settings-content.settings-container {
-    -webkit-column-width: initial;
-    overflow: hidden;
-    padding-right: 10px;
+  -webkit-column-width: initial;
+  overflow: hidden;
+  padding-right: 10px;
 }
 
 /*
  * Always show an outline. Needed because we have a white background here.
  */
+
 .harmony-input[type=text]:not(.error-input):not(:invalid) {
-    box-shadow: var(--focus-ring-inactive-shadow);
+  box-shadow: var(--focus-ring-inactive-shadow);
 }

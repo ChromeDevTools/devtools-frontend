@@ -5,16 +5,16 @@
  */
 
 .widget {
-    box-shadow: var(--drop-shadow);
-    background: white;
-    justify-content: flex-start;
-    align-items: stretch;
-    display: flex;
+  box-shadow: var(--drop-shadow);
+  background: white;
+  justify-content: flex-start;
+  align-items: stretch;
+  display: flex;
 }
 
 .dialog-close-button {
-    position: absolute;
-    right: 9px;
-    top: 9px;
-    z-index: 1;
+  position: absolute;
+  right: 9px;
+  top: 9px;
+  z-index: 1;
 }

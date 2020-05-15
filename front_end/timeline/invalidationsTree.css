@@ -4,25 +4,29 @@
  * found in the LICENSE file.
  */
 
-.header, .children, .content {
-    min-height: initial;
-    line-height: initial;
+.header,
+.children,
+.content {
+  min-height: initial;
+  line-height: initial;
 }
 
 /* This TreeElement is always expanded and has no arrow.   */
+
 /* FIXME(crbug.com/475618): Implement this in TreeElement. */
+
 .children li::before {
-    display: none;
+  display: none;
 }
 
 .content {
-    margin-bottom: 4px;
+  margin-bottom: 4px;
 }
 
 .content .stack-preview-container {
-    margin-left: 8px;
+  margin-left: 8px;
 }
 
 .content .node-list {
-    margin-left: 10px;
+  margin-left: 10px;
 }

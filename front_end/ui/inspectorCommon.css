@@ -5,220 +5,220 @@
  */
 
 * {
-    /* This is required for correct sizing of flex items because we rely
+  /* This is required for correct sizing of flex items because we rely
      * on an old version of the flexbox spec.
      * Longer-term we should remove this, see crbug.com/473625 */
-    min-width: 0;
-    min-height: 0;
+  min-width: 0;
+  min-height: 0;
 }
 
 :host-context(.platform-mac) .monospace,
 :host-context(.platform-mac) .source-code,
 .platform-mac .monospace,
 .platform-mac .source-code {
-    font-size: 11px !important;
-    font-family: Menlo, monospace;
+  font-size: 11px !important;
+  font-family: Menlo, monospace;
 }
 
 :host-context(.platform-windows) .monospace,
 :host-context(.platform-windows) .source-code,
 .platform-windows .monospace,
 .platform-windows .source-code {
-    font-size: 12px !important;
-    font-family: Consolas, Lucida Console, Courier New, monospace;
+  font-size: 12px !important;
+  font-family: Consolas, Lucida Console, Courier New, monospace;
 }
 
 :host-context(.platform-linux) .monospace,
 :host-context(.platform-linux) .source-code,
 .platform-linux .monospace,
 .platform-linux .source-code {
-    font-size: 11px !important;
-    font-family: dejavu sans mono, monospace;
+  font-size: 11px !important;
+  font-family: dejavu sans mono, monospace;
 }
 
 .source-code {
-    font-family: monospace;
-    font-size: 11px !important;
-    white-space: pre-wrap;
+  font-family: monospace;
+  font-size: 11px !important;
+  white-space: pre-wrap;
 }
 
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 :focus {
-    outline-width: 0;
+  outline-width: 0;
 }
 
 img {
-    -webkit-user-drag: none;
+  -webkit-user-drag: none;
 }
 
 iframe,
 a img {
-    border: none;
+  border: none;
 }
 
 .fill {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 iframe.fill {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 .widget {
-    position: relative;
-    flex: auto;
-    contain: style;
+  position: relative;
+  flex: auto;
+  contain: style;
 }
 
 .hbox {
-    display: flex;
-    flex-direction: row !important;
-    position: relative;
+  display: flex;
+  flex-direction: row !important;
+  position: relative;
 }
 
 .vbox {
-    display: flex;
-    flex-direction: column !important;
-    position: relative;
+  display: flex;
+  flex-direction: column !important;
+  position: relative;
 }
 
 .view-container > .toolbar {
-    border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #eee;
 }
 
 .flex-auto {
-    flex: auto;
+  flex: auto;
 }
 
 .flex-none {
-    flex: none;
+  flex: none;
 }
 
 .flex-centered {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .overflow-auto {
-    overflow: auto;
+  overflow: auto;
 }
 
 iframe.widget {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
 }
 
 .hidden {
-    display: none !important;
+  display: none !important;
 }
 
 .monospace {
-    font-size: 10px !important;
-    font-family: monospace;
+  font-size: 10px !important;
+  font-family: monospace;
 }
 
 .highlighted-search-result {
-    border-radius: 1px;
-    background-color: rgba(255, 255, 0, 0.8);
-    outline: 1px solid rgba(255, 255, 0, 0.8);
+  border-radius: 1px;
+  background-color: rgba(255, 255, 0, 0.8);
+  outline: 1px solid rgba(255, 255, 0, 0.8);
 }
 
 .-theme-with-dark-background .highlighted-search-result,
 :host-context(.-theme-with-dark-background) .highlighted-search-result {
-    background-color: hsl(133, 100%, 30%);
-    color: #333;
+  background-color: hsl(133, 100%, 30%);
+  color: #333;
 }
 
 .link {
-    cursor: pointer;
-    text-decoration: underline;
-    color: rgb(17, 85, 204);
+  cursor: pointer;
+  text-decoration: underline;
+  color: rgb(17, 85, 204);
 }
 
 button,
 input,
 select {
-    /* Form elements do not automatically inherit font style from ancestors. */
-    font-family: inherit;
-    font-size: inherit;
+  /* Form elements do not automatically inherit font style from ancestors. */
+  font-family: inherit;
+  font-size: inherit;
 }
 
 input {
-    background-color: white;
-    color: inherit;
+  background-color: white;
+  color: inherit;
 }
 
 input::placeholder {
-    color: rgba(0, 0, 0, 0.54);
+  color: rgba(0, 0, 0, 0.54);
 }
 
 :host-context(.-theme-with-dark-background) input[type="checkbox"]:not(.-theme-preserve) {
-    -webkit-filter: invert(80%);
+  -webkit-filter: invert(80%);
 }
 
 .harmony-input:not([type]),
 .harmony-input[type=number],
 .harmony-input[type=text] {
-    padding: 3px 6px;
-    height: 24px;
-    border: none;
-    box-shadow: var(--focus-ring-inactive-shadow);
+  padding: 3px 6px;
+  height: 24px;
+  border: none;
+  box-shadow: var(--focus-ring-inactive-shadow);
 }
 
 .harmony-input:not([type]):not(.error-input):not(:invalid):hover,
 .harmony-input[type=number]:not(.error-input):not(:invalid):hover,
 .harmony-input[type=text]:not(.error-input):not(:invalid):hover {
-    box-shadow: var(--focus-ring-inactive-shadow);
+  box-shadow: var(--focus-ring-inactive-shadow);
 }
 
 .harmony-input:not([type]):not(.error-input):not(:invalid):focus,
 .harmony-input[type=number]:not(.error-input):not(:invalid):focus,
 .harmony-input[type=text]:not(.error-input):not(:invalid):focus {
-    box-shadow: var(--focus-ring-active-shadow);
+  box-shadow: var(--focus-ring-active-shadow);
 }
 
 .highlighted-search-result.current-search-result {
-    border-radius: 1px;
-    padding: 1px;
-    margin: -1px;
-    background-color: rgba(255, 127, 0, 0.8);
+  border-radius: 1px;
+  padding: 1px;
+  margin: -1px;
+  background-color: rgba(255, 127, 0, 0.8);
 }
 
 .dimmed {
-    opacity: 0.6;
+  opacity: 0.6;
 }
 
 .editing {
-    box-shadow: var(--drop-shadow);
-    background-color: white;
-    text-overflow: clip !important;
-    padding-left: 2px;
-    margin-left: -2px;
-    padding-right: 2px;
-    margin-right: -2px;
-    margin-bottom: -1px;
-    padding-bottom: 1px;
-    opacity: 1.0 !important;
+  box-shadow: var(--drop-shadow);
+  background-color: white;
+  text-overflow: clip !important;
+  padding-left: 2px;
+  margin-left: -2px;
+  padding-right: 2px;
+  margin-right: -2px;
+  margin-bottom: -1px;
+  padding-bottom: 1px;
+  opacity: 1 !important;
 }
 
 .editing,
 .editing * {
-    color: #222 !important;
-    text-decoration: none !important;
+  color: #222 !important;
+  text-decoration: none !important;
 }
 
 .harmony-input:not([type]).error-input,
@@ -227,51 +227,51 @@ input::placeholder {
 .harmony-input:not([type]):invalid,
 .harmony-input[type=number]:invalid,
 .harmony-input[type=text]:invalid {
-    box-shadow: 0 0 0 1px #ff1a00;
+  box-shadow: 0 0 0 1px #ff1a00;
 }
 
 .chrome-select {
-    -webkit-appearance: none;
-    user-select: none;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 2px;
-    color: #333;
-    font: inherit;
-    margin: 0;
-    outline: none;
-    padding-right: 20px;
-    padding-left: 6px;
-    background-image: -webkit-image-set(url(Images/chromeSelect.png) 1x, url(Images/chromeSelect_2x.png) 2x);
-    background-color: hsl(0, 0%, 98%);
-    background-position: right center;
-    background-repeat: no-repeat;
-    min-height: 24px;
-    min-width: 80px;
-    background-size: 15px;
+  -webkit-appearance: none;
+  user-select: none;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+  color: #333;
+  font: inherit;
+  margin: 0;
+  outline: none;
+  padding-right: 20px;
+  padding-left: 6px;
+  background-image: -webkit-image-set(url(Images/chromeSelect.png) 1x, url(Images/chromeSelect_2x.png) 2x);
+  background-color: hsl(0, 0%, 98%);
+  background-position: right center;
+  background-repeat: no-repeat;
+  min-height: 24px;
+  min-width: 80px;
+  background-size: 15px;
 }
 
 .chrome-select:enabled:active,
 .chrome-select:enabled:focus,
 .chrome-select:enabled:hover {
-    background-color: hsl(0, 0%, 96%);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  background-color: hsl(0, 0%, 96%);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .chrome-select:enabled:active {
-    background-color: #f2f2f2;
+  background-color: #f2f2f2;
 }
 
 .chrome-select:enabled:focus {
-    border-color: transparent;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(66, 133, 244, 0.4);
+  border-color: transparent;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(66, 133, 244, 0.4);
 }
 
 .chrome-select:disabled {
-    opacity: 0.38;
+  opacity: 0.38;
 }
 
 .chrome-select-label {
-  margin: 0px 22px;
+  margin: 0 22px;
   flex: none;
 }
 
@@ -282,210 +282,232 @@ input::placeholder {
 
 .chrome-select optgroup,
 .chrome-select option {
-    background-color: #EEEEEE;
-    color: #222;
+  background-color: #eee;
+  color: #222;
 }
 
 :not(.platform-mac).-theme-with-dark-background ::-webkit-scrollbar,
 :host-context(:not(.platform-mac).-theme-with-dark-background) ::-webkit-scrollbar {
-    width: 14px;
-    height: 14px;
+  width: 14px;
+  height: 14px;
 }
 
 :not(.platform-mac).-theme-with-dark-background ::-webkit-scrollbar-track,
 :host-context(:not(.platform-mac).-theme-with-dark-background) ::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 1px rgba(255,255,255,0.3);
-    background: rgb(36, 36, 36);
+  -webkit-box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.3);
+  background: rgb(36, 36, 36);
 }
 
 :not(.platform-mac).-theme-with-dark-background ::-webkit-scrollbar-thumb,
 :host-context(:not(.platform-mac).-theme-with-dark-background) ::-webkit-scrollbar-thumb {
-    border-radius: 2px;
-    background-color: #333;
-    -webkit-box-shadow: inset 0 0 1px rgba(255,255,255,0.5);
+  border-radius: 2px;
+  background-color: #333;
+  -webkit-box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.5);
 }
 
 :not(.platform-mac).-theme-with-dark-background ::-webkit-scrollbar-corner,
 :host-context(:not(.platform-mac).-theme-with-dark-background) ::-webkit-scrollbar-corner {
-    background-color: #242424;
+  background-color: #242424;
 }
 
 .gray-info-message {
-    text-align: center;
-    font-style: italic;
-    padding: 6px;
-    color: #888;
-    white-space: nowrap;
+  text-align: center;
+  font-style: italic;
+  padding: 6px;
+  color: #888;
+  white-space: nowrap;
 }
 
 span[is=dt-icon-label] {
-    flex: none;
+  flex: none;
 }
 
 .full-widget-dimmed-banner a {
-    color: inherit;
+  color: inherit;
 }
 
 .full-widget-dimmed-banner {
-    color: #777;
-    background-color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 20px;
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    font-size: 13px;
-    overflow: auto;
-    z-index: 500;
+  color: #777;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  font-size: 13px;
+  overflow: auto;
+  z-index: 500;
 }
 
 [is=ui-icon] {
-    display: inline-block;
-    flex-shrink: 0;
+  display: inline-block;
+  flex-shrink: 0;
 }
 
 .-theme-with-dark-background [is=ui-icon].icon-invert,
 :host-context(.-theme-with-dark-background) [is=ui-icon].icon-invert {
-    filter: invert(80%) hue-rotate(180deg);
+  filter: invert(80%) hue-rotate(180deg);
 }
 
 [is=ui-icon].icon-mask {
-    background-color: rgb(110, 110, 110);
-    -webkit-mask-position: var(--spritesheet-position);
+  background-color: rgb(110, 110, 110);
+  -webkit-mask-position: var(--spritesheet-position);
 }
 
 [is=ui-icon]:not(.icon-mask) {
-    background-position: var(--spritesheet-position);
+  background-position: var(--spritesheet-position);
 }
 
 .spritesheet-smallicons:not(.icon-mask) {
-    background-image: url(Images/smallIcons.svg);
+  background-image: url(Images/smallIcons.svg);
 }
 
 .spritesheet-smallicons.icon-mask {
-    -webkit-mask-image: url(Images/smallIcons.svg);
+  -webkit-mask-image: url(Images/smallIcons.svg);
 }
 
 .spritesheet-largeicons:not(.icon-mask) {
-    background-image: url(Images/largeIcons.svg);
+  background-image: url(Images/largeIcons.svg);
 }
 
 .spritesheet-largeicons.icon-mask {
-    -webkit-mask-image: url(Images/largeIcons.svg);
+  -webkit-mask-image: url(Images/largeIcons.svg);
 }
 
 .spritesheet-mediumicons:not(.icon-mask) {
-    background-image: url(Images/mediumIcons.svg);
+  background-image: url(Images/mediumIcons.svg);
 }
 
 .spritesheet-mediumicons.icon-mask {
-    -webkit-mask-image: url(Images/mediumIcons.svg);
+  -webkit-mask-image: url(Images/mediumIcons.svg);
 }
 
 .spritesheet-arrowicons {
-    background-image: url(Images/popoverArrows.png);
+  background-image: url(Images/popoverArrows.png);
 }
 
-:host-context(.force-white-icons) [is=ui-icon].spritesheet-smallicons, .force-white-icons [is=ui-icon].spritesheet-smallicons, [is=ui-icon].force-white-icons.spritesheet-smallicons, -theme-preserve {
-    -webkit-mask-image: url(Images/smallIcons.svg);
-    -webkit-mask-position: var(--spritesheet-position);
-    background: #fafafa !important;
+:host-context(.force-white-icons) [is=ui-icon].spritesheet-smallicons,
+.force-white-icons [is=ui-icon].spritesheet-smallicons,
+[is=ui-icon].force-white-icons.spritesheet-smallicons,
+-theme-preserve {
+  -webkit-mask-image: url(Images/smallIcons.svg);
+  -webkit-mask-position: var(--spritesheet-position);
+  background: #fafafa !important;
 }
 
-:host-context(.force-white-icons) [is=ui-icon].spritesheet-largeicons, .force-white-icons [is=ui-icon].spritesheet-largeicons, [is=ui-icon].force-white-icons.spritesheet-largeicons, -theme-preserve {
-    -webkit-mask-image: url(Images/largeIcons.svg);
-    -webkit-mask-position: var(--spritesheet-position);
-    background: #fafafa !important;
+:host-context(.force-white-icons) [is=ui-icon].spritesheet-largeicons,
+.force-white-icons [is=ui-icon].spritesheet-largeicons,
+[is=ui-icon].force-white-icons.spritesheet-largeicons,
+-theme-preserve {
+  -webkit-mask-image: url(Images/largeIcons.svg);
+  -webkit-mask-position: var(--spritesheet-position);
+  background: #fafafa !important;
 }
 
-:host-context(.force-white-icons) [is=ui-icon].spritesheet-mediumicon, .force-white-icons [is=ui-icon].spritesheet-mediumicons, [is=ui-icon].force-white-icons.spritesheet-mediumicons, -theme-preserve {
-    -webkit-mask-image: url(Images/mediumIcons.svg);
-    -webkit-mask-position: var(--spritesheet-position);
-    background: #fafafa !important;
+:host-context(.force-white-icons) [is=ui-icon].spritesheet-mediumicon,
+.force-white-icons [is=ui-icon].spritesheet-mediumicons,
+[is=ui-icon].force-white-icons.spritesheet-mediumicons,
+-theme-preserve {
+  -webkit-mask-image: url(Images/mediumIcons.svg);
+  -webkit-mask-position: var(--spritesheet-position);
+  background: #fafafa !important;
 }
 
 .expandable-inline-button {
-    background-color: #dedede;
-    color: #333;
-    cursor: pointer;
-    border-radius: 3px;
+  background-color: #dedede;
+  color: #333;
+  cursor: pointer;
+  border-radius: 3px;
 }
 
 .undisplayable-text,
 .expandable-inline-button {
-    padding: 1px 3px;
-    margin: 0 2px;
-    font-size: 11px;
-    font-family: sans-serif;
-    white-space: nowrap;
-    display: inline-block;
+  padding: 1px 3px;
+  margin: 0 2px;
+  font-size: 11px;
+  font-family: sans-serif;
+  white-space: nowrap;
+  display: inline-block;
 }
 
 .undisplayable-text::after,
 .expandable-inline-button::after {
-    content: attr(data-text);
+  content: attr(data-text);
 }
 
 .undisplayable-text {
-    color: rgb(128, 128, 128);
-    font-style: italic;
+  color: rgb(128, 128, 128);
+  font-style: italic;
 }
 
 .expandable-inline-button:hover {
-    background-color: #d5d5d5;
+  background-color: #d5d5d5;
 }
 
 .expandable-inline-button[data-keyboard-focus="true"] {
-    background-color: #bbbbbb;
+  background-color: #bbb;
 }
 
 ::selection {
-    background-color: #bbdefb;
+  background-color: #bbdefb;
 }
 
 .-theme-with-dark-background *::selection,
 :host-context(.-theme-with-dark-background) *::selection {
-    background-color: #9e9e9e;
+  background-color: #9e9e9e;
 }
 
 button.link {
-    border: none;
-    background: none;
-    padding: 3px;
+  border: none;
+  background: none;
+  padding: 3px;
 }
 
 button.link[data-keyboard-focus="true"]:focus {
-    background-color: rgba(0, 0, 0, 0.08);
-    border-radius: 2px;
+  background-color: rgba(0, 0, 0, 0.08);
+  border-radius: 2px;
 }
 
 /* See ARIAUtils.js */
+
 [data-aria-utils-animation-hack] {
-    animation: ANIMATION-HACK 0s;
+  animation: ANIMATION-HACK 0s;
 }
+
 @keyframes ANIMATION-HACK {
 }
 
 @media (forced-colors: active) {
-    .dimmed,
-    .chrome-select:disabled {
-        opacity: 1;
-    }
-    [is=ui-icon].icon-mask,
-    :host-context(.force-white-icons) [is=ui-icon].spritesheet-smallicons, .force-white-icons [is=ui-icon].spritesheet-smallicons, [is=ui-icon].force-white-icons.spritesheet-smallicons, -theme-preserve,
-    :host-context(.force-white-icons) [is=ui-icon].spritesheet-largeicons, .force-white-icons [is=ui-icon].spritesheet-largeicons, [is=ui-icon].force-white-icons.spritesheet-largeicons, -theme-preserve,
-    :host-context(.force-white-icons) [is=ui-icon].spritesheet-mediumicon, .force-white-icons [is=ui-icon].spritesheet-mediumicons, [is=ui-icon].force-white-icons.spritesheet-mediumicons, -theme-preserve {
-        forced-color-adjust: none;
-        background-color: ButtonText;
-    }
-    .harmony-input:not([type]),
-    .harmony-input[type=number],
-    .harmony-input[type=text] {
-        border: 1px solid ButtonText;
-    }
+  .dimmed,
+  .chrome-select:disabled {
+    opacity: 1;
+  }
+
+  [is=ui-icon].icon-mask,
+  :host-context(.force-white-icons) [is=ui-icon].spritesheet-smallicons,
+  .force-white-icons [is=ui-icon].spritesheet-smallicons,
+  [is=ui-icon].force-white-icons.spritesheet-smallicons,
+  -theme-preserve,
+  :host-context(.force-white-icons) [is=ui-icon].spritesheet-largeicons,
+  .force-white-icons [is=ui-icon].spritesheet-largeicons,
+  [is=ui-icon].force-white-icons.spritesheet-largeicons,
+  -theme-preserve,
+  :host-context(.force-white-icons) [is=ui-icon].spritesheet-mediumicon,
+  .force-white-icons [is=ui-icon].spritesheet-mediumicons,
+  [is=ui-icon].force-white-icons.spritesheet-mediumicons,
+  -theme-preserve {
+    forced-color-adjust: none;
+    background-color: ButtonText;
+  }
+
+  .harmony-input:not([type]),
+  .harmony-input[type=number],
+  .harmony-input[type=text] {
+    border: 1px solid ButtonText;
+  }
 }

@@ -5,104 +5,109 @@
  */
 
 .object-properties-section-dimmed {
-    opacity: 0.6;
+  opacity: 0.6;
 }
 
 .object-properties-section {
-    padding: 0 0 0px 0px;
-    color: rgb(33,33,33) !important;
-    display: flex;
-    flex-direction: column;
+  padding: 0 0 0 0;
+  color: rgb(33, 33, 33) !important;
+  display: flex;
+  flex-direction: column;
 }
 
 .object-properties-section li {
-    user-select: text;
+  user-select: text;
 }
 
 .object-properties-section li::before {
-    top: -1px;
+  top: -1px;
 }
 
 .object-properties-section li.editing-sub-part {
-    padding: 3px 12px 8px 6px;
-    margin: -1px -6px -8px -6px;
-    text-overflow: clip;
+  padding: 3px 12px 8px 6px;
+  margin: -1px -6px -8px -6px;
+  text-overflow: clip;
 }
 
 .object-properties-section li.editing {
-    margin-left: 10px;
-    text-overflow: clip;
+  margin-left: 10px;
+  text-overflow: clip;
 }
 
 .tree-outline ol.title-less-mode {
-    padding-left: 0px;
+  padding-left: 0;
 }
 
 .object-properties-section .synthetic-property {
-    font-style: italic;
+  font-style: italic;
 }
 
 .object-properties-section .private-property-hash {
-    color: #222;
+  color: #222;
 }
 
 .object-properties-section-root-element {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
 .object-properties-section .editable-div {
-    overflow: hidden;
+  overflow: hidden;
 }
 
 .name-and-value {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    line-height: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 16px;
 }
 
 .editing-sub-part .name-and-value {
-    overflow: visible;
-    display: inline-flex;
+  overflow: visible;
+  display: inline-flex;
 }
 
 .property-prompt {
-    margin-left: 4px;
+  margin-left: 4px;
 }
 
 .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] {
-    background: none;
+  background: none;
 }
 
 .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] ::slotted(*),
 .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] .tree-element-title,
 .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] .name-and-value {
-    background: var(--focus-bg-color);
-    border-radius: 2px;
-    box-shadow: 0px 0px 0px 2px var(--focus-bg-color);
+  background: var(--focus-bg-color);
+  border-radius: 2px;
+  box-shadow: 0 0 0 2px var(--focus-bg-color);
 }
 
 @media (forced-colors: active) {
-    .object-properties-section-dimmed {
-        opacity: 1;
-    }
-    .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] {
-        background: Highlight;
-    }
-    .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] .tree-element-title,
-    .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] .name-and-value {
-        background: transparent;
-        box-shadow: none;
-    }
-    .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] span,
-    .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] .gray-info-message {
-        color: HighlightText;
-    }
-    .tree-outline-disclosure:hover li.parent::before {
-        background-color: ButtonText;
-    }
-    .tree-outline li:hover .tree-element-title,
-    .tree-outline li.selected .tree-element-title {
-        color: ButtonText;
-    }
+  .object-properties-section-dimmed {
+    opacity: 1;
+  }
+
+  .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] {
+    background: Highlight;
+  }
+
+  .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] .tree-element-title,
+  .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] .name-and-value {
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] span,
+  .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] .gray-info-message {
+    color: HighlightText;
+  }
+
+  .tree-outline-disclosure:hover li.parent::before {
+    background-color: ButtonText;
+  }
+
+  .tree-outline li:hover .tree-element-title,
+  .tree-outline li.selected .tree-element-title {
+    color: ButtonText;
+  }
 }

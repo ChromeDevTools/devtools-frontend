@@ -5,88 +5,89 @@
  */
 
 .tree-outline {
-    padding-left: 0;
-    --error-background-color: #D93025;
+  padding-left: 0;
+
+  --error-background-color: #d93025;
 }
 
 .tree-outline > ol {
-    padding-bottom: 5px;
-    border-bottom: solid 1px #e0e0e0;
+  padding-bottom: 5px;
+  border-bottom: solid 1px #e0e0e0;
 }
 
 .tree-outline > .parent {
-    user-select: none;
-    font-weight: bold;
-    color: #616161;
-    margin-top: -1px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    height: 26px;
+  user-select: none;
+  font-weight: bold;
+  color: #616161;
+  margin-top: -1px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  height: 26px;
 }
 
 .tree-outline li {
-    display: block;
-    padding-left: 5px;
-    line-height: 20px;
+  display: block;
+  padding-left: 5px;
+  line-height: 20px;
 }
 
 .tree-outline li:not(.parent) {
-    margin-left: 10px;
+  margin-left: 10px;
 }
 
 .tree-outline li:not(.parent)::before {
-    display: none;
+  display: none;
 }
 
 .tree-outline .caution {
-    margin-left: 4px;
-    display: inline-block;
-    font-weight: bold;
+  margin-left: 4px;
+  display: inline-block;
+  font-weight: bold;
 }
 
 .tree-outline li.expanded .header-count {
-    display: none;
+  display: none;
 }
 
 .tree-outline li .header-toggle {
-    display: none;
+  display: none;
 }
 
 .tree-outline li .status-from-cache {
-    color: gray;
+  color: gray;
 }
 
 .tree-outline li.expanded .header-toggle {
-    display: inline;
-    margin-left: 30px;
-    font-weight: normal;
-    color: rgb(45%, 45%, 45%);
+  display: inline;
+  margin-left: 30px;
+  font-weight: normal;
+  color: rgb(45%, 45%, 45%);
 }
 
 .tree-outline li .header-toggle:hover {
-    color: rgb(20%, 20%, 45%);
-    cursor: pointer;
+  color: rgb(20%, 20%, 45%);
+  cursor: pointer;
 }
 
 .tree-outline .header-name {
-    color: rgb(33%, 33%, 33%);
-    display: inline-block;
-    margin-right: 0.25em;
-    font-weight: bold;
-    vertical-align: top;
-    white-space: pre-wrap;
+  color: rgb(33%, 33%, 33%);
+  display: inline-block;
+  margin-right: 0.25em;
+  font-weight: bold;
+  vertical-align: top;
+  white-space: pre-wrap;
 }
 
 .tree-outline .header-separator {
-    user-select: none;
+  user-select: none;
 }
 
 .tree-outline .header-badge-text {
-    font-variant: small-caps;
-    font-weight: 500;
-    white-space: pre-wrap;
-    word-break: break-all;
+  font-variant: small-caps;
+  font-weight: 500;
+  white-space: pre-wrap;
+  word-break: break-all;
 }
 
 .tree-outline .header-warning {
@@ -94,88 +95,90 @@
 }
 
 .tree-outline .header-badge {
-    display: inline;
-    margin-right: 0.75em;
-    background-color: var(--error-background-color);
-    color: white;
-    border-radius: 100vh;
-    padding-left: 6px;
-    padding-right: 6px;
+  display: inline;
+  margin-right: 0.75em;
+  background-color: var(--error-background-color);
+  color: white;
+  border-radius: 100vh;
+  padding-left: 6px;
+  padding-right: 6px;
 }
 
 .tree-outline .header-value {
-    display: inline;
-    margin-right: 1em;
-    white-space: pre-wrap;
-    word-break: break-all;
-    margin-top: 1px;
+  display: inline;
+  margin-right: 1em;
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin-top: 1px;
 }
 
 .tree-outline .call-to-action {
-    background-color: #F8F9FA;
-    padding: 8px;
-    border-radius: 2px;
+  background-color: #f8f9fa;
+  padding: 8px;
+  border-radius: 2px;
 }
 
 .tree-outline .selected .call-to-action {
-    background-color: transparent;
-    padding: 8px;
-    border-radius: 2px;
+  background-color: transparent;
+  padding: 8px;
+  border-radius: 2px;
 }
 
 .tree-outline .call-to-action-body {
-    padding: 6px 0;
-    margin-left: 9.5px;
-    border-left: 2px solid #F29900;
-    padding-left: 18px;
+  padding: 6px 0;
+  margin-left: 9.5px;
+  border-left: 2px solid #f29900;
+  padding-left: 18px;
 }
 
 .tree-outline .call-to-action .explanation {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .tree-outline .call-to-action code {
-    font-size: 90%;
+  font-size: 90%;
 }
 
-
 .tree-outline .call-to-action .example .comment::before {
-   content: " — ";
+  content: " — ";
 }
 
 .tree-outline .empty-request-header {
-    color: rgba(33%, 33%, 33%, 0.5);
+  color: rgba(33%, 33%, 33%, 0.5);
 }
 
 .request-headers-show-more-button {
-    border: none;
-    border-radius: 3px;
-    display: inline-block;
-    font-size: 12px;
-    font-family: sans-serif;
-    cursor: pointer;
-    margin: 0 4px;
-    padding: 2px 4px;
+  border: none;
+  border-radius: 3px;
+  display: inline-block;
+  font-size: 12px;
+  font-family: sans-serif;
+  cursor: pointer;
+  margin: 0 4px;
+  padding: 2px 4px;
 }
 
 .header-highlight {
-    background-color: #FFFF78
+  background-color: #ffff78;
 }
 
 @media (forced-colors: active) {
-    :host-context(.request-headers-tree) ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
-        background: Highlight;
-    }
-    :host-context(.request-headers-tree) ol.tree-outline:not(.hide-selection-when-blurred) li::before {
-        background-color: ButtonText;
-    }
-    :host-context(.request-headers-tree) ol.tree-outline:not(.hide-selection-when-blurred) li.selected.parent::before {
-        background-color: HighlightText;
-    }
-    :host-context(.request-headers-tree) ol.tree-outline:not(.hide-selection-when-blurred) li.selected *,
-    :host-context(.request-headers-tree) ol.tree-outline:not(.hide-selection-when-blurred) li.selected.parent,
-    :host-context(.request-headers-tree) ol.tree-outline:not(.hide-selection-when-blurred) li.selected.parent span,
-    :host-context(.request-headers-tree) ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus .status-from-cache {
-        color: HighlightText;
-    }
+  :host-context(.request-headers-tree) ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
+    background: Highlight;
+  }
+
+  :host-context(.request-headers-tree) ol.tree-outline:not(.hide-selection-when-blurred) li::before {
+    background-color: ButtonText;
+  }
+
+  :host-context(.request-headers-tree) ol.tree-outline:not(.hide-selection-when-blurred) li.selected.parent::before {
+    background-color: HighlightText;
+  }
+
+  :host-context(.request-headers-tree) ol.tree-outline:not(.hide-selection-when-blurred) li.selected *,
+  :host-context(.request-headers-tree) ol.tree-outline:not(.hide-selection-when-blurred) li.selected.parent,
+  :host-context(.request-headers-tree) ol.tree-outline:not(.hide-selection-when-blurred) li.selected.parent span,
+  :host-context(.request-headers-tree) ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus .status-from-cache {
+    color: HighlightText;
+  }
 }

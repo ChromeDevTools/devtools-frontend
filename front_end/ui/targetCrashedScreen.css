@@ -5,11 +5,11 @@
  */
 
 .widget {
-    padding: 25px;
+  padding: 25px;
 }
 
 .message {
-    font-size: larger;
-    white-space: pre;
-    margin: 5px;
+  font-size: larger;
+  white-space: pre;
+  margin: 5px;
 }

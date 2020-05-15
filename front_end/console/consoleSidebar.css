@@ -5,72 +5,75 @@
  */
 
 :host {
-    overflow: auto;
-    background-color: var(--toolbar-bg-color);
+  overflow: auto;
+  background-color: var(--toolbar-bg-color);
 }
 
 .tree-outline-disclosure {
-    max-width: 100%;
-    padding-left: 6px;
+  max-width: 100%;
+  padding-left: 6px;
 }
 
 .count {
-    flex: none;
-    margin: 0 8px;
+  flex: none;
+  margin: 0 8px;
 }
 
 [is=ui-icon] {
-    margin: 0 5px;
+  margin: 0 5px;
 }
 
 [is=ui-icon].icon-mask {
-    background-color: #555;
+  background-color: #555;
 }
 
 li {
-    height: 24px;
+  height: 24px;
 }
 
 li .largeicon-navigator-file {
-    background: linear-gradient(45deg, hsl(48, 70%, 50%), hsl(48, 70%, 70%));
-    margin: 0;
+  background: linear-gradient(45deg, hsl(48, 70%, 50%), hsl(48, 70%, 70%));
+  margin: 0;
 }
 
 li .largeicon-navigator-folder {
-    background: linear-gradient(45deg, hsl(210, 82%, 65%), hsl(210, 82%, 80%));
-    margin: -3px -3px 0 -5px;
+  background: linear-gradient(45deg, hsl(210, 82%, 65%), hsl(210, 82%, 80%));
+  margin: -3px -3px 0 -5px;
 }
 
 .tree-element-title {
-    flex-shrink: 100;
-    flex-grow: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  flex-shrink: 100;
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .tree-outline li:hover:not(.selected) .selection {
-    display: block;
-    background-color: var(--item-hover-color);
+  display: block;
+  background-color: var(--item-hover-color);
 }
 
 @media (forced-colors: active) {
-    [is=ui-icon].icon-mask {
-        background-color: ButtonText;
-    }
-    .tree-outline li:hover:not(.selected) .selection {
-        forced-color-adjust: none;
-        background-color: Highlight;
-    }
-    .tree-outline li:hover .tree-element-title,
-    .tree-outline li.selected .tree-element-title,
-    .tree-outline li:hover .count,
-    .tree-outline li.selected .count {
-        forced-color-adjust: none;
-        color: HighlightText;
-    }
-    .tree-outline li:hover [is=ui-icon].icon-mask,
-    .tree-outline li.selected [is=ui-icon].icon-mask,
-    .tree-outline li.selected:focus .spritesheet-mediumicons:not(.icon-mask) {
-        background-color: HighlightText !important;
-    }
+  [is=ui-icon].icon-mask {
+    background-color: ButtonText;
+  }
+
+  .tree-outline li:hover:not(.selected) .selection {
+    forced-color-adjust: none;
+    background-color: Highlight;
+  }
+
+  .tree-outline li:hover .tree-element-title,
+  .tree-outline li.selected .tree-element-title,
+  .tree-outline li:hover .count,
+  .tree-outline li.selected .count {
+    forced-color-adjust: none;
+    color: HighlightText;
+  }
+
+  .tree-outline li:hover [is=ui-icon].icon-mask,
+  .tree-outline li.selected [is=ui-icon].icon-mask,
+  .tree-outline li.selected:focus .spritesheet-mediumicons:not(.icon-mask) {
+    background-color: HighlightText !important;
+  }
 }

@@ -5,60 +5,60 @@
  */
 
 .film-strip-view {
-    overflow-x: auto;
-    overflow-y: hidden;
-    align-content: flex-start;
-    min-height: 81px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  align-content: flex-start;
+  min-height: 81px;
 }
 
 .film-strip-view.time-based .frame .time {
-    display: none;
+  display: none;
 }
 
 .film-strip-view .label {
-    margin: auto;
-    font-size: 18px;
-    color: #999;
+  margin: auto;
+  font-size: 18px;
+  color: #999;
 }
 
 .film-strip-view .frame {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 4px;
-    flex: none;
-    cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4px;
+  flex: none;
+  cursor: pointer;
 }
 
 .film-strip-view .frame .thumbnail {
-    min-width: 24px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    pointer-events: none;
-    margin: 4px 0 2px;
-    border: 2px solid transparent;
+  min-width: 24px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  pointer-events: none;
+  margin: 4px 0 2px;
+  border: 2px solid transparent;
 }
 
 .film-strip-view .frame:hover .thumbnail {
-    border-color: #FBCA46;
+  border-color: #fbca46;
 }
 
 .film-strip-view .frame .thumbnail img {
-    height: auto;
-    width: auto;
-    max-width: 80px;
-    max-height: 50px;
-    pointer-events: none;
-    box-shadow: 0 0 3px #bbb;
-    flex: 0 0 auto;
+  height: auto;
+  width: auto;
+  max-width: 80px;
+  max-height: 50px;
+  pointer-events: none;
+  box-shadow: 0 0 3px #bbb;
+  flex: 0 0 auto;
 }
 
 .film-strip-view .frame:hover .thumbnail img {
-    box-shadow: none;
+  box-shadow: none;
 }
 
 .film-strip-view .frame .time {
-    font-size: 10px;
-    margin-top: 2px;
+  font-size: 10px;
+  margin-top: 2px;
 }

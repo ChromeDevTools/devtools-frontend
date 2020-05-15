@@ -9,19 +9,20 @@
 }
 
 .node-link {
-    cursor: pointer;
-    display: inline;
-    pointer-events: auto;
+  cursor: pointer;
+  display: inline;
+  pointer-events: auto;
 }
 
 .node-link[data-keyboard-focus="true"]:focus {
-    outline-width: unset;
+  outline-width: unset;
 }
 
 .node-label-name {
-    color: rgb(136, 18, 128);
+  color: rgb(136, 18, 128);
 }
 
-.node-label-class, .node-label-pseudo {
-    color: rgb(153, 69, 0);
+.node-label-class,
+.node-label-pseudo {
+  color: rgb(153, 69, 0);
 }

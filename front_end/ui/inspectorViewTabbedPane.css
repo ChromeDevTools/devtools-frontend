@@ -6,21 +6,21 @@
 
 .tabbed-pane-header-tab,
 .tabbed-pane-header-tab.selected {
-    height: 26px;
-    margin: 0;
-    border: none;
-    border-left: 2px solid transparent;
-    border-right: 2px solid transparent;
+  height: 26px;
+  margin: 0;
+  border: none;
+  border-left: 2px solid transparent;
+  border-right: 2px solid transparent;
 }
 
 .tabbed-pane-header-tab.selected {
-    border-width: 0 2px 0 2px;
+  border-width: 0 2px 0 2px;
 }
 
 .tabbed-pane-header-contents {
-    margin-left: 0;
+  margin-left: 0;
 }
 
 .tabbed-pane-left-toolbar {
-    margin-right: 0 !important;
+  margin-right: 0 !important;
 }

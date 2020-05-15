@@ -36,6 +36,7 @@ import * as TextUtils from '../text_utils/text_utils.js';
 
 import {CompilerSourceMappingContentProvider} from './CompilerSourceMappingContentProvider.js';
 import {MultitargetNetworkManager} from './NetworkManager.js';
+import {Script} from './Script.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @interface
@@ -229,7 +230,8 @@ export class TextSourceMap {
   /**
    * @param {string} sourceMapURL
    * @param {string} compiledURL
-   * @return {!Promise<?TextSourceMap>}
+   * @return {!Promise<!TextSourceMap>}
+   * @throws {!Error}
    * @this {TextSourceMap}
    */
   static async load(sourceMapURL, compiledURL) {
@@ -667,6 +669,12 @@ export class WasmSourceMap {
     return WasmSourceMap._asyncResolver = WasmSourceMap._asyncResolver || WasmSourceMap._loadBindings();
   }
 
+  /**
+   *
+   * @param {!Script} script
+   * @param {string} wasmUrl
+   * @returns {!Promise<!WasmSourceMap>}
+   */
   static async load(script, wasmUrl) {
     const [Resolver, wasm] = await Promise.all([WasmSourceMap._loadBindingsOnce(), script.getWasmBytecode()]);
 

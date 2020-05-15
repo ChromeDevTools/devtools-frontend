@@ -2,8 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
+import * as TextUtils from '../text_utils/text_utils.js';
 
 import {cssMetadata, VariableRegex} from './CSSMetadata.js';
 import {CSSModel} from './CSSModel.js';        // eslint-disable-line no-unused-vars
@@ -41,6 +40,7 @@ export class CSSMatchedStyles {
     this._addedStyles = new Map();
     /** @type {!Map<!Protocol.DOM.NodeId, !Map<string, boolean>>} */
     this._matchingSelectors = new Map();
+    /** @type {!Array.<!CSSKeyframesRule>} */
     this._keyframes = [];
     if (animationsPayload) {
       this._keyframes = animationsPayload.map(rule => new CSSKeyframesRule(cssModel, rule));
@@ -109,8 +109,8 @@ export class CSSMatchedStyles {
         for (const entry of from.rule.style.cssProperties) {
           properties.set(entry.name, entry.value);
         }
-        to.rule.style.shorthandEntries = [...shorthands.keys()].map(name => ({name, value: shorthands.get(name)}));
-        to.rule.style.cssProperties = [...properties.keys()].map(name => ({name, value: properties.get(name)}));
+        to.rule.style.shorthandEntries = [...shorthands.entries()].map(([name, value]) => ({name, value}));
+        to.rule.style.cssProperties = [...properties.entries()].map(([name, value]) => ({name, value}));
       }
 
       /**
@@ -228,7 +228,7 @@ export class CSSMatchedStyles {
 
     /**
      * @param {!Array<!CSSStyleDeclaration>|!Set<!CSSStyleDeclaration>} styles
-     * @param {!SDK.CSSStyleDeclaration} query
+     * @param {!CSSStyleDeclaration} query
      * @return {boolean}
      */
     function containsStyle(styles, query) {
@@ -316,7 +316,7 @@ export class CSSMatchedStyles {
    */
   matchingSelectors(rule) {
     const node = this.nodeForStyle(rule.style);
-    if (!node) {
+    if (!node || typeof node.id !== 'number') {
       return [];
     }
     const map = this._matchingSelectors.get(node.id);
@@ -353,18 +353,30 @@ export class CSSMatchedStyles {
      * @this {CSSMatchedStyles}
      */
     async function querySelector(node, selectorText) {
-      const ownerDocument = node.ownerDocument || null;
-      // We assume that "matching" property does not ever change during the
-      // MatchedStyleResult's lifetime.
-      const map = this._matchingSelectors.get(node.id);
-      if ((map && map.has(selectorText)) || !ownerDocument) {
+      const ownerDocument = node.ownerDocument;
+      if (!ownerDocument) {
         return;
       }
+      // We assume that "matching" property does not ever change during the
+      // MatchedStyleResult's lifetime.
+      if (typeof node.id === 'number') {
+        const map = this._matchingSelectors.get(node.id);
+        if (map && map.has(selectorText)) {
+          return;
+        }
+      }
 
+      if (typeof ownerDocument.id !== 'number') {
+        return;
+      }
       const matchingNodeIds = await this._node.domModel().querySelectorAll(ownerDocument.id, selectorText);
 
       if (matchingNodeIds) {
-        this._setSelectorMatches(node, selectorText, matchingNodeIds.indexOf(node.id) !== -1);
+        if (typeof node.id === 'number') {
+          this._setSelectorMatches(node, selectorText, matchingNodeIds.indexOf(node.id) !== -1);
+        } else {
+          this._setSelectorMatches(node, selectorText, false);
+        }
       }
     }
   }
@@ -385,6 +397,9 @@ export class CSSMatchedStyles {
    * @param {boolean} value
    */
   _setSelectorMatches(node, selectorText, value) {
+    if (typeof node.id !== 'number') {
+      return;
+    }
     let map = this._matchingSelectors.get(node.id);
     if (!map) {
       map = new Map();
@@ -398,7 +413,10 @@ export class CSSMatchedStyles {
    * @return {boolean}
    */
   mediaMatches(style) {
-    const media = style.parentRule ? style.parentRule.media : [];
+    if (!style.parentRule) {
+      return true;
+    }
+    const media = /** @type {!CSSStyleRule} */ (style.parentRule).media;
     for (let i = 0; media && i < media.length; ++i) {
       if (!media[i].active()) {
         return false;
@@ -606,7 +624,11 @@ class DOMInheritanceCascade {
       return [];
     }
     this._ensureInitialized();
-    return Array.from(this._availableCSSVariables.get(nodeCascade).keys());
+    const availableCSSVariables = this._availableCSSVariables.get(nodeCascade);
+    if (!availableCSSVariables) {
+      return [];
+    }
+    return Array.from(availableCSSVariables.keys());
   }
 
   /**
@@ -622,6 +644,9 @@ class DOMInheritanceCascade {
     this._ensureInitialized();
     const availableCSSVariables = this._availableCSSVariables.get(nodeCascade);
     const computedCSSVariables = this._computedCSSVariables.get(nodeCascade);
+    if (!availableCSSVariables || !computedCSSVariables) {
+      return null;
+    }
     return this._innerComputeCSSVariable(availableCSSVariables, computedCSSVariables, variableName);
   }
 
@@ -638,6 +663,9 @@ class DOMInheritanceCascade {
     this._ensureInitialized();
     const availableCSSVariables = this._availableCSSVariables.get(nodeCascade);
     const computedCSSVariables = this._computedCSSVariables.get(nodeCascade);
+    if (!availableCSSVariables || !computedCSSVariables) {
+      return null;
+    }
     return this._innerComputeValue(availableCSSVariables, computedCSSVariables, value);
   }
 
@@ -652,11 +680,14 @@ class DOMInheritanceCascade {
       return null;
     }
     if (computedCSSVariables.has(variableName)) {
-      return computedCSSVariables.get(variableName);
+      return computedCSSVariables.get(variableName) || null;
     }
     // Set dummy value to avoid infinite recursion.
     computedCSSVariables.set(variableName, null);
     const definedValue = availableCSSVariables.get(variableName);
+    if (definedValue === undefined) {
+      return null;
+    }
     const computedValue = this._innerComputeValue(availableCSSVariables, computedCSSVariables, definedValue);
     computedCSSVariables.set(variableName, computedValue);
     return computedValue;
@@ -669,7 +700,7 @@ class DOMInheritanceCascade {
    * @return {?string}
    */
   _innerComputeValue(availableCSSVariables, computedCSSVariables, value) {
-    const results = TextUtils.TextUtils.splitStringByRegexes(value, [VariableRegex]);
+    const results = TextUtils.TextUtils.Utils.splitStringByRegexes(value, [VariableRegex]);
     const tokens = [];
     for (const result of results) {
       if (result.regexIndex === -1) {

@@ -207,11 +207,16 @@ export class DebuggerPlugin extends Plugin {
     // Divs are created in the breakpoint gutter in each line
     // so that the contextMenu event handler can determine which row was clicked on.
     this._textEditor.installGutter(breakpointsGutterType, true);
-    for (let i = 0; i < this._textEditor.linesCount; ++i) {
+    this._gutterElementCount = 0;
+  }
+
+  _addGutterElements() {
+    for (let i = this._gutterElementCount; i < this._textEditor.linesCount; ++i) {
       const gutterElement = document.createElement('div');
       gutterElement.classList.add('breakpoint-element');
       this._textEditor.setGutterDecoration(i, breakpointsGutterType, gutterElement);
     }
+    this._gutterElementCount = this._textEditor.linesCount;
   }
 
   /**
@@ -1281,6 +1286,8 @@ export class DebuggerPlugin extends Plugin {
      * @this {DebuggerPlugin}
      */
     function updateGutter(editorLineNumber, decorations) {
+      this._addGutterElements();
+
       this._textEditor.toggleLineClass(editorLineNumber, 'cm-breakpoint', false);
       this._textEditor.toggleLineClass(editorLineNumber, 'cm-breakpoint-disabled', false);
       this._textEditor.toggleLineClass(editorLineNumber, 'cm-breakpoint-unbound', false);
@@ -1441,7 +1448,8 @@ export class DebuggerPlugin extends Plugin {
     } else {
       const handle = this._textEditor.textEditorPositionHandle(editorLocation[0], editorLocation[1]);
       decoration = new BreakpointDecoration(
-          this._textEditor, handle, breakpoint.condition(), breakpoint.enabled(), breakpoint.bound(), breakpoint);
+          this._textEditor, handle, breakpoint.condition(), breakpoint.enabled(),
+          breakpoint.bound() || !breakpoint.hasBoundScript(), breakpoint);
       decoration.element.addEventListener('click', this._inlineBreakpointClick.bind(this, decoration), true);
       decoration.element.addEventListener(
           'contextmenu', this._inlineBreakpointContextMenu.bind(this, decoration), true);

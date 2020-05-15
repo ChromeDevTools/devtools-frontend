@@ -20,7 +20,8 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
       lineNumbers: true,
       lineWrapping: false,
       bracketMatchingSetting: Common.Settings.Settings.instance().moduleSetting('textEditorBracketMatching'),
-      padBottom: Common.Settings.Settings.instance().moduleSetting('allowScrollPastEof').get()
+      padBottom: Common.Settings.Settings.instance().moduleSetting('allowScrollPastEof').get(),
+      lineWiseCopyCut: true,
     };
     if (codeMirrorOptions) {
       Object.assign(defaultCodeMirrorOptions, codeMirrorOptions);

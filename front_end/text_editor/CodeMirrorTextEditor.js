@@ -66,7 +66,7 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox {
       indentUnit,
       indentWithTabs,
       lineWrapping: options.lineWrapping,
-      lineWiseCopyCut: false,
+      lineWiseCopyCut: options.lineWiseCopyCut || false,
       tabIndex: 0,
       pollInterval: Math.pow(2, 31) - 1,  // ~25 days
       inputStyle: options.inputStyle || 'devToolsAccessibleTextArea'

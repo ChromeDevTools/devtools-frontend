@@ -134,7 +134,8 @@ export const Events = {
   *  autoHeight: (boolean|undefined),
   *  padBottom: (boolean|undefined),
   *  maxHighlightLength: (number|undefined),
-  *  placeholder: (string|undefined)
+  *  placeholder: (string|undefined),
+  *  lineWiseCopyCut: (boolean|undefined)
   * }}
   */
 export let Options;

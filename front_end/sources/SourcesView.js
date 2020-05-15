@@ -376,10 +376,10 @@ export class SourcesView extends UI.Widget.VBox {
   }
 
   _updateScriptViewToolbarItems() {
-    this._scriptViewToolbar.removeToolbarItems();
     const view = this.visibleView();
     if (view instanceof UI.View.SimpleView) {
       (/** @type {?UI.View.SimpleView} */ (view)).toolbarItems().then(items => {
+        this._scriptViewToolbar.removeToolbarItems();
         items.map(item => this._scriptViewToolbar.appendToolbarItem(item));
       });
     }

@@ -13,7 +13,8 @@ describe('The Memory Panel', async () => {
     await navigateToMemoryTab(target);
   });
 
-  it('Can take several heap snapshots ', async () => {
+  // flaky test
+  it.skip('[crbug.com/1083134]: Can take several heap snapshots ', async () => {
     const {target} = getBrowserAndPages();
     await navigateToMemoryTab(target);
     await takeHeapSnapshot();

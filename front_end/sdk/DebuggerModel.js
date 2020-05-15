@@ -230,13 +230,14 @@ export class DebuggerModel extends SDKModel {
   }
 
   _pauseOnExceptionStateChanged() {
+    /** @type {!Protocol.Debugger.SetPauseOnExceptionsRequestState} */
     let state;
     if (!Common.Settings.Settings.instance().moduleSetting('pauseOnExceptionEnabled').get()) {
-      state = PauseOnExceptionsState.DontPauseOnExceptions;
+      state = Protocol.Debugger.SetPauseOnExceptionsRequestState.None;
     } else if (Common.Settings.Settings.instance().moduleSetting('pauseOnCaughtException').get()) {
-      state = PauseOnExceptionsState.PauseOnAllExceptions;
+      state = Protocol.Debugger.SetPauseOnExceptionsRequestState.All;
     } else {
-      state = PauseOnExceptionsState.PauseOnUncaughtExceptions;
+      state = Protocol.Debugger.SetPauseOnExceptionsRequestState.Uncaught;
     }
 
     this._agent.setPauseOnExceptions(state);
@@ -1051,11 +1052,6 @@ export const BreakReason = {
   Other: 'other'
 };
 
-const ContinueToLocationTargetCallFrames = {
-  Any: 'any',
-  Current: 'current'
-};
-
 /**
  * @extends {Protocol.DebuggerDispatcher}
  * @unrestricted
@@ -1206,7 +1202,8 @@ export class Location {
     if (pausedCallback) {
       this.debuggerModel._continueToLocationCallback = this._paused.bind(this, pausedCallback);
     }
-    this.debuggerModel._agent.continueToLocation(this.payload(), ContinueToLocationTargetCallFrames.Current);
+    this.debuggerModel._agent.continueToLocation(
+        this.payload(), Protocol.Debugger.ContinueToLocationRequestTargetCallFrames.Current);
   }
 
   /**

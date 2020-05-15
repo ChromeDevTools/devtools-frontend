@@ -794,7 +794,8 @@ export class ScreenshotCapture {
     }
     this._capturing = true;
     this._screenCaptureModel.startScreencast(
-        'jpeg', 80, undefined, 300, 2, this._screencastFrame.bind(this), visible => {});
+        Protocol.Page.StartScreencastRequestFormat.Jpeg, 80, undefined, 300, 2, this._screencastFrame.bind(this),
+        visible => {});
   }
 
   /**

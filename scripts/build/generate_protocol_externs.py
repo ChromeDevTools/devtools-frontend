@@ -172,15 +172,15 @@ def generate_protocol_externs(output_path, file1, file2):
                         if "optional" in in_param:
                             in_param_to_type[
                                 in_param_name] = "(%s|undefined)" % param_type(
-                                    domain_name, in_param)
+                                    domain_name, in_param, command)
                             annotation_suffix = "=" if in_param_name in trailing_optional else "|undefined"
                         else:
                             in_param_to_type[in_param_name] = param_type(
-                                domain_name, in_param)
+                                domain_name, in_param, command)
                             annotation_suffix = ""
                         output_file.write(
                             " * @param {%s%s} %s\n" %
-                            (param_type(domain_name, in_param),
+                            (param_type(domain_name, in_param, command),
                              annotation_suffix, real_in_param_name))
                 returns = []
                 returns.append("?Protocol.Error")

@@ -90,7 +90,7 @@ export class TracingManager extends SDKModel {
       bufferUsageReportingInterval: bufferUsageReportingIntervalMs,
       categories: categoryFilter,
       options: options,
-      transferMode: TransferMode.ReportEvents
+      transferMode: Protocol.Tracing.StartRequestTransferMode.ReportEvents,
     };
     const response = await this._tracingAgent.invoke_start(args);
     if (response[ProtocolClient.InspectorBackend.ProtocolError]) {
@@ -110,11 +110,6 @@ export class TracingManager extends SDKModel {
     this._tracingAgent.end();
   }
 }
-
-const TransferMode = {
-  ReportEvents: 'ReportEvents',
-  ReturnAsStream: 'ReturnAsStream'
-};
 
 /**
  * @interface

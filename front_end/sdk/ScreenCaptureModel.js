@@ -28,7 +28,7 @@ export class ScreenCaptureModel extends SDKModel {
   }
 
   /**
-   * @param {string} format
+   * @param {!Protocol.Page.StartScreencastRequestFormat} format
    * @param {number} quality
    * @param {number|undefined} width
    * @param {number|undefined} height
@@ -49,7 +49,7 @@ export class ScreenCaptureModel extends SDKModel {
   }
 
   /**
-   * @param {string} format
+   * @param {!Protocol.Page.CaptureScreenshotRequestFormat} format
    * @param {number} quality
    * @param {!Protocol.Page.Viewport=} clip
    * @return {!Promise<?string>}

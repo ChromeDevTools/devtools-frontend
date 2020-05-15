@@ -84,7 +84,11 @@ def generate_enum(name, json):
     return "\n/** @enum {string} */\n%s = {\n%s\n};\n" % (name, (",\n".join(enum_members)))
 
 
-def param_type(domain_name, param):
+def param_type(domain_name, param, command=None):
+    if "enum" in param and command:
+        return "Protocol.%s.%sRequest%s" % (domain_name,
+                                            to_title_case(command["name"]),
+                                            to_title_case(param_name(param)))
     if "type" in param:
         if param["type"] == "array":
             items = param["items"]
@@ -139,11 +143,19 @@ def generate_protocol_externs(output_path, file1, file2):
 
         if "commands" in domain:
             for command in domain["commands"]:
-                output_file.write("\n/**\n")
                 params = []
                 in_param_to_type = {}
                 out_param_to_type = {}
                 has_return_value = "returns" in command
+
+                if "parameters" in command:
+                    for param in command["parameters"]:
+                        if "enum" in param:
+                            enum_name = param_type(domain_name, param, command)
+                            output_file.write(generate_enum(enum_name, param))
+
+                output_file.write("\n/**\n")
+
                 if "parameters" in command:
                     # Only declare trailing optional parameters as optional in
                     # JSDoc annotations.
@@ -158,13 +170,18 @@ def generate_protocol_externs(output_path, file1, file2):
                         real_in_param_name = "opt_" + in_param_name if in_param_name in trailing_optional else in_param_name
                         params.append(real_in_param_name)
                         if "optional" in in_param:
-                            in_param_to_type[in_param_name] = "(%s|undefined)" % param_type(domain_name, in_param)
+                            in_param_to_type[
+                                in_param_name] = "(%s|undefined)" % param_type(
+                                    domain_name, in_param)
                             annotation_suffix = "=" if in_param_name in trailing_optional else "|undefined"
                         else:
-                            in_param_to_type[in_param_name] = param_type(domain_name, in_param)
+                            in_param_to_type[in_param_name] = param_type(
+                                domain_name, in_param)
                             annotation_suffix = ""
                         output_file.write(
-                            " * @param {%s%s} %s\n" % (param_type(domain_name, in_param), annotation_suffix, real_in_param_name))
+                            " * @param {%s%s} %s\n" %
+                            (param_type(domain_name, in_param),
+                             annotation_suffix, real_in_param_name))
                 returns = []
                 returns.append("?Protocol.Error")
                 if ("error" in command):

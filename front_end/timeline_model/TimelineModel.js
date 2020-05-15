@@ -140,6 +140,14 @@ export class TimelineModelImpl {
    * @param {!SDK.TracingModel.Event} event
    * @return {boolean}
    */
+  isParseHTMLEvent(event) {
+    return event.name === RecordType.ParseHTML;
+  }
+
+  /**
+   * @param {!SDK.TracingModel.Event} event
+   * @return {boolean}
+   */
   isLCPCandidateEvent(event) {
     return event.name === RecordType.MarkLCPCandidate && !!event.args['data']['isMainFrame'];
   }

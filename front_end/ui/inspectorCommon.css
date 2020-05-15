@@ -157,8 +157,13 @@ select {
   font-size: inherit;
 }
 
+select option,
+select optgroup,
 input {
   background-color: white;
+}
+
+input {
   color: inherit;
 }
 

@@ -5,52 +5,52 @@
  */
 
 .object-value-scientific-notation-exponent {
-    flex-shrink: 0;
+  flex-shrink: 0;
 }
 
 .object-value-scientific-notation-mantissa {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex-shrink: 1;
-    min-width: 1ex;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 1;
+  min-width: 1ex;
 }
 
 .object-value-scientific-notation-number {
-    display: flex !important;
+  display: flex !important;
 }
 
 .value.object-value-node:hover {
-    background-color: var(--item-hover-color);
+  background-color: var(--item-hover-color);
 }
 
 .object-value-function-prefix,
 .object-value-boolean {
-    color: rgb(13, 34, 170);
+  color: rgb(13, 34, 170);
 }
 
 .object-value-function {
-    font-style: italic;
+  font-style: italic;
 }
 
 .object-value-function.linkified:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-    cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.1);
+  cursor: pointer;
 }
 
 .object-value-number {
-    color: rgb(28, 0, 207);
+  color: rgb(28, 0, 207);
 }
 
 .object-value-bigint {
-    color: rgb(0, 93, 0);
+  color: rgb(0, 93, 0);
 }
 
 .object-value-string,
 .object-value-regexp,
 .object-value-symbol {
-    white-space: pre;
-    unicode-bidi: -webkit-isolate;
-    color: rgb(196, 26, 22);
+  white-space: pre;
+  unicode-bidi: -webkit-isolate;
+  color: rgb(196, 26, 22);
 }
 
 .-theme-with-dark-background .object-value-string,
@@ -59,61 +59,68 @@
 :host-context(.-theme-with-dark-background) .object-value-regexp,
 .-theme-with-dark-background .object-value-symbol,
 :host-context(.-theme-with-dark-background) .object-value-symbol {
-    color: rgb(242, 139, 84);
+  color: rgb(242, 139, 84);
 }
 
 .object-value-string-quote {
-    color: #222;
+  color: #222;
 }
 
 .object-value-node {
-    position: relative;
-    vertical-align: baseline;
-    color: rgb(48, 57, 66);
-    display: inline-block;
+  position: relative;
+  vertical-align: baseline;
+  color: rgb(48, 57, 66);
+  display: inline-block;
 }
 
 .object-value-null,
 .object-value-undefined {
-    color: rgb(128, 128, 128);
+  color: rgb(94 94 94);
+}
+
+.-theme-with-dark-background .object-value-null,
+:host-context(.-theme-with-dark-background) .object-value-null,
+.-theme-with-dark-background .object-value-undefined,
+:host-context(.-theme-with-dark-background) .object-value-undefined {
+  color: rgb(161 161 161);
 }
 
 .object-value-calculate-value-button:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .object-properties-section-custom-section {
-    display: inline-flex;
-    flex-direction: column;
+  display: inline-flex;
+  flex-direction: column;
 }
 
 .-theme-with-dark-background .object-value-number,
 :host-context(.-theme-with-dark-background) .object-value-number,
 .-theme-with-dark-background .object-value-boolean,
 :host-context(.-theme-with-dark-background) .object-value-boolean {
-    color: hsl(252, 100%, 75%);
+  color: hsl(252, 100%, 75%);
 }
 
 .object-properties-section .object-description {
-    color: gray;
+  color: gray;
 }
 
 .value .object-properties-preview {
-    white-space: nowrap;
+  white-space: nowrap;
 }
 
 .name {
-    color: rgb(136, 19, 145);
-    flex-shrink: 0;
+  color: rgb(136, 19, 145);
+  flex-shrink: 0;
 }
 
 .object-properties-preview .name {
-    color: #565656;
+  color: #565656;
 }
 
 @media (forced-colors: active) {
-    .object-value-calculate-value-button:hover {
-        forced-color-adjust: none;
-        color: Highlight;
-    }
+  .object-value-calculate-value-button:hover {
+    forced-color-adjust: none;
+    color: Highlight;
+  }
 }

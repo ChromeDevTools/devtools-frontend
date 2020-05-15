@@ -1,0 +1,8 @@
+front_end/cm
+front_end/third_party
+karma-coverage
+node_modules
+out
+scripts/jsdoc_validator/tests
+test/**/fixtures
+third_party

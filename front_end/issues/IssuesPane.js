@@ -364,6 +364,7 @@ class AffectedSourcesView extends AffectedResourcesView {
     const anchorElement = Components.Linkifier.Linkifier.linkifyURL(url, linkifierURLOptions);
     cellElement.appendChild(anchorElement);
     const rowElement = document.createElement('tr');
+    rowElement.classList.add('affected-resource-source');
     rowElement.appendChild(cellElement);
     this._affectedResources.appendChild(rowElement);
   }

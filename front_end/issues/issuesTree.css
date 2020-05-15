@@ -254,6 +254,14 @@ p {
   border-collapse: collapse;
 }
 
+.affected-resource-source {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--issue-link);
+  border: 0;
+  border-collapse: collapse;
+}
+
 .affected-resource-list {
   border-spacing: 10px 0;
   margin-left: -10px;

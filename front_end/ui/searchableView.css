@@ -141,3 +141,10 @@
 .toolbar-search-options {
   margin: 0 auto;
 }
+
+:host-context(#sources-panel-sources-view) .search-bar {
+  flex-basis: auto;
+}
+:host-context(#sources-panel-sources-view) .toolbar-search {
+  flex-wrap: wrap;
+}

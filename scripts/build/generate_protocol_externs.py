@@ -128,6 +128,10 @@ def generate_protocol_externs(output_path, file1, file2):
         output_file.write("/** @typedef {%s} */\n" % closureName)
         output_file.write("Protocol.%s;\n" % protocolName)
 
+    # Used for enforcing whether a dispatcher uses an object or not
+    output_file.write("/** @typedef {boolean} */\n")
+    output_file.write("Protocol.UsesObjectNotation;\n")
+
     for domain in domains:
         domain_name = domain["domain"]
         if "types" in domain:
@@ -273,6 +277,9 @@ def generate_protocol_externs(output_path, file1, file2):
         else:
             output_file.write("/** @interface */\n")
         output_file.write("Protocol.%sDispatcher = function() {};\n" % domain_name)
+        output_file.write("/** @interface */\n")
+        output_file.write("ProtocolProxyApi.%sDispatcher = function() {};\n" %
+                          domain_name)
         if "events" in domain:
             for event in domain["events"]:
                 params = []
@@ -288,6 +295,31 @@ def generate_protocol_externs(output_path, file1, file2):
                     output_file.write(" */\n")
                 output_file.write(
                     "Protocol.%sDispatcher.prototype.%s = function(%s) {};\n" % (domain_name, event["name"], ", ".join(params)))
+
+                # Generate a Event typedef that is used in dispatchers
+                if ("parameters" in event):
+                    output_file.write("/**\n")
+                    output_file.write("* @typedef {{")
+                    for param in event["parameters"]:
+                        output_file.write(
+                            "%s: %s," %
+                            (param["name"], param_type(domain_name, param)))
+                    output_file.write("}} */\n")
+                else:
+                    output_file.write("/**\n")
+                    output_file.write("* @typedef {Object}")
+                    output_file.write("*/\n")
+                output_file.write("Protocol.%s.%sEvent;\n" %
+                                  (domain_name, to_title_case(event["name"])))
+
+                # Add the interface method to the dispatcher type, which takes 1 event as argument
+                output_file.write("/**\n")
+                output_file.write("@param {!Protocol.%s.%sEvent} request\n" %
+                                  (domain_name, to_title_case(event["name"])))
+                output_file.write("*/\n")
+                output_file.write(
+                    "ProtocolProxyApi.%sDispatcher.prototype.%s = function(request) {};\n"
+                    % (domain_name, event["name"]))
 
     for domain in domains:
         domain_name = domain["domain"]

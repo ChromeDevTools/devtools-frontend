@@ -128,7 +128,7 @@ declare namespace ProtocolProxyApi {
      */
     invoke_getFullAXTree(): Promise<Protocol.Accessibility.GetFullAXTreeResponse>;
   }
-  export interface AccessibilityDispatcher {}
+  export interface AccessibilityDispatcher extends Protocol.Dispatcher {}
 
   export interface AnimationApi {
     /**
@@ -186,7 +186,7 @@ declare namespace ProtocolProxyApi {
      */
     invoke_setTiming(params: Protocol.Animation.SetTimingRequest): Promise<Protocol.ProtocolResponseWithError>;
   }
-  export interface AnimationDispatcher {
+  export interface AnimationDispatcher extends Protocol.Dispatcher {
     /**
      * Event for when an animation has been cancelled.
      */
@@ -227,7 +227,7 @@ declare namespace ProtocolProxyApi {
     invoke_getManifestForFrame(params: Protocol.ApplicationCache.GetManifestForFrameRequest):
         Promise<Protocol.ApplicationCache.GetManifestForFrameResponse>;
   }
-  export interface ApplicationCacheDispatcher {
+  export interface ApplicationCacheDispatcher extends Protocol.Dispatcher {
     applicationCacheStatusUpdated(params: Protocol.ApplicationCache.ApplicationCacheStatusUpdatedEvent): void;
 
     networkStateUpdated(params: Protocol.ApplicationCache.NetworkStateUpdatedEvent): void;
@@ -252,7 +252,7 @@ declare namespace ProtocolProxyApi {
      */
     invoke_enable(): Promise<Protocol.ProtocolResponseWithError>;
   }
-  export interface AuditsDispatcher {
+  export interface AuditsDispatcher extends Protocol.Dispatcher {
     issueAdded(params: Protocol.Audits.IssueAddedEvent): void;
   }
 
@@ -281,7 +281,7 @@ declare namespace ProtocolProxyApi {
     invoke_clearEvents(params: Protocol.BackgroundService.ClearEventsRequest):
         Promise<Protocol.ProtocolResponseWithError>;
   }
-  export interface BackgroundServiceDispatcher {
+  export interface BackgroundServiceDispatcher extends Protocol.Dispatcher {
     /**
      * Called when the recording state for the service has been updated.
      */
@@ -378,7 +378,7 @@ declare namespace ProtocolProxyApi {
      */
     invoke_setDockTile(params: Protocol.Browser.SetDockTileRequest): Promise<Protocol.ProtocolResponseWithError>;
   }
-  export interface BrowserDispatcher {}
+  export interface BrowserDispatcher extends Protocol.Dispatcher {}
 
   export interface CSSApi {
     /**
@@ -506,7 +506,7 @@ declare namespace ProtocolProxyApi {
      */
     invoke_takeCoverageDelta(): Promise<Protocol.CSS.TakeCoverageDeltaResponse>;
   }
-  export interface CSSDispatcher {
+  export interface CSSDispatcher extends Protocol.Dispatcher {
     /**
      * Fires whenever a web font is updated.  A non-empty font parameter indicates a successfully loaded
      * web font
@@ -564,7 +564,7 @@ declare namespace ProtocolProxyApi {
     invoke_requestEntries(params: Protocol.CacheStorage.RequestEntriesRequest):
         Promise<Protocol.CacheStorage.RequestEntriesResponse>;
   }
-  export interface CacheStorageDispatcher {}
+  export interface CacheStorageDispatcher extends Protocol.Dispatcher {}
 
   export interface CastApi {
     /**
@@ -598,7 +598,7 @@ declare namespace ProtocolProxyApi {
      */
     invoke_stopCasting(params: Protocol.Cast.StopCastingRequest): Promise<Protocol.ProtocolResponseWithError>;
   }
-  export interface CastDispatcher {
+  export interface CastDispatcher extends Protocol.Dispatcher {
     /**
      * This is fired whenever the list of available sinks changes. A sink is a
      * device or a software surface that you can cast to.
@@ -870,7 +870,7 @@ declare namespace ProtocolProxyApi {
      */
     invoke_getFrameOwner(params: Protocol.DOM.GetFrameOwnerRequest): Promise<Protocol.DOM.GetFrameOwnerResponse>;
   }
-  export interface DOMDispatcher {
+  export interface DOMDispatcher extends Protocol.Dispatcher {
     /**
      * Fired when `Element`'s attribute is modified.
      */
@@ -998,7 +998,7 @@ declare namespace ProtocolProxyApi {
     invoke_setXHRBreakpoint(params: Protocol.DOMDebugger.SetXHRBreakpointRequest):
         Promise<Protocol.ProtocolResponseWithError>;
   }
-  export interface DOMDebuggerDispatcher {}
+  export interface DOMDebuggerDispatcher extends Protocol.Dispatcher {}
 
   export interface DOMSnapshotApi {
     /**
@@ -1029,7 +1029,7 @@ declare namespace ProtocolProxyApi {
     invoke_captureSnapshot(params: Protocol.DOMSnapshot.CaptureSnapshotRequest):
         Promise<Protocol.DOMSnapshot.CaptureSnapshotResponse>;
   }
-  export interface DOMSnapshotDispatcher {}
+  export interface DOMSnapshotDispatcher extends Protocol.Dispatcher {}
 
   export interface DOMStorageApi {
     invoke_clear(params: Protocol.DOMStorage.ClearRequest): Promise<Protocol.ProtocolResponseWithError>;
@@ -1053,7 +1053,7 @@ declare namespace ProtocolProxyApi {
     invoke_setDOMStorageItem(params: Protocol.DOMStorage.SetDOMStorageItemRequest):
         Promise<Protocol.ProtocolResponseWithError>;
   }
-  export interface DOMStorageDispatcher {
+  export interface DOMStorageDispatcher extends Protocol.Dispatcher {
     domStorageItemAdded(params: Protocol.DOMStorage.DomStorageItemAddedEvent): void;
 
     domStorageItemRemoved(params: Protocol.DOMStorage.DomStorageItemRemovedEvent): void;
@@ -1079,7 +1079,7 @@ declare namespace ProtocolProxyApi {
     invoke_getDatabaseTableNames(params: Protocol.Database.GetDatabaseTableNamesRequest):
         Promise<Protocol.Database.GetDatabaseTableNamesResponse>;
   }
-  export interface DatabaseDispatcher {
+  export interface DatabaseDispatcher extends Protocol.Dispatcher {
     addDatabase(params: Protocol.Database.AddDatabaseEvent): void;
   }
 
@@ -1095,7 +1095,7 @@ declare namespace ProtocolProxyApi {
     invoke_setDeviceOrientationOverride(params: Protocol.DeviceOrientation.SetDeviceOrientationOverrideRequest):
         Promise<Protocol.ProtocolResponseWithError>;
   }
-  export interface DeviceOrientationDispatcher {}
+  export interface DeviceOrientationDispatcher extends Protocol.Dispatcher {}
 
   export interface EmulationApi {
     /**
@@ -1230,7 +1230,7 @@ declare namespace ProtocolProxyApi {
     invoke_setUserAgentOverride(params: Protocol.Emulation.SetUserAgentOverrideRequest):
         Promise<Protocol.ProtocolResponseWithError>;
   }
-  export interface EmulationDispatcher {
+  export interface EmulationDispatcher extends Protocol.Dispatcher {
     /**
      * Notification sent after the virtual time budget for the current VirtualTimePolicy has run out.
      */
@@ -1257,7 +1257,7 @@ declare namespace ProtocolProxyApi {
      */
     invoke_enable(): Promise<Protocol.ProtocolResponseWithError>;
   }
-  export interface HeadlessExperimentalDispatcher {
+  export interface HeadlessExperimentalDispatcher extends Protocol.Dispatcher {
     /**
      * Issued when the target starts or stops needing BeginFrames.
      * Deprecated. Issue beginFrame unconditionally instead and use result from
@@ -1284,7 +1284,7 @@ declare namespace ProtocolProxyApi {
      */
     invoke_resolveBlob(params: Protocol.IO.ResolveBlobRequest): Promise<Protocol.IO.ResolveBlobResponse>;
   }
-  export interface IODispatcher {}
+  export interface IODispatcher extends Protocol.Dispatcher {}
 
   // eslint thinks this is us prefixing our interfaces but it's not!
   // eslint-disable-next-line @typescript-eslint/interface-name-prefix
@@ -1339,7 +1339,7 @@ declare namespace ProtocolProxyApi {
     invoke_requestDatabaseNames(params: Protocol.IndexedDB.RequestDatabaseNamesRequest):
         Promise<Protocol.IndexedDB.RequestDatabaseNamesResponse>;
   }
-  export interface IndexedDBDispatcher {}
+  export interface IndexedDBDispatcher extends Protocol.Dispatcher {}
 
   // eslint thinks this is us prefixing our interfaces but it's not!
   // eslint-disable-next-line @typescript-eslint/interface-name-prefix
@@ -1398,7 +1398,7 @@ declare namespace ProtocolProxyApi {
     invoke_synthesizeTapGesture(params: Protocol.Input.SynthesizeTapGestureRequest):
         Promise<Protocol.ProtocolResponseWithError>;
   }
-  export interface InputDispatcher {}
+  export interface InputDispatcher extends Protocol.Dispatcher {}
 
   // eslint thinks this is us prefixing our interfaces but it's not!
   // eslint-disable-next-line @typescript-eslint/interface-name-prefix
@@ -1413,7 +1413,7 @@ declare namespace ProtocolProxyApi {
      */
     invoke_enable(): Promise<Protocol.ProtocolResponseWithError>;
   }
-  export interface InspectorDispatcher {
+  export interface InspectorDispatcher extends Protocol.Dispatcher {
     /**
      * Fired when remote debugging connection is about to be terminated. Contains detach reason.
      */
@@ -1480,7 +1480,7 @@ declare namespace ProtocolProxyApi {
     invoke_snapshotCommandLog(params: Protocol.LayerTree.SnapshotCommandLogRequest):
         Promise<Protocol.LayerTree.SnapshotCommandLogResponse>;
   }
-  export interface LayerTreeDispatcher {
+  export interface LayerTreeDispatcher extends Protocol.Dispatcher {
     layerPainted(params: Protocol.LayerTree.LayerPaintedEvent): void;
 
     layerTreeDidChange(params: Protocol.LayerTree.LayerTreeDidChangeEvent): void;
@@ -1514,7 +1514,7 @@ declare namespace ProtocolProxyApi {
      */
     invoke_stopViolationsReport(): Promise<Protocol.ProtocolResponseWithError>;
   }
-  export interface LogDispatcher {
+  export interface LogDispatcher extends Protocol.Dispatcher {
     /**
      * Issued when new message was logged.
      */
@@ -1571,7 +1571,7 @@ declare namespace ProtocolProxyApi {
      */
     invoke_getSamplingProfile(): Promise<Protocol.Memory.GetSamplingProfileResponse>;
   }
-  export interface MemoryDispatcher {}
+  export interface MemoryDispatcher extends Protocol.Dispatcher {}
 
   export interface NetworkApi {
     /**
@@ -1741,7 +1741,7 @@ declare namespace ProtocolProxyApi {
     invoke_setUserAgentOverride(params: Protocol.Network.SetUserAgentOverrideRequest):
         Promise<Protocol.ProtocolResponseWithError>;
   }
-  export interface NetworkDispatcher {
+  export interface NetworkDispatcher extends Protocol.Dispatcher {
     /**
      * Fired when data chunk was received over the network.
      */
@@ -1950,7 +1950,7 @@ declare namespace ProtocolProxyApi {
      */
     invoke_setShowHinge(params: Protocol.Overlay.SetShowHingeRequest): Promise<Protocol.ProtocolResponseWithError>;
   }
-  export interface OverlayDispatcher {
+  export interface OverlayDispatcher extends Protocol.Dispatcher {
     /**
      * Fired when the node should be inspected. This happens after call to `setInspectMode` or when
      * user manually inspects an element.
@@ -2270,7 +2270,7 @@ declare namespace ProtocolProxyApi {
     invoke_setInterceptFileChooserDialog(params: Protocol.Page.SetInterceptFileChooserDialogRequest):
         Promise<Protocol.ProtocolResponseWithError>;
   }
-  export interface PageDispatcher {
+  export interface PageDispatcher extends Protocol.Dispatcher {
     domContentEventFired(params: Protocol.Page.DomContentEventFiredEvent): void;
 
     /**
@@ -2412,7 +2412,7 @@ declare namespace ProtocolProxyApi {
      */
     invoke_getMetrics(): Promise<Protocol.Performance.GetMetricsResponse>;
   }
-  export interface PerformanceDispatcher {
+  export interface PerformanceDispatcher extends Protocol.Dispatcher {
     /**
      * Current values of the metrics.
      */
@@ -2449,7 +2449,7 @@ declare namespace ProtocolProxyApi {
     invoke_setOverrideCertificateErrors(params: Protocol.Security.SetOverrideCertificateErrorsRequest):
         Promise<Protocol.ProtocolResponseWithError>;
   }
-  export interface SecurityDispatcher {
+  export interface SecurityDispatcher extends Protocol.Dispatcher {
     /**
      * There is a certificate error. If overriding certificate errors is enabled, then it should be
      * handled with the `handleCertificateError` command. Note: this event does not fire if the
@@ -2502,7 +2502,7 @@ declare namespace ProtocolProxyApi {
     invoke_updateRegistration(params: Protocol.ServiceWorker.UpdateRegistrationRequest):
         Promise<Protocol.ProtocolResponseWithError>;
   }
-  export interface ServiceWorkerDispatcher {
+  export interface ServiceWorkerDispatcher extends Protocol.Dispatcher {
     workerErrorReported(params: Protocol.ServiceWorker.WorkerErrorReportedEvent): void;
 
     workerRegistrationUpdated(params: Protocol.ServiceWorker.WorkerRegistrationUpdatedEvent): void;
@@ -2562,7 +2562,7 @@ declare namespace ProtocolProxyApi {
     invoke_untrackIndexedDBForOrigin(params: Protocol.Storage.UntrackIndexedDBForOriginRequest):
         Promise<Protocol.ProtocolResponseWithError>;
   }
-  export interface StorageDispatcher {
+  export interface StorageDispatcher extends Protocol.Dispatcher {
     /**
      * A cache's contents have been modified.
      */
@@ -2595,7 +2595,7 @@ declare namespace ProtocolProxyApi {
      */
     invoke_getProcessInfo(): Promise<Protocol.SystemInfo.GetProcessInfoResponse>;
   }
-  export interface SystemInfoDispatcher {}
+  export interface SystemInfoDispatcher extends Protocol.Dispatcher {}
 
   export interface TargetApi {
     /**
@@ -2701,7 +2701,7 @@ declare namespace ProtocolProxyApi {
     invoke_setRemoteLocations(params: Protocol.Target.SetRemoteLocationsRequest):
         Promise<Protocol.ProtocolResponseWithError>;
   }
-  export interface TargetDispatcher {
+  export interface TargetDispatcher extends Protocol.Dispatcher {
     /**
      * Issued when attached to target because of auto-attach or `attachToTarget` command.
      */
@@ -2752,7 +2752,7 @@ declare namespace ProtocolProxyApi {
      */
     invoke_unbind(params: Protocol.Tethering.UnbindRequest): Promise<Protocol.ProtocolResponseWithError>;
   }
-  export interface TetheringDispatcher {
+  export interface TetheringDispatcher extends Protocol.Dispatcher {
     /**
      * Informs that port was successfully bound and got a specified connection id.
      */
@@ -2787,7 +2787,7 @@ declare namespace ProtocolProxyApi {
      */
     invoke_start(params: Protocol.Tracing.StartRequest): Promise<Protocol.ProtocolResponseWithError>;
   }
-  export interface TracingDispatcher {
+  export interface TracingDispatcher extends Protocol.Dispatcher {
     bufferUsage(params: Protocol.Tracing.BufferUsageEvent): void;
 
     /**
@@ -2862,7 +2862,7 @@ declare namespace ProtocolProxyApi {
     invoke_takeResponseBodyAsStream(params: Protocol.Fetch.TakeResponseBodyAsStreamRequest):
         Promise<Protocol.Fetch.TakeResponseBodyAsStreamResponse>;
   }
-  export interface FetchDispatcher {
+  export interface FetchDispatcher extends Protocol.Dispatcher {
     /**
      * Issued when the domain is enabled and the request URL matches the
      * specified filter. The request is paused until the client responds
@@ -2897,7 +2897,7 @@ declare namespace ProtocolProxyApi {
     invoke_getRealtimeData(params: Protocol.WebAudio.GetRealtimeDataRequest):
         Promise<Protocol.WebAudio.GetRealtimeDataResponse>;
   }
-  export interface WebAudioDispatcher {
+  export interface WebAudioDispatcher extends Protocol.Dispatcher {
     /**
      * Notifies that a new BaseAudioContext has been created.
      */
@@ -3025,7 +3025,7 @@ declare namespace ProtocolProxyApi {
     invoke_setUserVerified(params: Protocol.WebAuthn.SetUserVerifiedRequest):
         Promise<Protocol.ProtocolResponseWithError>;
   }
-  export interface WebAuthnDispatcher {}
+  export interface WebAuthnDispatcher extends Protocol.Dispatcher {}
 
   export interface MediaApi {
     /**
@@ -3038,7 +3038,7 @@ declare namespace ProtocolProxyApi {
      */
     invoke_disable(): Promise<Protocol.ProtocolResponseWithError>;
   }
-  export interface MediaDispatcher {
+  export interface MediaDispatcher extends Protocol.Dispatcher {
     /**
      * This can be called multiple times, and can be used to set / override /
      * remove player properties. A null propValue indicates removal.
@@ -3086,7 +3086,7 @@ declare namespace ProtocolProxyApi {
      */
     invoke_enable(): Promise<Protocol.ProtocolResponseWithError>;
   }
-  export interface ConsoleDispatcher {
+  export interface ConsoleDispatcher extends Protocol.Dispatcher {
     /**
      * Issued when new console message is added.
      */
@@ -3282,7 +3282,7 @@ declare namespace ProtocolProxyApi {
      */
     invoke_stepOver(): Promise<Protocol.ProtocolResponseWithError>;
   }
-  export interface DebuggerDispatcher {
+  export interface DebuggerDispatcher extends Protocol.Dispatcher {
     /**
      * Fired when breakpoint is resolved to an actual script and location.
      */
@@ -3346,7 +3346,7 @@ declare namespace ProtocolProxyApi {
     invoke_takeHeapSnapshot(params: Protocol.HeapProfiler.TakeHeapSnapshotRequest):
         Promise<Protocol.ProtocolResponseWithError>;
   }
-  export interface HeapProfilerDispatcher {
+  export interface HeapProfilerDispatcher extends Protocol.Dispatcher {
     addHeapSnapshotChunk(params: Protocol.HeapProfiler.AddHeapSnapshotChunkEvent): void;
 
     /**
@@ -3437,7 +3437,7 @@ declare namespace ProtocolProxyApi {
      */
     invoke_getRuntimeCallStats(): Promise<Protocol.Profiler.GetRuntimeCallStatsResponse>;
   }
-  export interface ProfilerDispatcher {
+  export interface ProfilerDispatcher extends Protocol.Dispatcher {
     consoleProfileFinished(params: Protocol.Profiler.ConsoleProfileFinishedEvent): void;
 
     /**
@@ -3578,7 +3578,7 @@ declare namespace ProtocolProxyApi {
      */
     invoke_removeBinding(params: Protocol.Runtime.RemoveBindingRequest): Promise<Protocol.ProtocolResponseWithError>;
   }
-  export interface RuntimeDispatcher {
+  export interface RuntimeDispatcher extends Protocol.Dispatcher {
     /**
      * Notification is issued every time when binding is called.
      */
@@ -3627,5 +3627,5 @@ declare namespace ProtocolProxyApi {
      */
     invoke_getDomains(): Promise<Protocol.Schema.GetDomainsResponse>;
   }
-  export interface SchemaDispatcher {}
+  export interface SchemaDispatcher extends Protocol.Dispatcher {}
 }

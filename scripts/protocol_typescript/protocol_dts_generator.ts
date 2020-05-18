@@ -81,6 +81,13 @@ const emitGlobalTypeDefs = () => {
   emitLine('getError(): string|undefined;');
   numIndents--;
   emitLine('}');
+  emitLine('export type UsesObjectNotation = true;');
+  emitLine('export interface Dispatcher {');
+  numIndents++;
+  emitLine('/** This dispatcher requires objects as parameters, rather than multiple arguments */');
+  emitLine('usesObjectNotation(): UsesObjectNotation;');
+  numIndents--;
+  emitLine('}');
 };
 
 const emitDomain = (domain: Protocol.Domain) => {
@@ -368,7 +375,7 @@ const emitDomainApi = (domain: Protocol.Domain, modulePrefix: string) => {
     domain.commands.forEach(c => emitApiCommand(c, domainName, modulePrefix));
   }
   emitCloseBlock();
-  emitOpenBlock(`export interface ${domainName}Dispatcher`);
+  emitOpenBlock(`export interface ${domainName}Dispatcher extends Protocol.Dispatcher`);
   if (domain.events) {
     domain.events.forEach(e => emitApiEvent(e, domainName, modulePrefix));
   }

@@ -18,6 +18,7 @@ ts_library("e2e") {
     "media",
     "memory",
     "network",
+    "performance",
     "profiler",
     "rendering",
     "search",

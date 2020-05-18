@@ -25,16 +25,15 @@ export class RemoteObjectPreviewFormatter {
     function sortValue(property) {
       // TODO(einbinder) expose whether preview properties are actually internal.
       const internalName = _internalName;
-      if (property.name === internalName.PromiseStatus) {
+      if (property.name === internalName.PromiseState) {
         return 1;
       }
-      if (property.name === internalName.PromiseValue) {
+      if (property.name === internalName.PromiseResult) {
         return 2;
       }
-      if (property.name === internalName.GeneratorStatus || property.name === internalName.PrimitiveValue) {
+      if (property.name === internalName.GeneratorState || property.name === internalName.PrimitiveValue) {
         return 3;
       }
-      // TODO(einbinder) expose whether preview properties are actually private.
       if (property.type !== 'function' && !property.name.startsWith('#')) {
         return 4;
       }
@@ -115,17 +114,17 @@ export class RemoteObjectPreviewFormatter {
       const property = properties[i];
       const name = property.name;
       // Internal properties are given special formatting, e.g. Promises `<rejected>: 123`.
-      if (preview.subtype === 'promise' && name === internalName.PromiseStatus) {
+      if (preview.subtype === 'promise' && name === internalName.PromiseState) {
         parentElement.appendChild(this._renderDisplayName('<' + property.value + '>'));
         const nextProperty = i + 1 < properties.length ? properties[i + 1] : null;
-        if (nextProperty && nextProperty.name === internalName.PromiseValue) {
+        if (nextProperty && nextProperty.name === internalName.PromiseResult) {
           if (property.value !== 'pending') {
             parentElement.createTextChild(': ');
             parentElement.appendChild(this._renderPropertyPreviewOrAccessor([nextProperty]));
           }
           i++;
         }
-      } else if (preview.subtype === 'generator' && name === internalName.GeneratorStatus) {
+      } else if (preview.subtype === 'generator' && name === internalName.GeneratorState) {
         parentElement.appendChild(this._renderDisplayName('<' + property.value + '>'));
       } else if (name === internalName.PrimitiveValue) {
         parentElement.appendChild(this._renderPropertyPreviewOrAccessor([property]));
@@ -312,10 +311,10 @@ export class RemoteObjectPreviewFormatter {
 
 /** @enum {string} */
 const _internalName = {
-  GeneratorStatus: '[[GeneratorStatus]]',
+  GeneratorState: '[[GeneratorState]]',
   PrimitiveValue: '[[PrimitiveValue]]',
-  PromiseStatus: '[[PromiseStatus]]',
-  PromiseValue: '[[PromiseValue]]'
+  PromiseState: '[[PromiseState]]',
+  PromiseResult: '[[PromiseResult]]'
 };
 
 /**

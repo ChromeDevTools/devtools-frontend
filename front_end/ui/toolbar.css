@@ -239,9 +239,6 @@ select.toolbar-item[data-keyboard-focus="true"]:focus > * {
   background-color: white;
   border: 1px solid transparent;
   min-width: 35px;
-}
-
-.toolbar-input:hover {
   box-shadow: var(--focus-ring-inactive-shadow);
 }
 

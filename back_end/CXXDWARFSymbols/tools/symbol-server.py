@@ -16,11 +16,12 @@ import tempfile
 import time
 from threading import Timer
 import urllib
+import urllib.request
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-port', default=8888, type=int)
 parser.add_argument('tool', default='/abs/path/to/DWARFSymbolServer')
-parser.add_argument('-I', nargs='*', default=[])
+parser.add_argument('-I', action='append', default=[])
 parser.add_argument(
     '-watch',
     help="watch symbol server for changes and restart automatically",
@@ -74,7 +75,8 @@ def DownloadResources(Input):
     if Input.get('method') == 'addRawModule':
         Module = Input.get('params', {}).get('rawModule', {})
         if Module and 'url' in Module:
-            Url = urllib.parse.urlparse(Module['url'])
+            UrlStr = Module['url']
+            Url = urllib.parse.urlparse(UrlStr)
             ResolvedFile = ResolveFile(Path(Url.path))
 
             if ResolvedFile:
@@ -84,16 +86,17 @@ def DownloadResources(Input):
             if Url.scheme != 'file' and Url.scheme != '':
                 TempFile = tempfile.NamedTemporaryFile()
                 Module['url'] = TempFile.name
-                urllib.request.urlretrieve(Url, TempFile.name)
+                urllib.request.urlretrieve(UrlStr, TempFile.name)
                 return Input, TempFile
 
     return Input, None
 
 
 class SymbolServerServerHandler(http.server.SimpleHTTPRequestHandler):
+    TempModules = []
+
     def __init__(self, *args):
         super().__init__(*args)
-        self.TempModules = []
 
     def do_GET(self, *args):
         print('Get:', args)
@@ -111,7 +114,7 @@ class SymbolServerServerHandler(http.server.SimpleHTTPRequestHandler):
         Input = json.loads(self.rfile.read(Len).decode())
         ResolvedResources, TempFile = DownloadResources(Input)
         if TempFile:
-            self.TempModules.append(TempFile)
+            SymbolServerServerHandler.TempModules.append(TempFile)
         Input = json.dumps(ResolvedResources)
 
         StdIn.write('Content-Length: {0}\r\n\r\n{1}'.format(len(Input),
@@ -173,3 +176,6 @@ while True:
         break
     time.sleep(0.001)
 LC.kill()
+
+for File in SymbolServerServerHandler.TempModules:
+    File.close()

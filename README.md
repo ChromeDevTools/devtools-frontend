@@ -12,6 +12,9 @@ The frontend is available on [chromium.googlesource.com](https://chromium.google
 ### Design Guidelines
 Please be aware that DevTools follows additional [development guidelines](DESIGN_GUIDELINES.md).
 
+### Issue triage
+The issue triage guidelines can be found [here](docs/TRIAGE_GUIDELINES.md).
+
 ### Workflows
 
 In order to make changes to DevTools frontend, build, run, test, and submit changes, several workflows exist. Having [depot_tools](https://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up) set up is a common prerequisite.

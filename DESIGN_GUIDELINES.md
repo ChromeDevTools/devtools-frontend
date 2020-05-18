@@ -24,24 +24,29 @@ The proposed workflow in here is based on the following assumptions and pillars:
 ## Roles
 ### Individual Contributor (IC)
 *LGTM*: N/A
+
 This person is the creator of the feature and the creator of the design documentation.
 
 ### The Technical Leads (TL)
 *LGTM*: Must have
+
 An LGTM is needed from the DevTools TLs, which are Benedikt Meurer (bmeurer@chromium.org) and Rob Paveza (Rob.Paveza@microsoft.com) at this point, in order to ensure architectural consistency. The TLs are also responsible for finding the right LGTM providers (i.e. the domain experts) to sign off on the design.
 
 In the absence of the TLs, the EnReOw takes over the responsibility.
 
 ### LGTM provider
 *LGTM*: Must have
+
 This is a person that is required to give LGTM. These are usually ICs which have significant knowledge about the areas in question.
 
 ### “Random” reviewer of the document (RRotD)
 *LGTM*: Not required
+
 This is somebody who is simply reviewing and comment on the proposal. Their input should be considered, although their LGTM is not required.
 
 ### The Eng Review Owners (EnReOw)
 *LGTM*: Not required
+
 Stuck proposals can be escalated to the [ENG_REVIEW_OWNERS](https://cs.chromium.org/chromium/src/third_party/devtools-frontend/src/ENG_REVIEW_OWNERS) Potential use cases of such an escalation:
 - An LGTM provider is non-responsive.
 - No consensus on the design can be reached.

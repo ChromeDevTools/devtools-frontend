@@ -123,12 +123,13 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
     const contentToTextMap = new Map();
 
     return Promise.all(locations.map(async ([breakpointLocation]) => {
-      const content = await breakpointLocation.uiLocation.uiSourceCode.requestContent();
-      if (contentToTextMap.has(content.content)) {
-        return contentToTextMap.get(content.content);
+      const {content} = await breakpointLocation.uiLocation.uiSourceCode.requestContent();
+      const contentText = content || '';
+      if (contentToTextMap.has(contentText)) {
+        return contentToTextMap.get(contentText);
       }
-      const text = new TextUtils.Text.Text(content.content || '');
-      contentToTextMap.set(content.content, text);
+      const text = new TextUtils.Text.Text(contentText);
+      contentToTextMap.set(contentText, text);
       return text;
     }));
   }

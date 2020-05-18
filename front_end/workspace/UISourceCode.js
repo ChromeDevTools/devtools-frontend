@@ -277,7 +277,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
       }
     } catch (err) {
       this._contentLoaded = true;
-      this._content = {error: err ? String(err) : '', isEncoded: false};
+      this._content = {content: null, error: err ? String(err) : '', isEncoded: false};
     }
 
     return /** @type {!TextUtils.ContentProvider.DeferredContent} */ (this._content);

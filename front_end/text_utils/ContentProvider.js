@@ -109,6 +109,7 @@ export const contentAsDataURL = function(content, mimeType, contentEncoded, char
  *    content: string,
  *    isEncoded: boolean,
  * }|{
+ *    content: null,
  *    error: string,
  *    isEncoded: boolean,
  * }}

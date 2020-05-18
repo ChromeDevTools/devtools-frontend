@@ -92,7 +92,7 @@ export class PlatformFileSystem {
    * @returns {!Promise<!TextUtils.ContentProvider.DeferredContent>}
    */
   async requestFileContent(path) {
-    return {error: ls`Unable to read files with this implementation.`, isEncoded: false};
+    return {content: null, error: ls`Unable to read files with this implementation.`, isEncoded: false};
   }
 
   /**

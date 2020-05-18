@@ -360,7 +360,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   async _innerRequestFileContent(path) {
     const blob = await this.requestFileBlob(path);
     if (!blob) {
-      return {error: ls`Blob could not be loaded.`, isEncoded: false};
+      return {content: null, error: ls`Blob could not be loaded.`, isEncoded: false};
     }
 
     const reader = new FileReader();
@@ -376,7 +376,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     if (reader.error) {
       const error = ls`Can't read file: ${path}: ${reader.error}`;
       console.error(error);
-      return {isEncoded: false, error};
+      return {content: null, isEncoded: false, error};
     }
     let result = null;
     let error = null;
@@ -389,7 +389,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     if (result === undefined || result === null) {
       error = error || ls`Unknown error reading file: ${path}`;
       console.error(error);
-      return {isEncoded: false, error};
+      return {content: null, isEncoded: false, error};
     }
     return {isEncoded: encoded, content: encoded ? btoa(result) : result};
   }

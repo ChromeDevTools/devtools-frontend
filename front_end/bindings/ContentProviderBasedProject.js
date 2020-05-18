@@ -65,7 +65,7 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
       return {content: content.content, isEncoded, error: content.error};
     } catch (err) {
       // TODO(rob.paveza): CRBug 1013683 - Consider propagating exceptions full-stack
-      return {isEncoded: false, error: err ? String(err) : ls`Unknown error loading file`};
+      return {content: null, isEncoded: false, error: err ? String(err) : ls`Unknown error loading file`};
     }
   }
 

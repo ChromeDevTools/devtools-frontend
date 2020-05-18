@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as TextUtils from '../text_utils/text_utils.js';
 
@@ -85,7 +82,7 @@ export class CompilerSourceMappingContentProvider {
             if (!success) {
               const error = ls`Could not load content for ${this._sourceURL} (${errorDescription.message})`;
               console.error(error);
-              resolve({error, isEncoded: false});
+              resolve({content: null, error, isEncoded: false});
             } else {
               resolve({content, isEncoded: false});
             }

@@ -283,7 +283,7 @@ export class Resource {
       if (response[ProtocolClient.InspectorBackend.ProtocolError]) {
         this._contentLoadError = response[ProtocolClient.InspectorBackend.ProtocolError];
         this._content = null;
-        loadResult = {error: response[ProtocolClient.InspectorBackend.ProtocolError], isEncoded: false};
+        loadResult = {content: null, error: response[ProtocolClient.InspectorBackend.ProtocolError], isEncoded: false};
       } else {
         this._content = response.content;
         this._contentLoadError = null;

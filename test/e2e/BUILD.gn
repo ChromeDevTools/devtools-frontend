@@ -11,6 +11,7 @@ ts_library("e2e") {
     "animations",
     "application",
     "console",
+    "coverage",
     "elements",
     "host",
     "layers",

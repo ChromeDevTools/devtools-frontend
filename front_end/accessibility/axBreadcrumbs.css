@@ -6,7 +6,7 @@
 
 .ax-breadcrumbs-ignored-node {
   font-style: italic;
-  opacity: 0.7;
+  opacity: 70%;
 }
 
 .ax-breadcrumbs {
@@ -44,7 +44,7 @@
   -webkit-mask-position: 0 0;
   -webkit-mask-size: 30px 10px;
   -webkit-mask-repeat: no-repeat;
-  background-color: rgb(48, 57, 66);
+  background-color: rgb(48 57 66);
   content: "";
   text-shadow: none;
   margin-right: -2px;
@@ -68,11 +68,11 @@
 }
 
 .ax-breadcrumbs .ax-node.no-dom-node {
-  opacity: 0.7;
+  opacity: 70%;
 }
 
 .ax-breadcrumbs .ax-node.children-unloaded::before {
-  opacity: 0.4;
+  opacity: 40%;
 }
 
 .ax-breadcrumbs .ax-node.preselected:not(.inspected) .selection,
@@ -85,7 +85,7 @@
 }
 
 .ax-breadcrumbs .ax-node.preselected:not(.inspected):focus .selection {
-  border: 1px solid rgba(56, 121, 217, 0.4);
+  border: 1px solid rgb(56 121 217 / 40%);
 }
 
 .ax-breadcrumbs .ax-node .selection {
@@ -117,7 +117,7 @@
 @media (forced-colors: active) {
   .ax-value-source-unused,
   .ax-breadcrumbs .ax-node.children-unloaded::before {
-    opacity: 1;
+    opacity: 100%;
   }
 
   .ax-breadcrumbs .ax-node.parent::before,

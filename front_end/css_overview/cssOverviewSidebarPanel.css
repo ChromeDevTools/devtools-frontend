@@ -20,7 +20,7 @@
 
 .overview-sidebar-panel-item:hover,
 .overview-sidebar-panel-item:focus {
-  background: rgb(234, 234, 234);
+  background: rgb(234 234 234);
 }
 
 .overview-sidebar-panel-item.selected {
@@ -29,5 +29,5 @@
 }
 
 .overview-toolbar {
-  border-bottom: 1px solid rgb(204, 204, 204);
+  border-bottom: 1px solid rgb(204 204 204);
 }

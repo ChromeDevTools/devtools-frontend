@@ -64,7 +64,7 @@
 
 .conditions-list-separator {
   flex: 0 0 1px;
-  background-color: rgb(231, 231, 231);
+  background-color: rgb(231 231 231);
   height: 30px;
   margin: 0 4px;
 }
@@ -90,5 +90,5 @@
   position: absolute;
   bottom: -20px;
   right: 0;
-  color: rgb(128, 128, 128);
+  color: rgb(128 128 128);
 }

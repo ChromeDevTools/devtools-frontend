@@ -47,7 +47,7 @@
 }
 
 .computed-style-property-inherited {
-  opacity: 0.5;
+  opacity: 50%;
 }
 
 .trace-link {
@@ -78,7 +78,7 @@
 .property-trace-inactive .property-trace-value::before {
   position: absolute;
   content: ".";
-  border-bottom: 1px solid rgba(0, 0, 0, 0.35);
+  border-bottom: 1px solid rgb(0 0 0 / 35%);
   top: 0;
   bottom: 5px;
   left: 0;
@@ -96,7 +96,7 @@
 }
 
 .tree-outline li:hover {
-  background-color: rgb(235, 242, 252);
+  background-color: rgb(235 242 252);
   cursor: pointer;
 }
 
@@ -133,7 +133,7 @@
 
 @media (forced-colors: active) {
   .computed-style-property-inherited {
-    opacity: 1;
+    opacity: 100%;
   }
 
   :host-context(.monospace.computed-properties) .tree-outline li:hover {

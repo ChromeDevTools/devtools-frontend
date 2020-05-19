@@ -5,15 +5,15 @@
  */
 
 .tooltip {
-  background: hsl(0, 0%, 95%);
+  background: hsl(0deg 0% 95%);
   border-radius: 2px;
-  color: hsl(0, 0%, 20%);
+  color: hsl(0deg 0% 20%);
   padding: 5px 8px;
   line-height: 14px;
   display: flex;
   align-items: center;
-  -webkit-filter: drop-shadow(0 1px 2px hsla(0, 0%, 0%, 0.3));
-  border: 1px solid hsla(0, 0%, 0%, 0.1);
+  -webkit-filter: drop-shadow(0 1px 2px hsl(0deg 0% 0% / 30%));
+  border: 1px solid hsl(0deg 0% 0% / 10%);
   background-clip: padding-box;
   box-sizing: border-box;
   position: absolute;
@@ -22,7 +22,7 @@
   z-index: 20001;
   top: 0;
   left: 0;
-  opacity: 0;
+  opacity: 0%;
   text-overflow: ellipsis;
   overflow: hidden;
   pointer-events: none;
@@ -35,7 +35,7 @@
 .tooltip.shown {
   visibility: visible;
   transition-delay: 600ms;
-  opacity: 1;
+  opacity: 100%;
 }
 
 .tooltip.shown.instant {
@@ -43,7 +43,7 @@
 }
 
 .tooltip-shortcut {
-  color: hsl(0, 0%, 45%);
+  color: hsl(0deg 0% 45%);
   display: inline-block;
   margin-left: 8px;
   flex: 0 0 auto;

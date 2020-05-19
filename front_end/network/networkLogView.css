@@ -38,7 +38,7 @@
 }
 
 #network-container {
-  border: 1px solid rgb(204, 204, 204);
+  border: 1px solid rgb(204 204 204);
 }
 
 #network-container.grid-focused.no-node-selected:focus-within {
@@ -89,8 +89,8 @@
 
 .network-waterfall-header,
 .network-log-grid.data-grid th {
-  border-bottom: 1px solid rgb(205, 205, 205);
-  border-left: 1px solid rgb(205, 205, 205);
+  border-bottom: 1px solid rgb(205 205 205);
+  border-left: 1px solid rgb(205 205 205);
 }
 
 .network-log-grid.data-grid table.data th {
@@ -154,13 +154,13 @@
 .network-log-grid.data-grid tr.selected.network-error-row,
 .network-log-grid.data-grid tr.selected.network-error-row .network-cell-subtitle,
 .network-log-grid.data-grid tr.selected.network-error-row .network-dim-cell {
-  color: rgb(230, 0, 0) !important;
+  color: rgb(230 0 0) !important;
 }
 
 .network-log-grid.data-grid:focus tr.selected.network-error-row,
 .network-log-grid.data-grid:focus tr.selected.network-error-row .network-cell-subtitle,
 .network-log-grid.data-grid:focus tr.selected.network-error-row .network-dim-cell {
-  color: rgb(230, 0, 0) !important;
+  color: rgb(230 0 0) !important;
 }
 
 .initiator-column .devtools-link {
@@ -184,8 +184,8 @@
 }
 
 @-webkit-keyframes network-row-highlight-fadeout {
-  from { background-color: rgba(255, 255, 120, 1); }
-  to { background-color: rgba(255, 255, 120, 0); }
+  from { background-color: rgb(255 255 120 / 100%); }
+  to { background-color: rgb(255 255 120 / 0%); }
 }
 
 .network-header-subtitle {
@@ -362,7 +362,7 @@
 }
 
 .network-waterfall-header:hover {
-  background-color: hsla(0, 0%, 10%, 0.1);
+  background-color: hsl(0deg 0% 10% / 10%);
 }
 
 .network-waterfall-header div {

@@ -5,7 +5,7 @@
  */
 
 .progress-indicator-shadow-stop-button {
-  background-color: rgb(216, 0, 0) !important;
+  background-color: rgb(216 0 0) !important;
   border: 0;
   width: 10px;
   height: 12px;

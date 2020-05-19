@@ -54,7 +54,7 @@
 }
 
 select.toolbar-item:disabled {
-  opacity: 0.5;
+  opacity: 50%;
 }
 
 .toolbar-dropdown-arrow {
@@ -64,7 +64,7 @@ select.toolbar-item:disabled {
 }
 
 select.toolbar-item:disabled + .toolbar-dropdown-arrow {
-  opacity: 0.5;
+  opacity: 50%;
 }
 
 /* Toolbar item */
@@ -116,7 +116,7 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
 
 .toolbar-render-as-links * {
   font-weight: initial;
-  color: rgb(17, 85, 204);
+  color: rgb(17 85 204);
   text-decoration: underline;
   cursor: pointer;
 }
@@ -133,7 +133,7 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
 /* Button */
 
 .toolbar-button:disabled {
-  opacity: 0.5;
+  opacity: 50%;
 }
 
 .toolbar-button.dark-text .toolbar-text {
@@ -180,12 +180,12 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
 
 .toolbar-button.toolbar-state-on.toolbar-toggle-with-red-color .toolbar-glyph,
 .toolbar-button.toolbar-state-off.toolbar-default-with-red-color .toolbar-glyph {
-  background-color: rgb(216, 0, 0) !important;
+  background-color: rgb(216 0 0) !important;
 }
 
 :host-context(.-theme-with-dark-background) .toolbar-button.toolbar-state-on.toolbar-toggle-with-red-color .toolbar-glyph,
 :host-context(.-theme-with-dark-background) .toolbar-button.toolbar-state-off.toolbar-default-with-red-color .toolbar-glyph {
-  background-color: hsl(0, 100%, 65%) !important;
+  background-color: hsl(0deg 100% 65%) !important;
 }
 
 
@@ -221,7 +221,7 @@ select.toolbar-item {
 }
 
 select.toolbar-item[data-keyboard-focus="true"]:focus {
-  background: rgba(0, 0, 0, 0.08);
+  background: rgb(0 0 0 / 8%);
   border-radius: 2px;
 }
 
@@ -253,14 +253,14 @@ select.toolbar-item[data-keyboard-focus="true"]:focus > * {
 }
 
 .toolbar-input-clear-button {
-  opacity: 0.7;
+  opacity: 70%;
   flex-basis: 13px;
   flex-shrink: 0;
   height: 16px;
 }
 
 .toolbar-input-clear-button:hover {
-  opacity: 0.99;
+  opacity: 99%;
 }
 
 .toolbar-input-empty .toolbar-input-clear-button {
@@ -301,7 +301,7 @@ select.toolbar-item[data-keyboard-focus="true"]:focus > * {
 }
 
 .toolbar-button.emulate-active {
-  background-color: rgb(163, 163, 163);
+  background-color: rgb(163 163 163);
 }
 
 .toolbar-button[data-keyboard-focus="true"]:focus::after {
@@ -310,7 +310,7 @@ select.toolbar-item[data-keyboard-focus="true"]:focus > * {
   bottom: 2px;
   left: 2px;
   right: 2px;
-  background-color: rgba(0, 0, 0, 0.08);
+  background-color: rgb(0 0 0 / 8%);
   border-radius: 2px;
   content: "";
 }
@@ -341,13 +341,13 @@ input[is=history-input]:not(:placeholder-shown) {
 }
 
 .toolbar-item.warning {
-  background: hsl(0, 100%, 95%);
+  background: hsl(0deg 100% 95%);
 }
 
 @media (forced-colors: active) {
   select.toolbar-item:disabled,
   select.toolbar-item:disabled + .toolbar-dropdown-arrow {
-    opacity: 1;
+    opacity: 100%;
     background-color: Graytext;
   }
 
@@ -374,7 +374,7 @@ input[is=history-input]:not(:placeholder-shown) {
   }
 
   .toolbar-button:disabled {
-    opacity: 1;
+    opacity: 100%;
   }
 
   :not(.toolbar-render-as-links) .toolbar-button:disabled .toolbar-glyph,

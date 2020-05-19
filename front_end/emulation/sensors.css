@@ -17,7 +17,7 @@
 }
 
 .sensors-view input[readonly] {
-  background-color: rgb(235, 235, 228);
+  background-color: rgb(235 235 228);
 }
 
 .sensors-view fieldset {
@@ -29,7 +29,7 @@
 }
 
 .sensors-view fieldset[disabled] {
-  opacity: 0.5;
+  opacity: 50%;
 }
 
 .sensors-view input:focus::-webkit-input-placeholder {
@@ -93,7 +93,7 @@
 
 .orientation-stage.disabled {
   -webkit-filter: grayscale();
-  opacity: 0.5;
+  opacity: 50%;
   cursor: default !important;
 }
 
@@ -294,6 +294,6 @@ button.text-button {
 
 @media (forced-colors: active) {
   .sensors-view fieldset[disabled] {
-    opacity: 1;
+    opacity: 100%;
   }
 }

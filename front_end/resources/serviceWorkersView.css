@@ -110,7 +110,7 @@
 
 .service-worker-has-current .service-workers-other-origin {
   margin-top: 16px;
-  border-top: 1px solid rgb(230, 230, 230);
+  border-top: 1px solid rgb(230 230 230);
 }
 
 .service-worker-list-empty .service-workers-other-origin {
@@ -128,7 +128,7 @@
   flex-grow: 0;
   flex-shrink: 0;
   background-color: white;
-  border-bottom: solid 1px rgb(230, 230, 230);
+  border-bottom: solid 1px rgb(230 230 230);
 }
 
 .service-worker-filter-label {
@@ -146,7 +146,7 @@
   -webkit-mask-size: 32px 24px;
   content: '';
   color: transparent;
-  background-color: rgb(110, 110, 110);
+  background-color: rgb(110 110 110);
   text-shadow: none;
   height: 12px;
   width: 10px;

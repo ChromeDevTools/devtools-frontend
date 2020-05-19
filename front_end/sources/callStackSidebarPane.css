@@ -93,7 +93,7 @@
 }
 
 .blackboxed-call-frame {
-  opacity: 0.6;
+  opacity: 60%;
   font-style: italic;
 }
 
@@ -109,12 +109,12 @@
 }
 
 :host-context(.-theme-with-dark-background) .blackboxed-message {
-  background-color: hsl(46, 98%, 22%);
+  background-color: hsl(46deg 98% 22%);
   color: #aaa;
 }
 
 :host-context(.-theme-with-dark-background) .blackboxed-message > .link {
-  color: hsl(0, 0%, 67%);
+  color: hsl(0deg 0% 67%);
 }
 
 @media (forced-colors: active) {

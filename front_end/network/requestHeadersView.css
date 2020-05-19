@@ -25,5 +25,5 @@
 }
 
 .-theme-with-dark-background .header-decode-error {
-  color: hsl(0, 100%, 65%);
+  color: hsl(0deg 100% 65%);
 }

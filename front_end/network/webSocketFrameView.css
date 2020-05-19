@@ -48,12 +48,12 @@
 }
 
 .websocket-frame-view-row-send {
-  background-color: rgb(226, 247, 218);
+  background-color: rgb(226 247 218);
 }
 
 .websocket-frame-view-row-error {
-  background-color: rgb(255, 237, 237);
-  color: rgb(182, 0, 0);
+  background-color: rgb(255 237 237);
+  color: rgb(182 0 0);
 }
 
 .websocket-frame-view .toolbar {

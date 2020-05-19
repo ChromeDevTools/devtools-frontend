@@ -5,7 +5,7 @@
  */
 
 .settings-window-main {
-  color: rgb(48, 57, 66);
+  color: rgb(48 57 66);
   background-color: white;
   padding: 11px 0 0 0;
 }
@@ -75,7 +75,7 @@
   font-size: 11px;
   background-color: #f7f7f7;
   color: #333;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 2px #fff inset;
+  box-shadow: 0 1px 0 rgb(0 0 0 / 20%), 0 0 0 2px #fff inset;
   border-radius: 3px;
   display: inline-block;
   margin: 0 0.1em;
@@ -115,7 +115,7 @@ fieldset {
 }
 
 .settings-experiments-warning-subsection-warning {
-  color: rgb(200, 0, 0);
+  color: rgb(200 0 0);
 }
 
 .settings-experiments-warning-subsection-message {
@@ -128,7 +128,7 @@ fieldset {
 
 .settings-window-title {
   font-size: 18px;
-  color: rgb(48, 57, 66);
+  color: rgb(48 57 66);
   padding: 0 0 5px 13px;
 }
 

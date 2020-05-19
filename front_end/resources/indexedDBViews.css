@@ -70,7 +70,7 @@
 }
 
 .indexed-db-key-path {
-  color: rgb(196, 26, 22);
+  color: rgb(196 26 22);
   white-space: pre-wrap;
   unicode-bidi: -webkit-isolate;
 }

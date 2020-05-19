@@ -54,12 +54,12 @@
   height: 20px;
   background-repeat: no-repeat;
   background-position: 4px 7px;
-  border-left: 1px solid rgb(170, 170, 170);
-  opacity: 0.3;
+  border-left: 1px solid rgb(170 170 170);
+  opacity: 30%;
 }
 
 .toolbar-search-navigation.enabled {
-  opacity: 1;
+  opacity: 100%;
 }
 
 .toolbar-search button.search-action-button {
@@ -87,7 +87,7 @@
 
 .toolbar-search-control,
 .toolbar-replace-control {
-  border: 1px solid rgb(163, 163, 163);
+  border: 1px solid rgb(163 163 163);
   height: 22px;
   border-radius: 2px;
   width: 100%;
@@ -101,7 +101,7 @@
 
 .toolbar-search-navigation.toolbar-search-navigation-prev {
   background-image: url(Images/searchPrev.png);
-  border-left: 1px solid rgb(163, 163, 163);
+  border-left: 1px solid rgb(163 163 163);
 }
 
 :host-context(.-theme-with-dark-background) .toolbar-search-navigation {
@@ -114,7 +114,7 @@
 
 .toolbar-search-navigation.toolbar-search-navigation-next {
   background-image: url(Images/searchNext.png);
-  border-left: 1px solid rgb(230, 230, 230);
+  border-left: 1px solid rgb(230 230 230);
 }
 
 .toolbar-search-navigation.toolbar-search-navigation-next.enabled:active {
@@ -125,7 +125,7 @@
   display: inline-block;
   text-align: right;
   padding: 0 4px;
-  color: rgb(165, 165, 165);
+  color: rgb(165 165 165);
   align-self: center;
 }
 

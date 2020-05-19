@@ -31,12 +31,12 @@
 }
 
 :host-context(.platform-mac) ::-webkit-scrollbar-thumb {
-  background-color: hsla(0, 0%, 56%, 0.6);
+  background-color: hsl(0deg 0% 56% / 60%);
   border-radius: 50px;
 }
 
 :host-context(.platform-mac) .chart-viewport-v-scroll:hover::-webkit-scrollbar-thumb {
-  background-color: hsla(0, 0%, 25%, 0.6);
+  background-color: hsl(0deg 0% 25% / 60%);
 }
 
 /* force non overlay scrollbars for Aura Overlay Scrollbar enabled */
@@ -46,18 +46,18 @@
 }
 
 :host-context(.overlay-scrollbar-enabled) ::-webkit-scrollbar-thumb {
-  background-color: hsla(0, 0%, 0%, 0.5);
+  background-color: hsl(0deg 0% 0% / 50%);
 }
 
 :host-context(.overlay-scrollbar-enabled) .chart-viewport-v-scroll:hover::-webkit-scrollbar-thumb {
-  background-color: hsla(0, 0%, 0%, 0.7);
+  background-color: hsl(0deg 0% 0% / 70%);
 }
 
 .chart-viewport-selection-overlay {
   position: absolute;
   z-index: 100;
-  background-color: rgba(56, 121, 217, 0.3);
-  border-color: rgb(16, 81, 177);
+  background-color: rgb(56 121 217 / 30%);
+  border-color: rgb(16 81 177);
   border-width: 0 1px;
   border-style: solid;
   pointer-events: none;

@@ -55,7 +55,7 @@
 }
 
 .release-note-container .release-note-link {
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border: 1px solid rgb(0 0 0 / 20%);
   padding-left: 8px;
   padding-right: 8px;
   margin-bottom: 4px;
@@ -63,7 +63,7 @@
 }
 
 .release-note-container .release-note-link:hover {
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5) inset;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 50%) inset;
 }
 
 .release-note-title,
@@ -100,11 +100,11 @@ img {
   width: 260px;
   height: 200px;
   flex: none;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 4px rgb(0 0 0 / 30%);
 }
 
 img:hover {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 4px rgb(0 0 0 / 50%);
 }
 
 @media (forced-colors: active) {

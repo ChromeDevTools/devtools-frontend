@@ -32,12 +32,12 @@ li {
 }
 
 li .largeicon-navigator-file {
-  background: linear-gradient(45deg, hsl(48, 70%, 50%), hsl(48, 70%, 70%));
+  background: linear-gradient(45deg, hsl(48deg 70% 50%), hsl(48deg 70% 70%));
   margin: 0;
 }
 
 li .largeicon-navigator-folder {
-  background: linear-gradient(45deg, hsl(210, 82%, 65%), hsl(210, 82%, 80%));
+  background: linear-gradient(45deg, hsl(210deg 82% 65%), hsl(210deg 82% 80%));
   margin: -3px -3px 0 -5px;
 }
 

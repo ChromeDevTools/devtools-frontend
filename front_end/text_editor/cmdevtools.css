@@ -45,10 +45,10 @@
 
 .CodeMirror .source-frame-eval-expression {
   outline: 0;
-  border: 1px solid rgb(163, 41, 34);
+  border: 1px solid rgb(163 41 34);
   border-left-width: 0;
   border-right-width: 0;
-  background-color: rgb(255, 255, 194);
+  background-color: rgb(255 255 194);
 }
 
 .CodeMirror .source-frame-eval-expression-start {
@@ -66,13 +66,13 @@
   border: 1px solid transparent;
   border-left-width: 0;
   border-right-width: 0;
-  background-color: rgb(230, 236, 255);
+  background-color: rgb(230 236 255);
   cursor: pointer;
 }
 
 .CodeMirror .source-frame-continue-to-location:hover {
-  border: 1px solid rgb(121, 141, 254);
-  background-color: rgb(171, 191, 254);
+  border: 1px solid rgb(121 141 254);
+  background-color: rgb(171 191 254);
 }
 
 :host-context(.-theme-with-dark-background) .CodeMirror .source-frame-continue-to-location,
@@ -98,7 +98,7 @@
 
 .CodeMirror .source-frame-async-step-in {
   outline: 0;
-  background-color: hsla(100, 46%, 80%, 1);
+  background-color: hsl(100deg 46% 80% / 100%);
   cursor: pointer;
   border: 1px solid transparent;
   border-left-width: 0;
@@ -106,8 +106,8 @@
 }
 
 .source-frame-async-step-in-hovered .source-frame-async-step-in {
-  background-color: hsl(96, 53%, 65%);
-  border-color: rgb(100, 154, 100);
+  background-color: hsl(96deg 53% 65%);
+  border-color: rgb(100 154 100);
 }
 
 .source-frame-async-step-in-hovered .source-frame-async-step-in-start {
@@ -131,7 +131,7 @@
 }
 
 .CodeMirror-linenumber {
-  color: hsl(0, 0%, 46%);
+  color: hsl(0deg 0% 46%);
   padding: 0 3px 0 5px;
   min-width: 22px;
   text-align: right;
@@ -152,22 +152,22 @@
 }
 
 @-webkit-keyframes fadeout {
-  from { background-color: rgb(255, 255, 120); }
+  from { background-color: rgb(255 255 120); }
   to { background-color: white; }
 }
 
 @-webkit-keyframes fadeout-dark {
-  from { background-color: hsla(133, 100%, 30%, 0.5); }
+  from { background-color: hsl(133deg 100% 30% / 50%); }
   to { background-color: transparent; }
 }
 
 .cm-readonly-highlight {
-  background-color: rgb(255, 255, 120);
+  background-color: rgb(255 255 120);
 }
 
 :host-context(.-theme-with-dark-background) .cm-readonly-highlight,
 .-theme-with-dark-background .cm-readonly-highlight {
-  background-color: hsla(133, 100%, 30%, 0.5);
+  background-color: hsl(133deg 100% 30% / 50%);
 }
 
 .cm-highlight.cm-execution-line {
@@ -180,8 +180,8 @@
 }
 
 @-webkit-keyframes fadeout-execution-line {
-  from { background-color: rgb(121, 141, 254); }
-  to { background-color: rgb(171, 191, 254); }
+  from { background-color: rgb(121 141 254); }
+  to { background-color: rgb(171 191 254); }
 }
 
 @-webkit-keyframes fadeout-execution-line-dark {
@@ -190,7 +190,7 @@
 }
 
 .cm-non-breakable-line .CodeMirror-linenumber {
-  color: rgba(128, 128, 128, 0.4);
+  color: rgb(128 128 128 / 40%);
 }
 
 .breakpoint-element {
@@ -284,10 +284,10 @@
 }
 
 .source-frame-eval-expression + .CodeMirror-widget {
-  border: 1px solid rgb(163, 41, 34);
+  border: 1px solid rgb(163 41 34);
   border-left-width: 0;
   border-right-width: 0;
-  background-color: rgb(255, 255, 194);
+  background-color: rgb(255 255 194);
 }
 
 .cm-inline-breakpoint.cm-execution-line-tail {
@@ -304,41 +304,41 @@
 
 .cm-continue-to-location {
   cursor: pointer;
-  opacity: 0.8;
+  opacity: 80%;
   position: relative;
   top: 2px;
 }
 
 .cm-continue-to-location:hover {
-  opacity: 1;
+  opacity: 100%;
 }
 
 div.CodeMirror:focus-within span.CodeMirror-matchingbracket {
-  background-color: rgba(0, 0, 0, 0.07);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+  background-color: rgb(0 0 0 / 7.000000000000001%);
+  border-bottom: 1px solid rgb(0 0 0 / 50%);
 }
 
 div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
-  background-color: rgba(255, 0, 0, 0.07);
-  border-bottom: 1px solid rgba(255, 0, 0, 0.5);
+  background-color: rgb(255 0 0 / 7.000000000000001%);
+  border-bottom: 1px solid rgb(255 0 0 / 50%);
 }
 
 :host-context(.-theme-with-dark-background) div.CodeMirror:focus-within span.CodeMirror-matchingbracket,
 .-theme-with-dark-background div.CodeMirror:focus-within span.CodeMirror-matchingbracket {
-  border-bottom: 1px solid rgb(217, 217, 217);
+  border-bottom: 1px solid rgb(217 217 217);
   background-color: initial;
 }
 
 :host-context(.-theme-with-dark-background) div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket,
 .-theme-with-dark-background div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
-  border-bottom: 1px solid rgb(255, 26, 26);
+  border-bottom: 1px solid rgb(255 26 26);
   background-color: initial;
 }
 
 .cm-whitespace::before {
   position: absolute;
   pointer-events: none;
-  color: rgb(175, 175, 175);
+  color: rgb(175 175 175);
 }
 
 .cm-tab {
@@ -351,7 +351,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
   display: none;
   content: ".";
   color: transparent;
-  border-bottom: 1px solid rgb(175, 175, 175);
+  border-bottom: 1px solid rgb(175 175 175);
   position: absolute;
   width: 90%;
   bottom: 50%;
@@ -363,15 +363,15 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 }
 
 .cm-execution-line {
-  background-color: rgba(0, 59, 255, 0.1);
+  background-color: rgb(0 59 255 / 10%);
 }
 
 .cm-execution-line-outline {
-  outline: 1px solid rgb(64, 115, 244);
+  outline: 1px solid rgb(64 115 244);
 }
 
 .cm-execution-line-tail {
-  background-color: rgb(171, 191, 254);
+  background-color: rgb(171 191 254);
 }
 
 :host-context(.-theme-with-dark-background) .cm-execution-line,
@@ -464,13 +464,13 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 
 .cm-line-with-selection .cm-column-with-selection.cm-search-highlight::before {
   margin: -1px -1px -1px -1px;
-  background-color: rgb(241, 234, 0);
+  background-color: rgb(241 234 0);
   z-index: -1;
 }
 
 :host-context(.-theme-with-dark-background) .cm-line-with-selection .cm-column-with-selection.cm-search-highlight::before,
 .-theme-with-dark-background .cm-line-with-selection .cm-column-with-selection.cm-search-highlight::before {
-  background-color: hsl(133, 100%, 30%);
+  background-color: hsl(133deg 100% 30%);
 }
 
 :host-context(.-theme-with-dark-background) .cm-line-with-selection .cm-search-highlight,
@@ -530,7 +530,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 1000px;
-  opacity: 0.8;
+  opacity: 80%;
   background-color: #ffe3c7;
   margin-left: 10px;
   padding-left: 5px;
@@ -540,7 +540,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 
 .CodeMirror .cm-execution-line .text-editor-value-decoration {
   background-color: transparent;
-  opacity: 0.5;
+  opacity: 50%;
 }
 
 .CodeMirror .text-editor-line-decoration-icon {
@@ -551,11 +551,11 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 }
 
 .CodeMirror .text-editor-line-with-warning:not(.cm-execution-line):not(.cm-readonly-highlight) {
-  background-color: rgba(241, 230, 0, 0.1);
+  background-color: rgb(241 230 0 / 10%);
 }
 
 .CodeMirror .text-editor-line-with-error:not(.cm-execution-line):not(.cm-readonly-highlight) {
-  background-color: rgba(255, 0, 0, 0.05);
+  background-color: rgb(255 0 0 / 5%);
 }
 
 .CodeMirror .text-editor-line-decoration-wave {
@@ -572,7 +572,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 }
 
 .cm-trailing-whitespace {
-  background-color: rgba(255, 0, 0, 0.05);
+  background-color: rgb(255 0 0 / 5%);
 }
 
 .CodeMirror-activeline .cm-trailing-whitespace {
@@ -585,12 +585,12 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 }
 
 .CodeMirror .auto-complete-text {
-  color: rgb(128, 128, 128);
+  color: rgb(128 128 128);
 }
 
 .CodeMirror .placeholder-text {
   height: 0;
-  color: rgb(128, 128, 128);
+  color: rgb(128 128 128);
 }
 
 /** Prevent the codemirror textarea from stealing PageUp events **/
@@ -662,11 +662,11 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 
 .CodeMirror-foldgutter-open {
   transition: opacity 0.2s;
-  opacity: 0;
+  opacity: 0%;
 }
 
 .CodeMirror-gutter-hovered .CodeMirror-foldgutter-open {
-  opacity: 1;
+  opacity: 100%;
 }
 
 .CodeMirror-foldgutter-open::before,

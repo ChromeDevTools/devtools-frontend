@@ -28,13 +28,13 @@
 .elements-disclosure li .selected-hint::before {
   font-style: italic;
   content: " == $0";
-  opacity: 0;
+  opacity: 0%;
   position: absolute;
   white-space: pre;
 }
 
 .elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) li.selected .selected-hint::before {
-  opacity: 0.6;
+  opacity: 60%;
 }
 
 .elements-disclosure li.parent::before {
@@ -125,19 +125,19 @@
 }
 
 .elements-tree-outline ol.shadow-root-depth-4 {
-  background-color: rgba(0, 0, 0, 0.04);
+  background-color: rgb(0 0 0 / 4%);
 }
 
 .elements-tree-outline ol.shadow-root-depth-3 {
-  background-color: rgba(0, 0, 0, 0.03);
+  background-color: rgb(0 0 0 / 3%);
 }
 
 .elements-tree-outline ol.shadow-root-depth-2 {
-  background-color: rgba(0, 0, 0, 0.02);
+  background-color: rgb(0 0 0 / 2%);
 }
 
 .elements-tree-outline ol.shadow-root-depth-1 {
-  background-color: rgba(0, 0, 0, 0.01);
+  background-color: rgb(0 0 0 / 1%);
 }
 
 .elements-tree-outline ol.shadow-root-deep {
@@ -189,7 +189,7 @@ select {
   margin-right: -2px;
   margin-bottom: -1px;
   padding-bottom: 1px;
-  opacity: 1 !important;
+  opacity: 100% !important;
 }
 
 .editing,
@@ -215,7 +215,7 @@ select {
 }
 
 .elements-gutter-decoration.elements-has-decorated-children {
-  opacity: 0.5;
+  opacity: 50%;
 }
 
 .add-attribute {
@@ -236,12 +236,12 @@ select {
 /* DOM update highlight */
 @-webkit-keyframes dom-update-highlight-animation {
   from {
-    background-color: rgb(158, 54, 153);
+    background-color: rgb(158 54 153);
     color: white;
   }
 
   80% {
-    background-color: rgb(245, 219, 244);
+    background-color: rgb(245 219 244);
     color: inherit;
   }
 
@@ -252,7 +252,7 @@ select {
 
 @-webkit-keyframes dom-update-highlight-animation-dark {
   from {
-    background-color: rgb(158, 54, 153);
+    background-color: rgb(158 54 153);
     color: white;
   }
 
@@ -281,7 +281,7 @@ select {
 
 .elements-tree-shortcut-title,
 .elements-tree-shortcut-link {
-  color: rgb(87, 87, 87);
+  color: rgb(87 87 87);
 }
 
 .elements-disclosure .gutter-container {
@@ -327,15 +327,15 @@ li.selected:not(.always-parent) + ol.children {
 }
 
 li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
-  border-color: hsla(0, 0%, 0%, 0.1);
+  border-color: hsl(0deg 0% 0% / 10%);
 }
 
 .elements-tree-outline ol.shadow-root {
-  border-color: hsla(0, 0%, 80%, 1);
+  border-color: hsl(0deg 0% 80% / 100%);
 }
 
 li.selected:not(.always-parent) + ol.children {
-  border-color: hsla(216, 68%, 80%, 1) !important;
+  border-color: hsl(216deg 68% 80% / 100%) !important;
 }
 
 @media (forced-colors: active) {

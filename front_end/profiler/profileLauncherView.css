@@ -24,7 +24,7 @@
 }
 
 .profile-launcher-view-content p {
-  color: hsl(0, 0%, 45%);
+  color: hsl(0deg 0% 45%);
   margin-top: 1px;
   margin-left: 22px;
 }
@@ -34,15 +34,15 @@
 }
 
 .profile-launcher-view-content button.running {
-  color: hsl(0, 100%, 58%);
+  color: hsl(0deg 100% 58%);
 }
 
 .profile-launcher-view-content button.running:hover {
-  color: hsl(0, 100%, 42%);
+  color: hsl(0deg 100% 42%);
 }
 
 body.inactive .profile-launcher-view-content button.running:not(.toolbar-item) {
-  color: rgb(220, 130, 130);
+  color: rgb(220 130 130);
 }
 
 .profile-launcher-view-content > div {

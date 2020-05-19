@@ -38,8 +38,8 @@ ol.tree-outline {
   padding: 0 10px;
   white-space: nowrap;
   margin-top: 1px;
-  color: rgb(92, 110, 129);
-  text-shadow: rgba(255, 255, 255, 0.75) 0 1px 0;
+  color: rgb(92 110 129);
+  text-shadow: rgb(255 255 255 / 75%) 0 1px 0;
   line-height: 18px;
 }
 

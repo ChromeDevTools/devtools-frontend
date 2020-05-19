@@ -19,7 +19,7 @@
 }
 
 .report-header {
-  border-bottom: 1px solid rgb(230, 230, 230);
+  border-bottom: 1px solid rgb(230 230 230);
   padding: 12px 24px;
 }
 
@@ -45,7 +45,7 @@
 .report-section {
   display: flex;
   padding: 12px;
-  border-bottom: 1px solid rgb(230, 230, 230);
+  border-bottom: 1px solid rgb(230 230 230);
   flex-direction: column;
 }
 

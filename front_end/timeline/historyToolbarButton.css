@@ -17,7 +17,7 @@
 }
 
 .history-dropdown-button[disabled] {
-  opacity: 0.5;
+  opacity: 50%;
   border: 1px solid transparent;
 }
 
@@ -37,12 +37,12 @@
   right: 0;
   bottom: 2px;
   border-radius: 2px;
-  background: rgba(0, 0, 0, 0.08);
+  background: rgb(0 0 0 / 8%);
 }
 
 @media (forced-colors: active) {
   .history-dropdown-button[disabled] {
-    opacity: 1;
+    opacity: 100%;
   }
 
   .history-dropdown-button[disabled] [is=ui-icon].icon-mask {

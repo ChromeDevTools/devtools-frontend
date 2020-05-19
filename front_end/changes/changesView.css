@@ -28,43 +28,43 @@
 
 .CodeMirror-line:hover {
   cursor: default !important;
-  background-color: rgba(0, 0, 255, 0.05);
+  background-color: rgb(0 0 255 / 5%);
 }
 
 .CodeMirror .CodeMirror-linebackground.spacer {
   text-align: center;
-  color: rgba(0, 0, 0, 0.5);
-  background-color: rgba(0, 0, 255, 0.1);
+  color: rgb(0 0 0 / 50%);
+  background-color: rgb(0 0 255 / 10%);
 }
 
 .CodeMirror .equal > span > span {
-  opacity: 0.5;
+  opacity: 50%;
 }
 
 .CodeMirror .CodeMirror-selectedtext:not(.CodeMirror-persist-highlight) {
-  opacity: 1;
+  opacity: 100%;
 }
 
 .CodeMirror .CodeMirror-linebackground.addition,
 -theme-preserve,
 .changes-diff-gutter-marker.addition {
-  background-color: hsla(144, 55%, 49%, 0.2);
+  background-color: hsl(144deg 55% 49% / 20%);
 }
 
 .CodeMirror .CodeMirror-linebackground.deletion,
 -theme-preserve,
 .changes-diff-gutter-marker.deletion {
-  background-color: rgba(255, 0, 0, 0.2);
+  background-color: rgb(255 0 0 / 20%);
 }
 
 .CodeMirror .addition .cm-inner-diff:not(.CodeMirror-selectedtext),
 -theme-preserve {
-  background-color: hsla(144, 55%, 49%, 0.3);
+  background-color: hsl(144deg 55% 49% / 30%);
 }
 
 .CodeMirror .deletion .cm-inner-diff:not(.CodeMirror-selectedtext),
 -theme-preserve {
-  background-color: rgba(255, 0, 0, 0.3);
+  background-color: rgb(255 0 0 / 30%);
 }
 
 .changes-toolbar {

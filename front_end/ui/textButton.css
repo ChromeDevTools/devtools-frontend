@@ -8,7 +8,7 @@
   margin: 2px;
   height: 24px;
   font-size: 12px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border: 1px solid rgb(0 0 0 / 20%);
   border-radius: 4px;
   padding: 0 12px;
   font-weight: 500;
@@ -22,7 +22,7 @@
 .text-button:not(:disabled):hover,
 .text-button:not(:disabled):active {
   background-color: var(--toolbar-bg-color);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
   cursor: pointer;
 }
 
@@ -37,11 +37,11 @@
 }
 
 .text-button:not(:disabled):focus {
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(66, 133, 244, 0.4);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 10%), 0 0 0 2px rgb(66 133 244 / 40%);
 }
 
 .text-button:disabled {
-  opacity: 0.38;
+  opacity: 38%;
 }
 
 .text-button.primary-button,
@@ -72,11 +72,11 @@
 .-theme-with-dark-background .text-button:not(.primary-button):not(:disabled):hover,
 .-theme-with-dark-background .text-button:not(.primary-button):not(:disabled):active {
   background-color: #313131;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
 }
 
 .-theme-with-dark-background .text-button:not(.primary-button):not(:disabled):focus {
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(94, 151, 246, 0.6);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 10%), 0 0 0 2px rgb(94 151 246 / 60%);
 }
 
 .-theme-with-dark-background .text-button:not(.primary-button):not(:disabled):active {
@@ -128,7 +128,7 @@
 
   .text-button:disabled {
     forced-color-adjust: none;
-    opacity: 1;
+    opacity: 100%;
     background: ButtonFace;
     border-color: GrayText;
     color: GrayText;

@@ -5,7 +5,7 @@
  */
 
 .item.disabled {
-  opacity: 0.5;
+  opacity: 50%;
 }
 
 .item-list {
@@ -23,7 +23,7 @@
 
 @media (forced-colors: active) {
   .item.disabled {
-    opacity: 1;
+    opacity: 100%;
   }
 
   .item-list {

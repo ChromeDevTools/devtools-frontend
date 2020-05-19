@@ -1,6 +1,6 @@
 li .icon {
   margin: -3px -5px -3px -5px;
-  background: linear-gradient(45deg, hsl(0, 0%, 50%), hsl(0, 0%, 70%));
+  background: linear-gradient(45deg, hsl(0deg 0% 50%), hsl(0deg 0% 70%));
 }
 
 .tree-outline li {
@@ -13,23 +13,23 @@ li .icon {
 }
 
 .navigator-fs-tree-item .icon {
-  background: linear-gradient(45deg, hsl(28, 75%, 50%), hsl(28, 75%, 70%));
+  background: linear-gradient(45deg, hsl(28deg 75% 50%), hsl(28deg 75% 70%));
 }
 
 .navigator-sm-script-tree-item .icon,
 .navigator-script-tree-item .icon,
 .navigator-snippet-tree-item .icon {
-  background: linear-gradient(45deg, hsl(48, 70%, 50%), hsl(48, 70%, 70%));
+  background: linear-gradient(45deg, hsl(48deg 70% 50%), hsl(48deg 70% 70%));
 }
 
 .navigator-sm-stylesheet-tree-item .icon,
 .navigator-stylesheet-tree-item .icon {
-  background: linear-gradient(45deg, hsl(256, 50%, 50%), hsl(256, 50%, 70%));
+  background: linear-gradient(45deg, hsl(256deg 50% 50%), hsl(256deg 50% 70%));
 }
 
 .navigator-image-tree-item .icon,
 .navigator-font-tree-item .icon {
-  background: linear-gradient(45deg, hsl(109, 33%, 50%), hsl(109, 33%, 70%));
+  background: linear-gradient(45deg, hsl(109deg 33% 50%), hsl(109deg 33% 70%));
 }
 
 @media (forced-colors: active) {

@@ -82,7 +82,7 @@
 .heap-snapshot-view .heap-snapshot-view-resizer {
   background-image: url(Images/toolbarResizerVertical.png);
   background-color: #eee;
-  border-bottom: 1px solid rgb(179, 179, 179);
+  border-bottom: 1px solid rgb(179 179 179);
   background-repeat: no-repeat;
   background-position: right center, center;
   flex: 0 0 21px;
@@ -144,7 +144,7 @@
 }
 
 .cycled-ancessor-node {
-  opacity: 0.6;
+  opacity: 60%;
 }
 
 #heap-recording-view .profile-view {
@@ -164,7 +164,7 @@
 }
 
 #heap-recording-overview-container {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid rgb(0 0 0 / 30%);
   overflow: hidden;
 }
 
@@ -188,12 +188,12 @@
 .heap-allocation-stack .stack-frame {
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px solid rgb(240, 240, 240);
+  border-bottom: 1px solid rgb(240 240 240);
   padding: 2px;
 }
 
 .heap-allocation-stack .stack-frame:hover:not(:focus) {
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgb(0 0 0 / 10%);
 }
 
 .heap-allocation-stack .stack-frame:focus {
@@ -206,7 +206,7 @@
 }
 
 .heap-allocation-stack .stack-frame .devtools-link {
-  color: rgb(33%, 33%, 33%);
+  color: rgb(33% 33% 33%);
 }
 
 .heap-allocation-stack .stack-frame:focus .devtools-link {
@@ -219,7 +219,7 @@
 
 @media (forced-colors: active) {
   .cycled-ancessor-node {
-    opacity: 1;
+    opacity: 100%;
   }
 
   .heap-snapshot-view td.object-column .objects-count,

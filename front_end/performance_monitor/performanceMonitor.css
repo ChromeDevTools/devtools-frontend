@@ -9,7 +9,7 @@
 }
 
 .perfmon-pane.suspended {
-  opacity: 0.4;
+  opacity: 40%;
   pointer-events: none;
 }
 
@@ -82,5 +82,5 @@
 }
 
 .perfmon-indicator:not(.active) .perfmon-indicator-value {
-  opacity: 0;
+  opacity: 0%;
 }

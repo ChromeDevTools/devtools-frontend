@@ -38,13 +38,13 @@
 }
 
 .segmented-button-segment.segmented-button-segment-selected {
-  background-color: hsl(218, 81%, 59%);
+  background-color: hsl(218deg 81% 59%);
   border-color: transparent;
   color: #fafafa;
 }
 
 .segmented-button-segment.segmented-button-segment-selected:hover {
-  background-color: hsl(218, 81%, 62%);
+  background-color: hsl(218deg 81% 62%);
   color: #fff;
 }
 

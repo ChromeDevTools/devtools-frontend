@@ -24,7 +24,7 @@ h1 {
   font-size: 11px;
   background-color: #f7f7f7;
   color: #333;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 2px #fff inset;
+  box-shadow: 0 1px 0 rgb(0 0 0 / 20%), 0 0 0 2px #fff inset;
   border-radius: 3px;
   display: inline-block;
   margin: 0 0.1em;
@@ -80,7 +80,7 @@ h1 {
 }
 
 .list-item:not(:first-child) .keybinds-category-header {
-  border-top: 1px solid rgb(231, 231, 231);
+  border-top: 1px solid rgb(231 231 231);
 }
 
 .keybinds-category-header:hover {

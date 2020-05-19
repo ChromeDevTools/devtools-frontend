@@ -9,16 +9,16 @@
   top: 5px;
   right: 6px;
   cursor: pointer;
-  opacity: 0;
+  opacity: 0%;
   min-width: 20px;
 }
 
 .watch-expression-header:hover .watch-expression-delete-button {
-  opacity: 0.5;
+  opacity: 50%;
 }
 
 .watch-expression-header:hover .watch-expression-delete-button:hover {
-  opacity: 1;
+  opacity: 100%;
 }
 
 .watch-expression-title:hover {
@@ -48,7 +48,7 @@
 }
 
 .watch-expressions .name {
-  color: rgb(136, 19, 145);
+  color: rgb(136 19 145);
   flex: none;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -60,7 +60,7 @@
 }
 
 :host-context(.-theme-with-dark-background) .watch-expression-error {
-  color: hsl(0, 100%, 65%);
+  color: hsl(0deg 100% 65%);
 }
 
 .watch-expressions-separator {
@@ -112,7 +112,7 @@ li.watch-expression-editing::before {
 @media (forced-colors: active) {
   .watch-expression-header:hover .watch-expression-delete-button,
   .watch-expressions .dimmed {
-    opacity: 1;
+    opacity: 100%;
   }
 
   li.watch-expression-tree-item * {

@@ -6,7 +6,7 @@
 
 .tree-outline {
   padding-left: 0;
-  color: rgb(90, 90, 90);
+  color: rgb(90 90 90);
 }
 
 .tree-outline > ol {
@@ -22,7 +22,7 @@ li.storage-group-list-item {
 }
 
 li.storage-group-list-item:not(:first-child) {
-  border-top: 1px solid rgb(230, 230, 230);
+  border-top: 1px solid rgb(230 230 230);
 }
 
 li.storage-group-list-item::before {
@@ -34,11 +34,11 @@ li.storage-group-list-item::before {
 }
 
 .navigator-file-tree-item {
-  background: linear-gradient(45deg, hsl(0, 0%, 50%), hsl(0, 0%, 70%));
+  background: linear-gradient(45deg, hsl(0deg 0% 50%), hsl(0deg 0% 70%));
 }
 
 .navigator-folder-tree-item {
-  background: linear-gradient(45deg, hsl(210, 82%, 65%), hsl(210, 82%, 80%));
+  background: linear-gradient(45deg, hsl(210deg 82% 65%), hsl(210deg 82% 80%));
 }
 
 .navigator-frame-tree-item {
@@ -46,18 +46,18 @@ li.storage-group-list-item::before {
 }
 
 .navigator-script-tree-item {
-  background: linear-gradient(45deg, hsl(48, 70%, 50%), hsl(48, 70%, 70%));
+  background: linear-gradient(45deg, hsl(48deg 70% 50%), hsl(48deg 70% 70%));
 }
 
 .navigator-stylesheet-tree-item {
-  background: linear-gradient(45deg, hsl(256, 50%, 50%), hsl(256, 50%, 70%));
+  background: linear-gradient(45deg, hsl(256deg 50% 50%), hsl(256deg 50% 70%));
 }
 
 .navigator-image-tree-item,
 .navigator-font-tree-item {
-  background: linear-gradient(45deg, hsl(109, 33%, 50%), hsl(109, 33%, 70%));
+  background: linear-gradient(45deg, hsl(109deg 33% 50%), hsl(109deg 33% 70%));
 }
 
 .resource-tree-item {
-  background: rgba(90, 90, 90, 0.7);
+  background: rgb(90 90 90 / 70%);
 }

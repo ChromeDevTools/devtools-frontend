@@ -5,12 +5,12 @@
  */
 
 .object-properties-section-dimmed {
-  opacity: 0.6;
+  opacity: 60%;
 }
 
 .object-properties-section {
   padding: 0 0 0 0;
-  color: rgb(33, 33, 33) !important;
+  color: rgb(33 33 33) !important;
   display: flex;
   flex-direction: column;
 }
@@ -84,7 +84,7 @@
 
 @media (forced-colors: active) {
   .object-properties-section-dimmed {
-    opacity: 1;
+    opacity: 100%;
   }
 
   .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] {

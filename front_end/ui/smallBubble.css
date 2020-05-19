@@ -21,17 +21,17 @@ div {
 }
 
 div.verbose {
-  background-color: rgb(0, 0, 255);
+  background-color: rgb(0 0 255);
 }
 
 div.info {
-  background-color: rgb(128, 151, 189);
+  background-color: rgb(128 151 189);
 }
 
 div.warning {
-  background-color: rgb(232, 164, 0);
+  background-color: rgb(232 164 0);
 }
 
 div.error {
-  background-color: rgb(216, 35, 35);
+  background-color: rgb(216 35 35);
 }

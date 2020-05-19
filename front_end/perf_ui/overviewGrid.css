@@ -8,7 +8,7 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  background-color: rgba(125, 173, 217, 0.5);
+  background-color: rgb(125 173 217 / 50%);
   z-index: 250;
   pointer-events: none;
 }
@@ -19,7 +19,7 @@
   height: 20px;
   width: 6px;
   margin-left: -3px;
-  background-color: rgb(153, 153, 153);
+  background-color: rgb(153 153 153);
   border: 1px solid white;
   z-index: 500;
 }
@@ -43,7 +43,7 @@
   top: 0;
   bottom: 0;
   width: 2px;
-  background-color: hsla(220, 95%, 50%, 0.7);
+  background-color: hsl(220deg 95% 50% / 70%);
   z-index: 500;
   pointer-events: none;
   visibility: hidden;
@@ -52,13 +52,13 @@
 
 .window-curtain-left,
 .window-curtain-right {
-  background-color: hsla(0, 0%, 80%, 0.5);
+  background-color: hsl(0deg 0% 80% / 50%);
   position: absolute;
   top: 0;
   height: 100%;
   z-index: 300;
   pointer-events: none;
-  border: 1px none hsla(0, 0%, 70%, 0.5);
+  border: 1px none hsl(0deg 0% 70% / 50%);
 }
 
 .window-curtain-left {

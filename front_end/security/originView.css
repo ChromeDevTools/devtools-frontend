@@ -5,7 +5,7 @@
 
 .title-section {
   padding: 16px 0 24px 0;
-  border-bottom: 1px solid rgb(230, 230, 230);
+  border-bottom: 1px solid rgb(230 230 230);
 }
 
 .title-section-header {
@@ -22,7 +22,7 @@
 }
 
 .security-origin-view .origin-view-section {
-  border-bottom: 1px solid rgb(230, 230, 230);
+  border-bottom: 1px solid rgb(230 230 230);
   padding: 12px 6px 12px  24px;
   font-size: 12px;
 }
@@ -73,7 +73,7 @@
 }
 
 .security-origin-view .details-table-row > div:first-child {
-  color: rgb(140, 140, 140);
+  color: rgb(140 140 140);
   width: 110px;
   margin-right: 1em;
   flex: none;
@@ -87,7 +87,7 @@
 }
 
 .security-origin-view .sct-details .details-table .details-table-row:last-child div:last-child {
-  border-bottom: 1px solid rgb(230, 230, 230);
+  border-bottom: 1px solid rgb(230 230 230);
   padding-bottom: 10px;
 }
 
@@ -106,7 +106,7 @@
 }
 
 .security-origin-view .details-table .empty-san {
-  color: rgb(140, 140, 140);
+  color: rgb(140 140 140);
 }
 
 .security-origin-view .details-table .san-entry {

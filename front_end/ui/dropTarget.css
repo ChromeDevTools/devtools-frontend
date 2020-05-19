@@ -11,7 +11,7 @@
   left: 0;
   right: 0;
   display: flex;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgb(255 255 255 / 80%);
   z-index: 1000;
 }
 

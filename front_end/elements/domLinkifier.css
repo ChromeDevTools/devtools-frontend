@@ -19,10 +19,10 @@
 }
 
 .node-label-name {
-  color: rgb(136, 18, 128);
+  color: rgb(136 18 128);
 }
 
 .node-label-class,
 .node-label-pseudo {
-  color: rgb(153, 69, 0);
+  color: rgb(153 69 0);
 }

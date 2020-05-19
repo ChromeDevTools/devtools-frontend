@@ -62,12 +62,12 @@
 
 .security-property-info {
   -webkit-mask-position: -48px -16px;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgb(0 0 0 / 50%);
 }
 
 .security-property-unknown {
   -webkit-mask-position: -64px -16px;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgb(0 0 0 / 50%);
 }
 
 .url-scheme-secure {

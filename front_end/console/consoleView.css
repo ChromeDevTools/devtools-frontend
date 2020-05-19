@@ -31,17 +31,17 @@
   background-color: white;
   overflow: hidden;
 
-  --message-border-color: rgb(240, 240, 240);
-  --warning-border-color: hsl(50, 100%, 88%);
-  --error-border-color: hsl(0, 100%, 92%);
+  --message-border-color: rgb(240 240 240);
+  --warning-border-color: hsl(50deg 100% 88%);
+  --error-border-color: hsl(0deg 100% 92%);
   --error-text-color: red;
 }
 
 .-theme-with-dark-background .console-view {
-  --message-border-color: rgb(58, 58, 58);
-  --warning-border-color: rgb(102, 85, 0);
-  --error-border-color: rgb(92, 0, 0);
-  --error-text-color: hsl(0, 100%, 75%);
+  --message-border-color: rgb(58 58 58);
+  --warning-border-color: rgb(102 85 0);
+  --error-border-color: rgb(92 0 0);
+  --error-text-color: hsl(0deg 100% 75%);
 }
 
 .console-toolbar-container {
@@ -152,7 +152,7 @@
 }
 
 .console-info {
-  color: rgb(128, 128, 128);
+  color: rgb(128 128 128);
   font-style: italic;
   padding-bottom: 2px;
 }
@@ -172,7 +172,7 @@
 .expand-group-icon {
   user-select: none;
   flex: none;
-  background-color: rgb(110, 110, 110);
+  background-color: rgb(110 110 110);
   position: relative;
   left: 10px;
   top: 5px;
@@ -245,26 +245,26 @@
 
 .console-message-wrapper:focus,
 .console-message-wrapper:focus:last-of-type {
-  border-top-color: hsl(214, 67%, 88%);
-  border-bottom-color: hsl(214, 67%, 88%);
-  background-color: hsl(214, 48%, 95%);
+  border-top-color: hsl(214deg 67% 88%);
+  border-bottom-color: hsl(214deg 67% 88%);
+  background-color: hsl(214deg 48% 95%);
 }
 
 .console-message-wrapper.console-error-level:focus,
 .console-message-wrapper.console-error-level:focus:last-of-type {
-  --error-text-color: rgb(200, 0, 0);
+  --error-text-color: rgb(200 0 0);
 }
 
 .-theme-with-dark-background .console-message-wrapper.console-error-level:focus,
 .-theme-with-dark-background .console-message-wrapper.console-error-level:focus:last-of-type {
-  --error-text-color: hsl(0, 100%, 75%);
+  --error-text-color: hsl(0deg 100% 75%);
 }
 
 .-theme-with-dark-background .console-message-wrapper:focus,
 .-theme-with-dark-background .console-message-wrapper:focus:last-of-type {
-  border-top-color: hsl(214, 47%, 48%);
-  border-bottom-color: hsl(214, 47%, 48%);
-  background-color: hsl(214, 19%, 20%);
+  border-top-color: hsl(214deg 47% 48%);
+  border-bottom-color: hsl(214deg 47% 48%);
+  background-color: hsl(214deg 19% 20%);
 }
 
 .console-message-wrapper:focus + .console-message-wrapper {
@@ -297,23 +297,23 @@
 }
 
 .console-error-level {
-  background-color: hsl(0, 100%, 97%);
+  background-color: hsl(0deg 100% 97%);
 }
 
 .-theme-with-dark-background .console-error-level {
-  background-color: hsl(0, 100%, 8%);
+  background-color: hsl(0deg 100% 8%);
 }
 
 .console-warning-level {
-  background-color: hsl(50, 100%, 95%);
+  background-color: hsl(50deg 100% 95%);
 }
 
 .-theme-with-dark-background .console-warning-level {
-  background-color: hsl(50, 100%, 10%);
+  background-color: hsl(50deg 100% 10%);
 }
 
 .console-warning-level .console-message-text {
-  color: hsl(39, 100%, 18%);
+  color: hsl(39deg 100% 18%);
 }
 
 .console-error-level .console-message-text,
@@ -327,11 +327,11 @@
 
 .-theme-with-dark-background .console-verbose-level:not(.console-warning-level) .console-message-text,
 .-theme-with-dark-background .console-system-type.console-info-level {
-  color: hsl(220, 100%, 65%) !important;
+  color: hsl(220deg 100% 65%) !important;
 }
 
 .console-message.console-warning-level {
-  background-color: rgb(255, 250, 224);
+  background-color: rgb(255 250 224);
 }
 
 #console-messages .link {
@@ -340,14 +340,14 @@
 
 #console-messages .link,
 #console-messages .devtools-link {
-  color: rgb(33%, 33%, 33%);
+  color: rgb(33% 33% 33%);
   cursor: pointer;
   word-break: break-all;
 }
 
 #console-messages .link:hover,
 #console-messages .devtools-link:hover {
-  color: rgb(15%, 15%, 15%);
+  color: rgb(15% 15% 15%);
 }
 
 .console-group-messages .section {
@@ -374,7 +374,7 @@
 .console-group-messages .section .properties li .info {
   padding-top: 0;
   padding-bottom: 0;
-  color: rgb(60%, 60%, 60%);
+  color: rgb(60% 60% 60%);
 }
 
 .console-object-preview {
@@ -385,7 +385,7 @@
 
 .console-object-preview .name {
   /* Follows .section .properties .name, .event-properties .name */
-  color: rgb(136, 19, 145);
+  color: rgb(136 19 145);
   flex-shrink: 0;
 }
 
@@ -435,11 +435,11 @@
 }
 
 .-theme-with-dark-background .object-state-note {
-  background-color: hsl(230, 100%, 80%);
+  background-color: hsl(230deg 100% 80%);
 }
 
 .info-note {
-  background-color: rgb(179, 203, 247);
+  background-color: rgb(179 203 247);
 }
 
 .info-note::before {

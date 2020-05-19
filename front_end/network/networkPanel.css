@@ -33,7 +33,7 @@
 }
 
 .network-details-view {
-  background: rgb(203, 203, 203);
+  background: rgb(203 203 203);
 }
 
 .network-details-view-tall-header {
@@ -53,7 +53,7 @@
 .resource-timing-view {
   display: block;
   margin: 6px;
-  color: rgb(30%, 30%, 30%);
+  color: rgb(30% 30% 30%);
 }
 
 .resource-timing-table {
@@ -88,7 +88,7 @@
 }
 
 .network-overview .resources-dividers-label-bar {
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: rgb(255 255 255 / 95%);
 }
 
 .network-overview .resources-dividers-label-bar .resources-divider {

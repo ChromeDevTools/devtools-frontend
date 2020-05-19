@@ -9,15 +9,15 @@
   overflow-y: auto;
   background: var(--toolbar-bg-color);
 
-  --error-background-color: hsl(0, 100%, 97%);
-  --error-border-color: hsl(0, 100%, 92%);
+  --error-background-color: hsl(0deg 100% 97%);
+  --error-border-color: hsl(0deg 100% 92%);
   --error-text-color: red;
 }
 
 :host-context(.-theme-with-dark-background) .console-pins {
-  --error-background-color: hsl(0, 100%, 8%);
-  --error-border-color: rgb(92, 0, 0);
-  --error-text-color: hsl(0, 100%, 75%);
+  --error-background-color: hsl(0deg 100% 8%);
+  --error-border-color: rgb(92 0 0);
+  --error-text-color: hsl(0deg 100% 75%);
 }
 
 .console-pins:not(:empty) {
@@ -69,13 +69,13 @@
   position: absolute;
   top: 8px;
   left: 8px;
-  opacity: 0.7;
+  opacity: 70%;
   cursor: pointer;
 }
 
 .console-delete-pin:hover,
 .console-delete-pin[data-keyboard-focus="true"]:focus {
-  opacity: 1;
+  opacity: 100%;
 }
 
 .console-pin-name:focus-within {
@@ -85,5 +85,5 @@
 
 .console-pin:focus-within .console-pin-preview,
 .console-pin-name:not(:focus-within):not(:hover) {
-  opacity: 0.6;
+  opacity: 60%;
 }

@@ -1,6 +1,6 @@
 .data-grid {
   position: relative;
-  border: 1px solid rgb(204, 204, 204) !important;
+  border: 1px solid rgb(204 204 204) !important;
   line-height: 120%;
 }
 
@@ -90,7 +90,7 @@
 
 .striped-data-grid .revealed.data-grid-data-grid-node:nth-child(odd),
 .striped-data-grid-starts-with-odd .revealed.data-grid-data-grid-node:nth-child(even) {
-  background-color: hsl(214, 70%, 97%);
+  background-color: hsl(214deg 70% 97%);
 }
 
 .data-grid td,
@@ -152,7 +152,7 @@
   right: 0;
   top: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.15);
+  background-color: rgb(0 0 0 / 15%);
 }
 
 .data-grid th .sort-order-icon-container {
@@ -176,7 +176,7 @@
 }
 
 .data-grid th.sortable:hover {
-  background-color: hsla(0, 0%, 90%, 1);
+  background-color: hsl(0deg 0% 90% / 100%);
 }
 
 .data-grid .top-filler-td {
@@ -201,7 +201,7 @@
   content: "";
   position: relative;
   top: 3px;
-  background-color: rgb(110, 110, 110);
+  background-color: rgb(110 110 110);
 }
 
 .data-grid tr:not(.parent) td.disclosure::before {
@@ -213,7 +213,7 @@
 }
 
 .data-grid table.data tr.revealed.selected {
-  background-color: rgb(212, 212, 212);
+  background-color: rgb(212 212 212);
   color: inherit;
 }
 
@@ -241,18 +241,18 @@
 }
 
 .data-grid tr.inactive {
-  color: rgb(128, 128, 128);
+  color: rgb(128 128 128);
   font-style: italic;
 }
 
 .data-grid tr.dirty {
-  background-color: hsl(0, 100%, 92%);
+  background-color: hsl(0deg 100% 92%);
   color: red;
   font-style: normal;
 }
 
 .data-grid:focus tr.selected.dirty {
-  background-color: hsl(0, 100%, 70%);
+  background-color: hsl(0deg 100% 70%);
 }
 
 .data-grid td.show-more {

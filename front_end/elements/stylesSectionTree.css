@@ -13,19 +13,19 @@
 }
 
 .tree-outline li.filter-match {
-  background-color: rgba(255, 255, 0, 0.5);
+  background-color: rgb(255 255 0 / 50%);
 }
 
 :host-context(.-theme-with-dark-background) .tree-outline li.filter-match {
-  background-color: hsla(133, 100%, 30%, 0.5);
+  background-color: hsl(133deg 100% 30% / 50%);
 }
 
 .tree-outline li.overloaded.filter-match {
-  background-color: rgba(255, 255, 0, 0.25);
+  background-color: rgb(255 255 0 / 25%);
 }
 
 :host-context(.-theme-with-dark-background) .tree-outline li.overloaded.filter-match {
-  background-color: hsla(133, 100%, 30%, 0.25);
+  background-color: hsl(133deg 100% 30% / 25%);
 }
 
 .tree-outline li.not-parsed-ok .exclamation-mark {
@@ -133,7 +133,7 @@ ol.expanded {
 
 .implicit,
 .inherited {
-  opacity: 0.5;
+  opacity: 50%;
 }
 
 .has-ignorable-error {
@@ -152,11 +152,11 @@ ol.expanded {
 }
 
 :host-context(.no-affect) .tree-outline li {
-  opacity: 0.5;
+  opacity: 50%;
 }
 
 :host-context(.no-affect) .tree-outline li.editing {
-  opacity: 1;
+  opacity: 100%;
 }
 
 :host-context(.styles-panel-hovered:not(.read-only)) .webkit-css-property:hover,
@@ -175,7 +175,7 @@ ol.expanded {
 .styles-clipboard-only {
   display: inline-block;
   width: 0;
-  opacity: 0;
+  opacity: 0%;
   pointer-events: none;
   white-space: pre;
 }

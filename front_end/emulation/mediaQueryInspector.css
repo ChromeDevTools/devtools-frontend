@@ -43,27 +43,27 @@
 
 .media-inspector-marker:hover {
   margin: -1px 0;
-  opacity: 1;
+  opacity: 100%;
 }
 
 .media-inspector-marker-max-width {
-  background-color: hsl(207, 90%, 77%);
-  border-right: 2px solid hsl(207, 90%, 61%);
-  border-left: 2px solid hsl(207, 90%, 61%);
+  background-color: hsl(207deg 90% 77%);
+  border-right: 2px solid hsl(207deg 90% 61%);
+  border-left: 2px solid hsl(207deg 90% 61%);
 }
 
 .media-inspector-marker-inactive .media-inspector-marker-max-width:not(:hover) {
-  background-color: hsl(199, 94%, 94%);
+  background-color: hsl(199deg 94% 94%);
 }
 
 .media-inspector-marker-min-max-width {
-  background-color: hsl(88, 50%, 76%);
+  background-color: hsl(88deg 50% 76%);
   border-left: 2px solid #689f38;
-  border-right: 2px solid hsl(92, 48%, 42%);
+  border-right: 2px solid hsl(92deg 48% 42%);
 }
 
 .media-inspector-marker-inactive .media-inspector-marker-min-max-width:not(:hover) {
-  background-color: hsl(125, 39%, 94%);
+  background-color: hsl(125deg 39% 94%);
 }
 
 .media-inspector-marker-min-max-width:hover {
@@ -71,20 +71,20 @@
 }
 
 .media-inspector-marker-min-width {
-  background-color: hsl(36, 100%, 75%);
+  background-color: hsl(36deg 100% 75%);
   flex: auto;
 }
 
 .media-inspector-marker-inactive .media-inspector-marker-min-width:not(:hover) {
-  background-color: hsl(37, 100%, 94%);
+  background-color: hsl(37deg 100% 94%);
 }
 
 .media-inspector-marker-min-width-right {
-  border-left: 2px solid hsl(30, 100%, 48%);
+  border-left: 2px solid hsl(30deg 100% 48%);
 }
 
 .media-inspector-marker-min-width-left {
-  border-right: 2px solid hsl(30, 100%, 48%);
+  border-right: 2px solid hsl(30deg 100% 48%);
 }
 
 /* Media query labels */

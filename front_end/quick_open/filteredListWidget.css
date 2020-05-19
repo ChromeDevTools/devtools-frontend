@@ -31,7 +31,7 @@
 
 .filtered-list-widget-progress {
   flex: none;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgb(0 0 0 / 20%);
   height: 2px;
 }
 
@@ -41,12 +41,12 @@
   width: 100%;
   transform: scaleX(0);
   transform-origin: top left;
-  opacity: 1;
+  opacity: 100%;
   transition: none;
 }
 
 .filtered-widget-progress-fade {
-  opacity: 0;
+  opacity: 0%;
   transition: opacity 500ms;
 }
 
@@ -61,7 +61,7 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  color: rgb(95, 95, 95);
+  color: rgb(95 95 95);
 }
 
 .filtered-list-widget-item.selected {
@@ -87,7 +87,7 @@
   flex: none;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: rgb(155, 155, 155);
+  color: rgb(155 155 155);
   display: flex;
 }
 
@@ -102,7 +102,7 @@
 }
 
 .filtered-list-widget-item.two-rows {
-  border-bottom: 1px solid rgb(235, 235, 235);
+  border-bottom: 1px solid rgb(235 235 235);
 }
 
 .tag {

@@ -54,7 +54,7 @@ table.network-timing-table > tr:not(.network-timing-table-header):not(.network-t
 
 .network-timing-table td.caution {
   font-weight: bold;
-  color: rgb(255, 128, 0);
+  color: rgb(255 128 0);
   padding: 2px 0;
 }
 
@@ -89,7 +89,7 @@ table.network-timing-table > tr:not(.network-timing-table-header):not(.network-t
 
 .network-timing-bar.queueing,
 .network-timing-bar.total {
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid rgb(0 0 0 / 10%);
 }
 
 .network-timing-bar.blocking,

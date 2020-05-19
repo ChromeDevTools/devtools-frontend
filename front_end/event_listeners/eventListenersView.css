@@ -30,7 +30,7 @@
 }
 
 .tree-outline-disclosure .name {
-  color: rgb(136, 19, 145);
+  color: rgb(136 19 145);
 }
 
 .tree-outline-disclosure .object-value-node {
@@ -56,13 +56,13 @@
   margin-left: 10px;
   display: block;
   cursor: pointer;
-  opacity: 0.8;
+  opacity: 80%;
   flex-shrink: 0;
 }
 
 .event-listener-button:hover {
   background-color: #e0e0e0;
-  opacity: 1;
+  opacity: 100%;
 }
 
 .tree-outline-disclosure li:hover .event-listener-button {
@@ -72,7 +72,7 @@
 @media (forced-colors: active) {
   .event-listener-details .event-listener-button {
     forced-color-adjust: none;
-    opacity: 1;
+    opacity: 100%;
     background: ButtonFace;
     color: ButtonText;
     border-color: ButtonText;

@@ -61,7 +61,7 @@
   margin: auto 2px;
   padding: 3px;
   background: transparent;
-  text-shadow: rgba(255, 255, 255, 0.5) 0 1px 0;
+  text-shadow: rgb(255 255 255 / 50%) 0 1px 0;
   border-radius: 6px;
   overflow: hidden;
 }
@@ -82,19 +82,19 @@
 .filter-bitset-filter span:hover,
 .filter-bitset-filter span:active {
   color: white;
-  text-shadow: rgba(0, 0, 0, 0.4) 0 1px 0;
+  text-shadow: rgb(0 0 0 / 40%) 0 1px 0;
 }
 
 .filter-bitset-filter span:hover {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgb(0 0 0 / 20%);
 }
 
 .filter-bitset-filter span.selected {
-  background: rgba(0, 0, 0, 0.3);
+  background: rgb(0 0 0 / 30%);
 }
 
 .filter-bitset-filter span:active {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgb(0 0 0 / 50%);
 }
 
 .filter-checkbox-filter {
@@ -146,13 +146,13 @@
 }
 
 .filter-input-clear-button {
-  opacity: 0.7;
+  opacity: 70%;
   height: 16px;
   margin-top: 1px;
 }
 
 .filter-input-clear-button:hover {
-  opacity: 0.99;
+  opacity: 99%;
 }
 
 @media (forced-colors: active) {

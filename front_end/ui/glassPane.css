@@ -16,7 +16,7 @@
 }
 
 :host-context(.dimmed-pane) {
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgb(255 255 255 / 50%);
 }
 
 :host-context(.no-pointer-events) {

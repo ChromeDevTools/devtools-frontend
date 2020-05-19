@@ -5,25 +5,25 @@
  */
 
 .infobar {
-  color: rgb(34, 34, 34);
+  color: rgb(34 34 34);
   display: flex;
   flex: auto;
-  border-bottom: 1px solid rgb(171, 171, 171);
+  border-bottom: 1px solid rgb(171 171 171);
   flex-direction: column;
   position: relative;
   padding: 1px 6px 1px;
 }
 
 .infobar:focus {
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2) inset;
+  box-shadow: 0 0 0 2px rgb(0 0 0 / 20%) inset;
 }
 
 .infobar-warning {
-  background-color: rgb(253, 242, 192);
+  background-color: rgb(253 242 192);
 }
 
 .infobar-info {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(255 255 255);
 }
 
 .infobar-main-row {
@@ -80,12 +80,12 @@
 
 .info-icon {
   -webkit-mask-image: url(Images/ic_info_black_18dp.svg);
-  background-color: hsl(214, 92%, 50%);
+  background-color: hsl(214deg 92% 50%);
 }
 
 .warning-icon {
   -webkit-mask-image: url(Images/ic_warning_black_18dp.svg);
-  background-color: hsl(44, 92%, 50%);
+  background-color: hsl(44deg 92% 50%);
 }
 
 .icon {

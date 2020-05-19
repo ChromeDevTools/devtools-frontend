@@ -35,7 +35,7 @@
   position: absolute;
   height: 88px;
   width: 88px;
-  border: 1px solid rgba(0, 0, 0, 0.14);
+  border: 1px solid rgb(0 0 0 / 14.000000000000002%);
   border-radius: 2px;
 }
 
@@ -54,7 +54,7 @@
   height: 24px;
   padding: 3px 7px;
   line-height: 16px;
-  border: 1px solid rgba(0, 0, 0, 0.14);
+  border: 1px solid rgb(0 0 0 / 14.000000000000002%);
   color: #333;
   background-color: #fff;
   text-align: center;
@@ -72,7 +72,7 @@
 
 .shadow-editor-button-left:hover,
 .shadow-editor-button-right:hover {
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 1px rgb(0 0 0 / 10%);
 }
 
 .shadow-editor-button-left:focus,

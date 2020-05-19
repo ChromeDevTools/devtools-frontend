@@ -62,7 +62,7 @@
 
 .locations-list-separator {
   flex: 0 0 1px;
-  background-color: rgb(231, 231, 231);
+  background-color: rgb(231 231 231);
   height: 30px;
   margin: 0 4px;
 }

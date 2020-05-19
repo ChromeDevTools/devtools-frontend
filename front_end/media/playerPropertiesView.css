@@ -29,15 +29,15 @@
 }
 
 .media-property-renderer:nth-child(even) {
-  background: hsl(214, 0%, 97%);
+  background: hsl(214deg 0% 97%);
 }
 
 .-theme-with-dark-background .media-property-renderer:nth-child(even) {
-  background: rgb(41, 41, 41);
+  background: rgb(41 41 41);
 }
 
 .media-property-renderer:hover {
-  background: hsl(214, 70%, 97%);
+  background: hsl(214deg 70% 97%);
 }
 
 .media-properties-frame {

@@ -62,16 +62,16 @@
   display: inline;
   margin-left: 30px;
   font-weight: normal;
-  color: rgb(45%, 45%, 45%);
+  color: rgb(45% 45% 45%);
 }
 
 .tree-outline li .header-toggle:hover {
-  color: rgb(20%, 20%, 45%);
+  color: rgb(20% 20% 45%);
   cursor: pointer;
 }
 
 .tree-outline .header-name {
-  color: rgb(33%, 33%, 33%);
+  color: rgb(33% 33% 33%);
   display: inline-block;
   margin-right: 0.25em;
   font-weight: bold;
@@ -144,7 +144,7 @@
 }
 
 .tree-outline .empty-request-header {
-  color: rgba(33%, 33%, 33%, 0.5);
+  color: rgb(33% 33% 33% / 50%);
 }
 
 .request-headers-show-more-button {

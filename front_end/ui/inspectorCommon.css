@@ -133,20 +133,20 @@ iframe.widget {
 
 .highlighted-search-result {
   border-radius: 1px;
-  background-color: rgba(255, 255, 0, 0.8);
-  outline: 1px solid rgba(255, 255, 0, 0.8);
+  background-color: rgb(255 255 0 / 80%);
+  outline: 1px solid rgb(255 255 0 / 80%);
 }
 
 .-theme-with-dark-background .highlighted-search-result,
 :host-context(.-theme-with-dark-background) .highlighted-search-result {
-  background-color: hsl(133, 100%, 30%);
+  background-color: hsl(133deg 100% 30%);
   color: #333;
 }
 
 .link {
   cursor: pointer;
   text-decoration: underline;
-  color: rgb(17, 85, 204);
+  color: rgb(17 85 204);
 }
 
 button,
@@ -168,7 +168,7 @@ input {
 }
 
 input::placeholder {
-  color: rgba(0, 0, 0, 0.54);
+  color: rgb(0 0 0 / 54%);
 }
 
 :host-context(.-theme-with-dark-background) input[type="checkbox"]:not(.-theme-preserve) {
@@ -200,11 +200,11 @@ input::placeholder {
   border-radius: 1px;
   padding: 1px;
   margin: -1px;
-  background-color: rgba(255, 127, 0, 0.8);
+  background-color: rgb(255 127 0 / 80%);
 }
 
 .dimmed {
-  opacity: 0.6;
+  opacity: 60%;
 }
 
 .editing {
@@ -217,7 +217,7 @@ input::placeholder {
   margin-right: -2px;
   margin-bottom: -1px;
   padding-bottom: 1px;
-  opacity: 1 !important;
+  opacity: 100% !important;
 }
 
 .editing,
@@ -238,7 +238,7 @@ input::placeholder {
 .chrome-select {
   -webkit-appearance: none;
   user-select: none;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border: 1px solid rgb(0 0 0 / 20%);
   border-radius: 2px;
   color: #333;
   font: inherit;
@@ -247,7 +247,7 @@ input::placeholder {
   padding-right: 20px;
   padding-left: 6px;
   background-image: -webkit-image-set(url(Images/chromeSelect.png) 1x, url(Images/chromeSelect_2x.png) 2x);
-  background-color: hsl(0, 0%, 98%);
+  background-color: hsl(0deg 0% 98%);
   background-position: right center;
   background-repeat: no-repeat;
   min-height: 24px;
@@ -258,8 +258,8 @@ input::placeholder {
 .chrome-select:enabled:active,
 .chrome-select:enabled:focus,
 .chrome-select:enabled:hover {
-  background-color: hsl(0, 0%, 96%);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  background-color: hsl(0deg 0% 96%);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
 }
 
 .chrome-select:enabled:active {
@@ -268,11 +268,11 @@ input::placeholder {
 
 .chrome-select:enabled:focus {
   border-color: transparent;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(66, 133, 244, 0.4);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 10%), 0 0 0 2px rgb(66 133 244 / 40%);
 }
 
 .chrome-select:disabled {
-  opacity: 0.38;
+  opacity: 38%;
 }
 
 .chrome-select-label {
@@ -299,15 +299,15 @@ input::placeholder {
 
 :not(.platform-mac).-theme-with-dark-background ::-webkit-scrollbar-track,
 :host-context(:not(.platform-mac).-theme-with-dark-background) ::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.3);
-  background: rgb(36, 36, 36);
+  -webkit-box-shadow: inset 0 0 1px rgb(255 255 255 / 30%);
+  background: rgb(36 36 36);
 }
 
 :not(.platform-mac).-theme-with-dark-background ::-webkit-scrollbar-thumb,
 :host-context(:not(.platform-mac).-theme-with-dark-background) ::-webkit-scrollbar-thumb {
   border-radius: 2px;
   background-color: #333;
-  -webkit-box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.5);
+  -webkit-box-shadow: inset 0 0 1px rgb(255 255 255 / 50%);
 }
 
 :not(.platform-mac).-theme-with-dark-background ::-webkit-scrollbar-corner,
@@ -360,7 +360,7 @@ span[is=dt-icon-label] {
 }
 
 [is=ui-icon].icon-mask {
-  background-color: rgb(110, 110, 110);
+  background-color: rgb(110 110 110);
   -webkit-mask-position: var(--spritesheet-position);
 }
 
@@ -446,7 +446,7 @@ span[is=dt-icon-label] {
 }
 
 .undisplayable-text {
-  color: rgb(128, 128, 128);
+  color: rgb(128 128 128);
   font-style: italic;
 }
 
@@ -474,7 +474,7 @@ button.link {
 }
 
 button.link[data-keyboard-focus="true"]:focus {
-  background-color: rgba(0, 0, 0, 0.08);
+  background-color: rgb(0 0 0 / 8%);
   border-radius: 2px;
 }
 
@@ -490,7 +490,7 @@ button.link[data-keyboard-focus="true"]:focus {
 @media (forced-colors: active) {
   .dimmed,
   .chrome-select:disabled {
-    opacity: 1;
+    opacity: 100%;
   }
 
   [is=ui-icon].icon-mask,

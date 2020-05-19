@@ -11,12 +11,12 @@
   background-size: 17px 17px;
   background-repeat: no-repeat;
   background-position: center;
-  opacity: 0.8;
+  opacity: 80%;
   cursor: auto;
 }
 
 .node-icon:hover {
-  opacity: 1;
+  opacity: 100%;
 }
 
 .node-icon.inactive {

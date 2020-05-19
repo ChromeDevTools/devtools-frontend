@@ -53,14 +53,14 @@
 }
 
 .bezier-curve line.linear-line {
-  stroke: rgb(238, 238, 238);
+  stroke: rgb(238 238 238);
   stroke-width: 2;
   stroke-linecap: round;
   fill: none;
 }
 
 :host-context(.-theme-with-dark-background) .bezier-curve line.linear-line {
-  stroke: rgb(138, 138, 138);
+  stroke: rgb(138 138 138);
 }
 
 .bezier-curve line.bezier-control-line {
@@ -68,7 +68,7 @@
   stroke-width: 2;
   stroke-linecap: round;
   fill: none;
-  opacity: 0.6;
+  opacity: 60%;
 }
 
 .bezier-curve circle.bezier-control-circle {
@@ -92,7 +92,7 @@
   height: 20px;
   z-index: 2;
   flex-shrink: 0;
-  opacity: 0;
+  opacity: 0%;
 }
 
 .bezier-preview-animation {
@@ -110,7 +110,7 @@
 }
 
 .bezier-preview-onion > .bezier-preview-animation {
-  opacity: 0.1;
+  opacity: 10%;
 }
 
 svg.bezier-preset-modify {
@@ -139,7 +139,7 @@ svg.bezier-preset-modify:hover,
 }
 
 .bezier-preset-selected .bezier-preset-modify {
-  opacity: 1;
+  opacity: 100%;
 }
 
 .bezier-preset-category {

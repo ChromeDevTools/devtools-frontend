@@ -32,7 +32,7 @@ li.search-result {
 }
 
 li.search-result:hover {
-  background-color: rgba(121, 121, 121, 0.1);
+  background-color: rgb(121 121 121 / 10%);
 }
 
 li.search-result .search-result-file-name {
@@ -73,7 +73,7 @@ li.search-match::before {
 }
 
 li.search-match .search-match-line-number {
-  color: rgb(128, 128, 128);
+  color: rgb(128 128 128);
   text-align: right;
   vertical-align: top;
   word-break: normal;
@@ -90,7 +90,7 @@ li.search-match .highlighted-match {
 }
 
 :host-context(.-theme-with-dark-background) li.search-match .highlighted-match {
-  background-color: hsl(133, 100%, 30%) !important;
+  background-color: hsl(133deg 100% 30%) !important;
 }
 
 .tree-outline .devtools-link {

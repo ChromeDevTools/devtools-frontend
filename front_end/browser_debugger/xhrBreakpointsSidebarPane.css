@@ -26,7 +26,7 @@
   margin-left: 0;
   margin-right: 0;
   outline: none !important;
-  border: 1px solid rgb(66%, 66%, 66%);
+  border: 1px solid rgb(66% 66% 66%);
 }
 
 .breakpoint-entry {
@@ -47,12 +47,12 @@
 }
 
 .breakpoint-hit {
-  background-color: rgb(255, 255, 194);
-  border-right: 3px solid rgb(107, 97, 48);
+  background-color: rgb(255 255 194);
+  border-right: 3px solid rgb(107 97 48);
 }
 
 :host-context(.-theme-with-dark-background) .breakpoint-hit {
-  background-color: hsl(46, 98%, 22%);
+  background-color: hsl(46deg 98% 22%);
   color: #ccc;
 }
 

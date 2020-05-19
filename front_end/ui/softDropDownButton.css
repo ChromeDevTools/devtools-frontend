@@ -13,7 +13,7 @@ button.soft-dropdown {
 }
 
 button.soft-dropdown[disabled] {
-  opacity: 0.5;
+  opacity: 50%;
 }
 
 button.soft-dropdown > .title {
@@ -31,7 +31,7 @@ button.soft-dropdown[data-keyboard-focus="true"]:focus::before {
   right: 2px;
   bottom: 2px;
   border-radius: 2px;
-  background: rgba(0, 0, 0, 0.08);
+  background: rgb(0 0 0 / 8%);
 }
 
 @media (forced-colors: active) {
@@ -40,7 +40,7 @@ button.soft-dropdown[data-keyboard-focus="true"]:focus::before {
   }
 
   button.soft-dropdown[disabled] {
-    opacity: 1;
+    opacity: 100%;
   }
 
   button.soft-dropdown:disabled > .smallicon-triangle-down {

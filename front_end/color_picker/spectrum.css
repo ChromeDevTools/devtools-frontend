@@ -71,12 +71,12 @@
 
 .spectrum-sat,
 .-theme-preserve {
-  background-image: linear-gradient(to right, white, rgba(204, 154, 129, 0));
+  background-image: linear-gradient(to right, white, rgb(204 154 129 / 0%));
 }
 
 .spectrum-val,
 .-theme-preserve {
-  background-image: linear-gradient(to top, black, rgba(204, 154, 129, 0));
+  background-image: linear-gradient(to top, black, rgb(204 154 129 / 0%));
 }
 
 .spectrum-hue {
@@ -93,7 +93,7 @@
   top: 0;
   left: 0;
   background: black;
-  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.24);
+  box-shadow: 0 0 2px 0 rgb(0 0 0 / 24%);
 }
 
 .spectrum-slider {
@@ -103,8 +103,8 @@
   width: 13px;
   height: 13px;
   border-radius: 13px;
-  background-color: rgb(248, 248, 248);
-  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.37);
+  background-color: rgb(248 248 248);
+  box-shadow: 0 1px 4px 0 rgb(0 0 0 / 37%);
 }
 
 .spectrum-contrast-details {
@@ -139,7 +139,7 @@
 }
 
 .spectrum-contrast-details .toolbar-state-on [is=ui-icon] {
-  background-color: rgb(110, 110, 110);
+  background-color: rgb(110 110 110);
 }
 
 .spectrum-contrast-details.visible {
@@ -268,18 +268,18 @@
 
 .swatch-overlay {
   cursor: pointer;
-  opacity: 0;
+  opacity: 0%;
   padding: 4px;
 }
 
 .swatch-overlay:hover,
 .swatch-overlay[data-keyboard-focus="true"]:focus {
-  background-color: rgba(0, 0, 0, 0.3);
-  opacity: 1;
+  background-color: rgb(0 0 0 / 30%);
+  opacity: 100%;
 }
 
 .swatch-overlay:active {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgb(0 0 0 / 50%);
 }
 
 [is=ui-icon].icon-mask.copy-color-icon {
@@ -377,26 +377,26 @@
   margin: 6px;
   cursor: pointer;
   position: relative;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid rgb(0 0 0 / 10%);
   background-position: -1px !important;
   z-index: 14;
 }
 
 .spectrum-palette-color:hover:not(.spectrum-shades-shown) > .spectrum-palette-color-shadow,
 .spectrum-palette-color:focus:not(.spectrum-shades-shown) > .spectrum-palette-color-shadow {
-  opacity: 0.2;
+  opacity: 20%;
 }
 
 .spectrum-palette-color:hover:not(.spectrum-shades-shown) > .spectrum-palette-color-shadow:first-child,
 .spectrum-palette-color:focus:not(.spectrum-shades-shown) > .spectrum-palette-color-shadow:first-child {
-  opacity: 0.6;
+  opacity: 60%;
   top: -3px;
   left: 1px;
 }
 
 .spectrum-palette-color-shadow {
   position: absolute;
-  opacity: 0;
+  opacity: 0%;
   margin: 0;
   top: -5px;
   left: 3px;
@@ -407,7 +407,7 @@
   background-color: white;
   height: 228px;
   width: 28px;
-  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 5px 0 rgb(0 0 0 / 14.000000000000002%), 0 1px 10px 0 rgb(0 0 0 / 12%), 0 2px 4px -1px rgb(0 0 0 / 40%);
   z-index: 14;
   border-radius: 2px;
   transform-origin: 0 228px;
@@ -518,15 +518,15 @@ div.palette-preview {
 .spectrum-overlay {
   z-index: 13;
   visibility: hidden;
-  background-color: hsla(0, 0%, 0%, 0.5);
-  opacity: 0;
+  background-color: hsl(0deg 0% 0% / 50%);
+  opacity: 0%;
   transition: opacity 100ms cubic-bezier(0, 0, 0.2, 1), visibility 0s 100ms;
 }
 
 .palette-panel-showing > .spectrum-overlay {
   transition-delay: 0s;
   visibility: visible;
-  opacity: 1;
+  opacity: 100%;
 }
 
 .spectrum-contrast-container {
@@ -538,7 +538,7 @@ div.palette-preview {
 :host-context(.-theme-with-dark-background) .spectrum-contrast-line {
   fill: none;
   stroke: white;
-  opacity: 0.7;
+  opacity: 70%;
   stroke-width: 1.5px;
 }
 
@@ -559,11 +559,11 @@ div.palette-preview {
 
 @keyframes showDeleteToolbar {
   from {
-    opacity: 0;
+    opacity: 0%;
   }
 
   to {
-    opacity: 1;
+    opacity: 100%;
   }
 }
 

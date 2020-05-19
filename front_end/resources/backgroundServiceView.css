@@ -30,7 +30,7 @@
 }
 
 .background-service-shortcut {
-  color: hsla(0, 0%, 50%, 1);
+  color: hsl(0deg 0% 50% / 100%);
 }
 
 .background-service-metadata {
@@ -44,7 +44,7 @@
 }
 
 .background-service-metadata-name {
-  color: rgb(33%, 33%, 33%);
+  color: rgb(33% 33% 33%);
   display: inline-block;
   margin-right: 0.25em;
   font-weight: bold;

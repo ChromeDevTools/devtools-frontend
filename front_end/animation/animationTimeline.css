@@ -11,7 +11,7 @@
 .animation-node-row {
   width: 100%;
   display: flex;
-  border-bottom: 1px dashed hsla(0, 0%, 94%, 1);
+  border-bottom: 1px dashed hsl(0deg 0% 94% / 100%);
 }
 
 .animation-node-description {
@@ -20,9 +20,9 @@
   overflow: hidden;
   position: relative;
   transform-style: preserve-3d;
-  border-bottom: 1px solid hsl(0, 0%, 90%);
+  border-bottom: 1px solid hsl(0deg 0% 90%);
   margin-bottom: -1px;
-  background-color: hsl(0, 0%, 98%);
+  background-color: hsl(0deg 0% 98%);
   display: flex;
   align-items: center;
   flex: 0 0 150px;
@@ -126,9 +126,9 @@ circle.animation-keyframe-point {
   width: 150px;
   left: 0;
   margin-top: 28px;
-  background-color: hsl(0, 0%, 98%);
+  background-color: hsl(0deg 0% 98%);
   z-index: 0;
-  border-right: 1px solid hsl(0, 0%, 90%);
+  border-right: 1px solid hsl(0deg 0% 90%);
 }
 
 .animation-controls {
@@ -171,7 +171,7 @@ circle.animation-keyframe-point {
 
 .animation-time-overlay {
   background-color: black;
-  opacity: 0.05;
+  opacity: 5%;
   position: absolute;
   height: 100%;
   width: 100%;
@@ -183,19 +183,19 @@ circle.animation-keyframe-point {
 }
 
 .animation-scrubber {
-  opacity: 1;
+  opacity: 100%;
   position: absolute;
   left: 150px;
   height: calc(100% - 103px);
   width: calc(100% - 150px);
   top: 103px;
-  border-left: 1px solid hsla(4, 90%, 58%, 1);
+  border-left: 1px solid hsl(4deg 90% 58% / 100%);
   z-index: 1;
 }
 
 .animation-scrubber-line {
   width: 11px;
-  background: linear-gradient(to right, transparent 5px, hsla(4, 90%, 58%, 1) 5px, hsla(4, 90%, 58%, 1) 6px, transparent 6px);
+  background: linear-gradient(to right, transparent 5px, hsl(4deg 90% 58% / 100%) 5px, hsl(4deg 90% 58% / 100%) 6px, transparent 6px);
   position: absolute;
   top: -28px;
   height: 28px;
@@ -222,7 +222,7 @@ svg.animation-timeline-grid {
 }
 
 rect.animation-timeline-grid-line {
-  fill: hsla(0, 0%, 93%, 1);
+  fill: hsl(0deg 0% 93% / 100%);
 }
 
 .animation-timeline-row > svg.animation-ui {
@@ -246,7 +246,7 @@ rect.animation-timeline-grid-line {
 }
 
 svg.animation-ui g:first-child {
-  opacity: 1;
+  opacity: 100%;
 }
 
 svg.animation-ui circle[data-keyboard-focus="true"],
@@ -255,7 +255,7 @@ svg.animation-ui path[data-keyboard-focus="true"] {
 }
 
 .animation-tail-iterations {
-  opacity: 0.5;
+  opacity: 50%;
 }
 
 .animation-keyframe-step line {
@@ -299,7 +299,7 @@ text.animation-timeline-grid-label {
 }
 
 .animation-node-row.animation-node-selected {
-  background-color: hsla(216, 71%, 53%, 0.08);
+  background-color: hsl(216deg 71% 53% / 8%);
 }
 
 .animation-node-selected > .animation-node-description {
@@ -326,15 +326,15 @@ text.animation-timeline-grid-label {
   position: absolute;
   top: 0;
   left: 0;
-  background: hsla(219, 100%, 66%, 0.27);
-  opacity: 0;
+  background: hsl(219deg 100% 66% / 27%);
+  opacity: 0%;
   border-right: 1px solid #a7a7a7;
   cursor: pointer;
 }
 
 .animation-buffer-preview[data-keyboard-focus="true"]:not(.selected):focus,
 .animation-buffer-preview:not(.selected):hover {
-  background-color: hsla(217, 90%, 92%, 1);
+  background-color: hsl(217deg 90% 92% / 100%);
 }
 
 .animation-buffer-preview[data-keyboard-focus="true"]:focus {
@@ -349,14 +349,14 @@ text.animation-timeline-grid-label {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: hsla(0, 0%, 70%, 0.5);
+  background-color: hsl(0deg 0% 70% / 50%);
   display: none;
 }
 
 .animation-paused::before,
 .animation-paused::after {
   content: "";
-  background: hsl(0, 100%, 100%);
+  background: hsl(0deg 100% 100%);
   width: 7px;
   height: 20px;
   border-radius: 2px;
@@ -418,11 +418,11 @@ text.animation-timeline-grid-label {
 }
 
 .animation-playback-rate-button:not(.selected):hover {
-  background: hsl(211, 100%, 95%);
+  background: hsl(211deg 100% 95%);
 }
 
 .animation-playback-rate-button.selected {
-  color: hsl(0, 100%, 100%);
+  color: hsl(0deg 100% 100%);
   background-color: var(--selection-bg-color);
   border-color: var(--selection-bg-color);
   z-index: 1;
@@ -430,7 +430,7 @@ text.animation-timeline-grid-label {
 
 .animation-playback-rate-button.selected:first-child {
   color: var(--selection-bg-color);
-  background-color: hsl(217, 89%, 100%);
+  background-color: hsl(217deg 89% 100%);
 }
 
 .animation-remove-button,
@@ -445,7 +445,7 @@ text.animation-timeline-grid-label {
   align-items: center;
   font-size: 10px;
   justify-content: center;
-  box-shadow: 0 1px 4px 0 rgb(185, 185, 185);
+  box-shadow: 0 1px 4px 0 rgb(185 185 185);
   z-index: 100;
   display: none;
   cursor: pointer;

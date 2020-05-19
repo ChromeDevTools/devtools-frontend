@@ -26,18 +26,18 @@
 .flame-chart-highlight-element {
   position: absolute;
   pointer-events: none;
-  background-color: rgba(56, 121, 217, 0.1);
+  background-color: rgb(56 121 217 / 10%);
 }
 
 .flame-chart-selected-element {
   position: absolute;
   pointer-events: none;
   outline: 2px solid var(--selection-bg-color);
-  background-color: rgba(56, 121, 217, 0.1);
+  background-color: rgb(56 121 217 / 10%);
 }
 
 .flame-chart-unfocused-selected-element {
-  outline: 2px solid rgba(123, 123, 123, 1);
+  outline: 2px solid rgb(123 123 123 / 100%);
 }
 
 .chart-cursor-element {

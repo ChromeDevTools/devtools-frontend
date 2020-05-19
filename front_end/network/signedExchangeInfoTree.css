@@ -39,7 +39,7 @@
 }
 
 .tree-outline .header-name {
-  color: rgb(33%, 33%, 33%);
+  color: rgb(33% 33% 33%);
   display: inline-block;
   margin-right: 0.25em;
   font-weight: bold;
@@ -63,11 +63,11 @@
   display: inline;
   margin-left: 30px;
   font-weight: normal;
-  color: rgb(45%, 45%, 45%);
+  color: rgb(45% 45% 45%);
 }
 
 .tree-outline .header-toggle:hover {
-  color: rgb(20%, 20%, 45%);
+  color: rgb(20% 20% 45%);
   cursor: pointer;
 }
 

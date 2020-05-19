@@ -7,18 +7,18 @@
 .paused-status {
   padding: 6px;
   border-bottom: 1px solid transparent;
-  border-top: 1px solid rgb(189, 189, 189);
-  background-color: hsl(50, 100%, 95%);
-  color: rgb(107, 97, 48);
+  border-top: 1px solid rgb(189 189 189);
+  background-color: hsl(50deg 100% 95%);
+  color: rgb(107 97 48);
 }
 
 .-theme-with-dark-background .paused-status {
-  background-color: hsl(46, 98%, 22%);
+  background-color: hsl(46deg 98% 22%);
   color: #ccc;
 }
 
 .paused-status.error-reason {
-  background-color: hsl(0, 100%, 97%);
+  background-color: hsl(0deg 100% 97%);
   color: #6b3b3b;
 }
 

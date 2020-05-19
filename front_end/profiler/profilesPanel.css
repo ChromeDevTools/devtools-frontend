@@ -39,11 +39,11 @@
 }
 
 .profile-view .data-grid tr:not(.selected) .highlight {
-  background-color: rgb(255, 230, 179);
+  background-color: rgb(255 230 179);
 }
 
 .profile-view .data-grid tr:hover td:not(.bottom-filler-td) {
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgb(0 0 0 / 10%);
 }
 
 .profile-view .data-grid td.numeric-column {
@@ -105,7 +105,7 @@
 }
 
 .data-grid tr.selected .profile-node-file {
-  color: rgb(33%, 33%, 33%);
+  color: rgb(33% 33% 33%);
 }
 
 .data-grid:focus tr.selected .profile-node-file {
@@ -117,8 +117,8 @@
 }
 
 @-webkit-keyframes row_highlight {
-  from { background-color: rgba(255, 255, 120, 1); }
-  to { background-color: rgba(255, 255, 120, 0); }
+  from { background-color: rgb(255 255 120 / 100%); }
+  to { background-color: rgb(255 255 120 / 0%); }
 }
 
 .cpu-profile-flame-chart-overview-container {
@@ -130,7 +130,7 @@
 }
 
 #cpu-profile-flame-chart-overview-container {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid rgb(0 0 0 / 30%);
   overflow: hidden;
 }
 

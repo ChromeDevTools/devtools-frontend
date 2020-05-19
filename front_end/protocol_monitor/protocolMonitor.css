@@ -25,7 +25,7 @@
 }
 
 .protocol-message-sent {
-  background-color: hsl(281, 64%, 95%);
+  background-color: hsl(281deg 64% 95%);
 }
 
 .protocol-monitor-toolbar {
@@ -33,6 +33,6 @@
 }
 
 .error {
-  background-color: hsl(0, 100%, 97%);
+  background-color: hsl(0deg 100% 97%);
   color: red;
 }

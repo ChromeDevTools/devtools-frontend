@@ -28,7 +28,7 @@ header {
   height: 85px;
   background: #0083c3;
   color: #fff;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 4px 0 rgb(0 0 0 / 50%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -61,7 +61,7 @@ header h2 .percentage {
 
 .shortcuts {
   background: #003b59;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 4px 0 rgb(0 0 0 / 50%);
   height: 48px;
   position: relative;
   z-index: 2;
@@ -75,17 +75,17 @@ header h2 .percentage {
   position: fixed;
   z-index: 10;
   pointer-events: none;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgb(0 0 0 / 70%);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  opacity: 0;
+  opacity: 0%;
   transition: opacity 0.2s cubic-bezier(0, 0, 0.4, 1);
 }
 
 .diff.visible {
-  opacity: 1;
+  opacity: 100%;
   pointer-events: auto;
 }
 
@@ -110,13 +110,13 @@ main img,
 .diff img {
   max-width: 100%;
   border: 1px solid #d0d0d0;
-  box-shadow: 0 6px 7px 0 rgba(0, 0, 0, 0.11);
+  box-shadow: 0 6px 7px 0 rgb(0 0 0 / 11%);
   background: #fff;
   cursor: pointer;
 }
 
 main img.selected {
-  outline: 6px solid rgba(255, 0, 120, 0.6);
+  outline: 6px solid rgb(255 0 120 / 60%);
 }
 
 main h3 {
@@ -144,7 +144,7 @@ footer button {
 }
 
 footer button[disabled] {
-  opacity: 0.4;
+  opacity: 40%;
 }
 
 .status {
@@ -191,7 +191,7 @@ footer button[disabled] {
   content: '';
   padding: 3px 8px;
   border-radius: 3px;
-  border: 1px solid rgba(255, 255, 255, 0.7);
+  border: 1px solid rgb(255 255 255 / 70%);
   margin-right: 8px;
   font-size: 12px;
 }

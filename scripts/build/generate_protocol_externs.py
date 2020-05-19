@@ -280,6 +280,10 @@ def generate_protocol_externs(output_path, file1, file2):
         output_file.write("/** @interface */\n")
         output_file.write("ProtocolProxyApi.%sDispatcher = function() {};\n" %
                           domain_name)
+        # Include the workaround for https://github.com/microsoft/TypeScript/issues/38640
+        output_file.write(
+            "var ProtocolProxyApiWorkaround_%sDispatcher = ProtocolProxyApi.%sDispatcher;\n"
+            % (domain_name, domain_name))
         if "events" in domain:
             for event in domain["events"]:
                 params = []

@@ -86,6 +86,8 @@ export class StylesSidebarPane extends ElementsSidebarPane {
 
     /** @type {!Array<!SectionBlock>} */
     this._sectionBlocks = [];
+    /** @type {?IdleCallbackManager} */
+    this._idleCallbackManager = null;
     this._needsForceUpdate = false;
     StylesSidebarPane._instance = this;
     self.UI.context.addFlavorChangeListener(SDK.DOMModel.DOMNode, this.forceUpdate, this);
@@ -540,10 +542,10 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     } else if (this._isEditingStyle || this._userOperation) {
       return;
     }
+
     const focusedIndex = this.focusedSectionIndex();
 
     this._linkifier.reset();
-    this._sectionsContainer.removeChildren();
     this._sectionBlocks = [];
 
     const node = this.node();
@@ -554,42 +556,32 @@ export class StylesSidebarPane extends ElementsSidebarPane {
 
     this._sectionBlocks = await this._rebuildSectionsForMatchedStyleRules(
         /** @type {!SDK.CSSMatchedStyles.CSSMatchedStyles} */ (matchedStyles));
-    let pseudoTypes = [];
-    const keys = matchedStyles.pseudoTypes();
-    if (keys.delete(Protocol.DOM.PseudoType.Before)) {
-      pseudoTypes.push(Protocol.DOM.PseudoType.Before);
-    }
-    pseudoTypes = pseudoTypes.concat([...keys].sort());
-    for (const pseudoType of pseudoTypes) {
-      const block = SectionBlock.createPseudoTypeBlock(pseudoType);
-      for (const style of matchedStyles.pseudoStyles(pseudoType)) {
-        const section = new StylePropertiesSection(this, matchedStyles, style);
-        block.sections.push(section);
-      }
-      this._sectionBlocks.push(block);
-    }
 
-    for (const keyframesRule of matchedStyles.keyframes()) {
-      const block = SectionBlock.createKeyframesBlock(keyframesRule.name().text);
-      for (const keyframe of keyframesRule.keyframes()) {
-        block.sections.push(new KeyframePropertiesSection(this, matchedStyles, keyframe.style));
-      }
-      this._sectionBlocks.push(block);
-    }
+    this._sectionsContainer.removeChildren();
+    const fragment = document.createDocumentFragment();
+
     let index = 0;
+    let elementToFocus = null;
     for (const block of this._sectionBlocks) {
       const titleElement = block.titleElement();
       if (titleElement) {
-        this._sectionsContainer.appendChild(titleElement);
+        fragment.appendChild(titleElement);
       }
       for (const section of block.sections) {
-        this._sectionsContainer.appendChild(section.element);
+        fragment.appendChild(section.element);
         if (index === focusedIndex) {
-          section.element.focus();
+          elementToFocus = section.element;
         }
         index++;
       }
     }
+
+    this._sectionsContainer.appendChild(fragment);
+
+    if (elementToFocus) {
+      elementToFocus.focus();
+    }
+
     if (focusedIndex >= index) {
       this._sectionBlocks[0].sections[0].element.focus();
     }
@@ -622,6 +614,12 @@ export class StylesSidebarPane extends ElementsSidebarPane {
    * @return {!Promise<!Array.<!SectionBlock>>}
    */
   async _rebuildSectionsForMatchedStyleRules(matchedStyles) {
+    if (this._idleCallbackManager) {
+      this._idleCallbackManager.discard();
+    }
+
+    this._idleCallbackManager = new IdleCallbackManager();
+
     const blocks = [new SectionBlock(null)];
     let lastParentNode = null;
     for (const style of matchedStyles.nodeStyles()) {
@@ -631,9 +629,43 @@ export class StylesSidebarPane extends ElementsSidebarPane {
         const block = await SectionBlock._createInheritedNodeBlock(lastParentNode);
         blocks.push(block);
       }
-      const section = new StylePropertiesSection(this, matchedStyles, style);
-      blocks.peekLast().sections.push(section);
+
+      const lastBlock = blocks.peekLast();
+      this._idleCallbackManager.schedule(() => {
+        const section = new StylePropertiesSection(this, matchedStyles, style);
+        lastBlock.sections.push(section);
+      });
     }
+
+    let pseudoTypes = [];
+    const keys = matchedStyles.pseudoTypes();
+    if (keys.delete(Protocol.DOM.PseudoType.Before)) {
+      pseudoTypes.push(Protocol.DOM.PseudoType.Before);
+    }
+    pseudoTypes = pseudoTypes.concat([...keys].sort());
+    for (const pseudoType of pseudoTypes) {
+      const block = SectionBlock.createPseudoTypeBlock(pseudoType);
+      for (const style of matchedStyles.pseudoStyles(pseudoType)) {
+        this._idleCallbackManager.schedule(() => {
+          const section = new StylePropertiesSection(this, matchedStyles, style);
+          block.sections.push(section);
+        });
+      }
+      blocks.push(block);
+    }
+
+    for (const keyframesRule of matchedStyles.keyframes()) {
+      const block = SectionBlock.createKeyframesBlock(keyframesRule.name().text);
+      for (const keyframe of keyframesRule.keyframes()) {
+        this._idleCallbackManager.schedule(() => {
+          block.sections.push(new KeyframePropertiesSection(this, matchedStyles, keyframe.style));
+        });
+      }
+      blocks.push(block);
+    }
+
+    await this._idleCallbackManager.awaitDone();
+
     return blocks;
   }
 
@@ -906,6 +938,47 @@ export class SectionBlock {
    */
   titleElement() {
     return this._titleElement;
+  }
+}
+
+class IdleCallbackManager {
+  constructor() {
+    this._discarded = false;
+    /** @type {!Array<!Promise<void>>} */
+    this._promises = [];
+  }
+
+  discard() {
+    this._discarded = true;
+  }
+
+  /**
+   * @param {function():void} fn
+   */
+  schedule(fn) {
+    if (this._discarded) {
+      return;
+    }
+    this._promises.push(new Promise((resolve, reject) => {
+      const run = () => {
+        try {
+          fn();
+          resolve();
+        } catch (err) {
+          reject(err);
+        }
+      };
+      window.requestIdleCallback(() => {
+        if (this._discarded) {
+          return resolve();
+        }
+        run();
+      }, {timeout: 100});
+    }));
+  }
+
+  awaitDone() {
+    return Promise.all(this._promises);
   }
 }
 

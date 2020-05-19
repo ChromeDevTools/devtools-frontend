@@ -141,7 +141,14 @@ export class NetworkLogViewColumns {
 
     this._waterfallColumn.element.addEventListener('contextmenu', handleContextMenu.bind(this));
     this._waterfallColumn.element.addEventListener('mousewheel', this._onMouseWheel.bind(this, false), {passive: true});
+    this._waterfallColumn.element.addEventListener('touchstart', this._onTouchStart.bind(this));
+    this._waterfallColumn.element.addEventListener('touchmove', this._onTouchMove.bind(this));
+    this._waterfallColumn.element.addEventListener('touchend', this._onTouchEnd.bind(this));
+
     this._dataGridScroller.addEventListener('mousewheel', this._onMouseWheel.bind(this, true), true);
+    this._dataGridScroller.addEventListener('touchstart', this._onTouchStart.bind(this));
+    this._dataGridScroller.addEventListener('touchmove', this._onTouchMove.bind(this));
+    this._dataGridScroller.addEventListener('touchend', this._onTouchEnd.bind(this));
 
     this._waterfallScroller = this._waterfallColumn.contentElement.createChild('div', 'network-waterfall-v-scroll');
     this._waterfallScrollerContent = this._waterfallScroller.createChild('div', 'network-waterfall-v-scroll-content');
@@ -192,6 +199,35 @@ export class NetworkLogViewColumns {
     this._activeScroller.scrollBy({top: -event.wheelDeltaY, behavior: hasRecentWheel ? 'instant' : 'smooth'});
     this._syncScrollers();
     this._lastWheelTime = Date.now();
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _onTouchStart(event) {
+    this._hasScrollerTouchStarted = true;
+    this._scrollerTouchStartPos = event.changedTouches[0].pageY;
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _onTouchMove(event) {
+    if (!this._hasScrollerTouchStarted) {
+      return;
+    }
+
+    const currentPos = event.changedTouches[0].pageY;
+    const delta = this._scrollerTouchStartPos - currentPos;
+
+    this._activeScroller.scrollBy({top: delta, behavior: 'instant'});
+    this._syncScrollers();
+
+    this._scrollerTouchStartPos = currentPos;
+  }
+
+  _onTouchEnd() {
+    this._hasScrollerTouchStarted = false;
   }
 
   _syncScrollers() {

@@ -60,7 +60,7 @@ export class NetworkManager extends SDKModel {
     super(target);
     this._dispatcher = new NetworkDispatcher(this);
     this._networkAgent = target.networkAgent();
-    target.registerDispatcher('Network', this._dispatcher);
+    target.registerNetworkDispatcher(this._dispatcher);
     if (Common.Settings.Settings.instance().moduleSetting('cacheDisabled').get()) {
       this._networkAgent.invoke_setCacheDisabled({cacheDisabled: true});
     }

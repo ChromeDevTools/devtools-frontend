@@ -335,7 +335,9 @@ def generate_protocol_externs(output_path, file1, file2):
         output_file.write("ProtocolClient.TargetBase.prototype.%s = function(){};\n" %
                           (domain_name[:uppercase_length].lower() + domain_name[uppercase_length:] + "Agent"))
 
-        output_file.write("/**\n * @param {!Protocol.%sDispatcher} dispatcher\n */\n" % domain_name)
+        output_file.write(
+            "/**\n * @param {!Protocol.%sDispatcher|!ProtocolProxyApi.%sDispatcher} dispatcher\n */\n"
+            % (domain_name, domain_name))
         output_file.write("ProtocolClient.TargetBase.prototype.register%sDispatcher = function(dispatcher) {}\n" % domain_name)
 
     output_file.close()

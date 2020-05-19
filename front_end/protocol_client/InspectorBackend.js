@@ -674,6 +674,13 @@ export class TargetBase {
   performanceAgent() {
     throw new Error('Implemented in InspectorBackend.js');
   }
+
+  /**
+   * @param {!ProtocolProxyApi.NetworkDispatcher} dispatcher
+   */
+  registerNetworkDispatcher(dispatcher) {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
 }
 
 /**

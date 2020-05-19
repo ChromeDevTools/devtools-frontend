@@ -117,6 +117,12 @@ build both Chromium and DevTools frontend with the [GN flag](https://www.chromiu
 
 You can inspect DevTools with DevTools by undocking DevTools and then open the developers tools (F12 on Windows/Linux, Cmd+Option+I on Mac).
 
+##### Obsolete debugging setup - not recommended
+
+Before the introduction of `--custom-devtools-frontend`, you could also set a GN flag on your Chromium build called `debug_devtools`.
+This flag is replaced by `--custom-devtools-frontend` and you are strongly recommended to use the new runtime binary flag, in favor of the Chromium GN flag.
+`debug_devtools` is only used when debugging layout tests living in Chromium and will be removed once that is no longer required.
+
 ##### Test
 Test are available by running scripts in `scripts/test/`.
 

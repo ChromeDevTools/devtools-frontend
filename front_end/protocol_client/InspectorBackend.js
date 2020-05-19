@@ -924,8 +924,13 @@ class _DispatcherPrototype {
 
     for (let index = 0; index < this._dispatchers.length; ++index) {
       const dispatcher = this._dispatchers[index];
+
       if (functionName in dispatcher) {
-        dispatcher[functionName].apply(dispatcher, params);
+        if (dispatcher.usesObjectNotation && dispatcher.usesObjectNotation()) {
+          dispatcher[functionName].call(dispatcher, {...messageObject.params});
+        } else {
+          dispatcher[functionName].apply(dispatcher, params);
+        }
       }
     }
   }

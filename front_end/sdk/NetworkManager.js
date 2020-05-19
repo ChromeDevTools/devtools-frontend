@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck crbug.com/1081686
-
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
@@ -271,7 +269,7 @@ export const Fast3GConditions = {
 const MAX_EAGER_POST_REQUEST_BODY_LENGTH = 64 * 1024;  // bytes
 
 /**
- * @implements {Protocol.NetworkDispatcher}
+ * @implements {ProtocolProxyApiWorkaround_NetworkDispatcher}
  * @unrestricted
  */
 export class NetworkDispatcher {
@@ -286,6 +284,13 @@ export class NetworkDispatcher {
     this._inflightRequestsByURL = {};
     /** @type {!Map<string, !RedirectExtraInfoBuilder>} */
     this._requestIdToRedirectExtraInfoBuilder = new Map();
+  }
+
+  /**
+   * @return {!Protocol.UsesObjectNotation}
+   */
+  usesObjectNotation() {
+    return true;
   }
 
   /**
@@ -416,11 +421,9 @@ export class NetworkDispatcher {
 
   /**
    * @override
-   * @param {!Protocol.Network.RequestId} requestId
-   * @param {!Protocol.Network.ResourcePriority} newPriority
-   * @param {!Protocol.Network.MonotonicTime} timestamp
+   * @param {!Protocol.Network.ResourceChangedPriorityEvent} request
    */
-  resourceChangedPriority(requestId, newPriority, timestamp) {
+  resourceChangedPriority({requestId, newPriority, timestamp}) {
     const networkRequest = this._inflightRequestsById.get(requestId);
     if (networkRequest) {
       networkRequest.setPriority(newPriority);
@@ -429,10 +432,9 @@ export class NetworkDispatcher {
 
   /**
    * @override
-   * @param {!Protocol.Network.RequestId} requestId
-   * @param {!Protocol.Network.SignedExchangeInfo} info
+   * @param {!Protocol.Network.SignedExchangeReceivedEvent} request
    */
-  signedExchangeReceived(requestId, info) {
+  signedExchangeReceived({requestId, info}) {
     // While loading a signed exchange, a signedExchangeReceived event is sent
     // between two requestWillBeSent events.
     // 1. The first requestWillBeSent is sent while starting the navigation (or
@@ -464,19 +466,10 @@ export class NetworkDispatcher {
 
   /**
    * @override
-   * @param {!Protocol.Network.RequestId} requestId
-   * @param {!Protocol.Network.LoaderId} loaderId
-   * @param {string} documentURL
-   * @param {!Protocol.Network.Request} request
-   * @param {!Protocol.Network.MonotonicTime} time
-   * @param {!Protocol.Network.TimeSinceEpoch} wallTime
-   * @param {!Protocol.Network.Initiator} initiator
-   * @param {!Protocol.Network.Response=} redirectResponse
-   * @param {!Protocol.Network.ResourceType=} resourceType
-   * @param {!Protocol.Page.FrameId=} frameId
+   * @param {!Protocol.Network.RequestWillBeSentEvent} request
    */
   requestWillBeSent(
-      requestId, loaderId, documentURL, request, time, wallTime, initiator, redirectResponse, resourceType, frameId) {
+      {requestId, loaderId, documentURL, request, timestamp, wallTime, initiator, redirectResponse, type, frameId}) {
     let networkRequest = this._inflightRequestsById.get(requestId);
     if (networkRequest) {
       // FIXME: move this check to the backend.
@@ -488,10 +481,16 @@ export class NetworkDispatcher {
       // |outerResponse| of SignedExchangeInfo was set to |networkRequest| in
       // signedExchangeReceived().
       if (!networkRequest.signedExchangeInfo()) {
-        this.responseReceived(
-            requestId, loaderId, time, Protocol.Network.ResourceType.Other, redirectResponse, frameId);
+        this.responseReceived({
+          requestId,
+          loaderId,
+          timestamp,
+          type: Protocol.Network.ResourceType.Other,
+          response: redirectResponse,
+          frameId
+        });
       }
-      networkRequest = this._appendRedirect(requestId, time, request.url);
+      networkRequest = this._appendRedirect(requestId, timestamp, request.url);
       this._manager.dispatchEventToListeners(Events.RequestRedirected, networkRequest);
     } else {
       networkRequest =
@@ -499,9 +498,9 @@ export class NetworkDispatcher {
     }
     networkRequest.hasNetworkData = true;
     this._updateNetworkRequestWithRequest(networkRequest, request);
-    networkRequest.setIssueTime(time, wallTime);
+    networkRequest.setIssueTime(timestamp, wallTime);
     networkRequest.setResourceType(
-        resourceType ? Common.ResourceType.resourceTypes[resourceType] : Common.ResourceType.resourceTypes.Other);
+        type ? Common.ResourceType.resourceTypes[type] : Common.ResourceType.resourceTypes.Other);
 
     this._getExtraInfoBuilder(requestId).addRequest(networkRequest);
 
@@ -510,9 +509,9 @@ export class NetworkDispatcher {
 
   /**
    * @override
-   * @param {!Protocol.Network.RequestId} requestId
+   * @param {!Protocol.Network.RequestServedFromCacheEvent} request
    */
-  requestServedFromCache(requestId) {
+  requestServedFromCache({requestId}) {
     const networkRequest = this._inflightRequestsById.get(requestId);
     if (!networkRequest) {
       return;
@@ -523,14 +522,9 @@ export class NetworkDispatcher {
 
   /**
    * @override
-   * @param {!Protocol.Network.RequestId} requestId
-   * @param {!Protocol.Network.LoaderId} loaderId
-   * @param {!Protocol.Network.MonotonicTime} time
-   * @param {!Protocol.Network.ResourceType} resourceType
-   * @param {!Protocol.Network.Response} response
-   * @param {!Protocol.Page.FrameId=} frameId
+   * @param {!Protocol.Network.ResponseReceivedEvent} request
    */
-  responseReceived(requestId, loaderId, time, resourceType, response, frameId) {
+  responseReceived({requestId, loaderId, timestamp, type, response, frameId}) {
     const networkRequest = this._inflightRequestsById.get(requestId);
     const lowercaseHeaders = NetworkManager.lowercaseHeaders(response.headers);
     if (!networkRequest) {
@@ -540,7 +534,7 @@ export class NetworkDispatcher {
         url: response.url,
         frameId: frameId || '',
         loaderId: loaderId,
-        resourceType: resourceType,
+        resourceType: type,
         mimeType: response.mimeType,
         lastModified: lastModifiedHeader ? new Date(lastModifiedHeader) : null,
       };
@@ -548,8 +542,8 @@ export class NetworkDispatcher {
       return;
     }
 
-    networkRequest.responseReceivedTime = time;
-    networkRequest.setResourceType(Common.ResourceType.resourceTypes[resourceType]);
+    networkRequest.responseReceivedTime = timestamp;
+    networkRequest.setResourceType(Common.ResourceType.resourceTypes[type]);
 
     // net::ParsedCookie::kMaxCookieSize = 4096 (net/cookies/parsed_cookie.h)
     if ('set-cookie' in lowercaseHeaders && lowercaseHeaders['set-cookie'].length > 4096) {
@@ -574,12 +568,9 @@ export class NetworkDispatcher {
 
   /**
    * @override
-   * @param {!Protocol.Network.RequestId} requestId
-   * @param {!Protocol.Network.MonotonicTime} time
-   * @param {number} dataLength
-   * @param {number} encodedDataLength
+   * @param {!Protocol.Network.DataReceivedEvent} request
    */
-  dataReceived(requestId, time, dataLength, encodedDataLength) {
+  dataReceived({requestId, timestamp, dataLength, encodedDataLength}) {
     /** @type {?(!NetworkRequest|undefined)} */
     let networkRequest = this._inflightRequestsById.get(requestId);
     if (!networkRequest) {
@@ -593,19 +584,16 @@ export class NetworkDispatcher {
     if (encodedDataLength !== -1) {
       networkRequest.increaseTransferSize(encodedDataLength);
     }
-    networkRequest.endTime = time;
+    networkRequest.endTime = timestamp;
 
     this._updateNetworkRequest(networkRequest);
   }
 
   /**
    * @override
-   * @param {!Protocol.Network.RequestId} requestId
-   * @param {!Protocol.Network.MonotonicTime} finishTime
-   * @param {number} encodedDataLength
-   * @param {boolean=} shouldReportCorbBlocking
+   * @param {!Protocol.Network.LoadingFinishedEvent} request
    */
-  loadingFinished(requestId, finishTime, encodedDataLength, shouldReportCorbBlocking) {
+  loadingFinished({requestId, timestamp: finishTime, encodedDataLength, shouldReportCorbBlocking}) {
     /** @type {?(!NetworkRequest|undefined)} */
     let networkRequest = this._inflightRequestsById.get(requestId);
     if (!networkRequest) {
@@ -621,14 +609,10 @@ export class NetworkDispatcher {
 
   /**
    * @override
-   * @param {!Protocol.Network.RequestId} requestId
-   * @param {!Protocol.Network.MonotonicTime} time
-   * @param {!Protocol.Network.ResourceType} resourceType
-   * @param {string} localizedDescription
-   * @param {boolean=} canceled
-   * @param {!Protocol.Network.BlockedReason=} blockedReason
+   * @param {!Protocol.Network.LoadingFailedEvent} request
    */
-  loadingFailed(requestId, time, resourceType, localizedDescription, canceled, blockedReason) {
+  loadingFailed(
+      {requestId, timestamp: time, type: resourceType, errorText: localizedDescription, canceled, blockedReason}) {
     const networkRequest = this._inflightRequestsById.get(requestId);
     if (!networkRequest) {
       return;
@@ -652,11 +636,9 @@ export class NetworkDispatcher {
 
   /**
    * @override
-   * @param {!Protocol.Network.RequestId} requestId
-   * @param {string} requestURL
-   * @param {!Protocol.Network.Initiator=} initiator
+   * @param {!Protocol.Network.WebSocketCreatedEvent} request
    */
-  webSocketCreated(requestId, requestURL, initiator) {
+  webSocketCreated({requestId, url: requestURL, initiator}) {
     const networkRequest = new NetworkRequest(requestId, requestURL, '', '', '', initiator || null);
     requestToManagerMap.set(networkRequest, this._manager);
     networkRequest.setResourceType(Common.ResourceType.resourceTypes.WebSocket);
@@ -665,12 +647,9 @@ export class NetworkDispatcher {
 
   /**
    * @override
-   * @param {!Protocol.Network.RequestId} requestId
-   * @param {!Protocol.Network.MonotonicTime} time
-   * @param {!Protocol.Network.TimeSinceEpoch} wallTime
-   * @param {!Protocol.Network.WebSocketRequest} request
+   * @param {!Protocol.Network.WebSocketWillSendHandshakeRequestEvent} request
    */
-  webSocketWillSendHandshakeRequest(requestId, time, wallTime, request) {
+  webSocketWillSendHandshakeRequest({requestId, timestamp: time, wallTime, request}) {
     const networkRequest = this._inflightRequestsById.get(requestId);
     if (!networkRequest) {
       return;
@@ -685,11 +664,9 @@ export class NetworkDispatcher {
 
   /**
    * @override
-   * @param {!Protocol.Network.RequestId} requestId
-   * @param {!Protocol.Network.MonotonicTime} time
-   * @param {!Protocol.Network.WebSocketResponse} response
+   * @param {!Protocol.Network.WebSocketHandshakeResponseReceivedEvent} request
    */
-  webSocketHandshakeResponseReceived(requestId, time, response) {
+  webSocketHandshakeResponseReceived({requestId, timestamp: time, response}) {
     const networkRequest = this._inflightRequestsById.get(requestId);
     if (!networkRequest) {
       return;
@@ -713,11 +690,9 @@ export class NetworkDispatcher {
 
   /**
    * @override
-   * @param {!Protocol.Network.RequestId} requestId
-   * @param {!Protocol.Network.MonotonicTime} time
-   * @param {!Protocol.Network.WebSocketFrame} response
+   * @param {!Protocol.Network.WebSocketFrameReceivedEvent} request
    */
-  webSocketFrameReceived(requestId, time, response) {
+  webSocketFrameReceived({requestId, timestamp: time, response}) {
     const networkRequest = this._inflightRequestsById.get(requestId);
     if (!networkRequest) {
       return;
@@ -731,11 +706,9 @@ export class NetworkDispatcher {
 
   /**
    * @override
-   * @param {!Protocol.Network.RequestId} requestId
-   * @param {!Protocol.Network.MonotonicTime} time
-   * @param {!Protocol.Network.WebSocketFrame} response
+   * @param {!Protocol.Network.WebSocketFrameSentEvent} request
    */
-  webSocketFrameSent(requestId, time, response) {
+  webSocketFrameSent({requestId, timestamp: time, response}) {
     const networkRequest = this._inflightRequestsById.get(requestId);
     if (!networkRequest) {
       return;
@@ -749,11 +722,9 @@ export class NetworkDispatcher {
 
   /**
    * @override
-   * @param {!Protocol.Network.RequestId} requestId
-   * @param {!Protocol.Network.MonotonicTime} time
-   * @param {string} errorMessage
+   * @param {!Protocol.Network.WebSocketFrameErrorEvent} request
    */
-  webSocketFrameError(requestId, time, errorMessage) {
+  webSocketFrameError({requestId, timestamp: time, errorMessage}) {
     const networkRequest = this._inflightRequestsById.get(requestId);
     if (!networkRequest) {
       return;
@@ -767,10 +738,9 @@ export class NetworkDispatcher {
 
   /**
    * @override
-   * @param {!Protocol.Network.RequestId} requestId
-   * @param {!Protocol.Network.MonotonicTime} time
+   * @param {!Protocol.Network.WebSocketClosedEvent} request
    */
-  webSocketClosed(requestId, time) {
+  webSocketClosed({requestId, timestamp: time}) {
     const networkRequest = this._inflightRequestsById.get(requestId);
     if (!networkRequest) {
       return;
@@ -780,13 +750,9 @@ export class NetworkDispatcher {
 
   /**
    * @override
-   * @param {!Protocol.Network.RequestId} requestId
-   * @param {!Protocol.Network.MonotonicTime} time
-   * @param {string} eventName
-   * @param {string} eventId
-   * @param {string} data
+   * @param {!Protocol.Network.EventSourceMessageReceivedEvent} request
    */
-  eventSourceMessageReceived(requestId, time, eventName, eventId, data) {
+  eventSourceMessageReceived({requestId, timestamp: time, eventName, eventId, data}) {
     const networkRequest = this._inflightRequestsById.get(requestId);
     if (!networkRequest) {
       return;
@@ -796,22 +762,22 @@ export class NetworkDispatcher {
 
   /**
    * @override
-   * @param {!Protocol.Network.InterceptionId} interceptionId
-   * @param {!Protocol.Network.Request} request
-   * @param {!Protocol.Page.FrameId} frameId
-   * @param {!Protocol.Network.ResourceType} resourceType
-   * @param {boolean} isNavigationRequest
-   * @param {boolean=} isDownload
-   * @param {string=} redirectUrl
-   * @param {!Protocol.Network.AuthChallenge=} authChallenge
-   * @param {!Protocol.Network.ErrorReason=} responseErrorReason
-   * @param {number=} responseStatusCode
-   * @param {!Protocol.Network.Headers=} responseHeaders
-   * @param {!Protocol.Network.RequestId=} requestId
+   * @param {!Protocol.Network.RequestInterceptedEvent} request
    */
-  requestIntercepted(
-      interceptionId, request, frameId, resourceType, isNavigationRequest, isDownload, redirectUrl, authChallenge,
-      responseErrorReason, responseStatusCode, responseHeaders, requestId) {
+  requestIntercepted({
+    interceptionId,
+    request,
+    frameId,
+    resourceType,
+    isNavigationRequest,
+    isDownload,
+    redirectUrl,
+    authChallenge,
+    responseErrorReason,
+    responseStatusCode,
+    responseHeaders,
+    requestId
+  }) {
     MultitargetNetworkManager.instance()._requestIntercepted(new InterceptedRequest(
         this._manager.target().networkAgent(), interceptionId, request, frameId, resourceType, isNavigationRequest,
         isDownload, redirectUrl, authChallenge, responseErrorReason, responseStatusCode, responseHeaders, requestId));
@@ -819,11 +785,9 @@ export class NetworkDispatcher {
 
   /**
    * @override
-   * @param {!Protocol.Network.RequestId} requestId
-   * @param {!Array<!Protocol.Network.BlockedCookieWithReason>} associatedCookies
-   * @param {!Protocol.Network.Headers} headers
+   * @param {!Protocol.Network.RequestWillBeSentExtraInfoEvent} request
    */
-  requestWillBeSentExtraInfo(requestId, associatedCookies, headers) {
+  requestWillBeSentExtraInfo({requestId, associatedCookies, headers}) {
     /** @type {!Array<!BlockedCookieWithReason>} */
     const blockedRequestCookies = [];
     const includedRequestCookies = [];
@@ -844,12 +808,9 @@ export class NetworkDispatcher {
 
   /**
    * @override
-   * @param {!Protocol.Network.RequestId} requestId
-   * @param {!Array<!Protocol.Network.BlockedSetCookieWithReason>} blockedCookies
-   * @param {!Protocol.Network.Headers} headers
-   * @param {string=} headersText
+   * @param {!Protocol.Network.ResponseReceivedExtraInfoEvent} request
    */
-  responseReceivedExtraInfo(requestId, blockedCookies, headers, headersText) {
+  responseReceivedExtraInfo({requestId, blockedCookies, headers, headersText}) {
     /** @type {!ExtraResponseInfo} */
     const extraResponseInfo = {
       blockedResponseCookies: blockedCookies.map(blockedCookie => {
@@ -863,16 +824,6 @@ export class NetworkDispatcher {
       responseHeadersText: headersText
     };
     this._getExtraInfoBuilder(requestId).addResponseExtraInfo(extraResponseInfo);
-  }
-
-  /**
-   * @suppress {missingOverride}
-   * @param {string} url
-   * @param {string} firstPartyUrl
-   * @param {!Array<!Protocol.Network.BlockedSetCookieWithReason>} blockedCookies
-   */
-  cookiesChanged(url, firstPartyUrl, blockedCookies) {
-    // TODO(chromium:1032063): Implement this protocol message handler.
   }
 
   /**

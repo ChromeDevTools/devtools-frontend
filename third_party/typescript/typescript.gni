@@ -72,6 +72,8 @@ template("ts_library") {
         "You must either specify an array of 'sources' or 'deps' for $target_name")
 
     _test_only = defined(invoker.testonly) && invoker.testonly
+    _verify_lib_check =
+        defined(invoker.verify_lib_check) && invoker.verify_lib_check
 
     if (defined(deps)) {
       args += [ "--deps" ]
@@ -98,8 +100,8 @@ template("ts_library") {
       args += [ "--test-only" ]
     }
 
-    if (is_debug) {
-      args += [ "--skip-lib-check" ]
+    if (_verify_lib_check) {
+      args += [ "--verify-lib-check" ]
     }
 
     output_files = [ "$target_gen_dir/$target_name-tsconfig.json" ]
@@ -129,7 +131,7 @@ template("ts_library") {
 
           # check that the file is TypeScript and not a unittest file
           # add it to the outputs
-          if (_extension == "ts" && !_test_only) {
+          if (_extension == "ts" && !_test_only && !_verify_lib_check) {
             # Figure out what the relative path is to the front_end folder.
             # We have to get the full path to the target_gen_dir
             # and compare that to the full location of the front_end

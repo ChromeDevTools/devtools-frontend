@@ -17,6 +17,51 @@ const commandMenuShortcut = Host.Platform.isMac() ? 'Command+Shift+P' : 'Control
 /** @type {!Array<!ReleaseNote>} */
 export const releaseNoteText = [
   {
+    version: 26,
+    header: 'Highlights from the Chrome 84 update',
+    highlights: [
+      {
+        title: 'The new Issues tab',
+        subtitle:
+            'The Issues tab aggregates warnings from the browser in a structured, aggregated, and actionable way, links to affected resources within DevTools, and provides guidance on how to fix the issues.',
+        link: 'https://developers.google.com/web/updates/2020/05/devtools#issues',
+      },
+      {
+        title: 'New accessibility information in the Inspect Mode tooltip',
+        subtitle:
+            'The tooltip now indicates whether an element has an accessible name and role and is keyboard-focusable.',
+        link: 'https://developers.google.com/web/updates/2020/05/devtools#a11y',
+      },
+      {
+        title: 'Performance panel updates',
+        subtitle: 'New features related to Total Blocking Time (TBT) and Cumulative Layout Shift (CLS).',
+        link: 'https://developers.google.com/web/updates/2020/05/devtools#performance',
+      },
+      {
+        title: 'More accurate Promise terminology',
+        subtitle: 'When logging Promises in the Console, the status now matches the Promise spec.',
+        link: 'https://developers.google.com/web/updates/2020/05/devtools#performance',
+      },
+      {
+        title: 'Styles pane updates',
+        subtitle:
+            'Support for the revert keyword, image previews, and more usage of space-separated functional color notation by default.',
+        link: 'https://developers.google.com/web/updates/2020/05/devtools#styles',
+      },
+      {
+        title: 'Deprecation of the Properties pane',
+        subtitle: 'Use console.dir($0) instead.',
+        link: 'https://developers.google.com/web/updates/2020/05/devtools#properties',
+      },
+      {
+        title: 'App shortcuts support in the Manifest pane',
+        subtitle: 'Verify your app shortcuts are set up correctly for your PWA.',
+        link: 'https://developers.google.com/web/updates/2020/05/devtools#app-shortcuts',
+      },
+    ],
+    link: 'https://developers.google.com/web/updates/2020/05/devtools',
+  },
+  {
     version: 25,
     header: 'Highlights from the Chrome 83 update',
     highlights: [

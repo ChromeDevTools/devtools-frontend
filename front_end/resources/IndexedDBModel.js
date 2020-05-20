@@ -42,7 +42,8 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
    */
   constructor(target) {
     super(target);
-    target.registerStorageDispatcher(this);
+    // TODO(chromium:1011811): Make the cast below unnecessary.
+    target.registerStorageDispatcher(/** @type {!ProtocolProxyApi.StorageDispatcher} */ (this));
     this._securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager);
     this._indexedDBAgent = target.indexedDBAgent();
     this._storageAgent = target.storageAgent();

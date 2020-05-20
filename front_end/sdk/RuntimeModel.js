@@ -873,8 +873,8 @@ export class ExecutionContext {
 SDKModel.register(RuntimeModel, Capability.JS, true);
 
 /** @typedef {{
- *    object: (!RemoteObject|undefined),
- *    exceptionDetails: (!Protocol.Runtime.ExceptionDetails|undefined),
+ *    object: !RemoteObject,
+ *    exceptionDetails: (!Protocol.Runtime.ExceptionDetails|undefined)}|{
  *    error: (!ProtocolClient.InspectorBackend.ProtocolError|undefined)}
  *  }}
  */

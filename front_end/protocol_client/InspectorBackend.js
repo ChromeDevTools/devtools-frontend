@@ -710,6 +710,13 @@ export class TargetBase {
   // Dispatcher registration, keep alphabetically sorted.
 
   /**
+   * @param {!ProtocolProxyApi.DebuggerDispatcher} dispatcher
+   */
+  registerDebuggerDispatcher(dispatcher) {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
    * @param {!ProtocolProxyApi.NetworkDispatcher} dispatcher
    */
   registerNetworkDispatcher(dispatcher) {

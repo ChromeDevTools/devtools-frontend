@@ -149,7 +149,7 @@ module.exports = {
         //
         // Don't use `importPath` here, as `path.normalize` removes
         // the `./` from same-folder import paths.
-        if (!node.source.value.startsWith('.') && !/^\w+$/.test(node.source.value)) {
+        if (!node.source.value.startsWith('.') && !/^[\w\-_]+$/.test(node.source.value)) {
           context.report({
             node,
             message: 'Invalid relative URL import. An import should start with either "../" or "./".',

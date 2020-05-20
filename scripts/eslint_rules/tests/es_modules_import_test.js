@@ -73,6 +73,10 @@ ruleTester.run('es_modules_import', rule, {
       filename: 'test/unittests/front_end/Unit_test.ts',
     },
     {
+      code: 'import {terser} from \'rollup-plugin-terser\';',
+      filename: 'front_end/rollup.config.js',
+    },
+    {
       code: 'export {UIString} from \'../platform/platform.js\';',
       filename: 'front_end/common/common.js',
     },

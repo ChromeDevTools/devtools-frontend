@@ -29,4 +29,9 @@ describe('JavaScriptFormatter', () => {
     assert.strictEqual(
         formattedCode, '(async()=>{\n  await someFunctionThatNeedsAwaiting();\n  callSomeOtherFunction();\n}\n)();\n');
   });
+
+  it('formats nullish coalescing expressions correctly', () => {
+    const formattedCode = formatJavaScript('false??true');
+    assert.strictEqual(formattedCode, 'false ?? true\n');
+  });
 });

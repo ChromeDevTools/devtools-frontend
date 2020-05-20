@@ -31,7 +31,7 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
-import {AcornTokenizer} from './AcornTokenizer.js';
+import {AcornTokenizer, ECMA_VERSION} from './AcornTokenizer.js';
 import {ESTreeWalker} from './ESTreeWalker.js';
 import {FormattedContentBuilder} from './FormattedContentBuilder.js';  // eslint-disable-line no-unused-vars
 
@@ -58,7 +58,7 @@ export class JavaScriptFormatter {
     this._content = text.substring(this._fromOffset, this._toOffset);
     this._lastLineNumber = 0;
     this._tokenizer = new AcornTokenizer(this._content);
-    const options = {ranges: false, preserveParens: true, allowImportExportEverywhere: true, ecmaVersion: 2020};
+    const options = {ranges: false, preserveParens: true, allowImportExportEverywhere: true, ecmaVersion: ECMA_VERSION};
     const ast = acorn.parse(this._content, options);
     const walker = new ESTreeWalker(this._beforeVisit.bind(this), this._afterVisit.bind(this));
     walker.walk(ast);

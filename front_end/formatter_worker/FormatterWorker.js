@@ -30,7 +30,7 @@
 
 import * as Platform from '../platform/platform.js';
 
-import {AcornTokenizer} from './AcornTokenizer.js';
+import {AcornTokenizer, ECMA_VERSION} from './AcornTokenizer.js';
 import {CSSFormatter} from './CSSFormatter.js';
 import {parseCSS} from './CSSRuleParser.js';
 import {ESTreeWalker} from './ESTreeWalker.js';
@@ -122,7 +122,7 @@ export function parseJSONRelaxed(content) {
  * @param {string} content
  */
 export function evaluatableJavaScriptSubstring(content) {
-  const tokenizer = acorn.tokenizer(content, {});
+  const tokenizer = acorn.tokenizer(content, {ecmaVersion: ECMA_VERSION});
   let result = '';
   try {
     let token = tokenizer.getToken();
@@ -169,7 +169,7 @@ export function evaluatableJavaScriptSubstring(content) {
 export function javaScriptIdentifiers(content) {
   let root = null;
   try {
-    root = acorn.parse(content, {ranges: false});
+    root = acorn.parse(content, {ecmaVersion: ECMA_VERSION, ranges: false});
   } catch (e) {
   }
 
@@ -274,7 +274,7 @@ export function findLastFunctionCall(content) {
     return null;
   }
   try {
-    const tokenizer = acorn.tokenizer(content, {});
+    const tokenizer = acorn.tokenizer(content, {ecmaVersion: ECMA_VERSION});
     while (tokenizer.getToken().type !== acorn.tokTypes.eof) {
     }
   } catch (e) {
@@ -321,13 +321,13 @@ export function argumentsList(content) {
   let parsed = null;
   try {
     // Try to parse as a function, anonymous function, or arrow function.
-    parsed = acorn.parse(`(${content})`, {});
+    parsed = acorn.parse(`(${content})`, {ecmaVersion: ECMA_VERSION});
   } catch (e) {
   }
   if (!parsed) {
     try {
       // Try to parse as a method.
-      parsed = acorn.parse(`({${content}})`, {});
+      parsed = acorn.parse(`({${content}})`, {ecmaVersion: ECMA_VERSION});
     } catch (e) {
     }
   }
@@ -391,7 +391,7 @@ export function findLastExpression(content) {
     return null;
   }
   try {
-    const tokenizer = acorn.tokenizer(content, {});
+    const tokenizer = acorn.tokenizer(content, {ecmaVersion: ECMA_VERSION});
     while (tokenizer.getToken().type !== acorn.tokTypes.eof) {
     }
   } catch (e) {
@@ -400,7 +400,7 @@ export function findLastExpression(content) {
 
   const suffix = '.DEVTOOLS';
   try {
-    acorn.parse(content + suffix, {});
+    acorn.parse(content + suffix, {ecmaVersion: ECMA_VERSION});
   } catch (parseError) {
     // If this is an invalid location for a '.', don't attempt to give autocomplete
     if (parseError.message.startsWith('Unexpected token') && parseError.pos === content.length) {
@@ -428,7 +428,7 @@ export function _lastCompleteExpression(content, suffix, types) {
     try {
       // Wrap content in paren to successfully parse object literals
       parsedContent = content[i] === '{' ? `(${content.substring(i)})${suffix}` : `${content.substring(i)}${suffix}`;
-      ast = acorn.parse(parsedContent, {});
+      ast = acorn.parse(parsedContent, {ecmaVersion: ECMA_VERSION});
       break;
     } catch (e) {
     }

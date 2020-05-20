@@ -5,6 +5,7 @@
 import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
+import {ECMA_VERSION} from './AcornTokenizer.js';
 import {ESTreeWalker} from './ESTreeWalker.js';
 
 /**
@@ -17,9 +18,9 @@ export function javaScriptOutline(content) {
 
   let ast;
   try {
-    ast = acorn.parse(content, {ranges: false});
+    ast = acorn.parse(content, {ecmaVersion: ECMA_VERSION, ranges: false});
   } catch (e) {
-    ast = acorn.loose.parse(content, {ranges: false});
+    ast = acorn.loose.parse(content, {ecmaVersion: ECMA_VERSION, ranges: false});
   }
 
   const contentLineEndings = Platform.StringUtilities.findLineEndingIndexes(content);

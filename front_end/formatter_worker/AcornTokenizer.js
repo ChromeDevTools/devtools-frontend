@@ -18,7 +18,7 @@ export class AcornTokenizer {
   constructor(content) {
     this._content = content;
     this._comments = [];
-    this._tokenizer = acorn.tokenizer(this._content, {onComment: this._comments});
+    this._tokenizer = acorn.tokenizer(this._content, {onComment: this._comments, ecmaVersion: ECMA_VERSION});
     const contentLineEndings = Platform.StringUtilities.findLineEndingIndexes(this._content);
     this._textCursor = new TextUtils.TextCursor.TextCursor(contentLineEndings);
     this._tokenLineStart = 0;
@@ -134,3 +134,5 @@ export class AcornTokenizer {
     return this._tokenColumnStart;
   }
 }
+
+export const ECMA_VERSION = 11;

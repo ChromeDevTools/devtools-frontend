@@ -400,6 +400,10 @@ export class AppManifestView extends UI.Widget.VBox {
    */
   async _appendIconResourceToSection(baseUrl, icon, section) {
     const iconErrors = [];
+    if (!icon.src) {
+      iconErrors.push(ls`Icon src is not set`);
+      return iconErrors;
+    }
     const iconUrl = Common.ParsedURL.ParsedURL.completeURL(baseUrl, icon['src']);
     const result = await this._loadImage(iconUrl);
     if (!result) {

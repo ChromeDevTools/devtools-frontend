@@ -717,6 +717,13 @@ export class TargetBase {
   }
 
   /**
+   * @param {!ProtocolProxyApi.ServiceWorkerDispatcher} dispatcher
+   */
+  registerServiceWorkerDispatcher(dispatcher) {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
    * @param {!ProtocolProxyApi.StorageDispatcher} dispatcher
    */
   registerStorageDispatcher(dispatcher) {

@@ -132,6 +132,7 @@ export class ServiceWorkersView extends UI.Widget.VBox {
   _getTimeStamp(registration) {
     const versions = registration.versionsByMode();
 
+    /** @type {number|undefined} */
     let timestamp = 0;
 
     const active = versions.get(SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.Active);
@@ -149,7 +150,7 @@ export class ServiceWorkersView extends UI.Widget.VBox {
       timestamp = redundant.scriptResponseTime;
     }
 
-    return timestamp;
+    return timestamp || 0;
   }
 
   _updateSectionVisibility() {
@@ -295,7 +296,7 @@ export class ServiceWorkersView extends UI.Widget.VBox {
     }
 
     const regex = String.filterRegex(filterString);
-    return registration.scopeURL.match(regex);
+    return regex.test(registration.scopeURL);
   }
 
   _filterChanged() {
@@ -320,7 +321,7 @@ export class ServiceWorkersView extends UI.Widget.VBox {
 
   _toggleFilter() {
     const expanded = this._otherSWFilter.getAttribute('aria-checked') === 'true';
-    this._otherSWFilter.setAttribute('aria-checked', !expanded);
+    this._otherSWFilter.setAttribute('aria-checked', `${!expanded}`);
     this._filterChanged();
   }
 }
@@ -437,7 +438,7 @@ export class Section {
    */
   _updateClientsField(version) {
     this._clientsField.removeChildren();
-    this._section.setFieldVisible(Common.UIString.UIString('Clients'), version.controlledClients.length);
+    this._section.setFieldVisible(Common.UIString.UIString('Clients'), !!version.controlledClients.length);
     for (const client of version.controlledClients) {
       const clientLabelText = this._clientsField.createChild('div', 'service-worker-client');
       if (this._clientInfoCache.has(client)) {

@@ -22,6 +22,7 @@ interface String {
   removeURLFragment(): string;
   trimEndWithMaxLength(maxLength: number): string;
   escapeForRegExp(): string;
+  filterRegex(query: string): RegExp;
 }
 
 declare let ls: (template: ITemplateArray, ...args: any[]) => string;

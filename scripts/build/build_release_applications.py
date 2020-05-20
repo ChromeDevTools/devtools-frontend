@@ -221,7 +221,8 @@ class ReleaseBuilder(object):
             out, error = rollup_process.communicate()
         else:
             out = read_file(js_entrypoint)
-        write_file(join(self.output_dir, module_name, module_name + '.js'), minify_js(out))
+        write_file(join(self.output_dir, module_name, module_name + '.js'),
+                   out)
 
         legacyFileName = module_name + '-legacy.js'
         if legacyFileName in modules:

@@ -5,6 +5,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
+import {terser} from 'rollup-plugin-terser';
+
 const external = fs.readdirSync(__dirname, {withFileTypes: true})
                      .filter(dirent => dirent.isDirectory())
                      .map(dirent => path.join(__dirname, dirent.name, dirent.name + '.js'));
@@ -16,5 +18,6 @@ export default {
   context: 'self',
   output: {
     format: 'esm',
+    plugins: [terser()],
   },
 };

@@ -33,8 +33,8 @@
  * @return {function(string, function(string, ?string, number, number):(!Object|undefined))}
  */
 
-import * as WasmDis from '../third_party/wasmparser/package/esm/WasmDis.js';
-import * as WasmParser from '../third_party/wasmparser/package/esm/WasmParser.js';
+import * as WasmDis from '../third_party/wasmparser/package/dist/esm/WasmDis.js';
+import * as WasmParser from '../third_party/wasmparser/package/dist/esm/WasmParser.js';
 
 self.onmessage = async function(event) {
   const method = /** @type {string} */ (event.data.method);

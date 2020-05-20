@@ -3,13 +3,26 @@
 // found in the LICENSE file.
 
 // Suggest owners based on authoring and reviewing contributions.
-// Usage: node suggest-owners.js <since-date> <path> [<cut-off>]
-const util = require('util');
-const exec = util.promisify(require('child_process').exec);
+// Usage: node suggest-owners.js <since-date> <path>
+const {promisify} = require('util');
+const exec = promisify(require('child_process').exec);
+const readline = require('readline');
+const fs = require('fs');
+const path = require('path');
+const file_path = process.argv[3];
+const date = process.argv[2];
+
+readline.Interface.prototype.question[promisify.custom] = function(prompt) {
+  return new Promise(
+      resolve => readline.Interface.prototype.question.call(this, prompt, resolve),
+  );
+};
+readline.Interface.prototype.questionAsync = promisify(
+    readline.Interface.prototype.question,
+);
 
 (async function() {
-  const {stdout} =
-      await exec(`git log --numstat --since=${process.argv[2]} ${process.argv[3]}`, {maxBuffer: 1024 * 1024 * 128});
+  const {stdout} = await exec(`git log --numstat --since=${date} ${file_path}`, {maxBuffer: 1024 * 1024 * 128});
   const structured_log = [];
   // Parse git log into a list of commit objects.
   for (const line of stdout.split('\n')) {
@@ -49,19 +62,41 @@ const exec = util.promisify(require('child_process').exec);
     list.push({contributor, commits});
   }
   list.sort((a, b) => b.commits - a.commits);
-
-  const cutoff = parseInt(process.argv[4], 10) || 0;
-  if (cutoff > 0) {
-    // If there is a cut-off specified, sort the list by contributor.
-    list = list.filter(item => item.commits >= cutoff)
-               .sort((a, b) => a.contributor.toLowerCase().localeCompare(b.contributor.toLowerCase()));
-    for (const {contributor} of list) {
-      console.log(contributor);
-    }
-  } else {
-    // If there is no cut-off specified, sort the list by commit.
-    for (const {contributor, commits} of list) {
-      console.log(`${contributor.padEnd(30)}: ${String(commits).padStart(3)}`);
-    }
+  console.log('Contributions');
+  for (const {contributor, commits} of list) {
+    console.log(`  ${contributor.padEnd(30)}: ${String(commits).padStart(3)}`);
   }
+
+  const owners_path = path.join(file_path, 'OWNERS');
+  // Output existing OWNERS file if exists.
+  if (fs.existsSync(owners_path)) {
+    console.log('Content of existing OWNERS file\n');
+    console.log(fs.readFileSync(owners_path).toString());
+  }
+
+  // Prompt cut off value to suggest owners.
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+  const input = await rl.questionAsync('Cut off at: ');
+  const cutoff = parseInt(input, 10);
+  if (isNaN(cutoff)) {
+    return;
+  }
+
+  console.log('Proposed owners');
+  list = list.filter(item => item.commits >= cutoff)
+             .sort((a, b) => a.contributor.toLowerCase().localeCompare(b.contributor.toLowerCase()));
+  for (const {contributor} of list) {
+    console.log('  ' + contributor);
+  }
+
+  // Prompt to write to OWNERS file.
+  if ((await rl.questionAsync(`Write to ${owners_path} ?`)).toLowerCase() === 'y') {
+    fs.writeFileSync(owners_path, list.map(e => e.contributor).join('\n') + '\n');
+    await exec(`git add ${owners_path}`);
+  }
+
+  rl.close();
 })();

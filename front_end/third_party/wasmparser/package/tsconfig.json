@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist/",
+        "sourceMap": true,
+        "declaration": true,
+        "preserveConstEnums": true,
+        "target": "es5",
+        "module": "commonjs"
+    },
+    "exclude": [
+        "node_modules"
+    ],
+    "files": [
+        "src/index.ts",
+        "src/WasmParser.ts",
+        "src/WasmParserTransform.ts",
+        "src/WasmEmitter.ts",
+        "src/WasmDis.ts"
+    ]
+}

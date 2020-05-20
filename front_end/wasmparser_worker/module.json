@@ -1,8 +1,8 @@
 {
   "scripts": [],
   "modules": [
-    "../third_party/wasmparser/WasmDis.js",
-    "../third_party/wasmparser/WasmParser.js",
+    "../third_party/wasmparser/package/esm/WasmDis.js",
+    "../third_party/wasmparser/package/esm/WasmParser.js",
     "wasmparser_worker.js",
     "WasmParserWorker.js"
   ]

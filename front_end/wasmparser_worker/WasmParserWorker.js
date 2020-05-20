@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 Google Inc. All rights reserved.
+ * Copyright (C) 2020 Google Inc. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -33,8 +33,8 @@
  * @return {function(string, function(string, ?string, number, number):(!Object|undefined))}
  */
 
-import * as WasmDis from '../third_party/wasmparser/WasmDis.js';
-import * as WasmParser from '../third_party/wasmparser/WasmParser.js';
+import * as WasmDis from '../third_party/wasmparser/package/esm/WasmDis.js';
+import * as WasmParser from '../third_party/wasmparser/package/esm/WasmParser.js';
 
 self.onmessage = async function(event) {
   const method = /** @type {string} */ (event.data.method);

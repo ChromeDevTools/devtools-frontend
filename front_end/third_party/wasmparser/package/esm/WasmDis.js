@@ -12,7 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { OperatorCodeNames, bytesToString, NULL_FUNCTION_INDEX } from './WasmParser.js';
+import { bytesToString, isTypeIndex , NULL_FUNCTION_INDEX, OperatorCodeNames} from './WasmParser.js';
+
 const NAME_SECTION_NAME = "name";
 const INVALID_NAME_SYMBOLS_REGEX = /[^0-9A-Za-z!#$%&'*+.:<=>?@^_`|~\/\-]/;
 const INVALID_NAME_SYMBOLS_REGEX_GLOBAL = new RegExp(INVALID_NAME_SYMBOLS_REGEX.source, "g");
@@ -83,7 +84,7 @@ function memoryAddressToString(address, code) {
     var defaultAlignFlags;
     switch (code) {
         case 64768 /* v128_load */:
-        case 64769 /* v128_store */:
+        case 64779 /* v128_store */:
             defaultAlignFlags = 4;
             break;
         case 41 /* i64_load */:
@@ -418,6 +419,17 @@ export class WasmDisassembler {
             this.appendBuffer(')');
         }
     }
+    printBlockType(type) {
+        if (type === -64 /* empty_block_type */) {
+            return;
+        }
+        if (isTypeIndex(type)) {
+            return this.printFuncType(type);
+        }
+        this.appendBuffer(' (result ');
+        this.appendBuffer(typeToString(type));
+        this.appendBuffer(')');
+    }
     printString(b) {
         this.appendBuffer('\"');
         for (var i = 0; i < b.length; i++) {
@@ -475,11 +487,7 @@ export class WasmDisassembler {
                     }
                     this._backrefLabels.push(backrefLabel);
                 }
-                if (operator.blockType !== -64 /* empty_block_type */) {
-                    this.appendBuffer(' (result ');
-                    this.appendBuffer(typeToString(operator.blockType));
-                    this.appendBuffer(')');
-                }
+                this.printBlockType(operator.blockType);
                 break;
             case 11 /* end */:
                 if (this._labelMode === LabelMode.Depth) {
@@ -613,7 +621,7 @@ export class WasmDisassembler {
             case 65101 /* i64_atomic_rmw16_u_cmpxchg */:
             case 65102 /* i64_atomic_rmw32_u_cmpxchg */:
             case 64768 /* v128_load */:
-            case 64769 /* v128_store */:
+            case 64779 /* v128_store */:
                 var memoryAddress = memoryAddressToString(operator.memoryAddress, operator.code);
                 if (memoryAddress !== null) {
                     this.appendBuffer(' ');
@@ -635,26 +643,26 @@ export class WasmDisassembler {
             case 68 /* f64_const */:
                 this.appendBuffer(` ${formatFloat64(operator.literal)}`);
                 break;
-            case 64770 /* v128_const */:
+            case 64780 /* v128_const */:
                 this.appendBuffer(` i32x4 ${formatI32Array(operator.literal, 4)}`);
                 break;
-            case 64771 /* v8x16_shuffle */:
+            case 64781 /* v8x16_shuffle */:
                 this.appendBuffer(` ${formatI8Array(operator.lines, 16)}`);
                 break;
-            case 64773 /* i8x16_extract_lane_s */:
-            case 64774 /* i8x16_extract_lane_u */:
-            case 64775 /* i8x16_replace_lane */:
-            case 64777 /* i16x8_extract_lane_s */:
-            case 64778 /* i16x8_extract_lane_u */:
-            case 64779 /* i16x8_replace_lane */:
-            case 64781 /* i32x4_extract_lane */:
-            case 64782 /* i32x4_replace_lane */:
-            case 64787 /* f32x4_extract_lane */:
-            case 64788 /* f32x4_replace_lane */:
-            case 64784 /* i64x2_extract_lane */:
-            case 64785 /* i64x2_replace_lane */:
-            case 64790 /* f64x2_extract_lane */:
-            case 64791 /* f64x2_replace_lane */:
+            case 64789 /* i8x16_extract_lane_s */:
+            case 64790 /* i8x16_extract_lane_u */:
+            case 64791 /* i8x16_replace_lane */:
+            case 64792 /* i16x8_extract_lane_s */:
+            case 64793 /* i16x8_extract_lane_u */:
+            case 64794 /* i16x8_replace_lane */:
+            case 64795 /* i32x4_extract_lane */:
+            case 64796 /* i32x4_replace_lane */:
+            case 64799 /* f32x4_extract_lane */:
+            case 64800 /* f32x4_replace_lane */:
+            case 64797 /* i64x2_extract_lane */:
+            case 64798 /* i64x2_replace_lane */:
+            case 64801 /* f64x2_extract_lane */:
+            case 64802 /* f64x2_replace_lane */:
                 this.appendBuffer(` ${operator.lineIndex}`);
                 break;
             case 64520 /* memory_init */:

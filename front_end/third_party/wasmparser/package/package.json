@@ -1,0 +1,31 @@
+{
+  "name": "wasmparser",
+  "version": "0.14.0",
+  "description": "Binary WebAssembly file parser.",
+  "main": "./dist/index.js",
+  "module": "./esm/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "disassemble-wasm": "./disassemble-wasm.js"
+  },
+  "scripts": {
+    "test": "jest",
+    "build": "tsc && tsc -p es6-tsconfig.json"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wasdk/wasmparser.git"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.9.1",
+    "jest": "^25.1.0",
+    "ts-jest": "^24.3.0",
+    "typescript": "^3.8.3",
+    "wabt": "^1.0.13"
+  },
+  "dependencies": {
+    "@types/node": "^12.12.30"
+  }
+}

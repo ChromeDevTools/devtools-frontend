@@ -6,7 +6,7 @@ import("../../../third_party/typescript/typescript.gni")
 
 ts_library("application") {
   testonly = true
-  sources = [ "boot-perf.ts" ]
+  sources = [ "boot-perf_test.ts" ]
 
   deps = [
     "../../shared",

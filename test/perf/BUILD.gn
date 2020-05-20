@@ -6,7 +6,6 @@ import("../../third_party/typescript/typescript.gni")
 
 ts_library("perf") {
   testonly = true
-  sources = [ "test-list.ts" ]
 
   deps = [
     "application",

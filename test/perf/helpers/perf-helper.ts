@@ -12,3 +12,23 @@ export const storeGeneratedResults = (file: string, content: string) => {
   const filePath = join(directory, file);
   fs.writeFileSync(filePath, content, {encoding: 'utf8'});
 };
+
+export const percentile = (values: number[], position: number) => {
+  if (values.length === 0) {
+    return 0;
+  }
+
+  values = Array.from(values).sort();
+  const idx = Math.floor(values.length * position);
+  if (values.length % 2 === 1) {
+    return values[idx];
+  }
+  return (values[idx] + values[idx - 1]) / 2;
+};
+
+export const mean = (values: number[]) => {
+  if (values.length === 0) {
+    return 0;
+  }
+  return values.reduce((prev, curr) => prev + curr, 0) / values.length;
+};

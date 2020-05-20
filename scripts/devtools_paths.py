@@ -78,10 +78,6 @@ def typescript_compiler_path():
     return path.join(node_modules_path(), 'typescript', 'bin', 'tsc')
 
 
-def boot_perf_test_path():
-    return path.join(devtools_root_path(), 'test', 'perf', 'bootperf.js')
-
-
 def hosted_mode_script_path():
     return path.join(devtools_root_path(), 'scripts', 'hosted_mode', 'server.js')
 

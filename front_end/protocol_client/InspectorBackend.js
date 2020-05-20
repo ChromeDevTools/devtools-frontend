@@ -672,9 +672,23 @@ export class TargetBase {
   }
 
   /**
+   * @return {!ProtocolProxyApi.HeapProfilerApi}
+   */
+  heapProfilerAgent() {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
    * @return {!ProtocolProxyApi.LayerTreeApi}
    */
   layerTreeAgent() {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
+   * @return {!ProtocolProxyApi.MemoryApi}
+   */
+  memoryAgent() {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
@@ -717,6 +731,13 @@ export class TargetBase {
   }
 
   /**
+   * @param {!ProtocolProxyApi.HeapProfilerDispatcher} dispatcher
+   */
+  registerHeapProfilerDispatcher(dispatcher) {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
    * @param {!ProtocolProxyApi.NetworkDispatcher} dispatcher
    */
   registerNetworkDispatcher(dispatcher) {
@@ -724,16 +745,16 @@ export class TargetBase {
   }
 
   /**
-   * @param {!ProtocolProxyApi.ServiceWorkerDispatcher} dispatcher
+   * @param {!ProtocolProxyApi.StorageDispatcher} dispatcher
    */
-  registerServiceWorkerDispatcher(dispatcher) {
+  registerStorageDispatcher(dispatcher) {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
   /**
-   * @param {!ProtocolProxyApi.StorageDispatcher} dispatcher
+   * @param {!ProtocolProxyApi.ServiceWorkerDispatcher} dispatcher
    */
-  registerStorageDispatcher(dispatcher) {
+  registerServiceWorkerDispatcher(dispatcher) {
     throw new Error('Implemented in InspectorBackend.js');
   }
 }

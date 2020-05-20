@@ -538,7 +538,7 @@ export class SamplingNativeHeapSnapshotType extends SamplingHeapProfileTypeBase 
 
   /**
    * @param {!SDK.HeapProfilerModel.HeapProfilerModel} heapProfilerModel
-   * @return {!Promise<!Protocol.HeapProfiler.SamplingHeapProfile>}
+   * @return {!Promise<?SDK.HeapProfilerModel.CommonHeapProfile>}
    */
   _takeNativeSnapshot(heapProfilerModel) {
     throw 'Not implemented';
@@ -556,10 +556,10 @@ export class SamplingNativeHeapSnapshotBrowserType extends SamplingNativeHeapSna
   /**
    * @override
    * @param {!SDK.HeapProfilerModel.HeapProfilerModel} heapProfilerModel
-   * @return {!Promise<!Protocol.HeapProfiler.SamplingHeapProfile>}
+   * @return {!Promise<?SDK.HeapProfilerModel.CommonHeapProfile>}
    */
   async _takeNativeSnapshot(heapProfilerModel) {
-    return await heapProfilerModel.takeNativeBrowserSnapshot();
+    return heapProfilerModel.takeNativeBrowserSnapshot();
   }
 }
 
@@ -572,10 +572,10 @@ export class SamplingNativeHeapSnapshotRendererType extends SamplingNativeHeapSn
   /**
    * @override
    * @param {!SDK.HeapProfilerModel.HeapProfilerModel} heapProfilerModel
-   * @return {!Promise<!Protocol.HeapProfiler.SamplingHeapProfile>}
+   * @return {!Promise<?SDK.HeapProfilerModel.CommonHeapProfile>}
    */
   async _takeNativeSnapshot(heapProfilerModel) {
-    return await heapProfilerModel.takeNativeSnapshot();
+    return heapProfilerModel.takeNativeSnapshot();
   }
 }
 

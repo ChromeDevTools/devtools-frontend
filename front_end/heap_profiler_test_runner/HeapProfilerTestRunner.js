@@ -644,7 +644,7 @@ HeapProfilerTestRunner.takeAndOpenSnapshot = async function(generator, callback)
   }
 
   HeapProfilerTestRunner._takeAndOpenSnapshotCallback = callback;
-  TestRunner.override(TestRunner.HeapProfilerAgent, 'takeHeapSnapshot', pushGeneratedSnapshot);
+  TestRunner.override(TestRunner.HeapProfilerAgent, 'invoke_takeHeapSnapshot', pushGeneratedSnapshot);
   if (!self.UI.context.flavor(SDK.HeapProfilerModel)) {
     await new Promise(resolve => self.UI.context.addFlavorChangeListener(SDK.HeapProfilerModel, resolve));
   }

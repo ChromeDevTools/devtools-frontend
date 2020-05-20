@@ -55,7 +55,7 @@ export const releaseNoteText = [
       },
       {
         title: 'App shortcuts support in the Manifest pane',
-        subtitle: 'Verify your app shortcuts are setup correctly for your PWA.',
+        subtitle: 'Verify your app shortcuts are set up correctly for your PWA.',
         link: 'https://developers.google.com/web/updates/2020/05/devtools#app-shortcuts',
       },
     ],

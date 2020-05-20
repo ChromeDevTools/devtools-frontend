@@ -7,13 +7,15 @@ use once_cell::unsync::OnceCell;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen]
+#[wasm_bindgen(typescript_custom_section)]
+const TS_SOURCE_MAP_ENTRY: &str = "import { SourceMapEntry } from '../../SourceMap.js';";
+
+#[wasm_bindgen(raw_module = "../../SourceMap.js")]
 extern "C" {
-  #[wasm_bindgen(js_namespace = SDK)]
   #[derive(Debug, Clone)]
+  #[wasm_bindgen(typescript_type = "SourceMapEntry")]
   pub type SourceMapEntry;
 
-  #[wasm_bindgen(js_namespace = SDK)]
   #[wasm_bindgen(constructor)]
   pub fn new(
     compiled_line: u32,

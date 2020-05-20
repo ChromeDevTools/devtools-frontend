@@ -81,7 +81,6 @@ JS_PROTOCOL_PATH = path.join(ROOT_PATH, 'v8', 'include', 'js_protocol.pdl')
 DEVTOOLS_FRONTEND_PATH = path.join(DEVTOOLS_PATH, 'front_end')
 GLOBAL_EXTERNS_FILE = to_platform_path(path.join(DEVTOOLS_FRONTEND_PATH, 'externs.js'))
 DEFAULT_PROTOCOL_EXTERNS_FILE = path.join(DEVTOOLS_FRONTEND_PATH, 'protocol_externs.js')
-WASM_SOURCE_MAP_FILE = path.join(DEVTOOLS_FRONTEND_PATH, 'sdk', 'wasm_source_map', 'types.js')
 RUNTIME_FILE = to_platform_path(path.join(DEVTOOLS_FRONTEND_PATH, 'RuntimeInstantiator.js'))
 ROOT_MODULE_FILE = to_platform_path(path.join(DEVTOOLS_FRONTEND_PATH, 'root.js'))
 
@@ -322,7 +321,7 @@ def prepare_closure_frontend_compile(temp_devtools_path, descriptors, namespace_
         ROOT_MODULE_FILE,
     ]
 
-    all_files = descriptors.all_compiled_files() + [WASM_SOURCE_MAP_FILE]
+    all_files = descriptors.all_compiled_files()
     args = []
     for file in all_files:
 
@@ -342,6 +341,9 @@ def prepare_closure_frontend_compile(temp_devtools_path, descriptors, namespace_
         generated_file = path.normpath(path.join(temp_frontend_path, file))
         if not generated_file in args:
             modular_build.write_file(generated_file, '')
+            if os.path.basename(generated_file) == 'wasm_source_map.js':
+                with open(generated_file.replace('.js', '_types.js')) as f:
+                    modular_build.write_file(generated_file, f.read())
             args.extend(['--js', generated_file])
 
     command += args

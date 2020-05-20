@@ -1,36 +1,10 @@
-//Copyright 2020 The Chromium Authors. All rights reserved.
-//Use of this source code is governed by a BSD-style license that can be
-//found in the LICENSE file.
+import { SourceMapEntry } from '../../SourceMap.js';
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
+let wasm;
 
-(function() {
-    const __exports = {};
-    let wasm;
+const heap = new Array(32).fill(undefined);
 
-    let cachegetUint8Memory = null;
-    function getUint8Memory() {
-        if (cachegetUint8Memory === null || cachegetUint8Memory.buffer !== wasm.memory.buffer) {
-            cachegetUint8Memory = new Uint8Array(wasm.memory.buffer);
-        }
-        return cachegetUint8Memory;
-    }
-
-    let WASM_VECTOR_LEN = 0;
-
-    function passArray8ToWasm(arg) {
-        const ptr = wasm.__wbindgen_malloc(arg.length * 1);
-        getUint8Memory().set(arg, ptr / 1);
-        WASM_VECTOR_LEN = arg.length;
-        return ptr;
-    }
-
-    const heap = new Array(32);
-
-    heap.fill(undefined);
-
-    heap.push(undefined, null, true, false);
+heap.push(undefined, null, true, false);
 
 function getObject(idx) { return heap[idx]; }
 
@@ -48,6 +22,40 @@ function takeObject(idx) {
     return ret;
 }
 
+function addHeapObject(obj) {
+    if (heap_next === heap.length) heap.push(heap.length + 1);
+    const idx = heap_next;
+    heap_next = heap[idx];
+
+    heap[idx] = obj;
+    return idx;
+}
+
+let cachedTextDecoder = new TextDecoder('utf-8', { ignoreBOM: true, fatal: true });
+
+cachedTextDecoder.decode();
+
+let cachegetUint8Memory0 = null;
+function getUint8Memory0() {
+    if (cachegetUint8Memory0 === null || cachegetUint8Memory0.buffer !== wasm.memory.buffer) {
+        cachegetUint8Memory0 = new Uint8Array(wasm.memory.buffer);
+    }
+    return cachegetUint8Memory0;
+}
+
+function getStringFromWasm0(ptr, len) {
+    return cachedTextDecoder.decode(getUint8Memory0().subarray(ptr, ptr + len));
+}
+
+let WASM_VECTOR_LEN = 0;
+
+function passArray8ToWasm0(arg, malloc) {
+    const ptr = malloc(arg.length * 1);
+    getUint8Memory0().set(arg, ptr / 1);
+    WASM_VECTOR_LEN = arg.length;
+    return ptr;
+}
+
 let cachedTextEncoder = new TextEncoder('utf-8');
 
 const encodeString = (typeof cachedTextEncoder.encodeInto === 'function'
@@ -63,12 +71,20 @@ const encodeString = (typeof cachedTextEncoder.encodeInto === 'function'
     };
 });
 
-function passStringToWasm(arg) {
+function passStringToWasm0(arg, malloc, realloc) {
+
+    if (realloc === undefined) {
+        const buf = cachedTextEncoder.encode(arg);
+        const ptr = malloc(buf.length);
+        getUint8Memory0().subarray(ptr, ptr + buf.length).set(buf);
+        WASM_VECTOR_LEN = buf.length;
+        return ptr;
+    }
 
     let len = arg.length;
-    let ptr = wasm.__wbindgen_malloc(len);
+    let ptr = malloc(len);
 
-    const mem = getUint8Memory();
+    const mem = getUint8Memory0();
 
     let offset = 0;
 
@@ -82,8 +98,8 @@ function passStringToWasm(arg) {
         if (offset !== 0) {
             arg = arg.slice(offset);
         }
-        ptr = wasm.__wbindgen_realloc(ptr, len, len = offset + arg.length * 3);
-        const view = getUint8Memory().subarray(ptr + offset, ptr + len);
+        ptr = realloc(ptr, len, len = offset + arg.length * 3);
+        const view = getUint8Memory0().subarray(ptr + offset, ptr + len);
         const ret = encodeString(arg, view);
 
         offset += ret.written;
@@ -92,24 +108,9 @@ function passStringToWasm(arg) {
     WASM_VECTOR_LEN = offset;
     return ptr;
 }
-
-function addHeapObject(obj) {
-    if (heap_next === heap.length) heap.push(heap.length + 1);
-    const idx = heap_next;
-    heap_next = heap[idx];
-
-    heap[idx] = obj;
-    return idx;
-}
-
-let cachedTextDecoder = new TextDecoder('utf-8', { ignoreBOM: true, fatal: true });
-
-function getStringFromWasm(ptr, len) {
-    return cachedTextDecoder.decode(getUint8Memory().subarray(ptr, ptr + len));
-}
 /**
 */
-class Resolver {
+export class Resolver {
 
     static __wrap(ptr) {
         const obj = Object.create(Resolver.prototype);
@@ -126,127 +127,133 @@ class Resolver {
     }
     /**
     * @param {Uint8Array} src
-    * @returns {Resolver}
     */
     constructor(src) {
-        const ret = wasm.resolver_from_slice(passArray8ToWasm(src), WASM_VECTOR_LEN);
+        var ptr0 = passArray8ToWasm0(src, wasm.__wbindgen_malloc);
+        var len0 = WASM_VECTOR_LEN;
+        var ret = wasm.resolver_from_slice(ptr0, len0);
         return Resolver.__wrap(ret);
     }
     /**
-    * @returns {any}
+    * @returns {Array<any>}
     */
     listFiles() {
-        const ret = wasm.resolver_listFiles(this.ptr);
+        var ret = wasm.resolver_listFiles(this.ptr);
         return takeObject(ret);
     }
     /**
-    * @returns {any}
+    * @returns {Array<any>}
     */
     listMappings() {
-        const ret = wasm.resolver_listMappings(this.ptr);
+        var ret = wasm.resolver_listMappings(this.ptr);
         return takeObject(ret);
     }
     /**
     * @param {number} addr
-    * @returns {any}
+    * @returns {SourceMapEntry | undefined}
     */
     resolve(addr) {
-        const ret = wasm.resolver_resolve(this.ptr, addr);
+        var ret = wasm.resolver_resolve(this.ptr, addr);
         return takeObject(ret);
     }
     /**
     * @param {string} file
     * @param {number} line
     * @param {number} column
-    * @returns {any}
+    * @returns {SourceMapEntry | undefined}
     */
     resolveReverse(file, line, column) {
-        const ret = wasm.resolver_resolveReverse(this.ptr, passStringToWasm(file), WASM_VECTOR_LEN, line, column);
+        var ptr0 = passStringToWasm0(file, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        var len0 = WASM_VECTOR_LEN;
+        var ret = wasm.resolver_resolveReverse(this.ptr, ptr0, len0, line, column);
         return takeObject(ret);
     }
 }
-__exports.Resolver = Resolver;
 
-function init(module) {
+async function load(module, imports) {
+    if (typeof Response === 'function' && module instanceof Response) {
 
-    let result;
+        if (typeof WebAssembly.instantiateStreaming === 'function') {
+            try {
+                return await WebAssembly.instantiateStreaming(module, imports);
+
+            } catch (e) {
+                if (module.headers.get('Content-Type') != 'application/wasm') {
+                    console.warn("`WebAssembly.instantiateStreaming` failed because your server does not serve wasm with `application/wasm` MIME type. Falling back to `WebAssembly.instantiate` which is slower. Original error:\n", e);
+
+                } else {
+                    throw e;
+                }
+            }
+        }
+
+        const bytes = await module.arrayBuffer();
+        return await WebAssembly.instantiate(bytes, imports);
+
+    } else {
+
+        const instance = await WebAssembly.instantiate(module, imports);
+
+        if (instance instanceof WebAssembly.Instance) {
+            return { instance, module };
+
+        } else {
+            return instance;
+        }
+    }
+}
+
+async function init(input) {
+    if (typeof input === 'undefined') {
+        input = import.meta.url.replace(/\.js$/, '_bg.wasm');
+    }
     const imports = {};
     imports.wbg = {};
     imports.wbg.__wbindgen_object_drop_ref = function(arg0) {
         takeObject(arg0);
     };
-    imports.wbg.__wbg_new_8e4c496df8c98a76 = function(arg0, arg1, arg2, arg3, arg4) {
-        const ret = new SDK.SourceMapEntry(arg0 >>> 0, arg1 >>> 0, getObject(arg2), arg3 >>> 0, arg4 >>> 0);
+    imports.wbg.__wbg_new_8344aa4d8326b816 = function(arg0, arg1, arg2, arg3, arg4) {
+        var ret = new SourceMapEntry(arg0 >>> 0, arg1 >>> 0, getObject(arg2), arg3 >>> 0, arg4 >>> 0);
         return addHeapObject(ret);
     };
     imports.wbg.__wbindgen_object_clone_ref = function(arg0) {
-        const ret = getObject(arg0);
+        var ret = getObject(arg0);
         return addHeapObject(ret);
     };
     imports.wbg.__wbindgen_string_new = function(arg0, arg1) {
-        const ret = getStringFromWasm(arg0, arg1);
+        var ret = getStringFromWasm0(arg0, arg1);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbg_new_951e889c56bc7e3c = function() {
-        const ret = new Array();
+    imports.wbg.__wbg_new_0d50725e1ae68303 = function() {
+        var ret = new Array();
         return addHeapObject(ret);
     };
-    imports.wbg.__wbg_push_36cde80dfc256d1d = function(arg0, arg1) {
-        const ret = getObject(arg0).push(getObject(arg1));
+    imports.wbg.__wbg_push_46274b393147c746 = function(arg0, arg1) {
+        var ret = getObject(arg0).push(getObject(arg1));
         return ret;
     };
-    imports.wbg.__wbg_new_4d5ae649984849e5 = function(arg0, arg1) {
-        const ret = new Error(getStringFromWasm(arg0, arg1));
+    imports.wbg.__wbg_new_1d56e97b8de3067f = function(arg0, arg1) {
+        var ret = new Error(getStringFromWasm0(arg0, arg1));
         return addHeapObject(ret);
     };
     imports.wbg.__wbindgen_throw = function(arg0, arg1) {
-        throw new Error(getStringFromWasm(arg0, arg1));
+        throw new Error(getStringFromWasm0(arg0, arg1));
     };
     imports.wbg.__wbindgen_rethrow = function(arg0) {
         throw takeObject(arg0);
     };
 
-    if ((typeof URL === 'function' && module instanceof URL) || typeof module === 'string' || (typeof Request === 'function' && module instanceof Request)) {
-
-        const response = fetch(module);
-        if (typeof WebAssembly.instantiateStreaming === 'function') {
-            result = WebAssembly.instantiateStreaming(response, imports)
-            .catch(e => {
-                return response
-                .then(r => {
-                    if (r.headers.get('Content-Type') != 'application/wasm') {
-                        console.warn("`WebAssembly.instantiateStreaming` failed because your server does not serve wasm with `application/wasm` MIME type. Falling back to `WebAssembly.instantiate` which is slower. Original error:\n", e);
-                        return r.arrayBuffer();
-                    } else {
-                        throw e;
-                    }
-                })
-                .then(bytes => WebAssembly.instantiate(bytes, imports));
-            });
-        } else {
-            result = response
-            .then(r => r.arrayBuffer())
-            .then(bytes => WebAssembly.instantiate(bytes, imports));
-        }
-    } else {
-
-        result = WebAssembly.instantiate(module, imports)
-        .then(result => {
-            if (result instanceof WebAssembly.Instance) {
-                return { instance: result, module };
-            } else {
-                return result;
-            }
-        });
+    if (typeof input === 'string' || (typeof Request === 'function' && input instanceof Request) || (typeof URL === 'function' && input instanceof URL)) {
+        input = fetch(input);
     }
-    return result.then(({instance, module}) => {
-        wasm = instance.exports;
-        init.__wbindgen_wasm_module = module;
 
-        return wasm;
-    });
+    const { instance, module } = await load(await input, imports);
+
+    wasm = instance.exports;
+    init.__wbindgen_wasm_module = module;
+
+    return wasm;
 }
 
-self.wasm_bindgen = Object.assign(init, __exports);
+export default init;
 
-})();

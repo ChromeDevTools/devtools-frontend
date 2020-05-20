@@ -61,7 +61,6 @@ ts_library("sdk") {
     "TracingManager.js",
     "TracingModel.js",
     "sdk.js",
-    "wasm_source_map/pkg/wasm_source_map.js",
   ]
 
   deps = [
@@ -71,5 +70,6 @@ ts_library("sdk") {
     "../platform",
     "../protocol_client",
     "../text_utils",
+    "wasm_source_map",
   ]
 }

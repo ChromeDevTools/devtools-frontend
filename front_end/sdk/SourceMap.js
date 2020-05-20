@@ -37,6 +37,7 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import {CompilerSourceMappingContentProvider} from './CompilerSourceMappingContentProvider.js';
 import {MultitargetNetworkManager} from './NetworkManager.js';
 import {Script} from './Script.js';  // eslint-disable-line no-unused-vars
+import initWasm, {Resolver as WasmResolver} from './wasm_source_map/pkg/wasm_source_map.js';
 
 /**
  * @interface
@@ -635,7 +636,7 @@ export class WasmSourceMap {
   /**
    * Implements SourceMap interface for DWARF information in Wasm.
    * @param {string} wasmUrl
-   * @param {*} resolver
+   * @param {!WasmResolver} resolver
    */
   constructor(wasmUrl, resolver) {
     this._wasmUrl = wasmUrl;
@@ -648,8 +649,8 @@ export class WasmSourceMap {
   static async _loadBindings() {
     const arrayBuffer =
         await self.runtime.loadBinaryResourcePromise('./sdk/wasm_source_map/pkg/wasm_source_map_bg.wasm', true);
-    await self.wasm_bindgen(arrayBuffer);
-    return self.wasm_bindgen.Resolver;
+    await initWasm(arrayBuffer);
+    return WasmResolver;
   }
 
   /**
@@ -667,7 +668,6 @@ export class WasmSourceMap {
    */
   static async load(script, wasmUrl) {
     const [Resolver, wasm] = await Promise.all([WasmSourceMap._loadBindingsOnce(), script.getWasmBytecode()]);
-
     return new WasmSourceMap(wasmUrl, new Resolver(new Uint8Array(wasm)));
   }
 

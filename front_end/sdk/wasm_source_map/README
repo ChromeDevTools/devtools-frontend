@@ -11,4 +11,4 @@ To modify and recompile the library, you'll need:
 1) Rust toolchain - install as per https://rustup.rs/.
 2) Wasm-pack toolchain - install as per https://rustwasm.github.io/wasm-pack/.
 3) Change code in `src/` folder.
-4) Rebuild with `wasm-pack build --target no-modules`.
+4) Rebuild with `wasm-pack build --target web`.

@@ -8,9 +8,7 @@
 import * as Common from '../common/common.js';
 import {ContextFlavorListener} from './ContextFlavorListener.js';
 
-/**
- * @unrestricted
- */
+
 export class Context {
   constructor() {
     this._flavors = new Map();

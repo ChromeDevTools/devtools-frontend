@@ -13,9 +13,7 @@ import * as Host from '../host/host.js';  // eslint-disable-line no-unused-vars
  */
 let zoomManagerInstance;
 
-/**
- * @unrestricted
- */
+
 export class ZoomManager extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @private

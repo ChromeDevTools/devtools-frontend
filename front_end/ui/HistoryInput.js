@@ -8,9 +8,7 @@
 import {Keys} from './KeyboardShortcut.js';
 import {registerCustomElement} from './utils/register-custom-element.js';
 
-/**
- * @unrestricted
- */
+
 export class HistoryInput extends HTMLInputElement {
   constructor() {
     super();

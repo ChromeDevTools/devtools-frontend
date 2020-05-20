@@ -8,9 +8,6 @@
 import {Action} from './Action.js';
 import {Context} from './Context.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class ActionRegistry {
   constructor() {
     /** @type {!Map.<string, !Action>} */

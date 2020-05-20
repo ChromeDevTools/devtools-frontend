@@ -36,9 +36,6 @@
  */
 export const _Eps = 1e-5;
 
-/**
- * @unrestricted
- */
 export class Vector {
   /**
    * @param {number} x
@@ -70,9 +67,7 @@ export class Vector {
   }
 }
 
-/**
- * @unrestricted
- */
+
 export class Point {
   /**
    * @param {number} x
@@ -119,9 +114,7 @@ export class Point {
   }
 }
 
-/**
- * @unrestricted
- */
+
 export class CubicBezier {
   /**
    * @param {!Point} point1
@@ -196,9 +189,7 @@ CubicBezier.KeywordValues = {
   'ease-out': 'cubic-bezier(0, 0, 0.58, 1)'
 };
 
-/**
- * @unrestricted
- */
+
 export class EulerAngles {
   /**
    * @param {number} alpha
@@ -341,9 +332,7 @@ export const boundsForTransformedPoints = function(matrix, points, aggregateBoun
   return aggregateBounds;
 };
 
-/**
- * @unrestricted
- */
+
 export class Size {
   /**
    * @param {number} width
@@ -414,9 +403,7 @@ export class Size {
   }
 }
 
-/**
- * @unrestricted
- */
+
 export class Insets {
   /**
    * @param {number} left
@@ -441,9 +428,7 @@ export class Insets {
   }
 }
 
-/**
- * @unrestricted
- */
+
 export class Rect {
   /**
    * @param {number} left
@@ -499,9 +484,7 @@ export class Rect {
   }
 }
 
-/**
- * @unrestricted
- */
+
 export class Constraints {
   /**
    * @param {!Size=} minimum

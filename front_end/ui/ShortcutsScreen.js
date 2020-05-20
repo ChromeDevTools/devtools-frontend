@@ -39,9 +39,7 @@ import {Descriptor, KeyboardShortcut, Keys, Modifiers} from './KeyboardShortcut.
 import {createDocumentationLink} from './UIUtils.js';
 import {Widget} from './Widget.js';
 
-/**
- * @unrestricted
- */
+
 export class ShortcutsScreen {
   constructor() {
     /** @type {!Object.<string, !ShortcutsSection>} */
@@ -285,9 +283,7 @@ export class ShortcutsScreen {
   }
 }
 
-/**
- * @unrestricted
- */
+
 class ShortcutsSection {
   /**
    * @param {string} name

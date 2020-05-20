@@ -32,9 +32,7 @@
 
 import * as Host from '../host/host.js';
 
-/**
- * @unrestricted
- */
+
 export class KeyboardShortcut {
   /**
    * @param {!Array.<!Descriptor>} descriptors

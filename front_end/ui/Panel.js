@@ -33,9 +33,7 @@ import {SearchableView} from './SearchableView.js';  // eslint-disable-line no-u
 import {SplitWidget} from './SplitWidget.js';
 import {VBox} from './Widget.js';
 
-/**
- * @unrestricted
- */
+
 export class Panel extends VBox {
   /**
    * @param {string} name

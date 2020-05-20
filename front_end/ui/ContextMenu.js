@@ -119,9 +119,7 @@ export class Item {
   }
 }
 
-/**
- * @unrestricted
- */
+
 export class Section {
   /**
    * @param {?ContextMenu} contextMenu
@@ -215,9 +213,7 @@ export class Section {
   }
 }
 
-/**
- * @unrestricted
- */
+
 export class SubMenu extends Item {
   /**
    * @param {?ContextMenu} contextMenu

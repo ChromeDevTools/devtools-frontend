@@ -177,9 +177,7 @@ export const Events = {
   ResizeEnd: Symbol('ResizeEnd')
 };
 
-/**
- * @unrestricted
- */
+
 export class SimpleResizerWidget extends ResizerWidget {
   constructor() {
     super();

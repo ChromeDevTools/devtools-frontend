@@ -133,9 +133,7 @@ UI.SettingUI = UIModule.SettingsUI.SettingUI;
 /** @constructor */
 UI.ShortcutRegistry = UIModule.ShortcutRegistry.ShortcutRegistry;
 
-/**
- * @unrestricted
- */
+
 UI.ShortcutRegistry.ForwardedShortcut = UIModule.ShortcutRegistry.ForwardedShortcut;
 
 /** @constructor */

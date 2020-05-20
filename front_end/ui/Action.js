@@ -8,9 +8,7 @@
 import * as Common from '../common/common.js';
 import {ActionDelegate} from './ActionDelegate.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
+
 export class Action extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!Root.Runtime.Extension} extension

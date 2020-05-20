@@ -11,9 +11,7 @@ import * as Host from '../host/host.js';
 import {KeyboardShortcut} from './KeyboardShortcut.js';
 import {ForwardedShortcut} from './ShortcutRegistry.js';
 
-/**
- * @unrestricted
- */
+
 export class ForwardedInputEventHandler {
   constructor() {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(

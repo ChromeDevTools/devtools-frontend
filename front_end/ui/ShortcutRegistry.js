@@ -15,9 +15,7 @@ import {Dialog} from './Dialog.js';
 import {Descriptor, KeyboardShortcut, Modifiers, Type} from './KeyboardShortcut.js';  // eslint-disable-line no-unused-vars
 import {isEditing} from './UIUtils.js';
 
-/**
- * @unrestricted
- */
+
 export class ShortcutRegistry {
   /**
    * @param {!ActionRegistry} actionRegistry
@@ -437,9 +435,7 @@ export class ShortcutTreeNode {
   }
 }
 
-/**
- * @unrestricted
- */
+
 export class ForwardedShortcut {}
 
 ForwardedShortcut.instance = new ForwardedShortcut();

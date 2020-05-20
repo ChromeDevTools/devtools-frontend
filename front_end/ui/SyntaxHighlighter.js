@@ -31,9 +31,6 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
-/**
- * @unrestricted
- */
 export class SyntaxHighlighter {
   /**
    * @param {string} mimeType

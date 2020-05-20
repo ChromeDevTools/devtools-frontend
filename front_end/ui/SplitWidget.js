@@ -40,9 +40,7 @@ import {ToolbarButton} from './Toolbar.js';
 import {Widget} from './Widget.js';
 import {Events as ZoomManagerEvents, ZoomManager} from './ZoomManager.js';
 
-/**
- * @unrestricted
- */
+
 export class SplitWidget extends Widget {
   /**
    * @param {boolean} isVertical

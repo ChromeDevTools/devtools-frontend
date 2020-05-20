@@ -8,9 +8,7 @@
 import * as Common from '../common/common.js';
 import {VBox} from './Widget.js';
 
-/**
- * @unrestricted
- */
+
 export class ThrottledWidget extends VBox {
   /**
    * @param {boolean=} isWebComponent

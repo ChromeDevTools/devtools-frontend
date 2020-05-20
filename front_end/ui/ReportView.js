@@ -117,9 +117,7 @@ export class ReportView extends VBox {
   }
 }
 
-/**
- * @unrestricted
- */
+
 export class Section extends VBox {
   /**
    * @param {string} title

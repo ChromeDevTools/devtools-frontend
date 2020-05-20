@@ -34,9 +34,7 @@
 import {VBox} from './Widget.js';
 import {XLink} from './XLink.js';
 
-/**
- * @unrestricted
- */
+
 export class EmptyWidget extends VBox {
   /**
    * @param {string} text

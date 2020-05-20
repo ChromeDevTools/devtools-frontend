@@ -155,7 +155,7 @@ luci.cq_group(
 )
 
 luci.cq_group(
-  name="infra/config",
+  name="infra_config",
   watch=cq.refset(
     repo="https://chromium.googlesource.com/devtools/devtools-frontend",
     refs=["refs/heads/infra/config"]

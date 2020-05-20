@@ -676,6 +676,13 @@ export class TargetBase {
   }
 
   /**
+   * @return {!ProtocolProxyApi.DOMDebuggerApi}
+   */
+  domdebuggerAgent() {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
    * @param {!ProtocolProxyApi.NetworkDispatcher} dispatcher
    */
   registerNetworkDispatcher(dispatcher) {

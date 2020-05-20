@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 
 import {Location} from './DebuggerModel.js';                                // eslint-disable-line no-unused-vars
@@ -50,9 +47,10 @@ export class DOMDebuggerModel extends SDKModel {
       return [];
     }
 
-    const payloads = await this._agent.getEventListeners(/** @type {string} */ (remoteObject.objectId));
+    const listeners =
+        await this._agent.invoke_getEventListeners({objectId: /** @type {string} */ (remoteObject.objectId)});
     const eventListeners = [];
-    for (const payload of payloads || []) {
+    for (const payload of listeners.listeners || []) {
       const location = this._runtimeModel.debuggerModel().createRawLocationByScriptId(
           payload.scriptId, payload.lineNumber, payload.columnNumber);
       if (!location) {
@@ -140,16 +138,20 @@ export class DOMDebuggerModel extends SDKModel {
    * @param {!DOMBreakpoint} breakpoint
    */
   _enableDOMBreakpoint(breakpoint) {
-    this._agent.setDOMBreakpoint(breakpoint.node.id, breakpoint.type);
-    breakpoint.node.setMarker(Marker, true);
+    if (breakpoint.node.id) {
+      this._agent.invoke_setDOMBreakpoint({nodeId: breakpoint.node.id, type: breakpoint.type});
+      breakpoint.node.setMarker(Marker, true);
+    }
   }
 
   /**
    * @param {!DOMBreakpoint} breakpoint
    */
   _disableDOMBreakpoint(breakpoint) {
-    this._agent.removeDOMBreakpoint(breakpoint.node.id, breakpoint.type);
-    breakpoint.node.setMarker(Marker, this._nodeHasBreakpoints(breakpoint.node) ? true : null);
+    if (breakpoint.node.id) {
+      this._agent.invoke_removeDOMBreakpoint({nodeId: breakpoint.node.id, type: breakpoint.type});
+      breakpoint.node.setMarker(Marker, this._nodeHasBreakpoints(breakpoint.node) ? true : null);
+    }
   }
 
   /**
@@ -166,7 +168,7 @@ export class DOMDebuggerModel extends SDKModel {
   }
 
   /**
-   * @param {!Object} auxData
+   * @param {{type: !Protocol.DOMDebugger.DOMBreakpointType, nodeId: !Protocol.DOM.NodeId, targetNodeId: !Protocol.DOM.NodeId, insertion: boolean}} auxData
    * @return {?{type: !Protocol.DOMDebugger.DOMBreakpointType, node: !DOMNode, targetNode: ?DOMNode, insertion: boolean}}
    */
   resolveDOMBreakpointData(auxData) {
@@ -260,7 +262,8 @@ export class DOMDebuggerModel extends SDKModel {
 
   _saveDOMBreakpoints() {
     const currentURL = this._currentURL();
-    const breakpoints = this._domBreakpointsSetting.get().filter(breakpoint => breakpoint.url !== currentURL);
+    const breakpoints = this._domBreakpointsSetting.get().filter(
+        /** @param {{url: string}} breakpoint */ breakpoint => breakpoint.url !== currentURL);
     for (const breakpoint of this._domBreakpoints) {
       breakpoints.push(
           {url: currentURL, path: breakpoint.node.path(), type: breakpoint.type, enabled: breakpoint.enabled});
@@ -302,9 +305,9 @@ export class EventListener {
    * @param {boolean} passive
    * @param {boolean} once
    * @param {?RemoteObject} handler
-   * @param {?SDK.RemoteObject} originalHandler
+   * @param {?RemoteObject} originalHandler
    * @param {!Location} location
-   * @param {?SDK.RemoteObject} customRemoveFunction
+   * @param {?RemoteObject} customRemoveFunction
    * @param {!EventListener.Origin=} origin
    */
   constructor(
@@ -400,52 +403,62 @@ export class EventListener {
    */
   remove() {
     if (!this.canRemove()) {
-      return Promise.resolve();
+      return Promise.resolve(undefined);
     }
 
     if (this._origin !== EventListener.Origin.FrameworkUser) {
       /**
        * @param {string} type
-       * @param {function()} listener
+       * @param {function():void} listener
        * @param {boolean} useCapture
-       * @this {Object}
+       * @this {{removeEventListener: function(string, function():void, boolean):void}}
        * @suppressReceiverCheck
        */
       function removeListener(type, listener, useCapture) {
         this.removeEventListener(type, listener, useCapture);
+        // @ts-ignore:
         if (this['on' + type]) {
+          // @ts-ignore:
           this['on' + type] = undefined;
         }
       }
 
-      return /** @type {!Promise<undefined>} */ (this._eventTarget.callFunction(removeListener, [
-        RemoteObject.toCallArgument(this._type), RemoteObject.toCallArgument(this._originalHandler),
-        RemoteObject.toCallArgument(this._useCapture)
-      ]));
+      return /** @type {!Promise<undefined>} */ (
+          this._eventTarget
+              .callFunction(
+                  removeListener,
+                  [
+                    RemoteObject.toCallArgument(this._type), RemoteObject.toCallArgument(this._originalHandler),
+                    RemoteObject.toCallArgument(this._useCapture)
+                  ])
+              .then(() => undefined));
     }
 
-    return this._customRemoveFunction
-        .callFunction(
-            callCustomRemove,
-            [
-              RemoteObject.toCallArgument(this._type),
-              RemoteObject.toCallArgument(this._originalHandler),
-              RemoteObject.toCallArgument(this._useCapture),
-              RemoteObject.toCallArgument(this._passive),
-            ])
-        .then(() => undefined);
+    if (this._customRemoveFunction) {
+      /**
+       * @param {string} type
+       * @param {function():void} listener
+       * @param {boolean} useCapture
+       * @param {boolean} passive
+       * @this {function(string, function():void, boolean, boolean):void}
+       * @suppressReceiverCheck
+       */
+      function callCustomRemove(type, listener, useCapture, passive) {
+        this.call(null, type, listener, useCapture, passive);
+      }
 
-    /**
-     * @param {string} type
-     * @param {function()} listener
-     * @param {boolean} useCapture
-     * @param {boolean} passive
-     * @this {Function}
-     * @suppressReceiverCheck
-     */
-    function callCustomRemove(type, listener, useCapture, passive) {
-      this.call(null, type, listener, useCapture, passive);
+      return this._customRemoveFunction
+          .callFunction(
+              callCustomRemove,
+              [
+                RemoteObject.toCallArgument(this._type),
+                RemoteObject.toCallArgument(this._originalHandler),
+                RemoteObject.toCallArgument(this._useCapture),
+                RemoteObject.toCallArgument(this._passive),
+              ])
+          .then(() => undefined);
     }
+    return Promise.resolve(undefined);
   }
 
   /**
@@ -459,19 +472,26 @@ export class EventListener {
    * @return {!Promise<undefined>}
    */
   togglePassive() {
-    return /** @type {!Promise<undefined>} */ (this._eventTarget.callFunction(callTogglePassive, [
-      RemoteObject.toCallArgument(this._type),
-      RemoteObject.toCallArgument(this._originalHandler),
-      RemoteObject.toCallArgument(this._useCapture),
-      RemoteObject.toCallArgument(this._passive),
-    ]));
+    return this._eventTarget
+        .callFunction(
+            callTogglePassive,
+            [
+              RemoteObject.toCallArgument(this._type),
+              RemoteObject.toCallArgument(this._originalHandler),
+              RemoteObject.toCallArgument(this._useCapture),
+              RemoteObject.toCallArgument(this._passive),
+            ])
+        .then(() => undefined);
 
     /**
      * @param {string} type
-     * @param {function()} listener
+     * @param {function():void} listener
      * @param {boolean} useCapture
      * @param {boolean} passive
-     * @this {Object}
+     * @this {{
+         addEventListener:function(string, function():void, {capture: boolean, passive: boolean}):void,
+         removeEventListener: function(string, function():void, {capture: boolean}):void,
+       }}
      * @suppressReceiverCheck
      */
     function callTogglePassive(type, listener, useCapture, passive) {
@@ -521,6 +541,7 @@ export class EventListenerBreakpoint {
     this._eventTargetNames = eventTargetNames;
     this._category = category;
     this._title = title;
+    /** @type {boolean} */
     this._enabled = false;
   }
 
@@ -557,16 +578,16 @@ export class EventListenerBreakpoint {
   _updateOnModel(model) {
     if (this._instrumentationName) {
       if (this._enabled) {
-        model._agent.setInstrumentationBreakpoint(this._instrumentationName);
+        model._agent.invoke_setInstrumentationBreakpoint({eventName: this._instrumentationName});
       } else {
-        model._agent.removeInstrumentationBreakpoint(this._instrumentationName);
+        model._agent.invoke_removeInstrumentationBreakpoint({eventName: this._instrumentationName});
       }
     } else {
       for (const eventTargetName of this._eventTargetNames) {
         if (this._enabled) {
-          model._agent.setEventListenerBreakpoint(this._eventName, eventTargetName);
+          model._agent.invoke_setEventListenerBreakpoint({eventName: this._eventName, targetName: eventTargetName});
         } else {
-          model._agent.removeEventListenerBreakpoint(this._eventName, eventTargetName);
+          model._agent.invoke_removeEventListenerBreakpoint({eventName: this._eventName, targetName: eventTargetName});
         }
       }
     }
@@ -678,42 +699,87 @@ export class DOMDebuggerManager {
         ['readystatechange', 'load', 'loadstart', 'loadend', 'abort', 'error', 'progress', 'timeout'],
         ['xmlhttprequest', 'xmlhttprequestupload']);
 
-    this._resolveEventListenerBreakpoint('instrumentation:setTimeout.callback')._title =
-        Common.UIString.UIString('setTimeout fired');
-    this._resolveEventListenerBreakpoint('instrumentation:setInterval.callback')._title =
-        Common.UIString.UIString('setInterval fired');
-    this._resolveEventListenerBreakpoint('instrumentation:scriptFirstStatement')._title =
-        Common.UIString.UIString('Script First Statement');
-    this._resolveEventListenerBreakpoint('instrumentation:scriptBlockedByCSP')._title =
-        Common.UIString.UIString('Script Blocked by Content Security Policy');
-    this._resolveEventListenerBreakpoint('instrumentation:requestAnimationFrame')._title =
-        Common.UIString.UIString('Request Animation Frame');
-    this._resolveEventListenerBreakpoint('instrumentation:cancelAnimationFrame')._title =
-        Common.UIString.UIString('Cancel Animation Frame');
-    this._resolveEventListenerBreakpoint('instrumentation:requestAnimationFrame.callback')._title =
-        Common.UIString.UIString('Animation Frame Fired');
-    this._resolveEventListenerBreakpoint('instrumentation:webglErrorFired')._title =
-        Common.UIString.UIString('WebGL Error Fired');
-    this._resolveEventListenerBreakpoint('instrumentation:webglWarningFired')._title =
-        Common.UIString.UIString('WebGL Warning Fired');
-    this._resolveEventListenerBreakpoint('instrumentation:Element.setInnerHTML')._title =
-        Common.UIString.UIString('Set innerHTML');
-    this._resolveEventListenerBreakpoint('instrumentation:canvasContextCreated')._title =
-        Common.UIString.UIString('Create canvas context');
-    this._resolveEventListenerBreakpoint('instrumentation:Geolocation.getCurrentPosition')._title =
-        'getCurrentPosition';
-    this._resolveEventListenerBreakpoint('instrumentation:Geolocation.watchPosition')._title = 'watchPosition';
-    this._resolveEventListenerBreakpoint('instrumentation:Notification.requestPermission')._title = 'requestPermission';
-    this._resolveEventListenerBreakpoint('instrumentation:DOMWindow.close')._title = 'window.close';
-    this._resolveEventListenerBreakpoint('instrumentation:Document.write')._title = 'document.write';
-    this._resolveEventListenerBreakpoint('instrumentation:audioContextCreated')._title =
-        Common.UIString.UIString('Create AudioContext');
-    this._resolveEventListenerBreakpoint('instrumentation:audioContextClosed')._title =
-        Common.UIString.UIString('Close AudioContext');
-    this._resolveEventListenerBreakpoint('instrumentation:audioContextResumed')._title =
-        Common.UIString.UIString('Resume AudioContext');
-    this._resolveEventListenerBreakpoint('instrumentation:audioContextSuspended')._title =
-        Common.UIString.UIString('Suspend AudioContext');
+    let breakpoint;
+    breakpoint = this._resolveEventListenerBreakpoint('instrumentation:setTimeout.callback');
+    if (breakpoint) {
+      breakpoint._title = Common.UIString.UIString('setTimeout fired');
+    }
+    breakpoint = this._resolveEventListenerBreakpoint('instrumentation:setInterval.callback');
+    if (breakpoint) {
+      breakpoint._title = Common.UIString.UIString('setInterval fired');
+    }
+    breakpoint = this._resolveEventListenerBreakpoint('instrumentation:scriptFirstStatement');
+    if (breakpoint) {
+      breakpoint._title = Common.UIString.UIString('Script First Statement');
+    }
+    breakpoint = this._resolveEventListenerBreakpoint('instrumentation:scriptBlockedByCSP');
+    if (breakpoint) {
+      breakpoint._title = Common.UIString.UIString('Script Blocked by Content Security Policy');
+    }
+    breakpoint = this._resolveEventListenerBreakpoint('instrumentation:requestAnimationFrame');
+    if (breakpoint) {
+      breakpoint._title = Common.UIString.UIString('Request Animation Frame');
+    }
+    breakpoint = this._resolveEventListenerBreakpoint('instrumentation:cancelAnimationFrame');
+    if (breakpoint) {
+      breakpoint._title = Common.UIString.UIString('Cancel Animation Frame');
+    }
+    breakpoint = this._resolveEventListenerBreakpoint('instrumentation:requestAnimationFrame.callback');
+    if (breakpoint) {
+      breakpoint._title = Common.UIString.UIString('Animation Frame Fired');
+    }
+    breakpoint = this._resolveEventListenerBreakpoint('instrumentation:webglErrorFired');
+    if (breakpoint) {
+      breakpoint._title = Common.UIString.UIString('WebGL Error Fired');
+    }
+    breakpoint = this._resolveEventListenerBreakpoint('instrumentation:webglWarningFired');
+    if (breakpoint) {
+      breakpoint._title = Common.UIString.UIString('WebGL Warning Fired');
+    }
+    breakpoint = this._resolveEventListenerBreakpoint('instrumentation:Element.setInnerHTML');
+    if (breakpoint) {
+      breakpoint._title = Common.UIString.UIString('Set innerHTML');
+    }
+    breakpoint = this._resolveEventListenerBreakpoint('instrumentation:canvasContextCreated');
+    if (breakpoint) {
+      breakpoint._title = Common.UIString.UIString('Create canvas context');
+    }
+    breakpoint = this._resolveEventListenerBreakpoint('instrumentation:Geolocation.getCurrentPosition');
+    if (breakpoint) {
+      breakpoint._title = 'getCurrentPosition';
+    }
+    breakpoint = this._resolveEventListenerBreakpoint('instrumentation:Geolocation.watchPosition');
+    if (breakpoint) {
+      breakpoint._title = 'watchPosition';
+    }
+    breakpoint = this._resolveEventListenerBreakpoint('instrumentation:Notification.requestPermission');
+    if (breakpoint) {
+      breakpoint._title = 'requestPermission';
+    }
+    breakpoint = this._resolveEventListenerBreakpoint('instrumentation:DOMWindow.close');
+    if (breakpoint) {
+      breakpoint._title = 'window.close';
+    }
+    breakpoint = this._resolveEventListenerBreakpoint('instrumentation:Document.write');
+    if (breakpoint) {
+      breakpoint._title = 'document.write';
+    }
+    breakpoint = this._resolveEventListenerBreakpoint('instrumentation:audioContextCreated');
+    if (breakpoint) {
+      breakpoint._title = Common.UIString.UIString('Create AudioContext');
+    }
+    breakpoint = this._resolveEventListenerBreakpoint('instrumentation:audioContextClosed');
+    if (breakpoint) {
+      breakpoint._title = Common.UIString.UIString('Close AudioContext');
+    }
+    breakpoint = this._resolveEventListenerBreakpoint('instrumentation:audioContextResumed');
+    if (breakpoint) {
+      breakpoint._title = Common.UIString.UIString('Resume AudioContext');
+    }
+    breakpoint = this._resolveEventListenerBreakpoint('instrumentation:audioContextSuspended');
+    if (breakpoint) {
+      breakpoint._title = Common.UIString.UIString('Suspend AudioContext');
+    }
 
     TargetManager.instance().observeModels(DOMDebuggerModel, this);
   }
@@ -784,7 +850,7 @@ export class DOMDebuggerManager {
   }
 
   /**
-   * @param {!Object} auxData
+   * @param {!{eventName: string, webglErrorName: string, directiveText: string, targetName: string}} auxData
    * @return {string}
    */
   resolveEventListenerBreakpointTitle(auxData) {
@@ -810,7 +876,7 @@ export class DOMDebuggerManager {
   }
 
   /**
-   * @param {!Object} auxData
+   * @param {!{eventName: string, targetName: string}} auxData
    * @return {?EventListenerBreakpoint}
    */
   resolveEventListenerBreakpoint(auxData) {
@@ -883,7 +949,7 @@ export class DOMDebuggerManager {
   modelAdded(domDebuggerModel) {
     for (const url of this._xhrBreakpoints.keys()) {
       if (this._xhrBreakpoints.get(url)) {
-        domDebuggerModel._agent.setXHRBreakpoint(url);
+        domDebuggerModel._agent.invoke_setXHRBreakpoint({url: url});
       }
     }
     for (const breakpoint of this._eventListenerBreakpoints) {

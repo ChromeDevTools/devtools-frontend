@@ -11,9 +11,7 @@ import {CSSKeyframesRule, CSSStyleRule} from './CSSRule.js';
 import {CSSStyleDeclaration, Type} from './CSSStyleDeclaration.js';
 import {DOMNode} from './DOMModel.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
+
 export class CSSMatchedStyles {
   /**
    * @param {!CSSModel} cssModel

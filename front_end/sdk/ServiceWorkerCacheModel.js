@@ -339,9 +339,7 @@ export const Events = {
   CacheStorageContentUpdated: Symbol('CacheStorageContentUpdated')
 };
 
-/**
- * @unrestricted
- */
+
 export class Cache {
   /**
    * @param {!ServiceWorkerCacheModel} model

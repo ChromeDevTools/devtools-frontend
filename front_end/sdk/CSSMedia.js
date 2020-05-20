@@ -7,9 +7,7 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import {CSSLocation, CSSModel, Edit} from './CSSModel.js';     // eslint-disable-line no-unused-vars
 import {CSSStyleSheetHeader} from './CSSStyleSheetHeader.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
+
 export class CSSMediaQuery {
   /**
    * @param {!Protocol.CSS.MediaQuery} payload
@@ -47,9 +45,6 @@ export class CSSMediaQuery {
 }
 
 
-/**
- * @unrestricted
- */
 export class CSSMediaQueryExpression {
   /**
    * @param {!Protocol.CSS.MediaQueryExpression} payload

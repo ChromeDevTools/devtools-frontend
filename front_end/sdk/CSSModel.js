@@ -763,9 +763,7 @@ export const Events = {
 
 const PseudoStateMarker = 'pseudo-state-marker';
 
-/**
- * @unrestricted
- */
+
 export class Edit {
   /**
    * @param {!Protocol.CSS.StyleSheetId} styleSheetId
@@ -862,9 +860,7 @@ class CSSDispatcher {
   }
 }
 
-/**
- * @unrestricted
- */
+
 class ComputedStyleLoader {
   /**
    * @param {!CSSModel} cssModel
@@ -907,9 +903,7 @@ class ComputedStyleLoader {
   }
 }
 
-/**
- * @unrestricted
- */
+
 export class InlineStyleResult {
   /**
    * @param {?CSSStyleDeclaration} inlineStyle

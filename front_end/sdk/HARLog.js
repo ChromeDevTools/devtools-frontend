@@ -40,9 +40,7 @@ import {Cookie} from './Cookie.js';                  // eslint-disable-line no-u
 import {PageLoad} from './NetworkLog.js';            // eslint-disable-line no-unused-vars
 import {NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
+
 export class HARLog {
   /**
    * @param {!NetworkRequest} request
@@ -127,9 +125,7 @@ export class HARLog {
   }
 }
 
-/**
- * @unrestricted
- */
+
 export class Entry {
   /**
    * @param {!NetworkRequest} request

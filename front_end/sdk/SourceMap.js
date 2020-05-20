@@ -127,9 +127,7 @@ SourceMapV3.Section = class {
   }
 };
 
-/**
- * @unrestricted
- */
+
 SourceMapV3.Offset = class {
   constructor() {
     /** @type {number} */ this.line;
@@ -137,9 +135,7 @@ SourceMapV3.Offset = class {
   }
 };
 
-/**
- * @unrestricted
- */
+
 export class SourceMapEntry {
   /**
    * @param {number} lineNumber
@@ -171,9 +167,7 @@ export class SourceMapEntry {
   }
 }
 
-/**
- * @unrestricted
- */
+
 export class EditResult {
   /**
    * @param {!SourceMap} map
@@ -587,9 +581,7 @@ TextSourceMap._VLQ_BASE_SHIFT = 5;
 TextSourceMap._VLQ_BASE_MASK = (1 << 5) - 1;
 TextSourceMap._VLQ_CONTINUATION_MASK = 1 << 5;
 
-/**
- * @unrestricted
- */
+
 TextSourceMap.StringCharIterator = class {
   /**
    * @param {string} string
@@ -621,9 +613,7 @@ TextSourceMap.StringCharIterator = class {
   }
 };
 
-/**
- * @unrestricted
- */
+
 TextSourceMap.SourceInfo = class {
   /**
    * @param {?string} content

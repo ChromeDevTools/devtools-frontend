@@ -11,9 +11,7 @@ import {cssMetadata, GridAreaRowRegex} from './CSSMetadata.js';
 import {Edit} from './CSSModel.js';                            // eslint-disable-line no-unused-vars
 import {CSSStyleDeclaration} from './CSSStyleDeclaration.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
+
 export class CSSProperty {
   /**
    * @param {!CSSStyleDeclaration} ownerStyle

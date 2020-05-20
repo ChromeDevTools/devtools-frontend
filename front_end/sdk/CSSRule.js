@@ -86,9 +86,7 @@ export class CSSRule {
   }
 }
 
-/**
- * @unrestricted
- */
+
 class CSSValue {
   /**
    * @param {!Protocol.CSS.Value} payload
@@ -111,9 +109,7 @@ class CSSValue {
   }
 }
 
-/**
- * @unrestricted
- */
+
 export class CSSStyleRule extends CSSRule {
   /**
    * @param {!CSSModel} cssModel
@@ -242,9 +238,6 @@ export class CSSStyleRule extends CSSRule {
 }
 
 
-/**
- * @unrestricted
- */
 export class CSSKeyframesRule {
   /**
    * @param {!CSSModel} cssModel

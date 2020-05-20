@@ -220,9 +220,7 @@ export class CookieParser {
   }
 }
 
-/**
- * @unrestricted
- */
+
 class KeyValue {
   /**
    * @param {string} key

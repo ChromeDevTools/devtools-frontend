@@ -10,9 +10,7 @@ import * as ProtocolClient from '../protocol_client/protocol_client.js';
 /** @type {!Map<function(new:SDKModel, !Target), !{capabilities: number, autostart: boolean}>} */
 const _registeredModels = new Map();
 
-/**
- * @unrestricted
- */
+
 export class SDKModel extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!Target} target

@@ -34,9 +34,7 @@ import * as Common from '../common/common.js';
 import * as SupportedCSSProperties from '../generated/SupportedCSSProperties.js';
 import * as Platform from '../platform/platform.js';
 
-/**
- * @unrestricted
- */
+
 export class CSSMetadata {
   /**
    * @param {!Array<!CSSPropertyDefinition>} properties

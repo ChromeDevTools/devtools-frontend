@@ -828,9 +828,7 @@ export class AsyncEvent extends Event {
   }
 }
 
-/**
- * @unrestricted
- */
+
 class ProfileEventsGroup {
   /**
    * @param {!Event} event

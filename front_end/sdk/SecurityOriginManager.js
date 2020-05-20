@@ -4,9 +4,7 @@
 
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
+
 export class SecurityOriginManager extends SDKModel {
   /**
    * @param {!Target} target

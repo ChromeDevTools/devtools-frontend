@@ -1155,9 +1155,7 @@ class DebuggerDispatcher {
   }
 }
 
-/**
- * @unrestricted
- */
+
 export class Location {
   /**
    * @param {!DebuggerModel} debuggerModel
@@ -1229,9 +1227,7 @@ export class Location {
   }
 }
 
-/**
- * @unrestricted
- */
+
 export class BreakLocation extends Location {
   /**
    * @param {!DebuggerModel} debuggerModel
@@ -1258,9 +1254,7 @@ export class BreakLocation extends Location {
   }
 }
 
-/**
- * @unrestricted
- */
+
 export class CallFrame {
   /**
    * @param {!DebuggerModel} debuggerModel
@@ -1547,9 +1541,7 @@ export class Scope {
   }
 }
 
-/**
- * @unrestricted
- */
+
 export class DebuggerPausedDetails {
   /**
    * @param {!DebuggerModel} debuggerModel

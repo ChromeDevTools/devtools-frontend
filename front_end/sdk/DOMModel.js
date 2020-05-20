@@ -1103,9 +1103,7 @@ DOMNode.ShadowRootTypes = {
   Closed: 'closed'
 };
 
-/**
- * @unrestricted
- */
+
 export class DeferredDOMNode {
   /**
    * @param {!Target} target
@@ -1150,9 +1148,7 @@ export class DeferredDOMNode {
   }
 }
 
-/**
- * @unrestricted
- */
+
 export class DOMNodeShortcut {
   /**
    * @param {!Target} target

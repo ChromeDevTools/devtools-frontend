@@ -7,9 +7,7 @@ import {ls} from '../common/common.js';  // eslint-disable-line rulesdir/es_modu
 
 import {NameValue} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
+
 export class ServerTiming {
   /**
    * @param {string} metric

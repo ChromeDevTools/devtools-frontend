@@ -126,9 +126,7 @@ export class PaintProfilerSnapshot {
   }
 }
 
-/**
- * @unrestricted
- */
+
 export class PaintProfilerLogItem {
   /**
    * @param {!RawPaintProfilerLogItem} rawEntry

@@ -10,9 +10,7 @@ import {RemoteObject} from './RemoteObject.js';              // eslint-disable-l
 import {RuntimeModel} from './RuntimeModel.js';              // eslint-disable-line no-unused-vars
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
+
 export class HeapProfilerModel extends SDKModel {
   /**
    * @param {!Target} target

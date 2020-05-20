@@ -49,9 +49,7 @@ const CONNECTION_TYPES = new Map([
   ['wimax', Protocol.Network.ConnectionType.Wimax],
 ]);
 
-/**
- * @unrestricted
- */
+
 export class NetworkManager extends SDKModel {
   /**
    * @param {!Target} target

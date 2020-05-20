@@ -4,9 +4,7 @@
 
 import {Event, ObjectSnapshot, TracingModel} from './TracingModel.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
+
 export class FilmStripModel {
   /**
    * @param {!TracingModel} tracingModel

@@ -24,6 +24,7 @@ ts_library("helpers") {
     "search-helpers.ts",
     "settings-helpers.ts",
     "sources-helpers.ts",
+    "webaudio-helpers.ts",
   ]
 
   deps = [ "../../shared" ]

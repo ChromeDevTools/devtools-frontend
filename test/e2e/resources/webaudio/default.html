@@ -1,0 +1,17 @@
+<!--
+  Copyright 2020 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<html>
+<body>
+    <script>
+        let audioContext;
+        try {
+            audioContext = new AudioContext();
+        } catch (e) {
+            alert('Web Audio API is not supported in this browser');
+        }
+    </script>
+</body>
+</html>

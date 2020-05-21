@@ -16,6 +16,6 @@ ts_library("formatter_worker") {
     "../platform",
     "../text_utils",
     "../third_party/acorn",
-    "acorn",
+    "../third_party/acorn-loose",
   ]
 }

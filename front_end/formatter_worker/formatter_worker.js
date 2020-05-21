@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import '../third_party/acorn/package/dist/acorn.js';
-import './acorn/acorn_loose.js';
+import '../third_party/acorn-loose/package/dist/acorn-loose.js';
 import '../cm_headless/cm_headless.js';
 import '../third_party/codemirror/package/mode/css/css.js';
 import '../third_party/codemirror/package/mode/xml/xml.js';

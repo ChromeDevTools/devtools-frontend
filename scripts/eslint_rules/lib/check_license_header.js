@@ -58,8 +58,6 @@ const EXCLUDED_FILES = [
   'dagre_layout/dagre.js',
   // FIXME: Diff bundles must be moved to third_party
   'diff/diff_match_patch.js',
-  // FIXME: Acorn bundles must be moved to third_party
-  'formatter_worker/acorn/acorn_loose.js',
 ];
 
 const OTHER_LICENSE_HEADERS = [

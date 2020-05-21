@@ -16,3 +16,6 @@ It will, to recover from missing brackets, treat whitespace as significant, whic
 ```bash
 wget -qO- https://registry.npmjs.org/acorn-loose/-/acorn-loose-7.0.0.tgz | tar xzf -
 ```
+
+Local Modifications:
+- Add empty `acorn-loose.d.ts` file for typechecking with TypeScript

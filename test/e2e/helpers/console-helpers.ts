@@ -12,15 +12,22 @@ export const CONSOLE_FIRST_MESSAGES_SELECTOR = '.console-group-messages .source-
 export const LOG_LEVELS_SELECTOR = '[aria-label^="Log level: "]';
 export const LOG_LEVELS_VERBOSE_OPTION_SELECTOR = '[aria-label^="Verbose"]';
 export const CONSOLE_PROMPT_SELECTOR = '.console-prompt-editor-container';
+export const CONSOLE_VIEW_SELECTOR = '.console-view';
 
 export async function getConsoleMessages(testName: string, callback?: (page: puppeteer.Page) => Promise<void>) {
-  const {target, frontend} = getBrowserAndPages();
+  const {target} = getBrowserAndPages();
 
   // Have the target load the page.
   await target.goto(`${resourcesPath}/console/${testName}.html`);
 
-  // Locate the button for switching to the console tab.
-  await click(CONSOLE_TAB_SELECTOR);
+  return getCurrentConsoleMessages(callback);
+}
+
+export async function getCurrentConsoleMessages(callback?: (page: puppeteer.Page) => Promise<void>) {
+  const {frontend} = getBrowserAndPages();
+
+  await navigateToConsoleTab();
+
   // Get console messages that were logged.
   await waitFor(CONSOLE_MESSAGES_SELECTOR);
 
@@ -75,4 +82,22 @@ export async function switchToTopExecutionContext(frontend: puppeteer.Page) {
   await frontend.keyboard.press('Space');
   // Double-check that it worked.
   await waitFor('[aria-label="JavaScript context: top"]');
+}
+
+export async function navigateToConsoleTab() {
+  // Locate the button for switching to the console tab.
+  await click(CONSOLE_TAB_SELECTOR);
+  await waitFor(CONSOLE_VIEW_SELECTOR);
+}
+
+export async function waitForConsoleMessageAndClickOnLink() {
+  const console_message = await waitFor('div.console-group-messages span.source-code');
+  await click('span.devtools-link', {root: console_message});
+}
+
+export async function navigateToIssuesPanelViaInfoBar() {
+  // Navigate to Issues panel
+  await waitFor('.infobar');
+  await click('.infobar .infobar-button');
+  await waitFor('.issues-pane');
 }

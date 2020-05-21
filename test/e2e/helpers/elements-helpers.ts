@@ -9,6 +9,7 @@ import {$, $$, click, getBrowserAndPages, timeout, waitFor, waitForFunction} fro
 
 const SELECTED_TREE_ELEMENT_SELECTOR = '.selected[role="treeitem"]';
 const CSS_PROPERTY_NAME_SELECTOR = '.webkit-css-property';
+const ELEMENTS_PANEL_SELECTOR = '.panel[aria-label="elements"]';
 
 export const assertContentOfSelectedElementsNode = async (expectedTextContent: string) => {
   const selectedNode = await $(SELECTED_TREE_ELEMENT_SELECTOR);
@@ -147,4 +148,15 @@ export const getSelectedBreadcrumbTextContent = async () => {
   const selectedCrumb = await $('span.crumb.selected');
   const text = selectedCrumb.evaluate((node: HTMLElement) => node.textContent || '');
   return text;
+};
+
+export const navigateToElementsTab = async () => {
+  // Open Elements panel
+  await click('#tab-elements');
+  await waitFor(ELEMENTS_PANEL_SELECTOR);
+};
+
+export const clickOnFirstLinkInStylesPanel = async () => {
+  const stylesPane = await waitFor('div.styles-pane');
+  await click('div.styles-section-subtitle span.devtools-link', {root: stylesPane});
 };

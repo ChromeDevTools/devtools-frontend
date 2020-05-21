@@ -290,4 +290,26 @@ export const step = async (description: string, step: Function) => {
   }
 };
 
+export const closePanelTab = async (panelTabId: string) => {
+  // Get close button from tab element
+  const selector = `#${panelTabId} > .tabbed-pane-close-button`;
+  await click(selector);
+};
+
+export const closeAllCloseableTabs = async () => {
+  // get all closeable tools by looking for the available x buttons on tabs
+  const selector = '.tabbed-pane-close-button';
+  const allCloseButtons = await $$(selector);
+
+  // Get all panel ids
+  const panelTabIds = await allCloseButtons.evaluate((buttons: HTMLElement[]) => {
+    return buttons.map(button => button.parentElement ? button.parentElement.id : '');
+  });
+
+  // Close each tab
+  for (const panelTabId of panelTabIds) {
+    closePanelTab(panelTabId);
+  }
+};
+
 export {getBrowserAndPages, reloadDevTools};

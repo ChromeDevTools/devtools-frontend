@@ -1,0 +1,33 @@
+<!--
+  Copyright 2020 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Document</title>
+    <style>
+        body {
+            background-color: #F0F0F0;
+        }
+    </style>
+  </head>
+  <body>
+    <div id="div1">
+        The time is: <span id="span1"></span>
+    </div>
+    <script>
+        const el = document.getElementById('span1');
+        const date = new Date();
+        const time = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + ':' + date.getMilliseconds();
+        el.innerHTML = time;
+        console.log(time);
+        console.log(el);
+
+        document.cookie = 'foo=bar;samesite=None';
+    </script>
+  </body>
+</html>

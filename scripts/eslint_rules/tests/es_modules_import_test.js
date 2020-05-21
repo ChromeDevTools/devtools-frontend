@@ -69,6 +69,10 @@ ruleTester.run('es_modules_import', rule, {
       filename: 'front_end/wasmparser_worker/WasmParserWorker.js',
     },
     {
+      code: 'import * as Acorn from \'../third_party/acorn/package/dist/acorn.mjs\';',
+      filename: 'front_end/formatter_worker/JavascriptOutline.js',
+    },
+    {
       code: 'import * as fs from \'fs\';',
       filename: 'test/unittests/front_end/Unit_test.ts',
     },

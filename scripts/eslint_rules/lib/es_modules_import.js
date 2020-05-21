@@ -17,6 +17,10 @@ const EXEMPTED_THIRD_PARTY_MODULES = new Set([
   path.join(FRONT_END_DIRECTORY, 'third_party', 'lit-html'),
   // wasmparser is exempt as it doesn't expose all its modules from the root file
   path.join(FRONT_END_DIRECTORY, 'third_party', 'wasmparser'),
+  // acorn is exempt as it doesn't expose all its modules from the root file
+  path.join(FRONT_END_DIRECTORY, 'third_party', 'acorn'),
+  // acorn-loose is exempt as it doesn't expose all its modules from the root file
+  path.join(FRONT_END_DIRECTORY, 'third_party', 'acorn-loose'),
 ]);
 
 const CROSS_NAMESPACE_MESSAGE =
@@ -53,7 +57,7 @@ function checkImportExtension(importPath, context, node) {
     return;
   }
 
-  if (!importPath.endsWith('.js')) {
+  if (!importPath.endsWith('.js') && !importPath.endsWith('.mjs')) {
     context.report({
       node,
       message: 'Missing file extension for import "{{importPath}}"',

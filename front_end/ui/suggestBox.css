@@ -98,3 +98,13 @@
 .suggest-box-content-item:hover:not(.selected) {
   background-color: var(--item-hover-color);
 }
+
+@media (forced-colors: active) {
+  .suggest-box-content-item.selected {
+      forced-color-adjust: none;
+      background-color: Highlight;
+  }
+  .suggest-box-content-item.selected > span {
+      color: HighlightText;
+  }
+}

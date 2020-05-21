@@ -62,9 +62,9 @@ export class RuntimeModel extends SDKModel {
     /** @type {?boolean} */
     this._hasSideEffectSupport = null;
 
-    // TODO(1016755): remove custom formatters altogether.
-    Common.Settings.Settings.instance().moduleSetting('customFormatters').set(false);
-    this._agent.setCustomObjectFormatterEnabled(false);
+    if (Common.Settings.Settings.instance().moduleSetting('customFormatters').get()) {
+      this._agent.setCustomObjectFormatterEnabled(true);
+    }
 
     Common.Settings.Settings.instance()
         .moduleSetting('customFormatters')

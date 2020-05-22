@@ -7,7 +7,7 @@ import {describe, it} from 'mocha';
 import * as puppeteer from 'puppeteer';
 
 import {click, getBrowserAndPages, resourcesPath, waitFor} from '../../shared/helper.js';
-import {assertContentOfSelectedElementsNode, getAriaLabelSelectorFromPropertiesSelector, getDisplayedCSSPropertyNames, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
+import {assertContentOfSelectedElementsNode, getAriaLabelSelectorFromPropertiesSelector, getDisplayedCSSPropertyNames, getDisplayedStyleRules, waitForElementsStyleSection, waitForStyleRule} from '../helpers/elements-helpers.js';
 
 const PROPERTIES_TO_DELETE_SELECTOR = '#properties-to-delete';
 const FIRST_PROPERTY_NAME_SELECTOR = '.tree-outline li:nth-of-type(1) > .webkit-css-property';
@@ -21,7 +21,34 @@ const deletePropertyByBackspace = async (selector: string, root?: puppeteer.JSHa
   await waitFor('.tree-outline .child-editing', root);
 };
 
-describe('The Elements Tab', async () => {
+describe('The Styles pane', async () => {
+  it('can display the CSS properties of the selected element', async () => {
+    const {target, frontend} = getBrowserAndPages();
+
+    await target.goto(`${resourcesPath}/elements/simple-styled-page.html`);
+    await waitForElementsStyleSection();
+
+    // Select the H1 element by pressing down, since <body> is the default selected element.
+    const onH1RuleAppeared = waitForStyleRule('h1');
+    await frontend.keyboard.press('ArrowDown');
+    await onH1RuleAppeared;
+
+    const h1Rules = await getDisplayedStyleRules();
+    // Checking the first h1 rule, that's the authored rule, right after the element style.
+    assert.deepEqual(h1Rules[1], {selectorText: 'h1', propertyNames: ['color']}, 'The correct rule is displayed');
+
+    // Select the H2 element by pressing down.
+    const onH2RuleAppeared = waitForStyleRule('h2');
+    await frontend.keyboard.press('ArrowDown');
+    await onH2RuleAppeared;
+
+    const h2Rules = await getDisplayedStyleRules();
+    // Checking the first h2 rule, that's the authored rule, right after the element style.
+    assert.deepEqual(
+        h2Rules[1], {selectorText: 'h2', propertyNames: ['background-color', 'color']},
+        'The correct rule is displayed');
+  });
+
   it('can remove a CSS property when its name or value is deleted', async () => {
     const {target, frontend} = getBrowserAndPages();
 

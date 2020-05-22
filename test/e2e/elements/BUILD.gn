@@ -7,6 +7,7 @@ import("../../../third_party/typescript/typescript.gni")
 ts_library("elements") {
   testonly = true
   sources = [
+    "computed-pane-properties_test.ts",
     "element-breadcrumbs_test.ts",
     "pseudo-states_test.ts",
     "selection-after-delete_test.ts",

@@ -125,6 +125,10 @@ export class SoftContextMenu {
     }
     if (this._parentMenu) {
       delete this._parentMenu._subMenu;
+      if (this._parentMenu._activeSubMenuElement) {
+        ARIAUtils.setExpanded(this._parentMenu._activeSubMenuElement, false);
+        delete this._parentMenu._activeSubMenuElement;
+      }
     }
   }
 
@@ -202,6 +206,7 @@ export class SoftContextMenu {
     checkMarkElement.style.opacity = '0';
 
     menuItemElement.createTextChild(item.label);
+    ARIAUtils.setExpanded(menuItemElement, false);
 
     if (Host.Platform.isMac() && !self.UI.themeSupport.hasTheme()) {
       const subMenuArrowElement = menuItemElement.createChild('span', 'soft-context-menu-item-submenu-arrow');
@@ -274,6 +279,8 @@ export class SoftContextMenu {
       return;
     }
 
+    this._activeSubMenuElement = menuItemElement;
+    ARIAUtils.setExpanded(menuItemElement, true);
     this._subMenu = new SoftContextMenu(menuItemElement._subItems, this._itemSelectedCallback, this);
     const anchorBox = menuItemElement.boxInWindow();
     // Adjust for padding.

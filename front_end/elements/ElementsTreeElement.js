@@ -1283,6 +1283,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       this._decorationsElement.removeChildren();
       this._decorationsElement.classList.add('hidden');
       this._gutterContainer.classList.toggle('has-decorations', decorations.length || descendantDecorations.length);
+      UI.ARIAUtils.setAccessibleName(this._decorationsElement, '');
 
       if (!decorations.length && !descendantDecorations.length) {
         return;
@@ -1318,6 +1319,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         processColors.call(this, descendantColors, 'elements-gutter-decoration elements-has-decorated-children');
       }
       UI.Tooltip.Tooltip.install(this._decorationsElement, titles);
+      UI.ARIAUtils.setAccessibleName(this._decorationsElement, titles.textContent);
 
       /**
        * @param {!Set<string>} colors

@@ -17,6 +17,8 @@ add_subdirectory(third_party/llvm/llvm)
 set_property(DIRECTORY third_party/llvm/llvm
   PROPERTY EXCLUDE_FROM_ALL TRUE)
 
+# Required to enable llvm option parsing
+include(third_party/llvm/llvm/cmake/modules/DetermineGCCCompatible.cmake)
 
 option(SYMBOL_SERVER_BUILD_FORMATTERS
   "Build the formatters library for evaluator modules" OFF)

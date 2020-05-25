@@ -195,7 +195,7 @@ export class MediaQueryInspector extends UI.Widget.Widget {
       for (let j = 0; j < cssMedia.mediaList.length; ++j) {
         const mediaQuery = cssMedia.mediaList[j];
         const queryModel = MediaQueryUIModel.createFromMediaQuery(cssMedia, mediaQuery);
-        if (queryModel && queryModel.rawLocation()) {
+        if (queryModel) {
           queryModels.push(queryModel);
         }
       }
@@ -233,11 +233,18 @@ export class MediaQueryInspector extends UI.Widget.Widget {
     for (let i = 0; i < this._cachedQueryModels.length; ++i) {
       const model = this._cachedQueryModels[i];
       if (lastMarker && lastMarker.model.dimensionsEqual(model)) {
-        lastMarker.locations.push(model.rawLocation());
         lastMarker.active = lastMarker.active || model.active();
       } else {
-        lastMarker = {active: model.active(), model: model, locations: [model.rawLocation()]};
+        lastMarker = {
+          active: model.active(),
+          model,
+          locations: /** @type {!Array<!SDK.CSSModel.CSSLocation>} */ ([]),
+        };
         markers.push(lastMarker);
+      }
+      const rawLocation = model.rawLocation();
+      if (rawLocation) {
+        lastMarker.locations.push(rawLocation);
       }
     }
 

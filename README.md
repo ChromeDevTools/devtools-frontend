@@ -25,7 +25,10 @@ This workflow will ensure that your local setup is equivalent to how Chromium in
 It also allows you to develop DevTools independently of the version in your Chromium checkout.
 This means that you don't need to update Chromium often, in order to work on DevTools.
 
+##### Remove Existing devtools-frontend subrepository
+
 <details>
+First, you need to remove the exitsting devtools-frontend subrepo from chromium/src/
 
 In `chromium/src`, run `gclient sync` to make sure you have installed all required submodules.
 ```bash
@@ -50,12 +53,84 @@ This removes the DevTools frontend dependency. We now create a symlink to refer 
 
 **(Note that the folder names do NOT include the trailing slash)**
 
+</details>
+
+##### Workflow 1: separate gclient projects
+
+Now, There are 2 approaches to integrating your workflows:
+The first approach is to have separate gclient projects, one for each repository, and manually
+symlink between the two
+
+<details>
+To complete the symlink:
 ```bash
 ln -s path/to/standalone/devtools-frontend third_party/devtools-frontend/src
 ```
 
 Running `gclient sync` in `chromium/src/` will update dependencies for the Chromium checkout.
 Running `gclient sync` in `chromium/src/third_party/devtools-frontend/src` will update dependencies for the standalone checkout.
+
+</details>
+
+##### Workflow 2: a single gclient project
+The second approach is to have a single gclient project
+that automatically gclient sync's all dependencies for both repositories
+
+<details>
+After removing your devtools dependency, Modify the .gclient file for chromium/src
+to add the devtools project and a hook to automatically symlink (comments optional):
+
+```python
+solutions = [
+  {
+    # Chromium src project
+    "url": "https://chromium.googlesource.com/chromium/src.git",
+    "managed": False,
+    "name": "src",
+    "custom_deps": {
+      "src/third_party/devtools-frontend/src": None,
+    },
+    "custom_vars": {},
+  },
+  {
+    # devtools-frontend project
+    "name": "devtools-frontend",
+    "url": "https://chromium.googlesource.com/devtools/devtools-frontend",
+    "custom_deps": {}
+  }
+]
+```
+
+Run `gclient sync` once in `chromium/src/` to get the new devtools frontend checkout.
+
+Running `gclient sync` anywhere within `chromium/src/` or `chromium/src/third_party/devtools-frontend/src`
+will update dependencies for both checkouts.
+
+</details>
+
+#### Automatic Symlink
+To automatically symlink between the devtools-frontend and chromium/src, you can add the following
+hook to your .gclient file that manages your chromium/src repository after your list of solutions
+
+<details>
+
+```python
+hooks = [
+  {
+    # Ensure devtools is symlinked in the correct location on every gclient sync
+    'name': 'Symlink Depot Tools',
+    'pattern': '.',
+    'action': [
+        'python',
+        '<path>/<to>/devtools-frontend/scripts/deps/ensure_symlink.py',
+        '<path>/<to>/chromium/src',
+        '<path>/<to>/devtools-frontend'
+    ],
+  }
+]
+```
+
+Now, running `gclient sync -D` will no longer remove your symlink.
 
 </details>
 

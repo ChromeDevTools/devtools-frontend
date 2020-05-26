@@ -205,6 +205,33 @@ export const getDisplayedCSSPropertyNames = async (propertiesSection: puppeteer.
   return propertyNamesText;
 };
 
+export const getStyleRule = async (selector: string) => {
+  return await $(`[aria-label="${selector}, css selector"]`);
+};
+
+export const getCSSPropertyInRule = async (ruleSection: puppeteer.JSHandle<any>, name: string) => {
+  const propertyNames = await $$(CSS_PROPERTY_NAME_SELECTOR, ruleSection);
+  return await propertyNames.evaluateHandle(async (nodes: Element[], name) => {
+    const propertyName = nodes.find(node => node.textContent === name);
+    return propertyName && propertyName.parentNode;
+  }, name);
+};
+
+export const focusCSSPropertyValue = async (selector: string, propertyName: string) => {
+  await waitForStyleRule(selector);
+  const rule = await getStyleRule(selector);
+  const property = await getCSSPropertyInRule(rule, propertyName);
+  await click('.value', {root: property});
+};
+
+export async function editCSSProperty(selector: string, propertyName: string, newValue: string) {
+  await focusCSSPropertyValue(selector, propertyName);
+
+  const {frontend} = getBrowserAndPages();
+  await frontend.keyboard.type(newValue);
+  await frontend.keyboard.press('Enter');
+}
+
 export const getBreadcrumbsTextContent = async () => {
   const crumbs = await $$('span.crumb');
 

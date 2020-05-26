@@ -56,20 +56,19 @@ def concatenate_scripts(file_names, module_dir, output_dir, output):
 
 class Descriptors:
 
-    def __init__(self, application_name, application_dir, application_descriptor, module_descriptors, extends, has_html, worker):
+    def __init__(self, application_name, application_dir,
+                 application_descriptor, module_descriptors, extends, worker):
         self.application_name = application_name
         self.application_dir = application_dir
         self.application = application_descriptor
         self._cached_sorted_modules = None
         self.modules = module_descriptors
         self.extends = extends
-        self.has_html = has_html
         self.worker = worker
 
     def application_json(self):
         result = dict()
         result['modules'] = self.application.values()
-        result['has_html'] = self.has_html
         return json.dumps(result)
 
     def all_compiled_files(self):
@@ -178,7 +177,9 @@ class DescriptorLoader:
                 all_module_descriptors[name] = descriptors[name]
             for name in result.application:
                 all_application_descriptors[name] = result.application[name]
-        return Descriptors('all', self.application_dir, all_application_descriptors, all_module_descriptors, None, False, False)
+        return Descriptors('all', self.application_dir,
+                           all_application_descriptors, all_module_descriptors,
+                           None, False)
 
     def _load_application(self, application_descriptor_name, all_module_descriptors):
         module_descriptors = {}
@@ -188,7 +189,6 @@ class DescriptorLoader:
         extends = descriptor_json['extends'] if 'extends' in descriptor_json else None
         if extends:
             extends = self._load_application(extends, all_module_descriptors)
-        has_html = True if 'has_html' in descriptor_json and descriptor_json['has_html'] else False
         worker = True if 'worker' in descriptor_json and descriptor_json['worker'] else False
 
         for (module_name, module) in application_descriptor.items():
@@ -203,8 +203,9 @@ class DescriptorLoader:
                     bail_error('Module "%s" (dependency of "%s") not listed in application descriptor %s' %
                                (dep, module['name'], application_descriptor_filename))
 
-        return Descriptors(application_descriptor_name, self.application_dir, application_descriptor, module_descriptors, extends,
-                           has_html, worker)
+        return Descriptors(application_descriptor_name, self.application_dir,
+                           application_descriptor, module_descriptors, extends,
+                           worker)
 
     def _read_module_descriptor(self, module_name, application_descriptor_filename):
         json_filename = path.join(self.application_dir, module_name, 'module.json')

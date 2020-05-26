@@ -864,7 +864,6 @@ generated_test_modules = [
   "$resources_out_dir/extensions_test_runner/extensions_test_runner_module.js",
   "$resources_out_dir/heap_profiler_test_runner/heap_profiler_test_runner_module.js",
   "$resources_out_dir/heap_snapshot_worker/heap_snapshot_worker_module.js",
-  "$resources_out_dir/integration_test_runner.html",
   "$resources_out_dir/integration_test_runner.js",
   "$resources_out_dir/layers_test_runner/layers_test_runner_module.js",
   "$resources_out_dir/network_test_runner/network_test_runner_module.js",
@@ -932,6 +931,10 @@ devtools_frontend_resources_deps = [
   ":copy_wasm_deps",
   ":devtools_extension_api",
   "front_end",
+
+  # Required for layout tests, which depend on the existence of `integration_test_runner.html`
+  # If we don't add this dependency explicitly, the swarming bots don't pick up the file.
+  "front_end:front_end_html_entrypoints",
 ]
 
 if (is_debug) {
@@ -1707,6 +1710,8 @@ action("build_release_devtools") {
     "scripts/build/modular_build.py",
     "scripts/build/rjsmin.py",
   ]
+
+  deps = [ "front_end" ]
 
   inputs = helper_scripts + all_devtools_files + devtools_test_files +
            application_templates + all_worker_entrypoints +

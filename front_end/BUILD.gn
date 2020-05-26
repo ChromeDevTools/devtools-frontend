@@ -17,6 +17,7 @@ copy("front_end_html_entrypoints") {
   sources = [
     "devtools_app.html",
     "inspector.html",
+    "integration_test_runner.html",
     "js_app.html",
     "ndb_app.html",
     "node_app.html",

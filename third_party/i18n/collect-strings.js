@@ -11,13 +11,10 @@
 const fs = require('fs');
 const glob = require('glob');
 const path = require('path');
-const assert = require('assert');
 const tsc = require('typescript');
-const Util = require('../../report/html/renderer/util.js');
 const {collectAndBakeCtcStrings} = require('./bake-ctc-to-lhl.js');
-const {pruneObsoleteLhlMessages} = require('./prune-obsolete-lhl-messages.js');
 
-const LH_ROOT = path.join(__dirname, '../../../');
+const SRC_ROOT = path.join(__dirname, '../../');
 const UISTRINGS_REGEX = /UIStrings = .*?\};\n/s;
 
 /** @typedef {import('./bake-ctc-to-lhl.js').CtcMessage} CtcMessage */
@@ -26,11 +23,8 @@ const UISTRINGS_REGEX = /UIStrings = .*?\};\n/s;
 
 const ignoredPathComponents = [
   '**/.git/**',
-  '**/scripts/**',
-  '**/node_modules/**',
-  '**/test/**',
-  '**/*-test.js',
-  '**/*-renderer.js',
+  '**/*_test_runner/**',
+  '**/third_party/**',
 ];
 
 /**
@@ -171,7 +165,7 @@ function _processPlaceholderMarkdownCode(icu) {
 
   icu.message = '';
   let idx = 0;
-  for (const segment of Util.splitMarkdownCodeSpans(message)) {
+  for (const segment of _splitMarkdownCodeSpans(message)) {
     if (segment.isCode) {
       const placeholderName = `MARKDOWN_SNIPPET_${idx++}`;
       // Backtick replacement looks unreadable here, so .join() instead.
@@ -207,7 +201,7 @@ function _processPlaceholderMarkdownLink(icu) {
   icu.message = '';
   let idx = 0;
 
-  for (const segment of Util.splitMarkdownLink(message)) {
+  for (const segment of _splitMarkdownLink(message)) {
     if (!segment.isLink) {
       // Plain text segment.
       icu.message += segment.text;
@@ -226,6 +220,66 @@ function _processPlaceholderMarkdownLink(icu) {
       content: `](${segment.linkHref})`,
     };
   }
+}
+
+/**
+ * Split a string by markdown code spans (enclosed in `backticks`), splitting
+ * into segments that were enclosed in backticks (marked as `isCode === true`)
+ * and those that outside the backticks (`isCode === false`).
+ * @param {string} text
+ * @return {Array<{isCode: true, text: string}|{isCode: false, text: string}>}
+ */
+function _splitMarkdownCodeSpans(text) {
+  /** @type {Array<{isCode: true, text: string}|{isCode: false, text: string}>} */
+  const segments = [];
+  // Split on backticked code spans.
+  const parts = text.split(/`(.*?)`/g);
+  for (let i = 0; i < parts.length; i++) {
+    const text = parts[i];
+    // Empty strings are an artifact of splitting, not meaningful.
+    if (!text)
+      continue;
+    // Alternates between plain text and code segments.
+    const isCode = i % 2 !== 0;
+    segments.push({
+      isCode,
+      text,
+    });
+  }
+  return segments;
+}
+
+/**
+ * Split a string on markdown links (e.g. [some link](https://...)) into
+ * segments of plain text that weren't part of a link (marked as
+ * `isLink === false`), and segments with text content and a URL that did make
+ * up a link (marked as `isLink === true`).
+ * @param {string} text
+ * @return {Array<{isLink: true, text: string, linkHref: string}|{isLink: false, text: string}>}
+ */
+function _splitMarkdownLink(text) {
+  /** @type {Array<{isLink: true, text: string, linkHref: string}|{isLink: false, text: string}>} */
+  const segments = [];
+  const parts = text.split(/\[([^\]]+?)\]\((https?:\/\/.*?)\)/g);
+  while (parts.length) {
+    // Shift off the same number of elements as the pre-split and capture groups.
+    const [preambleText, linkText, linkHref] = parts.splice(0, 3);
+    if (preambleText) {  // Skip empty text as it's an artifact of splitting, not meaningful.
+      segments.push({
+        isLink: false,
+        text: preambleText,
+      });
+    }
+    // Append link if there are any.
+    if (linkText && linkHref) {
+      segments.push({
+        isLink: true,
+        text: linkText,
+        linkHref,
+      });
+    }
+  }
+  return segments;
 }
 
 /**
@@ -343,8 +397,10 @@ function _processPlaceholderDirectIcu(icu, examples) {
  * @param {IncrementalCtc} icu the ctc output message to verify
  */
 function _ctcSanityChecks(icu) {
-  // '$$' i.e. "Double Dollar" is always invalid in ctc.
-  if (icu.message.match(/\$\$/)) {
+  // '$$' i.e. "Double Dollar" is sometimes invalid in ctc.
+  // Upstream issue on this regex change https://github.com/GoogleChrome/lighthouse/issues/10285
+  const regexMatch = icu.message.match(/\$([^$]*?)\$/);
+  if (regexMatch && !regexMatch[1]) {
     throw new Error(`Ctc messages cannot contain double dollar: ${icu.message}`);
   }
 }
@@ -419,11 +475,31 @@ function getIdentifier(node) {
 }
 
 /**
+ * Helper function that retrieves the text token in the tsc AST.
+ * @param {import('typescript').NamedDeclaration} node
+ * @return {string}
+ */
+function getToken(node) {
+  if (!node.initializer)
+    throw new Error('no Token found');
+  let token = '';
+  getTokenHelper(node.initializer);
+  function getTokenHelper(node) {
+    if (!tsc.isToken(node)) {
+      getTokenHelper(node.left);
+      getTokenHelper(node.right);
+    } else {
+      token += node.text;
+    }
+  }
+  return token;
+}
+
+/**
  * @param {string} sourceStr String of the form 'const UIStrings = {...}'.
- * @param {Record<string, string>} liveUIStrings The actual imported UIStrings object.
  * @return {Record<string, ParsedUIString>}
  */
-function parseUIStrings(sourceStr, liveUIStrings) {
+function parseUIStrings(sourceStr) {
   const tsAst = tsc.createSourceFile('uistrings', sourceStr, tsc.ScriptTarget.ES2019, true, tsc.ScriptKind.JS);
 
   const extractionError = new Error('UIStrings declaration was not extracted correctly by the collect-strings regex.');
@@ -449,8 +525,8 @@ function parseUIStrings(sourceStr, liveUIStrings) {
   for (const property of uiStringsObject.properties) {
     const key = getIdentifier(property);
 
-    // Use live message to avoid having to e.g. concat strings broken into parts.
-    const message = liveUIStrings[key];
+    // concat strings that are broken into parts.
+    const message = getToken(property);
 
     // @ts-ignore - Not part of the public tsc interface yet.
     const jsDocComments = tsc.getJSDocCommentsAndTags(property);
@@ -485,37 +561,28 @@ function collectAllStringsInDir(dir) {
   /** @type {Record<string, CtcMessage>} */
   const strings = {};
 
-  const globPattern = path.join(path.relative(LH_ROOT, dir), '/**/*.js');
+  const globPattern = path.join(path.relative(SRC_ROOT, dir), '/**/*.js');
   const files = glob.sync(globPattern, {
-    cwd: LH_ROOT,
+    cwd: SRC_ROOT,
     ignore: ignoredPathComponents,
   });
   for (const relativeToRootPath of files) {
-    const absolutePath = path.join(LH_ROOT, relativeToRootPath);
+    const absolutePath = path.join(SRC_ROOT, relativeToRootPath);
     if (!process.env.CI)
       console.log('Collecting from', relativeToRootPath);
 
     const content = fs.readFileSync(absolutePath, 'utf8');
-    const exportVars = require(absolutePath);
     const regexMatch = content.match(UISTRINGS_REGEX);
-    const exportedUIStrings = exportVars.UIStrings;
 
     if (!regexMatch) {
       // No UIStrings found in the file text or exports, so move to the next.
-      if (!exportedUIStrings)
-        continue;
-
-      throw new Error('UIStrings exported but no definition found');
-    }
-
-    if (!exportedUIStrings) {
-      throw new Error('UIStrings defined in file but not exported');
+      continue;
     }
 
     // just parse the UIStrings substring to avoid ES version issues, save time, etc
     const justUIStrings = 'const ' + regexMatch[0];
-    const parsedMessages = parseUIStrings(justUIStrings, exportedUIStrings);
 
+    const parsedMessages = parseUIStrings(justUIStrings);
     for (const [key, parsed] of Object.entries(parsedMessages)) {
       const {message, description, examples} = parsed;
       const converted = convertMessageToCtc(message, examples);
@@ -529,8 +596,9 @@ function collectAllStringsInDir(dir) {
         description,
         placeholders,
       };
-
-      const messageKey = `${relativeToRootPath} | ${key}`;
+      // slice out "front_end/" and use the path relative to front_end as id
+      const pathRelativeToFrontend = relativeToRootPath.slice('front_end/'.length);
+      const messageKey = `${pathRelativeToFrontend} | ${key}`;
       strings[messageKey] = ctc;
 
       // check for duplicates, if duplicate, add @description as @meaning to both
@@ -558,7 +626,7 @@ function collectAllStringsInDir(dir) {
  * @param {Record<string, CtcMessage>} strings
  */
 function writeStringsToCtcFiles(locale, strings) {
-  const fullPath = path.join(LH_ROOT, `lighthouse-core/lib/i18n/locales/${locale}.ctc.json`);
+  const fullPath = path.join(SRC_ROOT, `front_end/i18n/locales/${locale}.ctc.json`);
   /** @type {Record<string, CtcMessage>} */
   const output = {};
   const sortedEntries = Object.entries(strings).sort(([keyA], [keyB]) => keyA.localeCompare(keyB));
@@ -571,21 +639,10 @@ function writeStringsToCtcFiles(locale, strings) {
 
 // @ts-ignore Test if called from the CLI or as a module.
 if (require.main === module) {
-  const coreStrings = collectAllStringsInDir(path.join(LH_ROOT, 'lighthouse-core'));
-  console.log('Collected from LH core!');
+  const frontendStrings = collectAllStringsInDir(path.join(SRC_ROOT, 'front_end'));
+  console.log(`Collected from front_end!`);
 
-  const stackPackStrings = collectAllStringsInDir(path.join(LH_ROOT, 'stack-packs/packs'));
-  console.log('Collected from Stack Packs!');
-
-  if ((collisions) > 0) {
-    console.log(`MEANING COLLISION: ${collisions} string(s) have the same content.`);
-    assert.equal(
-        collisions, 17,
-        `The number of duplicate strings have changed, update this assertion if that is expected, or reword strings. Collisions: ${
-            collisionStrings}`);
-  }
-
-  const strings = {...coreStrings, ...stackPackStrings};
+  const strings = {...frontendStrings};
   writeStringsToCtcFiles('en-US', strings);
   console.log('Written to disk!', 'en-US.ctc.json');
   // Generate local pseudolocalized files for debugging while translating
@@ -594,14 +651,10 @@ if (require.main === module) {
 
   // Bake the ctc en-US and en-XL files into en-US and en-XL LHL format
   const lhl = collectAndBakeCtcStrings(
-      path.join(LH_ROOT, 'lighthouse-core/lib/i18n/locales/'), path.join(LH_ROOT, 'lighthouse-core/lib/i18n/locales/'));
+      path.join(SRC_ROOT, 'front_end/i18n/locales/'), path.join(SRC_ROOT, 'front_end/i18n/locales/'));
   lhl.forEach(function(locale) {
     console.log(`Baked ${locale} into LHL format.`);
   });
-
-  // Remove any obsolete strings in existing LHL files.
-  console.log('Checking for out-of-date LHL messages...');
-  pruneObsoleteLhlMessages();
 }
 
 module.exports = {

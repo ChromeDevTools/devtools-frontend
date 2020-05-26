@@ -10,4 +10,8 @@ i18n infrastructure scripts that originated from Lighthouse localization pipelin
 (see https://github.com/GoogleChrome/lighthouse/tree/master/lighthouse-core/lib/i18n)
 
 Local Modifications:
-None
+1. Update paths and directory names to fit the DevTools
+2. Update _ctcSanityChecks regex
+3. Port in the only two functions(_splitMarkdownCodeSpans, _splitMarkdownLink) that are needed from Util
+4. Remove pruneObsoleteLhlMessages() and check collisions step
+5. Implement getToken() to avoid requiring the exportVars (liveUIStrings) due to ESM limitation in collectAllStringsInDir()

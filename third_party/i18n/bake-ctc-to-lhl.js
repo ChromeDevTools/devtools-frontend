@@ -11,7 +11,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const LH_ROOT = path.join(__dirname, '../../../');
+const SRC_ROOT = path.join(__dirname, '../../');
 
 /**
  * @typedef CtcMessage
@@ -126,12 +126,12 @@ function collectAndBakeCtcStrings(dir, outputDir) {
   const lhlFilenames = [];
   for (const filename of fs.readdirSync(dir)) {
     const fullPath = path.join(dir, filename);
-    const relativePath = path.relative(LH_ROOT, fullPath);
+    const relativePath = path.relative(SRC_ROOT, fullPath);
 
     if (filename.endsWith('.ctc.json')) {
       if (!process.env.CI)
         console.log('Baking', relativePath);
-      const ctcStrings = loadCtcStrings(relativePath);
+      const ctcStrings = loadCtcStrings(fullPath);
       const strings = bakePlaceholders(ctcStrings);
       const outputFile = outputDir + path.basename(filename).replace('.ctc', '');
       saveLhlStrings(outputFile, strings);

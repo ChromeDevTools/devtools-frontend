@@ -38,6 +38,9 @@ import {Events as ResourceTreeModelEvents, ResourceTreeFrame, ResourceTreeModel}
 import {RuntimeModel} from './RuntimeModel.js';
 import {SDKModelObserver, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
+/** @type {!NetworkLog} */
+let _instance;
+
 /**
  * @implements {SDKModelObserver<!NetworkManager>}
  */
@@ -59,6 +62,16 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
     this._modelListeners = new WeakMap();
     /** @type {!WeakMap<!NetworkRequest, !InitiatorData>} */
     this._initiatorData = new WeakMap();
+  }
+
+  /**
+   * @return {!NetworkLog}
+   */
+  static instance() {
+    if (!_instance) {
+      _instance = new NetworkLog();
+    }
+    return _instance;
   }
 
   /**

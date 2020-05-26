@@ -108,12 +108,12 @@ class AffectedResourcesView extends UI.TreeOutline.TreeElement {
    * @return {!Array<!SDK.NetworkRequest.NetworkRequest>}
    */
   _resolveRequestId(requestId) {
-    const requests = self.SDK.networkLog.requestsForId(requestId);
+    const requests = SDK.NetworkLog.NetworkLog.instance().requestsForId(requestId);
     if (!requests.length) {
       this._unresolvedRequestIds.add(requestId);
       if (!this._listener) {
-        this._listener =
-            self.SDK.networkLog.addEventListener(SDK.NetworkLog.Events.RequestAdded, this._onRequestAdded, this);
+        this._listener = SDK.NetworkLog.NetworkLog.instance().addEventListener(
+            SDK.NetworkLog.Events.RequestAdded, this._onRequestAdded, this);
       }
     }
     return requests;

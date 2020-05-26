@@ -222,7 +222,7 @@ class ReleaseBuilder(object):
         else:
             out = read_file(js_entrypoint)
         write_file(join(self.output_dir, module_name, module_name + '.js'),
-                   out)
+                   minify_js(out))
 
         legacyFileName = module_name + '-legacy.js'
         if legacyFileName in modules:

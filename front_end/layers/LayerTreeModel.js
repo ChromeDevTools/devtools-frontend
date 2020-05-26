@@ -191,17 +191,17 @@ export class AgentLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
       return;
     }
     let root;
-    const oldLayersById = this._layersById;
-    this._layersById = {};
+    const oldLayersById = this.layersById;
+    this.layersById = new Map();
     for (let i = 0; i < layers.length; ++i) {
       const layerId = layers[i].layerId;
-      let layer = oldLayersById[layerId];
+      let layer = /** @type {?AgentLayer} */ (oldLayersById.get(layerId));
       if (layer) {
         layer._reset(layers[i]);
       } else {
         layer = new AgentLayer(this._layerTreeModel, layers[i]);
       }
-      this._layersById[layerId] = layer;
+      this.layersById.set(layerId, layer);
       const backendNodeId = layers[i].backendNodeId;
       if (backendNodeId) {
         layer._setNode(this.backendNodeIdToNode().get(backendNodeId));
@@ -211,7 +211,7 @@ export class AgentLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
       }
       const parentId = layer.parentId();
       if (parentId) {
-        const parent = this._layersById[parentId];
+        const parent = this.layersById.get(parentId);
         if (!parent) {
           console.assert(parent, 'missing parent ' + parentId + ' for layer ' + layerId);
         }

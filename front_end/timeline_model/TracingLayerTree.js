@@ -41,8 +41,8 @@ export class TracingLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
 
     await this.resolveBackendNodeIds(idsToResolve);
 
-    const oldLayersById = this._layersById;
-    this._layersById = {};
+    const oldLayersById = this.layersById;
+    this.layersById = new Map();
     this.setContentRoot(null);
     if (root) {
       const convertedLayers = this._innerSetLayers(oldLayersById, root);
@@ -93,7 +93,7 @@ export class TracingLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
    */
   _setPaints(paints) {
     for (let i = 0; i < paints.length; ++i) {
-      const layer = this._layersById[paints[i].layerId()];
+      const layer = /** @type {?TracingLayer} */ (this.layersById.get(paints[i].layerId()));
       if (layer) {
         layer._addPaintEvent(paints[i]);
       }
@@ -101,18 +101,18 @@ export class TracingLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
   }
 
   /**
-   * @param {!Object<(string|number), !SDK.LayerTreeBase.Layer>} oldLayersById
+   * @param {!Map<(string|number), !SDK.LayerTreeBase.Layer>} oldLayersById
    * @param {!TracingLayerPayload} payload
    * @return {!TracingLayer}
    */
   _innerSetLayers(oldLayersById, payload) {
-    let layer = /** @type {?TracingLayer} */ (oldLayersById[payload.layer_id]);
+    let layer = /** @type {?TracingLayer} */ (oldLayersById.get(payload.layer_id));
     if (layer) {
       layer._reset(payload);
     } else {
       layer = new TracingLayer(this._paintProfilerModel, payload);
     }
-    this._layersById[payload.layer_id] = layer;
+    this.layersById.set(payload.layer_id, layer);
     if (payload.owner_node) {
       layer._setNode(this.backendNodeIdToNode().get(payload.owner_node) || null);
     }

@@ -721,6 +721,13 @@ export class TargetBase {
   }
 
   /**
+   * @return {!ProtocolProxyApi.RuntimeApi}
+   */
+  runtimeAgent() {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
    * @return {!ProtocolProxyApi.ServiceWorkerApi}
    */
   serviceWorkerAgent() {
@@ -731,6 +738,13 @@ export class TargetBase {
    * @return {!ProtocolProxyApi.StorageApi}
    */
   storageAgent() {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
+   * @return {!ProtocolProxyApi.TargetApi}
+   */
+  targetAgent() {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
@@ -783,6 +797,13 @@ export class TargetBase {
    * @param {!ProtocolProxyApi.ServiceWorkerDispatcher} dispatcher
    */
   registerServiceWorkerDispatcher(dispatcher) {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
+   * @param {!ProtocolProxyApi.TargetDispatcher} dispatcher
+   */
+  registerTargetDispatcher(dispatcher) {
     throw new Error('Implemented in InspectorBackend.js');
   }
 }

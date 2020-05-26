@@ -305,9 +305,11 @@ def generate_protocol_externs(output_path, file1, file2):
                     output_file.write("/**\n")
                     output_file.write("* @typedef {{")
                     for param in event["parameters"]:
-                        output_file.write(
-                            "%s: %s," %
-                            (param["name"], param_type(domain_name, param)))
+                        full_param_type = param_type(domain_name, param)
+                        if ("optional" in param):
+                            full_param_type = "(%s|undefined)" % full_param_type
+                        output_file.write("%s: %s," %
+                                          (param["name"], full_param_type))
                     output_file.write("}} */\n")
                 else:
                     output_file.write("/**\n")

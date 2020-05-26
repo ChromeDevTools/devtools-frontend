@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
@@ -14,10 +11,11 @@ import {Capability, Events, SDKModel, Target, TargetManager, Type} from './SDKMo
 
 let _lastAnonymousTargetId = 0;
 
+/** @type {(function({target: !Target, waitingForDebugger: boolean}):!Promise<?>)|undefined} */
 let _attachCallback;
 
 /**
- * @implements {Protocol.TargetDispatcher}
+ * @implements {ProtocolProxyApiWorkaround_TargetDispatcher}
  */
 export class ChildTargetManager extends SDKModel {
   /**
@@ -44,9 +42,16 @@ export class ChildTargetManager extends SDKModel {
     this._targetAgent.invoke_setAutoAttach({autoAttach: true, waitForDebuggerOnStart: true, flatten: true});
 
     if (!parentTarget.parentTarget() && !Host.InspectorFrontendHost.isUnderTest()) {
-      this._targetAgent.setDiscoverTargets(true);
-      this._targetAgent.setRemoteLocations([{host: 'localhost', port: 9229}]);
+      this._targetAgent.invoke_setDiscoverTargets({discover: true});
+      this._targetAgent.invoke_setRemoteLocations({locations: [{host: 'localhost', port: 9229}]});
     }
+  }
+
+  /**
+   * @return {!Protocol.UsesObjectNotation}
+   */
+  usesObjectNotation() {
+    return true;
   }
 
   /**
@@ -78,44 +83,42 @@ export class ChildTargetManager extends SDKModel {
    */
   dispose() {
     for (const sessionId of this._childTargets.keys()) {
-      this.detachedFromTarget(sessionId, undefined);
+      this.detachedFromTarget({sessionId, targetId: undefined});
     }
   }
 
   /**
    * @override
-   * @param {!Protocol.Target.TargetInfo} targetInfo
+   * @param {!Protocol.Target.TargetCreatedEvent} event
    */
-  targetCreated(targetInfo) {
+  targetCreated({targetInfo}) {
     this._targetInfos.set(targetInfo.targetId, targetInfo);
     this._fireAvailableTargetsChanged();
   }
 
   /**
    * @override
-   * @param {!Protocol.Target.TargetInfo} targetInfo
+   * @param {!Protocol.Target.TargetInfoChangedEvent} event
    */
-  targetInfoChanged(targetInfo) {
+  targetInfoChanged({targetInfo}) {
     this._targetInfos.set(targetInfo.targetId, targetInfo);
     this._fireAvailableTargetsChanged();
   }
 
   /**
    * @override
-   * @param {string} targetId
+   * @param {!Protocol.Target.TargetDestroyedEvent} event
    */
-  targetDestroyed(targetId) {
+  targetDestroyed({targetId}) {
     this._targetInfos.delete(targetId);
     this._fireAvailableTargetsChanged();
   }
 
   /**
    * @override
-   * @param {string} targetId
-   * @param {string} status
-   * @param {number} errorCode
+   * @param {!Protocol.Target.TargetCrashedEvent} event
    */
-  targetCrashed(targetId, status, errorCode) {
+  targetCrashed({targetId, status, errorCode}) {
   }
 
   _fireAvailableTargetsChanged() {
@@ -127,18 +130,16 @@ export class ChildTargetManager extends SDKModel {
    */
   async _getParentTargetId() {
     if (!this._parentTargetId) {
-      this._parentTargetId = (await this._parentTarget.targetAgent().getTargetInfo()).targetId;
+      this._parentTargetId = (await this._parentTarget.targetAgent().invoke_getTargetInfo({})).targetInfo.targetId;
     }
     return this._parentTargetId;
   }
 
   /**
    * @override
-   * @param {string} sessionId
-   * @param {!Protocol.Target.TargetInfo} targetInfo
-   * @param {boolean} waitingForDebugger
+   * @param {!Protocol.Target.AttachedToTargetEvent} event
    */
-  attachedToTarget(sessionId, targetInfo, waitingForDebugger) {
+  attachedToTarget({sessionId, targetInfo, waitingForDebugger}) {
     if (this._parentTargetId === targetInfo.targetId) {
       return;
     }
@@ -170,34 +171,34 @@ export class ChildTargetManager extends SDKModel {
 
     if (_attachCallback) {
       _attachCallback({target, waitingForDebugger}).then(() => {
-        target.runtimeAgent().runIfWaitingForDebugger();
+        target.runtimeAgent().invoke_runIfWaitingForDebugger();
       });
     } else {
-      target.runtimeAgent().runIfWaitingForDebugger();
+      target.runtimeAgent().invoke_runIfWaitingForDebugger();
     }
   }
 
   /**
    * @override
-   * @param {string} sessionId
-   * @param {string=} childTargetId
+   * @param {!Protocol.Target.DetachedFromTargetEvent} event
    */
-  detachedFromTarget(sessionId, childTargetId) {
+  detachedFromTarget({sessionId}) {
     if (this._parallelConnections.has(sessionId)) {
       this._parallelConnections.delete(sessionId);
     } else {
-      this._childTargets.get(sessionId).dispose('target terminated');
-      this._childTargets.delete(sessionId);
+      const session = this._childTargets.get(sessionId);
+      if (session) {
+        session.dispose('target terminated');
+        this._childTargets.delete(sessionId);
+      }
     }
   }
 
   /**
    * @override
-   * @param {string} sessionId
-   * @param {string} message
-   * @param {string=} childTargetId
+   * @param {!Protocol.Target.ReceivedMessageFromTargetEvent} event
    */
-  receivedMessageFromTarget(sessionId, message, childTargetId) {
+  receivedMessageFromTarget({}) {
     // We use flatten protocol.
   }
 
@@ -223,13 +224,13 @@ export class ChildTargetManager extends SDKModel {
    */
   async _createParallelConnectionAndSessionForTarget(target, targetId) {
     const targetAgent = target.targetAgent();
-    const targetRouter = target.router();
-    const sessionId = /** @type {string} */ (await targetAgent.attachToTarget(targetId, true /* flatten */));
+    const targetRouter = /** @type {!ProtocolClient.InspectorBackend.SessionRouter} */ (target.router());
+    const sessionId = (await targetAgent.invoke_attachToTarget({targetId, flatten: true})).sessionId;
     const connection = new ParallelConnection(targetRouter.connection(), sessionId);
     targetRouter.registerSession(target, sessionId, connection);
     connection.setOnDisconnect(() => {
-      targetAgent.detachFromTarget(sessionId);
       targetRouter.unregisterSession(sessionId);
+      targetAgent.invoke_detachFromTarget({sessionId});
     });
     return {connection, sessionId};
   }

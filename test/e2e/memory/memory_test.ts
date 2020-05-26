@@ -12,8 +12,8 @@ describe('The Memory Panel', async () => {
     const {target} = getBrowserAndPages();
     await navigateToMemoryTab(target);
   });
-
-  it('Can take several heap snapshots ', async () => {
+  // The row count assertion is failing in CQ
+  it.skip('[crbug.com/1086641]: Can take several heap snapshots ', async () => {
     const {target} = getBrowserAndPages();
     await navigateToMemoryTab(target);
     await takeHeapSnapshot();

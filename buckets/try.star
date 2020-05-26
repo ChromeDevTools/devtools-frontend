@@ -115,7 +115,6 @@ cq_retry_config=cq.retry_config(
 
 cq_master_builders=[
   'devtools_frontend_linux_blink_light_rel',
-  'devtools_frontend_linux_blink_rel',
   'devtools_frontend_linux_rel',
   'devtools_frontend_mac_rel',
   'devtools_frontend_win64_rel',

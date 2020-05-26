@@ -766,6 +766,13 @@ export class TargetBase {
   }
 
   /**
+   * @param {!ProtocolProxyApi.PageDispatcher} dispatcher
+   */
+  registerPageDispatcher(dispatcher) {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
    * @param {!ProtocolProxyApi.StorageDispatcher} dispatcher
    */
   registerStorageDispatcher(dispatcher) {

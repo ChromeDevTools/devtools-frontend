@@ -2,16 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
-import * as ProtocolClient from '../protocol_client/protocol_client.js';
-
 import {OverlayModel} from './OverlayModel.js';
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 /**
- * @implements {Protocol.PageDispatcher}
+ * @implements {ProtocolProxyApiWorkaround_PageDispatcher}
  */
 export class ScreenCaptureModel extends SDKModel {
   /**
@@ -20,7 +15,7 @@ export class ScreenCaptureModel extends SDKModel {
   constructor(target) {
     super(target);
     this._agent = target.pageAgent();
-    /** @type {?function(string, !Protocol.Page.ScreencastFrameMetadata):void} */
+    /** @type {?function(!Protocol.binary, !Protocol.Page.ScreencastFrameMetadata):void} */
     this._onScreencastFrame = null;
     /** @type {?function(boolean):void} */
     this._onScreencastVisibilityChanged = null;
@@ -28,45 +23,52 @@ export class ScreenCaptureModel extends SDKModel {
   }
 
   /**
+   * @return {!Protocol.UsesObjectNotation}
+   */
+  usesObjectNotation() {
+    return true;
+  }
+
+  /**
    * @param {!Protocol.Page.StartScreencastRequestFormat} format
    * @param {number} quality
-   * @param {number|undefined} width
-   * @param {number|undefined} height
+   * @param {number|undefined} maxWidth
+   * @param {number|undefined} maxHeight
    * @param {number|undefined} everyNthFrame
-   * @param {function(string, !Protocol.Page.ScreencastFrameMetadata):void} onFrame
-   * @param {function(boolean):void} onVisibilityChanged
+   * @param {function(!Protocol.binary, !Protocol.Page.ScreencastFrameMetadata): void} onFrame
+   * @param {function(boolean): void} onVisibilityChanged
    */
-  startScreencast(format, quality, width, height, everyNthFrame, onFrame, onVisibilityChanged) {
+  startScreencast(format, quality, maxWidth, maxHeight, everyNthFrame, onFrame, onVisibilityChanged) {
     this._onScreencastFrame = onFrame;
     this._onScreencastVisibilityChanged = onVisibilityChanged;
-    this._agent.startScreencast(format, quality, width, height, everyNthFrame);
+    this._agent.invoke_startScreencast({format, quality, maxWidth, maxHeight, everyNthFrame});
   }
 
   stopScreencast() {
     this._onScreencastFrame = null;
     this._onScreencastVisibilityChanged = null;
-    this._agent.stopScreencast();
+    this._agent.invoke_stopScreencast();
   }
 
   /**
    * @param {!Protocol.Page.CaptureScreenshotRequestFormat} format
    * @param {number} quality
    * @param {!Protocol.Page.Viewport=} clip
-   * @return {!Promise<?string>}
+   * @return {!Promise<?Protocol.binary>}
    */
   async captureScreenshot(format, quality, clip) {
     await OverlayModel.muteHighlight();
-    const result = await this._agent.captureScreenshot(format, quality, clip, true);
+    const result = await this._agent.invoke_captureScreenshot({format, quality, clip, fromSurface: true});
     await OverlayModel.unmuteHighlight();
-    return result;
+    return result.data;
   }
 
   /**
    * @return {!Promise<?{viewportX: number, viewportY: number, viewportScale: number, contentWidth: number, contentHeight: number}>}
    */
   async fetchLayoutMetrics() {
-    const response = await this._agent.invoke_getLayoutMetrics({});
-    if (response[ProtocolClient.InspectorBackend.ProtocolError]) {
+    const response = await this._agent.invoke_getLayoutMetrics();
+    if (response.getError()) {
       return null;
     }
     return {
@@ -80,12 +82,10 @@ export class ScreenCaptureModel extends SDKModel {
 
   /**
    * @override
-   * @param {string} data
-   * @param {!Protocol.Page.ScreencastFrameMetadata} metadata
-   * @param {number} sessionId
+   * @param {!Protocol.Page.ScreencastFrameEvent} _
    */
-  screencastFrame(data, metadata, sessionId) {
-    this._agent.screencastFrameAck(sessionId);
+  screencastFrame({data, metadata, sessionId}) {
+    this._agent.invoke_screencastFrameAck({sessionId});
     if (this._onScreencastFrame) {
       this._onScreencastFrame.call(null, data, metadata);
     }
@@ -93,9 +93,9 @@ export class ScreenCaptureModel extends SDKModel {
 
   /**
    * @override
-   * @param {boolean} visible
+   * @param {!Protocol.Page.ScreencastVisibilityChangedEvent} _
    */
-  screencastVisibilityChanged(visible) {
+  screencastVisibilityChanged({visible}) {
     if (this._onScreencastVisibilityChanged) {
       this._onScreencastVisibilityChanged.call(null, visible);
     }
@@ -103,93 +103,87 @@ export class ScreenCaptureModel extends SDKModel {
 
   /**
    * @override
-   * @param {number} time
+   * @param {!Protocol.Page.DomContentEventFiredEvent} params
    */
-  domContentEventFired(time) {
+  domContentEventFired(params) {
   }
 
   /**
    * @override
-   * @param {number} time
+   * @param {!Protocol.Page.LoadEventFiredEvent} params
    */
-  loadEventFired(time) {
+  loadEventFired(params) {
   }
 
   /**
    * @override
-   * @param {!Protocol.Page.FrameId} frameId
-   * @param {!Protocol.Network.LoaderId} loaderId
-   * @param {string} name
-   * @param {number} time
+   * @param {!Protocol.Page.LifecycleEventEvent} params
    */
-  lifecycleEvent(frameId, loaderId, name, time) {
+  lifecycleEvent(params) {
   }
 
   /**
    * @override
-   * @param {!Protocol.Page.FrameId} frameId
-   * @param {string} url
+   * @param {!Protocol.Page.NavigatedWithinDocumentEvent} params
    */
-  navigatedWithinDocument(frameId, url) {
+  navigatedWithinDocument(params) {
   }
 
   /**
    * @override
-   * @param {!Protocol.Page.FrameId} frameId
-   * @param {!Protocol.Page.FrameId} parentFrameId
+   * @param {!Protocol.Page.FrameAttachedEvent} params
    */
-  frameAttached(frameId, parentFrameId) {
+  frameAttached(params) {
   }
 
   /**
    * @override
-   * @param {!Protocol.Page.Frame} frame
+   * @param {!Protocol.Page.FrameNavigatedEvent} params
    */
-  frameNavigated(frame) {
+  frameNavigated(params) {
   }
 
   /**
    * @override
-   * @param {!Protocol.Page.FrameId} frameId
+   * @param {!Protocol.Page.FrameDetachedEvent} params
    */
-  frameDetached(frameId) {
+  frameDetached(params) {
   }
 
   /**
    * @override
-   * @param {!Protocol.Page.FrameId} frameId
+   * @param {!Protocol.Page.FrameStartedLoadingEvent} params
    */
-  frameStartedLoading(frameId) {
+  frameStartedLoading(params) {
   }
 
   /**
    * @override
-   * @param {!Protocol.Page.FrameId} frameId
+   * @param {!Protocol.Page.FrameStoppedLoadingEvent} params
    */
-  frameStoppedLoading(frameId) {
+  frameStoppedLoading(params) {
   }
 
   /**
    * @override
-   * @param {!Protocol.Page.FrameId} frameId
+   * @param {!Protocol.Page.FrameRequestedNavigationEvent} params
    */
-  frameRequestedNavigation(frameId) {
+  frameRequestedNavigation(params) {
   }
 
 
   /**
    * @override
-   * @param {!Protocol.Page.FrameId} frameId
-   * @param {number} delay
+   * @param {!Protocol.Page.FrameScheduledNavigationEvent} params
    */
-  frameScheduledNavigation(frameId, delay) {
+  frameScheduledNavigation(params) {
   }
 
   /**
    * @override
-   * @param {!Protocol.Page.FrameId} frameId
+   * @param {!Protocol.Page.FrameClearedScheduledNavigationEvent} params
    */
-  frameClearedScheduledNavigation(frameId) {
+  frameClearedScheduledNavigation(params) {
   }
 
   /**
@@ -200,21 +194,16 @@ export class ScreenCaptureModel extends SDKModel {
 
   /**
    * @override
-   * @param {string} url
-   * @param {string} message
-   * @param {string} dialogType
-   * @param {boolean} hasBrowserHandler
-   * @param {string=} prompt
+   * @param {!Protocol.Page.JavascriptDialogOpeningEvent} params
    */
-  javascriptDialogOpening(url, message, dialogType, hasBrowserHandler, prompt) {
+  javascriptDialogOpening(params) {
   }
 
   /**
    * @override
-   * @param {boolean} result
-   * @param {string} userInput
+   * @param {!Protocol.Page.JavascriptDialogClosedEvent} params
    */
-  javascriptDialogClosed(result, userInput) {
+  javascriptDialogClosed(params) {
   }
 
   /**
@@ -231,35 +220,30 @@ export class ScreenCaptureModel extends SDKModel {
 
   /**
    * @override
-   * @param {string} url
-   * @param {string} windowName
-   * @param {!Array<string>} windowFeatures
-   * @param {boolean} userGesture
+   * @param {!Protocol.Page.WindowOpenEvent} params
    */
-  windowOpen(url, windowName, windowFeatures, userGesture) {
+  windowOpen(params) {
   }
 
   /**
    * @override
-   * @param {string} mode
+   * @param {!Protocol.Page.FileChooserOpenedEvent} params
    */
-  fileChooserOpened(mode) {
+  fileChooserOpened(params) {
   }
 
   /**
    * @override
-   * @param {string} url
-   * @param {string} data
+   * @param {!Protocol.Page.CompilationCacheProducedEvent} params
    */
-  compilationCacheProduced(url, data) {
+  compilationCacheProduced(params) {
   }
 
   /**
    * @override
-   * @param {!Protocol.Page.FrameId} frameId
-   * @param {string} url
+   * @param {!Protocol.Page.DownloadWillBeginEvent} params
    */
-  downloadWillBegin(frameId, url) {
+  downloadWillBegin(params) {
   }
 
   /**

@@ -105,7 +105,9 @@ export class FilesNavigatorView extends NavigatorView {
     this.setPlaceholder(placeholder);
     placeholder.appendParagraph().appendChild(UI.Fragment.html`
       <div>${ls`Sync changes in DevTools with the local filesystem`}</div><br />
-      ${UI.XLink.XLink.create('https://developers.google.com/web/tools/chrome-devtools/workspaces/', ls`Learn more`)}
+      ${
+        UI.XLink.XLink.create(
+            'https://developers.google.com/web/tools/chrome-devtools/workspaces/', ls`Learn more about Workspaces`)}
     `);
 
     const toolbar = new UI.Toolbar.Toolbar('navigator-toolbar');

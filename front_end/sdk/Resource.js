@@ -26,12 +26,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Platfrom from '../platform/platform.js';
-import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
 import {Events, NetworkRequest} from './NetworkRequest.js';                   // eslint-disable-line no-unused-vars
@@ -59,6 +55,9 @@ export class Resource {
     this._resourceTreeModel = resourceTreeModel;
     this._request = request;
     this.url = url;
+    /** @type {string} */
+    this._url;
+
     this._documentURL = documentURL;
     this._frameId = frameId;
     this._loaderId = loaderId;
@@ -71,6 +70,7 @@ export class Resource {
     /** @type {?string} */ this._content;
     /** @type {?string} */ this._contentLoadError;
     /** @type {boolean} */ this._contentEncoded;
+    /** @type {!Array<function(?Object):void>} */
     this._pendingContentCallbacks = [];
     if (this._request && !this._request.finished) {
       this._request.addEventListener(Events.FinishedLoading, this._requestFinished, this);
@@ -151,7 +151,7 @@ export class Resource {
    * @return {string}
    */
   get displayName() {
-    return this._parsedURL.displayName;
+    return this._parsedURL ? this._parsedURL.displayName : '';
   }
 
   /**
@@ -213,13 +213,12 @@ export class Resource {
       return Promise.resolve({content: /** @type {string} */ (this._content), isEncoded: this._contentEncoded});
     }
 
-    let callback;
-    const promise = new Promise(fulfill => callback = fulfill);
-    this._pendingContentCallbacks.push(callback);
-    if (!this._request || this._request.finished) {
-      this._innerRequestContent();
-    }
-    return promise;
+    return new Promise(resolve => {
+      this._pendingContentCallbacks.push(/** @type {function(?Object):void} */ (resolve));
+      if (!this._request || this._request.finished) {
+        this._innerRequestContent();
+      }
+    });
   }
 
   /**
@@ -243,13 +242,13 @@ export class Resource {
     if (this.request) {
       return this.request.searchInContent(query, caseSensitive, isRegex);
     }
-    const result = await this._resourceTreeModel.target().pageAgent().searchInResource(
-        this.frameId, this.url, query, caseSensitive, isRegex);
-    return result || [];
+    const result = await this._resourceTreeModel.target().pageAgent().invoke_searchInResource(
+        {frameId: this.frameId, url: this.url, query, caseSensitive, isRegex});
+    return result.result || [];
   }
 
   /**
-   * @param {!Element} image
+   * @param {!HTMLImageElement} image
    */
   async populateImageSource(image) {
     const {content} = await this.requestContent();
@@ -258,7 +257,9 @@ export class Resource {
   }
 
   _requestFinished() {
-    this._request.removeEventListener(Events.FinishedLoading, this._requestFinished, this);
+    if (this._request) {
+      this._request.removeEventListener(Events.FinishedLoading, this._requestFinished, this);
+    }
     if (this._pendingContentCallbacks.length) {
       this._innerRequestContent();
     }
@@ -280,10 +281,11 @@ export class Resource {
     } else {
       const response = await this._resourceTreeModel.target().pageAgent().invoke_getResourceContent(
           {frameId: this.frameId, url: this.url});
-      if (response[ProtocolClient.InspectorBackend.ProtocolError]) {
-        this._contentLoadError = response[ProtocolClient.InspectorBackend.ProtocolError];
+      const protocolError = response.getError();
+      if (protocolError) {
+        this._contentLoadError = protocolError;
         this._content = null;
-        loadResult = {content: null, error: response[ProtocolClient.InspectorBackend.ProtocolError], isEncoded: false};
+        loadResult = {content: null, error: protocolError, isEncoded: false};
       } else {
         this._content = response.content;
         this._contentLoadError = null;

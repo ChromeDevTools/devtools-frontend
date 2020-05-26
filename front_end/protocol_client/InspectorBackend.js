@@ -700,6 +700,13 @@ export class TargetBase {
   }
 
   /**
+   * @return {!ProtocolProxyApi.PageApi}
+   */
+  pageAgent() {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
    * @return {!ProtocolProxyApi.PerformanceApi}
    */
   performanceAgent() {

@@ -186,6 +186,18 @@ def addClangFormat():
     return False
 
 
+def addOwnersFile():
+    with open(path.join(devtools_paths.node_modules_path(), 'OWNERS'),
+              'w+') as owners_file:
+        try:
+            owners_file.write('file://INFRA_OWNERS')
+            owners_file.write('')
+        except:
+            print('Unable to write OWNERS file')
+            return True
+    return False
+
+
 def run_npm_command(npm_command_args=None):
     for (name, version) in DEPS.items():
         if (version.find(u'^') == 0):
@@ -214,6 +226,9 @@ def run_npm_command(npm_command_args=None):
         return True
 
     if addClangFormat():
+        return True
+
+    if addOwnersFile():
         return True
 
     if run_custom_command:

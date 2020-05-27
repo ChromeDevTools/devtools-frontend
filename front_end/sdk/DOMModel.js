@@ -1201,13 +1201,18 @@ export class DOMModel extends SDKModel {
     target.registerDOMDispatcher(new DOMDispatcher(this));
 
     this._runtimeModel = /** @type {!RuntimeModel} */ (target.model(RuntimeModel));
+    /** @type {number} */
+    this._lastMutationId;
+
+    /** @type {?Promise<?DOMDocument>} */
+    this._pendingDocumentRequestPromise;
 
     if (!target.suspended()) {
-      this._agent.enable();
+      this._agent.invoke_enable({});
     }
 
     if (Root.Runtime.experiments.isEnabled('captureNodeCreationStacks')) {
-      this._agent.setNodeStackTracesEnabled(true);
+      this._agent.invoke_setNodeStackTracesEnabled({enable: true});
     }
   }
 
@@ -1264,7 +1269,7 @@ export class DOMModel extends SDKModel {
   }
 
   /**
-   * @return {!Promise<!DOMDocument>}
+   * @return {!Promise<?DOMDocument>}
    */
   requestDocument() {
     if (this._document) {
@@ -1280,7 +1285,7 @@ export class DOMModel extends SDKModel {
    * @return {!Promise<?DOMDocument>}
    */
   async _requestDocument() {
-    const documentPayload = await this._agent.getDocument();
+    const {root: documentPayload} = await this._agent.invoke_getDocument();
     delete this._pendingDocumentRequestPromise;
 
     if (documentPayload) {
@@ -1295,7 +1300,7 @@ export class DOMModel extends SDKModel {
     if (parentModel && !this._frameOwnerNode) {
       await parentModel.requestDocument();
       const response = await parentModel._agent.invoke_getFrameOwner({frameId: this.target().id()});
-      if (!response[ProtocolClient.InspectorBackend.ProtocolError]) {
+      if (!response.getError() && response.nodeId) {
         this._frameOwnerNode = parentModel.nodeForId(response.nodeId);
       }
     }
@@ -1328,7 +1333,7 @@ export class DOMModel extends SDKModel {
    */
   async pushNodeToFrontend(objectId) {
     await this.requestDocument();
-    const nodeId = await this._agent.requestNode(objectId);
+    const {nodeId} = await this._agent.invoke_requestNode({objectId});
     return nodeId ? this.nodeForId(nodeId) : null;
   }
 
@@ -1337,7 +1342,9 @@ export class DOMModel extends SDKModel {
    * @return {!Promise<?Protocol.DOM.NodeId>}
    */
   pushNodeByPathToFrontend(path) {
-    return this.requestDocument().then(() => this._agent.pushNodeByPathToFrontend(path));
+    return this.requestDocument()
+        .then(() => this._agent.invoke_pushNodeByPathToFrontend({path}))
+        .then(({nodeId}) => nodeId);
   }
 
   /**
@@ -1347,7 +1354,7 @@ export class DOMModel extends SDKModel {
   async pushNodesByBackendIdsToFrontend(backendNodeIds) {
     await this.requestDocument();
     const backendNodeIdsArray = [...backendNodeIds];
-    const nodeIds = await this._agent.pushNodesByBackendIdsToFrontend(backendNodeIdsArray);
+    const {nodeIds} = await this._agent.invoke_pushNodesByBackendIdsToFrontend({backendNodeIds: backendNodeIdsArray});
     if (!nodeIds) {
       return null;
     }
@@ -1359,24 +1366,6 @@ export class DOMModel extends SDKModel {
       }
     }
     return map;
-  }
-
-  /**
-   * @param {function(?T):void} callback
-   * @return {function(?ProtocolClient.InspectorBackend.ProtocolError, !T=):void}
-   * @template T
-   */
-  _wrapClientCallback(callback) {
-    /**
-     * @param {?ProtocolClient.InspectorBackend.ProtocolError} error
-     * @param {!T=} result
-     * @template T
-     */
-    function wrapper(error, result) {
-      // Caller is responsible for handling the actual error.
-      callback(error ? null : result || null);
-    }
-    return wrapper;
   }
 
   /**
@@ -1422,7 +1411,7 @@ export class DOMModel extends SDKModel {
   _loadNodeAttributes() {
     delete this._loadNodeAttributesTimeout;
     for (const nodeId of this._attributeLoadNodeIds) {
-      this._agent.getAttributes(nodeId).then(attributes => {
+      this._agent.invoke_getAttributes({nodeId}).then(({attributes}) => {
         if (!attributes) {
           // We are calling _loadNodeAttributes asynchronously, it is ok if node is not found.
           return;
@@ -1479,7 +1468,7 @@ export class DOMModel extends SDKModel {
     } else {
       this._document = null;
     }
-    self.SDK.domModelUndoStack._dispose(this);
+    DOMModelUndoStack.instance()._dispose(this);
 
     if (!this.parentModel()) {
       this.dispatchEventToListeners(Events.DocumentUpdated, this);
@@ -1663,10 +1652,10 @@ export class DOMModel extends SDKModel {
    */
   async performSearch(query, includeUserAgentShadowDOM) {
     const response = await this._agent.invoke_performSearch({query, includeUserAgentShadowDOM});
-    if (!response[ProtocolClient.InspectorBackend.ProtocolError]) {
+    if (!response.getError()) {
       this._searchId = response.searchId;
     }
-    return response[ProtocolClient.InspectorBackend.ProtocolError] ? 0 : response.resultCount;
+    return response.getError() ? 0 : response.resultCount;
   }
 
   /**
@@ -1677,7 +1666,8 @@ export class DOMModel extends SDKModel {
     if (!this._searchId) {
       return null;
     }
-    const nodeIds = await this._agent.getSearchResults(this._searchId, index, index + 1);
+    const {nodeIds} =
+        await this._agent.invoke_getSearchResults({searchId: this._searchId, fromIndex: index, toIndex: index + 1});
     return nodeIds && nodeIds.length === 1 ? this.nodeForId(nodeIds[0]) : null;
   }
 
@@ -1685,7 +1675,7 @@ export class DOMModel extends SDKModel {
     if (!this._searchId) {
       return;
     }
-    this._agent.discardSearchResults(this._searchId);
+    this._agent.invoke_discardSearchResults({searchId: this._searchId});
     delete this._searchId;
   }
 
@@ -1694,32 +1684,32 @@ export class DOMModel extends SDKModel {
    * @return {!Promise<!Array<string>>}
    */
   classNamesPromise(nodeId) {
-    return this._agent.collectClassNamesFromSubtree(nodeId).then(classNames => classNames || []);
+    return this._agent.invoke_collectClassNamesFromSubtree({nodeId}).then(({classNames}) => classNames || []);
   }
 
   /**
    * @param {!Protocol.DOM.NodeId} nodeId
-   * @param {string} selectors
+   * @param {string} selector
    * @return {!Promise<?Protocol.DOM.NodeId>}
    */
-  querySelector(nodeId, selectors) {
-    return this._agent.querySelector(nodeId, selectors);
+  querySelector(nodeId, selector) {
+    return this._agent.invoke_querySelector({nodeId, selector}).then(({nodeId}) => nodeId);
   }
 
   /**
    * @param {!Protocol.DOM.NodeId} nodeId
-   * @param {string} selectors
+   * @param {string} selector
    * @return {!Promise<?Array<!Protocol.DOM.NodeId>>}
    */
-  querySelectorAll(nodeId, selectors) {
-    return this._agent.querySelectorAll(nodeId, selectors);
+  querySelectorAll(nodeId, selector) {
+    return this._agent.invoke_querySelectorAll({nodeId, selector}).then(({nodeIds}) => nodeIds);
   }
 
   /**
    * @param {boolean=} minorChange
    */
   markUndoableState(minorChange) {
-    self.SDK.domModelUndoStack._markUndoableState(this, minorChange || false);
+    DOMModelUndoStack.instance()._markUndoableState(this, minorChange || false);
   }
 
   /**
@@ -1730,7 +1720,7 @@ export class DOMModel extends SDKModel {
    */
   async nodeForLocation(x, y, includeUserAgentShadowDOM) {
     const response = await this._agent.invoke_getNodeForLocation({x, y, includeUserAgentShadowDOM});
-    if (response[ProtocolClient.InspectorBackend.ProtocolError] || !response.nodeId) {
+    if (response.getError() || !response.nodeId) {
       return null;
     }
     return this.nodeForId(response.nodeId);
@@ -1749,22 +1739,22 @@ export class DOMModel extends SDKModel {
    * @return {!Promise<void>}
    */
   suspendModel() {
-    return this._agent.disable().then(() => this._setDocument(null));
+    return this._agent.invoke_disable().then(() => this._setDocument(null));
   }
 
   /**
    * @override
    * @return {!Promise<void>}
    */
-  resumeModel() {
-    return this._agent.enable();
+  async resumeModel() {
+    await this._agent.invoke_enable();
   }
 
   /**
    * @override
    */
   dispose() {
-    self.SDK.domModelUndoStack._dispose(this);
+    DOMModelUndoStack.instance()._dispose(this);
   }
 
   /**
@@ -1920,6 +1910,11 @@ class DOMDispatcher {
   }
 }
 
+/**
+ * @type {?DOMModelUndoStack}
+ */
+let DOMModelUndoStackInstance;
+
 export class DOMModelUndoStack {
   constructor() {
     /** @type {!Array<!DOMModel>} */
@@ -1927,6 +1922,19 @@ export class DOMModelUndoStack {
     this._index = 0;
     /** @type {?DOMModel} */
     this._lastModelWithMinorChange = null;
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   * @return {!DOMModelUndoStack}
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!DOMModelUndoStackInstance || forceNew) {
+      DOMModelUndoStackInstance = new DOMModelUndoStack();
+    }
+
+    return DOMModelUndoStackInstance;
   }
 
   /**

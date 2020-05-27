@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/wasdk/wasmparser.svg?branch=master)](https://travis-ci.org/wasdk/wasmparser)
+[![NPM version](https://img.shields.io/npm/v/wasmparser.svg)](https://www.npmjs.com/package/wasmparser)
 
 Simple streamable WebAssembly binary parser.
 

@@ -1,6 +1,6 @@
 {
   "name": "wasmparser",
-  "version": "0.14.1",
+  "version": "0.16.1",
   "description": "Binary WebAssembly file parser.",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -9,10 +9,11 @@
     "disassemble-wasm": "./disassemble-wasm.js"
   },
   "scripts": {
-    "test": "jest",
     "build": "concurrently \"npm:build:cjs\" \"npm:build:esm\"",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs --target es5",
-    "build:esm": "tsc --module esnext --moduleResolution node --outDir dist/esm --target esnext"
+    "build:esm": "tsc --module esnext --moduleResolution node --outDir dist/esm --target esnext",
+    "prepare": "npm run build",
+    "test": "jest"
   },
   "author": "",
   "license": "Apache-2.0",

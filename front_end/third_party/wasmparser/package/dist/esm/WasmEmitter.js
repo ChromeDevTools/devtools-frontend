@@ -613,53 +613,53 @@ export class Emitter {
             case 65053 /* i64_atomic_store32 */:
             case 65054 /* i32_atomic_rmw_add */:
             case 65055 /* i64_atomic_rmw_add */:
-            case 65056 /* i32_atomic_rmw8_u_add */:
-            case 65057 /* i32_atomic_rmw16_u_add */:
-            case 65058 /* i64_atomic_rmw8_u_add */:
-            case 65059 /* i64_atomic_rmw16_u_add */:
-            case 65060 /* i64_atomic_rmw32_u_add */:
+            case 65056 /* i32_atomic_rmw8_add_u */:
+            case 65057 /* i32_atomic_rmw16_add_u */:
+            case 65058 /* i64_atomic_rmw8_add_u */:
+            case 65059 /* i64_atomic_rmw16_add_u */:
+            case 65060 /* i64_atomic_rmw32_add_u */:
             case 65061 /* i32_atomic_rmw_sub */:
             case 65062 /* i64_atomic_rmw_sub */:
-            case 65063 /* i32_atomic_rmw8_u_sub */:
-            case 65064 /* i32_atomic_rmw16_u_sub */:
-            case 65065 /* i64_atomic_rmw8_u_sub */:
-            case 65066 /* i64_atomic_rmw16_u_sub */:
-            case 65067 /* i64_atomic_rmw32_u_sub */:
+            case 65063 /* i32_atomic_rmw8_sub_u */:
+            case 65064 /* i32_atomic_rmw16_sub_u */:
+            case 65065 /* i64_atomic_rmw8_sub_u */:
+            case 65066 /* i64_atomic_rmw16_sub_u */:
+            case 65067 /* i64_atomic_rmw32_sub_u */:
             case 65068 /* i32_atomic_rmw_and */:
             case 65069 /* i64_atomic_rmw_and */:
-            case 65070 /* i32_atomic_rmw8_u_and */:
-            case 65071 /* i32_atomic_rmw16_u_and */:
-            case 65072 /* i64_atomic_rmw8_u_and */:
-            case 65073 /* i64_atomic_rmw16_u_and */:
-            case 65074 /* i64_atomic_rmw32_u_and */:
+            case 65070 /* i32_atomic_rmw8_and_u */:
+            case 65071 /* i32_atomic_rmw16_and_u */:
+            case 65072 /* i64_atomic_rmw8_and_u */:
+            case 65073 /* i64_atomic_rmw16_and_u */:
+            case 65074 /* i64_atomic_rmw32_and_u */:
             case 65075 /* i32_atomic_rmw_or */:
             case 65076 /* i64_atomic_rmw_or */:
-            case 65077 /* i32_atomic_rmw8_u_or */:
-            case 65078 /* i32_atomic_rmw16_u_or */:
-            case 65079 /* i64_atomic_rmw8_u_or */:
-            case 65080 /* i64_atomic_rmw16_u_or */:
-            case 65081 /* i64_atomic_rmw32_u_or */:
+            case 65077 /* i32_atomic_rmw8_or_u */:
+            case 65078 /* i32_atomic_rmw16_or_u */:
+            case 65079 /* i64_atomic_rmw8_or_u */:
+            case 65080 /* i64_atomic_rmw16_or_u */:
+            case 65081 /* i64_atomic_rmw32_or_u */:
             case 65082 /* i32_atomic_rmw_xor */:
             case 65083 /* i64_atomic_rmw_xor */:
-            case 65084 /* i32_atomic_rmw8_u_xor */:
-            case 65085 /* i32_atomic_rmw16_u_xor */:
-            case 65086 /* i64_atomic_rmw8_u_xor */:
-            case 65087 /* i64_atomic_rmw16_u_xor */:
-            case 65088 /* i64_atomic_rmw32_u_xor */:
+            case 65084 /* i32_atomic_rmw8_xor_u */:
+            case 65085 /* i32_atomic_rmw16_xor_u */:
+            case 65086 /* i64_atomic_rmw8_xor_u */:
+            case 65087 /* i64_atomic_rmw16_xor_u */:
+            case 65088 /* i64_atomic_rmw32_xor_u */:
             case 65089 /* i32_atomic_rmw_xchg */:
             case 65090 /* i64_atomic_rmw_xchg */:
-            case 65091 /* i32_atomic_rmw8_u_xchg */:
-            case 65092 /* i32_atomic_rmw16_u_xchg */:
-            case 65093 /* i64_atomic_rmw8_u_xchg */:
-            case 65094 /* i64_atomic_rmw16_u_xchg */:
-            case 65095 /* i64_atomic_rmw32_u_xchg */:
+            case 65091 /* i32_atomic_rmw8_xchg_u */:
+            case 65092 /* i32_atomic_rmw16_xchg_u */:
+            case 65093 /* i64_atomic_rmw8_xchg_u */:
+            case 65094 /* i64_atomic_rmw16_xchg_u */:
+            case 65095 /* i64_atomic_rmw32_xchg_u */:
             case 65096 /* i32_atomic_rmw_cmpxchg */:
             case 65097 /* i64_atomic_rmw_cmpxchg */:
-            case 65098 /* i32_atomic_rmw8_u_cmpxchg */:
-            case 65099 /* i32_atomic_rmw16_u_cmpxchg */:
-            case 65100 /* i64_atomic_rmw8_u_cmpxchg */:
-            case 65101 /* i64_atomic_rmw16_u_cmpxchg */:
-            case 65102 /* i64_atomic_rmw32_u_cmpxchg */:
+            case 65098 /* i32_atomic_rmw8_cmpxchg_u */:
+            case 65099 /* i32_atomic_rmw16_cmpxchg_u */:
+            case 65100 /* i64_atomic_rmw8_cmpxchg_u */:
+            case 65101 /* i64_atomic_rmw16_cmpxchg_u */:
+            case 65102 /* i64_atomic_rmw32_cmpxchg_u */:
             case 64768 /* v128_load */:
             case 64779 /* v128_store */:
                 this.writeMemoryImmediate(opInfo.memoryAddress);

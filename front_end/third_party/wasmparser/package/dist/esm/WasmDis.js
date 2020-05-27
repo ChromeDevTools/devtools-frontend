@@ -117,19 +117,19 @@ function memoryAddressToString(address, code) {
         case 65047 /* i32_atomic_store */:
         case 65053 /* i64_atomic_store32 */:
         case 65054 /* i32_atomic_rmw_add */:
-        case 65060 /* i64_atomic_rmw32_u_add */:
+        case 65060 /* i64_atomic_rmw32_add_u */:
         case 65061 /* i32_atomic_rmw_sub */:
-        case 65067 /* i64_atomic_rmw32_u_sub */:
+        case 65067 /* i64_atomic_rmw32_sub_u */:
         case 65068 /* i32_atomic_rmw_and */:
-        case 65074 /* i64_atomic_rmw32_u_and */:
+        case 65074 /* i64_atomic_rmw32_and_u */:
         case 65075 /* i32_atomic_rmw_or */:
-        case 65081 /* i64_atomic_rmw32_u_or */:
+        case 65081 /* i64_atomic_rmw32_or_u */:
         case 65082 /* i32_atomic_rmw_xor */:
-        case 65088 /* i64_atomic_rmw32_u_xor */:
+        case 65088 /* i64_atomic_rmw32_xor_u */:
         case 65089 /* i32_atomic_rmw_xchg */:
-        case 65095 /* i64_atomic_rmw32_u_xchg */:
+        case 65095 /* i64_atomic_rmw32_xchg_u */:
         case 65096 /* i32_atomic_rmw_cmpxchg */:
-        case 65102 /* i64_atomic_rmw32_u_cmpxchg */:
+        case 65102 /* i64_atomic_rmw32_cmpxchg_u */:
             defaultAlignFlags = 2;
             break;
         case 46 /* i32_load16_s */:
@@ -142,20 +142,20 @@ function memoryAddressToString(address, code) {
         case 65045 /* i64_atomic_load16_u */:
         case 65050 /* i32_atomic_store16 */:
         case 65052 /* i64_atomic_store16 */:
-        case 65057 /* i32_atomic_rmw16_u_add */:
-        case 65059 /* i64_atomic_rmw16_u_add */:
-        case 65064 /* i32_atomic_rmw16_u_sub */:
-        case 65066 /* i64_atomic_rmw16_u_sub */:
-        case 65071 /* i32_atomic_rmw16_u_and */:
-        case 65073 /* i64_atomic_rmw16_u_and */:
-        case 65078 /* i32_atomic_rmw16_u_or */:
-        case 65080 /* i64_atomic_rmw16_u_or */:
-        case 65085 /* i32_atomic_rmw16_u_xor */:
-        case 65087 /* i64_atomic_rmw16_u_xor */:
-        case 65092 /* i32_atomic_rmw16_u_xchg */:
-        case 65094 /* i64_atomic_rmw16_u_xchg */:
-        case 65099 /* i32_atomic_rmw16_u_cmpxchg */:
-        case 65101 /* i64_atomic_rmw16_u_cmpxchg */:
+        case 65057 /* i32_atomic_rmw16_add_u */:
+        case 65059 /* i64_atomic_rmw16_add_u */:
+        case 65064 /* i32_atomic_rmw16_sub_u */:
+        case 65066 /* i64_atomic_rmw16_sub_u */:
+        case 65071 /* i32_atomic_rmw16_and_u */:
+        case 65073 /* i64_atomic_rmw16_and_u */:
+        case 65078 /* i32_atomic_rmw16_or_u */:
+        case 65080 /* i64_atomic_rmw16_or_u */:
+        case 65085 /* i32_atomic_rmw16_xor_u */:
+        case 65087 /* i64_atomic_rmw16_xor_u */:
+        case 65092 /* i32_atomic_rmw16_xchg_u */:
+        case 65094 /* i64_atomic_rmw16_xchg_u */:
+        case 65099 /* i32_atomic_rmw16_cmpxchg_u */:
+        case 65101 /* i64_atomic_rmw16_cmpxchg_u */:
             defaultAlignFlags = 1;
             break;
         case 44 /* i32_load8_s */:
@@ -168,20 +168,20 @@ function memoryAddressToString(address, code) {
         case 65044 /* i64_atomic_load8_u */:
         case 65049 /* i32_atomic_store8 */:
         case 65051 /* i64_atomic_store8 */:
-        case 65056 /* i32_atomic_rmw8_u_add */:
-        case 65058 /* i64_atomic_rmw8_u_add */:
-        case 65063 /* i32_atomic_rmw8_u_sub */:
-        case 65065 /* i64_atomic_rmw8_u_sub */:
-        case 65070 /* i32_atomic_rmw8_u_and */:
-        case 65072 /* i64_atomic_rmw8_u_and */:
-        case 65077 /* i32_atomic_rmw8_u_or */:
-        case 65079 /* i64_atomic_rmw8_u_or */:
-        case 65084 /* i32_atomic_rmw8_u_xor */:
-        case 65086 /* i64_atomic_rmw8_u_xor */:
-        case 65091 /* i32_atomic_rmw8_u_xchg */:
-        case 65093 /* i64_atomic_rmw8_u_xchg */:
-        case 65098 /* i32_atomic_rmw8_u_cmpxchg */:
-        case 65100 /* i64_atomic_rmw8_u_cmpxchg */:
+        case 65056 /* i32_atomic_rmw8_add_u */:
+        case 65058 /* i64_atomic_rmw8_add_u */:
+        case 65063 /* i32_atomic_rmw8_sub_u */:
+        case 65065 /* i64_atomic_rmw8_sub_u */:
+        case 65070 /* i32_atomic_rmw8_and_u */:
+        case 65072 /* i64_atomic_rmw8_and_u */:
+        case 65077 /* i32_atomic_rmw8_or_u */:
+        case 65079 /* i64_atomic_rmw8_or_u */:
+        case 65084 /* i32_atomic_rmw8_xor_u */:
+        case 65086 /* i64_atomic_rmw8_xor_u */:
+        case 65091 /* i32_atomic_rmw8_xchg_u */:
+        case 65093 /* i64_atomic_rmw8_xchg_u */:
+        case 65098 /* i32_atomic_rmw8_cmpxchg_u */:
+        case 65100 /* i64_atomic_rmw8_cmpxchg_u */:
             defaultAlignFlags = 0;
             break;
     }
@@ -210,19 +210,6 @@ function formatHex(n, width) {
     return paddingCache[paddingIndex] + s;
 }
 const IndentIncrement = '  ';
-var operatorCodeNamesCache = null;
-function getOperatorName(code) {
-    if (!operatorCodeNamesCache) {
-        operatorCodeNamesCache = Object.create(null);
-        Object.keys(OperatorCodeNames).forEach((key) => {
-            let value = OperatorCodeNames[key];
-            if (typeof value !== 'string')
-                return;
-            operatorCodeNamesCache[key] = value.replace(/^([if](32|64))_/, "$1.").replace(/_([if](32|64))$/, "\/$1");
-        });
-    }
-    return operatorCodeNamesCache[code];
-}
 function isValidName(name) {
     return !INVALID_NAME_SYMBOLS_REGEX.test(name);
 }
@@ -465,7 +452,7 @@ export class WasmDisassembler {
     }
     printOperator(operator) {
         var code = operator.code;
-        this.appendBuffer(getOperatorName(code));
+        this.appendBuffer(OperatorCodeNames[code]);
         switch (code) {
             case 2 /* block */:
             case 3 /* loop */:
@@ -573,53 +560,53 @@ export class WasmDisassembler {
             case 65053 /* i64_atomic_store32 */:
             case 65054 /* i32_atomic_rmw_add */:
             case 65055 /* i64_atomic_rmw_add */:
-            case 65056 /* i32_atomic_rmw8_u_add */:
-            case 65057 /* i32_atomic_rmw16_u_add */:
-            case 65058 /* i64_atomic_rmw8_u_add */:
-            case 65059 /* i64_atomic_rmw16_u_add */:
-            case 65060 /* i64_atomic_rmw32_u_add */:
+            case 65056 /* i32_atomic_rmw8_add_u */:
+            case 65057 /* i32_atomic_rmw16_add_u */:
+            case 65058 /* i64_atomic_rmw8_add_u */:
+            case 65059 /* i64_atomic_rmw16_add_u */:
+            case 65060 /* i64_atomic_rmw32_add_u */:
             case 65061 /* i32_atomic_rmw_sub */:
             case 65062 /* i64_atomic_rmw_sub */:
-            case 65063 /* i32_atomic_rmw8_u_sub */:
-            case 65064 /* i32_atomic_rmw16_u_sub */:
-            case 65065 /* i64_atomic_rmw8_u_sub */:
-            case 65066 /* i64_atomic_rmw16_u_sub */:
-            case 65067 /* i64_atomic_rmw32_u_sub */:
+            case 65063 /* i32_atomic_rmw8_sub_u */:
+            case 65064 /* i32_atomic_rmw16_sub_u */:
+            case 65065 /* i64_atomic_rmw8_sub_u */:
+            case 65066 /* i64_atomic_rmw16_sub_u */:
+            case 65067 /* i64_atomic_rmw32_sub_u */:
             case 65068 /* i32_atomic_rmw_and */:
             case 65069 /* i64_atomic_rmw_and */:
-            case 65070 /* i32_atomic_rmw8_u_and */:
-            case 65071 /* i32_atomic_rmw16_u_and */:
-            case 65072 /* i64_atomic_rmw8_u_and */:
-            case 65073 /* i64_atomic_rmw16_u_and */:
-            case 65074 /* i64_atomic_rmw32_u_and */:
+            case 65070 /* i32_atomic_rmw8_and_u */:
+            case 65071 /* i32_atomic_rmw16_and_u */:
+            case 65072 /* i64_atomic_rmw8_and_u */:
+            case 65073 /* i64_atomic_rmw16_and_u */:
+            case 65074 /* i64_atomic_rmw32_and_u */:
             case 65075 /* i32_atomic_rmw_or */:
             case 65076 /* i64_atomic_rmw_or */:
-            case 65077 /* i32_atomic_rmw8_u_or */:
-            case 65078 /* i32_atomic_rmw16_u_or */:
-            case 65079 /* i64_atomic_rmw8_u_or */:
-            case 65080 /* i64_atomic_rmw16_u_or */:
-            case 65081 /* i64_atomic_rmw32_u_or */:
+            case 65077 /* i32_atomic_rmw8_or_u */:
+            case 65078 /* i32_atomic_rmw16_or_u */:
+            case 65079 /* i64_atomic_rmw8_or_u */:
+            case 65080 /* i64_atomic_rmw16_or_u */:
+            case 65081 /* i64_atomic_rmw32_or_u */:
             case 65082 /* i32_atomic_rmw_xor */:
             case 65083 /* i64_atomic_rmw_xor */:
-            case 65084 /* i32_atomic_rmw8_u_xor */:
-            case 65085 /* i32_atomic_rmw16_u_xor */:
-            case 65086 /* i64_atomic_rmw8_u_xor */:
-            case 65087 /* i64_atomic_rmw16_u_xor */:
-            case 65088 /* i64_atomic_rmw32_u_xor */:
+            case 65084 /* i32_atomic_rmw8_xor_u */:
+            case 65085 /* i32_atomic_rmw16_xor_u */:
+            case 65086 /* i64_atomic_rmw8_xor_u */:
+            case 65087 /* i64_atomic_rmw16_xor_u */:
+            case 65088 /* i64_atomic_rmw32_xor_u */:
             case 65089 /* i32_atomic_rmw_xchg */:
             case 65090 /* i64_atomic_rmw_xchg */:
-            case 65091 /* i32_atomic_rmw8_u_xchg */:
-            case 65092 /* i32_atomic_rmw16_u_xchg */:
-            case 65093 /* i64_atomic_rmw8_u_xchg */:
-            case 65094 /* i64_atomic_rmw16_u_xchg */:
-            case 65095 /* i64_atomic_rmw32_u_xchg */:
+            case 65091 /* i32_atomic_rmw8_xchg_u */:
+            case 65092 /* i32_atomic_rmw16_xchg_u */:
+            case 65093 /* i64_atomic_rmw8_xchg_u */:
+            case 65094 /* i64_atomic_rmw16_xchg_u */:
+            case 65095 /* i64_atomic_rmw32_xchg_u */:
             case 65096 /* i32_atomic_rmw_cmpxchg */:
             case 65097 /* i64_atomic_rmw_cmpxchg */:
-            case 65098 /* i32_atomic_rmw8_u_cmpxchg */:
-            case 65099 /* i32_atomic_rmw16_u_cmpxchg */:
-            case 65100 /* i64_atomic_rmw8_u_cmpxchg */:
-            case 65101 /* i64_atomic_rmw16_u_cmpxchg */:
-            case 65102 /* i64_atomic_rmw32_u_cmpxchg */:
+            case 65098 /* i32_atomic_rmw8_cmpxchg_u */:
+            case 65099 /* i32_atomic_rmw16_cmpxchg_u */:
+            case 65100 /* i64_atomic_rmw8_cmpxchg_u */:
+            case 65101 /* i64_atomic_rmw16_cmpxchg_u */:
+            case 65102 /* i64_atomic_rmw32_cmpxchg_u */:
             case 64768 /* v128_load */:
             case 64779 /* v128_store */:
                 var memoryAddress = memoryAddressToString(operator.memoryAddress, operator.code);
@@ -680,6 +667,9 @@ export class WasmDisassembler {
                 }
             case 64526 /* table_copy */:
                 {
+                    // Table index might be omitted and defaults to 0.
+                    if (operator.tableIndex === 0 && operator.destinationIndex === 0)
+                        break;
                     let tableName = this._nameResolver.getTableName(operator.tableIndex, true);
                     let destinationName = this._nameResolver.getTableName(operator.destinationIndex, true);
                     this.appendBuffer(` ${destinationName} ${tableName}`);
@@ -687,6 +677,11 @@ export class WasmDisassembler {
                 }
             case 64524 /* table_init */:
                 {
+                    // Table index might be omitted and defaults to 0.
+                    if (operator.tableIndex === 0) {
+                        this.appendBuffer(` ${operator.segmentIndex}`);
+                        break;
+                    }
                     let tableName = this._nameResolver.getTableName(operator.tableIndex, true);
                     this.appendBuffer(` ${operator.segmentIndex} ${tableName}`);
                     break;
@@ -824,7 +819,7 @@ export class WasmDisassembler {
                     var memoryName = this._nameResolver.getMemoryName(this._memoryCount++, false);
                     this.appendBuffer(`  (memory ${memoryName} `);
                     if (memoryInfo.shared) {
-                        this.appendBuffer(`(shared ${limitsToString(memoryInfo.limits)})`);
+                        this.appendBuffer(`${limitsToString(memoryInfo.limits)} shared`);
                     }
                     else {
                         this.appendBuffer(limitsToString(memoryInfo.limits));
@@ -888,7 +883,7 @@ export class WasmDisassembler {
                             var memoryName = this._nameResolver.getMemoryName(this._memoryCount++, false);
                             this.appendBuffer(` (memory ${memoryName} `);
                             if (memoryImportInfo.shared) {
-                                this.appendBuffer(`(shared ${limitsToString(memoryImportInfo.limits)})`);
+                                this.appendBuffer(`${limitsToString(memoryImportInfo.limits)} shared`);
                             }
                             else {
                                 this.appendBuffer(limitsToString(memoryImportInfo.limits));

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-var wasmparser = require('./dist/WasmParser.js');
-var wasmdis = require('./dist/WasmDis.js');
+var wasmparser = require('./dist/cjs/WasmParser.js');
+var wasmdis = require('./dist/cjs/WasmDis.js');
 var fs = require('fs');
 
 var wasmPath = process.argv[2];

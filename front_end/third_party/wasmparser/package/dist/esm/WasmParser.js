@@ -184,25 +184,25 @@ export var OperatorCode;
     OperatorCode[OperatorCode["f64_max"] = 165] = "f64_max";
     OperatorCode[OperatorCode["f64_copysign"] = 166] = "f64_copysign";
     OperatorCode[OperatorCode["i32_wrap_i64"] = 167] = "i32_wrap_i64";
-    OperatorCode[OperatorCode["i32_trunc_s_f32"] = 168] = "i32_trunc_s_f32";
-    OperatorCode[OperatorCode["i32_trunc_u_f32"] = 169] = "i32_trunc_u_f32";
-    OperatorCode[OperatorCode["i32_trunc_s_f64"] = 170] = "i32_trunc_s_f64";
-    OperatorCode[OperatorCode["i32_trunc_u_f64"] = 171] = "i32_trunc_u_f64";
-    OperatorCode[OperatorCode["i64_extend_s_i32"] = 172] = "i64_extend_s_i32";
-    OperatorCode[OperatorCode["i64_extend_u_i32"] = 173] = "i64_extend_u_i32";
-    OperatorCode[OperatorCode["i64_trunc_s_f32"] = 174] = "i64_trunc_s_f32";
-    OperatorCode[OperatorCode["i64_trunc_u_f32"] = 175] = "i64_trunc_u_f32";
-    OperatorCode[OperatorCode["i64_trunc_s_f64"] = 176] = "i64_trunc_s_f64";
-    OperatorCode[OperatorCode["i64_trunc_u_f64"] = 177] = "i64_trunc_u_f64";
-    OperatorCode[OperatorCode["f32_convert_s_i32"] = 178] = "f32_convert_s_i32";
-    OperatorCode[OperatorCode["f32_convert_u_i32"] = 179] = "f32_convert_u_i32";
-    OperatorCode[OperatorCode["f32_convert_s_i64"] = 180] = "f32_convert_s_i64";
-    OperatorCode[OperatorCode["f32_convert_u_i64"] = 181] = "f32_convert_u_i64";
+    OperatorCode[OperatorCode["i32_trunc_f32_s"] = 168] = "i32_trunc_f32_s";
+    OperatorCode[OperatorCode["i32_trunc_f32_u"] = 169] = "i32_trunc_f32_u";
+    OperatorCode[OperatorCode["i32_trunc_f64_s"] = 170] = "i32_trunc_f64_s";
+    OperatorCode[OperatorCode["i32_trunc_f64_u"] = 171] = "i32_trunc_f64_u";
+    OperatorCode[OperatorCode["i64_extend_i32_s"] = 172] = "i64_extend_i32_s";
+    OperatorCode[OperatorCode["i64_extend_i32_u"] = 173] = "i64_extend_i32_u";
+    OperatorCode[OperatorCode["i64_trunc_f32_s"] = 174] = "i64_trunc_f32_s";
+    OperatorCode[OperatorCode["i64_trunc_f32_u"] = 175] = "i64_trunc_f32_u";
+    OperatorCode[OperatorCode["i64_trunc_f64_s"] = 176] = "i64_trunc_f64_s";
+    OperatorCode[OperatorCode["i64_trunc_f64_u"] = 177] = "i64_trunc_f64_u";
+    OperatorCode[OperatorCode["f32_convert_i32_s"] = 178] = "f32_convert_i32_s";
+    OperatorCode[OperatorCode["f32_convert_i32_u"] = 179] = "f32_convert_i32_u";
+    OperatorCode[OperatorCode["f32_convert_i64_s"] = 180] = "f32_convert_i64_s";
+    OperatorCode[OperatorCode["f32_convert_i64_u"] = 181] = "f32_convert_i64_u";
     OperatorCode[OperatorCode["f32_demote_f64"] = 182] = "f32_demote_f64";
-    OperatorCode[OperatorCode["f64_convert_s_i32"] = 183] = "f64_convert_s_i32";
-    OperatorCode[OperatorCode["f64_convert_u_i32"] = 184] = "f64_convert_u_i32";
-    OperatorCode[OperatorCode["f64_convert_s_i64"] = 185] = "f64_convert_s_i64";
-    OperatorCode[OperatorCode["f64_convert_u_i64"] = 186] = "f64_convert_u_i64";
+    OperatorCode[OperatorCode["f64_convert_i32_s"] = 183] = "f64_convert_i32_s";
+    OperatorCode[OperatorCode["f64_convert_i32_u"] = 184] = "f64_convert_i32_u";
+    OperatorCode[OperatorCode["f64_convert_i64_s"] = 185] = "f64_convert_i64_s";
+    OperatorCode[OperatorCode["f64_convert_i64_u"] = 186] = "f64_convert_i64_u";
     OperatorCode[OperatorCode["f64_promote_f32"] = 187] = "f64_promote_f32";
     OperatorCode[OperatorCode["i32_reinterpret_f32"] = 188] = "i32_reinterpret_f32";
     OperatorCode[OperatorCode["i64_reinterpret_f64"] = 189] = "i64_reinterpret_f64";
@@ -216,14 +216,14 @@ export var OperatorCode;
     OperatorCode[OperatorCode["prefix_0xfc"] = 252] = "prefix_0xfc";
     OperatorCode[OperatorCode["prefix_0xfd"] = 253] = "prefix_0xfd";
     OperatorCode[OperatorCode["prefix_0xfe"] = 254] = "prefix_0xfe";
-    OperatorCode[OperatorCode["i32_trunc_s_sat_f32"] = 64512] = "i32_trunc_s_sat_f32";
-    OperatorCode[OperatorCode["i32_trunc_u_sat_f32"] = 64513] = "i32_trunc_u_sat_f32";
-    OperatorCode[OperatorCode["i32_trunc_s_sat_f64"] = 64514] = "i32_trunc_s_sat_f64";
-    OperatorCode[OperatorCode["i32_trunc_u_sat_f64"] = 64515] = "i32_trunc_u_sat_f64";
-    OperatorCode[OperatorCode["i64_trunc_s_sat_f32"] = 64516] = "i64_trunc_s_sat_f32";
-    OperatorCode[OperatorCode["i64_trunc_u_sat_f32"] = 64517] = "i64_trunc_u_sat_f32";
-    OperatorCode[OperatorCode["i64_trunc_s_sat_f64"] = 64518] = "i64_trunc_s_sat_f64";
-    OperatorCode[OperatorCode["i64_trunc_u_sat_f64"] = 64519] = "i64_trunc_u_sat_f64";
+    OperatorCode[OperatorCode["i32_trunc_sat_f32_s"] = 64512] = "i32_trunc_sat_f32_s";
+    OperatorCode[OperatorCode["i32_trunc_sat_f32_u"] = 64513] = "i32_trunc_sat_f32_u";
+    OperatorCode[OperatorCode["i32_trunc_sat_f64_s"] = 64514] = "i32_trunc_sat_f64_s";
+    OperatorCode[OperatorCode["i32_trunc_sat_f64_u"] = 64515] = "i32_trunc_sat_f64_u";
+    OperatorCode[OperatorCode["i64_trunc_sat_f32_s"] = 64516] = "i64_trunc_sat_f32_s";
+    OperatorCode[OperatorCode["i64_trunc_sat_f32_u"] = 64517] = "i64_trunc_sat_f32_u";
+    OperatorCode[OperatorCode["i64_trunc_sat_f64_s"] = 64518] = "i64_trunc_sat_f64_s";
+    OperatorCode[OperatorCode["i64_trunc_sat_f64_u"] = 64519] = "i64_trunc_sat_f64_u";
     OperatorCode[OperatorCode["memory_init"] = 64520] = "memory_init";
     OperatorCode[OperatorCode["data_drop"] = 64521] = "data_drop";
     OperatorCode[OperatorCode["memory_copy"] = 64522] = "memory_copy";
@@ -258,53 +258,53 @@ export var OperatorCode;
     OperatorCode[OperatorCode["i64_atomic_store32"] = 65053] = "i64_atomic_store32";
     OperatorCode[OperatorCode["i32_atomic_rmw_add"] = 65054] = "i32_atomic_rmw_add";
     OperatorCode[OperatorCode["i64_atomic_rmw_add"] = 65055] = "i64_atomic_rmw_add";
-    OperatorCode[OperatorCode["i32_atomic_rmw8_u_add"] = 65056] = "i32_atomic_rmw8_u_add";
-    OperatorCode[OperatorCode["i32_atomic_rmw16_u_add"] = 65057] = "i32_atomic_rmw16_u_add";
-    OperatorCode[OperatorCode["i64_atomic_rmw8_u_add"] = 65058] = "i64_atomic_rmw8_u_add";
-    OperatorCode[OperatorCode["i64_atomic_rmw16_u_add"] = 65059] = "i64_atomic_rmw16_u_add";
-    OperatorCode[OperatorCode["i64_atomic_rmw32_u_add"] = 65060] = "i64_atomic_rmw32_u_add";
+    OperatorCode[OperatorCode["i32_atomic_rmw8_add_u"] = 65056] = "i32_atomic_rmw8_add_u";
+    OperatorCode[OperatorCode["i32_atomic_rmw16_add_u"] = 65057] = "i32_atomic_rmw16_add_u";
+    OperatorCode[OperatorCode["i64_atomic_rmw8_add_u"] = 65058] = "i64_atomic_rmw8_add_u";
+    OperatorCode[OperatorCode["i64_atomic_rmw16_add_u"] = 65059] = "i64_atomic_rmw16_add_u";
+    OperatorCode[OperatorCode["i64_atomic_rmw32_add_u"] = 65060] = "i64_atomic_rmw32_add_u";
     OperatorCode[OperatorCode["i32_atomic_rmw_sub"] = 65061] = "i32_atomic_rmw_sub";
     OperatorCode[OperatorCode["i64_atomic_rmw_sub"] = 65062] = "i64_atomic_rmw_sub";
-    OperatorCode[OperatorCode["i32_atomic_rmw8_u_sub"] = 65063] = "i32_atomic_rmw8_u_sub";
-    OperatorCode[OperatorCode["i32_atomic_rmw16_u_sub"] = 65064] = "i32_atomic_rmw16_u_sub";
-    OperatorCode[OperatorCode["i64_atomic_rmw8_u_sub"] = 65065] = "i64_atomic_rmw8_u_sub";
-    OperatorCode[OperatorCode["i64_atomic_rmw16_u_sub"] = 65066] = "i64_atomic_rmw16_u_sub";
-    OperatorCode[OperatorCode["i64_atomic_rmw32_u_sub"] = 65067] = "i64_atomic_rmw32_u_sub";
+    OperatorCode[OperatorCode["i32_atomic_rmw8_sub_u"] = 65063] = "i32_atomic_rmw8_sub_u";
+    OperatorCode[OperatorCode["i32_atomic_rmw16_sub_u"] = 65064] = "i32_atomic_rmw16_sub_u";
+    OperatorCode[OperatorCode["i64_atomic_rmw8_sub_u"] = 65065] = "i64_atomic_rmw8_sub_u";
+    OperatorCode[OperatorCode["i64_atomic_rmw16_sub_u"] = 65066] = "i64_atomic_rmw16_sub_u";
+    OperatorCode[OperatorCode["i64_atomic_rmw32_sub_u"] = 65067] = "i64_atomic_rmw32_sub_u";
     OperatorCode[OperatorCode["i32_atomic_rmw_and"] = 65068] = "i32_atomic_rmw_and";
     OperatorCode[OperatorCode["i64_atomic_rmw_and"] = 65069] = "i64_atomic_rmw_and";
-    OperatorCode[OperatorCode["i32_atomic_rmw8_u_and"] = 65070] = "i32_atomic_rmw8_u_and";
-    OperatorCode[OperatorCode["i32_atomic_rmw16_u_and"] = 65071] = "i32_atomic_rmw16_u_and";
-    OperatorCode[OperatorCode["i64_atomic_rmw8_u_and"] = 65072] = "i64_atomic_rmw8_u_and";
-    OperatorCode[OperatorCode["i64_atomic_rmw16_u_and"] = 65073] = "i64_atomic_rmw16_u_and";
-    OperatorCode[OperatorCode["i64_atomic_rmw32_u_and"] = 65074] = "i64_atomic_rmw32_u_and";
+    OperatorCode[OperatorCode["i32_atomic_rmw8_and_u"] = 65070] = "i32_atomic_rmw8_and_u";
+    OperatorCode[OperatorCode["i32_atomic_rmw16_and_u"] = 65071] = "i32_atomic_rmw16_and_u";
+    OperatorCode[OperatorCode["i64_atomic_rmw8_and_u"] = 65072] = "i64_atomic_rmw8_and_u";
+    OperatorCode[OperatorCode["i64_atomic_rmw16_and_u"] = 65073] = "i64_atomic_rmw16_and_u";
+    OperatorCode[OperatorCode["i64_atomic_rmw32_and_u"] = 65074] = "i64_atomic_rmw32_and_u";
     OperatorCode[OperatorCode["i32_atomic_rmw_or"] = 65075] = "i32_atomic_rmw_or";
     OperatorCode[OperatorCode["i64_atomic_rmw_or"] = 65076] = "i64_atomic_rmw_or";
-    OperatorCode[OperatorCode["i32_atomic_rmw8_u_or"] = 65077] = "i32_atomic_rmw8_u_or";
-    OperatorCode[OperatorCode["i32_atomic_rmw16_u_or"] = 65078] = "i32_atomic_rmw16_u_or";
-    OperatorCode[OperatorCode["i64_atomic_rmw8_u_or"] = 65079] = "i64_atomic_rmw8_u_or";
-    OperatorCode[OperatorCode["i64_atomic_rmw16_u_or"] = 65080] = "i64_atomic_rmw16_u_or";
-    OperatorCode[OperatorCode["i64_atomic_rmw32_u_or"] = 65081] = "i64_atomic_rmw32_u_or";
+    OperatorCode[OperatorCode["i32_atomic_rmw8_or_u"] = 65077] = "i32_atomic_rmw8_or_u";
+    OperatorCode[OperatorCode["i32_atomic_rmw16_or_u"] = 65078] = "i32_atomic_rmw16_or_u";
+    OperatorCode[OperatorCode["i64_atomic_rmw8_or_u"] = 65079] = "i64_atomic_rmw8_or_u";
+    OperatorCode[OperatorCode["i64_atomic_rmw16_or_u"] = 65080] = "i64_atomic_rmw16_or_u";
+    OperatorCode[OperatorCode["i64_atomic_rmw32_or_u"] = 65081] = "i64_atomic_rmw32_or_u";
     OperatorCode[OperatorCode["i32_atomic_rmw_xor"] = 65082] = "i32_atomic_rmw_xor";
     OperatorCode[OperatorCode["i64_atomic_rmw_xor"] = 65083] = "i64_atomic_rmw_xor";
-    OperatorCode[OperatorCode["i32_atomic_rmw8_u_xor"] = 65084] = "i32_atomic_rmw8_u_xor";
-    OperatorCode[OperatorCode["i32_atomic_rmw16_u_xor"] = 65085] = "i32_atomic_rmw16_u_xor";
-    OperatorCode[OperatorCode["i64_atomic_rmw8_u_xor"] = 65086] = "i64_atomic_rmw8_u_xor";
-    OperatorCode[OperatorCode["i64_atomic_rmw16_u_xor"] = 65087] = "i64_atomic_rmw16_u_xor";
-    OperatorCode[OperatorCode["i64_atomic_rmw32_u_xor"] = 65088] = "i64_atomic_rmw32_u_xor";
+    OperatorCode[OperatorCode["i32_atomic_rmw8_xor_u"] = 65084] = "i32_atomic_rmw8_xor_u";
+    OperatorCode[OperatorCode["i32_atomic_rmw16_xor_u"] = 65085] = "i32_atomic_rmw16_xor_u";
+    OperatorCode[OperatorCode["i64_atomic_rmw8_xor_u"] = 65086] = "i64_atomic_rmw8_xor_u";
+    OperatorCode[OperatorCode["i64_atomic_rmw16_xor_u"] = 65087] = "i64_atomic_rmw16_xor_u";
+    OperatorCode[OperatorCode["i64_atomic_rmw32_xor_u"] = 65088] = "i64_atomic_rmw32_xor_u";
     OperatorCode[OperatorCode["i32_atomic_rmw_xchg"] = 65089] = "i32_atomic_rmw_xchg";
     OperatorCode[OperatorCode["i64_atomic_rmw_xchg"] = 65090] = "i64_atomic_rmw_xchg";
-    OperatorCode[OperatorCode["i32_atomic_rmw8_u_xchg"] = 65091] = "i32_atomic_rmw8_u_xchg";
-    OperatorCode[OperatorCode["i32_atomic_rmw16_u_xchg"] = 65092] = "i32_atomic_rmw16_u_xchg";
-    OperatorCode[OperatorCode["i64_atomic_rmw8_u_xchg"] = 65093] = "i64_atomic_rmw8_u_xchg";
-    OperatorCode[OperatorCode["i64_atomic_rmw16_u_xchg"] = 65094] = "i64_atomic_rmw16_u_xchg";
-    OperatorCode[OperatorCode["i64_atomic_rmw32_u_xchg"] = 65095] = "i64_atomic_rmw32_u_xchg";
+    OperatorCode[OperatorCode["i32_atomic_rmw8_xchg_u"] = 65091] = "i32_atomic_rmw8_xchg_u";
+    OperatorCode[OperatorCode["i32_atomic_rmw16_xchg_u"] = 65092] = "i32_atomic_rmw16_xchg_u";
+    OperatorCode[OperatorCode["i64_atomic_rmw8_xchg_u"] = 65093] = "i64_atomic_rmw8_xchg_u";
+    OperatorCode[OperatorCode["i64_atomic_rmw16_xchg_u"] = 65094] = "i64_atomic_rmw16_xchg_u";
+    OperatorCode[OperatorCode["i64_atomic_rmw32_xchg_u"] = 65095] = "i64_atomic_rmw32_xchg_u";
     OperatorCode[OperatorCode["i32_atomic_rmw_cmpxchg"] = 65096] = "i32_atomic_rmw_cmpxchg";
     OperatorCode[OperatorCode["i64_atomic_rmw_cmpxchg"] = 65097] = "i64_atomic_rmw_cmpxchg";
-    OperatorCode[OperatorCode["i32_atomic_rmw8_u_cmpxchg"] = 65098] = "i32_atomic_rmw8_u_cmpxchg";
-    OperatorCode[OperatorCode["i32_atomic_rmw16_u_cmpxchg"] = 65099] = "i32_atomic_rmw16_u_cmpxchg";
-    OperatorCode[OperatorCode["i64_atomic_rmw8_u_cmpxchg"] = 65100] = "i64_atomic_rmw8_u_cmpxchg";
-    OperatorCode[OperatorCode["i64_atomic_rmw16_u_cmpxchg"] = 65101] = "i64_atomic_rmw16_u_cmpxchg";
-    OperatorCode[OperatorCode["i64_atomic_rmw32_u_cmpxchg"] = 65102] = "i64_atomic_rmw32_u_cmpxchg";
+    OperatorCode[OperatorCode["i32_atomic_rmw8_cmpxchg_u"] = 65098] = "i32_atomic_rmw8_cmpxchg_u";
+    OperatorCode[OperatorCode["i32_atomic_rmw16_cmpxchg_u"] = 65099] = "i32_atomic_rmw16_cmpxchg_u";
+    OperatorCode[OperatorCode["i64_atomic_rmw8_cmpxchg_u"] = 65100] = "i64_atomic_rmw8_cmpxchg_u";
+    OperatorCode[OperatorCode["i64_atomic_rmw16_cmpxchg_u"] = 65101] = "i64_atomic_rmw16_cmpxchg_u";
+    OperatorCode[OperatorCode["i64_atomic_rmw32_cmpxchg_u"] = 65102] = "i64_atomic_rmw32_cmpxchg_u";
     OperatorCode[OperatorCode["v128_load"] = 64768] = "v128_load";
     OperatorCode[OperatorCode["i16x8_load8x8_s"] = 64769] = "i16x8_load8x8_s";
     OperatorCode[OperatorCode["i16x8_load8x8_u"] = 64770] = "i16x8_load8x8_u";
@@ -483,15 +483,15 @@ export var OperatorCode;
 })(OperatorCode || (OperatorCode = {}));
 ;
 export const OperatorCodeNames = [
-    "unreachable", "nop", "block", "loop", "if", "else", undefined, undefined, undefined, undefined, undefined, "end", "br", "br_if", "br_table", "return", "call", "call_indirect", "return_call", "return_call_indirect", undefined, undefined, undefined, undefined, undefined, undefined, "drop", "select", undefined, undefined, undefined, undefined, "local.get", "local.set", "local.tee", "global.get", "global.set", "table.get", "table.set", undefined, "i32.load", "i64.load", "f32.load", "f64.load", "i32.load8_s", "i32.load8_u", "i32.load16_s", "i32.load16_u", "i64.load8_s", "i64.load8_u", "i64.load16_s", "i64.load16_u", "i64.load32_s", "i64.load32_u", "i32.store", "i64.store", "f32.store", "f64.store", "i32.store8", "i32.store16", "i64.store8", "i64.store16", "i64.store32", "current_memory", "grow_memory", "i32.const", "i64.const", "f32.const", "f64.const", "i32.eqz", "i32.eq", "i32.ne", "i32.lt_s", "i32.lt_u", "i32.gt_s", "i32.gt_u", "i32.le_s", "i32.le_u", "i32.ge_s", "i32.ge_u", "i64.eqz", "i64.eq", "i64.ne", "i64.lt_s", "i64.lt_u", "i64.gt_s", "i64.gt_u", "i64.le_s", "i64.le_u", "i64.ge_s", "i64.ge_u", "f32.eq", "f32.ne", "f32.lt", "f32.gt", "f32.le", "f32.ge", "f64.eq", "f64.ne", "f64.lt", "f64.gt", "f64.le", "f64.ge", "i32.clz", "i32.ctz", "i32.popcnt", "i32.add", "i32.sub", "i32.mul", "i32.div_s", "i32.div_u", "i32.rem_s", "i32.rem_u", "i32.and", "i32.or", "i32.xor", "i32.shl", "i32.shr_s", "i32.shr_u", "i32.rotl", "i32.rotr", "i64.clz", "i64.ctz", "i64.popcnt", "i64.add", "i64.sub", "i64.mul", "i64.div_s", "i64.div_u", "i64.rem_s", "i64.rem_u", "i64.and", "i64.or", "i64.xor", "i64.shl", "i64.shr_s", "i64.shr_u", "i64.rotl", "i64.rotr", "f32.abs", "f32.neg", "f32.ceil", "f32.floor", "f32.trunc", "f32.nearest", "f32.sqrt", "f32.add", "f32.sub", "f32.mul", "f32.div", "f32.min", "f32.max", "f32.copysign", "f64.abs", "f64.neg", "f64.ceil", "f64.floor", "f64.trunc", "f64.nearest", "f64.sqrt", "f64.add", "f64.sub", "f64.mul", "f64.div", "f64.min", "f64.max", "f64.copysign", "i32.wrap/i64", "i32.trunc_s/f32", "i32.trunc_u/f32", "i32.trunc_s/f64", "i32.trunc_u/f64", "i64.extend_s/i32", "i64.extend_u/i32", "i64.trunc_s/f32", "i64.trunc_u/f32", "i64.trunc_s/f64", "i64.trunc_u/f64", "f32.convert_s/i32", "f32.convert_u/i32", "f32.convert_s/i64", "f32.convert_u/i64", "f32.demote/f64", "f64.convert_s/i32", "f64.convert_u/i32", "f64.convert_s/i64", "f64.convert_u/i64", "f64.promote/f32", "i32.reinterpret/f32", "i64.reinterpret/f64", "f32.reinterpret/i32", "f64.reinterpret/i64", "i32.extend8_s", "i32.extend16_s", "i64.extend8_s", "i64.extend16_s", "i64.extend32_s", undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, "ref.null", "ref.is_null", "ref.func", undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined
+    "unreachable", "nop", "block", "loop", "if", "else", undefined, undefined, undefined, undefined, undefined, "end", "br", "br_if", "br_table", "return", "call", "call_indirect", "return_call", "return_call_indirect", undefined, undefined, undefined, undefined, undefined, undefined, "drop", "select", undefined, undefined, undefined, undefined, "local.get", "local.set", "local.tee", "global.get", "global.set", "table.get", "table.set", undefined, "i32.load", "i64.load", "f32.load", "f64.load", "i32.load8_s", "i32.load8_u", "i32.load16_s", "i32.load16_u", "i64.load8_s", "i64.load8_u", "i64.load16_s", "i64.load16_u", "i64.load32_s", "i64.load32_u", "i32.store", "i64.store", "f32.store", "f64.store", "i32.store8", "i32.store16", "i64.store8", "i64.store16", "i64.store32", "current_memory", "grow_memory", "i32.const", "i64.const", "f32.const", "f64.const", "i32.eqz", "i32.eq", "i32.ne", "i32.lt_s", "i32.lt_u", "i32.gt_s", "i32.gt_u", "i32.le_s", "i32.le_u", "i32.ge_s", "i32.ge_u", "i64.eqz", "i64.eq", "i64.ne", "i64.lt_s", "i64.lt_u", "i64.gt_s", "i64.gt_u", "i64.le_s", "i64.le_u", "i64.ge_s", "i64.ge_u", "f32.eq", "f32.ne", "f32.lt", "f32.gt", "f32.le", "f32.ge", "f64.eq", "f64.ne", "f64.lt", "f64.gt", "f64.le", "f64.ge", "i32.clz", "i32.ctz", "i32.popcnt", "i32.add", "i32.sub", "i32.mul", "i32.div_s", "i32.div_u", "i32.rem_s", "i32.rem_u", "i32.and", "i32.or", "i32.xor", "i32.shl", "i32.shr_s", "i32.shr_u", "i32.rotl", "i32.rotr", "i64.clz", "i64.ctz", "i64.popcnt", "i64.add", "i64.sub", "i64.mul", "i64.div_s", "i64.div_u", "i64.rem_s", "i64.rem_u", "i64.and", "i64.or", "i64.xor", "i64.shl", "i64.shr_s", "i64.shr_u", "i64.rotl", "i64.rotr", "f32.abs", "f32.neg", "f32.ceil", "f32.floor", "f32.trunc", "f32.nearest", "f32.sqrt", "f32.add", "f32.sub", "f32.mul", "f32.div", "f32.min", "f32.max", "f32.copysign", "f64.abs", "f64.neg", "f64.ceil", "f64.floor", "f64.trunc", "f64.nearest", "f64.sqrt", "f64.add", "f64.sub", "f64.mul", "f64.div", "f64.min", "f64.max", "f64.copysign", "i32.wrap_i64", "i32.trunc_f32_s", "i32.trunc_f32_u", "i32.trunc_f64_s", "i32.trunc_f64_u", "i64.extend_i32_s", "i64.extend_i32_u", "i64.trunc_f32_s", "i64.trunc_f32_u", "i64.trunc_f64_s", "i64.trunc_f64_u", "f32.convert_i32_s", "f32.convert_i32_u", "f32.convert_i64_s", "f32.convert_i64_u", "f32.demote_f64", "f64.convert_i32_s", "f64.convert_i32_u", "f64.convert_i64_s", "f64.convert_i64_u", "f64.promote_f32", "i32.reinterpret_f32", "i64.reinterpret_f64", "f32.reinterpret_i32", "f64.reinterpret_i64", "i32.extend8_s", "i32.extend16_s", "i64.extend8_s", "i64.extend16_s", "i64.extend32_s", undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, "ref.null", "ref.is_null", "ref.func", undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined
 ];
-["i32.trunc_s:sat/f32", "i32.trunc_u:sat/f32", "i32.trunc_s:sat/f64", "i32.trunc_u:sat/f64", "i64.trunc_s:sat/f32", "i64.trunc_u:sat/f32", "i64.trunc_s:sat/f64", "i64.trunc_u:sat/f64", "memory.init", "data.drop", "memory.copy", "memory.fill", "table.init", "elem.drop", "table.copy", "table.grow", "table.size", "table.fill"].forEach((s, i) => {
+["i32.trunc_sat_f32_s", "i32.trunc_sat_f32_u", "i32.trunc_sat_f64_s", "i32.trunc_sat_f64_u", "i64.trunc_sat_f32_s", "i64.trunc_sat_f32_u", "i64.trunc_sat_f64_s", "i64.trunc_sat_f64_u", "memory.init", "data.drop", "memory.copy", "memory.fill", "table.init", "elem.drop", "table.copy", "table.grow", "table.size", "table.fill"].forEach((s, i) => {
     OperatorCodeNames[0xfc00 | i] = s;
 });
 ["v128.load", "i16x8.load8x8_s", "i16x8.load8x8_u", "i32x4.load16x4_s", "i32x4.load16x4_u", "i64x2.load32x2_s", "i64x2.load32x2_u", "v8x16.load_splat", "v16x8.load_splat", "v32x4.load_splat", "v64x2.load_splat", "v128.store", "v128.const", "v8x16.shuffle", "v8x16.swizzle", "i8x16.splat", "i16x8.splat", "i32x4.splat", "i64x2.splat", "f32x4.splat", "f64x2.splat", "i8x16.extract_lane_s", "i8x16.extract_lane_u", "i8x16.replace_lane", "i16x8.extract_lane_s", "i16x8.extract_lane_u", "i16x8.replace_lane", "i32x4.extract_lane", "i32x4.replace_lane", "i64x2.extract_lane", "i64x2.replace_lane", "f32x4.extract_lane", "f32x4.replace_lane", "f64x2.extract_lane", "f64x2.replace_lane", "i8x16.eq", "i8x16.ne", "i8x16.lt_s", "i8x16.lt_u", "i8x16.gt_s", "i8x16.gt_u", "i8x16.le_s", "i8x16.le_u", "i8x16.ge_s", "i8x16.ge_u", "i16x8.eq", "i16x8.ne", "i16x8.lt_s", "i16x8.lt_u", "i16x8.gt_s", "i16x8.gt_u", "i16x8.le_s", "i16x8.le_u", "i16x8.ge_s", "i16x8.ge_u", "i32x4.eq", "i32x4.ne", "i32x4.lt_s", "i32x4.lt_u", "i32x4.gt_s", "i32x4.gt_u", "i32x4.le_s", "i32x4.le_u", "i32x4.ge_s", "i32x4.ge_u", "f32x4.eq", "f32x4.ne", "f32x4.lt", "f32x4.gt", "f32x4.le", "f32x4.ge", "f64x2.eq", "f64x2.ne", "f64x2.lt", "f64x2.gt", "f64x2.le", "f64x2.ge", "v128.not", "v128.and", "v128.andnot", "v128.or", "v128.xor", "v128.bitselect", undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, "i8x16.abs", "i8x16.neg", "i8x16.any_true", "i8x16.all_true", undefined, "i8x16.narrow_i16x8_s", "i8x16.narrow_i16x8_u", undefined, undefined, undefined, undefined, "i8x16.shl", "i8x16.shr_s", "i8x16.shr_u", "i8x16.add", "i8x16.add_saturate_s", "i8x16.add_saturate_u", "i8x16.sub", "i8x16.sub_saturate_s", "i8x16.sub_saturate_u", undefined, undefined, "i8x16.min_s", "i8x16.min_u", "i8x16.max_s", "i8x16.max_u", undefined, "i8x16.avgr_u", undefined, undefined, undefined, undefined, "i16x8.abs", "i16x8.neg", "i16x8.any_true", "i16x8.all_true", undefined, "i16x8.narrow_i32x4_s", "i16x8.narrow_i32x4_u", "i16x8.widen_low_i8x16_s", "i16x8.widen_high_i8x16_s", "i16x8.widen_low_i8x16_u", "i16x8.widen_high_i8x16_u", "i16x8.shl", "i16x8.shr_s", "i16x8.shr_u", "i16x8.add", "i16x8.add_saturate_s", "i16x8.add_saturate_u", "i16x8.sub", "i16x8.sub_saturate_s", "i16x8.sub_saturate_u", undefined, "i16x8.mul", "i16x8.min_s", "i16x8.min_u", "i16x8.max_s", "i16x8.max_u", undefined, "i16x8.avgr_u", undefined, undefined, undefined, undefined, "i32x4.abs", "i32x4.neg", "i32x4.any_true", "i32x4.all_true", undefined, undefined, undefined, "i32x4.widen_low_i16x8_s", "i32x4.widen_high_i16x8_s", "i32x4.widen_low_i16x8_u", "i32x4.widen_high_i16x8_u", "i32x4.shl", "i32x4.shr_s", "i32x4.shr_u", "i32x4.add", undefined, undefined, "i32x4.sub", undefined, undefined, undefined, "i32x4.mul", "i32x4.min_s", "i32x4.min_u", "i32x4.max_s", "i32x4.max_u", undefined, undefined, undefined, undefined, undefined, undefined, undefined, "i64x2.neg", undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, "i64x2.shl", "i64x2.shr_s", "i64x2.shr_u", "i64x2.add", undefined, undefined, "i64x2.sub", undefined, undefined, undefined, "i64x2.mul", undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, "f32x4.abs", "f32x4.neg", undefined, "f32x4.sqrt", "f32x4.add", "f32x4.sub", "f32x4.mul", "f32x4.div", "f32x4.min", "f32x4.max", undefined, undefined, "f64x2.abs", "f64x2.neg", undefined, "f64x2.sqrt", "f64x2.add", "f64x2.sub", "f64x2.mul", "f64x2.div", "f64x2.min", "f64x2.max", undefined, undefined, "i32x4.trunc_sat_f32x4_s", "i32x4.trunc_sat_f32x4_u", "f32x4.convert_i32x4_s", "f32x4.convert_i32x4_u"].forEach((s, i) => {
     OperatorCodeNames[0xfd00 | i] = s;
 });
-["atomic.notify", "i32.atomic.wait", "i64.atomic.wait", undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, "i32.atomic.load", "i64.atomic.load", "i32.atomic.load8_u", "i32.atomic.load16_u", "i64.atomic.load8_u", "i64.atomic.load16_u", "i64.atomic.load32_u", "i32.atomic.store", "i64.atomic.store", "i32.atomic.store8", "i32.atomic.store16", "i64.atomic.store8", "i64.atomic.store16", "i64.atomic.store32", "i32.atomic.rmw.add", "i64.atomic.rmw.add", "i32.atomic.rmw8_u.add", "i32.atomic.rmw16_u.add", "i64.atomic.rmw8_u.add", "i64.atomic.rmw16_u.add", "i64.atomic.rmw32_u.add", "i32.atomic.rmw.sub", "i64.atomic.rmw.sub", "i32.atomic.rmw8_u.sub", "i32.atomic.rmw16_u.sub", "i64.atomic.rmw8_u.sub", "i64.atomic.rmw16_u.sub", "i64.atomic.rmw32_u.sub", "i32.atomic.rmw.and", "i64.atomic.rmw.and", "i32.atomic.rmw8_u.and", "i32.atomic.rmw16_u.and", "i64.atomic.rmw8_u.and", "i64.atomic.rmw16_u.and", "i64.atomic.rmw32_u.and", "i32.atomic.rmw.or", "i64.atomic.rmw.or", "i32.atomic.rmw8_u.or", "i32.atomic.rmw16_u.or", "i64.atomic.rmw8_u.or", "i64.atomic.rmw16_u.or", "i64.atomic.rmw32_u.or", "i32.atomic.rmw.xor", "i64.atomic.rmw.xor", "i32.atomic.rmw8_u.xor", "i32.atomic.rmw16_u.xor", "i64.atomic.rmw8_u.xor", "i64.atomic.rmw16_u.xor", "i64.atomic.rmw32_u.xor", "i32.atomic.rmw.xchg", "i64.atomic.rmw.xchg", "i32.atomic.rmw8_u.xchg", "i32.atomic.rmw16_u.xchg", "i64.atomic.rmw8_u.xchg", "i64.atomic.rmw16_u.xchg", "i64.atomic.rmw32_u.xchg", "i32.atomic.rmw.cmpxchg", "i64.atomic.rmw.cmpxchg", "i32.atomic.rmw8_u.cmpxchg", "i32.atomic.rmw16_u.cmpxchg", "i64.atomic.rmw8_u.cmpxchg", "i64.atomic.rmw16_u.cmpxchg", "i64.atomic.rmw32_u.cmpxchg"].forEach((s, i) => {
+["atomic.notify", "i32.atomic.wait", "i64.atomic.wait", undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, "i32.atomic.load", "i64.atomic.load", "i32.atomic.load8_u", "i32.atomic.load16_u", "i64.atomic.load8_u", "i64.atomic.load16_u", "i64.atomic.load32_u", "i32.atomic.store", "i64.atomic.store", "i32.atomic.store8", "i32.atomic.store16", "i64.atomic.store8", "i64.atomic.store16", "i64.atomic.store32", "i32.atomic.rmw.add", "i64.atomic.rmw.add", "i32.atomic.rmw8.add_u", "i32.atomic.rmw16.add_u", "i64.atomic.rmw8.add_u", "i64.atomic.rmw16.add_u", "i64.atomic.rmw32.add_u", "i32.atomic.rmw.sub", "i64.atomic.rmw.sub", "i32.atomic.rmw8.sub_u", "i32.atomic.rmw16.sub_u", "i64.atomic.rmw8.sub_u", "i64.atomic.rmw16.sub_u", "i64.atomic.rmw32.sub_u", "i32.atomic.rmw.and", "i64.atomic.rmw.and", "i32.atomic.rmw8.and_u", "i32.atomic.rmw16.and_u", "i64.atomic.rmw8.and_u", "i64.atomic.rmw16.and_u", "i64.atomic.rmw32.and_u", "i32.atomic.rmw.or", "i64.atomic.rmw.or", "i32.atomic.rmw8.or_u", "i32.atomic.rmw16.or_u", "i64.atomic.rmw8.or_u", "i64.atomic.rmw16.or_u", "i64.atomic.rmw32.or_u", "i32.atomic.rmw.xor", "i64.atomic.rmw.xor", "i32.atomic.rmw8.xor_u", "i32.atomic.rmw16.xor_u", "i64.atomic.rmw8.xor_u", "i64.atomic.rmw16.xor_u", "i64.atomic.rmw32.xor_u", "i32.atomic.rmw.xchg", "i64.atomic.rmw.xchg", "i32.atomic.rmw8.xchg_u", "i32.atomic.rmw16.xchg_u", "i64.atomic.rmw8.xchg_u", "i64.atomic.rmw16.xchg_u", "i64.atomic.rmw32.xchg_u", "i32.atomic.rmw.cmpxchg", "i64.atomic.rmw.cmpxchg", "i32.atomic.rmw8.cmpxchg_u", "i32.atomic.rmw16.cmpxchg_u", "i64.atomic.rmw8.cmpxchg_u", "i64.atomic.rmw16.cmpxchg_u", "i64.atomic.rmw32.cmpxchg_u"].forEach((s, i) => {
     OperatorCodeNames[0xfe00 | i] = s;
 });
 export var ExternalKind;
@@ -1263,14 +1263,14 @@ export class BinaryReader {
         var code = this._data[this._pos++] | 0xfc00;
         var reserved, segmentIndex, destinationIndex, tableIndex;
         switch (code) {
-            case 64512 /* i32_trunc_s_sat_f32 */:
-            case 64513 /* i32_trunc_u_sat_f32 */:
-            case 64514 /* i32_trunc_s_sat_f64 */:
-            case 64515 /* i32_trunc_u_sat_f64 */:
-            case 64516 /* i64_trunc_s_sat_f32 */:
-            case 64517 /* i64_trunc_u_sat_f32 */:
-            case 64518 /* i64_trunc_s_sat_f64 */:
-            case 64519 /* i64_trunc_u_sat_f64 */:
+            case 64512 /* i32_trunc_sat_f32_s */:
+            case 64513 /* i32_trunc_sat_f32_u */:
+            case 64514 /* i32_trunc_sat_f64_s */:
+            case 64515 /* i32_trunc_sat_f64_u */:
+            case 64516 /* i64_trunc_sat_f32_s */:
+            case 64517 /* i64_trunc_sat_f32_u */:
+            case 64518 /* i64_trunc_sat_f64_s */:
+            case 64519 /* i64_trunc_sat_f64_u */:
                 break;
             case 64522 /* memory_copy */:
                 // Currently memory index must be zero.
@@ -1517,53 +1517,53 @@ export class BinaryReader {
             case 65053 /* i64_atomic_store32 */:
             case 65054 /* i32_atomic_rmw_add */:
             case 65055 /* i64_atomic_rmw_add */:
-            case 65056 /* i32_atomic_rmw8_u_add */:
-            case 65057 /* i32_atomic_rmw16_u_add */:
-            case 65058 /* i64_atomic_rmw8_u_add */:
-            case 65059 /* i64_atomic_rmw16_u_add */:
-            case 65060 /* i64_atomic_rmw32_u_add */:
+            case 65056 /* i32_atomic_rmw8_add_u */:
+            case 65057 /* i32_atomic_rmw16_add_u */:
+            case 65058 /* i64_atomic_rmw8_add_u */:
+            case 65059 /* i64_atomic_rmw16_add_u */:
+            case 65060 /* i64_atomic_rmw32_add_u */:
             case 65061 /* i32_atomic_rmw_sub */:
             case 65062 /* i64_atomic_rmw_sub */:
-            case 65063 /* i32_atomic_rmw8_u_sub */:
-            case 65064 /* i32_atomic_rmw16_u_sub */:
-            case 65065 /* i64_atomic_rmw8_u_sub */:
-            case 65066 /* i64_atomic_rmw16_u_sub */:
-            case 65067 /* i64_atomic_rmw32_u_sub */:
+            case 65063 /* i32_atomic_rmw8_sub_u */:
+            case 65064 /* i32_atomic_rmw16_sub_u */:
+            case 65065 /* i64_atomic_rmw8_sub_u */:
+            case 65066 /* i64_atomic_rmw16_sub_u */:
+            case 65067 /* i64_atomic_rmw32_sub_u */:
             case 65068 /* i32_atomic_rmw_and */:
             case 65069 /* i64_atomic_rmw_and */:
-            case 65070 /* i32_atomic_rmw8_u_and */:
-            case 65071 /* i32_atomic_rmw16_u_and */:
-            case 65072 /* i64_atomic_rmw8_u_and */:
-            case 65073 /* i64_atomic_rmw16_u_and */:
-            case 65074 /* i64_atomic_rmw32_u_and */:
+            case 65070 /* i32_atomic_rmw8_and_u */:
+            case 65071 /* i32_atomic_rmw16_and_u */:
+            case 65072 /* i64_atomic_rmw8_and_u */:
+            case 65073 /* i64_atomic_rmw16_and_u */:
+            case 65074 /* i64_atomic_rmw32_and_u */:
             case 65075 /* i32_atomic_rmw_or */:
             case 65076 /* i64_atomic_rmw_or */:
-            case 65077 /* i32_atomic_rmw8_u_or */:
-            case 65078 /* i32_atomic_rmw16_u_or */:
-            case 65079 /* i64_atomic_rmw8_u_or */:
-            case 65080 /* i64_atomic_rmw16_u_or */:
-            case 65081 /* i64_atomic_rmw32_u_or */:
+            case 65077 /* i32_atomic_rmw8_or_u */:
+            case 65078 /* i32_atomic_rmw16_or_u */:
+            case 65079 /* i64_atomic_rmw8_or_u */:
+            case 65080 /* i64_atomic_rmw16_or_u */:
+            case 65081 /* i64_atomic_rmw32_or_u */:
             case 65082 /* i32_atomic_rmw_xor */:
             case 65083 /* i64_atomic_rmw_xor */:
-            case 65084 /* i32_atomic_rmw8_u_xor */:
-            case 65085 /* i32_atomic_rmw16_u_xor */:
-            case 65086 /* i64_atomic_rmw8_u_xor */:
-            case 65087 /* i64_atomic_rmw16_u_xor */:
-            case 65088 /* i64_atomic_rmw32_u_xor */:
+            case 65084 /* i32_atomic_rmw8_xor_u */:
+            case 65085 /* i32_atomic_rmw16_xor_u */:
+            case 65086 /* i64_atomic_rmw8_xor_u */:
+            case 65087 /* i64_atomic_rmw16_xor_u */:
+            case 65088 /* i64_atomic_rmw32_xor_u */:
             case 65089 /* i32_atomic_rmw_xchg */:
             case 65090 /* i64_atomic_rmw_xchg */:
-            case 65091 /* i32_atomic_rmw8_u_xchg */:
-            case 65092 /* i32_atomic_rmw16_u_xchg */:
-            case 65093 /* i64_atomic_rmw8_u_xchg */:
-            case 65094 /* i64_atomic_rmw16_u_xchg */:
-            case 65095 /* i64_atomic_rmw32_u_xchg */:
+            case 65091 /* i32_atomic_rmw8_xchg_u */:
+            case 65092 /* i32_atomic_rmw16_xchg_u */:
+            case 65093 /* i64_atomic_rmw8_xchg_u */:
+            case 65094 /* i64_atomic_rmw16_xchg_u */:
+            case 65095 /* i64_atomic_rmw32_xchg_u */:
             case 65096 /* i32_atomic_rmw_cmpxchg */:
             case 65097 /* i64_atomic_rmw_cmpxchg */:
-            case 65098 /* i32_atomic_rmw8_u_cmpxchg */:
-            case 65099 /* i32_atomic_rmw16_u_cmpxchg */:
-            case 65100 /* i64_atomic_rmw8_u_cmpxchg */:
-            case 65101 /* i64_atomic_rmw16_u_cmpxchg */:
-            case 65102 /* i64_atomic_rmw32_u_cmpxchg */:
+            case 65098 /* i32_atomic_rmw8_cmpxchg_u */:
+            case 65099 /* i32_atomic_rmw16_cmpxchg_u */:
+            case 65100 /* i64_atomic_rmw8_cmpxchg_u */:
+            case 65101 /* i64_atomic_rmw16_cmpxchg_u */:
+            case 65102 /* i64_atomic_rmw32_cmpxchg_u */:
                 memoryAddress = this.readMemoryImmediate();
                 break;
             default:
@@ -1815,25 +1815,25 @@ export class BinaryReader {
             case 165 /* f64_max */:
             case 166 /* f64_copysign */:
             case 167 /* i32_wrap_i64 */:
-            case 168 /* i32_trunc_s_f32 */:
-            case 169 /* i32_trunc_u_f32 */:
-            case 170 /* i32_trunc_s_f64 */:
-            case 171 /* i32_trunc_u_f64 */:
-            case 172 /* i64_extend_s_i32 */:
-            case 173 /* i64_extend_u_i32 */:
-            case 174 /* i64_trunc_s_f32 */:
-            case 175 /* i64_trunc_u_f32 */:
-            case 176 /* i64_trunc_s_f64 */:
-            case 177 /* i64_trunc_u_f64 */:
-            case 178 /* f32_convert_s_i32 */:
-            case 179 /* f32_convert_u_i32 */:
-            case 180 /* f32_convert_s_i64 */:
-            case 181 /* f32_convert_u_i64 */:
+            case 168 /* i32_trunc_f32_s */:
+            case 169 /* i32_trunc_f32_u */:
+            case 170 /* i32_trunc_f64_s */:
+            case 171 /* i32_trunc_f64_u */:
+            case 172 /* i64_extend_i32_s */:
+            case 173 /* i64_extend_i32_u */:
+            case 174 /* i64_trunc_f32_s */:
+            case 175 /* i64_trunc_f32_u */:
+            case 176 /* i64_trunc_f64_s */:
+            case 177 /* i64_trunc_f64_u */:
+            case 178 /* f32_convert_i32_s */:
+            case 179 /* f32_convert_i32_u */:
+            case 180 /* f32_convert_i64_s */:
+            case 181 /* f32_convert_i64_u */:
             case 182 /* f32_demote_f64 */:
-            case 183 /* f64_convert_s_i32 */:
-            case 184 /* f64_convert_u_i32 */:
-            case 185 /* f64_convert_s_i64 */:
-            case 186 /* f64_convert_u_i64 */:
+            case 183 /* f64_convert_i32_s */:
+            case 184 /* f64_convert_i32_u */:
+            case 185 /* f64_convert_i64_s */:
+            case 186 /* f64_convert_i64_u */:
             case 187 /* f64_promote_f32 */:
             case 188 /* i32_reinterpret_f32 */:
             case 189 /* i64_reinterpret_f64 */:

@@ -80,7 +80,7 @@ function requestHandler(request, response) {
     }
 
     let encoding = 'utf8';
-    if (path.endsWith('.js')) {
+    if (path.endsWith('.js') || path.endsWith('.mjs')) {
       response.setHeader('Content-Type', 'text/javascript; charset=utf-8');
     } else if (path.endsWith('.css')) {
       response.setHeader('Content-Type', 'text/css; charset=utf-8');

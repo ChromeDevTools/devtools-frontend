@@ -53,6 +53,8 @@ module.exports = function(config) {
       {pattern: path.join(GEN_DIRECTORY, 'front_end/Images/*.{svg,png}'), served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.js'), served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.js.map'), served: true, included: false},
+      {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.mjs'), served: true, included: false},
+      {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.mjs.map'), served: true, included: false},
       {pattern: path.join(ROOT_DIRECTORY, 'front_end/**/*.ts'), served: true, included: false},
     ],
 
@@ -74,8 +76,8 @@ module.exports = function(config) {
     ],
 
     preprocessors: {
-      '**/*.js': ['sourcemap'],
-      [path.join(GEN_DIRECTORY, 'front_end/**/*.js')]: [...coveragePreprocessors],
+      '**/*.{js,mjs}': ['sourcemap'],
+      [path.join(GEN_DIRECTORY, 'front_end/**/*.{js,mjs}')]: [...coveragePreprocessors],
     },
 
     proxies: {'/Images': 'front_end/Images'},

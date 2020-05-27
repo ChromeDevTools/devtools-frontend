@@ -341,8 +341,12 @@ def prepare_closure_frontend_compile(temp_devtools_path, descriptors, namespace_
         generated_file = path.normpath(path.join(temp_frontend_path, file))
         if not generated_file in args:
             modular_build.write_file(generated_file, '')
-            if os.path.basename(generated_file) == 'wasm_source_map.js':
-                with open(generated_file.replace('.js', '_types.js')) as f:
+            if os.path.basename(generated_file) in [
+                    'wasm_source_map.js', 'acorn.mjs', 'acorn-loose.mjs'
+            ]:
+                with open(
+                        generated_file.replace('.js', '_types.js').replace(
+                            '.mjs', '_types.mjs')) as f:
                     modular_build.write_file(generated_file, f.read())
             args.extend(['--js', generated_file])
 

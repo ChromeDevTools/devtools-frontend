@@ -31,6 +31,8 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
+import * as Acorn from '../third_party/acorn/package/dist/acorn.mjs';
+
 import {AcornTokenizer, ECMA_VERSION} from './AcornTokenizer.js';
 import {ESTreeWalker} from './ESTreeWalker.js';
 import {FormattedContentBuilder} from './FormattedContentBuilder.js';  // eslint-disable-line no-unused-vars
@@ -59,13 +61,13 @@ export class JavaScriptFormatter {
     this._lastLineNumber = 0;
     this._tokenizer = new AcornTokenizer(this._content);
     const options = {ranges: false, preserveParens: true, allowImportExportEverywhere: true, ecmaVersion: ECMA_VERSION};
-    const ast = acorn.parse(this._content, options);
+    const ast = Acorn.parse(this._content, options);
     const walker = new ESTreeWalker(this._beforeVisit.bind(this), this._afterVisit.bind(this));
     walker.walk(ast);
   }
 
   /**
-   * @param {?Acorn.TokenOrComment} token
+   * @param {?Acorn.Acorn.TokenOrComment} token
    * @param {string} format
    */
   _push(token, format) {
@@ -98,7 +100,7 @@ export class JavaScriptFormatter {
       return;
     }
     while (this._tokenizer.peekToken() && this._tokenizer.peekToken().start < node.start) {
-      const token = /** @type {!Acorn.TokenOrComment} */ (this._tokenizer.nextToken());
+      const token = /** @type {!Acorn.Acorn.TokenOrComment} */ (this._tokenizer.nextToken());
       const format = this._formatToken(node.parent, token);
       this._push(token, format);
     }
@@ -109,7 +111,7 @@ export class JavaScriptFormatter {
    */
   _afterVisit(node) {
     while (this._tokenizer.peekToken() && this._tokenizer.peekToken().start < node.end) {
-      const token = /** @type {!Acorn.TokenOrComment} */ (this._tokenizer.nextToken());
+      const token = /** @type {!Acorn.Acorn.TokenOrComment} */ (this._tokenizer.nextToken());
       const format = this._formatToken(node, token);
       this._push(token, format);
     }
@@ -136,7 +138,7 @@ export class JavaScriptFormatter {
 
   /**
    * @param {!ESTree.Node} node
-   * @param {!Acorn.TokenOrComment} token
+   * @param {!Acorn.Acorn.TokenOrComment} token
    * @return {string}
    */
   _formatToken(node, token) {

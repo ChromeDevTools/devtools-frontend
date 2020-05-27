@@ -1,4 +1,4 @@
-import { tokTypes, SourceLocation, Node, lineBreak, isNewLine, Parser, Token, getLineInfo, lineBreakG, defaultOptions } from 'acorn';
+import { tokTypes, SourceLocation, Node, lineBreak, isNewLine, Parser, Token, getLineInfo, lineBreakG, defaultOptions } from '../../../acorn/package/dist/acorn.mjs';
 
 function noop() {}
 

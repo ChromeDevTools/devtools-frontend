@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Acorn from '../third_party/acorn/package/dist/acorn.mjs';
+
 import {ECMA_VERSION} from './AcornTokenizer.js';
 import {ESTreeWalker} from './ESTreeWalker.js';
 
@@ -15,7 +17,7 @@ export const RelaxedJSONParser = {
 
     let root;
     try {
-      root = acorn.parse(content, {ecmaVersion: ECMA_VERSION});
+      root = Acorn.parse(content, {ecmaVersion: ECMA_VERSION});
     } catch (e) {
       return null;
     }

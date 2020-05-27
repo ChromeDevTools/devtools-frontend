@@ -10,8 +10,8 @@
     "formatter_worker-legacy.js",
     "ESTreeWalker.js",
     "FormatterWorker.js",
-    "../third_party/acorn/package/dist/acorn.js",
-    "../third_party/acorn-loose/package/dist/acorn-loose.js",
+    "../third_party/acorn/package/dist/acorn.mjs",
+    "../third_party/acorn-loose/package/dist/acorn-loose.mjs",
     "../third_party/codemirror/package/mode/css/css.js",
     "../third_party/codemirror/package/mode/xml/xml.js",
     "CSSFormatter.js",
@@ -25,8 +25,8 @@
     "RelaxedJSONParser.js"
   ],
   "skip_compilation": [
-    "../third_party/acorn/package/dist/acorn.js",
-    "../third_party/acorn-loose/package/dist/acorn-loose.js",
+    "../third_party/acorn/package/dist/acorn.mjs",
+    "../third_party/acorn-loose/package/dist/acorn-loose.mjs",
     "../third_party/codemirror/package/mode/css/css.js",
     "../third_party/codemirror/package/mode/xml/xml.js"
   ]

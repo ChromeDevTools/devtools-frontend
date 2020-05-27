@@ -44,13 +44,15 @@ export class Linkifier {
   /**
    * @param {number=} maxLengthForDisplayedURLs
    * @param {boolean=} useLinkDecorator
+   * @param {function():void=} onLiveLocationUpdate
    */
-  constructor(maxLengthForDisplayedURLs, useLinkDecorator) {
+  constructor(maxLengthForDisplayedURLs, useLinkDecorator, onLiveLocationUpdate = () => {}) {
     this._maxLength = maxLengthForDisplayedURLs || UI.UIUtils.MaxLengthForDisplayedURLs;
     /** @type {!Map<!SDK.SDKModel.Target, !Array<!Element>>} */
     this._anchorsByTarget = new Map();
     /** @type {!Map<!SDK.SDKModel.Target, !Bindings.LiveLocation.LiveLocationPool>} */
     this._locationPoolByTarget = new Map();
+    this._onLiveLocationUpdate = onLiveLocationUpdate;
     this._useLinkDecorator = !!useLinkDecorator;
     _instances.add(this);
     SDK.SDKModel.TargetManager.instance().observeTargets(this);
@@ -203,6 +205,7 @@ export class Linkifier {
         .createLiveLocation(rawLocation, this._updateAnchor.bind(this, anchor), pool)
         .then(liveLocation => {
           info.liveLocation = liveLocation;
+          this._onLiveLocationUpdate();
         });
 
     const anchors = /** @type {!Array<!Element>} */ (this._anchorsByTarget.get(rawLocation.debuggerModel.target()));
@@ -286,6 +289,7 @@ export class Linkifier {
         .createStackTraceTopFrameLiveLocation(rawLocations, this._updateAnchor.bind(this, anchor), pool)
         .then(liveLocation => {
           info.liveLocation = liveLocation;
+          this._onLiveLocationUpdate();
         });
 
     const anchors = /** @type {!Array<!Element>} */ (this._anchorsByTarget.get(target));
@@ -311,6 +315,7 @@ export class Linkifier {
         .createLiveLocation(rawLocation, this._updateAnchor.bind(this, anchor), pool)
         .then(liveLocation => {
           info.liveLocation = liveLocation;
+          this._onLiveLocationUpdate();
         });
 
     const anchors = /** @type {!Array<!Element>} */ (this._anchorsByTarget.get(rawLocation.cssModel().target()));

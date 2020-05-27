@@ -127,7 +127,7 @@ export class ObjectPopoverHelper {
     const sourceURL = rawLocation && rawLocation.script() && rawLocation.script().sourceURL;
     let linkifier = null;
     if (sourceURL) {
-      linkifier = new Components.Linkifier.Linkifier();
+      linkifier = new Components.Linkifier.Linkifier(undefined, undefined, popover.positionContent.bind(popover));
       linkContainer.appendChild(
           linkifier.linkifyRawLocation(/** @type {!SDK.DebuggerModel.Location} */ (rawLocation), sourceURL));
     }

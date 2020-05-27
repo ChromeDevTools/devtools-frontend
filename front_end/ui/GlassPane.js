@@ -90,7 +90,7 @@ export class GlassPane {
    */
   setMaxContentSize(size) {
     this._maxSize = size;
-    this._positionContent();
+    this.positionContent();
   }
 
   /**
@@ -98,7 +98,7 @@ export class GlassPane {
    */
   setSizeBehavior(sizeBehavior) {
     this._sizeBehavior = sizeBehavior;
-    this._positionContent();
+    this.positionContent();
   }
 
   /**
@@ -109,7 +109,7 @@ export class GlassPane {
   setContentPosition(x, y) {
     this._positionX = x;
     this._positionY = y;
-    this._positionContent();
+    this.positionContent();
   }
 
   /**
@@ -118,7 +118,7 @@ export class GlassPane {
    */
   setContentAnchorBox(anchorBox) {
     this._anchorBox = anchorBox;
-    this._positionContent();
+    this.positionContent();
   }
 
   /**
@@ -149,7 +149,7 @@ export class GlassPane {
     document.body.addEventListener('mousedown', this._onMouseDownBound, true);
     this._widget.show(document.body);
     _panes.add(this);
-    this._positionContent();
+    this.positionContent();
   }
 
   hide() {
@@ -175,7 +175,7 @@ export class GlassPane {
     this._onClickOutsideCallback.call(null, event);
   }
 
-  _positionContent() {
+  positionContent() {
     if (!this.isShowing()) {
       return;
     }
@@ -384,7 +384,7 @@ export class GlassPane {
   static containerMoved(element) {
     for (const pane of _panes) {
       if (pane.isShowing() && pane.element.ownerDocument === element.ownerDocument) {
-        pane._positionContent();
+        pane.positionContent();
       }
     }
   }

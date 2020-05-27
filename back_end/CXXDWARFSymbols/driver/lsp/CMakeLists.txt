@@ -2,47 +2,14 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-
-find_package(Protobuf REQUIRED)
-set(PROTOC $<TARGET_FILE:protobuf::protoc>)
-set(PROTO_SOURCES)
-
-set(ADDITIONAL_LIBS)
-if(CMAKE_SYSTEM_NAME MATCHES "Windows")
-  list(APPEND ADDITIONAL_LIBS $ENV{VSINSTALLDIR}VC\\Tools\\MSVC\\$ENV{VCToolsVersion}\\lib\\onecore\\$ENV{VSCMD_ARG_TGT_ARCH}\\diaguids.lib)
-endif()
-
-function(add_proto name)
-  set(PROTO_HDRS
-    ${CMAKE_CURRENT_BINARY_DIR}/${name}.pb.h
-    )
-  set(PROTO_SRCS
-    ${CMAKE_CURRENT_BINARY_DIR}/${name}.pb.cc
-    )
-  set(PROTO_SOURCES ${PROTO_SOURCES} ${PROTO_SRCS} PARENT_SCOPE)
-  add_custom_command(
-    OUTPUT ${PROTO_SRCS} ${PROTO_HDRS}
-    COMMAND ${PROTOC}
-    ARGS
-    --cpp_out ${CMAKE_CURRENT_BINARY_DIR}
-    -I ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/${name}.proto
-    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${name}.proto
-    )
-endfunction()
-
-add_proto(symbol_server)
 add_lldb_tool(DWARFSymbolServer
-  RPC.cc
-  ${PROTO_SOURCES}
+  JSON.cc
   Main.cc
 
 
   LINK_LIBS
   DWARFSymbols
   clangDaemon
-  ${PROTOBUF_LIBRARIES}
-  ${ADDITIONAL_LIBS}
   )
 
 #FIXME Can we use the llvm facilities here?

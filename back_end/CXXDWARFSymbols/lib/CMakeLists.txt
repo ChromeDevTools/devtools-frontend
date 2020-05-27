@@ -11,6 +11,7 @@ configure_file(symbol-server-config.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/symbol-server-config.h @ONLY)
 
 llvm_add_library(DWARFSymbols
+  APIImpl.cc
   Modules.cc
   Variables.cc
   DWARFLocationParser.cc

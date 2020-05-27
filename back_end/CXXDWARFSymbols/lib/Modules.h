@@ -16,9 +16,10 @@
 #include "llvm/ADT/StringMap.h"
 #include "llvm/ADT/StringRef.h"
 #include "llvm/Support/FileSystem.h"
+#include "llvm/Support/MemoryBuffer.h"
 
 namespace symbol_server {
-using Binary = std::string;
+using Binary = std::vector<uint8_t>;
 
 struct SourceLocation {
   SourceLocation(llvm::StringRef file, uint32_t line, uint16_t column)
@@ -73,8 +74,9 @@ class WasmModule {
   static std::shared_ptr<WasmModule> CreateFromFile(llvm::StringRef id,
                                                     llvm::StringRef path);
 
-  static std::shared_ptr<WasmModule> CreateFromCode(llvm::StringRef id,
-                                                    llvm::StringRef byte_code);
+  static std::shared_ptr<WasmModule> CreateFromCode(
+      llvm::StringRef id,
+      const std::vector<uint8_t>& byte_code);
 
   bool Valid() const;
   llvm::StringRef Id() const { return id_; }
@@ -87,7 +89,7 @@ class WasmModule {
   llvm::SmallSet<MemoryLocation, 1> GetVariablesInScope(
       const SourceLocation& source_loc) const;
   llvm::SmallSet<Variable, 1> GetVariablesInScope(lldb::addr_t offset) const;
-  llvm::Expected<Binary> GetVariableFormatScript(
+  llvm::Expected<std::unique_ptr<llvm::MemoryBuffer>> GetVariableFormatScript(
       llvm::StringRef name,
       lldb::addr_t frame_offset,
       VariablePrinter* printer) const;
@@ -108,7 +110,7 @@ class ModuleCache {
 
   const WasmModule* GetModuleFromUrl(llvm::StringRef id, llvm::StringRef url);
   const WasmModule* GetModuleFromCode(llvm::StringRef id,
-                                      llvm::StringRef byte_code);
+                                      const std::vector<uint8_t>& byte_code);
 
   void AddModuleSearchPath(const llvm::Twine&);
 

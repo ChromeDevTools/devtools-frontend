@@ -106,7 +106,7 @@ std::shared_ptr<WasmModule> WasmModule::CreateFromFile(
 
 std::shared_ptr<WasmModule> WasmModule::CreateFromCode(
     llvm::StringRef id,
-    llvm::StringRef byte_code) {
+    const std::vector<uint8_t>& byte_code) {
   llvm::SmallString<128> t_file;
   llvm::sys::path::system_temp_directory(true, t_file);
   llvm::sys::path::append(t_file, "%%%%%%.wasm");
@@ -121,7 +121,10 @@ std::shared_ptr<WasmModule> WasmModule::CreateFromCode(
   LLVM_DEBUG(llvm::dbgs() << "Created temporary module " << filename << "\n");
   {
     llvm::raw_fd_ostream o(tf->FD, false);
-    o << byte_code;
+    int8_t c;
+    llvm::StringRef string_view(reinterpret_cast<const char*>(byte_code.data()),
+                                byte_code.size());
+    o << string_view;
   }
 
   auto new_module = CreateFromFile(id, std::move(*tf));
@@ -341,13 +344,15 @@ const WasmModule* ModuleCache::GetModuleFromUrl(llvm::StringRef id,
   return module.get();
 }
 
-const WasmModule* ModuleCache::GetModuleFromCode(llvm::StringRef id,
-                                                 llvm::StringRef byte_code) {
+const WasmModule* ModuleCache::GetModuleFromCode(
+    llvm::StringRef id,
+    const std::vector<uint8_t>& byte_code) {
   if (auto m = FindModule(id)) {
     return m;
   }
 
-  auto hash = ModuleHash(byte_code);
+  auto hash = ModuleHash(
+      {reinterpret_cast<const char*>(byte_code.data()), byte_code.size()});
   auto i = module_hashes_.find(hash);
   if (i != module_hashes_.end()) {
     modules_[id] = i->second;
@@ -401,10 +406,10 @@ llvm::SmallSet<Variable, 1> WasmModule::GetVariablesInScope(
   return variables;
 }
 
-llvm::Expected<Binary> WasmModule::GetVariableFormatScript(
-    llvm::StringRef name,
-    lldb::addr_t frame_offset,
-    VariablePrinter* printer) const {
+llvm::Expected<std::unique_ptr<llvm::MemoryBuffer>>
+WasmModule::GetVariableFormatScript(llvm::StringRef name,
+                                    lldb::addr_t frame_offset,
+                                    VariablePrinter* printer) const {
   lldb::VariableSP variable =
       FindVariableAtOffset(&*module_, frame_offset, name);
   if (!variable) {
@@ -417,7 +422,6 @@ llvm::Expected<Binary> WasmModule::GetVariableFormatScript(
   if (!code) {
     return code.takeError();
   }
-  auto wasm_code = printer->GenerateCode(&**code);
-  return wasm_code->getBuffer().str();
+  return printer->GenerateCode(&**code);
 }
 }  // namespace symbol_server

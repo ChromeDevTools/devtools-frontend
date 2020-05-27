@@ -23,7 +23,7 @@ export const releaseNoteText = [
       {
         title: 'The new Issues tab',
         subtitle:
-            'The Issues tab aggregates warnings from the browser in a structured, aggregated, and actionable way, links to affected resources within DevTools, and provides guidance on how to fix the issues.',
+            'The Issues tab presents warnings from the browser in a structured, aggregated, and actionable way, links to affected resources within DevTools, and provides guidance on how to fix the issues.',
         link: 'https://developers.google.com/web/updates/2020/05/devtools#issues',
       },
       {

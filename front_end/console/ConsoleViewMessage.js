@@ -145,17 +145,18 @@ export class ConsoleViewMessage {
       formattedMessage.appendChild(this._anchorElement);
     }
 
-    let table = this._message.parameters && this._message.parameters.length ? this._message.parameters[0] : null;
-    if (table) {
-      table = this._parameterToRemoteObject(table);
+    const table = this._message.parameters && this._message.parameters.length ? this._message.parameters[0] : null;
+    if (!table) {
+      return this._buildMessage();
     }
-    if (!table || !table.preview) {
+    const actualTable = this._parameterToRemoteObject(table);
+    if (!actualTable || !actualTable.preview) {
       return this._buildMessage();
     }
 
     const rawValueColumnSymbol = Symbol('rawValueColumn');
     const columnNames = [];
-    const preview = table.preview;
+    const preview = actualTable.preview;
     const rows = [];
     for (let i = 0; i < preview.properties.length; ++i) {
       const rowProperty = preview.properties[i];
@@ -182,7 +183,7 @@ export class ConsoleViewMessage {
         }
 
         if (columnRendered) {
-          const cellElement = this._renderPropertyPreviewOrAccessor(table, [rowProperty, cellProperty]);
+          const cellElement = this._renderPropertyPreviewOrAccessor(actualTable, [rowProperty, cellProperty]);
           cellElement.classList.add('console-message-nowrap-below');
           rowValue[cellProperty.name] = cellElement;
         }
@@ -212,7 +213,7 @@ export class ConsoleViewMessage {
       formattedResult.classList.add('console-message-text');
       const tableElement = formattedResult.createChild('div', 'console-message-formatted-table');
       const dataGridContainer = tableElement.createChild('span');
-      tableElement.appendChild(this._formatParameter(table, true, false));
+      tableElement.appendChild(this._formatParameter(actualTable, true, false));
       dataGridContainer.appendChild(this._dataGrid.element);
       formattedMessage.appendChild(formattedResult);
       this._dataGrid.renderInline();

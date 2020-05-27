@@ -36,6 +36,7 @@ import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
+import * as Root from '../root/root.js';
 
 import {CSSModel} from './CSSModel.js';
 import {OverlayModel} from './OverlayModel.js';
@@ -1790,8 +1791,7 @@ export const Events = {
 };
 
 /**
- * @implements {Protocol.DOMDispatcher}
- * @unrestricted
+ * @implements {ProtocolProxyApiWorkaround_DOMDispatcher}
  */
 class DOMDispatcher {
   /**
@@ -1799,6 +1799,13 @@ class DOMDispatcher {
    */
   constructor(domModel) {
     this._domModel = domModel;
+  }
+
+  /**
+   * @return {!Protocol.UsesObjectNotation}
+   */
+  usesObjectNotation() {
+    return true;
   }
 
   /**
@@ -1810,119 +1817,105 @@ class DOMDispatcher {
 
   /**
    * @override
-   * @param {!Protocol.DOM.NodeId} nodeId
-   * @param {string} name
-   * @param {string} value
+   * @param {!Protocol.DOM.AttributeModifiedEvent} event
    */
-  attributeModified(nodeId, name, value) {
+  attributeModified({nodeId, name, value}) {
     this._domModel._attributeModified(nodeId, name, value);
   }
 
   /**
    * @override
-   * @param {!Protocol.DOM.NodeId} nodeId
-   * @param {string} name
+   * @param {!Protocol.DOM.AttributeRemovedEvent} event
    */
-  attributeRemoved(nodeId, name) {
+  attributeRemoved({nodeId, name}) {
     this._domModel._attributeRemoved(nodeId, name);
   }
 
   /**
    * @override
-   * @param {!Array.<!Protocol.DOM.NodeId>} nodeIds
+   * @param {!Protocol.DOM.InlineStyleInvalidatedEvent} event
    */
-  inlineStyleInvalidated(nodeIds) {
+  inlineStyleInvalidated({nodeIds}) {
     this._domModel._inlineStyleInvalidated(nodeIds);
   }
 
   /**
    * @override
-   * @param {!Protocol.DOM.NodeId} nodeId
-   * @param {string} characterData
+   * @param {!Protocol.DOM.CharacterDataModifiedEvent} event
    */
-  characterDataModified(nodeId, characterData) {
+  characterDataModified({nodeId, characterData}) {
     this._domModel._characterDataModified(nodeId, characterData);
   }
 
   /**
    * @override
-   * @param {!Protocol.DOM.NodeId} parentId
-   * @param {!Array.<!Protocol.DOM.Node>} payloads
+   * @param {!Protocol.DOM.SetChildNodesEvent} event
    */
-  setChildNodes(parentId, payloads) {
-    this._domModel._setChildNodes(parentId, payloads);
+  setChildNodes({parentId, nodes}) {
+    this._domModel._setChildNodes(parentId, nodes);
   }
 
   /**
    * @override
-   * @param {!Protocol.DOM.NodeId} nodeId
-   * @param {number} childNodeCount
+   * @param {!Protocol.DOM.ChildNodeCountUpdatedEvent} event
    */
-  childNodeCountUpdated(nodeId, childNodeCount) {
+  childNodeCountUpdated({nodeId, childNodeCount}) {
     this._domModel._childNodeCountUpdated(nodeId, childNodeCount);
   }
 
   /**
    * @override
-   * @param {!Protocol.DOM.NodeId} parentNodeId
-   * @param {!Protocol.DOM.NodeId} previousNodeId
-   * @param {!Protocol.DOM.Node} payload
+   * @param {!Protocol.DOM.ChildNodeInsertedEvent} event
    */
-  childNodeInserted(parentNodeId, previousNodeId, payload) {
-    this._domModel._childNodeInserted(parentNodeId, previousNodeId, payload);
+  childNodeInserted({parentNodeId, previousNodeId, node}) {
+    this._domModel._childNodeInserted(parentNodeId, previousNodeId, node);
   }
 
   /**
    * @override
-   * @param {!Protocol.DOM.NodeId} parentNodeId
-   * @param {!Protocol.DOM.NodeId} nodeId
+   * @param {!Protocol.DOM.ChildNodeRemovedEvent} event
    */
-  childNodeRemoved(parentNodeId, nodeId) {
+  childNodeRemoved({parentNodeId, nodeId}) {
     this._domModel._childNodeRemoved(parentNodeId, nodeId);
   }
 
   /**
    * @override
-   * @param {!Protocol.DOM.NodeId} hostId
-   * @param {!Protocol.DOM.Node} root
+   * @param {!Protocol.DOM.ShadowRootPushedEvent} event
    */
-  shadowRootPushed(hostId, root) {
+  shadowRootPushed({hostId, root}) {
     this._domModel._shadowRootPushed(hostId, root);
   }
 
   /**
    * @override
-   * @param {!Protocol.DOM.NodeId} hostId
-   * @param {!Protocol.DOM.NodeId} rootId
+   * @param {!Protocol.DOM.ShadowRootPoppedEvent} event
    */
-  shadowRootPopped(hostId, rootId) {
+  shadowRootPopped({hostId, rootId}) {
     this._domModel._shadowRootPopped(hostId, rootId);
   }
 
   /**
    * @override
-   * @param {!Protocol.DOM.NodeId} parentId
-   * @param {!Protocol.DOM.Node} pseudoElement
+   * @param {!Protocol.DOM.PseudoElementAddedEvent} event
    */
-  pseudoElementAdded(parentId, pseudoElement) {
+  pseudoElementAdded({parentId, pseudoElement}) {
     this._domModel._pseudoElementAdded(parentId, pseudoElement);
   }
 
   /**
    * @override
-   * @param {!Protocol.DOM.NodeId} parentId
-   * @param {!Protocol.DOM.NodeId} pseudoElementId
+   * @param {!Protocol.DOM.PseudoElementRemovedEvent} event
    */
-  pseudoElementRemoved(parentId, pseudoElementId) {
+  pseudoElementRemoved({parentId, pseudoElementId}) {
     this._domModel._pseudoElementRemoved(parentId, pseudoElementId);
   }
 
   /**
    * @override
-   * @param {!Protocol.DOM.NodeId} insertionPointId
-   * @param {!Array.<!Protocol.DOM.BackendNode>} distributedNodes
+   * @param {!Protocol.DOM.DistributedNodesUpdatedEvent} event
    */
-  distributedNodesUpdated(insertionPointId, distributedNodes) {
+  distributedNodesUpdated({insertionPointId, distributedNodes}) {
     this._domModel._distributedNodesUpdated(insertionPointId, distributedNodes);
   }
 }

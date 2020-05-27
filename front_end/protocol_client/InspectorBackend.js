@@ -752,6 +752,13 @@ export class TargetBase {
   }
 
   /**
+   * @param {!ProtocolProxyApi.DOMDispatcher} dispatcher
+   */
+  registerDOMDispatcher(dispatcher) {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
    * @param {!ProtocolProxyApi.HeapProfilerDispatcher} dispatcher
    */
   registerHeapProfilerDispatcher(dispatcher) {

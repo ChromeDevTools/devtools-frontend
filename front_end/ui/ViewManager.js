@@ -289,7 +289,11 @@ export class _ExpandableContainerWidget extends VBox {
    */
   wasShown() {
     if (this._widget) {
-      this._materializePromise.then(() => this._widget.show(this.element));
+      this._materializePromise.then(() => {
+        if (this._titleElement.classList.contains('expanded')) {
+          this._widget.show(this.element);
+        }
+      });
     }
   }
 

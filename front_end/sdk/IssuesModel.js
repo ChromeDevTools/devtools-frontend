@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// @ts-nocheck
+// TODO(crbug.com/1011811): Enable TypeScript compiler checks
+
 import {CrossOriginEmbedderPolicyIssue} from './CrossOriginEmbedderPolicyIssue.js';
 import {Issue} from './Issue.js';  // eslint-disable-line no-unused-vars
 import {MixedContentIssue} from './MixedContentIssue.js';
-import {NetworkLog} from './NetworkLog.js';
 import {Events as NetworkManagerEvents, NetworkManager} from './NetworkManager.js';
 import {NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
 import {SameSiteCookieIssue} from './SameSiteCookieIssue.js';
@@ -28,7 +30,7 @@ export class NetworkIssueDetector {
     if (this._networkManager) {
       this._networkManager.addEventListener(NetworkManagerEvents.RequestFinished, this._handleRequestFinished, this);
     }
-    for (const request of NetworkLog.instance().requests()) {
+    for (const request of self.SDK.networkLog.requests()) {
       this._handleRequestFinished({data: request});
     }
   }
@@ -76,7 +78,7 @@ export class NetworkIssueDetector {
  * class (usually derived from `Issue`) and passes the instances on via a dispatched event.
  * We chose this approach here because the lifetime of the Model is tied to the target, but DevTools
  * wants to preserve issues for targets (e.g. iframes) that are already gone as well.
- * @implements {ProtocolProxyApiWorkaround_AuditsDispatcher}
+ * @implements {Protocol.AuditsDispatcher}
  */
 export class IssuesModel extends SDKModel {
   /**
@@ -91,13 +93,6 @@ export class IssuesModel extends SDKModel {
     this.ensureEnabled();
   }
 
-  /**
-   * @return {!Protocol.UsesObjectNotation}
-   */
-  usesObjectNotation() {
-    return true;
-  }
-
   ensureEnabled() {
     if (this._enabled) {
       return;
@@ -106,16 +101,16 @@ export class IssuesModel extends SDKModel {
     this._enabled = true;
     this.target().registerAuditsDispatcher(this);
     this._auditsAgent = this.target().auditsAgent();
-    this._auditsAgent.invoke_enable();
+    this._auditsAgent.enable();
     this._networkIssueDetector = new NetworkIssueDetector(this.target(), this);
   }
 
   /**
    * @override
-   * @param {!Protocol.Audits.IssueAddedEvent} issueAddedEvent
+   * @param {!Protocol.Audits.InspectorIssue} inspectorIssue
    */
-  issueAdded(issueAddedEvent) {
-    const issues = this._createIssuesFromProtocolIssue(issueAddedEvent.issue);
+  issueAdded(inspectorIssue) {
+    const issues = this._createIssuesFromProtocolIssue(inspectorIssue);
     for (const issue of issues) {
       this.addIssue(issue);
     }

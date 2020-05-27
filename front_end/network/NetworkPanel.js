@@ -180,11 +180,9 @@ export class NetworkPanel extends UI.Panel.Panel {
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._load, this);
     this._networkLogView.addEventListener(Events.RequestSelected, this._onRequestSelected, this);
     this._networkLogView.addEventListener(Events.RequestActivated, this._onRequestActivated, this);
-    SDK.NetworkLog.NetworkLog.instance().addEventListener(
-        SDK.NetworkLog.Events.RequestAdded, this._onUpdateRequest, this);
-    SDK.NetworkLog.NetworkLog.instance().addEventListener(
-        SDK.NetworkLog.Events.RequestUpdated, this._onUpdateRequest, this);
-    SDK.NetworkLog.NetworkLog.instance().addEventListener(SDK.NetworkLog.Events.Reset, this._onNetworkLogReset, this);
+    self.SDK.networkLog.addEventListener(SDK.NetworkLog.Events.RequestAdded, this._onUpdateRequest, this);
+    self.SDK.networkLog.addEventListener(SDK.NetworkLog.Events.RequestUpdated, this._onUpdateRequest, this);
+    self.SDK.networkLog.addEventListener(SDK.NetworkLog.Events.Reset, this._onNetworkLogReset, this);
   }
 
   /**
@@ -250,8 +248,7 @@ export class NetworkPanel extends UI.Panel.Panel {
     }
     this._panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this._toggleRecordAction));
     const clearButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Clear'), 'largeicon-clear');
-    clearButton.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.Click, () => SDK.NetworkLog.NetworkLog.instance().reset(), this);
+    clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => self.SDK.networkLog.reset(), this);
     this._panelToolbar.appendToolbarItem(clearButton);
     this._panelToolbar.appendSeparator();
 
@@ -325,7 +322,7 @@ export class NetworkPanel extends UI.Panel.Panel {
 
   _toggleRecording() {
     if (!this._preserveLogSetting.get() && !this._toggleRecordAction.toggled()) {
-      SDK.NetworkLog.NetworkLog.instance().reset();
+      self.SDK.networkLog.reset();
     }
     this._toggleRecord(!this._toggleRecordAction.toggled());
   }
@@ -341,7 +338,7 @@ export class NetworkPanel extends UI.Panel.Panel {
     }
     // TODO(einbinder) This should be moved to a setting/action that NetworkLog owns but NetworkPanel controls, but
     // always be present in the command menu.
-    SDK.NetworkLog.NetworkLog.instance().setIsRecording(toggled);
+    self.SDK.networkLog.setIsRecording(toggled);
   }
 
   /**

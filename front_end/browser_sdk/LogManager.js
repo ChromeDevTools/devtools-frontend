@@ -47,8 +47,7 @@ export class LogManager {
         data.entry.stackTrace, data.entry.timestamp, undefined, undefined, data.entry.workerId);
 
     if (data.entry.networkRequestId) {
-      SDK.NetworkLog.NetworkLog.instance().associateConsoleMessageWithRequest(
-          consoleMessage, data.entry.networkRequestId);
+      self.SDK.networkLog.associateConsoleMessageWithRequest(consoleMessage, data.entry.networkRequestId);
     }
 
     if (consoleMessage.source === SDK.ConsoleModel.MessageSource.Worker) {

@@ -134,7 +134,7 @@ export class RequestInitiatorView extends UI.Widget.VBox {
       this._appendExpandableSection(stackTracePreview.element, ls`Request call stack`, true);
     }
 
-    const initiatorGraph = SDK.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this._request);
+    const initiatorGraph = self.SDK.networkLog.initiatorGraphForRequest(this._request);
     if (initiatorGraph.initiators.size > 1 || initiatorGraph.initiated.size > 1) {
       initiatorDataPresent = true;
       this._appendExpandableSection(

@@ -15,6 +15,7 @@ ts_library("e2e") {
     "coverage",
     "cross_tool_integration",
     "elements",
+    "emulation",
     "host",
     "layers",
     "lighthouse",

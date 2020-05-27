@@ -45,6 +45,11 @@ import {ExtensionTraceProvider, TracingSession} from './ExtensionTraceProvider.j
 
 const extensionOriginSymbol = Symbol('extensionOrigin');
 
+const kAllowedOrigins = [
+  'chrome://newtab',
+  'chrome://new-tab-page',
+].map(url => (new URL(url)).origin);
+
 /**
  * @unrestricted
  */
@@ -1018,6 +1023,9 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
       parsedURL = new URL(url);
     } catch (exception) {
       return false;
+    }
+    if (kAllowedOrigins.includes(parsedURL.origin)) {
+      return true;
     }
     if (parsedURL.protocol === 'chrome:' || parsedURL.protocol === 'devtools:') {
       return false;

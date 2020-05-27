@@ -161,6 +161,7 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
         /* ignoreHasOwnProperty */ true, extraProperties);
     section.title = titleElement;
     section.listItemElement.classList.add('scope-chain-sidebar-pane-section');
+    section.listItemElement.setAttribute('aria-label', title);
     this._expandController.watchSection(title + (subtitle ? ':' + subtitle : ''), section);
 
     return section;
@@ -175,7 +176,7 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
    * @return {!Array.<!SDK.RemoteObject.RemoteObjectProperty>}
    */
   _extraPropertiesForScope(scope, details, callFrame, thisObject, isFirstScope) {
-    if (scope.type() !== Protocol.Debugger.ScopeType.Local) {
+    if (scope.type() !== Protocol.Debugger.ScopeType.Local || callFrame.script.isWasm()) {
       return [];
     }
 

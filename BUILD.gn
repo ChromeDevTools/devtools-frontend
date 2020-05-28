@@ -959,7 +959,7 @@ group("devtools_frontend_resources") {
   public_deps = devtools_frontend_resources_deps
 }
 
-group("devtools_inspector_overlay_resources") {
+group("generate_devtools_inspector_overlay_resources") {
   public_deps = [ "front_end/inspector_overlay:build_inspector_overlay" ]
 }
 

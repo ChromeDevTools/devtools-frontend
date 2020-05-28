@@ -39,6 +39,17 @@ finally:
 
 FRONT_END_DIRECTORY = path.join(os.path.dirname(path.abspath(__file__)), '..', '..', 'front_end')
 
+MODULE_LIST = [
+    path.join(FRONT_END_DIRECTORY, subfolder, subfolder + '.js')
+    for subfolder in os.listdir(FRONT_END_DIRECTORY)
+    if path.isdir(os.path.join(FRONT_END_DIRECTORY, subfolder))
+]
+
+ROLLUP_ARGS = [
+    '--no-treeshake', '--format', 'esm', '--context', 'self', '--external',
+    ','.join([path.abspath(module) for module in MODULE_LIST])
+]
+
 
 def main(argv):
     try:
@@ -205,14 +216,12 @@ class ReleaseBuilder(object):
         js_entrypoint = join(self.application_dir, module_name, module_name + '.js')
         out = ''
         if self.use_rollup:
-            rollup_process = subprocess.Popen([
-                devtools_paths.node_path(),
-                devtools_paths.rollup_path(), '--config',
-                join(FRONT_END_DIRECTORY, 'rollup.config.js'), '--input',
-                js_entrypoint
-            ],
-                                              stdout=subprocess.PIPE,
-                                              stderr=subprocess.PIPE)
+            rollup_process = subprocess.Popen(
+                [devtools_paths.node_path(),
+                 devtools_paths.rollup_path()] + ROLLUP_ARGS +
+                ['--input', js_entrypoint],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE)
             out, error = rollup_process.communicate()
         else:
             out = read_file(js_entrypoint)

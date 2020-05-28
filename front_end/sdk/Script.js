@@ -60,9 +60,6 @@ export class Script {
       debuggerModel, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash,
       isContentScript, isLiveEdit, sourceMapURL, hasSourceURL, length, originStackTrace, codeOffset, scriptLanguage,
       debugSymbols) {
-    /** @type {?string} */
-    this._source;
-
     this.debuggerModel = debuggerModel;
     this.scriptId = scriptId;
     this.sourceURL = sourceURL;
@@ -83,11 +80,14 @@ export class Script {
     this.debugSymbols = debugSymbols;
     this.hasSourceURL = hasSourceURL;
     this.contentLength = length;
+    /** @type {?TextUtils.ContentProvider.ContentProvider} */
     this._originalContentProvider = null;
-    this._originalSource = null;
     this.originStackTrace = originStackTrace;
     this._codeOffset = codeOffset;
     this._language = scriptLanguage;
+    /** @type {?Promise<!TextUtils.ContentProvider.DeferredContent>} */
+    this._contentPromise = null;
+    // TODO(bmeurer): Remove these wasm specific fields, since they cause races.
     this._lineMap = null;
     this._functionBodyOffsets = null;
   }
@@ -185,51 +185,11 @@ export class Script {
    * @override
    * @return {!Promise<!TextUtils.ContentProvider.DeferredContent>}
    */
-  async requestContent() {
-    if (this._source) {
-      return {content: this._source, isEncoded: false};
+  requestContent() {
+    if (!this._contentPromise) {
+      this._contentPromise = this.originalContentProvider().requestContent();
     }
-    if (!this.scriptId) {
-      return {content: null, error: ls`Script removed or deleted.`, isEncoded: false};
-    }
-
-    try {
-      const sourceOrBytecode =
-          await this.debuggerModel.target().debuggerAgent().invoke_getScriptSource({scriptId: this.scriptId});
-      const source = sourceOrBytecode.scriptSource;
-      if (source) {
-        if (this.hasSourceURL) {
-          this._source = Script._trimSourceURLComment(source);
-        } else {
-          this._source = source;
-        }
-      } else {
-        this._source = '';
-        if (sourceOrBytecode.bytecode) {
-          const worker = new Common.Worker.WorkerWrapper('wasmparser_worker_entrypoint');
-          /** @type {!Promise<!MessageEvent>} */
-          const promise = new Promise(function(resolve, reject) {
-            worker.onmessage = resolve;
-            worker.onerror = reject;
-          });
-          worker.postMessage({method: 'disassemble', params: {content: sourceOrBytecode.bytecode}});
-
-          /** @type {{source: string, offsets: ?Array<number>, functionBodyOffsets: ?Array<{start: number, end: number}>}} */
-          const data = (await promise).data;
-          this._source = data.source;
-          this._lineMap = data.offsets;
-          this._functionBodyOffsets = data.functionBodyOffsets;
-          this.endLine = (this._lineMap && this._lineMap.length) || 0;
-        }
-      }
-
-      if (this._originalSource === null) {
-        this._originalSource = this._source;
-      }
-      return {content: this._source, isEncoded: false};
-    } catch (err) {
-      return {content: null, error: ls`Unable to fetch script source.`, isEncoded: false};
-    }
+    return this._contentPromise;
   }
 
   /**
@@ -246,14 +206,45 @@ export class Script {
    */
   originalContentProvider() {
     if (!this._originalContentProvider) {
-      const lazyContent = () => this.requestContent().then(() => {
-        return {
-          content: this._originalSource || '',
-          isEncoded: false,
-        };
-      });
+      /** @type {?Promise<!TextUtils.ContentProvider.DeferredContent>} } */
+      let lazyContentPromise;
       this._originalContentProvider =
-          new TextUtils.StaticContentProvider.StaticContentProvider(this.contentURL(), this.contentType(), lazyContent);
+          new TextUtils.StaticContentProvider.StaticContentProvider(this.contentURL(), this.contentType(), () => {
+            if (!lazyContentPromise) {
+              lazyContentPromise = (async () => {
+                if (!this.scriptId) {
+                  return {content: null, error: ls`Script removed or deleted.`, isEncoded: false};
+                }
+                try {
+                  const {scriptSource, bytecode} =
+                      await this.debuggerModel.target().debuggerAgent().invoke_getScriptSource(
+                          {scriptId: this.scriptId});
+                  let content = this.hasSourceURL ? Script._trimSourceURLComment(scriptSource) : scriptSource;
+                  if (bytecode) {
+                    const worker = new Common.Worker.WorkerWrapper('wasmparser_worker_entrypoint');
+                    /** @type {!Promise<!{source: string, offsets: ?Array<number>, functionBodyOffsets: ?Array<{start: number, end: number}>}>} */
+                    const promise = new Promise((resolve, reject) => {
+                      worker.onmessage = ({data}) => resolve(data);
+                      worker.onerror = reject;
+                    });
+                    worker.postMessage({method: 'disassemble', params: {content: bytecode}});
+
+                    const {source, offsets, functionBodyOffsets} = await promise;
+                    content = source;
+                    // TODO(chromium:1056632): This is racy
+                    this._lineMap = offsets;
+                    this._functionBodyOffsets = functionBodyOffsets;
+                  }
+
+                  return {content, isEncoded: false};
+                } catch (err) {
+                  // TODO(bmeurer): Propagate errors as exceptions / rejections.
+                  return {content: null, error: ls`Unable to fetch script source.`, isEncoded: false};
+                }
+              })();
+            }
+            return lazyContentPromise;
+          });
     }
     return this._originalContentProvider;
   }
@@ -301,8 +292,8 @@ export class Script {
       return;
     }
 
-    await this.requestContent();
-    if (this._source === newSource) {
+    const {content: oldSource} = await this.requestContent();
+    if (oldSource === newSource) {
       callback(null);
       return;
     }
@@ -310,7 +301,7 @@ export class Script {
         {scriptId: this.scriptId, scriptSource: newSource});
 
     if (!response.getError() && !response.exceptionDetails) {
-      this._source = newSource;
+      this._contentPromise = Promise.resolve({content: newSource, isEncoded: false});
     }
 
     const needsStepIn = !!response.stackChanged;

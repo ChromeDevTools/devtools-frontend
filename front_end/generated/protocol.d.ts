@@ -802,6 +802,29 @@ declare namespace Protocol {
     }
 
     /**
+     * Enum indicating the reason a response has been blocked. These reasons are
+     * refinements of the net error BLOCKED_BY_RESPONSE.
+     */
+    export enum BlockedByResponseReason {
+      CoepFrameResourceNeedsCoepHeader = 'CoepFrameResourceNeedsCoepHeader',
+      CoopSandboxedIFrameCannotNavigateToCoopPage = 'CoopSandboxedIFrameCannotNavigateToCoopPage',
+      CorpNotSameOrigin = 'CorpNotSameOrigin',
+      CorpNotSameOriginAfterDefaultedToSameOriginByCoep = 'CorpNotSameOriginAfterDefaultedToSameOriginByCoep',
+      CorpNotSameSite = 'CorpNotSameSite',
+    }
+
+    /**
+     * Details for a request that has been blocked with the BLOCKED_BY_RESPONSE
+     * code. Currently only used for COEP/COOP, but may be extended to include
+     * some CSP errors in the future.
+     */
+    export interface BlockedByResponseIssueDetails {
+      request: AffectedRequest;
+      frame?: AffectedFrame;
+      reason: BlockedByResponseReason;
+    }
+
+    /**
      * A unique identifier for the type of issue. Each type may use one of the
      * optional fields in InspectorIssueDetails to convey more specific
      * information about the kind of issue.
@@ -809,6 +832,7 @@ declare namespace Protocol {
     export enum InspectorIssueCode {
       SameSiteCookieIssue = 'SameSiteCookieIssue',
       MixedContentIssue = 'MixedContentIssue',
+      BlockedByResponseIssue = 'BlockedByResponseIssue',
     }
 
     /**
@@ -819,6 +843,7 @@ declare namespace Protocol {
     export interface InspectorIssueDetails {
       sameSiteCookieIssueDetails?: SameSiteCookieIssueDetails;
       mixedContentIssueDetails?: MixedContentIssueDetails;
+      blockedByResponseIssueDetails?: BlockedByResponseIssueDetails;
     }
 
     /**
@@ -6080,6 +6105,14 @@ declare namespace Protocol {
        */
       workerReady: number;
       /**
+       * Started fetch event.
+       */
+      workerFetchStart: number;
+      /**
+       * Settled fetch event respondWith promise.
+       */
+      workerRespondWithSettled: number;
+      /**
        * Started sending request.
        */
       sendStart: number;
@@ -6294,6 +6327,16 @@ declare namespace Protocol {
     }
 
     /**
+     * Source of serviceworker response.
+     */
+    export enum ServiceWorkerResponseSource {
+      CacheStorage = 'cache-storage',
+      HttpCache = 'http-cache',
+      FallbackCode = 'fallback-code',
+      Network = 'network',
+    }
+
+    /**
      * HTTP response data.
      */
     export interface Response {
@@ -6365,6 +6408,18 @@ declare namespace Protocol {
        * Timing information for the given request.
        */
       timing?: ResourceTiming;
+      /**
+       * Response source of response from ServiceWorker.
+       */
+      serviceWorkerResponseSource?: ServiceWorkerResponseSource;
+      /**
+       * The time at which the returned response was generated.
+       */
+      responseTime?: TimeSinceEpoch;
+      /**
+       * Cache Storage Cache Name.
+       */
+      cacheStorageCacheName?: string;
       /**
        * Protocol used to fetch this request.
        */
@@ -7692,6 +7747,48 @@ declare namespace Protocol {
   export namespace Overlay {
 
     /**
+     * Configuration data for the highlighting of Grid elements.
+     */
+    export interface GridHighlightConfig {
+      /**
+       * Whether the extension lines from grid cells to the rulers should be shown (default: false).
+       */
+      showGridExtensionLines?: boolean;
+      /**
+       * The grid container border highlight color (default: transparent).
+       */
+      gridBorderColor?: DOM.RGBA;
+      /**
+       * The cell border color (default: transparent).
+       */
+      cellBorderColor?: DOM.RGBA;
+      /**
+       * Whether the grid border is dashed (default: false).
+       */
+      gridBorderDash?: boolean;
+      /**
+       * Whether the cell border is dashed (default: false).
+       */
+      cellBorderDash?: boolean;
+      /**
+       * The row gap highlight fill color (default: transparent).
+       */
+      rowGapColor?: DOM.RGBA;
+      /**
+       * The row gap hatching fill color (default: transparent).
+       */
+      rowHatchColor?: DOM.RGBA;
+      /**
+       * The column gap highlight fill color (default: transparent).
+       */
+      columnGapColor?: DOM.RGBA;
+      /**
+       * The column gap hatching fill color (default: transparent).
+       */
+      columnHatchColor?: DOM.RGBA;
+    }
+
+    /**
      * Configuration data for the highlighting of page elements.
      */
     export interface HighlightConfig {
@@ -7747,6 +7844,10 @@ declare namespace Protocol {
        * The color format used to format color styles (default: hex).
        */
       colorFormat?: ColorFormat;
+      /**
+       * The grid layout highlight configuration (default: all transparent).
+       */
+      gridHighlightConfig?: GridHighlightConfig;
     }
 
     export enum ColorFormat {
@@ -9231,6 +9332,10 @@ declare namespace Protocol {
        * URL of the resource being downloaded.
        */
       url: string;
+      /**
+       * Suggested file name of the resource (the actual name of the file saved on disk may differ).
+       */
+      suggestedFilename: string;
     }
 
     export enum DownloadProgressEventState {

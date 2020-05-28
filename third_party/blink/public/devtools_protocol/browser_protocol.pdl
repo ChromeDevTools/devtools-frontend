@@ -558,6 +558,25 @@ experimental domain Audits
       # Optional because not every mixed content issue is necessarily linked to a frame.
       optional AffectedFrame frame
 
+  # Enum indicating the reason a response has been blocked. These reasons are
+  # refinements of the net error BLOCKED_BY_RESPONSE.
+  type BlockedByResponseReason extends string
+    enum
+      CoepFrameResourceNeedsCoepHeader
+      CoopSandboxedIFrameCannotNavigateToCoopPage
+      CorpNotSameOrigin
+      CorpNotSameOriginAfterDefaultedToSameOriginByCoep
+      CorpNotSameSite
+
+  # Details for a request that has been blocked with the BLOCKED_BY_RESPONSE
+  # code. Currently only used for COEP/COOP, but may be extended to include
+  # some CSP errors in the future.
+  type BlockedByResponseIssueDetails extends object
+    properties
+      AffectedRequest request
+      optional AffectedFrame frame
+      BlockedByResponseReason reason
+
   # A unique identifier for the type of issue. Each type may use one of the
   # optional fields in InspectorIssueDetails to convey more specific
   # information about the kind of issue.
@@ -565,6 +584,8 @@ experimental domain Audits
     enum
       SameSiteCookieIssue
       MixedContentIssue
+      BlockedByResponseIssue
+
 
   # This struct holds a list of optional fields with additional information
   # specific to the kind of issue. When adding a new issue code, please also
@@ -573,6 +594,7 @@ experimental domain Audits
     properties
       optional SameSiteCookieIssueDetails sameSiteCookieIssueDetails
       optional MixedContentIssueDetails mixedContentIssueDetails
+      optional BlockedByResponseIssueDetails blockedByResponseIssueDetails
 
   # An inspector issue reported from the back-end.
   type InspectorIssue extends object
@@ -4118,6 +4140,10 @@ domain Network
       experimental number workerStart
       # Finished Starting ServiceWorker.
       experimental number workerReady
+      # Started fetch event.
+      experimental number workerFetchStart
+      # Settled fetch event respondWith promise.
+      experimental number workerRespondWithSettled
       # Started sending request.
       number sendStart
       # Finished sending request.
@@ -4244,6 +4270,14 @@ domain Network
       corp-not-same-origin-after-defaulted-to-same-origin-by-coep
       corp-not-same-site
 
+  # Source of serviceworker response.
+  type ServiceWorkerResponseSource extends string
+    enum
+      cache-storage
+      http-cache
+      fallback-code
+      network
+
   # HTTP response data.
   type Response extends object
     properties
@@ -4281,6 +4315,12 @@ domain Network
       number encodedDataLength
       # Timing information for the given request.
       optional ResourceTiming timing
+      # Response source of response from ServiceWorker.
+      optional ServiceWorkerResponseSource serviceWorkerResponseSource
+      # The time at which the returned response was generated.
+      optional TimeSinceEpoch responseTime
+      # Cache Storage Cache Name.
+      optional string cacheStorageCacheName
       # Protocol used to fetch this request.
       optional string protocol
       # Security state of the request resource.
@@ -5140,6 +5180,28 @@ experimental domain Overlay
   depends on Page
   depends on Runtime
 
+  # Configuration data for the highlighting of Grid elements.
+  type GridHighlightConfig extends object
+    properties
+      # Whether the extension lines from grid cells to the rulers should be shown (default: false).
+      optional boolean showGridExtensionLines
+      # The grid container border highlight color (default: transparent).
+      optional DOM.RGBA gridBorderColor
+      # The cell border color (default: transparent).
+      optional DOM.RGBA cellBorderColor
+      # Whether the grid border is dashed (default: false).
+      optional boolean gridBorderDash
+      # Whether the cell border is dashed (default: false).
+      optional boolean cellBorderDash
+      # The row gap highlight fill color (default: transparent).
+      optional DOM.RGBA rowGapColor
+      # The row gap hatching fill color (default: transparent).
+      optional DOM.RGBA rowHatchColor
+      # The column gap highlight fill color (default: transparent).
+      optional DOM.RGBA columnGapColor
+      # The column gap hatching fill color (default: transparent).
+      optional DOM.RGBA columnHatchColor
+
   # Configuration data for the highlighting of page elements.
   type HighlightConfig extends object
     properties
@@ -5169,6 +5231,8 @@ experimental domain Overlay
       optional DOM.RGBA cssGridColor
       # The color format used to format color styles (default: hex).
       optional ColorFormat colorFormat
+      # The grid layout highlight configuration (default: all transparent).
+      optional GridHighlightConfig gridHighlightConfig
 
   type ColorFormat extends string
     enum
@@ -6209,6 +6273,8 @@ domain Page
       string guid
       # URL of the resource being downloaded.
       string url
+      # Suggested file name of the resource (the actual name of the file saved on disk may differ).
+      string suggestedFilename
 
   # Fired when download makes progress. Last call has |done| == true.
   experimental event downloadProgress

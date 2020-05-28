@@ -238,6 +238,8 @@ export class Importer {
 
       workerStart: -1,
       workerReady: -1,
+      workerFetchStart: -1,
+      workerRespondWithSettled: -1,
       sendStart: timings.send >= 0 ? lastEntry : -1,
       sendEnd: accumulateTime(timings.send),
       pushStart: 0,

@@ -214,9 +214,18 @@ export function registerCommands(inspectorBackend) {
     XMLHttpRequest: 'XMLHttpRequest',
     XSLT: 'XSLT'
   });
-  inspectorBackend.registerEnum(
-      'Audits.InspectorIssueCode',
-      {SameSiteCookieIssue: 'SameSiteCookieIssue', MixedContentIssue: 'MixedContentIssue'});
+  inspectorBackend.registerEnum('Audits.BlockedByResponseReason', {
+    CoepFrameResourceNeedsCoepHeader: 'CoepFrameResourceNeedsCoepHeader',
+    CoopSandboxedIFrameCannotNavigateToCoopPage: 'CoopSandboxedIFrameCannotNavigateToCoopPage',
+    CorpNotSameOrigin: 'CorpNotSameOrigin',
+    CorpNotSameOriginAfterDefaultedToSameOriginByCoep: 'CorpNotSameOriginAfterDefaultedToSameOriginByCoep',
+    CorpNotSameSite: 'CorpNotSameSite'
+  });
+  inspectorBackend.registerEnum('Audits.InspectorIssueCode', {
+    SameSiteCookieIssue: 'SameSiteCookieIssue',
+    MixedContentIssue: 'MixedContentIssue',
+    BlockedByResponseIssue: 'BlockedByResponseIssue'
+  });
   inspectorBackend.registerEvent('Audits.issueAdded', ['issue']);
   inspectorBackend.registerEnum('Audits.GetEncodedResponseRequestEncoding', {Webp: 'webp', Jpeg: 'jpeg', Png: 'png'});
   inspectorBackend.registerCommand(
@@ -1344,6 +1353,9 @@ export function registerCommands(inspectorBackend) {
     CorpNotSameSite: 'corp-not-same-site'
   });
   inspectorBackend.registerEnum(
+      'Network.ServiceWorkerResponseSource',
+      {CacheStorage: 'cache-storage', HttpCache: 'http-cache', FallbackCode: 'fallback-code', Network: 'network'});
+  inspectorBackend.registerEnum(
       'Network.InitiatorType',
       {Parser: 'parser', Script: 'script', Preload: 'preload', SignedExchange: 'SignedExchange', Other: 'other'});
   inspectorBackend.registerEnum('Network.SetCookieBlockedReason', {
@@ -1665,7 +1677,7 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEvent('Page.frameScheduledNavigation', ['frameId', 'delay', 'reason', 'url']);
   inspectorBackend.registerEvent('Page.frameStartedLoading', ['frameId']);
   inspectorBackend.registerEvent('Page.frameStoppedLoading', ['frameId']);
-  inspectorBackend.registerEvent('Page.downloadWillBegin', ['frameId', 'guid', 'url']);
+  inspectorBackend.registerEvent('Page.downloadWillBegin', ['frameId', 'guid', 'url', 'suggestedFilename']);
   inspectorBackend.registerEvent('Page.downloadProgress', ['guid', 'totalBytes', 'receivedBytes', 'state']);
   inspectorBackend.registerEvent('Page.interstitialHidden', []);
   inspectorBackend.registerEvent('Page.interstitialShown', []);

@@ -1120,12 +1120,45 @@
                     ]
                 },
                 {
+                    "id": "BlockedByResponseReason",
+                    "description": "Enum indicating the reason a response has been blocked. These reasons are\nrefinements of the net error BLOCKED_BY_RESPONSE.",
+                    "type": "string",
+                    "enum": [
+                        "CoepFrameResourceNeedsCoepHeader",
+                        "CoopSandboxedIFrameCannotNavigateToCoopPage",
+                        "CorpNotSameOrigin",
+                        "CorpNotSameOriginAfterDefaultedToSameOriginByCoep",
+                        "CorpNotSameSite"
+                    ]
+                },
+                {
+                    "id": "BlockedByResponseIssueDetails",
+                    "description": "Details for a request that has been blocked with the BLOCKED_BY_RESPONSE\ncode. Currently only used for COEP/COOP, but may be extended to include\nsome CSP errors in the future.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "request",
+                            "$ref": "AffectedRequest"
+                        },
+                        {
+                            "name": "frame",
+                            "optional": true,
+                            "$ref": "AffectedFrame"
+                        },
+                        {
+                            "name": "reason",
+                            "$ref": "BlockedByResponseReason"
+                        }
+                    ]
+                },
+                {
                     "id": "InspectorIssueCode",
                     "description": "A unique identifier for the type of issue. Each type may use one of the\noptional fields in InspectorIssueDetails to convey more specific\ninformation about the kind of issue.",
                     "type": "string",
                     "enum": [
                         "SameSiteCookieIssue",
-                        "MixedContentIssue"
+                        "MixedContentIssue",
+                        "BlockedByResponseIssue"
                     ]
                 },
                 {
@@ -1142,6 +1175,11 @@
                             "name": "mixedContentIssueDetails",
                             "optional": true,
                             "$ref": "MixedContentIssueDetails"
+                        },
+                        {
+                            "name": "blockedByResponseIssueDetails",
+                            "optional": true,
+                            "$ref": "BlockedByResponseIssueDetails"
                         }
                     ]
                 },
@@ -8992,6 +9030,18 @@
                             "type": "number"
                         },
                         {
+                            "name": "workerFetchStart",
+                            "description": "Started fetch event.",
+                            "experimental": true,
+                            "type": "number"
+                        },
+                        {
+                            "name": "workerRespondWithSettled",
+                            "description": "Settled fetch event respondWith promise.",
+                            "experimental": true,
+                            "type": "number"
+                        },
+                        {
                             "name": "sendStart",
                             "description": "Started sending request.",
                             "type": "number"
@@ -9262,6 +9312,17 @@
                     ]
                 },
                 {
+                    "id": "ServiceWorkerResponseSource",
+                    "description": "Source of serviceworker response.",
+                    "type": "string",
+                    "enum": [
+                        "cache-storage",
+                        "http-cache",
+                        "fallback-code",
+                        "network"
+                    ]
+                },
+                {
                     "id": "Response",
                     "description": "HTTP response data.",
                     "type": "object",
@@ -9359,6 +9420,24 @@
                             "description": "Timing information for the given request.",
                             "optional": true,
                             "$ref": "ResourceTiming"
+                        },
+                        {
+                            "name": "serviceWorkerResponseSource",
+                            "description": "Response source of response from ServiceWorker.",
+                            "optional": true,
+                            "$ref": "ServiceWorkerResponseSource"
+                        },
+                        {
+                            "name": "responseTime",
+                            "description": "The time at which the returned response was generated.",
+                            "optional": true,
+                            "$ref": "TimeSinceEpoch"
+                        },
+                        {
+                            "name": "cacheStorageCacheName",
+                            "description": "Cache Storage Cache Name.",
+                            "optional": true,
+                            "type": "string"
                         },
                         {
                             "name": "protocol",
@@ -11150,6 +11229,67 @@
             ],
             "types": [
                 {
+                    "id": "GridHighlightConfig",
+                    "description": "Configuration data for the highlighting of Grid elements.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "showGridExtensionLines",
+                            "description": "Whether the extension lines from grid cells to the rulers should be shown (default: false).",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "gridBorderColor",
+                            "description": "The grid container border highlight color (default: transparent).",
+                            "optional": true,
+                            "$ref": "DOM.RGBA"
+                        },
+                        {
+                            "name": "cellBorderColor",
+                            "description": "The cell border color (default: transparent).",
+                            "optional": true,
+                            "$ref": "DOM.RGBA"
+                        },
+                        {
+                            "name": "gridBorderDash",
+                            "description": "Whether the grid border is dashed (default: false).",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "cellBorderDash",
+                            "description": "Whether the cell border is dashed (default: false).",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "rowGapColor",
+                            "description": "The row gap highlight fill color (default: transparent).",
+                            "optional": true,
+                            "$ref": "DOM.RGBA"
+                        },
+                        {
+                            "name": "rowHatchColor",
+                            "description": "The row gap hatching fill color (default: transparent).",
+                            "optional": true,
+                            "$ref": "DOM.RGBA"
+                        },
+                        {
+                            "name": "columnGapColor",
+                            "description": "The column gap highlight fill color (default: transparent).",
+                            "optional": true,
+                            "$ref": "DOM.RGBA"
+                        },
+                        {
+                            "name": "columnHatchColor",
+                            "description": "The column gap hatching fill color (default: transparent).",
+                            "optional": true,
+                            "$ref": "DOM.RGBA"
+                        }
+                    ]
+                },
+                {
                     "id": "HighlightConfig",
                     "description": "Configuration data for the highlighting of page elements.",
                     "type": "object",
@@ -11231,6 +11371,12 @@
                             "description": "The color format used to format color styles (default: hex).",
                             "optional": true,
                             "$ref": "ColorFormat"
+                        },
+                        {
+                            "name": "gridHighlightConfig",
+                            "description": "The grid layout highlight configuration (default: all transparent).",
+                            "optional": true,
+                            "$ref": "GridHighlightConfig"
                         }
                     ]
                 },
@@ -13441,6 +13587,11 @@
                         {
                             "name": "url",
                             "description": "URL of the resource being downloaded.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "suggestedFilename",
+                            "description": "Suggested file name of the resource (the actual name of the file saved on disk may differ).",
                             "type": "string"
                         }
                     ]

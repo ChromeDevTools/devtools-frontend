@@ -126,6 +126,15 @@ export const typeText = async (text: string) => {
   await frontend.keyboard.type(text);
 };
 
+export const pasteText = async (text: string) => {
+  const {frontend} = getBrowserAndPages();
+  if (!frontend) {
+    throw new Error('Unable to locate DevTools frontend page. Was it stored first?');
+  }
+
+  await frontend.keyboard.sendCharacter(text);
+};
+
 // Get a single element handle, across Shadow DOM boundaries.
 export const $ = async (selector: string, root?: puppeteer.JSHandle) => {
   const {frontend} = getBrowserAndPages();

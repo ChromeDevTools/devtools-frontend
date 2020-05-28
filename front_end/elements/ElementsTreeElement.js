@@ -306,6 +306,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
    * @override
    */
   onunbind() {
+    if (this._editing) {
+      this._editing.cancel();
+    }
     if (this._node[this.treeOutline.treeElementSymbol()] === this) {
       this._node[this.treeOutline.treeElementSymbol()] = null;
     }

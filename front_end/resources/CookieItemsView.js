@@ -130,6 +130,7 @@ export class CookieItemsView extends StorageItemsView {
 
     if (!preview) {
       preview = new UI.EmptyWidget.EmptyWidget(ls`Select a cookie to preview its value`);
+      preview.element.classList.add('cookie-value');
     }
 
     this._previewValue = value;
@@ -232,6 +233,7 @@ export class CookieItemsView extends StorageItemsView {
    * @override
    */
   deleteAllItems() {
+    this._showPreview(null, null);
     this._model.clear(this._cookieDomain).then(() => this.refreshItems());
   }
 
@@ -241,6 +243,7 @@ export class CookieItemsView extends StorageItemsView {
   deleteSelectedItem() {
     const selectedCookie = this._cookiesTable.selectedCookie();
     if (selectedCookie) {
+      this._showPreview(null, null);
       this._model.deleteCookie(selectedCookie).then(() => this.refreshItems());
     }
   }

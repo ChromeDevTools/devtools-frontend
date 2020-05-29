@@ -85,3 +85,17 @@ interface HTMLElement {
   createChild(tagName: string, className?: string, content?: string): HTMLElement;
   createSVGChild(childType: string, className?: string): HTMLElement;
 }
+
+interface Element {
+  createChild(tagName: string, className?: string, content?: string): Element;
+  createTextChild(text: string): Text;
+  removeChildren(): void;
+}
+
+interface Event {
+  consume(preventDefault: boolean): void;
+}
+
+interface Node {
+  getComponentSelection(): Selection|null;
+}

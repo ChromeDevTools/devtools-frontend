@@ -12,8 +12,8 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!ContrastInfo} contrastInfo
    * @param {!Element} contentElement
-   * @param {function(boolean=, !Common.EventTarget.EventTargetEvent=)} toggleMainColorPickerCallback
-   * @param {function()} expandedChangedCallback
+   * @param {function(boolean=, !Common.EventTarget.EventTargetEvent=):void} toggleMainColorPickerCallback
+   * @param {function():void} expandedChangedCallback
    */
   constructor(contrastInfo, contentElement, toggleMainColorPickerCallback, expandedChangedCallback) {
     super();
@@ -23,10 +23,10 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
     /** @type {!Element} */
     this._element = contentElement.createChild('div', 'spectrum-contrast-details collapsed');
 
-    /** @type {function(boolean=, !Common.EventTarget.EventTargetEvent=)} */
+    /** @type {function(boolean=, !Common.EventTarget.EventTargetEvent=):void} */
     this._toggleMainColorPicker = toggleMainColorPickerCallback;
 
-    /** @type {function()} */
+    /** @type {function():void} */
     this._expandedChangedCallback = expandedChangedCallback;
 
     /** @type {boolean} */
@@ -57,6 +57,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
 
     this._contrastValueBubble = contrastValueRowContents.createChild('span', 'contrast-details-value');
     this._contrastValue = this._contrastValueBubble.createChild('span');
+    /** @type {!Array<!Node>} */
     this._contrastValueBubbleIcons = [];
     this._contrastValueBubbleIcons.push(
         this._contrastValueBubble.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square')));
@@ -142,8 +143,9 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
 
     this._bgColorSwatch.setColors(fgColor, bgColor);
 
-    const aa = this._contrastInfo.contrastRatioThreshold('aa');
-    this._passesAA = this._contrastInfo.contrastRatio() >= aa;
+    // In greater then comparisons we can substite null with 0.
+    const aa = this._contrastInfo.contrastRatioThreshold('aa') || 0;
+    this._passesAA = (this._contrastInfo.contrastRatio() || 0) >= aa;
     this._contrastPassFailAA.removeChildren();
     const labelAA = this._contrastPassFailAA.createChild('span', 'contrast-link-label');
     labelAA.textContent = Common.UIString.UIString('AA');
@@ -154,8 +156,9 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
       this._contrastPassFailAA.appendChild(UI.Icon.Icon.create('smallicon-no'));
     }
 
-    const aaa = this._contrastInfo.contrastRatioThreshold('aaa');
-    const passesAAA = this._contrastInfo.contrastRatio() >= aaa;
+    // In greater then comparisons we can substite null with 0.
+    const aaa = this._contrastInfo.contrastRatioThreshold('aaa') || 0;
+    const passesAAA = (this._contrastInfo.contrastRatio() || 0) >= aaa;
     this._contrastPassFailAAA.removeChildren();
     const labelAAA = this._contrastPassFailAAA.createChild('span', 'contrast-link-label');
     labelAAA.textContent = Common.UIString.UIString('AAA');
@@ -204,7 +207,10 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _expandButtonClicked(event) {
-    this._contrastValueBubble.getComponentSelection().empty();
+    const selection = this._contrastValueBubble.getComponentSelection();
+    if (selection) {
+      selection.empty();
+    }
     this._toggleExpanded();
   }
 
@@ -212,7 +218,10 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!Event} event
    */
   _topRowClicked(event) {
-    this._contrastValueBubble.getComponentSelection().empty();
+    const selection = this._contrastValueBubble.getComponentSelection();
+    if (selection) {
+      selection.empty();
+    }
     this._toggleExpanded();
     event.consume(true);
   }
@@ -312,8 +321,8 @@ export class Swatch {
   constructor(parentElement) {
     this._parentElement = parentElement;
     this._swatchElement = parentElement.createChild('span', 'swatch contrast swatch-inner-white');
-    this._swatchInnerElement = this._swatchElement.createChild('span', 'swatch-inner');
-    this._textPreview = this._swatchElement.createChild('div', 'text-preview');
+    this._swatchInnerElement = /** @type {!HTMLElement} */ (this._swatchElement.createChild('span', 'swatch-inner'));
+    this._textPreview = /** @type {!HTMLElement} */ (this._swatchElement.createChild('div', 'text-preview'));
     this._textPreview.textContent = 'Aa';
   }
 

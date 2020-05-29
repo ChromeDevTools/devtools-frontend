@@ -366,7 +366,7 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
 
     // The order of these plugins matters for toolbar items
     if (DebuggerPlugin.accepts(pluginUISourceCode)) {
-      this._plugins.push(new DebuggerPlugin(this.textEditor, pluginUISourceCode, this.transformer()));
+      this._plugins.push(new DebuggerPlugin(this.textEditor, pluginUISourceCode, this));
     }
     if (CSSPlugin.accepts(pluginUISourceCode)) {
       this._plugins.push(new CSSPlugin(this.textEditor));
@@ -439,9 +439,9 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
   async populateTextAreaContextMenu(contextMenu, editorLineNumber, editorColumnNumber) {
     await super.populateTextAreaContextMenu(contextMenu, editorLineNumber, editorColumnNumber);
     contextMenu.appendApplicableItems(this._uiSourceCode);
-    const location = this.transformer().editorToRawLocation(editorLineNumber, editorColumnNumber);
+    const location = this.editorLocationToUILocation(editorLineNumber, editorColumnNumber);
     contextMenu.appendApplicableItems(
-        new Workspace.UISourceCode.UILocation(this._uiSourceCode, location[0], location[1]));
+        new Workspace.UISourceCode.UILocation(this._uiSourceCode, location.lineNumber, location.columnNumber));
     contextMenu.appendApplicableItems(this);
     for (const plugin of this._plugins) {
       await plugin.populateTextAreaContextMenu(contextMenu, editorLineNumber, editorColumnNumber);
@@ -468,20 +468,28 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
 
   /**
    * @param {!Workspace.UISourceCode.Message} message
+   * @return {number}
+   */
+  _getClampedEditorLineNumberForMessage(message) {
+    let {lineNumber} = this.uiLocationToEditorLocation(message.lineNumber(), message.columnNumber());
+    if (lineNumber >= this.textEditor.linesCount) {
+      lineNumber = this.textEditor.linesCount - 1;
+    }
+    if (lineNumber < 0) {
+      lineNumber = 0;
+    }
+    return lineNumber;
+  }
+
+  /**
+   * @param {!Workspace.UISourceCode.Message} message
    */
   _addMessageToSource(message) {
     if (!this.loaded) {
       return;
     }
-    const editorLocation = this.transformer().rawToEditorLocation(message.lineNumber(), message.columnNumber());
-    let editorLineNumber = editorLocation[0];
-    if (editorLineNumber >= this.textEditor.linesCount) {
-      editorLineNumber = this.textEditor.linesCount - 1;
-    }
-    if (editorLineNumber < 0) {
-      editorLineNumber = 0;
-    }
 
+    const editorLineNumber = this._getClampedEditorLineNumberForMessage(message);
     let messageBucket = this._rowMessageBuckets.get(editorLineNumber);
     if (!messageBucket) {
       messageBucket = new RowMessageBucket(this, this.textEditor, editorLineNumber);
@@ -506,15 +514,7 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
       return;
     }
 
-    const editorLocation = this.transformer().rawToEditorLocation(message.lineNumber(), message.columnNumber());
-    let editorLineNumber = editorLocation[0];
-    if (editorLineNumber >= this.textEditor.linesCount) {
-      editorLineNumber = this.textEditor.linesCount - 1;
-    }
-    if (editorLineNumber < 0) {
-      editorLineNumber = 0;
-    }
-
+    const editorLineNumber = this._getClampedEditorLineNumberForMessage(message);
     const messageBucket = this._rowMessageBuckets.get(editorLineNumber);
     if (!messageBucket) {
       return;
@@ -835,9 +835,9 @@ export class RowMessageBucket {
     let maxMessage = null;
     for (let i = 0; i < this._messages.length; ++i) {
       const message = this._messages[i].message();
-      const editorLocation =
-          this._sourceFrame.transformer().rawToEditorLocation(editorLineNumber, message.columnNumber());
-      columnNumber = Math.min(columnNumber, editorLocation[1]);
+      const {columnNumber: editorColumnNumber} =
+          this._sourceFrame.uiLocationToEditorLocation(editorLineNumber, message.columnNumber());
+      columnNumber = Math.min(columnNumber, editorColumnNumber);
       if (!maxMessage || Workspace.UISourceCode.Message.messageLevelComparator(maxMessage, message) < 0) {
         maxMessage = message;
       }

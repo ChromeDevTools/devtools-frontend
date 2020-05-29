@@ -42,6 +42,7 @@ import {Events, SourcesTextEditor, SourcesTextEditorDelegate} from './SourcesTex
  * @implements {UI.SearchableView.Searchable}
  * @implements {UI.SearchableView.Replaceable}
  * @implements {SourcesTextEditorDelegate}
+ * @implements {Transformer}
  * @unrestricted
  */
 export class SourceFrameImpl extends UI.View.SimpleView {
@@ -110,32 +111,32 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     this._loaded = false;
     this._contentRequested = false;
     this._highlighterType = '';
-    /** @type {!Transformer} */
-    this._transformer = {
-      /**
-       * @param {number} editorLineNumber
-       * @param {number=} editorColumnNumber
-       * @return {!Array<number>}
-       */
-      editorToRawLocation: (editorLineNumber, editorColumnNumber = 0) => {
-        if (!this._pretty) {
-          return [editorLineNumber, editorColumnNumber];
-        }
-        return this._prettyToRawLocation(editorLineNumber, editorColumnNumber);
-      },
+  }
 
-      /**
-       * @param {number} lineNumber
-       * @param {number=} columnNumber
-       * @return {!Array<number>}
-       */
-      rawToEditorLocation: (lineNumber, columnNumber = 0) => {
-        if (!this._pretty) {
-          return [lineNumber, columnNumber];
-        }
-        return this._rawToPrettyLocation(lineNumber, columnNumber);
-      }
-    };
+  /**
+   * @override
+   * @param {number} lineNumber
+   * @param {number=} columnNumber
+   * @return {{lineNumber: number, columnNumber: number}}
+   */
+  editorLocationToUILocation(lineNumber, columnNumber = 0) {
+    if (this._pretty) {
+      [lineNumber, columnNumber] = this._prettyToRawLocation(lineNumber, columnNumber);
+    }
+    return {lineNumber, columnNumber};
+  }
+
+  /**
+   * @override
+   * @param {number} lineNumber
+   * @param {number=} columnNumber
+   * @return {{lineNumber: number, columnNumber: number}}
+   */
+  uiLocationToEditorLocation(lineNumber, columnNumber = 0) {
+    if (this._pretty) {
+      [lineNumber, columnNumber] = this._rawToPrettyLocation(lineNumber, columnNumber);
+    }
+    return {lineNumber, columnNumber};
   }
 
   /**
@@ -201,14 +202,6 @@ export class SourceFrameImpl extends UI.View.SimpleView {
       });
     }
   }
-
-  /**
-   * @return {!Transformer}
-   */
-  transformer() {
-    return this._transformer;
-  }
-
 
   /**
    * @param {number} line
@@ -371,10 +364,10 @@ export class SourceFrameImpl extends UI.View.SimpleView {
       return;
     }
 
-    const [line, column] =
-        this._transformer.rawToEditorLocation(this._positionToReveal.line, this._positionToReveal.column);
+    const {lineNumber, columnNumber} =
+        this.uiLocationToEditorLocation(this._positionToReveal.line, this._positionToReveal.column);
 
-    this._textEditor.revealPosition(line, column, this._positionToReveal.shouldHighlight);
+    this._textEditor.revealPosition(lineNumber, columnNumber, this._positionToReveal.shouldHighlight);
     this._positionToReveal = null;
   }
 
@@ -855,9 +848,24 @@ export class LineDecorator {
 }
 
 /**
- * @typedef {{
- *  editorToRawLocation: function(number, number=):!Array<number>,
- *  rawToEditorLocation: function(number, number=):!Array<number>
- * }}
+ * @interface
  */
-export let Transformer;
+export class Transformer {
+  /**
+   * @param {number} lineNumber
+   * @param {number=} columnNumber
+   * @return {{lineNumber: number, columnNumber: number}}
+   */
+  editorLocationToUILocation(lineNumber, columnNumber) {
+    throw new Error('Not implemented');
+  }
+
+  /**
+   * @param {number} lineNumber
+   * @param {number=} columnNumber
+   * @return {{lineNumber: number, columnNumber: number}}
+   */
+  uiLocationToEditorLocation(lineNumber, columnNumber) {
+    throw new Error('Not implemented');
+  }
+}

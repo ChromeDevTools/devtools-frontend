@@ -13,14 +13,6 @@ import * as SourceFrame from './SourceFrame.js';
 import * as SourcesTextEditor from './SourcesTextEditor.js';
 import * as XMLView from './XMLView.js';
 
-/**
- * @typedef {{
-  *  editorToRawLocation: function(number, number=):!Array<number>,
-  *  rawToEditorLocation: function(number, number=):!Array<number>
-  * }}
-  */
-export let Transformer;
-
 export {
   BinaryResourceViewFactory,
   FontView,

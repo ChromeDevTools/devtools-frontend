@@ -780,8 +780,8 @@ export class DebuggerPlugin extends Plugin {
     }
 
     this._executionLocation = uiLocation;
-    const editorLocation = this._transformer.rawToEditorLocation(uiLocation.lineNumber, uiLocation.columnNumber);
-    this._textEditor.setExecutionLocation(editorLocation[0], editorLocation[1]);
+    const editorLocation = this._transformer.uiLocationToEditorLocation(uiLocation.lineNumber, uiLocation.columnNumber);
+    this._textEditor.setExecutionLocation(editorLocation.lineNumber, editorLocation.columnNumber);
     if (this._textEditor.isShowing()) {
       // We need SourcesTextEditor to be initialized prior to this call. @see crbug.com/506566
       setImmediate(() => {
@@ -843,15 +843,15 @@ export class DebuggerPlugin extends Plugin {
       locations = locations.reverse();
       let previousCallLine = -1;
       for (const location of locations) {
-        const editorLocation = this._transformer.rawToEditorLocation(location.lineNumber, location.columnNumber);
-        let token = this._textEditor.tokenAtTextPosition(editorLocation[0], editorLocation[1]);
+        const editorLocation = this._transformer.uiLocationToEditorLocation(location.lineNumber, location.columnNumber);
+        let token = this._textEditor.tokenAtTextPosition(editorLocation.lineNumber, editorLocation.columnNumber);
         if (!token) {
           continue;
         }
-        const line = this._textEditor.line(editorLocation[0]);
+        const line = this._textEditor.line(editorLocation.lineNumber);
         let tokenContent = line.substring(token.startColumn, token.endColumn);
         if (!token.type && tokenContent === '.') {
-          token = this._textEditor.tokenAtTextPosition(editorLocation[0], token.endColumn + 1);
+          token = this._textEditor.tokenAtTextPosition(editorLocation.lineNumber, token.endColumn + 1);
           tokenContent = line.substring(token.startColumn, token.endColumn);
         }
         if (!token.type) {
@@ -863,22 +863,23 @@ export class DebuggerPlugin extends Plugin {
         if (!validKeyword && !this._isIdentifier(token.type)) {
           continue;
         }
-        if (previousCallLine === editorLocation[0] && location.type !== Protocol.Debugger.BreakLocationType.Call) {
+        if (previousCallLine === editorLocation.lineNumber &&
+            location.type !== Protocol.Debugger.BreakLocationType.Call) {
           continue;
         }
 
         let highlightRange = new TextUtils.TextRange.TextRange(
-            editorLocation[0], token.startColumn, editorLocation[0], token.endColumn - 1);
+            editorLocation.lineNumber, token.startColumn, editorLocation.lineNumber, token.endColumn - 1);
         let decoration = this._textEditor.highlightRange(highlightRange, 'source-frame-continue-to-location');
         this._continueToLocationDecorations.set(decoration, location.continueToLocation.bind(location));
         if (location.type === Protocol.Debugger.BreakLocationType.Call) {
-          previousCallLine = editorLocation[0];
+          previousCallLine = editorLocation.lineNumber;
         }
 
         let isAsyncCall = (line[token.startColumn - 1] === '.' && tokenContent === 'then') ||
             tokenContent === 'setTimeout' || tokenContent === 'setInterval' || tokenContent === 'postMessage';
         if (tokenContent === 'new') {
-          token = this._textEditor.tokenAtTextPosition(editorLocation[0], token.endColumn + 1);
+          token = this._textEditor.tokenAtTextPosition(editorLocation.lineNumber, token.endColumn + 1);
           tokenContent = line.substring(token.startColumn, token.endColumn);
           isAsyncCall = tokenContent === 'Worker';
         }
@@ -887,10 +888,10 @@ export class DebuggerPlugin extends Plugin {
             location.columnNumber === this._executionLocation.columnNumber;
         if (location.type === Protocol.Debugger.BreakLocationType.Call && isAsyncCall) {
           const asyncStepInRange =
-              this._findAsyncStepInRange(this._textEditor, editorLocation[0], line, token.endColumn);
+              this._findAsyncStepInRange(this._textEditor, editorLocation.lineNumber, line, token.endColumn);
           if (asyncStepInRange) {
             highlightRange = new TextUtils.TextRange.TextRange(
-                editorLocation[0], asyncStepInRange.from, editorLocation[0], asyncStepInRange.to - 1);
+                editorLocation.lineNumber, asyncStepInRange.from, editorLocation.lineNumber, asyncStepInRange.to - 1);
             decoration = this._textEditor.highlightRange(highlightRange, 'source-frame-async-step-in');
             this._continueToLocationDecorations.set(
                 decoration, this._asyncStepIn.bind(this, location, !!isCurrentPosition));
@@ -1035,12 +1036,12 @@ export class DebuggerPlugin extends Plugin {
     }
 
     const functionEditorLocation =
-        this._transformer.rawToEditorLocation(functionUILocation.lineNumber, functionUILocation.columnNumber);
+        this._transformer.uiLocationToEditorLocation(functionUILocation.lineNumber, functionUILocation.columnNumber);
     const executionEditorLocation =
-        this._transformer.rawToEditorLocation(executionUILocation.lineNumber, executionUILocation.columnNumber);
-    const fromLine = functionEditorLocation[0];
-    const fromColumn = functionEditorLocation[1];
-    const toLine = executionEditorLocation[0];
+        this._transformer.uiLocationToEditorLocation(executionUILocation.lineNumber, executionUILocation.columnNumber);
+    const fromLine = functionEditorLocation.lineNumber;
+    const fromColumn = functionEditorLocation.columnNumber;
+    const toLine = executionEditorLocation.lineNumber;
     if (fromLine >= toLine || toLine - fromLine > 500 || fromLine < 0 || toLine >= this._textEditor.linesCount) {
       return;
     }
@@ -1365,8 +1366,9 @@ export class DebuggerPlugin extends Plugin {
       if (!editorLocation) {
         return;
       }
-      const location = this._transformer.editorToRawLocation(editorLocation.lineNumber, editorLocation.columnNumber);
-      await this._setBreakpoint(location[0], location[1], decoration.condition, true);
+      const location =
+          this._transformer.editorLocationToUILocation(editorLocation.lineNumber, editorLocation.columnNumber);
+      await this._setBreakpoint(location.lineNumber, location.columnNumber, decoration.condition, true);
     }
   }
 
@@ -1380,7 +1382,8 @@ export class DebuggerPlugin extends Plugin {
     if (!editorLocation) {
       return;
     }
-    const location = this._transformer.editorToRawLocation(editorLocation[0], editorLocation[1]);
+    const location =
+        this._transformer.editorLocationToUILocation(editorLocation.lineNumber, editorLocation.columnNumber);
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     if (decoration.breakpoint) {
       contextMenu.debugSection().appendItem(
@@ -1396,7 +1399,7 @@ export class DebuggerPlugin extends Plugin {
               this, editorLocation.lineNumber, null, editorLocation, true /* preferLogpoint */));
       contextMenu.debugSection().appendItem(
           Common.UIString.UIString('Never pause here'),
-          this._setBreakpoint.bind(this, location[0], location[1], 'false', true));
+          this._setBreakpoint.bind(this, location.lineNumber, location.columnNumber, 'false', true));
     }
     contextMenu.show();
   }
@@ -1438,15 +1441,15 @@ export class DebuggerPlugin extends Plugin {
    * @param {!Bindings.BreakpointManager.Breakpoint} breakpoint
    */
   _addBreakpoint(uiLocation, breakpoint) {
-    const editorLocation = this._transformer.rawToEditorLocation(uiLocation.lineNumber, uiLocation.columnNumber);
+    const editorLocation = this._transformer.uiLocationToEditorLocation(uiLocation.lineNumber, uiLocation.columnNumber);
     const lineDecorations = this._lineBreakpointDecorations(uiLocation.lineNumber);
-    let decoration = this._breakpointDecoration(editorLocation[0], editorLocation[1]);
+    let decoration = this._breakpointDecoration(editorLocation.lineNumber, editorLocation.columnNumber);
     if (decoration) {
       decoration.breakpoint = breakpoint;
       decoration.condition = breakpoint.condition();
       decoration.enabled = breakpoint.enabled();
     } else {
-      const handle = this._textEditor.textEditorPositionHandle(editorLocation[0], editorLocation[1]);
+      const handle = this._textEditor.textEditorPositionHandle(editorLocation.lineNumber, editorLocation.columnNumber);
       decoration = new BreakpointDecoration(
           this._textEditor, handle, breakpoint.condition(), breakpoint.enabled(),
           breakpoint.bound() || !breakpoint.hasBoundScript(), breakpoint);
@@ -1458,13 +1461,14 @@ export class DebuggerPlugin extends Plugin {
     this._decorationByBreakpoint.set(breakpoint, decoration);
     this._updateBreakpointDecoration(decoration);
     if (breakpoint.enabled() && !lineDecorations.length) {
-      this._possibleBreakpointsRequested.add(editorLocation[0]);
-      const start = this._transformer.editorToRawLocation(editorLocation[0], 0);
-      const end = this._transformer.editorToRawLocation(editorLocation[0] + 1, 0);
+      this._possibleBreakpointsRequested.add(editorLocation.lineNumber);
+      const start = this._transformer.editorLocationToUILocation(editorLocation.lineNumber, 0);
+      const end = this._transformer.editorLocationToUILocation(editorLocation.lineNumber + 1, 0);
       this._breakpointManager
           .possibleBreakpoints(
-              this._uiSourceCode, new TextUtils.TextRange.TextRange(start[0], start[1], end[0], end[1]))
-          .then(addInlineDecorations.bind(this, editorLocation[0]));
+              this._uiSourceCode,
+              new TextUtils.TextRange.TextRange(start.lineNumber, start.columnNumber, end.lineNumber, end.columnNumber))
+          .then(addInlineDecorations.bind(this, editorLocation.lineNumber));
     }
 
     /**
@@ -1493,14 +1497,15 @@ export class DebuggerPlugin extends Plugin {
       // Only consider the first 100 inline breakpoints, as DevTools might appear to hang while CodeMirror is updating
       // the inline breakpoints. See crbug.com/1060105.
       for (const location of possibleLocations.slice(0, 100)) {
-        const editorLocation = this._transformer.rawToEditorLocation(location.lineNumber, location.columnNumber);
-        if (editorLocation[0] !== editorLineNumber) {
+        const editorLocation = this._transformer.uiLocationToEditorLocation(location.lineNumber, location.columnNumber);
+        if (editorLocation.lineNumber !== editorLineNumber) {
           continue;
         }
-        if (columns.has(editorLocation[1])) {
+        if (columns.has(editorLocation.columnNumber)) {
           continue;
         }
-        const handle = this._textEditor.textEditorPositionHandle(editorLocation[0], editorLocation[1]);
+        const handle =
+            this._textEditor.textEditorPositionHandle(editorLocation.lineNumber, editorLocation.columnNumber);
         const decoration = new BreakpointDecoration(
             this._textEditor, handle, '', /** enabled */ false, /** bound */ false, /** breakpoint */ null);
         decoration.element.addEventListener('click', this._inlineBreakpointClick.bind(this, decoration), true);
@@ -1527,11 +1532,11 @@ export class DebuggerPlugin extends Plugin {
     }
     this._decorationByBreakpoint.delete(breakpoint);
 
-    const editorLocation = this._transformer.rawToEditorLocation(uiLocation.lineNumber, uiLocation.columnNumber);
+    const editorLocation = this._transformer.uiLocationToEditorLocation(uiLocation.lineNumber, uiLocation.columnNumber);
     decoration.breakpoint = null;
     decoration.enabled = false;
 
-    const lineDecorations = this._lineBreakpointDecorations(editorLocation[0]);
+    const lineDecorations = this._lineBreakpointDecorations(editorLocation.lineNumber);
     if (!lineDecorations.some(decoration => !!decoration.breakpoint)) {
       for (const lineDecoration of lineDecorations) {
         this._breakpointDecorations.delete(lineDecoration);
@@ -1748,17 +1753,18 @@ export class DebuggerPlugin extends Plugin {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ScriptsBreakpointSet);
     if (editorLineNumber < this._textEditor.linesCount) {
       const lineLength = Math.min(this._textEditor.line(editorLineNumber).length, 1024);
-      const start = this._transformer.editorToRawLocation(editorLineNumber, 0);
-      const end = this._transformer.editorToRawLocation(editorLineNumber, lineLength);
+      const start = this._transformer.editorLocationToUILocation(editorLineNumber, 0);
+      const end = this._transformer.editorLocationToUILocation(editorLineNumber, lineLength);
       const locations = await this._breakpointManager.possibleBreakpoints(
-          this._uiSourceCode, new TextUtils.TextRange.TextRange(start[0], start[1], end[0], end[1]));
+          this._uiSourceCode,
+          new TextUtils.TextRange.TextRange(start.lineNumber, start.columnNumber, end.lineNumber, end.columnNumber));
       if (locations && locations.length) {
         await this._setBreakpoint(locations[0].lineNumber, locations[0].columnNumber, condition, enabled);
         return;
       }
     }
-    const origin = this._transformer.editorToRawLocation(editorLineNumber, 0);
-    await this._setBreakpoint(origin[0], origin[1], condition, enabled);
+    const origin = this._transformer.editorLocationToUILocation(editorLineNumber, 0);
+    await this._setBreakpoint(origin.lineNumber, origin.columnNumber, condition, enabled);
   }
 
   /**

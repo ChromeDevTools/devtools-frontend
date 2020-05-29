@@ -33,7 +33,7 @@
 
 import * as Acorn from '../third_party/acorn/package/dist/acorn.mjs';
 
-import {AcornTokenizer, ECMA_VERSION} from './AcornTokenizer.js';
+import {AcornTokenizer, ECMA_VERSION, TokenOrComment} from './AcornTokenizer.js';  // eslint-disable-line no-unused-vars
 import {ESTreeWalker} from './ESTreeWalker.js';
 import {FormattedContentBuilder} from './FormattedContentBuilder.js';  // eslint-disable-line no-unused-vars
 
@@ -67,7 +67,7 @@ export class JavaScriptFormatter {
   }
 
   /**
-   * @param {?Acorn.Acorn.TokenOrComment} token
+   * @param {?TokenOrComment} token
    * @param {string} format
    */
   _push(token, format) {
@@ -100,7 +100,7 @@ export class JavaScriptFormatter {
       return;
     }
     while (this._tokenizer.peekToken() && this._tokenizer.peekToken().start < node.start) {
-      const token = /** @type {!Acorn.Acorn.TokenOrComment} */ (this._tokenizer.nextToken());
+      const token = /** @type {!TokenOrComment} */ (this._tokenizer.nextToken());
       const format = this._formatToken(node.parent, token);
       this._push(token, format);
     }
@@ -111,7 +111,7 @@ export class JavaScriptFormatter {
    */
   _afterVisit(node) {
     while (this._tokenizer.peekToken() && this._tokenizer.peekToken().start < node.end) {
-      const token = /** @type {!Acorn.Acorn.TokenOrComment} */ (this._tokenizer.nextToken());
+      const token = /** @type {!TokenOrComment} */ (this._tokenizer.nextToken());
       const format = this._formatToken(node, token);
       this._push(token, format);
     }
@@ -138,17 +138,18 @@ export class JavaScriptFormatter {
 
   /**
    * @param {!ESTree.Node} node
-   * @param {!Acorn.Acorn.TokenOrComment} token
+   * @param {!TokenOrComment} tokenOrComment
    * @return {string}
    */
-  _formatToken(node, token) {
+  _formatToken(node, tokenOrComment) {
     const AT = AcornTokenizer;
-    if (AT.lineComment(token)) {
+    if (AT.lineComment(tokenOrComment)) {
       return 'tn';
     }
-    if (AT.blockComment(token)) {
+    if (AT.blockComment(tokenOrComment)) {
       return 'tn';
     }
+    const token = /** @type {!Acorn.Token} */ (tokenOrComment);
     if (node.type === 'ContinueStatement' || node.type === 'BreakStatement') {
       return node.label && AT.keyword(token) ? 'ts' : 't';
     }

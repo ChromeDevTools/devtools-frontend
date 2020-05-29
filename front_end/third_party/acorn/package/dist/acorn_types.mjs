@@ -3,7 +3,7 @@ export const Acorn = {};
  * @constructor
  */
 Acorn.Tokenizer = function() {
-  /** @type {function():!Acorn.Token} */
+  /** @type {function():!Token} */
   this.getToken;
 };
 
@@ -20,17 +20,12 @@ Acorn.TokenType = function() {
 /**
  * @typedef {{type: !Acorn.TokenType, value: string, start: number, end: number}}
  */
-Acorn.Token;
+export let Token;
 
 /**
  * @typedef {{type: string, value: string, start: number, end: number}}
  */
-Acorn.Comment;
-
-/**
- * @typedef {(!Acorn.Token|!Acorn.Comment)}
- */
-Acorn.TokenOrComment;
+export let Comment;
 
 /**
  * @param {string} text

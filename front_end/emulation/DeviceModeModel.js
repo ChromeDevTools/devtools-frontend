@@ -441,14 +441,11 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
 
   _onFrameResized() {
     const overlayModel = this._emulationModel ? this._emulationModel.overlayModel() : null;
-    if (!overlayModel || !this._type) {
+    if (!overlayModel) {
       return;
     }
 
-    if (this._type === Type.Device) {
-      const orientation = this._device.orientationByName(this._mode.orientation);
-      this._showHingeIfApplicable(overlayModel, orientation);
-    }
+    this._showHingeIfApplicable(overlayModel);
   }
 
   _scaleSettingChanged() {
@@ -523,6 +520,9 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     }
     const mobile = this._isMobile();
     const overlayModel = this._emulationModel ? this._emulationModel.overlayModel() : null;
+    if (overlayModel) {
+      this._showHingeIfApplicable(overlayModel);
+    }
     if (this._type === Type.Device) {
       const orientation = this._device.orientationByName(this._mode.orientation);
       const outline = this._currentOutline();
@@ -532,9 +532,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
         this._appliedUserAgentType = this._device.touch() ? UA.Mobile : UA.MobileNoTouch;
       } else {
         this._appliedUserAgentType = this._device.touch() ? UA.DesktopTouch : UA.Desktop;
-      }
-      if (overlayModel) {
-        this._showHingeIfApplicable(overlayModel, orientation);
       }
       this._applyDeviceMetrics(
           new UI.Geometry.Size(orientation.width, orientation.height), insets, outline, this._scaleSetting.get(),
@@ -806,17 +803,15 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!SDK.OverlayModel.OverlayModel} overlayModel
-   * @param {!Orientation} orientation
    */
-  _showHingeIfApplicable(overlayModel, orientation) {
-    if (!this._experimentDualScreenSupport) {
+  _showHingeIfApplicable(overlayModel) {
+    const orientation = (this._device && this._mode) ? this._device.orientationByName(this._mode.orientation) : null;
+    if (this._experimentDualScreenSupport && orientation && orientation.hinge) {
+      overlayModel.showHingeForDualScreen(/* show*/ true, orientation.hinge);
       return;
     }
-    if (orientation.hinge) {
-      overlayModel.showHingeForDualScreen(/* show*/ true, orientation.hinge);
-    } else {
-      overlayModel.showHingeForDualScreen(false);
-    }
+
+    overlayModel.showHingeForDualScreen(false);
   }
 }
 

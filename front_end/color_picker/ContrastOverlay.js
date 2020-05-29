@@ -17,11 +17,12 @@ export class ContrastOverlay {
 
     this._visible = false;
 
-    this._contrastRatioSVG = colorElement.createSVGChild('svg', 'spectrum-contrast-container fill');
-    this._contrastRatioLines = {
-      aa: this._contrastRatioSVG.createSVGChild('path', 'spectrum-contrast-line'),
-      aaa: this._contrastRatioSVG.createSVGChild('path', 'spectrum-contrast-line')
-    };
+    this._contrastRatioSVG =
+        /** @type {!HTMLElement} */ (colorElement).createSVGChild('svg', 'spectrum-contrast-container fill');
+    /** @type {!Map<string, !Element>} */
+    this._contrastRatioLines = new Map();
+    this._contrastRatioLines.set('aa', this._contrastRatioSVG.createSVGChild('path', 'spectrum-contrast-line'));
+    this._contrastRatioLines.set('aaa', this._contrastRatioSVG.createSVGChild('path', 'spectrum-contrast-line'));
 
     this._width = 0;
     this._height = 0;
@@ -62,12 +63,13 @@ export class ContrastOverlay {
   }
 
   async _drawContrastRatioLines() {
-    for (const level in this._contrastRatioLines) {
-      const path = this._contrastRatioLineBuilder.drawContrastRatioLine(this._width, this._height, level);
+    for (const [level, element] of this._contrastRatioLines) {
+      const path = this._contrastRatioLineBuilder.drawContrastRatioLine(
+          this._width, this._height, /** @type {string} */ (level));
       if (path) {
-        this._contrastRatioLines[level].setAttribute('d', path);
+        element.setAttribute('d', path);
       } else {
-        this._contrastRatioLines[level].removeAttribute('d');
+        element.removeAttribute('d');
       }
     }
   }
@@ -111,6 +113,7 @@ export class ContrastRatioLineBuilder {
     const fgHSVA = color.hsva();
     const bgRGBA = bgColor.rgba();
     const bgLuminance = Common.Color.Color.luminance(bgRGBA);
+    /** @type {!Array<number>} */
     const blendedRGBA = [];
     Common.Color.Color.blendColors(fgRGBA, bgRGBA, blendedRGBA);
     const fgLuminance = Common.Color.Color.luminance(blendedRGBA);
@@ -121,6 +124,7 @@ export class ContrastRatioLineBuilder {
     let currentSlope = 0;
     const candidateHSVA = [fgHSVA[H], 0, 0, fgHSVA[A]];
     let pathBuilder = [];
+    /** @type {!Array<number>} */
     const candidateRGBA = [];
     Common.Color.Color.hsva2rgba(candidateHSVA, candidateRGBA);
     Common.Color.Color.blendColors(candidateRGBA, bgRGBA, blendedRGBA);

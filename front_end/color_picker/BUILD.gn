@@ -5,7 +5,10 @@
 import("../../third_party/typescript/typescript.gni")
 
 ts_library("color_picker") {
-  sources = [ "ContrastInfo.js" ]
+  sources = [
+    "ContrastInfo.js",
+    "ContrastOverlay.js",
+  ]
 
   deps = [
     "../common",

@@ -83,4 +83,5 @@ declare namespace Adb {
 
 interface HTMLElement {
   createChild(tagName: string, className?: string, content?: string): HTMLElement;
+  createSVGChild(childType: string, className?: string): HTMLElement;
 }

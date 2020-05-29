@@ -94,6 +94,7 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper {
     // background, draw the line for the "worst case" scenario: where
     // the unknown background is the same color as the text.
     if (bgColor.hasAlpha()) {
+      /** @type {!Array<number>} */
       const blendedRGBA = [];
       Common.Color.Color.blendColors(bgColor.rgba(), fgRGBA, blendedRGBA);
       this._bgColor = new Common.Color.Color(blendedRGBA, Common.Color.Format.RGBA);
@@ -157,4 +158,5 @@ const _ContrastThresholds = {
 };
 
 /** @typedef {{backgroundColors: ?Array<string>, computedFontSize: string, computedFontWeight: string}} */
+// @ts-ignore typedef
 export let ContrastInfoType;

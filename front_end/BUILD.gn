@@ -47,6 +47,7 @@ ts_library("ts_library-verification") {
   deps = [
     "bindings",
     "browser_sdk",
+    "color_picker",
     "common",
     "elements",
     "formatter_worker",

@@ -347,6 +347,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
     this._textPrompt.renderAsBlock();
     const proxyElement = this._textPrompt.attachAndStartEditing(newDiv, this._finishEditing.bind(this));
     this._treeElement.listItemElement.classList.add('watch-expression-editing');
+    this._treeElement.collapse();
     proxyElement.classList.add('watch-expression-text-prompt-proxy');
     proxyElement.addEventListener('keydown', this._promptKeyDown.bind(this), false);
     this._element.getComponentSelection().selectAllChildren(newDiv);

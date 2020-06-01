@@ -20,6 +20,7 @@ ts_library("helpers") {
     "lighthouse-helpers.ts",
     "media-helpers.ts",
     "memory-helpers.ts",
+    "network-helpers.ts",
     "performance-helpers.ts",
     "profiler-helpers.ts",
     "quick_open-helpers.ts",

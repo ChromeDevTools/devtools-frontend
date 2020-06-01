@@ -1,0 +1,20 @@
+<!--
+  Copyright 2020 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<script>
+  // This test page is useful for the network panel E2E tests.
+  // Load it with ?num=N where is the number of requests you want this test
+  // page to make.
+
+  function getNumberOfRequiredRequests() {
+    const url = new URL(document.location);
+    const number = url.searchParams.get('num');
+    return number ? parseInt(number, 10) : 0;
+  }
+
+  for (let i = 0; i < getNumberOfRequiredRequests(); i++) {
+    fetch(`image.svg?id=${i}`);
+  }
+</script>

@@ -2,7 +2,9 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-copy("acorn") {
+import("../../../scripts/build/copy_to_gen.gni")
+
+copy_to_gen("acorn") {
   sources = [
     "acorn-tsconfig.json",
     "package/dist/acorn.d.ts",
@@ -11,6 +13,4 @@ copy("acorn") {
     "package/dist/acorn.mjs.d.ts",
     "package/dist/acorn.mjs.map",
   ]
-
-  outputs = [ "{{source_gen_dir}}/{{source_file_part}}" ]
 }

@@ -2,8 +2,8 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-copy("hosted_mode") {
-  sources = [ "server.js" ]
+import("../build/copy_to_gen.gni")
 
-  outputs = [ "{{source_gen_dir}}/{{source_file_part}}" ]
+copy_to_gen("hosted_mode") {
+  sources = [ "server.js" ]
 }

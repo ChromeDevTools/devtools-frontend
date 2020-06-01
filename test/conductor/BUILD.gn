@@ -4,7 +4,14 @@
 
 import("../../third_party/typescript/typescript.gni")
 
-node_ts_library("conductor") {
+group("conductor") {
+  deps = [
+    ":implementation",
+    "../../scripts/hosted_mode",
+  ]
+}
+
+node_ts_library("implementation") {
   sources = [
     "hooks.ts",
     "mocha_hooks.ts",

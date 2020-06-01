@@ -2,7 +2,9 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-copy("codemirror") {
+import("../../../scripts/build/copy_to_gen.gni")
+
+copy_to_gen("codemirror") {
   sources = [
     "codemirror-tsconfig.json",
     "package/addon/runmode/runmode-standalone.js",
@@ -70,6 +72,4 @@ copy("codemirror") {
     "package/src/util/misc.js",
     "package/src/util/operation_group.js",
   ]
-
-  outputs = [ "{{source_gen_dir}}/{{source_file_part}}" ]
 }

@@ -2,13 +2,13 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-copy("acorn-loose") {
+import("../../../scripts/build/copy_to_gen.gni")
+
+copy_to_gen("acorn-loose") {
   sources = [
     "acorn-loose-tsconfig.json",
     "package/dist/acorn-loose.d.ts",
     "package/dist/acorn-loose.js",
     "package/dist/acorn-loose.js.map",
   ]
-
-  outputs = [ "{{source_gen_dir}}/{{source_file_part}}" ]
 }

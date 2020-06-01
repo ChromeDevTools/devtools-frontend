@@ -10,5 +10,5 @@ node_ts_library("shared") {
     "helper.ts",
     "text-color.ts",
   ]
-  deps = [ "../conductor" ]
+  deps = [ "../conductor:implementation" ]
 }

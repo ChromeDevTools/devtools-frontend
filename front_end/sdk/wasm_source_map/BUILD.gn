@@ -2,12 +2,12 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-copy("wasm_source_map") {
+import("../../../scripts/build/copy_to_gen.gni")
+
+copy_to_gen("wasm_source_map") {
   sources = [
     "pkg/wasm_source_map.d.ts",
     "pkg/wasm_source_map.js",
     "wasm_source_map-tsconfig.json",
   ]
-
-  outputs = [ "{{source_gen_dir}}/{{source_file_part}}" ]
 }

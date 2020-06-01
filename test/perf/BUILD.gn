@@ -2,6 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("../../scripts/build/copy_to_gen.gni")
 import("../../third_party/typescript/typescript.gni")
 
 group("perf") {
@@ -20,8 +21,6 @@ ts_library("tests") {
   ]
 }
 
-copy("config") {
+copy_to_gen("config") {
   sources = [ ".mocharc.js" ]
-
-  outputs = [ "{{source_gen_dir}}/{{source_file_part}}" ]
 }

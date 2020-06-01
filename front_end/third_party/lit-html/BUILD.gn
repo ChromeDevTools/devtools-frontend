@@ -2,7 +2,9 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-copy("lit-html") {
+import("../../../scripts/build/copy_to_gen.gni")
+
+copy_to_gen("lit-html") {
   sources = [
     "lit-html-tsconfig.json",
     "package/directives/class-map.d.ts",
@@ -42,6 +44,4 @@ copy("lit-html") {
     "package/lit-html.js",
     "package/lit-html.js.map",
   ]
-
-  outputs = [ "{{source_gen_dir}}/{{source_file_part}}" ]
 }

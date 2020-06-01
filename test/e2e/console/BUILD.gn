@@ -4,11 +4,13 @@
 
 import("../../../third_party/typescript/typescript.gni")
 
-ts_library("console") {
-  testonly = true
+node_ts_library("console") {
   sources = [
+    "console-autocomplete_test.ts",
     "console-message-format_test.ts",
     "console-repl-mode_test.ts",
+    "console-trim-long-traces_test.ts",
+    "issues-toolbar_test.ts",
   ]
 
   deps = [

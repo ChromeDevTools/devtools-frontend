@@ -4,8 +4,7 @@
 
 import("../../../third_party/typescript/typescript.gni")
 
-ts_library("cross_tool_integration") {
-  testonly = true
+node_ts_library("cross_tool_integration") {
   sources = [
     "browser_test.ts",
     "workflow_test.ts",

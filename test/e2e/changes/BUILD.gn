@@ -4,8 +4,7 @@
 
 import("../../../third_party/typescript/typescript.gni")
 
-ts_library("changes") {
-  testonly = true
+node_ts_library("changes") {
   sources = [ "changes_test.ts" ]
 
   deps = [

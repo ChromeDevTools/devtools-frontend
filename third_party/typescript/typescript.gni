@@ -104,6 +104,10 @@ template("ts_library") {
       args += [ "--verify-lib-check" ]
     }
 
+    if (defined(invoker.module)) {
+      args += [ "--module=" + invoker.module ]
+    }
+
     output_files = [ "$target_gen_dir/$target_name-tsconfig.json" ]
 
     if (defined(sources)) {
@@ -163,4 +167,18 @@ set_defaults("ts_library") {
   # Build output should be private and directories should export all relevant
   # components in a group
   visibility = [ "*" ]
+}
+
+template("node_ts_library") {
+  ts_library(target_name) {
+    module = "commonjs"
+    testonly = true
+
+    forward_variables_from(invoker,
+                           [
+                             "sources",
+                             "visibility",
+                             "deps",
+                           ])
+  }
 }

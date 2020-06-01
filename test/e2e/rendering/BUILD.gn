@@ -4,8 +4,7 @@
 
 import("../../../third_party/typescript/typescript.gni")
 
-ts_library("rendering") {
-  testonly = true
+node_ts_library("rendering") {
   sources = [ "vision-deficiencies_test.ts" ]
 
   deps = [

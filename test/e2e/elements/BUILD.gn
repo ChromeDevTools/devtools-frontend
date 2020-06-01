@@ -4,8 +4,7 @@
 
 import("../../../third_party/typescript/typescript.gni")
 
-ts_library("elements") {
-  testonly = true
+node_ts_library("elements") {
   sources = [
     "computed-pane-properties_test.ts",
     "element-breadcrumbs_test.ts",

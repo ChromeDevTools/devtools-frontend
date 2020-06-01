@@ -4,11 +4,24 @@
 
 import("../../third_party/typescript/typescript.gni")
 
-ts_library("perf") {
+group("perf") {
+  deps = [
+    ":config",
+    ":tests",
+  ]
+}
+
+ts_library("tests") {
   testonly = true
 
   deps = [
     "application",
     "helpers",
   ]
+}
+
+copy("config") {
+  sources = [ ".mocharc.js" ]
+
+  outputs = [ "{{source_gen_dir}}/{{source_file_part}}" ]
 }

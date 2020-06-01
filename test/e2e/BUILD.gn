@@ -4,9 +4,14 @@
 
 import("../../third_party/typescript/typescript.gni")
 
-ts_library("e2e") {
-  testonly = true
+group("e2e") {
+  deps = [
+    ":config",
+    ":tests",
+  ]
+}
 
+node_ts_library("tests") {
   deps = [
     "animations",
     "application",
@@ -30,4 +35,10 @@ ts_library("e2e") {
     "sources",
     "webaudio",
   ]
+}
+
+copy("config") {
+  sources = [ ".mocharc.js" ]
+
+  outputs = [ "{{source_gen_dir}}/{{source_file_part}}" ]
 }

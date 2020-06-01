@@ -4,8 +4,7 @@
 
 import("../../../third_party/typescript/typescript.gni")
 
-ts_library("emulation") {
-  testonly = true
+node_ts_library("emulation") {
   sources = [ "media-query-inspector_test.ts" ]
 
   deps = [

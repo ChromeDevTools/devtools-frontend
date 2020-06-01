@@ -4,8 +4,7 @@
 
 import("../../../third_party/typescript/typescript.gni")
 
-ts_library("sources") {
-  testonly = true
+node_ts_library("sources") {
   sources = [
     "can-break-with-wasm-sourcemaps_test.ts",
     "can-format-sourcecode_test.ts",

@@ -4,8 +4,7 @@
 
 import("../../../third_party/typescript/typescript.gni")
 
-ts_library("sensors") {
-  testonly = true
+node_ts_library("sensors") {
   sources = [ "location_test.ts" ]
 
   deps = [

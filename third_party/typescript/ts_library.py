@@ -56,7 +56,10 @@ def main():
     parser.add_argument('-b', '--tsconfig_output_location', required=True)
     parser.add_argument('--test-only', action='store_true')
     parser.add_argument('--verify-lib-check', action='store_true')
-    parser.set_defaults(test_only=False, verify_lib_check=False)
+    parser.add_argument('--module', required=False)
+    parser.set_defaults(test_only=False,
+                        verify_lib_check=False,
+                        module='esnext')
 
     opts = parser.parse_args()
     with open(BASE_TS_CONFIG_LOCATION) as root_tsconfig:
@@ -83,6 +86,7 @@ def main():
     tsconfig['compilerOptions']['declaration'] = True
     tsconfig['compilerOptions']['composite'] = True
     tsconfig['compilerOptions']['sourceMap'] = True
+    tsconfig['compilerOptions']['module'] = opts.module
     if (not opts.verify_lib_check):
         tsconfig['compilerOptions']['skipLibCheck'] = True
     tsconfig['compilerOptions']['rootDir'] = get_relative_path_from_output_directory(opts.front_end_directory)

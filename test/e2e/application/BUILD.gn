@@ -4,8 +4,7 @@
 
 import("../../../third_party/typescript/typescript.gni")
 
-ts_library("application") {
-  testonly = true
+node_ts_library("application") {
   sources = [
     "cookies_test.ts",
     "session-storage_test.ts",

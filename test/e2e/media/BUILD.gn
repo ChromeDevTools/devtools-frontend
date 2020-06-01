@@ -4,8 +4,7 @@
 
 import("../../../third_party/typescript/typescript.gni")
 
-ts_library("media") {
-  testonly = true
+node_ts_library("media") {
   sources = [ "media-tab_test.ts" ]
 
   deps = [

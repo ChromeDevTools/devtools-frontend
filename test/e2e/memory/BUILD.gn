@@ -4,8 +4,7 @@
 
 import("../../../third_party/typescript/typescript.gni")
 
-ts_library("memory") {
-  testonly = true
+node_ts_library("memory") {
   sources = [ "memory_test.ts" ]
 
   deps = [

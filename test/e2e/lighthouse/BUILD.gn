@@ -4,8 +4,7 @@
 
 import("../../../third_party/typescript/typescript.gni")
 
-ts_library("lighthouse") {
-  testonly = true
+node_ts_library("lighthouse") {
   sources = [ "generate-report.ts" ]
 
   deps = [

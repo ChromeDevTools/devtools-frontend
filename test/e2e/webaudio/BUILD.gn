@@ -4,8 +4,7 @@
 
 import("../../../third_party/typescript/typescript.gni")
 
-ts_library("webaudio") {
-  testonly = true
+node_ts_library("webaudio") {
   sources = [ "webaudio_test.ts" ]
 
   deps = [

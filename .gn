@@ -16,6 +16,4 @@ buildconfig = "//build_overrides/BUILDCONFIG.gn"
 check_targets = [ "*" ]
 
 default_args = {
-  # Enable by default to provide unbundled resource files.
-  debug_devtools = true
 }

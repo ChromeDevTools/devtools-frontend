@@ -183,20 +183,7 @@ To run the production build, use
 <path-to-chrome>/chrome --custom-devtools-frontend=file://$(realpath out/Default/resources/inspector)
 ```
 
-To run the debug build (directly symlinked to the original unminified source files),
-build both Chromium and DevTools frontend with the [GN flag](https://www.chromium.org/developers/gn-build-configuration) `debug_devtools=true`, and use
-
-```bash
-<path-to-chrome>/chrome --custom-devtools-frontend=file://$(realpath out/Default/resources/inspector/debug)
-```
-
 You can inspect DevTools with DevTools by undocking DevTools and then open the developers tools (F12 on Windows/Linux, Cmd+Option+I on Mac).
-
-##### Obsolete debugging setup - not recommended
-
-Before the introduction of `--custom-devtools-frontend`, you could also set a GN flag on your Chromium build called `debug_devtools`.
-This flag is replaced by `--custom-devtools-frontend` and you are strongly recommended to use the new runtime binary flag, in favor of the Chromium GN flag.
-`debug_devtools` is only used when debugging layout tests living in Chromium and will be removed once that is no longer required.
 
 ##### Test
 Test are available by running scripts in `scripts/test/`.
@@ -227,8 +214,6 @@ Follow [instructions](https://www.chromium.org/developers/how-tos/get-the-code) 
 
 ##### Build
 Refer to [instructions](https://www.chromium.org/developers/how-tos/get-the-code) to build Chromium. To only build DevTools frontend, use `devtools_frontend_resources` as build target. The resulting build artifacts for DevTools frontend can be found in `out/Default/resources/inspector`.
-
-Consider building with the [GN flag](https://www.chromium.org/developers/gn-build-configuration) `debug_devtools=true` to symlink to the original unminified source.
 
 ##### Run
 Run Chrome with DevTools frontend bundled:

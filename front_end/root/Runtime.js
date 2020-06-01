@@ -3,7 +3,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const REMOTE_MODULE_FALLBACK_REVISION = '@010ddcfda246975d194964ccf20038ebbdec6084';
+const REMOTE_MODULE_FALLBACK_REVISION = '@9c7912d3335c02d62f63be2749d84b2d0b788982';
 const instanceSymbol = Symbol('instance');
 
 const originalConsole = console;

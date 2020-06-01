@@ -19,7 +19,6 @@ type ITemplateArray = TemplateStringsArray
 
 interface String {
   compareTo(other: string): number;
-  removeURLFragment(): string;
   trimEndWithMaxLength(maxLength: number): string;
   escapeForRegExp(): string;
   filterRegex(query: string): RegExp;

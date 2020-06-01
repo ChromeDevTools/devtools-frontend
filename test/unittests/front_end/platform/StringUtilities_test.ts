@@ -523,4 +523,21 @@ describe('StringUtilities', () => {
       assert.strictEqual(output, 'Foo bar baz');
     });
   });
+
+  describe('removeURLFragment', () => {
+    it('removes the URL fragment if found', () => {
+      const input = 'http://www.example.com/foo.html#blah';
+      assert.strictEqual(StringUtilities.removeURLFragment(input), 'http://www.example.com/foo.html');
+    });
+
+    it('returns the same string if there is no fragment', () => {
+      const input = 'http://www.example.com/foo.html';
+      assert.strictEqual(StringUtilities.removeURLFragment(input), input);
+    });
+
+    it('does not strip query parameters', () => {
+      const input = 'http://www.example.com/foo.html?x=1#blah';
+      assert.strictEqual(StringUtilities.removeURLFragment(input), 'http://www.example.com/foo.html?x=1');
+    });
+  });
 });

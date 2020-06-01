@@ -221,7 +221,13 @@ export class InspectorFrontendHostStub {
   close(url) {
     const buffer = this._urlsBeingSaved.get(url) || [];
     this._urlsBeingSaved.delete(url);
-    const fileName = url ? Platform.StringUtilities.trimURL(url).removeURLFragment() : '';
+    let fileName = '';
+
+    if (url) {
+      const trimmed = Platform.StringUtilities.trimURL(url);
+      fileName = Platform.StringUtilities.removeURLFragment(trimmed);
+    }
+
     const link = document.createElement('a');
     link.download = fileName;
     const blob = new Blob([buffer.join('')], {type: 'text/plain'});

@@ -123,17 +123,6 @@ String.prototype.compareTo = function(other) {
 };
 
 /**
- * @return {string}
- */
-String.prototype.removeURLFragment = function() {
-  let fragmentIndex = this.indexOf('#');
-  if (fragmentIndex === -1) {
-    fragmentIndex = this.length;
-  }
-  return this.substring(0, fragmentIndex);
-};
-
-/**
  * @param {string|undefined} string
  * @return {number}
  */

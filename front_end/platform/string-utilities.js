@@ -460,3 +460,13 @@ export const stripLineBreaks = inputStr => {
 export const toTitleCase = inputStr => {
   return inputStr.substring(0, 1).toUpperCase() + inputStr.substring(1);
 };
+
+/**
+ * @param {string} inputStr
+ * @return {string}
+ */
+export const removeURLFragment = inputStr => {
+  const url = new URL(inputStr);
+  url.hash = '';
+  return url.toString();
+};

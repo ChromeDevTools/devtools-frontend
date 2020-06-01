@@ -22,7 +22,7 @@ describe('The Application Tab', async () => {
     // This sets a new cookie foo=bar
     await navigateToApplicationTab(target, 'cookies');
 
-    await target.goto(`${resourcesPath}/unreachable.rawresponse`);
+    await target.goto(`${resourcesPath}/network/unreachable.rawresponse`);
 
     await doubleClickSourceTreeItem(COOKIES_SELECTOR);
     await doubleClickSourceTreeItem(DOMAIN_SELECTOR);

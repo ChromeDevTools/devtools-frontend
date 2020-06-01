@@ -22,7 +22,7 @@ describe('The Lighthouse Tab', async () => {
     const {target} = getBrowserAndPages();
     await navigateToLighthouseTab(target, 'empty');
 
-    await target.goto(`${resourcesPath}/unreachable.rawresponse`);
+    await target.goto(`${resourcesPath}/network/unreachable.rawresponse`);
     const disabled = await isGenerateReportButtonDisabled();
     assert.isTrue(disabled, 'The Generate Report button should be disabled');
   });

@@ -113,8 +113,9 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
 
   /**
    * @param {!Array<!Array<!BreakpointLocation>>} locations
+   * @return {!Promise<!Array<!TextUtils.Text.Text>>}
    */
-  async _getContent(locations) {
+  _getContent(locations) {
     // Use a cache to share the Text objects between all breakpoints. This way
     // we share the cached line ending information that Text calculates. This
     // was very slow to calculate with a lot of breakpoints in the same very
@@ -122,11 +123,22 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
     /** @type {!Map<string, !TextUtils.Text.Text>} */
     const contentToTextMap = new Map();
 
-    return Promise.all(locations.map(async ([breakpointLocation]) => {
-      const {content} = await breakpointLocation.uiLocation.uiSourceCode.requestContent();
+    return Promise.all(locations.map(async ([{uiLocation: {uiSourceCode}}]) => {
+      if (uiSourceCode.mimeType() === 'application/wasm') {
+        // We could mirror the logic from `SourceFrame._ensureContentLoaded()` here
+        // (and if so, ideally share that code somewhere), but that's quite heavy
+        // logic just to display a single Wasm instruction. Also not really clear
+        // how much value this would add. So let's keep it simple for now and don't
+        // display anything additional for Wasm breakpoints, and if there's demand
+        // to display some text preview, we could look into selectively disassemb-
+        // ling the part of the text that we need here.
+        // Relevant crbug: https://crbug.com/1090256
+        return new TextUtils.Text.Text('');
+      }
+      const {content} = await uiSourceCode.requestContent();
       const contentText = content || '';
       if (contentToTextMap.has(contentText)) {
-        return contentToTextMap.get(contentText);
+        return /** @type {!TextUtils.Text.Text} */ (contentToTextMap.get(contentText));
       }
       const text = new TextUtils.Text.Text(contentText);
       contentToTextMap.set(contentText, text);

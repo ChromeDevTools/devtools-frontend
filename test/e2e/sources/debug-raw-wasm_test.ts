@@ -38,7 +38,7 @@ describe('Source Tab', async () => {
 
     const scriptLocation = await retrieveTopCallFrameScriptLocation('main();', target);
     // TODO(chromium:1043047): Switch to bytecode offsets here.
-    assert.deepEqual(scriptLocation, 'add.wasm:1');
+    assert.deepEqual(scriptLocation, 'add.wasm:0x23');
   });
 
   it('cannot set a breakpoint on non-breakable line in raw wasm', async () => {
@@ -108,7 +108,7 @@ describe('Raw-Wasm', async () => {
     const location = await callFrameLocation.evaluate(n => n.textContent);
 
     assert.strictEqual(title, 'foo');
-    assert.strictEqual(location, 'callstack-wasm-to-js.wasm:1');
+    assert.strictEqual(location, 'callstack-wasm-to-js.wasm:0x32');
 
     // Select next call frame.
     await callFrame.press('ArrowDown');

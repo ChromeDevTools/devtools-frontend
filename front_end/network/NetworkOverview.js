@@ -254,6 +254,7 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
     drawLines(RequestTimeRangeNames.Connecting);
     drawLines(RequestTimeRangeNames.ServiceWorker);
     drawLines(RequestTimeRangeNames.ServiceWorkerPreparation);
+    drawLines(RequestTimeRangeNames.ServiceWorkerRespondWith);
     drawLines(RequestTimeRangeNames.Push);
     drawLines(RequestTimeRangeNames.Proxy);
     drawLines(RequestTimeRangeNames.DNS);
@@ -334,6 +335,7 @@ export const RequestTimeRangeNameToColor = {
   [RequestTimeRangeNames.Connecting]: '#FF9800',
   [RequestTimeRangeNames.ServiceWorker]: '#FF9800',
   [RequestTimeRangeNames.ServiceWorkerPreparation]: '#FF9800',
+  [RequestTimeRangeNames.ServiceWorkerRespondWith]: '#00FFFF',
   [RequestTimeRangeNames.Push]: '#8CDBff',
   [RequestTimeRangeNames.Proxy]: '#A1887F',
   [RequestTimeRangeNames.DNS]: '#009688',

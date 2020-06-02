@@ -77,7 +77,9 @@ export class RequestTimingView extends UI.Widget.VBox {
       case RequestTimeRangeNames.ServiceWorker:
         return Common.UIString.UIString('Request to ServiceWorker');
       case RequestTimeRangeNames.ServiceWorkerPreparation:
-        return Common.UIString.UIString('ServiceWorker Preparation');
+        return Common.UIString.UIString('Startup');
+      case RequestTimeRangeNames.ServiceWorkerRespondWith:
+        return Common.UIString.UIString('respondWith');
       case RequestTimeRangeNames.SSL:
         return Common.UIString.UIString('SSL');
       case RequestTimeRangeNames.Total:
@@ -163,6 +165,8 @@ export class RequestTimingView extends UI.Widget.VBox {
     if (request.fetchedViaServiceWorker) {
       addOffsetRange(RequestTimeRangeNames.Blocking, 0, timing.workerStart);
       addOffsetRange(RequestTimeRangeNames.ServiceWorkerPreparation, timing.workerStart, timing.workerReady);
+      addOffsetRange(
+          RequestTimeRangeNames.ServiceWorkerRespondWith, timing.workerFetchStart, timing.workerRespondWithSettled);
       addOffsetRange(RequestTimeRangeNames.ServiceWorker, timing.workerReady, timing.sendEnd);
       addOffsetRange(RequestTimeRangeNames.Waiting, timing.sendEnd, responseReceived);
     } else if (!timing.pushStart) {
@@ -208,6 +212,7 @@ export class RequestTimingView extends UI.Widget.VBox {
     const scale = 100 / (endTime - startTime);
 
     let connectionHeader;
+    let serviceworkerHeader;
     let dataHeader;
     let queueingHeader;
     let totalDuration = 0;
@@ -249,6 +254,10 @@ export class RequestTimingView extends UI.Widget.VBox {
       } else if (ConnectionSetupRangeNames.has(rangeName)) {
         if (!connectionHeader) {
           connectionHeader = createHeader(Common.UIString.UIString('Connection Start'));
+        }
+      } else if (ServiceWorkerRangeNames.has(rangeName)) {
+        if (!serviceworkerHeader) {
+          serviceworkerHeader = createHeader(ls`Service Worker`);
         }
       } else {
         if (!dataHeader) {
@@ -408,10 +417,16 @@ export const RequestTimeRangeNames = {
   Sending: 'sending',
   ServiceWorker: 'serviceworker',
   ServiceWorkerPreparation: 'serviceworker-preparation',
+  ServiceWorkerRespondWith: 'serviceworker-respondwith',
   SSL: 'ssl',
   Total: 'total',
   Waiting: 'waiting'
 };
+
+export const ServiceWorkerRangeNames = new Set([
+  RequestTimeRangeNames.ServiceWorker, RequestTimeRangeNames.ServiceWorkerPreparation,
+  RequestTimeRangeNames.ServiceWorkerRespondWith
+]);
 
 export const ConnectionSetupRangeNames = new Set([
   RequestTimeRangeNames.Queueing, RequestTimeRangeNames.Blocking, RequestTimeRangeNames.Connecting,

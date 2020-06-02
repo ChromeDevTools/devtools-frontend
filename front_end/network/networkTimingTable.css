@@ -41,7 +41,7 @@ table.network-timing-table > tr:not(.network-timing-table-header):not(.network-t
 }
 
 .network-timing-table col.labels {
-  width: 156px;
+  width: 166px;
 }
 
 .network-timing-table col.duration {
@@ -117,6 +117,11 @@ table.network-timing-table > tr:not(.network-timing-table-header):not(.network-t
 .network-timing-bar.ssl,
 -theme-preserve {
   background-color: #9c27b0;
+}
+
+.network-timing-bar.serviceworker-respondwith,
+-theme-preserve {
+    background-color: #A8A3FF;
 }
 
 .network-timing-bar.sending,

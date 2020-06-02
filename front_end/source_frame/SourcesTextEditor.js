@@ -367,7 +367,13 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
    */
   hasLineClass(lineNumber, className) {
     const lineInfo = this.codeMirror().lineInfo(lineNumber);
-    const wrapClass = lineInfo.wrapClass || '';
+    if (!lineInfo) {
+      return false;
+    }
+    const wrapClass = lineInfo.wrapClass;
+    if (!wrapClass) {
+      return false;
+    }
     const classNames = wrapClass.split(' ');
     return classNames.indexOf(className) !== -1;
   }

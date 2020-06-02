@@ -1086,6 +1086,7 @@ all_devtools_modules = [
   "common/TextDictionary.js",
   "common/Throttler.js",
   "common/Trie.js",
+  "common/WasmDisassembly.js",
   "common/Worker.js",
   "components/DockController.js",
   "components/ImagePreview.js",

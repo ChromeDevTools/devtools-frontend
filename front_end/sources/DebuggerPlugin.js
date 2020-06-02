@@ -1382,6 +1382,9 @@ export class DebuggerPlugin extends Plugin {
     if (!editorLocation) {
       return;
     }
+    if (this._textEditor.hasLineClass(editorLocation.lineNumber, 'cm-non-breakable-line')) {
+      return;
+    }
     const location =
         this._transformer.editorLocationToUILocation(editorLocation.lineNumber, editorLocation.columnNumber);
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
@@ -1554,18 +1557,6 @@ export class DebuggerPlugin extends Plugin {
     }
   }
 
-  _getScriptForCurrentUISourceCode() {
-    for (const scriptFile of this._scriptFileForDebuggerModel.values()) {
-      if (!scriptFile) {
-        continue;
-      }
-      if (scriptFile.uiSourceCode === this._uiSourceCode) {
-        return scriptFile.script;
-      }
-    }
-    return;
-  }
-
   _updateLinesWithoutMappingHighlight() {
     const isSourceMapSource =
         !!Bindings.CompilerScriptMapping.CompilerScriptMapping.uiSourceCodeOrigin(this._uiSourceCode);
@@ -1582,17 +1573,6 @@ export class DebuggerPlugin extends Plugin {
         }
       }
       return;
-    }
-
-    // Check to see if it is Wasm Disassembly.
-    const script = this._getScriptForCurrentUISourceCode();
-    if (script && script.hasWasmDisassembly()) {
-      const linesCount = this._textEditor.linesCount;
-      for (let i = 0; i < linesCount; ++i) {
-        if (!script.isWasmDisassemblyBreakableLine(i)) {
-          this._textEditor.toggleLineClass(i, 'cm-non-breakable-line', true);
-        }
-      }
     }
   }
 
@@ -1750,6 +1730,9 @@ export class DebuggerPlugin extends Plugin {
    * @param {boolean} enabled
    */
   async _createNewBreakpoint(editorLineNumber, condition, enabled) {
+    if (this._textEditor.hasLineClass(editorLineNumber, 'cm-non-breakable-line')) {
+      return;
+    }
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ScriptsBreakpointSet);
     if (editorLineNumber < this._textEditor.linesCount) {
       const lineLength = Math.min(this._textEditor.line(editorLineNumber).length, 1024);
@@ -1774,16 +1757,6 @@ export class DebuggerPlugin extends Plugin {
    * @param {boolean} enabled
    */
   async _setBreakpoint(lineNumber, columnNumber, condition, enabled) {
-    if (!Bindings.CompilerScriptMapping.CompilerScriptMapping.uiLineHasMapping(this._uiSourceCode, lineNumber)) {
-      return;
-    }
-
-    // Check to see if it is Wasm Disassembly.
-    const script = this._getScriptForCurrentUISourceCode();
-    if (script && script.hasWasmDisassembly() && !script.isWasmDisassemblyBreakableLine(lineNumber)) {
-      return;
-    }
-
     Common.Settings.Settings.instance().moduleSetting('breakpointsActive').set(true);
     await this._breakpointManager.setBreakpoint(this._uiSourceCode, lineNumber, columnNumber, condition, enabled);
     this._breakpointWasSetForTest(lineNumber, columnNumber, condition, enabled);

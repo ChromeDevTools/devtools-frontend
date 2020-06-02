@@ -87,9 +87,6 @@ export class Script {
     this._language = scriptLanguage;
     /** @type {?Promise<!TextUtils.ContentProvider.DeferredContent>} */
     this._contentPromise = null;
-    // TODO(bmeurer): Remove these wasm specific fields, since they cause races.
-    this._lineMap = null;
-    this._functionBodyOffsets = null;
   }
 
   /**
@@ -134,13 +131,6 @@ export class Script {
    */
   isWasm() {
     return this._language === Protocol.Debugger.ScriptLanguage.WebAssembly;
-  }
-
-  /**
-   * @return {boolean}
-   */
-  hasWasmDisassembly() {
-    return !!this._lineMap && !this.sourceMapURL;
   }
 
   /**
@@ -219,24 +209,15 @@ export class Script {
                   const {scriptSource, bytecode} =
                       await this.debuggerModel.target().debuggerAgent().invoke_getScriptSource(
                           {scriptId: this.scriptId});
-                  let content = this.hasSourceURL ? Script._trimSourceURLComment(scriptSource) : scriptSource;
                   if (bytecode) {
-                    const worker = new Common.Worker.WorkerWrapper('wasmparser_worker_entrypoint');
-                    /** @type {!Promise<!{source: string, offsets: ?Array<number>, functionBodyOffsets: ?Array<{start: number, end: number}>}>} */
-                    const promise = new Promise((resolve, reject) => {
-                      worker.onmessage = ({data}) => resolve(data);
-                      worker.onerror = reject;
-                    });
-                    worker.postMessage({method: 'disassemble', params: {content: bytecode}});
-
-                    const {source, offsets, functionBodyOffsets} = await promise;
-                    content = source;
-                    // TODO(chromium:1056632): This is racy
-                    this._lineMap = offsets;
-                    this._functionBodyOffsets = functionBodyOffsets;
+                    return {content: bytecode, isEncoded: true};
                   }
-
+                  let content = scriptSource || '';
+                  if (this.hasSourceURL) {
+                    content = Script._trimSourceURLComment(content);
+                  }
                   return {content, isEncoded: false};
+
                 } catch (err) {
                   // TODO(bmeurer): Propagate errors as exceptions / rejections.
                   return {content: null, error: ls`Unable to fetch script source.`, isEncoded: false};
@@ -320,68 +301,6 @@ export class Script {
       return new Location(this.debuggerModel, this.scriptId, lineNumber, columnNumber);
     }
     return null;
-  }
-
-  /**
-   * @param {number} lineNumber
-   * @return {?Location}
-   */
-  wasmByteLocation(lineNumber) {
-    if (this._lineMap && lineNumber < this._lineMap.length) {
-      return new Location(this.debuggerModel, this.scriptId, 0, this._lineMap[lineNumber]);
-    }
-    return null;
-  }
-
-  /**
-   * @param {number} byteOffset
-   * @return {number}
-   */
-  wasmDisassemblyLine(byteOffset) {
-    let line = 0;
-    // TODO: Implement binary search if necessary for large wasm modules
-    while (this._lineMap && line < this._lineMap.length && byteOffset > this._lineMap[line]) {
-      line++;
-    }
-    return line;
-  }
-
-  /**
-   * @param {number} lineNumber
-   * @return {boolean}
-   */
-  isWasmDisassemblyBreakableLine(lineNumber) {
-    if (!this._functionBodyOffsets || this._functionBodyOffsets.length === 0) {
-      return false;
-    }
-    const location = this.wasmByteLocation(lineNumber);
-    if (!location) {
-      return false;
-    }
-    const byteOffset = location.columnNumber;
-
-    // Here, this._functionBodyOffsets is [{start:s0, end:e0}, {start:s1, end:e1}, ...].
-    // Also, we have s0 < e0 < s1 < e1 ... and the breakable lines are defined by the union of [a0,b0), [a1,b1), ...
-    let first = 0;
-    let last = this._functionBodyOffsets.length - 1;
-    // Quick return if it is outside of code section.
-    if (byteOffset < this._functionBodyOffsets[first].start || byteOffset >= this._functionBodyOffsets[last].end) {
-      return false;
-    }
-    // Binary search.
-    while (first <= last) {
-      const mid = (first + last) >> 1;
-      const functionBodyOffset = this._functionBodyOffsets[mid];
-      if (byteOffset < functionBodyOffset.start) {
-        last = mid - 1;
-      } else if (byteOffset >= functionBodyOffset.end) {
-        first = mid + 1;
-      } else {
-        return true;
-      }
-    }
-
-    return false;
   }
 
   /**

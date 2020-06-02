@@ -37,7 +37,8 @@ describe('Source Tab', async () => {
     await addBreakpointForLine(frontend, 5);
 
     const scriptLocation = await retrieveTopCallFrameScriptLocation('main();', target);
-    assert.deepEqual(scriptLocation, 'add.wasm:5');
+    // TODO(chromium:1043047): Switch to bytecode offsets here.
+    assert.deepEqual(scriptLocation, 'add.wasm:1');
   });
 
   it('cannot set a breakpoint on non-breakable line in raw wasm', async () => {

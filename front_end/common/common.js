@@ -26,6 +26,7 @@ import * as StringOutputStream from './StringOutputStream.js';
 import * as TextDictionary from './TextDictionary.js';
 import * as Throttler from './Throttler.js';
 import * as Trie from './Trie.js';
+import * as WasmDisassembly from './WasmDisassembly.js';
 import * as Worker from './Worker.js';
 
 /* This is re-exported here because we moved UIString into platform from
@@ -66,4 +67,5 @@ export {
   Throttler,
   Trie,
   Worker,
+  WasmDisassembly,
 };

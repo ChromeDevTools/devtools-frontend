@@ -28,6 +28,7 @@ ts_library("common") {
     "TextDictionary.js",
     "Throttler.js",
     "Trie.js",
+    "WasmDisassembly.js",
     "Worker.js",
     "common.js",
   ]

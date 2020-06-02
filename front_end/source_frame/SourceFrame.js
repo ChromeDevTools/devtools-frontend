@@ -111,6 +111,9 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     this._loaded = false;
     this._contentRequested = false;
     this._highlighterType = '';
+
+    /** @type {?Common.WasmDisassembly.WasmDisassembly} */
+    this._wasmDisassembly = null;
   }
 
   /**
@@ -120,7 +123,10 @@ export class SourceFrameImpl extends UI.View.SimpleView {
    * @return {{lineNumber: number, columnNumber: number}}
    */
   editorLocationToUILocation(lineNumber, columnNumber = 0) {
-    if (this._pretty) {
+    if (this._wasmDisassembly) {
+      columnNumber = this._wasmDisassembly.lineNumberToBytecodeOffset(lineNumber);
+      lineNumber = 0;
+    } else if (this._pretty) {
       [lineNumber, columnNumber] = this._prettyToRawLocation(lineNumber, columnNumber);
     }
     return {lineNumber, columnNumber};
@@ -133,7 +139,10 @@ export class SourceFrameImpl extends UI.View.SimpleView {
    * @return {{lineNumber: number, columnNumber: number}}
    */
   uiLocationToEditorLocation(lineNumber, columnNumber = 0) {
-    if (this._pretty) {
+    if (this._wasmDisassembly) {
+      lineNumber = this._wasmDisassembly.bytecodeOffsetToLineNumber(columnNumber);
+      columnNumber = 0;
+    } else if (this._pretty) {
       [lineNumber, columnNumber] = this._rawToPrettyLocation(lineNumber, columnNumber);
     }
     return {lineNumber, columnNumber};
@@ -291,15 +300,33 @@ export class SourceFrameImpl extends UI.View.SimpleView {
 
       const progressIndicator = new UI.ProgressIndicator.ProgressIndicator();
       progressIndicator.setTitle(Common.UIString.UIString('Loading…'));
-      progressIndicator.setTotalWork(1);
+      progressIndicator.setTotalWork(2);
       this._progressToolbarItem.element.appendChild(progressIndicator.element);
 
       const {content, error} = (await this._lazyContent());
+      this._rawContent = error || content || '';
 
+      // TODO(chromium:1090262): Do proper progress bar updates for disassembly
+      // generation below, the wasmparser already supports chunked operation.
       progressIndicator.setWorked(1);
+
+      if (!error && this._highlighterType === 'application/wasm') {
+        const worker = new Common.Worker.WorkerWrapper('wasmparser_worker_entrypoint');
+        /** @type {!Promise<!{source: string, offsets: !Array<number>, functionBodyOffsets: !Array<{start: number, end: number}>}>} */
+        const promise = new Promise((resolve, reject) => {
+          worker.onmessage = ({data}) => resolve(data);
+          worker.onerror = reject;
+        });
+        worker.postMessage({method: 'disassemble', params: {content}});
+
+        const {source, offsets, functionBodyOffsets} = await promise;
+        this._rawContent = source;
+        this._wasmDisassembly = new Common.WasmDisassembly.WasmDisassembly(offsets, functionBodyOffsets);
+      }
+
+      progressIndicator.setWorked(2);
       progressIndicator.done();
 
-      this._rawContent = error || content || '';
       this._formattedContentPromise = null;
       this._formattedMap = null;
       this._prettyToggle.setEnabled(true);
@@ -483,6 +510,11 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     if (mimeType === 'text/x-php' && content.match(/\<\?.*\?\>/g)) {
       return 'application/x-httpd-php';
     }
+    if (mimeType === 'application/wasm') {
+      // text/webassembly is not a proper MIME type, but CodeMirror uses it for WAT syntax highlighting.
+      // We generally use application/wasm, which is the correct MIME type for Wasm binary data.
+      return 'text/webassembly';
+    }
     return mimeType;
   }
 
@@ -534,6 +566,14 @@ export class SourceFrameImpl extends UI.View.SimpleView {
       this._textEditor.setText(content || '');
       this._textEditor.setScrollTop(scrollTop);
       this._textEditor.setSelection(selection);
+    }
+
+    // Mark non-breakable lines in the Wasm disassembly after setting
+    // up the content for the text editor (which creates the gutter).
+    if (this._wasmDisassembly) {
+      for (const lineNumber of this._wasmDisassembly.nonBreakableLineNumbers()) {
+        this._textEditor.toggleLineClass(lineNumber, 'cm-non-breakable-line', true);
+      }
     }
 
     this._updateHighlighterType(content || '');

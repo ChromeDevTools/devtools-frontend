@@ -34,4 +34,75 @@ describe('Adorner', () => {
     assertIsAdorner(adornerWithOptions);
     assert.strictEqual(adornerWithOptions.category, AdornerCategories.Layout);
   });
+
+  it('can interacts as a toggle button with proper ARIA setup', () => {
+    const content = document.createElement('span');
+    const adorner = Adorner.create(content, ADORNER_NAME);
+    assert.isNull(adorner.getAttribute('role'), 'non-interactive adorner had wrong aria role value');
+
+    let clickCounter = 0;
+    const clickListener = () => {
+      clickCounter++;
+    };
+
+    const ariaLabelDefault = 'adorner toggled on';
+    const ariaLabelActive = 'adorner toggled off';
+    adorner.addInteraction(clickListener, {
+      isToggle: true,
+      shouldPropagateOnKeydown: false,
+      ariaLabelActive,
+      ariaLabelDefault,
+    });
+    assert.strictEqual(
+        adorner.getAttribute('aria-label'), ariaLabelDefault,
+        'interactive adorner didn\'t have correct initial aria-label value');
+    assert.strictEqual(
+        adorner.getAttribute('role'), 'button', 'interactive adorner didn\'t have correct aria role setup');
+    assert.strictEqual(
+        adorner.getAttribute('aria-pressed'), 'false',
+        'toggle adorner didn\'t have correct initial aria-pressed value');
+
+    adorner.click();
+    assert.strictEqual(clickCounter, 1, 'interactive adorner was not triggered by clicking');
+    assert.strictEqual(
+        adorner.getAttribute('aria-label'), ariaLabelActive,
+        'interactive adorner didn\'t have correct active aria-label value');
+    assert.strictEqual(
+        adorner.getAttribute('aria-pressed'), 'true', 'toggle adorner didn\'t have correct active aria-pressed value');
+
+    adorner.dispatchEvent(new KeyboardEvent('keydown', {'code': 'Enter'}));
+    assert.strictEqual(clickCounter, 2, 'interactive adorner was not triggered by Enter key');
+    assert.strictEqual(
+        adorner.getAttribute('aria-label'), ariaLabelDefault,
+        'interactive adorner didn\'t have correct inactive aria-label value');
+    assert.strictEqual(
+        adorner.getAttribute('aria-pressed'), 'false',
+        'toggle adorner didn\'t have correct inactive aria-pressed value');
+
+    adorner.dispatchEvent(new KeyboardEvent('keydown', {'code': 'Space'}));
+    assert.strictEqual(clickCounter, 3, 'interactive adorner was not triggered by Space key');
+    assert.strictEqual(
+        adorner.getAttribute('aria-label'), ariaLabelActive,
+        'interactive adorner didn\'t have correct active aria-label value');
+    assert.strictEqual(
+        adorner.getAttribute('aria-pressed'), 'true', 'toggle adorner didn\'t have correct active aria-pressed value');
+  });
+
+  it('can be toggled programmatically', () => {
+    const content = document.createElement('span');
+    const adorner = Adorner.create(content, ADORNER_NAME);
+    adorner.addInteraction(() => {}, {
+      isToggle: true,
+      shouldPropagateOnKeydown: false,
+      ariaLabelActive: '',
+      ariaLabelDefault: '',
+    });
+    assert.strictEqual(
+        adorner.getAttribute('aria-pressed'), 'false',
+        'toggle adorner didn\'t have correct initial aria-pressed value');
+
+    adorner.toggle();
+    assert.strictEqual(
+        adorner.getAttribute('aria-pressed'), 'true', 'toggle adorner didn\'t have correct active aria-pressed value');
+  });
 });

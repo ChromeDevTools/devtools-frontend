@@ -33,6 +33,12 @@ def parse_options(cli_args):
     parser.add_argument('--test-suite', dest='test_suite', help='path to test suite')
     parser.add_argument('--test-file', dest='test_file', help='an absolute path for the file to test')
     parser.add_argument(
+        '--target',
+        '-t',
+        default='Default',
+        dest='target',
+        help='The name of the Ninja output directory. Defaults to "Default"')
+    parser.add_argument(
         '--chrome-features',
         dest='chrome_features',
         help='comma separated list of strings passed to --enable-features on the chromium commandline')

@@ -284,8 +284,8 @@ export class CSSMetadata {
    */
   isCSSPropertyName(propertyName) {
     propertyName = propertyName.toLowerCase();
-    if (propertyName.startsWith('-moz-') || propertyName.startsWith('-o-') || propertyName.startsWith('-webkit-') ||
-        propertyName.startsWith('-ms-')) {
+    if ((propertyName.startsWith('--') && propertyName.length > 2) || propertyName.startsWith('-moz-') ||
+        propertyName.startsWith('-ms-') || propertyName.startsWith('-o-') || propertyName.startsWith('-webkit-')) {
       return true;
     }
     return this._valuesSet.has(propertyName);

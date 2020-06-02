@@ -20,13 +20,27 @@
         The time is: <span id="span1"></span>
     </div>
     <script>
-        const el = document.getElementById('span1');
-        const date = new Date();
-        const time = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + ':' + date.getMilliseconds();
-        el.innerHTML = time;
-        console.log(time);
-        console.log(el);
+        function getTime() {
+          const date = new Date();
+          return date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + ':' + date.getMilliseconds();
+        }
 
+        const el = document.getElementById('span1');
+
+        // Log some messages to the console.
+        console.log(el);
+        console.log(getTime());
+
+        // Generate some script activity for the performance tool.
+        function updateTime() {
+          const time = getTime();
+          el.innerHTML = time;
+
+          setTimeout(updateTime, 0);
+        }
+        updateTime();
+
+        // Generate some entries in the issues panel.
         document.cookie = 'foo=bar;samesite=None';
     </script>
   </body>

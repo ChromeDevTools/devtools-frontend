@@ -2,15 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as puppeteer from 'puppeteer';
-
-import {$, click, resourcesPath, waitFor} from '../../shared/helper.js';
+import {$, click, getBrowserAndPages, resourcesPath, waitFor} from '../../shared/helper.js';
 
 const RECORD_BUTTON_SELECTOR = '[aria-label="Record"]';
 const STOP_BUTTON_SELECTOR = '[aria-label="Stop"]';
 
-export async function navigateToPerformanceTab(target: puppeteer.Page, testName: string) {
-  await target.goto(`${resourcesPath}/performance/${testName}.html`);
+export async function navigateToPerformanceTab(testName?: string) {
+  if (testName) {
+    const {target} = getBrowserAndPages();
+    await target.goto(`${resourcesPath}/performance/${testName}.html`);
+  }
 
   // Click on the tab.
   await click('#tab-timeline');
@@ -42,4 +43,14 @@ export async function getTotalTimeFromSummary(): Promise<number> {
   const pieChartTotal = await $('.pie-chart-total');
   const totalText = await pieChartTotal.evaluate(node => node.textContent);
   return parseInt(totalText, 10);
+}
+
+export async function navigateToPerformanceSidebarTab(tabName: string) {
+  await click(`[aria-label="${tabName}"]`);
+}
+
+export async function waitForSourceLinkAndFollowIt() {
+  const link = await waitFor('.devtools-link');
+  await click(link);
+  await waitFor('.panel[aria-label="sources"]');
 }

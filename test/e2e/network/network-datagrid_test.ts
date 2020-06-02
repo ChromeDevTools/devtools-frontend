@@ -4,9 +4,16 @@
 
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
+import * as puppeteer from 'puppeteer';
 
-import {$, click, getBrowserAndPages, waitFor} from '../../shared/helper.js';
-import {navigateToNetworkTab, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
+import {$, click, getBrowserAndPages, resourcesPath, waitFor} from '../../shared/helper.js';
+
+async function navigateToNetworkTab(target: puppeteer.Page, testName: string) {
+  await target.goto(`${resourcesPath}/network/${testName}`);
+  await click('#tab-network');
+  // Make sure the network tab is shown on the screen
+  await waitFor('.network-log-grid');
+}
 
 describe('The Network Tab', async () => {
   it('can click on checkbox label to toggle checkbox', async () => {
@@ -35,7 +42,9 @@ describe('The Network Tab', async () => {
     await click('[aria-label="Last-Modified, unchecked"]');
 
     // Wait for the column to show up and populate its values
-    await waitForSomeRequestsToAppear(3, '.last-modified-column');
+    await frontend.waitForFunction(() => {
+      return document.querySelectorAll('.last-modified-column').length >= 3;
+    });
 
     const lastModifiedColumnValues = await frontend.evaluate(() => {
       return Array.from(document.querySelectorAll('.last-modified-column')).map(message => message.textContent);
@@ -50,12 +59,14 @@ describe('The Network Tab', async () => {
 
   // Flaky test
   it.skip('[crbug.com/1066813] shows the HTML response including cyrillic characters with utf-8 encoding', async () => {
-    const {target} = getBrowserAndPages();
+    const {target, frontend} = getBrowserAndPages();
 
     await navigateToNetworkTab(target, 'utf-8.rawresponse');
 
     // Wait for the column to show up and populate its values
-    await waitForSomeRequestsToAppear(2);
+    await frontend.waitForFunction(() => {
+      return document.querySelectorAll('.name-column').length === 2;
+    });
 
     // Open the HTML file that was loaded
     await click('td.name-column');
@@ -81,7 +92,9 @@ describe('The Network Tab', async () => {
     await navigateToNetworkTab(target, 'resources-from-cache.html');
 
     // Wait for the column to show up and populate its values
-    await waitForSomeRequestsToAppear(3);
+    await frontend.waitForFunction(() => {
+      return document.querySelectorAll('.name-column').length === 3;
+    });
 
     // Reload the page without a cache, to force a fresh load of the network resources
     await click('[aria-label="Disable cache"]');

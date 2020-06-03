@@ -46,18 +46,18 @@ describe('Source Tab', async () => {
 
     await openSourceCodeEditorForFile(target, 'add.wasm', 'wasm/call-to-add-wasm.html');
     assert.deepEqual(await getNonBreakableLines(frontend), [
-      1,
-      2,
-      3,
-      4,
-      9,
+      0x000,
+      0x00a,
+      0x017,
+      0x020,
+      0x04b,
     ]);
     // Line 3 is non-breakable.
     await addBreakpointForLine(frontend, 3, true);
     assert.deepEqual(await getBreakpointDecorators(frontend), []);
     // Line 5 is breakable.
     await addBreakpointForLine(frontend, 5);
-    assert.deepEqual(await getBreakpointDecorators(frontend), [5]);
+    assert.deepEqual(await getBreakpointDecorators(frontend), [0x023]);
   });
 });
 

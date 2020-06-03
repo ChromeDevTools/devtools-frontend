@@ -191,10 +191,16 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     this._updatePrettyPrintState();
   }
 
-  _updatePrettyPrintState() {
-    this._prettyToggle.setToggled(this._pretty);
-    this._textEditor.element.classList.toggle('pretty-printed', this._pretty);
-    if (this._pretty) {
+  _updateLineNumberFormatter() {
+    if (this._wasmDisassembly) {
+      const disassembly = this._wasmDisassembly;
+      const lastBytecodeOffset = disassembly.lineNumberToBytecodeOffset(disassembly.lineNumbers - 1);
+      const bytecodeOffsetDigits = lastBytecodeOffset.toString(16).length + 1;
+      this._textEditor.setLineNumberFormatter(lineNumber => {
+        const bytecodeOffset = disassembly.lineNumberToBytecodeOffset(lineNumber - 1);
+        return `0x${bytecodeOffset.toString(16).padStart(bytecodeOffsetDigits, '0')}`;
+      });
+    } else if (this._pretty) {
       this._textEditor.setLineNumberFormatter(lineNumber => {
         const line = this._prettyToRawLocation(lineNumber - 1, 0)[0] + 1;
         if (lineNumber === 1) {
@@ -210,6 +216,12 @@ export class SourceFrameImpl extends UI.View.SimpleView {
         return String(lineNumber);
       });
     }
+  }
+
+  _updatePrettyPrintState() {
+    this._prettyToggle.setToggled(this._pretty);
+    this._textEditor.element.classList.toggle('pretty-printed', this._pretty);
+    this._updateLineNumberFormatter();
   }
 
   /**
@@ -576,6 +588,7 @@ export class SourceFrameImpl extends UI.View.SimpleView {
       }
     }
 
+    this._updateLineNumberFormatter();
     this._updateHighlighterType(content || '');
     this._wasShownOrLoaded();
 

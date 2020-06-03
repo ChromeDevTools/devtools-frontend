@@ -594,9 +594,10 @@ export class ConsoleView extends UI.Widget.VBox {
 
     // If we already have similar messages, go slow path.
     let shouldGoIntoGroup = false;
+    const shouldGroupSimilar = this._groupSimilarSetting.get();
     if (message.isGroupable()) {
       const groupKey = viewMessage.groupKey();
-      shouldGoIntoGroup = this._groupSimilarSetting.get() && this._groupableMessages.has(groupKey);
+      shouldGoIntoGroup = shouldGroupSimilar && this._groupableMessages.has(groupKey);
       let list = this._groupableMessages.get(groupKey);
       if (!list) {
         list = [];
@@ -607,7 +608,9 @@ export class ConsoleView extends UI.Widget.VBox {
 
     this._computeShouldMessageBeVisible(viewMessage);
     if (!shouldGoIntoGroup && !insertedInMiddle) {
-      this._appendMessageToEnd(viewMessage);
+      this._appendMessageToEnd(
+          viewMessage,
+          !shouldGroupSimilar /* crbug.com/1082963: prevent collapse of same messages when "Group similar" is false */);
       this._updateFilterStatus();
       this._searchableView.updateSearchMatchesCount(this._regexMatchRanges.length);
     } else {
@@ -904,7 +907,9 @@ export class ConsoleView extends UI.Widget.VBox {
     } else {
       for (let i = 0; i < this._consoleMessages.length; ++i) {
         this._consoleMessages[i].setInSimilarGroup(false);
-        this._appendMessageToEnd(this._consoleMessages[i]);
+        this._appendMessageToEnd(
+            this._consoleMessages[i],
+            true /* crbug.com/1082963: prevent collapse of same messages when "Group similar" is false */);
       }
     }
     this._updateFilterStatus();

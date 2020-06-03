@@ -557,11 +557,16 @@ CodeMirror.Pos.prototype.ch;
  */
 CodeMirror.cmpPos = function(pos1, pos2) {};
 
-/** @constructor */
-CodeMirror.StringStream = function(line) {
+/**
+ * @constructor
+ * @param {(!Array<string>|string)} line
+ * @param {number=} index
+ */
+CodeMirror.StringStream = function(line, index) {
   this.pos = 0;
   this.start = 0;
 };
+
 CodeMirror.StringStream.prototype = {
   backUp: function(n) {},
   column: function() {},

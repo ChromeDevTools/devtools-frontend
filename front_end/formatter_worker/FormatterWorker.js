@@ -54,7 +54,7 @@ export function createTokenizer(mimeType) {
    * @param {function(string, ?string, number, number):?} callback
    */
   function tokenize(line, callback) {
-    const stream = new CodeMirror.StringStream(line);
+    const stream = new CodeMirror.StringStream([line], 0);
     while (!stream.eol()) {
       const style = mode.token(stream, state);
       const value = stream.current();

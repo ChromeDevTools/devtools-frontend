@@ -5,7 +5,13 @@
 import("../../../third_party/typescript/typescript.gni")
 
 node_ts_library("network") {
-  sources = [ "network-datagrid_test.ts" ]
+  sources = [
+    "network-datagrid_test.ts",
+    "network_test.ts",
+  ]
 
-  deps = [ "../../shared" ]
+  deps = [
+    "../../shared",
+    "../helpers",
+  ]
 }

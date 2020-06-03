@@ -669,6 +669,14 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
   }
 
   /**
+   * @override
+   * @return {!Array<!Element>}
+   */
+  elementsToRestoreScrollPositionsFor() {
+    return [this._issuesTree.element];
+  }
+
+  /**
    * @returns {!{toolbarContainer: !Element, updateToolbarIssuesCount: function(number):void}}
    */
   _createToolbars() {

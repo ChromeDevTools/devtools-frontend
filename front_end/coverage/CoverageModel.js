@@ -552,8 +552,10 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
       let fullText = null;
       if (useFullText) {
         const resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(url);
-        const content = (await resource.requestContent()).content;
-        fullText = resource ? new TextUtils.Text.Text(content || '') : null;
+        if (resource) {
+          const content = (await resource.requestContent()).content;
+          fullText = new TextUtils.Text.Text(content || '');
+        }
       }
 
       const coverageByLocationKeys = Array.from(urlInfo._coverageInfoByLocation.keys()).sort(locationCompare);

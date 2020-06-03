@@ -417,6 +417,10 @@ text.animation-timeline-grid-label {
   background-color: var(--focus-bg-color);
 }
 
+.animation-playback-rate-button[data-keyboard-focus="true"].selected:focus {
+  color: hsl(0deg 0% 0%);
+}
+
 .animation-playback-rate-button:not(.selected):hover {
   background: hsl(211deg 100% 95%);
 }

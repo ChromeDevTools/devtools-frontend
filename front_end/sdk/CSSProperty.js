@@ -250,7 +250,14 @@ export class CSSProperty {
       }
 
       if (token === '}' || token === ';') {
-        result = result.trimRight() + indentation + propertyText.trim() + ';';
+        // While `propertyText` can generally be trimmed, doing so
+        // breaks valid CSS declarations such as `--foo:  ;` which would
+        // then produce invalid CSS of the form `--foo:;`. This
+        // implementation takes special care to restore a single
+        // whitespace token in this edge case. https://crbug.com/1071296
+        const trimmedPropertyText = propertyText.trim();
+        result = result.trimRight() + indentation + trimmedPropertyText +
+            (trimmedPropertyText.endsWith(':') ? ' ' : '') + ';';
         needsSemi = false;
         insideProperty = false;
         propertyName = '';

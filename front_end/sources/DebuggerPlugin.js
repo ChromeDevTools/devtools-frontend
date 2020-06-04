@@ -45,8 +45,6 @@ import {Plugin} from './Plugin.js';
 import {resolveExpression, resolveScopeInObject} from './SourceMapNamesResolver.js';
 import {SourcesPanel} from './SourcesPanel.js';
 
-const breakpointsGutterType = 'CodeMirror-gutter-breakpoints';
-
 export class DebuggerPlugin extends Plugin {
   /**
    * @param {!SourceFrame.SourcesTextEditor.SourcesTextEditor} textEditor
@@ -203,20 +201,6 @@ export class DebuggerPlugin extends Plugin {
       this._prettyPrintInfobar = null;
       this._detectMinified();
     }
-
-    // Divs are created in the breakpoint gutter in each line
-    // so that the contextMenu event handler can determine which row was clicked on.
-    this._textEditor.installGutter(breakpointsGutterType, true);
-    this._gutterElementCount = 0;
-  }
-
-  _addGutterElements() {
-    for (let i = this._gutterElementCount; i < this._textEditor.linesCount; ++i) {
-      const gutterElement = document.createElement('div');
-      gutterElement.classList.add('breakpoint-element');
-      this._textEditor.setGutterDecoration(i, breakpointsGutterType, gutterElement);
-    }
-    this._gutterElementCount = this._textEditor.linesCount;
   }
 
   /**
@@ -1286,8 +1270,6 @@ export class DebuggerPlugin extends Plugin {
      * @this {DebuggerPlugin}
      */
     function updateGutter(editorLineNumber, decorations) {
-      this._addGutterElements();
-
       this._textEditor.toggleLineClass(editorLineNumber, 'cm-breakpoint', false);
       this._textEditor.toggleLineClass(editorLineNumber, 'cm-breakpoint-disabled', false);
       this._textEditor.toggleLineClass(editorLineNumber, 'cm-breakpoint-unbound', false);
@@ -1703,8 +1685,7 @@ export class DebuggerPlugin extends Plugin {
     }
 
     const eventData = /** @type {!SourceFrame.SourcesTextEditor.GutterClickEventData} */ (event.data);
-    if (eventData.gutterType !== SourceFrame.SourcesTextEditor.lineNumbersGutterType &&
-        eventData.gutterType !== breakpointsGutterType) {
+    if (eventData.gutterType !== SourceFrame.SourcesTextEditor.lineNumbersGutterType) {
       return;
     }
     const editorLineNumber = eventData.lineNumber;

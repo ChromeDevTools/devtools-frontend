@@ -36,13 +36,6 @@
     margin-left: 3px;
 }
 
-.CodeMirror-gutter-breakpoints {
-    width: 10px;
-    margin: 0 -4px 0 2px;
-    pointer-events: none;
-    cursor: default;
-}
-
 .CodeMirror .source-frame-eval-expression {
     outline: 0;
     border: 1px solid rgb(163, 41, 34);
@@ -132,7 +125,7 @@
 
 .CodeMirror-linenumber {
     color: hsl(0, 0%, 46%);
-    padding: 0 3px 0 5px;
+    padding: 0 3px 0 12px;
     min-width: 22px;
     text-align: right;
     white-space: nowrap;
@@ -187,45 +180,40 @@
     color: rgba(128, 128, 128, 0.4);
 }
 
-.breakpoint-element {
-    padding-top: 1.5px;
-}
-
-.breakpoint-element::before {
-    content: "\00AD";
-}
-
 .CodeMirror-gutter-background.cm-breakpoint {
     background-color: var(--breakpoint-background-red);
 }
 
-.cm-breakpoint .breakpoint-element::before {
+.CodeMirror-gutter-background.cm-breakpoint::before {
     content: url(Images/breakpoint.svg);
+    position: relative;
+    top: 1px;
+    left: 1px;
 }
 
-.breakpoints-deactivated .cm-breakpoint .breakpoint-element::before,
-.cm-breakpoint-unbound .breakpoint-element::before,
-.cm-breakpoint-disabled .breakpoint-element::before {
+.breakpoints-deactivated .CodeMirror-gutter-background.cm-breakpoint::before,
+.CodeMirror-gutter-background.cm-breakpoint-unbound::before,
+.CodeMirror-gutter-background.cm-breakpoint-disabled::before {
     content: url(Images/breakpoint-disabled.svg);
 }
 
-.cm-breakpoint.cm-breakpoint-conditional .breakpoint-element::before {
+.CodeMirror-gutter-background.cm-breakpoint.cm-breakpoint-conditional::before {
     content: url(Images/breakpoint-conditional.svg);
 }
 
-.cm-breakpoint-disabled.cm-breakpoint-conditional .breakpoint-element::before,
-.cm-breakpoint-unbound.cm-breakpoint-conditional .breakpoint-element::before,
-.breakpoints-deactivated .cm-breakpoint.cm-breakpoint-conditional .breakpoint-element::before {
+.CodeMirror-gutter-background.cm-breakpoint-disabled.cm-breakpoint-conditional::before,
+.CodeMirror-gutter-background.cm-breakpoint-unbound.cm-breakpoint-conditional::before,
+.breakpoints-deactivated .CodeMirror-gutter-background.cm-breakpoint.cm-breakpoint-conditional::before {
     content: url(Images/breakpoint-conditional-disabled.svg);
 }
 
-.cm-breakpoint.cm-breakpoint-logpoint .breakpoint-element::before {
+.CodeMirror-gutter-background.cm-breakpoint.cm-breakpoint-logpoint::before {
     content: url(Images/logpoint.svg);
 }
 
-.cm-breakpoint-disabled.cm-breakpoint-logpoint .breakpoint-element::before,
-.cm-breakpoint-unbound.cm-breakpoint-logpoint .breakpoint-element::before,
-.breakpoints-deactivated .cm-breakpoint.cm-breakpoint-logpoint .breakpoint-element::before {
+.CodeMirror-gutter-background.cm-breakpoint-disabled.cm-breakpoint-logpoint::before,
+.CodeMirror-gutter-background.cm-breakpoint-unbound.cm-breakpoint-logpoint::before,
+.breakpoints-deactivated .CodeMirror-gutter-background.cm-breakpoint.cm-breakpoint-logpoint::before {
     content: url(Images/logpoint-disabled.svg);
 }
 

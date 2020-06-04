@@ -37,7 +37,6 @@ describe('Source Tab', async () => {
     await addBreakpointForLine(frontend, 5);
 
     const scriptLocation = await retrieveTopCallFrameScriptLocation('main();', target);
-    // TODO(chromium:1043047): Switch to bytecode offsets here.
     assert.deepEqual(scriptLocation, 'add.wasm:0x23');
   });
 

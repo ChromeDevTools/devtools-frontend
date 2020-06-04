@@ -1696,7 +1696,8 @@ export class HeapProfileHeader extends ProfileHeader {
    */
   saveToFile() {
     const fileOutputStream = new Bindings.FileUtils.FileOutputStream();
-    this._fileName = this._fileName || 'Heap-' + new Date().toISO8601Compact() + this.profileType().fileExtension();
+    this._fileName = this._fileName ||
+        'Heap-' + Platform.DateUtilities.toISO8601Compact(new Date()) + this.profileType().fileExtension();
     fileOutputStream.open(this._fileName).then(onOpen.bind(this));
 
     /**

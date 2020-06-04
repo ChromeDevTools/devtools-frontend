@@ -5,6 +5,7 @@
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as HostModule from '../host/host.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Timeline from '../timeline/timeline.js';
 import * as UI from '../ui/ui.js';
@@ -149,7 +150,7 @@ export class LighthouseReportUIFeatures extends ReportUIFeatures {
   async _saveFile(blob) {
     const domain = new Common.ParsedURL.ParsedURL(this.json.finalUrl).domain();
     const sanitizedDomain = domain.replace(/[^a-z0-9.-]+/gi, '_');
-    const timestamp = new Date(this.json.fetchTime).toISO8601Compact();
+    const timestamp = Platform.DateUtilities.toISO8601Compact(new Date(this.json.fetchTime));
     const ext = blob.type.match('json') ? '.json' : '.html';
     const basename = `${sanitizedDomain}-${timestamp}${ext}`;
     const text = await blob.text();

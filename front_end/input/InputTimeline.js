@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Bindings from '../bindings/bindings.js';
+import * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Timeline from '../timeline/timeline.js';
@@ -152,7 +153,7 @@ export class InputTimeline extends UI.Widget.VBox {
   async _saveToFile() {
     console.assert(this._state === State.Idle && this._tracingModel);
 
-    const fileName = `InputProfile-${new Date().toISO8601Compact()}.json`;
+    const fileName = `InputProfile-${Platform.DateUtilities.toISO8601Compact(new Date())}.json`;
     const stream = new Bindings.FileUtils.FileOutputStream();
 
     const accepted = await stream.open(fileName);

@@ -5,6 +5,7 @@
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as DataGrid from '../data_grid/data_grid.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -364,7 +365,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
    * Saves all currently displayed events in a file (JSON format).
    */
   async _saveToFile() {
-    const fileName = `${this._serviceName}-${new Date().toISO8601Compact()}.json`;
+    const fileName = `${this._serviceName}-${Platform.DateUtilities.toISO8601Compact(new Date())}.json`;
     const stream = new Bindings.FileUtils.FileOutputStream();
 
     const accepted = await stream.open(fileName);

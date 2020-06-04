@@ -35,6 +35,7 @@ import * as Extensions from '../extensions/extensions.js';
 import * as Host from '../host/host.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
+import * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';
@@ -400,7 +401,7 @@ export class TimelinePanel extends UI.Panel.Panel {
     }
 
     const now = new Date();
-    const fileName = 'Profile-' + now.toISO8601Compact() + '.json';
+    const fileName = 'Profile-' + Platform.DateUtilities.toISO8601Compact(now) + '.json';
     const stream = new Bindings.FileUtils.FileOutputStream();
 
     const accepted = await stream.open(fileName);

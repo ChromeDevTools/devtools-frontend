@@ -221,21 +221,6 @@ Number.toFixedIfFloating = function(value) {
   return number % 1 ? number.toFixed(3) : String(number);
 };
 
-/**
- * @return {string}
- */
-Date.prototype.toISO8601Compact = function() {
-  /**
-   * @param {number} x
-   * @return {string}
-   */
-  function leadZero(x) {
-    return (x > 9 ? '' : '0') + x;
-  }
-  return this.getFullYear() + leadZero(this.getMonth() + 1) + leadZero(this.getDate()) + 'T' +
-      leadZero(this.getHours()) + leadZero(this.getMinutes()) + leadZero(this.getSeconds());
-};
-
 (function() {
 const partition = {
   /**

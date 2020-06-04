@@ -330,8 +330,8 @@ export class SourceFrameImpl extends UI.View.SimpleView {
           worker.onerror = reject;
         });
         worker.postMessage({method: 'disassemble', params: {content}});
-
         const {source, offsets, functionBodyOffsets} = await promise;
+        worker.terminate();
         this._rawContent = source;
         this._wasmDisassembly = new Common.WasmDisassembly.WasmDisassembly(offsets, functionBodyOffsets);
       }

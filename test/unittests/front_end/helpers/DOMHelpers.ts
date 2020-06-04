@@ -18,7 +18,7 @@ interface RenderOptions {
 }
 
 /**
- * Renders a given element into the DOM. By default it will error if it finds an element already rendered but this can be controlled via the otpions.
+ * Renders a given element into the DOM. By default it will error if it finds an element already rendered but this can be controlled via the options.
  **/
 export const renderElementIntoDOM = (element: HTMLElement, renderOptions: RenderOptions = {}) => {
   const container = document.getElementById(TEST_CONTAINER_ID);

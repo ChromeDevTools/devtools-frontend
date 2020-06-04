@@ -42,25 +42,12 @@ const TEST_FILES = glob.sync(TEST_SOURCES).map(fileName => {
 
 const TEST_FILES_SOURCE_MAPS = TEST_FILES.map(fileName => `${fileName}.map`);
 
-/** We separate the setup files because we need them to execute first */
-const unitTestFiles = [];
-const setupTestFiles = [];
-TEST_FILES.forEach(filePath => {
-  if (filePath.includes('test_setup')) {
-    setupTestFiles.push(filePath);
-  } else {
-    unitTestFiles.push(filePath);
-  }
-});
-
-
 module.exports = function(config) {
   const options = {
     basePath: ROOT_DIRECTORY,
 
     files: [
-      ...setupTestFiles.map(pattern => ({pattern, type: 'module'})),
-      ...unitTestFiles.map(pattern => ({pattern, type: 'module'})),
+      ...TEST_FILES.map(pattern => ({pattern, type: 'module'})),
       ...TEST_FILES_SOURCE_MAPS.map(pattern => ({pattern, served: true, included: false})),
       {pattern: TEST_SOURCES, served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/Images/*.{svg,png}'), served: true, included: false},

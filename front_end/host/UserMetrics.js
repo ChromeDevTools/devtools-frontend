@@ -117,6 +117,16 @@ export class UserMetrics {
   }
 
   /**
+   * @param {string} keybindSet
+   */
+  keybindSetSettingChanged(keybindSet) {
+    const size = Object.keys(KeybindSetSettings).length + 1;
+    const value = KeybindSetSettings[keybindSet] || 0;
+    InspectorFrontendHostInstance.recordEnumeratedHistogram('DevTools.KeybindSetSettingChanged', value, size);
+    Common.EventTarget.fireEvent('DevTools.KeybindSetSettingChanged', {value});
+  }
+
+  /**
    * @param {string} actionId
    */
   keyboardShortcutFired(actionId) {
@@ -224,6 +234,12 @@ export const PanelCodes = {
   'settings-shortcuts': 36,
   'drawer-issues-pane': 37,
   'settings-keybinds': 38
+};
+
+/** @type {!Object<string, number>} */
+export const KeybindSetSettings = {
+  'devToolsDefault': 0,
+  'vsCode': 1,
 };
 
 /** @type {!Object<string, number>} */

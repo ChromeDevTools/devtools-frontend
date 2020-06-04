@@ -38,7 +38,10 @@ export class ShortcutRegistry {
         keybindSetSetting.get() !== DefaultShortcutSetting) {
       keybindSetSetting.set(DefaultShortcutSetting);
     }
-    keybindSetSetting.addChangeListener(this._registerBindings, this);
+    keybindSetSetting.addChangeListener(event => {
+      Host.userMetrics.keybindSetSettingChanged(event.data);
+      this._registerBindings();
+    });
 
     this._registerBindings();
   }

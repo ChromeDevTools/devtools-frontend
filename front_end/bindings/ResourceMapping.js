@@ -292,6 +292,9 @@ class ModelInfo {
         continue;
       }
       const binding = this._bindings.get(resource.url);
+      if (!binding) {
+        continue;
+      }
       if (binding._resources.size === 1) {
         binding.dispose();
         this._bindings.delete(resource.url);

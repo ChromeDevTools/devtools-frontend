@@ -10,6 +10,7 @@ ts_library("common") {
     "AppProvider.js",
     "CharacterIdMap.js",
     "Color.js",
+    "ColorUtils.js",
     "Console.js",
     "EventTarget.js",
     "JavaScriptMetaData.js",

@@ -77,4 +77,5 @@ ts_library("inspector_overlay") {
     "tool_viewport_size.js",
     "tool_viewport_size_impl.js",
   ]
+  deps = [ "../common" ]
 }

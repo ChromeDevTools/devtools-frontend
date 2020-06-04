@@ -11,6 +11,7 @@
     "Worker.js",
     "TextDictionary.js",
     "Color.js",
+    "ColorUtils.js",
     "Console.js",
     "ParsedURL.js",
     "Progress.js",

@@ -28,6 +28,7 @@
  */
 
 import * as Platform from '../platform/platform.js';
+import {blendColors} from './ColorUtils.js';
 
 /** @type {?Map<string, string>} */
 let _rgbaToNickname;
@@ -377,21 +378,6 @@ export class Color {
   }
 
   /**
-   * Combine the two given color according to alpha blending.
-   * @param {!Array<number>} fgRGBA
-   * @param {!Array<number>} bgRGBA
-   * @param {!Array<number>} out_blended
-   */
-  static blendColors(fgRGBA, bgRGBA, out_blended) {
-    const alpha = fgRGBA[3];
-
-    out_blended[0] = ((1 - alpha) * bgRGBA[0]) + (alpha * fgRGBA[0]);
-    out_blended[1] = ((1 - alpha) * bgRGBA[1]) + (alpha * fgRGBA[1]);
-    out_blended[2] = ((1 - alpha) * bgRGBA[2]) + (alpha * fgRGBA[2]);
-    out_blended[3] = alpha + (bgRGBA[3] * (1 - alpha));
-  }
-
-  /**
    * Calculate the contrast ratio between a foreground and a background color.
    * Returns the ratio to 1, for example for two two colors with a contrast ratio of 21:1, this function will return 21.
    * See http://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef
@@ -400,16 +386,10 @@ export class Color {
    * @return {number}
    */
   static calculateContrastRatio(fgRGBA, bgRGBA) {
-    Color.blendColors(fgRGBA, bgRGBA, _blendedFg);
-
-    const fgLuminance = Color.luminance(_blendedFg);
+    const blendedFg = blendColors(fgRGBA, bgRGBA);
+    const fgLuminance = Color.luminance(blendedFg);
     const bgLuminance = Color.luminance(bgRGBA);
     const contrastRatio = (Math.max(fgLuminance, bgLuminance) + 0.05) / (Math.min(fgLuminance, bgLuminance) + 0.05);
-
-    for (let i = 0; i < _blendedFg.length; i++) {
-      _blendedFg[i] = 0;
-    }
-
     return contrastRatio;
   }
 
@@ -724,8 +704,7 @@ export class Color {
    */
   blendWith(fgColor) {
     /** @type {!Array.<number>} */
-    const rgba = [];
-    Color.blendColors(fgColor._rgba, this._rgba, rgba);
+    const rgba = blendColors(fgColor._rgba, this._rgba);
     return new Color(rgba, Format.RGBA);
   }
 
@@ -995,4 +974,3 @@ export class Generator {
 }
 
 const _tmpHSLA = [0, 0, 0, 0];
-const _blendedFg = [0, 0, 0, 0];

@@ -79,14 +79,6 @@ describe('Color', () => {
     assert.strictEqual(contrastRatio, 2.148936170212766, 'contrast ratio was not calculated correctly');
   });
 
-  it('is able to blend two colors according to alpha blending', () => {
-    const firstColor = [1, 0, 0, 1];
-    const secondColor = [0, 0, 1, 1];
-    const result: number[] = [];
-    Color.Color.blendColors(firstColor, secondColor, result);
-    assert.deepEqual(result, [1, 0, 0, 1], 'colors were not blended successfully');
-  });
-
   it('parses hex values', () => {
     assert.deepEqual(Color.Color.parse('#FF00FF')!.rgba(), [1, 0, 1, 1]);
     assert.deepEqual(Color.Color.parse('#F0F')!.rgba(), [1, 0, 1, 1]);

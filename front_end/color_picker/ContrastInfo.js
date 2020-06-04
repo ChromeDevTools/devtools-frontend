@@ -95,8 +95,7 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper {
     // the unknown background is the same color as the text.
     if (bgColor.hasAlpha()) {
       /** @type {!Array<number>} */
-      const blendedRGBA = [];
-      Common.Color.Color.blendColors(bgColor.rgba(), fgRGBA, blendedRGBA);
+      const blendedRGBA = Common.ColorUtils.blendColors(bgColor.rgba(), fgRGBA);
       this._bgColor = new Common.Color.Color(blendedRGBA, Common.Color.Format.RGBA);
     }
 

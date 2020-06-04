@@ -114,8 +114,7 @@ export class ContrastRatioLineBuilder {
     const bgRGBA = bgColor.rgba();
     const bgLuminance = Common.Color.Color.luminance(bgRGBA);
     /** @type {!Array<number>} */
-    const blendedRGBA = [];
-    Common.Color.Color.blendColors(fgRGBA, bgRGBA, blendedRGBA);
+    let blendedRGBA = Common.ColorUtils.blendColors(fgRGBA, bgRGBA);
     const fgLuminance = Common.Color.Color.luminance(blendedRGBA);
     const fgIsLighter = fgLuminance > bgLuminance;
     const desiredLuminance = Common.Color.Color.desiredLuminance(bgLuminance, requiredContrast, fgIsLighter);
@@ -127,7 +126,7 @@ export class ContrastRatioLineBuilder {
     /** @type {!Array<number>} */
     const candidateRGBA = [];
     Common.Color.Color.hsva2rgba(candidateHSVA, candidateRGBA);
-    Common.Color.Color.blendColors(candidateRGBA, bgRGBA, blendedRGBA);
+    blendedRGBA = Common.ColorUtils.blendColors(candidateRGBA, bgRGBA);
 
     /**
      * @param {number} index
@@ -136,7 +135,7 @@ export class ContrastRatioLineBuilder {
     function updateCandidateAndComputeDelta(index, x) {
       candidateHSVA[index] = x;
       Common.Color.Color.hsva2rgba(candidateHSVA, candidateRGBA);
-      Common.Color.Color.blendColors(candidateRGBA, bgRGBA, blendedRGBA);
+      blendedRGBA = Common.ColorUtils.blendColors(candidateRGBA, bgRGBA);
       return Common.Color.Color.luminance(blendedRGBA) - desiredLuminance;
     }
 

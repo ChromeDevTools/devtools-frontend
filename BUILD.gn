@@ -1068,6 +1068,7 @@ all_devtools_modules = [
   "common/AppProvider.js",
   "common/CharacterIdMap.js",
   "common/Color.js",
+  "common/ColorUtils.js",
   "common/Console.js",
   "common/EventTarget.js",
   "common/JavaScriptMetaData.js",

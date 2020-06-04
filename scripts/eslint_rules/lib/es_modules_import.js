@@ -11,6 +11,7 @@
 const path = require('path');
 
 const FRONT_END_DIRECTORY = path.join(__dirname, '..', '..', '..', 'front_end');
+const INSPECTOR_OVERLAY_DIRECTORY = path.join(__dirname, '..', '..', '..', 'front_end', 'inspector_overlay');
 
 const EXEMPTED_THIRD_PARTY_MODULES = new Set([
   // lit-html is exempt as it doesn't expose all its modules from the root file
@@ -161,6 +162,10 @@ module.exports = {
         }
 
         if (!importingFileName.startsWith(FRONT_END_DIRECTORY)) {
+          return;
+        }
+
+        if (importingFileName.startsWith(INSPECTOR_OVERLAY_DIRECTORY)) {
           return;
         }
 

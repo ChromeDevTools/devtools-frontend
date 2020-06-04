@@ -38,11 +38,6 @@ export function reset(resetData) {
     window.canvasWidth = viewportSize.width;
     window.canvasHeight = viewportSize.height;
   }
-
-  doReset();
-}
-
-function doReset() {
 }
 
 export function setPlatform(platform) {

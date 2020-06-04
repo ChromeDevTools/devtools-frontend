@@ -41,16 +41,6 @@ describe('Color', () => {
     assert.deepEqual(hsva, [0, 0, 0.5, 0.5], 'HSVA was not calculated correctly');
   });
 
-  it('is able to return the luminance of an RGBA value with the RGB values more than 0.03928', () => {
-    const lum = Color.Color.luminance([0.5, 0.5, 0.5, 0.5]);
-    assert.strictEqual(lum, 0.21404114048223255, 'luminance was not calculated correctly');
-  });
-
-  it('is able to return the luminance of an RGBA value with the RGB values less than 0.03928', () => {
-    const lum = Color.Color.luminance([0.03927, 0.03927, 0.03927, 0.5]);
-    assert.strictEqual(lum, 0.003039473684210526, 'luminance was not calculated correctly');
-  });
-
   it('is able to return a lighter luminance according to a given contrast value', () => {
     const result = Color.Color.desiredLuminance(0.2, 2, true);
     assert.strictEqual(result, 0.45, 'luminance was not calculated correctly');
@@ -70,13 +60,6 @@ describe('Color', () => {
     const color = new Color.Color([0.5, 0.5, 0.5, 0.5], 'testFormat', 'testColor');
     const result = color.canonicalHSLA();
     assert.deepEqual(result, [0, 0, 50, 0.5], 'canonical HSLA was not calculated correctly');
-  });
-
-  it('is able to calculate the contrast ratio between two colors', () => {
-    const firstColor = [1, 0, 0, 1];
-    const secondColor = [0, 0, 1, 1];
-    const contrastRatio = Color.Color.calculateContrastRatio(firstColor, secondColor);
-    assert.strictEqual(contrastRatio, 2.148936170212766, 'contrast ratio was not calculated correctly');
   });
 
   it('parses hex values', () => {

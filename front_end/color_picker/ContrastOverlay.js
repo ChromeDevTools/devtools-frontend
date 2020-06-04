@@ -112,10 +112,10 @@ export class ContrastRatioLineBuilder {
     const fgRGBA = color.rgba();
     const fgHSVA = color.hsva();
     const bgRGBA = bgColor.rgba();
-    const bgLuminance = Common.Color.Color.luminance(bgRGBA);
+    const bgLuminance = Common.ColorUtils.luminance(bgRGBA);
     /** @type {!Array<number>} */
     let blendedRGBA = Common.ColorUtils.blendColors(fgRGBA, bgRGBA);
-    const fgLuminance = Common.Color.Color.luminance(blendedRGBA);
+    const fgLuminance = Common.ColorUtils.luminance(blendedRGBA);
     const fgIsLighter = fgLuminance > bgLuminance;
     const desiredLuminance = Common.Color.Color.desiredLuminance(bgLuminance, requiredContrast, fgIsLighter);
 
@@ -136,7 +136,7 @@ export class ContrastRatioLineBuilder {
       candidateHSVA[index] = x;
       Common.Color.Color.hsva2rgba(candidateHSVA, candidateRGBA);
       blendedRGBA = Common.ColorUtils.blendColors(candidateRGBA, bgRGBA);
-      return Common.Color.Color.luminance(blendedRGBA) - desiredLuminance;
+      return Common.ColorUtils.luminance(blendedRGBA) - desiredLuminance;
     }
 
     /**

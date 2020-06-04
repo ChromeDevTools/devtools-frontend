@@ -32,7 +32,7 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
-import {blendColors} from '../common/ColorUtils.js';
+import {contrastRatio, rgbaToHsla} from '../common/ColorUtils.js';
 
 import {createElement} from './common.js';
 
@@ -193,45 +193,6 @@ function parseHexa(hexa) {
 }
 
 /**
- * TODO(alexrudenko): import this and other color helpers from DevTools
- * @param {!Array<number>} rgba
- * @return {!Array<number>}
- */
-function rgbaToHsla(rgba) {
-  const [r, g, b] = rgba;
-  const max = Math.max(r, g, b);
-  const min = Math.min(r, g, b);
-  const diff = max - min;
-  const sum = max + min;
-
-  let h;
-  if (min === max) {
-    h = 0;
-  } else if (r === max) {
-    h = ((1 / 6 * (g - b) / diff) + 1) % 1;
-  } else if (g === max) {
-    h = (1 / 6 * (b - r) / diff) + 1 / 3;
-  } else {
-    h = (1 / 6 * (r - g) / diff) + 2 / 3;
-  }
-
-  const l = 0.5 * sum;
-
-  let s;
-  if (l === 0) {
-    s = 0;
-  } else if (l === 1) {
-    s = 0;
-  } else if (l <= 0.5) {
-    s = diff / sum;
-  } else {
-    s = diff / (2 - sum);
-  }
-
-  return [h, s, l, rgba[3]];
-}
-
-/**
  * @param {!String} hexa
  * @param {!String} colorFormat
  * @return {!String}
@@ -257,44 +218,6 @@ function formatColor(hexa, colorFormat) {
   }
 
   return hexa;
-}
-
-/**
-* Calculate the contrast ratio between a foreground and a background color.
-* Returns the ratio to 1, for example for two colors with a contrast ratio of 21:1,
-* this function will return 21.
-* See http://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef
-* @param {!Array<number>} fgRGBA
-* @param {!Array<number>} bgRGBA
-* @return {number}
-*/
-function contrastRatio(fgRGBA, bgRGBA) {
-  // If we have a semi-transparent background color over an unknown
-  // background, draw the line for the "worst case" scenario: where
-  // the unknown background is the same color as the text.
-  bgRGBA = blendColors(bgRGBA, fgRGBA);
-  const fgLuminance = luminance(blendColors(fgRGBA, bgRGBA));
-  const bgLuminance = luminance(bgRGBA);
-  const result = (Math.max(fgLuminance, bgLuminance) + 0.05) / (Math.min(fgLuminance, bgLuminance) + 0.05);
-  return result.toFixed(2);
-
-  /**
-    * Calculate the luminance of this color using the WCAG algorithm.
-    * See http://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
-    * @param {!Array<number>} rgba
-    * @return {number}
-    */
-  function luminance(rgba) {
-    const rSRGB = rgba[0];
-    const gSRGB = rgba[1];
-    const bSRGB = rgba[2];
-
-    const r = rSRGB <= 0.03928 ? rSRGB / 12.92 : Math.pow(((rSRGB + 0.055) / 1.055), 2.4);
-    const g = gSRGB <= 0.03928 ? gSRGB / 12.92 : Math.pow(((gSRGB + 0.055) / 1.055), 2.4);
-    const b = bSRGB <= 0.03928 ? bSRGB / 12.92 : Math.pow(((bSRGB + 0.055) / 1.055), 2.4);
-
-    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-  }
 }
 
 function computeIsLargeFont(contrast) {

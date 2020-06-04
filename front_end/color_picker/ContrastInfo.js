@@ -99,7 +99,7 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper {
       this._bgColor = new Common.Color.Color(blendedRGBA, Common.Color.Format.RGBA);
     }
 
-    this._contrastRatio = Common.Color.Color.calculateContrastRatio(fgRGBA, this._bgColor.rgba());
+    this._contrastRatio = Common.ColorUtils.contrastRatio(fgRGBA, this._bgColor.rgba());
   }
 
   /**
@@ -113,7 +113,7 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper {
     if (!this._bgColor || !this._fgColor) {
       return;
     }
-    this._contrastRatio = Common.Color.Color.calculateContrastRatio(this._fgColor.rgba(), this._bgColor.rgba());
+    this._contrastRatio = Common.ColorUtils.contrastRatio(this._fgColor.rgba(), this._bgColor.rgba());
   }
 
   /**

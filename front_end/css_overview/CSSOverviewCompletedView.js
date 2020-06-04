@@ -456,7 +456,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     return Array.from(srcColors.keys()).sort((colA, colB) => {
       const colorA = Common.Color.Color.parse(colA);
       const colorB = Common.Color.Color.parse(colB);
-      return Common.Color.Color.luminance(colorB.rgba()) - Common.Color.Color.luminance(colorA.rgba());
+      return Common.ColorUtils.luminance(colorB.rgba()) - Common.ColorUtils.luminance(colorA.rgba());
     });
   }
 

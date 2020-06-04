@@ -11,10 +11,18 @@ export class ReleaseNoteView extends UI.Widget.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('help/releaseNote.css');
-    const releaseNoteElement = this._createReleaseNoteElement(latestReleaseNote());
+    this._releaseNoteElement = this._createReleaseNoteElement(latestReleaseNote());
     const topSection = this.contentElement.createChild('div', 'release-note-top-section');
     topSection.textContent = ls`${latestReleaseNote().header}`;
-    this.contentElement.appendChild(releaseNoteElement);
+    this.contentElement.appendChild(this._releaseNoteElement);
+  }
+
+  /**
+   * @override
+   * @return {!Array<!Element>}
+   */
+  elementsToRestoreScrollPositionsFor() {
+    return [this._releaseNoteElement];
   }
 
   /**

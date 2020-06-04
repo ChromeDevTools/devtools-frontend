@@ -246,6 +246,9 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
     if (this._uiSourceCode.editDisabled()) {
       return false;
     }
+    if (this._uiSourceCode.mimeType() === 'application/wasm') {
+      return false;
+    }
     if (self.Persistence.persistence.binding(this._uiSourceCode)) {
       return true;
     }

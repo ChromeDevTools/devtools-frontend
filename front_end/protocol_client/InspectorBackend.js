@@ -129,11 +129,10 @@ export class InspectorBackend {
    * @param {string} method
    * @param {!Array.<!{name: string, type: string, optional: boolean}>} signature
    * @param {!Array.<string>} replyArgs
-   * @param {boolean} hasErrorData
    */
-  registerCommand(method, signature, replyArgs, hasErrorData) {
+  registerCommand(method, signature, replyArgs) {
     const domainAndMethod = method.split('.');
-    this._agentPrototype(domainAndMethod[0]).registerCommand(domainAndMethod[1], signature, replyArgs, hasErrorData);
+    this._agentPrototype(domainAndMethod[0]).registerCommand(domainAndMethod[1], signature, replyArgs);
     this._initialized = true;
   }
 
@@ -825,8 +824,6 @@ class _AgentPrototype {
   constructor(domain) {
     /** @type {!Object<string, !Array<string>>} */
     this._replyArgs = {};
-    /** @type {!Object<string, boolean>} */
-    this._hasErrorData = {};
     this._domain = domain;
     /** @type {!TargetBase} */
     this._target;
@@ -836,9 +833,8 @@ class _AgentPrototype {
    * @param {string} methodName
    * @param {!Array.<!{name: string, type: string, optional: boolean}>} signature
    * @param {!Array.<string>} replyArgs
-   * @param {boolean} hasErrorData
    */
-  registerCommand(methodName, signature, replyArgs, hasErrorData) {
+  registerCommand(methodName, signature, replyArgs) {
     const domainAndMethod = this._domain + '.' + methodName;
 
     /**
@@ -867,9 +863,6 @@ class _AgentPrototype {
     this['invoke_' + methodName] = invoke;
 
     this._replyArgs[domainAndMethod] = replyArgs;
-    if (hasErrorData) {
-      this._hasErrorData[domainAndMethod] = true;
-    }
   }
 
   /**

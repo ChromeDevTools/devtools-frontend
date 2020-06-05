@@ -701,28 +701,6 @@ function hatchFillPath(context, path, bounds, delta, color, flipDirection) {
   context.restore();
 }
 
-function clipLayoutGridCells(highlight, context) {
-  // It may seem simpler to, before drawing the desired path, call context.clip()
-  // with the rows and then with the columns. However, the 2nd context.clip() call
-  // would try to find the intersection of the rows and columns, which is way too
-  // expensive if the grid is huge, e.g. a 1000x1000 grid has 1M cells.
-  // Therefore, it's better to draw the path first, set the globalCompositeOperation
-  // so that the existing canvas content is kept where it overlaps with new content,
-  // and then draw the rows and columns.
-  if (highlight.gridInfo) {
-    for (const grid of highlight.gridInfo) {
-      if (!grid.isPrimaryGrid) {
-        continue;
-      }
-      context.save();
-      context.globalCompositeOperation = 'destination-in';
-      drawPath(context, grid.rows, 'red', null, emptyBounds());
-      drawPath(context, grid.columns, 'red', null, emptyBounds());
-      context.restore();
-    }
-  }
-}
-
 export function drawHighlight(highlight, context) {
   context = context || window.context;
   context.save();
@@ -736,10 +714,6 @@ export function drawHighlight(highlight, context) {
     if (paths.length) {
       context.globalCompositeOperation = 'destination-out';
       drawPath(context, paths[paths.length - 1].path, 'red', null, bounds);
-    }
-    // Clip content quad using the data grid cells info to create white stripes.
-    if (path.name === 'content') {
-      clipLayoutGridCells(highlight, context);
     }
     context.restore();
   }

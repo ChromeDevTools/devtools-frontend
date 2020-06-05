@@ -6,8 +6,7 @@ const {assert} = chai;
 
 import {TracingModel} from '../../../../front_end/sdk/TracingModel.js';
 
-// TODO(crbug.com/1061125): Requires common/ to be typechecked
-describe.skip('TracingModel', () => {
+describe('TracingModel', () => {
   it('is able to determine if a phase is a nestable async phase', () => {
     assert.isTrue(TracingModel.isNestableAsyncPhase('b'), '\'b\' should be considered a nestable async phase');
     assert.isTrue(TracingModel.isNestableAsyncPhase('e'), '\'e\' should be considered a nestable async phase');

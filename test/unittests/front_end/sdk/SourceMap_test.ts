@@ -6,8 +6,7 @@ const {assert} = chai;
 
 import {SourceMapEntry, TextSourceMap} from '../../../../front_end/sdk/SourceMap.js';
 
-// TODO(crbug.com/1061125): Requires common/ to be typechecked
-describe.skip('SourceMapEntry', () => {
+describe('SourceMapEntry', () => {
   it('can be instantiated correctly', () => {
     const sourceMapEntry = new SourceMapEntry(1, 1, 'http://www.example.com/', 1, 1, 'example');
     assert.strictEqual(sourceMapEntry.lineNumber, 1, 'line number was not set correctly');

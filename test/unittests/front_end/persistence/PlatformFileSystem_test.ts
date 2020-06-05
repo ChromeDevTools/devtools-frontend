@@ -6,8 +6,7 @@ const {assert} = chai;
 
 import {PlatformFileSystem} from '../../../../front_end/persistence/PlatformFileSystem.js';
 
-// TODO(crbug.com/1061125): Requires all of common/ to be checked with TypeScript
-describe.skip('PlatformFileSystem', () => {
+describe('PlatformFileSystem', () => {
   it('can be instantiated successfully', () => {
     const platformFileSystem = new PlatformFileSystem('Test Path', 'Test Type');
     assert.strictEqual(platformFileSystem.path(), 'Test Path', 'path was not set or retrieved correctly');

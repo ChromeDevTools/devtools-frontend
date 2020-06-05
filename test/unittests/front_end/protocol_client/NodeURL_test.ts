@@ -7,7 +7,7 @@ const {assert} = chai;
 import {NodeURL} from '../../../../front_end/protocol_client/NodeURL.js';
 import {Platform} from '../../../../front_end/host/host.js';
 
-describe.skip('NodeURL', () => {
+describe('NodeURL', () => {
   describe('platform detection for paths', () => {
     it('works correctly on windows', () => {
       const isWindows = true;

@@ -68,6 +68,9 @@ Make sure that you bundle the WontFix with a brief comment explaining it e.g. �
 If you think the to-triage issue is not a DevTools issue, please simply set it to a component that you think it should belong to and potentially remove the DevTools component. Make sure that the status is set to Untriaged. Feel free to CC people that you think might help with triaging this.
 This essentially moves the issue out of the DevTools triage queue into another team’s queue.
 
+### What if the issue is best handled by Microsoft?
+If you think the to-triage issue or feature request is best handled by Microsoft then add the label "msft-consider" to the issue along with completing the other normal triage steps.
+
 ### There is a feature request I am unsure how to handle. What should I do?
 Please set the request to Available and add the label “Hotlist-DevTools-ProductReview”.
 

@@ -356,7 +356,9 @@ export class Linkifier {
     Linkifier._setTrimmedText(anchor, text, this._maxLength);
 
     let titleText = uiLocation.uiSourceCode.url();
-    if (typeof uiLocation.lineNumber === 'number') {
+    if (uiLocation.uiSourceCode.mimeType() === 'application/wasm') {
+      titleText += `:0x${uiLocation.columnNumber.toString(16)}`;
+    } else if (typeof uiLocation.lineNumber === 'number') {
       titleText += ':' + (uiLocation.lineNumber + 1);
     }
     anchor.title = titleText;

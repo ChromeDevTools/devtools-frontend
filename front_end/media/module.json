@@ -27,15 +27,13 @@
     "PlayerDetailView.js",
     "PlayerListView.js",
     "PlayerPropertiesView.js",
-    "MediaModel.js",
-    "ChevronTabbedPanel.js"
+    "MediaModel.js"
   ],
   "scripts": [],
   "resources": [
     "eventDisplayTable.css",
     "mediaView.css",
     "playerListView.css",
-    "playerPropertiesView.css",
-    "chevronTabbedPanel.css"
+    "playerPropertiesView.css"
   ]
 }

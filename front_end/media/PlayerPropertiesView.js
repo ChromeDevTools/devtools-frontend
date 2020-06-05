@@ -5,8 +5,6 @@
 import * as Common from '../common/common.js';
 import * as UI from '../ui/ui.js';
 
-import {ChevronTabbedPanel} from './ChevronTabbedPanel.js';
-
 /** @enum {string} */
 export const PlayerPropertyKeys = {
   kResolution: 'kResolution',
@@ -180,7 +178,6 @@ export class TrackManager {
 
   updateData(name, value) {
     const tabs = this._view.GetTabs(this._type);
-    tabs.RemoveTabs(this._previousTabs);
 
     const newTabs = /** @type {!Array.<!Object>} */ (JSON.parse(value));
     let enumerate = 1;
@@ -209,7 +206,7 @@ export class VideoTrackManager extends TrackManager {
       tabElements.push(new DefaultPropertyRenderer(name, data));
     }
     const newTab = new AttributesView(tabElements);
-    tabs.CreateAndAddDropdownButton('tab_' + tabNumber, {title: UI.Fragment.html`Track #${tabNumber}`, element: newTab});
+    tabs.addNewTab(tabNumber, newTab);
   }
 }
 
@@ -226,8 +223,37 @@ export class AudioTrackManager extends TrackManager {
     for (const [name, data] of Object.entries(tabData)) {
       tabElements.push(new DefaultPropertyRenderer(name, data));
     }
-    const newtab = new AttributesView(tabElements);
-    tabs.CreateAndAddDropdownButton('tab_' + tabNumber, {title: UI.Fragment.html`Track #${tabNumber}`, element: newtab});
+    const newTab = new AttributesView(tabElements);
+
+    tabs.addNewTab(tabNumber, newTab);
+  }
+}
+
+
+const TrackTypeLocalized = {
+  Video: Common.UIString.UIString('Video'),
+  Audio: Common.UIString.UIString('Audio'),
+};
+
+
+class DecoderTrackMenu extends UI.TabbedPane.TabbedPane {
+  constructor(decoderName, informationalElement) {
+    super();
+    this._decoderName = decoderName;
+
+    const decoderLocalized = Common.UIString.UIString('Decoder');
+    const title = `${decoderName} ${decoderLocalized}`;
+    const propertiesLocalized = Common.UIString.UIString('Properties');
+    const hoverText = `${title} ${propertiesLocalized}`;
+    this.appendTab('DecoderProperties', title, informationalElement, hoverText);
+  }
+
+  addNewTab(trackNumber, element) {
+    const localizedTrack = Common.UIString.UIString('Track');
+    const localizedTrackLower = Common.UIString.UIString('track');
+    this.appendTab(
+        `Track${trackNumber}`,  // No need for localizing, internal ID.
+        `${localizedTrack} #${trackNumber}`, element, `${this._decoderName} ${localizedTrackLower} #${trackNumber}`);
   }
 }
 
@@ -244,27 +270,19 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
     this._videoDecoderProperties = new AttributesView(this._videoDecoderElements);
     this._audioDecoderProperties = new AttributesView(this._audioDecoderElements);
 
-    const video = new ChevronTabbedPanel({tab: {title: UI.Fragment.html`Media`, element: this._videoProperties}});
-    video.contentElement.classList.add('media-properties-view');
-    video.show(this.contentElement);
-
-    this._videoDecoderTab =
-        new ChevronTabbedPanel({tab: {title: UI.Fragment.html`Video Decoder`, element: this._videoDecoderProperties}});
-    this._videoDecoderTab.contentElement.classList.add('media-properties-view');
-    this._videoDecoderTab.show(this.contentElement);
-
-    this._audioDecoderTab =
-        new ChevronTabbedPanel({tab: {title: UI.Fragment.html`Audio Decoder`, element: this._audioDecoderProperties}});
-    this._audioDecoderTab.contentElement.classList.add('media-properties-view');
-    this._audioDecoderTab.show(this.contentElement);
+    this._videoProperties.show(this.contentElement);
+    this._videoDecoderTabs = new DecoderTrackMenu(TrackTypeLocalized.Video, this._videoDecoderProperties);
+    this._videoDecoderTabs.show(this.contentElement);
+    this._audioDecoderTabs = new DecoderTrackMenu(TrackTypeLocalized.Audio, this._audioDecoderProperties);
+    this._audioDecoderTabs.show(this.contentElement);
   }
 
   GetTabs(type) {
     if (type === 'audio') {
-      return this._audioDecoderTab;
+      return this._audioDecoderTabs;
     }
     if (type === 'video') {
-      return this._videoDecoderTab;
+      return this._videoDecoderTabs;
     }
     // There should be no other type allowed.
     throw new Error('Unreachable');

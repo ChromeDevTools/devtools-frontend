@@ -36,7 +36,6 @@ import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
-import {ColorSwatchPopoverIcon, ShadowSwatchPopoverHelper} from './ColorSwatchPopoverIcon.js';
 import {linkifyDeferredNodeReference} from './DOMLinkifier.js';
 import {ElementsSidebarPane} from './ElementsSidebarPane.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
@@ -1040,8 +1039,6 @@ export class StylePropertiesSection {
     const closeBrace = this._innerElement.createChild('div', 'sidebar-pane-closing-brace');
     closeBrace.textContent = '}';
 
-    this._createHoverMenuToolbar(closeBrace);
-
     this._selectorElement.addEventListener('click', this._handleSelectorClick.bind(this), false);
     this.element.addEventListener('mousedown', this._handleEmptySpaceMouseDown.bind(this), false);
     this.element.addEventListener('click', this._handleEmptySpaceClick.bind(this), false);
@@ -1240,76 +1237,6 @@ export class StylePropertiesSection {
   }
 
   /**
-   * @param {!Element} container
-   */
-  _createHoverMenuToolbar(container) {
-    if (!this.editable) {
-      return;
-    }
-    const items = [];
-
-    const textShadowButton =
-        new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Add text-shadow'), 'largeicon-text-shadow');
-    textShadowButton.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.Click, this._onInsertShadowPropertyClick.bind(this, 'text-shadow'));
-    textShadowButton.element.tabIndex = -1;
-    items.push(textShadowButton);
-
-    const boxShadowButton =
-        new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Add box-shadow'), 'largeicon-box-shadow');
-    boxShadowButton.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.Click, this._onInsertShadowPropertyClick.bind(this, 'box-shadow'));
-    boxShadowButton.element.tabIndex = -1;
-    items.push(boxShadowButton);
-
-    const colorButton =
-        new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Add color'), 'largeicon-foreground-color');
-    colorButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._onInsertColorPropertyClick, this);
-    colorButton.element.tabIndex = -1;
-    items.push(colorButton);
-
-    const backgroundButton =
-        new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Add background-color'), 'largeicon-background-color');
-    backgroundButton.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.Click, this._onInsertBackgroundColorPropertyClick, this);
-    backgroundButton.element.tabIndex = -1;
-    items.push(backgroundButton);
-
-    let newRuleButton = null;
-    if (this._style.parentRule) {
-      newRuleButton =
-          new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Insert Style Rule Below'), 'largeicon-add');
-      newRuleButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._onNewRuleClick, this);
-      newRuleButton.element.tabIndex = -1;
-      items.push(newRuleButton);
-    }
-
-    const sectionToolbar = new UI.Toolbar.Toolbar('sidebar-pane-section-toolbar', container);
-    for (let i = 0; i < items.length; ++i) {
-      sectionToolbar.appendToolbarItem(items[i]);
-    }
-
-    const menuButton = new UI.Toolbar.ToolbarButton('', 'largeicon-menu');
-    menuButton.element.tabIndex = -1;
-    sectionToolbar.appendToolbarItem(menuButton);
-    setItemsVisibility(items, false);
-    sectionToolbar.element.addEventListener('mouseenter', setItemsVisibility.bind(null, items, true));
-    sectionToolbar.element.addEventListener('mouseleave', setItemsVisibility.bind(null, items, false));
-    UI.ARIAUtils.markAsHidden(sectionToolbar.element);
-
-    /**
-     * @param {!Array<!UI.Toolbar.ToolbarButton>} items
-     * @param {boolean} value
-     */
-    function setItemsVisibility(items, value) {
-      for (let i = 0; i < items.length; ++i) {
-        items[i].setVisible(value);
-      }
-      menuButton.setVisible(!value);
-    }
-  }
-
-  /**
    * @return {!SDK.CSSStyleDeclaration.CSSStyleDeclaration}
    */
   style() {
@@ -1420,63 +1347,6 @@ export class StylePropertiesSection {
     } while (curElement && !curElement._section);
 
     return curElement ? curElement._section : null;
-  }
-
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onNewRuleClick(event) {
-    event.data.consume();
-    const rule = this._style.parentRule;
-    const range =
-        TextUtils.TextRange.TextRange.createFromLocation(rule.style.range.endLine, rule.style.range.endColumn + 1);
-    this._parentPane._addBlankSection(this, /** @type {string} */ (rule.styleSheetId), range);
-  }
-
-  /**
-   * @param {string} propertyName
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onInsertShadowPropertyClick(propertyName, event) {
-    event.data.consume(true);
-    const treeElement = this.addNewBlankProperty();
-    treeElement.property.name = propertyName;
-    treeElement.property.value = '0 0 black';
-    treeElement.updateTitle();
-    const shadowSwatchPopoverHelper = ShadowSwatchPopoverHelper.forTreeElement(treeElement);
-    if (shadowSwatchPopoverHelper) {
-      shadowSwatchPopoverHelper.showPopover();
-    }
-  }
-
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onInsertColorPropertyClick(event) {
-    event.data.consume(true);
-    const treeElement = this.addNewBlankProperty();
-    treeElement.property.name = 'color';
-    treeElement.property.value = 'black';
-    treeElement.updateTitle();
-    const colorSwatch = ColorSwatchPopoverIcon.forTreeElement(treeElement);
-    if (colorSwatch) {
-      colorSwatch.showPopover();
-    }
-  }
-
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onInsertBackgroundColorPropertyClick(event) {
-    event.data.consume(true);
-    const treeElement = this.addNewBlankProperty();
-    treeElement.property.name = 'background-color';
-    treeElement.property.value = 'white';
-    treeElement.updateTitle();
-    const colorSwatch = ColorSwatchPopoverIcon.forTreeElement(treeElement);
-    if (colorSwatch) {
-      colorSwatch.showPopover();
-    }
   }
 
   /**

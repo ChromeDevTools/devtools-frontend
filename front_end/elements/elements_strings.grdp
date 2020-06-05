@@ -12,9 +12,6 @@
   <message name="IDS_DEVTOOLS_07f01edb2a05909a9c0d04031d7c43e1" desc="Aria accessible name in Styles Sidebar Pane of the Elements panel">
     Filter Styles
   </message>
-  <message name="IDS_DEVTOOLS_081c9f670acb11b080077b3fb6127b4c" desc="Tooltip text that appears when hovering over the largeicon box shadow button in the Styles Sidebar Pane of the Elements panel">
-    Add box-shadow
-  </message>
   <message name="IDS_DEVTOOLS_084cd932d6dd317197a20945c76603e2" desc="Text of a DOM element in Styles Sidebar Pane of the Elements panel">
     Inherited from<ph name="___">$1s<ex>''' '''</ex></ph>
   </message>
@@ -237,9 +234,6 @@
   <message name="IDS_DEVTOOLS_abdf882c25e08d9ba219fe33f17591fe" desc="Link text content in Elements Tree Outline of the Elements panel">
     reveal
   </message>
-  <message name="IDS_DEVTOOLS_ad4ac01e4a5688063dace5ba5d0f04de" desc="Tooltip text that appears when hovering over the largeicon add button in the Styles Sidebar Pane of the Elements panel">
-    Insert Style Rule Below
-  </message>
   <message name="IDS_DEVTOOLS_b0351810a5721f657b088608865849dd" desc="Text in Styles Sidebar Pane of the Elements panel">
     via inspector
   </message>
@@ -267,9 +261,6 @@
   <message name="IDS_DEVTOOLS_c736f6b512801b5fe4670e5968ee7be7" desc="Text in Element State Pane Widget of the Elements panel">
     Toggle Element State
   </message>
-  <message name="IDS_DEVTOOLS_c8997c00026b49aa07e0a8c11511e390" desc="Tooltip text that appears when hovering over the largeicon text shadow button in the Styles Sidebar Pane of the Elements panel">
-    Add text-shadow
-  </message>
   <message name="IDS_DEVTOOLS_c8f439c7ee24c34bc0b2e39a976509ad" desc="Text in Platform Fonts Widget of the Elements panel">
     (<ph name="USAGE">$1d<ex>4</ex></ph> glyphs)
   </message>
@@ -294,14 +285,8 @@
   <message name="IDS_DEVTOOLS_f0e82f268931d7aed566ed41457fceb4" desc="Screen reader announcement string when adding a class via the Classes Pane Widget.">
     Class <ph name="ANNOUNCEMENTSTRING">$1s<ex>title-container</ex></ph> added.
   </message>
-  <message name="IDS_DEVTOOLS_f2a70e3a6d14a56de7ebbb5b748ed127" desc="Tooltip text that appears when hovering over the largeicon foreground color button in the Styles Sidebar Pane of the Elements panel">
-    Add color
-  </message>
   <message name="IDS_DEVTOOLS_f3d48b9ad0a801282e3adc8b452d5fc0" desc="A context menu item in the Elements Tree Element of the Elements panel">
     Edit as HTML
-  </message>
-  <message name="IDS_DEVTOOLS_f750c8807bc5f4a7bd259788114a4ebd" desc="Tooltip text that appears when hovering over the largeicon background color button in the Styles Sidebar Pane of the Elements panel">
-    Add background-color
   </message>
   <message name="IDS_DEVTOOLS_f8d0f1896a9e4ad16d43caa28534df32" desc="Show all button text content in Styles Sidebar Pane of the Elements panel">
     Show All Properties (<ph name="PROPERTIES_LENGTH___COUNT">$1s<ex>3</ex></ph> more)

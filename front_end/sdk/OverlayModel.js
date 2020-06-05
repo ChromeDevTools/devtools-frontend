@@ -57,6 +57,7 @@ export class OverlayModel extends SDKModel {
     }
 
     this._inspectModeEnabled = false;
+    this._gridFeaturesExperimentEnabled = Root.Runtime.experiments.isEnabled('cssGridFeatures');
     this._hideHighlightTimeout = null;
     this._defaultHighlighter = new DefaultHighlighter(this);
     this._highlighter = this._defaultHighlighter;
@@ -341,7 +342,17 @@ export class OverlayModel extends SDKModel {
     }
 
     if (mode === 'all') {
-      highlightConfig.cssGridColor = Common.Color.PageHighlight.CssGrid.toProtocolRGBA();
+      if (this._gridFeaturesExperimentEnabled) {
+        highlightConfig.gridHighlightConfig = {
+          rowHatchColor: Common.Color.PageHighlight.GridRowGapHatch.toProtocolRGBA(),
+          columnHatchColor: Common.Color.PageHighlight.GridColumnGapHatch.toProtocolRGBA(),
+          cellBorderColor: Common.Color.PageHighlight.GridCellBorder.toProtocolRGBA(),
+          cellBorderDash: true
+        };
+      } else {
+        // Support for the legacy grid cell highlight.
+        highlightConfig.cssGridColor = Common.Color.PageHighlight.CssGrid.toProtocolRGBA();
+      }
     }
 
     // the backend does not support the 'original' format because

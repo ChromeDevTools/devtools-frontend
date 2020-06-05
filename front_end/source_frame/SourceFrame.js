@@ -312,21 +312,33 @@ export class SourceFrameImpl extends UI.View.SimpleView {
 
       const progressIndicator = new UI.ProgressIndicator.ProgressIndicator();
       progressIndicator.setTitle(Common.UIString.UIString('Loading…'));
-      progressIndicator.setTotalWork(2);
+      progressIndicator.setTotalWork(100);
       this._progressToolbarItem.element.appendChild(progressIndicator.element);
 
       const {content, error} = (await this._lazyContent());
       this._rawContent = error || content || '';
 
-      // TODO(chromium:1090262): Do proper progress bar updates for disassembly
-      // generation below, the wasmparser already supports chunked operation.
       progressIndicator.setWorked(1);
 
       if (!error && this._highlighterType === 'application/wasm') {
         const worker = new Common.Worker.WorkerWrapper('wasmparser_worker_entrypoint');
         /** @type {!Promise<!{source: string, offsets: !Array<number>, functionBodyOffsets: !Array<{start: number, end: number}>}>} */
         const promise = new Promise((resolve, reject) => {
-          worker.onmessage = ({data}) => resolve(data);
+          worker.onmessage = ({/** @type {{event:string, params:{percentage:number}}} */ data}) => {
+            if ('event' in data) {
+              switch (data.event) {
+                case 'progress':
+                  progressIndicator.setWorked(data.params.percentage);
+                  break;
+              }
+            } else if ('method' in data) {
+              switch (data.method) {
+                case 'disassemble':
+                  resolve(data.result);
+                  break;
+              }
+            }
+          };
           worker.onerror = reject;
         });
         worker.postMessage({method: 'disassemble', params: {content}});
@@ -336,7 +348,7 @@ export class SourceFrameImpl extends UI.View.SimpleView {
         this._wasmDisassembly = new Common.WasmDisassembly.WasmDisassembly(offsets, functionBodyOffsets);
       }
 
-      progressIndicator.setWorked(2);
+      progressIndicator.setWorked(100);
       progressIndicator.done();
 
       this._formattedContentPromise = null;

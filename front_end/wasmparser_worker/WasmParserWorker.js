@@ -36,6 +36,30 @@
 import * as WasmDis from '../third_party/wasmparser/package/dist/esm/WasmDis.js';
 import * as WasmParser from '../third_party/wasmparser/package/dist/esm/WasmParser.js';
 
+class BinaryReaderWithProgress extends WasmParser.BinaryReader {
+  /**
+   * @param {!function(number):void} progressCallback
+   */
+  constructor(progressCallback) {
+    super();
+    /** @type {number} */
+    this._percentage = 0;
+    this._progressCallback = progressCallback;
+  }
+
+  read() {
+    if (!super.read()) {
+      return false;
+    }
+    const percentage = Math.floor((this.position / this.length) * 100);
+    if (this._percentage !== percentage) {
+      this._progressCallback.call(undefined, percentage);
+      this._percentage = percentage;
+    }
+    return true;
+  }
+}
+
 self.onmessage = async function(event) {
   const method = /** @type {string} */ (event.data.method);
   const params = /** @type !{content: string} */ (event.data.params);
@@ -43,26 +67,39 @@ self.onmessage = async function(event) {
     return;
   }
 
+  const NAME_GENERATOR_WEIGHT = 30;
+  const DISASSEMBLY_WEIGHT = 69;
+  const FINALIZATION_WEIGHT = 100 - (NAME_GENERATOR_WEIGHT + DISASSEMBLY_WEIGHT);
+
   const response = await fetch(`data:application/wasm;base64,${params.content}`);
   const buffer = await response.arrayBuffer();
-  const data = new Uint8Array(buffer);
 
-  const parser = new WasmParser.BinaryReader();
-  parser.setData(data, 0, data.length);
+  let parser = new BinaryReaderWithProgress(percentage => {
+    this.postMessage({event: 'progress', params: {percentage: percentage * (NAME_GENERATOR_WEIGHT / 100)}});
+  });
+  parser.setData(buffer, 0, buffer.byteLength);
   const nameGenerator = new WasmDis.DevToolsNameGenerator();
   nameGenerator.read(parser);
+
   const dis = new WasmDis.WasmDisassembler();
   dis.nameResolver = nameGenerator.getNameResolver();
   dis.addOffsets = true;
-  dis.maxLines = 1000000;
-  parser.setData(data, 0, data.length);
-  dis.disassembleChunk(parser);
-  const result = dis.getResult();
-  this.postMessage({
-    source: result.lines.join('\n'),
-    offsets: result.offsets,
-    functionBodyOffsets: result.functionBodyOffsets,
+  dis.maxLines = 1000 * 1000;
+  parser = new BinaryReaderWithProgress(percentage => {
+    this.postMessage(
+        {event: 'progress', params: {percentage: NAME_GENERATOR_WEIGHT + percentage * (DISASSEMBLY_WEIGHT / 100)}});
   });
+  parser.setData(buffer, 0, buffer.byteLength);
+  dis.disassembleChunk(parser);
+  const {lines, offsets, functionBodyOffsets} = dis.getResult();
+
+  this.postMessage({event: 'progress', params: {percentage: FINALIZATION_WEIGHT}});
+
+  const source = lines.join('\n');
+
+  this.postMessage({event: 'progress', params: {percentage: 100}});
+
+  this.postMessage({method: 'disassemble', result: {source, offsets, functionBodyOffsets}});
 };
 
 /* Legacy exported object */

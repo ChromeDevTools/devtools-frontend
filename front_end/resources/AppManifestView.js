@@ -245,7 +245,8 @@ export class AppManifestView extends UI.Widget.VBox {
         const shortcutIconErrors = await this._appendIconResourceToSection(url, shortcutIcon, shortcutSection);
         if (shortcutIconErrors.length > 0) {
           imageErrors.push(...shortcutIconErrors);
-        } else {
+        }
+        if (!hasShorcutIconLargeEnough && shortcutIcon.sizes) {
           const shortcutIconSize = shortcutIcon.sizes.match(/^(\d+)x(\d+)$/);
           if (shortcutIconSize && shortcutIconSize[1] >= 96 && shortcutIconSize[2] >= 96) {
             hasShorcutIconLargeEnough = true;

@@ -268,7 +268,8 @@
       "bindings": [
         {
           "platform": "mac",
-          "shortcut": "Meta+G"
+          "shortcut": "Meta+G",
+          "keybindSets": ["devToolsDefault", "vsCode"]
         },
         {
           "platform": "windows,linux",

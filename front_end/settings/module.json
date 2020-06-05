@@ -16,7 +16,13 @@
           "shortcut": "Shift+?"
         },
         {
+          "platform": "windows,linux",
           "shortcut": "Ctrl+,",
+          "keybindSets": ["vsCode"]
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+,",
           "keybindSets": ["vsCode"]
         }
       ]
@@ -36,7 +42,13 @@
       "className": "Settings.SettingsScreen.ActionDelegate",
       "bindings": [
         {
+          "platform": "windows,linux",
           "shortcut": "Ctrl+K Ctrl+S",
+          "keybindSets": ["vsCode"]
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+K Meta+S",
           "keybindSets": ["vsCode"]
         }
       ]

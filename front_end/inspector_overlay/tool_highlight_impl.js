@@ -593,12 +593,10 @@ function _drawLayoutGridHighlight(highlight, context) {
     context.strokeStyle = highlight.gridHighlightConfig.cellBorderColor;
 
     context.save();
-    context.clip(columnPath);
     context.stroke(rowPath);
     context.restore();
 
     context.save();
-    context.clip(rowPath);
     context.stroke(columnPath);
     context.restore();
 

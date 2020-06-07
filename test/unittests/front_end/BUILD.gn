@@ -19,6 +19,7 @@ group("front_end") {
     "platform",
     "protocol_client",
     "sdk",
+    "sources",
     "test_setup",
     "text_utils",
     "ui",

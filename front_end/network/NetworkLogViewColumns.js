@@ -686,12 +686,17 @@ export class NetworkLogViewColumns {
     }
     return {
       box: anchor.boxInWindow(),
-      show: popover => {
+      show: async popover => {
+        this._popupLinkifier.setLiveLocationUpdateCallback(() => {
+          popover.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
+        });
         const content = RequestInitiatorView.createStackTracePreview(
-            /** @type {!SDK.NetworkRequest.NetworkRequest} */ (request), this._popupLinkifier, false,
-            () => popover.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent));
+            /** @type {!SDK.NetworkRequest.NetworkRequest} */ (request), this._popupLinkifier, false);
+        if (!content) {
+          return false;
+        }
         popover.contentElement.appendChild(content.element);
-        return Promise.resolve(true);
+        return true;
       },
       hide: this._popupLinkifier.reset.bind(this._popupLinkifier)
     };

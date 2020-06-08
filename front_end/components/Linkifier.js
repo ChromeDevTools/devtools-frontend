@@ -367,6 +367,13 @@ export class Linkifier {
   }
 
   /**
+   * @param {function():void} callback
+   */
+  setLiveLocationUpdateCallback(callback) {
+    this._onLiveLocationUpdate = callback;
+  }
+
+  /**
    * @param {!Element} anchor
    */
   static _updateLinkDecorations(anchor) {

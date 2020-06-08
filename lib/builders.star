@@ -81,9 +81,9 @@ os_dimensions = {
   "mac": dimensions.mac,
 }
 
-def builder_coverage(covered_oss, buider_factory, builder_name_pattern, **kvargs):
+def builder_coverage(covered_oss, builder_factory, builder_name_pattern, **kvargs):
   for os in covered_oss:
-    buider_factory(
+    builder_factory(
       dimensions=os_dimensions[os],
       name= builder_name_pattern % os,
       **kvargs

@@ -49,6 +49,11 @@ generate_ci_configs(
         recipe_name="devtools/devtools-frontend",
         excluded_from=['chromium']
       ),
+      builder_descriptor(
+        name="Backend Linux",
+        recipe_name="devtools/devtools-backend",
+        excluded_from=['chromium']
+      ),
     ]
 )
 

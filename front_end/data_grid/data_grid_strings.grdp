@@ -33,9 +33,6 @@
   <message name="IDS_DEVTOOLS_d73d1ee203c4075522513de6fe5557c8" desc="Show next text content in Show More Data Grid Node of a data grid">
     Show <ph name="THIS__CHUNKSIZE">$1d<ex>5</ex></ph> before
   </message>
-  <message name="IDS_DEVTOOLS_e199c6bb662785b037c5f330f58878ce" desc="Show all text content in Show More Data Grid Node of a data grid">
-    Show all <ph name="TOTALSIZE">$1d<ex>5</ex></ph>
-  </message>
   <message name="IDS_DEVTOOLS_eee28a676b473c3714da2467ed91aa4f" desc="Default Accessible Text for a Datagrid">
     <ph name="THIS__DISPLAYNAME">$1s<ex>Network</ex></ph> <ph name="ITEMS">$2s<ex>Rows: 27</ex></ph>, use the up and down arrow keys to navigate and interact with the rows of the table; Use browse mode to read cell by cell.
   </message>

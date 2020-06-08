@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Basic Component example</title>
+  </head>
+  <body>
+
+    <script type="module">
+      // if we needed to we can import anything from DevTools frontend here
+      const myComponent = document.createElement('div')
+      myComponent.innerHTML = '<marquee>hello world</marquee>';
+      document.body.appendChild(myComponent);
+    </script>
+  </body>
+</html>

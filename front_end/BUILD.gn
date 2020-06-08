@@ -10,6 +10,7 @@ group("front_end") {
   public_deps = [
     ":front_end_html_entrypoints",
     ":ts_library-verification",
+    "component_docs",
   ]
 }
 

@@ -3,6 +3,9 @@
   <message name="IDS_DEVTOOLS_00a2f9d16aa26eb89a776a3d1ed4f9cd" desc="Text in Breakpoint Edit Dialog of the Sources panel">
     Expression to check before pausing, e.g. x &gt; 5
   </message>
+  <message name="IDS_DEVTOOLS_01b4eae597c8d9a611b6836c14b679b1" desc="Text in Java Script Breakpoints Sidebar Pane of the Sources panel">
+    Disable breakpoints in file
+  </message>
   <message name="IDS_DEVTOOLS_01f0097c3b7f0774139005734eacbae4" desc="A context menu item in the Watch Expressions Sidebar Pane of the Sources panel">
     Add property path to watch
   </message>
@@ -341,6 +344,9 @@
   </message>
   <message name="IDS_DEVTOOLS_97edd5423acfdf412ad9ba7f4eaa6d39" desc="Text in Go To Line Quick Open of the Sources panel">
     No file selected.
+  </message>
+  <message name="IDS_DEVTOOLS_985edc3140c77213ce3e2f9877288ecb" desc="Text in Java Script Breakpoints Sidebar Pane of the Sources panel">
+    Enable breakpoints in file
   </message>
   <message name="IDS_DEVTOOLS_9bbb0377ecbf31fdcfcce3283e815311" desc="Text in Snippets Plugin of the Sources panel">
     Ctrl+Enter

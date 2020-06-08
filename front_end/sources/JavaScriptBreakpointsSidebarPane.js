@@ -403,17 +403,45 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
     if (breakpoints.some(breakpoint => !breakpoint.enabled())) {
       const enableTitle = Common.UIString.UIString('Enable all breakpoints');
       contextMenu.defaultSection().appendItem(enableTitle, this._toggleAllBreakpoints.bind(this, true));
+      if (event.target instanceof Element) {
+        const enableInFileTitle = Common.UIString.UIString('Enable breakpoints in file');
+        contextMenu.defaultSection().appendItem(
+            enableInFileTitle, this._toggleAllBreakpointsInFile.bind(this, event.target, true));
+      }
     }
     if (breakpoints.some(breakpoint => breakpoint.enabled())) {
       const disableTitle = Common.UIString.UIString('Disable all breakpoints');
       contextMenu.defaultSection().appendItem(disableTitle, this._toggleAllBreakpoints.bind(this, false));
+      if (event.target instanceof Element) {
+        const disableInFileTitle = Common.UIString.UIString('Disable breakpoints in file');
+        contextMenu.defaultSection().appendItem(
+            disableInFileTitle, this._toggleAllBreakpointsInFile.bind(this, event.target, false));
+      }
     }
+
     const removeAllTitle = Common.UIString.UIString('Remove all breakpoints');
     contextMenu.defaultSection().appendItem(removeAllTitle, this._removeAllBreakpoints.bind(this));
     const removeOtherTitle = Common.UIString.UIString('Remove other breakpoints');
     contextMenu.defaultSection().appendItem(
         removeOtherTitle, this._removeOtherBreakpoints.bind(this, new Set(breakpoints)));
     contextMenu.show();
+  }
+
+  /**
+   * @param {!Element} element
+   * @param {boolean} toggleState
+   */
+  _toggleAllBreakpointsInFile(element, toggleState) {
+    const breakpointLocations = this._getBreakpointLocations();
+    const selectedBreakpointLocations = this._breakpointLocationsForElement(element);
+    breakpointLocations.forEach(breakpointLocation => {
+      const matchesLocation = selectedBreakpointLocations.some(
+          selectedBreakpointLocation =>
+              selectedBreakpointLocation.breakpoint.url() === breakpointLocation.breakpoint.url());
+      if (matchesLocation) {
+        breakpointLocation.breakpoint.setEnabled(toggleState);
+      }
+    });
   }
 
   /**

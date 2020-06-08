@@ -127,6 +127,7 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  min-width: 8px;
 }
 
 .data-grid td.editing > div {

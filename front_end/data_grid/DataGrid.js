@@ -953,6 +953,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     }
     let sum = 0;
     let lastOffset = 0;
+    const minColumnWidth = 14;  // px
 
     for (let i = 0; i < this.visibleColumnsArray.length; ++i) {
       const column = this.visibleColumnsArray[i];
@@ -962,7 +963,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
       } else {
         sum += column.weight;
         const offset = (sum * tableWidth / sumOfWeights) | 0;
-        width = offset - lastOffset;
+        width = Math.max(offset - lastOffset, minColumnWidth);
         lastOffset = offset;
       }
       this._setPreferredWidth(i, width);

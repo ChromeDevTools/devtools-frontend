@@ -8,8 +8,12 @@ import {click, waitFor} from '../../shared/helper.js';
 import {navigateToConsoleTab, navigateToIssuesPanelViaInfoBar, waitForConsoleMessageAndClickOnLink} from '../helpers/console-helpers.js';
 import {prepareForCrossToolScenario} from '../helpers/cross-tool-helper.js';
 import {clickOnFirstLinkInStylesPanel, navigateToElementsTab} from '../helpers/elements-helpers.js';
+import {navigateToPerformanceSidebarTab, navigateToPerformanceTab, startRecording, stopRecording, waitForSourceLinkAndFollowIt} from '../helpers/performance-helpers.js';
 
-describe('A user can navigate across', async () => {
+describe('A user can navigate across', async function() {
+  // These tests move between panels, which takes time.
+  this.timeout(10000);
+
   beforeEach(async function() {
     await prepareForCrossToolScenario();
   });
@@ -36,5 +40,15 @@ describe('A user can navigate across', async () => {
     await clickOnFirstLinkInStylesPanel();
 
     await waitFor('.panel[aria-label="sources"]');
+  });
+
+  it('Performance -> Sources', async () => {
+    await navigateToPerformanceTab();
+
+    await startRecording();
+    await stopRecording();
+
+    await navigateToPerformanceSidebarTab('Bottom-Up');
+    await waitForSourceLinkAndFollowIt();
   });
 });

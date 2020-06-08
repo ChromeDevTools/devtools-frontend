@@ -34,10 +34,17 @@ export class ViewManager {
     /** @type {!Map<string, string>} */
     this._locationNameByViewId = new Map();
 
+    // Read override setting for location
+    this._locationOverrideSetting = Common.Settings.Settings.instance().createSetting('viewsLocationOverride', {});
+    const preferredExtensionLocations = this._locationOverrideSetting.get();
+
     for (const extension of self.runtime.extensions('view')) {
       const descriptor = extension.descriptor();
-      this._views.set(descriptor['id'], new ProvidedView(extension));
-      this._locationNameByViewId.set(descriptor['id'], descriptor['location']);
+      const descriptorId = descriptor['id'];
+      this._views.set(descriptorId, new ProvidedView(extension));
+      // Use the preferred user location if available
+      const locationName = preferredExtensionLocations[descriptorId] || descriptor['location'];
+      this._locationNameByViewId.set(descriptorId, locationName);
     }
   }
 
@@ -66,6 +73,47 @@ export class ViewManager {
       toolbar.appendToolbarItem(item);
     }
     return toolbar.element;
+  }
+
+  /**
+   * @param {string} viewId
+   * @returns {string}
+   */
+  locationNameForViewId(viewId) {
+    return this._locationNameByViewId.get(viewId);
+  }
+
+  /**
+   * Moves a view to a new location
+   * @param {string} viewId
+   * @param {string} locationName
+   */
+  moveView(viewId, locationName) {
+    if (!viewId || !locationName) {
+      return;
+    }
+
+    const view = this.view(viewId);
+    if (!view) {
+      return;
+    }
+
+    // Update the inner map of locations
+    this._locationNameByViewId.set(viewId, locationName);
+
+    // Update the settings of location overwrites
+    const locations = this._locationOverrideSetting.get();
+    locations[viewId] = locationName;
+    this._locationOverrideSetting.set(locations);
+
+    // Find new location and show view there
+    this.resolveLocation(locationName).then(location => {
+      if (!location) {
+        throw new Error('Move view: Could not resolve location for view: ' + viewId);
+      }
+      location._reveal();
+      return location.showView(view, undefined, true /* userGesture*/);
+    });
   }
 
   /**
@@ -435,6 +483,7 @@ export class _TabbedLocation extends _Location {
 
     this._tabbedPane.addEventListener(TabbedPaneEvents.TabSelected, this._tabSelected, this);
     this._tabbedPane.addEventListener(TabbedPaneEvents.TabClosed, this._tabClosed, this);
+
     // Note: go via self.Common for globally-namespaced singletons.
     this._closeableTabSetting = Common.Settings.Settings.instance().createSetting(location + '-closeableTabs', {});
     // Note: go via self.Common for globally-namespaced singletons.

@@ -190,7 +190,9 @@ export const Action = {
   CoverageStartedPerBlock: 35,
   SettingsOpenedFromGear: 36,
   SettingsOpenedFromMenu: 37,
-  SettingsOpenedFromCommandMenu: 38
+  SettingsOpenedFromCommandMenu: 38,
+  TabMovedToDrawer: 39,
+  TabMovedToMainPanel: 40
 };
 
 /** @type {!Object<string, number>} */

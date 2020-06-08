@@ -10,7 +10,7 @@ import {$$, click, resourcesPath, waitFor, waitForNone} from '../../shared/helpe
 const NEW_HEAP_SNAPSHOT_BUTTON = 'button[aria-label="Take heap snapshot"]';
 const MEMORY_PANEL_CONTENT = 'div[aria-label="Memory panel"]';
 const PROFILE_TREE_SIDEBAR = 'div.profiles-tree-sidebar';
-const MEMORY_TAB_ID = '#tab-heap_profiler';
+export const MEMORY_TAB_ID = '#tab-heap_profiler';
 
 export async function navigateToMemoryTab(target: puppeteer.Page) {
   const targetUrl = `${resourcesPath}/memory/default.html`;

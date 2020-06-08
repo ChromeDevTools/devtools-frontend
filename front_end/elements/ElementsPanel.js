@@ -54,7 +54,6 @@ export class ElementsPanel extends UI.Panel.Panel {
   constructor() {
     super('elements');
     this.registerRequiredCSS('elements/elementsPanel.css');
-
     this._splitWidget = new UI.SplitWidget.SplitWidget(true, true, 'elementsPanelSplitViewState', 325, 325);
     this._splitWidget.addEventListener(
         UI.SplitWidget.Events.SidebarSizeChanged, this._updateTreeOutlineVisibleWidth.bind(this));
@@ -786,35 +785,12 @@ export class ElementsPanel extends UI.Panel.Panel {
     }
   }
 
-  _updateSidebarPosition() {
-    if (this.sidebarPaneView && this.sidebarPaneView.tabbedPane().shouldHideOnDetach()) {
-      return;
-    }  // We can't reparent extension iframes.
-
-    let splitMode;
-    const position = Common.Settings.Settings.instance().moduleSetting('sidebarPosition').get();
-    if (position === 'right' || (position === 'auto' && self.UI.inspectorView.element.offsetWidth > 680)) {
-      splitMode = _splitMode.Vertical;
-    } else if (self.UI.inspectorView.element.offsetWidth > 415) {
-      splitMode = _splitMode.Horizontal;
-    } else {
-      splitMode = _splitMode.Slim;
-    }
-
-    if (this.sidebarPaneView && splitMode === this._splitMode) {
-      return;
-    }
-    this._splitMode = splitMode;
-
-    const extensionSidebarPanes = self.Extensions.extensionServer.sidebarPanes();
-    let lastSelectedTabId = null;
-    if (this.sidebarPaneView) {
-      lastSelectedTabId = this.sidebarPaneView.tabbedPane().selectedTabId;
-      this.sidebarPaneView.tabbedPane().detach();
-      this._splitWidget.uninstallResizer(this.sidebarPaneView.tabbedPane().headerElement());
-    }
-
-    this._splitWidget.setVertical(this._splitMode === _splitMode.Vertical);
+  /**
+   *
+   * @param {!_splitMode} splitMode
+   */
+  _initializeSidebarPanes(splitMode) {
+    this._splitWidget.setVertical(splitMode === _splitMode.Vertical);
     this.showToolbarPane(null /* widget */, null /* toggle */);
 
     const matchedStylePanesWrapper = new UI.Widget.VBox();
@@ -827,74 +803,74 @@ export class ElementsPanel extends UI.Panel.Panel {
     this._computedStyleWidget.show(computedStylePanesWrapper.element);
 
     /**
-     * @param {boolean} inComputedStyle
-     * @this {ElementsPanel}
-     */
-    function showMetrics(inComputedStyle) {
-      if (inComputedStyle) {
-        this._metricsWidget.show(computedStylePanesWrapper.element, this._computedStyleWidget.element);
-      } else {
-        this._metricsWidget.show(matchedStylePanesWrapper.element);
-      }
-    }
-
-    /**
      * @param {!Common.EventTarget.EventTargetEvent} event
-     * @this {ElementsPanel}
      */
-    function tabSelected(event) {
+    const tabSelected = event => {
       const tabId = /** @type {string} */ (event.data.tabId);
       if (tabId === Common.UIString.UIString('Computed')) {
-        showMetrics.call(this, true);
+        this._metricsWidget.show(computedStylePanesWrapper.element, this._computedStyleWidget.element);
       } else if (tabId === Common.UIString.UIString('Styles')) {
-        showMetrics.call(this, false);
+        this._metricsWidget.show(matchedStylePanesWrapper.element);
       }
-    }
+    };
 
     this.sidebarPaneView = UI.ViewManager.ViewManager.instance().createTabbedLocation(
         () => UI.ViewManager.ViewManager.instance().showView('elements'));
     const tabbedPane = this.sidebarPaneView.tabbedPane();
-
     if (this._splitMode !== _splitMode.Vertical) {
       this._splitWidget.installResizer(tabbedPane.headerElement());
     }
 
     const stylesView = new UI.View.SimpleView(Common.UIString.UIString('Styles'));
     this.sidebarPaneView.appendView(stylesView);
-    if (splitMode === _splitMode.Horizontal) {
-      // Styles and computed are merged into a single tab.
-      stylesView.element.classList.add('flex-auto');
+    stylesView.element.classList.add('flex-auto');
+    matchedStylePanesWrapper.show(stylesView.element);
 
-      const splitWidget = new UI.SplitWidget.SplitWidget(true, true, 'stylesPaneSplitViewState', 215);
-      splitWidget.show(stylesView.element);
-      splitWidget.setMainWidget(matchedStylePanesWrapper);
-      splitWidget.setSidebarWidget(computedStylePanesWrapper);
-    } else {
-      // Styles and computed are in separate tabs.
-      stylesView.element.classList.add('flex-auto');
-      matchedStylePanesWrapper.show(stylesView.element);
+    const computedView = new UI.View.SimpleView(Common.UIString.UIString('Computed'));
+    computedView.element.classList.add('composite', 'fill');
+    computedStylePanesWrapper.show(computedView.element);
 
-      const computedView = new UI.View.SimpleView(Common.UIString.UIString('Computed'));
-      computedView.element.classList.add('composite', 'fill');
-      computedStylePanesWrapper.show(computedView.element);
-
-      tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, tabSelected, this);
-      this.sidebarPaneView.appendView(computedView);
-    }
+    tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, tabSelected, this);
+    this.sidebarPaneView.appendView(computedView);
     this._stylesViewToReveal = stylesView;
 
-    showMetrics.call(this, this._splitMode === _splitMode.Horizontal);
-
     this.sidebarPaneView.appendApplicableItems('elements-sidebar');
+    const extensionSidebarPanes = self.Extensions.extensionServer.sidebarPanes();
     for (let i = 0; i < extensionSidebarPanes.length; ++i) {
       this._addExtensionSidebarPane(extensionSidebarPanes[i]);
     }
 
-    if (lastSelectedTabId) {
-      this.sidebarPaneView.tabbedPane().selectTab(lastSelectedTabId);
-    }
-
     this._splitWidget.setSidebarWidget(this.sidebarPaneView.tabbedPane());
+  }
+
+  _updateSidebarPosition() {
+    if (this.sidebarPaneView && this.sidebarPaneView.tabbedPane().shouldHideOnDetach()) {
+      return;
+    }  // We can't reparent extension iframes.
+
+    const position = Common.Settings.Settings.instance().moduleSetting('sidebarPosition').get();
+    let splitMode = _splitMode.Horizontal;
+    if (position === 'right' || (position === 'auto' && self.UI.inspectorView.element.offsetWidth > 680)) {
+      splitMode = _splitMode.Vertical;
+    }
+    if (!this.sidebarPaneView) {
+      this._initializeSidebarPanes(splitMode);
+      return;
+    }
+    if (splitMode === this._splitMode) {
+      return;
+    }
+    this._splitMode = splitMode;
+
+    const tabbedPane = this.sidebarPaneView.tabbedPane();
+    this._splitWidget.uninstallResizer(tabbedPane.headerElement());
+
+    this._splitWidget.setVertical(this._splitMode === _splitMode.Vertical);
+    this.showToolbarPane(null /* widget */, null /* toggle */);
+
+    if (this._splitMode !== _splitMode.Vertical) {
+      this._splitWidget.installResizer(tabbedPane.headerElement());
+    }
   }
 
   /**
@@ -921,7 +897,6 @@ ElementsPanel._firstInspectElementCompletedForTest = function() {};
 export const _splitMode = {
   Vertical: Symbol('Vertical'),
   Horizontal: Symbol('Horizontal'),
-  Slim: Symbol('Slim'),
 };
 
 /**

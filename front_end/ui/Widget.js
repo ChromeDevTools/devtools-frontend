@@ -376,7 +376,7 @@ export class Widget extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {boolean=} overrideHideOnDetach
+   * @param {boolean=} overrideHideOnDetach remove element from DOM instead of hiding
    */
   detach(overrideHideOnDetach) {
     if (!this._parentWidget && !this._isRoot) {

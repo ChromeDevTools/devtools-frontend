@@ -67,7 +67,10 @@ def properties_from_file(file_name):
         properties.append(_keep_only_required_keys(entry))
         property_names[entry["name"]] = entry
         if "keywords" in entry:
-            property_values[entry["name"]] = {"values": entry["keywords"]}
+            keywords = list(
+                filter(lambda keyword: not keyword.startswith("-internal-"),
+                       entry["keywords"]))
+            property_values[entry["name"]] = {"values": keywords}
 
     properties.sort(key=lambda entry: entry["name"])
     aliases_for.sort(key=lambda entry: entry[0])

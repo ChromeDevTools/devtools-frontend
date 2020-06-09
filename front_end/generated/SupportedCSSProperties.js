@@ -1213,13 +1213,9 @@ export const generatedPropertyValues = {
   'stroke-linejoin': {'values': ['miter', 'bevel', 'round']},
   'table-layout': {'values': ['auto', 'fixed']},
   'text-align': {
-    'values': [
-      'left', 'right', 'center', 'justify', '-webkit-left', '-webkit-right', '-webkit-center', 'start', 'end',
-      '-internal-space-around'
-    ]
+    'values': ['left', 'right', 'center', 'justify', '-webkit-left', '-webkit-right', '-webkit-center', 'start', 'end']
   },
-  'text-align-last':
-      {'values': ['auto', 'start', 'end', 'left', 'right', 'center', 'justify', '-internal-space-around']},
+  'text-align-last': {'values': ['auto', 'start', 'end', 'left', 'right', 'center', 'justify']},
   'text-anchor': {'values': ['start', 'middle', 'end']},
   'text-combine-upright': {'values': ['none', 'all']},
   'text-decoration-color': {'values': ['currentcolor']},

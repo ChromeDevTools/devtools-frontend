@@ -367,6 +367,8 @@ all_devtools_files = [
   "front_end/web_audio/audioContextSelector.css",
   "front_end/web_audio/module.json",
   "front_end/web_audio/webAudio.css",
+  "front_end/webauthn/module.json",
+  "front_end/webauthn/webauthnPane.css",
   "front_end/worker_main/module.json",
   "front_end/worker_service/module.json",
   "front_end/workspace_diff/module.json",
@@ -570,6 +572,8 @@ devtools_module_entrypoints = [
   "wasmparser_worker/wasmparser_worker.js",
   "web_audio/web_audio.js",
   "web_audio/web_audio-legacy.js",
+  "webauthn/webauthn.js",
+  "webauthn/webauthn-legacy.js",
   "worker_main/worker_main.js",
   "worker_main/worker_main-legacy.js",
   "worker_service/worker_service.js",
@@ -839,6 +843,7 @@ generated_non_autostart_non_remote_modules = [
   "$resources_out_dir/timeline_model/timeline_model_module.js",
   "$resources_out_dir/timeline/timeline_module.js",
   "$resources_out_dir/web_audio/web_audio_module.js",
+  "$resources_out_dir/webauthn/webauthn_module.js",
   "$resources_out_dir/workspace_diff/workspace_diff_module.js",
 ]
 
@@ -1607,6 +1612,7 @@ all_devtools_modules = [
   "web_audio/graph_visualizer/NodeView.js",
   "web_audio/WebAudioModel.js",
   "web_audio/WebAudioView.js",
+  "webauthn/WebauthnPane.js",
   "worker_main/WorkerMain.js",
   "worker_service/ServiceDispatcher.js",
   "workspace_diff/WorkspaceDiff.js",

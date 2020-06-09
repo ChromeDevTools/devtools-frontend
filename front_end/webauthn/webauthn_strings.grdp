@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_0f9d05f79599511a36679baf1c599552" desc="Label for checkbox that enables virtual authenticator environment">
+    Enable Virtual Authenticator Environment
+  </message>
+  <message name="IDS_DEVTOOLS_7981a42fd27d757338f9a99563a24ac8" desc="Title of WebAuthn tool in bottom drawer">
+    WebAuthn
+  </message>
+</grit-part>

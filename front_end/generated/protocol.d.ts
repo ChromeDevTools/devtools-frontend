@@ -1461,6 +1461,13 @@ declare namespace Protocol {
        */
       isInline: boolean;
       /**
+       * Whether this stylesheet is mutable. Inline stylesheets become mutable
+       * after they have been modified via CSSOM API.
+       * <link> element's stylesheets are never mutable. Constructed stylesheets
+       * (new CSSStyleSheet()) are mutable immediately after creation.
+       */
+      isMutable: boolean;
+      /**
        * Line offset of the stylesheet within the resource (zero based).
        */
       startLine: number;
@@ -10485,6 +10492,14 @@ declare namespace Protocol {
        * If specified, disposes this context when debugging session disconnects.
        */
       disposeOnDetach?: boolean;
+      /**
+       * Proxy server, similar to the one passed to --proxy-server
+       */
+      proxyServer?: string;
+      /**
+       * Proxy bypass list, similar to the one passed to --proxy-bypass-list
+       */
+      proxyBypassList?: string;
     }
 
     export interface CreateBrowserContextResponse extends ProtocolResponseWithError {

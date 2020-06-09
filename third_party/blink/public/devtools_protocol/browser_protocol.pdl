@@ -1025,6 +1025,11 @@ experimental domain CSS
       # Whether this stylesheet is created for STYLE tag by parser. This flag is not set for
       # document.written STYLE tags.
       boolean isInline
+      # Whether this stylesheet is mutable. Inline stylesheets become mutable
+      # after they have been modified via CSSOM API.
+      # <link> element's stylesheets are never mutable. Constructed stylesheets
+      # (new CSSStyleSheet()) are mutable immediately after creation.
+      boolean isMutable
       # Line offset of the stylesheet within the resource (zero based).
       number startLine
       # Column offset of the stylesheet within the resource (zero based).
@@ -7075,6 +7080,11 @@ domain Target
     parameters
       # If specified, disposes this context when debugging session disconnects.
       optional boolean disposeOnDetach
+      # Proxy server, similar to the one passed to --proxy-server
+      optional string proxyServer
+      # Proxy bypass list, similar to the one passed to --proxy-bypass-list
+      optional string proxyBypassList
+
     returns
       # The id of the context created.
       Browser.BrowserContextID browserContextId

@@ -2093,6 +2093,11 @@
                             "type": "boolean"
                         },
                         {
+                            "name": "isMutable",
+                            "description": "Whether this stylesheet is mutable. Inline stylesheets become mutable\nafter they have been modified via CSSOM API.\n<link> element's stylesheets are never mutable. Constructed stylesheets\n(new CSSStyleSheet()) are mutable immediately after creation.",
+                            "type": "boolean"
+                        },
+                        {
                             "name": "startLine",
                             "description": "Line offset of the stylesheet within the resource (zero based).",
                             "type": "number"
@@ -15339,6 +15344,18 @@
                             "description": "If specified, disposes this context when debugging session disconnects.",
                             "optional": true,
                             "type": "boolean"
+                        },
+                        {
+                            "name": "proxyServer",
+                            "description": "Proxy server, similar to the one passed to --proxy-server",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "proxyBypassList",
+                            "description": "Proxy bypass list, similar to the one passed to --proxy-bypass-list",
+                            "optional": true,
+                            "type": "string"
                         }
                     ],
                     "returns": [

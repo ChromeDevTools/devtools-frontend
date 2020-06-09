@@ -2074,7 +2074,12 @@ export function registerCommands(inspectorBackend) {
       ],
       []);
   inspectorBackend.registerCommand(
-      'Target.createBrowserContext', [{'name': 'disposeOnDetach', 'type': 'boolean', 'optional': true}],
+      'Target.createBrowserContext',
+      [
+        {'name': 'disposeOnDetach', 'type': 'boolean', 'optional': true},
+        {'name': 'proxyServer', 'type': 'string', 'optional': true},
+        {'name': 'proxyBypassList', 'type': 'string', 'optional': true}
+      ],
       ['browserContextId']);
   inspectorBackend.registerCommand('Target.getBrowserContexts', [], ['browserContextIds']);
   inspectorBackend.registerCommand(

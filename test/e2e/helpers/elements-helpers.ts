@@ -9,6 +9,7 @@ import {$, $$, click, getBrowserAndPages, timeout, waitFor, waitForFunction} fro
 
 const SELECTED_TREE_ELEMENT_SELECTOR = '.selected[role="treeitem"]';
 const CSS_PROPERTY_NAME_SELECTOR = '.webkit-css-property';
+const CSS_PROPERTY_SWATCH_SELECTOR = '.color-swatch-inner';
 const CSS_STYLE_RULE_SELECTOR = '[aria-label*="css selector"]';
 const COMPUTED_PROPERTY_SELECTOR = '.computed-style-property';
 const ELEMENTS_PANEL_SELECTOR = '.panel[aria-label="elements"]';
@@ -207,6 +208,13 @@ export const getDisplayedCSSPropertyNames = async (propertiesSection: puppeteer.
 
 export const getStyleRule = async (selector: string) => {
   return await $(`[aria-label="${selector}, css selector"]`);
+};
+
+export const getCSSPropertySwatchStyle = async (ruleSection: puppeteer.JSHandle<any>) => {
+  const swatches = await $$(CSS_PROPERTY_SWATCH_SELECTOR, ruleSection);
+  return await swatches.evaluate(async (nodes: Element[]) => {
+    return nodes.length && nodes[0].getAttribute('style');
+  });
 };
 
 export const getCSSPropertyInRule = async (ruleSection: puppeteer.JSHandle<any>, name: string) => {

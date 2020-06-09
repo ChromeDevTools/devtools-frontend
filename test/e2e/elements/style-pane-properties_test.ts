@@ -7,9 +7,10 @@ import {describe, it} from 'mocha';
 import * as puppeteer from 'puppeteer';
 
 import {click, getBrowserAndPages, resourcesPath, waitFor} from '../../shared/helper.js';
-import {assertContentOfSelectedElementsNode, getAriaLabelSelectorFromPropertiesSelector, getDisplayedCSSPropertyNames, getDisplayedStyleRules, waitForElementsStyleSection, waitForStyleRule} from '../helpers/elements-helpers.js';
+import {assertContentOfSelectedElementsNode, getAriaLabelSelectorFromPropertiesSelector, getCSSPropertySwatchStyle, getDisplayedCSSPropertyNames, getDisplayedStyleRules, waitForElementsStyleSection, waitForStyleRule} from '../helpers/elements-helpers.js';
 
 const PROPERTIES_TO_DELETE_SELECTOR = '#properties-to-delete';
+const PROPERTIES_TO_INSPECT_SELECTOR = '#properties-to-inspect';
 const FIRST_PROPERTY_NAME_SELECTOR = '.tree-outline li:nth-of-type(1) > .webkit-css-property';
 const SECOND_PROPERTY_NAME_SELECTOR = '.tree-outline li:nth-of-type(2) > .webkit-css-property';
 
@@ -47,6 +48,24 @@ describe('The Styles pane', async () => {
     assert.deepEqual(
         h2Rules[1], {selectorText: 'h2', propertyNames: ['background-color', 'color']},
         'The correct rule is displayed');
+  });
+
+  it('can display CSS variables properly', async () => {
+    const {target, frontend} = getBrowserAndPages();
+
+    await target.goto(`${resourcesPath}/elements/css-variables.html`);
+    await waitForElementsStyleSection();
+
+    // Sanity check to make sure we have the correct node selected after opening a file
+    await assertContentOfSelectedElementsNode('<body>\u200B');
+
+    // Select div that we will inspect the CSS variables for
+    await frontend.keyboard.press('ArrowRight');
+    await assertContentOfSelectedElementsNode('<div id=\u200B"properties-to-inspect">\u200B</div>\u200B');
+
+    const propertiesSection = await waitFor(getAriaLabelSelectorFromPropertiesSelector(PROPERTIES_TO_INSPECT_SELECTOR));
+    const swatchStyle = await getCSSPropertySwatchStyle(propertiesSection);
+    assert.deepEqual(swatchStyle, 'background-color: black;', 'The swatch has incorrect style');
   });
 
   it('can remove a CSS property when its name or value is deleted', async () => {

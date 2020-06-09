@@ -804,15 +804,24 @@ class DOMInheritanceCascade {
     const accumulatedCSSVariables = new Map();
     for (let i = this._nodeCascades.length - 1; i >= 0; --i) {
       const nodeCascade = this._nodeCascades[i];
+      const variableNames = [];
       for (const entry of nodeCascade._activeProperties.entries()) {
         const propertyName = /** @type {string} */ (entry[0]);
         const property = /** @type {!CSSProperty} */ (entry[1]);
         if (propertyName.startsWith('--')) {
           accumulatedCSSVariables.set(propertyName, property.value);
+          variableNames.push(propertyName);
         }
       }
-      this._availableCSSVariables.set(nodeCascade, new Map(accumulatedCSSVariables));
-      this._computedCSSVariables.set(nodeCascade, new Map());
+      const availableCSSVariablesMap = new Map(accumulatedCSSVariables);
+      const computedVariablesMap = new Map();
+      this._availableCSSVariables.set(nodeCascade, availableCSSVariablesMap);
+      this._computedCSSVariables.set(nodeCascade, computedVariablesMap);
+      for (const variableName of variableNames) {
+        accumulatedCSSVariables.delete(variableName);
+        accumulatedCSSVariables.set(
+            variableName, this._innerComputeCSSVariable(availableCSSVariablesMap, computedVariablesMap, variableName));
+      }
     }
   }
 }

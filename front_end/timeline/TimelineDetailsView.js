@@ -88,10 +88,9 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     // Add TBT info to the footer.
     this._additionalMetricsToolbar.removeToolbarItems();
     if (model && model.timelineModel()) {
-      let message = ls`Total blocking time: Unavailable`;
-      if (model.timelineModel().totalBlockingTime() !== -1) {
-        message = ls`Total blocking time: ${model.timelineModel().totalBlockingTime().toFixed(2)}ms`;
-      }
+      const {estimated, time} = model.timelineModel().totalBlockingTime();
+      const isEstimate = estimated ? ` (${ls`estimated`})` : '';
+      const message = ls`Total blocking time: ${time.toFixed(2)}ms${isEstimate}`;
 
       const warning = createElement('span');
       const clsLink = UI.UIUtils.createWebDevLink('tbt/', ls`Learn more`);

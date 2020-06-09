@@ -199,6 +199,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_2b912aa1a87361a536122b08c7d08829" desc="Label for Cumulative Layout records, indicating where they moved to">
     Moved to
   </message>
+  <message name="IDS_DEVTOOLS_2c36802bed2effbf9044276283fac3ef" desc="The label for estimated total blocking time in the performance panel">
+    estimated
+  </message>
   <message name="IDS_DEVTOOLS_2d2af0b530003b552681f91e29c509d1" desc="Stack label in Timeline UIUtils of the Performance panel">
     Recalculation Forced
   </message>
@@ -249,9 +252,6 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   </message>
   <message name="IDS_DEVTOOLS_359783360b8522c55aa7a9c7d5593d5d" desc="Text in Timeline UIUtils of the Performance panel">
     Pinch End
-  </message>
-  <message name="IDS_DEVTOOLS_35de4e967da8f1ddc42d34180785880a" desc="Text when TBT values are unavailable in the Performance panel">
-    Total blocking time: Unavailable
   </message>
   <message name="IDS_DEVTOOLS_361beede47de122bfb91fe1da6e3f1a7" desc="Text in Timeline Loader of the Performance panel">
     Legacy Timeline format is not supported.
@@ -612,6 +612,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_8dc1f1afb0dcd5282b146c8cf5d758e1" desc="Title in Timeline Flame Chart Data Provider of the Performance panel">
     Unexpected entryIndex <ph name="ENTRYINDEX">$1d<ex>2</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_8e03e3725cf3a3263e2b55c943213564" desc="Label for the total blocking time in the Performance Panel">
+    Total blocking time: <ph name="MODEL_TIMELINEMODEL___TOTALBLOCKINGTIME___TIME_TOFIXED___">$1s<ex>320.23</ex></ph>ms<ph name="ESTIMATED">$2s<ex>(estimated)</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_8e5a67121e2a36110fef3aa447993acd" desc="Text in Timeline UIUtils of the Performance panel">
     Unknown cause
   </message>
@@ -854,9 +857,6 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_d0c91aff68287a1a0003af56b91cadde" desc="Range text content in Counters Graph of the Performance panel">
     [<ph name="MIN">$1s<ex>2</ex></ph> – <ph name="MAX">$2s<ex>10</ex></ph>]
-  </message>
-  <message name="IDS_DEVTOOLS_d0ccf5c5711a6c11aae337a193143037" desc="Text when TBT values are available in the Performance panel">
-    Total blocking time: <ph name="MODEL_TIMELINEMODEL___TOTALBLOCKINGTIME___TOFIXED___">$1s<ex>18.67</ex></ph>ms
   </message>
   <message name="IDS_DEVTOOLS_d147f3c372833715f5bcff727b0665aa" desc="Text in UIDevtools Utils of the Performance panel">
     RasterizerTaskImpl::RunOnWorkerThread

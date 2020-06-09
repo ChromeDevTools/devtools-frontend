@@ -225,7 +225,7 @@ class ModelInfo {
    */
   async _styleSheetChanged(event) {
     const header = this._cssModel.styleSheetHeaderForId(event.data.styleSheetId);
-    if (!header || !header.isInline) {
+    if (!header || !header.isInline || (header.isInline && header.isMutable)) {
       return;
     }
     const binding = this._bindings.get(header.resourceURL());

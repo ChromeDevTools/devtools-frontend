@@ -28,6 +28,7 @@ export class CSSStyleSheetHeader {
     this.title = payload.title;
     this.disabled = payload.disabled;
     this.isInline = payload.isInline;
+    this.isMutable = payload.isMutable;
     this.startLine = payload.startLine;
     this.startColumn = payload.startColumn;
     this.endLine = payload.endLine;

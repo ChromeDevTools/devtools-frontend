@@ -29,13 +29,23 @@ RESOURCES_INSPECTOR_PATH = path.join(os.getcwd(), 'resources', 'inspector')
 
 GLOBAL_TYPESCRIPT_DEFINITION_FILES = [
     # legacy definitions used to help us bridge Closure and TypeScript
-    path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'front_end', 'legacy', 'legacy-defs.d.ts'),
+    path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'front_end', 'legacy',
+              'legacy-defs.d.ts'),
+    # global definitions that we need
+    # e.g. TypeScript doesn't provide ResizeObserver definitions so we host them ourselves
+    path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'front_end', 'global_typings',
+              'global_defs.d.ts'),
+    path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'front_end', 'global_typings',
+              'resize_observer.d.ts'),
     # generated protocol definitions
-    path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'front_end', 'generated', 'protocol.d.ts'),
+    path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'front_end', 'generated',
+              'protocol.d.ts'),
     # generated protocol api interactions
-    path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'front_end', 'generated', 'protocol-proxy-api.d.ts'),
+    path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'front_end', 'generated',
+              'protocol-proxy-api.d.ts'),
     # Types for W3C FileSystem API
-    path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'node_modules', '@types', 'filesystem', 'index.d.ts'),
+    path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'node_modules', '@types',
+              'filesystem', 'index.d.ts'),
 ]
 
 

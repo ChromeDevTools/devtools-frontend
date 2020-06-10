@@ -509,8 +509,8 @@ export class DeviceModeView extends UI.Widget.VBox {
     const url = this._model.inspectedURL();
     let fileName = '';
     if (url) {
-      const trimmed = Platform.StringUtilities.trimURL(url);
-      fileName = Platform.StringUtilities.removeURLFragment(trimmed);
+      const withoutFragment = Platform.StringUtilities.removeURLFragment(url);
+      fileName = Platform.StringUtilities.trimURL(withoutFragment);
     }
 
     if (this._model.type() === Type.Device) {

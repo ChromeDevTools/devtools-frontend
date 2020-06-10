@@ -128,7 +128,7 @@ Before proceeding, make sure you know the different [localization APIs](localiza
 ### Frontend GRDP file
 1. Run any of the following commands to have new strings automatically added to the corresponding grdp file:
   - `git cl presubmit --upload`, or
-  - `node scripts/check_localizable_resources.js --autofix` under the devtools folder
+  - `node scripts/localization/check_localizable_resources.js --autofix` from devtools-frontend/src folder
 2. Manually add information to the new grdp message. See [Adding Descriptive Information to GRDP Messages](grdp_files.md)
 
 ## Modifying a string

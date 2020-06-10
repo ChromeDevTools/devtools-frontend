@@ -85,7 +85,7 @@ async function autofix(existingError) {
     if (shouldAddExampleTag) {
       message += ' Add example tag(s) <ex> for messages that contain placeholder(s)';
     }
-    message += '\nFor more details, see devtools/docs/langpacks/grdp_files.md';
+    message += '\nFor more details, see src/docs/localization/grdp_files.md';
   }
   if (resourceRemoved && duplicateRemoved(keysToRemoveFromGRD)) {
     message += '\nDuplicate <message> entries are removed. Please verify the retained descriptions are correct.';

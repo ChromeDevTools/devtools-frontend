@@ -82,9 +82,10 @@ self.onmessage = async function(event) {
   nameGenerator.read(parser);
 
   const dis = new WasmDis.WasmDisassembler();
-  dis.nameResolver = nameGenerator.getNameResolver();
   dis.addOffsets = true;
+  dis.exportMetadata = nameGenerator.getExportMetadata();
   dis.maxLines = 1000 * 1000;
+  dis.nameResolver = nameGenerator.getNameResolver();
   parser = new BinaryReaderWithProgress(percentage => {
     this.postMessage(
         {event: 'progress', params: {percentage: NAME_GENERATOR_WEIGHT + percentage * (DISASSEMBLY_WEIGHT / 100)}});

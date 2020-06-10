@@ -34,7 +34,7 @@ describe('Source Tab', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await openSourceCodeEditorForFile(target, 'add.wasm', 'wasm/call-to-add-wasm.html');
-    await addBreakpointForLine(frontend, 5);
+    await addBreakpointForLine(frontend, 3);
 
     const scriptLocation = await retrieveTopCallFrameScriptLocation('main();', target);
     assert.deepEqual(scriptLocation, 'add.wasm:0x23');
@@ -46,16 +46,14 @@ describe('Source Tab', async () => {
     await openSourceCodeEditorForFile(target, 'add.wasm', 'wasm/call-to-add-wasm.html');
     assert.deepEqual(await getNonBreakableLines(frontend), [
       0x000,
-      0x00a,
-      0x017,
       0x020,
       0x04b,
     ]);
-    // Line 3 is non-breakable.
-    await addBreakpointForLine(frontend, 3, true);
+    // Line 1 is non-breakable.
+    await addBreakpointForLine(frontend, 1, true);
     assert.deepEqual(await getBreakpointDecorators(frontend), []);
-    // Line 5 is breakable.
-    await addBreakpointForLine(frontend, 5);
+    // Line 3 is breakable.
+    await addBreakpointForLine(frontend, 3);
     assert.deepEqual(await getBreakpointDecorators(frontend), [0x023]);
   });
 });

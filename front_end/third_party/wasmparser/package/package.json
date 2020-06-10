@@ -1,6 +1,6 @@
 {
   "name": "wasmparser",
-  "version": "0.16.1",
+  "version": "2.2.0",
   "description": "Binary WebAssembly file parser.",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -15,21 +15,52 @@
     "prepare": "npm run build",
     "test": "jest"
   },
-  "author": "",
+  "author": "Yury Delendik <ydelendik@mozilla.com.",
+  "contributors": [
+    "Benedikt Meurer <bmeurer@google.com>",
+    "Kim Anh-Tran <kimanh@google.com>",
+    "Z Nguyen-Huu <duongn@microsoft.com>"
+  ],
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/wasdk/wasmparser.git"
   },
   "devDependencies": {
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
+    "@semantic-release/changelog": "^5.0.1",
+    "@semantic-release/git": "^9.0.0",
     "@types/jest": "^24.9.1",
     "concurrently": "^5.2.0",
+    "husky": "^4.2.5",
     "jest": "^25.1.0",
+    "semantic-release": "^17.0.8",
     "ts-jest": "^24.3.0",
     "typescript": "^3.8.3",
     "wabt": "^1.0.13"
   },
   "dependencies": {
     "@types/node": "^12.12.30"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "release": {
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/changelog",
+      "@semantic-release/npm",
+      "@semantic-release/git",
+      "@semantic-release/github"
+    ]
   }
 }

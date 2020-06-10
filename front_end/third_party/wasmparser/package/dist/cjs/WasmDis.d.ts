@@ -1,4 +1,10 @@
 import { BinaryReader } from './WasmParser.js';
+export interface IExportMetadata {
+    getFunctionExportNames(index: number): string[];
+    getGlobalExportNames(index: number): string[];
+    getMemoryExportNames(index: number): string[];
+    getTableExportNames(index: number): string[];
+}
 export interface INameResolver {
     getTypeName(index: number, isRef: boolean): string;
     getTableName(index: number, isRef: boolean): string;
@@ -71,10 +77,11 @@ export declare class WasmDisassembler {
     private _indent;
     private _indentLevel;
     private _addOffsets;
-    private _nextLineToAddOffset;
+    private _skipTypes;
     private _done;
     private _currentPosition;
     private _nameResolver;
+    private _exportMetadata;
     private _labelMode;
     private _maxLines;
     private _functionBodyOffsets;
@@ -84,8 +91,12 @@ export declare class WasmDisassembler {
     private _reset;
     get addOffsets(): boolean;
     set addOffsets(value: boolean);
+    get skipTypes(): boolean;
+    set skipTypes(skipTypes: boolean);
     get labelMode(): LabelMode;
     set labelMode(value: LabelMode);
+    get exportMetadata(): IExportMetadata;
+    set exportMetadata(exportMetadata: IExportMetadata);
     get nameResolver(): INameResolver;
     set nameResolver(resolver: INameResolver);
     set maxLines(value: number);
@@ -128,10 +139,14 @@ export declare class DevToolsNameGenerator {
     private _memoryNames;
     private _tableNames;
     private _globalNames;
+    private _functionExportNames;
+    private _globalExportNames;
+    private _memoryExportNames;
+    private _tableExportNames;
     constructor();
-    private _generateExportName;
-    private _generateImportName;
+    private _addExportName;
     private _setName;
     read(reader: BinaryReader): boolean;
+    getExportMetadata(): IExportMetadata;
     getNameResolver(): INameResolver;
 }

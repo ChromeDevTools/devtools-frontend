@@ -419,6 +419,9 @@ export class TabbedPane extends VBox {
    */
   setTabIcon(id, icon) {
     const tab = this._tabsById.get(id);
+    if (!tab) {
+      return;
+    }
     tab._setIcon(icon);
     this._updateTabElements();
   }

@@ -211,11 +211,34 @@ export class InspectorView extends VBox {
   }
 
   /**
-   * @param {string} panelName
+   * @param {string} tabId
    * @param {?Icon} icon
    */
-  setPanelIcon(panelName, icon) {
-    this._tabbedPane.setTabIcon(panelName, icon);
+  setPanelIcon(tabId, icon) {
+    // Find the tabbed location where the panel lives
+    const tabbedPane = this._getTabbedPaneForTabId(tabId);
+    if (tabbedPane) {
+      tabbedPane.setTabIcon(tabId, icon);
+    }
+  }
+
+  /**
+   * @param {string} tabId
+   * @return {?TabbedPane}
+   */
+  _getTabbedPaneForTabId(tabId) {
+    // Tab exists in the main panel
+    if (this._tabbedPane.hasTab(tabId)) {
+      return this._tabbedPane;
+    }
+
+    // Tab exists in the drawer
+    if (this._drawerTabbedPane.hasTab(tabId)) {
+      return this._drawerTabbedPane;
+    }
+
+    // Tab is not open
+    return null;
   }
 
   /**

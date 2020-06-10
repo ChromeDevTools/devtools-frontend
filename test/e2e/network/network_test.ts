@@ -12,7 +12,10 @@ const SIMPLE_PAGE_REQUEST_NUMBER = 10;
 const SIMPLE_PAGE_URL = `requests.html?num=${SIMPLE_PAGE_REQUEST_NUMBER}`;
 
 // Tests are flaky
-describe.skip('[crbug.com/1093287]: The Network Tab', async () => {
+describe('The Network Tab', async function() {
+  // The tests here tend to take time because they wait for requests to appear in the request panel.
+  this.timeout(5000);
+
   it('displays requests', async () => {
     const {target} = getBrowserAndPages();
     await navigateToNetworkTab(target, SIMPLE_PAGE_URL);

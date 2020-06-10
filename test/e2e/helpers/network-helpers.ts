@@ -46,8 +46,8 @@ export async function getSelectedRequestName() {
 
 export async function selectRequestByName(name: string) {
   const requests = await $$(REQUEST_LIST_SELECTOR + ' .name-column');
-  const request = await requests.evaluateHandle((nodes: Element[], name) => {
-    return nodes.find(node => node.childNodes[1].textContent = name);
+  const request = await requests.evaluateHandle((nodes: Element[], name: string) => {
+    return nodes.find(node => node.childNodes[1].textContent === name);
   }, name);
   await click(request);
 }

@@ -69,7 +69,7 @@ export class TimelinePanel extends UI.Panel.Panel {
     this._recordingOptionUIControls = [];
     this._state = State.Idle;
     this._recordingPageReload = false;
-    this._millisecondsToRecordAfterLoadEvent = 3000;
+    this._millisecondsToRecordAfterLoadEvent = 5000;
     this._toggleRecordAction =
         /** @type {!UI.Action.Action }*/ (self.UI.actionRegistry.action('timeline.toggle-recording'));
     this._recordReloadAction =

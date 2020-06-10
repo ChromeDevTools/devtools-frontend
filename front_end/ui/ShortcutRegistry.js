@@ -143,16 +143,16 @@ export class ShortcutRegistry {
    */
   addShortcutListener(element, handlers) {
     // We only want keys for these specific actions to get handled this
-    // way; all others should be allowed to bubble up
-    const whitelistKeyMap = new ShortcutTreeNode(0, 0);
+    // way; all others should be allowed to bubble up.
+    const allowlistKeyMap = new ShortcutTreeNode(0, 0);
     const shortcuts = Object.keys(handlers).flatMap(action => [...this._actionToShortcut.get(action)]);
     shortcuts.forEach(shortcut => {
-      whitelistKeyMap.addKeyMapping(shortcut.descriptors.map(descriptor => descriptor.key), shortcut.action);
+      allowlistKeyMap.addKeyMapping(shortcut.descriptors.map(descriptor => descriptor.key), shortcut.action);
     });
 
     element.addEventListener('keydown', event => {
       const key = KeyboardShortcut.makeKeyFromEvent(/** @type {!KeyboardEvent} */ (event));
-      let keyMap = whitelistKeyMap;
+      let keyMap = allowlistKeyMap;
       if (this._activePrefixKey) {
         keyMap = keyMap.getNode(this._activePrefixKey.key());
         if (!keyMap) {

@@ -73,7 +73,7 @@ export class CustomPreviewSection {
    */
   _renderElement(object) {
     const tagName = object.shift();
-    if (!CustomPreviewSection._tagsWhiteList.has(tagName)) {
+    if (!CustomPreviewSection._allowedTags.has(tagName)) {
       Common.Console.Console.instance().error('Broken formatter: element ' + tagName + ' is not allowed!');
       return createElement('span');
     }
@@ -270,4 +270,4 @@ export class CustomPreviewComponent {
   }
 }
 
-CustomPreviewSection._tagsWhiteList = new Set(['span', 'div', 'ol', 'li', 'table', 'tr', 'td']);
+CustomPreviewSection._allowedTags = new Set(['span', 'div', 'ol', 'li', 'table', 'tr', 'td']);

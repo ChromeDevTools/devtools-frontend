@@ -72,8 +72,8 @@ export class RequestPreviewView extends RequestResponseView {
       return new UI.EmptyWidget.EmptyWidget(Common.UIString.UIString('Failed to load response data'));
     }
 
-    const whitelist = new Set(['text/html', 'text/plain', 'application/xhtml+xml']);
-    if (!whitelist.has(this.request.mimeType)) {
+    const allowlist = new Set(['text/html', 'text/plain', 'application/xhtml+xml']);
+    if (!allowlist.has(this.request.mimeType)) {
       return null;
     }
 

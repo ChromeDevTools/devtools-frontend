@@ -783,7 +783,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     const tagName = tagNameElement.textContent;
-    if (EditTagBlacklist.has(tagName.toLowerCase())) {
+    if (EditTagBlocklist.has(tagName.toLowerCase())) {
       return false;
     }
 
@@ -1929,7 +1929,7 @@ export const ForbiddenClosingTagElements = new Set([
 ]);
 
 // These tags we do not allow editing their tag name.
-export const EditTagBlacklist = new Set(['html', 'head', 'body']);
+export const EditTagBlocklist = new Set(['html', 'head', 'body']);
 
 const OrderedAdornerCategories = [
   AdornerCategories.Security,

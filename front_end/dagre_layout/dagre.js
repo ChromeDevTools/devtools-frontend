@@ -531,8 +531,8 @@ function runLayout(g, time) {
 
 /*
  * Copies final layout information from the layout graph back to the input
- * graph. This process only copies whitelisted attributes from the layout graph
- * to the input graph, so it serves as a good place to determine what
+ * graph. This process only copies allowlisted attributes from the layout
+ * graph to the input graph, so it serves as a good place to determine what
  * attributes can influence layout.
  */
 function updateInputGraph(inputGraph, layoutGraph) {
@@ -580,7 +580,7 @@ var graphNumAttrs = ['nodesep', 'edgesep', 'ranksep', 'marginx', 'marginy'],
 
 /*
  * Constructs a new graph from the input graph, which can be used for layout.
- * This process copies only whitelisted attributes from the input graph to the
+ * This process copies only allowlisted attributes from the input graph to the
  * layout graph. Thus this function serves as a good place to determine what
  * attributes can influence layout.
  */

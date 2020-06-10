@@ -886,13 +886,13 @@ export class ConsoleViewMessage {
       buffer.setAttribute('style', obj.description);
       for (let i = 0; i < buffer.style.length; i++) {
         const property = buffer.style[i];
-        if (isWhitelistedProperty(property)) {
+        if (isAllowedProperty(property)) {
           currentStyle[property] = buffer.style[property];
         }
       }
     }
 
-    function isWhitelistedProperty(property) {
+    function isAllowedProperty(property) {
       // Make sure that allowed properties do not interfere with link visibility.
       const prefixes = [
         'background', 'border', 'color', 'font', 'line', 'margin', 'padding', 'text', '-webkit-background',

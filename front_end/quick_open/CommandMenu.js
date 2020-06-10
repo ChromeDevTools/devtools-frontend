@@ -136,7 +136,7 @@ export class CommandMenu {
       this._commands.push(CommandMenu.createRevealViewCommand(options));
     }
 
-    // Populate whitelisted settings.
+    // Populate allowlisted settings.
     const settingExtensions = self.runtime.extensions('setting');
     for (const extension of settingExtensions) {
       const options = extension.descriptor()['options'];
@@ -199,7 +199,7 @@ export class CommandMenuProvider extends Provider {
   attach() {
     const allCommands = commandMenu.commands();
 
-    // Populate whitelisted actions.
+    // Populate allowlisted actions.
     const actions = self.UI.actionRegistry.availableActions();
     for (const action of actions) {
       const category = action.category();

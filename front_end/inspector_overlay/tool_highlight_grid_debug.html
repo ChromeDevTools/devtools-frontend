@@ -1,0 +1,51 @@
+<!--
+Copyright 2020 The Chromium Authors. All rights reserved.
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debug</title>
+  <link rel="stylesheet" type="text/css" href="common.css">
+  <script type="module" src="tool_highlight.js"></script>
+  <style>
+    body {
+      background: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <script type="module">
+    function test() {
+      setPlatform("mac");
+      reset(window);
+      // Grid based on https://gridbyexample.com/examples/code/example1.html
+      drawHighlight({
+        "paths": [{ "path": ["M", 100, 60, "L", 891, 60, "L", 891, 204, "L", 100, 204, "Z"], "fillColor": "rgba(255,0,0,0)", "outlineColor": "rgba(128,0,0,0)", "name": "content" },
+        { "path": ["M", 90, 50, "L", 901, 50, "L", 901, 214, "L", 90, 214, "Z"], "fillColor": "rgba(0,255,0,0)", "name": "padding" },
+        { "path": ["M", 90, 50, "L", 901, 50, "L", 901, 214, "L", 90, 214, "Z"], "fillColor": "rgba(0,0,255,0)", "name": "border" },
+        { "path": ["M", 40, 0, "L", 951, 0, "L", 951, 264, "L", 40, 264, "Z"], "fillColor": "rgba(255,255,255,0)", "name": "margin" }],
+        "showRulers": false, "showExtensionLines": false,
+        "elementInfo": { "tagName": "div", "idValue": "", "className": ".wrapper", "nodeWidth": "811", "nodeHeight": "164", "isKeyboardFocusable": false, "accessibleName": "", "accessibleRole": "generic" },
+        "gridInfo": [{
+          "rows": ["M", 100, 60, "L", 420, 60, "L", 420, 127, "L", 100, 127, "Z", "M", 100, 137, "L", 420, 137, "L", 420, 204, "L", 100, 204, "Z"],
+          "rowGaps": ["M", 100, 127, "L", 420, 127, "L", 420, 137, "L", 100, 137, "Z"], "positiveRowLineNumberOffsets": [0, 72, 144],
+          "columns": ["M", 100, 60, "L", 200, 60, "L", 200, 204, "L", 100, 204, "Z", "M", 210, 60, "L", 310, 60, "L", 310, 204, "L", 210, 204, "Z", "M", 320, 60, "L", 420, 60, "L", 420, 204, "L", 320, 204, "Z"],
+          "columnGaps": ["M", 200, 60, "L", 210, 60, "L", 210, 204, "L", 200, 204, "Z", "M", 310, 60, "L", 320, 60, "L", 320, 204, "L", 310, 204, "Z"],
+          "positiveColumnLineNumberOffsets": [0, 105, 215, 320], "gridBorder": ["M", 100, 60, "L", 420, 60, "L", 420, 204, "L", 100, 204, "Z"],
+          "gridHighlightConfig": {
+            "gridBorderDash": false, "cellBorderDash": true, "showGridExtensionLines": true, "showPositiveLineNumbers": true,
+            "gridBorderColor": "rgba(255, 0, 0, 0)", "cellBorderColor": "rgba(26, 115, 232, 1)", "rowGapColor": "rgba(147, 52, 230, .3)",
+            "columnGapColor": "rgba(147, 52, 230, .3)", "rowHatchColor": "rgba(147, 52, 230, .8)", "columnHatchColor": "rgba(147, 52, 230, .8)"
+          }, "isPrimaryGrid": true
+        }]
+      });
+    }
+    test();
+  </script>
+</body>
+
+</html>

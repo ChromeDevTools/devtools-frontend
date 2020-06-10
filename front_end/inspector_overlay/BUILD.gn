@@ -12,6 +12,7 @@ action("build_inspector_overlay") {
   inputs = [
     "./common.css",
     "$target_gen_dir/common.js",
+    "$target_gen_dir/css_grid_label_helpers.js",
     "$target_gen_dir/tool_highlight_impl.js",
     "$target_gen_dir/tool_highlight.js",
     "$target_gen_dir/tool_paused_impl.js",
@@ -66,6 +67,7 @@ copy("copy_resources") {
 ts_library("inspector_overlay") {
   sources = [
     "common.js",
+    "css_grid_label_helpers.js",
     "tool_distances.js",
     "tool_distances_impl.js",
     "tool_highlight.js",

@@ -11,7 +11,8 @@ import {getAllRequestNames, getSelectedRequestName, navigateToNetworkTab, select
 const SIMPLE_PAGE_REQUEST_NUMBER = 10;
 const SIMPLE_PAGE_URL = `requests.html?num=${SIMPLE_PAGE_REQUEST_NUMBER}`;
 
-describe('The Network Tab', async () => {
+// Tests are flaky
+describe.skip('[crbug.com/1093287]: The Network Tab', async () => {
   it('displays requests', async () => {
     const {target} = getBrowserAndPages();
     await navigateToNetworkTab(target, SIMPLE_PAGE_URL);

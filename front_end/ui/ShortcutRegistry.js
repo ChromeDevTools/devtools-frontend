@@ -299,7 +299,9 @@ export class ShortcutRegistry {
     this._keyMap.clear();
     const keybindSet = self.Common.settings.moduleSetting('activeKeybindSet').get();
     const extensions = self.runtime.extensions('action');
+    const forwardedKeys = [];
     extensions.forEach(registerExtension, this);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.setWhitelistedShortcuts(JSON.stringify(forwardedKeys));
 
     /**
      * @param {!Root.Runtime.Extension} extension
@@ -317,6 +319,10 @@ export class ShortcutRegistry {
         const shortcutDescriptors = keys.map(KeyboardShortcut.makeDescriptorFromBindingShortcut);
         if (shortcutDescriptors.length > 0) {
           const actionId = /** @type {string} */ (descriptor.actionId);
+          if (ForwardedActions.has(actionId)) {
+            forwardedKeys.push(
+                ...shortcutDescriptors.map(shortcut => KeyboardShortcut.keyCodeAndModifiersFromKey(shortcut.key)));
+          }
           if (!keybindSets) {
             this._registerShortcut(new KeyboardShortcut(shortcutDescriptors, actionId, Type.DefaultShortcut));
           } else {
@@ -443,5 +449,8 @@ export class ForwardedShortcut {}
 
 ForwardedShortcut.instance = new ForwardedShortcut();
 
+export const ForwardedActions = new Set([
+  'main.toggle-dock', 'debugger.toggle-breakpoints-active', 'debugger.toggle-pause', 'commandMenu.show', 'console.show'
+]);
 export const KeyTimeout = 1000;
 export const DefaultShortcutSetting = 'devToolsDefault';

@@ -29,7 +29,10 @@
 .CodeMirror-vscrollbar, .CodeMirror-hscrollbar, .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
   position: absolute;
   z-index: 6;
-  display: none;
+  /* CodeMirror uses inline styles to set the display to block. Therefore, we have to use
+   * !important to force the overriding. For more info, see crbug.com/1093786
+   */
+  display: none !important;
 }
 .CodeMirror-vscrollbar {
   right: 0; top: 0;

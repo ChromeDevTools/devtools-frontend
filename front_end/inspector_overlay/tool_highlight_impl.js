@@ -182,6 +182,7 @@ function _drawAxis(context, rulerAtRight, rulerAtBottom) {
 
 export function doReset() {
   document.getElementById('tooltip-container').removeChildren();
+  document.getElementById('grid-label-container').removeChildren();
   window._gridPainted = false;
 }
 

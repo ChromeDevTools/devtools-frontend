@@ -271,6 +271,17 @@ export const logFailure = () => {
 
 export const resourcesPath = 'http://localhost:8090/test/e2e/resources';
 
+export const enableExperiment = async (
+    experiment: string, options: {selectedPanel?: {name: string, selector?: string}, canDock?: boolean} = {}) => {
+  const {frontend} = getBrowserAndPages();
+  await frontend.evaluate(experiment => {
+    // @ts-ignore
+    globalThis.Root.Runtime.experiments.setEnabled(experiment, true);
+  }, experiment);
+
+  await reloadDevTools(options);
+};
+
 export const goTo = async (url: string) => {
   const {target} = getBrowserAndPages();
   await target.goto(url);
@@ -278,16 +289,6 @@ export const goTo = async (url: string) => {
 
 export const goToResource = async (path: string) => {
   await goTo(`${resourcesPath}/${path}`);
-};
-
-export const enableExperiment = async (experiment: string) => {
-  const {frontend} = getBrowserAndPages();
-  await frontend.evaluate(experiment => {
-    // @ts-ignore
-    globalThis.Root.Runtime.experiments.setEnabled(experiment, true);
-  }, experiment);
-
-  await reloadDevTools();
 };
 
 export const step = async (description: string, step: Function) => {

@@ -1850,7 +1850,6 @@
       type_name: "LengthSize",
       converter: "ConvertIntrinsicSize",
       include_paths: ["third_party/blink/renderer/platform/geometry/length_size.h"],
-      runtime_flag: "CSSIntrinsicSize"
     },
     {
       name: "content",

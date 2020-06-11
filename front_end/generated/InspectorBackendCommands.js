@@ -2593,7 +2593,7 @@ export function registerCommands(inspectorBackend) {
     F32: 'f32',
     F64: 'f64',
     V128: 'v128',
-    Anyref: 'anyref'
+    Externref: 'externref'
   });
   inspectorBackend.registerEnum('Runtime.ObjectPreviewType', {
     Object: 'object',

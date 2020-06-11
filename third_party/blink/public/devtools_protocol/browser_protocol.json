@@ -11245,6 +11245,12 @@
                             "type": "boolean"
                         },
                         {
+                            "name": "showPositiveLineNumbers",
+                            "description": "Show Positive line number labels (default: false).",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
                             "name": "gridBorderColor",
                             "description": "The grid container border highlight color (default: transparent).",
                             "optional": true,
@@ -19440,7 +19446,7 @@
                                 "f32",
                                 "f64",
                                 "v128",
-                                "anyref"
+                                "externref"
                             ]
                         },
                         {

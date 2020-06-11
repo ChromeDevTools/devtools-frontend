@@ -5190,6 +5190,8 @@ experimental domain Overlay
     properties
       # Whether the extension lines from grid cells to the rulers should be shown (default: false).
       optional boolean showGridExtensionLines
+      # Show Positive line number labels (default: false).
+      optional boolean showPositiveLineNumbers
       # The grid container border highlight color (default: transparent).
       optional DOM.RGBA gridBorderColor
       # The cell border color (default: transparent).

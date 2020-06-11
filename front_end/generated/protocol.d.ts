@@ -7762,6 +7762,10 @@ declare namespace Protocol {
        */
       showGridExtensionLines?: boolean;
       /**
+       * Show Positive line number labels (default: false).
+       */
+      showPositiveLineNumbers?: boolean;
+      /**
        * The grid container border highlight color (default: transparent).
        */
       gridBorderColor?: DOM.RGBA;
@@ -13181,7 +13185,7 @@ declare namespace Protocol {
       F32 = 'f32',
       F64 = 'f64',
       V128 = 'v128',
-      Anyref = 'anyref',
+      Externref = 'externref',
     }
 
     /**

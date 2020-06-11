@@ -244,16 +244,20 @@ class DevToolsExportMetadata {
         this._tableExportNames = tableExportNames;
     }
     getFunctionExportNames(index) {
-        return this._functionExportNames[index] ?? EMPTY_STRING_ARRAY;
+        var _a;
+        return (_a = this._functionExportNames[index]) !== null && _a !== void 0 ? _a : EMPTY_STRING_ARRAY;
     }
     getGlobalExportNames(index) {
-        return this._globalExportNames[index] ?? EMPTY_STRING_ARRAY;
+        var _a;
+        return (_a = this._globalExportNames[index]) !== null && _a !== void 0 ? _a : EMPTY_STRING_ARRAY;
     }
     getMemoryExportNames(index) {
-        return this._memoryExportNames[index] ?? EMPTY_STRING_ARRAY;
+        var _a;
+        return (_a = this._memoryExportNames[index]) !== null && _a !== void 0 ? _a : EMPTY_STRING_ARRAY;
     }
     getTableExportNames(index) {
-        return this._tableExportNames[index] ?? EMPTY_STRING_ARRAY;
+        var _a;
+        return (_a = this._tableExportNames[index]) !== null && _a !== void 0 ? _a : EMPTY_STRING_ARRAY;
     }
 }
 export class DevToolsNameResolver extends DefaultNameResolver {

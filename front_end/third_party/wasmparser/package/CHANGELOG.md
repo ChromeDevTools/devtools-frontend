@@ -1,3 +1,10 @@
+## [2.2.1](https://github.com/wasdk/wasmparser/compare/v2.2.0...v2.2.1) (2020-06-11)
+
+
+### Bug Fixes
+
+* make `dist/esm` output ES2015 compatible ([f2c16cf](https://github.com/wasdk/wasmparser/commit/f2c16cff1db35fe2bb014e9ab2cafd472d068d82))
+
 # [2.2.0](https://github.com/wasdk/wasmparser/compare/v2.1.0...v2.2.0) (2020-06-10)
 
 

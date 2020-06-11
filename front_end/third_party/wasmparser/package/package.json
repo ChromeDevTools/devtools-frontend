@@ -1,6 +1,6 @@
 {
   "name": "wasmparser",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Binary WebAssembly file parser.",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -11,7 +11,7 @@
   "scripts": {
     "build": "concurrently \"npm:build:cjs\" \"npm:build:esm\"",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs --target es5",
-    "build:esm": "tsc --module esnext --moduleResolution node --outDir dist/esm --target esnext",
+    "build:esm": "tsc --module es2015 --moduleResolution node --outDir dist/esm --target es2015",
     "prepare": "npm run build",
     "test": "jest"
   },

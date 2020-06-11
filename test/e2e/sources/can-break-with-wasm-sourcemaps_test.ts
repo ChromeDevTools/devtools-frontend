@@ -13,7 +13,7 @@ describe('The Sources Tab', async () => {
   it('can add breakpoint for a sourcemapped wasm module', async () => {
     const {target, frontend} = getBrowserAndPages();
 
-    await openSourceCodeEditorForFile(target, 'with-sourcemap.ll', 'wasm/wasm-with-sourcemap.html');
+    await openSourceCodeEditorForFile('with-sourcemap.ll', 'wasm/wasm-with-sourcemap.html');
     await addBreakpointForLine(frontend, 5);
 
     const scriptLocation = await retrieveTopCallFrameScriptLocation('main();', target);

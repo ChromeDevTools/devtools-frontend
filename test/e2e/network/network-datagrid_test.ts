@@ -10,8 +10,7 @@ import {navigateToNetworkTab, waitForSomeRequestsToAppear} from '../helpers/netw
 
 describe('The Network Tab', async () => {
   it('can click on checkbox label to toggle checkbox', async () => {
-    const {target} = getBrowserAndPages();
-    await navigateToNetworkTab(target, 'resources-from-cache.html');
+    await navigateToNetworkTab('resources-from-cache.html');
 
     // Click the label next to the checkbox input element
     await click('[aria-label="Disable cache"] + label');
@@ -24,8 +23,8 @@ describe('The Network Tab', async () => {
 
   // Flaky test
   it.skip('[crbug.com/1066813] shows Last-Modified', async () => {
-    const {target, frontend} = getBrowserAndPages();
-    await navigateToNetworkTab(target, 'last-modified.html');
+    const {frontend} = getBrowserAndPages();
+    await navigateToNetworkTab('last-modified.html');
 
     // Open the contextmenu for all network column
     await click('.name-column', {clickOptions: {button: 'right'}});
@@ -50,9 +49,7 @@ describe('The Network Tab', async () => {
 
   // Flaky test
   it.skip('[crbug.com/1066813] shows the HTML response including cyrillic characters with utf-8 encoding', async () => {
-    const {target} = getBrowserAndPages();
-
-    await navigateToNetworkTab(target, 'utf-8.rawresponse');
+    await navigateToNetworkTab('utf-8.rawresponse');
 
     // Wait for the column to show up and populate its values
     await waitForSomeRequestsToAppear(2);
@@ -78,7 +75,7 @@ describe('The Network Tab', async () => {
   it.skip('[crbug.com/1066813] shows the correct MIME type when resources came from HTTP cache', async () => {
     const {target, frontend} = getBrowserAndPages();
 
-    await navigateToNetworkTab(target, 'resources-from-cache.html');
+    await navigateToNetworkTab('resources-from-cache.html');
 
     // Wait for the column to show up and populate its values
     await waitForSomeRequestsToAppear(3);

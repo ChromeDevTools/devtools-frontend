@@ -4,15 +4,15 @@
 
 import {describe, it} from 'mocha';
 
-import {click, getBrowserAndPages, resourcesPath, waitForElementWithTextContent} from '../../shared/helper.js';
+import {click, getBrowserAndPages, goToResource, waitForElementWithTextContent} from '../../shared/helper.js';
 import {assertContentOfSelectedElementsNode, expandSelectedNodeRecursively, getContentOfSelectedNode, waitForElementsStyleSection, waitForSelectedNodeChange} from '../helpers/elements-helpers.js';
 
 describe('The Elements tab', async () => {
   // Flaky test
   it.skip('[crbug.com/1071851]: can delete elements in the tree', async () => {
-    const {target, frontend} = getBrowserAndPages();
+    const {frontend} = getBrowserAndPages();
 
-    await target.goto(`${resourcesPath}/elements/selection-after-delete.html`);
+    await goToResource('elements/selection-after-delete.html');
 
     // Wait for the file to be loaded and selectors to be shown
     await waitForElementsStyleSection();

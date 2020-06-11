@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {$, $$, click, getBrowserAndPages, resourcesPath, waitFor} from '../../shared/helper.js';
+import {$, $$, click, getBrowserAndPages, goToResource, waitFor} from '../../shared/helper.js';
 
 import {assertContentOfSelectedElementsNode, waitForElementsStyleSection} from './elements-helpers.js';
 
 export const loadEventListenersAndSelectButtonNode = async () => {
-  const {target, frontend} = getBrowserAndPages();
-  await target.goto(`${resourcesPath}/elements/sidebar-event-listeners.html`);
+  const {frontend} = getBrowserAndPages();
+  await goToResource('elements/sidebar-event-listeners.html');
   await waitForElementsStyleSection();
 
   // Sanity check to make sure we have the correct node selected after opening a file

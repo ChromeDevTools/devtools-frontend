@@ -2,20 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as puppeteer from 'puppeteer';
-
-import {$, click, closeAllCloseableTabs, getBrowserAndPages, resourcesPath, waitFor} from '../../shared/helper.js';
+import {$, click, closeAllCloseableTabs, goToResource, waitFor} from '../../shared/helper.js';
 
 export async function prepareForCrossToolScenario() {
-  const {target} = getBrowserAndPages();
-  await navigateToCrossToolIntegrationSite(target);
+  await navigateToCrossToolIntegrationSite();
   await closeAllCloseableTabs();
 }
 
-export async function navigateToCrossToolIntegrationSite(target: puppeteer.Page) {
-  // Navigate to a website with an animation
-  const targetUrl = `${resourcesPath}/cross_tool/default.html`;
-  await target.goto(targetUrl);
+export async function navigateToCrossToolIntegrationSite() {
+  await goToResource('cross_tool/default.html');
 }
 
 export async function clickOnContextMenuItemFromTab(tabId: string, menuItemSelector: string) {

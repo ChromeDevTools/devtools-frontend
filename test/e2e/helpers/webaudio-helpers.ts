@@ -2,9 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as puppeteer from 'puppeteer';
-
-import {resourcesPath, waitFor, waitForNone} from '../../shared/helper.js';
+import {goToResource, waitFor, waitForNone} from '../../shared/helper.js';
 import {openPanelViaMoreTools} from './settings-helpers.js';
 
 export async function waitForTheWebAudioPanelToLoad() {
@@ -13,10 +11,9 @@ export async function waitForTheWebAudioPanelToLoad() {
   await waitFor('div[aria-label="WebAudio panel"]');
 }
 
-export async function navigateToSiteWithAudioContexts(target: puppeteer.Page) {
+export async function navigateToSiteWithAudioContexts() {
   // Navigate to a website with an audio context
-  const targetUrl = `${resourcesPath}/webaudio/default.html`;
-  await target.goto(targetUrl);
+  await goToResource('webaudio/default.html');
 }
 
 export async function waitForWebAudioContent() {

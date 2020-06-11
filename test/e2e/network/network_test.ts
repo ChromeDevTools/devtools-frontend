@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {getBrowserAndPages} from '../../shared/helper.js';
+import {goTo} from '../../shared/helper.js';
 import {getAllRequestNames, getSelectedRequestName, navigateToNetworkTab, selectRequestByName, togglePersistLog, waitForSelectedRequestChange, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
 
 const SIMPLE_PAGE_REQUEST_NUMBER = 10;
@@ -17,8 +17,7 @@ describe('The Network Tab', async function() {
   this.timeout(5000);
 
   it('displays requests', async () => {
-    const {target} = getBrowserAndPages();
-    await navigateToNetworkTab(target, SIMPLE_PAGE_URL);
+    await navigateToNetworkTab(SIMPLE_PAGE_URL);
 
     // Wait for all the requests to be displayed + 1 to account for the page itself.
     await waitForSomeRequestsToAppear(SIMPLE_PAGE_REQUEST_NUMBER + 1);
@@ -33,8 +32,7 @@ describe('The Network Tab', async function() {
   });
 
   it('can select requests', async () => {
-    const {target} = getBrowserAndPages();
-    await navigateToNetworkTab(target, SIMPLE_PAGE_URL);
+    await navigateToNetworkTab(SIMPLE_PAGE_URL);
 
     let selected = await getSelectedRequestName();
     assert.isUndefined(selected, 'No request should be selected by default');
@@ -54,8 +52,7 @@ describe('The Network Tab', async function() {
   });
 
   it('can persist requests', async () => {
-    const {target} = getBrowserAndPages();
-    await navigateToNetworkTab(target, SIMPLE_PAGE_URL);
+    await navigateToNetworkTab(SIMPLE_PAGE_URL);
 
     // Wait for all the requests to be displayed + 1 to account for the page itself, and get their names.
     await waitForSomeRequestsToAppear(SIMPLE_PAGE_REQUEST_NUMBER + 1);
@@ -64,7 +61,7 @@ describe('The Network Tab', async function() {
     await togglePersistLog();
 
     // Navigate to a new page, and wait for the same requests to still be there.
-    await target.goto('about:blank');
+    await goTo('about:blank');
     await waitForSomeRequestsToAppear(SIMPLE_PAGE_REQUEST_NUMBER + 1);
     const secondPageRequestNames = await getAllRequestNames();
 

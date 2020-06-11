@@ -271,6 +271,15 @@ export const logFailure = () => {
 
 export const resourcesPath = 'http://localhost:8090/test/e2e/resources';
 
+export const goTo = async (url: string) => {
+  const {target} = getBrowserAndPages();
+  await target.goto(url);
+};
+
+export const goToResource = async (path: string) => {
+  await goTo(`${resourcesPath}/${path}`);
+};
+
 export const enableExperiment = async (experiment: string) => {
   const {frontend} = getBrowserAndPages();
   await frontend.evaluate(experiment => {

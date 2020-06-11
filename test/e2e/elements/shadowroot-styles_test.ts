@@ -5,14 +5,14 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {$$, getBrowserAndPages, resourcesPath, waitFor, waitForFunction} from '../../shared/helper.js';
+import {$$, getBrowserAndPages, goToResource, waitFor, waitForFunction} from '../../shared/helper.js';
 import {assertContentOfSelectedElementsNode, waitForChildrenOfSelectedElementNode} from '../helpers/elements-helpers.js';
 
 describe('The Elements Tab', async () => {
   it('can show styles in shadow roots', async () => {
-    const {target, frontend} = getBrowserAndPages();
+    const {frontend} = getBrowserAndPages();
 
-    await target.goto(`${resourcesPath}/elements/shadow-roots.html`);
+    await goToResource('elements/shadow-roots.html');
 
     // Wait for the file to be loaded and selectors to be shown
     await waitFor('.styles-selector');

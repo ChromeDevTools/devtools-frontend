@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {click, getBrowserAndPages, resourcesPath, waitFor} from '../../shared/helper.js';
+import {click, goToResource, waitFor} from '../../shared/helper.js';
 import {createSelectorsForWorkerFile, expandFileTree, NestedFileSelector} from '../helpers/sources-helpers.js';
 
 const WORKER1_SELECTORS = createSelectorsForFile('worker1.js');
@@ -26,10 +26,8 @@ describe('The Sources Tab', async function() {
   this.timeout(10000);
 
   it('can show multiple dedicated workers with different scripts', async () => {
-    const {target} = getBrowserAndPages();
-
     // Have the target load the page.
-    await target.goto(`${resourcesPath}/sources/different-workers.html`);
+    await goToResource('sources/different-workers.html');
 
     // Locate the button for switching to the sources tab.
     await click('#tab-sources');

@@ -4,18 +4,15 @@
 
 import {describe, it} from 'mocha';
 
-import {getBrowserAndPages} from '../../shared/helper.js';
 import {createAProfile, navigateToProfilerTab} from '../helpers/profiler-helpers.js';
 
 describe('The JavaScript Profiler Panel', async () => {
   it('Loads content', async () => {
-    const {target} = getBrowserAndPages();
-    await navigateToProfilerTab(target);
+    await navigateToProfilerTab();
   });
 
   it('Can make one profile and display its information', async () => {
-    const {target} = getBrowserAndPages();
-    await navigateToProfilerTab(target);
+    await navigateToProfilerTab();
     await createAProfile();
   });
 });

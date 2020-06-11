@@ -5,14 +5,14 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {getBrowserAndPages, resourcesPath} from '../../shared/helper.js';
+import {getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {focusElementsTree, getAllPropertiesFromComputedPane, getContentOfComputedPane, navigateToSidePane, waitForComputedPaneChange, waitForElementsComputedSection} from '../helpers/elements-helpers.js';
 
 describe('The Computed pane', async () => {
   it('can display the CSS properties of the selected element', async () => {
-    const {target, frontend} = getBrowserAndPages();
+    const {frontend} = getBrowserAndPages();
 
-    await target.goto(`${resourcesPath}/elements/simple-styled-page.html`);
+    await goToResource('elements/simple-styled-page.html');
     await navigateToSidePane('Computed');
     await waitForElementsComputedSection();
 

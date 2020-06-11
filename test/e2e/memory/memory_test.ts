@@ -4,18 +4,15 @@
 
 import {describe, it} from 'mocha';
 
-import {getBrowserAndPages} from '../../shared/helper.js';
 import {navigateToMemoryTab, takeHeapSnapshot, waitForHeapSnapshotData} from '../helpers/memory-helpers.js';
 
 describe('The Memory Panel', async () => {
   it('Loads content', async () => {
-    const {target} = getBrowserAndPages();
-    await navigateToMemoryTab(target);
+    await navigateToMemoryTab();
   });
   // The row count assertion is failing in CQ
   it.skip('[crbug.com/1086641]: Can take several heap snapshots ', async () => {
-    const {target} = getBrowserAndPages();
-    await navigateToMemoryTab(target);
+    await navigateToMemoryTab();
     await takeHeapSnapshot();
     await waitForHeapSnapshotData();
     await takeHeapSnapshot();

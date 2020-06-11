@@ -5,13 +5,12 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {getBrowserAndPages, resourcesPath} from '../../shared/helper.js';
+import {goToResource} from '../../shared/helper.js';
 import {isGenerateReportButtonDisabled, navigateToLighthouseTab} from '../helpers/lighthouse-helpers.js';
 
 describe('The Lighthouse Tab', async () => {
   it('shows a button to generate a new report', async () => {
-    const {target} = getBrowserAndPages();
-    await navigateToLighthouseTab(target, 'empty');
+    await navigateToLighthouseTab('empty');
 
     const disabled = await isGenerateReportButtonDisabled();
     assert.isFalse(disabled, 'The Generate Report button should not be disabled');
@@ -19,10 +18,9 @@ describe('The Lighthouse Tab', async () => {
 
   // Broken on non-debug runs
   it.skip('[crbug.com/1057948] shows generate report button even when navigating to an unreachable page', async () => {
-    const {target} = getBrowserAndPages();
-    await navigateToLighthouseTab(target, 'empty');
+    await navigateToLighthouseTab('empty');
 
-    await target.goto(`${resourcesPath}/network/unreachable.rawresponse`);
+    await goToResource('network/unreachable.rawresponse');
     const disabled = await isGenerateReportButtonDisabled();
     assert.isTrue(disabled, 'The Generate Report button should be disabled');
   });

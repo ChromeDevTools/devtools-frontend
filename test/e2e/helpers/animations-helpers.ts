@@ -2,9 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as puppeteer from 'puppeteer';
-
-import {click, resourcesPath, waitFor} from '../../shared/helper.js';
+import {click, goToResource, waitFor} from '../../shared/helper.js';
 import {openPanelViaMoreTools} from './settings-helpers.js';
 
 export async function waitForAnimationsPanelToLoad() {
@@ -14,10 +12,9 @@ export async function waitForAnimationsPanelToLoad() {
   await waitFor('div.animations-timeline');
 }
 
-export async function navigateToSiteWithAnimation(target: puppeteer.Page) {
+export async function navigateToSiteWithAnimation() {
   // Navigate to a website with an animation
-  const targetUrl = `${resourcesPath}/animations/default.html`;
-  await target.goto(targetUrl);
+  await goToResource('animations/default.html');
 }
 
 export async function waitForAnimationContent() {

@@ -19,7 +19,7 @@ describe('The Sources Tab', async () => {
   it('can show JavaScript files after dynamic loading', async () => {
     const {target, frontend} = getBrowserAndPages();
 
-    await openFileInSourcesPanel(target, 'dynamic-loading-javascript.html');
+    await openFileInSourcesPanel('dynamic-loading-javascript.html');
     await listenForSourceFilesAdded(frontend);
 
     // Load the JavaScript files by executing the function in `dynamic-loading.html`
@@ -37,7 +37,7 @@ describe('The Sources Tab', async () => {
   it('can show CSS files after dynamic loading', async () => {
     const {target, frontend} = getBrowserAndPages();
 
-    await openFileInSourcesPanel(target, 'dynamic-loading-css.html');
+    await openFileInSourcesPanel('dynamic-loading-css.html');
     await listenForSourceFilesAdded(frontend);
 
     // Load the CSS file by executing the function in `dynamic-loading-css.html`

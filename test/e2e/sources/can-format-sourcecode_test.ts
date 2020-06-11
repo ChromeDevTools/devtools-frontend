@@ -32,9 +32,9 @@ describe('The Sources Tab', async function() {
   this.timeout(10000);
 
   it('can format a JavaScript file', async () => {
-    const {target, frontend} = getBrowserAndPages();
+    const {frontend} = getBrowserAndPages();
 
-    await openSourceCodeEditorForFile(target, 'minified-sourcecode.js', 'minified-sourcecode.html');
+    await openSourceCodeEditorForFile('minified-sourcecode.js', 'minified-sourcecode.html');
     await prettyPrintMinifiedFile(frontend);
 
     const expectedLines = [
@@ -66,9 +66,9 @@ describe('The Sources Tab', async function() {
   });
 
   it('causes the correct line number to show up in the console panel', async () => {
-    const {target, frontend} = getBrowserAndPages();
+    const {frontend} = getBrowserAndPages();
 
-    await openSourceCodeEditorForFile(target, 'minified-sourcecode.js', 'minified-sourcecode.html');
+    await openSourceCodeEditorForFile('minified-sourcecode.js', 'minified-sourcecode.html');
     await prettyPrintMinifiedFile(frontend);
 
     await click('#tab-console');
@@ -98,7 +98,7 @@ describe('The Sources Tab', async function() {
   it('can add breakpoint for formatted file', async () => {
     const {target, frontend} = getBrowserAndPages();
 
-    await openSourceCodeEditorForFile(target, 'minified-sourcecode.js', 'minified-sourcecode.html');
+    await openSourceCodeEditorForFile('minified-sourcecode.js', 'minified-sourcecode.html');
     await prettyPrintMinifiedFile(frontend);
     await addBreakpointForLine(frontend, 10);
 
@@ -109,7 +109,7 @@ describe('The Sources Tab', async function() {
   it('can add breakpoint for unformatted file', async () => {
     const {target, frontend} = getBrowserAndPages();
 
-    await openSourceCodeEditorForFile(target, 'minified-sourcecode.js', 'minified-sourcecode.html');
+    await openSourceCodeEditorForFile('minified-sourcecode.js', 'minified-sourcecode.html');
     await addBreakpointForLine(frontend, 5);
 
     const scriptLocation = await retrieveTopCallFrameScriptLocation('notFormattedFunction();', target);
@@ -119,7 +119,7 @@ describe('The Sources Tab', async function() {
   it('can add breakpoint on minified source and then break correctly on formatted source', async () => {
     const {target, frontend} = getBrowserAndPages();
 
-    await openSourceCodeEditorForFile(target, 'minified-sourcecode.js', 'minified-sourcecode.html');
+    await openSourceCodeEditorForFile('minified-sourcecode.js', 'minified-sourcecode.html');
     await addBreakpointForLine(frontend, 5);
     await prettyPrintMinifiedFile(frontend);
 
@@ -131,7 +131,7 @@ describe('The Sources Tab', async function() {
   it.skip('[crbug.com/1003497] can add breakpoint for inline scripts in HTML file', async () => {
     const {target, frontend} = getBrowserAndPages();
 
-    await openSourceCodeEditorForFile(target, 'inline-script.html', 'inline-script.html');
+    await openSourceCodeEditorForFile('inline-script.html', 'inline-script.html');
     await addBreakpointForLine(frontend, 16);
 
     const scriptLocation = await retrieveTopCallFrameScriptLocation('functionInInlineScriptWithSourceURL();', target);

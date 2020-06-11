@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {$, click, enableExperiment, getBrowserAndPages, resourcesPath, waitFor} from '../../shared/helper.js';
+import {$, click, enableExperiment, getBrowserAndPages, goToResource, waitFor} from '../../shared/helper.js';
 import {addBreakpointForLine, listenForSourceFilesAdded, openFileInEditor, openFileInSourcesPanel, openSourcesPanel, PAUSE_ON_EXCEPTION_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
 
 // TODO: Remove once Chromium updates its version of Node.js to 12+.
@@ -85,7 +85,7 @@ describe('The Debugger Language Plugins', async () => {
       globalThis.installMockPlugin(new SingleFilePlugin());
     });
 
-    await openFileInSourcesPanel(target, 'wasm/global_variable.html');
+    await openFileInSourcesPanel('wasm/global_variable.html');
     await listenForSourceFilesAdded(frontend);
     await target.evaluate('go();');
     await waitForAdditionalSourceFiles(frontend);
@@ -99,7 +99,7 @@ describe('The Debugger Language Plugins', async () => {
   // Resolve a single code offset to a source line to test the correctness of offset computations.
   // Disabled to the Chromium binary -> DevTools roller working again.
   it('use correct code offsets to interpret raw locations', async () => {
-    const {target, frontend} = getBrowserAndPages();
+    const {frontend} = getBrowserAndPages();
     await frontend.evaluate(() => {
       class LocationMappingPlugin extends globalThis.MockLanguagePluginBase {
         async addRawModule(
@@ -120,7 +120,7 @@ describe('The Debugger Language Plugins', async () => {
 
     await openSourcesPanel();
     await click(PAUSE_ON_EXCEPTION_BUTTON);
-    await target.goto(`${resourcesPath}/sources/wasm/unreachable.html`);
+    await goToResource('sources/wasm/unreachable.html');
     await waitFor('.paused-status');
 
     const scriptLocation =
@@ -166,9 +166,9 @@ describe('The Debugger Language Plugins', async () => {
       globalThis.installMockPlugin(new LocationMappingPlugin());
     });
 
-    await openFileInSourcesPanel(target, 'wasm/global_variable.html');
+    await openFileInSourcesPanel('wasm/global_variable.html');
     await target.evaluate('go();');
-    await openFileInEditor(target, 'global_variable.ll');
+    await openFileInEditor('global_variable.ll');
     await addBreakpointForLine(frontend, 9);
 
     const scriptLocation = await retrieveTopCallFrameScriptLocation('main();', target);

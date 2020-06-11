@@ -4,7 +4,7 @@
 
 import * as puppeteer from 'puppeteer';
 
-import {$, click, getBrowserAndPages, resourcesPath, typeText, waitFor} from '../../shared/helper.js';
+import {$, click, getBrowserAndPages, goToResource, typeText, waitFor} from '../../shared/helper.js';
 
 export const PAUSE_ON_EXCEPTION_BUTTON = '[aria-label="Pause on exceptions"]';
 export const PAUSE_BUTTON = '[aria-label="Pause script execution"]';
@@ -23,8 +23,8 @@ export async function openSourcesPanel() {
   await waitFor('.navigator-file-tree-item');
 }
 
-export async function openFileInSourcesPanel(target: puppeteer.Page, testInput: string) {
-  await target.goto(`${resourcesPath}/sources/${testInput}`);
+export async function openFileInSourcesPanel(testInput: string) {
+  await goToResource(`sources/${testInput}`);
 
   await openSourcesPanel();
 }
@@ -48,7 +48,7 @@ export async function createNewSnippet(snippetName: string) {
   await frontend.keyboard.press('Enter');
 }
 
-export async function openFileInEditor(target: puppeteer.Page, sourceFile: string) {
+export async function openFileInEditor(sourceFile: string) {
   // Open a particular file in the editor
   await doubleClickSourceTreeItem(`[aria-label="${sourceFile}, file"]`);
 
@@ -56,9 +56,9 @@ export async function openFileInEditor(target: puppeteer.Page, sourceFile: strin
   await waitFor(`[aria-label="Pretty print ${sourceFile}"]`);
 }
 
-export async function openSourceCodeEditorForFile(target: puppeteer.Page, sourceFile: string, testInput: string) {
-  await openFileInSourcesPanel(target, testInput);
-  await openFileInEditor(target, sourceFile);
+export async function openSourceCodeEditorForFile(sourceFile: string, testInput: string) {
+  await openFileInSourcesPanel(testInput);
+  await openFileInEditor(sourceFile);
 }
 
 export async function getOpenSources() {

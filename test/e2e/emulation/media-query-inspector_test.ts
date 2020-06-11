@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {$$, getBrowserAndPages, resourcesPath, waitFor} from '../../shared/helper.js';
+import {$$, goToResource, waitFor} from '../../shared/helper.js';
 import {openDeviceToolbar, reloadDockableFrontEnd, showMediaQueryInspector} from '../helpers/emulation-helpers.js';
 
 const MEDIA_INSPECTOR_MARKER_SELECTOR = '.media-inspector-marker';
@@ -14,8 +14,7 @@ describe('Media query inspector', async () => {
   beforeEach(async function() {
     await reloadDockableFrontEnd();
 
-    const {target} = getBrowserAndPages();
-    await target.goto(`${resourcesPath}/emulation/media-query-inspector.html`);
+    await goToResource('emulation/media-query-inspector.html');
     await waitFor('.tabbed-pane-left-toolbar');
     await openDeviceToolbar();
     await showMediaQueryInspector();

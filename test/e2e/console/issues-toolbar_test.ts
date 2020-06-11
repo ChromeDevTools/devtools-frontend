@@ -5,14 +5,12 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {$, click, getBrowserAndPages, resourcesPath, waitFor} from '../../shared/helper.js';
+import {$, click, goToResource, waitFor} from '../../shared/helper.js';
 
 describe('The Console Tab', async () => {
   it('shows infobar with button linking to issues tab', async () => {
-    const {target} = getBrowserAndPages();
-
     // navigate to page which causes a SameSiteCookieIssue
-    await target.goto(`${resourcesPath}/console/cookie-issue.html`);
+    await goToResource('console/cookie-issue.html');
     await click('#tab-console');
     await waitFor('.console-view');
 

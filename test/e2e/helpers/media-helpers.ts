@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {$, getBrowserAndPages, resourcesPath, waitFor} from '../../shared/helper.js';
+import {$, getBrowserAndPages, goToResource, waitFor} from '../../shared/helper.js';
 
 export async function playMediaFile(media: string) {
   const {target} = getBrowserAndPages();
-  await target.goto(`${resourcesPath}/media/${media}`);
+  await goToResource(`media/${media}`);
 
   // Need to click play manually - autoplay policy prevents it otherwise.
   return new Promise(async resolve => {

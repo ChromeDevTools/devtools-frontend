@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {debuggerStatement, getBrowserAndPages, resourcesPath} from '../../shared/helper.js';
+import {debuggerStatement, getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {assertContentOfSelectedElementsNode, assertGutterDecorationForDomNodeExists, forcePseudoState, getComputedStylesForDomNode, removePseudoState, waitForDomNodeToBeHidden, waitForDomNodeToBeVisible, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
 
 const TARGET_SHOWN_ON_HOVER_SELECTOR = '.show-on-hover';
@@ -13,9 +13,9 @@ const TARGET_SHOWN_ON_FOCUS_SELECTOR = '.show-on-focus';
 
 describe('The Elements tab', async () => {
   it('can force :hover state for selected DOM node', async () => {
-    const {target, frontend} = getBrowserAndPages();
+    const {frontend} = getBrowserAndPages();
 
-    await target.goto(`${resourcesPath}/elements/hover.html`);
+    await goToResource('elements/hover.html');
 
     await waitForElementsStyleSection();
 
@@ -35,9 +35,9 @@ describe('The Elements tab', async () => {
   });
 
   it('can force :focus state for selected DOM node', async () => {
-    const {target, frontend} = getBrowserAndPages();
+    const {frontend} = getBrowserAndPages();
 
-    await target.goto(`${resourcesPath}/elements/focus.html`);
+    await goToResource('elements/focus.html');
 
     await waitForElementsStyleSection();
 
@@ -60,9 +60,9 @@ describe('The Elements tab', async () => {
   });
 
   it('can remove :focus state', async () => {
-    const {target, frontend} = getBrowserAndPages();
+    const {frontend} = getBrowserAndPages();
 
-    await target.goto(`${resourcesPath}/elements/focus.html`);
+    await goToResource('elements/focus.html');
 
     await waitForElementsStyleSection();
 

@@ -4,10 +4,10 @@
 
 import * as puppeteer from 'puppeteer';
 
-import {$$, click, resourcesPath, waitFor} from '../../shared/helper.js';
+import {$$, click, goToResource, waitFor} from '../../shared/helper.js';
 
 export async function navigateToApplicationTab(target: puppeteer.Page, testName: string) {
-  await target.goto(`${resourcesPath}/application/${testName}.html`);
+  await goToResource(`application/${testName}.html`);
   await click('#tab-resources');
   // Make sure the application navigation list is shown
   await waitFor('.storage-group-list-item');

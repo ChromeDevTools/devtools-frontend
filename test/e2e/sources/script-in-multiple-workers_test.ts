@@ -6,7 +6,7 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 import * as puppeteer from 'puppeteer';
 
-import {click, getBrowserAndPages, resourcesPath, step, waitFor} from '../../shared/helper.js';
+import {click, getBrowserAndPages, goToResource, step, waitFor} from '../../shared/helper.js';
 import {addBreakpointForLine, createSelectorsForWorkerFile, getBreakpointDecorators, getExecutionLine, getOpenSources, openNestedWorkerFile, PAUSE_BUTTON, RESUME_BUTTON} from '../helpers/sources-helpers.js';
 
 async function validateSourceTabs() {
@@ -22,8 +22,7 @@ describe('Multi-Workers', async function() {
 
   [false, true].forEach(sourceMaps => {
     const withOrWithout = sourceMaps ? 'with source maps' : 'without source maps';
-    const targetPage = sourceMaps ? `${resourcesPath}/sources/multi-workers-sourcemap.html` :
-                                    `${resourcesPath}/sources/multi-workers.html`;
+    const targetPage = sourceMaps ? 'sources/multi-workers-sourcemap.html' : 'sources/multi-workers.html';
     const scriptFile = sourceMaps ? 'multi-workers.min.js' : 'multi-workers.js';
     function workerFileSelectors(workerIndex: number) {
       return createSelectorsForWorkerFile(scriptFile, 'test/e2e/resources/sources', 'multi-workers.js', workerIndex);
@@ -41,10 +40,8 @@ describe('Multi-Workers', async function() {
     }
 
     it(`loads scripts exactly once on reload ${withOrWithout}`, async () => {
-      const {target} = getBrowserAndPages();
-
       // Have the target load the page.
-      await target.goto(targetPage);
+      await goToResource(targetPage);
 
       await click('#tab-sources');
       await validateNavigationTree();
@@ -54,7 +51,7 @@ describe('Multi-Workers', async function() {
       await validateSourceTabs();
 
       // Reload page
-      await target.goto(targetPage);
+      await goToResource(targetPage);
 
       // Check workers again
       await validateNavigationTree();
@@ -67,7 +64,7 @@ describe('Multi-Workers', async function() {
       const {target} = getBrowserAndPages();
 
       // Have the target load the page.
-      await target.goto(targetPage);
+      await goToResource(targetPage);
 
       await click('#tab-sources');
 
@@ -100,9 +97,9 @@ describe('Multi-Workers', async function() {
 
     describe(`copies breakpoints between workers ${withOrWithout}`, () => {
       beforeEach(async () => {
-        const {target, frontend} = getBrowserAndPages();
+        const {frontend} = getBrowserAndPages();
         // Have the target load the page.
-        await target.goto(targetPage);
+        await goToResource(targetPage);
 
         await click('#tab-sources');
         // Wait for all workers to load
@@ -155,10 +152,10 @@ describe('Multi-Workers', async function() {
 
     describe(`hits breakpoints added to workers ${withOrWithout}`, () => {
       beforeEach(async () => {
-        const {target, frontend} = getBrowserAndPages();
+        const {frontend} = getBrowserAndPages();
 
         // Have the target load the page.
-        await target.goto(targetPage);
+        await goToResource(targetPage);
 
         await step('Open sources panel', async () => {
           await click('#tab-sources');

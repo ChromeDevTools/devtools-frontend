@@ -2,17 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as puppeteer from 'puppeteer';
-
-import {click, resourcesPath, waitFor, waitForNone} from '../../shared/helper.js';
+import {click, goToResource, waitFor, waitForNone} from '../../shared/helper.js';
 import {openPanelViaMoreTools} from './settings-helpers.js';
 
 const START_PROFILING_BUTTON = 'button[aria-label="Start CPU profiling"]';
 const STOP_PROFILING_BUTTON = 'button[aria-label="Stop CPU profiling"]';
 
-export async function navigateToProfilerTab(target: puppeteer.Page) {
-  const targetUrl = `${resourcesPath}/profiler/default.html`;
-  await target.goto(targetUrl);
+export async function navigateToProfilerTab() {
+  await goToResource('profiler/default.html');
   await openPanelViaMoreTools('JavaScript Profiler');
   await waitFor('[aria-label="JavaScript Profiler panel"]');
   await waitFor('.profile-launcher-view');

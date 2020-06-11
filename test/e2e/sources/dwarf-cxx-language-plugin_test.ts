@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {$, click, enableExperiment, getBrowserAndPages, resourcesPath, waitFor, waitForFunction} from '../../shared/helper.js';
+import {$, click, enableExperiment, getBrowserAndPages, goToResource, waitFor, waitForFunction} from '../../shared/helper.js';
 import {addBreakpointForLine, listenForSourceFilesAdded, openFileInEditor, openFileInSourcesPanel, openSourcesPanel, PAUSE_ON_EXCEPTION_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
 
 describe('The CXX DWARF Language Plugin', async () => {
@@ -23,7 +23,7 @@ describe('The CXX DWARF Language Plugin', async () => {
   it('can show C filenames after loading the module', async () => {
     const {target, frontend} = getBrowserAndPages();
 
-    await openFileInSourcesPanel(target, 'wasm/global_variable_with_dwarf.html');
+    await openFileInSourcesPanel('wasm/global_variable_with_dwarf.html');
     await listenForSourceFilesAdded(frontend);
     await target.evaluate('go();');
     await waitForAdditionalSourceFiles(frontend, 2);
@@ -40,11 +40,9 @@ describe('The CXX DWARF Language Plugin', async () => {
 
   // Resolve a single code offset to a source line to test the correctness of offset computations.
   it('use correct code offsets to interpret raw locations', async () => {
-    const {target} = getBrowserAndPages();
-
     await openSourcesPanel();
     await click(PAUSE_ON_EXCEPTION_BUTTON);
-    await target.goto(`${resourcesPath}/sources/wasm/unreachable_with_dwarf.html`);
+    await goToResource('sources/wasm/unreachable_with_dwarf.html');
     await waitFor('.paused-status');
 
     const scriptLocation = await waitForFunction(async () => {
@@ -62,9 +60,9 @@ describe('The CXX DWARF Language Plugin', async () => {
   it('resolves locations for breakpoints correctly', async () => {
     const {target, frontend} = getBrowserAndPages();
 
-    await openFileInSourcesPanel(target, 'wasm/global_variable_with_dwarf.html');
+    await openFileInSourcesPanel('wasm/global_variable_with_dwarf.html');
     await target.evaluate('go();');
-    await openFileInEditor(target, 'global_variable_with_dwarf.c');
+    await openFileInEditor('global_variable_with_dwarf.c');
     await addBreakpointForLine(frontend, 4);
 
     const scriptLocation = await retrieveTopCallFrameScriptLocation('main();', target);

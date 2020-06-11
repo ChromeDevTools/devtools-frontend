@@ -6,7 +6,7 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 import * as puppeteer from 'puppeteer';
 
-import {click, getBrowserAndPages, resourcesPath, waitFor} from '../../shared/helper.js';
+import {click, getBrowserAndPages, goToResource, waitFor} from '../../shared/helper.js';
 import {assertContentOfSelectedElementsNode, getAriaLabelSelectorFromPropertiesSelector, getCSSPropertySwatchStyle, getDisplayedCSSPropertyNames, getDisplayedStyleRules, waitForElementsStyleSection, waitForStyleRule} from '../helpers/elements-helpers.js';
 
 const PROPERTIES_TO_DELETE_SELECTOR = '#properties-to-delete';
@@ -24,9 +24,9 @@ const deletePropertyByBackspace = async (selector: string, root?: puppeteer.JSHa
 
 describe('The Styles pane', async () => {
   it('can display the CSS properties of the selected element', async () => {
-    const {target, frontend} = getBrowserAndPages();
+    const {frontend} = getBrowserAndPages();
 
-    await target.goto(`${resourcesPath}/elements/simple-styled-page.html`);
+    await goToResource('elements/simple-styled-page.html');
     await waitForElementsStyleSection();
 
     // Select the H1 element by pressing down, since <body> is the default selected element.
@@ -51,9 +51,9 @@ describe('The Styles pane', async () => {
   });
 
   it('can display CSS variables properly', async () => {
-    const {target, frontend} = getBrowserAndPages();
+    const {frontend} = getBrowserAndPages();
 
-    await target.goto(`${resourcesPath}/elements/css-variables.html`);
+    await goToResource('elements/css-variables.html');
     await waitForElementsStyleSection();
 
     // Sanity check to make sure we have the correct node selected after opening a file
@@ -69,9 +69,9 @@ describe('The Styles pane', async () => {
   });
 
   it('can remove a CSS property when its name or value is deleted', async () => {
-    const {target, frontend} = getBrowserAndPages();
+    const {frontend} = getBrowserAndPages();
 
-    await target.goto(`${resourcesPath}/elements/style-pane-properties.html`);
+    await goToResource('elements/style-pane-properties.html');
     await waitForElementsStyleSection();
 
     // Sanity check to make sure we have the correct node selected after opening a file

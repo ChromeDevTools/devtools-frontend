@@ -2,9 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as puppeteer from 'puppeteer';
-
-import {click, resourcesPath, waitFor, waitForNone} from '../../shared/helper.js';
+import {click, goToResource, waitFor, waitForNone} from '../../shared/helper.js';
 
 import {openPanelViaMoreTools} from './settings-helpers.js';
 
@@ -18,9 +16,8 @@ export async function waitForTheCoveragePanelToLoad() {
   await waitFor('.coverage-results .landing-page');
 }
 
-export async function navigateToCoverageTestSite(target: puppeteer.Page) {
-  const targetUrl = `${resourcesPath}/coverage/default.html`;
-  await target.goto(targetUrl);
+export async function navigateToCoverageTestSite() {
+  await goToResource('coverage/default.html');
 }
 
 export async function startInstrumentingCoverage() {

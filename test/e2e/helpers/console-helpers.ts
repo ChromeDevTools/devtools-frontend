@@ -4,7 +4,7 @@
 
 import * as puppeteer from 'puppeteer';
 
-import {click, debuggerStatement, getBrowserAndPages, resourcesPath, waitFor} from '../../shared/helper.js';
+import {click, debuggerStatement, getBrowserAndPages, goToResource, waitFor} from '../../shared/helper.js';
 
 export const CONSOLE_TAB_SELECTOR = '#tab-console';
 export const CONSOLE_MESSAGES_SELECTOR = '.console-group-messages';
@@ -16,10 +16,8 @@ export const CONSOLE_VIEW_SELECTOR = '.console-view';
 export const STACK_PREVIEW_CONTAINER = '.stack-preview-container';
 
 export async function getConsoleMessages(testName: string, callback?: (page: puppeteer.Page) => Promise<void>) {
-  const {target} = getBrowserAndPages();
-
   // Have the target load the page.
-  await target.goto(`${resourcesPath}/console/${testName}.html`);
+  await goToResource(`console/${testName}.html`);
 
   return getCurrentConsoleMessages(callback);
 }

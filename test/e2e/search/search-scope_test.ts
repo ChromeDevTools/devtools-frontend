@@ -4,19 +4,19 @@
 
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
-import {$, $$, getBrowserAndPages, resourcesPath, waitFor} from '../../shared/helper.js';
+import {$, $$, getBrowserAndPages, goToResource, waitFor} from '../../shared/helper.js';
 import {triggerFindDialog} from '../helpers/search-helpers.js';
 
 describe('The Search Panel', async () => {
   it('provides results across scopes', async () => {
-    const {target, frontend} = getBrowserAndPages();
+    const {frontend} = getBrowserAndPages();
     const SEARCH_QUERY = '[aria-label="Search Query"]';
     const SEARCH_RESULTS = '.search-results';
     const SEARCH_FILE_RESULT = '.search-result';
     const SEARCH_CHILDREN_RESULT = '.search-match-link';
 
     // Load the search page, which has results in the HTML, JS, and CSS.
-    await target.goto(`${resourcesPath}/search/search.html`);
+    await goToResource('search/search.html');
 
     // Launch the search panel.
     await triggerFindDialog(frontend);

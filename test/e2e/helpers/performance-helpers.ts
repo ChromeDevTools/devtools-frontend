@@ -2,15 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {$, click, getBrowserAndPages, resourcesPath, waitFor} from '../../shared/helper.js';
+import {$, click, goToResource, waitFor} from '../../shared/helper.js';
 
 const RECORD_BUTTON_SELECTOR = '[aria-label="Record"]';
 const STOP_BUTTON_SELECTOR = '[aria-label="Stop"]';
 
 export async function navigateToPerformanceTab(testName?: string) {
   if (testName) {
-    const {target} = getBrowserAndPages();
-    await target.goto(`${resourcesPath}/performance/${testName}.html`);
+    await goToResource(`performance/${testName}.html`);
   }
 
   // Click on the tab.

@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {$, click, getBrowserAndPages, resourcesPath, waitFor} from '../../shared/helper.js';
+import {$, click, getBrowserAndPages, goToResource, waitFor} from '../../shared/helper.js';
 import {doubleClickSourceTreeItem, getDataGridData, navigateToApplicationTab} from '../helpers/application-helpers.js';
 
 const COOKIES_SELECTOR = '[aria-label="Cookies"]';
@@ -22,7 +22,7 @@ describe('The Application Tab', async () => {
     // This sets a new cookie foo=bar
     await navigateToApplicationTab(target, 'cookies');
 
-    await target.goto(`${resourcesPath}/network/unreachable.rawresponse`);
+    await goToResource('network/unreachable.rawresponse');
 
     await doubleClickSourceTreeItem(COOKIES_SELECTOR);
     await doubleClickSourceTreeItem(DOMAIN_SELECTOR);

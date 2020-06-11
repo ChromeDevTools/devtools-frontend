@@ -10,9 +10,9 @@ import {addBreakpointForLine, openFileInEditor, openFileInSourcesPanel, RESUME_B
 
 describe('Source Tab', async () => {
   beforeEach(async function() {
-    const {target, frontend} = getBrowserAndPages();
-    await openFileInSourcesPanel(target, 'wasm/scopes.html');
-    await openFileInEditor(target, 'scopes.wasm');
+    const {frontend} = getBrowserAndPages();
+    await openFileInSourcesPanel('wasm/scopes.html');
+    await openFileInEditor('scopes.wasm');
     await addBreakpointForLine(frontend, 16);
   });
 

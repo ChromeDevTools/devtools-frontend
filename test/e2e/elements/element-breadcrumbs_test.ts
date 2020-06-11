@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {click, getBrowserAndPages, resourcesPath, waitForElementWithTextContent} from '../../shared/helper.js';
+import {click, goToResource, waitForElementWithTextContent} from '../../shared/helper.js';
 import {assertContentOfSelectedElementsNode, assertSelectedElementsNodeTextIncludes, expandSelectedNodeRecursively, getBreadcrumbsTextContent, getSelectedBreadcrumbTextContent, waitForElementsStyleSection, waitForSelectedTreeElementSelectorWithTextcontent} from '../helpers/elements-helpers.js';
 
 const EXPECTED_TEXT_CONTENT = `<div class=\u200B"div2">\u200B
@@ -14,8 +14,7 @@ const EXPECTED_TEXT_CONTENT = `<div class=\u200B"div2">\u200B
 
 describe('Element breadcrumbs', async () => {
   beforeEach(async function() {
-    const {target} = getBrowserAndPages();
-    await target.goto(`${resourcesPath}/elements/element-breadcrumbs.html`);
+    await goToResource('elements/element-breadcrumbs.html');
     await waitForElementsStyleSection();
 
     // Sanity check to make sure we have the correct node selected after opening a file

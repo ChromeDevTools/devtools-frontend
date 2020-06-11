@@ -2,16 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {$, $$, getBrowserAndPages, resourcesPath, waitFor, waitForFunction} from '../../shared/helper.js';
+import {$, $$, getBrowserAndPages, goToResource, waitFor, waitForFunction} from '../../shared/helper.js';
 
 import {openCommandMenu} from '../helpers/quick_open-helpers.js';
 
 const PANEL_ROOT_SELECTOR = 'div[aria-label="Changes panel"]';
 
 export async function openChangesPanelAndNavigateTo(testName: string) {
-  const {target, frontend} = getBrowserAndPages();
+  const {frontend} = getBrowserAndPages();
 
-  await target.goto(`${resourcesPath}/changes/${testName}.html`);
+  await goToResource(`changes/${testName}.html`);
 
   await openCommandMenu();
   await frontend.keyboard.type('changes');

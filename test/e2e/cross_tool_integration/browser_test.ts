@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {closeAllCloseableTabs, getBrowserAndPages, resourcesPath} from '../../shared/helper.js';
+import {closeAllCloseableTabs, getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {getCurrentConsoleMessages} from '../helpers/console-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
@@ -13,8 +13,7 @@ describe('Browser', async () => {
   it('can reload a website after all closeable tools are closed', async () => {
     // Navigate to website
     const {target} = getBrowserAndPages();
-    const targetUrl = `${resourcesPath}/cross_tool/default.html`;
-    await target.goto(targetUrl);
+    await goToResource('cross_tool/default.html');
 
     // Open a few closeable panels
     await openPanelViaMoreTools('Animations');
@@ -32,10 +31,9 @@ describe('Browser', async () => {
 
   it('can navigate to a new website after all closeable tools are closed', async () => {
     // Navigate to website
-    const {target} = getBrowserAndPages();
-    const targetUrl = `${resourcesPath}/cross_tool/default.html`;
-    const secondTargetUrl = `${resourcesPath}/cross_tool/site_with_errors.html`;
-    await target.goto(targetUrl);
+    const targetUrl = 'cross_tool/default.html';
+    const secondTargetUrl = 'cross_tool/site_with_errors.html';
+    await goToResource(targetUrl);
 
     // Open a few closeable panels
     await openPanelViaMoreTools('Animations');
@@ -43,6 +41,6 @@ describe('Browser', async () => {
 
     await closeAllCloseableTabs();
     // Navigate to a different website
-    await target.goto(secondTargetUrl);
+    await goToResource(secondTargetUrl);
   });
 });

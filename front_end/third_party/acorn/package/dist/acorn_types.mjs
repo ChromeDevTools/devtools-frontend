@@ -41,6 +41,14 @@ export function parse(text, options) {}
  */
 export function tokenizer(text, options) {}
 
+export class Parser {
+  /**
+   * @param {Object} plugins
+   * @return {Object}
+   */
+  static extend(plugins) {}
+}
+
 export const tokTypes = {
   _true: new Acorn.TokenType(),
   _false: new Acorn.TokenType(),

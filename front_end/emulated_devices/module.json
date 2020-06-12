@@ -1869,21 +1869,21 @@
           "title": "Surface Duo",
           "screen": {
               "horizontal": {
-                  "width": 600,
-                  "height": 450
+                  "width": 720,
+                  "height": 540
               },
               "device-pixel-ratio": 2.5,
               "vertical": {
-                  "width": 450,
-                  "height": 600
+                  "width": 540,
+                  "height": 720
               },
               "vertical-spanned": {
-                  "width": 928,
-                  "height": 600,
+                  "width": 1114,
+                  "height": 720,
                   "hinge": {
-                      "width": 28,
-                      "height": 600,
-                      "x": 450,
+                      "width": 34,
+                      "height": 720,
+                      "x": 540,
                       "y": 0,
                       "contentColor": {
                           "r": 38,
@@ -1894,13 +1894,13 @@
                   }
               },
               "horizontal-spanned": {
-                  "width": 600,
-                  "height": 928,
+                  "width": 720,
+                  "height": 1114,
                   "hinge": {
-                      "width": 600,
-                      "height": 28,
+                      "width": 720,
+                      "height": 34,
                       "x": 0,
-                      "y": 450,
+                      "y": 540,
                       "contentColor": {
                         "r": 38,
                         "g": 38,

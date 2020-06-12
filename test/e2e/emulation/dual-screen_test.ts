@@ -7,8 +7,8 @@ import {describe, it} from 'mocha';
 import {clickToggleButton, getWidthOfDevice, selectDualScreen, selectNonDualScreenDevice, startEmulationWithDualScreenFlag} from '../helpers/emulation-helpers.js';
 import {getButtonDisabled, selectToggleButton} from '../helpers/emulation-helpers.js';
 
-const DUO_VERTICAL_SPANNED_WIDTH = '928';
-const DUO_VERTICAL_WIDTH = '450';
+const DUO_VERTICAL_SPANNED_WIDTH = '1114';
+const DUO_VERTICAL_WIDTH = '540';
 
 describe('Dual screen mode', async () => {
   beforeEach(async function() {

@@ -663,9 +663,7 @@ function _drawLayoutGridHighlight(highlight, context) {
       context, highlight.columnGaps, highlight.gridHighlightConfig.columnGapColor,
       highlight.gridHighlightConfig.columnHatchColor);
 
-  if (highlight.gridHighlightConfig.showPositiveLineNumbers) {
-    drawGridNumbers(highlight, gridBounds);
-  }
+  drawGridNumbers(highlight, gridBounds);
 }
 
 function _drawGridGap(context, gapCommands, gapColor, hatchColor, flipDirection) {

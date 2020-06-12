@@ -33,9 +33,20 @@ let GridLabelPositions;  // eslint-disable-line no-unused-vars
  * @param {Object} bounds
  */
 export function drawGridNumbers(config, bounds) {
+  const showPositiveColumns =
+      config.gridHighlightConfig.showPositiveLineNumbers && config.positiveColumnLineNumberOffsets;
+  const showPositiveRows = config.gridHighlightConfig.showPositiveLineNumbers && config.positiveRowLineNumberOffsets;
+  const showNegativeColumns =
+      config.gridHighlightConfig.showNegativeLineNumbers && config.negativeColumnLineNumberOffsets;
+  const showNegativeRows = config.gridHighlightConfig.showNegativeLineNumbers && config.negativeRowLineNumberOffsets;
+  if (!showPositiveColumns && !showPositiveRows && !showNegativeColumns && !showNegativeRows) {
+    return;
+  }
+
   const labelContainer = document.getElementById('grid-label-container');
   labelContainer.removeChildren();
-  if (config.positiveColumnLineNumberOffsets) {
+
+  if (showPositiveColumns) {
     for (const [i, offset] of config.positiveColumnLineNumberOffsets.entries()) {
       const isFirstColumn = offset === config.positiveColumnLineNumberOffsets[0];
       const isLastColumn =
@@ -44,7 +55,8 @@ export function drawGridNumbers(config, bounds) {
           labelContainer, (i + 1).toString(), bounds.minX + offset, bounds.minY, isFirstColumn, isLastColumn);
     }
   }
-  if (config.positiveRowLineNumberOffsets) {
+
+  if (showPositiveRows) {
     for (const [i, offset] of config.positiveRowLineNumberOffsets.entries()) {
       const isTopRow = offset === config.positiveRowLineNumberOffsets[0];
       const isBottomRow = offset === config.positiveRowLineNumberOffsets[config.positiveRowLineNumberOffsets.length];
@@ -52,6 +64,32 @@ export function drawGridNumbers(config, bounds) {
       _placeRowLabel(
           labelContainer, (i + 1).toString(), bounds.minX, bounds.minY + offset, isTopRow, isBottomRow,
           avoidColumnLabel);
+    }
+  }
+
+  if (showNegativeColumns) {
+    for (const [i, offset] of config.negativeColumnLineNumberOffsets.entries()) {
+      // Negative offsets are sorted such that the first offset corresponds to the line closest to start edge of the grid.
+      const index = config.negativeColumnLineNumberOffsets.length * -1 + i;
+      const isFirstColumn = offset === config.negativeColumnLineNumberOffsets[0];
+      const isLastColumn =
+          offset === config.negativeColumnLineNumberOffsets[config.negativeColumnLineNumberOffsets.length];
+      _placeColumnLabel(
+          labelContainer, index.toString(), bounds.minX + offset, bounds.maxY, isFirstColumn, isLastColumn,
+          /* isNegative */ true);
+    }
+  }
+
+  if (showNegativeRows) {
+    for (const [i, offset] of config.negativeRowLineNumberOffsets.entries()) {
+      // Negative offsets are sorted such that the first offset corresponds to the line closest to start edge of the grid.
+      const index = config.negativeRowLineNumberOffsets.length * -1 + i;
+      const isBottomRow = offset === config.negativeRowLineNumberOffsets[0];
+      const isTopRow = offset === config.negativeRowLineNumberOffsets[config.negativeRowLineNumberOffsets.length];
+      const avoidColumnLabel = bounds.minY < gridPageMargin;
+      _placeRowLabel(
+          labelContainer, index.toString(), bounds.maxX, bounds.minY + offset, isTopRow, isBottomRow, avoidColumnLabel,
+          /* isNegative */ true);
     }
   }
 }
@@ -66,30 +104,32 @@ export function drawGridNumbers(config, bounds) {
  * @param {boolean} isTopRow
  * @param {boolean} isBottomRow
  * @param {boolean} avoidColumnLabel
+ * @param {boolean} isNegative
  */
-function _placeRowLabel(labelLayer, label, x, y, isTopRow, isBottomRow, avoidColumnLabel) {
+function _placeRowLabel(labelLayer, label, x, y, isTopRow, isBottomRow, avoidColumnLabel, isNegative) {
   const labelContainer = labelLayer.createChild('div');
   const labelContent = labelContainer.createChild('div', 'grid-label-content');
   labelContent.textContent = label;
 
-  let arrowType = GridArrowTypes.rightMid;
-
-  // Flip inside if too close to page margin
-  if (x < gridPageMargin) {
-    if (isTopRow) {
-      arrowType = GridArrowTypes.leftTop;
-    } else if (isBottomRow) {
-      arrowType = GridArrowTypes.leftBottom;
-    } else {
-      arrowType = GridArrowTypes.leftMid;
-    }
-  } else if (isTopRow) {
-    // Shift down to avoid column label
-    arrowType = GridArrowTypes.rightTop;
-  } else if (isBottomRow && (canvasHeight - y) < gridPageMargin) {
-    // Shift up to keep on page
-    arrowType = GridArrowTypes.rightBottom;
+  // Determine where the arrow should be, relative to the label.
+  let verticalAlign = 'Mid';
+  if (isTopRow && y < gridPageMargin) {
+    verticalAlign = 'Top';
   }
+  if (isBottomRow && (canvasHeight - y) < gridPageMargin) {
+    verticalAlign = 'Bottom';
+  }
+
+  // Determine if the arrow should be right or left of the label.
+  let horizontalAlign = isNegative ? 'left' : 'right';
+  if (!isNegative && x < gridPageMargin) {
+    horizontalAlign = 'left';
+  }
+  if (isNegative && (canvasWidth - x) < gridPageMargin) {
+    horizontalAlign = 'right';
+  }
+
+  const arrowType = GridArrowTypes[horizontalAlign + verticalAlign];
 
   const labelWidth = _getAdjustedLabelWidth(labelContent);
   const labelHeight = labelContent.getBoundingClientRect().height;
@@ -113,28 +153,33 @@ function _placeRowLabel(labelLayer, label, x, y, isTopRow, isBottomRow, avoidCol
  * @param {number} y
  * @param {boolean} isFirstColumn
  * @param {boolean} isLastColumn
+ * @param {boolean} isNegative
  */
-function _placeColumnLabel(labelLayer, label, x, y, isFirstColumn, isLastColumn) {
+function _placeColumnLabel(labelLayer, label, x, y, isFirstColumn, isLastColumn, isNegative) {
   const labelContainer = labelLayer.createChild('div');
   const labelContent = labelContainer.createChild('div', 'grid-label-content');
   labelContent.textContent = label;
 
-  let arrowType = GridArrowTypes.bottomMid;
-
-  // Move label to avoid margins of page
-  if (y < gridPageMargin) {
-    if (isFirstColumn) {
-      arrowType = GridArrowTypes.topLeft;
-    } else if (isLastColumn) {
-      arrowType = GridArrowTypes.topRight;
-    } else {
-      arrowType = GridArrowTypes.topMid;
-    }
-  } else if (isLastColumn && (canvasWidth - x) < gridPageMargin) {
-    arrowType = GridArrowTypes.bottomRight;
-  } else if (isFirstColumn && x < gridPageMargin) {
-    arrowType = GridArrowTypes.bottomLeft;
+  // Determine where the arrow should be, relative to the label.
+  let horizontalAlign = 'Mid';
+  if (isFirstColumn && x < gridPageMargin) {
+    horizontalAlign = 'Left';
   }
+  if (isLastColumn && (canvasWidth - x) < gridPageMargin) {
+    horizontalAlign = 'Right';
+  }
+
+  // Determine if the arrow should be above, or below the label.
+  let verticalAlign = isNegative ? 'top' : 'bottom';
+  if (!isNegative && y < gridPageMargin) {
+    verticalAlign = 'top';
+  }
+
+  if (isNegative && (canvasHeight - y) < gridPageMargin) {
+    verticalAlign = 'bottom';
+  }
+
+  const arrowType = GridArrowTypes[verticalAlign + horizontalAlign];
 
   const labelWidth = _getAdjustedLabelWidth(labelContent);
   const labelHeight = labelContent.getBoundingClientRect().height;

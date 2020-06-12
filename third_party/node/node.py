@@ -21,15 +21,11 @@ def GetBinaryPath():
 
 def RunNode(cmd_parts):
     cmd = [GetBinaryPath()] + cmd_parts
-    process = subprocess.Popen(cmd,
-                               cwd=os.getcwd(),
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE)
+    process = subprocess.Popen(cmd, cwd=os.getcwd())
     stdout, stderr = process.communicate()
 
-    if process.returncode is not 0:
-        print(stderr)
-        process.exit(process.returncode)
+    if stderr:
+        raise RuntimeError('%s failed: %s' % (cmd, stderr))
 
     return stdout
 

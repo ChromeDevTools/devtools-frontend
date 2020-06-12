@@ -223,6 +223,9 @@ class ReleaseBuilder(object):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE)
             out, error = rollup_process.communicate()
+            if rollup_process.returncode != 0:
+                print(error)
+                os.exit(rollup_process.returncode)
         else:
             out = read_file(js_entrypoint)
         write_file(join(self.output_dir, module_name, module_name + '.js'),

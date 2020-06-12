@@ -31,4 +31,9 @@ describe('JavaScriptFormatter', () => {
     const formattedCode = formatJavaScript('false??true');
     assert.strictEqual(formattedCode, 'false ?? true\n');
   });
+
+  it('formats optional chaining expressions correctly', () => {
+    const formattedCode = formatJavaScript('var x=a?.b;');
+    assert.strictEqual(formattedCode, 'var x = a?.b;\n');
+  });
 });

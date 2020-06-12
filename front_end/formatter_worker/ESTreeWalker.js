@@ -119,6 +119,7 @@ const _walkOrder = {
   'ClassBody': ['body'],
   'ClassDeclaration': ['id', 'superClass', 'body'],
   'ClassExpression': ['id', 'superClass', 'body'],
+  'ChainExpression': ['expression'],
   'ConditionalExpression': ['test', 'consequent', 'alternate'],
   'ContinueStatement': ['label'],
   'DebuggerStatement': [],

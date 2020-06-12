@@ -117,6 +117,120 @@
     },
     {
       "type": "setting",
+      "category": "Grid",
+      "title": "Grid Border",
+      "experiment": "cssGridFeatures",
+      "settingName": "showGridBorder",
+      "settingType": "enum",
+      "defaultValue": "none",
+      "options": [
+        {
+          "title": "Do not show grid container border",
+          "text": "None",
+          "value": "none"
+        },
+        {
+          "title": "Show dashed grid container border",
+          "text": "Dashed",
+          "value": "dashed"
+        },
+        {
+          "title": "Show solid grid container border",
+          "text": "Solid",
+          "value": "solid"
+        }
+      ]
+    },
+    {
+      "type": "setting",
+      "category": "Grid",
+      "title": "Grid Lines",
+      "experiment": "cssGridFeatures",
+      "settingName": "showGridLines",
+      "settingType": "enum",
+      "defaultValue": "dashed",
+      "options": [
+        {
+          "title": "Do not show grid lines",
+          "text": "None",
+          "value": "none"
+        },
+        {
+          "title": "Show dashed grid lines",
+          "text": "Dashed",
+          "value": "dashed"
+        },
+        {
+          "title": "Show solid grid lines",
+          "text": "Solid",
+          "value": "solid"
+        },
+        {
+          "title": "Show dashed grid lines extended to the edge of page",
+          "text": "Extended Dashed",
+          "value": "extended-dashed"
+        },
+        {
+          "title": "Show solid grid lines extended to the edge of the page",
+          "text": "Extended Solid",
+          "value": "extended-solid"
+        }
+      ]
+    },
+    {
+      "type": "setting",
+      "category": "Grid",
+      "title": "Grid Line Numbers",
+      "experiment": "cssGridFeatures",
+      "settingName": "showGridLineNumbers",
+      "settingType": "enum",
+      "defaultValue": "none",
+      "options": [
+        {
+          "title": "Do not show grid line numbers",
+          "text": "None",
+          "value": "none"
+        },
+        {
+          "title": "Show positive grid line numbers",
+          "text": "Positive",
+          "value": "positive"
+        }
+      ]
+    },
+    {
+      "type": "setting",
+      "category": "Grid",
+      "title": "Grid Gaps",
+      "experiment": "cssGridFeatures",
+      "settingName": "showGridGaps",
+      "settingType": "enum",
+      "defaultValue": "both",
+      "options": [
+        {
+          "title": "Do not shade grid gaps",
+          "text": "None",
+          "value": "none"
+        },
+        {
+          "title": "Shade row gaps",
+          "text": "Row Gaps",
+          "value": "row-gaps"
+        },
+        {
+          "title": "Shade column gaps",
+          "text": "Column Gaps",
+          "value": "column-gaps"
+        },
+        {
+          "title": "Shade both row and column gaps",
+          "text": "Both",
+          "value": "both"
+        }
+      ]
+    },
+    {
+      "type": "setting",
       "category": "Rendering",
       "settingName": "showPaintRects",
       "settingType": "boolean",

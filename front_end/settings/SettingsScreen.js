@@ -208,10 +208,21 @@ export class GenericSettingsTab extends SettingsTab {
       '', 'Appearance', 'Sources', 'Elements', 'Network', 'Performance', 'Console', 'Extensions', 'Persistence',
       'Debugger', 'Global'
     ];
+
+    // Sections only available if their corresponding experiment is enabled
+    /** @type {!Array<{name: string, experiment: string}>} */
+    const experimentalSections = [{name: 'Grid', experiment: 'cssGridFeatures'}];
+
+
     /** @type {!Map<string, !Element>} */
     this._nameToSection = new Map();
     for (const sectionName of explicitSectionOrder) {
       this._createSectionElement(sectionName);
+    }
+    for (const section of experimentalSections) {
+      if (Root.Runtime.experiments.isEnabled(section.experiment)) {
+        this._createSectionElement(section.name);
+      }
     }
     self.runtime.extensions('setting').forEach(this._addSetting.bind(this));
     self.runtime.extensions(UI.SettingsUI.SettingUI).forEach(this._addSettingUI.bind(this));

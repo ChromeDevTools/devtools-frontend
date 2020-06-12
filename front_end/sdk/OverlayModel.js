@@ -310,6 +310,96 @@ export class OverlayModel extends SDKModel {
   }
 
   /**
+   * @return {!Protocol.Overlay.GridHighlightConfig}
+   */
+  _buildGridHighlightConfig() {
+    const gridBorderSetting = Common.Settings.Settings.instance().moduleSetting('showGridBorder').get();
+    let showGridBorder;
+    let gridBorderDashed;
+    switch (gridBorderSetting) {
+      case 'dashed':
+        showGridBorder = true;
+        gridBorderDashed = true;
+        break;
+      case 'solid':
+        showGridBorder = true;
+        break;
+      default:
+        break;
+    }
+    const showGridLinesSetting = Common.Settings.Settings.instance().moduleSetting('showGridLines').get();
+    let showGridLines;
+    let gridLinesDashed;
+    let showGridExtensionLines;
+    switch (showGridLinesSetting) {
+      case 'dashed':
+        showGridLines = true;
+        gridLinesDashed = true;
+        break;
+      case 'solid':
+        showGridLines = true;
+        break;
+      case 'extended-dashed':
+        showGridLines = true;
+        gridLinesDashed = true;
+        showGridExtensionLines = true;
+        break;
+      case 'extended-solid':
+        showGridLines = true;
+        showGridExtensionLines = true;
+        break;
+      default:
+        break;
+    }
+    // Add background to help distinguish rows/columns when cell borders are not outlined
+    const addBackgroundsToGaps = !showGridLines;
+    const showGridLineNumbersSetting = Common.Settings.Settings.instance().moduleSetting('showGridLineNumbers').get();
+    // TODO: extend switch case when negitive line number CL lands
+    let showPositiveLineNumbers;
+    switch (showGridLineNumbersSetting) {
+      case 'positive':
+        showPositiveLineNumbers = true;
+        break;
+      default:
+        break;
+    }
+    const showGridGapsSetting = Common.Settings.Settings.instance().moduleSetting('showGridGaps').get();
+    let showGridRowGaps;
+    let showGridColumnGaps;
+    switch (showGridGapsSetting) {
+      case 'both':
+        showGridRowGaps = true;
+        showGridColumnGaps = true;
+        break;
+      case 'row-gaps':
+        showGridRowGaps = true;
+        break;
+      case 'column-gaps':
+        showGridColumnGaps = true;
+        break;
+      default:
+        break;
+    }
+
+    return {
+      rowGapColor: (showGridRowGaps && addBackgroundsToGaps) ?
+          Common.Color.PageHighlight.GridRowGapBackground.toProtocolRGBA() :
+          undefined,
+      rowHatchColor: showGridRowGaps ? Common.Color.PageHighlight.GridRowGapHatch.toProtocolRGBA() : undefined,
+      columnGapColor: (showGridColumnGaps && addBackgroundsToGaps) ?
+          Common.Color.PageHighlight.GridColumnGapBackground.toProtocolRGBA() :
+          undefined,
+      columnHatchColor: showGridColumnGaps ? Common.Color.PageHighlight.GridColumnGapHatch.toProtocolRGBA() : undefined,
+      gridBorderColor: showGridBorder ? Common.Color.PageHighlight.GridBorder.toProtocolRGBA() : undefined,
+      gridBorderDash: gridBorderDashed,
+      cellBorderColor: showGridLines ? Common.Color.PageHighlight.GridCellBorder.toProtocolRGBA() : undefined,
+      cellBorderDash: gridLinesDashed,
+      showGridExtensionLines: showGridExtensionLines,
+      showPositiveLineNumbers
+    };
+  }
+
+  /**
    * @param {string=} mode
    * @param {boolean=} showStyles
    * @return {!Protocol.Overlay.HighlightConfig}
@@ -343,12 +433,7 @@ export class OverlayModel extends SDKModel {
 
     if (mode === 'all') {
       if (this._gridFeaturesExperimentEnabled) {
-        highlightConfig.gridHighlightConfig = {
-          rowHatchColor: Common.Color.PageHighlight.GridRowGapHatch.toProtocolRGBA(),
-          columnHatchColor: Common.Color.PageHighlight.GridColumnGapHatch.toProtocolRGBA(),
-          cellBorderColor: Common.Color.PageHighlight.GridCellBorder.toProtocolRGBA(),
-          cellBorderDash: true
-        };
+        highlightConfig.gridHighlightConfig = this._buildGridHighlightConfig();
       } else {
         // Support for the legacy grid cell highlight.
         highlightConfig.cssGridColor = Common.Color.PageHighlight.CssGrid.toProtocolRGBA();

@@ -225,9 +225,6 @@
   <message name="IDS_DEVTOOLS_41d98c4bb351da4733feff7e1ad628a5" desc="Error text for empty list widget input in Request Blocking tool">
     Pattern input cannot be empty.
   </message>
-  <message name="IDS_DEVTOOLS_41de6d6cfb8953c021bbe4ba0701c8a1" desc="Text in Network Item View of the Network panel">
-    Messages
-  </message>
   <message name="IDS_DEVTOOLS_41e85145baafb89d0b709ae827218084" desc="A context menu item in the Network Log View of the Network panel">
     Clear browser cache
   </message>

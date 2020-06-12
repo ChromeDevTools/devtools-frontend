@@ -126,9 +126,6 @@
   <message name="IDS_DEVTOOLS_6eed4ce2d5859b11dc44a5e3bd91af20" desc="Title of a setting under the Console category in Settings">
     Eager evaluation
   </message>
-  <message name="IDS_DEVTOOLS_7a1920d61156abc05a60135aefe8bc67" desc="A context menu item in the Console View of the Console panel">
-    Default
-  </message>
   <message name="IDS_DEVTOOLS_7be1a30a7758269755609f1f7434d828" desc="Title of a setting under the Console category that can be invoked through the Command Menu">
     Group similar messages in console
   </message>

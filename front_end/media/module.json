@@ -26,6 +26,7 @@
     "MainView.js",
     "PlayerDetailView.js",
     "PlayerListView.js",
+    "PlayerMessagesView.js",
     "PlayerPropertiesView.js",
     "MediaModel.js"
   ],
@@ -34,6 +35,7 @@
     "eventDisplayTable.css",
     "mediaView.css",
     "playerListView.css",
-    "playerPropertiesView.css"
+    "playerPropertiesView.css",
+    "playerMessagesView.css"
   ]
 }

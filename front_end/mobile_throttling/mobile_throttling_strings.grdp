@@ -57,9 +57,6 @@
   <message name="IDS_DEVTOOLS_8fd93ea382b6642f13ff291b76f5bc85" desc="Text in Throttling Settings Tab of the Network panel">
     Profile Name
   </message>
-  <message name="IDS_DEVTOOLS_90589c47f06eb971d548591f23c285af" desc="Text in Network Throttling Selector of the Network panel">
-    Custom
-  </message>
   <message name="IDS_DEVTOOLS_91412465ea9169dfd901dd5e7c96dd99" desc="Text in Throttling Settings Tab of the Network panel">
     Upload
   </message>

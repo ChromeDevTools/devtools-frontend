@@ -3,14 +3,20 @@
   <message name="IDS_DEVTOOLS_34e2d1989a1dbf75cd631596133ee5ee" desc="The type of media, for example - video, audio, or text. Capitalized.">
     Video
   </message>
+  <message name="IDS_DEVTOOLS_b22f0418e8ac915eb66f829d262d14a2" desc="The type of media. Capitalized.">
+    Audio
+  </message>
+  <message name="IDS_DEVTOOLS_421b47ffd946ca083b65cd668c6b17e6" desc="The type of media. Lower case.">
+    video
+  </message>
+  <message name="IDS_DEVTOOLS_13dfca9cbe1740873c59b90e24cfb348" desc="Default text for user-text-entry for searching log messages.">
+    filter log messages
+  </message>
   <message name="IDS_DEVTOOLS_368cc7b17925cc0f9c4b5a90db1e68c1" desc="The video or audio stream, much like on an old cd.">
     track
   </message>
   <message name="IDS_DEVTOOLS_e6818a215084646ac80a1a07561ecf35" desc="A device that converts media files into playable streams of audio or video.">
     Decoder
-  </message>
-  <message name="IDS_DEVTOOLS_421b47ffd946ca083b65cd668c6b17e6" desc="Video player">
-    video
   </message>
   <message name="IDS_DEVTOOLS_42895832ab7605d00676bebb0521991f" desc="Media property giving the distance of the playback quality from the ideal playback.">
     Video Playback Roughness
@@ -33,8 +39,11 @@
   <message name="IDS_DEVTOOLS_9cb334507c95e83a9c863f5014ab317e" desc="Media property giving the media file frame rate">
     Frame Rate
   </message>
-  <message name="IDS_DEVTOOLS_b22f0418e8ac915eb66f829d262d14a2" desc="The type of media, for example - video, audio, or text. Capitalized.">
-    Audio
+  <message name="IDS_DEVTOOLS_9a8eea4475eb7a8d51024b7eefc0c1b1" desc="Column header for messages view.">
+    Player messages
+  </message>
+  <message name="IDS_DEVTOOLS_a603905470e2a5b8c13e96b579ef0dba" desc="Debug log level">
+    Debug
   </message>
   <message name="IDS_DEVTOOLS_cf6523ecab64a91c7a9b3d83b58f9e61" desc="Hover text for the Events button.">
     Player events
@@ -77,6 +86,9 @@
   </message>
   <message name="IDS_DEVTOOLS_e95c013230e5d1b944fed845b44ded28" desc="Media property giving the title of the frame where the media is embedded">
     Playback Frame Title
+  </message>
+  <message name="IDS_DEVTOOLS_f4ac5f45c490b495f6eb032e44e4dd59" desc="Label for selecting between the set of log levels to show.">
+    Log Level:
   </message>
   <message name="IDS_DEVTOOLS_fb731aa4f5e2e27d0e54fcceac99ebb0" desc="Media property signaling whether the content is encrypted">
     Decrypting Demuxer

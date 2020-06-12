@@ -166,6 +166,9 @@
   <message name="IDS_DEVTOOLS_4059b0251f66a18cb56f544728796875" desc="Sdk console message message level info of level Labels in Console View of the Console panel">
     Info
   </message>
+  <message name="IDS_DEVTOOLS_41de6d6cfb8953c021bbe4ba0701c8a1" desc="Text in Network Item View of the Network panel">
+    Messages
+  </message>
   <message name="IDS_DEVTOOLS_41fdb410354e76ef7674f98e1cc84c8f" desc="Text for throttling the network">
     Throttling
   </message>
@@ -310,6 +313,9 @@
   <message name="IDS_DEVTOOLS_787ae37366b7a8c53f381abfd315c647" desc="Text that refers to the Elements Panel">
     Elements Panel
   </message>
+  <message name="IDS_DEVTOOLS_7a1920d61156abc05a60135aefe8bc67" desc="A context menu item in the Console View of the Console panel">
+    Default
+  </message>
   <message name="IDS_DEVTOOLS_7a2ccf251ecb20b2b84ce0e3c3f72a29" desc="Text to show something is secure">
     Secure
   </message>
@@ -363,6 +369,9 @@
   </message>
   <message name="IDS_DEVTOOLS_902b0d55fddef6f8d651fe1035b7d4bd" desc="Text for errors">
     Error
+  </message>
+  <message name="IDS_DEVTOOLS_90589c47f06eb971d548591f23c285af" desc="Text in Network Throttling Selector of the Network panel">
+    Custom
   </message>
   <message name="IDS_DEVTOOLS_90da6f38945a1c7e7ba11e3adcbe6919" desc="Text for pausing the debugger on exceptions">
     Pause on exceptions

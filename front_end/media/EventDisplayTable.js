@@ -111,8 +111,8 @@ export class PlayerEventsView extends UI.Widget.VBox {
     if (this._firstEventTime === 0) {
       this._firstEventTime = event.timestamp;
     }
-    event = this._subtractFirstEventTime(event);
 
+    event = this._subtractFirstEventTime(event);
     const stringified = /** @type {string} */ (event.value);
     try {
       const json = JSON.parse(stringified);

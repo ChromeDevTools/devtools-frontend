@@ -313,6 +313,9 @@ export const resolveExpressionAsync =
     const textRange = sourceMap.reverseMapTextRange(
         uiSourceCode.url(),
         new TextUtils.TextRange.TextRange(lineNumber, startColumnNumber, lineNumber, endColumnNumber));
+    if (!textRange) {
+      return Promise.resolve('');
+    }
     const originalText = text.extract(textRange);
     if (!originalText) {
       return Promise.resolve('');

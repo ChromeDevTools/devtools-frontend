@@ -746,7 +746,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     const startPage = extensionInfo.startPage;
 
     const inspectedURL = SDK.SDKModel.TargetManager.instance().mainTarget().inspectedURL();
-    if (!this._canInspectURL(inspectedURL)) {
+    if (inspectedURL !== '' && !this._canInspectURL(inspectedURL)) {
       this._disableExtensions();
     }
     if (!this._extensionsEnabled) {

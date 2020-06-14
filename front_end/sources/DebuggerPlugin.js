@@ -1716,9 +1716,8 @@ export class DebuggerPlugin extends Plugin {
     }
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ScriptsBreakpointSet);
     if (editorLineNumber < this._textEditor.linesCount) {
-      const lineLength = Math.min(this._textEditor.line(editorLineNumber).length, 1024);
       const start = this._transformer.editorLocationToUILocation(editorLineNumber, 0);
-      const end = this._transformer.editorLocationToUILocation(editorLineNumber, lineLength);
+      const end = this._transformer.editorLocationToUILocation(editorLineNumber + 1, 0);
       const locations = await this._breakpointManager.possibleBreakpoints(
           this._uiSourceCode,
           new TextUtils.TextRange.TextRange(start.lineNumber, start.columnNumber, end.lineNumber, end.columnNumber));

@@ -970,7 +970,7 @@ export class TimelineUIUtils {
         if (cacheConsumeOptions) {
           contentHelper.appendTextRow(ls`Cache Consume Options`, cacheConsumeOptions);
           contentHelper.appendTextRow(ls`Consumed Cache Size`, eventData['consumedCacheSize']);
-          contentHelper.appendTextRow(ls`Cache Rejected`, eventData['cacheRejected']);
+          contentHelper.appendTextRow(ls`Cache Successful`, !eventData['cacheRejected']);
         }
         break;
       }

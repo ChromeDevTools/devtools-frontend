@@ -460,9 +460,6 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_6734ebb8322bff404034f6ebbcc0d2fb" desc="Aria-label for filter bar in Call Tree view">
     Filter call tree
   </message>
-  <message name="IDS_DEVTOOLS_67eed98f4bc75c4ab261b79a0e2c52cd" desc="Text in Timeline UIUtils of the Performance panel">
-    Cache Rejected
-  </message>
   <message name="IDS_DEVTOOLS_681d72abce5de4f856e71bfb1856796b" desc="Text in UIDevtools Utils of the Performance panel">
     Drawing
   </message>
@@ -561,6 +558,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   </message>
   <message name="IDS_DEVTOOLS_84497a704396fa5a9e67913f67fc465a" desc="Text in Timeline UIUtils of the Performance panel">
     ''' (from memory cache)
+  </message>
+  <message name="IDS_DEVTOOLS_85cd916d2931d80101107e4a9428f5d4" desc="Text in Timeline UIUtils of the Performance panel">
+    Cache Successful
   </message>
   <message name="IDS_DEVTOOLS_86c8559f4d7d1d74dc3e04baf2b65cc6" desc="Text in Timeline UIUtils of the Performance panel">
     Decoded Body

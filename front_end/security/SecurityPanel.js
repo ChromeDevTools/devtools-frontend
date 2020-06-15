@@ -200,7 +200,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar {
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onResponseReceived(event) {
-    const request = /** @type {!SDK.NetworkRequest.NetworkRequest} */ (event.data);
+    const request = /** @type {!SDK.NetworkRequest.NetworkRequest} */ (event.data.request);
     if (request.resourceType() === Common.ResourceType.resourceTypes.Document) {
       this._lastResponseReceivedForLoaderId.set(request.loaderId, request);
     }

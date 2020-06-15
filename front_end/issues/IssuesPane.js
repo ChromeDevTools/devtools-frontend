@@ -488,11 +488,12 @@ class IssueView extends UI.TreeOutline.TreeElement {
     this.childrenListElement.classList.add('body');
 
     this._affectedResources = this._createAffectedResources();
-    this._affectedCookiesView = new AffectedCookiesView(this, this._issue);
-    this._affectedElementsView = new AffectedElementsView(this, this._issue);
-    this._affectedRequestsView = new AffectedRequestsView(this, this._issue);
-    this._affectedMixedContentView = new AffectedMixedContentView(this, this._issue);
-    this._affectedSourcesView = new AffectedSourcesView(this, this._issue);
+    /** @type {!Array<!AffectedResourcesView>} */
+    this._affectedResourceViews = [
+      new AffectedCookiesView(this, this._issue), new AffectedElementsView(this, this._issue),
+      new AffectedRequestsView(this, this._issue), new AffectedMixedContentView(this, this._issue),
+      new AffectedSourcesView(this, this._issue)
+    ];
 
     this._aggregatedIssuesCount = null;
   }
@@ -504,18 +505,12 @@ class IssueView extends UI.TreeOutline.TreeElement {
     this._appendHeader();
     this._createBody();
     this.appendChild(this._affectedResources);
-    this.appendAffectedResource(this._affectedCookiesView);
-    this._affectedCookiesView.update();
-    this.appendAffectedResource(this._affectedElementsView);
-    this._affectedElementsView.update();
-    this.appendAffectedResource(this._affectedRequestsView);
-    this._affectedRequestsView.update();
-    this.appendAffectedResource(this._affectedMixedContentView);
-    this._affectedMixedContentView.update();
-    this.appendAffectedResource(this._affectedSourcesView);
-    this._affectedSourcesView.update();
-    this._createReadMoreLinks();
+    for (const view of this._affectedResourceViews) {
+      this.appendAffectedResource(view);
+      view.update();
+    }
 
+    this._createReadMoreLinks();
     this.updateAffectedResourceVisibility();
   }
 
@@ -552,12 +547,7 @@ class IssueView extends UI.TreeOutline.TreeElement {
   }
 
   updateAffectedResourceVisibility() {
-    const noCookies = !this._affectedCookiesView || this._affectedCookiesView.isEmpty();
-    const noElements = !this._affectedElementsView || this._affectedElementsView.isEmpty();
-    const noRequests = !this._affectedRequestsView || this._affectedRequestsView.isEmpty();
-    const noMixedContent = !this._affectedMixedContentView || this._affectedMixedContentView.isEmpty();
-    const noSources = !this._affectedSourcesView || this._affectedSourcesView.isEmpty();
-    const noResources = noCookies && noElements && noRequests && noMixedContent && noSources;
+    const noResources = this._affectedResourceViews.every(view => view.isEmpty());
     this._affectedResources.hidden = noResources;
   }
 
@@ -607,10 +597,7 @@ class IssueView extends UI.TreeOutline.TreeElement {
   }
 
   update() {
-    this._affectedCookiesView.update();
-    this._affectedRequestsView.update();
-    this._affectedMixedContentView.update();
-    this._affectedSourcesView.update();
+    this._affectedResourceViews.forEach(view => view.update());
     this.updateAffectedResourceVisibility();
     this._updateAggregatedIssuesCount();
   }

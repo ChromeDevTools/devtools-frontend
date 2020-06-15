@@ -4,23 +4,31 @@
   "masters": {
     "https://build.chromium.org/p/client.devtools-frontend.integration": [
       {
+        "categories": [
+          "notify_failure"
+        ],
         "builders": {
-          "Auto-roll - devtools deps": {
-            "comment": [
-              "forgive_all below prevents closing tree and sending to ",
-              "blamelist, i.e. only addresses in tree_notify are emailed"
-            ],
-            "forgive_all": "true",
-            "tree_notify": [
-              "devtools-waterfall-sheriff-onduty@grotations.appspotmail.com"
-            ],
-            "closing_optional": [
-              "*"
-            ],
-            "status_template": "Auto-roller failure in %(project_name)s on %(builder_name)s, %(unsatisfied)s"
-          }
+          "Auto-roll - devtools deps": {},
+          "Stand-alone Linux beta": {},
+          "Stand-alone Linux stable": {}
         }
       }
     ]
+  },
+  "categories": {
+    "notify_failure": {
+      "comment": [
+        "forgive_all below prevents closing tree and sending to ",
+        "blamelist, i.e. only addresses in tree_notify are emailed"
+      ],
+      "forgive_all": "true",
+      "tree_notify": [
+        "devtools-waterfall-sheriff-onduty@grotations.appspotmail.com"
+      ],
+      "closing_optional": [
+        "*"
+      ],
+      "status_template": "buildbot failure in %(project_name)s on %(builder_name)s, %(unsatisfied)s"
+    }
   }
 }

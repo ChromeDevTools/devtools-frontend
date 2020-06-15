@@ -8,6 +8,8 @@
           "Auto-roll - devtools chromium",
           "Auto-roll - devtools deps",
           "Backend Linux",
+          "Backend Linux beta",
+          "Backend Linux stable",
           "Stand-alone Linux beta",
           "Stand-alone Linux stable"
         ],

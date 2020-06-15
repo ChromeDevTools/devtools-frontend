@@ -4,6 +4,8 @@
 
 import {$, waitFor} from '../../shared/helper.js';
 
+export const LAYERS_TAB_SELECTOR = '#tab-layers';
+
 export async function getCurrentUrl() {
   await waitFor('[aria-label="layers"]');
   const element = await $('[aria-label="layers"]');

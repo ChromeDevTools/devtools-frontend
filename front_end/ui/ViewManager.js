@@ -559,8 +559,22 @@ export class _TabbedLocation extends _Location {
         this._appendTab(view);
       }
     }
-    if (this._defaultTab && this._tabbedPane.hasTab(this._defaultTab)) {
-      this._tabbedPane.selectTab(this._defaultTab);
+
+    // If a default tab was provided we open or select it
+    if (this._defaultTab) {
+      if (this._tabbedPane.hasTab(this._defaultTab)) {
+        // If the tabbed pane already has the tab we just have to select it
+        this._tabbedPane.selectTab(this._defaultTab);
+      } else {
+        // If the tab is not present already it can be because:
+        // it doesn't correspond to this tabbed location
+        // or because it is closed
+        const view = Array.from(this._views.values()).find(view => view.viewId() === this._defaultTab);
+        if (view) {
+          // _defaultTab is indeed part of the views for this tabbed location
+          this.showView(view);
+        }
+      }
     } else if (this._lastSelectedTabSetting && this._tabbedPane.hasTab(this._lastSelectedTabSetting.get())) {
       this._tabbedPane.selectTab(this._lastSelectedTabSetting.get());
     }

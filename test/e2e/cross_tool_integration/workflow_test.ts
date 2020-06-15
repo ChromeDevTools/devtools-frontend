@@ -4,10 +4,11 @@
 
 import {describe, it} from 'mocha';
 
-import {click, enableExperiment, waitFor} from '../../shared/helper.js';
+import {click, enableExperiment, reloadDevTools, waitFor} from '../../shared/helper.js';
 import {navigateToConsoleTab, navigateToIssuesPanelViaInfoBar, waitForConsoleMessageAndClickOnLink} from '../helpers/console-helpers.js';
 import {clickOnContextMenuItemFromTab, prepareForCrossToolScenario, tabExistsInDrawer, tabExistsInMainPanel} from '../helpers/cross-tool-helper.js';
 import {clickOnFirstLinkInStylesPanel, navigateToElementsTab} from '../helpers/elements-helpers.js';
+import {LAYERS_TAB_SELECTOR} from '../helpers/layers-helpers.js';
 import {MEMORY_TAB_ID, navigateToMemoryTab} from '../helpers/memory-helpers.js';
 import {navigateToPerformanceSidebarTab, navigateToPerformanceTab, startRecording, stopRecording, waitForSourceLinkAndFollowIt} from '../helpers/performance-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
@@ -79,5 +80,12 @@ describe('A user can move tabs', async function() {
     await tabExistsInDrawer(ANIMATIONS_TAB_ID);
     await clickOnContextMenuItemFromTab(ANIMATIONS_TAB_ID, MOVE_TO_MAIN_PANEL_SELECTOR);
     await tabExistsInMainPanel(ANIMATIONS_TAB_ID);
+  });
+});
+
+describe('A user can open panels via the "panel" query param', async function() {
+  it('Layers is shown', async () => {
+    await reloadDevTools({queryParams: {panel: 'layers'}});
+    await tabExistsInMainPanel(LAYERS_TAB_SELECTOR);
   });
 });

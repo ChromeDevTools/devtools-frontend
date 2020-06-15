@@ -109,12 +109,17 @@ export async function resetPages() {
   await reloadDevTools();
 }
 
-export async function reloadDevTools(
-    options: {selectedPanel?: {name: string, selector?: string}, canDock?: boolean} = {}) {
+type ReloadDevToolsOptions = {
+  selectedPanel?: {name: string, selector?: string},
+  canDock?: boolean,
+  queryParams?: {panel?: string}
+};
+
+export async function reloadDevTools(options: ReloadDevToolsOptions = {}) {
   const {frontend} = getBrowserAndPages();
 
   // For the unspecified case wait for loading, then wait for the elements panel.
-  const {selectedPanel = DEFAULT_TAB, canDock = false} = options;
+  const {selectedPanel = DEFAULT_TAB, canDock = false, queryParams = {}} = options;
 
   if (selectedPanel.name !== DEFAULT_TAB.name) {
     await frontend.evaluate(name => {
@@ -127,10 +132,15 @@ export async function reloadDevTools(
   await frontend.goto(EMPTY_PAGE, {waitUntil: ['domcontentloaded']});
   // omit "can_dock=" when it's false because appending "can_dock=false"
   // will make getElementPosition in shared helpers unhappy
-  const url = canDock ? `${frontendUrl}&can_dock=true` : frontendUrl;
+  let url = canDock ? `${frontendUrl}&can_dock=true` : frontendUrl;
+
+  if (queryParams.panel) {
+    url += `&panel=${queryParams.panel}`;
+  }
+
   await frontend.goto(url, {waitUntil: ['domcontentloaded']});
 
-  if (selectedPanel.selector) {
+  if (!queryParams.panel && selectedPanel.selector) {
     await frontend.waitForSelector(selectedPanel.selector);
   }
 

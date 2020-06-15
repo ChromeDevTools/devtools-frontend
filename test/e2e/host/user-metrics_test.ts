@@ -7,6 +7,7 @@ import {describe, it} from 'mocha';
 import * as puppeteer from 'puppeteer';
 
 import {$, click, enableExperiment, getBrowserAndPages, platform, reloadDevTools, waitFor} from '../../shared/helper.js';
+import {clickToggleButton, selectDualScreen, startEmulationWithDualScreenFlag} from '../helpers/emulation-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 interface UserMetric {
@@ -34,6 +35,7 @@ declare global {
     __keyboardShortcutFired: (evt: Event) => void;
     __issuesPanelOpenedFrom: (evt: Event) => void;
     __keybindSetSettingChanged: (evt: Event) => void;
+    __dualScreenDeviceEmulated: (evt: Event) => void;
     Host: {UserMetrics: UserMetrics; userMetrics: {actionTaken(name: number): void;}};
     UI: {inspectorView: {_showDrawer(show: boolean): void; showView(name: string): void;}};
   }
@@ -65,9 +67,15 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       const customEvt = evt as CustomEvent;
       window.__caughtEvents.push({name: 'DevTools.IssuesPanelOpenedFrom', value: customEvt.detail.value});
     };
+
     window.__keybindSetSettingChanged = (evt: Event) => {
       const customEvt = evt as CustomEvent;
       window.__caughtEvents.push({name: 'DevTools.KeybindSetSettingChanged', value: customEvt.detail.value});
+    };
+
+    window.__dualScreenDeviceEmulated = (evt: Event) => {
+      const customEvt = evt as CustomEvent;
+      window.__caughtEvents.push({name: 'DevTools.DualScreenDeviceEmulated', value: customEvt.detail.value});
     };
 
     window.__caughtEvents = [];
@@ -78,6 +86,7 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.addEventListener('DevTools.KeyboardShortcutFired', window.__keyboardShortcutFired);
       window.addEventListener('DevTools.IssuesPanelOpenedFrom', window.__issuesPanelOpenedFrom);
       window.addEventListener('DevTools.KeybindSetSettingChanged', window.__keybindSetSettingChanged);
+      window.addEventListener('DevTools.DualScreenDeviceEmulated', window.__dualScreenDeviceEmulated);
     };
 
     window.__endCatchEvents = () => {
@@ -87,6 +96,7 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.removeEventListener('DevTools.KeyboardShortcutFired', window.__keyboardShortcutFired);
       window.removeEventListener('DevTools.IssuesPanelOpenedFrom', window.__issuesPanelOpenedFrom);
       window.removeEventListener('DevTools.KeybindSetSettingChanged', window.__keybindSetSettingChanged);
+      window.removeEventListener('DevTools.DualScreenDeviceEmulated', window.__dualScreenDeviceEmulated);
     };
 
     window.__beginCatchEvents();
@@ -323,5 +333,42 @@ describe('User Metrics', () => {
         },
       },
     ]);
+  });
+});
+
+describe('User Metrics for dual screen emulation', () => {
+  beforeEach(async () => {
+    await startEmulationWithDualScreenFlag();
+    const {frontend} = getBrowserAndPages();
+    await beginCatchEvents(frontend);
+  });
+
+  it('dispatch events when dual screen emulation started and span button hit', async () => {
+    await selectDualScreen();
+    await clickToggleButton();
+
+    await assertCapturedEvents([
+      {
+        name: 'DevTools.DualScreenDeviceEmulated',
+        value: 0,  // Dual screen/fold device selected
+      },
+      {
+        name: 'DevTools.ActionTaken',
+        value: 10,  // Device mode enabled
+      },
+      {
+        name: 'DevTools.DualScreenDeviceEmulated',
+        value: 1,  // Toggle single/dual screen mode (span button)
+      },
+      {
+        name: 'DevTools.ActionTaken',
+        value: 10,  // Device mode enabled.
+      },
+    ]);
+  });
+
+  afterEach(async () => {
+    const {frontend} = getBrowserAndPages();
+    await endCatchEvents(frontend);
   });
 });

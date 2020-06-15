@@ -144,6 +144,15 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordEnumeratedHistogram('DevTools.IssuesPanelOpenedFrom', issueOpener, size);
     Common.EventTarget.fireEvent('DevTools.IssuesPanelOpenedFrom', {value: issueOpener});
   }
+
+  /**
+   * @param {!DualScreenDeviceEmulated} emulationAction
+   */
+  dualScreenDeviceEmulated(emulationAction) {
+    const size = Object.keys(DualScreenDeviceEmulated).length + 1;
+    InspectorFrontendHostInstance.recordEnumeratedHistogram('DevTools.DualScreenDeviceEmulated', emulationAction, size);
+    Common.EventTarget.fireEvent('DevTools.DualScreenDeviceEmulated', {value: emulationAction});
+  }
 }
 
 // Codes below are used to collect UMA histograms in the Chromium port.
@@ -279,4 +288,11 @@ export const IssueOpener = {
   StatusBarIssuesCounter: 2,
   HamburgerMenu: 3,
   Adorner: 4
+};
+
+/** @enum {number} */
+export const DualScreenDeviceEmulated = {
+  DualScreenDeviceSelected: 0,  // a dual screen or fold device is selected
+  SpanButtonClicked: 1,         // span button is clicked when emulating a dual screen/fold device
+  PlatformSupportUsed: 2        // user starts to use platform dual screen support feature.
 };

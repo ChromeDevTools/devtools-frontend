@@ -21,7 +21,6 @@ const GridArrowTypes = {
 };
 const gridArrowWidth = 3;
 const gridPageMargin = 20;
-const gridLabelMinWidth = 10;
 /** @typedef {!{contentTop: number, contentLeft: number}} */
 let GridLabelPositions;  // eslint-disable-line no-unused-vars
 
@@ -48,9 +47,8 @@ export function drawGridNumbers(config, bounds) {
 
   if (showPositiveColumns) {
     for (const [i, offset] of config.positiveColumnLineNumberOffsets.entries()) {
-      const isFirstColumn = offset === config.positiveColumnLineNumberOffsets[0];
-      const isLastColumn =
-          offset === config.positiveColumnLineNumberOffsets[config.positiveColumnLineNumberOffsets.length];
+      const isFirstColumn = offset === 0;
+      const isLastColumn = i === config.positiveColumnLineNumberOffsets.length - 1;
       _placeColumnLabel(
           labelContainer, (i + 1).toString(), bounds.minX + offset, bounds.minY, isFirstColumn, isLastColumn);
     }
@@ -58,9 +56,9 @@ export function drawGridNumbers(config, bounds) {
 
   if (showPositiveRows) {
     for (const [i, offset] of config.positiveRowLineNumberOffsets.entries()) {
-      const isTopRow = offset === config.positiveRowLineNumberOffsets[0];
-      const isBottomRow = offset === config.positiveRowLineNumberOffsets[config.positiveRowLineNumberOffsets.length];
-      const avoidColumnLabel = bounds.minY < gridPageMargin;
+      const isTopRow = offset === 0;
+      const isBottomRow = i === config.positiveRowLineNumberOffsets.length - 1;
+      const avoidColumnLabel = (isTopRow && showPositiveColumns) || (isBottomRow && showNegativeColumns);
       _placeRowLabel(
           labelContainer, (i + 1).toString(), bounds.minX, bounds.minY + offset, isTopRow, isBottomRow,
           avoidColumnLabel);
@@ -71,9 +69,12 @@ export function drawGridNumbers(config, bounds) {
     for (const [i, offset] of config.negativeColumnLineNumberOffsets.entries()) {
       // Negative offsets are sorted such that the first offset corresponds to the line closest to start edge of the grid.
       const index = config.negativeColumnLineNumberOffsets.length * -1 + i;
-      const isFirstColumn = offset === config.negativeColumnLineNumberOffsets[0];
-      const isLastColumn =
-          offset === config.negativeColumnLineNumberOffsets[config.negativeColumnLineNumberOffsets.length];
+      const isFirstColumn = offset === 0;
+      // To determine if this is the last column, we can't just check if we're at the end of the
+      // negativeColumnLineNumberOffsets array, since negative columns don't go to the end of the
+      // implicit grid. Use the positiveColumnLineNumberOffsets instead, which does go to the end.
+      const positiveOffsets = config.positiveColumnLineNumberOffsets;
+      const isLastColumn = positiveOffsets && offset === positiveOffsets[positiveOffsets.length - 1];
       _placeColumnLabel(
           labelContainer, index.toString(), bounds.minX + offset, bounds.maxY, isFirstColumn, isLastColumn,
           /* isNegative */ true);
@@ -84,9 +85,13 @@ export function drawGridNumbers(config, bounds) {
     for (const [i, offset] of config.negativeRowLineNumberOffsets.entries()) {
       // Negative offsets are sorted such that the first offset corresponds to the line closest to start edge of the grid.
       const index = config.negativeRowLineNumberOffsets.length * -1 + i;
-      const isBottomRow = offset === config.negativeRowLineNumberOffsets[0];
-      const isTopRow = offset === config.negativeRowLineNumberOffsets[config.negativeRowLineNumberOffsets.length];
-      const avoidColumnLabel = bounds.minY < gridPageMargin;
+      const isTopRow = offset === 0;
+      // To determine if this is the last row, we can't just check if we're at the end of the
+      // negativeRowLineNumberOffsets array, since negative rows don't go to the end of the
+      // implicit grid. Use the positiveRowLineNumberOffsets instead, which does go to the end.
+      const positiveOffsets = config.positiveRowLineNumberOffset;
+      const isBottomRow = positiveOffsets && offset === positiveOffsets[positiveOffsets.length - 1];
+      const avoidColumnLabel = (isTopRow && showPositiveColumns) || (isBottomRow && showNegativeColumns);
       _placeRowLabel(
           labelContainer, index.toString(), bounds.maxX, bounds.minY + offset, isTopRow, isBottomRow, avoidColumnLabel,
           /* isNegative */ true);
@@ -113,10 +118,10 @@ function _placeRowLabel(labelLayer, label, x, y, isTopRow, isBottomRow, avoidCol
 
   // Determine where the arrow should be, relative to the label.
   let verticalAlign = 'Mid';
-  if (isTopRow && y < gridPageMargin) {
+  if (isTopRow && (y < gridPageMargin || avoidColumnLabel)) {
     verticalAlign = 'Top';
   }
-  if (isBottomRow && (canvasHeight - y) < gridPageMargin) {
+  if (isBottomRow && (canvasHeight - y < gridPageMargin || avoidColumnLabel)) {
     verticalAlign = 'Bottom';
   }
 
@@ -135,10 +140,6 @@ function _placeRowLabel(labelLayer, label, x, y, isTopRow, isBottomRow, avoidCol
   const labelHeight = labelContent.getBoundingClientRect().height;
   const labelParams = _getLabelPositionByArrowType(arrowType, x, y, labelWidth, labelHeight);
 
-  if (avoidColumnLabel && isTopRow) {
-    // Move top left corner row label to avoid column label.
-    labelParams.contentLeft += gridLabelMinWidth;
-  }
   labelContent.classList.add(arrowType);
   labelContent.style.left = labelParams.contentLeft + 'px';
   labelContent.style.top = labelParams.contentTop + 'px';

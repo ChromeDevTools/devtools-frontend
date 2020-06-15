@@ -19,34 +19,70 @@ found in the LICENSE file.
 </head>
 <body>
   <script type="module">
+    const TESTS= [
+      // Simple 2x3 grid, with explicit lines.
+      {
+        "paths":[
+          {"path":["M",100,60,"L",420,60,"L",420,204,"L",100,204,"Z"],"fillColor":"rgba(111, 168, 220, .66)","name":"content"},
+          {"path":["M",90,50,"L",430,50,"L",430,214,"L",90,214,"Z"],"fillColor":"rgba(147, 196, 125, .55)","name":"padding"},
+          {"path":["M",87,47,"L",433,47,"L",433,217,"L",87,217,"Z"],"fillColor":"rgba(255, 229, 153, .66)","name":"border"},
+          {"path":["M",47,7,"L",473,7,"L",473,257,"L",47,257,"Z"],"fillColor":"rgba(246, 178, 107, .6)","name":"margin"}
+        ],
+        "gridInfo":[
+          {
+            "rows":["M",100,60,"L",420,60,"L",420,127,"L",100,127,"Z","M",100,137,"L",420,137,"L",420,204,"L",100,204,"Z"],
+            "rowGaps":["M",100,127,"L",420,127,"L",420,137,"L",100,137,"Z"],
+            "positiveRowLineNumberOffsets":[0,72,144],
+            "negativeRowLineNumberOffsets":[0,72,144],
+            "columns":["M",100,60,"L",200,60,"L",200,204,"L",100,204,"Z","M",210,60,"L",310,60,"L",310,204,"L",210,204,"Z","M",320,60,"L",420,60,"L",420,204,"L",320,204,"Z"],
+            "columnGaps":["M",200,60,"L",210,60,"L",210,204,"L",200,204,"Z","M",310,60,"L",320,60,"L",320,204,"L",310,204,"Z"],
+            "positiveColumnLineNumberOffsets":[0,105,215,320],
+            "negativeColumnLineNumberOffsets":[0,105,215,320],
+            "gridBorder":["M",100,60,"L",420,60,"L",420,204,"L",100,204,"Z"],
+            "gridHighlightConfig":{"gridBorderDash":false,"cellBorderDash":true,"showGridExtensionLines":false,"showPositiveLineNumbers":true,"showNegativeLineNumbers":true,"cellBorderColor":"rgba(147, 52, 230, 1)","rowHatchColor":"rgba(147, 52, 230, .8)","columnHatchColor":"rgba(147, 52, 230, .8)"},
+            "isPrimaryGrid":true
+          }
+        ]
+      },
+      // 3x3 grid with a leading implicit row and a leading implicit column.
+      {
+        "paths":[
+          {"path":["M",200,400,"L",800,400,"L",800,800,"L",200,800,"Z"],"fillColor":"rgba(111, 168, 220, .66)","name":"content"},
+          {"path":["M",180,380,"L",820,380,"L",820,820,"L",180,820,"Z"],"fillColor":"rgba(246, 178, 107, .6)","name":"margin"}
+        ],
+        "gridInfo":[
+          {"rows":["M",200,400,"L",800,400,"L",800,495,"L",200,495,"Z","M",200,505,"L",800,505,"L",800,595,"L",200,595,"Z","M",200,605,"L",800,605,"L",800,695,"L",200,695,"Z","M",200,705,"L",800,705,"L",800,800,"L",200,800,"Z"],
+          "rowGaps":["M",200,495,"L",800,495,"L",800,505,"L",200,505,"Z","M",200,595,"L",800,595,"L",800,605,"L",200,605,"Z","M",200,695,"L",800,695,"L",800,705,"L",200,705,"Z"],
+          "positiveRowLineNumberOffsets":[100,200,300,400],
+          "negativeRowLineNumberOffsets":[0,100,200,300],
+          "columns":["M",200,400,"L",400,400,"L",400,800,"L",200,800,"Z","M",400,400,"L",600,400,"L",600,800,"L",400,800,"Z","M",600,400,"L",800,400,"L",800,800,"L",600,800,"Z"],
+          "columnGaps":[],
+          "positiveColumnLineNumberOffsets":[200,400,600],
+          "negativeColumnLineNumberOffsets":[0,200,400],
+          "gridBorder":["M",200,400,"L",800,400,"L",800,800,"L",200,800,"Z"],
+          "gridHighlightConfig":{"gridBorderDash":false,"cellBorderDash":true,"showGridExtensionLines":false,"showPositiveLineNumbers":true,"showNegativeLineNumbers":true,"cellBorderColor":"rgba(147, 52, 230, 1)","rowHatchColor":"rgba(147, 52, 230, .8)","columnHatchColor":"rgba(147, 52, 230, .8)"},
+          "isPrimaryGrid":true
+        }
+      ]
+    }
+  ];
+
     function test() {
       setPlatform("mac");
+
+      window.viewportSize = {
+        width: document.documentElement.clientWidth,
+        height: document.documentElement.clientHeight
+      };
       reset(window);
-      // Grid based on https://gridbyexample.com/examples/code/example1.html
-      drawHighlight({
-        "paths": [{ "path": ["M", 100, 60, "L", 891, 60, "L", 891, 204, "L", 100, 204, "Z"], "fillColor": "rgba(255,0,0,0)", "outlineColor": "rgba(128,0,0,0)", "name": "content" },
-        { "path": ["M", 90, 50, "L", 901, 50, "L", 901, 214, "L", 90, 214, "Z"], "fillColor": "rgba(0,255,0,0)", "name": "padding" },
-        { "path": ["M", 90, 50, "L", 901, 50, "L", 901, 214, "L", 90, 214, "Z"], "fillColor": "rgba(0,0,255,0)", "name": "border" },
-        { "path": ["M", 40, 0, "L", 951, 0, "L", 951, 264, "L", 40, 264, "Z"], "fillColor": "rgba(255,255,255,0)", "name": "margin" }],
-        "showRulers": false, "showExtensionLines": false,
-        "elementInfo": { "tagName": "div", "idValue": "", "className": ".wrapper", "nodeWidth": "811", "nodeHeight": "164", "isKeyboardFocusable": false, "accessibleName": "", "accessibleRole": "generic" },
-        "gridInfo": [{
-          "rows": ["M", 100, 60, "L", 420, 60, "L", 420, 127, "L", 100, 127, "Z", "M", 100, 137, "L", 420, 137, "L", 420, 204, "L", 100, 204, "Z"],
-          "rowGaps": ["M", 100, 127, "L", 420, 127, "L", 420, 137, "L", 100, 137, "Z"],
-          "positiveRowLineNumberOffsets": [0, 72, 144], "negativeRowLineNumberOffsets": [0, 72, 144],
-          "columns": ["M", 100, 60, "L", 200, 60, "L", 200, 204, "L", 100, 204, "Z", "M", 210, 60, "L", 310, 60, "L", 310, 204, "L", 210, 204, "Z", "M", 320, 60, "L", 420, 60, "L", 420, 204, "L", 320, 204, "Z"],
-          "columnGaps": ["M", 200, 60, "L", 210, 60, "L", 210, 204, "L", 200, 204, "Z", "M", 310, 60, "L", 320, 60, "L", 320, 204, "L", 310, 204, "Z"],
-          "positiveColumnLineNumberOffsets": [0, 105, 215, 320], "negativeColumnLineNumberOffsets": [0, 105, 215, 320],
-          "gridBorder": ["M", 100, 60, "L", 420, 60, "L", 420, 1027, "L", 100, 1027, "Z"],
-          "gridHighlightConfig": {
-            "gridBorderDash": false, "cellBorderDash": true, "showGridExtensionLines": true, "showPositiveLineNumbers": true,
-            "showNegativeLineNumbers": true,
-            "gridBorderColor": "rgba(255, 0, 0, 0)", "cellBorderColor": "rgba(26, 115, 232, 1)", "rowGapColor": "rgba(147, 52, 230, .3)",
-            "columnGapColor": "rgba(147, 52, 230, .3)", "rowHatchColor": "rgba(147, 52, 230, .8)", "columnHatchColor": "rgba(147, 52, 230, .8)"
-          }, "isPrimaryGrid": true
-        }]
-      });
+
+      // Note that, for now, line number labels can only appear once in the document, so they will only be drawn on the
+      // last test grid. Comment out entries in the TESTS array if you want numbers to appear on another grid.
+      for (const config of TESTS) {
+        drawHighlight(config);
+      }
     }
+
     test();
   </script>
 </body>

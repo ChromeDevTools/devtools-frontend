@@ -1,0 +1,38 @@
+{
+  "name": "acorn-numeric-separator",
+  "description": "Support for numeric separators in acorn",
+  "homepage": "https://github.com/acornjs/acorn-numeric-separator",
+  "contributors": [
+    "Adrian Heine <mail@adrianheine.de>"
+  ],
+  "main": "dist/acorn-numeric-separator.js",
+  "module": "dist/acorn-numeric-separator.mjs",
+  "engines": {
+    "node": ">=4.8.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/acornjs/acorn-numeric-separator"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "rollup -c rollup.config.js",
+    "prepare": "npm run build",
+    "test": "mocha",
+    "test:test262": "node run_test262.js",
+    "lint": "eslint -c .eslintrc.json ."
+  },
+  "peerDependencies": {
+    "acorn": "^6 || ^7"
+  },
+  "version": "0.3.3",
+  "devDependencies": {
+    "acorn": "^7",
+    "eslint": "^6",
+    "eslint-plugin-node": "^11",
+    "mocha": "^7",
+    "rollup": "^2.10.0",
+    "test262": "git+https://github.com/tc39/test262.git#a3c7d30cbb68ebcdc522df362dffbc31465b0d1d",
+    "test262-parser-runner": "^0.5.0"
+  }
+}

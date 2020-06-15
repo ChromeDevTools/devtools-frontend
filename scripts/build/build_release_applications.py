@@ -44,11 +44,8 @@ MODULE_LIST = [
     for subfolder in os.listdir(FRONT_END_DIRECTORY)
     if path.isdir(os.path.join(FRONT_END_DIRECTORY, subfolder))
 ]
-
-ROLLUP_ARGS = [
-    '--no-treeshake', '--format', 'esm', '--context', 'self', '--external',
-    ','.join([path.abspath(module) for module in MODULE_LIST])
-]
+EXTERNAL_MODULE_LIST = ','.join(
+    [path.abspath(module) for module in MODULE_LIST])
 
 
 def main(argv):
@@ -216,16 +213,18 @@ class ReleaseBuilder(object):
         js_entrypoint = join(self.application_dir, module_name, module_name + '.js')
         out = ''
         if self.use_rollup:
-            rollup_process = subprocess.Popen(
-                [devtools_paths.node_path(),
-                 devtools_paths.rollup_path()] + ROLLUP_ARGS +
-                ['--input', js_entrypoint],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE)
+            rollup_process = subprocess.Popen([
+                devtools_paths.node_path(),
+                devtools_paths.rollup_path(), '--config',
+                join(FRONT_END_DIRECTORY, 'rollup.config.js'), '--input',
+                js_entrypoint, '--external', EXTERNAL_MODULE_LIST
+            ],
+                                              stdout=subprocess.PIPE,
+                                              stderr=subprocess.PIPE)
             out, error = rollup_process.communicate()
             if rollup_process.returncode != 0:
                 print(error)
-                os.exit(rollup_process.returncode)
+                sys.exit(rollup_process.returncode)
         else:
             out = read_file(js_entrypoint)
         write_file(join(self.output_dir, module_name, module_name + '.js'),

@@ -1713,6 +1713,7 @@ action("build_release_devtools") {
   helper_scripts = [
     "scripts/build/modular_build.py",
     "scripts/build/rjsmin.py",
+    "front_end/rollup.config.js",
   ]
 
   deps = [ "front_end" ]

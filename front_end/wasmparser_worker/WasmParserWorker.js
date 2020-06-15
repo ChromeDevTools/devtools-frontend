@@ -111,7 +111,6 @@ self.onmessage = async function(event) {
   const dis = new WasmDis.WasmDisassembler();
   dis.addOffsets = true;
   dis.exportMetadata = nameGenerator.getExportMetadata();
-  dis.maxLines = 1000 * 1000;
   dis.nameResolver = nameGenerator.getNameResolver();
   parser = new BinaryReaderWithProgress(percentage => {
     this.postMessage(
@@ -120,6 +119,20 @@ self.onmessage = async function(event) {
   parser.setData(buffer, 0, buffer.byteLength);
   dis.disassembleChunk(parser);
   const {lines, offsets, functionBodyOffsets} = dis.getResult();
+
+  // Truncate the output to 1M lines, because CodeMirror gets glitchy above that.
+  // TODO(bmeurer): This is not very performant and we also risk running out of
+  // memory in the worker (seems to work for the cases that we know about for now),
+  // so we should look into using the chunked disassembly to implement this in a
+  // more reasonable fashion.
+  const MAX_LINES = 1000 * 1000;
+  if (lines.length > MAX_LINES) {
+    lines[MAX_LINES] = ';; .... text is truncated due to size';
+    lines.splice(MAX_LINES + 1);
+    if (offsets) {
+      offsets.splice(MAX_LINES + 1);
+    }
+  }
 
   this.postMessage({event: 'progress', params: {percentage: FINALIZATION_WEIGHT}});
 

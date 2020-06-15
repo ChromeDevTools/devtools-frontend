@@ -64,6 +64,9 @@ def properties_from_file(file_name):
         if "alias_for" in entry:
             aliases_for.append([entry["name"], entry["alias_for"]])
             continue
+        # Filter out internal properties.
+        if entry["name"].startswith("-internal-"):
+            continue
         properties.append(_keep_only_required_keys(entry))
         property_names[entry["name"]] = entry
         if "keywords" in entry:

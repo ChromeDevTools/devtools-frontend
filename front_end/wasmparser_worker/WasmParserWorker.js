@@ -97,7 +97,7 @@ self.onmessage = async function(event) {
 
   const NAME_GENERATOR_WEIGHT = 30;
   const DISASSEMBLY_WEIGHT = 69;
-  const FINALIZATION_WEIGHT = 100 - (NAME_GENERATOR_WEIGHT + DISASSEMBLY_WEIGHT);
+  const FINALIZATION_WEIGHT = NAME_GENERATOR_WEIGHT + DISASSEMBLY_WEIGHT;
 
   const buffer = base64Decode(params.content);
 

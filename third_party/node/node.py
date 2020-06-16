@@ -24,8 +24,9 @@ def RunNode(cmd_parts):
     process = subprocess.Popen(cmd, cwd=os.getcwd())
     stdout, stderr = process.communicate()
 
-    if stderr:
-        raise RuntimeError('%s failed: %s' % (cmd, stderr))
+    if process.returncode is not 0:
+        print('%s failed: %s' % (cmd, stderr))
+        exit(process.returncode)
 
     return stdout
 

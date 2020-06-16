@@ -12,20 +12,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Transform } from 'stream';
-import { BinaryReader } from './WasmParser.js';
-export { BinaryReaderState, SectionCode } from './WasmParser.js';
+import { Transform } from "stream";
+import { BinaryReader } from "./WasmParser.js";
+export { BinaryReaderState, SectionCode } from "./WasmParser.js";
 export class BinaryReaderTransform extends Transform {
     constructor() {
         super({
-            readableObjectMode: true
+            readableObjectMode: true,
         });
         this._buffer = new ArrayBuffer(1024);
         this._bufferSize = 0;
         this._parser = new BinaryReader();
     }
     _transform(chunk, encoding, callback) {
-        var buf = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk, encoding);
+        var buf = Buffer.isBuffer(chunk)
+            ? chunk
+            : Buffer.from(chunk, encoding);
         var bufferNeeded = this._bufferSize + buf.length;
         if (bufferNeeded > this._buffer.byteLength) {
             var oldData = new Uint8Array(this._buffer, 0, this._bufferSize);
@@ -41,7 +43,7 @@ export class BinaryReaderTransform extends Transform {
         while (parser.read()) {
             this.push({
                 state: parser.state,
-                result: parser.result
+                result: parser.result,
             });
         }
         if (parser.position > 0) {
@@ -59,7 +61,7 @@ export class BinaryReaderTransform extends Transform {
         while (parser.read()) {
             this.push({
                 state: parser.state,
-                result: parser.result
+                result: parser.result,
             });
         }
         this._bufferSize = 0;

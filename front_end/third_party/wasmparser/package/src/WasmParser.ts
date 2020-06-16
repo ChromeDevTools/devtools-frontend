@@ -487,21 +487,628 @@ export const enum OperatorCode {
   i32x4_trunc_sat_f32x4_u = 0xfdf9,
   f32x4_convert_i32x4_s = 0xfdfa,
   f32x4_convert_i32x4_u = 0xfdfb,
-};
+}
 
 export const OperatorCodeNames = [
-  "unreachable", "nop", "block", "loop", "if", "else", undefined, undefined, undefined, undefined, undefined, "end", "br", "br_if", "br_table", "return", "call", "call_indirect", "return_call", "return_call_indirect", undefined, undefined, undefined, undefined, undefined, undefined, "drop", "select", undefined, undefined, undefined, undefined, "local.get", "local.set", "local.tee", "global.get", "global.set", "table.get", "table.set", undefined, "i32.load", "i64.load", "f32.load", "f64.load", "i32.load8_s", "i32.load8_u", "i32.load16_s", "i32.load16_u", "i64.load8_s", "i64.load8_u", "i64.load16_s", "i64.load16_u", "i64.load32_s", "i64.load32_u", "i32.store", "i64.store", "f32.store", "f64.store", "i32.store8", "i32.store16", "i64.store8", "i64.store16", "i64.store32", "current_memory", "grow_memory", "i32.const", "i64.const", "f32.const", "f64.const", "i32.eqz", "i32.eq", "i32.ne", "i32.lt_s", "i32.lt_u", "i32.gt_s", "i32.gt_u", "i32.le_s", "i32.le_u", "i32.ge_s", "i32.ge_u", "i64.eqz", "i64.eq", "i64.ne", "i64.lt_s", "i64.lt_u", "i64.gt_s", "i64.gt_u", "i64.le_s", "i64.le_u", "i64.ge_s", "i64.ge_u", "f32.eq", "f32.ne", "f32.lt", "f32.gt", "f32.le", "f32.ge", "f64.eq", "f64.ne", "f64.lt", "f64.gt", "f64.le", "f64.ge", "i32.clz", "i32.ctz", "i32.popcnt", "i32.add", "i32.sub", "i32.mul", "i32.div_s", "i32.div_u", "i32.rem_s", "i32.rem_u", "i32.and", "i32.or", "i32.xor", "i32.shl", "i32.shr_s", "i32.shr_u", "i32.rotl", "i32.rotr", "i64.clz", "i64.ctz", "i64.popcnt", "i64.add", "i64.sub", "i64.mul", "i64.div_s", "i64.div_u", "i64.rem_s", "i64.rem_u", "i64.and", "i64.or", "i64.xor", "i64.shl", "i64.shr_s", "i64.shr_u", "i64.rotl", "i64.rotr", "f32.abs", "f32.neg", "f32.ceil", "f32.floor", "f32.trunc", "f32.nearest", "f32.sqrt", "f32.add", "f32.sub", "f32.mul", "f32.div", "f32.min", "f32.max", "f32.copysign", "f64.abs", "f64.neg", "f64.ceil", "f64.floor", "f64.trunc", "f64.nearest", "f64.sqrt", "f64.add", "f64.sub", "f64.mul", "f64.div", "f64.min", "f64.max", "f64.copysign", "i32.wrap_i64", "i32.trunc_f32_s", "i32.trunc_f32_u", "i32.trunc_f64_s", "i32.trunc_f64_u", "i64.extend_i32_s", "i64.extend_i32_u", "i64.trunc_f32_s", "i64.trunc_f32_u", "i64.trunc_f64_s", "i64.trunc_f64_u", "f32.convert_i32_s", "f32.convert_i32_u", "f32.convert_i64_s", "f32.convert_i64_u", "f32.demote_f64", "f64.convert_i32_s", "f64.convert_i32_u", "f64.convert_i64_s", "f64.convert_i64_u", "f64.promote_f32", "i32.reinterpret_f32", "i64.reinterpret_f64", "f32.reinterpret_i32", "f64.reinterpret_i64", "i32.extend8_s", "i32.extend16_s", "i64.extend8_s", "i64.extend16_s", "i64.extend32_s", undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, "ref.null", "ref.is_null", "ref.func", undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined
+  "unreachable",
+  "nop",
+  "block",
+  "loop",
+  "if",
+  "else",
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  "end",
+  "br",
+  "br_if",
+  "br_table",
+  "return",
+  "call",
+  "call_indirect",
+  "return_call",
+  "return_call_indirect",
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  "drop",
+  "select",
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  "local.get",
+  "local.set",
+  "local.tee",
+  "global.get",
+  "global.set",
+  "table.get",
+  "table.set",
+  undefined,
+  "i32.load",
+  "i64.load",
+  "f32.load",
+  "f64.load",
+  "i32.load8_s",
+  "i32.load8_u",
+  "i32.load16_s",
+  "i32.load16_u",
+  "i64.load8_s",
+  "i64.load8_u",
+  "i64.load16_s",
+  "i64.load16_u",
+  "i64.load32_s",
+  "i64.load32_u",
+  "i32.store",
+  "i64.store",
+  "f32.store",
+  "f64.store",
+  "i32.store8",
+  "i32.store16",
+  "i64.store8",
+  "i64.store16",
+  "i64.store32",
+  "current_memory",
+  "memory.grow",
+  "i32.const",
+  "i64.const",
+  "f32.const",
+  "f64.const",
+  "i32.eqz",
+  "i32.eq",
+  "i32.ne",
+  "i32.lt_s",
+  "i32.lt_u",
+  "i32.gt_s",
+  "i32.gt_u",
+  "i32.le_s",
+  "i32.le_u",
+  "i32.ge_s",
+  "i32.ge_u",
+  "i64.eqz",
+  "i64.eq",
+  "i64.ne",
+  "i64.lt_s",
+  "i64.lt_u",
+  "i64.gt_s",
+  "i64.gt_u",
+  "i64.le_s",
+  "i64.le_u",
+  "i64.ge_s",
+  "i64.ge_u",
+  "f32.eq",
+  "f32.ne",
+  "f32.lt",
+  "f32.gt",
+  "f32.le",
+  "f32.ge",
+  "f64.eq",
+  "f64.ne",
+  "f64.lt",
+  "f64.gt",
+  "f64.le",
+  "f64.ge",
+  "i32.clz",
+  "i32.ctz",
+  "i32.popcnt",
+  "i32.add",
+  "i32.sub",
+  "i32.mul",
+  "i32.div_s",
+  "i32.div_u",
+  "i32.rem_s",
+  "i32.rem_u",
+  "i32.and",
+  "i32.or",
+  "i32.xor",
+  "i32.shl",
+  "i32.shr_s",
+  "i32.shr_u",
+  "i32.rotl",
+  "i32.rotr",
+  "i64.clz",
+  "i64.ctz",
+  "i64.popcnt",
+  "i64.add",
+  "i64.sub",
+  "i64.mul",
+  "i64.div_s",
+  "i64.div_u",
+  "i64.rem_s",
+  "i64.rem_u",
+  "i64.and",
+  "i64.or",
+  "i64.xor",
+  "i64.shl",
+  "i64.shr_s",
+  "i64.shr_u",
+  "i64.rotl",
+  "i64.rotr",
+  "f32.abs",
+  "f32.neg",
+  "f32.ceil",
+  "f32.floor",
+  "f32.trunc",
+  "f32.nearest",
+  "f32.sqrt",
+  "f32.add",
+  "f32.sub",
+  "f32.mul",
+  "f32.div",
+  "f32.min",
+  "f32.max",
+  "f32.copysign",
+  "f64.abs",
+  "f64.neg",
+  "f64.ceil",
+  "f64.floor",
+  "f64.trunc",
+  "f64.nearest",
+  "f64.sqrt",
+  "f64.add",
+  "f64.sub",
+  "f64.mul",
+  "f64.div",
+  "f64.min",
+  "f64.max",
+  "f64.copysign",
+  "i32.wrap_i64",
+  "i32.trunc_f32_s",
+  "i32.trunc_f32_u",
+  "i32.trunc_f64_s",
+  "i32.trunc_f64_u",
+  "i64.extend_i32_s",
+  "i64.extend_i32_u",
+  "i64.trunc_f32_s",
+  "i64.trunc_f32_u",
+  "i64.trunc_f64_s",
+  "i64.trunc_f64_u",
+  "f32.convert_i32_s",
+  "f32.convert_i32_u",
+  "f32.convert_i64_s",
+  "f32.convert_i64_u",
+  "f32.demote_f64",
+  "f64.convert_i32_s",
+  "f64.convert_i32_u",
+  "f64.convert_i64_s",
+  "f64.convert_i64_u",
+  "f64.promote_f32",
+  "i32.reinterpret_f32",
+  "i64.reinterpret_f64",
+  "f32.reinterpret_i32",
+  "f64.reinterpret_i64",
+  "i32.extend8_s",
+  "i32.extend16_s",
+  "i64.extend8_s",
+  "i64.extend16_s",
+  "i64.extend32_s",
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  "ref.null",
+  "ref.is_null",
+  "ref.func",
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
 ];
 
-["i32.trunc_sat_f32_s", "i32.trunc_sat_f32_u", "i32.trunc_sat_f64_s", "i32.trunc_sat_f64_u", "i64.trunc_sat_f32_s", "i64.trunc_sat_f32_u", "i64.trunc_sat_f64_s", "i64.trunc_sat_f64_u", "memory.init", "data.drop", "memory.copy", "memory.fill", "table.init", "elem.drop", "table.copy", "table.grow", "table.size", "table.fill"].forEach((s, i) => {
+[
+  "i32.trunc_sat_f32_s",
+  "i32.trunc_sat_f32_u",
+  "i32.trunc_sat_f64_s",
+  "i32.trunc_sat_f64_u",
+  "i64.trunc_sat_f32_s",
+  "i64.trunc_sat_f32_u",
+  "i64.trunc_sat_f64_s",
+  "i64.trunc_sat_f64_u",
+  "memory.init",
+  "data.drop",
+  "memory.copy",
+  "memory.fill",
+  "table.init",
+  "elem.drop",
+  "table.copy",
+  "table.grow",
+  "table.size",
+  "table.fill",
+].forEach((s, i) => {
   OperatorCodeNames[0xfc00 | i] = s;
 });
 
-["v128.load", "i16x8.load8x8_s", "i16x8.load8x8_u", "i32x4.load16x4_s", "i32x4.load16x4_u", "i64x2.load32x2_s", "i64x2.load32x2_u", "v8x16.load_splat", "v16x8.load_splat", "v32x4.load_splat", "v64x2.load_splat", "v128.store", "v128.const", "v8x16.shuffle", "v8x16.swizzle", "i8x16.splat", "i16x8.splat", "i32x4.splat", "i64x2.splat", "f32x4.splat", "f64x2.splat", "i8x16.extract_lane_s", "i8x16.extract_lane_u", "i8x16.replace_lane", "i16x8.extract_lane_s", "i16x8.extract_lane_u", "i16x8.replace_lane", "i32x4.extract_lane", "i32x4.replace_lane", "i64x2.extract_lane", "i64x2.replace_lane", "f32x4.extract_lane", "f32x4.replace_lane", "f64x2.extract_lane", "f64x2.replace_lane", "i8x16.eq", "i8x16.ne", "i8x16.lt_s", "i8x16.lt_u", "i8x16.gt_s", "i8x16.gt_u", "i8x16.le_s", "i8x16.le_u", "i8x16.ge_s", "i8x16.ge_u", "i16x8.eq", "i16x8.ne", "i16x8.lt_s", "i16x8.lt_u", "i16x8.gt_s", "i16x8.gt_u", "i16x8.le_s", "i16x8.le_u", "i16x8.ge_s", "i16x8.ge_u", "i32x4.eq", "i32x4.ne", "i32x4.lt_s", "i32x4.lt_u", "i32x4.gt_s", "i32x4.gt_u", "i32x4.le_s", "i32x4.le_u", "i32x4.ge_s", "i32x4.ge_u", "f32x4.eq", "f32x4.ne", "f32x4.lt", "f32x4.gt", "f32x4.le", "f32x4.ge", "f64x2.eq", "f64x2.ne", "f64x2.lt", "f64x2.gt", "f64x2.le", "f64x2.ge", "v128.not", "v128.and", "v128.andnot", "v128.or", "v128.xor", "v128.bitselect", undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, "i8x16.abs", "i8x16.neg", "i8x16.any_true", "i8x16.all_true", undefined, "i8x16.narrow_i16x8_s", "i8x16.narrow_i16x8_u", undefined, undefined, undefined, undefined, "i8x16.shl", "i8x16.shr_s", "i8x16.shr_u", "i8x16.add", "i8x16.add_saturate_s", "i8x16.add_saturate_u", "i8x16.sub", "i8x16.sub_saturate_s", "i8x16.sub_saturate_u", undefined, undefined, "i8x16.min_s", "i8x16.min_u", "i8x16.max_s", "i8x16.max_u", undefined, "i8x16.avgr_u", undefined, undefined, undefined, undefined, "i16x8.abs", "i16x8.neg", "i16x8.any_true", "i16x8.all_true", undefined, "i16x8.narrow_i32x4_s", "i16x8.narrow_i32x4_u", "i16x8.widen_low_i8x16_s", "i16x8.widen_high_i8x16_s", "i16x8.widen_low_i8x16_u", "i16x8.widen_high_i8x16_u", "i16x8.shl", "i16x8.shr_s", "i16x8.shr_u", "i16x8.add", "i16x8.add_saturate_s", "i16x8.add_saturate_u", "i16x8.sub", "i16x8.sub_saturate_s", "i16x8.sub_saturate_u", undefined, "i16x8.mul", "i16x8.min_s", "i16x8.min_u", "i16x8.max_s", "i16x8.max_u", undefined, "i16x8.avgr_u", undefined, undefined, undefined, undefined, "i32x4.abs", "i32x4.neg", "i32x4.any_true", "i32x4.all_true", undefined, undefined, undefined, "i32x4.widen_low_i16x8_s", "i32x4.widen_high_i16x8_s", "i32x4.widen_low_i16x8_u", "i32x4.widen_high_i16x8_u", "i32x4.shl", "i32x4.shr_s", "i32x4.shr_u", "i32x4.add", undefined, undefined, "i32x4.sub", undefined, undefined, undefined, "i32x4.mul", "i32x4.min_s", "i32x4.min_u", "i32x4.max_s", "i32x4.max_u", undefined, undefined, undefined, undefined, undefined, undefined, undefined, "i64x2.neg", undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, "i64x2.shl", "i64x2.shr_s", "i64x2.shr_u", "i64x2.add", undefined, undefined, "i64x2.sub", undefined, undefined, undefined, "i64x2.mul", undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, "f32x4.abs", "f32x4.neg", undefined, "f32x4.sqrt", "f32x4.add", "f32x4.sub", "f32x4.mul", "f32x4.div", "f32x4.min", "f32x4.max", undefined, undefined, "f64x2.abs", "f64x2.neg", undefined, "f64x2.sqrt", "f64x2.add", "f64x2.sub", "f64x2.mul", "f64x2.div", "f64x2.min", "f64x2.max", undefined, undefined, "i32x4.trunc_sat_f32x4_s", "i32x4.trunc_sat_f32x4_u", "f32x4.convert_i32x4_s", "f32x4.convert_i32x4_u"].forEach((s, i) => {
+[
+  "v128.load",
+  "i16x8.load8x8_s",
+  "i16x8.load8x8_u",
+  "i32x4.load16x4_s",
+  "i32x4.load16x4_u",
+  "i64x2.load32x2_s",
+  "i64x2.load32x2_u",
+  "v8x16.load_splat",
+  "v16x8.load_splat",
+  "v32x4.load_splat",
+  "v64x2.load_splat",
+  "v128.store",
+  "v128.const",
+  "v8x16.shuffle",
+  "v8x16.swizzle",
+  "i8x16.splat",
+  "i16x8.splat",
+  "i32x4.splat",
+  "i64x2.splat",
+  "f32x4.splat",
+  "f64x2.splat",
+  "i8x16.extract_lane_s",
+  "i8x16.extract_lane_u",
+  "i8x16.replace_lane",
+  "i16x8.extract_lane_s",
+  "i16x8.extract_lane_u",
+  "i16x8.replace_lane",
+  "i32x4.extract_lane",
+  "i32x4.replace_lane",
+  "i64x2.extract_lane",
+  "i64x2.replace_lane",
+  "f32x4.extract_lane",
+  "f32x4.replace_lane",
+  "f64x2.extract_lane",
+  "f64x2.replace_lane",
+  "i8x16.eq",
+  "i8x16.ne",
+  "i8x16.lt_s",
+  "i8x16.lt_u",
+  "i8x16.gt_s",
+  "i8x16.gt_u",
+  "i8x16.le_s",
+  "i8x16.le_u",
+  "i8x16.ge_s",
+  "i8x16.ge_u",
+  "i16x8.eq",
+  "i16x8.ne",
+  "i16x8.lt_s",
+  "i16x8.lt_u",
+  "i16x8.gt_s",
+  "i16x8.gt_u",
+  "i16x8.le_s",
+  "i16x8.le_u",
+  "i16x8.ge_s",
+  "i16x8.ge_u",
+  "i32x4.eq",
+  "i32x4.ne",
+  "i32x4.lt_s",
+  "i32x4.lt_u",
+  "i32x4.gt_s",
+  "i32x4.gt_u",
+  "i32x4.le_s",
+  "i32x4.le_u",
+  "i32x4.ge_s",
+  "i32x4.ge_u",
+  "f32x4.eq",
+  "f32x4.ne",
+  "f32x4.lt",
+  "f32x4.gt",
+  "f32x4.le",
+  "f32x4.ge",
+  "f64x2.eq",
+  "f64x2.ne",
+  "f64x2.lt",
+  "f64x2.gt",
+  "f64x2.le",
+  "f64x2.ge",
+  "v128.not",
+  "v128.and",
+  "v128.andnot",
+  "v128.or",
+  "v128.xor",
+  "v128.bitselect",
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  "i8x16.abs",
+  "i8x16.neg",
+  "i8x16.any_true",
+  "i8x16.all_true",
+  undefined,
+  "i8x16.narrow_i16x8_s",
+  "i8x16.narrow_i16x8_u",
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  "i8x16.shl",
+  "i8x16.shr_s",
+  "i8x16.shr_u",
+  "i8x16.add",
+  "i8x16.add_saturate_s",
+  "i8x16.add_saturate_u",
+  "i8x16.sub",
+  "i8x16.sub_saturate_s",
+  "i8x16.sub_saturate_u",
+  undefined,
+  undefined,
+  "i8x16.min_s",
+  "i8x16.min_u",
+  "i8x16.max_s",
+  "i8x16.max_u",
+  undefined,
+  "i8x16.avgr_u",
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  "i16x8.abs",
+  "i16x8.neg",
+  "i16x8.any_true",
+  "i16x8.all_true",
+  undefined,
+  "i16x8.narrow_i32x4_s",
+  "i16x8.narrow_i32x4_u",
+  "i16x8.widen_low_i8x16_s",
+  "i16x8.widen_high_i8x16_s",
+  "i16x8.widen_low_i8x16_u",
+  "i16x8.widen_high_i8x16_u",
+  "i16x8.shl",
+  "i16x8.shr_s",
+  "i16x8.shr_u",
+  "i16x8.add",
+  "i16x8.add_saturate_s",
+  "i16x8.add_saturate_u",
+  "i16x8.sub",
+  "i16x8.sub_saturate_s",
+  "i16x8.sub_saturate_u",
+  undefined,
+  "i16x8.mul",
+  "i16x8.min_s",
+  "i16x8.min_u",
+  "i16x8.max_s",
+  "i16x8.max_u",
+  undefined,
+  "i16x8.avgr_u",
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  "i32x4.abs",
+  "i32x4.neg",
+  "i32x4.any_true",
+  "i32x4.all_true",
+  undefined,
+  undefined,
+  undefined,
+  "i32x4.widen_low_i16x8_s",
+  "i32x4.widen_high_i16x8_s",
+  "i32x4.widen_low_i16x8_u",
+  "i32x4.widen_high_i16x8_u",
+  "i32x4.shl",
+  "i32x4.shr_s",
+  "i32x4.shr_u",
+  "i32x4.add",
+  undefined,
+  undefined,
+  "i32x4.sub",
+  undefined,
+  undefined,
+  undefined,
+  "i32x4.mul",
+  "i32x4.min_s",
+  "i32x4.min_u",
+  "i32x4.max_s",
+  "i32x4.max_u",
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  "i64x2.neg",
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  "i64x2.shl",
+  "i64x2.shr_s",
+  "i64x2.shr_u",
+  "i64x2.add",
+  undefined,
+  undefined,
+  "i64x2.sub",
+  undefined,
+  undefined,
+  undefined,
+  "i64x2.mul",
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  "f32x4.abs",
+  "f32x4.neg",
+  undefined,
+  "f32x4.sqrt",
+  "f32x4.add",
+  "f32x4.sub",
+  "f32x4.mul",
+  "f32x4.div",
+  "f32x4.min",
+  "f32x4.max",
+  undefined,
+  undefined,
+  "f64x2.abs",
+  "f64x2.neg",
+  undefined,
+  "f64x2.sqrt",
+  "f64x2.add",
+  "f64x2.sub",
+  "f64x2.mul",
+  "f64x2.div",
+  "f64x2.min",
+  "f64x2.max",
+  undefined,
+  undefined,
+  "i32x4.trunc_sat_f32x4_s",
+  "i32x4.trunc_sat_f32x4_u",
+  "f32x4.convert_i32x4_s",
+  "f32x4.convert_i32x4_u",
+].forEach((s, i) => {
   OperatorCodeNames[0xfd00 | i] = s;
 });
 
-["atomic.notify", "i32.atomic.wait", "i64.atomic.wait", undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, "i32.atomic.load", "i64.atomic.load", "i32.atomic.load8_u", "i32.atomic.load16_u", "i64.atomic.load8_u", "i64.atomic.load16_u", "i64.atomic.load32_u", "i32.atomic.store", "i64.atomic.store", "i32.atomic.store8", "i32.atomic.store16", "i64.atomic.store8", "i64.atomic.store16", "i64.atomic.store32", "i32.atomic.rmw.add", "i64.atomic.rmw.add", "i32.atomic.rmw8.add_u", "i32.atomic.rmw16.add_u", "i64.atomic.rmw8.add_u", "i64.atomic.rmw16.add_u", "i64.atomic.rmw32.add_u", "i32.atomic.rmw.sub", "i64.atomic.rmw.sub", "i32.atomic.rmw8.sub_u", "i32.atomic.rmw16.sub_u", "i64.atomic.rmw8.sub_u", "i64.atomic.rmw16.sub_u", "i64.atomic.rmw32.sub_u", "i32.atomic.rmw.and", "i64.atomic.rmw.and", "i32.atomic.rmw8.and_u", "i32.atomic.rmw16.and_u", "i64.atomic.rmw8.and_u", "i64.atomic.rmw16.and_u", "i64.atomic.rmw32.and_u", "i32.atomic.rmw.or", "i64.atomic.rmw.or", "i32.atomic.rmw8.or_u", "i32.atomic.rmw16.or_u", "i64.atomic.rmw8.or_u", "i64.atomic.rmw16.or_u", "i64.atomic.rmw32.or_u", "i32.atomic.rmw.xor", "i64.atomic.rmw.xor", "i32.atomic.rmw8.xor_u", "i32.atomic.rmw16.xor_u", "i64.atomic.rmw8.xor_u", "i64.atomic.rmw16.xor_u", "i64.atomic.rmw32.xor_u", "i32.atomic.rmw.xchg", "i64.atomic.rmw.xchg", "i32.atomic.rmw8.xchg_u", "i32.atomic.rmw16.xchg_u", "i64.atomic.rmw8.xchg_u", "i64.atomic.rmw16.xchg_u", "i64.atomic.rmw32.xchg_u", "i32.atomic.rmw.cmpxchg", "i64.atomic.rmw.cmpxchg", "i32.atomic.rmw8.cmpxchg_u", "i32.atomic.rmw16.cmpxchg_u", "i64.atomic.rmw8.cmpxchg_u", "i64.atomic.rmw16.cmpxchg_u", "i64.atomic.rmw32.cmpxchg_u"].forEach((s, i) => {
+[
+  "atomic.notify",
+  "i32.atomic.wait",
+  "i64.atomic.wait",
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  "i32.atomic.load",
+  "i64.atomic.load",
+  "i32.atomic.load8_u",
+  "i32.atomic.load16_u",
+  "i64.atomic.load8_u",
+  "i64.atomic.load16_u",
+  "i64.atomic.load32_u",
+  "i32.atomic.store",
+  "i64.atomic.store",
+  "i32.atomic.store8",
+  "i32.atomic.store16",
+  "i64.atomic.store8",
+  "i64.atomic.store16",
+  "i64.atomic.store32",
+  "i32.atomic.rmw.add",
+  "i64.atomic.rmw.add",
+  "i32.atomic.rmw8.add_u",
+  "i32.atomic.rmw16.add_u",
+  "i64.atomic.rmw8.add_u",
+  "i64.atomic.rmw16.add_u",
+  "i64.atomic.rmw32.add_u",
+  "i32.atomic.rmw.sub",
+  "i64.atomic.rmw.sub",
+  "i32.atomic.rmw8.sub_u",
+  "i32.atomic.rmw16.sub_u",
+  "i64.atomic.rmw8.sub_u",
+  "i64.atomic.rmw16.sub_u",
+  "i64.atomic.rmw32.sub_u",
+  "i32.atomic.rmw.and",
+  "i64.atomic.rmw.and",
+  "i32.atomic.rmw8.and_u",
+  "i32.atomic.rmw16.and_u",
+  "i64.atomic.rmw8.and_u",
+  "i64.atomic.rmw16.and_u",
+  "i64.atomic.rmw32.and_u",
+  "i32.atomic.rmw.or",
+  "i64.atomic.rmw.or",
+  "i32.atomic.rmw8.or_u",
+  "i32.atomic.rmw16.or_u",
+  "i64.atomic.rmw8.or_u",
+  "i64.atomic.rmw16.or_u",
+  "i64.atomic.rmw32.or_u",
+  "i32.atomic.rmw.xor",
+  "i64.atomic.rmw.xor",
+  "i32.atomic.rmw8.xor_u",
+  "i32.atomic.rmw16.xor_u",
+  "i64.atomic.rmw8.xor_u",
+  "i64.atomic.rmw16.xor_u",
+  "i64.atomic.rmw32.xor_u",
+  "i32.atomic.rmw.xchg",
+  "i64.atomic.rmw.xchg",
+  "i32.atomic.rmw8.xchg_u",
+  "i32.atomic.rmw16.xchg_u",
+  "i64.atomic.rmw8.xchg_u",
+  "i64.atomic.rmw16.xchg_u",
+  "i64.atomic.rmw32.xchg_u",
+  "i32.atomic.rmw.cmpxchg",
+  "i64.atomic.rmw.cmpxchg",
+  "i32.atomic.rmw8.cmpxchg_u",
+  "i32.atomic.rmw16.cmpxchg_u",
+  "i64.atomic.rmw8.cmpxchg_u",
+  "i64.atomic.rmw16.cmpxchg_u",
+  "i64.atomic.rmw32.cmpxchg_u",
+].forEach((s, i) => {
   OperatorCodeNames[0xfe00 | i] = s;
 });
 
@@ -596,7 +1203,7 @@ export const enum SegmentFlags {
   HasTableIndex = 2,
   FunctionsAsElements = 4,
 }
-export const NULL_FUNCTION_INDEX = 0xFFFFFFFF;
+export const NULL_FUNCTION_INDEX = 0xffffffff;
 
 class DataRange {
   start: number;
@@ -656,12 +1263,12 @@ export interface IImportEntry {
   type?: ImportEntryType;
 }
 export interface IExportEntry {
-   field: Uint8Array;
-   kind: ExternalKind;
-   index: number;
+  field: Uint8Array;
+  kind: ExternalKind;
+  index: number;
 }
 export interface INameEntry {
-   type: NameType;
+  type: NameType;
 }
 export interface INaming {
   index: number;
@@ -742,11 +1349,16 @@ export interface IOperatorInformation {
 }
 export class Int64 {
   private _data: Uint8Array;
-  constructor (data) {
+  constructor(data: Uint8Array) {
     this._data = data || new Uint8Array(8);
   }
   public toInt32(): number {
-    return this._data[0] | (this._data[1] << 8) | (this._data[2] << 16) | (this._data[3] << 24);
+    return (
+      this._data[0] |
+      (this._data[1] << 8) |
+      (this._data[2] << 16) |
+      (this._data[3] << 24)
+    );
   }
   public toDouble(): number {
     var power = 1;
@@ -754,19 +1366,28 @@ export class Int64 {
     if (this._data[7] & 0x80) {
       sum = -1;
       for (var i = 0; i < 8; i++, power *= 256)
-        sum -= power * (0xFF ^ this._data[i]);
+        sum -= power * (0xff ^ this._data[i]);
     } else {
       sum = 0;
-      for (var i = 0; i < 8; i++, power *= 256)
-        sum += power * this._data[i];
+      for (var i = 0; i < 8; i++, power *= 256) sum += power * this._data[i];
     }
     return sum;
   }
   public toString(): string {
-    var low = (this._data[0] | (this._data[1] << 8) | (this._data[2] << 16) | (this._data[3] << 24)) >>> 0;
-    var high = (this._data[4] | (this._data[5] << 8) | (this._data[6] << 16) | (this._data[7] << 24)) >>> 0;
+    var low =
+      (this._data[0] |
+        (this._data[1] << 8) |
+        (this._data[2] << 16) |
+        (this._data[3] << 24)) >>>
+      0;
+    var high =
+      (this._data[4] |
+        (this._data[5] << 8) |
+        (this._data[6] << 16) |
+        (this._data[7] << 24)) >>>
+      0;
     if (low === 0 && high === 0) {
-      return '0';
+      return "0";
     }
     var sign = false;
     if (high >> 31) {
@@ -779,7 +1400,7 @@ export class Int64 {
     }
     var buf = [];
     while (high > 0) {
-      var t = ((high % 10) * 4294967296) + low;
+      var t = (high % 10) * 4294967296 + low;
       high = Math.floor(high / 10);
       buf.unshift((t % 10).toString());
       low = Math.floor(t / 10);
@@ -788,21 +1409,39 @@ export class Int64 {
       buf.unshift((low % 10).toString());
       low = Math.floor(low / 10);
     }
-    if (sign)
-      buf.unshift('-');
-    return buf.join('');
+    if (sign) buf.unshift("-");
+    return buf.join("");
   }
   public get data(): Uint8Array {
     return this._data;
   }
 }
 export type BinaryReaderResult =
-  IImportEntry | IExportEntry | IFunctionEntry | IFunctionType | IModuleHeader |
-  IOperatorInformation | IMemoryType | ITableType | IGlobalVariable | INameEntry |
-  IElementSegment | IElementSegmentBody | IDataSegment | IDataSegmentBody |
-  ISectionInformation | IFunctionInformation | ISectionInformation |
-  IFunctionInformation | IRelocHeader | IRelocEntry | ILinkingEntry |
-  ISourceMappingURL | IModuleNameEntry | IStartEntry | Uint8Array;
+  | IImportEntry
+  | IExportEntry
+  | IFunctionEntry
+  | IFunctionType
+  | IModuleHeader
+  | IOperatorInformation
+  | IMemoryType
+  | ITableType
+  | IGlobalVariable
+  | INameEntry
+  | IElementSegment
+  | IElementSegmentBody
+  | IDataSegment
+  | IDataSegmentBody
+  | ISectionInformation
+  | IFunctionInformation
+  | ISectionInformation
+  | IFunctionInformation
+  | IRelocHeader
+  | IRelocEntry
+  | ILinkingEntry
+  | ISourceMappingURL
+  | IModuleNameEntry
+  | IStartEntry
+  | Uint8Array;
 export class BinaryReader {
   private _data: Uint8Array;
   private _pos: number;
@@ -844,21 +1483,24 @@ export class BinaryReader {
     this._sectionRange = null;
     this._functionRange = null;
   }
-  public setData(buffer: ArrayBuffer, pos: number, length: number, eof?: boolean): void {
+  public setData(
+    buffer: ArrayBuffer,
+    pos: number,
+    length: number,
+    eof?: boolean
+  ): void {
     var posDelta = pos - this._pos;
     this._data = new Uint8Array(buffer);
     this._pos = pos;
     this._length = length;
     this._eof = eof === undefined ? true : eof;
-    if (this._sectionRange)
-      this._sectionRange.offset(posDelta);
-    if (this._functionRange)
-      this._functionRange.offset(posDelta);
+    if (this._sectionRange) this._sectionRange.offset(posDelta);
+    if (this._functionRange) this._functionRange.offset(posDelta);
   }
   private hasBytes(n: number): boolean {
     return this._pos + n <= this._length;
   }
-  public hasMoreBytes() {
+  public hasMoreBytes(): boolean {
     return this.hasBytes(1);
   }
   private readUint8(): number {
@@ -892,8 +1534,7 @@ export class BinaryReader {
   private hasVarIntBytes(): boolean {
     var pos = this._pos;
     while (pos < this._length) {
-      if ((this._data[pos++] & 0x80) == 0)
-        return true;
+      if ((this._data[pos++] & 0x80) == 0) return true;
     }
     return false;
   }
@@ -911,14 +1552,12 @@ export class BinaryReader {
     var shift = 0;
     while (true) {
       var byte = this.readUint8();
-      result |= (byte & 0x7F) << shift;
+      result |= (byte & 0x7f) << shift;
       shift += 7;
-      if ((byte & 0x80) === 0)
-        break;
+      if ((byte & 0x80) === 0) break;
     }
-    if (shift >= 32)
-      return result;
-    var ashift = (32 - shift);
+    if (shift >= 32) return result;
+    var ashift = 32 - shift;
     return (result << ashift) >> ashift;
   }
   private readVarUint32(): number {
@@ -926,10 +1565,9 @@ export class BinaryReader {
     var shift = 0;
     while (true) {
       var byte = this.readUint8();
-      result |= (byte & 0x7F) << shift;
+      result |= (byte & 0x7f) << shift;
       shift += 7;
-      if ((byte & 0x80) === 0)
-        break;
+      if ((byte & 0x80) === 0) break;
     }
     return result;
   }
@@ -940,20 +1578,19 @@ export class BinaryReader {
     var shift = 0;
     while (true) {
       var byte = this.readUint8();
-      c |= (byte & 0x7F) << shift;
+      c |= (byte & 0x7f) << shift;
       shift += 7;
       if (shift > 8) {
-        result[i++] = c & 0xFF;
+        result[i++] = c & 0xff;
         c >>= 8;
         shift -= 8;
       }
-      if ((byte & 0x80) === 0)
-        break;
+      if ((byte & 0x80) === 0) break;
     }
-    var ashift = (32 - shift);
+    var ashift = 32 - shift;
     c = (c << ashift) >> ashift;
     while (i < 8) {
-      result[i++] = c & 0xFF;
+      result[i++] = c & 0xff;
       c >>= 8;
     }
     return new Int64(result);
@@ -968,8 +1605,7 @@ export class BinaryReader {
     return new Uint8Array(result); // making a clone of the data
   }
   private hasStringBytes(): boolean {
-    if (!this.hasVarIntBytes())
-      return false;
+    if (!this.hasVarIntBytes()) return false;
     var pos = this._pos;
     var length = this.readVarUint32() >>> 0;
     var result = this.hasBytes(length);
@@ -983,16 +1619,14 @@ export class BinaryReader {
     var form = this.readVarInt7();
     var paramCount = this.readVarUint32() >>> 0;
     var paramTypes = new Int8Array(paramCount);
-    for (var i = 0; i < paramCount; i++)
-      paramTypes[i] = this.readVarInt7();
+    for (var i = 0; i < paramCount; i++) paramTypes[i] = this.readVarInt7();
     var returnCount = this.readVarUint1();
     var returnTypes = new Int8Array(returnCount);
-    for (var i = 0; i < returnCount; i++)
-      returnTypes[i] = this.readVarInt7();
+    for (var i = 0; i < returnCount; i++) returnTypes[i] = this.readVarInt7();
     return {
       form: form,
       params: paramTypes,
-      returns: returnTypes
+      returns: returnTypes,
     };
   }
   private readResizableLimits(maxPresent: boolean): IResizableLimits {
@@ -1003,7 +1637,7 @@ export class BinaryReader {
     }
     return { initial: initial, maximum: maximum };
   }
-  private readTableType() : ITableType{
+  private readTableType(): ITableType {
     var elementType = this.readVarInt7();
     var flags = this.readVarUint32() >>> 0;
     var limits = this.readResizableLimits(!!(flags & 0x01));
@@ -1012,7 +1646,10 @@ export class BinaryReader {
   private readMemoryType(): IMemoryType {
     var flags = this.readVarUint32() >>> 0;
     var shared = !!(flags & 0x02);
-    return { limits: this.readResizableLimits(!!(flags & 0x01)), shared: shared };
+    return {
+      limits: this.readResizableLimits(!!(flags & 0x01)),
+      shared: shared,
+    };
   }
   private readGlobalType(): IGlobalType {
     if (!this.hasVarIntBytes()) {
@@ -1047,7 +1684,7 @@ export class BinaryReader {
     var field = this.readStringBytes();
     var kind = this.readUint8();
     var funcTypeIndex: number;
-    var type: (ITableType|IMemoryType|IGlobalType);
+    var type: ITableType | IMemoryType | IGlobalType;
     switch (kind) {
       case ExternalKind.Function:
         funcTypeIndex = this.readVarUint32() >>> 0;
@@ -1067,7 +1704,7 @@ export class BinaryReader {
       field: field,
       kind: kind,
       funcTypeIndex: funcTypeIndex,
-      type: type
+      type: type,
     };
     this._sectionEntriesLeft--;
     return true;
@@ -1092,7 +1729,7 @@ export class BinaryReader {
     }
     var typeIndex = this.readVarUint32() >>> 0;
     this.state = BinaryReaderState.FUNCTION_SECTION_ENTRY;
-    this.result = {typeIndex: typeIndex};
+    this.result = { typeIndex: typeIndex };
     this._sectionEntriesLeft--;
     return true;
   }
@@ -1128,7 +1765,7 @@ export class BinaryReader {
     }
     this.state = BinaryReaderState.BEGIN_GLOBAL_SECTION_ENTRY;
     this.result = {
-      type: globalType
+      type: globalType,
     };
     this._sectionEntriesLeft--;
     return true;
@@ -1142,7 +1779,7 @@ export class BinaryReader {
       this.state = BinaryReaderState.ELEMENT_SECTION_ENTRY;
       return false;
     }
-    let flags = this.readVarUint7();
+    const flags = this.readVarUint7();
     let tableIndex = 0;
     if (flags & SegmentFlags.HasTableIndex) {
       tableIndex = this.readVarUint32();
@@ -1156,19 +1793,21 @@ export class BinaryReader {
   }
   private readElementEntryBody(): boolean {
     let funcType = Type.unspecified;
-    if (this._segmentFlags & (SegmentFlags.IsPassive | SegmentFlags.HasTableIndex)) {
+    if (
+      this._segmentFlags &
+      (SegmentFlags.IsPassive | SegmentFlags.HasTableIndex)
+    ) {
       funcType = this.readVarInt7();
     }
-    if (!this.hasVarIntBytes())
-      return false;
-    let pos = this._pos;
-    let numElemements = this.readVarUint32();
+    if (!this.hasVarIntBytes()) return false;
+    const pos = this._pos;
+    const numElemements = this.readVarUint32();
     if (!this.hasBytes(numElemements)) {
       // Shall have at least the numElemements amount of bytes.
       this._pos = pos;
       return false;
     }
-    let elements = new Uint32Array(numElemements);
+    const elements = new Uint32Array(numElemements);
     for (let i = 0; i < numElemements; i++) {
       if (this._segmentFlags & SegmentFlags.FunctionsAsElements) {
         // Read initializer expression, which must either be null ref or func ref
@@ -1178,12 +1817,14 @@ export class BinaryReader {
         } else if (operator == OperatorCode.ref_func) {
           elements[i] = this.readVarInt32();
         } else {
-          this.error = new Error('Invalid initializer expression for element');
+          this.error = new Error("Invalid initializer expression for element");
           return true;
         }
         operator = this.readUint8();
         if (operator != OperatorCode.end) {
-          this.error = new Error('Expected end of initializer expression for element');
+          this.error = new Error(
+            "Expected end of initializer expression for element"
+          );
           return true;
         }
       } else {
@@ -1198,7 +1839,7 @@ export class BinaryReader {
     this.result = {
       elements: elements,
       elementType: funcType,
-      asElements: !!(this._segmentFlags & SegmentFlags.FunctionsAsElements)
+      asElements: !!(this._segmentFlags & SegmentFlags.FunctionsAsElements),
     };
     return true;
   }
@@ -1208,7 +1849,7 @@ export class BinaryReader {
       return this.read();
     }
     if (!this.hasVarIntBytes()) {
-       return false;
+      return false;
     }
 
     this._segmentFlags = this.readVarUint32();
@@ -1218,7 +1859,7 @@ export class BinaryReader {
     }
     this.state = BinaryReaderState.BEGIN_DATA_SECTION_ENTRY;
     this.result = {
-      index: index
+      index: index,
     };
     this._sectionEntriesLeft--;
     return true;
@@ -1229,7 +1870,7 @@ export class BinaryReader {
     }
     this.state = BinaryReaderState.DATA_SECTION_ENTRY_BODY;
     this.result = {
-      data: this.readStringBytes()
+      data: this.readStringBytes(),
     };
     return true;
   }
@@ -1253,7 +1894,7 @@ export class BinaryReader {
     for (var i = 0; i < count; i++) {
       var index = this.readVarUint32();
       var name = this.readStringBytes();
-      result.push({index: index, name: name});
+      result.push({ index: index, name: name });
     }
     return result;
   }
@@ -1263,8 +1904,7 @@ export class BinaryReader {
       this.skipSection();
       return this.read();
     }
-    if (!this.hasVarIntBytes())
-      return false;
+    if (!this.hasVarIntBytes()) return false;
     var type: NameType = this.readVarUint7();
     if (!this.hasVarIntBytes()) {
       this._pos = pos;
@@ -1275,18 +1915,18 @@ export class BinaryReader {
       this._pos = pos;
       return false;
     }
-    var result: (IModuleNameEntry|IFunctionNameEntry|ILocalNameEntry);
+    var result: IModuleNameEntry | IFunctionNameEntry | ILocalNameEntry;
     switch (type) {
       case NameType.Module:
         result = {
           type: type,
-          moduleName: this.readStringBytes()
+          moduleName: this.readStringBytes(),
         };
         break;
       case NameType.Function:
         result = {
           type: type,
-          names: this.readNameMap()
+          names: this.readNameMap(),
         };
         break;
       case NameType.Local:
@@ -1296,12 +1936,12 @@ export class BinaryReader {
           var funcIndex = this.readVarUint32();
           funcs.push({
             index: funcIndex,
-            locals: this.readNameMap()
+            locals: this.readNameMap(),
           });
         }
         result = {
           type: type,
-          funcs: funcs
+          funcs: funcs,
         };
         break;
       default:
@@ -1340,8 +1980,7 @@ export class BinaryReader {
       this.skipSection();
       return this.read();
     }
-    if (!this.hasVarIntBytes())
-      return false;
+    if (!this.hasVarIntBytes()) return false;
     var pos = this._pos;
     var type: LinkingType = this.readVarUint32() >>> 0;
     var index;
@@ -1359,16 +1998,15 @@ export class BinaryReader {
         return true;
     }
     this.state = BinaryReaderState.LINKING_SECTION_ENTRY;
-    this.result = {type: type, index: index};
+    this.result = { type: type, index: index };
     this._sectionEntriesLeft--;
     return true;
   }
   private readSourceMappingURL(): boolean {
-    if (!this.hasStringBytes())
-      return false;
+    if (!this.hasStringBytes()) return false;
     var url = this.readStringBytes();
     this.state = BinaryReaderState.SOURCE_MAPPING_URL;
-    this.result = {url: url};
+    this.result = { url: url };
     return true;
   }
   private readRelocEntry(): boolean {
@@ -1376,8 +2014,7 @@ export class BinaryReader {
       this.skipSection();
       return this.read();
     }
-    if (!this.hasVarIntBytes())
-      return false;
+    if (!this.hasVarIntBytes()) return false;
     var pos = this._pos;
     var type: RelocType = this.readVarUint7();
     if (!this.hasVarIntBytes()) {
@@ -1417,7 +2054,7 @@ export class BinaryReader {
       type: type,
       offset: offset,
       index: index,
-      addend: addend
+      addend: addend,
     };
     this._sectionEntriesLeft--;
     return true;
@@ -1470,12 +2107,23 @@ export class BinaryReader {
         this.state = BinaryReaderState.ERROR;
         return true;
     }
-    this.result = { code: code,
-      blockType: undefined, brDepth: undefined, brTable: undefined,
-      funcIndex: undefined, typeIndex: undefined, tableIndex: tableIndex, localIndex: undefined,
-      globalIndex: undefined, memoryAddress: undefined, literal: undefined,
-      segmentIndex: segmentIndex, destinationIndex: destinationIndex,
-      lines: undefined, lineIndex: undefined, };
+    this.result = {
+      code: code,
+      blockType: undefined,
+      brDepth: undefined,
+      brTable: undefined,
+      funcIndex: undefined,
+      typeIndex: undefined,
+      tableIndex: tableIndex,
+      localIndex: undefined,
+      globalIndex: undefined,
+      memoryAddress: undefined,
+      literal: undefined,
+      segmentIndex: segmentIndex,
+      destinationIndex: destinationIndex,
+      lines: undefined,
+      lineIndex: undefined,
+    };
     return true;
   }
 
@@ -1646,12 +2294,22 @@ export class BinaryReader {
         this.state = BinaryReaderState.ERROR;
         return true;
     }
-    this.result = { code: code,
-      blockType: undefined, brDepth: undefined, brTable: undefined,
-      funcIndex: undefined, typeIndex: undefined, localIndex: undefined,
-      globalIndex: undefined, memoryAddress: memoryAddress, literal: literal,
-      segmentIndex: undefined, destinationIndex: undefined,
-      lines: lines, lineIndex: lineIndex, };
+    this.result = {
+      code: code,
+      blockType: undefined,
+      brDepth: undefined,
+      brTable: undefined,
+      funcIndex: undefined,
+      typeIndex: undefined,
+      localIndex: undefined,
+      globalIndex: undefined,
+      memoryAddress: memoryAddress,
+      literal: literal,
+      segmentIndex: undefined,
+      destinationIndex: undefined,
+      lines: lines,
+      lineIndex: lineIndex,
+    };
     return true;
   }
 
@@ -1737,23 +2395,37 @@ export class BinaryReader {
         this.state = BinaryReaderState.ERROR;
         return true;
     }
-    this.result = { code: code,
-      blockType: undefined, brDepth: undefined, brTable: undefined,
-      funcIndex: undefined, typeIndex: undefined, localIndex: undefined,
-      globalIndex: undefined, memoryAddress: memoryAddress, literal: undefined,
-      segmentIndex: undefined, destinationIndex: undefined,
-      lines: undefined, lineIndex: undefined, };
+    this.result = {
+      code: code,
+      blockType: undefined,
+      brDepth: undefined,
+      brTable: undefined,
+      funcIndex: undefined,
+      typeIndex: undefined,
+      localIndex: undefined,
+      globalIndex: undefined,
+      memoryAddress: memoryAddress,
+      literal: undefined,
+      segmentIndex: undefined,
+      destinationIndex: undefined,
+      lines: undefined,
+      lineIndex: undefined,
+    };
     return true;
   }
 
   private readCodeOperator(): boolean {
-    if (this.state === BinaryReaderState.CODE_OPERATOR &&
-        this._pos >= this._functionRange.end) {
+    if (
+      this.state === BinaryReaderState.CODE_OPERATOR &&
+      this._pos >= this._functionRange.end
+    ) {
       this.skipFunctionBody();
       return this.read();
-    } else if (this.state === BinaryReaderState.INIT_EXPRESSION_OPERATOR &&
-               this.result &&
-               (<IOperatorInformation>this.result).code === OperatorCode.end) {
+    } else if (
+      this.state === BinaryReaderState.INIT_EXPRESSION_OPERATOR &&
+      this.result &&
+      (<IOperatorInformation>this.result).code === OperatorCode.end
+    ) {
       this.state = BinaryReaderState.END_INIT_EXPRESSION_BODY;
       this.result = null;
       return true;
@@ -1764,8 +2436,17 @@ export class BinaryReader {
       return false;
     }
     var code = this._data[this._pos++];
-    var blockType, brDepth, brTable, funcIndex, typeIndex, tableIndex,
-        localIndex, globalIndex, memoryAddress, literal, reserved;
+    var blockType,
+      brDepth,
+      brTable,
+      funcIndex,
+      typeIndex,
+      tableIndex,
+      localIndex,
+      globalIndex,
+      memoryAddress,
+      literal,
+      reserved;
     switch (code) {
       case OperatorCode.block:
       case OperatorCode.loop:
@@ -1784,7 +2465,8 @@ export class BinaryReader {
           return false;
         }
         brTable = [];
-        for (var i = 0; i <= tableCount; i++) { // including default
+        for (var i = 0; i <= tableCount; i++) {
+          // including default
           if (!this.hasVarIntBytes()) {
             this._pos = pos;
             return false;
@@ -1851,11 +2533,17 @@ export class BinaryReader {
         literal = this.readVarInt64();
         break;
       case OperatorCode.f32_const:
-        literal = new DataView(this._data.buffer, this._data.byteOffset).getFloat32(this._pos, true);
+        literal = new DataView(
+          this._data.buffer,
+          this._data.byteOffset
+        ).getFloat32(this._pos, true);
         this._pos += 4;
         break;
       case OperatorCode.f64_const:
-        literal = new DataView(this._data.buffer, this._data.byteOffset).getFloat64(this._pos, true);
+        literal = new DataView(
+          this._data.buffer,
+          this._data.byteOffset
+        ).getFloat64(this._pos, true);
         this._pos += 8;
         break;
       case OperatorCode.prefix_0xfc:
@@ -2019,12 +2707,23 @@ export class BinaryReader {
         this.state = BinaryReaderState.ERROR;
         return true;
     }
-    this.result = { code: code,
-      blockType: blockType, brDepth: brDepth, brTable: brTable, tableIndex: tableIndex,
-      funcIndex: funcIndex, typeIndex: typeIndex, localIndex: localIndex,
-      globalIndex: globalIndex, memoryAddress: memoryAddress, literal: literal,
-      segmentIndex: undefined, destinationIndex: undefined,
-      lines: undefined, lineIndex: undefined, };
+    this.result = {
+      code: code,
+      blockType: blockType,
+      brDepth: brDepth,
+      brTable: brTable,
+      tableIndex: tableIndex,
+      funcIndex: funcIndex,
+      typeIndex: typeIndex,
+      localIndex: localIndex,
+      globalIndex: globalIndex,
+      memoryAddress: memoryAddress,
+      literal: literal,
+      segmentIndex: undefined,
+      destinationIndex: undefined,
+      lines: undefined,
+      lineIndex: undefined,
+    };
     return true;
   }
   private readFunctionBody(): boolean {
@@ -2032,8 +2731,7 @@ export class BinaryReader {
       this.skipSection();
       return this.read();
     }
-    if (!this.hasVarIntBytes())
-      return false;
+    if (!this.hasVarIntBytes()) return false;
     var pos = this._pos;
     var size = this.readVarUint32() >>> 0;
     var bodyEnd = this._pos + size;
@@ -2054,12 +2752,12 @@ export class BinaryReader {
         return false;
       }
       var type = this.readVarInt7();
-      locals.push({count: count, type: type});
+      locals.push({ count: count, type: type });
     }
     var bodyStart = this._pos;
     this.state = BinaryReaderState.BEGIN_FUNCTION_BODY;
     this.result = {
-      locals: locals
+      locals: locals,
     };
     this._functionRange = new DataRange(bodyStart, bodyEnd);
     this._sectionEntriesLeft--;
@@ -2084,8 +2782,7 @@ export class BinaryReader {
         return true;
       }
     }
-    if (!this.hasVarIntBytes())
-      return false;
+    if (!this.hasVarIntBytes()) return false;
     var sectionStart = this._pos;
     var id = this.readVarUint7();
     if (!this.hasVarIntBytes()) {
@@ -2102,7 +2799,7 @@ export class BinaryReader {
       }
       name = this.readStringBytes();
     }
-    this.result = {id: id, name: name};
+    this.result = { id: id, name: name };
     this._sectionId = id;
     this._sectionRange = new DataRange(this._pos, payloadEnd);
     this.state = BinaryReaderState.BEGIN_SECTION;
@@ -2128,78 +2825,66 @@ export class BinaryReader {
     var currentSection = <ISectionInformation>this.result;
     switch (currentSection.id) {
       case SectionCode.Type:
-        if (!this.hasSectionPayload())
-          return false;
+        if (!this.hasSectionPayload()) return false;
         this._sectionEntriesLeft = this.readVarUint32() >>> 0;
         return this.readTypeEntry();
       case SectionCode.Import:
-        if (!this.hasSectionPayload())
-          return false;
+        if (!this.hasSectionPayload()) return false;
         this._sectionEntriesLeft = this.readVarUint32() >>> 0;
         return this.readImportEntry();
       case SectionCode.Export:
-        if (!this.hasSectionPayload())
-          return false;
+        if (!this.hasSectionPayload()) return false;
         this._sectionEntriesLeft = this.readVarUint32() >>> 0;
         return this.readExportEntry();
       case SectionCode.Function:
-        if (!this.hasSectionPayload())
-          return false;
+        if (!this.hasSectionPayload()) return false;
         this._sectionEntriesLeft = this.readVarUint32() >>> 0;
         return this.readFunctionEntry();
       case SectionCode.Table:
-        if (!this.hasSectionPayload())
-          return false;
+        if (!this.hasSectionPayload()) return false;
         this._sectionEntriesLeft = this.readVarUint32() >>> 0;
         return this.readTableEntry();
       case SectionCode.Memory:
-        if (!this.hasSectionPayload())
-          return false;
+        if (!this.hasSectionPayload()) return false;
         this._sectionEntriesLeft = this.readVarUint32() >>> 0;
         return this.readMemoryEntry();
       case SectionCode.Global:
-        if (!this.hasVarIntBytes())
-          return false;
+        if (!this.hasVarIntBytes()) return false;
         this._sectionEntriesLeft = this.readVarUint32() >>> 0;
         return this.readGlobalEntry();
       case SectionCode.Start:
-        if (!this.hasVarIntBytes())
-          return false;
+        if (!this.hasVarIntBytes()) return false;
         this.state = BinaryReaderState.START_SECTION_ENTRY;
         this.result = { index: this.readVarUint32() };
         return true;
       case SectionCode.Code:
-        if (!this.hasVarIntBytes())
-          return false;
+        if (!this.hasVarIntBytes()) return false;
         this._sectionEntriesLeft = this.readVarUint32() >>> 0;
         this.state = BinaryReaderState.READING_FUNCTION_HEADER;
         return this.readFunctionBody();
       case SectionCode.Element:
-        if (!this.hasVarIntBytes())
-          return false;
+        if (!this.hasVarIntBytes()) return false;
         this._sectionEntriesLeft = this.readVarUint32() >>> 0;
         return this.readElementEntry();
       case SectionCode.Data:
-        if (!this.hasVarIntBytes())
-          return false;
+        if (!this.hasVarIntBytes()) return false;
         this._sectionEntriesLeft = this.readVarUint32() >>> 0;
         this.state = BinaryReaderState.DATA_SECTION_ENTRY;
         return this.readDataEntry();
       case SectionCode.Custom:
         var customSectionName = bytesToString(currentSection.name);
-        if (customSectionName === 'name') {
+        if (customSectionName === "name") {
           return this.readNameEntry();
         }
-        if (customSectionName.indexOf('reloc.') === 0) {
+        if (customSectionName.indexOf("reloc.") === 0) {
           return this.readRelocHeader();
         }
-        if (customSectionName === 'linking') {
-          if (!this.hasVarIntBytes())
-            return false;
+        if (customSectionName === "linking") {
+          if (!this.hasVarIntBytes()) return false;
           this._sectionEntriesLeft = this.readVarUint32() >>> 0;
           return this.readLinkingEntry();
         }
-        if (customSectionName === 'sourceMappingURL') {
+        if (customSectionName === "sourceMappingURL") {
           return this.readSourceMappingURL();
         }
         return this.readSectionRawData();
@@ -2212,22 +2897,23 @@ export class BinaryReader {
   public read(): boolean {
     switch (this.state) {
       case BinaryReaderState.INITIAL:
-        if (!this.hasBytes(8))
-          return false;
+        if (!this.hasBytes(8)) return false;
         var magicNumber = this.readUint32();
         if (magicNumber != WASM_MAGIC_NUMBER) {
-          this.error = new Error('Bad magic number');
+          this.error = new Error("Bad magic number");
           this.state = BinaryReaderState.ERROR;
           return true;
         }
         var version = this.readUint32();
-        if (version != WASM_SUPPORTED_VERSION &&
-            version != WASM_SUPPORTED_EXPERIMENTAL_VERSION) {
+        if (
+          version != WASM_SUPPORTED_VERSION &&
+          version != WASM_SUPPORTED_EXPERIMENTAL_VERSION
+        ) {
           this.error = new Error(`Bad version number ${version}`);
           this.state = BinaryReaderState.ERROR;
           return true;
         }
-        this.result = {magicNumber: magicNumber, version: version};
+        this.result = { magicNumber: magicNumber, version: version };
         this.state = BinaryReaderState.BEGIN_WASM;
         return true;
       case BinaryReaderState.END_WASM:
@@ -2242,7 +2928,7 @@ export class BinaryReader {
         return true;
       case BinaryReaderState.BEGIN_WASM:
       case BinaryReaderState.END_SECTION:
-         return this.readSectionHeader();
+        return this.readSectionHeader();
       case BinaryReaderState.BEGIN_SECTION:
         return this.readSectionBody();
       case BinaryReaderState.SKIPPING_SECTION:
@@ -2295,11 +2981,11 @@ export class BinaryReader {
       case BinaryReaderState.END_DATA_SECTION_ENTRY:
         return this.readDataEntry();
       case BinaryReaderState.BEGIN_DATA_SECTION_ENTRY:
-          if (this._segmentFlags & SegmentFlags.IsPassive) {
-            return this.readDataEntryBody();
-          } else {
-            return this.readInitExpressionBody();
-          }
+        if (this._segmentFlags & SegmentFlags.IsPassive) {
+          return this.readDataEntryBody();
+        } else {
+          return this.readInitExpressionBody();
+        }
       case BinaryReaderState.DATA_SECTION_ENTRY_BODY:
         this.state = BinaryReaderState.END_DATA_SECTION_ENTRY;
         this.result = null;
@@ -2320,8 +3006,7 @@ export class BinaryReader {
       case BinaryReaderState.NAME_SECTION_ENTRY:
         return this.readNameEntry();
       case BinaryReaderState.RELOC_SECTION_HEADER:
-        if (!this.hasVarIntBytes())
-          return false;
+        if (!this.hasVarIntBytes()) return false;
         this._sectionEntriesLeft = this.readVarUint32() >>> 0;
         return this.readRelocEntry();
       case BinaryReaderState.LINKING_SECTION_ENTRY:
@@ -2358,17 +3043,21 @@ export class BinaryReader {
     }
   }
   public skipSection(): void {
-    if (this.state === BinaryReaderState.ERROR ||
-        this.state === BinaryReaderState.INITIAL ||
-        this.state === BinaryReaderState.END_SECTION ||
-        this.state === BinaryReaderState.BEGIN_WASM ||
-        this.state === BinaryReaderState.END_WASM)
+    if (
+      this.state === BinaryReaderState.ERROR ||
+      this.state === BinaryReaderState.INITIAL ||
+      this.state === BinaryReaderState.END_SECTION ||
+      this.state === BinaryReaderState.BEGIN_WASM ||
+      this.state === BinaryReaderState.END_WASM
+    )
       return;
     this.state = BinaryReaderState.SKIPPING_SECTION;
   }
   public skipFunctionBody(): void {
-    if (this.state !== BinaryReaderState.BEGIN_FUNCTION_BODY &&
-        this.state !== BinaryReaderState.CODE_OPERATOR)
+    if (
+      this.state !== BinaryReaderState.BEGIN_FUNCTION_BODY &&
+      this.state !== BinaryReaderState.CODE_OPERATOR
+    )
       return;
     this.state = BinaryReaderState.SKIPPING_FUNCTION_BODY;
   }
@@ -2387,7 +3076,7 @@ export class BinaryReader {
 }
 
 export function isTypeIndex(type: Type): boolean {
-  return type >= 0;  
+  return type >= 0;
 }
 
 declare var escape: (string) => string;
@@ -2397,17 +3086,19 @@ declare class TextDecoder {
 }
 
 export var bytesToString: (bytes: Uint8Array) => string;
-if (typeof TextDecoder !== 'undefined') {
+if (typeof TextDecoder !== "undefined") {
   try {
-    bytesToString = function () {
-      var utf8Decoder = new TextDecoder('utf-8');
+    bytesToString = (function () {
+      var utf8Decoder = new TextDecoder("utf-8");
       utf8Decoder.decode(new Uint8Array([97, 208, 144]));
-      return b => utf8Decoder.decode(b);
-    }();
-  } catch (_) { /* ignore */ }
+      return (b) => utf8Decoder.decode(b);
+    })();
+  } catch (_) {
+    /* ignore */
+  }
 }
 if (!bytesToString) {
-  bytesToString = b => {
+  bytesToString = (b) => {
     var str = String.fromCharCode.apply(null, b);
     return decodeURIComponent(escape(str));
   };

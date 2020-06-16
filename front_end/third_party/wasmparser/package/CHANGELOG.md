@@ -1,3 +1,10 @@
+## [2.2.2](https://github.com/wasdk/wasmparser/compare/v2.2.1...v2.2.2) (2020-06-16)
+
+
+### Bug Fixes
+
+* `grow_memory` -> `memory.grow` ([4bf7233](https://github.com/wasdk/wasmparser/commit/4bf7233ba7a50e77831a91a0bcac151b8fdd62e0))
+
 ## [2.2.1](https://github.com/wasdk/wasmparser/compare/v2.2.0...v2.2.1) (2020-06-11)
 
 

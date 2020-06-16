@@ -1,4 +1,4 @@
-import { BinaryReader, IBinaryReaderData, IDataSegment, IDataSegmentBody, IElementSegment, IElementSegmentBody, IExportEntry, IFunctionEntry, IFunctionInformation, IFunctionType, IGlobalVariable, IImportEntry, ILinkingEntry, IMemoryType, IModuleHeader, INameEntry, IOperatorInformation, IRelocEntry, IRelocHeader, ISectionInformation, ISourceMappingURL , ITableType} from './WasmParser.js';
+import { BinaryReader, IBinaryReaderData, IDataSegment, IDataSegmentBody, IElementSegment, IElementSegmentBody, IExportEntry, IFunctionEntry, IFunctionInformation, IFunctionType, IGlobalVariable, IImportEntry, ILinkingEntry, IMemoryType, IModuleHeader, INameEntry, IOperatorInformation, IRelocEntry, IRelocHeader, ISectionInformation, ISourceMappingURL , ITableType} from "./WasmParser.js";
 
 export declare class Emitter {
     private _buffer;

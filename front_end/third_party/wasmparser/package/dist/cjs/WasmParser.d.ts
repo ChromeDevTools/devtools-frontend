@@ -678,7 +678,7 @@ export interface IOperatorInformation {
 }
 export declare class Int64 {
     private _data;
-    constructor(data: any);
+    constructor(data: Uint8Array);
     toInt32(): number;
     toDouble(): number;
     toString(): string;

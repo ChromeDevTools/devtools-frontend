@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { bytesToString, } from './WasmParser.js';
+import { bytesToString, } from "./WasmParser.js";
 var EmitterState;
 (function (EmitterState) {
     EmitterState[EmitterState["Initial"] = 0] = "Initial";
@@ -178,7 +178,7 @@ export class Emitter {
         this._buffer[pos] = byte;
     }
     writeVarUint(n) {
-        while ((n & ~0x7F)) {
+        while (n & ~0x7f) {
             this.writeByte(0x80 | (n & 0x7f));
             n >>>= 7;
         }
@@ -187,7 +187,7 @@ export class Emitter {
     writeVarInt(n) {
         n |= 0;
         var test = n >> 31;
-        while ((n >> 6) != test) {
+        while (n >> 6 != test) {
             this.writeByte(0x80 | (n & 0x7f));
             n >>= 7;
         }
@@ -211,11 +211,11 @@ export class Emitter {
         this.writeBytes(str, 0, str.length);
     }
     patchVarUint32(pos, n) {
-        this.patchByte(pos, 0x80 | (n & 0x7F));
-        this.patchByte(pos + 1, 0x80 | ((n >>> 7) & 0x7F));
-        this.patchByte(pos + 2, 0x80 | ((n >>> 14) & 0x7F));
-        this.patchByte(pos + 3, 0x80 | ((n >>> 21) & 0x7F));
-        this.patchByte(pos + 4, ((n >>> 28) & 0x7F));
+        this.patchByte(pos, 0x80 | (n & 0x7f));
+        this.patchByte(pos + 1, 0x80 | ((n >>> 7) & 0x7f));
+        this.patchByte(pos + 2, 0x80 | ((n >>> 14) & 0x7f));
+        this.patchByte(pos + 3, 0x80 | ((n >>> 21) & 0x7f));
+        this.patchByte(pos + 4, (n >>> 28) & 0x7f);
     }
     ensureState(state) {
         if (this._state !== state)
@@ -227,7 +227,7 @@ export class Emitter {
     }
     ensureEndOperatorWritten() {
         if (!this._endWritten)
-            throw new Error('End as a last written operator is expected.');
+            throw new Error("End as a last written operator is expected.");
     }
     writeBeginWasm(header) {
         this.ensureState(EmitterState.Initial);
@@ -249,19 +249,19 @@ export class Emitter {
             case 0 /* Custom */:
                 this.writeString(section.name);
                 var sectionName = bytesToString(section.name);
-                if (sectionName === 'name') {
+                if (sectionName === "name") {
                     this._state = EmitterState.NameEntry;
                     break;
                 }
-                if (sectionName.indexOf('reloc.') === 0) {
+                if (sectionName.indexOf("reloc.") === 0) {
                     this._state = EmitterState.RelocHeader;
                     break;
                 }
-                if (sectionName === 'linking') {
+                if (sectionName === "linking") {
                     this._state = EmitterState.LinkingEntry;
                     break;
                 }
-                if (sectionName === 'sourceMappingURL') {
+                if (sectionName === "sourceMappingURL") {
                     this._state = EmitterState.SourceMappingURL;
                     break;
                 }
@@ -492,13 +492,13 @@ export class Emitter {
     writeVarInt64(n) {
         var pos = 0, end = 7;
         var highBit = n.data[end] & 0x80;
-        var optionalBits = highBit ? 0xFF : 0;
+        var optionalBits = highBit ? 0xff : 0;
         while (end > 0 && n.data[end] === optionalBits) {
             end--;
         }
         var buffer = n.data[pos], buffered = 8;
         do {
-            this.writeByte(0x80 | (buffer & 0x7F));
+            this.writeByte(0x80 | (buffer & 0x7f));
             buffer >>= 7;
             buffered -= 7;
             if (buffered > 7)
@@ -508,7 +508,8 @@ export class Emitter {
                 buffer |= n.data[pos] << buffered;
                 buffered += 8;
             }
-            else if (pos == end && buffer === 7 &&
+            else if (pos == end &&
+                buffer === 7 &&
                 (n.data[pos] & 0x80) !== highBit) {
                 ++pos;
                 buffer |= optionalBits << buffered;
@@ -529,7 +530,10 @@ export class Emitter {
         this.writeBytes(data, 0, data.length);
     }
     writeOperator(opInfo) {
-        this.ensureEitherState([EmitterState.FunctionBody, EmitterState.InitExpression]);
+        this.ensureEitherState([
+            EmitterState.FunctionBody,
+            EmitterState.InitExpression,
+        ]);
         if (opInfo.code < 0x100) {
             this.writeByte(opInfo.code);
         }
@@ -551,7 +555,8 @@ export class Emitter {
             case 14 /* br_table */:
                 var tableCount = opInfo.brTable.length - 1;
                 this.writeVarUint(tableCount);
-                for (var i = 0; i <= tableCount; i++) { // including default
+                for (var i = 0; i <= tableCount; i++) {
+                    // including default
                     this.writeVarUint(opInfo.brTable[i]);
                 }
                 break;
@@ -711,7 +716,7 @@ export class Emitter {
     }
     writeNameMap(map) {
         this.writeVarUint(map.length);
-        map.forEach(naming => {
+        map.forEach((naming) => {
             this.writeVarUint(naming.index);
             this.writeString(naming.name);
         });
@@ -731,7 +736,7 @@ export class Emitter {
             case 2 /* Local */:
                 var funcs = entry.funcs;
                 this.writeVarUint(funcs.length);
-                funcs.forEach(func => {
+                funcs.forEach((func) => {
                     this.writeVarUint(func.index);
                     this.writeNameMap(func.locals);
                 });

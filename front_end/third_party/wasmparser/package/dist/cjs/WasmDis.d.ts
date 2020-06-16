@@ -1,4 +1,4 @@
-import { BinaryReader } from './WasmParser.js';
+import { BinaryReader } from "./WasmParser.js";
 export interface IExportMetadata {
     getFunctionExportNames(index: number): string[];
     getGlobalExportNames(index: number): string[];
@@ -143,7 +143,6 @@ export declare class DevToolsNameGenerator {
     private _globalExportNames;
     private _memoryExportNames;
     private _tableExportNames;
-    constructor();
     private _addExportName;
     private _setName;
     read(reader: BinaryReader): boolean;

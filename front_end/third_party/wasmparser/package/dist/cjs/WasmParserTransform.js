@@ -27,16 +27,17 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.BinaryReaderTransform = void 0;
 var stream_1 = require("stream");
 var WasmParser_js_1 = require("./WasmParser.js");
 var WasmParser_js_2 = require("./WasmParser.js");
-exports.BinaryReaderState = WasmParser_js_2.BinaryReaderState;
-exports.SectionCode = WasmParser_js_2.SectionCode;
+Object.defineProperty(exports, "BinaryReaderState", { enumerable: true, get: function () { return WasmParser_js_2.BinaryReaderState; } });
+Object.defineProperty(exports, "SectionCode", { enumerable: true, get: function () { return WasmParser_js_2.SectionCode; } });
 var BinaryReaderTransform = /** @class */ (function (_super) {
     __extends(BinaryReaderTransform, _super);
     function BinaryReaderTransform() {
         var _this = _super.call(this, {
-            readableObjectMode: true
+            readableObjectMode: true,
         }) || this;
         _this._buffer = new ArrayBuffer(1024);
         _this._bufferSize = 0;
@@ -44,7 +45,9 @@ var BinaryReaderTransform = /** @class */ (function (_super) {
         return _this;
     }
     BinaryReaderTransform.prototype._transform = function (chunk, encoding, callback) {
-        var buf = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk, encoding);
+        var buf = Buffer.isBuffer(chunk)
+            ? chunk
+            : Buffer.from(chunk, encoding);
         var bufferNeeded = this._bufferSize + buf.length;
         if (bufferNeeded > this._buffer.byteLength) {
             var oldData = new Uint8Array(this._buffer, 0, this._bufferSize);
@@ -60,7 +63,7 @@ var BinaryReaderTransform = /** @class */ (function (_super) {
         while (parser.read()) {
             this.push({
                 state: parser.state,
-                result: parser.result
+                result: parser.result,
             });
         }
         if (parser.position > 0) {
@@ -78,7 +81,7 @@ var BinaryReaderTransform = /** @class */ (function (_super) {
         while (parser.read()) {
             this.push({
                 state: parser.state,
-                result: parser.result
+                result: parser.result,
             });
         }
         this._bufferSize = 0;

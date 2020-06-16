@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Emitter = void 0;
 /* Copyright 2017 Mozilla Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -68,7 +69,7 @@ var Emitter = /** @class */ (function () {
         get: function () {
             return this._data;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Emitter.prototype.write = function (reader) {
@@ -186,14 +187,14 @@ var Emitter = /** @class */ (function () {
         get: function () {
             return this._buffer.length;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Emitter.prototype.patchByte = function (pos, byte) {
         this._buffer[pos] = byte;
     };
     Emitter.prototype.writeVarUint = function (n) {
-        while ((n & ~0x7F)) {
+        while (n & ~0x7f) {
             this.writeByte(0x80 | (n & 0x7f));
             n >>>= 7;
         }
@@ -202,7 +203,7 @@ var Emitter = /** @class */ (function () {
     Emitter.prototype.writeVarInt = function (n) {
         n |= 0;
         var test = n >> 31;
-        while ((n >> 6) != test) {
+        while (n >> 6 != test) {
             this.writeByte(0x80 | (n & 0x7f));
             n >>= 7;
         }
@@ -226,11 +227,11 @@ var Emitter = /** @class */ (function () {
         this.writeBytes(str, 0, str.length);
     };
     Emitter.prototype.patchVarUint32 = function (pos, n) {
-        this.patchByte(pos, 0x80 | (n & 0x7F));
-        this.patchByte(pos + 1, 0x80 | ((n >>> 7) & 0x7F));
-        this.patchByte(pos + 2, 0x80 | ((n >>> 14) & 0x7F));
-        this.patchByte(pos + 3, 0x80 | ((n >>> 21) & 0x7F));
-        this.patchByte(pos + 4, ((n >>> 28) & 0x7F));
+        this.patchByte(pos, 0x80 | (n & 0x7f));
+        this.patchByte(pos + 1, 0x80 | ((n >>> 7) & 0x7f));
+        this.patchByte(pos + 2, 0x80 | ((n >>> 14) & 0x7f));
+        this.patchByte(pos + 3, 0x80 | ((n >>> 21) & 0x7f));
+        this.patchByte(pos + 4, (n >>> 28) & 0x7f);
     };
     Emitter.prototype.ensureState = function (state) {
         if (this._state !== state)
@@ -242,7 +243,7 @@ var Emitter = /** @class */ (function () {
     };
     Emitter.prototype.ensureEndOperatorWritten = function () {
         if (!this._endWritten)
-            throw new Error('End as a last written operator is expected.');
+            throw new Error("End as a last written operator is expected.");
     };
     Emitter.prototype.writeBeginWasm = function (header) {
         this.ensureState(EmitterState.Initial);
@@ -264,19 +265,19 @@ var Emitter = /** @class */ (function () {
             case 0 /* Custom */:
                 this.writeString(section.name);
                 var sectionName = WasmParser_js_1.bytesToString(section.name);
-                if (sectionName === 'name') {
+                if (sectionName === "name") {
                     this._state = EmitterState.NameEntry;
                     break;
                 }
-                if (sectionName.indexOf('reloc.') === 0) {
+                if (sectionName.indexOf("reloc.") === 0) {
                     this._state = EmitterState.RelocHeader;
                     break;
                 }
-                if (sectionName === 'linking') {
+                if (sectionName === "linking") {
                     this._state = EmitterState.LinkingEntry;
                     break;
                 }
-                if (sectionName === 'sourceMappingURL') {
+                if (sectionName === "sourceMappingURL") {
                     this._state = EmitterState.SourceMappingURL;
                     break;
                 }
@@ -507,13 +508,13 @@ var Emitter = /** @class */ (function () {
     Emitter.prototype.writeVarInt64 = function (n) {
         var pos = 0, end = 7;
         var highBit = n.data[end] & 0x80;
-        var optionalBits = highBit ? 0xFF : 0;
+        var optionalBits = highBit ? 0xff : 0;
         while (end > 0 && n.data[end] === optionalBits) {
             end--;
         }
         var buffer = n.data[pos], buffered = 8;
         do {
-            this.writeByte(0x80 | (buffer & 0x7F));
+            this.writeByte(0x80 | (buffer & 0x7f));
             buffer >>= 7;
             buffered -= 7;
             if (buffered > 7)
@@ -523,7 +524,8 @@ var Emitter = /** @class */ (function () {
                 buffer |= n.data[pos] << buffered;
                 buffered += 8;
             }
-            else if (pos == end && buffer === 7 &&
+            else if (pos == end &&
+                buffer === 7 &&
                 (n.data[pos] & 0x80) !== highBit) {
                 ++pos;
                 buffer |= optionalBits << buffered;
@@ -544,7 +546,10 @@ var Emitter = /** @class */ (function () {
         this.writeBytes(data, 0, data.length);
     };
     Emitter.prototype.writeOperator = function (opInfo) {
-        this.ensureEitherState([EmitterState.FunctionBody, EmitterState.InitExpression]);
+        this.ensureEitherState([
+            EmitterState.FunctionBody,
+            EmitterState.InitExpression,
+        ]);
         if (opInfo.code < 0x100) {
             this.writeByte(opInfo.code);
         }
@@ -566,7 +571,8 @@ var Emitter = /** @class */ (function () {
             case 14 /* br_table */:
                 var tableCount = opInfo.brTable.length - 1;
                 this.writeVarUint(tableCount);
-                for (var i = 0; i <= tableCount; i++) { // including default
+                for (var i = 0; i <= tableCount; i++) {
+                    // including default
                     this.writeVarUint(opInfo.brTable[i]);
                 }
                 break;

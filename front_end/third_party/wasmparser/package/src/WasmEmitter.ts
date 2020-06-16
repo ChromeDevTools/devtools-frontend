@@ -13,15 +13,46 @@
  * limitations under the License.
  */
 import {
-  BinaryReader, BinaryReaderResult, BinaryReaderState, bytesToString, ExternalKind,
-  IBinaryReaderData, IDataSegment, IDataSegmentBody, IElementSegment, IElementSegmentBody,
-  IExportEntry, IFunctionEntry, IFunctionInformation, IFunctionNameEntry, IFunctionType, IGlobalType,
-  IGlobalVariable, IImportEntry, ILinkingEntry, ILocalNameEntry, IMemoryAddress, IMemoryType,
-  IModuleHeader, IModuleNameEntry,
+  BinaryReader,
+  BinaryReaderResult,
+  BinaryReaderState,
+  bytesToString,
+  ExternalKind,
+  IBinaryReaderData,
+  IDataSegment,
+  IDataSegmentBody,
+  IElementSegment,
+  IElementSegmentBody,
+  IExportEntry,
+  IFunctionEntry,
+  IFunctionInformation,
+  IFunctionNameEntry,
+  IFunctionType,
+  IGlobalType,
+  IGlobalVariable,
+  IImportEntry,
+  ILinkingEntry,
+  ILocalNameEntry,
+  IMemoryAddress,
+  IMemoryType,
+  IModuleHeader,
+  IModuleNameEntry,
   INameEntry,
-  INaming, Int64, IOperatorInformation, IRelocEntry, IRelocHeader, IResizableLimits, ISectionInformation, ISourceMappingURL,
-  ITableType, LinkingType, NameType, OperatorCode, RelocType, SectionCode,
-} from './WasmParser.js';
+  INaming,
+  Int64,
+  IOperatorInformation,
+  IRelocEntry,
+  IRelocHeader,
+  IResizableLimits,
+  ISectionInformation,
+  ISourceMappingURL,
+  ITableType,
+  LinkingType,
+  NameType,
+  OperatorCode,
+  RelocType,
+  SectionCode,
+} from "./WasmParser.js";
 
 enum EmitterState {
   Initial,
@@ -97,7 +128,10 @@ export class Emitter {
     this.writeStateAndResult(data.state, data.result || null);
   }
 
-  private writeStateAndResult(state: BinaryReaderState, result: BinaryReaderResult): void {
+  private writeStateAndResult(
+    state: BinaryReaderState,
+    result: BinaryReaderResult
+  ): void {
     switch (state) {
       case BinaryReaderState.BEGIN_WASM:
         this.writeBeginWasm(<IModuleHeader>result);
@@ -209,7 +243,7 @@ export class Emitter {
   }
 
   private writeVarUint(n: number): void {
-    while ((n & ~0x7F)) {
+    while (n & ~0x7f) {
       this.writeByte(0x80 | (n & 0x7f));
       n >>>= 7;
     }
@@ -219,7 +253,7 @@ export class Emitter {
   private writeVarInt(n: number): void {
     n |= 0;
     var test = n >> 31;
-    while ((n >> 6) != test) {
+    while (n >> 6 != test) {
       this.writeByte(0x80 | (n & 0x7f));
       n >>= 7;
     }
@@ -238,8 +272,7 @@ export class Emitter {
   }
 
   private writeBytes(bytes: Uint8Array, start: number, end: number): void {
-    for (var i = start; i < end; i++)
-      this.writeByte(bytes[i]);
+    for (var i = start; i < end; i++) this.writeByte(bytes[i]);
   }
 
   private writeString(str: Uint8Array): void {
@@ -248,11 +281,11 @@ export class Emitter {
   }
 
   private patchVarUint32(pos: number, n: number): void {
-    this.patchByte(pos, 0x80 | (n & 0x7F));
-    this.patchByte(pos + 1, 0x80 | ((n >>> 7) & 0x7F));
-    this.patchByte(pos + 2, 0x80 | ((n >>> 14) & 0x7F));
-    this.patchByte(pos + 3, 0x80 | ((n >>> 21) & 0x7F));
-    this.patchByte(pos + 4, ((n >>> 28) & 0x7F));
+    this.patchByte(pos, 0x80 | (n & 0x7f));
+    this.patchByte(pos + 1, 0x80 | ((n >>> 7) & 0x7f));
+    this.patchByte(pos + 2, 0x80 | ((n >>> 14) & 0x7f));
+    this.patchByte(pos + 3, 0x80 | ((n >>> 21) & 0x7f));
+    this.patchByte(pos + 4, (n >>> 28) & 0x7f);
   }
 
   private ensureState(state: EmitterState): void {
@@ -262,12 +295,14 @@ export class Emitter {
 
   private ensureEitherState(states: EmitterState[]): void {
     if (states.indexOf(this._state) < 0)
-      throw new Error(`Unexpected state: ${this._state} (expected one of ${states}).`);
+      throw new Error(
+        `Unexpected state: ${this._state} (expected one of ${states}).`
+      );
   }
 
   private ensureEndOperatorWritten(): void {
     if (!this._endWritten)
-      throw new Error('End as a last written operator is expected.');
+      throw new Error("End as a last written operator is expected.");
   }
 
   public writeBeginWasm(header?: IModuleHeader): void {
@@ -292,19 +327,19 @@ export class Emitter {
       case SectionCode.Custom:
         this.writeString(section.name);
         var sectionName = bytesToString(section.name);
-        if (sectionName === 'name') {
+        if (sectionName === "name") {
           this._state = EmitterState.NameEntry;
           break;
         }
-        if (sectionName.indexOf('reloc.') === 0) {
+        if (sectionName.indexOf("reloc.") === 0) {
           this._state = EmitterState.RelocHeader;
           break;
         }
-        if (sectionName === 'linking') {
+        if (sectionName === "linking") {
           this._state = EmitterState.LinkingEntry;
           break;
         }
-        if (sectionName === 'sourceMappingURL') {
+        if (sectionName === "sourceMappingURL") {
           this._state = EmitterState.SourceMappingURL;
           break;
         }
@@ -394,8 +429,7 @@ export class Emitter {
     var flags = limits.maximum == undefined ? 0 : 1;
     this.writeVarUint(flags);
     this.writeVarUint(limits.initial);
-    if (flags)
-      this.writeVarUint(limits.maximum);
+    if (flags) this.writeVarUint(limits.maximum);
   }
 
   private writeTableType(type: ITableType): void {
@@ -541,7 +575,9 @@ export class Emitter {
         this._initExpressionAfterState = EmitterState.GlobalSectionEntryEnd;
         break;
       default:
-        throw new Error(`Unexpected state ${this._state} at writeEndInitExpression`);
+        throw new Error(
+          `Unexpected state ${this._state} at writeEndInitExpression`
+        );
     }
     this._endWritten = false;
     this._state = EmitterState.InitExpression;
@@ -559,25 +595,29 @@ export class Emitter {
   }
 
   private writeVarInt64(n: Int64): void {
-    var pos = 0, end = 7;
+    var pos = 0,
+      end = 7;
     var highBit = n.data[end] & 0x80;
-    var optionalBits = highBit ? 0xFF : 0;
+    var optionalBits = highBit ? 0xff : 0;
     while (end > 0 && n.data[end] === optionalBits) {
       end--;
     }
-    var buffer = n.data[pos], buffered = 8;
+    var buffer = n.data[pos],
+      buffered = 8;
     do {
-      this.writeByte(0x80 | (buffer & 0x7F));
+      this.writeByte(0x80 | (buffer & 0x7f));
       buffer >>= 7;
       buffered -= 7;
-      if (buffered > 7)
-        continue;
+      if (buffered > 7) continue;
       if (pos < end) {
         ++pos;
         buffer |= n.data[pos] << buffered;
         buffered += 8;
-      } else if (pos == end && buffer === 7 &&
-                 (n.data[pos] & 0x80) !== highBit) {
+      } else if (
+        pos == end &&
+        buffer === 7 &&
+        (n.data[pos] & 0x80) !== highBit
+      ) {
         ++pos;
         buffer |= optionalBits << buffered;
         buffered += 8;
@@ -600,7 +640,10 @@ export class Emitter {
   }
 
   public writeOperator(opInfo: IOperatorInformation): void {
-    this.ensureEitherState([EmitterState.FunctionBody, EmitterState.InitExpression]);
+    this.ensureEitherState([
+      EmitterState.FunctionBody,
+      EmitterState.InitExpression,
+    ]);
     if (opInfo.code < 0x100) {
       this.writeByte(opInfo.code);
     } else {
@@ -621,7 +664,8 @@ export class Emitter {
       case OperatorCode.br_table:
         var tableCount = opInfo.brTable.length - 1;
         this.writeVarUint(tableCount);
-        for (var i = 0; i <= tableCount; i++) { // including default
+        for (var i = 0; i <= tableCount; i++) {
+          // including default
           this.writeVarUint(opInfo.brTable[i]);
         }
         break;
@@ -739,7 +783,7 @@ export class Emitter {
         this.writeVarUint(0);
         break;
       case OperatorCode.i32_const:
-        this.writeVarInt(<number>opInfo.literal | 0);
+        this.writeVarInt((<number>opInfo.literal) | 0);
         break;
       case OperatorCode.i64_const:
         this.writeVarInt64(<Int64>opInfo.literal);
@@ -783,7 +827,7 @@ export class Emitter {
 
   private writeNameMap(map: INaming[]): void {
     this.writeVarUint(map.length);
-    map.forEach(naming => {
+    map.forEach((naming) => {
       this.writeVarUint(naming.index);
       this.writeString(naming.name);
     });
@@ -804,7 +848,7 @@ export class Emitter {
       case NameType.Local:
         var funcs = (<ILocalNameEntry>entry).funcs;
         this.writeVarUint(funcs.length);
-        funcs.forEach(func => {
+        funcs.forEach((func) => {
           this.writeVarUint(func.index);
           this.writeNameMap(func.locals);
         });
@@ -879,14 +923,19 @@ export class Emitter {
       case EmitterState.ElementSection:
       case EmitterState.RelocEntry:
       case EmitterState.LinkingEntry:
-        this.patchVarUint32(this._sectionEntiesCountBytes, this._sectionEntiesCount);
+        this.patchVarUint32(
+          this._sectionEntiesCountBytes,
+          this._sectionEntiesCount
+        );
         break;
       case EmitterState.NameEntry:
       case EmitterState.SourceMappingURLEnd:
       case EmitterState.RawDataSection:
         break;
       default:
-        throw new Error(`Unexpected state: ${this._state} (expected section state)`);
+        throw new Error(
+          `Unexpected state: ${this._state} (expected section state)`
+        );
     }
     var sectionLength = this._position - this._sectionStart;
     this.patchVarUint32(this._sectionSizeBytes, sectionLength);

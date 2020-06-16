@@ -13,10 +13,10 @@
  * limitations under the License.
  */
 
-import { Transform } from 'stream';
-import { BinaryReader, BinaryReaderState } from './WasmParser.js';
+import { Transform } from "stream";
+import { BinaryReader, BinaryReaderState } from "./WasmParser.js";
 
-export { BinaryReaderState, SectionCode } from './WasmParser.js';
+export { BinaryReaderState, SectionCode } from "./WasmParser.js";
 
 export class BinaryReaderTransform extends Transform {
   private _buffer: ArrayBuffer;
@@ -25,15 +25,21 @@ export class BinaryReaderTransform extends Transform {
 
   public constructor() {
     super({
-      readableObjectMode: true
+      readableObjectMode: true,
     });
     this._buffer = new ArrayBuffer(1024);
     this._bufferSize = 0;
     this._parser = new BinaryReader();
   }
 
-  public _transform(chunk: any, encoding: BufferEncoding, callback: Function): void {
-    var buf: Buffer = Buffer.isBuffer(chunk) ? <Buffer>chunk : Buffer.from(chunk, encoding);
+  public _transform(
+    chunk: any,
+    encoding: BufferEncoding,
+    callback: () => void
+  ): void {
+    var buf: Buffer = Buffer.isBuffer(chunk)
+      ? <Buffer>chunk
+      : Buffer.from(chunk, encoding);
     var bufferNeeded = this._bufferSize + buf.length;
     if (bufferNeeded > this._buffer.byteLength) {
       var oldData = new Uint8Array(this._buffer, 0, this._bufferSize);
@@ -42,33 +48,36 @@ export class BinaryReaderTransform extends Transform {
       this._buffer = newBuffer;
     }
     var arr = new Uint8Array(this._buffer, 0, bufferNeeded);
-    arr.set(new Uint8Array(buf.buffer, buf.byteOffset, buf.length), this._bufferSize);
+    arr.set(
+      new Uint8Array(buf.buffer, buf.byteOffset, buf.length),
+      this._bufferSize
+    );
     this._bufferSize = bufferNeeded;
     var parser = this._parser;
     parser.setData(this._buffer, 0, bufferNeeded, false);
     while (parser.read()) {
       this.push({
         state: parser.state,
-        result: parser.result
+        result: parser.result,
       });
     }
     if (parser.position > 0) {
       var left = parser.length - parser.position;
       if (left > 0) {
-        arr.set(arr.subarray(parser.position, parser.length))
+        arr.set(arr.subarray(parser.position, parser.length));
       }
       this._bufferSize = left;
     }
     callback();
   }
 
-  public _flush(callback: Function): void {
+  public _flush(callback: () => void): void {
     var parser = this._parser;
     parser.setData(this._buffer, 0, this._bufferSize, true);
     while (parser.read()) {
       this.push({
         state: parser.state,
-        result: parser.result
+        result: parser.result,
       });
     }
     this._bufferSize = 0;

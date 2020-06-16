@@ -23,8 +23,8 @@ const { parseWat } = require("wabt")();
 describe("DevToolsNameGenerator", () => {
   test("Wasm module with export names only for function, memory, global and table", () => {
     const { buffer } = parseWat(
-        `test.wat`,
-	`(module
+      `test.wat`,
+      `(module
          (export "export.function" (func 0))
          (export "export.memory" (memory 0))
          (export "export.table" (table 0))
@@ -51,8 +51,8 @@ describe("DevToolsNameGenerator", () => {
 
   test("Wasm module with import names only for function, memory, global and table", () => {
     const { buffer } = parseWat(
-        `test.wat`,
-	`(module
+      `test.wat`,
+      `(module
          (import "import" "function" (func))
          (import "import" "memory" (memory 0))
          (import "import" "table" (table 1 funcref))
@@ -77,11 +77,11 @@ describe("DevToolsNameGenerator", () => {
 
   test("Wasm module with function and export name", () => {
     const { buffer } = parseWat(
-        `test.wat`,
-        `(module
+      `test.wat`,
+      `(module
          (export "export.function" (func $f))
          (func $f (result i32) i32.const 0))`
-  ).toBinary({ write_debug_names: true });
+    ).toBinary({ write_debug_names: true });
     const reader = new BinaryReader();
     reader.setData(buffer.buffer, 0, buffer.byteLength);
     const ng = new DevToolsNameGenerator();
@@ -93,11 +93,11 @@ describe("DevToolsNameGenerator", () => {
 
   test("Wasm module with import and export name", () => {
     const { buffer } = parseWat(
-        `test.wat`,
-        `(module
+      `test.wat`,
+      `(module
          (import "import" "function" (func))
          (export "export.function" (func 0)))`
-  ).toBinary({ write_debug_names: true });
+    ).toBinary({ write_debug_names: true });
     const reader = new BinaryReader();
     reader.setData(buffer.buffer, 0, buffer.byteLength);
     const ng = new DevToolsNameGenerator();
@@ -108,71 +108,71 @@ describe("DevToolsNameGenerator", () => {
   });
 
   test("Wasm module with no set names", () => {
-      const { buffer } = parseWat(
-          `test.wat`,
-          `(module
+    const { buffer } = parseWat(
+      `test.wat`,
+      `(module
            (import "" "" (func))
            (export "" (func 0))
            (func)
            (memory 0)
            (table 1 funcref)
            (global i32 (i32.const 0)))`
-      ).toBinary({ write_debug_names: true });
-      const reader = new BinaryReader();
-      reader.setData(buffer.buffer, 0, buffer.byteLength);
-      const ng = new DevToolsNameGenerator();
-      ng.read(reader);
-      const nr = ng.getNameResolver();
-      expect(nr.getFunctionName(0, true, true)).toBe("$.");
-      expect(nr.getFunctionName(0, true, false)).toBe("$. (;0;)");
-      expect(nr.getFunctionName(1, false, true)).toBe("$func1");
-      expect(nr.getFunctionName(1, false, false)).toBe("$func1");
-      expect(nr.getMemoryName(0, true)).toBe("$memory0");
-      expect(nr.getMemoryName(0, false)).toBe("$memory0");
-      expect(nr.getTableName(0, true)).toBe("$table0");
-      expect(nr.getTableName(0, false)).toBe("$table0");
-      expect(nr.getGlobalName(0, false)).toBe("$global0");
-      expect(nr.getGlobalName(0, false)).toBe("$global0");
+    ).toBinary({ write_debug_names: true });
+    const reader = new BinaryReader();
+    reader.setData(buffer.buffer, 0, buffer.byteLength);
+    const ng = new DevToolsNameGenerator();
+    ng.read(reader);
+    const nr = ng.getNameResolver();
+    expect(nr.getFunctionName(0, true, true)).toBe("$.");
+    expect(nr.getFunctionName(0, true, false)).toBe("$. (;0;)");
+    expect(nr.getFunctionName(1, false, true)).toBe("$func1");
+    expect(nr.getFunctionName(1, false, false)).toBe("$func1");
+    expect(nr.getMemoryName(0, true)).toBe("$memory0");
+    expect(nr.getMemoryName(0, false)).toBe("$memory0");
+    expect(nr.getTableName(0, true)).toBe("$table0");
+    expect(nr.getTableName(0, false)).toBe("$table0");
+    expect(nr.getGlobalName(0, false)).toBe("$global0");
+    expect(nr.getGlobalName(0, false)).toBe("$global0");
   });
 
   test("Wasm module with defined and undefined param names", () => {
-      const { buffer } = parseWat(
-          `test.wat`,
-          `(module
+    const { buffer } = parseWat(
+      `test.wat`,
+      `(module
            (func (param i32) (param $x i32)))`
-      ).toBinary({ write_debug_names: true });
-      const reader = new BinaryReader();
-      reader.setData(buffer.buffer, 0, buffer.byteLength);
-      const ng = new DevToolsNameGenerator();
-      ng.read(reader);
-      const nr = ng.getNameResolver();
-      expect(nr.getVariableName(0, 0, true)).toBe("$var0");
-      expect(nr.getVariableName(0, 0, false)).toBe("$var0");
-      expect(nr.getVariableName(0, 1, true)).toBe("$x");
-      expect(nr.getVariableName(0, 1, false)).toBe("$x (;1;)");
+    ).toBinary({ write_debug_names: true });
+    const reader = new BinaryReader();
+    reader.setData(buffer.buffer, 0, buffer.byteLength);
+    const ng = new DevToolsNameGenerator();
+    ng.read(reader);
+    const nr = ng.getNameResolver();
+    expect(nr.getVariableName(0, 0, true)).toBe("$var0");
+    expect(nr.getVariableName(0, 0, false)).toBe("$var0");
+    expect(nr.getVariableName(0, 1, true)).toBe("$x");
+    expect(nr.getVariableName(0, 1, false)).toBe("$x (;1;)");
   });
 
   test("Wasm module with defined and undefined local names", () => {
-      const { buffer } = parseWat(
-          `test.wat`,
-          `(module
+    const { buffer } = parseWat(
+      `test.wat`,
+      `(module
            (func (local i32) (local $x i32)))`
-      ).toBinary({ write_debug_names: true });
-      const reader = new BinaryReader();
-      reader.setData(buffer.buffer, 0, buffer.byteLength);
-      const ng = new DevToolsNameGenerator();
-      ng.read(reader);
-      const nr = ng.getNameResolver();
-      expect(nr.getVariableName(0, 0, true)).toBe("$var0");
-      expect(nr.getVariableName(0, 0, false)).toBe("$var0");
-      expect(nr.getVariableName(0, 1, true)).toBe("$x");
-      expect(nr.getVariableName(0, 1, false)).toBe("$x (;1;)");
+    ).toBinary({ write_debug_names: true });
+    const reader = new BinaryReader();
+    reader.setData(buffer.buffer, 0, buffer.byteLength);
+    const ng = new DevToolsNameGenerator();
+    ng.read(reader);
+    const nr = ng.getNameResolver();
+    expect(nr.getVariableName(0, 0, true)).toBe("$var0");
+    expect(nr.getVariableName(0, 0, false)).toBe("$var0");
+    expect(nr.getVariableName(0, 1, true)).toBe("$x");
+    expect(nr.getVariableName(0, 1, false)).toBe("$x (;1;)");
   });
 
   test("Wasm module with invalid export name", () => {
     const { buffer } = parseWat(
-        `test.wat`,
-        `(module
+      `test.wat`,
+      `(module
          (export "{}" (func 0))
          (func))`
     ).toBinary({ write_debug_names: true });
@@ -197,7 +197,7 @@ describe("NameSectionReader", () => {
       0x01,
       0x00,
       0x00,
-      0x00
+      0x00,
     ]);
     const reader = new BinaryReader();
     reader.setData(data.buffer, 0, data.byteLength);
@@ -251,8 +251,8 @@ describe("NameSectionReader", () => {
 
   test("Wasm module with bad names", () => {
     const { buffer } = parseWat(
-        `test.wat`,
-	`(module
+      `test.wat`,
+      `(module
          (import "import" "function" (func $foo))
          (import "import" "function2" (func $foo))
          )`
@@ -294,14 +294,14 @@ describe("NameSectionReader", () => {
 describe("WasmDisassembler with export metadata", () => {
   function parseAndDisassemble(lines: string[]) {
     const { buffer } = parseWat("functions.js", lines.join("\n")).toBinary({
-      write_debug_names: true
+      write_debug_names: true,
     });
-    const parser = new BinaryReader;
+    const parser = new BinaryReader();
     parser.setData(buffer.buffer, 0, buffer.byteLength);
-    const ng = new DevToolsNameGenerator;
+    const ng = new DevToolsNameGenerator();
     ng.read(parser);
     parser.setData(buffer.buffer, 0, buffer.byteLength);
-    const dis = new WasmDisassembler;
+    const dis = new WasmDisassembler();
     dis.exportMetadata = ng.getExportMetadata();
     dis.disassembleChunk(parser);
     return dis.getResult().lines;
@@ -314,7 +314,7 @@ describe("WasmDisassembler with export metadata", () => {
       `  (func $func1 (export "baz") (param $var0 i32) (result i32)`,
       `    local.get $var0`,
       `  )`,
-      `)`
+      `)`,
     ];
     expect(parseAndDisassemble(lines)).toEqual(lines);
   });
@@ -324,7 +324,7 @@ describe("WasmDisassembler with export metadata", () => {
       `(module`,
       `  (global $global0 (export "bar") (export "foo") (import "foo" "bar") i32)`,
       `  (global $global1 (export "baz") f32 (f32.const 42))`,
-      `)`
+      `)`,
     ];
     expect(parseAndDisassemble(lines)).toEqual(lines);
   });
@@ -333,7 +333,7 @@ describe("WasmDisassembler with export metadata", () => {
     const lines = [
       `(module`,
       `  (memory $memory0 (export "bar") (export "foo") (import "foo" "bar") 100)`,
-      `)`
+      `)`,
     ];
     expect(parseAndDisassemble(lines)).toEqual(lines);
   });
@@ -342,7 +342,7 @@ describe("WasmDisassembler with export metadata", () => {
     const lines = [
       `(module`,
       `  (memory $memory0 (export "bar") (export "foo") 100)`,
-      `)`
+      `)`,
     ];
     expect(parseAndDisassemble(lines)).toEqual(lines);
   });
@@ -352,15 +352,14 @@ describe("WasmDisassembler with export metadata", () => {
       `(module`,
       `  (table $table0 (export "bar") (export "foo") (import "foo" "bar") 10 anyfunc)`,
       `  (table $table1 (export "baz") 5 20 anyfunc)`,
-      `)`
+      `)`,
     ];
     expect(parseAndDisassemble(lines)).toEqual(lines);
   });
 });
 
 describe("WasmDisassembler.getResult() with function code", () => {
-  const watString =
-  `(module
+  const watString = `(module
   (export "export.function" (func $f))
   (func $f (result i32)
   (local $x i32)
@@ -369,7 +368,7 @@ describe("WasmDisassembler.getResult() with function code", () => {
   const fileName = `test.wat`;
   const expectedLines = [
     "(module",
-    "  (export \"export.function\" (func $func0))",
+    '  (export "export.function" (func $func0))',
     "  (func $func0 (result i32)",
     "    (local $var0 i32)",
     "    i32.const 0",
@@ -382,7 +381,7 @@ describe("WasmDisassembler.getResult() with function code", () => {
 
   test("addOffsets is true", () => {
     const { buffer } = parseWat(fileName, watString).toBinary({
-      write_debug_names: true
+      write_debug_names: true,
     });
     const parser = new BinaryReader();
     parser.setData(buffer.buffer, 0, buffer.byteLength);
@@ -394,22 +393,21 @@ describe("WasmDisassembler.getResult() with function code", () => {
     expect(result.done).toBe(true);
     expect(result.lines).toEqual(expectedLines);
     expect(result.offsets).toEqual([0, 22, 43, 43, 48, 50, 51, 53, 55, 83]);
-    expect(result.functionBodyOffsets).toEqual(
-      [
-        {
-          start: 48,
-          end: 51,
-        },
-        {
-          start: 53,
-          end: 56,
-        },
-      ]);
+    expect(result.functionBodyOffsets).toEqual([
+      {
+        start: 48,
+        end: 51,
+      },
+      {
+        start: 53,
+        end: 56,
+      },
+    ]);
   });
 
   test("addOffsets is false", () => {
     const { buffer } = parseWat(fileName, watString).toBinary({
-      write_debug_names: true
+      write_debug_names: true,
     });
     const parser = new BinaryReader();
     parser.setData(buffer.buffer, 0, buffer.byteLength);
@@ -431,7 +429,7 @@ describe("WasmDisassembler.getResult() without function code", () => {
     `(module`,
     `  (func $import0 (import "import" "function"))`,
     `  (export "export.function" (func $import0))`,
-    `)`
+    `)`,
   ];
   const expectedLinesWithTypes = [
     `(module`,
@@ -440,11 +438,11 @@ describe("WasmDisassembler.getResult() without function code", () => {
     `  (export \"export.function\" (func $import0))`,
     `)`,
   ];
-  const watString = expectedLines.join('\n');
+  const watString = expectedLines.join("\n");
 
   test("addOffsets is true", () => {
     const { buffer } = parseWat(fileName, watString).toBinary({
-      write_debug_names: true
+      write_debug_names: true,
     });
     const parser = new BinaryReader();
     parser.setData(buffer.buffer, 0, buffer.byteLength);
@@ -461,7 +459,7 @@ describe("WasmDisassembler.getResult() without function code", () => {
 
   test("addOffsets is false", () => {
     const { buffer } = parseWat(fileName, watString).toBinary({
-      write_debug_names: true
+      write_debug_names: true,
     });
     const parser = new BinaryReader();
     parser.setData(buffer.buffer, 0, buffer.byteLength);
@@ -478,7 +476,7 @@ describe("WasmDisassembler.getResult() without function code", () => {
 
   test("skipTypes is false", () => {
     const { buffer } = parseWat(fileName, watString).toBinary({
-      write_debug_names: true
+      write_debug_names: true,
     });
     const parser = new BinaryReader();
     parser.setData(buffer.buffer, 0, buffer.byteLength);

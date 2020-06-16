@@ -4,13 +4,13 @@
 
 vars = {
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': 'a29e858ed835b606f8df36fd7679789a9f110157',
+  'build_revision': 'a980f85fdc0b6eee68b3470dc3b6c2a909f3bb1c',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
-  'buildtools_revision': '574cbd5df82c6ae48805b2aa8d75e0ef76aa15aa',
+  'buildtools_revision': '3200e0f147c59e57507a26afd098de801bd96777',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
-  'depot_tools_revision': '23bd174fea451b2ef774eebdfd02fa298131a148',
+  'depot_tools_revision': 'e364dd820b29ab33721f12c448f7454092295ef6',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
   'inspector_protocol_revision': 'b7cda08cd6e522df2159413ba5f29d2a953cc1c4',
@@ -29,7 +29,7 @@ vars = {
   'protoc_version': 'protobuf_version:v3.11.4',
 
   # GN CIPD package version.
-  'gn_version': 'git_revision:9a0496a74efd13c1bb2abd866d8a227404615068',
+  'gn_version': 'git_revision:fbe7aec770944d17c9f3006f6cbb5c19e8cd43ea',
 
   # Chromium build number for unit tests. It should be regularly updated to
   # the content of https://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/LAST_CHANGE

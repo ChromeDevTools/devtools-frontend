@@ -230,24 +230,17 @@ export class TextSourceMap {
    * @this {TextSourceMap}
    */
   static async load(sourceMapURL, compiledURL) {
-    let content = await new Promise((resolve, reject) => {
-      MultitargetNetworkManager.instance().loadResource(
-          sourceMapURL, (success, _headers, content, errorDescription) => {
-            if (!content || !success) {
-              const error = new Error(ls`Could not load content for ${sourceMapURL}: ${errorDescription.message}`);
-              reject(error);
-            } else {
-              resolve(content);
-            }
-          });
-    });
-
+    const {success, content, errorDescription} = await MultitargetNetworkManager.instance().loadResource(sourceMapURL);
+    if (!content || !success) {
+      throw new Error(ls`Could not load content for ${sourceMapURL}: ${errorDescription.message}`);
+    }
+    let updatedContent = content;
     if (content.slice(0, 3) === ')]}') {
-      content = content.substring(content.indexOf('\n'));
+      updatedContent = content.substring(content.indexOf('\n'));
     }
 
     try {
-      const payload = /** @type {!SourceMapV3} */ (JSON.parse(content));
+      const payload = /** @type {!SourceMapV3} */ (JSON.parse(updatedContent));
       return new TextSourceMap(compiledURL, sourceMapURL, payload);
     } catch (error) {
       throw new Error(ls`Could not parse content for ${sourceMapURL}: ${error.message}`);

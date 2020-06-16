@@ -1423,9 +1423,9 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
 
   /**
    * @param {string} url
-   * @param {function(boolean, !Object.<string, string>, string, !Host.ResourceLoader.LoadErrorDescription):void} callback
+   * @return {!Promise<!{success: boolean, content: string, errorDescription: !Host.ResourceLoader.LoadErrorDescription}>}
    */
-  loadResource(url, callback) {
+  async loadResource(url) {
     /** @type {!Object<string, string>} */
     const headers = {};
 
@@ -1438,7 +1438,10 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
       headers['Cache-Control'] = 'no-cache';
     }
 
-    Host.ResourceLoader.load(url, headers, callback);
+    return new Promise(
+        resolve => Host.ResourceLoader.load(url, headers, (success, _responseHeaders, content, errorDescription) => {
+          resolve({success, content, errorDescription});
+        }));
   }
 }
 

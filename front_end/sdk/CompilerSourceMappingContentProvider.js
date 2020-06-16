@@ -75,19 +75,15 @@ export class CompilerSourceMappingContentProvider {
    * @override
    * @return {!Promise<!TextUtils.ContentProvider.DeferredContent>}
    */
-  requestContent() {
-    return new Promise(resolve => {
-      MultitargetNetworkManager.instance().loadResource(
-          this._sourceURL, (success, _headers, content, errorDescription) => {
-            if (!success) {
-              const error = ls`Could not load content for ${this._sourceURL} (${errorDescription.message})`;
-              console.error(error);
-              resolve({content: null, error, isEncoded: false});
-            } else {
-              resolve({content, isEncoded: false});
-            }
-          });
-    });
+  async requestContent() {
+    const {success, content, errorDescription} =
+        await MultitargetNetworkManager.instance().loadResource(this._sourceURL);
+    if (!success) {
+      const error = ls`Could not load content for ${this._sourceURL} (${errorDescription.message})`;
+      console.error(error);
+      return {content: null, error, isEncoded: false};
+    }
+    return {content, isEncoded: false};
   }
 
   /**

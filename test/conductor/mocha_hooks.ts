@@ -17,7 +17,7 @@ before(async function() {
 
   if (process.env['DEBUG']) {
     console.log('Running in debug mode.');
-    console.log(' - Press any key to run the test suite.');
+    console.log(' - Press enter to run the test suite.');
     console.log(' - Press ctrl + c to quit.');
 
     await new Promise(resolve => {

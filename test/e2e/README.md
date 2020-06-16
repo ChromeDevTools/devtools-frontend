@@ -21,6 +21,12 @@ FEATURES is a comma separated list of chrome features passed as `--enable-featur
 
 If you only want to run a single test or testsuite, use respectively `it.only` or `describe.only`.
 
+## Debugging tests
+To see what the test script does, run `npm run debug-e2etest`. This will bring up the chrome window and stop just
+before your test script is about to execute. The test will then run to completion and exit. You can add an infinite
+await `await new Promise(() => {});` at the end of your test to give you some time to examine the result of your
+test script.
+
 ## General implementation details
 
 To that end, the "what" from the "how" are separate in end-to-end tests.

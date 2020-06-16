@@ -96,7 +96,6 @@
       "title": "Selected context only",
       "settingName": "selectedContextFilterEnabled",
       "settingType": "boolean",
-      "storageType": "session",
       "defaultValue": false,
       "options": [
         {

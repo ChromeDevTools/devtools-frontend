@@ -233,14 +233,14 @@ export class OverlayModel extends SDKModel {
 
   /**
    * @param {!Protocol.Overlay.InspectMode} mode
-   * @param {boolean=} showStyles
+   * @param {boolean=} showDetailedTooltip
    * @return {!Promise<void>}
    */
-  async setInspectMode(mode, showStyles = true) {
+  async setInspectMode(mode, showDetailedTooltip = true) {
     await this._domModel.requestDocument();
     this._inspectModeEnabled = mode !== Protocol.Overlay.InspectMode.None;
     this.dispatchEventToListeners(Events.InspectModeWillBeToggled, this);
-    this._highlighter.setInspectMode(mode, this._buildHighlightConfig('all', showStyles));
+    this._highlighter.setInspectMode(mode, this._buildHighlightConfig('all', showDetailedTooltip));
   }
 
   /**
@@ -401,14 +401,19 @@ export class OverlayModel extends SDKModel {
 
   /**
    * @param {string=} mode
-   * @param {boolean=} showStyles
+   * @param {boolean=} showDetailedToolip
    * @return {!Protocol.Overlay.HighlightConfig}
    */
-  _buildHighlightConfig(mode = 'all', showStyles = false) {
+  _buildHighlightConfig(mode = 'all', showDetailedToolip = false) {
     const showRulers = Common.Settings.Settings.instance().moduleSetting('showMetricsRulers').get();
     const colorFormat = Common.Settings.Settings.instance().moduleSetting('colorFormat').get();
-    const highlightConfig =
-        {showInfo: mode === 'all', showRulers: showRulers, showStyles, showExtensionLines: showRulers};
+    const highlightConfig = {
+      showInfo: mode === 'all',
+      showRulers: showRulers,
+      showStyles: showDetailedToolip,
+      showAccessibilityInfo: showDetailedToolip,
+      showExtensionLines: showRulers,
+    };
     if (mode === 'all' || mode === 'content') {
       highlightConfig.contentColor = Common.Color.PageHighlight.Content.toProtocolRGBA();
     }

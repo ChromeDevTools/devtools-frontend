@@ -21,6 +21,9 @@
   <message name="IDS_DEVTOOLS_57391192dfa1f247ad015a0fe2eca48e" desc="Aria accessible name in Framework Blackbox Settings Tab of the Settings">
     Pattern
   </message>
+  <message name="IDS_DEVTOOLS_7ab792e440250e15b2a2066eaeee3563" desc="Aria accessible name in Framework Blackbox Settings Tab of the Settings">
+    Add filename pattern
+  </message>
   <message name="IDS_DEVTOOLS_7c3ebe810fd87afa74649e8230167a75" desc="Message text content in Settings Screen of the Settings">
     These experiments are particularly unstable. Enable at your own risk.
   </message>

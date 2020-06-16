@@ -15,6 +15,7 @@ node_ts_library("sources") {
     "debugger-language-plugins_test.ts",
     "navigation_test.ts",
     "script-in-multiple-workers_test.ts",
+    "sourcemap-without-mappings_test.ts",
   ]
 
   deps = [

@@ -95,6 +95,10 @@ async function loadTargetPageAndDevToolsFrontend() {
     throw new Error(`Page error in Frontend: ${error}`);
   });
 
+  process.on('unhandledRejection', error => {
+    throw new Error(`Unhandled rejection in Frontend: ${error}`);
+  });
+
   setBrowserAndPages({target: srcPage, frontend, browser});
 }
 

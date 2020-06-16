@@ -39,6 +39,7 @@ export class FrameworkBlackboxSettingsTab extends UI.Widget.VBox {
     this._list.show(this.contentElement);
     const addPatternButton = UI.UIUtils.createTextButton(
         Common.UIString.UIString('Add pattern...'), this._addButtonClicked.bind(this), 'add-button');
+    UI.ARIAUtils.setAccessibleName(addPatternButton, ls`Add filename pattern`);
     this.contentElement.appendChild(addPatternButton);
 
     this._setting = Common.Settings.Settings.instance().moduleSetting('skipStackFramesPattern');

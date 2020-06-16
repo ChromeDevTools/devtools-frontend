@@ -35,7 +35,7 @@ export class BlackboxManager {
         .moduleSetting('skipContentScripts')
         .addChangeListener(this._patternChanged.bind(this));
 
-    /** @type {!Set<function()>} */
+    /** @type {!Set<function():void>} */
     this._listeners = new Set();
 
     /** @type {!Map<string, boolean>} */
@@ -63,14 +63,14 @@ export class BlackboxManager {
   }
 
   /**
-   * @param {function()} listener
+   * @param {function():void} listener
    */
   addChangeListener(listener) {
     this._listeners.add(listener);
   }
 
   /**
-   * @param {function()} listener
+   * @param {function():void} listener
    */
   removeChangeListener(listener) {
     this._listeners.delete(listener);
@@ -188,15 +188,17 @@ export class BlackboxManager {
 
     const mappings = sourceMap.mappings();
     const newRanges = [];
-    let currentBlackboxed = false;
-    if (mappings[0].lineNumber !== 0 || mappings[0].columnNumber !== 0) {
-      newRanges.push({lineNumber: 0, columnNumber: 0});
-      currentBlackboxed = true;
-    }
-    for (const mapping of mappings) {
-      if (mapping.sourceURL && currentBlackboxed !== this.isBlackboxedURL(mapping.sourceURL)) {
-        newRanges.push({lineNumber: mapping.lineNumber, columnNumber: mapping.columnNumber});
-        currentBlackboxed = !currentBlackboxed;
+    if (mappings.length > 0) {
+      let currentBlackboxed = false;
+      if (mappings[0].lineNumber !== 0 || mappings[0].columnNumber !== 0) {
+        newRanges.push({lineNumber: 0, columnNumber: 0});
+        currentBlackboxed = true;
+      }
+      for (const mapping of mappings) {
+        if (mapping.sourceURL && currentBlackboxed !== this.isBlackboxedURL(mapping.sourceURL)) {
+          newRanges.push({lineNumber: mapping.lineNumber, columnNumber: mapping.columnNumber});
+          currentBlackboxed = !currentBlackboxed;
+        }
       }
     }
 
@@ -324,7 +326,7 @@ export class BlackboxManager {
   async _patternChanged() {
     this._isBlackboxedURLCache.clear();
 
-    /** @type {!Array<!Promise>} */
+    /** @type {!Array<!Promise<*>>} */
     const promises = [];
     for (const debuggerModel of SDK.SDKModel.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel)) {
       promises.push(this._setBlackboxPatterns(debuggerModel));

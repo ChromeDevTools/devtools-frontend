@@ -5,8 +5,8 @@
 import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as AcornLoose from '../third_party/acorn-loose/package/dist/acorn-loose.mjs';
-import * as Acorn from '../third_party/acorn/package/dist/acorn.mjs';
 
+import {Acorn} from './Acorn.js';
 import {ECMA_VERSION} from './AcornTokenizer.js';
 import {ESTreeWalker} from './ESTreeWalker.js';
 

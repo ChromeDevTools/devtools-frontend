@@ -29,8 +29,8 @@
  */
 
 import * as Platform from '../platform/platform.js';
-import * as Acorn from '../third_party/acorn/package/dist/acorn.mjs';
 
+import {Acorn} from './Acorn.js';
 import {AcornTokenizer, ECMA_VERSION} from './AcornTokenizer.js';
 import {CSSFormatter} from './CSSFormatter.js';
 import {parseCSS} from './CSSRuleParser.js';

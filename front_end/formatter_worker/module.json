@@ -15,6 +15,7 @@
     "../third_party/codemirror/package/mode/css/css.js",
     "../third_party/codemirror/package/mode/xml/xml.js",
     "CSSFormatter.js",
+    "Acorn.js",
     "AcornTokenizer.js",
     "JavaScriptFormatter.js",
     "FormattedContentBuilder.js",

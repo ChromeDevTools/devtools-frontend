@@ -1170,6 +1170,7 @@ all_devtools_modules = [
   "extensions/ExtensionServer.js",
   "extensions/ExtensionTraceProvider.js",
   "extensions/ExtensionView.js",
+  "formatter_worker/Acorn.js",
   "formatter_worker/AcornTokenizer.js",
   "formatter_worker/CSSFormatter.js",
   "formatter_worker/CSSRuleParser.js",

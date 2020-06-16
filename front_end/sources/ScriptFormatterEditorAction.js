@@ -54,7 +54,10 @@ export class ScriptFormatterEditorAction {
   _updateButton(uiSourceCode) {
     const isFormattable = this._isFormatableScript(uiSourceCode);
     this._button.element.classList.toggle('hidden', !isFormattable);
-    if (isFormattable) {
+    if (uiSourceCode) {
+      // We always update the title of the button, even if the {uiSourceCode} is
+      // not formattable, since we use the title (the aria-label actually) as a
+      // signal for the E2E tests that the source code loading is done.
       this._button.setTitle(Common.UIString.UIString(`Pretty print ${uiSourceCode.name()}`));
     }
   }
@@ -99,6 +102,9 @@ export class ScriptFormatterEditorAction {
       return false;
     }
     if (self.Persistence.persistence.binding(uiSourceCode)) {
+      return false;
+    }
+    if (uiSourceCode.mimeType() === 'application/wasm') {
       return false;
     }
     return uiSourceCode.contentType().hasScripts();

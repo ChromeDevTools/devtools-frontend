@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_05ffd37b74b38636b25349b7a8c1ebba" desc="Aria label for Elements Tree adorners">
+    Enable grid mode
+  </message>
   <message name="IDS_DEVTOOLS_068bc495b79facfaa7918369fa9909eb" desc="Text in Elements Tree Element of the Elements panel">
     Cut element
   </message>
@@ -77,6 +80,9 @@
   </message>
   <message name="IDS_DEVTOOLS_2f76fab71405b40cf521f64eab0d350f" desc="A context menu item in the Elements Tree Element of the Elements panel">
     Delete element
+  </message>
+  <message name="IDS_DEVTOOLS_3224263eb4ab6c159620b9eea03e1ffb" desc="Aria label for Elements Tree adorners">
+    Disable grid mode
   </message>
   <message name="IDS_DEVTOOLS_365fee797b55ffeac84d2ba82507b721" desc="Text in Styles Sidebar Pane of the Elements panel">
     user agent stylesheet

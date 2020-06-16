@@ -88,7 +88,7 @@ builder_coverage(
 )
 
 builder_coverage(
-  covered_oss = ["linux"],
+  covered_oss = ["linux", "win64", "mac"],
   builder_factory = try_builder,
   builder_name_pattern = "devtools_backend_%s_rel",
   recipe_name="devtools/devtools-backend",
@@ -127,6 +127,8 @@ cq_master_builders=[
   'devtools_frontend_mac_rel',
   'devtools_frontend_win64_rel',
   'devtools_backend_linux_rel',
+  'devtools_backend_mac_rel',
+  'devtools_backend_win64_rel',
   'dtf_presubmit_linux',
   'dtf_presubmit_win64',
   'dtf_linux_experiments',
@@ -136,7 +138,8 @@ cq_master_experiment_builders = [
   # Quarantine a builder here
   # This will make them experiment 100%
   'dtf_linux_experiments',
-  'devtools_backend_linux_rel',
+  'devtools_backend_mac_rel',
+  'devtools_backend_win64_rel',
 ]
 
 def experiment_builder(builder):

@@ -909,9 +909,6 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_da3c710f68f0c891ecad19dcbf2ab349" desc="Text in Timeline UIUtils of the Performance panel">
     Console Time
   </message>
-  <message name="IDS_DEVTOOLS_da5b09b6bbef223b458f5a5318c1261d" desc="Text in Timeline UIUtils of the Performance panel">
-    First Meaningful Paint
-  </message>
   <message name="IDS_DEVTOOLS_dbcc430b9ebc8e22dc874b108f77e4a9" desc="Text in Timeline Flame Chart Data Provider of the Performance panel">
     Timings
   </message>
@@ -932,9 +929,6 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_df2c48ebe0a4927e0f33ce3adeaa265b" desc="Text in Timeline Details View of the Performance panel">
     Range:  <ph name="NUMBER_MILLISTOSTRING_STARTOFFSET_">$1s<ex>1ms</ex></ph> – <ph name="NUMBER_MILLISTOSTRING_ENDOFFSET_">$2s<ex>10ms</ex></ph>
-  </message>
-  <message name="IDS_DEVTOOLS_df839b886d238c3ce6de2fa9f9615518" desc="Text in Timeline UIUtils of the Performance panel">
-    FMP
   </message>
   <message name="IDS_DEVTOOLS_dfe67b764ba5e3f6b674f049db64e165" desc="Call site stack label in Timeline UIUtils of the Performance panel">
     First Layout Invalidation

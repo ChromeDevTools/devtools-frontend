@@ -110,7 +110,6 @@ export class TimelineUIUtils {
     eventStyles[type.MarkDOMContent] = new TimelineRecordStyle(ls`DOMContentLoaded Event`, scripting, true);
     eventStyles[type.MarkFirstPaint] = new TimelineRecordStyle(ls`First Paint`, painting, true);
     eventStyles[type.MarkFCP] = new TimelineRecordStyle(ls`First Contentful Paint`, rendering, true);
-    eventStyles[type.MarkFMP] = new TimelineRecordStyle(ls`First Meaningful Paint`, rendering, true);
     eventStyles[type.MarkLCPCandidate] = new TimelineRecordStyle(ls`Largest Contentful Paint`, rendering, true);
     eventStyles[type.TimeStamp] = new TimelineRecordStyle(ls`Timestamp`, scripting);
     eventStyles[type.ConsoleTime] = new TimelineRecordStyle(ls`Console Time`, scripting);
@@ -788,10 +787,6 @@ export class TimelineUIUtils {
         link = 'https://web.dev/first-contentful-paint';
         name = 'first contentful paint';
         break;
-      case recordType.MarkFMP:
-        link = 'https://web.dev/first-meaningful-paint/';
-        name = 'first meaningful paint';
-        break;
       default:
         break;
     }
@@ -1128,7 +1123,6 @@ export class TimelineUIUtils {
 
       case recordTypes.MarkFirstPaint:
       case recordTypes.MarkFCP:
-      case recordTypes.MarkFMP:
       case recordTypes.MarkLoad:
       case recordTypes.MarkDOMContent: {
         contentHelper.appendTextRow(
@@ -1996,8 +1990,6 @@ export class TimelineUIUtils {
         return ls`FP`;
       case recordTypes.MarkFCP:
         return ls`FCP`;
-      case recordTypes.MarkFMP:
-        return ls`FMP`;
       case recordTypes.MarkLCPCandidate:
         return ls`LCP`;
     }
@@ -2046,10 +2038,6 @@ export class TimelineUIUtils {
         break;
       case recordTypes.MarkFCP:
         color = '#1A6937';
-        tall = true;
-        break;
-      case recordTypes.MarkFMP:
-        color = '#134A26';
         tall = true;
         break;
       case recordTypes.MarkLCPCandidate:

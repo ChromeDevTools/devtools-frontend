@@ -108,8 +108,6 @@ export class TimelineModelImpl {
         return true;
       case recordTypes.MarkFirstPaint:
       case recordTypes.MarkFCP:
-      case recordTypes.MarkFMP:
-        // TODO(alph): There are duplicate FMP events coming from the backend. Keep the one having 'data' property.
         return this._mainFrame && event.args.frame === this._mainFrame.frameId && !!event.args.data;
       case recordTypes.MarkDOMContent:
       case recordTypes.MarkLoad:
@@ -1493,7 +1491,6 @@ export const RecordType = {
   MarkDOMContent: 'MarkDOMContent',
   MarkFirstPaint: 'firstPaint',
   MarkFCP: 'firstContentfulPaint',
-  MarkFMP: 'firstMeaningfulPaint',
   MarkLCPCandidate: 'largestContentfulPaint::Candidate',
   MarkLCPInvalidate: 'largestContentfulPaint::Invalidate',
 

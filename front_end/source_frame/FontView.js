@@ -67,6 +67,7 @@ export class FontView extends UI.View.SimpleView {
     const url = content ? TextUtils.ContentProvider.contentAsDataURL(content, this._mimeType, true) : this._url;
     this.fontStyleElement.textContent =
         Platform.StringUtilities.sprintf('@font-face { font-family: "%s"; src: url(%s); }', uniqueFontName, url);
+    this.updateFontPreviewSize();
   }
 
   _createContentIfNeeded() {

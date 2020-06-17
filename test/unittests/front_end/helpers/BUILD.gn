@@ -6,5 +6,10 @@ import("../../../../third_party/typescript/typescript.gni")
 
 ts_library("helpers") {
   testonly = true
-  sources = [ "DOMHelpers.ts" ]
+  sources = [
+    "DOMHelpers.ts",
+    "InspectorOverlayHelpers.ts",
+  ]
+
+  deps = [ "../../../../front_end/inspector_overlay" ]
 }

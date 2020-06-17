@@ -559,8 +559,13 @@ const _extraPropertyValues = {
   'border-image': {values: ['repeat', 'stretch', 'space', 'round']},
   'text-decoration':
       {values: ['blink', 'line-through', 'overline', 'underline', 'wavy', 'double', 'solid', 'dashed', 'dotted']},
-  'font-family':
-      {values: ['serif', 'sans-serif', 'cursive', 'fantasy', 'monospace', '-webkit-body', '-webkit-pictograph']},
+  // List taken from https://drafts.csswg.org/css-fonts-4/#generic-font-families
+  'font-family': {
+    values: [
+      'serif', 'sans-serif', 'cursive', 'fantasy', 'monospace', 'system-ui', 'emoji', 'math', 'fangsong', 'ui-serif',
+      'ui-sans-serif', 'ui-monospace', 'ui-rounded', '-webkit-body', '-webkit-pictograph'
+    ]
+  },
   'zoom': {values: ['normal']},
   'max-width': {values: ['min-content', 'max-content', '-webkit-fill-available', 'fit-content']},
   '-webkit-font-smoothing': {values: ['antialiased', 'subpixel-antialiased']},

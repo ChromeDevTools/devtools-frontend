@@ -186,7 +186,6 @@
   color: rgb(128 128 128 / 40%);
 }
 
-
 .CodeMirror-gutter-background.cm-breakpoint {
   background-color: var(--breakpoint-background-red);
 }

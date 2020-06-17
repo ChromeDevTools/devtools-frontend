@@ -5,5 +5,5 @@
  */
 
 .webauthn-toolbar {
-    border-bottom: var(--divider-border);
+  border-bottom: var(--divider-border);
 }

@@ -101,10 +101,11 @@
 
 @media (forced-colors: active) {
   .suggest-box-content-item.selected {
-      forced-color-adjust: none;
-      background-color: Highlight;
+    forced-color-adjust: none;
+    background-color: Highlight;
   }
+
   .suggest-box-content-item.selected > span {
-      color: HighlightText;
+    color: HighlightText;
   }
 }

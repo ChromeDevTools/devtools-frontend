@@ -22,7 +22,7 @@ The proposed workflow in here is based on the following assumptions and pillars:
 1. If a feature is uncontroversial, nearly no overhead should be created.
 1. If there's a lot of controversy, the feature can be escalated to a dedicated design review meeting where future steps are decided.
 
-![DevTools Design Guidelines at a glance](docs/images/DevToolsDesignGuidelines.png "DevTools Design Guidelines at a glance")
+![DevTools Design Guidelines at a glance](images/DevToolsDesignGuidelines.png "DevTools Design Guidelines at a glance")
 
 ## Roles
 

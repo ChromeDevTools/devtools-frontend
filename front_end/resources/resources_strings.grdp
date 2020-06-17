@@ -513,7 +513,7 @@ as used by Chrome
   <message name="IDS_DEVTOOLS_f0134cf28b55123eff2dc62bd223d0dd" desc="Manifest installability error in the Application panel">
     Could not check service worker without a &apos;start_url&apos; field in the manifest
   </message>
-  <message name="IDS_DEVTOOLS_f18cd4b9f925d85b3a669adc015a9797" desc="Text used to show that data was retrieved from ServiceWorker Cache">
+  <message name="IDS_DEVTOOLS_f18cd4b9f925d85b3a669adc015a9797" desc="Data grid name for Service Worker Cache data grids">
     Service Worker Cache
   </message>
   <message name="IDS_DEVTOOLS_f4d6426949b935ced95ef5e5d0bc5ef5" desc="Manifest installability error in the Application panel">

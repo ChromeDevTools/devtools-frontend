@@ -1120,7 +1120,7 @@
 
     let count = 0;
     function onResponseReceived(event) {
-      const networkRequest = event.data.request;
+      const networkRequest = event.data;
       if (!networkRequest.url().startsWith('http')) {
         return;
       }

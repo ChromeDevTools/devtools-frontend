@@ -195,6 +195,16 @@
           "title": "Show positive grid line numbers",
           "text": "Positive",
           "value": "positive"
+        },
+        {
+          "title": "Show negative grid line numbers",
+          "text": "Negative",
+          "value": "negative"
+        },
+        {
+          "title": "Show both positive and negative grid line numbers",
+          "text": "Both",
+          "value": "both"
         }
       ]
     },

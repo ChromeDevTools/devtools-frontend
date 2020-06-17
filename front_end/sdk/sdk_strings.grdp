@@ -200,6 +200,9 @@
   <message name="IDS_DEVTOOLS_47ff9951b01a6b094431ff82dc68e266" desc="The kind of resolution for a mixed content issue">
     warned
   </message>
+  <message name="IDS_DEVTOOLS_4ce41fe857f34b15736cf25214ecde48" desc="Title for CSS Grid tooling option">
+    Show both positive and negative grid line numbers
+  </message>
   <message name="IDS_DEVTOOLS_5146254b747d45c28b8e8d22bd3373bf" desc="Description for a SameSiteCookie issue">
     In a future version of the browser, cookies marked with <ph name="LOCKED_1">|SameSite=None|</ph> must also be marked with <ph name="LOCKED_1">|Secure|</ph> to allow setting them in a cross-site context.
        This behavior protects user data from being sent over an insecure connection.
@@ -571,6 +574,9 @@
   <message name="IDS_DEVTOOLS_c432f4e5fdec5760a2f06b38f646168e" desc="Text in Console Model">
     Profile &apos;<ph name="DATA_TITLE">$1s<ex>title</ex></ph>&apos; started.
   </message>
+  <message name="IDS_DEVTOOLS_c450d5e7a852f5b6151135103ebf09bb" desc="Title for CSS Grid tooling option">
+    Show negative grid line numbers
+  </message>
   <message name="IDS_DEVTOOLS_c5d59568835d0760e318829b800ee06d" desc="Text in Debugger Model">
     Catch
   </message>
@@ -735,5 +741,8 @@
   </message>
   <message name="IDS_DEVTOOLS_1b1cc7f086b3f074da452bc3129981eb" desc="A tag of Emulate CSS screen media type setting that can be searched in the command menu">
     query
+  </message>
+  <message name="IDS_DEVTOOLS_ffb9356ff2b7da85c75c92fa7ea03b8b" desc="An option for CSS Grid tooling that allows to display negative line numbers">
+    Negative
   </message>
 </grit-part>

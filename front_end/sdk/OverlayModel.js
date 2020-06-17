@@ -314,8 +314,8 @@ export class OverlayModel extends SDKModel {
    */
   _buildGridHighlightConfig() {
     const gridBorderSetting = Common.Settings.Settings.instance().moduleSetting('showGridBorder').get();
-    let showGridBorder;
-    let gridBorderDashed;
+    let showGridBorder = false;
+    let gridBorderDashed = false;
     switch (gridBorderSetting) {
       case 'dashed':
         showGridBorder = true;
@@ -328,8 +328,8 @@ export class OverlayModel extends SDKModel {
         break;
     }
     const showGridLinesSetting = Common.Settings.Settings.instance().moduleSetting('showGridLines').get();
-    let showGridLines;
-    let gridLinesDashed;
+    let showGridLines = false;
+    let gridLinesDashed = false;
     let showGridExtensionLines;
     switch (showGridLinesSetting) {
       case 'dashed':
@@ -354,18 +354,25 @@ export class OverlayModel extends SDKModel {
     // Add background to help distinguish rows/columns when cell borders are not outlined
     const addBackgroundsToGaps = !showGridLines;
     const showGridLineNumbersSetting = Common.Settings.Settings.instance().moduleSetting('showGridLineNumbers').get();
-    // TODO: extend switch case when negitive line number CL lands
-    let showPositiveLineNumbers;
+    let showPositiveLineNumbers = false;
+    let showNegativeLineNumbers = false;
     switch (showGridLineNumbersSetting) {
       case 'positive':
         showPositiveLineNumbers = true;
+        break;
+      case 'negative':
+        showNegativeLineNumbers = true;
+        break;
+      case 'both':
+        showPositiveLineNumbers = true;
+        showNegativeLineNumbers = true;
         break;
       default:
         break;
     }
     const showGridGapsSetting = Common.Settings.Settings.instance().moduleSetting('showGridGaps').get();
-    let showGridRowGaps;
-    let showGridColumnGaps;
+    let showGridRowGaps = false;
+    let showGridColumnGaps = false;
     switch (showGridGapsSetting) {
       case 'both':
         showGridRowGaps = true;
@@ -395,7 +402,8 @@ export class OverlayModel extends SDKModel {
       cellBorderColor: showGridLines ? Common.Color.PageHighlight.GridCellBorder.toProtocolRGBA() : undefined,
       cellBorderDash: gridLinesDashed,
       showGridExtensionLines: showGridExtensionLines,
-      showPositiveLineNumbers
+      showPositiveLineNumbers,
+      showNegativeLineNumbers
     };
   }
 

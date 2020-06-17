@@ -1,5 +1,6 @@
 'use strict';
 
+// eslint-disable-next-line node/no-unsupported-features/es-syntax
 function logicalAssignment(Parser) {
   const acorn = Parser.acorn || require("acorn");
   const tt = acorn.tokTypes;
@@ -27,11 +28,9 @@ function logicalAssignment(Parser) {
         if (next === 63) {
           next = this.input.charCodeAt(this.pos + 2);
           if (next === 61) return this.finishOp(tt.assign, 3)
-          // Check if acorn has nullish coalescing support
-          if (tt.coalesce) return this.finishOp(tt.coalesce, 2)
         }
       }
-      return this.finishOp(tt.question, 1)
+      return super.readToken_question ? super.readToken_question() : this.finishOp(tt.question, 1)
     }
   }
 }

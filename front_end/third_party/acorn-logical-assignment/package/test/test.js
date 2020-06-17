@@ -8,7 +8,9 @@ const Parser = acorn.Parser.extend(logicalAssignments)
 function test(text, expectedResult, additionalOptions) {
   it(text, function () {
     const result = Parser.parse(text, Object.assign({ ecmaVersion: 11 }, additionalOptions))
-    assert.deepStrictEqual(result.body[0], expectedResult)
+    if (expectedResult) {
+      assert.deepStrictEqual(result.body[0], expectedResult)
+    }
   })
 }
 function testFail(text, expectedError, additionalOptions) {
@@ -44,6 +46,7 @@ describe("acorn-logical-assignment", function () {
         end: 1,
         name: "x"
       }),
+      optional: false,
       property: newNode(0, {
         type: "Identifier",
         start: 2,
@@ -113,4 +116,12 @@ describe("acorn-logical-assignment", function () {
       )
     })
   })
+  test(`let count = 0;
+    const obj = {a: true};
+    while (obj?.a) {
+      count++;
+      break;
+    }
+    assert.sameValue(1, count);
+  `)
 })

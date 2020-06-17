@@ -9,24 +9,8 @@ Security Critical: no
 Description:
 Logical assignment support for Acorn.
 
-This is a fork of the upstream at https://github.com/acornjs/acorn-logical-assignment and will be maintained until upstream has merged required changes for ESM support.
-
-While the PR is outstanding, we import the code manually:
-
 ```bash
-git clone https://github.com/bmeurer/acorn-logical-assignment
-cd acorn-logical-assignment
-git checkout esm
-npm run build
-npm pack
-# cp acorn-logical-assignment-0.1.1.tgz to this folder
-tar xzf acorn-logical-assignment-0.1.1.tgz
-```
-
-After the PR is merged, we can download from npm:
-
-```bash
-wget -qO- https://registry.npmjs.org/acorn/-/acorn-logical-assignment-0.1.1.tgz | tar xzf -
+wget -qO- https://registry.npmjs.org/acorn-logical-assignment/-/acorn-logical-assignment-0.1.3.tgz | tar xzf -
 ```
 
 Local modifications:

@@ -22,7 +22,7 @@ import test_helpers
 import devtools_paths
 
 
-def run_tests(chrome_binary, target, no_text_coverage):
+def run_tests(chrome_binary, target, no_text_coverage, coverage):
     cwd = devtools_paths.devtools_root_path()
     karmaconfig_path = os.path.join(cwd, 'out', target, 'gen', 'test', 'unittests', 'front_end', 'karma.conf.js')
 
@@ -39,6 +39,8 @@ def run_tests(chrome_binary, target, no_text_coverage):
     env['NODE_PATH'] = devtools_paths.node_path()
     if (no_text_coverage is not False):
         env['NO_TEXT_COVERAGE'] = '1'
+    if (coverage is True):
+        env['COVERAGE'] = '1'
     if (chrome_binary is not None):
         env['CHROME_BIN'] = chrome_binary
 
@@ -51,6 +53,7 @@ def run_tests(chrome_binary, target, no_text_coverage):
 
 def run_unit_tests_on_ninja_build_target(target,
                                          no_text_coverage=True,
+                                         coverage=False,
                                          chrome_binary=None):
     if chrome_binary and not test_helpers.check_chrome_binary(chrome_binary):
         print(
@@ -71,7 +74,7 @@ def run_unit_tests_on_ninja_build_target(target,
 
     print('Using Chromium binary (%s)\n' % chrome_binary)
 
-    errors_found = run_tests(chrome_binary, target, no_text_coverage)
+    errors_found = run_tests(chrome_binary, target, no_text_coverage, coverage)
     if errors_found:
         print('ERRORS DETECTED')
         sys.exit(1)
@@ -83,13 +86,18 @@ def main():
         '--target', '-t', default='Default', dest='target', help='The name of the Ninja output directory. Defaults to "Default"')
     parser.add_argument(
         '--no-text-coverage', action='store_true', default=False, dest='no_text_coverage', help='Whether to output text coverage')
+    parser.add_argument('--coverage',
+                        action='store_true',
+                        default=False,
+                        dest='coverage',
+                        help='Whether to output coverage')
     parser.add_argument('--chrome-binary',
                         dest='chrome_binary',
                         help='Path to Chromium binary')
     args = parser.parse_args(sys.argv[1:])
 
     run_unit_tests_on_ninja_build_target(args.target, args.no_text_coverage,
-                                         args.chrome_binary)
+                                         args.coverage, args.chrome_binary)
 
 
 if __name__ == '__main__':

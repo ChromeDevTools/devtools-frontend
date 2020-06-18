@@ -6,12 +6,12 @@ const path = require('path');
 const glob = require('glob');
 const fs = require('fs');
 
-// true by default
-const COVERAGE_ENABLED = !process.env['NOCOVERAGE'];
-const TEXT_COVERAGE_ENABLED = COVERAGE_ENABLED && !process.env['NO_TEXT_COVERAGE'];
-
 // false by default
 const DEBUG_ENABLED = !!process.env['DEBUG'];
+const COVERAGE_ENABLED = !!process.env['COVERAGE'];
+
+// true by default
+const TEXT_COVERAGE_ENABLED = COVERAGE_ENABLED && !process.env['NO_TEXT_COVERAGE'];
 
 const GEN_DIRECTORY = path.join(__dirname, '..', '..', '..');
 const ROOT_DIRECTORY = path.join(GEN_DIRECTORY, '..', '..', '..');

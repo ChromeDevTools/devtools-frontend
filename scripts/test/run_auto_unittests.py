@@ -29,10 +29,17 @@ def main():
         '--target', '-t', default='Default', dest='target', help='The name of the Ninja output directory. Defaults to "Default"')
     parser.add_argument(
         '--no-text-coverage', action='store_true', default=False, dest='no_text_coverage', help='Whether to output text coverage')
+    parser.add_argument('--coverage',
+                        action='store_true',
+                        default=False,
+                        dest='coverage',
+                        help='Whether to output coverage')
     args = parser.parse_args(sys.argv[1:])
 
     efficiently_recompile.recompile(args.target, 'test/unittests/front_end')
-    run_unittests.run_unit_tests_on_ninja_build_target(args.target, True)
+    run_unittests.run_unit_tests_on_ninja_build_target(args.target,
+                                                       args.no_text_coverage,
+                                                       args.coverage)
 
 
 if __name__ == '__main__':

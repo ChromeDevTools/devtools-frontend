@@ -36,8 +36,8 @@ def main(argv):
 
     for file_name in devtools_modules:
         file_content = read_file(join(input_path, file_name))
-        minified = rjsmin.jsmin(file_content)
-        write_file(join(output_path, relpath(file_name, 'front_end')), minified)
+        write_file(join(output_path, relpath(file_name, 'front_end')),
+                   file_content)
 
 
 if __name__ == '__main__':

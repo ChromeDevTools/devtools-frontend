@@ -5,7 +5,7 @@ import {assert} from 'chai';
 import {performance} from 'perf_hooks';
 import * as puppeteer from 'puppeteer';
 
-import {$, $$, click, getBrowserAndPages, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
+import {$, $$, click, getBrowserAndPages, goToResource, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
 
 const SELECTED_TREE_ELEMENT_SELECTOR = '.selected[role="treeitem"]';
 const CSS_PROPERTY_NAME_SELECTOR = '.webkit-css-property';
@@ -13,6 +13,12 @@ const CSS_PROPERTY_SWATCH_SELECTOR = '.color-swatch-inner';
 const CSS_STYLE_RULE_SELECTOR = '[aria-label*="css selector"]';
 const COMPUTED_PROPERTY_SELECTOR = '.computed-style-property';
 const ELEMENTS_PANEL_SELECTOR = '.panel[aria-label="elements"]';
+
+export const setupComputedPaneTest = async (resource: string) => {
+  await goToResource(resource);
+  await navigateToSidePane('Computed');
+  await waitForElementsComputedSection();
+};
 
 export const assertContentOfSelectedElementsNode = async (expectedTextContent: string) => {
   const selectedNode = await $(SELECTED_TREE_ELEMENT_SELECTOR);
@@ -67,6 +73,14 @@ export const waitForChildrenOfSelectedElementNode = async () => {
 
 export const focusElementsTree = async () => {
   await click(SELECTED_TREE_ELEMENT_SELECTOR);
+};
+
+export const keyboardNavigateInElementsTree = async (keysToPress: string[]) => {
+  const {frontend} = getBrowserAndPages();
+  await focusElementsTree();
+  for (const key of keysToPress) {
+    await frontend.keyboard.press(key);
+  }
 };
 
 export const navigateToSidePane = async (paneName: string) => {

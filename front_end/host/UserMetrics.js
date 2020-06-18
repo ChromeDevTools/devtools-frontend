@@ -241,7 +241,7 @@ export const PanelCodes = {
   'settings-blackbox': 32,
   'settings-devices': 33,
   'settings-throttling-conditions': 34,
-  'settings-emulation-geolocations': 35,
+  'settings-emulation-locations': 35,
   'settings-shortcuts': 36,
   'drawer-issues-pane': 37,
   'settings-keybinds': 38

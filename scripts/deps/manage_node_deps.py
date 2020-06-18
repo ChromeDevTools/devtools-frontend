@@ -61,7 +61,7 @@ DEPS = {
     "rollup-plugin-terser": "5.3.0",
     "stylelint": "13.5.0",
     "typescript": "3.9.3",
-    "yargs": "15.3.1"
+    "yargs": "15.3.1",
 }
 
 def exec_command(cmd):

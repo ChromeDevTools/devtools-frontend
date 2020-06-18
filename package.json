@@ -24,7 +24,7 @@
     "check-gn": "third_party/node/node.py scripts/check_gn.js",
     "check-grdp": "third_party/node/node.py scripts/localization/check_localizable_resources.js",
     "check-json": "third_party/node/node.py scripts/json_validator/validate_module_json.js",
-    "check-lint": "third_party/node/node.py scripts/test/run_lint_check.js",
+    "check-lint": "third_party/node/node.py scripts/test/run_lint_check_js.js && python scripts/test/run_lint_check_css.py",
     "check-loc": "python scripts/test/run_localization_check.py",
     "check-type": "echo \"If you want to typecheck with TypeScript, run \\\"autoninja -C out/X\\\". If you want to typecheck with Closure, run \\\"npm run check-type-closure\\\"\"",
     "check-type-closure": "python scripts/test/run_type_check.py",

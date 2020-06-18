@@ -4,9 +4,6 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-# TODO(1083142): remove this file in favor of run_lint_check_js.py once
-# infra has been updated.
-
 import sys
 from os import path
 from subprocess import Popen

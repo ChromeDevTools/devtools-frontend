@@ -145,48 +145,97 @@ def _CheckDevtoolsLocalization(input_api, output_api, check_all_files=False):  #
     return _ExecuteSubProcess(input_api, output_api, script_path, args, results)
 
 
-def _CheckDevtoolsStyle(input_api, output_api):
-    results = [output_api.PresubmitNotifyResult('Running Devtools Style Check:')]
-    lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'test', 'run_lint_check.js')
+def _CheckDevToolsStyleJS(input_api, output_api):
+    results = [
+        output_api.PresubmitNotifyResult('Running DevTools JS style check:')
+    ]
+    lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
+                                       'scripts', 'test',
+                                       'run_lint_check_js.js')
 
-    front_end_directory = input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end')
-    test_directory = input_api.os_path.join(input_api.PresubmitLocalPath(), 'test')
-    scripts_directory = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts')
+    front_end_directory = input_api.os_path.join(
+        input_api.PresubmitLocalPath(), 'front_end')
+    test_directory = input_api.os_path.join(input_api.PresubmitLocalPath(),
+                                            'test')
+    scripts_directory = input_api.os_path.join(input_api.PresubmitLocalPath(),
+                                               'scripts')
 
-    default_linted_directories = [front_end_directory, test_directory, scripts_directory]
+    default_linted_directories = [
+        front_end_directory, test_directory, scripts_directory
+    ]
 
     eslint_related_files = [
-        input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules', 'eslint'),
+        input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules',
+                               'eslint'),
         input_api.os_path.join(input_api.PresubmitLocalPath(), '.eslintrc.js'),
-        input_api.os_path.join(input_api.PresubmitLocalPath(), '.eslintignore'),
-        input_api.os_path.join(scripts_directory, 'test', 'run_lint_check.py'),
-        input_api.os_path.join(scripts_directory, 'test', 'run_lint_check.js'),
+        input_api.os_path.join(input_api.PresubmitLocalPath(),
+                               '.eslintignore'),
+        input_api.os_path.join(scripts_directory, 'test',
+                               'run_lint_check_js.py'),
+        input_api.os_path.join(scripts_directory, 'test',
+                               'run_lint_check_js.js'),
         input_api.os_path.join(scripts_directory, '.eslintrc.js'),
         input_api.os_path.join(scripts_directory, 'eslint_rules'),
     ]
 
-    affected_files = _getAffectedFiles(input_api, eslint_related_files, [], ['.js', '.py', '.eslintignore'])
+    lint_config_files = _getAffectedFiles(input_api, eslint_related_files, [],
+                                          ['.js', '.py', '.eslintignore'])
 
-    # We are changing the ESLint configuration, make sure to run the full check
-    if len(affected_files) is not 0:
-        results.append(output_api.PresubmitNotifyResult('Running full ESLint check'))
-        affected_files = default_linted_directories
-    else:
-        # Only run ESLint on files that are relevant, to save PRESUBMIT time
-        affected_files = _getAffectedFiles(input_api, default_linted_directories, ['D'], ['.js', '.ts'])
+    files_to_lint = _getFilesToLint(input_api, output_api, lint_config_files,
+                                    default_linted_directories, ['.js', '.ts'],
+                                    results)
+    if len(files_to_lint) is 0:
+        return results
 
-        # If we have not changed any lintable files, then we should bail out.
-        # Otherwise, `run_lint_check.js` will lint *all* files.
-        if len(affected_files) is 0:
-            results.append(output_api.PresubmitNotifyResult('No affected files for ESLint check'))
-            return results
-
-    results.extend(_checkWithNodeScript(input_api, output_api, lint_path, affected_files))
+    results.extend(
+        _checkWithNodeScript(input_api, output_api, lint_path, files_to_lint))
     return results
 
 
+def _CheckDevToolsStyleCSS(input_api, output_api):
+    results = [
+        output_api.PresubmitNotifyResult('Running DevTools CSS style check:')
+    ]
+    lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
+                                       'scripts', 'test',
+                                       'run_lint_check_css.py')
+
+    front_end_directory = input_api.os_path.join(
+        input_api.PresubmitLocalPath(), 'front_end')
+    default_linted_directories = [front_end_directory]
+
+    scripts_directory = input_api.os_path.join(input_api.PresubmitLocalPath(),
+                                               'scripts')
+
+    stylelint_related_files = [
+        input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules',
+                               'stylelint'),
+        input_api.os_path.join(input_api.PresubmitLocalPath(),
+                               '.stylelintrc.json'),
+        input_api.os_path.join(input_api.PresubmitLocalPath(),
+                               '.stylelintignore'),
+        input_api.os_path.join(scripts_directory, 'test',
+                               'run_lint_check_css.py'),
+    ]
+
+    lint_config_files = _getAffectedFiles(input_api, stylelint_related_files,
+                                          [],
+                                          ['.json', '.py', '.stylelintignore'])
+
+    files_to_lint = _getFilesToLint(input_api, output_api, lint_config_files,
+                                    default_linted_directories, ['.css'],
+                                    results)
+    if len(files_to_lint) is 0:
+        return results
+
+    return _ExecuteSubProcess(input_api, output_api, lint_path, files_to_lint,
+                              results)
+
+
 def _CheckOptimizeSVGHashes(input_api, output_api):
-    results = [output_api.PresubmitNotifyResult('Running SVG Optimization Check:')]
+    results = [
+        output_api.PresubmitNotifyResult('Running SVG optimization check:')
+    ]
     if not input_api.platform.startswith('linux'):
         return results
 
@@ -309,7 +358,8 @@ def _CommonChecks(input_api, output_api):
     results.extend(_CheckBuildGN(input_api, output_api))
     results.extend(_CheckGeneratedFiles(input_api, output_api))
     results.extend(_CheckJSON(input_api, output_api))
-    results.extend(_CheckDevtoolsStyle(input_api, output_api))
+    results.extend(_CheckDevToolsStyleJS(input_api, output_api))
+    results.extend(_CheckDevToolsStyleCSS(input_api, output_api))
     results.extend(_CheckFormat(input_api, output_api))
     results.extend(_CheckOptimizeSVGHashes(input_api, output_api))
     results.extend(_CheckChangesAreExclusiveToDirectory(input_api, output_api))
@@ -356,3 +406,27 @@ def _checkWithNodeScript(input_api, output_api, script_path, script_arguments=[]
         sys.path = original_sys_path
 
     return _ExecuteSubProcess(input_api, output_api, [devtools_paths.node_path(), script_path], script_arguments, [])
+
+
+def _getFilesToLint(input_api, output_api, lint_config_files,
+                    default_linted_directories, accepted_endings, results):
+    files_to_lint = []
+
+    # We are changing the lint configuration; run the full check.
+    if len(lint_config_files) is not 0:
+        results.append(
+            output_api.PresubmitNotifyResult('Running full lint check'))
+    else:
+        # Only run the linter on files that are relevant, to save PRESUBMIT time.
+        files_to_lint = _getAffectedFiles(input_api,
+                                          default_linted_directories, ['D'],
+                                          accepted_endings)
+
+        if len(files_to_lint) is 0:
+            results.append(
+                output_api.PresubmitNotifyResult(
+                    'No affected files for lint check'))
+
+    # Callers should check len(files_to_lint) and bail out if it's 0,
+    # otherwise all files get linted.
+    return files_to_lint

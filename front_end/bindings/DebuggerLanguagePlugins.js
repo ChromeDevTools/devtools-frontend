@@ -408,6 +408,8 @@ export class DebuggerLanguagePluginManager {
   }
 
   /**
+   * @param {string} sourceFile
+   * @param {!SDK.Script.Script} script
    * @param {string} sourceFileURL
    * @return {!Workspace.UISourceCode.UISourceCode}
    */
@@ -420,7 +422,7 @@ export class DebuggerLanguagePluginManager {
     uiSourceCode = this._project.createUISourceCode(sourceFileURL, Common.ResourceType.resourceTypes.SourceMapScript);
     Bindings.NetworkProject.setInitialFrameAttribution(uiSourceCode, script.frameId);
     const contentProvider = new SDK.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(
-        sourceFileURL, Common.ResourceType.resourceTypes.SourceMapScript);
+        sourceFileURL, Common.ResourceType.resourceTypes.SourceMapScript, script.frameId);
     this._bindUISourceCode(uiSourceCode, script, sourceFile);
 
     // TODO(pfaffe) Try and set a correct mimetype here? We don't actually know the mime type of the source code here,

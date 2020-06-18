@@ -5,12 +5,14 @@
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 
+import {FrameAssociated} from './FrameAssociated.js';  // eslint-disable-line no-unused-vars
 import {Script} from './Script.js';
 import {Events as TargetManagerEvents, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 import {SourceMap, TextSourceMap, WasmSourceMap} from './SourceMap.js';  // eslint-disable-line no-unused-vars
 
+
 /**
- * @template T
+ * @template {!FrameAssociated} T
  */
 export class SourceMapManager extends Common.ObjectWrapper.ObjectWrapper {
   /**
@@ -178,7 +180,7 @@ export class SourceMapManager extends Common.ObjectWrapper.ObjectWrapper {
       if (sourceMapURL === WasmSourceMap.FAKE_URL && client instanceof Script) {
         sourceMapPromise = WasmSourceMap.load(client, sourceURL);
       } else {
-        sourceMapPromise = TextSourceMap.load(sourceMapURL, sourceURL);
+        sourceMapPromise = TextSourceMap.load(sourceMapURL, sourceURL, client.frameId);
       }
       sourceMapPromise
           .catch(error => {

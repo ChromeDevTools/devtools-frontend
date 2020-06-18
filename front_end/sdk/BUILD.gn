@@ -29,6 +29,7 @@ ts_library("sdk") {
     "DebuggerModel.js",
     "EmulationModel.js",
     "FilmStripModel.js",
+    "FrameAssociated.js",
     "HARLog.js",
     "HeapProfilerModel.js",
     "IsolateManager.js",

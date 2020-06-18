@@ -7,11 +7,12 @@ import * as TextUtils from '../text_utils/text_utils.js';
 
 import {CSSModel} from './CSSModel.js';  // eslint-disable-line no-unused-vars
 import {DeferredDOMNode} from './DOMModel.js';
+import {FrameAssociated} from './FrameAssociated.js';  // eslint-disable-line no-unused-vars
 import {ResourceTreeModel} from './ResourceTreeModel.js';
 
 /**
  * @implements {TextUtils.ContentProvider.ContentProvider}
- * @unrestricted
+ * TODO(chromium:1011811): make `implements {FrameAssociated}` annotation work here.
  */
 export class CSSStyleSheetHeader {
   /**
@@ -37,7 +38,8 @@ export class CSSStyleSheetHeader {
     if (payload.ownerNode) {
       this.ownerNode = new DeferredDOMNode(cssModel.target(), payload.ownerNode);
     }
-    this.setSourceMapURL(payload.sourceMapURL);
+    this.sourceMapURL = payload.sourceMapURL;
+    this._originalContentProvider = null;
   }
 
   /**

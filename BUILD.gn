@@ -1381,6 +1381,7 @@ all_devtools_modules = [
   "sdk/DOMModel.js",
   "sdk/EmulationModel.js",
   "sdk/FilmStripModel.js",
+  "sdk/FrameAssociated.js",
   "sdk/HARLog.js",
   "sdk/HeapProfilerModel.js",
   "sdk/IsolateManager.js",

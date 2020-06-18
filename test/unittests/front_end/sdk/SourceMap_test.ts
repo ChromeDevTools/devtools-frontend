@@ -6,6 +6,8 @@ const {assert} = chai;
 
 import {SourceMapEntry, TextSourceMap} from '../../../../front_end/sdk/SourceMap.js';
 
+const fakeFrameId = 'fakeFrameId';
+
 describe('SourceMapEntry', () => {
   it('can be instantiated correctly', () => {
     const sourceMapEntry = new SourceMapEntry(1, 1, 'http://www.example.com/', 1, 1, 'example');
@@ -113,7 +115,7 @@ describe('TextSourceMap', () => {
       sourceRoot: undefined,
       names: undefined,
     };
-    const sourceMap = new TextSourceMap('compiled.js', 'source-map.json', mappingPayload);
+    const sourceMap = new TextSourceMap('compiled.js', 'source-map.json', mappingPayload, fakeFrameId);
 
     assertMapping(sourceMap.findEntry(0, 9), 'example.js', 0, 9);
     assertMapping(sourceMap.findEntry(0, 13), 'example.js', 0, 13);
@@ -140,7 +142,7 @@ describe('TextSourceMap', () => {
       sourceRoot: undefined,
       names: undefined,
     };
-    const sourceMap = new TextSourceMap('compiled.js', 'source-map.json', mappingPayload);
+    const sourceMap = new TextSourceMap('compiled.js', 'source-map.json', mappingPayload, fakeFrameId);
 
     assertMapping(sourceMap.findEntry(0, 0), 'example.js', 0, 0);
     assertMapping(sourceMap.findEntry(0, 2), 'example.js', 0, 2);
@@ -161,7 +163,7 @@ describe('TextSourceMap', () => {
       sourceRoot: undefined,
       names: undefined,
     };
-    const sourceMap = new TextSourceMap('compiled.js', 'source-map.json', mappingPayload);
+    const sourceMap = new TextSourceMap('compiled.js', 'source-map.json', mappingPayload, fakeFrameId);
 
     assertMapping(sourceMap.findEntry(0, 0), 'example.js', 0, 0);
     assertReverseMapping(sourceMap.sourceLineMapping('example.js', 1, 0), 3, 1);
@@ -202,7 +204,7 @@ describe('TextSourceMap', () => {
       sourceRoot: undefined,
       names: undefined,
     };
-    const sourceMap = new TextSourceMap('compiled.js', 'source-map.json', mappingPayload);
+    const sourceMap = new TextSourceMap('compiled.js', 'source-map.json', mappingPayload, fakeFrameId);
 
     assert.lengthOf(sourceMap.sourceURLs(), 2, 'unexpected number of original source URLs');
     assertMapping(sourceMap.findEntry(0, 0), 'source1.js', 0, 0);

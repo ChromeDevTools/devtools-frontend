@@ -41,10 +41,12 @@ export class CompilerSourceMappingContentProvider {
   /**
    * @param {string} sourceURL
    * @param {!Common.ResourceType.ResourceType} contentType
+   * @param {!Protocol.Page.FrameId} frameId
    */
-  constructor(sourceURL, contentType) {
+  constructor(sourceURL, contentType, frameId) {
     this._sourceURL = sourceURL;
     this._contentType = contentType;
+    this._frameId = frameId;
   }
 
   /**

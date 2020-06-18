@@ -353,7 +353,7 @@ class Binding {
   }
 
   /**
-   * @param {string} frameId
+   * @param {!Protocol.Page.FrameId} frameId
    */
   _recreateUISourceCodeIfNeeded(frameId) {
     const sourceMap = this._referringSourceMaps.peekLast();
@@ -385,7 +385,7 @@ class Binding {
 
   /**
    * @param {!SDK.SourceMap.SourceMap} sourceMap
-   * @param {string} frameId
+   * @param {!Protocol.Page.FrameId} frameId
    */
   addSourceMap(sourceMap, frameId) {
     if (this._uiSourceCode) {
@@ -397,7 +397,7 @@ class Binding {
 
   /**
    * @param {!SDK.SourceMap.SourceMap} sourceMap
-   * @param {string} frameId
+   * @param {!Protocol.Page.FrameId} frameId
    */
   removeSourceMap(sourceMap, frameId) {
     NetworkProject.removeFrameAttribution(

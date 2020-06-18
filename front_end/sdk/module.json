@@ -537,6 +537,7 @@
     "sdk.js",
     "sdk-legacy.js",
     "SDKModel.js",
+    "FrameAssociated.js",
     "Connections.js",
     "CompilerSourceMappingContentProvider.js",
     "Cookie.js",

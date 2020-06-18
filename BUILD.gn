@@ -1053,6 +1053,7 @@ all_devtools_modules = [
   "browser_debugger/EventListenerBreakpointsSidebarPane.js",
   "browser_debugger/ObjectEventListenersSidebarPane.js",
   "browser_debugger/XHRBreakpointsSidebarPane.js",
+  "browser_sdk/FrameManager.js",
   "browser_sdk/LogManager.js",
   "browser_sdk/IssuesManager.js",
   "browser_sdk/RelatedIssue.js",

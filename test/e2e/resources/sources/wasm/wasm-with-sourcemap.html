@@ -4,7 +4,7 @@
   found in the LICENSE file.
 -->
 <script>
-async function go() {
+(async () => {
   const importObj = {
     env: {
       memory: new WebAssembly.Memory({
@@ -27,6 +27,6 @@ async function go() {
 
   const instance = await WebAssembly.instantiateStreaming(fetch(modulename), importObj);
   window.main = instance.instance.exports.Main;
-}
-go();
+  main();
+})();
 </script>

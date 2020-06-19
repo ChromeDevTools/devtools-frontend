@@ -514,7 +514,7 @@ export class VersionController {
   }
 
   static get currentVersion() {
-    return 29;
+    return 30;
   }
 
   updateVersion() {
@@ -971,6 +971,25 @@ export class VersionController {
     renameKeyInObjectSetting('panel-tabOrder', 'audits', 'lighthouse');
     renameKeyInObjectSetting('panel-closeableTabs', 'audits', 'lighthouse');
     renameInStringSetting('panel-selectedTab', 'audits', 'lighthouse');
+  }
+
+  _updateVersionFrom29To30() {
+    // Create new location agnostic setting
+    const closeableTabSetting = Settings.instance().createSetting('closeableTabs', {});
+
+    // Read current settings
+    const panelCloseableTabSetting = Settings.instance().createSetting('panel-closeableTabs', {});
+    const drawerCloseableTabSetting = Settings.instance().createSetting('drawer-view-closeableTabs', {});
+    const openTabsInPanel = panelCloseableTabSetting.get();
+    const openTabsInDrawer = panelCloseableTabSetting.get();
+
+    // Set value of new setting
+    const newValue = Object.assign(openTabsInDrawer, openTabsInPanel);
+    closeableTabSetting.set(newValue);
+
+    // Remove old settings
+    panelCloseableTabSetting.remove();
+    drawerCloseableTabSetting.remove();
   }
 
   _migrateSettingsFromLocalStorage() {

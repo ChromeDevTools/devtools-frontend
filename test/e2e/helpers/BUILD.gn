@@ -24,6 +24,7 @@ node_ts_library("helpers") {
     "profiler-helpers.ts",
     "quick_open-helpers.ts",
     "search-helpers.ts",
+    "security-helpers.ts",
     "settings-helpers.ts",
     "sources-helpers.ts",
     "webaudio-helpers.ts",

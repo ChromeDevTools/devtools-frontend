@@ -6,6 +6,7 @@
       "id": "security",
       "title": "Security",
       "order": 80,
+      "persistence": "closeable",
       "className": "Security.SecurityPanel"
     }
   ],

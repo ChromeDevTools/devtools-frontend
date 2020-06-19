@@ -46,11 +46,8 @@ path.animation-keyframe {
   fill-opacity: 0.2;
 }
 
+.animation-node-selected path.animation-keyframe,
 svg.animation-ui g:first-child:hover path.animation-keyframe {
-  fill-opacity: 0.4;
-}
-
-.animation-node-selected path.animation-keyframe {
   fill-opacity: 0.4;
 }
 
@@ -69,6 +66,10 @@ line.animation-delay-line.animation-fill {
   stroke-dasharray: none;
 }
 
+circle.animation-keyframe-point {
+  fill: white;
+}
+
 circle.animation-endpoint,
 circle.animation-keyframe-point {
   stroke-width: 2px;
@@ -78,18 +79,14 @@ circle.animation-keyframe-point {
   transform-origin: 50% 50%;
 }
 
-.animation-ui circle.animation-endpoint:hover,
-.animation-ui circle.animation-keyframe-point:hover {
-  transform: scale(1.2);
-}
-
 circle.animation-endpoint:active,
 circle.animation-keyframe-point:active {
   transform: scale(1);
 }
 
-circle.animation-keyframe-point {
-  fill: white;
+.animation-ui circle.animation-endpoint:hover,
+.animation-ui circle.animation-keyframe-point:hover {
+  transform: scale(1.2);
 }
 
 .animation-name {
@@ -139,7 +136,11 @@ circle.animation-keyframe-point {
   padding-right: 8px;
 }
 
-.animation-timeline-current-time { flex: 0 0 auto; line-height: 28px; margin-right: 5px; }
+.animation-timeline-current-time {
+  flex: 0 0 auto;
+  line-height: 28px;
+  margin-right: 5px;
+}
 
 .animation-grid-header {
   flex: 1 0 auto;
@@ -332,13 +333,13 @@ text.animation-timeline-grid-label {
   cursor: pointer;
 }
 
+.animation-buffer-preview[data-keyboard-focus="true"]:focus {
+  outline: -webkit-focus-ring-color auto 5px;
+}
+
 .animation-buffer-preview[data-keyboard-focus="true"]:not(.selected):focus,
 .animation-buffer-preview:not(.selected):hover {
   background-color: hsl(217deg 90% 92% / 100%);
-}
-
-.animation-buffer-preview[data-keyboard-focus="true"]:focus {
-  outline: -webkit-focus-ring-color auto 5px;
 }
 
 .animation-buffer-preview.selected {
@@ -346,7 +347,6 @@ text.animation-timeline-grid-label {
 }
 
 .animation-paused {
-  display: flex;
   align-items: center;
   justify-content: center;
   background-color: hsl(0deg 0% 70% / 50%);
@@ -368,12 +368,12 @@ text.animation-timeline-grid-label {
   display: flex;
 }
 
-.animation-buffer-preview.selected > svg > line {
-  stroke: white !important;
-}
-
 .animation-buffer-preview > svg > line {
   stroke-width: 1px;
+}
+
+.animation-buffer-preview.selected > svg > line {
+  stroke: white !important;
 }
 
 @keyframes newGroupAnim {
@@ -392,14 +392,6 @@ text.animation-timeline-grid-label {
   width: 120px;
 }
 
-.animation-playback-rate-button:first-child {
-  border-radius: 4px 0 0 4px;
-}
-
-.animation-playback-rate-button:last-child {
-  border-radius: 0 4px 4px 0;
-}
-
 .animation-playback-rate-button {
   border: 1px solid #ccc;
   color: #000;
@@ -412,13 +404,21 @@ text.animation-timeline-grid-label {
   cursor: pointer;
 }
 
-.animation-playback-rate-button[data-keyboard-focus="true"].selected:first-child:focus,
-.animation-playback-rate-button[data-keyboard-focus="true"]:focus {
-  background-color: var(--focus-bg-color);
+.animation-playback-rate-button:first-child {
+  border-radius: 4px 0 0 4px;
+}
+
+.animation-playback-rate-button:last-child {
+  border-radius: 0 4px 4px 0;
 }
 
 .animation-playback-rate-button[data-keyboard-focus="true"].selected:focus {
   color: hsl(0deg 0% 0%);
+}
+
+.animation-playback-rate-button[data-keyboard-focus="true"].selected:first-child:focus,
+.animation-playback-rate-button[data-keyboard-focus="true"]:focus {
+  background-color: var(--focus-bg-color);
 }
 
 .animation-playback-rate-button:not(.selected):hover {
@@ -438,7 +438,7 @@ text.animation-timeline-grid-label {
 }
 
 .animation-remove-button,
--theme-preserve {
+.-theme-preserve {
   position: absolute;
   top: -3px;
   right: -3px;

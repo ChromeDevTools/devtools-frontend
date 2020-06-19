@@ -62,30 +62,14 @@
   -webkit-mask-position: -20px 1px;
 }
 
-.ax-breadcrumbs .ax-node.children-unloaded::before {
-  -webkit-mask-position: 0 1px;
-  width: 13px;
-}
-
 .ax-breadcrumbs .ax-node.no-dom-node {
   opacity: 70%;
 }
 
 .ax-breadcrumbs .ax-node.children-unloaded::before {
+  -webkit-mask-position: 0 1px;
+  width: 13px;
   opacity: 40%;
-}
-
-.ax-breadcrumbs .ax-node.preselected:not(.inspected) .selection,
-.ax-breadcrumbs .ax-node.hovered:not(.inspected) .selection {
-  display: block;
-  left: 2px;
-  right: 2px;
-  background-color: var(--item-hover-color);
-  border-radius: 5px;
-}
-
-.ax-breadcrumbs .ax-node.preselected:not(.inspected):focus .selection {
-  border: 1px solid rgb(56 121 217 / 40%);
 }
 
 .ax-breadcrumbs .ax-node .selection {
@@ -114,6 +98,19 @@
   color: inherit;
 }
 
+.ax-breadcrumbs .ax-node.preselected:not(.inspected) .selection,
+.ax-breadcrumbs .ax-node.hovered:not(.inspected) .selection {
+  display: block;
+  left: 2px;
+  right: 2px;
+  background-color: var(--item-hover-color);
+  border-radius: 5px;
+}
+
+.ax-breadcrumbs .ax-node.preselected:not(.inspected):focus .selection {
+  border: 1px solid rgb(56 121 217 / 40%);
+}
+
 @media (forced-colors: active) {
   .ax-value-source-unused,
   .ax-breadcrumbs .ax-node.children-unloaded::before {
@@ -126,8 +123,8 @@
     background-color: ButtonText;
   }
 
-  .ax-breadcrumbs .ax-node.parent.inspected:focus::before,
-  .ax-breadcrumbs .ax-node.parent.inspected::before {
+  .ax-breadcrumbs .ax-node.parent.inspected::before,
+  .ax-breadcrumbs .ax-node.parent.inspected:focus::before {
     background-color: HighlightText;
   }
 

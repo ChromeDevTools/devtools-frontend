@@ -1,7 +1,6 @@
-file://COMMON_OWNERS
-
-alph@chromium.org
-caseq@chromium.org
-
+file://INFRA_OWNERS
 per-file *_test_runner=file://COMMON_OWNERS
 per-file audits*=file://LIGHTHOUSE_OWNERS
+
+bmeurer@chromium.org
+Rob.Paveza@microsoft.com

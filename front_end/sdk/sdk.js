@@ -65,6 +65,7 @@ import * as SourceMap from './SourceMap.js';
 import * as SourceMapManager from './SourceMapManager.js';
 import * as TracingManager from './TracingManager.js';
 import * as TracingModel from './TracingModel.js';
+import * as WebAuthnModel from './WebAuthnModel.js';
 
 export {
   ChildTargetManager,
@@ -119,4 +120,5 @@ export {
   SourceMapManager,
   TracingManager,
   TracingModel,
+  WebAuthnModel
 };

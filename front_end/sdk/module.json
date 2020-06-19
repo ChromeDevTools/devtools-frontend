@@ -546,6 +546,7 @@
     "ProfileTreeModel.js",
     "Issue.js",
     "IssuesModel.js",
+    "WebAuthnModel.js",
     "SameSiteCookieIssue.js",
     "MixedContentIssue.js",
     "CrossOriginEmbedderPolicyIssue.js",

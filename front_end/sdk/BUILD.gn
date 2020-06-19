@@ -61,6 +61,7 @@ ts_library("sdk") {
     "SourceMapManager.js",
     "TracingManager.js",
     "TracingModel.js",
+    "WebAuthnModel.js",
     "sdk.js",
   ]
 

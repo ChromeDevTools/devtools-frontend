@@ -104,7 +104,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
       case Type.Frame:
         this._capabilitiesMask = Capability.Browser | Capability.Storage | Capability.DOM | Capability.JS |
             Capability.Log | Capability.Network | Capability.Target | Capability.Tracing | Capability.Emulation |
-            Capability.Input | Capability.Inspector | Capability.Audits;
+            Capability.Input | Capability.Inspector | Capability.Audits | Capability.WebAuthn;
         if (!parentTarget) {
           // This matches backend exposing certain capabilities only for the main frame.
           this._capabilitiesMask |=
@@ -337,6 +337,7 @@ export const Capability = {
   Storage: 1 << 13,
   ServiceWorker: 1 << 14,
   Audits: 1 << 15,
+  WebAuthn: 1 << 16,
 
   None: 0,
 };

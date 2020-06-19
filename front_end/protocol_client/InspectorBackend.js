@@ -747,6 +747,13 @@ export class TargetBase {
     throw new Error('Implemented in InspectorBackend.js');
   }
 
+  /**
+   * @return {!ProtocolProxyApi.WebAuthnApi}
+   */
+  webAuthnAgent() {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
 
   // Dispatcher registration, keep alphabetically sorted.
 

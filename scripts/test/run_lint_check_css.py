@@ -22,6 +22,9 @@ DEFAULT_GLOB = '**/*.css'
 def get_css_files_or_glob():
     files = sys.argv[1:]
     if len(files):
+        # TODO(crbug.com/1095940): Use `pathlib.PurePath(...).as_posix`
+        # instead of `replace` once we drop support for Python 2.
+        files = [f.replace('\\', '/') for f in files]
         return files
     return [DEFAULT_GLOB]
 

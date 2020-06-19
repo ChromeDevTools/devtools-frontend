@@ -181,10 +181,10 @@ def _CheckDevToolsStyleJS(input_api, output_api):
     lint_config_files = _getAffectedFiles(input_api, eslint_related_files, [],
                                           ['.js', '.py', '.eslintignore'])
 
-    files_to_lint = _getFilesToLint(input_api, output_api, lint_config_files,
-                                    default_linted_directories, ['.js', '.ts'],
-                                    results)
-    if len(files_to_lint) is 0:
+    should_bail_out, files_to_lint = _getFilesToLint(
+        input_api, output_api, lint_config_files, default_linted_directories,
+        ['.js', '.ts'], results)
+    if should_bail_out:
         return results
 
     results.extend(
@@ -222,10 +222,10 @@ def _CheckDevToolsStyleCSS(input_api, output_api):
                                           [],
                                           ['.json', '.py', '.stylelintignore'])
 
-    files_to_lint = _getFilesToLint(input_api, output_api, lint_config_files,
-                                    default_linted_directories, ['.css'],
-                                    results)
-    if len(files_to_lint) is 0:
+    should_bail_out, files_to_lint = _getFilesToLint(
+        input_api, output_api, lint_config_files, default_linted_directories,
+        ['.css'], results)
+    if should_bail_out:
         return results
 
     return _ExecuteSubProcess(input_api, output_api, lint_path, files_to_lint,
@@ -410,12 +410,14 @@ def _checkWithNodeScript(input_api, output_api, script_path, script_arguments=[]
 
 def _getFilesToLint(input_api, output_api, lint_config_files,
                     default_linted_directories, accepted_endings, results):
+    run_full_check = False
     files_to_lint = []
 
     # We are changing the lint configuration; run the full check.
     if len(lint_config_files) is not 0:
         results.append(
             output_api.PresubmitNotifyResult('Running full lint check'))
+        run_full_check = True
     else:
         # Only run the linter on files that are relevant, to save PRESUBMIT time.
         files_to_lint = _getAffectedFiles(input_api,
@@ -427,6 +429,5 @@ def _getFilesToLint(input_api, output_api, lint_config_files,
                 output_api.PresubmitNotifyResult(
                     'No affected files for lint check'))
 
-    # Callers should check len(files_to_lint) and bail out if it's 0,
-    # otherwise all files get linted.
-    return files_to_lint
+    should_bail_out = len(files_to_lint) is 0 and not run_full_check
+    return should_bail_out, files_to_lint

@@ -4,7 +4,6 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import posixpath
 import sys
 from os import path
 from subprocess import Popen
@@ -13,12 +12,11 @@ scripts_path = path.dirname(path.dirname(path.abspath(__file__)))
 sys.path.append(scripts_path)
 import devtools_paths
 
-# Note: stylelint requires POSIX-formatted paths, even on Windows.
-CURRENT_DIRECTORY = posixpath.abspath(posixpath.dirname(sys.argv[0]))
-ROOT_DIRECTORY = posixpath.normpath(
-    posixpath.join(CURRENT_DIRECTORY, '..', '..'))
-FRONT_END_DIRECTORY = posixpath.join(ROOT_DIRECTORY, 'front_end')
-DEFAULT_GLOB = posixpath.join(FRONT_END_DIRECTORY, '**', '*.css')
+ROOT_DIRECTORY = path.dirname(scripts_path)
+
+# Note: stylelint requires POSIX-formatted paths/globs, even on Windows.
+# The forward slash is not a bug.
+DEFAULT_GLOB = '**/*.css'
 
 
 def get_css_files_or_glob():

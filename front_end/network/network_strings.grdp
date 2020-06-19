@@ -42,6 +42,9 @@
   <message name="IDS_DEVTOOLS_0c1ac4502b106b89cbf1d3850f44ae12" desc="An option in the user agent dropdown menu in the Network conditions tool">
     <ph name="LOCKED_1">Android (4.0.2) Browser — Galaxy Nexus</ph>
   </message>
+  <message name="IDS_DEVTOOLS_0d6c76e22c095f0ae6cf53753121adef" desc="Text used to show that serviceworker fetch response source is ServiceWorker Cache Storage">
+    ServiceWorker cache storage
+  </message>
   <message name="IDS_DEVTOOLS_0db377921f4ce762c62526131097968f" desc="Text in Request Headers View of the Network panel">
     General
   </message>
@@ -117,6 +120,9 @@
   <message name="IDS_DEVTOOLS_21fd2e738b03921c90da8ac98319a04b" desc="An option in the user agent dropdown menu in the Network conditions tool">
     <ph name="LOCKED_1">Chrome — Windows</ph>
   </message>
+  <message name="IDS_DEVTOOLS_22c5170c679b5d0232542f02c15bf335" desc="Text used to show that data was retrieved via a Network fetch">
+    Network fetch
+  </message>
   <message name="IDS_DEVTOOLS_22f3e616a52e25632d98fd53d3f821ed" desc="An option in the user agent dropdown menu in the Network conditions tool">
     <ph name="LOCKED_1">Safari — Mac</ph>
   </message>
@@ -186,6 +192,9 @@
   <message name="IDS_DEVTOOLS_38adb5ba687241627ce2b1f82b714e7d" desc="Tooltip text for network request overview setting">
     Show overview of network requests
   </message>
+  <message name="IDS_DEVTOOLS_38f054df4f04de343770f468846f0202" desc="Text for unknown cache storage name">
+    Cache storage cache name: Unknown
+  </message>
   <message name="IDS_DEVTOOLS_39b8414d89adf80e97ec0024e13e3b86" desc="Title of a section in Request Initiator view of the Network Panel">
     Request call stack
   </message>
@@ -212,6 +221,9 @@
   </message>
   <message name="IDS_DEVTOOLS_3e0dc7bd31f5ad41b900fef5b7aba791" desc="Title of a setting under the Network category that can be invoked through the Command Menu">
     Don&apos;t group network log items by frame
+  </message>
+  <message name="IDS_DEVTOOLS_3e150c8e936066f2c4e47dad7a07c9d1" desc="Description for treeitem in ServiceWorker Fetch Details">
+    Original Request
   </message>
   <message name="IDS_DEVTOOLS_3ebfafd757759c5e0081920b36450c58" desc="An option in the user agent dropdown menu in the Network conditions tool">
     <ph name="LOCKED_1">Firefox — Android Mobile</ph>
@@ -375,6 +387,9 @@
   <message name="IDS_DEVTOOLS_6b41d86d21d49c95f5b106fb2ed95762" desc="An option in the user agent dropdown menu in the Network conditions tool">
     <ph name="LOCKED_1">Internet Explorer 10</ph>
   </message>
+  <message name="IDS_DEVTOOLS_5d0fc8284dca5a87af1d80b6715da9cf" desc="Displays how a particular response was fetched">
+    Source of response: <ph name="THIS__REQUEST_RESPONSESOURCE__">$1s<ex>Network fetch</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_6c2a1bf87fb84c91fc7e1120f4e3d0c7" desc="Text in Request Timing View of the Network panel">
     Content Download
   </message>
@@ -408,8 +423,17 @@
   <message name="IDS_DEVTOOLS_8470bd9052ed82990d6e49335b14e41e" desc="Text in Headers View of the Network panel">
     This document was blocked from loading in an <ph name="LOCKED_1">iframe</ph> with a <ph name="LOCKED_1">sandbox</ph> attribute because this document specified a cross-origin opener policy.
   </message>
+  <message name="IDS_DEVTOOLS_88183b946cc5f0e8c96b2e66e1c74a7e" desc="Text for an unspecified service worker response source">
+    Unknown
+  </message>
   <message name="IDS_DEVTOOLS_95059da3555281e1df90b77ce4ff7554" desc="Text in Request Timing View of the Network panel">
     respondWith
+  </message>
+  <message name="IDS_DEVTOOLS_9b5e92790ca7fec879dfd28355a224d1" desc="Text used to show that serviceworker fetch response source is HTTP cache">
+    From HTTP cache
+  </message>
+  <message name="IDS_DEVTOOLS_bb9fd331bd610fd877425ceff23708a7" desc="Time at which a response was retrieved">
+    Retrieval Time: <ph name="THIS__REQUEST_RESPONSERETRIEVALTIME">$1s<ex>Fri Apr 10 2020 17:20:27 GMT-0700 (Pacific Daylight Time)</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_b23be8e9d2dc9b79c70ec2acd3f174d3" desc="Label for the Server Timing API">
     the Server Timing API
@@ -462,6 +486,9 @@
   <message name="IDS_DEVTOOLS_db6cb44185e9c607291751f915b1ca99" desc="Title of an action that hides network request details">
     Hide request details
   </message>
+  <message name="IDS_DEVTOOLS_de04f7066e574ccce5b163308115dd2c" desc="Text used to show that data was retrieved using ServiceWorker fallback code">
+    Fallback code
+  </message>
   <message name="IDS_DEVTOOLS_de9b14d980b77c264d42463f407180be" desc="Message to explain lack of raw headers for a particular network request">
     Provisional headers are shown
   </message>
@@ -485,6 +512,9 @@
   </message>
   <message name="IDS_DEVTOOLS_e48c00bc05b642164b5520137b66d011" desc="Text in Network Log View of the Network panel">
     Copy all as Node.js fetch
+  </message>
+  <message name="IDS_DEVTOOLS_f0c5b7ae2d085f65b7b003d43a7d7521" desc="Name of storage cache from which a response was fetched">
+    Cache storage cache name: <ph name="THIS__REQUEST_RESPONSECACHESTORAGECACHENAME">$1s<ex>v1</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_f59329e45eb11a75d709aeb5b9b8943e" desc="Tooltip for expanding network request row setting">
     Show more information in request rows
@@ -1010,6 +1040,9 @@
   </message>
   <message name="IDS_DEVTOOLS_f750833a940ae1ba3cd75b86d520fda3" desc="From cache format in Network Time Calculator of the Network panel">
     <ph name="PH1">$1s<ex>20ms latency</ex></ph> (from cache)
+  </message>
+  <message name="IDS_DEVTOOLS_f7aa0779f4d8e843b2877afa34d559e0" desc="Description for treeitem in ServiceWorker Fetch Details">
+    Response Received
   </message>
   <message name="IDS_DEVTOOLS_f9069c6541beaac49cce4b2542069f02" desc="Text in Request Headers View of the Network panel">
     Referrer Policy

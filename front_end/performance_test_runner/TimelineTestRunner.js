@@ -12,6 +12,7 @@ PerformanceTestRunner.timelinePropertyFormatters = {
   endTime: 'formatAsTypeName',
   requestId: 'formatAsTypeName',
   startTime: 'formatAsTypeName',
+  responseTime: 'formatAsTypeName',
   stackTrace: 'formatAsTypeName',
   url: 'formatAsURL',
   fileName: 'formatAsURL',

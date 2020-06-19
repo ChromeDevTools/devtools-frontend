@@ -293,6 +293,37 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
+   * @return {string | undefined}
+   * The cache name of the CacheStorage from where the response is served via
+   * the ServiceWorker.
+   */
+  getResponseCacheStorageCacheName() {
+    return this._responseCacheStorageCacheName;
+  }
+
+  /**
+   * @param {string} x
+   */
+  setResponseCacheStorageCacheName(x) {
+    this._responseCacheStorageCacheName = x;
+  }
+
+  /**
+   * @return {!Protocol.Network.ServiceWorkerResponseSource | undefined}
+   */
+  serviceWorkerResponseSource() {
+    return this._serviceWorkerResponseSource;
+  }
+
+  /**
+   * @param {!Protocol.Network.ServiceWorkerResponseSource} serviceWorkerResponseSource
+   */
+  setServiceWorkerResponseSource(serviceWorkerResponseSource) {
+    this._serviceWorkerResponseSource = serviceWorkerResponseSource;
+  }
+
+
+  /**
    * @param {!Protocol.Network.RequestReferrerPolicy} referrerPolicy
    */
   setReferrerPolicy(referrerPolicy) {
@@ -378,6 +409,22 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
    */
   set responseReceivedTime(x) {
     this._responseReceivedTime = x;
+  }
+
+  /**
+   * @return {!Date | undefined}
+   * The time at which the returned response was generated. For cached
+   * responses, this is the last time the cache entry was validated.
+   */
+  getResponseRetrievalTime() {
+    return this._responseRetrievalTime;
+  }
+
+  /**
+   * @param {!Date} x
+   */
+  setResponseRetrievalTime(x) {
+    this._responseRetrievalTime = x;
   }
 
   /**

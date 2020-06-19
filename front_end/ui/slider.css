@@ -15,7 +15,7 @@
 }
 
 .dt-range-input::-webkit-slider-thumb,
--theme-preserve {
+.-theme-preserve {
   -webkit-appearance: none;
   margin: 0;
   padding: 0;
@@ -37,7 +37,7 @@
 }
 
 .dt-range-input:focus::-webkit-slider-thumb,
--theme-preserve {
+.-theme-preserve {
   box-shadow: 0 0 0 2px rgb(66 133 244 / 40%);
 }
 

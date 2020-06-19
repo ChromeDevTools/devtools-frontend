@@ -82,14 +82,14 @@
 
 .shadow-editor-button-left.enabled,
 .shadow-editor-button-right.enabled,
--theme-preserve {
+.-theme-preserve {
   background-color: #4285f4;
   color: #fff;
 }
 
 .shadow-editor-button-left.enabled:focus,
 .shadow-editor-button-right.enabled:focus,
--theme-preserve {
+.-theme-preserve {
   background-color: #3b78e7;
 }
 

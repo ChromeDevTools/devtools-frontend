@@ -46,24 +46,24 @@
 }
 
 .CodeMirror .CodeMirror-linebackground.addition,
--theme-preserve,
+.-theme-preserve,
 .changes-diff-gutter-marker.addition {
   background-color: hsl(144deg 55% 49% / 20%);
 }
 
 .CodeMirror .CodeMirror-linebackground.deletion,
--theme-preserve,
+.-theme-preserve,
 .changes-diff-gutter-marker.deletion {
   background-color: rgb(255 0 0 / 20%);
 }
 
 .CodeMirror .addition .cm-inner-diff:not(.CodeMirror-selectedtext),
--theme-preserve {
+.-theme-preserve {
   background-color: hsl(144deg 55% 49% / 30%);
 }
 
 .CodeMirror .deletion .cm-inner-diff:not(.CodeMirror-selectedtext),
--theme-preserve {
+.-theme-preserve {
   background-color: rgb(255 0 0 / 30%);
 }
 

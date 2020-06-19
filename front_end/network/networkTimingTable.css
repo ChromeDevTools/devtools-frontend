@@ -93,61 +93,61 @@ table.network-timing-table > tr:not(.network-timing-table-header):not(.network-t
 }
 
 .network-timing-bar.blocking,
--theme-preserve {
+.-theme-preserve {
   background-color: #aaa;
 }
 
 .network-timing-bar.proxy,
--theme-preserve {
+.-theme-preserve {
   background-color: #a1887f;
 }
 
 .network-timing-bar.dns,
--theme-preserve {
+.-theme-preserve {
   background-color: #009688;
 }
 
 .network-timing-bar.connecting,
 .network-timing-bar.serviceworker,
 .network-timing-bar.serviceworker-preparation,
--theme-preserve {
+.-theme-preserve {
   background-color: #ff9800;
 }
 
 .network-timing-bar.ssl,
--theme-preserve {
+.-theme-preserve {
   background-color: #9c27b0;
 }
 
 .network-timing-bar.serviceworker-respondwith,
--theme-preserve {
+.-theme-preserve {
   background-color: #a8a3ff;
 }
 
 .network-timing-bar.sending,
--theme-preserve {
+.-theme-preserve {
   background-color: #b0bec5;
 }
 
 .network-timing-bar.waiting,
--theme-preserve {
+.-theme-preserve {
   background-color: #00c853;
 }
 
 .network-timing-bar.receiving,
--theme-preserve,
+.-theme-preserve,
 .network-timing-bar.receiving-push,
--theme-preserve {
+.-theme-preserve {
   background-color: #03a9f4;
 }
 
 .network-timing-bar.push,
--theme-preserve {
+.-theme-preserve {
   background-color: #8cdbff;
 }
 
 .network-timing-bar.server-timing,
--theme-preserve {
+.-theme-preserve {
   background-color: #ddd;
 }
 
@@ -169,29 +169,29 @@ table.network-timing-table > tr:not(.network-timing-table-header):not(.network-t
 
 @media (forced-colors: active) {
   .network-timing-bar.blocking,
-  -theme-preserve,
+  .-theme-preserve,
   .network-timing-bar.proxy,
-  -theme-preserve,
+  .-theme-preserve,
   .network-timing-bar.dns,
-  -theme-preserve,
+  .-theme-preserve,
   .network-timing-bar.connecting,
   .network-timing-bar.serviceworker,
   .network-timing-bar.serviceworker-preparation,
-  -theme-preserve,
+  .-theme-preserve,
   .network-timing-bar.ssl,
-  -theme-preserve,
+  .-theme-preserve,
   .network-timing-bar.sending,
-  -theme-preserve,
+  .-theme-preserve,
   .network-timing-bar.waiting,
-  -theme-preserve,
+  .-theme-preserve,
   .network-timing-bar.receiving,
-  -theme-preserve,
+  .-theme-preserve,
   .network-timing-bar.receiving-push,
-  -theme-preserve,
+  .-theme-preserve,
   .network-timing-bar.push,
-  -theme-preserve,
+  .-theme-preserve,
   .network-timing-bar.server-timing,
-  -theme-preserve {
+  .-theme-preserve {
     forced-color-adjust: none;
   }
 

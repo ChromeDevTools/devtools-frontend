@@ -399,7 +399,7 @@ span[is=dt-icon-label] {
 :host-context(.force-white-icons) [is=ui-icon].spritesheet-smallicons,
 .force-white-icons [is=ui-icon].spritesheet-smallicons,
 [is=ui-icon].force-white-icons.spritesheet-smallicons,
--theme-preserve {
+.-theme-preserve {
   -webkit-mask-image: url(Images/smallIcons.svg);
   -webkit-mask-position: var(--spritesheet-position);
   background: #fafafa !important;
@@ -408,7 +408,7 @@ span[is=dt-icon-label] {
 :host-context(.force-white-icons) [is=ui-icon].spritesheet-largeicons,
 .force-white-icons [is=ui-icon].spritesheet-largeicons,
 [is=ui-icon].force-white-icons.spritesheet-largeicons,
--theme-preserve {
+.-theme-preserve {
   -webkit-mask-image: url(Images/largeIcons.svg);
   -webkit-mask-position: var(--spritesheet-position);
   background: #fafafa !important;
@@ -417,7 +417,7 @@ span[is=dt-icon-label] {
 :host-context(.force-white-icons) [is=ui-icon].spritesheet-mediumicon,
 .force-white-icons [is=ui-icon].spritesheet-mediumicons,
 [is=ui-icon].force-white-icons.spritesheet-mediumicons,
--theme-preserve {
+.-theme-preserve {
   -webkit-mask-image: url(Images/mediumIcons.svg);
   -webkit-mask-position: var(--spritesheet-position);
   background: #fafafa !important;
@@ -497,15 +497,15 @@ button.link[data-keyboard-focus="true"]:focus {
   :host-context(.force-white-icons) [is=ui-icon].spritesheet-smallicons,
   .force-white-icons [is=ui-icon].spritesheet-smallicons,
   [is=ui-icon].force-white-icons.spritesheet-smallicons,
-  -theme-preserve,
+  .-theme-preserve,
   :host-context(.force-white-icons) [is=ui-icon].spritesheet-largeicons,
   .force-white-icons [is=ui-icon].spritesheet-largeicons,
   [is=ui-icon].force-white-icons.spritesheet-largeicons,
-  -theme-preserve,
+  .-theme-preserve,
   :host-context(.force-white-icons) [is=ui-icon].spritesheet-mediumicon,
   .force-white-icons [is=ui-icon].spritesheet-mediumicons,
   [is=ui-icon].force-white-icons.spritesheet-mediumicons,
-  -theme-preserve {
+  .-theme-preserve {
     forced-color-adjust: none;
     background-color: ButtonText;
   }

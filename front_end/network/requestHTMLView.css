@@ -4,7 +4,7 @@
  * found in the LICENSE file.
  */
 
--theme-preserve,
+.-theme-preserve,
 .html-preview-frame {
   box-shadow: var(--drop-shadow);
   background: white;

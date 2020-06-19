@@ -45,7 +45,7 @@
 }
 
 .text-button.primary-button,
--theme-preserve {
+.-theme-preserve {
   background-color: var(--accent-color);
   border: none;
   color: #fff;
@@ -63,7 +63,7 @@
 .text-button.primary-button:not(:disabled):focus,
 .text-button.primary-button:not(:disabled):hover,
 .text-button.primary-button:not(:disabled):active,
--theme-preserve {
+.-theme-preserve {
   background-color: var(--accent-color-hover);
   color: #fff;
 }

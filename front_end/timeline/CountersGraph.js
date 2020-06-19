@@ -384,7 +384,7 @@ export class CounterUI {
     this._setting = Common.Settings.Settings.instance().createSetting('timelineCountersGraph-' + title, true);
     this._setting.setTitle(title);
     this._filter = new UI.Toolbar.ToolbarSettingCheckbox(this._setting, title);
-    this._filter.inputElement.classList.add('-theme-preserve');
+    this._filter.inputElement.classList.add('-theme-preserve-input');
     const color = Common.Color.Color.parse(graphColor).setAlpha(0.5).asString(Common.Color.Format.RGBA);
     if (color) {
       this._filter.element.backgroundColor = color;

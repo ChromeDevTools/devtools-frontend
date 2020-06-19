@@ -10,7 +10,8 @@ import {$, click, getBrowserAndPages, goToResource, step, waitFor} from '../../s
 import {addBreakpointForLine, checkBreakpointDidNotActivate, checkBreakpointIsActive, checkBreakpointIsNotActive, clearSourceFilesAdded, getBreakpointDecorators, getNonBreakableLines, listenForSourceFilesAdded, openSourceCodeEditorForFile, openSourcesPanel, RESUME_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, retrieveTopCallFrameWithoutResuming, sourceLineNumberSelector, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
 
 describe('Sources Tab', async () => {
-  it('shows the correct wasm source on load and reload', async () => {
+  // Disabled to the Chromium binary -> DevTools roller working again.
+  it.skip('[crbug.com/1097061] shows the correct wasm source on load and reload', async () => {
     async function checkSources(frontend: puppeteer.Page) {
       await waitForAdditionalSourceFiles(frontend, 2);
       const capturedFileNames = await retrieveSourceFilesAdded(frontend);
@@ -188,7 +189,6 @@ describe('Sources Tab', async () => {
   });
 });
 
-// Disabled to the Chromium binary -> DevTools roller working again.
 describe('Raw-Wasm', async () => {
   it('displays correct location in Wasm source', async () => {
     const {frontend} = getBrowserAndPages();

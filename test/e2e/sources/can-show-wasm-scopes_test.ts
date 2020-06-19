@@ -41,7 +41,8 @@ describe('Source Tab', async () => {
     await scriptEvaluation;
   });
 
-  it('correctly shows local scope content.', async () => {
+  // Disabled to the Chromium binary -> DevTools roller working again.
+  it.skip('[crbug.com/1097061] correctly shows local scope content.', async () => {
     const {target} = getBrowserAndPages();
     const scriptEvaluation = target.evaluate('main(42);');
     await waitFor(RESUME_BUTTON);

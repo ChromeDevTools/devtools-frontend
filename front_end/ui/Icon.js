@@ -231,6 +231,7 @@ export const Descriptors = {
   'largeicon-rotate-screen': {position: 'g8', spritesheet: 'largeicons', isMask: true},
   'largeicon-search': {position: 'h4', spritesheet: 'largeicons', isMask: true},
   'largeicon-settings-gear': {position: 'g7', spritesheet: 'largeicons', isMask: true},
+  'largeicon-shortcut-changed': {position: 'i4', spritesheet: 'largeicons', isMask: true},
   'largeicon-show-bottom-sidebar': {position: 'g6', spritesheet: 'largeicons', isMask: true},
   'largeicon-show-left-sidebar': {position: 'g5', spritesheet: 'largeicons', isMask: true},
   'largeicon-show-right-sidebar': {position: 'g4', spritesheet: 'largeicons', isMask: true},

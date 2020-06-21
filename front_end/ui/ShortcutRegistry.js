@@ -33,6 +33,8 @@ export class ShortcutRegistry {
     this._activePrefixTimeout = null;
     /** @type {?function():Promise<void>} */
     this._consumePrefix = null;
+    /** @type {!Set.<string>} */
+    this._devToolsDefaultShortcutActions = new Set();
     const keybindSetSetting = self.Common.settings.moduleSetting('activeKeybindSet');
     if (!Root.Runtime.experiments.isEnabled('customKeyboardShortcuts') &&
         keybindSetSetting.get() !== DefaultShortcutSetting) {
@@ -135,6 +137,14 @@ export class ShortcutRegistry {
    */
   handleShortcut(event, handlers) {
     this.handleKey(KeyboardShortcut.makeKeyFromEvent(event), event.key, event, handlers);
+  }
+
+  /**
+   * @param {string} actionId
+   * return {boolean}
+   */
+  actionHasDefaultShortcut(actionId) {
+    return this._devToolsDefaultShortcutActions.has(actionId);
   }
 
   /**
@@ -324,10 +334,14 @@ export class ShortcutRegistry {
                 ...shortcutDescriptors.map(shortcut => KeyboardShortcut.keyCodeAndModifiersFromKey(shortcut.key)));
           }
           if (!keybindSets) {
+            this._devToolsDefaultShortcutActions.add(actionId);
             this._registerShortcut(new KeyboardShortcut(shortcutDescriptors, actionId, Type.DefaultShortcut));
           } else {
+            if (keybindSets.includes(DefaultShortcutSetting)) {
+              this._devToolsDefaultShortcutActions.add(actionId);
+            }
             this._registerShortcut(
-                new KeyboardShortcut(shortcutDescriptors, actionId, Type.KeybindSetShortcut, keybindSet));
+                new KeyboardShortcut(shortcutDescriptors, actionId, Type.KeybindSetShortcut, new Set(keybindSets)));
           }
         }
       }

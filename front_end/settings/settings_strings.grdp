@@ -24,6 +24,9 @@
   <message name="IDS_DEVTOOLS_7ab792e440250e15b2a2066eaeee3563" desc="Aria accessible name in Framework Blackbox Settings Tab of the Settings">
     Add filename pattern
   </message>
+  <message name="IDS_DEVTOOLS_751e59737c652a9eb70be6fea8632ec5" desc="Screen-reader accessible label for an icon denoting a non-default/common shortcut.">
+    Shortcut provided by preset
+  </message>
   <message name="IDS_DEVTOOLS_7c3ebe810fd87afa74649e8230167a75" desc="Message text content in Settings Screen of the Settings">
     These experiments are particularly unstable. Enable at your own risk.
   </message>

@@ -174,6 +174,14 @@ export class ListControl {
     }
   }
 
+  refreshAllItems() {
+    this._itemToElement.clear();
+    this.invalidateRange(0, this._model.length);
+    if (this._selectedIndex !== -1) {
+      this._select(this._selectedIndex, null, null);
+    }
+  }
+
   /**
    * @param {number} from
    * @param {number} to

@@ -5,27 +5,12 @@
 import * as UI from '../ui/ui.js';
 
 /**
- * @implements {UI.ListWidget.Delegate}
+ * @implements {UI.ListControl.ListDelegate<!KeybindsItem>}
  */
 export class KeybindsSettingsTab extends UI.Widget.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('settings/keybindsSettingsTab.css');
-    this._actions = self.UI.actionRegistry.actions().sort((actionA, actionB) => {
-      if (actionA.category() < actionB.category()) {
-        return -1;
-      }
-      if (actionA.category() > actionB.category()) {
-        return 1;
-      }
-      if (actionA.id() < actionB.id()) {
-        return -1;
-      }
-      if (actionA.id() > actionB.id()) {
-        return 1;
-      }
-      return 0;
-    });
 
     const header = this.contentElement.createChild('header');
     header.createChild('h1').textContent = ls`Shortcuts`;
@@ -36,10 +21,13 @@ export class KeybindsSettingsTab extends UI.Widget.VBox {
     keybindsSetSelect.classList.add('keybinds-set-select');
     this.contentElement.appendChild(keybindsSetSelect);
 
-    this._list = new UI.ListWidget.ListWidget(this);
+    /** @type {!UI.ListModel.ListModel<!KeybindsItem>} */
+    this._items = new UI.ListModel.ListModel();
+    this._list = new UI.ListControl.ListControl(this._items, this, UI.ListControl.ListMode.NonViewport);
+    this._items.replaceAll(this._createListItems());
     UI.ARIAUtils.markAsList(this._list.element);
-    this._list.registerRequiredCSS('settings/keybindsSettingsTab.css');
-    this._list.show(this.contentElement);
+    this.registerRequiredCSS('settings/keybindsSettingsTab.css');
+    this.contentElement.appendChild(this._list.element);
     this.update();
   }
 
@@ -48,10 +36,11 @@ export class KeybindsSettingsTab extends UI.Widget.VBox {
    * @param {!KeybindsItem} item
    * @return {!Element}
    */
-  renderItem(item) {
+  createElementForItem(item) {
     const itemElement = document.createElement('div');
     itemElement.classList.add('keybinds-list-item');
     UI.ARIAUtils.markAsListitem(itemElement);
+    itemElement.tabIndex = item === this._list.selectedItem() ? 0 : -1;
 
     if (typeof item === 'string') {
       itemElement.classList.add('keybinds-category-header');
@@ -72,42 +61,91 @@ export class KeybindsSettingsTab extends UI.Widget.VBox {
   }
 
   /**
+   * This method will never be called.
    * @override
    * @param {!KeybindsItem} item
-   * @param {number} index
+   * @return {number}
    */
-  removeItemRequested(item, index) {
+  heightForItem(item) {
+    return 0;
   }
 
-  /**
-   * None of the items are editable, so this method will never be called
-   * @override
-   * @param {!KeybindsItem} item
-   * @return {!UI.ListWidget.Editor<!KeybindsItem>}
-   */
-  beginEdit(item) {
-    return new UI.ListWidget.Editor();
-  }
 
   /**
    * @override
    * @param {!KeybindsItem} item
-   * @param {!UI.ListWidget.Editor<!KeybindsItem>} editor
-   * @param {boolean} isNew
+   * @returns {boolean}
    */
-  commitEdit(item, editor, isNew) {
+  isItemSelectable(item) {
+    return true;
+  }
+
+  /**
+   * @override
+   * @param {?KeybindsItem} from
+   * @param {?KeybindsItem} to
+   * @param {?Element} fromElement
+   * @param {?Element} toElement
+   */
+  selectedItemChanged(from, to, fromElement, toElement) {
+    if (fromElement) {
+      fromElement.tabIndex = -1;
+    }
+    if (toElement) {
+      toElement.tabIndex = 0;
+      if (this._list.element.hasFocus()) {
+        toElement.focus();
+      }
+    }
+  }
+
+  /**
+   * @override
+   * @param {?Element} fromElement
+   * @param {?Element} toElement
+   * @return {boolean}
+   */
+  updateSelectedItemARIA(fromElement, toElement) {
+    return true;
+  }
+
+  /**
+   * @returns {!Array.<!KeybindsItem>}
+   */
+  _createListItems() {
+    const actions = self.UI.actionRegistry.actions().sort((actionA, actionB) => {
+      if (actionA.category() < actionB.category()) {
+        return -1;
+      }
+      if (actionA.category() > actionB.category()) {
+        return 1;
+      }
+      if (actionA.id() < actionB.id()) {
+        return -1;
+      }
+      if (actionA.id() > actionB.id()) {
+        return 1;
+      }
+      return 0;
+    });
+
+    const items = [];
+    let currentCategory;
+    actions.forEach(action => {
+      if (currentCategory !== action.category()) {
+        items.push(action.category());
+      }
+      items.push(action);
+      currentCategory = action.category();
+    });
+    return items;
   }
 
   update() {
-    this._list.clear();
-    let currentCategory;
-    this._actions.forEach(action => {
-      if (currentCategory !== action.category()) {
-        this._list.appendItem(action.category(), false);
-      }
-      this._list.appendItem(action, false);
-      currentCategory = action.category();
-    });
+    this._list.refreshAllItems();
+    if (!this._list.selectedItem()) {
+      this._list.selectItem(this._items.at(0));
+    }
   }
 }
 

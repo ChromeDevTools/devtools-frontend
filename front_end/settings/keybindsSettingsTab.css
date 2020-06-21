@@ -77,14 +77,15 @@ h1 {
 
 .keybinds-category-header {
   font-weight: bold;
+  line-height: 30px;
 }
 
-.list-item:not(:first-child) .keybinds-category-header {
+.keybinds-category-header:not(:nth-child(2)) {
   border-top: 1px solid rgb(231 231 231);
 }
 
-.keybinds-category-header:hover {
-  background-color: white;
+.keybinds-list-item:not(.keybinds-category-header):hover {
+  background: hsl(0deg 0% 96%);
 }
 
 .keybinds-set-select {
@@ -99,8 +100,4 @@ h1 {
 
 .keybinds-set-select select {
   margin-left: 6px;
-}
-
-.list {
-  border: none;
 }

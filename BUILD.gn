@@ -930,7 +930,6 @@ devtools_frontend_resources_deps = [
   ":build_release_devtools",
   ":copy_embedder_scripts",
   ":copy_emulated_devices_images",
-  ":copy_htaccess",
   ":copy_inspector_images",
   ":copy_lighthouse_locale_files",
   ":copy_wasm_deps",
@@ -973,11 +972,6 @@ group("devtools_frontend_resources_data") {
 copy("copy_embedder_scripts") {
   sources = devtools_embedder_scripts
   outputs = [ "$resources_out_dir/{{source_file_part}}" ]
-}
-
-copy("copy_htaccess") {
-  sources = [ "htaccess" ]
-  outputs = [ "$resources_out_dir/.htaccess" ]
 }
 
 copy("copy_inspector_images") {

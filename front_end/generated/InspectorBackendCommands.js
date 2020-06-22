@@ -1543,7 +1543,8 @@ export function registerCommands(inspectorBackend) {
         {'name': 'nodeId', 'type': 'number', 'optional': false},
         {'name': 'includeDistance', 'type': 'boolean', 'optional': true},
         {'name': 'includeStyle', 'type': 'boolean', 'optional': true},
-        {'name': 'colorFormat', 'type': 'string', 'optional': true}
+        {'name': 'colorFormat', 'type': 'string', 'optional': true},
+        {'name': 'showAccessibilityInfo', 'type': 'boolean', 'optional': true}
       ],
       ['highlight']);
   inspectorBackend.registerCommand('Overlay.hideHighlight', [], []);
@@ -2703,7 +2704,8 @@ export function registerCommands(inspectorBackend) {
         {'name': 'throwOnSideEffect', 'type': 'boolean', 'optional': true},
         {'name': 'timeout', 'type': 'number', 'optional': true},
         {'name': 'disableBreaks', 'type': 'boolean', 'optional': true},
-        {'name': 'replMode', 'type': 'boolean', 'optional': true}
+        {'name': 'replMode', 'type': 'boolean', 'optional': true},
+        {'name': 'allowUnsafeEvalBlockedByCSP', 'type': 'boolean', 'optional': true}
       ],
       ['result', 'exceptionDetails']);
   inspectorBackend.registerCommand('Runtime.getIsolateId', [], ['id']);

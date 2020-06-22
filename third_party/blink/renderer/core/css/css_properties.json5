@@ -1886,6 +1886,16 @@
       typedom_types: ["Keyword"],
     },
     {
+      name: "counter-set",
+      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      style_builder_template: "counter",
+      style_builder_template_args: {
+        action: "Set",
+      },
+      keywords: ["none"],
+      typedom_types: ["Keyword"],
+    },
+    {
       name: "cursor",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       inherited: true,
@@ -2513,15 +2523,6 @@
       svg: true,
       name_for_methods: "MaskerResource",
       converter: "ConvertElementReference",
-    },
-    {
-      name: "mask-source-type",
-      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
-      runtime_flag: "CSSMaskSourceType",
-      style_builder_template: "mask_layer",
-      style_builder_template_args: {
-        fill_type: "MaskSourceType",
-      },
     },
     {
       name: "mask-type",
@@ -5082,6 +5083,30 @@
       is_property: false,
       runtime_flag: "CSSVariables2AtProperty",
     },
+    {
+      name: "source",
+      is_descriptor: true,
+      is_property: false,
+      runtime_flag: "CSSScrollTimeline",
+    },
+    {
+      name: "start",
+      is_descriptor: true,
+      is_property: false,
+      runtime_flag: "CSSScrollTimeline",
+    },
+    {
+      name: "end",
+      is_descriptor: true,
+      is_property: false,
+      runtime_flag: "CSSScrollTimeline",
+    },
+    {
+      name: "time-range",
+      is_descriptor: true,
+      is_property: false,
+      runtime_flag: "CSSScrollTimeline",
+    },
 
     // Shorthands
     {
@@ -5539,7 +5564,7 @@
     },
     {
       name: "text-decoration",
-      longhands: ["text-decoration-line", "text-decoration-style", "text-decoration-color"],
+      longhands: ["text-decoration-line", "text-decoration-thickness", "text-decoration-style", "text-decoration-color"],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
     },
     {

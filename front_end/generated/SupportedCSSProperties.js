@@ -326,6 +326,7 @@ export const generatedProperties = [
   {'name': 'content-visibility', 'keywords': ['visible', 'auto', 'hidden', 'hidden-matchable']},
   {'name': 'counter-increment', 'keywords': ['none']},
   {'name': 'counter-reset', 'keywords': ['none']},
+  {'name': 'counter-set', 'keywords': ['none']},
   {
     'name': 'cursor',
     'inherited': true,
@@ -376,6 +377,7 @@ export const generatedProperties = [
     'keywords': ['auto', 'alphabetic', 'ideographic', 'middle', 'central', 'mathematical', 'hanging']
   },
   {'name': 'empty-cells', 'inherited': true, 'keywords': ['show', 'hide']},
+  {'name': 'end'},
   {'name': 'fill', 'svg': true, 'inherited': true},
   {'svg': true, 'inherited': true, 'name': 'fill-opacity'},
   {'name': 'fill-rule', 'svg': true, 'inherited': true, 'keywords': ['nonzero', 'evenodd']},
@@ -596,7 +598,6 @@ export const generatedProperties = [
   {'svg': true, 'inherited': true, 'keywords': ['none'], 'name': 'marker-mid'},
   {'svg': true, 'inherited': true, 'keywords': ['none'], 'name': 'marker-start'},
   {'svg': true, 'name': 'mask'},
-  {'name': 'mask-source-type'},
   {'keywords': ['luminance', 'alpha'], 'svg': true, 'name': 'mask-type'},
   {'name': 'math-style', 'inherited': true, 'keywords': ['inline', 'display']},
   {'name': 'math-superscript-shift-style', 'inherited': true, 'keywords': ['inline', 'display']},
@@ -737,12 +738,14 @@ export const generatedProperties = [
     'keywords': ['auto', 'optimizespeed', 'crispedges', 'geometricprecision']
   },
   {'name': 'size'},
+  {'name': 'source'},
   {
     'name': 'speak',
     'inherited': true,
     'keywords': ['none', 'normal', 'spell-out', 'digits', 'literal-punctuation', 'no-punctuation']
   },
   {'name': 'src'},
+  {'name': 'start'},
   {'name': 'stop-color', 'svg': true, 'keywords': ['currentcolor']},
   {'name': 'stop-opacity', 'svg': true},
   {'name': 'stroke', 'svg': true, 'inherited': true},
@@ -771,7 +774,11 @@ export const generatedProperties = [
   },
   {'name': 'text-anchor', 'svg': true, 'inherited': true, 'keywords': ['start', 'middle', 'end']},
   {'name': 'text-combine-upright', 'inherited': true, 'keywords': ['none', 'all']},
-  {'longhands': ['text-decoration-line', 'text-decoration-style', 'text-decoration-color'], 'name': 'text-decoration'},
+  {
+    'longhands':
+        ['text-decoration-line', 'text-decoration-thickness', 'text-decoration-style', 'text-decoration-color'],
+    'name': 'text-decoration'
+  },
   {'name': 'text-decoration-color', 'keywords': ['currentcolor']},
   {'name': 'text-decoration-line', 'keywords': ['none', 'underline', 'overline', 'line-through', 'blink']},
   {'name': 'text-decoration-skip-ink', 'inherited': true, 'keywords': ['none', 'auto']},
@@ -795,6 +802,7 @@ export const generatedProperties = [
   },
   {'name': 'text-underline-offset', 'inherited': true, 'keywords': ['auto']},
   {'name': 'text-underline-position', 'inherited': true, 'keywords': ['auto', 'from-font', 'under', 'left', 'right']},
+  {'name': 'time-range'},
   {'name': 'top', 'keywords': ['auto']},
   {
     'name': 'touch-action',
@@ -943,6 +951,7 @@ export const generatedPropertyValues = {
   'content-visibility': {'values': ['visible', 'auto', 'hidden', 'hidden-matchable']},
   'counter-increment': {'values': ['none']},
   'counter-reset': {'values': ['none']},
+  'counter-set': {'values': ['none']},
   'cursor': {
     'values': [
       'auto',        'default',   'none',      'context-menu',  'help',        'pointer',    'progress',   'wait',

@@ -3,6 +3,9 @@
   <message name="IDS_DEVTOOLS_0007333f80790cc7ef6b97ce5e0ac297" desc="Title in Timeline UIUtils of the Performance panel">
     Layout Invalidations
   </message>
+  <message name="IDS_DEVTOOLS_00b5c32430f3089083afab9c319506b6" desc="Text in Timeline UIUtils of the Performance panel">
+    script saved to cache
+  </message>
   <message name="IDS_DEVTOOLS_00c3783a786856df24fd85e1093ef516" desc="Text in Timeline UIUtils of the Performance panel">
     DCL
   </message>
@@ -99,9 +102,6 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   </message>
   <message name="IDS_DEVTOOLS_12ddabfc2210fb123f96a03f03816024" desc="Span text content in Timeline UIUtils of the Performance panel">
     Recurring handler took <ph name="NUMBER_MILLISTOSTRING_EVENT_DURATION__TRUE_">$1s<ex>20ms</ex></ph>
-  </message>
-  <message name="IDS_DEVTOOLS_1572a49e8ab36a669016c48d7fca5d76" desc="Text in Timeline UIUtils of the Performance panel">
-    Cache Consume Options
   </message>
   <message name="IDS_DEVTOOLS_16bfbf9c462762cf1cba4134ec53c504" desc="Text in Timeline UIUtils of the Performance panel">
     Loading
@@ -207,6 +207,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   </message>
   <message name="IDS_DEVTOOLS_2da2415714a5e7450a9a127431c02a41" desc="Text in Timeline UIUtils of the Performance panel">
     Send Request
+  </message>
+  <message name="IDS_DEVTOOLS_2f32830d78ef884b0a1489e4d445514f" desc="Text in Timeline UIUtils of the Performance panel">
+    Compilation cache status
   </message>
   <message name="IDS_DEVTOOLS_2f3e2f48b161c9cadd45dcdffd726c79" desc="Text in Counters Graph of the Performance panel">
     JS Heap: <ph name="PH1">$1s<ex>hsl(220, 90%, 43%)</ex></ph>
@@ -544,6 +547,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_812f4cf4e8c262a256350332191a52b2" desc="Status text to indicate the recording has failed in the Performance panel">
     Recording failed
   </message>
+  <message name="IDS_DEVTOOLS_8142fed2a67d3ac62f9d85fde68bf489" desc="Text in Timeline UIUtils of the Performance panel">
+    script not eligible
+  </message>
   <message name="IDS_DEVTOOLS_81e91be8db96be69e372f0c715ec7444" desc="Text in Timeline UIUtils of the Performance panel">
     Collected
   </message>
@@ -558,9 +564,6 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   </message>
   <message name="IDS_DEVTOOLS_84497a704396fa5a9e67913f67fc465a" desc="Text in Timeline UIUtils of the Performance panel">
     ''' (from memory cache)
-  </message>
-  <message name="IDS_DEVTOOLS_85cd916d2931d80101107e4a9428f5d4" desc="Text in Timeline UIUtils of the Performance panel">
-    Cache Successful
   </message>
   <message name="IDS_DEVTOOLS_86c8559f4d7d1d74dc3e04baf2b65cc6" desc="Text in Timeline UIUtils of the Performance panel">
     Decoded Body
@@ -636,6 +639,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_932cc5549fb2d58c13ce13653469d309" desc="Text in Timeline UIUtils of the Performance panel">
     Mouse Down
   </message>
+  <message name="IDS_DEVTOOLS_933cb9f4ce6670ce0a4bbaf9d0b98dbd" desc="Text in Timeline UIUtils of the Performance panel">
+    script loaded from cache
+  </message>
   <message name="IDS_DEVTOOLS_9352d706112654ca7c3f2595bc529cf5" desc="Text in Timeline UIUtils of the Performance panel">
     Paint Image
   </message>
@@ -704,6 +710,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_ab0b54125d50a09e75f3829e7e90b8ea" desc="Text in Timeline UIUtils of the Performance panel">
     WebSocket Protocol
+  </message>
+  <message name="IDS_DEVTOOLS_ab853e5c21196888e062d5e3e0169aef" desc="Text in Timeline UIUtils of the Performance panel">
+    failed to load script from cache
   </message>
   <message name="IDS_DEVTOOLS_ac3b5b333d7529f2d6e178a1d326315c" desc="Text in Timeline Panel of the Performance panel">
     Disables JavaScript sampling, reduces overhead when running against mobile devices
@@ -992,6 +1001,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_f1fef3f490158560a580633887faf5d3" desc="Data grid name for Timeline Stack data grids">
     Timeline Stack
+  </message>
+  <message name="IDS_DEVTOOLS_f2f08200f7e8df8715e4a4fc148d11f9" desc="Text in Timeline UIUtils of the Performance panel">
+    Compilation cache size
   </message>
   <message name="IDS_DEVTOOLS_f466ef0697891303497dfbf951a14b1d" desc="Text in Timeline Flame Chart Data Provider of the Performance panel">
     Idle Frame

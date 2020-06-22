@@ -132,5 +132,17 @@ describe('The Styles pane', async () => {
     assert.deepEqual(
         subtitles, ['', 'constructed stylesheet', 'stylesheets…ces.html:10', '<style>', 'user agent stylesheet'],
         'incorrectly displayed style sources');
+
+    const divRules = await getDisplayedStyleRules();
+    assert.deepEqual(
+        divRules,
+        [
+          {selectorText: 'element.style', propertyNames: []},
+          {selectorText: '#properties-to-inspect', propertyNames: ['color']},
+          {selectorText: '#properties-to-inspect', propertyNames: ['text-align']},
+          {selectorText: '#properties-to-inspect', propertyNames: ['width']},
+          {selectorText: 'div', propertyNames: ['display']},
+        ],
+        'The correct rule is displayed');
   });
 });

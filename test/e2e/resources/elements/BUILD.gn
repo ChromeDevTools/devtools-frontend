@@ -16,5 +16,6 @@ copy_to_gen("elements") {
     "sidebar-event-listeners.html",
     "simple-styled-page.html",
     "style-pane-properties.html",
+    "stylesheets-with-various-sources.html",
   ]
 }

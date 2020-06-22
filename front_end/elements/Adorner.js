@@ -42,9 +42,9 @@ template.innerHTML = `
     }
 
     slot {
-      display: inline-block;
+      display: inline-flex;
+      box-sizing: border-box;
       height: 13px;
-      line-height: 13px;
       padding: 0 6px;
       font-size: 8.5px;
       color: var(--adorner-text-color, #3c4043);
@@ -57,6 +57,10 @@ template.innerHTML = `
       color: var(--adorner-text-color, #ffffffde);
       background-color: var(--adorner-background-color, #5db0d726);
       border: var(--adorner-border, 1px solid #5db0d780);
+    }
+
+    ::slotted(*) {
+      height: 10px;
     }
   </style>
   <slot name="content"></slot>

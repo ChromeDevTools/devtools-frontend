@@ -362,7 +362,6 @@ li.selected:not(.always-parent) + ol.children {
 }
 
 /** Adorner */
-
 .adorner-container {
   display: inline-block;
 }
@@ -373,5 +372,5 @@ li.selected:not(.always-parent) + ol.children {
 
 .adorner-container devtools-adorner {
   margin-left: 3px;
-  vertical-align: middle;
+  vertical-align: text-bottom;
 }

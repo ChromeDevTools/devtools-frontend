@@ -13,6 +13,7 @@ const CSS_PROPERTY_SWATCH_SELECTOR = '.color-swatch-inner';
 const CSS_STYLE_RULE_SELECTOR = '[aria-label*="css selector"]';
 const COMPUTED_PROPERTY_SELECTOR = '.computed-style-property';
 const ELEMENTS_PANEL_SELECTOR = '.panel[aria-label="elements"]';
+const SECTION_SUBTITLE_SELECTOR = '.styles-section-subtitle';
 
 export const assertContentOfSelectedElementsNode = async (expectedTextContent: string) => {
   const selectedNode = await $(SELECTED_TREE_ELEMENT_SELECTOR);
@@ -214,6 +215,13 @@ export const getCSSPropertySwatchStyle = async (ruleSection: puppeteer.JSHandle<
   const swatches = await $$(CSS_PROPERTY_SWATCH_SELECTOR, ruleSection);
   return await swatches.evaluate(async (nodes: Element[]) => {
     return nodes.length && nodes[0].getAttribute('style');
+  });
+};
+
+export const getStyleSectionSubtitles = async () => {
+  const subtitles = await $$(SECTION_SUBTITLE_SELECTOR);
+  return await subtitles.evaluate(async (nodes: Element[]) => {
+    return nodes.map(node => node.textContent);
   });
 };
 

@@ -7,7 +7,7 @@ import {describe, it} from 'mocha';
 import * as puppeteer from 'puppeteer';
 
 import {click, getBrowserAndPages, goToResource, waitFor} from '../../shared/helper.js';
-import {assertContentOfSelectedElementsNode, getAriaLabelSelectorFromPropertiesSelector, getCSSPropertySwatchStyle, getDisplayedCSSPropertyNames, getDisplayedStyleRules, waitForElementsStyleSection, waitForStyleRule} from '../helpers/elements-helpers.js';
+import {assertContentOfSelectedElementsNode, getAriaLabelSelectorFromPropertiesSelector, getCSSPropertySwatchStyle, getDisplayedCSSPropertyNames, getDisplayedStyleRules, getStyleSectionSubtitles, waitForElementsStyleSection, waitForStyleRule} from '../helpers/elements-helpers.js';
 
 const PROPERTIES_TO_DELETE_SELECTOR = '#properties-to-delete';
 const PROPERTIES_TO_INSPECT_SELECTOR = '#properties-to-inspect';
@@ -115,5 +115,22 @@ describe('The Styles pane', async () => {
       const displayedValues = await getDisplayedCSSPropertyNames(propertiesSection);
       assert.deepEqual(displayedValues, [], 'incorrectly displayed style after removing first property\'s name');
     }
+  });
+
+  it('can display the source names for stylesheets', async () => {
+    const {frontend} = getBrowserAndPages();
+
+    await goToResource('elements/stylesheets-with-various-sources.html');
+    await waitForElementsStyleSection();
+
+    // Select the div element by pressing down, since <body> is the default selected element.
+    const onDivRuleAppeared = waitForStyleRule('div');
+    await frontend.keyboard.press('ArrowDown');
+    await onDivRuleAppeared;
+
+    const subtitles = await getStyleSectionSubtitles();
+    assert.deepEqual(
+        subtitles, ['', 'constructed stylesheet', 'stylesheets…ces.html:10', '<style>', 'user agent stylesheet'],
+        'incorrectly displayed style sources');
   });
 });

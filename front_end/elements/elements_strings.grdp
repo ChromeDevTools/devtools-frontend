@@ -270,6 +270,9 @@
   <message name="IDS_DEVTOOLS_d0ad356f675744ef8f0311e83400b6ba" desc="Text in Platform Fonts Widget of the Elements panel">
     Network resource
   </message>
+  <message name="IDS_DEVTOOLS_d2303f7f6800bc01a1036c7fbd5bc0f0" desc="Text in Styles Sidebar Pane of the Elements panel">
+    constructed stylesheet
+  </message>
   <message name="IDS_DEVTOOLS_d42f4851e770aa0f758b01388874f67b" desc="Text in Metrics Sidebar Pane of the Elements panel">
     margin
   </message>

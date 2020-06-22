@@ -66,12 +66,9 @@ def main():
     parser.add_argument('-b', '--tsconfig_output_location', required=True)
     parser.add_argument('--test-only', action='store_true')
     parser.add_argument('--verify-lib-check', action='store_true')
-    parser.add_argument('--disable-copying-to-resources-inspector',
-                        action='store_true')
     parser.add_argument('--module', required=False)
     parser.set_defaults(test_only=False,
                         verify_lib_check=False,
-                        disable_copying_to_resources_inspector=False,
                         module='esnext')
 
     opts = parser.parse_args()
@@ -131,7 +128,7 @@ def main():
         print('')
         return 1
 
-    if not opts.disable_copying_to_resources_inspector:
+    if not opts.test_only and not opts.verify_lib_check:
         # We are currently still loading devtools from out/<NAME>/resources/inspector
         # but we generate our sources in out/<NAME>/gen/ (which is the proper location).
         # For now, copy paste the build output back into resources/inspector to keep

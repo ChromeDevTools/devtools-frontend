@@ -4,7 +4,7 @@
 
 import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
-import {Acorn} from './Acorn.js';
+import * as Acorn from './Acorn.js';
 
 /**
  * @typedef {(!Acorn.Token|!Acorn.Comment)}

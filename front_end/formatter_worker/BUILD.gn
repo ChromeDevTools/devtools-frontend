@@ -17,6 +17,7 @@ ts_library("formatter_worker") {
     "../platform",
     "../text_utils",
     "../third_party/acorn",
+    "../third_party/acorn-logical-assignment",
     "../third_party/acorn-loose",
   ]
 }

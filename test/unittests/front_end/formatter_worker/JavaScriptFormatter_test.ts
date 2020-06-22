@@ -36,4 +36,9 @@ describe('JavaScriptFormatter', () => {
     const formattedCode = formatJavaScript('var x=a?.b;');
     assert.strictEqual(formattedCode, 'var x = a?.b;\n');
   });
+
+  it('formats logical assignment expressions correctly', () => {
+    const formattedCode = formatJavaScript('x||=1;');
+    assert.strictEqual(formattedCode, 'x ||= 1;\n');
+  });
 });

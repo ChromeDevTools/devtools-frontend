@@ -30,7 +30,7 @@
 
 import * as Platform from '../platform/platform.js';
 
-import {Acorn} from './Acorn.js';
+import * as Acorn from './Acorn.js';
 import {AcornTokenizer, ECMA_VERSION} from './AcornTokenizer.js';
 import {CSSFormatter} from './CSSFormatter.js';
 import {parseCSS} from './CSSRuleParser.js';

@@ -31,7 +31,7 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
-import {Acorn} from './Acorn.js';
+import * as Acorn from './Acorn.js';
 import {AcornTokenizer, ECMA_VERSION, TokenOrComment} from './AcornTokenizer.js';  // eslint-disable-line no-unused-vars
 import {ESTreeWalker} from './ESTreeWalker.js';
 import {FormattedContentBuilder} from './FormattedContentBuilder.js';  // eslint-disable-line no-unused-vars

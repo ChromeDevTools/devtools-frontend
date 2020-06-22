@@ -74,6 +74,7 @@ module.exports = {
     'prefer-const': 2,
     'radix': 2,
     'valid-typeof': 2,
+    'no-return-assign': [2, 'always'],
 
     // es2015 features
     'require-yield': 2,

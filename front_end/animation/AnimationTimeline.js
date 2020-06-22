@@ -247,7 +247,9 @@ export class AnimationTimeline extends UI.Widget.VBox {
         }
 
         let fulfill;
-        const promise = new Promise(x => fulfill = x);
+        const promise = new Promise(x => {
+          fulfill = x;
+        });
         if (!screenshots[0].complete) {
           screenshots[0].onload = onFirstScreenshotLoaded.bind(null, screenshots);
         } else {

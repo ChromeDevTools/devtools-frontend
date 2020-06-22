@@ -352,7 +352,9 @@ class StyleMapping {
     const headers = this._headersForUISourceCode(original);
     if (enable) {
       original[this._headersSymbol] = headers;
-      headers.forEach(header => header[SourceFormatData._formatDataSymbol] = formatData);
+      headers.forEach(header => {
+        header[SourceFormatData._formatDataSymbol] = formatData;
+      });
     } else {
       original[this._headersSymbol] = null;
       headers.forEach(header => delete header[SourceFormatData._formatDataSymbol]);

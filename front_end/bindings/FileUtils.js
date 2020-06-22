@@ -97,7 +97,9 @@ export class ChunkedFileReader {
     this._reader.onload = this._onChunkLoaded.bind(this);
     this._reader.onerror = this._onError.bind(this);
     this._loadChunk();
-    return new Promise(resolve => this._transferFinished = resolve);
+    return new Promise(resolve => {
+      this._transferFinished = resolve;
+    });
   }
 
   /**

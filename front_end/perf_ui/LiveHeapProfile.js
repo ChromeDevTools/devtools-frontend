@@ -70,8 +70,9 @@ export class LiveHeapProfile {
         }
       }
       await Promise.race([
-        new Promise(r => setTimeout(r, Host.InspectorFrontendHost.isUnderTest() ? 10 : 5000)),
-        new Promise(r => this._loadEventCallback = r)
+        new Promise(r => setTimeout(r, Host.InspectorFrontendHost.isUnderTest() ? 10 : 5000)), new Promise(r => {
+          this._loadEventCallback = r;
+        })
       ]);
     } while (sessionId === this._sessionId);
 

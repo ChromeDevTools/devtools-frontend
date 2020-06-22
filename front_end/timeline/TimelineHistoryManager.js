@@ -355,7 +355,9 @@ export class DropDown {
     this._listControl.element.focus();
     this._listControl.selectItem(currentModel);
 
-    return new Promise(fulfill => this._selectionDone = fulfill);
+    return new Promise(fulfill => {
+      this._selectionDone = fulfill;
+    });
   }
 
   /**

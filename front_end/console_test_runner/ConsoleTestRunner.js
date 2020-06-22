@@ -494,7 +494,9 @@ ConsoleTestRunner.waitForRemoteObjectsConsoleMessagesPromise = function() {
  */
 ConsoleTestRunner.waitUntilConsoleEditorLoaded = function() {
   let fulfill;
-  const promise = new Promise(x => (fulfill = x));
+  const promise = new Promise(x => {
+    fulfill = x;
+  });
   const prompt = Console.ConsoleView.instance()._prompt;
   if (prompt._editor) {
     fulfill(prompt._editor);

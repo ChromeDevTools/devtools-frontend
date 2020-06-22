@@ -67,7 +67,12 @@ CoverageTestRunner.getCoverageModel = function() {
 CoverageTestRunner.exportReport = async function() {
   const coverageView = self.runtime.sharedInstance(Coverage.CoverageView);
   let data;
-  await coverageView._model.exportReport({write: d => data = d, close: _ => 0});
+  await coverageView._model.exportReport({
+    write: d => {
+      data = d;
+    },
+    close: _ => 0
+  });
   return data;
 };
 

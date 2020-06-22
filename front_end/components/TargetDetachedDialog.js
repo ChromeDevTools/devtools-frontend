@@ -48,7 +48,11 @@ export class TargetDetachedDialog extends SDK.SDKModel.SDKModel {
     dialog.addCloseButton();
     dialog.setDimmed(true);
     this._hideCrashedDialog = dialog.hide.bind(dialog);
-    new UI.TargetCrashedScreen.TargetCrashedScreen(() => this._hideCrashedDialog = null).show(dialog.contentElement);
+    new UI.TargetCrashedScreen
+        .TargetCrashedScreen(() => {
+          this._hideCrashedDialog = null;
+        })
+        .show(dialog.contentElement);
     dialog.show();
   }
 

@@ -31,7 +31,9 @@ export class ImagePreview {
     }
 
     let fulfill;
-    const promise = new Promise(x => fulfill = x);
+    const promise = new Promise(x => {
+      fulfill = x;
+    });
     const imageElement = createElement('img');
     imageElement.addEventListener('load', buildContent, false);
     imageElement.addEventListener('error', () => fulfill(null), false);

@@ -231,7 +231,9 @@ let _resolveOnFinishInits;
  * @return {!Promise<undefined>}
  */
 export async function loadModule(module) {
-  const promise = new Promise(resolve => _resolveOnFinishInits = resolve);
+  const promise = new Promise(resolve => {
+    _resolveOnFinishInits = resolve;
+  });
   await self.runtime.loadModulePromise(module);
   if (!_pendingInits) {
     return;

@@ -132,7 +132,9 @@ export class TimelineController {
   _waitForTracingToStop(awaitTracingCompleteCallback) {
     const tracingStoppedPromises = [];
     if (this._tracingManager && awaitTracingCompleteCallback) {
-      tracingStoppedPromises.push(new Promise(resolve => this._tracingCompleteCallback = resolve));
+      tracingStoppedPromises.push(new Promise(resolve => {
+        this._tracingCompleteCallback = resolve;
+      }));
     }
     tracingStoppedPromises.push(this._stopProfilingOnAllModels());
 

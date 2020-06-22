@@ -9,7 +9,9 @@
 
 SourcesTestRunner.dumpSuggestions = function(textEditor, lines) {
   let resolve;
-  const promise = new Promise(fulfill => resolve = fulfill);
+  const promise = new Promise(fulfill => {
+    resolve = fulfill;
+  });
   let lineNumber = -1;
   let columnNumber;
 

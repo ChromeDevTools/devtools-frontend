@@ -95,7 +95,9 @@ export class SoftDropDown {
       this._list.selectItem(this._selectedItem);
     }
     event.consume(true);
-    setTimeout(() => this._listWasShowing200msAgo = true, 200);
+    setTimeout(() => {
+      this._listWasShowing200msAgo = true;
+    }, 200);
   }
 
   _updateGlasspaneSize() {
@@ -108,7 +110,9 @@ export class SoftDropDown {
    * @param {!Event} event
    */
   _hide(event) {
-    setTimeout(() => this._listWasShowing200msAgo = false, 200);
+    setTimeout(() => {
+      this._listWasShowing200msAgo = false;
+    }, 200);
     this._glassPane.hide();
     this._list.selectItem(null);
     ARIAUtils.setExpanded(this.element, false);

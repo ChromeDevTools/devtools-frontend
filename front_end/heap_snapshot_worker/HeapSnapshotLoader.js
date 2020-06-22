@@ -142,7 +142,9 @@ export class HeapSnapshotLoader {
    * @return {!Promise<string>}
    */
   _fetchChunk() {
-    return this._done ? Promise.resolve(this._buffer) : new Promise(r => this._dataCallback = r);
+    return this._done ? Promise.resolve(this._buffer) : new Promise(r => {
+      this._dataCallback = r;
+    });
   }
 
   /**

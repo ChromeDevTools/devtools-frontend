@@ -555,7 +555,11 @@ export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
    * @return {!Array.<!HeapSnapshotGridNode>}
    */
   allChildren(parent) {
-    return parent._allChildren || (parent._allChildren = []);
+    if (!parent._allChildren) {
+      parent._allChildren = [];
+    }
+
+    return parent._allChildren;
   }
 
   /**

@@ -272,7 +272,9 @@ export class HeapSnapshotGridNode extends DataGrid.DataGrid.DataGridNode {
    */
   _populateChildren(fromPosition, toPosition) {
     let afterPopulate;
-    const promise = new Promise(resolve => afterPopulate = resolve);
+    const promise = new Promise(resolve => {
+      afterPopulate = resolve;
+    });
     fromPosition = fromPosition || 0;
     toPosition = toPosition || fromPosition + this._dataGrid.defaultPopulateCount();
     let firstNotSerializedPosition = fromPosition;

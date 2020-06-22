@@ -84,7 +84,9 @@ BindingsTestRunner.AutomappingTest.prototype = {
   },
 
   waitUntilMappingIsStabilized: function() {
-    const promise = new Promise(x => this._stabilizedCallback = x);
+    const promise = new Promise(x => {
+      this._stabilizedCallback = x;
+    });
     this._checkStabilized();
     return promise;
   },

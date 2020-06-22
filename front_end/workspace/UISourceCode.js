@@ -169,7 +169,9 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
   rename(newName) {
     /** @type {function(boolean):void} */
     let fulfill;
-    const promise = new Promise(x => fulfill = x);
+    const promise = new Promise(x => {
+      fulfill = x;
+    });
     this._project.rename(this, newName, innerCallback.bind(this));
     return promise;
 

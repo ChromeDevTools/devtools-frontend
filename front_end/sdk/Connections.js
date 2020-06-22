@@ -207,7 +207,9 @@ export class WebSocketConnection {
   disconnect() {
     /** @type {function():void} */
     let fulfill;
-    const promise = new Promise(f => fulfill = f);
+    const promise = new Promise(f => {
+      fulfill = f;
+    });
     this._close(() => {
       if (this._onDisconnect) {
         this._onDisconnect.call(null, 'force disconnect');

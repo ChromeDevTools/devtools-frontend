@@ -107,7 +107,9 @@ export class FormatterWorkerPool {
    */
   _runTask(methodName, params) {
     let callback;
-    const promise = new Promise(fulfill => callback = fulfill);
+    const promise = new Promise(fulfill => {
+      callback = fulfill;
+    });
     const task = new Task(methodName, params, callback, false);
     this._taskQueue.push(task);
     this._processNextTask();

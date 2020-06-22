@@ -73,13 +73,17 @@ export class WorkerWrapper {
    * @param {?function(!MessageEvent):void} listener
    */
   set onmessage(listener) {
-    this._workerPromise.then(worker => worker.onmessage = listener);
+    this._workerPromise.then(worker => {
+      worker.onmessage = listener;
+    });
   }
 
   /**
    * @param {?function(!Event):void} listener
    */
   set onerror(listener) {
-    this._workerPromise.then(worker => worker.onerror = listener);
+    this._workerPromise.then(worker => {
+      worker.onerror = listener;
+    });
   }
 }

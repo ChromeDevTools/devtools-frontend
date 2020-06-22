@@ -1209,7 +1209,9 @@ LongClickController.TIME_MS = 200;
 
 function _trackKeyboardFocus() {
   UI._keyboardFocus = true;
-  document.defaultView.requestAnimationFrame(() => void (UI._keyboardFocus = false));
+  document.defaultView.requestAnimationFrame(() => {
+    UI._keyboardFocus = false;
+  });
 }
 
 /**

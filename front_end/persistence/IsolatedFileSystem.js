@@ -114,7 +114,9 @@ export class IsolatedFileSystem extends PlatformFileSystem {
    */
   getMetadata(path) {
     let fulfill;
-    const promise = new Promise(f => fulfill = f);
+    const promise = new Promise(f => {
+      fulfill = f;
+    });
     this._domFileSystem.root.getFile(path, undefined, fileEntryLoaded, errorHandler);
     return promise;
 
@@ -164,7 +166,9 @@ export class IsolatedFileSystem extends PlatformFileSystem {
    */
   _initializeFilePaths() {
     let fulfill;
-    const promise = new Promise(x => fulfill = x);
+    const promise = new Promise(x => {
+      fulfill = x;
+    });
     let pendingRequests = 1;
     const boundInnerCallback = innerCallback.bind(this);
     this._requestEntries('', boundInnerCallback);
@@ -288,7 +292,9 @@ export class IsolatedFileSystem extends PlatformFileSystem {
    */
   deleteFile(path) {
     let resolveCallback;
-    const promise = new Promise(resolve => resolveCallback = resolve);
+    const promise = new Promise(resolve => {
+      resolveCallback = resolve;
+    });
     this._domFileSystem.root.getFile(path, undefined, fileEntryLoaded.bind(this), errorHandler.bind(this));
     return promise;
 
@@ -366,7 +372,9 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     const reader = new FileReader();
     const extension = Common.ParsedURL.ParsedURL.extractExtension(path);
     const encoded = BinaryExtensions.has(extension);
-    const readPromise = new Promise(x => reader.onloadend = x);
+    const readPromise = new Promise(x => {
+      reader.onloadend = x;
+    });
     if (encoded) {
       reader.readAsBinaryString(blob);
     } else {
@@ -404,7 +412,9 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.FileSavedInWorkspace);
     let callback;
     const innerSetFileContent = () => {
-      const promise = new Promise(x => callback = x);
+      const promise = new Promise(x => {
+        callback = x;
+      });
       this._domFileSystem.root.getFile(path, {create: true}, fileEntryLoaded.bind(this), errorHandler.bind(this));
       return promise;
     };

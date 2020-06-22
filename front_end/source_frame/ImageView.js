@@ -113,7 +113,9 @@ export class ImageView extends UI.View.SimpleView {
     if (content === null) {
       imageSrc = this._url;
     }
-    const loadPromise = new Promise(x => this._imagePreviewElement.onload = x);
+    const loadPromise = new Promise(x => {
+      this._imagePreviewElement.onload = x;
+    });
     this._imagePreviewElement.src = imageSrc;
     const size = content && !contentEncoded ? content.length : base64ToSize(content);
     this._sizeLabel.setText(Platform.NumberUtilities.bytesToString(size));

@@ -347,7 +347,9 @@ export class WorkerServicePort {
     this._worker = worker;
 
     let fulfill;
-    this._workerPromise = new Promise(resolve => fulfill = resolve);
+    this._workerPromise = new Promise(resolve => {
+      fulfill = resolve;
+    });
 
     this._worker.onmessage = onMessage.bind(this);
     this._worker.onclose = this._closeHandler;

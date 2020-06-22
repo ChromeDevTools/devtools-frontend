@@ -97,7 +97,9 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
    */
   _requestFileSystems() {
     let fulfill;
-    const promise = new Promise(f => fulfill = f);
+    const promise = new Promise(f => {
+      fulfill = f;
+    });
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.FileSystemsLoaded, onFileSystemsLoaded, this);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.requestFileSystems();

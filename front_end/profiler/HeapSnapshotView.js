@@ -1524,7 +1524,9 @@ export class HeapProfileHeader extends ProfileHeader {
     /** @type {?HeapSnapshotProxy} */
     this._snapshotProxy = null;
     /** @type {!Promise<!HeapSnapshotProxy>} */
-    this._loadPromise = new Promise(resolve => this._fulfillLoad = resolve);
+    this._loadPromise = new Promise(resolve => {
+      this._fulfillLoad = resolve;
+    });
     this._totalNumberOfChunks = 0;
     this._bufferedWriter = null;
     /** @type {?Bindings.TempFile.TempFile} */

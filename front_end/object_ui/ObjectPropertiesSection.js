@@ -830,7 +830,9 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
    */
   _showAllPropertiesElementSelected(element) {
     this.removeChild(element);
-    this.children().forEach(x => x.hidden = false);
+    this.children().forEach(x => {
+      x.hidden = false;
+    });
     return false;
   }
 

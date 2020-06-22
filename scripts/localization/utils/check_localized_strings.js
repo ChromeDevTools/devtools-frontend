@@ -86,7 +86,9 @@ async function validateGrdFile(shouldAutoFix) {
   const fileLines = fileContent.split('\n');
   const newLines = [];
   let errors = '';
-  fileLines.forEach(line => errors += validateGrdLine(line, newLines));
+  fileLines.forEach(line => {
+    errors += validateGrdLine(line, newLines);
+  });
   if (errors !== '' && shouldAutoFix) {
     await writeFileAsync(localizationUtils.GRD_PATH, newLines.join('\n'));
   }
@@ -129,9 +131,9 @@ async function validateGrdpFiles(shouldAutoFix) {
   let errors = '';
   const renameFilePromises = [];
   const grdpFilesToAddToGrd = [];
-  frontendDirsToGrdpFiles.forEach(
-      (grdpFiles, dir) => errors +=
-      validateGrdpFile(dir, grdpFiles, grdFileContent, shouldAutoFix, renameFilePromises, grdpFilesToAddToGrd));
+  frontendDirsToGrdpFiles.forEach((grdpFiles, dir) => {
+    errors += validateGrdpFile(dir, grdpFiles, grdFileContent, shouldAutoFix, renameFilePromises, grdpFilesToAddToGrd);
+  });
   if (grdpFilesToAddToGrd.length > 0) {
     await localizationUtils.addChildGRDPFilePathsToGRD(grdpFilesToAddToGrd.sort());
   }
@@ -582,9 +584,11 @@ function getAndReportResourcesToRemove() {
   // Example error message:
   // third_party/devtools-frontend/front_end/accessibility/accessibility_strings.grdp Line 300: IDS_DEVTOOLS_c9bbad3047af039c14d0e7ec957bb867
   for (const [ids, messages] of keysToRemoveFromGRD) {
-    messages.forEach(
-        message => errorStr += `${localizationUtils.getRelativeFilePathFromSrc(message.grdpPath)}${
-            localizationUtils.getLocationMessage(message.location)}: ${ids}\n\n`);
+    messages.forEach(message => {
+      const path = localizationUtils.getRelativeFilePathFromSrc(message.grdpPath);
+      const msg = localizationUtils.getLocationMessage(message.location);
+      errorStr += `${path}${msg}: ${ids}\n\n`;
+    });
   }
   return errorStr;
 }
@@ -599,10 +603,11 @@ function getAndReportIDSKeysToModify() {
   errorStr += 'Please update the key(s) by changing the "name" value.\n\n';
 
   for (const [expectedIDSKey, messages] of messagesToModify) {
-    messages.forEach(
-        message => errorStr += `${localizationUtils.getRelativeFilePathFromSrc(message.grdpPath)}${
-            localizationUtils.getLocationMessage(
-                message.location)}:\n${message.actualIDSKey} --> ${expectedIDSKey}\n\n`);
+    messages.forEach(message => {
+      const path = localizationUtils.getRelativeFilePathFromSrc(message.grdpPath);
+      const msg = localizationUtils.getLocationMessage(message.location);
+      errorStr += `${path}${msg}:\n${message.actualIDSKey} --> ${expectedIDSKey}\n\n`;
+    });
   }
   return errorStr;
 }

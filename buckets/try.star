@@ -88,7 +88,7 @@ builder_coverage(
 )
 
 builder_coverage(
-  covered_oss = ["linux", "win64", "mac"],
+  covered_oss = ["linux", "win64"],
   builder_factory = try_builder,
   builder_name_pattern = "devtools_backend_%s_rel",
   recipe_name="devtools/devtools-backend",
@@ -127,7 +127,7 @@ cq_master_builders=[
   'devtools_frontend_mac_rel',
   'devtools_frontend_win64_rel',
   'devtools_backend_linux_rel',
-  'devtools_backend_mac_rel',
+  #'devtools_backend_mac_rel',
   'devtools_backend_win64_rel',
   'dtf_presubmit_linux',
   'dtf_presubmit_win64',

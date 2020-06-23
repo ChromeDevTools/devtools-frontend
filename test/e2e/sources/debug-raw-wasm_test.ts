@@ -64,7 +64,6 @@ describe('Sources Tab', async () => {
 
     await step('check that the code has paused on the breakpoint at the correct script location', async () => {
       const scriptLocation = await retrieveTopCallFrameWithoutResuming();
-      // TODO(chromium:1043047): Switch to bytecode offsets here.
       assert.deepEqual(scriptLocation, 'add.wasm:0x27');
     });
   });
@@ -131,7 +130,6 @@ describe('Sources Tab', async () => {
 
     await step('check that the code has paused on the breakpoint at the correct script location', async () => {
       const scriptLocation = await retrieveTopCallFrameWithoutResuming();
-      // TODO(chromium:1043047): Switch to bytecode offsets here.
       assert.deepEqual(scriptLocation, 'add.wasm:0x27');
     });
 
@@ -166,7 +164,6 @@ describe('Sources Tab', async () => {
 
     await step('check that the code has paused on the breakpoint at the correct script location', async () => {
       const scriptLocation = await retrieveTopCallFrameWithoutResuming();
-      // TODO(chromium:1043047): Switch to bytecode offsets here.
       assert.deepEqual(scriptLocation, 'add.wasm:0x28');
     });
   });

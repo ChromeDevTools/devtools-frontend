@@ -139,6 +139,12 @@
   display: none;
 }
 
+.console-message-stack-trace-toggle {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
 .repeated-message .console-message-stack-trace-toggle,
 .repeated-message > .console-message-text {
   flex: 1;
@@ -208,6 +214,28 @@
   border-top-width: 0;
 }
 
+.console-message-wrapper:last-of-type {
+  border-bottom-color: var(--message-border-color);
+}
+
+.console-message-wrapper:focus,
+.console-message-wrapper:focus:last-of-type {
+  border-top-color: hsl(214deg 67% 88%);
+  border-bottom-color: hsl(214deg 67% 88%);
+  background-color: hsl(214deg 48% 95%);
+}
+
+.console-message-wrapper:focus + .console-message-wrapper {
+  border-top-color: transparent;
+}
+
+.-theme-with-dark-background .console-message-wrapper:focus,
+.-theme-with-dark-background .console-message-wrapper:focus:last-of-type {
+  border-top-color: hsl(214deg 47% 48%);
+  border-bottom-color: hsl(214deg 47% 48%);
+  background-color: hsl(214deg 19% 20%);
+}
+
 .console-message-wrapper.console-error-level,
 .console-message-wrapper.console-error-level:not(:focus) + .console-message-wrapper:not(.console-warning-level):not(:focus) {
   border-top-color: var(--error-border-color);
@@ -216,10 +244,6 @@
 .console-message-wrapper.console-warning-level,
 .console-message-wrapper.console-warning-level:not(:focus) + .console-message-wrapper:not(.console-error-level):not(:focus) {
   border-top-color: var(--warning-border-color);
-}
-
-.console-message-wrapper:last-of-type {
-  border-bottom-color: var(--message-border-color);
 }
 
 .console-message-wrapper.console-error-level:last-of-type {
@@ -243,13 +267,6 @@
   top: 3px;
 }
 
-.console-message-wrapper:focus,
-.console-message-wrapper:focus:last-of-type {
-  border-top-color: hsl(214deg 67% 88%);
-  border-bottom-color: hsl(214deg 67% 88%);
-  background-color: hsl(214deg 48% 95%);
-}
-
 .console-message-wrapper.console-error-level:focus,
 .console-message-wrapper.console-error-level:focus:last-of-type {
   --error-text-color: rgb(200 0 0);
@@ -258,17 +275,6 @@
 .-theme-with-dark-background .console-message-wrapper.console-error-level:focus,
 .-theme-with-dark-background .console-message-wrapper.console-error-level:focus:last-of-type {
   --error-text-color: hsl(0deg 100% 75%);
-}
-
-.-theme-with-dark-background .console-message-wrapper:focus,
-.-theme-with-dark-background .console-message-wrapper:focus:last-of-type {
-  border-top-color: hsl(214deg 47% 48%);
-  border-bottom-color: hsl(214deg 47% 48%);
-  background-color: hsl(214deg 19% 20%);
-}
-
-.console-message-wrapper:focus + .console-message-wrapper {
-  border-top-color: transparent;
 }
 
 .console-message-wrapper .nesting-level-marker {
@@ -280,11 +286,6 @@
   margin-top: -1px;
 }
 
-.console-message-wrapper:last-child .nesting-level-marker::before,
-.console-message-wrapper .nesting-level-marker.group-closed::before {
-  content: "";
-}
-
 .console-message-wrapper .nesting-level-marker::before {
   border-bottom: 1px solid #a5a5a5;
   position: absolute;
@@ -294,6 +295,11 @@
   width: 3px;
   height: 100%;
   box-sizing: border-box;
+}
+
+.console-message-wrapper:last-child .nesting-level-marker::before,
+.console-message-wrapper .nesting-level-marker.group-closed::before {
+  content: "";
 }
 
 .console-error-level {
@@ -314,6 +320,28 @@
 
 .console-warning-level .console-message-text {
   color: hsl(39deg 100% 18%);
+}
+
+.console-view-object-properties-section {
+  padding: 0;
+  position: relative;
+  vertical-align: baseline;
+  color: inherit;
+  display: inline-block;
+  overflow-wrap: break-word;
+  max-width: 100%;
+}
+
+.info-note {
+  background-color: rgb(179 203 247);
+}
+
+.info-note::before {
+  content: "i";
+}
+
+.console-view-object-properties-section:not(.expanded) .info-note {
+  display: none;
 }
 
 .console-error-level .console-message-text,
@@ -438,37 +466,9 @@
   background-color: hsl(230deg 100% 80%);
 }
 
-.info-note {
-  background-color: rgb(179 203 247);
-}
-
-.info-note::before {
-  content: "i";
-}
-
-.console-view-object-properties-section:not(.expanded) .info-note {
-  display: none;
-}
-
-.console-view-object-properties-section {
-  padding: 0;
-  position: relative;
-  vertical-align: baseline;
-  color: inherit;
-  display: inline-block;
-  overflow-wrap: break-word;
-  max-width: 100%;
-}
-
 .console-object {
   white-space: pre-wrap;
   word-break: break-all;
-}
-
-.console-message-stack-trace-toggle {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
 }
 
 .console-message-stack-trace-wrapper {

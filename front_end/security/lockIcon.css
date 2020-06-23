@@ -98,13 +98,13 @@
     background-color: Highlight;
   }
 
-  .tree-outline:not(.hide-selection-when-blurred) li.selected .security-property-info,
-  .tree-outline:not(.hide-selection-when-blurred) li.selected .security-property-unknown {
-    background-color: HighlightText;
-  }
-
   .security-property-info,
   .security-property-unknown {
     background-color: canvastext;
+  }
+
+  .tree-outline:not(.hide-selection-when-blurred) li.selected .security-property-info,
+  .tree-outline:not(.hide-selection-when-blurred) li.selected .security-property-unknown {
+    background-color: HighlightText;
   }
 }

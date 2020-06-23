@@ -27,7 +27,7 @@ export async function takeHeapSnapshot() {
 export async function waitForHeapSnapshotData() {
   await waitFor('#profile-views');
   await waitFor('#profile-views .data-grid');
-  const rowCount = await getCountOfDataGridRows('#profile-views .data-grid');
+  const rowCount = await getCountOfDataGridRows('#profile-views table.data');
   assert.notEqual(rowCount, 0);
 }
 

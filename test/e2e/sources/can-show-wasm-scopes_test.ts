@@ -42,13 +42,13 @@ describe('Source Tab', async () => {
   });
 
   // Disabled to the Chromium binary -> DevTools roller working again.
-  it.skip('[crbug.com/1097061] correctly shows local scope content.', async () => {
+  it('correctly shows local scope content.', async () => {
     const {target} = getBrowserAndPages();
     const scriptEvaluation = target.evaluate('main(42);');
     await waitFor(RESUME_BUTTON);
 
     const localValues = await getValuesForScope('Local');
-    assert.deepEqual(localValues, ['locals: {i32: 42, i64_var: 9221120237041090, f32_var: 5.5, f64_var: 2.23e-11}']);
+    assert.deepEqual(localValues, ['f32_var: 5.5', 'f64_var: 2.23e-11', 'i32: 42', 'i64_var: 9221120237041090']);
 
     await click(RESUME_BUTTON);
     await scriptEvaluation;

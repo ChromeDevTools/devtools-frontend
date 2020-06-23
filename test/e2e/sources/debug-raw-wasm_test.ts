@@ -11,7 +11,7 @@ import {addBreakpointForLine, checkBreakpointDidNotActivate, checkBreakpointIsAc
 
 describe('Sources Tab', async () => {
   // Disabled to the Chromium binary -> DevTools roller working again.
-  it.skip('[crbug.com/1097061] shows the correct wasm source on load and reload', async () => {
+  it('shows the correct wasm source on load and reload', async () => {
     async function checkSources(frontend: puppeteer.Page) {
       await waitForAdditionalSourceFiles(frontend, 2);
       const capturedFileNames = await retrieveSourceFilesAdded(frontend);

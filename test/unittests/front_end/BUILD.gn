@@ -15,6 +15,7 @@ group("front_end") {
     "inline_editor",
     "inspector_overlay",
     "issues",
+    "media",
     "persistence",
     "platform",
     "protocol_client",

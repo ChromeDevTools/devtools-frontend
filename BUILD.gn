@@ -1233,6 +1233,7 @@ all_devtools_modules = [
   "media/PlayerMessagesView.js",
   "media/PlayerPropertiesView.js",
   "media/TickingFlameChart.js",
+  "media/TickingFlameChartHelpers.js",
   "mobile_throttling/MobileThrottlingSelector.js",
   "mobile_throttling/NetworkPanelIndicator.js",
   "mobile_throttling/NetworkThrottlingSelector.js",

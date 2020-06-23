@@ -31,7 +31,8 @@
     "PlayerPropertiesView.js",
     "MediaModel.js",
     "EventTimelineView.js",
-    "TickingFlameChart.js"
+    "TickingFlameChart.js",
+    "TickingFlameChartHelpers.js"
   ],
   "scripts": [],
   "resources": [

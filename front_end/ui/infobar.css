@@ -22,7 +22,8 @@
   background-color: rgb(253 242 192);
 }
 
-.infobar-info {
+.infobar-info,
+.infobar-issue {
   background-color: rgb(255 255 255);
 }
 

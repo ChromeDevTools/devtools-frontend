@@ -8,6 +8,7 @@
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 
 import * as ARIAUtils from './ARIAUtils.js';
+import {Icon} from './Icon.js';
 import {Keys} from './KeyboardShortcut.js';
 import {createTextButton} from './UIUtils.js';
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
@@ -35,7 +36,17 @@ export class Infobar {
     this._infoContainer = this._mainRow.createChild('div', 'infobar-info-container');
 
     this._infoMessage = this._infoContainer.createChild('div', 'infobar-info-message');
-    this._infoMessage.createChild('div', type + '-icon icon');
+
+    // TODO(chromium:1098185) Do we really need both sprite sheet and separate svg files?
+    if (type === Type.Issue) {
+      // Icon is part of sprite sheet.
+      const icon = Icon.create('largeicon-breaking-change', 'icon');
+      this._infoMessage.appendChild(icon);
+    } else {
+      // Icon is in separate file and included via CSS.
+      this._infoMessage.createChild('div', type + '-icon icon');
+    }
+
     this._infoText = this._infoMessage.createChild('div', 'infobar-info-text');
     this._infoText.textContent = text;
     ARIAUtils.markAsAlert(this._infoText);
@@ -200,5 +211,6 @@ export let InfobarAction;
 /** @enum {string} */
 export const Type = {
   Warning: 'warning',
-  Info: 'info'
+  Info: 'info',
+  Issue: 'issue',
 };

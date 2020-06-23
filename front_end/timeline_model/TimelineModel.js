@@ -212,6 +212,17 @@ export class TimelineModelImpl {
   }
 
   /**
+   * @return {!Map<string, !SDK.TracingModel.Event>}
+   */
+  navStartTimes() {
+    if (!this._tracingModel) {
+      return new Map();
+    }
+
+    return this._tracingModel.navStartTimes();
+  }
+
+  /**
    * @param {!SDK.TracingModel.TracingModel} tracingModel
    */
   setEvents(tracingModel) {
@@ -1493,6 +1504,7 @@ export const RecordType = {
   MarkFCP: 'firstContentfulPaint',
   MarkLCPCandidate: 'largestContentfulPaint::Candidate',
   MarkLCPInvalidate: 'largestContentfulPaint::Invalidate',
+  NavigationStart: 'navigationStart',
 
   TimeStamp: 'TimeStamp',
   ConsoleTime: 'ConsoleTime',

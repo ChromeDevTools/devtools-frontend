@@ -1139,8 +1139,19 @@ export class TimelineUIUtils {
       case recordTypes.MarkFCP:
       case recordTypes.MarkLoad:
       case recordTypes.MarkDOMContent: {
-        contentHelper.appendTextRow(
-            ls`Timestamp`, Number.preciseMillisToString(event.startTime - model.minimumRecordTime(), 1));
+        let eventTime = event.startTime - model.minimumRecordTime();
+
+        // Find the appropriate navStart based on the navigation ID.
+        const {navigationId} = event.args.data;
+        if (navigationId) {
+          const navStartTime = model.navStartTimes().get(navigationId);
+
+          if (navStartTime) {
+            eventTime = event.startTime - navStartTime.startTime;
+          }
+        }
+
+        contentHelper.appendTextRow(ls`Timestamp`, Number.preciseMillisToString(eventTime, 1));
         contentHelper.appendElementRow(ls`Details`, TimelineUIUtils.buildDetailsNodeForPerformanceEvent(event));
         break;
       }
@@ -2017,9 +2028,11 @@ export class TimelineUIUtils {
   static markerStyleForEvent(event) {
     const tallMarkerDashStyle = [6, 4];
     const title = TimelineUIUtils.eventTitle(event);
+    const recordTypes = TimelineModel.TimelineModel.RecordType;
 
-    if (event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.Console) ||
-        event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming)) {
+    if (event.name !== recordTypes.NavigationStart &&
+        (event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.Console) ||
+         event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming))) {
       return {
         title: title,
         dashStyle: tallMarkerDashStyle,
@@ -2030,10 +2043,13 @@ export class TimelineUIUtils {
         lowPriority: false,
       };
     }
-    const recordTypes = TimelineModel.TimelineModel.RecordType;
     let tall = false;
     let color = 'grey';
     switch (event.name) {
+      case recordTypes.NavigationStart:
+        color = '#FF9800';
+        tall = true;
+        break;
       case recordTypes.FrameStartedLoading:
         color = 'green';
         tall = true;

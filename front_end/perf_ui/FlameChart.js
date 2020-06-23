@@ -31,6 +31,7 @@
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
+import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
 import {ChartViewport, ChartViewportDelegate} from './ChartViewport.js';  // eslint-disable-line no-unused-vars
@@ -1224,10 +1225,33 @@ export class FlameChart extends UI.Widget.VBox {
     this._drawFlowEvents(context, width, height);
     this._drawMarkers();
     const dividersData = TimelineGrid.calculateGridOffsets(this);
+    const navStartTimes = Array.from(this._dataProvider.navStartTimes().values());
+
+    let navStartTimeIndex = 0;
+    const drawAdjustedTime = time => {
+      if (navStartTimes.length === 0) {
+        return this.formatValue(time, dividersData.precision);
+      }
+
+      // Track when the time crosses the boundary to the next nav start record,
+      // and when it does, move the nav start array index accordingly.
+      const hasNextNavStartTime = navStartTimes.length > navStartTimeIndex + 1;
+      if (hasNextNavStartTime && time > navStartTimes[navStartTimeIndex + 1].startTime) {
+        navStartTimeIndex++;
+      }
+
+      // Adjust the time by the nearest nav start marker's value.
+      const nearestMarker = navStartTimes[navStartTimeIndex];
+      if (nearestMarker) {
+        time -= nearestMarker.startTime - this.zeroTime();
+      }
+
+      return this.formatValue(time, dividersData.precision);
+    };
+
     TimelineGrid.drawCanvasGrid(context, dividersData);
     if (this._rulerEnabled) {
-      TimelineGrid.drawCanvasHeaders(
-          context, dividersData, time => this.formatValue(time, dividersData.precision), 3, HeaderHeight);
+      TimelineGrid.drawCanvasHeaders(context, dividersData, drawAdjustedTime, 3, HeaderHeight);
     }
 
     this._updateElementPosition(this._highlightElement, this._highlightedEntryIndex);
@@ -2314,6 +2338,12 @@ export class FlameChartDataProvider {
    * @return {string}
    */
   textColor(entryIndex) {
+  }
+
+  /**
+   * @return {!Map<string, !SDK.TracingModel.Event>}
+   */
+  navStartTimes() {
   }
 }
 

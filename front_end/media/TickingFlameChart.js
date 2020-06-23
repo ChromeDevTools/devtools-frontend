@@ -778,4 +778,11 @@ class TickingFlameChartDataProvider {
   canJumpToEntry(entryIndex) {
     return false;
   }
+
+  /**
+   * @override
+   */
+  navStartTimes() {
+    return new Map();
+  }
 }

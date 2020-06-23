@@ -186,6 +186,7 @@ SDKModel.register(TracingManager, Capability.Tracing, false);
           sort_index: number,
           name: string,
           snapshot: ObjectSnapshot,
+          data: ?Object
         },
         dur: number,
         id: string,

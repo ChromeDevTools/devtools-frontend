@@ -121,6 +121,17 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
   /**
    * @override
+   */
+  navStartTimes() {
+    if (!this._model) {
+      return new Map();
+    }
+
+    return this._model.navStartTimes();
+  }
+
+  /**
+   * @override
    * @param {number} entryIndex
    * @return {?string}
    */

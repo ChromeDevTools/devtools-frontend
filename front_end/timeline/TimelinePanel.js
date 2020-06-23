@@ -698,6 +698,7 @@ export class TimelinePanel extends UI.Panel.Panel {
     this._overviewPane.reset();
     if (model) {
       this._performanceModel.addEventListener(Events.WindowChanged, this._onModelWindowChanged, this);
+      this._overviewPane.setNavStartTimes(model.timelineModel().navStartTimes());
       this._overviewPane.setBounds(
           model.timelineModel().minimumRecordTime(), model.timelineModel().maximumRecordTime());
       const lineLevelProfile = self.runtime.sharedInstance(PerfUI.LineLevelProfile.Performance);
@@ -891,6 +892,11 @@ export class TimelinePanel extends UI.Panel.Panel {
         continue;
       }
       markers.set(event.startTime, TimelineUIUtils.createEventDivider(event, zeroTime));
+    }
+
+    // Add markers for navigation start times.
+    for (const navStartTimeEvent of timelineModel.navStartTimes().values()) {
+      markers.set(navStartTimeEvent.startTime, TimelineUIUtils.createEventDivider(navStartTimeEvent, zeroTime));
     }
     this._overviewPane.setMarkers(markers);
   }

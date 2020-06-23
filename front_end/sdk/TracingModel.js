@@ -32,6 +32,8 @@ export class TracingModel {
     this._profileGroups = new Map();
     /** @type {!Map<string, !Set<string>>} */
     this._parsedCategories = new Map();
+    /** @type {!Map<string, !Event>} */
+    this._mainFrameNavStartTimes = new Map();
   }
 
   /**
@@ -223,6 +225,20 @@ export class TracingModel {
         (payload.ph === phase.Begin || payload.ph === phase.Complete || payload.ph === phase.Instant)) {
       this._minimumRecordTime = timestamp;
     }
+
+    // Track only main thread navigation start items. This is done by tracking isLoadingMainFrame,
+    // and whether documentLoaderURL is set.
+    if (payload.name === 'navigationStart') {
+      const data = /** @type {!{isLoadingMainFrame: boolean, documentLoaderURL: string, navigationId: string}} */ (
+          payload.args.data);
+      const {isLoadingMainFrame, documentLoaderURL, navigationId} = data;
+      if (isLoadingMainFrame && documentLoaderURL !== '') {
+        const thread = process.threadById(payload.tid);
+        const navStartEvent = Event.fromPayload(payload, thread);
+        this._mainFrameNavStartTimes.set(navigationId, navStartEvent);
+      }
+    }
+
     const endTimeStamp = (payload.ts + (payload.dur || 0)) / 1000;
     this._maximumRecordTime = Math.max(this._maximumRecordTime, endTimeStamp);
     const event = process._addEvent(payload);
@@ -303,6 +319,13 @@ export class TracingModel {
    */
   maximumRecordTime() {
     return this._maximumRecordTime;
+  }
+
+  /**
+   * @return {!Map<string, !Event>}
+   */
+  navStartTimes() {
+    return this._mainFrameNavStartTimes;
   }
 
   /**

@@ -449,4 +449,15 @@ export class TimelineFlameChartNetworkDataProvider {
   canJumpToEntry(entryIndex) {
     return false;
   }
+
+  /**
+   * @override
+   */
+  navStartTimes() {
+    if (!this._model) {
+      return new Map();
+    }
+
+    return this._model.navStartTimes();
+  }
 }

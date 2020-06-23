@@ -193,6 +193,13 @@ export class ProfileFlameChartDataProvider {
   textColor(entryIndex) {
     return '#333';
   }
+
+  /**
+   * @override
+   */
+  navStartTimes() {
+    return new Map();
+  }
 }
 
 

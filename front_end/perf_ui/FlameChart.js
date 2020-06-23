@@ -628,6 +628,14 @@ export class FlameChart extends UI.Widget.VBox {
   }
 
   /**
+   * @param {string} eventName
+   * @param {function(!Event):undefined} onEvent
+   */
+  bindCanvasEvent(eventName, onEvent) {
+    this._canvas.addEventListener(eventName, onEvent);
+  }
+
+  /**
    * @param {!Event} e
    */
   _handleKeyboardGroupNavigation(e) {

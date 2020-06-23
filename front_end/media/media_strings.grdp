@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_3d1f92a565d3b1a61880236e33c49bf3" desc="Title for the timeline tab.">
+    Timeline
+  </message>
   <message name="IDS_DEVTOOLS_34e2d1989a1dbf75cd631596133ee5ee" desc="The type of media, for example - video, audio, or text. Capitalized.">
     Video
-  </message>
-  <message name="IDS_DEVTOOLS_b22f0418e8ac915eb66f829d262d14a2" desc="The type of media. Capitalized.">
-    Audio
   </message>
   <message name="IDS_DEVTOOLS_421b47ffd946ca083b65cd668c6b17e6" desc="The type of media. Lower case.">
     video
@@ -20,6 +20,9 @@
   </message>
   <message name="IDS_DEVTOOLS_42895832ab7605d00676bebb0521991f" desc="Media property giving the distance of the playback quality from the ideal playback.">
     Video Playback Roughness
+  </message>
+  <message name="IDS_DEVTOOLS_5b999e8e6e64d49616bdf5a24a3d02bf" desc="Hovertext for Timeline tab.">
+    Player timeline
   </message>
   <message name="IDS_DEVTOOLS_62933a2951ef01f4eafd9bdf4d3cd2f0" desc="Media player">
     media
@@ -44,6 +47,9 @@
   </message>
   <message name="IDS_DEVTOOLS_a603905470e2a5b8c13e96b579ef0dba" desc="Debug log level">
     Debug
+  </message>
+  <message name="IDS_DEVTOOLS_b22f0418e8ac915eb66f829d262d14a2" desc="The type of media, for example - video, audio, or text. Capitalized.">
+    Audio
   </message>
   <message name="IDS_DEVTOOLS_cf6523ecab64a91c7a9b3d83b58f9e61" desc="Hover text for the Events button.">
     Player events

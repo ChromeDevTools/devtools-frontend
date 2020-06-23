@@ -18,9 +18,27 @@
   white-space: nowrap;
 }
 
+.tree-outline .lock-icon,
+.tree-outline .security-property {
+  margin-right: 4px;
+  flex: none;
+}
+
 .tree-outline li.selected:focus .lock-icon,
 .tree-outline .security-sidebar-tree-item.selected:focus .icon {
   background-color: var(--selection-fg-color);
+}
+
+@media (forced-colors: active) {
+  .tree-outline .lock-icon,
+  .tree-outline .security-property {
+    forced-color-adjust: none;
+  }
+
+  .tree-outline li.selected:focus .lock-icon,
+  .tree-outline .security-sidebar-tree-item.selected:focus .icon {
+    background-color: HighlightText;
+  }
 }
 
 .tree-outline .security-main-view-sidebar-tree-item {
@@ -52,12 +70,6 @@
   padding-left: 16px;
 }
 
-.tree-outline .lock-icon,
-.tree-outline .security-property {
-  margin-right: 4px;
-  flex: none;
-}
-
 .security-sidebar-tree-item {
   padding: 2px 0;
 }
@@ -70,16 +82,4 @@
 .security-main-view-reload-message .tree-element-title {
   color: rgb(0 0 0 / 60%);
   padding-left: 8px;
-}
-
-@media (forced-colors: active) {
-  .tree-outline .lock-icon,
-  .tree-outline .security-property {
-    forced-color-adjust: none;
-  }
-
-  .tree-outline li.selected:focus .lock-icon,
-  .tree-outline .security-sidebar-tree-item.selected:focus .icon {
-    background-color: HighlightText;
-  }
 }

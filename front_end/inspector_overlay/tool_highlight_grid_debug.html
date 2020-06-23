@@ -14,11 +14,15 @@ found in the LICENSE file.
   <style>
     body {
       background: #ccc;
+      overflow: hidden;
     }
   </style>
 </head>
 <body>
   <script type="module">
+    const viewportWidth = document.documentElement.clientWidth;
+    const viewportHeight = document.documentElement.clientHeight;
+
     const TESTS= [
       // Simple 2x3 grid, with explicit lines.
       {
@@ -30,11 +34,11 @@ found in the LICENSE file.
         ],
         "gridInfo":[
           {
-            "rows":["M",100,60,"L",420,60,"L",420,127,"L",100,127,"Z","M",100,137,"L",420,137,"L",420,204,"L",100,204,"Z"],
+            "rows":["M",100,60,"L",420,60,"M",420,127,"L",100,127,"M",100,137,"L",420,137,"M",420,204,"L",100,204],
             "rowGaps":["M",100,127,"L",420,127,"L",420,137,"L",100,137,"Z"],
             "positiveRowLineNumberOffsets":[0,72,144],
             "negativeRowLineNumberOffsets":[0,72,144],
-            "columns":["M",100,60,"L",200,60,"L",200,204,"L",100,204,"Z","M",210,60,"L",310,60,"L",310,204,"L",210,204,"Z","M",320,60,"L",420,60,"L",420,204,"L",320,204,"Z"],
+            "columns":["M",100,60,"L",100,204,"M",200,204,"L",200,60,"M",210,60,"L",210,204,"M",310,204,"L",310,60,"M",320,60,"L",320,204,"M",420,204,"L",420,60],
             "columnGaps":["M",200,60,"L",210,60,"L",210,204,"L",200,204,"Z","M",310,60,"L",320,60,"L",320,204,"L",310,204,"Z"],
             "positiveColumnLineNumberOffsets":[0,105,215,320],
             "negativeColumnLineNumberOffsets":[0,105,215,320],
@@ -51,21 +55,39 @@ found in the LICENSE file.
           {"path":["M",180,380,"L",820,380,"L",820,820,"L",180,820,"Z"],"fillColor":"rgba(246, 178, 107, .6)","name":"margin"}
         ],
         "gridInfo":[
-          {"rows":["M",200,400,"L",800,400,"L",800,495,"L",200,495,"Z","M",200,505,"L",800,505,"L",800,595,"L",200,595,"Z","M",200,605,"L",800,605,"L",800,695,"L",200,695,"Z","M",200,705,"L",800,705,"L",800,800,"L",200,800,"Z"],
-          "rowGaps":["M",200,495,"L",800,495,"L",800,505,"L",200,505,"Z","M",200,595,"L",800,595,"L",800,605,"L",200,605,"Z","M",200,695,"L",800,695,"L",800,705,"L",200,705,"Z"],
-          "positiveRowLineNumberOffsets":[100,200,300,400],
-          "negativeRowLineNumberOffsets":[0,100,200,300],
-          "columns":["M",200,400,"L",400,400,"L",400,800,"L",200,800,"Z","M",400,400,"L",600,400,"L",600,800,"L",400,800,"Z","M",600,400,"L",800,400,"L",800,800,"L",600,800,"Z"],
-          "columnGaps":[],
-          "positiveColumnLineNumberOffsets":[200,400,600],
-          "negativeColumnLineNumberOffsets":[0,200,400],
-          "gridBorder":["M",200,400,"L",800,400,"L",800,800,"L",200,800,"Z"],
-          "gridHighlightConfig":{"gridBorderDash":false,"cellBorderDash":true,"showGridExtensionLines":false,"showPositiveLineNumbers":true,"showNegativeLineNumbers":true,"cellBorderColor":"rgba(147, 52, 230, 1)","rowHatchColor":"rgba(147, 52, 230, .8)","columnHatchColor":"rgba(147, 52, 230, .8)"},
-          "isPrimaryGrid":true
-        }
-      ]
-    }
-  ];
+          {
+            "rows":["M",200,400,"L",800,400,"M",800,495,"L",200,495,"M",200,505,"L",800,505,"M",800,595,"L",200,595,"M",200,605,"L",800,605,"M",800,695,"L",200,695,"M",200,705,"L",800,705,"M",800,800,"L",200,800],
+            "rowGaps":["M",200,495,"L",800,495,"L",800,505,"L",200,505,"Z","M",200,595,"L",800,595,"L",800,605,"L",200,605,"Z","M",200,695,"L",800,695,"L",800,705,"L",200,705,"Z"],
+            "positiveRowLineNumberOffsets":[100,200,300,400],
+            "negativeRowLineNumberOffsets":[0,100,200,300],
+            "columns":["M",200,400,"L",200,800,"M",400,800,"L",400,400,"M",600,800,"L",600,400,"M",800,800,"L",800,400],
+            "columnGaps":[],
+            "positiveColumnLineNumberOffsets":[200,400,600],
+            "negativeColumnLineNumberOffsets":[0,200,400],
+            "gridBorder":["M",200,400,"L",800,400,"L",800,800,"L",200,800,"Z"],
+            "gridHighlightConfig":{"gridBorderDash":false,"cellBorderDash":true,"showGridExtensionLines":false,"showPositiveLineNumbers":true,"showNegativeLineNumbers":true,"cellBorderColor":"rgba(147, 52, 230, 1)","rowHatchColor":"rgba(147, 52, 230, .8)","columnHatchColor":"rgba(147, 52, 230, .8)"},
+            "isPrimaryGrid":true
+          }
+        ]
+      },
+      // 1x1 full-page grid to test when labels are inside the grid
+      {
+        "paths":[],
+        "gridInfo":[
+          {
+            "rows":["M",0,0,"L",viewportWidth,0,"M",viewportWidth,viewportHeight,"L",0,viewportHeight],
+            "positiveRowLineNumberOffsets":[0,viewportHeight],
+            "negativeRowLineNumberOffsets":[0,viewportHeight],
+            "columns":["M",0,0,"L",0,viewportHeight,"M",viewportWidth,viewportHeight,"L",viewportWidth,0],
+            "positiveColumnLineNumberOffsets":[0,viewportWidth],
+            "negativeColumnLineNumberOffsets":[0,viewportWidth],
+            "gridBorder":["M",0,0,"L",viewportWidth,0,"L",viewportWidth,viewportHeight,"L",0,viewportHeight,"Z"],
+            "gridHighlightConfig":{"gridBorderDash":false,"cellBorderDash":true,"showGridExtensionLines":false,"showPositiveLineNumbers":true,"showNegativeLineNumbers":true,"cellBorderColor":"rgba(147, 52, 230, 1)"},
+            "isPrimaryGrid":true
+          }
+        ]
+      }
+    ];
 
     function test() {
       setPlatform("mac");

@@ -238,3 +238,101 @@ describe('drawGridNumbers label placement', () => {
     });
   }
 });
+
+describe('drawGridNumbers inner-grid label placement', () => {
+  beforeEach(initFrameForGridLabels);
+
+  // Making a grid bounds object that's the size of the viewport so all labels flip inside the grid.
+  const bounds = {
+    minX: 0,
+    maxX: 1000,
+    minY: 0,
+    maxY: 1000,
+  };
+
+  const TESTS = [
+    {
+      description: 'flips positive row labels inside the grid',
+      config: {
+        gridHighlightConfig: {
+          showPositiveLineNumbers: true,
+        },
+        positiveRowLineNumberOffsets: [0, 500, 1000],
+      },
+      bounds,
+      expectedLabels: [
+        {className: 'left-top', count: 1},
+        {className: 'left-mid', count: 1},
+        {className: 'left-bottom', count: 1},
+      ],
+    },
+    {
+      description: 'flips negative row labels inside the grid',
+      config: {
+        gridHighlightConfig: {
+          showNegativeLineNumbers: true,
+        },
+        negativeRowLineNumberOffsets: [0, 500, 1000],
+      },
+      bounds,
+      expectedLabels: [
+        {className: 'right-top', count: 1},
+        {className: 'right-mid', count: 1},
+        {className: 'right-bottom', count: 1},
+      ],
+    },
+    {
+      description: 'flips positive column labels inside the grid',
+      config: {
+        gridHighlightConfig: {
+          showPositiveLineNumbers: true,
+        },
+        positiveColumnLineNumberOffsets: [0, 500, 1000],
+      },
+      bounds,
+      expectedLabels: [
+        {className: 'top-left', count: 1},
+        {className: 'top-mid', count: 1},
+        {className: 'top-right', count: 1},
+      ],
+    },
+    {
+      description: 'flips negative column labels inside the grid',
+      config: {
+        gridHighlightConfig: {
+          showNegativeLineNumbers: true,
+        },
+        negativeColumnLineNumberOffsets: [0, 500, 1000],
+      },
+      bounds,
+      expectedLabels: [
+        {className: 'bottom-left', count: 1},
+        {className: 'bottom-mid', count: 1},
+        {className: 'bottom-right', count: 1},
+      ],
+    },
+  ];
+
+  for (const {description, config, bounds, expectedLabels} of TESTS) {
+    it(description, () => {
+      drawGridNumbers(config, bounds);
+
+      // assert.isFalse(true, JSON.stringify(config));
+      // assert.isFalse(true, JSON.stringify(bounds));
+
+      const el = getGridLabelContainer();
+      assertNotNull(el);
+
+      let totalLabelCount = 0;
+      for (const {className, count} of expectedLabels) {
+        const labels = el.querySelectorAll(`.grid-label-content.${className}`);
+        assert.strictEqual(labels.length, count, `Expected ${count} labels to be displayed ${className}`);
+        totalLabelCount += count;
+      }
+
+      assert.strictEqual(
+          el.querySelectorAll('.grid-label-content').length, totalLabelCount,
+          'The right total number of labels were displayed');
+    });
+  }
+});

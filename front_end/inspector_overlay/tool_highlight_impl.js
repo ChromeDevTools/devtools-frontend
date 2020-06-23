@@ -561,7 +561,7 @@ function buildPath(commands, bounds) {
         break;
     }
   }
-  path.closePath();
+
   return path;
 }
 

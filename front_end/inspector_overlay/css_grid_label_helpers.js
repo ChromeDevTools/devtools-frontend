@@ -5,6 +5,28 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
+/**
+ * There are 12 different types of arrows for labels.
+ *
+ * The first word in an arrow type corresponds to the side of the label
+ * container the arrow is on (e.g. 'left' means the arrow is on the left side of
+ * the container).
+ *
+ * The second word defines where, along that side, the arrow is (e.g. 'top' in
+ * a 'leftTop' type means the arrow is at the top of the left side of the
+ * container).
+ *
+ * Here are 2 examples to illustrate:
+ *
+ *              +----+
+ * rightMid:    |     >
+ *              +----+
+ *
+ *              +----+
+ * bottomRight: |    |
+ *              +--  +
+ *                  \|
+ */
 const GridArrowTypes = {
   leftTop: 'left-top',
   leftMid: 'left-mid',
@@ -32,178 +54,295 @@ let GridLabelPositions;  // eslint-disable-line no-unused-vars
  * @param {Object} bounds
  */
 export function drawGridNumbers(config, bounds) {
-  const showPositiveColumns =
-      config.gridHighlightConfig.showPositiveLineNumbers && config.positiveColumnLineNumberOffsets;
-  const showPositiveRows = config.gridHighlightConfig.showPositiveLineNumbers && config.positiveRowLineNumberOffsets;
-  const showNegativeColumns =
-      config.gridHighlightConfig.showNegativeLineNumbers && config.negativeColumnLineNumberOffsets;
-  const showNegativeRows = config.gridHighlightConfig.showNegativeLineNumbers && config.negativeRowLineNumberOffsets;
-  if (!showPositiveColumns && !showPositiveRows && !showNegativeColumns && !showNegativeRows) {
-    return;
-  }
-
   const labelContainer = document.getElementById('grid-label-container');
   labelContainer.removeChildren();
 
-  if (showPositiveColumns) {
+  if (config.gridHighlightConfig.showPositiveLineNumbers && config.positiveColumnLineNumberOffsets) {
     for (const [i, offset] of config.positiveColumnLineNumberOffsets.entries()) {
-      const isFirstColumn = offset === 0;
-      const isLastColumn = i === config.positiveColumnLineNumberOffsets.length - 1;
-      _placeColumnLabel(
-          labelContainer, (i + 1).toString(), bounds.minX + offset, bounds.minY, isFirstColumn, isLastColumn);
+      const element = _createLabelElement(labelContainer, i + 1);
+      _placePositiveColumnLabel(element, offset, config, bounds);
     }
   }
 
-  if (showPositiveRows) {
+  if (config.gridHighlightConfig.showPositiveLineNumbers && config.positiveRowLineNumberOffsets) {
     for (const [i, offset] of config.positiveRowLineNumberOffsets.entries()) {
-      const isTopRow = offset === 0;
-      const isBottomRow = i === config.positiveRowLineNumberOffsets.length - 1;
-      const avoidColumnLabel = (isTopRow && showPositiveColumns) || (isBottomRow && showNegativeColumns);
-      _placeRowLabel(
-          labelContainer, (i + 1).toString(), bounds.minX, bounds.minY + offset, isTopRow, isBottomRow,
-          avoidColumnLabel);
+      const element = _createLabelElement(labelContainer, i + 1);
+      _placePositiveRowLabel(element, offset, config, bounds);
     }
   }
 
-  if (showNegativeColumns) {
+  if (config.gridHighlightConfig.showNegativeLineNumbers && config.negativeColumnLineNumberOffsets) {
     for (const [i, offset] of config.negativeColumnLineNumberOffsets.entries()) {
       // Negative offsets are sorted such that the first offset corresponds to the line closest to start edge of the grid.
-      const index = config.negativeColumnLineNumberOffsets.length * -1 + i;
-      const isFirstColumn = offset === 0;
-      // To determine if this is the last column, we can't just check if we're at the end of the
-      // negativeColumnLineNumberOffsets array, since negative columns don't go to the end of the
-      // implicit grid. Use the positiveColumnLineNumberOffsets instead, which does go to the end.
-      const positiveOffsets = config.positiveColumnLineNumberOffsets;
-      const isLastColumn = positiveOffsets && offset === positiveOffsets[positiveOffsets.length - 1];
-      _placeColumnLabel(
-          labelContainer, index.toString(), bounds.minX + offset, bounds.maxY, isFirstColumn, isLastColumn,
-          /* isNegative */ true);
+      const element = _createLabelElement(labelContainer, config.negativeColumnLineNumberOffsets.length * -1 + i);
+      _placeNegativeColumnLabel(element, offset, config, bounds);
     }
   }
 
-  if (showNegativeRows) {
+  if (config.gridHighlightConfig.showNegativeLineNumbers && config.negativeRowLineNumberOffsets) {
     for (const [i, offset] of config.negativeRowLineNumberOffsets.entries()) {
       // Negative offsets are sorted such that the first offset corresponds to the line closest to start edge of the grid.
-      const index = config.negativeRowLineNumberOffsets.length * -1 + i;
-      const isTopRow = offset === 0;
-      // To determine if this is the last row, we can't just check if we're at the end of the
-      // negativeRowLineNumberOffsets array, since negative rows don't go to the end of the
-      // implicit grid. Use the positiveRowLineNumberOffsets instead, which does go to the end.
-      const positiveOffsets = config.positiveRowLineNumberOffset;
-      const isBottomRow = positiveOffsets && offset === positiveOffsets[positiveOffsets.length - 1];
-      const avoidColumnLabel = (isTopRow && showPositiveColumns) || (isBottomRow && showNegativeColumns);
-      _placeRowLabel(
-          labelContainer, index.toString(), bounds.maxX, bounds.minY + offset, isTopRow, isBottomRow, avoidColumnLabel,
-          /* isNegative */ true);
+      const element = _createLabelElement(labelContainer, config.negativeRowLineNumberOffsets.length * -1 + i);
+      _placeNegativeRowLabel(element, offset, config, bounds);
     }
   }
 }
 
 /**
- * Places the grid row labels on the overlay.
+ * Create the necessary DOM for a single label element.
  *
- * @param {HTMLElement} labelLayer
- * @param {string} label
- * @param {number} x
- * @param {number} y
- * @param {boolean} isTopRow
- * @param {boolean} isBottomRow
- * @param {boolean} avoidColumnLabel
- * @param {boolean} isNegative
+ * @param {HTMLElement} container The DOM element where to append the label
+ * @param {string} textContent The text to display in the label
+ * @return {HTMLElement} The new label element
  */
-function _placeRowLabel(labelLayer, label, x, y, isTopRow, isBottomRow, avoidColumnLabel, isNegative) {
-  const labelContainer = labelLayer.createChild('div');
-  const labelContent = labelContainer.createChild('div', 'grid-label-content');
-  labelContent.textContent = label;
-
-  // Determine where the arrow should be, relative to the label.
-  let verticalAlign = 'Mid';
-  if (isTopRow && (y < gridPageMargin || avoidColumnLabel)) {
-    verticalAlign = 'Top';
-  }
-  if (isBottomRow && (canvasHeight - y < gridPageMargin || avoidColumnLabel)) {
-    verticalAlign = 'Bottom';
-  }
-
-  // Determine if the arrow should be right or left of the label.
-  let horizontalAlign = isNegative ? 'left' : 'right';
-  if (!isNegative && x < gridPageMargin) {
-    horizontalAlign = 'left';
-  }
-  if (isNegative && (canvasWidth - x) < gridPageMargin) {
-    horizontalAlign = 'right';
-  }
-
-  const arrowType = GridArrowTypes[horizontalAlign + verticalAlign];
-
-  const labelWidth = _getAdjustedLabelWidth(labelContent);
-  const labelHeight = labelContent.getBoundingClientRect().height;
-  const labelParams = _getLabelPositionByArrowType(arrowType, x, y, labelWidth, labelHeight);
-
-  labelContent.classList.add(arrowType);
-  labelContent.style.left = labelParams.contentLeft + 'px';
-  labelContent.style.top = labelParams.contentTop + 'px';
+function _createLabelElement(container, textContent) {
+  const wrapper = container.createChild('div');
+  const element = wrapper.createChild('div', 'grid-label-content');
+  element.textContent = textContent.toString();
+  return element;
 }
 
 /**
- * Places the grid column labels on the overlay.
+ * Determine the position of a positive row label, and place it.
  *
- * @param {HTMLElement} labelLayer
- * @param {string} label
- * @param {number} x
- * @param {number} y
- * @param {boolean} isFirstColumn
- * @param {boolean} isLastColumn
- * @param {boolean} isNegative
+ * @param {HTMLElement} element The label DOM element
+ * @param {number} offset The corresponding grid line offset
+ * @param {Object} config The grid highlight config object
+ * @param {object} bounbds The grid bounds
  */
-function _placeColumnLabel(labelLayer, label, x, y, isFirstColumn, isLastColumn, isNegative) {
-  const labelContainer = labelLayer.createChild('div');
-  const labelContent = labelContainer.createChild('div', 'grid-label-content');
-  labelContent.textContent = label;
+function _placePositiveRowLabel(element, offset, config, bounds) {
+  const x = bounds.minX;
+  const y = bounds.minY + offset;
+  const isAtSharedStartCorner = offset === 0 && config.gridHighlightConfig.showPositiveLineNumbers &&
+      config.positiveColumnLineNumberOffsets && config.positiveColumnLineNumberOffsets[0] === 0;
+  const isAtSharedEndCorner = offset === bounds.maxY - bounds.minY &&
+      config.gridHighlightConfig.showNegativeLineNumbers && config.negativeColumnLineNumberOffsets &&
+      config.negativeColumnLineNumberOffsets[0] === 0;
+  const isTooCloseToViewportStart = y < gridPageMargin;
+  const isTooCloseToViewportEnd = canvasHeight - y < gridPageMargin;
+  const flipIn = x < gridPageMargin;
 
-  // Determine where the arrow should be, relative to the label.
-  let horizontalAlign = 'Mid';
-  if (isFirstColumn && x < gridPageMargin) {
-    horizontalAlign = 'Left';
-  }
-  if (isLastColumn && (canvasWidth - x) < gridPageMargin) {
-    horizontalAlign = 'Right';
-  }
-
-  // Determine if the arrow should be above, or below the label.
-  let verticalAlign = isNegative ? 'top' : 'bottom';
-  if (!isNegative && y < gridPageMargin) {
-    verticalAlign = 'top';
+  if (flipIn && (isAtSharedStartCorner || isAtSharedEndCorner)) {
+    element.classList.add('inner-shared-corner');
   }
 
-  if (isNegative && (canvasHeight - y) < gridPageMargin) {
-    verticalAlign = 'bottom';
+  let arrowType = GridArrowTypes.rightMid;
+  if (isTooCloseToViewportStart || isAtSharedStartCorner) {
+    arrowType = GridArrowTypes.rightTop;
+  } else if (isTooCloseToViewportEnd || isAtSharedEndCorner) {
+    arrowType = GridArrowTypes.rightBottom;
+  }
+  arrowType = _flipArrowTypeIfNeeded(arrowType, flipIn);
+
+  _placeLabel(element, arrowType, x, y);
+}
+
+/**
+ * Determine the position of a negative row label, and place it.
+ *
+ * @param {HTMLElement} element The label DOM element
+ * @param {number} offset The corresponding grid line offset
+ * @param {Object} config The grid highlight config object
+ * @param {object} bounbds The grid bounds
+ */
+function _placeNegativeRowLabel(element, offset, config, bounds) {
+  const x = bounds.maxX;
+  const y = bounds.minY + offset;
+  const isAtSharedStartCorner = offset === 0 && config.gridHighlightConfig.showPositiveLineNumbers &&
+      config.positiveColumnLineNumberOffsets &&
+      config.positiveColumnLineNumberOffsets[config.positiveColumnLineNumberOffsets.length - 1] ===
+          bounds.maxX - bounds.minX;
+  const isAtSharedEndCorner = offset === bounds.maxY - bounds.minY &&
+      config.gridHighlightConfig.showNegativeLineNumbers && config.negativeColumnLineNumberOffsets &&
+      config.negativeColumnLineNumberOffsets[config.negativeColumnLineNumberOffsets.length - 1] ===
+          bounds.maxX - bounds.minX;
+  const isTooCloseToViewportStart = y < gridPageMargin;
+  const isTooCloseToViewportEnd = canvasHeight - y < gridPageMargin;
+  const flipIn = canvasWidth - x < gridPageMargin;
+
+  if (flipIn && (isAtSharedStartCorner || isAtSharedEndCorner)) {
+    element.classList.add('inner-shared-corner');
   }
 
-  const arrowType = GridArrowTypes[verticalAlign + horizontalAlign];
+  let arrowType = GridArrowTypes.leftMid;
+  if (isTooCloseToViewportStart || isAtSharedStartCorner) {
+    arrowType = GridArrowTypes.leftTop;
+  } else if (isTooCloseToViewportEnd || isAtSharedEndCorner) {
+    arrowType = GridArrowTypes.leftBottom;
+  }
+  arrowType = _flipArrowTypeIfNeeded(arrowType, flipIn);
 
-  const labelWidth = _getAdjustedLabelWidth(labelContent);
-  const labelHeight = labelContent.getBoundingClientRect().height;
-  const labelParams = _getLabelPositionByArrowType(arrowType, x, y, labelWidth, labelHeight);
-  labelContent.classList.add(arrowType);
-  labelContent.style.left = labelParams.contentLeft + 'px';
-  labelContent.style.top = labelParams.contentTop + 'px';
+  _placeLabel(element, arrowType, x, y);
+}
+
+/**
+ * Determine the position of a positive column label, and place it.
+ *
+ * @param {HTMLElement} element The label DOM element
+ * @param {number} offset The corresponding grid line offset
+ * @param {Object} config The grid highlight config object
+ * @param {object} bounbds The grid bounds
+ */
+function _placePositiveColumnLabel(element, offset, config, bounds) {
+  const x = bounds.minX + offset;
+  const y = bounds.minY;
+  const isAtSharedStartCorner = offset === 0 && config.gridHighlightConfig.showPositiveLineNumbers &&
+      config.positiveRowLineNumberOffsets && config.positiveRowLineNumberOffsets[0] === 0;
+  const isAtSharedEndCorner = offset === bounds.maxX - bounds.minX &&
+      config.gridHighlightConfig.showNegativeLineNumbers && config.negativeRowLineNumberOffsets &&
+      config.negativeRowLineNumberOffsets[0] === 0;
+  const isTooCloseToViewportStart = x < gridPageMargin;
+  const isTooCloseToViewportEnd = canvasWidth - x < gridPageMargin;
+  const flipIn = y < gridPageMargin;
+
+  if (flipIn && (isAtSharedStartCorner || isAtSharedEndCorner)) {
+    element.classList.add('inner-shared-corner');
+  }
+
+  let arrowType = GridArrowTypes.bottomMid;
+  if (isTooCloseToViewportStart) {
+    arrowType = GridArrowTypes.bottomLeft;
+  } else if (isTooCloseToViewportEnd) {
+    arrowType = GridArrowTypes.bottomRight;
+  }
+  arrowType = _flipArrowTypeIfNeeded(arrowType, flipIn);
+
+  _placeLabel(element, arrowType, x, y);
+}
+
+/**
+ * Determine the position of a negative column label, and place it.
+ *
+ * @param {HTMLElement} element The label DOM element
+ * @param {number} offset The corresponding grid line offset
+ * @param {Object} config The grid highlight config object
+ * @param {object} bounbds The grid bounds
+ */
+function _placeNegativeColumnLabel(element, offset, config, bounds) {
+  const x = bounds.minX + offset;
+  const y = bounds.maxY;
+  const isAtSharedStartCorner = offset === 0 && config.gridHighlightConfig.showPositiveLineNumbers &&
+      config.positiveRowLineNumberOffsets &&
+      config.positiveRowLineNumberOffsets[config.positiveRowLineNumberOffsets.length - 1] === bounds.maxY - bounds.minY;
+  const isAtSharedEndCorner = offset === bounds.maxX - bounds.minX &&
+      config.gridHighlightConfig.showNegativeLineNumbers && config.negativeRowLineNumberOffsets &&
+      config.negativeRowLineNumberOffsets[config.negativeRowLineNumberOffsets.length - 1] === bounds.maxY - bounds.minY;
+  const isTooCloseToViewportStart = x < gridPageMargin;
+  const isTooCloseToViewportEnd = canvasWidth - x < gridPageMargin;
+  const flipIn = canvasHeight - y < gridPageMargin;
+
+  if (flipIn && (isAtSharedStartCorner || isAtSharedEndCorner)) {
+    element.classList.add('inner-shared-corner');
+  }
+
+  let arrowType = GridArrowTypes.topMid;
+  if (isTooCloseToViewportStart) {
+    arrowType = GridArrowTypes.topLeft;
+  } else if (isTooCloseToViewportEnd) {
+    arrowType = GridArrowTypes.topRight;
+  }
+  arrowType = _flipArrowTypeIfNeeded(arrowType, flipIn);
+
+  _placeLabel(element, arrowType, x, y);
+}
+
+/**
+ * Correctly place a label element in the page. The given coordinates are the
+ * ones where the arrow of the label needs to point.
+ * Therefore, the width of the text in the label, and the position of the arrow
+ * relative to the label are taken into account here to calculate the final x
+ * and y coordinates of the label DOM element.
+ *
+ * @param {HTMLElement} element The label element
+ * @param {string} arrowType One of GridArrowTypes' values
+ * @param {number} x Where to place the label on the x axis
+ * @param {number} y Where to place the label on the y axis
+ */
+function _placeLabel(element, arrowType, x, y) {
+  const labelWidth = _getAdjustedLabelWidth(element);
+  const labelHeight = element.getBoundingClientRect().height;
+  const {contentLeft, contentTop} = _getLabelPositionByArrowType(arrowType, x, y, labelWidth, labelHeight);
+
+  element.classList.add(arrowType);
+  element.style.left = contentLeft + 'px';
+  element.style.top = contentTop + 'px';
 }
 
 /**
  * Forces the width of the provided grid label element to be an even
  * number of pixels to allow centered placement of the arrow
  *
- * @param {HTMLElement} labelContent
- * @returns {number}
+ * @param {HTMLElement} element
+ * @return {number} The width of the element
  */
-function _getAdjustedLabelWidth(labelContent) {
-  let labelWidth = labelContent.getBoundingClientRect().width;
+function _getAdjustedLabelWidth(element) {
+  let labelWidth = element.getBoundingClientRect().width;
   if (labelWidth % 2 === 1) {
     labelWidth += 1;
-    labelContent.style.width = labelWidth + 'px';
+    element.style.width = labelWidth + 'px';
   }
   return labelWidth;
+}
+
+/**
+ * In some cases, a label doesn't fit where it's supposed to be displayed.
+ * This happens when it's too close to the edge of the viewport. When it does,
+ * the label's position is flipped so that instead of being outside the grid, it
+ * moves inside the grid.
+ *
+ * Example of a leftMid arrowType, which is by default outside the grid:
+ *  -----------------------------
+ * |                             |   +------+
+ * |                             |   |      |
+ * |-----------------------------|  <       |
+ * |                             |   |      |
+ * |                             |   +------+
+ *  -----------------------------
+ * When flipped, the label will be drawn inside the grid, so the arrow now needs
+ * to point the other way:
+ *  -----------------------------
+ * |                  +------+   |
+ * |                  |      |   |
+ * |------------------|       >--|
+ * |                  |      |   |
+ * |                  +------+   |
+ *  -----------------------------
+ *
+ * @param {string} arrowType
+ * @param {boolean} flipIn
+ * @return {string} The new arrow type
+ */
+function _flipArrowTypeIfNeeded(arrowType, flipIn) {
+  if (!flipIn) {
+    return arrowType;
+  }
+
+  switch (arrowType) {
+    case GridArrowTypes.leftTop:
+      return GridArrowTypes.rightTop;
+    case GridArrowTypes.leftMid:
+      return GridArrowTypes.rightMid;
+    case GridArrowTypes.leftBottom:
+      return GridArrowTypes.rightBottom;
+    case GridArrowTypes.rightTop:
+      return GridArrowTypes.leftTop;
+    case GridArrowTypes.rightMid:
+      return GridArrowTypes.leftMid;
+    case GridArrowTypes.rightBottom:
+      return GridArrowTypes.leftBottom;
+    case GridArrowTypes.topLeft:
+      return GridArrowTypes.bottomLeft;
+    case GridArrowTypes.topMid:
+      return GridArrowTypes.bottomMid;
+    case GridArrowTypes.topRight:
+      return GridArrowTypes.bottomRight;
+    case GridArrowTypes.bottomLeft:
+      return GridArrowTypes.topLeft;
+    case GridArrowTypes.bottomMid:
+      return GridArrowTypes.topMid;
+    case GridArrowTypes.bottomRight:
+      return GridArrowTypes.topRight;
+  }
 }
 
 /**

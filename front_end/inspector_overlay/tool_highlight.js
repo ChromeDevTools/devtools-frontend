@@ -265,6 +265,27 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  --inner-corner-avoid-distance: 15px;
+}
+
+.grid-label-content.top-left.inner-shared-corner,
+.grid-label-content.top-right.inner-shared-corner {
+  transform: translateY(var(--inner-corner-avoid-distance));
+}
+
+.grid-label-content.bottom-left.inner-shared-corner,
+.grid-label-content.bottom-right.inner-shared-corner {
+  transform: translateY(calc(var(--inner-corner-avoid-distance) * -1));
+}
+
+.grid-label-content.left-top.inner-shared-corner,
+.grid-label-content.left-bottom.inner-shared-corner {
+  transform: translateX(var(--inner-corner-avoid-distance));
+}
+
+.grid-label-content.right-top.inner-shared-corner,
+.grid-label-content.right-bottom.inner-shared-corner {
+  transform: translateX(calc(var(--inner-corner-avoid-distance) * -1));
 }
 
 .grid-label-content::before {

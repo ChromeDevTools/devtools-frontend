@@ -49,6 +49,19 @@
   background-color: rgb(90 90 90 / 25%);
 }
 
+@media (forced-colors: active) {
+  .security-summary-neutral .lock-icon-neutral {
+    background-color: Highlight;
+  }
+
+  .security-summary:not(.security-summary-secure) .lock-icon-secure,
+  .security-summary:not(.security-summary-neutral) .lock-icon-neutral,
+  .security-summary:not(.security-summary-insecure) .lock-icon-insecure,
+  .security-summary:not(.security-summary-insecure-broken) .lock-icon-insecure-broken {
+    background-color: canvastext;
+  }
+}
+
 .triangle-pointer-container {
   margin: 8px 24px 0;
   padding: 0 0;
@@ -167,17 +180,4 @@
 
 .security-explanation-recommendations > li {
   margin-bottom: 4px;
-}
-
-@media (forced-colors: active) {
-  .security-summary:not(.security-summary-secure) .lock-icon-secure,
-  .security-summary:not(.security-summary-neutral) .lock-icon-neutral,
-  .security-summary:not(.security-summary-insecure) .lock-icon-insecure,
-  .security-summary:not(.security-summary-insecure-broken) .lock-icon-insecure-broken {
-    background-color: canvastext;
-  }
-
-  .security-summary-neutral .lock-icon-neutral {
-    background-color: Highlight;
-  }
 }

@@ -14,14 +14,14 @@
   --error-text-color: red;
 }
 
+.console-pins:not(:empty) {
+  border-bottom: 1px solid var(--divider-color);
+}
+
 :host-context(.-theme-with-dark-background) .console-pins {
   --error-background-color: hsl(0deg 100% 8%);
   --error-border-color: rgb(92 0 0);
   --error-text-color: hsl(0deg 100% 75%);
-}
-
-.console-pins:not(:empty) {
-  border-bottom: 1px solid var(--divider-color);
 }
 
 .console-pin {
@@ -35,15 +35,15 @@
   border-bottom: 1px solid #e4e4e4;
 }
 
+.console-pin.error-level:not(:focus-within) {
+  background-color: var(--error-background-color);
+  color: var(--error-text-color);
+}
+
 .console-pin:not(:last-child).error-level:not(:focus-within) {
   border-top: 1px solid var(--error-border-color);
   border-bottom: 1px solid var(--error-border-color);
   margin-top: -1px;
-}
-
-.console-pin.error-level:not(:focus-within) {
-  background-color: var(--error-background-color);
-  color: var(--error-text-color);
 }
 
 .console-pin-name {
@@ -61,10 +61,6 @@
   min-height: 13px;
 }
 
-:host-context(.-theme-with-dark-background) .console-delete-pin {
-  filter: brightness(2);
-}
-
 .console-delete-pin {
   position: absolute;
   top: 8px;
@@ -76,6 +72,10 @@
 .console-delete-pin:hover,
 .console-delete-pin[data-keyboard-focus="true"]:focus {
   opacity: 100%;
+}
+
+:host-context(.-theme-with-dark-background) .console-delete-pin {
+  filter: brightness(2);
 }
 
 .console-pin-name:focus-within {

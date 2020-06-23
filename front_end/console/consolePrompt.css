@@ -35,21 +35,18 @@
   overflow: hidden;
   margin-left: 4px;
   height: 100%;
-}
-
-.console-eager-inner-preview {
   white-space: nowrap;
-}
-
-.console-eager-inner-preview:empty,
-.console-eager-inner-preview:empty + .preview-result-icon {
-  opacity: 0%;
 }
 
 .preview-result-icon {
   position: absolute;
   left: -13px;
   top: 1px;
+}
+
+.console-eager-inner-preview:empty,
+.console-eager-inner-preview:empty + .preview-result-icon {
+  opacity: 0%;
 }
 
 .console-prompt-icon.console-prompt-incomplete {

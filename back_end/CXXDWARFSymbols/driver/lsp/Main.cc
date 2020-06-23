@@ -3,9 +3,7 @@
 // found in the LICENSE file.
 
 #include "APIImpl.h"
-#include "Logger.h"
 #include "Modules.h"
-#include "Transport.h"  // from clangd
 #include "Util.h"
 
 #include "Plugins/Language/CPlusPlus/CPlusPlusLanguage.h"  // IWYU pragma: keep
@@ -17,6 +15,10 @@
 #include "llvm/ADT/StringRef.h"
 #include "llvm/Support/CommandLine.h"
 #include "llvm/Support/raw_ostream.h"
+// clangd:
+#include "Transport.h"
+#include "support/Logger.h"
+
 namespace symbol_server {
 namespace api {
 llvm::json::Value CallApiMethod(api::DWARFSymbolsApi* api,

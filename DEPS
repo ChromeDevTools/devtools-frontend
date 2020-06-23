@@ -16,7 +16,7 @@ vars = {
   'inspector_protocol_revision': 'b7cda08cd6e522df2159413ba5f29d2a953cc1c4',
 
   'llvm_url': 'https://chromium.googlesource.com/external/github.com/llvm/llvm-project/',
-  'llvm_revision': '302e11cd974255eafd80ee4fdf52054a00b3e4be',
+  'llvm_revision': '7edc7f6edbcb5be439886c271a71df43b3f0a8e3',
   'build_symbol_server': False,
 
   'clang_format_url': 'https://chromium.googlesource.com/chromium/llvm-project/cfe/tools/clang-format.git',

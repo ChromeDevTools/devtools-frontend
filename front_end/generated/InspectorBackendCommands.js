@@ -220,10 +220,16 @@ export function registerCommands(inspectorBackend) {
     CorpNotSameOriginAfterDefaultedToSameOriginByCoep: 'CorpNotSameOriginAfterDefaultedToSameOriginByCoep',
     CorpNotSameSite: 'CorpNotSameSite'
   });
+  inspectorBackend.registerEnum(
+      'Audits.HeavyAdResolutionStatus', {HeavyAdBlocked: 'HeavyAdBlocked', HeavyAdWarning: 'HeavyAdWarning'});
+  inspectorBackend.registerEnum(
+      'Audits.HeavyAdReason',
+      {NetworkTotalLimit: 'NetworkTotalLimit', CpuTotalLimit: 'CpuTotalLimit', CpuPeakLimit: 'CpuPeakLimit'});
   inspectorBackend.registerEnum('Audits.InspectorIssueCode', {
     SameSiteCookieIssue: 'SameSiteCookieIssue',
     MixedContentIssue: 'MixedContentIssue',
-    BlockedByResponseIssue: 'BlockedByResponseIssue'
+    BlockedByResponseIssue: 'BlockedByResponseIssue',
+    HeavyAdIssue: 'HeavyAdIssue'
   });
   inspectorBackend.registerEvent('Audits.issueAdded', ['issue']);
   inspectorBackend.registerEnum('Audits.GetEncodedResponseRequestEncoding', {Webp: 'webp', Jpeg: 'jpeg', Png: 'png'});

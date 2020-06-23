@@ -1,6 +1,6 @@
 {
   "name": "wasmparser",
-  "version": "2.2.2",
+  "version": "2.2.5",
   "description": "Binary WebAssembly file parser.",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",

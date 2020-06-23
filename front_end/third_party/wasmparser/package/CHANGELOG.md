@@ -1,3 +1,24 @@
+## [2.2.5](https://github.com/wasdk/wasmparser/compare/v2.2.4...v2.2.5) (2020-06-23)
+
+
+### Bug Fixes
+
+* imports need to use .js suffix to work correctly ([64a7f77](https://github.com/wasdk/wasmparser/commit/64a7f776e896e3c5aea8371456d84d0052b577be))
+
+## [2.2.4](https://github.com/wasdk/wasmparser/compare/v2.2.3...v2.2.4) (2020-06-23)
+
+
+### Bug Fixes
+
+* rename atomic.notify and *.atomic.wait ([9d10a22](https://github.com/wasdk/wasmparser/commit/9d10a22193e66ac3e953a3722c1c3bf673c00914)), closes [WebAssembly/threads#149](https://github.com/WebAssembly/threads/issues/149)
+
+## [2.2.3](https://github.com/wasdk/wasmparser/compare/v2.2.2...v2.2.3) (2020-06-21)
+
+
+### Bug Fixes
+
+* correct import from "WasmParser" in "WasmDis.ts" ([8abb34b](https://github.com/wasdk/wasmparser/commit/8abb34b59ec0820259587db07cac95a94a54958e))
+
 ## [2.2.2](https://github.com/wasdk/wasmparser/compare/v2.2.1...v2.2.2) (2020-06-16)
 
 

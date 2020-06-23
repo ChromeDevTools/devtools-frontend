@@ -1029,9 +1029,9 @@ export const OperatorCodeNames = [
 });
 
 [
-  "atomic.notify",
-  "i32.atomic.wait",
-  "i64.atomic.wait",
+  "memory.atomic.notify",
+  "memory.atomic.wait32",
+  "memory.atomic.wait64",
   undefined,
   undefined,
   undefined,

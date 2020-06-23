@@ -36,10 +36,10 @@
   display: none;
 }
 
-.stack-preview-container.show-blackboxed > tr.show-blackboxed-link {
-  display: none;
-}
-
 .stack-preview-container > tr.show-blackboxed-link {
   font-style: italic;
+}
+
+.stack-preview-container.show-blackboxed > tr.show-blackboxed-link {
+  display: none;
 }

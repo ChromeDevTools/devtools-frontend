@@ -37,6 +37,7 @@ import * as EmulationModel from './EmulationModel.js';
 import * as FilmStripModel from './FilmStripModel.js';
 import * as HARLog from './HARLog.js';
 import * as HeapProfilerModel from './HeapProfilerModel.js';
+import * as HeavyAdIssue from './HeavyAdIssue.js';
 import * as IsolateManager from './IsolateManager.js';
 import * as Issue from './Issue.js';
 import * as IssuesModel from './IssuesModel.js';
@@ -92,6 +93,7 @@ export {
   FilmStripModel,
   HARLog,
   HeapProfilerModel,
+  HeavyAdIssue,
   IsolateManager,
   Issue,
   IssuesModel,

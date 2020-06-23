@@ -9,6 +9,7 @@ export const IssueCategory = {
   CrossOriginEmbedderPolicy: Symbol('CrossOriginEmbedderPolicy'),
   MixedContent: Symbol('MixedContent'),
   SameSiteCookie: Symbol('SameSiteCookie'),
+  HeavyAd: Symbol('HeavyAd'),
   Other: Symbol('Other')
 };
 
@@ -85,6 +86,13 @@ export class Issue extends Common.ObjectWrapper.ObjectWrapper {
    * @return {!Iterable<!AffectedElement>}
    */
   elements() {
+    return [];
+  }
+
+  /**
+   * @returns {!Iterable<!Protocol.Audits.HeavyAdIssueDetails>}
+   */
+  heavyAds() {
     return [];
   }
 

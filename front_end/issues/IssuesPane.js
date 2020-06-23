@@ -469,6 +469,117 @@ class AffectedMixedContentView extends AffectedResourcesView {
   }
 }
 
+class AffectedHeavyAdView extends AffectedResourcesView {
+  /**
+   * @param {!IssueView} parent
+   * @param {!SDK.Issue.Issue} issue
+   */
+  constructor(parent, issue) {
+    super(parent, {singular: ls`resource`, plural: ls`resources`});
+    /** @type {!SDK.Issue.Issue} */
+    this._issue = issue;
+  }
+
+  /**
+   * @param {!Iterable<!Protocol.Audits.HeavyAdIssueDetails>} heavyAds
+   */
+  _appendAffectedHeavyAds(heavyAds) {
+    const header = document.createElement('tr');
+
+    const reason = document.createElement('td');
+    reason.classList.add('affected-resource-header');
+    reason.textContent = ls`Limit exceeded`;
+    header.appendChild(reason);
+
+    const resolution = document.createElement('td');
+    resolution.classList.add('affected-resource-header');
+    resolution.textContent = ls`Resolution Status`;
+    header.appendChild(resolution);
+
+    const frame = document.createElement('td');
+    frame.classList.add('affected-resource-header');
+    frame.textContent = ls`Frame URL`;
+    header.appendChild(frame);
+
+    this._affectedResources.appendChild(header);
+
+    let count = 0;
+    for (const heavyAd of heavyAds) {
+      this._appendAffectedHeavyAd(heavyAd);
+      count++;
+    }
+    this.updateAffectedResourceCount(count);
+  }
+
+  /**
+   * @param {!Protocol.Audits.HeavyAdResolutionStatus} status
+   * @return {string}
+   */
+  _statusToString(status) {
+    switch (status) {
+      case Protocol.Audits.HeavyAdResolutionStatus.HeavyAdBlocked:
+        return ls`blocked`;
+      case Protocol.Audits.HeavyAdResolutionStatus.HeavyAdWarning:
+        return ls`warning`;
+    }
+    return '';
+  }
+
+  /**
+   * @param {!Protocol.Audits.HeavyAdReason} status
+   * @return {string}
+   */
+  _limitToString(status) {
+    switch (status) {
+      case Protocol.Audits.HeavyAdReason.CpuPeakLimit:
+        return ls`CPU peak limit`;
+      case Protocol.Audits.HeavyAdReason.CpuTotalLimit:
+        return ls`CPU total limit`;
+      case Protocol.Audits.HeavyAdReason.NetworkTotalLimit:
+        return ls`Network limit`;
+    }
+    return '';
+  }
+
+  /**
+   * @param {!Protocol.Audits.HeavyAdIssueDetails} heavyAd
+   */
+  _appendAffectedHeavyAd(heavyAd) {
+    const element = document.createElement('tr');
+    element.classList.add('affected-resource-heavy-ad');
+
+    // TODO(chromium:1095617): Also link to the elements panel and the highlight the frame on hover.
+    const frame = BrowserSDK.FrameManager.FrameManager.instance().getFrame(heavyAd.frame.frameId);
+    const url = frame && (frame.unreachableUrl() || frame.url) || '';
+
+    const reason = document.createElement('td');
+    reason.classList.add('affected-resource-heavy-ad-info');
+    reason.textContent = this._limitToString(heavyAd.reason);
+    element.appendChild(reason);
+
+    const status = document.createElement('td');
+    status.classList.add('affected-resource-heavy-ad-info');
+    status.textContent = this._statusToString(heavyAd.resolution);
+    element.appendChild(status);
+
+    const name = document.createElement('td');
+    name.classList.add('affected-resource-heavy-ad-info');
+    name.textContent = url;
+    UI.Tooltip.Tooltip.install(name, url);
+    element.appendChild(name);
+
+    this._affectedResources.appendChild(element);
+  }
+
+  /**
+   * @override
+   */
+  update() {
+    this.clear();
+    this._appendAffectedHeavyAds(this._issue.heavyAds());
+  }
+}
+
 class IssueView extends UI.TreeOutline.TreeElement {
   /**
    *
@@ -492,7 +603,7 @@ class IssueView extends UI.TreeOutline.TreeElement {
     this._affectedResourceViews = [
       new AffectedCookiesView(this, this._issue), new AffectedElementsView(this, this._issue),
       new AffectedRequestsView(this, this._issue), new AffectedMixedContentView(this, this._issue),
-      new AffectedSourcesView(this, this._issue)
+      new AffectedSourcesView(this, this._issue), new AffectedHeavyAdView(this, this._issue)
     ];
 
     this._aggregatedIssuesCount = null;

@@ -567,6 +567,7 @@
     "DebuggerModel.js",
     "EmulationModel.js",
     "HARLog.js",
+    "HeavyAdIssue.js",
     "LayerTreeBase.js",
     "LogModel.js",
     "ServiceWorkerManager.js",

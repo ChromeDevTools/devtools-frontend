@@ -211,6 +211,19 @@ p {
   display: list-item;
 }
 
+ul > li.plain-enum {
+  display: list-item;
+}
+
+/* This is a hack because the tree view's CSS overrides list styling in a non-compositional way. This
+   can be removed once we've moved to proper components. */
+ul > li.plain-enum::before {
+  content: "";
+  padding: 0px;
+  margin: 0px;
+  max-width: 0px;
+}
+
 .affected-resources-label + .affected-resources {
   padding: 3px 0 0 0;
   position: relative;
@@ -241,6 +254,13 @@ p {
 }
 
 .affected-resource-mixed-content {
+  font-size: 14px;
+  line-height: 20px;
+  border: 0;
+  border-collapse: collapse;
+}
+
+.affected-resource-heavy-ad {
   font-size: 14px;
   line-height: 20px;
   border: 0;
@@ -284,6 +304,11 @@ p {
 }
 
 .affected-resource-mixed-content-info {
+  color: var(--issue-gray);
+  padding: 2px;
+}
+
+.affected-resource-heavy-ad-info {
   color: var(--issue-gray);
   padding: 2px;
 }

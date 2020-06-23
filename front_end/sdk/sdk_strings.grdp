@@ -18,6 +18,9 @@
   <message name="IDS_DEVTOOLS_07ba1c48fc0b478df5462700f993fa5e" desc="Message in Network Manager">
     <ph name="NETWORKREQUEST_RESOURCETYPE___TITLE__">$1s<ex>XHR</ex></ph> failed loading: <ph name="NETWORKREQUEST_REQUESTMETHOD">$2s<ex>GET</ex></ph> &quot;<ph name="NETWORKREQUEST_URL__">$3s<ex>https://example.com</ex></ph>&quot;.
   </message>
+  <message name="IDS_DEVTOOLS_07d2b6742c9e7e9d87e07d29cf823079" desc="Text leading up to enumeration of resource limits for Heavy Ads issue description">
+    An ad is considered heavy if the user has not interacted with it (for example, has not tapped or clicked it) and it meets any of the following criteria:
+  </message>
   <message name="IDS_DEVTOOLS_07e44bf98e17bd4c8213ed8890e910c0" desc="Description for a SameSiteCookie issue">
     Cookies marked with <ph name="LOCKED_1">|SameSite=None|</ph> must also be marked with <ph name="LOCKED_1">|Secure|</ph> to allow setting them in a cross-site context.
        This behavior protects user data from being sent over an insecure connection.
@@ -34,8 +37,14 @@
   <message name="IDS_DEVTOOLS_0c94f752d037fd8475e98b0711b543a6" desc="Label for the link for SameSiteCookies Issues">
     SameSite cookies explained
   </message>
+  <message name="IDS_DEVTOOLS_0cd2d0b4afad7ca0ce11b209afa435d8" desc="Resource limit for Heavy Ads issue description">
+    Uses the main thread for more than 15 seconds in any 30 second window (CPU peak limit)
+  </message>
   <message name="IDS_DEVTOOLS_0d66520dddd8718f59f517582fafaebb" desc="Title of a media query that can be emulated via the Rendering drawer">
     prefers-color-scheme: light
+  </message>
+  <message name="IDS_DEVTOOLS_0e2921b95cb34ab1467f98f26a725c3f" desc="Resource limit for Heavy Ads issue description">
+    Uses the main thread for more than 60 seconds in total (CPU total limit)
   </message>
   <message name="IDS_DEVTOOLS_0fe1f9158e2f164da1332501f9e65702" desc="Text in Console Model">
     Navigated to <ph name="EVENT_DATA_URL">$1s<ex>https://example.com</ex></ph>
@@ -225,9 +234,6 @@
   </message>
   <message name="IDS_DEVTOOLS_5e53467e9b005376370c28e92b42b6f5" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Emulate CSS prefers-reduced-motion: reduce
-  </message>
-  <message name="IDS_DEVTOOLS_61326117ed4a9ddf3f754e71e119e5b3" desc="The kind of resolution for a mixed content issue">
-    blocked
   </message>
   <message name="IDS_DEVTOOLS_6210038187f9fe73d2b999fe9d2d44b3" desc="Phase used to descript the security of a context">
     a secure
@@ -515,6 +521,9 @@
   <message name="IDS_DEVTOOLS_ac4aac1ba23d844f4976e9fcd1fd4a61" desc="Text in DOMDebugger Model">
     WebGL Error Fired (<ph name="ERRORNAME">$1s<ex>Snag Error</ex></ph>)
   </message>
+  <message name="IDS_DEVTOOLS_acd03ba2ec36eef79177aa99a71caf5e" desc="Resource limit for Heavy Ads issue description">
+    Uses more than 4 megabytes of network bandwidth (Network limit)
+  </message>
   <message name="IDS_DEVTOOLS_ae40945c5cb26d80b9e396ea9e333ee9" desc="Message for the MixedContentIssue issue code">
     Even though the initial HTML page is loaded over a secure HTTPS connection, some resources like images, stylesheets or scripts are being accessed over an insecure HTTP connection. Usage of insecure resources is restricted to strengthen the security of your entire site.
   </message>
@@ -577,6 +586,9 @@
   <message name="IDS_DEVTOOLS_c450d5e7a852f5b6151135103ebf09bb" desc="Title for CSS Grid tooling option">
     Show negative grid line numbers
   </message>
+  <message name="IDS_DEVTOOLS_c561fb3e02584dda306acf61d28cc03b" desc="Resolution for Heavy Ads issue description">
+    Stop this from happening by only showing ads that stay within resource limits.
+  </message>
   <message name="IDS_DEVTOOLS_c5d59568835d0760e318829b800ee06d" desc="Text in Debugger Model">
     Catch
   </message>
@@ -605,6 +617,9 @@
   <message name="IDS_DEVTOOLS_cdb227ce6e015a5e5570e286ccd8866c" desc="Title of a setting under the Rendering drawer">
     Emulate CSS media feature prefers-reduced-motion
   </message>
+  <message name="IDS_DEVTOOLS_ce98868a90066f46abb433ee122768c9" desc="Title for a learn more link in Heavy Ads issue description">
+    Handling Heavy Ad Interventions
+  </message>
   <message name="IDS_DEVTOOLS_ceb19b7234304452f0c748bac8ba3fb8" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Do not emulate CSS prefers-reduced-motion
   </message>
@@ -619,6 +634,10 @@
   </message>
   <message name="IDS_DEVTOOLS_d5746b506b158b2dfedca3c0868bf51a" desc="Title for SameSiteCookie issue">
     Indicate whether a cookie is intended to be set in a cross-site context by specifying its SameSite attribute
+  </message>
+  <message name="IDS_DEVTOOLS_d8a169f64eba0443bf29b60aae227bca" desc="Context for Heavy Ads issue description">
+    '''
+  Chrome identifies heavy ads on your site that use too many resources without a user gesture. Heavy ads have an impact on performance and harm the user’s browsing experience. They increase battery drain, consume mobile data and make your site slow. To improve the user experience, Chrome warns about or blocks heavy ads.
   </message>
   <message name="IDS_DEVTOOLS_d8e859dc455c59c30b396adf797d6005" desc="Description of a SameSiteCookie issue">
     A cookie is being sent from <ph name="ORIGIN">$1s<ex>a secure</ex></ph> context to <ph name="DESTINATION">$2s<ex>an insecure</ex></ph> origin and is specified with |SameSite=Strict| or |SameSite=Lax|.
@@ -699,6 +718,9 @@
   </message>
   <message name="IDS_DEVTOOLS_f2a47c6809d88e175dade0ef7b16aa13" desc="Text in DOMDebugger Model">
     Mouse
+  </message>
+  <message name="IDS_DEVTOOLS_f3f99fa84a12bc852fc0bd730d460fe4" desc="Title for Heavy Ads issue">
+    An ad on your site is exceeding resource limits
   </message>
   <message name="IDS_DEVTOOLS_f43cbd4a1a33a14b459e80598dd28b47" desc="Title for a SameSiteCookie issue">
     Migrate entirely to HTTPS to continue having cookies sent on same-site requests

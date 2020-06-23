@@ -25,6 +25,8 @@ export class AggregatedIssue extends SDK.Issue.Issue {
     this._representative = null;
     /** @type {!Map<string, !Protocol.Audits.MixedContentIssueDetails>} */
     this._mixedContents = new Map();
+    /** @type {!Map<string, !Protocol.Audits.HeavyAdIssueDetails>} */
+    this._heavyAdIssueDetails = new Map();
     this._aggregatedIssuesCount = 0;
   }
 
@@ -49,6 +51,14 @@ export class AggregatedIssue extends SDK.Issue.Issue {
    */
   cookiesWithRequestIndicator() {
     return this._cookies.values();
+  }
+
+  /**
+   * @override
+   * @returns {!Iterable<!Protocol.Audits.HeavyAdIssueDetails>}
+   */
+  heavyAds() {
+    return this._heavyAdIssueDetails.values();
   }
 
   /**
@@ -129,6 +139,10 @@ export class AggregatedIssue extends SDK.Issue.Issue {
     for (const mixedContent of issue.mixedContents()) {
       const key = JSON.stringify(mixedContent);
       this._mixedContents.set(key, mixedContent);
+    }
+    for (const heavyAds of issue.heavyAds()) {
+      const key = JSON.stringify(heavyAds);
+      this._heavyAdIssueDetails.set(key, heavyAds);
     }
   }
 }

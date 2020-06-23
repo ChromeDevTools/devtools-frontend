@@ -12,4 +12,4 @@ export const logManager = new LogManager.LogManager();
 IssuesManager.IssuesManager.instance();
 FrameManager.FrameManager.instance();
 
-export {LogManager, IssuesManager, RelatedIssue};
+export {LogManager, IssuesManager, RelatedIssue, FrameManager};

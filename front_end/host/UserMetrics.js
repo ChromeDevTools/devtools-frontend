@@ -55,19 +55,6 @@ export class UserMetrics {
   }
 
   /**
-   * Fired when a panel is closed (regardless if it exists in the main panel or the drawer)
-   * @param {string} panelName
-   */
-  panelClosed(panelName) {
-    const code = PanelCodes[panelName] || 0;
-    const size = Object.keys(PanelCodes).length + 1;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram('DevTools.PanelClosed', code, size);
-    Common.EventTarget.fireEvent('DevTools.PanelClosed', {value: code});
-    // Store that the user has changed the panel so we know launch histograms should not be fired.
-    this._panelChangedSinceLaunch = true;
-  }
-
-  /**
    * @param {string} drawerId
    */
   drawerShown(drawerId) {

@@ -29,11 +29,6 @@
   text-overflow: ellipsis;
 }
 
-.tree-outline li:hover .goto-source-icon {
-  display: block;
-  margin-top: -2px;
-}
-
 .goto-source-icon {
   background-color: #5a5a5a;
   display: none;
@@ -44,6 +39,11 @@
 
 .goto-source-icon:hover {
   background-color: #333;
+}
+
+.tree-outline li:hover .goto-source-icon {
+  display: block;
+  margin-top: -2px;
 }
 
 .computed-style-property-inherited {

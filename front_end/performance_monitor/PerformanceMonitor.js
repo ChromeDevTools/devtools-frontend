@@ -449,6 +449,9 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
       {title: Common.UIString.UIString('Style recalcs / sec'), metrics: [{name: 'RecalcStyleCount', color: 'deeppink'}]}
     ];
     for (const info of this._chartsInfo) {
+      if (info.color) {
+        info.color = self.UI.themeSupport.patchColorText(info.color, UI.UIUtils.ThemeSupport.ColorUsage.Foreground);
+      }
       for (const metric of info.metrics) {
         metric.color = self.UI.themeSupport.patchColorText(metric.color, UI.UIUtils.ThemeSupport.ColorUsage.Foreground);
       }
@@ -599,7 +602,8 @@ export let MetricInfo;
  *   max: (number|undefined),
  *   currentMax: (number|undefined),
  *   format: (!Format|undefined),
- *   smooth: (boolean|undefined)
+ *   smooth: (boolean|undefined),
+ *   color: (string|undefined)
  * }}
  */
 export let ChartInfo;

@@ -11,7 +11,7 @@ const SkipSubTreeObject = {};
 export class ESTreeWalker {
   /**
    * @param {function(!ESTree.Node):(!Object|undefined)} beforeVisit
-   * @param {function(!ESTree.Node)=} afterVisit
+   * @param {function(!ESTree.Node):void=} afterVisit
    */
   constructor(beforeVisit, afterVisit) {
     this._beforeVisit = beforeVisit;

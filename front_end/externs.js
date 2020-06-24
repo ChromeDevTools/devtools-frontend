@@ -723,6 +723,51 @@ ESTree.SimpleLiteral = function() {
 };
 
 /**
+ * @extends {ESTree.Node}
+ * @constructor
+ */
+ESTree.ForStatement = function() {
+  /** @type {(!ESTree.Node|undefined)} */
+  this.update;
+};
+
+/**
+ * @extends {ESTree.Node}
+ * @constructor
+ */
+ESTree.ForInStatement = function() {};
+
+/**
+ * @extends {ESTree.Node}
+ * @constructor
+ */
+ESTree.ForOfStatement = function() {};
+
+/**
+ * @extends {ESTree.Node}
+ * @constructor
+ */
+ESTree.IfStatement = function() {
+  /** @type {(!ESTree.Node|undefined)} */
+  this.consequent;
+};
+
+/**
+ * @extends {ESTree.Node}
+ * @constructor
+ */
+ESTree.TryStatement = function() {
+  /** @type {(!ESTree.Node|undefined)} */
+  this.block;
+};
+
+/**
+ * @extends {ESTree.Node}
+ * @constructor
+ */
+ESTree.CatchClause = function() {};
+
+/**
  * @type {string}
  * @see http://heycam.github.io/webidl/#es-DOMException-prototype-object
  * TODO(jsbell): DOMException should be a subclass of Error.

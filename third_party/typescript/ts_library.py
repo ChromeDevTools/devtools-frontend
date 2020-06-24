@@ -46,6 +46,11 @@ GLOBAL_TYPESCRIPT_DEFINITION_FILES = [
     # Types for W3C FileSystem API
     path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'node_modules', '@types',
               'filesystem', 'index.d.ts'),
+    # Global types required for our usage of ESTree (coming from Acorn)
+    path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'node_modules', '@types', 'estree',
+              'index.d.ts'),
+    path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'front_end', 'legacy',
+              'estree-legacy.d.ts'),
 ]
 
 

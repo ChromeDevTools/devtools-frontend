@@ -712,6 +712,17 @@ ESTree.TemplateLiteralNode = function() {
 };
 
 /**
+ * @extends {ESTree.Node}
+ * @constructor
+ */
+ESTree.SimpleLiteral = function() {
+  /** @type {?(string|boolean|number)} */
+  this.value;
+  /** @type {(string|undefined)} */
+  this.raw;
+};
+
+/**
  * @type {string}
  * @see http://heycam.github.io/webidl/#es-DOMException-prototype-object
  * TODO(jsbell): DOMException should be a subclass of Error.

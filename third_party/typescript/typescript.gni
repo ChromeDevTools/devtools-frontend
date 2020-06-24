@@ -62,6 +62,8 @@ template("ts_library") {
       _devtools_location_prepend +
           "front_end/generated/protocol-proxy-api.d.ts",
       _devtools_location_prepend + "node_modules/@types/filesystem/index.d.ts",
+      _devtools_location_prepend + "front_end/legacy/estree-legacy.d.ts",
+      _devtools_location_prepend + "node_modules/@types/estree/index.d.ts",
     ]
 
     args = [

@@ -808,7 +808,7 @@ export class ProgressTracker {
     }
     const request = /** @type {!SDK.NetworkRequest.NetworkRequest} */ (event.data.request);
     // Ignore long-living WebSockets for the sake of progress indicator, as we won't be waiting them anyway.
-    if (request.type === Common.ResourceType.resourceTypes.WebSocket) {
+    if (request.resourceType() === Common.ResourceType.resourceTypes.WebSocket) {
       return;
     }
     this._requestIds[request.requestId()] = request;

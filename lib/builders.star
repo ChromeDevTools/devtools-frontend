@@ -93,7 +93,8 @@ def config_section(name, branch,
     view=None,
     name_suffix=None,
     mastername="client.devtools-frontend.integration",
-    repo=defaults.repo):
+    repo=defaults.repo,
+    tree_closing=False):
   view = view or name.capitalize()
   if name_suffix == None:
     name_suffix = " %s" % name
@@ -104,6 +105,7 @@ def config_section(name, branch,
     view=view,
     name_suffix=name_suffix,
     mastername=mastername,
+    tree_closing=tree_closing
   )
 
 def builder_descriptor(name, recipe_name, excluded_from=[]):
@@ -148,6 +150,7 @@ def generate_ci_configs(configurations, builders):
           service_account=SERVICE_ACCOUNT,
           schedule="triggered",
           properties=goma_rbe_prod_default,
+          notifies=['devtools tree closer'] if c.tree_closing else None,
           **kvargs
       )
       builders_refs.append((kvargs['name'], category))

@@ -1,5 +1,8 @@
 #!/usr/bin/env lucicfg
 
+# Enable luci.tree_closer.
+lucicfg.enable_experiment("crbug.com/1054172")
+
 # Tell lucicfg what files it is allowed to touch
 lucicfg.config(
   config_dir='generated',
@@ -8,6 +11,8 @@ lucicfg.config(
     'cr-buildbucket.cfg',
     'luci-logdog.cfg',
     'luci-milo.cfg',
+    'luci-notify.cfg',
+    'luci-notify/**/*',
     'luci-scheduler.cfg',
     'project.cfg',
   ],
@@ -19,6 +24,7 @@ luci.project(
   buildbucket='cr-buildbucket.appspot.com',
   logdog="luci-logdog",
   milo="luci-milo",
+  notify='luci-notify.appspot.com',
   scheduler='luci-scheduler',
   swarming='chromium-swarm.appspot.com',
   acls=[
@@ -43,6 +49,35 @@ luci.project(
       groups=['luci-logdog-chromium-writers']
     )
   ],
+)
+
+EXCLUDED_STEPS = [
+  'Failure reason',
+  'steps',
+  '.* \\(flakes\\)',
+  '.* \\(retry shards with patch\\)',
+  '.* \\(with patch\\)',
+  '.* \\(without patch\\)',
+]
+
+luci.notifier(
+  name = 'devtools notifier',
+  on_occurrence = ['FAILURE'],
+  failed_step_regexp_exclude = [
+    'bot_update',
+    'isolate tests',
+    'package build',
+    'extract build',
+    'cleanup_temp',
+    'gsutil upload',
+    'taskkill',
+  ] + EXCLUDED_STEPS,
+)
+
+luci.tree_closer(
+  name = 'devtools tree closer',
+  tree_status_host = 'devtools-status.appspot.com',
+  failed_step_regexp_exclude = EXCLUDED_STEPS,
 )
 
 luci.milo(

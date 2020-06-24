@@ -17,13 +17,15 @@ generate_ci_configs(
         branch='refs/heads/master',
         view='Main',
         name_suffix='',
+        tree_closing=True,
       ),
       config_section(
         name="chromium",
         repo='https://chromium.googlesource.com/chromium/src',
         branch='refs/heads/master',
         name_suffix = ' (chromium)',
-        mastername="chromium.devtools-frontend"
+        mastername="chromium.devtools-frontend",
+        tree_closing=True,
       ),
       config_section(
         name="beta",
@@ -36,6 +38,7 @@ generate_ci_configs(
       config_section(
         name="previous",
         branch='refs/heads/chromium/4044',
+        tree_closing=True,
       ),
     ],
     builders = [

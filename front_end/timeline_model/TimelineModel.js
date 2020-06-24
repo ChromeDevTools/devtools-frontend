@@ -516,6 +516,11 @@ export class TimelineModelImpl {
     // rename its category.
     for (const trackEvent of track.events) {
       trackEvent.categoriesString = experienceCategory;
+      if (trackEvent.name === RecordType.LayoutShift) {
+        const eventData = trackEvent.args['data'] || trackEvent.args['beginData'] || {};
+        const timelineData = TimelineData.forEvent(trackEvent);
+        timelineData.backendNodeId = eventData['impacted_nodes'][0]['node_id'];
+      }
     }
   }
 

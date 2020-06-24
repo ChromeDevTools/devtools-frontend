@@ -64,10 +64,6 @@ li.selected .title-container > .save-link {
   cursor: pointer;
 }
 
-.tree-outline > .icon {
-  margin-left: 16px;
-}
-
 li .icon {
   width: 32px;
   height: 32px;
@@ -76,8 +72,8 @@ li .icon {
   flex: none;
 }
 
-li.wait .icon {
-  content: none;
+.tree-outline > .icon {
+  margin-left: 16px;
 }
 
 li.wait .icon::before {
@@ -115,11 +111,6 @@ li.small {
   height: 20px;
 }
 
-li.small .icon {
-  width: 16px;
-  height: 16px;
-}
-
 li .titles {
   display: flex;
   flex-direction: column;
@@ -154,16 +145,6 @@ li.small .subtitle {
   display: none;
 }
 
-/* Heap profiles */
-
-.heap-snapshot-sidebar-tree-item .icon {
-  content: url(Images/profileIcon.png);
-}
-
-.heap-snapshot-sidebar-tree-item.small .icon {
-  content: url(Images/profileSmallIcon.png);
-}
-
 /* Launcher */
 
 .profile-launcher-view-tree-item {
@@ -175,18 +156,35 @@ li.small .subtitle {
   visibility: hidden;
 }
 
-/* CPU profiles */
+/* Heap profiles and CPU profiles */
+
+.heap-snapshot-sidebar-tree-item .icon {
+  content: url(Images/profileIcon.png);
+}
 
 .profile-sidebar-tree-item .icon {
   content: url(Images/profileIcon.png);
 }
 
-.profile-sidebar-tree-item.small .icon {
+.profile-group-sidebar-tree-item .icon {
+  content: url(Images/profileGroupIcon.png);
+}
+
+li.small .icon {
+  width: 16px;
+  height: 16px;
+}
+
+li.wait .icon {
+  content: none;
+}
+
+.heap-snapshot-sidebar-tree-item.small .icon {
   content: url(Images/profileSmallIcon.png);
 }
 
-.profile-group-sidebar-tree-item .icon {
-  content: url(Images/profileGroupIcon.png);
+.profile-sidebar-tree-item.small .icon {
+  content: url(Images/profileSmallIcon.png);
 }
 
 @media (forced-colors: active) {

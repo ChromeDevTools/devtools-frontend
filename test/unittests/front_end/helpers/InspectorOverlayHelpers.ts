@@ -2,9 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {reset} from '../../../../front_end/inspector_overlay/common.js';
+const {assert} = chai;
 
-import {renderElementIntoDOM} from './DOMHelpers.js';
+import {assertNotNull, renderElementIntoDOM} from './DOMHelpers.js';
+import {reset} from '../../../../front_end/inspector_overlay/common.js';
+import {drawGridNumbers} from '../../../../front_end/inspector_overlay/css_grid_label_helpers.js';
 
 const GRID_LABEL_CONTAINER_ID = 'grid-label-container';
 
@@ -54,4 +56,42 @@ export function createGridLabelContainer() {
 
 export function getGridLabelContainer() {
   return document.getElementById(GRID_LABEL_CONTAINER_ID);
+}
+
+interface GridHighlightConfig {
+  showPositiveLineNumbers?: boolean;
+  showNegativeLineNumbers?: boolean;
+}
+interface HighlightConfig {
+  gridHighlightConfig: GridHighlightConfig;
+  positiveRowLineNumberOffsets?: number[];
+  negativeRowLineNumberOffsets?: number[];
+  positiveColumnLineNumberOffsets?: number[];
+  negativeColumnLineNumberOffsets?: number[];
+}
+interface Bounds {
+  minX: number, maxX: number, minY: number, maxY: number,
+}
+interface ExpectedLabel {
+  className: string;
+  count: number;
+}
+
+export function drawGridNumbersAndAssertLabels(
+    config: HighlightConfig, bounds: Bounds, expectedLabels: ExpectedLabel[]) {
+  drawGridNumbers(config, bounds);
+
+  const el = getGridLabelContainer();
+  assertNotNull(el);
+
+  let totalLabelCount = 0;
+  for (const {className, count} of expectedLabels) {
+    const labels = el.querySelectorAll(`.grid-label-content.${className}`);
+    assert.strictEqual(labels.length, count, `Expected ${count} labels to be displayed ${className}`);
+    totalLabelCount += count;
+  }
+
+  assert.strictEqual(
+      el.querySelectorAll('.grid-label-content').length, totalLabelCount,
+      'The right total number of labels were displayed');
 }

@@ -41,10 +41,44 @@ const GridArrowTypes = {
   bottomMid: 'bottom-mid',
   bottomRight: 'bottom-right',
 };
+
+// The size (in px) of a label arrow.
 const gridArrowWidth = 3;
+// The minimum distance (in px) a label has to be from the edge of the viewport
+// to avoid being flipped inside the grid.
 const gridPageMargin = 20;
+// The minimum distance (in px) 2 labels can be to eachother. This is set to
+// allow 2 consecutive 2-digits labels to not overlap.
+const gridLabelDistance = 20;
+
 /** @typedef {!{contentTop: number, contentLeft: number}} */
 let GridLabelPositions;  // eslint-disable-line no-unused-vars
+
+/**
+ * This is a generator function used to iterate over grid line offsets in a way
+ * that skips the ones that are too close to eachother, in order to avoid overlaps.
+ *
+ * @param {Array} offsets
+ */
+function* offsetIterator(offsets) {
+  let lastEmittedOffset = null;
+
+  for (const [i, offset] of offsets.entries()) {
+    // Only emit the offset if this is the first.
+    const isFirst = i === 0;
+    // Or if this is the last.
+    const isLast = i === offsets.length - 1;
+    // Or if there is some minimum distance between the last emitted offset.
+    const isFarEnoughFromPrevious = offset - lastEmittedOffset > gridLabelDistance;
+    // And if there is also some minium distance from the very last offset.
+    const isFarEnoughFromLast = !isLast && offsets[offsets.length - 1] - offset > gridLabelDistance;
+
+    if (isFirst || isLast || (isFarEnoughFromPrevious && isFarEnoughFromLast)) {
+      yield [i, offset];
+      lastEmittedOffset = offset;
+    }
+  }
+}
 
 /**
  * Places the grid row and column labels on the overlay.
@@ -58,21 +92,21 @@ export function drawGridNumbers(config, bounds) {
   labelContainer.removeChildren();
 
   if (config.gridHighlightConfig.showPositiveLineNumbers && config.positiveColumnLineNumberOffsets) {
-    for (const [i, offset] of config.positiveColumnLineNumberOffsets.entries()) {
+    for (const [i, offset] of offsetIterator(config.positiveColumnLineNumberOffsets)) {
       const element = _createLabelElement(labelContainer, i + 1);
       _placePositiveColumnLabel(element, offset, config, bounds);
     }
   }
 
   if (config.gridHighlightConfig.showPositiveLineNumbers && config.positiveRowLineNumberOffsets) {
-    for (const [i, offset] of config.positiveRowLineNumberOffsets.entries()) {
+    for (const [i, offset] of offsetIterator(config.positiveRowLineNumberOffsets)) {
       const element = _createLabelElement(labelContainer, i + 1);
       _placePositiveRowLabel(element, offset, config, bounds);
     }
   }
 
   if (config.gridHighlightConfig.showNegativeLineNumbers && config.negativeColumnLineNumberOffsets) {
-    for (const [i, offset] of config.negativeColumnLineNumberOffsets.entries()) {
+    for (const [i, offset] of offsetIterator(config.negativeColumnLineNumberOffsets)) {
       // Negative offsets are sorted such that the first offset corresponds to the line closest to start edge of the grid.
       const element = _createLabelElement(labelContainer, config.negativeColumnLineNumberOffsets.length * -1 + i);
       _placeNegativeColumnLabel(element, offset, config, bounds);
@@ -80,7 +114,7 @@ export function drawGridNumbers(config, bounds) {
   }
 
   if (config.gridHighlightConfig.showNegativeLineNumbers && config.negativeRowLineNumberOffsets) {
-    for (const [i, offset] of config.negativeRowLineNumberOffsets.entries()) {
+    for (const [i, offset] of offsetIterator(config.negativeRowLineNumberOffsets)) {
       // Negative offsets are sorted such that the first offset corresponds to the line closest to start edge of the grid.
       const element = _createLabelElement(labelContainer, config.negativeRowLineNumberOffsets.length * -1 + i);
       _placeNegativeRowLabel(element, offset, config, bounds);

@@ -40,9 +40,6 @@
   border-left: 1px white solid;
 }
 
-.data-grid td .bar-container {
-}
-
 .data-grid td .bar-unused-size {
   background-color: #ee442f;
 }
@@ -74,6 +71,10 @@
     background-color: ButtonFace;
   }
 
+  .data-grid td .bar {
+    border-color: ButtonText;
+  }
+
   .data-grid .selected td .bar {
     border-top-color: HighlightText;
     border-bottom-color: HighlightText;
@@ -85,10 +86,6 @@
 
   .data-grid .selected td .bar:first-child {
     border-left-color: HighlightText;
-  }
-
-  .data-grid td .bar {
-    border-color: ButtonText;
   }
 
   .data-grid:focus tr.selected span.percent-value {

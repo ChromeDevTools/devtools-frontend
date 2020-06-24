@@ -138,7 +138,7 @@ exports.pack = function (cwd, opts) {
     var entry = pack.entry(header, onnextentry)
     if (!entry) return
 
-    var rs = mapStream(xfs.createReadStream(path.join(cwd, filename)), header)
+    var rs = mapStream(xfs.createReadStream(path.join(cwd, filename), { start: 0, end: header.size > 0 ? header.size - 1 : header.size }), header)
 
     rs.on('error', function (err) { // always forward errors on destroy
       entry.destroy(err)

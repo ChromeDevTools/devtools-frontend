@@ -29,7 +29,7 @@ npm install extract-zip -g
 ```javascript
 const extract = require('extract-zip')
 
-async main () {
+async function main () {
   try {
     await extract(source, { dir: target })
     console.log('Extraction complete')

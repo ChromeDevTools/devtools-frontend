@@ -108,10 +108,7 @@ class Extractor {
 
     debug('extracting entry', { filename: entry.fileName, isDir: isDir, isSymlink: symlink })
 
-    // reverse umask first (~)
-    const umask = ~process.umask()
-    // & with processes umask to override invalid perms
-    const procMode = this.getExtractedMode(mode, isDir) & umask
+    const procMode = this.getExtractedMode(mode, isDir) & 0o777
 
     // always ensure folders are created
     const destDir = isDir ? dest : path.dirname(dest)

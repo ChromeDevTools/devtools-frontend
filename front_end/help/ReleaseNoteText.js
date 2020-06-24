@@ -68,15 +68,16 @@ export const releaseNoteText = [
         link: 'https://developers.google.com/web/updates/2020/06/devtools#sources-panel',
       },
       {
-        title: 'New breakpoint icons',
-        subtitle: 'The new circular icons make the DevTools UI more consistent with other GUI debugging tools.',
-        link: 'https://developers.google.com/web/updates/2020/06/devtools#breakpoint-icons',
-      },
-      {
         title: 'Console Settings updates',
         subtitle:
             'The “Group similar” option now applies to duplicate messages and the “Selected context only” option is now persisted.',
         link: 'https://developers.google.com/web/updates/2020/06/devtools#console-settings',
+      },
+      {
+        title: 'Performance panel updates',
+        subtitle:
+            'Display JavaScript compilation cache information and align navigation timing in the Performance panel.',
+        link: 'https://developers.google.com/web/updates/2020/06/devtools#perf-panel',
       },
     ],
     link: 'https://developers.google.com/web/updates/2020/06/devtools',

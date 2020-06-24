@@ -1040,6 +1040,9 @@ export class SecurityMainView extends UI.Widget.VBox {
   refreshExplanations() {
     this._securityExplanationsMain.removeChildren();
     this._securityExplanationsExtra.removeChildren();
+    if (!this._explanations) {
+      return;
+    }
     for (const explanation of this._explanations) {
       if (explanation.securityState === Protocol.Security.SecurityState.Info) {
         this._addExplanation(this._securityExplanationsExtra, explanation);

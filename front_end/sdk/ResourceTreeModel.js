@@ -34,7 +34,7 @@
 import * as Common from '../common/common.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 
-import {DOMModel} from './DOMModel.js';
+import {DeferredDOMNode, DOMModel} from './DOMModel.js';  // eslint-disable-line no-unused-vars
 import {Events as NetworkManagerEvents, NetworkManager} from './NetworkManager.js';
 import {NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
 import {Resource} from './Resource.js';
@@ -890,6 +890,21 @@ export class ResourceTreeFrame {
       return this._name + ' (' + subtitle + ')';
     }
     return Common.UIString.UIString('<iframe>');
+  }
+
+  /**
+   * @returns {!Promise<?DeferredDOMNode>}
+   */
+  getOwnerDOMNode() {
+    return this.resourceTreeModel().domModel().getOwnerNodeForFrame(this.id);
+  }
+
+
+  /**
+   * @returns {void}
+   */
+  highlight() {
+    this.resourceTreeModel().domModel().overlayModel().highlightFrame(this.id);
   }
 }
 

@@ -36,6 +36,9 @@
   <message name="IDS_DEVTOOLS_8e2dcfd7e7e24b1ca76c1193f645902b" desc="Singular label for number of affected element resource indication in issue view">
     element
   </message>
+  <message name="IDS_DEVTOOLS_965667e5913ece6c999a54b2a167fc15" desc="Tooltip for button linking to the Elements panel">
+    Click to reveal the frame&apos;s DOM node in the Elements panel
+  </message>
   <message name="IDS_DEVTOOLS_96ab4e163f4ee03aaa4d1051aa51d204" desc="Label for number of affected resources indication in issue view">
     resource
   </message>

@@ -1282,6 +1282,18 @@ export class DOMModel extends SDKModel {
   }
 
   /**
+   * @param {!Protocol.Page.FrameId} frameId
+   * @returns {!Promise<?DeferredDOMNode>}
+   */
+  async getOwnerNodeForFrame(frameId) {
+    const response = await this._agent.invoke_getFrameOwner({frameId});
+    if (response.getError()) {
+      return null;
+    }
+    return new DeferredDOMNode(this.target(), response.backendNodeId);
+  }
+
+  /**
    * @return {!Promise<?DOMDocument>}
    */
   async _requestDocument() {

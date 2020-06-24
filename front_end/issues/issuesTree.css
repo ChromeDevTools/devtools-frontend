@@ -313,6 +313,14 @@ ul > li.plain-enum::before {
   padding: 2px;
 }
 
+.affected-resource-heavy-ad-info-frame {
+  display: flex;
+  align-items: center;
+  color: var(--issue-gray);
+  padding: 2px;
+}
+
+
 .affected-resources > .parent {
   margin-top: 0;
   padding: 2px 5px 0 5px;

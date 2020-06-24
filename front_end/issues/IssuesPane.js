@@ -548,8 +548,8 @@ class AffectedHeavyAdView extends AffectedResourcesView {
     const element = document.createElement('tr');
     element.classList.add('affected-resource-heavy-ad');
 
-    // TODO(chromium:1095617): Also link to the elements panel and the highlight the frame on hover.
-    const frame = BrowserSDK.FrameManager.FrameManager.instance().getFrame(heavyAd.frame.frameId);
+    const frameId = heavyAd.frame.frameId;
+    const frame = BrowserSDK.FrameManager.FrameManager.instance().getFrame(frameId);
     const url = frame && (frame.unreachableUrl() || frame.url) || '';
 
     const reason = document.createElement('td');
@@ -562,11 +562,29 @@ class AffectedHeavyAdView extends AffectedResourcesView {
     status.textContent = this._statusToString(heavyAd.resolution);
     element.appendChild(status);
 
-    const name = document.createElement('td');
-    name.classList.add('affected-resource-heavy-ad-info');
-    name.textContent = url;
-    UI.Tooltip.Tooltip.install(name, url);
-    element.appendChild(name);
+    const frameUrl = document.createElement('td');
+    frameUrl.classList.add('affected-resource-heavy-ad-info-frame');
+    const icon = UI.Icon.Icon.create('largeicon-node-search', 'icon');
+    icon.onclick = async () => {
+      const frame = BrowserSDK.FrameManager.FrameManager.instance().getFrame(frameId);
+      if (frame) {
+        const deferedNode = await frame.getOwnerDOMNode();
+        if (deferedNode) {
+          Common.Revealer.reveal(deferedNode);
+        }
+      }
+    };
+    UI.Tooltip.Tooltip.install(icon, ls`Click to reveal the frame's DOM node in the Elements panel`);
+    frameUrl.appendChild(icon);
+    frameUrl.appendChild(document.createTextNode(url));
+    frameUrl.onmouseenter = () => {
+      const frame = BrowserSDK.FrameManager.FrameManager.instance().getFrame(frameId);
+      if (frame) {
+        frame.highlight();
+      }
+    };
+    frameUrl.onmouseleave = () => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+    element.appendChild(frameUrl);
 
     this._affectedResources.appendChild(element);
   }

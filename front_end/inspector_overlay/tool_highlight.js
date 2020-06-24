@@ -373,7 +373,7 @@ body {
       background-color: transparent;
       forced-color-adjust: none;
   }
-  .tooltip-content {
+  .tooltip-content, .grid-label-content {
       border-color: Highlight;
       background-color: Canvas;
       color: Text;
@@ -381,6 +381,10 @@ body {
   }
   .tooltip-content::after {
       background-color: Highlight;
+  }
+  .grid-label-content::before {
+    background-color: Canvas;
+    border-color: Highlight;
   }
   .color-swatch-inner,
   .contrast-text,

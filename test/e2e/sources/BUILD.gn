@@ -13,6 +13,7 @@ node_ts_library("sources") {
     "can-show-wasm-scopes_test.ts",
     "debug-raw-wasm_test.ts",
     "debugger-language-plugins_test.ts",
+    "dwarf-cxx-language-plugin_test.ts",
     "navigation_test.ts",
     "script-in-multiple-workers_test.ts",
     "sourcemap-without-mappings_test.ts",

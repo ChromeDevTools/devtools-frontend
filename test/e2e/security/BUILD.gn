@@ -4,8 +4,7 @@
 
 import("../../../third_party/typescript/typescript.gni")
 
-ts_library("security") {
-  testonly = true
+node_ts_library("security") {
   sources = [ "security_test.ts" ]
 
   deps = [

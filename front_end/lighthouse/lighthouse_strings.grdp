@@ -79,7 +79,7 @@
     At least one category must be selected.
   </message>
   <message name="IDS_DEVTOOLS_67aa731132e0e7bbabb1b3d3c363e7d6" desc="Help text in Lighthouse Controller">
-    Multiple tabs are being controlled by the same service worker. Close your other tabs on the same origin to audit this page.
+    Multiple tabs are being controlled by the same <ph name="LOCKED_TERM">service worker</ph>. Close your other tabs on the same origin to audit this page.
   </message>
   <message name="IDS_DEVTOOLS_6e394d18cb68d551f58fa35f4dfc70bb" desc="Fast fact in the pop-up dialog when lighthouse is running in the Lighthouse panel">
     As page load time increases from one second to seven seconds, the probability of a mobile site visitor bouncing increases 113%. [Source: <ph name="LOCKED_1">Think with Google</ph>]

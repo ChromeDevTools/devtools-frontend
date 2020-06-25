@@ -485,7 +485,7 @@
     Do not highlight ad frames
   </message>
   <message name="IDS_DEVTOOLS_a155bce1e541d9234013102c2e613941" desc="Text in Service Worker Cache Model">
-    ServiceWorkerCacheAgent error deleting cache entry <ph name="CACHE_TOSTRING__">$1s<ex>https://cache</ex></ph> in cache: <ph name="RESPONSE_PROTOCOL_ERROR_">$2s<ex>error message</ex></ph>
+    <ph name="LOCKED_TERM">ServiceWorkerCacheAgent</ph> error deleting cache entry <ph name="CACHE_TOSTRING__">$1s<ex>https://cache</ex></ph> in cache: <ph name="RESPONSE_PROTOCOL_ERROR_">$2s<ex>error message</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_a1595abbb4c3a326636dd178757cd6c1" desc="Text in DOMDebugger Model">
     Control

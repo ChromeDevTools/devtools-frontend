@@ -43,7 +43,7 @@
     <ph name="LOCKED_1">Android (4.0.2) Browser — Galaxy Nexus</ph>
   </message>
   <message name="IDS_DEVTOOLS_0d6c76e22c095f0ae6cf53753121adef" desc="Text used to show that serviceworker fetch response source is ServiceWorker Cache Storage">
-    ServiceWorker cache storage
+    <ph name="LOCKED_TERM">ServiceWorker</ph> cache storage
   </message>
   <message name="IDS_DEVTOOLS_0db377921f4ce762c62526131097968f" desc="Text in Request Headers View of the Network panel">
     General
@@ -73,7 +73,7 @@
     <ph name="LOCKED_1">Microsoft Edge — Android Mobile</ph>
   </message>
   <message name="IDS_DEVTOOLS_17145319aba079a26c6d3bb2b1d58894" desc="Text in Request Timing View of the Network panel">
-    Service Worker
+    <ph name="LOCKED_TERM">Service Worker</ph>
   </message>
   <message name="IDS_DEVTOOLS_17439cab6b197fcaff231614384c9dcc" desc="An option in the user agent dropdown menu in the Network conditions tool">
     <ph name="LOCKED_1">Opera (Presto) — Windows</ph>
@@ -127,7 +127,7 @@
     <ph name="LOCKED_1">Safari — Mac</ph>
   </message>
   <message name="IDS_DEVTOOLS_2537b3e6907e17001b7cdf121cd39dc0" desc="Text in Request Headers View of the Network panel">
-    (from ServiceWorker)
+    (from <ph name="LOCKED_TERM">ServiceWorker</ph>)
   </message>
   <message name="IDS_DEVTOOLS_26b6b5ae2c6e2575b2a451c35e94df23" desc="Text in Request Timing View of the Network panel">
     Waiting (TTFB)
@@ -136,7 +136,7 @@
     Signed HTTP exchange
   </message>
   <message name="IDS_DEVTOOLS_29d37bdcfeb74d25d56bcf841866ae32" desc="Cell title in Network Data Grid Node of the Network panel">
-    Served from ServiceWorker, resource size: <ph name="RESOURCESIZE">$1s<ex>4 B</ex></ph>
+    Served from <ph name="LOCKED_TERM">ServiceWorker</ph>, resource size: <ph name="RESOURCESIZE">$1s<ex>4 B</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_2ad7f735dd6d0dedb0d010a612854a17" desc="An option in the user agent dropdown menu in the Network conditions tool">
     <ph name="LOCKED_1">Internet Explorer 8</ph>
@@ -544,7 +544,7 @@
     Copied as Hex
   </message>
   <message name="IDS_DEVTOOLS_79307e20670213e6f99203c2d81bbbaf" desc="Text of a DOM element in Network Data Grid Node of the Network panel">
-    (ServiceWorker)
+    (<ph name="LOCKED_TERM">ServiceWorker</ph>)
   </message>
   <message name="IDS_DEVTOOLS_7954bc50e461d57fa640f77741cea491" desc="Text of a DOM element in Request Timing View of the Network panel">
     Resource Scheduling
@@ -718,7 +718,7 @@
     <ph name="COUNT">$1d<ex>4</ex></ph> blocked
   </message>
   <message name="IDS_DEVTOOLS_a09b75f1cd4e3d54099fa8e14ff5056d" desc="From service worker format in Network Time Calculator of the Network panel">
-    <ph name="PH1">$1s<ex>20ms latency</ex></ph> (from ServiceWorker)
+    <ph name="PH1">$1s<ex>20ms latency</ex></ph> (from <ph name="LOCKED_TERM">ServiceWorker</ph>)
   </message>
   <message name="IDS_DEVTOOLS_a12a6481ad87f558622dcf0a1a87982a" desc="An option in the user agent dropdown menu in the Network conditions tool">
     <ph name="LOCKED_1">UC Browser — Android Mobile</ph>
@@ -799,7 +799,7 @@
     Copy as cURL (bash)
   </message>
   <message name="IDS_DEVTOOLS_b4774747599df05309e1de2e2734dd3e" desc="Text in Request Timing View of the Network panel">
-    Request to ServiceWorker
+    Request to <ph name="LOCKED_TERM">ServiceWorker</ph>
   </message>
   <message name="IDS_DEVTOOLS_b72ac10807b29c77f5b7e4b80ea40414" desc="Text in Request Timing View of the Network panel">
     Explanation

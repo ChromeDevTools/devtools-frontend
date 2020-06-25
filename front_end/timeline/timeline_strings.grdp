@@ -149,7 +149,7 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
     Group by Activity
   </message>
   <message name="IDS_DEVTOOLS_232e59f3380381caf0634ab2f035dbf2" desc="Text in Timeline UIUtils of the Performance panel">
-    ''' (from service worker)
+    ''' (from <ph name="LOCKED_TERM">service worker</ph>)
   </message>
   <message name="IDS_DEVTOOLS_2383a71629ce9189cb494c3fb8af7ac4" desc="Header text content in Timeline Tree View of the Performance panel">
     Heaviest stack

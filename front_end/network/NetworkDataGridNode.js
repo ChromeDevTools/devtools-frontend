@@ -823,6 +823,10 @@ export class NetworkRequestNode extends NetworkNode {
       simpleType = mimeType.replace(/^(application|image)\//, '');
     }
 
+    if (this._request.isRedirect()) {
+      simpleType += ' / ' + ls`Redirect`;
+    }
+
     return simpleType;
   }
 

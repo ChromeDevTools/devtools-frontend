@@ -90,6 +90,8 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     this._initiator = initiator;
     /** @type {?NetworkRequest} */
     this._redirectSource = null;
+    /** @type {boolean} */
+    this._isRedirect = false;
     /** @type {?NetworkRequest} */
     this._redirectDestination = null;
     this._issueTime = -1;
@@ -1455,7 +1457,15 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
    * @param {number} redirectCount
    */
   markAsRedirect(redirectCount) {
+    this._isRedirect = true;
     this._requestId = `${this._backendRequestId}:redirected.${redirectCount}`;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isRedirect() {
+    return this._isRedirect;
   }
 
   /**

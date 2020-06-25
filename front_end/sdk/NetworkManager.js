@@ -496,7 +496,7 @@ export class NetworkDispatcher {
           requestId,
           loaderId,
           timestamp,
-          type: Protocol.Network.ResourceType.Other,
+          type: type || Protocol.Network.ResourceType.Other,
           response: redirectResponse,
           frameId
         });

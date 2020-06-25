@@ -184,7 +184,7 @@
       "experiment": "cssGridFeatures",
       "settingName": "showGridLineNumbers",
       "settingType": "enum",
-      "defaultValue": "none",
+      "defaultValue": "both",
       "options": [
         {
           "title": "Do not show grid line numbers",

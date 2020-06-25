@@ -181,7 +181,9 @@ export class MainImpl {
     Root.Runtime.experiments.register('dualScreenSupport', 'Emulation: Support dual screen mode');
 
     // CSS Grid
-    Root.Runtime.experiments.register('cssGridFeatures', 'Enable new CSS Grid debugging features');
+    Root.Runtime.experiments.register(
+        'cssGridFeatures',
+        'Enable new CSS Grid debugging features (configuration options available in Settings after restart)');
 
     // Layout personalization
     Root.Runtime.experiments.register('movableTabs', 'Enable support to move tabs between panels');

@@ -516,3 +516,13 @@ button.link[data-keyboard-focus="true"]:focus {
     border: 1px solid ButtonText;
   }
 }
+
+/* search input with customized styling */
+input.custom-search-input::-webkit-search-cancel-button {
+  appearance: none;
+  cursor: pointer;
+  width: 16px;
+  height: 15px;
+  margin-right: 0;
+  background: -32px 32px url(Images/mediumIcons.svg);
+}

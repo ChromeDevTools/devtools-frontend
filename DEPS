@@ -254,5 +254,12 @@ hooks = [
     'condition': 'host_os != "aix" and build_symbol_server',
     'action': ['python', 'devtools-frontend/third_party/clang/scripts/update.py'],
   },
+  {
+    'name': 'sysroot_x64',
+    'pattern': '.',
+    'condition': 'checkout_linux and checkout_x64',
+    'action': ['python', 'devtools-frontend/build/linux/sysroot_scripts/install-sysroot.py',
+               '--arch=x64'],
+  },
 
 ]

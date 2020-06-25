@@ -1178,12 +1178,6 @@
   "lighthouse-core/audits/timing-budget.js | title": {
     "message": "Zamanlama bütçesi"
   },
-  "lighthouse-core/audits/user-timings.js | columnDuration": {
-    "message": "Süre"
-  },
-  "lighthouse-core/audits/user-timings.js | columnStartTime": {
-    "message": "Başlangıç Zamanı"
-  },
   "lighthouse-core/audits/user-timings.js | columnType": {
     "message": "Tür"
   },

@@ -1178,12 +1178,6 @@
   "lighthouse-core/audits/timing-budget.js | title": {
     "message": "Pressupost de temps"
   },
-  "lighthouse-core/audits/user-timings.js | columnDuration": {
-    "message": "Durada"
-  },
-  "lighthouse-core/audits/user-timings.js | columnStartTime": {
-    "message": "Hora d'inici"
-  },
   "lighthouse-core/audits/user-timings.js | columnType": {
     "message": "Tipus"
   },

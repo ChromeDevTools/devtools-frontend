@@ -552,50 +552,33 @@
   display: none;
 }
 
-
 /* Perf Metric */
 
-.lh-columns {
-  display: flex;
-  width: 100%;
+.lh-metrics-container {
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-auto-flow: column;
+  grid-column-gap: 24px;
 }
-@media screen and (max-width: 640px) {
-  .lh-columns {
-    flex-wrap: wrap;
-
-  }
-}
-
-.lh-column {
-  flex: 1;
-}
-.lh-column:first-of-type {
-  margin-right: 24px;
-}
-
-@media screen and (max-width: 800px) {
-  .lh-column:first-of-type {
-    margin-right: 8px;
-  }
-}
-@media screen and (max-width: 640px) {
-  .lh-column {
-    flex-basis: 100%;
-  }
-  .lh-column:first-of-type {
-    margin-right: 0px;
-  }
-  .lh-column:first-of-type .lh-metric:last-of-type {
-    border-bottom: 0;
-  }
-}
-
 
 .lh-metric {
-  border-bottom: 1px solid var(--report-border-color-secondary);
-}
-.lh-metric:first-of-type {
   border-top: 1px solid var(--report-border-color-secondary);
+}
+
+@media screen and (min-width: 640px) {
+  .lh-metric:nth-child(3n+3) {
+    border-bottom: 1px solid var(--report-border-color-secondary);
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .lh-metrics-container {
+    display: block;
+  }
+
+  .lh-metric:nth-last-child(-n+1) {
+    border-bottom: 1px solid var(--report-border-color-secondary);
+  }
 }
 
 .lh-metric__innerwrap {
@@ -618,9 +601,6 @@
   color: var(--color-gray-600);
   margin: var(--section-padding-vertical) 0;
 }
-.lh-metrics__disclaimer a {
-  color: var(--color-gray-700);
-}
 
 .lh-calclink {
   padding-left: calc(1ex / 3);
@@ -641,7 +621,7 @@
 
 /* No-JS toggle switch */
 /* Keep this selector sync'd w/ `magicSelector` in report-ui-features-test.js */
- .lh-metrics-toggle__input:checked ~ .lh-columns .lh-metric__description {
+ .lh-metrics-toggle__input:checked ~ .lh-metrics-container .lh-metric__description {
   display: block;
 }
 
@@ -1347,8 +1327,11 @@
   word-break: normal;
 }
 
-.lh-table tbody tr:nth-child(odd) {
+.lh-row--odd {
   background-color: var(--table-higlight-background-color);
+}
+.lh-row--hidden {
+  display: none;
 }
 
 .lh-table th,
@@ -1442,12 +1425,15 @@
   text-decoration: underline dotted #999;
 }
 
-.lh-sub-rows:not(:first-child) .lh-sub-row {
+.lh-sub-item-row {
   margin-left: 20px;
+  margin-bottom: 0;
   color: var(--color-gray-700);
 }
-.lh-sub-row {
-  margin-bottom: 0;
+.lh-sub-item-row td {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 20px;
 }
 
 /* Chevron

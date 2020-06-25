@@ -1178,12 +1178,6 @@
   "lighthouse-core/audits/timing-budget.js | title": {
     "message": "タイミング予算"
   },
-  "lighthouse-core/audits/user-timings.js | columnDuration": {
-    "message": "継続時間"
-  },
-  "lighthouse-core/audits/user-timings.js | columnStartTime": {
-    "message": "開始時間"
-  },
   "lighthouse-core/audits/user-timings.js | columnType": {
     "message": "タイプ"
   },

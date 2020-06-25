@@ -1103,8 +1103,11 @@ class DetailsRenderer {
    */
   _renderBytes(details) {
     // TODO: handle displayUnit once we have something other than 'kb'
-    const value = Util.i18n.formatBytesToKB(details.value, details.granularity);
-    return this._renderText(value);
+    // Note that 'kb' is historical and actually represents KiB.
+    const value = Util.i18n.formatBytesToKiB(details.value, details.granularity);
+    const textEl = this._renderText(value);
+    textEl.title = Util.i18n.formatBytes(details.value);
+    return textEl;
   }
 
   /**
@@ -1183,7 +1186,7 @@ class DetailsRenderer {
 
   /**
    * @param {string} text
-   * @return {Element}
+   * @return {HTMLDivElement}
    */
   _renderText(text) {
     const element = this._dom.createElement('div', 'lh-text');
@@ -1192,14 +1195,13 @@ class DetailsRenderer {
   }
 
   /**
-   * @param {string} text
+   * @param {{value: number, granularity?: number}} details
    * @return {Element}
    */
-  _renderNumeric(text) {
-    // TODO: this should probably accept a number and call `formatNumber` instead of being identical
-    // to _renderText.
+  _renderNumeric(details) {
+    const value = Util.i18n.formatNumber(details.value, details.granularity);
     const element = this._dom.createElement('div', 'lh-numeric');
-    element.textContent = text;
+    element.textContent = value;
     return element;
   }
 
@@ -1242,7 +1244,7 @@ class DetailsRenderer {
    * @return {Element|null}
    */
   _renderTableValue(value, heading) {
-    if (typeof value === 'undefined' || value === null) {
+    if (value === undefined || value === null) {
       return null;
     }
 
@@ -1290,8 +1292,8 @@ class DetailsRenderer {
         return this._renderMilliseconds(msValue);
       }
       case 'numeric': {
-        const strValue = String(value);
-        return this._renderNumeric(strValue);
+        const numValue = Number(value);
+        return this._renderNumeric({value: numValue, granularity: heading.granularity});
       }
       case 'text': {
         const strValue = String(value);
@@ -1343,21 +1345,15 @@ class DetailsRenderer {
    * @return {LH.Audit.Details.OpportunityColumnHeading}
    */
   _getCanonicalizedHeading(heading) {
-    let subRows;
-    if (heading.subRows) {
-      // @ts-ignore: It's ok that there is no text.
-      subRows = this._getCanonicalizedHeading(heading.subRows);
-      if (!subRows.key) {
-        // eslint-disable-next-line no-console
-        console.warn('key should not be null');
-      }
-      subRows = {...subRows, key: subRows.key || ''};
+    let subItemsHeading;
+    if (heading.subItemsHeading) {
+      subItemsHeading = this._getCanonicalizedsubItemsHeading(heading.subItemsHeading, heading);
     }
 
     return {
       key: heading.key,
       valueType: heading.itemType,
-      subRows,
+      subItemsHeading,
       label: heading.text,
       displayUnit: heading.displayUnit,
       granularity: heading.granularity,
@@ -1365,19 +1361,101 @@ class DetailsRenderer {
   }
 
   /**
-   * @param {LH.Audit.Details.ItemValue[]} values
-   * @param {LH.Audit.Details.OpportunityColumnHeading} heading
-   * @return {Element}
+   * @param {Exclude<LH.Audit.Details.TableColumnHeading['subItemsHeading'], undefined>} subItemsHeading
+   * @param {LH.Audit.Details.TableColumnHeading} parentHeading
+   * @return {LH.Audit.Details.OpportunityColumnHeading['subItemsHeading']}
    */
-  _renderSubRows(values, heading) {
-    const subRowsElement = this._dom.createElement('div', 'lh-sub-rows');
-    for (const childValue of values) {
-      const subRowElement = this._renderTableValue(childValue, heading);
-      if (!subRowElement) continue;
-      subRowElement.classList.add('lh-sub-row');
-      subRowsElement.appendChild(subRowElement);
+  _getCanonicalizedsubItemsHeading(subItemsHeading, parentHeading) {
+    // Low-friction way to prevent commiting a falsy key (which is never allowed for
+    // a subItemsHeading) from passing in CI.
+    if (!subItemsHeading.key) {
+      // eslint-disable-next-line no-console
+      console.warn('key should not be null');
     }
-    return subRowsElement;
+
+    return {
+      key: subItemsHeading.key || '',
+      valueType: subItemsHeading.itemType || parentHeading.itemType,
+      granularity: subItemsHeading.granularity || parentHeading.granularity,
+      displayUnit: subItemsHeading.displayUnit || parentHeading.displayUnit,
+    };
+  }
+
+  /**
+   * Returns a new heading where the values are defined first by `heading.subItemsHeading`,
+   * and secondly by `heading`. If there is no subItemsHeading, returns null, which will
+   * be rendered as an empty column.
+   * @param {LH.Audit.Details.OpportunityColumnHeading} heading
+   * @return {LH.Audit.Details.OpportunityColumnHeading | null}
+   */
+  _getDerivedsubItemsHeading(heading) {
+    if (!heading.subItemsHeading) return null;
+    return {
+      key: heading.subItemsHeading.key || '',
+      valueType: heading.subItemsHeading.valueType || heading.valueType,
+      granularity: heading.subItemsHeading.granularity || heading.granularity,
+      displayUnit: heading.subItemsHeading.displayUnit || heading.displayUnit,
+      label: '',
+    };
+  }
+
+  /**
+   * @param {LH.Audit.Details.OpportunityItem | LH.Audit.Details.TableItem} item
+   * @param {(LH.Audit.Details.OpportunityColumnHeading | null)[]} headings
+   */
+  _renderTableRow(item, headings) {
+    const rowElem = this._dom.createElement('tr');
+
+    for (const heading of headings) {
+      // Empty cell if no heading or heading key for this column.
+      if (!heading || !heading.key) {
+        this._dom.createChildOf(rowElem, 'td', 'lh-table-column--empty');
+        continue;
+      }
+
+      const value = item[heading.key];
+      let valueElement;
+      if (value !== undefined && value !== null) {
+        valueElement = this._renderTableValue(value, heading);
+      }
+
+      if (valueElement) {
+        const classes = `lh-table-column--${heading.valueType}`;
+        this._dom.createChildOf(rowElem, 'td', classes).appendChild(valueElement);
+      } else {
+        // Empty cell is rendered for a column if:
+        // - the pair is null
+        // - the heading key is null
+        // - the value is undefined/null
+        this._dom.createChildOf(rowElem, 'td', 'lh-table-column--empty');
+      }
+    }
+
+    return rowElem;
+  }
+
+  /**
+   * Renders one or more rows from a details table item. A single table item can
+   * expand into multiple rows, if there is a subItemsHeading.
+   * @param {LH.Audit.Details.OpportunityItem | LH.Audit.Details.TableItem} item
+   * @param {LH.Audit.Details.OpportunityColumnHeading[]} headings
+   */
+  _renderTableRowsFromItem(item, headings) {
+    const fragment = this._dom.createFragment();
+    fragment.append(this._renderTableRow(item, headings));
+
+    if (!item.subItems) return fragment;
+
+    const subItemsHeadings = headings.map(this._getDerivedsubItemsHeading);
+    if (!subItemsHeadings.some(Boolean)) return fragment;
+
+    for (const subItem of item.subItems.items) {
+      const rowEl = this._renderTableRow(subItem, subItemsHeadings);
+      rowEl.classList.add('lh-sub-item-row');
+      fragment.append(rowEl);
+    }
+
+    return fragment;
   }
 
   /**
@@ -1402,50 +1480,17 @@ class DetailsRenderer {
     }
 
     const tbodyElem = this._dom.createChildOf(tableElem, 'tbody');
-    for (const row of details.items) {
-      const rowElem = this._dom.createChildOf(tbodyElem, 'tr');
-      for (const heading of headings) {
-        const valueFragment = this._dom.createFragment();
-
-        if (heading.key === null && !heading.subRows) {
-          // eslint-disable-next-line no-console
-          console.warn('A header with a null `key` should define `subRows`.');
-        }
-
-        if (heading.key === null) {
-          const emptyElement = this._dom.createElement('div');
-          emptyElement.innerHTML = '&nbsp;';
-          valueFragment.appendChild(emptyElement);
-        } else {
-          const value = row[heading.key];
-          const valueElement =
-            value !== undefined && !Array.isArray(value) && this._renderTableValue(value, heading);
-          if (valueElement) valueFragment.appendChild(valueElement);
-        }
-
-        if (heading.subRows) {
-          const subRowsHeading = {
-            key: heading.subRows.key,
-            valueType: heading.subRows.valueType || heading.valueType,
-            granularity: heading.subRows.granularity || heading.granularity,
-            displayUnit: heading.subRows.displayUnit || heading.displayUnit,
-            label: '',
-          };
-          const values = row[subRowsHeading.key];
-          if (Array.isArray(values)) {
-            const subRowsElement = this._renderSubRows(values, subRowsHeading);
-            valueFragment.appendChild(subRowsElement);
-          }
-        }
-
-        if (valueFragment.childElementCount) {
-          const classes = `lh-table-column--${heading.valueType}`;
-          this._dom.createChildOf(rowElem, 'td', classes).appendChild(valueFragment);
-        } else {
-          this._dom.createChildOf(rowElem, 'td', 'lh-table-column--empty');
-        }
+    let even = true;
+    for (const item of details.items) {
+      const rowsFragment = this._renderTableRowsFromItem(item, headings);
+      for (const rowEl of this._dom.findAll('tr', rowsFragment)) {
+        // For zebra styling.
+        rowEl.classList.add(even ? 'lh-row--even' : 'lh-row--odd');
       }
+      even = !even;
+      tbodyElem.append(rowsFragment);
     }
+
     return tableElem;
   }
 
@@ -1689,7 +1734,7 @@ class CriticalRequestChainRenderer {
       const span = dom.createElement('span', 'crc-node__chain-duration');
       span.textContent = ' - ' + Util.i18n.formatMilliseconds((endTime - startTime) * 1000) + ', ';
       const span2 = dom.createElement('span', 'crc-node__chain-duration');
-      span2.textContent = Util.i18n.formatBytesToKB(transferSize, 0.01);
+      span2.textContent = Util.i18n.formatBytesToKiB(transferSize, 0.01);
 
       treevalEl.appendChild(span);
       treevalEl.appendChild(span2);
@@ -2289,7 +2334,7 @@ if (typeof module !== 'undefined' && module.exports) {
 
 /**
  * @param {HTMLTableElement} tableEl
- * @return {Array<HTMLTableRowElement>}
+ * @return {Array<HTMLElement>}
  */
 function getTableRows(tableEl) {
   return Array.from(tableEl.tBodies[0].rows);
@@ -2508,29 +2553,34 @@ class ReportUIFeatures {
 
       filterInput.id = id;
       filterInput.addEventListener('change', e => {
-        // Remove rows from the dom and keep track of them to re-add on uncheck.
-        // Why removing instead of hiding? To keep nth-child(even) background-colors working.
-        if (e.target instanceof HTMLInputElement && !e.target.checked) {
-          for (const row of thirdPartyRows.values()) {
-            row.remove();
-          }
-        } else {
-          // Add row elements back to original positions.
-          for (const [position, row] of thirdPartyRows.entries()) {
-            const childrenArr = getTableRows(tableEl);
-            tableEl.tBodies[0].insertBefore(row, childrenArr[position]);
-          }
+        const shouldHideThirdParty = e.target instanceof HTMLInputElement && !e.target.checked;
+        let even = true;
+        let rowEl = rowEls[0];
+        while (rowEl) {
+          const shouldHide = shouldHideThirdParty && thirdPartyRows.includes(rowEl);
+
+          // Iterate subsequent associated sub item rows.
+          do {
+            rowEl.classList.toggle('lh-row--hidden', shouldHide);
+            // Adjust for zebra styling.
+            rowEl.classList.toggle('lh-row--even', !shouldHide && even);
+            rowEl.classList.toggle('lh-row--odd', !shouldHide && !even);
+
+            rowEl = /** @type {HTMLElement} */ (rowEl.nextElementSibling);
+          } while (rowEl && rowEl.classList.contains('lh-sub-item-row'));
+
+          if (!shouldHide) even = !even;
         }
       });
 
       this._dom.find('label', filterTemplate).setAttribute('for', id);
       this._dom.find('.lh-3p-filter-count', filterTemplate).textContent =
-          `${thirdPartyRows.size}`;
+          `${thirdPartyRows.length}`;
       this._dom.find('.lh-3p-ui-string', filterTemplate).textContent =
           Util.i18n.strings.thirdPartyResourcesLabel;
 
-      const allThirdParty = thirdPartyRows.size === rowEls.length;
-      const allFirstParty = !thirdPartyRows.size;
+      const allThirdParty = thirdPartyRows.length === rowEls.length;
+      const allFirstParty = !thirdPartyRows.length;
 
       // If all or none of the rows are 3rd party, disable the checkbox.
       if (allThirdParty || allFirstParty) {
@@ -2553,28 +2603,30 @@ class ReportUIFeatures {
 
   /**
    * From a table with URL entries, finds the rows containing third-party URLs
-   * and returns a Map of those rows, mapping from row index to row Element.
+   * and returns them.
    * @param {HTMLElement[]} rowEls
    * @param {string} finalUrl
-   * @return {Map<number, HTMLElement>}
+   * @return {Array<HTMLElement>}
    */
   _getThirdPartyRows(rowEls, finalUrl) {
-    /** @type {Map<number, HTMLElement>} */
-    const thirdPartyRows = new Map();
+    /** @type {Array<HTMLElement>} */
+    const thirdPartyRows = [];
     const finalUrlRootDomain = Util.getRootDomain(finalUrl);
 
-    rowEls.forEach((rowEl, rowPosition) => {
+    for (const rowEl of rowEls) {
+      if (rowEl.classList.contains('lh-sub-item-row')) continue;
+
       /** @type {HTMLElement|null} */
       const urlItem = rowEl.querySelector('.lh-text__url');
-      if (!urlItem) return;
+      if (!urlItem) continue;
 
       const datasetUrl = urlItem.dataset.url;
-      if (!datasetUrl) return;
+      if (!datasetUrl) continue;
       const isThirdParty = Util.getRootDomain(datasetUrl) !== finalUrlRootDomain;
-      if (!isThirdParty) return;
+      if (!isThirdParty) continue;
 
-      thirdPartyRows.set(Number(rowPosition), rowEl);
-    });
+      thirdPartyRows.push(rowEl);
+    }
 
     return thirdPartyRows;
   }
@@ -3033,13 +3085,10 @@ class DropDown {
 
   /**
    * Focus out handler for the drop down menu.
-   * @param {Event} e
+   * @param {FocusEvent} e
    */
   onMenuFocusOut(e) {
-    // TODO: The focusout event is not supported in our current version of typescript (3.5.3)
-    // https://github.com/microsoft/TypeScript/issues/30716
-    const focusEvent = /** @type {FocusEvent} */ (e);
-    const focusedEl = /** @type {?HTMLElement} */ (focusEvent.relatedTarget);
+    const focusedEl = /** @type {?HTMLElement} */ (e.relatedTarget);
 
     if (!this._menuEl.contains(focusedEl)) {
       this.close();
@@ -3710,10 +3759,36 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
     if (fci) v5andv6metrics.push(fci);
     if (fmp) v5andv6metrics.push(fmp);
 
+    /** @type {Record<string, string>} */
+    const acronymMapping = {
+      'cumulative-layout-shift': 'CLS',
+      'first-contentful-paint': 'FCP',
+      'first-cpu-idle': 'FCI',
+      'first-meaningful-paint': 'FMP',
+      'interactive': 'TTI',
+      'largest-contentful-paint': 'LCP',
+      'speed-index': 'SI',
+      'total-blocking-time': 'TBT',
+    };
+
+    /**
+     * Clamp figure to 2 decimal places
+     * @param {number} val
+     * @return {number}
+     */
+    const clampTo2Decimals = val => Math.round(val * 100) / 100;
+
     const metricPairs = v5andv6metrics.map(audit => {
-      const value = typeof audit.result.numericValue !== 'undefined' ?
-        audit.result.numericValue.toString() : 'null';
-      return [audit.id, value];
+      let value;
+      if (typeof audit.result.numericValue === 'number') {
+        value = audit.id === 'cumulative-layout-shift' ?
+          clampTo2Decimals(audit.result.numericValue) :
+          Math.round(audit.result.numericValue);
+        value = value.toString();
+      } else {
+        value = 'null';
+      }
+      return [acronymMapping[audit.id] || audit.id, value];
     });
     const paramPairs = [...metricPairs];
 
@@ -3756,33 +3831,22 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
     metricAuditsEl.append(..._toggleEl.childNodes);
 
     const metricAudits = category.auditRefs.filter(audit => audit.group === 'metrics');
+    const metricsBoxesEl = this.dom.createChildOf(metricAuditsEl, 'div', 'lh-metrics-container');
 
-    const keyMetrics = metricAudits.slice(0, 3);
-    const otherMetrics = metricAudits.slice(3);
-
-    const metricsBoxesEl = this.dom.createChildOf(metricAuditsEl, 'div', 'lh-columns');
-    const metricsColumn1El = this.dom.createChildOf(metricsBoxesEl, 'div', 'lh-column');
-    const metricsColumn2El = this.dom.createChildOf(metricsBoxesEl, 'div', 'lh-column');
-
-    keyMetrics.forEach(item => {
-      metricsColumn1El.appendChild(this._renderMetric(item));
-    });
-    otherMetrics.forEach(item => {
-      metricsColumn2El.appendChild(this._renderMetric(item));
+    metricAudits.forEach(item => {
+      metricsBoxesEl.appendChild(this._renderMetric(item));
     });
 
-    // 'Values are estimated and may vary' is used as the category description for PSI
-    if (environment !== 'PSI') {
-      const estValuesEl = this.dom.createChildOf(metricAuditsEl, 'div', 'lh-metrics__disclaimer');
-      const disclaimerEl = this.dom.convertMarkdownLinkSnippets(strings.varianceDisclaimer);
-      estValuesEl.appendChild(disclaimerEl);
+    const estValuesEl = this.dom.createChildOf(metricAuditsEl, 'div', 'lh-metrics__disclaimer');
+    const disclaimerEl = this.dom.convertMarkdownLinkSnippets(strings.varianceDisclaimer);
+    estValuesEl.appendChild(disclaimerEl);
 
-      // Add link to score calculator.
-      const calculatorLink = this.dom.createChildOf(estValuesEl, 'a', 'lh-calclink');
-      calculatorLink.target = '_blank';
-      calculatorLink.textContent = strings.calculatorLink;
-      calculatorLink.href = this._getScoringCalculatorHref(category.auditRefs);
-    }
+    // Add link to score calculator.
+    const calculatorLink = this.dom.createChildOf(estValuesEl, 'a', 'lh-calclink');
+    calculatorLink.target = '_blank';
+    calculatorLink.textContent = strings.calculatorLink;
+    calculatorLink.href = this._getScoringCalculatorHref(category.auditRefs);
+
 
     metricAuditsEl.classList.add('lh-audit-group--metrics');
     element.appendChild(metricAuditsEl);
@@ -4398,9 +4462,19 @@ class I18n {
    * @param {number=} granularity Controls how coarse the displayed value is, defaults to 0.1
    * @return {string}
    */
-  formatBytesToKB(size, granularity = 0.1) {
+  formatBytesToKiB(size, granularity = 0.1) {
     const kbs = this._numberFormatter.format(Math.round(size / 1024 / granularity) * granularity);
-    return `${kbs}${NBSP2}KB`;
+    return `${kbs}${NBSP2}KiB`;
+  }
+
+  /**
+   * @param {number} size
+   * @param {number=} granularity Controls how coarse the displayed value is, defaults to 0.1
+   * @return {string}
+   */
+  formatBytes(size, granularity = 1) {
+    const kbs = this._numberFormatter.format(Math.round(size / granularity) * granularity);
+    return `${kbs}${NBSP2}bytes`;
   }
 
   /**

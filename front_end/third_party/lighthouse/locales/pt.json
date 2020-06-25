@@ -1178,12 +1178,6 @@
   "lighthouse-core/audits/timing-budget.js | title": {
     "message": "Orçamento de tempo"
   },
-  "lighthouse-core/audits/user-timings.js | columnDuration": {
-    "message": "Duração"
-  },
-  "lighthouse-core/audits/user-timings.js | columnStartTime": {
-    "message": "Horário de início"
-  },
   "lighthouse-core/audits/user-timings.js | columnType": {
     "message": "Tipo"
   },

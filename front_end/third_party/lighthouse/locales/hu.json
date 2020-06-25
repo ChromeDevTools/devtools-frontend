@@ -1178,12 +1178,6 @@
   "lighthouse-core/audits/timing-budget.js | title": {
     "message": "Időkeret"
   },
-  "lighthouse-core/audits/user-timings.js | columnDuration": {
-    "message": "Időtartam"
-  },
-  "lighthouse-core/audits/user-timings.js | columnStartTime": {
-    "message": "Kezdés ideje"
-  },
   "lighthouse-core/audits/user-timings.js | columnType": {
     "message": "Típus"
   },

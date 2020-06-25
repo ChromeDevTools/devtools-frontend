@@ -1178,12 +1178,6 @@
   "lighthouse-core/audits/timing-budget.js | title": {
     "message": "Timingbudget"
   },
-  "lighthouse-core/audits/user-timings.js | columnDuration": {
-    "message": "Duur"
-  },
-  "lighthouse-core/audits/user-timings.js | columnStartTime": {
-    "message": "Begintijd"
-  },
   "lighthouse-core/audits/user-timings.js | columnType": {
     "message": "Type"
   },

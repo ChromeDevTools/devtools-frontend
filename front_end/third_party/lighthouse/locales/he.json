@@ -1178,12 +1178,6 @@
   "lighthouse-core/audits/timing-budget.js | title": {
     "message": "תקציב תזמון"
   },
-  "lighthouse-core/audits/user-timings.js | columnDuration": {
-    "message": "משך זמן"
-  },
-  "lighthouse-core/audits/user-timings.js | columnStartTime": {
-    "message": "שעת התחלה"
-  },
   "lighthouse-core/audits/user-timings.js | columnType": {
     "message": "סוג"
   },

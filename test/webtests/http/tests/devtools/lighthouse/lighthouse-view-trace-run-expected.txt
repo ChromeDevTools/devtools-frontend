@@ -29,6 +29,7 @@ interactive
 largest-contentful-paint
 largest-contentful-paint-element
 layout-shift-elements
+long-tasks
 main-thread-tasks
 mainthread-work-breakdown
 max-potential-fid

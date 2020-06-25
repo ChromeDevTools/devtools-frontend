@@ -52,6 +52,7 @@ Gathering setup: RobotsTxt
 Gathering setup: TapTargets
 Gathering setup: Accessibility
 Gathering setup: TraceElements
+Gathering setup: SourceMaps
 Beginning devtoolsLog and trace
 Getting browser version
 Loading page & waiting for onload
@@ -80,6 +81,7 @@ Gathering in-page: RobotsTxt
 Gathering in-page: TapTargets
 Gathering in-page: Accessibility
 Gathering in-page: TraceElements
+Gathering in-page: SourceMaps
 Gathering trace
 Gathering devtoolsLog & network records
 Running afterPass methods
@@ -107,6 +109,7 @@ Gathering: RobotsTxt
 Gathering: TapTargets
 Gathering: Accessibility
 Gathering: TraceElements
+Gathering: SourceMaps
 Running offlinePass pass
 Resetting state with about:blank
 Setting up network for the pass trace
@@ -206,7 +209,7 @@ Computing artifact: ManifestValues
 Auditing: Manifest has a maskable icon
 Auditing: Content is sized correctly for the viewport
 Auditing: Displays images with correct aspect ratio
-Auditing: Displays images with appropriate size
+Auditing: Serves images with appropriate resolution
 Auditing: Avoids deprecated APIs
 Auditing: Minimizes main-thread work
 Computing artifact: MainThreadTasks
@@ -230,6 +233,7 @@ Auditing: Keep request counts low and transfer sizes small
 Auditing: Minimize third-party usage
 Auditing: Largest Contentful Paint element
 Auditing: Avoid large layout shifts
+Auditing: Avoid long main-thread tasks
 Auditing: Site works cross-browser
 Auditing: Page transitions don't feel like they block on the network
 Auditing: Each page has a URL
@@ -295,6 +299,7 @@ Auditing: Minify CSS
 Auditing: Minify JavaScript
 Auditing: Remove unused CSS
 Auditing: Remove unused JavaScript
+Computing artifact: JSBundles
 Auditing: Serve images in next-gen formats
 Auditing: Efficiently encode images
 Auditing: Enable text compression
@@ -317,6 +322,7 @@ Auditing: Document has a meta description
 Auditing: Page has successful HTTP status code
 Auditing: Document uses legible font sizes
 Auditing: Links have descriptive text
+Auditing: Links are crawlable
 Auditing: Page isn’t blocked from indexing
 Auditing: robots.txt is valid
 Auditing: Tap targets are sized appropriately
@@ -328,7 +334,7 @@ Generating results...
 
 =============== Lighthouse Results ===============
 URL: http://127.0.0.1:8000/devtools/lighthouse/resources/lighthouse-basic.html
-Version: 6.0.0
+Version: 6.1.0
 TestedAsMobileDevice: true
 ViewportDimensions: {
   "innerWidth": 980,
@@ -360,6 +366,7 @@ canonical: notApplicable
 charset: fail
 color-contrast: pass
 content-width: fail
+crawlable-anchors: pass
 critical-request-chains: notApplicable
 cumulative-layout-shift: numeric
 custom-controls-labels: manual
@@ -406,7 +413,7 @@ js-libraries: pass
 label: notApplicable
 largest-contentful-paint: numeric
 largest-contentful-paint-element: informative
-layout-shift-elements: informative
+layout-shift-elements: notApplicable
 layout-table: notApplicable
 link-name: notApplicable
 link-text: pass
@@ -414,6 +421,7 @@ list: notApplicable
 listitem: notApplicable
 load-fast-enough-for-pwa: flaky
 logical-tab-order: manual
+long-tasks: informative
 main-thread-tasks: informative
 mainthread-work-breakdown: numeric
 managed-focus: manual
@@ -482,5 +490,5 @@ visual-order-follows-dom: manual
 without-javascript: pass
 works-offline: fail
 
-# of .lh-audit divs: 126
+# of .lh-audit divs: 128
 

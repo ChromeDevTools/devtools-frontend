@@ -339,21 +339,34 @@ export class CoverageView extends UI.Widget.VBox {
   }
 
   _updateStats() {
-    let total = 0;
-    let unused = 0;
+    const all = {total: 0, unused: 0};
+    const filtered = {total: 0, unused: 0};
+    let filterApplied = false;
     for (const info of this._model.entries()) {
-      if (!this._isVisible(true, info)) {
-        continue;
+      all.total += info.size();
+      all.unused += info.unusedSize();
+      if (this._isVisible(false, info)) {
+        filtered.total += info.size();
+        filtered.unused += info.unusedSize();
+      } else {
+        filterApplied = true;
       }
-      total += info.size();
-      unused += info.unusedSize();
     }
+    this._statusMessageElement.textContent =
+        filterApplied ? ls`Filtered: ${formatStat(filtered)}  Total: ${formatStat(all)}` : formatStat(all);
 
-    const used = total - unused;
-    const percentUsed = total ? Math.round(100 * used / total) : 0;
-    this._statusMessageElement.textContent = ls`${Platform.NumberUtilities.bytesToString(used)} of ${
-        Platform.NumberUtilities.bytesToString(total)} (${percentUsed}%) used so far.
+    /**
+     *
+     * @param {!{total: number, unused: number}} stat
+     * @returns {string}
+     */
+    function formatStat({total, unused}) {
+      const used = total - unused;
+      const percentUsed = total ? Math.round(100 * used / total) : 0;
+      return ls`${Platform.NumberUtilities.bytesToString(used)} of ${Platform.NumberUtilities.bytesToString(total)} (${
+          percentUsed}%) used so far,
         ${Platform.NumberUtilities.bytesToString(unused)} unused.`;
+    }
   }
 
   _onFilterChanged() {

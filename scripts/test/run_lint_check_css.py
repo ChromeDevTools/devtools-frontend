@@ -37,6 +37,8 @@ def main():
     ]
     exec_command.extend(get_css_files_or_glob())
     exec_command.append('--fix')
+    # If all affected files are excluded due to .stylelintignore, exit gracefully
+    exec_command.append('--allow-empty-input')
 
     stylelint_proc = Popen(exec_command, cwd=ROOT_DIRECTORY)
     stylelint_proc.communicate()

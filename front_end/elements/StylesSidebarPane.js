@@ -602,6 +602,9 @@ export class StylesSidebarPane extends ElementsSidebarPane {
       this._decorator.perform();
       this._decorator = null;
     }
+
+    // Record the elements tool load time after the sidepane has loaded.
+    Host.userMetrics.panelLoaded('elements', 'DevTools.Launch.Elements');
   }
 
   /**

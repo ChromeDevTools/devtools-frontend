@@ -27,7 +27,6 @@
  */
 
 import * as Common from '../common/common.js';
-import * as HostModule from '../host/host.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -314,9 +313,6 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     metricsElement.addEventListener('mouseover', this._highlightDOMNode.bind(this, false, 'all'), false);
     this.contentElement.removeChildren();
     this.contentElement.appendChild(metricsElement);
-
-    // Record the elements tool load time after the sidepane has loaded.
-    HostModule.userMetrics.panelLoaded('elements', 'DevTools.Launch.Elements');
   }
 
   /**

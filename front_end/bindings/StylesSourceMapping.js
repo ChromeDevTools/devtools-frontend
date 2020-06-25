@@ -73,7 +73,7 @@ export class StylesSourceMapping {
     if (!header || !this._acceptsHeader(header)) {
       return null;
     }
-    const styleFile = this._styleFiles.get(header.resourceURL());
+    const styleFile = this._styleFiles.get(this._headerFileId(header));
     if (!styleFile) {
       return null;
     }
@@ -123,6 +123,16 @@ export class StylesSourceMapping {
   }
 
   /**
+   * @param {!SDK.CSSStyleSheetHeader.CSSStyleSheetHeader} header
+   */
+  _headerFileId(header) {
+    if (header.isMutable) {
+      return header.id;
+    }
+    return header.resourceURL();
+  }
+
+  /**
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _styleSheetAdded(event) {
@@ -131,11 +141,10 @@ export class StylesSourceMapping {
       return;
     }
 
-    const url = header.resourceURL();
-    let styleFile = this._styleFiles.get(url);
+    let styleFile = this._styleFiles.get(this._headerFileId(header));
     if (!styleFile) {
       styleFile = new StyleFile(this._cssModel, this._project, header);
-      this._styleFiles.set(url, styleFile);
+      this._styleFiles.set(this._headerFileId(header), styleFile);
     } else {
       styleFile.addHeader(header);
     }
@@ -149,11 +158,10 @@ export class StylesSourceMapping {
     if (!this._acceptsHeader(header)) {
       return;
     }
-    const url = header.resourceURL();
-    const styleFile = this._styleFiles.get(url);
+    const styleFile = this._styleFiles.get(this._headerFileId(header));
     if (styleFile._headers.size === 1) {
       styleFile.dispose();
-      this._styleFiles.delete(url);
+      this._styleFiles.delete(this._headerFileId(header));
     } else {
       styleFile.removeHeader(header);
     }
@@ -167,7 +175,7 @@ export class StylesSourceMapping {
     if (!header || !this._acceptsHeader(header)) {
       return;
     }
-    const styleFile = this._styleFiles.get(header.resourceURL());
+    const styleFile = this._styleFiles.get(this._headerFileId(header));
     styleFile._styleSheetChanged(header);
   }
 

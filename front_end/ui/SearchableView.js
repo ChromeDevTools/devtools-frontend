@@ -71,7 +71,8 @@ export class SearchableView extends VBox {
     const searchControlElement = searchInputElements.createChild('div', 'toolbar-search-control');
 
     this._searchInputElement = HistoryInput.create();
-    this._searchInputElement.classList.add('search-replace');
+    this._searchInputElement.type = 'search';
+    this._searchInputElement.classList.add('search-replace', 'custom-search-input');
     this._searchInputElement.id = 'search-input-field';
     this._searchInputElement.placeholder = Common.UIString.UIString('Find');
     searchControlElement.appendChild(this._searchInputElement);

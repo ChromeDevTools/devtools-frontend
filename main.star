@@ -51,6 +51,8 @@ luci.project(
   ],
 )
 
+luci.notify(tree_closing_enabled = True)
+
 EXCLUDED_STEPS = [
   'Failure reason',
   'steps',

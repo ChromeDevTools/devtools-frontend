@@ -1854,7 +1854,7 @@ export class BreakpointDecoration {
     this.enabled = enabled;
     this.bound = bound;
     this.breakpoint = breakpoint;
-    this.element = createElement('span');
+    this.element = document.createElement('span');
     this.element.classList.toggle('cm-inline-breakpoint', true);
 
     /** @type {?TextEditor.CodeMirrorTextEditor.TextEditorBookMark} */

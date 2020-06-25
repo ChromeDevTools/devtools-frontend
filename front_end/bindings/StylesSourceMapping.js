@@ -73,7 +73,7 @@ export class StylesSourceMapping {
     if (!header || !this._acceptsHeader(header)) {
       return null;
     }
-    const styleFile = this._styleFiles.get(this._headerFileId(header));
+    const styleFile = this._styleFiles.get(header.resourceURL());
     if (!styleFile) {
       return null;
     }
@@ -113,6 +113,9 @@ export class StylesSourceMapping {
    * @param {!SDK.CSSStyleSheetHeader.CSSStyleSheetHeader} header
    */
   _acceptsHeader(header) {
+    if (header.isMutable) {
+      return false;
+    }
     if (header.isInline && !header.hasSourceURL && header.origin !== 'inspector') {
       return false;
     }
@@ -120,16 +123,6 @@ export class StylesSourceMapping {
       return false;
     }
     return true;
-  }
-
-  /**
-   * @param {!SDK.CSSStyleSheetHeader.CSSStyleSheetHeader} header
-   */
-  _headerFileId(header) {
-    if (header.isMutable) {
-      return header.id;
-    }
-    return header.resourceURL();
   }
 
   /**
@@ -141,10 +134,11 @@ export class StylesSourceMapping {
       return;
     }
 
-    let styleFile = this._styleFiles.get(this._headerFileId(header));
+    const url = header.resourceURL();
+    let styleFile = this._styleFiles.get(url);
     if (!styleFile) {
       styleFile = new StyleFile(this._cssModel, this._project, header);
-      this._styleFiles.set(this._headerFileId(header), styleFile);
+      this._styleFiles.set(url, styleFile);
     } else {
       styleFile.addHeader(header);
     }
@@ -158,10 +152,11 @@ export class StylesSourceMapping {
     if (!this._acceptsHeader(header)) {
       return;
     }
-    const styleFile = this._styleFiles.get(this._headerFileId(header));
+    const url = header.resourceURL();
+    const styleFile = this._styleFiles.get(url);
     if (styleFile._headers.size === 1) {
       styleFile.dispose();
-      this._styleFiles.delete(this._headerFileId(header));
+      this._styleFiles.delete(url);
     } else {
       styleFile.removeHeader(header);
     }
@@ -175,7 +170,7 @@ export class StylesSourceMapping {
     if (!header || !this._acceptsHeader(header)) {
       return;
     }
-    const styleFile = this._styleFiles.get(this._headerFileId(header));
+    const styleFile = this._styleFiles.get(header.resourceURL());
     styleFile._styleSheetChanged(header);
   }
 

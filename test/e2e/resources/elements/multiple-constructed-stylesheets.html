@@ -1,0 +1,14 @@
+<!--
+  Copyright 2020 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<div class="rule1 rule2"></div>
+<script>
+  const sheet1 = new CSSStyleSheet();
+  sheet1.insertRule('.rule1 { background-color: rgb(255, 0, 0);  }', 0);
+  const sheet2 = new CSSStyleSheet();
+  sheet2.insertRule('.rule2 { background-color: rgb(0, 0, 0); color: rgb(255, 0, 0); }', 0);
+  document.adoptedStyleSheets = [sheet1, sheet2];
+</script>

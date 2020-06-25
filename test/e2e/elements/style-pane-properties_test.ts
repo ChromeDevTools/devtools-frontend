@@ -7,12 +7,14 @@ import {describe, it} from 'mocha';
 import * as puppeteer from 'puppeteer';
 
 import {click, getBrowserAndPages, goToResource, waitFor} from '../../shared/helper.js';
-import {assertContentOfSelectedElementsNode, getAriaLabelSelectorFromPropertiesSelector, getCSSPropertySwatchStyle, getDisplayedCSSPropertyNames, getDisplayedStyleRules, getStyleSectionSubtitles, waitForElementsStyleSection, waitForStyleRule} from '../helpers/elements-helpers.js';
+import {assertContentOfSelectedElementsNode, getAriaLabelSelectorFromPropertiesSelector, getComputedStylesForDomNode, getCSSPropertySwatchStyle, getDisplayedCSSPropertyNames, getDisplayedStyleRules, getStyleSectionSubtitles, waitForElementsStyleSection, waitForStyleRule} from '../helpers/elements-helpers.js';
 
 const PROPERTIES_TO_DELETE_SELECTOR = '#properties-to-delete';
 const PROPERTIES_TO_INSPECT_SELECTOR = '#properties-to-inspect';
 const FIRST_PROPERTY_NAME_SELECTOR = '.tree-outline li:nth-of-type(1) > .webkit-css-property';
 const SECOND_PROPERTY_NAME_SELECTOR = '.tree-outline li:nth-of-type(2) > .webkit-css-property';
+const RULE1_SELECTOR = '.rule1';
+const RULE2_SELECTOR = '.rule2';
 
 const deletePropertyByBackspace = async (selector: string, root?: puppeteer.JSHandle<any>) => {
   const {frontend} = getBrowserAndPages();
@@ -144,5 +146,74 @@ describe('The Styles pane', async () => {
           {selectorText: 'div', propertyNames: ['display']},
         ],
         'The correct rule is displayed');
+  });
+
+  it('can edit multiple constructed stylesheets', async () => {
+    const {frontend} = getBrowserAndPages();
+
+    await goToResource('elements/multiple-constructed-stylesheets.html');
+    await waitForElementsStyleSection();
+
+    // Sanity check to make sure we have the correct node selected after opening a file.
+    await assertContentOfSelectedElementsNode('<body>\u200B');
+
+    // Select div that we will remove a CSS property from.
+    await frontend.keyboard.press('ArrowRight');
+    await assertContentOfSelectedElementsNode('<div class=\u200B"rule1 rule2">\u200B</div>\u200B');
+
+    // Verify that initial CSS properties correspond to the ones in the test file.
+    const rule1PropertiesSection = await waitFor(getAriaLabelSelectorFromPropertiesSelector(RULE1_SELECTOR));
+    const rule2PropertiesSection = await waitFor(getAriaLabelSelectorFromPropertiesSelector(RULE2_SELECTOR));
+    {
+      const displayedNames = await getDisplayedCSSPropertyNames(rule1PropertiesSection);
+      assert.deepEqual(
+          displayedNames,
+          [
+            'background-color',
+          ],
+          'incorrectly displayed style after initialization');
+    }
+    {
+      const displayedNames = await getDisplayedCSSPropertyNames(rule2PropertiesSection);
+      assert.deepEqual(
+          displayedNames,
+          [
+            'background-color',
+            'color',
+          ],
+          'incorrectly displayed style after initialization');
+    }
+
+    // Select the first property's name of .rule2 (background-color) and delete.
+    await deletePropertyByBackspace(FIRST_PROPERTY_NAME_SELECTOR, rule2PropertiesSection);
+
+    // Verify that .rule1 has background-color.
+    {
+      const displayedNames = await getDisplayedCSSPropertyNames(rule1PropertiesSection);
+      assert.deepEqual(
+          displayedNames,
+          [
+            'background-color',
+          ],
+          'incorrectly displayed style after property removal');
+    }
+
+    // Verify that .rule2 has background-color removed and only color remains.
+    {
+      const displayedNames = await getDisplayedCSSPropertyNames(rule2PropertiesSection);
+      assert.deepEqual(
+          displayedNames,
+          [
+            'color',
+          ],
+          'incorrectly displayed style after property removal');
+    }
+
+    // Verify that computed styles correspond to the changes made.
+    const computedStyles = [
+      await getComputedStylesForDomNode(RULE1_SELECTOR, 'color'),
+      await getComputedStylesForDomNode(RULE1_SELECTOR, 'background-color'),
+    ];
+    assert.deepEqual(computedStyles, ['rgb(255, 0, 0)', 'rgb(255, 0, 0)'], 'Styles are not correct after the update');
   });
 });

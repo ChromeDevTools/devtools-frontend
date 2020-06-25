@@ -183,6 +183,7 @@
       "actionId": "debugger.toggle-breakpoints-active",
       "iconClass": "largeicon-deactivate-breakpoints",
       "toggleable": true,
+      "toggledIconClass": "largeicon-activate-breakpoints",
       "className": "Sources.SourcesPanel.DebuggingActionDelegate",
       "contextTypes": [
         "Sources.SourcesView"

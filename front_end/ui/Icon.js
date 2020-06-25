@@ -181,6 +181,7 @@ export const Descriptors = {
   'mediumicon-schedule': {position: 'd6', spritesheet: 'mediumicons', isMask: true},
 
   'badge-navigator-file-sync': {position: 'a9', spritesheet: 'largeicons'},
+  'largeicon-activate-breakpoints': {position: 'b9', spritesheet: 'largeicons', isMask: true},
   'largeicon-add': {position: 'a8', spritesheet: 'largeicons', isMask: true},
   'largeicon-camera': {position: 'b7', spritesheet: 'largeicons', isMask: true},
   'largeicon-center': {position: 'c9', spritesheet: 'largeicons', isMask: true},

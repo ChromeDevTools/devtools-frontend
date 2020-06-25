@@ -79,6 +79,12 @@ export const releaseNoteText = [
             'Display JavaScript compilation cache information and align navigation timing in the Performance panel.',
         link: 'https://developers.google.com/web/updates/2020/06/devtools#perf-panel',
       },
+      {
+        title: 'New icons for breakpoints, conditional breakpoints, and logpoints',
+        subtitle:
+            'Breakpoints get a refreshed flag design with brighter and friendlier colors. Icons are added to differentiate conditional breakpoints and logpoints.',
+        link: 'https://developers.google.com/web/updates/2020/06/devtools#breakpoints',
+      },
     ],
     link: 'https://developers.google.com/web/updates/2020/06/devtools',
   },

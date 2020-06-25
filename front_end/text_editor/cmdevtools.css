@@ -116,7 +116,7 @@
 
 .CodeMirror-linenumber {
   color: hsl(0deg 0% 46%);
-  padding: 0 3px 0 9px;
+  padding: 0 3px 0 8px;
   min-width: 28px;
   text-align: right;
   white-space: nowrap;
@@ -178,93 +178,63 @@
 .-theme-preserve {
   border-width: 1px 4px 1px 1px;
   padding-right: 3px;
-  padding-left: 8px;
+  padding-left: 6px;
   height: 11px;
   line-height: 12px;
   border-style: solid;
-  position: relative;
-  /* The line number jumps slightly on hover when the minify banner is showing
-     if this fractional value is not there. */
-  top: -0.15px;
-}
-
-.CodeMirror-linenumber:hover {
-  -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%23ebeced" stroke="%23ebeced"/></svg>') 1 3 1 1;
-  padding-left: 8px;
-}
-
-:host-context(.-theme-with-dark-background) .CodeMirror-linenumber:hover,
-.-theme-with-dark-background .CodeMirror-linenumber:hover {
-  -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%233c4043" stroke="%233c4043"/></svg>') 1 3 1 1;
 }
 
 .cm-breakpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber, .-theme-preserve {
   color: white;
-  -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%234285f4" stroke="%231a73e8"/></svg>') 1 3 1 1;
+  -webkit-border-image: url("data:image/svg+xml,%3Csvg height='11' width='26' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M22.8.5l2.7 5-2.7 5H.5V.5z' fill='%234285f4' stroke='%231a73e8'/%3E%3C/svg%3E") 1 3 1 1;
+}
+
+.CodeMirror-linenumber:hover {
+  -webkit-border-image: url("data:image/svg+xml,%3Csvg height='11' width='26' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M22.8.5l2.7 5-2.7 5H.5V.5z' fill='%23ebeced' stroke='%23ebeced' /%3E%3C/svg%3E") 1 3 1 1;
+}
+
+:host-context(.-theme-with-dark-background) .CodeMirror-linenumber:hover,
+.-theme-with-dark-background .CodeMirror-linenumber:hover {
+  -webkit-border-image: url("data:image/svg+xml,%3Csvg height='11' width='26' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M22.8.5l2.7 5-2.7 5H.5V.5z' fill='%233c4043' stroke='%233c4043' /%3E%3C/svg%3E") 1 3 1 1;
 }
 
 .cm-breakpoint-disabled .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
-.breakpoints-deactivated .cm-breakpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber {
+.breakpoints-deactivated .cm-breakpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber, .-theme-preserve {
   color: #1a73e8;
-  -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%23d9e7fd" stroke="%231a73e8"/></svg>') 1 3 1 1;
-}
-
-:host-context(.-theme-with-dark-background) .cm-breakpoint-disabled .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
-:host-context(.-theme-with-dark-background) .breakpoints-deactivated .cm-breakpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
-.-theme-with-dark-background .cm-breakpoint-disabled .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
-.-theme-with-dark-background .breakpoints-deactivated .cm-breakpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber {
-  color: #1a73e8;
-  -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%232a384e" stroke="%231a73e8"/></svg>') 1 3 1 1;
+  -webkit-border-image: url("data:image/svg+xml,%3Csvg height='11' width='26' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M22.8.5l2.7 5-2.7 5H.5V.5z' fill='%234285f4' fill-opacity='0.2' stroke='%231a73e8'/%3E%3C/svg%3E") 1 3 1 1;
 }
 
 .cm-breakpoint-conditional .CodeMirror-gutter-wrapper .CodeMirror-linenumber, .-theme-preserve {
-  -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%23f29900" stroke="%23e37400"/></svg>') 1 3 1 1;
+  -webkit-border-image: url("data:image/svg+xml,%3Csvg height='11' width='26' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M22.8.5l2.7 5-2.7 5H.5V.5z' fill='%23f29900' stroke='%23e37400'/%3E%3C/svg%3E") 1 3 1 1;
 }
 
 .cm-breakpoint-disabled.cm-breakpoint-conditional .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
-.breakpoints-deactivated .cm-breakpoint-conditional .CodeMirror-gutter-wrapper .CodeMirror-linenumber {
+.breakpoints-deactivated .cm-breakpoint-conditional .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
+.-theme-preserve {
   color: #e37400;
-  -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%23fcebcc" stroke="%23e37400"/></svg>') 1 3 1 1;
-}
-
-:host-context(.-theme-with-dark-background) .cm-breakpoint-disabled.cm-breakpoint-conditional .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
-:host-context(.-theme-with-dark-background) .breakpoints-deactivated .cm-breakpoint-conditional .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
-.-theme-with-dark-background .cm-breakpoint-disabled.cm-breakpoint-conditional .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
-.-theme-with-dark-background .breakpoints-deactivated .cm-breakpoint-conditional .CodeMirror-gutter-wrapper .CodeMirror-linenumber {
-  color: #e37400;
-  -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%234d3c1d" stroke="%23e37400"/></svg>') 1 3 1 1;
+  -webkit-border-image: url("data:image/svg+xml,%3Csvg height='11' width='26' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M22.8.5l2.7 5-2.7 5H.5V.5z' fill='%23f29900' fill-opacity='0.2' stroke='%23e37400'/%3E%3C/svg%3E") 1 3 1 1;
 }
 
 .cm-breakpoint-logpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber, .-theme-preserve {
-  -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%23f439a0" stroke="%23d01884"/></svg>') 1 3 1 1;
+  -webkit-border-image: url("data:image/svg+xml,%3Csvg height='11' width='26' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M22.8.5l2.7 5-2.7 5H.5V.5z' fill='%23f439a0' stroke='%23d01884'/%3E%3C/svg%3E") 1 3 1 1;
 }
 
 .cm-breakpoint-disabled.cm-breakpoint-logpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
-.breakpoints-deactivated .cm-breakpoint-logpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber {
+.breakpoints-deactivated .cm-breakpoint-logpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber, .-theme-preserve {
   color: #d01884;
-  -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%23fdd7ec" stroke="%23f439a0"/></svg>') 1 3 1 1;
-}
-
-:host-context(.-theme-with-dark-background) .cm-breakpoint-disabled.cm-breakpoint-logpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
-:host-context(.-theme-with-dark-background) .breakpoints-deactivated .cm-breakpoint-logpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
-.-theme-with-dark-background .cm-breakpoint-disabled.cm-breakpoint-logpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
-.-theme-with-dark-background .breakpoints-deactivated .cm-breakpoint-logpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber {
-  color: #d01884;
-  -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%234e283d" stroke="%23f439a0"/></svg>') 1 3 1 1;
+  -webkit-border-image: url("data:image/svg+xml,%3Csvg height='11' width='26' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M22.8.5l2.7 5-2.7 5H.5V.5z' fill='%23f439a0' fill-opacity='0.2' stroke='%23f439a0'/%3E%3C/svg%3E") 1 3 1 1;
 }
 
 .cm-breakpoint-conditional .CodeMirror-gutter-wrapper .CodeMirror-linenumber::before, .-theme-preserve {
   content: "?";
-  position: absolute;
-  top: 0px;
-  left: 1px;
+  padding-right: 2px;
+  margin-left: -7px;
 }
 
 .cm-breakpoint-logpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber::before, .-theme-preserve {
   content: "‥";
-  position: absolute;
-  top: -3px;
-  left: 1px;
+  padding-right: 2px;
+  margin-left: -7px;
 }
 
 .cm-non-breakable-line .CodeMirror-linenumber {
@@ -275,31 +245,31 @@
   cursor: pointer;
   position: relative;
   top: 1px;
-  content: url('data:image/svg+xml,<svg width="11" height="12" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.5 0.5H5.80139C6.29382 0.5 6.7549 0.741701 7.03503 1.14669L10.392 6L7.03503 10.8533C6.7549 11.2583 6.29382 11.5 5.80139 11.5H0.5V0.5Z" fill="%234285F4" stroke="%231A73E8"/></svg>');
+  content: url("data:image/svg+xml,%3Csvg width='11' height='12' viewBox='0 0 11 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0.5 0.5H5.80139C6.29382 0.5 6.7549 0.741701 7.03503 1.14669L10.392 6L7.03503 10.8533C6.7549 11.2583 6.29382 11.5 5.80139 11.5H0.5V0.5Z' fill='%234285F4' stroke='%231A73E8'/%3E%3C/svg%3E ");
   height: 10px;
 }
 
 .cm-inline-breakpoint.cm-inline-disabled,
 .breakpoints-deactivated .cm-inline-breakpoint {
-  content: url('data:image/svg+xml,<svg width="11" height="12" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.5 0.5H5.80139C6.29382 0.5 6.7549 0.741701 7.03503 1.14669L10.392 6L7.03503 10.8533C6.7549 11.2583 6.29382 11.5 5.80139 11.5H0.5V0.5Z" fill="%234285F4" fill-opacity="0.2" stroke="%231A73E8"/></svg>');
+  content: url("data:image/svg+xml,%3Csvg width='11' height='12' viewBox='0 0 11 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0.5 0.5H5.80139C6.29382 0.5 6.7549 0.741701 7.03503 1.14669L10.392 6L7.03503 10.8533C6.7549 11.2583 6.29382 11.5 5.80139 11.5H0.5V0.5Z' fill='%234285F4' fill-opacity='0.2' stroke='%231A73E8'/%3E%3C/svg%3E");
 }
 
 .cm-inline-breakpoint.cm-inline-breakpoint-conditional {
-  content: url('data:image/svg+xml,<svg width="11" height="12" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.5 0.5H5.80139C6.29382 0.5 6.75489 0.741701 7.03503 1.14669L10.392 6L7.03503 10.8533C6.75489 11.2583 6.29382 11.5 5.80138 11.5H0.5V0.5Z" fill="%23F29900" stroke="%23E37400"/><path d="M3.51074 7.75635H4.68408V9H3.51074V7.75635ZM4.68408 7.23779H3.51074V6.56104C3.51074 6.271 3.55615 6.02344 3.64697 5.81836C3.73779 5.61328 3.90039 5.39648 4.13477 5.16797L4.53027 4.77686C4.71484 4.59814 4.83936 4.4502 4.90381 4.33301C4.97119 4.21582 5.00488 4.09424 5.00488 3.96826C5.00488 3.77197 4.9375 3.62402 4.80273 3.52441C4.66797 3.4248 4.46582 3.375 4.19629 3.375C3.9502 3.375 3.69238 3.42773 3.42285 3.5332C3.15625 3.63574 2.88232 3.78955 2.60107 3.99463V2.81689C2.88818 2.65283 3.17822 2.52979 3.47119 2.44775C3.76709 2.36279 4.06299 2.32031 4.35889 2.32031C4.95068 2.32031 5.41504 2.45801 5.75195 2.7334C6.08887 3.00879 6.25732 3.38818 6.25732 3.87158C6.25732 4.09424 6.20752 4.30225 6.10791 4.49561C6.0083 4.68604 5.8208 4.91602 5.54541 5.18555L5.15869 5.56348C4.95947 5.75684 4.83203 5.91504 4.77637 6.03809C4.7207 6.16113 4.69287 6.31201 4.69287 6.49072C4.69287 6.51709 4.69141 6.54785 4.68848 6.58301C4.68848 6.61816 4.68701 6.65625 4.68408 6.69727V7.23779Z" fill="white"/></svg>');
+  content: url("data:image/svg+xml,%3Csvg width='11' height='12' viewBox='0 0 11 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0.5 0.5H5.80139C6.29382 0.5 6.75489 0.741701 7.03503 1.14669L10.392 6L7.03503 10.8533C6.75489 11.2583 6.29382 11.5 5.80138 11.5H0.5V0.5Z' fill='%23F29900' stroke='%23E37400'/%3E%3Cpath d='M3.51074 7.75635H4.68408V9H3.51074V7.75635ZM4.68408 7.23779H3.51074V6.56104C3.51074 6.271 3.55615 6.02344 3.64697 5.81836C3.73779 5.61328 3.90039 5.39648 4.13477 5.16797L4.53027 4.77686C4.71484 4.59814 4.83936 4.4502 4.90381 4.33301C4.97119 4.21582 5.00488 4.09424 5.00488 3.96826C5.00488 3.77197 4.9375 3.62402 4.80273 3.52441C4.66797 3.4248 4.46582 3.375 4.19629 3.375C3.9502 3.375 3.69238 3.42773 3.42285 3.5332C3.15625 3.63574 2.88232 3.78955 2.60107 3.99463V2.81689C2.88818 2.65283 3.17822 2.52979 3.47119 2.44775C3.76709 2.36279 4.06299 2.32031 4.35889 2.32031C4.95068 2.32031 5.41504 2.45801 5.75195 2.7334C6.08887 3.00879 6.25732 3.38818 6.25732 3.87158C6.25732 4.09424 6.20752 4.30225 6.10791 4.49561C6.0083 4.68604 5.8208 4.91602 5.54541 5.18555L5.15869 5.56348C4.95947 5.75684 4.83203 5.91504 4.77637 6.03809C4.7207 6.16113 4.69287 6.31201 4.69287 6.49072C4.69287 6.51709 4.69141 6.54785 4.68848 6.58301C4.68848 6.61816 4.68701 6.65625 4.68408 6.69727V7.23779Z' fill='white'/%3E%3C/svg%3E ");
 }
 
 .cm-inline-breakpoint.cm-inline-breakpoint-conditional.cm-inline-disabled,
 .breakpoints-deactivated .cm-inline-breakpoint.cm-inline-breakpoint-conditional {
-  content: url('data:image/svg+xml,<svg width="11" height="12" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.5 0.5H5.80139C6.29382 0.5 6.75489 0.741701 7.03503 1.14669L10.392 6L7.03503 10.8533C6.75489 11.2583 6.29382 11.5 5.80138 11.5H0.5V0.5Z" fill="%23F9AB00" fill-opacity="0.2" stroke="%23E37400"/><path d="M3.51074 7.75635H4.68408V9H3.51074V7.75635ZM4.68408 7.23779H3.51074V6.56104C3.51074 6.271 3.55615 6.02344 3.64697 5.81836C3.73779 5.61328 3.90039 5.39648 4.13477 5.16797L4.53027 4.77686C4.71484 4.59814 4.83936 4.4502 4.90381 4.33301C4.97119 4.21582 5.00488 4.09424 5.00488 3.96826C5.00488 3.77197 4.9375 3.62402 4.80273 3.52441C4.66797 3.4248 4.46582 3.375 4.19629 3.375C3.9502 3.375 3.69238 3.42773 3.42285 3.5332C3.15625 3.63574 2.88232 3.78955 2.60107 3.99463V2.81689C2.88818 2.65283 3.17822 2.52979 3.47119 2.44775C3.76709 2.36279 4.06299 2.32031 4.35889 2.32031C4.95068 2.32031 5.41504 2.45801 5.75195 2.7334C6.08887 3.00879 6.25732 3.38818 6.25732 3.87158C6.25732 4.09424 6.20752 4.30225 6.10791 4.49561C6.0083 4.68604 5.8208 4.91602 5.54541 5.18555L5.15869 5.56348C4.95947 5.75684 4.83203 5.91504 4.77637 6.03809C4.7207 6.16113 4.69287 6.31201 4.69287 6.49072C4.69287 6.51709 4.69141 6.54785 4.68848 6.58301C4.68848 6.61816 4.68701 6.65625 4.68408 6.69727V7.23779Z" fill="%23E37400"/></svg>');
+  content: url("data:image/svg+xml,%3Csvg width='11' height='12' viewBox='0 0 11 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0.5 0.5H5.80139C6.29382 0.5 6.75489 0.741701 7.03503 1.14669L10.392 6L7.03503 10.8533C6.75489 11.2583 6.29382 11.5 5.80138 11.5H0.5V0.5Z' fill='%23F9AB00' fill-opacity='0.2' stroke='%23E37400'/%3E%3Cpath d='M3.51074 7.75635H4.68408V9H3.51074V7.75635ZM4.68408 7.23779H3.51074V6.56104C3.51074 6.271 3.55615 6.02344 3.64697 5.81836C3.73779 5.61328 3.90039 5.39648 4.13477 5.16797L4.53027 4.77686C4.71484 4.59814 4.83936 4.4502 4.90381 4.33301C4.97119 4.21582 5.00488 4.09424 5.00488 3.96826C5.00488 3.77197 4.9375 3.62402 4.80273 3.52441C4.66797 3.4248 4.46582 3.375 4.19629 3.375C3.9502 3.375 3.69238 3.42773 3.42285 3.5332C3.15625 3.63574 2.88232 3.78955 2.60107 3.99463V2.81689C2.88818 2.65283 3.17822 2.52979 3.47119 2.44775C3.76709 2.36279 4.06299 2.32031 4.35889 2.32031C4.95068 2.32031 5.41504 2.45801 5.75195 2.7334C6.08887 3.00879 6.25732 3.38818 6.25732 3.87158C6.25732 4.09424 6.20752 4.30225 6.10791 4.49561C6.0083 4.68604 5.8208 4.91602 5.54541 5.18555L5.15869 5.56348C4.95947 5.75684 4.83203 5.91504 4.77637 6.03809C4.7207 6.16113 4.69287 6.31201 4.69287 6.49072C4.69287 6.51709 4.69141 6.54785 4.68848 6.58301C4.68848 6.61816 4.68701 6.65625 4.68408 6.69727V7.23779Z' fill='%23E37400'/%3E%3C/svg%3E%0A");
 }
 
 .cm-inline-breakpoint.cm-inline-logpoint {
-  content: url('data:image/svg+xml,<svg width="11" height="12" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.5 0.5H5.80139C6.29382 0.5 6.7549 0.741701 7.03503 1.14669L10.392 6L7.03503 10.8533C6.7549 11.2583 6.29382 11.5 5.80139 11.5H0.5V0.5Z" fill="%23F439A0" stroke="%23D01884"/><circle cx="3" cy="6" r="1" fill="white"/><circle cx="7" cy="6" r="1" fill="white"/></svg>');
+  content: url("data:image/svg+xml,%3Csvg width='11' height='12' viewBox='0 0 11 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0.5 0.5H5.80139C6.29382 0.5 6.7549 0.741701 7.03503 1.14669L10.392 6L7.03503 10.8533C6.7549 11.2583 6.29382 11.5 5.80139 11.5H0.5V0.5Z' fill='%23F439A0' stroke='%23D01884'/%3E%3Ccircle cx='3' cy='6' r='1' fill='white'/%3E%3Ccircle cx='7' cy='6' r='1' fill='white'/%3E%3C/svg%3E ");
 }
 
 .cm-inline-breakpoint.cm-inline-logpoint.cm-inline-disabled,
 .breakpoints-deactivated .cm-inline-breakpoint.cm-inline-logpoint {
-  content: url('data:image/svg+xml,<svg width="11" height="12" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.5 0.5H5.80139C6.29382 0.5 6.7549 0.741701 7.03503 1.14669L10.392 6L7.03503 10.8533C6.7549 11.2583 6.29382 11.5 5.80139 11.5H0.5V0.5Z" fill="%23F439A0" fill-opacity="0.2" stroke="%23D01884"/><circle cx="3" cy="6" r="1" fill="%23D01884"/><circle cx="7" cy="6" r="1" fill="%23D01884"/></svg>');
+  content: url("data:image/svg+xml,%3Csvg width='11' height='12' viewBox='0 0 11 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0.5 0.5H5.80139C6.29382 0.5 6.7549 0.741701 7.03503 1.14669L10.392 6L7.03503 10.8533C6.7549 11.2583 6.29382 11.5 5.80139 11.5H0.5V0.5Z' fill='%23F439A0' fill-opacity='0.2' stroke='%23D01884'/%3E%3Ccircle cx='3' cy='6' r='1' fill='%23D01884'/%3E%3Ccircle cx='7' cy='6' r='1' fill='%23D01884'/%3E%3C/svg%3E%0A");
 }
 
 .cm-execution-line-tail + .CodeMirror-widget {

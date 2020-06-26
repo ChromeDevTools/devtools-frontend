@@ -208,9 +208,12 @@ export class Script {
                   return {content: null, error: ls`Script removed or deleted.`, isEncoded: false};
                 }
                 try {
-                  const {scriptSource, bytecode} =
-                      await this.debuggerModel.target().debuggerAgent().invoke_getScriptSource(
-                          {scriptId: this.scriptId});
+                  const result = await this.debuggerModel.target().debuggerAgent().invoke_getScriptSource(
+                      {scriptId: this.scriptId});
+                  if (result.getError()) {
+                    throw new Error(result.getError());
+                  }
+                  const {scriptSource, bytecode} = result;
                   if (bytecode) {
                     return {content: bytecode, isEncoded: true};
                   }

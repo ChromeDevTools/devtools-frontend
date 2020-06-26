@@ -24,6 +24,10 @@ interface String {
   filterRegex(query: string): RegExp;
 }
 
+interface NumberConstructor {
+  withThousandsSeparator(num: number): string
+}
+
 declare let ls: (template: ITemplateArray, ...args: any[]) => string;
 
 declare namespace Runtime {

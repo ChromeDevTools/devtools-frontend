@@ -11,6 +11,7 @@ copy_to_gen("elements") {
     "element-breadcrumbs.html",
     "focus.html",
     "hover.html",
+    "multiple-constructed-stylesheets.html",
     "selection-after-delete.html",
     "shadow-roots.html",
     "sidebar-event-listeners.html",

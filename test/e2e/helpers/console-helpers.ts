@@ -16,6 +16,9 @@ export const CONSOLE_VIEW_SELECTOR = '.console-view';
 export const STACK_PREVIEW_CONTAINER = '.stack-preview-container';
 
 export async function getConsoleMessages(testName: string, callback?: (page: puppeteer.Page) => Promise<void>) {
+  // Ensure Console is loaded before the page is loaded to avoid a race condition.
+  await getCurrentConsoleMessages();
+
   // Have the target load the page.
   await goToResource(`console/${testName}.html`);
 

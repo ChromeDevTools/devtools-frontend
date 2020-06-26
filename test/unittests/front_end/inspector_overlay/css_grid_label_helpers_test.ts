@@ -6,7 +6,7 @@ const {assert} = chai;
 
 import {assertNotNull} from '../helpers/DOMHelpers.js';
 import {drawGridNumbersAndAssertLabels, getGridLabelContainer, initFrameForGridLabels} from '../helpers/InspectorOverlayHelpers.js';
-import {drawGridNumbers} from '../../../../front_end/inspector_overlay/css_grid_label_helpers.js';
+import {drawGridNumbers, _normalizeOffsetData} from '../../../../front_end/inspector_overlay/css_grid_label_helpers.js';
 
 describe('drawGridNumbers label creation', () => {
   beforeEach(initFrameForGridLabels);
@@ -341,5 +341,81 @@ describe('drawGridNumbers label skipping logic', () => {
           {className: 'left-top', count: 1},
           {className: 'left-bottom', count: 1},
         ]);
+  });
+});
+
+describe('_normalizeOffsetData', () => {
+  it('returns an object with default values', () => {
+    const data = _normalizeOffsetData({}, {minX: 0, maxX: 100, minY: 0, maxY: 100});
+    assert.deepStrictEqual(data, {
+      bounds: {
+        minX: 0,
+        maxX: 100,
+        minY: 0,
+        maxY: 100,
+        width: 100,
+        height: 100,
+      },
+      rows: {
+        positive: {
+          offsets: [],
+          hasFirst: false,
+          hasLast: false,
+        },
+        negative: {
+          offsets: [],
+          hasFirst: false,
+          hasLast: false,
+        },
+      },
+      columns: {
+        positive: {
+          offsets: [],
+          hasFirst: false,
+          hasLast: false,
+        },
+        negative: {
+          offsets: [],
+          hasFirst: false,
+          hasLast: false,
+        },
+      },
+    });
+  });
+
+  it('rounds offsets', () => {
+    const data = _normalizeOffsetData(
+        {
+          positiveRowLineNumberOffsets: [1.54, 5.89, 10, 123.7564353278],
+          negativeRowLineNumberOffsets: [3, 6.3265, 28.463532, 50],
+          positiveColumnLineNumberOffsets: [0.654535365378, 1.1323256, 1.896057],
+          negativeColumnLineNumberOffsets: [2, 6, 10.564543],
+        },
+        {minX: 0, maxX: 100, minY: 0, maxY: 100});
+
+    assert.deepStrictEqual(data.rows.positive.offsets, [2, 6, 10, 124]);
+    assert.deepStrictEqual(data.rows.negative.offsets, [3, 6, 28, 50]);
+    assert.deepStrictEqual(data.columns.positive.offsets, [1, 1, 2]);
+    assert.deepStrictEqual(data.columns.negative.offsets, [2, 6, 11]);
+  });
+
+  it('detects first and last offsets', () => {
+    const data = _normalizeOffsetData(
+        {
+          positiveRowLineNumberOffsets: [0, 10, 20],
+          negativeRowLineNumberOffsets: [10, 20, 30],
+          positiveColumnLineNumberOffsets: [10, 20],
+          negativeColumnLineNumberOffsets: [0, 30],
+        },
+        {minX: 0, maxX: 30, minY: 0, maxY: 30});
+
+    assert.isTrue(data.rows.positive.hasFirst);
+    assert.isFalse(data.rows.positive.hasLast);
+    assert.isFalse(data.rows.negative.hasFirst);
+    assert.isTrue(data.rows.negative.hasLast);
+    assert.isFalse(data.columns.positive.hasFirst);
+    assert.isFalse(data.columns.positive.hasLast);
+    assert.isTrue(data.columns.negative.hasFirst);
+    assert.isTrue(data.columns.negative.hasLast);
   });
 });

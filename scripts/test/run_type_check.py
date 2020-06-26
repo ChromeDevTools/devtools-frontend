@@ -343,7 +343,8 @@ def prepare_closure_frontend_compile(temp_devtools_path, descriptors, namespace_
             modular_build.write_file(generated_file, '')
             if os.path.basename(generated_file) in [
                     'wasm_source_map.js', 'acorn.mjs', 'acorn-loose.mjs',
-                    'acorn-logical-assignment.mjs'
+                    'acorn-logical-assignment.mjs',
+                    'acorn-numeric-separator.mjs'
             ]:
                 with open(
                         generated_file.replace('.js', '_types.js').replace(

@@ -43,7 +43,7 @@ export function tokenizer(text, options) {}
 
 export class Parser {
   /**
-   * @param {Object} plugins
+   * @param {...Object} plugins
    * @return {Object}
    */
   static extend(plugins) {}

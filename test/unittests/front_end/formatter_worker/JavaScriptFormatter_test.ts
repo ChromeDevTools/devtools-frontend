@@ -41,4 +41,9 @@ describe('JavaScriptFormatter', () => {
     const formattedCode = formatJavaScript('x||=1;');
     assert.strictEqual(formattedCode, 'x ||= 1;\n');
   });
+
+  it('formats numeric separators correctly', () => {
+    const formattedCode = formatJavaScript('x=1_000;');
+    assert.strictEqual(formattedCode, 'x = 1_000;\n');
+  });
 });

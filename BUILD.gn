@@ -1477,6 +1477,7 @@ all_devtools_modules = [
   "third_party/acorn/package/dist/acorn.mjs",
   "third_party/acorn-loose/package/dist/acorn-loose.mjs",
   "third_party/acorn-logical-assignment/package/dist/acorn-logical-assignment.mjs",
+  "third_party/acorn-numeric-separator/package/dist/acorn-numeric-separator.mjs",
   "third_party/codemirror/package/addon/runmode/runmode-standalone.js",
   "third_party/codemirror/package/mode/clike/clike.js",
   "third_party/codemirror/package/mode/clojure/clojure.js",

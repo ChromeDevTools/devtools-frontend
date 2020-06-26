@@ -15,3 +15,5 @@ wget -qO- https://registry.npmjs.org/acorn-numeric-separator/-/acorn-numeric-sep
 
 Local modifications:
 - remove package/.eslintrc.json, causes problems with presubmit
+- add acorn-numeric-separator.mjs.d.ts for TypeScript compiler
+- add acorn-numeric-separator_types.mjs for Closure compiler

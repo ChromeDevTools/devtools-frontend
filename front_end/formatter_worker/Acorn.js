@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import logicalAssignment from '../third_party/acorn-logical-assignment/package/dist/acorn-logical-assignment.mjs';
+import numericSeparator from '../third_party/acorn-numeric-separator/package/dist/acorn-numeric-separator.mjs';
 import * as acorn from '../third_party/acorn/package/dist/acorn.mjs';
 
 // There are a couple of issues faced when trying to closure compiler to
@@ -21,7 +22,7 @@ import * as acorn from '../third_party/acorn/package/dist/acorn.mjs';
 // Would cause type check failures in the callers.
 
 // Extensions return a new Parser class (no mutation).
-const ExtendedParser = acorn.Parser.extend(logicalAssignment);
+const ExtendedParser = acorn.Parser.extend(logicalAssignment, numericSeparator);
 
 /**
  * @typedef {acorn.Token}

@@ -13,5 +13,3 @@ Issues = Issues || {};
 Issues.IssuesPane = IssuesModule.IssuesPane.IssuesPaneImpl;
 
 Issues.IssueRevealer = IssuesModule.IssueRevealer.IssueRevealer;
-
-Issues.IssueAggregator = IssuesModule.IssueAggregator.IssueAggregator;

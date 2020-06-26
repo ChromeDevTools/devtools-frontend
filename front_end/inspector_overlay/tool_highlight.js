@@ -85,7 +85,7 @@ body {
 
 .element-info-header {
   display: flex;
-  align-items: start;
+  align-items: center;
 }
 
 .element-info-body {

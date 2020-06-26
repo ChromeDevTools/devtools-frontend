@@ -760,12 +760,19 @@ export class ResourceTreeFrame {
   }
 
   /**
+   * Returns true if this is the main frame of its target. For example, this returns true for the main frame
+   * of an out-of-process iframe (OOPIF).
    * @return {boolean}
    */
   isMainFrame() {
     return !this._parentFrame;
   }
 
+  /**
+   * Returns true if this is the top frame of the main target, i.e. if this is the top-most frame in the inspected
+   * tab.
+   * @return {boolean}
+   */
   isTopFrame() {
     return !this._parentFrame && !this._crossTargetParentFrameId;
   }

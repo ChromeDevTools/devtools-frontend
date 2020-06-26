@@ -52,7 +52,9 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper {
         resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameAdded, this._frameAdded, this);
     const detachListener =
         resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameDetached, this._frameDetached, this);
-    this._eventListeners.set(resourceTreeModel, [addListener, detachListener]);
+    const navigatedListener =
+        resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated, this);
+    this._eventListeners.set(resourceTreeModel, [addListener, detachListener, navigatedListener]);
     this._framesForTarget.set(resourceTreeModel.target().id(), new Set());
   }
 
@@ -116,6 +118,16 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
+   * @param {!Common.EventTarget.EventTargetEvent} event
+   */
+  _frameNavigated(event) {
+    const frame = /** @type {!SDK.ResourceTreeModel.ResourceTreeFrame} */ (event.data);
+    if (frame.isTopFrame()) {
+      this.dispatchEventToListeners(Events.TopFrameNavigated, {frame});
+    }
+  }
+
+  /**
    * @param {string} frameId
    */
   decreaseOrRemoveFrame(frameId) {
@@ -157,4 +169,5 @@ export const Events = {
   // The FrameRemoved event is only sent when a frame has been detached from
   // all targets.
   FrameRemoved: Symbol('FrameRemoved'),
+  TopFrameNavigated: Symbol('TopFrameNavigated'),
 };

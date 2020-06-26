@@ -485,6 +485,24 @@
     },
     {
       "type": "setting",
+      "category": "Rendering",
+      "settingName": "localFontsDisabled",
+      "settingType": "boolean",
+      "storageType": "session",
+      "options": [
+        {
+          "value": true,
+          "title": "Disable local fonts"
+        },
+        {
+          "value": false,
+          "title": "Enable local fonts"
+        }
+      ],
+      "defaultValue": false
+    },
+    {
+      "type": "setting",
       "category": "Console",
       "title": "Enable custom formatters",
       "settingName": "customFormatters",

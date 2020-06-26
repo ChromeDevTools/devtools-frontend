@@ -67,6 +67,12 @@ export class EmulationModel extends SDKModel {
       this._emulateVisionDeficiency(visionDeficiencySetting.get());
     }
 
+    const localFontsDisabledSetting = Common.Settings.Settings.instance().moduleSetting('localFontsDisabled');
+    localFontsDisabledSetting.addChangeListener(() => this._setLocalFontsDisabled(localFontsDisabledSetting.get()));
+    if (localFontsDisabledSetting.get()) {
+      this._setLocalFontsDisabled(localFontsDisabledSetting.get());
+    }
+
     this._touchEnabled = false;
     this._touchMobile = false;
     this._customTouchEnabled = false;
@@ -193,6 +199,10 @@ export class EmulationModel extends SDKModel {
    */
   _emulateVisionDeficiency(type) {
     this._emulationAgent.setEmulatedVisionDeficiency(type);
+  }
+
+  _setLocalFontsDisabled(disabled) {
+    this._cssModel.setLocalFontsEnabled(!disabled);
   }
 
   /**

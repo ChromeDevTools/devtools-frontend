@@ -63,6 +63,9 @@ export class RenderingOptionsView extends UI.Widget.VBox {
         this._appendCheckbox(
             ls`Hit-test borders`, ls`Shows borders around hit-test regions.`,
             Common.Settings.Settings.instance().moduleSetting('showHitTestBorders'));
+        this._appendCheckbox(
+            ls`Disable local fonts`, ls`Requires a page reload to apply.`,
+            Common.Settings.Settings.instance().moduleSetting('localFontsDisabled'));
         this.contentElement.createChild('div').classList.add('panel-section-separator');
 
         this._appendSelect(

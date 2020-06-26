@@ -105,6 +105,9 @@
   <message name="IDS_DEVTOOLS_d543dbe64db0c952d6e13c9519218b3e" desc="Title of an action in the inspector main tool to hard reload">
     Hard reload page
   </message>
+  <message name="IDS_DEVTOOLS_f0e576f5f713bfcd84dceaf16f785598" desc="Subtitle of the checkbox to disable local fonts in Rendering panel">
+    Requires a page reload to apply.
+  </message>
   <message name="IDS_DEVTOOLS_f23c9ba06e7123f0b4c906de90fbcc9f" desc="Title of a setting under the DevTools category that can be invoked through the Command Menu">
     Auto-open <ph name="LOCKED_1">DevTools</ph> for popups
   </message>

@@ -6,6 +6,9 @@
   <message name="IDS_DEVTOOLS_0398e20ca5e8214a35535636d2b586d8" desc="Title for a SameSiteCookies Issue">
     Indicate whether to send a cookie in a cross-site request by specifying its SameSite attribute
   </message>
+  <message name="IDS_DEVTOOLS_03be52f72503b516a6e445c8a7a59c70" desc="Text that refers to enabling local fonts">
+    Enable local fonts
+  </message>
   <message name="IDS_DEVTOOLS_05dfd3a2f7eebfad702620a4a7e182eb" desc="Tooltip to explain why a cookie was blocked">
     This Set-Cookie was blocked because it had the &quot;SameSite=Strict&quot; attribute but came from a cross-site response which was not the response to a top-level navigation.
   </message>

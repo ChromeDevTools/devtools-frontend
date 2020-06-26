@@ -266,6 +266,12 @@ export class CSSModel extends SDKModel {
     return {timestamp, coverage};
   }
 
+  setLocalFontsEnabled(enabled) {
+    return this._agent.invoke_setLocalFontsEnabled({
+      enabled,
+    });
+  }
+
   /**
    * @return {!Promise<?>}
    */

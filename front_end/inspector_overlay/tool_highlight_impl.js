@@ -237,11 +237,14 @@ function computeIsLargeFont(contrast) {
 
 /**
  * Determine the layout type of the highlighted element based on the config.
- * @param {Object} highlight The highlight config object passed to drawHighlight
+ * @param {Object} elementInfo The element information, part of the config object passed to drawHighlight
  * @return {String|null} The layout type of the object, or null if none was found
  */
-function _getElementLayoutType(highlight) {
-  if (highlight.gridInfo && highlight.gridInfo.length) {
+function _getElementLayoutType(elementInfo) {
+  // TODO(patrickbrosset): elementInfo.layoutObjectName can be any of the values returned by
+  // LayoutObject.GetName on the backend. For now we only care about grid. In the future, modify this code
+  // to allow other layout object types. See CRBug 1099682.
+  if (elementInfo.layoutObjectName && elementInfo.layoutObjectName.endsWith('Grid')) {
     return 'grid';
   }
 
@@ -250,16 +253,15 @@ function _getElementLayoutType(highlight) {
 
 /**
  * Create the DOM node that displays the description of the highlighted element
- * @param {Object} highlight The highlight config object passed to drawHighlight
+ * @param {Object} elementInfo The element information, part of the config object passed to drawHighlight
+ * @param {String} colorFormat
  * @return {DOMNode}
  */
-function _createElementDescription(highlight) {
-  const {elementInfo, colorFormat} = highlight;
-
+function _createElementDescription(elementInfo, colorFormat) {
   const elementInfoElement = createElement('div', 'element-info');
   const elementInfoHeaderElement = elementInfoElement.createChild('div', 'element-info-header');
 
-  const layoutType = _getElementLayoutType(highlight);
+  const layoutType = _getElementLayoutType(elementInfo);
   if (layoutType) {
     elementInfoHeaderElement.createChild('div', `element-layout-type ${layoutType}`);
   }
@@ -392,18 +394,22 @@ function _createElementDescription(highlight) {
 }
 
 /**
- * @param {Object} highlight The highlight config object passed to drawHighlight
+ * @param {Object} elementInfo The highlight config object passed to drawHighlight
+ * @param {String} colorFormat
+ * @param {Object} bounds
  */
-function _drawElementTitle(highlight, bounds) {
+function _drawElementTitle(elementInfo, colorFormat, bounds) {
+  // Get the tooltip container and empty it, there can only be one tooltip displayed at the same time.
   const tooltipContainer = document.getElementById('tooltip-container');
   tooltipContainer.removeChildren();
-  _createMaterialTooltip(tooltipContainer, bounds, _createElementDescription(highlight), true);
-}
 
-function _createMaterialTooltip(parentElement, bounds, contentElement, withArrow) {
-  const tooltipContainer = parentElement.createChild('div');
-  const tooltipContent = tooltipContainer.createChild('div', 'tooltip-content');
-  tooltipContent.appendChild(contentElement);
+  // Create the necessary wrappers.
+  const wrapper = tooltipContainer.createChild('div');
+  const tooltipContent = wrapper.createChild('div', 'tooltip-content');
+
+  // Create the tooltip content and append it.
+  const tooltip = _createElementDescription(elementInfo, colorFormat);
+  tooltipContent.appendChild(tooltip);
 
   const titleWidth = tooltipContent.offsetWidth;
   const titleHeight = tooltipContent.offsetHeight;
@@ -431,7 +437,7 @@ function _createMaterialTooltip(parentElement, bounds, contentElement, withArrow
     }
   }
   // Hide arrow if element is completely off the sides of the page.
-  const arrowHidden = !withArrow || arrowX < containerMinX || arrowX > containerMaxX;
+  const arrowHidden = arrowX < containerMinX || arrowX > containerMaxX;
 
   let boxX = arrowX - arrowInset;
   boxX = Number.constrain(boxX, pageMargin, canvasWidth - titleWidth - pageMargin);
@@ -771,7 +777,7 @@ export function drawHighlight(highlight, context) {
     }
 
     if (highlight.elementInfo) {
-      _drawElementTitle(highlight, bounds);
+      _drawElementTitle(highlight.elementInfo, highlight.colorFormat, bounds);
     }
   }
   if (highlight.gridInfo) {

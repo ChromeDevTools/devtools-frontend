@@ -43,7 +43,6 @@ import {HTMLFormatter} from './HTMLFormatter.js';
 import {IdentityFormatter} from './IdentityFormatter.js';
 import {JavaScriptFormatter} from './JavaScriptFormatter.js';
 import {javaScriptOutline} from './JavaScriptOutline.js';
-import {RelaxedJSONParser} from './RelaxedJSONParser.js';
 
 /**
  * @param {string} mimeType
@@ -98,9 +97,6 @@ self.onmessage = function(event) {
     case 'evaluatableJavaScriptSubstring':
       evaluatableJavaScriptSubstring(params.content);
       break;
-    case 'parseJSONRelaxed':
-      parseJSONRelaxed(params.content);
-      break;
     case 'findLastExpression':
       postMessage(findLastExpression(params.content));
       break;
@@ -114,13 +110,6 @@ self.onmessage = function(event) {
       console.error('Unsupport method name: ' + method);
   }
 };
-
-/**
- * @param {string} content
- */
-export function parseJSONRelaxed(content) {
-  postMessage(RelaxedJSONParser.parse(content));
-}
 
 /**
  * @param {string} content

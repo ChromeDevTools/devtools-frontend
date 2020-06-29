@@ -29,7 +29,6 @@
  */
 
 import * as Common from '../common/common.js';
-import * as Formatter from '../formatter/formatter.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
@@ -106,23 +105,19 @@ export class JSONView extends UI.Widget.VBox {
       returnObj = JSONView._extractJSON(/** @type {string} */ (text));
     }
     if (!returnObj) {
-      return Promise.resolve(/** @type {?ParsedJSON} */ (null));
+      return Promise.resolve(null);
     }
-    return Formatter.FormatterWorkerPool.formatterWorkerPool()
-        .parseJSONRelaxed(returnObj.data)
-        .then(handleReturnedJSON);
-
-    /**
-     * @param {*} data
-     * @return {?ParsedJSON}
-     */
-    function handleReturnedJSON(data) {
-      if (!data) {
-        return null;
+    try {
+      const json = JSON.parse(returnObj.data);
+      if (!json) {
+        return Promise.resolve(null);
       }
-      returnObj.data = data;
-      return returnObj;
+      returnObj.data = json;
+    } catch (e) {
+      returnObj = null;
     }
+
+    return Promise.resolve(returnObj);
   }
 
   /**

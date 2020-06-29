@@ -24,8 +24,7 @@
     "CSSRuleParser.js",
     "HTMLFormatter.js",
     "IdentityFormatter.js",
-    "JavaScriptOutline.js",
-    "RelaxedJSONParser.js"
+    "JavaScriptOutline.js"
   ],
   "skip_compilation": [
     "../third_party/acorn/package/dist/acorn.mjs",

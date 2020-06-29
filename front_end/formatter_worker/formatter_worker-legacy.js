@@ -24,7 +24,6 @@ FormatterWorker.FormattedContentBuilder = FormatterWorkerModule.FormattedContent
 
 FormatterWorker.AbortTokenization = FormatterWorkerModule.FormatterWorker.AbortTokenization;
 FormatterWorker.createTokenizer = FormatterWorkerModule.FormatterWorker.createTokenizer;
-FormatterWorker.parseJSONRelaxed = FormatterWorkerModule.FormatterWorker.parseJSONRelaxed;
 FormatterWorker.evaluatableJavaScriptSubstring = FormatterWorkerModule.FormatterWorker.evaluatableJavaScriptSubstring;
 FormatterWorker.javaScriptIdentifiers = FormatterWorkerModule.FormatterWorker.javaScriptIdentifiers;
 FormatterWorker.format = FormatterWorkerModule.FormatterWorker.format;
@@ -46,5 +45,3 @@ FormatterWorker.IdentityFormatter = FormatterWorkerModule.IdentityFormatter.Iden
 FormatterWorker.JavaScriptFormatter = FormatterWorkerModule.JavaScriptFormatter.JavaScriptFormatter;
 
 FormatterWorker.javaScriptOutline = FormatterWorkerModule.JavaScriptOutline.javaScriptOutline;
-
-FormatterWorker.RelaxedJSONParser = FormatterWorkerModule.RelaxedJSONParser.RelaxedJSONParser;

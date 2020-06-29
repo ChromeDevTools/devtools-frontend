@@ -1170,7 +1170,6 @@ all_devtools_modules = [
   "formatter_worker/IdentityFormatter.js",
   "formatter_worker/JavaScriptFormatter.js",
   "formatter_worker/JavaScriptOutline.js",
-  "formatter_worker/RelaxedJSONParser.js",
   "formatter/FormatterWorkerPool.js",
   "formatter/ScriptFormatter.js",
   "formatter/SourceFormatter.js",

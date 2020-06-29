@@ -16,7 +16,6 @@ import * as HTMLFormatter from './HTMLFormatter.js';
 import * as IdentityFormatter from './IdentityFormatter.js';
 import * as JavaScriptFormatter from './JavaScriptFormatter.js';
 import * as JavaScriptOutline from './JavaScriptOutline.js';
-import * as RelaxedJSONParser from './RelaxedJSONParser.js';
 
 export {
   AcornTokenizer,
@@ -29,5 +28,4 @@ export {
   IdentityFormatter,
   JavaScriptFormatter,
   JavaScriptOutline,
-  RelaxedJSONParser,
 };

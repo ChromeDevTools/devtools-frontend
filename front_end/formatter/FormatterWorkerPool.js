@@ -118,14 +118,6 @@ export class FormatterWorkerPool {
 
   /**
    * @param {string} content
-   * @return {!Promise<*>}
-   */
-  parseJSONRelaxed(content) {
-    return this._runTask('parseJSONRelaxed', {content: content});
-  }
-
-  /**
-   * @param {string} content
    * @return {!Promise<!Array<!SCSSRule>>}
    */
   parseSCSS(content) {

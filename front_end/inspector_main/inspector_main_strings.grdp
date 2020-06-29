@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
-  <message name="IDS_DEVTOOLS_035f93937dfd06c795a75877c9e6ddeb" desc="Checkbox subtitle for 'FPS meter' in the Rendering tool">
-    Plots frames per second, frame rate distribution, and GPU memory.
+  <message name="IDS_DEVTOOLS_79eabc5ef01281e5513568fb4f8674d2" desc="Text in Rendering Options">
+    Frame Rendering Stats
+  </message>
+  <message name="IDS_DEVTOOLS_82064341bcde66b437c0d657b44ac0be" desc="Checkbox subtitle for 'Frame Rendering Stats' in the Rendering tool">
+    Plots frame throughput, dropped frames distribution, and GPU memory.
   </message>
   <message name="IDS_DEVTOOLS_05934928102b17827b8f03ed60c3e6e0" desc="Command Menu search query that points to the Rendering tool">
     fps
@@ -62,9 +65,6 @@
   </message>
   <message name="IDS_DEVTOOLS_6526f858ca97d80241dacb00b40504bb" desc="Checkbox subtitle for 'Hit-test borders' in the Rendering tool">
     Shows borders around hit-test regions.
-  </message>
-  <message name="IDS_DEVTOOLS_6eac03f446434baa29ece59d88410812" desc="Text in Rendering Options">
-    FPS meter
   </message>
   <message name="IDS_DEVTOOLS_7962fd6013e985379fd3a4964d769703" desc="Text in Rendering Options">
     Hit-test borders

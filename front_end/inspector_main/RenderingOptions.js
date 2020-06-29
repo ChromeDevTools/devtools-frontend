@@ -48,7 +48,7 @@ export class RenderingOptionsView extends UI.Widget.VBox {
         ls`Layer borders`, ls`Shows layer borders (orange/olive) and tiles (cyan).`,
         Common.Settings.Settings.instance().moduleSetting('showDebugBorders'));
     this._appendCheckbox(
-        ls`FPS meter`, ls`Plots frames per second, frame rate distribution, and GPU memory.`,
+        ls`Frame Rendering Stats`, ls`Plots frame throughput, dropped frames distribution, and GPU memory.`,
         Common.Settings.Settings.instance().moduleSetting('showFPSCounter'));
     this._appendCheckbox(
         ls`Scrolling performance issues`,

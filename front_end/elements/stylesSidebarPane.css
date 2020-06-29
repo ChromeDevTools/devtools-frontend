@@ -61,14 +61,14 @@
   color: #222;
 }
 
-.styles-section-title .media:not(.editing-media),
-.styles-section-title .media:not(.editing-media) .subtitle {
-  overflow: hidden;
-}
-
 .styles-section-title .media .subtitle {
   float: right;
   color: hsl(0deg 0% 34%);
+}
+
+.styles-section-title .media:not(.editing-media),
+.styles-section-title .media:not(.editing-media) .subtitle {
+  overflow: hidden;
 }
 
 .styles-section-subtitle {
@@ -88,6 +88,10 @@
   color: hsl(0deg 0% 46%);
 }
 
+.styles-section .devtools-link {
+  user-select: none;
+}
+
 .styles-section .styles-section-subtitle .devtools-link {
   color: hsl(0deg 0% 44%);
   text-decoration-color: hsl(0deg 0% 60%);
@@ -100,10 +104,6 @@
 .styles-section .simple-selector.selector-matches,
 .styles-section.keyframe-key {
   color: #222;
-}
-
-.styles-section .devtools-link {
-  user-select: none;
 }
 
 .styles-section .style-properties {
@@ -257,15 +257,16 @@
     background-color: Highlight;
   }
 
+  .styles-section .styles-section-subtitle .devtools-link {
+    color: linktext;
+    text-decoration-color: linktext;
+  }
+
   .styles-section[data-keyboard-focus="true"]:focus *,
   .styles-section.read-only[data-keyboard-focus="true"]:focus *,
   .styles-section[data-keyboard-focus="true"]:focus .styles-section-subtitle .devtools-link {
     color: HighlightText;
     text-decoration-color: HighlightText;
-  }
-
-  .styles-section[data-keyboard-focus="true"]:focus .sidebar-pane-section-toolbar {
-    background-color: ButtonFace;
   }
 
   .sidebar-pane-section-toolbar {
@@ -274,8 +275,7 @@
     background-color: ButtonFace;
   }
 
-  .styles-section .styles-section-subtitle .devtools-link {
-    color: linktext;
-    text-decoration-color: linktext;
+  .styles-section[data-keyboard-focus="true"]:focus .sidebar-pane-section-toolbar {
+    background-color: ButtonFace;
   }
 }

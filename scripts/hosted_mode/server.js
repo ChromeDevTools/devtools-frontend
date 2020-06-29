@@ -24,8 +24,10 @@ function requestHandler(request, response) {
     return;
   }
 
-  const absoluteFilePath = path.join(devtoolsFolder, filePath);
-  if (!path.resolve(absoluteFilePath).startsWith(devtoolsFolder)) {
+  const replacedName = filePath.replace('front_end', '../resources/inspector');
+
+  const absoluteFilePath = path.join(devtoolsFolder, replacedName);
+  if (!path.resolve(absoluteFilePath).startsWith(path.join(devtoolsFolder, '..'))) {
     console.log(`File requested (${absoluteFilePath}) is outside of devtools folder: ${devtoolsFolder}`);
     sendResponse(403, `403 - Access denied. File requested is outside of devtools folder: ${devtoolsFolder}`);
     return;

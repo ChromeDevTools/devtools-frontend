@@ -168,8 +168,13 @@ export async function globalSetup() {
 }
 
 export async function globalTeardown() {
+  // We need to kill the browser before we stop the hosted mode server.
+  // That's because the browser could continue to make network requests,
+  // even after we would have closed the server. If we did so, the requests
+  // would fail and the test would crash on closedown. This only happens
+  // for the very last test that runs.
+  await browser.close();
+
   console.log('Stopping hosted mode server');
   hostedModeServer.kill();
-
-  await browser.close();
 }

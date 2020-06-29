@@ -21,8 +21,6 @@ def GetBinaryPath():
 
 def RunNode(cmd_parts, output=subprocess.PIPE):
     cmd = [GetBinaryPath()] + cmd_parts
-    # Pipe the output, because in Ninja actions we don't want
-    # to print any output, unless the action failed.
     process = subprocess.Popen(cmd,
                                cwd=os.getcwd(),
                                stdout=output,

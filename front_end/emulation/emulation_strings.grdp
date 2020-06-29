@@ -357,9 +357,6 @@
   <message name="IDS_DEVTOOLS_ee1611b61f5688e70c12b40684dbb395" desc="City name in Locations Settings">
     Berlin
   </message>
-  <message name="IDS_DEVTOOLS_ee1cab1975e28575b1631ee8fc4ea749" desc="Title of an action in the emulation tool to capture node screenshot">
-    Capture node screenshot
-  </message>
   <message name="IDS_DEVTOOLS_eec6c4bdbd339edf8cbea68becb85244" desc="Label in the Devices settings pane for the height input of a custom device">
     Height
   </message>

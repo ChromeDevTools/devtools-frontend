@@ -652,6 +652,9 @@
   <message name="IDS_DEVTOOLS_edd24cce7afedea5a1b2f90675880687" desc="Text to preserve the log after refreshing">
     Preserve log
   </message>
+  <message name="IDS_DEVTOOLS_ee1cab1975e28575b1631ee8fc4ea749" desc="Title of an action in the emulation tool to capture node screenshot">
+    Capture node screenshot
+  </message>
   <message name="IDS_DEVTOOLS_ee33e909372d935d190f4fcb2a92d542" desc="The milisecond unit">
     ms
   </message>

@@ -30,6 +30,7 @@
 
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
+import * as Emulation from '../emulation/emulation.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
@@ -627,6 +628,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
     contextMenu.viewSection().appendItem(ls`Expand recursively`, this.expandRecursively.bind(this));
     contextMenu.viewSection().appendItem(ls`Collapse children`, this.collapseChildren.bind(this));
+    const deviceModeWrapperAction = new Emulation.DeviceModeWrapper.ActionDelegate();
+    contextMenu.viewSection().appendItem(
+        ls`Capture node screenshot`,
+        deviceModeWrapperAction.handleAction.bind(null, self.UI.context, 'emulation.capture-node-screenshot'));
   }
 
   _startEditing() {

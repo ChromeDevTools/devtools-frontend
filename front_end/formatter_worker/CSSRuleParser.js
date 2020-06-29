@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import {createTokenizer} from './FormatterWorker.js';
 
 export const CSSParserStates = {
@@ -20,25 +17,43 @@ export const CSSParserStates = {
  * @param {string} text
  */
 export function parseCSS(text) {
+  // TypeScript expects a targetOrgin argument to be passed to postMessage
+  // @ts-expect-error
   _innerParseCSS(text, postMessage);
 }
 
+/** @typedef {*} */
+let Rule;  // eslint-disable-line no-unused-vars
+
+/**
+ * @typedef {{ chunk: Array.<!Rule>, isLastChunk: boolean }} */
+let Chunk;  // eslint-disable-line no-unused-vars
+
 /**
  * @param {string} text
- * @param {function(*)} chunkCallback
+ * @param {function({ chunk: !Array.<!Rule>, isLastChunk:boolean}):void} chunkCallback
  */
 export function _innerParseCSS(text, chunkCallback) {
   const chunkSize = 100000;  // characters per data chunk
   const lines = text.split('\n');
+  /** @type {!Array.<!Rule>} */
   let rules = [];
   let processedChunkCharacters = 0;
 
   let state = CSSParserStates.Initial;
+  /** @type {!Rule} */
   let rule;
+  /** @type {*} */
   let property;
   const UndefTokenType = new Set();
 
+  /** @type {!Array.<!Rule>} */
   let disabledRules = [];
+
+  /**
+   *
+   * @param {!Chunk} chunk
+   */
   function disabledRulesCallback(chunk) {
     disabledRules = disabledRules.concat(chunk.chunk);
   }
@@ -173,6 +188,7 @@ export function _innerParseCSS(text, chunkCallback) {
     }
   }
   const tokenizer = createTokenizer('text/css');
+  /** @type {number} */
   let lineNumber;
   for (lineNumber = 0; lineNumber < lines.length; ++lineNumber) {
     const line = lines[lineNumber];
@@ -182,6 +198,8 @@ export function _innerParseCSS(text, chunkCallback) {
   chunkCallback({chunk: rules, isLastChunk: true});
 
   /**
+   * @param {number} lineNumber
+   * @param {number} columnNumber
    * @return {!{startLine: number, startColumn: number, endLine: number, endColumn: number}}
    */
   function createRange(lineNumber, columnNumber) {

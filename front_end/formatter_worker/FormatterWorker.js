@@ -47,7 +47,7 @@ import {RelaxedJSONParser} from './RelaxedJSONParser.js';
 
 /**
  * @param {string} mimeType
- * @return {function(string, function(string, ?string, number, number):(!Object|undefined))}
+ * @return {function(string, function(string, ?string, number, number):(!Object|undefined|void))}
  */
 export function createTokenizer(mimeType) {
   const mode = CodeMirror.getMode({indentUnit: 2}, mimeType);

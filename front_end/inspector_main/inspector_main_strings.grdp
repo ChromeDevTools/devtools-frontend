@@ -48,6 +48,9 @@
   <message name="IDS_DEVTOOLS_508386d4665c7d3d7b4958a52e28eab1" desc="Command Menu search query that points to the Rendering tool">
     CSS media feature
   </message>
+  <message name="IDS_DEVTOOLS_528927d3c247929aa7f1bbe5133dbe17" desc="Subtitle of the checkbox to disable local fonts in Rendering panel">
+    Disables local() sources in @font-face rules. Requires a page reload to apply.
+  </message>
   <message name="IDS_DEVTOOLS_53f2f05226edcd77bd4351cb27d07ba8" desc="Text in Rendering Options">
     Highlights frames (red) detected to be ads.
   </message>
@@ -104,9 +107,6 @@
   </message>
   <message name="IDS_DEVTOOLS_d543dbe64db0c952d6e13c9519218b3e" desc="Title of an action in the inspector main tool to hard reload">
     Hard reload page
-  </message>
-  <message name="IDS_DEVTOOLS_f0e576f5f713bfcd84dceaf16f785598" desc="Subtitle of the checkbox to disable local fonts in Rendering panel">
-    Requires a page reload to apply.
   </message>
   <message name="IDS_DEVTOOLS_f23c9ba06e7123f0b4c906de90fbcc9f" desc="Title of a setting under the DevTools category that can be invoked through the Command Menu">
     Auto-open <ph name="LOCKED_1">DevTools</ph> for popups

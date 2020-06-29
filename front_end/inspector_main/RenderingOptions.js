@@ -38,50 +38,47 @@ export class RenderingOptionsView extends UI.Widget.VBox {
 
     this._appendCheckbox(
         ls`Paint flashing`,
-        ls
-        `Highlights areas of the page (green) that need to be repainted. May not be suitable for people prone to photosensitive epilepsy.`,
+        ls`Highlights areas of the page (green) that need to be repainted. May not be suitable for people prone to photosensitive epilepsy.`,
         Common.Settings.Settings.instance().moduleSetting('showPaintRects'));
     this._appendCheckbox(
         ls`Layout Shift Regions`,
-        ls
-        `Highlights areas of the page (blue) that were shifted. May not be suitable for people prone to photosensitive epilepsy.`,
+        ls`Highlights areas of the page (blue) that were shifted. May not be suitable for people prone to photosensitive epilepsy.`,
         Common.Settings.Settings.instance().moduleSetting('showLayoutShiftRegions'));
-        this._appendCheckbox(
-            ls`Layer borders`, ls`Shows layer borders (orange/olive) and tiles (cyan).`,
-            Common.Settings.Settings.instance().moduleSetting('showDebugBorders'));
-        this._appendCheckbox(
-            ls`FPS meter`, ls`Plots frames per second, frame rate distribution, and GPU memory.`,
-            Common.Settings.Settings.instance().moduleSetting('showFPSCounter'));
+    this._appendCheckbox(
+        ls`Layer borders`, ls`Shows layer borders (orange/olive) and tiles (cyan).`,
+        Common.Settings.Settings.instance().moduleSetting('showDebugBorders'));
+    this._appendCheckbox(
+        ls`FPS meter`, ls`Plots frames per second, frame rate distribution, and GPU memory.`,
+        Common.Settings.Settings.instance().moduleSetting('showFPSCounter'));
     this._appendCheckbox(
         ls`Scrolling performance issues`,
-        ls
-        `Highlights elements (teal) that can slow down scrolling, including touch & wheel event handlers and other main-thread scrolling situations.`,
+        ls`Highlights elements (teal) that can slow down scrolling, including touch & wheel event handlers and other main-thread scrolling situations.`,
         Common.Settings.Settings.instance().moduleSetting('showScrollBottleneckRects'));
-        this._appendCheckbox(
-            ls`Highlight ad frames`, ls`Highlights frames (red) detected to be ads.`,
-            Common.Settings.Settings.instance().moduleSetting('showAdHighlights'));
-        this._appendCheckbox(
-            ls`Hit-test borders`, ls`Shows borders around hit-test regions.`,
-            Common.Settings.Settings.instance().moduleSetting('showHitTestBorders'));
-        this._appendCheckbox(
-            ls`Disable local fonts`, ls`Requires a page reload to apply.`,
-            Common.Settings.Settings.instance().moduleSetting('localFontsDisabled'));
-        this.contentElement.createChild('div').classList.add('panel-section-separator');
+    this._appendCheckbox(
+        ls`Highlight ad frames`, ls`Highlights frames (red) detected to be ads.`,
+        Common.Settings.Settings.instance().moduleSetting('showAdHighlights'));
+    this._appendCheckbox(
+        ls`Hit-test borders`, ls`Shows borders around hit-test regions.`,
+        Common.Settings.Settings.instance().moduleSetting('showHitTestBorders'));
+    this._appendCheckbox(
+        ls`Disable local fonts`, ls`Disables local() sources in @font-face rules. Requires a page reload to apply.`,
+        Common.Settings.Settings.instance().moduleSetting('localFontsDisabled'));
+    this.contentElement.createChild('div').classList.add('panel-section-separator');
 
-        this._appendSelect(
-            ls`Forces media type for testing print and screen styles`,
-            Common.Settings.Settings.instance().moduleSetting('emulatedCSSMedia'));
-        this._appendSelect(
-            ls`Forces CSS prefers-color-scheme media feature`,
-            Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeaturePrefersColorScheme'));
-        this._appendSelect(
-            ls`Forces CSS prefers-reduced-motion media feature`,
-            Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeaturePrefersReducedMotion'));
-        this.contentElement.createChild('div').classList.add('panel-section-separator');
+    this._appendSelect(
+        ls`Forces media type for testing print and screen styles`,
+        Common.Settings.Settings.instance().moduleSetting('emulatedCSSMedia'));
+    this._appendSelect(
+        ls`Forces CSS prefers-color-scheme media feature`,
+        Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeaturePrefersColorScheme'));
+    this._appendSelect(
+        ls`Forces CSS prefers-reduced-motion media feature`,
+        Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeaturePrefersReducedMotion'));
+    this.contentElement.createChild('div').classList.add('panel-section-separator');
 
-        this._appendSelect(
-            ls`Forces vision deficiency emulation`,
-            Common.Settings.Settings.instance().moduleSetting('emulatedVisionDeficiency'));
+    this._appendSelect(
+        ls`Forces vision deficiency emulation`,
+        Common.Settings.Settings.instance().moduleSetting('emulatedVisionDeficiency'));
   }
 
   /**

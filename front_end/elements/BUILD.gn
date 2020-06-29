@@ -3,8 +3,5 @@ import("../../third_party/typescript/typescript.gni")
 ts_library("elements") {
   sources = [ "Adorner.js" ]
 
-  deps = [
-    "../lit_html",
-    "../ui",
-  ]
+  deps = [ "../ui" ]
 }

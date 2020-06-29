@@ -1942,7 +1942,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
 
-    if (styles.get('display') === 'grid') {
+    const display = styles.get('display');
+    if (display === 'grid' || display === 'inline-grid') {
       const gridAdorner = this.adornText('grid', AdornerCategories.Layout);
       gridAdorner.classList.add('grid');
       // TODO(changhaohan): enable interactivity once persistent overlay is implemented

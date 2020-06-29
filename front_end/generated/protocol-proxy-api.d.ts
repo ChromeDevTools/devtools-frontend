@@ -505,6 +505,12 @@ declare namespace ProtocolProxyApi {
      * instrumentation)
      */
     invoke_takeCoverageDelta(): Promise<Protocol.CSS.TakeCoverageDeltaResponse>;
+
+    /**
+     * Enables/disables rendering of local CSS fonts (enabled by default).
+     */
+    invoke_setLocalFontsEnabled(params: Protocol.CSS.SetLocalFontsEnabledRequest):
+        Promise<Protocol.ProtocolResponseWithError>;
   }
   export interface CSSDispatcher extends Protocol.Dispatcher {
     /**

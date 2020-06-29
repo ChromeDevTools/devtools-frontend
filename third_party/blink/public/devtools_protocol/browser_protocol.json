@@ -3089,6 +3089,18 @@
                             "type": "number"
                         }
                     ]
+                },
+                {
+                    "name": "setLocalFontsEnabled",
+                    "description": "Enables/disables rendering of local CSS fonts (enabled by default).",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "enabled",
+                            "description": "Whether rendering of local fonts is enabled.",
+                            "type": "boolean"
+                        }
+                    ]
                 }
             ],
             "events": [
@@ -7734,6 +7746,16 @@
                             "description": "Whether the event was from the left or right side of the keyboard. 1=Left, 2=Right (default:\n0).",
                             "optional": true,
                             "type": "integer"
+                        },
+                        {
+                            "name": "commands",
+                            "description": "Editing commands to send with the key event (e.g., 'selectAll') (default: []).\nThese are related to but not equal the command names used in `document.execCommand` and NSStandardKeyBindingResponding.\nSee https://source.chromium.org/chromium/chromium/src/+/master:third_party/blink/renderer/core/editing/commands/editor_command_names.h for valid command names.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         }
                     ]
                 },

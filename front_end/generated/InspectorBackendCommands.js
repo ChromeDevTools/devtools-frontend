@@ -452,6 +452,8 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand('CSS.startRuleUsageTracking', [], []);
   inspectorBackend.registerCommand('CSS.stopRuleUsageTracking', [], ['ruleUsage']);
   inspectorBackend.registerCommand('CSS.takeCoverageDelta', [], ['coverage', 'timestamp']);
+  inspectorBackend.registerCommand(
+      'CSS.setLocalFontsEnabled', [{'name': 'enabled', 'type': 'boolean', 'optional': false}], []);
 
   // CacheStorage.
   inspectorBackend.registerEnum('CacheStorage.CachedResponseType', {
@@ -1072,7 +1074,8 @@ export function registerCommands(inspectorBackend) {
         {'name': 'autoRepeat', 'type': 'boolean', 'optional': true},
         {'name': 'isKeypad', 'type': 'boolean', 'optional': true},
         {'name': 'isSystemKey', 'type': 'boolean', 'optional': true},
-        {'name': 'location', 'type': 'number', 'optional': true}
+        {'name': 'location', 'type': 'number', 'optional': true},
+        {'name': 'commands', 'type': 'object', 'optional': true}
       ],
       []);
   inspectorBackend.registerCommand('Input.insertText', [{'name': 'text', 'type': 'string', 'optional': false}], []);

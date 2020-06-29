@@ -2124,6 +2124,13 @@ declare namespace Protocol {
       timestamp: number;
     }
 
+    export interface SetLocalFontsEnabledRequest {
+      /**
+       * Whether rendering of local fonts is enabled.
+       */
+      enabled: boolean;
+    }
+
     /**
      * Fires whenever a web font is updated.  A non-empty font parameter indicates a successfully loaded
      * web font
@@ -5199,6 +5206,12 @@ declare namespace Protocol {
        * 0).
        */
       location?: integer;
+      /**
+       * Editing commands to send with the key event (e.g., 'selectAll') (default: []).
+       * These are related to but not equal the command names used in `document.execCommand` and NSStandardKeyBindingResponding.
+       * See https://source.chromium.org/chromium/chromium/src/+/master:third_party/blink/renderer/core/editing/commands/editor_command_names.h for valid command names.
+       */
+      commands?: string[];
     }
 
     export interface InsertTextRequest {

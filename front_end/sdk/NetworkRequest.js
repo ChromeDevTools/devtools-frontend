@@ -187,9 +187,9 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     this._mimeType;
     /** @type {!Common.ParsedURL.ParsedURL} */
     this._parsedURL;
-    /** @type {string} */
+    /** @type {(string|undefined)} */
     this._name;
-    /** @type {string} */
+    /** @type {(string|undefined)} */
     this._path;
   }
 
@@ -699,7 +699,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
       return this._name;
     }
     this._parseNameAndPathFromURL();
-    return this._name;
+    return /** @type {string} */ (this._name);
   }
 
   /**
@@ -710,7 +710,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
       return this._path;
     }
     this._parseNameAndPathFromURL();
-    return this._path;
+    return /** @type {string} */ (this._path);
   }
 
   _parseNameAndPathFromURL() {

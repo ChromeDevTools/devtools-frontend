@@ -321,7 +321,9 @@ export class Swatch {
   constructor(parentElement) {
     this._parentElement = parentElement;
     this._swatchElement = parentElement.createChild('span', 'swatch contrast swatch-inner-white');
+    /** @type {!HTMLElement} */
     this._swatchInnerElement = /** @type {!HTMLElement} */ (this._swatchElement.createChild('span', 'swatch-inner'));
+    /** @type {!HTMLElement} */
     this._textPreview = /** @type {!HTMLElement} */ (this._swatchElement.createChild('div', 'text-preview'));
     this._textPreview.textContent = 'Aa';
   }

@@ -148,7 +148,7 @@ export const tokenizeFormatString = function(formatString, formatters) {
  * @param {!Object.<string, function(string, ...*):*>} formatters
  * @param {!T} initialValue
  * @param {function(T, *): T} append
- * @param {!Array.<!Object>=} tokenizedFormat
+ * @param {!Array.<!FORMATTER_TOKEN>=} tokenizedFormat
  * @return {!{formattedResult: T, unusedSubstitutions: ?ArrayLike<*>}};
  * @template T
  */

@@ -110,6 +110,10 @@ fieldset {
   flex-shrink: 0;
 }
 
+.settings-tab p {
+  margin: 12px 0;
+}
+
 .settings-block p p {
   padding-left: 30px;
 }
@@ -178,16 +182,12 @@ fieldset {
   color: #222;
 }
 
-.settings-tab .settings-block fieldset:disabled label:hover {
-  color: inherit;
-}
-
 .settings-tab .settings-block label:hover {
   color: #222;
 }
 
-.settings-tab p {
-  margin: 12px 0;
+.settings-tab .settings-block fieldset:disabled label:hover {
+  color: inherit;
 }
 
 .settings-tab select {

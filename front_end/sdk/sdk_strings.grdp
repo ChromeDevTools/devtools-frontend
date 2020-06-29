@@ -189,6 +189,9 @@
   <message name="IDS_DEVTOOLS_3f23f0e9da2803d48c2d67aa09f01bf5" desc="Tooltip to explain why a cookie was blocked">
     This Set-Cookie didn&apos;t specify a &quot;SameSite&quot; attribute and was defaulted to &quot;SameSite=Lax,&quot; and was blocked because it came from a cross-site response which was not the response to a top-level navigation. The Set-Cookie had to have been set with &quot;SameSite=None&quot; to enable cross-site usage.
   </message>
+  <message name="IDS_DEVTOOLS_b40b37431c71726db1bd4e1bc44cbfac" desc="Error message for canceled source map loads">
+    Load canceled due to reload of inspected page
+  </message>
   <message name="IDS_DEVTOOLS_4248ddef2208954d55e94f82b6e32888" desc="Title for CSS Grid tooling option">
     Do not shade grid gaps
   </message>
@@ -637,6 +640,9 @@
   </message>
   <message name="IDS_DEVTOOLS_d5746b506b158b2dfedca3c0868bf51a" desc="Title for SameSiteCookie issue">
     Indicate whether a cookie is intended to be set in a cross-site context by specifying its SameSite attribute
+  </message>
+  <message name="IDS_DEVTOOLS_d7eb928d99f0528e1929c9283d74080a" desc="Error message for canceled source map loads">
+    Load canceled due to load timeout
   </message>
   <message name="IDS_DEVTOOLS_d8a169f64eba0443bf29b60aae227bca" desc="Context for Heavy Ads issue description">
     '''

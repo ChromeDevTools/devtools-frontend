@@ -1389,6 +1389,7 @@ all_devtools_modules = [
   "sdk/NetworkManager.js",
   "sdk/NetworkRequest.js",
   "sdk/OverlayModel.js",
+  "sdk/PageResourceLoader.js",
   "sdk/PaintProfiler.js",
   "sdk/PerformanceMetricsModel.js",
   "sdk/ProfileTreeModel.js",

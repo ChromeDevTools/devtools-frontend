@@ -48,6 +48,7 @@ import * as NetworkLog from './NetworkLog.js';
 import * as NetworkManager from './NetworkManager.js';
 import * as NetworkRequest from './NetworkRequest.js';
 import * as OverlayModel from './OverlayModel.js';
+import * as PageResourceLoader from './PageResourceLoader.js';
 import * as PaintProfiler from './PaintProfiler.js';
 import * as PerformanceMetricsModel from './PerformanceMetricsModel.js';
 import * as ProfileTreeModel from './ProfileTreeModel.js';
@@ -104,6 +105,7 @@ export {
   NetworkManager,
   NetworkRequest,
   OverlayModel,
+  PageResourceLoader,
   PaintProfiler,
   PerformanceMetricsModel,
   ProfileTreeModel,

@@ -43,6 +43,7 @@ ts_library("sdk") {
     "NetworkManager.js",
     "NetworkRequest.js",
     "OverlayModel.js",
+    "PageResourceLoader.js",
     "PaintProfiler.js",
     "PerformanceMetricsModel.js",
     "ProfileTreeModel.js",

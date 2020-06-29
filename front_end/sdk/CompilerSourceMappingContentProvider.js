@@ -31,7 +31,7 @@
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as TextUtils from '../text_utils/text_utils.js';
 
-import {MultitargetNetworkManager} from './NetworkManager.js';
+import {PageResourceLoader} from './PageResourceLoader.js';
 
 /**
  * @implements {TextUtils.ContentProvider.ContentProvider}
@@ -78,14 +78,14 @@ export class CompilerSourceMappingContentProvider {
    * @return {!Promise<!TextUtils.ContentProvider.DeferredContent>}
    */
   async requestContent() {
-    const {success, content, errorDescription} =
-        await MultitargetNetworkManager.instance().loadResource(this._sourceURL);
-    if (!success) {
-      const error = ls`Could not load content for ${this._sourceURL} (${errorDescription.message})`;
+    try {
+      const {content} = await PageResourceLoader.instance().loadResource(this._sourceURL, this._frameId);
+      return {content, isEncoded: false};
+    } catch (e) {
+      const error = ls`Could not load content for ${this._sourceURL} (${e.message})`;
       console.error(error);
       return {content: null, error, isEncoded: false};
     }
-    return {content, isEncoded: false};
   }
 
   /**

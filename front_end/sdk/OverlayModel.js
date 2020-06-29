@@ -453,6 +453,25 @@ export class OverlayModel extends SDKModel {
       }
     }
 
+    if (mode.endsWith('gap') && this._gridFeaturesExperimentEnabled) {
+      highlightConfig.gridHighlightConfig = {
+        gridBorderColor: Common.Color.PageHighlight.GridBorder.toProtocolRGBA(),
+        gridBorderDash: true
+      };
+
+      if (mode === 'gap' || mode === 'row-gap') {
+        highlightConfig.gridHighlightConfig.rowGapColor =
+            Common.Color.PageHighlight.GridRowGapBackground.toProtocolRGBA();
+        highlightConfig.gridHighlightConfig.rowHatchColor = Common.Color.PageHighlight.GridRowGapHatch.toProtocolRGBA();
+      }
+      if (mode === 'gap' || mode === 'column-gap') {
+        highlightConfig.gridHighlightConfig.columnGapColor =
+            Common.Color.PageHighlight.GridColumnGapBackground.toProtocolRGBA();
+        highlightConfig.gridHighlightConfig.columnHatchColor =
+            Common.Color.PageHighlight.GridColumnGapHatch.toProtocolRGBA();
+      }
+    }
+
     // the backend does not support the 'original' format because
     // it currently cannot retrieve the original format using computed styles
     const supportedColorFormats = new Set(['rgb', 'hsl', 'hex']);

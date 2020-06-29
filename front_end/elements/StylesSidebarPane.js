@@ -43,6 +43,20 @@ import {StylePropertyHighlighter} from './StylePropertyHighlighter.js';
 import {StylePropertyTreeElement} from './StylePropertyTreeElement.js';
 import {Context} from './StylePropertyTreeElement.js';  // eslint-disable-line no-unused-vars
 
+// Highlightable properties are those that can be hovered in the sidebar to trigger a specific
+// highlighting mode on the current element.
+const HIGHLIGHTABLE_PROPERTIES = [
+  {property: 'padding', mode: 'padding'},
+  {property: 'border', mode: 'border'},
+  {property: 'margin', mode: 'margin'},
+  {property: 'grid-gap', mode: 'gap'},
+  {property: 'gap', mode: 'gap'},
+  {property: 'grid-column-gap', mode: 'column-gap'},
+  {property: 'grid-row-gap', mode: 'row-gap'},
+  {property: 'column-gap', mode: 'column-gap'},
+  {property: 'row-gap', mode: 'row-gap'},
+];
+
 export class StylesSidebarPane extends ElementsSidebarPane {
   constructor() {
     super(true /* delegatesFocus */);
@@ -467,8 +481,8 @@ export class StylesSidebarPane extends ElementsSidebarPane {
 
     const rule = treeElement.property.ownerStyle.parentRule;
     const selectorList = (rule instanceof SDK.CSSRule.CSSStyleRule) ? rule.selectorText() : undefined;
-    for (const mode of ['padding', 'border', 'margin']) {
-      if (!treeElement.name.startsWith(mode)) {
+    for (const {property, mode} of HIGHLIGHTABLE_PROPERTIES) {
+      if (!treeElement.name.startsWith(property)) {
         continue;
       }
       this.node().domModel().overlayModel().highlightInOverlay(

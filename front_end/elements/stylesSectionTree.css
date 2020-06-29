@@ -54,6 +54,10 @@
   display: none;
 }
 
+.has-ignorable-error .webkit-css-property {
+  color: inherit;
+}
+
 .tree-outline li .webkit-css-property {
   margin-left: -22px; /* outdent the first line of longhand properties (in an expanded shorthand) to compensate for the "padding-left" shift in .tree-outline li */
 }
@@ -125,10 +129,6 @@ ol.expanded {
 .disabled,
 .not-parsed-ok:not(.has-ignorable-error) {
   text-decoration: line-through;
-}
-
-.has-ignorable-error .webkit-css-property {
-  color: inherit;
 }
 
 .implicit,

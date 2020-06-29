@@ -29,15 +29,15 @@ generate_ci_configs(
       ),
       config_section(
         name="beta",
-        branch='refs/heads/chromium/4147',
+        branch='refs/heads/chromium/4183',
       ),
       config_section(
         name="stable",
-        branch='refs/heads/chromium/4103',
+        branch='refs/heads/chromium/4147',
       ),
       config_section(
         name="previous",
-        branch='refs/heads/chromium/4044',
+        branch='refs/heads/chromium/4103',
         tree_closing=True,
       ),
     ],

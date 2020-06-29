@@ -69,11 +69,28 @@ export async function typeIntoConsole(frontend: puppeteer.Page, message: string)
 
   // Wait for autocomplete text to catch up.
   const line = (await console.$('.CodeMirror-activeline'))!.asElement()!;
-  const autocomplete = (await line.$('.auto-complete-text'))!.asElement()!;
+  const autocompleteHandle = (await line.$('.auto-complete-text'));
+  // The autocomplete element doesn't exist until the first autocomplete suggestion
+  // is actaully given.
+  const autocomplete = autocompleteHandle ? autocompleteHandle.asElement()! : null;
   await frontend.waitFor(
-      (msg, ln, ac) => ln.textContent === msg && ac.textContent === '', undefined, message, line, autocomplete);
+      (msg, ln, ac) => ln.textContent === msg && (!ac || ac.textContent === ''), undefined, message, line,
+      autocomplete);
 
   await console.press('Enter');
+}
+
+export async function typeIntoConsoleAndWaitForResult(frontend: puppeteer.Page, message: string) {
+  // Get the current number of console results so we can check we increased it.
+  const originalLength = await frontend.evaluate(() => {
+    return document.querySelectorAll('.console-user-command-result').length;
+  });
+
+  await typeIntoConsole(frontend, message);
+
+  await frontend.waitForFunction(originalLength => {
+    return document.querySelectorAll('.console-user-command-result').length === originalLength + 1;
+  }, {}, originalLength);
 }
 
 export async function switchToTopExecutionContext(frontend: puppeteer.Page) {

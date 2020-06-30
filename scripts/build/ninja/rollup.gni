@@ -51,6 +51,8 @@ template("rollup_entrypoint") {
         # as Chromium does not process the returncode of the subprocess correctly
         # and instead looks if `stderr` is empty.
         "--silent",
+        "--plugin",
+        "terser",
         "--config",
         rebase_path(devtools_location_prepend + "front_end/rollup.config.js",
                     root_build_dir),

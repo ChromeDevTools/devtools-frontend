@@ -110,7 +110,7 @@ export class HeapSnapshotGridNode extends DataGrid.DataGrid.DataGridNode {
   /**
    * @override
    * @param {string} columnId
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   createCell(columnId) {
     const cell = super.createCell(columnId);
@@ -222,10 +222,10 @@ export class HeapSnapshotGridNode extends DataGrid.DataGrid.DataGridNode {
 
   /**
    * @param {string} columnId
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   _createValueCell(columnId) {
-    const cell = UI.Fragment.html`<td class="numeric-column" />`;
+    const cell = /** @type {!HTMLElement} */ (UI.Fragment.html`<td class="numeric-column" />`);
     if (this.dataGrid.snapshot.totalSize !== 0) {
       const div = createElement('div');
       const valueSpan = UI.Fragment.html`<span>${this.data[columnId]}</span>`;
@@ -522,7 +522,7 @@ export class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode {
   /**
    * @override
    * @param {string} columnId
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   createCell(columnId) {
     const cell = columnId !== 'object' ? this._createValueCell(columnId) : this._createObjectCell();
@@ -533,7 +533,7 @@ export class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode {
   }
 
   /**
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   _createObjectCell() {
     let value = this._name;
@@ -571,7 +571,7 @@ export class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode {
   /**
    * @param {string} valueStyle
    * @param {string} value
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   _createObjectCellWithValue(valueStyle, value) {
     const fragment = UI.Fragment.Fragment.build`
@@ -591,7 +591,7 @@ export class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode {
       div.appendChild(UI.Fragment.html`<span class="heap-object-tag" title="${ls`Detached from DOM tree`}">✀</span>`);
     }
     this._appendSourceLocation(div);
-    const cell = fragment.element();
+    const cell = /** @type {!HTMLElement} */ (fragment.element());
     if (this.depth) {
       cell.style.setProperty('padding-left', (this.depth * this.dataGrid.indentWidth) + 'px');
     }
@@ -1073,7 +1073,7 @@ export class HeapSnapshotConstructorNode extends HeapSnapshotGridNode {
   /**
    * @override
    * @param {string} columnId
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   createCell(columnId) {
     const cell = columnId === 'object' ? super.createCell(columnId) : this._createValueCell(columnId);
@@ -1265,7 +1265,7 @@ export class HeapSnapshotDiffNode extends HeapSnapshotGridNode {
   /**
    * @override
    * @param {string} columnId
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   createCell(columnId) {
     const cell = super.createCell(columnId);
@@ -1409,7 +1409,7 @@ export class AllocationGridNode extends HeapSnapshotGridNode {
   /**
    * @override
    * @param {string} columnId
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   createCell(columnId) {
     if (columnId !== 'name') {

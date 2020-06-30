@@ -40,7 +40,7 @@ export class EventNode extends DataGrid.DataGrid.DataGridNode {
   /**
    * @override
    * @param {string} columnId
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   createCell(columnId) {
     const cell = this.createTD(columnId);

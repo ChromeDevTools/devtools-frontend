@@ -103,7 +103,7 @@ export class ShowMoreDataGridNode extends DataGridNode {
   /**
    * @override
    * @param {string} columnIdentifier
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   createCell(columnIdentifier) {
     const cell = this.createTD(columnIdentifier);

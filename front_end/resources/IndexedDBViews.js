@@ -491,7 +491,7 @@ export class IDBDataGridNode extends DataGrid.DataGrid.DataGridNode {
 
   /**
    * @override
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   createCell(columnIdentifier) {
     const cell = super.createCell(columnIdentifier);

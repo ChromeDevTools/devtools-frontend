@@ -161,25 +161,24 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode {
   /**
    * @override
    * @param {string} columnId
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   createCell(columnId) {
-    let cell;
     switch (columnId) {
       case 'self': {
-        cell = this._createValueCell(this.self, this.selfPercent, columnId);
+        const cell = this._createValueCell(this.self, this.selfPercent, columnId);
         cell.classList.toggle('highlight', this._searchMatchedSelfColumn);
-        break;
+        return cell;
       }
 
       case 'total': {
-        cell = this._createValueCell(this.total, this.totalPercent, columnId);
+        const cell = this._createValueCell(this.total, this.totalPercent, columnId);
         cell.classList.toggle('highlight', this._searchMatchedTotalColumn);
-        break;
+        return cell;
       }
 
       case 'function': {
-        cell = this.createTD(columnId);
+        const cell = this.createTD(columnId);
         cell.classList.toggle('highlight', this._searchMatchedFunctionColumn);
         if (this._deoptReason) {
           cell.classList.add('not-optimized');
@@ -189,34 +188,29 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode {
         }
         cell.createTextChild(this.functionName);
         if (this.profileNode.scriptId === '0') {
-          break;
+          return cell;
         }
         const urlElement = this.tree._formatter.linkifyNode(this);
         if (!urlElement) {
-          break;
+          return cell;
         }
         urlElement.style.maxWidth = '75%';
         cell.appendChild(urlElement);
         this.linkElement = urlElement;
-        break;
-      }
-
-      default: {
-        cell = super.createCell(columnId);
-        break;
+        return cell;
       }
     }
-    return cell;
+    return super.createCell(columnId);
   }
 
   /**
    * @param {number} value
    * @param {number} percent
    * @param {string} columnId
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   _createValueCell(value, percent, columnId) {
-    const cell = document.createElement('td');
+    const cell = /** @type {!HTMLElement} */ (document.createElement('td'));
     cell.classList.add('numeric-column');
     const div = cell.createChild('div', 'profile-multiple-values');
     const valueSpan = div.createChild('span');

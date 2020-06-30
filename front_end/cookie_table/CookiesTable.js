@@ -659,11 +659,11 @@ export class DataGridNode extends DataGrid.DataGrid.DataGridNode {
   /**
    * @override
    * @param {string} columnId
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   createCell(columnId) {
     const cell = super.createCell(columnId);
-    cell.title = cell.textContent;
+    cell.title = cell.textContent || '';
 
     let blockedReasonString = '';
     if (this._blockedReasons) {

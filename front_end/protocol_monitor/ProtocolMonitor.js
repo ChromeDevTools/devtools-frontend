@@ -276,7 +276,7 @@ export class ProtocolNode extends DataGrid.SortableDataGrid.SortableDataGridNode
   /**
    * @override
    * @param {string} columnId
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   createCell(columnId) {
     switch (columnId) {

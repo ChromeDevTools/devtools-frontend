@@ -287,7 +287,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
   /**
    * @override
    * @param {string} columnId
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   createCell(columnId) {
     const cell = this.createTD(columnId);

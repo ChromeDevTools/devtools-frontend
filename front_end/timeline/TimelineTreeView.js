@@ -542,7 +542,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
   /**
    * @override
    * @param {string} columnId
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   createCell(columnId) {
     if (columnId === 'activity') {
@@ -553,7 +553,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
 
   /**
    * @param {string} columnId
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   _createNameCell(columnId) {
     const cell = this.createTD(columnId);
@@ -593,7 +593,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
 
   /**
    * @param {string} columnId
-   * @return {?Element}
+   * @return {?HTMLElement}
    */
   _createValueCell(columnId) {
     if (columnId !== 'self' && columnId !== 'total' && columnId !== 'startTime') {

@@ -613,7 +613,7 @@ export class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode 
   /**
    * @override
    * @param {string} columnId
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   createCell(columnId) {
     // Nodes.

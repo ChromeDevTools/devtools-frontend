@@ -1944,10 +1944,10 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {string} className
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   _createTDWithClass(className) {
-    const cell = document.createElement('td');
+    const cell = /** @type {!HTMLElement} */ (document.createElement('td'));
     if (className) {
       cell.className = className;
     }
@@ -1960,7 +1960,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {string} columnId
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   createTD(columnId) {
     const cell = this._createTDWithClass(columnId + '-column');
@@ -1983,7 +1983,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {string} columnId
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   createCell(columnId) {
     const cell = this.createTD(columnId);

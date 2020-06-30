@@ -298,7 +298,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
   /**
    * @override
    * @param {string} columnId
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   createCell(columnId) {
     const cell = this.createTD(columnId);
@@ -311,7 +311,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
         cell.createChild('span', 'size-units').textContent = ls`KB`;
         break;
       case 'isolates':
-        cell.textContent = this._isolateCount;
+        cell.textContent = `${this._isolateCount}`;
         break;
     }
     return cell;

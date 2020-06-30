@@ -4,6 +4,29 @@
  * found in the LICENSE file.
  */
 
+.editing {
+  box-shadow: var(--drop-shadow);
+  background-color: white;
+  text-overflow: clip !important;
+  padding-left: 2px;
+  margin-left: -2px;
+  padding-right: 2px;
+  margin-right: -2px;
+  margin-bottom: -1px;
+  padding-bottom: 1px;
+  opacity: 100% !important;
+}
+
+.editing,
+.editing * {
+  color: #222 !important;
+  text-decoration: none !important;
+}
+
+.editing br {
+  display: none;
+}
+
 .elements-disclosure {
   width: 100%;
   display: inline-block;
@@ -39,9 +62,6 @@
 
 .elements-disclosure li.parent::before {
   box-sizing: border-box;
-}
-
-.elements-disclosure li.parent::before {
   user-select: none;
   -webkit-mask-image: url(Images/treeoutlineTriangles.svg);
   -webkit-mask-size: 32px 24px;
@@ -49,20 +69,31 @@
   color: transparent;
   text-shadow: none;
   margin-right: -3px;
+  -webkit-mask-position: 0 0;
+  background-color: #727272;
 }
 
 .elements-disclosure li.always-parent::before {
   visibility: hidden;
 }
 
-.elements-disclosure li.parent::before {
-  -webkit-mask-position: 0 0;
-  background-color: #727272;
-}
-
 .elements-disclosure li .selection {
   display: none;
   z-index: -1;
+}
+
+.elements-disclosure li.selected .selection {
+  display: block;
+}
+
+.elements-disclosure li.elements-drag-over .selection {
+  display: block;
+  margin-top: -2px;
+  border-top: 2px solid var(--selection-bg-color);
+}
+
+.elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) .selection {
+  background-color: var(--item-selection-inactive-bg-color);
 }
 
 .elements-disclosure li.hovered:not(.selected) .selection {
@@ -73,22 +104,18 @@
   border-radius: 5px;
 }
 
-.elements-disclosure li.parent.expanded::before {
-  -webkit-mask-position: -16px 0;
-}
-
-.elements-disclosure li.selected .selection {
-  display: block;
-}
-
-.elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) .selection {
-  background-color: var(--item-selection-inactive-bg-color);
+.elements-disclosure li .webkit-html-tag.close {
+  margin-left: -12px;
 }
 
 .elements-disclosure .elements-tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] .highlight > * {
   background: var(--focus-bg-color);
   border-radius: 2px;
   box-shadow: 0 0 0 2px var(--focus-bg-color);
+}
+
+.elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection {
+  background-color: var(--item-selection-bg-color);
 }
 
 .elements-disclosure ol {
@@ -107,10 +134,6 @@
   display: block;
 }
 
-.elements-disclosure li .webkit-html-tag.close {
-  margin-left: -12px;
-}
-
 .elements-disclosure > ol {
   position: relative;
   margin: 0;
@@ -120,8 +143,8 @@
   padding-left: 2px;
 }
 
-.elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection {
-  background-color: var(--item-selection-bg-color);
+.elements-disclosure li.in-clipboard .highlight {
+  outline: 1px dotted darkgrey;
 }
 
 .elements-tree-outline ol.shadow-root-depth-4 {
@@ -149,16 +172,6 @@
   margin-right: 4px;
 }
 
-.elements-disclosure li.elements-drag-over .selection {
-  display: block;
-  margin-top: -2px;
-  border-top: 2px solid var(--selection-bg-color);
-}
-
-.elements-disclosure li.in-clipboard .highlight {
-  outline: 1px dotted darkgrey;
-}
-
 .CodeMirror {
   background-color: white;
   height: 300px !important;
@@ -177,29 +190,6 @@ input,
 select {
   font-family: inherit;
   font-size: inherit;
-}
-
-.editing {
-  box-shadow: var(--drop-shadow);
-  background-color: white;
-  text-overflow: clip !important;
-  padding-left: 2px;
-  margin-left: -2px;
-  padding-right: 2px;
-  margin-right: -2px;
-  margin-bottom: -1px;
-  padding-bottom: 1px;
-  opacity: 100% !important;
-}
-
-.editing,
-.editing * {
-  color: #222 !important;
-  text-decoration: none !important;
-}
-
-.editing br {
-  display: none;
 }
 
 .elements-gutter-decoration {
@@ -326,16 +316,16 @@ li.selected:not(.always-parent) + ol.children {
   border-left-style: solid;
 }
 
+li.selected:not(.always-parent) + ol.children {
+  border-color: hsl(216deg 68% 80% / 100%) !important;
+}
+
 li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
   border-color: hsl(0deg 0% 0% / 10%);
 }
 
 .elements-tree-outline ol.shadow-root {
   border-color: hsl(0deg 0% 80% / 100%);
-}
-
-li.selected:not(.always-parent) + ol.children {
-  border-color: hsl(216deg 68% 80% / 100%) !important;
 }
 
 @media (forced-colors: active) {
@@ -348,9 +338,9 @@ li.selected:not(.always-parent) + ol.children {
     opacity: unset;
   }
 
+  .elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) .selection,
   .elements-disclosure li.hovered:not(.selected) .selection,
-  .elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection,
-  .elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) .selection {
+  .elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection {
     forced-color-adjust: none;
     background: canvas !important;
     border: 1px solid Highlight !important;

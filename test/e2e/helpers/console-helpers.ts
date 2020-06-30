@@ -101,9 +101,17 @@ export async function showVerboseMessages() {
 export async function typeIntoConsole(frontend: puppeteer.Page, message: string) {
   const console = (await waitFor(CONSOLE_PROMPT_SELECTOR)).asElement()!;
   await console.type(message);
-  await console.press('Enter');
-  // If the first 'enter' only closed the autocomplete, we need another one to actually trigger evaluation.
-  // If the first 'enter' already triggered evaluation, this does not do anything.
+
+  // Wait for autocomplete text to catch up.
+  const line = (await console.$('.CodeMirror-activeline'))!.asElement()!;
+  const autocompleteHandle = (await line.$('.auto-complete-text'));
+  // The autocomplete element doesn't exist until the first autocomplete suggestion
+  // is actaully given.
+  const autocomplete = autocompleteHandle ? autocompleteHandle.asElement()! : null;
+  await frontend.waitFor(
+      (msg, ln, ac) => ln.textContent === msg && (!ac || ac.textContent === ''), undefined, message, line,
+      autocomplete);
+
   await console.press('Enter');
 }
 

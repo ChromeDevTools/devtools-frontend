@@ -648,9 +648,6 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_93c8e71d1b0e18d58736d3e255a14533" desc="Text in Timeline Panel of the Performance panel">
     Buffer usage
   </message>
-  <message name="IDS_DEVTOOLS_93cba07454f06a4a960172bbd6e2a435" desc="Text in Timeline indicating that input has happened recently">
-    Yes
-  </message>
   <message name="IDS_DEVTOOLS_9467817bf2985168e61e3f2b23f87a81" desc="Text in Timeline UIUtils of the Performance panel">
     <ph name="TITLE">$1s<ex>StyleInvalidator for element</ex></ph>. <ph name="STACK">$2s<ex>Stack trace: function @ line</ex></ph>
   </message>
@@ -782,9 +779,6 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_b9f3a3a888d3796e0248b3f65b14349e" desc="Text in Timeline Details View of the Performance panel">
     Bottom-Up
-  </message>
-  <message name="IDS_DEVTOOLS_bafd7322c6e97d25b6299b5d6fe8920b" desc="Text in Timeline indicating that input has not happened recently">
-    No
   </message>
   <message name="IDS_DEVTOOLS_bd03acccca092608aac93f5fadb091d5" desc="Text in Timeline UIUtils of the Performance panel">
     Streamed

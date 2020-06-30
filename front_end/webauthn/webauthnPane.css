@@ -4,6 +4,11 @@
  * found in the LICENSE file.
  */
 
+.webauthn-pane {
+  display: block;
+  overflow: auto;
+  min-width: 400px;
+}
 
 .webauthn-toolbar-container {
     display: flex;
@@ -15,4 +20,92 @@
 .webauthn-toolbar {
     border-bottom: var(--divider-border);
     display: inline-block;
+}
+
+/* New Authenticator Section */
+.new-authenticator-title {
+  line-height: 24px;
+  font-weight: bold;
+  display: block;
+}
+
+.new-authenticator-container {
+  display: block;
+  margin: 10px 10px;
+}
+
+.new-authenticator-form {
+  border: none;
+  padding: 10px 0;
+  margin-left: 0;
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.webauthn-pane .chrome-select {
+  width: 120px;
+}
+
+/* Active Authenticator Section */
+.authenticator-section {
+  display: block;
+  margin: 10px 10px;
+  border-bottom: 1px solid rgb(230 230 230);
+}
+
+.authenticator-fields {
+  border: none;
+  padding: 10px 0;
+  margin-left: 0;
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.authenticator-field {
+  display: flex;
+  padding-bottom: 10px;
+  margin: auto;
+}
+.authenticator-section-title {
+  line-height: 24px;
+  font-weight: bold;
+  display: inline-block;
+}
+
+.authenticator-field-value {
+  padding: 5px 0px 5px 0px;
+  display: inline-block;
+  font-family: monospace;
+}
+
+.authenticator-option-checkbox {
+  position: relative;
+  top: 2px;
+}
+
+.authenticator-option {
+  display: flex;
+  padding-bottom: 10px;
+  margin: auto;
+}
+
+.authenticator-option-label {
+  color: var(--main-fg-color);
+  text-align: right;
+  width: 200px;
+  display: inline-block;
+  padding: 5px 10px 5px 0px;
+}
+
+.remove-authenticator-button {
+  float: right;
+  white-space: nowrap;
+  overflow: hidden;
+  min-width: 28px;
+  background: transparent;
+  cursor: pointer;
+  border: none;
+  color: rgb(17 85 204);
+  text-decoration: underline;
+  cursor: pointer;
 }

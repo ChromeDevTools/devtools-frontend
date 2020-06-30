@@ -23,6 +23,22 @@ export class WebAuthnModel extends SDKModel {
     }
     return this._agent.invoke_disable();
   }
+
+  /**
+   * @param {!Protocol.WebAuthn.VirtualAuthenticatorOptions} options
+   * @return {!Promise<!Protocol.WebAuthn.AuthenticatorId>}
+   */
+  async addAuthenticator(options) {
+    const response = await this._agent.invoke_addVirtualAuthenticator({options});
+    return response.authenticatorId;
+  }
+
+  /**
+   * @param {!Protocol.WebAuthn.AuthenticatorId} authenticatorId
+   */
+  async removeAuthenticator(authenticatorId) {
+    await this._agent.invoke_removeVirtualAuthenticator({authenticatorId});
+  }
 }
 
 SDKModel.register(WebAuthnModel, Capability.WebAuthn, false);

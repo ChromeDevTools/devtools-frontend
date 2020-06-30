@@ -13,7 +13,7 @@ This will be determined on a case-by-case basis, taking into account the portion
     1. If you are unsure whether the size will be an issue, please email devtools-dev+third_party@chromium.org for guidance before opening any CL.
 1. Obtain security review from chrome. You can read full guidance on this process [here](https://www.chromium.org/Home/chromium-security/security-reviews).
     1. Add devtools-dev+security@ in the CC and start the title with `[DevTools]`.
-    1. Note that all existing third_party packages in `front_end/` will be grandfathered in, but will receive post-inclusion security review.
+    1. Note that all existing third_party packages in `front_end/` will be legacied in, but will receive post-inclusion security review.
 1. Open a single CL with only the source of the third_party package and required Ninja build configuration.
     1. All existing Chromium third_party policies about documenting the code's context still apply.
     You can read the "Document the code's context" section [here](https://chromium.googlesource.com/chromium/src.git/+/master/docs/adding_to_third_party.md#document-the-code_s-context).

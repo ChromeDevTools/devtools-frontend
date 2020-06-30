@@ -888,7 +888,7 @@
      * @param {number} actionCode
      */
     recordActionTaken(actionCode) {
-      this.recordEnumeratedHistogram('DevTools.ActionTaken', actionCode, 100);
+      // Do not record actions, as that may crash the DevTools renderer.
     }
 
     /**
@@ -896,7 +896,7 @@
      * @param {number} panelCode
      */
     recordPanelShown(panelCode) {
-      this.recordEnumeratedHistogram('DevTools.PanelShown', panelCode, 20);
+      // Do not record actions, as that may crash the DevTools renderer.
     }
   };
 

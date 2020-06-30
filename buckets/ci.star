@@ -17,7 +17,7 @@ generate_ci_configs(
         branch='refs/heads/master',
         view='Main',
         name_suffix='',
-        tree_closing=True,
+        notifiers=['devtools tree closer'],
       ),
       config_section(
         name="chromium",
@@ -25,20 +25,22 @@ generate_ci_configs(
         branch='refs/heads/master',
         name_suffix = ' (chromium)',
         mastername="chromium.devtools-frontend",
-        tree_closing=True,
+        notifiers=['devtools tree closer'],
       ),
       config_section(
         name="beta",
         branch='refs/heads/chromium/4183',
+        notifiers=['devtools notifier'],
       ),
       config_section(
         name="stable",
         branch='refs/heads/chromium/4147',
+        notifiers=['devtools notifier'],
       ),
       config_section(
         name="previous",
         branch='refs/heads/chromium/4103',
-        tree_closing=True,
+        notifiers=['devtools notifier'],
       ),
     ],
     builders = [
@@ -55,7 +57,8 @@ generate_ci_configs(
       builder_descriptor(
         name="Backend Linux",
         recipe_name="devtools/devtools-backend",
-        excluded_from=['chromium']
+        excluded_from=['chromium'],
+        notification_muted=True,
       ),
     ]
 )

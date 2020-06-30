@@ -74,6 +74,7 @@ luci.notifier(
     'gsutil upload',
     'taskkill',
   ] + EXCLUDED_STEPS,
+  notify_emails=['liviurau@chromium.org']
 )
 
 luci.tree_closer(

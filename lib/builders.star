@@ -94,7 +94,7 @@ def config_section(name, branch,
     name_suffix=None,
     mastername="client.devtools-frontend.integration",
     repo=defaults.repo,
-    tree_closing=False):
+    notifiers=[]):
   view = view or name.capitalize()
   if name_suffix == None:
     name_suffix = " %s" % name
@@ -105,14 +105,15 @@ def config_section(name, branch,
     view=view,
     name_suffix=name_suffix,
     mastername=mastername,
-    tree_closing=tree_closing
+    notifiers=notifiers
   )
 
-def builder_descriptor(name, recipe_name, excluded_from=[]):
+def builder_descriptor(name, recipe_name, excluded_from=[], notification_muted=False):
   return struct(
     name=name,
     recipe_name=recipe_name,
-    excluded_from=excluded_from
+    excluded_from=excluded_from,
+    notification_muted=notification_muted,
   )
 
 def generate_ci_configs(configurations, builders):
@@ -150,7 +151,6 @@ def generate_ci_configs(configurations, builders):
           service_account=SERVICE_ACCOUNT,
           schedule="triggered",
           properties=goma_rbe_prod_default,
-          notifies=['devtools tree closer'] if c.tree_closing else None,
           **kvargs
       )
       builders_refs.append((kvargs['name'], category))
@@ -162,7 +162,8 @@ def generate_ci_configs(configurations, builders):
           recipe_name=b.recipe_name,
           dimensions=dimensions.default_ubuntu,
           execution_timeout=2 * time.hour,
-          console_category='Linux'
+          console_category='Linux',
+          notifies=[] if b.notification_muted else c.notifiers,
         )
 
     luci.console_view(

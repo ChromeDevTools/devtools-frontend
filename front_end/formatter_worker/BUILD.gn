@@ -27,6 +27,7 @@ ts_library("formatter_worker") {
     "../third_party/acorn",
     "../third_party/acorn-logical-assignment",
     "../third_party/acorn-loose",
+    "../third_party/acorn-numeric-separator",
     "../third_party/codemirror",
   ]
 }

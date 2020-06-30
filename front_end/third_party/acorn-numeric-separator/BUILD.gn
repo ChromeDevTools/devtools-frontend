@@ -6,6 +6,7 @@ import("../../../scripts/build/copy_to_gen.gni")
 
 copy_to_gen("acorn-numeric-separator") {
   sources = [
+    "acorn-numeric-separator-tsconfig.json",
     "package/dist/acorn-numeric-separator.mjs",
     "package/dist/acorn-numeric-separator.mjs.d.ts",
     "package/dist/acorn-numeric-separator.mjs.map",

@@ -234,6 +234,7 @@
   "dependencies": [
     "bindings",
     "components",
+    "host",
     "platform",
     "ui",
     "mobile_throttling"

@@ -99,6 +99,9 @@
   <message name="IDS_DEVTOOLS_a4c766a2e6eb33e7575331b6affd9778" desc="Checkbox subtitle for 'Paint flashing' in the Rendering tool">
     Highlights areas of the page (green) that need to be repainted. May not be suitable for people prone to photosensitive epilepsy.
   </message>
+  <message name="IDS_DEVTOOLS_acedccca82f1cf8be95ce70905a0c9be" desc="Subtitle for a select box under the Rendering drawer">
+    Forces CSS prefers-reduced-data media feature
+  </message>
   <message name="IDS_DEVTOOLS_c1940aeeb9693a02e28c52eb85ce261c" desc="Command Menu search query that points to the Rendering tool">
     paint
   </message>

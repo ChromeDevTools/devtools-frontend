@@ -9,6 +9,9 @@
   <message name="IDS_DEVTOOLS_03be52f72503b516a6e445c8a7a59c70" desc="Text that refers to enabling local fonts">
     Enable local fonts
   </message>
+  <message name="IDS_DEVTOOLS_044b149f2d31de7a7f43518045f61642" desc="Title of a media query that can be emulated via the Rendering drawer">
+    prefers-reduced-data: reduce
+  </message>
   <message name="IDS_DEVTOOLS_05dfd3a2f7eebfad702620a4a7e182eb" desc="Tooltip to explain why a cookie was blocked">
     This Set-Cookie was blocked because it had the &quot;SameSite=Strict&quot; attribute but came from a cross-site response which was not the response to a top-level navigation.
   </message>
@@ -171,6 +174,9 @@
   <message name="IDS_DEVTOOLS_37b2c194f5aaf6a38e0dc67b90ab3760" desc="Title for an issue in the issues view">
     An <ph name="LOCKED_1">iframe</ph> navigation to a document with a Cross-Origin Opener Policy was blocked
   </message>
+  <message name="IDS_DEVTOOLS_3b51284293e8d99f06fd180c78dab5b9" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
+    Emulate CSS prefers-reduced-data: reduce
+  </message>
   <message name="IDS_DEVTOOLS_3bd3beb3fb5c78e8e85ad06d749bea78" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Emulate protanopia
   </message>
@@ -188,6 +194,9 @@
   </message>
   <message name="IDS_DEVTOOLS_3f23f0e9da2803d48c2d67aa09f01bf5" desc="Tooltip to explain why a cookie was blocked">
     This Set-Cookie didn&apos;t specify a &quot;SameSite&quot; attribute and was defaulted to &quot;SameSite=Lax,&quot; and was blocked because it came from a cross-site response which was not the response to a top-level navigation. The Set-Cookie had to have been set with &quot;SameSite=None&quot; to enable cross-site usage.
+  </message>
+  <message name="IDS_DEVTOOLS_9485d0acccd869b51a96f2b35fd0b620" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
+    Do not emulate CSS prefers-reduced-data
   </message>
   <message name="IDS_DEVTOOLS_b40b37431c71726db1bd4e1bc44cbfac" desc="Error message for canceled source map loads">
     Load canceled due to reload of inspected page
@@ -640,6 +649,9 @@
   </message>
   <message name="IDS_DEVTOOLS_d5746b506b158b2dfedca3c0868bf51a" desc="Title for SameSiteCookie issue">
     Indicate whether a cookie is intended to be set in a cross-site context by specifying its SameSite attribute
+  </message>
+  <message name="IDS_DEVTOOLS_d662a8a1893561c3dd8dc74a64fd5477" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
+    Emulate CSS media feature prefers-reduced-data
   </message>
   <message name="IDS_DEVTOOLS_d7eb928d99f0528e1929c9283d74080a" desc="Error message for canceled source map loads">
     Load canceled due to load timeout

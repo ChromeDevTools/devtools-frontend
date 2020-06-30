@@ -443,6 +443,26 @@
     },
     {
       "type": "setting",
+      "settingName": "emulatedCSSMediaFeaturePrefersReducedData",
+      "settingType": "enum",
+      "storageType": "session",
+      "defaultValue": "",
+      "options": [
+        {
+          "title": "Do not emulate CSS prefers-reduced-data",
+          "text": "No emulation",
+          "value": ""
+        },
+        {
+          "title": "Emulate CSS prefers-reduced-data: reduce",
+          "text": "prefers-reduced-data: reduce",
+          "value": "reduce"
+        }
+      ],
+      "title": "Emulate CSS media feature prefers-reduced-data"
+    },
+    {
+      "type": "setting",
       "category": "Rendering",
       "settingName": "emulatedVisionDeficiency",
       "settingType": "enum",

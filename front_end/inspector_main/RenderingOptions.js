@@ -31,6 +31,28 @@
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
+// TODO(1096068): remove this feature detection and expose the UI
+// unconditionally once prefers-reduced-data ships unflagged. At that
+// point, we can also add `category` and `tags` to the entry in
+// `front_end/sdk/module.json` to make this feature available in the
+// Command Menu.
+/**
+ * @return {boolean}
+ */
+const supportsPrefersReducedData = () => {
+  const style = document.createElement('style');
+  style.textContent = `
+    @media (prefers-reduced-data: reduce), (prefers-reduced-data: no-preference) {
+      html { --supports-prefers-reduced-data: yass; }
+    }
+  `;
+  document.head.append(style);
+  const hasSupport =
+      Boolean(getComputedStyle(document.documentElement).getPropertyValue('--supports-prefers-reduced-data'));
+  style.remove();
+  return hasSupport;
+};
+
 export class RenderingOptionsView extends UI.Widget.VBox {
   constructor() {
     super(true);
@@ -74,6 +96,11 @@ export class RenderingOptionsView extends UI.Widget.VBox {
     this._appendSelect(
         ls`Forces CSS prefers-reduced-motion media feature`,
         Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeaturePrefersReducedMotion'));
+    if (supportsPrefersReducedData()) {
+      this._appendSelect(
+          ls`Forces CSS prefers-reduced-data media feature`,
+          Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeaturePrefersReducedData'));
+    }
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
     this._appendSelect(

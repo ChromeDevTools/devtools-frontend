@@ -8,7 +8,7 @@ import * as puppeteer from 'puppeteer';
 
 import {$, click, enableExperiment, getBrowserAndPages, platform, reloadDevTools, waitFor} from '../../shared/helper.js';
 import {clickToggleButton, selectDualScreen, startEmulationWithDualScreenFlag} from '../helpers/emulation-helpers.js';
-import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
+import {openPanelViaMoreTools, openSettingsTab} from '../helpers/settings-helpers.js';
 
 interface UserMetric {
   name: string;
@@ -36,6 +36,7 @@ declare global {
     __issuesPanelOpenedFrom: (evt: Event) => void;
     __keybindSetSettingChanged: (evt: Event) => void;
     __dualScreenDeviceEmulated: (evt: Event) => void;
+    __gridSettingChanged: (evt: Event) => void;
     Host: {UserMetrics: UserMetrics; userMetrics: {actionTaken(name: number): void;}};
     UI: {inspectorView: {_showDrawer(show: boolean): void; showView(name: string): void;}};
   }
@@ -78,6 +79,11 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.__caughtEvents.push({name: 'DevTools.DualScreenDeviceEmulated', value: customEvt.detail.value});
     };
 
+    window.__gridSettingChanged = (evt: Event) => {
+      const customEvt = evt as CustomEvent;
+      window.__caughtEvents.push({name: 'DevTools.GridSettingChanged', value: customEvt.detail.value});
+    };
+
     window.__caughtEvents = [];
     window.__beginCatchEvents = () => {
       window.addEventListener('DevTools.PanelShown', window.__panelShown);
@@ -87,6 +93,7 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.addEventListener('DevTools.IssuesPanelOpenedFrom', window.__issuesPanelOpenedFrom);
       window.addEventListener('DevTools.KeybindSetSettingChanged', window.__keybindSetSettingChanged);
       window.addEventListener('DevTools.DualScreenDeviceEmulated', window.__dualScreenDeviceEmulated);
+      window.addEventListener('DevTools.GridSettingChanged', window.__gridSettingChanged);
     };
 
     window.__endCatchEvents = () => {
@@ -97,6 +104,7 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.removeEventListener('DevTools.IssuesPanelOpenedFrom', window.__issuesPanelOpenedFrom);
       window.removeEventListener('DevTools.KeybindSetSettingChanged', window.__keybindSetSettingChanged);
       window.removeEventListener('DevTools.DualScreenDeviceEmulated', window.__dualScreenDeviceEmulated);
+      window.removeEventListener('DevTools.GridSettingChanged', window.__gridSettingChanged);
     };
 
     window.__beginCatchEvents();
@@ -331,6 +339,33 @@ describe('User Metrics', () => {
           histogramName: 'DevTools.Launch.Timeline',
           panelName: 'timeline',
         },
+      },
+    ]);
+  });
+
+  it('dispatches an event when the CSS Grid overlay setting changes', async () => {
+    const {frontend} = getBrowserAndPages();
+    await enableExperiment('cssGridFeatures');
+    // enableExperiment reloads the DevTools and removes our listeners
+    await beginCatchEvents(frontend);
+
+    await openSettingsTab('Preferences');
+
+    const gridBorderSelect = await $('[aria-label="Grid"] p select') as puppeteer.ElementHandle<HTMLSelectElement>;
+    gridBorderSelect.select('solid');
+
+    await assertCapturedEvents([
+      {
+        name: 'DevTools.ActionTaken',
+        value: 37,  // Settings opened from menu
+      },
+      {
+        name: 'DevTools.PanelShown',
+        value: 29,  // settings-preferences
+      },
+      {
+        name: 'DevTools.GridSettingChanged',
+        value: 2,  // showGridBorder.solid
       },
     ]);
   });

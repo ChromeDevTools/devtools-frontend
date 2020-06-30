@@ -153,6 +153,19 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordEnumeratedHistogram('DevTools.DualScreenDeviceEmulated', emulationAction, size);
     Common.EventTarget.fireEvent('DevTools.DualScreenDeviceEmulated', {value: emulationAction});
   }
+
+  /**
+   * @param {string} gridSettingId
+   */
+  gridSettingChanged(gridSettingId) {
+    const size = Object.keys(GridSettings).length + 1;
+    const gridSetting = GridSettings[gridSettingId];
+    if (!gridSetting) {
+      return;
+    }
+    InspectorFrontendHostInstance.recordEnumeratedHistogram('DevTools.GridSettingChanged', gridSetting, size);
+    Common.EventTarget.fireEvent('DevTools.GridSettingChanged', {value: gridSetting});
+  }
 }
 
 // Codes below are used to collect UMA histograms in the Chromium port.
@@ -295,4 +308,24 @@ export const DualScreenDeviceEmulated = {
   DualScreenDeviceSelected: 0,  // a dual screen or fold device is selected
   SpanButtonClicked: 1,         // span button is clicked when emulating a dual screen/fold device
   PlatformSupportUsed: 2        // user starts to use platform dual screen support feature.
+};
+
+/** @type {!Object<string, number>} */
+export const GridSettings = {
+  'showGridBorder.none': 0,
+  'showGridBorder.dashed': 1,
+  'showGridBorder.solid': 2,
+  'showGridLines.none': 3,
+  'showGridLines.dashed': 4,
+  'showGridLines.solid': 5,
+  'showGridLines.extended-dashed': 6,
+  'showGridLines.extended-solid': 7,
+  'showGridLineNumbers.none': 8,
+  'showGridLineNumbers.positive': 9,
+  'showGridLineNumbers.negative': 10,
+  'showGridLineNumbers.both': 11,
+  'showGridGaps.none': 12,
+  'showGridGaps.row-gaps': 13,
+  'showGridGaps.column-gaps': 14,
+  'showGridGaps.both': 15
 };

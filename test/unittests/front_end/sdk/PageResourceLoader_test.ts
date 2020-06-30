@@ -7,20 +7,28 @@ const {assert} = chai;
 import {LoadErrorDescription} from '../../../../front_end/host/ResourceLoader.js';
 import {PageResourceLoader} from '../../../../front_end/sdk/PageResourceLoader.js';
 
+interface LoadResult {
+  success: boolean;
+  content: string;
+  errorDescription: LoadErrorDescription;
+}
+
 describe('PageResourceLoader', () => {
   const loads: Array<{url: string}> = [];
-  const load =
-      async(url: string): Promise<{success: boolean, content: string, errorDescription: LoadErrorDescription}> => {
+  const load = (url: string): Promise<LoadResult> => {
     loads.push({url});
-    return {
+
+    return Promise.resolve({
       success: true,
       content: `${url} - content`,
       errorDescription: {message: '', statusCode: 0, netError: 0, netErrorName: '', urlValid: true},
-    };
+    });
   };
+
   beforeEach(() => {
     loads.length = 0;
   });
+
   it('loads resources correctly', async () => {
     const loader =
         PageResourceLoader.instance({forceNew: true, loadOverride: load, maxConcurrentLoads: 500, loadTimeout: 30000});
@@ -64,11 +72,11 @@ describe('PageResourceLoader', () => {
   });
 
   it('handles the load timeout correctly', async () => {
-    const load =
-        async(url: string): Promise<{success: boolean, content: string, errorDescription: LoadErrorDescription}> => {
+    const load = (url: string): Promise<LoadResult> => {
       loads.push({url});
       return new Promise(() => {});
     };
+
     const loader =
         PageResourceLoader.instance({forceNew: true, loadOverride: load, maxConcurrentLoads: 2, loadTimeout: 30});
     const loading = [

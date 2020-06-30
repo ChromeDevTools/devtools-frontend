@@ -525,22 +525,23 @@ async function parseGRDPFile(filePath) {
     const line = localizationUtils.lineNumberOfIndex(fileContent, match.index);
     const actualIDSKey = match[1];
     const description = match[2];
-    let message = match[3];
-    message = convertToFrontendPlaceholders(message.trim());
+    const grdString = match[3].trim();
+    let message = convertToFrontendPlaceholders(grdString);
     message = stripWhitespacePadding(message);
     message = localizationUtils.sanitizeStringIntoFrontendFormat(message);
 
     const ids = localizationUtils.getIDSKey(message);
-    addMessage(ids, actualIDSKey, filePath, line, description);
+    addMessage(ids, actualIDSKey, filePath, line, description, grdString);
   }
 }
 
-function addMessage(expectedIDSKey, actualIDSKey, grdpPath, line, description) {
+function addMessage(expectedIDSKey, actualIDSKey, grdpPath, line, description, grdString) {
   if (!IDSkeys.has(expectedIDSKey)) {
     IDSkeys.set(expectedIDSKey, []);
   }
 
-  IDSkeys.get(expectedIDSKey).push({actualIDSKey, grdpPath, location: {start: {line}, end: {line}}, description});
+  IDSkeys.get(expectedIDSKey)
+      .push({actualIDSKey, grdpPath, location: {start: {line}, end: {line}}, description, grdString});
 }
 
 /**

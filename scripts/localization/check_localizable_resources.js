@@ -125,10 +125,12 @@ async function addResourcesToGRDP(keysToAddToGRD, keysToRemoveFromGRD) {
 
       // Add the IDS key to stringObj so we have access to it later
       stringObj.ids = key;
-      // If the same key is to be removed, this is likely a string copy
-      // to another folder. Keep the description.
+      // If the same key is to be removed, this is likely a string copy to another folder.
+      // Keep the string from grd to preserve all <ex> and <ph> tags and the description.
       if (keysToRemoveFromGRD.has(key)) {
-        stringObj.description = checkLocalizedStrings.getLongestDescription(keysToRemoveFromGRD.get(key));
+        const existingMessage = keysToRemoveFromGRD.get(key);
+        stringObj.grdString = existingMessage[0].grdString;
+        stringObj.description = checkLocalizedStrings.getLongestDescription(existingMessage);
       }
       grdpFilePathToStrings.get(stringObj.grdpPath).push(stringObj);
     }

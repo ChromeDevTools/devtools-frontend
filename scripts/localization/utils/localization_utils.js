@@ -298,7 +298,7 @@ function modifyStringIntoGRDFormat(str, args) {
 
 function createGrdpMessage(ids, stringObj) {
   let message = `  <message name="${ids}" desc="${stringObj.description || ''}">\n`;
-  message += `    ${modifyStringIntoGRDFormat(stringObj.string, stringObj.arguments)}\n`;
+  message += `    ${stringObj.grdString || modifyStringIntoGRDFormat(stringObj.string, stringObj.arguments)}\n`;
   message += '  </message>\n';
   return message;
 }

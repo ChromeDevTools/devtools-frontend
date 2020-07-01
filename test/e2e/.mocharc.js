@@ -30,8 +30,12 @@ testFiles = process.env['TEST_FILE'] || testFiles;
 // of the application at the moment of the timeout. Here, 0 denotes "indefinite timeout".
 const timeout = process.env['DEBUG'] ? 0 : 5 * 1000;
 
+// Our e2e tests are almost always slower than the default 75ms.
+const slow = 1000;
+
 module.exports = {
   file: path.join(__dirname, '..', 'conductor', 'mocha_hooks.js'),
   spec: testFiles,
+  slow,
   timeout,
 }

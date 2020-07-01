@@ -40,17 +40,9 @@ import * as UI from '../ui/ui.js';
  * @return {boolean}
  */
 const supportsPrefersReducedData = () => {
-  const style = document.createElement('style');
-  style.textContent = `
-    @media (prefers-reduced-data: reduce), (prefers-reduced-data: no-preference) {
-      html { --supports-prefers-reduced-data: yass; }
-    }
-  `;
-  document.head.append(style);
-  const hasSupport =
-      Boolean(getComputedStyle(document.documentElement).getPropertyValue('--supports-prefers-reduced-data'));
-  style.remove();
-  return hasSupport;
+  const query = '(prefers-reduced-data: reduce)';
+  // Note: `media` serializes to `'not all'` for unsupported queries.
+  return window.matchMedia(query).media === query;
 };
 
 export class RenderingOptionsView extends UI.Widget.VBox {

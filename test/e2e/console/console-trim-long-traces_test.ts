@@ -6,8 +6,8 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
 import {$$, click, getBrowserAndPages, pasteText, step} from '../../shared/helper.js';
-import {CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
-import {STACK_PREVIEW_CONTAINER} from '../helpers/console-helpers.js';
+import {focusConsolePrompt} from '../helpers/console-helpers.js';
+import {CONSOLE_SELECTOR, CONSOLE_TAB_SELECTOR, STACK_PREVIEW_CONTAINER} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', async () => {
   it('truncates long stack traces ', async () => {
@@ -35,9 +35,9 @@ describe('The Console Tab', async () => {
       await frontend.keyboard.press('Enter');
 
       // Wait for the console to be usable again.
-      await frontend.waitForFunction(() => {
-        return document.querySelectorAll('.console-user-command-result').length === 1;
-      });
+      await frontend.waitForFunction(CONSOLE_SELECTOR => {
+        return document.querySelectorAll(CONSOLE_SELECTOR).length === 1;
+      }, {}, CONSOLE_SELECTOR);
     });
 
     await step('retrieve the console log', async () => {

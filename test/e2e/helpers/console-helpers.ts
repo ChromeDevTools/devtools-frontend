@@ -15,6 +15,7 @@ export const CONSOLE_PROMPT_SELECTOR = '.console-prompt-editor-container';
 export const CONSOLE_VIEW_SELECTOR = '.console-view';
 export const STACK_PREVIEW_CONTAINER = '.stack-preview-container';
 export const CONSOLE_MESSAGE_WRAPPER_SELECTOR = '.console-group-messages .console-message-wrapper';
+export const CONSOLE_SELECTOR = '.console-user-command-result';
 
 export async function getConsoleMessages(testName: string, callback?: (page: puppeteer.Page) => Promise<void>) {
   // Ensure Console is loaded before the page is loaded to avoid a race condition.

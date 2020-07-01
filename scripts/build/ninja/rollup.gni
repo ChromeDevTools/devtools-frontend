@@ -4,68 +4,41 @@
 
 import("./vars.gni")
 
-template("rollup_entrypoint") {
+template("rollup") {
   assert(defined(invoker.entrypoint),
          "You must define the 'entrypoint' for a rollup target")
 
-  if (is_debug) {
-    not_needed(invoker, [ "entrypoint" ])
+  action(target_name) {
+    script = "//third_party/node/node.py"
 
-    group(target_name) {
-      forward_variables_from(invoker,
-                             [
-                               "visibility",
-                               "deps",
-                             ])
-    }
-  } else {
-    _input_file_location = "$target_gen_dir/" + invoker.entrypoint
+    forward_variables_from(invoker,
+                           [
+                             "visibility",
+                             "deps",
+                           ])
 
-    action(target_name) {
-      script = "//third_party/node/node.py"
+    inputs = [ invoker.entrypoint ]
 
-      forward_variables_from(invoker,
-                             [
-                               "visibility",
-                               "deps",
-                             ])
+    args = [
+      rebase_path(
+          devtools_location_prepend + "node_modules/rollup/dist/bin/rollup",
+          root_build_dir),
 
-      inputs = [ _input_file_location ]
+      # TODO(crbug.com/1098074): We need to hide warnings that are written stderr,
+      # as Chromium does not process the returncode of the subprocess correctly
+      # and instead looks if `stderr` is empty.
+      "--silent",
+      "--plugin",
+      "terser",
+      "--config",
+      rebase_path(devtools_location_prepend + "front_end/rollup.config.js",
+                  root_build_dir),
+      "--input",
+      rebase_path(invoker.entrypoint, root_build_dir),
+      "--file",
+      rebase_path(invoker.output_file_location, root_build_dir),
+    ]
 
-      # Figure out what the relative path is to the front_end folder.
-      # We have to get the full path to the target_gen_dir
-      # and compare that to the full location of the front_end
-      # folder in the gen_dir, to make sure nested packages
-      # resolve to the correct location.
-      _front_end_module_name =
-          string_replace(get_path_info(target_gen_dir, "abspath"),
-                         root_gen_dir + "/" + devtools_location + "front_end/",
-                         "")
-
-      args = [
-        rebase_path(
-            devtools_location_prepend + "node_modules/rollup/dist/bin/rollup",
-            root_build_dir),
-
-        # TODO(crbug.com/1098074): We need to hide warnings that are written stderr,
-        # as Chromium does not process the returncode of the subprocess correctly
-        # and instead looks if `stderr` is empty.
-        "--silent",
-        "--plugin",
-        "terser",
-        "--config",
-        rebase_path(devtools_location_prepend + "front_end/rollup.config.js",
-                    root_build_dir),
-        "--input",
-        rebase_path(_input_file_location, root_build_dir),
-        "--file",
-        rebase_path(
-            "$resources_out_dir/$_front_end_module_name/" + invoker.entrypoint,
-            root_build_dir),
-      ]
-
-      outputs =
-          [ "$resources_out_dir/$_front_end_module_name/" + invoker.entrypoint ]
-    }
+    outputs = [ invoker.output_file_location ]
   }
 }

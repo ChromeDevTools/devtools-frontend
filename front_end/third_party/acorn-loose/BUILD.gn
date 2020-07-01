@@ -10,5 +10,6 @@ copy_to_gen("acorn-loose") {
     "package/dist/acorn-loose.d.ts",
     "package/dist/acorn-loose.js",
     "package/dist/acorn-loose.js.map",
+    "package/dist/acorn-loose.mjs",
   ]
 }

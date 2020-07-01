@@ -116,7 +116,6 @@ APPLICATION_DESCRIPTORS = [
     'inspector',
     'toolbox',
     'integration_test_runner',
-    'formatter_worker_entrypoint',
     'heap_snapshot_worker_entrypoint',
 ]
 

@@ -2,20 +2,17 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../scripts/build/ninja/rollup.gni")
+import("../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../third_party/typescript/typescript.gni")
 
 ts_library("lit_html") {
-  sources = [
-    "directives.ts",
-    "lit_html.ts",
-  ]
+  sources = [ "directives.ts" ]
 
   deps = [ "../third_party/lit-html" ]
 }
 
-# rollup_entrypoint("lit_html-rollup") {
-#   entrypoint = "lit_html.js"
+devtools_entrypoint("lit_html-rollup") {
+  entrypoint = "lit_html.ts"
 
-#   deps = [ ":lit_html" ]
-# }
+  deps = [ ":lit_html" ]
+}

@@ -2,6 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../third_party/typescript/typescript.gni")
 
 ts_library("formatter_worker") {
@@ -17,7 +18,6 @@ ts_library("formatter_worker") {
     "IdentityFormatter.js",
     "JavaScriptFormatter.js",
     "JavaScriptOutline.js",
-    "formatter_worker.js",
   ]
 
   deps = [
@@ -30,4 +30,10 @@ ts_library("formatter_worker") {
     "../third_party/acorn-numeric-separator",
     "../third_party/codemirror",
   ]
+}
+
+devtools_entrypoint("formatter_worker-rollup") {
+  entrypoint = "formatter_worker.ts"
+
+  deps = [ ":formatter_worker" ]
 }

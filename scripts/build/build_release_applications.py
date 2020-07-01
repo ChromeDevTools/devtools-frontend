@@ -202,6 +202,19 @@ class ReleaseBuilder(object):
         output.close()
 
     def _rollup_module(self, module_name, modules):
+        legacyFileName = module_name + '-legacy.js'
+        if legacyFileName in modules:
+            write_file(
+                join(self.output_dir, module_name, legacyFileName),
+                minify_js(
+                    read_file(
+                        join(self.application_dir, module_name,
+                             legacyFileName))))
+
+        # Temporary hack, as we use `devtools_entrypoint` for this module now
+        if module_name == 'formatter_worker':
+            return
+
         js_entrypoint = join(self.application_dir, module_name, module_name + '.js')
         out = ''
         if self.use_rollup:
@@ -221,12 +234,6 @@ class ReleaseBuilder(object):
             out = read_file(js_entrypoint)
         write_file(join(self.output_dir, module_name, module_name + '.js'),
                    minify_js(out))
-
-        legacyFileName = module_name + '-legacy.js'
-        if legacyFileName in modules:
-            write_file(
-                join(self.output_dir, module_name, legacyFileName),
-                minify_js(read_file(join(self.application_dir, module_name, legacyFileName))))
 
 
 if __name__ == '__main__':

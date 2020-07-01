@@ -1,0 +1,115 @@
+# Copyright 2020 The Chromium Authors.  All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../third_party/typescript/typescript.gni")
+import("./rollup.gni")
+import("./vars.gni")
+
+# This defines an entrypoint for DevTools, which uses Rollup
+# in release mode, but creates an unbundled JavaScript file
+# in debug mode. This entrypoint should only be used if:
+# 1. it defines a file that is statically imported. E.g. in
+#    the form of "../entrypoint/entrypoint.js".
+# 2. it defines a file that is dynamically imported by the
+#    runtime. This uses the same notation, but uses a dynamic
+#    import in `root/Runtime.js`.
+template("devtools_entrypoint") {
+  assert(defined(invoker.entrypoint),
+         "You must define the 'entrypoint' for a rollup target")
+
+  # Figure out what the relative path is to the front_end folder.
+  # We have to get the full path to the target_gen_dir
+  # and compare that to the full location of the front_end
+  # folder in the gen_dir, to make sure nested packages
+  # resolve to the correct location.
+  _front_end_module_name =
+      string_replace(get_path_info(target_gen_dir, "abspath"),
+                     root_gen_dir + "/" + devtools_location + "front_end/",
+                     "")
+
+  _entrypoint_target_name = "devtools_entrypoint-" + target_name
+  _entrypoint_output_file_name = get_path_info(invoker.entrypoint, "name")
+  _entrypoint_gen_file_location =
+      "$target_gen_dir/$_entrypoint_output_file_name.js"
+
+  # In debug mode, the entrypoint is kept as-is. This means we only
+  # need to compile with TypeScript, which means it will fetch all
+  # of its files as separate network requests.
+  if (is_debug) {
+    ts_library(_entrypoint_target_name) {
+      sources = [ invoker.entrypoint ]
+
+      deps = invoker.deps
+    }
+  } else {
+    # In release mode, we are running Rollup and thus bundle all
+    # files in the (sub-)folder(s) into 1 file.
+    #
+    # To make sure that the build system can handle the Rollup
+    # bundle, we have to use several tasks. That's because we
+    # can't have 2 tasks generate a file to the same location.
+    #
+    # First, we need to compile the entrypoint with TypeScript
+    # as usual. However, we can't put the output into the
+    # location of the entrypoint, as that's where we are going
+    # to put the Rollup bundle output. Therefore, we need to
+    # create a separate file called the "entrypoint.prebundle.ts"
+    # file.
+    #
+    # We compile the "prebundle.ts" with TypeScript, to create
+    # the "prebundle.js" file. We pass in the "prebundle.js"
+    # into Rollup, which then outputs into the normal
+    # "entrypoint.js" location.
+    #
+    # Since TypeScript does not support renaming of files during
+    # compilation, we first have a "copy" task that copies (and
+    # essentially renames) the file to the output directory.
+    #
+    # Since all of these tasks depend on each other, we have to
+    # make sure that the GN dependency graph correctly corresponds
+    # to that. Therefore, the graph looks like so:
+    #
+    #   copy -> ts_library -> rollup
+    #
+    _output_file_name =
+        "$target_gen_dir/$_entrypoint_output_file_name.prebundle"
+    _copy_output_file_name = "$_output_file_name.ts"
+    _typescript_output_file_name = "$_output_file_name.js"
+
+    _copy_target_name = _entrypoint_target_name + "-copy"
+    _typescript_target_name = _entrypoint_target_name + "-typescript"
+
+    copy(_copy_target_name) {
+      sources = [ invoker.entrypoint ]
+
+      outputs = [ _copy_output_file_name ]
+
+      deps = invoker.deps
+    }
+
+    ts_library(_typescript_target_name) {
+      sources = [ _copy_output_file_name ]
+
+      rootdir = target_gen_dir
+
+      public_deps = [ ":$_copy_target_name" ]
+    }
+
+    rollup(_entrypoint_target_name) {
+      entrypoint = _typescript_output_file_name
+
+      output_file_location = _entrypoint_gen_file_location
+
+      deps = [ ":$_typescript_target_name" ]
+    }
+  }
+
+  copy(target_name) {
+    sources = [ _entrypoint_gen_file_location ]
+
+    outputs = [ "$resources_out_dir/$_front_end_module_name/$_entrypoint_output_file_name.js" ]
+
+    deps = [ ":$_entrypoint_target_name" ]
+  }
+}

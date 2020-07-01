@@ -38,6 +38,7 @@ template("ts_library") {
                              "sources",
                              "visibility",
                              "deps",
+                             "public_deps",
                            ])
 
     inputs = [
@@ -67,19 +68,27 @@ template("ts_library") {
     _test_only = defined(invoker.testonly) && invoker.testonly
     _verify_lib_check =
         defined(invoker.verify_lib_check) && invoker.verify_lib_check
-    _disable_copying = !is_debug || _test_only || _verify_lib_check
+    _rootdir = "."
+
+    if (defined(invoker.rootdir)) {
+      _rootdir = invoker.rootdir
+    }
+
+    if (!defined(public_deps)) {
+      public_deps = []
+    }
 
     if (defined(deps)) {
       args += [ "--deps" ]
       foreach(dep, deps) {
-        args += [ rebase_path(get_label_info(dep, "dir"), ".") + "/" +
+        args += [ rebase_path(get_label_info(dep, "dir"), _rootdir) + "/" +
                   get_label_info(dep, "name") + "-tsconfig.json" ]
       }
 
       # We need to expose our deps in the Ninja chain, to allow `generate_devtools_grd`
       # to eventually roll up all files. If these are not public, Ninja complains that
       # the files are not reachable.
-      public_deps = deps
+      public_deps += deps
     }
 
     # Here we assume that all sources are in this folder listed,
@@ -87,7 +96,7 @@ template("ts_library") {
     # is in with Ninja.
     args += [
       "--front_end_directory",
-      rebase_path(".", root_build_dir),
+      rebase_path(_rootdir, root_build_dir),
     ]
 
     if (_test_only) {
@@ -96,10 +105,6 @@ template("ts_library") {
 
     if (_verify_lib_check) {
       args += [ "--verify-lib-check" ]
-    }
-
-    if (_disable_copying) {
-      args += [ "--disable-copying-to-resources-inspector" ]
     }
 
     if (defined(invoker.module)) {
@@ -115,7 +120,9 @@ template("ts_library") {
 
       foreach(src, sources) {
         _extension = get_path_info(src, "extension")
-        _fileName = get_path_info(src, "dir") + "/" + get_path_info(src, "name")
+        _relative_file_name = rebase_path(src, _rootdir)
+        _fileName = get_path_info(_relative_file_name, "dir") + "/" +
+                    get_path_info(_relative_file_name, "name")
 
         # Any .d.ts file does not generate a corresponding a .js file, but we
         # copy it over into the generated build folder instead, as tsc doesn't
@@ -130,24 +137,6 @@ template("ts_library") {
             "$target_gen_dir/$_fileName.js",
             "$target_gen_dir/$_fileName.js.map",
           ]
-
-          # check that the file is TypeScript and not a unittest file
-          # add it to the outputs
-          if (_extension == "ts" && !_disable_copying) {
-            # Figure out what the relative path is to the front_end folder.
-            # We have to get the full path to the target_gen_dir
-            # and compare that to the full location of the front_end
-            # folder in the gen_dir, to make sure nested packages
-            # resolve to the correct location.
-            _front_end_module_name = string_replace(
-                    get_path_info(target_gen_dir, "abspath"),
-                    root_gen_dir + "/" + devtools_location + "front_end/",
-                    "")
-
-            # Generate JavaScript files are temporarily copied into the old
-            # resources/inspector directory. See ts_library.py for more info
-            output_files += [ "$root_build_dir/resources/inspector/$_front_end_module_name/$_fileName.js" ]
-          }
         } else {
           assert(false,
                  "Incorrect extension on '$src' with extension '$_extension'")

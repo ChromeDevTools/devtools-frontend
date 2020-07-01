@@ -479,7 +479,6 @@ devtools_module_entrypoints = [
   "extensions/extensions-legacy.js",
   "formatter/formatter.js",
   "formatter/formatter-legacy.js",
-  "formatter_worker/formatter_worker.js",
   "formatter_worker/formatter_worker-legacy.js",
   "har_importer/har_importer.js",
   "har_importer/har_importer-legacy.js",
@@ -884,6 +883,9 @@ generated_worker_bundles = [
   "$resources_out_dir/wasmparser_worker_entrypoint.js",
 ]
 
+generated_typescript_entrypoints =
+    [ "$resources_out_dir/formatter_worker/formatter_worker.js" ]
+
 devtools_applications = [
   "lighthouse_worker",
   "devtools_app",
@@ -933,6 +935,7 @@ devtools_frontend_resources_deps = [
   # Required for layout tests, which depend on the existence of `integration_test_runner.html`
   # If we don't add this dependency explicitly, the swarming bots don't pick up the file.
   "front_end:front_end_html_entrypoints",
+  "front_end/formatter_worker:formatter_worker-rollup",
 ]
 
 if (is_debug) {
@@ -1659,7 +1662,7 @@ action("generate_devtools_grd") {
       generated_devtools_module_entrypoints + output_devtools_modules +
       generated_applications_html + generated_applications_js +
       generated_non_autostart_non_remote_modules + devtools_embedder_scripts +
-      generated_worker_bundles +
+      generated_worker_bundles + generated_typescript_entrypoints +
       [
         "$resources_out_dir/devtools_extension_api.js",
         "$resources_out_dir/sdk/wasm_source_map/pkg/wasm_source_map_bg.wasm",

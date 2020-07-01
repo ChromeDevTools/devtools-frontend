@@ -14,8 +14,8 @@ ts_library("lit_html") {
   deps = [ "../third_party/lit-html" ]
 }
 
-rollup_entrypoint("lit_html-rollup") {
-  entrypoint = "lit_html.js"
+# rollup_entrypoint("lit_html-rollup") {
+#   entrypoint = "lit_html.js"
 
-  deps = [ ":lit_html" ]
-}
+#   deps = [ ":lit_html" ]
+# }

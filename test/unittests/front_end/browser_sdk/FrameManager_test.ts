@@ -35,6 +35,8 @@ class MockResourceTreeFrame {
       id: () => this._targetId,
     }),
   });
+
+  isMainFrame = () => true;
 }
 
 describe('FrameManager', () => {

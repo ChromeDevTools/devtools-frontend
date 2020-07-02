@@ -21,6 +21,10 @@ FEATURES is a comma separated list of chrome features passed as `--enable-featur
 
 If you only want to run a single test or testsuite, use respectively `it.only` or `describe.only`.
 
+You can also run all tests in one file with the `--test-file` option, e.g.
+`npm run e2etest -- --test-file=console/console-clear_test`. The path is relative to the generated test/e2e/
+directory. File extensions are not needed and are ignored.
+
 ## Debugging tests
 To see what the test script does, run `npm run debug-e2etest`. This will bring up the chrome window and stop just
 before your test script is about to execute. The test will then run to completion and exit. You can add an infinite

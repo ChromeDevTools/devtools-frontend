@@ -24,7 +24,25 @@ let testFiles = glob.sync(path.join(ROOT_DIRECTORY, '**/*_test.ts')).map(fileNam
 
 // Respect the test file if defined.
 // This way you can test one single file instead of running all e2e tests every time.
-testFiles = process.env['TEST_FILE'] || testFiles;
+if (process.env['TEST_FILE']) {
+  let testFile = process.env['TEST_FILE'];
+  // Accept .ts, .js and no extension.
+  testFile = testFile.replace(/\.ts$/, '.js');
+  if (!testFile.endsWith('.js')) {
+    testFile += '.js';
+  }
+  const absoluteTestFile = path.join(__dirname, testFile);
+
+  // We also need to filter the test against the .ts list above because there can be
+  // leftover .js files from previous builds.
+  if (!testFiles.includes(absoluteTestFile)) {
+    // The leading \n makes the failure easier to find in the output.
+    throw new Error(
+        `\nNo test found matching --test-file=${process.env['TEST_FILE']}.` +
+        ' Use a relative path from test/e2e/.');
+  }
+  testFiles = absoluteTestFile;
+}
 
 // When we are debugging, we don't want to timeout any test. This allows to inspect the state
 // of the application at the moment of the timeout. Here, 0 denotes "indefinite timeout".

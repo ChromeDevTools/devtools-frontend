@@ -145,7 +145,7 @@ CoverageTestRunner.dumpCoverageListView = function() {
       continue;
     }
 
-    const type = Coverage.CoverageListView._typeToString(data.type());
+    const type = Coverage.coverageTypeToString(data.type());
     TestRunner.addResult(`${url} ${type} used: ${data.usedSize()} unused: ${data.unusedSize()} total: ${data.size()}`);
   }
 };

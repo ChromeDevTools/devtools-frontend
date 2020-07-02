@@ -33,6 +33,12 @@ Coverage.CoverageModel.Events = CoverageModule.CoverageModel.Events;
 Coverage.CoverageType = CoverageModule.CoverageModel.CoverageType;
 
 /**
+ * @param {!Coverage.CoverageType} type
+ * @returns {string}
+ */
+Coverage.coverageTypeToString = CoverageModule.CoverageListView.coverageTypeToString;
+
+/**
  * @constructor
  */
 Coverage.URLCoverageInfo = CoverageModule.CoverageModel.URLCoverageInfo;

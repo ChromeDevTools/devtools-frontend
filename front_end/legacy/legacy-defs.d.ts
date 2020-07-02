@@ -102,3 +102,6 @@ interface Event {
 interface Node {
   getComponentSelection(): Selection|null;
 }
+
+declare function isEnterKey(event: Event): boolean;
+declare function createPlainTextSearchRegex(query: string, flags?: string): RegExp;

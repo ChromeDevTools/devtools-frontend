@@ -5,29 +5,47 @@
 import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as Formatter from '../formatter/formatter.js';
+import {ls} from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {CoverageType, URLCoverageInfo} from './CoverageModel.js';  // eslint-disable-line no-unused-vars
 
+/**
+ * @param {!CoverageType} type
+ * @returns {string}
+ */
+export function coverageTypeToString(type) {
+  const types = [];
+  if (type & CoverageType.CSS) {
+    types.push(ls`CSS`);
+  }
+  if (type & CoverageType.JavaScriptPerFunction) {
+    types.push(ls`JS (per function)`);
+  } else if (type & CoverageType.JavaScript) {
+    types.push(ls`JS (per block)`);
+  }
+  return types.join('+');
+}
+
 export class CoverageListView extends UI.Widget.VBox {
   /**
-   * @param {function(!URLCoverageInfo):boolean} filterCallback
+   * @param {function(!URLCoverageInfo):boolean} isVisibleFilter
    */
-  constructor(filterCallback) {
+  constructor(isVisibleFilter) {
     super(true);
     /** @type {!Map<!URLCoverageInfo, !GridNode>} */
     this._nodeForCoverageInfo = new Map();
-    this._filterCallback = filterCallback;
+    this._isVisibleFilter = isVisibleFilter;
     /** @type {?RegExp} */
     this._highlightRegExp = null;
     this.registerRequiredCSS('coverage/coverageListView.css');
     const columns = [
-      {id: 'url', title: Common.UIString.UIString('URL'), width: '250px', fixedWidth: false, sortable: true},
-      {id: 'type', title: Common.UIString.UIString('Type'), width: '45px', fixedWidth: true, sortable: true}, {
+      {id: 'url', title: ls`URL`, width: '250px', fixedWidth: false, sortable: true},
+      {id: 'type', title: ls`Type`, width: '45px', fixedWidth: true, sortable: true}, {
         id: 'size',
-        title: Common.UIString.UIString('Total Bytes'),
+        title: ls`Total Bytes`,
         width: '60px',
         fixedWidth: true,
         sortable: true,
@@ -35,7 +53,7 @@ export class CoverageListView extends UI.Widget.VBox {
       },
       {
         id: 'unusedSize',
-        title: Common.UIString.UIString('Unused Bytes'),
+        title: ls`Unused Bytes`,
         width: '100px',
         fixedWidth: true,
         sortable: true,
@@ -66,14 +84,14 @@ export class CoverageListView extends UI.Widget.VBox {
     for (const entry of coverageInfo) {
       let node = this._nodeForCoverageInfo.get(entry);
       if (node) {
-        if (this._filterCallback(node._coverageInfo)) {
+        if (this._isVisibleFilter(node._coverageInfo)) {
           hadUpdates = node._refreshIfNeeded(maxSize) || hadUpdates;
         }
         continue;
       }
       node = new GridNode(entry, maxSize);
       this._nodeForCoverageInfo.set(entry, node);
-      if (this._filterCallback(node._coverageInfo)) {
+      if (this._isVisibleFilter(node._coverageInfo)) {
         rootNode.appendChild(node);
         hadUpdates = true;
       }
@@ -95,7 +113,7 @@ export class CoverageListView extends UI.Widget.VBox {
     this._highlightRegExp = highlightRegExp;
     let hadTreeUpdates = false;
     for (const node of this._nodeForCoverageInfo.values()) {
-      const shouldBeVisible = this._filterCallback(node._coverageInfo);
+      const shouldBeVisible = this._isVisibleFilter(node._coverageInfo);
       const isVisible = !!node.parent;
       if (shouldBeVisible) {
         node._setHighlight(this._highlightRegExp);
@@ -115,6 +133,9 @@ export class CoverageListView extends UI.Widget.VBox {
     }
   }
 
+  /**
+   * @param {string} url
+   */
   selectByUrl(url) {
     for (const [info, node] of this._nodeForCoverageInfo.entries()) {
       if (info.url() === url) {
@@ -164,84 +185,17 @@ export class CoverageListView extends UI.Widget.VBox {
     if (!columnId) {
       return;
     }
-    let sortFunction;
-    switch (columnId) {
-      case 'url':
-        sortFunction = compareURL;
-        break;
-      case 'type':
-        sortFunction = compareType;
-        break;
-      case 'size':
-        sortFunction = compareNumericField.bind(null, 'size');
-        break;
-      case 'bars':
-      case 'unusedSize':
-        sortFunction = compareNumericField.bind(null, 'unusedSize');
-        break;
-      default:
-        console.assert(false, 'Unknown sort field: ' + columnId);
-        return;
+    const sortFunction = GridNode.sortFunctionForColumn(columnId);
+    if (!sortFunction) {
+      return;
     }
-
     this._dataGrid.sortNodes(sortFunction, !this._dataGrid.isSortOrderAscending());
-
-    /**
-     * @param {!DataGrid.DataGrid.DataGridNode} a
-     * @param {!DataGrid.DataGrid.DataGridNode} b
-     * @return {number}
-     */
-    function compareURL(a, b) {
-      const nodeA = /** @type {!GridNode} */ (a);
-      const nodeB = /** @type {!GridNode} */ (b);
-
-      return nodeA._url.localeCompare(nodeB._url);
-    }
-
-    /**
-     * @param {string} fieldName
-     * @param {!DataGrid.DataGrid.DataGridNode} a
-     * @param {!DataGrid.DataGrid.DataGridNode} b
-     * @return {number}
-     */
-    function compareNumericField(fieldName, a, b) {
-      const nodeA = /** @type {!GridNode} */ (a);
-      const nodeB = /** @type {!GridNode} */ (b);
-
-      return nodeA._coverageInfo[fieldName]() - nodeB._coverageInfo[fieldName]() || compareURL(a, b);
-    }
-
-    /**
-     * @param {!DataGrid.DataGrid.DataGridNode} a
-     * @param {!DataGrid.DataGrid.DataGridNode} b
-     * @return {number}
-     */
-    function compareType(a, b) {
-      const nodeA = /** @type {!GridNode} */ (a);
-      const nodeB = /** @type {!GridNode} */ (b);
-      const typeA = CoverageListView._typeToString(nodeA._coverageInfo.type());
-      const typeB = CoverageListView._typeToString(nodeB._coverageInfo.type());
-      return typeA.localeCompare(typeB) || compareURL(a, b);
-    }
-  }
-
-  /**
-   * @param {!CoverageType} type
-   */
-  static _typeToString(type) {
-    const types = [];
-    if (type & CoverageType.CSS) {
-      types.push(Common.UIString.UIString('CSS'));
-    }
-    if (type & CoverageType.JavaScriptPerFunction) {
-      types.push(Common.UIString.UIString('JS (per function)'));
-    } else if (type & CoverageType.JavaScript) {
-      types.push(Common.UIString.UIString('JS (per block)'));
-    }
-    return types.join('+');
   }
 }
 
+/**
+ * @extends {DataGrid.SortableDataGrid.SortableDataGridNode<!GridNode>}
+ */
 export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
   /**
    * @param {!URLCoverageInfo} coverageInfo
@@ -254,7 +208,6 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
     this._lastUsedSize;
     this._url = coverageInfo.url();
     this._maxSize = maxSize;
-    this._highlightDOMChanges = [];
     /** @type {?RegExp} */
     this._highlightRegExp = null;
   }
@@ -307,7 +260,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
         break;
       }
       case 'type': {
-        cell.textContent = CoverageListView._typeToString(this._coverageInfo.type());
+        cell.textContent = coverageTypeToString(this._coverageInfo.type());
         if (this._coverageInfo.type() & CoverageType.JavaScriptPerFunction) {
           cell.title = ls
           `JS coverage with per function granularity: Once a function was executed, the whole function is marked as covered.`;
@@ -383,11 +336,45 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
    * @param {string} textContent
    */
   _highlight(element, textContent) {
+    if (!this._highlightRegExp) {
+      return;
+    }
     const matches = this._highlightRegExp.exec(textContent);
     if (!matches || !matches.length) {
       return;
     }
     const range = new TextUtils.TextRange.SourceRange(matches.index, matches[0].length);
     UI.UIUtils.highlightRangesWithStyleClass(element, [range], 'filter-highlight');
+  }
+
+  /**
+   *
+   * @param {string} columnId
+   * @returns {null|function(!GridNode, !GridNode):number}
+   */
+  static sortFunctionForColumn(columnId) {
+    /**
+     * @param {!GridNode} a
+     * @param {!GridNode} b
+     */
+    const compareURL = (a, b) => a._url.localeCompare(b._url);
+    switch (columnId) {
+      case 'url':
+        return compareURL;
+      case 'type':
+        return (a, b) => {
+          const typeA = coverageTypeToString(a._coverageInfo.type());
+          const typeB = coverageTypeToString(b._coverageInfo.type());
+          return typeA.localeCompare(typeB) || compareURL(a, b);
+        };
+      case 'size':
+        return (a, b) => a._coverageInfo.size() - b._coverageInfo.size() || compareURL(a, b);
+      case 'bars':
+      case 'unusedSize':
+        return (a, b) => a._coverageInfo.unusedSize() - b._coverageInfo.unusedSize() || compareURL(a, b);
+      default:
+        console.assert(false, 'Unknown sort field: ' + columnId);
+        return null;
+    }
   }
 }

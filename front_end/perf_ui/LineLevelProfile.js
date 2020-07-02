@@ -230,7 +230,7 @@ export class LineDecorator {
   /**
    * @override
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   * @param {!TextEditor.CodeMirrorTextEditor.CodeMirrorTextEditor} textEditor
+   * @param {!SourceFrame.SourcesTextEditor.SourcesTextEditor} textEditor
    * @param {string} type
    */
   decorate(uiSourceCode, textEditor, type) {

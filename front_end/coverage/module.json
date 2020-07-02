@@ -44,11 +44,17 @@
     }
   ],
   "dependencies": [
-    "sdk",
-    "ui",
-    "source_frame",
+    "bindings",
+    "common",
     "data_grid",
-    "formatter"
+    "formatter",
+    "host",
+    "platform",
+    "sdk",
+    "source_frame",
+    "text_utils",
+    "ui",
+    "workspace"
   ],
   "scripts": [],
   "modules": [

@@ -1,9 +1,9 @@
 {
   "all": true,
-  "check-coverage": true,
+  "check-coverage": false,
   "instrumentation": false,
   "sourceMap": false,
-  "reporter": ["html", "text-summary"],
+  "reporter": ["text-summary", "text", "html", "json"],
   "lines": 93,
   "statements": 93,
   "functions": 96,

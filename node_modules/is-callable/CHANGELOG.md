@@ -1,3 +1,11 @@
+1.2.0 / 2020-06-02
+=================
+  * [New] use `Reflect.apply`‑based callability detection
+  * [readme] add install instructions (#55)
+  * [meta] only run `aud` on prod deps
+  * [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `tape`, `make-arrow-function`, `make-generator-function`; add `aud`, `safe-publish-latest`, `make-async-function`
+  * [Tests] add tests for function proxies (#53, #25)
+
 1.1.5 / 2019-12-18
 =================
   * [meta] remove unused Makefile and associated utilities

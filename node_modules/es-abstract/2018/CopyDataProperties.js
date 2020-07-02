@@ -6,8 +6,14 @@ var OwnPropertyKeys = require('../helpers/OwnPropertyKeys');
 
 var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
 
+var CreateDataProperty = require('./CreateDataProperty');
+var Get = require('./Get');
 var IsArray = require('./IsArray');
+var IsInteger = require('./IsInteger');
 var IsPropertyKey = require('./IsPropertyKey');
+var SameValue = require('./SameValue');
+var ToNumber = require('./ToNumber');
+var ToObject = require('./ToObject');
 var Type = require('./Type');
 
 // https://www.ecma-international.org/ecma-262/9.0/#sec-copydataproperties
@@ -30,16 +36,14 @@ module.exports = function CopyDataProperties(target, source, excludedItems) {
 		return target;
 	}
 
-	var ES = this;
-
-	var fromObj = ES.ToObject(source);
+	var fromObj = ToObject(source);
 
 	var sourceKeys = OwnPropertyKeys(fromObj);
 	forEach(sourceKeys, function (nextKey) {
 		var excluded = false;
 
 		forEach(excludedItems, function (e) {
-			if (ES.SameValue(e, nextKey) === true) {
+			if (SameValue(e, nextKey) === true) {
 				excluded = true;
 			}
 		});
@@ -48,11 +52,11 @@ module.exports = function CopyDataProperties(target, source, excludedItems) {
 		// this is to handle string keys being non-enumerable in older engines
 			typeof source === 'string'
             && nextKey >= 0
-            && ES.IsInteger(ES.ToNumber(nextKey))
+            && IsInteger(ToNumber(nextKey))
 		);
 		if (excluded === false && enumerable) {
-			var propValue = ES.Get(fromObj, nextKey);
-			ES.CreateDataProperty(target, nextKey, propValue);
+			var propValue = Get(fromObj, nextKey);
+			CreateDataProperty(target, nextKey, propValue);
 		}
 	});
 

@@ -1,7 +1,7 @@
 'use strict';
 
-var trimStart = require('string.prototype.trimleft');
-var trimEnd = require('string.prototype.trimright');
+var trimStart = require('string.prototype.trimstart');
+var trimEnd = require('string.prototype.trimend');
 
 var GetIntrinsic = require('../GetIntrinsic');
 

@@ -154,3 +154,18 @@ test('Booleans', function (t) {
 
     t.end();
 });
+
+test('Date', function (t) {
+    var now = new Date();
+    t.equal(inspect(now), String(now), 'Date shows properly');
+    t.equal(inspect(new Date(NaN)), 'Invalid Date', 'Invalid Date shows properly');
+
+    t.end();
+});
+
+test('RegExps', function (t) {
+    t.equal(inspect(/a/g), '/a/g', 'regex shows properly');
+    t.equal(inspect(new RegExp('abc', 'i')), '/abc/i', 'new RegExp shows properly');
+
+    t.end();
+});

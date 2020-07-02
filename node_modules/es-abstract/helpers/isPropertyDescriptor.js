@@ -18,7 +18,7 @@ module.exports = function IsPropertyDescriptor(ES, Desc) {
 		'[[Writable]]': true
 	};
 
-    for (var key in Desc) { // eslint-disable-line
+	for (var key in Desc) { // eslint-disable-line no-restricted-syntax
 		if (has(Desc, key) && !allowed[key]) {
 			return false;
 		}

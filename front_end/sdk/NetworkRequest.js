@@ -197,7 +197,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!NetworkRequest} other
    * @return {number}
    */
-  indentityCompare(other) {
+  identityCompare(other) {
     const thisId = this.requestId();
     const thatId = other.requestId();
     if (thisId > thatId) {

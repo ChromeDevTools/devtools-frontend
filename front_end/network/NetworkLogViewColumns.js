@@ -792,14 +792,14 @@ export const _defaultColumns = [
     title: ls`Path`,
     hideable: true,
     hideableGroup: 'path',
-    sortingFunction: NetworkRequestNode.RequestPropertyComparator.bind(null, 'path')
+    sortingFunction: NetworkRequestNode.RequestPropertyComparator.bind(null, 'pathname')
   },
   {
     id: 'url',
     title: ls`Url`,
     hideable: true,
     hideableGroup: 'path',
-    sortingFunction: NetworkRequestNode.RequestPropertyComparator.bind(null, 'url')
+    sortingFunction: NetworkRequestNode.RequestURLComparator
   },
   {
     id: 'method',

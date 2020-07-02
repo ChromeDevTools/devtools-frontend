@@ -27,7 +27,8 @@ const onFileChange = () => {
   filesChangedDuringBuild = false;
   isBuilding = true;
 
-  const autoninja = childProcess.spawn('autoninja', ['-C', `out/${target}`, 'front_end'], {cwd, env, stdio: 'inherit'});
+  const autoninja = childProcess.spawn(
+      'autoninja', ['-C', `out/${target}`, 'devtools_frontend_resources'], {cwd, env, stdio: 'inherit'});
   autoninja.on('close', () => {
     if (filesChangedDuringBuild) {
       console.warn('Warning: files changed during build, you may wish to trigger a fresh rebuild.');
@@ -38,5 +39,5 @@ const onFileChange = () => {
 };
 
 // Watch the front_end folder and build on any change.
-console.log(`Watching for changes in /front_end; building to out/${target}`);
+console.log(`Watching for changes in ${frontEnd}; building to out/${target}`);
 fs.watch(`${frontEnd}`, {recursive: true}, onFileChange);

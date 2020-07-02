@@ -52,6 +52,6 @@
     "test-local": "third_party/node/node.py --output scripts/npm_test.js --layout-tests-directory=test/webtests/",
     "ts_library-test": "./third_party/typescript/tests/verify_ts_libary.sh",
     "unittest": "python scripts/test/run_unittests.py --no-text-coverage",
-    "watch": "third_party/node/node.py scripts/watch_build.js --output"
+    "watch": "third_party/node/node.py --output scripts/watch_build.js"
   }
 }

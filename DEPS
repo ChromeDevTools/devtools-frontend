@@ -4,16 +4,16 @@
 
 vars = {
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': '2b37200db6bc5818510ed3d67cb864e5bb5b4cc7',
+  'build_revision': 'cee6c15d0d8d2e92de1a6c1291cb9dfe984820b5',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
-  'buildtools_revision': '6099f101844843c71117a888e8b405cff450d367',
+  'buildtools_revision': '6b2a302b65baf729e0dc026bf2f0bfdb593a2366',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
   'depot_tools_revision': '95099f475463caa66801dd1b22ee851fe8bc05be',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
-  'inspector_protocol_revision': '8c11f011735fedf71002e0f2f29a4a3a9546136e',
+  'inspector_protocol_revision': '898aed4a1e8b6be1460b6058bd0553ba84e71e29',
 
   'llvm_url': 'https://chromium.googlesource.com/external/github.com/llvm/llvm-project/',
   'llvm_revision': '7edc7f6edbcb5be439886c271a71df43b3f0a8e3',
@@ -29,7 +29,7 @@ vars = {
   'protoc_version': 'protobuf_version:v3.11.4',
 
   # GN CIPD package version.
-  'gn_version': 'git_revision:7d7e8deea36d126397bda2cf924682504271f0e1',
+  'gn_version': 'git_revision:cd3869be2477f7ee1aa3f27f43ee934e74722dfb',
 
   # Chromium build number for unit tests. It should be regularly updated to
   # the content of https://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/LAST_CHANGE

@@ -8,10 +8,12 @@ copy_to_gen("console") {
   sources = [
     "big-int.html",
     "built-ins.html",
+    "console-filter.html",
     "cookie-issue.html",
     "document-write.html",
     "dom-interactions.html",
     "escaping.html",
+    "log-source.js",
     "navigation/after-navigation.html",
     "navigation/after-removal.html",
     "navigation/write-to-console.html",

@@ -202,7 +202,7 @@ describe('The Console Tab', async () => {
   });
 
   it('can show verbose promise unhandledrejections', async () => {
-    const messages = await getConsoleMessages('onunhandledrejection', showVerboseMessages);
+    const messages = await getConsoleMessages('onunhandledrejection', false, showVerboseMessages);
 
     assert.deepEqual(messages, [
       'onunhandledrejection1',

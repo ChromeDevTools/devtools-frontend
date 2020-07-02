@@ -1,0 +1,34 @@
+<!--
+  Copyright 2020 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<script src="log-source.js"></script>
+<script>
+function log1() {
+    console.log.apply(console, arguments);
+}
+
+log1("1topGroup: log1()"); // from console-filter.html
+log2("2topGroup: log2()"); // from log-source.js
+log1("3topGroup: log1()"); // from console-filter.html
+
+console.group("outerGroup");
+log1("1outerGroup: log1()"); // from console-filter.html
+log2("2outerGroup: log2()"); // from log-source.js
+
+console.group("innerGroup");
+log1("1innerGroup: log1()"); // from console-filter.html
+log2("2innerGroup: log2()"); // from log-source.js
+
+console.groupEnd();
+console.groupEnd();
+
+var logger1 = console.context("context1");
+var logger2 = console.context("context2");
+logger1.log("Hello 1");
+logger2.log("Hello 2");
+
+console.debug('verbose debug message');
+console.log("end");
+</script>

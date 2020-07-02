@@ -6,9 +6,12 @@ const {assert} = chai;
 
 import {assertNotNull, renderElementIntoDOM} from './DOMHelpers.js';
 import {reset} from '../../../../front_end/inspector_overlay/common.js';
-import {drawGridNumbers} from '../../../../front_end/inspector_overlay/css_grid_label_helpers.js';
+import {drawGridAreaNames, drawGridNumbers} from '../../../../front_end/inspector_overlay/css_grid_label_helpers.js';
+import {AreaBounds, Bounds} from '../../../../front_end/inspector_overlay/common.js';
 
 const GRID_LABEL_CONTAINER_ID = 'grid-label-container';
+const GRID_LINE_NUMBER_LABEL_CONTAINER_CLASS = 'line-numbers';
+const GRID_LINE_AREA_LABEL_CONTAINER_CLASS = 'area-names';
 
 // Make sure typescript knows about the custom properties that are set on the window object.
 declare global {
@@ -51,11 +54,31 @@ export function initFrameForGridLabels() {
 export function createGridLabelContainer() {
   const el = document.createElement('div');
   el.id = GRID_LABEL_CONTAINER_ID;
+
+  el.createChild('div', GRID_LINE_NUMBER_LABEL_CONTAINER_CLASS);
+  el.createChild('div', GRID_LINE_AREA_LABEL_CONTAINER_CLASS);
+
   renderElementIntoDOM(el);
 }
 
 export function getGridLabelContainer() {
-  return document.getElementById(GRID_LABEL_CONTAINER_ID);
+  const el = document.getElementById(GRID_LABEL_CONTAINER_ID) as HTMLElement;
+  assertNotNull(el);
+  return el;
+}
+
+export function getGridLineNumberLabelContainer() {
+  const el =
+      document.querySelector(`#${GRID_LABEL_CONTAINER_ID} .${GRID_LINE_NUMBER_LABEL_CONTAINER_CLASS}`) as HTMLElement;
+  assertNotNull(el);
+  return el;
+}
+
+export function getGridAreaNameLabelContainer() {
+  const el =
+      document.querySelector(`#${GRID_LABEL_CONTAINER_ID} .${GRID_LINE_AREA_LABEL_CONTAINER_CLASS}`) as HTMLElement;
+  assertNotNull(el);
+  return el;
 }
 
 interface GridHighlightConfig {
@@ -69,29 +92,66 @@ interface HighlightConfig {
   positiveColumnLineNumberOffsets?: number[];
   negativeColumnLineNumberOffsets?: number[];
 }
-interface Bounds {
-  minX: number, maxX: number, minY: number, maxY: number,
-}
-interface ExpectedLabel {
+interface ExpectedLineNumberLabel {
   className: string;
   count: number;
 }
 
-export function drawGridNumbersAndAssertLabels(
-    config: HighlightConfig, bounds: Bounds, expectedLabels: ExpectedLabel[]) {
-  drawGridNumbers(config, bounds);
+interface ExpectedAreaNameLabel {
+  textContent: string;
+  left?: string;
+  top?: string;
+}
 
-  const el = getGridLabelContainer();
-  assertNotNull(el);
+export function drawGridNumbersAndAssertLabels(
+    config: HighlightConfig, bounds: Bounds, expectedLabels: ExpectedLineNumberLabel[]) {
+  const el = getGridLineNumberLabelContainer();
+  drawGridNumbers(el, config, bounds);
 
   let totalLabelCount = 0;
   for (const {className, count} of expectedLabels) {
-    const labels = el.querySelectorAll(`.grid-label-content.${className}`);
+    const labels = el.querySelectorAll(`.line-numbers .grid-label-content.${className}`);
     assert.strictEqual(labels.length, count, `Expected ${count} labels to be displayed ${className}`);
     totalLabelCount += count;
   }
 
   assert.strictEqual(
-      el.querySelectorAll('.grid-label-content').length, totalLabelCount,
-      'The right total number of labels were displayed');
+      el.querySelectorAll('.line-numbers .grid-label-content').length, totalLabelCount,
+      'The right total number of line number labels were displayed');
+}
+
+export function drawGridAreaNamesAndAssertLabels(areaNames: AreaBounds[], expectedLabels: ExpectedAreaNameLabel[]) {
+  const el = getGridAreaNameLabelContainer();
+  drawGridAreaNames(el, areaNames);
+
+  const labels = el.querySelectorAll('.area-names .grid-label-content');
+  assert.strictEqual(labels.length, expectedLabels.length, 'The right total number of area name labels were displayed');
+
+  const foundLabels: ExpectedAreaNameLabel[] = [];
+  labels.forEach(label => {
+    foundLabels.push({
+      textContent: label.textContent || '',
+      top: (label as HTMLElement).style.top,
+      left: (label as HTMLElement).style.left,
+    });
+  });
+  for (const expected of expectedLabels) {
+    const foundLabel = foundLabels.find(({textContent}) => textContent === expected.textContent);
+
+    if (!foundLabel) {
+      assert.fail(`Expected area label with text content ${expected.textContent} not found`);
+      return;
+    }
+
+    if (typeof expected.left !== 'undefined') {
+      assert.strictEqual(
+          foundLabel.left, expected.left,
+          `Expected label ${expected.textContent} to be left positioned to ${expected.left}`);
+    }
+    if (typeof expected.top !== 'undefined') {
+      assert.strictEqual(
+          foundLabel.top, expected.top,
+          `Expected label ${expected.textContent} to be top positioned to ${expected.top}`);
+    }
+  }
 }

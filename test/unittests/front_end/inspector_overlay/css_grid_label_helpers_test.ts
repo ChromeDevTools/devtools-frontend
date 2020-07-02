@@ -4,8 +4,7 @@
 
 const {assert} = chai;
 
-import {assertNotNull} from '../helpers/DOMHelpers.js';
-import {drawGridNumbersAndAssertLabels, getGridLabelContainer, initFrameForGridLabels} from '../helpers/InspectorOverlayHelpers.js';
+import {drawGridAreaNamesAndAssertLabels, drawGridNumbersAndAssertLabels, getGridLineNumberLabelContainer, initFrameForGridLabels} from '../helpers/InspectorOverlayHelpers.js';
 import {drawGridNumbers, _normalizeOffsetData} from '../../../../front_end/inspector_overlay/css_grid_label_helpers.js';
 
 describe('drawGridNumbers label creation', () => {
@@ -82,10 +81,8 @@ describe('drawGridNumbers label creation', () => {
 
   for (const {description, config, bounds, expectedLabels} of TESTS) {
     it(description, () => {
-      drawGridNumbers(config, bounds);
-
-      const el = getGridLabelContainer();
-      assertNotNull(el);
+      const el = getGridLineNumberLabelContainer();
+      drawGridNumbers(el, config, bounds);
 
       assert.strictEqual(el.children.length, expectedLabels.length, 'The right number of labels got created');
       assert.strictEqual(el.textContent, expectedLabels.join(''), 'The labels text is correct');
@@ -418,4 +415,54 @@ describe('_normalizeOffsetData', () => {
     assert.isTrue(data.columns.negative.hasFirst);
     assert.isTrue(data.columns.negative.hasLast);
   });
+});
+
+describe('drawGridAreaNames', () => {
+  beforeEach(initFrameForGridLabels);
+
+  const TESTS = [
+    {
+      description: 'does not create labels when not needed',
+      areaBounds: [],
+      expectedLabels: [],
+    },
+    {
+      description: 'creates the necessary number of area labels',
+      areaBounds: [
+        {
+          name: 'foo',
+          bounds: {minX: 0, maxX: 0, minY: 0, maxY: 0},
+        },
+        {
+          name: 'bar',
+          bounds: {minX: 0, maxX: 0, minY: 0, maxY: 0},
+        },
+      ],
+      expectedLabels: [
+        {textContent: 'foo'},
+        {textContent: 'bar'},
+      ],
+    },
+    {
+      description: 'positions area labels correctly',
+      areaBounds: [
+        {
+          name: 'foo',
+          bounds: {minX: 125, maxX: 376, minY: 22, maxY: 428},
+        },
+        {
+          name: 'bar',
+          bounds: {minX: 678, maxX: 1092, minY: 435, maxY: 450},
+        },
+      ],
+      expectedLabels: [
+        {textContent: 'foo', top: '22px', left: '125px'},
+        {textContent: 'bar', top: '435px', left: '678px'},
+      ],
+    },
+  ];
+
+  for (const {description, areaBounds, expectedLabels} of TESTS) {
+    it(description, () => drawGridAreaNamesAndAssertLabels(areaBounds, expectedLabels));
+  }
 });

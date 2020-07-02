@@ -5,6 +5,12 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
+/** @typedef {!{minX: number, maxX: number, minY: number, maxY: number, width?: number, height?: number}} */
+export let Bounds;  // eslint-disable-line no-unused-vars
+
+/** @typedef {!{name: String, bounds: Bounds}} */
+export let AreaBounds;  // eslint-disable-line no-unused-vars
+
 window.viewportSize = {
   width: 800,
   height: 600

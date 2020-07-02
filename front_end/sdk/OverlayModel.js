@@ -432,9 +432,11 @@ export class OverlayModel extends SDKModel {
       gridBorderDash: gridBorderDashed,
       cellBorderColor: showGridLines ? Common.Color.PageHighlight.GridCellBorder.toProtocolRGBA() : undefined,
       cellBorderDash: gridLinesDashed,
-      showGridExtensionLines: showGridExtensionLines,
+      showGridExtensionLines,
       showPositiveLineNumbers,
-      showNegativeLineNumbers
+      showNegativeLineNumbers,
+      showAreaNames: Common.Settings.Settings.instance().moduleSetting('showGridAreas').get(),
+      areaBorderColor: Common.Color.PageHighlight.GridAreaBorder.toProtocolRGBA()
     };
   }
 

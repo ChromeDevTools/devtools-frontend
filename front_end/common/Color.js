@@ -842,6 +842,7 @@ export const PageHighlight = {
   GridColumnGapBackground: Color.fromRGBA([147, 52, 230, .3]),
   GridRowGapHatch: Color.fromRGBA([147, 52, 230, .8]),
   GridColumnGapHatch: Color.fromRGBA([147, 52, 230, .8]),
+  GridAreaBorder: Color.fromRGBA([26, 115, 232, 1]),
 };
 
 export class Generator {

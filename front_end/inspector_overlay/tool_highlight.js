@@ -254,7 +254,6 @@ body {
   min-width: 10px;
   min-height: 15px;
   color: #FFFFFF;
-  border: 1px solid white;
   border-radius: 2px;
   box-sizing: border-box;
   z-index: 1;
@@ -265,6 +264,10 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.line-numbers .grid-label-content {
+  border: 1px solid white;
   --inner-corner-avoid-distance: 15px;
 }
 
@@ -288,7 +291,7 @@ body {
   transform: translateX(calc(var(--inner-corner-avoid-distance) * -1));
 }
 
-.grid-label-content::before {
+.line-numbers .grid-label-content::before {
   position: absolute;
   z-index: 1;
   pointer-events: none;

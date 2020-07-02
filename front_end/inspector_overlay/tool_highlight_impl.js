@@ -28,18 +28,20 @@
 //  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 //  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import {contrastRatio, rgbaToHsla} from '../common/ColorUtils.js';
 
-import {createElement} from './common.js';
-import {drawGridNumbers} from './css_grid_label_helpers.js';
+import {AreaBounds, Bounds, createElement} from './common.js';  // eslint-disable-line no-unused-vars
+import {drawGridLabels} from './css_grid_label_helpers.js';
 
 const lightGridColor = 'rgba(0,0,0,0.2)';
 const darkGridColor = 'rgba(0,0,0,0.7)';
 const gridBackgroundColor = 'rgba(255, 255, 255, 0.8)';
+
+/** @typedef {!Object<string, Array>} */
+let AreaPaths;  // eslint-disable-line no-unused-vars
 
 function _drawAxis(context, rulerAtRight, rulerAtBottom) {
   if (window._gridPainted) {
@@ -669,7 +671,49 @@ function _drawLayoutGridHighlight(highlight, context) {
       context, highlight.columnGaps, highlight.gridHighlightConfig.columnGapColor,
       highlight.gridHighlightConfig.columnHatchColor);
 
-  drawGridNumbers(highlight, gridBounds);
+  // Draw named grid areas
+  const areaBounds = _drawGridAreas(context, highlight.areaNames, highlight.gridHighlightConfig.areaBorderColor);
+
+  // Draw all the labels
+  drawGridLabels(highlight, gridBounds, areaBounds);
+}
+
+/**
+ * Draw all of the named grid area paths. This does not draw the labels, as
+ * placing labels in and around the grid for various things is handled later.
+ *
+ * @param {CanvasRenderingContext2D} context
+ * @param {AreaPaths} areas
+ * @param {string} borderColor
+ * @return {AreaBounds[]} The list of area names and their associated bounds.
+ */
+function _drawGridAreas(context, areas, borderColor) {
+  if (!areas || !Object.keys(areas).length) {
+    return [];
+  }
+
+  context.save();
+  if (borderColor) {
+    context.strokeStyle = borderColor;
+  }
+  context.lineWidth = 2;
+
+  const areaBounds = [];
+
+  for (const name in areas) {
+    const areaCommands = areas[name];
+
+    const bounds = emptyBounds();
+    const path = buildPath(areaCommands, bounds);
+
+    context.stroke(path);
+
+    areaBounds.push({name, bounds});
+  }
+
+  context.restore();
+
+  return areaBounds;
 }
 
 function _drawGridGap(context, gapCommands, gapColor, hatchColor, flipDirection) {

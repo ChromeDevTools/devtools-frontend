@@ -241,6 +241,26 @@
     },
     {
       "type": "setting",
+      "category": "Grid",
+      "title": "Grid Areas",
+      "experiment": "cssGridFeatures",
+      "settingName": "showGridAreas",
+      "settingType": "boolean",
+      "storageType": "session",
+      "options": [
+        {
+          "value": true,
+          "title": "Show grid named areas"
+        },
+        {
+          "value": false,
+          "title": "Do not show grid named areas"
+        }
+      ],
+      "defaultValue": false
+    },
+    {
+      "type": "setting",
       "category": "Rendering",
       "settingName": "showPaintRects",
       "settingType": "boolean",

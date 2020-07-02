@@ -195,6 +195,9 @@
   <message name="IDS_DEVTOOLS_3f23f0e9da2803d48c2d67aa09f01bf5" desc="Tooltip to explain why a cookie was blocked">
     This Set-Cookie didn&apos;t specify a &quot;SameSite&quot; attribute and was defaulted to &quot;SameSite=Lax,&quot; and was blocked because it came from a cross-site response which was not the response to a top-level navigation. The Set-Cookie had to have been set with &quot;SameSite=None&quot; to enable cross-site usage.
   </message>
+  <message name="IDS_DEVTOOLS_4cbb2bdce4db02a995cdd7a237a63d69" desc="Title of a setting under the Grid category that turns CSS Grid Area highlighting on">
+    Show grid named areas
+  </message>
   <message name="IDS_DEVTOOLS_9485d0acccd869b51a96f2b35fd0b620" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Do not emulate CSS prefers-reduced-data
   </message>
@@ -589,6 +592,9 @@
   <message name="IDS_DEVTOOLS_beff15b1acf49b84bf1080cceb920ebf" desc="Title of a media query that can be emulated via the Rendering drawer">
     prefers-color-scheme: dark
   </message>
+  <message name="IDS_DEVTOOLS_c112e1b21767d13578eec90eb52998f3" desc="Section of CSS Grid tooling options for showing grid areas">
+    Grid Areas
+  </message>
   <message name="IDS_DEVTOOLS_c2b67a1559b80b23f73dabb8bba0f534" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Emulate tritanopia
   </message>
@@ -670,6 +676,9 @@
   </message>
   <message name="IDS_DEVTOOLS_df9f4292c1d025cbada13b25744d34e5" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Do not emulate CSS media type
+  </message>
+  <message name="IDS_DEVTOOLS_dfac8599aa1a20968a973065801167fe" desc="Title of a setting under the Grid category that turns CSS Grid Area highlighting off">
+    Do not show grid named areas
   </message>
   <message name="IDS_DEVTOOLS_e0ced940105749256af3e9b91792a78e" desc="Option for CSS Grid tooling">
     Row Gaps

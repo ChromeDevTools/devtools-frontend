@@ -124,7 +124,30 @@ found in the LICENSE file.
             "isPrimaryGrid":true
           }
         ]
-      }
+      },
+      // Grid with named areas.
+      {
+        "paths":[],
+        "gridInfo":[
+          {
+            "rows":["M",800,60,"L",1200,60,"M",1200,120,"L",800,120,"M",1200,180,"L",800,180],
+            "rowGaps":[],
+            "positiveRowLineNumberOffsets":[],
+            "negativeRowLineNumberOffsets":[],
+            "columns":["M",800,60,"L",800,180,"M",1000,180,"L",1000,60,"M",1200,60,"L",1200,180],
+            "columnGaps":[],
+            "positiveColumnLineNumberOffsets":[],
+            "negativeColumnLineNumberOffsets":[],
+            "gridBorder":["M",800,60,"L",1200,60,"L",1200,180,"L",800,180,"Z"],
+            "areaNames": {
+              "foo": ["M", 800, 60, "L", 1000, 60, "L", 1000, 180, "L", 800, 180, "Z"],
+              "bar": ["M", 1000, 120, "L", 1200, 120, "L", 1200, 180, "L", 1000, 180, "Z"],
+            },
+            "gridHighlightConfig":{"gridBorderDash":false,"cellBorderDash":true,"showGridExtensionLines":false,"cellBorderColor":"rgba(147, 52, 230, 1)","showAreaNames": true, "areaBorderColor": "rgba(26, 115, 232, 1)"},
+            "isPrimaryGrid":true
+          }
+        ]
+      },
     ];
 
     function test() {

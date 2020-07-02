@@ -242,7 +242,7 @@ export class InspectorFrontendHostAPI {
   }
 
   /**
-   * @param {string} actionName
+   * @param {!EnumeratedHistogram} actionName
    * @param {number} actionCode
    * @param {number} bucketSize
    */
@@ -400,3 +400,19 @@ export let LoadNetworkResourceResult;
 }} */
 // @ts-ignore typedef
 export let ExtensionDescriptor;
+
+/**
+ * Enum for recordPerformanceHistogram
+ * Warning: There are three definitions of this enum in the DevTools code base, keep them in sync.
+ * @readonly
+ * @enum {string}
+ */
+export const EnumeratedHistogram = {
+  ActionTaken: 'DevTools.ActionTaken',
+  PanelShown: 'DevTools.PanelShown',
+  KeyboardShortcutFired: 'DevTools.KeyboardShortcutFired',
+  IssuesPanelOpenedFrom: 'DevTools.IssuesPanelOpenedFrom',
+  KeybindSetSettingChanged: 'DevTools.KeybindSetSettingChanged',
+  DualScreenDeviceEmulated: 'DevTools.DualScreenDeviceEmulated',
+  GridSettingChanged: 'DevTools.GridSettingChanged',
+};

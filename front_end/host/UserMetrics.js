@@ -34,6 +34,7 @@ import * as Common from '../common/common.js';
  * @unrestricted
  */
 import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
+import {EnumeratedHistogram} from './InspectorFrontendHostAPI.js';
 
 export class UserMetrics {
   constructor() {
@@ -48,8 +49,8 @@ export class UserMetrics {
   panelShown(panelName) {
     const code = PanelCodes[panelName] || 0;
     const size = Object.keys(PanelCodes).length + 1;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram('DevTools.PanelShown', code, size);
-    Common.EventTarget.fireEvent('DevTools.PanelShown', {value: code});
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.PanelShown, code, size);
+    Common.EventTarget.fireEvent(EnumeratedHistogram.PanelShown, {value: code});
     // Store that the user has changed the panel so we know launch histograms should not be fired.
     this._panelChangedSinceLaunch = true;
   }
@@ -73,8 +74,8 @@ export class UserMetrics {
    */
   actionTaken(action) {
     const size = Object.keys(Action).length + 1;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram('DevTools.ActionTaken', action, size);
-    Common.EventTarget.fireEvent('DevTools.ActionTaken', {value: action});
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.ActionTaken, action, size);
+    Common.EventTarget.fireEvent(EnumeratedHistogram.ActionTaken, {value: action});
   }
 
   /**
@@ -122,8 +123,8 @@ export class UserMetrics {
   keybindSetSettingChanged(keybindSet) {
     const size = Object.keys(KeybindSetSettings).length + 1;
     const value = KeybindSetSettings[keybindSet] || 0;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram('DevTools.KeybindSetSettingChanged', value, size);
-    Common.EventTarget.fireEvent('DevTools.KeybindSetSettingChanged', {value});
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.KeybindSetSettingChanged, value, size);
+    Common.EventTarget.fireEvent(EnumeratedHistogram.KeybindSetSettingChanged, {value});
   }
 
   /**
@@ -132,8 +133,8 @@ export class UserMetrics {
   keyboardShortcutFired(actionId) {
     const size = Object.keys(KeyboardShortcutAction).length + 1;
     const action = KeyboardShortcutAction[actionId] || KeyboardShortcutAction.OtherShortcut;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram('DevTools.KeyboardShortcutFired', action, size);
-    Common.EventTarget.fireEvent('DevTools.KeyboardShortcutFired', {value: action});
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.KeyboardShortcutFired, action, size);
+    Common.EventTarget.fireEvent(EnumeratedHistogram.KeyboardShortcutFired, {value: action});
   }
 
   /**
@@ -141,8 +142,9 @@ export class UserMetrics {
    */
   issuesPanelOpenedFrom(issueOpener) {
     const size = Object.keys(IssueOpener).length + 1;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram('DevTools.IssuesPanelOpenedFrom', issueOpener, size);
-    Common.EventTarget.fireEvent('DevTools.IssuesPanelOpenedFrom', {value: issueOpener});
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.IssuesPanelOpenedFrom, issueOpener, size);
+    Common.EventTarget.fireEvent(EnumeratedHistogram.IssuesPanelOpenedFrom, {value: issueOpener});
   }
 
   /**
@@ -150,8 +152,9 @@ export class UserMetrics {
    */
   dualScreenDeviceEmulated(emulationAction) {
     const size = Object.keys(DualScreenDeviceEmulated).length + 1;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram('DevTools.DualScreenDeviceEmulated', emulationAction, size);
-    Common.EventTarget.fireEvent('DevTools.DualScreenDeviceEmulated', {value: emulationAction});
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.DualScreenDeviceEmulated, emulationAction, size);
+    Common.EventTarget.fireEvent(EnumeratedHistogram.DualScreenDeviceEmulated, {value: emulationAction});
   }
 
   /**
@@ -163,8 +166,8 @@ export class UserMetrics {
     if (!gridSetting) {
       return;
     }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram('DevTools.GridSettingChanged', gridSetting, size);
-    Common.EventTarget.fireEvent('DevTools.GridSettingChanged', {value: gridSetting});
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.GridSettingChanged, gridSetting, size);
+    Common.EventTarget.fireEvent(EnumeratedHistogram.GridSettingChanged, {value: gridSetting});
   }
 }
 

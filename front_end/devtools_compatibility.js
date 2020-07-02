@@ -356,6 +356,22 @@
   // InspectorFrontendHostImpl --------------------------------------------------
 
   /**
+   * Enum for recordPerformanceHistogram
+   * Warning: There are three definitions of this enum in the DevTools code base, keep them in sync.
+   * @readonly
+   * @enum {string}
+   */
+  const EnumeratedHistogram = {
+    ActionTaken: 'DevTools.ActionTaken',
+    PanelShown: 'DevTools.PanelShown',
+    KeyboardShortcutFired: 'DevTools.KeyboardShortcutFired',
+    IssuesPanelOpenedFrom: 'DevTools.IssuesPanelOpenedFrom',
+    KeybindSetSettingChanged: 'DevTools.KeybindSetSettingChanged',
+    DualScreenDeviceEmulated: 'DevTools.DualScreenDeviceEmulated',
+    GridSettingChanged: 'DevTools.GridSettingChanged',
+  };
+
+  /**
    * @implements {InspectorFrontendHostAPI}
    * @unrestricted
    */
@@ -570,13 +586,12 @@
 
     /**
      * @override
-     * @param {string} actionName
+     * @param {!InspectorFrontendHostAPI.EnumeratedHistogram} actionName
      * @param {number} actionCode
      * @param {number} bucketSize
      */
     recordEnumeratedHistogram(actionName, actionCode, bucketSize) {
-      // Support for M49 frontend.
-      if (actionName === 'DevTools.DrawerShown') {
+      if (!Object.values(EnumeratedHistogram).includes(actionName)) {
         return;
       }
       DevToolsAPI.sendMessageToEmbedder('recordEnumeratedHistogram', [actionName, actionCode, bucketSize], null);

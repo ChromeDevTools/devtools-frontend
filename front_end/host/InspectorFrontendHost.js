@@ -32,7 +32,7 @@ import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
-import {ContextMenuDescriptor, EventDescriptors, Events, InspectorFrontendHostAPI, LoadNetworkResourceResult} from './InspectorFrontendHostAPI.js';  // eslint-disable-line no-unused-vars
+import {ContextMenuDescriptor, EnumeratedHistogram, EventDescriptors, Events, InspectorFrontendHostAPI, LoadNetworkResourceResult} from './InspectorFrontendHostAPI.js';  // eslint-disable-line no-unused-vars
 import {streamWrite as resourceLoaderStreamWrite} from './ResourceLoader.js';
 
 /**
@@ -244,7 +244,7 @@ export class InspectorFrontendHostStub {
 
   /**
    * @override
-   * @param {string} actionName
+   * @param {!EnumeratedHistogram} actionName
    * @param {number} actionCode
    * @param {number} bucketSize
    */

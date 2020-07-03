@@ -46,8 +46,8 @@
     background-color: Highlight;
   }
 
-  .breakpoint-list .breakpoint-entry:hover *,
-  .breakpoint-entry[data-keyboard-focus="true"] * {
+  .breakpoint-entry[data-keyboard-focus="true"] *,
+  .breakpoint-list .breakpoint-entry:hover * {
     color: HighlightText;
   }
 }

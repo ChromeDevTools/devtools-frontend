@@ -27,7 +27,12 @@
  */
 .cm-js-keyword { color: hsl(310deg 86% 36%); }
 .cm-js-number { color: hsl(248deg 100% 41%); }
-.cm-js-comment { color: hsl(120deg 100% 23%); font-style: italic; }
+
+.cm-js-comment {
+  color: hsl(120deg 100% 23%);
+  font-style: italic;
+}
+
 .cm-js-string { color: hsl(1deg 80% 43%); }
 .cm-js-string-2 { color: hsl(1deg 99% 39%); }
 .cm-js-atom { color: hsl(310deg 86% 36%); }
@@ -144,7 +149,12 @@
 .cm-header,
 .cm-strong { font-weight: bold; }
 .cm-em { font-style: italic; }
-.cm-link { text-decoration: underline; }
+
+.cm-link {
+  text-decoration: underline;
+  color: #00c;
+}
+
 .cm-strikethrough { text-decoration: line-through; }
 
 .cm-invalidchar { color: #f00; }
@@ -170,7 +180,6 @@
 .cm-tag { color: #170; }
 .cm-attribute { color: #00c; }
 .cm-hr { color: #999; }
-.cm-link { color: #00c; }
 
 .cm-error { color: #f00; }
 

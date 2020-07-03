@@ -43,16 +43,13 @@ input.dt-checkbox-themed::after {
   width: 12px;
   height: 12px;
   background: none;
+  -webkit-mask-image: url(Images/checkboxCheckmark.svg);
+  -webkit-mask-size: 11px 11px;
+  -webkit-mask-position: 0 0;
 }
 
 input.dt-checkbox-themed:checked::after {
   background-color: #333;
-}
-
-input.dt-checkbox-themed::after {
-  -webkit-mask-image: url(Images/checkboxCheckmark.svg);
-  -webkit-mask-size: 11px 11px;
-  -webkit-mask-position: 0 0;
 }
 
 :host-context(.-theme-with-dark-background) input:not(.dt-checkbox-themed) {
@@ -74,6 +71,16 @@ input.dt-checkbox-themed::after {
     forced-color-adjust: none;
   }
 
+  input.dt-checkbox-theme-preserve:active {
+    background: HighlightText;
+  }
+
+  input.dt-checkbox-theme-preserve:checked,
+  input.dt-checkbox-theme-preserve:active:checked {
+    background: Highlight;
+    border-color: Highlight;
+  }
+
   input.dt-checkbox-theme-preserve:hover:enabled {
     border-color: Highlight;
   }
@@ -83,21 +90,11 @@ input.dt-checkbox-themed::after {
     background-color: Highlight;
   }
 
-  input.dt-checkbox-theme-preserve:active {
-    background: HighlightText;
-  }
-
-  input.dt-checkbox-theme-preserve:active:checked::before,
-  input.dt-checkbox-theme-preserve:active:checked::after,
   input.dt-checkbox-theme-preserve:checked::before,
-  input.dt-checkbox-theme-preserve:checked::after {
+  input.dt-checkbox-theme-preserve:checked::after,
+  input.dt-checkbox-theme-preserve:active:checked::before,
+  input.dt-checkbox-theme-preserve:active:checked::after {
     background-color: HighlightText;
-  }
-
-  input.dt-checkbox-theme-preserve:active:checked,
-  input.dt-checkbox-theme-preserve:checked {
-    background: Highlight;
-    border-color: Highlight;
   }
 
   input.dt-checkbox-theme-preserve:hover:checked::before,

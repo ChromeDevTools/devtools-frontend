@@ -219,9 +219,14 @@ export class MainImpl {
     self.Persistence.isolatedFileSystemManager =
         Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance();
 
-    const themeSetting = Common.Settings.Settings.instance().createSetting('uiTheme', 'systemPreferred');
+    const defaultThemeSetting = 'systemPreferred';
+    const themeSetting = Common.Settings.Settings.instance().createSetting('uiTheme', defaultThemeSetting);
     UI.UIUtils.initializeUIUtils(document, themeSetting);
     themeSetting.addChangeListener(Components.Reload.reload.bind(Components));
+    if (themeSetting.get() === defaultThemeSetting) {
+      const darkThemeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      darkThemeMediaQuery.addEventListener('change', Components.Reload.reload.bind(Components));
+    }
 
     UI.UIUtils.installComponentRootStyles(/** @type {!Element} */ (document.body));
 

@@ -33,14 +33,26 @@ template("devtools_entrypoint") {
   _entrypoint_gen_file_location =
       "$target_gen_dir/$_entrypoint_output_file_name.js"
 
+  _is_typescript_file = get_path_info(invoker.entrypoint, "extension") == "ts"
+
   # In debug mode, the entrypoint is kept as-is. This means we only
   # need to compile with TypeScript, which means it will fetch all
   # of its files as separate network requests.
   if (is_debug) {
-    ts_library(_entrypoint_target_name) {
-      sources = [ invoker.entrypoint ]
+    if (_is_typescript_file) {
+      ts_library(_entrypoint_target_name) {
+        sources = [ invoker.entrypoint ]
 
-      deps = invoker.deps
+        deps = invoker.deps
+      }
+    } else {
+      copy(_entrypoint_target_name) {
+        sources = [ invoker.entrypoint ]
+
+        outputs = [ _entrypoint_gen_file_location ]
+
+        deps = invoker.deps
+      }
     }
   } else {
     # In release mode, we are running Rollup and thus bundle all
@@ -74,30 +86,43 @@ template("devtools_entrypoint") {
     #
     _output_file_name =
         "$target_gen_dir/$_entrypoint_output_file_name.prebundle"
-    _copy_output_file_name = "$_output_file_name.ts"
-    _typescript_output_file_name = "$_output_file_name.js"
-
     _copy_target_name = _entrypoint_target_name + "-copy"
-    _typescript_target_name = _entrypoint_target_name + "-typescript"
+    _prebundle_output_file_name = "$_output_file_name.js"
 
-    copy(_copy_target_name) {
-      sources = [ invoker.entrypoint ]
+    if (_is_typescript_file) {
+      _copy_output_file_name = "$_output_file_name.ts"
 
-      outputs = [ _copy_output_file_name ]
+      _prebundle_target_name = _entrypoint_target_name + "-typescript"
 
-      deps = invoker.deps
-    }
+      copy(_copy_target_name) {
+        sources = [ invoker.entrypoint ]
 
-    ts_library(_typescript_target_name) {
-      sources = [ _copy_output_file_name ]
+        outputs = [ _copy_output_file_name ]
 
-      rootdir = target_gen_dir
+        deps = invoker.deps
+      }
 
-      public_deps = [ ":$_copy_target_name" ]
+      ts_library(_prebundle_target_name) {
+        sources = [ _copy_output_file_name ]
+
+        rootdir = target_gen_dir
+
+        public_deps = [ ":$_copy_target_name" ]
+      }
+    } else {
+      _prebundle_target_name = _copy_target_name
+
+      copy(_copy_target_name) {
+        sources = [ invoker.entrypoint ]
+
+        outputs = [ _prebundle_output_file_name ]
+
+        deps = invoker.deps
+      }
     }
 
     rollup(_entrypoint_target_name) {
-      entrypoint = _typescript_output_file_name
+      entrypoint = _prebundle_output_file_name
 
       output_file_location = _entrypoint_gen_file_location
 
@@ -110,7 +135,7 @@ template("devtools_entrypoint") {
       # is the same. So Ninja will detect that no output has changed for
       # "_typescript_target_name" and bail out. This would then *also* skip
       # the Rollup action.
-      deps = [ ":$_typescript_target_name" ] + invoker.deps
+      deps = [ ":$_prebundle_target_name" ] + invoker.deps
     }
   }
 

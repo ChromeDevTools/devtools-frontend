@@ -32,7 +32,7 @@ ts_library("formatter_worker") {
   ]
 }
 
-devtools_entrypoint("formatter_worker-rollup") {
+devtools_entrypoint("bundle") {
   entrypoint = "formatter_worker.ts"
 
   deps = [ ":formatter_worker" ]

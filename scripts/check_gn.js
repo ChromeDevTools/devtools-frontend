@@ -105,7 +105,10 @@ function checkDevtoolsModuleEntrypoints() {
       'devtools_module_entrypoints',
       (moduleJSON, folderName) => {
         return (moduleJSON.modules || []).filter(fileName => {
-          return fileName === `${folderName}.js` || fileName === `${folderName}-legacy.js`;
+          // TODO(crbug.com/1101738): Remove the exemption and change the variable to
+          // `generated_typescript_entrypoints` instead.
+          return (folderName !== 'elements' && fileName === `${folderName}.js`) ||
+              fileName === `${folderName}-legacy.js`;
         });
       },
       buildGNPath => filename => {

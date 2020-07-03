@@ -1,3 +1,9 @@
+# Copyright 2020 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../scripts/build/copy_to_gen.gni")
+import("../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../third_party/typescript/typescript.gni")
 
 ts_library("elements") {
@@ -6,5 +12,44 @@ ts_library("elements") {
   deps = [
     "../lit_html",
     "../ui",
+  ]
+}
+
+copy_to_gen("elements-copy") {
+  sources = [
+    "ClassesPaneWidget.js",
+    "ColorSwatchPopoverIcon.js",
+    "ComputedStyleModel.js",
+    "ComputedStyleWidget.js",
+    "DOMLinkifier.js",
+    "DOMPath.js",
+    "ElementStatePaneWidget.js",
+    "ElementsBreadcrumbs.js",
+    "ElementsPanel.js",
+    "ElementsSidebarPane.js",
+    "ElementsTreeElement.js",
+    "ElementsTreeElementHighlighter.js",
+    "ElementsTreeOutline.js",
+    "EventListenersWidget.js",
+    "ImagePreviewPopover.js",
+    "InspectElementModeController.js",
+    "MarkerDecorator.js",
+    "MetricsSidebarPane.js",
+    "NodeStackTraceWidget.js",
+    "PlatformFontsWidget.js",
+    "PropertiesWidget.js",
+    "StylePropertyHighlighter.js",
+    "StylePropertyTreeElement.js",
+    "StylesSidebarPane.js",
+    "elements-legacy.js",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "elements.js"
+
+  deps = [
+    ":elements",
+    ":elements-copy",
   ]
 }

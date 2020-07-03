@@ -469,7 +469,6 @@ devtools_module_entrypoints = [
   "diff/diff.js",
   "diff/diff-legacy.js",
   "dom_extension/dom_extension.js",
-  "elements/elements.js",
   "elements/elements-legacy.js",
   "emulation/emulation.js",
   "emulation/emulation-legacy.js",
@@ -883,8 +882,10 @@ generated_worker_bundles = [
   "$resources_out_dir/wasmparser_worker_entrypoint.js",
 ]
 
-generated_typescript_entrypoints =
-    [ "$resources_out_dir/formatter_worker/formatter_worker.js" ]
+generated_typescript_entrypoints = [
+  "$resources_out_dir/formatter_worker/formatter_worker.js",
+  "$resources_out_dir/elements/elements.js",
+]
 
 devtools_applications = [
   "lighthouse_worker",
@@ -935,7 +936,8 @@ devtools_frontend_resources_deps = [
   # Required for layout tests, which depend on the existence of `integration_test_runner.html`
   # If we don't add this dependency explicitly, the swarming bots don't pick up the file.
   "front_end:front_end_html_entrypoints",
-  "front_end/formatter_worker:formatter_worker-rollup",
+  "front_end/elements:bundle",
+  "front_end/formatter_worker:bundle",
 ]
 
 if (is_debug) {

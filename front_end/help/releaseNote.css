@@ -4,9 +4,6 @@
  * found in the LICENSE file.
  */
 
-:host {
-}
-
 .hbox {
   overflow-y: auto;
   overflow-x: hidden;

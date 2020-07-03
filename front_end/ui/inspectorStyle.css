@@ -30,9 +30,7 @@
 :root {
   height: 100%;
   overflow: hidden;
-}
 
-:root {
   --accent-color: #1a73e8;
   --accent-fg-color: #1a73e8;
   --accent-color-hover: #3b86e8;
@@ -44,6 +42,7 @@
   --toolbar-bg-color: #f3f3f3;
   --toolbar-hover-bg-color: #eaeaea;
   --selection-fg-color: white;
+  --selection-bg-color: var(--accent-color);
   --selection-inactive-fg-color: #5a5a5a;
   --selection-inactive-bg-color: #dadada;
   --tab-selected-fg-color: #333;
@@ -53,9 +52,12 @@
     0 2px 4px rgb(0 0 0 / 20%),
     0 2px 6px rgb(0 0 0 / 10%);
   --divider-color: #d0d0d0;
+  --divider-border: 1px solid var(--divider-color);
   --focus-ring-inactive-shadow: 0 0 0 1px var(--focus-ring-inactive-shadow-color);
+  --focus-ring-active-shadow: 0 0 0 1px var(--accent-color);
   --item-selection-bg-color: #cfe8fc;
   --item-selection-inactive-bg-color: #e0e0e0;
+  --item-hover-color: rgb(56 121 217 / 10%);
   --network-grid-default-color: rgb(255 255 255 / 100%);
   --network-grid-stripe-color: rgb(245 245 245 / 100%);
   --network-grid-navigation-color: rgb(221 238 255 / 100%);
@@ -67,6 +69,7 @@
   --network-grid-focus-selected-color-has-error: rgb(255 240 240 / 100%);
   --network-grid-from-frame-color: rgb(224 247 250 / 40%);
   --network-grid-is-product-color: rgb(255 252 225 / 60%);
+  --network-frame-divider-color: #fccc49;
 }
 
 .-theme-with-dark-background {
@@ -103,14 +106,6 @@
   --network-grid-focus-selected-color-has-error: rgb(217 58 58 / 15%);
   --network-grid-from-frame-color: rgb(224 247 250 / 40%);
   --network-grid-is-product-color: rgb(255 252 225 / 60%);
-}
-
-:root {
-  --focus-ring-active-shadow: 0 0 0 1px var(--accent-color);
-  --selection-bg-color: var(--accent-color);
-  --divider-border: 1px solid var(--divider-color);
-  --item-hover-color: rgb(56 121 217 / 10%);
-  --network-frame-divider-color: #fccc49;
 }
 
 body {

@@ -19,6 +19,13 @@
   --context-menu-seperator-color: var(--divider-color);
 }
 
+:host-context(.-theme-with-dark-background) .soft-context-menu {
+  --context-menu-hover-bg: var(--selection-bg-color);
+  --context-menu-hover-color: var(--selection-fg-color);
+
+  border: none;
+}
+
 :host:host-context(.platform-mac):host-context(html:not(.-theme-with-dark-background)) .soft-context-menu {
   border: 1px solid rgb(196 196 196 / 90%);
   border-top: 1px solid rgb(196 196 196 / 50%);
@@ -28,13 +35,6 @@
 
   --context-menu-hover-color: #fff;
   --context-menu-seperator-color: rgb(222 222 222);
-}
-
-:host-context(.-theme-with-dark-background) .soft-context-menu {
-  --context-menu-hover-bg: var(--selection-bg-color);
-  --context-menu-hover-color: var(--selection-fg-color);
-
-  border: none;
 }
 
 .soft-context-menu-item {
@@ -119,13 +119,13 @@
   margin: auto 5px auto 0;
 }
 
-:host-context(.-theme-with-dark-background) .checkmark {
-  filter: invert(80%);
-}
-
 .soft-context-menu-item-mouse-over .checkmark {
   opacity: 100%;
   filter: none;
+}
+
+:host-context(.-theme-with-dark-background) .checkmark {
+  filter: invert(80%);
 }
 
 @media (forced-colors: active) {

@@ -429,7 +429,7 @@ export class Section {
   _addVersion(versionsStack, icon, label) {
     const installingEntry = versionsStack.createChild('div', 'service-worker-version');
     installingEntry.createChild('div', icon);
-    installingEntry.createChild('span').textContent = label;
+    installingEntry.createChild('span', 'service-worker-version-string').textContent = label;
     return installingEntry;
   }
 

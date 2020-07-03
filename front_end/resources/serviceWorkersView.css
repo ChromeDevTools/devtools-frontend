@@ -4,6 +4,10 @@
  * found in the LICENSE file.
  */
 
+.service-worker-version {
+  display: flex;
+}
+
 .service-worker-version-stack {
   position: relative;
 }
@@ -20,6 +24,11 @@
 
 .service-worker-version:not(:last-child) {
   margin-bottom: 7px;
+}
+
+.service-worker-version-string {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .service-worker-active-circle,
@@ -83,6 +92,11 @@
   text-overflow: ellipsis;
 }
 
+.report-field-value-subtitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .service-worker-client {
   display: flex;
 }
@@ -108,6 +122,12 @@
   flex-grow: 0;
 }
 
+.service-workers-this-origin,
+.service-worker-filter,
+.service-workers-other-origin {
+  min-width: 400px;
+}
+
 .service-worker-has-current .service-workers-other-origin {
   margin-top: 16px;
   border-top: 1px solid rgb(230 230 230);
@@ -115,12 +135,6 @@
 
 .service-worker-list-empty .service-workers-other-origin {
   display: none;
-}
-
-.service-workers-this-origin,
-.service-worker-filter,
-.service-workers-other-origin {
-  min-width: 400px;
 }
 
 .service-worker-filter {

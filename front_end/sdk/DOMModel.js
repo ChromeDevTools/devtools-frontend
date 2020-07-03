@@ -1286,6 +1286,7 @@ export class DOMModel extends SDKModel {
    * @returns {!Promise<?DeferredDOMNode>}
    */
   async getOwnerNodeForFrame(frameId) {
+    // Returns an error if the frameId does not belong to the current target.
     const response = await this._agent.invoke_getFrameOwner({frameId});
     if (response.getError()) {
       return null;

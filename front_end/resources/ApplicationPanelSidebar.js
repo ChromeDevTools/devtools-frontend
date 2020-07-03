@@ -2192,10 +2192,13 @@ export class FrameTreeElement extends BaseStorageTreeElement {
     return false;
   }
 
+  /**
+   * @param {boolean} hovered
+   */
   set hovered(hovered) {
     if (hovered) {
       this.listItemElement.classList.add('hovered');
-      this._frame.resourceTreeModel().domModel().overlayModel().highlightFrame(this._frameId);
+      this._frame.highlight();
     } else {
       this.listItemElement.classList.remove('hovered');
       SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
@@ -2288,7 +2291,7 @@ export class FrameTreeElement extends BaseStorageTreeElement {
 
   /**
    * @override
-   * @returns {!Promise}
+   * @return {!Promise<void>}
    */
   async onpopulate() {
     this._populated = true;

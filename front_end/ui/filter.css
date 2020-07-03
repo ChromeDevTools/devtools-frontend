@@ -136,19 +136,19 @@
   box-shadow: var(--focus-ring-inactive-shadow);
 }
 
-.filter-text-filter:not(.filter-text-empty) .filter-input-container,
-.filter-input-container:focus-within {
+.filter-input-container:focus-within,
+.filter-text-filter:not(.filter-text-empty) .filter-input-container {
   box-shadow: var(--focus-ring-active-shadow);
-}
-
-.filter-text-empty .filter-input-clear-button {
-  display: none;
 }
 
 .filter-input-clear-button {
   opacity: 70%;
   height: 16px;
   margin-top: 1px;
+}
+
+.filter-text-empty .filter-input-clear-button {
+  display: none;
 }
 
 .filter-input-clear-button:hover {

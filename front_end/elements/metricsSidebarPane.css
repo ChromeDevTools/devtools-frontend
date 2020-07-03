@@ -18,17 +18,22 @@
 
 :host {
   --metrics-height: 190px;
-
   height: var(--metrics-height);
   contain: strict;
 }
 
-/* All computed layout attributes except position have a quite light
- * background colour applied to them, so the default light font in dark
- * mode is very low contrast. Therefore we swap back to a dark font by
- * default in dark mode because the background colours are lighter.
+/* The font we use on Windows takes up more vertical space, so adjust
+ * the height of the metrics sidebar pane accordingly.
  */
+:host-context(.platform-windows) {
+  --metrics-height: 214px;
+}
 
+/* All computed layout attributes except position have a quite light
+ * background color applied to them, so the default light font in dark
+ * mode is very low contrast. Therefore we swap back to a dark font by
+ * default in dark mode because the background colors are lighter.
+ */
 :host-context(.-theme-with-dark-background) .metrics .margin,
 :host-context(.-theme-with-dark-background) .metrics .border,
 :host-context(.-theme-with-dark-background) .metrics .padding,
@@ -42,17 +47,15 @@
  * color of the text for all the children to light. This also fixes
  * hovering over anything within margin such as border/padding.
  */
-
 :host-context(.-theme-with-dark-background) .metrics .margin:hover div {
   color: #ccc;
 }
 
-/* In dark mode the hover colour that is used when hovering on border
+/* In dark mode the hover color that is used when hovering on border
  * constrasts very poorly with the lighter text colour used in dark
- * mode. So when you hover over the border we apply a dark font colour
+ * mode. So when you hover over the border we apply a dark font color
  * that contrasts much better with the background.
  */
-
 :host-context(.-theme-with-dark-background) .metrics .border:hover > div:not(.padding) {
   color: #222;
 }

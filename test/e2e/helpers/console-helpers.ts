@@ -17,6 +17,8 @@ export const CONSOLE_VIEW_SELECTOR = '.console-view';
 export const STACK_PREVIEW_CONTAINER = '.stack-preview-container';
 export const CONSOLE_MESSAGE_WRAPPER_SELECTOR = '.console-group-messages .console-message-wrapper';
 export const CONSOLE_SELECTOR = '.console-user-command-result';
+export const CONSOLE_SETTINGS_SELECTOR = '[aria-label^="Console settings"]';
+export const AUTOCOMPLETE_FROM_HISTORY_SELECTOR = '[aria-label^="Autocomplete from history"]';
 
 export async function deleteConsoleMessagesFilter(frontend: puppeteer.Page) {
   await waitFor('.console-main-toolbar');
@@ -179,4 +181,10 @@ export async function navigateToIssuesPanelViaInfoBar() {
   await waitFor('.infobar');
   await click('.infobar .infobar-button');
   await waitFor('.issues-pane');
+}
+
+export async function turnOffHistoryAutocomplete() {
+  await click(CONSOLE_SETTINGS_SELECTOR);
+  await waitFor(AUTOCOMPLETE_FROM_HISTORY_SELECTOR);
+  await click(AUTOCOMPLETE_FROM_HISTORY_SELECTOR);
 }

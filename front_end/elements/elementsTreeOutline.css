@@ -73,6 +73,10 @@
   background-color: #727272;
 }
 
+.elements-disclosure li.parent.expanded::before {
+  -webkit-mask-position: -16px 0;
+}
+
 .elements-disclosure li.always-parent::before {
   visibility: hidden;
 }

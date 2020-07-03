@@ -279,7 +279,7 @@ describe('User Metrics', () => {
       },
       {
         name: 'DevTools.KeyboardShortcutFired',
-        value: 0,  // OtherShortcut
+        value: 35,  // debugger.toggle-breakpoints-active
       },
     ]);
   });

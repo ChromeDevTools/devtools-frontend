@@ -22,7 +22,6 @@ describe('Cookie', () => {
     assert.strictEqual(cookie.priority(), 'Medium');
     assert.strictEqual(cookie.session(), true);
     assert.strictEqual(cookie.path(), undefined);
-    assert.strictEqual(cookie.port(), undefined);
     assert.strictEqual(cookie.domain(), undefined);
     assert.strictEqual(cookie.expires(), undefined);
     assert.strictEqual(cookie.maxAge(), undefined);
@@ -57,7 +56,6 @@ describe('Cookie', () => {
     assert.strictEqual(cookie.sameSite(), 'Strict');
     assert.strictEqual(cookie.session(), false);
     assert.strictEqual(cookie.path(), '/test');
-    assert.strictEqual(cookie.port(), undefined);
     assert.strictEqual(cookie.domain(), '.example.com');
     assert.strictEqual(cookie.expires(), expires);
     assert.strictEqual(cookie.maxAge(), undefined);
@@ -92,7 +90,6 @@ describe('Cookie', () => {
     assert.strictEqual(cookie.priority(), 'Medium');
     assert.strictEqual(cookie.session(), true);
     assert.strictEqual(cookie.path(), '/test');
-    assert.strictEqual(cookie.port(), undefined);
     assert.strictEqual(cookie.domain(), '.example.com');
     assert.strictEqual(cookie.expires(), 42);
     assert.strictEqual(cookie.maxAge(), undefined);

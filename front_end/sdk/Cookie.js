@@ -32,8 +32,6 @@ export class Cookie {
     const cookie = new Cookie(protocolCookie.name, protocolCookie.value, null, protocolCookie.priority);
     cookie.addAttribute('domain', protocolCookie['domain']);
     cookie.addAttribute('path', protocolCookie['path']);
-    // @ts-ignore the PDL says Cookies do not have a port attribute: https://crbug.com/1060613
-    cookie.addAttribute('port', protocolCookie['port']);
     if (protocolCookie['expires']) {
       cookie.addAttribute('expires', protocolCookie['expires'] * 1000);
     }
@@ -122,13 +120,6 @@ export class Cookie {
      */
   path() {
     return /** @type {string} */ (this._attributes['path']);
-  }
-
-  /**
-     * @return {string}
-     */
-  port() {
-    return /** @type {string} */ (this._attributes['port']);
   }
 
   /**

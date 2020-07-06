@@ -60,7 +60,8 @@ describe('Multi-Workers', async function() {
       await validateSourceTabs();
     });
 
-    it(`loads scripts exactly once on break ${withOrWithout}`, async () => {
+    // Flaky test
+    it.skip(`[crbug.com/1073406]: loads scripts exactly once on break ${withOrWithout}`, async () => {
       const {target} = getBrowserAndPages();
 
       // Have the target load the page.
@@ -172,7 +173,8 @@ describe('Multi-Workers', async function() {
         });
       });
 
-      it('for pre-loaded workers', async () => {
+      // Flaky test
+      it.skip('[crbug.com/1073406]: for pre-loaded workers', async () => {
         const {target} = getBrowserAndPages();
         // Send message to a worker to trigger break
         await target.evaluate('workers[5].postMessage({});');

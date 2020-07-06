@@ -6,13 +6,14 @@
 
 .add-network-target-button {
   margin: 10px 25px;
-  align-self: flex-start;
+  align-self: center;
 }
 
 .network-discovery-list {
-  margin: 10px 0 0 25px;
-  max-width: 500px;
   flex: none;
+  max-width: 600px;
+  max-height: 202px;
+  margin: 20px 0 5px 0;
 }
 
 .network-discovery-list-empty {
@@ -32,16 +33,16 @@
   flex: auto 1 1;
 }
 
+.network-discovery-value {
+  flex: 3 1 0;
+}
+
 .list-item .network-discovery-value {
   white-space: nowrap;
   text-overflow: ellipsis;
   user-select: none;
   color: #222;
   overflow: hidden;
-}
-
-.network-discovery-value {
-  flex: 3 1 0;
 }
 
 .network-discovery-edit-row {
@@ -58,8 +59,8 @@
 }
 
 .network-discovery-footer {
+  margin: 0;
   overflow: hidden;
-  margin: 15px 0 0 25px;
   max-width: 500px;
 }
 
@@ -77,10 +78,6 @@
   flex: auto;
 }
 
-.add-network-target-button {
-  align-self: center;
-}
-
 :host-context(.node-frontend) .network-discovery-list-empty {
   height: 40px;
 }
@@ -88,16 +85,6 @@
 :host-context(.node-frontend) .network-discovery-list-item {
   padding: 3px 15px;
   height: 40px;
-}
-
-.network-discovery-list {
-  margin: 20px 0 5px 0;
-  max-width: 600px;
-  max-height: 202px;
-}
-
-.network-discovery-footer {
-  margin: 0;
 }
 
 .node-panel-center {

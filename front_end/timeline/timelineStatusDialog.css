@@ -33,7 +33,6 @@
   width: 200px;
   height: 8px;
   background-color: #f4f4f4;
-  display: inline-block;
 }
 
 .timeline-status-dialog .progress .indicator {

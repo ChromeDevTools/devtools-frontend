@@ -11,7 +11,7 @@ ts_library("lit_html") {
   deps = [ "../third_party/lit-html" ]
 }
 
-devtools_entrypoint("lit_html-rollup") {
+devtools_entrypoint("bundle") {
   entrypoint = "lit_html.ts"
 
   deps = [ ":lit_html" ]

@@ -10,7 +10,7 @@ ts_library("elements") {
   sources = [ "Adorner.js" ]
 
   deps = [
-    "../lit_html",
+    "../lit_html:bundle",
     "../ui",
   ]
 }

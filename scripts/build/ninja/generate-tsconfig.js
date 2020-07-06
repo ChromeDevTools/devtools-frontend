@@ -4,7 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const [, , tsconfigLocation, entrypointName, originalFileLocation, ...dependencies] = process.argv;
+const [, , tsconfigLocation, originalFileLocation, ...dependencies] = process.argv;
 
 const originalFrontendMappedLocation =
     path.relative(path.dirname(tsconfigLocation), path.join(process.cwd(), originalFileLocation));
@@ -27,10 +27,3 @@ const generatedTSConfig = {
 };
 
 fs.writeFileSync(tsconfigLocation, JSON.stringify(generatedTSConfig));
-
-const outputDirectory = path.dirname(tsconfigLocation);
-const rawFileName = path.basename(entrypointName, path.extname(entrypointName));
-const inputLocation = path.join(outputDirectory, `${rawFileName}.prebundle.d.ts`);
-const outputLocation = path.join(outputDirectory, `${rawFileName}.d.ts`);
-
-fs.copyFileSync(inputLocation, outputLocation);

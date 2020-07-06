@@ -40,7 +40,9 @@ template("devtools_entrypoint") {
   # of its files as separate network requests.
   if (is_debug) {
     if (_is_typescript_file) {
-      ts_library(_entrypoint_target_name) {
+      _ts_library_target_name = _entrypoint_target_name + "-typescript"
+
+      ts_library(_ts_library_target_name) {
         sources = [ invoker.entrypoint ]
 
         deps = invoker.deps
@@ -92,11 +94,11 @@ template("devtools_entrypoint") {
         "$target_gen_dir/$_entrypoint_output_file_name.prebundle"
     _copy_target_name = _entrypoint_target_name + "-copy"
     _prebundle_output_file_name = "$_output_file_name.js"
+    _rollup_target_name = _entrypoint_target_name + "-rollup"
 
     if (_is_typescript_file) {
       _copy_output_file_name = "$_output_file_name.ts"
 
-      _ts_library_target_name = _entrypoint_target_name + "-typescript"
       _prebundle_target_name = _entrypoint_target_name + "-tsconfig"
 
       copy(_copy_target_name) {
@@ -107,61 +109,16 @@ template("devtools_entrypoint") {
         deps = invoker.deps
       }
 
-      ts_library(_ts_library_target_name) {
+      ts_library(_prebundle_target_name) {
         sources = [ _copy_output_file_name ]
 
         rootdir = target_gen_dir
 
         public_deps = [ ":$_copy_target_name" ]
       }
-
-      # Because we change the filename before rolling up the bundle,
-      # tsc can get upset when it uses the original `target_name` to
-      # reference a different `ts_library`. The `ts_library` action
-      # above generates a `tsconfig.json` which does not include the
-      # `target_name`, but instead uses `_ts_library_target_name`.
-      #
-      # For example, if the `target_name` is "module", the `ts_library`
-      # action above generates a
-      # `devtools_entrypoint-module-typescript-tsconfig.json`. However,
-      # if a different `ts_library` depends on this `devtools_entrypoint`,
-      # it depends on it as "../module:module". Therefore, the expected
-      # location of the `tsconfig.json` is instead `module-tsconfig.json`.
-      #
-      # Therefore, we need to generate a separate tsconfig.json which
-      # artificially mimics what `ts_library` would have generated.
-      #
-      # Additionally, TypeScript requires a `module.d.ts` that describes
-      # the public API of the `module.js` entrypoint. To do so, we copy
-      # the generated `prebundle.d.ts` over, as the public API for a
-      # rolled up bundle remains the same.
-      _generated_tsconfig_location =
-          target_gen_dir + "/" + invoker.target_name + "-tsconfig.json"
-
-      action(_prebundle_target_name) {
-        script = "//third_party/node/node.py"
-
-        inputs = [ devtools_location_prepend +
-                   "scripts/build/ninja/generate-tsconfig.js" ]
-
-        args = [
-                 rebase_path(devtools_location_prepend +
-                                 "scripts/build/ninja/generate-tsconfig.js",
-                             root_build_dir),
-                 rebase_path(_generated_tsconfig_location, root_build_dir),
-                 invoker.entrypoint,
-                 rebase_path(invoker.entrypoint, root_build_dir),
-               ] + invoker.deps
-
-        public_deps = [ ":$_ts_library_target_name" ]
-
-        outputs = [
-          _generated_tsconfig_location,
-          "$target_gen_dir/$_entrypoint_output_file_name.d.ts",
-        ]
-      }
     } else {
       _prebundle_target_name = _copy_target_name
+      _entrypoint_target_name = _rollup_target_name
 
       copy(_copy_target_name) {
         sources = [ invoker.entrypoint ]
@@ -172,7 +129,7 @@ template("devtools_entrypoint") {
       }
     }
 
-    rollup(_entrypoint_target_name) {
+    rollup(_rollup_target_name) {
       entrypoint = _prebundle_output_file_name
 
       output_file_location = _entrypoint_gen_file_location
@@ -187,6 +144,72 @@ template("devtools_entrypoint") {
       # "_typescript_target_name" and bail out. This would then *also* skip
       # the Rollup action.
       deps = [ ":$_prebundle_target_name" ] + invoker.deps
+    }
+
+    if (_is_typescript_file) {
+      # TypeScript requires a `module.d.ts` that describes
+      # the public API of the `module.js` entrypoint. To do so, we copy
+      # the generated `prebundle.d.ts` over, as the public API for a
+      # rolled up bundle remains the same.
+      _ts_library_target_name = _entrypoint_target_name + "-typescript"
+
+      action(_ts_library_target_name) {
+        script = "//third_party/node/node.py"
+
+        inputs = [ devtools_location_prepend +
+                   "scripts/build/ninja/generate-declaration.js" ]
+
+        args = [
+          rebase_path(devtools_location_prepend +
+                          "scripts/build/ninja/generate-declaration.js",
+                      root_build_dir),
+          rebase_path(target_gen_dir, root_build_dir),
+          invoker.entrypoint,
+        ]
+
+        public_deps = [ ":$_rollup_target_name" ]
+
+        outputs = [ "$target_gen_dir/$_entrypoint_output_file_name.d.ts" ]
+      }
+    }
+  }
+
+  if (_is_typescript_file) {
+    # Because we change the filename before rolling up the bundle,
+    # tsc can get upset when it uses the original `target_name` to
+    # reference a different `ts_library`. The `ts_library` action
+    # above generates a `tsconfig.json` which does not include the
+    # `target_name`, but instead uses `_ts_library_target_name`.
+    #
+    # For example, if the `target_name` is "module", the `ts_library`
+    # action above generates a
+    # `devtools_entrypoint-module-typescript-tsconfig.json`. However,
+    # if a different `ts_library` depends on this `devtools_entrypoint`,
+    # it depends on it as "../module:module". Therefore, the expected
+    # location of the `tsconfig.json` is instead `module-tsconfig.json`.
+    #
+    # Therefore, we need to generate a separate tsconfig.json which
+    # artificially mimics what `ts_library` would have generated.
+    _generated_tsconfig_location =
+        target_gen_dir + "/" + invoker.target_name + "-tsconfig.json"
+
+    action(_entrypoint_target_name) {
+      script = "//third_party/node/node.py"
+
+      inputs = [ devtools_location_prepend +
+                 "scripts/build/ninja/generate-tsconfig.js" ]
+
+      args = [
+               rebase_path(devtools_location_prepend +
+                               "scripts/build/ninja/generate-tsconfig.js",
+                           root_build_dir),
+               rebase_path(_generated_tsconfig_location, root_build_dir),
+               rebase_path(invoker.entrypoint, root_build_dir),
+             ] + invoker.deps
+
+      public_deps = [ ":$_ts_library_target_name" ]
+
+      outputs = [ _generated_tsconfig_location ]
     }
   }
 

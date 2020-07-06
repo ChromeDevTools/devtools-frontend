@@ -91,6 +91,11 @@
     background: Highlight;
   }
 
+  .tree-outline li:hover .tree-element-title,
+  .tree-outline li.selected .tree-element-title {
+    color: ButtonText;
+  }
+
   .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] .tree-element-title,
   .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] .name-and-value {
     background: transparent;
@@ -104,10 +109,5 @@
 
   .tree-outline-disclosure:hover li.parent::before {
     background-color: ButtonText;
-  }
-
-  .tree-outline li:hover .tree-element-title,
-  .tree-outline li.selected .tree-element-title {
-    color: ButtonText;
   }
 }

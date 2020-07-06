@@ -1,0 +1,62 @@
+<!--
+  Copyright 2020 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Step with state and threads</title>
+    <script>
+      (async () => {
+        const module = await WebAssembly.compileStreaming(fetch('stepping-with-state.wasm'));
+        const instance = new WebAssembly.Instance(module);
+        console.log(instance.exports.addMultiply(42, 8, 5));
+        const worker = new Worker('worker-stepping-with-state-and-threads.js');
+        worker.postMessage(module);
+      })().catch(console.error);
+    </script>
+  </head>
+  <body>
+    <h1>Stepping with state in multi-threaded code</h1>
+    <p>
+      This tests that we can successfully complete a debugging session with state, including
+      setting breakpoints, deleting breakpoints, and stepping with multiple threads.
+    </p>
+
+    <h2>Steps</h2>
+
+    <p>
+      <ol>
+        <li>Open DevTools</li>
+        <li>Open stepping-with-state.wasm</li>
+        <li>Inspect main thread:</li>
+        <ol>
+          <li>Set a breakpoint at function <code>addMultiply</code> on line <code>local.get $var0</code></li>
+          <li>Reload</li>
+          <li>Breakpoint should hit set breakpoint in main thread</code></li>
+          <li>Step 2 times and inspect the variables in the scope view</li>
+          <li>Remove breakpoint</li>
+          <li>Set a breakpoint at function <code>mul</code> on line <code>local.get $var0</code></li>
+          <li>Reload</li>
+          <li>Breakpoint should hit the new breakpoint in main thread</li>
+          <li>Step 2 times and inspect the variables in the scope view</li>
+          <li>Resume</li>
+        </ol>
+        <li>Inspect worker thread:</li>
+        <ol>
+          <li>Set a breakpoint at function <code>divSub</code> on line <code>local.get $var0</code></li>
+          <li>Reload</li>
+          <li>Breakpoint should hit set breakpoint in worker thread</code></li>
+          <li>Step 2 times and inspect the variables in the scope view</li>
+          <li>Remove breakpoint</li>
+          <li>Set a breakpoint at function <code>div</code> on line <code>local.get $var0</code></li>
+          <li>Reload</li>
+          <li>Breakpoint should hit the new breakpoint in worker thread</li>
+          <li>Step 2 times and inspect the variables in the scope view</li>
+          <li>Resume</li>
+        </ol>
+      </ol>
+    </p>
+  </body>
+</html>

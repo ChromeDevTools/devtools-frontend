@@ -1,0 +1,43 @@
+<!--
+  Copyright 2020 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Step with state</title>
+    <script>
+      (async () => {
+        const instance = await WebAssembly.instantiateStreaming(fetch('stepping-with-state.wasm'));
+        console.log(instance.instance.exports.addMultiply(42, 8, 5));
+      })().catch(console.error);
+    </script>
+  </head>
+  <body>
+    <h1>Stepping with state</h1>
+    <p>
+      This tests that we can successfully complete a debugging session with state, including
+      setting breakpoints, deleting breakpoints, and stepping.
+    </p>
+
+    <h2>Steps</h2>
+
+    <p>
+      <ol>
+        <li>Open DevTools</li>
+        <li>Open stepping-with-state.wasm</li>
+        <li>Set a breakpoint at function <code>addMultiply</code> on line <code>local.get $var0</code></li>
+        <li>Reload</li>
+        <li>Breakpoint should hit set breakpoint</li>
+        <li>Step 2 times and inspect the variables in the scope view</li>
+        <li>Remove breakpoint</li>
+        <li>Set a breakpoint at function <code>mul</code> on line <code>local.get $var0</code></li>
+        <li>Reload</li>
+        <li>Breakpoint should hit the new breakpoint</li>
+        <li>Step 2 times and inspect the variables in the scope view</li>
+        <li>Resume</li>
+      </ol>
+    </p>
+  </body>
+</html>

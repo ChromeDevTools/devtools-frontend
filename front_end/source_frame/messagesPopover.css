@@ -8,10 +8,6 @@
   display: inline-block;
 }
 
-.text-editor-row-message:first-child {
-  border-top-width: 0;
-}
-
 .text-editor-row-message {
   line-height: 1.2;
   white-space: nowrap;
@@ -19,6 +15,10 @@
   align-items: center;
   justify-content: flex-start;
   margin-top: 2px;
+}
+
+.text-editor-row-message:first-child {
+  border-top-width: 0;
 }
 
 .text-editor-row-message-repeat-count {

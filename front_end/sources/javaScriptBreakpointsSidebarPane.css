@@ -48,14 +48,14 @@
 }
 
 @media (forced-colors: active) {
-  :not(.breakpoints-list-deactivated) > .breakpoint-entry:hover,
-  .breakpoint-entry:focus {
+  .breakpoint-entry:focus,
+  :not(.breakpoints-list-deactivated) > .breakpoint-entry:hover {
     forced-color-adjust: none;
     background-color: Highlight;
   }
 
-  :not(.breakpoints-list-deactivated) > .breakpoint-entry:hover > *,
-  .breakpoint-entry:focus > * {
+  .breakpoint-entry:focus > *,
+  :not(.breakpoints-list-deactivated) > .breakpoint-entry:hover > * {
     color: HighlightText;
   }
 }

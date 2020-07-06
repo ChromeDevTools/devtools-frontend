@@ -27,6 +27,10 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+:host {
+  overflow-y: auto;
+}
+
 .icon,
 .icon-badge {
   margin: -3px -5px -3px -5px;
@@ -96,10 +100,6 @@
 .navigator-sm-script-tree-item .tree-element-title,
 .navigator-sm-stylesheet-tree-item .tree-element-title {
   font-style: italic;
-}
-
-:host {
-  overflow-y: auto;
 }
 
 @media (forced-colors: active) {

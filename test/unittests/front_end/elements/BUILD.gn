@@ -2,7 +2,13 @@ import("../../../../third_party/typescript/typescript.gni")
 
 ts_library("elements") {
   testonly = true
-  sources = [ "Adorner_test.ts" ]
+  sources = [
+    "Adorner_test.ts",
+    "ElementsBreadcrumbs_test.ts",
+  ]
 
-  deps = [ "../../../../front_end/elements" ]
+  deps = [
+    "../../../../front_end/elements",
+    "../helpers",
+  ]
 }

@@ -25,7 +25,7 @@ http.createServer(requestHandler).listen(serverPort);
 console.log(`Started components server at http://localhost:${serverPort}\n`);
 
 function createComponentIndexFile(componentPath, componentExamples) {
-  const componentName = componentPath.replace('/', '');
+  const componentName = componentPath.replace('/', '').replace('_', ' ');
   // clang-format off
   return `<!DOCTYPE html>
   <html>
@@ -46,7 +46,7 @@ function createComponentIndexFile(componentPath, componentExamples) {
     <body>
       <h1>${componentName}</h1>
       ${componentExamples.map(example => {
-        const fullPath = path.join('component_docs', componentName, example);
+        const fullPath = path.join('component_docs', componentPath, example);
         return `<div class="example">
           <h3><a href="${fullPath}">${example}</a></h3>
           <iframe src="${fullPath}"></iframe>
@@ -101,6 +101,15 @@ function send404(response, message) {
   response.end();
 }
 
+async function checkFileExists(filePath) {
+  try {
+    const errorsAccessingFile = await fs.promises.access(filePath, fs.constants.R_OK);
+    return !errorsAccessingFile;
+  } catch (e) {
+    return false;
+  }
+}
+
 async function requestHandler(request, response) {
   const filePath = parseURL(request.url).pathname;
 
@@ -125,10 +134,10 @@ async function requestHandler(request, response) {
       console.error(`Path ${fullPath} is outside the DevTools Frontend root dir.`);
       process.exit(1);
     }
-    const errorsAccesingFile = await fs.promises.access(fullPath, fs.constants.R_OK);
 
-    if (errorsAccesingFile) {
-      console.error(`File ${fullPath} does not exist.`);
+    const fileExists = await checkFileExists(fullPath);
+
+    if (!fileExists) {
       send404(response, '404, File not found');
       return;
     }

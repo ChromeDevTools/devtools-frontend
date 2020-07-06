@@ -67,8 +67,6 @@ export function assertNotNull<T>(val: T): asserts val is NonNullable<T> {
 /**
  * An easy way to assert the component's shadowRoot exists so you're able to assert on its contents.
  */
-export const assertShadowRoot = (shadowRoot: ShadowRoot|null): asserts shadowRoot is ShadowRoot => {
-  if (!shadowRoot) {
-    assert.fail('Expected shadowRoot to exist');
-  }
-};
+export function assertShadowRoot(shadowRoot: ShadowRoot|null): asserts shadowRoot is ShadowRoot {
+  assert.instanceOf(shadowRoot, ShadowRoot);
+}

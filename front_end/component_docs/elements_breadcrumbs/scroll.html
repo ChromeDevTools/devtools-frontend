@@ -1,0 +1,92 @@
+<!--
+  Copyright 2020 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Scrolling breadcrumbs example</title>
+    <style>
+      #container {
+        width: 400px;
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div id="container">
+    </div>
+
+    <script type="module">
+      import {ElementsBreadcrumbs} from '../../elements/NewElementsBreadcrumbs.js';
+
+      let id = 0;
+      const makeCrumb = (overrides = {}) => {
+        const attributes = overrides.attributes || {};
+        const newCrumb = {
+          nodeType: Node.ELEMENT_NODE,
+          id: id++,
+          pseudoType: '',
+          shadowRootType: '',
+          nodeName: 'body',
+          nodeNameNicelyCased: 'body',
+          legacyDomNode: {},
+          highlightNode: () => {},
+          clearHighlight: () => {},
+          getAttribute: x => attributes[x] || '',
+          ...overrides,
+        };
+        return newCrumb;
+      };
+
+      const component = new ElementsBreadcrumbs();
+      const bodyCrumb = makeCrumb({
+        nodeType: Node.ELEMENT_NODE,
+        nodeName: 'body',
+        nodeNameNicelyCased: 'body',
+        attributes: {
+          class: 'body-class1 body-class2'
+        }
+      });
+
+      const divCrumb = makeCrumb({
+        nodeType: Node.ELEMENT_NODE,
+        nodeName: 'div',
+        nodeNameNicelyCased: 'div',
+        attributes: {
+          id: 'test-id',
+          class: 'wrapper-div',
+        },
+      });
+
+      const spanCrumb = makeCrumb({
+        nodeType: Node.ELEMENT_NODE,
+        nodeName: 'span',
+        nodeNameNicelyCased: 'span',
+        attributes: {
+          id: 'my-span-has-a-long-id',
+        },
+      });
+
+      const emCrumb = makeCrumb({
+        nodeType: Node.ELEMENT_NODE,
+        nodeName: 'em',
+        nodeNameNicelyCased: 'em',
+        attributes: {
+          id: 'my-em-has-a-long-id',
+        },
+      });
+
+      document.getElementById('container').appendChild(component);
+
+      component.data = {
+        crumbs: [emCrumb, spanCrumb, divCrumb, bodyCrumb],
+        selectedNode: bodyCrumb,
+      };
+
+    </script>
+  </body>
+</html>

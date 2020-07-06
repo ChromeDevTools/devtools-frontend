@@ -58,7 +58,15 @@ const collectAllElementsFromPage = async (root?: puppeteer.JSHandle) => {
   }, root || '');
 };
 
-export const getElementPosition = async (selector: string|puppeteer.JSHandle, root?: puppeteer.JSHandle) => {
+/**
+ * Returns an {x, y} position within the element identified by the selector within the root.
+ * By default the position is the center of the bounding box. If the element's bounding box
+ * extends beyond that of a containing element, this position may not correspond to the element.
+ * In this case, specifying maxPixelsFromLeft will constrain the returned point to be close to
+ * the left edge of the bounding box.
+ */
+export const getElementPosition =
+    async (selector: string|puppeteer.JSHandle, root?: puppeteer.JSHandle, maxPixelsFromLeft?: number) => {
   let element: puppeteer.JSHandle;
   if (typeof selector === 'string') {
     element = await $(selector, root);
@@ -66,31 +74,39 @@ export const getElementPosition = async (selector: string|puppeteer.JSHandle, ro
     element = selector;
   }
 
-  const position = await element.evaluate(element => {
+  const rect = await element.evaluate(element => {
     if (!element) {
       return {};
     }
-    // Extract the location values.
+
     const {left, top, width, height} = element.getBoundingClientRect();
-    return {
-      x: left + width * 0.5,
-      y: top + height * 0.5,
-    };
+    return {left, top, width, height};
   });
-  if (position.x === undefined || position.y === undefined) {
+
+  if (rect.left === undefined) {
     throw new Error(`Unable to find element with selector "${selector}"`);
   }
-  return position;
+
+  let pixelsFromLeft = rect.width * 0.5;
+  if (maxPixelsFromLeft && pixelsFromLeft > maxPixelsFromLeft) {
+    pixelsFromLeft = maxPixelsFromLeft;
+  }
+
+  return {
+    x: rect.left + pixelsFromLeft,
+    y: rect.top + rect.height * 0.5,
+  };
 };
 
 export const click = async (
     selector: string|puppeteer.JSHandle,
-    options?: {root?: puppeteer.JSHandle, clickOptions?: puppeteer.ClickOptions}) => {
+    options?: {root?: puppeteer.JSHandle, clickOptions?: puppeteer.ClickOptions, maxPixelsFromLeft?: number}) => {
   const {frontend} = getBrowserAndPages();
   if (!frontend) {
     throw new Error('Unable to locate DevTools frontend page. Was it stored first?');
   }
-  const clickableElement = await getElementPosition(selector, options && options.root);
+  const clickableElement =
+      await getElementPosition(selector, options && options.root, options && options.maxPixelsFromLeft);
 
   if (!clickableElement) {
     throw new Error(`Unable to locate clickable element "${selector}".`);
@@ -124,6 +140,43 @@ export const typeText = async (text: string) => {
   }
 
   await frontend.keyboard.type(text);
+};
+
+export const pressKey = async (key: string, modifiers?: {control?: boolean, alt?: boolean, shift?: boolean}) => {
+  const {frontend} = getBrowserAndPages();
+  if (modifiers) {
+    if (modifiers.control) {
+      if (platform === 'mac') {
+        // Use command key on mac
+        await frontend.keyboard.down('Meta');
+      } else {
+        await frontend.keyboard.down('Control');
+      }
+    }
+    if (modifiers.alt) {
+      await frontend.keyboard.down('Alt');
+    }
+    if (modifiers.shift) {
+      await frontend.keyboard.down('Shift');
+    }
+  }
+  await frontend.keyboard.press(key);
+  if (modifiers) {
+    if (modifiers.shift) {
+      await frontend.keyboard.up('Shift');
+    }
+    if (modifiers.alt) {
+      await frontend.keyboard.up('Alt');
+    }
+    if (modifiers.control) {
+      if (platform === 'mac') {
+        // Use command key on mac
+        await frontend.keyboard.up('Meta');
+      } else {
+        await frontend.keyboard.up('Control');
+      }
+    }
+  }
 };
 
 export const pasteText = async (text: string) => {
@@ -331,6 +384,15 @@ export const closeAllCloseableTabs = async () => {
     const selector = `#${tabId}`;
     await closePanelTab(selector);
   }
+};
+
+// Noisy! Do not leave this in your test but it may be helpful
+// when debugging.
+export const enableCDPLogging = async () => {
+  const {frontend} = getBrowserAndPages();
+  await frontend.evaluate(() => {
+    globalThis.ProtocolClient.test.dumpProtocol = console.log;  // eslint-disable-line no-console
+  });
 };
 
 export {getBrowserAndPages, reloadDevTools};

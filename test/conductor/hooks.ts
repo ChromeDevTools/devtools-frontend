@@ -27,6 +27,14 @@ const headless = !process.env['DEBUG'];
 const envSlowMo = process.env['STRESS'] ? 50 : undefined;
 const envThrottleRate = process.env['STRESS'] ? 3 : 1;
 
+const logLevels = {
+  log: 'I',
+  info: 'I',
+  error: 'E',
+  exception: 'E',
+  assert: 'E',
+};
+
 let hostedModeServer: ChildProcessWithoutNullStreams;
 let browser: puppeteer.Browser;
 let frontendUrl: string;
@@ -97,6 +105,14 @@ async function loadTargetPageAndDevToolsFrontend() {
 
   process.on('unhandledRejection', error => {
     throw new Error(`Unhandled rejection in Frontend: ${error}`);
+  });
+
+  frontend.on('console', msg => {
+    const logLevel = logLevels[msg.type() as keyof typeof logLevels] as string;
+    if (logLevel) {
+      const filename = msg.location()!.url!.replace(/^.*\//, '');
+      console.log(`${logLevel} ${filename}:${msg.location().lineNumber}: ${msg.text()}`);
+    }
   });
 
   setBrowserAndPages({target: srcPage, frontend, browser});

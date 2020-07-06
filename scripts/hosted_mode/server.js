@@ -17,7 +17,7 @@ console.log('https://bit.ly/devtools-contribution-guide');
 console.log('Tip: Look for the \'Development server options\' section\n');
 
 function requestHandler(request, response) {
-  const filePath = parseURL(request.url).pathname;
+  const filePath = unescape(parseURL(request.url).pathname);
   if (filePath === '/') {
     const landingURL = `http://localhost:${remoteDebuggingPort}#custom=true`;
     sendResponse(200, `<html>Please go to <a href="${landingURL}">${landingURL}</a></html>`);

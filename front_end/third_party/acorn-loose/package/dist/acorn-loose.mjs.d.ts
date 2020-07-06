@@ -6,11 +6,5 @@
 // deps. It has been written solely to satisfy the TypeScript compiler in
 // this repo.
 
-export as namespace AcornLoose
-export = AcornLoose
-
-import { Options } from '../../../acorn/package/dist/acorn.js';
-
-declare namespace AcornLoose {
-  function parse(input: string, options?: Options): Node;
-}
+import * as AcornLoose from './acorn-loose';
+export = AcornLoose;

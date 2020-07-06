@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as AcornLoose from '../third_party/acorn-loose/package/dist/acorn-loose.mjs';
@@ -18,6 +15,7 @@ import {ESTreeWalker} from './ESTreeWalker.js';
  */
 export function javaScriptOutline(content) {
   const chunkSize = 100000;
+  /** @type {!Array<{name: string, line: number, column: number, arguments: (string|undefined)}>} */
   let outlineChunk = [];
   let lastReportedOffset = 0;
 
@@ -31,7 +29,14 @@ export function javaScriptOutline(content) {
   const contentLineEndings = Platform.StringUtilities.findLineEndingIndexes(content);
   const textCursor = new TextUtils.TextCursor.TextCursor(contentLineEndings);
   const walker = new ESTreeWalker(beforeVisit);
+
+  // @ts-ignore Technically, the acorn Node type is a subclass of ESTree.Node.
+  // However, the acorn package currently exports its type without specifying
+  // this relationship. So while this is allowed on runtime, we can't properly
+  // typecheck it.
   walker.walk(ast);
+
+  // @ts-ignore Worker.postMessage signature is different to Window.postMessage; lib.dom.ts assumes this code is on window.
   postMessage({chunk: outlineChunk, isLastChunk: true});
 
   /**
@@ -40,7 +45,7 @@ export function javaScriptOutline(content) {
   function beforeVisit(node) {
     if (node.type === 'ClassDeclaration') {
       reportClass(/** @type {!ESTree.Node} */ (node.id));
-    } else if (node.type === 'VariableDeclarator' && isClassNode(node.init)) {
+    } else if (node.type === 'VariableDeclarator' && node.init && isClassNode(node.init)) {
       reportClass(/** @type {!ESTree.Node} */ (node.id));
     } else if (node.type === 'AssignmentExpression' && isNameNode(node.left) && isClassNode(node.right)) {
       reportClass(/** @type {!ESTree.Node} */ (node.left));
@@ -48,7 +53,7 @@ export function javaScriptOutline(content) {
       reportClass(/** @type {!ESTree.Node} */ (node.key));
     } else if (node.type === 'FunctionDeclaration') {
       reportFunction(/** @type {!ESTree.Node} */ (node.id), node);
-    } else if (node.type === 'VariableDeclarator' && isFunctionNode(node.init)) {
+    } else if (node.type === 'VariableDeclarator' && node.init && isFunctionNode(node.init)) {
       reportFunction(/** @type {!ESTree.Node} */ (node.id), /** @type {!ESTree.Node} */ (node.init));
     } else if (node.type === 'AssignmentExpression' && isNameNode(node.left) && isFunctionNode(node.right)) {
       reportFunction(/** @type {!ESTree.Node} */ (node.left), /** @type {!ESTree.Node} */ (node.right));
@@ -59,11 +64,13 @@ export function javaScriptOutline(content) {
       if (node.kind === 'get' || node.kind === 'set') {
         namePrefix.push(node.kind);
       }
-      if (node.static) {
+      if ('static' in node && node.static) {
         namePrefix.push('static');
       }
       reportFunction(/** @type {!ESTree.Node} */ (node.key), node.value, namePrefix.join(' '));
     }
+
+    return undefined;
   }
 
   /**
@@ -72,11 +79,8 @@ export function javaScriptOutline(content) {
   function reportClass(nameNode) {
     const name = 'class ' + stringifyNameNode(nameNode);
     textCursor.advance(nameNode.start);
-    addOutlineItem({
-      name: name,
-      line: textCursor.lineNumber(),
-      column: textCursor.columnNumber(),
-    });
+    addOutlineItem(
+        {name: name, line: textCursor.lineNumber(), column: textCursor.columnNumber(), arguments: undefined});
   }
 
   /**
@@ -86,13 +90,14 @@ export function javaScriptOutline(content) {
    */
   function reportFunction(nameNode, functionNode, namePrefix) {
     let name = stringifyNameNode(nameNode);
-    if (functionNode.generator) {
+    const functionDeclarationNode = /** @type {!ESTree.FunctionDeclaration} */ (functionNode);
+    if (functionDeclarationNode.generator) {
       name = '*' + name;
     }
     if (namePrefix) {
       name = namePrefix + ' ' + name;
     }
-    if (functionNode.async) {
+    if (functionDeclarationNode.async) {
       name = 'async ' + name;
     }
 
@@ -101,7 +106,7 @@ export function javaScriptOutline(content) {
       name: name,
       line: textCursor.lineNumber(),
       column: textCursor.columnNumber(),
-      arguments: stringifyArguments(/** @type {!Array<!ESTree.Node>} */ (functionNode.params))
+      arguments: stringifyArguments(/** @type {!Array<!ESTree.Node>} */ (functionDeclarationNode.params))
     });
   }
 
@@ -147,7 +152,8 @@ export function javaScriptOutline(content) {
       node = /** @type {!ESTree.Node} */ (node.property);
     }
     console.assert(node.type === 'Identifier', 'Cannot extract identifier from unknown type: ' + node.type);
-    return /** @type {string} */ (node.name);
+    const identifier = /** @type {!ESTree.Identifier} */ (node);
+    return identifier.name;
   }
 
   /**
@@ -176,6 +182,8 @@ export function javaScriptOutline(content) {
     if (textCursor.offset() - lastReportedOffset < chunkSize) {
       return;
     }
+
+    // @ts-ignore Worker.postMessage signature is different to Window.postMessage; lib.dom.ts assumes this code is on window.
     postMessage({chunk: outlineChunk, isLastChunk: false});
     outlineChunk = [];
     lastReportedOffset = textCursor.offset();

@@ -104,11 +104,11 @@
   margin-left: 4px;
 }
 
-.delimeter {
+.delimiter {
   color: transparent;
 }
 
-.delimeter::selection {
+.delimiter::selection {
   color: transparent;
 }
 

@@ -45,7 +45,6 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
   constructor() {
     super(true);
     this.registerRequiredCSS('elements/computedStyleSidebarPane.css');
-    this._alwaysShowComputedProperties = {'display': true, 'height': true, 'width': true};
 
     this._computedStyleModel = new ComputedStyleModel();
     this._computedStyleModel.addEventListener(Events.ComputedStyleChanged, this.update, this);
@@ -61,6 +60,8 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     UI.ARIAUtils.setAccessibleName(filterInput, Common.UIString.UIString('Filter Computed Styles'));
     filterContainerElement.appendChild(filterInput);
     this.setDefaultFocusedElement(filterInput);
+    /** @type {?RegExp} */
+    this._filterRegex = null;
 
     const toolbar = new UI.Toolbar.Toolbar('styles-pane-toolbar', hbox);
     toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
@@ -204,14 +205,14 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     uniqueProperties.sort(propertySorter);
 
     const propertyTraces = this._computePropertyTraces(matchedStyles);
-    const inhertiedProperties = this._computeInheritedProperties(matchedStyles);
+    const inheritedProperties = this._computeInheritedProperties(matchedStyles);
     const showInherited = this._showInheritedComputedStylePropertiesSetting.get();
     for (let i = 0; i < uniqueProperties.length; ++i) {
       const propertyName = uniqueProperties[i];
       const propertyValue = nodeStyle.computedStyle.get(propertyName);
       const canonicalName = SDK.CSSMetadata.cssMetadata().canonicalPropertyName(propertyName);
-      const inherited = !inhertiedProperties.has(canonicalName);
-      if (!showInherited && inherited && !(propertyName in this._alwaysShowComputedProperties)) {
+      const inherited = !inheritedProperties.has(canonicalName);
+      if (!showInherited && inherited && !_alwaysShownComputedProperties.has(propertyName)) {
         continue;
       }
       if (!showInherited && propertyName.startsWith('--')) {
@@ -232,7 +233,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
       propertyElement.appendChild(propertyNameElement);
 
       const colon = document.createElement('span');
-      colon.classList.add('delimeter');
+      colon.classList.add('delimiter');
       colon.textContent = ': ';
       propertyNameElement.appendChild(colon);
 
@@ -243,7 +244,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
       propertyValueElement.appendChild(propertyValueText);
 
       const semicolon = document.createElement('span');
-      semicolon.classList.add('delimeter');
+      semicolon.classList.add('delimiter');
       semicolon.textContent = ';';
       propertyValueElement.appendChild(semicolon);
 
@@ -446,3 +447,4 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
 const _maxLinkLength = 30;
 const _propertySymbol = Symbol('property');
 ComputedStyleWidget._propertySymbol = _propertySymbol;
+const _alwaysShownComputedProperties = new Set(['display', 'height', 'width']);

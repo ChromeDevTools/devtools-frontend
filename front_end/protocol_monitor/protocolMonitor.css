@@ -1,8 +1,4 @@
 .data-grid {
-  border: none;
-}
-
-.data-grid {
   flex: auto;
   border: none;
 }

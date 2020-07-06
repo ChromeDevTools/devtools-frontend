@@ -35,6 +35,7 @@
 
 .heap-snapshot-view .data-grid {
   border: none;
+  flex: auto;
 }
 
 .heap-snapshot-view .data-grid tr:empty {
@@ -66,10 +67,6 @@
   color: grey;
 }
 
-.heap-snapshot-view .data-grid {
-  flex: auto;
-}
-
 .profile-view .heap-tracking-overview {
   flex: 0 0 80px;
   height: 80px;
@@ -88,6 +85,10 @@
   flex: 0 0 21px;
 }
 
+.heap-snapshot-view td.object-column > div > span {
+  margin-right: 6px;
+}
+
 .heap-snapshot-view .heap-snapshot-view-resizer .title > span {
   display: inline-block;
   padding-top: 3px;
@@ -102,10 +103,6 @@
 
 .heap-snapshot-view tr:not(.selected) td.object-column span.highlight {
   background-color: inherit;
-}
-
-.heap-snapshot-view td.object-column > div > span {
-  margin-right: 6px;
 }
 
 .heap-snapshot-view td.object-column span.heap-object-source-link {
@@ -192,10 +189,6 @@
   padding: 2px;
 }
 
-.heap-allocation-stack .stack-frame:hover:not(:focus) {
-  background-color: rgb(0 0 0 / 10%);
-}
-
 .heap-allocation-stack .stack-frame:focus {
   background-color: var(--selection-bg-color);
   color: var(--selection-fg-color);
@@ -203,6 +196,10 @@
 
 .heap-allocation-stack .stack-frame:focus:hover {
   background-color: var(--accent-color-hover);
+}
+
+.heap-allocation-stack .stack-frame:hover:not(:focus) {
+  background-color: rgb(0 0 0 / 10%);
 }
 
 .heap-allocation-stack .stack-frame .devtools-link {

@@ -20,6 +20,7 @@ ts_library("sdk") {
     "CompilerSourceMappingContentProvider.js",
     "Connections.js",
     "ConsoleModel.js",
+    "ContentSecurityPolicyIssue.js",
     "Cookie.js",
     "CookieModel.js",
     "CookieParser.js",

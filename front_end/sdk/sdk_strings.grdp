@@ -88,8 +88,16 @@
   <message name="IDS_DEVTOOLS_1b6164cca79eeac4716c6b056dae437a" desc="Suggestion for resolution of MixedContentIssue">
     To resolve this issue load all resources over a secure HTTPS connection.
   </message>
+  <message name="IDS_DEVTOOLS_1c70eb0d30c0f514c12a9d199adee0aa" desc="Description of a CSP issue of URL violation type">
+    The Content Security Policy (CSP) improves the security of your site by defining a list of trusted sources and
+     instructs the browser to only execute or render resources from this list. Some resources on your site can&apos;t be accessed
+     because their origin is not listed in the CSP policy.
+  </message>
   <message name="IDS_DEVTOOLS_1ccfb518c1eb59a48fa9b2c578073557" desc="Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel">
     redundant
+  </message>
+  <message name="IDS_DEVTOOLS_1db54c6dc79d68e305c9426783416c81" desc="Title for CSP issue of URL violation type">
+    Some resources are blocked because their origin is not included in your site&apos;s content security policy header
   </message>
   <message name="IDS_DEVTOOLS_1e20b296e8d4ce166160272060b60448" desc="Part of an explenatory text describing an issue in the issues view">
     To solve this, add the following to the embedded frame’s HTML response header:
@@ -147,6 +155,9 @@
   <message name="IDS_DEVTOOLS_301c6a898ab412749bfb0e72381d91d2" desc="Title for the MixedContentIssue issue code">
     Mixed content: load all resources via HTTPS to improve the security of your site
   </message>
+  <message name="IDS_DEVTOOLS_321e23e3febfc97e38133e46a321b34c" desc="Link for CSP issues of URL violation type">
+    https://developers.google.com/web/fundamentals/security/csp#source_whitelists
+  </message>
   <message name="IDS_DEVTOOLS_323d4eb70b252acb4a04eaf9e0882597" desc="Title for a group of cities">
     Geolocation
   </message>
@@ -164,6 +175,10 @@
   </message>
   <message name="IDS_DEVTOOLS_35d4892bb81c31af26ec7047ef5c8872" desc="Resolution for SameSiteCookie issue">
     Specify <ph name="LOCKED_1">|SameSite=Strict|</ph> or <ph name="LOCKED_1">|SameSite=Lax|</ph> if the cookie should not be set by cross-site requests
+  </message>
+  <message name="IDS_DEVTOOLS_36092cec6f8d6b1721fa4c9880068064" desc="Part of explanatory text describing CSP issue of URL violation type">
+    Solve this problem by carefully checking that all the blocked resources listed below are trustworthy and include their
+     source in the Content Security Policy of your website.
   </message>
   <message name="IDS_DEVTOOLS_3767b041971f23f04804e75dbf475c46" desc="Title for CSS Grid tooling option">
     Show solid grid container border
@@ -425,6 +440,9 @@
   <message name="IDS_DEVTOOLS_8022a7ceb04a413d242483f01407dfba" desc="Name of a color vision deficiency that can be emulated via the Rendering drawer">
     Protanopia
   </message>
+  <message name="IDS_DEVTOOLS_8043d799c881c2bd1c4381682eadb11b" desc="Label for the link for CSP issues of URL violation type">
+    Content Security Policy | Source Allowlists
+  </message>
   <message name="IDS_DEVTOOLS_8186f0d9076262cae346db9adabf643e" desc="Description how an issue can be fixed">
     if the resource is served from another location than your website. ⚠️If you set this header, any website can embed this resource.
   </message>
@@ -670,6 +688,10 @@
     A cookie is being sent from <ph name="ORIGIN">$1s<ex>a secure</ex></ph> context to <ph name="DESTINATION">$2s<ex>an insecure</ex></ph> origin and is specified with |SameSite=Strict| or |SameSite=Lax|.
         Because this cookie is being sent across schemes on the same site, it will not be sent in a future version of Chrome.
         This behavior protects user data from request forgery by network attackers.
+  </message>
+  <message name="IDS_DEVTOOLS_dc63af9ea86e7ce364eda357bd7d7dfe" desc="Part of explanatory text for CSP issue of URL violation type">
+    ⚠️ Never add a source you don&apos;t trust to your site&apos;s Content Security Policy. If you don&apos;t trust the source, consider
+     hosting resources on your own site instead.
   </message>
   <message name="IDS_DEVTOOLS_dcd9c13c4f8ae68ea7ae92edf9191264" desc="Text in Server Timing">
     Deprecated syntax found. Please use: &lt;name&gt;;dur=&lt;duration&gt;;desc=&lt;description&gt;

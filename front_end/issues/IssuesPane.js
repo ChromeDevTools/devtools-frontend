@@ -193,6 +193,68 @@ class AffectedElementsView extends AffectedResourcesView {
   }
 }
 
+class AffectedDirectivesView extends AffectedResourcesView {
+  /**
+   * @param {!IssueView} parent
+   * @param {!AggregatedIssue} issue
+   */
+  constructor(parent, issue) {
+    super(parent, {singular: ls`directive`, plural: ls`directives`});
+    /** @type {!AggregatedIssue} */
+    this._issue = issue;
+  }
+
+  /**
+   * @param {!Set<!Protocol.Audits.ContentSecurityPolicyIssueDetails>} cspViolations
+   */
+  _appendAffectedDirectives(cspViolations) {
+    const header = document.createElement('tr');
+    const info = document.createElement('td');
+    info.classList.add('affected-resource-header');
+    info.classList.add('affected-resource-directive-info-header');
+    info.textContent = ls`Resource`;
+    header.appendChild(info);
+    const name = document.createElement('td');
+    name.classList.add('affected-resource-header');
+    name.textContent = ls`Directive`;
+    header.appendChild(name);
+    this._affectedResources.appendChild(header);
+    let count = 0;
+    for (const cspViolation of cspViolations) {
+      count++;
+      this.appendAffectedDirective(cspViolation);
+    }
+    this.updateAffectedResourceCount(count);
+  }
+
+  /**
+   * @param {!Protocol.Audits.ContentSecurityPolicyIssueDetails} cspViolation
+   */
+  appendAffectedDirective(cspViolation) {
+    const url = cspViolation.blockedURL;
+    if (url) {
+      const element = document.createElement('tr');
+      element.classList.add('affected-resource-directive');
+      const name = document.createElement('td');
+      name.textContent = cspViolation.violatedDirective;
+      const info = document.createElement('td');
+      info.classList.add('affected-resource-directive-info');
+      info.textContent = url;
+      element.appendChild(info);
+      element.appendChild(name);
+      this._affectedResources.appendChild(element);
+    }
+  }
+
+  /**
+   * @override
+   */
+  update() {
+    this.clear();
+    this._appendAffectedDirectives(this._issue.cspViolations());
+  }
+}
+
 class AffectedCookiesView extends AffectedResourcesView {
   /**
    * @param {!IssueView} parent
@@ -621,7 +683,8 @@ class IssueView extends UI.TreeOutline.TreeElement {
     this._affectedResourceViews = [
       new AffectedCookiesView(this, this._issue), new AffectedElementsView(this, this._issue),
       new AffectedRequestsView(this, this._issue), new AffectedMixedContentView(this, this._issue),
-      new AffectedSourcesView(this, this._issue), new AffectedHeavyAdView(this, this._issue)
+      new AffectedSourcesView(this, this._issue), new AffectedHeavyAdView(this, this._issue),
+      new AffectedDirectivesView(this, this._issue)
     ];
 
     this._aggregatedIssuesCount = null;

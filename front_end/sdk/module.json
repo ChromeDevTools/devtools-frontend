@@ -607,6 +607,7 @@
     "WebAuthnModel.js",
     "SameSiteCookieIssue.js",
     "MixedContentIssue.js",
+    "ContentSecurityPolicyIssue.js",
     "CrossOriginEmbedderPolicyIssue.js",
     "ServerTiming.js",
     "CPUProfileDataModel.js",

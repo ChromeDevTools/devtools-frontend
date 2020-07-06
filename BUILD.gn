@@ -1383,6 +1383,7 @@ all_devtools_modules = [
   "sdk/IsolateManager.js",
   "sdk/Issue.js",
   "sdk/SameSiteCookieIssue.js",
+  "sdk/ContentSecurityPolicyIssue.js",
   "sdk/CrossOriginEmbedderPolicyIssue.js",
   "sdk/IssuesModel.js",
   "sdk/LayerTreeBase.js",

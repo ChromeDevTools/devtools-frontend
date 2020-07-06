@@ -850,6 +850,27 @@ declare namespace Protocol {
       frame: AffectedFrame;
     }
 
+    export enum ContentSecurityPolicyViolationType {
+      KInlineViolation = 'kInlineViolation',
+      KEvalViolation = 'kEvalViolation',
+      KURLViolation = 'kURLViolation',
+      KTrustedTypesSinkViolation = 'kTrustedTypesSinkViolation',
+      KTrustedTypesPolicyViolation = 'kTrustedTypesPolicyViolation',
+    }
+
+    export interface ContentSecurityPolicyIssueDetails {
+      /**
+       * The url not included in allowed sources.
+       */
+      blockedURL?: string;
+      /**
+       * Specific directive that is violated, causing the CSP issue.
+       */
+      violatedDirective: string;
+      contentSecurityPolicyViolationType: ContentSecurityPolicyViolationType;
+      frameAncestor?: AffectedFrame;
+    }
+
     /**
      * A unique identifier for the type of issue. Each type may use one of the
      * optional fields in InspectorIssueDetails to convey more specific
@@ -860,6 +881,7 @@ declare namespace Protocol {
       MixedContentIssue = 'MixedContentIssue',
       BlockedByResponseIssue = 'BlockedByResponseIssue',
       HeavyAdIssue = 'HeavyAdIssue',
+      ContentSecurityPolicyIssue = 'ContentSecurityPolicyIssue',
     }
 
     /**
@@ -872,6 +894,7 @@ declare namespace Protocol {
       mixedContentIssueDetails?: MixedContentIssueDetails;
       blockedByResponseIssueDetails?: BlockedByResponseIssueDetails;
       heavyAdIssueDetails?: HeavyAdIssueDetails;
+      contentSecurityPolicyIssueDetails?: ContentSecurityPolicyIssueDetails;
     }
 
     /**

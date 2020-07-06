@@ -597,6 +597,23 @@ experimental domain Audits
       # The frame that was blocked.
       AffectedFrame frame
 
+  type ContentSecurityPolicyViolationType extends string
+    enum
+      kInlineViolation
+      kEvalViolation
+      kURLViolation
+      kTrustedTypesSinkViolation
+      kTrustedTypesPolicyViolation
+
+  type ContentSecurityPolicyIssueDetails extends object
+    properties
+      # The url not included in allowed sources.
+      optional string blockedURL
+      # Specific directive that is violated, causing the CSP issue.
+      string violatedDirective
+      ContentSecurityPolicyViolationType contentSecurityPolicyViolationType
+      optional AffectedFrame frameAncestor
+
   # A unique identifier for the type of issue. Each type may use one of the
   # optional fields in InspectorIssueDetails to convey more specific
   # information about the kind of issue.
@@ -606,6 +623,7 @@ experimental domain Audits
       MixedContentIssue
       BlockedByResponseIssue
       HeavyAdIssue
+      ContentSecurityPolicyIssue
 
   # This struct holds a list of optional fields with additional information
   # specific to the kind of issue. When adding a new issue code, please also
@@ -616,6 +634,7 @@ experimental domain Audits
       optional MixedContentIssueDetails mixedContentIssueDetails
       optional BlockedByResponseIssueDetails blockedByResponseIssueDetails
       optional HeavyAdIssueDetails heavyAdIssueDetails
+      optional ContentSecurityPolicyIssueDetails contentSecurityPolicyIssueDetails
 
   # An inspector issue reported from the back-end.
   type InspectorIssue extends object

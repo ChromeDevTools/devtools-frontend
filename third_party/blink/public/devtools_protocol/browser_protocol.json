@@ -1190,6 +1190,43 @@
                     ]
                 },
                 {
+                    "id": "ContentSecurityPolicyViolationType",
+                    "type": "string",
+                    "enum": [
+                        "kInlineViolation",
+                        "kEvalViolation",
+                        "kURLViolation",
+                        "kTrustedTypesSinkViolation",
+                        "kTrustedTypesPolicyViolation"
+                    ]
+                },
+                {
+                    "id": "ContentSecurityPolicyIssueDetails",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "blockedURL",
+                            "description": "The url not included in allowed sources.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "violatedDirective",
+                            "description": "Specific directive that is violated, causing the CSP issue.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "contentSecurityPolicyViolationType",
+                            "$ref": "ContentSecurityPolicyViolationType"
+                        },
+                        {
+                            "name": "frameAncestor",
+                            "optional": true,
+                            "$ref": "AffectedFrame"
+                        }
+                    ]
+                },
+                {
                     "id": "InspectorIssueCode",
                     "description": "A unique identifier for the type of issue. Each type may use one of the\noptional fields in InspectorIssueDetails to convey more specific\ninformation about the kind of issue.",
                     "type": "string",
@@ -1197,7 +1234,8 @@
                         "SameSiteCookieIssue",
                         "MixedContentIssue",
                         "BlockedByResponseIssue",
-                        "HeavyAdIssue"
+                        "HeavyAdIssue",
+                        "ContentSecurityPolicyIssue"
                     ]
                 },
                 {
@@ -1224,6 +1262,11 @@
                             "name": "heavyAdIssueDetails",
                             "optional": true,
                             "$ref": "HeavyAdIssueDetails"
+                        },
+                        {
+                            "name": "contentSecurityPolicyIssueDetails",
+                            "optional": true,
+                            "$ref": "ContentSecurityPolicyIssueDetails"
                         }
                     ]
                 },

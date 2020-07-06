@@ -11,6 +11,11 @@
   min-height: 81px;
 }
 
+.film-strip-view .frame .time {
+  font-size: 10px;
+  margin-top: 2px;
+}
+
 .film-strip-view.time-based .frame .time {
   display: none;
 }
@@ -56,9 +61,4 @@
 
 .film-strip-view .frame:hover .thumbnail img {
   box-shadow: none;
-}
-
-.film-strip-view .frame .time {
-  font-size: 10px;
-  margin-top: 2px;
 }

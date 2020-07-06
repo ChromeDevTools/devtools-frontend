@@ -24,7 +24,7 @@ def check_chrome_binary(chrome_binary):
 def popen(arguments, cwd=devtools_paths.devtools_root_path(), env=os.environ.copy()):
     process = Popen(arguments, cwd=cwd, env=env)
     def handle_signal(signum, frame):
-        print '\nSending signal (%i) to process' % signum
+        print('\nSending signal (%i) to process' % signum)
         process.send_signal(signum)
         process.terminate()
 

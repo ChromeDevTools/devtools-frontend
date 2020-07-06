@@ -33,7 +33,16 @@
   color: #737373;
 }
 
+.network-timing-table td {
+  padding: 4px 0;
+}
+
 .network-timing-table-header td:last-child {
+  text-align: right;
+}
+
+.network-timing-footer td:last-child {
+  font-weight: bold;
   text-align: right;
 }
 
@@ -49,10 +58,6 @@ table.network-timing-table > tr:not(.network-timing-table-header):not(.network-t
   width: 80px;
 }
 
-.network-timing-table td {
-  padding: 4px 0;
-}
-
 .network-timing-table td.caution {
   font-weight: bold;
   color: rgb(255 128 0);
@@ -63,11 +68,6 @@ table.network-timing-table > tr:not(.network-timing-table-header):not(.network-t
   border: 0;
   height: 1px;
   background-image: linear-gradient(to right, #eee, #bbb, #eee);
-}
-
-.network-timing-footer td:last-child {
-  font-weight: bold;
-  text-align: right;
 }
 
 .network-timing-row {
@@ -126,52 +126,48 @@ table.network-timing-table > tr:not(.network-timing-table-header):not(.network-t
 }
 
 .network-fetch-timing-bar-clickable::before {
-    user-select: none;
-    -webkit-mask-image: url(Images/treeoutlineTriangles.svg);
-    -webkit-mask-position: 0 0;
-    -webkit-mask-size: 32px 24px;
-    float: left;
-    width: 8px;
-    height: 12px;
-    margin-right: 2px;
-    content: "";
-    position: relative;
-    top: 3px;
-    background-color: rgb(110 110 110);
+  user-select: none;
+  -webkit-mask-image: url(Images/treeoutlineTriangles.svg);
+  -webkit-mask-position: 0 0;
+  -webkit-mask-size: 32px 24px;
+  float: left;
+  width: 8px;
+  height: 12px;
+  margin-right: 2px;
+  content: "";
+  position: relative;
+  top: 3px;
+  background-color: rgb(110 110 110);
 }
 
 .network-fetch-timing-bar-clickable[data-keyboard-focus="true"]:focus {
-    background-color: var(--toolbar-bg-color);
+  background-color: var(--toolbar-bg-color);
 }
 
 .network-fetch-timing-bar-clickable[aria-checked="true"]::before {
-    -webkit-mask-position: -16px 0;
+  -webkit-mask-position: -16px 0;
 }
 
 .network-fetch-timing-bar-details-collapsed {
-    display: none;
+  display: none;
 }
 
 .network-fetch-timing-bar-details-expanded {
-    display: block;
+  display: block;
 }
 
 .network-fetch-timing-bar-clickable {
-    position: relative;
-    left: -12px;
+  position: relative;
+  left: -12px;
 }
 
 .network-fetch-timing-bar-details {
-    padding-left: 11px;
-    width: fit-content;
+  padding-left: 11px;
+  width: fit-content;
 }
 
 .network-fetch-details-treeitem {
-    width: max-content;
-}
-
-.network-timing-bar.ssl, .-theme-preserve {
-    background-color: #9C27B0;
+  width: max-content;
 }
 
 .network-timing-bar.sending,
@@ -185,7 +181,6 @@ table.network-timing-table > tr:not(.network-timing-table-header):not(.network-t
 }
 
 .network-timing-bar.receiving,
-.-theme-preserve,
 .network-timing-bar.receiving-push,
 .-theme-preserve {
   background-color: #03a9f4;
@@ -219,27 +214,17 @@ table.network-timing-table > tr:not(.network-timing-table-header):not(.network-t
 
 @media (forced-colors: active) {
   .network-timing-bar.blocking,
-  .-theme-preserve,
   .network-timing-bar.proxy,
-  .-theme-preserve,
   .network-timing-bar.dns,
-  .-theme-preserve,
   .network-timing-bar.connecting,
   .network-timing-bar.serviceworker,
   .network-timing-bar.serviceworker-preparation,
-  .-theme-preserve,
   .network-timing-bar.ssl,
-  .-theme-preserve,
   .network-timing-bar.sending,
-  .-theme-preserve,
   .network-timing-bar.waiting,
-  .-theme-preserve,
   .network-timing-bar.receiving,
-  .-theme-preserve,
   .network-timing-bar.receiving-push,
-  .-theme-preserve,
   .network-timing-bar.push,
-  .-theme-preserve,
   .network-timing-bar.server-timing,
   .-theme-preserve {
     forced-color-adjust: none;

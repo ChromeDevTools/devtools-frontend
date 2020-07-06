@@ -61,6 +61,7 @@ describe('Multi-Workers', async function() {
     });
 
     // Flaky test
+    // eslint-disable-next-line
     it.skip(`[crbug.com/1073406]: loads scripts exactly once on break ${withOrWithout}`, async () => {
       const {target} = getBrowserAndPages();
 

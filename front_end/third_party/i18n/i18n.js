@@ -5,8 +5,8 @@
  */
 'use strict';
 
-const isDeepEqual = require('lodash.isequal');
-const MessageFormat = require('intl-messageformat').default;
+const isDeepEqual = require('../lodash-isequal/package/index');
+const MessageFormat = require('../intl-messageformat/package/dist/umd/intl-messageformat').default;
 const LOCALES = require('./locales.js');
 
 /** @typedef {import('intl-messageformat-parser').Element} MessageElement */
@@ -15,28 +15,6 @@ const LOCALES = require('./locales.js');
 const MESSAGE_INSTANCE_ID_REGEX = /(.* \| .*) # (\d+)$/;
 // Above regex is very slow against large strings. Use QUICK_REGEX as a much quicker discriminator.
 const MESSAGE_INSTANCE_ID_QUICK_REGEX = / # \d+$/;
-
-(() => {
-  // Node without full-icu doesn't come with the locales we want built-in. Load the polyfill if needed.
-  // See https://nodejs.org/api/intl.html#intl_options_for_building_node_js
-
-
-  // @ts-ignore
-  const IntlPolyfill = require('intl');
-
-  // The bundler also removes this dep, so there's nothing to do if it's empty.
-  if (!IntlPolyfill.NumberFormat) return;
-
-  // Check if global implementation supports a minimum set of locales.
-  const minimumLocales = ['en', 'es', 'ru', 'zh'];
-  const supportedLocales = Intl.NumberFormat.supportedLocalesOf(minimumLocales);
-
-  if (supportedLocales.length !== minimumLocales.length) {
-    Intl.NumberFormat = IntlPolyfill.NumberFormat;
-    Intl.DateTimeFormat = IntlPolyfill.DateTimeFormat;
-  }
-})();
-
 
 const formats = {
   number: {

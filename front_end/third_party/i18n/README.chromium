@@ -15,3 +15,6 @@ Local Modifications:
 3. In getMessageInstanceIdFn(), us the filename that gets passed in as the first part of the id
 4. Add lookupClosestLocale() to the file and remove the require statement
 5. Add getFormatter(icuMessageIdOrRawString, locale) and rework the _resolveIcuMessageInstanceId call chain
+6. Removing the 'intl' polyfill.
+7. Changed locales exports from CommonJS modules to ESM
+8. Pointing dependencies to third_party folder.

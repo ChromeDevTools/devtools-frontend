@@ -11,6 +11,7 @@ group("front_end") {
     ":front_end_html_entrypoints",
     ":ts_library-verification",
     "component_docs",
+    "i18n:bundle_i18n",
   ]
 }
 

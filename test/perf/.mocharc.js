@@ -20,7 +20,7 @@ testFiles = process.env['TEST_FILE'] || testFiles;
 const timeout = process.env['DEBUG'] ? 0 : 5 * 1000;
 
 module.exports = {
-  file: path.join(__dirname, '..', 'conductor', 'mocha_hooks.js'),
+  require: path.join(__dirname, '..', 'conductor', 'mocha_hooks.js'),
   spec: testFiles,
   timeout,
 }

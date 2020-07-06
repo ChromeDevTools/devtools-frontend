@@ -21,10 +21,6 @@
   opacity: 100%;
 }
 
-.watch-expression-title:hover {
-  padding-right: 26px;
-}
-
 .watch-expressions {
   overflow-x: hidden;
   min-height: 26px;
@@ -35,6 +31,10 @@
   text-overflow: ellipsis;
   overflow: hidden;
   line-height: 20px;
+}
+
+.watch-expression-title:hover {
+  padding-right: 26px;
 }
 
 .watch-expression-object-header .watch-expression-title {
@@ -93,12 +93,12 @@
   padding-left: 15px;
 }
 
-li.watch-expression-tree-item:hover {
-  background-color: #f0f0f0;
-}
-
 li.watch-expression-tree-item {
   padding-left: 4px;
+}
+
+li.watch-expression-tree-item:hover {
+  background-color: #f0f0f0;
 }
 
 .watch-expression-header:focus[data-keyboard-focus="true"] {

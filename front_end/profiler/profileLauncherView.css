@@ -41,6 +41,10 @@
   color: hsl(0deg 100% 42%);
 }
 
+.profile-launcher-view-content button:not(:disabled):hover.running {
+  color: HighlightText;
+}
+
 body.inactive .profile-launcher-view-content button.running:not(.toolbar-item) {
   color: rgb(220 130 130);
 }
@@ -70,17 +74,23 @@ body.inactive .profile-launcher-view-content button.running:not(.toolbar-item) {
   overflow-x: hidden;
 }
 
+.profile-isolate-selector-block > .profile-memory-usage-item {
+  margin-left: 1px;
+  margin-bottom: 4px;
+  font-weight: bolder;
+}
+
 .profile-launcher-target-list .profile-memory-usage-item:hover:not(.selected) {
   background-color: var(--item-hover-color);
+}
+
+.profile-memory-usage-item.selected {
+  background-color: var(--item-selection-inactive-bg-color);
 }
 
 .javascript-vm-instances-list:focus .profile-memory-usage-item.selected {
   border-color: var(--selection-bg-color);
   background-color: var(--item-selection-bg-color);
-}
-
-.profile-memory-usage-item.selected {
-  background-color: var(--item-selection-inactive-bg-color);
 }
 
 .profile-memory-usage-item > div {
@@ -100,12 +110,6 @@ body.inactive .profile-launcher-view-content button.running:not(.toolbar-item) {
 
 .profile-memory-usage-item-trend.increasing {
   color: red;
-}
-
-.profile-isolate-selector-block > .profile-memory-usage-item {
-  margin-left: 1px;
-  margin-bottom: 4px;
-  font-weight: bolder;
 }
 
 .profile-launcher-buttons {
@@ -131,13 +135,14 @@ body.inactive .profile-launcher-view-content button.running:not(.toolbar-item) {
     color: ButtonText;
   }
 
-  .profile-launcher-view-content button:not(:disabled):hover.running {
-    color: HighlightText;
-  }
-
   .javascript-vm-instances-list .profile-memory-usage-item:hover:not(.selected) {
     background-color: Highlight;
     color: HighlightText;
+  }
+
+  .javascript-vm-instances-list .profile-memory-usage-item.selected .profile-memory-usage-item-trend,
+  .javascript-vm-instances-list .profile-memory-usage-item.selected .profile-memory-usage-item-trend.increasing {
+    color: ButtonFace;
   }
 
   .javascript-vm-instances-list .profile-memory-usage-item:hover:not(.selected) .profile-memory-usage-item-trend,
@@ -149,11 +154,6 @@ body.inactive .profile-launcher-view-content button.running:not(.toolbar-item) {
   .javascript-vm-instances-list .profile-memory-usage-item.selected {
     background-color: ButtonText;
     border-color: Highlight;
-    color: ButtonFace;
-  }
-
-  .javascript-vm-instances-list .profile-memory-usage-item.selected .profile-memory-usage-item-trend,
-  .javascript-vm-instances-list .profile-memory-usage-item.selected .profile-memory-usage-item-trend.increasing {
     color: ButtonFace;
   }
 

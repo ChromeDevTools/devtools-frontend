@@ -35,10 +35,6 @@ ruleTester.run('es_modules_import', rule, {
       filename: 'front_end/accessibility/ARIAMetadata.js',
     },
     {
-      code: 'import { DebuggerLanguagePlugin } from \'../DebuggerLanguagePlugins.js\';',
-      filename: 'front_end/bindings/language_plugins/CXXDWARFLanguagePlugin.js',
-    },
-    {
       code: 'import \'../../common/common.js\';',
       filename: 'front_end/formatter_worker/formatter_worker.js',
     },

@@ -1030,7 +1030,6 @@ all_devtools_modules = [
   "bindings/CSSWorkspaceBinding.js",
   "bindings/DebuggerWorkspaceBinding.js",
   "bindings/DebuggerLanguagePlugins.js",
-  "bindings/language_plugins/CXXDWARFLanguagePlugin.js",
   "bindings/DefaultScriptMapping.js",
   "bindings/FileUtils.js",
   "bindings/LiveLocation.js",

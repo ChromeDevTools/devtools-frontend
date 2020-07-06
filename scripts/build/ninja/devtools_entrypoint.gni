@@ -167,7 +167,10 @@ template("devtools_entrypoint") {
           invoker.entrypoint,
         ]
 
-        public_deps = [ ":$_rollup_target_name" ]
+        public_deps = [
+          ":$_prebundle_target_name",
+          ":$_rollup_target_name",
+        ]
 
         outputs = [ "$target_gen_dir/$_entrypoint_output_file_name.d.ts" ]
       }

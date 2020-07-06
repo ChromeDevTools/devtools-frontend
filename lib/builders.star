@@ -108,10 +108,11 @@ def config_section(name, branch,
     notifiers=notifiers
   )
 
-def builder_descriptor(name, recipe_name, excluded_from=[], notification_muted=False):
+def builder_descriptor(name, recipe_name, dims=dimensions.default_ubuntu, excluded_from=[], notification_muted=False):
   return struct(
     name=name,
     recipe_name=recipe_name,
+    dims=dims,
     excluded_from=excluded_from,
     notification_muted=notification_muted,
   )
@@ -160,7 +161,7 @@ def generate_ci_configs(configurations, builders):
         ci_builder(
           name=b.name + c.name_suffix,
           recipe_name=b.recipe_name,
-          dimensions=dimensions.default_ubuntu,
+          dimensions=b.dims,
           execution_timeout=2 * time.hour,
           console_category='Linux',
           notifies=[] if b.notification_muted else c.notifiers,

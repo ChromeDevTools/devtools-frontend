@@ -55,6 +55,12 @@ generate_ci_configs(
         excluded_from=['chromium']
       ),
       builder_descriptor(
+        name="Stand-alone Mac",
+        recipe_name="devtools/devtools-frontend",
+        dims=dimensions.mac,
+        excluded_from=['chromium', 'beta', 'stable', 'previous']
+      ),
+      builder_descriptor(
         name="Backend Linux",
         recipe_name="devtools/devtools-backend",
         excluded_from=['chromium'],

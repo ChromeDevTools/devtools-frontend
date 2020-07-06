@@ -55,17 +55,17 @@
   flex: auto 1 1;
 }
 
+.blackbox-pattern {
+  flex: auto;
+  min-width: 100px;
+}
+
 .blackbox-list-item .blackbox-pattern {
   white-space: nowrap;
   text-overflow: ellipsis;
   user-select: none;
   color: #222;
   overflow: hidden;
-}
-
-.blackbox-pattern {
-  flex: auto;
-  min-width: 100px;
 }
 
 .blackbox-list-item.blackbox-disabled .blackbox-pattern {

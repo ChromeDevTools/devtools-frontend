@@ -34,9 +34,26 @@ module.exports = {
     return {
       MemberExpression(node) {
         if (node.object.name === 'it' && node.property.name === 'skip') {
-          const testName = node.parent.arguments[0].value;
+          const testNameNode = node.parent.arguments[0];
 
-          if (!TEST_NAME_REGEX.test(testName)) {
+          let textValue;
+
+          if (testNameNode.type === 'Literal') {
+            textValue = testNameNode.value;
+          } else if (testNameNode.type === 'TemplateLiteral') {
+            if (testNameNode.quasis.length === 0) {
+              context.report({
+                node,
+                messageId: 'description',
+              });
+
+              return;
+            }
+
+            textValue = testNameNode.quasis[0].value.cooked;
+          }
+
+          if (!textValue || !TEST_NAME_REGEX.test(textValue)) {
             context.report({
               node,
               messageId: 'description',

@@ -20,8 +20,26 @@ const generatedTSConfig = {
     originalFrontendMappedLocation,
   ],
   references: dependencies.map(dep => {
+    // Deps come in the form of :foo, ../some/path:foo or
+    // ../some/path, which means we can split on the colon and
+    // obtain the path and target parts. If there is no target
+    // part it is assumed to be the same as the final dirname of
+    // the path.
+
+    // eslint-disable-next-line prefer-const
+    let [pathPart, targetPart] = dep.split(':');
+    if (pathPart === '') {
+      pathPart = '.';
+    }
+
+    // A path of ../some/path means that we need to assume
+    // ../some/path with a target of path.
+    if (pathPart === dep) {
+      targetPart = path.basename(dep);
+    }
+
     return {
-      path: `./${dep.substring(1)}-tsconfig.json`,
+      path: `${pathPart}/${targetPart}-tsconfig.json`,
     };
   }),
 };

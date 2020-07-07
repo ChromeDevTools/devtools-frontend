@@ -26,6 +26,6 @@ describe('SourceMap handling', async () => {
 
     await openSourceCodeEditorForFile(
         'script-with-sourcemap-without-mappings.js', 'script-with-sourcemap-without-mappings.html');
-    await addBreakpointForLine(frontend, 1);
+    await addBreakpointForLine(frontend, 0);
   });
 });

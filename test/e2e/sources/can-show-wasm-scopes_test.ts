@@ -13,7 +13,7 @@ describe('Source Tab', async () => {
     const {frontend} = getBrowserAndPages();
     await openFileInSourcesPanel('wasm/scopes.html');
     await openFileInEditor('scopes.wasm');
-    await addBreakpointForLine(frontend, 15);
+    await addBreakpointForLine(frontend, 16);
   });
 
   async function getScopeNames() {

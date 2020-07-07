@@ -34,9 +34,6 @@ copy_to_gen("sources") {
     "wasm/global_variable_with_dwarf.wasm",
     "wasm/scopes.html",
     "wasm/scopes.wasm",
-    "wasm/stepping-with-state-and-threads.html",
-    "wasm/stepping-with-state.html",
-    "wasm/stepping-with-state.wasm",
     "wasm/unreachable.html",
     "wasm/unreachable.ll",
     "wasm/unreachable.wasm",
@@ -47,7 +44,6 @@ copy_to_gen("sources") {
     "wasm/wasm-with-sourcemap.html",
     "wasm/wasm-with-sourcemap.wasm",
     "wasm/with-sourcemap.ll",
-    "wasm/worker-stepping-with-state-and-threads.js",
     "worker1.js",
     "worker2.js",
   ]

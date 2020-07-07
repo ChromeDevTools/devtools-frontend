@@ -9,7 +9,7 @@
 // CHECK-NOT: Didn't consume
 // CHECK: Reading 4 bytes from offset 1028
 // CHECK: Result at: {{[0-9]+}}
-// CHECK: Result: {"type":"const char*","name":"String","value":"ABCD"}
+// CHECK: Result: {"type":"const char*","js_type":"string","name":"String","value":"ABCD"}
 
 tests = require('./tests.js')
 

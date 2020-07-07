@@ -13,7 +13,7 @@
 // CHECK: Reading 4 bytes from offset 1036
 // CHECK: Result at: {{[0-9]+}}
 // FIXME: Canonical types?
-// CHECK: Result: {"type":"int","name":"A","value":[{"type":"int32_t","name":"A[0]","value":"0"},{"type":"int32_t","name":"A[1]","value":"4"},{"type":"int32_t","name":"A[2]","value":"8"},{"type":"int32_t","name":"A[3]","value":"12"}]}
+// CHECK: Result: {"type":"int","js_type":"array","name":"A","value":[{"type":"int32_t","js_type":"number","name":"A[0]","value":"0"},{"type":"int32_t","js_type":"number","name":"A[1]","value":"4"},{"type":"int32_t","js_type":"number","name":"A[2]","value":"8"},{"type":"int32_t","js_type":"number","name":"A[3]","value":"12"}]}
 
 tests = require('./tests.js')
 

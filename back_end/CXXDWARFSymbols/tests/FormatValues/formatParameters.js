@@ -15,7 +15,7 @@
 // CHECK: Reading 4 bytes from offset 19
 
 // CHECK: Result at: {{[0-9]+}}
-// CHECK: Result: {"type":"int32_t","name":"a","value":"256"}
+// CHECK: Result: {"type":"int32_t","js_type":"number","name":"a","value":"256"}
 
 tests = require('./tests.js')
 

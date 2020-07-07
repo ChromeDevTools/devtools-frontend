@@ -99,31 +99,34 @@ TEST(SymbolServerRuntime, TypeName) {
 }
 
 TEST(SymbolServerRuntime, FormattingNullTerminated) {
-  char result[64];
+  char result[128];
   char* cur = result;
   int value = 7;
-  auto r = format_int(&value, "Value", cur, 64);
+  auto r = format_int(&value, "Value", cur, 128);
   ASSERT_GT(r, 0);
-  ASSERT_LT(r, 64);
+  ASSERT_LT(r, 128);
   ASSERT_EQ(result[r], '\0');
 }
 
 TEST(SymbolServerRuntime, FormatInt64) {
   int64_t value = 7;
-  ASSERT_EQ(Format<64>(value, "Value", format_int64_t),
-            "{\"type\":\"int64_t\",\"name\":\"Value\",\"value\":\"7\"}");
+  ASSERT_EQ(Format<128>(value, "Value", format_int64_t),
+            "{\"type\":\"int64_t\",\"js_type\":\"number\",\"name\":\"Value\","
+            "\"value\":\"7\"}");
 }
 
 TEST(SymbolServerRuntime, FormatInt32) {
   int32_t value = 7;
-  ASSERT_EQ(Format<64>(value, "Value", format_int32_t),
-            "{\"type\":\"int32_t\",\"name\":\"Value\",\"value\":\"7\"}");
+  ASSERT_EQ(Format<128>(value, "Value", format_int32_t),
+            "{\"type\":\"int32_t\",\"js_type\":\"number\",\"name\":\"Value\","
+            "\"value\":\"7\"}");
 }
 
 TEST(SymbolServerRuntime, FormatInt8) {
   int8_t value = 7;
-  ASSERT_EQ(Format<64>(value, "Value", format_int8_t),
-            "{\"type\":\"int8_t\",\"name\":\"Value\",\"value\":\"7\"}");
+  ASSERT_EQ(Format<128>(value, "Value", format_int8_t),
+            "{\"type\":\"int8_t\",\"js_type\":\"number\",\"name\":\"Value\","
+            "\"value\":\"7\"}");
 }
 
 TEST(SymbolServerRuntime, EmitString) {
@@ -140,8 +143,10 @@ TEST(SymbolServerRuntime, EmitString) {
 
 TEST(SymbolServerRuntime, FormatString) {
   const char* value = "abc";
-  ASSERT_EQ(Format<64>(value, "Value", format_string),
-            "{\"type\":\"const char*\",\"name\":\"Value\",\"value\":\"abc\"}");
+  ASSERT_EQ(
+      Format<128>(value, "Value", format_string),
+      "{\"type\":\"const "
+      "char*\",\"js_type\":\"string\",\"name\":\"Value\",\"value\":\"abc\"}");
 }
 
 TEST(SymbolServerRuntime, FormatArray) {
@@ -173,11 +178,14 @@ TEST(SymbolServerRuntime, FormatArray) {
   ASSERT_LT(n, size);
   std::string expect =
       "{\"type\":\"int32_t "
-      "[4]\",\"name\":\"A\",\"value\":[{\"type\":\"int32_t\",\"name\":\"[0]\","
-      "\"value\":\"0\"},{\"type\":\"int32_t\",\"name\":\"[1]\",\"value\":\"1\"}"
+      "[4]\",\"js_type\":\"array\",\"name\":\"A\",\"value\":[{\"type\":\"int32_"
+      "t\",\"js_type\":\"number\",\"name\":\"[0]\","
+      "\"value\":\"0\"},{\"type\":\"int32_t\",\"js_type\":\"number\",\"name\":"
+      "\"[1]\",\"value\":\"1\"}"
       ",{"
-      "\"type\":\"int32_t\",\"name\":\"[2]\",\"value\":\"2\"},{\"type\":"
-      "\"int32_t\","
+      "\"type\":\"int32_t\",\"js_type\":\"number\",\"name\":\"[2]\",\"value\":"
+      "\"2\"},{\"type\":"
+      "\"int32_t\",\"js_type\":\"number\","
       "\"name\":\"[3]\",\"value\":\"3\"}]}";
   ASSERT_EQ(std::string(result), expect);
 }

@@ -87,6 +87,14 @@ IMPLEMENT_TYPENAME(int8_t)
 IMPLEMENT_TYPENAME(const char*)
 
 template <typename T>
+ConstStringSlice GetJSType() {
+  if (std::is_arithmetic<T>::value) {
+    return {"number", 6};
+  }
+  return {"string", 6};
+}
+
+template <typename T>
 struct Value {
   explicit Value(T* value) : val(value) {}
   void EmitInto(StringSlice* output) const;
@@ -229,8 +237,9 @@ int FormatValue(T* value, const char* variable, char* result, uint32_t size) {
   }
 
   Printer p(result, size);
-  p << "{\"type\":\"" << GetTypename<T>() << "\",\"name\":\"" << variable
-    << "\",\"value\":\"" << ::Value<T>(value) << "\"}" << fin;
+  p << "{\"type\":\"" << GetTypename<T>() << "\",\"js_type\":\""
+    << GetJSType<T>() << "\",\"name\":\"" << variable << "\",\"value\":\""
+    << ::Value<T>(value) << "\"}" << fin;
 
   return ErrorOrLen(p);
 }
@@ -247,13 +256,24 @@ uint32_t get_scratch_pad_size(char* scratch_pad_begin, char* scratch_pad_end) {
 }
 
 // NOLINTNEXTLINE
+int format_begin_struct(const char* variable,
+                        const char* type,
+                        char* result,
+                        uint32_t size) {
+  Printer p(result, size);
+  p << "{\"type\":\"" << type << "\",\"js_type\":\"object\",\"name\":\""
+    << variable << "\",\"value\":[" << fin;
+  return ErrorOrLen(p);
+}
+
+// NOLINTNEXTLINE
 int format_begin_array(const char* variable,
                        const char* type,
                        char* result,
                        uint32_t size) {
   Printer p(result, size);
-  p << "{\"type\":\"" << type << "\",\"name\":\"" << variable
-    << "\",\"value\":[" << fin;
+  p << "{\"type\":\"" << type << "\",\"js_type\":\"array\",\"name\":\""
+    << variable << "\",\"value\":[" << fin;
   return ErrorOrLen(p);
 }
 

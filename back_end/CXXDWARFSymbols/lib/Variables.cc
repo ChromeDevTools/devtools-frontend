@@ -90,6 +90,15 @@ llvm::FunctionCallee GetSBrk(llvm::Module* m) {
                                 b.getInt8PtrTy(), b.getInt32Ty());
 }
 
+// int format_begin_struct(const char* ArrayName, const char *ElementType,
+//                        char *Buffer, int Size);
+llvm::FunctionCallee GetStructBeginFormatter(llvm::Module* m) {
+  llvm::IRBuilder<> b(m->getContext());
+  return m->getOrInsertFunction("format_begin_struct", b.getInt32Ty(),
+                                b.getInt8PtrTy(), b.getInt8PtrTy(),
+                                b.getInt8PtrTy(), b.getInt32Ty());
+}
+
 // int format_begin_array(const char* ArrayName, const char *ElementType,
 //                        char *Buffer, int Size);
 llvm::FunctionCallee GetArrayBeginFormatter(llvm::Module* m) {
@@ -232,7 +241,7 @@ llvm::Expected<VariablePrinter::StringSlice> VariablePrinter::FormatAggregate(
       variable_type.GetTypeName().GetStringRef());
   llvm::Value* var_name = builder->CreateGlobalStringPtr(name);
 
-  std::tie(buffer, size) = CallFormatter(builder, GetArrayBeginFormatter(&m),
+  std::tie(buffer, size) = CallFormatter(builder, GetStructBeginFormatter(&m),
                                          buffer, size, var_name, type_name);
   for (size_t child = 0, e = variable_type.GetNumFields(); child < e; ++child) {
     if (child > 0) {

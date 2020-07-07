@@ -10,7 +10,7 @@
 // CHECK: Reading 4 bytes from offset 1032
 // CHECK: Reading 4 bytes from offset 1036
 // CHECK: Result at: {{[0-9]+}}
-// CHECK: Result: {"type":"Pair","name":"P","value":[{"type":"int32_t","name":"X","value":"8"},{"type":"int32_t","name":"Y","value":"12"}]}
+// CHECK: Result: {"type":"Pair","js_type":"object","name":"P","value":[{"type":"int32_t","js_type":"number","name":"X","value":"8"},{"type":"int32_t","js_type":"number","name":"Y","value":"12"}]}
 
 tests = require('./tests.js')
 

@@ -15,11 +15,14 @@ class SourceVariable extends SDK.RemoteObject.RemoteObjectImpl {
    * @param {!RawLocation} location
    */
   constructor(callFrame, variable, plugin, location) {
+    const variableType = variable.type.replace(/ /g, '_');
     super(
-        callFrame.debuggerModel.runtimeModel(), /* objectId=*/ undefined, /* type=*/ variable.type,
+        callFrame.debuggerModel.runtimeModel(), /* objectId=*/ undefined,
+        /* type=*/ variableType,
         /* subtype=*/ undefined, /* value=*/ null, /* unserializableValue=*/ undefined,
         /* customPreview=*/ variable.type);
     this._variable = variable;
+    this._variableType = variableType;
     this._callFrame = callFrame;
     this._plugin = plugin;
     this._location = location;
@@ -32,7 +35,66 @@ class SourceVariable extends SDK.RemoteObject.RemoteObjectImpl {
    * @return {string}
    */
   get type() {
-    return this._variable.type;
+    return this._variableType;
+  }
+
+  /** Get the representation when value contains a string
+   * @param {!VariableValue} value
+   */
+  _reprString(value) {
+    return value.value;
+  }
+
+  /** Get the representation when value contains a number
+   * @param {!VariableValue} value
+   */
+  _reprNumber(value) {
+    return Number(value.value);
+  }
+
+  /** Get the representation when value is a compound value
+   * @param {!VariableValue} value
+   */
+  _reprCompound(value) {
+    const result = {};
+    for (const property of value.value) {
+      result[property.name] = this._repr(property);
+    }
+    return result;
+  }
+
+  /** Get the representation when value contains an array of values
+   * @param {!VariableValue} value
+   */
+  _reprArray(value) {
+    return value.value.map(v => this._repr(v));
+  }
+
+  /** Get the representation for a variable value
+   * @param {!VariableValue} value
+   */
+  _repr(value) {
+    if (value.js_type === 'array') {
+      return this._reprArray(value);
+    }
+    if (value.js_type === 'object') {
+      return this._reprCompound(value);
+    }
+    if (value.js_type === 'number') {
+      return this._reprNumber(value);
+    }
+    if (value.js_type !== 'string') {
+      Common.Console.Console.instance().warn(ls`Invalid JS type on the evaluation result: ${value.js_type}`);
+    }
+    return this._reprString(value);
+  }
+
+  /** Produce a language specific representation of a variable value
+   * @param {!VariableValue} value
+   * @return {!SDK.RemoteObject.RemoteObject}
+   */
+  _getRepresentation(value) {
+    return new SDK.RemoteObject.LocalJSONObject(this._repr(value));
   }
 
   /**
@@ -43,18 +105,7 @@ class SourceVariable extends SDK.RemoteObject.RemoteObjectImpl {
    * @return {!Promise<!SDK.RemoteObject.GetPropertiesResult>}
    */
   async doGetProperties(ownProperties, accessorPropertiesOnly, generatePreview) {
-    if (accessorPropertiesOnly) {
-      return /** @type {!SDK.RemoteObject.GetPropertiesResult} */ ({properties: [], internalProperties: []});
-    }
-
-    const repr = await getRepr(this._evaluator, this._callFrame, this._plugin);
-    return /** @type {!SDK.RemoteObject.GetPropertiesResult} */ ({
-      properties: [new SDK.RemoteObject.RemoteObjectProperty(
-          'value', repr, /* enumerable=*/ false, /* writable=*/ false, /* isOwn=*/ true, /* wasThrown=*/ false)],
-      internalProperties: []
-    });
-
-    async function getRepr(evaluatorPromise, callFrame, plugin) {
+    const getRepr = async (evaluatorPromise, callFrame, plugin) => {
       try {
         const evaluator = await evaluatorPromise;
         const evaluateResponse = await callFrame.debuggerModel._agent.invoke_executeWasmEvaluator(
@@ -66,8 +117,8 @@ class SourceVariable extends SDK.RemoteObject.RemoteObjectImpl {
           return null;
         }
 
-        const value = JSON.parse(evaluateResponse.result.value);
-        return await plugin.getRepresentation(value);
+        const value = /** @type {!VariableValue} */ (JSON.parse(evaluateResponse.result.value));
+        return this._getRepresentation(value);
       } catch (error) {
         if (!(error instanceof DebuggerLanguagePluginError)) {
           throw error;
@@ -75,7 +126,18 @@ class SourceVariable extends SDK.RemoteObject.RemoteObjectImpl {
         console.error('Error in debugger language plugin: ' + error.message + ' (' + error.code + ')');
         return null;
       }
+    };
+
+    if (accessorPropertiesOnly) {
+      return /** @type {!SDK.RemoteObject.GetPropertiesResult} */ ({properties: [], internalProperties: []});
     }
+
+    const repr = await getRepr(this._evaluator, this._callFrame, this._plugin);
+    return /** @type {!SDK.RemoteObject.GetPropertiesResult} */ ({
+      properties: [new SDK.RemoteObject.RemoteObjectProperty(
+          'value', repr, /* enumerable=*/ false, /* writable=*/ false, /* isOwn=*/ true, /* wasThrown=*/ false)],
+      internalProperties: []
+    });
   }
 }
 
@@ -600,6 +662,7 @@ export let Variable;
 /** The value of a source language variable
  * @typedef {{
  *            value: (string|!Array<!VariableValue>),
+ *            js_type: string,
  *            type: string,
  *            name: string
  *          }}
@@ -662,12 +725,5 @@ export class DebuggerLanguagePlugin {
    * @throws {DebuggerLanguagePluginError}
   */
   async evaluateVariable(name, location) {
-  }
-
-  /** Produce a language specific representation of a variable value
-   * @param {!VariableValue} value
-   * @return {!Promise<!SDK.RemoteObject.RemoteObject>}
-   */
-  async getRepresentation(value) {
   }
 }

@@ -39,6 +39,7 @@
 
 #network-container {
   border: 1px solid rgb(204 204 204);
+  overflow: hidden;
 }
 
 #network-container.grid-focused.no-node-selected:focus-within {
@@ -149,6 +150,9 @@
   margin-right: 4px;
 }
 
+/* We are using a multitude of different selector specificity rules here, which
+   is incompatible with what stylelint requires as ordering of the rules. */
+/* stylelint-disable no-descending-specificity */
 .network-error-row,
 .network-error-row .network-cell-subtitle,
 .network-log-grid.data-grid tr.selected.network-error-row,
@@ -179,15 +183,6 @@
   color: var(--selection-fg-color);
 }
 
-.network-log-grid tr.highlighted-row {
-  -webkit-animation: network-row-highlight-fadeout 2s 0s;
-}
-
-@-webkit-keyframes network-row-highlight-fadeout {
-  from { background-color: rgb(255 255 120 / 100%); }
-  to { background-color: rgb(255 255 120 / 0%); }
-}
-
 .network-header-subtitle {
   color: gray;
 }
@@ -202,7 +197,22 @@
   margin-left: 4px;
 }
 
+.network-log-grid tr.highlighted-row {
+  -webkit-animation: network-row-highlight-fadeout 2s 0s;
+}
+
+/* See comment above why the rules were disabled */
+/* stylelint-enable no-descending-specificity */
+
+@-webkit-keyframes network-row-highlight-fadeout {
+  from { background-color: rgb(255 255 120 / 100%); }
+  to { background-color: rgb(255 255 120 / 0%); }
+}
+
 /* Resource preview icons */
+
+/* These rules are grouped by type and therefore do not adhere to the ordering of stylelint */
+/* stylelint-disable no-descending-specificity, no-duplicate-selectors */
 
 .network-log-grid.data-grid .icon {
   content: url(Images/resourcePlainIcon.png);
@@ -299,6 +309,11 @@
   max-height: 11px;
 }
 
+/* stylelint-enable no-descending-specificity, no-duplicate-selectors */
+
+/* This is part of the large color block declared above, but should not be
+   extracted out. */
+/* stylelint-disable-next-line no-descending-specificity */
 .network-dim-cell {
   color: grey;
 }
@@ -329,10 +344,6 @@
   user-select: none;
   min-width: 1ex;
   display: inline-block;
-}
-
-#network-container {
-  overflow: hidden;
 }
 
 .network-status-pane {
@@ -375,6 +386,8 @@
   padding: 0 4px;
 }
 
+/* All network-waterfall-header rules are defined here instead of above */
+/* stylelint-disable-next-line no-descending-specificity */
 .network-waterfall-header .sort-order-icon-container {
   position: absolute;
   top: 1px;
@@ -404,6 +417,9 @@
     color: canvastext;
   }
 
+  /* This is part of the large color block declared above, but should not be
+   extracted out. */
+  /* stylelint-disable no-descending-specificity */
   .network-log-grid.data-grid table.data tr.revealed.selected,
   .network-log-grid.data-grid:focus table.data tr.revealed.selected,
   .network-log-grid.data-grid:focus tr.selected .network-dim-cell,
@@ -413,6 +429,7 @@
   .network-waterfall-header:hover * {
     color: HighlightText;
   }
+  /* stylelint-enable no-descending-specificity */
 
   .network-log-grid {
     --network-grid-default-color: canvas;
@@ -429,15 +446,15 @@
     background-color: canvas !important;
   }
 
+  .network-waterfall-header:hover {
+    forced-color-adjust: none;
+    background-color: Highlight;
+  }
+
   .network-waterfall-header.small,
   .network-log-grid.data-grid.small .header-container .network-waterfall-header,
   .network-log-grid.data-grid .header-container {
     background-color: canvas;
-  }
-
-  .network-waterfall-header:hover {
-    forced-color-adjust: none;
-    background-color: Highlight;
   }
 
   .network-waterfall-header:hover .sort-order-icon-container [is=ui-icon].icon-mask {

@@ -11,9 +11,8 @@ import {createTypeScriptSourceFile, createTypeScriptSourceFromFilePath} from './
 
 const fixturesPath = path.join(process.cwd(), 'test', 'unittests', 'scripts', 'component_bridges', 'fixtures');
 
-
 describe('walkTree', () => {
-  it('understands interfaces that are imported and can find them', () => {
+  it('understands interfaces that are imported as named imports and can find them', () => {
     const filePath = path.resolve(path.join(fixturesPath, 'component-with-external-interface.ts'));
 
     const source = createTypeScriptSourceFromFilePath(filePath);
@@ -24,6 +23,15 @@ describe('walkTree', () => {
     });
 
     assert.deepEqual(foundInterfaceNames, ['Dog', 'Person']);
+  });
+
+  it('errors if a user references an interface via a qualifier', () => {
+    const filePath = path.resolve(path.join(fixturesPath, 'component-with-external-interface-import-star.ts'));
+
+    const source = createTypeScriptSourceFromFilePath(filePath);
+    assert.throws(() => {
+      walkTree(source, filePath);
+    }, 'Found an interface that was referenced indirectly. You must reference interfaces directly, rather than via a qualifier. For example, `Person` rather than `Foo.Person`');
   });
 
   it('errors loudly if it cannot find an interface', () => {
@@ -171,6 +179,53 @@ describe('walkTree', () => {
       assert.deepEqual(setterNames, ['foo']);
       assert.deepEqual(Array.from(result.interfaceNamesToConvert), ['Person']);
     });
+
+    it('can parse interfaces out of the Readonly helper type', () => {
+      const code = `interface Person{}
+
+      class Breadcrumbs extends HTMLElement {
+
+        private render() {
+          console.log('render')
+        }
+
+        public set foo(x: Readonly<Person>) {
+        }
+      }`;
+
+      const source = createTypeScriptSourceFile(code);
+      const result = walkTree(source, 'test.ts');
+
+      if (!result.componentClass) {
+        assert.fail('No component class was found');
+      }
+
+      assert.deepEqual(Array.from(result.interfaceNamesToConvert), ['Person']);
+    });
+
+    it('can parse interfaces out of the ReadonlyArray helper type', () => {
+      const code = `interface Person{}
+
+      class Breadcrumbs extends HTMLElement {
+
+        private render() {
+          console.log('render')
+        }
+
+        public set foo(x: ReadonlyArray<Person>) {
+        }
+      }`;
+
+      const source = createTypeScriptSourceFile(code);
+      const result = walkTree(source, 'test.ts');
+
+      if (!result.componentClass) {
+        assert.fail('No component class was found');
+      }
+
+      assert.deepEqual(Array.from(result.interfaceNamesToConvert), ['Person']);
+    });
+
 
     it('deals with setters that take an object and pulls out the interfaces', () => {
       const code = `interface Person { name: string }

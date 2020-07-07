@@ -37,6 +37,19 @@ const classExtendsHTMLElement = (classNode: ts.ClassDeclaration): boolean => {
   });
 };
 
+/*
+ * Detects if a Node is of type Readonly<X>.
+ */
+export const nodeIsReadOnlyInterfaceReference = (node: ts.Node): node is ts.TypeReferenceNode => {
+  return ts.isTypeReferenceNode(node) && ts.isIdentifier(node.typeName) && node.typeName.escapedText === 'Readonly';
+};
+/*
+ * Detects if a Node is of type ReadonlyArray<X>.
+ */
+export const nodeIsReadOnlyArrayInterfaceReference = (node: ts.Node): node is ts.TypeReferenceNode => {
+  return ts.isTypeReferenceNode(node) && ts.isIdentifier(node.typeName) &&
+      node.typeName.escapedText === 'ReadonlyArray';
+};
 /* takes a type and checks if it's either an array of interfaces or an interface
  * e.g, we're looking for: Array<Foo> or Foo
  * and not for primitives like string, number, etc
@@ -47,11 +60,31 @@ const classExtendsHTMLElement = (classNode: ts.ClassDeclaration): boolean => {
 const findInterfacesFromType = (node: ts.Node): Set<string> => {
   const foundInterfaces = new Set<string>();
 
+  /*
+   * If the Node is ReadOnly<X>, then we want to ditch the ReadOnly and recurse to
+   * parse the inner type to check if that's an interface.
+   */
+  if (nodeIsReadOnlyInterfaceReference(node) || nodeIsReadOnlyArrayInterfaceReference(node)) {
+    if (!node.typeArguments) {
+      throw new Error('Found ReadOnly interface with no type arguments; invalid TS detected.');
+    }
+    return findInterfacesFromType(node.typeArguments[0]);
+  }
+
   if (ts.isArrayTypeNode(node) && ts.isTypeReferenceNode(node.elementType) &&
       ts.isIdentifier(node.elementType.typeName)) {
     foundInterfaces.add(node.elementType.typeName.escapedText.toString());
 
-  } else if (ts.isTypeReferenceNode(node) && ts.isIdentifier(node.typeName)) {
+  } else if (ts.isTypeReferenceNode(node)) {
+    /*
+     * This means that an interface is being referenced via a qualifier, e.g.:
+     * `Interfaces.Person` rather than `Person`.
+     * We don't support this - all interfaces must be referenced directly.
+     */
+    if (!ts.isIdentifier(node.typeName)) {
+      throw new Error(
+          'Found an interface that was referenced indirectly. You must reference interfaces directly, rather than via a qualifier. For example, `Person` rather than `Foo.Person`');
+    }
     foundInterfaces.add(node.typeName.escapedText.toString());
   } else if (ts.isTypeLiteralNode(node)) {
     /* type literal here means it's an object: data: { x: string; y: number, z: SomeInterface , ... }
@@ -149,11 +182,10 @@ const walkNode = (node: ts.Node, startState?: WalkerState): WalkerState => {
     const fileWithoutExt = path.basename(filePath, '.js');
     const sourceFile = `${fileWithoutExt}.ts`;
 
-    if (node.importClause) {
-      const namedImports = (node.importClause.namedBindings as ts.NamedImports).elements.map(namedImport => {
+    if (node.importClause && node.importClause.namedBindings && ts.isNamedImports(node.importClause.namedBindings)) {
+      const namedImports = node.importClause.namedBindings.elements.map(namedImport => {
         return namedImport.name.escapedText.toString();
       });
-
       state.imports.add({
         filePath: sourceFile,
         namedImports: new Set(namedImports),

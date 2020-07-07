@@ -405,6 +405,48 @@ describe('generateClosure', () => {
 
       assert.include(classOutput.join('\n'), 'set data(data) {}');
     });
+
+    it('correctly handles Readonly and outputs the inner type', () => {
+      const state = parseCode(`interface Person {
+        name: string
+        age: number
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public set data(data: { person: Readonly<Person> }) {
+        }
+      }`);
+
+      const classOutput = generateClosureClass(state);
+
+      assert.include(classOutput.join('\n'), `
+  /**
+  * @param {{person: !Person}} data
+  */`);
+
+      assert.include(classOutput.join('\n'), 'set data(data) {}');
+    });
+
+    it('correctly handles ReadonlyArray and outputs the inner type', () => {
+      const state = parseCode(`interface Person {
+        name: string
+        age: number
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public set data(data: { person: ReadonlyArray<Person> }) {
+        }
+      }`);
+
+      const classOutput = generateClosureClass(state);
+
+      assert.include(classOutput.join('\n'), `
+  /**
+  * @param {{person: !Array.<!Person>}} data
+  */`);
+
+      assert.include(classOutput.join('\n'), 'set data(data) {}');
+    });
   });
 
   describe('generateInterfaces', () => {
@@ -452,6 +494,28 @@ describe('generateClosure', () => {
 
       assert.strictEqual(interfaces.length, 1);
       assert.isTrue(interfaces[0].join('').includes('export let Person'));
+    });
+
+    it('pulls out interfaces from a Readonly helper type', () => {
+      const state = parseCode(`interface Person {
+        name: string
+        age: number
+      }
+
+      interface Dog {
+        name: string
+        goodDog: boolean
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public update(people: ReadonlyArray<Person>, dog: Readonly<Dog>) {}
+      }`);
+
+      const interfaces = generateInterfaces(state);
+
+      assert.strictEqual(interfaces.length, 2);
+      assert.isTrue(interfaces[0].join('').includes('export let Person'));
+      assert.isTrue(interfaces[1].join('').includes('export let Dog'));
     });
 
     it('can convert a basic interface into a Closure one', () => {

@@ -4,6 +4,8 @@
 
 import * as ts from 'typescript';
 
+import {nodeIsReadOnlyArrayInterfaceReference, nodeIsReadOnlyInterfaceReference} from './walk_tree';
+
 export const nodeIsPrimitive = (node: ts.TypeNode): boolean => {
   return [
     ts.SyntaxKind.NumberKeyword,
@@ -18,6 +20,20 @@ export const valueForTypeNode = (node: ts.TypeNode, isFunctionParam: boolean = f
   let value = '';
 
   if (ts.isTypeReferenceNode(node)) {
+    /* These check for Readonly<X> or ReadonlyArray<X> and unwrap them
+     * so we parse out the inner type instead.
+     */
+    if (nodeIsReadOnlyInterfaceReference(node) && node.typeArguments) {
+      return valueForTypeNode(node.typeArguments[0], isFunctionParam);
+    }
+    if (nodeIsReadOnlyArrayInterfaceReference(node) && node.typeArguments) {
+      /* The structure of a ReadonlyArray node is different to that of an Array node.
+       * Rather than duplicate the logic for handling an array, we can instead construct
+       * an array node from the inner type of the ReadonlyArray and recurse with that.
+       */
+      const arrayNode = ts.factory.createArrayTypeNode(node.typeArguments[0]);
+      return valueForTypeNode(arrayNode, isFunctionParam);
+    }
     value = (node.typeName as ts.Identifier).escapedText.toString();
   } else if (ts.isArrayTypeNode(node)) {
     const isPrimitive = nodeIsPrimitive(node.elementType);
@@ -36,7 +52,9 @@ export const valueForTypeNode = (node: ts.TypeNode, isFunctionParam: boolean = f
   } else if (node.kind === ts.SyntaxKind.VoidKeyword) {
     value = 'void';
   } else if (ts.isUnionTypeNode(node)) {
-    const isNullUnion = node.types.some(n => n.kind === ts.SyntaxKind.NullKeyword);
+    const isNullUnion = node.types.some(node => {
+      return ts.isLiteralTypeNode(node) && node.literal.kind === ts.SyntaxKind.NullKeyword;
+    });
 
     if (isNullUnion) {
       if (node.types.length > 2) {

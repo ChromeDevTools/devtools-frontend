@@ -27,11 +27,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-.panel.network .toolbar {
-  background-color: var(--toolbar-bg-color);
-  border-bottom: var(--divider-border);
-}
-
 .network-details-view {
   background: rgb(203 203 203);
 }
@@ -80,16 +75,16 @@
   height: 100%;
 }
 
+.network-overview .resources-dividers-label-bar {
+  background-color: rgb(255 255 255 / 95%);
+}
+
 #network-overview-grid .resources-dividers-label-bar {
   pointer-events: auto;
 }
 
 .network .network-overview {
   flex: 0 0 60px;
-}
-
-.network-overview .resources-dividers-label-bar {
-  background-color: rgb(255 255 255 / 95%);
 }
 
 .network-overview .resources-dividers-label-bar .resources-divider {
@@ -135,6 +130,11 @@
 
 .network-toolbar-container > :first-child {
   flex: 1 1 auto;
+}
+
+.panel.network .toolbar {
+  background-color: var(--toolbar-bg-color);
+  border-bottom: var(--divider-border);
 }
 
 @media (forced-colors: active) {

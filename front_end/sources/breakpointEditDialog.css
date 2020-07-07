@@ -15,7 +15,6 @@
 }
 
 :host(.sources-edit-breakpoint-dialog) {
-  border: none;
   border-radius: 0;
   z-index: 30;
   background-color: var(--toolbar-bg-color);

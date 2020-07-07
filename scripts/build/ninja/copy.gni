@@ -1,6 +1,7 @@
 # Copyright 2019 The Chromium Authors.  All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
+import("./vars.gni")
 
 template("copy_to_gen") {
   copy(target_name) {
@@ -11,5 +12,29 @@ template("copy_to_gen") {
                              "deps",
                            ])
     outputs = [ "{{source_gen_dir}}/{{source_file_part}}" ]
+  }
+}
+
+template("copy_to_resources") {
+  copy(target_name) {
+    forward_variables_from(invoker,
+                           [
+                             "sources",
+                             "visibility",
+                             "deps",
+                           ])
+
+    # Figure out what the relative path is to the front_end folder.
+    # We have to get the full path to the target_gen_dir
+    # and compare that to the full location of the front_end
+    # folder in the gen_dir, to make sure nested packages
+    # resolve to the correct location.
+    _front_end_module_name =
+        string_replace(get_path_info(target_gen_dir, "abspath"),
+                       root_gen_dir + "/" + devtools_location + "front_end/",
+                       "")
+
+    outputs =
+        [ "$resources_out_dir/$_front_end_module_name/{{source_file_part}}" ]
   }
 }

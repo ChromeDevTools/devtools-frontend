@@ -3,6 +3,7 @@
 # found in the LICENSE file.
 
 import("../../../third_party/typescript/typescript.gni")
+import("./copy.gni")
 import("./rollup.gni")
 import("./vars.gni")
 
@@ -17,16 +18,6 @@ import("./vars.gni")
 template("devtools_entrypoint") {
   assert(defined(invoker.entrypoint),
          "You must define the 'entrypoint' for a rollup target")
-
-  # Figure out what the relative path is to the front_end folder.
-  # We have to get the full path to the target_gen_dir
-  # and compare that to the full location of the front_end
-  # folder in the gen_dir, to make sure nested packages
-  # resolve to the correct location.
-  _front_end_module_name =
-      string_replace(get_path_info(target_gen_dir, "abspath"),
-                     root_gen_dir + "/" + devtools_location + "front_end/",
-                     "")
 
   _entrypoint_target_name = "devtools_entrypoint-" + target_name
   _entrypoint_output_file_name = get_path_info(invoker.entrypoint, "name")
@@ -216,10 +207,8 @@ template("devtools_entrypoint") {
     }
   }
 
-  copy(target_name) {
+  copy_to_resources(target_name) {
     sources = [ _entrypoint_gen_file_location ]
-
-    outputs = [ "$resources_out_dir/$_front_end_module_name/$_entrypoint_output_file_name.js" ]
 
     deps = [ ":$_entrypoint_target_name" ]
   }

@@ -21,6 +21,35 @@
   flex: none;
 }
 
+.spectrum-dragger,
+.spectrum-slider {
+  user-select: none;
+}
+
+.spectrum-dragger {
+  border-radius: 12px;
+  height: 12px;
+  width: 12px;
+  border: 1px solid white;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: black;
+  box-shadow: 0 0 2px 0 rgb(0 0 0 / 24%);
+}
+
+.spectrum-slider {
+  position: absolute;
+  top: -1px;
+  cursor: pointer;
+  width: 13px;
+  height: 13px;
+  border-radius: 13px;
+  background-color: rgb(248 248 248);
+  box-shadow: 0 1px 4px 0 rgb(0 0 0 / 37%);
+}
+
 .spectrum-color:focus .spectrum-dragger {
   border: 1px solid var(--accent-color-hover);
 }
@@ -34,6 +63,7 @@
 
 .spectrum-hue {
   top: 16px;
+  background: linear-gradient(to left, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%);
 }
 
 .spectrum-alpha {
@@ -64,11 +94,6 @@
   border-radius: 14px;
 }
 
-.spectrum-dragger,
-.spectrum-slider {
-  user-select: none;
-}
-
 .spectrum-sat,
 .-theme-preserve {
   background-image: linear-gradient(to right, white, rgb(204 154 129 / 0%));
@@ -79,50 +104,17 @@
   background-image: linear-gradient(to top, black, rgb(204 154 129 / 0%));
 }
 
-.spectrum-hue {
-  background: linear-gradient(to left, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%);
-}
-
-.spectrum-dragger {
-  border-radius: 12px;
-  height: 12px;
-  width: 12px;
-  border: 1px solid white;
-  cursor: pointer;
-  position: absolute;
-  top: 0;
-  left: 0;
-  background: black;
-  box-shadow: 0 0 2px 0 rgb(0 0 0 / 24%);
-}
-
-.spectrum-slider {
-  position: absolute;
-  top: -1px;
-  cursor: pointer;
-  width: 13px;
-  height: 13px;
-  border-radius: 13px;
-  background-color: rgb(248 248 248);
-  box-shadow: 0 1px 4px 0 rgb(0 0 0 / 37%);
-}
-
 .spectrum-contrast-details {
   position: relative;
   background-color: white;
   width: 100%;
-  height: 111px;
+  height: 78px;
   top: 0;
   font-size: 13px;
   color: #333;
   border-top: var(--divider-border);
   line-height: initial;
   overflow: hidden;
-  flex: none;
-}
-
-.spectrum-contrast-details {
-  height: 78px;
   flex: none;
 }
 
@@ -138,10 +130,6 @@
   margin: 0;
 }
 
-.spectrum-contrast-details .toolbar-state-on [is=ui-icon] {
-  background-color: rgb(110 110 110);
-}
-
 .spectrum-contrast-details.visible {
   display: initial;
 }
@@ -150,27 +138,27 @@
   margin: 10px;
 }
 
-.spectrum-contrast-details.collapsed .expanded-details {
-  display: none;
-}
-
 .spectrum-contrast-details .expanded-details {
   display: flex;
   margin: 12px 12px 0 4px;
+}
+
+.spectrum-contrast-details.collapsed .expanded-details {
+  display: none;
 }
 
 .contrast-pass-fail {
   margin-left: 0.5em;
 }
 
-.spectrum-contrast-details .contrast-choose-bg-color,
-.spectrum-contrast-details .contrast-thresholds {
-  width: 145px;
-}
-
 .contrast-choose-bg-color {
   margin: 8px 0 0 5px;
   font-style: italic;
+}
+
+.spectrum-contrast-details .contrast-choose-bg-color,
+.spectrum-contrast-details .contrast-thresholds {
+  width: 145px;
 }
 
 .contrast-link-label {
@@ -185,6 +173,15 @@
   position: absolute;
   flex: none;
   right: 12px;
+}
+
+.spectrum-eye-dropper {
+  width: 32px;
+  height: 24px;
+  position: relative;
+  left: 8px;
+  top: 17px;
+  cursor: pointer;
 }
 
 .spectrum-contrast-details .spectrum-eye-dropper {
@@ -204,6 +201,10 @@
   display: none;
   margin-left: 5px;
   background-color: #333;
+}
+
+.spectrum-contrast-details .toolbar-state-on [is=ui-icon] {
+  background-color: rgb(110 110 110);
 }
 
 [is=ui-icon].smallicon-no {
@@ -230,16 +231,16 @@
   margin-left: -6px;
 }
 
-.spectrum-contrast-details.contrast-fail .contrast-details-value .smallicon-no,
-.contrast-details-value.contrast-aa .smallicon-checkmark-square,
-.contrast-details-value.contrast-aaa .smallicon-checkmark-behind {
-  display: inline-block;
-}
-
 .contrast-details-value .smallicon-no,
 .contrast-details-value .smallicon-checkmark-square,
 .contrast-details-value .smallicon-checkmark-behind {
   cursor: pointer;
+}
+
+.spectrum-contrast-details.contrast-fail .contrast-details-value .smallicon-no,
+.contrast-details-value.contrast-aa .smallicon-checkmark-square,
+.contrast-details-value.contrast-aaa .smallicon-checkmark-behind {
+  display: inline-block;
 }
 
 .swatch {
@@ -345,15 +346,6 @@
   background-color: var(--focus-bg-color);
 }
 
-.spectrum-eye-dropper {
-  width: 32px;
-  height: 24px;
-  position: relative;
-  left: 8px;
-  top: 17px;
-  cursor: pointer;
-}
-
 .spectrum-palette-container {
   border-top: var(--divider-border);
   position: relative;
@@ -382,6 +374,14 @@
   z-index: 14;
 }
 
+.spectrum-palette-color-shadow {
+  position: absolute;
+  opacity: 0%;
+  margin: 0;
+  top: -5px;
+  left: 3px;
+}
+
 .spectrum-palette-color:hover:not(.spectrum-shades-shown) > .spectrum-palette-color-shadow,
 .spectrum-palette-color:focus:not(.spectrum-shades-shown) > .spectrum-palette-color-shadow {
   opacity: 20%;
@@ -392,14 +392,6 @@
   opacity: 60%;
   top: -3px;
   left: 1px;
-}
-
-.spectrum-palette-color-shadow {
-  position: absolute;
-  opacity: 0%;
-  margin: 0;
-  top: -5px;
-  left: 3px;
 }
 
 .palette-color-shades {
@@ -431,18 +423,22 @@
   z-index: 13;
 }
 
-.spectrum-palette > .spectrum-palette-color.empty-color {
-  border-color: transparent;
+.palette-preview > .spectrum-palette-color {
+  margin-top: 1px;
 }
 
-.spectrum-palette > .spectrum-palette-color:not(.empty-color):not(.has-material-shades):hover,
-.palette-color-shades > .spectrum-palette-color:not(.empty-color):hover {
-  transform: scale(1.15);
+.spectrum-palette > .spectrum-palette-color.empty-color {
+  border-color: transparent;
 }
 
 .spectrum-palette-color:not(.has-material-shades):focus {
   border: 1px solid var(--accent-color-hover);
   transform: scale(1.4);
+}
+
+.palette-color-shades > .spectrum-palette-color:not(.empty-color):hover,
+.spectrum-palette > .spectrum-palette-color:not(.empty-color):not(.has-material-shades):hover {
+  transform: scale(1.15);
 }
 
 .add-color-toolbar {
@@ -504,10 +500,6 @@ div.palette-preview {
 
 .palette-preview-title {
   flex: 0 0 84px;
-}
-
-.palette-preview > .spectrum-palette-color {
-  margin-top: 1px;
 }
 
 .palette-preview[data-keyboard-focus="true"]:focus,
@@ -625,14 +617,14 @@ div.palette-preview {
     forced-color-adjust: none;
   }
 
-  :host-context(.-theme-with-dark-background) .spectrum-switcher {
-    -webkit-filter: unset;
-  }
-
   .spectrum-switcher:hover,
   .spectrum-switcher[data-keyboard-focus="true"]:focus {
     forced-color-adjust: none;
     background-color: Highlight !important;
+  }
+
+  :host-context(.-theme-with-dark-background) .spectrum-switcher {
+    -webkit-filter: unset;
   }
 
   .spectrum-switcher:hover svg,

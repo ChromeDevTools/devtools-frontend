@@ -50,10 +50,6 @@
   overflow: hidden;
 }
 
-.storage-view {
-  overflow: hidden;
-}
-
 .storage-view .data-grid:not(.inline) {
   border: none;
   flex: auto;

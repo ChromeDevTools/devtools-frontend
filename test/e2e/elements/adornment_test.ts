@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {$$, enableExperiment, getBrowserAndPages, resourcesPath} from '../../shared/helper.js';
+import {$$, enableExperiment, goToResource} from '../../shared/helper.js';
 import {assertContentOfSelectedElementsNode, expandSelectedNodeRecursively, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
 
 const INACTIVE_GRID_ADORNER_SELECTOR = '[aria-label="grid adorner"]';
@@ -18,8 +18,7 @@ const prepareElementsTab = async () => {
 
 describe('Adornment in the Elements Tab', async () => {
   beforeEach(async function() {
-    const {target} = getBrowserAndPages();
-    await target.goto(`${resourcesPath}/elements/adornment.html`);
+    await goToResource('elements/adornment.html');
     await prepareElementsTab();
   });
 

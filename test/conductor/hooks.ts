@@ -8,7 +8,7 @@ import {ChildProcessWithoutNullStreams, spawn} from 'child_process';
 import * as path from 'path';
 import * as puppeteer from 'puppeteer';
 
-import {getBrowserAndPages, setBrowserAndPages} from './puppeteer-state.js';
+import {getBrowserAndPages, setBrowserAndPages, setHostedModeServerPort} from './puppeteer-state.js';
 
 const HOSTED_MODE_SERVER_PATH = path.join(__dirname, '..', '..', 'scripts', 'hosted_mode', 'server.js');
 const EMPTY_PAGE = 'data:text/html,';
@@ -23,6 +23,7 @@ const width = 1280;
 const height = 720;
 
 const envPort = 9222;
+const hostedModeServerPort = 8090;
 const headless = !process.env['DEBUG'];
 const envSlowMo = process.env['STRESS'] ? 50 : undefined;
 const envThrottleRate = process.env['STRESS'] ? 3 : 1;
@@ -92,7 +93,8 @@ async function loadTargetPageAndDevToolsFrontend() {
 
   // Connect to the DevTools frontend.
   const frontend = await browser.newPage();
-  frontendUrl = `http://localhost:8090/front_end/devtools_app.html?ws=localhost:${envPort}/devtools/page/${id}`;
+  frontendUrl = `http://localhost:${hostedModeServerPort}/front_end/devtools_app.html?ws=localhost:${
+      envPort}/devtools/page/${id}`;
   await frontend.goto(frontendUrl, {waitUntil: ['networkidle2', 'domcontentloaded']});
 
   frontend.on('error', error => {
@@ -174,11 +176,12 @@ export async function reloadDevTools(options: ReloadDevToolsOptions = {}) {
 }
 
 export async function globalSetup() {
-  console.log('Spawning hosted mode server');
+  console.log(`Spawning hosted mode server on port ${hostedModeServerPort}`);
 
   hostedModeServer = spawn(execPath, [HOSTED_MODE_SERVER_PATH], {cwd});
   hostedModeServer.on('error', handleHostedModeError);
   hostedModeServer.stderr.on('data', handleHostedModeError);
+  setHostedModeServerPort(hostedModeServerPort);
 
   await loadTargetPageAndDevToolsFrontend();
 }
@@ -191,6 +194,6 @@ export async function globalTeardown() {
   // for the very last test that runs.
   await browser.close();
 
-  console.log('Stopping hosted mode server');
+  console.log(`Stopping hosted mode server on port ${hostedModeServerPort}`);
   hostedModeServer.kill();
 }

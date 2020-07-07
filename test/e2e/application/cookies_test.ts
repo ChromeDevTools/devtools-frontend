@@ -5,13 +5,17 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {$, click, getBrowserAndPages, goToResource, waitFor} from '../../shared/helper.js';
+import {$, click, getBrowserAndPages, getHostedModeServerPort, goToResource, waitFor} from '../../shared/helper.js';
 import {doubleClickSourceTreeItem, getDataGridData, navigateToApplicationTab} from '../helpers/application-helpers.js';
 
 const COOKIES_SELECTOR = '[aria-label="Cookies"]';
-const DOMAIN_SELECTOR = `${COOKIES_SELECTOR} + ol > [aria-label="http://localhost:8090"]`;
+let DOMAIN_SELECTOR: string;
 
 describe('The Application Tab', async () => {
+  before(async () => {
+    DOMAIN_SELECTOR = `${COOKIES_SELECTOR} + ol > [aria-label="http://localhost:${getHostedModeServerPort()}"]`;
+  });
+
   afterEach(async () => {
     const {target} = getBrowserAndPages();
     await target.deleteCookie({name: 'foo'});

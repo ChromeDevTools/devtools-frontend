@@ -8,7 +8,7 @@ import {performance} from 'perf_hooks';
 import * as puppeteer from 'puppeteer';
 
 import {reloadDevTools} from '../conductor/hooks.js';
-import {getBrowserAndPages} from '../conductor/puppeteer-state.js';
+import {getBrowserAndPages, getHostedModeServerPort} from '../conductor/puppeteer-state.js';
 
 export let platform: string;
 switch (os.platform()) {
@@ -322,8 +322,6 @@ export const logFailure = () => {
   });
 };
 
-export const resourcesPath = 'http://localhost:8090/test/e2e/resources';
-
 export const enableExperiment = async (
     experiment: string, options: {selectedPanel?: {name: string, selector?: string}, canDock?: boolean} = {}) => {
   const {frontend} = getBrowserAndPages();
@@ -341,7 +339,11 @@ export const goTo = async (url: string) => {
 };
 
 export const goToResource = async (path: string) => {
-  await goTo(`${resourcesPath}/${path}`);
+  await goTo(`${getResourcesPath()}/${path}`);
+};
+
+export const getResourcesPath = () => {
+  return `http://localhost:${getHostedModeServerPort()}/test/e2e/resources`;
 };
 
 export const step = async (description: string, step: Function) => {
@@ -395,4 +397,4 @@ export const enableCDPLogging = async () => {
   });
 };
 
-export {getBrowserAndPages, reloadDevTools};
+export {getBrowserAndPages, getHostedModeServerPort, reloadDevTools};

@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {getBrowserAndPages, goToResource, resourcesPath, waitFor} from '../../shared/helper.js';
+import {getBrowserAndPages, getResourcesPath, goToResource, waitFor} from '../../shared/helper.js';
 import {getCurrentUrl} from '../helpers/layers-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
@@ -18,7 +18,7 @@ describe('The Layers Panel', async () => {
 
     await waitFor('[aria-label="layers"]:not([test-current-url=""])');
     const url = await getCurrentUrl();
-    assert.strictEqual(url, `${resourcesPath}/${targetUrl}`);
+    assert.strictEqual(url, `${getResourcesPath()}/${targetUrl}`);
   });
 
   it('[crbug.com/1053901] should update the layers view when going offline', async () => {
@@ -28,7 +28,7 @@ describe('The Layers Panel', async () => {
     const targetUrl = 'layers/default.html';
     await goToResource(targetUrl);
     await waitFor('[aria-label="layers"]:not([test-current-url=""])');
-    assert.strictEqual(await getCurrentUrl(), `${resourcesPath}/${targetUrl}`);
+    assert.strictEqual(await getCurrentUrl(), `${getResourcesPath()}/${targetUrl}`);
 
     const session = await target.target().createCDPSession();
     await session.send('Network.emulateNetworkConditions', {

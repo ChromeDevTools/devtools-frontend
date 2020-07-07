@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../host/host.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -29,6 +30,7 @@ export class CSSOverviewPanel extends UI.Panel.Panel {
     this._completedView = new CSSOverviewCompletedView(this._controller, model.target());
 
     this._controller.addEventListener(Events.RequestOverviewStart, event => {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.CaptureCssOverviewClicked);
       this._startOverview();
     }, this);
     this._controller.addEventListener(Events.RequestOverviewCancel, this._cancelOverview, this);

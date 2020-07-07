@@ -217,7 +217,8 @@ export const Action = {
   SettingsOpenedFromMenu: 37,
   SettingsOpenedFromCommandMenu: 38,
   TabMovedToDrawer: 39,
-  TabMovedToMainPanel: 40
+  TabMovedToMainPanel: 40,
+  CaptureCssOverviewClicked: 41
 };
 
 /** @type {!Object<string, number>} */
@@ -260,7 +261,8 @@ export const PanelCodes = {
   'settings-emulation-locations': 35,
   'settings-shortcuts': 36,
   'drawer-issues-pane': 37,
-  'settings-keybinds': 38
+  'settings-keybinds': 38,
+  'cssoverview': 39
 };
 
 /** @type {!Object<string, number>} */

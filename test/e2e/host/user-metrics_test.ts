@@ -7,6 +7,7 @@ import {describe, it} from 'mocha';
 import * as puppeteer from 'puppeteer';
 
 import {$, click, enableExperiment, getBrowserAndPages, platform, reloadDevTools, waitFor} from '../../shared/helper.js';
+import {navigateToCssOverviewTab} from '../helpers/css-overview-helpers.js';
 import {clickToggleButton, selectDualScreen, startEmulationWithDualScreenFlag} from '../helpers/emulation-helpers.js';
 import {openPanelViaMoreTools, openSettingsTab} from '../helpers/settings-helpers.js';
 
@@ -398,6 +399,37 @@ describe('User Metrics for dual screen emulation', () => {
       {
         name: 'DevTools.ActionTaken',
         value: 10,  // Device mode enabled.
+      },
+    ]);
+  });
+
+  afterEach(async () => {
+    const {frontend} = getBrowserAndPages();
+    await endCatchEvents(frontend);
+  });
+});
+
+describe('User Metrics for CSS Overview', () => {
+  beforeEach(async () => {
+    await enableExperiment('cssOverview');
+    // enableExperiment reloads the DevTools and removes our listeners
+    const {frontend} = getBrowserAndPages();
+    await beginCatchEvents(frontend);
+  });
+
+  it('dispatch events when capture overview button hit', async () => {
+    await navigateToCssOverviewTab('default');
+
+    await click('.primary-button');  // Capture overview
+
+    await assertCapturedEvents([
+      {
+        name: 'DevTools.PanelShown',
+        value: 39,  // cssoverview
+      },
+      {
+        name: 'DevTools.ActionTaken',
+        value: 41,  // CaptureCssOverviewClicked
       },
     ]);
   });

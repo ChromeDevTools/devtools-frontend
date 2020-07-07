@@ -10,6 +10,7 @@ group("resources") {
     "console",
     "coverage",
     "cross_tool",
+    "css_overview",
     "elements",
     "emulation",
     "layers",

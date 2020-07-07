@@ -37,7 +37,7 @@ export class HeavyAdIssue extends Issue {
    */
   getDescription() {
     return {
-      title: ls`An ad on your site is exceeding resource limits`,
+      title: ls`An ad on your site has exceeded resource limits`,
       message: mkHeavyAdDescription,
       issueKind: IssueKind.BreakingChange,
       links: [
@@ -66,7 +66,7 @@ function mkHeavyAdDescription() {
   message.classList.add('message');
   const contextParagraph = document.createElement('p');
   contextParagraph.textContent = ls`
-  Chrome identifies heavy ads on your site that use too many resources without a user gesture. Heavy ads have an impact on performance and harm the user’s browsing experience. They increase battery drain, consume mobile data and make your site slow. To improve the user experience, Chrome warns about or blocks heavy ads.`;
+  Chrome identifies heavy ads on your site that use too many resources without a user gesture. Heavy ads have an impact on performance and harm the user’s browsing experience. They increase battery drain, consume mobile data, and make your site slow. To improve the user experience, Chrome warns about or removes heavy ads.`;
 
   message.append(contextParagraph);
 

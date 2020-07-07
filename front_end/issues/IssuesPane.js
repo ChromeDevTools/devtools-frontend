@@ -580,9 +580,9 @@ class AffectedHeavyAdView extends AffectedResourcesView {
   _statusToString(status) {
     switch (status) {
       case Protocol.Audits.HeavyAdResolutionStatus.HeavyAdBlocked:
-        return ls`blocked`;
+        return ls`Removed`;
       case Protocol.Audits.HeavyAdResolutionStatus.HeavyAdWarning:
-        return ls`warning`;
+        return ls`Warned`;
     }
     return '';
   }

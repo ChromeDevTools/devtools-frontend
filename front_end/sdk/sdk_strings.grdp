@@ -210,8 +210,18 @@
   <message name="IDS_DEVTOOLS_3f23f0e9da2803d48c2d67aa09f01bf5" desc="Tooltip to explain why a cookie was blocked">
     This Set-Cookie didn&apos;t specify a &quot;SameSite&quot; attribute and was defaulted to &quot;SameSite=Lax,&quot; and was blocked because it came from a cross-site response which was not the response to a top-level navigation. The Set-Cookie had to have been set with &quot;SameSite=None&quot; to enable cross-site usage.
   </message>
+  <message name="IDS_DEVTOOLS_46141cdfd02fdac3a846783c4acb7c8e" desc="Context for Heavy Ads issue description">
+    '''
+  Chrome identifies heavy ads on your site that use too many resources without a user gesture. Heavy ads have an impact on performance and harm the user’s browsing experience. They increase battery drain, consume mobile data, and make your site slow. To improve the user experience, Chrome warns about or removes heavy ads.
+  </message>
+  <message name="IDS_DEVTOOLS_47ff9951b01a6b094431ff82dc68e266" desc="The kind of resolution for a mixed content issue">
+    warned
+  </message>
   <message name="IDS_DEVTOOLS_4cbb2bdce4db02a995cdd7a237a63d69" desc="Title of a setting under the Grid category that turns CSS Grid Area highlighting on">
     Show grid named areas
+  </message>
+  <message name="IDS_DEVTOOLS_61326117ed4a9ddf3f754e71e119e5b3" desc="The kind of resolution for a mixed content issue">
+    blocked
   </message>
   <message name="IDS_DEVTOOLS_9485d0acccd869b51a96f2b35fd0b620" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Do not emulate CSS prefers-reduced-data
@@ -238,9 +248,6 @@
   </message>
   <message name="IDS_DEVTOOLS_478be082ab36b6ae1c1c2d410be610c1" desc="Title for CSS Grid tooling option">
     Shade both row and column gaps
-  </message>
-  <message name="IDS_DEVTOOLS_47ff9951b01a6b094431ff82dc68e266" desc="The kind of resolution for a mixed content issue">
-    warned
   </message>
   <message name="IDS_DEVTOOLS_4ce41fe857f34b15736cf25214ecde48" desc="Title for CSS Grid tooling option">
     Show both positive and negative grid line numbers
@@ -644,6 +651,9 @@
   <message name="IDS_DEVTOOLS_c89686a387d2b12b3c729ce35a0bcb5b" desc="Text in DOMDebugger Model">
     Window
   </message>
+  <message name="IDS_DEVTOOLS_bafb7f4720e58a8100dde1d476eb361e" desc="Title for Heavy Ads issue">
+    An ad on your site has exceeded resource limits
+  </message>
   <message name="IDS_DEVTOOLS_c9d5135171a5ebdf8e5d6d1247bc7b31" desc="Link text for a link to external documentation">
     COOP and COEP
   </message>
@@ -679,10 +689,6 @@
   </message>
   <message name="IDS_DEVTOOLS_d7eb928d99f0528e1929c9283d74080a" desc="Error message for canceled source map loads">
     Load canceled due to load timeout
-  </message>
-  <message name="IDS_DEVTOOLS_d8a169f64eba0443bf29b60aae227bca" desc="Context for Heavy Ads issue description">
-    '''
-  Chrome identifies heavy ads on your site that use too many resources without a user gesture. Heavy ads have an impact on performance and harm the user’s browsing experience. They increase battery drain, consume mobile data and make your site slow. To improve the user experience, Chrome warns about or blocks heavy ads.
   </message>
   <message name="IDS_DEVTOOLS_d8e859dc455c59c30b396adf797d6005" desc="Description of a SameSiteCookie issue">
     A cookie is being sent from <ph name="ORIGIN">$1s<ex>a secure</ex></ph> context to <ph name="DESTINATION">$2s<ex>an insecure</ex></ph> origin and is specified with |SameSite=Strict| or |SameSite=Lax|.
@@ -770,9 +776,6 @@
   </message>
   <message name="IDS_DEVTOOLS_f2a47c6809d88e175dade0ef7b16aa13" desc="Text in DOMDebugger Model">
     Mouse
-  </message>
-  <message name="IDS_DEVTOOLS_f3f99fa84a12bc852fc0bd730d460fe4" desc="Title for Heavy Ads issue">
-    An ad on your site is exceeding resource limits
   </message>
   <message name="IDS_DEVTOOLS_f43cbd4a1a33a14b459e80598dd28b47" desc="Title for a SameSiteCookie issue">
     Migrate entirely to HTTPS to continue having cookies sent on same-site requests

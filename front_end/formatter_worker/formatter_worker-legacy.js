@@ -39,9 +39,6 @@ FormatterWorker.HTMLFormatter = FormatterWorkerModule.HTMLFormatter.HTMLFormatte
 FormatterWorker.HTMLModel = FormatterWorkerModule.HTMLFormatter.HTMLModel;
 
 /** @constructor */
-FormatterWorker.IdentityFormatter = FormatterWorkerModule.IdentityFormatter.IdentityFormatter;
-
-/** @constructor */
 FormatterWorker.JavaScriptFormatter = FormatterWorkerModule.JavaScriptFormatter.JavaScriptFormatter;
 
 FormatterWorker.javaScriptOutline = FormatterWorkerModule.JavaScriptOutline.javaScriptOutline;

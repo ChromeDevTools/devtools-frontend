@@ -13,7 +13,6 @@ import * as ESTreeWalker from './ESTreeWalker.js';
 import * as FormattedContentBuilder from './FormattedContentBuilder.js';
 import * as FormatterWorker from './FormatterWorker.js';
 import * as HTMLFormatter from './HTMLFormatter.js';
-import * as IdentityFormatter from './IdentityFormatter.js';
 import * as JavaScriptFormatter from './JavaScriptFormatter.js';
 import * as JavaScriptOutline from './JavaScriptOutline.js';
 
@@ -25,7 +24,6 @@ export {
   FormattedContentBuilder,
   FormatterWorker,
   HTMLFormatter,
-  IdentityFormatter,
   JavaScriptFormatter,
   JavaScriptOutline,
 };

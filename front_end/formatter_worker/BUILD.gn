@@ -3,9 +3,9 @@
 # found in the LICENSE file.
 
 import("../../scripts/build/ninja/devtools_entrypoint.gni")
-import("../../third_party/typescript/typescript.gni")
+import("../../scripts/build/ninja/devtools_module.gni")
 
-ts_library("formatter_worker") {
+devtools_module("formatter_worker") {
   sources = [
     "Acorn.js",
     "AcornTokenizer.js",
@@ -15,7 +15,7 @@ ts_library("formatter_worker") {
     "FormattedContentBuilder.js",
     "FormatterWorker.js",
     "HTMLFormatter.js",
-    "IdentityFormatter.js",
+    "IdentityFormatter.ts",
     "JavaScriptFormatter.js",
     "JavaScriptOutline.js",
   ]

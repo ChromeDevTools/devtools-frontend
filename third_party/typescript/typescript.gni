@@ -55,10 +55,16 @@ template("ts_library") {
       devtools_location_prepend + "node_modules/@types/filesystem/index.d.ts",
     ]
 
+    _typescript_config_name = target_name
+
+    if (defined(invoker.typescript_config_name)) {
+      _typescript_config_name = invoker.typescript_config_name
+    }
+
     args = [
       "--tsconfig_output_location",
       rebase_path(target_gen_dir, root_build_dir) +
-          "/$target_name-tsconfig.json",
+          "/$_typescript_config_name-tsconfig.json",
     ]
 
     assert(
@@ -111,12 +117,13 @@ template("ts_library") {
       args += [ "--module=" + invoker.module ]
     }
 
-    output_files = [ "$target_gen_dir/$target_name-tsconfig.json" ]
+    output_files = [ "$target_gen_dir/$_typescript_config_name-tsconfig.json" ]
 
     if (defined(sources)) {
       args += [ "--sources" ] + rebase_path(sources, root_build_dir)
-      output_files +=
-          [ "$target_gen_dir/$target_name-tsconfig.json.tsbuildinfo" ]
+      output_files += [
+        "$target_gen_dir/$_typescript_config_name-tsconfig.json.tsbuildinfo",
+      ]
 
       foreach(src, sources) {
         _extension = get_path_info(src, "extension")

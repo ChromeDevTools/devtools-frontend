@@ -1163,17 +1163,6 @@ all_devtools_modules = [
   "extensions/ExtensionServer.js",
   "extensions/ExtensionTraceProvider.js",
   "extensions/ExtensionView.js",
-  "formatter_worker/Acorn.js",
-  "formatter_worker/AcornTokenizer.js",
-  "formatter_worker/CSSFormatter.js",
-  "formatter_worker/CSSRuleParser.js",
-  "formatter_worker/ESTreeWalker.js",
-  "formatter_worker/FormattedContentBuilder.js",
-  "formatter_worker/FormatterWorker.js",
-  "formatter_worker/HTMLFormatter.js",
-  "formatter_worker/IdentityFormatter.js",
-  "formatter_worker/JavaScriptFormatter.js",
-  "formatter_worker/JavaScriptOutline.js",
   "formatter/FormatterWorkerPool.js",
   "formatter/ScriptFormatter.js",
   "formatter/SourceFormatter.js",
@@ -1634,6 +1623,27 @@ foreach(module, all_devtools_modules) {
   }
 }
 
+generated_typescript_modules = []
+
+all_typescript_modules = [
+  "formatter_worker/Acorn.js",
+  "formatter_worker/AcornTokenizer.js",
+  "formatter_worker/CSSFormatter.js",
+  "formatter_worker/CSSRuleParser.js",
+  "formatter_worker/ESTreeWalker.js",
+  "formatter_worker/FormattedContentBuilder.js",
+  "formatter_worker/FormatterWorker.js",
+  "formatter_worker/HTMLFormatter.js",
+  "formatter_worker/JavaScriptFormatter.js",
+  "formatter_worker/JavaScriptOutline.js",
+]
+
+foreach(module, all_typescript_modules) {
+  if (is_debug) {
+    generated_typescript_modules += [ "$resources_out_dir/$module" ]
+  }
+}
+
 if (is_debug) {
   action("copy_devtools_modules") {
     script = "scripts/build/copy_devtools_modules.py"
@@ -1665,6 +1675,7 @@ action("generate_devtools_grd") {
       generated_applications_html + generated_applications_js +
       generated_non_autostart_non_remote_modules + devtools_embedder_scripts +
       generated_worker_bundles + generated_typescript_entrypoints +
+      generated_typescript_modules +
       [
         "$resources_out_dir/devtools_extension_api.js",
         "$resources_out_dir/sdk/wasm_source_map/pkg/wasm_source_map_bg.wasm",

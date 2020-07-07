@@ -74,7 +74,7 @@ export class CSSOverviewUnusedDeclarations {
   }
 
   static checkForInvalidVerticalAlignment(unusedDeclarations, nodeId, strings, displayIdx, verticalAlignIdx) {
-    if (strings[displayIdx] === 'inline' || strings[displayIdx].startsWith('table')) {
+    if (!strings[displayIdx] || strings[displayIdx] === 'inline' || strings[displayIdx].startsWith('table')) {
       return;
     }
 

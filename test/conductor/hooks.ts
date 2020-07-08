@@ -112,7 +112,10 @@ async function loadTargetPageAndDevToolsFrontend() {
   frontend.on('console', msg => {
     const logLevel = logLevels[msg.type() as keyof typeof logLevels] as string;
     if (logLevel) {
-      const filename = msg.location()!.url!.replace(/^.*\//, '');
+      let filename = '<unknown>';
+      if (msg.location() && msg.location().url) {
+        filename = msg.location()!.url!.replace(/^.*\//, '');
+      }
       console.log(`${logLevel} ${filename}:${msg.location().lineNumber}: ${msg.text()}`);
     }
   });

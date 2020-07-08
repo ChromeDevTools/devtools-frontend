@@ -509,6 +509,15 @@ export class OverlayModel extends SDKModel {
       }
     }
 
+    if (mode === 'grid-areas' && this._gridFeaturesExperimentEnabled) {
+      highlightConfig.gridHighlightConfig = {
+        cellBorderColor: Common.Color.PageHighlight.GridCellBorder.toProtocolRGBA(),
+        cellBorderDash: true,
+        showAreaNames: true,
+        areaBorderColor: Common.Color.PageHighlight.GridAreaBorder.toProtocolRGBA()
+      };
+    }
+
     // the backend does not support the 'original' format because
     // it currently cannot retrieve the original format using computed styles
     const supportedColorFormats = new Set(['rgb', 'hsl', 'hex']);

@@ -46,15 +46,11 @@ import {Context} from './StylePropertyTreeElement.js';  // eslint-disable-line n
 // Highlightable properties are those that can be hovered in the sidebar to trigger a specific
 // highlighting mode on the current element.
 const HIGHLIGHTABLE_PROPERTIES = [
-  {property: 'padding', mode: 'padding'},
-  {property: 'border', mode: 'border'},
-  {property: 'margin', mode: 'margin'},
-  {property: 'grid-gap', mode: 'gap'},
-  {property: 'gap', mode: 'gap'},
-  {property: 'grid-column-gap', mode: 'column-gap'},
-  {property: 'grid-row-gap', mode: 'row-gap'},
-  {property: 'column-gap', mode: 'column-gap'},
-  {property: 'row-gap', mode: 'row-gap'},
+  {property: 'padding', mode: 'padding'}, {property: 'border', mode: 'border'}, {property: 'margin', mode: 'margin'},
+  {property: 'grid-gap', mode: 'gap'}, {property: 'gap', mode: 'gap'},
+  {property: 'grid-column-gap', mode: 'column-gap'}, {property: 'grid-row-gap', mode: 'row-gap'},
+  {property: 'column-gap', mode: 'column-gap'}, {property: 'row-gap', mode: 'row-gap'},
+  {property: 'grid-template-areas', mode: 'grid-areas'}
 ];
 
 export class StylesSidebarPane extends ElementsSidebarPane {

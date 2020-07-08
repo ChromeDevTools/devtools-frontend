@@ -8,22 +8,6 @@ import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 import * as Workspace from '../workspace/workspace.js';
 
-/**
- * @param {string} name
- * @return {string}
- */
-function escapeSnippetName(name) {
-  return encodeURIComponent(name);
-}
-
-/**
- * @param {string} name
- * @return {string}
- */
-function unescapeSnippetName(name) {
-  return decodeURIComponent(name);
-}
-
 class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFileSystem {
   constructor() {
     super('snippet://', 'snippets');
@@ -38,7 +22,7 @@ class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFileSyste
    */
   initialFilePaths() {
     const savedSnippets = this._snippetsSetting.get();
-    return savedSnippets.map(snippet => escapeSnippetName(snippet.name));
+    return savedSnippets.map(snippet => escape(snippet.name));
   }
 
   /**
@@ -56,7 +40,7 @@ class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFileSyste
     snippets.push({name: snippetName, content: ''});
     this._snippetsSetting.set(snippets);
 
-    return escapeSnippetName(snippetName);
+    return escape(snippetName);
   }
 
   /**
@@ -65,7 +49,7 @@ class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFileSyste
    * @return {!Promise<boolean>}
    */
   async deleteFile(path) {
-    const name = unescapeSnippetName(path.substring(1));
+    const name = unescape(path.substring(1));
     const allSnippets = this._snippetsSetting.get();
     const snippets = allSnippets.filter(snippet => snippet.name !== name);
     if (allSnippets.length !== snippets.length) {
@@ -81,7 +65,7 @@ class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFileSyste
    * @returns {!Promise<!TextUtils.ContentProvider.DeferredContent>}
    */
   async requestFileContent(path) {
-    const name = unescapeSnippetName(path.substring(1));
+    const name = unescape(path.substring(1));
     const snippet = this._snippetsSetting.get().find(snippet => snippet.name === name);
     return {content: snippet ? snippet.content : null, isEncoded: false};
   }
@@ -93,7 +77,7 @@ class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFileSyste
    * @param {boolean} isBase64
    */
   async setFileContent(path, content, isBase64) {
-    const name = unescapeSnippetName(path.substring(1));
+    const name = unescape(path.substring(1));
     const snippets = this._snippetsSetting.get();
     const snippet = snippets.find(snippet => snippet.name === name);
     if (snippet) {
@@ -111,7 +95,7 @@ class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFileSyste
    * @param {function(boolean, string=)} callback
    */
   renameFile(path, newName, callback) {
-    const name = unescapeSnippetName(path.substring(1));
+    const name = unescape(path.substring(1));
     const snippets = this._snippetsSetting.get();
     const snippet = snippets.find(snippet => snippet.name === name);
     newName = newName.trim();
@@ -133,7 +117,7 @@ class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFileSyste
   async searchInPath(query, progress) {
     const re = new RegExp(query.escapeForRegExp(), 'i');
     const snippets = this._snippetsSetting.get().filter(snippet => snippet.content.match(re));
-    return snippets.map(snippet => `snippet:///${escapeSnippetName(snippet.name)}`);
+    return snippets.map(snippet => escape(snippet.name));
   }
 
   /**
@@ -160,7 +144,7 @@ class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFileSyste
    * @return {string}
    */
   tooltipForURL(url) {
-    return ls`Linked to ${unescapeSnippetName(url.substring(this.path().length))}`;
+    return ls`Linked to ${unescape(url.substring(this.path().length))}`;
   }
 
   /**

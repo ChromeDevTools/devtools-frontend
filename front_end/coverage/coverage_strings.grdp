@@ -55,17 +55,11 @@
   <message name="IDS_DEVTOOLS_8324d82d6d4baaa0405621a1a15f365a" desc="Title of an action under the Performance category that can be invoked through the Command Menu">
     Stop instrumenting coverage and show results
   </message>
-  <message name="IDS_DEVTOOLS_832e506a71f4a57ed15ecbcd771f9247" desc="Text in Coverage List View of the Coverage tab">
-    Total Bytes
-  </message>
   <message name="IDS_DEVTOOLS_84038c7000b62b795844a70378a97aac" desc="Text in the Coverage List View of the Coverage Tab">
     Usage Visualization
   </message>
   <message name="IDS_DEVTOOLS_8e8c9f0a8c3469d9900728e8b1d451cb" desc="Text in Coverage View of the Coverage tab">
     URL filter
-  </message>
-  <message name="IDS_DEVTOOLS_9066c4d254b4c8ab67e107a1b59e925d" desc="Accessible text for a file size of 1 byte">
-    1 byte
   </message>
   <message name="IDS_DEVTOOLS_95dd3a82779cda9791819969c51c97d3" desc="Message in Coverage View of the Coverage tab">
     Click the record button <ph name="RECORD_BUTTON_ICON">$1s<ex>record button icon</ex></ph> to start capturing coverage.

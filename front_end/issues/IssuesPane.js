@@ -611,7 +611,7 @@ class AffectedHeavyAdView extends AffectedResourcesView {
     element.classList.add('affected-resource-heavy-ad');
 
     const frameId = heavyAd.frame.frameId;
-    const frame = BrowserSDK.FrameManager.FrameManager.instance().getFrame(frameId);
+    const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
     const url = frame && (frame.unreachableUrl() || frame.url) || '';
 
     const reason = document.createElement('td');
@@ -628,7 +628,7 @@ class AffectedHeavyAdView extends AffectedResourcesView {
     frameUrl.classList.add('affected-resource-heavy-ad-info-frame');
     const icon = UI.Icon.Icon.create('largeicon-node-search', 'icon');
     icon.onclick = async () => {
-      const frame = BrowserSDK.FrameManager.FrameManager.instance().getFrame(frameId);
+      const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
       if (frame) {
         const deferedNode = await frame.getOwnerDOMNode();
         if (deferedNode) {
@@ -640,7 +640,7 @@ class AffectedHeavyAdView extends AffectedResourcesView {
     frameUrl.appendChild(icon);
     frameUrl.appendChild(document.createTextNode(url));
     frameUrl.onmouseenter = () => {
-      const frame = BrowserSDK.FrameManager.FrameManager.instance().getFrame(frameId);
+      const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
       if (frame) {
         frame.highlight();
       }

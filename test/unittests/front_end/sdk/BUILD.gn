@@ -5,6 +5,7 @@ ts_library("sdk") {
   sources = [
     "CookieParser_test.ts",
     "Cookie_test.ts",
+    "FrameManager_test.ts",
     "Issue_test.ts",
     "MockIssuesModel.ts",
     "NetworkManager_test.ts",

@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
@@ -178,14 +177,14 @@ class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
         break;
       }
       case 'frame': {
-        const frame = BrowserSDK.FrameManager.FrameManager.instance().getFrame(this.item.frameId);
+        const frame = SDK.FrameManager.FrameManager.instance().getFrame(this.item.frameId);
         if (frame) {
           cell.textContent = frame.displayName();
         } else {
           cell.textContent = this.item.frameId;
         }
         cell.onmouseenter = () => {
-          const frame = BrowserSDK.FrameManager.FrameManager.instance().getFrame(this.item.frameId);
+          const frame = SDK.FrameManager.FrameManager.instance().getFrame(this.item.frameId);
           if (frame) {
             frame.highlight();
           }

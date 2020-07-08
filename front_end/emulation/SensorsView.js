@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as SDK from '../sdk/sdk.js';
@@ -549,8 +548,8 @@ export class SensorsView extends UI.Widget.VBox {
         emulationModel.overrideEmulateTouch(select.value === 'enabled');
       }
       reloadWarning.classList.remove('hidden');
-      BrowserSDK.FrameManager.FrameManager.instance()
-          .once(BrowserSDK.FrameManager.Events.TopFrameNavigated)
+      SDK.FrameManager.FrameManager.instance()
+          .once(SDK.FrameManager.Events.TopFrameNavigated)
           .then(() => reloadWarning.classList.add('hidden'));
     }
   }

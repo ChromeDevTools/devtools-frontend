@@ -625,6 +625,7 @@
     "DOMModel.js",
     "DebuggerModel.js",
     "EmulationModel.js",
+    "FrameManager.js",
     "HARLog.js",
     "HeavyAdIssue.js",
     "LayerTreeBase.js",

@@ -35,6 +35,7 @@ import * as DOMDebuggerModel from './DOMDebuggerModel.js';
 import * as DOMModel from './DOMModel.js';
 import * as EmulationModel from './EmulationModel.js';
 import * as FilmStripModel from './FilmStripModel.js';
+import * as FrameManager from './FrameManager.js';
 import * as HARLog from './HARLog.js';
 import * as HeapProfilerModel from './HeapProfilerModel.js';
 import * as HeavyAdIssue from './HeavyAdIssue.js';
@@ -69,6 +70,9 @@ import * as TracingManager from './TracingManager.js';
 import * as TracingModel from './TracingModel.js';
 import * as WebAuthnModel from './WebAuthnModel.js';
 
+// We need to force creation of the FrameManager early to make sure no issues are missed.
+FrameManager.FrameManager.instance();
+
 export {
   ChildTargetManager,
   CompilerSourceMappingContentProvider,
@@ -92,6 +96,7 @@ export {
   DOMModel,
   EmulationModel,
   FilmStripModel,
+  FrameManager,
   HARLog,
   HeapProfilerModel,
   HeavyAdIssue,

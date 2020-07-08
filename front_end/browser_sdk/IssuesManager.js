@@ -5,8 +5,6 @@
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 
-import {Events as FrameManagerEvents, FrameManager} from './FrameManager.js';
-
 /** @type {?IssuesManager} */
 let issuesManagerInstance = null;
 
@@ -28,7 +26,8 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper {
     /** @type {!Map<string, !SDK.Issue.Issue>} */
     this._issues = new Map();
     this._hasSeenTopFrameNavigated = false;
-    FrameManager.instance().addEventListener(FrameManagerEvents.TopFrameNavigated, this._onTopFrameNavigated, this);
+    SDK.FrameManager.FrameManager.instance().addEventListener(
+        SDK.FrameManager.Events.TopFrameNavigated, this._onTopFrameNavigated, this);
   }
 
   /**

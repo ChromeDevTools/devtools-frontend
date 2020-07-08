@@ -3,7 +3,9 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import * as SDK from '../sdk/sdk.js';
+
+import {Events as ResourceTreeModelEvents, ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars
+import {SDKModelObserver, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 /** @type {?FrameManager} */
 let frameManagerInstance = null;
@@ -12,19 +14,19 @@ let frameManagerInstance = null;
  * The FrameManager is a central storage for all frames. It collects frames from all
  * ResourceTreeModel-instances (one per target), so that frames can be found by id
  * without needing to know their target.
- * @implements {SDK.SDKModel.SDKModelObserver<!SDK.ResourceTreeModel.ResourceTreeModel>}
+ * @implements {SDKModelObserver<!ResourceTreeModel>}
  */
 export class FrameManager extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
-    /** @type {!WeakMap<!SDK.ResourceTreeModel.ResourceTreeModel, !Array<!Common.EventTarget.EventDescriptor>>} */
+    /** @type {!WeakMap<!ResourceTreeModel, !Array<!Common.EventTarget.EventDescriptor>>} */
     this._eventListeners = new WeakMap();
-    SDK.SDKModel.TargetManager.instance().observeModels(SDK.ResourceTreeModel.ResourceTreeModel, this);
+    TargetManager.instance().observeModels(ResourceTreeModel, this);
 
     // Maps frameIds to frames and a count of how many ResourceTreeModels contain this frame.
     // (OOPIFs are first attached to a new target and then detached from their old target,
     // therefore being contained in 2 models for a short period of time.)
-    /** @type {!Map<string, {frame: !SDK.ResourceTreeModel.ResourceTreeFrame, count: number}>} */
+    /** @type {!Map<string, {frame: !ResourceTreeFrame, count: number}>} */
     this._frames = new Map();
 
     // Maps targetIds to a set of frameIds.
@@ -45,22 +47,21 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @override
-   * @param {!SDK.ResourceTreeModel.ResourceTreeModel} resourceTreeModel
+   * @param {!ResourceTreeModel} resourceTreeModel
    */
   modelAdded(resourceTreeModel) {
-    const addListener =
-        resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameAdded, this._frameAdded, this);
+    const addListener = resourceTreeModel.addEventListener(ResourceTreeModelEvents.FrameAdded, this._frameAdded, this);
     const detachListener =
-        resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameDetached, this._frameDetached, this);
+        resourceTreeModel.addEventListener(ResourceTreeModelEvents.FrameDetached, this._frameDetached, this);
     const navigatedListener =
-        resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated, this);
+        resourceTreeModel.addEventListener(ResourceTreeModelEvents.FrameNavigated, this._frameNavigated, this);
     this._eventListeners.set(resourceTreeModel, [addListener, detachListener, navigatedListener]);
     this._framesForTarget.set(resourceTreeModel.target().id(), new Set());
   }
 
   /**
    * @override
-   * @param {!SDK.ResourceTreeModel.ResourceTreeModel} resourceTreeModel
+   * @param {!ResourceTreeModel} resourceTreeModel
    */
   modelRemoved(resourceTreeModel) {
     const listeners = this._eventListeners.get(resourceTreeModel);
@@ -84,7 +85,7 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _frameAdded(event) {
-    const frame = /** @type {!SDK.ResourceTreeModel.ResourceTreeFrame} */ (event.data);
+    const frame = /** @type {!ResourceTreeFrame} */ (event.data);
     const frameData = this._frames.get(frame.id);
     // If the frame is already in the map, increase its count, otherwise add it to the map.
     if (frameData) {
@@ -106,7 +107,7 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _frameDetached(event) {
-    const frame = /** @type {!SDK.ResourceTreeModel.ResourceTreeFrame} */ (event.data);
+    const frame = /** @type {!ResourceTreeFrame} */ (event.data);
     // Decrease the frame's count or remove it entirely from the map.
     this._decreaseOrRemoveFrame(frame.id);
 
@@ -121,7 +122,7 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _frameNavigated(event) {
-    const frame = /** @type {!SDK.ResourceTreeModel.ResourceTreeFrame} */ (event.data);
+    const frame = /** @type {!ResourceTreeFrame} */ (event.data);
     this.dispatchEventToListeners(Events.FrameNavigated, {frame});
     if (frame.isTopFrame()) {
       this.dispatchEventToListeners(Events.TopFrameNavigated, {frame});
@@ -150,7 +151,7 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper {
    * ResourceTreeFrame after detachment. Callers of getFrame() should therefore
    * immediately use the function return value and not store it for later use.
    * @param {string} frameId
-   * @return {?SDK.ResourceTreeModel.ResourceTreeFrame}
+   * @return {?ResourceTreeFrame}
    */
   getFrame(frameId) {
     const frameData = this._frames.get(frameId);
@@ -161,7 +162,7 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @return {!Array<!SDK.ResourceTreeModel.ResourceTreeFrame>}
+   * @return {!Array<!ResourceTreeFrame>}
    */
   getMainFrames() {
     const result = [];

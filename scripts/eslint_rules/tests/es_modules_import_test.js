@@ -83,6 +83,10 @@ ruleTester.run('es_modules_import', rule, {
     {
       code: 'export async function foo() {};',
       filename: 'front_end/common/common.js',
+    },
+    {
+      code: 'import Marked from \'../third_party/marked/package/lib/marked.esm.js\';',
+      filename: 'front_end/marked/marked.js',
     }
   ],
 

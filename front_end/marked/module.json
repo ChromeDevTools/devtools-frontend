@@ -1,0 +1,10 @@
+{
+  "scripts": [],
+  "modules": [
+    "marked.js",
+    "../third_party/marked/package/lib/marked.esm.js"
+  ],
+  "skip_compilation": [
+    "../third_party/marked/package/lib/marked.esm.js"
+  ]
+}

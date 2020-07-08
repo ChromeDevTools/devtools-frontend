@@ -16,13 +16,13 @@ template("devtools_module") {
 
     # To make sure that this target can be depended upon by other TypeScript targets,
     # we have to name it the `target_name`. However, we can't name this `ts_library` the
-    # `target_name`, as the buildgraph requires the `copy_to_resources` to happen *after*
+    # `target_name`, as the buildgraph requires the `copy_gen__to_resources` to happen *after*
     # `ts_library` is finished.
     typescript_config_name = invoker.target_name
   }
 
   if (is_debug) {
-    copy_to_resources(target_name) {
+    copy_gen_to_resources(target_name) {
       sources =
           filter_include(get_target_outputs(_typescript_target_dep), [ "*.js" ])
 

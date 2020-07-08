@@ -298,6 +298,7 @@
     "event_listeners"
   ],
   "scripts": [],
+  "skip_rollup": true,
   "modules": [
     "elements.js",
     "elements-legacy.js",

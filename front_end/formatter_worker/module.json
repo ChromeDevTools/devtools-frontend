@@ -5,6 +5,7 @@
     "cm_headless"
   ],
   "scripts": [],
+  "skip_rollup": true,
   "modules": [
     "formatter_worker.js",
     "formatter_worker-legacy.js",

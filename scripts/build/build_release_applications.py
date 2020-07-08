@@ -168,7 +168,8 @@ class ReleaseBuilder(object):
                 if len(non_autostart_deps):
                     bail_error(
                         'Non-autostart dependencies specified for the autostarted module "%s": %s' % (name, non_autostart_deps))
-                self._rollup_module(name, desc.get('modules', []))
+                self._rollup_module(name, desc.get('modules', []),
+                                    desc.get('skip_rollup', False))
             else:
                 non_autostart.add(name)
 
@@ -196,12 +197,13 @@ class ReleaseBuilder(object):
         if resources:
             self._write_module_resources(resources, output)
         if modules:
-            self._rollup_module(module_name, modules)
+            self._rollup_module(module_name, modules,
+                                module.get('skip_rollup', False))
         output_file_path = concatenated_module_filename(module_name, self.output_dir)
         write_file(output_file_path, minify_js(output.getvalue()))
         output.close()
 
-    def _rollup_module(self, module_name, modules):
+    def _rollup_module(self, module_name, modules, skip_rollup):
         legacyFileName = module_name + '-legacy.js'
         if legacyFileName in modules:
             write_file(
@@ -213,7 +215,7 @@ class ReleaseBuilder(object):
 
         # Temporary hack, as we use `devtools_entrypoint` for this module now
         # TODO(crbug.com/1101738): remove once all folders are migrated
-        if module_name in ['formatter_worker', 'elements']:
+        if skip_rollup:
             return
 
         js_entrypoint = join(self.application_dir, module_name, module_name + '.js')

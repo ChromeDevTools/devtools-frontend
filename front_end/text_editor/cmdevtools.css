@@ -59,13 +59,13 @@
   background-color: rgb(171 191 254);
 }
 
-:host-context(.-theme-with-dark-background) .CodeMirror .source-frame-continue-to-location,
-.-theme-with-dark-background .CodeMirror .source-frame-continue-to-location {
+.-theme-with-dark-background .CodeMirror .source-frame-continue-to-location,
+:host-context(.-theme-with-dark-background) .CodeMirror .source-frame-continue-to-location {
   background-color: #14522b;
 }
 
-:host-context(.-theme-with-dark-background) .CodeMirror .source-frame-continue-to-location:hover,
-.-theme-with-dark-background .CodeMirror .source-frame-continue-to-location:hover {
+.-theme-with-dark-background .CodeMirror .source-frame-continue-to-location:hover,
+:host-context(.-theme-with-dark-background) .CodeMirror .source-frame-continue-to-location:hover {
   border: 1px solid #33cc6b;
   background-color: #14522b;
 }
@@ -104,6 +104,12 @@
   margin-right: -1px;
 }
 
+.CodeMirror-cursor {
+  border-left: 1px solid black;
+  border-right: none;
+  width: 0;
+}
+
 .CodeMirror-readonly .CodeMirror-cursor {
   display: none;
 }
@@ -126,12 +132,16 @@
   color: var(--accent-color);
 }
 
+.cm-non-breakable-line .CodeMirror-linenumber {
+  color: rgb(128 128 128 / 40%);
+}
+
 .cm-highlight {
   -webkit-animation: fadeout 2s 0s;
 }
 
-:host-context(.-theme-with-dark-background) .cm-highlight,
-.-theme-with-dark-background .cm-highlight {
+.-theme-with-dark-background .cm-highlight,
+:host-context(.-theme-with-dark-background) .cm-highlight {
   -webkit-animation: fadeout-dark 2s 0s;
 }
 
@@ -149,8 +159,8 @@
   background-color: rgb(255 255 120);
 }
 
-:host-context(.-theme-with-dark-background) .cm-readonly-highlight,
-.-theme-with-dark-background .cm-readonly-highlight {
+.-theme-with-dark-background .cm-readonly-highlight,
+:host-context(.-theme-with-dark-background) .cm-readonly-highlight {
   background-color: hsl(133deg 100% 30% / 50%);
 }
 
@@ -158,8 +168,8 @@
   -webkit-animation: fadeout-execution-line 1s 0s;
 }
 
-:host-context(.-theme-with-dark-background) .cm-highlight.cm-execution-line,
-.-theme-with-dark-background .cm-highlight.cm-execution-line {
+.-theme-with-dark-background .cm-highlight.cm-execution-line,
+:host-context(.-theme-with-dark-background) .cm-highlight.cm-execution-line {
   -webkit-animation: fadeout-execution-line-dark 1s 0s;
 }
 
@@ -173,8 +183,8 @@
   to { background-color: #14522b; }
 }
 
-.cm-breakpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
 .CodeMirror-linenumber:hover,
+.cm-breakpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
 .-theme-preserve {
   border-width: 1px 4px 1px 1px;
   padding-right: 3px;
@@ -183,22 +193,26 @@
   line-height: 12px;
   border-style: solid;
   position: relative;
+
   /* The line number jumps slightly on hover when the minify banner is showing
      if this fractional value is not there. */
   top: -0.15px;
 }
+
+/* stylelint-disable no-descending-specificity */
 
 .CodeMirror-linenumber:hover {
   -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%23ebeced" stroke="%23ebeced"/></svg>') 1 3 1 1;
   padding-left: 8px;
 }
 
-:host-context(.-theme-with-dark-background) .CodeMirror-linenumber:hover,
-.-theme-with-dark-background .CodeMirror-linenumber:hover {
+.-theme-with-dark-background .CodeMirror-linenumber:hover,
+:host-context(.-theme-with-dark-background) .CodeMirror-linenumber:hover {
   -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%233c4043" stroke="%233c4043"/></svg>') 1 3 1 1;
 }
 
-.cm-breakpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber, .-theme-preserve {
+.cm-breakpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
+.-theme-preserve {
   color: white;
   -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%234285f4" stroke="%231a73e8"/></svg>') 1 3 1 1;
 }
@@ -209,15 +223,16 @@
   -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%23d9e7fd" stroke="%231a73e8"/></svg>') 1 3 1 1;
 }
 
-:host-context(.-theme-with-dark-background) .cm-breakpoint-disabled .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
-:host-context(.-theme-with-dark-background) .breakpoints-deactivated .cm-breakpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
 .-theme-with-dark-background .cm-breakpoint-disabled .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
-.-theme-with-dark-background .breakpoints-deactivated .cm-breakpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber {
+.-theme-with-dark-background .breakpoints-deactivated .cm-breakpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
+:host-context(.-theme-with-dark-background) .cm-breakpoint-disabled .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
+:host-context(.-theme-with-dark-background) .breakpoints-deactivated .cm-breakpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber {
   color: #1a73e8;
   -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%232a384e" stroke="%231a73e8"/></svg>') 1 3 1 1;
 }
 
-.cm-breakpoint-conditional .CodeMirror-gutter-wrapper .CodeMirror-linenumber, .-theme-preserve {
+.cm-breakpoint-conditional .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
+.-theme-preserve {
   -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%23f29900" stroke="%23e37400"/></svg>') 1 3 1 1;
 }
 
@@ -227,15 +242,16 @@
   -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%23fcebcc" stroke="%23e37400"/></svg>') 1 3 1 1;
 }
 
-:host-context(.-theme-with-dark-background) .cm-breakpoint-disabled.cm-breakpoint-conditional .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
-:host-context(.-theme-with-dark-background) .breakpoints-deactivated .cm-breakpoint-conditional .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
 .-theme-with-dark-background .cm-breakpoint-disabled.cm-breakpoint-conditional .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
-.-theme-with-dark-background .breakpoints-deactivated .cm-breakpoint-conditional .CodeMirror-gutter-wrapper .CodeMirror-linenumber {
+.-theme-with-dark-background .breakpoints-deactivated .cm-breakpoint-conditional .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
+:host-context(.-theme-with-dark-background) .cm-breakpoint-disabled.cm-breakpoint-conditional .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
+:host-context(.-theme-with-dark-background) .breakpoints-deactivated .cm-breakpoint-conditional .CodeMirror-gutter-wrapper .CodeMirror-linenumber {
   color: #e37400;
   -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%234d3c1d" stroke="%23e37400"/></svg>') 1 3 1 1;
 }
 
-.cm-breakpoint-logpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber, .-theme-preserve {
+.cm-breakpoint-logpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
+.-theme-preserve {
   -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%23f439a0" stroke="%23d01884"/></svg>') 1 3 1 1;
 }
 
@@ -245,30 +261,30 @@
   -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%23fdd7ec" stroke="%23f439a0"/></svg>') 1 3 1 1;
 }
 
-:host-context(.-theme-with-dark-background) .cm-breakpoint-disabled.cm-breakpoint-logpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
-:host-context(.-theme-with-dark-background) .breakpoints-deactivated .cm-breakpoint-logpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
 .-theme-with-dark-background .cm-breakpoint-disabled.cm-breakpoint-logpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
-.-theme-with-dark-background .breakpoints-deactivated .cm-breakpoint-logpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber {
+.-theme-with-dark-background .breakpoints-deactivated .cm-breakpoint-logpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
+:host-context(.-theme-with-dark-background) .cm-breakpoint-disabled.cm-breakpoint-logpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
+:host-context(.-theme-with-dark-background) .breakpoints-deactivated .cm-breakpoint-logpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber {
   color: #d01884;
   -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%234e283d" stroke="%23f439a0"/></svg>') 1 3 1 1;
 }
 
-.cm-breakpoint-conditional .CodeMirror-gutter-wrapper .CodeMirror-linenumber::before, .-theme-preserve {
+/* stylelint-enable no-descending-specificity */
+
+.cm-breakpoint-conditional .CodeMirror-gutter-wrapper .CodeMirror-linenumber::before,
+.-theme-preserve {
   content: "?";
   position: absolute;
-  top: 0px;
+  top: 0;
   left: 1px;
 }
 
-.cm-breakpoint-logpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber::before, .-theme-preserve {
+.cm-breakpoint-logpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber::before,
+.-theme-preserve {
   content: "‥";
   position: absolute;
   top: -3px;
   left: 1px;
-}
-
-.cm-non-breakable-line .CodeMirror-linenumber {
-  color: rgb(128 128 128 / 40%);
 }
 
 .cm-inline-breakpoint {
@@ -346,14 +362,14 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
   border-bottom: 1px solid rgb(255 0 0 / 50%);
 }
 
-:host-context(.-theme-with-dark-background) div.CodeMirror:focus-within span.CodeMirror-matchingbracket,
-.-theme-with-dark-background div.CodeMirror:focus-within span.CodeMirror-matchingbracket {
+.-theme-with-dark-background div.CodeMirror:focus-within span.CodeMirror-matchingbracket,
+:host-context(.-theme-with-dark-background) div.CodeMirror:focus-within span.CodeMirror-matchingbracket {
   border-bottom: 1px solid rgb(217 217 217);
   background-color: initial;
 }
 
-:host-context(.-theme-with-dark-background) div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket,
-.-theme-with-dark-background div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
+.-theme-with-dark-background div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket,
+:host-context(.-theme-with-dark-background) div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
   border-bottom: 1px solid rgb(255 26 26);
   background-color: initial;
 }
@@ -397,18 +413,18 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
   background-color: rgb(171 191 254);
 }
 
-:host-context(.-theme-with-dark-background) .cm-execution-line,
-.-theme-with-dark-background .cm-execution-line {
+.-theme-with-dark-background .cm-execution-line,
+:host-context(.-theme-with-dark-background) .cm-execution-line {
   background-color: #14522b;
 }
 
-:host-context(.-theme-with-dark-background) .cm-execution-line-outline,
-.-theme-with-dark-background .cm-execution-line-outline {
+.-theme-with-dark-background .cm-execution-line-outline,
+:host-context(.-theme-with-dark-background) .cm-execution-line-outline {
   outline: 1px solid #33cc6b;
 }
 
-:host-context(.-theme-with-dark-background) .cm-execution-line-tail,
-.-theme-with-dark-background .cm-execution-line-tail {
+.-theme-with-dark-background .cm-execution-line-tail,
+:host-context(.-theme-with-dark-background) .cm-execution-line-tail {
   background-color: #347132;
 }
 
@@ -491,13 +507,13 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
   z-index: -1;
 }
 
-:host-context(.-theme-with-dark-background) .cm-line-with-selection .cm-column-with-selection.cm-search-highlight::before,
-.-theme-with-dark-background .cm-line-with-selection .cm-column-with-selection.cm-search-highlight::before {
+.-theme-with-dark-background .cm-line-with-selection .cm-column-with-selection.cm-search-highlight::before,
+:host-context(.-theme-with-dark-background) .cm-line-with-selection .cm-column-with-selection.cm-search-highlight::before {
   background-color: hsl(133deg 100% 30%);
 }
 
-:host-context(.-theme-with-dark-background) .cm-line-with-selection .cm-search-highlight,
-.-theme-with-dark-background .cm-line-with-selection .cm-search-highlight {
+.-theme-with-dark-background .cm-line-with-selection .cm-search-highlight,
+:host-context(.-theme-with-dark-background) .cm-line-with-selection .cm-search-highlight {
   color: #eee;
 }
 
@@ -544,6 +560,9 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
   left: 4px;
   cursor: pointer;
   height: 4px;
+  background-image: url(Images/errorWave.svg);
+  background-repeat: repeat-x;
+  background-size: contain;
 }
 
 .CodeMirror .text-editor-value-decoration {
@@ -581,12 +600,6 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
   background-color: rgb(255 0 0 / 5%);
 }
 
-.CodeMirror .text-editor-line-decoration-wave {
-  background-image: url(Images/errorWave.svg);
-  background-repeat: repeat-x;
-  background-size: contain;
-}
-
 /** @see crbug.com/358161 */
 
 .CodeMirror .CodeMirror-vscrollbar,
@@ -602,8 +615,16 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
   background-color: transparent;
 }
 
-:host-context(.-theme-with-dark-background) .CodeMirror .CodeMirror-selected,
-.-theme-with-dark-background .CodeMirror .CodeMirror-selected {
+.CodeMirror .CodeMirror-selected {
+  background-color: var(--item-selection-inactive-bg-color);
+}
+
+.CodeMirror-focused .CodeMirror-selected {
+  background-color: var(--item-selection-bg-color);
+}
+
+.-theme-with-dark-background .CodeMirror .CodeMirror-selected,
+:host-context(.-theme-with-dark-background) .CodeMirror .CodeMirror-selected {
   background-color: #454545;
 }
 
@@ -636,12 +657,6 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
   background-color: white; /* The little square between H and V scrollbars */
 }
 
-.CodeMirror-cursor {
-  border-left: 1px solid black;
-  border-right: none;
-  width: 0;
-}
-
 /* Shown when moving in bi-directional text */
 
 .CodeMirror div.CodeMirror-secondarycursor {
@@ -650,10 +665,6 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 
 .CodeMirror-composing {
   border-bottom: 2px solid;
-}
-
-.pretty-printed .CodeMirror-linenumber {
-  color: var(--accent-color);
 }
 
 .CodeMirror-foldmarker {
@@ -714,14 +725,6 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 
 .CodeMirror-foldgutter-folded::before {
   -webkit-mask-position: 0 0;
-}
-
-.CodeMirror .CodeMirror-selected {
-  background-color: var(--item-selection-inactive-bg-color);
-}
-
-.CodeMirror-focused .CodeMirror-selected {
-  background-color: var(--item-selection-bg-color);
 }
 
 .CodeMirror .CodeMirror-line::selection,

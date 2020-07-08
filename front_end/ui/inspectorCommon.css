@@ -5,6 +5,8 @@
  */
 
 * {
+  box-sizing: border-box;
+
   /* This is required for correct sizing of flex items because we rely
      * on an old version of the flexbox spec.
      * Longer-term we should remove this, see crbug.com/473625 */
@@ -12,28 +14,9 @@
   min-height: 0;
 }
 
-:host-context(.platform-mac) .monospace,
-:host-context(.platform-mac) .source-code,
-.platform-mac .monospace,
-.platform-mac .source-code {
-  font-size: 11px !important;
-  font-family: Menlo, monospace;
-}
-
-:host-context(.platform-windows) .monospace,
-:host-context(.platform-windows) .source-code,
-.platform-windows .monospace,
-.platform-windows .source-code {
-  font-size: 12px !important;
-  font-family: Consolas, Lucida Console, Courier New, monospace;
-}
-
-:host-context(.platform-linux) .monospace,
-:host-context(.platform-linux) .source-code,
-.platform-linux .monospace,
-.platform-linux .source-code {
-  font-size: 11px !important;
-  font-family: dejavu sans mono, monospace;
+.monospace {
+  font-size: 10px !important;
+  font-family: monospace;
 }
 
 .source-code {
@@ -42,8 +25,40 @@
   white-space: pre-wrap;
 }
 
-* {
-  box-sizing: border-box;
+.platform-mac .monospace,
+.platform-mac .source-code {
+  font-size: 11px !important;
+  font-family: Menlo, monospace;
+}
+
+.platform-windows .monospace,
+.platform-windows .source-code {
+  font-size: 12px !important;
+  font-family: Consolas, Lucida Console, Courier New, monospace;
+}
+
+.platform-linux .monospace,
+.platform-linux .source-code {
+  font-size: 11px !important;
+  font-family: dejavu sans mono, monospace;
+}
+
+:host-context(.platform-mac) .monospace,
+:host-context(.platform-mac) .source-code {
+  font-size: 11px !important;
+  font-family: Menlo, monospace;
+}
+
+:host-context(.platform-windows) .monospace,
+:host-context(.platform-windows) .source-code {
+  font-size: 12px !important;
+  font-family: Consolas, Lucida Console, Courier New, monospace;
+}
+
+:host-context(.platform-linux) .monospace,
+:host-context(.platform-linux) .source-code {
+  font-size: 11px !important;
+  font-family: dejavu sans mono, monospace;
 }
 
 :focus {
@@ -126,11 +141,6 @@ iframe.widget {
   display: none !important;
 }
 
-.monospace {
-  font-size: 10px !important;
-  font-family: monospace;
-}
-
 .highlighted-search-result {
   border-radius: 1px;
   background-color: rgb(255 255 0 / 80%);
@@ -184,6 +194,15 @@ input::placeholder {
   box-shadow: var(--focus-ring-inactive-shadow);
 }
 
+.harmony-input:not([type]).error-input,
+.harmony-input[type=number].error-input,
+.harmony-input[type=text].error-input,
+.harmony-input:not([type]):invalid,
+.harmony-input[type=number]:invalid,
+.harmony-input[type=text]:invalid {
+  box-shadow: 0 0 0 1px #ff1a00;
+}
+
 .harmony-input:not([type]):not(.error-input):not(:invalid):hover,
 .harmony-input[type=number]:not(.error-input):not(:invalid):hover,
 .harmony-input[type=text]:not(.error-input):not(:invalid):hover {
@@ -226,15 +245,6 @@ input::placeholder {
   text-decoration: none !important;
 }
 
-.harmony-input:not([type]).error-input,
-.harmony-input[type=number].error-input,
-.harmony-input[type=text].error-input,
-.harmony-input:not([type]):invalid,
-.harmony-input[type=number]:invalid,
-.harmony-input[type=text]:invalid {
-  box-shadow: 0 0 0 1px #ff1a00;
-}
-
 .chrome-select {
   -webkit-appearance: none;
   user-select: none;
@@ -255,6 +265,10 @@ input::placeholder {
   background-size: 15px;
 }
 
+.chrome-select:disabled {
+  opacity: 38%;
+}
+
 .chrome-select:enabled:active,
 .chrome-select:enabled:focus,
 .chrome-select:enabled:hover {
@@ -269,10 +283,6 @@ input::placeholder {
 .chrome-select:enabled:focus {
   border-color: transparent;
   box-shadow: 0 1px 2px rgb(0 0 0 / 10%), 0 0 0 2px rgb(66 133 244 / 40%);
-}
-
-.chrome-select:disabled {
-  opacity: 38%;
 }
 
 .chrome-select-label {
@@ -291,26 +301,42 @@ input::placeholder {
   color: #222;
 }
 
-:not(.platform-mac).-theme-with-dark-background ::-webkit-scrollbar,
+:not(.platform-mac).-theme-with-dark-background ::-webkit-scrollbar {
+  width: 14px;
+  height: 14px;
+}
+
+:not(.platform-mac).-theme-with-dark-background ::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 1px rgb(255 255 255 / 30%);
+  background: rgb(36 36 36);
+}
+
+:not(.platform-mac).-theme-with-dark-background ::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+  background-color: #333;
+  -webkit-box-shadow: inset 0 0 1px rgb(255 255 255 / 50%);
+}
+
+:not(.platform-mac).-theme-with-dark-background ::-webkit-scrollbar-corner {
+  background-color: #242424;
+}
+
 :host-context(:not(.platform-mac).-theme-with-dark-background) ::-webkit-scrollbar {
   width: 14px;
   height: 14px;
 }
 
-:not(.platform-mac).-theme-with-dark-background ::-webkit-scrollbar-track,
 :host-context(:not(.platform-mac).-theme-with-dark-background) ::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 1px rgb(255 255 255 / 30%);
   background: rgb(36 36 36);
 }
 
-:not(.platform-mac).-theme-with-dark-background ::-webkit-scrollbar-thumb,
 :host-context(:not(.platform-mac).-theme-with-dark-background) ::-webkit-scrollbar-thumb {
   border-radius: 2px;
   background-color: #333;
   -webkit-box-shadow: inset 0 0 1px rgb(255 255 255 / 50%);
 }
 
-:not(.platform-mac).-theme-with-dark-background ::-webkit-scrollbar-corner,
 :host-context(:not(.platform-mac).-theme-with-dark-background) ::-webkit-scrollbar-corner {
   background-color: #242424;
 }
@@ -396,8 +422,8 @@ span[is=dt-icon-label] {
   background-image: url(Images/popoverArrows.png);
 }
 
-:host-context(.force-white-icons) [is=ui-icon].spritesheet-smallicons,
 .force-white-icons [is=ui-icon].spritesheet-smallicons,
+:host-context(.force-white-icons) [is=ui-icon].spritesheet-smallicons,
 [is=ui-icon].force-white-icons.spritesheet-smallicons,
 .-theme-preserve {
   -webkit-mask-image: url(Images/smallIcons.svg);
@@ -405,8 +431,8 @@ span[is=dt-icon-label] {
   background: #fafafa !important;
 }
 
-:host-context(.force-white-icons) [is=ui-icon].spritesheet-largeicons,
 .force-white-icons [is=ui-icon].spritesheet-largeicons,
+:host-context(.force-white-icons) [is=ui-icon].spritesheet-largeicons,
 [is=ui-icon].force-white-icons.spritesheet-largeicons,
 .-theme-preserve {
   -webkit-mask-image: url(Images/largeIcons.svg);
@@ -414,8 +440,8 @@ span[is=dt-icon-label] {
   background: #fafafa !important;
 }
 
-:host-context(.force-white-icons) [is=ui-icon].spritesheet-mediumicon,
 .force-white-icons [is=ui-icon].spritesheet-mediumicons,
+:host-context(.force-white-icons) [is=ui-icon].spritesheet-mediumicons,
 [is=ui-icon].force-white-icons.spritesheet-mediumicons,
 .-theme-preserve {
   -webkit-mask-image: url(Images/mediumIcons.svg);
@@ -485,6 +511,7 @@ button.link[data-keyboard-focus="true"]:focus {
 }
 
 @keyframes ANIMATION-HACK {
+  /* empty keyframe to trigger the animation hack above */
 }
 
 @media (forced-colors: active) {
@@ -494,16 +521,14 @@ button.link[data-keyboard-focus="true"]:focus {
   }
 
   [is=ui-icon].icon-mask,
-  :host-context(.force-white-icons) [is=ui-icon].spritesheet-smallicons,
   .force-white-icons [is=ui-icon].spritesheet-smallicons,
+  :host-context(.force-white-icons) [is=ui-icon].spritesheet-smallicons,
   [is=ui-icon].force-white-icons.spritesheet-smallicons,
-  .-theme-preserve,
-  :host-context(.force-white-icons) [is=ui-icon].spritesheet-largeicons,
   .force-white-icons [is=ui-icon].spritesheet-largeicons,
+  :host-context(.force-white-icons) [is=ui-icon].spritesheet-largeicons,
   [is=ui-icon].force-white-icons.spritesheet-largeicons,
-  .-theme-preserve,
-  :host-context(.force-white-icons) [is=ui-icon].spritesheet-mediumicon,
   .force-white-icons [is=ui-icon].spritesheet-mediumicons,
+  :host-context(.force-white-icons) [is=ui-icon].spritesheet-mediumicons,
   [is=ui-icon].force-white-icons.spritesheet-mediumicons,
   .-theme-preserve {
     forced-color-adjust: none;

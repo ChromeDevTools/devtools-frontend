@@ -1646,6 +1646,7 @@ all_typescript_modules = [
   "formatter_worker/FormattedContentBuilder.js",
   "formatter_worker/FormatterWorker.js",
   "formatter_worker/HTMLFormatter.js",
+  "formatter_worker/IdentityFormatter.js",
   "formatter_worker/JavaScriptFormatter.js",
   "formatter_worker/JavaScriptOutline.js",
 ]

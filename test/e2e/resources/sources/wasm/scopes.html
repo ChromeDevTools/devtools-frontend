@@ -3,11 +3,38 @@
   Use of this source code is governed by a BSD-style license that can be
   found in the LICENSE file.
 -->
-<script>
-  (async () => {
-    const global = new WebAssembly.Global({value: "i32", mutable: true}, 24);
-    const importObj = {imports: {global}};
-    const instance = await WebAssembly.instantiateStreaming(fetch('scopes.wasm'), importObj);
-    window.main = instance.instance.exports.foo;
-  })();
-</script>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Scopes</title>
+      <script>
+        (async () => {
+          const global = new WebAssembly.Global({value: 'i32', mutable: true}, 24);
+          const importObj = {imports: {global}};
+          const instance = await WebAssembly.instantiateStreaming(fetch('scopes.wasm'), importObj);
+          instance.instance.exports.foo(42);
+        })();
+      </script>
+  </head>
+  <body>
+    <h1>Scopes</h1>
+    <p>
+      This tests that the Scope view shown in DevTools shows all the relevant information when paused in a
+      Wasm function. This includes the module (instance, memory, globals), local and stack scope. It's
+      important that this information is presented to the user in a meaningful way.
+    </p>
+    <h2>Steps</h2>
+    <p>
+      <ol>
+        <li>Open DevTools</li>
+        <li>Locate the Wasm function <code>foo</code> from the <code>scopes.wasm</code> module and set a breakpoint on the <code>global.get $imports.global</code> line</li>
+        <li>Reload the page</button></li>
+        <li>Breakpoint should hit the new breakpoint</button></li>
+        <li>Now look at the Scope in the DevTools and make sure that it shows all the necessary information mentioned above in an easily accessible fashion</li>
+        <li>Step 1 time</li>
+        <li>Now look at the Scope in the DevTools and make sure that it has updated the scope values accordingly</li>
+        <li>Resume</li>
+      </ol>
+    </p>
+  </body>
+</html>

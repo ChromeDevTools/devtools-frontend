@@ -289,3 +289,17 @@ export async function typeIntoSourcesAndSave(text: string) {
 
   await pressKey('s', {control: true});
 }
+
+export async function getScopeNames() {
+  const scopeElements = await $$('.scope-chain-sidebar-pane-section-title');
+  const scopeNames = await scopeElements.evaluate(nodes => nodes.map((n: HTMLElement) => n.textContent));
+  return scopeNames;
+}
+
+export async function getValuesForScope(scope: string) {
+  const scopeSelector = `[aria-label="${scope}"]`;
+  await waitFor(scopeSelector);
+  const valueSelector = `${scopeSelector} + ol .name-and-value`;
+  const values = await (await $$(valueSelector)).evaluate(nodes => nodes.map((n: HTMLElement) => n.textContent));
+  return values;
+}

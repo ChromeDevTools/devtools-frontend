@@ -5,52 +5,83 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {$$, click, getBrowserAndPages, waitFor} from '../../shared/helper.js';
-import {addBreakpointForLine, openFileInEditor, openFileInSourcesPanel, RESUME_BUTTON} from '../helpers/sources-helpers.js';
+import {click, getBrowserAndPages, step, waitFor} from '../../shared/helper.js';
+import {addBreakpointForLine, getScopeNames, getValuesForScope, openSourceCodeEditorForFile, PAUSE_INDICATOR_SELECTOR, RESUME_BUTTON, sourceLineNumberSelector} from '../helpers/sources-helpers.js';
 
 describe('Source Tab', async () => {
-  beforeEach(async function() {
-    const {frontend} = getBrowserAndPages();
-    await openFileInSourcesPanel('wasm/scopes.html');
-    await openFileInEditor('scopes.wasm');
-    await addBreakpointForLine(frontend, 16);
-  });
+  it('shows and updates the module, local, and stack scope while pausing', async () => {
+    const {frontend, target} = getBrowserAndPages();
+    const breakpointLine = 13;
+    let moduleScopeValues: string[];
+    let localScopeValues: string[];
 
-  async function getScopeNames() {
-    const scopeElements = await $$('.scope-chain-sidebar-pane-section-title');
-    const scopeNames = await scopeElements.evaluate(nodes => nodes.map((n: HTMLElement) => n.textContent));
-    return scopeNames;
-  }
+    await step('navigate to a page and open the Sources tab', async () => {
+      await openSourceCodeEditorForFile('scopes.wasm', 'wasm/scopes.html');
+    });
 
-  async function getValuesForScope(scope: string) {
-    const scopeSelector = `[aria-label="${scope}"]`;
-    const valueSelector = `${scopeSelector} + ol .name-and-value`;
-    const values = await (await $$(valueSelector)).evaluate(nodes => nodes.map((n: HTMLElement) => n.textContent));
-    return values;
-  }
+    await step(`add a breakpoint to line No.${breakpointLine}`, async () => {
+      await addBreakpointForLine(frontend, breakpointLine);
+    });
 
-  it('shows the module, local, and stack scope while pausing', async () => {
-    const {target} = getBrowserAndPages();
-    const scriptEvaluation = target.evaluate('main(42);');
-    await waitFor(RESUME_BUTTON);
+    await step('reload the page', async () => {
+      await target.reload();
+    });
 
-    const scopeNames = await getScopeNames();
-    assert.deepEqual(scopeNames, ['Module', 'Local', 'Stack']);
+    await step('wait for all the source code to appear', async () => {
+      await waitFor(await sourceLineNumberSelector(breakpointLine));
+    });
 
-    await click(RESUME_BUTTON);
-    await scriptEvaluation;
-  });
+    await step('check that the module, local, and stack scope appear', async () => {
+      const scopeNames = await getScopeNames();
+      assert.deepEqual(scopeNames, ['Module', 'Local', 'Stack']);
+    });
 
-  // Disabled to the Chromium binary -> DevTools roller working again.
-  it('correctly shows local scope content.', async () => {
-    const {target} = getBrowserAndPages();
-    const scriptEvaluation = target.evaluate('main(42);');
-    await waitFor(RESUME_BUTTON);
+    await step('check that the module scope content is as expected', async () => {
+      moduleScopeValues = await getValuesForScope('Module');
+      // Remove occurrences of arrays.
+      const formattedValues = moduleScopeValues.map((line: string) => {
+        return line.replace(/\[[^\]]*\]/, '').trim();
+      });
+      assert.deepEqual(
+          formattedValues, ['globals: {imports.global: 24}', 'instance: Instance\xA0{}', 'memory0: Uint8Array(65536)']);
+    });
 
-    const localValues = await getValuesForScope('Local');
-    assert.deepEqual(localValues, ['f32_var: 5.5', 'f64_var: 2.23e-11', 'i32: 42', 'i64_var: 9221120237041090']);
+    await step('check that the local scope content is as expected', async () => {
+      localScopeValues = await getValuesForScope('Local');
+      assert.deepEqual(localScopeValues, ['f32_var: 5.5', 'f64_var: 2.23e-11', 'i32: 42', 'i64_var: 9221120237041090']);
+    });
 
-    await click(RESUME_BUTTON);
-    await scriptEvaluation;
+    await step('expand the stack scope', async () => {
+      await click('[aria-label="Stack"]');
+    });
+
+    await step('check that the stack scope content is as expected', async () => {
+      const stackScopeValues = await getValuesForScope('Stack');
+      assert.deepEqual(stackScopeValues, []);
+    });
+
+    await step('step one time', async () => {
+      await frontend.keyboard.press('F9');
+      await waitFor(PAUSE_INDICATOR_SELECTOR);
+    });
+
+    await step('check that the module scope content is as before', async () => {
+      const currentModuleScopeValues = await getValuesForScope('Module');
+      assert.deepEqual(currentModuleScopeValues, moduleScopeValues);
+    });
+
+    await step('check that the local scope content is as before', async () => {
+      const updatedLocalScopeValues = await getValuesForScope('Local');
+      assert.deepEqual(updatedLocalScopeValues, localScopeValues);
+    });
+
+    await step('check that the stack scope content is updated to reflect the change', async () => {
+      const stackScopeValues = await getValuesForScope('Stack');
+      assert.deepEqual(stackScopeValues, ['0: 24']);
+    });
+
+    await step('resume execution', async () => {
+      await click(RESUME_BUTTON);
+    });
   });
 });

@@ -478,7 +478,6 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
    */
   _onRequestStarted(event) {
     const request = /** @type {!NetworkRequest} */ (event.data.request);
-    this._requests.push(request);
     if (event.data.originalRequest) {
       this._sentNetworkRequests.push(event.data.originalRequest);
     }

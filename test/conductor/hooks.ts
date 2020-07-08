@@ -4,7 +4,7 @@
 
 /* eslint-disable no-console */
 
-import {ChildProcessWithoutNullStreams, spawn} from 'child_process';
+import {ChildProcess, spawn} from 'child_process';
 import * as path from 'path';
 import * as puppeteer from 'puppeteer';
 
@@ -23,7 +23,6 @@ const width = 1280;
 const height = 720;
 
 const chromeDebugPort = 9222;
-const hostedModeServerPort = 8090;
 const headless = !process.env['DEBUG'];
 const envSlowMo = process.env['STRESS'] ? 50 : undefined;
 const envThrottleRate = process.env['STRESS'] ? 3 : 1;
@@ -36,7 +35,7 @@ const logLevels = {
   assert: 'E',
 };
 
-let hostedModeServer: ChildProcessWithoutNullStreams;
+let hostedModeServer: ChildProcess;
 let browser: puppeteer.Browser;
 let frontendUrl: string;
 
@@ -45,13 +44,9 @@ interface DevToolsTarget {
   id: string;
 }
 
-function handleHostedModeError(error: Error) {
-  throw new Error(`Hosted mode server: ${error}`);
-}
-
 const envChromeBinary = process.env['CHROME_BIN'];
 
-async function loadTargetPageAndDevToolsFrontend() {
+async function loadTargetPageAndDevToolsFrontend(hostedModeServerPort: number) {
   const launchArgs = [`--remote-debugging-port=${chromeDebugPort}`];
   const opts: puppeteer.LaunchOptions = {
     headless,
@@ -178,22 +173,46 @@ export async function reloadDevTools(options: ReloadDevToolsOptions = {}) {
   }
 }
 
-function startHostedModeServer() {
-  console.log(`Spawning hosted mode server on port ${hostedModeServerPort}`);
+function startHostedModeServer(chromePort: number): Promise<number> {
+  console.log('Spawning hosted mode server');
+
+  function handleHostedModeError(error: Error) {
+    throw new Error(`Hosted mode server: ${error}`);
+  }
 
   // Copy the current env and append the ports.
   const env = Object.create(process.env);
-  env.PORT = hostedModeServerPort;
-  env.REMOTE_DEBUGGING_PORT = chromeDebugPort;
-  hostedModeServer = spawn(execPath, [HOSTED_MODE_SERVER_PATH], {cwd, env});
-  hostedModeServer.on('error', handleHostedModeError);
-  hostedModeServer.stderr.on('data', handleHostedModeError);
-  setHostedModeServerPort(hostedModeServerPort);
+  env.PORT = 0;  // 0 means request a free port from the OS.
+  env.REMOTE_DEBUGGING_PORT = chromePort;
+  return new Promise((resolve, reject) => {
+    // We open the server with an IPC channel so that it can report the port it
+    // used back to us. For parallel test mode, we need to avoid specifying a
+    // port directly and instead request any free port, which is what port 0
+    // signifies to the OS.
+    hostedModeServer = spawn(execPath, [HOSTED_MODE_SERVER_PATH], {cwd, env, stdio: ['pipe', 'pipe', 'pipe', 'ipc']});
+    hostedModeServer.on('message', message => {
+      if (message === 'ERROR') {
+        reject('Could not start hosted mode server');
+      } else {
+        resolve(parseInt(message, 10));
+      }
+    });
+    hostedModeServer.on('error', handleHostedModeError);
+    if (hostedModeServer.stderr) {
+      hostedModeServer.stderr.on('data', handleHostedModeError);
+    }
+  });
 }
 
 export async function globalSetup() {
-  startHostedModeServer();
-  await loadTargetPageAndDevToolsFrontend();
+  try {
+    const port = await startHostedModeServer(chromeDebugPort);
+    console.log(`Started hosted mode server on port ${port}`);
+    setHostedModeServerPort(port);
+    await loadTargetPageAndDevToolsFrontend(port);
+  } catch (message) {
+    throw new Error(message);
+  }
 }
 
 export async function globalTeardown() {
@@ -204,6 +223,6 @@ export async function globalTeardown() {
   // for the very last test that runs.
   await browser.close();
 
-  console.log(`Stopping hosted mode server on port ${hostedModeServerPort}`);
+  console.log('Stopping hosted mode server');
   hostedModeServer.kill();
 }

@@ -22,7 +22,7 @@ const {execPath} = process;
 const width = 1280;
 const height = 720;
 
-const envPort = 9222;
+const chromeDebugPort = 9222;
 const hostedModeServerPort = 8090;
 const headless = !process.env['DEBUG'];
 const envSlowMo = process.env['STRESS'] ? 50 : undefined;
@@ -52,7 +52,7 @@ function handleHostedModeError(error: Error) {
 const envChromeBinary = process.env['CHROME_BIN'];
 
 async function loadTargetPageAndDevToolsFrontend() {
-  const launchArgs = [`--remote-debugging-port=${envPort}`];
+  const launchArgs = [`--remote-debugging-port=${chromeDebugPort}`];
   const opts: puppeteer.LaunchOptions = {
     headless,
     executablePath: envChromeBinary,
@@ -77,7 +77,7 @@ async function loadTargetPageAndDevToolsFrontend() {
 
   // Now get the DevTools listings.
   const devtools = await browser.newPage();
-  await devtools.goto(`http://localhost:${envPort}/json`);
+  await devtools.goto(`http://localhost:${chromeDebugPort}/json`);
 
   // Find the appropriate item to inspect the target page.
   const listing = await devtools.$('pre');
@@ -94,7 +94,7 @@ async function loadTargetPageAndDevToolsFrontend() {
   // Connect to the DevTools frontend.
   const frontend = await browser.newPage();
   frontendUrl = `http://localhost:${hostedModeServerPort}/front_end/devtools_app.html?ws=localhost:${
-      envPort}/devtools/page/${id}`;
+      chromeDebugPort}/devtools/page/${id}`;
   await frontend.goto(frontendUrl, {waitUntil: ['networkidle2', 'domcontentloaded']});
 
   frontend.on('error', error => {
@@ -178,14 +178,21 @@ export async function reloadDevTools(options: ReloadDevToolsOptions = {}) {
   }
 }
 
-export async function globalSetup() {
+function startHostedModeServer() {
   console.log(`Spawning hosted mode server on port ${hostedModeServerPort}`);
 
-  hostedModeServer = spawn(execPath, [HOSTED_MODE_SERVER_PATH], {cwd});
+  // Copy the current env and append the ports.
+  const env = Object.create(process.env);
+  env.PORT = hostedModeServerPort;
+  env.REMOTE_DEBUGGING_PORT = chromeDebugPort;
+  hostedModeServer = spawn(execPath, [HOSTED_MODE_SERVER_PATH], {cwd, env});
   hostedModeServer.on('error', handleHostedModeError);
   hostedModeServer.stderr.on('data', handleHostedModeError);
   setHostedModeServerPort(hostedModeServerPort);
+}
 
+export async function globalSetup() {
+  startHostedModeServer();
   await loadTargetPageAndDevToolsFrontend();
 }
 

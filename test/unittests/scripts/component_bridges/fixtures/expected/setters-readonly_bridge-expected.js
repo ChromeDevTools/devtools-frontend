@@ -9,6 +9,7 @@
 *  npm run generate-bridge-file test/unittests/scripts/component_bridges/fixtures/setters-readonly.ts
 */
 
+import './setters-readonly.js';
 /**
 * @typedef {{
 * name:string,

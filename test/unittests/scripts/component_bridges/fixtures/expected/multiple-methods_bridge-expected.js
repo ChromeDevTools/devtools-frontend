@@ -9,6 +9,7 @@
 *  npm run generate-bridge-file test/unittests/scripts/component_bridges/fixtures/multiple-methods.ts
 */
 
+import './multiple-methods.js';
 /**
 * @typedef {{
 * name:string,

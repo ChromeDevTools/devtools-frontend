@@ -9,6 +9,7 @@
 *  npm run generate-bridge-file test/unittests/scripts/component_bridges/fixtures/array-params.ts
 */
 
+import './array-params.js';
 /**
 * @typedef {{
 * name:string,

@@ -9,6 +9,7 @@
 *  npm run generate-bridge-file test/unittests/scripts/component_bridges/fixtures/basic-component.ts
 */
 
+import './basic-component.js';
 /**
 * @typedef {{
 * name:string,

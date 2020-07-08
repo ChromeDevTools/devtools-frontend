@@ -9,6 +9,7 @@
 *  npm run generate-bridge-file test/unittests/scripts/component_bridges/fixtures/getters-setters-component.ts
 */
 
+import './getters-setters-component.js';
 /**
 * @typedef {{
 * name:string,

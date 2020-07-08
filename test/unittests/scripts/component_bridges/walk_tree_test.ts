@@ -124,6 +124,28 @@ describe('walkTree', () => {
       assert.deepEqual(publicMethodNames, ['update']);
     });
 
+    it('ignores any component lifecycle methods in the class', () => {
+      const code = `class Breadcrumbs extends HTMLElement {
+        connectedCallback() {
+        }
+        disconnectedCallback() {
+        }
+        attributeChangedCallback() {
+        }
+        adoptedCallback() {
+        }
+      }`;
+
+      const source = createTypeScriptSourceFile(code);
+      const result = walkTree(source, 'test.ts');
+
+      if (!result.componentClass) {
+        assert.fail('No component class was found');
+      }
+
+      assert.strictEqual(result.publicMethods.size, 0);
+    });
+
     it('finds any public getter functions on the class and notes its return interface', () => {
       const code = `interface Person {}
 

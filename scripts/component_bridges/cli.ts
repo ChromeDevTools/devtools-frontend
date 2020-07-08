@@ -17,6 +17,8 @@ export const writeToDisk = (inputFilePath: string, generatedCode: GeneratedCode)
   const baseName = path.basename(inputFilePath, '.ts');
   const outputFileName = `${baseName}_bridge.js`;
 
+  const importStatement = `import './${baseName}.js';`;
+
   const interfaces = generatedCode.interfaces
                          .map(interfacePart => {
                            return interfacePart.join('\n');
@@ -36,7 +38,8 @@ export const writeToDisk = (inputFilePath: string, generatedCode: GeneratedCode)
 `;
 
   // extra \n to ensure ending with a linebreak at end of file
-  const finalCode = [chromeLicense, byHandWarning, interfaces, classDeclaration, creatorFunction].join('\n') + '\n';
+  const finalCode =
+      [chromeLicense, byHandWarning, importStatement, interfaces, classDeclaration, creatorFunction].join('\n') + '\n';
 
   fs.writeFileSync(path.join(dir, outputFileName), finalCode, {encoding: 'utf8'});
 

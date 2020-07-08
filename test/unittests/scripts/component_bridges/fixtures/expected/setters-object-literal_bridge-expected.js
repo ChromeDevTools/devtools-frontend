@@ -9,6 +9,7 @@
 *  npm run generate-bridge-file test/unittests/scripts/component_bridges/fixtures/setters-object-literal.ts
 */
 
+import './setters-object-literal.js';
 /**
 * @typedef {{
 * name:string,

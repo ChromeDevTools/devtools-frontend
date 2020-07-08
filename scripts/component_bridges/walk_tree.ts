@@ -105,6 +105,13 @@ const isPrivate = (node: ts.MethodDeclaration|ts.GetAccessorDeclaration|ts.SetAc
   return node.modifiers && node.modifiers.some(modifier => modifier.kind === ts.SyntaxKind.PrivateKeyword) || false;
 };
 
+const CUSTOM_ELEMENTS_LIFECYCLE_METHODS = new Set([
+  'connectedCallback',
+  'disconnectedCallback',
+  'adoptedCallback',
+  'attributeChangedCallback',
+]);
+
 const walkNode = (node: ts.Node, startState?: WalkerState): WalkerState => {
   const state: WalkerState = startState || {
     foundInterfaces: new Set(),
@@ -129,7 +136,13 @@ const walkNode = (node: ts.Node, startState?: WalkerState): WalkerState => {
           if (isPrivate(member)) {
             return;
           }
-          state.publicMethods.add(member);
+          const methodName = (member.name as ts.Identifier).escapedText.toString();
+          if (CUSTOM_ELEMENTS_LIFECYCLE_METHODS.has(methodName) === false) {
+            /* We skip custom element lifecycle methods. Whilst they are public,
+            they are never called from user code, so the bridge file does not
+            need to include them.*/
+            state.publicMethods.add(member);
+          }
 
           // TODO: we should check the return type of the method - if
           // that's an interface we should include it in the _bridge.js

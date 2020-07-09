@@ -116,9 +116,10 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!TreeElement} child
+   * @param {(function(!TreeElement, !TreeElement):number)=} comparator
    */
-  appendChild(child) {
-    this._rootElement.appendChild(child);
+  appendChild(child, comparator) {
+    this._rootElement.appendChild(child, comparator);
   }
 
   /**
@@ -572,14 +573,17 @@ export class TreeElement {
 
   /**
    * @param {!TreeElement} child
+   * @param {(function(!TreeElement, !TreeElement):number)=} comparator
    */
-  appendChild(child) {
+  appendChild(child, comparator) {
     if (!this._children) {
       this._children = [];
     }
 
     let insertionIndex;
-    if (this.treeOutline && this.treeOutline._comparator) {
+    if (comparator) {
+      insertionIndex = this._children.lowerBound(child, comparator);
+    } else if (this.treeOutline && this.treeOutline._comparator) {
       insertionIndex = this._children.lowerBound(child, this.treeOutline._comparator);
     } else {
       insertionIndex = this._children.length;

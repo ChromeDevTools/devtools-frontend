@@ -22,6 +22,15 @@
   opacity: 100% !important;
 }
 
+.text-prompt {
+  cursor: text;
+  overflow-x: visible;
+}
+
+.text-prompt::-webkit-scrollbar {
+  display: none;
+}
+
 .text-prompt-editing > .text-prompt {
   color: #222 !important;
   text-decoration: none !important;
@@ -41,15 +50,6 @@
   content: '\00A0';
   width: 0;
   display: block;
-}
-
-.text-prompt {
-  cursor: text;
-  overflow-x: visible;
-}
-
-.text-prompt::-webkit-scrollbar {
-  display: none;
 }
 
 .text-prompt.disabled {

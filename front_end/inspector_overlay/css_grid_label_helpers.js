@@ -77,12 +77,21 @@ let GridHighlightConfig;  // eslint-disable-line no-unused-vars
  * @param {AreaBounds[]} areaBounds The list of named grid areas with their bounds.
  */
 export function drawGridLabels(config, gridBounds, areaBounds) {
-  // Clear out the main label container and create child elements for the various labels.
-  const labelContainer = /* @type {HTMLElement} */ document.getElementById('grid-label-container');
-  labelContainer.removeChildren();
+  // Find and clear the layer for the node specified in the config, or the default layer:
+  // Each node has a layer for grid labels in order to draw multiple grid highlights
+  // at once.
+  const labelContainerId = window._gridLayerCounter ? `grid-${window._gridLayerCounter++}-labels` : 'grid-labels';
+  let labelContainerForNode = document.getElementById(labelContainerId);
+  if (!labelContainerForNode) {
+    const mainLabelLayerContainer = document.getElementById('grid-label-container');
+    labelContainerForNode = mainLabelLayerContainer.createChild('div');
+    labelContainerForNode.id = labelContainerId;
+  }
+  labelContainerForNode.removeChildren();
 
-  const lineNumberContainer = labelContainer.createChild('div', 'line-numbers');
-  const areaNameContainer = labelContainer.createChild('div', 'area-names');
+  // Add the containers for the line and area to the node's layer
+  const lineNumberContainer = labelContainerForNode.createChild('div', 'line-numbers');
+  const areaNameContainer = labelContainerForNode.createChild('div', 'area-names');
 
   // Draw line numbers.
   drawGridNumbers(lineNumberContainer, config, gridBounds);

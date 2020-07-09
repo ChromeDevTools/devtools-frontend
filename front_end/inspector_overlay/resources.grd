@@ -10,6 +10,7 @@
     <includes>
       <include name="IDR_INSPECT_COMMON_CSS" file="common.css" type="BINDATA" compress="gzip"/>
       <include name="IDR_INSPECT_TOOL_HIGHLIGHT_JS" file="tool_highlight.js" type="BINDATA" compress="gzip"/>
+      <include name="IDR_INSPECT_TOOL_HIGHLIGHT_GRID_JS" file="tool_highlight_grid.js" type="BINDATA" compress="gzip"/>
       <include name="IDR_INSPECT_TOOL_SCREENSHOT_JS" file="tool_screenshot.js" type="BINDATA" compress="gzip"/>
       <include name="IDR_INSPECT_TOOL_PAUSED_JS" file="tool_paused.js" type="BINDATA" compress="gzip"/>
       <include name="IDR_INSPECT_TOOL_VIEWPORT_SIZE_JS" file="tool_viewport_size.js" type="BINDATA" compress="gzip"/>

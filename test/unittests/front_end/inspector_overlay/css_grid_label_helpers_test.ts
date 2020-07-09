@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {drawGridAreaNamesAndAssertLabels, drawGridNumbersAndAssertLabels, getGridLineNumberLabelContainer, initFrameForGridLabels} from '../helpers/InspectorOverlayHelpers.js';
+import {drawGridAreaNamesAndAssertLabels, drawGridNumbersAndAssertLabels, drawMultipleGridNumbersAndAssertLabels, getGridLineNumberLabelContainer, initFrameForGridLabels, initFrameForMultipleGridLabels} from '../helpers/InspectorOverlayHelpers.js';
 import {drawGridNumbers, _normalizeOffsetData} from '../../../../front_end/inspector_overlay/css_grid_label_helpers.js';
 
 describe('drawGridNumbers label creation', () => {
@@ -465,4 +465,47 @@ describe('drawGridAreaNames', () => {
   for (const {description, areaBounds, expectedLabels} of TESTS) {
     it(description, () => drawGridAreaNamesAndAssertLabels(areaBounds, expectedLabels));
   }
+});
+
+describe('drawMultipleGridLabels', () => {
+  it('can set labels on multiple grid nodes', () => {
+    initFrameForMultipleGridLabels(2);
+    const bounds = {
+      minX: 100,
+      maxX: 500,
+      minY: 100,
+      maxY: 500,
+    };
+    const configs = [
+      {
+        layerId: 1,
+        gridHighlightConfig: {
+          showPositiveLineNumbers: true,
+        },
+        positiveRowLineNumberOffsets: [0, 50, 100],
+      },
+      {
+        layerId: 2,
+        gridHighlightConfig: {
+          showPositiveLineNumbers: true,
+        },
+        positiveRowLineNumberOffsets: [0, 50, 100],
+      },
+    ];
+    const expectedLayers = [
+      {
+        layerId: 1,
+        expectedLabels: [
+          {className: 'right-mid', count: 3},
+        ],
+      },
+      {
+        layerId: 2,
+        expectedLabels: [
+          {className: 'right-mid', count: 3},
+        ],
+      },
+    ];
+    drawMultipleGridNumbersAndAssertLabels(configs, bounds, expectedLayers);
+  });
 });

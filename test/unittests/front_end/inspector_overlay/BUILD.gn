@@ -5,6 +5,7 @@ ts_library("inspector_overlay") {
   sources = [
     "common_test.ts",
     "css_grid_label_helpers_test.ts",
+    "highlight_common_test.ts",
   ]
 
   deps = [

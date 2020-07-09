@@ -145,9 +145,6 @@
 
 .tabbed-pane-header-tab.selected {
   border-bottom: none;
-}
-
-.tabbed-pane-header-tab.selected {
   background-color: var(--tab-selected-bg-color);
   color: var(--tab-selected-fg-color);
 }

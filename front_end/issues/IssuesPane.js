@@ -691,6 +691,13 @@ class IssueView extends UI.TreeOutline.TreeElement {
   }
 
   /**
+   * @returns {string}
+   */
+  getIssueTitle() {
+    return this._description.title;
+  }
+
+  /**
    * @override
    */
   onattach() {
@@ -902,7 +909,13 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     if (!this._issueViews.has(issue.code())) {
       const view = new IssueView(this, issue, description);
       this._issueViews.set(issue.code(), view);
-      this._issuesTree.appendChild(view);
+      this._issuesTree.appendChild(view, (a, b) => {
+        if (a instanceof IssueView && b instanceof IssueView) {
+          return a.getIssueTitle().localeCompare(b.getIssueTitle());
+        }
+        console.error('The issues tree should only contain IssueView objects as direct children');
+        return 0;
+      });
     }
     this._issueViews.get(issue.code()).update();
     this._updateCounts();

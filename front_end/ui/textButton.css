@@ -18,18 +18,16 @@
   white-space: nowrap;
 }
 
+.text-button:disabled {
+  opacity: 38%;
+}
+
 .text-button:not(:disabled):focus,
 .text-button:not(:disabled):hover,
 .text-button:not(:disabled):active {
   background-color: var(--toolbar-bg-color);
   box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
   cursor: pointer;
-}
-
-.text-button:not(:disabled):not(.running):focus,
-.text-button:not(:disabled):not(.running):hover,
-.text-button:not(:disabled):not(.running):active {
-  color: var(--accent-fg-color-hover);
 }
 
 .text-button:not(:disabled):active {
@@ -40,8 +38,10 @@
   box-shadow: 0 1px 2px rgb(0 0 0 / 10%), 0 0 0 2px rgb(66 133 244 / 40%);
 }
 
-.text-button:disabled {
-  opacity: 38%;
+.text-button:not(:disabled):not(.running):focus,
+.text-button:not(:disabled):not(.running):hover,
+.text-button:not(:disabled):not(.running):active {
+  color: var(--accent-fg-color-hover);
 }
 
 .text-button.primary-button,
@@ -90,6 +90,14 @@
     border-color: ButtonText;
   }
 
+  .text-button:disabled {
+    forced-color-adjust: none;
+    opacity: 100%;
+    background: ButtonFace;
+    border-color: GrayText;
+    color: GrayText;
+  }
+
   .text-button:not(:disabled):focus {
     forced-color-adjust: none;
     background-color: ButtonFace;
@@ -124,13 +132,5 @@
     background-color: HighlightText;
     color: Highlight;
     border-color: Highlight;
-  }
-
-  .text-button:disabled {
-    forced-color-adjust: none;
-    opacity: 100%;
-    background: ButtonFace;
-    border-color: GrayText;
-    color: GrayText;
   }
 }

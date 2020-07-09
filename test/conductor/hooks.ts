@@ -22,7 +22,6 @@ const {execPath} = process;
 const width = 1280;
 const height = 720;
 
-const chromeDebugPort = 9222;
 const headless = !process.env['DEBUG'];
 const envSlowMo = process.env['STRESS'] ? 50 : undefined;
 const envThrottleRate = process.env['STRESS'] ? 3 : 1;
@@ -46,8 +45,9 @@ interface DevToolsTarget {
 
 const envChromeBinary = process.env['CHROME_BIN'];
 
-async function loadTargetPageAndDevToolsFrontend(hostedModeServerPort: number) {
-  const launchArgs = [`--remote-debugging-port=${chromeDebugPort}`];
+function launchChrome() {
+  // Use port 0 to request any free port.
+  const launchArgs = ['--remote-debugging-port=0'];
   const opts: puppeteer.LaunchOptions = {
     headless,
     executablePath: envChromeBinary,
@@ -64,8 +64,23 @@ async function loadTargetPageAndDevToolsFrontend(hostedModeServerPort: number) {
   }
 
   opts.args = launchArgs;
+  return puppeteer.launch(opts);
+}
 
-  browser = await puppeteer.launch(opts);
+function getDebugPort(browser: puppeteer.Browser) {
+  const websocketUrl = browser.wsEndpoint();
+  const url = new URL(websocketUrl);
+  if (url.port) {
+    return url.port;
+  }
+  throw new Error(`Unable to find debug port: ${websocketUrl}`);
+}
+
+async function loadTargetPageAndDevToolsFrontend(hostedModeServerPort: number) {
+  browser = await launchChrome();
+  const chromeDebugPort = getDebugPort(browser);
+  console.log(`Opened chrome with debug port: ${chromeDebugPort}`);
+
   // Load the target page.
   const srcPage = await browser.newPage();
   await srcPage.goto(EMPTY_PAGE);
@@ -173,17 +188,16 @@ export async function reloadDevTools(options: ReloadDevToolsOptions = {}) {
   }
 }
 
-function startHostedModeServer(chromePort: number): Promise<number> {
+function startHostedModeServer(): Promise<number> {
   console.log('Spawning hosted mode server');
 
   function handleHostedModeError(error: Error) {
     throw new Error(`Hosted mode server: ${error}`);
   }
 
-  // Copy the current env and append the ports.
+  // Copy the current env and append the port.
   const env = Object.create(process.env);
   env.PORT = 0;  // 0 means request a free port from the OS.
-  env.REMOTE_DEBUGGING_PORT = chromePort;
   return new Promise((resolve, reject) => {
     // We open the server with an IPC channel so that it can report the port it
     // used back to us. For parallel test mode, we need to avoid specifying a
@@ -206,7 +220,7 @@ function startHostedModeServer(chromePort: number): Promise<number> {
 
 export async function globalSetup() {
   try {
-    const port = await startHostedModeServer(chromeDebugPort);
+    const port = await startHostedModeServer();
     console.log(`Started hosted mode server on port ${port}`);
     setHostedModeServerPort(port);
     await loadTargetPageAndDevToolsFrontend(port);

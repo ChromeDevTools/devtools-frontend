@@ -2,6 +2,9 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+use_relative_paths = True
+use_relative_hooks = True
+
 vars = {
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
   'build_revision': '992194ef50151b9a160f5abf78a9100915f5c92b',
@@ -45,13 +48,13 @@ vars = {
 allowed_hosts = [ 'chromium.googlesource.com' ]
 
 deps = {
-  'devtools-frontend/buildtools/clang_format/script':
+  'buildtools/clang_format/script':
     Var('clang_format_url') + '@' + Var('clang_format_revision'),
 
-  'devtools-frontend/buildtools':
+  'buildtools':
     Var('buildtools_url') + '@' + Var('buildtools_revision'),
 
-  'devtools-frontend/buildtools/linux64': {
+  'buildtools/linux64': {
     'packages': [
       {
         'package': 'gn/gn/linux-amd64',
@@ -61,7 +64,7 @@ deps = {
     'dep_type': 'cipd',
     'condition': 'host_os == "linux"',
   },
-  'devtools-frontend/buildtools/mac': {
+  'buildtools/mac': {
     'packages': [
       {
         'package': 'gn/gn/mac-amd64',
@@ -71,7 +74,7 @@ deps = {
     'dep_type': 'cipd',
     'condition': 'host_os == "mac"',
   },
-  'devtools-frontend/buildtools/win': {
+  'buildtools/win': {
     'packages': [
       {
         'package': 'gn/gn/windows-amd64',
@@ -81,22 +84,22 @@ deps = {
     'dep_type': 'cipd',
     'condition': 'host_os == "win"',
   },
-  'devtools-frontend/build':
+  'build':
     Var('build_url') + '@' + Var('build_revision'),
-  'devtools-frontend/third_party/depot_tools':
+  'third_party/depot_tools':
     Var('depot_tools_url') + '@' + Var('depot_tools_revision'),
-  'devtools-frontend/third_party/inspector_protocol':
+  'third_party/inspector_protocol':
     Var('inspector_protocol_url') + '@' + Var('inspector_protocol_revision'),
 
-  'devtools-frontend/back_end/CXXDWARFSymbols/third_party/llvm': {
+  'back_end/CXXDWARFSymbols/third_party/llvm': {
     'url': Var('llvm_url') + '@' + Var('llvm_revision'),
     'condition': 'build_symbol_server'
   },
-  'devtools-frontend/third_party/clang': {
+  'third_party/clang': {
     'url': Var('clang_url') + '@' + Var('clang_revision'),
     'condition': 'build_symbol_server'
   },
-  'devtools-frontend/third_party/cmake': {
+  'third_party/cmake': {
     'packages': [
       {
         'package': 'infra/cmake/${{platform}}',
@@ -106,7 +109,7 @@ deps = {
     'dep_type': 'cipd',
     'condition': 'build_symbol_server'
   },
-  'devtools-frontend/third_party/protoc': {
+  'third_party/protoc': {
     'packages': [
       {
         'package': 'infra/tools/protoc/${{platform}}',
@@ -125,12 +128,12 @@ hooks = [
     'pattern': '.',
     'condition': 'host_os == "linux"',
     'action': [ 'python',
-                'devtools-frontend/third_party/depot_tools/download_from_google_storage.py',
+                'third_party/depot_tools/download_from_google_storage.py',
                 '--no_resume',
                 '--extract',
                 '--no_auth',
                 '--bucket', 'chromium-nodejs/12.14.1',
-                '-s', 'devtools-frontend/third_party/node/linux/node-linux-x64.tar.gz.sha1',
+                '-s', 'third_party/node/linux/node-linux-x64.tar.gz.sha1',
     ],
   },
   {
@@ -138,12 +141,12 @@ hooks = [
     'pattern': '.',
     'condition': 'host_os == "mac"',
     'action': [ 'python',
-                'devtools-frontend/third_party/depot_tools/download_from_google_storage.py',
+                'third_party/depot_tools/download_from_google_storage.py',
                 '--no_resume',
                 '--extract',
                 '--no_auth',
                 '--bucket', 'chromium-nodejs/12.14.1',
-                '-s', 'devtools-frontend/third_party/node/mac/node-darwin-x64.tar.gz.sha1',
+                '-s', 'third_party/node/mac/node-darwin-x64.tar.gz.sha1',
     ],
   },
   {
@@ -151,11 +154,11 @@ hooks = [
     'pattern': '.',
     'condition': 'host_os == "win"',
     'action': [ 'python',
-                'devtools-frontend/third_party/depot_tools/download_from_google_storage.py',
+                'third_party/depot_tools/download_from_google_storage.py',
                 '--no_resume',
                 '--no_auth',
                 '--bucket', 'chromium-nodejs/12.14.1',
-                '-s', 'devtools-frontend/third_party/node/win/node.exe.sha1',
+                '-s', 'third_party/node/win/node.exe.sha1',
     ],
   },
 
@@ -166,7 +169,7 @@ hooks = [
     'pattern': '.',
     'action': [
         'python',
-        'devtools-frontend/third_party/depot_tools/update_depot_tools_toggle.py',
+        'third_party/depot_tools/update_depot_tools_toggle.py',
         '--disable',
     ],
   },
@@ -177,11 +180,11 @@ hooks = [
     'pattern': '.',
     'condition': 'host_os == "win"',
     'action': [ 'python',
-                'devtools-frontend/third_party/depot_tools/download_from_google_storage.py',
+                'third_party/depot_tools/download_from_google_storage.py',
                 '--no_resume',
                 '--no_auth',
                 '--bucket', 'chromium-clang-format',
-                '-s', 'devtools-frontend/buildtools/win/clang-format.exe.sha1',
+                '-s', 'buildtools/win/clang-format.exe.sha1',
     ],
   },
   {
@@ -189,11 +192,11 @@ hooks = [
     'pattern': '.',
     'condition': 'host_os == "mac"',
     'action': [ 'python',
-                'devtools-frontend/third_party/depot_tools/download_from_google_storage.py',
+                'third_party/depot_tools/download_from_google_storage.py',
                 '--no_resume',
                 '--no_auth',
                 '--bucket', 'chromium-clang-format',
-                '-s', 'devtools-frontend/buildtools/mac/clang-format.sha1',
+                '-s', 'buildtools/mac/clang-format.sha1',
     ],
   },
   {
@@ -201,11 +204,11 @@ hooks = [
     'pattern': '.',
     'condition': 'host_os == "linux"',
     'action': [ 'python',
-                'devtools-frontend/third_party/depot_tools/download_from_google_storage.py',
+                'third_party/depot_tools/download_from_google_storage.py',
                 '--no_resume',
                 '--no_auth',
                 '--bucket', 'chromium-clang-format',
-                '-s', 'devtools-frontend/buildtools/linux64/clang-format.sha1',
+                '-s', 'buildtools/linux64/clang-format.sha1',
     ],
   },
 
@@ -215,9 +218,9 @@ hooks = [
     'pattern': '.',
     'condition': 'host_os == "win"',
     'action': [ 'python',
-                'devtools-frontend/scripts/deps/download_chromium.py',
+                'scripts/deps/download_chromium.py',
                 'https://commondatastorage.googleapis.com/chromium-browser-snapshots/Win_x64/' + Var('chromium_win') + '/chrome-win.zip',
-                'devtools-frontend/third_party/chrome',
+                'third_party/chrome',
                 'chrome-win/chrome.exe',
                 Var('chromium_win'),
     ],
@@ -227,9 +230,9 @@ hooks = [
     'pattern': '.',
     'condition': 'host_os == "mac"',
     'action': [ 'python',
-                'devtools-frontend/scripts/deps/download_chromium.py',
+                'scripts/deps/download_chromium.py',
                 'https://commondatastorage.googleapis.com/chromium-browser-snapshots/Mac/' + Var('chromium_mac') + '/chrome-mac.zip',
-                'devtools-frontend/third_party/chrome',
+                'third_party/chrome',
                 'chrome-mac/Chromium.app/Contents',
                 Var('chromium_mac'),
     ],
@@ -239,9 +242,9 @@ hooks = [
     'pattern': '.',
     'condition': 'host_os == "linux"',
     'action': [ 'python',
-                'devtools-frontend/scripts/deps/download_chromium.py',
+                'scripts/deps/download_chromium.py',
                 'https://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/' + Var('chromium_linux') + '/chrome-linux.zip',
-                'devtools-frontend/third_party/chrome',
+                'third_party/chrome',
                 'chrome-linux/chrome',
                 Var('chromium_linux'),
     ],
@@ -252,13 +255,13 @@ hooks = [
     'pattern': '.',
     # clang not supported on aix
     'condition': 'host_os != "aix" and build_symbol_server',
-    'action': ['python', 'devtools-frontend/third_party/clang/scripts/update.py'],
+    'action': ['python', 'third_party/clang/scripts/update.py'],
   },
   {
     'name': 'sysroot_x64',
     'pattern': '.',
     'condition': 'checkout_linux and checkout_x64',
-    'action': ['python', 'devtools-frontend/build/linux/sysroot_scripts/install-sysroot.py',
+    'action': ['python', 'build/linux/sysroot_scripts/install-sysroot.py',
                '--arch=x64'],
   },
 

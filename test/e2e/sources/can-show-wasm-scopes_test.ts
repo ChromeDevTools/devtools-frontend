@@ -11,7 +11,7 @@ import {addBreakpointForLine, getScopeNames, getValuesForScope, openSourceCodeEd
 describe('Source Tab', async () => {
   it('shows and updates the module, local, and stack scope while pausing', async () => {
     const {frontend, target} = getBrowserAndPages();
-    const breakpointLine = 13;
+    const breakpointLine = 12;
     let moduleScopeValues: string[];
     let localScopeValues: string[];
 

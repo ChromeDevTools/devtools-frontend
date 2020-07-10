@@ -12,6 +12,11 @@ export const PAUSE_BUTTON = '[aria-label="Pause script execution"]';
 export const RESUME_BUTTON = '[aria-label="Resume script execution"]';
 export const SOURCES_LINES_SELECTOR = '.CodeMirror-code > div';
 export const PAUSE_INDICATOR_SELECTOR = '.paused-status';
+export const CODE_LINE_SELECTOR = '.CodeMirror-code .CodeMirror-linenumber';
+export const SCOPE_LOCAL_VALUES_SELECTOR = 'li[aria-label="Local"] + ol';
+export const SELECTED_THREAD_SELECTOR = 'div.thread-item.selected > div.thread-item-title';
+export const TURNED_OFF_PAUSE_BUTTON_SELECTOR = 'button.toolbar-state-off';
+export const TURNED_ON_PAUSE_BUTTON_SELECTOR = 'button.toolbar-state-on';
 
 export async function doubleClickSourceTreeItem(selector: string) {
   await waitFor(selector);
@@ -75,18 +80,18 @@ export async function getOpenSources() {
 // We can't use the click helper, as it is not possible to select a particular
 // line number element in CodeMirror.
 export async function addBreakpointForLine(frontend: puppeteer.Page, index: number, expectedFail: boolean = false) {
-  await frontend.waitForFunction(index => {
-    return document.querySelectorAll('.CodeMirror-linenumber').length >= index;
-  }, undefined, index);
-  const breakpointLineNumber = await frontend.evaluate(index => {
-    const element = document.querySelectorAll('.CodeMirror-linenumber')[index];
+  await frontend.waitForFunction((index, CODE_LINE_SELECTOR) => {
+    return document.querySelectorAll(CODE_LINE_SELECTOR).length >= (index - 1);
+  }, undefined, index, CODE_LINE_SELECTOR);
+  const breakpointLineNumber = await frontend.evaluate((index, CODE_LINE_SELECTOR) => {
+    const element = document.querySelectorAll(CODE_LINE_SELECTOR)[index - 1];
 
     const {left, top, width, height} = element.getBoundingClientRect();
     return {
       x: left + width * 0.5,
       y: top + height * 0.5,
     };
-  }, index);
+  }, index, CODE_LINE_SELECTOR);
 
   const currentBreakpointCount = await frontend.$$eval('.cm-breakpoint', nodes => nodes.length);
 
@@ -265,6 +270,12 @@ export async function expandFileTree(selectors: NestedFileSelector) {
   await expandSourceTreeItem(selectors.domainSelector);
   await expandSourceTreeItem(selectors.folderSelector);
   return await waitFor(selectors.fileSelector, undefined, 1000);
+}
+
+export async function stepThroughTheCode() {
+  const {frontend} = getBrowserAndPages();
+  await frontend.keyboard.press('F9');
+  await waitFor(PAUSE_INDICATOR_SELECTOR);
 }
 
 export async function openNestedWorkerFile(selectors: NestedFileSelector) {

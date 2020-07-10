@@ -820,6 +820,7 @@ export class ExecutionContext {
       timeout: options.timeout,
       disableBreaks: options.disableBreaks,
       replMode: options.replMode,
+      allowUnsafeEvalBlockedByCSP: options.allowUnsafeEvalBlockedByCSP,
     });
 
     const error = response[ProtocolClient.InspectorBackend.ProtocolError];
@@ -897,7 +898,8 @@ export let CompileScriptResult;
  *    throwOnSideEffect: (boolean|undefined),
  *    timeout: (number|undefined),
  *    disableBreaks: (boolean|undefined),
- *    replMode: (boolean|undefined)
+ *    replMode: (boolean|undefined),
+ *    allowUnsafeEvalBlockedByCSP: (boolean|undefined)
  *  }}
  */
 export let EvaluationOptions;

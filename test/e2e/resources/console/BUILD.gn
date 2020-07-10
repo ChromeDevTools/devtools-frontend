@@ -6,6 +6,7 @@ import("../../../../scripts/build/ninja/copy.gni")
 
 copy_to_gen("console") {
   sources = [
+    "CSP-blocks-eval.html",
     "big-int.html",
     "built-ins.html",
     "console-filter.html",

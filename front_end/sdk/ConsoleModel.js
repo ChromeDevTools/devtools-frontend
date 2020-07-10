@@ -166,7 +166,8 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
           silent: false,
           returnByValue: false,
           generatePreview: true,
-          replMode: true
+          replMode: true,
+          allowUnsafeEvalBlockedByCSP: false
         },
         Common.Settings.Settings.instance().moduleSetting('consoleUserActivationEval').get(), /* awaitPromise */ false);
     HostModule.userMetrics.actionTaken(Host.UserMetrics.Action.ConsoleEvaluated);

@@ -8,6 +8,7 @@ node_ts_library("console") {
   sources = [
     "console-autocomplete_test.ts",
     "console-clear_test.ts",
+    "console-eval-blocked-by-CSP_test.ts",
     "console-eval-fake_test.ts",
     "console-eval-global_test.ts",
     "console-filter_test.ts",

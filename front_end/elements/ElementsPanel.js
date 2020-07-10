@@ -586,7 +586,8 @@ export class ElementsPanel extends UI.Panel.Panel {
         searchResult.node = node;
 
         // If any of these properties are undefined, this means the search/highlight request is outdated.
-        const highlightRequestValid = this._searchConfig && this._currentSearchResultIndex && this._searchResults;
+        const highlightRequestValid =
+            this._searchConfig && this._searchResults && (this._currentSearchResultIndex !== undefined);
         if (highlightRequestValid) {
           this._highlightCurrentSearchResult();
         }

@@ -421,7 +421,7 @@ list: notApplicable
 listitem: notApplicable
 load-fast-enough-for-pwa: flaky
 logical-tab-order: manual
-long-tasks: informative
+long-tasks: flaky
 main-thread-tasks: informative
 mainthread-work-breakdown: numeric
 managed-focus: manual

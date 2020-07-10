@@ -62,12 +62,12 @@
   border-right: 2px solid hsl(92deg 48% 42%);
 }
 
-.media-inspector-marker-inactive .media-inspector-marker-min-max-width:not(:hover) {
-  background-color: hsl(125deg 39% 94%);
-}
-
 .media-inspector-marker-min-max-width:hover {
   z-index: 1;
+}
+
+.media-inspector-marker-inactive .media-inspector-marker-min-max-width:not(:hover) {
+  background-color: hsl(125deg 39% 94%);
 }
 
 .media-inspector-marker-min-width {
@@ -89,13 +89,13 @@
 
 /* Media query labels */
 
-.media-inspector-marker:not(:hover) .media-inspector-marker-label-container {
-  display: none;
-}
-
 .media-inspector-marker-label-container {
   position: absolute;
   z-index: 1;
+}
+
+.media-inspector-marker:not(:hover) .media-inspector-marker-label-container {
+  display: none;
 }
 
 .media-inspector-marker-label-container-left {

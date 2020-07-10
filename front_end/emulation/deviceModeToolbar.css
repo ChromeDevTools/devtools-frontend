@@ -11,14 +11,14 @@
   text-align: center;
 }
 
-.device-mode-size-input:focus::-webkit-input-placeholder {
-  color: transparent;
-}
-
 .device-mode-size-input:disabled {
   background: transparent;
   user-select: none;
   opacity: 60%;
+}
+
+.device-mode-size-input:focus::-webkit-input-placeholder {
+  color: transparent;
 }
 
 .device-mode-x {

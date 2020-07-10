@@ -297,15 +297,15 @@
   background-color: hsl(0deg 0% 98% / 90%);
 }
 
-.device-mode-content-clip.device-mode-outline-visible .device-mode-ruler-top .device-mode-ruler-content {
-  border-top: 1px solid hsl(0deg 0% 50%);
-}
-
 .device-mode-ruler-left .device-mode-ruler-content {
   border-left: 1px solid transparent;
   border-top: 1px solid transparent;
   right: 20px;
   bottom: 0;
+}
+
+.device-mode-content-clip.device-mode-outline-visible .device-mode-ruler-top .device-mode-ruler-content {
+  border-top: 1px solid hsl(0deg 0% 50%);
 }
 
 .device-mode-content-clip.device-mode-outline-visible .device-mode-ruler-left .device-mode-ruler-content {

@@ -6,7 +6,7 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
 import {$$, click, getBrowserAndPages, pasteText, step} from '../../shared/helper.js';
-import {focusConsolePrompt} from '../helpers/console-helpers.js';
+import {focusConsolePrompt, unifyLogVM} from '../helpers/console-helpers.js';
 import {CONSOLE_SELECTOR, CONSOLE_TAB_SELECTOR, STACK_PREVIEW_CONTAINER} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', async () => {
@@ -46,14 +46,56 @@ describe('The Console Tab', async () => {
       });
     });
 
-    // match was used here because line numbers differ from one machine to another
     await step('check that the first log is not truncated', async () => {
-      assert.match(messages[0], /([\t]recursive[\t]@[\t]VM\d+:\d+[\n]){10}([\t]\(anonymous\)[\t]@[\t]VM\d+:\d+){1}/);
+      const expectedLog = '\trecursive\t@\tVM11:6\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\t(anonymous)\t@\tVM11:9';
+
+      assert.strictEqual(messages[0], await unifyLogVM(messages[0], expectedLog));
     });
 
-    // match was used here because line numbers differ from one machine to another
     await step('check that the second log is truncated', async () => {
-      assert.match(messages[1], /([\t]recursive[\t]@[\t]VM\d+:\d+[\n]){30}([\t]Show 21 more frames){1}/);
+      const expectedLog = '\trecursive\t@\tVM11:6\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\trecursive\t@\tVM11:4\n' +
+          '\tShow 21 more frames';
+
+      assert.strictEqual(messages[1], await unifyLogVM(messages[1], expectedLog));
     });
   });
 });

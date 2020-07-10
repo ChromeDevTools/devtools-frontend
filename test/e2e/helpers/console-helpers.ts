@@ -155,6 +155,24 @@ export async function typeIntoConsoleAndWaitForResult(frontend: puppeteer.Page, 
   }, {}, originalLength);
 }
 
+export async function unifyLogVM(actualLog: string, expectedLog: string) {
+  const actualLogArray = actualLog.split('\n');
+  const expectedLogArray = expectedLog.split('\n');
+
+  if (actualLogArray.length !== expectedLogArray.length) {
+    throw 'logs are not the same length';
+  }
+
+  for (let index = 0; index < actualLogArray.length; index++) {
+    const repl = actualLogArray[index].match(/VM\d+:/g);
+    if (repl) {
+      expectedLogArray[index] = expectedLogArray[index].replace(/VM\d+:/g, repl[0]);
+    }
+  }
+
+  return expectedLogArray.join('\n');
+}
+
 export async function switchToTopExecutionContext(frontend: puppeteer.Page) {
   const dropdown = (await waitFor('[aria-label^="JavaScript context:"]')).asElement()!;
   // Use keyboard to open drop down, select first item.

@@ -9,21 +9,15 @@ found in the LICENSE file.
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Debug</title>
-  <link rel="stylesheet" type="text/css" href="common.css">
-  <script type="module" src="tool_highlight_grid.js"></script>
-  <style>
-    body {
-      background: #ccc;
-      overflow: hidden;
-    }
-  </style>
+  <link rel="stylesheet" type="text/css" href="../common.css">
+  <script type="module" src="../tool_highlight_grid.js"></script>
 </head>
 <body>
   <script type="module">
     const viewportWidth = document.documentElement.clientWidth;
     const viewportHeight = document.documentElement.clientHeight;
 
-    const TESTS= [
+    const gridInfos = [
       // Simple 2x3 grid, with explicit lines.
       {
         "gridInfo":
@@ -114,21 +108,17 @@ found in the LICENSE file.
       }
     ];
 
-    function test() {
-      setPlatform("mac");
+    setPlatform("mac");
 
-      window.viewportSize = {
-        width: document.documentElement.clientWidth,
-        height: document.documentElement.clientHeight
-      };
-      reset(window);
+    window.viewportSize = {
+      width: document.documentElement.clientWidth,
+      height: document.documentElement.clientHeight
+    };
+    reset(window);
 
-      for (const config of TESTS) {
-        drawGridHighlight(config.gridInfo);
-      }
+    for (const {gridInfo} of gridInfos) {
+      drawGridHighlight(gridInfo);
     }
-
-    test();
   </script>
 </body>
 </html>

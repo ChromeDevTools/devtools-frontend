@@ -1,0 +1,49 @@
+<!--
+Copyright 2020 The Chromium Authors. All rights reserved.
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debug</title>
+  <link rel="stylesheet" type="text/css" href="../common.css">
+  <script type="module" src="../tool_highlight.js"></script>
+</head>
+<body>
+  <script type="module">
+    window.viewportSize = {
+      width: document.documentElement.clientWidth,
+      height: document.documentElement.clientHeight
+    };
+
+    setPlatform("mac");
+    reset(window);
+
+    drawHighlight({
+      "paths":[],
+      "gridInfo":[
+        {
+          "rows":["M",800,60,"L",1200,60,"M",1200,120,"L",800,120,"M",1200,180,"L",800,180],
+          "rowGaps":[],
+          "positiveRowLineNumberOffsets":[],
+          "negativeRowLineNumberOffsets":[],
+          "columns":["M",800,60,"L",800,180,"M",1000,180,"L",1000,60,"M",1200,60,"L",1200,180],
+          "columnGaps":[],
+          "positiveColumnLineNumberOffsets":[],
+          "negativeColumnLineNumberOffsets":[],
+          "gridBorder":["M",800,60,"L",1200,60,"L",1200,180,"L",800,180,"Z"],
+          "areaNames": {
+            "foo": ["M", 800, 60, "L", 1000, 60, "L", 1000, 180, "L", 800, 180, "Z"],
+            "bar": ["M", 1000, 120, "L", 1200, 120, "L", 1200, 180, "L", 1000, 180, "Z"],
+          },
+          "gridHighlightConfig":{"gridBorderDash":false,"cellBorderDash":true,"showGridExtensionLines":false,"cellBorderColor":"rgba(147, 52, 230, 1)","showAreaNames": true, "areaBorderColor": "rgba(26, 115, 232, 1)"},
+          "isPrimaryGrid":true
+        }
+      ]
+    });
+  </script>
+</body>
+</html>

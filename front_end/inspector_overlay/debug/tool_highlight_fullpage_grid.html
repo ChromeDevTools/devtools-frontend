@@ -1,0 +1,46 @@
+<!--
+Copyright 2020 The Chromium Authors. All rights reserved.
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debug</title>
+  <link rel="stylesheet" type="text/css" href="../common.css">
+  <script type="module" src="../tool_highlight.js"></script>
+</head>
+<body>
+  <script type="module">
+    const viewportWidth = document.documentElement.clientWidth;
+    const viewportHeight = document.documentElement.clientHeight;
+
+    window.viewportSize = {
+      width: viewportWidth,
+      height: viewportHeight
+    };
+
+    setPlatform("mac");
+    reset(window);
+
+    drawHighlight({
+      "paths":[],
+      "gridInfo":[
+        {
+          "rows":["M",0,0,"L",viewportWidth,0,"M",viewportWidth,viewportHeight,"L",0,viewportHeight],
+          "positiveRowLineNumberOffsets":[0,viewportHeight],
+          "negativeRowLineNumberOffsets":[0,viewportHeight],
+          "columns":["M",0,0,"L",0,viewportHeight,"M",viewportWidth,viewportHeight,"L",viewportWidth,0],
+          "positiveColumnLineNumberOffsets":[0,viewportWidth],
+          "negativeColumnLineNumberOffsets":[0,viewportWidth],
+          "gridBorder":["M",0,0,"L",viewportWidth,0,"L",viewportWidth,viewportHeight,"L",0,viewportHeight,"Z"],
+          "gridHighlightConfig":{"gridBorderDash":false,"cellBorderDash":true,"showGridExtensionLines":false,"showPositiveLineNumbers":true,"showNegativeLineNumbers":true,"cellBorderColor":"rgba(147, 52, 230, 1)"},
+          "isPrimaryGrid":true
+        }
+      ]
+    });
+  </script>
+</body>
+</html>

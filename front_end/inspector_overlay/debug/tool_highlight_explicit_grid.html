@@ -1,0 +1,45 @@
+<!--
+Copyright 2020 The Chromium Authors. All rights reserved.
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debug</title>
+  <link rel="stylesheet" type="text/css" href="../common.css">
+  <script type="module" src="../tool_highlight.js"></script>
+</head>
+<body>
+  <script type="module">
+    setPlatform("mac");
+    reset(window);
+
+    drawHighlight({
+      "paths":[
+        {"path":["M",100,60,"L",420,60,"L",420,204,"L",100,204,"Z"],"fillColor":"rgba(111, 168, 220, .66)","name":"content"},
+        {"path":["M",90,50,"L",430,50,"L",430,214,"L",90,214,"Z"],"fillColor":"rgba(147, 196, 125, .55)","name":"padding"},
+        {"path":["M",87,47,"L",433,47,"L",433,217,"L",87,217,"Z"],"fillColor":"rgba(255, 229, 153, .66)","name":"border"},
+        {"path":["M",47,7,"L",473,7,"L",473,257,"L",47,257,"Z"],"fillColor":"rgba(246, 178, 107, .6)","name":"margin"}
+      ],
+      "gridInfo":[
+        {
+          "rows":["M",100,60,"L",420,60,"M",420,127,"L",100,127,"M",100,137,"L",420,137,"M",420,204,"L",100,204],
+          "rowGaps":["M",100,127,"L",420,127,"L",420,137,"L",100,137,"Z"],
+          "positiveRowLineNumberOffsets":[0,72,144],
+          "negativeRowLineNumberOffsets":[0,72,144],
+          "columns":["M",100,60,"L",100,204,"M",200,204,"L",200,60,"M",210,60,"L",210,204,"M",310,204,"L",310,60,"M",320,60,"L",320,204,"M",420,204,"L",420,60],
+          "columnGaps":["M",200,60,"L",210,60,"L",210,204,"L",200,204,"Z","M",310,60,"L",320,60,"L",320,204,"L",310,204,"Z"],
+          "positiveColumnLineNumberOffsets":[0,105,215,320],
+          "negativeColumnLineNumberOffsets":[0,105,215,320],
+          "gridBorder":["M",100,60,"L",420,60,"L",420,204,"L",100,204,"Z"],
+          "gridHighlightConfig":{"gridBorderDash":false,"cellBorderDash":true,"showGridExtensionLines":false,"showPositiveLineNumbers":true,"showNegativeLineNumbers":true,"cellBorderColor":"rgba(147, 52, 230, 1)","rowHatchColor":"rgba(147, 52, 230, .8)","columnHatchColor":"rgba(147, 52, 230, .8)"},
+          "isPrimaryGrid":true
+        }
+      ]
+    });
+  </script>
+</body>
+</html>

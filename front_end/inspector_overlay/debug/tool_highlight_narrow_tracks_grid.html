@@ -1,0 +1,40 @@
+<!--
+Copyright 2020 The Chromium Authors. All rights reserved.
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debug</title>
+  <link rel="stylesheet" type="text/css" href="../common.css">
+  <script type="module" src="../tool_highlight.js"></script>
+</head>
+<body>
+  <script type="module">
+    setPlatform("mac");
+    reset(window);
+
+    drawHighlight({
+      "paths":[],
+      "gridInfo":[
+        {
+          "rows":["M",600,100,"L",700,100,"M",700,110,"L",600,110,"M",600,120,"L",700,120,"M",700,130,"L",600,130,"M",600,140,"L",700,140,"M",700,150,"L",600,150,"M",600,160,"L",700,160,"M",700,170,"L",600,170,"M",600,180,"L",700,180,"M",700,190,"L",600,190,"M",600,200,"L",700,200],
+          "rowGaps":[],
+          "positiveRowLineNumberOffsets":[0,10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+          "negativeRowLineNumberOffsets":[0,10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+          "columns":["M",600,100,"L",600,200,"M",610,200,"L",610,100,"M",620,100,"L",620,200,"M",630,200,"L",630,100,"M",640,100,"L",640,200,"M",650,200,"L",650,100,"M",660,100,"L",660,200,"M",670,200,"L",670,100,"M",680,100,"L",680,200,"M",690,200,"L",690,100,"M",700,100,"L",700,200],
+          "columnGaps":[],
+          "positiveColumnLineNumberOffsets":[0,10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+          "negativeColumnLineNumberOffsets":[0,10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+          "gridBorder":["M",600,100,"L",700,100,"L",700,200,"L",600,200,"Z"],
+          "gridHighlightConfig":{"gridBorderDash":false,"cellBorderDash":true,"showGridExtensionLines":false,"showPositiveLineNumbers":true,"showNegativeLineNumbers":true,"cellBorderColor":"rgba(147, 52, 230, 1)"},
+          "isPrimaryGrid":true
+        }
+      ]
+    });
+  </script>
+</body>
+</html>

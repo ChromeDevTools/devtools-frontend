@@ -11,12 +11,12 @@ Inspector Overlay provides JS/CSS modules which are responsible for rendering th
 
 ## Local Development
 
-To iterate on the overlay UI locally, start a web server in the root folder and open one of the `*_debug.html` files.
+To iterate on the overlay UI locally, start a web server in the root folder and open one of the `debug/*.html` files.
 
 For example:
 
 - `python -m SimpleHTTPServer 8000`
-- Go to `http://localhost:8000/front_end/inspector_overlay/tool_highlight_debug.html`
+- Go to `http://localhost:8000/front_end/inspector_overlay/debug/tool_highlight_top_arrow.html`
 
 In this mode, JS modules will be served without bundling.
 

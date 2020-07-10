@@ -6,7 +6,7 @@ ts_library("issues") {
 
   deps = [
     "../../../../front_end/issues",
-    "../../../../front_end/sdk",
+    "../../../../front_end/sdk:bundle",
     "../sdk",
   ]
 }

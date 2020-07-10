@@ -11,7 +11,7 @@ ts_library("formatter_worker") {
     "JavaScriptFormatter_test.ts",
   ]
   deps = [
-    "../../../../front_end/formatter_worker",
+    "../../../../front_end/formatter_worker:bundle",
     "../../../../front_end/platform",
     "../../../../front_end/third_party/acorn",
     "../../../../front_end/third_party/acorn-loose",

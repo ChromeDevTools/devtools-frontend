@@ -5,8 +5,8 @@
 const {assert} = chai;
 
 import * as SDK from '../../../../front_end/sdk/sdk.js';
+import * as BrowserSDK from '../../../../front_end/browser_sdk/browser_sdk.js';
 import {StubIssue} from '../sdk/StubIssue.js';
-import {IssuesManager, Events as IssuesManagerEvents} from '../../../../front_end/browser_sdk/IssuesManager.js';
 import {MockIssuesModel} from '../sdk/MockIssuesModel.js';
 
 describe('IssuesManager', () => {
@@ -16,11 +16,12 @@ describe('IssuesManager', () => {
     const issue2_1 = new StubIssue('StubIssue2', ['id1', 'id2'], ['id3']);
 
     const mockModel = new MockIssuesModel([issue1]);
-    const issuesManager = new IssuesManager();
+    const issuesManager = new BrowserSDK.IssuesManager.IssuesManager();
     issuesManager.modelAdded((mockModel as any) as SDK.IssuesModel.IssuesModel);
 
     const dispatchedIssues: SDK.Issue.Issue[] = [];
-    issuesManager.addEventListener(IssuesManagerEvents.IssueAdded, event => dispatchedIssues.push(event.data.issue));
+    issuesManager.addEventListener(
+        BrowserSDK.IssuesManager.Events.IssueAdded, event => dispatchedIssues.push(event.data.issue));
 
     mockModel.dispatchEventToListeners(SDK.IssuesModel.Events.IssueAdded, {issuesModel: mockModel, issue: issue2});
 

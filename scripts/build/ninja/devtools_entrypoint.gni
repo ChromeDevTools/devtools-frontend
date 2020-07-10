@@ -24,7 +24,12 @@ template("devtools_entrypoint") {
   _entrypoint_gen_file_location =
       "$target_gen_dir/$_entrypoint_output_file_name.js"
 
-  _is_typescript_file = get_path_info(invoker.entrypoint, "extension") == "ts"
+  _is_typescript_file = get_path_info(invoker.entrypoint, "extension") ==
+                        "ts" || defined(invoker.is_legacy_javascript_entrypoint)
+
+  if (defined(invoker.is_legacy_javascript_entrypoint)) {
+    not_needed(invoker.is_legacy_javascript_entrypoint)
+  }
 
   # In debug mode, the entrypoint is kept as-is. This means we only
   # need to compile with TypeScript, which means it will fetch all

@@ -590,6 +590,7 @@
     }
   ],
   "scripts": [],
+  "skip_rollup": true,
   "modules": [
     "../generated/SupportedCSSProperties.js",
     "sdk.js",

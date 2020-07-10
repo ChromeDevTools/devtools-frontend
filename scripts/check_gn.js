@@ -18,24 +18,6 @@ const gnPath = path.resolve(__dirname, '..', 'BUILD.gn');
 const gnFile = fs.readFileSync(gnPath, 'utf-8');
 const gnLines = gnFile.split('\n');
 
-function main() {
-  const errors = [
-    ...checkNonAutostartNonRemoteModules(),
-    ...checkAllDevToolsFiles(),
-    ...checkAllDevToolsModules(),
-    ...checkDevtoolsModuleEntrypoints(),
-  ];
-  if (errors.length) {
-    console.log('DevTools BUILD.gn checker detected errors!');
-    console.log(`There's an issue with: ${gnPath}`);
-    console.log(errors.join('\n'));
-    process.exit(1);
-  }
-  console.log('DevTools BUILD.gn checker passed');
-}
-
-main();
-
 /**
  * Ensures that generated module files are in the right list in BUILD.gn.
  * This is primarily to avoid remote modules from accidentally getting
@@ -86,11 +68,43 @@ function checkAllDevToolsFiles() {
   });
 }
 
+const EXCLUDED_FOLDERS = ['elements', 'sdk', 'generated'];
+const EXCLUDED_FILE_NAMES = [
+  // This file is pre-generated and copied outside of a regular `devtools_entrypoint`.
+  'wasm_source_map/pkg/wasm_source_map.js',
+  // Included as part of `elements`
+  '../generated/SupportedCSSProperties.js',
+];
+
 function checkAllDevToolsModules() {
   return checkGNVariable(
       'all_devtools_modules',
       (moduleJSON, folderName) => {
+        if (EXCLUDED_FOLDERS.includes(folderName)) {
+          return [];
+        }
         return (moduleJSON.modules || []).filter(fileName => {
+          return fileName !== `${folderName}.js` && fileName !== `${folderName}-legacy.js`;
+        });
+      },
+      buildGNPath => filename => {
+        const relativePath = path.normalize(`${buildGNPath}/${filename}`);
+        return `"${relativePath}",`;
+      });
+}
+
+function checkAllTypescriptModules() {
+  return checkGNVariable(
+      'all_typescript_modules',
+      (moduleJSON, folderName) => {
+        // Elements has both TypeScript and JavaScript, so it is a bit special.
+        if (folderName === 'elements' || !EXCLUDED_FOLDERS.includes(folderName)) {
+          return [];
+        }
+        return (moduleJSON.modules || []).filter(fileName => {
+          if (EXCLUDED_FILE_NAMES.includes(fileName)) {
+            return false;
+          }
           return fileName !== `${folderName}.js` && fileName !== `${folderName}-legacy.js`;
         });
       },
@@ -107,12 +121,27 @@ function checkDevtoolsModuleEntrypoints() {
         return (moduleJSON.modules || []).filter(fileName => {
           // TODO(crbug.com/1101738): Remove the exemption and change the variable to
           // `generated_typescript_entrypoints` instead.
-          return (folderName !== 'elements' && fileName === `${folderName}.js`) ||
+          return (!EXCLUDED_FOLDERS.includes(folderName) && fileName === `${folderName}.js`) ||
               fileName === `${folderName}-legacy.js`;
         });
       },
       buildGNPath => filename => {
         const relativePath = path.normalize(`${buildGNPath}/${filename}`);
+        return `"${relativePath}",`;
+      });
+}
+function checkGeneratedTypescriptEntrypoints() {
+  return checkGNVariable(
+      'generated_typescript_entrypoints',
+      (moduleJSON, folderName) => {
+        return (moduleJSON.modules || []).filter(fileName => {
+          // TODO(crbug.com/1101738): Remove the exemption and change the variable to
+          // `generated_typescript_entrypoints` instead.
+          return (EXCLUDED_FOLDERS.includes(folderName) && fileName === `${folderName}.js`);
+        });
+      },
+      buildGNPath => filename => {
+        const relativePath = path.normalize(`$resources_out_dir/${buildGNPath}/${filename}`);
         return `"${relativePath}",`;
       });
 }
@@ -183,3 +212,23 @@ function selectGNLines(startLine, endLine) {
   }
   return lines.slice(startIndex + 1, endIndex);
 }
+
+function main() {
+  const errors = [
+    ...checkNonAutostartNonRemoteModules(),
+    ...checkAllDevToolsFiles(),
+    ...checkAllDevToolsModules(),
+    ...checkAllTypescriptModules(),
+    ...checkDevtoolsModuleEntrypoints(),
+    ...checkGeneratedTypescriptEntrypoints(),
+  ];
+  if (errors.length) {
+    console.log('DevTools BUILD.gn checker detected errors!');
+    console.log(`There's an issue with: ${gnPath}`);
+    console.log(errors.join('\n'));
+    process.exit(1);
+  }
+  console.log('DevTools BUILD.gn checker passed');
+}
+
+main();

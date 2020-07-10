@@ -2,9 +2,10 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../third_party/typescript/typescript.gni")
+import("../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../scripts/build/ninja/devtools_module.gni")
 
-ts_library("sdk") {
+devtools_module("sdk") {
   sources = [
     "CPUProfileDataModel.js",
     "CPUProfilerModel.js",
@@ -66,7 +67,6 @@ ts_library("sdk") {
     "TracingManager.js",
     "TracingModel.js",
     "WebAuthnModel.js",
-    "sdk.js",
   ]
 
   deps = [
@@ -78,4 +78,12 @@ ts_library("sdk") {
     "../text_utils",
     "wasm_source_map",
   ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "sdk.js"
+
+  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
+
+  deps = [ ":sdk" ]
 }

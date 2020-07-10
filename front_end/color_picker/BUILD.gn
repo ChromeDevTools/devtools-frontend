@@ -13,7 +13,7 @@ ts_library("color_picker") {
 
   deps = [
     "../common",
-    "../sdk",
+    "../sdk:bundle",
     "../ui",
   ]
 }

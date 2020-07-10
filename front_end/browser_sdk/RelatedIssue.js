@@ -59,7 +59,7 @@ export function issuesAssociatedWith(issues, obj) {
   if (obj instanceof SDK.Cookie.Cookie) {
     return issuesAssociatedWithCookie(issues, obj.domain(), obj.name(), obj.path());
   }
-  throw new Error(`issues can not be associated with ${obj}`);
+  throw new Error(`issues can not be associated with ${JSON.stringify(obj)}`);
 }
 
 /**

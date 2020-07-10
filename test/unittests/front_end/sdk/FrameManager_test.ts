@@ -6,7 +6,6 @@ const {assert} = chai;
 
 import * as SDK from '../../../../front_end/sdk/sdk.js';
 import * as Common from '../../../../front_end/common/common.js';
-import {FrameManager, Events} from '../../../../front_end/sdk/FrameManager.js';
 
 class MockResourceTreeModel extends Common.ObjectWrapper.ObjectWrapper {
   private _targetId: string;
@@ -44,10 +43,11 @@ describe('FrameManager', () => {
     const mockModel = new MockResourceTreeModel('target-id');
     const mockFrame = new MockResourceTreeFrame('frame-id', 'target-id');
 
-    const frameManager = new FrameManager();
+    const frameManager = new SDK.FrameManager.FrameManager();
     frameManager.modelAdded((mockModel as any) as SDK.ResourceTreeModel.ResourceTreeModel);
     const dispatchedEvents: any[] = [];
-    frameManager.addEventListener(Events.FrameAddedToTarget, event => dispatchedEvents.push(event.data));
+    frameManager.addEventListener(
+        SDK.FrameManager.Events.FrameAddedToTarget, event => dispatchedEvents.push(event.data));
 
     mockModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameAdded, mockFrame);
 
@@ -62,13 +62,14 @@ describe('FrameManager', () => {
     const mockParentFrame = new MockResourceTreeFrame('parent-frame-id', 'target-id');
     const mockChildFrame = new MockResourceTreeFrame('child-frame-id', 'target-id');
 
-    const frameManager = new FrameManager();
+    const frameManager = new SDK.FrameManager.FrameManager();
     frameManager.modelAdded((mockModel as any) as SDK.ResourceTreeModel.ResourceTreeModel);
     const dispatchedEvents: any[] = [];
     frameManager.addEventListener(
-        Events.FrameAddedToTarget, event => dispatchedEvents.push({type: 'FrameAddedToTarget', data: event.data}));
+        SDK.FrameManager.Events.FrameAddedToTarget,
+        event => dispatchedEvents.push({type: 'FrameAddedToTarget', data: event.data}));
     frameManager.addEventListener(
-        Events.FrameRemoved, event => dispatchedEvents.push({type: 'FrameRemoved', data: event.data}));
+        SDK.FrameManager.Events.FrameRemoved, event => dispatchedEvents.push({type: 'FrameRemoved', data: event.data}));
 
     mockModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameAdded, mockParentFrame);
     mockModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameAdded, mockChildFrame);
@@ -92,13 +93,14 @@ describe('FrameManager', () => {
     const mockParentFrame = new MockResourceTreeFrame('parent-frame-id', 'target-id');
     const mockChildFrame = new MockResourceTreeFrame('child-frame-id', 'target-id');
 
-    const frameManager = new FrameManager();
+    const frameManager = new SDK.FrameManager.FrameManager();
     frameManager.modelAdded((mockModel as any) as SDK.ResourceTreeModel.ResourceTreeModel);
     const dispatchedEvents: any[] = [];
     frameManager.addEventListener(
-        Events.FrameAddedToTarget, event => dispatchedEvents.push({type: 'FrameAddedToTarget', data: event.data}));
+        SDK.FrameManager.Events.FrameAddedToTarget,
+        event => dispatchedEvents.push({type: 'FrameAddedToTarget', data: event.data}));
     frameManager.addEventListener(
-        Events.FrameRemoved, event => dispatchedEvents.push({type: 'FrameRemoved', data: event.data}));
+        SDK.FrameManager.Events.FrameRemoved, event => dispatchedEvents.push({type: 'FrameRemoved', data: event.data}));
 
     mockModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameAdded, mockParentFrame);
     mockModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameAdded, mockChildFrame);
@@ -124,13 +126,14 @@ describe('FrameManager', () => {
     const mockChildFrameParentTarget = new MockResourceTreeFrame('child-frame-id', 'parent-target-id');
     const mockChildFrameOwnTarget = new MockResourceTreeFrame('child-frame-id', 'child-target-id');
 
-    const frameManager = new FrameManager();
+    const frameManager = new SDK.FrameManager.FrameManager();
     frameManager.modelAdded((mockParentModel as any) as SDK.ResourceTreeModel.ResourceTreeModel);
     const dispatchedEvents: any[] = [];
     frameManager.addEventListener(
-        Events.FrameAddedToTarget, event => dispatchedEvents.push({type: 'FrameAddedToTarget', data: event.data}));
+        SDK.FrameManager.Events.FrameAddedToTarget,
+        event => dispatchedEvents.push({type: 'FrameAddedToTarget', data: event.data}));
     frameManager.addEventListener(
-        Events.FrameRemoved, event => dispatchedEvents.push({type: 'FrameRemoved', data: event.data}));
+        SDK.FrameManager.Events.FrameRemoved, event => dispatchedEvents.push({type: 'FrameRemoved', data: event.data}));
 
     mockParentModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameAdded, mockParentFrame);
     frameManager.modelAdded((mockChildModel as any) as SDK.ResourceTreeModel.ResourceTreeModel);

@@ -595,7 +595,7 @@ export class NavigatorView extends UI.Widget.VBox {
     frameNode.setHoverCallback(hoverCallback);
     this._frameNodes.set(frame, frameNode);
 
-    const parentFrame = frame.parentFrame || frame.crossTargetParentFrame();
+    const parentFrame = frame.parentFrame();
     this._frameNode(project, parentFrame ? parentFrame.resourceTreeModel().target() : target, parentFrame)
         .appendChild(frameNode);
     if (!parentFrame) {

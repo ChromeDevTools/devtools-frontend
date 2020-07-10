@@ -108,10 +108,9 @@ export class ConsoleContextSelector {
       depth++;
     }
     if (executionContext.frameId) {
-      const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-      let frame = resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
+      let frame = SDK.FrameManager.FrameManager.instance().getFrame(executionContext.frameId);
       while (frame) {
-        frame = frame.parentFrame || frame.crossTargetParentFrame();
+        frame = frame.parentFrame();
         if (frame) {
           depth++;
           target = frame.resourceTreeModel().target();
@@ -260,7 +259,8 @@ export class ConsoleContextSelector {
     if (executionContext.origin.startsWith('chrome-extension://')) {
       return Common.UIString.UIString('Extension');
     }
-    if (!frame || !frame.parentFrame || frame.parentFrame.securityOrigin !== executionContext.origin) {
+    if (!frame || !frame.sameTargetParentFrame() ||
+        frame.sameTargetParentFrame().securityOrigin !== executionContext.origin) {
       const url = Common.ParsedURL.ParsedURL.fromString(executionContext.origin);
       if (url) {
         return url.domain();

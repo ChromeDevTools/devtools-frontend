@@ -189,17 +189,17 @@ export class ResourceTreeModel extends SDKModel {
    * @return {?ResourceTreeFrame}
    */
   _frameAttached(frameId, parentFrameId, stackTrace) {
-    const parentFrame = parentFrameId ? (this._frames.get(parentFrameId) || null) : null;
+    const sameTargetParentFrame = parentFrameId ? (this._frames.get(parentFrameId) || null) : null;
     // Do nothing unless cached resource tree is processed - it will overwrite everything.
-    if (!this._cachedResourcesProcessed && parentFrame) {
+    if (!this._cachedResourcesProcessed && sameTargetParentFrame) {
       return null;
     }
     if (this._frames.has(frameId)) {
       return null;
     }
 
-    const frame = new ResourceTreeFrame(this, parentFrame, frameId, null, stackTrace || null);
-    if (parentFrameId && !parentFrame) {
+    const frame = new ResourceTreeFrame(this, sameTargetParentFrame, frameId, null, stackTrace || null);
+    if (parentFrameId && !sameTargetParentFrame) {
       frame._crossTargetParentFrameId = parentFrameId;
     }
     if (frame.isMainFrame() && this.mainFrame) {
@@ -214,9 +214,9 @@ export class ResourceTreeModel extends SDKModel {
    * @param {!Protocol.Page.Frame} framePayload
    */
   _frameNavigated(framePayload) {
-    const parentFrame = framePayload.parentId ? (this._frames.get(framePayload.parentId) || null) : null;
+    const sameTargetParentFrame = framePayload.parentId ? (this._frames.get(framePayload.parentId) || null) : null;
     // Do nothing unless cached resource tree is processed - it will overwrite everything.
-    if (!this._cachedResourcesProcessed && parentFrame) {
+    if (!this._cachedResourcesProcessed && sameTargetParentFrame) {
       return;
     }
     let frame = this._frames.get(framePayload.id);
@@ -260,8 +260,8 @@ export class ResourceTreeModel extends SDKModel {
       return;
     }
 
-    if (frame.parentFrame) {
-      frame.parentFrame._removeChildFrame(frame);
+    if (frame.sameTargetParentFrame()) {
+      frame.sameTargetParentFrame()._removeChildFrame(frame);
     } else {
       frame._remove();
     }
@@ -348,13 +348,13 @@ export class ResourceTreeModel extends SDKModel {
   }
 
   /**
-   * @param {?ResourceTreeFrame} parentFrame
+   * @param {?ResourceTreeFrame} sameTargetParentFrame
    * @param {!Protocol.Page.FrameResourceTree} frameTreePayload
    */
-  _addFramesRecursively(parentFrame, frameTreePayload) {
+  _addFramesRecursively(sameTargetParentFrame, frameTreePayload) {
     const framePayload = frameTreePayload.frame;
-    const frame = new ResourceTreeFrame(this, parentFrame, framePayload.id, framePayload, null);
-    if (!parentFrame && framePayload.parentId) {
+    const frame = new ResourceTreeFrame(this, sameTargetParentFrame, framePayload.id, framePayload, null);
+    if (!sameTargetParentFrame && framePayload.parentId) {
       frame._crossTargetParentFrameId = framePayload.parentId;
     }
     this._addFrame(frame);
@@ -492,7 +492,7 @@ export class ResourceTreeModel extends SDKModel {
       const parents = [];
       while (currentFrame) {
         parents.push(currentFrame);
-        currentFrame = currentFrame.parentFrame;
+        currentFrame = currentFrame.sameTargetParentFrame();
       }
       return parents.reverse();
     }
@@ -607,7 +607,7 @@ export class ResourceTreeFrame {
    */
   constructor(model, parentFrame, frameId, payload, creationStackTrace) {
     this._model = model;
-    this._parentFrame = parentFrame;
+    this._sameTargetParentFrame = parentFrame;
     this._id = frameId;
     this._url = '';
     this._crossTargetParentFrameId = null;
@@ -633,8 +633,8 @@ export class ResourceTreeFrame {
      */
     this._resourcesMap = {};
 
-    if (this._parentFrame) {
-      this._parentFrame._childFrames.add(this);
+    if (this._sameTargetParentFrame) {
+      this._sameTargetParentFrame._childFrames.add(this);
     }
   }
 
@@ -707,13 +707,6 @@ export class ResourceTreeFrame {
   }
 
   /**
-   * @return {?ResourceTreeFrame}
-   */
-  get parentFrame() {
-    return this._parentFrame;
-  }
-
-  /**
    * @return {!Array.<!ResourceTreeFrame>}
    */
   get childFrames() {
@@ -721,6 +714,15 @@ export class ResourceTreeFrame {
   }
 
   /**
+   * Returns the parent frame if both frames are part of the same process/target.
+   * @return {?ResourceTreeFrame}
+   */
+  sameTargetParentFrame() {
+    return this._sameTargetParentFrame;
+  }
+
+  /**
+   * Returns the parent frame if both frames are part of different processes/targets (child is an OOPIF).
    * @return {?ResourceTreeFrame}
    */
   crossTargetParentFrame() {
@@ -741,6 +743,15 @@ export class ResourceTreeFrame {
     // - cached resource tree got processed on parent model;
     // - child target was created as a result of setAutoAttach call.
     return parentModel._frames.get(this._crossTargetParentFrameId) || null;
+  }
+
+  /**
+   * Returns the parent frame. There is only 1 parent and it's either in the
+   * same target or it's cross-target.
+   * @return {?ResourceTreeFrame}
+   */
+  parentFrame() {
+    return this.sameTargetParentFrame() || this.crossTargetParentFrame();
   }
 
   /**
@@ -765,7 +776,7 @@ export class ResourceTreeFrame {
    * @return {boolean}
    */
   isMainFrame() {
-    return !this._parentFrame;
+    return !this._sameTargetParentFrame;
   }
 
   /**
@@ -774,7 +785,7 @@ export class ResourceTreeFrame {
    * @return {boolean}
    */
   isTopFrame() {
-    return !this._parentFrame && !this._crossTargetParentFrameId;
+    return !this._sameTargetParentFrame && !this._crossTargetParentFrameId;
   }
 
   /**
@@ -903,7 +914,7 @@ export class ResourceTreeFrame {
    * @returns {?Promise<?DeferredDOMNode>}
    */
   getOwnerDOMNode() {
-    const parentFrame = this.parentFrame || this.crossTargetParentFrame();
+    const parentFrame = this.parentFrame();
     if (!parentFrame) {
       return null;
     }
@@ -914,7 +925,7 @@ export class ResourceTreeFrame {
    * @returns {!Promise<void>}
    */
   async highlight() {
-    const parentFrame = this.parentFrame || this.crossTargetParentFrame();
+    const parentFrame = this.parentFrame();
     if (parentFrame) {
       const domModel = parentFrame.resourceTreeModel().domModel();
       const deferredNode = await domModel.getOwnerNodeForFrame(this._id);

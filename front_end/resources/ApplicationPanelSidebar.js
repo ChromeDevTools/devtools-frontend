@@ -2033,22 +2033,6 @@ export class ResourcesSection {
   }
 
   /**
-   * @param {!SDK.ResourceTreeModel.ResourceTreeFrame} frame
-   * @returns {?SDK.ResourceTreeModel.ResourceTreeFrame}
-   */
-  static _getParentFrame(frame) {
-    const parentFrame = frame.parentFrame;
-    if (parentFrame) {
-      return parentFrame;
-    }
-    const parentTarget = frame.resourceTreeModel().target().parentTarget();
-    if (!parentTarget) {
-      return null;
-    }
-    return parentTarget.model(SDK.ResourceTreeModel.ResourceTreeModel).mainFrame;
-  }
-
-  /**
    * @param {?SDK.ResourceTreeModel.ResourceTreeFrame} frame
    * @return {boolean}
    */
@@ -2057,7 +2041,7 @@ export class ResourcesSection {
       return false;
     }
     let treeElement = this._treeElementForFrameId.get(frame.id);
-    if (!treeElement && !this._expandFrame(ResourcesSection._getParentFrame(frame))) {
+    if (!treeElement && !this._expandFrame(frame.parentFrame())) {
       return false;
     }
     treeElement = this._treeElementForFrameId.get(frame.id);
@@ -2088,7 +2072,7 @@ export class ResourcesSection {
    * @param {!SDK.ResourceTreeModel.ResourceTreeFrame} frame
    */
   _frameAdded(frame) {
-    const parentFrame = ResourcesSection._getParentFrame(frame);
+    const parentFrame = frame.parentFrame();
     const parentTreeElement = parentFrame ? this._treeElementForFrameId.get(parentFrame.id) : this._treeElement;
     if (!parentTreeElement) {
       return;

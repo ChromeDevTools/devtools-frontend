@@ -104,12 +104,12 @@ describe('The Debugger Language Plugins', async () => {
       class LocationMappingPlugin extends globalThis.MockLanguagePluginBase {
         async addRawModule(
             rawModuleId: any, symbols: any, rawModule: any) {  // eslint-disable-line @typescript-eslint/no-unused-vars
-          return ['/test/e2e/resources/sources/wasm/unreachable.ll'];
+          return ['test/e2e/resources/sources/wasm/unreachable.ll'];
         }
 
         /* async */ rawLocationToSourceLocation(rawLocation: any) {
           if (rawLocation.codeOffset === 6) {
-            return [{sourceFile: '/test/e2e/resources/sources/wasm/unreachable.ll', lineNumber: 4, columnNumber: 2}];
+            return [{sourceFile: 'test/e2e/resources/sources/wasm/unreachable.ll', lineNumber: 4, columnNumber: 2}];
           }
           return null;
         }

@@ -323,7 +323,12 @@ export class ElementsPanel extends UI.Panel.Panel {
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _selectedNodeChanged(event) {
-    const selectedNode = /** @type {?SDK.DOMModel.DOMNode} */ (event.data.node);
+    let selectedNode = /** @type {?SDK.DOMModel.DOMNode} */ (event.data.node);
+
+    // If the selectedNode is a pseudoNode, we want to ensure that it has a valid parentNode
+    if (selectedNode && (selectedNode.pseudoType() && !selectedNode.parentNode)) {
+      selectedNode = null;
+    }
     const focus = /** @type {boolean} */ (event.data.focus);
     for (const treeOutline of this._treeOutlines) {
       if (!selectedNode || ElementsTreeOutline.forDOMModel(selectedNode.domModel()) !== treeOutline) {

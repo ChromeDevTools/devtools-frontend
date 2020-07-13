@@ -2,7 +2,7 @@ file://ENG_REVIEW_OWNERS
 
 per-file .*=file://INFRA_OWNERS
 per-file AUTHORS=file://COMMON_OWNERS
-per-file BUILD.gn=file://COMMON_OWNERS
+per-file BUILD.gn=file://INFRA_OWNERS
 per-file DEPS=file://INFRA_OWNERS
 per-file PRESUBMIT.py=file://INFRA_OWNERS
 per-file README.md=file://COMMON_OWNERS

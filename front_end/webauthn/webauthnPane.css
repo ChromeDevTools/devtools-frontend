@@ -11,15 +11,15 @@
 }
 
 .webauthn-toolbar-container {
-    display: flex;
-    background-color: var(--toolbar-bg-color);
-    border-bottom: var(--divider-border);
-    flex: 0 0 auto;
+  display: flex;
+  background-color: var(--toolbar-bg-color);
+  border-bottom: var(--divider-border);
+  flex: 0 0 auto;
 }
 
 .webauthn-toolbar {
-    border-bottom: var(--divider-border);
-    display: inline-block;
+  border-bottom: var(--divider-border);
+  display: inline-block;
 }
 
 /* New Authenticator Section */
@@ -37,7 +37,6 @@
 .new-authenticator-form {
   border: none;
   padding: 10px 0;
-  margin-left: 0;
   flex: 0 0 auto;
   margin: 0;
 }
@@ -56,7 +55,6 @@
 .authenticator-fields {
   border: none;
   padding: 10px 0;
-  margin-left: 0;
   flex: 0 0 auto;
   margin: 0;
 }
@@ -66,6 +64,7 @@
   padding-bottom: 10px;
   margin: auto;
 }
+
 .authenticator-section-title {
   line-height: 24px;
   font-weight: bold;
@@ -73,7 +72,7 @@
 }
 
 .authenticator-field-value {
-  padding: 5px 0px 5px 0px;
+  padding: 5px 0 5px 0;
   display: inline-block;
   font-family: monospace;
 }
@@ -94,7 +93,7 @@
   text-align: right;
   width: 200px;
   display: inline-block;
-  padding: 5px 10px 5px 0px;
+  padding: 5px 10px 5px 0;
 }
 
 .remove-authenticator-button {
@@ -103,7 +102,6 @@
   overflow: hidden;
   min-width: 28px;
   background: transparent;
-  cursor: pointer;
   border: none;
   color: rgb(17 85 204);
   text-decoration: underline;

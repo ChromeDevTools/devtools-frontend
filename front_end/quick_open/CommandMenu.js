@@ -55,13 +55,20 @@ export class CommandMenu {
   static createSettingCommand(extension, title, value) {
     const category = extension.descriptor()['category'] || '';
     const tags = extension.descriptor()['tags'] || '';
+    const reloadRequired = !!extension.descriptor()['reloadRequired'];
     const setting = Common.Settings.Settings.instance().moduleSetting(extension.descriptor()['settingName']);
     return CommandMenu.createCommand({
       category: ls(category),
       keys: tags,
       title,
       shortcut: '',
-      executeHandler: setting.set.bind(setting, value),
+      executeHandler: () => {
+        setting.set(value);
+        if (reloadRequired) {
+          UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(
+              ls`One or more settings have changed which requires a reload to take effect.`);
+        }
+      },
       availableHandler,
     });
 

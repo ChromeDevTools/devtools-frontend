@@ -65,11 +65,12 @@ export const createSettingCheckbox = function(name, setting, omitParagraphElemen
 /**
  * @param {string} name
  * @param {!Array<!{text: string, value: *, raw: (boolean|undefined)}>} options
+ * @param {boolean|undefined} requiresReload
  * @param {!Common.Settings.Setting<*>} setting
  * @param {string=} subtitle
  * @return {!Element}
  */
-const createSettingSelect = function(name, options, setting, subtitle) {
+const createSettingSelect = function(name, options, requiresReload, setting, subtitle) {
   const settingSelectElement = createElement('p');
   const label = settingSelectElement.createChild('label');
   const select = settingSelectElement.createChild('select', 'chrome-select');
@@ -85,6 +86,13 @@ const createSettingSelect = function(name, options, setting, subtitle) {
     const option = options[i];
     const optionName = option.raw ? option.text : Common.UIString.UIString(option.text);
     select.add(new Option(optionName, option.value));
+  }
+
+  let reloadWarning = /** @type {?Element} */ (null);
+  if (requiresReload) {
+    reloadWarning = settingSelectElement.createChild('span', 'reload-warning hidden');
+    reloadWarning.textContent = ls`${'*'}Requires reload`;
+    ARIAUtils.markAsAlert(reloadWarning);
   }
 
   setting.addChangeListener(settingChanged);
@@ -104,6 +112,11 @@ const createSettingSelect = function(name, options, setting, subtitle) {
   function selectChanged() {
     // Don't use event.target.value to avoid conversion of the value to string.
     setting.set(options[select.selectedIndex].value);
+    if (reloadWarning) {
+      reloadWarning.classList.remove('hidden');
+      self.UI.InspectorView.instance().displayReloadRequiredWarning(
+          ls`One or more settings have changed which requires a reload to take effect.`);
+    }
   }
 };
 
@@ -159,7 +172,7 @@ export const createControlForSetting = function(setting, subtitle) {
       return createSettingCheckbox(uiTitle, setting);
     case 'enum':
       if (Array.isArray(descriptor['options'])) {
-        return createSettingSelect(uiTitle, descriptor['options'], setting, subtitle);
+        return createSettingSelect(uiTitle, descriptor['options'], descriptor['reloadRequired'], setting, subtitle);
       }
       console.error('Enum setting defined without options');
       return null;

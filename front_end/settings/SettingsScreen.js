@@ -363,6 +363,8 @@ export class ExperimentsSettingsTab extends SettingsTab {
     input.name = experiment.name;
     function listener() {
       experiment.setEnabled(input.checked);
+      UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(
+          ls`One or more settings have changed which requires a reload to take effect.`);
     }
     input.addEventListener('click', listener, false);
 

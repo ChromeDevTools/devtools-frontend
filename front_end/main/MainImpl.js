@@ -222,10 +222,12 @@ export class MainImpl {
     const defaultThemeSetting = 'systemPreferred';
     const themeSetting = Common.Settings.Settings.instance().createSetting('uiTheme', defaultThemeSetting);
     UI.UIUtils.initializeUIUtils(document, themeSetting);
-    themeSetting.addChangeListener(Components.Reload.reload.bind(Components));
     if (themeSetting.get() === defaultThemeSetting) {
       const darkThemeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      darkThemeMediaQuery.addEventListener('change', Components.Reload.reload.bind(Components));
+      darkThemeMediaQuery.addEventListener('change', () => {
+        UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(
+            ls`The system-preferred color scheme has changed. To apply this change to DevTools, reload.`);
+      });
     }
 
     UI.UIUtils.installComponentRootStyles(/** @type {!Element} */ (document.body));

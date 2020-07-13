@@ -48,7 +48,7 @@ export const gridStyle = `
   padding: 2px;
   font-family: Menlo, monospace;
   font-size: 10px;
-  min-width: 10px;
+  min-width: 17px;
   min-height: 15px;
   color: #FFFFFF;
   border-radius: 2px;

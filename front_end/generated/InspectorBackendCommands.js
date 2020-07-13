@@ -869,6 +869,8 @@ export function registerCommands(inspectorBackend) {
     LandscapeSecondary: 'landscapeSecondary'
   });
   inspectorBackend.registerEnum(
+      'Emulation.DisplayFeatureOrientation', {Vertical: 'vertical', Horizontal: 'horizontal'});
+  inspectorBackend.registerEnum(
       'Emulation.VirtualTimePolicy',
       {Advance: 'advance', Pause: 'pause', PauseIfNetworkFetchesPending: 'pauseIfNetworkFetchesPending'});
   inspectorBackend.registerEvent('Emulation.virtualTimeBudgetExpired', []);
@@ -894,7 +896,8 @@ export function registerCommands(inspectorBackend) {
         {'name': 'positionY', 'type': 'number', 'optional': true},
         {'name': 'dontSetVisibleSize', 'type': 'boolean', 'optional': true},
         {'name': 'screenOrientation', 'type': 'object', 'optional': true},
-        {'name': 'viewport', 'type': 'object', 'optional': true}
+        {'name': 'viewport', 'type': 'object', 'optional': true},
+        {'name': 'displayFeature', 'type': 'object', 'optional': true}
       ],
       []);
   inspectorBackend.registerCommand(
@@ -2316,6 +2319,13 @@ export function registerCommands(inspectorBackend) {
       [
         {'name': 'authenticatorId', 'type': 'string', 'optional': false},
         {'name': 'isUserVerified', 'type': 'boolean', 'optional': false}
+      ],
+      []);
+  inspectorBackend.registerCommand(
+      'WebAuthn.setAutomaticPresenceSimulation',
+      [
+        {'name': 'authenticatorId', 'type': 'string', 'optional': false},
+        {'name': 'enabled', 'type': 'boolean', 'optional': false}
       ],
       []);
 

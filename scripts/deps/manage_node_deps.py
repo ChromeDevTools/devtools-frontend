@@ -37,6 +37,7 @@ LICENSES = [
 DEPS = {
     "@rollup/plugin-commonjs": "13.0.0",
     "@types/chai": "4.2.0",
+    "@types/codemirror": "0.0.97",
     "@types/estree": "0.0.45",
     "@types/filesystem": "0.0.29",
     "@types/mocha": "5.2.7",

@@ -13,6 +13,8 @@ group("front_end") {
     "component_docs",
     "i18n:bundle_i18n",
   ]
+
+  data_deps = [ ":front_end_html_entrypoints" ]
 }
 
 copy("front_end_html_entrypoints") {

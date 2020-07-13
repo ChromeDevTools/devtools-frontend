@@ -944,7 +944,6 @@ devtools_frontend_resources_deps = [
 
   # Required for layout tests, which depend on the existence of `integration_test_runner.html`
   # If we don't add this dependency explicitly, the swarming bots don't pick up the file.
-  "front_end:front_end_html_entrypoints",
   "front_end/elements:bundle",
   "front_end/formatter_worker",
   "front_end/formatter_worker:bundle",

@@ -8007,6 +8007,20 @@ declare namespace Protocol {
     }
 
     /**
+     * Configurations for Persistent Grid Highlight
+     */
+    export interface GridNodeHighlightConfig {
+      /**
+       * A descriptor for the highlight appearance.
+       */
+      gridHighlightConfig: GridHighlightConfig;
+      /**
+       * Identifier of the node to highlight.
+       */
+      nodeId: DOM.NodeId;
+    }
+
+    /**
      * Configuration for dual screen hinge
      */
     export interface HingeConfig {
@@ -8060,6 +8074,20 @@ declare namespace Protocol {
        * Highlight data for the node.
        */
       highlight: any;
+    }
+
+    export interface GetGridHighlightObjectsForTestRequest {
+      /**
+       * Ids of the node to get highlight object for.
+       */
+      nodeIds: DOM.NodeId[];
+    }
+
+    export interface GetGridHighlightObjectsForTestResponse extends ProtocolResponseWithError {
+      /**
+       * Grid Highlight data for the node ids provided.
+       */
+      highlights: any;
     }
 
     export interface HighlightFrameRequest {
@@ -8180,6 +8208,13 @@ declare namespace Protocol {
        * True for showing the FPS counter
        */
       show: boolean;
+    }
+
+    export interface SetShowGridOverlaysRequest {
+      /**
+       * An array of node identifiers and descriptors for the highlight appearance.
+       */
+      gridNodeHighlightConfigs: GridNodeHighlightConfig[];
     }
 
     export interface SetShowPaintRectsRequest {

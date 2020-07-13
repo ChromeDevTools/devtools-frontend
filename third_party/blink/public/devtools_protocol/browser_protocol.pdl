@@ -5339,6 +5339,14 @@ experimental domain Overlay
       hsl
       hex
 
+  # Configurations for Persistent Grid Highlight
+  type GridNodeHighlightConfig extends object
+    properties
+      # A descriptor for the highlight appearance.
+      GridHighlightConfig gridHighlightConfig
+      # Identifier of the node to highlight.
+      DOM.NodeId nodeId
+
   # Configuration for dual screen hinge
   type HingeConfig extends object
     properties
@@ -5379,6 +5387,15 @@ experimental domain Overlay
     returns
       # Highlight data for the node.
       object highlight
+
+  # For Persistent Grid testing.
+  command getGridHighlightObjectsForTest
+    parameters
+      # Ids of the node to get highlight object for.
+      array of DOM.NodeId nodeIds
+    returns
+      # Grid Highlight data for the node ids provided.
+      object highlights
 
   # Hides any highlight.
   command hideHighlight
@@ -5466,6 +5483,12 @@ experimental domain Overlay
     parameters
       # True for showing the FPS counter
       boolean show
+
+  # Highlight multiple elements with the CSS Grid overlay.
+  command setShowGridOverlays
+    parameters
+      # An array of node identifiers and descriptors for the highlight appearance.
+      array of GridNodeHighlightConfig gridNodeHighlightConfigs
 
   # Requests that backend shows paint rectangles
   command setShowPaintRects

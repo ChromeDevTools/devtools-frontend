@@ -67,6 +67,9 @@ Resources.DatabaseQueryView.Events = ResourcesModule.DatabaseQueryView.Events;
 Resources.DatabaseTableView = ResourcesModule.DatabaseTableView.DatabaseTableView;
 
 /** @constructor */
+Resources.FrameDetailsView = ResourcesModule.FrameDetailsView.FrameDetailsView;
+
+/** @constructor */
 Resources.IndexedDBModel = ResourcesModule.IndexedDBModel.IndexedDBModel;
 
 /** @enum {symbol} */

@@ -96,6 +96,7 @@
     "DOMStorageItemsView.js",
     "DatabaseQueryView.js",
     "DatabaseTableView.js",
+    "FrameDetailsView.js",
     "IndexedDBModel.js",
     "IndexedDBViews.js",
     "ResourcesPanel.js",

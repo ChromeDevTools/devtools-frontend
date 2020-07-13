@@ -332,6 +332,7 @@ all_devtools_modules = [
   "resources/ResourcesPanel.js",
   "resources/IndexedDBViews.js",
   "resources/IndexedDBModel.js",
+  "resources/FrameDetailsView.js",
   "resources/DatabaseTableView.js",
   "resources/DatabaseQueryView.js",
   "resources/DatabaseModel.js",

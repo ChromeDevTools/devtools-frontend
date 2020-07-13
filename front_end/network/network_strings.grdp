@@ -45,9 +45,6 @@
   <message name="IDS_DEVTOOLS_0d6c76e22c095f0ae6cf53753121adef" desc="Text used to show that serviceworker fetch response source is ServiceWorker Cache Storage">
     <ph name="LOCKED_TERM">ServiceWorker</ph> cache storage
   </message>
-  <message name="IDS_DEVTOOLS_0db377921f4ce762c62526131097968f" desc="Text in Request Headers View of the Network panel">
-    General
-  </message>
   <message name="IDS_DEVTOOLS_0f591b1d87c91e77d4fa11dc6e44288c" desc="Text in Network Item View of the Network panel">
     Request and response timeline
   </message>

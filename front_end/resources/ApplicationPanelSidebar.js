@@ -45,6 +45,7 @@ import {Database as DatabaseModelDatabase, DatabaseModel, Events as DatabaseMode
 import {DatabaseQueryView, Events as DatabaseQueryViewEvents} from './DatabaseQueryView.js';
 import {DatabaseTableView} from './DatabaseTableView.js';
 import {DOMStorage, DOMStorageModel, Events as DOMStorageModelEvents} from './DOMStorageModel.js';  // eslint-disable-line no-unused-vars
+import {FrameDetailsView} from './FrameDetailsView.js';
 import {Database as IndexedDBModelDatabase, DatabaseId, Events as IndexedDBModelEvents, Index, IndexedDBModel, ObjectStore} from './IndexedDBModel.js';  // eslint-disable-line no-unused-vars
 import {IDBDatabaseView, IDBDataView} from './IndexedDBViews.js';
 import {ServiceWorkerCacheView} from './ServiceWorkerCacheViews.js';
@@ -2141,6 +2142,8 @@ export class FrameTreeElement extends BaseStorageTreeElement {
     this._treeElementForResource = {};
     this.setExpandable(true);
     this.frameNavigated(frame);
+    /** @type {?FrameDetailsView} */
+    this._view = null;
 
     const icon = UI.Icon.Icon.create('largeicon-navigator-frame', 'navigator-tree-item');
     icon.classList.add('navigator-frame-tree-item');
@@ -2169,7 +2172,12 @@ export class FrameTreeElement extends BaseStorageTreeElement {
    */
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
-    this._section._panel.showCategoryView(this.titleAsText(), null);
+    if (!this._view) {
+      this._view = new FrameDetailsView(this._frame);
+    }
+    // this._section._panel.showFrameView(this._frame);
+    // this.showView(new FrameDetailsView(frame));
+    this.showView(this._view);
 
     this.listItemElement.classList.remove('hovered');
     SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();

@@ -15,6 +15,7 @@ import * as DatabaseQueryView from './DatabaseQueryView.js';
 import * as DatabaseTableView from './DatabaseTableView.js';
 import * as DOMStorageItemsView from './DOMStorageItemsView.js';
 import * as DOMStorageModel from './DOMStorageModel.js';
+import * as FrameDetailsView from './FrameDetailsView.js';
 import * as IndexedDBModel from './IndexedDBModel.js';
 import * as IndexedDBViews from './IndexedDBViews.js';
 import * as ResourcesPanel from './ResourcesPanel.js';
@@ -36,6 +37,7 @@ export {
   DatabaseTableView,
   DOMStorageItemsView,
   DOMStorageModel,
+  FrameDetailsView,
   IndexedDBModel,
   IndexedDBViews,
   ResourcesPanel,

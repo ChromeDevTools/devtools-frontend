@@ -19,6 +19,8 @@ template("devtools_module") {
     # `target_name`, as the buildgraph requires the `copy_gen__to_resources` to happen *after*
     # `ts_library` is finished.
     typescript_config_name = invoker.target_name
+
+    is_web_worker = defined(invoker.is_web_worker) && invoker.is_web_worker
   }
 
   if (is_debug) {

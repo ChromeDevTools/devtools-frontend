@@ -54,7 +54,6 @@ ts_library("ts_library-verification") {
     "browser_sdk",
     "color_picker",
     "common",
-    "formatter_worker",
     "host",
     "inspector_overlay",
     "issues",

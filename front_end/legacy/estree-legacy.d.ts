@@ -9,6 +9,7 @@ declare module 'estree' {
     parent: BaseNode|null;
     start: number;
     end: number;
+    id?: Node|null;
   }
 }
 

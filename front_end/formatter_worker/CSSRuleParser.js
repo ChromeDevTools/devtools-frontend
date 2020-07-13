@@ -17,8 +17,6 @@ export const CSSParserStates = {
  * @param {string} text
  */
 export function parseCSS(text) {
-  // TypeScript expects a targetOrgin argument to be passed to postMessage
-  // @ts-expect-error
   _innerParseCSS(text, postMessage);
 }
 

@@ -64,10 +64,11 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
     this._contrastValueBubbleIcons.push(
         this._contrastValueBubble.appendChild(UI.Icon.Icon.create('smallicon-checkmark-behind')));
     this._contrastValueBubbleIcons.push(this._contrastValueBubble.appendChild(UI.Icon.Icon.create('smallicon-no')));
-    this._contrastValueBubbleIcons.forEach(button => button.addEventListener('click', event => {
-      ContrastDetails._showHelp();
-      event.consume(false);
-    }));
+    this._contrastValueBubbleIcons.forEach(
+        button => button.addEventListener('click', /** @param {!Event} event */ event => {
+          ContrastDetails._showHelp();
+          event.consume(false);
+        }));
 
     const expandToolbar = new UI.Toolbar.Toolbar('expand', contrastValueRowContents);
     this._expandButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Show more'), 'smallicon-expand-more');
@@ -169,7 +170,8 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
       this._contrastPassFailAAA.appendChild(UI.Icon.Icon.create('smallicon-no'));
     }
 
-    [labelAA, labelAAA].forEach(e => e.addEventListener('click', event => ContrastDetails._showHelp()));
+    [labelAA, labelAAA].forEach(
+        e => e.addEventListener('click', /** @param {!Event} event */ event => ContrastDetails._showHelp()));
 
     this._element.classList.toggle('contrast-fail', !this._passesAA);
     this._contrastValueBubble.classList.toggle('contrast-aa', this._passesAA);

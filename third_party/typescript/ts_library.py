@@ -51,6 +51,11 @@ GLOBAL_TYPESCRIPT_DEFINITION_FILES = [
               'index.d.ts'),
     path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'front_end', 'legacy',
               'estree-legacy.d.ts'),
+    # CodeMirror types
+    path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'node_modules', '@types',
+              'codemirror', 'index.d.ts'),
+    path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'front_end', 'legacy',
+              'codemirror-legacy.d.ts'),
 ]
 
 
@@ -71,6 +76,7 @@ def main():
     parser.add_argument('-b', '--tsconfig_output_location', required=True)
     parser.add_argument('--test-only', action='store_true')
     parser.add_argument('--verify-lib-check', action='store_true')
+    parser.add_argument('--is_web_worker', action='store_true')
     parser.add_argument('--module', required=False)
     parser.set_defaults(test_only=False,
                         verify_lib_check=False,
@@ -110,6 +116,10 @@ def main():
     ] or []
     tsconfig['compilerOptions']['outDir'] = '.'
     tsconfig['compilerOptions']['tsBuildInfoFile'] = tsbuildinfo_name
+    tsconfig['compilerOptions']['lib'] = [
+        'esnext', opts.is_web_worker and 'webworker' or 'dom'
+    ]
+
     with open(tsconfig_output_location, 'w') as generated_tsconfig:
         try:
             json.dump(tsconfig, generated_tsconfig)

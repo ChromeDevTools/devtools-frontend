@@ -49,10 +49,12 @@ template("ts_library") {
       devtools_location_prepend +
           "front_end/global_typings/resize_observer.d.ts",
       devtools_location_prepend + "front_end/legacy/estree-legacy.d.ts",
+      devtools_location_prepend + "front_end/legacy/codemirror-legacy.d.ts",
       devtools_location_prepend + "node_modules/@types/estree/index.d.ts",
       devtools_location_prepend + "front_end/generated/protocol.d.ts",
       devtools_location_prepend + "front_end/generated/protocol-proxy-api.d.ts",
       devtools_location_prepend + "node_modules/@types/filesystem/index.d.ts",
+      devtools_location_prepend + "node_modules/@types/codemirror/index.d.ts",
     ]
 
     _typescript_config_name = target_name
@@ -115,6 +117,10 @@ template("ts_library") {
 
     if (defined(invoker.module)) {
       args += [ "--module=" + invoker.module ]
+    }
+
+    if (defined(invoker.is_web_worker) && invoker.is_web_worker) {
+      args += [ "--is_web_worker" ]
     }
 
     output_files = [ "$target_gen_dir/$_typescript_config_name-tsconfig.json" ]

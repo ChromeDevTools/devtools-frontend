@@ -8,11 +8,6 @@
 
     "noEmitOnError": true,
 
-    "lib": [
-      "esnext",
-      "dom"
-    ],
-
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,

@@ -7,6 +7,7 @@ per-file DEPS=file://INFRA_OWNERS
 per-file PRESUBMIT.py=file://INFRA_OWNERS
 per-file README.md=file://COMMON_OWNERS
 per-file WATCHLISTS=file://INFRA_OWNERS
+per-file all_devtools_modules.gni=file://COMMON_OWNERS
 per-file codereview.settings=file://INFRA_OWNERS
 per-file htaccess=file://INFRA_OWNERS
 per-file karma.conf.json=file://INFRA_OWNERS

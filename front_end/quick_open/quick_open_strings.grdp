@@ -6,6 +6,9 @@
   <message name="IDS_DEVTOOLS_532ce4f18bb96f70d8ee338082ad7ed0" desc="Title of quick open dialog">
     Quick open
   </message>
+  <message name="IDS_DEVTOOLS_806c4f7f91556f25136ea360e1d4d15b" desc="Prompt for free-form input in the QuickInput dialog; Enter and Escape here are keyboard buttons and should be localized as appropriate.">
+    <ph name="THIS__OPTIONS_PROMPT">$1s<ex>Provide some information.</ex></ph> (Press &apos;Enter&apos; to confirm or &apos;Escape&apos; to cancel.)
+  </message>
   <message name="IDS_DEVTOOLS_c986e2ac993abbee8febcc7e21ebb4d8" desc="Aria-placeholder text for quick open dialog prompt">
     Type question mark to see available commands
   </message>

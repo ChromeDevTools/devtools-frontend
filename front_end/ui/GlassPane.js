@@ -5,6 +5,7 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
+import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 
 import {Size} from './Geometry.js';  // eslint-disable-line no-unused-vars
@@ -12,8 +13,9 @@ import {Icon} from './Icon.js';
 import {measuredScrollbarWidth} from './utils/measured-scrollbar-width.js';
 import {Widget} from './Widget.js';
 
-export class GlassPane {
+export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
+    super();
     this._widget = new Widget(true);
     this._widget.markAsRoot();
     this.element = this._widget.element;

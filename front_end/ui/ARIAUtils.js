@@ -575,7 +575,11 @@ export function setActiveDescendant(element, activedescendant) {
     return;
   }
 
-  console.assert(element.hasSameShadowRoot(activedescendant), 'elements are not in the same shadow dom');
+  if (activedescendant.isConnected && element.isConnected) {
+    console.assert(element.hasSameShadowRoot(activedescendant), 'elements are not in the same shadow dom');
+  } else {
+    console.warn('One or more elements in an active-descendant relationship are not yet attached to the DOM tree.');
+  }
 
   ensureId(activedescendant);
   element.setAttribute('aria-activedescendant', activedescendant.id);

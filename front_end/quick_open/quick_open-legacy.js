@@ -45,12 +45,16 @@ QuickOpen.FilteredListWidget.Provider = QuickOpenModule.FilteredListWidget.Provi
  */
 QuickOpen.HelpQuickOpen = QuickOpenModule.HelpQuickOpen.HelpQuickOpen;
 
+QuickOpen.QuickInput = QuickOpenModule.QuickInput.QuickInput;
+
 /**
  * @constructor
  */
 QuickOpen.QuickOpen = QuickOpenModule.QuickOpen.QuickOpenImpl;
 
 QuickOpen.QuickOpen._history = QuickOpenModule.QuickOpen.history;
+
+QuickOpen.QuickPick = QuickOpenModule.QuickPick.QuickPick;
 
 /**
  * @constructor

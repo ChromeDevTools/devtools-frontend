@@ -274,14 +274,7 @@ export class CommandMenuProvider extends Provider {
    */
   itemScoreAt(itemIndex, query) {
     const command = this._commands[itemIndex];
-    const opcodes = Diff.Diff.DiffWrapper.charDiff(query.toLowerCase(), command.title().toLowerCase());
-    let score = 0;
-    // Score longer sequences higher.
-    for (let i = 0; i < opcodes.length; ++i) {
-      if (opcodes[i][0] === Diff.Diff.Operation.Equal) {
-        score += opcodes[i][1].length * opcodes[i][1].length;
-      }
-    }
+    let score = Diff.Diff.DiffWrapper.characterScore(query.toLowerCase(), command.title().toLowerCase());
 
     // Score panel/drawer reveals above regular actions.
     if (command.category().startsWith('Panel')) {

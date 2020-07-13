@@ -99,6 +99,7 @@ export class Dialog extends GlassPane {
       this._targetDocument.removeEventListener('keydown', this._targetDocumentKeyDownHandler, true);
     }
     this._restoreTabIndexOnElements();
+    this.dispatchEventToListeners('hidden');
     delete Dialog._instance;
   }
 

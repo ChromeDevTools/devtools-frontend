@@ -81,7 +81,24 @@ export const DiffWrapper = {
         removed = 0;
       }
     }
-  }
+  },
+
+  /**
+   * Scores character-sequence diffs, giving higher scores for longer sequences.
+   * @param {string} item
+   * @param {string} against
+   * @return {number}
+   */
+  characterScore: function(item, against) {
+    let score = 0;
+    const diff = DiffWrapper.charDiff(item, against);
+    for (let i = 0; i < diff.length; ++i) {
+      if (diff[i][0] === Operation.Equal) {
+        score += diff[i][1].length * diff[i][1].length;
+      }
+    }
+    return score;
+  },
 
 };
 

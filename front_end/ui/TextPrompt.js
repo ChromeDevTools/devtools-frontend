@@ -199,6 +199,30 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
+  /**
+   * @param {number} startIndex
+   * @param {number} endIndex
+   */
+  setSelectedRange(startIndex, endIndex) {
+    if (startIndex < 0) {
+      throw new RangeError('Selected range start must be a nonnegative integer');
+    }
+    if (endIndex > this._element.textContent.length) {
+      endIndex = this._element.textContent.length;
+    }
+    if (endIndex < startIndex) {
+      endIndex = startIndex;
+    }
+
+    const textNode = /** @type {!Node} */ (this._element.childNodes[0]);
+    const range = new Range();
+    range.setStart(textNode, startIndex);
+    range.setEnd(textNode, endIndex);
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+  }
+
   focus() {
     this._element.focus();
   }

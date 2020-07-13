@@ -57,6 +57,10 @@ function checkNonAutostartNonRemoteModules() {
  * listed in BUILD.gn.
  */
 function checkAllDevToolsFiles() {
+  const allDevToolsFilesPath = path.resolve(__dirname, '..', 'all_devtools_files.gni');
+  const allDevToolsFilesFile = fs.readFileSync(allDevToolsFilesPath, 'utf-8');
+  const allDevToolsFilesLines = allDevToolsFilesFile.split('\n');
+
   return checkGNVariable('all_devtools_files', moduleJSON => {
     const scripts = moduleJSON.scripts || [];
     const resources = moduleJSON.resources || [];
@@ -65,7 +69,7 @@ function checkAllDevToolsFiles() {
       ...scripts,
       ...resources,
     ];
-  });
+  }, undefined, allDevToolsFilesLines);
 }
 
 const EXCLUDED_FOLDERS = ['elements', 'sdk', 'generated'];

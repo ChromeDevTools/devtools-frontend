@@ -248,7 +248,7 @@ export function format(mimeType, text, indentString) {
         formatter.format(text, lineEndings, 0, text.length);
       }
     }
-    result.mapping = builder.mapping();
+    result.mapping = builder.mapping;
     result.content = builder.content();
   } catch (e) {
     console.error(e);

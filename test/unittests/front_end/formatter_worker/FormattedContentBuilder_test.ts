@@ -138,7 +138,7 @@ describe('FormattedContentBuilder', () => {
     builder.addToken('}', 17);
     builder.addNewLine();
 
-    const {original, formatted} = builder.mapping();
+    const {original, formatted} = builder.mapping;
     assert.deepEqual(original, [0, 5, 6, 17]);
     assert.deepEqual(formatted, [0, 6, 10, 22]);
     assert.strictEqual(builder.content(), '#main {\n  color: red;\n}\n');

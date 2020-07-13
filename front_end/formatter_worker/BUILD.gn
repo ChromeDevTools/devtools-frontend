@@ -12,7 +12,7 @@ devtools_module("formatter_worker") {
     "CSSFormatter.js",
     "CSSRuleParser.js",
     "ESTreeWalker.js",
-    "FormattedContentBuilder.js",
+    "FormattedContentBuilder.ts",
     "FormatterWorker.js",
     "HTMLFormatter.js",
     "IdentityFormatter.ts",

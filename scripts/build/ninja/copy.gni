@@ -41,7 +41,8 @@ template("copy_sources_to_resources") {
 }
 
 template("copy_gen_to_resources") {
-  copy(target_name) {
+  _copy_action_name = "$target_name-copy"
+  copy(_copy_action_name) {
     forward_variables_from(invoker,
                            [
                              "sources",
@@ -61,5 +62,10 @@ template("copy_gen_to_resources") {
 
     outputs =
         [ "$resources_out_dir/$_front_end_module_name/{{source_file_part}}" ]
+  }
+
+  group(target_name) {
+    public_deps = [ ":$_copy_action_name" ]
+    data_deps = [ ":$_copy_action_name" ]
   }
 }

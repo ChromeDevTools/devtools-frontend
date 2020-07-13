@@ -342,7 +342,6 @@ devtools_frontend_resources_deps = [
   # If we don't add this dependency explicitly, the swarming bots don't pick up the file.
   "front_end/elements:bundle",
   "front_end/formatter_worker",
-  "front_end/formatter_worker:bundle",
   "front_end/sdk",
   "front_end/sdk:bundle",
 ]

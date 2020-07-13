@@ -199,6 +199,10 @@
     Because a cookie&apos;s <ph name="LOCKED_1">|SameSite|</ph> attribute  was not set or is invalid, it defaults to <ph name="LOCKED_1">|SameSite=Lax|</ph>, which prevents the cookie from being set in a cross-site context.
        This behavior protects user data from accidentally leaking to third parties and cross-site request forgery.
   </message>
+  <message name="IDS_DEVTOOLS_46141cdfd02fdac3a846783c4acb7c8e" desc="Context for Heavy Ads issue description">
+    '''
+  Chrome identifies heavy ads on your site that use too many resources without a user gesture. Heavy ads have an impact on performance and harm the user’s browsing experience. They increase battery drain, consume mobile data, and make your site slow. To improve the user experience, Chrome warns about or removes heavy ads.
+  </message>
   <message name="IDS_DEVTOOLS_46c75cbc309f21c58c989dc57b531eef" desc="Description for a SameSiteCookie issue">
     In a future version of the browser, cookies marked with <ph name="LOCKED_1">|SameSite=None|</ph> must also be marked with <ph name="LOCKED_1">|Secure|</ph> to get sent in cross-site requests.
        This behavior protects user data from being sent over an insecure connection.
@@ -234,6 +238,9 @@
   </message>
   <message name="IDS_DEVTOOLS_5e53467e9b005376370c28e92b42b6f5" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Emulate CSS prefers-reduced-motion: reduce
+  </message>
+  <message name="IDS_DEVTOOLS_61326117ed4a9ddf3f754e71e119e5b3" desc="The kind of resolution for a mixed content issue">
+    blocked
   </message>
   <message name="IDS_DEVTOOLS_6210038187f9fe73d2b999fe9d2d44b3" desc="Phase used to descript the security of a context">
     a secure
@@ -558,6 +565,9 @@
   <message name="IDS_DEVTOOLS_ba76fecd860f5cf4a97da9177080fc1c" desc="Label for the link for Mixed Content Issues">
     Preventing mixed content
   </message>
+  <message name="IDS_DEVTOOLS_bafb7f4720e58a8100dde1d476eb361e" desc="Title for Heavy Ads issue">
+    An ad on your site has exceeded resource limits
+  </message>
   <message name="IDS_DEVTOOLS_bc06bdbf329ad9ca96d447a6807694f4" desc="Title for a SameSiteCookie issue">
     Mark cross-site cookies as Secure to allow setting them in cross-site contexts
   </message>
@@ -634,10 +644,6 @@
   </message>
   <message name="IDS_DEVTOOLS_d5746b506b158b2dfedca3c0868bf51a" desc="Title for SameSiteCookie issue">
     Indicate whether a cookie is intended to be set in a cross-site context by specifying its SameSite attribute
-  </message>
-  <message name="IDS_DEVTOOLS_d8a169f64eba0443bf29b60aae227bca" desc="Context for Heavy Ads issue description">
-    '''
-  Chrome identifies heavy ads on your site that use too many resources without a user gesture. Heavy ads have an impact on performance and harm the user’s browsing experience. They increase battery drain, consume mobile data and make your site slow. To improve the user experience, Chrome warns about or blocks heavy ads.
   </message>
   <message name="IDS_DEVTOOLS_d8e859dc455c59c30b396adf797d6005" desc="Description of a SameSiteCookie issue">
     A cookie is being sent from <ph name="ORIGIN">$1s<ex>a secure</ex></ph> context to <ph name="DESTINATION">$2s<ex>an insecure</ex></ph> origin and is specified with |SameSite=Strict| or |SameSite=Lax|.
@@ -718,9 +724,6 @@
   </message>
   <message name="IDS_DEVTOOLS_f2a47c6809d88e175dade0ef7b16aa13" desc="Text in DOMDebugger Model">
     Mouse
-  </message>
-  <message name="IDS_DEVTOOLS_f3f99fa84a12bc852fc0bd730d460fe4" desc="Title for Heavy Ads issue">
-    An ad on your site is exceeding resource limits
   </message>
   <message name="IDS_DEVTOOLS_f43cbd4a1a33a14b459e80598dd28b47" desc="Title for a SameSiteCookie issue">
     Migrate entirely to HTTPS to continue having cookies sent on same-site requests

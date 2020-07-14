@@ -36,13 +36,13 @@ import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {ComputedStyleWidget} from './ComputedStyleWidget.js';
-import {ElementsBreadcrumbs, Events} from './ElementsBreadcrumbs.js';
+import {ElementsBreadcrumbs, Events as ElementsBreadcrumbsEvents} from './ElementsBreadcrumbs.js';
 import {ElementsTreeElement} from './ElementsTreeElement.js';  // eslint-disable-line no-unused-vars
 import {ElementsTreeElementHighlighter} from './ElementsTreeElementHighlighter.js';
 import {ElementsTreeOutline} from './ElementsTreeOutline.js';
 import {MarkerDecorator} from './MarkerDecorator.js';  // eslint-disable-line no-unused-vars
 import {MetricsSidebarPane} from './MetricsSidebarPane.js';
-import {StylesSidebarPane} from './StylesSidebarPane.js';
+import {Events as StylesSidebarPaneEvents, StylesSidebarPane} from './StylesSidebarPane.js';
 
 /**
  * @implements {UI.SearchableView.Searchable}
@@ -85,7 +85,7 @@ export class ElementsPanel extends UI.Panel.Panel {
     crumbsContainer.id = 'elements-crumbs';
     this._breadcrumbs = new ElementsBreadcrumbs();
     this._breadcrumbs.show(crumbsContainer);
-    this._breadcrumbs.addEventListener(Events.NodeSelected, this._crumbNodeSelected, this);
+    this._breadcrumbs.addEventListener(ElementsBreadcrumbsEvents.NodeSelected, this._crumbNodeSelected, this);
 
     this._stylesWidget = new StylesSidebarPane();
     this._computedStyleWidget = new ComputedStyleWidget();
@@ -816,7 +816,13 @@ export class ElementsPanel extends UI.Panel.Panel {
       if (tabId === Common.UIString.UIString('Computed')) {
         this._metricsWidget.show(computedStylePanesWrapper.element, this._computedStyleWidget.element);
       } else if (tabId === Common.UIString.UIString('Styles')) {
-        this._metricsWidget.show(matchedStylePanesWrapper.element);
+        if (this._stylesWidget.initialUpdateCompleted()) {
+          this._metricsWidget.show(matchedStylePanesWrapper.element);
+        } else {
+          this._stylesWidget.addEventListener(StylesSidebarPaneEvents.InitialUpdateCompleted, () => {
+            this._metricsWidget.show(matchedStylePanesWrapper.element);
+          });
+        }
       }
     };
 

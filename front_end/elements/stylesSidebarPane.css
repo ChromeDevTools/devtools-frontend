@@ -279,3 +279,10 @@
     background-color: ButtonFace;
   }
 }
+
+.spinner::before {
+  --dimension: 24px;
+
+  margin-top: 2em;
+  left: calc(50% - var(--dimension) / 2);
+}

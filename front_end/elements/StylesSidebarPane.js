@@ -90,6 +90,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     /** @type {?RegExp} */
     this._filterRegex = null;
     this._isActivePropertyHighlighted = false;
+    this._initialUpdateCompleted = false;
 
     this.contentElement.classList.add('styles-pane');
 
@@ -396,8 +397,26 @@ export class StylesSidebarPane extends ElementsSidebarPane {
    * @override
    * @return {!Promise.<?>}
    */
-  doUpdate() {
-    return this._fetchMatchedCascade().then(this._innerRebuildUpdate.bind(this));
+  async doUpdate() {
+    if (!this._initialUpdateCompleted) {
+      setTimeout(() => {
+        if (!this._initialUpdateCompleted) {
+          // the spinner will get automatically removed when _innerRebuildUpdate is called
+          this._sectionsContainer.createChild('span', 'spinner');
+        }
+      }, 200 /* only spin for loading time > 200ms to avoid unpleasant render flashes */);
+    }
+
+    const matchedStyles = await this._fetchMatchedCascade();
+    await this._innerRebuildUpdate(matchedStyles);
+    if (!this._initialUpdateCompleted) {
+      this._initialUpdateCompleted = true;
+      this.dispatchEventToListeners(Events.InitialUpdateCompleted);
+    }
+  }
+
+  initialUpdateCompleted() {
+    return this._initialUpdateCompleted;
   }
 
   /**
@@ -888,6 +907,11 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     }
   }
 }
+
+/** @enum {symbol} */
+export const Events = {
+  InitialUpdateCompleted: Symbol('InitialUpdateCompleted'),
+};
 
 export const _maxLinkLength = 23;
 

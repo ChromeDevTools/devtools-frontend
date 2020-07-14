@@ -60,6 +60,7 @@ export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
       this._titlesElement.classList.toggle('no-subtitle', !statusUpdate.subtitle);
     }
     if (typeof statusUpdate.wait === 'boolean' && this.listItemElement) {
+      this._iconElement.classList.toggle('spinner', statusUpdate.wait);
       this.listItemElement.classList.toggle('wait', statusUpdate.wait);
     }
   }

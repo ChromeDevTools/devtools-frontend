@@ -556,3 +556,22 @@ input.custom-search-input::-webkit-search-cancel-button {
   margin-right: 0;
   background: -32px 32px url(Images/mediumIcons.svg);
 }
+
+/* loading spinner */
+.spinner::before {
+  display: block;
+  width: var(--dimension, 24px);
+  height: var(--dimension, 24px);
+  border: var(--spinner-size, 3px) solid var(--spinner-color, grey);
+  border-radius: 12px;
+  clip: rect(0, var(--clip-size, 15px), var(--clip-size, 15px), 0);
+  content: "";
+  position: absolute;
+  animation: spinner-animation 1s linear infinite;
+  box-sizing: border-box;
+}
+
+@keyframes spinner-animation {
+  from { transform: rotate(0); }
+  to { transform: rotate(360deg); }
+}

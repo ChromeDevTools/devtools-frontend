@@ -86,7 +86,7 @@
 }
 
 .screencast-navigation input {
-  -webkit-flex: 1;
+  flex: 1;
   margin: 2px;
   max-height: 19px;
 }

@@ -113,7 +113,7 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus * {
   -webkit-mask-size: 32px 24px;
   -webkit-mask-position: 0 0;
   background-color: #727272;
-  content: "\00a0\00a0";
+  content: "\A0\A0";
   text-shadow: none;
   margin-right: -2px;
   height: 12px;

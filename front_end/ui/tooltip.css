@@ -12,7 +12,7 @@
   line-height: 14px;
   display: flex;
   align-items: center;
-  -webkit-filter: drop-shadow(0 1px 2px hsl(0deg 0% 0% / 30%));
+  filter: drop-shadow(0 1px 2px hsl(0deg 0% 0% / 30%));
   border: 1px solid hsl(0deg 0% 0% / 10%);
   background-clip: padding-box;
   box-sizing: border-box;

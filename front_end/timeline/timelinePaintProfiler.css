@@ -9,7 +9,7 @@
 }
 
 .paint-profiler-image-view .paint-profiler-image-container {
-  -webkit-transform-origin: 0 0;
+  transform-origin: 0 0;
 }
 
 .paint-profiler-image-view .paint-profiler-image-container div {

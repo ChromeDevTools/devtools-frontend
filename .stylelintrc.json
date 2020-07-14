@@ -4,11 +4,20 @@
     "alpha-value-notation": "percentage",
     "color-function-notation": "modern",
     "hue-degree-notation": "angle",
+    "property-no-vendor-prefix": [
+      true,
+      {
+        "ignoreProperties": [
+          "border-image",
+          "/^mask-/"
+        ]
+      }
+    ],
     "selector-type-no-unknown": [
       true,
       {
         "ignoreTypes": [
-          "/^devtools-.+/"
+          "/^devtools-/"
         ]
       }
     ]

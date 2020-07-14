@@ -84,18 +84,18 @@
 }
 
 .orientation-stage {
-  -webkit-perspective: 700px;
-  -webkit-perspective-origin: 50% 50%;
+  perspective: 700px;
+  perspective-origin: 50% 50%;
   width: 160px;
   height: 150px;
   background: linear-gradient(#e1f5fe 0%, #e1f5fe 64%, #b0ebf3 64%, #def6f9 100%);
-  transition: 0.2s ease opacity, 0.2s ease -webkit-filter;
+  transition: 0.2s ease opacity, 0.2s ease filter;
   overflow: hidden;
   margin-bottom: 10px;
 }
 
 .orientation-stage.disabled {
-  -webkit-filter: grayscale();
+  filter: grayscale();
   opacity: 50%;
   cursor: default !important;
 }

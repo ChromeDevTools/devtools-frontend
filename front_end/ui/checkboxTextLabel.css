@@ -28,7 +28,7 @@ input:focus {
 }
 
 input.dt-checkbox-themed {
-  -webkit-appearance: none;
+  appearance: none;
   margin: auto 5px auto 2px;
   border: 1px solid rgb(45 45 45);
   border-radius: 3px;

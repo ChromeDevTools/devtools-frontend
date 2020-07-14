@@ -182,7 +182,7 @@ input::placeholder {
 }
 
 :host-context(.-theme-with-dark-background) input[type="checkbox"]:not(.-theme-preserve) {
-  -webkit-filter: invert(80%);
+  filter: invert(80%);
 }
 
 .harmony-input:not([type]),
@@ -246,7 +246,7 @@ input::placeholder {
 }
 
 .chrome-select {
-  -webkit-appearance: none;
+  appearance: none;
   user-select: none;
   border: 1px solid rgb(0 0 0 / 20%);
   border-radius: 2px;
@@ -307,14 +307,14 @@ input::placeholder {
 }
 
 :not(.platform-mac).-theme-with-dark-background ::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 1px rgb(255 255 255 / 30%);
+  box-shadow: inset 0 0 1px rgb(255 255 255 / 30%);
   background: rgb(36 36 36);
 }
 
 :not(.platform-mac).-theme-with-dark-background ::-webkit-scrollbar-thumb {
   border-radius: 2px;
   background-color: #333;
-  -webkit-box-shadow: inset 0 0 1px rgb(255 255 255 / 50%);
+  box-shadow: inset 0 0 1px rgb(255 255 255 / 50%);
 }
 
 :not(.platform-mac).-theme-with-dark-background ::-webkit-scrollbar-corner {
@@ -327,14 +327,14 @@ input::placeholder {
 }
 
 :host-context(:not(.platform-mac).-theme-with-dark-background) ::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 1px rgb(255 255 255 / 30%);
+  box-shadow: inset 0 0 1px rgb(255 255 255 / 30%);
   background: rgb(36 36 36);
 }
 
 :host-context(:not(.platform-mac).-theme-with-dark-background) ::-webkit-scrollbar-thumb {
   border-radius: 2px;
   background-color: #333;
-  -webkit-box-shadow: inset 0 0 1px rgb(255 255 255 / 50%);
+  box-shadow: inset 0 0 1px rgb(255 255 255 / 50%);
 }
 
 :host-context(:not(.platform-mac).-theme-with-dark-background) ::-webkit-scrollbar-corner {

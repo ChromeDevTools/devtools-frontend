@@ -18,7 +18,7 @@
 }
 
 .search-replace {
-  -webkit-appearance: none;
+  appearance: none;
   border: 0;
   padding: 0 3px;
   margin: 0;
@@ -69,7 +69,7 @@
 }
 
 .toolbar-search-control {
-  display: -webkit-flex;
+  display: flex;
   position: relative;
   background-color: white;
 }
@@ -104,7 +104,7 @@
 }
 
 :host-context(.-theme-with-dark-background) .toolbar-search-navigation {
-  -webkit-filter: invert(90%);
+  filter: invert(90%);
 }
 
 .toolbar-search-navigation.toolbar-search-navigation-prev.enabled:active {

@@ -57,5 +57,5 @@
 }
 
 :host-context(.-theme-with-dark-background) .arrow {
-  -webkit-filter: invert(80%);
+  filter: invert(80%);
 }

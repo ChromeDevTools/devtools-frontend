@@ -137,20 +137,20 @@
 }
 
 .cm-highlight {
-  -webkit-animation: fadeout 2s 0s;
+  animation: fadeout 2s 0s;
 }
 
 .-theme-with-dark-background .cm-highlight,
 :host-context(.-theme-with-dark-background) .cm-highlight {
-  -webkit-animation: fadeout-dark 2s 0s;
+  animation: fadeout-dark 2s 0s;
 }
 
-@-webkit-keyframes fadeout {
+@keyframes fadeout {
   from { background-color: rgb(255 255 120); }
   to { background-color: white; }
 }
 
-@-webkit-keyframes fadeout-dark {
+@keyframes fadeout-dark {
   from { background-color: hsl(133deg 100% 30% / 50%); }
   to { background-color: transparent; }
 }
@@ -165,20 +165,20 @@
 }
 
 .cm-highlight.cm-execution-line {
-  -webkit-animation: fadeout-execution-line 1s 0s;
+  animation: fadeout-execution-line 1s 0s;
 }
 
 .-theme-with-dark-background .cm-highlight.cm-execution-line,
 :host-context(.-theme-with-dark-background) .cm-highlight.cm-execution-line {
-  -webkit-animation: fadeout-execution-line-dark 1s 0s;
+  animation: fadeout-execution-line-dark 1s 0s;
 }
 
-@-webkit-keyframes fadeout-execution-line {
+@keyframes fadeout-execution-line {
   from { background-color: rgb(121 141 254); }
   to { background-color: rgb(171 191 254); }
 }
 
-@-webkit-keyframes fadeout-execution-line-dark {
+@keyframes fadeout-execution-line-dark {
   from { background-color: #208043; }
   to { background-color: #14522b; }
 }

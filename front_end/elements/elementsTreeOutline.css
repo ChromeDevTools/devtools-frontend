@@ -65,7 +65,7 @@
   user-select: none;
   -webkit-mask-image: url(Images/treeoutlineTriangles.svg);
   -webkit-mask-size: 32px 24px;
-  content: '\00a0\00a0';
+  content: '\A0\A0';
   color: transparent;
   text-shadow: none;
   margin-right: -3px;
@@ -228,7 +228,7 @@ select {
 }
 
 /* DOM update highlight */
-@-webkit-keyframes dom-update-highlight-animation {
+@keyframes dom-update-highlight-animation {
   from {
     background-color: rgb(158 54 153);
     color: white;
@@ -244,7 +244,7 @@ select {
   }
 }
 
-@-webkit-keyframes dom-update-highlight-animation-dark {
+@keyframes dom-update-highlight-animation-dark {
   from {
     background-color: rgb(158 54 153);
     color: white;
@@ -261,12 +261,12 @@ select {
 }
 
 .dom-update-highlight {
-  -webkit-animation: dom-update-highlight-animation 1.4s 1 cubic-bezier(0, 0, 0.2, 1);
+  animation: dom-update-highlight-animation 1.4s 1 cubic-bezier(0, 0, 0.2, 1);
   border-radius: 2px;
 }
 
 :host-context(.-theme-with-dark-background) .dom-update-highlight {
-  -webkit-animation: dom-update-highlight-animation-dark 1.4s 1 cubic-bezier(0, 0, 0.2, 1);
+  animation: dom-update-highlight-animation-dark 1.4s 1 cubic-bezier(0, 0, 0.2, 1);
 }
 
 .elements-disclosure.single-node li {

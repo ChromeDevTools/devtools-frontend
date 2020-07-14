@@ -12,8 +12,8 @@
   min-height: var(--metrics-height);
   display: flex;
   flex-direction: column;
-  -webkit-align-items: center;
-  -webkit-justify-content: center;
+  align-items: center;
+  justify-content: center;
 }
 
 :host {

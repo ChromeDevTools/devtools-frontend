@@ -28,7 +28,7 @@ input:focus {
 }
 
 input.dt-checkbox-themed {
-  appearance: none;
+  -webkit-appearance: none;
   margin: auto 5px auto 2px;
   border: 1px solid rgb(45 45 45);
   border-radius: 3px;
@@ -43,9 +43,9 @@ input.dt-checkbox-themed::after {
   width: 12px;
   height: 12px;
   background: none;
-  mask-image: url(Images/checkboxCheckmark.svg);
-  mask-size: 11px 11px;
-  mask-position: 0 0;
+  -webkit-mask-image: url(Images/checkboxCheckmark.svg);
+  -webkit-mask-size: 11px 11px;
+  -webkit-mask-position: 0 0;
 }
 
 input.dt-checkbox-themed:checked::after {

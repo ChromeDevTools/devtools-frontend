@@ -127,9 +127,9 @@ table.network-timing-table > tr:not(.network-timing-table-header):not(.network-t
 
 .network-fetch-timing-bar-clickable::before {
   user-select: none;
-  mask-image: url(Images/treeoutlineTriangles.svg);
-  mask-position: 0 0;
-  mask-size: 32px 24px;
+  -webkit-mask-image: url(Images/treeoutlineTriangles.svg);
+  -webkit-mask-position: 0 0;
+  -webkit-mask-size: 32px 24px;
   float: left;
   width: 8px;
   height: 12px;
@@ -145,7 +145,7 @@ table.network-timing-table > tr:not(.network-timing-table-header):not(.network-t
 }
 
 .network-fetch-timing-bar-clickable[aria-checked="true"]::before {
-  mask-position: -16px 0;
+  -webkit-mask-position: -16px 0;
 }
 
 .network-fetch-timing-bar-details-collapsed {

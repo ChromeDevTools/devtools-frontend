@@ -242,7 +242,7 @@ rect.animation-timeline-grid-line {
 }
 
 .animation-node-removed {
-  filter: saturate(0);
+  -webkit-filter: saturate(0);
   cursor: not-allowed;
 }
 
@@ -378,11 +378,11 @@ text.animation-timeline-grid-label {
 
 @keyframes newGroupAnim {
   from {
-    clip-path: polygon(0% 0%, 0% 100%, 0% 100%, 0% 0%);
+    -webkit-clip-path: polygon(0% 0%, 0% 100%, 0% 100%, 0% 0%);
   }
 
   to {
-    clip-path: polygon(0% 0%, 0% 100%, 100% 100%, 100% 0%);
+    -webkit-clip-path: polygon(0% 0%, 0% 100%, 100% 100%, 100% 0%);
   }
 }
 

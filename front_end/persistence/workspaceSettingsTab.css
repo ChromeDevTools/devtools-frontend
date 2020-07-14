@@ -26,11 +26,11 @@ header > h1 {
 
 .settings-container {
   width: 100%;
-  column-width: 288px;
+  -webkit-column-width: 288px;
 }
 
 .settings-tab.settings-container {
-  column-width: 308px;
+  -webkit-column-width: 308px;
 }
 
 .settings-tab label {
@@ -102,7 +102,7 @@ p.folder-exclude-pattern > input {
 }
 
 .settings-tab.settings-content.settings-container {
-  column-width: initial;
+  -webkit-column-width: initial;
   overflow: hidden;
   padding-right: 10px;
 }

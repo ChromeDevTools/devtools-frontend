@@ -15,7 +15,7 @@
   border: 1px solid #a5a5a5;
   background-image: linear-gradient(to bottom, var(--gradient-start), var(--gradient-end));
   border-radius: 8px;
-  appearance: none;
+  -webkit-appearance: none;
   vertical-align: middle;
   margin: 0 5px 5px 0;
 }

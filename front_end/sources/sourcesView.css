@@ -54,7 +54,7 @@
   background-color: #444;
 }
 
-@keyframes source-frame-value-update-highlight-animation {
+@-webkit-keyframes source-frame-value-update-highlight-animation {
   from {
     background-color: inherit;
     color: inherit;
@@ -72,7 +72,7 @@
 }
 
 .source-frame-value-update-highlight {
-  animation: source-frame-value-update-highlight-animation 0.8s 1 cubic-bezier(0, 0, 0.2, 1);
+  -webkit-animation: source-frame-value-update-highlight-animation 0.8s 1 cubic-bezier(0, 0, 0.2, 1);
   border-radius: 2px;
 }
 

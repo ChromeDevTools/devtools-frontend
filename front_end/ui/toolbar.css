@@ -210,7 +210,7 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
 
 select.toolbar-item {
   min-width: 38px;
-  appearance: none;
+  -webkit-appearance: none;
   border: 1px solid transparent;
   border-radius: 0;
   padding: 0 13px 0 5px;

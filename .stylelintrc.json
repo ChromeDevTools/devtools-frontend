@@ -4,7 +4,6 @@
     "alpha-value-notation": "percentage",
     "color-function-notation": "modern",
     "hue-degree-notation": "angle",
-    "property-no-vendor-prefix": true,
     "selector-type-no-unknown": [
       true,
       {

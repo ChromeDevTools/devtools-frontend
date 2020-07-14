@@ -5,7 +5,7 @@
  */
 
 .dt-range-input {
-  appearance: none;
+  -webkit-appearance: none;
   margin: 0;
   padding: 0;
   height: 10px;
@@ -16,7 +16,7 @@
 
 .dt-range-input::-webkit-slider-thumb,
 .-theme-preserve {
-  appearance: none;
+  -webkit-appearance: none;
   margin: 0;
   padding: 0;
   border: 0;
@@ -28,7 +28,7 @@
 }
 
 .dt-range-input::-webkit-slider-runnable-track {
-  appearance: none;
+  -webkit-appearance: none;
   margin: 0;
   padding: 0;
   width: 100%;

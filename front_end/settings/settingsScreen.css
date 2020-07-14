@@ -26,18 +26,18 @@
 
 .settings-container {
   width: 100%;
-  column-width: 288px;
+  -webkit-column-width: 288px;
 }
 
 .settings-block {
   display: block;
   padding-bottom: 9px;
   width: 288px;
-  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
 }
 
 .settings-tab.settings-container {
-  column-width: 308px;
+  -webkit-column-width: 308px;
 }
 
 .settings-tab .settings-block {
@@ -162,7 +162,7 @@ fieldset {
 }
 
 #experiments-tab-content .settings-container {
-  column-width: 470px;
+  -webkit-column-width: 470px;
 }
 
 #experiments-tab-content .settings-block {

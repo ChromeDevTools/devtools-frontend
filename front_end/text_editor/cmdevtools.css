@@ -137,20 +137,20 @@
 }
 
 .cm-highlight {
-  animation: fadeout 2s 0s;
+  -webkit-animation: fadeout 2s 0s;
 }
 
 .-theme-with-dark-background .cm-highlight,
 :host-context(.-theme-with-dark-background) .cm-highlight {
-  animation: fadeout-dark 2s 0s;
+  -webkit-animation: fadeout-dark 2s 0s;
 }
 
-@keyframes fadeout {
+@-webkit-keyframes fadeout {
   from { background-color: rgb(255 255 120); }
   to { background-color: white; }
 }
 
-@keyframes fadeout-dark {
+@-webkit-keyframes fadeout-dark {
   from { background-color: hsl(133deg 100% 30% / 50%); }
   to { background-color: transparent; }
 }
@@ -165,20 +165,20 @@
 }
 
 .cm-highlight.cm-execution-line {
-  animation: fadeout-execution-line 1s 0s;
+  -webkit-animation: fadeout-execution-line 1s 0s;
 }
 
 .-theme-with-dark-background .cm-highlight.cm-execution-line,
 :host-context(.-theme-with-dark-background) .cm-highlight.cm-execution-line {
-  animation: fadeout-execution-line-dark 1s 0s;
+  -webkit-animation: fadeout-execution-line-dark 1s 0s;
 }
 
-@keyframes fadeout-execution-line {
+@-webkit-keyframes fadeout-execution-line {
   from { background-color: rgb(121 141 254); }
   to { background-color: rgb(171 191 254); }
 }
 
-@keyframes fadeout-execution-line-dark {
+@-webkit-keyframes fadeout-execution-line-dark {
   from { background-color: #208043; }
   to { background-color: #14522b; }
 }
@@ -202,25 +202,25 @@
 /* stylelint-disable no-descending-specificity */
 
 .CodeMirror-linenumber:hover {
-  border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%23ebeced" stroke="%23ebeced"/></svg>') 1 3 1 1;
+  -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%23ebeced" stroke="%23ebeced"/></svg>') 1 3 1 1;
   padding-left: 8px;
 }
 
 .-theme-with-dark-background .CodeMirror-linenumber:hover,
 :host-context(.-theme-with-dark-background) .CodeMirror-linenumber:hover {
-  border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%233c4043" stroke="%233c4043"/></svg>') 1 3 1 1;
+  -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%233c4043" stroke="%233c4043"/></svg>') 1 3 1 1;
 }
 
 .cm-breakpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
 .-theme-preserve {
   color: white;
-  border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%234285f4" stroke="%231a73e8"/></svg>') 1 3 1 1;
+  -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%234285f4" stroke="%231a73e8"/></svg>') 1 3 1 1;
 }
 
 .cm-breakpoint-disabled .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
 .breakpoints-deactivated .cm-breakpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber {
   color: #1a73e8;
-  border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%23d9e7fd" stroke="%231a73e8"/></svg>') 1 3 1 1;
+  -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%23d9e7fd" stroke="%231a73e8"/></svg>') 1 3 1 1;
 }
 
 .-theme-with-dark-background .cm-breakpoint-disabled .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
@@ -228,18 +228,18 @@
 :host-context(.-theme-with-dark-background) .cm-breakpoint-disabled .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
 :host-context(.-theme-with-dark-background) .breakpoints-deactivated .cm-breakpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber {
   color: #1a73e8;
-  border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%232a384e" stroke="%231a73e8"/></svg>') 1 3 1 1;
+  -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%232a384e" stroke="%231a73e8"/></svg>') 1 3 1 1;
 }
 
 .cm-breakpoint-conditional .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
 .-theme-preserve {
-  border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%23f29900" stroke="%23e37400"/></svg>') 1 3 1 1;
+  -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%23f29900" stroke="%23e37400"/></svg>') 1 3 1 1;
 }
 
 .cm-breakpoint-disabled.cm-breakpoint-conditional .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
 .breakpoints-deactivated .cm-breakpoint-conditional .CodeMirror-gutter-wrapper .CodeMirror-linenumber {
   color: #e37400;
-  border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%23fcebcc" stroke="%23e37400"/></svg>') 1 3 1 1;
+  -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%23fcebcc" stroke="%23e37400"/></svg>') 1 3 1 1;
 }
 
 .-theme-with-dark-background .cm-breakpoint-disabled.cm-breakpoint-conditional .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
@@ -247,18 +247,18 @@
 :host-context(.-theme-with-dark-background) .cm-breakpoint-disabled.cm-breakpoint-conditional .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
 :host-context(.-theme-with-dark-background) .breakpoints-deactivated .cm-breakpoint-conditional .CodeMirror-gutter-wrapper .CodeMirror-linenumber {
   color: #e37400;
-  border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%234d3c1d" stroke="%23e37400"/></svg>') 1 3 1 1;
+  -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%234d3c1d" stroke="%23e37400"/></svg>') 1 3 1 1;
 }
 
 .cm-breakpoint-logpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
 .-theme-preserve {
-  border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%23f439a0" stroke="%23d01884"/></svg>') 1 3 1 1;
+  -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%23f439a0" stroke="%23d01884"/></svg>') 1 3 1 1;
 }
 
 .cm-breakpoint-disabled.cm-breakpoint-logpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
 .breakpoints-deactivated .cm-breakpoint-logpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber {
   color: #d01884;
-  border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%23fdd7ec" stroke="%23f439a0"/></svg>') 1 3 1 1;
+  -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%23fdd7ec" stroke="%23f439a0"/></svg>') 1 3 1 1;
 }
 
 .-theme-with-dark-background .cm-breakpoint-disabled.cm-breakpoint-logpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
@@ -266,7 +266,7 @@
 :host-context(.-theme-with-dark-background) .cm-breakpoint-disabled.cm-breakpoint-logpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
 :host-context(.-theme-with-dark-background) .breakpoints-deactivated .cm-breakpoint-logpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber {
   color: #d01884;
-  border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%234e283d" stroke="%23f439a0"/></svg>') 1 3 1 1;
+  -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%234e283d" stroke="%23f439a0"/></svg>') 1 3 1 1;
 }
 
 /* stylelint-enable no-descending-specificity */
@@ -707,8 +707,8 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 .CodeMirror-foldgutter-folded::before {
   background-color: #727272;
   user-select: none;
-  mask-image: url(Images/treeoutlineTriangles.svg);
-  mask-size: 32px 24px;
+  -webkit-mask-image: url(Images/treeoutlineTriangles.svg);
+  -webkit-mask-size: 32px 24px;
   content: "";
   display: block;
   width: 8px;
@@ -720,11 +720,11 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 }
 
 .CodeMirror-foldgutter-open::before {
-  mask-position: -16px 0;
+  -webkit-mask-position: -16px 0;
 }
 
 .CodeMirror-foldgutter-folded::before {
-  mask-position: 0 0;
+  -webkit-mask-position: 0 0;
 }
 
 .CodeMirror .CodeMirror-line::selection,

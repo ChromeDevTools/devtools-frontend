@@ -215,6 +215,6 @@ template("devtools_entrypoint") {
   copy_gen_to_resources(target_name) {
     sources = [ _entrypoint_gen_file_location ]
 
-    deps = [ ":$_entrypoint_target_name" ]
+    public_deps = [ ":$_entrypoint_target_name" ]
   }
 }

@@ -11,8 +11,10 @@ group("front_end") {
     ":front_end_html_entrypoints",
     ":ts_library-verification",
     "component_docs",
+    "elements:bundle",
     "formatter_worker:bundle",
     "i18n:bundle_i18n",
+    "sdk:bundle",
   ]
 
   data_deps = [ ":front_end_html_entrypoints" ]

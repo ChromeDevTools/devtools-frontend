@@ -337,13 +337,6 @@ devtools_frontend_resources_deps = [
   ":devtools_extension_api",
   "front_end",
   "test",
-
-  # Required for layout tests, which depend on the existence of `integration_test_runner.html`
-  # If we don't add this dependency explicitly, the swarming bots don't pick up the file.
-  "front_end/elements:bundle",
-  "front_end/formatter_worker",
-  "front_end/sdk",
-  "front_end/sdk:bundle",
 ]
 
 if (is_debug) {

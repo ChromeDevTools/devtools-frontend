@@ -28,11 +28,11 @@ template("devtools_module") {
       sources =
           filter_include(get_target_outputs(_typescript_target_dep), [ "*.js" ])
 
-      deps = [ _typescript_target_dep ]
+      public_deps = [ _typescript_target_dep ]
     }
   } else {
     group(target_name) {
-      deps = [ _typescript_target_dep ]
+      public_deps = [ _typescript_target_dep ]
     }
   }
 }

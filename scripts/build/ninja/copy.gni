@@ -16,12 +16,14 @@ template("copy_to_gen") {
 }
 
 template("copy_sources_to_resources") {
-  copy(target_name) {
+  _copy_action_name = "$target_name-copy"
+  copy(_copy_action_name) {
     forward_variables_from(invoker,
                            [
                              "sources",
                              "visibility",
                              "deps",
+                             "public_deps",
                            ])
 
     # Figure out what the relative path is to the front_end folder.
@@ -37,6 +39,11 @@ template("copy_sources_to_resources") {
     outputs = [
       "$resources_out_dir/$_front_end_module_name/{{source_target_relative}}",
     ]
+  }
+
+  group(target_name) {
+    public_deps = [ ":$_copy_action_name" ]
+    data_deps = [ ":$_copy_action_name" ]
   }
 }
 

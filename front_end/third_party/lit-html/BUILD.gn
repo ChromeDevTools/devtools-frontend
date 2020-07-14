@@ -2,9 +2,9 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../../scripts/build/ninja/copy.gni")
+import("../../../scripts/build/ninja/devtools_pre_built.gni")
 
-copy_to_gen("lit-html") {
+devtools_pre_built("lit-html") {
   sources = [
     "lit-html-tsconfig.json",
     "package/directives/class-map.d.ts",

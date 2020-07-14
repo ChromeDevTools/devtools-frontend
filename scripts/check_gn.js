@@ -87,6 +87,9 @@ function checkAllDevToolsModules() {
           return [];
         }
         return (moduleJSON.modules || []).filter(fileName => {
+          if (fileName.startsWith('../third_party/codemirror') || fileName.startsWith('../third_party/acorn')) {
+            return false;
+          }
           return fileName !== `${folderName}.js` && fileName !== `${folderName}-legacy.js`;
         });
       },

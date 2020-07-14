@@ -2,11 +2,12 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../scripts/build/ninja/copy.gni")
 import("../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../scripts/build/ninja/devtools_module.gni")
+import("../../scripts/build/ninja/devtools_pre_built.gni")
 import("../../third_party/typescript/typescript.gni")
 
-ts_library("elements") {
+devtools_module("elements") {
   sources = [
     "Adorner.js",
     "ElementsBreadcrumbsUtils.ts",
@@ -21,7 +22,7 @@ ts_library("elements") {
   ]
 }
 
-copy_to_gen("elements-copy") {
+devtools_pre_built("elements-pre-built") {
   sources = [
     "ClassesPaneWidget.js",
     "ColorSwatchPopoverIcon.js",
@@ -47,7 +48,6 @@ copy_to_gen("elements-copy") {
     "StylePropertyHighlighter.js",
     "StylePropertyTreeElement.js",
     "StylesSidebarPane.js",
-    "elements-legacy.js",
   ]
 }
 
@@ -56,6 +56,6 @@ devtools_entrypoint("bundle") {
 
   deps = [
     ":elements",
-    ":elements-copy",
+    ":elements-pre-built",
   ]
 }

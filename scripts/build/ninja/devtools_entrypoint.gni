@@ -49,7 +49,7 @@ template("devtools_entrypoint") {
 
         outputs = [ _entrypoint_gen_file_location ]
 
-        deps = invoker.deps
+        public_deps = invoker.deps
       }
     }
   } else {
@@ -102,7 +102,7 @@ template("devtools_entrypoint") {
 
         outputs = [ _copy_output_file_name ]
 
-        deps = invoker.deps
+        public_deps = invoker.deps
       }
 
       ts_library(_prebundle_target_name) {
@@ -121,7 +121,7 @@ template("devtools_entrypoint") {
 
         outputs = [ _prebundle_output_file_name ]
 
-        deps = invoker.deps
+        public_deps = invoker.deps
       }
     }
 

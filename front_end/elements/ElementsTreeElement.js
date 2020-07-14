@@ -1937,6 +1937,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
   async _updateStyleAdorners() {
     const node = this.node();
+    if (node.nodeType() === Node.COMMENT_NODE) {
+      return;
+    }
+
     const styles = await node.domModel().cssModel().computedStylePromise(node.id);
     if (!styles) {
       return;

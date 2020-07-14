@@ -80,17 +80,17 @@
 }
 
 .info-icon {
-  -webkit-mask-image: url(Images/ic_info_black_18dp.svg);
+  mask-image: url(Images/ic_info_black_18dp.svg);
   background-color: hsl(214deg 92% 50%);
 }
 
 .warning-icon {
-  -webkit-mask-image: url(Images/ic_warning_black_18dp.svg);
+  mask-image: url(Images/ic_warning_black_18dp.svg);
   background-color: hsl(44deg 92% 50%);
 }
 
 .icon {
-  -webkit-mask-size: 18px 18px;
+  mask-size: 18px 18px;
   width: 18px;
   height: 18px;
   flex-shrink: 0;

@@ -92,7 +92,7 @@ li.wait.selected .spinner::before {
   --spinner-color: white;
 }
 
-@-webkit-keyframes spinner-animation {
+@keyframes spinner-animation {
   from { transform: rotate(0); }
   to { transform: rotate(360deg); }
 }

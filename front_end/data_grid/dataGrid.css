@@ -192,9 +192,9 @@
 
 .data-grid td.disclosure::before {
   user-select: none;
-  -webkit-mask-image: url(Images/treeoutlineTriangles.svg);
-  -webkit-mask-position: 0 0;
-  -webkit-mask-size: 32px 24px;
+  mask-image: url(Images/treeoutlineTriangles.svg);
+  mask-position: 0 0;
+  mask-size: 32px 24px;
   float: left;
   width: 8px;
   height: 12px;
@@ -210,7 +210,7 @@
 }
 
 .data-grid tr.expanded td.disclosure::before {
-  -webkit-mask-position: -16px 0;
+  mask-position: -16px 0;
 }
 
 .data-grid table.data tr.revealed.selected {
@@ -233,12 +233,12 @@
 
 .data-grid:focus tr.parent.selected td.disclosure::before {
   background-color: var(--selection-fg-color);
-  -webkit-mask-position: 0 0;
+  mask-position: 0 0;
 }
 
 .data-grid:focus tr.expanded.selected td.disclosure::before {
   background-color: var(--selection-fg-color);
-  -webkit-mask-position: -16px 0;
+  mask-position: -16px 0;
 }
 
 .data-grid tr.inactive {

@@ -40,10 +40,10 @@
 }
 
 .ax-breadcrumbs .ax-node::before {
-  -webkit-mask-image: url(Images/chevrons.svg);
-  -webkit-mask-position: 0 0;
-  -webkit-mask-size: 30px 10px;
-  -webkit-mask-repeat: no-repeat;
+  mask-image: url(Images/chevrons.svg);
+  mask-position: 0 0;
+  mask-size: 30px 10px;
+  mask-repeat: no-repeat;
   background-color: rgb(48 57 66);
   content: "";
   text-shadow: none;
@@ -59,7 +59,7 @@
 }
 
 .ax-breadcrumbs .ax-node.parent::before {
-  -webkit-mask-position: -20px 1px;
+  mask-position: -20px 1px;
 }
 
 .ax-breadcrumbs .ax-node.no-dom-node {
@@ -67,7 +67,7 @@
 }
 
 .ax-breadcrumbs .ax-node.children-unloaded::before {
-  -webkit-mask-position: 0 1px;
+  mask-position: 0 1px;
   width: 13px;
   opacity: 40%;
 }

@@ -113,10 +113,10 @@
 }
 
 .highlighted-row {
-  -webkit-animation: row_highlight 2s 0s;
+  animation: row_highlight 2s 0s;
 }
 
-@-webkit-keyframes row_highlight {
+@keyframes row_highlight {
   from { background-color: rgb(255 255 120 / 100%); }
   to { background-color: rgb(255 255 120 / 0%); }
 }

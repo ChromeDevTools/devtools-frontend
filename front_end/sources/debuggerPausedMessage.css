@@ -43,12 +43,12 @@
 }
 
 .status-icon {
-  -webkit-filter: hue-rotate(190deg);
+  filter: hue-rotate(190deg);
   position: absolute;
   left: 0;
   top: calc(50% - 5px);
 }
 
 .paused-status.error-reason .status-icon {
-  -webkit-filter: none;
+  filter: none;
 }

@@ -50,7 +50,7 @@
 }
 
 .issues li.parent.expanded::before {
-  -webkit-mask-position: 0 0;
+  mask-position: 0 0;
   transform: rotate(90deg);
 }
 
@@ -191,12 +191,12 @@ p {
 
 .link-list li::before {
   content: none;
-  -webkit-mask-image: none;
+  mask-image: none;
 }
 
 .resolutions-list li::before {
   content: "→";
-  -webkit-mask-image: none;
+  mask-image: none;
   padding-right: 5px;
   position: relative;
   top: -1px;

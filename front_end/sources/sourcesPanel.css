@@ -38,7 +38,7 @@
 
 .scripts-debug-toolbar-drawer {
   flex: 0 0 52px;
-  -webkit-transition: margin-top 0.1s ease-in-out;
+  transition: margin-top 0.1s ease-in-out;
   margin-top: -26px;
   padding-top: 25px;
   background-color: white;

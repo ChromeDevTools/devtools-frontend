@@ -624,7 +624,7 @@ div.palette-preview {
   }
 
   :host-context(.-theme-with-dark-background) .spectrum-switcher {
-    -webkit-filter: unset;
+    filter: unset;
   }
 
   .spectrum-switcher:hover svg,

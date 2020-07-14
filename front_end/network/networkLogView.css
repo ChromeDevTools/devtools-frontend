@@ -118,7 +118,7 @@
 }
 
 .network-log-grid.data-grid select {
-  -webkit-appearance: none;
+  appearance: none;
   border: none;
   width: 100%;
   color: inherit;
@@ -198,13 +198,13 @@
 }
 
 .network-log-grid tr.highlighted-row {
-  -webkit-animation: network-row-highlight-fadeout 2s 0s;
+  animation: network-row-highlight-fadeout 2s 0s;
 }
 
 /* See comment above why the rules were disabled */
 /* stylelint-enable no-descending-specificity */
 
-@-webkit-keyframes network-row-highlight-fadeout {
+@keyframes network-row-highlight-fadeout {
   from { background-color: rgb(255 255 120 / 100%); }
   to { background-color: rgb(255 255 120 / 0%); }
 }

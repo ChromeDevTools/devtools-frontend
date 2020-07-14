@@ -68,7 +68,7 @@ h1 {
   padding: 3px 0;
   white-space: nowrap;
   text-overflow: ellipsis;
-  -webkit-user-select: none;
+  user-select: none;
   color: #222;
   text-align: start;
   position: relative;

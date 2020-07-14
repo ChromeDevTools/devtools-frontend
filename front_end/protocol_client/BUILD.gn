@@ -12,7 +12,7 @@ ts_library("protocol_client") {
   ]
 
   deps = [
-    "../common",
+    "../common:bundle",
     "../generated",
     "../host",
   ]

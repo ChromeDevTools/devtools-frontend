@@ -42,6 +42,7 @@ export const ls = Platform.UIString.ls;
 /**
  * @type {!Settings.Settings}
  */
+// @ts-ignore typedef
 export let settings;
 
 export {

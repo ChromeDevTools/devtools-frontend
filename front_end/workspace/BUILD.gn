@@ -13,7 +13,7 @@ ts_library("workspace") {
   ]
 
   deps = [
-    "../common",
+    "../common:bundle",
     "../host",
     "../platform",
     "../text_utils",

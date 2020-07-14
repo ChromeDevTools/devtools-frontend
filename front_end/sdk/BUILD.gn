@@ -70,7 +70,7 @@ devtools_module("sdk") {
   ]
 
   deps = [
-    "../common",
+    "../common:bundle",
     "../generated",
     "../host",
     "../platform",

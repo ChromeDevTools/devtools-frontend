@@ -13,7 +13,7 @@ ts_library("browser_sdk") {
   ]
 
   deps = [
-    "../common",
+    "../common:bundle",
     "../sdk:bundle",
   ]
 }

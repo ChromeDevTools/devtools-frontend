@@ -24,7 +24,6 @@ devtools_module_entrypoints = [
   "cm_modes/cm_modes.js",
   "color_picker/color_picker.js",
   "color_picker/color_picker-legacy.js",
-  "common/common.js",
   "common/common-legacy.js",
   "components/components.js",
   "components/components-legacy.js",
@@ -168,6 +167,7 @@ foreach(module, devtools_module_entrypoints) {
 }
 
 generated_typescript_entrypoints = [
+  "$resources_out_dir/common/common.js",
   "$resources_out_dir/formatter_worker/formatter_worker.js",
   "$resources_out_dir/elements/elements.js",
   "$resources_out_dir/sdk/sdk.js",

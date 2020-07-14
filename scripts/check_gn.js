@@ -83,7 +83,7 @@ function checkAllDevToolsModules() {
   return checkGNVariable(
       'all_devtools_modules',
       (moduleJSON, folderName) => {
-        if (EXCLUDED_FOLDERS.includes(folderName)) {
+        if (EXCLUDED_FOLDERS.includes(folderName) || moduleJSON.skip_rollup) {
           return [];
         }
         return (moduleJSON.modules || []).filter(fileName => {
@@ -125,7 +125,8 @@ function checkDevtoolsModuleEntrypoints() {
         return (moduleJSON.modules || []).filter(fileName => {
           // TODO(crbug.com/1101738): Remove the exemption and change the variable to
           // `generated_typescript_entrypoints` instead.
-          return (!EXCLUDED_FOLDERS.includes(folderName) && fileName === `${folderName}.js`) ||
+          return (!(EXCLUDED_FOLDERS.includes(folderName) || moduleJSON.skip_rollup) &&
+                  fileName === `${folderName}.js`) ||
               fileName === `${folderName}-legacy.js`;
         });
       },

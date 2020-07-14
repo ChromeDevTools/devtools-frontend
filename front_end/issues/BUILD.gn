@@ -9,7 +9,7 @@ ts_library("issues") {
 
   deps = [
     "../browser_sdk",
-    "../common",
+    "../common:bundle",
     "../sdk:bundle",
   ]
 }

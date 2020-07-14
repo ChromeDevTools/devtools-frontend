@@ -14,5 +14,5 @@ ts_library("host") {
     "host.js",
   ]
 
-  deps = [ "../common" ]
+  deps = [ "../common:bundle" ]
 }

@@ -8,7 +8,7 @@ ts_library("persistence") {
   sources = [ "PlatformFileSystem.js" ]
 
   deps = [
-    "../common",
+    "../common:bundle",
     "../text_utils",
   ]
 }

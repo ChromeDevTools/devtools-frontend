@@ -16,7 +16,7 @@ ts_library("text_utils") {
   ]
 
   deps = [
-    "../common",
+    "../common:bundle",
     "../platform",
     "../root",
   ]

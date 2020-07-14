@@ -2,9 +2,10 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../third_party/typescript/typescript.gni")
+import("../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../scripts/build/ninja/devtools_module.gni")
 
-ts_library("common") {
+devtools_module("common") {
   sources = [
     "App.js",
     "AppProvider.js",
@@ -31,11 +32,18 @@ ts_library("common") {
     "Trie.js",
     "WasmDisassembly.js",
     "Worker.js",
-    "common.js",
   ]
 
   deps = [
     "../platform",
     "../root",
   ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "common.js"
+
+  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
+
+  deps = [ ":common" ]
 }

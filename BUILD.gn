@@ -5,6 +5,7 @@
 import("//third_party/blink/public/public_features.gni")
 import("./all_devtools_files.gni")
 import("./all_devtools_modules.gni")
+import("./devtools_image_files.gni")
 import("./devtools_module_entrypoints.gni")
 
 devtools_test_files = [
@@ -117,64 +118,6 @@ devtools_emulated_devices_images = [
   "front_end/emulated_devices/Nexus5X-portrait.svg",
   "front_end/emulated_devices/Nexus6P-landscape.svg",
   "front_end/emulated_devices/Nexus6P-portrait.svg",
-]
-
-devtools_image_files = [
-  "front_end/Images/accelerometer-back.svg",
-  "front_end/Images/accelerometer-bottom.png",
-  "front_end/Images/accelerometer-front.svg",
-  "front_end/Images/accelerometer-left.png",
-  "front_end/Images/accelerometer-right.png",
-  "front_end/Images/accelerometer-top.png",
-  "front_end/Images/lighthouse_logo.svg",
-  "front_end/Images/checkboxCheckmark.svg",
-  "front_end/Images/checker.png",
-  "front_end/Images/chevrons.svg",
-  "front_end/Images/chromeDisabledSelect_2x.png",
-  "front_end/Images/chromeDisabledSelect.png",
-  "front_end/Images/chromeLeft.png",
-  "front_end/Images/chromeMiddle.png",
-  "front_end/Images/chromeRight.png",
-  "front_end/Images/chromeSelect_2x.png",
-  "front_end/Images/chromeSelect.png",
-  "front_end/Images/cssoverview_icons_2x.png",
-  "front_end/Images/errorWave.svg",
-  "front_end/Images/ic_info_black_18dp.svg",
-  "front_end/Images/ic_warning_black_18dp.svg",
-  "front_end/Images/largeIcons.svg",
-  "front_end/Images/mediumIcons.svg",
-  "front_end/Images/navigationControls_2x.png",
-  "front_end/Images/navigationControls.png",
-  "front_end/Images/nodeIcon.png",
-  "front_end/Images/popoverArrows.png",
-  "front_end/Images/profileGroupIcon.png",
-  "front_end/Images/profileIcon.png",
-  "front_end/Images/profileSmallIcon.png",
-  "front_end/Images/radioDot-dark-theme.png",
-  "front_end/Images/radioDot.png",
-  "front_end/Images/resizeDiagonal_2x.png",
-  "front_end/Images/resizeDiagonal.png",
-  "front_end/Images/resizeHorizontal_2x.png",
-  "front_end/Images/resizeHorizontal.png",
-  "front_end/Images/resizeVertical_2x.png",
-  "front_end/Images/resizeVertical.png",
-  "front_end/Images/resourceCSSIcon.png",
-  "front_end/Images/resourceDocumentIcon.png",
-  "front_end/Images/resourceDocumentIconSmall.png",
-  "front_end/Images/resourceJSIcon.png",
-  "front_end/Images/resourcePlainIcon.png",
-  "front_end/Images/resourcePlainIconSmall.png",
-  "front_end/Images/resourcesTimeGraphIcon.png",
-  "front_end/Images/searchNext.png",
-  "front_end/Images/searchPrev.png",
-  "front_end/Images/securityIcons.svg",
-  "front_end/Images/smallIcons.svg",
-  "front_end/Images/speech.png",
-  "front_end/Images/toolbarResizerVertical.png",
-  "front_end/Images/touchCursor_2x.png",
-  "front_end/Images/touchCursor.png",
-  "front_end/Images/treeoutlineTriangles.svg",
-  "front_end/Images/whatsnew.png",
 ]
 
 resources_out_dir = "$root_out_dir/resources/inspector"
@@ -330,7 +273,6 @@ devtools_applications = [
 devtools_frontend_resources_deps = [
   ":build_release_devtools",
   ":copy_emulated_devices_images",
-  ":copy_inspector_images",
   ":devtools_extension_api",
   "front_end",
   "test",
@@ -356,11 +298,6 @@ group("devtools_frontend_resources") {
 
 group("generate_devtools_inspector_overlay_resources") {
   public_deps = [ "front_end/inspector_overlay:build_inspector_overlay" ]
-}
-
-copy("copy_inspector_images") {
-  sources = devtools_image_files
-  outputs = [ "$resources_out_dir/Images/{{source_file_part}}" ]
 }
 
 copy("copy_emulated_devices_images") {
@@ -406,7 +343,7 @@ action("generate_devtools_grd") {
         "$resources_out_dir/sdk/wasm_source_map/pkg/wasm_source_map_bg.wasm",
       ]
 
-  inputs = grd_files + devtools_image_files
+  inputs = grd_files + front_end_image_files
   response_file_contents = rebase_path(grd_files, root_build_dir)
   outfile = "$root_gen_dir/devtools/devtools_resources.grd"
   outputs = [ outfile ]

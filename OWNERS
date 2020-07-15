@@ -10,6 +10,7 @@ per-file WATCHLISTS=file://INFRA_OWNERS
 per-file all_devtools_files.gni=file://COMMON_OWNERS
 per-file all_devtools_modules.gni=file://COMMON_OWNERS
 per-file codereview.settings=file://INFRA_OWNERS
+per-file devtools_image_files.gni=file://COMMON_OWNERS
 per-file devtools_module_entrypoints.gni=file://COMMON_OWNERS
 per-file htaccess=file://INFRA_OWNERS
 per-file karma.conf.json=file://INFRA_OWNERS

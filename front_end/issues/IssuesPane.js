@@ -219,6 +219,10 @@ class AffectedDirectivesView extends AffectedResourcesView {
     name.textContent = ls`Directive`;
     header.appendChild(name);
     this._affectedResources.appendChild(header);
+    const sourceCodeLink = document.createElement('td');
+    sourceCodeLink.classList.add('affected-resource-header');
+    sourceCodeLink.textContent = ls`Source code`;
+    header.appendChild(sourceCodeLink);
     let count = 0;
     for (const cspViolation of cspViolations) {
       count++;
@@ -242,6 +246,17 @@ class AffectedDirectivesView extends AffectedResourcesView {
       info.textContent = url;
       element.appendChild(info);
       element.appendChild(name);
+      const sourceCodeLocation = cspViolation.sourceCodeLocation;
+      if (sourceCodeLocation) {
+        const maxLengthForDisplayedURLs = 40;  // Same as console messages.
+        const linkifier = new Components.Linkifier.Linkifier(maxLengthForDisplayedURLs);
+        const sourceAnchor = linkifier.linkifyScriptLocation(
+            /* target */ null,
+            /* scriptId */ null, sourceCodeLocation.url, sourceCodeLocation.lineNumber);
+        const sourceLocation = document.createElement('td');
+        sourceLocation.appendChild(sourceAnchor);
+        element.appendChild(sourceLocation);
+      }
       this._affectedResources.appendChild(element);
     }
   }

@@ -48,6 +48,9 @@
   <message name="IDS_DEVTOOLS_a4d7581ea74e5240c4a1a7c32532d6f8" desc="Label for mixed content issue's restriction status">
     Restriction Status
   </message>
+  <message name="IDS_DEVTOOLS_a98df7359ac52361af81fa897d556a6a" desc="Header for the source code column">
+    Source code
+  </message>
   <message name="IDS_DEVTOOLS_af54fb3a43842c87e975974597a1623a" desc="Label in the issues panel">
     No issues detected so far
   </message>

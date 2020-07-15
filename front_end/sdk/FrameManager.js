@@ -4,6 +4,7 @@
 
 import * as Common from '../common/common.js';
 
+import {Resource} from './Resource.js';  // eslint-disable-line no-unused-vars
 import {Events as ResourceTreeModelEvents, ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars
 import {SDKModelObserver, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
@@ -55,7 +56,10 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper {
         resourceTreeModel.addEventListener(ResourceTreeModelEvents.FrameDetached, this._frameDetached, this);
     const navigatedListener =
         resourceTreeModel.addEventListener(ResourceTreeModelEvents.FrameNavigated, this._frameNavigated, this);
-    this._eventListeners.set(resourceTreeModel, [addListener, detachListener, navigatedListener]);
+    const resourceAddedListener =
+        resourceTreeModel.addEventListener(ResourceTreeModelEvents.ResourceAdded, this._resourceAdded, this);
+    this._eventListeners.set(
+        resourceTreeModel, [addListener, detachListener, navigatedListener, resourceAddedListener]);
     this._framesForTarget.set(resourceTreeModel.target().id(), new Set());
   }
 
@@ -130,6 +134,14 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
+   * @param {!Common.EventTarget.EventTargetEvent} event
+   */
+  _resourceAdded(event) {
+    const resource = /** @type {!Resource} */ (event.data);
+    this.dispatchEventToListeners(Events.ResourceAdded, {resource});
+  }
+
+  /**
    * @param {string} frameId
    */
   _decreaseOrRemoveFrame(frameId) {
@@ -164,14 +176,8 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @return {!Array<!ResourceTreeFrame>}
    */
-  getMainFrames() {
-    const result = [];
-    for (const frameData of this._frames.values()) {
-      if (frameData.frame.isMainFrame()) {
-        result.push(frameData.frame);
-      }
-    }
-    return result;
+  getAllFrames() {
+    return Array.from(this._frames.values(), frameData => frameData.frame);
   }
 }
 
@@ -185,5 +191,6 @@ export const Events = {
   // The FrameRemoved event is only sent when a frame has been detached from
   // all targets.
   FrameRemoved: Symbol('FrameRemoved'),
+  ResourceAdded: Symbol('ResourceAdded'),
   TopFrameNavigated: Symbol('TopFrameNavigated'),
 };

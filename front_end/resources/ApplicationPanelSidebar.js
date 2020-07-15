@@ -2016,21 +2016,32 @@ export class ResourcesSection {
     /** @type {!Map<string, !FrameTreeElement>} */
     this._treeElementForFrameId = new Map();
 
-    function addListener(eventType, handler, target) {
-      SDK.SDKModel.TargetManager.instance().addModelListener(
-          SDK.ResourceTreeModel.ResourceTreeModel, eventType, event => handler.call(target, event.data));
-    }
-    addListener(SDK.ResourceTreeModel.Events.FrameAdded, this._frameAdded, this);
-    addListener(SDK.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated, this);
-    addListener(SDK.ResourceTreeModel.Events.FrameDetached, this._frameDetached, this);
-    addListener(SDK.ResourceTreeModel.Events.ResourceAdded, this._resourceAdded, this);
+    const frameManager = SDK.FrameManager.FrameManager.instance();
+    frameManager.addEventListener(
+        SDK.FrameManager.Events.FrameAddedToTarget, event => this._frameAdded(event.data.frame), this);
+    frameManager.addEventListener(
+        SDK.FrameManager.Events.FrameRemoved, event => this._frameDetached(event.data.frameId), this);
+    frameManager.addEventListener(
+        SDK.FrameManager.Events.FrameNavigated, event => this._frameNavigated(event.data.frame), this);
+    frameManager.addEventListener(
+        SDK.FrameManager.Events.ResourceAdded, event => this._resourceAdded(event.data.resource), this);
 
-    const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
-    const resourceTreeModel = mainTarget && mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    const mainFrame = resourceTreeModel && resourceTreeModel.mainFrame;
-    if (mainFrame) {
-      this._frameAdded(mainFrame);
+    for (const frame of frameManager.getAllFrames()) {
+      if (!this._treeElementForFrameId.get(frame.id)) {
+        this._addFrameAndParents(frame);
+      }
     }
+  }
+
+  /**
+   * @param {!SDK.ResourceTreeModel.ResourceTreeFrame} frame
+   */
+  _addFrameAndParents(frame) {
+    const parentFrame = frame.parentFrame();
+    if (parentFrame && !this._treeElementForFrameId.get(parentFrame.id)) {
+      this._addFrameAndParents(parentFrame);
+    }
+    this._frameAdded(frame);
   }
 
   /**
@@ -2078,21 +2089,34 @@ export class ResourcesSection {
     if (!parentTreeElement) {
       return;
     }
+
+    const existingElement = this._treeElementForFrameId.get(frame.id);
+    if (existingElement) {
+      this._treeElementForFrameId.delete(frame.id);
+      if (existingElement.parent) {
+        existingElement.parent.removeChild(existingElement);
+      }
+    }
+
     const frameTreeElement = new FrameTreeElement(this, frame);
     this._treeElementForFrameId.set(frame.id, frameTreeElement);
     parentTreeElement.appendChild(frameTreeElement);
+
+    for (const resource of frame.resources()) {
+      this._resourceAdded(resource);
+    }
   }
 
   /**
-   * @param {!SDK.ResourceTreeModel.ResourceTreeFrame} frame
+   * @param {string} frameId
    */
-  _frameDetached(frame) {
-    const frameTreeElement = this._treeElementForFrameId.get(frame.id);
+  _frameDetached(frameId) {
+    const frameTreeElement = this._treeElementForFrameId.get(frameId);
     if (!frameTreeElement) {
       return;
     }
 
-    this._treeElementForFrameId.delete(frame.id);
+    this._treeElementForFrameId.delete(frameId);
     if (frameTreeElement.parent) {
       frameTreeElement.parent.removeChild(frameTreeElement);
     }
@@ -2134,7 +2158,6 @@ export class FrameTreeElement extends BaseStorageTreeElement {
    */
   constructor(section, frame) {
     super(section._panel, '', false);
-    this._populated = false;
     this._section = section;
     this._frame = frame;
     this._frameId = frame.id;
@@ -2155,14 +2178,33 @@ export class FrameTreeElement extends BaseStorageTreeElement {
    */
   frameNavigated(frame) {
     this.invalidateChildren();
+
     this._frameId = frame.id;
-    this.title = frame.displayName();
+    if (this.title !== frame.displayName()) {
+      this.title = frame.displayName();
+      if (this.parent) {
+        const parent = this.parent;
+        // Insert frame at new position to preserve correct alphabetical order
+        parent.removeChild(this);
+        parent.appendChild(this);
+      }
+    }
     this._categoryElements = {};
     this._treeElementForResource = {};
+
+    if (this.selected) {
+      this._view = new FrameDetailsView(this._frame);
+      this.showView(this._view);
+    } else {
+      this._view = null;
+    }
   }
 
   get itemURL() {
-    return 'frame://' + encodeURI(this.titleAsText());
+    // This is used to persist over reloads/navigation which frame was selected.
+    // A frame's title can change on DevTools refresh, so we resort to using
+    // the URL instead (even though it is not guaranteed to be unique).
+    return 'frame://' + encodeURI(this._frame.url);
   }
 
   /**
@@ -2175,8 +2217,6 @@ export class FrameTreeElement extends BaseStorageTreeElement {
     if (!this._view) {
       this._view = new FrameDetailsView(this._frame);
     }
-    // this._section._panel.showFrameView(this._frame);
-    // this.showView(new FrameDetailsView(frame));
     this.showView(this._view);
 
     this.listItemElement.classList.remove('hovered');
@@ -2201,9 +2241,6 @@ export class FrameTreeElement extends BaseStorageTreeElement {
    * @param {!SDK.Resource.Resource} resource
    */
   appendResource(resource) {
-    if (!this._populated) {
-      return;
-    }
     const statusCode = resource['statusCode'];
     if (statusCode >= 301 && statusCode <= 303) {
       return;
@@ -2238,9 +2275,6 @@ export class FrameTreeElement extends BaseStorageTreeElement {
    * @param {!UI.TreeOutline.TreeElement} treeElement
    */
   appendChild(treeElement) {
-    if (!this._populated) {
-      return;
-    }
     super.appendChild(treeElement, FrameTreeElement._presentationOrderCompare);
   }
 
@@ -2267,20 +2301,6 @@ export class FrameTreeElement extends BaseStorageTreeElement {
     const typeWeight1 = typeWeight(treeElement1);
     const typeWeight2 = typeWeight(treeElement2);
     return typeWeight1 - typeWeight2 || treeElement1.titleAsText().localeCompare(treeElement2.titleAsText());
-  }
-
-  /**
-   * @override
-   * @return {!Promise<void>}
-   */
-  async onpopulate() {
-    this._populated = true;
-    for (const child of this._frame.childFrames) {
-      this._section._frameAdded(child);
-    }
-    for (const resource of this._frame.resources()) {
-      this.appendResource(resource);
-    }
   }
 }
 

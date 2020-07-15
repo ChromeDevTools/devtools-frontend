@@ -102,7 +102,6 @@ devtools_module_entrypoints = [
   "perf_ui/perf_ui-legacy.js",
   "persistence/persistence.js",
   "persistence/persistence-legacy.js",
-  "platform/platform.js",
   "profiler/profiler.js",
   "profiler/profiler-legacy.js",
   "protocol_client/protocol_client.js",
@@ -171,4 +170,5 @@ generated_typescript_entrypoints = [
   "$resources_out_dir/formatter_worker/formatter_worker.js",
   "$resources_out_dir/elements/elements.js",
   "$resources_out_dir/sdk/sdk.js",
+  "$resources_out_dir/platform/platform.js",
 ]

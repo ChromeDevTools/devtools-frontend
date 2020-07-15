@@ -35,7 +35,7 @@ devtools_module("common") {
   ]
 
   deps = [
-    "../platform",
+    "../platform:bundle",
     "../root",
   ]
 }

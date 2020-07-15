@@ -73,7 +73,7 @@ devtools_module("sdk") {
     "../common:bundle",
     "../generated",
     "../host",
-    "../platform",
+    "../platform:bundle",
     "../protocol_client",
     "../text_utils",
     "wasm_source_map",

@@ -22,7 +22,7 @@ devtools_module("formatter_worker") {
 
   deps = [
     "../cm_headless",
-    "../platform",
+    "../platform:bundle",
     "../text_utils",
     "../third_party/acorn",
     "../third_party/acorn-logical-assignment",

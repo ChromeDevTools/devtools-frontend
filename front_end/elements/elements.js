@@ -7,7 +7,6 @@ import './ColorSwatchPopoverIcon.js';
 import './ComputedStyleModel.js';
 import './DOMLinkifier.js';
 import './DOMPath.js';
-import './ElementsBreadcrumbs.js';
 import './ElementsSidebarPane.js';
 import './ElementsTreeElement.js';
 import './ElementsTreeOutline.js';
@@ -33,7 +32,6 @@ import * as ComputedStyleModel from './ComputedStyleModel.js';
 import * as ComputedStyleWidget from './ComputedStyleWidget.js';
 import * as DOMLinkifier from './DOMLinkifier.js';
 import * as DOMPath from './DOMPath.js';
-import * as ElementsBreadcrumbs from './ElementsBreadcrumbs.js';
 import * as ElementsPanel from './ElementsPanel.js';
 import * as ElementsSidebarPane from './ElementsSidebarPane.js';
 import * as ElementStatePaneWidget from './ElementStatePaneWidget.js';
@@ -59,7 +57,6 @@ export {
   ComputedStyleWidget,
   DOMLinkifier,
   DOMPath,
-  ElementsBreadcrumbs,
   ElementsPanel,
   ElementsSidebarPane,
   ElementStatePaneWidget,

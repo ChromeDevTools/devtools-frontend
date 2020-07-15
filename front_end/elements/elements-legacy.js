@@ -38,9 +38,6 @@ Elements.ElementStatePaneWidget = ElementsModule.ElementStatePaneWidget.ElementS
 Elements.ElementStatePaneWidget.ButtonProvider = ElementsModule.ElementStatePaneWidget.ButtonProvider;
 
 /** @constructor */
-Elements.ElementsBreadcrumbs = ElementsModule.ElementsBreadcrumbs.ElementsBreadcrumbs;
-
-/** @constructor */
 Elements.ElementsPanel = ElementsModule.ElementsPanel.ElementsPanel;
 
 /** @constructor */

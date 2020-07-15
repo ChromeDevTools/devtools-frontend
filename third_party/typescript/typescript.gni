@@ -55,6 +55,8 @@ template("ts_library") {
       devtools_location_prepend + "front_end/generated/protocol-proxy-api.d.ts",
       devtools_location_prepend + "node_modules/@types/filesystem/index.d.ts",
       devtools_location_prepend + "node_modules/@types/codemirror/index.d.ts",
+      devtools_location_prepend + "node_modules/@types/chai/index.d.ts",
+      devtools_location_prepend + "node_modules/@types/mocha/index.d.ts",
     ]
 
     _typescript_config_name = target_name

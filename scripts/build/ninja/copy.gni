@@ -33,7 +33,7 @@ template("copy_sources_to_resources") {
     # resolve to the correct location.
     _front_end_module_name =
         string_replace(get_path_info(target_gen_dir, "abspath"),
-                       root_gen_dir + "/" + devtools_location + "front_end/",
+                       root_gen_dir + "/" + devtools_location + "front_end",
                        "")
 
     outputs = [

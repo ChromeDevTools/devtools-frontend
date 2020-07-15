@@ -329,7 +329,6 @@ devtools_applications = [
 
 devtools_frontend_resources_deps = [
   ":build_release_devtools",
-  ":copy_embedder_scripts",
   ":copy_emulated_devices_images",
   ":copy_inspector_images",
   ":copy_lighthouse_locale_files",
@@ -359,11 +358,6 @@ group("devtools_frontend_resources") {
 
 group("generate_devtools_inspector_overlay_resources") {
   public_deps = [ "front_end/inspector_overlay:build_inspector_overlay" ]
-}
-
-copy("copy_embedder_scripts") {
-  sources = devtools_embedder_scripts
-  outputs = [ "$resources_out_dir/{{source_file_part}}" ]
 }
 
 copy("copy_inspector_images") {

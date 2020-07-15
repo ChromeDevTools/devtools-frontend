@@ -2,6 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("../scripts/build/ninja/copy.gni")
 import("../third_party/typescript/typescript.gni")
 
 resources_out_dir = "$root_out_dir/resources/inspector"
@@ -18,7 +19,10 @@ group("front_end") {
     "sdk:bundle",
   ]
 
-  data_deps = [ ":front_end_html_entrypoints" ]
+  data_deps = [
+    ":embedder-scripts",
+    ":front_end_html_entrypoints",
+  ]
 }
 
 copy("front_end_html_entrypoints") {
@@ -34,6 +38,13 @@ copy("front_end_html_entrypoints") {
   ]
 
   outputs = [ "$resources_out_dir/{{source_file_part}}" ]
+}
+
+copy_sources_to_resources("embedder-scripts") {
+  sources = [
+    "Tests.js",
+    "devtools_compatibility.js",
+  ]
 }
 
 # This target is used to perform checks on all generated `.d.ts` files.

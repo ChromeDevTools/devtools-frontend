@@ -869,6 +869,13 @@ declare namespace Protocol {
       violatedDirective: string;
       contentSecurityPolicyViolationType: ContentSecurityPolicyViolationType;
       frameAncestor?: AffectedFrame;
+      sourceCodeLocation?: SourceCodeLocation;
+    }
+
+    export interface SourceCodeLocation {
+      url: string;
+      lineNumber: integer;
+      columnNumber: integer;
     }
 
     /**

@@ -1223,6 +1223,29 @@
                             "name": "frameAncestor",
                             "optional": true,
                             "$ref": "AffectedFrame"
+                        },
+                        {
+                            "name": "sourceCodeLocation",
+                            "optional": true,
+                            "$ref": "SourceCodeLocation"
+                        }
+                    ]
+                },
+                {
+                    "id": "SourceCodeLocation",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "url",
+                            "type": "string"
+                        },
+                        {
+                            "name": "lineNumber",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "columnNumber",
+                            "type": "integer"
                         }
                     ]
                 },

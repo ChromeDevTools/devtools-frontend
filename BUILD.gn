@@ -332,7 +332,6 @@ devtools_frontend_resources_deps = [
   ":copy_emulated_devices_images",
   ":copy_inspector_images",
   ":copy_lighthouse_locale_files",
-  ":copy_wasm_deps",
   ":devtools_extension_api",
   "front_end",
   "test",
@@ -375,12 +374,6 @@ copy("copy_lighthouse_locale_files") {
   outputs = [
     "$resources_out_dir/third_party/lighthouse/locales/{{source_file_part}}",
   ]
-}
-
-copy("copy_wasm_deps") {
-  sources = [ "front_end/sdk/wasm_source_map/pkg/wasm_source_map_bg.wasm" ]
-  outputs =
-      [ "$resources_out_dir/sdk/wasm_source_map/pkg/wasm_source_map_bg.wasm" ]
 }
 
 if (is_debug) {

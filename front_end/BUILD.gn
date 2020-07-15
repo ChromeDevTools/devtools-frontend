@@ -17,6 +17,7 @@ group("front_end") {
     "formatter_worker:bundle",
     "i18n:bundle_i18n",
     "sdk:bundle",
+    "third_party/lighthouse",
   ]
 
   data_deps = [

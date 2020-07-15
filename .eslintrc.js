@@ -123,7 +123,15 @@ module.exports = {
     // no-implicit-globals will prevent accidental globals
     'no-implicit-globals': [0],
 
-    '@typescript-eslint/interface-name-prefix': [2, {'prefixWithI': 'never'}],
+    // forbids interfaces starting with an I prefix.
+    '@typescript-eslint/naming-convention': [2, {
+        "selector": "interface",
+        "format": ["PascalCase"],
+        "custom": {
+          "regex": "^I[A-Z]",
+          "match": false
+        }
+    }],
     '@typescript-eslint/explicit-member-accessibility': [0],
 
     // errors on it('test') with no body

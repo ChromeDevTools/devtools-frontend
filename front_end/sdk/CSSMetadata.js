@@ -197,6 +197,14 @@ export class CSSMetadata {
    * @param {string} propertyName
    * @return {boolean}
    */
+  isFontFamilyProperty(propertyName) {
+    return propertyName.toLowerCase() === 'font-family';
+  }
+
+  /**
+   * @param {string} propertyName
+   * @return {boolean}
+   */
   isGridAreaDefiningProperty(propertyName) {
     propertyName = propertyName.toLowerCase();
     return propertyName === 'grid' || propertyName === 'grid-template' || propertyName === 'grid-template-areas';

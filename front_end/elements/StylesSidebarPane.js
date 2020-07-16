@@ -2346,6 +2346,14 @@ export class KeyframePropertiesSection extends StylePropertiesSection {
   }
 }
 
+/**
+ * @param {string} fontFamily
+ * @return {string}
+ */
+function encloseFontFamilyInQuotesIfNeeded(fontFamily) {
+  return fontFamily.includes(' ') ? `"${fontFamily}"` : fontFamily;
+}
+
 export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
   /**
    * @param {!StylePropertyTreeElement} treeElement
@@ -2355,17 +2363,22 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     // Use the same callback both for applyItemCallback and acceptItemCallback.
     super();
     this.initialize(this._buildPropertyCompletions.bind(this), UI.UIUtils.StyleValueDelimiters);
+    const cssMetadata = SDK.CSSMetadata.cssMetadata();
     this._isColorAware = SDK.CSSMetadata.cssMetadata().isColorAwareProperty(treeElement.property.name);
     /** @type {!Array<string>} */
     this._cssCompletions = [];
+    const node = treeElement.node();
     if (isEditingName) {
-      this._cssCompletions = SDK.CSSMetadata.cssMetadata().allProperties();
-      if (!treeElement.node().isSVGNode()) {
-        this._cssCompletions =
-            this._cssCompletions.filter(property => !SDK.CSSMetadata.cssMetadata().isSVGProperty(property));
+      this._cssCompletions = cssMetadata.allProperties();
+      if (node && !node.isSVGNode()) {
+        this._cssCompletions = this._cssCompletions.filter(property => !cssMetadata.isSVGProperty(property));
       }
     } else {
-      this._cssCompletions = SDK.CSSMetadata.cssMetadata().propertyValues(treeElement.nameElement.textContent);
+      this._cssCompletions = cssMetadata.propertyValues(treeElement.property.name);
+      if (node && cssMetadata.isFontFamilyProperty(treeElement.property.name)) {
+        const fontFamilies = node.domModel().cssModel().fontFaces().map(font => font.getFontFamily());
+        this._cssCompletions.unshift(...fontFamilies.map(encloseFontFamilyInQuotesIfNeeded));
+      }
     }
 
     this._treeElement = treeElement;

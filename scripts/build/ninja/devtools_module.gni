@@ -26,8 +26,11 @@ template("devtools_module") {
 
   if (is_debug) {
     copy_gen_to_resources(target_name) {
-      sources =
-          filter_include(get_target_outputs(_typescript_target_dep), [ "*.js" ])
+      sources = filter_include(get_target_outputs(_typescript_target_dep),
+                               [
+                                 "*.js",
+                                 "*.map",
+                               ])
 
       public_deps = [ _typescript_target_dep ]
 

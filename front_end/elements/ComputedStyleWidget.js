@@ -39,6 +39,122 @@ import {PlatformFontsWidget} from './PlatformFontsWidget.js';
 import {StylePropertiesSection, StylesSidebarPane, StylesSidebarPropertyRenderer} from './StylesSidebarPane.js';
 
 /**
+ * @param {!SDK.DOMModel.DOMNode} node
+ * @param {string} propertyName
+ * @param {string | undefined} propertyValue
+ * @param {boolean} isInherited
+ */
+const createPropertyElement = (node, propertyName, propertyValue, isInherited) => {
+  const propertyElement = document.createElement('div');
+  propertyElement.classList.add('computed-style-property');
+  propertyElement.classList.toggle('computed-style-property-inherited', isInherited);
+
+  const renderer = new StylesSidebarPropertyRenderer(null, node, propertyName, /** @type {string} */ (propertyValue));
+  renderer.setColorHandler(processComputedColor);
+  const propertyNameElement = renderer.renderName();
+  propertyNameElement.classList.add('property-name');
+  propertyElement.appendChild(propertyNameElement);
+
+  const colon = document.createElement('span');
+  colon.classList.add('delimiter');
+  colon.textContent = ': ';
+  propertyNameElement.appendChild(colon);
+
+  const propertyValueElement = propertyElement.createChild('span', 'property-value');
+
+  const propertyValueText = renderer.renderValue();
+  propertyValueText.classList.add('property-value-text');
+  propertyValueElement.appendChild(propertyValueText);
+
+  const semicolon = document.createElement('span');
+  semicolon.classList.add('delimiter');
+  semicolon.textContent = ';';
+  propertyValueElement.appendChild(semicolon);
+
+  return {propertyElement, propertyValueElement};
+};
+
+/**
+ * @param {!SDK.DOMModel.DOMNode} node
+ * @param {!SDK.CSSProperty.CSSProperty} property
+ * @param {boolean} isPropertyOverloaded
+ * @param {!SDK.CSSMatchedStyles.CSSMatchedStyles} matchedStyles
+ * @param {!Components.Linkifier.Linkifier} linkifier
+ */
+const createTraceElement = (node, property, isPropertyOverloaded, matchedStyles, linkifier) => {
+  const trace = document.createElement('div');
+  trace.classList.add('property-trace');
+  if (isPropertyOverloaded) {
+    trace.classList.add('property-trace-inactive');
+  }
+
+  const renderer = new StylesSidebarPropertyRenderer(null, node, property.name, /** @type {string} */ (property.value));
+  renderer.setColorHandler(processColor);
+  const valueElement = renderer.renderValue();
+  valueElement.classList.add('property-trace-value');
+  valueElement.addEventListener('click', navigateToSource.bind(null, property), false);
+  const gotoSourceElement = UI.Icon.Icon.create('mediumicon-arrow-in-circle', 'goto-source-icon');
+  gotoSourceElement.addEventListener('click', navigateToSource.bind(null, property));
+  valueElement.insertBefore(gotoSourceElement, valueElement.firstChild);
+
+  trace.appendChild(valueElement);
+
+  const rule = property.ownerStyle.parentRule;
+  const selectorElement = trace.createChild('span', 'property-trace-selector');
+  selectorElement.textContent = rule ? rule.selectorText() : 'element.style';
+  selectorElement.title = selectorElement.textContent;
+
+  if (rule) {
+    const linkSpan = trace.createChild('span', 'trace-link');
+    linkSpan.appendChild(StylePropertiesSection.createRuleOriginNode(matchedStyles, linkifier, rule));
+  }
+
+  return trace;
+};
+
+/**
+ * @param {string} text
+ * @return {!Node}
+ */
+const processColor = text => {
+  const color = Common.Color.Color.parse(text);
+  if (!color) {
+    return document.createTextNode(text);
+  }
+  const swatch = InlineEditor.ColorSwatch.ColorSwatch.create();
+  swatch.setColor(color);
+  swatch.setFormat(Common.Settings.detectColorFormat(color));
+  return swatch;
+};
+
+/**
+ * @param {string} text
+ * @return {!Node}
+ */
+const processComputedColor = text => {
+  const color = Common.Color.Color.parse(text);
+  if (!color) {
+    return document.createTextNode(text);
+  }
+  const swatch = InlineEditor.ColorSwatch.ColorSwatch.create();
+  // Computed styles don't provide the original format, so
+  // switch to RGB.
+  color.setFormat(Common.Color.Format.RGB);
+  swatch.setColor(color);
+  swatch.setFormat(Common.Color.Format.RGB);
+  return swatch;
+};
+
+/**
+ * @param {!SDK.CSSProperty.CSSProperty} cssProperty
+ * @param {!Event} event
+ */
+const navigateToSource = (cssProperty, event) => {
+  Common.Revealer.reveal(cssProperty);
+  event.consume(true);
+};
+
+/**
  * @unrestricted
  */
 export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
@@ -145,39 +261,6 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   /**
-   * @param {string} text
-   * @return {!Node}
-   */
-  _processColor(text) {
-    const color = Common.Color.Color.parse(text);
-    if (!color) {
-      return createTextNode(text);
-    }
-    const swatch = InlineEditor.ColorSwatch.ColorSwatch.create();
-    swatch.setColor(color);
-    swatch.setFormat(Common.Settings.detectColorFormat(color));
-    return swatch;
-  }
-
-  /**
-   * @param {string} text
-   * @return {!Node}
-   */
-  _processComputedColor(text) {
-    const color = Common.Color.Color.parse(text);
-    if (!color) {
-      return createTextNode(text);
-    }
-    const swatch = InlineEditor.ColorSwatch.ColorSwatch.create();
-    // computed styles don't provide the original format
-    // therefore, switching to RGB
-    color.setFormat(Common.Color.Format.RGB);
-    swatch.setColor(color);
-    swatch.setFormat(Common.Color.Format.RGB);
-    return swatch;
-  }
-
-  /**
    * @param {?ComputedStyle} nodeStyle
    * @param {?SDK.CSSMatchedStyles.CSSMatchedStyles} matchedStyles
    */
@@ -211,8 +294,8 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
       const propertyName = uniqueProperties[i];
       const propertyValue = nodeStyle.computedStyle.get(propertyName);
       const canonicalName = SDK.CSSMetadata.cssMetadata().canonicalPropertyName(propertyName);
-      const inherited = !inheritedProperties.has(canonicalName);
-      if (!showInherited && inherited && !_alwaysShownComputedProperties.has(propertyName)) {
+      const isInherited = !inheritedProperties.has(canonicalName);
+      if (!showInherited && isInherited && !_alwaysShownComputedProperties.has(propertyName)) {
         continue;
       }
       if (!showInherited && propertyName.startsWith('--')) {
@@ -222,31 +305,8 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
         continue;
       }
 
-      const propertyElement = createElement('div');
-      propertyElement.classList.add('computed-style-property');
-      propertyElement.classList.toggle('computed-style-property-inherited', inherited);
-      const renderer =
-          new StylesSidebarPropertyRenderer(null, nodeStyle.node, propertyName, /** @type {string} */ (propertyValue));
-      renderer.setColorHandler(this._processComputedColor.bind(this));
-      const propertyNameElement = renderer.renderName();
-      propertyNameElement.classList.add('property-name');
-      propertyElement.appendChild(propertyNameElement);
-
-      const colon = document.createElement('span');
-      colon.classList.add('delimiter');
-      colon.textContent = ': ';
-      propertyNameElement.appendChild(colon);
-
-      const propertyValueElement = propertyElement.createChild('span', 'property-value');
-
-      const propertyValueText = renderer.renderValue();
-      propertyValueText.classList.add('property-value-text');
-      propertyValueElement.appendChild(propertyValueText);
-
-      const semicolon = document.createElement('span');
-      semicolon.classList.add('delimiter');
-      semicolon.textContent = ';';
-      propertyValueElement.appendChild(semicolon);
+      const {propertyElement, propertyValueElement} =
+          createPropertyElement(nodeStyle.node, propertyName, propertyValue, isInherited);
 
       const treeElement = new UI.TreeOutline.TreeElement();
       treeElement.title = propertyElement;
@@ -260,14 +320,14 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
 
       const trace = propertyTraces.get(propertyName);
       if (trace) {
-        const activeProperty = this._renderPropertyTrace(cssModel, matchedStyles, nodeStyle.node, treeElement, trace);
+        const activeProperty = this._renderPropertyTrace(matchedStyles, nodeStyle.node, treeElement, trace);
         treeElement.listItemElement.addEventListener('mousedown', e => e.consume(), false);
         treeElement.listItemElement.addEventListener('dblclick', e => e.consume(), false);
         treeElement.listItemElement.addEventListener('click', handleClick.bind(null, treeElement), false);
         treeElement.listItemElement.addEventListener(
             'contextmenu', this._handleContextMenuEvent.bind(this, matchedStyles, activeProperty));
         const gotoSourceElement = UI.Icon.Icon.create('mediumicon-arrow-in-circle', 'goto-source-icon');
-        gotoSourceElement.addEventListener('click', this._navigateToSource.bind(this, activeProperty));
+        gotoSourceElement.addEventListener('click', navigateToSource.bind(this, activeProperty));
         propertyValueElement.appendChild(gotoSourceElement);
         if (expandedProperties.has(propertyName)) {
           treeElement.expand();
@@ -309,54 +369,21 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   /**
-   * @param {!SDK.CSSProperty.CSSProperty} cssProperty
-   * @param {!Event} event
-   */
-  _navigateToSource(cssProperty, event) {
-    Common.Revealer.reveal(cssProperty);
-    event.consume(true);
-  }
-
-  /**
-   * @param {!SDK.CSSModel.CSSModel} cssModel
    * @param {!SDK.CSSMatchedStyles.CSSMatchedStyles} matchedStyles
    * @param {!SDK.DOMModel.DOMNode} node
    * @param {!UI.TreeOutline.TreeElement} rootTreeElement
    * @param {!Array<!SDK.CSSProperty.CSSProperty>} tracedProperties
    * @return {!SDK.CSSProperty.CSSProperty}
    */
-  _renderPropertyTrace(cssModel, matchedStyles, node, rootTreeElement, tracedProperties) {
+  _renderPropertyTrace(matchedStyles, node, rootTreeElement, tracedProperties) {
     let activeProperty = null;
     for (const property of tracedProperties) {
-      const trace = createElement('div');
-      trace.classList.add('property-trace');
-      if (matchedStyles.propertyState(property) === SDK.CSSMatchedStyles.PropertyState.Overloaded) {
-        trace.classList.add('property-trace-inactive');
-      } else {
+      const isPropertyOverloaded =
+          matchedStyles.propertyState(property) === SDK.CSSMatchedStyles.PropertyState.Overloaded;
+      if (!isPropertyOverloaded) {
         activeProperty = property;
       }
-
-      const renderer =
-          new StylesSidebarPropertyRenderer(null, node, property.name, /** @type {string} */ (property.value));
-      renderer.setColorHandler(this._processColor.bind(this));
-      const valueElement = renderer.renderValue();
-      valueElement.classList.add('property-trace-value');
-      valueElement.addEventListener('click', this._navigateToSource.bind(this, property), false);
-      const gotoSourceElement = UI.Icon.Icon.create('mediumicon-arrow-in-circle', 'goto-source-icon');
-      gotoSourceElement.addEventListener('click', this._navigateToSource.bind(this, property));
-      valueElement.insertBefore(gotoSourceElement, valueElement.firstChild);
-
-      trace.appendChild(valueElement);
-
-      const rule = property.ownerStyle.parentRule;
-      const selectorElement = trace.createChild('span', 'property-trace-selector');
-      selectorElement.textContent = rule ? rule.selectorText() : 'element.style';
-      selectorElement.title = selectorElement.textContent;
-
-      if (rule) {
-        const linkSpan = trace.createChild('span', 'trace-link');
-        linkSpan.appendChild(StylePropertiesSection.createRuleOriginNode(matchedStyles, this._linkifier, rule));
-      }
+      const trace = createTraceElement(node, property, isPropertyOverloaded, matchedStyles, this._linkifier);
 
       const traceTreeElement = new UI.TreeOutline.TreeElement();
       traceTreeElement.title = trace;

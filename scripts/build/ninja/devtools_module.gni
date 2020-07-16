@@ -2,6 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("../../../all_devtools_modules.gni")
 import("../../../third_party/typescript/typescript.gni")
 import("./copy.gni")
 import("./vars.gni")
@@ -32,6 +33,12 @@ template("devtools_module") {
 
       visibility = invoker.visibility + [ ":*" ]
     }
+
+    _target_outputs = get_target_outputs(":" + target_name + "-copy")
+    _filtered_target_outputs =
+        filter_exclude(_target_outputs, generated_typescript_modules)
+    assert(_filtered_target_outputs == [],
+           "$_filtered_target_outputs are not listed in all_typescript_modules")
   } else {
     group(target_name) {
       public_deps = [ _typescript_target_dep ]

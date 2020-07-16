@@ -234,6 +234,9 @@
   <message name="IDS_DEVTOOLS_b0351810a5721f657b088608865849dd" desc="Text in Styles Sidebar Pane of the Elements panel">
     via inspector
   </message>
+  <message name="IDS_DEVTOOLS_b28bafc65dea7e88bb2bbd14c3dcb4aa" desc="The warning text shown in Elements panel when font-variation-settings don't match allowed values">
+    Value for setting “<ph name="ELEMENTSETTING_TAG">$1s<ex>wdth</ex></ph>” <ph name="ELEMENTSETTING_VALUE">$2s<ex>100</ex></ph> is outside the supported range [<ph name="FONTSETTING_MINVALUE">$3s<ex>10</ex></ph>, <ph name="FONTSETTING_MAXVALUE">$4s<ex>20</ex></ph>] for font-family “<ph name="FONT_GETFONTFAMILY__">$5s<ex>Arial</ex></ph>”.
+  </message>
   <message name="IDS_DEVTOOLS_b70cdb878a204fecf91c7dd1af312421" desc="Text in Metrics Sidebar Pane of the Elements panel">
     padding
   </message>

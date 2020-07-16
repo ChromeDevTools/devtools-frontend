@@ -40,6 +40,13 @@ export class ElementsSidebarPane extends UI.Widget.VBox {
   }
 
   /**
+   * @return {!ComputedStyleModel}
+   */
+  computedStyleModel() {
+    return this._computedStyleModel;
+  }
+
+  /**
    * @protected
    * @return {!Promise.<?>}
    */

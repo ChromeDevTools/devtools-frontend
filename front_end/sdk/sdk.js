@@ -22,11 +22,13 @@ import * as CookieModel from './CookieModel.js';
 import * as CookieParser from './CookieParser.js';
 import * as CPUProfileDataModel from './CPUProfileDataModel.js';
 import * as CPUProfilerModel from './CPUProfilerModel.js';
+import * as CSSFontFace from './CSSFontFace.js';
 import * as CSSMatchedStyles from './CSSMatchedStyles.js';
 import * as CSSMedia from './CSSMedia.js';
 import * as CSSMetadata from './CSSMetadata.js';
 import * as CSSModel from './CSSModel.js';
 import * as CSSProperty from './CSSProperty.js';
+import * as CSSPropertyParser from './CSSPropertyParser.js';
 import * as CSSRule from './CSSRule.js';
 import * as CSSStyleDeclaration from './CSSStyleDeclaration.js';
 import * as CSSStyleSheetHeader from './CSSStyleSheetHeader.js';
@@ -83,11 +85,13 @@ export {
   CookieParser,
   CPUProfileDataModel,
   CPUProfilerModel,
+  CSSFontFace,
   CSSMatchedStyles,
   CSSMedia,
   CSSMetadata,
   CSSModel,
   CSSProperty,
+  CSSPropertyParser,
   CSSRule,
   CSSStyleDeclaration,
   CSSStyleSheetHeader,

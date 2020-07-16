@@ -36,6 +36,7 @@ import * as HostModule from '../host/host.js';
 import * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 
+import {CSSFontFace} from './CSSFontFace.js';
 import {CSSMatchedStyles} from './CSSMatchedStyles.js';
 import {CSSMedia} from './CSSMedia.js';
 import {CSSStyleRule} from './CSSRule.js';
@@ -79,6 +80,9 @@ export class CSSModel extends SDKModel {
 
     /** @type {boolean} */
     this._isRuleUsageTrackingEnabled = false;
+
+    /** @type {!Map<string, !CSSFontFace>} */
+    this._fontFaces = new Map();
 
     this._sourceMapManager.setEnabled(Common.Settings.Settings.instance().moduleSetting('cssSourceMapsEnabled').get());
     Common.Settings.Settings.instance()
@@ -518,8 +522,21 @@ export class CSSModel extends SDKModel {
     this.dispatchEventToListeners(Events.MediaQueryResultChanged);
   }
 
-  fontsUpdated() {
+  /**
+   * @param {?Protocol.CSS.FontFace=} fontFace
+   */
+  fontsUpdated(fontFace) {
+    if (fontFace) {
+      this._fontFaces.set(fontFace.src, new CSSFontFace(fontFace));
+    }
     this.dispatchEventToListeners(Events.FontsUpdated);
+  }
+
+  /**
+   * @return {!Array<!CSSFontFace>}
+   */
+  fontFaces() {
+    return [...this._fontFaces.values()];
   }
 
   /**
@@ -701,13 +718,19 @@ export class CSSModel extends SDKModel {
     }
   }
 
+  _resetFontFaces() {
+    this._fontFaces.clear();
+  }
+
   /**
    * @override
    * @return {!Promise<?>}
    */
-  suspendModel() {
+  async suspendModel() {
     this._isEnabled = false;
-    return this._agent.disable().then(this._resetStyleSheets.bind(this));
+    await this._agent.disable();
+    this._resetStyleSheets();
+    this._resetFontFaces();
   }
 
   /**
@@ -836,9 +859,10 @@ class CSSDispatcher {
 
   /**
    * @override
+   * @param {?Protocol.CSS.FontFace=} fontFace
    */
-  fontsUpdated() {
-    this._cssModel.fontsUpdated();
+  fontsUpdated(fontFace) {
+    this._cssModel.fontsUpdated(fontFace);
   }
 
   /**

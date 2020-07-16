@@ -503,8 +503,11 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
       // Add a separate exclamation mark IMG element with a tooltip.
       this.listItemElement.insertBefore(
-          StylesSidebarPane.createExclamationMark(this.property), this.listItemElement.firstChild);
+          StylesSidebarPane.createExclamationMark(this.property, null), this.listItemElement.firstChild);
+    } else {
+      this._updateFontVariationSettingsWarning();
     }
+
     if (!this.property.activeInStyle()) {
       this.listItemElement.classList.add('inactive');
     }
@@ -524,6 +527,50 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           enabledCheckboxElement, `${this.nameElement.textContent} ${this.valueElement.textContent}`);
       this.listItemElement.insertBefore(enabledCheckboxElement, this.listItemElement.firstChild);
     }
+  }
+
+  async _updateFontVariationSettingsWarning() {
+    if (this.property.name !== 'font-variation-settings') {
+      return;
+    }
+    const value = this.property.value;
+    const cssModel = this._parentPane.cssModel();
+    if (!cssModel) {
+      return;
+    }
+    const computedStyleModel = this._parentPane.computedStyleModel();
+    const styles = await computedStyleModel.fetchComputedStyle();
+    if (!styles) {
+      return;
+    }
+    const fontFamily = styles.computedStyle.get('font-family');
+    if (!fontFamily) {
+      return;
+    }
+    const fontFamilies = new Set(SDK.CSSPropertyParser.parseFontFamily(fontFamily));
+    const matchingFontFaces = cssModel.fontFaces().filter(f => fontFamilies.has(f.getFontFamily()));
+    const variationSettings = SDK.CSSPropertyParser.parseFontVariationSettings(value);
+    const warnings = [];
+    for (const elementSetting of variationSettings) {
+      for (const font of matchingFontFaces) {
+        const fontSetting = font.getVariationAxisByTag(elementSetting.tag);
+        if (!fontSetting) {
+          continue;
+        }
+        if (elementSetting.value < fontSetting.minValue || elementSetting.value > fontSetting.maxValue) {
+          warnings.push(
+              ls`Value for setting “${elementSetting.tag}” ${elementSetting.value} is outside the supported range [${
+                  fontSetting.minValue}, ${fontSetting.maxValue}] for font-family “${font.getFontFamily()}”.`);
+        }
+      }
+    }
+
+    if (!warnings.length) {
+      return;
+    }
+    this.listItemElement.classList.add('has-warning');
+    this.listItemElement.insertBefore(
+        StylesSidebarPane.createExclamationMark(this.property, warnings.join(' ')), this.listItemElement.firstChild);
   }
 
   /**

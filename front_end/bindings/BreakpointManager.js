@@ -218,7 +218,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper {
       }
     }
     if (!startLocation || !endLocation) {
-      return Promise.resolve([]);
+      return [];
     }
 
     return startLocation.debuggerModel

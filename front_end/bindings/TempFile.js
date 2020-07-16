@@ -72,7 +72,7 @@ export class TempFile {
   async readRange(startOffset, endOffset) {
     if (!this._lastBlob) {
       Common.Console.Console.instance().error('Attempt to read a temp file that was never written');
-      return Promise.resolve('');
+      return '';
     }
     const blob = typeof startOffset === 'number' || typeof endOffset === 'number' ?
         this._lastBlob.slice(/** @type {number} */ (startOffset), /** @type {number} */ (endOffset)) :

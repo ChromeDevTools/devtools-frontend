@@ -21,5 +21,5 @@ ts_library("common") {
     "WasmDisassembly_test.ts",
   ]
 
-  deps = [ "../../../../front_end/common" ]
+  deps = [ "../../../../front_end/common:bundle" ]
 }

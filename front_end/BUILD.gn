@@ -68,13 +68,13 @@ ts_library("ts_library-verification") {
     "bindings",
     "browser_sdk",
     "color_picker",
-    "common",
+    "common:bundle",
     "host",
     "inspector_overlay",
     "issues",
     "protocol_client",
     "root",
-    "sdk",
+    "sdk:bundle",
     "workspace",
   ]
 }

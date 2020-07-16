@@ -21,6 +21,11 @@ devtools_module("elements") {
     "../platform:bundle",
     "../ui",
   ]
+
+  visibility = [
+    "../component_docs/elements_breadcrumbs",
+    "../../test/unittests/front_end/elements",
+  ]
 }
 
 devtools_pre_built("elements-pre-built") {

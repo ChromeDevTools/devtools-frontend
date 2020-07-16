@@ -15,6 +15,7 @@ template("rollup") {
                            [
                              "visibility",
                              "deps",
+                             "public_deps",
                            ])
 
     inputs = [

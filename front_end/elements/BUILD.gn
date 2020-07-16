@@ -12,6 +12,7 @@ devtools_module("elements") {
     "Adorner.js",
     "ElementsBreadcrumbsUtils.ts",
     "NewElementsBreadcrumbs.ts",
+    "NewElementsBreadcrumbs_bridge.js",
   ]
 
   deps = [
@@ -31,7 +32,6 @@ devtools_pre_built("elements-pre-built") {
     "DOMLinkifier.js",
     "DOMPath.js",
     "ElementStatePaneWidget.js",
-    "ElementsBreadcrumbs.js",
     "ElementsPanel.js",
     "ElementsSidebarPane.js",
     "ElementsTreeElement.js",

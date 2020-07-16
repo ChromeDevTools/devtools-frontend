@@ -2347,11 +2347,12 @@ export class KeyframePropertiesSection extends StylePropertiesSection {
 }
 
 /**
- * @param {string} fontFamily
+ * @param {string} familyName
  * @return {string}
+ * @suppress {missingProperties} Closure doesn't know String.p.replaceAll exists.
  */
-function encloseFontFamilyInQuotesIfNeeded(fontFamily) {
-  return fontFamily.includes(' ') ? `"${fontFamily}"` : fontFamily;
+export function quoteFamilyName(familyName) {
+  return `'${familyName.replaceAll('\'', '\\\'')}'`;
 }
 
 export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
@@ -2376,8 +2377,8 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     } else {
       this._cssCompletions = cssMetadata.propertyValues(treeElement.property.name);
       if (node && cssMetadata.isFontFamilyProperty(treeElement.property.name)) {
-        const fontFamilies = node.domModel().cssModel().fontFaces().map(font => font.getFontFamily());
-        this._cssCompletions.unshift(...fontFamilies.map(encloseFontFamilyInQuotesIfNeeded));
+        const fontFamilies = node.domModel().cssModel().fontFaces().map(font => quoteFamilyName(font.getFontFamily()));
+        this._cssCompletions.unshift(...fontFamilies);
       }
     }
 

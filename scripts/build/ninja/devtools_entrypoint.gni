@@ -139,7 +139,7 @@ template("devtools_entrypoint") {
       # is the same. So Ninja will detect that no output has changed for
       # "_typescript_target_name" and bail out. This would then *also* skip
       # the Rollup action.
-      public_deps = [ ":$_prebundle_target_name" ] + invoker.deps
+      deps = [ ":$_prebundle_target_name" ] + invoker.deps
     }
 
     if (_is_typescript_file) {

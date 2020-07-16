@@ -3,9 +3,9 @@
 # found in the LICENSE file.
 
 import("../../scripts/build/ninja/devtools_entrypoint.gni")
-import("../../scripts/build/ninja/devtools_module.gni")
+import("../../third_party/typescript/typescript.gni")
 
-devtools_module("lit_html") {
+ts_library("lit_html") {
   sources = [ "directives.ts" ]
 
   deps = [ "../third_party/lit-html" ]

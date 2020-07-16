@@ -101,6 +101,7 @@ all_devtools_files = [
   "front_end/elements_test_runner/module.json",
   "front_end/elements_test_runner/SetOuterHTMLTestRunner.js",
   "front_end/elements_test_runner/StylesUpdateLinksTestRunner.js",
+  "front_end/elements/breadcrumbs.css",
   "front_end/elements/classesPaneWidget.css",
   "front_end/elements/computedStyleSidebarPane.css",
   "front_end/elements/computedStyleWidgetTree.css",

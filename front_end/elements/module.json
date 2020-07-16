@@ -308,6 +308,7 @@
     "Adorner.js",
     "DOMLinkifier.js",
     "DOMPath.js",
+    "ElementsBreadcrumbs.js",
     "ElementsSidebarPane.js",
     "ElementsTreeElement.js",
     "ElementsTreeOutline.js",
@@ -325,10 +326,10 @@
     "ClassesPaneWidget.js",
     "ElementStatePaneWidget.js",
     "ElementsTreeElementHighlighter.js",
-    "ImagePreviewPopover.js",
-    "NewElementsBreadcrumbs_bridge.js"
+    "ImagePreviewPopover.js"
   ],
   "resources": [
+    "breadcrumbs.css",
     "classesPaneWidget.css",
     "computedStyleSidebarPane.css",
     "computedStyleWidgetTree.css",

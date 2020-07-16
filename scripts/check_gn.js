@@ -68,13 +68,6 @@ function checkAllDevToolsFiles() {
   });
 }
 
-const EXCLUDED_FILE_NAMES = [
-  // This file is pre-generated and copied outside of a regular `devtools_entrypoint`.
-  'wasm_source_map/pkg/wasm_source_map.js',
-  // Included as part of `elements`
-  '../generated/SupportedCSSProperties.js',
-];
-
 function checkAllDevToolsModules() {
   return checkGNVariable(
       'all_devtools_modules',
@@ -84,27 +77,6 @@ function checkAllDevToolsModules() {
         }
         return (moduleJSON.modules || []).filter(fileName => {
           if (fileName.startsWith('../third_party/codemirror') || fileName.startsWith('../third_party/acorn')) {
-            return false;
-          }
-          return fileName !== `${folderName}.js` && fileName !== `${folderName}-legacy.js`;
-        });
-      },
-      buildGNPath => filename => {
-        const relativePath = path.normalize(`${buildGNPath}/${filename}`);
-        return `"${relativePath}",`;
-      });
-}
-
-function checkAllTypescriptModules() {
-  return checkGNVariable(
-      'all_typescript_modules',
-      (moduleJSON, folderName) => {
-        // TODO(crbug.com/1101738): Remove the exemption
-        if (!moduleJSON.skip_rollup) {
-          return [];
-        }
-        return (moduleJSON.modules || []).filter(fileName => {
-          if (EXCLUDED_FILE_NAMES.includes(fileName)) {
             return false;
           }
           return fileName !== `${folderName}.js` && fileName !== `${folderName}-legacy.js`;
@@ -134,36 +106,9 @@ function checkDevtoolsModuleEntrypoints() {
         return `"${relativePath}",`;
       });
 }
-function checkGeneratedTypescriptEntrypoints() {
-  return checkGNVariable(
-      'generated_typescript_entrypoints',
-      (moduleJSON, folderName) => {
-        // TODO(crbug.com/1101738): Remove the exemption and change the variable to
-        // `generated_typescript_entrypoints` instead.
-        if (!moduleJSON.skip_rollup) {
-          return [];
-        }
-        return (moduleJSON.modules || []).filter(fileName => {
-          return fileName === `${folderName}.js`;
-        });
-      },
-      buildGNPath => filename => {
-        const relativePath = path.normalize(`$resources_out_dir/${buildGNPath}/${filename}`);
-        return `"${relativePath}",`;
-      });
-}
-
-const VARIABLE_TO_FILE_MAPPGING = new Map([
-  ['all_typescript_modules', 'all_devtools_modules.gni'],
-  ['generated_typescript_entrypoints', 'devtools_module_entrypoints.gni'],
-]);
 
 function checkGNVariable(gnVariable, obtainFiles, obtainRelativePath) {
-  let gniFileLocation = `${gnVariable}.gni`;
-  if (VARIABLE_TO_FILE_MAPPGING.has(gnVariable)) {
-    gniFileLocation = VARIABLE_TO_FILE_MAPPGING.get(gnVariable);
-  }
-  const filePath = path.resolve(__dirname, '..', gniFileLocation);
+  const filePath = path.resolve(__dirname, '..', `${gnVariable}.gni`);
   const fileContent = fs.readFileSync(filePath, 'utf-8');
   const linesToCheck = fileContent.split('\n');
 
@@ -238,9 +183,7 @@ function main() {
     ...checkNonAutostartNonRemoteModules(),
     ...checkAllDevToolsFiles(),
     ...checkAllDevToolsModules(),
-    ...checkAllTypescriptModules(),
     ...checkDevtoolsModuleEntrypoints(),
-    ...checkGeneratedTypescriptEntrypoints(),
   ];
   if (errors.length) {
     console.log('DevTools BUILD.gn checker detected errors!');

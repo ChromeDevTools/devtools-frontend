@@ -648,10 +648,10 @@ export class Module {
       return Promise.resolve();
     }
     const promises = [];
-    for (let i = 0; i < resources.length; ++i) {
-      const url = this._modularizeURL(resources[i]);
-      const isHtml = url.endsWith('.html');
-      promises.push(loadResourceIntoCache(url, !isHtml /* appendSourceURL */));
+    for (const resource of resources) {
+      const url = this._modularizeURL(resource);
+      const shouldAppendSourceURL = !(url.endsWith('.html') || url.endsWith('.md'));
+      promises.push(loadResourceIntoCache(url, shouldAppendSourceURL));
     }
     return Promise.all(promises).then(undefined);
   }

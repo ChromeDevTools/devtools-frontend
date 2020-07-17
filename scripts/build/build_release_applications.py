@@ -149,7 +149,10 @@ class ReleaseBuilder(object):
             resource_name = path.normpath(resource_name).replace('\\', '/')
             output.write('self.Runtime.cachedResources["%s"] = "' % resource_name)
             resource_content = read_file(path.join(self.application_dir, resource_name))
-            resource_content += resource_source_url(resource_name).encode('utf-8')
+            if not (resource_name.endswith('.html')
+                    or resource_name.endswith('md')):
+                resource_content += resource_source_url(resource_name).encode(
+                    'utf-8')
             resource_content = resource_content.replace('\\', '\\\\')
             resource_content = resource_content.replace('\n', '\\n')
             resource_content = resource_content.replace('"', '\\"')

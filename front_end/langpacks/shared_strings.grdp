@@ -19,14 +19,14 @@
   <message name="IDS_DEVTOOLS_07ba8a9247a0f91e025d8036a28c3b56" desc="A tag of Application Panel that can be searched in the command menu">
     pwa
   </message>
+  <message name="IDS_DEVTOOLS_0945359809dad1fbf3dea1c95a0da951" desc="Name of a network resource type">
+    Document
+  </message>
   <message name="IDS_DEVTOOLS_0b484cfcf50c8fabff48c0aad426f544" desc="Text to dock the DevTools to the left of the browser tab">
     Dock to left
   </message>
   <message name="IDS_DEVTOOLS_0ca08f8f4a8a19f7f1ae87c119494327" desc="Title as part of a tool to override existing configurations">
     Overrides
-  </message>
-  <message name="IDS_DEVTOOLS_0db377921f4ce762c62526131097968f" desc="Text in Request Headers View of the Network panel">
-    General
   </message>
   <message name="IDS_DEVTOOLS_0eaadb4fcb48a0a0ed7bc9868be9fbaa" desc="Text to indicate an item is a warning">
     Warning
@@ -663,6 +663,9 @@
   </message>
   <message name="IDS_DEVTOOLS_ec211f7c20af43e742bf2570c3cb84f9" desc="Text to add something">
     Add
+  </message>
+  <message name="IDS_DEVTOOLS_ec21eddec143497cea80ab45444a5dab" desc="Related node label in Timeline UIUtils of the Performance panel">
+    Owner Element
   </message>
   <message name="IDS_DEVTOOLS_ec53a8c4f07baed5d8825072c89799be" desc="Text for the status of something">
     Status

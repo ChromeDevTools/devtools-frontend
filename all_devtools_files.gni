@@ -242,6 +242,7 @@ all_devtools_files = [
   "front_end/resources/backgroundServiceView.css",
   "front_end/resources/clearStorageView.css",
   "front_end/resources/cookieItemsView.css",
+  "front_end/resources/frameDetailsReportView.css",
   "front_end/resources/indexedDBViews.css",
   "front_end/resources/module.json",
   "front_end/resources/resourcesPanel.css",

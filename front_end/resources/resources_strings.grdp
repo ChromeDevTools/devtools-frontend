@@ -244,6 +244,9 @@ table is empty.
   <message name="IDS_DEVTOOLS_897356954c2cd3d41b221e3f24f99bba" desc="Text in DOMStorage Items View of the Application panel">
     Key
   </message>
+  <message name="IDS_DEVTOOLS_89babd10371e21bb9eaf39937de7c656" desc="Text for a link to the Sources panel">
+    View Source
+  </message>
   <message name="IDS_DEVTOOLS_8a6bd58d43215a9efccc3753ab42b347" desc="Manifest installability error in the Application panel">
     Manifest does not contain a suitable icon - PNG, SVG or WebP format of at least <ph name="MINIMUM_ICON_SIZE">$1s<ex>100</ex></ph>px is required, the sizes attribute must be set, and the purpose attribute, if set, must include &quot;any&quot; or &quot;maskable&quot;.
   </message>
@@ -444,6 +447,9 @@ as used by Chrome
   <message name="IDS_DEVTOOLS_d8e87c0927539672f54462c837be0b7f" desc="Text in Service Workers View of the Application panel">
     Sync
   </message>
+  <message name="IDS_DEVTOOLS_d9b14828b34925dfb6661e86caa12cbc" desc="Title for a link to the Elements panel">
+    Click to reveal in Elements panel
+  </message>
   <message name="IDS_DEVTOOLS_da131b6bd53f501c1323af4b198740d2" desc="Text in Background Service View of the Application panel">
     Push Messaging
   </message>
@@ -485,6 +491,9 @@ as used by Chrome
   </message>
   <message name="IDS_DEVTOOLS_ea2b2676c28c0db26d39331a336c6b92" desc="Text in Service Workers View of the Application panel">
     start
+  </message>
+  <message name="IDS_DEVTOOLS_eb4111d5e2da22c6dcd33573e7557c17" desc="Text for a link to the Elements panel">
+    View Request
   </message>
   <message name="IDS_DEVTOOLS_ebfabf3434ab96d355274e76214e61ed" desc="Manifest installability error in the Application panel">
     Manifest does not contain a &apos;name&apos; or &apos;short_name&apos; field

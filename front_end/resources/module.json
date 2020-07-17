@@ -112,6 +112,7 @@
     "resourcesSidebar.css",
     "serviceWorkerCacheViews.css",
     "serviceWorkersView.css",
-    "cookieItemsView.css"
+    "cookieItemsView.css",
+    "frameDetailsReportView.css"
   ]
 }

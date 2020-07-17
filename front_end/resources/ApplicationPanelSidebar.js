@@ -2216,6 +2216,8 @@ export class FrameTreeElement extends BaseStorageTreeElement {
     super.onselect(selectedByUser);
     if (!this._view) {
       this._view = new FrameDetailsView(this._frame);
+    } else {
+      this._view.update();
     }
     this.showView(this._view);
 
@@ -2259,6 +2261,10 @@ export class FrameTreeElement extends BaseStorageTreeElement {
     const resourceTreeElement = new FrameResourceTreeElement(this._section._panel, resource);
     categoryElement.appendChild(resourceTreeElement, FrameTreeElement._presentationOrderCompare);
     this._treeElementForResource[resource.url] = resourceTreeElement;
+
+    if (this._view) {
+      this._view.update();
+    }
   }
 
   /**

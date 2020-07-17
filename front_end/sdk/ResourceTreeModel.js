@@ -34,7 +34,7 @@
 import * as Common from '../common/common.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 
-import {DeferredDOMNode, DOMModel} from './DOMModel.js';  // eslint-disable-line no-unused-vars
+import {DeferredDOMNode, DOMModel, DOMNode} from './DOMModel.js';  // eslint-disable-line no-unused-vars
 import {Events as NetworkManagerEvents, NetworkManager} from './NetworkManager.js';
 import {NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
 import {Resource} from './Resource.js';
@@ -911,14 +911,28 @@ export class ResourceTreeFrame {
   }
 
   /**
-   * @returns {?Promise<?DeferredDOMNode>}
+   * @returns {!Promise<?DeferredDOMNode>}
    */
-  getOwnerDOMNode() {
+  async getOwnerDeferredDOMNode() {
     const parentFrame = this.parentFrame();
     if (!parentFrame) {
       return null;
     }
     return parentFrame.resourceTreeModel().domModel().getOwnerNodeForFrame(this._id);
+  }
+
+  /**
+   * @returns {!Promise<?DOMNode>}
+   */
+  async getOwnerDOMNodeOrDocument() {
+    const deferredNode = await this.getOwnerDeferredDOMNode();
+    if (deferredNode) {
+      return deferredNode.resolvePromise();
+    }
+    if (this.isTopFrame()) {
+      return this.resourceTreeModel().domModel().requestDocument();
+    }
+    return null;
   }
 
   /**

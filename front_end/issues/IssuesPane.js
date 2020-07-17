@@ -645,7 +645,7 @@ class AffectedHeavyAdView extends AffectedResourcesView {
     icon.onclick = async () => {
       const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
       if (frame) {
-        const deferedNode = await frame.getOwnerDOMNode();
+        const deferedNode = await frame.getOwnerDeferredDOMNode();
         if (deferedNode) {
           Common.Revealer.reveal(deferedNode);
         }

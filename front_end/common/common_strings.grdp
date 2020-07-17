@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
-  <message name="IDS_DEVTOOLS_0945359809dad1fbf3dea1c95a0da951" desc="Name of a network resource type">
-    Document
-  </message>
   <message name="IDS_DEVTOOLS_21133d71a056222fa2096906538e4e04" desc="Text that appears on a button for the image resource type filter.">
     Img
   </message>

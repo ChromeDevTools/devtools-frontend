@@ -2,13 +2,20 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../third_party/typescript/typescript.gni")
+import("../../scripts/build/ninja/devtools_module.gni")
 
-ts_library("generated") {
+devtools_module("generated") {
   sources = [
+    "ARIAProperties.js",
     "InspectorBackendCommands.js",
     "SupportedCSSProperties.js",
   ]
 
   deps = []
+
+  visibility = [
+    "../protocol_client",
+    "../sdk:sdk-typescript",
+    "../accessibility:devtools_entrypoint-bundle",
+  ]
 }

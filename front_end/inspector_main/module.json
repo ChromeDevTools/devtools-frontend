@@ -150,7 +150,6 @@
     "components",
     "mobile_throttling"
   ],
-  "scripts": [],
   "modules": [
     "inspector_main.js",
     "inspector_main-legacy.js",

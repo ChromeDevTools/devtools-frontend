@@ -32,6 +32,5 @@
     "CharacterIdMap.js",
     "Lazy.js"
   ],
-  "scripts": [],
   "skip_rollup": true
 }

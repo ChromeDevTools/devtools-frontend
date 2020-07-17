@@ -56,7 +56,6 @@
     "ui",
     "workspace"
   ],
-  "scripts": [],
   "modules": [
     "coverage.js",
     "coverage-legacy.js",

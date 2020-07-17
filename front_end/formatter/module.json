@@ -2,7 +2,6 @@
   "dependencies": [
     "common"
   ],
-  "scripts": [],
   "modules": [
     "formatter.js",
     "formatter-legacy.js",

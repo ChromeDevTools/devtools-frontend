@@ -1041,7 +1041,6 @@
     "formatter",
     "coverage"
   ],
-  "scripts": [],
   "modules": [
     "sources.js",
     "sources-legacy.js",

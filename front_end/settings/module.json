@@ -119,7 +119,6 @@
   "dependencies": [
     "components"
   ],
-  "scripts": [],
   "modules": [
     "settings.js",
     "settings-legacy.js",

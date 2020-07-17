@@ -21,7 +21,6 @@
     "network",
     "browser_sdk"
   ],
-  "scripts": [],
   "modules": [
     "developer_resources.js",
     "developer_resources-legacy.js",

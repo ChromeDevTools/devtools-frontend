@@ -63,7 +63,6 @@
     "ui",
     "host"
   ],
-  "scripts": [],
   "modules": [
     "help.js",
     "help-legacy.js",

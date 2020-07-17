@@ -1,5 +1,4 @@
 {
-  "scripts": [],
   "modules": [
     "cm.js",
     "../third_party/codemirror/package/lib/codemirror.js",

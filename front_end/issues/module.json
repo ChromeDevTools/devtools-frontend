@@ -29,7 +29,6 @@
     "network",
     "browser_sdk"
   ],
-  "scripts": [],
   "modules": [
     "issues.js",
     "issues-legacy.js",

@@ -29,7 +29,6 @@
     "CSSOverviewSidebarPanel.js",
     "CSSOverviewPanel.js"
   ],
-  "scripts": [],
   "resources": [
     "cssOverview.css",
     "cssOverviewStartView.css",

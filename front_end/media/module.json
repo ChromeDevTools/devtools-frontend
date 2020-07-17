@@ -33,7 +33,6 @@
     "TickingFlameChart.js",
     "TickingFlameChartHelpers.js"
   ],
-  "scripts": [],
   "resources": [
     "eventDisplayTable.css",
     "mediaView.css",

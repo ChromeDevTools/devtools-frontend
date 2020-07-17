@@ -71,7 +71,6 @@
     "sdk",
     "ui"
   ],
-  "scripts": [],
   "modules": [
     "input.js",
     "input-legacy.js",

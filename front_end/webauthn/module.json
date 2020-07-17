@@ -17,7 +17,6 @@
     "ui",
     "host"
   ],
-  "scripts": [],
   "modules": [
     "webauthn.js",
     "WebauthnPane.js",

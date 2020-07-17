@@ -19,7 +19,6 @@
     "data_grid",
     "source_frame"
   ],
-  "scripts": [],
   "modules": [
     "protocol_monitor.js",
     "protocol_monitor-legacy.js",

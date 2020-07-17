@@ -4,7 +4,6 @@
     "sdk",
     "data_grid"
   ],
-  "scripts": [],
   "modules": [
     "cookie_table.js",
     "cookie_table-legacy.js",

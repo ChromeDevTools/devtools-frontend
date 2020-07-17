@@ -119,7 +119,6 @@
     "heap_snapshot_model",
     "object_ui"
   ],
-  "scripts": [],
   "modules": [
     "profiler.js",
     "profiler-legacy.js",

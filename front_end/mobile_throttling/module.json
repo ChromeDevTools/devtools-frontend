@@ -56,7 +56,6 @@
     "ui",
     "protocol_client"
   ],
-  "scripts": [],
   "modules": [
     "mobile_throttling.js",
     "mobile_throttling-legacy.js",

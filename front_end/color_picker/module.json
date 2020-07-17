@@ -3,7 +3,6 @@
     "ui",
     "sdk"
   ],
-  "scripts": [],
   "modules": [
     "color_picker.js",
     "color_picker-legacy.js",

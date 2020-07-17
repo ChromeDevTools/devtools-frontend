@@ -15,7 +15,6 @@
     "common",
     "cm"
   ],
-  "scripts": [],
   "modules": [
     "text_editor.js",
     "text_editor-legacy.js",

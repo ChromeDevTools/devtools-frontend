@@ -245,7 +245,6 @@
     "profiler",
     "mobile_throttling"
   ],
-  "scripts": [],
   "modules": [
     "timeline.js",
     "timeline-legacy.js",

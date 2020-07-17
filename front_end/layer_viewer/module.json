@@ -6,7 +6,6 @@
     "ui",
     "perf_ui"
   ],
-  "scripts": [],
   "modules": [
     "layer_viewer.js",
     "layer_viewer-legacy.js",

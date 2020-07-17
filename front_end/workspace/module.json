@@ -4,7 +4,6 @@
     "host",
     "platform"
   ],
-  "scripts": [],
   "modules": [
     "workspace.js",
     "workspace-legacy.js",

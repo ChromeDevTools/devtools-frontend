@@ -2,7 +2,6 @@
   "dependencies": [
     "ui"
   ],
-  "scripts": [],
   "resources": [
     "dataGrid.css"
   ],

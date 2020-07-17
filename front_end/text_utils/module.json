@@ -2,7 +2,6 @@
   "dependencies": [
     "platform"
   ],
-  "scripts": [],
   "modules": [
     "ContentProvider.js",
     "StaticContentProvider.js",

@@ -71,7 +71,6 @@
     "source_frame",
     "text_editor"
   ],
-  "scripts": [],
   "modules": [
     "perf_ui.js",
     "perf_ui-legacy.js",

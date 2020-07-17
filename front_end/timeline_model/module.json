@@ -2,7 +2,6 @@
   "dependencies": [
     "sdk"
   ],
-  "scripts": [],
   "modules": [
     "timeline_model.js",
     "timeline_model-legacy.js",

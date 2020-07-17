@@ -4,7 +4,6 @@
     "text_utils",
     "cm_headless"
   ],
-  "scripts": [],
   "skip_rollup": true,
   "modules": [
     "formatter_worker.js",

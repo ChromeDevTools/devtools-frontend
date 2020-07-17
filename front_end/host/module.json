@@ -3,7 +3,6 @@
     "common",
     "platform"
   ],
-  "scripts": [],
   "modules": [
     "host.js",
     "host-legacy.js",

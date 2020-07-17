@@ -19,7 +19,6 @@
     "services",
     "ui"
   ],
-  "scripts": [],
   "modules": [
     "../third_party/lighthouse/report-assets/report.js",
     "../third_party/lighthouse/report-assets/report-generator.js",

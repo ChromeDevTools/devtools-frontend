@@ -2,7 +2,6 @@
   "dependencies": [
     "components"
   ],
-  "scripts": [],
   "modules": [
     "search.js",
     "search-legacy.js",

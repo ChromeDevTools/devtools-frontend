@@ -79,7 +79,6 @@
     "ui",
     "diff"
   ],
-  "scripts": [],
   "modules": [
     "quick_open.js",
     "quick_open-legacy.js",

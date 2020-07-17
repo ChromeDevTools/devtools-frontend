@@ -297,7 +297,6 @@
     "color_picker",
     "event_listeners"
   ],
-  "scripts": [],
   "skip_rollup": true,
   "modules": [
     "elements.js",

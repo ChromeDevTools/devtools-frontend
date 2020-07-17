@@ -6,7 +6,6 @@
     "sdk",
     "object_ui"
   ],
-  "scripts": [],
   "modules": [
     "event_listeners.js",
     "event_listeners-legacy.js",

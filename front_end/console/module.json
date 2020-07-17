@@ -216,7 +216,6 @@
     "formatter",
     "browser_sdk"
   ],
-  "scripts": [],
   "modules": [
     "console.js",
     "console-legacy.js",

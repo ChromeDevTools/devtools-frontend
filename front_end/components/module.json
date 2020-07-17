@@ -4,7 +4,6 @@
     "platform",
     "ui"
   ],
-  "scripts": [],
   "modules": [
     "components.js",
     "components-legacy.js",

@@ -191,7 +191,6 @@
     "source_frame",
     "ui"
   ],
-  "scripts": [],
   "modules": [
     "network.js",
     "network-legacy.js",

@@ -40,7 +40,6 @@
     "object_ui",
     "workspace_diff"
   ],
-  "scripts": [],
   "modules": [
     "source_frame.js",
     "source_frame-legacy.js",

@@ -131,8 +131,9 @@ class ReleaseBuilder(object):
             resources = module.get('resources', None)
             if module.get('scripts') or resources:
                 if module_type == 'autostart':
-                    # Autostart modules are already baked in.
-                    del module['scripts']
+                    if module.get('scripts'):
+                        # Autostart modules are already baked in.
+                        del module['scripts']
                 else:
                     # Non-autostart modules are vulcanized.
                     module['scripts'] = [name + '_module.js']

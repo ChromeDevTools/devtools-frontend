@@ -79,7 +79,6 @@
     "sources",
     "browser_sdk"
   ],
-  "scripts": [],
   "modules": [
     "resources.js",
     "resources-legacy.js",

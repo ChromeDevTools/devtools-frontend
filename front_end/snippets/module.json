@@ -12,7 +12,6 @@
     "quick_open",
     "persistence"
   ],
-  "scripts": [],
   "modules": [
     "snippets.js",
     "snippets-legacy.js",

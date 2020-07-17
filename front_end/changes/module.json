@@ -27,7 +27,6 @@
     "snippets",
     "ui"
   ],
-  "scripts": [],
   "modules": [
     "changes.js",
     "changes-legacy.js",

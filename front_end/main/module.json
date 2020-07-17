@@ -507,7 +507,6 @@
     "sdk",
     "persistence"
   ],
-  "scripts": [],
   "modules": [
     "main.js",
     "main-legacy.js",

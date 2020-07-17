@@ -16,7 +16,6 @@
     "ui",
     "sdk"
   ],
-  "scripts": [],
   "modules": [
     "security.js",
     "security-legacy.js",

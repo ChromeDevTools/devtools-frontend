@@ -239,7 +239,6 @@
     "ui",
     "mobile_throttling"
   ],
-  "scripts": [],
   "modules": [
     "emulation.js",
     "emulation-legacy.js",

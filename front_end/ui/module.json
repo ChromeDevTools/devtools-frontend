@@ -5,7 +5,6 @@
     "common",
     "host"
   ],
-  "scripts": [],
   "modules": [
     "ui-legacy.js",
     "Action.js",

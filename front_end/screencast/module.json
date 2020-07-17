@@ -22,7 +22,6 @@
     "components",
     "emulation"
   ],
-  "scripts": [],
   "modules": [
     "screencast.js",
     "screencast-legacy.js",

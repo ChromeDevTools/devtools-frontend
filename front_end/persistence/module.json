@@ -43,7 +43,6 @@
       "className": "Persistence.PersistenceActions.ContextMenuProvider"
     }
   ],
-  "scripts": [],
   "modules": [
     "persistence.js",
     "persistence-legacy.js",

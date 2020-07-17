@@ -78,7 +78,8 @@ export default {
               // includes third_party. It also not possible to use the current directory
               // as a check for the import, as the import will be different in Chromium and
               // would therefore not match the path of `__dirname`.
-              if (importedFileDirectory.includes(path.join('front_end', 'third_party'))) {
+              if (importedFileDirectory.includes(path.join('front_end', 'third_party')) &&
+                  !importedFileDirectory.includes(path.join('front_end', 'third_party', 'lit-html'))) {
                 return null;
               }
 

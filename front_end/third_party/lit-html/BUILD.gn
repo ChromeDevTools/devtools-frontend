@@ -2,6 +2,8 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
 
 devtools_pre_built("lit-html") {
@@ -43,5 +45,20 @@ devtools_pre_built("lit-html") {
     "package/lit-html.d.ts",
     "package/lit-html.js",
     "package/lit-html.js.map",
+  ]
+}
+
+devtools_module("lit-html-directives") {
+  sources = [ "directives.ts" ]
+
+  deps = [ ":lit-html" ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "lit-html.ts"
+
+  deps = [
+    ":lit-html",
+    ":lit-html-directives",
   ]
 }

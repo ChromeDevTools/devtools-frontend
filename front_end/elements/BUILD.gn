@@ -17,8 +17,8 @@ devtools_module("elements") {
 
   deps = [
     "../common:bundle",
-    "../lit_html:bundle",
     "../platform:bundle",
+    "../third_party/lit-html:bundle",
     "../ui",
   ]
 

@@ -2,7 +2,4 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export * from '../third_party/lit-html/package/lit-html.js';
-import * as Directives from './directives.js';
-
-export {Directives};
+export * from './package/directives/class-map.js';

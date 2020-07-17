@@ -2,10 +2,12 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../third_party/typescript/typescript.gni")
+import("../../scripts/build/ninja/devtools_entrypoint.gni")
 
-ts_library("cm_headless") {
-  sources = [ "cm_headless.js" ]
+devtools_entrypoint("cm_headless") {
+  entrypoint = "cm_headless.js"
+
+  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
 
   deps = [ "../third_party/codemirror" ]
 }

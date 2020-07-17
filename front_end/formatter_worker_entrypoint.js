@@ -9,6 +9,4 @@ import './text_utils/text_utils-legacy.js';
 import './cm_headless/cm_headless.js';
 import './formatter_worker/formatter_worker.js';
 
-import {startWorker} from './RuntimeInstantiator.js';
-
-startWorker('formatter_worker_entrypoint');
+self.postMessage('workerReady');

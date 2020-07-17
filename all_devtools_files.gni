@@ -129,8 +129,6 @@ all_devtools_files = [
   "front_end/extensions_test_runner/ExtensionsTestRunner.js",
   "front_end/extensions_test_runner/module.json",
   "front_end/extensions/module.json",
-  "front_end/formatter_worker_entrypoint.json",
-  "front_end/formatter_worker/module.json",
   "front_end/formatter/module.json",
   "front_end/har_importer/module.json",
   "front_end/heap_profiler_test_runner/HeapProfilerTestRunner.js",

@@ -20,7 +20,6 @@ devtools_module_entrypoints = [
   "changes/changes.js",
   "changes/changes-legacy.js",
   "cm/cm.js",
-  "cm_headless/cm_headless.js",
   "cm_modes/cm_modes.js",
   "color_picker/color_picker.js",
   "color_picker/color_picker-legacy.js",
@@ -52,7 +51,6 @@ devtools_module_entrypoints = [
   "extensions/extensions-legacy.js",
   "formatter/formatter.js",
   "formatter/formatter-legacy.js",
-  "formatter_worker/formatter_worker-legacy.js",
   "har_importer/har_importer.js",
   "har_importer/har_importer-legacy.js",
   "heap_snapshot_model/heap_snapshot_model.js",
@@ -166,6 +164,7 @@ foreach(module, devtools_module_entrypoints) {
 
 generated_typescript_entrypoints = [
   "$resources_out_dir/common/common.js",
+  "$resources_out_dir/cm_headless/cm_headless.js",
   "$resources_out_dir/formatter_worker/formatter_worker.js",
   "$resources_out_dir/elements/elements.js",
   "$resources_out_dir/third_party/acorn/acorn.js",

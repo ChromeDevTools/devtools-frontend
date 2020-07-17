@@ -27,6 +27,7 @@ group("front_end") {
 copy_sources_to_resources("front_end_html_entrypoints") {
   sources = [
     "devtools_app.html",
+    "formatter_worker_entrypoint.js",
     "inspector.html",
     "integration_test_runner.html",
     "js_app.html",

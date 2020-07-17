@@ -14,6 +14,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     this.registerRequiredCSS('webauthn/webauthnPane.css');
     this.contentElement.classList.add('webauthn-pane');
     this._enabled = false;
+    this._activeAuthId = null;
 
     const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
     if (mainTarget) {
@@ -154,11 +155,21 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
 
     const headerElement = section.createChild('div', 'authenticator-section-header');
     const titleElement = headerElement.createChild('div', 'authenticator-section-title');
+    titleElement.textContent = ls`Authenticator ${authenticatorId}`;
+    UI.ARIAUtils.markAsHeading(titleElement, 2);
+
     const removeButton = headerElement.createChild('button', 'remove-authenticator-button');
     removeButton.textContent = ls`Remove`;
     removeButton.addEventListener('click', this._removeAuthenticator.bind(this, authenticatorId));
-    titleElement.textContent = ls`Authenticator ${authenticatorId}`;
-    UI.ARIAUtils.markAsHeading(titleElement, 2);
+
+    this._clearActiveAuthenticator();
+    const activeButtonContainer = headerElement.createChild('div', 'active-button-container');
+    const activeLabel = UI.UIUtils.createRadioLabel('active-authenticator', ls`Active`);
+    activeLabel.radioElement.addEventListener('click', this._setActiveAuthenticator.bind(this, authenticatorId));
+    activeButtonContainer.appendChild(activeLabel);
+    activeLabel.radioElement.checked = true;
+    activeLabel.radioElement.title = ls`Set authenticator ${authenticatorId} as the active authenticator`;
+    this._activeAuthId = authenticatorId;  // Newly added authenticator is automatically set as active.
 
     const sectionFields = section.createChild('div', 'authenticator-fields');
     const protocolField = sectionFields.createChild('div', 'authenticator-field');
@@ -179,19 +190,22 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
   }
 
   /**
-   * Removes both the authenticator and its respective UI element
+   * Removes both the authenticator and its respective UI element.
    * @param {!Protocol.WebAuthn.AuthenticatorId} authenticatorId
    */
   _removeAuthenticator(authenticatorId) {
     this._authenticatorsView.querySelector(`[data-authenticator-id=${CSS.escape(authenticatorId)}]`).remove();
     this._model.removeAuthenticator(authenticatorId);
+    if (this._activeAuthId === authenticatorId) {
+      this._activeAuthId = null;
+    }
   }
 
   /**
    * @return {!Protocol.WebAuthn.VirtualAuthenticatorOptions}
    */
   _createOptionsFromCurrentInputs() {
-    // TODO(crbug.com/1034663): Add optionality for automaticPresenceSimulation and isUserVerified params.
+    // TODO(crbug.com/1034663): Add optionality for isUserVerified param.
     return {
       protocol: this._protocolSelect.options[this._protocolSelect.selectedIndex].value,
       transport: this._transportSelect.options[this._transportSelect.selectedIndex].value,
@@ -200,5 +214,32 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
       automaticPresenceSimulation: true,
       isUserVerified: true,
     };
+  }
+
+  /**
+   * Sets the given authenticator as active.
+   * Note that a newly added authenticator will automatically be set as active.
+   * @param {!Protocol.WebAuthn.AuthenticatorId} authenticatorId
+   */
+  async _setActiveAuthenticator(authenticatorId) {
+    await this._clearActiveAuthenticator();
+    await this._model.setAutomaticPresenceSimulation(authenticatorId, true);
+    this._activeAuthId = authenticatorId;
+    this._updateActiveButtons();
+  }
+
+  _updateActiveButtons() {
+    const authenticators = this._authenticatorsView.getElementsByClassName('authenticator-section');
+    Array.from(authenticators).forEach(authenticator => {
+      authenticator.querySelector('input.dt-radio-button').checked =
+          authenticator.getAttribute('data-authenticator-id') === this._activeAuthId;
+    });
+  }
+
+  async _clearActiveAuthenticator() {
+    if (this._activeAuthId) {
+      await this._model.setAutomaticPresenceSimulation(this._activeAuthId, false);
+    }
+    this._activeAuthId = null;
   }
 }

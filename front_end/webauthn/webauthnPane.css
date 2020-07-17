@@ -7,7 +7,7 @@
 .webauthn-pane {
   display: block;
   overflow: auto;
-  min-width: 400px;
+  min-width: 500px;
 }
 
 .webauthn-toolbar-container {
@@ -67,6 +67,7 @@
 
 .authenticator-section-title {
   line-height: 24px;
+  width: 330px;
   font-weight: bold;
   display: inline-block;
 }
@@ -106,4 +107,10 @@
   color: rgb(17 85 204);
   text-decoration: underline;
   cursor: pointer;
+}
+
+.active-button-container {
+  display: inline-block;
+  min-width: 28px;
+  margin-left: 5px;
 }

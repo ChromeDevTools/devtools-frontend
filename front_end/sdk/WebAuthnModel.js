@@ -39,6 +39,14 @@ export class WebAuthnModel extends SDKModel {
   async removeAuthenticator(authenticatorId) {
     await this._agent.invoke_removeVirtualAuthenticator({authenticatorId});
   }
+
+  /**
+   * @param {!Protocol.WebAuthn.AuthenticatorId} authenticatorId
+   * @param {boolean} enabled
+   */
+  async setAutomaticPresenceSimulation(authenticatorId, enabled) {
+    await this._agent.invoke_setAutomaticPresenceSimulation({authenticatorId, enabled});
+  }
 }
 
 SDKModel.register(WebAuthnModel, Capability.WebAuthn, false);

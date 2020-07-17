@@ -79,7 +79,11 @@ export default {
               // as a check for the import, as the import will be different in Chromium and
               // would therefore not match the path of `__dirname`.
               if (importedFileDirectory.includes(path.join('front_end', 'third_party')) &&
-                  !importedFileDirectory.includes(path.join('front_end', 'third_party', 'lit-html'))) {
+                  !importedFileDirectory.includes(path.join('front_end', 'third_party', 'lit-html')) &&
+                  // Note that we have to include the path.sep for `acorn`, as there are multiple packages
+                  // in `third_party` that start with `acorn-`
+                  !importedFileDirectory.includes(
+                      dirnameWithSeparator(path.join('front_end', 'third_party', 'acorn', 'acorn.js')))) {
                 return null;
               }
 

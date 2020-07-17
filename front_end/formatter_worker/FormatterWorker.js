@@ -30,8 +30,8 @@
 
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
+import * as Acorn from '../third_party/acorn/acorn.js';
 
-import * as Acorn from './Acorn.js';
 import {AcornTokenizer, ECMA_VERSION} from './AcornTokenizer.js';
 import {CSSFormatter} from './CSSFormatter.js';
 import {parseCSS} from './CSSRuleParser.js';

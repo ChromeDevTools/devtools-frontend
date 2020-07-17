@@ -541,7 +541,6 @@ all_typescript_modules = [
   "elements/StylePropertyHighlighter.js",
   "elements/StylePropertyTreeElement.js",
   "elements/StylesSidebarPane.js",
-  "formatter_worker/Acorn.js",
   "formatter_worker/AcornTokenizer.js",
   "formatter_worker/CSSFormatter.js",
   "formatter_worker/CSSRuleParser.js",

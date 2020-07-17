@@ -605,6 +605,12 @@ experimental domain Audits
       kTrustedTypesSinkViolation
       kTrustedTypesPolicyViolation
 
+  type SourceCodeLocation extends object
+    properties
+      string url
+      integer lineNumber
+      integer columnNumber
+
   type ContentSecurityPolicyIssueDetails extends object
     properties
       # The url not included in allowed sources.
@@ -614,12 +620,6 @@ experimental domain Audits
       ContentSecurityPolicyViolationType contentSecurityPolicyViolationType
       optional AffectedFrame frameAncestor
       optional SourceCodeLocation sourceCodeLocation
-
-  type SourceCodeLocation extends object
-    properties
-      string url
-      integer lineNumber
-      integer columnNumber
 
   # A unique identifier for the type of issue. Each type may use one of the
   # optional fields in InspectorIssueDetails to convey more specific
@@ -5565,6 +5565,15 @@ domain Page
   # Unique frame identifier.
   type FrameId extends string
 
+  # Indicates whether a frame has been identified as an ad.
+  experimental type AdFrameType extends string
+    enum
+      none
+      # This frame is a subframe of an ad frame.
+      child
+      # This frame is the root of an ad frame.
+      root
+
   # Information about the Frame on the page.
   type Frame extends object
     properties
@@ -5586,6 +5595,8 @@ domain Page
       string mimeType
       # If the frame failed to load, this contains the URL that could not be loaded. Note that unlike url above, this URL may contain a fragment.
       experimental optional string unreachableUrl
+      # Indicates whether this frame was tagged as an ad.
+      experimental optional AdFrameType adFrameType
 
   # Information about the Resource on the page.
   experimental type FrameResource extends object

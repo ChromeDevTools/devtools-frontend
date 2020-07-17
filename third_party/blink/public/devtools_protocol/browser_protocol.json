@@ -1201,6 +1201,24 @@
                     ]
                 },
                 {
+                    "id": "SourceCodeLocation",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "url",
+                            "type": "string"
+                        },
+                        {
+                            "name": "lineNumber",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "columnNumber",
+                            "type": "integer"
+                        }
+                    ]
+                },
+                {
                     "id": "ContentSecurityPolicyIssueDetails",
                     "type": "object",
                     "properties": [
@@ -1228,24 +1246,6 @@
                             "name": "sourceCodeLocation",
                             "optional": true,
                             "$ref": "SourceCodeLocation"
-                        }
-                    ]
-                },
-                {
-                    "id": "SourceCodeLocation",
-                    "type": "object",
-                    "properties": [
-                        {
-                            "name": "url",
-                            "type": "string"
-                        },
-                        {
-                            "name": "lineNumber",
-                            "type": "integer"
-                        },
-                        {
-                            "name": "columnNumber",
-                            "type": "integer"
                         }
                     ]
                 },
@@ -12076,6 +12076,17 @@
                     "type": "string"
                 },
                 {
+                    "id": "AdFrameType",
+                    "description": "Indicates whether a frame has been identified as an ad.",
+                    "experimental": true,
+                    "type": "string",
+                    "enum": [
+                        "none",
+                        "child",
+                        "root"
+                    ]
+                },
+                {
                     "id": "Frame",
                     "description": "Information about the Frame on the page.",
                     "type": "object",
@@ -12130,6 +12141,13 @@
                             "experimental": true,
                             "optional": true,
                             "type": "string"
+                        },
+                        {
+                            "name": "adFrameType",
+                            "description": "Indicates whether this frame was tagged as an ad.",
+                            "experimental": true,
+                            "optional": true,
+                            "$ref": "AdFrameType"
                         }
                     ]
                 },

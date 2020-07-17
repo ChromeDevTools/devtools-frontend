@@ -2,5 +2,12 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-# Empty BUILD.gn needed to make PRESUBMIT happy.
-# TODO(crbug.com/1011811): Add |devtools_entrypoint| and make 'marked' usable from TypeScript.
+import("../../scripts/build/ninja/devtools_entrypoint.gni")
+
+devtools_entrypoint("bundle") {
+  entrypoint = "marked.js"
+
+  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
+
+  deps = [ "../third_party/marked" ]
+}

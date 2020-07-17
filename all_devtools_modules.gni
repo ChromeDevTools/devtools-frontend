@@ -360,7 +360,6 @@ all_devtools_modules = [
   "text_utils/TextCursor.js",
   "text_utils/TextRange.js",
   "text_utils/TextUtils.js",
-  "third_party/marked/package/lib/marked.esm.js",
   "third_party/wasmparser/package/dist/esm/WasmDis.js",
   "third_party/wasmparser/package/dist/esm/WasmParser.js",
   "timeline/UIDevtoolsUtils.js",
@@ -668,6 +667,7 @@ all_typescript_modules = [
   "third_party/lit-html/package/lib/template-result.js",
   "third_party/lit-html/package/lib/template.js",
   "third_party/lit-html/package/lit-html.js",
+  "third_party/marked/package/lib/marked.esm.js",
 ]
 
 foreach(module, all_typescript_modules) {

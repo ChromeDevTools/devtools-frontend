@@ -12,6 +12,8 @@ const CSS_PROPERTY_NAME_SELECTOR = '.webkit-css-property';
 const CSS_PROPERTY_SWATCH_SELECTOR = '.color-swatch-inner';
 const CSS_STYLE_RULE_SELECTOR = '[aria-label*="css selector"]';
 const COMPUTED_PROPERTY_SELECTOR = '.computed-style-property';
+const COMPUTED_STYLES_PANEL_SELECTOR = '[aria-label="Computed panel"]';
+const COMPUTED_STYLES_SHOW_ALL_SELECTOR = '[aria-label="Show all"]';
 const ELEMENTS_PANEL_SELECTOR = '.panel[aria-label="elements"]';
 const SECTION_SUBTITLE_SELECTOR = '.styles-section-subtitle';
 
@@ -148,6 +150,15 @@ export const getComputedStylesForDomNode = async (elementSelector: string, style
     }
     return getComputedStyle(element)[styleAttribute];
   }, elementSelector, styleAttribute);
+};
+
+export const toggleShowAllComputedProperties = async () => {
+  const initialContent = await getContentOfComputedPane();
+
+  const computedPanel = await $(COMPUTED_STYLES_PANEL_SELECTOR);
+  const showAllButton = await $(COMPUTED_STYLES_SHOW_ALL_SELECTOR, computedPanel);
+  await click(showAllButton);
+  await waitForComputedPaneChange(initialContent);
 };
 
 export const waitForDomNodeToBeVisible = async (elementSelector: string) => {

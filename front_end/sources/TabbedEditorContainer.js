@@ -652,6 +652,15 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
     const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data);
     this._updateFileTitle(uiSourceCode);
     this._updateHistory();
+
+    // Remove from map under old url if it has changed.
+    for (const [k, v] of this._uriToUISourceCode) {
+      if (v === uiSourceCode && k !== v.url()) {
+        this._uriToUISourceCode.delete(k);
+      }
+    }
+    // Ensure it is mapped under current url.
+    this._canonicalUISourceCode(uiSourceCode);
   }
 
   /**

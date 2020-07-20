@@ -5,7 +5,11 @@
 import("../../../third_party/typescript/typescript.gni")
 
 node_ts_library("snippets") {
-  sources = [ "context-menu_test.ts" ]
+  sources = [
+    "breakpoint_test.ts",
+    "context-menu_test.ts",
+    "name_test.ts",
+  ]
 
   deps = [
     "../../shared",

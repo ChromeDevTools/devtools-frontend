@@ -23,8 +23,8 @@ describe('NodeURL', () => {
   });
 
   describe('patch', () => {
-    const url = Platform.isWin() ? 'c:\\prog\\foobar.js' : '/usr/local/home/prog/foobar.js';
-    const patchedUrl = Platform.isWin() ? 'file:///c:/prog/foobar.js' : 'file:///usr/local/home/prog/foobar.js';
+    const url = Platform.isWin() ? 'C:\\prog\\foobar.js' : '/usr/local/home/prog/foobar.js';
+    const patchedUrl = Platform.isWin() ? 'file:///C:/prog/foobar.js' : 'file:///usr/local/home/prog/foobar.js';
 
     it('does patch url fields', () => {
       const object = {url, result: null};

@@ -48,7 +48,7 @@
 }
 
 .metrics .margin {
-  border: 1px dashed;
+  border: 1px dashed rgb(48 57 66);
   background-color: white;
   display: inline-block;
   text-align: center;

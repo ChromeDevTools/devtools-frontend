@@ -353,22 +353,33 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _treeElementAdded(event) {
+    // On tree item selection its itemURL and those of its parents are persisted.
+    // On reload/navigation we check for matches starting from the root on the
+    // path to the current element. Matching nodes are expanded until we hit a
+    // mismatch. This way we ensure that the longest matching path starting from
+    // the root is expanded, even if we cannot match the whole path.
     const selection = this._panel.lastSelectedItemPath();
     if (!selection.length) {
       return;
     }
     const element = event.data;
-    const index = selection.indexOf(element.itemURL);
-    if (index < 0) {
-      return;
+    const elementPath = [element];
+    for (let parent = element.parent; parent && parent.itemURL; parent = parent.parent) {
+      elementPath.push(parent);
     }
-    for (let parent = element.parent; parent; parent = parent.parent) {
-      parent.expand();
+
+    let i = selection.length - 1;
+    let j = elementPath.length - 1;
+    while (i >= 0 && j >= 0 && selection[i] === elementPath[j].itemURL) {
+      if (!elementPath[j].expanded) {
+        if (i > 0) {
+          elementPath[j].expand();
+        }
+        elementPath[j].select();
+      }
+      i--;
+      j--;
     }
-    if (index > 0) {
-      element.expand();
-    }
-    element.select();
   }
 
   _reset() {

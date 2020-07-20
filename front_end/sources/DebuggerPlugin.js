@@ -1719,17 +1719,6 @@ export class DebuggerPlugin extends Plugin {
       return;
     }
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ScriptsBreakpointSet);
-    if (editorLineNumber < this._textEditor.linesCount) {
-      const start = this._transformer.editorLocationToUILocation(editorLineNumber, 0);
-      const end = this._transformer.editorLocationToUILocation(editorLineNumber + 1, 0);
-      const locations = await this._breakpointManager.possibleBreakpoints(
-          this._uiSourceCode,
-          new TextUtils.TextRange.TextRange(start.lineNumber, start.columnNumber, end.lineNumber, end.columnNumber));
-      if (locations && locations.length) {
-        await this._setBreakpoint(locations[0].lineNumber, locations[0].columnNumber, condition, enabled);
-        return;
-      }
-    }
     const origin = this._transformer.editorLocationToUILocation(editorLineNumber, 0);
     await this._setBreakpoint(origin.lineNumber, origin.columnNumber, condition, enabled);
   }

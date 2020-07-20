@@ -19,7 +19,7 @@ class SourceVariable extends SDK.RemoteObject.RemoteObjectImpl {
    * @param {!RawLocation} location
    */
   constructor(callFrame, variable, plugin, location) {
-    const variable_type = variable.type.replace(/[ \[\]]/g, '_');
+    const variable_type = variable.type.replace(/[ ]/g, '_');
     super(
         callFrame.debuggerModel.runtimeModel(), /* objectId=*/ undefined,
         /* type=*/ variable_type,
@@ -389,9 +389,9 @@ export class DebuggerLanguagePluginManager {
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {!Promise<?Array<!SDK.DebuggerModel.Location>>} Returns null if this manager does not have a plugin for it.
+   * @return {!Promise<?Array<!{start: !SDK.DebuggerModel.Location, end: !SDK.DebuggerModel.Location}>>} Returns null if this manager does not have a plugin for it.
    */
-  async uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
+  async uiLocationToRawLocationRanges(uiSourceCode, lineNumber, columnNumber) {
     const mappedSourceFiles = this._uiSourceCodes.get(uiSourceCode);
     if (!mappedSourceFiles) {
       return null;
@@ -420,8 +420,12 @@ export class DebuggerLanguagePluginManager {
     }
 
     /**
-     * @return {!Promise<!Array<!SDK.DebuggerModel.Location>>}
-     */
+       * @return {!Promise<!Array<!{start: !SDK.DebuggerModel.Location, end: !SDK.DebuggerModel.Location}>>}
+       * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel
+       * @param {!DebuggerLanguagePlugin} plugin
+       * @param {string} sourceFileURL
+       * @param {!SDK.Script.Script} script
+       */
     async function getLocations(debuggerModel, plugin, sourceFileURL, script) {
       const pluginLocation = {rawModuleId: script.sourceURL, sourceFileURL, lineNumber, columnNumber};
 
@@ -430,10 +434,27 @@ export class DebuggerLanguagePluginManager {
         return [];
       }
 
-      return rawLocations.map(
-          m => new SDK.DebuggerModel.Location(
-              debuggerModel, script.scriptId, 0, Number(m.startOffset) + script.codeOffset()));
+      return rawLocations.map(m => ({
+                                start: new SDK.DebuggerModel.Location(
+                                    debuggerModel, script.scriptId, 0, Number(m.startOffset) + script.codeOffset()),
+                                end: new SDK.DebuggerModel.Location(
+                                    debuggerModel, script.scriptId, 0, Number(m.endOffset) + script.codeOffset())
+                              }));
     }
+  }
+
+  /**
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
+   * @param {number} lineNumber
+   * @param {number} columnNumber
+   * @return {!Promise<?Array<!SDK.DebuggerModel.Location>>} Returns null if this manager does not have a plugin for it.
+   */
+  async uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
+    const locationRanges = await this.uiLocationToRawLocationRanges(uiSourceCode, lineNumber, columnNumber);
+    if (!locationRanges) {
+      return null;
+    }
+    return locationRanges.map(({start}) => start);
   }
 
   /**

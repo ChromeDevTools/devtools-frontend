@@ -39,6 +39,30 @@ import {Script} from './Script.js';
 import {Capability, SDKModel, Target, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 import {SourceMapManager} from './SourceMapManager.js';
 
+/**
+ * TODO(bmeurer): Introduce a dedicated {DebuggerLocationRange} class or something!
+ *
+ * @param {!Location} location
+ * @param {!{start:!Location, end:!Location}} range
+ * @return {boolean}
+ */
+function contained(location, range) {
+  const {start, end} = range;
+  if (start.scriptId !== location.scriptId) {
+    return false;
+  }
+  if (location.lineNumber < start.lineNumber || location.lineNumber > end.lineNumber) {
+    return false;
+  }
+  if (location.lineNumber === start.lineNumber && location.columnNumber < start.columnNumber) {
+    return false;
+  }
+  if (location.lineNumber === end.lineNumber && location.columnNumber >= end.columnNumber) {
+    return false;
+  }
+  return true;
+}
+
 export class DebuggerModel extends SDKModel {
   /**
    * @param {!Target} target
@@ -79,6 +103,8 @@ export class DebuggerModel extends SDKModel {
     /** @type {!Common.ObjectWrapper.ObjectWrapper} */
     this._breakpointResolvedEventTarget = new Common.ObjectWrapper.ObjectWrapper();
 
+    /** @type {!Array<!{start: !Location, end: !Location}>} */
+    this._autoStepSkipList = [];
     /** @type {boolean} */
     this._autoStepOver = false;
 
@@ -266,14 +292,39 @@ export class DebuggerModel extends SDKModel {
         {active: Common.Settings.Settings.instance().moduleSetting('breakpointsActive').get()});
   }
 
-  stepInto() {
+  /**
+   *  @return {!Promise<!Array<!{start: !Location, end: !Location}>>}
+   */
+  async _computeAutoStepSkipList() {
+    // @ts-ignore
+    const pluginManager = Bindings.DebuggerWorkspaceBinding.instance().getLanguagePluginManager(this);
+    if (pluginManager) {
+      // @ts-ignore
+      const rawLocation = this._debuggerPausedDetails.callFrames[0].location();
+      const uiLocation = await pluginManager.rawLocationToUILocation(rawLocation);
+      if (uiLocation) {
+        const ranges = await pluginManager.uiLocationToRawLocationRanges(
+            uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber);
+        if (ranges) {
+          // TODO(bmeurer): Remove the {rawLocation} from the {ranges}?
+          // @ts-ignore
+          return ranges.filter(range => contained(rawLocation, range));
+        }
+      }
+    }
+    return [];
+  }
+
+  async stepInto() {
+    this._autoStepSkipList = await this._computeAutoStepSkipList();
     this._agent.invoke_stepInto({breakOnAsyncCall: false});
   }
 
-  stepOver() {
+  async stepOver() {
     // Mark that in case of auto-stepping, we should be doing
     // step-over instead of step-in.
     this._autoStepOver = true;
+    this._autoStepSkipList = await this._computeAutoStepSkipList();
     this._agent.invoke_stepOver();
   }
 
@@ -466,6 +517,7 @@ export class DebuggerModel extends SDKModel {
     this._stringMap.clear();
     this._discardableScripts = [];
     this._autoStepOver = false;
+    this._autoStepSkipList = [];
   }
 
   /**
@@ -563,23 +615,36 @@ export class DebuggerModel extends SDKModel {
 
   /**
    * @param {?DebuggerPausedDetails} debuggerPausedDetails
-   * @return {boolean}
+   * @return {!Promise<boolean>}
    */
-  _setDebuggerPausedDetails(debuggerPausedDetails) {
+  async _setDebuggerPausedDetails(debuggerPausedDetails) {
     this._isPausing = false;
     this._debuggerPausedDetails = debuggerPausedDetails;
-    if (this._debuggerPausedDetails) {
-      if (this._beforePausedCallback) {
-        if (!this._beforePausedCallback.call(null, this._debuggerPausedDetails)) {
+    if (debuggerPausedDetails) {
+      const rawLocation = debuggerPausedDetails.callFrames[0].location();
+      for (const range of this._autoStepSkipList) {
+        if (contained(rawLocation, range)) {
           return false;
+        }
+      }
+      if (this._beforePausedCallback) {
+        if (!this._beforePausedCallback.call(null, debuggerPausedDetails)) {
+          return false;
+        }
+      }
+      // @ts-ignore
+      const pluginManager = Bindings.DebuggerWorkspaceBinding.instance().getLanguagePluginManager(this);
+      if (pluginManager) {
+        for (const callFrame of debuggerPausedDetails.callFrames) {
+          // @ts-ignore
+          callFrame.sourceScopeChain = await pluginManager.resolveScopeChain(callFrame);
         }
       }
       // If we resolved a location in auto-stepping callback, reset the
       // step-over marker.
       this._autoStepOver = false;
+      this._autoStepSkipList = [];
       this.dispatchEventToListeners(Events.DebuggerPaused, this);
-    }
-    if (debuggerPausedDetails) {
       this.setSelectedCallFrame(debuggerPausedDetails.callFrames[0]);
     } else {
       this.setSelectedCallFrame(null);
@@ -619,16 +684,8 @@ export class DebuggerModel extends SDKModel {
 
     const pausedDetails =
         new DebuggerPausedDetails(this, callFrames, reason, auxData, breakpointIds, asyncStackTrace, asyncStackTraceId);
-    // @ts-ignore
-    const pluginManager = Bindings.DebuggerWorkspaceBinding.instance().getLanguagePluginManager(this);
-    if (pluginManager) {
-      for (const callFrame of pausedDetails.callFrames) {
-        // @ts-ignore
-        callFrame.sourceScopeChain = await pluginManager.resolveScopeChain(callFrame);
-      }
-    }
 
-    if (pausedDetails && this._continueToLocationCallback) {
+    if (this._continueToLocationCallback) {
       const callback = this._continueToLocationCallback;
       this._continueToLocationCallback = null;
       if (callback(pausedDetails)) {
@@ -636,7 +693,7 @@ export class DebuggerModel extends SDKModel {
       }
     }
 
-    if (!this._setDebuggerPausedDetails(pausedDetails)) {
+    if (!await this._setDebuggerPausedDetails(pausedDetails)) {
       if (this._autoStepOver) {
         this._agent.invoke_stepOver();
       } else {

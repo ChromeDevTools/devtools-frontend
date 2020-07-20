@@ -12,5 +12,6 @@
     "ViewportDataGrid.js",
     "SortableDataGrid.js",
     "ShowMoreDataGridNode.js"
-  ]
+  ],
+  "skip_rollup": true
 }

@@ -14,6 +14,7 @@ group("front_end") {
     "browser_sdk:bundle",
     "common:bundle",
     "component_docs",
+    "data_grid:bundle",
     "dom_extension:bundle",
     "elements:bundle",
     "formatter_worker:bundle",

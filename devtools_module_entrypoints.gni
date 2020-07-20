@@ -7,7 +7,6 @@ import("./scripts/build/ninja/vars.gni")
 devtools_module_entrypoints = [
   "root.js",
   "RuntimeInstantiator.js",
-  "accessibility/accessibility.js",
   "accessibility/accessibility-legacy.js",
   "animation/animation.js",
   "animation/animation-legacy.js",
@@ -163,6 +162,7 @@ foreach(module, devtools_module_entrypoints) {
 }
 
 generated_typescript_entrypoints = [
+  "$resources_out_dir/accessibility/accessibility.js",
   "$resources_out_dir/common/common.js",
   "$resources_out_dir/cm_headless/cm_headless.js",
   "$resources_out_dir/formatter_worker/formatter_worker.js",

@@ -5,14 +5,6 @@
 import("./scripts/build/ninja/vars.gni")
 
 all_devtools_modules = [
-  "accessibility/AccessibilityModel.js",
-  "accessibility/AccessibilityNodeView.js",
-  "accessibility/AccessibilitySidebarView.js",
-  "accessibility/AccessibilityStrings.js",
-  "accessibility/AccessibilitySubPane.js",
-  "accessibility/ARIAAttributesView.js",
-  "accessibility/ARIAMetadata.js",
-  "accessibility/AXBreadcrumbsPane.js",
   "animation/AnimationGroupPreviewUI.js",
   "animation/AnimationModel.js",
   "animation/AnimationScreenshotPopover.js",
@@ -486,6 +478,14 @@ foreach(module, all_devtools_modules) {
 generated_typescript_modules = []
 
 all_typescript_modules = [
+  "accessibility/AccessibilityModel.js",
+  "accessibility/AccessibilityNodeView.js",
+  "accessibility/AccessibilitySidebarView.js",
+  "accessibility/AccessibilityStrings.js",
+  "accessibility/AccessibilitySubPane.js",
+  "accessibility/ARIAAttributesView.js",
+  "accessibility/ARIAMetadata.js",
+  "accessibility/AXBreadcrumbsPane.js",
   "common/App.js",
   "common/AppProvider.js",
   "common/CharacterIdMap.js",

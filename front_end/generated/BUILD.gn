@@ -16,6 +16,6 @@ devtools_module("generated") {
   visibility = [
     "../protocol_client",
     "../sdk:sdk-typescript",
-    "../accessibility:devtools_entrypoint-bundle",
+    "../accessibility:*",
   ]
 }

@@ -325,7 +325,7 @@
     "ElementStatePaneWidget.js",
     "ElementsTreeElementHighlighter.js",
     "ImagePreviewPopover.js",
-    "NewElementsBreadcrumbs_bridge.js"
+    "ElementsBreadcrumbs_bridge.js"
   ],
   "resources": [
     "classesPaneWidget.css",

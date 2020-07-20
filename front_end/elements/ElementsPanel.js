@@ -36,12 +36,12 @@ import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {ComputedStyleWidget} from './ComputedStyleWidget.js';
+import {createElementsBreadcrumbs, DOMNode} from './ElementsBreadcrumbs_bridge.js';  // eslint-disable-line no-unused-vars
 import {ElementsTreeElement} from './ElementsTreeElement.js';  // eslint-disable-line no-unused-vars
 import {ElementsTreeElementHighlighter} from './ElementsTreeElementHighlighter.js';
 import {ElementsTreeOutline} from './ElementsTreeOutline.js';
 import {MarkerDecorator} from './MarkerDecorator.js';  // eslint-disable-line no-unused-vars
 import {MetricsSidebarPane} from './MetricsSidebarPane.js';
-import {createElementsBreadcrumbs, DOMNode} from './NewElementsBreadcrumbs_bridge.js';  // eslint-disable-line no-unused-vars
 import {Events as StylesSidebarPaneEvents, StylesSidebarPane} from './StylesSidebarPane.js';
 
 /**

@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {ElementsBreadcrumbs} from '../../../../front_end/elements/ElementsBreadcrumbs.js';
 import {crumbsToRender, determineElementTitle, DOMNode} from '../../../../front_end/elements/ElementsBreadcrumbsUtils.js';
-import {ElementsBreadcrumbs} from '../../../../front_end/elements/NewElementsBreadcrumbs.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const {assert} = chai;

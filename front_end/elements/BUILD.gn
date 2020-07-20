@@ -10,9 +10,9 @@ import("../../third_party/typescript/typescript.gni")
 devtools_module("elements") {
   sources = [
     "Adorner.js",
+    "ElementsBreadcrumbs.ts",
     "ElementsBreadcrumbsUtils.ts",
-    "NewElementsBreadcrumbs.ts",
-    "NewElementsBreadcrumbs_bridge.js",
+    "ElementsBreadcrumbs_bridge.js",
   ]
 
   deps = [

@@ -45,8 +45,24 @@ template("devtools_entrypoint") {
         deps = invoker.deps
       }
     } else {
-      copy(_entrypoint_target_name) {
-        sources = [ invoker.entrypoint ]
+      action(_entrypoint_target_name) {
+        script = "//third_party/node/node.py"
+
+        inputs = [
+          devtools_location_prepend + "scripts/build/ninja/copy-file.js",
+          invoker.entrypoint,
+        ]
+
+        _copy_src = rebase_path(".", root_build_dir) + "/" + invoker.entrypoint
+        _copy_dest = rebase_path(_entrypoint_gen_file_location, root_build_dir)
+
+        args = [
+          rebase_path(
+              devtools_location_prepend + "scripts/build/ninja/copy-file.js",
+              root_build_dir),
+          _copy_src,
+          _copy_dest,
+        ]
 
         outputs = [ _entrypoint_gen_file_location ]
 

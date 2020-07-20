@@ -26,6 +26,7 @@
   position: absolute;
   left: 200px;
   overflow: hidden;
+  height: 20px;
 }
 
 .media-property-renderer:nth-child(even) {

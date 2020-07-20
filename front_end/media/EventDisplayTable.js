@@ -120,7 +120,12 @@ export class PlayerEventsView extends UI.Widget.VBox {
       delete json['event'];
       event.value = json;
       const node = new EventNode(event);
+      const scroll = this._dataGrid.scrollContainer;
+      const isAtBottom = scroll.scrollTop === (scroll.scrollHeight - scroll.offsetHeight);
       this._dataGrid.rootNode().appendChild(node);
+      if (isAtBottom) {
+        scroll.scrollTop = scroll.scrollHeight;
+      }
     } catch (e) {
       // If this is a legacy message event, ignore it for now until they
       // are handled.

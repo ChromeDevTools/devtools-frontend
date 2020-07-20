@@ -30,7 +30,7 @@ devtools_module("bindings") {
 
   deps = [
     "../common:bundle",
-    "../host",
+    "../host:bundle",
     "../sdk:bundle",
     "../text_utils",
     "../workspace",

@@ -9,6 +9,6 @@ ts_library("media") {
 
   deps = [
     "../common:bundle",
-    "../host",
+    "../host:bundle",
   ]
 }

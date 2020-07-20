@@ -5,7 +5,7 @@ ts_library("protocol_client") {
   sources = [ "NodeURL_test.ts" ]
 
   deps = [
-    "../../../../front_end/host",
+    "../../../../front_end/host:bundle",
     "../../../../front_end/protocol_client",
   ]
 }

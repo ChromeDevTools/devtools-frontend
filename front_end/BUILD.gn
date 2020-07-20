@@ -68,7 +68,7 @@ ts_library("ts_library-verification") {
     "browser_sdk",
     "color_picker",
     "common:bundle",
-    "host",
+    "host:bundle",
     "inspector_overlay",
     "issues",
     "protocol_client",

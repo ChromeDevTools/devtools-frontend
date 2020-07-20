@@ -612,6 +612,10 @@ export class ResourceTreeFrame {
     this._url = '';
     this._crossTargetParentFrameId = null;
 
+    /**
+     * @type {!Protocol.Page.AdFrameType}
+     */
+    this._adFrameType = Protocol.Page.AdFrameType.None;
     if (payload) {
       this._loaderId = payload.loaderId;
       this._name = payload.name;
@@ -619,6 +623,7 @@ export class ResourceTreeFrame {
       this._securityOrigin = payload.securityOrigin;
       this._mimeType = payload.mimeType;
       this._unreachableUrl = payload.unreachableUrl || '';
+      this._adFrameType = payload.adFrameType || Protocol.Page.AdFrameType.None;
     }
 
     this._creationStackTrace = creationStackTrace;
@@ -649,6 +654,7 @@ export class ResourceTreeFrame {
     this._securityOrigin = framePayload.securityOrigin;
     this._mimeType = framePayload.mimeType;
     this._unreachableUrl = framePayload.unreachableUrl || '';
+    this._adFrameType = framePayload.adFrameType || Protocol.Page.AdFrameType.None;
     const mainResource = this._resourcesMap[this._url];
     this._resourcesMap = {};
     this._removeChildFrames();
@@ -704,6 +710,13 @@ export class ResourceTreeFrame {
    */
   get loaderId() {
     return this._loaderId;
+  }
+
+  /**
+   * @return {!Protocol.Page.AdFrameType}
+   */
+  adFrameType() {
+    return this._adFrameType;
   }
 
   /**

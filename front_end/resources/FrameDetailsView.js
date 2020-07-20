@@ -32,6 +32,7 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
         Common.Revealer.reveal(this._ownerDomNode);
       }
     });
+    this._adStatus = this._generalSection.appendField(ls`Ad Status`);
     this.update();
   }
 
@@ -57,8 +58,27 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     }
     this._originFieldValue.textContent = this._frame.securityOrigin;
     this._ownerDomNode = await this._frame.getOwnerDOMNodeOrDocument();
+    this._updateAdStatus();
     if (this._ownerDomNode) {
       this._ownerElementFieldValue.textContent = `<${this._ownerDomNode.nodeName().toLocaleLowerCase()}>`;
+    }
+  }
+
+  _updateAdStatus() {
+    switch (this._frame.adFrameType()) {
+      case Protocol.Page.AdFrameType.Root:
+        this._generalSection.setFieldVisible(ls`Ad Status`, true);
+        this._adStatus.textContent = ls`root`;
+        this._adStatus.title = ls`This frame has been identified as the root frame of an ad`;
+        break;
+      case Protocol.Page.AdFrameType.Child:
+        this._generalSection.setFieldVisible(ls`Ad Status`, true);
+        this._adStatus.textContent = ls`child`;
+        this._adStatus.title = ls`This frame has been identified as the a child frame of an ad`;
+        break;
+      default:
+        this._generalSection.setFieldVisible(ls`Ad Status`, false);
+        break;
     }
   }
 }

@@ -42,6 +42,7 @@ import * as Workspace from '../workspace/workspace.js';
 
 import {ExtensionButton, ExtensionPanel, ExtensionSidebarPane} from './ExtensionPanel.js';
 import {ExtensionTraceProvider, TracingSession} from './ExtensionTraceProvider.js';  // eslint-disable-line no-unused-vars
+import {LanguageExtensionEndpoint} from './LanguageExtensionEndpoint.js';
 
 const extensionOriginSymbol = Symbol('extensionOrigin');
 
@@ -107,6 +108,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     this._registerHandler(commands.OpenResource, this._onOpenResource.bind(this));
     this._registerHandler(commands.Unsubscribe, this._onUnsubscribe.bind(this));
     this._registerHandler(commands.UpdateButton, this._onUpdateButton.bind(this));
+    this._registerHandler(commands.RegisterLanguageExtensionPlugin, this._registerLanguageExtensionEndpoint.bind(this));
     window.addEventListener('message', this._onWindowMessage.bind(this), false);  // Only for main window.
 
     /** @suppress {checkTypes} */
@@ -119,6 +121,9 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.SetInspectedTabId, this._setInspectedTabId, this);
 
+    this._languageExtensionRequests = new Map();
+    /** @type {!Array<!LanguageExtensionEndpoint>} */
+    this._languageExtensionEndpoints = [];
     this._initExtensions();
   }
 
@@ -162,6 +167,19 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
    */
   notifyButtonClicked(identifier) {
     this._postNotification(Extensions.extensionAPI.Events.ButtonClicked + identifier);
+  }
+
+  _registerLanguageExtensionEndpoint(message, shared_port) {
+    const {pluginName, port, supportedScriptTypes: {language, symbol_types}} = message;
+    const symbol_types_array = /** @type !Array<string> */
+        (Array.isArray(symbol_types) && symbol_types.every(e => typeof e === 'string') ? symbol_types : []);
+    const extension = new LanguageExtensionEndpoint(pluginName, {language, symbol_types: symbol_types_array}, port);
+    this._languageExtensionEndpoints.push(extension);
+    this.dispatchEventToListeners(Events.LanguageExtensionEndpointAdded, extension);
+  }
+
+  get languageExtensionEndpoints() {
+    return this._languageExtensionEndpoints;
   }
 
   _inspectedURLChanged(event) {
@@ -768,6 +786,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
       }
       const iframe = createElement('iframe');
       iframe.src = startPage;
+      iframe.dataset.devtoolsExtension = extensionInfo.name;
       iframe.style.display = 'none';
       document.body.appendChild(iframe);  // Only for main window.
     } catch (e) {
@@ -1045,7 +1064,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
 /** @enum {symbol} */
 export const Events = {
   SidebarPaneAdded: Symbol('SidebarPaneAdded'),
-  TraceProviderAdded: Symbol('TraceProviderAdded')
+  TraceProviderAdded: Symbol('TraceProviderAdded'),
+  LanguageExtensionEndpointAdded: Symbol('LanguageExtensionEndpointAdded')
 };
 
 /**

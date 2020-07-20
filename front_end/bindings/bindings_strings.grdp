@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_0ae4e547120fb54e7963de03617bb164" desc="Error message that is displayed on errors in language plugins">
+      Error in debugger language plugin: <ph name="ERROR_MESSAGE">$1s<ex>message</ex></ph> (<ph name="ERROR_CODE">$2s<ex>code</ex></ph>)
+  </message>
   <message name="IDS_DEVTOOLS_412dac8227bbaf752fecaad8826f20e6" desc="Text in Resource Script Mapping">
     LiveEdit failed: <ph name="ERROR">$1s<ex>warning</ex></ph>
   </message>

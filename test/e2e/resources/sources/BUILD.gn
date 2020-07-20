@@ -11,6 +11,7 @@ copy_to_gen("sources") {
     "dynamic-loading-javascript.html",
     "dynamic.css",
     "inline-script.html",
+    "language_extensions.html",
     "minified-sourcecode.html",
     "minified-sourcecode.js",
     "multi-workers-sourcemap.html",

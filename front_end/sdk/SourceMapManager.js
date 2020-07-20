@@ -4,6 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
+import * as Root from '../root/root.js';
 
 import {FrameAssociated} from './FrameAssociated.js';  // eslint-disable-line no-unused-vars
 import {Script} from './Script.js';
@@ -175,10 +176,14 @@ export class SourceMapManager extends Common.ObjectWrapper.ObjectWrapper {
       return;
     }
     if (!this._sourceMapIdToLoadingClients.has(sourceMapId)) {
-      /** @type {!Promise<!SourceMap>} */
+      /** @type {!Promise<?SourceMap>} */
       let sourceMapPromise;
       if (sourceMapURL === WasmSourceMap.FAKE_URL && client instanceof Script) {
-        sourceMapPromise = WasmSourceMap.load(client, sourceURL);
+        if (Root.Runtime.experiments.isEnabled('wasmDWARFDebugging')) {
+          sourceMapPromise = Promise.resolve(null);
+        } else {
+          sourceMapPromise = WasmSourceMap.load(client, sourceURL);
+        }
       } else {
         sourceMapPromise = TextSourceMap.load(sourceMapURL, sourceURL, client.frameId);
       }

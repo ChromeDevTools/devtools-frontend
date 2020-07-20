@@ -452,6 +452,13 @@ export class DebuggerModel extends SDKModel {
     for (const scriptWithSourceMap of this._sourceMapIdToScript.values()) {
       this._sourceMapManager.detachSourceMap(scriptWithSourceMap);
     }
+    // @ts-ignore
+    const pluginManager = Bindings.DebuggerWorkspaceBinding.instance().getLanguagePluginManager(this);
+    if (pluginManager) {
+      for (const script of this._scripts.values()) {
+        pluginManager.removeScript(script);
+      }
+    }
     this._sourceMapIdToScript.clear();
 
     this._scripts.clear();
@@ -895,6 +902,15 @@ export class DebuggerModel extends SDKModel {
       throw new Error('No call frame selected');
     }
     return callFrame.evaluate(options);
+  }
+
+  /**
+   * @param {string} callFrameId
+   * @param {string} evaluator
+   * @return {!Promise<!Protocol.Debugger.ExecuteWasmEvaluatorResponse>}
+   */
+  executeWasmEvaluator(callFrameId, evaluator) {
+    return this._agent.invoke_executeWasmEvaluator({callFrameId, evaluator});
   }
 
   /**

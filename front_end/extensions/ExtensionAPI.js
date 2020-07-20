@@ -80,7 +80,18 @@ export function defineCommonExtensionSymbols(apiPrivate) {
     SetSidebarPage: 'setSidebarPage',
     ShowPanel: 'showPanel',
     Unsubscribe: 'unsubscribe',
-    UpdateButton: 'updateButton'
+    UpdateButton: 'updateButton',
+    RegisterLanguageExtensionPlugin: 'registerLanguageExtensionPlugin'
+  };
+
+  /** @enum {string} */
+  apiPrivate.LanguageExtensionPluginCommands = {
+    AddRawModule: 'addRawModule',
+    RemoveRawModule: 'removeRawModule',
+    SourceLocationToRawLocation: 'sourceLocationToRawLocation',
+    RawLocationToSourceLocation: 'rawLocationToSourceLocation',
+    ListVariablesInScope: 'listVariablesInScope',
+    EvaluateVariable: 'evaluateVariable'
   };
 }
 
@@ -107,6 +118,7 @@ self.injectedExtensionAPI = function(
   defineCommonExtensionSymbols(apiPrivate);
 
   const commands = apiPrivate.Commands;
+  const languageExtensionPluginCommands = apiPrivate.LanguageExtensionPluginCommands;
   const events = apiPrivate.Events;
   let userAction = false;
 
@@ -178,6 +190,7 @@ self.injectedExtensionAPI = function(
     this.panels = new Panels();
     this.network = new Network();
     this.timeline = new Timeline();
+    this.languageServices = new LanguageServicesAPI();
     defineDeprecatedProperty(this, 'webInspector', 'resources', 'network');
   }
 
@@ -342,6 +355,61 @@ self.injectedExtensionAPI = function(
     __proto__: ExtensionViewImpl.prototype
   };
 
+  /**
+   * @constructor
+   */
+  function LanguageServicesAPIImpl() {
+    this._plugins = new Map();
+  }
+
+  LanguageServicesAPIImpl.prototype = {
+    /**
+     * @param {*} plugin The language plugin instance to register.
+     * @param {string} pluginName The plugin name
+     * @param {{language: string, symbol_types: !Array<string>}} supportedScriptTypes Script language and debug symbol types supported by this extension.
+     */
+    registerLanguageExtensionPlugin: function(plugin, pluginName, supportedScriptTypes) {
+      if (this._plugins.has(plugin)) {
+        throw new Error('Tried to register a plugin twice');
+      }
+      const channel = new MessageChannel();
+      const port = channel.port1;
+      this._plugins.set(plugin, port);
+      port.onmessage = ({data: {requestId, method, parameters}}) => {
+        dispatchMethodCall(method, parameters)
+            .then(result => port.postMessage({requestId, result}))
+            .catch(error => port.postMessage({requestId, error: {message: error.message}}));
+      };
+
+      /**
+       * @param {string} method
+       * @param {*} parameters
+       * @return {!Promise<*>}
+       */
+      function dispatchMethodCall(method, parameters) {
+        switch (method) {
+          case languageExtensionPluginCommands.AddRawModule:
+            return plugin.addRawModule(parameters.rawModuleId, parameters.symbolsURL, parameters.rawModule);
+          case languageExtensionPluginCommands.RemoveRawModule:
+            return plugin.removeRawModule(parameters.rawModuleId);
+          case languageExtensionPluginCommands.SourceLocationToRawLocation:
+            return plugin.sourceLocationToRawLocation(parameters.sourceLocation);
+          case languageExtensionPluginCommands.RawLocationToSourceLocation:
+            return plugin.rawLocationToSourceLocation(parameters.rawLocation);
+          case languageExtensionPluginCommands.ListVariablesInScope:
+            return plugin.listVariablesInScope(parameters.rawLocation);
+          case languageExtensionPluginCommands.EvaluateVariable:
+            return plugin.evaluateVariable(parameters.name, parameters.location);
+        }
+        throw new Error(`Unknown language plugin method ${method}`);
+      }
+
+      extensionServer.sendRequest(
+          {command: commands.RegisterLanguageExtensionPlugin, pluginName, port: channel.port2, supportedScriptTypes},
+          undefined, [channel.port2]);
+    }
+  };
+
   function declareInterfaceClass(implConstructor) {
     return function() {
       const impl = {__proto__: implConstructor.prototype};
@@ -367,6 +435,7 @@ self.injectedExtensionAPI = function(
     return typeof lastArgument === 'function' ? lastArgument : undefined;
   }
 
+  const LanguageServicesAPI = declareInterfaceClass(LanguageServicesAPIImpl);
   const Button = declareInterfaceClass(ButtonImpl);
   const EventSink = declareInterfaceClass(EventSinkImpl);
   const ExtensionPanel = declareInterfaceClass(ExtensionPanelImpl);
@@ -731,12 +800,13 @@ self.injectedExtensionAPI = function(
     /**
      * @param {!Object} message
      * @param {function()=} callback
+     * @param {!Array<*>=} transfers
      */
-    sendRequest: function(message, callback) {
+    sendRequest: function(message, callback, transfers) {
       if (typeof callback === 'function') {
         message.requestId = this._registerCallback(callback);
       }
-      this._port.postMessage(message);
+      this._port.postMessage(message, transfers);
     },
 
     /**
@@ -824,6 +894,7 @@ self.injectedExtensionAPI = function(
   if (extensionInfo.exposeExperimentalAPIs !== false) {
     chrome.experimental = chrome.experimental || {};
     chrome.experimental.devtools = chrome.experimental.devtools || {};
+    chrome.experimental.devtools.languageServices = new LanguageServicesAPI();
 
     const properties = Object.getOwnPropertyNames(coreAPI);
     for (let i = 0; i < properties.length; ++i) {
@@ -850,7 +921,8 @@ self.injectedExtensionAPI = function(
  * @return {string}
  */
 self.buildExtensionAPIInjectedScript = function(extensionInfo, inspectedTabId, themeName, keysToForward, testHook) {
-  const argumentsJSON = [extensionInfo, inspectedTabId || null, themeName, keysToForward].map(_ => JSON.stringify(_)).join(',');
+  const argumentsJSON =
+      [extensionInfo, inspectedTabId || null, themeName, keysToForward].map(_ => JSON.stringify(_)).join(',');
   if (!testHook) {
     testHook = () => {};
   }

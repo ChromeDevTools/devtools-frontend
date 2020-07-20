@@ -1,0 +1,93 @@
+<!--
+ * Copyright 2020 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+-->
+
+<script language="javascript">
+class ExtensionPluginBase {
+  constructor(impl) {
+    this._impl = impl;
+  }
+
+  dispose() {
+  }
+
+  /*async */ removeRawModule(rawModuleId) {
+    if (this._impl.removeRawModule) {
+      return this._impl.removeRawModule(rawModule);
+    }
+    return Promise.resolve();
+  }
+
+  /** Notify the plugin about a new script
+   * @param {string} rawModuleId
+   * @param {string} symbols - URL of a file providing the debug symbols for this module
+   * @param {!{url: string}} rawModule
+   * @return {!Promise<!Array<string>>} - An array of absolute or relative URLs for the source files for the raw module
+   */
+  /*async */ addRawModule(rawModuleId, symbols, rawModule) {
+    if (this._impl.addRawModule) {
+      return this._impl.addRawModule(rawModule, symbols, rawModule);
+    }
+    return Promise.resolve([]);
+  }
+
+  /** Find locations in raw modules from a location in a source file
+   * @param {!SourceLocation} sourceLocation
+   * @return {!Promise<!Array<!*>>}
+   */
+  /*async */ sourceLocationToRawLocation(sourceLocation) {
+    if (this._impl.sourceLocationToRawLocation) {
+      return this._impl.sourceLocationToRawLocation(sourceLocation);
+    }
+    return Promise.resolve([]);
+  }
+
+  /** Find locations in source files from a location in a raw module
+   * @param {!RawLocation} rawLocation
+   * @return {!Promise<!Array<!*>>}
+   */
+  /*async */ rawLocationToSourceLocation(rawLocation) {
+    if (this._impl.rawLocationToSourceLocation) {
+      return this._impl.rawLocationToSourceLocation(rawLocation);
+    }
+    return Promise.resolve([]);
+  }
+
+  /** List all variables in lexical scope at a given location in a raw module
+   * @param {!RawLocation} rawLocation
+   * @return {!Promise<!Array<!*>>}
+   */
+  /*async*/ listVariablesInScope(rawLocation) {
+    if (this._impl.listVariablesInScope) {
+      return this._impl.listVariablesInScope(rawLocation);
+    }
+    return Promise.resolve([]);
+  }
+
+  /** Evaluate the content of a variable in a given lexical scope
+   * @param {string} name
+   * @param {!RawLocation} location
+   * @return {!Promise<?*>}
+   */
+  /*async*/ evaluateVariable(name, location) {
+    if (this._impl.evaluateVariable) {
+      return this._impl.evaluateVariable(name, location);
+    }
+    return Promise.resolve(null);
+  }
+}
+
+/**
+ * @param {!{languageServices: *}} extensionAPI
+ * @param {*} pluginImpl
+ * @param {string} name
+ * @param {!{language: string, symbol_types: !Array<string>}} supportedScriptTypes
+ */
+function RegisterExtension(extensionAPI, pluginImpl, name, supportedScriptTypes) {
+  extensionAPI.languageServices.registerLanguageExtensionPlugin(
+      new ExtensionPluginBase(pluginImpl), name, supportedScriptTypes);
+}
+
+</script>

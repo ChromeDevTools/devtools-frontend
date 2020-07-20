@@ -91,6 +91,7 @@ all_devtools_modules = [
   "extensions/ExtensionServer.js",
   "extensions/ExtensionTraceProvider.js",
   "extensions/ExtensionView.js",
+  "extensions/LanguageExtensionEndpoint.js",
   "formatter/FormatterWorkerPool.js",
   "formatter/ScriptFormatter.js",
   "formatter/SourceFormatter.js",

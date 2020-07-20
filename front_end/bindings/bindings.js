@@ -7,6 +7,7 @@ import * as BreakpointManager from './BreakpointManager.js';
 import * as CompilerScriptMapping from './CompilerScriptMapping.js';
 import * as ContentProviderBasedProject from './ContentProviderBasedProject.js';
 import * as CSSWorkspaceBinding from './CSSWorkspaceBinding.js';
+import * as DebuggerLanguagePlugins from './DebuggerLanguagePlugins.js';
 import * as DebuggerWorkspaceBinding from './DebuggerWorkspaceBinding.js';
 import * as DefaultScriptMapping from './DefaultScriptMapping.js';
 import * as FileUtils from './FileUtils.js';
@@ -26,6 +27,7 @@ export {
   CompilerScriptMapping,
   ContentProviderBasedProject,
   CSSWorkspaceBinding,
+  DebuggerLanguagePlugins,
   DebuggerWorkspaceBinding,
   DefaultScriptMapping,
   FileUtils,

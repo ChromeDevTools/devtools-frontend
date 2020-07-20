@@ -261,6 +261,26 @@
     },
     {
       "type": "setting",
+      "category": "Grid",
+      "title": "Grid Track Sizes",
+      "experiment": "cssGridFeatures",
+      "settingName": "showGridTrackSizes",
+      "settingType": "boolean",
+      "storageType": "session",
+      "options": [
+        {
+          "value": true,
+          "title": "Show grid track sizes"
+        },
+        {
+          "value": false,
+          "title": "Do not show grid track sizes"
+        }
+      ],
+      "defaultValue": false
+    },
+    {
+      "type": "setting",
       "category": "Rendering",
       "settingName": "showPaintRects",
       "settingType": "boolean",

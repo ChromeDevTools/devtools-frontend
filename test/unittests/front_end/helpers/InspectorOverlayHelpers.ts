@@ -13,11 +13,14 @@ const GRID_LABEL_CONTAINER_ID = 'grid-label-container';
 const DEFAULT_GRID_LABEL_LAYER_ID = 'grid-labels';
 const GRID_LINE_NUMBER_LABEL_CONTAINER_CLASS = 'line-numbers';
 const GRID_LINE_AREA_LABEL_CONTAINER_CLASS = 'area-names';
+const GRID_TRACK_SIZES_LABEL_CONTAINER_CLASS = 'track-sizes';
 
 // Make sure typescript knows about the custom properties that are set on the window object.
 declare global {
   interface Window {
     gridPageMargin: number;
+    canvasWidth: number;
+    canvasHeight: number,
   }
 }
 
@@ -42,6 +45,8 @@ export function initFrame() {
   });
 
   window.gridPageMargin = 20;
+  window.canvasHeight = 600;
+  window.canvasWidth = 800;
 }
 
 /**
@@ -71,6 +76,7 @@ export function createGridLabelContainer(layerId?: number) {
   layerEl.id = layerId ? `grid-${layerId}-labels` : DEFAULT_GRID_LABEL_LAYER_ID;
   layerEl.createChild('div', GRID_LINE_NUMBER_LABEL_CONTAINER_CLASS);
   layerEl.createChild('div', GRID_LINE_AREA_LABEL_CONTAINER_CLASS);
+  layerEl.createChild('div', GRID_TRACK_SIZES_LABEL_CONTAINER_CLASS);
 
   renderElementIntoDOM(el, {allowMultipleChildren: true});
 }
@@ -97,6 +103,15 @@ export function getGridLineNumberLabelContainer(layerId?: number): HTMLElement {
   return el;
 }
 
+export function getGridTrackSizesLabelContainer(layerId?: number): HTMLElement {
+  const id = layerId ? `grid-${layerId}-labels` : DEFAULT_GRID_LABEL_LAYER_ID;
+  const el =
+      document.querySelector(
+          `#${GRID_LABEL_CONTAINER_ID} #${CSS.escape(id)} .${GRID_TRACK_SIZES_LABEL_CONTAINER_CLASS}`) as HTMLElement;
+  assertNotNull(el);
+  return el;
+}
+
 export function getGridAreaNameLabelContainer(layerId?: number): HTMLElement {
   const id = layerId ? `grid-${layerId}-labels` : DEFAULT_GRID_LABEL_LAYER_ID;
   const el =
@@ -110,6 +125,13 @@ interface GridHighlightConfig {
   showPositiveLineNumbers?: boolean;
   showNegativeLineNumbers?: boolean;
 }
+
+interface TrackSize {
+  computedSize: number;
+  x: number;
+  y: number;
+}
+
 interface HighlightConfig {
   gridHighlightConfig: GridHighlightConfig;
   positiveRowLineNumberOffsets?: number[];
@@ -117,6 +139,9 @@ interface HighlightConfig {
   positiveColumnLineNumberOffsets?: number[];
   negativeColumnLineNumberOffsets?: number[];
   layerId?: number;
+  rowTrackSizes?: TrackSize[];
+  columnTrackSizes?: TrackSize[];
+  rotationAngle?: number;
 }
 
 interface ExpectedLayerLabel {

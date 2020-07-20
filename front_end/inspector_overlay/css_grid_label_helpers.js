@@ -65,7 +65,10 @@ let TracksOffsetData;  // eslint-disable-line no-unused-vars
 /** @typedef {!{rows: TracksOffsetData, columns: TracksOffsetData, bounds: Bounds}} */
 let GridOffsetNormalizedData;  // eslint-disable-line no-unused-vars
 
-/** @typedef {!{positiveRowLineNumberOffsets?: number[], negativeRowLineNumberOffsets?: number[], positiveColumnLineNumberOffsets?: number[], negativeColumnLineNumberOffsets?: number[]}} */
+/** @typedef {!{computedSize: number, x: number, y: number}} */
+let TrackSize;  // eslint-disable-line no-unused-vars
+
+/** @typedef {!{rotationAngle?: number, columnTrackSizes?: TrackSize[], rowTrackSizes?: TrackSize[], positiveRowLineNumberOffsets?: number[], negativeRowLineNumberOffsets?: number[], positiveColumnLineNumberOffsets?: number[], negativeColumnLineNumberOffsets?: number[]}} */
 let GridHighlightConfig;  // eslint-disable-line no-unused-vars
 
 /**
@@ -92,12 +95,22 @@ export function drawGridLabels(config, gridBounds, areaBounds) {
   // Add the containers for the line and area to the node's layer
   const lineNumberContainer = labelContainerForNode.createChild('div', 'line-numbers');
   const areaNameContainer = labelContainerForNode.createChild('div', 'area-names');
+  const trackSizesContainer = labelContainerForNode.createChild('div', 'track-sizes');
 
   // Draw line numbers.
   drawGridNumbers(lineNumberContainer, config, gridBounds);
 
   // Draw area names.
   drawGridAreaNames(areaNameContainer, areaBounds);
+
+  if (config.columnTrackSizes) {
+    // Draw column sizes.
+    drawGridTrackSizes(trackSizesContainer, config.rotationAngle, config.columnTrackSizes, 'column');
+  }
+  if (config.rowTrackSizes) {
+    // Draw row sizes.
+    drawGridTrackSizes(trackSizesContainer, config.rotationAngle, config.rowTrackSizes, 'row');
+  }
 }
 
 /**
@@ -232,6 +245,28 @@ export function drawGridNumbers(container, config, bounds) {
 }
 
 /**
+ * Places the grid track size labels on the overlay.
+ *
+ * @param {HTMLElement} container
+ * @param {number} rotationAngle
+ * @param {!Array<TrackSize>} trackSizes
+ * @param {string} direction
+ */
+export function drawGridTrackSizes(container, rotationAngle, trackSizes, direction) {
+  for (const {x, y, computedSize} of trackSizes) {
+    const size = computedSize.toFixed(2);
+    const element = _createLabelElement(container, (size.endsWith('.00') ? size.slice(0, -3) : size) + 'px');
+    const labelWidth = _getAdjustedLabelWidth(element);
+    const labelHeight = element.getBoundingClientRect().height;
+    const arrowType = direction === 'column' ? GridArrowTypes.bottomMid : GridArrowTypes.rightMid;
+    const {contentLeft, contentTop} = _getLabelPositionByArrowType(arrowType, x, y, labelWidth, labelHeight);
+    element.classList.add(arrowType);
+    element.style.left = contentLeft + 'px';
+    element.style.top = contentTop + 'px';
+  }
+}
+
+/**
  * Places the grid area name labels on the overlay.
  *
  * @param {HTMLElement} container
@@ -270,8 +305,8 @@ function _createLabelElement(container, textContent) {
 function _placePositiveRowLabel(element, offset, data) {
   const x = data.bounds.minX;
   const y = data.bounds.minY + offset;
-  const isAtSharedStartCorner = offset === 0 && data.columns.positive.hasFirst;
-  const isAtSharedEndCorner = offset === data.bounds.height && data.columns.negative.hasFirst;
+  const isAtSharedStartCorner = offset === 0 && data.columns && data.columns.positive.hasFirst;
+  const isAtSharedEndCorner = offset === data.bounds.height && data.columns && data.columns.negative.hasFirst;
   const isTooCloseToViewportStart = y < gridPageMargin;
   const isTooCloseToViewportEnd = canvasHeight - y < gridPageMargin;
   const flipIn = x < gridPageMargin;
@@ -301,8 +336,8 @@ function _placePositiveRowLabel(element, offset, data) {
 function _placeNegativeRowLabel(element, offset, data) {
   const x = data.bounds.maxX;
   const y = data.bounds.minY + offset;
-  const isAtSharedStartCorner = offset === 0 && data.columns.positive.hasLast;
-  const isAtSharedEndCorner = offset === data.bounds.height && data.columns.negative.hasLast;
+  const isAtSharedStartCorner = offset === 0 && data.columns && data.columns.positive.hasLast;
+  const isAtSharedEndCorner = offset === data.bounds.height && data.columns && data.columns.negative.hasLast;
   const isTooCloseToViewportStart = y < gridPageMargin;
   const isTooCloseToViewportEnd = canvasHeight - y < gridPageMargin;
   const flipIn = canvasWidth - x < gridPageMargin;
@@ -332,8 +367,8 @@ function _placeNegativeRowLabel(element, offset, data) {
 function _placePositiveColumnLabel(element, offset, data) {
   const x = data.bounds.minX + offset;
   const y = data.bounds.minY;
-  const isAtSharedStartCorner = offset === 0 && data.rows.positive.hasFirst;
-  const isAtSharedEndCorner = offset === data.bounds.width && data.rows.negative.hasFirst;
+  const isAtSharedStartCorner = offset === 0 && data.rows && data.rows.positive.hasFirst;
+  const isAtSharedEndCorner = offset === data.bounds.width && data.rows && data.rows.negative.hasFirst;
   const isTooCloseToViewportStart = x < gridPageMargin;
   const isTooCloseToViewportEnd = canvasWidth - x < gridPageMargin;
   const flipIn = y < gridPageMargin;
@@ -363,8 +398,8 @@ function _placePositiveColumnLabel(element, offset, data) {
 function _placeNegativeColumnLabel(element, offset, data) {
   const x = data.bounds.minX + offset;
   const y = data.bounds.maxY;
-  const isAtSharedStartCorner = offset === 0 && data.rows.positive.hasLast;
-  const isAtSharedEndCorner = offset === data.bounds.width && data.rows.negative.hasLast;
+  const isAtSharedStartCorner = offset === 0 && data.rows && data.rows.positive.hasLast;
+  const isAtSharedEndCorner = offset === data.bounds.width && data.rows && data.rows.negative.hasLast;
   const isTooCloseToViewportStart = x < gridPageMargin;
   const isTooCloseToViewportEnd = canvasWidth - x < gridPageMargin;
   const flipIn = canvasHeight - y < gridPageMargin;

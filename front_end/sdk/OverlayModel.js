@@ -69,6 +69,8 @@ export class OverlayModel extends SDKModel {
     this._showGridGapsSetting = null;
     /** @type {?Common.Settings.Setting<*>} */
     this._showGridAreasSetting = null;
+    /** @type {?Common.Settings.Setting<*>} */
+    this._showGridTrackSizesSetting = null;
     if (this._gridFeaturesExperimentEnabled) {
       this._registerGridSettingsTelemetry();
     }
@@ -204,6 +206,7 @@ export class OverlayModel extends SDKModel {
     this._showGridLineNumbersSetting = Common.Settings.Settings.instance().moduleSetting('showGridLineNumbers');
     this._showGridGapsSetting = Common.Settings.Settings.instance().moduleSetting('showGridGaps');
     this._showGridAreasSetting = Common.Settings.Settings.instance().moduleSetting('showGridAreas');
+    this._showGridTrackSizesSetting = Common.Settings.Settings.instance().moduleSetting('showGridTrackSizes');
 
     this._showGridBorderSetting.addChangeListener(() => this._recordGridSettingChange(this._showGridBorderSetting));
     this._showGridLinesSetting.addChangeListener(() => this._recordGridSettingChange(this._showGridLinesSetting));
@@ -211,6 +214,8 @@ export class OverlayModel extends SDKModel {
         () => this._recordGridSettingChange(this._showGridLineNumbersSetting));
     this._showGridGapsSetting.addChangeListener(() => this._recordGridSettingChange(this._showGridGapsSetting));
     this._showGridAreasSetting.addChangeListener(() => this._recordGridSettingChange(this._showGridAreasSetting));
+    this._showGridTrackSizesSetting.addChangeListener(
+        () => this._recordGridSettingChange(this._showGridTrackSizesSetting));
   }
 
   /**
@@ -440,7 +445,8 @@ export class OverlayModel extends SDKModel {
       showPositiveLineNumbers,
       showNegativeLineNumbers,
       showAreaNames: /** @type {boolean} */ (this._showGridAreasSetting.get()),
-      areaBorderColor: Common.Color.PageHighlight.GridAreaBorder.toProtocolRGBA()
+      showTrackSizes: /** @type {boolean} */ (this._showGridTrackSizesSetting.get()),
+      areaBorderColor: Common.Color.PageHighlight.GridAreaBorder.toProtocolRGBA(),
     };
   }
 

@@ -55,7 +55,6 @@ export const gridStyle = `
   box-sizing: border-box;
   z-index: 1;
   background-clip: padding-box;
-  will-change: transform;
   pointer-events: none;
   text-align: center;
   display: flex;
@@ -63,6 +62,7 @@ export const gridStyle = `
   align-items: center;
 }
 
+.track-sizes .grid-label-content,
 .line-numbers .grid-label-content {
   border: 1px solid white;
   --inner-corner-avoid-distance: 15px;
@@ -88,6 +88,7 @@ export const gridStyle = `
   transform: translateX(calc(var(--inner-corner-avoid-distance) * -1));
 }
 
+.track-sizes .grid-label-content::before,
 .line-numbers .grid-label-content::before {
   position: absolute;
   z-index: 1;

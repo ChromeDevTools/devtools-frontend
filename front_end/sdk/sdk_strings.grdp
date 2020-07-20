@@ -180,6 +180,9 @@
     Solve this problem by carefully checking that all the blocked resources listed below are trustworthy and include their
      source in the Content Security Policy of your website.
   </message>
+  <message name="IDS_DEVTOOLS_3654795479df876aba56836576570751" desc="Title for CSS Grid tooling option">
+    Grid Track Sizes
+  </message>
   <message name="IDS_DEVTOOLS_3767b041971f23f04804e75dbf475c46" desc="Title for CSS Grid tooling option">
     Show solid grid container border
   </message>
@@ -223,8 +226,14 @@
   <message name="IDS_DEVTOOLS_61326117ed4a9ddf3f754e71e119e5b3" desc="The kind of resolution for a mixed content issue">
     blocked
   </message>
+  <message name="IDS_DEVTOOLS_6e434cf220a5334cfb7c8b8944686adf" desc="Title for CSS Grid tooling option">
+    Show grid track sizes
+  </message>
   <message name="IDS_DEVTOOLS_9485d0acccd869b51a96f2b35fd0b620" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Do not emulate CSS prefers-reduced-data
+  </message>
+  <message name="IDS_DEVTOOLS_9915b8ef9885af8c4381daed280b5248" desc="Title for CSS Grid tooling option">
+    Do not show grid track sizes
   </message>
   <message name="IDS_DEVTOOLS_b40b37431c71726db1bd4e1bc44cbfac" desc="Error message for canceled source map loads">
     Load canceled due to reload of inspected page

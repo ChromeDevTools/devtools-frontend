@@ -4,5 +4,5 @@ ts_library("bindings") {
   testonly = true
   sources = [ "LiveLocation_test.ts" ]
 
-  deps = [ "../../../../front_end/bindings" ]
+  deps = [ "../../../../front_end/bindings:bundle" ]
 }

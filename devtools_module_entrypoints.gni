@@ -10,7 +10,6 @@ devtools_module_entrypoints = [
   "accessibility/accessibility-legacy.js",
   "animation/animation.js",
   "animation/animation-legacy.js",
-  "bindings/bindings.js",
   "bindings/bindings-legacy.js",
   "browser_debugger/browser_debugger.js",
   "browser_debugger/browser_debugger-legacy.js",
@@ -163,6 +162,7 @@ foreach(module, devtools_module_entrypoints) {
 
 generated_typescript_entrypoints = [
   "$resources_out_dir/accessibility/accessibility.js",
+  "$resources_out_dir/bindings/bindings.js",
   "$resources_out_dir/common/common.js",
   "$resources_out_dir/cm_headless/cm_headless.js",
   "$resources_out_dir/formatter_worker/formatter_worker.js",

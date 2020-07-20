@@ -26,5 +26,6 @@
     "PresentationConsoleMessageHelper.js",
     "ResourceUtils.js",
     "TempFile.js"
-  ]
+  ],
+  "skip_rollup": true
 }

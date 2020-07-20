@@ -160,14 +160,14 @@ export class UserMetrics {
   /**
    * @param {string} gridSettingId
    */
-  gridSettingChanged(gridSettingId) {
-    const size = Object.keys(GridSettings).length + 1;
-    const gridSetting = GridSettings[gridSettingId];
-    if (!gridSetting) {
+  cssGridSettings(gridSettingId) {
+    const size = Object.keys(CSSGridSettings).length + 1;
+    const gridSetting = CSSGridSettings[gridSettingId];
+    if (gridSetting === undefined) {
       return;
     }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.GridSettingChanged, gridSetting, size);
-    Common.EventTarget.fireEvent(EnumeratedHistogram.GridSettingChanged, {value: gridSetting});
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.CSSGridSettings, gridSetting, size);
+    Common.EventTarget.fireEvent(EnumeratedHistogram.CSSGridSettings, {value: gridSetting});
   }
 }
 
@@ -385,7 +385,7 @@ export const DualScreenDeviceEmulated = {
 };
 
 /** @type {!Object<string, number>} */
-export const GridSettings = {
+export const CSSGridSettings = {
   'showGridBorder.none': 0,
   'showGridBorder.dashed': 1,
   'showGridBorder.solid': 2,
@@ -403,5 +403,8 @@ export const GridSettings = {
   'showGridGaps.column-gaps': 14,
   'showGridGaps.both': 15,
   'showGridAreas.false': 16,
-  'showGridAreas.true': 17
+  'showGridAreas.true': 17,
+  'showGridLineNumbers.names': 18,
+  'showGridTrackSizes.false': 19,
+  'showGridTrackSizes.true': 20,
 };

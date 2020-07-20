@@ -368,7 +368,7 @@
     IssuesPanelOpenedFrom: 'DevTools.IssuesPanelOpenedFrom',
     KeybindSetSettingChanged: 'DevTools.KeybindSetSettingChanged',
     DualScreenDeviceEmulated: 'DevTools.DualScreenDeviceEmulated',
-    GridSettingChanged: 'DevTools.GridSettingChanged',
+    CSSGridSettings: 'DevTools.CSSGridSettings',
   };
 
   /**

@@ -246,7 +246,6 @@
       "experiment": "cssGridFeatures",
       "settingName": "showGridAreas",
       "settingType": "boolean",
-      "storageType": "session",
       "options": [
         {
           "value": true,
@@ -266,7 +265,6 @@
       "experiment": "cssGridFeatures",
       "settingName": "showGridTrackSizes",
       "settingType": "boolean",
-      "storageType": "session",
       "options": [
         {
           "value": true,

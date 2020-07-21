@@ -24,9 +24,7 @@ devtools_module("formatter_worker") {
     "../platform:bundle",
     "../text_utils",
     "../third_party/acorn:bundle",
-    "../third_party/acorn-logical-assignment",
     "../third_party/acorn-loose",
-    "../third_party/acorn-numeric-separator",
     "../third_party/codemirror",
   ]
 

@@ -15,6 +15,9 @@
   <message name="IDS_DEVTOOLS_368cc7b17925cc0f9c4b5a90db1e68c1" desc="The video or audio stream, much like on an old cd.">
     track
   </message>
+  <message name="IDS_DEVTOOLS_6e3e66da4fb111d1cf68b4b1e4730261" desc="A right-click context menu entry which when clicked causes the menu entry for that player to be removed.">
+    Hide player
+  </message>
   <message name="IDS_DEVTOOLS_e6818a215084646ac80a1a07561ecf35" desc="A device that converts media files into playable streams of audio or video.">
     Decoder
   </message>

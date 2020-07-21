@@ -265,4 +265,14 @@ export class MainView extends UI.Panel.PanelWithSidebar {
       this._onPlayerCreated(playerID);
     }
   }
+
+  /**
+   * @param {string} playerID
+   */
+  markPlayerForDeletion(playerID) {
+    // TODO(tmathmeyer): send this to chromium to save the storage space there too.
+    this._deletedPlayers.add(playerID);
+    this._detailPanels.delete(playerID);
+    this._sidebar.deletePlayer(playerID);
+  }
 }

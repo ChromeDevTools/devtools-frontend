@@ -234,8 +234,8 @@ export class EmulatedDevice {
 
       result.vertical = parseOrientation(parseValue(json['screen'], 'vertical', 'object'));
       result.horizontal = parseOrientation(parseValue(json['screen'], 'horizontal', 'object'));
+      result.isDualScreen = /** @type {boolean} */ (parseValue(json, 'dual-screen', 'boolean', false));
 
-      result.isDualScreen = /** @type {boolean} */ (parseValue(json, 'dual-screen', 'boolean', null));
       if (result.isDualScreen) {
         result.verticalSpanned = parseOrientation(parseValue(json['screen'], 'vertical-spanned', 'object', null));
         result.horizontalSpanned = parseOrientation(parseValue(json['screen'], 'horizontal-spanned', 'object', null));

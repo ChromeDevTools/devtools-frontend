@@ -207,6 +207,7 @@ export const getDisplayedStyleRules = async () => {
   return rules;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getDisplayedCSSPropertyNames = async (propertiesSection: puppeteer.JSHandle<any>) => {
   const listNodesContent = (nodes: Element[]) => {
     const rawContent = nodes.map(node => node.textContent);
@@ -222,6 +223,7 @@ export const getStyleRule = async (selector: string) => {
   return await $(`[aria-label="${selector}, css selector"]`);
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getCSSPropertySwatchStyle = async (ruleSection: puppeteer.JSHandle<any>) => {
   const swatches = await $$(CSS_PROPERTY_SWATCH_SELECTOR, ruleSection);
   return await swatches.evaluate(async (nodes: Element[]) => {
@@ -236,6 +238,7 @@ export const getStyleSectionSubtitles = async () => {
   });
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getCSSPropertyInRule = async (ruleSection: puppeteer.JSHandle<any>, name: string) => {
   const propertyNames = await $$(CSS_PROPERTY_NAME_SELECTOR, ruleSection);
   return await propertyNames.evaluateHandle(async (nodes: Element[], name) => {

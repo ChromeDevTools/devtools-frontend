@@ -124,15 +124,10 @@ module.exports = {
     'no-implicit-globals': [0],
 
     // forbids interfaces starting with an I prefix.
-    '@typescript-eslint/naming-convention': [2, {
-        "selector": "interface",
-        "format": ["PascalCase"],
-        "custom": {
-          "regex": "^I[A-Z]",
-          "match": false
-        }
-    }],
+    '@typescript-eslint/naming-convention':
+        [2, {'selector': 'interface', 'format': ['PascalCase'], 'custom': {'regex': '^I[A-Z]', 'match': false}}],
     '@typescript-eslint/explicit-member-accessibility': [0],
+    '@typescript-eslint/no-explicit-any': 2,
 
     // errors on it('test') with no body
     'mocha/no-pending-tests': 2,

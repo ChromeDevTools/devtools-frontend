@@ -31,14 +31,17 @@ function computeNamespaceName(folderName: string): string {
 }
 
 // Transform an expression of UI.ARIAUtils.Foo to its string representation
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getFullTypeName(expression: MemberExpressionKind): any {
   let name = '';
 
   while (expression.object.type === 'MemberExpression') {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     name = `${(expression.property as any).name}${name && `.${name}` || ''}`;
     expression = expression.object;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return `${(expression.property as any).name}${name && `.${name}` || ''}`;
 }
 
@@ -50,6 +53,7 @@ function rewriteSource(refactoringNamespace: string, source: string) {
   const removedExports: string[] = [];
 
   // Remove global exports
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ast.program.body = ast.program.body.map((statement: any) => {
     // UI.ARIAUtils.Foo = 5;
     if (statement.type === 'ExpressionStatement') {
@@ -88,6 +92,7 @@ function rewriteSource(refactoringNamespace: string, source: string) {
   });
 
   // Remove ES exports
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ast.program.body = ast.program.body.map((statement: any) => {
     if (statement.type === 'ExportNamedDeclaration') {
       if (statement.declaration) {

@@ -9,6 +9,7 @@ import {$, click, enableExperiment, getBrowserAndPages, getResourcesPath, goToRe
 import {addBreakpointForLine, listenForSourceFilesAdded, openFileInEditor, openFileInSourcesPanel, openSourcesPanel, PAUSE_ON_EXCEPTION_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
 
 // TODO: Remove once Chromium updates its version of Node.js to 12+.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const globalThis: any = global;
 
 declare global {
@@ -18,6 +19,7 @@ declare global {
 }
 
 declare function RegisterExtension(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     extensionAPI: {languageServices: any}, pluginImpl: any, name: string,
     supportedScriptTypes: {language: string, symbol_types: string[]}): void;
 
@@ -29,6 +31,7 @@ describe('The Debugger Language Plugins', async () => {
 
     const {frontend} = getBrowserAndPages();
     await frontend.evaluate(resourcePath => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       globalThis.installExtensionPlugin = function(registerPluginCallback: any) {
         const extensionServer = globalThis.Extensions.extensionServer;
         /** @type {!{startPage: string, name: string, exposeExperimentalAPIs: boolean}} */
@@ -50,6 +53,7 @@ describe('The Debugger Language Plugins', async () => {
             if (ev.target) {
               const iframeWin = (ev.target as HTMLIFrameElement).contentWindow;
               if (iframeWin) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 (iframeWin as any).eval(`${injectedAPI}()`);
               }
             }
@@ -68,10 +72,12 @@ describe('The Debugger Language Plugins', async () => {
   // Load a simple wasm file and verify that the source file shows up in the file tree.
   it('can show C filenames after loading the module', async () => {
     const {target, frontend} = getBrowserAndPages();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await frontend.evaluate(() => globalThis.installExtensionPlugin((extensionServerClient: any, extensionAPI: any) => {
       // A simple plugin that resolves to a single source file
       class SingleFilePlugin {
         async addRawModule(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             rawModuleId: any, symbols: any, rawModule: any) {  // eslint-disable-line @typescript-eslint/no-unused-vars
           const fileUrl = new URL('/source_file.c', rawModule.url);
           return [fileUrl.href];
@@ -97,6 +103,7 @@ describe('The Debugger Language Plugins', async () => {
   // Disabled to the Chromium binary -> DevTools roller working again.
   it('use correct code offsets to interpret raw locations', async () => {
     const {frontend} = getBrowserAndPages();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await frontend.evaluate(() => globalThis.installExtensionPlugin((extensionServerClient: any, extensionAPI: any) => {
       class LocationMappingPlugin {
         _modules: Map<string, string>;
@@ -105,12 +112,14 @@ describe('The Debugger Language Plugins', async () => {
         }
 
         async addRawModule(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             rawModuleId: any, symbols: any, rawModule: any) {  // eslint-disable-line @typescript-eslint/no-unused-vars
           this._modules.set(rawModuleId.url, rawModule.url);
           const fileUrl = new URL('unreachable.ll', rawModule.url);
           return [fileUrl.href];
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         async rawLocationToSourceLocation(rawLocation: any) {
           if (rawLocation.codeOffset === 6) {
             const moduleUrl = this._modules.get(rawLocation.rawModuleId);
@@ -139,13 +148,17 @@ describe('The Debugger Language Plugins', async () => {
   // Resolve the location for a breakpoint.
   it('resolve locations for breakpoints correctly', async () => {
     const {target, frontend} = getBrowserAndPages();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await frontend.evaluate(() => globalThis.installExtensionPlugin((extensionServerClient: any, extensionAPI: any) => {
       // This plugin will emulate a source mapping with a single file and a single corresponding source line and byte
       // code offset pair.
       class LocationMappingPlugin {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         sourceLocation: any;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         rawLocationRange: any;
         async addRawModule(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             rawModuleId: any, symbols: any, rawModule: any) {  // eslint-disable-line @typescript-eslint/no-unused-vars
           this.sourceLocation = {
             sourceFileURL: new URL('global_variable.ll', rawModule.url).href,
@@ -156,6 +169,7 @@ describe('The Debugger Language Plugins', async () => {
           return [this.sourceLocation.sourceFileURL];
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         async rawLocationToSourceLocation(rawLocation: any) {
           if (rawLocation.rawModuleId === this.rawLocationRange.rawModuleId &&
               rawLocation.codeOffset === this.rawLocationRange.startOffset) {
@@ -164,6 +178,7 @@ describe('The Debugger Language Plugins', async () => {
           return null;
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         async sourceLocationToRawLocation(sourceLocation: any) {
           if (sourceLocation.sourceFileURL === this.sourceLocation.sourceFileURL &&
               sourceLocation.lineNumber === this.sourceLocation.lineNumber) {

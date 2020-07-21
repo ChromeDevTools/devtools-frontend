@@ -65,7 +65,7 @@ describe('NodeURL', () => {
         },
       };
 
-      NodeURL.patch(object as any);
+      NodeURL.patch(object as unknown as {url: string});
 
       assert.strictEqual(object.exceptionDetails.url, patchedUrl);
       assert.strictEqual(object.exceptionDetails.stackTrace.callFrames[0].url, patchedUrl);

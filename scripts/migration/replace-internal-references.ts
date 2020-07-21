@@ -15,6 +15,7 @@ const b = types.builders;
 
 const FRONT_END_FOLDER = path.join(__dirname, '..', '..', 'front_end');
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function rewriteSource(pathName: string, srcFile: string, mappings:Map<string, any>, useExternalRefs = false) {
   const filePath = path.join(pathName, srcFile);
   const srcFileContents = await readFile(filePath, { encoding: 'utf-8' });
@@ -24,10 +25,12 @@ async function rewriteSource(pathName: string, srcFile: string, mappings:Map<str
 
   visit(ast, {
     visitComment(path) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const comments = (path.node as any).comments;
       for (const comment of comments) {
 
         if (comment.loc) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (comment.loc as any).indent = 0;
         }
 
@@ -69,6 +72,7 @@ async function rewriteSource(pathName: string, srcFile: string, mappings:Map<str
     },
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const importMap = new Map<string, any[]>();
   for (const { file, sameFolderReplacement, replacement } of importsRequired) {
     if (filePath === file) {

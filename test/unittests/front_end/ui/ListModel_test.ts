@@ -63,8 +63,8 @@ describe('ListModel', () => {
 
   it('fires an event when elements are replaced', () => {
     const model = new ListModel([0, 1, 2]);
-    let eventData: any;
-    model.addEventListener(Events.ItemsReplaced, (event: {data: any}) => {
+    let eventData!: {index: number, removed: number[], inserted: number};
+    model.addEventListener(Events.ItemsReplaced, (event: {data: typeof eventData}) => {
       eventData = event.data;
     });
     model.replaceRange(0, 1, [5, 6, 7]);

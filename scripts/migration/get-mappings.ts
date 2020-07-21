@@ -12,6 +12,7 @@ const stat = promisify(fs.stat);
 
 const FRONT_END_FOLDER = path.join(__dirname, '..', '..', 'front_end');
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function getMappings(namespace: string, mappings: Map<string, any>, useExternalRefs = false) {
   const src = namespace.toLocaleLowerCase();
   const externalModule = path.join(FRONT_END_FOLDER, src, `${src}.js`);

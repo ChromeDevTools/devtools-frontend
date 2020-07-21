@@ -44,8 +44,8 @@ describe('FrameManager', () => {
     const mockFrame = new MockResourceTreeFrame('frame-id', 'target-id');
 
     const frameManager = new SDK.FrameManager.FrameManager();
-    frameManager.modelAdded((mockModel as any) as SDK.ResourceTreeModel.ResourceTreeModel);
-    const dispatchedEvents: any[] = [];
+    frameManager.modelAdded(mockModel as unknown as SDK.ResourceTreeModel.ResourceTreeModel);
+    const dispatchedEvents: Array<{frame: {id: string}}> = [];
     frameManager.addEventListener(
         SDK.FrameManager.Events.FrameAddedToTarget, event => dispatchedEvents.push(event.data));
 
@@ -63,8 +63,8 @@ describe('FrameManager', () => {
     const mockChildFrame = new MockResourceTreeFrame('child-frame-id', 'target-id');
 
     const frameManager = new SDK.FrameManager.FrameManager();
-    frameManager.modelAdded((mockModel as any) as SDK.ResourceTreeModel.ResourceTreeModel);
-    const dispatchedEvents: any[] = [];
+    frameManager.modelAdded(mockModel as unknown as SDK.ResourceTreeModel.ResourceTreeModel);
+    const dispatchedEvents: Array<{type: string, data: {}}> = [];
     frameManager.addEventListener(
         SDK.FrameManager.Events.FrameAddedToTarget,
         event => dispatchedEvents.push({type: 'FrameAddedToTarget', data: event.data}));
@@ -94,8 +94,8 @@ describe('FrameManager', () => {
     const mockChildFrame = new MockResourceTreeFrame('child-frame-id', 'target-id');
 
     const frameManager = new SDK.FrameManager.FrameManager();
-    frameManager.modelAdded((mockModel as any) as SDK.ResourceTreeModel.ResourceTreeModel);
-    const dispatchedEvents: any[] = [];
+    frameManager.modelAdded(mockModel as unknown as SDK.ResourceTreeModel.ResourceTreeModel);
+    const dispatchedEvents: Array<{type: string, data: {}}> = [];
     frameManager.addEventListener(
         SDK.FrameManager.Events.FrameAddedToTarget,
         event => dispatchedEvents.push({type: 'FrameAddedToTarget', data: event.data}));
@@ -104,7 +104,7 @@ describe('FrameManager', () => {
 
     mockModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameAdded, mockParentFrame);
     mockModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameAdded, mockChildFrame);
-    frameManager.modelRemoved((mockModel as any) as SDK.ResourceTreeModel.ResourceTreeModel);
+    frameManager.modelRemoved(mockModel as unknown as SDK.ResourceTreeModel.ResourceTreeModel);
 
     const expectation = [
       {type: 'FrameAddedToTarget', data: {frame: {id: 'parent-frame-id', _targetId: 'target-id'}}},
@@ -127,8 +127,8 @@ describe('FrameManager', () => {
     const mockChildFrameOwnTarget = new MockResourceTreeFrame('child-frame-id', 'child-target-id');
 
     const frameManager = new SDK.FrameManager.FrameManager();
-    frameManager.modelAdded((mockParentModel as any) as SDK.ResourceTreeModel.ResourceTreeModel);
-    const dispatchedEvents: any[] = [];
+    frameManager.modelAdded(mockParentModel as unknown as SDK.ResourceTreeModel.ResourceTreeModel);
+    const dispatchedEvents: Array<{type: string, data: {}}> = [];
     frameManager.addEventListener(
         SDK.FrameManager.Events.FrameAddedToTarget,
         event => dispatchedEvents.push({type: 'FrameAddedToTarget', data: event.data}));
@@ -136,7 +136,7 @@ describe('FrameManager', () => {
         SDK.FrameManager.Events.FrameRemoved, event => dispatchedEvents.push({type: 'FrameRemoved', data: event.data}));
 
     mockParentModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameAdded, mockParentFrame);
-    frameManager.modelAdded((mockChildModel as any) as SDK.ResourceTreeModel.ResourceTreeModel);
+    frameManager.modelAdded(mockChildModel as unknown as SDK.ResourceTreeModel.ResourceTreeModel);
     mockParentModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameAdded, mockChildFrameParentTarget);
     mockChildModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameAdded, mockChildFrameOwnTarget);
     mockParentModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameDetached, mockChildFrameParentTarget);

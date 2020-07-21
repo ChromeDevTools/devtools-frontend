@@ -17,7 +17,7 @@ describe('IssuesManager', () => {
 
     const mockModel = new MockIssuesModel([issue1]);
     const issuesManager = new BrowserSDK.IssuesManager.IssuesManager();
-    issuesManager.modelAdded((mockModel as any) as SDK.IssuesModel.IssuesModel);
+    issuesManager.modelAdded(mockModel as unknown as SDK.IssuesModel.IssuesModel);
 
     const dispatchedIssues: SDK.Issue.Issue[] = [];
     issuesManager.addEventListener(

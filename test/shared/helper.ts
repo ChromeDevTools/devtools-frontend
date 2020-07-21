@@ -26,6 +26,7 @@ switch (os.platform()) {
 }
 
 // TODO: Remove once Chromium updates its version of Node.js to 12+.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const globalThis: any = global;
 
 /**
@@ -38,6 +39,7 @@ const globalThis: any = global;
 const collectAllElementsFromPage = async (root?: puppeteer.JSHandle) => {
   const {frontend} = getBrowserAndPages();
   await frontend.evaluate(root => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const container = (self as any);
     container.__elements = [];
     const collect = (root: HTMLElement|ShadowRoot) => {

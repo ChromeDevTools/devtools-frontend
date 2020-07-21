@@ -277,17 +277,17 @@ exports.decode = function (buf, filenameEncoding) {
   if (typeflag === 0 && name && name[name.length - 1] === '/') typeflag = 5
 
   return {
-    name: name,
-    mode: mode,
-    uid: uid,
-    gid: gid,
-    size: size,
+    name,
+    mode,
+    uid,
+    gid,
+    size,
     mtime: new Date(1000 * mtime),
-    type: type,
-    linkname: linkname,
-    uname: uname,
-    gname: gname,
-    devmajor: devmajor,
-    devminor: devminor
+    type,
+    linkname,
+    uname,
+    gname,
+    devmajor,
+    devminor
   }
 }

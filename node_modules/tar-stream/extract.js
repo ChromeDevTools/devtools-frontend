@@ -29,7 +29,7 @@ var mixinPax = function (header, pax) {
 var Source = function (self, offset) {
   this._parent = self
   this.offset = offset
-  PassThrough.call(this)
+  PassThrough.call(this, { autoDestroy: false })
 }
 
 util.inherits(Source, PassThrough)

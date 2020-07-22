@@ -526,9 +526,10 @@ export class NetworkPanel extends UI.Panel.Panel {
    * @param {!{data: *}} event
    */
   _onRequestActivated(event) {
-    const eventData = /** @type {!{showPanel: boolean, tab: !NetworkItemViewTabs}} */ (event.data);
+    const eventData =
+        /** @type {!{showPanel: boolean, tab: !NetworkItemViewTabs, takeFocus: (boolean|undefined)}} */ (event.data);
     if (eventData.showPanel) {
-      this._showRequestPanel(eventData.tab, /* takeFocus */ true);
+      this._showRequestPanel(eventData.tab, /* takeFocus */ eventData.takeFocus);
     } else {
       this._hideRequestPanel();
     }

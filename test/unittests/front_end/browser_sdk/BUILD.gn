@@ -8,7 +8,7 @@ ts_library("browser_sdk") {
   ]
 
   deps = [
-    "../../../../front_end/browser_sdk",
+    "../../../../front_end/browser_sdk:bundle",
     "../sdk",
   ]
 }

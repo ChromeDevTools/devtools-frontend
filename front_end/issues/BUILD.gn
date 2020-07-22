@@ -10,7 +10,7 @@ devtools_module("issues") {
   sources = [ "IssueAggregator.js" ]
 
   deps = [
-    "../browser_sdk",
+    "../browser_sdk:bundle",
     "../common:bundle",
     "../marked:bundle",
     "../sdk:bundle",

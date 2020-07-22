@@ -20,6 +20,7 @@
       ]
     }
   ],
+  "skip_rollup": true,
   "modules": [
     "browser_sdk.js",
     "browser_sdk-legacy.js",

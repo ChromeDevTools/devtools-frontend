@@ -29,6 +29,7 @@
     "network",
     "browser_sdk"
   ],
+  "skip_rollup": true,
   "modules": [
     "issues.js",
     "issues-legacy.js",

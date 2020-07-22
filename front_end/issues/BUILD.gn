@@ -2,9 +2,11 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../third_party/typescript/typescript.gni")
+import("../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../scripts/build/ninja/devtools_module.gni")
+import("../../scripts/build/ninja/devtools_pre_built.gni")
 
-ts_library("issues") {
+devtools_module("issues") {
   sources = [ "IssueAggregator.js" ]
 
   deps = [
@@ -12,5 +14,25 @@ ts_library("issues") {
     "../common:bundle",
     "../marked:bundle",
     "../sdk:bundle",
+  ]
+
+  visibility = [ "../../test/unittests/front_end/issues" ]
+}
+
+# TODO(crbug.com/1101738): Move these two files to devtools_module once all
+#                          their dependencies are TypeScript-ified.
+devtools_pre_built("issues-pre-built") {
+  sources = [
+    "IssueRevealer.js",
+    "IssuesPane.js",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "issues.js"
+
+  deps = [
+    ":issues",
+    ":issues-pre-built",
   ]
 }

@@ -69,7 +69,7 @@ ts_library("ui") {
 
   deps = [
     "../common:bundle",
-    "../dom_extension",
+    "../dom_extension:bundle",
     "../host:bundle",
     "../text_utils",
     "utils",

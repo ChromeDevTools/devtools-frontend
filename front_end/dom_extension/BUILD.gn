@@ -2,11 +2,17 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../third_party/typescript/typescript.gni")
+import("../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../scripts/build/ninja/devtools_module.gni")
 
-ts_library("dom_extension") {
-  sources = [
-    "DOMExtension.js",
-    "dom_extension.js",
-  ]
+devtools_module("dom_extension") {
+  sources = [ "DOMExtension.js" ]
+  deps = []
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "dom_extension.js"
+  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
+
+  deps = [ ":dom_extension" ]
 }

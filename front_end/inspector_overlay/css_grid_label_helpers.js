@@ -52,11 +52,13 @@ const gridPageMargin = 20;
 // The minimum distance (in px) 2 labels can be to eachother. This is set to
 // allow 2 consecutive 2-digits labels to not overlap.
 const gridLabelDistance = 20;
+// The maximum number of custom line names that can be displayed in a label.
+const maxLineNamesCount = 3;
 
 /** @typedef {!{contentTop: number, contentLeft: number}} */
 let GridLabelPositions;  // eslint-disable-line no-unused-vars
 
-/** @typedef {!{offsets: number[], hasFirst: boolean, hasLast: boolean}} */
+/** @typedef {!{offsets: number[], hasFirst: boolean, hasLast: boolean, names?: string[][]}} */
 let OffsetData;  // eslint-disable-line no-unused-vars
 
 /** @typedef {!{positive: OffsetData, negative: OffsetData}} */
@@ -68,7 +70,18 @@ let GridOffsetNormalizedData;  // eslint-disable-line no-unused-vars
 /** @typedef {!{computedSize: number, x: number, y: number}} */
 let TrackSize;  // eslint-disable-line no-unused-vars
 
-/** @typedef {!{rotationAngle?: number, columnTrackSizes?: TrackSize[], rowTrackSizes?: TrackSize[], positiveRowLineNumberOffsets?: number[], negativeRowLineNumberOffsets?: number[], positiveColumnLineNumberOffsets?: number[], negativeColumnLineNumberOffsets?: number[]}} */
+/** @typedef {!{
+ * rotationAngle?: number,
+ * columnTrackSizes?: TrackSize[],
+ * rowTrackSizes?: TrackSize[],
+ * positiveRowLineNumberOffsets?: number[],
+ * negativeRowLineNumberOffsets?: number[],
+ * positiveColumnLineNumberOffsets?: number[],
+ * negativeColumnLineNumberOffsets?: number[],
+ * rowLineNameOffsets?: {name: string, offset: number}[],
+ * columnLineNameOffsets?: {name: string, offset: number}[],
+ * gridHighlightConfig?: Object
+ * } */
 let GridHighlightConfig;  // eslint-disable-line no-unused-vars
 
 /**
@@ -93,12 +106,18 @@ export function drawGridLabels(config, gridBounds, areaBounds) {
   labelContainerForNode.removeChildren();
 
   // Add the containers for the line and area to the node's layer
-  const lineNumberContainer = labelContainerForNode.createChild('div', 'line-numbers');
   const areaNameContainer = labelContainerForNode.createChild('div', 'area-names');
+  const lineNameContainer = labelContainerForNode.createChild('div', 'line-names');
+  const lineNumberContainer = labelContainerForNode.createChild('div', 'line-numbers');
   const trackSizesContainer = labelContainerForNode.createChild('div', 'track-sizes');
 
-  // Draw line numbers.
-  drawGridNumbers(lineNumberContainer, config, gridBounds);
+  // Draw line numbers and names.
+  const normalizedData = _normalizeOffsetData(config, gridBounds);
+  if (config.gridHighlightConfig.showLineNames) {
+    drawGridLineNames(lineNameContainer, normalizedData);
+  } else {
+    drawGridLineNumbers(lineNumberContainer, normalizedData);
+  }
 
   // Draw area names.
   drawGridAreaNames(areaNameContainer, areaBounds);
@@ -140,6 +159,30 @@ function* offsetIterator(offsets) {
 }
 
 /**
+ * Massage the list of line name offsets given by the backend for easier consumption.
+ *
+ * @param {!{name: string, offset: number}[]} nameOffsets
+ * @return {!{offsets: number[], names: string[][]}}
+ */
+function _normalizeNameOffsets(nameOffsets) {
+  nameOffsets.sort((a, b) => a.offset - b.offset);
+
+  const offsets = [];
+  const names = [];
+
+  for (const {name, offset} of nameOffsets) {
+    if (offsets.length && Math.round(offset) === offsets[offsets.length - 1]) {
+      names[names.length - 1].push(name);
+    } else {
+      offsets.push(Math.round(offset));
+      names.push([name]);
+    }
+  }
+
+  return {offsets, names};
+}
+
+/**
  * Take the highlight config and bound objects in, and spits out an object with
  * the same information, but with 2 key differences:
  * - the information is organized in a way that makes the rest of the code more
@@ -175,71 +218,99 @@ export function _normalizeOffsetData(config, bounds) {
     }
   };
 
-  if (config.positiveRowLineNumberOffsets) {
+  // Line numbers and line names can't be shown together at once for now.
+  // If showLineNames is set to true, then don't show line numbers, even if the
+  // data is present.
+
+  if (config.gridHighlightConfig.showLineNames) {
+    const rowData = _normalizeNameOffsets(config.rowLineNameOffsets);
     data.rows.positive = {
-      offsets: config.positiveRowLineNumberOffsets.map(offset => Math.round(offset)),
-      hasFirst: Math.round(config.positiveRowLineNumberOffsets[0]) === 0,
-      hasLast:
-          Math.round(config.positiveRowLineNumberOffsets[config.positiveRowLineNumberOffsets.length - 1]) === height
+      offsets: rowData.offsets,
+      names: rowData.names,
+      hasFirst: rowData.offsets[0] === 0,
+      hasLast: rowData.offsets[rowData.offsets.length - 1] === height
     };
-  }
-  if (config.negativeRowLineNumberOffsets) {
-    data.rows.negative = {
-      offsets: config.negativeRowLineNumberOffsets.map(offset => Math.round(offset)),
-      hasFirst: Math.round(config.negativeRowLineNumberOffsets[0]) === 0,
-      hasLast:
-          Math.round(config.negativeRowLineNumberOffsets[config.negativeRowLineNumberOffsets.length - 1]) === height
-    };
-  }
-  if (config.positiveColumnLineNumberOffsets) {
+
+    const columnData = _normalizeNameOffsets(config.columnLineNameOffsets);
     data.columns.positive = {
-      offsets: config.positiveColumnLineNumberOffsets.map(offset => Math.round(offset)),
-      hasFirst: Math.round(config.positiveColumnLineNumberOffsets[0]) === 0,
-      hasLast: Math.round(config.positiveColumnLineNumberOffsets[config.positiveColumnLineNumberOffsets.length - 1]) ===
-          width
+      offsets: columnData.offsets,
+      names: columnData.names,
+      hasFirst: columnData.offsets[0] === 0,
+      hasLast: columnData.offsets[columnData.offsets.length - 1] === width
     };
-  }
-  if (config.negativeColumnLineNumberOffsets) {
-    data.columns.negative = {
-      offsets: config.negativeColumnLineNumberOffsets.map(offset => Math.round(offset)),
-      hasFirst: Math.round(config.negativeColumnLineNumberOffsets[0]) === 0,
-      hasLast: Math.round(config.negativeColumnLineNumberOffsets[config.negativeColumnLineNumberOffsets.length - 1]) ===
-          width
-    };
+  } else {
+    if (config.positiveRowLineNumberOffsets) {
+      data.rows.positive = {
+        offsets: config.positiveRowLineNumberOffsets.map(offset => Math.round(offset)),
+        hasFirst: Math.round(config.positiveRowLineNumberOffsets[0]) === 0,
+        hasLast:
+            Math.round(config.positiveRowLineNumberOffsets[config.positiveRowLineNumberOffsets.length - 1]) === height
+      };
+    }
+
+    if (config.negativeRowLineNumberOffsets) {
+      data.rows.negative = {
+        offsets: config.negativeRowLineNumberOffsets.map(offset => Math.round(offset)),
+        hasFirst: Math.round(config.negativeRowLineNumberOffsets[0]) === 0,
+        hasLast:
+            Math.round(config.negativeRowLineNumberOffsets[config.negativeRowLineNumberOffsets.length - 1]) === height
+      };
+    }
+
+    if (config.positiveColumnLineNumberOffsets) {
+      data.columns.positive = {
+        offsets: config.positiveColumnLineNumberOffsets.map(offset => Math.round(offset)),
+        hasFirst: Math.round(config.positiveColumnLineNumberOffsets[0]) === 0,
+        hasLast:
+            Math.round(config.positiveColumnLineNumberOffsets[config.positiveColumnLineNumberOffsets.length - 1]) ===
+            width
+      };
+    }
+
+    if (config.negativeColumnLineNumberOffsets) {
+      data.columns.negative = {
+        offsets: config.negativeColumnLineNumberOffsets.map(offset => Math.round(offset)),
+        hasFirst: Math.round(config.negativeColumnLineNumberOffsets[0]) === 0,
+        hasLast:
+            Math.round(config.negativeColumnLineNumberOffsets[config.negativeColumnLineNumberOffsets.length - 1]) ===
+            width
+      };
+    }
   }
 
   return data;
 }
 
 /**
- * Places the grid row and column labels on the overlay.
+ * Places the grid row and column number labels on the overlay.
  *
  * @param {HTMLElement} container
- * @param {GridHighlightConfig} config
- * @param {Bounds} bounds
+ * @param {GridOffsetNormalizedData} data
  */
-export function drawGridNumbers(container, config, bounds) {
-  const data = _normalizeOffsetData(config, bounds);
-
-  for (const [i, offset] of offsetIterator(data.columns.positive.offsets)) {
-    const element = _createLabelElement(container, i + 1);
-    _placePositiveColumnLabel(element, offset, data);
+export function drawGridLineNumbers(container, data) {
+  if (!data.columns.positive.names) {
+    for (const [i, offset] of offsetIterator(data.columns.positive.offsets)) {
+      const element = _createLabelElement(container, (i + 1).toString());
+      _placePositiveColumnLabel(element, offset, data);
+    }
   }
 
-  for (const [i, offset] of offsetIterator(data.rows.positive.offsets)) {
-    const element = _createLabelElement(container, i + 1);
-    _placePositiveRowLabel(element, offset, data);
+  if (!data.rows.positive.names) {
+    for (const [i, offset] of offsetIterator(data.rows.positive.offsets)) {
+      const element = _createLabelElement(container, (i + 1).toString());
+      _placePositiveRowLabel(element, offset, data);
+    }
   }
 
   for (const [i, offset] of offsetIterator(data.columns.negative.offsets)) {
     // Negative offsets are sorted such that the first offset corresponds to the line closest to start edge of the grid.
-    const element = _createLabelElement(container, data.columns.negative.offsets.length * -1 + i);
+    const element = _createLabelElement(container, (data.columns.negative.offsets.length * -1 + i).toString());
     _placeNegativeColumnLabel(element, offset, data);
   }
 
   for (const [i, offset] of offsetIterator(data.rows.negative.offsets)) {
     // Negative offsets are sorted such that the first offset corresponds to the line closest to start edge of the grid.
-    const element = _createLabelElement(container, data.rows.negative.offsets.length * -1 + i);
+    const element = _createLabelElement(container, (data.rows.negative.offsets.length * -1 + i).toString());
     _placeNegativeRowLabel(element, offset, data);
   }
 }
@@ -267,6 +338,43 @@ export function drawGridTrackSizes(container, rotationAngle, trackSizes, directi
 }
 
 /**
+ * Places the grid row and column name labels on the overlay.
+ *
+ * @param {HTMLElement} container
+ * @param {GridOffsetNormalizedData} data
+ */
+export function drawGridLineNames(container, data) {
+  for (const [i, offset] of data.columns.positive.offsets.entries()) {
+    const names = data.columns.positive.names[i];
+    const element = _createLabelElement(container, _makeLineNameLabelContent(names));
+    _placePositiveColumnLabel(element, offset, data);
+  }
+
+  for (const [i, offset] of data.rows.positive.offsets.entries()) {
+    const names = data.rows.positive.names[i];
+    const element = _createLabelElement(container, _makeLineNameLabelContent(names));
+    _placePositiveRowLabel(element, offset, data);
+  }
+}
+
+/**
+ * Turn an array of custom line names into DOM content that can be used in a label.
+ *
+ * @param {string[]} names
+ * @return {HTMLElement}
+ */
+function _makeLineNameLabelContent(names) {
+  const content = document.createElement('ul');
+  const namesToDisplay = names.slice(0, maxLineNamesCount);
+
+  for (const name of namesToDisplay) {
+    content.createChild('li', 'line-name').textContent = name;
+  }
+
+  return content;
+}
+
+/**
  * Places the grid area name labels on the overlay.
  *
  * @param {HTMLElement} container
@@ -285,13 +393,19 @@ export function drawGridAreaNames(container, areaBounds) {
  * Create the necessary DOM for a single label element.
  *
  * @param {HTMLElement} container The DOM element where to append the label
- * @param {string} textContent The text to display in the label
+ * @param {string|HTMLElement} textContent The text, or DOM node to display in the label
  * @return {Element} The new label element
  */
 function _createLabelElement(container, textContent) {
   const wrapper = container.createChild('div');
   const element = wrapper.createChild('div', 'grid-label-content');
-  element.textContent = textContent.toString();
+
+  if (typeof textContent === 'string') {
+    element.textContent = textContent;
+  } else {
+    element.appendChild(textContent);
+  }
+
   return element;
 }
 

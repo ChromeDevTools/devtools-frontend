@@ -6,7 +6,7 @@ const {assert} = chai;
 
 import {assertNotNull, renderElementIntoDOM} from './DOMHelpers.js';
 import {reset} from '../../../../front_end/inspector_overlay/common.js';
-import {drawGridAreaNames, drawGridNumbers} from '../../../../front_end/inspector_overlay/css_grid_label_helpers.js';
+import {_normalizeOffsetData, drawGridAreaNames, drawGridLineNumbers} from '../../../../front_end/inspector_overlay/css_grid_label_helpers.js';
 import {AreaBounds, Bounds} from '../../../../front_end/inspector_overlay/common.js';
 
 const GRID_LABEL_CONTAINER_ID = 'grid-label-container';
@@ -159,10 +159,11 @@ interface ExpectedAreaNameLabel {
   top?: string;
 }
 
-export function drawGridNumbersAndAssertLabels(
+export function drawGridLineNumbersAndAssertLabels(
     config: HighlightConfig, bounds: Bounds, expectedLabels: ExpectedLineNumberLabel[]) {
   const el = getGridLineNumberLabelContainer(config.layerId);
-  drawGridNumbers(el, config, bounds);
+  const data = _normalizeOffsetData(config, bounds);
+  drawGridLineNumbers(el, data);
 
   let totalLabelCount = 0;
   for (const {className, count} of expectedLabels) {
@@ -212,11 +213,12 @@ export function drawGridAreaNamesAndAssertLabels(areaNames: AreaBounds[], expect
   }
 }
 
-export function drawMultipleGridNumbersAndAssertLabels(
+export function drawMultipleGridLineNumbersAndAssertLabels(
     configs: HighlightConfig[], bounds: Bounds, expectedLabelList: ExpectedLayerLabel[]) {
   for (const config of configs) {
     const el = getGridLineNumberLabelContainer(config.layerId);
-    drawGridNumbers(el, config, bounds);
+    const data = _normalizeOffsetData(config, bounds);
+    drawGridLineNumbers(el, data);
   }
 
   let totalLabelCount = 0;

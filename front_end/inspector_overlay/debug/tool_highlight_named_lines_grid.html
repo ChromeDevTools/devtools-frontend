@@ -1,0 +1,52 @@
+<!--
+Copyright 2020 The Chromium Authors. All rights reserved.
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debug</title>
+  <link rel="stylesheet" type="text/css" href="../common.css">
+  <script type="module" src="../tool_highlight.js"></script>
+</head>
+<body>
+  <script type="module">
+    setPlatform("mac");
+    reset(window);
+
+    drawHighlight({
+      "paths":[],
+      "gridInfo":[
+        {
+          "rows":["M",100,100,"L",600,100,"M",600,200,"L",100,200,"M",100,300,"L",600,300,"M",600,300,"L",100,300, "M", 100, 400, "L", 600, 400],
+          "rowGaps": [],
+          "columns":["M",100,100,"L",100,400,"M",200,400,"L",200,100,"M",300,100,"L",300,400,"M",400,400,"L",400,100,"M",500,100,"L",500,400,"M",600,400,"L",600,100],
+          "columnGaps": [],
+          "gridBorder":["M",100,100,"L",600,100,"L",600,400,"L",100,400,"Z"],
+          "rowLineNameOffsets": [
+            {name: "fullpage-start", offset: 0},
+            {name: "header", offset: 100},
+            {name: "ads", offset: 100},
+            {name: "content-start", offset: 100},
+            {name: "content-end", offset: 300},
+            {name: "fullpage-end", offset: 300},
+            {name: "footer", offset: 200},
+          ],
+          "columnLineNameOffsets": [
+            {name: "edge-start", offset: 0},
+            {name: "content-start", offset: 100},
+            {name: "content-end", offset: 400},
+            {name: "sidebar", offset: 400},
+            {name: "edge-end", offset: 500},
+          ],
+          "gridHighlightConfig":{"gridBorderDash":false, "gridBorderColor": "rgba(147, 52, 230, 1)", "cellBorderDash":true,"showGridExtensionLines":true,"cellBorderColor":"rgba(147, 52, 230, 1)", "showLineNames": true},
+          "isPrimaryGrid":true
+        }
+      ]
+    });
+  </script>
+</body>
+</html>

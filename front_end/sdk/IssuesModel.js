@@ -209,7 +209,6 @@ function createIssuesForContentSecurityPolicyIssue(issuesModel, inspectorDetails
     console.warn('Content security policy issue without details received.');
     return [];
   }
-
   return [new ContentSecurityPolicyIssue(cspDetails)];
 }
 

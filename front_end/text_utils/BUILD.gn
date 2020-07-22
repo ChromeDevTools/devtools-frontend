@@ -18,6 +18,6 @@ ts_library("text_utils") {
   deps = [
     "../common:bundle",
     "../platform:bundle",
-    "../root",
+    "../root:bundle",
   ]
 }

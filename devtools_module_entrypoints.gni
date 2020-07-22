@@ -103,7 +103,6 @@ devtools_module_entrypoints = [
   "quick_open/quick_open-legacy.js",
   "resources/resources.js",
   "resources/resources-legacy.js",
-  "root/root.js",
   "root/root-legacy.js",
   "screencast/screencast.js",
   "screencast/screencast-legacy.js",
@@ -170,6 +169,7 @@ generated_typescript_entrypoints = [
   "$resources_out_dir/third_party/acorn/acorn.js",
   "$resources_out_dir/third_party/lit-html/lit-html.js",
   "$resources_out_dir/marked/marked.js",
+  "$resources_out_dir/root/root.js",
   "$resources_out_dir/sdk/sdk.js",
   "$resources_out_dir/platform/platform.js",
 ]

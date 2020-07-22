@@ -85,7 +85,7 @@
   right: 0;
 }
 
-.tree-outline li.odd-row {
+.tree-outline li.even-row {
   position: relative;
   background-color: #f5f5f5;
 }

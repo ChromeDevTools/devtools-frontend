@@ -36,7 +36,7 @@ import * as UI from '../ui/ui.js';
 import {ComputedStyle, ComputedStyleModel, Events} from './ComputedStyleModel.js';  // eslint-disable-line no-unused-vars
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {PlatformFontsWidget} from './PlatformFontsWidget.js';
-import {StylePropertiesSection, StylesSidebarPane, StylesSidebarPropertyRenderer} from './StylesSidebarPane.js';
+import {IdleCallbackManager, StylePropertiesSection, StylesSidebarPane, StylesSidebarPropertyRenderer} from './StylesSidebarPane.js';
 
 /**
  * @param {!SDK.DOMModel.DOMNode} node
@@ -215,6 +215,9 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
 
     const fontsWidget = new PlatformFontsWidget(this._computedStyleModel);
     fontsWidget.show(this.contentElement);
+
+    /** @type {?IdleCallbackManager} */
+    this._idleCallbackManager = null;
   }
 
   /**
@@ -231,12 +234,23 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
 
   /**
    * @override
+   */
+  update() {
+    if (this._idleCallbackManager) {
+      this._idleCallbackManager.discard();
+    }
+    this._idleCallbackManager = new IdleCallbackManager();
+    super.update();
+  }
+
+  /**
+   * @override
    * @return {!Promise.<?>}
    */
   async doUpdate() {
     const promises = [this._computedStyleModel.fetchComputedStyle(), this._fetchMatchedCascade()];
     const [nodeStyles, matchedStyles] = await Promise.all(promises);
-    this._innerRebuildUpdate(nodeStyles, matchedStyles);
+    await this._innerRebuildUpdate(nodeStyles, matchedStyles);
   }
 
   /**
@@ -264,7 +278,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
    * @param {?ComputedStyle} nodeStyle
    * @param {?SDK.CSSMatchedStyles.CSSMatchedStyles} matchedStyles
    */
-  _innerRebuildUpdate(nodeStyle, matchedStyles) {
+  async _innerRebuildUpdate(nodeStyle, matchedStyles) {
     /** @type {!Set<string>} */
     const expandedProperties = new Set();
     for (const treeElement of this._propertiesOutline.rootElement().children()) {
@@ -287,11 +301,13 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     const uniqueProperties = [...nodeStyle.computedStyle.keys()];
     uniqueProperties.sort(propertySorter);
 
+    const node = nodeStyle.node;
     const propertyTraces = this._computePropertyTraces(matchedStyles);
     const inheritedProperties = this._computeInheritedProperties(matchedStyles);
     const showInherited = this._showInheritedComputedStylePropertiesSetting.get();
-    for (let i = 0; i < uniqueProperties.length; ++i) {
-      const propertyName = uniqueProperties[i];
+    const computedStyleQueue = [];
+    // filter and preprocess properties to line up in the computed style queue
+    for (const propertyName of uniqueProperties) {
       const propertyValue = nodeStyle.computedStyle.get(propertyName);
       const canonicalName = SDK.CSSMetadata.cssMetadata().canonicalPropertyName(propertyName);
       const isInherited = !inheritedProperties.has(canonicalName);
@@ -304,38 +320,62 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
       if (propertyName !== canonicalName && propertyValue === nodeStyle.computedStyle.get(canonicalName)) {
         continue;
       }
-
-      const {propertyElement, propertyValueElement} =
-          createPropertyElement(nodeStyle.node, propertyName, propertyValue, isInherited);
-
-      const treeElement = new UI.TreeOutline.TreeElement();
-      treeElement.title = propertyElement;
-      treeElement[_propertySymbol] = {name: propertyName, value: propertyValue};
-      const isOdd = this._propertiesOutline.rootElement().children().length % 2 === 0;
-      treeElement.listItemElement.classList.toggle('odd-row', isOdd);
-      this._propertiesOutline.appendChild(treeElement);
-      if (!this._propertiesOutline.selectedTreeElement) {
-        treeElement.select(!hadFocus);
-      }
-
-      const trace = propertyTraces.get(propertyName);
-      if (trace) {
-        const activeProperty = this._renderPropertyTrace(matchedStyles, nodeStyle.node, treeElement, trace);
-        treeElement.listItemElement.addEventListener('mousedown', e => e.consume(), false);
-        treeElement.listItemElement.addEventListener('dblclick', e => e.consume(), false);
-        treeElement.listItemElement.addEventListener('click', handleClick.bind(null, treeElement), false);
-        treeElement.listItemElement.addEventListener(
-            'contextmenu', this._handleContextMenuEvent.bind(this, matchedStyles, activeProperty));
-        const gotoSourceElement = UI.Icon.Icon.create('mediumicon-arrow-in-circle', 'goto-source-icon');
-        gotoSourceElement.addEventListener('click', navigateToSource.bind(this, activeProperty));
-        propertyValueElement.appendChild(gotoSourceElement);
-        if (expandedProperties.has(propertyName)) {
-          treeElement.expand();
-        }
-      }
+      computedStyleQueue.push({propertyName, propertyValue, isInherited});
     }
 
-    this._updateFilter(this._filterRegex);
+    // Render computed style properties in batches via idle callbacks to avoid a
+    // very long task. The batchSize and timeoutInterval should be tweaked in
+    // pair. Currently, updating, laying-out, rendering, and painting 20 items
+    // in every 100ms seems to be a good balance between updating too lazy vs.
+    // updating too much in one cycle.
+    const batchSize = 20;
+    const timeoutInterval = 100;
+    let timeout = 100;
+    while (computedStyleQueue.length > 0) {
+      const currentBatch = computedStyleQueue.splice(0, batchSize);
+
+      this._idleCallbackManager.schedule(() => {
+        for (const {propertyName, propertyValue, isInherited} of currentBatch) {
+          const {propertyElement, propertyValueElement} =
+              createPropertyElement(node, propertyName, propertyValue, isInherited);
+          const treeElement = new UI.TreeOutline.TreeElement();
+          treeElement.title = propertyElement;
+          treeElement[_propertySymbol] = {name: propertyName, value: propertyValue};
+          if (!this._propertiesOutline.selectedTreeElement) {
+            treeElement.select(!hadFocus);
+          }
+
+          const trace = propertyTraces.get(propertyName);
+          if (trace) {
+            const activeProperty = this._renderPropertyTrace(
+                /** @type {!SDK.CSSMatchedStyles.CSSMatchedStyles} */ (matchedStyles), node, treeElement, trace);
+            treeElement.listItemElement.addEventListener('mousedown', e => e.consume(), false);
+            treeElement.listItemElement.addEventListener('dblclick', e => e.consume(), false);
+            treeElement.listItemElement.addEventListener('click', handleClick.bind(null, treeElement), false);
+            treeElement.listItemElement.addEventListener(
+                'contextmenu',
+                this._handleContextMenuEvent.bind(
+                    this, /** @type {!SDK.CSSMatchedStyles.CSSMatchedStyles} */ (matchedStyles), activeProperty));
+            const gotoSourceElement = UI.Icon.Icon.create('mediumicon-arrow-in-circle', 'goto-source-icon');
+            gotoSourceElement.addEventListener('click', navigateToSource.bind(this, activeProperty));
+            propertyValueElement.appendChild(gotoSourceElement);
+            if (expandedProperties.has(propertyName)) {
+              treeElement.expand();
+            }
+          }
+
+          this._propertiesOutline.appendChild(treeElement);
+          const isEven = this._propertiesOutline.rootElement().children().length % 2 === 0;
+          treeElement.listItemElement.classList.toggle('even-row', isEven);
+        }
+
+        this._updateFilter(this._filterRegex);
+      }, timeout);
+
+      timeout += timeoutInterval;
+    }
+
+    await this._idleCallbackManager.awaitDone();
 
     /**
      * @param {string} a

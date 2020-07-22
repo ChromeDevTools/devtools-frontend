@@ -988,7 +988,7 @@ export class SectionBlock {
   }
 }
 
-class IdleCallbackManager {
+export class IdleCallbackManager {
   constructor() {
     this._discarded = false;
     /** @type {!Array<!Promise<void>>} */
@@ -1001,8 +1001,9 @@ class IdleCallbackManager {
 
   /**
    * @param {function():void} fn
+   * @param {number} timeout
    */
-  schedule(fn) {
+  schedule(fn, timeout = 100) {
     if (this._discarded) {
       return;
     }
@@ -1020,7 +1021,7 @@ class IdleCallbackManager {
           return resolve();
         }
         run();
-      }, {timeout: 100});
+      }, {timeout});
     }));
   }
 

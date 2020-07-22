@@ -25,6 +25,7 @@ describe('The Computed pane', async () => {
     let content = await getContentOfComputedPane();
     await frontend.keyboard.press('ArrowDown');
     await waitForComputedPaneChange(content);
+    await waitForElementsComputedSection();
 
     const h1Properties = await getAllPropertiesFromComputedPane();
     assert.strictEqual(h1Properties.length, 10, 'There should be 10 computed properties on the H1 element');
@@ -40,6 +41,7 @@ describe('The Computed pane', async () => {
     content = await getContentOfComputedPane();
     await frontend.keyboard.press('ArrowDown');
     await waitForComputedPaneChange(content);
+    await waitForElementsComputedSection();
 
     const h2Properties = await getAllPropertiesFromComputedPane();
     assert.strictEqual(h2Properties.length, 11, 'There should be 11 computed properties on the H2 element');
@@ -61,6 +63,7 @@ describe('The Computed pane', async () => {
     await waitForComputedPaneChange(content);
 
     await toggleShowAllComputedProperties();
+    await waitForElementsComputedSection();
 
     const allH1Properties = await getAllPropertiesFromComputedPane();
     const alignContentProperty = allH1Properties.find(property => property && property.name === 'align-content');

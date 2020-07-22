@@ -155,7 +155,6 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
 
     const headerElement = section.createChild('div', 'authenticator-section-header');
     const titleElement = headerElement.createChild('div', 'authenticator-section-title');
-    titleElement.textContent = ls`Authenticator ${authenticatorId}`;
     UI.ARIAUtils.markAsHeading(titleElement, 2);
 
     const removeButton = headerElement.createChild('button', 'remove-authenticator-button');
@@ -168,25 +167,103 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     activeLabel.radioElement.addEventListener('click', this._setActiveAuthenticator.bind(this, authenticatorId));
     activeButtonContainer.appendChild(activeLabel);
     activeLabel.radioElement.checked = true;
-    activeLabel.radioElement.title = ls`Set authenticator ${authenticatorId} as the active authenticator`;
     this._activeAuthId = authenticatorId;  // Newly added authenticator is automatically set as active.
 
+    const toolbar = new UI.Toolbar.Toolbar('edit-name-toolbar', titleElement);
+    const editName = new UI.Toolbar.ToolbarButton(ls`Edit name`, 'largeicon-edit');
+    const saveName = new UI.Toolbar.ToolbarButton(ls`Save name`, 'largeicon-checkmark');
+    saveName.setVisible(false);
+
+    const nameField = titleElement.createChild('input', 'authenticator-name-field');
+    nameField.setAttribute('readOnly', 'true');
+    const userFriendlyName = authenticatorId.slice(-5);  // User friendly name defaults to last 5 chars of UUID.
+    nameField.value = ls`Authenticator ${userFriendlyName}`;
+    this._updateActiveLabelTitle(activeLabel, nameField.value);
+
+    editName.addEventListener(
+        UI.Toolbar.ToolbarButton.Events.Click,
+        () => this._handleEditNameButton(titleElement, nameField, editName, saveName));
+    saveName.addEventListener(
+        UI.Toolbar.ToolbarButton.Events.Click,
+        () => this._handleSaveNameButton(titleElement, nameField, editName, saveName, activeLabel));
+
+    nameField.addEventListener(
+        'focusout', () => this._handleSaveNameButton(titleElement, nameField, editName, saveName, activeLabel));
+    nameField.addEventListener('keydown', event => {
+      if (event.key === 'Enter') {
+        this._handleSaveNameButton(titleElement, nameField, editName, saveName, activeLabel);
+      }
+    });
+
+    toolbar.appendToolbarItem(editName);
+    toolbar.appendToolbarItem(saveName);
+
+    this._createAuthenticatorFields(section, authenticatorId, options);
+  }
+
+  /**
+   * Creates the fields describing the authenticator in the front end.
+   * @param {!Element} section
+   * @param {!Protocol.WebAuthn.AuthenticatorId} authenticatorId
+   * @param {!Protocol.WebAuthn.VirtualAuthenticatorOptions} options
+   */
+  _createAuthenticatorFields(section, authenticatorId, options) {
     const sectionFields = section.createChild('div', 'authenticator-fields');
+    const uuidField = sectionFields.createChild('div', 'authenticator-field');
     const protocolField = sectionFields.createChild('div', 'authenticator-field');
     const transportField = sectionFields.createChild('div', 'authenticator-field');
     const srkField = sectionFields.createChild('div', 'authenticator-field');
     const suvField = sectionFields.createChild('div', 'authenticator-field');
 
+    uuidField.appendChild(UI.UIUtils.createLabel(ls`UUID`, 'authenticator-option-label'));
     protocolField.appendChild(UI.UIUtils.createLabel(ls`Protocol`, 'authenticator-option-label'));
     transportField.appendChild(UI.UIUtils.createLabel(ls`Transport`, 'authenticator-option-label'));
     srkField.appendChild(UI.UIUtils.createLabel(ls`Supports resident keys`, 'authenticator-option-label'));
     suvField.appendChild(UI.UIUtils.createLabel(ls`Supports user verification`, 'authenticator-option-label'));
 
+    uuidField.createChild('div', 'authenticator-field-value').textContent = authenticatorId;
     protocolField.createChild('div', 'authenticator-field-value').textContent = options.protocol;
     transportField.createChild('div', 'authenticator-field-value').textContent = options.transport;
     srkField.createChild('div', 'authenticator-field-value').textContent = options.hasResidentKey ? ls`Yes` : ls`No`;
     suvField.createChild('div', 'authenticator-field-value').textContent =
         options.hasUserVerification ? ls`Yes` : ls`No`;
+  }
+
+  /**
+   * @param {!Element} titleElement
+   * @param {!Element} nameField
+   * @param {!UI.Toolbar.ToolbarButton} editName
+   * @param {!UI.Toolbar.ToolbarButton} saveName
+   */
+  _handleEditNameButton(titleElement, nameField, editName, saveName) {
+    nameField.removeAttribute('readonly');
+    titleElement.classList.add('editing-name');
+    nameField.focus();
+    saveName.setVisible(true);
+    editName.setVisible(false);
+  }
+
+  /**
+   * @param {!Element} titleElement
+   * @param {!Element} nameField
+   * @param {!UI.Toolbar.ToolbarItem} editName
+   * @param {!UI.Toolbar.ToolbarItem} saveName
+   * @param {!Element} activeLabel
+   */
+  _handleSaveNameButton(titleElement, nameField, editName, saveName, activeLabel) {
+    nameField.setAttribute('readonly', '');
+    titleElement.classList.remove('editing-name');
+    editName.setVisible(true);
+    saveName.setVisible(false);
+    this._updateActiveLabelTitle(activeLabel, nameField.value);
+  }
+
+  /**
+   * @param {!Element} activeLabel
+   * @param {string} authenticatorName
+   */
+  _updateActiveLabelTitle(activeLabel, authenticatorName) {
+    activeLabel.radioElement.title = ls`Set ${authenticatorName} as the active authenticator`;
   }
 
   /**

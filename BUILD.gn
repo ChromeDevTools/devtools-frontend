@@ -336,6 +336,8 @@ action("generate_devtools_grd") {
       [
         "$resources_out_dir/devtools_extension_api.js",
         "$resources_out_dir/sdk/wasm_source_map/pkg/wasm_source_map_bg.wasm",
+        "$resources_out_dir/formatter_worker_entrypoint.js",
+        "$resources_out_dir/third_party/acorn/package/dist/acorn.mjs",
       ]
 
   inputs = grd_files + front_end_image_files

@@ -96,46 +96,6 @@ describe('Parsed URL', () => {
     assert.strictEqual(convertedUrl, 'usr\\lib', 'URL was not converted successfully');
   });
 
-  it('converts URL to a platform path that includes drive letter and spaces on Windows', () => {
-    const urlTest = 'file:///C:/Program%20Files/Google';
-    const convertedUrl = ParsedURL.urlToPlatformPath(urlTest, true);
-    assert.strictEqual(convertedUrl, 'C:\\Program Files\\Google', 'URL was not converted successfully');
-  });
-
-  it('converts URL to a platform path that includes spaces and percents', () => {
-    const urlTest = 'file:///home/user/with%20space/with%2520escape';
-    const convertedUrl = ParsedURL.urlToPlatformPath(urlTest, false);
-    assert.strictEqual(convertedUrl, '/home/user/with space/with%20escape', 'URL was not converted successfully');
-  });
-
-  it('converts relative platform path and base URL to URL', () => {
-    const baseUrl = 'http://localhost:8080/my%20folder/old%20path';
-    const relativePath = 'new spaced%20name';
-    const convertedUrl = ParsedURL.relativePlatformPathToURL(relativePath, baseUrl);
-    assert.strictEqual(convertedUrl, 'http://localhost:8080/my%20folder/new%20spaced%2520name');
-  });
-
-  it('converts Windows platform path with spaces and percents to file url', () => {
-    const urlTest = 'C:\\Program Files\\with%20escape';
-    const convertedUrl = ParsedURL.platformPathToURL(urlTest);
-    assert.strictEqual(
-        convertedUrl, 'file:///C:/Program%20Files/with%2520escape', 'URL was not converted successfully');
-  });
-
-  it('escapes partial path', () => {
-    const pathTest = 'path/with%20escape/and spaces';
-    const escapedPath = 'path/with%2520escape/and%20spaces';
-    const convertedPath = ParsedURL.escapeFilePath(pathTest);
-    assert.strictEqual(convertedPath, escapedPath, 'path was not converted successfully');
-  });
-
-  it('unescapes partial path', () => {
-    const pathTest = 'path/with%20escape/and spaces';
-    const escapedPath = 'path/with%2520escape/and%20spaces';
-    const convertedPath = ParsedURL.unescapeFilePath(escapedPath);
-    assert.strictEqual(convertedPath, pathTest, 'path was not converted successfully');
-  });
-
   it('converts URL with a hash to a URL without a hash', () => {
     const urlTest = 'http://www.example.com#test';
     const convertedUrl = ParsedURL.urlWithoutHash(urlTest);

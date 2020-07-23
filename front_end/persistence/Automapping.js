@@ -348,7 +348,8 @@ export class Automapping {
     if (url.startsWith('file://') || url.startsWith('snippet://')) {
       let fileSourceCode;
       try {
-        fileSourceCode = this._fileSystemUISourceCodes.get(networkSourceCode.url());
+        const decodedUrl = decodeURI(url);
+        fileSourceCode = this._fileSystemUISourceCodes.get(decodedUrl);
       } catch (error) {
         Common.Console.Console.instance().error(
             ls`The attempt to bind "${url}" in the workspace failed as this URI is malformed.`);
@@ -365,8 +366,9 @@ export class Automapping {
     if (networkPath.endsWith('/')) {
       networkPath += 'index.html';
     }
+    const urlDecodedNetworkPath = decodeURI(networkPath);
     const similarFiles =
-        this._filesIndex.similarFiles(networkPath).map(path => this._fileSystemUISourceCodes.get(path));
+        this._filesIndex.similarFiles(urlDecodedNetworkPath).map(path => this._fileSystemUISourceCodes.get(path));
     if (!similarFiles.length) {
       return Promise.resolve(/** @type {?AutomappingStatus} */ (null));
     }

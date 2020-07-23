@@ -103,43 +103,11 @@ export class ParsedURL {
   }
 
   /**
-   * @param {string} filename
-   * @return {string}
-   */
-  static _preEscapeFilePath(filename) {
-    for (const specialChar of ['%', ';', '#', '?', '\\']) {
-      filename = filename.replaceAll(specialChar, encodeURIComponent(specialChar));
-    }
-    return filename;
-  }
-
-  /**
-   * @param {string} filename
-   * @return {string}
-   */
-  static escapeFilePath(filename) {
-    const result = new URL(ParsedURL._preEscapeFilePath(filename), 'file:///').pathname;
-    if (filename.startsWith('/')) {
-      return result;
-    }
-    // URL prepends a '/'
-    return result.substr(1);
-  }
-
-  /**
-   * @param {string} filename
-   * @return {string}
-   */
-  static unescapeFilePath(filename) {
-    return decodeURIComponent(filename);
-  }
-
-  /**
    * @param {string} fileSystemPath
    * @return {string}
    */
   static platformPathToURL(fileSystemPath) {
-    fileSystemPath = ParsedURL._preEscapeFilePath(fileSystemPath.replace(/\\/g, '/'));
+    fileSystemPath = fileSystemPath.replace(/\\/g, '/');
     if (!fileSystemPath.startsWith('file://')) {
       if (fileSystemPath.startsWith('/')) {
         fileSystemPath = 'file://' + fileSystemPath;
@@ -147,17 +115,7 @@ export class ParsedURL {
         fileSystemPath = 'file:///' + fileSystemPath;
       }
     }
-    return new URL(fileSystemPath).toString();
-  }
-
-  /**
-   * @param {string} relativePath
-   * @param {string} baseURL
-   * @return {string}
-   */
-  static relativePlatformPathToURL(relativePath, baseURL) {
-    relativePath = ParsedURL._preEscapeFilePath(relativePath.replace(/\\/g, '/'));
-    return new URL(relativePath, baseURL).toString();
+    return fileSystemPath;
   }
 
   /**
@@ -167,7 +125,6 @@ export class ParsedURL {
    */
   static urlToPlatformPath(fileURL, isWindows) {
     console.assert(fileURL.startsWith('file://'), 'This must be a file URL.');
-    fileURL = ParsedURL.unescapeFilePath(fileURL);
     if (isWindows) {
       return fileURL.substr('file:///'.length).replace(/\//g, '\\');
     }

@@ -5,5 +5,9 @@
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
 
 devtools_pre_built("chromium") {
-  sources = [ "client-variations/ClientVariationsParser.js" ]
+  sources = [
+    "chromium-tsconfig.json",
+    "client-variations/ClientVariationsParser.d.ts",
+    "client-variations/ClientVariationsParser.js",
+  ]
 }

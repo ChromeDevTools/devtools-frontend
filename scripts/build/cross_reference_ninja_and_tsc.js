@@ -116,15 +116,17 @@ async function buildTargetInfo(buildDir, gnTarget) {
   try {
     // Ask TypeScript to enumerate the files it knows about.
     const types = path.join(cwd, 'front_end/global_typings');
-    const tscOut = await exec(`tsc ${entryPoint} --typeRoots ${types} --noEmit --listFiles --allowJs --target esnext ${
-        types}/resize_observer.d.ts`);
+    const tscOut = await exec(`tsc ${entryPoint} --types ${types}/resize_observer.d.ts --types ${
+        types}/global_defs.d.ts --noEmit --listFiles --allowJs --target esnext`);
 
     // Filter the list and remap to those that are explicitly in the front_end, excluding the entrypoint itself.
     const frontEndFiles =
         tscOut.split('\n')
-            .filter(line => line.includes('front_end') && line !== entryPoint)
+            .filter(line => line.includes('front_end') && line !== entryPoint && !line.includes('global_typings'))
             // Ensure we look for the original file, not the .d.ts.
             .map(line => line.replace(/\.d\.ts$/, ''))
+            // Ensure that any file that ends in .ts is replaced as the equivalent outputted .js file.
+            .map(line => line.replace(/\.ts$/, '.js'))
             // Trim the files so that the path starts with front_end
             .map(line => line.replace(/.*?front_end/, 'front_end'))
             // Finally remove any files where stripping the .d.ts has resulted in a file with no suffix.

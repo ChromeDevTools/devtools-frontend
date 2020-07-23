@@ -3,7 +3,6 @@
 # found in the LICENSE file.
 
 use_relative_paths = True
-use_relative_hooks = True
 
 vars = {
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',

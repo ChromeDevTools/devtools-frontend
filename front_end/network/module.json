@@ -191,6 +191,9 @@
     "source_frame",
     "ui"
   ],
+  "skip_compilation": [
+    "../third_party/chromium/client-variations/ClientVariationsParser.js"
+  ],
   "modules": [
     "network.js",
     "network-legacy.js",

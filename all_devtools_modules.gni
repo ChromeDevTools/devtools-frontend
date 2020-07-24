@@ -308,13 +308,6 @@ all_devtools_modules = [
   "third_party/lighthouse/report-assets/report.js",
   "third_party/wasmparser/package/dist/esm/WasmDis.js",
   "third_party/wasmparser/package/dist/esm/WasmParser.js",
-  "timeline_model/TimelineFrameModel.js",
-  "timeline_model/TimelineIRModel.js",
-  "timeline_model/TimelineJSProfile.js",
-  "timeline_model/TimelineModel.js",
-  "timeline_model/TimelineModelFilter.js",
-  "timeline_model/TimelineProfileTree.js",
-  "timeline_model/TracingLayerTree.js",
   "timeline/CLSLinkifier.js",
   "timeline/CountersGraph.js",
   "timeline/EventsTimelineTreeView.js",
@@ -668,6 +661,13 @@ all_typescript_modules = [
   "third_party/lit-html/package/lib/template.js",
   "third_party/lit-html/package/lit-html.js",
   "third_party/marked/package/lib/marked.esm.js",
+  "timeline_model/TimelineFrameModel.js",
+  "timeline_model/TimelineIRModel.js",
+  "timeline_model/TimelineJSProfile.js",
+  "timeline_model/TimelineModel.js",
+  "timeline_model/TimelineModelFilter.js",
+  "timeline_model/TimelineProfileTree.js",
+  "timeline_model/TracingLayerTree.js",
 ]
 
 foreach(module, all_typescript_modules) {

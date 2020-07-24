@@ -25,6 +25,7 @@ group("front_end") {
     "i18n:bundle_i18n",
     "issues:bundle",
     "sdk:bundle",
+    "search:bundle",
     "third_party/lighthouse",
     "timeline_model:bundle",
     "workspace:bundle",

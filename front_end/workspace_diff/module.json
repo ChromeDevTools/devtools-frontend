@@ -8,5 +8,6 @@
     "workspace_diff.js",
     "workspace_diff-legacy.js",
     "WorkspaceDiff.js"
-  ]
+  ],
+  "skip_rollup": true
 }

@@ -399,7 +399,6 @@ all_devtools_modules = [
   "webauthn/WebauthnPane.js",
   "worker_main/WorkerMain.js",
   "worker_service/ServiceDispatcher.js",
-  "workspace_diff/WorkspaceDiff.js",
 ]
 
 input_devtools_modules = []
@@ -668,6 +667,7 @@ all_typescript_modules = [
   "timeline_model/TimelineModelFilter.js",
   "timeline_model/TimelineProfileTree.js",
   "timeline_model/TracingLayerTree.js",
+  "workspace_diff/WorkspaceDiff.js",
 ]
 
 foreach(module, all_typescript_modules) {

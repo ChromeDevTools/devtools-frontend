@@ -1,0 +1,7 @@
+This subdirectory is reserved for dependencies that are part of the upstream `chromium` repository.
+
+To update these dependencies, run this from the root of the `devtools-frontend` repository:
+
+```sh
+scripts/deps/roll_deps.py /path/to/chromium/src .
+```

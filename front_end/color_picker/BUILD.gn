@@ -2,18 +2,29 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../third_party/typescript/typescript.gni")
+import("../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../scripts/build/ninja/devtools_module.gni")
 
-ts_library("color_picker") {
+devtools_module("color_picker") {
   sources = [
     "ContrastDetails.js",
     "ContrastInfo.js",
     "ContrastOverlay.js",
+    "Spectrum.js",
   ]
 
   deps = [
     "../common:bundle",
+    "../host:bundle",
+    "../platform:bundle",
     "../sdk:bundle",
     "../ui",
   ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "color_picker.js"
+  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
+
+  deps = [ ":color_picker" ]
 }

@@ -230,8 +230,62 @@ export const filePathToTypeScriptSourceFile = (filePath: string): ts.SourceFile 
   return ts.createSourceFile(filePath, fs.readFileSync(filePath, {encoding: 'utf8'}), ts.ScriptTarget.ESNext);
 };
 
+const findNestedInterfacesInInterface = (interfaceDec: ts.InterfaceDeclaration): Set<string> => {
+  const foundNestedInterfaceNames = new Set<string>();
+
+  interfaceDec.members.forEach(member => {
+    if (ts.isPropertySignature(member)) {
+      if (!member.type) {
+        return;
+      }
+      const nestedInterfacesForMember = findInterfacesFromType(member.type);
+      nestedInterfacesForMember.forEach(nested => foundNestedInterfaceNames.add(nested));
+    }
+  });
+
+  return foundNestedInterfaceNames;
+};
+
+const populateInterfacesToConvert = (state: WalkerState): WalkerState => {
+  state.interfaceNamesToConvert.forEach(interfaceNameToConvert => {
+    const interfaceDec = Array.from(state.foundInterfaces).find(dec => {
+      return dec.name.escapedText === interfaceNameToConvert;
+    });
+
+    // if the interface isn't found, it might be imported, so just move on.
+    if (!interfaceDec) {
+      return;
+    }
+
+    const nestedInterfaces = findNestedInterfacesInInterface(interfaceDec);
+    nestedInterfaces.forEach(nestedInterface => state.interfaceNamesToConvert.add(nestedInterface));
+  });
+
+  return state;
+};
+
 export const walkTree = (startNode: ts.SourceFile, resolvedFilePath: string): WalkerState => {
-  const state = walkNode(startNode);
+  let state = walkNode(startNode);
+
+  /**
+   * Now we have a list of top level interfaces we need to convert, we need to
+   * go through each one and look for any interfaces referenced within e.g.:
+   *
+   * ```
+   * interface Baz {...}
+   *
+   * interface Foo {
+   *   x: Baz
+   * }
+   *
+   * // in the component
+   * set data(data: { foo: Foo }) {}
+   * ```
+   *
+   * We know we have to convert the Foo interface in the _bridge.js, but we need
+   * to also convert Baz because Foo references it.
+   */
+  state = populateInterfacesToConvert(state);
 
   /* if we are here and found an interface passed to a public method
    * that we didn't find the definition for, that means it's imported
@@ -250,6 +304,8 @@ export const walkTree = (startNode: ts.SourceFile, resolvedFilePath: string): Wa
    * else, error loudly
    */
 
+  const importsToCheck = new Set<string>();
+
   missingInterfaces.forEach(missingInterfaceName => {
     const importForMissingInterface = Array.from(state.imports).find(imp => imp.namedImports.has(missingInterfaceName));
 
@@ -258,10 +314,11 @@ export const walkTree = (startNode: ts.SourceFile, resolvedFilePath: string): Wa
           `Could not find definition for interface ${missingInterfaceName} in the source file or any of its imports.`);
     }
 
-    const fullPathToImport = path.join(path.dirname(resolvedFilePath), importForMissingInterface.filePath);
+    importsToCheck.add(path.join(path.dirname(resolvedFilePath), importForMissingInterface.filePath));
+  });
 
+  importsToCheck.forEach(fullPathToImport => {
     const sourceFile = filePathToTypeScriptSourceFile(fullPathToImport);
-
     const stateFromSubFile = walkTree(sourceFile, fullPathToImport);
 
     // now merge the foundInterfaces part

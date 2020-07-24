@@ -559,7 +559,7 @@ describe('generateClosure', () => {
         pet?: Pet
       }
 
-      class Pet {}
+      interface Pet {}
 
       class Breadcrumbs extends HTMLElement {
         public update(person: Person) {}
@@ -567,7 +567,7 @@ describe('generateClosure', () => {
 
       const interfaces = generateInterfaces(state);
 
-      assert.strictEqual(interfaces.length, 1);
+      assert.strictEqual(interfaces.length, 2);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
 * pet:(!Pet|undefined),
 * }}`);

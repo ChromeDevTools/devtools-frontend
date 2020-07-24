@@ -71,6 +71,12 @@ async function buildTargetInfo(buildDir, gnTarget) {
 
   // Grab the outputs of the build target itself.
   const output = await exec(`gn desc out/${buildDir} ${gnTarget} outputs --format=json`);
+  if (output.startsWith('ERROR')) {
+    console.error('GN error:');
+    console.error(output);
+    process.exit(1);
+  }
+
   const gnTargetOutputFileList = flattenOutput(output);
 
   // The response from this is a new line-separated list of targets.

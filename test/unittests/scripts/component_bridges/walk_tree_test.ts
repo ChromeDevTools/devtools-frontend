@@ -382,6 +382,38 @@ describe('walkTree', () => {
       assert.deepEqual(Array.from(result.interfaceNamesToConvert), ['Person', 'Dog']);
     });
 
+    it('can deal with setters taking optional arguments', () => {
+      const code = `interface Person { name: string }
+
+      interface Dog {
+        name: string
+      }
+
+      class Breadcrumbs extends HTMLElement {
+
+        private render() {
+          console.log('render')
+        }
+
+        public set data(data: {x: Person|null, y: Dog}) {
+        }
+      }`;
+
+      const source = createTypeScriptSourceFile(code);
+      const result = walkTree(source, 'test.ts');
+
+      if (!result.componentClass) {
+        assert.fail('No component class was found');
+      }
+
+      const setterNames = Array.from(result.setters, method => {
+        return (method.name as ts.Identifier).escapedText as string;
+      });
+
+      assert.deepEqual(setterNames, ['data']);
+      assert.deepEqual(Array.from(result.interfaceNamesToConvert), ['Person', 'Dog']);
+    });
+
     it('finds the custom elements define call', () => {
       const code = `class Breadcrumbs extends HTMLElement {
 

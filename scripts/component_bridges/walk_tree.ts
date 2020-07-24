@@ -86,6 +86,14 @@ const findInterfacesFromType = (node: ts.Node): Set<string> => {
           'Found an interface that was referenced indirectly. You must reference interfaces directly, rather than via a qualifier. For example, `Person` rather than `Foo.Person`');
     }
     foundInterfaces.add(node.typeName.escapedText.toString());
+  } else if (ts.isUnionTypeNode(node)) {
+    /**
+     * If the param is something like `x: Foo|null` we want to loop over each type
+     * because we need to pull the `Foo` out.
+     */
+    node.types.forEach(unionTypeMember => {
+      findInterfacesFromType(unionTypeMember).forEach(i => foundInterfaces.add(i));
+    });
   } else if (ts.isTypeLiteralNode(node)) {
     /* type literal here means it's an object: data: { x: string; y: number, z: SomeInterface , ... }
      * so we loop over each member and recurse to find any references we need
@@ -153,7 +161,6 @@ const walkNode = (node: ts.Node, startState?: WalkerState): WalkerState => {
             if (!param.type) {
               return;
             }
-
             const foundInterfaces = findInterfacesFromType(param.type);
             foundInterfaces.forEach(i => state.interfaceNamesToConvert.add(i));
           });
@@ -177,7 +184,6 @@ const walkNode = (node: ts.Node, startState?: WalkerState): WalkerState => {
 
           if (member.parameters[0]) {
             const setterParamType = member.parameters[0].type;
-
             if (setterParamType) {
               const foundInterfaces = findInterfacesFromType(setterParamType);
               foundInterfaces.forEach(i => state.interfaceNamesToConvert.add(i));

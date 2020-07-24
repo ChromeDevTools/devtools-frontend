@@ -305,28 +305,6 @@ export interface GeneratedCode {
 }
 
 export const generateClosureBridge = (state: WalkerState): GeneratedCode => {
-  /* To find the interfaces to convert we go through all the public
-   * methods that we found and look at any interfaces that they take in
-   * as arguments
-   */
-  const interfacesToConvert = new Set<string>();
-
-  state.publicMethods.forEach(method => {
-    method.parameters.forEach(param => {
-      if (!param.type) {
-        return;
-      }
-      // this case matches foo: Array<X> or foo: X[] and pulls out X as an interface we care about
-      if (ts.isArrayTypeNode(param.type) && ts.isTypeReferenceNode(param.type.elementType) &&
-          ts.isIdentifier(param.type.elementType.typeName)) {
-        interfacesToConvert.add(param.type.elementType.typeName.escapedText.toString());
-
-      } else if (ts.isTypeReferenceNode(param.type) && ts.isIdentifier(param.type.typeName)) {
-        interfacesToConvert.add(param.type.typeName.escapedText.toString());
-      }
-    });
-  });
-
   const result: GeneratedCode = {
     interfaces: generateInterfaces(state),
     closureClass: generateClosureClass(state),

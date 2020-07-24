@@ -33,7 +33,7 @@ devtools_module("bindings") {
     "../host:bundle",
     "../sdk:bundle",
     "../text_utils",
-    "../workspace",
+    "../workspace:bundle",
   ]
 }
 

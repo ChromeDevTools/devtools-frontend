@@ -10,5 +10,6 @@
     "FileManager.js",
     "UISourceCode.js",
     "WorkspaceImpl.js"
-  ]
+  ],
+  "skip_rollup": true
 }

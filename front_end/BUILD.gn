@@ -22,6 +22,7 @@ group("front_end") {
     "issues:bundle",
     "sdk:bundle",
     "third_party/lighthouse",
+    "workspace:bundle",
   ]
 
   data_deps = [
@@ -78,6 +79,6 @@ ts_library("ts_library-verification") {
     "protocol_client",
     "root:bundle",
     "sdk:bundle",
-    "workspace",
+    "workspace:bundle",
   ]
 }

@@ -140,7 +140,6 @@ devtools_module_entrypoints = [
   "worker_main/worker_main.js",
   "worker_main/worker_main-legacy.js",
   "worker_service/worker_service.js",
-  "workspace/workspace.js",
   "workspace/workspace-legacy.js",
   "workspace_diff/workspace_diff.js",
   "workspace_diff/workspace_diff-legacy.js",
@@ -172,4 +171,5 @@ generated_typescript_entrypoints = [
   "$resources_out_dir/root/root.js",
   "$resources_out_dir/sdk/sdk.js",
   "$resources_out_dir/platform/platform.js",
+  "$resources_out_dir/workspace/workspace.js",
 ]

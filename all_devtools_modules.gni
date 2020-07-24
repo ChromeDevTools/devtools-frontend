@@ -425,9 +425,6 @@ all_devtools_modules = [
   "worker_main/WorkerMain.js",
   "worker_service/ServiceDispatcher.js",
   "workspace_diff/WorkspaceDiff.js",
-  "workspace/FileManager.js",
-  "workspace/UISourceCode.js",
-  "workspace/WorkspaceImpl.js",
 ]
 
 input_devtools_modules = []
@@ -622,6 +619,9 @@ all_typescript_modules = [
   "sdk/TracingModel.js",
   "sdk/wasm_source_map/pkg/wasm_source_map.js",
   "sdk/WebAuthnModel.js",
+  "workspace/FileManager.js",
+  "workspace/UISourceCode.js",
+  "workspace/WorkspaceImpl.js",
   "third_party/acorn-logical-assignment/package/dist/acorn-logical-assignment.mjs",
   "third_party/acorn-loose/package/dist/acorn-loose.mjs",
   "third_party/acorn-numeric-separator/package/dist/acorn-numeric-separator.mjs",

@@ -275,20 +275,31 @@ export const generateInterfaces = (state: WalkerState): Array<string[]> => {
   const finalCode: Array<string[]> = [];
 
   state.interfaceNamesToConvert.forEach(interfaceName => {
-    const interfaceDec = Array.from(state.foundInterfaces).find(dec => {
+    const interfaceOrTypeAlias = Array.from(state.foundInterfaces).find(dec => {
       return dec.name.escapedText === interfaceName;
     });
 
-    if (!interfaceDec) {
-      throw new Error(`Could not find interface: ${interfaceName}`);
+    if (!interfaceOrTypeAlias) {
+      throw new Error(`Could not find interface or type alias: ${interfaceName}`);
     }
 
-    const interfaceBits: string[] = [];
-    interfaceBits.push('/**');
-    interfaceBits.push('* @typedef {{');
-    interfaceBits.push(...generateInterfaceMembers(interfaceDec.members));
-    interfaceBits.push('* }}');
-    interfaceBits.push('*/');
+    const interfaceBits: string[] = ['/**'];
+
+    if (ts.isInterfaceDeclaration(interfaceOrTypeAlias)) {
+      interfaceBits.push('* @typedef {{');
+      interfaceBits.push(...generateInterfaceMembers(interfaceOrTypeAlias.members));
+      interfaceBits.push('* }}');
+      interfaceBits.push('*/');
+
+    } else if (ts.isTypeAliasDeclaration(interfaceOrTypeAlias)) {
+      if (!ts.isUnionTypeNode(interfaceOrTypeAlias.type)) {
+        throw new Error('Error: type aliases that are not union types are not yet supported.');
+      }
+      const unionTypeConverted = interfaceOrTypeAlias.type.types.map(v => valueForTypeNode(v)).join('|');
+      interfaceBits.push(`* @typedef {{${unionTypeConverted}}}`);
+      interfaceBits.push('*/');
+    }
+
     interfaceBits.push('// @ts-ignore we export this for Closure not TS');
     interfaceBits.push(`export let ${interfaceName};`);
 

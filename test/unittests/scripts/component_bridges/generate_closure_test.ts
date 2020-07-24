@@ -164,7 +164,7 @@ describe('generateClosure', () => {
   */`);
     });
 
-    it('generates the correct interface for opitonal arrays of primitives', () => {
+    it('generates the correct interface for optional arrays of primitives', () => {
       const state = parseCode(`class Breadcrumbs extends HTMLElement {
         private render() {}
 
@@ -535,6 +535,50 @@ describe('generateClosure', () => {
 * name:string,
 * age:number,
 * }}`);
+    });
+
+    it('can convert interfaces that include a union type', () => {
+      const state = parseCode(`interface Person {
+        name: 'jack'|'paul'|'tim';
+        age: number;
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public update(person: Person) {}
+      }`);
+
+      const interfaces = generateInterfaces(state);
+
+      assert.strictEqual(interfaces.length, 1);
+      assert.include(interfaces[0].join('\n'), `* @typedef {{
+* name:"jack"|"paul"|"tim",
+* age:number,
+* }}`);
+    });
+
+    it('can convert interfaces that include a union type defined separately', () => {
+      const state = parseCode(`type Name = 'jack'|'paul'|'tim';
+
+      interface Person {
+        name: Name;
+        age: number;
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public update(person: Person) {}
+      }`);
+
+      const interfaces = generateInterfaces(state);
+
+      assert.strictEqual(interfaces.length, 2);
+      assert.include(interfaces[0].join('\n'), `* @typedef {{
+* name:Name,
+* age:number,
+* }}`);
+      assert.include(interfaces[0].join('\n'), 'export let Person');
+
+      assert.include(interfaces[1].join('\n'), '* @typedef {{"jack"|"paul"|"tim"}}');
+      assert.include(interfaces[1].join('\n'), 'export let Name');
     });
 
     it('converts optional primitives correctly', () => {

@@ -128,6 +128,12 @@ export const valueForTypeNode = (node: ts.TypeNode, isFunctionParam: boolean = f
                         .join(', ');
 
     return `{${members}}`;
+  } else if (ts.isLiteralTypeNode(node)) {
+    if (ts.isStringLiteral(node.literal)) {
+      return `"${node.literal.text}"`;
+    }
+    throw new Error(`Unsupported literal node kind: ${ts.SyntaxKind[node.literal.kind]}`);
+
   } else {
     throw new Error(`Unsupported node kind: ${ts.SyntaxKind[node.kind]}`);
   }

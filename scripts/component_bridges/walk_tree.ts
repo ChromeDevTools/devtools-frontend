@@ -12,7 +12,11 @@ interface ExternalImport {
 }
 
 export interface WalkerState {
-  foundInterfaces: Set<ts.InterfaceDeclaration>;
+  /* Whilst these are technically different things, for the bridge generation we
+   * can treat them the same - the Closure output is similar for both - and the
+   * overhead of an extra piece of state and another set to check isn't worth it
+   */
+  foundInterfaces: Set<ts.InterfaceDeclaration|ts.TypeAliasDeclaration>;
   interfaceNamesToConvert: Set<string>;
   componentClass?: ts.ClassDeclaration;
   publicMethods: Set<ts.MethodDeclaration>;
@@ -76,12 +80,12 @@ const findInterfacesFromType = (node: ts.Node): Set<string> => {
     foundInterfaces.add(node.elementType.typeName.escapedText.toString());
 
   } else if (ts.isTypeReferenceNode(node)) {
-    /*
-     * This means that an interface is being referenced via a qualifier, e.g.:
-     * `Interfaces.Person` rather than `Person`.
-     * We don't support this - all interfaces must be referenced directly.
-     */
     if (!ts.isIdentifier(node.typeName)) {
+      /*
+      * This means that an interface is being referenced via a qualifier, e.g.:
+      * `Interfaces.Person` rather than `Person`.
+      * We don't support this - all interfaces must be referenced directly.
+      */
       throw new Error(
           'Found an interface that was referenced indirectly. You must reference interfaces directly, rather than via a qualifier. For example, `Person` rather than `Foo.Person`');
     }
@@ -195,6 +199,8 @@ const walkNode = (node: ts.Node, startState?: WalkerState): WalkerState => {
 
   } else if (ts.isInterfaceDeclaration(node)) {
     state.foundInterfaces.add(node);
+  } else if (ts.isTypeAliasDeclaration(node)) {
+    state.foundInterfaces.add(node);
   } else if (ts.isImportDeclaration(node)) {
     const filePath = (node.moduleSpecifier as ts.StringLiteral).text;
 
@@ -254,16 +260,24 @@ const findNestedInterfacesInInterface = (interfaceDec: ts.InterfaceDeclaration):
 
 const populateInterfacesToConvert = (state: WalkerState): WalkerState => {
   state.interfaceNamesToConvert.forEach(interfaceNameToConvert => {
-    const interfaceDec = Array.from(state.foundInterfaces).find(dec => {
+    const interfaceOrTypeAliasDeclaration = Array.from(state.foundInterfaces).find(dec => {
       return dec.name.escapedText === interfaceNameToConvert;
     });
 
     // if the interface isn't found, it might be imported, so just move on.
-    if (!interfaceDec) {
+    if (!interfaceOrTypeAliasDeclaration || ts.isTypeAliasDeclaration(interfaceOrTypeAliasDeclaration)) {
       return;
     }
 
-    const nestedInterfaces = findNestedInterfacesInInterface(interfaceDec);
+    if (ts.isTypeAliasDeclaration(interfaceOrTypeAliasDeclaration)) {
+      /* TODO: we need to support finding interfaces from nested type aliases.
+       * e.g.: if we find `type alias Foo = Bar|Baz` we should add `Bar` and `Baz`
+       * to the list of interfaces that need to be converted.
+       */
+      return;
+    }
+
+    const nestedInterfaces = findNestedInterfacesInInterface(interfaceOrTypeAliasDeclaration);
     nestedInterfaces.forEach(nestedInterface => state.interfaceNamesToConvert.add(nestedInterface));
   });
 

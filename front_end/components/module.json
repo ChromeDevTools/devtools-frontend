@@ -4,6 +4,7 @@
     "platform",
     "ui"
   ],
+  "skip_rollup": true,
   "modules": [
     "components.js",
     "components-legacy.js",

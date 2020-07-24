@@ -15,6 +15,7 @@ group("front_end") {
     "color_picker:bundle",
     "common:bundle",
     "component_docs",
+    "components:bundle",
     "data_grid:bundle",
     "diff:bundle",
     "dom_extension:bundle",

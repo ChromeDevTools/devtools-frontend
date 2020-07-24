@@ -179,6 +179,13 @@ export const Descriptors = {
   'mediumicon-bell': {position: 'b6', spritesheet: 'mediumicons', isMask: true},
   'mediumicon-payment': {position: 'c6', spritesheet: 'mediumicons', isMask: true},
   'mediumicon-schedule': {position: 'd6', spritesheet: 'mediumicons', isMask: true},
+  'mediumicon-frame': {position: 'e6', spritesheet: 'mediumicons', isMask: true},
+  'mediumicon-frame-embedded': {position: 'f6', spritesheet: 'mediumicons', isMask: true},
+  'mediumicon-frame-opened': {position: 'f5', spritesheet: 'mediumicons', isMask: true},
+  'mediumicon-frame-embedded-blocked': {position: 'f4', spritesheet: 'mediumicons', isMask: true},
+  'mediumicon-elements-panel': {position: 'f3', spritesheet: 'mediumicons', isMask: true},
+  'mediumicon-network-panel': {position: 'f2', spritesheet: 'mediumicons', isMask: true},
+  'mediumicon-frame-top': {position: 'f1', spritesheet: 'mediumicons', isMask: true},
 
   'badge-navigator-file-sync': {position: 'a9', spritesheet: 'largeicons'},
   'largeicon-add': {position: 'a8', spritesheet: 'largeicons', isMask: true},

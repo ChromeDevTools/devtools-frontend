@@ -5,8 +5,8 @@
 /**
  * @param {string} data
  * @return {{
-  *   variationIds: !Array<number>,
-  *   triggerVariationIds: !Array<number>,
-  * }}
-  */
+ *   variationIds: !Array<number>,
+ *   triggerVariationIds: !Array<number>,
+ * }}
+ */
 export function parseClientVariations(data) {}

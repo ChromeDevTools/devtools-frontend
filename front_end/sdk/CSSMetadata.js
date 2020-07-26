@@ -417,24 +417,23 @@ const _imageValuePresetMap = new Map([
   ['url', 'url(||)'],
 ]);
 
+const _filterValuePresetMap = new Map([
+  ['blur', 'blur(|1px|)'],
+  ['brightness', 'brightness(|0.5|)'],
+  ['contrast', 'contrast(|0.5|)'],
+  ['drop-shadow', 'drop-shadow(|2px 4px 6px black|)'],
+  ['grayscale', 'grayscale(|1|)'],
+  ['hue-rotate', 'hue-rotate(|45deg|)'],
+  ['invert', 'invert(|1|)'],
+  ['opacity', 'opacity(|0.5|)'],
+  ['saturate', 'saturate(|0.5|)'],
+  ['sepia', 'sepia(|1|)'],
+  ['url', 'url(||)'],
+]);
+
 const _valuePresets = new Map([
-  [
-    'filter', new Map([
-      ['blur', 'blur(|1px|)'],
-      ['brightness', 'brightness(|0.5|)'],
-      ['contrast', 'contrast(|0.5|)'],
-      ['drop-shadow', 'drop-shadow(|2px 4px 6px black|)'],
-      ['grayscale', 'grayscale(|1|)'],
-      ['hue-rotate', 'hue-rotate(|45deg|)'],
-      ['invert', 'invert(|1|)'],
-      ['opacity', 'opacity(|0.5|)'],
-      ['saturate', 'saturate(|0.5|)'],
-      ['sepia', 'sepia(|1|)'],
-      ['url', 'url(||)'],
-    ])
-  ],
-  ['background', _imageValuePresetMap], ['background-image', _imageValuePresetMap],
-  ['-webkit-mask-image', _imageValuePresetMap],
+  ['filter', _filterValuePresetMap], ['backdrop-filter', _filterValuePresetMap], ['background', _imageValuePresetMap],
+  ['background-image', _imageValuePresetMap], ['-webkit-mask-image', _imageValuePresetMap],
   [
     'transform', new Map([
       ['scale', 'scale(|1.5|)'],
@@ -473,7 +472,6 @@ const _bezierAwareProperties = new Set([
 ]);
 
 const _colorAwareProperties = new Set([
-  'backdrop-filter',
   'background',
   'background-color',
   'background-image',
@@ -512,7 +510,6 @@ const _colorAwareProperties = new Set([
   '-webkit-box-reflect',
   '-webkit-box-shadow',
   '-webkit-column-rule-color',
-  '-webkit-filter',
   '-webkit-mask',
   '-webkit-mask-box-image',
   '-webkit-mask-box-image-source',
@@ -688,6 +685,12 @@ const _extraPropertyValues = {
   '-webkit-column-span': {values: ['all']},
   '-webkit-column-gap': {values: ['normal']},
   'filter': {
+    values: [
+      'url', 'blur', 'brightness', 'contrast', 'drop-shadow', 'grayscale', 'hue-rotate', 'invert', 'opacity',
+      'saturate', 'sepia'
+    ]
+  },
+  'backdrop-filter': {
     values: [
       'url', 'blur', 'brightness', 'contrast', 'drop-shadow', 'grayscale', 'hue-rotate', 'invert', 'opacity',
       'saturate', 'sepia'

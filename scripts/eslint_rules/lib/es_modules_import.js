@@ -24,8 +24,6 @@ const EXEMPTED_THIRD_PARTY_MODULES = new Set([
   path.join(FRONT_END_DIRECTORY, 'third_party', 'acorn-loose'),
   // marked is exempt as it doesn't expose all its modules from the root file
   path.join(FRONT_END_DIRECTORY, 'third_party', 'marked'),
-  // client-variations is exempt as it doesn't expose all its modules from the root file
-  path.join(FRONT_END_DIRECTORY, 'third_party', 'chromium', 'client-variations'),
 ]);
 
 const CROSS_NAMESPACE_MESSAGE =

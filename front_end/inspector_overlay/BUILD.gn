@@ -27,6 +27,8 @@ action("build_inspector_overlay") {
     "$target_gen_dir/tool_viewport_size.js",
     "$target_gen_dir/tool_distances_impl.js",
     "$target_gen_dir/tool_distances.js",
+    "$target_gen_dir/tool_source_order_impl.js",
+    "$target_gen_dir/tool_source_order.js",
   ]
 
   outputs = [
@@ -37,6 +39,7 @@ action("build_inspector_overlay") {
     "$resources_out_dir/tool_paused.js",
     "$resources_out_dir/tool_screenshot.js",
     "$resources_out_dir/tool_viewport_size.js",
+    "$resources_out_dir/tool_source_order.js",
   ]
 
   args = [
@@ -54,6 +57,8 @@ action("build_inspector_overlay") {
     "5000",  # max_size in bytes
     "tool_viewport_size.js",
     "5000",  # max_size in bytes
+    "tool_source_order.js",
+    "10000",  # max_size in bytes
     "--input_path",
     rebase_path(".", root_build_dir),
     "--output_path",
@@ -87,6 +92,8 @@ ts_library("inspector_overlay") {
     "tool_paused_impl.js",
     "tool_screenshot.js",
     "tool_screenshot_impl.js",
+    "tool_source_order.js",
+    "tool_source_order_impl.js",
     "tool_viewport_size.js",
     "tool_viewport_size_impl.js",
   ]

@@ -187,11 +187,11 @@ describe('User Metrics', () => {
     await assertCapturedEvents([
       {
         name: 'DevTools.PanelShown',
-        value: 10,  // 'drawer-console-view'.
+        value: 10,  // 'console-view'.
       },
       {
         name: 'DevTools.PanelShown',
-        value: 11,  // 'drawer-animations'.
+        value: 11,  // 'animations'.
       },
     ]);
   });
@@ -206,11 +206,11 @@ describe('User Metrics', () => {
       },
       {
         name: 'DevTools.PanelShown',
-        value: 10,  // 'drawer-console-view'.
+        value: 10,  // 'console-view'.
       },
       {
         name: 'DevTools.PanelShown',
-        value: 37,  // 'drawer-issues-pane'.
+        value: 37,  // 'issues-pane'.
       },
     ]);
   });

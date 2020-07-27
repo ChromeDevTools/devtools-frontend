@@ -79,7 +79,7 @@ export class InspectorView extends VBox {
     this._drawerTabbedPane.element.classList.add('drawer-tabbed-pane');
     const closeDrawerButton = new ToolbarButton(Common.UIString.UIString('Close drawer'), 'largeicon-delete');
     closeDrawerButton.addEventListener(ToolbarButton.Events.Click, this._closeDrawer, this);
-    this._drawerTabbedPane.addEventListener(TabbedPaneEvents.TabSelected, this._drawerTabSelected, this);
+    this._drawerTabbedPane.addEventListener(TabbedPaneEvents.TabSelected, this._tabSelected, this);
     this._drawerTabbedPane.setTabDelegate(this._tabDelegate);
 
     this._drawerSplitWidget.setSidebarWidget(this._drawerTabbedPane);
@@ -368,14 +368,6 @@ export class InspectorView extends VBox {
   _tabSelected(event) {
     const tabId = /** @type {string} */ (event.data['tabId']);
     Host.userMetrics.panelShown(tabId);
-  }
-
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _drawerTabSelected(event) {
-    const tabId = /** @type {string} */ (event.data['tabId']);
-    Host.userMetrics.drawerShown(tabId);
   }
 
   /**

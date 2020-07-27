@@ -56,13 +56,6 @@ export class UserMetrics {
   }
 
   /**
-   * @param {string} drawerId
-   */
-  drawerShown(drawerId) {
-    this.panelShown('drawer-' + drawerId);
-  }
-
-  /**
    * @param {string} settingsViewId
    */
   settingsPanelShown(settingsViewId) {
@@ -233,25 +226,25 @@ export const PanelCodes = {
   'legacy-audits-deprecated': 7,
   console: 8,
   layers: 9,
-  'drawer-console-view': 10,
-  'drawer-animations': 11,
-  'drawer-network.config': 12,
-  'drawer-rendering': 13,
-  'drawer-sensors': 14,
-  'drawer-sources.search': 15,
+  'console-view': 10,
+  'animations': 11,
+  'network.config': 12,
+  'rendering': 13,
+  'sensors': 14,
+  'sources.search': 15,
   security: 16,
   js_profiler: 17,
   lighthouse: 18,
-  'drawer-coverage': 19,
-  'drawer-protocol-monitor': 20,
-  'drawer-remote-devices': 21,
-  'drawer-web-audio': 22,
-  'drawer-changes.changes': 23,
-  'drawer-performance.monitor': 24,
-  'drawer-release-note': 25,
-  'drawer-live_heap_profile': 26,
-  'drawer-sources.quick': 27,
-  'drawer-network.blocked-urls': 28,
+  'coverage': 19,
+  'protocol-monitor': 20,
+  'remote-devices': 21,
+  'web-audio': 22,
+  'changes.changes': 23,
+  'performance.monitor': 24,
+  'release-note': 25,
+  'live_heap_profile': 26,
+  'sources.quick': 27,
+  'network.blocked-urls': 28,
   'settings-preferences': 29,
   'settings-workspace': 30,
   'settings-experiments': 31,
@@ -260,7 +253,7 @@ export const PanelCodes = {
   'settings-throttling-conditions': 34,
   'settings-emulation-locations': 35,
   'settings-shortcuts': 36,
-  'drawer-issues-pane': 37,
+  'issues-pane': 37,
   'settings-keybinds': 38,
   'cssoverview': 39
 };

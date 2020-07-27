@@ -9,6 +9,6 @@ ts_library("persistence") {
 
   deps = [
     "../common:bundle",
-    "../text_utils",
+    "../text_utils:bundle",
   ]
 }

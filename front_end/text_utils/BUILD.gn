@@ -2,9 +2,10 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../third_party/typescript/typescript.gni")
+import("../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../scripts/build/ninja/devtools_module.gni")
 
-ts_library("text_utils") {
+devtools_module("text_utils") {
   sources = [
     "ContentProvider.js",
     "StaticContentProvider.js",
@@ -12,7 +13,6 @@ ts_library("text_utils") {
     "TextCursor.js",
     "TextRange.js",
     "TextUtils.js",
-    "text_utils.js",
   ]
 
   deps = [
@@ -20,4 +20,14 @@ ts_library("text_utils") {
     "../platform:bundle",
     "../root:bundle",
   ]
+
+  visibility = [ "../../test/unittests/front_end/text_utils:text_utils" ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "text_utils.js"
+
+  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
+
+  deps = [ ":text_utils" ]
 }

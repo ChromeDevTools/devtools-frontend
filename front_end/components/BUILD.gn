@@ -21,7 +21,7 @@ devtools_module("components") {
     "../host:bundle",
     "../platform:bundle",
     "../sdk:bundle",
-    "../text_utils",
+    "../text_utils:bundle",
     "../ui",
     "../workspace:bundle",
   ]

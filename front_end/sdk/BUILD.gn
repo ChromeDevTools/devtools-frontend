@@ -77,7 +77,7 @@ devtools_module("sdk") {
     "../host:bundle",
     "../platform:bundle",
     "../protocol_client",
-    "../text_utils",
+    "../text_utils:bundle",
     "wasm_source_map",
   ]
 }

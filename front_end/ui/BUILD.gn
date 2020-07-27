@@ -71,7 +71,7 @@ ts_library("ui") {
     "../common:bundle",
     "../dom_extension:bundle",
     "../host:bundle",
-    "../text_utils",
+    "../text_utils:bundle",
     "utils",
   ]
 }

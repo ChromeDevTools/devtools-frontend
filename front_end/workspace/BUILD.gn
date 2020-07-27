@@ -16,7 +16,7 @@ devtools_module("workspace") {
     "../common:bundle",
     "../host:bundle",
     "../platform:bundle",
-    "../text_utils",
+    "../text_utils:bundle",
   ]
 }
 

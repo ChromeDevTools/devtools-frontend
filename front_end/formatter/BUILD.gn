@@ -17,7 +17,7 @@ devtools_module("formatter") {
     "../common:bundle",
     "../platform:bundle",
     "../sdk:bundle",
-    "../text_utils",
+    "../text_utils:bundle",
     "../workspace:bundle",
   ]
 }

@@ -15,7 +15,7 @@ devtools_module("search") {
   deps = [
     "../common:bundle",
     "../components:bundle",
-    "../text_utils",
+    "../text_utils:bundle",
     "../ui",
     "../workspace:bundle",
   ]

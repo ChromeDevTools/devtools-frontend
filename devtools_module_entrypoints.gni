@@ -43,7 +43,6 @@ devtools_module_entrypoints = [
   "extensions/extensions-legacy.js",
   "formatter/formatter-legacy.js",
   "har_importer/har_importer-legacy.js",
-  "heap_snapshot_model/heap_snapshot_model.js",
   "heap_snapshot_model/heap_snapshot_model-legacy.js",
   "heap_snapshot_worker/heap_snapshot_worker.js",
   "heap_snapshot_worker/heap_snapshot_worker-legacy.js",
@@ -172,4 +171,5 @@ generated_typescript_entrypoints = [
   "$resources_out_dir/workspace_diff/workspace_diff.js",
   "$resources_out_dir/worker_service/worker_service.js",
   "$resources_out_dir/har_importer/har_importer.js",
+  "$resources_out_dir/heap_snapshot_model/heap_snapshot_model.js",
 ]

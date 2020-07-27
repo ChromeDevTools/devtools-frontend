@@ -23,6 +23,7 @@ group("front_end") {
     "formatter:bundle",
     "formatter_worker:bundle",
     "har_importer:bundle",
+    "heap_snapshot_model:bundle",
     "i18n:bundle_i18n",
     "issues:bundle",
     "sdk:bundle",

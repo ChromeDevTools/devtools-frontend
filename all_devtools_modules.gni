@@ -82,8 +82,6 @@ all_devtools_modules = [
   "input/InputTimeline.js",
   "inspector_main/InspectorMain.js",
   "inspector_main/RenderingOptions.js",
-  "javascript_metadata/JavaScriptMetadata.js",
-  "javascript_metadata/NativeFunctions.js",
   "js_main/JsMain.js",
   "layer_viewer/LayerDetailsView.js",
   "layer_viewer/Layers3DView.js",
@@ -668,6 +666,8 @@ all_typescript_modules = [
   "har_importer/HARFormat.js",
   "har_importer/HARImporter.js",
   "heap_snapshot_model/HeapSnapshotModel.js",
+  "javascript_metadata/JavaScriptMetadata.js",
+  "javascript_metadata/NativeFunctions.js",
 ]
 
 foreach(module, all_typescript_modules) {

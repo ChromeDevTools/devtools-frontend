@@ -26,6 +26,7 @@ group("front_end") {
     "heap_snapshot_model:bundle",
     "i18n:bundle_i18n",
     "issues:bundle",
+    "javascript_metadata:bundle",
     "sdk:bundle",
     "search:bundle",
     "text_utils:bundle",

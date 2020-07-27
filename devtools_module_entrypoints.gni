@@ -58,7 +58,6 @@ devtools_module_entrypoints = [
   "issues/issues-legacy.js",
   "developer_resources/developer_resources.js",
   "developer_resources/developer_resources-legacy.js",
-  "javascript_metadata/javascript_metadata.js",
   "javascript_metadata/javascript_metadata-legacy.js",
   "js_main/js_main.js",
   "js_main/js_main-legacy.js",
@@ -172,4 +171,5 @@ generated_typescript_entrypoints = [
   "$resources_out_dir/worker_service/worker_service.js",
   "$resources_out_dir/har_importer/har_importer.js",
   "$resources_out_dir/heap_snapshot_model/heap_snapshot_model.js",
+  "$resources_out_dir/javascript_metadata/javascript_metadata.js",
 ]

@@ -242,7 +242,7 @@ export const generateClosureClass = (state: WalkerState): string[] => {
 };
 
 
-const generateInterfaceMembers = (members: ts.NodeArray<ts.TypeElement>): string[] => {
+const generateInterfaceMembers = (members: ts.NodeArray<ts.TypeElement|ts.TypeNode>): string[] => {
   const output: string[] = [];
 
   members.forEach(member => {
@@ -271,45 +271,108 @@ const generateInterfaceMembers = (members: ts.NodeArray<ts.TypeElement>): string
   return output;
 };
 
+/**
+ * Takes a type reference node, looks up the state of found interface for it,
+ * and returns its members.
+ */
+const membersForTypeReference = (foundInterfaces: WalkerState['foundInterfaces'],
+                                 typeReference: ts.TypeReferenceNode): ts.NodeArray<ts.TypeElement|ts.TypeNode> => {
+  if (!ts.isIdentifierOrPrivateIdentifier(typeReference.typeName)) {
+    throw new Error('Unexpected type reference without an identifier.');
+  }
+  const interfaceName = typeReference.typeName.escapedText.toString();
+
+  const interfaceOrTypeAlias = Array.from(foundInterfaces).find(dec => {
+    return dec.name.escapedText === interfaceName;
+  });
+
+  if (!interfaceOrTypeAlias) {
+    throw new Error(`Could not find interface or type alias: ${interfaceName}`);
+  }
+
+  if (ts.isInterfaceDeclaration(interfaceOrTypeAlias)) {
+    return interfaceOrTypeAlias.members;
+  }
+
+  if (ts.isTypeAliasDeclaration(interfaceOrTypeAlias) && ts.isUnionTypeNode(interfaceOrTypeAlias.type)) {
+    return interfaceOrTypeAlias.type.types;
+  }
+
+  if (ts.isTypeAliasDeclaration(interfaceOrTypeAlias) && ts.isTypeLiteralNode(interfaceOrTypeAlias.type)) {
+    return interfaceOrTypeAlias.type.members;
+  }
+
+  throw new Error(`Unexpected type reference: ${ts.SyntaxKind[interfaceOrTypeAlias.kind]}`);
+};
+
+const generateClosureForInterface =
+    (foundInterfaces: WalkerState['foundInterfaces'], interfaceName: string): string[] => {
+      const interfaceOrTypeAlias = Array.from(foundInterfaces).find(dec => {
+        return dec.name.escapedText === interfaceName;
+      });
+
+      if (!interfaceOrTypeAlias) {
+        throw new Error(`Could not find interface or type alias: ${interfaceName}`);
+      }
+
+      const interfaceBits: string[] = ['/**'];
+
+      if (ts.isInterfaceDeclaration(interfaceOrTypeAlias)) {
+        // e.g. interface X { ... }
+        interfaceBits.push('* @typedef {{');
+        interfaceBits.push(...generateInterfaceMembers(interfaceOrTypeAlias.members));
+        interfaceBits.push('* }}');
+        interfaceBits.push('*/');
+      } else if (ts.isTypeAliasDeclaration(interfaceOrTypeAlias) && ts.isUnionTypeNode(interfaceOrTypeAlias.type)) {
+        // e.g. type X = A|B, type Y = string|number, etc
+        const unionTypeConverted = interfaceOrTypeAlias.type.types.map(v => valueForTypeNode(v)).join('|');
+        interfaceBits.push(`* @typedef {{${unionTypeConverted}}}`);
+        interfaceBits.push('*/');
+      } else if (ts.isTypeAliasDeclaration(interfaceOrTypeAlias) && ts.isTypeLiteralNode(interfaceOrTypeAlias.type)) {
+        // e.g. type X = { name: string; }
+        interfaceBits.push('* @typedef {{');
+        interfaceBits.push(...generateInterfaceMembers(interfaceOrTypeAlias.type.members));
+        interfaceBits.push('* }}');
+        interfaceBits.push('*/');
+      } else if (
+          ts.isTypeAliasDeclaration(interfaceOrTypeAlias) && ts.isIntersectionTypeNode(interfaceOrTypeAlias.type)) {
+        // e.g. type Foo = Bar & {...}
+        /* Closure types don't support being extended, so in this case we define the type Foo
+      * in Closure as all the members of Foo and all the members of Bar
+      */
+        interfaceBits.push('* @typedef {{');
+        interfaceOrTypeAlias.type.types.forEach(typePart => {
+          if (ts.isTypeLiteralNode(typePart)) {
+            interfaceBits.push(...generateInterfaceMembers(typePart.members));
+          } else if (ts.isTypeReferenceNode(typePart)) {
+            /** This means it's a reference to either an interface or a type alias
+         * So we need to find that object in the interfaces that the tree walker found
+         * And then parse out the members to Closure.
+         */
+            const members = membersForTypeReference(foundInterfaces, typePart);
+            interfaceBits.push(...generateInterfaceMembers(members));
+          } else {
+            throw new Error(`Unsupported: a type extended something that the bridges generator doesn't understand: ${
+                ts.SyntaxKind[typePart.kind]}`);
+          }
+        });
+        interfaceBits.push('* }}');
+        interfaceBits.push('*/');
+      } else {
+        throw new Error(`Unsupported type alias nested type: ${ts.SyntaxKind[interfaceOrTypeAlias.type.kind]}.`);
+      }
+
+      interfaceBits.push('// @ts-ignore we export this for Closure not TS');
+      interfaceBits.push(`export let ${interfaceName};`);
+
+      return interfaceBits;
+    };
+
 export const generateInterfaces = (state: WalkerState): Array<string[]> => {
   const finalCode: Array<string[]> = [];
 
   state.interfaceNamesToConvert.forEach(interfaceName => {
-    const interfaceOrTypeAlias = Array.from(state.foundInterfaces).find(dec => {
-      return dec.name.escapedText === interfaceName;
-    });
-
-    if (!interfaceOrTypeAlias) {
-      throw new Error(`Could not find interface or type alias: ${interfaceName}`);
-    }
-
-    const interfaceBits: string[] = ['/**'];
-
-    if (ts.isInterfaceDeclaration(interfaceOrTypeAlias)) {
-      // e.g. interface X { ... }
-      interfaceBits.push('* @typedef {{');
-      interfaceBits.push(...generateInterfaceMembers(interfaceOrTypeAlias.members));
-      interfaceBits.push('* }}');
-      interfaceBits.push('*/');
-    } else if (ts.isTypeAliasDeclaration(interfaceOrTypeAlias) && ts.isUnionTypeNode(interfaceOrTypeAlias.type)) {
-      // e.g. type X = A|B, type Y = string|number, etc
-      const unionTypeConverted = interfaceOrTypeAlias.type.types.map(v => valueForTypeNode(v)).join('|');
-      interfaceBits.push(`* @typedef {{${unionTypeConverted}}}`);
-      interfaceBits.push('*/');
-    } else if (ts.isTypeAliasDeclaration(interfaceOrTypeAlias) && ts.isTypeLiteralNode(interfaceOrTypeAlias.type)) {
-      // e.g. type X = { name: string; }
-      interfaceBits.push('* @typedef {{');
-      interfaceBits.push(...generateInterfaceMembers(interfaceOrTypeAlias.type.members));
-      interfaceBits.push('* }}');
-      interfaceBits.push('*/');
-    } else {
-      throw new Error(`Unsupported type alias nested type: ${ts.SyntaxKind[interfaceOrTypeAlias.type.kind]}.`);
-    }
-
-    interfaceBits.push('// @ts-ignore we export this for Closure not TS');
-    interfaceBits.push(`export let ${interfaceName};`);
-
-    finalCode.push(interfaceBits);
+    finalCode.push(generateClosureForInterface(state.foundInterfaces, interfaceName));
   });
 
   return finalCode;

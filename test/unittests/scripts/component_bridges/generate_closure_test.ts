@@ -853,5 +853,53 @@ export let Person`);
 * }}`);
       assert.include(interfaces[1].join('\n'), 'export let Name');
     });
+
+    it('understands types that extend other types and fully defines them', () => {
+      const state = parseCode(`type NamedThing = {
+        name: string;
+      }
+
+      type Person = NamedThing & {
+        age: number;
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public update(person: Person) {}
+      }`);
+
+      const interfaces = generateInterfaces(state);
+
+      assert.strictEqual(interfaces.length, 1);
+      assert.include(interfaces[0].join('\n'), `* @typedef {{
+* name:string,
+* age:number,
+* }}`);
+      assert.include(interfaces[0].join('\n'), 'export let Person');
+    });
+
+    it('understands types that extend other types with no object literals', () => {
+      const state = parseCode(`type NamedThing = {
+        name: string;
+      }
+
+      type AgedThing = {
+        age: number;
+      }
+
+      type Person = NamedThing & AgedThing;
+
+      class Breadcrumbs extends HTMLElement {
+        public update(person: Person) {}
+      }`);
+
+      const interfaces = generateInterfaces(state);
+
+      assert.strictEqual(interfaces.length, 1);
+      assert.include(interfaces[0].join('\n'), `* @typedef {{
+* name:string,
+* age:number,
+* }}`);
+      assert.include(interfaces[0].join('\n'), 'export let Person');
+    });
   });
 });

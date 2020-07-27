@@ -3,6 +3,19 @@
 // found in the LICENSE file.
 
 import * as puppeteer from 'puppeteer';
+declare module 'puppeteer' {
+  interface QueryHandler {
+    queryOne?: (element: Element|Document, selector: string) => Element | null;
+    queryAll?: (element: Element|Document, selector: string) => Element[] | NodeListOf<Element>;
+  }
+
+  function __experimental_registerCustomQueryHandler(name: string, queryHandler: QueryHandler): void;
+  function __experimental_unregisterCustomQueryHandler(name: string): void;
+  function __experimental_customQueryHandlers(): Map<string, QueryHandler>;
+  function __experimental_clearQueryHandlers(): void;
+}
+
+import {querySelectorShadowAll, querySelectorShadowOne, querySelectorShadowTextAll, querySelectorShadowTextOne} from './custom-query-handlers.js';
 
 let target: puppeteer.Page;
 let frontend: puppeteer.Page;
@@ -61,4 +74,17 @@ export const getHostedModeServerPort = () => {
         'at runtime when the port is available.');
   }
   return hostedModeServerPort;
+};
+
+export const registerHandlers = () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  puppeteer.__experimental_registerCustomQueryHandler('pierceShadow', {
+    queryOne: querySelectorShadowOne,
+    queryAll: querySelectorShadowAll,
+  });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  puppeteer.__experimental_registerCustomQueryHandler('pierceShadowText', {
+    queryOne: querySelectorShadowTextOne,
+    queryAll: querySelectorShadowTextAll,
+  });
 };

@@ -8,7 +8,7 @@ import {ChildProcess, spawn} from 'child_process';
 import * as path from 'path';
 import * as puppeteer from 'puppeteer';
 
-import {getBrowserAndPages, setBrowserAndPages, setHostedModeServerPort} from './puppeteer-state.js';
+import {getBrowserAndPages, registerHandlers, setBrowserAndPages, setHostedModeServerPort} from './puppeteer-state.js';
 
 const HOSTED_MODE_SERVER_PATH = path.join(__dirname, '..', '..', 'scripts', 'hosted_mode', 'server.js');
 const EMPTY_PAGE = 'data:text/html,';
@@ -222,6 +222,7 @@ export async function globalSetup() {
   try {
     const port = await startHostedModeServer();
     console.log(`Started hosted mode server on port ${port}`);
+    registerHandlers();
     setHostedModeServerPort(port);
     await loadTargetPageAndDevToolsFrontend(port);
   } catch (message) {

@@ -13,6 +13,7 @@ group("conductor") {
 
 node_ts_library("implementation") {
   sources = [
+    "custom-query-handlers.ts",
     "hooks.ts",
     "mocha_hooks.ts",
     "puppeteer-state.ts",

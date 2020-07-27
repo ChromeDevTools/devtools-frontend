@@ -274,6 +274,12 @@ const populateInterfacesToConvert = (state: WalkerState): WalkerState => {
         /* this means it's a type Person = { name: string } */
         const nestedInterfaces = findNestedInterfacesInInterface(interfaceOrTypeAliasDeclaration.type);
         nestedInterfaces.forEach(nestedInterface => state.interfaceNamesToConvert.add(nestedInterface));
+      } else if (ts.isUnionTypeNode(interfaceOrTypeAliasDeclaration.type)) {
+        interfaceOrTypeAliasDeclaration.type.types.forEach(unionTypeMember => {
+          if (ts.isTypeReferenceNode(unionTypeMember) && ts.isIdentifierOrPrivateIdentifier(unionTypeMember.typeName)) {
+            state.interfaceNamesToConvert.add(unionTypeMember.typeName.escapedText.toString());
+          }
+        });
       }
 
       /* TODO: we need to support finding interfaces from nested type aliases in union types.

@@ -581,6 +581,146 @@ describe('generateClosure', () => {
       assert.include(interfaces[1].join('\n'), 'export let Name');
     });
 
+    it('supports unions of interfaces', () => {
+      const state = parseCode(`type Animal = Dog|Cat;
+
+      interface Dog {
+        name: string;
+      }
+
+      interface Cat {
+        name: string;
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public update(animal: Animal) {}
+      }`);
+
+      const interfaces = generateInterfaces(state);
+
+      assert.strictEqual(interfaces.length, 3);
+      assert.include(interfaces[0].join('\n'), '* @typedef {{Dog|Cat}}');
+      assert.include(interfaces[0].join('\n'), 'export let Animal');
+
+      assert.include(interfaces[1].join('\n'), `* @typedef {{
+* name:string,
+* }}`);
+      assert.include(interfaces[1].join('\n'), 'export let Dog');
+
+      assert.include(interfaces[2].join('\n'), `* @typedef {{
+* name:string,
+* }}`);
+      assert.include(interfaces[2].join('\n'), 'export let Cat');
+    });
+
+    it('supports unions of interfaces and types', () => {
+      const state = parseCode(`type Animal = Dog|Cat;
+
+      interface Dog {
+        name: string;
+      }
+
+      type Cat = {
+        name: string;
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public update(animal: Animal) {}
+      }`);
+
+      const interfaces = generateInterfaces(state);
+
+      assert.strictEqual(interfaces.length, 3);
+      assert.include(interfaces[0].join('\n'), '* @typedef {{Dog|Cat}}');
+      assert.include(interfaces[0].join('\n'), 'export let Animal');
+
+      assert.include(interfaces[1].join('\n'), `* @typedef {{
+* name:string,
+* }}`);
+      assert.include(interfaces[1].join('\n'), 'export let Dog');
+
+      assert.include(interfaces[2].join('\n'), `* @typedef {{
+* name:string,
+* }}`);
+      assert.include(interfaces[2].join('\n'), 'export let Cat');
+    });
+
+    it('supports unions of interfaces and types and primitives', () => {
+      const state = parseCode(`type Animal = Dog|Cat|string|number;
+
+      interface Dog {
+        name: string;
+      }
+
+      type Cat = {
+        name: string;
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public update(animal: Animal) {}
+      }`);
+
+      const interfaces = generateInterfaces(state);
+
+      assert.strictEqual(interfaces.length, 3);
+      assert.include(interfaces[0].join('\n'), '* @typedef {{Dog|Cat|string|number}}');
+      assert.include(interfaces[0].join('\n'), 'export let Animal');
+
+      assert.include(interfaces[1].join('\n'), `* @typedef {{
+* name:string,
+* }}`);
+      assert.include(interfaces[1].join('\n'), 'export let Dog');
+
+      assert.include(interfaces[2].join('\n'), `* @typedef {{
+* name:string,
+* }}`);
+      assert.include(interfaces[2].join('\n'), 'export let Cat');
+    });
+
+    it('supports unions of interfaces that reference interfaces', () => {
+      const state = parseCode(`type Animal = Dog|Cat;
+
+      interface DogFood {
+        name: string;
+        foodType: 'healthy'|'tasty';
+      }
+      interface Dog {
+        name: string;
+        food: DogFood;
+      }
+
+      type Cat = {
+        name: string;
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public update(animal: Animal) {}
+      }`);
+
+      const interfaces = generateInterfaces(state);
+
+      assert.strictEqual(interfaces.length, 4);
+      assert.include(interfaces[0].join('\n'), '* @typedef {{Dog|Cat}}');
+      assert.include(interfaces[0].join('\n'), 'export let Animal');
+
+      assert.include(interfaces[1].join('\n'), `* @typedef {{
+* name:string,
+* food:DogFood,
+* }}`);
+      assert.include(interfaces[1].join('\n'), 'export let Dog');
+
+      assert.include(interfaces[2].join('\n'), `* @typedef {{
+* name:string,
+* }}`);
+      assert.include(interfaces[2].join('\n'), 'export let Cat');
+
+      assert.include(interfaces[3].join('\n'), `* @typedef {{
+* name:string,
+* foodType:"healthy"|"tasty",
+* }}`);
+      assert.include(interfaces[3].join('\n'), 'export let DogFood');
+    });
+
     it('converts optional primitives correctly', () => {
       const state = parseCode(`interface Person {
         name?: string

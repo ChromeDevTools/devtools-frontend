@@ -633,5 +633,85 @@ describe('generateClosure', () => {
       assert.include(interfaces[0].join('\n'), `// @ts-ignore we export this for Closure not TS
 export let Person`);
     });
+
+    it('converts a TS type into a Closure interface', () => {
+      const state = parseCode(`type Person = {
+        name: string;
+        age: number;
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public update(person: Person) {}
+      }`);
+
+      const interfaces = generateInterfaces(state);
+
+      assert.strictEqual(interfaces.length, 1);
+      assert.include(interfaces[0].join('\n'), `* @typedef {{
+* name:string,
+* age:number,
+* }}`);
+      assert.include(interfaces[0].join('\n'), 'export let Person');
+    });
+
+    it('supports a type that has a nested interface within', () => {
+      const state = parseCode(`type Person = {
+        name: Name;
+        age: number;
+      }
+
+      interface Name {
+        firstLetter: string;
+        rest: string[];
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public update(person: Person) {}
+      }`);
+
+      const interfaces = generateInterfaces(state);
+
+      assert.strictEqual(interfaces.length, 2);
+      assert.include(interfaces[0].join('\n'), `* @typedef {{
+* name:Name,
+* age:number,
+* }}`);
+      assert.include(interfaces[0].join('\n'), 'export let Person');
+      assert.include(interfaces[1].join('\n'), `* @typedef {{
+* firstLetter:string,
+* rest:Array.<string>,
+* }}`);
+      assert.include(interfaces[1].join('\n'), 'export let Name');
+    });
+
+    it('pulls out a type that is nested within an interface', () => {
+      const state = parseCode(`interface Person {
+        name: Name;
+        age: number;
+      }
+
+      type Name = {
+        firstLetter: string;
+        rest: string[];
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public update(person: Person) {}
+      }`);
+
+      const interfaces = generateInterfaces(state);
+
+      assert.strictEqual(interfaces.length, 2);
+      assert.include(interfaces[0].join('\n'), `* @typedef {{
+* name:Name,
+* age:number,
+* }}`);
+      assert.include(interfaces[0].join('\n'), 'export let Person');
+      assert.include(interfaces[1].join('\n'), `* @typedef {{
+* firstLetter:string,
+* rest:Array.<string>,
+* }}`);
+      assert.include(interfaces[1].join('\n'), 'export let Name');
+    });
   });
 });

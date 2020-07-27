@@ -242,7 +242,7 @@ export const filePathToTypeScriptSourceFile = (filePath: string): ts.SourceFile 
   return ts.createSourceFile(filePath, fs.readFileSync(filePath, {encoding: 'utf8'}), ts.ScriptTarget.ESNext);
 };
 
-const findNestedInterfacesInInterface = (interfaceDec: ts.InterfaceDeclaration): Set<string> => {
+const findNestedInterfacesInInterface = (interfaceDec: ts.InterfaceDeclaration|ts.TypeLiteralNode): Set<string> => {
   const foundNestedInterfaceNames = new Set<string>();
 
   interfaceDec.members.forEach(member => {
@@ -265,18 +265,25 @@ const populateInterfacesToConvert = (state: WalkerState): WalkerState => {
     });
 
     // if the interface isn't found, it might be imported, so just move on.
-    if (!interfaceOrTypeAliasDeclaration || ts.isTypeAliasDeclaration(interfaceOrTypeAliasDeclaration)) {
+    if (!interfaceOrTypeAliasDeclaration) {
       return;
     }
 
     if (ts.isTypeAliasDeclaration(interfaceOrTypeAliasDeclaration)) {
-      /* TODO: we need to support finding interfaces from nested type aliases.
+      if (ts.isTypeLiteralNode(interfaceOrTypeAliasDeclaration.type)) {
+        /* this means it's a type Person = { name: string } */
+        const nestedInterfaces = findNestedInterfacesInInterface(interfaceOrTypeAliasDeclaration.type);
+        nestedInterfaces.forEach(nestedInterface => state.interfaceNamesToConvert.add(nestedInterface));
+      }
+
+      /* TODO: we need to support finding interfaces from nested type aliases in union types.
        * e.g.: if we find `type alias Foo = Bar|Baz` we should add `Bar` and `Baz`
        * to the list of interfaces that need to be converted.
        */
       return;
     }
 
+    // If we got here, it was definitely an interface declaration.
     const nestedInterfaces = findNestedInterfacesInInterface(interfaceOrTypeAliasDeclaration);
     nestedInterfaces.forEach(nestedInterface => state.interfaceNamesToConvert.add(nestedInterface));
   });

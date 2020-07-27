@@ -286,18 +286,24 @@ export const generateInterfaces = (state: WalkerState): Array<string[]> => {
     const interfaceBits: string[] = ['/**'];
 
     if (ts.isInterfaceDeclaration(interfaceOrTypeAlias)) {
+      // e.g. interface X { ... }
       interfaceBits.push('* @typedef {{');
       interfaceBits.push(...generateInterfaceMembers(interfaceOrTypeAlias.members));
       interfaceBits.push('* }}');
       interfaceBits.push('*/');
-
-    } else if (ts.isTypeAliasDeclaration(interfaceOrTypeAlias)) {
-      if (!ts.isUnionTypeNode(interfaceOrTypeAlias.type)) {
-        throw new Error('Error: type aliases that are not union types are not yet supported.');
-      }
+    } else if (ts.isTypeAliasDeclaration(interfaceOrTypeAlias) && ts.isUnionTypeNode(interfaceOrTypeAlias.type)) {
+      // e.g. type X = A|B, type Y = string|number, etc
       const unionTypeConverted = interfaceOrTypeAlias.type.types.map(v => valueForTypeNode(v)).join('|');
       interfaceBits.push(`* @typedef {{${unionTypeConverted}}}`);
       interfaceBits.push('*/');
+    } else if (ts.isTypeAliasDeclaration(interfaceOrTypeAlias) && ts.isTypeLiteralNode(interfaceOrTypeAlias.type)) {
+      // e.g. type X = { name: string; }
+      interfaceBits.push('* @typedef {{');
+      interfaceBits.push(...generateInterfaceMembers(interfaceOrTypeAlias.type.members));
+      interfaceBits.push('* }}');
+      interfaceBits.push('*/');
+    } else {
+      throw new Error(`Unsupported type alias nested type: ${ts.SyntaxKind[interfaceOrTypeAlias.type.kind]}.`);
     }
 
     interfaceBits.push('// @ts-ignore we export this for Closure not TS');

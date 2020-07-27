@@ -22,6 +22,7 @@ group("front_end") {
     "elements:bundle",
     "formatter:bundle",
     "formatter_worker:bundle",
+    "har_importer:bundle",
     "i18n:bundle_i18n",
     "issues:bundle",
     "sdk:bundle",

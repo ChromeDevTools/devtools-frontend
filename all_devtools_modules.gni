@@ -64,8 +64,6 @@ all_devtools_modules = [
   "extensions/ExtensionTraceProvider.js",
   "extensions/ExtensionView.js",
   "extensions/LanguageExtensionEndpoint.js",
-  "har_importer/HARFormat.js",
-  "har_importer/HARImporter.js",
   "heap_snapshot_model/HeapSnapshotModel.js",
   "heap_snapshot_worker/AllocationProfile.js",
   "heap_snapshot_worker/HeapSnapshot.js",
@@ -668,6 +666,8 @@ all_typescript_modules = [
   "timeline_model/TracingLayerTree.js",
   "workspace_diff/WorkspaceDiff.js",
   "worker_service/ServiceDispatcher.js",
+  "har_importer/HARFormat.js",
+  "har_importer/HARImporter.js",
 ]
 
 foreach(module, all_typescript_modules) {

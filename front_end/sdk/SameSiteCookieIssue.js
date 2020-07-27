@@ -176,7 +176,7 @@ const sameSiteUnspecifiedErrorRead = {
        This behavior protects user data from accidentally leaking to third parties and cross-site request forgery.`,
       resolveBySentence, resolutionsRead),
   issueKind: IssueKind.BreakingChange,
-  links: [{link: ls`https://web.dev/samesite-cookies-explained/`, linkTitle: ls`SameSite cookies explained`}],
+  links: [{link: 'https://web.dev/samesite-cookies-explained/', linkTitle: ls`SameSite cookies explained`}],
 };
 
 const sameSiteUnspecifiedErrorSet = {
@@ -187,7 +187,7 @@ const sameSiteUnspecifiedErrorSet = {
        This behavior protects user data from accidentally leaking to third parties and cross-site request forgery.`,
       resolveBySentence, resolutionsSet),
   issueKind: IssueKind.BreakingChange,
-  links: [{link: ls`https://web.dev/samesite-cookies-explained/`, linkTitle: ls`SameSite cookies explained`}],
+  links: [{link: 'https://web.dev/samesite-cookies-explained/', linkTitle: ls`SameSite cookies explained`}],
 };
 
 const sameSiteUnspecifiedWarnRead = {
@@ -197,7 +197,7 @@ const sameSiteUnspecifiedWarnRead = {
        This behavior protects user data from accidentally leaking to third parties and cross-site request forgery.`,
       resolveBySentence, resolutionsRead),
   issueKind: IssueKind.BreakingChange,
-  links: [{link: ls`https://web.dev/samesite-cookies-explained/`, linkTitle: ls`SameSite cookies explained`}],
+  links: [{link: 'https://web.dev/samesite-cookies-explained/', linkTitle: ls`SameSite cookies explained`}],
 };
 
 const sameSiteUnspecifiedWarnSet = {
@@ -207,7 +207,7 @@ const sameSiteUnspecifiedWarnSet = {
        This behavior protects user data from accidentally leaking to third parties and cross-site request forgery.`,
       resolveBySentence, resolutionsSet),
   issueKind: IssueKind.BreakingChange,
-  links: [{link: ls`https://web.dev/samesite-cookies-explained/`, linkTitle: ls`SameSite cookies explained`}],
+  links: [{link: 'https://web.dev/samesite-cookies-explained/', linkTitle: ls`SameSite cookies explained`}],
 };
 
 const sameSiteNoneInsecureErrorRead = {
@@ -217,7 +217,7 @@ const sameSiteNoneInsecureErrorRead = {
        This behavior protects user data from being sent over an insecure connection.`,
       resolveBySentence, resolutionsRead),
   issueKind: IssueKind.BreakingChange,
-  links: [{link: ls`https://web.dev/samesite-cookies-explained/`, linkTitle: ls`SameSite cookies explained`}],
+  links: [{link: 'https://web.dev/samesite-cookies-explained/', linkTitle: ls`SameSite cookies explained`}],
 };
 
 const sameSiteNoneInsecureErrorSet = {
@@ -227,7 +227,7 @@ const sameSiteNoneInsecureErrorSet = {
        This behavior protects user data from being sent over an insecure connection.`,
       resolveBySentence, resolutionsSet),
   issueKind: IssueKind.BreakingChange,
-  links: [{link: ls`https://web.dev/samesite-cookies-explained/`, linkTitle: ls`SameSite cookies explained`}],
+  links: [{link: 'https://web.dev/samesite-cookies-explained/', linkTitle: ls`SameSite cookies explained`}],
 };
 
 const sameSiteNoneInsecureWarnRead = {
@@ -237,7 +237,7 @@ const sameSiteNoneInsecureWarnRead = {
        This behavior protects user data from being sent over an insecure connection.`,
       resolveBySentence, resolutionsRead),
   issueKind: IssueKind.BreakingChange,
-  links: [{link: ls`https://web.dev/samesite-cookies-explained/`, linkTitle: ls`SameSite cookies explained`}],
+  links: [{link: 'https://web.dev/samesite-cookies-explained/', linkTitle: ls`SameSite cookies explained`}],
 };
 
 const sameSiteNoneInsecureWarnSet = {
@@ -247,7 +247,7 @@ const sameSiteNoneInsecureWarnSet = {
        This behavior protects user data from being sent over an insecure connection.`,
       resolveBySentence, resolutionsSet),
   issueKind: IssueKind.BreakingChange,
-  links: [{link: ls`https://web.dev/samesite-cookies-explained/`, linkTitle: ls`SameSite cookies explained`}],
+  links: [{link: 'https://web.dev/samesite-cookies-explained/', linkTitle: ls`SameSite cookies explained`}],
 };
 
 /**

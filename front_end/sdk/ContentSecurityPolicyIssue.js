@@ -101,7 +101,7 @@ const cspURLViolation = {
       []),
   issueKind: IssueKind.BreakingChange,
   links: [{
-    link: ls`https://developers.google.com/web/fundamentals/security/csp#source_whitelists`,
+    link: 'https://developers.google.com/web/fundamentals/security/csp#source_whitelists',
     linkTitle: ls`Content Security Policy - Source Allowlists`
   }],
 };
@@ -122,7 +122,7 @@ const cspInlineViolation = {
       ]),
   issueKind: IssueKind.BreakingChange,
   links: [{
-    link: ls`https://developers.google.com/web/fundamentals/security/csp#inline_code_is_considered_harmful`,
+    link: 'https://developers.google.com/web/fundamentals/security/csp#inline_code_is_considered_harmful',
     linkTitle: ls`Learn more: Content Security Policy - Inline Code`
   }],
 };

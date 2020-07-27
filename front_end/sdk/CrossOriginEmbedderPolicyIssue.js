@@ -181,9 +181,9 @@ const issueDescriptions = new Map([
   message: CorpNotSameOriginAfterDefaultedToSameOriginByCoepMessage,
   issueKind: IssueKind.BreakingChange,
   links: [
-    {link: ls`https://web.dev/coop-coep/`,
+    {link: 'https://web.dev/coop-coep/',
      linkTitle: ls`COOP and COEP`},
-    {link: ls`https://web.dev/same-site-same-origin/`,
+    {link: 'https://web.dev/same-site-same-origin/',
      linkTitle: ls`Same-Site and Same-Origin`},
   ],
 }],
@@ -192,7 +192,7 @@ const issueDescriptions = new Map([
   message: CoepFrameResourceNeedsCoepHeaderMessage,
   issueKind: IssueKind.BreakingChange,
   links: [
-    {link: ls`https://web.dev/coop-coep/`,
+    {link: 'https://web.dev/coop-coep/',
      linkTitle: ls`COOP and COEP`},
   ],
 }],
@@ -203,7 +203,7 @@ const issueDescriptions = new Map([
   This protects COOP-enabled documents from inheriting properties from its opener.`),
   issueKind: IssueKind.BreakingChange,
   links: [
-    {link: ls`https://web.dev/coop-coep/`,
+    {link: 'https://web.dev/coop-coep/',
      linkTitle: ls`COOP and COEP`},
   ],
 }],
@@ -212,9 +212,9 @@ const issueDescriptions = new Map([
   message: CorpNotSameSiteMessage,
   issueKind: IssueKind.BreakingChange,
   links: [
-    {link: ls`https://web.dev/coop-coep/`,
+    {link: 'https://web.dev/coop-coep/',
      linkTitle: ls`COOP and COEP`},
-    {link: ls`https://web.dev/same-site-same-origin/`,
+    {link: 'https://web.dev/same-site-same-origin/',
      linkTitle: ls`Same-Site and Same-Origin`},
   ],
 }],
@@ -223,9 +223,9 @@ const issueDescriptions = new Map([
   message: CorpNotSameOriginMessage,
   issueKind: IssueKind.BreakingChange,
   links: [
-    {link: ls`https://web.dev/coop-coep/`,
+    {link: 'https://web.dev/coop-coep/',
      linkTitle: ls`COOP and COEP`},
-    {link: ls`https://web.dev/same-site-same-origin/`,
+    {link: 'https://web.dev/same-site-same-origin/',
      linkTitle: ls`Same-Site and Same-Origin`},
   ],
 }],

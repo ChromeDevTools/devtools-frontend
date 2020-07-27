@@ -146,9 +146,6 @@
   <message name="IDS_DEVTOOLS_2ac1cf0a93713a09d3d4b9f2137d2be1" desc="Resolution for SameSiteCookie issue">
     Specify <ph name="LOCKED_1">|SameSite=None|</ph> and <ph name="LOCKED_1">|Secure|</ph> if the cookie is intended to be set in cross-site contexts. Note that only cookies sent over HTTPS may use the <ph name="LOCKED_1">|Secure|</ph> attribute.
   </message>
-  <message name="IDS_DEVTOOLS_2ca5bc4c75fa0bac63906eac6cb0c265" desc="Link for mixed content issues">
-    https://developers.google.com/web/fundamentals/security/prevent-mixed-content/fixing-mixed-content
-  </message>
   <message name="IDS_DEVTOOLS_2d4f58197f03de72c0472189fd18c162" desc="Title of a setting under the Rendering drawer">
     Emulate vision deficiencies
   </message>
@@ -158,9 +155,6 @@
   </message>
   <message name="IDS_DEVTOOLS_301c6a898ab412749bfb0e72381d91d2" desc="Title for the MixedContentIssue issue code">
     Mixed content: load all resources via HTTPS to improve the security of your site
-  </message>
-  <message name="IDS_DEVTOOLS_321e23e3febfc97e38133e46a321b34c" desc="Link for CSP issues of URL violation type">
-    https://developers.google.com/web/fundamentals/security/csp#source_whitelists
   </message>
   <message name="IDS_DEVTOOLS_323d4eb70b252acb4a04eaf9e0882597" desc="Title for a group of cities">
     Geolocation
@@ -185,9 +179,6 @@
   </message>
   <message name="IDS_DEVTOOLS_3767b041971f23f04804e75dbf475c46" desc="Title for CSS Grid tooling option">
     Show solid grid container border
-  </message>
-  <message name="IDS_DEVTOOLS_378803262ee085f9f247171a28618827" desc="A link to more information in the issues view">
-    https://web.dev/same-site-same-origin/
   </message>
   <message name="IDS_DEVTOOLS_37b2c194f5aaf6a38e0dc67b90ab3760" desc="Title for an issue in the issues view">
     An <ph name="LOCKED_1">iframe</ph> navigation to a document with a Cross-Origin Opener Policy was blocked
@@ -494,9 +485,6 @@
   <message name="IDS_DEVTOOLS_8e25939ed027992ec3229fb82c8635a9" desc="Title for an issue in the issues view">
     Specify a Cross-Origin Resource Policy to prevent a resource from being blocked
   </message>
-  <message name="IDS_DEVTOOLS_8e6aefb01ad865cdce56f1992b317e4a" desc="Link for SameSiteCookies Issues">
-    https://web.dev/samesite-cookies-explained/
-  </message>
   <message name="IDS_DEVTOOLS_8eb3dbe83bec0f4c902665a1d49c1f38" desc="Tooltip to explain why a cookie was blocked">
     This Set-Cookie was blocked due to user preferences.
   </message>
@@ -741,9 +729,6 @@
   <message name="IDS_DEVTOOLS_e0ced940105749256af3e9b91792a78e" desc="Option for CSS Grid tooling">
     Row Gaps
   </message>
-  <message name="IDS_DEVTOOLS_e12225a29c31fea436fefce230425785" desc="Link to the CSP inline article">
-    https://developers.google.com/web/fundamentals/security/csp#inline_code_is_considered_harmful
-  </message>
   <message name="IDS_DEVTOOLS_e1e4c8c9ccd9fc39c391da4bcd093fb2" desc="Noun that represents a section or block of code in the Debugger Model. Shown in the Sources tab, while paused on a breakpoint.">
     Block
   </message>
@@ -824,9 +809,6 @@
   </message>
   <message name="IDS_DEVTOOLS_f6137609f4decf877ede5bd3a3125629" desc="Text in CPUProfile Data Model">
     <ph name="LOCKED_1">DevTools</ph>: CPU profile parser is fixing <ph name="COUNT">$1s<ex>2</ex></ph> missing samples.
-  </message>
-  <message name="IDS_DEVTOOLS_f63631e200b8b3ba73fe9ea65dcd2d3a" desc="A link to more information in the issues view">
-    https://web.dev/coop-coep/
   </message>
   <message name="IDS_DEVTOOLS_f7531e2d0ea27233ce00b5f01c5bf335" desc="A drop-down menu option to emulate css print media type">
     print

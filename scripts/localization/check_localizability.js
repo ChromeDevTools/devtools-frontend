@@ -97,6 +97,18 @@ function includesGritPlaceholders(cookedValue) {
   return regexPattern.test(cookedValue);
 }
 
+/**
+ * Matches strings like:
+ *   - https://web.dev
+ *   - https://web.dev/page
+ *   - https://web.dev/page?referrer=devtools_frontend&otherParam=param
+ */
+function isURL(string) {
+  const regexPattern =
+      /^(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/g;
+  return regexPattern.test(string);
+}
+
 function addError(error, errors) {
   if (!errors.includes(error)) {
     errors.push(error);
@@ -227,6 +239,14 @@ function analyzeNode(parentNode, node, filePath, errors) {
             errors);
       }
 
+      if (node.arguments[0].type === espreeTypes.LITERAL && isURL(node.arguments[0].value)) {
+        addError(
+            `${localizationUtils.getRelativeFilePathFromSrc(filePath)}${
+                localizationUtils.getLocationMessage(node.loc)}: localized URL-only string found in ${
+                code}. Please extract the URL out of the localization call.`,
+            errors);
+      }
+
       break;
     }
 
@@ -246,6 +266,15 @@ function analyzeNode(parentNode, node, filePath, errors) {
                 code}. Please extract placeholders(s) out of the localization call.`,
             errors);
       }
+
+      if (isURL(node.quasi.quasis[0].value.raw)) {
+        addError(
+            `${localizationUtils.getRelativeFilePathFromSrc(filePath)}${
+                localizationUtils.getLocationMessage(node.loc)}: localized URL-only string found in ${
+                code}. Please extract the URL out of the localization call.`,
+            errors);
+      }
+
       break;
     }
 

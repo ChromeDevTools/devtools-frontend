@@ -901,5 +901,30 @@ export let Person`);
 * }}`);
       assert.include(interfaces[0].join('\n'), 'export let Person');
     });
+
+    it('correctly picks the right most field when a type extends a type and overrides a field', () => {
+      const state = parseCode(`type NamedThing = {
+        name: string;
+      }
+
+      type AgedThing = {
+        age: number;
+      }
+
+      type Person = NamedThing & AgedThing & { name: 'jack' };
+
+      class Breadcrumbs extends HTMLElement {
+        public update(person: Person) {}
+      }`);
+
+      const interfaces = generateInterfaces(state);
+
+      assert.strictEqual(interfaces.length, 1);
+      assert.include(interfaces[0].join('\n'), `* @typedef {{
+* name:"jack",
+* age:number,
+* }}`);
+      assert.include(interfaces[0].join('\n'), 'export let Person');
+    });
   });
 });

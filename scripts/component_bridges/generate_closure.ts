@@ -341,21 +341,48 @@ const generateClosureForInterface =
       * in Closure as all the members of Foo and all the members of Bar
       */
         interfaceBits.push('* @typedef {{');
+        const allMembers: (ts.TypeNode|ts.TypeElement)[] = [];
         interfaceOrTypeAlias.type.types.forEach(typePart => {
           if (ts.isTypeLiteralNode(typePart)) {
-            interfaceBits.push(...generateInterfaceMembers(typePart.members));
+            allMembers.push(...typePart.members);
           } else if (ts.isTypeReferenceNode(typePart)) {
             /** This means it's a reference to either an interface or a type alias
          * So we need to find that object in the interfaces that the tree walker found
          * And then parse out the members to Closure.
          */
             const members = membersForTypeReference(foundInterfaces, typePart);
-            interfaceBits.push(...generateInterfaceMembers(members));
+            allMembers.push(...members);
           } else {
             throw new Error(`Unsupported: a type extended something that the bridges generator doesn't understand: ${
                 ts.SyntaxKind[typePart.kind]}`);
           }
         });
+
+        /**
+          * Now we have all the members, we need to check if any override each other.
+          * e.g.:
+          * type Person = { name: string }
+          * type Jack = Person & { name: 'jack' }
+          *
+          * Should generate a typedef with one `name` key, set to the string "jack".
+          *
+          * Because we populate the array of allMembers from left to right, that
+          * means we can loop over them now and set the keys in the map as we
+          * go. Any that are overriden will have their entry in the map
+          * overriden accordingly
+          * and then we can take the final list of members and convert those to Closure syntax.
+          */
+        const membersToOutput = new Map<string, ts.TypeNode|ts.TypeElement>();
+        allMembers.forEach(member => {
+          if (!ts.isPropertySignature(member)) {
+            throw new Error(`Unexpected member without a property signature: ${ts.SyntaxKind[member.kind]}`);
+          }
+          const keyIdentifer = (member.name as ts.Identifier).escapedText.toString();
+          membersToOutput.set(keyIdentifer, member);
+        });
+        const finalMembers = ts.createNodeArray([...membersToOutput.values()]);
+        interfaceBits.push(...generateInterfaceMembers(finalMembers));
+
         interfaceBits.push('* }}');
         interfaceBits.push('*/');
       } else {

@@ -133,7 +133,6 @@ devtools_module_entrypoints = [
   "webauthn/webauthn-legacy.js",
   "worker_main/worker_main.js",
   "worker_main/worker_main-legacy.js",
-  "worker_service/worker_service.js",
   "workspace/workspace-legacy.js",
   "workspace_diff/workspace_diff-legacy.js",
 ]
@@ -172,4 +171,5 @@ generated_typescript_entrypoints = [
   "$resources_out_dir/platform/platform.js",
   "$resources_out_dir/workspace/workspace.js",
   "$resources_out_dir/workspace_diff/workspace_diff.js",
+  "$resources_out_dir/worker_service/worker_service.js",
 ]

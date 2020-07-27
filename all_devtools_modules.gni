@@ -398,7 +398,6 @@ all_devtools_modules = [
   "web_audio/WebAudioView.js",
   "webauthn/WebauthnPane.js",
   "worker_main/WorkerMain.js",
-  "worker_service/ServiceDispatcher.js",
 ]
 
 input_devtools_modules = []
@@ -668,6 +667,7 @@ all_typescript_modules = [
   "timeline_model/TimelineProfileTree.js",
   "timeline_model/TracingLayerTree.js",
   "workspace_diff/WorkspaceDiff.js",
+  "worker_service/ServiceDispatcher.js",
 ]
 
 foreach(module, all_typescript_modules) {

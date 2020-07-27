@@ -12,7 +12,7 @@ describe('The Console Tab', async () => {
     // navigate to page which causes a SameSiteCookieIssue
     await goToResource('console/cookie-issue.html');
     await click('#tab-console');
-    await waitFor('.console-view');
+    await waitFor('.infobar-issue');
 
     const infobarButton = await $('.infobar .infobar-button');
     const infobarButtonText = await infobarButton.evaluate(node => node.textContent);

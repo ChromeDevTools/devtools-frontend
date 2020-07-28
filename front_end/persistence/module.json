@@ -61,5 +61,6 @@
   "resources": [
     "editFileSystemView.css",
     "workspaceSettingsTab.css"
-  ]
+  ],
+  "skip_rollup": true
 }

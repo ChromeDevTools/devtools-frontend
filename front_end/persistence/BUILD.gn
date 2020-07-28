@@ -2,13 +2,40 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../third_party/typescript/typescript.gni")
+import("../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../scripts/build/ninja/devtools_module.gni")
 
-ts_library("persistence") {
-  sources = [ "PlatformFileSystem.js" ]
+devtools_module("persistence") {
+  sources = [
+    "Automapping.js",
+    "EditFileSystemView.js",
+    "FileSystemWorkspaceBinding.js",
+    "IsolatedFileSystem.js",
+    "IsolatedFileSystemManager.js",
+    "NetworkPersistenceManager.js",
+    "PersistenceActions.js",
+    "PersistenceImpl.js",
+    "PersistenceUtils.js",
+    "PlatformFileSystem.js",
+    "WorkspaceSettingsTab.js",
+  ]
 
   deps = [
+    "../bindings:bundle",
     "../common:bundle",
+    "../components:bundle",
+    "../host:bundle",
+    "../platform:bundle",
+    "../sdk:bundle",
     "../text_utils:bundle",
+    "../ui:bundle",
+    "../workspace:bundle",
   ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "persistence.js"
+  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
+
+  deps = [ ":persistence" ]
 }

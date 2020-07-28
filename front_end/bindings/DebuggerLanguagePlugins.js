@@ -376,7 +376,7 @@ export class DebuggerLanguagePluginManager {
         this._unhandledScripts.delete(script);
       }
     }
-    scripts.forEach(script => this._loadScript(plugin, script));
+    scripts.forEach(script => this._pluginForScriptId.set(script.scriptId, this._loadScript(plugin, script)));
   }
 
   _languageExtensionPluginAdded(event) {
@@ -442,7 +442,8 @@ export class DebuggerLanguagePluginManager {
     if (!uiSourceCode) {
       return null;
     }
-    return uiSourceCode.uiLocation(sourceLocation.lineNumber, sourceLocation.columnNumber);
+    return uiSourceCode.uiLocation(
+        sourceLocation.lineNumber, sourceLocation.columnNumber >= 0 ? sourceLocation.columnNumber : undefined);
   }
 
   /**

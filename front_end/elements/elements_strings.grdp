@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_05ffd37b74b38636b25349b7a8c1ebba" desc="ARIA label for Elements Tree adorners">
+    Enable grid mode
+  </message>
   <message name="IDS_DEVTOOLS_068bc495b79facfaa7918369fa9909eb" desc="Text in Elements Tree Element of the Elements panel">
     Cut element
   </message>
   <message name="IDS_DEVTOOLS_07ac88884a74a656722bb8041d5c828e" desc="Deprecation message for the Properties subpane in the Elements panel">
     This panel has been deprecated in favor of executing the following in the console:
   </message>
-  <message name="IDS_DEVTOOLS_07f01edb2a05909a9c0d04031d7c43e1" desc="Aria accessible name in Styles Sidebar Pane of the Elements panel">
+  <message name="IDS_DEVTOOLS_07f01edb2a05909a9c0d04031d7c43e1" desc="ARIA accessible name in Styles Sidebar Pane of the Elements panel">
     Filter Styles
   </message>
   <message name="IDS_DEVTOOLS_084cd932d6dd317197a20945c76603e2" desc="Text of a DOM element in Styles Sidebar Pane of the Elements panel">
@@ -42,7 +45,7 @@
   <message name="IDS_DEVTOOLS_243bcfa8bb3e955a2c98c5815c2fe446" desc="Console warning when the user tries to reveal a deferred DOM Node that resolves as null.">
     The deferred DOM Node could not be resolved into a valid node.
   </message>
-  <message name="IDS_DEVTOOLS_254dd634c2a4b01fad95fe963b193ba8" desc="Aria accessible name in Elements Tree Outline of the Elements panel">
+  <message name="IDS_DEVTOOLS_254dd634c2a4b01fad95fe963b193ba8" desc="ARIA accessible name in Elements Tree Outline of the Elements panel">
     Page DOM
   </message>
   <message name="IDS_DEVTOOLS_26396cca3eae28fc6e39123edb2f1510" desc="Context menu item for style property in edit mode">
@@ -74,6 +77,9 @@
   </message>
   <message name="IDS_DEVTOOLS_2f76fab71405b40cf521f64eab0d350f" desc="A context menu item in the Elements Tree Element of the Elements panel">
     Delete element
+  </message>
+  <message name="IDS_DEVTOOLS_3224263eb4ab6c159620b9eea03e1ffb" desc="ARIA label for Elements Tree adorners">
+    Disable grid mode
   </message>
   <message name="IDS_DEVTOOLS_365fee797b55ffeac84d2ba82507b721" desc="Text in Styles Sidebar Pane of the Elements panel">
     user agent stylesheet
@@ -150,7 +156,7 @@
   <message name="IDS_DEVTOOLS_685db349070d4d06c11a83153b7ed4c0" desc="Text that describes the console placeholder used to to reference the currently selected element in the DOM tree">
     (<ph name="DOLLAR_ZERO"><ex>DollarSignZero</ex>$1s</ph> is a reference to the currently selected DOM node in the elements tree.)
   </message>
-  <message name="IDS_DEVTOOLS_686676f33cf19ca00788564f43b992cb" desc="Aria accessible name in Computed Style Widget of the Elements panel">
+  <message name="IDS_DEVTOOLS_686676f33cf19ca00788564f43b992cb" desc="ARIA accessible name in Computed Style Widget of the Elements panel">
     Filter Computed Styles
   </message>
   <message name="IDS_DEVTOOLS_68a483c15a1730a88f2a57b1b1b8b69a" desc="Title of dispatch filter in event listeners widget of the elements panel">

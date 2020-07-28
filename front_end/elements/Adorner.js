@@ -113,13 +113,25 @@ export class Adorner extends HTMLElement {
     }
   }
 
-  toggle() {
+  /**
+   * @return {boolean}
+   */
+  isActive() {
+    return this.getAttribute('aria-pressed') === 'true';
+  }
+
+  /**
+   * Toggle the active state of the adorner. Optionally pass `true` to force-set
+   * an active state; pass `false` to force-set an inactive state.
+   * @param {boolean=} forceActiveState
+   */
+  toggle(forceActiveState) {
     if (!this._isToggle) {
       return;
     }
-    const shouldBePressed = this.getAttribute('aria-pressed') === 'false';
-    UI.ARIAUtils.setPressed(this, shouldBePressed);
-    UI.ARIAUtils.setAccessibleName(this, shouldBePressed ? this._ariaLabelActive : this._ariaLabelDefault);
+    const shouldBecomeActive = forceActiveState === undefined ? !this.isActive() : forceActiveState;
+    UI.ARIAUtils.setPressed(this, shouldBecomeActive);
+    UI.ARIAUtils.setAccessibleName(this, shouldBecomeActive ? this._ariaLabelActive : this._ariaLabelDefault);
   }
 
   show() {
@@ -149,11 +161,13 @@ export class Adorner extends HTMLElement {
     }
 
     if (isToggle) {
-      UI.ARIAUtils.setPressed(this, false);
-      this.addEventListener('click', this.toggle);
+      this.addEventListener('click', () => {
+        this.toggle();
+      });
       if (ariaLabelActive) {
         this._ariaLabelActive = ariaLabelActive;
       }
+      this.toggle(false /* initialize inactive state */);
     }
 
     // Simulate an ARIA-capable toggle button

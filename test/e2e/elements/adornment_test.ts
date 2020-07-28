@@ -5,10 +5,11 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {$$, enableExperiment, goToResource} from '../../shared/helper.js';
+import {$$, click, enableExperiment, goToResource} from '../../shared/helper.js';
 import {assertContentOfSelectedElementsNode, expandSelectedNodeRecursively, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
 
-const INACTIVE_GRID_ADORNER_SELECTOR = '[aria-label="grid adorner"]';
+const INACTIVE_GRID_ADORNER_SELECTOR = '[aria-label="Enable grid mode"]';
+const ACTIVE_GRID_ADORNER_SELECTOR = '[aria-label="Disable grid mode"]';
 
 const prepareElementsTab = async () => {
   await waitForElementsStyleSection();
@@ -36,5 +37,18 @@ describe('Adornment in the Elements Tab', async () => {
           'grid',
         ],
         'did not have exactly 2 Grid adorners in the inactive state');
+
+    // Toggle both grid adorners on and try to select them with the active selector
+    await click(INACTIVE_GRID_ADORNER_SELECTOR);
+    await click(INACTIVE_GRID_ADORNER_SELECTOR);
+    const activeGridAdorners = await $$(ACTIVE_GRID_ADORNER_SELECTOR);
+    const activeContent = await activeGridAdorners.evaluate(getNodesContent);
+    assert.deepEqual(
+        activeContent,
+        [
+          'grid',
+          'grid',
+        ],
+        'did not have exactly 2 Grid adorners in the active state');
   });
 });

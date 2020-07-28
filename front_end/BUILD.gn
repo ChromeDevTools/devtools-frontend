@@ -18,6 +18,7 @@ group("front_end") {
     "component_docs",
     "components:bundle",
     "console_counters:bundle",
+    "css_overview:bundle",
     "data_grid:bundle",
     "diff:bundle",
     "dom_extension:bundle",

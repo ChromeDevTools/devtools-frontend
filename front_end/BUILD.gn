@@ -22,6 +22,7 @@ group("front_end") {
     "diff:bundle",
     "dom_extension:bundle",
     "elements:bundle",
+    "extensions:bundle",
     "formatter:bundle",
     "formatter_worker:bundle",
     "har_importer:bundle",

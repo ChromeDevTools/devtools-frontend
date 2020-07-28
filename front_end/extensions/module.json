@@ -13,5 +13,6 @@
     "ExtensionPanel.js",
     "ExtensionView.js",
     "LanguageExtensionEndpoint.js"
-  ]
+  ],
+  "skip_rollup": true
 }

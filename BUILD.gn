@@ -281,7 +281,7 @@ if (is_debug) {
 
 group("devtools_all_files") {
   testonly = true
-  data = all_devtools_files + generated_devtools_module_entrypoints
+  data = all_devtools_files + generated_devtools_module_entrypoint_sources
   data += [
     # This enables us to test bots with whitespace changes.
     "scripts/whitespaces.txt",
@@ -329,10 +329,10 @@ action("generate_devtools_grd") {
   deps = [ ":devtools_frontend_resources" ]
 
   grd_files =
-      generated_devtools_module_entrypoints + output_devtools_modules +
+      generated_devtools_module_entrypoint_sources + output_devtools_modules +
       generated_applications_html + generated_applications_js +
       generated_non_autostart_non_remote_modules + devtools_embedder_scripts +
-      generated_worker_bundles + generated_typescript_entrypoints +
+      generated_worker_bundles + generated_typescript_entrypoint_sources +
       generated_typescript_modules +
       [
         "$resources_out_dir/devtools_extension_api.js",
@@ -394,11 +394,11 @@ action("build_release_devtools") {
 
   inputs = helper_scripts + all_devtools_files + devtools_test_files +
            application_templates + all_worker_entrypoints +
-           front_end_devtools_module_entrypoints + input_devtools_modules
+           front_end_devtools_module_entrypoint_sources + input_devtools_modules
   outputs =
       generated_applications_js + generated_non_autostart_non_remote_modules +
       generated_remote_modules + generated_test_modules +
-      generated_worker_bundles + generated_devtools_module_entrypoints
+      generated_worker_bundles + generated_devtools_module_entrypoint_sources
 
   args = devtools_applications + [
            "--input_path",

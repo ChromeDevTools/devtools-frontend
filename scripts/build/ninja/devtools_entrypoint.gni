@@ -238,8 +238,8 @@ template("devtools_entrypoint") {
   _target_outputs = get_target_outputs(":" + target_name + "-copy")
   _target_name = invoker.entrypoint
   _filtered_target_outputs =
-      filter_exclude(_target_outputs, generated_typescript_entrypoints)
+      filter_exclude(_target_outputs, generated_typescript_entrypoint_sources)
   assert(
       _filtered_target_outputs == [],
-      "Entrypoint ($_target_name) is not listed in devtools_module_entrypoints")
+      "Entrypoint ($_target_name) is not listed in devtools_module_entrypoint_sources")
 }

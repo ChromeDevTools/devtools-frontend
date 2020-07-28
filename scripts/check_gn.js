@@ -64,7 +64,7 @@ function checkNonAutostartNonRemoteModules() {
  * listed in BUILD.gn.
  */
 function checkAllDevToolsFiles() {
-  return checkGNVariable('all_devtools_files', moduleJSON => {
+  return checkGNVariable('all_devtools_files', 'all_devtools_files', moduleJSON => {
     const scripts = moduleJSON.scripts || [];
     const resources = moduleJSON.resources || [];
     return [
@@ -77,7 +77,7 @@ function checkAllDevToolsFiles() {
 
 function checkAllDevToolsModules() {
   return checkGNVariable(
-      'all_devtools_modules',
+      'all_devtools_modules', 'all_devtools_module_sources',
       (moduleJSON, folderName) => {
         if (moduleJSON.skip_rollup) {
           return [];
@@ -98,10 +98,10 @@ function checkAllDevToolsModules() {
 
 function checkDevtoolsModuleEntrypoints() {
   return checkGNVariable(
-      'devtools_module_entrypoints',
+      'devtools_module_entrypoints', 'devtools_module_entrypoint_sources',
       (moduleJSON, folderName) => {
         // TODO(crbug.com/1101738): Remove the exemption and change the variable to
-        // `generated_typescript_entrypoints` instead.
+        // `generated_typescript_entrypoint_sources` instead.
         if (moduleJSON.skip_rollup) {
           return [];
         }
@@ -115,8 +115,8 @@ function checkDevtoolsModuleEntrypoints() {
       });
 }
 
-function checkGNVariable(gnVariable, obtainFiles, obtainRelativePath) {
-  const filePath = path.resolve(__dirname, '..', `${gnVariable}.gni`);
+function checkGNVariable(fileName, gnVariable, obtainFiles, obtainRelativePath) {
+  const filePath = path.resolve(__dirname, '..', `${fileName}.gni`);
   const fileContent = fs.readFileSync(filePath, 'utf-8');
   const linesToCheck = fileContent.split('\n');
 

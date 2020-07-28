@@ -5,7 +5,7 @@ ts_library("inline_editor") {
   sources = [ "BezierUI_test.ts" ]
 
   deps = [
-    "../../../../front_end/inline_editor",
+    "../../../../front_end/inline_editor:bundle",
     "../../../../front_end/ui:bundle",
   ]
 }

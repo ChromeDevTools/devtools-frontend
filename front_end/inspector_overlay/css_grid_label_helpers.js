@@ -324,12 +324,16 @@ export function drawGridLineNumbers(container, data) {
  * @param {string} direction
  */
 export function drawGridTrackSizes(container, rotationAngle, trackSizes, direction) {
-  for (const {x, y, computedSize} of trackSizes) {
+  for (const {x, y, computedSize, authoredSize} of trackSizes) {
     const size = computedSize.toFixed(2);
-    const element = _createLabelElement(container, (size.endsWith('.00') ? size.slice(0, -3) : size) + 'px');
+    const formattedComputed = `${size.endsWith('.00') ? size.slice(0, -3) : size}px`;
+    const element = _createLabelElement(container, `${authoredSize ? authoredSize + '·' : ''}${formattedComputed}`);
     const labelWidth = _getAdjustedLabelWidth(element);
     const labelHeight = element.getBoundingClientRect().height;
-    const arrowType = direction === 'column' ? GridArrowTypes.bottomMid : GridArrowTypes.rightMid;
+
+    const flipIn = direction === 'column' ? y < gridPageMargin : x - labelWidth < gridPageMargin;
+    const arrowType =
+        _flipArrowTypeIfNeeded(direction === 'column' ? GridArrowTypes.bottomMid : GridArrowTypes.rightMid, flipIn);
     const {contentLeft, contentTop} = _getLabelPositionByArrowType(arrowType, x, y, labelWidth, labelHeight);
     element.classList.add(arrowType);
     element.style.left = contentLeft + 'px';

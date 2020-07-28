@@ -6,6 +6,6 @@ ts_library("protocol_client") {
 
   deps = [
     "../../../../front_end/host:bundle",
-    "../../../../front_end/protocol_client",
+    "../../../../front_end/protocol_client:bundle",
   ]
 }

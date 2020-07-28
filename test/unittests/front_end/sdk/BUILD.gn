@@ -18,7 +18,7 @@ ts_library("sdk") {
   ]
 
   deps = [
-    "../../../../front_end/protocol_client",
+    "../../../../front_end/protocol_client:bundle",
     "../../../../front_end/sdk:bundle",
   ]
 }

@@ -668,6 +668,7 @@ all_typescript_modules = [
   "workspace/FileManager.js",
   "workspace/UISourceCode.js",
   "workspace/WorkspaceImpl.js",
+  "workspace_diff/WorkspaceDiff.js",
 ]
 
 foreach(module, all_typescript_modules) {

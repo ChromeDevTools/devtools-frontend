@@ -35,6 +35,25 @@ export let EnumSetting;
 */
 // @ts-ignore we export this for Closure not TS
 export let BooleanSetting;
+/**
+* @typedef {{"boolean"|"enum"}}
+*/
+// @ts-ignore we export this for Closure not TS
+export let SettingType;
+/**
+* @typedef {{
+* value:string,
+* }}
+*/
+// @ts-ignore we export this for Closure not TS
+export let EnumSettingOption;
+/**
+* @typedef {{
+* value:boolean,
+* }}
+*/
+// @ts-ignore we export this for Closure not TS
+export let BooleanSettingOption;
 // eslint-disable-next-line no-unused-vars
 class LayoutPaneClosureInterface extends HTMLElement {
   /**

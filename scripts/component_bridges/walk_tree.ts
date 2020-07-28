@@ -258,6 +258,63 @@ const findNestedInterfacesInInterface = (interfaceDec: ts.InterfaceDeclaration|t
   return foundNestedInterfaceNames;
 };
 
+const findNestedReferencesForTypeReference =
+    (state: WalkerState,
+     interfaceOrTypeAliasDeclaration: ts.InterfaceDeclaration|ts.TypeAliasDeclaration): Set<string> => {
+      const foundNestedReferences = new Set<string>();
+      if (ts.isTypeAliasDeclaration(interfaceOrTypeAliasDeclaration)) {
+        if (ts.isTypeLiteralNode(interfaceOrTypeAliasDeclaration.type)) {
+          /* this means it's a type Person = { name: string } */
+          const nestedInterfaces = findNestedInterfacesInInterface(interfaceOrTypeAliasDeclaration.type);
+          nestedInterfaces.forEach(nestedInterface => foundNestedReferences.add(nestedInterface));
+        } else if (ts.isUnionTypeNode(interfaceOrTypeAliasDeclaration.type)) {
+          interfaceOrTypeAliasDeclaration.type.types.forEach(unionTypeMember => {
+            if (ts.isTypeReferenceNode(unionTypeMember) &&
+                ts.isIdentifierOrPrivateIdentifier(unionTypeMember.typeName)) {
+              foundNestedReferences.add(unionTypeMember.typeName.escapedText.toString());
+            }
+          });
+        } else if (ts.isIntersectionTypeNode(interfaceOrTypeAliasDeclaration.type)) {
+          /**
+      * This means it's something like:
+      *
+      * type NamedThing = { foo: Foo }
+      * type Person = NamedThing & { name: 'jack' };
+      *
+      * The bridges generator will inline types when they are extended, so we
+      * _don't_ need `NamedThing` to be defined in the bridge. But `NamedThing`
+      * mentions `Foo`, so we do need to include `Foo` in the bridge.
+      */
+          interfaceOrTypeAliasDeclaration.type.types.forEach(nestedType => {
+            if (ts.isTypeLiteralNode(nestedType)) {
+              // this is any `& { name: string }` parts of the type alias.
+              const nestedInterfaces = findNestedInterfacesInInterface(nestedType);
+              nestedInterfaces.forEach(nestedInterface => foundNestedReferences.add(nestedInterface));
+            } else if (ts.isTypeReferenceNode(nestedType) && ts.isIdentifierOrPrivateIdentifier(nestedType.typeName)) {
+              // This means we have a reference to another interface so we have to
+              // find the interface and check for any nested interfaces within it.
+              const typeReferenceName = nestedType.typeName.escapedText.toString();
+              const nestedTypeReference = Array.from(state.foundInterfaces).find(dec => {
+                return dec.name.escapedText === typeReferenceName;
+              });
+              if (!nestedTypeReference) {
+                throw new Error(`Could not find definition for type reference ${typeReferenceName}.`);
+              }
+              // Recurse on the nested interface because if it references any other
+              // interfaces we need to include those in the bridge.
+              findNestedReferencesForTypeReference(state, nestedTypeReference)
+                  .forEach(nested => foundNestedReferences.add(nested));
+            }
+          });
+        }
+      } else {
+        // If it wasn't a type alias, it's an interface, so walk through the interface and add any found nested types.
+        const nestedInterfaces = findNestedInterfacesInInterface(interfaceOrTypeAliasDeclaration);
+        nestedInterfaces.forEach(nestedInterface => foundNestedReferences.add(nestedInterface));
+      }
+      return foundNestedReferences;
+    };
+
 const populateInterfacesToConvert = (state: WalkerState): WalkerState => {
   state.interfaceNamesToConvert.forEach(interfaceNameToConvert => {
     const interfaceOrTypeAliasDeclaration = Array.from(state.foundInterfaces).find(dec => {
@@ -269,29 +326,8 @@ const populateInterfacesToConvert = (state: WalkerState): WalkerState => {
       return;
     }
 
-    if (ts.isTypeAliasDeclaration(interfaceOrTypeAliasDeclaration)) {
-      if (ts.isTypeLiteralNode(interfaceOrTypeAliasDeclaration.type)) {
-        /* this means it's a type Person = { name: string } */
-        const nestedInterfaces = findNestedInterfacesInInterface(interfaceOrTypeAliasDeclaration.type);
-        nestedInterfaces.forEach(nestedInterface => state.interfaceNamesToConvert.add(nestedInterface));
-      } else if (ts.isUnionTypeNode(interfaceOrTypeAliasDeclaration.type)) {
-        interfaceOrTypeAliasDeclaration.type.types.forEach(unionTypeMember => {
-          if (ts.isTypeReferenceNode(unionTypeMember) && ts.isIdentifierOrPrivateIdentifier(unionTypeMember.typeName)) {
-            state.interfaceNamesToConvert.add(unionTypeMember.typeName.escapedText.toString());
-          }
-        });
-      }
-
-      /* TODO: we need to support finding interfaces from nested type aliases in union types.
-       * e.g.: if we find `type alias Foo = Bar|Baz` we should add `Bar` and `Baz`
-       * to the list of interfaces that need to be converted.
-       */
-      return;
-    }
-
-    // If we got here, it was definitely an interface declaration.
-    const nestedInterfaces = findNestedInterfacesInInterface(interfaceOrTypeAliasDeclaration);
-    nestedInterfaces.forEach(nestedInterface => state.interfaceNamesToConvert.add(nestedInterface));
+    const foundNestedInterfaces = findNestedReferencesForTypeReference(state, interfaceOrTypeAliasDeclaration);
+    foundNestedInterfaces.forEach(nested => state.interfaceNamesToConvert.add(nested));
   });
 
   return state;

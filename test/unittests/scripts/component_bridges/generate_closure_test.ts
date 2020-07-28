@@ -926,5 +926,64 @@ export let Person`);
 * }}`);
       assert.include(interfaces[0].join('\n'), 'export let Person');
     });
+
+    it('correctly includes interfaces from types that get extended', () => {
+      const state = parseCode(`type NamedThing = {
+        name: string;
+        details: Detail[];
+      }
+
+      interface Detail {
+        id: number;
+      }
+
+      type Person = NamedThing & { name: 'jack' };
+
+      class Breadcrumbs extends HTMLElement {
+        public update(person: Person) {}
+      }`);
+
+      const interfaces = generateInterfaces(state);
+
+      assert.strictEqual(interfaces.length, 2);
+      assert.include(interfaces[0].join('\n'), `* @typedef {{
+* name:"jack",
+* details:Array.<!Detail>,
+* }}`);
+      assert.include(interfaces[0].join('\n'), 'export let Person');
+      assert.include(interfaces[1].join('\n'), `* @typedef {{
+* id:number,
+* }}`);
+      assert.include(interfaces[1].join('\n'), 'export let Detail');
+    });
+
+    it('correctly includes interfaces from types that get extended with object literals', () => {
+      const state = parseCode(`interface Detail {
+        id: number;
+      }
+
+      type NamedThing = {
+        name: string;
+      }
+
+      type Person = NamedThing & { details: Detail[] };
+
+      class Breadcrumbs extends HTMLElement {
+        public update(person: Person) {}
+      }`);
+
+      const interfaces = generateInterfaces(state);
+
+      assert.strictEqual(interfaces.length, 2);
+      assert.include(interfaces[0].join('\n'), `* @typedef {{
+* name:string,
+* details:Array.<!Detail>,
+* }}`);
+      assert.include(interfaces[0].join('\n'), 'export let Person');
+      assert.include(interfaces[1].join('\n'), `* @typedef {{
+* id:number,
+* }}`);
+      assert.include(interfaces[1].join('\n'), 'export let Detail');
+    });
   });
 });

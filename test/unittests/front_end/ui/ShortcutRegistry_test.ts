@@ -4,18 +4,18 @@
 
 const {assert} = chai;
 
-import {ShortcutTreeNode} from '../../../../front_end/ui/ShortcutRegistry.js';
+import * as UI from '../../../../front_end/ui/ui.js';
 
 describe('ShortcutTreeNode', () => {
   it('can be instantiated without issues', () => {
-    const node = new ShortcutTreeNode(0, 0);
+    const node = new UI.ShortcutRegistry.ShortcutTreeNode(0, 0);
     assert.isEmpty(node.actions(), 'node should not have any actions upon instantiation');
     assert.isFalse(node.hasChords(), 'node should not have any chords');
     assert.strictEqual(node.key(), 0, 'node should set key property');
   });
 
   it('can add a mapping', () => {
-    const node = new ShortcutTreeNode(0, 0);
+    const node = new UI.ShortcutRegistry.ShortcutTreeNode(0, 0);
     node.addKeyMapping([12, 154, 36], 'test action');
     const leafNode = node.getNode(12)?.getNode(154)?.getNode(36);
     assert.ok(leafNode, 'node should have a descendant for the mapping');
@@ -27,7 +27,7 @@ describe('ShortcutTreeNode', () => {
   });
 
   it('can clear itself', () => {
-    const node = new ShortcutTreeNode(0, 0);
+    const node = new UI.ShortcutRegistry.ShortcutTreeNode(0, 0);
     node.addKeyMapping([12, 154, 36], 'test action');
     node.addAction('another action');
     node.clear();

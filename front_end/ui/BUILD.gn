@@ -2,9 +2,10 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../third_party/typescript/typescript.gni")
+import("../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../scripts/build/ninja/devtools_module.gni")
 
-ts_library("ui") {
+devtools_module("ui") {
   sources = [
     "ARIAUtils.js",
     "Action.js",
@@ -64,14 +65,21 @@ ts_library("ui") {
     "XLink.js",
     "XWidget.js",
     "ZoomManager.js",
-    "ui.js",
   ]
 
   deps = [
     "../common:bundle",
     "../dom_extension:bundle",
     "../host:bundle",
+    "../platform:bundle",
     "../text_utils:bundle",
-    "utils",
+    "utils:bundle",
   ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "ui.js"
+  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
+
+  deps = [ ":ui" ]
 }

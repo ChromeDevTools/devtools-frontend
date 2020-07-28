@@ -114,5 +114,6 @@
     "tooltip.css",
     "treeoutline.css",
     "viewContainers.css"
-  ]
+  ],
+  "skip_rollup": true
 }

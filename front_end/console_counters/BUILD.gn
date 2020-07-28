@@ -13,7 +13,7 @@ devtools_module("console_counters") {
     "../common:bundle",
     "../host:bundle",
     "../sdk:bundle",
-    "../ui",
+    "../ui:bundle",
   ]
 }
 

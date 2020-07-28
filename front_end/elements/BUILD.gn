@@ -19,7 +19,7 @@ devtools_module("elements") {
     "../common:bundle",
     "../platform:bundle",
     "../third_party/lit-html:bundle",
-    "../ui",
+    "../ui:bundle",
   ]
 
   visibility = [

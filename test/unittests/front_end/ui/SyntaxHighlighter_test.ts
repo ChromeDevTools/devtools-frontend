@@ -4,11 +4,11 @@
 
 const {assert} = chai;
 
-import {SyntaxHighlighter} from '../../../../front_end/ui/SyntaxHighlighter.js';
+import * as UI from '../../../../front_end/ui/ui.js';
 
 describe('SyntaxHighlighter', () => {
   it('can be instantiated correctly', () => {
-    const syntaxHighlighter = new SyntaxHighlighter('TestMimeType', true);
+    const syntaxHighlighter = new UI.SyntaxHighlighter.SyntaxHighlighter('TestMimeType', true);
     const result = syntaxHighlighter.createSpan('TestContent', 'TestClass');
     assert.strictEqual(result.tagName, 'SPAN', 'span element was not created correctly');
     assert.strictEqual(result.getAttribute('class'), 'cm-TestClass', 'class was not set correctly');

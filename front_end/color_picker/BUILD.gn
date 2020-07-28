@@ -18,7 +18,7 @@ devtools_module("color_picker") {
     "../host:bundle",
     "../platform:bundle",
     "../sdk:bundle",
-    "../ui",
+    "../ui:bundle",
   ]
 }
 

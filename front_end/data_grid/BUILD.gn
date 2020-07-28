@@ -16,7 +16,7 @@ devtools_module("data_grid") {
   deps = [
     "../common:bundle",
     "../platform:bundle",
-    "../ui",
+    "../ui:bundle",
   ]
 }
 

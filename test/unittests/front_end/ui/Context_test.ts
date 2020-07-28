@@ -4,11 +4,11 @@
 
 const {assert} = chai;
 
-import {Context} from '../../../../front_end/ui/Context.js';
+import * as UI from '../../../../front_end/ui/ui.js';
 
 describe('Context', () => {
   it('can be instantiated without issues', () => {
-    const context = new Context();
+    const context = new UI.Context.Context();
     assert.strictEqual(context.flavors().size, 0, 'context should not have any flavors upon instantiation');
   });
 

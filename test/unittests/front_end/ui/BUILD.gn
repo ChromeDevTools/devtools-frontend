@@ -15,5 +15,5 @@ ts_library("ui") {
     "utils/measured-scrollbar-width_test.ts",
   ]
 
-  deps = [ "../../../../front_end/ui" ]
+  deps = [ "../../../../front_end/ui:bundle" ]
 }

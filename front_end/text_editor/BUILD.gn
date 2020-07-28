@@ -18,7 +18,7 @@ devtools_module("text_editor") {
     "../host:bundle",
     "../platform:bundle",
     "../text_utils:bundle",
-    "../ui",
+    "../ui:bundle",
   ]
 }
 

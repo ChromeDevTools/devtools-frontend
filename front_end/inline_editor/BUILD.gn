@@ -7,5 +7,5 @@ import("../../third_party/typescript/typescript.gni")
 ts_library("inline_editor") {
   sources = [ "BezierUI.js" ]
 
-  deps = [ "../ui" ]
+  deps = [ "../ui:bundle" ]
 }

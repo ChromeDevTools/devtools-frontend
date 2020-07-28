@@ -4,11 +4,11 @@
 
 const {assert} = chai;
 
-import {Icon} from '../../../../front_end/ui/Icon.js';
+import * as UI from '../../../../front_end/ui/ui.js';
 
 describe('Icon', () => {
   it('can create an empty instance without issues', () => {
-    const icon = Icon.create();
+    const icon = UI.Icon.Icon.create();
     assert.strictEqual(icon.tagName, 'SPAN', 'icon span element was not created correctly');
     assert.strictEqual(icon.getAttribute('is'), 'ui-icon', 'icon span element "is" attribute was not set correctly');
   });

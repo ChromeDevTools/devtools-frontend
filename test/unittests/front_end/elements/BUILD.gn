@@ -9,6 +9,7 @@ ts_library("elements") {
 
   deps = [
     "../../../../front_end/elements",
+    "../../../../front_end/ui:bundle",
     "../helpers",
   ]
 }

@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {measuredScrollbarWidth} from '../../../../../front_end/ui/utils/measured-scrollbar-width.js';
+import * as UI from '../../../../../front_end/ui/ui.js';
 
 describe('measuredScrollbarWidth', () => {
   let style: HTMLStyleElement;
@@ -14,7 +14,7 @@ describe('measuredScrollbarWidth', () => {
 
   it('provides a default value', () => {
     const expectedDefaultWidth = 16;
-    assert.strictEqual(measuredScrollbarWidth(), expectedDefaultWidth);
+    assert.strictEqual(UI.Utils.measuredScrollbarWidth(), expectedDefaultWidth);
   });
 
   it('calculates specific widths correctly', () => {
@@ -27,10 +27,10 @@ describe('measuredScrollbarWidth', () => {
       width: ${width}px;
     }`;
     document.head.appendChild(style);
-    assert.strictEqual(measuredScrollbarWidth(document), width);
+    assert.strictEqual(UI.Utils.measuredScrollbarWidth(document), width);
 
     // Remove the styles and try again to detect that cached values are used.
     style.remove();
-    assert.strictEqual(measuredScrollbarWidth(document), width);
+    assert.strictEqual(UI.Utils.measuredScrollbarWidth(document), width);
   });
 });

@@ -16,7 +16,7 @@ devtools_module("search") {
     "../common:bundle",
     "../components:bundle",
     "../text_utils:bundle",
-    "../ui",
+    "../ui:bundle",
     "../workspace:bundle",
   ]
 }

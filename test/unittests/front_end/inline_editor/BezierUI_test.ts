@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import {BezierUI} from '../../../../front_end/inline_editor/BezierUI.js';
-import {Point, CubicBezier} from '../../../../front_end/ui/Geometry.js';
+import * as UI from '../../../../front_end/ui/ui.js';
 
 describe('BezierUI', () => {
   it('can be instantiated successfully', () => {
@@ -23,7 +23,7 @@ describe('BezierUI', () => {
   });
 
   it('can draw velocity chart correctly', () => {
-    const bezier = new CubicBezier(new Point(1, 1), new Point(3, 4));
+    const bezier = new UI.Geometry.CubicBezier(new UI.Geometry.Point(1, 1), new UI.Geometry.Point(3, 4));
     const path = document.createElement('path');
     BezierUI.drawVelocityChart(bezier, path, 10);
     assert.strictEqual(
@@ -44,7 +44,7 @@ describe('BezierUI', () => {
 
   it('draws a curve correctly', () => {
     const bezierUI = new BezierUI(10, 10, 1, 3, true);
-    const bezier = new CubicBezier(new Point(1, 1), new Point(3, 4));
+    const bezier = new UI.Geometry.CubicBezier(new UI.Geometry.Point(1, 1), new UI.Geometry.Point(3, 4));
     const svg = document.createElement('svg');
     bezierUI.drawCurve(bezier, svg);
     /*

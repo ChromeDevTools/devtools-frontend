@@ -6,6 +6,6 @@ ts_library("inline_editor") {
 
   deps = [
     "../../../../front_end/inline_editor",
-    "../../../../front_end/ui",
+    "../../../../front_end/ui:bundle",
   ]
 }

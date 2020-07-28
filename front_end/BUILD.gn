@@ -29,6 +29,7 @@ group("front_end") {
     "i18n:bundle_i18n",
     "issues:bundle",
     "javascript_metadata:bundle",
+    "js_main:bundle",
     "protocol_client:bundle",
     "sdk:bundle",
     "search:bundle",

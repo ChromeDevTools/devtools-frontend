@@ -6,7 +6,8 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
 import {$, click, enableExperiment, getBrowserAndPages, getResourcesPath, goToResource, waitFor} from '../../shared/helper.js';
-import {addBreakpointForLine, listenForSourceFilesAdded, openFileInEditor, openFileInSourcesPanel, openSourcesPanel, PAUSE_ON_EXCEPTION_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
+import {addBreakpointForLine, getValuesForScope, listenForSourceFilesAdded, openFileInEditor, openFileInSourcesPanel, openSourcesPanel, PAUSE_ON_EXCEPTION_BUTTON, RESUME_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
+
 
 // TODO: Remove once Chromium updates its version of Node.js to 12+.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -200,5 +201,67 @@ describe('The Debugger Language Plugins', async () => {
 
     const scriptLocation = await retrieveTopCallFrameScriptLocation('main();', target);
     assert.deepEqual(scriptLocation, 'global_variable.ll:9');
+  });
+
+  it('shows top-level and nested variables', async () => {
+    const {frontend} = getBrowserAndPages();
+    await frontend.evaluateHandle(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        () => globalThis.installExtensionPlugin((extensionServerClient: any, extensionAPI: any) => {
+          class VariableListingPlugin {
+            _modules: Map<string, string>;
+            evaluatedVariables: Array<string>;
+            constructor() {
+              this._modules = new Map();
+              this.evaluatedVariables = [];
+            }
+
+            async addRawModule(
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                rawModuleId: any, symbols: any,  // eslint-disable-line @typescript-eslint/no-unused-vars
+                rawModule: any) {                // eslint-disable-line @typescript-eslint/no-explicit-any
+              this._modules.set(rawModuleId.url, rawModule.url);
+              const fileUrl = new URL('unreachable.ll', rawModule.url);
+              return [fileUrl.href];
+            }
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            async rawLocationToSourceLocation(rawLocation: any) {
+              if (rawLocation.codeOffset === 6) {
+                const moduleUrl = this._modules.get(rawLocation.rawModuleId);
+                const sourceFile = new URL('unreachable.ll', moduleUrl);
+                return [{sourceFileURL: sourceFile.href, lineNumber: 5, columnNumber: 2}];
+              }
+              return null;
+            }
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            async listVariablesInScope(rawLocation: any) {  // eslint-disable-line @typescript-eslint/no-unused-vars
+              return [
+                {scope: 'LOCAL', name: 'localX', type: 'int'},
+                {scope: 'GLOBAL', name: 'n1::n2::globalY', nestedName: ['n1', 'n2', 'globalY'], type: 'float'},
+              ];
+            }
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            async evaluateVariable(name: any, location: any) {  // eslint-disable-line @typescript-eslint/no-unused-vars
+              console.error(`Test was not supposed to evaluate ${name}`);
+            }
+          }
+
+          RegisterExtension(
+              extensionAPI, new VariableListingPlugin(), 'Location Mapping',
+              {language: 'WebAssembly', symbol_types: ['None']});
+        }));
+
+    await openSourcesPanel();
+    await click(PAUSE_ON_EXCEPTION_BUTTON);
+    await goToResource('sources/wasm/unreachable.html');
+    await waitFor(RESUME_BUTTON);
+
+    const locals = await getValuesForScope('LOCAL');
+    assert.deepEqual(locals, ['localX: int']);
+    const globals = await getValuesForScope('GLOBAL', 2);
+    assert.deepEqual(globals, ['n1: namespace', 'n2: namespace', 'globalY: float']);
   });
 });

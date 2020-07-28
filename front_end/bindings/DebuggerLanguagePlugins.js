@@ -31,10 +31,7 @@ class SourceVariable extends SDK.RemoteObject.RemoteObjectImpl {
     this._plugin = plugin;
     this._location = location;
     this._hasChildren = true;
-    this._evaluator = plugin.evaluateVariable(variable.name, location)
-                          .catch(
-                              error => Common.Console.Console.instance().warn(
-                                  ls`Error in debugger language plugin: ${error.message} (${error.code})`));
+    this._evaluator = null;
   }
 
   /**
@@ -43,6 +40,19 @@ class SourceVariable extends SDK.RemoteObject.RemoteObjectImpl {
    */
   get type() {
     return this._variable_type;
+  }
+
+  /**
+   * @return {!Promise<?RawModule>}
+   */
+  _getEvaluator() {
+    if (!this._evaluator) {
+      this._evaluator = this._plugin.evaluateVariable(this._variable.name, this._location)
+                            .catch(
+                                error => Common.Console.Console.instance().warn(
+                                    ls`Error in debugger language plugin: ${error.message} (${error.code})`));
+    }
+    return this._evaluator;
   }
 
   /** Get the representation when value contains a string
@@ -133,12 +143,37 @@ class SourceVariable extends SDK.RemoteObject.RemoteObjectImpl {
       return /** @type {!SDK.RemoteObject.GetPropertiesResult} */ ({properties: [], internalProperties: []});
     }
 
-    const repr = await getRepr(this._evaluator, this._callFrame, this._plugin);
+    const repr = await getRepr(this._getEvaluator(), this._callFrame, this._plugin);
     return /** @type {!SDK.RemoteObject.GetPropertiesResult} */ ({
       properties: [new SDK.RemoteObject.RemoteObjectProperty(
           'value', repr, /* enumerable=*/ false, /* writable=*/ false, /* isOwn=*/ true, /* wasThrown=*/ false)],
       internalProperties: []
     });
+  }
+}
+
+class NamespaceObject extends SDK.RemoteObject.LocalJSONObject {
+  /**
+   * @param {*} value
+   */
+  constructor(value) {
+    super(value);
+  }
+
+  /**
+   * @override
+   * @return {string}
+   */
+  get description() {
+    return this.type;
+  }
+
+  /**
+   * @override
+   * @return {string}
+   */
+  get type() {
+    return 'namespace';
   }
 }
 
@@ -169,10 +204,35 @@ class SourceScopeRemoteObject extends SDK.RemoteObject.RemoteObjectImpl {
       return /** @type {!SDK.RemoteObject.GetPropertiesResult} */ ({properties: [], internalProperties: []});
     }
 
-    const properties = this.variables.map(
-        variable => new SDK.RemoteObject.RemoteObjectProperty(
-            variable.name, new SourceVariable(this._callFrame, variable, this._plugin, this._location),
-            /* enumerable=*/ false, /* writable=*/ false, /* isOwn=*/ true, /* wasThrown=*/ false));
+    const properties = [];
+    const namespaces = {};
+
+    function makeProperty(name, obj) {
+      return new SDK.RemoteObject.RemoteObjectProperty(
+          name, obj,
+          /* enumerable=*/ false, /* writable=*/ false, /* isOwn=*/ true, /* wasThrown=*/ false);
+    }
+
+    for (const variable of this.variables) {
+      const sourceVar = new SourceVariable(this._callFrame, variable, this._plugin, this._location);
+      if (variable.nestedName && variable.nestedName.length > 1) {
+        let parent = namespaces;
+        for (let index = 0; index < variable.nestedName.length - 1; index++) {
+          if (!parent[variable.nestedName[index]]) {
+            parent[variable.nestedName[index]] = new NamespaceObject({});
+          }
+          parent = parent[variable.nestedName[index]].value;
+        }
+        const name = variable.nestedName[variable.nestedName.length - 1];
+        parent[name] = sourceVar;
+      } else {
+        properties.push(makeProperty(variable.name, sourceVar));
+      }
+    }
+
+    for (const namespace in namespaces) {
+      properties.push(makeProperty(namespace, namespaces[namespace]));
+    }
 
     return /** @type {!SDK.RemoteObject.GetPropertiesResult} */ ({properties: properties, internalProperties: []});
   }
@@ -604,10 +664,6 @@ export class DebuggerLanguagePluginManager {
     try {
       const variables = await plugin.listVariablesInScope(location);
       for (const variable of variables || []) {
-        // TODO(bmeurer): Exclude globals for now. Make this faster to make it usable.
-        if (variable.scope === 'GLOBAL') {
-          continue;
-        }
         if (!scopes.has(variable.scope)) {
           scopes.set(variable.scope, new SourceScope(callFrame, variable.scope, plugin, location));
         }
@@ -701,9 +757,10 @@ export let SourceLocation;
 
 /** A source language variable
  * @typedef {{
- *            scope:string,
- *            name:string,
- *            type:string
+ *            scope: string,
+ *            name: string,
+ *            type: string,
+ *            nestedName: ?Array<string>
  *          }}
  */
 export let Variable;

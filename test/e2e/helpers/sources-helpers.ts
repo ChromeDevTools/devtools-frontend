@@ -307,9 +307,14 @@ export async function getScopeNames() {
   return scopeNames;
 }
 
-export async function getValuesForScope(scope: string) {
+export async function getValuesForScope(scope: string, expandCount = 0) {
   const scopeSelector = `[aria-label="${scope}"]`;
   await waitFor(scopeSelector);
+  for (let i = 0; i < expandCount; i++) {
+    const unexpandedSelector = `${scopeSelector} + ol li[aria-expanded=false]`;
+    await waitFor(unexpandedSelector);
+    await click(unexpandedSelector);
+  }
   const valueSelector = `${scopeSelector} + ol .name-and-value`;
   const values = await (await $$(valueSelector)).evaluate(nodes => nodes.map((n: HTMLElement) => n.textContent));
   return values;

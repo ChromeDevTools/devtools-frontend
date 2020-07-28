@@ -10,7 +10,9 @@
       "bindings": [
         {
           "shortcut": "F1",
-          "keybindSets": ["devToolsDefault"]
+          "keybindSets": [
+            "devToolsDefault"
+          ]
         },
         {
           "shortcut": "Shift+?"
@@ -18,12 +20,16 @@
         {
           "platform": "windows,linux",
           "shortcut": "Ctrl+,",
-          "keybindSets": ["vsCode"]
+          "keybindSets": [
+            "vsCode"
+          ]
         },
         {
           "platform": "mac",
           "shortcut": "Meta+,",
-          "keybindSets": ["vsCode"]
+          "keybindSets": [
+            "vsCode"
+          ]
         }
       ]
     },
@@ -44,12 +50,16 @@
         {
           "platform": "windows,linux",
           "shortcut": "Ctrl+K Ctrl+S",
-          "keybindSets": ["vsCode"]
+          "keybindSets": [
+            "vsCode"
+          ]
         },
         {
           "platform": "mac",
           "shortcut": "Meta+K Meta+S",
-          "keybindSets": ["vsCode"]
+          "keybindSets": [
+            "vsCode"
+          ]
         }
       ]
     },
@@ -130,5 +140,6 @@
     "frameworkBlackboxSettingsTab.css",
     "settingsScreen.css",
     "keybindsSettingsTab.css"
-  ]
+  ],
+  "skip_rollup": true
 }

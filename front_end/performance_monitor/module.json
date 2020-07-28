@@ -22,5 +22,6 @@
   ],
   "resources": [
     "performanceMonitor.css"
-  ]
+  ],
+  "skip_rollup": true
 }

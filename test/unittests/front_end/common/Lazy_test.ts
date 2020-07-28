@@ -4,7 +4,9 @@
 
 const {assert} = chai;
 
-import {lazy} from '../../../../front_end/common/Lazy.js';
+import * as Common from '../../../../front_end/common/common.js';
+
+const lazy = Common.Lazy.lazy;
 
 describe('lazy', () => {
   it('evaluates callback once', () => {

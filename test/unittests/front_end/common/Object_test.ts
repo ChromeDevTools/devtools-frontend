@@ -4,10 +4,12 @@
 
 const {assert} = chai;
 
-import {ObjectWrapper} from '../../../../front_end/common/Object.js';
+import * as Common from '../../../../front_end/common/common.js';
+
+const ObjectWrapper = Common.ObjectWrapper.ObjectWrapper;
 
 describe('ObjectWrapper', () => {
-  let obj: ObjectWrapper;
+  let obj: Common.ObjectWrapper.ObjectWrapper;
   beforeEach(() => {
     obj = new ObjectWrapper();
   });

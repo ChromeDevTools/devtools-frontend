@@ -4,7 +4,9 @@
 
 const {assert} = chai;
 
-import {StringOutputStream} from '../../../../front_end/common/StringOutputStream.js';
+import * as Common from '../../../../front_end/common/common.js';
+
+const StringOutputStream = Common.StringOutputStream.StringOutputStream;
 
 describe('StringOutputStream', () => {
   it('can be instantiated without issues', () => {

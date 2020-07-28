@@ -4,7 +4,10 @@
 
 const {assert} = chai;
 
-import {LiveLocationWithPool, LiveLocationPool} from '../../../../front_end/bindings/LiveLocation.js';
+import * as Bindings from '../../../../front_end/bindings/bindings.js';
+
+const LiveLocationPool = Bindings.LiveLocation.LiveLocationPool;
+const LiveLocationWithPool = Bindings.LiveLocation.LiveLocationWithPool;
 
 describe('LiveLocation', () => {
   it('executes updates atomically', async () => {

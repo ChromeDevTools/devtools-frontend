@@ -4,7 +4,9 @@
 
 const {assert} = chai;
 
-import * as Color from '../../../../front_end/common/Color.js';
+import * as Common from '../../../../front_end/common/common.js';
+
+const Color = Common.Color;
 
 describe('Color', () => {
   it('can be instantiated without issues', () => {

@@ -4,10 +4,14 @@
 
 const {assert} = chai;
 
-import {Console, Events, MessageLevel} from '../../../../front_end/common/Console.js';
+import * as Common from '../../../../front_end/common/common.js';
+
+const Console = Common.Console.Console;
+const Events = Common.Console.Events;
+const MessageLevel = Common.Console.MessageLevel;
 
 describe('Console', () => {
-  let consoleImpl: Console;
+  let consoleImpl: Common.Console.Console;
   beforeEach(() => {
     consoleImpl = Console.instance({forceNew: true});
   });
@@ -20,7 +24,7 @@ describe('Console', () => {
   });
 
   it('adds handles messages of all types', () => {
-    const messageTypes = new Map<MessageLevel, string>([
+    const messageTypes = new Map<Common.Console.MessageLevel, string>([
       ['Info', 'log'],
       ['Warning', 'warn'],
       ['Error', 'error'],

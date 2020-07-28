@@ -4,7 +4,9 @@
 
 const {assert} = chai;
 
-import {WasmDisassembly} from '../../../../front_end/common/WasmDisassembly.js';
+import * as Common from '../../../../front_end/common/common.js';
+
+const WasmDisassembly = Common.WasmDisassembly.WasmDisassembly;
 
 describe('WasmDisassembly', () => {
   const BYTECODE_OFFSETS = [0, 10, 23, 32, 35, 37, 39, 40, 75];

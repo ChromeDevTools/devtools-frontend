@@ -4,7 +4,9 @@
 
 const {assert} = chai;
 
-import {CharacterIdMap} from '../../../../front_end/common/CharacterIdMap.js';
+import * as Common from '../../../../front_end/common/common.js';
+
+const CharacterIdMap = Common.CharacterIdMap.CharacterIdMap;
 
 describe('CharacterIdMap class', () => {
   it('is able to convert an element to a character', () => {

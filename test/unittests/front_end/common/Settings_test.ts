@@ -4,7 +4,9 @@
 
 const {assert} = chai;
 
-import {SettingsStorage} from '../../../../front_end/common/Settings.js';
+import * as Common from '../../../../front_end/common/common.js';
+
+const SettingsStorage = Common.Settings.SettingsStorage;
 
 describe('SettingsStorage class', () => {
   it('is able to set a name', () => {

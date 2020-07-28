@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {parseClientVariations} from '../../../../front_end/third_party/chromium/client-variations/ClientVariationsParser.js';
+import {parseClientVariations} from '../../../../front_end/client_variations/client_variations.js';
 
 describe('parseClientVariations', () => {
   it('returns empty lists for unparseable text', () => {

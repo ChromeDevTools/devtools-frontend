@@ -157,9 +157,9 @@ generated_applications_js = [
 generated_non_autostart_non_remote_modules = [
   "$resources_out_dir/accessibility/accessibility_module.js",
   "$resources_out_dir/animation/animation_module.js",
-  "$resources_out_dir/lighthouse/lighthouse_module.js",
   "$resources_out_dir/browser_debugger/browser_debugger_module.js",
   "$resources_out_dir/changes/changes_module.js",
+  "$resources_out_dir/client_variations/client_variations_module.js",
   "$resources_out_dir/cm_modes/cm_modes_module.js",
   "$resources_out_dir/cm/cm_module.js",
   "$resources_out_dir/color_picker/color_picker_module.js",
@@ -182,6 +182,7 @@ generated_non_autostart_non_remote_modules = [
   "$resources_out_dir/js_profiler/js_profiler_module.js",
   "$resources_out_dir/layer_viewer/layer_viewer_module.js",
   "$resources_out_dir/layers/layers_module.js",
+  "$resources_out_dir/lighthouse/lighthouse_module.js",
   "$resources_out_dir/marked/marked_module.js",
   "$resources_out_dir/media/media_module.js",
   "$resources_out_dir/network/network_module.js",

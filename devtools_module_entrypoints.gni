@@ -160,6 +160,7 @@ generated_typescript_entrypoints = [
   "$resources_out_dir/third_party/acorn/acorn.js",
   "$resources_out_dir/third_party/lit-html/lit-html.js",
   "$resources_out_dir/marked/marked.js",
+  "$resources_out_dir/client_variations/client_variations.js",
   "$resources_out_dir/root/root.js",
   "$resources_out_dir/sdk/sdk.js",
   "$resources_out_dir/search/search.js",

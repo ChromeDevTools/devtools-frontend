@@ -12,6 +12,7 @@ group("front_end") {
     "accessibility:bundle",
     "bindings:bundle",
     "browser_sdk:bundle",
+    "client_variations:bundle",
     "color_picker:bundle",
     "common:bundle",
     "component_docs",

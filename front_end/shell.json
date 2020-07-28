@@ -1,6 +1,7 @@
 {
   "modules" : [
     { "name": "bindings", "type": "autostart" },
+    { "name": "browser_sdk", "type": "autostart" },
     { "name": "common", "type": "autostart" },
     { "name": "components", "type": "autostart"},
     { "name": "console_counters", "type": "autostart" },
@@ -11,17 +12,17 @@
     { "name": "persistence", "type": "autostart" },
     { "name": "platform", "type": "autostart" },
     { "name": "protocol_client", "type": "autostart" },
-    { "name": "sdk", "type": "autostart" },
-    { "name": "browser_sdk", "type": "autostart" },
     { "name": "root", "type": "autostart" },
+    { "name": "sdk", "type": "autostart" },
     { "name": "services", "type": "autostart" },
     { "name": "text_utils", "type": "autostart" },
     { "name": "ui", "type": "autostart" },
     { "name": "workspace", "type": "autostart" },
 
     { "name": "changes" },
-    { "name": "cm" },
+    { "name": "client_variations" },
     { "name": "cm_modes" },
+    { "name": "cm" },
     { "name": "color_picker" },
     { "name": "console" },
     { "name": "coverage" },
@@ -31,10 +32,13 @@
     { "name": "formatter" },
     { "name": "heap_snapshot_model" },
     { "name": "inline_editor" },
+    { "name": "input"},
     { "name": "javascript_metadata" },
+    { "name": "marked" },
     { "name": "object_ui" },
     { "name": "perf_ui" },
     { "name": "profiler" },
+    { "name": "protocol_monitor"},
     { "name": "quick_open" },
     { "name": "search" },
     { "name": "settings" },
@@ -42,9 +46,6 @@
     { "name": "source_frame" },
     { "name": "sources" },
     { "name": "text_editor" },
-    { "name": "workspace_diff" },
-    { "name": "protocol_monitor"},
-    { "name": "input"},
-    { "name": "marked" }
+    { "name": "workspace_diff" }
   ]
 }

@@ -29,6 +29,7 @@
  */
 
 import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
+import * as ClientVariationsParser from '../client_variations/client_variations.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
@@ -736,7 +737,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
       if (this._request.cachedInMemory() || this._request.cached()) {
         cautionText = ls`Provisional headers are shown. Disable cache to see full headers.`;
         cautionTitle = ls
-        `Only provisional headers are available because this request was not sent over the network and instead was served from a local cache, which doesn't store the original request headers. Disable cache to see full request headers.`;
+        `Only provisional headers are available because this request was not sent over the network and instead was served from a local cache, which doesn’t store the original request headers. Disable cache to see full request headers.`;
       } else {
         cautionText = ls`Provisional headers are shown`;
       }
@@ -757,12 +758,14 @@ export class RequestHeadersView extends UI.Widget.VBox {
     }
 
     headersTreeElement.hidden = !length && !provisionalHeaders;
-    for (let i = 0; i < length; ++i) {
-      const headerTreeElement = new UI.TreeOutline.TreeElement(this._formatHeaderObject(headers[i]));
-      headerTreeElement[_headerNameSymbol] = headers[i].name;
+    for (const header of headers) {
+      const headerTreeElement = new UI.TreeOutline.TreeElement(this._formatHeaderObject(header));
+      headerTreeElement[_headerNameSymbol] = header.name;
 
-      if (headers[i].name.toLowerCase() === 'set-cookie') {
-        const matchingBlockedReasons = blockedCookieLineToReasons.get(headers[i].value);
+      const headerId = header.name.toLowerCase();
+
+      if (headerId === 'set-cookie') {
+        const matchingBlockedReasons = blockedCookieLineToReasons.get(header.value);
         if (matchingBlockedReasons) {
           const icon = UI.Icon.Icon.create('smallicon-warning', '');
           headerTreeElement.listItemElement.appendChild(icon);
@@ -779,6 +782,25 @@ export class RequestHeadersView extends UI.Widget.VBox {
       }
 
       headersTreeElement.appendChild(headerTreeElement);
+
+      if (headerId === 'x-client-data') {
+        // https://source.chromium.org/chromium/chromium/src/+/master:components/variations/proto/client_variations.proto;l=14-21
+        const {variationIds, triggerVariationIds} = ClientVariationsParser.parseClientVariations(header.value);
+        if (variationIds.length || triggerVariationIds.length) {
+          const element = createElement('div');
+          element.classList.add('x-client-data-details');
+          if (variationIds.length) {
+            element.createChild('div').textContent =
+                ls`Active client experiment variation IDs: ${variationIds.join(', ')}`;
+          }
+          if (triggerVariationIds.length) {
+            element.createChild('div').textContent =
+                ls`Active client experiment variation IDs that trigger server-side behavior: ${
+                    triggerVariationIds.join(', ')}`;
+          }
+          headerTreeElement.listItemElement.appendChild(element);
+        }
+      }
     }
   }
 

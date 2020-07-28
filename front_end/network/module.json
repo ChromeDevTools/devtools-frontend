@@ -176,6 +176,7 @@
   ],
   "dependencies": [
     "browser_sdk",
+    "client_variations",
     "common",
     "components",
     "cookie_table",

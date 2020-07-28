@@ -31,6 +31,7 @@ group("front_end") {
     "javascript_metadata:bundle",
     "sdk:bundle",
     "search:bundle",
+    "text_editor:bundle",
     "text_utils:bundle",
     "third_party/lighthouse",
     "timeline_model:bundle",

@@ -29,6 +29,7 @@
     "../third_party/codemirror/package/addon/fold/foldgutter.js",
     "../third_party/codemirror/package/addon/fold/brace-fold.js"
   ],
+  "skip_rollup": true,
   "resources": [
     "codemirror.css"
   ]

@@ -46,6 +46,7 @@ group("front_end") {
     "search:bundle",
     "services:bundle",
     "settings:bundle",
+    "source_frame:bundle",
     "text_editor:bundle",
     "text_utils:bundle",
     "third_party/lighthouse",

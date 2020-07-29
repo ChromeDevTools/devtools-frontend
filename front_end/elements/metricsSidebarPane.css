@@ -139,12 +139,3 @@
 :host-context(.-theme-with-dark-background) .metrics .margin:hover div {
   color: #ccc;
 }
-
-/* In dark mode the hover color that is used when hovering on border
- * constrasts very poorly with the lighter text colour used in dark
- * mode. So when you hover over the border we apply a dark font color
- * that contrasts much better with the background.
- */
-:host-context(.-theme-with-dark-background) .metrics .border:hover > div:not(.padding) {
-  color: #222;
-}

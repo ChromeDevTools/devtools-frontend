@@ -136,9 +136,6 @@ table is empty.
   <message name="IDS_DEVTOOLS_457e0305e5c05fccf452f238863faa46" desc="Manifest installability error in the Application panel">
     Manifest start URL is not valid
   </message>
-  <message name="IDS_DEVTOOLS_458efe6e41ed41835b8d84b28db3f394" desc="Filter label text content in Service Workers View of the Application panel">
-    <ph name="LOCKED_TERM">Service workers</ph> from other origins
-  </message>
   <message name="IDS_DEVTOOLS_45e035baf33a8e403766a606457f8b10" desc="Text in App Manifest View of the Application panel">
     Theme color
   </message>
@@ -249,9 +246,6 @@ table is empty.
   </message>
   <message name="IDS_DEVTOOLS_87e059dc2492bd5041581f05daef12f7" desc="Text in Service Worker Cache Views of the Application panel">
     Filter by Path
-  </message>
-  <message name="IDS_DEVTOOLS_886b9bffdebad3a988a8da87b1affa2d" desc="Text in Service Workers View of the Application panel">
-    Filter <ph name="LOCKED_TERM">service worker</ph>
   </message>
   <message name="IDS_DEVTOOLS_897356954c2cd3d41b221e3f24f99bba" desc="Text in DOMStorage Items View of the Application panel">
     Key

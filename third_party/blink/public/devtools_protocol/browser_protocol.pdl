@@ -472,6 +472,8 @@ experimental domain Audits
     enum
       ExcludeSameSiteUnspecifiedTreatedAsLax
       ExcludeSameSiteNoneInsecure
+      ExcludeSameSiteLax
+      ExcludeSameSiteStrict
 
   type SameSiteCookieWarningReason extends string
     enum
@@ -3146,6 +3148,17 @@ domain Emulation
       # Mock accuracy
       optional number accuracy
 
+  # Overrides the Idle state.
+  experimental command setIdleOverride
+    parameters
+      # Mock isUserActive
+      boolean isUserActive
+      # Mock isScreenUnlocked
+      boolean isScreenUnlocked
+
+  # Clears Idle state overrides.
+  experimental command clearIdleOverride
+
   # Overrides value returned by the javascript navigator object.
   experimental deprecated command setNavigatorOverrides
     parameters
@@ -4260,6 +4273,11 @@ domain Network
       High
       VeryHigh
 
+  # Post data entry for HTTP request
+  type PostDataEntry extends object
+    properties
+      optional binary bytes
+
   # HTTP request data.
   type Request extends object
     properties
@@ -4275,6 +4293,8 @@ domain Network
       optional string postData
       # True when the request has POST data. Note that postData might still be omitted when this flag is true when the data is too long.
       optional boolean hasPostData
+      # Request body elements. This will be converted from base64 to binary
+      experimental optional array of PostDataEntry postDataEntries
       # The mixed content type of the request.
       optional Security.MixedContentType mixedContentType
       # Priority of the resource request at the time request is sent.
@@ -4853,7 +4873,9 @@ domain Network
   # detailed cookie information in the `cookies` field.
   command getCookies
     parameters
-      # The list of URLs for which applicable cookies will be fetched
+      # The list of URLs for which applicable cookies will be fetched.
+      # If not specified, it's assumed to be set to the list containing
+      # the URLs of the page and all of its subframes.
       optional array of string urls
     returns
       # Array of cookie objects.
@@ -5287,6 +5309,10 @@ experimental domain Overlay
       optional boolean showNegativeLineNumbers
       # Show area name labels (default: false).
       optional boolean showAreaNames
+      # Show line name labels (default: false).
+      optional boolean showLineNames
+      # Show track size labels (default: false).
+      optional boolean showTrackSizes
       # The grid container border highlight color (default: transparent).
       optional DOM.RGBA gridBorderColor
       # The cell border color (default: transparent).
@@ -7635,7 +7661,7 @@ experimental domain Fetch
       # If set, the request method is overridden.
       optional string method
       # If set, overrides the post data in the request.
-      optional string postData
+      optional binary postData
       # If set, overrides the request headers.
       optional array of HeaderEntry headers
 

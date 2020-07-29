@@ -698,6 +698,8 @@ declare namespace Protocol {
     export enum SameSiteCookieExclusionReason {
       ExcludeSameSiteUnspecifiedTreatedAsLax = 'ExcludeSameSiteUnspecifiedTreatedAsLax',
       ExcludeSameSiteNoneInsecure = 'ExcludeSameSiteNoneInsecure',
+      ExcludeSameSiteLax = 'ExcludeSameSiteLax',
+      ExcludeSameSiteStrict = 'ExcludeSameSiteStrict',
     }
 
     export enum SameSiteCookieWarningReason {
@@ -4624,6 +4626,17 @@ declare namespace Protocol {
       accuracy?: number;
     }
 
+    export interface SetIdleOverrideRequest {
+      /**
+       * Mock isUserActive
+       */
+      isUserActive: boolean;
+      /**
+       * Mock isScreenUnlocked
+       */
+      isScreenUnlocked: boolean;
+    }
+
     export interface SetNavigatorOverridesRequest {
       /**
        * The platform navigator.platform should return.
@@ -6282,6 +6295,13 @@ declare namespace Protocol {
       VeryHigh = 'VeryHigh',
     }
 
+    /**
+     * Post data entry for HTTP request
+     */
+    export interface PostDataEntry {
+      bytes?: binary;
+    }
+
     export enum RequestReferrerPolicy {
       UnsafeUrl = 'unsafe-url',
       NoReferrerWhenDowngrade = 'no-referrer-when-downgrade',
@@ -6321,6 +6341,10 @@ declare namespace Protocol {
        * True when the request has POST data. Note that postData might still be omitted when this flag is true when the data is too long.
        */
       hasPostData?: boolean;
+      /**
+       * Request body elements. This will be converted from base64 to binary
+       */
+      postDataEntries?: PostDataEntry[];
       /**
        * The mixed content type of the request.
        */
@@ -7191,7 +7215,9 @@ declare namespace Protocol {
 
     export interface GetCookiesRequest {
       /**
-       * The list of URLs for which applicable cookies will be fetched
+       * The list of URLs for which applicable cookies will be fetched.
+       * If not specified, it's assumed to be set to the list containing
+       * the URLs of the page and all of its subframes.
        */
       urls?: string[];
     }
@@ -7903,6 +7929,14 @@ declare namespace Protocol {
        * Show area name labels (default: false).
        */
       showAreaNames?: boolean;
+      /**
+       * Show line name labels (default: false).
+       */
+      showLineNames?: boolean;
+      /**
+       * Show track size labels (default: false).
+       */
+      showTrackSizes?: boolean;
       /**
        * The grid container border highlight color (default: transparent).
        */
@@ -11304,7 +11338,7 @@ declare namespace Protocol {
       /**
        * If set, overrides the post data in the request.
        */
-      postData?: string;
+      postData?: binary;
       /**
        * If set, overrides the request headers.
        */

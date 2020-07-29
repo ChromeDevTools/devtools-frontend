@@ -1360,6 +1360,14 @@ export namespace ProtocolMapping {
     'Emulation.setGeolocationOverride':
         {paramsType: [Protocol.Emulation.SetGeolocationOverrideRequest?]; returnType: void;};
     /**
+     * Overrides the Idle state.
+     */
+    'Emulation.setIdleOverride': {paramsType: [Protocol.Emulation.SetIdleOverrideRequest]; returnType: void;};
+    /**
+     * Clears Idle state overrides.
+     */
+    'Emulation.clearIdleOverride': {paramsType: []; returnType: void;};
+    /**
      * Overrides value returned by the javascript navigator object.
      */
     'Emulation.setNavigatorOverrides':

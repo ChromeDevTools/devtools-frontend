@@ -969,7 +969,9 @@
                     "type": "string",
                     "enum": [
                         "ExcludeSameSiteUnspecifiedTreatedAsLax",
-                        "ExcludeSameSiteNoneInsecure"
+                        "ExcludeSameSiteNoneInsecure",
+                        "ExcludeSameSiteLax",
+                        "ExcludeSameSiteStrict"
                     ]
                 },
                 {
@@ -6932,6 +6934,28 @@
                     ]
                 },
                 {
+                    "name": "setIdleOverride",
+                    "description": "Overrides the Idle state.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "isUserActive",
+                            "description": "Mock isUserActive",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "isScreenUnlocked",
+                            "description": "Mock isScreenUnlocked",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
+                    "name": "clearIdleOverride",
+                    "description": "Clears Idle state overrides.",
+                    "experimental": true
+                },
+                {
                     "name": "setNavigatorOverrides",
                     "description": "Overrides value returned by the javascript navigator object.",
                     "experimental": true,
@@ -9293,6 +9317,18 @@
                     ]
                 },
                 {
+                    "id": "PostDataEntry",
+                    "description": "Post data entry for HTTP request",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "bytes",
+                            "optional": true,
+                            "type": "binary"
+                        }
+                    ]
+                },
+                {
                     "id": "Request",
                     "description": "HTTP request data.",
                     "type": "object",
@@ -9329,6 +9365,16 @@
                             "description": "True when the request has POST data. Note that postData might still be omitted when this flag is true when the data is too long.",
                             "optional": true,
                             "type": "boolean"
+                        },
+                        {
+                            "name": "postDataEntries",
+                            "description": "Request body elements. This will be converted from base64 to binary",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "PostDataEntry"
+                            }
                         },
                         {
                             "name": "mixedContentType",
@@ -10521,7 +10567,7 @@
                     "parameters": [
                         {
                             "name": "urls",
-                            "description": "The list of URLs for which applicable cookies will be fetched",
+                            "description": "The list of URLs for which applicable cookies will be fetched.\nIf not specified, it's assumed to be set to the list containing\nthe URLs of the page and all of its subframes.",
                             "optional": true,
                             "type": "array",
                             "items": {
@@ -11464,6 +11510,18 @@
                         {
                             "name": "showAreaNames",
                             "description": "Show area name labels (default: false).",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "showLineNames",
+                            "description": "Show line name labels (default: false).",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "showTrackSizes",
+                            "description": "Show track size labels (default: false).",
                             "optional": true,
                             "type": "boolean"
                         },
@@ -16559,7 +16617,7 @@
                             "name": "postData",
                             "description": "If set, overrides the post data in the request.",
                             "optional": true,
-                            "type": "string"
+                            "type": "binary"
                         },
                         {
                             "name": "headers",

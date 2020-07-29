@@ -1180,6 +1180,17 @@ declare namespace ProtocolProxyApi {
         Promise<Protocol.ProtocolResponseWithError>;
 
     /**
+     * Overrides the Idle state.
+     */
+    invoke_setIdleOverride(params: Protocol.Emulation.SetIdleOverrideRequest):
+        Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Clears Idle state overrides.
+     */
+    invoke_clearIdleOverride(): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
      * Overrides value returned by the javascript navigator object.
      */
     invoke_setNavigatorOverrides(params: Protocol.Emulation.SetNavigatorOverridesRequest):

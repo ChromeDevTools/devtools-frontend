@@ -167,7 +167,9 @@ export function registerCommands(inspectorBackend) {
   // Audits.
   inspectorBackend.registerEnum('Audits.SameSiteCookieExclusionReason', {
     ExcludeSameSiteUnspecifiedTreatedAsLax: 'ExcludeSameSiteUnspecifiedTreatedAsLax',
-    ExcludeSameSiteNoneInsecure: 'ExcludeSameSiteNoneInsecure'
+    ExcludeSameSiteNoneInsecure: 'ExcludeSameSiteNoneInsecure',
+    ExcludeSameSiteLax: 'ExcludeSameSiteLax',
+    ExcludeSameSiteStrict: 'ExcludeSameSiteStrict'
   });
   inspectorBackend.registerEnum('Audits.SameSiteCookieWarningReason', {
     WarnSameSiteUnspecifiedCrossSiteContext: 'WarnSameSiteUnspecifiedCrossSiteContext',
@@ -935,6 +937,14 @@ export function registerCommands(inspectorBackend) {
         {'name': 'accuracy', 'type': 'number', 'optional': true}
       ],
       []);
+  inspectorBackend.registerCommand(
+      'Emulation.setIdleOverride',
+      [
+        {'name': 'isUserActive', 'type': 'boolean', 'optional': false},
+        {'name': 'isScreenUnlocked', 'type': 'boolean', 'optional': false}
+      ],
+      []);
+  inspectorBackend.registerCommand('Emulation.clearIdleOverride', [], []);
   inspectorBackend.registerCommand(
       'Emulation.setNavigatorOverrides', [{'name': 'platform', 'type': 'string', 'optional': false}], []);
   inspectorBackend.registerCommand(

@@ -117,7 +117,7 @@ describe('Multi-Workers', async function() {
           return;
         }
         await bpCheckbox.evaluate(n => (n as HTMLElement).click());
-        await frontend.waitFor('.cm-breakpoint-disabled');
+        await frontend.waitForSelector('.cm-breakpoint-disabled');
         // Add another breakpoint
         await addBreakpointForLine(frontend, 12);
 

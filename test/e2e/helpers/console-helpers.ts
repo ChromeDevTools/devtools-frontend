@@ -135,7 +135,7 @@ export async function typeIntoConsole(frontend: puppeteer.Page, message: string)
   // The autocomplete element doesn't exist until the first autocomplete suggestion
   // is actaully given.
   const autocomplete = autocompleteHandle ? autocompleteHandle.asElement()! : null;
-  await frontend.waitFor(
+  await frontend.waitForFunction(
       (msg, ln, ac) => ln.textContent === msg && (!ac || ac.textContent === ''), undefined, message, line,
       autocomplete);
 

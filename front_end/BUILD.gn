@@ -43,7 +43,6 @@ group("front_end") {
     "text_utils:bundle",
     "third_party/lighthouse",
     "timeline_model:bundle",
-    "toolbox_bootstrap:bundle",
     "ui:bundle",
     "worker_service:bundle",
     "workspace:bundle",

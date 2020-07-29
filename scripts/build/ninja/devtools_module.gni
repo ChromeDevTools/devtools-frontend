@@ -29,8 +29,11 @@ template("devtools_module") {
 
   if (is_debug) {
     copy_gen_to_resources(target_name) {
-      sources =
-          filter_include(get_target_outputs(_typescript_target_dep), [ "*.js" ])
+      sources = filter_include(get_target_outputs(_typescript_target_dep),
+                               [
+                                 "*.js",
+                                 "*.map",
+                               ])
 
       public_deps = [ _typescript_target_dep ]
 
@@ -39,7 +42,9 @@ template("devtools_module") {
 
     _target_outputs = get_target_outputs(":" + target_name + "-copy")
     _filtered_target_outputs =
-        filter_exclude(_target_outputs, generated_typescript_modules)
+        filter_exclude(
+            filter_exclude(_target_outputs, generated_typescript_modules),
+            [ "*.map" ])
     assert(
         _filtered_target_outputs == [],
         "$_filtered_target_outputs are not listed in all_typescript_module_sources")

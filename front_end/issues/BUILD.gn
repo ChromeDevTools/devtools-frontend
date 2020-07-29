@@ -7,13 +7,18 @@ import("../../scripts/build/ninja/devtools_module.gni")
 import("../../scripts/build/ninja/devtools_pre_built.gni")
 
 devtools_module("issues") {
-  sources = [ "IssueAggregator.js" ]
+  sources = [
+    "IssueAggregator.js",
+    "MarkdownView.ts",
+    "MarkdownView_bridge.js",
+  ]
 
   deps = [
     "../browser_sdk:bundle",
     "../common:bundle",
     "../marked:bundle",
     "../sdk:bundle",
+    "../third_party/lit-html:bundle",
   ]
 
   visibility = [ "../../test/unittests/front_end/issues" ]

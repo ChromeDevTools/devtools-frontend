@@ -2,11 +2,16 @@ import("../../../../third_party/typescript/typescript.gni")
 
 ts_library("issues") {
   testonly = true
-  sources = [ "IssueAggregator_test.ts" ]
+  sources = [
+    "IssueAggregator_test.ts",
+    "MarkdownView_test.ts",
+  ]
 
   deps = [
     "../../../../front_end/issues",
+    "../../../../front_end/marked:bundle",
     "../../../../front_end/sdk:bundle",
+    "../helpers",
     "../sdk",
   ]
 }

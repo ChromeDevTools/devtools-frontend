@@ -72,5 +72,6 @@
   ],
   "resources": [
     "releaseNote.css"
-  ]
+  ],
+  "skip_rollup": true
 }

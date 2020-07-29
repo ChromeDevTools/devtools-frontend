@@ -68,5 +68,6 @@
   ],
   "resources": [
     "throttlingSettingsTab.css"
-  ]
+  ],
+  "skip_rollup": true
 }

@@ -34,6 +34,7 @@ group("front_end") {
     "issues:bundle",
     "javascript_metadata:bundle",
     "js_main:bundle",
+    "mobile_throttling:bundle",
     "performance_monitor:bundle",
     "persistence:bundle",
     "protocol_client:bundle",

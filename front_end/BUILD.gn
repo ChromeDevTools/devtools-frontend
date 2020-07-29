@@ -38,6 +38,7 @@ group("front_end") {
     "performance_monitor:bundle",
     "persistence:bundle",
     "protocol_client:bundle",
+    "quick_open:bundle",
     "screencast:bundle",
     "sdk:bundle",
     "search:bundle",

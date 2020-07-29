@@ -293,7 +293,7 @@ export class ConsoleView extends UI.Widget.VBox {
       if (this._issueBarDiv) {
         this._issueBarDiv.element().remove();
         this._issueBarDiv = null;
-        this.doResize();
+        this._scheduleViewportRefresh();
       }
     } else if (!this._issueBarDiv && !this._hasInteractedWithInfoBar) {
       const elem = document.createElement('div');
@@ -330,7 +330,7 @@ export class ConsoleView extends UI.Widget.VBox {
       });
       elem.appendChild(issueBar.element);
       issueBar.setParentView(this);
-      this.doResize();
+      this._scheduleViewportRefresh();
     }
   }
 

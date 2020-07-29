@@ -5,17 +5,16 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {$, click, goToResource, waitFor} from '../../shared/helper.js';
+import {goToResource, waitFor} from '../../shared/helper.js';
+import {navigateToConsoleTab} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', async () => {
-  // Disabled due to flakiness (see crbug.com/1110351)
-  it.skip('[crbug.com/1110351] shows infobar with button linking to issues tab', async () => {
+  it('shows infobar with button linking to issues tab', async () => {
     // navigate to page which causes a SameSiteCookieIssue
     await goToResource('console/cookie-issue.html');
-    await click('#tab-console');
-    await waitFor('.infobar .infobar-button');
+    await navigateToConsoleTab();
 
-    const infobarButton = await $('.infobar .infobar-button');
+    const infobarButton = await waitFor('.infobar .infobar-button');
     const infobarButtonText = await infobarButton.evaluate(node => node.textContent);
     assert.strictEqual(infobarButtonText, 'Go to Issues');
   });

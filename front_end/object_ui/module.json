@@ -29,5 +29,6 @@
     "objectPopover.css",
     "objectPropertiesSection.css",
     "objectValue.css"
-  ]
+  ],
+  "skip_rollup": true
 }

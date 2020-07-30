@@ -36,6 +36,7 @@ class MockResourceTreeFrame {
   });
 
   isMainFrame = () => true;
+  isTopFrame = () => true;
 }
 
 describe('FrameManager', () => {
@@ -153,5 +154,24 @@ describe('FrameManager', () => {
     frameFromId = frameManager.getFrame('child-frame-id');
     assert.strictEqual(frameFromId?.id, 'child-frame-id');
     assert.strictEqual(frameFromId?.resourceTreeModel().target().id(), 'child-target-id');
+  });
+
+  describe('getTopFrame', () => {
+    it('returns null when no frames are attached', () => {
+      const frameManager = new SDK.FrameManager.FrameManager();
+      assert.isNull(frameManager.getTopFrame());
+    });
+
+    it('returns the top main frame', () => {
+      const frameManager = new SDK.FrameManager.FrameManager();
+
+      const mockModel = new MockResourceTreeModel('target-id');
+      frameManager.modelAdded(mockModel as unknown as SDK.ResourceTreeModel.ResourceTreeModel);
+
+      const mockFrame = new MockResourceTreeFrame('frame-id', 'target-id');
+      mockModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameAdded, mockFrame);
+
+      assert.strictEqual(frameManager.getTopFrame()?.id, 'frame-id');
+    });
   });
 });

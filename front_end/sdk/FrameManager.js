@@ -33,6 +33,9 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper {
     // Maps targetIds to a set of frameIds.
     /** @type {!Map<string, !Set<string>>} */
     this._framesForTarget = new Map();
+
+    /** @type {?ResourceTreeFrame} */
+    this._topFrame = null;
   }
 
   /**
@@ -97,6 +100,7 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper {
     } else {
       this._frames.set(frame.id, {frame, count: 1});
     }
+    this._resetTopFrame();
 
     // Add the frameId to the the targetId's set of frameIds.
     const frameSet = this._framesForTarget.get(frame.resourceTreeModel().target().id());
@@ -149,11 +153,22 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper {
     if (frameData) {
       if (frameData.count === 1) {
         this._frames.delete(frameId);
+        this._resetTopFrame();
         this.dispatchEventToListeners(Events.FrameRemoved, {frameId});
       } else {
         frameData.count--;
       }
     }
+  }
+
+  /**
+   * Looks for the top frame in `_frames` and sets `_topFrame` accordingly.
+   *
+   * Important: This method needs to be called everytime `_frames` is updated.
+   */
+  _resetTopFrame() {
+    const topFrames = this.getAllFrames().filter(frame => frame.isTopFrame());
+    this._topFrame = topFrames.length > 0 ? topFrames[0] : null;
   }
 
   /**
@@ -178,6 +193,13 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper {
    */
   getAllFrames() {
     return Array.from(this._frames.values(), frameData => frameData.frame);
+  }
+
+  /**
+   * @return {?ResourceTreeFrame}
+   */
+  getTopFrame() {
+    return this._topFrame;
   }
 }
 

@@ -25,6 +25,7 @@ group("front_end") {
     "diff:bundle",
     "dom_extension:bundle",
     "elements:bundle",
+    "emulation:bundle",
     "event_listeners:bundle",
     "extensions:bundle",
     "formatter:bundle",

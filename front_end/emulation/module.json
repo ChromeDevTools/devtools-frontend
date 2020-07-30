@@ -262,5 +262,6 @@
     "locationsSettingsTab.css",
     "mediaQueryInspector.css",
     "sensors.css"
-  ]
+  ],
+  "skip_rollup": true
 }

@@ -56,6 +56,7 @@ group("front_end") {
     "search:bundle",
     "services:bundle",
     "settings:bundle",
+    "snippets:bundle",
     "source_frame:bundle",
     "text_editor:bundle",
     "text_utils:bundle",

@@ -455,6 +455,7 @@ export class OverlayModel extends SDKModel {
     const addBackgroundsToGaps = !showGridLines;
     let showPositiveLineNumbers = false;
     let showNegativeLineNumbers = false;
+    let showLineNames = false;
     switch (this._showGridLineNumbersSetting.get()) {
       case 'positive':
         showPositiveLineNumbers = true;
@@ -465,6 +466,9 @@ export class OverlayModel extends SDKModel {
       case 'both':
         showPositiveLineNumbers = true;
         showNegativeLineNumbers = true;
+        break;
+      case 'names':
+        showLineNames = true;
         break;
       default:
         break;
@@ -502,6 +506,7 @@ export class OverlayModel extends SDKModel {
       showGridExtensionLines,
       showPositiveLineNumbers,
       showNegativeLineNumbers,
+      showLineNames,
       showAreaNames: /** @type {boolean} */ (this._showGridAreasSetting.get()),
       showTrackSizes: /** @type {boolean} */ (this._showGridTrackSizesSetting.get()),
       areaBorderColor: Common.Color.PageHighlight.GridAreaBorder.toProtocolRGBA(),

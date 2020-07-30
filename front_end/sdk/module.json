@@ -180,31 +180,36 @@
     {
       "type": "setting",
       "category": "Grid",
-      "title": "Grid Line Numbers",
+      "title": "Grid Line Labels",
       "experiment": "cssGridFeatures",
       "settingName": "showGridLineNumbers",
       "settingType": "enum",
       "defaultValue": "both",
       "options": [
         {
-          "title": "Do not show grid line numbers",
+          "title": "Do not show labels for grid line",
           "text": "None",
           "value": "none"
         },
         {
           "title": "Show positive grid line numbers",
-          "text": "Positive",
+          "text": "Positive numbers",
           "value": "positive"
         },
         {
           "title": "Show negative grid line numbers",
-          "text": "Negative",
+          "text": "Negative numbers",
           "value": "negative"
         },
         {
-          "title": "Show both positive and negative grid line numbers",
-          "text": "Both",
+          "title": "Show all grid line numbers",
+          "text": "All numbers",
           "value": "both"
+        },
+        {
+          "title": "Show grid line names",
+          "text": "Names",
+          "value": "names"
         }
       ]
     },

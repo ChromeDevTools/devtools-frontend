@@ -37,6 +37,9 @@
   <message name="IDS_DEVTOOLS_08a0eff6ec6a38189b8f84511b42ab4a" desc="Tooltip to explain why a cookie was blocked">
     This cookie was blocked because it had the &quot;SameSite=Lax&quot; attribute and the request was made from a different site and was not initiated by a top-level navigation.
   </message>
+  <message name="IDS_DEVTOOLS_08b0bd0c23d627c390ee87aa5b6622b0" desc="An option for CSS Grid tooling that allows to display negative line numbers">
+    Negative numbers
+  </message>
   <message name="IDS_DEVTOOLS_0938b838c7d2deec3675635ab48bf1c5" desc="Phase used to descript the security of a context">
     an insecure
   </message>
@@ -159,9 +162,6 @@
   <message name="IDS_DEVTOOLS_323d4eb70b252acb4a04eaf9e0882597" desc="Title for a group of cities">
     Geolocation
   </message>
-  <message name="IDS_DEVTOOLS_3289297424e01eda5b788c083bbf3147" desc="Option for CSS Grid tooling">
-    Positive
-  </message>
   <message name="IDS_DEVTOOLS_32b9ee3a08ef264f0921540212c6bb85" desc="Title for CSS Grid tooling option">
     Show dashed grid lines extended to the edge of page
   </message>
@@ -211,6 +211,9 @@
   <message name="IDS_DEVTOOLS_47ff9951b01a6b094431ff82dc68e266" desc="The kind of resolution for a mixed content issue">
     warned
   </message>
+  <message name="IDS_DEVTOOLS_480052599ab803eff97b19054c9aa8e4" desc="Title for CSS Grid tooling option">
+    Do not show labels for grid line
+  </message>
   <message name="IDS_DEVTOOLS_490431c2edef7d40dc90533f02fd98cf" desc="Part of the issue message for CSP url issues">
     The Content Security Policy (CSP) improves the security of your site by defining a list of trusted sources and
      instructs the browser to only execute or render resources from this list. Some resources on your site can&apos;t be accessed
@@ -222,6 +225,9 @@
   <message name="IDS_DEVTOOLS_5988f13c0976ce6b6edbc4d667f1bb7a" desc="Part of the issue message for CSP inline issues">
     Content Security Policy blocks inline execution of scripts and stylesheets
   </message>
+  <message name="IDS_DEVTOOLS_5bf12c4c7d2579c8586373ced46b5398" desc="Title for CSS Grid tooling option">
+    Show all grid line numbers
+  </message>
   <message name="IDS_DEVTOOLS_61326117ed4a9ddf3f754e71e119e5b3" desc="The kind of resolution for a mixed content issue">
     blocked
   </message>
@@ -230,6 +236,9 @@
   </message>
   <message name="IDS_DEVTOOLS_62c98a40c9549eded0914ba9f5de51ce" desc="Bullet point about resolving CSP inline violations">
     adding the hash or nonce of the inline script to your CSP header.
+  </message>
+  <message name="IDS_DEVTOOLS_788d0de228ecc87bef71dd9bbf51f704" desc="Section of CSS grid tooling options about line number labels">
+    Grid Line Labels
   </message>
   <message name="IDS_DEVTOOLS_83551c20aa46bf996b5f9a989ad44948" desc="Part of issue message for CSP issues of url type">
     Content Security Policy of your site blockes some resources because their origin is not included in the content security policy header
@@ -265,9 +274,6 @@
   </message>
   <message name="IDS_DEVTOOLS_478be082ab36b6ae1c1c2d410be610c1" desc="Title for CSS Grid tooling option">
     Shade both row and column gaps
-  </message>
-  <message name="IDS_DEVTOOLS_4ce41fe857f34b15736cf25214ecde48" desc="Title for CSS Grid tooling option">
-    Show both positive and negative grid line numbers
   </message>
   <message name="IDS_DEVTOOLS_5146254b747d45c28b8e8d22bd3373bf" desc="Description for a SameSiteCookie issue">
     In a future version of the browser, cookies marked with <ph name="LOCKED_1">|SameSite=None|</ph> must also be marked with <ph name="LOCKED_1">|Secure|</ph> to allow setting them in a cross-site context.
@@ -550,9 +556,6 @@
   <message name="IDS_DEVTOOLS_a2b7a2f1bb0d832325c673c5bc858576" desc="Tooltip to explain why a cookie was blocked">
     This cookie was blocked because its path was not an exact match for or a superdirectory of the request url&apos;s path.
   </message>
-  <message name="IDS_DEVTOOLS_a2db968d29017360d39fb900fff5774d" desc="Section of CSS grid tooling options about line number labels">
-    Grid Line Numbers
-  </message>
   <message name="IDS_DEVTOOLS_a4deb78486926489577a930595ef27ba" desc="Tooltip to explain why a cookie was blocked">
     This cookie was blocked because neither did the request URL&apos;s domain exactly match the cookie&apos;s domain, nor was the request URL&apos;s domain a subdomain of the cookie&apos;s Domain attribute value.
   </message>
@@ -628,6 +631,9 @@
   <message name="IDS_DEVTOOLS_be9ba343e8b19ab015571dcb75e0db81" desc="Tooltip to explain why a cookie was blocked">
     This cookie was blocked because it had the &quot;SameSite=None&quot; attribute but was not marked &quot;Secure&quot;. Cookies without SameSite restrictions must be marked &quot;Secure&quot; and sent over a secure connection.
   </message>
+  <message name="IDS_DEVTOOLS_beaea142b84493de07de8fa197399a19" desc="Title for CSS Grid tooling option">
+    Show grid line names
+  </message>
   <message name="IDS_DEVTOOLS_beff15b1acf49b84bf1080cceb920ebf" desc="Title of a media query that can be emulated via the Rendering drawer">
     prefers-color-scheme: dark
   </message>
@@ -640,6 +646,9 @@
   </message>
   <message name="IDS_DEVTOOLS_c2b67a1559b80b23f73dabb8bba0f534" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Emulate tritanopia
+  </message>
+  <message name="IDS_DEVTOOLS_c3581236a563454ee5775426673cb702" desc="Title for CSS Grid tooling option">
+    All numbers
   </message>
   <message name="IDS_DEVTOOLS_c3905c37f4127686d512a7665206852e" desc="Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel">
     activated
@@ -678,6 +687,9 @@
   <message name="IDS_DEVTOOLS_ca4fbb6d710463b20755b9a024d841c1" desc="Error message when failing to load a source map text">
     DevTools failed to load SourceMap: <ph name="ERROR_MESSAGE"><ex>An error occurred</ex>$1s</ph>
   </message>
+  <message name="IDS_DEVTOOLS_cafd6a9e554bce844b3fb415747a3abe" desc="An option for CSS Grid tooling that allows to display line names">
+    Names
+  </message>
   <message name="IDS_DEVTOOLS_ccab918ce9f085b521a52ac13f653c0b" desc="Tooltip to explain why a cookie was blocked">
     An unknown error was encountered when trying to send this cookie.
   </message>
@@ -692,6 +704,9 @@
   </message>
   <message name="IDS_DEVTOOLS_cedab6b9e4e794e93bba797e8aff218a" desc="Message in Network Manager">
     <ph name="NETWORKREQUEST_RESOURCETYPE___TITLE__">$1s<ex>XHR</ex></ph> finished loading: <ph name="NETWORKREQUEST_REQUESTMETHOD">$2s<ex>GET</ex></ph> &quot;<ph name="NETWORKREQUEST_URL__">$3s<ex>https://example.com</ex></ph>&quot;.
+  </message>
+  <message name="IDS_DEVTOOLS_d0b1b6bcc47d95785771c3bcc0b1f88a" desc="Option for CSS Grid tooling">
+    Positive numbers
   </message>
   <message name="IDS_DEVTOOLS_d24a22fef757966373800aa9795458dc" desc="Text in Source Map">
     ? [sm]
@@ -801,9 +816,6 @@
   <message name="IDS_DEVTOOLS_f43cbd4a1a33a14b459e80598dd28b47" desc="Title for a SameSiteCookie issue">
     Migrate entirely to HTTPS to continue having cookies sent on same-site requests
   </message>
-  <message name="IDS_DEVTOOLS_f5dfe370dffb1abc360b7225b08f1747" desc="Title for CSS Grid tooling option">
-    Do not show grid line numbers
-  </message>
   <message name="IDS_DEVTOOLS_f60ec43a57016c2eab2e49b252b6155e" desc="Title for CSS Grid tooling option">
     Show dashed grid lines
   </message>
@@ -836,8 +848,5 @@
   </message>
   <message name="IDS_DEVTOOLS_1b1cc7f086b3f074da452bc3129981eb" desc="A tag of Emulate CSS screen media type setting that can be searched in the command menu">
     query
-  </message>
-  <message name="IDS_DEVTOOLS_ffb9356ff2b7da85c75c92fa7ea03b8b" desc="An option for CSS Grid tooling that allows to display negative line numbers">
-    Negative
   </message>
 </grit-part>

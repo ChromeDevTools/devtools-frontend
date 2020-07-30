@@ -20,5 +20,6 @@
     "layers3DView.css",
     "paintProfiler.css",
     "layerDetailsView.css"
-  ]
+  ],
+  "skip_rollup": true
 }

@@ -16,7 +16,7 @@ luci.bucket(
     acl.entry(
       roles=acl.BUILDBUCKET_TRIGGERER,
       groups=[
-        'project-devtools-committers',
+        'project-devtools-tryjob-access',
         'service-account-cq',
       ]
     ),
@@ -109,7 +109,7 @@ cq_acls=[
   ),
   acl.entry(
     [acl.CQ_DRY_RUNNER],
-    groups=['project-devtools-committers']
+    groups=['project-devtools-tryjob-access']
   )
 ]
 

@@ -17,5 +17,6 @@ devtools_module("generated") {
     "../protocol_client:*",
     "../sdk:sdk-typescript",
     "../accessibility:*",
+    "../elements:*",
   ]
 }

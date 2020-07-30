@@ -5,6 +5,7 @@
 import("//third_party/blink/public/public_features.gni")
 import("./all_devtools_files.gni")
 import("./all_devtools_modules.gni")
+import("./devtools_grd_files.gni")
 import("./devtools_image_files.gni")
 import("./devtools_module_entrypoints.gni")
 import("./scripts/build/ninja/vars.gni")
@@ -342,6 +343,36 @@ action("generate_devtools_grd") {
       ]
 
   inputs = grd_files + front_end_image_files
+
+  # Confirm that the files in the inputs match expectations.
+  # There is some path wrangling necessary here because some paths come with
+  # //out/{Target} at the start, others with front_end
+  _normalized_inputs = []
+  foreach(input, inputs) {
+    _normalized_inputs +=
+        [ string_replace(input, resources_out_dir, "front_end") ]
+  }
+
+  # Always assume the release files are included.
+  _expected_files = []
+  _expected_files += grd_files_release_sources
+  if (is_debug) {
+    _expected_files += grd_files_debug_sources
+  }
+
+  # Remove the inputs from the expectations, any leftovers means that not all inputs were provided.
+  _missing_files_expected = filter_exclude(_expected_files, _normalized_inputs)
+  assert(
+      _missing_files_expected == [],
+      "Files were expected that weren't found in the GRD inputs: $_missing_files_expected")
+
+  # Remove the expectations from the inputs, any leftovers means that too many files were provided.
+  _missing_files_normalized =
+      filter_exclude(_normalized_inputs, _expected_files)
+  assert(
+      _missing_files_normalized == [],
+      "Files were provided that weren't expected in the GRD inputs: $_missing_files_normalized")
+
   response_file_contents = rebase_path(grd_files, root_build_dir)
   outfile = "$root_gen_dir/devtools/devtools_resources.grd"
   outputs = [ outfile ]

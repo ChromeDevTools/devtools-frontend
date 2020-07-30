@@ -43,6 +43,7 @@ group("front_end") {
     "js_main:bundle",
     "layer_viewer:bundle",
     "mobile_throttling:bundle",
+    "node_main:bundle",
     "object_ui:bundle",
     "perf_ui:bundle",
     "performance_monitor:bundle",

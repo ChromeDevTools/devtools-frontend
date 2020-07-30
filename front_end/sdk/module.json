@@ -148,7 +148,7 @@
       "experiment": "cssGridFeatures",
       "settingName": "showGridLines",
       "settingType": "enum",
-      "defaultValue": "dashed",
+      "defaultValue": "extended-dashed",
       "options": [
         {
           "title": "Do not show grid lines",

@@ -21,7 +21,8 @@ describe('The Layers Panel', async () => {
     assert.strictEqual(url, `${getResourcesPath()}/${targetUrl}`);
   });
 
-  it('[crbug.com/1053901] should update the layers view when going offline', async () => {
+  // Disabled due to flakiness
+  it.skip('[crbug.com/1111256] should update the layers view when going offline', async () => {
     const {target} = getBrowserAndPages();
     await openPanelViaMoreTools('Layers');
 

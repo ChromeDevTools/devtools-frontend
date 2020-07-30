@@ -33,7 +33,10 @@
       "bindings": [
         {
           "shortcut": "Ctrl+`",
-          "keybindSets": ["devToolsDefault", "vsCode"]
+          "keybindSets": [
+            "devToolsDefault",
+            "vsCode"
+          ]
         }
       ]
     },
@@ -235,5 +238,6 @@
     "consolePrompt.css",
     "consoleSidebar.css",
     "consoleView.css"
-  ]
+  ],
+  "skip_rollup": true
 }

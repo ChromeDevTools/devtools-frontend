@@ -447,6 +447,38 @@ describe('generateClosure', () => {
 
       assert.include(classOutput.join('\n'), 'set data(data) {}');
     });
+
+    it('correctly handles TypeScript Object type', () => {
+      const state = parseCode(`
+      class Breadcrumbs extends HTMLElement {
+        public set data(data: { person: Object }) {
+        }
+      }`);
+
+      const classOutput = generateClosureClass(state);
+
+      assert.include(classOutput.join('\n'), `
+  /**
+  * @param {{person: !Object}} data
+  */`);
+      assert.include(classOutput.join('\n'), 'set data(data) {}');
+    });
+
+    it('correctly handles TypeScript array of Object type', () => {
+      const state = parseCode(`
+      class Breadcrumbs extends HTMLElement {
+        public set data(data: { people: Object[] }) {
+        }
+      }`);
+
+      const classOutput = generateClosureClass(state);
+
+      assert.include(classOutput.join('\n'), `
+  /**
+  * @param {{people: !Array.<!Object>}} data
+  */`);
+      assert.include(classOutput.join('\n'), 'set data(data) {}');
+    });
   });
 
   describe('generateInterfaces', () => {
@@ -984,6 +1016,15 @@ export let Person`);
 * id:number,
 * }}`);
       assert.include(interfaces[1].join('\n'), 'export let Detail');
+    });
+    it('ignores the Object type', () => {
+      const state = parseCode(`
+      class Breadcrumbs extends HTMLElement {
+        public set data(data: { people: Object[] }) {
+        }
+      }`);
+      const interfaces = generateInterfaces(state);
+      assert.strictEqual(interfaces.length, 0);
     });
   });
 });

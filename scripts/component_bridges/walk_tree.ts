@@ -364,6 +364,11 @@ export const walkTree = (startNode: ts.SourceFile, resolvedFilePath: string): Wa
     return foundInterface.name.escapedText.toString();
   }));
 
+  // Some components may (rarely) use the TypeScript Object type
+  // But that's defined by TypeScript, not us, and maps directly to Closure's Object
+  // So we don't need to generate any typedefs for the `Object` type.
+  state.interfaceNamesToConvert.delete('Object');
+
   const missingInterfaces = Array.from(state.interfaceNamesToConvert).filter(name => {
     return foundInterfaceNames.has(name) === false;
   });
@@ -372,7 +377,6 @@ export const walkTree = (startNode: ts.SourceFile, resolvedFilePath: string): Wa
    * and if we do, walk that file to find the interface
    * else, error loudly
    */
-
   const importsToCheck = new Set<string>();
 
   missingInterfaces.forEach(missingInterfaceName => {

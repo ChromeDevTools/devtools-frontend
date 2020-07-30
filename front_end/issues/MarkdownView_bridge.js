@@ -14,7 +14,7 @@ import './MarkdownView.js';
 // eslint-disable-next-line no-unused-vars
 class MarkdownViewClosureInterface extends HTMLElement {
   /**
-  * @param {{tokens: !Array.<*>}} data
+  * @param {{tokens: !Array.<!Object>}} data
   */
   set data(data) {
   }

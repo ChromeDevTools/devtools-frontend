@@ -61,7 +61,6 @@ all_devtools_module_sources = [
   "web_audio/graph_visualizer/NodeRendererUtility.js",
   "web_audio/graph_visualizer/NodeView.js",
   "webauthn/WebauthnPane.js",
-  "worker_main/WorkerMain.js",
 ]
 
 input_devtools_modules = []
@@ -666,6 +665,7 @@ all_typescript_module_sources = [
   "ui/utils/measured-scrollbar-width.js",
   "ui/utils/register-custom-element.js",
   "ui/utils/utils.js",
+  "worker_main/WorkerMain.js",
   "worker_service/ServiceDispatcher.js",
   "workspace/FileManager.js",
   "workspace/UISourceCode.js",

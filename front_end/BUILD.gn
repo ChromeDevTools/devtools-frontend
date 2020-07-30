@@ -71,6 +71,7 @@ group("front_end") {
     "timeline_model:bundle",
     "toolbox_bootstrap:bundle",
     "ui:bundle",
+    "worker_main:bundle",
     "worker_service:bundle",
     "workspace:bundle",
     "workspace_diff:bundle",

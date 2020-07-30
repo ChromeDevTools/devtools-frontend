@@ -19,5 +19,6 @@
     "LayerPaintProfilerView.js",
     "LayerTreeModel.js",
     "LayersPanel.js"
-  ]
+  ],
+  "skip_rollup": true
 }

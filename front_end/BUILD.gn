@@ -20,6 +20,7 @@ group("front_end") {
     "components:bundle",
     "console:bundle",
     "console_counters:bundle",
+    "coverage:bundle",
     "css_overview:bundle",
     "data_grid:bundle",
     "devices:bundle",

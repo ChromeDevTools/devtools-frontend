@@ -63,10 +63,14 @@ export class KeybindsSettingsTab extends UI.Widget.VBox {
           shortcutElement.createChild('span', 'keybinds-key').textContent = key;
         });
       });
-      if (shortcuts.length === 0 && self.UI.shortcutRegistry.actionHasDefaultShortcut(item.id())) {
-        const icon = UI.Icon.Icon.create('largeicon-shortcut-changed', 'keybinds-modified');
-        UI.ARIAUtils.setAccessibleName(icon, ls`Shortcut provided by preset`);
-        itemElement.appendChild(icon);
+      if (shortcuts.length === 0) {
+        if (self.UI.shortcutRegistry.actionHasDefaultShortcut(item.id())) {
+          const icon = UI.Icon.Icon.create('largeicon-shortcut-changed', 'keybinds-modified');
+          UI.ARIAUtils.setAccessibleName(icon, ls`Shortcut provided by preset`);
+          itemElement.appendChild(icon);
+        }
+        const emptyElement = itemElement.createChild('div', 'keybinds-shortcut keybinds-list-text');
+        UI.ARIAUtils.setAccessibleName(emptyElement, ls`No shortcut for action`);
       }
     }
 

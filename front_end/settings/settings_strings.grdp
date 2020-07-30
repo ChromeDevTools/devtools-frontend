@@ -30,6 +30,9 @@
   <message name="IDS_DEVTOOLS_7c3ebe810fd87afa74649e8230167a75" desc="Message text content in Settings Screen of the Settings">
     These experiments are particularly unstable. Enable at your own risk.
   </message>
+  <message name="IDS_DEVTOOLS_856d3924ec1295aa3215e89d83d0499a" desc="Screen reader label for an empty shortcut cell in custom shortcuts settings tab">
+    No shortcut for action
+  </message>
   <message name="IDS_DEVTOOLS_87ae3156c118350d6b13cdebc37485e9" desc="Error message in Framework Blackbox settings pane that declares pattern must be a valid regular expression">
     Pattern must be a valid regular expression
   </message>

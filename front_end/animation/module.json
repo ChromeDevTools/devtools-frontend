@@ -25,5 +25,6 @@
   "resources": [
     "animationScreenshotPopover.css",
     "animationTimeline.css"
-  ]
+  ],
+  "skip_rollup": true
 }

@@ -8,7 +8,6 @@ devtools_module_entrypoint_sources = [
   "RuntimeInstantiator.js",
   "accessibility/accessibility-legacy.js",
   "animation/animation-legacy.js",
-  "animation/animation.js",
   "bindings/bindings-legacy.js",
   "browser_debugger/browser_debugger-legacy.js",
   "browser_debugger/browser_debugger.js",
@@ -117,6 +116,7 @@ foreach(module, devtools_module_entrypoint_sources) {
 
 generated_typescript_entrypoint_sources = [
   "$resources_out_dir/accessibility/accessibility.js",
+  "$resources_out_dir/animation/animation.js",
   "$resources_out_dir/bindings/bindings.js",
   "$resources_out_dir/browser_sdk/browser_sdk.js",
   "$resources_out_dir/client_variations/client_variations.js",

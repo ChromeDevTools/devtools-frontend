@@ -10,6 +10,7 @@ group("front_end") {
     ":front_end_html_entrypoints",
     ":ts_library-verification",
     "accessibility:bundle",
+    "animation:bundle",
     "bindings:bundle",
     "browser_sdk:bundle",
     "client_variations:bundle",

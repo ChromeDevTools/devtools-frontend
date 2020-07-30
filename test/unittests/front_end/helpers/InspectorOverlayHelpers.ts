@@ -6,7 +6,7 @@ const {assert} = chai;
 
 import {assertNotNull, renderElementIntoDOM} from './DOMHelpers.js';
 import {reset} from '../../../../front_end/inspector_overlay/common.js';
-import {_normalizeOffsetData, drawGridAreaNames, drawGridLineNumbers} from '../../../../front_end/inspector_overlay/css_grid_label_helpers.js';
+import {_normalizePositionData, drawGridAreaNames, drawGridLineNumbers} from '../../../../front_end/inspector_overlay/css_grid_label_helpers.js';
 import {AreaBounds, Bounds} from '../../../../front_end/inspector_overlay/common.js';
 
 const GRID_LABEL_CONTAINER_ID = 'grid-label-container';
@@ -126,18 +126,21 @@ interface GridHighlightConfig {
   showNegativeLineNumbers?: boolean;
 }
 
-interface TrackSize {
-  computedSize: number;
+interface Position {
   x: number;
   y: number;
 }
 
+interface TrackSize extends Position {
+  computedSize: number;
+}
+
 interface HighlightConfig {
   gridHighlightConfig: GridHighlightConfig;
-  positiveRowLineNumberOffsets?: number[];
-  negativeRowLineNumberOffsets?: number[];
-  positiveColumnLineNumberOffsets?: number[];
-  negativeColumnLineNumberOffsets?: number[];
+  positiveRowLineNumberPositions?: Position[];
+  negativeRowLineNumberPositions?: Position[];
+  positiveColumnLineNumberPositions?: Position[];
+  negativeColumnLineNumberPositions?: Position[];
   layerId?: number;
   rowTrackSizes?: TrackSize[];
   columnTrackSizes?: TrackSize[];
@@ -162,7 +165,7 @@ interface ExpectedAreaNameLabel {
 export function drawGridLineNumbersAndAssertLabels(
     config: HighlightConfig, bounds: Bounds, expectedLabels: ExpectedLineNumberLabel[]) {
   const el = getGridLineNumberLabelContainer(config.layerId);
-  const data = _normalizeOffsetData(config, bounds);
+  const data = _normalizePositionData(config, bounds);
   drawGridLineNumbers(el, data);
 
   let totalLabelCount = 0;
@@ -217,7 +220,7 @@ export function drawMultipleGridLineNumbersAndAssertLabels(
     configs: HighlightConfig[], bounds: Bounds, expectedLabelList: ExpectedLayerLabel[]) {
   for (const config of configs) {
     const el = getGridLineNumberLabelContainer(config.layerId);
-    const data = _normalizeOffsetData(config, bounds);
+    const data = _normalizePositionData(config, bounds);
     drawGridLineNumbers(el, data);
   }
 

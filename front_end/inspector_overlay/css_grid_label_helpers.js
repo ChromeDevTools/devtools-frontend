@@ -58,26 +58,29 @@ const maxLineNamesCount = 3;
 /** @typedef {!{contentTop: number, contentLeft: number}} */
 let GridLabelPositions;  // eslint-disable-line no-unused-vars
 
-/** @typedef {!{offsets: number[], hasFirst: boolean, hasLast: boolean, names?: string[][]}} */
-let OffsetData;  // eslint-disable-line no-unused-vars
+/** @typedef {!{positions: Position[], hasFirst: boolean, hasLast: boolean, names?: string[][]}} */
+let PositionData;  // eslint-disable-line no-unused-vars
 
-/** @typedef {!{positive: OffsetData, negative: OffsetData}} */
-let TracksOffsetData;  // eslint-disable-line no-unused-vars
+/** @typedef {!{positive: PositionData, negative: PositionData}} */
+let TracksPositionData;  // eslint-disable-line no-unused-vars
 
-/** @typedef {!{rows: TracksOffsetData, columns: TracksOffsetData, bounds: Bounds}} */
-let GridOffsetNormalizedData;  // eslint-disable-line no-unused-vars
+/** @typedef {!{rows: TracksPositionData, columns: TracksPositionData, bounds: Bounds}} */
+let GridPositionNormalizedData;  // eslint-disable-line no-unused-vars
 
 /** @typedef {!{computedSize: number, x: number, y: number}} */
 let TrackSize;  // eslint-disable-line no-unused-vars
+
+/** @typedef {!{x: number, y: number}} */
+let Position;  // eslint-disable-line no-unused-vars
 
 /** @typedef {!{
  * rotationAngle?: number,
  * columnTrackSizes?: TrackSize[],
  * rowTrackSizes?: TrackSize[],
- * positiveRowLineNumberOffsets?: number[],
- * negativeRowLineNumberOffsets?: number[],
- * positiveColumnLineNumberOffsets?: number[],
- * negativeColumnLineNumberOffsets?: number[],
+ * positiveRowLineNumberPositions?: Position[],
+ * negativeRowLineNumberPositions?: Position[],
+ * positiveColumnLineNumberPositions?: Position[],
+ * negativeColumnLineNumberPositions?: Position[],
  * rowLineNameOffsets?: {name: string, offset: number}[],
  * columnLineNameOffsets?: {name: string, offset: number}[],
  * gridHighlightConfig?: Object
@@ -112,7 +115,7 @@ export function drawGridLabels(config, gridBounds, areaBounds) {
   const trackSizesContainer = labelContainerForNode.createChild('div', 'track-sizes');
 
   // Draw line numbers and names.
-  const normalizedData = _normalizeOffsetData(config, gridBounds);
+  const normalizedData = _normalizePositionData(config, gridBounds);
   if (config.gridHighlightConfig.showLineNames) {
     drawGridLineNames(lineNameContainer, normalizedData);
   } else {
@@ -133,27 +136,28 @@ export function drawGridLabels(config, gridBounds, areaBounds) {
 }
 
 /**
- * This is a generator function used to iterate over grid line offsets in a way
+ * This is a generator function used to iterate over grid label positions in a way
  * that skips the ones that are too close to eachother, in order to avoid overlaps.
  *
- * @param {number[]} offsets
+ * @param {Position[]} positions
+ * @param {string} axis - 'x' or 'y' in Position
  */
-function* offsetIterator(offsets) {
-  let lastEmittedOffset = null;
+function* positionIterator(positions, axis) {
+  let lastEmittedPos = null;
 
-  for (const [i, offset] of offsets.entries()) {
-    // Only emit the offset if this is the first.
+  for (const [i, pos] of positions.entries()) {
+    // Only emit the position if this is the first.
     const isFirst = i === 0;
     // Or if this is the last.
-    const isLast = i === offsets.length - 1;
-    // Or if there is some minimum distance between the last emitted offset.
-    const isFarEnoughFromPrevious = offset - lastEmittedOffset > gridLabelDistance;
-    // And if there is also some minium distance from the very last offset.
-    const isFarEnoughFromLast = !isLast && offsets[offsets.length - 1] - offset > gridLabelDistance;
+    const isLast = i === positions.length - 1;
+    // Or if there is some minimum distance between the last emitted position.
+    const isFarEnoughFromPrevious = pos[axis] - (lastEmittedPos ? lastEmittedPos[axis] : 0) > gridLabelDistance;
+    // And if there is also some minium distance from the very last position.
+    const isFarEnoughFromLast = !isLast && positions[positions.length - 1][axis] - pos[axis] > gridLabelDistance;
 
     if (isFirst || isLast || (isFarEnoughFromPrevious && isFarEnoughFromLast)) {
-      yield [i, offset];
-      lastEmittedOffset = offset;
+      yield [i, pos];
+      lastEmittedPos = pos;
     }
   }
 }
@@ -188,25 +192,25 @@ function _normalizeNameOffsets(nameOffsets) {
  * - the information is organized in a way that makes the rest of the code more
  *   readable
  * - all pixel values are rounded to integers in order to safely compare
- *   offsets (on high-dpi monitors floats are passed by the backend, this means
- *   checking if an offset is at either edges of the container can't be done).
+ *   positions (on high-dpi monitors floats are passed by the backend, this means
+ *   checking if a position is at either edges of the container can't be done).
  *
  * @param {GridHighlightConfig} config The highlight config object from the backend
  * @param {Bounds} bounds The bounds of the grid container
- * @return {GridOffsetNormalizedData} The new, normalized, data object
+ * @return {GridPositionNormalizedData} The new, normalized, data object
  */
-export function _normalizeOffsetData(config, bounds) {
+export function _normalizePositionData(config, bounds) {
   const width = Math.round(bounds.maxX - bounds.minX);
   const height = Math.round(bounds.maxY - bounds.minY);
 
   const data = {
     rows: {
-      positive: {offsets: [], hasFirst: false, hasLast: false},
-      negative: {offsets: [], hasFirst: false, hasLast: false},
+      positive: {positions: [], hasFirst: false, hasLast: false},
+      negative: {positions: [], hasFirst: false, hasLast: false},
     },
     columns: {
-      positive: {offsets: [], hasFirst: false, hasLast: false},
-      negative: {offsets: [], hasFirst: false, hasLast: false},
+      positive: {positions: [], hasFirst: false, hasLast: false},
+      negative: {positions: [], hasFirst: false, hasLast: false},
     },
     bounds: {
       minX: Math.round(bounds.minX),
@@ -225,7 +229,7 @@ export function _normalizeOffsetData(config, bounds) {
   if (config.gridHighlightConfig.showLineNames) {
     const rowData = _normalizeNameOffsets(config.rowLineNameOffsets);
     data.rows.positive = {
-      offsets: rowData.offsets,
+      positions: rowData.offsets.map(offset => ({x: bounds.minX, y: bounds.minY + offset})),
       names: rowData.names,
       hasFirst: rowData.offsets[0] === 0,
       hasLast: rowData.offsets[rowData.offsets.length - 1] === height
@@ -233,47 +237,45 @@ export function _normalizeOffsetData(config, bounds) {
 
     const columnData = _normalizeNameOffsets(config.columnLineNameOffsets);
     data.columns.positive = {
-      offsets: columnData.offsets,
+      positions: columnData.offsets.map(offset => ({x: bounds.minX + offset, y: bounds.minY})),
       names: columnData.names,
       hasFirst: columnData.offsets[0] === 0,
       hasLast: columnData.offsets[columnData.offsets.length - 1] === width
     };
   } else {
-    if (config.positiveRowLineNumberOffsets) {
+    const normalizeXY = ({x, y}) => ({x: Math.round(x), y: Math.round(y)});
+    const last = array => array[array.length - 1];
+    const first = array => array[0];
+    // TODO (alexrudenko): hasFirst & hasLast checks won't probably work for rotated grids.
+    if (config.positiveRowLineNumberPositions) {
       data.rows.positive = {
-        offsets: config.positiveRowLineNumberOffsets.map(offset => Math.round(offset)),
-        hasFirst: Math.round(config.positiveRowLineNumberOffsets[0]) === 0,
-        hasLast:
-            Math.round(config.positiveRowLineNumberOffsets[config.positiveRowLineNumberOffsets.length - 1]) === height
+        positions: config.positiveRowLineNumberPositions.map(normalizeXY),
+        hasFirst: Math.round(first(config.positiveRowLineNumberPositions).y) === data.bounds.minY,
+        hasLast: Math.round(last(config.positiveRowLineNumberPositions).y) === data.bounds.maxY,
       };
     }
 
-    if (config.negativeRowLineNumberOffsets) {
+    if (config.negativeRowLineNumberPositions) {
       data.rows.negative = {
-        offsets: config.negativeRowLineNumberOffsets.map(offset => Math.round(offset)),
-        hasFirst: Math.round(config.negativeRowLineNumberOffsets[0]) === 0,
-        hasLast:
-            Math.round(config.negativeRowLineNumberOffsets[config.negativeRowLineNumberOffsets.length - 1]) === height
+        positions: config.negativeRowLineNumberPositions.map(normalizeXY),
+        hasFirst: Math.round(first(config.negativeRowLineNumberPositions).y) === data.bounds.minY,
+        hasLast: Math.round(last(config.negativeRowLineNumberPositions).y) === data.bounds.maxY
       };
     }
 
-    if (config.positiveColumnLineNumberOffsets) {
+    if (config.positiveColumnLineNumberPositions) {
       data.columns.positive = {
-        offsets: config.positiveColumnLineNumberOffsets.map(offset => Math.round(offset)),
-        hasFirst: Math.round(config.positiveColumnLineNumberOffsets[0]) === 0,
-        hasLast:
-            Math.round(config.positiveColumnLineNumberOffsets[config.positiveColumnLineNumberOffsets.length - 1]) ===
-            width
+        positions: config.positiveColumnLineNumberPositions.map(normalizeXY),
+        hasFirst: Math.round(first(config.positiveColumnLineNumberPositions).x) === data.bounds.minX,
+        hasLast: Math.round(last(config.positiveColumnLineNumberPositions).x) === data.bounds.maxX
       };
     }
 
-    if (config.negativeColumnLineNumberOffsets) {
+    if (config.negativeColumnLineNumberPositions) {
       data.columns.negative = {
-        offsets: config.negativeColumnLineNumberOffsets.map(offset => Math.round(offset)),
-        hasFirst: Math.round(config.negativeColumnLineNumberOffsets[0]) === 0,
-        hasLast:
-            Math.round(config.negativeColumnLineNumberOffsets[config.negativeColumnLineNumberOffsets.length - 1]) ===
-            width
+        positions: config.negativeColumnLineNumberPositions.map(normalizeXY),
+        hasFirst: Math.round(first(config.negativeColumnLineNumberPositions).x) === data.bounds.minX,
+        hasLast: Math.round(last(config.negativeColumnLineNumberPositions).y) === data.bounds.maxX
       };
     }
   }
@@ -285,33 +287,33 @@ export function _normalizeOffsetData(config, bounds) {
  * Places the grid row and column number labels on the overlay.
  *
  * @param {HTMLElement} container
- * @param {GridOffsetNormalizedData} data
+ * @param {GridPositionNormalizedData} data
  */
 export function drawGridLineNumbers(container, data) {
   if (!data.columns.positive.names) {
-    for (const [i, offset] of offsetIterator(data.columns.positive.offsets)) {
+    for (const [i, pos] of positionIterator(data.columns.positive.positions, 'x')) {
       const element = _createLabelElement(container, (i + 1).toString());
-      _placePositiveColumnLabel(element, offset, data);
+      _placePositiveColumnLabel(element, pos, data);
     }
   }
 
   if (!data.rows.positive.names) {
-    for (const [i, offset] of offsetIterator(data.rows.positive.offsets)) {
+    for (const [i, pos] of positionIterator(data.rows.positive.positions, 'y')) {
       const element = _createLabelElement(container, (i + 1).toString());
-      _placePositiveRowLabel(element, offset, data);
+      _placePositiveRowLabel(element, pos, data);
     }
   }
 
-  for (const [i, offset] of offsetIterator(data.columns.negative.offsets)) {
-    // Negative offsets are sorted such that the first offset corresponds to the line closest to start edge of the grid.
-    const element = _createLabelElement(container, (data.columns.negative.offsets.length * -1 + i).toString());
-    _placeNegativeColumnLabel(element, offset, data);
+  for (const [i, pos] of positionIterator(data.columns.negative.positions, 'x')) {
+    // Negative positions are sorted such that the first position corresponds to the line closest to start edge of the grid.
+    const element = _createLabelElement(container, (data.columns.negative.positions.length * -1 + i).toString());
+    _placeNegativeColumnLabel(element, pos, data);
   }
 
-  for (const [i, offset] of offsetIterator(data.rows.negative.offsets)) {
-    // Negative offsets are sorted such that the first offset corresponds to the line closest to start edge of the grid.
-    const element = _createLabelElement(container, (data.rows.negative.offsets.length * -1 + i).toString());
-    _placeNegativeRowLabel(element, offset, data);
+  for (const [i, pos] of positionIterator(data.rows.negative.positions, 'y')) {
+    // Negative positions are sorted such that the first position corresponds to the line closest to start edge of the grid.
+    const element = _createLabelElement(container, (data.rows.negative.positions.length * -1 + i).toString());
+    _placeNegativeRowLabel(element, pos, data);
   }
 }
 
@@ -345,7 +347,7 @@ export function drawGridTrackSizes(container, rotationAngle, trackSizes, directi
  * Places the grid row and column name labels on the overlay.
  *
  * @param {HTMLElement} container
- * @param {GridOffsetNormalizedData} data
+ * @param {GridPositionNormalizedData} data
  */
 export function drawGridLineNames(container, data) {
   for (const [i, offset] of data.columns.positive.offsets.entries()) {
@@ -417,14 +419,14 @@ function _createLabelElement(container, textContent) {
  * Determine the position of a positive row label, and place it.
  *
  * @param {HTMLElement} element The label DOM element
- * @param {number} offset The corresponding grid line offset
- * @param {GridOffsetNormalizedData} data The normalized offset data
+ * @param {Position} pos The corresponding grid line position
+ * @param {GridPositionNormalizedData} data The normalized position data
  */
-function _placePositiveRowLabel(element, offset, data) {
-  const x = data.bounds.minX;
-  const y = data.bounds.minY + offset;
-  const isAtSharedStartCorner = offset === 0 && data.columns && data.columns.positive.hasFirst;
-  const isAtSharedEndCorner = offset === data.bounds.height && data.columns && data.columns.negative.hasFirst;
+function _placePositiveRowLabel(element, pos, data) {
+  const x = pos.x;
+  const y = pos.y;
+  const isAtSharedStartCorner = y === data.bounds.minY && data.columns && data.columns.positive.hasFirst;
+  const isAtSharedEndCorner = y === data.bounds.maxY && data.columns && data.columns.negative.hasFirst;
   const isTooCloseToViewportStart = y < gridPageMargin;
   const isTooCloseToViewportEnd = canvasHeight - y < gridPageMargin;
   const flipIn = x < gridPageMargin;
@@ -448,14 +450,14 @@ function _placePositiveRowLabel(element, offset, data) {
  * Determine the position of a negative row label, and place it.
  *
  * @param {HTMLElement} element The label DOM element
- * @param {number} offset The corresponding grid line offset
- * @param {GridOffsetNormalizedData} data The normalized offset data
+ * @param {Position} pos The corresponding grid line position
+ * @param {GridPositionNormalizedData} data The normalized position data
  */
-function _placeNegativeRowLabel(element, offset, data) {
-  const x = data.bounds.maxX;
-  const y = data.bounds.minY + offset;
-  const isAtSharedStartCorner = offset === 0 && data.columns && data.columns.positive.hasLast;
-  const isAtSharedEndCorner = offset === data.bounds.height && data.columns && data.columns.negative.hasLast;
+function _placeNegativeRowLabel(element, pos, data) {
+  const x = pos.x;
+  const y = pos.y;
+  const isAtSharedStartCorner = y === data.bounds.minY && data.columns && data.columns.positive.hasLast;
+  const isAtSharedEndCorner = y === data.bounds.maxY && data.columns && data.columns.negative.hasLast;
   const isTooCloseToViewportStart = y < gridPageMargin;
   const isTooCloseToViewportEnd = canvasHeight - y < gridPageMargin;
   const flipIn = canvasWidth - x < gridPageMargin;
@@ -479,14 +481,14 @@ function _placeNegativeRowLabel(element, offset, data) {
  * Determine the position of a positive column label, and place it.
  *
  * @param {HTMLElement} element The label DOM element
- * @param {number} offset The corresponding grid line offset
- * @param {GridOffsetNormalizedData} data The normalized offset data
+ * @param {Position} pos The corresponding grid line position
+ * @param {GridPositionNormalizedData} data The normalized position data
  */
-function _placePositiveColumnLabel(element, offset, data) {
-  const x = data.bounds.minX + offset;
-  const y = data.bounds.minY;
-  const isAtSharedStartCorner = offset === 0 && data.rows && data.rows.positive.hasFirst;
-  const isAtSharedEndCorner = offset === data.bounds.width && data.rows && data.rows.negative.hasFirst;
+function _placePositiveColumnLabel(element, pos, data) {
+  const x = pos.x;
+  const y = pos.y;
+  const isAtSharedStartCorner = x === data.bounds.minX && data.rows && data.rows.positive.hasFirst;
+  const isAtSharedEndCorner = x === data.bounds.maxX && data.rows && data.rows.negative.hasFirst;
   const isTooCloseToViewportStart = x < gridPageMargin;
   const isTooCloseToViewportEnd = canvasWidth - x < gridPageMargin;
   const flipIn = y < gridPageMargin;
@@ -510,14 +512,14 @@ function _placePositiveColumnLabel(element, offset, data) {
  * Determine the position of a negative column label, and place it.
  *
  * @param {HTMLElement} element The label DOM element
- * @param {number} offset The corresponding grid line offset
- * @param {GridOffsetNormalizedData} data The normalized offset data
+ * @param {Position} pos The corresponding grid line position
+ * @param {GridPositionNormalizedData} data The normalized position data
  */
-function _placeNegativeColumnLabel(element, offset, data) {
-  const x = data.bounds.minX + offset;
-  const y = data.bounds.maxY;
-  const isAtSharedStartCorner = offset === 0 && data.rows && data.rows.positive.hasLast;
-  const isAtSharedEndCorner = offset === data.bounds.width && data.rows && data.rows.negative.hasLast;
+function _placeNegativeColumnLabel(element, pos, data) {
+  const x = pos.x;
+  const y = pos.y;
+  const isAtSharedStartCorner = x === data.bounds.minX && data.rows && data.rows.positive.hasLast;
+  const isAtSharedEndCorner = x === data.bounds.maxX && data.rows && data.rows.negative.hasLast;
   const isTooCloseToViewportStart = x < gridPageMargin;
   const isTooCloseToViewportEnd = canvasWidth - x < gridPageMargin;
   const flipIn = canvasHeight - y < gridPageMargin;

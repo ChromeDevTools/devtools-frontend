@@ -9,6 +9,7 @@ import * as puppeteer from 'puppeteer';
 import {$, click, enableExperiment, getBrowserAndPages, platform, reloadDevTools, waitFor} from '../../shared/helper.js';
 import {navigateToCssOverviewTab} from '../helpers/css-overview-helpers.js';
 import {clickToggleButton, selectDualScreen, startEmulationWithDualScreenFlag} from '../helpers/emulation-helpers.js';
+import {closeSecurityTab, navigateToSecurityTab} from '../helpers/security-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 interface UserMetric {
@@ -32,6 +33,7 @@ declare global {
     __endCatchEvents: () => void;
     __panelLoaded: (evt: Event) => void;
     __panelShown: (evt: Event) => void;
+    __panelClosed: (evt: Event) => void;
     __actionTaken: (evt: Event) => void;
     __keyboardShortcutFired: (evt: Event) => void;
     __issuesPanelOpenedFrom: (evt: Event) => void;
@@ -47,6 +49,11 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
     window.__panelShown = (evt: Event) => {
       const customEvt = evt as CustomEvent;
       window.__caughtEvents.push({name: 'DevTools.PanelShown', value: customEvt.detail.value});
+    };
+
+    window.__panelClosed = (evt: Event) => {
+      const customEvt = evt as CustomEvent;
+      window.__caughtEvents.push({name: 'DevTools.PanelClosed', value: customEvt.detail.value});
     };
 
     window.__panelLoaded = (evt: Event) => {
@@ -82,6 +89,7 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
     window.__caughtEvents = [];
     window.__beginCatchEvents = () => {
       window.addEventListener('DevTools.PanelShown', window.__panelShown);
+      window.addEventListener('DevTools.PanelClosed', window.__panelClosed);
       window.addEventListener('DevTools.PanelLoaded', window.__panelLoaded);
       window.addEventListener('DevTools.ActionTaken', window.__actionTaken);
       window.addEventListener('DevTools.KeyboardShortcutFired', window.__keyboardShortcutFired);
@@ -92,6 +100,7 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
 
     window.__endCatchEvents = () => {
       window.removeEventListener('DevTools.PanelShown', window.__panelShown);
+      window.removeEventListener('DevTools.PanelClosed', window.__panelClosed);
       window.removeEventListener('DevTools.PanelLoaded', window.__panelLoaded);
       window.removeEventListener('DevTools.ActionTaken', window.__actionTaken);
       window.removeEventListener('DevTools.KeyboardShortcutFired', window.__keyboardShortcutFired);
@@ -307,6 +316,27 @@ describe('User Metrics', () => {
       {
         name: 'DevTools.KeybindSetSettingChanged',
         value: 1,  // vsCode
+      },
+    ]);
+  });
+
+  it('dispatches closed panel events for views', async () => {
+    // Focus and close a tab
+    await navigateToSecurityTab();
+    await closeSecurityTab();
+
+    await assertCapturedEvents([
+      {
+        name: 'DevTools.PanelShown',
+        value: 16,  // Security
+      },
+      {
+        name: 'DevTools.PanelShown',
+        value: 1,
+      },
+      {
+        name: 'DevTools.PanelClosed',
+        value: 16,  // Security
       },
     ]);
   });

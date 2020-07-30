@@ -12,7 +12,7 @@
 import './MarkdownView.js';
 
 // eslint-disable-next-line no-unused-vars
-class MarkdownViewClosureInterface extends HTMLElement {
+export class MarkdownViewClosureInterface extends HTMLElement {
   /**
   * @param {{tokens: !Array.<!Object>}} data
   */

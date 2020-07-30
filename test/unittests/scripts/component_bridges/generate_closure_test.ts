@@ -108,7 +108,7 @@ describe('generateClosure', () => {
 
       const classOutput = generateClosureClass(state);
 
-      assert.isTrue(classOutput.includes('class BreadcrumbsClosureInterface extends HTMLElement {'));
+      assert.isTrue(classOutput.includes('export class BreadcrumbsClosureInterface extends HTMLElement {'));
     });
 
     it('generates the correct JSDoc for the public methods', () => {

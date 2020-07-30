@@ -19,7 +19,7 @@ import './getters-setters-component.js';
 // @ts-ignore we export this for Closure not TS
 export let Dog;
 // eslint-disable-next-line no-unused-vars
-class BasicComponentClosureInterface extends HTMLElement {
+export class BasicComponentClosureInterface extends HTMLElement {
   /**
   * @return {!Dog}
   */

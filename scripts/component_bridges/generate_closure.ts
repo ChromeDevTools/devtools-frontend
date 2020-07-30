@@ -146,7 +146,7 @@ export const generateClosureClass = (state: WalkerState): string[] => {
   const generatedClassName = generatedClassInterfaceName(customElementClass);
   // the line is used as a Closure typedoc so it is used
   output.push('// eslint-disable-next-line no-unused-vars');
-  output.push(`class ${generatedClassName} extends HTMLElement {`);
+  output.push(`export class ${generatedClassName} extends HTMLElement {`);
 
   state.publicMethods.forEach(method => {
     let methodName = '';

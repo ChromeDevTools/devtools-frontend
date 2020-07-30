@@ -28,7 +28,7 @@ import './ElementsBreadcrumbs.js';
 // @ts-ignore we export this for Closure not TS
 export let DOMNode;
 // eslint-disable-next-line no-unused-vars
-class ElementsBreadcrumbsClosureInterface extends HTMLElement {
+export class ElementsBreadcrumbsClosureInterface extends HTMLElement {
   /**
   * @param {{selectedNode: ?DOMNode, crumbs: !Array.<!DOMNode>}} data
   */

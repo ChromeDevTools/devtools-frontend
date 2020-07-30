@@ -30,7 +30,7 @@ export let DOMNode;
 // @ts-ignore we export this for Closure not TS
 export let Settings;
 // eslint-disable-next-line no-unused-vars
-class LayoutPaneClosureInterface extends HTMLElement {
+export class LayoutPaneClosureInterface extends HTMLElement {
   /**
   * @param {{selectedNode: ?DOMNode, settings: !Settings}} data
   */

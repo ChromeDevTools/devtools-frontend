@@ -47,6 +47,7 @@ group("front_end") {
     "perf_ui:bundle",
     "performance_monitor:bundle",
     "persistence:bundle",
+    "profiler:bundle",
     "protocol_client:bundle",
     "quick_open:bundle",
     "screencast:bundle",

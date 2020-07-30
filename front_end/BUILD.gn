@@ -60,6 +60,7 @@ group("front_end") {
     "text_editor:bundle",
     "text_utils:bundle",
     "third_party/lighthouse",
+    "timeline:bundle",
     "timeline_model:bundle",
     "toolbox_bootstrap:bundle",
     "ui:bundle",

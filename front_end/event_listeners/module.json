@@ -14,5 +14,6 @@
   ],
   "resources": [
     "eventListenersView.css"
-  ]
+  ],
+  "skip_rollup": true
 }

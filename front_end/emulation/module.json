@@ -229,6 +229,60 @@
       "settings": [
         "emulation.locations"
       ]
+    },
+    {
+      "type": "setting",
+      "title": "Touch",
+      "reloadRequired": true,
+      "settingName": "emulation.touch",
+      "settingType": "enum",
+      "defaultValue": "none",
+      "options": [
+        {
+          "title": "Device-based",
+          "text": "Device-based",
+          "value": "none"
+        },
+        {
+          "title": "Force enabled",
+          "text": "Force enabled",
+          "value": "force"
+        }
+      ]
+    },
+    {
+      "type": "setting",
+      "title": "Emulate Idle Detector state",
+      "settingName": "emulation.idleDetection",
+      "settingType": "enum",
+      "defaultValue": "none",
+      "options": [
+        {
+          "title": "No idle emulation",
+          "text": "No idle emulation",
+          "value": "none"
+        },
+        {
+          "title": "User active, screen unlocked",
+          "text": "User active, screen unlocked",
+          "value": "{\"isUserActive\":true,\"isScreenUnlocked\":true}"
+        },
+        {
+          "title": "User active, screen locked",
+          "text": "User active, screen locked",
+          "value": "{\"isUserActive\":true,\"isScreenUnlocked\":false}"
+        },
+        {
+          "title": "User idle, screen unlocked",
+          "text": "User idle, screen unlocked",
+          "value": "{\"isUserActive\":false,\"isScreenUnlocked\":true}"
+        },
+        {
+          "title": "User idle, screen locked",
+          "text": "User idle, screen locked",
+          "value": "{\"isUserActive\":false,\"isScreenUnlocked\":false}"
+        }
+      ]
     }
   ],
   "dependencies": [

@@ -24,11 +24,26 @@
   <message name="IDS_DEVTOOLS_146bdebb324a64d327b1dde22a07d0bd" desc="Text in Device Mode View of the Device Toolbar">
     Laptop
   </message>
+  <message name="IDS_DEVTOOLS_33485fcae7737ceb110576dc3ef1a316" desc="Description of the Touch select in Sensors tab">
+    Forces touch instead of click
+  </message>
   <message name="IDS_DEVTOOLS_391e4e3cd855d914f85f3a4e1b9a00ea" desc="Title of the rotate/screen orientation button">
     Screen orientation options
   </message>
-  <message name="IDS_DEVTOOLS_81c3744a7fe979d029d1e7b84afd613f" desc="Reload warning text content in Sensors View of the Device Toolbar">
-    *Requires reload
+  <message name="IDS_DEVTOOLS_52089bab86bd75e95090797a7ff551e7" desc="Title of an option in Sensors tab idle emulation select">
+    User active, screen unlocked
+  </message>
+  <message name="IDS_DEVTOOLS_5531adbb03e9e9d529dee1cfe6ae9325" desc="Title of an option in Sensors tab idle emulation select">
+    No idle emulation
+  </message>
+  <message name="IDS_DEVTOOLS_55c0b68e68ef5e4d687c6170f80b3d49" desc="Description of the Emulate Idle State select in Sensors tab">
+    Forces selected idle state emulation
+  </message>
+  <message name="IDS_DEVTOOLS_769667ac82abe561c47b57d183f6aa57" desc="Title of a section option in Sensors tab for idle emulation">
+    Emulate Idle Detector state
+  </message>
+  <message name="IDS_DEVTOOLS_7cc843457525ef424db9f857de4939a2" desc="Title of an option in Sensors tab idle emulation select">
+    User active, screen locked
   </message>
   <message name="IDS_DEVTOOLS_89999eac57e5838aa3adb04ad831f5d3" desc="Text in Sensors View of the Device Toolbar">
     Custom orientation
@@ -207,6 +222,9 @@
   <message name="IDS_DEVTOOLS_89e755205b0e07c218525b9ee9aa7cdd" desc="Error message in the Devices settings pane that declares the maximum length of the device name input">
     Device name must be less than <ph name="EMULATION_DEVICEMODEMODEL_MAXDEVICENAMELENGTH">$1s<ex>50</ex></ph> characters.
   </message>
+  <message name="IDS_DEVTOOLS_8bf4483ea45027136e813ce57a15d855" desc="Title of an option in Sensors tab idle emulation select">
+    User idle, screen locked
+  </message>
   <message name="IDS_DEVTOOLS_8d2de5368588552fbae54044ac5c7b3d" desc="Title of mode button in device mode toolbar of the device toolbar">
     Rotate
   </message>
@@ -254,6 +272,9 @@
   </message>
   <message name="IDS_DEVTOOLS_a07f7588275e6b286450c54c3fb5bc92" desc="Text in Sensors View of the Device Toolbar">
     No override
+  </message>
+  <message name="IDS_DEVTOOLS_a28fb5a7bee5fd82d17e8bfb78fe73bf" desc="Title of an option in Sensors tab idle emulation select">
+    User idle, screen unlocked
   </message>
   <message name="IDS_DEVTOOLS_a68cfcae283e3b2a60c99386c809fd6e" desc="Stage element title in Sensors View of the Device Toolbar">
     Shift+drag horizontally to rotate around the y-axis

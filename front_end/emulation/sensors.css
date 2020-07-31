@@ -291,3 +291,7 @@ button.text-button {
     opacity: 100%;
   }
 }
+
+.chrome-select-label {
+  margin-bottom: 16px;
+}

@@ -33,6 +33,26 @@ export class EmulationModel extends SDKModel {
       this._emulationAgent.setScriptExecutionDisabled(true);
     }
 
+    const touchSetting = Common.Settings.Settings.instance().moduleSetting('emulation.touch');
+    touchSetting.addChangeListener(() => {
+      const settingValue = touchSetting.get();
+
+      this.overrideEmulateTouch(settingValue === 'force');
+    });
+
+    const idleDetectionSetting = Common.Settings.Settings.instance().moduleSetting('emulation.idleDetection');
+    idleDetectionSetting.addChangeListener(async () => {
+      const settingValue = idleDetectionSetting.get();
+      if (settingValue === 'none') {
+        await this.clearIdleOverride();
+        return;
+      }
+
+      const emulationParams =
+          /** @type {{isUserActive: boolean, isScreenUnlocked: boolean}} */ (JSON.parse(settingValue));
+      await this.setIdleOverride(emulationParams);
+    });
+
     const mediaTypeSetting = Common.Settings.Settings.instance().moduleSetting('emulatedCSSMedia');
     const mediaFeaturePrefersColorSchemeSetting =
         Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeaturePrefersColorScheme');
@@ -188,6 +208,17 @@ export class EmulationModel extends SDKModel {
     } else {
       this._deviceOrientationAgent.clearDeviceOrientationOverride();
     }
+  }
+
+  /**
+   * @param {{isUserActive: boolean, isScreenUnlocked: boolean}} emulationParams
+   */
+  async setIdleOverride(emulationParams) {
+    await this._emulationAgent.invoke_setIdleOverride(emulationParams);
+  }
+
+  async clearIdleOverride() {
+    await this._emulationAgent.invoke_clearIdleOverride();
   }
 
   /**

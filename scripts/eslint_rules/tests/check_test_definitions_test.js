@@ -42,6 +42,16 @@ ruleTester.run('check_e2e_tests', rule, {
       `,
       filename: 'test/e2e/folder/file.ts',
     },
+    {
+      code: `import {describe, it} from 'mocha';
+
+      // Explaining comment
+      it.skip = function (name, callback) {
+        callback(name);
+      };
+      `,
+      filename: 'test/e2e/folder/file.ts',
+    }
   ],
 
   invalid: [

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_17c9736b5d9c0a3840fbbfc5567ae847" desc="Context menu entry which downloads the json dump when clicked">
+    Save player info
+  </message>
   <message name="IDS_DEVTOOLS_3d1f92a565d3b1a61880236e33c49bf3" desc="Title for the timeline tab.">
     Timeline
   </message>

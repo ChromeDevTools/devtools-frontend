@@ -47,12 +47,17 @@ export class PlayerEntryTreeElement extends UI.TreeOutline.TreeElement {
   _rightClickContextMenu(playerID, event) {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.headerSection().appendItem(ls`Hide player`, this._hidePlayer.bind(this, playerID));
+    contextMenu.headerSection().appendItem(ls`Save player info`, this._savePlayer.bind(this, playerID));
     contextMenu.show();
     return true;
   }
 
   _hidePlayer(playerID) {
     this._displayContainer.markPlayerForDeletion(playerID);
+  }
+
+  _savePlayer(playerID) {
+    this._displayContainer.exportPlayerData(playerID);
   }
 }
 

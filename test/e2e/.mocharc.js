@@ -52,7 +52,7 @@ const timeout = process.env['DEBUG'] ? 0 : 5 * 1000;
 const slow = 1000;
 
 module.exports = {
-  require: path.join(__dirname, '..', 'conductor', 'mocha_hooks.js'),
+  require: [path.join(__dirname, '..', 'conductor', 'mocha_hooks.js'), 'source-map-support/register'],
   spec: testFiles,
   slow,
   timeout,

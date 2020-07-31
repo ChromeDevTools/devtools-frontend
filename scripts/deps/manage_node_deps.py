@@ -64,6 +64,7 @@ DEPS = {
     "rimraf": "3.0.2",
     "rollup": "2.3.3",
     "rollup-plugin-terser": "5.3.0",
+    "source-map-support": "0.5.19",
     "stylelint": "13.5.0",
     "stylelint-config-standard": "20.0.0",
     "typescript": "4.0.0-beta",

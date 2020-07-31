@@ -54,6 +54,7 @@ group("front_end") {
     "profiler:bundle",
     "protocol_client:bundle",
     "quick_open:bundle",
+    "resources:bundle",
     "screencast:bundle",
     "sdk:bundle",
     "search:bundle",

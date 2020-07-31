@@ -114,5 +114,6 @@
     "serviceWorkersView.css",
     "cookieItemsView.css",
     "frameDetailsReportView.css"
-  ]
+  ],
+  "skip_rollup": true
 }

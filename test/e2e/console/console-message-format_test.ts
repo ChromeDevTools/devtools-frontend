@@ -223,7 +223,7 @@ describe('The Console Tab', async () => {
       assert.deepEqual(messages, [
         'A message with first argument string Second argument which should not be discarded',
         '2011 "A message with first argument integer"',
-        'Window\xA0{parent: Window, opener: null, top: Window, length: 0, frames: Window,\xA0…} "A message with first argument window"',
+        'Window\xA0{window: Window, self: Window, document: document, name: \"\", location: Location,\xA0…} "A message with first argument window"',
       ]);
     });
 
@@ -233,7 +233,7 @@ describe('The Console Tab', async () => {
       assert.deepEqual(messages, [
         'A message with first argument string Second argument which should not be discarded',
         '2011 "A message with first argument integer"',
-        'Window\xA0{parent: Window, opener: null, top: Window, length: 0, frames: Window,\xA0…} "A message with first argument window"',
+        'Window\xA0{window: Window, self: Window, document: document, name: \"\", location: Location,\xA0…} "A message with first argument window"',
         'After iframe navigation.',
       ]);
     });

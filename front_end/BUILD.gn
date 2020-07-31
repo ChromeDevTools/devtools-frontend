@@ -58,6 +58,7 @@ group("front_end") {
     "screencast:bundle",
     "sdk:bundle",
     "search:bundle",
+    "security:bundle",
     "services:bundle",
     "settings:bundle",
     "snippets:bundle",

@@ -27,5 +27,6 @@
     "mainView.css",
     "originView.css",
     "sidebar.css"
-  ]
+  ],
+  "skip_rollup": true
 }

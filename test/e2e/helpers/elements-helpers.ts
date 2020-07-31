@@ -11,9 +11,10 @@ const SELECTED_TREE_ELEMENT_SELECTOR = '.selected[role="treeitem"]';
 const CSS_PROPERTY_NAME_SELECTOR = '.webkit-css-property';
 const CSS_PROPERTY_SWATCH_SELECTOR = '.color-swatch-inner';
 const CSS_STYLE_RULE_SELECTOR = '[aria-label*="css selector"]';
-const COMPUTED_PROPERTY_SELECTOR = '.computed-style-property';
+export const COMPUTED_PROPERTY_SELECTOR = '.computed-style-property';
 const COMPUTED_STYLES_PANEL_SELECTOR = '[aria-label="Computed panel"]';
 const COMPUTED_STYLES_SHOW_ALL_SELECTOR = '[aria-label="Show all"]';
+const COMPUTED_STYLE_TRACES_SELECTOR = '.expanded .property-trace';
 const ELEMENTS_PANEL_SELECTOR = '.panel[aria-label="elements"]';
 const SECTION_SUBTITLE_SELECTOR = '.styles-section-subtitle';
 
@@ -114,6 +115,14 @@ export const getAllPropertiesFromComputedPane = async () => {
         })
         .filter(prop => !!prop);
   });
+};
+
+export const getTracesFromComputedStyle = async (computedStyleSelector: string) => {
+  const computedStyleProperty = await $(computedStyleSelector);
+  await click(computedStyleProperty);
+  await waitFor(COMPUTED_STYLE_TRACES_SELECTOR);  // avoid flakiness
+  const propertyTraces = await $$(COMPUTED_STYLE_TRACES_SELECTOR);
+  return propertyTraces.evaluate((nodes: Element[]) => nodes.map(node => node.textContent));
 };
 
 export const expandSelectedNodeRecursively = async () => {

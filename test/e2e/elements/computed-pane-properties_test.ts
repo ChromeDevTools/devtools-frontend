@@ -6,7 +6,7 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
 import {getBrowserAndPages, goToResource} from '../../shared/helper.js';
-import {focusElementsTree, getAllPropertiesFromComputedPane, getContentOfComputedPane, navigateToSidePane, toggleShowAllComputedProperties, waitForComputedPaneChange, waitForElementsComputedSection} from '../helpers/elements-helpers.js';
+import {COMPUTED_PROPERTY_SELECTOR, focusElementsTree, getAllPropertiesFromComputedPane, getContentOfComputedPane, getTracesFromComputedStyle, navigateToSidePane, toggleShowAllComputedProperties, waitForComputedPaneChange, waitForElementsComputedSection} from '../helpers/elements-helpers.js';
 
 describe('The Computed pane', async () => {
   beforeEach(async function() {
@@ -72,5 +72,21 @@ describe('The Computed pane', async () => {
       name: 'align-content',
       value: 'normal',
     });
+  });
+
+  it('can show traces when clicked on a property', async () => {
+    const {frontend} = getBrowserAndPages();
+
+    // Select the H1 element and wait for the computed pane to change.
+    const content = await getContentOfComputedPane();
+    await frontend.keyboard.press('ArrowDown');
+    await waitForComputedPaneChange(content);
+    await waitForElementsComputedSection();
+
+    const tracesText = await getTracesFromComputedStyle(COMPUTED_PROPERTY_SELECTOR);
+    assert.deepEqual(tracesText, [
+      '#f06body h1simple-styled-page.html:16',
+      '#f05h1simple-styled-page.html:9',
+    ]);
   });
 });

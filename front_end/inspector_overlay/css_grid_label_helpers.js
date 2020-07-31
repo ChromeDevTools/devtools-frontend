@@ -275,7 +275,7 @@ export function _normalizePositionData(config, bounds) {
       data.columns.negative = {
         positions: config.negativeColumnLineNumberPositions.map(normalizeXY),
         hasFirst: Math.round(first(config.negativeColumnLineNumberPositions).x) === data.bounds.minX,
-        hasLast: Math.round(last(config.negativeColumnLineNumberPositions).y) === data.bounds.maxX
+        hasLast: Math.round(last(config.negativeColumnLineNumberPositions).x) === data.bounds.maxX
       };
     }
   }

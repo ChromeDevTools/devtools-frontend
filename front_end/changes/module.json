@@ -38,5 +38,6 @@
   "resources": [
     "changesView.css",
     "changesSidebar.css"
-  ]
+  ],
+  "skip_rollup": true
 }

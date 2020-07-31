@@ -13,6 +13,7 @@ group("front_end") {
     "animation:bundle",
     "bindings:bundle",
     "browser_sdk:bundle",
+    "changes:bundle",
     "client_variations:bundle",
     "color_picker:bundle",
     "common:bundle",

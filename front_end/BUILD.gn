@@ -60,6 +60,7 @@ group("front_end") {
     "settings:bundle",
     "snippets:bundle",
     "source_frame:bundle",
+    "sources:bundle",
     "text_editor:bundle",
     "text_utils:bundle",
     "third_party/lighthouse",

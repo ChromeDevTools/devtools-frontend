@@ -487,7 +487,7 @@ class ModelData {
 /**
  * @unrestricted
  */
-class Location extends LiveLocationWithPool {
+export class Location extends LiveLocationWithPool {
   /**
    * @param {!SDK.Script.Script} script
    * @param {!SDK.DebuggerModel.Location} rawLocation

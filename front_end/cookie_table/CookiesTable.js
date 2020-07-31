@@ -28,10 +28,12 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// @ts-nocheck
+// TODO(crbug.com/1011811): Enable TypeScript compiler checks
+
 import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
-import * as Network from '../network/network.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
@@ -613,16 +615,22 @@ export class CookiesTable extends UI.Widget.VBox {
     const cookie = maybeCookie;
 
     contextMenu.revealSection().appendItem(ls`Show Requests With This Cookie`, () => {
-      Network.NetworkPanel.NetworkPanel.revealAndFilter([
-        {
-          filterType: 'cookie-domain',
-          filterValue: cookie.domain(),
-        },
-        {
-          filterType: 'cookie-name',
-          filterValue: cookie.name(),
-        }
-      ]);
+      const evt = new CustomEvent('networkrevealandfilter', {
+        bubbles: true,
+        composed: true,
+        detail: [
+          {
+            filterType: 'cookie-domain',
+            filterValue: cookie.domain(),
+          },
+          {
+            filterType: 'cookie-name',
+            filterValue: cookie.name(),
+          }
+        ]
+      });
+
+      this.element.dispatchEvent(evt);
     });
     if (Root.Runtime.experiments.isEnabled('issuesPane') && BrowserSDK.RelatedIssue.hasIssues(cookie)) {
       contextMenu.revealSection().appendItem(ls`Show issue associated with this cookie`, () => {

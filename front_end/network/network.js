@@ -82,3 +82,15 @@ export {
   ResourceWebSocketFrameView,
   SignedExchangeInfoView,
 };
+
+/**
+ * This function exists to break a circular dependency from Cookie Table. In order to reveal
+ * requests from the Cookie Table in the Network Panel, the Cookie Table dispatches an event
+ * which is picked up here and used to load the Network Panel instance.
+ * @param {!CustomEvent<!Array<{filterType: !NetworkLogView.FilterType, filterValue: string}>>} evt
+ */
+const onRevealAndFilter = evt => {
+  NetworkPanel.NetworkPanel.revealAndFilter(evt.detail);
+};
+
+document.body.addEventListener('networkrevealandfilter', /** @type {!EventListener} */ (onRevealAndFilter));

@@ -124,7 +124,7 @@ cq_retry_config=cq.retry_config(
 cq_master_builders=[
   'devtools_frontend_linux_blink_light_rel',
   'devtools_frontend_linux_rel',
-  #'devtools_frontend_mac_rel',
+  'devtools_frontend_mac_rel',
   'devtools_frontend_win64_rel',
   'devtools_backend_linux_rel',
   #'devtools_backend_mac_rel',
@@ -148,6 +148,13 @@ def experiment_builder(builder):
   else:
     return None
 
+cq_master_includable_only_builders = [
+  'devtools_frontend_mac_rel'
+]
+
+def includable_only_builder(builder):
+  return builder in cq_master_includable_only_builders
+
 luci.cq_group(
   name="master",
   watch=cq.refset(
@@ -161,7 +168,8 @@ luci.cq_group(
     luci.cq_tryjob_verifier(
         builder=builder,
         disable_reuse=("presubmit" in builder),
-        experiment_percentage=experiment_builder(builder)
+        experiment_percentage=experiment_builder(builder),
+        includable_only=includable_only_builder(builder)
     ) for builder in cq_master_builders
   ],
 )

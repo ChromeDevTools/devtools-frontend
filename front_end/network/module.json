@@ -164,12 +164,18 @@
         {
           "platform": "mac",
           "shortcut": "Meta+F",
-          "keybindSets": ["devToolsDefault", "vsCode"]
+          "keybindSets": [
+            "devToolsDefault",
+            "vsCode"
+          ]
         },
         {
           "platform": "windows,linux",
           "shortcut": "Ctrl+F",
-          "keybindSets": ["devToolsDefault", "vsCode"]
+          "keybindSets": [
+            "devToolsDefault",
+            "vsCode"
+          ]
         }
       ]
     }
@@ -239,5 +245,6 @@
     "signedExchangeInfoTree.css",
     "signedExchangeInfoView.css",
     "webSocketFrameView.css"
-  ]
+  ],
+  "skip_rollup": true
 }

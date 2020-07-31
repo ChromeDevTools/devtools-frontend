@@ -28,6 +28,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// @ts-nocheck
+// TODO(crbug.com/1011811): Enable TypeScript compiler checks
+
 import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as ClientVariationsParser from '../client_variations/client_variations.js';
 import * as Common from '../common/common.js';

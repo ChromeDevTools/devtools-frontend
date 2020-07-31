@@ -89,6 +89,7 @@ export {
  * which is picked up here and used to load the Network Panel instance.
  * @param {!CustomEvent<!Array<{filterType: !NetworkLogView.FilterType, filterValue: string}>>} evt
  */
+// @ts-ignore
 const onRevealAndFilter = evt => {
   NetworkPanel.NetworkPanel.revealAndFilter(evt.detail);
 };

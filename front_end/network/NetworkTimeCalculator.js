@@ -28,6 +28,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// @ts-nocheck
+// TODO(crbug.com/1011811): Enable TypeScript compiler checks
+
 import * as Common from '../common/common.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';             // eslint-disable-line no-unused-vars

@@ -1580,6 +1580,9 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand(
       'Overlay.getGridHighlightObjectsForTest', [{'name': 'nodeIds', 'type': 'object', 'optional': false}],
       ['highlights']);
+  inspectorBackend.registerCommand(
+      'Overlay.getSourceOrderHighlightObjectForTest', [{'name': 'nodeId', 'type': 'number', 'optional': false}],
+      ['highlight']);
   inspectorBackend.registerCommand('Overlay.hideHighlight', [], []);
   inspectorBackend.registerCommand(
       'Overlay.highlightFrame',
@@ -1613,6 +1616,15 @@ export function registerCommands(inspectorBackend) {
         {'name': 'width', 'type': 'number', 'optional': false}, {'name': 'height', 'type': 'number', 'optional': false},
         {'name': 'color', 'type': 'object', 'optional': true},
         {'name': 'outlineColor', 'type': 'object', 'optional': true}
+      ],
+      []);
+  inspectorBackend.registerCommand(
+      'Overlay.highlightSourceOrder',
+      [
+        {'name': 'sourceOrderConfig', 'type': 'object', 'optional': false},
+        {'name': 'nodeId', 'type': 'number', 'optional': true},
+        {'name': 'backendNodeId', 'type': 'number', 'optional': true},
+        {'name': 'objectId', 'type': 'string', 'optional': true}
       ],
       []);
   inspectorBackend.registerCommand(
@@ -2385,12 +2397,12 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEvent('Debugger.scriptFailedToParse', [
     'scriptId', 'url', 'startLine', 'startColumn', 'endLine', 'endColumn', 'executionContextId', 'hash',
     'executionContextAuxData', 'sourceMapURL', 'hasSourceURL', 'isModule', 'length', 'stackTrace', 'codeOffset',
-    'scriptLanguage'
+    'scriptLanguage', 'embedderName'
   ]);
   inspectorBackend.registerEvent('Debugger.scriptParsed', [
     'scriptId', 'url', 'startLine', 'startColumn', 'endLine', 'endColumn', 'executionContextId', 'hash',
     'executionContextAuxData', 'isLiveEdit', 'sourceMapURL', 'hasSourceURL', 'isModule', 'length', 'stackTrace',
-    'codeOffset', 'scriptLanguage', 'debugSymbols'
+    'codeOffset', 'scriptLanguage', 'debugSymbols', 'embedderName'
   ]);
   inspectorBackend.registerEnum('Debugger.ContinueToLocationRequestTargetCallFrames', {Any: 'any', Current: 'current'});
   inspectorBackend.registerCommand(

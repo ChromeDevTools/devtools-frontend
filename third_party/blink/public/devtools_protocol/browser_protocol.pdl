@@ -576,7 +576,8 @@ experimental domain Audits
   type BlockedByResponseIssueDetails extends object
     properties
       AffectedRequest request
-      optional AffectedFrame frame
+      optional AffectedFrame parentFrame
+      optional AffectedFrame blockedFrame
       BlockedByResponseReason reason
 
   type HeavyAdResolutionStatus extends string
@@ -5298,6 +5299,14 @@ experimental domain Overlay
   depends on Page
   depends on Runtime
 
+  # Configuration data for drawing the source order of an elements children.
+  type SourceOrderConfig extends object
+    properties
+      # the color to outline the givent element in.
+      DOM.RGBA parentOutlineColor
+      # the color to outline the child elements in.
+      DOM.RGBA childOutlineColor
+
   # Configuration data for the highlighting of Grid elements.
   type GridHighlightConfig extends object
     properties
@@ -5430,6 +5439,15 @@ experimental domain Overlay
       # Grid Highlight data for the node ids provided.
       object highlights
 
+  # For Source Order Viewer testing.
+  command getSourceOrderHighlightObjectForTest
+    parameters
+      # Id of the node to highlight.
+      DOM.NodeId nodeId
+    returns
+      # Source order highlight data for the node id provided.
+      object highlight
+
   # Hides any highlight.
   command hideHighlight
 
@@ -5483,6 +5501,19 @@ experimental domain Overlay
       optional DOM.RGBA color
       # The highlight outline color (default: transparent).
       optional DOM.RGBA outlineColor
+
+  # Highlights the source order of the children of the DOM node with given id or with the given
+  # JavaScript object wrapper. Either nodeId or objectId must be specified.
+  command highlightSourceOrder
+    parameters
+      # A descriptor for the appearance of the overlay drawing.
+      SourceOrderConfig sourceOrderConfig
+      # Identifier of the node to highlight.
+      optional DOM.NodeId nodeId
+      # Identifier of the backend node to highlight.
+      optional DOM.BackendNodeId backendNodeId
+      # JavaScript object id of the node to be highlighted.
+      optional Runtime.RemoteObjectId objectId
 
   # Enters the 'inspect' mode. In this mode, elements that user is hovering over are highlighted.
   # Backend then generates 'inspectNodeRequested' event upon element selection.

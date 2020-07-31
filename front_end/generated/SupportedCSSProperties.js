@@ -127,6 +127,7 @@ export const generatedProperties = [
     ]
   },
   {'name': 'appearance'},
+  {'name': 'ascent-override'},
   {'name': 'aspect-ratio', 'keywords': ['auto']},
   {'name': 'backdrop-filter', 'keywords': ['none']},
   {'name': 'backface-visibility', 'keywords': ['visible', 'hidden']},
@@ -341,6 +342,7 @@ export const generatedProperties = [
   {'svg': true, 'name': 'cx'},
   {'svg': true, 'name': 'cy'},
   {'name': 'd', 'svg': true, 'keywords': ['none']},
+  {'name': 'descent-override'},
   {'name': 'direction', 'inherited': true, 'keywords': ['ltr', 'rtl']},
   {
     'keywords': [

@@ -350,16 +350,16 @@ export function drawGridTrackSizes(container, rotationAngle, trackSizes, directi
  * @param {GridPositionNormalizedData} data
  */
 export function drawGridLineNames(container, data) {
-  for (const [i, offset] of data.columns.positive.offsets.entries()) {
+  for (const [i, pos] of data.columns.positive.positions.entries()) {
     const names = data.columns.positive.names[i];
     const element = _createLabelElement(container, _makeLineNameLabelContent(names));
-    _placePositiveColumnLabel(element, offset, data);
+    _placePositiveColumnLabel(element, pos, data);
   }
 
-  for (const [i, offset] of data.rows.positive.offsets.entries()) {
+  for (const [i, pos] of data.rows.positive.positions.entries()) {
     const names = data.rows.positive.names[i];
     const element = _createLabelElement(container, _makeLineNameLabelContent(names));
-    _placePositiveRowLabel(element, offset, data);
+    _placePositiveRowLabel(element, pos, data);
   }
 }
 

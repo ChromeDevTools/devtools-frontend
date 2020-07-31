@@ -4,11 +4,11 @@
 
 import {AssertionError} from 'chai';
 import * as os from 'os';
-import {performance} from 'perf_hooks';
 import * as puppeteer from 'puppeteer';
 
 import {reloadDevTools} from '../conductor/hooks.js';
 import {getBrowserAndPages, getHostedModeServerPort} from '../conductor/puppeteer-state.js';
+import {AsyncScope} from './async-tracing.js';
 
 export let platform: string;
 switch (os.platform()) {
@@ -247,53 +247,47 @@ export const $textContent = async (textContent: string, root?: puppeteer.JSHandl
 
 export const timeout = (duration: number) => new Promise(resolve => setTimeout(resolve, duration));
 
-export const waitFor = async (selector: string, root?: puppeteer.JSHandle, maxTotalTimeout = 3000) => {
-  return waitForFunction(async () => {
-    const element = await $(selector, root);
-    if (element.asElement()) {
-      return element;
-    }
-    return undefined;
-  }, `Unable to find element with selector ${selector}`, maxTotalTimeout);
+export const waitFor = async (selector: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope()) => {
+  return await asyncScope.exec(() => waitForFunction(async () => {
+                                 const element = await $(selector, root);
+                                 if (element.asElement()) {
+                                   return element;
+                                 }
+                                 return undefined;
+                               }, asyncScope));
 };
 
-export const waitForNone = async (selector: string, root?: puppeteer.JSHandle, maxTotalTimeout = 3000) => {
-  return waitForFunction(async () => {
-    const elements = await $$(selector, root);
-    if (elements.evaluate(list => list.length === 0)) {
-      return true;
-    }
-    return false;
-  }, `At least one element with selector ${selector} still exists`, maxTotalTimeout);
+export const waitForNone = async (selector: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope()) => {
+  return await asyncScope.exec(() => waitForFunction(async () => {
+                                 const elements = await $$(selector, root);
+                                 if (elements.evaluate(list => list.length === 0)) {
+                                   return true;
+                                 }
+                                 return false;
+                               }, asyncScope));
 };
 
 export const waitForElementWithTextContent =
-    (textContent: string, root?: puppeteer.JSHandle, maxTotalTimeout = 3000) => {
-      return waitForFunction(async () => {
-        const element = await $textContent(textContent, root);
-        if (element.asElement()) {
-          return element;
-        }
-        return undefined;
-      }, `No element with content ${textContent} exists`, maxTotalTimeout);
+    (textContent: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope()) => {
+      return asyncScope.exec(() => waitForFunction(async () => {
+                               const element = await $textContent(textContent, root);
+                               if (element.asElement()) {
+                                 return element;
+                               }
+                               return undefined;
+                             }, asyncScope));
     };
 
-export const waitForFunction =
-    async<T>(fn: () => Promise<T|undefined>, errorMessage: string, maxTotalTimeout = 3000): Promise<T> => {
-  if (maxTotalTimeout === 0) {
-    maxTotalTimeout = Number.POSITIVE_INFINITY;
-  }
-
-  const start = performance.now();
-  do {
-    await timeout(100);
-    const result = await fn();
-    if (result) {
-      return result;
+export const waitForFunction = async<T>(fn: () => Promise<T|undefined>, asyncScope = new AsyncScope()): Promise<T> => {
+  return await asyncScope.exec(async () => {
+    while (true) {
+      await timeout(100);
+      const result = await fn();
+      if (result) {
+        return result;
+      }
     }
-  } while (performance.now() - start < maxTotalTimeout);
-
-  throw new Error(errorMessage);
+  });
 };
 
 export const debuggerStatement = (frontend: puppeteer.Page) => {

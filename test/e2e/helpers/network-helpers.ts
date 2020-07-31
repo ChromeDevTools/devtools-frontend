@@ -25,7 +25,7 @@ export async function waitForSomeRequestsToAppear(numberOfRequests: number) {
   await waitForFunction(async () => {
     const requests = await getAllRequestNames();
     return requests.length >= numberOfRequests && !!requests.map(name => name ? name.trim() : '').join('');
-  }, `Timed out while waiting for ${numberOfRequests} requests to appear`);
+  });
 }
 
 export async function getAllRequestNames() {
@@ -54,7 +54,7 @@ export async function waitForSelectedRequestChange(initialRequestName: string|nu
   await waitForFunction(async () => {
     const name = await getSelectedRequestName();
     return name !== initialRequestName;
-  }, `The selected request did not get updated from ${initialRequestName}`);
+  });
 }
 
 export async function togglePersistLog() {

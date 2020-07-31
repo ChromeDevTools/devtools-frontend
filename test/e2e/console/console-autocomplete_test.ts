@@ -34,7 +34,7 @@ describe('The Console Tab', async () => {
     await frontend.keyboard.press('Escape');
     await disappearPromise;
 
-    const appearPromise2 = waitFor('.suggest-box', undefined, 1000);
+    const appearPromise2 = waitFor('.suggest-box');
     await typeText(textAfterObject);
     await appearPromise2;
   }

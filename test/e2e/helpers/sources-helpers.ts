@@ -148,17 +148,17 @@ export async function getBreakpointDecorators(frontend: puppeteer.Page, disabled
 
 export async function getNonBreakableLines(frontend: puppeteer.Page) {
   const selector = '.cm-non-breakable-line .CodeMirror-linenumber';
-  await waitFor(selector, undefined, 1000);
+  await waitFor(selector);
   return await frontend.$$eval(selector, nodes => nodes.map(n => parseInt(n.textContent!, 0)));
 }
 
 export async function getExecutionLine() {
-  const activeLine = await waitFor('.cm-execution-line-outline', undefined, 1000);
+  const activeLine = await waitFor('.cm-execution-line-outline');
   return await activeLine.asElement()!.evaluate(n => parseInt(n.textContent!, 10));
 }
 
 export async function getExecutionLineText() {
-  const activeLine = await waitFor('.cm-execution-line pre', undefined, 1000);
+  const activeLine = await waitFor('.cm-execution-line pre');
   return await activeLine.asElement()!.evaluate(n => n.textContent);
 }
 
@@ -256,7 +256,7 @@ export function createSelectorsForWorkerFile(
 }
 
 async function expandSourceTreeItem(selector: string) {
-  const sourceTreeItem = await waitFor(selector, undefined, 1000);
+  const sourceTreeItem = await waitFor(selector);
   const isExpanded = await sourceTreeItem.asElement()!.evaluate(element => {
     return element.getAttribute('aria-expanded') === 'true';
   });
@@ -269,7 +269,7 @@ export async function expandFileTree(selectors: NestedFileSelector) {
   await expandSourceTreeItem(selectors.rootSelector);
   await expandSourceTreeItem(selectors.domainSelector);
   await expandSourceTreeItem(selectors.folderSelector);
-  return await waitFor(selectors.fileSelector, undefined, 1000);
+  return await waitFor(selectors.fileSelector);
 }
 
 export async function stepThroughTheCode() {

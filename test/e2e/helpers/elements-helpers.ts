@@ -62,7 +62,7 @@ export const waitForSelectedTreeElementSelectorWithTextcontent = async (expected
     const selectedNode = await $(SELECTED_TREE_ELEMENT_SELECTOR);
     const selectedTextContent = await selectedNode.evaluate(node => node.textContent);
     return selectedTextContent === expectedTextContent;
-  }, 'Did not find a select elements tree element with textcontent');
+  });
 };
 
 export const waitForChildrenOfSelectedElementNode = async () => {
@@ -97,7 +97,7 @@ export const waitForComputedPaneChange = async (initialValue: string) => {
   await waitForFunction(async () => {
     const value = await getContentOfComputedPane();
     return value !== initialValue;
-  }, 'The content of the computed pane did not change');
+  });
 };
 
 export const getAllPropertiesFromComputedPane = async () => {
@@ -195,7 +195,7 @@ export const waitForStyleRule = async (expectedSelector: string) => {
   await waitForFunction(async () => {
     const rules = await getDisplayedStyleRules();
     return rules.map(rule => rule.selectorText).includes(expectedSelector);
-  }, `Style rule matching ${expectedSelector} did not appear`);
+  });
 };
 
 export const getDisplayedStyleRules = async () => {

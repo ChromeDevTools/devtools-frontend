@@ -31,6 +31,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox {
     UI.ARIAUtils.markAsList(this._list.element);
     this.registerRequiredCSS('settings/keybindsSettingsTab.css');
     this.contentElement.appendChild(this._list.element);
+    UI.ARIAUtils.setAccessibleName(this._list.element, ls`Keyboard shortcuts list`);
     this.update();
   }
 
@@ -46,9 +47,11 @@ export class KeybindsSettingsTab extends UI.Widget.VBox {
     itemElement.tabIndex = item === this._list.selectedItem() ? 0 : -1;
 
     if (typeof item === 'string') {
+      UI.ARIAUtils.setLevel(itemElement, 1);
       itemElement.classList.add('keybinds-category-header');
       itemElement.textContent = item;
     } else {
+      UI.ARIAUtils.setLevel(itemElement, 2);
       itemElement.createChild('div', 'keybinds-action-name keybinds-list-text').textContent = item.title();
       const shortcuts = self.UI.shortcutRegistry.shortcutsForAction(item.id());
       shortcuts.forEach((shortcut, index) => {

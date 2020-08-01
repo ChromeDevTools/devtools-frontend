@@ -72,6 +72,9 @@
   <message name="IDS_DEVTOOLS_f4f70727dc34561dfde1a3c529b6205c" desc="Name of the Settings view">
     Settings
   </message>
+  <message name="IDS_DEVTOOLS_fcaed535ee8943a22adbffb02ab12586" desc="Screen reader label for list of keyboard shortcuts in settings">
+    Keyboard shortcuts list
+  </message>
   <message name="IDS_DEVTOOLS_ffebb5ad32e2b253aa418b8d7a70028e" desc="Text in Framework Blackbox Settings Tab of the Settings">
     Blackbox content scripts
   </message>

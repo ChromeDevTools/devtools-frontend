@@ -386,6 +386,14 @@ export function setHidden(element, value) {
 }
 
 /**
+ * @param {!Element} element
+ * @param {number} level
+ */
+export function setLevel(element, level) {
+  element.setAttribute('aria-level', level);
+}
+
+/**
  * @enum {string}
  */
 export const AutocompleteInteractionModel = {

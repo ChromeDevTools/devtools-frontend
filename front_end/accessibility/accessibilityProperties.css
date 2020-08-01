@@ -24,3 +24,12 @@
 span.ax-internal-role {
   font-style: italic;
 }
+
+#source-order-warning {
+  padding-bottom: 0;
+  text-align: left;
+}
+
+.source-order-checkbox {
+  margin: 5px;
+}

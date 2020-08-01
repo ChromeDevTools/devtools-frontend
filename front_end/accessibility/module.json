@@ -24,7 +24,8 @@
     "AccessibilitySubPane.js",
     "ARIAAttributesView.js",
     "ARIAMetadata.js",
-    "AXBreadcrumbsPane.js"
+    "AXBreadcrumbsPane.js",
+    "SourceOrderView.js"
   ],
   "resources": [
     "accessibilityNode.css",

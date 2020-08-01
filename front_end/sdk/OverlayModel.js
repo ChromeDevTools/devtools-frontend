@@ -58,6 +58,7 @@ export class OverlayModel extends SDKModel {
 
     this._inspectModeEnabled = false;
     this._gridFeaturesExperimentEnabled = Root.Runtime.experiments.isEnabled('cssGridFeatures');
+    this._sourceOrderViewerExperimentEnabled = Root.Runtime.experiments.isEnabled('sourceOrderViewer');
 
     /** @type {?Common.Settings.Setting<*>} */
     this._showGridBorderSetting = null;
@@ -110,6 +111,10 @@ export class OverlayModel extends SDKModel {
           this._persistentGridHighlighter.hideInOverlay(nodeId);
         }
       });
+    }
+    if (this._sourceOrderViewerExperimentEnabled) {
+      this._sourceOrderHighlighter = new SourceOrderHighlighter(this);
+      this._sourceOrderModeActive = false;
     }
   }
 
@@ -343,7 +348,11 @@ export class OverlayModel extends SDKModel {
       // the persistent highlight is turned on: https://crbug.com/1109224.
       return;
     }
-
+    if (this._sourceOrderModeActive) {
+      // Return early if the source order is currently being shown the in the
+      // overlay, so that it is not cleared by the highlight
+      return;
+    }
     if (this._hideHighlightTimeout) {
       clearTimeout(this._hideHighlightTimeout);
       this._hideHighlightTimeout = null;
@@ -375,6 +384,32 @@ export class OverlayModel extends SDKModel {
    */
   hideGridInPersistentOverlay(nodeId) {
     this._persistentGridHighlighter.hideInOverlay(nodeId);
+  }
+
+  /**
+   * @param {!DOMNode} node
+   */
+  highlightSourceOrderInOverlay(node) {
+    const sourceOrderConfig = {
+      parentOutlineColor: Common.Color.SourceOrderHighlight.ParentOutline.toProtocolRGBA(),
+      childOutlineColor: Common.Color.SourceOrderHighlight.ChildOutline.toProtocolRGBA(),
+    };
+    this._sourceOrderHighlighter.highlightSourceOrderInOverlay(node, sourceOrderConfig);
+  }
+
+  hideSourceOrderInOverlay() {
+    this._sourceOrderHighlighter.hideSourceOrderHighlight();
+  }
+
+  /**
+   * @param {boolean} isActive
+   */
+  setSourceOrderActive(isActive) {
+    this._sourceOrderModeActive = isActive;
+  }
+
+  sourceOrderModeActive() {
+    return this._sourceOrderModeActive;
   }
 
   /**
@@ -814,6 +849,31 @@ class DefaultPersistentGridHighlighter {
       gridNodeHighlightConfigs.push({nodeId, gridHighlightConfig});
     }
     overlayModel.target().overlayAgent().setShowGridOverlays(gridNodeHighlightConfigs);
+  }
+}
+
+export class SourceOrderHighlighter {
+  /**
+   * @param {!OverlayModel} model
+   */
+  constructor(model) {
+    this._model = model;
+  }
+
+  /**
+   * @param {!DOMNode} node
+   * @param {!Protocol.Overlay.SourceOrderConfig} config
+   */
+  highlightSourceOrderInOverlay(node, config) {
+    this._model.setSourceOrderActive(true);
+    this._model.setShowViewportSizeOnResize(false);
+    this._model._overlayAgent.highlightSourceOrder(config, node.id);
+  }
+
+  hideSourceOrderHighlight() {
+    this._model.setSourceOrderActive(false);
+    this._model.setShowViewportSizeOnResize(true);
+    this._model.clearHighlight();
   }
 }
 

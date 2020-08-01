@@ -15,6 +15,7 @@ devtools_pre_built("accessibility") {
     "AccessibilitySidebarView.js",
     "AccessibilityStrings.js",
     "AccessibilitySubPane.js",
+    "SourceOrderView.js",
   ]
 }
 

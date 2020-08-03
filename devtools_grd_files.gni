@@ -284,6 +284,7 @@ grd_files_release_sources = [
   "front_end/ui/utils/utils.js",
   "front_end/wasmparser_worker/wasmparser_worker.js",
   "front_end/wasmparser_worker_entrypoint.js",
+  "front_end/web_audio/graph_visualizer/graph_visualizer.js",
   "front_end/web_audio/web_audio-legacy.js",
   "front_end/web_audio/web_audio.js",
   "front_end/web_audio/web_audio_module.js",

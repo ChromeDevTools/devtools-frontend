@@ -33,5 +33,6 @@
   "resources": [
     "webAudio.css",
     "audioContextSelector.css"
-  ]
+  ],
+  "skip_rollup": true
 }

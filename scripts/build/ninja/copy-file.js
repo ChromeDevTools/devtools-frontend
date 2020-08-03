@@ -8,6 +8,13 @@ const [, , src, dest] = process.argv;
 const srcPath = path.join(process.cwd(), src);
 const destPath = path.join(process.cwd(), dest);
 
+// If there's a file there from a previous build, unlink it first. This
+// is because the file in that location might be a hardlinked file, and
+// overwriting it doesn't change the fact that it's hardlinked.
+if (fs.existsSync(destPath)) {
+  fs.unlinkSync(destPath);
+}
+
 // Force a write to the target filesystem, since by default the ninja
 // toolchain will create a hardlink, which in turn reflects changes in
 // gen and resources/inspector back to //front_end.

@@ -79,5 +79,6 @@
   ],
   "resources": [
     "inputTimeline.css"
-  ]
+  ],
+  "skip_rollup": true
 }

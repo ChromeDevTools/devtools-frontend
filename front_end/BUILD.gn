@@ -39,6 +39,7 @@ group("front_end") {
     "help:bundle",
     "i18n:bundle_i18n",
     "inline_editor:bundle",
+    "input:bundle",
     "inspector_main:bundle",
     "issues:bundle",
     "javascript_metadata:bundle",

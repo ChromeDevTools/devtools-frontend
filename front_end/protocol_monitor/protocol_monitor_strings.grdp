@@ -3,9 +3,6 @@
   <message name="IDS_DEVTOOLS_02674a4ef33e11c879283629996c8ff8" desc="Text in Protocol Monitor of the Protocol Monitor tab">
     Direction
   </message>
-  <message name="IDS_DEVTOOLS_15c2d85f1fae22a3c3a0594510a1f611" desc="Text in Protocol Monitor of the Protocol Monitor tab">
-    Request
-  </message>
   <message name="IDS_DEVTOOLS_2448f896f98bcda2db043a999a00e1d2" desc="Cell text content in Protocol Monitor of the Protocol Monitor tab">
     <ph name="THIS_DATA_COLUMNID_">$1s<ex>30</ex></ph> ms
   </message>

@@ -1026,13 +1026,6 @@ export class PageDispatcher {
    * @param {!Protocol.Page.FrameNavigatedEvent} event
    */
   frameNavigated({frame}) {
-    const url = new URL(frame.url);
-    if (url.protocol === 'chrome-error:' && url.hostname === 'chromewebdata' && frame.parentId) {
-      // Skip navigation to heavy ads interstitials to
-      // allow developers to see resources of the origin they
-      // originally intended to see.
-      return;
-    }
     this._resourceTreeModel._frameNavigated(frame);
   }
 

@@ -36,9 +36,6 @@
   <message name="IDS_DEVTOOLS_a983530c8e824d30e214200ef6f8a2d7" desc="Element text content in Object Properties Section">
     (...)
   </message>
-  <message name="IDS_DEVTOOLS_ad921d60486366258809553a3db49a4a" desc="Text in Object Properties Section">
-    unknown
-  </message>
   <message name="IDS_DEVTOOLS_b46f6ce1cece499f73c9d5c36e4a3de4" desc="Element title in Object Properties Section">
     Invoke property getter
   </message>

@@ -39,9 +39,13 @@ class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     this._affectedResources = this.createAffectedResources();
     this._affectedResourcesCount = 0;
     /** @type {?Common.EventTarget.EventDescriptor} */
-    this._listener = null;
+    this._networkListener = null;
+    /** @type {!Array<!Common.EventTarget.EventDescriptor>} */
+    this._frameListeners = [];
     /** @type {!Set<string>} */
     this._unresolvedRequestIds = new Set();
+    /** @type {!Set<string>} */
+    this._unresolvedFrameIds = new Set();
   }
 
   /**
@@ -111,8 +115,8 @@ class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     const requests = SDK.NetworkLog.NetworkLog.instance().requestsForId(requestId);
     if (!requests.length) {
       this._unresolvedRequestIds.add(requestId);
-      if (!this._listener) {
-        this._listener = SDK.NetworkLog.NetworkLog.instance().addEventListener(
+      if (!this._networkListener) {
+        this._networkListener = SDK.NetworkLog.NetworkLog.instance().addEventListener(
             SDK.NetworkLog.Events.RequestAdded, this._onRequestAdded, this);
       }
     }
@@ -120,20 +124,131 @@ class AffectedResourcesView extends UI.TreeOutline.TreeElement {
   }
 
   /**
-   *
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onRequestAdded(event) {
     const request = /** @type {!SDK.NetworkRequest.NetworkRequest} */ (event.data);
     const requestWasUnresolved = this._unresolvedRequestIds.delete(request.requestId());
-    if (this._unresolvedRequestIds.size === 0 && this._listener) {
+    if (this._unresolvedRequestIds.size === 0 && this._networkListener) {
       // Stop listening once all requests are resolved.
-      Common.EventTarget.EventTarget.removeEventListeners([this._listener]);
-      this._listener = null;
+      Common.EventTarget.EventTarget.removeEventListeners([this._networkListener]);
+      this._networkListener = null;
     }
     if (requestWasUnresolved) {
       this.update();
     }
+  }
+
+  /**
+   * This function resolves a frameId to a ResourceTreeFrame. If the frameId does not resolve, or hasn't navigated yet,
+   * a listener is installed that takes care of updating the view if the frame is added. This is useful if the issue is
+   * added before the frame gets reported.
+   * @param {!Protocol.Page.FrameId} frameId
+   * @return {?SDK.ResourceTreeModel.ResourceTreeFrame}
+   */
+  _resolveFrameId(frameId) {
+    const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
+    if (!frame || !frame.url) {
+      this._unresolvedFrameIds.add(frameId);
+      if (!this._frameListeners.length) {
+        const addListener = SDK.FrameManager.FrameManager.instance().addEventListener(
+            SDK.FrameManager.Events.FrameAddedToTarget, this._onFrameChanged, this);
+        const navigateListener = SDK.FrameManager.FrameManager.instance().addEventListener(
+            SDK.FrameManager.Events.FrameNavigated, this._onFrameChanged, this);
+        this._frameListeners = [addListener, navigateListener];
+      }
+    }
+    return frame;
+  }
+
+  /**
+   *
+   * @param {!Common.EventTarget.EventTargetEvent} event
+   */
+  _onFrameChanged(event) {
+    const frame = /** @type {!SDK.ResourceTreeModel.ResourceTreeFrame} */ (event.data.frame);
+    if (!frame.url) {
+      return;
+    }
+    const frameWasUnresolved = this._unresolvedFrameIds.delete(frame.id);
+    if (this._unresolvedFrameIds.size === 0 && this._frameListeners.length) {
+      // Stop listening once all requests are resolved.
+      Common.EventTarget.EventTarget.removeEventListeners(this._frameListeners);
+      this._frameListeners = [];
+    }
+    if (frameWasUnresolved) {
+      this.update();
+    }
+  }
+
+  /**
+   * @param {!Protocol.Page.FrameId} frameId
+   * @returns {!HTMLElement}
+   */
+  _createFrameCell(frameId) {
+    const frame = this._resolveFrameId(frameId);
+    const url = frame && (frame.unreachableUrl() || frame.url) || ls`unknown`;
+
+    const frameCell = /** @type {!HTMLElement} */ (document.createElement('td'));
+    frameCell.classList.add('affected-resource-cell');
+    if (frame) {
+      const icon = UI.Icon.Icon.create('mediumicon-elements-panel', 'icon');
+      icon.classList.add('link');
+      icon.onclick = async () => {
+        const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
+        if (frame) {
+          const ownerNode = await frame.getOwnerDOMNodeOrDocument();
+          if (ownerNode) {
+            Common.Revealer.reveal(ownerNode);
+          }
+        }
+      };
+      UI.Tooltip.Tooltip.install(icon, ls`Click to reveal the frame's DOM node in the Elements panel`);
+      frameCell.appendChild(icon);
+    }
+    frameCell.appendChild(document.createTextNode(url));
+    frameCell.onmouseenter = () => {
+      const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
+      if (frame) {
+        frame.highlight();
+      }
+    };
+    frameCell.onmouseleave = () => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+    return frameCell;
+  }
+
+  /**
+   * @param {!Protocol.Audits.AffectedRequest} request
+   * @returns {!HTMLElement}
+   */
+  _createRequestCell(request) {
+    let url = request.url;
+    let filename = url ? extractShortPath(url) : '';
+    const requestCell = /** @type {!HTMLElement} */ (document.createElement('td'));
+    requestCell.classList.add('affected-resource-cell');
+    const icon = UI.Icon.Icon.create('mediumicon-network-panel', 'icon');
+    requestCell.appendChild(icon);
+
+    const requests = this._resolveRequestId(request.requestId);
+    if (requests.length) {
+      const request = requests[0];
+      requestCell.onclick = () => {
+        Network.NetworkPanel.NetworkPanel.selectAndShowRequest(request, Network.NetworkItemView.Tabs.Headers);
+      };
+      requestCell.classList.add('link');
+      icon.classList.add('link');
+      url = request.url();
+      filename = extractShortPath(url);
+      icon.title = ls`Click to show request in the network panel`;
+    } else {
+      icon.title = ls`Request unavailable in the network panel, try reloading the inspected page`;
+      icon.classList.add('unavailable');
+    }
+    if (url) {
+      requestCell.title = url;
+    }
+    requestCell.appendChild(document.createTextNode(filename));
+    return requestCell;
   }
 
   /**
@@ -627,10 +742,6 @@ class AffectedHeavyAdView extends AffectedResourcesView {
     const element = document.createElement('tr');
     element.classList.add('affected-resource-heavy-ad');
 
-    const frameId = heavyAd.frame.frameId;
-    const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
-    const url = frame && (frame.unreachableUrl() || frame.url) || '';
-
     const reason = document.createElement('td');
     reason.classList.add('affected-resource-heavy-ad-info');
     reason.textContent = this._limitToString(heavyAd.reason);
@@ -641,28 +752,8 @@ class AffectedHeavyAdView extends AffectedResourcesView {
     status.textContent = this._statusToString(heavyAd.resolution);
     element.appendChild(status);
 
-    const frameUrl = document.createElement('td');
-    frameUrl.classList.add('affected-resource-heavy-ad-info-frame');
-    const icon = UI.Icon.Icon.create('largeicon-node-search', 'icon');
-    icon.onclick = async () => {
-      const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
-      if (frame) {
-        const deferedNode = await frame.getOwnerDeferredDOMNode();
-        if (deferedNode) {
-          Common.Revealer.reveal(deferedNode);
-        }
-      }
-    };
-    UI.Tooltip.Tooltip.install(icon, ls`Click to reveal the frame's DOM node in the Elements panel`);
-    frameUrl.appendChild(icon);
-    frameUrl.appendChild(document.createTextNode(url));
-    frameUrl.onmouseenter = () => {
-      const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
-      if (frame) {
-        frame.highlight();
-      }
-    };
-    frameUrl.onmouseleave = () => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+    const frameId = heavyAd.frame.frameId;
+    const frameUrl = this._createFrameCell(frameId);
     element.appendChild(frameUrl);
 
     this._affectedResources.appendChild(element);
@@ -676,6 +767,85 @@ class AffectedHeavyAdView extends AffectedResourcesView {
     this._appendAffectedHeavyAds(this._issue.heavyAds());
   }
 }
+
+class AffectedBlockedByResponseView extends AffectedResourcesView {
+  /**
+   * @param {!IssueView} parent
+   * @param {!SDK.Issue.Issue} issue
+   */
+  constructor(parent, issue) {
+    super(parent, {singular: ls`request`, plural: ls`requests`});
+    /** @type {!SDK.Issue.Issue} */
+    this._issue = issue;
+  }
+
+  /**
+   * @param {!Iterable<!Protocol.Audits.BlockedByResponseIssueDetails>} details
+   */
+  _appendDetails(details) {
+    const header = document.createElement('tr');
+
+    const request = document.createElement('td');
+    request.classList.add('affected-resource-header');
+    request.textContent = ls`Request`;
+    header.appendChild(request);
+
+    const name = document.createElement('td');
+    name.classList.add('affected-resource-header');
+    name.textContent = ls`Parent Frame`;
+    header.appendChild(name);
+
+    const frame = document.createElement('td');
+    frame.classList.add('affected-resource-header');
+    frame.textContent = ls`Blocked Resource`;
+    header.appendChild(frame);
+
+    this._affectedResources.appendChild(header);
+
+    let count = 0;
+    for (const detail of details) {
+      this._appendDetail(detail);
+      count++;
+    }
+    this.updateAffectedResourceCount(count);
+  }
+
+  /**
+   * @param {!Protocol.Audits.BlockedByResponseIssueDetails} details
+   */
+  _appendDetail(details) {
+    const element = document.createElement('tr');
+    element.classList.add('affected-resource-row');
+
+    const requestCell = this._createRequestCell(details.request);
+    element.appendChild(requestCell);
+
+    if (details.parentFrame) {
+      const frameUrl = this._createFrameCell(details.parentFrame.frameId);
+      element.appendChild(frameUrl);
+    } else {
+      element.appendChild(document.createElement('td'));
+    }
+
+    if (details.blockedFrame) {
+      const frameUrl = this._createFrameCell(details.blockedFrame.frameId);
+      element.appendChild(frameUrl);
+    } else {
+      element.appendChild(document.createElement('td'));
+    }
+
+    this._affectedResources.appendChild(element);
+  }
+
+  /**
+   * @override
+   */
+  update() {
+    this.clear();
+    this._appendDetails(this._issue.blockedByResponseDetails());
+  }
+}
+
 
 class IssueView extends UI.TreeOutline.TreeElement {
   /**
@@ -701,7 +871,7 @@ class IssueView extends UI.TreeOutline.TreeElement {
       new AffectedCookiesView(this, this._issue), new AffectedElementsView(this, this._issue),
       new AffectedRequestsView(this, this._issue), new AffectedMixedContentView(this, this._issue),
       new AffectedSourcesView(this, this._issue), new AffectedHeavyAdView(this, this._issue),
-      new AffectedDirectivesView(this, this._issue)
+      new AffectedDirectivesView(this, this._issue), new AffectedBlockedByResponseView(this, this._issue)
     ];
 
     this._aggregatedIssuesCount = null;

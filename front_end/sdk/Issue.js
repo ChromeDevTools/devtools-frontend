@@ -77,6 +77,13 @@ export class Issue extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
+   * @return {!Iterable<!Protocol.Audits.BlockedByResponseIssueDetails>}
+   */
+  blockedByResponseDetails() {
+    return [];
+  }
+
+  /**
    * @return {!Iterable<!Protocol.Audits.AffectedCookie>}
    */
   cookies() {

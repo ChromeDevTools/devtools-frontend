@@ -29,6 +29,8 @@ export class AggregatedIssue extends SDK.Issue.Issue {
     this._heavyAdIssueDetails = new Map();
     /** @type {!Set<!Protocol.Audits.ContentSecurityPolicyIssueDetails>} */
     this._cspViolations = new Set();
+    /** @type {!Map<string, !Protocol.Audits.BlockedByResponseIssueDetails>} */
+    this._blockedByResponseDetails = new Map();
     this._aggregatedIssuesCount = 0;
   }
 
@@ -38,6 +40,14 @@ export class AggregatedIssue extends SDK.Issue.Issue {
    */
   primaryKey() {
     throw new Error('This should never be called');
+  }
+
+  /**
+   * @override
+   * @returns {!Iterable<Protocol.Audits.BlockedByResponseIssueDetails>}
+   */
+  blockedByResponseDetails() {
+    return this._blockedByResponseDetails.values();
   }
 
   /**
@@ -156,6 +166,10 @@ export class AggregatedIssue extends SDK.Issue.Issue {
     }
     for (const cspViolation of issue.cspViolations()) {
       this._cspViolations.add(cspViolation);
+    }
+    for (const details of issue.blockedByResponseDetails()) {
+      const key = JSON.stringify(details, ['parentFrame', 'blockedFrame', 'requestId', 'frameId', 'reason', 'request']);
+      this._blockedByResponseDetails.set(key, details);
     }
   }
 }

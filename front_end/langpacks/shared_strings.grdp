@@ -58,6 +58,9 @@
   <message name="IDS_DEVTOOLS_1583d36995134f9120fac115c08e0174" desc="Text when something is loading">
     Loading…
   </message>
+  <message name="IDS_DEVTOOLS_15c2d85f1fae22a3c3a0594510a1f611" desc="Text in Protocol Monitor of the Protocol Monitor tab">
+    Request
+  </message>
   <message name="IDS_DEVTOOLS_16f78b9465f03f7ec5a03c24918fbde3" desc="Status code of an event">
     Status Code
   </message>
@@ -489,6 +492,9 @@
   </message>
   <message name="IDS_DEVTOOLS_ad91a1da588ce256d30b1af38f78f84e" desc="Text exposed to screen readers on unchecked items.">
     unchecked
+  </message>
+  <message name="IDS_DEVTOOLS_ad921d60486366258809553a3db49a4a" desc="Text in Object Properties Section">
+    unknown
   </message>
   <message name="IDS_DEVTOOLS_af4bb376939e77df0e7c2332b837a866" desc="Text that refers to closure as a programming term">
     Closure

@@ -15,6 +15,7 @@
 
 .issues {
   --breaking-change-color: #f29900;
+  --issue-warning: #f2aa00;
   --issue-gray: #5f6368;
   --issue-link: #1967d2;
   --issue-black: #202124;
@@ -253,6 +254,13 @@ ul > li.plain-enum::before {
   border-collapse: collapse;
 }
 
+.affected-resource-row {
+  font-size: 14px;
+  line-height: 20px;
+  border: 0;
+  border-collapse: collapse;
+}
+
 .affected-resource-mixed-content {
   font-size: 14px;
   line-height: 20px;
@@ -318,6 +326,24 @@ ul > li.plain-enum::before {
   align-items: center;
   color: var(--issue-gray);
   padding: 2px;
+}
+
+.affected-resource-cell {
+  color: var(--issue-gray);
+  padding: 2px;
+}
+
+.affected-resource-cell span.icon {
+  margin-right: 0.5ex;
+  vertical-align: middle;
+}
+
+.affected-resource-cell [is=ui-icon].icon-mask.link {
+  background-color: var(--issue-link);
+}
+
+.affected-resource-cell [is=ui-icon].icon-mask.unavailable {
+  background-color: var(--issue-warning);
 }
 
 .affected-resources > .parent {

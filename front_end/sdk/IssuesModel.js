@@ -3,74 +3,12 @@
 // found in the LICENSE file.
 
 import {ContentSecurityPolicyIssue} from './ContentSecurityPolicyIssue.js';
-import {CrossOriginEmbedderPolicyIssue} from './CrossOriginEmbedderPolicyIssue.js';
+import {CrossOriginEmbedderPolicyIssue, isCrossOriginEmbedderPolicyIssue} from './CrossOriginEmbedderPolicyIssue.js';
 import {HeavyAdIssue} from './HeavyAdIssue.js';
 import {Issue} from './Issue.js';  // eslint-disable-line no-unused-vars
 import {MixedContentIssue} from './MixedContentIssue.js';
-import {NetworkLog} from './NetworkLog.js';
-import {Events as NetworkManagerEvents, NetworkManager} from './NetworkManager.js';
-import {NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
 import {SameSiteCookieIssue} from './SameSiteCookieIssue.js';
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
-
-
-/**
- * This class generates issues in the front-end based on information provided by the network panel. In the long
- * term, we might move this reporting to the back-end, but the current COVID-19 policy requires us to tone down
- * back-end changes until we are back at normal release cycle.
- */
-export class NetworkIssueDetector {
-  /**
-   * @param {!Target} target
-   * @param {!IssuesModel} issuesModel
-   */
-  constructor(target, issuesModel) {
-    this._issuesModel = issuesModel;
-    this._networkManager = target.model(NetworkManager);
-    if (this._networkManager) {
-      this._networkManager.addEventListener(NetworkManagerEvents.RequestFinished, this._handleRequestFinished, this);
-    }
-    for (const request of NetworkLog.instance().requests()) {
-      this._handleRequestFinished({data: request});
-    }
-  }
-
-  /**
-   * @param {!{data:*}} event
-   */
-  _handleRequestFinished(event) {
-    const request = /** @type {!NetworkRequest} */ (event.data);
-    const blockedReason = getCoepBlockedReason(request);
-    if (blockedReason) {
-      this._issuesModel.addIssue(new CrossOriginEmbedderPolicyIssue(blockedReason, request.requestId()));
-    }
-
-    /**
-     * @param {!NetworkRequest} request
-     * @return {?string}
-     */
-    function getCoepBlockedReason(request) {
-      if (!request.wasBlocked()) {
-        return null;
-      }
-      const blockedReason = request.blockedReason() || null;
-      if (blockedReason === Protocol.Network.BlockedReason.CoepFrameResourceNeedsCoepHeader ||
-          blockedReason === Protocol.Network.BlockedReason.CorpNotSameOriginAfterDefaultedToSameOriginByCoep ||
-          blockedReason === Protocol.Network.BlockedReason.CoopSandboxedIframeCannotNavigateToCoopPage ||
-          blockedReason === Protocol.Network.BlockedReason.CorpNotSameSite ||
-          blockedReason === Protocol.Network.BlockedReason.CorpNotSameOrigin) {
-        return blockedReason;
-      }
-      return null;
-    }
-  }
-
-  detach() {
-    if (this._networkManager) {
-      this._networkManager.removeEventListener(NetworkManagerEvents.RequestFinished, this._handleRequestFinished, this);
-    }
-  }
-}
 
 
 /**
@@ -89,7 +27,6 @@ export class IssuesModel extends SDKModel {
     this._enabled = false;
     /** @type {*} */
     this._auditsAgent = null;
-    this._networkIssueDetector = null;
     this.ensureEnabled();
   }
 
@@ -109,7 +46,6 @@ export class IssuesModel extends SDKModel {
     this.target().registerAuditsDispatcher(this);
     this._auditsAgent = this.target().auditsAgent();
     this._auditsAgent.invoke_enable();
-    this._networkIssueDetector = new NetworkIssueDetector(this.target(), this);
   }
 
   /**
@@ -228,6 +164,23 @@ function createIssuesForHeavyAdIssue(issuesModel, inspectorDetails) {
 }
 
 /**
+ * @param {!IssuesModel} issuesModel
+ * @param {!Protocol.Audits.InspectorIssueDetails} inspectorDetails
+ * @return {!Array<!Issue>}
+ */
+function createIssuesForBlockedByResponseIssue(issuesModel, inspectorDetails) {
+  const blockedByResponseIssueDetails = inspectorDetails.blockedByResponseIssueDetails;
+  if (!blockedByResponseIssueDetails) {
+    console.warn('BlockedByResponse issue without details received.');
+    return [];
+  }
+  if (isCrossOriginEmbedderPolicyIssue(blockedByResponseIssueDetails.reason)) {
+    return [new CrossOriginEmbedderPolicyIssue(blockedByResponseIssueDetails)];
+  }
+  return [];
+}
+
+/**
  * @type {!Map<!Protocol.Audits.InspectorIssueCode, function(!IssuesModel, !Protocol.Audits.InspectorIssueDetails):!Array<!Issue>>}
  */
 const issueCodeHandlers = new Map([
@@ -235,6 +188,7 @@ const issueCodeHandlers = new Map([
   [Protocol.Audits.InspectorIssueCode.MixedContentIssue, createIssuesForMixedContentIssue],
   [Protocol.Audits.InspectorIssueCode.HeavyAdIssue, createIssuesForHeavyAdIssue],
   [Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue, createIssuesForContentSecurityPolicyIssue],
+  [Protocol.Audits.InspectorIssueCode.BlockedByResponseIssue, createIssuesForBlockedByResponseIssue],
 ]);
 
 /** @enum {symbol} */

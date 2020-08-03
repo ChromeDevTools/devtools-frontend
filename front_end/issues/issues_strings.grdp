@@ -33,6 +33,12 @@
   <message name="IDS_DEVTOOLS_6a7f245843454cf4f28ad7c5e2572aa2" desc="Plural label for number of affected element resource indication in issue view">
     elements
   </message>
+  <message name="IDS_DEVTOOLS_6bc90532b96243fd3deae4514bbb5dc4" desc="Title for a link to a request in the network panel">
+    Click to show request in the network panel
+  </message>
+  <message name="IDS_DEVTOOLS_712e023413c1a2069cb68c5cb4a914a0" desc="Title for an unavailable link a request in the network panel">
+    Request unavailable in the network panel, try reloading the inspected page
+  </message>
   <message name="IDS_DEVTOOLS_8e2dcfd7e7e24b1ca76c1193f645902b" desc="Singular label for number of affected element resource indication in issue view">
     element
   </message>
@@ -68,6 +74,12 @@
   </message>
   <message name="IDS_DEVTOOLS_c8f2c7aa04b8080f5d0bb020dc886d82" desc="Title for a column in an Heavy Ads issue view">
     Frame URL
+  </message>
+  <message name="IDS_DEVTOOLS_d09fde8cce3e04fe6dfc89c15e3c449f" desc="Title for a column in an issue view">
+    Blocked Resource
+  </message>
+  <message name="IDS_DEVTOOLS_d63605063a480a98396822bd7ee88a11" desc="Title for a column in an issue view">
+    Parent Frame
   </message>
   <message name="IDS_DEVTOOLS_e1317e393c4c13c1bba0195dd20eceb8" desc="Singular label for number of affected directive resource indication in issue view">
     directive

@@ -5,10 +5,6 @@
 import("./scripts/build/ninja/vars.gni")
 
 all_devtools_module_sources = [
-  "browser_debugger/DOMBreakpointsSidebarPane.js",
-  "browser_debugger/EventListenerBreakpointsSidebarPane.js",
-  "browser_debugger/ObjectEventListenersSidebarPane.js",
-  "browser_debugger/XHRBreakpointsSidebarPane.js",
   "cm_modes/DefaultCodeMirrorMimeMode.js",
   "developer_resources/DeveloperResourcesListView.js",
   "developer_resources/DeveloperResourcesView.js",
@@ -89,6 +85,10 @@ all_typescript_module_sources = [
   "bindings/SASSSourceMapping.js",
   "bindings/StylesSourceMapping.js",
   "bindings/TempFile.js",
+  "browser_debugger/DOMBreakpointsSidebarPane.js",
+  "browser_debugger/EventListenerBreakpointsSidebarPane.js",
+  "browser_debugger/ObjectEventListenersSidebarPane.js",
+  "browser_debugger/XHRBreakpointsSidebarPane.js",
   "browser_sdk/IssuesManager.js",
   "browser_sdk/LogManager.js",
   "browser_sdk/RelatedIssue.js",

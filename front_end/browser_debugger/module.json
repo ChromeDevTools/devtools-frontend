@@ -130,5 +130,6 @@
     "domBreakpointsSidebarPane.css",
     "eventListenerBreakpoints.css",
     "xhrBreakpointsSidebarPane.css"
-  ]
+  ],
+  "skip_rollup": true
 }

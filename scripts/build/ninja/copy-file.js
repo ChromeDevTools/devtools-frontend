@@ -18,4 +18,4 @@ if (fs.existsSync(destPath)) {
 // Force a write to the target filesystem, since by default the ninja
 // toolchain will create a hardlink, which in turn reflects changes in
 // gen and resources/inspector back to //front_end.
-fs.writeFileSync(destPath, fs.readFileSync(srcPath, {encoding: 'utf8'}));
+fs.writeFileSync(destPath, fs.readFileSync(srcPath));

@@ -4,26 +4,54 @@
 import("./vars.gni")
 
 template("copy_to_gen") {
-  copy(target_name) {
+  action(target_name) {
     forward_variables_from(invoker,
                            [
                              "sources",
                              "visibility",
                              "deps",
                            ])
-    outputs = [ "{{source_gen_dir}}/{{source_file_part}}" ]
+
+    script = "//third_party/node/node.py"
+
+    inputs =
+        [ devtools_location_prepend + "scripts/build/ninja/copy-files.js" ] +
+        sources
+
+    _copy_src = rebase_path(".", root_build_dir) + "/"
+    _copy_dest = "gen/" + rebase_path(_copy_src, "../../")
+
+    args = [
+      rebase_path(
+          devtools_location_prepend + "scripts/build/ninja/copy-files.js",
+          root_build_dir),
+      _copy_src,
+      _copy_dest,
+      string_join(",", sources),
+    ]
+
+    outputs = []
+    foreach(_input, sources) {
+      outputs += [ "$target_gen_dir/$_input" ]
+    }
   }
 }
 
 template("copy_sources_to_resources") {
   _copy_action_name = "$target_name-copy"
-  copy(_copy_action_name) {
+  action(_copy_action_name) {
     forward_variables_from(invoker,
                            [
                              "sources",
                              "deps",
                              "public_deps",
                            ])
+
+    script = "//third_party/node/node.py"
+
+    inputs =
+        [ devtools_location_prepend + "scripts/build/ninja/copy-files.js" ] +
+        sources
 
     # Figure out what the relative path is to the front_end folder.
     # We have to get the full path to the target_gen_dir
@@ -35,9 +63,24 @@ template("copy_sources_to_resources") {
                        root_gen_dir + "/" + devtools_location + "front_end",
                        "")
 
-    outputs = [
-      "$resources_out_dir/$_front_end_module_name/{{source_target_relative}}",
+    _copy_src = rebase_path(".", root_build_dir) + "/"
+    _abs_resources_out = rebase_path(resources_out_dir, root_build_dir)
+    _copy_dest = "$_abs_resources_out$_front_end_module_name"
+
+    args = [
+      rebase_path(
+          devtools_location_prepend + "scripts/build/ninja/copy-files.js",
+          root_build_dir),
+      _copy_src,
+      _copy_dest,
+      string_join(",", sources),
     ]
+
+    outputs = []
+    foreach(_input, sources) {
+      # print("$resources_out_dir$_front_end_module_name/$_input")
+      outputs += [ "$resources_out_dir$_front_end_module_name/$_input" ]
+    }
   }
 
   group(target_name) {

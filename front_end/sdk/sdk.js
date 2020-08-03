@@ -75,6 +75,8 @@ import * as WebAuthnModel from './WebAuthnModel.js';
 
 // We need to force creation of the FrameManager early to make sure no issues are missed.
 FrameManager.FrameManager.instance();
+// We need to force creation of the NetworkLog early to make sure no requests is missed.
+NetworkLog.NetworkLog.instance();
 
 export {
   ChildTargetManager,

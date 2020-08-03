@@ -122,7 +122,10 @@
         {
           "platform": "windows,linux",
           "shortcut": "Ctrl+Plus",
-          "keybindSets": ["devToolsDefault", "vsCode"]
+          "keybindSets": [
+            "devToolsDefault",
+            "vsCode"
+          ]
         },
         {
           "platform": "windows,linux",
@@ -139,7 +142,10 @@
         {
           "platform": "mac",
           "shortcut": "Meta+Plus",
-          "keybindSets": ["devToolsDefault", "vsCode"]
+          "keybindSets": [
+            "devToolsDefault",
+            "vsCode"
+          ]
         },
         {
           "platform": "mac",
@@ -165,7 +171,10 @@
         {
           "platform": "windows,linux",
           "shortcut": "Ctrl+Minus",
-          "keybindSets": ["devToolsDefault", "vsCode"]
+          "keybindSets": [
+            "devToolsDefault",
+            "vsCode"
+          ]
         },
         {
           "platform": "windows,linux",
@@ -182,7 +191,10 @@
         {
           "platform": "mac",
           "shortcut": "Meta+Minus",
-          "keybindSets": ["devToolsDefault", "vsCode"]
+          "keybindSets": [
+            "devToolsDefault",
+            "vsCode"
+          ]
         },
         {
           "platform": "mac",
@@ -233,12 +245,18 @@
         {
           "platform": "windows,linux",
           "shortcut": "Ctrl+F",
-          "keybindSets": ["devToolsDefault", "vsCode"]
+          "keybindSets": [
+            "devToolsDefault",
+            "vsCode"
+          ]
         },
         {
           "platform": "mac",
           "shortcut": "Meta+F",
-          "keybindSets": ["devToolsDefault", "vsCode"]
+          "keybindSets": [
+            "devToolsDefault",
+            "vsCode"
+          ]
         },
         {
           "platform": "mac",
@@ -269,7 +287,10 @@
         {
           "platform": "mac",
           "shortcut": "Meta+G",
-          "keybindSets": ["devToolsDefault", "vsCode"]
+          "keybindSets": [
+            "devToolsDefault",
+            "vsCode"
+          ]
         },
         {
           "platform": "windows,linux",
@@ -278,7 +299,10 @@
         {
           "platform": "windows,linux",
           "shortcut": "F3",
-          "keybindSets": ["devToolsDefault", "vsCode"]
+          "keybindSets": [
+            "devToolsDefault",
+            "vsCode"
+          ]
         }
       ]
     },
@@ -292,7 +316,10 @@
         {
           "platform": "mac",
           "shortcut": "Meta+Shift+G",
-          "keybindSets": ["devToolsDefault", "vsCode"]
+          "keybindSets": [
+            "devToolsDefault",
+            "vsCode"
+          ]
         },
         {
           "platform": "windows,linux",
@@ -301,7 +328,10 @@
         {
           "platform": "windows,linux",
           "shortcut": "Shift+F3",
-          "keybindSets": ["devToolsDefault", "vsCode"]
+          "keybindSets": [
+            "devToolsDefault",
+            "vsCode"
+          ]
         }
       ]
     },
@@ -513,5 +543,6 @@
     "SimpleApp.js",
     "ExecutionContextSelector.js",
     "MainImpl.js"
-  ]
+  ],
+  "skip_rollup": true
 }

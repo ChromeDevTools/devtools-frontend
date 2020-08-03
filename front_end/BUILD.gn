@@ -46,6 +46,7 @@ group("front_end") {
     "js_main:bundle",
     "layer_viewer:bundle",
     "layers:bundle",
+    "main:bundle",
     "mobile_throttling:bundle",
     "network:bundle",
     "node_main:bundle",

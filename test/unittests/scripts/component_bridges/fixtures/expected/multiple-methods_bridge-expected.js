@@ -23,11 +23,13 @@ export class MultipleMethodsClosureInterface extends HTMLElement {
   /**
   * @param {!Dog} dog
   */
-  update(dog) {}
+  update(dog) {
+  }
   /**
   * @param {string} name
   */
-  otherMethod(name) {}
+  otherMethod(name) {
+  }
 }
 /**
 * @return {!MultipleMethodsClosureInterface}

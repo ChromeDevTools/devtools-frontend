@@ -30,7 +30,8 @@ export class BasicComponentClosureInterface extends HTMLElement {
   /**
   * @param {{dog: !Dog, otherDog: ?Dog, someDogs: !Array.<!Dog>, aLessGoodAnimal: !Cat}} data
   */
-  set data(data) {}
+  set data(data) {
+  }
 }
 /**
 * @return {!BasicComponentClosureInterface}

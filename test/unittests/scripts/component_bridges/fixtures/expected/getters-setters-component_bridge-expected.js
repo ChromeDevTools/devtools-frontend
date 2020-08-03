@@ -23,11 +23,13 @@ export class BasicComponentClosureInterface extends HTMLElement {
   /**
   * @return {!Dog}
   */
-  get dog() {}
+  get dog() {
+  }
   /**
   * @param {!Dog} dog
   */
-  set dog(dog) {}
+  set dog(dog) {
+  }
 }
 /**
 * @return {!BasicComponentClosureInterface}

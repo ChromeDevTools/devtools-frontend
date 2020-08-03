@@ -59,7 +59,8 @@ export class LayoutPaneClosureInterface extends HTMLElement {
   /**
   * @param {{input: !Array.<!Setting>}} data
   */
-  set data(data) {}
+  set data(data) {
+  }
 }
 /**
 * @return {!LayoutPaneClosureInterface}

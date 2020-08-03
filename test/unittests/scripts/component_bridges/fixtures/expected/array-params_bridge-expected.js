@@ -23,7 +23,8 @@ export class ArrayParamsClosureInterface extends HTMLElement {
   /**
   * @param {!Array.<!Dog>} dogs
   */
-  update(dogs) {}
+  update(dogs) {
+  }
 }
 /**
 * @return {!ArrayParamsClosureInterface}

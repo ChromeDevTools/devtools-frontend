@@ -283,7 +283,7 @@ describe('generateClosure', () => {
   * @return {!Person}
   */`);
 
-      assert.include(classOutput.join('\n'), 'get person() {}');
+      assert.include(classOutput.join('\n'), 'get person() {');
     });
 
     it('throws on a getter that has no return type', () => {
@@ -316,7 +316,7 @@ describe('generateClosure', () => {
   * @return {?Person}
   */`);
 
-      assert.include(classOutput.join('\n'), 'get person() {}');
+      assert.include(classOutput.join('\n'), 'get person() {');
     });
 
     it('parses setter functions', () => {
@@ -336,7 +336,7 @@ describe('generateClosure', () => {
   * @param {!Person} person
   */`);
 
-      assert.include(classOutput.join('\n'), 'set person(person) {}');
+      assert.include(classOutput.join('\n'), 'set person(person) {');
     });
 
     it('throws on a setter that has no parameter', () => {
@@ -382,7 +382,7 @@ describe('generateClosure', () => {
   * @param {!Person=} person
   */`);
 
-      assert.include(classOutput.join('\n'), 'set person(person) {}');
+      assert.include(classOutput.join('\n'), 'set person(person) {');
     });
 
     it('handles object parameters in setters', () => {
@@ -403,7 +403,7 @@ describe('generateClosure', () => {
   * @param {{person: !Person, somethingElse: number}} data
   */`);
 
-      assert.include(classOutput.join('\n'), 'set data(data) {}');
+      assert.include(classOutput.join('\n'), 'set data(data) {');
     });
 
     it('correctly handles Readonly and outputs the inner type', () => {
@@ -424,7 +424,7 @@ describe('generateClosure', () => {
   * @param {{person: !Person}} data
   */`);
 
-      assert.include(classOutput.join('\n'), 'set data(data) {}');
+      assert.include(classOutput.join('\n'), 'set data(data) {');
     });
 
     it('correctly handles ReadonlyArray and outputs the inner type', () => {
@@ -445,7 +445,7 @@ describe('generateClosure', () => {
   * @param {{person: !Array.<!Person>}} data
   */`);
 
-      assert.include(classOutput.join('\n'), 'set data(data) {}');
+      assert.include(classOutput.join('\n'), 'set data(data) {');
     });
 
     it('correctly handles TypeScript Object type', () => {
@@ -461,7 +461,7 @@ describe('generateClosure', () => {
   /**
   * @param {{person: !Object}} data
   */`);
-      assert.include(classOutput.join('\n'), 'set data(data) {}');
+      assert.include(classOutput.join('\n'), 'set data(data) {');
     });
 
     it('correctly handles TypeScript array of Object type', () => {
@@ -477,7 +477,7 @@ describe('generateClosure', () => {
   /**
   * @param {{people: !Array.<!Object>}} data
   */`);
-      assert.include(classOutput.join('\n'), 'set data(data) {}');
+      assert.include(classOutput.join('\n'), 'set data(data) {');
     });
   });
 

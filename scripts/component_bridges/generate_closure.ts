@@ -180,7 +180,12 @@ export const generateClosureClass = (state: WalkerState): string[] => {
     jsDocForFunc = jsDocForFunc.map(line => indent(line, 2));
 
     output.push(jsDocForFunc.join('\n'));
-    output.push(indent(`${methodName}(${argsForFunc}) {}`, 2));
+    /* We split the closing brace onto its own line as that's how Clang format
+     * does things - so doing it here means we save an extra change when the presubmit
+     * checks run Clang and reformat the braces.
+     */
+    output.push(indent(`${methodName}(${argsForFunc}) {`, 2));
+    output.push(indent('}', 2));
   });
 
   state.getters.forEach(getter => {
@@ -205,7 +210,8 @@ export const generateClosureClass = (state: WalkerState): string[] => {
     jsDocForFunc = jsDocForFunc.map(line => indent(line, 2));
 
     output.push(jsDocForFunc.join('\n'));
-    output.push(indent(`get ${getterName}() {}`, 2));
+    output.push(indent(`get ${getterName}() {`, 2));
+    output.push(indent('}', 2));
   });
 
   state.setters.forEach(setter => {
@@ -234,7 +240,8 @@ export const generateClosureClass = (state: WalkerState): string[] => {
     jsDocForFunc = jsDocForFunc.map(line => indent(line, 2));
     output.push(jsDocForFunc.join('\n'));
 
-    output.push(indent(`set ${setterName}(${setterParamName}) {}`, 2));
+    output.push(indent(`set ${setterName}(${setterParamName}) {`, 2));
+    output.push(indent('}', 2));
   });
 
   output.push('}');

@@ -34,7 +34,8 @@ export class LayoutPaneClosureInterface extends HTMLElement {
   /**
   * @param {{selectedNode: ?DOMNode, settings: !Settings}} data
   */
-  set data(data) {}
+  set data(data) {
+  }
 }
 /**
 * @return {!LayoutPaneClosureInterface}

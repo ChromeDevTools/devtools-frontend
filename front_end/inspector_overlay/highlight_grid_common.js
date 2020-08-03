@@ -242,19 +242,19 @@ export function drawLayoutGridHighlight(highlight, context) {
       // Extend row gap lines left/up.
       drawRulers(
           context, rowBounds, /* rulerAtRight */ false, /* rulerAtBottom */ false,
-          highlight.gridHighlightConfig.cellBorderColor, highlight.gridHighlightConfig.cellBorderDash);
+          /* default color */ false, highlight.gridHighlightConfig.cellBorderDash);
       // Extend row gap right/down.
       drawRulers(
           context, rowBounds, /* rulerAtRight */ true, /* rulerAtBottom */ true,
-          highlight.gridHighlightConfig.cellBorderColor, highlight.gridHighlightConfig.cellBorderDash);
+          /* default color */ false, highlight.gridHighlightConfig.cellBorderDash);
       // Extend column lines left/up.
       drawRulers(
           context, columnBounds, /* rulerAtRight */ false, /* rulerAtBottom */ false,
-          highlight.gridHighlightConfig.cellBorderColor, highlight.gridHighlightConfig.cellBorderDash);
+          /* default color */ false, highlight.gridHighlightConfig.cellBorderDash);
       // Extend column right/down.
       drawRulers(
           context, columnBounds, /* rulerAtRight */ true, /* rulerAtBottom */ true,
-          highlight.gridHighlightConfig.cellBorderColor, highlight.gridHighlightConfig.cellBorderDash);
+          /* default color */ false, highlight.gridHighlightConfig.cellBorderDash);
     }
   }
 

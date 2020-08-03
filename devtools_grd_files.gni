@@ -827,6 +827,7 @@ grd_files_debug_sources = [
   "front_end/third_party/lighthouse/report-assets/report.js",
   "front_end/third_party/lit-html/directives.js",
   "front_end/third_party/lit-html/package/directives/class-map.js",
+  "front_end/third_party/lit-html/package/directives/if-defined.js",
   "front_end/third_party/lit-html/package/lib/default-template-processor.js",
   "front_end/third_party/lit-html/package/lib/directive.js",
   "front_end/third_party/lit-html/package/lib/dom.js",

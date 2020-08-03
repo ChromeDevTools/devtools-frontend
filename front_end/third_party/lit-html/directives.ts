@@ -3,3 +3,4 @@
 // found in the LICENSE file.
 
 export * from './package/directives/class-map.js';
+export * from './package/directives/if-defined.js';

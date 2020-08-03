@@ -5,6 +5,7 @@
   "files": [
     "package/lit-html.js",
     "package/directives/class-map.js",
+    "package/directives/if-defined.js",
     "package/lib/template-result.js",
     "package/lib/default-template-processor.js",
     "package/lib/directive.js",

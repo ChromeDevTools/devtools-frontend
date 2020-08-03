@@ -560,6 +560,7 @@ all_typescript_module_sources = [
   "third_party/codemirror/package/mode/xml/xml.js",
   "third_party/lit-html/directives.js",
   "third_party/lit-html/package/directives/class-map.js",
+  "third_party/lit-html/package/directives/if-defined.js",
   "third_party/lit-html/package/lib/default-template-processor.js",
   "third_party/lit-html/package/lib/directive.js",
   "third_party/lit-html/package/lib/dom.js",

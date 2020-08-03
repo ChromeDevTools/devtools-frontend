@@ -34,6 +34,25 @@
   min-height: 25px;
 }
 
+.infobar.infobar-issue .infobar-main-row {
+  flex-direction: row;
+  font-size: 12px;
+}
+
+:host-context(.platform-linux) .infobar.infobar-issue {
+  color: rgb(48 57 66);
+  font-family: Roboto, Ubuntu, Arial, sans-serif;
+}
+
+:host-context(.platform-mac) .infobar.infobar-issue {
+  color: rgb(48 57 66);
+  font-family: '.SFNSDisplay-Regular', 'Helvetica Neue', 'Lucida Grande', sans-serif;
+}
+
+:host-context(.platform-windows) .infobar.infobar-issue {
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
 .infobar-info-container {
   display: flex;
   align-items: center;
@@ -44,6 +63,10 @@
 .infobar-info-message {
   display: flex;
   margin: 5px 0;
+}
+
+.infobar.infobar-issue .infobar-info-message {
+  flex: 1 0;
 }
 
 .infobar-info-text {

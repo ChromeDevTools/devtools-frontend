@@ -55,6 +55,7 @@ group("front_end") {
     "persistence:bundle",
     "profiler:bundle",
     "protocol_client:bundle",
+    "protocol_monitor:bundle",
     "quick_open:bundle",
     "resources:bundle",
     "screencast:bundle",

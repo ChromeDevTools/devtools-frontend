@@ -26,5 +26,6 @@
   ],
   "resources": [
     "protocolMonitor.css"
-  ]
+  ],
+  "skip_rollup": true
 }

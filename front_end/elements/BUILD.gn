@@ -10,26 +10,6 @@ import("../../third_party/typescript/typescript.gni")
 devtools_module("elements") {
   sources = [
     "Adorner.js",
-    "ElementsBreadcrumbs.ts",
-    "ElementsBreadcrumbsUtils.ts",
-    "ElementsBreadcrumbs_bridge.js",
-  ]
-
-  deps = [
-    "../common:bundle",
-    "../platform:bundle",
-    "../third_party/lit-html:bundle",
-    "../ui:bundle",
-  ]
-
-  visibility = [
-    "../component_docs/elements_breadcrumbs",
-    "../../test/unittests/front_end/elements",
-  ]
-}
-
-devtools_pre_built("elements-pre-built") {
-  sources = [
     "ClassesPaneWidget.js",
     "ColorSwatchPopoverIcon.js",
     "ComputedStyleModel.js",
@@ -37,6 +17,9 @@ devtools_pre_built("elements-pre-built") {
     "DOMLinkifier.js",
     "DOMPath.js",
     "ElementStatePaneWidget.js",
+    "ElementsBreadcrumbs.ts",
+    "ElementsBreadcrumbsUtils.ts",
+    "ElementsBreadcrumbs_bridge.js",
     "ElementsPanel.js",
     "ElementsSidebarPane.js",
     "ElementsTreeElement.js",
@@ -54,13 +37,39 @@ devtools_pre_built("elements-pre-built") {
     "StylePropertyTreeElement.js",
     "StylesSidebarPane.js",
   ]
+
+  deps = [
+    "../bindings:bundle",
+    "../color_picker:bundle",
+    "../common:bundle",
+    "../components:bundle",
+    "../emulation:bundle",
+    "../event_listeners:bundle",
+    "../extensions:bundle",
+    "../formatter:bundle",
+    "../generated",
+    "../inline_editor:bundle",
+    "../mobile_throttling:bundle",
+    "../object_ui:bundle",
+    "../platform:bundle",
+    "../protocol_client:bundle",
+    "../sdk:bundle",
+    "../sdk:bundle",
+    "../third_party/lit-html:bundle",
+    "../ui:bundle",
+    "../workspace:bundle",
+  ]
+
+  visibility = [
+    "../component_docs/elements_breadcrumbs",
+    "../../test/unittests/front_end/elements",
+  ]
 }
 
 devtools_entrypoint("bundle") {
   entrypoint = "elements.js"
 
-  deps = [
-    ":elements",
-    ":elements-pre-built",
-  ]
+  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
+
+  deps = [ ":elements" ]
 }

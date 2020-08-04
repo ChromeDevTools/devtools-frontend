@@ -51,7 +51,17 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
 
     locations.sort((item1, item2) => item1.uiLocation.compareTo(item2.uiLocation));
 
-    return locations;
+    const result = [];
+    let lastBreakpoint = null;
+    let lastLocation = null;
+    for (const location of locations) {
+      if (location.breakpoint !== lastBreakpoint || (lastLocation && location.uiLocation.compareTo(lastLocation))) {
+        result.push(location);
+        lastBreakpoint = location.breakpoint;
+        lastLocation = location.uiLocation;
+      }
+    }
+    return result;
   }
 
   _hideList() {

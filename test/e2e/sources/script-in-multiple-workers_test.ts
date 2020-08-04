@@ -6,7 +6,7 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 import * as puppeteer from 'puppeteer';
 
-import {click, getBrowserAndPages, goToResource, step, waitFor} from '../../shared/helper.js';
+import {$$, click, getBrowserAndPages, goToResource, step, waitFor} from '../../shared/helper.js';
 import {addBreakpointForLine, createSelectorsForWorkerFile, getBreakpointDecorators, getExecutionLine, getOpenSources, openNestedWorkerFile, PAUSE_BUTTON, RESUME_BUTTON} from '../helpers/sources-helpers.js';
 
 async function validateSourceTabs() {
@@ -29,7 +29,7 @@ describe('Multi-Workers', async function() {
     }
 
     async function validateNavigationTree() {
-      await step('Ensure 10 works exist', async () => {
+      await step('Ensure 10 workers exist', async () => {
         await waitFor(workerFileSelectors(10).rootSelector);
       });
     }
@@ -94,6 +94,24 @@ describe('Multi-Workers', async function() {
 
       // Look at source tabs
       await validateSourceTabs();
+    });
+
+    it(`shows exactly one breakpoint ${withOrWithout}`, async () => {
+      const {frontend} = getBrowserAndPages();
+      // Have the target load the page.
+      await goToResource(targetPage);
+
+      await click('#tab-sources');
+      // Wait for all workers to load
+      await validateNavigationTree();
+      // Open file from second worker
+      await openNestedWorkerFile(workerFileSelectors(2));
+      // Set a breakpoint
+      await addBreakpointForLine(frontend, 6);
+
+      await waitFor('.breakpoint-entry');
+      const breakpoints = (await $$('.breakpoint-entry')).length;
+      assert.strictEqual(breakpoints, 1);
     });
 
     describe(`copies breakpoints between workers ${withOrWithout}`, () => {

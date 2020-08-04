@@ -15,7 +15,7 @@ export const querySelectorShadowOne = (
     selector: string,
     ): Element|null => {
   let found: Element|null = null;
-  const search = (root: Element|Document|ShadowRoot) => {
+  const search = (root: Element|ShadowRoot) => {
     const iter = document.createTreeWalker(
         root,
         NodeFilter.SHOW_ELEMENT,
@@ -45,7 +45,7 @@ export const querySelectorShadowAll = (
     selector: string,
     ): Element[] => {
   const result: Element[] = [];
-  const collect = (root: Element|Document|ShadowRoot) => {
+  const collect = (root: Element|ShadowRoot) => {
     const iter = document.createTreeWalker(
         root,
         NodeFilter.SHOW_ELEMENT,
@@ -76,7 +76,7 @@ export const querySelectorShadowTextOne = (
     text: string,
     ): Element|null => {
   let found: Element|null = null;
-  const search = (root: Element|Document|ShadowRoot) => {
+  const search = (root: Element|ShadowRoot) => {
     const iter = document.createTreeWalker(
         root,
         NodeFilter.SHOW_ELEMENT,
@@ -106,7 +106,7 @@ export const querySelectorShadowTextAll = (
     selector: string,
     ): Element[] => {
   const result: Element[] = [];
-  const collect = (root: Element|Document|ShadowRoot) => {
+  const collect = (root: Element|ShadowRoot) => {
     const iter = document.createTreeWalker(
         root,
         NodeFilter.SHOW_ELEMENT,

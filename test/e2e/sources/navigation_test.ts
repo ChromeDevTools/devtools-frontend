@@ -15,7 +15,7 @@ describe('The Sources Tab', async () => {
 
       await clickOnContextMenu('[aria-label="test/e2e/resources/sources/navigation, nw-folder"]', 'Search in folder');
       const element = await waitFor('[aria-label="Search Query"]');
-      const value = await element.evaluate(input => input.value);
+      const value = await element.evaluate(input => (input as HTMLInputElement).value);
 
       assert.strictEqual(value, 'file:test/e2e/resources/sources/navigation');
     });

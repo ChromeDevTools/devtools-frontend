@@ -13,5 +13,5 @@ export async function navigateToLighthouseTab(testName: string) {
 
 export async function isGenerateReportButtonDisabled() {
   const button = await $('.lighthouse-start-view .primary-button');
-  return button.evaluate(element => element.disabled);
+  return button.evaluate(element => (element as HTMLButtonElement).disabled);
 }

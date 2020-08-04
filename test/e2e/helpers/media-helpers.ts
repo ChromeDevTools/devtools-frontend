@@ -33,5 +33,5 @@ export async function getPlayerButton() {
 
 export async function getPlayerButtonText() {
   const playerEntry = await getPlayerButton();
-  return await playerEntry.evaluate(E => E.textContent);
+  return await playerEntry.evaluate(element => element.textContent as string);
 }

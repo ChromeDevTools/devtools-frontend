@@ -43,13 +43,13 @@ describe('The Elements Tab', async () => {
 
     await waitForFunction(async () => {
       const styleSections = await $$('.styles-section');
-      const numFound = await styleSections.evaluate(array => array.length);
+      const numFound = styleSections.length;
 
       return numFound === 3;
     });
 
     const styleSections = await $$('.styles-section');
-    const selectorTexts = await styleSections.evaluate((nodes: Element[]) => nodes.map(node => node.textContent));
+    const selectorTexts = await Promise.all(styleSections.map(n => n.evaluate(node => node.textContent)));
 
     assert.deepEqual(selectorTexts, [
       'element.style {}',

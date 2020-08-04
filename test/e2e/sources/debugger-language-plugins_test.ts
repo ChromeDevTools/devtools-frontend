@@ -141,8 +141,8 @@ describe('The Debugger Language Plugins', async () => {
     await goToResource('sources/wasm/unreachable.html');
     await waitFor('.paused-status');
 
-    const scriptLocation =
-        await (await $('.call-frame-location')).evaluate((location: HTMLElement) => location.textContent);
+    const callFrameLoc = await $('.call-frame-location');
+    const scriptLocation = await callFrameLoc.evaluate(location => location.textContent);
     assert.deepEqual(scriptLocation, 'unreachable.ll:6');
   });
 

@@ -15,7 +15,7 @@ describe('Rendering pane', () => {
     const option = await $('option[value="achromatopsia"]');
     const actual = await option.evaluate(node => {
       const select = node.closest('select');
-      return select.textContent;
+      return select ? select.textContent : '';
     });
     const expected = [
       'No emulation',

@@ -23,9 +23,9 @@ export async function getChangesList() {
   const root = await $(PANEL_ROOT_SELECTOR);
   const items = await $$('.tree-element-title', root);
 
-  return items.evaluate((nodes: Element[]) => {
-    return nodes.map(node => node.textContent || '');
-  });
+  return Promise.all(items.map(node => {
+    return node.evaluate(node => node.textContent as string);
+  }));
 }
 
 export async function waitForNewChanges(initialChanges: string[]) {

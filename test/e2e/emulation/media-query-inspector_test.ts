@@ -22,9 +22,9 @@ describe('Media query inspector', async () => {
 
   it('lists all the media queries', async () => {
     const inspectorMarkers = await $$(MEDIA_INSPECTOR_MARKER_SELECTOR);
-    const markersContent = await inspectorMarkers.evaluate((nodes: HTMLElement[]) => {
-      return nodes.map((node: HTMLElement) => node.textContent);
-    });
+    const markersContent = await Promise.all(inspectorMarkers.map(node => {
+      return node.evaluate(node => node.textContent);
+    }));
     assert.includeMembers(
         markersContent,
         [

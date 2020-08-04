@@ -16,7 +16,7 @@ describe('The Network Tab', async () => {
     await click('[aria-label="Disable cache"] + label');
 
     const checkbox = await $('[aria-label="Disable cache"]');
-    const checked = await checkbox.evaluate(box => box.checked);
+    const checked = await checkbox.evaluate(box => (box as HTMLInputElement).checked);
 
     assert.strictEqual(checked, true, 'The disable cache checkbox should be checked');
   });

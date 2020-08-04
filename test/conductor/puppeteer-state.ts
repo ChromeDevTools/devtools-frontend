@@ -77,12 +77,10 @@ export const getHostedModeServerPort = () => {
 };
 
 export const registerHandlers = () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   puppeteer.__experimental_registerCustomQueryHandler('pierceShadow', {
     queryOne: querySelectorShadowOne,
     queryAll: querySelectorShadowAll,
   });
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   puppeteer.__experimental_registerCustomQueryHandler('pierceShadowText', {
     queryOne: querySelectorShadowTextOne,
     queryAll: querySelectorShadowTextAll,

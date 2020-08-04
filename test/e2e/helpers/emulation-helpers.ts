@@ -30,17 +30,16 @@ export const openDeviceToolbar = async () => {
 };
 
 export const showMediaQueryInspector = async () => {
-  const inspector = await $(MEDIA_QUERY_INSPECTOR_SELECTOR);
-  const isOpen = await inspector.evaluate(element => Boolean(element));
-  if (isOpen) {
+  try {
+    await $(MEDIA_QUERY_INSPECTOR_SELECTOR);
     return;
+  } catch (error) {
+    await click(DEVICE_TOOLBAR_OPTIONS_SELECTOR);
+    const {frontend} = getBrowserAndPages();
+    await frontend.keyboard.press('ArrowDown');
+    await frontend.keyboard.press('Enter');
+    await waitFor(MEDIA_QUERY_INSPECTOR_SELECTOR);
   }
-
-  await click(DEVICE_TOOLBAR_OPTIONS_SELECTOR);
-  const {frontend} = getBrowserAndPages();
-  await frontend.keyboard.press('ArrowDown');
-  await frontend.keyboard.press('Enter');
-  await waitFor(MEDIA_QUERY_INSPECTOR_SELECTOR);
 };
 
 export const startEmulationWithDualScreenFlag = async () => {
@@ -84,7 +83,7 @@ export const clickToggleButton = async () => {
 export const getWidthOfDevice = async () => {
   // Read the width of spanned duo to make sure spanning works.
   const widthInput = await $(SCREEN_DIM_INPUT_SELECTOR);
-  return widthInput.evaluate((e: HTMLInputElement) => e.value);
+  return widthInput.evaluate(e => (e as HTMLInputElement).value);
 };
 
 const IPAD_MENU_ITEM_SELECTOR = '[aria-label*="iPad"]';

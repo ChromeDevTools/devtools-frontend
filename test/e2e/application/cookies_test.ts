@@ -84,7 +84,7 @@ describe('The Application Tab', async () => {
 
     // Make sure that the preview resets
     const previewValueNode2 = await $('.cookie-value');
-    const previewValue2 = await previewValueNode2.evaluate(e => e.textContent);
+    const previewValue2 = await previewValueNode2.evaluate(e => e.textContent as string);
 
     assert.match(previewValue2, /Select a cookie to preview its value/);
   });

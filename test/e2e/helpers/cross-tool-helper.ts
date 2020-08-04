@@ -26,7 +26,7 @@ const MAIN_PANEL_SELECTOR = 'div[class*="main-tabbed-pane"][slot*="insertion-poi
 const DRAWER_PANEL_SELECTOR = 'div[class*="drawer-tabbed-pane"][slot*="insertion-point-sidebar"]';
 
 export async function tabExistsInMainPanel(tabId: string) {
-  const mainPanel = await $(MAIN_PANEL_SELECTOR);
+  const mainPanel = await waitFor(MAIN_PANEL_SELECTOR);
   await waitFor(tabId, mainPanel);
 }
 

@@ -41,9 +41,10 @@ describe('The Console Tab', async () => {
     });
 
     await step('retrieve the console log', async () => {
-      messages = await (await $$(STACK_PREVIEW_CONTAINER)).evaluate(elements => {
-        return elements.map((el: HTMLElement) => el.innerText);
-      });
+      const container = await $$(STACK_PREVIEW_CONTAINER);
+      messages = await Promise.all(container.map(elements => {
+        return elements.evaluate(el => (el as HTMLElement).innerText);
+      }));
     });
 
     await step('check that the first log is not truncated', async () => {

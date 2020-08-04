@@ -32,6 +32,16 @@ export let IssueDescription;  // eslint-disable-line no-unused-vars
 
 /**
  * @typedef {{
+  *             file: string,
+  *             issueKind: !IssueKind,
+  *             links: !Array<!{link: string, linkTitle: string}>
+  *          }}
+  */
+// @ts-ignore typedef
+export let MarkdownIssueDescription;  // eslint-disable-line no-unused-vars
+
+/**
+ * @typedef {{
   *            backendNodeId: number,
   *            nodeName: string
   *          }}
@@ -146,7 +156,7 @@ export class Issue extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @return {?IssueDescription}
+   * @return {?(!IssueDescription|!MarkdownIssueDescription)}
    */
   getDescription() {
     throw new Error('Not implemented');

@@ -506,6 +506,7 @@ grd_files_debug_sources = [
   "front_end/issues/IssueAggregator.js",
   "front_end/issues/IssueRevealer.js",
   "front_end/issues/IssuesPane.js",
+  "front_end/issues/MarkdownIssueDescription.js",
   "front_end/issues/MarkdownView.js",
   "front_end/issues/MarkdownView_bridge.js",
   "front_end/javascript_metadata/JavaScriptMetadata.js",

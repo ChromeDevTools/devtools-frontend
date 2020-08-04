@@ -26,6 +26,7 @@
     "host",
     "components",
     "sdk",
+    "marked",
     "network",
     "browser_sdk"
   ],
@@ -36,6 +37,7 @@
     "IssuesPane.js",
     "IssueRevealer.js",
     "IssueAggregator.js",
+    "MarkdownIssueDescription.js",
     "MarkdownView_bridge.js"
   ],
   "resources": [

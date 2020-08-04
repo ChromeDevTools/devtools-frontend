@@ -11,6 +11,7 @@ import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {AggregatedIssue, Events as IssueAggregatorEvents, IssueAggregator} from './IssueAggregator.js';  // eslint-disable-line no-unused-vars
+import {createIssueDescriptionFromMarkdown} from './MarkdownIssueDescription.js';
 
 /**
  * @param {string} path
@@ -1088,13 +1089,18 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
    * @param {!AggregatedIssue} issue
    */
   _updateIssueView(issue) {
-    const description = issue.getDescription();
-    if (!description) {
-      console.warn('Could not find description for issue code:', issue.code());
-      return;
-    }
     if (!this._issueViews.has(issue.code())) {
-      const view = new IssueView(this, issue, description);
+      let description = issue.getDescription();
+      if (!description) {
+        console.warn('Could not find description for issue code:', issue.code());
+        return;
+      }
+      if ('file' in description) {
+        // TODO(crbug.com/1011811): Remove casts once closure is gone. TypeScript can infer the type variant.
+        description =
+            createIssueDescriptionFromMarkdown(/** @type {!SDK.Issue.MarkdownIssueDescription} */ (description));
+      }
+      const view = new IssueView(this, issue, /** @type {!SDK.Issue.IssueDescription} */ (description));
       this._issueViews.set(issue.code(), view);
       this._issuesTree.appendChild(view, (a, b) => {
         if (a instanceof IssueView && b instanceof IssueView) {

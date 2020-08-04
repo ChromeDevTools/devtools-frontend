@@ -391,6 +391,14 @@ export class MainView extends UI.Panel.PanelWithSidebar {
     this._downloadStore.deletePlayer(playerID);
   }
 
+  markOtherPlayersForDeletion(playerID) {
+    for (const keyID of this._detailPanels.keys()) {
+      if (keyID !== playerID) {
+        this.markPlayerForDeletion(keyID);
+      }
+    }
+  }
+
   exportPlayerData(playerID) {
     const dump = this._downloadStore.exportPlayerData(playerID);
     const uriContent = 'data:application/octet-stream,' + encodeURIComponent(JSON.stringify(dump, null, 2));

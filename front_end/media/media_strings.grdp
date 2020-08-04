@@ -18,6 +18,9 @@
   <message name="IDS_DEVTOOLS_368cc7b17925cc0f9c4b5a90db1e68c1" desc="The video or audio stream, much like on an old cd.">
     track
   </message>
+  <message name="IDS_DEVTOOLS_6245bb413f62feb4e4c5cd7141a83182" desc="A right-click context menu entry which should keep the element selected, while hiding all other entries.">
+    Hide all others
+  </message>
   <message name="IDS_DEVTOOLS_6e3e66da4fb111d1cf68b4b1e4730261" desc="A right-click context menu entry which when clicked causes the menu entry for that player to be removed.">
     Hide player
   </message>

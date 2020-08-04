@@ -1034,12 +1034,6 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
       this._updateIssueView(issue);
     }
     this._updateCounts();
-
-    /** @type {?UI.Infobar.Infobar} */
-    this._reloadInfobar = null;
-    /** @type {?Element} */
-    this._infoBarDiv = null;
-    this._showReloadInfobarIfNeeded();
   }
 
   /**
@@ -1115,7 +1109,6 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
   }
 
   _fullUpdate() {
-    this._hideReloadInfoBar();
     for (const view of this._issueViews.values()) {
       this._issuesTree.removeChild(view);
     }
@@ -1138,7 +1131,7 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
    * @param {number} issuesCount
    */
   _showIssuesTreeOrNoIssuesDetectedMessage(issuesCount) {
-    if (issuesCount > 0 || this._issuesManager.reloadForAccurateInformationRequired()) {
+    if (issuesCount > 0) {
       this._issuesTree.element.hidden = false;
       this._noIssuesMessageDiv.style.display = 'none';
     } else {
@@ -1155,49 +1148,6 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     if (issueView) {
       issueView.expand();
       issueView.reveal();
-    }
-  }
-
-  _showReloadInfobarIfNeeded() {
-    if (!this._issuesManager.reloadForAccurateInformationRequired()) {
-      return;
-    }
-
-    function reload() {
-      const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
-      if (mainTarget) {
-        const resourceModel = mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
-        if (resourceModel) {
-          resourceModel.reloadPage();
-        }
-      }
-    }
-
-    const infobar = new UI.Infobar.Infobar(
-        UI.Infobar.Type.Warning,
-        ls`Some issues might be missing or incomplete, reload the inspected page to get the full information.`,
-        [{text: ls`Reload page`, highlight: false, delegate: reload, dismiss: true}]);
-
-    this._reloadInfobar = infobar;
-    this._attachReloadInfoBar(infobar);
-  }
-
-  /** @param {!UI.Infobar.Infobar} infobar */
-  _attachReloadInfoBar(infobar) {
-    if (!this._infoBarDiv) {
-      this._infoBarDiv = document.createElement('div');
-      this._infoBarDiv.classList.add('flex-none');
-      this.contentElement.insertBefore(this._infoBarDiv, this._issuesToolbarContainer.nextSibling);
-    }
-    this._infoBarDiv.appendChild(infobar.element);
-    infobar.setParentView(this);
-    this.doResize();
-  }
-
-  _hideReloadInfoBar() {
-    if (this._reloadInfobar) {
-      this._reloadInfobar.dispose();
-      this._reloadInfobar = null;
     }
   }
 }

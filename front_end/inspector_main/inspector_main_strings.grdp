@@ -108,6 +108,9 @@
   <message name="IDS_DEVTOOLS_c61404957758dfda283709e89376ab3e" desc="Command Menu search query that points to the Rendering tool">
     layout
   </message>
+  <message name="IDS_DEVTOOLS_cb835af5f855f79e8611dd3f8fec6aac" desc="Title of an action in the inspector main tool to reload">
+    Reload page
+  </message>
   <message name="IDS_DEVTOOLS_d543dbe64db0c952d6e13c9519218b3e" desc="Title of an action in the inspector main tool to hard reload">
     Hard reload page
   </message>

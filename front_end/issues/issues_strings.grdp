@@ -93,9 +93,6 @@
   <message name="IDS_DEVTOOLS_f2ab5fb218da8b84623f45579aa4ba11" desc="Plural label for number of affected source resource indication in issue view">
     sources
   </message>
-  <message name="IDS_DEVTOOLS_7b255ecb0466cedcea013f62b87c83cc" desc="Explanatory message why a reload of the inspected page is required. Next to reload button.">
-    Some issues might be missing or incomplete, reload the inspected page to get the full information.
-  </message>
   <message name="IDS_DEVTOOLS_fae3520ad615b90014c2f2991ff32edf" desc="Reason for a Heavy Ad being flagged in issue view">
     CPU total limit
   </message>

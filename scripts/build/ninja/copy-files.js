@@ -12,12 +12,17 @@ for (const file of files.split(',')) {
   // If there's a file there from a previous build, unlink it first. This
   // is because the file in that location might be a hardlinked file, and
   // overwriting it doesn't change the fact that it's hardlinked.
+  const srcContents = fs.readFileSync(srcPath);
   if (fs.existsSync(destPath)) {
-    fs.unlinkSync(destPath);
+    // Check contents, return early if match
+    const destContents = fs.readFileSync(destPath);
+    if (srcContents.equals(destContents)) {
+      return;
+    }
   }
 
   // Force a write to the target filesystem, since by default the ninja
   // toolchain will create a hardlink, which in turn reflects changes in
   // gen and resources/inspector back to //front_end.
-  fs.writeFileSync(destPath, fs.readFileSync(srcPath));
+  fs.writeFileSync(destPath, srcContents);
 }

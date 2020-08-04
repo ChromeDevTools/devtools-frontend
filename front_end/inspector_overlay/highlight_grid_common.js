@@ -33,7 +33,7 @@
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import {drawGridLabels} from './css_grid_label_helpers.js';
-import {buildPath, drawRulers, emptyBounds} from './highlight_common.js';
+import {buildPath, drawHorizontalRulers, drawVerticalRulers, emptyBounds} from './highlight_common.js';
 
 export const gridStyle = `
 /* Grid row and column labels */
@@ -214,49 +214,9 @@ export function drawLayoutGridHighlight(highlight, context) {
     context.restore();
   }
 
-  // Draw Cell Border
-  if (highlight.gridHighlightConfig.cellBorderColor) {
-    const rowBounds = emptyBounds();
-    const columnBounds = emptyBounds();
-    const rowPath = buildPath(highlight.rows, rowBounds);
-    const columnPath = buildPath(highlight.columns, columnBounds);
-    context.save();
-    context.translate(0.5, 0.5);
-    if (highlight.gridHighlightConfig.cellBorderDash) {
-      context.setLineDash([3, 3]);
-    }
-    context.lineWidth = 0;
-    context.strokeStyle = highlight.gridHighlightConfig.cellBorderColor;
-
-    context.save();
-    context.stroke(rowPath);
-    context.restore();
-
-    context.save();
-    context.stroke(columnPath);
-    context.restore();
-
-    context.restore();
-
-    if (highlight.gridHighlightConfig.showGridExtensionLines) {
-      // Extend row gap lines left/up.
-      drawRulers(
-          context, rowBounds, /* rulerAtRight */ false, /* rulerAtBottom */ false,
-          /* default color */ false, highlight.gridHighlightConfig.cellBorderDash);
-      // Extend row gap right/down.
-      drawRulers(
-          context, rowBounds, /* rulerAtRight */ true, /* rulerAtBottom */ true,
-          /* default color */ false, highlight.gridHighlightConfig.cellBorderDash);
-      // Extend column lines left/up.
-      drawRulers(
-          context, columnBounds, /* rulerAtRight */ false, /* rulerAtBottom */ false,
-          /* default color */ false, highlight.gridHighlightConfig.cellBorderDash);
-      // Extend column right/down.
-      drawRulers(
-          context, columnBounds, /* rulerAtRight */ true, /* rulerAtBottom */ true,
-          /* default color */ false, highlight.gridHighlightConfig.cellBorderDash);
-    }
-  }
+  // Draw grid lines
+  _drawGridLines(context, highlight, 'row');
+  _drawGridLines(context, highlight, 'column');
 
   // Draw gaps
   _drawGridGap(
@@ -271,6 +231,46 @@ export function drawLayoutGridHighlight(highlight, context) {
 
   // Draw all the labels
   drawGridLabels(highlight, gridBounds, areaBounds);
+}
+
+function _drawGridLines(context, highlight, direction) {
+  const tracks = highlight[`${direction}s`];
+  const color = highlight.gridHighlightConfig[`${direction}LineColor`];
+  const dash = highlight.gridHighlightConfig[`${direction}LineDash`];
+  const extensionLines = highlight.gridHighlightConfig.showGridExtensionLines;
+
+  if (!color) {
+    return;
+  }
+
+  const bounds = emptyBounds();
+  const path = buildPath(tracks, bounds);
+
+  context.save();
+  context.translate(0.5, 0.5);
+  if (dash) {
+    context.setLineDash([3, 3]);
+  }
+  context.lineWidth = 0;
+  context.strokeStyle = color;
+
+  context.save();
+  context.stroke(path);
+  context.restore();
+
+  context.restore();
+
+  if (extensionLines) {
+    if (direction === 'row') {
+      // Draw left and right of the rows.
+      drawHorizontalRulers(context, bounds, /* rulerAtRight */ false, /* default color */ undefined, dash);
+      drawHorizontalRulers(context, bounds, /* rulerAtRight */ true, /* default color */ undefined, dash);
+    } else {
+      // Draw above and below the columns.
+      drawVerticalRulers(context, bounds, /* rulerAtBottom */ false, /* default color */ undefined, dash);
+      drawVerticalRulers(context, bounds, /* rulerAtBottom */ true, /* default color */ undefined, dash);
+    }
+  }
 }
 
 /**

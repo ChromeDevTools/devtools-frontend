@@ -336,26 +336,6 @@ const populateInterfacesToConvert = (state: WalkerState): WalkerState => {
 export const walkTree = (startNode: ts.SourceFile, resolvedFilePath: string): WalkerState => {
   let state = walkNode(startNode);
 
-  /**
-   * Now we have a list of top level interfaces we need to convert, we need to
-   * go through each one and look for any interfaces referenced within e.g.:
-   *
-   * ```
-   * interface Baz {...}
-   *
-   * interface Foo {
-   *   x: Baz
-   * }
-   *
-   * // in the component
-   * set data(data: { foo: Foo }) {}
-   * ```
-   *
-   * We know we have to convert the Foo interface in the _bridge.js, but we need
-   * to also convert Baz because Foo references it.
-   */
-  state = populateInterfacesToConvert(state);
-
   /* if we are here and found an interface passed to a public method
    * that we didn't find the definition for, that means it's imported
    * so we now need to walk that imported file
@@ -398,7 +378,32 @@ export const walkTree = (startNode: ts.SourceFile, resolvedFilePath: string): Wa
     stateFromSubFile.foundInterfaces.forEach(foundInterface => {
       state.foundInterfaces.add(foundInterface);
     });
+
+    stateFromSubFile.interfaceNamesToConvert.forEach(interfaceToConvert => {
+      state.interfaceNamesToConvert.add(interfaceToConvert);
+    });
   });
+
+  /**
+   * Now we have a list of top level interfaces we need to convert, we need to
+   * go through each one and look for any interfaces referenced within e.g.:
+   *
+   * ```
+   * interface Baz {...}
+   *
+   * interface Foo {
+   *   x: Baz
+   * }
+   *
+   * // in the component
+   * set data(data: { foo: Foo }) {}
+   * ```
+   *
+   * We know we have to convert the Foo interface in the _bridge.js, but we need
+   * to also convert Baz because Foo references it.
+   */
+
+  state = populateInterfacesToConvert(state);
 
   return state;
 };

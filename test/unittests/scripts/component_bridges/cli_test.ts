@@ -57,4 +57,8 @@ describe('bridges CLI fixture tests', () => {
   it('complex union types and types extending other types', () => {
     runFixtureTestAndAssertMatch('complex-union-types-extending-types');
   });
+
+  it('finds complex types and nested types from imports', () => {
+    runFixtureTestAndAssertMatch('complex-types-imported');
+  });
 });

@@ -12,7 +12,6 @@ group("front_end") {
     "accessibility:bundle",
     "animation:bundle",
     "bindings:bundle",
-    "browser_debugger:bundle",
     "browser_sdk:bundle",
     "changes:bundle",
     "client_variations:bundle",

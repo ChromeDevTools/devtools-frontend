@@ -421,6 +421,9 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand(
       'CSS.getStyleSheetText', [{'name': 'styleSheetId', 'type': 'string', 'optional': false}], ['text']);
   inspectorBackend.registerCommand(
+      'CSS.trackComputedStyleUpdates', [{'name': 'propertiesToTrack', 'type': 'object', 'optional': false}], []);
+  inspectorBackend.registerCommand('CSS.takeComputedStyleUpdates', [], ['nodeIds']);
+  inspectorBackend.registerCommand(
       'CSS.setEffectivePropertyValueForNode',
       [
         {'name': 'nodeId', 'type': 'number', 'optional': false},

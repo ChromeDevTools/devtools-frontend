@@ -224,7 +224,8 @@ export const Action = {
   SettingsOpenedFromCommandMenu: 38,
   TabMovedToDrawer: 39,
   TabMovedToMainPanel: 40,
-  CaptureCssOverviewClicked: 41
+  CaptureCssOverviewClicked: 41,
+  VirtualAuthenticatorEnvironmentEnabled: 42
 };
 
 /** @type {!Object<string, number>} */

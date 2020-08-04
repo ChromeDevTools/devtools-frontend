@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../host/host.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -15,6 +16,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     this.contentElement.classList.add('webauthn-pane');
     this._enabled = false;
     this._activeAuthId = null;
+    this._hasBeenEnabled = false;
 
     const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
     if (mainTarget) {
@@ -48,6 +50,11 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
    * @param {boolean} enable
    */
   _setVirtualAuthEnvEnabled(enable) {
+    if (enable && !this._hasBeenEnabled) {
+      // Ensures metric is only tracked once per session.
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.VirtualAuthenticatorEnvironmentEnabled);
+      this._hasBeenEnabled = true;
+    }
     this._enabled = enable;
     this._model.setVirtualAuthEnvEnabled(enable);
     this._updateVisibility(enable);

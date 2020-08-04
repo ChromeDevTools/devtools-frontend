@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {$, $$, click, goToResource, waitFor, waitForFunction} from '../../shared/helper.js';
+import {$$, click, goToResource, waitFor, waitForFunction} from '../../shared/helper.js';
 
 const REQUEST_LIST_SELECTOR = '.network-log-grid .data';
 
@@ -34,7 +34,7 @@ export async function getAllRequestNames() {
 }
 
 export async function getSelectedRequestName() {
-  const request = await $(REQUEST_LIST_SELECTOR + ' tr.selected .name-column');
+  const request = await waitFor(REQUEST_LIST_SELECTOR + ' tr.selected .name-column');
   return await request.evaluate(node => {
     return node && node.childNodes[1].textContent;
   });

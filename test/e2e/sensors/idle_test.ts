@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {$} from '../../shared/helper.js';
+import {waitFor} from '../../shared/helper.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 describe('Sensors panel', () => {
@@ -14,7 +14,7 @@ describe('Sensors panel', () => {
   });
 
   it('includes UI for emulating an idle state', async () => {
-    const select = await $('.idle-section select');
+    const select = await waitFor('.idle-section select');
     const actual = await select.evaluate(node => node.textContent);
 
     const expected = [

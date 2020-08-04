@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {$, click, getBrowserAndPages, getHostedModeServerPort, goToResource, waitFor} from '../../shared/helper.js';
+import {click, getBrowserAndPages, getHostedModeServerPort, goToResource, waitFor} from '../../shared/helper.js';
 import {doubleClickSourceTreeItem, getDataGridData, navigateToApplicationTab} from '../helpers/application-helpers.js';
 
 const COOKIES_SELECTOR = '[aria-label="Cookies"]';
@@ -55,7 +55,7 @@ describe('The Application Tab', async () => {
     await waitFor('.cookies-table .data-grid-data-grid-node');
     await click('.cookies-table .data-grid-data-grid-node');
 
-    const previewValueNode = await $('.cookie-value');
+    const previewValueNode = await waitFor('.cookie-value');
     const previewValue = await previewValueNode.evaluate(e => e.textContent);
 
     assert.deepEqual(previewValue, 'bar');
@@ -73,7 +73,7 @@ describe('The Application Tab', async () => {
     await click('.cookies-table .data-grid-data-grid-node');
 
     // Select a cookie first
-    const previewValueNode1 = await $('.cookie-value');
+    const previewValueNode1 = await waitFor('.cookie-value');
     const previewValue1 = await previewValueNode1.evaluate(e => e.textContent);
 
     assert.deepEqual(previewValue1, 'bar');
@@ -83,7 +83,7 @@ describe('The Application Tab', async () => {
     await click('button[aria-label="Clear All"]');
 
     // Make sure that the preview resets
-    const previewValueNode2 = await $('.cookie-value');
+    const previewValueNode2 = await waitFor('.cookie-value');
     const previewValue2 = await previewValueNode2.evaluate(e => e.textContent as string);
 
     assert.match(previewValue2, /Select a cookie to preview its value/);

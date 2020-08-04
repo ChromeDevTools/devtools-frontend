@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {$, debuggerStatement, getBrowserAndPages, waitFor} from '../../shared/helper.js';
+import {debuggerStatement, getBrowserAndPages, waitFor} from '../../shared/helper.js';
 
 import {doubleClickSourceTreeItem, navigateToApplicationTab} from '../helpers/application-helpers.js';
 
@@ -20,8 +20,7 @@ describe('The Application Tab', async () => {
     await doubleClickSourceTreeItem(WEB_SQL_SELECTOR);
     await debuggerStatement(frontend);
 
-    await waitFor(DATABASES_SELECTOR);
-    const databaseList = await $(DATABASES_SELECTOR);
+    const databaseList = await waitFor(DATABASES_SELECTOR);
 
     const databaseNames = await databaseList.evaluate((list: Element) => {
       return Array.from(list.querySelectorAll('li')).map(node => node.textContent);

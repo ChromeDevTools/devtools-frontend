@@ -18,7 +18,7 @@ function createSelectorsForFile(fileName: string) {
 async function openNestedWorkerFile(selectors: NestedFileSelector) {
   const workerFile = await expandFileTree(selectors);
 
-  return workerFile.asElement()!.evaluate(node => node.textContent);
+  return workerFile.evaluate(node => node.textContent);
 }
 
 describe('The Sources Tab', async function() {

@@ -30,16 +30,15 @@ export const openDeviceToolbar = async () => {
 };
 
 export const showMediaQueryInspector = async () => {
-  try {
-    await $(MEDIA_QUERY_INSPECTOR_SELECTOR);
+  const inspector = await $(MEDIA_QUERY_INSPECTOR_SELECTOR);
+  if (inspector) {
     return;
-  } catch (error) {
-    await click(DEVICE_TOOLBAR_OPTIONS_SELECTOR);
-    const {frontend} = getBrowserAndPages();
-    await frontend.keyboard.press('ArrowDown');
-    await frontend.keyboard.press('Enter');
-    await waitFor(MEDIA_QUERY_INSPECTOR_SELECTOR);
   }
+  await click(DEVICE_TOOLBAR_OPTIONS_SELECTOR);
+  const {frontend} = getBrowserAndPages();
+  await frontend.keyboard.press('ArrowDown');
+  await frontend.keyboard.press('Enter');
+  await waitFor(MEDIA_QUERY_INSPECTOR_SELECTOR);
 };
 
 export const startEmulationWithDualScreenFlag = async () => {
@@ -56,8 +55,8 @@ export const getButtonDisabled = async (spanButton: puppeteer.JSHandle<HTMLButto
 };
 
 const clickDevicesDropDown = async () => {
-  const toolbar = await $(DEVICE_TOOLBAR_SELECTOR);
-  const button = await $(DEVICE_LIST_DROPDOWN_SELECTOR, toolbar);
+  const toolbar = await waitFor(DEVICE_TOOLBAR_SELECTOR);
+  const button = await waitFor(DEVICE_LIST_DROPDOWN_SELECTOR, toolbar);
   await click(button);
 };
 
@@ -70,7 +69,7 @@ export const selectToggleButton = async () => {
 // Test if span button works when emulating a dual screen device.
 export const selectDualScreen = async () => {
   await clickDevicesDropDown();
-  const duo = await $(SURFACE_DUO_MENU_ITEM_SELECTOR);
+  const duo = await waitFor(SURFACE_DUO_MENU_ITEM_SELECTOR);
   await click(duo);
 };
 
@@ -82,7 +81,7 @@ export const clickToggleButton = async () => {
 
 export const getWidthOfDevice = async () => {
   // Read the width of spanned duo to make sure spanning works.
-  const widthInput = await $(SCREEN_DIM_INPUT_SELECTOR);
+  const widthInput = await waitFor(SCREEN_DIM_INPUT_SELECTOR);
   return widthInput.evaluate(e => (e as HTMLInputElement).value);
 };
 
@@ -91,6 +90,6 @@ const IPAD_MENU_ITEM_SELECTOR = '[aria-label*="iPad"]';
 // Test if span button is clickable when emulating a non-dual-screen device.
 export const selectNonDualScreenDevice = async () => {
   await clickDevicesDropDown();
-  const nonDual = await $(IPAD_MENU_ITEM_SELECTOR);
+  const nonDual = await waitFor(IPAD_MENU_ITEM_SELECTOR);
   await click(nonDual);
 };

@@ -38,11 +38,15 @@ const globalThis: any = global;
  */
 export const getElementPosition =
     async (selector: string|puppeteer.JSHandle, root?: puppeteer.JSHandle, maxPixelsFromLeft?: number) => {
-  let element: puppeteer.JSHandle;
+  let element;
   if (typeof selector === 'string') {
     element = await $(selector, root);
   } else {
     element = selector;
+  }
+
+  if (!element) {
+    throw new Error(`Unable to find element with selector "${selector}"`);
   }
 
   const rect = await element.evaluate(element => {
@@ -153,9 +157,6 @@ export const $ = async (selector: string, root?: puppeteer.JSHandle) => {
   const {frontend} = getBrowserAndPages();
   const rootElement = root ? root as puppeteer.ElementHandle : frontend;
   const element = await rootElement.$('pierceShadow/' + selector);
-  if (!element) {
-    throw new Error(`Unable to find element for selector ${selector}`);
-  }
   return element;
 };
 
@@ -187,11 +188,8 @@ export const timeout = (duration: number) => new Promise(resolve => setTimeout(r
 
 export const waitFor = async (selector: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope()) => {
   return await asyncScope.exec(() => waitForFunction(async () => {
-                                 try {
-                                   return await $(selector, root);
-                                 } catch (error) {
-                                   return undefined;
-                                 }
+                                 const element = await $(selector, root);
+                                 return (element || undefined);
                                }, asyncScope));
 };
 

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {$, $$, click, getBrowserAndPages, goToResource, waitFor} from '../../shared/helper.js';
+import {$$, click, getBrowserAndPages, goToResource, waitFor} from '../../shared/helper.js';
 
 import {assertContentOfSelectedElementsNode, waitForElementsStyleSection} from './elements-helpers.js';
 
@@ -59,7 +59,7 @@ export const getFirstNodeForEventListener = async (listenerTypeSelector: string)
   await click(listenerTypeSelector);
 
   const listenerNodesSelector = `${listenerTypeSelector} + ol>li`;
-  const firstListenerNode = await $(listenerNodesSelector);
+  const firstListenerNode = await waitFor(listenerNodesSelector);
   const firstListenerText = await firstListenerNode.evaluate(node => {
     return node.textContent || '';
   });

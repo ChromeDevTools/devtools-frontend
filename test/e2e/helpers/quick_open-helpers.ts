@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {$, $$, getBrowserAndPages, platform, typeText, waitFor} from '../../shared/helper.js';
+import {$$, getBrowserAndPages, platform, typeText, waitFor} from '../../shared/helper.js';
 
 const QUICK_OPEN_SELECTOR = '[aria-label="Quick open"]';
 
@@ -50,7 +50,8 @@ export const showSnippetsAutocompletion = async () => {
 };
 
 export async function getAvailableSnippets() {
-  const snippetsDOMElements = await $$('.filtered-list-widget-item', await $(QUICK_OPEN_SELECTOR));
+  const quickOpenElement = await waitFor(QUICK_OPEN_SELECTOR);
+  const snippetsDOMElements = await $$('.filtered-list-widget-item', quickOpenElement);
   const snippets = await Promise.all(snippetsDOMElements.map(elem => elem.evaluate(elem => elem.textContent)));
   return snippets;
 }

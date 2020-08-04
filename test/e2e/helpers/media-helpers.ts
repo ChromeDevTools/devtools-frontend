@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {$, getBrowserAndPages, goToResource, waitFor} from '../../shared/helper.js';
+import {getBrowserAndPages, goToResource, waitFor} from '../../shared/helper.js';
 
 export async function playMediaFile(media: string) {
   const {target} = getBrowserAndPages();
@@ -27,8 +27,7 @@ export async function playMediaFile(media: string) {
 }
 
 export async function getPlayerButton() {
-  await waitFor('.player-entry-tree-element');
-  return await $('.player-entry-tree-element');
+  return await waitFor('.player-entry-tree-element');
 }
 
 export async function getPlayerButtonText() {

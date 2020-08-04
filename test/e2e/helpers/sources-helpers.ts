@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import * as puppeteer from 'puppeteer';
 
-import {$, $$, click, getBrowserAndPages, getHostedModeServerPort, goToResource, pressKey, step, typeText, waitFor} from '../../shared/helper.js';
+import {$$, click, getBrowserAndPages, getHostedModeServerPort, goToResource, pressKey, step, typeText, waitFor} from '../../shared/helper.js';
 
 export const PAUSE_ON_EXCEPTION_BUTTON = '[aria-label="Pause on exceptions"]';
 export const PAUSE_BUTTON = '[aria-label="Pause script execution"]';
@@ -38,7 +38,7 @@ export async function openFileInSourcesPanel(testInput: string) {
 }
 
 export async function openSnippetsSubPane() {
-  await click('[aria-label="More tabs"]', {root: await $('.navigator-tabbed-pane')});
+  await click('[aria-label="More tabs"]', {root: await waitFor('.navigator-tabbed-pane')});
   await waitFor('[aria-label="Snippets"]');
 
   await click('[aria-label="Snippets"]');
@@ -71,7 +71,7 @@ export async function openSourceCodeEditorForFile(sourceFile: string, testInput:
 
 export async function getOpenSources() {
   const sourceTabPane = await waitFor('#sources-panel-sources-view .tabbed-pane');
-  const sourceTabs = (await $('.tabbed-pane-header-tabs', sourceTabPane));
+  const sourceTabs = await waitFor('.tabbed-pane-header-tabs', sourceTabPane);
   const openSources =
       await sourceTabs.$$eval('.tabbed-pane-header-tab', nodes => nodes.map(n => n.getAttribute('aria-label')));
   return openSources;
@@ -146,23 +146,23 @@ export async function checkBreakpointDidNotActivate() {
 
 export async function getBreakpointDecorators(frontend: puppeteer.Page, disabledOnly = false) {
   const selector = `.cm-breakpoint${disabledOnly ? '-disabled' : ''} .CodeMirror-linenumber`;
-  return await frontend.$$eval(selector, nodes => nodes.map(n => parseInt(n.textContent!, 0)));
+  return await frontend.$$eval(selector, nodes => nodes.map(n => parseInt(n.textContent as string, 0)));
 }
 
 export async function getNonBreakableLines(frontend: puppeteer.Page) {
   const selector = '.cm-non-breakable-line .CodeMirror-linenumber';
   await waitFor(selector);
-  return await frontend.$$eval(selector, nodes => nodes.map(n => parseInt(n.textContent!, 0)));
+  return await frontend.$$eval(selector, nodes => nodes.map(n => parseInt(n.textContent as string, 0)));
 }
 
 export async function getExecutionLine() {
   const activeLine = await waitFor('.cm-execution-line-outline');
-  return await activeLine.asElement()!.evaluate(n => parseInt(n.textContent!, 10));
+  return await activeLine.evaluate(n => parseInt(n.textContent as string, 10));
 }
 
 export async function getExecutionLineText() {
   const activeLine = await waitFor('.cm-execution-line pre');
-  return await activeLine.asElement()!.evaluate(n => n.textContent);
+  return await activeLine.evaluate(n => n.textContent as string);
 }
 
 export async function retrieveTopCallFrameScriptLocation(script: string, target: puppeteer.Page) {
@@ -175,7 +175,7 @@ export async function retrieveTopCallFrameScriptLocation(script: string, target:
   await waitFor(PAUSE_INDICATOR_SELECTOR);
 
   // Retrieve the top level call frame script location name
-  const locationHandle = await $('.call-frame-location');
+  const locationHandle = await waitFor('.call-frame-location');
   const scriptLocation = await locationHandle.evaluate(location => location.textContent);
 
   // Resume the evaluation
@@ -194,7 +194,7 @@ export async function retrieveTopCallFrameWithoutResuming() {
   await waitFor(PAUSE_INDICATOR_SELECTOR);
 
   // Retrieve the top level call frame script location name
-  const locationHandle = await $('.call-frame-location');
+  const locationHandle = await waitFor('.call-frame-location');
   const scriptLocation = await locationHandle.evaluate(location => location.textContent);
 
   return scriptLocation;
@@ -260,7 +260,7 @@ export function createSelectorsForWorkerFile(
 
 async function expandSourceTreeItem(selector: string) {
   const sourceTreeItem = await waitFor(selector);
-  const isExpanded = await sourceTreeItem.asElement()!.evaluate(element => {
+  const isExpanded = await sourceTreeItem.evaluate(element => {
     return element.getAttribute('aria-expanded') === 'true';
   });
   if (!isExpanded) {
@@ -288,7 +288,7 @@ export async function openNestedWorkerFile(selectors: NestedFileSelector) {
 
 export async function clickOnContextMenu(selector: string, label: string) {
   // Find the selected node, right click.
-  const selectedNode = await $(selector);
+  const selectedNode = await waitFor(selector);
   await click(selectedNode, {clickOptions: {button: 'right'}});
 
   // Wait for the context menu option, and click it.
@@ -299,7 +299,7 @@ export async function clickOnContextMenu(selector: string, label: string) {
 
 export async function typeIntoSourcesAndSave(text: string) {
   const pane = await waitFor('.sources');
-  await pane.asElement()!.type(text);
+  await pane.type(text);
 
   await pressKey('s', {control: true});
 }

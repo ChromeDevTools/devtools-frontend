@@ -126,20 +126,21 @@ export async function showVerboseMessages() {
 }
 
 export async function typeIntoConsole(frontend: puppeteer.Page, message: string) {
-  const console = (await waitFor(CONSOLE_PROMPT_SELECTOR)).asElement()!;
-  await console.type(message);
-
+  const consoleElement = await waitFor(CONSOLE_PROMPT_SELECTOR);
+  await consoleElement.type(message);
   // Wait for autocomplete text to catch up.
-  const line = (await console.$('.CodeMirror-activeline'))!.asElement()!;
-  const autocompleteHandle = (await line.$('.auto-complete-text'));
+  const line = await waitFor('.CodeMirror-activeline', consoleElement);
+  const autocomplete = await line.$('.auto-complete-text');
   // The autocomplete element doesn't exist until the first autocomplete suggestion
-  // is actaully given.
-  const autocomplete = autocompleteHandle ? autocompleteHandle.asElement()! : null;
-  await frontend.waitForFunction(
-      (msg, ln, ac) => ln.textContent === msg && (!ac || ac.textContent === ''), undefined, message, line,
-      autocomplete);
+  // is actually given.
 
-  await console.press('Enter');
+  // Sometimes the autocomplete suggests `assert` when typing `console.clear()` which made a test flake.
+  // The following checks if there is any autocomplete text and dismisses it by pressing escape.
+  if (autocomplete && await autocomplete.evaluate(e => e.textContent)) {
+    consoleElement.press('Escape');
+  }
+  await frontend.waitForFunction((msg, ln) => ln.textContent === msg, undefined, message, line);
+  await consoleElement.press('Enter');
 }
 
 export async function typeIntoConsoleAndWaitForResult(frontend: puppeteer.Page, message: string) {
@@ -174,7 +175,7 @@ export async function unifyLogVM(actualLog: string, expectedLog: string) {
 }
 
 export async function switchToTopExecutionContext(frontend: puppeteer.Page) {
-  const dropdown = (await waitFor('[aria-label^="JavaScript context:"]')).asElement()!;
+  const dropdown = await waitFor('[aria-label^="JavaScript context:"]');
   // Use keyboard to open drop down, select first item.
   await dropdown.press('Space');
   await frontend.keyboard.press('Home');

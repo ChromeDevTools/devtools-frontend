@@ -155,7 +155,7 @@ describe('Sources Tab', async function() {
 
     await step('check that the variables in the scope view show the correct values', async () => {
       await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
-      const localScopeView = await $(SCOPE_LOCAL_VALUES_SELECTOR);
+      const localScopeView = await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
       const local_scope_values = await localScopeView.evaluate(element => {
         return (element as HTMLElement).innerText;
       });
@@ -193,7 +193,7 @@ describe('Sources Tab', async function() {
 
     await step('check that the variables in the scope view show the correct values', async () => {
       await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
-      const localScopeView = await $(SCOPE_LOCAL_VALUES_SELECTOR);
+      const localScopeView = await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
       const local_scope_values = await localScopeView.evaluate(element => {
         return (element as HTMLElement).innerText;
       });
@@ -217,7 +217,7 @@ describe('Sources Tab', async function() {
     });
 
     await step('check that the main thread is selected', async () => {
-      const selectedThreadElement = await $(SELECTED_THREAD_SELECTOR);
+      const selectedThreadElement = await waitFor(SELECTED_THREAD_SELECTOR);
       const selectedThreadName = await selectedThreadElement.evaluate(element => {
         return (element as HTMLElement).innerText;
       });
@@ -250,7 +250,7 @@ describe('Sources Tab', async function() {
 
     await step('check that the variables in the scope view show the correct values', async () => {
       await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
-      const localScopeView = await $(SCOPE_LOCAL_VALUES_SELECTOR);
+      const localScopeView = await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
       const local_scope_values = await localScopeView.evaluate(element => {
         return (element as HTMLElement).innerText;
       });
@@ -282,7 +282,7 @@ describe('Sources Tab', async function() {
     });
 
     await step('check that the main thread is selected', async () => {
-      const selectedThreadElement = await $(SELECTED_THREAD_SELECTOR);
+      const selectedThreadElement = await waitFor(SELECTED_THREAD_SELECTOR);
       const selectedThreadName = await selectedThreadElement.evaluate(element => {
         return (element as HTMLElement).innerText;
       });
@@ -296,7 +296,7 @@ describe('Sources Tab', async function() {
 
     await step('check that the variables in the scope view show the correct values', async () => {
       await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
-      const localScopeView = await $(SCOPE_LOCAL_VALUES_SELECTOR);
+      const localScopeView = await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
       const local_scope_values = await localScopeView.evaluate(element => {
         return (element as HTMLElement).innerText;
       });
@@ -335,7 +335,7 @@ describe('Sources Tab', async function() {
     });
 
     await step('check that the worker thread is selected', async () => {
-      const selectedThreadElement = await $(SELECTED_THREAD_SELECTOR);
+      const selectedThreadElement = await waitFor(SELECTED_THREAD_SELECTOR);
       const selectedThreadName = await selectedThreadElement.evaluate(element => {
         return (element as HTMLElement).innerText;
       });
@@ -350,7 +350,7 @@ describe('Sources Tab', async function() {
 
     await step('check that the variables in the scope view show the correct values', async () => {
       await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
-      const localScopeView = await $(SCOPE_LOCAL_VALUES_SELECTOR);
+      const localScopeView = await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
       const local_scope_values = await localScopeView.evaluate(element => {
         return (element as HTMLElement).innerText;
       });
@@ -382,7 +382,7 @@ describe('Sources Tab', async function() {
     });
 
     await step('check that the worker thread is selected', async () => {
-      const selectedThreadElement = await $(SELECTED_THREAD_SELECTOR);
+      const selectedThreadElement = await waitFor(SELECTED_THREAD_SELECTOR);
       const selectedThreadName = await selectedThreadElement.evaluate(element => {
         return (element as HTMLElement).innerText;
       });
@@ -397,7 +397,7 @@ describe('Sources Tab', async function() {
 
     await step('check that the variables in the scope view show the correct values', async () => {
       await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
-      const localScopeView = await $(SCOPE_LOCAL_VALUES_SELECTOR);
+      const localScopeView = await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
       const local_scope_values = await localScopeView.evaluate(element => {
         return (element as HTMLElement).innerText;
       });
@@ -425,34 +425,33 @@ describe('Raw-Wasm', async () => {
     // This page automatically enters debugging.
     const messageElement = await frontend.waitForSelector('.paused-message');
     const statusMain = await $('.status-main', messageElement);
-    const statusMainElement = statusMain.asElement();
 
-    if (!statusMainElement) {
+    if (!statusMain) {
       assert.fail('Unable to find .status-main element');
       return;
     }
 
-    const pauseMessage = await statusMainElement.evaluate(n => n.textContent);
+    const pauseMessage = await statusMain.evaluate(n => n.textContent);
 
     assert.strictEqual(pauseMessage, 'Debugger paused');
 
     const sidebar = await messageElement.evaluateHandle(n => n.parentElement);
 
     // Find second frame of call stack
-    const callFrame = (await $('.call-frame-item.selected + .call-frame-item', sidebar)).asElement();
+    const callFrame = (await $('.call-frame-item.selected + .call-frame-item', sidebar));
     if (!callFrame) {
       assert.fail('Unable to find callframe');
       return;
     }
 
-    const callFrameTitle = (await $('.call-frame-title-text', callFrame)).asElement();
+    const callFrameTitle = (await $('.call-frame-title-text', callFrame));
     if (!callFrameTitle) {
       assert.fail('Unable to find callframe title');
       return;
     }
 
     const title = await callFrameTitle.evaluate(n => n.textContent);
-    const callFrameLocation = (await $('.call-frame-location', callFrame)).asElement();
+    const callFrameLocation = await $('.call-frame-location', callFrame);
     if (!callFrameLocation) {
       assert.fail('Unable to find callframe location');
       return;

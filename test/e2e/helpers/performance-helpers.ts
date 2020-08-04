@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {$, click, goToResource, waitFor} from '../../shared/helper.js';
+import {click, goToResource, waitFor} from '../../shared/helper.js';
 
 const RECORD_BUTTON_SELECTOR = '[aria-label="Record"]';
 const STOP_BUTTON_SELECTOR = '[aria-label="Stop"]';
@@ -36,7 +36,7 @@ export async function stopRecording() {
 }
 
 export async function getTotalTimeFromSummary(): Promise<number> {
-  const pieChartTotal = await $('.pie-chart-total');
+  const pieChartTotal = await waitFor('.pie-chart-total');
   const totalText = await pieChartTotal.evaluate(node => node.textContent as string);
   return parseInt(totalText, 10);
 }

@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {$, click, getBrowserAndPages, waitFor} from '../../shared/helper.js';
+import {click, getBrowserAndPages, waitFor} from '../../shared/helper.js';
 import {navigateToNetworkTab, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
 
 describe('The Network Tab', async () => {
@@ -15,7 +15,7 @@ describe('The Network Tab', async () => {
     // Click the label next to the checkbox input element
     await click('[aria-label="Disable cache"] + label');
 
-    const checkbox = await $('[aria-label="Disable cache"]');
+    const checkbox = await waitFor('[aria-label="Disable cache"]');
     const checked = await checkbox.evaluate(box => (box as HTMLInputElement).checked);
 
     assert.strictEqual(checked, true, 'The disable cache checkbox should be checked');
@@ -63,7 +63,7 @@ describe('The Network Tab', async () => {
     // Wait for the raw response editor to show up
     await waitFor('.CodeMirror-code');
 
-    const codeMirrorEditor = await $('.CodeMirror-code');
+    const codeMirrorEditor = await waitFor('.CodeMirror-code');
     const htmlRawResponse = await codeMirrorEditor.evaluate(editor => editor.textContent);
 
     assert.strictEqual(

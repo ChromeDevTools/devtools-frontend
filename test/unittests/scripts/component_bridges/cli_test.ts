@@ -17,6 +17,10 @@ const runFixtureTestAndAssertMatch = (fixtureName: string) => {
 
   const {output} = parseTypeScriptComponent(sourcePath);
 
+  if (!output) {
+    assert.fail(`Generating bridge for ${fixtureName} unexpectedly generated nothing.`);
+  }
+
   const actualCode = fs.readFileSync(output, {encoding: 'utf8'});
   const expectedCode = fs.readFileSync(expectedPath, {encoding: 'utf8'});
 
@@ -54,11 +58,18 @@ describe('bridges CLI fixture tests', () => {
     runFixtureTestAndAssertMatch('multiple-interfaces');
   });
 
-  it('complex union types and types extending other types', () => {
+  it('understands complex union types and types extending other types', () => {
     runFixtureTestAndAssertMatch('complex-union-types-extending-types');
   });
 
   it('finds complex types and nested types from imports', () => {
     runFixtureTestAndAssertMatch('complex-types-imported');
+  });
+
+  it('will refuse to regenerate a bridge with a MANUALLY_EDITED_BRIDGE comment', () => {
+    const fixtureName = 'manually-edited-bridge-component';
+    const sourcePath = pathForFixture(`${fixtureName}.ts`);
+    const {output} = parseTypeScriptComponent(sourcePath);
+    assert.isUndefined(output, 'The bridge regeneration incorectly overwrote a manually edited bridge.');
   });
 });

@@ -36,4 +36,5 @@ test/screenshots/.generated
 test/perf/.generated
 test/unittests/scripts/component_bridges/gen/*
 test/unittests/scripts/component_bridges/fixtures/*_bridge.js
+!test/unittests/scripts/component_bridges/fixtures/manually-edited-bridge-component_bridge.js
 scripts/component_bridges/gen/*.js

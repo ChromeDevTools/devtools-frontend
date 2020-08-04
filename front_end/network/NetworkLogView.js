@@ -730,7 +730,7 @@ export class NetworkLogView extends UI.Widget.VBox {
     hintText.createChild('br');
     hintText.appendChild(UI.XLink.XLink.create(
         'https://developers.google.com/web/tools/chrome-devtools/network/?utm_source=devtools&utm_campaign=2019Q1',
-        'Learn more'));
+        ls`Learn more`));
 
     this._setHidden(true);
     this._dataGrid.updateGridAccessibleName('');

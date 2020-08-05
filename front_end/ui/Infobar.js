@@ -40,7 +40,7 @@ export class Infobar {
     // TODO(chromium:1098185) Do we really need both sprite sheet and separate svg files?
     if (type === Type.Issue) {
       // Icon is part of sprite sheet.
-      const icon = Icon.create('largeicon-breaking-change', 'icon');
+      const icon = Icon.create('smallicon-issue-blue-text', 'icon');
       this._infoMessage.appendChild(icon);
     } else {
       // Icon is in separate file and included via CSS.

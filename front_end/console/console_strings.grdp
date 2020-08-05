@@ -48,6 +48,9 @@
   <message name="IDS_DEVTOOLS_278cf66841e1d342f3115006e82c5dd9" desc="Text in Console View Message of the Console panel">
     Repeat <ph name="THIS__REPEATCOUNT">$1s<ex>3</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_2a52e36403e77b9a2b55d443111a45ac" desc="Infobar text about messages being on the issues tab">
+    Some messages have been moved to the Issues panel.
+  </message>
   <message name="IDS_DEVTOOLS_2a5a5a712c2bfb6c506cb669b8d81709" desc="Title of an action in the console tool to clear">
     Clear console history
   </message>
@@ -62,6 +65,9 @@
   </message>
   <message name="IDS_DEVTOOLS_2f20693f226f0545a8b68ef4f59fb02e" desc="Message text in Console View Message of the Console panel">
     [Violation] <ph name="MESSAGETEXT">$1s<ex>console.log(1)</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_32729a62feb4dce175aa21f272ec22f1" desc="Label for link to issues tab">
+    View issues
   </message>
   <message name="IDS_DEVTOOLS_375855385115b292f160b5131495003d" desc="Message element text content in Console View Message of the Console panel">
     <ph name="LOCKED_1">console.clear()</ph> was prevented due to &apos;Preserve log&apos;
@@ -144,17 +150,11 @@
   <message name="IDS_DEVTOOLS_a092483ed730ed040e5df5776dca49e5" desc="Title of a setting under the Console category in Settings">
     Log XMLHttpRequests
   </message>
-  <message name="IDS_DEVTOOLS_a1b9fcbaa7e3bc5e66e09f0ed8090015" desc="Infobar text about what the issues tab is">
-    Issues detected. The new Issues tab displays information about deprecations, breaking changes and other potential problems.
-  </message>
   <message name="IDS_DEVTOOLS_a1948ddb50d0bbd31e36f1fbc45479a0" desc="Title of a setting under the Console category that can be invoked through the Command Menu">
     Autocomplete from history
   </message>
   <message name="IDS_DEVTOOLS_a1a6657be79cc0fc1e9b23b9e108f043" desc="Text in Console Pin Pane of the Console panel">
     Expression
-  </message>
-  <message name="IDS_DEVTOOLS_a334d07d578235272cd75c7a8bd5690d" desc="Label for button linking to issues tab">
-    Go to Issues
   </message>
   <message name="IDS_DEVTOOLS_a3eb3c95c4cb8e06fd3682c1f0d70bc0" desc="Tooltip text that appears on the setting when hovering over it in Console View of the Console panel">
     Only show messages from the current context (top, iframe, worker, extension)

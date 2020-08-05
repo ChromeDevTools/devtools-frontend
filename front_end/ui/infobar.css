@@ -34,25 +34,6 @@
   min-height: 25px;
 }
 
-.infobar.infobar-issue .infobar-main-row {
-  flex-direction: row;
-  font-size: 12px;
-}
-
-:host-context(.platform-linux) .infobar.infobar-issue {
-  color: rgb(48 57 66);
-  font-family: Roboto, Ubuntu, Arial, sans-serif;
-}
-
-:host-context(.platform-mac) .infobar.infobar-issue {
-  color: rgb(48 57 66);
-  font-family: '.SFNSDisplay-Regular', 'Helvetica Neue', 'Lucida Grande', sans-serif;
-}
-
-:host-context(.platform-windows) .infobar.infobar-issue {
-  font-family: 'Segoe UI', Tahoma, sans-serif;
-}
-
 .infobar-info-container {
   display: flex;
   align-items: center;
@@ -63,10 +44,6 @@
 .infobar-info-message {
   display: flex;
   margin: 5px 0;
-}
-
-.infobar.infobar-issue .infobar-info-message {
-  flex: 1 0;
 }
 
 .infobar-info-text {
@@ -117,4 +94,57 @@
   width: 18px;
   height: 18px;
   flex-shrink: 0;
+}
+
+/* .infobar-issue style overrides to mimic console messages. */
+
+.infobar.infobar-issue {
+  border: none;
+  color: rgb(48 57 66);
+  padding-top: 3px;
+  line-height: 1.2;
+}
+
+.infobar.infobar-issue .infobar-info-text {
+  margin: 0 7px;
+}
+
+.infobar.infobar-issue .infobar-main-row {
+  flex-direction: row;
+  min-height: 17px;
+}
+
+.infobar.infobar-issue .infobar-close-container {
+  display: none;
+}
+
+.infobar.infobar-issue .infobar-button {
+  padding: 0 22px 0 0;
+  border: none;
+  text-decoration: underline;
+  margin: 0;
+  height: auto;
+  font-size: inherit;
+  color: rgb(33% 33% 33%);
+}
+
+.infobar.infobar-issue .infobar-button:hover,
+.infobar.infobar-issue .infobar-button:focus {
+  color: rgb(15% 15% 15%);
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.infobar.infobar-issue .icon {
+  margin-top: 1px;
+}
+
+.infobar.infobar-issue .infobar-info-message {
+  flex: 1 0;
+  margin: 0 1px;
+}
+
+.infobar.infobar-issue:focus {
+  box-shadow: none;
+  background-color: hsl(214deg 48% 95%);
 }

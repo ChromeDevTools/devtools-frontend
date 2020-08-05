@@ -347,9 +347,9 @@ def _CheckForTooLargeFiles(input_api, output_api):
 def _CommonChecks(input_api, output_api):
     """Checks common to both upload and commit."""
     results = []
-    results.extend(input_api.canned_checks.CheckAuthorizedAuthor(input_api, output_api,
-        bot_whitelist=[AUTOROLL_ACCOUNT]
-    ))
+    results.extend(
+        input_api.canned_checks.CheckAuthorizedAuthor(
+            input_api, output_api, bot_allowlist=[AUTOROLL_ACCOUNT]))
     results.extend(input_api.canned_checks.CheckOwnersFormat(input_api, output_api))
     results.extend(input_api.canned_checks.CheckOwners(input_api, output_api))
     results.extend(input_api.canned_checks.CheckChangeHasNoCrAndHasOnlyOneEol(input_api, output_api))

@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {getBrowserAndPages, getResourcesPath, goToResource, waitFor} from '../../shared/helper.js';
+import {getBrowserAndPages, getResourcesPath, goToResource, timeout, waitFor} from '../../shared/helper.js';
 import {getCurrentUrl} from '../helpers/layers-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
@@ -17,6 +17,10 @@ describe('The Layers Panel', async () => {
     await openPanelViaMoreTools('Layers');
 
     await waitFor('[aria-label="layers"]:not([test-current-url=""])');
+
+    // FIXME(crbug/1112692): Refactor test to remove the timeout.
+    await timeout(100);
+
     const url = await getCurrentUrl();
     assert.strictEqual(url, `${getResourcesPath()}/${targetUrl}`);
   });

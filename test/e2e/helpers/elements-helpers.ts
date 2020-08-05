@@ -138,7 +138,8 @@ export const forcePseudoState = async (pseudoState: string) => {
   // Open element state pane and wait for it to be loaded asynchronously
   await click('[aria-label="Toggle Element State"]');
   await waitFor(`[aria-label="${pseudoState}"]`);
-
+  // FIXME(crbug/1112692): Refactor test to remove the timeout.
+  await timeout(100);
   await click(`[aria-label="${pseudoState}"]`);
 };
 
@@ -283,5 +284,7 @@ export const navigateToElementsTab = async () => {
 
 export const clickOnFirstLinkInStylesPanel = async () => {
   const stylesPane = await waitFor('div.styles-pane');
+  // FIXME(crbug/1112692): Refactor test to remove the timeout.
+  await timeout(100);
   await click('div.styles-section-subtitle span.devtools-link', {root: stylesPane});
 };

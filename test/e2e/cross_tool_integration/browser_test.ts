@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {closeAllCloseableTabs, getBrowserAndPages, goToResource} from '../../shared/helper.js';
+import {closeAllCloseableTabs, getBrowserAndPages, goToResource, timeout} from '../../shared/helper.js';
 import {getCurrentConsoleMessages} from '../helpers/console-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
@@ -17,6 +17,8 @@ describe('Browser', async () => {
 
     // Open a few closeable panels
     await openPanelViaMoreTools('Animations');
+    // FIXME(crbug/1112692): Refactor test to remove the timeout.
+    await timeout(100);
     await openPanelViaMoreTools('Rendering');
 
     const messages = await getCurrentConsoleMessages();
@@ -37,6 +39,8 @@ describe('Browser', async () => {
 
     // Open a few closeable panels
     await openPanelViaMoreTools('Animations');
+    // FIXME(crbug/1112692): Refactor test to remove the timeout.
+    await timeout(100);
     await openPanelViaMoreTools('Rendering');
 
     await closeAllCloseableTabs();

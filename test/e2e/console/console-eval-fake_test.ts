@@ -37,6 +37,11 @@ describe('The Console Tab', async () => {
       await frontend.keyboard.press('Enter');
     });
 
+    // Wait for the console to be usable again.
+    await frontend.waitForFunction(() => {
+      return document.querySelectorAll('.console-user-command-result').length === 2;
+    });
+
     await step('retrieve the console log', async () => {
       messages = await getCurrentConsoleMessages();
     });

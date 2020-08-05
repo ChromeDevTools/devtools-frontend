@@ -178,9 +178,6 @@ export const $textContent = async (textContent: string, root?: puppeteer.JSHandl
   const {frontend} = getBrowserAndPages();
   const rootElement = root ? root as puppeteer.ElementHandle : frontend;
   const element = await rootElement.$('pierceShadowText/' + textContent);
-  if (!element) {
-    throw new Error(`Unable to find element with textContent ${textContent}`);
-  }
   return element;
 };
 
@@ -206,18 +203,19 @@ export const waitForNone = async (selector: string, root?: puppeteer.JSHandle, a
 export const waitForElementWithTextContent =
     (textContent: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope()) => {
       return asyncScope.exec(() => waitForFunction(async () => {
-                               return await $textContent(textContent, root);
+                               const elem = await $textContent(textContent, root);
+                               return elem || undefined;
                              }, asyncScope));
     };
 
 export const waitForFunction = async<T>(fn: () => Promise<T|undefined>, asyncScope = new AsyncScope()): Promise<T> => {
   return await asyncScope.exec(async () => {
     while (true) {
-      await timeout(100);
       const result = await fn();
       if (result) {
         return result;
       }
+      await timeout(100);
     }
   });
 };

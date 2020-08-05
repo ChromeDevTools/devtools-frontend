@@ -97,7 +97,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
     this._ariaSubPane.setNode(node);
     this._breadcrumbsSubPane.setNode(node);
     if (this._sourceOrderViewerExperimentEnabled) {
-      this._sourceOrderSubPane.setNode(node);
+      this._sourceOrderSubPane.setNodeAsync(node);
     }
     if (!node) {
       return Promise.resolve();

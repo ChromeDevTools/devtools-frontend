@@ -683,7 +683,7 @@ class DOMInheritanceCascade {
     // Set dummy value to avoid infinite recursion.
     computedCSSVariables.set(variableName, null);
     const definedValue = availableCSSVariables.get(variableName);
-    if (definedValue === undefined) {
+    if (definedValue === undefined || definedValue === null) {
       return null;
     }
     const computedValue = this._innerComputeValue(availableCSSVariables, computedCSSVariables, definedValue);

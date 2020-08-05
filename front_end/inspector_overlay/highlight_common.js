@@ -32,17 +32,13 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
-const DEFAULT_RULER_COLOR = 'rgba(128, 128, 128, 0.3)';
+export const DEFAULT_RULER_COLOR = 'rgba(128, 128, 128, 0.3)';
 
 export function drawRulers(context, bounds, rulerAtRight, rulerAtBottom, color, dash) {
-  drawHorizontalRulers(context, bounds, rulerAtRight, color, dash);
-  drawVerticalRulers(context, bounds, rulerAtBottom, color, dash);
-}
-
-export function drawHorizontalRulers(context, bounds, rulerAtRight, color = DEFAULT_RULER_COLOR, dash = false) {
   context.save();
   const width = canvasWidth;
-  context.strokeStyle = color;
+  const height = canvasHeight;
+  context.strokeStyle = color || DEFAULT_RULER_COLOR;
   context.lineWidth = 1;
   context.translate(0.5, 0.5);
   if (dash) {
@@ -63,19 +59,6 @@ export function drawHorizontalRulers(context, bounds, rulerAtRight, color = DEFA
       context.lineTo(bounds.leftmostXForY[y], y);
       context.stroke();
     }
-  }
-
-  context.restore();
-}
-
-export function drawVerticalRulers(context, bounds, rulerAtBottom, color = DEFAULT_RULER_COLOR, dash = false) {
-  context.save();
-  const height = canvasHeight;
-  context.strokeStyle = color;
-  context.lineWidth = 1;
-  context.translate(0.5, 0.5);
-  if (dash) {
-    context.setLineDash([3, 3]);
   }
 
   if (rulerAtBottom) {
@@ -116,6 +99,9 @@ export function buildPath(commands, bounds) {
       bounds.rightmostXForY[y] = Math.max(bounds.rightmostXForY[y] || Number.MIN_VALUE, x);
       bounds.topmostYForX[x] = Math.min(bounds.topmostYForX[x] || Number.MAX_VALUE, y);
       bounds.bottommostYForX[x] = Math.max(bounds.bottommostYForX[x] || Number.MIN_VALUE, y);
+
+      bounds.allPoints.push({x, y});
+
       points.push(x, y);
     }
     return points;
@@ -155,7 +141,8 @@ export function emptyBounds() {
     leftmostXForY: {},
     rightmostXForY: {},
     topmostYForX: {},
-    bottommostYForX: {}
+    bottommostYForX: {},
+    allPoints: []
   };
   return bounds;
 }

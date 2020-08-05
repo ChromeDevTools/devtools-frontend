@@ -3345,7 +3345,7 @@ declare namespace ProtocolProxyApi {
     /**
      * Steps over the statement.
      */
-    invoke_stepOver(): Promise<Protocol.ProtocolResponseWithError>;
+    invoke_stepOver(params: Protocol.Debugger.StepOverRequest): Promise<Protocol.ProtocolResponseWithError>;
   }
   export interface DebuggerDispatcher extends Protocol.Dispatcher {
     /**

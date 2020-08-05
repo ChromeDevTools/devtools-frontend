@@ -17947,6 +17947,26 @@
                     ]
                 },
                 {
+                    "id": "LocationRange",
+                    "description": "Location range within one script.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "scriptId",
+                            "$ref": "Runtime.ScriptId"
+                        },
+                        {
+                            "name": "start",
+                            "$ref": "ScriptPosition"
+                        },
+                        {
+                            "name": "end",
+                            "$ref": "ScriptPosition"
+                        }
+                    ]
+                },
+                {
                     "id": "CallFrame",
                     "description": "JavaScript call frame. Array of call frames form the call stack.",
                     "type": "object",
@@ -18807,6 +18827,16 @@
                             "experimental": true,
                             "optional": true,
                             "type": "boolean"
+                        },
+                        {
+                            "name": "skipList",
+                            "description": "The skipList specifies location ranges that should be skipped on step into.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "LocationRange"
+                            }
                         }
                     ]
                 },
@@ -18816,7 +18846,19 @@
                 },
                 {
                     "name": "stepOver",
-                    "description": "Steps over the statement."
+                    "description": "Steps over the statement.",
+                    "parameters": [
+                        {
+                            "name": "skipList",
+                            "description": "The skipList specifies location ranges that should be skipped on step over.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "LocationRange"
+                            }
+                        }
+                    ]
                 }
             ],
             "events": [

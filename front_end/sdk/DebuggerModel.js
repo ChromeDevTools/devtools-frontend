@@ -325,7 +325,7 @@ export class DebuggerModel extends SDKModel {
     // step-over instead of step-in.
     this._autoStepOver = true;
     this._autoStepSkipList = await this._computeAutoStepSkipList();
-    this._agent.invoke_stepOver();
+    this._agent.invoke_stepOver({});
   }
 
   stepOut() {
@@ -695,7 +695,7 @@ export class DebuggerModel extends SDKModel {
 
     if (!await this._setDebuggerPausedDetails(pausedDetails)) {
       if (this._autoStepOver) {
-        this._agent.invoke_stepOver();
+        this._agent.invoke_stepOver({});
       } else {
         this._agent.invoke_stepInto({breakOnAsyncCall: false});
       }

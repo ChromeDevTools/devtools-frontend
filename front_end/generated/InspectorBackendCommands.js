@@ -2543,9 +2543,14 @@ export function registerCommands(inspectorBackend) {
       ],
       []);
   inspectorBackend.registerCommand(
-      'Debugger.stepInto', [{'name': 'breakOnAsyncCall', 'type': 'boolean', 'optional': true}], []);
+      'Debugger.stepInto',
+      [
+        {'name': 'breakOnAsyncCall', 'type': 'boolean', 'optional': true},
+        {'name': 'skipList', 'type': 'object', 'optional': true}
+      ],
+      []);
   inspectorBackend.registerCommand('Debugger.stepOut', [], []);
-  inspectorBackend.registerCommand('Debugger.stepOver', [], []);
+  inspectorBackend.registerCommand('Debugger.stepOver', [{'name': 'skipList', 'type': 'object', 'optional': true}], []);
 
   // HeapProfiler.
   inspectorBackend.registerEvent('HeapProfiler.addHeapSnapshotChunk', ['chunk']);

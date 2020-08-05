@@ -8,10 +8,14 @@ import * as Host from '../host/host.js';  // eslint-disable-line no-unused-vars
 
 import {MultitargetNetworkManager} from './NetworkManager.js';
 import {Events as ResourceTreeModelEvents, ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars
-import {TargetManager} from './SDKModel.js';
+import {Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 
-/** @typedef {{success: ?boolean, errorMessage: (undefined|string), frameId: !Protocol.Page.FrameId, url: string, size: ?number}} */
+/** @typedef {{target: null, frameId: Protocol.Page.FrameId, initiatorUrl: ?string}|{target: Target, frameId: ?Protocol.Page.FrameId, initiatorUrl: ?string}} */
+// @ts-ignore typedef
+export let PageResourceLoadInitiator;  // eslint-disable-line no-unused-vars
+
+/** @typedef {{success: ?boolean, errorMessage: (undefined|string), initiator: !PageResourceLoadInitiator, url: string, size: ?number}} */
 // @ts-ignore typedef
 export let PageResource;  // eslint-disable-line no-unused-vars
 
@@ -126,13 +130,28 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {string} url
-   * @param {!Protocol.Page.FrameId} frameId
+   * @param {!PageResourceLoadInitiator} initiator
+   * @returns {string}
+   */
+  static makeKey(url, initiator) {
+    if (initiator.frameId) {
+      return `${url}-${initiator.frameId}`;
+    }
+    if (initiator.target) {
+      return `${url}-${initiator.target.id()}`;
+    }
+    throw new Error('Invalid initiator');
+  }
+
+  /**
+   * @param {string} url
+   * @param {!PageResourceLoadInitiator} initiator
    * @return {!Promise<!{content: string}>}
    */
-  async loadResource(url, frameId) {
-    const key = `${url}-${frameId}`;
+  async loadResource(url, initiator) {
+    const key = PageResourceLoader.makeKey(url, initiator);
     /** @type {!PageResource} */
-    const pageResource = {success: null, size: null, errorMessage: undefined, url, frameId};
+    const pageResource = {success: null, size: null, errorMessage: undefined, url, initiator};
     this._pageResources.set(key, pageResource);
     this.dispatchEventToListeners(Events.Update);
     try {

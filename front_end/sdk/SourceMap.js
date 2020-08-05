@@ -35,7 +35,7 @@ import * as Common from '../common/common.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
 import {CompilerSourceMappingContentProvider} from './CompilerSourceMappingContentProvider.js';
-import {PageResourceLoader} from './PageResourceLoader.js';
+import {PageResourceLoader, PageResourceLoadInitiator} from './PageResourceLoader.js';  // eslint-disable-line no-unused-vars
 import {Script} from './Script.js';  // eslint-disable-line no-unused-vars
 import initWasm, {Resolver as WasmResolver} from './wasm_source_map/pkg/wasm_source_map.js';
 
@@ -184,7 +184,6 @@ export class EditResult {
 
 /**
  * @implements {SourceMap}
- * @unrestricted
  */
 export class TextSourceMap {
   /**
@@ -193,10 +192,10 @@ export class TextSourceMap {
    * @param {string} compiledURL
    * @param {string} sourceMappingURL
    * @param {!SourceMapV3} payload
-   * @param {string} frameId
+   * @param {!PageResourceLoadInitiator} initiator
    */
-  constructor(compiledURL, sourceMappingURL, payload, frameId) {
-    this._frameId = frameId;
+  constructor(compiledURL, sourceMappingURL, payload, initiator) {
+    this._initiator = initiator;
     if (!TextSourceMap._base64Map) {
       const base64Digits = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
       TextSourceMap._base64Map = {};
@@ -227,15 +226,15 @@ export class TextSourceMap {
   /**
    * @param {string} sourceMapURL
    * @param {string} compiledURL
-   * @param {string} frameId
+   * @param {!PageResourceLoadInitiator} initiator
    * @return {!Promise<!TextSourceMap>}
    * @throws {!Error}
    * @this {TextSourceMap}
    */
-  static async load(sourceMapURL, compiledURL, frameId) {
+  static async load(sourceMapURL, compiledURL, initiator) {
     let updatedContent;
     try {
-      const {content} = await PageResourceLoader.instance().loadResource(sourceMapURL, frameId);
+      const {content} = await PageResourceLoader.instance().loadResource(sourceMapURL, initiator);
       updatedContent = content;
       if (content.slice(0, 3) === ')]}') {
         updatedContent = content.substring(content.indexOf('\n'));
@@ -246,7 +245,7 @@ export class TextSourceMap {
 
     try {
       const payload = /** @type {!SourceMapV3} */ (JSON.parse(updatedContent));
-      return new TextSourceMap(compiledURL, sourceMapURL, payload, frameId);
+      return new TextSourceMap(compiledURL, sourceMapURL, payload, initiator);
     } catch (error) {
       throw new Error(ls`Could not parse content for ${sourceMapURL}: ${error.message}`);
     }
@@ -287,7 +286,7 @@ export class TextSourceMap {
     if (info.content) {
       return TextUtils.StaticContentProvider.StaticContentProvider.fromString(sourceURL, contentType, info.content);
     }
-    return new CompilerSourceMappingContentProvider(sourceURL, contentType, this._frameId);
+    return new CompilerSourceMappingContentProvider(sourceURL, contentType, this._initiator);
   }
 
   /**
@@ -631,19 +630,18 @@ TextSourceMap._sourcesListSymbol = Symbol('sourcesList');
 
 /**
  * @implements {SourceMap}
- * @unrestricted
  */
 export class WasmSourceMap {
   /**
    * Implements SourceMap interface for DWARF information in Wasm.
    * @param {string} wasmUrl
    * @param {!WasmResolver} resolver
-   * @param {!Protocol.Page.FrameId} frameId
+   * @param {!PageResourceLoadInitiator} initiator
    */
-  constructor(wasmUrl, resolver, frameId) {
+  constructor(wasmUrl, resolver, initiator) {
     this._wasmUrl = wasmUrl;
     this._resolver = resolver;
-    this._frameId = frameId;
+    this._initiator = initiator;
   }
 
   /**
@@ -674,7 +672,7 @@ export class WasmSourceMap {
    */
   static async load(script, wasmUrl) {
     const [Resolver, wasm] = await Promise.all([WasmSourceMap._loadBindingsOnce(), script.getWasmBytecode()]);
-    return new WasmSourceMap(wasmUrl, new Resolver(new Uint8Array(wasm)), script.frameId);
+    return new WasmSourceMap(wasmUrl, new Resolver(new Uint8Array(wasm)), script.createPageResourceLoadInitiator());
   }
 
   /**
@@ -708,7 +706,7 @@ export class WasmSourceMap {
    * @return {!TextUtils.ContentProvider.ContentProvider}
    */
   sourceContentProvider(sourceURL, contentType) {
-    return new CompilerSourceMappingContentProvider(sourceURL, contentType, this._frameId);
+    return new CompilerSourceMappingContentProvider(sourceURL, contentType, this._initiator);
   }
 
   /**

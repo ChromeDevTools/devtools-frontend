@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/** @typedef {{frameId: Protocol.Page.FrameId}} */
+import {PageResourceLoadInitiator} from './PageResourceLoader.js';  // eslint-disable-line no-unused-vars
+
+/** @typedef {{createPageResourceLoadInitiator: function(): !PageResourceLoadInitiator}} */
 // @ts-ignore typedef
 export let FrameAssociated;

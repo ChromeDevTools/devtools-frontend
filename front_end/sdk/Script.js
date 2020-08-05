@@ -29,8 +29,10 @@ import * as TextUtils from '../text_utils/text_utils.js';
 
 import {DebuggerModel, Location} from './DebuggerModel.js';  // eslint-disable-line no-unused-vars
 import {FrameAssociated} from './FrameAssociated.js';        // eslint-disable-line no-unused-vars
+import {PageResourceLoadInitiator} from './PageResourceLoader.js';  // eslint-disable-line no-unused-vars
 import {ResourceTreeModel} from './ResourceTreeModel.js';
 import {ExecutionContext} from './RuntimeModel.js';  // eslint-disable-line no-unused-vars
+import {Target} from './SDKModel.js';                // eslint-disable-line no-unused-vars
 
 /**
  * @implements {TextUtils.ContentProvider.ContentProvider}
@@ -57,11 +59,12 @@ export class Script {
    * @param {?number} codeOffset
    * @param {?string} scriptLanguage
    * @param {?Protocol.Debugger.DebugSymbols} debugSymbols
+   * @param {?string} embedderName
    */
   constructor(
       debuggerModel, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash,
       isContentScript, isLiveEdit, sourceMapURL, hasSourceURL, length, originStackTrace, codeOffset, scriptLanguage,
-      debugSymbols) {
+      debugSymbols, embedderName) {
     this.debuggerModel = debuggerModel;
     this.scriptId = scriptId;
     this.sourceURL = sourceURL;
@@ -89,6 +92,21 @@ export class Script {
     this._language = scriptLanguage;
     /** @type {?Promise<!TextUtils.ContentProvider.DeferredContent>} */
     this._contentPromise = null;
+    this._embedderName = embedderName;
+  }
+
+  /**
+   * @returns {?string}
+   */
+  embedderName() {
+    return this._embedderName;
+  }
+
+  /**
+   * @returns {!Target}
+   */
+  target() {
+    return this.debuggerModel.target();
   }
 
   /**
@@ -380,6 +398,13 @@ export class Script {
       this[frameIdSymbol] = frameIdForScript(this);
     }
     return this[frameIdSymbol] || '';
+  }
+
+  /**
+   * @returns {!PageResourceLoadInitiator}
+   */
+  createPageResourceLoadInitiator() {
+    return {target: this.target(), frameId: this.frameId, initiatorUrl: this.embedderName()};
   }
 }
 

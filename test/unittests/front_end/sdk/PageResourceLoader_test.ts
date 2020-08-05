@@ -25,6 +25,8 @@ describe('PageResourceLoader', () => {
     });
   };
 
+  const initiator = {target: null, frameId: '123', initiatorUrl: ''};
+
   beforeEach(() => {
     loads.length = 0;
   });
@@ -32,8 +34,11 @@ describe('PageResourceLoader', () => {
   it('loads resources correctly', async () => {
     const loader =
         PageResourceLoader.instance({forceNew: true, loadOverride: load, maxConcurrentLoads: 500, loadTimeout: 30000});
-    const loading =
-        [loader.loadResource('foo1', '123'), loader.loadResource('foo2', '123'), loader.loadResource('foo3', '123')];
+    const loading = [
+      loader.loadResource('foo1', initiator),
+      loader.loadResource('foo2', initiator),
+      loader.loadResource('foo3', initiator),
+    ];
 
     assert.deepEqual(loader.getNumberOfResources(), {loading: 3, queued: 0, resources: 3});
 
@@ -49,9 +54,9 @@ describe('PageResourceLoader', () => {
     const loader =
         PageResourceLoader.instance({forceNew: true, loadOverride: load, maxConcurrentLoads: 1, loadTimeout: 30000});
     const loading = [
-      loader.loadResource('foo1', '123').catch(e => e.message),
-      loader.loadResource('foo2', '123').catch(e => e.message),
-      loader.loadResource('foo3', '123').catch(e => e.message),
+      loader.loadResource('foo1', initiator).catch(e => e.message),
+      loader.loadResource('foo2', initiator).catch(e => e.message),
+      loader.loadResource('foo3', initiator).catch(e => e.message),
     ];
     assert.deepEqual(loader.getNumberOfResources(), {loading: 3, queued: 2, resources: 3});
 
@@ -80,9 +85,9 @@ describe('PageResourceLoader', () => {
     const loader =
         PageResourceLoader.instance({forceNew: true, loadOverride: load, maxConcurrentLoads: 2, loadTimeout: 30});
     const loading = [
-      loader.loadResource('foo1', '123').catch(e => e.message),
-      loader.loadResource('foo2', '123').catch(e => e.message),
-      loader.loadResource('foo3', '123').catch(e => e.message),
+      loader.loadResource('foo1', initiator).catch(e => e.message),
+      loader.loadResource('foo2', initiator).catch(e => e.message),
+      loader.loadResource('foo3', initiator).catch(e => e.message),
     ];
     assert.deepEqual(loader.getNumberOfResources(), {loading: 3, queued: 1, resources: 3});
 
@@ -99,8 +104,11 @@ describe('PageResourceLoader', () => {
   it('respects the max concurrent loads', async () => {
     const loader =
         PageResourceLoader.instance({forceNew: true, loadOverride: load, maxConcurrentLoads: 2, loadTimeout: 30});
-    const loading =
-        [loader.loadResource('foo1', '123'), loader.loadResource('foo2', '123'), loader.loadResource('foo3', '123')];
+    const loading = [
+      loader.loadResource('foo1', initiator),
+      loader.loadResource('foo2', initiator),
+      loader.loadResource('foo3', initiator),
+    ];
     assert.deepEqual(loader.getNumberOfResources(), {loading: 3, queued: 1, resources: 3});
 
     const results = await Promise.all(loading);

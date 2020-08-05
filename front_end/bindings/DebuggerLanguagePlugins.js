@@ -546,7 +546,7 @@ export class DebuggerLanguagePluginManager {
     uiSourceCode = this._project.createUISourceCode(sourceFileURL, Common.ResourceType.resourceTypes.SourceMapScript);
     Bindings.NetworkProject.setInitialFrameAttribution(uiSourceCode, script.frameId);
     const contentProvider = new SDK.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(
-        sourceFileURL, Common.ResourceType.resourceTypes.SourceMapScript, script.frameId);
+        sourceFileURL, Common.ResourceType.resourceTypes.SourceMapScript, script.createPageResourceLoadInitiator());
     this._bindUISourceCode(uiSourceCode, script, sourceFileURL);
 
     const mimeType = Common.ResourceType.ResourceType.mimeFromURL(sourceFileURL) || 'text/javascript';

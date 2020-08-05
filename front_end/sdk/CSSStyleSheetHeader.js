@@ -8,6 +8,7 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import {CSSModel} from './CSSModel.js';  // eslint-disable-line no-unused-vars
 import {DeferredDOMNode} from './DOMModel.js';
 import {FrameAssociated} from './FrameAssociated.js';  // eslint-disable-line no-unused-vars
+import {PageResourceLoadInitiator} from './PageResourceLoader.js';  // eslint-disable-line no-unused-vars
 import {ResourceTreeModel} from './ResourceTreeModel.js';
 
 /**
@@ -196,5 +197,12 @@ export class CSSStyleSheetHeader {
    */
   isViaInspector() {
     return this.origin === 'inspector';
+  }
+
+  /**
+   * @returns {!PageResourceLoadInitiator}
+   */
+  createPageResourceLoadInitiator() {
+    return {target: null, frameId: this.frameId, initiatorUrl: this.hasSourceURL ? '' : this.sourceURL};
   }
 }

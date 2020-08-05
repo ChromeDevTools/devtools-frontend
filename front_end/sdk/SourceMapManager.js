@@ -185,7 +185,7 @@ export class SourceMapManager extends Common.ObjectWrapper.ObjectWrapper {
           sourceMapPromise = WasmSourceMap.load(client, sourceURL);
         }
       } else {
-        sourceMapPromise = TextSourceMap.load(sourceMapURL, sourceURL, client.frameId);
+        sourceMapPromise = TextSourceMap.load(sourceMapURL, sourceURL, client.createPageResourceLoadInitiator());
       }
       sourceMapPromise
           .catch(error => {

@@ -31,7 +31,7 @@
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as TextUtils from '../text_utils/text_utils.js';
 
-import {PageResourceLoader} from './PageResourceLoader.js';
+import {PageResourceLoader, PageResourceLoadInitiator} from './PageResourceLoader.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @implements {TextUtils.ContentProvider.ContentProvider}
@@ -41,12 +41,12 @@ export class CompilerSourceMappingContentProvider {
   /**
    * @param {string} sourceURL
    * @param {!Common.ResourceType.ResourceType} contentType
-   * @param {!Protocol.Page.FrameId} frameId
+   * @param {!PageResourceLoadInitiator} initiator
    */
-  constructor(sourceURL, contentType, frameId) {
+  constructor(sourceURL, contentType, initiator) {
     this._sourceURL = sourceURL;
     this._contentType = contentType;
-    this._frameId = frameId;
+    this._initiator = initiator;
   }
 
   /**
@@ -79,7 +79,7 @@ export class CompilerSourceMappingContentProvider {
    */
   async requestContent() {
     try {
-      const {content} = await PageResourceLoader.instance().loadResource(this._sourceURL, this._frameId);
+      const {content} = await PageResourceLoader.instance().loadResource(this._sourceURL, this._initiator);
       return {content, isEncoded: false};
     } catch (e) {
       const error = ls`Could not load content for ${this._sourceURL} (${e.message})`;

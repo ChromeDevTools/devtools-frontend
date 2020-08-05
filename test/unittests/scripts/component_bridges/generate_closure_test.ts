@@ -609,7 +609,7 @@ describe('generateClosure', () => {
 * }}`);
       assert.include(interfaces[0].join('\n'), 'export let Person');
 
-      assert.include(interfaces[1].join('\n'), '* @typedef {{"jack"|"paul"|"tim"}}');
+      assert.include(interfaces[1].join('\n'), '* @typedef {"jack"|"paul"|"tim"}');
       assert.include(interfaces[1].join('\n'), 'export let Name');
     });
 
@@ -631,7 +631,7 @@ describe('generateClosure', () => {
       const interfaces = generateInterfaces(state);
 
       assert.strictEqual(interfaces.length, 3);
-      assert.include(interfaces[0].join('\n'), '* @typedef {{Dog|Cat}}');
+      assert.include(interfaces[0].join('\n'), '* @typedef {Dog|Cat}');
       assert.include(interfaces[0].join('\n'), 'export let Animal');
 
       assert.include(interfaces[1].join('\n'), `* @typedef {{
@@ -663,7 +663,7 @@ describe('generateClosure', () => {
       const interfaces = generateInterfaces(state);
 
       assert.strictEqual(interfaces.length, 3);
-      assert.include(interfaces[0].join('\n'), '* @typedef {{Dog|Cat}}');
+      assert.include(interfaces[0].join('\n'), '* @typedef {Dog|Cat}');
       assert.include(interfaces[0].join('\n'), 'export let Animal');
 
       assert.include(interfaces[1].join('\n'), `* @typedef {{
@@ -695,7 +695,7 @@ describe('generateClosure', () => {
       const interfaces = generateInterfaces(state);
 
       assert.strictEqual(interfaces.length, 3);
-      assert.include(interfaces[0].join('\n'), '* @typedef {{Dog|Cat|string|number}}');
+      assert.include(interfaces[0].join('\n'), '* @typedef {Dog|Cat|string|number}');
       assert.include(interfaces[0].join('\n'), 'export let Animal');
 
       assert.include(interfaces[1].join('\n'), `* @typedef {{
@@ -732,7 +732,7 @@ describe('generateClosure', () => {
       const interfaces = generateInterfaces(state);
 
       assert.strictEqual(interfaces.length, 4);
-      assert.include(interfaces[0].join('\n'), '* @typedef {{Dog|Cat}}');
+      assert.include(interfaces[0].join('\n'), '* @typedef {Dog|Cat}');
       assert.include(interfaces[0].join('\n'), 'export let Animal');
 
       assert.include(interfaces[1].join('\n'), `* @typedef {{

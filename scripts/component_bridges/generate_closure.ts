@@ -333,7 +333,7 @@ const generateClosureForInterface =
       } else if (ts.isTypeAliasDeclaration(interfaceOrTypeAlias) && ts.isUnionTypeNode(interfaceOrTypeAlias.type)) {
         // e.g. type X = A|B, type Y = string|number, etc
         const unionTypeConverted = interfaceOrTypeAlias.type.types.map(v => valueForTypeNode(v)).join('|');
-        interfaceBits.push(`* @typedef {{${unionTypeConverted}}}`);
+        interfaceBits.push(`* @typedef {${unionTypeConverted}}`);
         interfaceBits.push('*/');
       } else if (ts.isTypeAliasDeclaration(interfaceOrTypeAlias) && ts.isTypeLiteralNode(interfaceOrTypeAlias.type)) {
         // e.g. type X = { name: string; }

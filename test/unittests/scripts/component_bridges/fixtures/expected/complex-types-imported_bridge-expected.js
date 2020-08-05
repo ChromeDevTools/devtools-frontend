@@ -18,7 +18,7 @@ import './complex-types-imported.js';
 // @ts-ignore we export this for Closure not TS
 export let DOMNode;
 /**
-* @typedef {{EnumSetting|BooleanSetting}}
+* @typedef {EnumSetting|BooleanSetting}
 */
 // @ts-ignore we export this for Closure not TS
 export let Setting;
@@ -45,7 +45,7 @@ export let EnumSetting;
 // @ts-ignore we export this for Closure not TS
 export let BooleanSetting;
 /**
-* @typedef {{"boolean"|"enum"}}
+* @typedef {"boolean"|"enum"}
 */
 // @ts-ignore we export this for Closure not TS
 export let SettingType;

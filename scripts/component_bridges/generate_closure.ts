@@ -249,7 +249,8 @@ export const generateClosureClass = (state: WalkerState): string[] => {
 };
 
 
-const generateInterfaceMembers = (members: ts.NodeArray<ts.TypeElement|ts.TypeNode>): string[] => {
+const generateInterfaceMembers = (members: ts.NodeArray<ts.TypeElement|ts.TypeNode>|
+                                  Array<ts.TypeElement|ts.TypeNode>): string[] => {
   const output: string[] = [];
 
   members.forEach(member => {
@@ -312,6 +313,47 @@ const membersForTypeReference = (foundInterfaces: WalkerState['foundInterfaces']
   throw new Error(`Unexpected type reference: ${ts.SyntaxKind[interfaceOrTypeAlias.kind]}`);
 };
 
+const gatherMembersForInterface =
+    (foundInterfaces: WalkerState['foundInterfaces'], currentInterface: ts.InterfaceDeclaration):
+        (ts.TypeElement|ts.TypeNode)[] => {
+          const allMembers: (ts.TypeNode|ts.TypeElement)[] = [];
+
+          // first, we gather all the members of any interfaces this interface extends
+          // e.g. if we have interface X extends Y, Z, we recurse to find members of Y and Z.
+          if (currentInterface.heritageClauses) {
+            currentInterface.heritageClauses.forEach(heritageClause => {
+              const extendNames = heritageClause.types.map(heritageClauseName => {
+                if (ts.isIdentifier(heritageClauseName.expression)) {
+                  return heritageClauseName.expression.escapedText.toString();
+                }
+                throw new Error('Unexpected heritageClauseName with no identifier.');
+              });
+
+              extendNames.forEach(interfaceName => {
+                const interfaceDec = Array.from(foundInterfaces).find(dec => {
+                  return dec.name.escapedText === interfaceName;
+                });
+                if (!interfaceDec) {
+                  throw new Error(`Could not find interface or type alias: ${interfaceName}`);
+                }
+                if (!ts.isInterfaceDeclaration(interfaceDec)) {
+                  throw new Error('Found invalid TypeScript: an interface cannot extend a type.');
+                }
+
+                if (interfaceDec.heritageClauses) {
+                  allMembers.push(...gatherMembersForInterface(foundInterfaces, interfaceDec));
+                } else {
+                  allMembers.push(...interfaceDec.members);
+                }
+              });
+            });
+          }
+
+          // now, gather the members of the actual interface itself
+          allMembers.push(...currentInterface.members);
+          return allMembers;
+        };
+
 const generateClosureForInterface =
     (foundInterfaces: WalkerState['foundInterfaces'], interfaceName: string): string[] => {
       const interfaceOrTypeAlias = Array.from(foundInterfaces).find(dec => {
@@ -325,9 +367,9 @@ const generateClosureForInterface =
       const interfaceBits: string[] = ['/**'];
 
       if (ts.isInterfaceDeclaration(interfaceOrTypeAlias)) {
-        // e.g. interface X { ... }
         interfaceBits.push('* @typedef {{');
-        interfaceBits.push(...generateInterfaceMembers(interfaceOrTypeAlias.members));
+        const allMembersOfInterface = gatherMembersForInterface(foundInterfaces, interfaceOrTypeAlias);
+        interfaceBits.push(...generateInterfaceMembers(allMembersOfInterface));
         interfaceBits.push('* }}');
         interfaceBits.push('*/');
       } else if (ts.isTypeAliasDeclaration(interfaceOrTypeAlias) && ts.isUnionTypeNode(interfaceOrTypeAlias.type)) {

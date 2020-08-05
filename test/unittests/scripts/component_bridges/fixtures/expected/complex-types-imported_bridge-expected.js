@@ -51,6 +51,7 @@ export let BooleanSetting;
 export let SettingType;
 /**
 * @typedef {{
+* title:string,
 * value:string,
 * }}
 */
@@ -58,6 +59,7 @@ export let SettingType;
 export let EnumSettingOption;
 /**
 * @typedef {{
+* title:string,
 * value:boolean,
 * }}
 */

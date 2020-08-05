@@ -1017,6 +1017,7 @@ export let Person`);
 * }}`);
       assert.include(interfaces[1].join('\n'), 'export let Detail');
     });
+
     it('ignores the Object type', () => {
       const state = parseCode(`
       class Breadcrumbs extends HTMLElement {
@@ -1025,6 +1026,85 @@ export let Person`);
       }`);
       const interfaces = generateInterfaces(state);
       assert.strictEqual(interfaces.length, 0);
+    });
+
+    it('understands interfaces that extend other interfaces and fully defines them', () => {
+      const state = parseCode(`interface NamedThing {
+        name: string;
+      }
+
+      interface Person extends NamedThing {
+        age: number;
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public update(person: Person) {}
+      }`);
+
+      const interfaces = generateInterfaces(state);
+
+      assert.strictEqual(interfaces.length, 1);
+      assert.include(interfaces[0].join('\n'), `* @typedef {{
+* name:string,
+* age:number,
+* }}`);
+      assert.include(interfaces[0].join('\n'), 'export let Person');
+    });
+
+    it('understands interfaces that extend multiple interfaces', () => {
+      const state = parseCode(`interface NamedThing {
+        name: string;
+      }
+
+      interface AgedThing {
+        age: number
+      }
+
+      interface Person extends NamedThing, AgedThing {
+        favouriteColour: string;
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public update(person: Person) {}
+      }`);
+
+      const interfaces = generateInterfaces(state);
+
+      assert.strictEqual(interfaces.length, 1);
+      assert.include(interfaces[0].join('\n'), `* @typedef {{
+* name:string,
+* age:number,
+* favouriteColour:string,
+* }}`);
+      assert.include(interfaces[0].join('\n'), 'export let Person');
+    });
+
+    it('understands interfaces that extend interfaces that extend interfaces', () => {
+      const state = parseCode(`interface NamedThing {
+        name: string;
+      }
+
+      interface AgedThing extends NamedThing {
+        age: number
+      }
+
+      interface Person extends AgedThing {
+        favouriteColour: string;
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public update(person: Person) {}
+      }`);
+
+      const interfaces = generateInterfaces(state);
+
+      assert.strictEqual(interfaces.length, 1);
+      assert.include(interfaces[0].join('\n'), `* @typedef {{
+* name:string,
+* age:number,
+* favouriteColour:string,
+* }}`);
+      assert.include(interfaces[0].join('\n'), 'export let Person');
     });
   });
 });

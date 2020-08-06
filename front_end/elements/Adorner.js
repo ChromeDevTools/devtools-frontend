@@ -152,7 +152,6 @@ export class Adorner extends HTMLElement {
   addInteraction(action, options = {}) {
     const {isToggle = false, shouldPropagateOnKeydown = false, ariaLabelDefault, ariaLabelActive} = options;
 
-    this.addEventListener('click', action);
     this._isToggle = isToggle;
 
     if (ariaLabelDefault) {
@@ -169,6 +168,8 @@ export class Adorner extends HTMLElement {
       }
       this.toggle(false /* initialize inactive state */);
     }
+
+    this.addEventListener('click', action);
 
     // Simulate an ARIA-capable toggle button
     this.classList.add('clickable');

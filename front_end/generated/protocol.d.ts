@@ -879,6 +879,7 @@ declare namespace Protocol {
       contentSecurityPolicyViolationType: ContentSecurityPolicyViolationType;
       frameAncestor?: AffectedFrame;
       sourceCodeLocation?: SourceCodeLocation;
+      violatingNodeId?: integer;
     }
 
     /**
@@ -10753,6 +10754,10 @@ declare namespace Protocol {
        * Opener target Id
        */
       openerId?: TargetID;
+      /**
+       * Whether the opened window has access to the originating window.
+       */
+      canAccessOpener: boolean;
       browserContextId?: Browser.BrowserContextID;
     }
 

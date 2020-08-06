@@ -511,6 +511,7 @@ export const generatedProperties = [
   {'name': 'justify-self'},
   {'name': 'left', 'keywords': ['auto']},
   {'inherited': true, 'keywords': ['normal'], 'name': 'letter-spacing'},
+  {'name': 'letter-spacing-override'},
   {'name': 'lighting-color', 'svg': true, 'keywords': ['currentcolor']},
   {'name': 'line-break', 'inherited': true, 'keywords': ['auto', 'loose', 'normal', 'strict', 'anywhere']},
   {'name': 'line-height', 'inherited': true, 'keywords': ['normal']},

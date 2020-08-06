@@ -623,6 +623,7 @@ experimental domain Audits
       ContentSecurityPolicyViolationType contentSecurityPolicyViolationType
       optional AffectedFrame frameAncestor
       optional SourceCodeLocation sourceCodeLocation
+      optional integer violatingNodeId
 
   # A unique identifier for the type of issue. Each type may use one of the
   # optional fields in InspectorIssueDetails to convey more specific
@@ -2019,7 +2020,9 @@ domain DOM
       Node root
 
   # Returns the root DOM node (and optionally the subtree) to the caller.
-  command getFlattenedDocument
+  # Deprecated, as it is not designed to work well with the rest of the DOM agent.
+  # Use DOMSnapshot.captureSnapshot instead.
+  deprecated command getFlattenedDocument
     parameters
       # The maximum depth at which children should be retrieved, defaults to 1. Use -1 for the
       # entire subtree or provide an integer larger than 0.
@@ -7246,6 +7249,8 @@ domain Target
       boolean attached
       # Opener target Id
       optional TargetID openerId
+      # Whether the opened window has access to the originating window.
+      experimental boolean canAccessOpener
       experimental optional Browser.BrowserContextID browserContextId
 
   experimental type RemoteLocation extends object

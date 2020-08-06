@@ -31,7 +31,7 @@ describe('walkTree', () => {
     const source = createTypeScriptSourceFromFilePath(filePath);
     const result = walkTree(source, filePath);
 
-    assert.deepEqual(Array.from(result.interfaceNamesToConvert), ['Person', 'Dog', 'DogOwner']);
+    assert.deepEqual(Array.from(result.typeReferencesToConvert), ['Person', 'Dog', 'DogOwner']);
   });
 
   it('errors if a user references an interface via a qualifier', () => {
@@ -104,7 +104,7 @@ describe('walkTree', () => {
       const source = createTypeScriptSourceFile(code);
       const result = walkTree(source, 'test.ts');
 
-      assert.deepEqual(Array.from(result.interfaceNamesToConvert), ['WebVitalsTimelineData', 'WebVitalsTimelineTask']);
+      assert.deepEqual(Array.from(result.typeReferencesToConvert), ['WebVitalsTimelineData', 'WebVitalsTimelineTask']);
     });
 
     it('correctly identifies interfaces that reference arrays of other interfaces', () => {
@@ -125,7 +125,7 @@ describe('walkTree', () => {
       const source = createTypeScriptSourceFile(code);
       const result = walkTree(source, 'test.ts');
 
-      assert.deepEqual(Array.from(result.interfaceNamesToConvert), ['WebVitalsTimelineData', 'WebVitalsTimelineTask']);
+      assert.deepEqual(Array.from(result.typeReferencesToConvert), ['WebVitalsTimelineData', 'WebVitalsTimelineTask']);
     });
 
     it('correctly identifies interfaces that reference interfaces in nested object literals', () => {
@@ -148,7 +148,7 @@ describe('walkTree', () => {
       const source = createTypeScriptSourceFile(code);
       const result = walkTree(source, 'test.ts');
 
-      assert.deepEqual(Array.from(result.interfaceNamesToConvert), ['WebVitalsTimelineData', 'WebVitalsTimelineTask']);
+      assert.deepEqual(Array.from(result.typeReferencesToConvert), ['WebVitalsTimelineData', 'WebVitalsTimelineTask']);
     });
 
     it('correctly identifies interfaces that are deeply nested', () => {
@@ -173,7 +173,7 @@ describe('walkTree', () => {
       const source = createTypeScriptSourceFile(code);
       const result = walkTree(source, 'test.ts');
 
-      assert.deepEqual(Array.from(result.interfaceNamesToConvert), ['WebVitalsTimelineData', 'LongTask', 'Timing']);
+      assert.deepEqual(Array.from(result.typeReferencesToConvert), ['WebVitalsTimelineData', 'LongTask', 'Timing']);
     });
   });
 
@@ -272,7 +272,7 @@ describe('walkTree', () => {
       });
 
       assert.deepEqual(getterNames, ['person']);
-      assert.deepEqual(Array.from(result.interfaceNamesToConvert), ['Person']);
+      assert.deepEqual(Array.from(result.typeReferencesToConvert), ['Person']);
     });
 
     it('finds any public setters and the interfaces they take', () => {
@@ -300,7 +300,7 @@ describe('walkTree', () => {
       });
 
       assert.deepEqual(setterNames, ['foo']);
-      assert.deepEqual(Array.from(result.interfaceNamesToConvert), ['Person']);
+      assert.deepEqual(Array.from(result.typeReferencesToConvert), ['Person']);
     });
 
     it('can parse interfaces out of the Readonly helper type', () => {
@@ -323,7 +323,7 @@ describe('walkTree', () => {
         assert.fail('No component class was found');
       }
 
-      assert.deepEqual(Array.from(result.interfaceNamesToConvert), ['Person']);
+      assert.deepEqual(Array.from(result.typeReferencesToConvert), ['Person']);
     });
 
     it('can parse interfaces out of the ReadonlyArray helper type', () => {
@@ -346,7 +346,7 @@ describe('walkTree', () => {
         assert.fail('No component class was found');
       }
 
-      assert.deepEqual(Array.from(result.interfaceNamesToConvert), ['Person']);
+      assert.deepEqual(Array.from(result.typeReferencesToConvert), ['Person']);
     });
 
 
@@ -379,7 +379,7 @@ describe('walkTree', () => {
       });
 
       assert.deepEqual(setterNames, ['data']);
-      assert.deepEqual(Array.from(result.interfaceNamesToConvert), ['Person', 'Dog']);
+      assert.deepEqual(Array.from(result.typeReferencesToConvert), ['Person', 'Dog']);
     });
 
     it('can deal with setters taking optional arguments', () => {
@@ -411,7 +411,7 @@ describe('walkTree', () => {
       });
 
       assert.deepEqual(setterNames, ['data']);
-      assert.deepEqual(Array.from(result.interfaceNamesToConvert), ['Person', 'Dog']);
+      assert.deepEqual(Array.from(result.typeReferencesToConvert), ['Person', 'Dog']);
     });
 
     it('finds the custom elements define call', () => {

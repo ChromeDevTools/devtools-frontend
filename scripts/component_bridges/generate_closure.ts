@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as ts from 'typescript';
 
+import {findNodeForTypeReferenceName} from './utils.js';
 import {nodeIsPrimitive, valueForTypeNode} from './value_for_type_node.js';
 import {WalkerState} from './walk_tree.js';
 
@@ -283,38 +284,36 @@ const generateInterfaceMembers = (members: ts.NodeArray<ts.TypeElement|ts.TypeNo
  * Takes a type reference node, looks up the state of found interface for it,
  * and returns its members.
  */
-const membersForTypeReference = (foundInterfaces: WalkerState['foundInterfaces'],
-                                 typeReference: ts.TypeReferenceNode): ts.NodeArray<ts.TypeElement|ts.TypeNode> => {
-  if (!ts.isIdentifierOrPrivateIdentifier(typeReference.typeName)) {
-    throw new Error('Unexpected type reference without an identifier.');
-  }
-  const interfaceName = typeReference.typeName.escapedText.toString();
+const membersForTypeReference =
+    (state: WalkerState, typeReference: ts.TypeReferenceNode): ts.NodeArray<ts.TypeElement|ts.TypeNode> => {
+      if (!ts.isIdentifierOrPrivateIdentifier(typeReference.typeName)) {
+        throw new Error('Unexpected type reference without an identifier.');
+      }
+      const interfaceName = typeReference.typeName.escapedText.toString();
 
-  const interfaceOrTypeAlias = Array.from(foundInterfaces).find(dec => {
-    return dec.name.escapedText === interfaceName;
-  });
+      const interfaceOrTypeAlias = findNodeForTypeReferenceName(state, interfaceName);
 
-  if (!interfaceOrTypeAlias) {
-    throw new Error(`Could not find interface or type alias: ${interfaceName}`);
-  }
+      if (!interfaceOrTypeAlias) {
+        throw new Error(`Could not find interface or type alias: ${interfaceName}`);
+      }
 
-  if (ts.isInterfaceDeclaration(interfaceOrTypeAlias)) {
-    return interfaceOrTypeAlias.members;
-  }
+      if (ts.isInterfaceDeclaration(interfaceOrTypeAlias)) {
+        return interfaceOrTypeAlias.members;
+      }
 
-  if (ts.isTypeAliasDeclaration(interfaceOrTypeAlias) && ts.isUnionTypeNode(interfaceOrTypeAlias.type)) {
-    return interfaceOrTypeAlias.type.types;
-  }
+      if (ts.isTypeAliasDeclaration(interfaceOrTypeAlias) && ts.isUnionTypeNode(interfaceOrTypeAlias.type)) {
+        return interfaceOrTypeAlias.type.types;
+      }
 
-  if (ts.isTypeAliasDeclaration(interfaceOrTypeAlias) && ts.isTypeLiteralNode(interfaceOrTypeAlias.type)) {
-    return interfaceOrTypeAlias.type.members;
-  }
+      if (ts.isTypeAliasDeclaration(interfaceOrTypeAlias) && ts.isTypeLiteralNode(interfaceOrTypeAlias.type)) {
+        return interfaceOrTypeAlias.type.members;
+      }
 
-  throw new Error(`Unexpected type reference: ${ts.SyntaxKind[interfaceOrTypeAlias.kind]}`);
-};
+      throw new Error(`Unexpected type reference: ${ts.SyntaxKind[interfaceOrTypeAlias.kind]}`);
+    };
 
 const gatherMembersForInterface =
-    (foundInterfaces: WalkerState['foundInterfaces'], currentInterface: ts.InterfaceDeclaration):
+    (state: WalkerState, currentInterface: ts.InterfaceDeclaration):
         (ts.TypeElement|ts.TypeNode)[] => {
           const allMembers: (ts.TypeNode|ts.TypeElement)[] = [];
 
@@ -330,9 +329,7 @@ const gatherMembersForInterface =
               });
 
               extendNames.forEach(interfaceName => {
-                const interfaceDec = Array.from(foundInterfaces).find(dec => {
-                  return dec.name.escapedText === interfaceName;
-                });
+                const interfaceDec = findNodeForTypeReferenceName(state, interfaceName);
                 if (!interfaceDec) {
                   throw new Error(`Could not find interface or type alias: ${interfaceName}`);
                 }
@@ -341,7 +338,7 @@ const gatherMembersForInterface =
                 }
 
                 if (interfaceDec.heritageClauses) {
-                  allMembers.push(...gatherMembersForInterface(foundInterfaces, interfaceDec));
+                  allMembers.push(...gatherMembersForInterface(state, interfaceDec));
                 } else {
                   allMembers.push(...interfaceDec.members);
                 }
@@ -355,10 +352,8 @@ const gatherMembersForInterface =
         };
 
 const generateClosureForInterface =
-    (foundInterfaces: WalkerState['foundInterfaces'], interfaceName: string): string[] => {
-      const interfaceOrTypeAlias = Array.from(foundInterfaces).find(dec => {
-        return dec.name.escapedText === interfaceName;
-      });
+    (state: WalkerState, interfaceName: string): string[] => {
+      const interfaceOrTypeAlias = findNodeForTypeReferenceName(state, interfaceName);
 
       if (!interfaceOrTypeAlias) {
         throw new Error(`Could not find interface or type alias: ${interfaceName}`);
@@ -368,7 +363,7 @@ const generateClosureForInterface =
 
       if (ts.isInterfaceDeclaration(interfaceOrTypeAlias)) {
         interfaceBits.push('* @typedef {{');
-        const allMembersOfInterface = gatherMembersForInterface(foundInterfaces, interfaceOrTypeAlias);
+        const allMembersOfInterface = gatherMembersForInterface(state, interfaceOrTypeAlias);
         interfaceBits.push(...generateInterfaceMembers(allMembersOfInterface));
         interfaceBits.push('* }}');
         interfaceBits.push('*/');
@@ -399,7 +394,7 @@ const generateClosureForInterface =
          * So we need to find that object in the interfaces that the tree walker found
          * And then parse out the members to Closure.
          */
-            const members = membersForTypeReference(foundInterfaces, typePart);
+            const members = membersForTypeReference(state, typePart);
             allMembers.push(...members);
           } else {
             throw new Error(`Unsupported: a type extended something that the bridges generator doesn't understand: ${
@@ -447,8 +442,8 @@ const generateClosureForInterface =
 export const generateInterfaces = (state: WalkerState): Array<string[]> => {
   const finalCode: Array<string[]> = [];
 
-  state.interfaceNamesToConvert.forEach(interfaceName => {
-    finalCode.push(generateClosureForInterface(state.foundInterfaces, interfaceName));
+  state.typeReferencesToConvert.forEach(interfaceName => {
+    finalCode.push(generateClosureForInterface(state, interfaceName));
   });
 
   return finalCode;

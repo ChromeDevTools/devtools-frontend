@@ -5,6 +5,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as ts from 'typescript';
+import {findNodeForTypeReferenceName} from './utils';
 
 interface ExternalImport {
   namedImports: Set<string>;
@@ -17,7 +18,8 @@ export interface WalkerState {
    * overhead of an extra piece of state and another set to check isn't worth it
    */
   foundInterfaces: Set<ts.InterfaceDeclaration|ts.TypeAliasDeclaration>;
-  interfaceNamesToConvert: Set<string>;
+  foundEnums: Set<ts.EnumDeclaration>;
+  typeReferencesToConvert: Set<string>;
   componentClass?: ts.ClassDeclaration;
   publicMethods: Set<ts.MethodDeclaration>;
   customElementsDefineCall?: ts.ExpressionStatement;
@@ -127,8 +129,9 @@ const CUSTOM_ELEMENTS_LIFECYCLE_METHODS = new Set([
 const walkNode = (node: ts.Node, startState?: WalkerState): WalkerState => {
   const state: WalkerState = startState || {
     foundInterfaces: new Set(),
+    foundEnums: new Set(),
     publicMethods: new Set(),
-    interfaceNamesToConvert: new Set(),
+    typeReferencesToConvert: new Set(),
     componentClass: undefined,
     customElementsDefineCall: undefined,
     imports: new Set(),
@@ -166,7 +169,7 @@ const walkNode = (node: ts.Node, startState?: WalkerState): WalkerState => {
               return;
             }
             const foundInterfaces = findInterfacesFromType(param.type);
-            foundInterfaces.forEach(i => state.interfaceNamesToConvert.add(i));
+            foundInterfaces.forEach(i => state.typeReferencesToConvert.add(i));
           });
         } else if (ts.isGetAccessorDeclaration(member)) {
           if (isPrivate(member)) {
@@ -177,7 +180,7 @@ const walkNode = (node: ts.Node, startState?: WalkerState): WalkerState => {
 
           if (member.type) {
             const foundInterfaces = findInterfacesFromType(member.type);
-            foundInterfaces.forEach(i => state.interfaceNamesToConvert.add(i));
+            foundInterfaces.forEach(i => state.typeReferencesToConvert.add(i));
           }
         } else if (ts.isSetAccessorDeclaration(member)) {
           if (isPrivate(member)) {
@@ -190,7 +193,7 @@ const walkNode = (node: ts.Node, startState?: WalkerState): WalkerState => {
             const setterParamType = member.parameters[0].type;
             if (setterParamType) {
               const foundInterfaces = findInterfacesFromType(setterParamType);
-              foundInterfaces.forEach(i => state.interfaceNamesToConvert.add(i));
+              foundInterfaces.forEach(i => state.typeReferencesToConvert.add(i));
             }
           }
         }
@@ -294,9 +297,7 @@ const findNestedReferencesForTypeReference =
               // This means we have a reference to another interface so we have to
               // find the interface and check for any nested interfaces within it.
               const typeReferenceName = nestedType.typeName.escapedText.toString();
-              const nestedTypeReference = Array.from(state.foundInterfaces).find(dec => {
-                return dec.name.escapedText === typeReferenceName;
-              });
+              const nestedTypeReference = findNodeForTypeReferenceName(state, typeReferenceName);
               if (!nestedTypeReference) {
                 throw new Error(`Could not find definition for type reference ${typeReferenceName}.`);
               }
@@ -316,10 +317,8 @@ const findNestedReferencesForTypeReference =
     };
 
 const populateInterfacesToConvert = (state: WalkerState): WalkerState => {
-  state.interfaceNamesToConvert.forEach(interfaceNameToConvert => {
-    const interfaceOrTypeAliasDeclaration = Array.from(state.foundInterfaces).find(dec => {
-      return dec.name.escapedText === interfaceNameToConvert;
-    });
+  state.typeReferencesToConvert.forEach(interfaceNameToConvert => {
+    const interfaceOrTypeAliasDeclaration = findNodeForTypeReferenceName(state, interfaceNameToConvert);
 
     // if the interface isn't found, it might be imported, so just move on.
     if (!interfaceOrTypeAliasDeclaration) {
@@ -327,7 +326,7 @@ const populateInterfacesToConvert = (state: WalkerState): WalkerState => {
     }
 
     const foundNestedInterfaces = findNestedReferencesForTypeReference(state, interfaceOrTypeAliasDeclaration);
-    foundNestedInterfaces.forEach(nested => state.interfaceNamesToConvert.add(nested));
+    foundNestedInterfaces.forEach(nested => state.typeReferencesToConvert.add(nested));
   });
 
   return state;
@@ -347,9 +346,9 @@ export const walkTree = (startNode: ts.SourceFile, resolvedFilePath: string): Wa
   // Some components may (rarely) use the TypeScript Object type
   // But that's defined by TypeScript, not us, and maps directly to Closure's Object
   // So we don't need to generate any typedefs for the `Object` type.
-  state.interfaceNamesToConvert.delete('Object');
+  state.typeReferencesToConvert.delete('Object');
 
-  const missingInterfaces = Array.from(state.interfaceNamesToConvert).filter(name => {
+  const missingInterfaces = Array.from(state.typeReferencesToConvert).filter(name => {
     return foundInterfaceNames.has(name) === false;
   });
 
@@ -379,8 +378,8 @@ export const walkTree = (startNode: ts.SourceFile, resolvedFilePath: string): Wa
       state.foundInterfaces.add(foundInterface);
     });
 
-    stateFromSubFile.interfaceNamesToConvert.forEach(interfaceToConvert => {
-      state.interfaceNamesToConvert.add(interfaceToConvert);
+    stateFromSubFile.typeReferencesToConvert.forEach(interfaceToConvert => {
+      state.typeReferencesToConvert.add(interfaceToConvert);
     });
   });
 

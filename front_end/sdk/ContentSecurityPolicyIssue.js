@@ -33,7 +33,7 @@ export class ContentSecurityPolicyIssue extends Issue {
   primaryKey() {
     return JSON.stringify(this._issueDetails, [
       'blockedURL', 'contentSecurityPolicyViolationType', 'violatedDirective', 'sourceCodeLocation', 'url',
-      'lineNumber', 'columnNumber'
+      'lineNumber', 'columnNumber', 'violatingNodeId'
     ]);
   }
 
@@ -133,7 +133,7 @@ export const urlViolationCode = [
   Protocol.Audits.ContentSecurityPolicyViolationType.KURLViolation
 ].join('::');
 
-
+/** @type {string} */
 export const inlineViolationCode = [
   Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue,
   Protocol.Audits.ContentSecurityPolicyViolationType.KInlineViolation

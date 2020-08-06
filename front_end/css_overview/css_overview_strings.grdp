@@ -30,9 +30,6 @@
   <message name="IDS_DEVTOOLS_34f6c3d68dc5fe7251e2b583829c5bde" desc="Plural of the term 'occurrence'">
     occurrences
   </message>
-  <message name="IDS_DEVTOOLS_231afe47f3f37d3808096b36c28b4ded" desc="Label for the column in the element list in the CSS Overview report">
-    Element
-  </message>
   <message name="IDS_DEVTOOLS_23717568804f63f75e7596dcced3119e" desc="Label for the number of universal selectors in the CSS Overview report">
     Universal selectors
   </message>

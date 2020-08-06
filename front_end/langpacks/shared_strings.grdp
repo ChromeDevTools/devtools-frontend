@@ -88,6 +88,9 @@
   <message name="IDS_DEVTOOLS_2310408a63388fe57e3a4177168a8798" desc="Text for the desktop platform, as opposed to mobile">
     Desktop
   </message>
+  <message name="IDS_DEVTOOLS_231afe47f3f37d3808096b36c28b4ded" desc="Label for the column in the element list in the CSS Overview report">
+    Element
+  </message>
   <message name="IDS_DEVTOOLS_26ae7bdd1d6fb8c4886e6fde8d12601c" desc="Text for the latency of a task">
     Latency
   </message>

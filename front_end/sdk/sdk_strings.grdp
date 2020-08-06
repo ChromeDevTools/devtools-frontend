@@ -12,7 +12,7 @@
   <message name="IDS_DEVTOOLS_044b149f2d31de7a7f43518045f61642" desc="Title of a media query that can be emulated via the Rendering drawer">
     prefers-reduced-data: reduce
   </message>
-  <message name="IDS_DEVTOOLS_04a8e1d4d35de0097dba4846b17f1c97" desc="Title for CSP inline link">
+  <message name="IDS_DEVTOOLS_04a8e1d4d35de0097dba4846b17f1c97" desc="Title for CSP inline issue link">
     Learn more: Content Security Policy - Inline Code
   </message>
   <message name="IDS_DEVTOOLS_05dfd3a2f7eebfad702620a4a7e182eb" desc="Tooltip to explain why a cookie was blocked">
@@ -121,7 +121,7 @@
   <message name="IDS_DEVTOOLS_22af645d1859cb5ca6da0c484f1f37ea" desc="Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel">
     new
   </message>
-  <message name="IDS_DEVTOOLS_22bd750a4363491a10742105f6c6c777" desc="Part of the issue message for CSP url issues">
+  <message name="IDS_DEVTOOLS_22bd750a4363491a10742105f6c6c777" desc="Part of issue message for CSP url issues">
     To solve this, carefully check that all of the blocked resources listed below are trustworthy; if they are,
      include their sources in the content security policy of your site. You can set a policy as a HTTP header (recommended),
      or via an HTML <ph name="LOCKED_1">&lt;meta&gt;</ph> tag.
@@ -152,7 +152,7 @@
   <message name="IDS_DEVTOOLS_2d4f58197f03de72c0472189fd18c162" desc="Title of a setting under the Rendering drawer">
     Emulate vision deficiencies
   </message>
-  <message name="IDS_DEVTOOLS_2e14ec7819d8f48f0b3a0bcc2092ef29" desc="Part of the issue message for CSP inline issues">
+  <message name="IDS_DEVTOOLS_2e14ec7819d8f48f0b3a0bcc2092ef29" desc="Part of issue message for CSP inline issues">
     ⚠️ Allowing inline execution comes at the risk of script injection via injection of HTML script elements.
      If you absolutely must, you can allow inline script and styles by:
   </message>
@@ -222,7 +222,7 @@
   <message name="IDS_DEVTOOLS_4cbb2bdce4db02a995cdd7a237a63d69" desc="Title of a setting under the Grid category that turns CSS Grid Area highlighting on">
     Show grid named areas
   </message>
-  <message name="IDS_DEVTOOLS_5988f13c0976ce6b6edbc4d667f1bb7a" desc="Part of the issue message for CSP inline issues">
+  <message name="IDS_DEVTOOLS_5988f13c0976ce6b6edbc4d667f1bb7a" desc="Part of issue message for CSP inline issues">
     Content Security Policy blocks inline execution of scripts and stylesheets
   </message>
   <message name="IDS_DEVTOOLS_5bf12c4c7d2579c8586373ced46b5398" desc="Title for CSS Grid tooling option">
@@ -606,7 +606,7 @@
   <message name="IDS_DEVTOOLS_b600e0facf21b7d4a9a769a60b236ba1" desc="Title of a setting under the Debugger category that can be invoked through the Command Menu">
     Enable JavaScript
   </message>
-  <message name="IDS_DEVTOOLS_b9192f20af774cee9221afdc60f1b11c" desc="Bullet point of resolving CSP inline violation">
+  <message name="IDS_DEVTOOLS_b9192f20af774cee9221afdc60f1b11c" desc="Bullet point for issue message for CSP inline issues">
     adding unsafe-inline as a source to the CSP header
   </message>
   <message name="IDS_DEVTOOLS_b9a5a0162829cba9db8b77daa75ec604" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
@@ -637,7 +637,7 @@
   <message name="IDS_DEVTOOLS_beff15b1acf49b84bf1080cceb920ebf" desc="Title of a media query that can be emulated via the Rendering drawer">
     prefers-color-scheme: dark
   </message>
-  <message name="IDS_DEVTOOLS_bfbdda72803f950364e1ff10adbc64f3" desc="Part of the issue message for CSP inline violations">
+  <message name="IDS_DEVTOOLS_bfbdda72803f950364e1ff10adbc64f3" desc="Part of issue message for CSP inline issues">
     The Content Security Policy (CSP) prevents cross-site scripting attacks by blocking inline execution of scripts
      and style sheets.
   </message>

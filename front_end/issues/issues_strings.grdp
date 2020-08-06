@@ -9,6 +9,9 @@
   <message name="IDS_DEVTOOLS_2631c466911c8c8de9c6b3332b1a0768" desc="Title for a checkbox. Whether the issues tab should include third-party issues or not.">
     Include Issues caused by third-party sites
   </message>
+  <message name="IDS_DEVTOOLS_07fad2e297fd65e042fa00d6977b4f2d" desc="Tooltip for button linking to the Elements panel">
+    Click to reveal the violating DOM node in the Elements panel
+  </message>
   <message name="IDS_DEVTOOLS_26d528c2e706eb2c3f4d4f90fc72632a" desc="Reason for a Heavy Ad being flagged in issue view">
     CPU peak limit
   </message>

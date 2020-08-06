@@ -22,6 +22,7 @@ group("resources") {
     "performance",
     "profiler",
     "search",
+    "sensors",
     "sources",
     "webaudio",
   ]

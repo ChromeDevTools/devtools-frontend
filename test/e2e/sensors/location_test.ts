@@ -8,7 +8,7 @@ import {describe, it} from 'mocha';
 import {waitFor} from '../../shared/helper.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
-describe('Sensors panel', () => {
+describe('Location emulation on Sensors panel', () => {
   beforeEach(async () => {
     await openPanelViaMoreTools('Sensors');
   });

@@ -66,12 +66,12 @@ describe('Source Tab', async () => {
     });
 
     await step('check that the module scope content is as before', async () => {
-      const currentModuleScopeValues = await getValuesForScope('Module', 0, moduleScopeValues.length);
+      const currentModuleScopeValues = await getValuesForScope('Module');
       assert.deepEqual(currentModuleScopeValues, moduleScopeValues);
     });
 
     await step('check that the local scope content is as before', async () => {
-      const updatedLocalScopeValues = await getValuesForScope('Local', 0, localScopeValues.length);
+      const updatedLocalScopeValues = await getValuesForScope('Local');
       assert.deepEqual(updatedLocalScopeValues, localScopeValues);
     });
 

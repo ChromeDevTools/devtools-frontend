@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import * as puppeteer from 'puppeteer';
 
-import {$$, click, getBrowserAndPages, getHostedModeServerPort, goToResource, pressKey, step, typeText, waitFor, waitForFunction} from '../../shared/helper.js';
+import {$$, click, getBrowserAndPages, getHostedModeServerPort, goToResource, pressKey, step, typeText, waitFor} from '../../shared/helper.js';
 
 export const PAUSE_ON_EXCEPTION_BUTTON = '[aria-label="Pause on exceptions"]';
 export const PAUSE_BUTTON = '[aria-label="Pause script execution"]';
@@ -113,10 +113,6 @@ export async function sourceLineNumberSelector(lineNumber: number) {
 
 export async function checkBreakpointIsActive(lineNumber: number) {
   await step(`check that the breakpoint is still active at line ${lineNumber}`, async () => {
-    await waitForFunction(async () => {
-      const elements = await $$(SOURCES_LINES_SELECTOR);
-      return elements.length >= lineNumber;
-    });
     const sourcesLines = await $$(SOURCES_LINES_SELECTOR);
     const codeLineNums = await Promise.all(sourcesLines.map(elements => {
       return elements.evaluate(el => el.className);
@@ -314,7 +310,7 @@ export async function getScopeNames() {
   return scopeNames;
 }
 
-export async function getValuesForScope(scope: string, expandCount = 0, waitForNoOfValues = 0) {
+export async function getValuesForScope(scope: string, expandCount = 0) {
   const scopeSelector = `[aria-label="${scope}"]`;
   await waitFor(scopeSelector);
   for (let i = 0; i < expandCount; i++) {
@@ -323,13 +319,7 @@ export async function getValuesForScope(scope: string, expandCount = 0, waitForN
     await click(unexpandedSelector);
   }
   const valueSelector = `${scopeSelector} + ol .name-and-value`;
-  const valueSelectorElements = await waitForFunction(async () => {
-    const elements = await $$(valueSelector);
-    if (elements.length >= waitForNoOfValues) {
-      return elements;
-    }
-    return undefined;
-  });
+  const valueSelectorElements = await $$(valueSelector);
   const values = await Promise.all(valueSelectorElements.map(elem => elem.evaluate(n => n.textContent as string)));
   return values;
 }

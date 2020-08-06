@@ -19,6 +19,11 @@ export const IssueKind = {
   BreakingChange: Symbol('BreakingChange'),
 };
 
+/** @return {!Common.Settings.Setting<boolean>} */
+export function getShowThirdPartyIssuesSetting() {
+  return Common.Settings.Settings.instance().createSetting('showThirdPartyIssues', false);
+}
+
 /**
  * @typedef {{
   *            title:string,
@@ -167,5 +172,12 @@ export class Issue extends Common.ObjectWrapper.ObjectWrapper {
    */
   getCategory() {
     throw new Error('Not implemented');
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isCausedByThirdParty() {
+    return false;
   }
 }

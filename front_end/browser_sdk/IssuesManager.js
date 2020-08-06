@@ -15,6 +15,10 @@ let issuesManagerInstance = null;
  * Any client can subscribe to the events provided, and/or query the issues via the public
  * interface.
  *
+ * Additionally, the `IssuesManager` can filter Issues. All Issues are stored, but only
+ * Issues that are accepted by the filter cause events to be fired or are returned by
+ * `IssuesManager#issues()`.
+ *
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.IssuesModel.IssuesModel>}
  */
 export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper {
@@ -25,9 +29,14 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper {
     SDK.SDKModel.TargetManager.instance().observeModels(SDK.IssuesModel.IssuesModel, this);
     /** @type {!Map<string, !SDK.Issue.Issue>} */
     this._issues = new Map();
+    /** @type {!Map<string, !SDK.Issue.Issue>} */
+    this._filteredIssues = new Map();
     this._hasSeenTopFrameNavigated = false;
     SDK.FrameManager.FrameManager.instance().addEventListener(
         SDK.FrameManager.Events.TopFrameNavigated, this._onTopFrameNavigated, this);
+
+    /** @type {?Common.EventTarget.EventDescriptor} */
+    this._showThirdPartySettingsChangeListener = null;
   }
 
   /**
@@ -66,6 +75,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper {
       }
     }
     this._issues = keptIssues;
+    this._updateFilteredIssues();
     this._hasSeenTopFrameNavigated = true;
     this.dispatchEventToListeners(Events.FullUpdateRequired);
     this.dispatchEventToListeners(Events.IssuesCountUpdated);
@@ -106,22 +116,59 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper {
       return;
     }
     this._issues.set(primaryKey, issue);
-    this.dispatchEventToListeners(Events.IssueAdded, {issuesModel, issue});
-    this.dispatchEventToListeners(Events.IssuesCountUpdated);
+
+    if (this._issueFilter(issue)) {
+      this._filteredIssues.set(primaryKey, issue);
+      this.dispatchEventToListeners(Events.IssueAdded, {issuesModel, issue});
+      this.dispatchEventToListeners(Events.IssuesCountUpdated);
+    }
   }
 
   /**
    * @return {!Iterable<!SDK.Issue.Issue>}
    */
   issues() {
-    return this._issues.values();
+    return this._filteredIssues.values();
   }
 
   /**
    * @return {number}
    */
   numberOfIssues() {
-    return this._issues.size;
+    return this._filteredIssues.size;
+  }
+
+  /**
+   * @param {!SDK.Issue.Issue} issue
+   * @return {boolean}
+   */
+  _issueFilter(issue) {
+    if (!this._showThirdPartySettingsChangeListener) {
+      // _issueFilter uses the 'showThirdPartyIssues' setting. Clients of IssuesManager need
+      // a full update when the setting changes to get an up-to-date issues list.
+      //
+      // The settings change listener can't be set up in IssuesManager's constructor. At that
+      // time, the settings storage is not initialized yet, so the setting can't be created.
+      const showThirdPartyIssuesSetting = SDK.Issue.getShowThirdPartyIssuesSetting();
+      this._showThirdPartySettingsChangeListener = showThirdPartyIssuesSetting.addChangeListener(() => {
+        this._updateFilteredIssues();
+        this.dispatchEventToListeners(Events.FullUpdateRequired);
+        this.dispatchEventToListeners(Events.IssuesCountUpdated);
+      });
+    }
+
+    const showThirdPartyIssuesSetting = SDK.Issue.getShowThirdPartyIssuesSetting();
+    return showThirdPartyIssuesSetting.get() || !issue.isCausedByThirdParty();
+  }
+
+  _updateFilteredIssues() {
+    this._filteredIssues.clear();
+    // TODO(crbug.com/1011811): Replace with for .. of loop once Closure is gone.
+    this._issues.forEach((issue, key) => {
+      if (this._issueFilter(issue)) {
+        this._filteredIssues.set(key, issue);
+      }
+    });
   }
 }
 

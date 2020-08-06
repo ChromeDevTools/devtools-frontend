@@ -43,3 +43,16 @@ export class StubIssue extends Issue {
     return new StubIssue('StubIssue', [], cookieNames);
   }
 }
+
+export class ThirdPartyStubIssue extends StubIssue {
+  private isThirdParty: boolean;
+
+  constructor(code: string, isThirdParty: boolean) {
+    super(code, [], []);
+    this.isThirdParty = isThirdParty;
+  }
+
+  isCausedByThirdParty() {
+    return this.isThirdParty;
+  }
+}

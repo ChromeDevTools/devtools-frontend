@@ -4,9 +4,10 @@
 
 const {assert} = chai;
 
-import * as Common from '../../../../front_end/common/common.js';
 import * as SDK from '../../../../front_end/sdk/sdk.js';
 import * as BrowserSDK from '../../../../front_end/browser_sdk/browser_sdk.js';
+
+import {resetSettingsStorage} from '../common/SettingsHelper.js';
 import {StubIssue, ThirdPartyStubIssue} from '../sdk/StubIssue.js';
 import {MockIssuesModel} from '../sdk/MockIssuesModel.js';
 
@@ -36,17 +37,8 @@ describe('IssuesManager', () => {
     assert.deepStrictEqual(issueCodes, ['StubIssue2', 'StubIssue2']);
   });
 
-  let settings: Common.Settings.Settings|null = null;
-  beforeEach(() => {
-    // @ts-ignore Settings instantiation looks up settings for extensions. We set a dummy value here, otherwise
-    //            this will result in a call to undefined.
-    self.runtime = {extensions: () => []};
-    settings = Common.Settings.Settings.instance({
-      forceNew: true,
-      globalStorage: new Common.Settings.SettingsStorage({}),
-      localStorage: new Common.Settings.SettingsStorage({}),
-    });
-  });
+  beforeEach(resetSettingsStorage);
+  afterEach(resetSettingsStorage);
 
   it('filters third-party issues when the third-party issues setting is false, includes them otherwise', () => {
     const issues = [
@@ -56,8 +48,7 @@ describe('IssuesManager', () => {
       new ThirdPartyStubIssue('StubIssue4', true),
     ];
 
-    const thirdPartySetting = settings?.createSetting('showThirdPartyIssues', false);
-    thirdPartySetting?.set(false);
+    SDK.Issue.getShowThirdPartyIssuesSetting().set(false);
 
     const issuesManager = new BrowserSDK.IssuesManager.IssuesManager();
     const mockModel = new MockIssuesModel([]);
@@ -75,7 +66,7 @@ describe('IssuesManager', () => {
     assert.deepStrictEqual(issueCodes, ['AllowedStubIssue1', 'AllowedStubIssue3']);
     assert.deepStrictEqual(firedIssueAddedEventCodes, ['AllowedStubIssue1', 'AllowedStubIssue3']);
 
-    thirdPartySetting?.set(true);
+    SDK.Issue.getShowThirdPartyIssuesSetting().set(true);
 
     issueCodes = Array.from(issuesManager.issues()).map(i => i.code());
     assert.deepStrictEqual(issueCodes, ['AllowedStubIssue1', 'StubIssue2', 'AllowedStubIssue3', 'StubIssue4']);

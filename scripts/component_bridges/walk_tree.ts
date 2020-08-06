@@ -312,6 +312,31 @@ const findNestedReferencesForTypeReference =
         // If it wasn't a type alias, it's an interface, so walk through the interface and add any found nested types.
         const nestedInterfaces = findNestedInterfacesInInterface(interfaceOrTypeAliasDeclaration);
         nestedInterfaces.forEach(nestedInterface => foundNestedReferences.add(nestedInterface));
+
+        // if the interface has any extensions, we need to dive into those too
+        // e.g. interface X extends Y means we have to check Y for any additional type references
+        if (interfaceOrTypeAliasDeclaration.heritageClauses) {
+          interfaceOrTypeAliasDeclaration.heritageClauses.forEach(heritageClause => {
+            const extendNames = heritageClause.types.map(heritageClauseName => {
+              if (ts.isIdentifier(heritageClauseName.expression)) {
+                return heritageClauseName.expression.escapedText.toString();
+              }
+              throw new Error('Unexpected heritageClauseName with no identifier.');
+            });
+
+            extendNames.forEach(interfaceName => {
+              const interfaceDec = findNodeForTypeReferenceName(state, interfaceName);
+              if (!interfaceDec) {
+                throw new Error(`Could not find interface: ${interfaceName}`);
+              }
+              if (!ts.isInterfaceDeclaration(interfaceDec)) {
+                throw new Error('Found invalid TypeScript: an interface cannot extend a type.');
+              }
+              const nestedInterfaces = findNestedInterfacesInInterface(interfaceDec);
+              nestedInterfaces.forEach(nestedInterface => foundNestedReferences.add(nestedInterface));
+            });
+          });
+        }
       }
       return foundNestedReferences;
     };

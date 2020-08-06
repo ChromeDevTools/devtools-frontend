@@ -1106,5 +1106,38 @@ export let Person`);
 * }}`);
       assert.include(interfaces[0].join('\n'), 'export let Person');
     });
+
+    it('will include nested types from interfaces that get extended', () => {
+      const state = parseCode(`interface NamedThing {
+        name: Name;
+      }
+
+      interface Name {
+        first: string;
+        last: string;
+      }
+
+      interface Person extends NamedThing {
+        favouriteColour: string;
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public update(person: Person) {}
+      }`);
+
+      const interfaces = generateInterfaces(state);
+
+      assert.strictEqual(interfaces.length, 2);
+      assert.include(interfaces[0].join('\n'), `* @typedef {{
+* name:Name,
+* favouriteColour:string,
+* }}`);
+      assert.include(interfaces[0].join('\n'), 'export let Person');
+      assert.include(interfaces[1].join('\n'), `* @typedef {{
+* first:string,
+* last:string,
+* }}`);
+      assert.include(interfaces[1].join('\n'), 'export let Name');
+    });
   });
 });

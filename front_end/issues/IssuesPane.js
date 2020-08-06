@@ -1051,6 +1051,13 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     const toolbarContainer = this.contentElement.createChild('div', 'issues-toolbar-container');
     new UI.Toolbar.Toolbar('issues-toolbar-left', toolbarContainer);
     const rightToolbar = new UI.Toolbar.Toolbar('issues-toolbar-right', toolbarContainer);
+
+    // TODO(crbug.com/1011811): Remove cast once closure is gone. Closure requires an upcast to 'any' from 'boolean'.
+    const thirdPartySetting = /** @type {!Common.Settings.Setting<*>} */ (SDK.Issue.getShowThirdPartyIssuesSetting());
+    const showThirdPartyCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
+        thirdPartySetting, ls`Include Issues caused by third-party sites`, ls`Include third-party issues`);
+    rightToolbar.appendToolbarItem(showThirdPartyCheckbox);
+
     rightToolbar.appendSeparator();
     const toolbarWarnings = document.createElement('div');
     toolbarWarnings.classList.add('toolbar-warnings');

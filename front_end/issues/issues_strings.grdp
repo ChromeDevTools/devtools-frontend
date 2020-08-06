@@ -6,6 +6,9 @@
   <message name="IDS_DEVTOOLS_05bb50eae282e818b1a9a4b0ada16150" desc="Reason for a Heavy Ad being flagged in issue view">
     Network limit
   </message>
+  <message name="IDS_DEVTOOLS_2631c466911c8c8de9c6b3332b1a0768" desc="Title for a checkbox. Whether the issues tab should include third-party issues or not.">
+    Include Issues caused by third-party sites
+  </message>
   <message name="IDS_DEVTOOLS_26d528c2e706eb2c3f4d4f90fc72632a" desc="Reason for a Heavy Ad being flagged in issue view">
     CPU peak limit
   </message>
@@ -17,6 +20,9 @@
   </message>
   <message name="IDS_DEVTOOLS_3298f13049d19cffaa37ca931dd4d421" desc="Label for number of affected resources indication in issue view">
     requests
+  </message>
+  <message name="IDS_DEVTOOLS_4c256011797a3f452ce4955e7f0c396f" desc="Label for a checkbox. Whether the issues tab should include third-party issues or not.">
+    Include third-party issues
   </message>
   <message name="IDS_DEVTOOLS_55b558c7ef820e6e00e5993b9e55d93b" desc="Label for number of affected resources indication in issue view">
     resources

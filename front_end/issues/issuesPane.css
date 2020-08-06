@@ -19,7 +19,7 @@
 }
 
 .issues-toolbar-container {
-  display: none;
+  display: flex;
   flex: none;
 }
 

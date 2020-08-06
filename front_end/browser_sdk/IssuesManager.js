@@ -77,10 +77,8 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper {
       }
     }
     this._issues = keptIssues;
-    this._updateFilteredIssues();
     this._hasSeenTopFrameNavigated = true;
-    this.dispatchEventToListeners(Events.FullUpdateRequired);
-    this.dispatchEventToListeners(Events.IssuesCountUpdated);
+    this._updateFilteredIssues();
   }
 
   /**
@@ -94,8 +92,6 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper {
     // when we attach to the top frame.
     if (frame.isTopFrame()) {
       this._updateFilteredIssues();
-      this.dispatchEventToListeners(Events.FullUpdateRequired);
-      this.dispatchEventToListeners(Events.IssuesCountUpdated);
     }
   }
 
@@ -170,8 +166,6 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper {
       const showThirdPartyIssuesSetting = SDK.Issue.getShowThirdPartyIssuesSetting();
       this._showThirdPartySettingsChangeListener = showThirdPartyIssuesSetting.addChangeListener(() => {
         this._updateFilteredIssues();
-        this.dispatchEventToListeners(Events.FullUpdateRequired);
-        this.dispatchEventToListeners(Events.IssuesCountUpdated);
       });
     }
 
@@ -187,6 +181,9 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper {
         this._filteredIssues.set(key, issue);
       }
     });
+
+    this.dispatchEventToListeners(Events.FullUpdateRequired);
+    this.dispatchEventToListeners(Events.IssuesCountUpdated);
   }
 }
 

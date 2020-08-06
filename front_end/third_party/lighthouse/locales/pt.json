@@ -396,7 +396,7 @@
     "message": "Tempo total de CPU"
   },
   "lighthouse-core/audits/bootup-time.js | description": {
-    "message": "Diminua o tempo gasto na análise, compilação e execução de JS. Você perceberá que exibir payloads de JS menores ajuda a fazer isso. [Saiba mais](https://web.dev/bootup-time)."
+    "message": "Diminua o tempo gasto na análise, compilação e execução de JS. Você perceberá que exibir payloads de JS menores ajuda a fazer isso. [Saiba mais](https://web.dev/bootup-time/)."
   },
   "lighthouse-core/audits/bootup-time.js | failureTitle": {
     "message": "Reduza o tempo de execução de JavaScript"
@@ -411,28 +411,34 @@
     "message": "Remova módulos duplicados em pacotes JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | description": {
-    "message": "GIFs grandes não são eficientes para exibir conteúdo animado. Use vídeos MPEG4/WebM para animações e PNG/WebP para imagens estáticas em vez de GIF para economizar bytes de rede. [Saiba mais](https://web.dev/efficient-animated-content)"
+    "message": "GIFs grandes não são eficientes para exibir conteúdo animado. Use vídeos MPEG4/WebM para animações e PNG/WebP para imagens estáticas em vez de GIF para economizar bytes de rede. [Saiba mais](https://web.dev/efficient-animated-content/)"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | title": {
     "message": "Use formatos de vídeo para conteúdo animado"
   },
+  "lighthouse-core/audits/byte-efficiency/legacy-javascript.js | description": {
+    "message": "Polyfills e transforms permitem que navegadores legados usem novos recursos do JavaScript. No entanto, muitos não são necessários para navegadores modernos. Para seu JavaScript empacotado, adote uma estratégia moderna de implantação de scripts, usando detecção de recursos por módulo/sem módulo para reduzir o total de códigos enviados a navegadores modernos e, ao mesmo tempo, manter a compatibilidade com navegadores legados. [Saiba mais](https://philipwalton.com/articles/deploying-es2015-code-in-production-today/)"
+  },
+  "lighthouse-core/audits/byte-efficiency/legacy-javascript.js | title": {
+    "message": "Evitar a exibição de JavaScript legado em navegadores modernos"
+  },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | description": {
-    "message": "A fim de reduzir o tempo para interação da página, faça o carregamento lento de imagens fora da tela e ocultas quando todos os recursos críticos já estiverem carregados. [Saiba mais](https://web.dev/offscreen-images)."
+    "message": "A fim de reduzir o tempo para interação da página, faça o carregamento lento de imagens fora da tela e ocultas quando todos os recursos críticos já estiverem carregados. [Saiba mais](https://web.dev/offscreen-images/)."
   },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | title": {
     "message": "Adie imagens fora da tela"
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | description": {
-    "message": "Os recursos estão bloqueando a primeira exibição da sua página. Exiba JS/CSS crítico inline e adie todos os JS/estilos não críticos. [Saiba mais](https://web.dev/render-blocking-resources)."
+    "message": "Os recursos estão bloqueando a primeira exibição da sua página. Exiba JS/CSS crítico inline e adie todos os JS/estilos não críticos. [Saiba mais](https://web.dev/render-blocking-resources/)."
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | title": {
     "message": "Elimine recursos que impedem a renderização"
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | description": {
-    "message": "Grandes payloads de rede geram custos para o usuário e estão diretamente relacionados a tempos de carregamento maiores. [Saiba mais](https://web.dev/total-byte-weight)."
+    "message": "Grandes payloads de rede geram custos para o usuário e estão diretamente relacionados a tempos de carregamento maiores. [Saiba mais](https://web.dev/total-byte-weight/)."
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | displayValue": {
-    "message": "O tamanho total foi de {totalBytes, number, bytes} KB"
+    "message": "O tamanho total foi de {totalBytes, number, bytes} KiB"
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | failureTitle": {
     "message": "Evite payloads de rede muito grandes"
@@ -441,31 +447,31 @@
     "message": "Evita payloads de rede muito grandes"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | description": {
-    "message": "A redução de arquivos CSS pode diminuir o tamanho do payload de rede. [Saiba mais](https://web.dev/unminified-css)."
+    "message": "A redução de arquivos CSS pode diminuir o tamanho do payload de rede. [Saiba mais](https://web.dev/unminified-css/)."
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | title": {
     "message": "Reduza o CSS"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | description": {
-    "message": "A redução de arquivos JavaScript pode diminuir o tamanho de payloads e o tempo de análise de scripts. [Saiba mais](https://web.dev/unminified-javascript)."
+    "message": "A redução de arquivos JavaScript pode diminuir o tamanho de payloads e o tempo de análise de scripts. [Saiba mais](https://web.dev/unminified-javascript/)."
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | title": {
     "message": "Reduza o JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "Remova as regras inativas das folhas de estilo e adie o carregamento de CSS não usado para conteúdo acima da dobra, a fim de reduzir o consumo desnecessário de bytes da atividade da rede. [Saiba mais](https://web.dev/unused-css-rules)."
+    "message": "Remova as regras inativas das folhas de estilo e adie o carregamento de CSS não usado para conteúdo acima da dobra, a fim de reduzir o consumo desnecessário de bytes da atividade da rede. [Saiba mais](https://web.dev/unused-css-rules/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
     "message": "Remova CSS não utilizado"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "Remova o JavaScript não utilizado para reduzir o consumo de bytes da atividade de rede. [Saiba mais](https://web.dev/remove-unused-code/)."
+    "message": "Remova o JavaScript não utilizado para reduzir o consumo de bytes da atividade de rede. [Saiba mais](https://web.dev/unused-javascript/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
     "message": "Remova o JavaScript não utilizado"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
-    "message": "Um cache com ciclo de vida longo pode acelerar visitas repetidas à sua página. [Saiba mais](https://web.dev/uses-long-cache-ttl)."
+    "message": "Um cache com ciclo de vida longo pode acelerar visitas repetidas à sua página. [Saiba mais](https://web.dev/uses-long-cache-ttl/)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | displayValue": {
     "message": "{itemCount,plural, =1{1 recurso encontrado}one{# recurso encontrado}other{# recursos encontrados}}"
@@ -477,31 +483,31 @@
     "message": "Usa uma política de cache eficiente em recursos estáticos"
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | description": {
-    "message": "Imagens otimizadas são carregadas mais rapidamente e consomem menos dados da rede celular. [Saiba mais](https://web.dev/uses-optimized-images)."
+    "message": "Imagens otimizadas são carregadas mais rapidamente e consomem menos dados da rede celular. [Saiba mais](https://web.dev/uses-optimized-images/)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Codifique as imagens com eficiência"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
-    "message": "Veicule imagens que tenham o tamanho adequado para economizar dados da rede celular e melhorar o tempo de carregamento. [Saiba mais](https://web.dev/uses-responsive-images)."
+    "message": "Veicule imagens que tenham o tamanho adequado para economizar dados da rede celular e melhorar o tempo de carregamento. [Saiba mais](https://web.dev/uses-responsive-images/)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | title": {
     "message": "Defina um tamanho adequado para as imagens"
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | description": {
-    "message": "Os recursos baseados em texto precisam ser veiculados com compactação (gzip, deflate ou brotli) para minimizar o total de bytes da rede. [Saiba mais](https://web.dev/uses-text-compression)."
+    "message": "Os recursos baseados em texto precisam ser veiculados com compactação (gzip, deflate ou brotli) para minimizar o total de bytes da rede. [Saiba mais](https://web.dev/uses-text-compression/)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | title": {
     "message": "Ative a compactação de texto"
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | description": {
-    "message": "Formatos de imagem como JPEG 2000, JPEG XR e WebP geralmente oferecem uma melhor compactação do que PNG ou JPEG, o que significa downloads mais rápidos e menor consumo de dados. [Saiba mais](https://web.dev/uses-webp-images)."
+    "message": "Formatos de imagem como JPEG 2000, JPEG XR e WebP geralmente oferecem uma melhor compactação do que PNG ou JPEG, o que significa downloads mais rápidos e menor consumo de dados. [Saiba mais](https://web.dev/uses-webp-images/)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | title": {
     "message": "Disponibilize imagens em formatos de última geração"
   },
   "lighthouse-core/audits/content-width.js | description": {
-    "message": "Se a largura do conteúdo do seu app não corresponder à largura da janela de visualização, não será possível otimizar o app para telas de dispositivos móveis. [Saiba mais](https://web.dev/content-width)."
+    "message": "Se a largura do conteúdo do seu app não corresponder à largura da janela de visualização, não será possível otimizar o app para telas de dispositivos móveis. [Saiba mais](https://web.dev/content-width/)."
   },
   "lighthouse-core/audits/content-width.js | explanation": {
     "message": "O tamanho da janela de visualização de {innerWidth} px não corresponde ao tamanho da janela {outerWidth} px."
@@ -513,7 +519,7 @@
     "message": "O conteúdo está no tamanho correto para a janela de visualização"
   },
   "lighthouse-core/audits/critical-request-chains.js | description": {
-    "message": "As cadeias de solicitação críticas abaixo mostram quais recursos são carregados com prioridade alta. Diminua o tamanho das cadeias, reduza o tamanho do download de recursos ou adie o download de recursos desnecessários para melhorar o carregamento de página. [Saiba mais](https://web.dev/critical-request-chains)."
+    "message": "As cadeias de solicitação críticas abaixo mostram quais recursos são carregados com prioridade alta. Diminua o tamanho das cadeias, reduza o tamanho do download de recursos ou adie o download de recursos desnecessários para melhorar o carregamento de página. [Saiba mais](https://web.dev/critical-request-chains/)."
   },
   "lighthouse-core/audits/critical-request-chains.js | displayValue": {
     "message": "{itemCount,plural, =1{1 rede encontrada}one{# rede encontrada}other{# redes encontradas}}"
@@ -528,7 +534,7 @@
     "message": "Linha"
   },
   "lighthouse-core/audits/deprecations.js | description": {
-    "message": "As APIs obsoletas acabarão sendo removidas do navegador. [Saiba mais](https://web.dev/deprecations)."
+    "message": "As APIs obsoletas acabarão sendo removidas do navegador. [Saiba mais](https://web.dev/deprecations/)."
   },
   "lighthouse-core/audits/deprecations.js | displayValue": {
     "message": "{itemCount,plural, =1{1 aviso encontrado}one{# aviso encontrado}other{# avisos encontrados}}"
@@ -540,7 +546,7 @@
     "message": "Evita APIs obsoletas"
   },
   "lighthouse-core/audits/dobetterweb/appcache-manifest.js | description": {
-    "message": "O cache de aplicativo está obsoleto. [Saiba mais](https://web.dev/appcache-manifest)."
+    "message": "O cache de aplicativo está obsoleto. [Saiba mais](https://web.dev/appcache-manifest/)."
   },
   "lighthouse-core/audits/dobetterweb/appcache-manifest.js | displayValue": {
     "message": "\"{AppCacheManifest}\" encontrado"
@@ -552,7 +558,7 @@
     "message": "Evita o cache de aplicativo"
   },
   "lighthouse-core/audits/dobetterweb/charset.js | description": {
-    "message": "Uma declaração de codificação de caracteres é obrigatória. Ela pode ser feita com uma tag <meta> nos primeiros 1.024 bytes do HTML ou no cabeçalho de resposta HTTP de tipo de conteúdo. [Saiba mais](https://www.w3.org/International/questions/qa-html-encoding-declarations)."
+    "message": "Uma declaração de codificação de caracteres é obrigatória. Ela pode ser feita com uma tag <meta> nos primeiros 1.024 bytes do HTML ou no cabeçalho de resposta HTTP de tipo de conteúdo. [Saiba mais](https://web.dev/charset/)."
   },
   "lighthouse-core/audits/dobetterweb/charset.js | failureTitle": {
     "message": "A declaração de charset está ausente ou ocorre tardiamente no HTML"
@@ -561,7 +567,7 @@
     "message": "Define corretamente o charset"
   },
   "lighthouse-core/audits/dobetterweb/doctype.js | description": {
-    "message": "A especificação de um doctype evita que o navegador alterne para o modo quirks. [Saiba mais](https://web.dev/doctype)."
+    "message": "A especificação de um doctype evita que o navegador alterne para o modo quirks. [Saiba mais](https://web.dev/doctype/)."
   },
   "lighthouse-core/audits/dobetterweb/doctype.js | explanationBadDoctype": {
     "message": "O nome do doctype precisa ser o `html` da string em letra minúscula"
@@ -588,7 +594,7 @@
     "message": "Valor"
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | description": {
-    "message": "Um DOM grande aumentará o uso da memória, causará [cálculos de estilo](https://developers.google.com/web/fundamentals/performance/rendering/reduce-the-scope-and-complexity-of-style-calculations) mais longos e produzirá [reflows de layout](https://developers.google.com/speed/articles/reflow) dispendiosos. [Saiba mais](https://web.dev/dom-size)."
+    "message": "Um DOM grande aumentará o uso da memória, causará [cálculos de estilo](https://developers.google.com/web/fundamentals/performance/rendering/reduce-the-scope-and-complexity-of-style-calculations) mais longos e produzirá [reflows de layout](https://developers.google.com/speed/articles/reflow) dispendiosos. [Saiba mais](https://web.dev/dom-size/)."
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | displayValue": {
     "message": "{itemCount,plural, =1{1 elemento}one{# elemento}other{# elementos}}"
@@ -612,7 +618,7 @@
     "message": "Âncoras com falha"
   },
   "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
-    "message": "Adicione `rel=\"noopener\"` ou `rel=\"noreferrer\"` a qualquer link externo para melhorar o desempenho e evitar vulnerabilidades de segurança. [Saiba mais](https://web.dev/external-anchors-use-rel-noopener)."
+    "message": "Adicione `rel=\"noopener\"` ou `rel=\"noreferrer\"` a qualquer link externo para melhorar o desempenho e evitar vulnerabilidades de segurança. [Saiba mais](https://web.dev/external-anchors-use-rel-noopener/)."
   },
   "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | failureTitle": {
     "message": "Links para destinos de origem cruzada não são seguros"
@@ -624,7 +630,7 @@
     "message": "Não é possível determinar o destino do item fixo ({anchorHTML}). Se não for usado como um hiperlink, remova target=_blank."
   },
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | description": {
-    "message": "Os usuários não confiam ou ficam confusos com sites que solicitam a localização sem contexto. Vincule a solicitação a uma ação do usuário. [Saiba mais](https://web.dev/geolocation-on-start)."
+    "message": "Os usuários não confiam ou ficam confusos com sites que solicitam a localização sem contexto. Vincule a solicitação a uma ação do usuário. [Saiba mais](https://web.dev/geolocation-on-start/)."
   },
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | failureTitle": {
     "message": "Solicita a permissão de geolocalização no carregamento de página"
@@ -636,13 +642,13 @@
     "message": "Versão"
   },
   "lighthouse-core/audits/dobetterweb/js-libraries.js | description": {
-    "message": "Todas as bibliotecas JavaScript de front-end detectadas na página. [Saiba mais](https://web.dev/js-libraries)."
+    "message": "Todas as bibliotecas JavaScript de front-end detectadas na página. [Saiba mais](https://web.dev/js-libraries/)."
   },
   "lighthouse-core/audits/dobetterweb/js-libraries.js | title": {
     "message": "Bibliotecas JavaScript detectadas"
   },
   "lighthouse-core/audits/dobetterweb/no-document-write.js | description": {
-    "message": "Para usuários em conexões lentas, os scripts externos injetados dinamicamente via `document.write()` podem atrasar o carregamento de página em dezenas de segundos. [Saiba mais](https://web.dev/no-document-write)."
+    "message": "Para usuários em conexões lentas, os scripts externos injetados dinamicamente via `document.write()` podem atrasar o carregamento de página em dezenas de segundos. [Saiba mais](https://web.dev/no-document-write/)."
   },
   "lighthouse-core/audits/dobetterweb/no-document-write.js | failureTitle": {
     "message": "Evitar `document.write()`"
@@ -660,7 +666,7 @@
     "message": "Contagem de vulnerabilidades"
   },
   "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | description": {
-    "message": "Alguns scripts de terceiros podem conter vulnerabilidades de segurança conhecidas, facilmente identificadas e exploradas por invasores. [Saiba mais](https://web.dev/no-vulnerable-libraries)."
+    "message": "Alguns scripts de terceiros podem conter vulnerabilidades de segurança conhecidas, facilmente identificadas e exploradas por invasores. [Saiba mais](https://web.dev/no-vulnerable-libraries/)."
   },
   "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | displayValue": {
     "message": "{itemCount,plural, =1{1 vulnerabilidade detectada}one{# vulnerabilidade detectada}other{# vulnerabilidades detectadas}}"
@@ -681,7 +687,7 @@
     "message": "Evita bibliotecas JavaScript de front-end com vulnerabilidades de segurança conhecidas"
   },
   "lighthouse-core/audits/dobetterweb/notification-on-start.js | description": {
-    "message": "Os usuários não confiam ou ficam confusos com sites que solicitam o envio de notificações sem contexto. Vincule a solicitação a gestos do usuário. [Saiba mais](https://web.dev/notification-on-start)."
+    "message": "Os usuários não confiam ou ficam confusos com sites que solicitam o envio de notificações sem contexto. Vincule a solicitação a gestos do usuário. [Saiba mais](https://web.dev/notification-on-start/)."
   },
   "lighthouse-core/audits/dobetterweb/notification-on-start.js | failureTitle": {
     "message": "Solicita a permissão de notificação no carregamento de página"
@@ -689,11 +695,8 @@
   "lighthouse-core/audits/dobetterweb/notification-on-start.js | title": {
     "message": "Evita o pedido da permissão de notificação no carregamento de página"
   },
-  "lighthouse-core/audits/dobetterweb/password-inputs-can-be-pasted-into.js | columnFailingElem": {
-    "message": "Elementos com falha"
-  },
   "lighthouse-core/audits/dobetterweb/password-inputs-can-be-pasted-into.js | description": {
-    "message": "Impedir a colagem da senha prejudica a política de boa segurança. [Saiba mais](https://web.dev/password-inputs-can-be-pasted-into)."
+    "message": "Impedir a colagem da senha prejudica a política de boa segurança. [Saiba mais](https://web.dev/password-inputs-can-be-pasted-into/)."
   },
   "lighthouse-core/audits/dobetterweb/password-inputs-can-be-pasted-into.js | failureTitle": {
     "message": "Evita que o usuário cole nos campos de senha"
@@ -705,19 +708,16 @@
     "message": "Protocolo"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | description": {
-    "message": "HTTP/2 oferece muitos benefícios com relação ao HTTP/1.1, incluindo cabeçalhos binários, multiplexação e push do servidor. [Saiba mais](https://web.dev/uses-http2)."
+    "message": "HTTP/2 oferece muitos benefícios com relação ao HTTP/1.1, incluindo cabeçalhos binários, multiplexação e push do servidor. [Saiba mais](https://web.dev/uses-http2/)."
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
     "message": "{itemCount,plural, =1{1 solicitação não veiculada via HTTP/2}one{# solicitação não veiculada via HTTP/2}other{# solicitações não veiculadas via HTTP/2}}"
   },
-  "lighthouse-core/audits/dobetterweb/uses-http2.js | failureTitle": {
-    "message": "Não utiliza HTTP/2 para todos os recursos"
-  },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | title": {
-    "message": "Usa HTTP/2 para os próprios recursos"
+    "message": "Use HTTP/2"
   },
   "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | description": {
-    "message": "Marque os listeners de eventos de toque e rolagem como `passive` para melhorar o desempenho de rolagem da página. [Saiba mais](https://web.dev/uses-passive-event-listeners)."
+    "message": "Marque os listeners de eventos de toque e rolagem como `passive` para melhorar o desempenho de rolagem da página. [Saiba mais](https://web.dev/uses-passive-event-listeners/)."
   },
   "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | failureTitle": {
     "message": "Não utiliza listeners passivos para melhorar o desempenho de rolagem"
@@ -729,7 +729,7 @@
     "message": "Descrição"
   },
   "lighthouse-core/audits/errors-in-console.js | description": {
-    "message": "Os erros registrados no console indicam problemas não resolvidos. Eles podem ocorrer devido a falhas de solicitação de rede e outras questões relacionadas ao navegador. [Saiba mais](https://web.dev/errors-in-console)"
+    "message": "Os erros registrados no console indicam problemas não resolvidos. Eles podem ocorrer devido a falhas de solicitação de rede e outras questões relacionadas ao navegador. [Saiba mais](https://web.dev/errors-in-console/)"
   },
   "lighthouse-core/audits/errors-in-console.js | failureTitle": {
     "message": "Erros do navegador foram registrados no console"
@@ -738,7 +738,7 @@
     "message": "Nenhum erro do navegador registrado no console"
   },
   "lighthouse-core/audits/font-display.js | description": {
-    "message": "Use o recurso CSS de exibição de fonte para garantir que o texto possa ser visto pelo usuário enquanto as webfonts são carregadas. [Saiba mais](https://web.dev/font-display)."
+    "message": "Use o recurso CSS de exibição de fonte para garantir que o texto possa ser visto pelo usuário enquanto as webfonts são carregadas. [Saiba mais](https://web.dev/font-display/)."
   },
   "lighthouse-core/audits/font-display.js | failureTitle": {
     "message": "Garanta que o texto continue visível durante o carregamento da webfont"
@@ -746,8 +746,8 @@
   "lighthouse-core/audits/font-display.js | title": {
     "message": "Todo o texto continua visível durante o carregamento da webfont"
   },
-  "lighthouse-core/audits/font-display.js | undeclaredFontURLWarning": {
-    "message": "O Lighthouse não conseguiu verificar automaticamente o valor de exibição da fonte para o seguinte URL: {fontURL}."
+  "lighthouse-core/audits/font-display.js | undeclaredFontOriginWarning": {
+    "message": "{fontCountForOrigin,plural, =1{O Lighthouse não conseguiu verificar automaticamente o valor `font-display` para o URL {fontOrigin} de origem.}one{O Lighthouse não conseguiu verificar automaticamente o valor `font-display` para o URL {fontOrigin} de origem.}other{O Lighthouse não conseguiu verificar automaticamente os valores `font-display` para o URL {fontOrigin} de origem.}}"
   },
   "lighthouse-core/audits/image-aspect-ratio.js | columnActual": {
     "message": "Proporção (real)"
@@ -756,7 +756,7 @@
     "message": "Proporção (exibida)"
   },
   "lighthouse-core/audits/image-aspect-ratio.js | description": {
-    "message": "As dimensões de exibição da imagem devem corresponder à proporção. [Saiba mais](https://web.dev/image-aspect-ratio)."
+    "message": "As dimensões de exibição da imagem devem corresponder à proporção. [Saiba mais](https://web.dev/image-aspect-ratio/)."
   },
   "lighthouse-core/audits/image-aspect-ratio.js | failureTitle": {
     "message": "Exibe imagens com a proporção incorreta"
@@ -777,16 +777,16 @@
     "message": "Tamanho esperado"
   },
   "lighthouse-core/audits/image-size-responsive.js | description": {
-    "message": "As dimensões naturais da imagem precisam ser proporcionais ao tamanho da tela e à proporção de pixels para maximizar a nitidez. [Saiba mais](https://web.dev/image-size-responsive)."
+    "message": "As dimensões naturais da imagem precisam ser proporcionais ao tamanho da tela e à proporção de pixels para maximizar a nitidez. [Saiba mais](https://web.dev/serve-responsive-images/)."
   },
   "lighthouse-core/audits/image-size-responsive.js | failureTitle": {
-    "message": "Mostra imagens com tamanho inadequado"
+    "message": "Exibe imagens em baixa resolução"
   },
   "lighthouse-core/audits/image-size-responsive.js | title": {
-    "message": "Mostra imagens com tamanho adequado"
+    "message": "Exibe imagens em resolução adequada"
   },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "Os navegadores podem solicitar automaticamente aos usuários que adicionem o app à tela inicial deles, o que pode aumentar a interação. [Saiba mais](https://web.dev/installable-manifest)."
+    "message": "Os navegadores podem solicitar automaticamente aos usuários que adicionem o app à tela inicial deles, o que pode aumentar a interação. [Saiba mais](https://web.dev/installable-manifest/)."
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
     "message": "O manifesto do app da Web não atende os requisitos de instabilidade."
@@ -794,11 +794,20 @@
   "lighthouse-core/audits/installable-manifest.js | title": {
     "message": "O manifesto do app de Web atende aos requisitos de instabilidade."
   },
+  "lighthouse-core/audits/is-on-https.js | allowed": {
+    "message": "Permitido"
+  },
+  "lighthouse-core/audits/is-on-https.js | blocked": {
+    "message": "Bloqueado"
+  },
   "lighthouse-core/audits/is-on-https.js | columnInsecureURL": {
     "message": "URL não seguro"
   },
+  "lighthouse-core/audits/is-on-https.js | columnResolution": {
+    "message": "Resolução da solicitação"
+  },
   "lighthouse-core/audits/is-on-https.js | description": {
-    "message": "Todos os sites devem ser protegidos com HTTPS, mesmo aqueles que não lidam com dados confidenciais. O HTTPS evita que invasores falsifiquem ou escutem passivamente a comunicação entre o app e o usuário, além de ser um pré-requisito para HTTP/2 e muitas novas APIs para plataforma da Web. [Saiba mais](https://web.dev/is-on-https)."
+    "message": "Todos os sites precisam ser protegidos com HTTPS, mesmo aqueles que não lidam com dados confidenciais. Por isso, é preciso evitar [conteúdo misto](https://developers.google.com/web/fundamentals/security/prevent-mixed-content/what-is-mixed-content), em que alguns recursos são carregados por HTTP mesmo quando o pedido inicial é exibido por HTTPS. O HTTPS evita que invasores falsifiquem ou escutem passivamente a comunicação entre o app e o usuário, além de ser um pré-requisito para HTTP/2 e várias novas APIs para plataforma da Web. [Saiba mais](https://web.dev/is-on-https/)."
   },
   "lighthouse-core/audits/is-on-https.js | displayValue": {
     "message": "{itemCount,plural, =1{1 solicitação não segura encontrada}one{# solicitação não segura encontrada}other{# solicitações não seguras encontradas}}"
@@ -809,14 +818,35 @@
   "lighthouse-core/audits/is-on-https.js | title": {
     "message": "Utiliza HTTPS"
   },
-  "lighthouse-core/audits/legacy-javascript.js | description": {
-    "message": "Polyfills e transforms permitem que navegadores legados usem novos recursos do JavaScript. No entanto, muitos não são necessários para navegadores modernos. Para seu JavaScript empacotado, adote uma estratégia moderna de implantação de scripts, usando detecção de recursos por módulo/sem módulo para reduzir o total de códigos enviados a navegadores modernos e, ao mesmo tempo, manter a compatibilidade com navegadores legados. [Saiba mais](https://philipwalton.com/articles/deploying-es2015-code-in-production-today/)"
+  "lighthouse-core/audits/is-on-https.js | upgraded": {
+    "message": "Upgrade automático para HTTPS"
   },
-  "lighthouse-core/audits/legacy-javascript.js | title": {
-    "message": "JavaScript legado"
+  "lighthouse-core/audits/is-on-https.js | warning": {
+    "message": "Permitido com um alerta"
+  },
+  "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
+    "message": "Este é o maior elemento com conteúdo na janela de visualização. [Saiba mais](https://web.dev/lighthouse-largest-contentful-paint/)"
+  },
+  "lighthouse-core/audits/largest-contentful-paint-element.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 elemento encontrado}one{# elemento encontrado}other{# elementos encontrados}}"
+  },
+  "lighthouse-core/audits/largest-contentful-paint-element.js | title": {
+    "message": "Elemento de Maior exibição de conteúdo"
+  },
+  "lighthouse-core/audits/layout-shift-elements.js | columnContribution": {
+    "message": "Contribuição da CLS"
+  },
+  "lighthouse-core/audits/layout-shift-elements.js | description": {
+    "message": "Estes elementos DOM contribuem principalmente para a CLS da página."
+  },
+  "lighthouse-core/audits/layout-shift-elements.js | displayValue": {
+    "message": "{nodeCount,plural, =1{1 elemento encontrado}one{# elemento encontrado}other{# elementos encontrados}}"
+  },
+  "lighthouse-core/audits/layout-shift-elements.js | title": {
+    "message": "Evite grandes mudanças no layout"
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "Um carregamento de página rápido em uma rede celular garante uma boa experiência do usuário em dispositivos móveis. [Saiba mais](https://web.dev/load-fast-enough-for-pwa)."
+    "message": "Um carregamento de página rápido em uma rede celular garante uma boa experiência do usuário em dispositivos móveis. [Saiba mais](https://web.dev/load-fast-enough-for-pwa/)."
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
     "message": "Interativa em {timeInMs, number, seconds} s"
@@ -833,11 +863,20 @@
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | title": {
     "message": "A velocidade de carregamento da página é suficiente em redes móveis"
   },
+  "lighthouse-core/audits/long-tasks.js | description": {
+    "message": "Lista as tarefas mais longas na linha de execução principal. Útil para identificar os piores contribuidores para a latência de entrada. [Saiba mais](https://web.dev/long-tasks-devtools/)"
+  },
+  "lighthouse-core/audits/long-tasks.js | displayValue": {
+    "message": "{itemCount,plural, =1{# tarefa longa encontrada}one{# tarefa longa encontrada}other{# tarefas longas encontradas}}"
+  },
+  "lighthouse-core/audits/long-tasks.js | title": {
+    "message": "Evitar tarefas longas da linha de execução principal"
+  },
   "lighthouse-core/audits/mainthread-work-breakdown.js | columnCategory": {
     "message": "Categoria"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | description": {
-    "message": "Considere diminuir o tempo gasto na análise, compilação e execução de JS. Você perceberá que exibir payloads de JS menores ajuda a fazer isso. [Saiba mais](https://web.dev/mainthread-work-breakdown)"
+    "message": "Considere diminuir o tempo gasto na análise, compilação e execução de JS. Você perceberá que exibir payloads de JS menores ajuda a fazer isso. [Saiba mais](https://web.dev/mainthread-work-breakdown/)"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | failureTitle": {
     "message": "Minimize o trabalho da thread principal"
@@ -846,25 +885,25 @@
     "message": "Minimiza o trabalho da thread principal"
   },
   "lighthouse-core/audits/manual/pwa-cross-browser.js | description": {
-    "message": "Os sites precisam funcionar em todos os principais navegadores para que sejam acessíveis ao maior número de usuários. [Saiba mais](https://web.dev/pwa-cross-browser)."
+    "message": "Os sites precisam funcionar em todos os principais navegadores para que sejam acessíveis ao maior número de usuários. [Saiba mais](https://web.dev/pwa-cross-browser/)."
   },
   "lighthouse-core/audits/manual/pwa-cross-browser.js | title": {
     "message": "O site funciona em diferentes navegadores"
   },
   "lighthouse-core/audits/manual/pwa-each-page-has-url.js | description": {
-    "message": "É necessário que as páginas individuais permitam links diretos via URL e que os URLs sejam exclusivos para o propósito de compartilhamento em mídias sociais. [Saiba mais](https://web.dev/pwa-each-page-has-url)."
+    "message": "É necessário que as páginas individuais permitam links diretos via URL e que os URLs sejam exclusivos para o propósito de compartilhamento em mídias sociais. [Saiba mais](https://web.dev/pwa-each-page-has-url/)."
   },
   "lighthouse-core/audits/manual/pwa-each-page-has-url.js | title": {
     "message": "Cada página tem um URL."
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | description": {
-    "message": "As transições precisam ser dinâmicas durante a navegação por toque, mesmo em uma conexão de rede lenta. Essa experiência é essencial para a percepção de desempenho. [Saiba mais](https://web.dev/pwa-page-transitions)."
+    "message": "As transições precisam ser dinâmicas durante a navegação por toque, mesmo em uma conexão de rede lenta. Essa experiência é essencial para a percepção de desempenho. [Saiba mais](https://web.dev/pwa-page-transitions/)."
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | title": {
     "message": "As transições de página não devem parecer bloqueadas pelo carregamento da rede."
   },
   "lighthouse-core/audits/maskable-icon.js | description": {
-    "message": "Um ícone mascarável garante que a imagem preencha toda a forma sem um efeito letterbox durante a instalação do app em um dispositivo. [Saiba mais](https://web.dev/maskable-icon/)."
+    "message": "Um ícone mascarável garante que a imagem preencha toda a forma sem um efeito letterbox durante a instalação do app em um dispositivo. [Saiba mais](https://web.dev/maskable-icon-audit/)."
   },
   "lighthouse-core/audits/maskable-icon.js | failureTitle": {
     "message": "O manifesto não tem um ícone mascarável"
@@ -873,34 +912,34 @@
     "message": "O manifesto tem um ícone mascarável"
   },
   "lighthouse-core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "A \"Mudança de layout cumulativa\" mede o movimento de elementos visíveis na janela de visualização. [Saiba mais](https://web.dev/cls)."
+    "message": "A \"Mudança de layout cumulativa\" mede o movimento de elementos visíveis na janela de visualização. [Saiba mais](https://web.dev/cls/)."
   },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
-    "message": "\"Latência de entrada estimada\" é uma estimativa de quanto tempo o app leva para responder à entrada do usuário, em milésimos de segundo, durante a janela de carregamento de página mais movimentada de cinco segundos. Se a latência for maior que 50 ms, o usuário poderá notar lentidão no app. [Saiba mais](https://web.dev/estimated-input-latency)."
+    "message": "\"Latência de entrada estimada\" é uma estimativa de quanto tempo o app leva para responder à entrada do usuário, em milésimos de segundo, durante a janela de carregamento de página mais movimentada de cinco segundos. Se a latência for maior que 50 ms, o usuário poderá notar lentidão no app. [Saiba mais](https://web.dev/estimated-input-latency/)."
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
-    "message": "\"Primeira exibição de conteúdo\" marca o momento em que o primeiro texto ou imagem é disponibilizado. [Saiba mais](https://web.dev/first-contentful-paint)."
+    "message": "\"Primeira exibição de conteúdo\" marca o momento em que o primeiro texto ou imagem é disponibilizado. [Saiba mais](https://web.dev/first-contentful-paint/)."
   },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
-    "message": "\"Primeira CPU ociosa\" marca a primeira vez que a linha de execução principal da página fica silenciosa o suficiente para lidar com a entrada.  [Saiba mais](https://web.dev/first-cpu-idle)."
+    "message": "\"Primeira CPU ociosa\" marca a primeira vez que a linha de execução principal da página fica silenciosa o suficiente para lidar com a entrada.  [Saiba mais](https://web.dev/first-cpu-idle/)."
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
-    "message": "\"Primeira exibição significativa\" marca o momento em que o conteúdo principal de uma página se torna visível. [Saiba mais](https://web.dev/first-meaningful-paint)."
+    "message": "\"Primeira exibição significativa\" marca o momento em que o conteúdo principal de uma página se torna visível. [Saiba mais](https://web.dev/first-meaningful-paint/)."
   },
   "lighthouse-core/audits/metrics/interactive.js | description": {
-    "message": "\"Tempo para interação da página\" é o período necessário para que ela fique totalmente interativa. [Saiba mais](https://web.dev/interactive)."
+    "message": "\"Tempo para interação da página\" é o período necessário para que ela fique totalmente interativa. [Saiba mais](https://web.dev/interactive/)."
   },
   "lighthouse-core/audits/metrics/largest-contentful-paint.js | description": {
-    "message": "\"Maior exibição de conteúdo\" marca o momento em que o maior texto ou imagem é exibido. [Saiba mais](https://web.dev/lighthouse-largest-contentful-paint)"
+    "message": "\"Maior exibição de conteúdo\" marca o momento em que o maior texto ou imagem é exibido. [Saiba mais](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
   "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
-    "message": "A possível latência máxima na primeira entrada que seus usuários notariam seria a duração da tarefa mais longa. [Saiba mais](https://web.dev/lighthouse-max-potential-fid)."
+    "message": "A possível latência máxima na primeira entrada que seus usuários notariam seria a duração da tarefa mais longa. [Saiba mais](https://web.dev/lighthouse-max-potential-fid/)."
   },
   "lighthouse-core/audits/metrics/speed-index.js | description": {
-    "message": "\"Índice de velocidade\" mostra a rapidez com que o conteúdo de uma página é preenchido visivelmente. [Saiba mais](https://web.dev/speed-index)."
+    "message": "\"Índice de velocidade\" mostra a rapidez com que o conteúdo de uma página é preenchido visivelmente. [Saiba mais](https://web.dev/speed-index/)."
   },
   "lighthouse-core/audits/metrics/total-blocking-time.js | description": {
-    "message": "Soma de todos os períodos entre \"FCP\" e \"Tempo para interação da página\", quando a duração da tarefa ultrapassa 50 ms, expressa em milésimos de segundo. [Saiba mais](https://web.dev/lighthouse-total-blocking-time)."
+    "message": "Soma de todos os períodos entre \"FCP\" e \"Tempo para interação da página\", quando a duração da tarefa ultrapassa 50 ms, expressa em milésimos de segundo. [Saiba mais](https://web.dev/lighthouse-total-blocking-time/)."
   },
   "lighthouse-core/audits/network-rtt.js | description": {
     "message": "O tempo de retorno (RTT, na sigla em inglês) da rede tem um grande impacto no desempenho. Se o RTT para uma origem é alto, significa que os servidores mais próximos do usuário poderiam melhorar o desempenho. [Saiba mais](https://hpbn.co/primer-on-latency-and-bandwidth/)."
@@ -914,8 +953,17 @@
   "lighthouse-core/audits/network-server-latency.js | title": {
     "message": "Latências do back-end do servidor"
   },
+  "lighthouse-core/audits/no-unload-listeners.js | description": {
+    "message": "O evento `unload` não é acionado de maneira confiável, e a detecção dele pode evitar otimizações do navegador, como o Back-Forward Cache. Em vez disso, considere usar os eventos `pagehide` ou `visibilitychange`. [Saiba mais](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+  },
+  "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
+    "message": "Registra um listener `unload`"
+  },
+  "lighthouse-core/audits/no-unload-listeners.js | title": {
+    "message": "Evita listeners de eventos `unload`"
+  },
   "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "Um service worker permite que seu app da Web funcione de maneira confiável em condições imprevisíveis de rede. [Saiba mais](https://web.dev/offline-start-url)."
+    "message": "Um service worker permite que seu app da Web funcione de maneira confiável em condições imprevisíveis de rede. [Saiba mais](https://web.dev/offline-start-url/)."
   },
   "lighthouse-core/audits/offline-start-url.js | errorLoading": {
     "message": "Erro ao carregar {url} no service worker, código de status {statusCode}"
@@ -939,7 +987,7 @@
     "message": "Orçamento de desempenho"
   },
   "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "Se você já definiu o HTTPS, redirecione todo o tráfego HTTP para HTTPS para garantir recursos da Web para todos os seus usuários. [Saiba mais](https://web.dev/redirects-http)."
+    "message": "Se você já definiu o HTTPS, redirecione todo o tráfego HTTP para HTTPS para garantir recursos da Web para todos os seus usuários. [Saiba mais](https://web.dev/redirects-http/)."
   },
   "lighthouse-core/audits/redirects-http.js | failureTitle": {
     "message": "O tráfego HTTP não é redirecionado para HTTPS"
@@ -948,22 +996,22 @@
     "message": "O tráfego HTTP é redirecionado para HTTPS"
   },
   "lighthouse-core/audits/redirects.js | description": {
-    "message": "Os redirecionamentos causam mais atrasos antes do carregamento da página. [Saiba mais](https://web.dev/redirects)."
+    "message": "Os redirecionamentos causam mais atrasos antes do carregamento da página. [Saiba mais](https://web.dev/redirects/)."
   },
   "lighthouse-core/audits/redirects.js | title": {
     "message": "Evite redirecionamentos múltiplos de página"
   },
   "lighthouse-core/audits/resource-summary.js | description": {
-    "message": "Para definir orçamentos para a quantidade e o tamanho dos recursos da página, adicione um arquivo budget.json. [Saiba mais](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
+    "message": "Para definir orçamentos para a quantidade e o tamanho dos recursos da página, adicione um arquivo budget.json. [Saiba mais](https://web.dev/use-lighthouse-for-performance-budgets/)."
   },
   "lighthouse-core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount,plural, =1{1 solicitação de • {byteCount, number, bytes} KB}one{# solicitação de • {byteCount, number, bytes} KB}other{# solicitações de • {byteCount, number, bytes} KB}}"
+    "message": "{requestCount,plural, =1{1 solicitação • {byteCount, number, bytes} KiB}one{# solicitação • {byteCount, number, bytes} KiB}other{# solicitações • {byteCount, number, bytes} KiB}}"
   },
   "lighthouse-core/audits/resource-summary.js | title": {
     "message": "Mantenha as contagens de solicitações baixas e os tamanhos de transferência pequenos"
   },
   "lighthouse-core/audits/seo/canonical.js | description": {
-    "message": "Os links canônicos sugerem o URL a ser exibido nos resultados da pesquisa. [Saiba mais](https://web.dev/canonical)."
+    "message": "Os links canônicos sugerem o URL a ser exibido nos resultados da pesquisa. [Saiba mais](https://web.dev/canonical/)."
   },
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "Vários URLs com conflito ({urlList})"
@@ -989,8 +1037,20 @@
   "lighthouse-core/audits/seo/canonical.js | title": {
     "message": "O documento tem um `rel=canonical` válido"
   },
+  "lighthouse-core/audits/seo/crawlable-anchors.js | columnFailingLink": {
+    "message": "Link não rastreável"
+  },
+  "lighthouse-core/audits/seo/crawlable-anchors.js | description": {
+    "message": "Os mecanismos de pesquisa podem usar atributos `href` em links para rastrear sites. Garanta que o atributo `href` de elementos de âncora esteja vinculado a um destino adequado para que mais páginas do site possam ser descobertas. [Saiba mais](https://support.google.com/webmasters/answer/9112205)"
+  },
+  "lighthouse-core/audits/seo/crawlable-anchors.js | failureTitle": {
+    "message": "Os links não são rastreáveis"
+  },
+  "lighthouse-core/audits/seo/crawlable-anchors.js | title": {
+    "message": "Os links são rastreáveis"
+  },
   "lighthouse-core/audits/seo/font-size.js | description": {
-    "message": "Fontes menores que 12 px não são legíveis e exigem que os visitantes que utilizam dispositivos móveis façam um gesto de pinça para aumentar o zoom e conseguir ler. Faça o possível para ter mais de 60% do texto da página com pelo menos 12 px. [Saiba mais](https://web.dev/font-size)."
+    "message": "Fontes menores que 12 px não são legíveis e exigem que os visitantes que utilizam dispositivos móveis façam um gesto de pinça para aumentar o zoom e conseguir ler. Faça o possível para ter mais de 60% do texto da página com pelo menos 12 px. [Saiba mais](https://web.dev/font-size/)."
   },
   "lighthouse-core/audits/seo/font-size.js | displayValue": {
     "message": "{decimalProportion, number, extendedPercent} do texto legível"
@@ -1005,16 +1065,22 @@
     "message": "O documento usa tamanhos de fonte legíveis"
   },
   "lighthouse-core/audits/seo/hreflang.js | description": {
-    "message": "Os links hreflang informam aos mecanismos de pesquisa qual versão de uma página deve ser listada nos resultados de pesquisa para um determinado idioma ou região. [Saiba mais](https://web.dev/hreflang)."
+    "message": "Os links hreflang informam aos mecanismos de pesquisa qual versão de uma página deve ser listada nos resultados de pesquisa para um determinado idioma ou região. [Saiba mais](https://web.dev/hreflang/)."
   },
   "lighthouse-core/audits/seo/hreflang.js | failureTitle": {
     "message": "O documento não tem um `hreflang` válido"
   },
+  "lighthouse-core/audits/seo/hreflang.js | notFullyQualified": {
+    "message": "Valor de href relativo"
+  },
   "lighthouse-core/audits/seo/hreflang.js | title": {
     "message": "O documento tem um `hreflang` válido"
   },
+  "lighthouse-core/audits/seo/hreflang.js | unexpectedLanguage": {
+    "message": "Código de idioma inesperado"
+  },
   "lighthouse-core/audits/seo/http-status-code.js | description": {
-    "message": "As páginas com falha no código de status HTTP talvez não sejam indexadas corretamente. [Saiba mais](https://web.dev/http-status-code)."
+    "message": "As páginas com falha no código de status HTTP talvez não sejam indexadas corretamente. [Saiba mais](https://web.dev/http-status-code/)."
   },
   "lighthouse-core/audits/seo/http-status-code.js | failureTitle": {
     "message": "A página tem uma falha no código de status HTTP"
@@ -1023,7 +1089,7 @@
     "message": "A página tem um código de status HTTP bem-sucedido"
   },
   "lighthouse-core/audits/seo/is-crawlable.js | description": {
-    "message": "Os mecanismos de pesquisa não poderão incluir suas páginas nos resultados se não tiverem permissão para rastreá-las. [Saiba mais](https://web.dev/is-crawable)."
+    "message": "Os mecanismos de pesquisa não poderão incluir suas páginas nos resultados se não tiverem permissão para rastreá-las. [Saiba mais](https://web.dev/is-crawable/)."
   },
   "lighthouse-core/audits/seo/is-crawlable.js | failureTitle": {
     "message": "A página está bloqueada para indexação"
@@ -1032,7 +1098,7 @@
     "message": "A página não está bloqueada para indexação"
   },
   "lighthouse-core/audits/seo/link-text.js | description": {
-    "message": "O texto com link descritivo ajuda os mecanismos de pesquisa a entender o conteúdo. [Saiba mais](https://web.dev/link-text)."
+    "message": "O texto com link descritivo ajuda os mecanismos de pesquisa a entender o conteúdo. [Saiba mais](https://web.dev/link-text/)."
   },
   "lighthouse-core/audits/seo/link-text.js | displayValue": {
     "message": "{itemCount,plural, =1{1 link encontrado}one{# link encontrado}other{# links encontrados}}"
@@ -1044,13 +1110,13 @@
     "message": "Os links têm texto descritivo"
   },
   "lighthouse-core/audits/seo/manual/structured-data.js | description": {
-    "message": "Execute a [Ferramenta de teste de dados estruturados](https://search.google.com/structured-data/testing-tool/) e a [Structured Data Linter](http://linter.structured-data.org/) para validar os dados estruturados. [Saiba mais](https://web.dev/structured-data)."
+    "message": "Execute a [Ferramenta de teste de dados estruturados](https://search.google.com/structured-data/testing-tool/) e a [Structured Data Linter](http://linter.structured-data.org/) para validar os dados estruturados. [Saiba mais](https://web.dev/structured-data/)."
   },
   "lighthouse-core/audits/seo/manual/structured-data.js | title": {
     "message": "Os dados estruturados são válidos"
   },
   "lighthouse-core/audits/seo/meta-description.js | description": {
-    "message": "Metadescrições podem ser incluídas nos resultados da pesquisa para resumir concisamente o conteúdo da página. [Saiba mais](https://web.dev/meta-description)."
+    "message": "Metadescrições podem ser incluídas nos resultados da pesquisa para resumir concisamente o conteúdo da página. [Saiba mais](https://web.dev/meta-description/)."
   },
   "lighthouse-core/audits/seo/meta-description.js | explanation": {
     "message": "O campo de texto da descrição está vazio."
@@ -1062,7 +1128,7 @@
     "message": "O documento tem uma metadescrição"
   },
   "lighthouse-core/audits/seo/plugins.js | description": {
-    "message": "Mecanismos de pesquisa não podem indexar conteúdo de plug-in, e muitos dispositivos restringem plug-ins ou não são compatíveis com eles. [Saiba mais](https://web.dev/plugins)."
+    "message": "Mecanismos de pesquisa não podem indexar conteúdo de plug-in, e muitos dispositivos restringem plug-ins ou não são compatíveis com eles. [Saiba mais](https://web.dev/plugins/)."
   },
   "lighthouse-core/audits/seo/plugins.js | failureTitle": {
     "message": "O documento usa plug-ins"
@@ -1071,7 +1137,7 @@
     "message": "O documento evita plug-ins"
   },
   "lighthouse-core/audits/seo/robots-txt.js | description": {
-    "message": "Se o arquivo robots.txt for inválido, talvez não seja possível aos rastreadores entender como você quer que seu site seja rastreado ou indexado. [Saiba mais](https://web.dev/robots-txt)."
+    "message": "Se o arquivo robots.txt for inválido, talvez não seja possível aos rastreadores entender como você quer que seu site seja rastreado ou indexado. [Saiba mais](https://web.dev/robots-txt/)."
   },
   "lighthouse-core/audits/seo/robots-txt.js | displayValueHttpBadCode": {
     "message": "A solicitação para robots.txt retornou o status HTTP: {statusCode}"
@@ -1089,7 +1155,7 @@
     "message": "robots.txt é válido"
   },
   "lighthouse-core/audits/seo/tap-targets.js | description": {
-    "message": "Os elementos interativos, como botões e links, precisam ser grandes o bastante (48x48 px) e ter espaço suficiente ao redor para poderem ser tocados sem sobreposição com outros elementos. [Saiba mais](https://web.dev/tap-targets)."
+    "message": "Os elementos interativos, como botões e links, precisam ser grandes o bastante (48x48 px) e ter espaço suficiente ao redor para poderem ser tocados sem sobreposição com outros elementos. [Saiba mais](https://web.dev/tap-targets/)."
   },
   "lighthouse-core/audits/seo/tap-targets.js | displayValue": {
     "message": "{decimalProportion, number, percent} de áreas de toque dimensionadas corretamente"
@@ -1109,8 +1175,20 @@
   "lighthouse-core/audits/seo/tap-targets.js | title": {
     "message": "As áreas de toque estão dimensionadas corretamente"
   },
+  "lighthouse-core/audits/server-response-time.js | description": {
+    "message": "Mantenha curto o tempo de resposta do servidor para o documento principal, já que todos os outros pedidos dependem dele. [Saiba mais](https://web.dev/time-to-first-byte/)."
+  },
+  "lighthouse-core/audits/server-response-time.js | displayValue": {
+    "message": "O documento raiz levou {timeInMs, number, milliseconds} ms"
+  },
+  "lighthouse-core/audits/server-response-time.js | failureTitle": {
+    "message": "Reduza o tempo de resposta inicial do servidor"
+  },
+  "lighthouse-core/audits/server-response-time.js | title": {
+    "message": "O tempo de resposta inicial do servidor foi curto"
+  },
   "lighthouse-core/audits/service-worker.js | description": {
-    "message": "O service worker é a tecnologia que permite que seu app use muitos recursos do Progressive Web App, como disponibilidade off-line, adicionar à tela inicial, e notificações de push. [Saiba mais](https://web.dev/service-worker)."
+    "message": "O service worker é a tecnologia que permite que seu app use muitos recursos do Progressive Web App, como disponibilidade off-line, adicionar à tela inicial, e notificações de push. [Saiba mais](https://web.dev/service-worker/)."
   },
   "lighthouse-core/audits/service-worker.js | explanationBadManifest": {
     "message": "Esta página é controlada por um service worker, no entanto, nenhum `start_url` foi encontrado porque o manifesto não foi analisado como um JSON válido."
@@ -1131,7 +1209,7 @@
     "message": "Há registro de um service worker que controla a página e `start_url`"
   },
   "lighthouse-core/audits/splash-screen.js | description": {
-    "message": "Uma tela de apresentação personalizada garante uma experiência de alta qualidade quando os usuários abrem o aplicativo na tela inicial. [Saiba mais](https://web.dev/splash-screen)."
+    "message": "Uma tela de apresentação personalizada garante uma experiência de alta qualidade quando os usuários abrem o aplicativo na tela inicial. [Saiba mais](https://web.dev/splash-screen/)."
   },
   "lighthouse-core/audits/splash-screen.js | failureTitle": {
     "message": "Não foi configurado para uma tela de apresentação personalizada"
@@ -1140,7 +1218,7 @@
     "message": "Configurado para uma tela de apresentação personalizada"
   },
   "lighthouse-core/audits/themed-omnibox.js | description": {
-    "message": "É possível atribuir um tema relacionado ao seu site à barra de endereço do navegador. [Saiba mais](https://web.dev/themed-omnibox)."
+    "message": "É possível atribuir um tema relacionado ao seu site à barra de endereço do navegador. [Saiba mais](https://web.dev/themed-omnibox/)."
   },
   "lighthouse-core/audits/themed-omnibox.js | failureTitle": {
     "message": "Não foi definida uma cor de tema para a barra de endereços."
@@ -1178,11 +1256,20 @@
   "lighthouse-core/audits/timing-budget.js | title": {
     "message": "Orçamento de tempo"
   },
+  "lighthouse-core/audits/unsized-images.js | description": {
+    "message": "Always include explicit width and height on image elements to reduce layout shifts and improve CLS. [Learn more](https://web.dev/optimize-cls/#images-without-dimensions)"
+  },
+  "lighthouse-core/audits/unsized-images.js | failureTitle": {
+    "message": "Image elements do not have explicit `width` and `height`"
+  },
+  "lighthouse-core/audits/unsized-images.js | title": {
+    "message": "Image elements have explicit `width` and `height`"
+  },
   "lighthouse-core/audits/user-timings.js | columnType": {
     "message": "Tipo"
   },
   "lighthouse-core/audits/user-timings.js | description": {
-    "message": "Instrumente seu app com a API User Timing para avaliar o desempenho real do app durante as principais experiências do usuário. [Saiba mais](https://web.dev/user-timings)."
+    "message": "Instrumente seu app com a API User Timing para avaliar o desempenho real do app durante as principais experiências do usuário. [Saiba mais](https://web.dev/user-timings/)."
   },
   "lighthouse-core/audits/user-timings.js | displayValue": {
     "message": "{itemCount,plural, =1{1 velocidade do usuário}one{# velocidade do usuário}other{# velocidades do usuário}}"
@@ -1194,7 +1281,7 @@
     "message": "Um <link> de pré-conexão foi encontrado para \"{securityOrigin}\", mas não foi utilizado pelo navegador. Verifique se você está usando o atributo `crossorigin` corretamente."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | description": {
-    "message": "Adicione dicas de recursos de `preconnect` ou `dns-prefetch` para estabelecer conexões antecipadas a origens importantes de terceiros. [Saiba mais](https://web.dev/uses-rel-preconnect)."
+    "message": "Adicione dicas de recursos de `preconnect` ou `dns-prefetch` para estabelecer conexões antecipadas a origens importantes de terceiros. [Saiba mais](https://web.dev/uses-rel-preconnect/)."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | title": {
     "message": "Pré-conecte às origens necessárias"
@@ -1206,13 +1293,13 @@
     "message": "Um <link> de pré-carregamento foi encontrado para \"{preloadURL}\", mas não foi usado pelo navegador. Verifique se você está usando o atributo `crossorigin` corretamente."
   },
   "lighthouse-core/audits/uses-rel-preload.js | description": {
-    "message": "Use `<link rel=preload>` para priorizar a busca de recursos que, no momento, são solicitados posteriormente no carregamento de página. [Saiba mais](https://web.dev/uses-rel-preload)."
+    "message": "Use `<link rel=preload>` para priorizar a busca de recursos que, no momento, são solicitados posteriormente no carregamento de página. [Saiba mais](https://web.dev/uses-rel-preload/)."
   },
   "lighthouse-core/audits/uses-rel-preload.js | title": {
     "message": "Pré-carregue as principais solicitações"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "Adicione uma tag `<meta name=\"viewport\">` para otimizar seu app para telas de dispositivos móveis. [Saiba mais](https://web.dev/viewport)."
+    "message": "Adicione uma tag `<meta name=\"viewport\">` para otimizar seu app para telas de dispositivos móveis. [Saiba mais](https://web.dev/viewport/)."
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "Nenhuma tag `<meta name=\"viewport\">` foi encontrada."
@@ -1224,7 +1311,7 @@
     "message": "Há uma tag `<meta name=\"viewport\">` com `width` ou `initial-scale`"
   },
   "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "Seu app precisa mostrar algum conteúdo quando o JavaScript está desativado, mesmo que seja somente um aviso de que o JavaScript é necessário para o uso do app. [Saiba mais](https://web.dev/without-javascript)."
+    "message": "Seu app precisa mostrar algum conteúdo quando o JavaScript está desativado, mesmo que seja somente um aviso de que o JavaScript é necessário para o uso do app. [Saiba mais](https://web.dev/without-javascript/)."
   },
   "lighthouse-core/audits/without-javascript.js | explanation": {
     "message": "O corpo da página precisa renderizar algum conteúdo se os scripts não estão disponíveis."
@@ -1236,7 +1323,7 @@
     "message": "Algum conteúdo é exibido quando o JavaScript não está disponível."
   },
   "lighthouse-core/audits/works-offline.js | description": {
-    "message": "Se você estiver criando um Progressive Web App, é recomendável usar um service worker para que seu app possa funcionar off-line. [Saiba mais](https://web.dev/works-offline)."
+    "message": "Se você estiver criando um Progressive Web App, é recomendável usar um service worker para que seu app possa funcionar off-line. [Saiba mais](https://web.dev/works-offline/)."
   },
   "lighthouse-core/audits/works-offline.js | failureTitle": {
     "message": "A página atual não responde com um código 200 quando off-line"
@@ -1299,13 +1386,25 @@
     "message": "Navegação"
   },
   "lighthouse-core/config/default-config.js | a11yTablesListsVideoGroupDescription": {
-    "message": "Veja aqui oportunidades de melhorar a experiência de leitura de dados em tabelas ou listas usando tecnologia assistiva, como um leitor de tela."
+    "message": "Veja aqui oportunidades para melhorar a experiência de leitura de dados em tabelas ou listas usando tecnologia adaptativa, como um leitor de tela."
   },
   "lighthouse-core/config/default-config.js | a11yTablesListsVideoGroupTitle": {
     "message": "Tabelas e listas"
   },
+  "lighthouse-core/config/default-config.js | bestPracticesBrowserCompatGroupTitle": {
+    "message": "Compatibilidade de navegadores"
+  },
   "lighthouse-core/config/default-config.js | bestPracticesCategoryTitle": {
     "message": "Práticas recomendadas"
+  },
+  "lighthouse-core/config/default-config.js | bestPracticesGeneralGroupTitle": {
+    "message": "Geral"
+  },
+  "lighthouse-core/config/default-config.js | bestPracticesTrustSafetyGroupTitle": {
+    "message": "Garantia e segurança"
+  },
+  "lighthouse-core/config/default-config.js | bestPracticesUXGroupTitle": {
+    "message": "Experiência do usuário"
   },
   "lighthouse-core/config/default-config.js | budgetsGroupDescription": {
     "message": "Os orçamentos de desempenho definem padrões para o desempenho do seu site."
@@ -1314,7 +1413,7 @@
     "message": "Orçamentos"
   },
   "lighthouse-core/config/default-config.js | diagnosticsGroupDescription": {
-    "message": "Mais informações sobre o desempenho do seu aplicativo. Esses números não [afetam diretamente](https://github.com/GoogleChrome/lighthouse/blob/d2ec9ffbb21de9ad1a0f86ed24575eda32c796f0/docs/scoring.md#how-are-the-scores-weighted) o índice de desempenho."
+    "message": "Mais informações sobre o desempenho do seu aplicativo. Esses números não [afetam diretamente](https://web.dev/performance-scoring/) o índice de desempenho."
   },
   "lighthouse-core/config/default-config.js | diagnosticsGroupTitle": {
     "message": "Diagnóstico"
@@ -1326,7 +1425,7 @@
     "message": "Melhorias do primeiro aparecimento"
   },
   "lighthouse-core/config/default-config.js | loadOpportunitiesGroupDescription": {
-    "message": "Essas sugestões podem ajudar a acelerar o carregamento de página. Elas não [afetam diretamente](https://github.com/GoogleChrome/lighthouse/blob/d2ec9ffbb21de9ad1a0f86ed24575eda32c796f0/docs/scoring.md#how-are-the-scores-weighted) o índice de desempenho."
+    "message": "Essas sugestões podem ajudar a acelerar o carregamento de página. Elas não [afetam diretamente](https://web.dev/performance-scoring/) o índice de desempenho."
   },
   "lighthouse-core/config/default-config.js | loadOpportunitiesGroupTitle": {
     "message": "Oportunidades"
@@ -1397,6 +1496,15 @@
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "Cache TTL"
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnDuration": {
+    "message": "Duração"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnElement": {
+    "message": "Elemento"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnFailingElem": {
+    "message": "Failing Elements"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnLocation": {
     "message": "Localização"
   },
@@ -1421,6 +1529,9 @@
   "lighthouse-core/lib/i18n/i18n.js | columnSource": {
     "message": "Fonte"
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnStartTime": {
+    "message": "Horário de início"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnTimeSpent": {
     "message": "Tempo gasto"
   },
@@ -1437,10 +1548,10 @@
     "message": "Possível economia"
   },
   "lighthouse-core/lib/i18n/i18n.js | cumulativeLayoutShiftMetric": {
-    "message": "Mudança de layout cumulativa"
+    "message": "Cumulative Layout Shift"
   },
   "lighthouse-core/lib/i18n/i18n.js | displayValueByteSavings": {
-    "message": "Possível economia de {wastedBytes, number, bytes} KB"
+    "message": "Possível economia de {wastedBytes, number, bytes} KiB"
   },
   "lighthouse-core/lib/i18n/i18n.js | displayValueMsSavings": {
     "message": "Possível economia de {wastedMs, number, milliseconds} ms"
@@ -1455,7 +1566,7 @@
     "message": "Primeira CPU ociosa"
   },
   "lighthouse-core/lib/i18n/i18n.js | firstContentfulPaintMetric": {
-    "message": "Primeiro aparecimento com conteúdo"
+    "message": "First Contentful Paint"
   },
   "lighthouse-core/lib/i18n/i18n.js | firstMeaningfulPaintMetric": {
     "message": "Primeira exibição importante"
@@ -1467,10 +1578,10 @@
     "message": "Imagem"
   },
   "lighthouse-core/lib/i18n/i18n.js | interactiveMetric": {
-    "message": "Tempo até ficar interativa"
+    "message": "Time to Interactive"
   },
   "lighthouse-core/lib/i18n/i18n.js | largestContentfulPaintMetric": {
-    "message": "Maior exibição de conteúdo"
+    "message": "Largest Contentful Paint"
   },
   "lighthouse-core/lib/i18n/i18n.js | maxPotentialFIDMetric": {
     "message": "Possível latência máxima na primeira entrada"
@@ -1491,7 +1602,7 @@
     "message": "{timeInMs, number, seconds} s"
   },
   "lighthouse-core/lib/i18n/i18n.js | speedIndexMetric": {
-    "message": "Índice de velocidade"
+    "message": "Speed Index"
   },
   "lighthouse-core/lib/i18n/i18n.js | stylesheetResourceType": {
     "message": "Folha de estilo"
@@ -1500,7 +1611,7 @@
     "message": "Terceiros"
   },
   "lighthouse-core/lib/i18n/i18n.js | totalBlockingTimeMetric": {
-    "message": "Tempo total de bloqueio"
+    "message": "Total Blocking Time"
   },
   "lighthouse-core/lib/i18n/i18n.js | totalResourceType": {
     "message": "Total"
@@ -1525,6 +1636,12 @@
   },
   "lighthouse-core/lib/lh-error.js | missingRequiredArtifact": {
     "message": "O coletor {artifactName} obrigatório não foi executado."
+  },
+  "lighthouse-core/lib/lh-error.js | notHtml": {
+    "message": "A página fornecida não é HTML (exibida como Tipo MIME {mimeType})."
+  },
+  "lighthouse-core/lib/lh-error.js | oldChromeDoesNotSupportFeature": {
+    "message": "Esta versão do Chrome é antiga demais para ser compatível com \"{featureName}\". Use uma versão mais recente para ver resultados completos."
   },
   "lighthouse-core/lib/lh-error.js | pageLoadFailed": {
     "message": "O Lighthouse não carregou de maneira confiável a página solicitada. Verifique se você está testando o URL correto e se o servidor está respondendo de forma adequada a todas as solicitações."
@@ -1558,6 +1675,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
     "message": "Mostrar auditorias"
+  },
+  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
+    "message": "Ver calculadora."
   },
   "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
     "message": "Navegação inicial"
@@ -1677,7 +1797,7 @@
     "message": "Alguns problemas afetaram esta execução do Lighthouse:"
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
-    "message": "Os valores são estimados e podem variar. O índice de desempenho [se baseia somente nessas métricas](https://github.com/GoogleChrome/lighthouse/blob/d2ec9ffbb21de9ad1a0f86ed24575eda32c796f0/docs/scoring.md#how-are-the-scores-weighted)."
+    "message": "Os valores são estimados e podem variar. O [índice de desempenho é calculado](https://web.dev/performance-scoring/) diretamente por essas métricas."
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "Passou nas auditorias, mas como avisos"
@@ -1692,7 +1812,7 @@
     "message": "Verifique se você está usando tags `amp-img` válidas para suas imagens que são carregadas lentamente de modo automático fora da primeira janela de visualização. [Saiba mais](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)."
   },
   "stack-packs/packs/amp.js | render_blocking_resources": {
-    "message": "Use ferramentas como o [Otimizador de AMP](https://github.com/ampproject/amp-toolbox/tree/master/packages/optimizer) para [renderizar layouts de AMP no servidor](https://amp.dev/documentation/guides-and-tutorials/optimize-and-measure/server-side-rendering/)."
+    "message": "Use ferramentas como o [Otimizador de AMP](https://github.com/ampproject/amp-toolbox/tree/main/packages/optimizer) para [renderizar layouts de AMP no servidor](https://amp.dev/documentation/guides-and-tutorials/optimize-and-measure/server-side-rendering/)."
   },
   "stack-packs/packs/amp.js | unminified_css": {
     "message": "Consulte a [documentação de AMP](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/style_pages/) para garantir que todos os seus estilos sejam compatíveis."
@@ -1731,7 +1851,10 @@
     "message": "Especifique `@font-display` ao [definir fontes personalizadas](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/css-topics/using-fonts.html)."
   },
   "stack-packs/packs/magento.js | offscreen_images": {
-    "message": "Considere modificar seus modelos de produto e catálogo para usar o recurso de [carregamento lento](https://web.dev/native-lazy-loading) da plataforma da Web."
+    "message": "Considere modificar seus modelos de produto e catálogo para usar o recurso de [carregamento lento](https://web.dev/native-lazy-loading/) da plataforma da Web."
+  },
+  "stack-packs/packs/magento.js | server_response_time": {
+    "message": "Use a [integração de Varnish](https://devdocs.magento.com/guides/v2.3/config-guide/varnish/config-varnish.html) da Magento."
   },
   "stack-packs/packs/magento.js | unminified_css": {
     "message": "Ative a opção \"Reduzir arquivos CSS\" nas configurações de desenvolvedor da loja. [Saiba mais](https://devdocs.magento.com/guides/v2.3/performance-best-practices/configuration.html?itm_source=devdocs&itm_medium=search_page&itm_campaign=federated_search&itm_term=minify%20css%20files)."
@@ -1760,6 +1883,9 @@
   "stack-packs/packs/react.js | redirects": {
     "message": "Se você estiver usando React Router, reduza o uso do componente `<Redirect>` para [navegações de rota](https://reacttraining.com/react-router/web/api/Redirect)."
   },
+  "stack-packs/packs/react.js | server_response_time": {
+    "message": "Se você estiver renderizando componentes do React no servidor, considere usar `renderToNodeStream()` ou `renderToStaticNodeStream()` para permitir que o cliente receba e hidrate diferentes partes da marcação em vez de todas juntas. [Saiba mais](https://reactjs.org/docs/react-dom-server.html#rendertonodestream)."
+  },
   "stack-packs/packs/react.js | unminified_css": {
     "message": "Se seu sistema de compilação reduz os arquivos CSS automaticamente, verifique se você está implantando a versão de produção do seu app. Você pode verificar isso com a extensão de Ferramentas para Desenvolvedores do React. [Saiba mais](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
   },
@@ -1780,6 +1906,9 @@
   },
   "stack-packs/packs/wordpress.js | render_blocking_resources": {
     "message": "Existem vários plug-ins do WordPress que podem ajudar você a [aplicar inline a recursos essenciais](https://wordpress.org/plugins/search/critical+css/) ou [adiar recursos menos importantes](https://wordpress.org/plugins/search/defer+css+javascript/). As otimizações oferecidas por esses plug-ins podem corromper os recursos do tema ou dos seus plug-ins, então é provável que você precise fazer alterações no código."
+  },
+  "stack-packs/packs/wordpress.js | server_response_time": {
+    "message": "Todas as especificações de servidor, temas e plug-ins contribuem para o tempo de resposta do servidor. Recomendamos que você use um tema mais otimizado, selecionando cuidadosamente um plug-in de otimização e/ou fazendo upgrade do seu servidor."
   },
   "stack-packs/packs/wordpress.js | total_byte_weight": {
     "message": "Recomendamos que você mostre trechos nas suas listas de postagem (por exemplo, por meio da tag \"mais\"), reduza o número de postagens exibidas em uma determinada página, divida suas postagens longas em várias páginas ou use um plug-in para aplicar lazy-load nos comentários."

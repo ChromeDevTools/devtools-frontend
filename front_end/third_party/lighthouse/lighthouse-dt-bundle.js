@@ -1,4 +1,4 @@
-// lighthouse, browserified. 6.1.0 (4c4b628ef1626e63cb7f069258d8e5dcb6b58f98)
+// lighthouse, browserified. 6.2.0 (3f73a486b55c8b10a3b99d2deb2650d9a5d6ea6b)
 // @ts-nocheck
 require=function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a;}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r);},p,p.exports,r,e,n,t);}return n[i].exports;}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o;}return r;}()({"../audits/accessibility/accesskeys":[function(require,module,exports){
 (function(__filename){
@@ -49,7 +49,7 @@ module.exports=Accesskeys;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/accesskeys.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/aria-allowed-attr":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/aria-allowed-attr":[function(require,module,exports){
 (function(__filename){
 
 
@@ -98,7 +98,7 @@ module.exports=ARIAAllowedAttr;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/aria-allowed-attr.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/aria-hidden-body":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/aria-hidden-body":[function(require,module,exports){
 (function(__filename){
 
 
@@ -145,7 +145,7 @@ module.exports=AriaHiddenBody;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/aria-hidden-body.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/aria-hidden-focus":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/aria-hidden-focus":[function(require,module,exports){
 (function(__filename){
 
 
@@ -192,7 +192,7 @@ module.exports=AriaHiddenFocus;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/aria-hidden-focus.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/aria-input-field-name":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/aria-input-field-name":[function(require,module,exports){
 (function(__filename){
 
 
@@ -239,7 +239,7 @@ module.exports=AriaInputFieldName;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/aria-input-field-name.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/aria-required-attr":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/aria-required-attr":[function(require,module,exports){
 (function(__filename){
 
 
@@ -287,7 +287,7 @@ module.exports=ARIARequiredAttr;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/aria-required-attr.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/aria-required-children":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/aria-required-children":[function(require,module,exports){
 (function(__filename){
 
 
@@ -339,7 +339,7 @@ module.exports=AriaRequiredChildren;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/aria-required-children.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/aria-required-parent":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/aria-required-parent":[function(require,module,exports){
 (function(__filename){
 
 
@@ -389,7 +389,7 @@ module.exports=AriaRequiredParent;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/aria-required-parent.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/aria-roles":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/aria-roles":[function(require,module,exports){
 (function(__filename){
 
 
@@ -438,7 +438,7 @@ module.exports=AriaRoles;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/aria-roles.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/aria-toggle-field-name":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/aria-toggle-field-name":[function(require,module,exports){
 (function(__filename){
 
 
@@ -485,7 +485,7 @@ module.exports=AriaToggleFieldName;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/aria-toggle-field-name.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/aria-valid-attr-value":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/aria-valid-attr-value":[function(require,module,exports){
 (function(__filename){
 
 
@@ -534,7 +534,7 @@ module.exports=ARIAValidAttr;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/aria-valid-attr-value.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/aria-valid-attr":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/aria-valid-attr":[function(require,module,exports){
 (function(__filename){
 
 
@@ -583,7 +583,7 @@ module.exports=ARIAValidAttr;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/aria-valid-attr.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/button-name":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/button-name":[function(require,module,exports){
 (function(__filename){
 
 
@@ -632,7 +632,7 @@ module.exports=ButtonName;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/button-name.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/bypass":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/bypass":[function(require,module,exports){
 (function(__filename){
 
 
@@ -682,7 +682,7 @@ module.exports=Bypass;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/bypass.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/color-contrast":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/color-contrast":[function(require,module,exports){
 (function(__filename){
 
 
@@ -732,7 +732,7 @@ module.exports=ColorContrast;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/color-contrast.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/definition-list":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/definition-list":[function(require,module,exports){
 (function(__filename){
 
 
@@ -783,7 +783,7 @@ module.exports=DefinitionList;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/definition-list.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/dlitem":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/dlitem":[function(require,module,exports){
 (function(__filename){
 
 
@@ -832,7 +832,7 @@ module.exports=DLItem;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/dlitem.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/document-title":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/document-title":[function(require,module,exports){
 (function(__filename){
 
 
@@ -881,7 +881,7 @@ module.exports=DocumentTitle;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/document-title.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/duplicate-id-active":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/duplicate-id-active":[function(require,module,exports){
 (function(__filename){
 
 
@@ -928,7 +928,7 @@ module.exports=DuplicateIdActive;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/duplicate-id-active.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/duplicate-id-aria":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/duplicate-id-aria":[function(require,module,exports){
 (function(__filename){
 
 
@@ -975,7 +975,7 @@ module.exports=DuplicateIdAria;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/duplicate-id-aria.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/form-field-multiple-labels":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/form-field-multiple-labels":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1023,7 +1023,7 @@ module.exports=FormFieldMultipleLabels;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/form-field-multiple-labels.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/frame-title":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/frame-title":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1071,7 +1071,7 @@ module.exports=FrameTitle;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/frame-title.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/heading-order":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/heading-order":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1118,7 +1118,7 @@ module.exports=HeadingOrder;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/heading-order.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/html-has-lang":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/html-has-lang":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1169,7 +1169,7 @@ module.exports=HTMLHasLang;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/html-has-lang.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/html-lang-valid":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/html-lang-valid":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1219,7 +1219,7 @@ module.exports=HTMLLangValid;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/html-lang-valid.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/image-alt":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/image-alt":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1268,7 +1268,7 @@ module.exports=ImageAlt;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/image-alt.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/input-image-alt":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/input-image-alt":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1317,7 +1317,7 @@ module.exports=InputImageAlt;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/input-image-alt.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/label":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/label":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1366,7 +1366,7 @@ module.exports=Label;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/label.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/layout-table":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/layout-table":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1419,7 +1419,7 @@ module.exports=LayoutTable;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/layout-table.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/link-name":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/link-name":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1469,7 +1469,7 @@ module.exports=LinkName;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/link-name.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/listitem":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/listitem":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1519,7 +1519,7 @@ module.exports=ListItem;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/listitem.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/list":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/list":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1570,7 +1570,7 @@ module.exports=List;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/list.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/manual/custom-controls-labels":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/manual/custom-controls-labels":[function(require,module,exports){
 
 
 
@@ -1600,7 +1600,7 @@ super.partialMeta);
 
 module.exports=CustomControlsLabels;
 
-},{"../../manual/manual-audit.js":5}],"../audits/accessibility/manual/custom-controls-roles":[function(require,module,exports){
+},{"../../manual/manual-audit.js":6}],"../audits/accessibility/manual/custom-controls-roles":[function(require,module,exports){
 
 
 
@@ -1630,7 +1630,7 @@ super.partialMeta);
 
 module.exports=CustomControlsRoles;
 
-},{"../../manual/manual-audit.js":5}],"../audits/accessibility/manual/focus-traps":[function(require,module,exports){
+},{"../../manual/manual-audit.js":6}],"../audits/accessibility/manual/focus-traps":[function(require,module,exports){
 
 
 
@@ -1660,7 +1660,7 @@ super.partialMeta);
 
 module.exports=FocusTraps;
 
-},{"../../manual/manual-audit.js":5}],"../audits/accessibility/manual/focusable-controls":[function(require,module,exports){
+},{"../../manual/manual-audit.js":6}],"../audits/accessibility/manual/focusable-controls":[function(require,module,exports){
 
 
 
@@ -1690,7 +1690,7 @@ super.partialMeta);
 
 module.exports=FocusableControls;
 
-},{"../../manual/manual-audit.js":5}],"../audits/accessibility/manual/interactive-element-affordance":[function(require,module,exports){
+},{"../../manual/manual-audit.js":6}],"../audits/accessibility/manual/interactive-element-affordance":[function(require,module,exports){
 
 
 
@@ -1720,7 +1720,7 @@ super.partialMeta);
 
 module.exports=InteractiveElementAffordance;
 
-},{"../../manual/manual-audit.js":5}],"../audits/accessibility/manual/logical-tab-order":[function(require,module,exports){
+},{"../../manual/manual-audit.js":6}],"../audits/accessibility/manual/logical-tab-order":[function(require,module,exports){
 
 
 
@@ -1750,7 +1750,7 @@ super.partialMeta);
 
 module.exports=LogicalTabOrder;
 
-},{"../../manual/manual-audit.js":5}],"../audits/accessibility/manual/managed-focus":[function(require,module,exports){
+},{"../../manual/manual-audit.js":6}],"../audits/accessibility/manual/managed-focus":[function(require,module,exports){
 
 
 
@@ -1780,7 +1780,7 @@ super.partialMeta);
 
 module.exports=ManagedFocus;
 
-},{"../../manual/manual-audit.js":5}],"../audits/accessibility/manual/offscreen-content-hidden":[function(require,module,exports){
+},{"../../manual/manual-audit.js":6}],"../audits/accessibility/manual/offscreen-content-hidden":[function(require,module,exports){
 
 
 
@@ -1811,7 +1811,7 @@ super.partialMeta);
 
 module.exports=OffscreenContentHidden;
 
-},{"../../manual/manual-audit.js":5}],"../audits/accessibility/manual/use-landmarks":[function(require,module,exports){
+},{"../../manual/manual-audit.js":6}],"../audits/accessibility/manual/use-landmarks":[function(require,module,exports){
 
 
 
@@ -1841,7 +1841,7 @@ super.partialMeta);
 
 module.exports=UseLandmarks;
 
-},{"../../manual/manual-audit.js":5}],"../audits/accessibility/manual/visual-order-follows-dom":[function(require,module,exports){
+},{"../../manual/manual-audit.js":6}],"../audits/accessibility/manual/visual-order-follows-dom":[function(require,module,exports){
 
 
 
@@ -1871,7 +1871,7 @@ super.partialMeta);
 
 module.exports=VisualOrderFollowsDOM;
 
-},{"../../manual/manual-audit.js":5}],"../audits/accessibility/meta-refresh":[function(require,module,exports){
+},{"../../manual/manual-audit.js":6}],"../audits/accessibility/meta-refresh":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1921,7 +1921,7 @@ module.exports=MetaRefresh;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/meta-refresh.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/meta-viewport":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/meta-viewport":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1972,7 +1972,7 @@ module.exports=MetaViewport;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/meta-viewport.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/object-alt":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/object-alt":[function(require,module,exports){
 (function(__filename){
 
 
@@ -2021,7 +2021,7 @@ module.exports=ObjectAlt;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/object-alt.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/tabindex":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/tabindex":[function(require,module,exports){
 (function(__filename){
 
 
@@ -2070,7 +2070,7 @@ module.exports=TabIndex;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/tabindex.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/td-headers-attr":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/td-headers-attr":[function(require,module,exports){
 (function(__filename){
 
 
@@ -2123,7 +2123,7 @@ module.exports=TDHeadersAttr;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/td-headers-attr.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/th-has-data-cells":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/th-has-data-cells":[function(require,module,exports){
 (function(__filename){
 
 
@@ -2175,7 +2175,7 @@ module.exports=THHasDataCells;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/th-has-data-cells.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/valid-lang":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/valid-lang":[function(require,module,exports){
 (function(__filename){
 
 
@@ -2224,7 +2224,7 @@ module.exports=ValidLang;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/valid-lang.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/video-caption":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/video-caption":[function(require,module,exports){
 (function(__filename){
 
 
@@ -2274,7 +2274,7 @@ module.exports=VideoCaption;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/video-caption.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/accessibility/video-description":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/accessibility/video-description":[function(require,module,exports){
 (function(__filename){
 
 
@@ -2324,7 +2324,7 @@ module.exports=VideoDescription;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/video-description.js");
-},{"../../lib/i18n/i18n.js":77,"./axe-audit.js":2}],"../audits/apple-touch-icon":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./axe-audit.js":2}],"../audits/apple-touch-icon":[function(require,module,exports){
 (function(__filename){
 
 
@@ -2399,7 +2399,7 @@ module.exports=AppleTouchIcon;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/apple-touch-icon.js");
-},{"../lib/i18n/i18n.js":77,"./audit.js":3}],"../audits/bootup-time":[function(require,module,exports){
+},{"../lib/i18n/i18n.js":78,"./audit.js":3}],"../audits/bootup-time":[function(require,module,exports){
 (function(__filename){
 
 
@@ -2623,7 +2623,7 @@ module.exports=BootupTime;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/bootup-time.js");
-},{"../computed/main-thread-tasks.js":13,"../computed/network-records.js":39,"../lib/i18n/i18n.js":77,"../lib/network-request.js":87,"../lib/tracehouse/task-groups.js":97,"./audit.js":3}],"../audits/byte-efficiency/duplicated-javascript":[function(require,module,exports){
+},{"../computed/main-thread-tasks.js":14,"../computed/network-records.js":40,"../lib/i18n/i18n.js":78,"../lib/network-request.js":88,"../lib/tracehouse/task-groups.js":98,"./audit.js":3}],"../audits/byte-efficiency/duplicated-javascript":[function(require,module,exports){
 (function(__filename){
 
 
@@ -2880,7 +2880,7 @@ module.exports=DuplicatedJavascript;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/duplicated-javascript.js");
-},{"../../computed/module-duplication.js":37,"../../lib/dependency-graph/simulator/network-analyzer.js":73,"../../lib/i18n/i18n.js":77,"./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/efficient-animated-content":[function(require,module,exports){
+},{"../../computed/module-duplication.js":38,"../../lib/dependency-graph/simulator/network-analyzer.js":74,"../../lib/i18n/i18n.js":78,"./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/efficient-animated-content":[function(require,module,exports){
 (function(__filename){
 
 
@@ -2976,7 +2976,493 @@ module.exports=EfficientAnimatedContent;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/efficient-animated-content.js");
-},{"../../lib/i18n/i18n.js":77,"../../lib/network-request.js":87,"./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/offscreen-images":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"../../lib/network-request.js":88,"./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/legacy-javascript":[function(require,module,exports){
+(function(__filename){
+
+
+
+
+
+'use strict';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const ByteEfficiencyAudit=require('./byte-efficiency-audit.js');
+const JsBundles=require('../../computed/js-bundles.js');
+const i18n=require('../../lib/i18n/i18n.js');
+const thirdPartyWeb=require('../../lib/third-party-web.js');
+const NetworkAnalyzer=require('../../lib/dependency-graph/simulator/network-analyzer.js');
+
+const UIStrings={
+
+title:'Avoid serving legacy JavaScript to modern browsers',
+
+
+
+description:'Polyfills and transforms enable legacy browsers to use new JavaScript features. However, many aren\'t necessary for modern browsers. For your bundled JavaScript, adopt a modern script deployment strategy using module/nomodule feature detection to reduce the amount of code shipped to modern browsers, while retaining support for legacy browsers. [Learn More](https://philipwalton.com/articles/deploying-es2015-code-in-production-today/)'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
+
+
+
+
+
+class CodePatternMatcher{
+
+
+
+constructor(patterns){
+const patternsExpression=patterns.map(pattern=>`(${pattern.expression})`).join('|');
+this.re=new RegExp(`(^\r\n|\r|\n)|${patternsExpression}`,'g');
+this.patterns=patterns;
+}
+
+
+
+
+
+match(code){
+
+this.re.lastIndex=0;
+
+const seen=new Set();
+
+const matches=[];
+
+let result;
+let line=0;
+let lineBeginsAtIndex=0;
+
+
+while((result=this.re.exec(code))!==null){
+
+const captureGroups=result.slice(1);
+
+
+
+const[isNewline,...patternExpressionMatches]=captureGroups;
+if(isNewline){
+line++;
+lineBeginsAtIndex=result.index+1;
+continue;
+}
+const pattern=this.patterns[patternExpressionMatches.findIndex(Boolean)];
+
+if(seen.has(pattern)){
+const existingMatch=matches.find(m=>m.name===pattern.name);
+if(existingMatch)existingMatch.count+=1;
+continue;
+}
+seen.add(pattern);
+
+matches.push({
+name:pattern.name,
+line,
+column:result.index-lineBeginsAtIndex,
+count:1});
+
+}
+
+return matches;
+}}
+
+
+class LegacyJavascript extends ByteEfficiencyAudit{
+
+
+
+static get meta(){
+return{
+id:'legacy-javascript',
+scoreDisplayMode:ByteEfficiencyAudit.SCORING_MODES.NUMERIC,
+description:str_(UIStrings.description),
+title:str_(UIStrings.title),
+requiredArtifacts:['devtoolsLogs','traces','ScriptElements','SourceMaps','URL']};
+
+}
+
+
+
+
+
+static buildPolyfillExpression(object,property){
+const qt=token=>
+`['"]${token}['"]`;
+
+let expression='';
+
+if(object){
+
+expression+=`${object}\\.${property}\\s?=[^=]`;
+}else{
+
+
+
+expression+=`(?:window\\.|[\\s;]+)${property}\\s?=[^=]`;
+}
+
+
+if(object){
+expression+=`|${object}\\[${qt(property)}\\]\\s?=[^=]`;
+}
+
+
+expression+=`|defineProperty\\(${object||'window'},\\s?${qt(property)}`;
+
+
+if(object){
+const objectWithoutPrototype=object.replace('.prototype','');
+
+
+
+
+
+
+
+
+expression+=`|\\$export\\([^,]+,${qt(objectWithoutPrototype)},{${property}:`;
+
+
+
+
+expression+=`|{target:${qt(objectWithoutPrototype)}\\S*},{${property}:`;
+}else{
+
+expression+=`|function ${property}\\(`;
+}
+
+return expression;
+}
+
+static getPolyfillData(){
+return[
+['Array.prototype.fill','es6.array.fill'],
+['Array.prototype.filter','es6.array.filter'],
+['Array.prototype.find','es6.array.find'],
+['Array.prototype.findIndex','es6.array.find-index'],
+['Array.prototype.forEach','es6.array.for-each'],
+['Array.from','es6.array.from'],
+['Array.isArray','es6.array.is-array'],
+['Array.prototype.map','es6.array.map'],
+['Array.of','es6.array.of'],
+['Array.prototype.reduce','es6.array.reduce'],
+['Array.prototype.reduceRight','es6.array.reduce-right'],
+['Array.prototype.some','es6.array.some'],
+['Date.now','es6.date.now'],
+['Date.prototype.toISOString','es6.date.to-iso-string'],
+['Date.prototype.toJSON','es6.date.to-json'],
+['Date.prototype.toString','es6.date.to-string'],
+['Function.prototype.name','es6.function.name'],
+['Number.isInteger','es6.number.is-integer'],
+['Number.isSafeInteger','es6.number.is-safe-integer'],
+['Number.parseInt','es6.number.parse-int'],
+['Object.defineProperties','es6.object.define-properties'],
+['Object.defineProperty','es6.object.define-property'],
+['Object.freeze','es6.object.freeze'],
+['Object.getOwnPropertyNames','es6.object.get-own-property-names'],
+['Object.getPrototypeOf','es6.object.get-prototype-of'],
+['Object.isExtensible','es6.object.is-extensible'],
+['Object.isFrozen','es6.object.is-frozen'],
+['Object.isSealed','es6.object.is-sealed'],
+['Object.keys','es6.object.keys'],
+['Object.preventExtensions','es6.object.prevent-extensions'],
+['Object.seal','es6.object.seal'],
+['Object.setPrototypeOf','es6.object.set-prototype-of'],
+['Reflect.apply','es6.reflect.apply'],
+['Reflect.construct','es6.reflect.construct'],
+['Reflect.defineProperty','es6.reflect.define-property'],
+['Reflect.deleteProperty','es6.reflect.delete-property'],
+['Reflect.get','es6.reflect.get'],
+['Reflect.getOwnPropertyDescriptor','es6.reflect.get-own-property-descriptor'],
+['Reflect.getPrototypeOf','es6.reflect.get-prototype-of'],
+['Reflect.has','es6.reflect.has'],
+['Reflect.isExtensible','es6.reflect.is-extensible'],
+['Reflect.ownKeys','es6.reflect.own-keys'],
+['Reflect.preventExtensions','es6.reflect.prevent-extensions'],
+['Reflect.setPrototypeOf','es6.reflect.set-prototype-of'],
+['String.prototype.codePointAt','es6.string.code-point-at'],
+['String.fromCodePoint','es6.string.from-code-point'],
+['String.raw','es6.string.raw'],
+['String.prototype.repeat','es6.string.repeat'],
+['Array.prototype.includes','es7.array.includes'],
+['Object.entries','es7.object.entries'],
+['Object.getOwnPropertyDescriptors','es7.object.get-own-property-descriptors'],
+['Object.values','es7.object.values']].
+map(data=>{
+const[name,coreJs2Module]=data;
+return{
+name,
+coreJs2Module,
+coreJs3Module:coreJs2Module.
+replace('es6.','es.').
+replace('es7.','es.').
+replace('typed.','typed-array.')};
+
+});
+}
+
+
+
+
+static getPolyfillPatterns(){
+return this.getPolyfillData().map(({name})=>{
+const parts=name.split('.');
+const object=parts.length>1?parts.slice(0,parts.length-1).join('.'):null;
+const property=parts[parts.length-1];
+return{
+name,
+expression:this.buildPolyfillExpression(object,property)};
+
+});
+}
+
+
+
+
+static getTransformPatterns(){
+return[
+{
+name:'@babel/plugin-transform-classes',
+expression:'Cannot call a class as a function',
+estimateBytes:result=>150+result.count*'_classCallCheck()'.length},
+
+{
+name:'@babel/plugin-transform-regenerator',
+expression:/regeneratorRuntime\.a?wrap/.source,
+
+
+estimateBytes:result=>result.count*80},
+
+{
+name:'@babel/plugin-transform-spread',
+expression:/\.apply\(void 0,\s?_toConsumableArray/.source,
+estimateBytes:result=>1169+result.count*'_toConsumableArray()'.length}];
+
+
+}
+
+
+
+
+
+
+
+
+
+
+static detectAcrossScripts(matcher,scripts,networkRecords,bundles){
+
+const urlToMatchResults=new Map();
+const polyfillData=this.getPolyfillData();
+
+for(const{requestId,content}of Object.values(scripts)){
+if(!content)continue;
+const networkRecord=networkRecords.find(record=>record.requestId===requestId);
+if(!networkRecord)continue;
+
+
+const matches=matcher.match(content);
+
+
+const bundle=bundles.find(b=>b.script.src===networkRecord.url);
+if(bundle){
+for(const{coreJs2Module,coreJs3Module,name}of polyfillData){
+
+if(matches.some(m=>m.name===name))continue;
+
+const source=bundle.rawMap.sources.find(source=>
+source.endsWith(`${coreJs2Module}.js`)||source.endsWith(`${coreJs3Module}.js`));
+if(!source)continue;
+
+const mapping=bundle.map.mappings().find(m=>m.sourceURL===source);
+if(mapping){
+matches.push({name,line:mapping.lineNumber,column:mapping.columnNumber,count:1});
+}else{
+matches.push({name,line:0,column:0,count:1});
+}
+}
+}
+
+if(!matches.length)continue;
+urlToMatchResults.set(networkRecord.url,matches);
+}
+
+return urlToMatchResults;
+}
+
+
+
+
+
+static estimateWastedBytes(matches){
+
+const polyfillResults=matches.filter(m=>!m.name.startsWith('@'));
+const transformResults=matches.filter(m=>m.name.startsWith('@'));
+
+let estimatedWastedBytesFromPolyfills=0;
+
+const graph=require('./polyfill-graph-data.json');
+const modulesSeen=new Set();
+for(const result of polyfillResults){
+const modules=graph.dependencies[result.name];
+if(!modules)continue;
+for(const module of modules){
+modulesSeen.add(module);
+}
+}
+
+if(polyfillResults.length>0)estimatedWastedBytesFromPolyfills+=graph.baseSize;
+estimatedWastedBytesFromPolyfills+=[...modulesSeen].reduce((acc,moduleIndex)=>{
+return acc+graph.moduleSizes[moduleIndex];
+},0);
+estimatedWastedBytesFromPolyfills=Math.min(estimatedWastedBytesFromPolyfills,graph.maxSize);
+
+let estimatedWastedBytesFromTransforms=0;
+
+for(const result of transformResults){
+const pattern=this.getTransformPatterns().find(p=>p.name===result.name);
+if(!pattern||!pattern.estimateBytes)continue;
+estimatedWastedBytesFromTransforms+=pattern.estimateBytes(result);
+}
+
+const estimatedWastedBytes=
+estimatedWastedBytesFromPolyfills+estimatedWastedBytesFromTransforms;
+return estimatedWastedBytes;
+}
+
+
+
+
+
+
+
+
+
+
+
+static async estimateTransferRatioForScript(transferRatioByUrl,url,artifacts,networkRecords){
+let transferRatio=transferRatioByUrl.get(url);
+if(transferRatio!==undefined)return transferRatio;
+
+const mainDocumentRecord=await NetworkAnalyzer.findMainDocument(networkRecords);
+const networkRecord=url===artifacts.URL.finalUrl?
+mainDocumentRecord:
+networkRecords.find(n=>n.url===url);
+const script=artifacts.ScriptElements.find(script=>script.src===url);
+
+if(!script||script.content===null){
+
+transferRatio=1;
+}else{
+const contentLength=script.content.length;
+const transferSize=
+ByteEfficiencyAudit.estimateTransferSize(networkRecord,contentLength,'Script');
+transferRatio=transferSize/contentLength;
+}
+
+transferRatioByUrl.set(url,transferRatio);
+return transferRatio;
+}
+
+
+
+
+
+
+
+static async audit_(artifacts,networkRecords,context){
+const mainDocumentEntity=thirdPartyWeb.getEntity(artifacts.URL.finalUrl);
+const bundles=await JsBundles.request(artifacts,context);
+
+
+const items=[];
+
+const matcher=new CodePatternMatcher([
+...this.getPolyfillPatterns(),
+...this.getTransformPatterns()]);
+
+
+
+const transferRatioByUrl=new Map();
+
+const urlToMatchResults=
+this.detectAcrossScripts(matcher,artifacts.ScriptElements,networkRecords,bundles);
+for(const[url,matches]of urlToMatchResults.entries()){
+const transferRatio=await this.estimateTransferRatioForScript(
+transferRatioByUrl,url,artifacts,networkRecords);
+const wastedBytes=Math.round(this.estimateWastedBytes(matches)*transferRatio);
+
+const item={
+url,
+wastedBytes,
+subItems:{
+type:'subitems',
+items:[]},
+
+
+totalBytes:0};
+
+for(const match of matches){
+const{name,line,column}=match;
+
+const subItem={
+signal:name,
+location:{
+type:'source-location',
+url,
+line,
+column,
+urlProvider:'network'}};
+
+
+item.subItems.items.push(subItem);
+}
+items.push(item);
+}
+
+
+const wastedBytesByUrl=new Map();
+for(const item of items){
+
+if(thirdPartyWeb.isFirstParty(item.url,mainDocumentEntity)){
+wastedBytesByUrl.set(item.url,item.wastedBytes);
+}
+}
+
+
+const headings=[
+
+{key:'url',valueType:'url',subItemsHeading:{key:'location',valueType:'source-location'},label:str_(i18n.UIStrings.columnURL)},
+{key:null,valueType:'code',subItemsHeading:{key:'signal'},label:''},
+{key:'wastedBytes',valueType:'bytes',label:str_(i18n.UIStrings.columnWastedBytes)}];
+
+
+
+return{
+items,
+headings,
+wastedBytesByUrl};
+
+}}
+
+
+module.exports=LegacyJavascript;
+module.exports.UIStrings=UIStrings;
+
+}).call(this,"/lighthouse-core/audits/byte-efficiency/legacy-javascript.js");
+},{"../../computed/js-bundles.js":11,"../../lib/dependency-graph/simulator/network-analyzer.js":74,"../../lib/i18n/i18n.js":78,"../../lib/third-party-web.js":96,"./byte-efficiency-audit.js":4,"./polyfill-graph-data.json":5}],"../audits/byte-efficiency/offscreen-images":[function(require,module,exports){
 (function(__filename){
 
 
@@ -3227,7 +3713,7 @@ module.exports=OffscreenImages;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/offscreen-images.js");
-},{"../../computed/metrics/interactive.js":20,"../../computed/trace-of-tab.js":44,"../../lib/i18n/i18n.js":77,"../../lib/sentry.js":90,"../../lib/url-shim.js":"url","./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/render-blocking-resources":[function(require,module,exports){
+},{"../../computed/metrics/interactive.js":21,"../../computed/trace-of-tab.js":45,"../../lib/i18n/i18n.js":78,"../../lib/sentry.js":91,"../../lib/url-shim.js":"url","./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/render-blocking-resources":[function(require,module,exports){
 (function(__filename){
 
 
@@ -3291,6 +3777,50 @@ urlMap[node.record.url]={node,nodeTiming};
 return urlMap;
 }
 
+
+
+
+
+
+
+function adjustNodeTimings(adjustedNodeTimings,node,Stacks){
+const nodeTiming=adjustedNodeTimings.get(node);
+if(!nodeTiming)return;
+const stackSpecificTiming=computeStackSpecificTiming(node,nodeTiming,Stacks);
+const difference=nodeTiming.duration-stackSpecificTiming.duration;
+if(!difference)return;
+
+
+node.traverse(childNode=>{
+adjustedNodeTimings.delete(childNode);
+});
+adjustedNodeTimings.set(node,stackSpecificTiming);
+}
+
+
+
+
+
+
+
+
+
+function computeStackSpecificTiming(node,nodeTiming,Stacks){
+const stackSpecificTiming={...nodeTiming};
+if(Stacks.some(stack=>stack.id==='amp')){
+
+
+
+if(node.type===BaseNode.TYPES.NETWORK&&
+node.record.resourceType===NetworkRequest.TYPES.Stylesheet&&
+nodeTiming.endTime>2100){
+stackSpecificTiming.endTime=Math.max(nodeTiming.startTime,2100);
+stackSpecificTiming.duration=stackSpecificTiming.endTime-stackSpecificTiming.startTime;
+}
+}
+return stackSpecificTiming;
+}
+
 class RenderBlockingResources extends Audit{
 
 
@@ -3303,7 +3833,8 @@ scoreDisplayMode:Audit.SCORING_MODES.NUMERIC,
 description:str_(UIStrings.description),
 
 
-requiredArtifacts:['URL','TagsBlockingFirstPaint','traces','devtoolsLogs','CSSUsage']};
+requiredArtifacts:['URL','TagsBlockingFirstPaint','traces','devtoolsLogs','CSSUsage',
+'Stacks']};
 
 }
 
@@ -3321,9 +3852,14 @@ const simulator=await LoadSimulator.request(simulatorData,context);
 const wastedCssBytes=await RenderBlockingResources.computeWastedCSSBytes(artifacts,context);
 
 const metricSettings={throttlingMethod:'simulate'};
+
+
+
 const metricComputationData={trace,devtoolsLog,simulator,settings:metricSettings};
 
-const fcpSimulation=await FirstContentfulPaint.request(metricComputationData,context);
+
+const fcpSimulation=
+await FirstContentfulPaint.request(metricComputationData,context);
 const fcpTsInMs=traceOfTab.timestamps.firstContentfulPaint/1000;
 
 const nodesByUrl=getNodesAndTimingByUrl(fcpSimulation.optimisticEstimate.nodeTimings);
@@ -3338,11 +3874,13 @@ if(!nodesByUrl[resource.tag.url])continue;
 
 const{node,nodeTiming}=nodesByUrl[resource.tag.url];
 
+const stackSpecificTiming=computeStackSpecificTiming(node,nodeTiming,artifacts.Stacks);
+
 
 node.traverse(node=>deferredNodeIds.add(node.id));
 
 
-const wastedMs=Math.round(nodeTiming.duration);
+const wastedMs=Math.round(stackSpecificTiming.duration);
 if(wastedMs<MINIMUM_WASTED_MS)continue;
 
 results.push({
@@ -3360,7 +3898,8 @@ const wastedMs=RenderBlockingResources.estimateSavingsWithGraphs(
 simulator,
 fcpSimulation.optimisticGraph,
 deferredNodeIds,
-wastedCssBytes);
+wastedCssBytes,
+artifacts.Stacks);
 
 
 return{results,wastedMs};
@@ -3382,11 +3921,15 @@ return{results,wastedMs};
 
 
 
-static estimateSavingsWithGraphs(simulator,fcpGraph,deferredIds,wastedCssBytesByUrl){
-const originalEstimate=simulator.simulate(fcpGraph).timeInMs;
+
+static estimateSavingsWithGraphs(simulator,fcpGraph,deferredIds,wastedCssBytesByUrl,Stacks){
+const{nodeTimings}=simulator.simulate(fcpGraph);
+const adjustedNodeTimings=new Map(nodeTimings);
 
 let totalChildNetworkBytes=0;
 const minimalFCPGraph=fcpGraph.cloneWithRelationships(node=>{
+adjustNodeTimings(adjustedNodeTimings,node,Stacks);
+
 
 const canDeferRequest=deferredIds.has(node.id);
 if(node.type!==BaseNode.TYPES.NETWORK)return!canDeferRequest;
@@ -3402,12 +3945,17 @@ return!canDeferRequest;
 });
 
 
+const estimateBeforeInline=Math.max(...Array.from(
+Array.from(adjustedNodeTimings).map(timing=>timing[1].endTime)));
+
+
+
 const originalTransferSize=minimalFCPGraph.record.transferSize;
 const safeTransferSize=originalTransferSize||0;
 minimalFCPGraph.record.transferSize=safeTransferSize+totalChildNetworkBytes;
 const estimateAfterInline=simulator.simulate(minimalFCPGraph).timeInMs;
 minimalFCPGraph.record.transferSize=originalTransferSize;
-return Math.round(Math.max(originalEstimate-estimateAfterInline,0));
+return Math.round(Math.max(estimateBeforeInline-estimateAfterInline,0));
 }
 
 
@@ -3467,7 +4015,7 @@ module.exports=RenderBlockingResources;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/render-blocking-resources.js");
-},{"../../computed/load-simulator.js":11,"../../computed/metrics/first-contentful-paint.js":17,"../../computed/trace-of-tab.js":44,"../../computed/unused-css.js":45,"../../lib/dependency-graph/base-node.js":68,"../../lib/i18n/i18n.js":77,"../../lib/network-request.js":87,"../audit.js":3,"./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/total-byte-weight":[function(require,module,exports){
+},{"../../computed/load-simulator.js":12,"../../computed/metrics/first-contentful-paint.js":18,"../../computed/trace-of-tab.js":45,"../../computed/unused-css.js":46,"../../lib/dependency-graph/base-node.js":69,"../../lib/i18n/i18n.js":78,"../../lib/network-request.js":88,"../audit.js":3,"./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/total-byte-weight":[function(require,module,exports){
 (function(__filename){
 
 
@@ -3549,7 +4097,6 @@ totalBytes:record.transferSize};
 totalBytes+=result.totalBytes;
 results.push(result);
 });
-const totalCompletedRequests=results.length;
 results=results.sort((itemA,itemB)=>{
 return itemB.totalBytes-itemA.totalBytes||
 itemA.url.localeCompare(itemB.url);
@@ -3573,12 +4120,6 @@ score,
 numericValue:totalBytes,
 numericUnit:'byte',
 displayValue:str_(UIStrings.displayValue,{totalBytes}),
-extendedInfo:{
-value:{
-results,
-totalCompletedRequests}},
-
-
 details:tableDetails};
 
 }}
@@ -3588,7 +4129,7 @@ module.exports=TotalByteWeight;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/total-byte-weight.js");
-},{"../../computed/network-records.js":39,"../../lib/i18n/i18n.js":77,"./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/unminified-css":[function(require,module,exports){
+},{"../../computed/network-records.js":40,"../../lib/i18n/i18n.js":78,"./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/unminified-css":[function(require,module,exports){
 (function(__filename){
 
 
@@ -3709,7 +4250,7 @@ module.exports=UnminifiedCSS;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/unminified-css.js");
-},{"../../computed/unused-css.js":45,"../../lib/i18n/i18n.js":77,"../../lib/minification-estimator.js":85,"./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/unminified-javascript":[function(require,module,exports){
+},{"../../computed/unused-css.js":46,"../../lib/i18n/i18n.js":78,"../../lib/minification-estimator.js":86,"./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/unminified-javascript":[function(require,module,exports){
 (function(__filename){
 
 
@@ -3831,7 +4372,7 @@ module.exports=UnminifiedJavaScript;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/unminified-javascript.js");
-},{"../../lib/i18n/i18n.js":77,"../../lib/minification-estimator.js":85,"./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/unused-css-rules":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"../../lib/minification-estimator.js":86,"./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/unused-css-rules":[function(require,module,exports){
 (function(__filename){
 
 
@@ -3906,7 +4447,7 @@ module.exports=UnusedCSSRules;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/unused-css-rules.js");
-},{"../../computed/unused-css.js":45,"../../lib/i18n/i18n.js":77,"./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/unused-javascript":[function(require,module,exports){
+},{"../../computed/unused-css.js":46,"../../lib/i18n/i18n.js":78,"./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/unused-javascript":[function(require,module,exports){
 (function(__filename){
 
 
@@ -3925,7 +4466,7 @@ const UIStrings={
 title:'Remove unused JavaScript',
 
 description:'Remove unused JavaScript to reduce bytes consumed by network activity. '+
-'[Learn more](https://web.dev/remove-unused-code/).'};
+'[Learn more](https://web.dev/unused-javascript/).'};
 
 
 const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
@@ -4064,7 +4605,7 @@ module.exports=UnusedJavaScript;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/unused-javascript.js");
-},{"../../computed/js-bundles.js":10,"../../computed/unused-javascript-summary.js":46,"../../lib/i18n/i18n.js":77,"./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/uses-long-cache-ttl":[function(require,module,exports){
+},{"../../computed/js-bundles.js":11,"../../computed/unused-javascript-summary.js":47,"../../lib/i18n/i18n.js":78,"./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/uses-long-cache-ttl":[function(require,module,exports){
 (function(__filename){
 
 
@@ -4264,7 +4805,6 @@ static audit(artifacts,context){
 const devtoolsLogs=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
 return NetworkRecords.request(devtoolsLogs,context).then(records=>{
 const results=[];
-let queryStringCount=0;
 let totalWastedBytes=0;
 
 for(const record of records){
@@ -4305,7 +4845,6 @@ const totalBytes=record.transferSize||0;
 const wastedBytes=(1-cacheHitProbability)*totalBytes;
 
 totalWastedBytes+=wastedBytes;
-if(url.includes('?'))queryStringCount++;
 
 
 
@@ -4356,12 +4895,6 @@ score,
 numericValue:totalWastedBytes,
 numericUnit:'byte',
 displayValue:str_(UIStrings.displayValue,{itemCount:results.length}),
-extendedInfo:{
-value:{
-results,
-queryStringCount}},
-
-
 details};
 
 });
@@ -4372,7 +4905,7 @@ module.exports=CacheHeaders;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js");
-},{"../../computed/network-records.js":39,"../../lib/i18n/i18n.js":77,"../../lib/network-request.js":87,"../../lib/statistics.js":93,"../../lib/url-shim.js":"url","../audit.js":3,"parse-cache-control":169}],"../audits/byte-efficiency/uses-optimized-images":[function(require,module,exports){
+},{"../../computed/network-records.js":40,"../../lib/i18n/i18n.js":78,"../../lib/network-request.js":88,"../../lib/statistics.js":94,"../../lib/url-shim.js":"url","../audit.js":3,"parse-cache-control":170}],"../audits/byte-efficiency/uses-optimized-images":[function(require,module,exports){
 (function(__filename){
 
 
@@ -4511,7 +5044,7 @@ module.exports=UsesOptimizedImages;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/uses-optimized-images.js");
-},{"../../lib/i18n/i18n.js":77,"../../lib/url-shim.js":"url","./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/uses-responsive-images":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"../../lib/url-shim.js":"url","./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/uses-responsive-images":[function(require,module,exports){
 (function(__filename){
 
 
@@ -4545,7 +5078,7 @@ description:
 
 const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
 
-const IGNORE_THRESHOLD_IN_BYTES=2048;
+const IGNORE_THRESHOLD_IN_BYTES=4096;
 
 class UsesResponsiveImages extends ByteEfficiencyAudit{
 
@@ -4671,7 +5204,7 @@ module.exports=UsesResponsiveImages;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/uses-responsive-images.js");
-},{"../../lib/i18n/i18n.js":77,"../../lib/sentry.js":90,"../../lib/url-shim.js":"url","./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/uses-text-compression":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"../../lib/sentry.js":91,"../../lib/url-shim.js":"url","./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/uses-text-compression":[function(require,module,exports){
 (function(__filename){
 
 
@@ -4775,7 +5308,7 @@ module.exports=ResponsesAreCompressed;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/uses-text-compression.js");
-},{"../../lib/i18n/i18n.js":77,"../../lib/url-shim.js":"url","./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/uses-webp-images":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"../../lib/url-shim.js":"url","./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/uses-webp-images":[function(require,module,exports){
 (function(__filename){
 
 
@@ -4913,7 +5446,7 @@ module.exports=UsesWebPImages;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/uses-webp-images.js");
-},{"../../lib/i18n/i18n.js":77,"../../lib/url-shim.js":"url","./byte-efficiency-audit.js":4}],"../audits/content-width":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"../../lib/url-shim.js":"url","./byte-efficiency-audit.js":4}],"../audits/content-width":[function(require,module,exports){
 (function(__filename){
 
 
@@ -4994,7 +5527,7 @@ module.exports=ContentWidth;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/content-width.js");
-},{"../lib/i18n/i18n.js":77,"./audit.js":3}],"../audits/critical-request-chains":[function(require,module,exports){
+},{"../lib/i18n/i18n.js":78,"./audit.js":3}],"../audits/critical-request-chains":[function(require,module,exports){
 (function(__filename){
 
 
@@ -5202,12 +5735,6 @@ return{
 score:Number(chainCount===0),
 notApplicable:chainCount===0,
 displayValue:chainCount?str_(UIStrings.displayValue,{itemCount:chainCount}):'',
-extendedInfo:{
-value:{
-chains:flattenedChains,
-longestChain}},
-
-
 details:{
 type:'criticalrequestchain',
 chains:flattenedChains,
@@ -5222,7 +5749,7 @@ module.exports=CriticalRequestChains;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/critical-request-chains.js");
-},{"../computed/critical-request-chains.js":9,"../lib/i18n/i18n.js":77,"./audit.js":3}],"../audits/deprecations":[function(require,module,exports){
+},{"../computed/critical-request-chains.js":10,"../lib/i18n/i18n.js":78,"./audit.js":3}],"../audits/deprecations":[function(require,module,exports){
 (function(__filename){
 
 
@@ -5321,9 +5848,6 @@ displayValue=str_(UIStrings.displayValue,{itemCount:deprecations.length});
 return{
 score:Number(deprecations.length===0),
 displayValue,
-extendedInfo:{
-value:deprecations},
-
 details};
 
 }}
@@ -5333,7 +5857,7 @@ module.exports=Deprecations;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/deprecations.js");
-},{"../lib/i18n/i18n.js":77,"./audit.js":3}],"../audits/diagnostics":[function(require,module,exports){
+},{"../lib/i18n/i18n.js":78,"./audit.js":3}],"../audits/diagnostics":[function(require,module,exports){
 
 
 
@@ -5413,7 +5937,7 @@ items:[diagnostics]}};
 
 module.exports=Diagnostics;
 
-},{"../computed/main-thread-tasks.js":13,"../computed/network-analysis.js":38,"../computed/network-records.js":39,"../lib/dependency-graph/simulator/network-analyzer.js":73,"./audit.js":3}],"../audits/dobetterweb/appcache-manifest":[function(require,module,exports){
+},{"../computed/main-thread-tasks.js":14,"../computed/network-analysis.js":39,"../computed/network-records.js":40,"../lib/dependency-graph/simulator/network-analyzer.js":74,"./audit.js":3}],"../audits/dobetterweb/appcache-manifest":[function(require,module,exports){
 (function(__filename){
 
 
@@ -5484,7 +6008,7 @@ module.exports=AppCacheManifestAttr;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/dobetterweb/appcache-manifest.js");
-},{"../../lib/i18n/i18n.js":77,"../audit.js":3}],"../audits/dobetterweb/charset":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"../audit.js":3}],"../audits/dobetterweb/charset":[function(require,module,exports){
 (function(__filename){
 
 
@@ -5584,7 +6108,7 @@ module.exports.CHARSET_HTTP_REGEX=CHARSET_HTTP_REGEX;
 module.exports.IANA_REGEX=IANA_REGEX;
 
 }).call(this,"/lighthouse-core/audits/dobetterweb/charset.js");
-},{"../../computed/main-resource.js":12,"../../lib/i18n/i18n.js":77,"../audit.js":3}],"../audits/dobetterweb/doctype":[function(require,module,exports){
+},{"../../computed/main-resource.js":13,"../../lib/i18n/i18n.js":78,"../audit.js":3}],"../audits/dobetterweb/doctype":[function(require,module,exports){
 (function(__filename){
 
 
@@ -5682,7 +6206,7 @@ module.exports=Doctype;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/dobetterweb/doctype.js");
-},{"../../lib/i18n/i18n.js":77,"../audit.js":3}],"../audits/dobetterweb/dom-size":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"../audit.js":3}],"../audits/dobetterweb/dom-size":[function(require,module,exports){
 (function(__filename){
 
 
@@ -5811,9 +6335,6 @@ score,
 numericValue:stats.totalBodyElements,
 numericUnit:'element',
 displayValue:str_(UIStrings.displayValue,{itemCount:stats.totalBodyElements}),
-extendedInfo:{
-value:items},
-
 details:Audit.makeTableDetails(headings,items)};
 
 }}
@@ -5823,7 +6344,7 @@ module.exports=DOMSize;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/dobetterweb/dom-size.js");
-},{"../../lib/i18n/i18n.js":77,"../../report/html/renderer/i18n.js":100,"../audit.js":3}],"../audits/dobetterweb/external-anchors-use-rel-noopener":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"../../report/html/renderer/i18n.js":101,"../audit.js":3}],"../audits/dobetterweb/external-anchors-use-rel-noopener":[function(require,module,exports){
 (function(__filename){
 
 
@@ -5919,9 +6440,6 @@ const details=Audit.makeTableDetails(headings,failingAnchors);
 
 return{
 score:Number(failingAnchors.length===0),
-extendedInfo:{
-value:failingAnchors},
-
 details,
 warnings};
 
@@ -5932,7 +6450,7 @@ module.exports=ExternalAnchorsUseRelNoopenerAudit;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js");
-},{"../../lib/i18n/i18n.js":77,"../../lib/url-shim.js":"url","../audit.js":3}],"../audits/dobetterweb/geolocation-on-start":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"../../lib/url-shim.js":"url","../audit.js":3}],"../audits/dobetterweb/geolocation-on-start":[function(require,module,exports){
 (function(__filename){
 
 
@@ -5996,9 +6514,6 @@ const details=ViolationAudit.makeTableDetails(headings,results);
 
 return{
 score:Number(results.length===0),
-extendedInfo:{
-value:results},
-
 details};
 
 }}
@@ -6008,7 +6523,7 @@ module.exports=GeolocationOnStart;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/dobetterweb/geolocation-on-start.js");
-},{"../../lib/i18n/i18n.js":77,"../violation-audit.js":7}],"../audits/dobetterweb/js-libraries":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"../violation-audit.js":8}],"../audits/dobetterweb/js-libraries":[function(require,module,exports){
 (function(__filename){
 
 
@@ -6095,7 +6610,7 @@ module.exports=JsLibrariesAudit;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/dobetterweb/js-libraries.js");
-},{"../../lib/i18n/i18n.js":77,"../audit.js":3}],"../audits/dobetterweb/no-document-write":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"../audit.js":3}],"../audits/dobetterweb/no-document-write":[function(require,module,exports){
 (function(__filename){
 
 
@@ -6174,9 +6689,6 @@ const details=ViolationAudit.makeTableDetails(headings,results);
 
 return{
 score:Number(results.length===0),
-extendedInfo:{
-value:results},
-
 details};
 
 }}
@@ -6186,7 +6698,7 @@ module.exports=NoDocWriteAudit;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/dobetterweb/no-document-write.js");
-},{"../../lib/i18n/i18n.js":77,"../violation-audit.js":7}],"../audits/dobetterweb/no-vulnerable-libraries":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"../violation-audit.js":8}],"../audits/dobetterweb/no-vulnerable-libraries":[function(require,module,exports){
 (function(__filename){
 
 
@@ -6374,7 +6886,7 @@ let totalVulns=0;
 
 const vulnerabilityResults=[];
 
-const libraryVulns=foundLibraries.map(lib=>{
+for(const lib of foundLibraries){
 const version=this.normalizeVersion(lib.version)||'';
 const vulns=this.getVulnerabilities(version,lib,snykDB);
 const vulnCount=vulns.length;
@@ -6394,15 +6906,7 @@ type:'link'}});
 
 
 }
-
-return{
-name:lib.name,
-npmPkgName:lib.npm,
-version,
-vulns,
-highestSeverity};
-
-});
+}
 
 let displayValue='';
 if(totalVulns>0){
@@ -6420,10 +6924,6 @@ const details=Audit.makeTableDetails(headings,vulnerabilityResults,{});
 return{
 score:Number(totalVulns===0),
 displayValue,
-extendedInfo:{
-jsLibs:libraryVulns,
-vulnerabilities:vulnerabilityResults},
-
 details};
 
 }}
@@ -6433,7 +6933,7 @@ module.exports=NoVulnerableLibrariesAudit;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js");
-},{"../../../third-party/snyk/snapshot.json":214,"../../lib/i18n/i18n.js":77,"../../lib/sentry.js":90,"../audit.js":3,"semver":193}],"../audits/dobetterweb/notification-on-start":[function(require,module,exports){
+},{"../../../third-party/snyk/snapshot.json":215,"../../lib/i18n/i18n.js":78,"../../lib/sentry.js":91,"../audit.js":3,"semver":194}],"../audits/dobetterweb/notification-on-start":[function(require,module,exports){
 (function(__filename){
 
 
@@ -6495,9 +6995,6 @@ const details=ViolationAudit.makeTableDetails(headings,results);
 
 return{
 score:Number(results.length===0),
-extendedInfo:{
-value:results},
-
 details};
 
 }}
@@ -6507,7 +7004,7 @@ module.exports=NotificationOnStart;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/dobetterweb/notification-on-start.js");
-},{"../../lib/i18n/i18n.js":77,"../violation-audit.js":7}],"../audits/dobetterweb/password-inputs-can-be-pasted-into":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"../violation-audit.js":8}],"../audits/dobetterweb/password-inputs-can-be-pasted-into":[function(require,module,exports){
 (function(__filename){
 
 
@@ -6526,9 +7023,7 @@ title:'Allows users to paste into password fields',
 failureTitle:'Prevents users to paste into password fields',
 
 description:'Preventing password pasting undermines good security policy. '+
-'[Learn more](https://web.dev/password-inputs-can-be-pasted-into/).',
-
-columnFailingElem:'Failing Elements'};
+'[Learn more](https://web.dev/password-inputs-can-be-pasted-into/).'};
 
 
 const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
@@ -6564,14 +7059,11 @@ node:{type:'node',snippet:input.snippet}});
 
 
 const headings=[
-{key:'node',itemType:'node',text:str_(UIStrings.columnFailingElem)}];
+{key:'node',itemType:'node',text:str_(i18n.UIStrings.columnFailingElem)}];
 
 
 return{
 score:Number(passwordInputsWithPreventedPaste.length===0),
-extendedInfo:{
-value:passwordInputsWithPreventedPaste},
-
 details:Audit.makeTableDetails(headings,items)};
 
 }}
@@ -6581,14 +7073,8 @@ module.exports=PasswordInputsCanBePastedIntoAudit;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/dobetterweb/password-inputs-can-be-pasted-into.js");
-},{"../../lib/i18n/i18n.js":77,"../audit.js":3}],"../audits/dobetterweb/uses-http2":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"../audit.js":3}],"../audits/dobetterweb/uses-http2":[function(require,module,exports){
 (function(__filename){
-
-
-
-
-
-
 
 
 
@@ -6596,16 +7082,27 @@ module.exports.UIStrings=UIStrings;
 
 'use strict';
 
-const URL=require('../../lib/url-shim.js');
+
+
+
+
+
+
+
+
 const Audit=require('../audit.js');
+const ThirdParty=require('../../lib/third-party-web.js');
+const ByteEfficiencyAudit=require('../byte-efficiency/byte-efficiency-audit.js');
+const Interactive=require('../../computed/metrics/lantern-interactive.js');
+const NetworkRequest=require('../../lib/network-request.js');
 const NetworkRecords=require('../../computed/network-records.js');
+const LoadSimulator=require('../../computed/load-simulator.js');
+const PageDependencyGraph=require('../../computed/page-dependency-graph.js');
 const i18n=require('../../lib/i18n/i18n.js');
 
 const UIStrings={
 
-title:'Uses HTTP/2 for its own resources',
-
-failureTitle:'Does not use HTTP/2 for all of its resources',
+title:'Use HTTP/2',
 
 description:'HTTP/2 offers many benefits over HTTP/1.1, including binary headers, '+
 'multiplexing, and server push. [Learn more](https://web.dev/uses-http2/).',
@@ -6620,6 +7117,16 @@ columnProtocol:'Protocol'};
 
 const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
 
+
+const STATIC_RESOURCE_TYPES=new Set([
+NetworkRequest.TYPES.Document,
+NetworkRequest.TYPES.Font,
+NetworkRequest.TYPES.Image,
+NetworkRequest.TYPES.Stylesheet,
+NetworkRequest.TYPES.Script,
+NetworkRequest.TYPES.Media]);
+
+
 class UsesHTTP2Audit extends Audit{
 
 
@@ -6628,9 +7135,8 @@ static get meta(){
 return{
 id:'uses-http2',
 title:str_(UIStrings.title),
-failureTitle:str_(UIStrings.failureTitle),
 description:str_(UIStrings.description),
-requiredArtifacts:['URL','devtoolsLogs']};
+requiredArtifacts:['URL','devtoolsLogs','traces']};
 
 }
 
@@ -6639,32 +7145,147 @@ requiredArtifacts:['URL','devtoolsLogs']};
 
 
 
-static audit(artifacts,context){
-const devtoolsLogs=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
-return NetworkRecords.request(devtoolsLogs,context).then(networkRecords=>{
-const finalHost=new URL(artifacts.URL.finalUrl).host;
+
+
+
+
+
+
+static computeWasteWithTTIGraph(results,graph,simulator){
+const beforeLabel=`uses-http2-before`;
+const afterLabel=`uses-http2-after`;
+const flexibleOrdering=true;
+
+const urlsToChange=new Set(results.map(result=>result.url));
+const simulationBefore=simulator.simulate(graph,{label:beforeLabel,flexibleOrdering});
+
+
+
+const originalProtocols=new Map();
+graph.traverse(node=>{
+if(node.type!=='network')return;
+if(!urlsToChange.has(node.record.url))return;
+
+originalProtocols.set(node.record.requestId,node.record.protocol);
+node.record.protocol='h2';
+});
+
+const simulationAfter=simulator.simulate(graph,{label:afterLabel,flexibleOrdering});
+
+
+graph.traverse(node=>{
+if(node.type!=='network')return;
+const originalProtocol=originalProtocols.get(node.record.requestId);
+if(originalProtocol===undefined)return;
+node.record.protocol=originalProtocol;
+});
+
+const savingsOnOverallLoad=simulationBefore.timeInMs-simulationAfter.timeInMs;
+const savingsOnTTI=Interactive.getLastLongTaskEndTime(simulationBefore.nodeTimings)-
+Interactive.getLastLongTaskEndTime(simulationAfter.nodeTimings);
+const savings=Math.max(savingsOnTTI,savingsOnOverallLoad);
+
+
+return Math.round(Math.max(savings,0)/10)*10;
+}
+
+
+
+
+
+
+
+
+
+static isStaticAsset(networkRequest){
+if(!STATIC_RESOURCE_TYPES.has(networkRequest.resourceType))return false;
+
+
+
+if(networkRequest.resourceSize<100){
+const entity=ThirdParty.getEntity(networkRequest.url);
+if(entity)return false;
+}
+
+return true;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+static determineNonHttp2Resources(networkRecords){
+
+const nonHttp2Resources=[];
+
 
 const seenURLs=new Set();
 
-const resources=networkRecords.filter(record=>{
+const groupedByOrigin=new Map();
+for(const record of networkRecords){
+if(!UsesHTTP2Audit.isStaticAsset(record))continue;
+const existing=groupedByOrigin.get(record.parsedURL.securityOrigin)||[];
+existing.push(record);
+groupedByOrigin.set(record.parsedURL.securityOrigin,existing);
+}
+
+for(const record of networkRecords){
+
+if(seenURLs.has(record.url))continue;
 
 
-if(record.fetchedViaServiceWorker)return false;
+if(record.fetchedViaServiceWorker)continue;
 
 const isOldHttp=/HTTP\/[01][.\d]?/i.test(record.protocol);
-if(!isOldHttp)return false;
-const requestHost=new URL(record.url).host;
-return requestHost===finalHost;
-}).map(record=>{
-return{
-protocol:record.protocol,
-url:record.url};
+if(!isOldHttp)continue;
 
-}).filter(record=>{
-if(seenURLs.has(record.url))return false;
+const group=groupedByOrigin.get(record.parsedURL.securityOrigin)||[];
+if(group.length<6)continue;
+
 seenURLs.add(record.url);
-return true;
-});
+nonHttp2Resources.push({protocol:record.protocol,url:record.url});
+}
+
+return nonHttp2Resources;
+}
+
+
+
+
+
+
+static async audit(artifacts,context){
+const trace=artifacts.traces[Audit.DEFAULT_PASS];
+const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+const settings=context&&context.settings||{};
+const simulatorOptions={
+devtoolsLog,
+settings};
+
+
+const networkRecords=await NetworkRecords.request(devtoolsLog,context);
+const graph=await PageDependencyGraph.request({trace,devtoolsLog},context);
+const simulator=await LoadSimulator.request(simulatorOptions,context);
+
+const resources=UsesHTTP2Audit.determineNonHttp2Resources(networkRecords);
+const wastedMs=UsesHTTP2Audit.computeWasteWithTTIGraph(resources,graph,simulator);
 
 let displayValue='';
 if(resources.length>0){
@@ -6673,22 +7294,19 @@ displayValue=str_(UIStrings.displayValue,{itemCount:resources.length});
 
 
 const headings=[
-{key:'url',itemType:'url',text:str_(i18n.UIStrings.columnURL)},
-{key:'protocol',itemType:'text',text:str_(UIStrings.columnProtocol)}];
+{key:'url',valueType:'url',label:str_(i18n.UIStrings.columnURL)},
+{key:'protocol',valueType:'text',label:str_(UIStrings.columnProtocol)}];
 
-const details=Audit.makeTableDetails(headings,resources);
+
+const details=Audit.makeOpportunityDetails(headings,resources,wastedMs);
 
 return{
-score:Number(resources.length===0),
-displayValue:displayValue,
-extendedInfo:{
-value:{
-results:resources}},
-
-
+displayValue,
+numericValue:wastedMs,
+numericUnit:'millisecond',
+score:ByteEfficiencyAudit.scoreForWastedMs(wastedMs),
 details};
 
-});
 }}
 
 
@@ -6696,7 +7314,7 @@ module.exports=UsesHTTP2Audit;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/dobetterweb/uses-http2.js");
-},{"../../computed/network-records.js":39,"../../lib/i18n/i18n.js":77,"../../lib/url-shim.js":"url","../audit.js":3}],"../audits/dobetterweb/uses-passive-event-listeners":[function(require,module,exports){
+},{"../../computed/load-simulator.js":12,"../../computed/metrics/lantern-interactive.js":26,"../../computed/network-records.js":40,"../../computed/page-dependency-graph.js":41,"../../lib/i18n/i18n.js":78,"../../lib/network-request.js":88,"../../lib/third-party-web.js":96,"../audit.js":3,"../byte-efficiency/byte-efficiency-audit.js":4}],"../audits/dobetterweb/uses-passive-event-listeners":[function(require,module,exports){
 (function(__filename){
 
 
@@ -6758,9 +7376,6 @@ const details=ViolationAudit.makeTableDetails(headings,results);
 
 return{
 score:Number(results.length===0),
-extendedInfo:{
-value:results},
-
 details};
 
 }}
@@ -6770,7 +7385,7 @@ module.exports=PassiveEventsAudit;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js");
-},{"../../lib/i18n/i18n.js":77,"../violation-audit.js":7}],"../audits/errors-in-console":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"../violation-audit.js":8}],"../audits/errors-in-console":[function(require,module,exports){
 (function(__filename){
 
 
@@ -6907,7 +7522,7 @@ module.exports=ErrorLogs;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/errors-in-console.js");
-},{"../lib/i18n/i18n.js":77,"./audit.js":3,"lighthouse-logger":137}],"../audits/final-screenshot":[function(require,module,exports){
+},{"../lib/i18n/i18n.js":78,"./audit.js":3,"lighthouse-logger":138}],"../audits/final-screenshot":[function(require,module,exports){
 
 
 
@@ -6943,7 +7558,7 @@ static async audit(artifacts,context){
 const trace=artifacts.traces[Audit.DEFAULT_PASS];
 const traceOfTab=await TraceOfTab.request(trace,context);
 const screenshots=await Screenshots.request(trace,context);
-const{navigationStart}=traceOfTab.timestamps;
+const{timeOrigin}=traceOfTab.timestamps;
 const finalScreenshot=screenshots[screenshots.length-1];
 
 if(!finalScreenshot){
@@ -6954,7 +7569,7 @@ return{
 score:1,
 details:{
 type:'screenshot',
-timing:Math.round((finalScreenshot.timestamp-navigationStart)/1000),
+timing:Math.round((finalScreenshot.timestamp-timeOrigin)/1000),
 timestamp:finalScreenshot.timestamp,
 data:finalScreenshot.datauri}};
 
@@ -6964,7 +7579,7 @@ data:finalScreenshot.datauri}};
 
 module.exports=FinalScreenshot;
 
-},{"../computed/screenshots.js":42,"../computed/trace-of-tab.js":44,"../lib/lh-error.js":83,"./audit.js":3}],"../audits/font-display":[function(require,module,exports){
+},{"../computed/screenshots.js":43,"../computed/trace-of-tab.js":45,"../lib/lh-error.js":84,"./audit.js":3}],"../audits/font-display":[function(require,module,exports){
 (function(__filename){
 
 
@@ -6996,8 +7611,12 @@ description:
 
 
 
-undeclaredFontURLWarning:'Lighthouse was unable to automatically check the font-display value '+
-'for the following URL: {fontURL}.'};
+undeclaredFontOriginWarning:
+'{fontCountForOrigin, plural, '+
+
+'=1 {Lighthouse was unable to automatically check the `font-display` value for the origin {fontOrigin}.} '+
+
+'other {Lighthouse was unable to automatically check the `font-display` values for the origin {fontOrigin}.}}'};
 
 
 const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
@@ -7080,6 +7699,28 @@ return{passingURLs,failingURLs};
 
 
 
+static getWarningsForFontUrls(warningUrls){
+
+const warningCountByOrigin=new Map();
+for(const warningUrl of warningUrls){
+const origin=URL.getOrigin(warningUrl);
+if(!origin)continue;
+
+const count=warningCountByOrigin.get(origin)||0;
+warningCountByOrigin.set(origin,count+1);
+}
+
+const warnings=[...warningCountByOrigin].map(([fontOrigin,fontCountForOrigin])=>{
+return str_(UIStrings.undeclaredFontOriginWarning,{fontCountForOrigin,fontOrigin});
+});
+return warnings;
+}
+
+
+
+
+
+
 static async audit(artifacts,context){
 const devtoolsLogs=artifacts.devtoolsLogs[this.DEFAULT_PASS];
 const networkRecords=await NetworkRecords.request(devtoolsLogs,context);
@@ -7123,7 +7764,7 @@ const details=Audit.makeTableDetails(headings,results);
 return{
 score:Number(results.length===0),
 details,
-warnings:warningURLs.map(fontURL=>str_(UIStrings.undeclaredFontURLWarning,{fontURL}))};
+warnings:FontDisplay.getWarningsForFontUrls(warningURLs)};
 
 }}
 
@@ -7132,7 +7773,52 @@ module.exports=FontDisplay;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/font-display.js");
-},{"../computed/network-records.js":39,"../lib/i18n/i18n.js":77,"../lib/sentry.js":90,"../lib/url-shim.js":"url","./audit.js":3}],"../audits/image-aspect-ratio":[function(require,module,exports){
+},{"../computed/network-records.js":40,"../lib/i18n/i18n.js":78,"../lib/sentry.js":91,"../lib/url-shim.js":"url","./audit.js":3}],"../audits/full-page-screenshot":[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const Audit=require('./audit.js');
+
+class FullPageScreenshot extends Audit{
+
+
+
+static get meta(){
+return{
+id:'full-page-screenshot',
+scoreDisplayMode:Audit.SCORING_MODES.INFORMATIVE,
+title:'Full-page screenshot',
+description:'A full-height screenshot of the final rendered page',
+requiredArtifacts:['FullPageScreenshot']};
+
+}
+
+
+
+
+
+static async audit(artifacts){
+if(!artifacts.FullPageScreenshot){
+return{score:0,notApplicable:true};
+}
+
+return{
+score:1,
+details:{
+type:'full-page-screenshot',
+...artifacts.FullPageScreenshot}};
+
+
+}}
+
+
+module.exports=FullPageScreenshot;
+
+},{"./audit.js":3}],"../audits/image-aspect-ratio":[function(require,module,exports){
 (function(__filename){
 
 
@@ -7273,7 +7959,7 @@ module.exports=ImageAspectRatio;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/image-aspect-ratio.js");
-},{"../lib/i18n/i18n.js":77,"../lib/url-shim.js":"url","./audit.js":3}],"../audits/image-size-responsive":[function(require,module,exports){
+},{"../lib/i18n/i18n.js":78,"../lib/url-shim.js":"url","./audit.js":3}],"../audits/image-size-responsive":[function(require,module,exports){
 (function(__filename){
 
 
@@ -7538,7 +8224,7 @@ module.exports=ImageSizeResponsive;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/image-size-responsive.js");
-},{"../lib/i18n/i18n.js":77,"../lib/url-shim.js":"url","./audit.js":3}],"../audits/installable-manifest":[function(require,module,exports){
+},{"../lib/i18n/i18n.js":78,"../lib/url-shim.js":"url","./audit.js":3}],"../audits/installable-manifest":[function(require,module,exports){
 (function(__filename){
 
 
@@ -7650,7 +8336,7 @@ module.exports=InstallableManifest;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/installable-manifest.js");
-},{"../computed/manifest-values.js":14,"../lib/i18n/i18n.js":77,"./multi-check-audit.js":6}],"../audits/is-on-https":[function(require,module,exports){
+},{"../computed/manifest-values.js":15,"../lib/i18n/i18n.js":78,"./multi-check-audit.js":7}],"../audits/is-on-https":[function(require,module,exports){
 (function(__filename){
 
 
@@ -7683,7 +8369,23 @@ displayValue:`{itemCount, plural,
     other {# insecure requests found}
     }`,
 
-columnInsecureURL:'Insecure URL'};
+columnInsecureURL:'Insecure URL',
+
+columnResolution:'Request Resolution',
+
+allowed:'Allowed',
+
+blocked:'Blocked',
+
+warning:'Allowed with warning',
+
+upgraded:'Automatically upgraded to HTTPS'};
+
+
+const resolutionToString={
+MixedContentAutomaticallyUpgraded:UIStrings.upgraded,
+MixedContentBlocked:UIStrings.blocked,
+MixedContentWarning:UIStrings.warning};
 
 
 const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
@@ -7702,7 +8404,7 @@ id:'is-on-https',
 title:str_(UIStrings.title),
 failureTitle:str_(UIStrings.failureTitle),
 description:str_(UIStrings.description),
-requiredArtifacts:['devtoolsLogs']};
+requiredArtifacts:['devtoolsLogs','InspectorIssues']};
 
 }
 
@@ -7728,24 +8430,47 @@ const insecureURLs=networkRecords.
 filter(record=>!HTTPS.isSecureRecord(record)).
 map(record=>URL.elideDataURI(record.url));
 
-const items=Array.from(new Set(insecureURLs)).map(url=>({url}));
 
-let displayValue='';
-if(items.length>0){
-displayValue=str_(UIStrings.displayValue,{itemCount:items.length});
-}
+const items=Array.from(new Set(insecureURLs)).map(url=>({url,resolution:undefined}));
 
 
 const headings=[
 {key:'url',itemType:'url',text:str_(UIStrings.columnInsecureURL)}];
 
 
+
+if(artifacts.InspectorIssues.mixedContent.length){
+headings.push(
+{key:'resolution',itemType:'text',text:str_(UIStrings.columnResolution)});
+for(const details of artifacts.InspectorIssues.mixedContent){
+let item=items.find(item=>item.url===details.insecureURL);
+if(!item){
+item={url:details.insecureURL};
+items.push(item);
+}
+item.resolution=resolutionToString[details.resolutionStatus]?
+str_(resolutionToString[details.resolutionStatus]):
+details.resolutionStatus;
+}
+}
+
+
+
+
+
+
+for(const item of items){
+if(!item.resolution)item.resolution=str_(UIStrings.allowed);
+}
+
+let displayValue='';
+if(items.length>0){
+displayValue=str_(UIStrings.displayValue,{itemCount:items.length});
+}
+
 return{
 score:Number(items.length===0),
 displayValue,
-extendedInfo:{
-value:items},
-
 details:Audit.makeTableDetails(headings,items)};
 
 });
@@ -7756,7 +8481,7 @@ module.exports=HTTPS;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/is-on-https.js");
-},{"../computed/network-records.js":39,"../lib/i18n/i18n.js":77,"../lib/url-shim.js":"url","./audit.js":3}],"../audits/largest-contentful-paint-element":[function(require,module,exports){
+},{"../computed/network-records.js":40,"../lib/i18n/i18n.js":78,"../lib/url-shim.js":"url","./audit.js":3}],"../audits/largest-contentful-paint-element":[function(require,module,exports){
 (function(__filename){
 
 
@@ -7802,8 +8527,8 @@ requiredArtifacts:['traces','TraceElements']};
 
 
 static audit(artifacts){
-const lcpElement=
-artifacts.TraceElements.find(element=>element.metricName==='largest-contentful-paint');
+const lcpElement=artifacts.TraceElements.
+find(element=>element.traceEventType==='largest-contentful-paint');
 const lcpElementDetails=[];
 if(lcpElement){
 lcpElementDetails.push({
@@ -7812,7 +8537,8 @@ type:'node',
 path:lcpElement.devtoolsNodePath,
 selector:lcpElement.selector,
 nodeLabel:lcpElement.nodeLabel,
-snippet:lcpElement.snippet}});
+snippet:lcpElement.snippet,
+boundingRect:lcpElement.boundingRect}});
 
 
 }
@@ -7839,7 +8565,7 @@ module.exports=LargestContentfulPaintElement;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/largest-contentful-paint-element.js");
-},{"../lib/i18n/i18n.js":77,"./audit.js":3}],"../audits/layout-shift-elements":[function(require,module,exports){
+},{"../lib/i18n/i18n.js":78,"./audit.js":3}],"../audits/layout-shift-elements":[function(require,module,exports){
 (function(__filename){
 
 
@@ -7886,8 +8612,8 @@ requiredArtifacts:['TraceElements']};
 
 
 static audit(artifacts){
-const clsElements=
-artifacts.TraceElements.filter(element=>element.metricName==='cumulative-layout-shift');
+const clsElements=artifacts.TraceElements.
+filter(element=>element.traceEventType==='layout-shift');
 
 const clsElementData=clsElements.map(element=>{
 return{
@@ -7896,7 +8622,8 @@ type:'node',
 path:element.devtoolsNodePath,
 selector:element.selector,
 nodeLabel:element.nodeLabel,
-snippet:element.snippet},
+snippet:element.snippet,
+boundingRect:element.boundingRect},
 
 score:element.score};
 
@@ -7928,407 +8655,7 @@ module.exports=LayoutShiftElements;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/layout-shift-elements.js");
-},{"../lib/i18n/i18n.js":77,"./audit.js":3}],"../audits/legacy-javascript":[function(require,module,exports){
-(function(__filename){
-
-
-
-
-
-'use strict';
-
-
-
-
-
-
-
-
-
-
-
-
-
-const Audit=require('./audit.js');
-const NetworkRecords=require('../computed/network-records.js');
-const JSBundles=require('../computed/js-bundles.js');
-const i18n=require('../lib/i18n/i18n.js');
-const thirdPartyWeb=require('../lib/third-party-web.js');
-
-const UIStrings={
-
-title:'Avoid serving legacy JavaScript to modern browsers',
-
-
-
-description:'Polyfills and transforms enable legacy browsers to use new JavaScript features. However, many aren\'t necessary for modern browsers. For your bundled JavaScript, adopt a modern script deployment strategy using module/nomodule feature detection to reduce the amount of code shipped to modern browsers, while retaining support for legacy browsers. [Learn More](https://philipwalton.com/articles/deploying-es2015-code-in-production-today/)'};
-
-
-const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
-
-
-
-
-
-class CodePatternMatcher{
-
-
-
-constructor(patterns){
-const patternsExpression=patterns.map(pattern=>`(${pattern.expression})`).join('|');
-this.re=new RegExp(`(^\r\n|\r|\n)|${patternsExpression}`,'g');
-this.patterns=patterns;
-}
-
-
-
-
-
-match(code){
-
-this.re.lastIndex=0;
-
-const seen=new Set();
-
-const matches=[];
-
-let result;
-let line=0;
-let lineBeginsAtIndex=0;
-
-
-while((result=this.re.exec(code))!==null){
-
-const captureGroups=result.slice(1);
-
-
-
-const[isNewline,...patternExpressionMatches]=captureGroups;
-if(isNewline){
-line++;
-lineBeginsAtIndex=result.index+1;
-continue;
-}
-const pattern=this.patterns[patternExpressionMatches.findIndex(Boolean)];
-
-
-
-
-
-if(seen.has(pattern)){
-continue;
-}
-seen.add(pattern);
-
-matches.push({
-name:pattern.name,
-line,
-column:result.index-lineBeginsAtIndex});
-
-}
-
-return matches;
-}}
-
-
-class LegacyJavascript extends Audit{
-
-
-
-static get meta(){
-return{
-id:'legacy-javascript',
-scoreDisplayMode:Audit.SCORING_MODES.INFORMATIVE,
-description:str_(UIStrings.description),
-title:str_(UIStrings.title),
-requiredArtifacts:['devtoolsLogs','ScriptElements','SourceMaps','URL']};
-
-}
-
-
-
-
-
-static buildPolyfillExpression(object,property){
-const qt=token=>
-`['"]${token}['"]`;
-
-let expression='';
-
-if(object){
-
-expression+=`${object}\\.${property}\\s?=[^=]`;
-}else{
-
-
-
-expression+=`(?:window\\.|[\\s;]+)${property}\\s?=[^=]`;
-}
-
-
-if(object){
-expression+=`|${object}\\[${qt(property)}\\]\\s?=[^=]`;
-}
-
-
-expression+=`|defineProperty\\(${object||'window'},\\s?${qt(property)}`;
-
-
-if(object){
-const objectWithoutPrototype=object.replace('.prototype','');
-
-
-
-
-
-
-
-
-expression+=`|\\$export\\([^,]+,${qt(objectWithoutPrototype)},{${property}:`;
-
-
-
-
-expression+=`|{target:${qt(objectWithoutPrototype)}\\S*},{${property}:`;
-}else{
-
-expression+=`|function ${property}\\(`;
-}
-
-return expression;
-}
-
-static getPolyfillData(){
-return[
-['Array.prototype.fill','es6.array.fill'],
-['Array.prototype.filter','es6.array.filter'],
-['Array.prototype.find','es6.array.find'],
-['Array.prototype.findIndex','es6.array.find-index'],
-['Array.prototype.forEach','es6.array.for-each'],
-['Array.from','es6.array.from'],
-['Array.isArray','es6.array.is-array'],
-['Array.prototype.map','es6.array.map'],
-['Array.of','es6.array.of'],
-['Array.prototype.reduce','es6.array.reduce'],
-['Array.prototype.reduceRight','es6.array.reduce-right'],
-['Array.prototype.some','es6.array.some'],
-['Date.now','es6.date.now'],
-['Date.prototype.toISOString','es6.date.to-iso-string'],
-['Date.prototype.toJSON','es6.date.to-json'],
-['Date.prototype.toString','es6.date.to-string'],
-['Function.prototype.name','es6.function.name'],
-['Number.isInteger','es6.number.is-integer'],
-['Number.isSafeInteger','es6.number.is-safe-integer'],
-['Number.parseInt','es6.number.parse-int'],
-['Object.defineProperties','es6.object.define-properties'],
-['Object.defineProperty','es6.object.define-property'],
-['Object.freeze','es6.object.freeze'],
-['Object.getOwnPropertyNames','es6.object.get-own-property-names'],
-['Object.getPrototypeOf','es6.object.get-prototype-of'],
-['Object.isExtensible','es6.object.is-extensible'],
-['Object.isFrozen','es6.object.is-frozen'],
-['Object.isSealed','es6.object.is-sealed'],
-['Object.keys','es6.object.keys'],
-['Object.preventExtensions','es6.object.prevent-extensions'],
-['Object.seal','es6.object.seal'],
-['Object.setPrototypeOf','es6.object.set-prototype-of'],
-['Reflect.apply','es6.reflect.apply'],
-['Reflect.construct','es6.reflect.construct'],
-['Reflect.defineProperty','es6.reflect.define-property'],
-['Reflect.deleteProperty','es6.reflect.delete-property'],
-['Reflect.get','es6.reflect.get'],
-['Reflect.getOwnPropertyDescriptor','es6.reflect.get-own-property-descriptor'],
-['Reflect.getPrototypeOf','es6.reflect.get-prototype-of'],
-['Reflect.has','es6.reflect.has'],
-['Reflect.isExtensible','es6.reflect.is-extensible'],
-['Reflect.ownKeys','es6.reflect.own-keys'],
-['Reflect.preventExtensions','es6.reflect.prevent-extensions'],
-['Reflect.setPrototypeOf','es6.reflect.set-prototype-of'],
-['String.prototype.codePointAt','es6.string.code-point-at'],
-['String.fromCodePoint','es6.string.from-code-point'],
-['String.raw','es6.string.raw'],
-['String.prototype.repeat','es6.string.repeat'],
-['Array.prototype.includes','es7.array.includes'],
-['Object.entries','es7.object.entries'],
-['Object.getOwnPropertyDescriptors','es7.object.get-own-property-descriptors'],
-['Object.values','es7.object.values']].
-map(data=>{
-const[name,coreJs2Module]=data;
-return{
-name,
-coreJs2Module,
-coreJs3Module:coreJs2Module.
-replace('es6.','es.').
-replace('es7.','es.').
-replace('typed.','typed-array.')};
-
-});
-}
-
-
-
-
-static getPolyfillPatterns(){
-return this.getPolyfillData().map(({name})=>{
-const parts=name.split('.');
-const object=parts.length>1?parts.slice(0,parts.length-1).join('.'):null;
-const property=parts[parts.length-1];
-return{
-name,
-expression:this.buildPolyfillExpression(object,property)};
-
-});
-}
-
-
-
-
-static getTransformPatterns(){
-return[
-{
-name:'@babel/plugin-transform-classes',
-expression:'Cannot call a class as a function'},
-
-{
-name:'@babel/plugin-transform-regenerator',
-expression:/regeneratorRuntime\.a?wrap/.source},
-
-{
-name:'@babel/plugin-transform-spread',
-expression:/\.apply\(void 0,\s?_toConsumableArray/.source}];
-
-
-}
-
-
-
-
-
-
-
-
-
-
-static detectAcrossScripts(matcher,scripts,networkRecords,bundles){
-
-const urlToMatchResults=new Map();
-const polyfillData=this.getPolyfillData();
-
-for(const{requestId,content}of Object.values(scripts)){
-if(!content)continue;
-const networkRecord=networkRecords.find(record=>record.requestId===requestId);
-if(!networkRecord)continue;
-
-
-const matches=matcher.match(content);
-
-
-const bundle=bundles.find(b=>b.script.src===networkRecord.url);
-if(bundle){
-for(const{coreJs2Module,coreJs3Module,name}of polyfillData){
-
-if(matches.some(m=>m.name===name))continue;
-
-const source=bundle.rawMap.sources.find(source=>
-source.endsWith(`${coreJs2Module}.js`)||source.endsWith(`${coreJs3Module}.js`));
-if(!source)continue;
-
-const mapping=bundle.map.mappings().find(m=>m.sourceURL===source);
-if(mapping){
-matches.push({name,line:mapping.lineNumber,column:mapping.columnNumber});
-}else{
-matches.push({name,line:0,column:0});
-}
-}
-}
-
-if(!matches.length)continue;
-urlToMatchResults.set(networkRecord.url,matches);
-}
-
-return urlToMatchResults;
-}
-
-
-
-
-
-
-static async audit(artifacts,context){
-const devtoolsLog=artifacts.devtoolsLogs[LegacyJavascript.DEFAULT_PASS];
-const networkRecords=await NetworkRecords.request(devtoolsLog,context);
-const bundles=await JSBundles.request(artifacts,context);
-
-
-const items=[];
-let signalCount=0;
-
-
-const matcher=new CodePatternMatcher([
-...this.getPolyfillPatterns(),
-...this.getTransformPatterns()]);
-
-
-const urlToMatchResults=
-this.detectAcrossScripts(matcher,artifacts.ScriptElements,networkRecords,bundles);
-urlToMatchResults.forEach((matches,url)=>{
-
-const item={
-url,
-subItems:{
-type:'subitems',
-items:[]}};
-
-
-for(const match of matches){
-const{name,line,column}=match;
-
-const subItem={
-signal:name,
-location:{
-type:'source-location',
-url,
-line,
-column,
-urlProvider:'network'}};
-
-
-item.subItems.items.push(subItem);
-}
-items.push(item);
-signalCount+=item.subItems.items.length;
-});
-
-
-const headings=[
-
-{key:'url',itemType:'url',subItemsHeading:{key:'location',itemType:'source-location'},text:str_(i18n.UIStrings.columnURL)},
-{key:null,itemType:'code',subItemsHeading:{key:'signal'},text:''}];
-
-
-const details=Audit.makeTableDetails(headings,items);
-
-
-const mainDocumentEntity=thirdPartyWeb.getEntity(artifacts.URL.finalUrl);
-const foundSignalInFirstPartyCode=items.some(row=>{
-return thirdPartyWeb.isFirstParty(row.url,mainDocumentEntity);
-});
-return{
-score:foundSignalInFirstPartyCode?0:1,
-notApplicable:!foundSignalInFirstPartyCode,
-extendedInfo:{
-signalCount},
-
-details};
-
-}}
-
-
-module.exports=LegacyJavascript;
-module.exports.UIStrings=UIStrings;
-
-}).call(this,"/lighthouse-core/audits/legacy-javascript.js");
-},{"../computed/js-bundles.js":10,"../computed/network-records.js":39,"../lib/i18n/i18n.js":77,"../lib/third-party-web.js":95,"./audit.js":3}],"../audits/load-fast-enough-for-pwa":[function(require,module,exports){
+},{"../lib/i18n/i18n.js":78,"./audit.js":3}],"../audits/load-fast-enough-for-pwa":[function(require,module,exports){
 (function(__filename){
 
 
@@ -8439,7 +8766,7 @@ module.exports=LoadFastEnough4Pwa;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/load-fast-enough-for-pwa.js");
-},{"../computed/metrics/interactive.js":20,"../config/constants.js":53,"../lib/i18n/i18n.js":77,"./audit.js":3,"lodash.isequal":157}],"../audits/long-tasks":[function(require,module,exports){
+},{"../computed/metrics/interactive.js":21,"../config/constants.js":54,"../lib/i18n/i18n.js":78,"./audit.js":3,"lodash.isequal":158}],"../audits/long-tasks":[function(require,module,exports){
 (function(__filename){
 
 
@@ -8567,7 +8894,7 @@ module.exports=LongTasks;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/long-tasks.js");
-},{"../computed/load-simulator.js":11,"../computed/main-thread-tasks.js":13,"../computed/network-records.js":39,"../computed/page-dependency-graph.js":40,"../lib/i18n/i18n.js":77,"./audit.js":3,"./bootup-time.js":"../audits/bootup-time"}],"../audits/main-thread-tasks":[function(require,module,exports){
+},{"../computed/load-simulator.js":12,"../computed/main-thread-tasks.js":14,"../computed/network-records.js":40,"../computed/page-dependency-graph.js":41,"../lib/i18n/i18n.js":78,"./audit.js":3,"./bootup-time.js":"../audits/bootup-time"}],"../audits/main-thread-tasks":[function(require,module,exports){
 
 
 
@@ -8628,7 +8955,7 @@ details:tableDetails};
 
 module.exports=MainThreadTasks;
 
-},{"../computed/main-thread-tasks.js":13,"./audit.js":3}],"../audits/mainthread-work-breakdown":[function(require,module,exports){
+},{"../computed/main-thread-tasks.js":14,"./audit.js":3}],"../audits/mainthread-work-breakdown":[function(require,module,exports){
 (function(__filename){
 
 
@@ -8766,7 +9093,7 @@ module.exports=MainThreadWorkBreakdown;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/mainthread-work-breakdown.js");
-},{"../computed/main-thread-tasks.js":13,"../lib/i18n/i18n.js":77,"../lib/tracehouse/task-groups.js":97,"./audit.js":3}],"../audits/manual/pwa-cross-browser":[function(require,module,exports){
+},{"../computed/main-thread-tasks.js":14,"../lib/i18n/i18n.js":78,"../lib/tracehouse/task-groups.js":98,"./audit.js":3}],"../audits/manual/pwa-cross-browser":[function(require,module,exports){
 (function(__filename){
 
 
@@ -8811,7 +9138,7 @@ module.exports.UIStrings=UIStrings;
 
 
 }).call(this,"/lighthouse-core/audits/manual/pwa-cross-browser.js");
-},{"../../lib/i18n/i18n.js":77,"./manual-audit.js":5}],"../audits/manual/pwa-each-page-has-url":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./manual-audit.js":6}],"../audits/manual/pwa-each-page-has-url":[function(require,module,exports){
 (function(__filename){
 
 
@@ -8854,7 +9181,7 @@ module.exports=PWAEachPageHasURL;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/manual/pwa-each-page-has-url.js");
-},{"../../lib/i18n/i18n.js":77,"./manual-audit.js":5}],"../audits/manual/pwa-page-transitions":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./manual-audit.js":6}],"../audits/manual/pwa-page-transitions":[function(require,module,exports){
 (function(__filename){
 
 
@@ -8897,7 +9224,7 @@ module.exports=PWAPageTransitions;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/manual/pwa-page-transitions.js");
-},{"../../lib/i18n/i18n.js":77,"./manual-audit.js":5}],"../audits/maskable-icon":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"./manual-audit.js":6}],"../audits/maskable-icon":[function(require,module,exports){
 (function(__filename){
 
 
@@ -8971,7 +9298,7 @@ module.exports=MaskableIcon;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/maskable-icon.js");
-},{"../computed/manifest-values.js":14,"../lib/i18n/i18n.js":77,"./audit.js":3}],"../audits/metrics/cumulative-layout-shift":[function(require,module,exports){
+},{"../computed/manifest-values.js":15,"../lib/i18n/i18n.js":78,"./audit.js":3}],"../audits/metrics/cumulative-layout-shift":[function(require,module,exports){
 (function(__filename){
 
 
@@ -9054,7 +9381,7 @@ module.exports=CumulativeLayoutShift;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/metrics/cumulative-layout-shift.js");
-},{"../../computed/metrics/cumulative-layout-shift.js":15,"../../lib/i18n/i18n.js":77,"../audit.js":3}],"../audits/metrics/estimated-input-latency":[function(require,module,exports){
+},{"../../computed/metrics/cumulative-layout-shift.js":16,"../../lib/i18n/i18n.js":78,"../audit.js":3}],"../audits/metrics/estimated-input-latency":[function(require,module,exports){
 (function(__filename){
 
 
@@ -9132,7 +9459,7 @@ module.exports=EstimatedInputLatency;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/metrics/estimated-input-latency.js");
-},{"../../computed/metrics/estimated-input-latency.js":16,"../../lib/i18n/i18n.js":77,"../audit.js":3}],"../audits/metrics/first-contentful-paint-3g":[function(require,module,exports){
+},{"../../computed/metrics/estimated-input-latency.js":17,"../../lib/i18n/i18n.js":78,"../audit.js":3}],"../audits/metrics/first-contentful-paint-3g":[function(require,module,exports){
 
 
 
@@ -9200,7 +9527,7 @@ displayValue:`${metricResult.timing}\xa0ms`};
 
 module.exports=FirstContentfulPaint3G;
 
-},{"../../computed/metrics/first-contentful-paint.js":17,"../../config/constants.js":53,"../audit.js":3}],"../audits/metrics/first-contentful-paint":[function(require,module,exports){
+},{"../../computed/metrics/first-contentful-paint.js":18,"../../config/constants.js":54,"../audit.js":3}],"../audits/metrics/first-contentful-paint":[function(require,module,exports){
 (function(__filename){
 
 
@@ -9288,7 +9615,7 @@ module.exports=FirstContentfulPaint;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/metrics/first-contentful-paint.js");
-},{"../../computed/metrics/first-contentful-paint.js":17,"../../lib/i18n/i18n.js":77,"../audit.js":3}],"../audits/metrics/first-cpu-idle":[function(require,module,exports){
+},{"../../computed/metrics/first-contentful-paint.js":18,"../../lib/i18n/i18n.js":78,"../audit.js":3}],"../audits/metrics/first-cpu-idle":[function(require,module,exports){
 (function(__filename){
 
 
@@ -9379,7 +9706,7 @@ module.exports=FirstCPUIdle;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/metrics/first-cpu-idle.js");
-},{"../../computed/metrics/first-cpu-idle.js":18,"../../lib/i18n/i18n.js":77,"../audit.js":3}],"../audits/metrics/first-meaningful-paint":[function(require,module,exports){
+},{"../../computed/metrics/first-cpu-idle.js":19,"../../lib/i18n/i18n.js":78,"../audit.js":3}],"../audits/metrics/first-meaningful-paint":[function(require,module,exports){
 (function(__filename){
 
 
@@ -9470,7 +9797,7 @@ module.exports=FirstMeaningfulPaint;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/metrics/first-meaningful-paint.js");
-},{"../../computed/metrics/first-meaningful-paint.js":19,"../../lib/i18n/i18n.js":77,"../audit.js":3}],"../audits/metrics/interactive":[function(require,module,exports){
+},{"../../computed/metrics/first-meaningful-paint.js":20,"../../lib/i18n/i18n.js":78,"../audit.js":3}],"../audits/metrics/interactive":[function(require,module,exports){
 (function(__filename){
 
 
@@ -9548,14 +9875,6 @@ const metricResult=await Interactive.request(metricComputationData,context);
 const timeInMs=metricResult.timing;
 const isDesktop=artifacts.TestedAsMobileDevice===false;
 const options=isDesktop?context.options.desktop:context.options.mobile;
-const extendedInfo={
-timeInMs,
-timestamp:metricResult.timestamp,
-
-optimistic:metricResult.optimisticEstimate&&metricResult.optimisticEstimate.timeInMs,
-
-pessimistic:metricResult.pessimisticEstimate&&metricResult.pessimisticEstimate.timeInMs};
-
 
 return{
 score:Audit.computeLogNormalScore(
@@ -9564,10 +9883,7 @@ timeInMs),
 
 numericValue:timeInMs,
 numericUnit:'millisecond',
-displayValue:str_(i18n.UIStrings.seconds,{timeInMs}),
-extendedInfo:{
-value:extendedInfo}};
-
+displayValue:str_(i18n.UIStrings.seconds,{timeInMs})};
 
 }}
 
@@ -9576,7 +9892,7 @@ module.exports=InteractiveMetric;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/metrics/interactive.js");
-},{"../../computed/metrics/interactive.js":20,"../../lib/i18n/i18n.js":77,"../audit.js":3}],"../audits/metrics/largest-contentful-paint":[function(require,module,exports){
+},{"../../computed/metrics/interactive.js":21,"../../lib/i18n/i18n.js":78,"../audit.js":3}],"../audits/metrics/largest-contentful-paint":[function(require,module,exports){
 (function(__filename){
 
 
@@ -9588,6 +9904,7 @@ module.exports.UIStrings=UIStrings;
 const Audit=require('../audit.js');
 const i18n=require('../../lib/i18n/i18n.js');
 const ComputedLcp=require('../../computed/metrics/largest-contentful-paint.js');
+const LHError=require('../../lib/lh-error.js');
 
 const UIStrings={
 
@@ -9607,7 +9924,7 @@ id:'largest-contentful-paint',
 title:str_(i18n.UIStrings.largestContentfulPaintMetric),
 description:str_(UIStrings.description),
 scoreDisplayMode:Audit.SCORING_MODES.NUMERIC,
-requiredArtifacts:['traces','devtoolsLogs','TestedAsMobileDevice']};
+requiredArtifacts:['HostUserAgent','traces','devtoolsLogs','TestedAsMobileDevice']};
 
 }
 
@@ -9652,7 +9969,25 @@ static async audit(artifacts,context){
 const trace=artifacts.traces[Audit.DEFAULT_PASS];
 const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
 const metricComputationData={trace,devtoolsLog,settings:context.settings};
-const metricResult=await ComputedLcp.request(metricComputationData,context);
+
+let metricResult;
+try{
+metricResult=await ComputedLcp.request(metricComputationData,context);
+}catch(err){
+const match=artifacts.HostUserAgent.match(/Chrome\/(\d+)/);
+if(!match)throw err;
+const milestone=Number(match[1]);
+
+
+
+if(milestone<79&&err.code==='NO_LCP'){
+throw new LHError(
+LHError.errors.UNSUPPORTED_OLD_CHROME,
+{featureName:'Largest Contentful Paint'});
+
+}
+throw err;
+}
 
 const isDesktop=artifacts.TestedAsMobileDevice===false;
 const options=isDesktop?context.options.desktop:context.options.mobile;
@@ -9673,7 +10008,7 @@ module.exports=LargestContentfulPaint;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/metrics/largest-contentful-paint.js");
-},{"../../computed/metrics/largest-contentful-paint.js":31,"../../lib/i18n/i18n.js":77,"../audit.js":3}],"../audits/metrics/max-potential-fid":[function(require,module,exports){
+},{"../../computed/metrics/largest-contentful-paint.js":32,"../../lib/i18n/i18n.js":78,"../../lib/lh-error.js":84,"../audit.js":3}],"../audits/metrics/max-potential-fid":[function(require,module,exports){
 (function(__filename){
 
 
@@ -9751,7 +10086,7 @@ module.exports=MaxPotentialFID;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/metrics/max-potential-fid.js");
-},{"../../computed/metrics/max-potential-fid.js":32,"../../lib/i18n/i18n.js":77,"../audit.js":3}],"../audits/metrics/speed-index":[function(require,module,exports){
+},{"../../computed/metrics/max-potential-fid.js":33,"../../lib/i18n/i18n.js":78,"../audit.js":3}],"../audits/metrics/speed-index":[function(require,module,exports){
 (function(__filename){
 
 
@@ -9841,7 +10176,7 @@ module.exports=SpeedIndex;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/metrics/speed-index.js");
-},{"../../computed/metrics/speed-index.js":34,"../../lib/i18n/i18n.js":77,"../audit.js":3}],"../audits/metrics/total-blocking-time":[function(require,module,exports){
+},{"../../computed/metrics/speed-index.js":35,"../../lib/i18n/i18n.js":78,"../audit.js":3}],"../audits/metrics/total-blocking-time":[function(require,module,exports){
 (function(__filename){
 
 
@@ -9947,7 +10282,7 @@ module.exports=TotalBlockingTime;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/metrics/total-blocking-time.js");
-},{"../../computed/metrics/total-blocking-time.js":36,"../../lib/i18n/i18n.js":77,"../audit.js":3}],"../audits/metrics":[function(require,module,exports){
+},{"../../computed/metrics/total-blocking-time.js":37,"../../lib/i18n/i18n.js":78,"../audit.js":3}],"../audits/metrics":[function(require,module,exports){
 
 
 
@@ -10016,7 +10351,7 @@ details};
 
 module.exports=Metrics;
 
-},{"../computed/metrics/timing-summary.js":35,"./audit.js":3}],"../audits/network-requests":[function(require,module,exports){
+},{"../computed/metrics/timing-summary.js":36,"./audit.js":3}],"../audits/network-requests":[function(require,module,exports){
 
 
 
@@ -10119,7 +10454,7 @@ details:tableDetails};
 
 module.exports=NetworkRequests;
 
-},{"../computed/network-records.js":39,"../lib/url-shim.js":"url","./audit.js":3}],"../audits/network-rtt":[function(require,module,exports){
+},{"../computed/network-records.js":40,"../lib/url-shim.js":"url","./audit.js":3}],"../audits/network-rtt":[function(require,module,exports){
 (function(__filename){
 
 
@@ -10204,7 +10539,7 @@ module.exports=NetworkRTT;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/network-rtt.js");
-},{"../computed/network-analysis.js":38,"../lib/i18n/i18n.js":77,"./audit.js":3}],"../audits/network-server-latency":[function(require,module,exports){
+},{"../computed/network-analysis.js":39,"../lib/i18n/i18n.js":78,"./audit.js":3}],"../audits/network-server-latency":[function(require,module,exports){
 (function(__filename){
 
 
@@ -10288,7 +10623,270 @@ module.exports=NetworkServerLatency;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/network-server-latency.js");
-},{"../computed/network-analysis.js":38,"../lib/i18n/i18n.js":77,"./audit.js":3}],"../audits/offline-start-url":[function(require,module,exports){
+},{"../computed/network-analysis.js":39,"../lib/i18n/i18n.js":78,"./audit.js":3}],"../audits/no-unload-listeners":[function(require,module,exports){
+(function(__filename){
+
+
+
+
+
+'use strict';
+
+const Audit=require('./audit.js');
+const i18n=require('./../lib/i18n/i18n.js');
+
+const UIStrings={
+
+title:'Avoids `unload` event listeners',
+
+failureTitle:'Registers an `unload` listener',
+
+description:'The `unload` event does not fire reliably and listening for it can prevent browser optimizations like the Back-Forward Cache. Consider using the `pagehide` or `visibilitychange` events instead. [Learn More](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
+
+class NoUnloadListeners extends Audit{
+
+
+
+static get meta(){
+return{
+id:'no-unload-listeners',
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+description:str_(UIStrings.description),
+requiredArtifacts:['GlobalListeners','JsUsage']};
+
+}
+
+
+
+
+
+static audit(artifacts){
+const unloadListeners=artifacts.GlobalListeners.filter(l=>l.type==='unload');
+if(!unloadListeners.length){
+return{
+score:1};
+
+}
+
+
+const headings=[
+{key:'source',itemType:'source-location',text:str_(i18n.UIStrings.columnURL)}];
+
+
+
+
+const scriptIdToUrlEntries=Object.values(artifacts.JsUsage).
+reduce((acc,usage)=>acc.concat(usage),[]).
+map(usage=>[usage.scriptId,usage.url]);
+const scriptIdToUrl=new Map(scriptIdToUrlEntries);
+
+
+const tableItems=unloadListeners.map(listener=>{
+const url=scriptIdToUrl.get(listener.scriptId);
+
+
+
+if(!url){
+return{
+source:{
+type:'url',
+value:'(unknown)'}};
+
+
+}
+
+return{
+source:{
+type:'source-location',
+url,
+urlProvider:'network',
+line:listener.lineNumber,
+column:listener.columnNumber}};
+
+
+});
+
+return{
+score:0,
+details:Audit.makeTableDetails(headings,tableItems)};
+
+}}
+
+
+module.exports=NoUnloadListeners;
+module.exports.UIStrings=UIStrings;
+
+}).call(this,"/lighthouse-core/audits/no-unload-listeners.js");
+},{"./../lib/i18n/i18n.js":78,"./audit.js":3}],"../audits/non-composited-animations":[function(require,module,exports){
+(function(__filename){
+
+
+
+
+
+'use strict';
+
+const Audit=require('./audit.js');
+const i18n=require('../lib/i18n/i18n.js');
+
+const UIStrings={
+
+title:'Avoid non-composited animations',
+
+description:'Animations which are not composited can be janky and contribute to CLS. '+
+'[Learn more](https://developers.google.com/web/fundamentals/performance/rendering/stick-to-compositor-only-properties-and-manage-layer-count)',
+
+displayValue:`{itemCount, plural,
+  =1 {# animated element found}
+  other {# animated elements found}
+  }`,
+
+unsupportedCSSProperty:'Unsupported CSS Property'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
+
+
+
+
+
+
+const ACTIONABLE_FAILURE_REASONS=[
+{
+flag:1<<13,
+text:str_(UIStrings.unsupportedCSSProperty)}];
+
+
+
+
+
+
+
+
+
+
+function getActionableFailureReasons(failureCode){
+return ACTIONABLE_FAILURE_REASONS.
+filter(reason=>failureCode&reason.flag).
+map(reason=>reason.text);
+}
+
+class NonCompositedAnimations extends Audit{
+
+
+
+static get meta(){
+return{
+id:'non-composited-animations',
+scoreDisplayMode:Audit.SCORING_MODES.INFORMATIVE,
+title:str_(UIStrings.title),
+description:str_(UIStrings.description),
+requiredArtifacts:['TraceElements','HostUserAgent']};
+
+}
+
+
+
+
+
+static async audit(artifacts){
+
+const match=artifacts.HostUserAgent.match(/Chrome\/(\d+)/);
+if(!match||Number(match[1])<86){
+return{
+score:1,
+notApplicable:true};
+
+}
+
+
+const results=[];
+let hasDisplayNames=false;
+artifacts.TraceElements.forEach(element=>{
+if(element.traceEventType!=='animation')return;
+
+const node={
+type:'node',
+path:element.devtoolsNodePath,
+selector:element.selector,
+nodeLabel:element.nodeLabel,
+snippet:element.snippet};
+
+
+const animations=element.animations||[];
+const animationReasons=new Map();
+for(const{name,failureReasonsMask}of animations){
+if(!failureReasonsMask)continue;
+for(const failureReason of getActionableFailureReasons(failureReasonsMask)){
+if(name){
+hasDisplayNames=true;
+}
+const reasons=animationReasons.get(name)||new Set();
+reasons.add(failureReason);
+animationReasons.set(name,reasons);
+}
+}
+if(!animationReasons.size)return;
+
+const allFailureReasons=[];
+for(const[name,reasons]of animationReasons){
+for(const failureReason of reasons){
+allFailureReasons.push({
+failureReason,
+animation:name});
+
+}
+}
+
+results.push({
+node,
+subItems:{
+type:'subitems',
+items:allFailureReasons}});
+
+
+});
+
+
+const headings=[
+
+{key:'node',itemType:'node',subItemsHeading:{key:'failureReason',itemType:'text'},text:str_(i18n.UIStrings.columnElement)}];
+
+
+
+if(hasDisplayNames){
+headings.push(
+
+{key:null,itemType:'text',subItemsHeading:{key:'animation',itemType:'text'},text:str_(i18n.UIStrings.columnName)});
+
+
+}
+
+const details=Audit.makeTableDetails(headings,results);
+
+let displayValue;
+if(results.length>0){
+displayValue=str_(UIStrings.displayValue,{itemCount:results.length});
+}
+
+return{
+score:results.length===0?1:0,
+notApplicable:results.length===0,
+details,
+displayValue};
+
+}}
+
+
+module.exports=NonCompositedAnimations;
+module.exports.UIStrings=UIStrings;
+
+}).call(this,"/lighthouse-core/audits/non-composited-animations.js");
+},{"../lib/i18n/i18n.js":78,"./audit.js":3}],"../audits/offline-start-url":[function(require,module,exports){
 (function(__filename){
 
 
@@ -10377,7 +10975,7 @@ module.exports=OfflineStartUrl;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/offline-start-url.js");
-},{"../lib/i18n/i18n.js":77,"./audit.js":3}],"../audits/performance-budget":[function(require,module,exports){
+},{"../lib/i18n/i18n.js":78,"./audit.js":3}],"../audits/performance-budget":[function(require,module,exports){
 (function(__filename){
 
 
@@ -10533,7 +11131,7 @@ module.exports=ResourceBudget;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/performance-budget.js");
-},{"../computed/main-resource.js":12,"../computed/resource-summary.js":41,"../config/budget.js":49,"../lib/i18n/i18n.js":77,"./audit.js":3}],"../audits/predictive-perf":[function(require,module,exports){
+},{"../computed/main-resource.js":13,"../computed/resource-summary.js":42,"../config/budget.js":50,"../lib/i18n/i18n.js":78,"./audit.js":3}],"../audits/predictive-perf":[function(require,module,exports){
 
 
 
@@ -10645,7 +11243,7 @@ items:[values]}};
 
 module.exports=PredictivePerf;
 
-},{"../computed/metrics/lantern-estimated-input-latency.js":21,"../computed/metrics/lantern-first-contentful-paint.js":22,"../computed/metrics/lantern-first-cpu-idle.js":23,"../computed/metrics/lantern-first-meaningful-paint.js":24,"../computed/metrics/lantern-interactive.js":25,"../computed/metrics/lantern-largest-contentful-paint.js":26,"../computed/metrics/lantern-speed-index.js":29,"../report/html/renderer/i18n.js":100,"./audit.js":3}],"../audits/redirects-http":[function(require,module,exports){
+},{"../computed/metrics/lantern-estimated-input-latency.js":22,"../computed/metrics/lantern-first-contentful-paint.js":23,"../computed/metrics/lantern-first-cpu-idle.js":24,"../computed/metrics/lantern-first-meaningful-paint.js":25,"../computed/metrics/lantern-interactive.js":26,"../computed/metrics/lantern-largest-contentful-paint.js":27,"../computed/metrics/lantern-speed-index.js":30,"../report/html/renderer/i18n.js":101,"./audit.js":3}],"../audits/redirects-http":[function(require,module,exports){
 (function(__filename){
 
 
@@ -10698,7 +11296,7 @@ module.exports=RedirectsHTTP;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/redirects-http.js");
-},{"../lib/i18n/i18n.js":77,"./audit.js":3}],"../audits/redirects":[function(require,module,exports){
+},{"../lib/i18n/i18n.js":78,"./audit.js":3}],"../audits/redirects":[function(require,module,exports){
 (function(__filename){
 
 
@@ -10743,6 +11341,47 @@ requiredArtifacts:['URL','devtoolsLogs','traces']};
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+static getDocumentRequestChain(mainResource,networkRecords,traceOfTab){
+
+const documentRequests=[];
+
+
+for(const event of traceOfTab.processEvents){
+if(event.name!=='navigationStart')continue;
+
+const data=event.args.data||{};
+if(!data.documentLoaderURL||!data.isLoadingMainFrame)continue;
+
+let networkRecord=networkRecords.find(record=>record.url===data.documentLoaderURL);
+while(networkRecord){
+documentRequests.push(networkRecord);
+networkRecord=networkRecord.redirectDestination;
+}
+}
+
+
+if(documentRequests.length)return documentRequests;
+
+
+return(mainResource.redirects||[]).concat(mainResource);
+}
+
+
+
+
+
+
 static async audit(artifacts,context){
 const settings=context.settings;
 const trace=artifacts.traces[Audit.DEFAULT_PASS];
@@ -10764,26 +11403,20 @@ nodeTimingsByUrl.set(networkNode.record.url,timing);
 }
 }
 
-
-const redirectRequests=Array.from(mainResource.redirects||[]);
-
-
-redirectRequests.push(mainResource);
+const documentRequests=Redirects.getDocumentRequestChain(
+mainResource,networkRecords,traceOfTab);
 
 let totalWastedMs=0;
-const pageRedirects=[];
+const tableRows=[];
 
 
-if(redirectRequests.length>1){
-pageRedirects.push({
-url:`(Initial: ${redirectRequests[0].url})`,
-wastedMs:0});
 
-}
+for(let i=0;i<documentRequests.length;i++){
 
-for(let i=1;i<redirectRequests.length;i++){
-const initialRequest=redirectRequests[i-1];
-const redirectedRequest=redirectRequests[i];
+if(documentRequests.length<2)break;
+
+const initialRequest=documentRequests[i];
+const redirectedRequest=documentRequests[i+1]||initialRequest;
 
 const initialTiming=nodeTimingsByUrl.get(initialRequest.url);
 const redirectedTiming=nodeTimingsByUrl.get(redirectedRequest.url);
@@ -10791,11 +11424,14 @@ if(!initialTiming||!redirectedTiming){
 throw new Error('Could not find redirects in graph');
 }
 
-const wastedMs=redirectedTiming.startTime-initialTiming.startTime;
+const lanternTimingDeltaMs=redirectedTiming.startTime-initialTiming.startTime;
+const observedTimingDeltaS=redirectedRequest.startTime-initialRequest.startTime;
+const wastedMs=settings.throttlingMethod==='simulate'?
+lanternTimingDeltaMs:observedTimingDeltaS*1000;
 totalWastedMs+=wastedMs;
 
-pageRedirects.push({
-url:redirectedRequest.url,
+tableRows.push({
+url:initialRequest.url,
 wastedMs});
 
 }
@@ -10805,21 +11441,18 @@ const headings=[
 {key:'url',valueType:'url',label:str_(i18n.UIStrings.columnURL)},
 {key:'wastedMs',valueType:'timespanMs',label:str_(i18n.UIStrings.columnTimeSpent)}];
 
-const details=Audit.makeOpportunityDetails(headings,pageRedirects,totalWastedMs);
+const details=Audit.makeOpportunityDetails(headings,tableRows,totalWastedMs);
 
 return{
 
-score:redirectRequests.length<=2?1:UnusedBytes.scoreForWastedMs(totalWastedMs),
+
+
+score:documentRequests.length<=2?1:UnusedBytes.scoreForWastedMs(totalWastedMs),
 numericValue:totalWastedMs,
 numericUnit:'millisecond',
 displayValue:totalWastedMs?
 str_(i18n.UIStrings.displayValueMsSavings,{wastedMs:totalWastedMs}):
 '',
-extendedInfo:{
-value:{
-wastedMs:totalWastedMs}},
-
-
 details};
 
 }}
@@ -10829,7 +11462,7 @@ module.exports=Redirects;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/redirects.js");
-},{"../computed/main-resource.js":12,"../computed/metrics/lantern-interactive.js":25,"../computed/network-records.js":39,"../computed/trace-of-tab.js":44,"../lib/i18n/i18n.js":77,"./audit.js":3,"./byte-efficiency/byte-efficiency-audit.js":4}],"../audits/resource-summary":[function(require,module,exports){
+},{"../computed/main-resource.js":13,"../computed/metrics/lantern-interactive.js":26,"../computed/network-records.js":40,"../computed/trace-of-tab.js":45,"../lib/i18n/i18n.js":78,"./audit.js":3,"./byte-efficiency/byte-efficiency-audit.js":4}],"../audits/resource-summary":[function(require,module,exports){
 (function(__filename){
 
 
@@ -10937,7 +11570,7 @@ module.exports=ResourceSummary;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/resource-summary.js");
-},{"../computed/resource-summary.js":41,"../lib/i18n/i18n.js":77,"./audit.js":3}],"../audits/screenshot-thumbnails":[function(require,module,exports){
+},{"../computed/resource-summary.js":42,"../lib/i18n/i18n.js":78,"./audit.js":3}],"../audits/screenshot-thumbnails":[function(require,module,exports){
 
 
 
@@ -11087,7 +11720,7 @@ items:thumbnails}};
 
 module.exports=ScreenshotThumbnails;
 
-},{"../computed/metrics/interactive.js":20,"../computed/speedline.js":43,"../lib/lh-error.js":83,"./audit.js":3,"jpeg-js":134}],"../audits/seo/canonical":[function(require,module,exports){
+},{"../computed/metrics/interactive.js":21,"../computed/speedline.js":44,"../lib/lh-error.js":84,"./audit.js":3,"jpeg-js":135}],"../audits/seo/canonical":[function(require,module,exports){
 (function(__filename){
 
 
@@ -11322,7 +11955,7 @@ module.exports=Canonical;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/seo/canonical.js");
-},{"../../computed/main-resource.js":12,"../../lib/i18n/i18n.js":77,"../../lib/url-shim.js":"url","../audit.js":3}],"../audits/seo/crawlable-anchors":[function(require,module,exports){
+},{"../../computed/main-resource.js":13,"../../lib/i18n/i18n.js":78,"../../lib/url-shim.js":"url","../audit.js":3}],"../audits/seo/crawlable-anchors":[function(require,module,exports){
 (function(__filename){
 
 
@@ -11426,7 +12059,7 @@ module.exports=CrawlableAnchors;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/seo/crawlable-anchors.js");
-},{"../../lib/i18n/i18n.js":77,"../audit.js":3}],"../audits/seo/font-size":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"../audit.js":3}],"../audits/seo/font-size":[function(require,module,exports){
 (function(__filename){
 
 
@@ -11757,7 +12390,7 @@ module.exports=FontSize;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/seo/font-size.js");
-},{"../../computed/viewport-meta.js":48,"../../lib/i18n/i18n.js":77,"../audit.js":3}],"../audits/seo/hreflang":[function(require,module,exports){
+},{"../../computed/viewport-meta.js":49,"../../lib/i18n/i18n.js":78,"../audit.js":3}],"../audits/seo/hreflang":[function(require,module,exports){
 (function(global,__filename){
 
 
@@ -11765,6 +12398,10 @@ module.exports.UIStrings=UIStrings;
 
 
 'use strict';
+
+
+
+
 
 const Audit=require('../audit.js');
 const VALID_LANGS=importValidLangs();
@@ -11779,7 +12416,11 @@ failureTitle:'Document doesn\'t have a valid `hreflang`',
 
 description:'hreflang links tell search engines what version of a page they should '+
 'list in search results for a given language or region. [Learn more]'+
-'(https://web.dev/hreflang/).'};
+'(https://web.dev/hreflang/).',
+
+unexpectedLanguage:'Unexpected language code',
+
+notFullyQualified:'Relative href value'};
 
 
 const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
@@ -11809,7 +12450,15 @@ return validLangs;
 
 
 
-function isValidHreflang(hreflang){
+function isFullyQualified(href){
+return href.startsWith('http:')||href.startsWith('https:');
+}
+
+
+
+
+
+function isExpectedLanguageCode(hreflang){
 if(hreflang.toLowerCase()===NO_LANGUAGE){
 return true;
 }
@@ -11837,32 +12486,64 @@ requiredArtifacts:['LinkElements','URL']};
 
 
 
-static audit(artifacts){
+static audit({LinkElements}){
 
 const invalidHreflangs=[];
 
-for(const link of artifacts.LinkElements){
-if(link.rel!=='alternate')continue;
-if(!link.hreflang||isValidHreflang(link.hreflang))continue;
-if(link.source==='body')continue;
+const auditableLinkElements=LinkElements.filter(linkElement=>{
+const isAlternate=linkElement.rel==='alternate';
+const hasHreflang=linkElement.hreflang;
+const isInBody=linkElement.source==='body';
+
+return isAlternate&&hasHreflang&&!isInBody;
+});
+
+for(const link of auditableLinkElements){
+const reasons=[];
+
+let source;
+
+if(!isExpectedLanguageCode(link.hreflang)){
+reasons.push(str_(UIStrings.unexpectedLanguage));
+}
+
+if(!isFullyQualified(link.hrefRaw.toLowerCase())){
+reasons.push(str_(UIStrings.notFullyQualified));
+}
 
 if(link.source==='head'){
-invalidHreflangs.push({
-source:{
+source={
 type:'node',
-snippet:`<link rel="alternate" hreflang="${link.hreflang}" href="${link.href}" />`}});
-
+snippet:`<link rel="alternate" hreflang="${link.hreflang}" href="${link.hrefRaw}" />`,
+path:link.devtoolsNodePath||'',
+selector:link.selector||'',
+nodeLabel:link.nodeLabel||''};
 
 }else if(link.source==='headers'){
+source=`Link: <${link.hrefRaw}>; rel="alternate"; hreflang="${link.hreflang}"`;
+}
+
+if(!source||!reasons.length)continue;
+
 invalidHreflangs.push({
-source:`Link: <${link.href}>; rel="alternate"; hreflang="${link.hreflang}"`});
+source,
+subItems:{
+type:'subitems',
+items:reasons.map(reason=>({reason}))}});
+
 
 }
-}
 
 
-const headings=[
-{key:'source',itemType:'code',text:'Source'}];
+const headings=[{
+key:'source',
+itemType:'code',
+subItemsHeading:{
+key:'reason',
+itemType:'text'},
+
+text:''}];
+
 
 const details=Audit.makeTableDetails(headings,invalidHreflangs);
 
@@ -11877,7 +12558,7 @@ module.exports=Hreflang;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{},"/lighthouse-core/audits/seo/hreflang.js");
-},{"../../lib/i18n/i18n.js":77,"../audit.js":3,"axe-core/lib/core/utils/valid-langs.js":110}],"../audits/seo/http-status-code":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"../audit.js":3,"axe-core/lib/core/utils/valid-langs.js":111}],"../audits/seo/http-status-code":[function(require,module,exports){
 (function(__filename){
 
 
@@ -11950,7 +12631,7 @@ module.exports=HTTPStatusCode;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/seo/http-status-code.js");
-},{"../../computed/main-resource.js":12,"../../lib/i18n/i18n.js":77,"../audit.js":3}],"../audits/seo/is-crawlable":[function(require,module,exports){
+},{"../../computed/main-resource.js":13,"../../lib/i18n/i18n.js":78,"../audit.js":3}],"../audits/seo/is-crawlable":[function(require,module,exports){
 (function(__filename){
 
 
@@ -12107,7 +12788,7 @@ module.exports=IsCrawlable;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/seo/is-crawlable.js");
-},{"../../computed/main-resource.js":12,"../../lib/i18n/i18n.js":77,"../../lib/url-shim.js":"url","../audit.js":3,"robots-parser":191}],"../audits/seo/link-text":[function(require,module,exports){
+},{"../../computed/main-resource.js":13,"../../lib/i18n/i18n.js":78,"../../lib/url-shim.js":"url","../audit.js":3,"robots-parser":192}],"../audits/seo/link-text":[function(require,module,exports){
 (function(__filename){
 
 
@@ -12162,8 +12843,6 @@ const BLOCKLIST=new Set([
 'empezar',
 
 'clique aqui',
-'inicio',
-'início',
 'ir',
 'mais informação',
 'mais informações',
@@ -12271,7 +12950,7 @@ module.exports=LinkText;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/seo/link-text.js");
-},{"../../lib/i18n/i18n.js":77,"../../lib/url-shim.js":"url","../audit.js":3}],"../audits/seo/manual/structured-data":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"../../lib/url-shim.js":"url","../audit.js":3}],"../audits/seo/manual/structured-data":[function(require,module,exports){
 (function(__filename){
 
 
@@ -12313,7 +12992,7 @@ module.exports=StructuredData;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/seo/manual/structured-data.js");
-},{"../../../lib/i18n/i18n.js":77,"../../manual/manual-audit.js":5}],"../audits/seo/meta-description":[function(require,module,exports){
+},{"../../../lib/i18n/i18n.js":78,"../../manual/manual-audit.js":6}],"../audits/seo/meta-description":[function(require,module,exports){
 (function(__filename){
 
 
@@ -12384,7 +13063,7 @@ module.exports=Description;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/seo/meta-description.js");
-},{"../../lib/i18n/i18n.js":77,"../audit.js":3}],"../audits/seo/plugins":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"../audit.js":3}],"../audits/seo/plugins":[function(require,module,exports){
 (function(__filename){
 
 
@@ -12558,7 +13237,7 @@ module.exports=Plugins;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/seo/plugins.js");
-},{"../../lib/i18n/i18n.js":77,"../../lib/url-shim.js":"url","../audit.js":3}],"../audits/seo/robots-txt":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"../../lib/url-shim.js":"url","../audit.js":3}],"../audits/seo/robots-txt":[function(require,module,exports){
 (function(__filename){
 
 
@@ -12818,7 +13497,7 @@ module.exports=RobotsTxt;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/seo/robots-txt.js");
-},{"../../lib/i18n/i18n.js":77,"../../lib/url-shim.js":"url","../audit.js":3}],"../audits/seo/tap-targets":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"../../lib/url-shim.js":"url","../audit.js":3}],"../audits/seo/tap-targets":[function(require,module,exports){
 (function(__filename){
 
 
@@ -12839,7 +13518,8 @@ getRectOverlapArea,
 getRectAtCenter,
 allRectsContainedWithinEachOther,
 getLargestRect,
-getBoundingRectWithPadding}=
+getBoundingRectWithPadding,
+getBoundingRect}=
 require('../../lib/rect-helpers.js');
 const{getTappableRectsFromClientRects}=require('../../lib/tappable-rects.js');
 const i18n=require('../../lib/i18n/i18n.js');
@@ -13066,11 +13746,14 @@ return tableItems;
 
 
 function targetToTableNode(target){
+const boundingRect=getBoundingRect(target.clientRects);
+
 return{
 type:'node',
 snippet:target.snippet,
 path:target.path,
 selector:target.selector,
+boundingRect,
 nodeLabel:target.nodeLabel};
 
 }
@@ -13188,7 +13871,7 @@ module.exports.UIStrings=UIStrings;
 
 
 }).call(this,"/lighthouse-core/audits/seo/tap-targets.js");
-},{"../../computed/viewport-meta.js":48,"../../lib/i18n/i18n.js":77,"../../lib/rect-helpers.js":89,"../../lib/tappable-rects.js":94,"../audit.js":3}],"../audits/server-response-time":[function(require,module,exports){
+},{"../../computed/viewport-meta.js":49,"../../lib/i18n/i18n.js":78,"../../lib/rect-helpers.js":90,"../../lib/tappable-rects.js":95,"../audit.js":3}],"../audits/server-response-time":[function(require,module,exports){
 (function(__filename){
 
 
@@ -13264,12 +13947,7 @@ numericValue:responseTime,
 numericUnit:'millisecond',
 score:Number(passed),
 displayValue,
-details,
-extendedInfo:{
-value:{
-wastedMs:responseTime-RESPONSE_THRESHOLD}}};
-
-
+details};
 
 }}
 
@@ -13278,7 +13956,7 @@ module.exports=ServerResponseTime;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/server-response-time.js");
-},{"../computed/main-resource.js":12,"../lib/i18n/i18n.js":77,"./audit.js":3}],"../audits/service-worker":[function(require,module,exports){
+},{"../computed/main-resource.js":13,"../lib/i18n/i18n.js":78,"./audit.js":3}],"../audits/service-worker":[function(require,module,exports){
 (function(__filename){
 
 
@@ -13440,7 +14118,7 @@ module.exports=ServiceWorker;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/service-worker.js");
-},{"../lib/i18n/i18n.js":77,"../lib/url-shim.js":"url","./audit.js":3}],"../audits/splash-screen":[function(require,module,exports){
+},{"../lib/i18n/i18n.js":78,"../lib/url-shim.js":"url","./audit.js":3}],"../audits/splash-screen":[function(require,module,exports){
 (function(__filename){
 
 
@@ -13542,7 +14220,7 @@ module.exports=SplashScreen;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/splash-screen.js");
-},{"../computed/manifest-values.js":14,"../lib/i18n/i18n.js":77,"./multi-check-audit.js":6}],"../audits/themed-omnibox":[function(require,module,exports){
+},{"../computed/manifest-values.js":15,"../lib/i18n/i18n.js":78,"./multi-check-audit.js":7}],"../audits/themed-omnibox":[function(require,module,exports){
 (function(__filename){
 
 
@@ -13655,7 +14333,7 @@ module.exports=ThemedOmnibox;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/themed-omnibox.js");
-},{"../computed/manifest-values.js":14,"../lib/i18n/i18n.js":77,"./multi-check-audit.js":6,"cssstyle/lib/parsers":119}],"../audits/third-party-summary":[function(require,module,exports){
+},{"../computed/manifest-values.js":15,"../lib/i18n/i18n.js":78,"./multi-check-audit.js":7,"cssstyle/lib/parsers":120}],"../audits/third-party-summary":[function(require,module,exports){
 (function(__filename){
 
 
@@ -13825,7 +14503,7 @@ module.exports=ThirdPartySummary;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/third-party-summary.js");
-},{"../computed/main-resource.js":12,"../computed/main-thread-tasks.js":13,"../computed/network-records.js":39,"../lib/i18n/i18n.js":77,"../lib/third-party-web.js":95,"./audit.js":3,"./bootup-time.js":"../audits/bootup-time"}],"../audits/timing-budget":[function(require,module,exports){
+},{"../computed/main-resource.js":13,"../computed/main-thread-tasks.js":14,"../computed/network-records.js":40,"../lib/i18n/i18n.js":78,"../lib/third-party-web.js":96,"./audit.js":3,"./bootup-time.js":"../audits/bootup-time"}],"../audits/timing-budget":[function(require,module,exports){
 (function(__filename){
 
 
@@ -13918,10 +14596,13 @@ return measurements[timingMetric];
 
 
 static tableItems(budget,summary){
+
+let items=[];
 if(!budget.timings){
-return[];
+return items;
 }
-return budget.timings.map(timingBudget=>{
+
+items=budget.timings.map(timingBudget=>{
 const metricName=timingBudget.metric;
 const label=this.getRowLabel(metricName);
 const measurement=this.getMeasurement(metricName,summary);
@@ -13936,6 +14617,28 @@ overBudget};
 }).sort((a,b)=>{
 return(b.overBudget||0)-(a.overBudget||0);
 });
+
+
+
+const clsItem=items.find(item=>item.metric==='cumulative-layout-shift');
+if(clsItem){
+if(typeof clsItem.measurement!=='object'){
+clsItem.measurement={
+type:'numeric',
+value:Number(clsItem.measurement),
+granularity:0.01};
+
+}
+if(typeof clsItem.overBudget!=='object'){
+clsItem.overBudget={
+type:'numeric',
+value:Number(clsItem.overBudget),
+granularity:0.01};
+
+}
+}
+
+return items;
 }
 
 
@@ -13979,7 +14682,138 @@ module.exports=TimingBudget;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/timing-budget.js");
-},{"../computed/main-resource.js":12,"../computed/metrics/timing-summary.js":35,"../config/budget.js":49,"../lib/i18n/i18n.js":77,"./audit.js":3}],"../audits/user-timings":[function(require,module,exports){
+},{"../computed/main-resource.js":13,"../computed/metrics/timing-summary.js":36,"../config/budget.js":50,"../lib/i18n/i18n.js":78,"./audit.js":3}],"../audits/unsized-images":[function(require,module,exports){
+(function(__filename){
+
+
+
+
+
+
+
+
+
+
+'use strict';
+
+const Audit=require('./audit.js');
+const i18n=require('./../lib/i18n/i18n.js');
+const URL=require('./../lib/url-shim.js');
+
+const UIStrings={
+
+title:'Image elements have explicit `width` and `height`',
+
+failureTitle:'Image elements do not have explicit `width` and `height`',
+
+description:'Set an explicit width and height on image elements to reduce layout shifts and improve CLS. [Learn more](https://web.dev/optimize-cls/#images-without-dimensions)'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
+
+class UnsizedImages extends Audit{
+
+
+
+static get meta(){
+return{
+id:'unsized-images',
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+description:str_(UIStrings.description),
+requiredArtifacts:['ImageElements']};
+
+}
+
+
+
+
+
+
+
+static isValidAttr(attr){
+const NON_NEGATIVE_INT_REGEX=/^\d+$/;
+const ZERO_REGEX=/^0+$/;
+return NON_NEGATIVE_INT_REGEX.test(attr)&&!ZERO_REGEX.test(attr);
+}
+
+
+
+
+
+
+
+static isValidCss(property){
+if(!property)return false;
+return property!=='auto';
+}
+
+
+
+
+
+
+static isSizedImage(image){
+const attrWidth=image.attributeWidth;
+const attrHeight=image.attributeHeight;
+const cssWidth=image.cssWidth;
+const cssHeight=image.cssHeight;
+const widthIsValidAttribute=UnsizedImages.isValidAttr(attrWidth);
+const widthIsValidCss=UnsizedImages.isValidCss(cssWidth);
+const heightIsValidAttribute=UnsizedImages.isValidAttr(attrHeight);
+const heightIsValidCss=UnsizedImages.isValidCss(cssHeight);
+const validWidth=widthIsValidAttribute||widthIsValidCss;
+const validHeight=heightIsValidAttribute||heightIsValidCss;
+return validWidth&&validHeight;
+}
+
+
+
+
+
+static async audit(artifacts){
+
+const images=artifacts.ImageElements.filter(el=>!el.isCss&&!el.isInShadowDOM);
+const unsizedImages=[];
+
+for(const image of images){
+const isFixedImage=
+image.cssComputedPosition==='fixed'||image.cssComputedPosition==='absolute';
+
+if(isFixedImage||UnsizedImages.isSizedImage(image))continue;
+const url=URL.elideDataURI(image.src);
+unsizedImages.push({
+url,
+node:{
+type:'node',
+path:image.devtoolsNodePath,
+selector:image.selector,
+nodeLabel:image.nodeLabel,
+snippet:image.snippet}});
+
+
+}
+
+
+const headings=[
+{key:'url',itemType:'thumbnail',text:''},
+{key:'url',itemType:'url',text:str_(i18n.UIStrings.columnURL)},
+{key:'node',itemType:'node',text:str_(i18n.UIStrings.columnFailingElem)}];
+
+
+return{
+score:unsizedImages.length>0?0:1,
+notApplicable:images.length===0,
+details:Audit.makeTableDetails(headings,unsizedImages)};
+
+}}
+
+
+module.exports=UnsizedImages;
+module.exports.UIStrings=UIStrings;
+
+}).call(this,"/lighthouse-core/audits/unsized-images.js");
+},{"./../lib/i18n/i18n.js":78,"./../lib/url-shim.js":"url","./audit.js":3}],"../audits/user-timings":[function(require,module,exports){
 (function(__filename){
 
 
@@ -14094,9 +14928,6 @@ return{
 score:Number(userTimings.length===0),
 notApplicable:userTimings.length===0,
 displayValue,
-extendedInfo:{
-value:userTimings},
-
 details};
 
 });
@@ -14107,7 +14938,7 @@ module.exports=UserTimings;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/user-timings.js");
-},{"../computed/user-timings.js":47,"../lib/i18n/i18n.js":77,"./audit.js":3}],"../audits/uses-rel-preconnect":[function(require,module,exports){
+},{"../computed/user-timings.js":48,"../lib/i18n/i18n.js":78,"./audit.js":3}],"../audits/uses-rel-preconnect":[function(require,module,exports){
 (function(__filename){
 
 
@@ -14320,9 +15151,6 @@ numericUnit:'millisecond',
 displayValue:maxWasted?
 str_(i18n.UIStrings.displayValueMsSavings,{wastedMs:maxWasted}):
 '',
-extendedInfo:{
-value:results},
-
 warnings,
 details};
 
@@ -14333,7 +15161,7 @@ module.exports=UsesRelPreconnectAudit;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/uses-rel-preconnect.js");
-},{"../computed/load-simulator.js":11,"../computed/main-resource.js":12,"../computed/network-records.js":39,"../lib/i18n/i18n.js":77,"../lib/url-shim.js":"url","./audit.js":3,"./byte-efficiency/byte-efficiency-audit.js":4}],"../audits/uses-rel-preload":[function(require,module,exports){
+},{"../computed/load-simulator.js":12,"../computed/main-resource.js":13,"../computed/network-records.js":40,"../lib/i18n/i18n.js":78,"../lib/url-shim.js":"url","./audit.js":3,"./byte-efficiency/byte-efficiency-audit.js":4}],"../audits/uses-rel-preload":[function(require,module,exports){
 (function(__filename){
 
 
@@ -14580,9 +15408,6 @@ numericUnit:'millisecond',
 displayValue:wastedMs?
 str_(i18n.UIStrings.displayValueMsSavings,{wastedMs}):
 '',
-extendedInfo:{
-value:results},
-
 details,
 warnings};
 
@@ -14593,7 +15418,7 @@ module.exports=UsesRelPreloadAudit;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/uses-rel-preload.js");
-},{"../computed/critical-request-chains.js":9,"../computed/load-simulator.js":11,"../computed/main-resource.js":12,"../computed/page-dependency-graph.js":40,"../lib/i18n/i18n.js":77,"../lib/url-shim.js":"url","./audit.js":3,"./byte-efficiency/byte-efficiency-audit.js":4}],"../audits/viewport":[function(require,module,exports){
+},{"../computed/critical-request-chains.js":10,"../computed/load-simulator.js":12,"../computed/main-resource.js":13,"../computed/page-dependency-graph.js":41,"../lib/i18n/i18n.js":78,"../lib/url-shim.js":"url","./audit.js":3,"./byte-efficiency/byte-efficiency-audit.js":4}],"../audits/viewport":[function(require,module,exports){
 (function(__filename){
 
 
@@ -14661,7 +15486,7 @@ module.exports=Viewport;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/viewport.js");
-},{"../computed/viewport-meta.js":48,"../lib/i18n/i18n.js":77,"./audit.js":3}],"../audits/without-javascript":[function(require,module,exports){
+},{"../computed/viewport-meta.js":49,"../lib/i18n/i18n.js":78,"./audit.js":3}],"../audits/without-javascript":[function(require,module,exports){
 (function(__filename){
 
 
@@ -14727,7 +15552,7 @@ module.exports=WithoutJavaScript;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/without-javascript.js");
-},{"../lib/i18n/i18n.js":77,"./audit.js":3}],"../audits/works-offline":[function(require,module,exports){
+},{"../lib/i18n/i18n.js":78,"./audit.js":3}],"../audits/works-offline":[function(require,module,exports){
 (function(__filename){
 
 
@@ -14799,7 +15624,7 @@ module.exports=WorksOffline;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/works-offline.js");
-},{"../lib/i18n/i18n.js":77,"../lib/url-shim.js":"url","./audit.js":3}],"../gather/gatherers/accessibility":[function(require,module,exports){
+},{"../lib/i18n/i18n.js":78,"../lib/url-shim.js":"url","./audit.js":3}],"../gather/gatherers/accessibility":[function(require,module,exports){
 
 
 
@@ -14855,6 +15680,10 @@ rules:{
 
 then(axeResult=>{
 
+
+document.documentElement.scrollTop=0;
+
+
 const augmentAxeNodes=result=>{
 
 result.nodes.forEach(node=>{
@@ -14862,6 +15691,12 @@ result.nodes.forEach(node=>{
 node.path=getNodePath(node.element);
 
 node.snippet=getOuterHTMLSnippet(node.element);
+
+const rect=getBoundingClientRect(node.element);
+if(rect.width>0&&rect.height>0){
+node.boundingRect=rect;
+}
+
 
 node.nodeLabel=getNodeLabel(node.element);
 
@@ -14902,6 +15737,7 @@ afterPass(passContext){
 const driver=passContext.driver;
 const expression=`(function () {
       ${pageFunctions.getOuterHTMLSnippetString};
+      ${pageFunctions.getBoundingClientRectString};
       ${pageFunctions.getNodePathString};
       ${pageFunctions.getNodeLabelString};
       ${axeLibSource};
@@ -14922,7 +15758,7 @@ return returnedValue;
 
 module.exports=Accessibility;
 
-},{"../../lib/page-functions.js":88,"./gatherer.js":61}],"../gather/gatherers/anchor-elements":[function(require,module,exports){
+},{"../../lib/page-functions.js":89,"./gatherer.js":62}],"../gather/gatherers/anchor-elements":[function(require,module,exports){
 
 
 
@@ -15064,7 +15900,7 @@ return result;
 
 module.exports=AnchorElements;
 
-},{"../../lib/page-functions.js":88,"./gatherer.js":61}],"../gather/gatherers/cache-contents":[function(require,module,exports){
+},{"../../lib/page-functions.js":89,"./gatherer.js":62}],"../gather/gatherers/cache-contents":[function(require,module,exports){
 
 
 
@@ -15125,7 +15961,7 @@ return cacheUrls;
 
 module.exports=CacheContents;
 
-},{"./gatherer.js":61}],"../gather/gatherers/console-messages":[function(require,module,exports){
+},{"./gatherer.js":62}],"../gather/gatherers/console-messages":[function(require,module,exports){
 
 
 
@@ -15181,7 +16017,7 @@ return this._logEntries;
 
 module.exports=ConsoleMessages;
 
-},{"./gatherer.js":61}],"../gather/gatherers/css-usage":[function(require,module,exports){
+},{"./gatherer.js":62}],"../gather/gatherers/css-usage":[function(require,module,exports){
 
 
 
@@ -15242,7 +16078,7 @@ stylesheets:Array.from(dedupedStylesheets.values())};
 
 module.exports=CSSUsage;
 
-},{"./gatherer.js":61}],"../gather/gatherers/dobetterweb/appcache":[function(require,module,exports){
+},{"./gatherer.js":62}],"../gather/gatherers/dobetterweb/appcache":[function(require,module,exports){
 
 
 
@@ -15269,7 +16105,7 @@ then(node=>node&&node.getAttribute('manifest'));
 
 module.exports=AppCacheManifest;
 
-},{"../gatherer.js":61}],"../gather/gatherers/dobetterweb/doctype":[function(require,module,exports){
+},{"../gatherer.js":62}],"../gather/gatherers/dobetterweb/doctype":[function(require,module,exports){
 
 
 
@@ -15307,7 +16143,7 @@ return driver.evaluateAsync(`(${getDoctype.toString()}())`);
 
 module.exports=Doctype;
 
-},{"../gatherer.js":61}],"../gather/gatherers/dobetterweb/domstats":[function(require,module,exports){
+},{"../gatherer.js":62}],"../gather/gatherers/dobetterweb/domstats":[function(require,module,exports){
 
 
 
@@ -15470,7 +16306,7 @@ return results;
 
 module.exports=DOMStats;
 
-},{"../../../lib/page-functions.js":88,"../gatherer.js":61}],"../gather/gatherers/dobetterweb/optimized-images":[function(require,module,exports){
+},{"../../../lib/page-functions.js":89,"../gatherer.js":62}],"../gather/gatherers/dobetterweb/optimized-images":[function(require,module,exports){
 
 
 
@@ -15643,7 +16479,7 @@ return results;
 
 module.exports=OptimizedImages;
 
-},{"../../../lib/network-request.js":87,"../../../lib/sentry.js":90,"../../../lib/url-shim.js":"url","../../driver.js":58,"../gatherer.js":61,"lighthouse-logger":137}],"../gather/gatherers/dobetterweb/password-inputs-with-prevented-paste":[function(require,module,exports){
+},{"../../../lib/network-request.js":88,"../../../lib/sentry.js":91,"../../../lib/url-shim.js":"url","../../driver.js":59,"../gatherer.js":62,"lighthouse-logger":138}],"../gather/gatherers/dobetterweb/password-inputs-with-prevented-paste":[function(require,module,exports){
 
 
 
@@ -15690,7 +16526,7 @@ return passContext.driver.evaluateAsync(`(() => {
 
 module.exports=PasswordInputsWithPreventedPaste;
 
-},{"../../../lib/page-functions.js":88,"../gatherer.js":61}],"../gather/gatherers/dobetterweb/response-compression":[function(require,module,exports){
+},{"../../../lib/page-functions.js":89,"../gatherer.js":62}],"../gather/gatherers/dobetterweb/response-compression":[function(require,module,exports){
 (function(Buffer){
 
 
@@ -15816,7 +16652,7 @@ return record;
 module.exports=ResponseCompression;
 
 }).call(this,require("buffer").Buffer);
-},{"../../../lib/network-request.js":87,"../../../lib/sentry.js":90,"../../../lib/url-shim.js":"url","../gatherer.js":61,"buffer":116,"zlib":114}],"../gather/gatherers/dobetterweb/tags-blocking-first-paint":[function(require,module,exports){
+},{"../../../lib/network-request.js":88,"../../../lib/sentry.js":91,"../../../lib/url-shim.js":"url","../gatherer.js":62,"buffer":117,"zlib":115}],"../gather/gatherers/dobetterweb/tags-blocking-first-paint":[function(require,module,exports){
 
 
 
@@ -16009,7 +16845,323 @@ return TagsBlockingFirstPaint.findBlockingTags(passContext.driver,loadData.netwo
 
 module.exports=TagsBlockingFirstPaint;
 
-},{"../../driver.js":58,"../gatherer.js":61}],"../gather/gatherers/html-without-javascript":[function(require,module,exports){
+},{"../../driver.js":59,"../gatherer.js":62}],"../gather/gatherers/form-elements":[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const Gatherer=require('./gatherer.js');
+const pageFunctions=require('../../lib/page-functions.js');
+
+
+
+
+
+
+
+function collectFormElements(){
+
+const formChildren=getElementsInDocument('textarea, input, label, select');
+
+const forms=new Map();
+
+const formlessObj={
+inputs:[],
+labels:[]};
+
+for(const child of formChildren){
+const isButton=child instanceof HTMLInputElement&&(
+child.type==='submit'||child.type==='button');
+if(isButton)continue;
+
+const parentFormElement=child.form;
+const hasForm=!!parentFormElement;
+if(hasForm&&!forms.has(parentFormElement)){
+const newFormObj={
+attributes:{
+id:parentFormElement.id,
+name:parentFormElement.name,
+autocomplete:parentFormElement.autocomplete,
+
+nodeLabel:getNodeLabel(parentFormElement),
+
+snippet:getOuterHTMLSnippet(parentFormElement)},
+
+inputs:[],
+labels:[]};
+
+forms.set(parentFormElement,newFormObj);
+}
+const formObj=forms.get(parentFormElement)||formlessObj;
+
+if(child instanceof HTMLInputElement||child instanceof HTMLTextAreaElement||
+child instanceof HTMLSelectElement){
+formObj.inputs.push({
+id:child.id,
+name:child.name,
+placeholder:child instanceof HTMLSelectElement?undefined:child.placeholder,
+autocomplete:child.autocomplete,
+
+nodeLabel:getNodeLabel(child),
+
+snippet:getOuterHTMLSnippet(child)});
+
+}
+if(child instanceof HTMLLabelElement){
+formObj.labels.push({
+for:child.htmlFor,
+
+nodeLabel:getNodeLabel(child),
+
+snippet:getOuterHTMLSnippet(child)});
+
+}
+}
+
+if(formlessObj.inputs.length>0||formlessObj.labels.length>0){
+forms.set('formless',{
+inputs:formlessObj.inputs,
+labels:formlessObj.labels});
+
+}
+return[...forms.values()];
+}
+
+class FormElements extends Gatherer{
+
+
+
+
+async afterPass(passContext){
+const driver=passContext.driver;
+
+const expression=`(() => {
+      ${pageFunctions.getElementsInDocumentString};
+      ${pageFunctions.getOuterHTMLSnippetString};
+      ${pageFunctions.getNodeLabelString};
+      return (${collectFormElements})();
+    })()`;
+
+
+const formElements=await driver.evaluateAsync(expression,{useIsolation:true});
+return formElements;
+}}
+
+
+module.exports=FormElements;
+
+},{"../../lib/page-functions.js":89,"./gatherer.js":62}],"../gather/gatherers/full-page-screenshot":[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const Gatherer=require('./gatherer.js');
+
+
+
+const FULL_PAGE_SCREENSHOT_QUALITY=30;
+
+const MAX_SCREENSHOT_HEIGHT=16384;
+
+const MAX_DATA_URL_SIZE=2*1024*1024-1;
+
+
+
+
+function snakeCaseToCamelCase(str){
+return str.replace(/(-\w)/g,m=>m[1].toUpperCase());
+}
+
+class FullPageScreenshot extends Gatherer{
+
+
+
+
+
+async _takeScreenshot(passContext,maxScreenshotHeight){
+const driver=passContext.driver;
+const metrics=await driver.sendCommand('Page.getLayoutMetrics');
+const deviceScaleFactor=await driver.evaluateAsync('window.devicePixelRatio');
+const width=Math.min(metrics.contentSize.width,maxScreenshotHeight);
+const height=Math.min(metrics.contentSize.height,maxScreenshotHeight);
+
+await driver.sendCommand('Emulation.setDeviceMetricsOverride',{
+mobile:passContext.baseArtifacts.TestedAsMobileDevice,
+height,
+screenHeight:height,
+width,
+screenWidth:width,
+deviceScaleFactor,
+scale:1,
+positionX:0,
+positionY:0,
+screenOrientation:{angle:0,type:'portraitPrimary'}});
+
+
+
+
+
+
+const result=await driver.sendCommand('Page.captureScreenshot',{
+format:'jpeg',
+quality:FULL_PAGE_SCREENSHOT_QUALITY});
+
+const data='data:image/jpeg;base64,'+result.data;
+
+return{
+width,
+height,
+data};
+
+}
+
+
+
+
+
+async afterPass_(passContext){
+const deviceScaleFactor=await passContext.driver.evaluateAsync('window.devicePixelRatio');
+const maxScreenshotHeight=Math.floor(MAX_SCREENSHOT_HEIGHT/deviceScaleFactor);
+let screenshot=await this._takeScreenshot(passContext,maxScreenshotHeight);
+
+if(screenshot.data.length>MAX_DATA_URL_SIZE){
+
+
+
+screenshot=await this._takeScreenshot(passContext,5000);
+if(screenshot.data.length>MAX_DATA_URL_SIZE){
+passContext.LighthouseRunWarnings.push(
+'Full page screenshot is too big–report won\'t show element screenshots.');
+return null;
+}
+}
+
+return screenshot;
+}
+
+
+
+
+
+async afterPass(passContext){
+const{driver}=passContext;
+
+
+
+const lighthouseControlsEmulation=passContext.settings.emulatedFormFactor!=='none'&&
+!passContext.settings.internalDisableDeviceScreenEmulation;
+
+try{
+return await this.afterPass_(passContext);
+}finally{
+
+if(lighthouseControlsEmulation){
+await driver.beginEmulation(passContext.settings);
+}else{
+
+
+
+
+
+
+
+const observedDeviceMetrics=await driver.evaluateAsync(`(function() {
+          return {
+            width: document.documentElement.clientWidth,
+            height: document.documentElement.clientHeight,
+            screenWidth: window.screen.width,
+            screenHeight: window.screen.height,
+            screenOrientation: {
+              type: window.screen.orientation.type,
+              angle: window.screen.orientation.angle,
+            },
+            deviceScaleFactor: window.devicePixelRatio,
+          };
+        })()`,{useIsolation:true});
+
+observedDeviceMetrics.screenOrientation.type=
+snakeCaseToCamelCase(observedDeviceMetrics.screenOrientation.type);
+await driver.sendCommand('Emulation.setDeviceMetricsOverride',{
+mobile:passContext.baseArtifacts.TestedAsMobileDevice,
+...observedDeviceMetrics});
+
+}
+}
+}}
+
+
+module.exports=FullPageScreenshot;
+module.exports.MAX_SCREENSHOT_HEIGHT=MAX_SCREENSHOT_HEIGHT;
+
+},{"./gatherer.js":62}],"../gather/gatherers/global-listeners":[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+
+
+
+
+
+
+
+const Gatherer=require('./gatherer.js');
+
+class GlobalListeners extends Gatherer{
+
+
+
+
+static _filterForAllowlistedTypes(listener){
+return listener.type==='pagehide'||
+listener.type==='unload'||
+listener.type==='visibilitychange';
+}
+
+
+
+
+
+async afterPass(passContext){
+const driver=passContext.driver;
+
+
+const{result:{objectId}}=await driver.sendCommand('Runtime.evaluate',{
+expression:'window',
+returnByValue:false});
+
+if(!objectId){
+throw new Error('Error fetching information about the global object');
+}
+
+
+const{listeners}=await driver.sendCommand('DOMDebugger.getEventListeners',{objectId});
+return listeners.
+filter(GlobalListeners._filterForAllowlistedTypes).
+map(listener=>{
+const{type,scriptId,lineNumber,columnNumber}=listener;
+return{
+type,
+scriptId,
+lineNumber,
+columnNumber};
+
+});
+}}
+
+
+module.exports=GlobalListeners;
+
+},{"./gatherer.js":62}],"../gather/gatherers/html-without-javascript":[function(require,module,exports){
 
 
 
@@ -16067,7 +17219,7 @@ hasNoScript};
 
 module.exports=HTMLWithoutJavaScript;
 
-},{"./gatherer.js":61}],"../gather/gatherers/http-redirect":[function(require,module,exports){
+},{"./gatherer.js":62}],"../gather/gatherers/http-redirect":[function(require,module,exports){
 
 
 
@@ -16114,7 +17266,7 @@ value:isHttps};
 
 module.exports=HTTPRedirect;
 
-},{"./gatherer.js":61}],"../gather/gatherers/iframe-elements":[function(require,module,exports){
+},{"./gatherer.js":62}],"../gather/gatherers/iframe-elements":[function(require,module,exports){
 
 
 
@@ -16171,7 +17323,7 @@ return iframeElements;
 
 module.exports=IFrameElements;
 
-},{"../../lib/page-functions.js":88,"./gatherer.js":61}],"../gather/gatherers/image-elements":[function(require,module,exports){
+},{"../../lib/page-functions.js":89,"./gatherer.js":62}],"../gather/gatherers/image-elements":[function(require,module,exports){
 
 
 
@@ -16186,6 +17338,7 @@ module.exports=IFrameElements;
 const Gatherer=require('./gatherer.js');
 const pageFunctions=require('../../lib/page-functions.js');
 const Driver=require('../driver.js');
+const FontSize=require('./seo/font-size.js');
 
 
 
@@ -16208,6 +17361,21 @@ right:clientRect.right};
 
 
 
+
+
+function getPosition(element,computedStyle){
+if(element.parentElement&&element.parentElement.tagName==='PICTURE'){
+const parentStyle=window.getComputedStyle(element.parentElement);
+return parentStyle.getPropertyValue('position');
+}
+return computedStyle.getPropertyValue('position');
+}
+
+
+
+
+
+
 function getHTMLImages(allElements){
 const allImageElements=allElements.filter(element=>{
 return element.localName==='img';
@@ -16219,11 +17387,17 @@ return{
 
 
 src:element.currentSrc,
+srcset:element.srcset,
 displayedWidth:element.width,
 displayedHeight:element.height,
 clientRect:getClientRect(element),
 naturalWidth:element.naturalWidth,
 naturalHeight:element.naturalHeight,
+attributeWidth:element.getAttribute('width')||'',
+attributeHeight:element.getAttribute('height')||'',
+cssWidth:undefined,
+cssHeight:undefined,
+cssComputedPosition:getPosition(element,computedStyle),
 isCss:false,
 
 loading:element.loading,
@@ -16235,8 +17409,17 @@ computedStyle.getPropertyValue('object-fit')),
 usesPixelArtScaling:['pixelated','crisp-edges'].includes(
 computedStyle.getPropertyValue('image-rendering')),
 
+isInShadowDOM:element.getRootNode()instanceof ShadowRoot,
 
-usesSrcSetDensityDescriptor:/ \d+(\.\d+)?x/.test(element.srcset)};
+usesSrcSetDensityDescriptor:/ \d+(\.\d+)?x/.test(element.srcset),
+
+devtoolsNodePath:getNodePath(element),
+
+selector:getNodeSelector(element),
+
+nodeLabel:getNodeLabel(element),
+
+snippet:getOuterHTMLSnippet(element)};
 
 });
 }
@@ -16265,20 +17448,35 @@ const url=imageMatch[1];
 
 images.push({
 src:url,
+srcset:'',
 displayedWidth:element.clientWidth,
 displayedHeight:element.clientHeight,
 clientRect:getClientRect(element),
 
 naturalWidth:0,
 naturalHeight:0,
+attributeWidth:'',
+attributeHeight:'',
+cssWidth:undefined,
+cssHeight:undefined,
+cssComputedPosition:getPosition(element,style),
 isCss:true,
 isPicture:false,
+isInShadowDOM:element.getRootNode()instanceof ShadowRoot,
 usesObjectFit:false,
 usesPixelArtScaling:['pixelated','crisp-edges'].includes(
 style.getPropertyValue('image-rendering')),
 
 usesSrcSetDensityDescriptor:false,
-resourceSize:0});
+resourceSize:0,
+
+devtoolsNodePath:getNodePath(element),
+
+selector:getNodeSelector(element),
+
+nodeLabel:getNodeLabel(element),
+
+snippet:getOuterHTMLSnippet(element)});
 
 }
 
@@ -16312,6 +17510,57 @@ naturalHeight:img.naturalHeight});
 
 img.src=url;
 });
+}
+
+
+
+
+
+
+function findSizeDeclaration(style,property){
+if(!style)return;
+
+const definedProp=style.cssProperties.find(({name})=>name===property);
+if(!definedProp)return;
+
+return definedProp.value;
+}
+
+
+
+
+
+
+
+
+function findMostSpecificCSSRule(matchedCSSRules,property){
+
+const isDeclarationofInterest=declaration=>findSizeDeclaration(declaration,property);
+const rule=FontSize.findMostSpecificMatchedCSSRule(matchedCSSRules,isDeclarationofInterest);
+if(!rule)return;
+
+
+return findSizeDeclaration(rule.style,property);
+}
+
+
+
+
+
+
+function getEffectiveSizingRule({attributesStyle,inlineStyle,matchedCSSRules},property){
+
+
+
+const inlineRule=findSizeDeclaration(inlineStyle,property);
+if(inlineRule)return inlineRule;
+
+const attributeRule=findSizeDeclaration(attributesStyle,property);
+if(attributeRule)return attributeRule;
+
+
+const matchedRule=findMostSpecificCSSRule(matchedCSSRules,property);
+if(matchedRule)return matchedRule;
 }
 
 class ImageElements extends Gatherer{
@@ -16350,6 +17599,31 @@ return element;
 
 
 
+async fetchSourceRules(driver,devtoolsNodePath,element){
+try{
+const{nodeId}=await driver.sendCommand('DOM.pushNodeByPathToFrontend',{
+path:devtoolsNodePath});
+
+if(!nodeId)return;
+
+const matchedRules=await driver.sendCommand('CSS.getMatchedStylesForNode',{
+nodeId:nodeId});
+
+const sourceWidth=getEffectiveSizingRule(matchedRules,'width');
+const sourceHeight=getEffectiveSizingRule(matchedRules,'height');
+const sourceRules={cssWidth:sourceWidth,cssHeight:sourceHeight};
+Object.assign(element,sourceRules);
+}catch(err){
+if(/No node.*found/.test(err.message))return;
+throw err;
+}
+}
+
+
+
+
+
+
 async afterPass(passContext,loadData){
 const driver=passContext.driver;
 const indexedNetworkRecords=loadData.networkRecords.reduce((map,record)=>{
@@ -16364,7 +17638,12 @@ return map;
 
 const expression=`(function() {
       ${pageFunctions.getElementsInDocumentString}; // define function on page
+      ${pageFunctions.getNodePathString};
+      ${pageFunctions.getNodeSelectorString};
+      ${pageFunctions.getNodeLabelString};
+      ${pageFunctions.getOuterHTMLSnippetString};
       ${getClientRect.toString()};
+      ${getPosition.toString()};
       ${getHTMLImages.toString()};
       ${getCSSImages.toString()};
       ${collectImageElementInfo.toString()};
@@ -16380,6 +17659,11 @@ const imageUsage=[];
 const top50Images=Object.values(indexedNetworkRecords).
 sort((a,b)=>b.resourceSize-a.resourceSize).
 slice(0,50);
+await Promise.all([
+driver.sendCommand('DOM.enable'),
+driver.sendCommand('CSS.enable'),
+driver.sendCommand('DOM.getDocument',{depth:-1,pierce:true})]);
+
 
 for(let element of elements){
 
@@ -16393,12 +17677,15 @@ element.mimeType=networkRecord.mimeType;
 const{resourceSize=0,transferSize=0}=networkRecord;
 element.resourceSize=Math.min(resourceSize,transferSize);
 
+if(!element.isInShadowDOM){
+await this.fetchSourceRules(driver,element.devtoolsNodePath,element);
+}
 
 
 
 
 if(
-(element.isPicture||element.isCss)&&
+(element.isPicture||element.isCss||element.srcset)&&
 networkRecord&&
 top50Images.includes(networkRecord))
 {
@@ -16408,13 +17695,18 @@ element=await this.fetchElementWithSizeInformation(driver,element);
 imageUsage.push(element);
 }
 
+await Promise.all([
+driver.sendCommand('DOM.disable'),
+driver.sendCommand('CSS.disable')]);
+
+
 return imageUsage;
 }}
 
 
 module.exports=ImageElements;
 
-},{"../../lib/page-functions.js":88,"../driver.js":58,"./gatherer.js":61}],"../gather/gatherers/inspector-issues":[function(require,module,exports){
+},{"../../lib/page-functions.js":89,"../driver.js":59,"./gatherer.js":62,"./seo/font-size.js":"../gather/gatherers/seo/font-size"}],"../gather/gatherers/inspector-issues":[function(require,module,exports){
 
 
 
@@ -16486,7 +17778,7 @@ return artifact;
 
 module.exports=InspectorIssues;
 
-},{"./gatherer.js":61}],"../gather/gatherers/js-usage":[function(require,module,exports){
+},{"./gatherer.js":62}],"../gather/gatherers/js-usage":[function(require,module,exports){
 
 
 
@@ -16534,7 +17826,7 @@ return usageByUrl;
 
 module.exports=JsUsage;
 
-},{"./gatherer.js":61}],"../gather/gatherers/link-elements":[function(require,module,exports){
+},{"./gatherer.js":62}],"../gather/gatherers/link-elements":[function(require,module,exports){
 
 
 
@@ -16542,11 +17834,16 @@ module.exports=JsUsage;
 
 'use strict';
 
-const Gatherer=require('./gatherer.js');
-const URL=require('../../lib/url-shim.js').URL;
-const NetworkAnalyzer=require('../../lib/dependency-graph/simulator/network-analyzer.js');
 const LinkHeader=require('http-link-header');
-const{getElementsInDocumentString}=require('../../lib/page-functions.js');
+const Gatherer=require('./gatherer.js');
+const{URL}=require('../../lib/url-shim.js');
+const NetworkAnalyzer=require('../../lib/dependency-graph/simulator/network-analyzer.js');
+const{
+getElementsInDocumentString,
+getNodePathString,
+getNodeSelectorString,
+getNodeLabelString}=
+require('../../lib/page-functions.js');
 
 
 
@@ -16596,14 +17893,27 @@ for(const link of browserElements){
 
 if(!(link instanceof HTMLLinkElement))continue;
 
+
+const nodePath=getNodePath(link);
+
+const selector=getNodeSelector(link);
+
+const nodeLabel=getNodeLabel(link);
+
+const hrefRaw=link.getAttribute('href')||'';
+const source=link.closest('head')?'head':'body';
+
 linkElements.push({
 rel:link.rel,
 href:link.href,
-hrefRaw:link.href,
 hreflang:link.hreflang,
 as:link.as,
 crossOrigin:link.crossOrigin,
-source:link.closest('head')?'head':'body'});
+devtoolsNodePath:nodePath,
+hrefRaw,
+source,
+selector,
+nodeLabel});
 
 }
 
@@ -16621,6 +17931,9 @@ static getLinkElementsInDOM(passContext){
 return passContext.driver.evaluateAsync(`(() => {
       ${getElementsInDocumentString};
       ${getLinkElementsInDOM};
+      ${getNodePathString};
+      ${getNodeSelectorString};
+      ${getNodeLabelString};
 
       return getLinkElementsInDOM();
     })()`,{useIsolation:true});
@@ -16679,7 +17992,7 @@ return linkElements;
 
 module.exports=LinkElements;
 
-},{"../../lib/dependency-graph/simulator/network-analyzer.js":73,"../../lib/page-functions.js":88,"../../lib/url-shim.js":"url","./gatherer.js":61,"http-link-header":121}],"../gather/gatherers/main-document-content":[function(require,module,exports){
+},{"../../lib/dependency-graph/simulator/network-analyzer.js":74,"../../lib/page-functions.js":89,"../../lib/url-shim.js":"url","./gatherer.js":62,"http-link-header":122}],"../gather/gatherers/main-document-content":[function(require,module,exports){
 
 
 
@@ -16709,7 +18022,7 @@ return driver.getRequestContent(mainResource.requestId);
 
 module.exports=MainDocumentContent;
 
-},{"../../lib/dependency-graph/simulator/network-analyzer.js":73,"./gatherer.js":61}],"../gather/gatherers/meta-elements":[function(require,module,exports){
+},{"../../lib/dependency-graph/simulator/network-analyzer.js":74,"./gatherer.js":62}],"../gather/gatherers/meta-elements":[function(require,module,exports){
 
 
 
@@ -16748,7 +18061,7 @@ return driver.evaluateAsync(`(() => {
 
 module.exports=MetaElements;
 
-},{"../../lib/page-functions.js":88,"./gatherer.js":61}],"../gather/gatherers/offline":[function(require,module,exports){
+},{"../../lib/page-functions.js":89,"./gatherer.js":62}],"../gather/gatherers/offline":[function(require,module,exports){
 
 
 
@@ -16787,7 +18100,7 @@ return navigationRecord?navigationRecord.statusCode:-1;
 
 module.exports=Offline;
 
-},{"../../lib/url-shim.js":"url","./gatherer.js":61}],"../gather/gatherers/runtime-exceptions":[function(require,module,exports){
+},{"../../lib/url-shim.js":"url","./gatherer.js":62}],"../gather/gatherers/runtime-exceptions":[function(require,module,exports){
 
 
 
@@ -16837,7 +18150,7 @@ return this._exceptions;
 
 module.exports=RuntimeExceptions;
 
-},{"./gatherer.js":61}],"../gather/gatherers/script-elements":[function(require,module,exports){
+},{"./gatherer.js":62}],"../gather/gatherers/script-elements":[function(require,module,exports){
 
 
 
@@ -16966,7 +18279,7 @@ return scripts;
 
 module.exports=ScriptElements;
 
-},{"../../lib/dependency-graph/simulator/network-analyzer.js":73,"../../lib/network-request.js":87,"../../lib/page-functions.js":88,"./gatherer.js":61}],"../gather/gatherers/seo/embedded-content":[function(require,module,exports){
+},{"../../lib/dependency-graph/simulator/network-analyzer.js":74,"../../lib/network-request.js":88,"../../lib/page-functions.js":89,"./gatherer.js":62}],"../gather/gatherers/seo/embedded-content":[function(require,module,exports){
 
 
 
@@ -17009,7 +18322,7 @@ return passContext.driver.evaluateAsync(expression);
 
 module.exports=EmbeddedContent;
 
-},{"../../../lib/page-functions.js":88,"../gatherer.js":61}],"../gather/gatherers/seo/font-size":[function(require,module,exports){
+},{"../../../lib/page-functions.js":89,"../gatherer.js":62}],"../gather/gatherers/seo/font-size":[function(require,module,exports){
 
 
 
@@ -17111,13 +18424,14 @@ return Math.min(9,numIDs)*100+Math.min(9,numClasses)*10+Math.min(9,numTypes);
 
 
 
-function findMostSpecificMatchedCSSRule(matchedCSSRules=[]){
+
+function findMostSpecificMatchedCSSRule(matchedCSSRules=[],isDeclarationOfInterest){
 let maxSpecificity=-Infinity;
 
 let maxSpecificityRule;
 
 for(const{rule,matchingSelectors}of matchedCSSRules){
-if(hasFontSizeDeclaration(rule.style)){
+if(isDeclarationOfInterest(rule.style)){
 const specificities=matchingSelectors.map(idx=>
 computeSelectorSpecificity(rule.selectorList.selectors[idx].text));
 
@@ -17156,7 +18470,7 @@ function findInheritedCSSRule(inheritedEntries=[]){
 for(const{inlineStyle,matchedCSSRules}of inheritedEntries){
 if(hasFontSizeDeclaration(inlineStyle))return{type:'Inline',...inlineStyle};
 
-const directRule=findMostSpecificMatchedCSSRule(matchedCSSRules);
+const directRule=findMostSpecificMatchedCSSRule(matchedCSSRules,hasFontSizeDeclaration);
 if(directRule)return directRule;
 }
 }
@@ -17174,7 +18488,7 @@ function getEffectiveFontRule({attributesStyle,inlineStyle,matchedCSSRules,inher
 if(hasFontSizeDeclaration(inlineStyle))return{type:'Inline',...inlineStyle};
 
 
-const matchedRule=findMostSpecificMatchedCSSRule(matchedCSSRules);
+const matchedRule=findMostSpecificMatchedCSSRule(matchedCSSRules,hasFontSizeDeclaration);
 if(matchedRule)return matchedRule;
 
 
@@ -17388,8 +18702,9 @@ totalTextLength};
 module.exports=FontSize;
 module.exports.computeSelectorSpecificity=computeSelectorSpecificity;
 module.exports.getEffectiveFontRule=getEffectiveFontRule;
+module.exports.findMostSpecificMatchedCSSRule=findMostSpecificMatchedCSSRule;
 
-},{"../gatherer.js":61}],"../gather/gatherers/seo/robots-txt":[function(require,module,exports){
+},{"../gatherer.js":62}],"../gather/gatherers/seo/robots-txt":[function(require,module,exports){
 
 
 
@@ -17432,7 +18747,7 @@ useIsolation:true});
 
 module.exports=RobotsTxt;
 
-},{"../gatherer.js":61}],"../gather/gatherers/seo/tap-targets":[function(require,module,exports){
+},{"../gatherer.js":62}],"../gather/gatherers/seo/tap-targets":[function(require,module,exports){
 
 
 
@@ -17718,6 +19033,8 @@ visibleClientRects});
 for(const{tapTargetElement,visibleClientRects}of tapTargetsWithVisibleClientRects){
 targets.push({
 clientRects:visibleClientRects,
+
+boundingRect:getBoundingClientRect(tapTargetElement),
 snippet:truncate(tapTargetElement.outerHTML,300),
 
 path:getNodePath(tapTargetElement),
@@ -17751,6 +19068,7 @@ const expression=`(function() {
       ${getClientRects.toString()};
       ${hasTextNodeSiblingsFormingTextBlock.toString()};
       ${elementIsInTextBlock.toString()};
+      ${pageFunctions.getBoundingClientRectString};
       ${getRectArea.toString()};
       ${getLargestRect.toString()};
       ${getRectCenterPoint.toString()};
@@ -17769,7 +19087,7 @@ return passContext.driver.evaluateAsync(expression,{useIsolation:true});
 
 module.exports=TapTargets;
 
-},{"../../../lib/page-functions.js":88,"../../../lib/rect-helpers.js":89,"../gatherer.js":61}],"../gather/gatherers/service-worker":[function(require,module,exports){
+},{"../../../lib/page-functions.js":89,"../../../lib/rect-helpers.js":90,"../gatherer.js":62}],"../gather/gatherers/service-worker":[function(require,module,exports){
 
 
 
@@ -17797,7 +19115,7 @@ registrations};
 
 module.exports=ServiceWorker;
 
-},{"./gatherer.js":61}],"../gather/gatherers/source-maps":[function(require,module,exports){
+},{"./gatherer.js":62}],"../gather/gatherers/source-maps":[function(require,module,exports){
 (function(Buffer){
 
 
@@ -17942,7 +19260,7 @@ return Promise.all(eventProcessPromises);
 module.exports=SourceMaps;
 
 }).call(this,require("buffer").Buffer);
-},{"../../lib/url-shim.js":"url","./gatherer.js":61,"buffer":116}],"../gather/gatherers/start-url":[function(require,module,exports){
+},{"../../lib/url-shim.js":"url","./gatherer.js":62,"buffer":117}],"../gather/gatherers/start-url":[function(require,module,exports){
 
 
 
@@ -18065,7 +19383,7 @@ then(()=>Promise.race([fetchPromise,timeoutPromise]));
 
 module.exports=StartUrl;
 
-},{"../../lib/url-shim.js":"url","./gatherer.js":61}],"../gather/gatherers/trace-elements":[function(require,module,exports){
+},{"../../lib/url-shim.js":"url","./gatherer.js":62}],"../gather/gatherers/trace-elements":[function(require,module,exports){
 
 
 
@@ -18090,14 +19408,11 @@ const RectHelpers=require('../../lib/rect-helpers.js');
 
 
 
-
-
-function setAttributeMarker(metricName){
+function getNodeDetailsData(){
 const elem=this.nodeType===document.ELEMENT_NODE?this:this.parentElement;
 let traceElement;
 if(elem){
 traceElement={
-metricName,
 
 devtoolsNodePath:getNodePath(elem),
 
@@ -18105,7 +19420,9 @@ selector:getNodeSelector(elem),
 
 nodeLabel:getNodeLabel(elem),
 
-snippet:getOuterHTMLSnippet(elem)};
+snippet:getOuterHTMLSnippet(elem),
+
+boundingRect:getBoundingClientRect(elem)};
 
 }
 return traceElement;
@@ -18119,6 +19436,24 @@ class TraceElements extends Gatherer{
 static getNodeIDFromTraceEvent(event){
 return event&&event.args&&
 event.args.data&&event.args.data.nodeId;
+}
+
+
+
+
+
+static getAnimationIDFromTraceEvent(event){
+return event&&event.args&&
+event.args.data&&event.args.data.id;
+}
+
+
+
+
+
+static getFailureReasonsFromTraceEvent(event){
+return event&&event.args&&
+event.args.data&&event.args.data.compositeFailed;
 }
 
 
@@ -18140,6 +19475,30 @@ return RectHelpers.addRectTopAndBottom(rectArgs);
 
 
 
+static async resolveAnimationName(passContext,animationId){
+const driver=passContext.driver;
+try{
+const result=await driver.sendCommand('Animation.resolveAnimation',{animationId});
+const objectId=result.remoteObject.objectId;
+if(!objectId)return undefined;
+const response=await driver.sendCommand('Runtime.getProperties',{
+objectId});
+
+const nameProperty=response.result.find(property=>property.name==='animationName');
+const animationName=nameProperty&&nameProperty.value&&nameProperty.value.value;
+if(animationName==='')return undefined;
+return animationName;
+}catch(err){
+
+return undefined;
+}
+}
+
+
+
+
+
+
 
 
 
@@ -18150,10 +19509,18 @@ const clsPerNode=new Map();
 const shiftEvents=mainThreadEvents.
 filter(e=>e.name==='LayoutShift').
 map(e=>e.args&&e.args.data);
+const indexFirstEventWithoutInput=
+shiftEvents.findIndex(event=>event&&!event.had_recent_input);
 
-shiftEvents.forEach(event=>{
-if(!event||!event.impacted_nodes||!event.score||event.had_recent_input){
+shiftEvents.forEach((event,index)=>{
+if(!event||!event.impacted_nodes||!event.score){
 return;
+}
+
+
+
+if(indexFirstEventWithoutInput!==-1&&index>=indexFirstEventWithoutInput){
+if(event.had_recent_input)return;
 }
 
 let totalAreaOfImpact=0;
@@ -18200,6 +19567,65 @@ return topFive;
 
 
 
+
+static async getAnimatedElements(passContext,mainThreadEvents){
+
+const animationPairs=new Map();
+for(const event of mainThreadEvents){
+if(event.name!=='Animation')continue;
+
+if(!event.id2||!event.id2.local)continue;
+const local=event.id2.local;
+
+const pair=animationPairs.get(local)||{begin:undefined,status:undefined};
+if(event.ph==='b'){
+pair.begin=event;
+}else if(
+event.ph==='n'&&
+event.args.data&&
+event.args.data.compositeFailed!==undefined){
+pair.status=event;
+}
+animationPairs.set(local,pair);
+}
+
+
+const elementAnimations=new Map();
+for(const{begin,status}of animationPairs.values()){
+const nodeId=this.getNodeIDFromTraceEvent(begin);
+const animationId=this.getAnimationIDFromTraceEvent(begin);
+const failureReasonsMask=this.getFailureReasonsFromTraceEvent(status);
+if(!nodeId||!animationId)continue;
+const animationIds=elementAnimations.get(nodeId)||new Set();
+animationIds.add({animationId,failureReasonsMask});
+elementAnimations.set(nodeId,animationIds);
+}
+
+
+const animatedElementData=[];
+for(const[nodeId,animationIds]of elementAnimations){
+const animations=[];
+for(const{animationId,failureReasonsMask}of animationIds){
+const animationName=await this.resolveAnimationName(passContext,animationId);
+animations.push({name:animationName,failureReasonsMask});
+}
+animatedElementData.push({nodeId,animations});
+}
+return animatedElementData;
+}
+
+
+
+
+async beforePass(passContext){
+await passContext.driver.sendCommand('Animation.enable');
+}
+
+
+
+
+
+
 async afterPass(passContext,loadData){
 const driver=passContext.driver;
 if(!loadData.trace){
@@ -18209,40 +19635,52 @@ throw new Error('Trace is missing!');
 const{largestContentfulPaintEvt,mainThreadEvents}=
 TraceProcessor.computeTraceOfTab(loadData.trace);
 
-const backendNodeData=[];
-
 const lcpNodeId=TraceElements.getNodeIDFromTraceEvent(largestContentfulPaintEvt);
 const clsNodeData=TraceElements.getTopLayoutShiftElements(mainThreadEvents);
-if(lcpNodeId){
-backendNodeData.push({nodeId:lcpNodeId});
-}
-backendNodeData.push(...clsNodeData);
+const animatedElementData=
+await TraceElements.getAnimatedElements(passContext,mainThreadEvents);
+
+
+const backendNodeDataMap=new Map([
+['largest-contentful-paint',lcpNodeId?[{nodeId:lcpNodeId}]:[]],
+['layout-shift',clsNodeData],
+['animation',animatedElementData]]);
+
 
 const traceElements=[];
+for(const[traceEventType,backendNodeData]of backendNodeDataMap){
 for(let i=0;i<backendNodeData.length;i++){
 const backendNodeId=backendNodeData[i].nodeId;
-const metricName=
-lcpNodeId===backendNodeId?'largest-contentful-paint':'cumulative-layout-shift';
 const objectId=await driver.resolveNodeIdToObjectId(backendNodeId);
 if(!objectId)continue;
 const response=await driver.sendCommand('Runtime.callFunctionOn',{
 objectId,
 functionDeclaration:`function () {
-          ${setAttributeMarker.toString()};
-          ${pageFunctions.getNodePathString};
-          ${pageFunctions.getNodeSelectorString};
-          ${pageFunctions.getNodeLabelString};
-          ${pageFunctions.getOuterHTMLSnippetString};
-          return setAttributeMarker.call(this, '${metricName}');
-        }`,
+            ${getNodeDetailsData.toString()};
+            ${pageFunctions.getNodePathString};
+            ${pageFunctions.getNodeSelectorString};
+            ${pageFunctions.getNodeLabelString};
+            ${pageFunctions.getOuterHTMLSnippetString};
+            ${pageFunctions.getBoundingClientRectString};
+            return getNodeDetailsData.call(this);
+          }`,
 returnByValue:true,
 awaitPromise:true});
 
 
 if(response&&response.result&&response.result.value){
-traceElements.push({...response.result.value,score:backendNodeData[i].score});
+traceElements.push({
+traceEventType,
+...response.result.value,
+score:backendNodeData[i].score,
+animations:backendNodeData[i].animations,
+nodeId:backendNodeId});
+
 }
 }
+}
+
+await driver.sendCommand('Animation.disable');
 
 return traceElements;
 }}
@@ -18250,7 +19688,7 @@ return traceElements;
 
 module.exports=TraceElements;
 
-},{"../../lib/page-functions.js":88,"../../lib/rect-helpers.js":89,"../../lib/tracehouse/trace-processor.js":98,"./gatherer.js":61}],"../gather/gatherers/viewport-dimensions":[function(require,module,exports){
+},{"../../lib/page-functions.js":89,"../../lib/rect-helpers.js":90,"../../lib/tracehouse/trace-processor.js":99,"./gatherer.js":62}],"../gather/gatherers/viewport-dimensions":[function(require,module,exports){
 
 
 
@@ -18303,7 +19741,7 @@ return dimensions;
 
 module.exports=ViewportDimensions;
 
-},{"./gatherer.js":61}],1:[function(require,module,exports){
+},{"./gatherer.js":62}],1:[function(require,module,exports){
 (function(global){
 
 
@@ -18371,7 +19809,6 @@ global.runBundledLighthouse=lighthouse;
 }
 
 
-
 if(typeof self!=='undefined'){
 
 global.isDevtools=true;
@@ -18391,7 +19828,7 @@ self.lookupLocale=lookupLocale;
 }
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{"../lighthouse-core/config/constants.js":53,"../lighthouse-core/gather/connections/raw.js":56,"../lighthouse-core/index.js":62,"../lighthouse-core/lib/i18n/i18n.js":77,"lighthouse-logger":137}],2:[function(require,module,exports){
+},{"../lighthouse-core/config/constants.js":54,"../lighthouse-core/gather/connections/raw.js":57,"../lighthouse-core/index.js":63,"../lighthouse-core/lib/i18n/i18n.js":78,"lighthouse-logger":138}],2:[function(require,module,exports){
 (function(__filename){
 
 
@@ -18475,6 +19912,7 @@ type:'node',
 selector:Array.isArray(node.target)?node.target.join(' '):'',
 path:node.path,
 snippet:node.html||node.snippet,
+boundingRect:node.boundingRect,
 explanation:node.failureSummary,
 nodeLabel:node.nodeLabel}}));
 
@@ -18498,9 +19936,6 @@ tags};
 
 return{
 score:Number(rule===undefined),
-extendedInfo:{
-value:rule},
-
 details:{...Audit.makeTableDetails(headings,items),debugData}};
 
 }}
@@ -18510,7 +19945,7 @@ module.exports=AxeAudit;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/axe-audit.js");
-},{"../../lib/i18n/i18n.js":77,"../audit.js":3}],3:[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":78,"../audit.js":3}],3:[function(require,module,exports){
 
 
 
@@ -18824,7 +20259,7 @@ details:product.details};
 
 module.exports=Audit;
 
-},{"../lib/lh-env.js":82,"../lib/statistics.js":93,"../report/html/renderer/util.js":101}],4:[function(require,module,exports){
+},{"../lib/lh-env.js":83,"../lib/statistics.js":94,"../report/html/renderer/util.js":102}],4:[function(require,module,exports){
 (function(__filename){
 
 
@@ -18845,8 +20280,6 @@ const str_=i18n.createMessageInstanceIdFn(__filename,{});
 
 
 
-
-const KB_IN_BYTES=1024;
 
 const WASTED_MS_FOR_AVERAGE=300;
 const WASTED_MS_FOR_POOR=750;
@@ -19026,7 +20459,6 @@ static createAuditProduct(result,graph,simulator){
 const results=result.items.sort((itemA,itemB)=>itemB.wastedBytes-itemA.wastedBytes);
 
 const wastedBytes=results.reduce((sum,item)=>sum+item.wastedBytes,0);
-const wastedKb=Math.round(wastedBytes/KB_IN_BYTES);
 const wastedMs=this.computeWasteWithTTIGraph(results,graph,simulator,{
 providedWastedBytesByUrl:result.wastedBytesByUrl});
 
@@ -19045,13 +20477,6 @@ displayValue,
 numericValue:wastedMs,
 numericUnit:'millisecond',
 score:UnusedBytes.scoreForWastedMs(wastedMs),
-extendedInfo:{
-value:{
-wastedMs,
-wastedKb,
-results}},
-
-
 details};
 
 }
@@ -19074,7 +20499,67 @@ throw new Error('audit_ unimplemented');
 module.exports=UnusedBytes;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/byte-efficiency-audit.js");
-},{"../../computed/load-simulator.js":11,"../../computed/metrics/lantern-interactive.js":25,"../../computed/network-records.js":39,"../../computed/page-dependency-graph.js":40,"../../lib/i18n/i18n.js":77,"../../lib/statistics.js":93,"../audit.js":3}],5:[function(require,module,exports){
+},{"../../computed/load-simulator.js":12,"../../computed/metrics/lantern-interactive.js":26,"../../computed/network-records.js":40,"../../computed/page-dependency-graph.js":41,"../../lib/i18n/i18n.js":78,"../../lib/statistics.js":94,"../audit.js":3}],5:[function(require,module,exports){
+module.exports={
+"moduleSizes":[498,155,242,615,220,657,651,1664,790,1534,558,279,868,974,618,356,720,133,826,732,235,552,170,585,1030,210,349,179,546,167,1634,118,199,478,849,470,452,417,147,60,180,433,360,303,1325,1518,397,201,550,226,132,156,198,312,544,2125,658,778,1084,701,401,81,716,632,321,428,648,804,718,130,1443,142,374,259,286,403,821,938,514,654,280,328,186,233,243,553,267,187,206,879,105,343,779,833,773,275,477,696,224,759,671,772,746,716,182,304,658,473,592,235,334,277,404,420,280,675,1034,508,725,526,498,498,499,752,661,276,275,843,1698,962,562,609,573,1048,205,374,226,625,632,308,772,641,233],
+"dependencies":{
+"Array.prototype.fill":[3,5,8,17,19,21,22,29,30,35,38,39,40,42,43,45,48,51,52,53,55,56,58,60,61,63,64,65,68,69,70,71,72,73,74,75,80,81,82,83,84,87,88,89,91],
+"Array.prototype.filter":[1,8,9,10,12,14,17,19,21,22,27,28,29,30,33,35,38,39,42,43,45,47,48,51,52,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,84,87,88,89,92],
+"Array.prototype.find":[1,3,8,9,12,14,17,19,21,22,29,30,33,35,38,39,40,42,43,45,47,48,51,52,53,55,56,58,60,61,63,64,65,68,69,70,71,72,73,74,75,80,81,82,83,84,87,88,89,94],
+"Array.prototype.findIndex":[1,3,8,9,12,14,17,19,21,22,29,30,33,35,38,39,40,42,43,45,47,48,51,52,53,55,56,58,60,61,63,64,65,68,69,70,71,72,73,74,75,80,81,82,83,84,87,88,89,93],
+"Array.prototype.forEach":[1,6,8,9,11,12,14,17,19,21,22,29,30,33,35,38,39,42,43,45,47,48,51,52,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,84,87,88,89,95],
+"Array.from":[1,7,8,15,16,17,18,19,21,22,23,29,30,33,35,36,38,39,42,43,45,46,48,51,52,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,84,86,87,88,89,96],
+"Array.isArray":[8,17,19,21,22,29,30,35,38,39,42,43,45,47,48,51,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,87,98],
+"Array.prototype.map":[1,8,9,10,12,14,17,19,21,22,27,28,29,30,33,35,38,39,42,43,45,47,48,51,52,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,84,87,88,89,99],
+"Array.of":[8,17,19,21,22,23,29,30,35,38,39,42,43,45,48,51,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,87,100],
+"Array.prototype.reduce":[1,8,11,12,13,17,19,21,22,29,30,35,38,39,42,43,45,48,51,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,84,87,102],
+"Array.prototype.reduceRight":[1,8,11,12,13,17,19,21,22,29,30,35,38,39,42,43,45,48,51,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,84,87,101],
+"Array.prototype.some":[1,8,9,11,12,14,17,19,21,22,29,30,33,35,38,39,42,43,45,47,48,51,52,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,84,87,88,89,103],
+"Date.now":[8,17,19,21,22,29,30,35,38,39,42,43,45,48,51,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,87,104],
+"Date.prototype.toISOString":[8,17,19,21,22,24,29,30,35,38,39,42,43,45,48,51,53,58,60,61,63,65,68,69,70,71,72,73,74,75,77,78,80,81,82,83,87,105],
+"Date.prototype.toJSON":[8,17,19,21,22,29,30,35,38,39,42,43,45,48,51,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,84,87,106],
+"Date.prototype.toString":[21,22,38,39,43,45,51,53,70,72,73,74,75,87,107],
+"Function.prototype.name":[108],
+"Number.isInteger":[8,17,19,21,22,29,30,35,38,39,42,43,45,48,49,51,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,87,109],
+"Number.isSafeInteger":[8,17,19,21,22,29,30,35,38,39,42,43,45,48,49,51,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,87,110],
+"Number.parseInt":[8,17,19,21,22,29,30,35,38,39,42,43,45,48,51,53,54,58,60,61,63,65,68,69,70,71,72,73,74,75,79,80,81,82,83,87,90,111],
+"Object.defineProperties":[8,17,19,21,22,29,30,35,38,39,42,43,45,48,51,53,56,58,60,61,63,64,65,68,69,70,71,72,73,74,75,80,81,82,83,87,112],
+"Object.defineProperty":[8,17,19,21,22,29,30,35,38,39,42,43,45,48,51,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,87,113],
+"Object.freeze":[8,17,19,21,22,29,30,32,35,38,39,42,43,44,45,48,51,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,87,115],
+"Object.getOwnPropertyNames":[8,17,19,21,22,29,30,35,38,39,42,43,45,48,51,53,58,59,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,87,117],
+"Object.getPrototypeOf":[8,17,19,20,21,22,29,30,35,38,39,42,43,45,48,51,53,58,60,61,62,63,65,68,69,70,71,72,73,74,75,80,81,82,83,84,87,118],
+"Object.isExtensible":[8,17,19,21,22,29,30,35,38,39,42,43,45,48,51,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,87,119],
+"Object.isFrozen":[8,17,19,21,22,29,30,35,38,39,42,43,45,48,51,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,87,120],
+"Object.isSealed":[8,17,19,21,22,29,30,35,38,39,42,43,45,48,51,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,87,121],
+"Object.keys":[8,17,19,21,22,29,30,35,38,39,42,43,45,48,51,53,58,60,61,63,64,65,68,69,70,71,72,73,74,75,80,81,82,83,84,87,122],
+"Object.preventExtensions":[8,17,19,21,22,29,30,32,35,38,39,42,43,44,45,48,51,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,87,123],
+"Object.seal":[8,17,19,21,22,29,30,32,35,38,39,42,43,44,45,48,51,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,87,124],
+"Object.setPrototypeOf":[2,8,17,19,21,22,29,30,35,38,39,42,43,45,48,51,53,58,60,61,63,65,66,68,69,70,71,72,73,74,75,80,81,82,83,87,125],
+"Reflect.apply":[1,8,17,19,21,22,29,30,35,38,39,42,43,45,48,51,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,87,127],
+"Reflect.construct":[1,8,17,19,21,22,29,30,34,35,38,39,40,42,43,45,48,51,53,55,56,58,60,61,63,64,65,68,69,70,71,72,73,74,75,80,81,82,83,87,128],
+"Reflect.defineProperty":[8,17,19,21,22,29,30,35,38,39,42,43,45,48,51,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,87,129],
+"Reflect.deleteProperty":[8,17,19,21,22,29,30,35,38,39,42,43,45,48,51,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,87,130],
+"Reflect.get":[8,17,19,20,21,22,29,30,35,38,39,42,43,45,48,51,53,58,60,61,62,63,65,68,69,70,71,72,73,74,75,80,81,82,83,84,87,133],
+"Reflect.getOwnPropertyDescriptor":[8,17,19,21,22,29,30,35,38,39,42,43,45,48,51,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,87,131],
+"Reflect.getPrototypeOf":[8,17,19,20,21,22,29,30,35,38,39,42,43,45,48,51,53,58,60,61,62,63,65,68,69,70,71,72,73,74,75,80,81,82,83,84,87,132],
+"Reflect.has":[8,17,19,21,22,29,30,35,38,39,42,43,45,48,51,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,87,134],
+"Reflect.isExtensible":[8,17,19,21,22,29,30,35,38,39,42,43,45,48,51,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,87,135],
+"Reflect.ownKeys":[8,17,19,21,22,29,30,35,38,39,42,43,45,48,51,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,87,136],
+"Reflect.preventExtensions":[8,17,19,21,22,29,30,32,35,38,39,42,43,45,48,51,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,87,137],
+"Reflect.setPrototypeOf":[2,8,17,19,21,22,29,30,35,38,39,42,43,45,48,51,53,58,60,61,63,65,66,68,69,70,71,72,73,74,75,80,81,82,83,87,138],
+"String.prototype.codePointAt":[8,17,19,21,22,29,30,35,38,39,42,43,45,48,51,53,58,60,61,63,65,68,69,70,71,72,73,74,75,76,80,81,82,83,87,139],
+"String.fromCodePoint":[8,17,19,21,22,29,30,35,38,39,42,43,45,48,51,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,87,140],
+"String.raw":[8,17,19,21,22,29,30,35,38,39,42,43,45,48,51,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,87,141],
+"String.prototype.repeat":[8,17,19,21,22,29,30,35,38,39,42,43,45,48,51,53,58,60,61,63,65,68,69,70,71,72,73,74,75,78,80,81,82,83,87,142],
+"Array.prototype.includes":[3,8,12,17,19,21,22,29,30,35,38,39,40,42,43,45,48,51,52,53,55,56,58,60,61,63,64,65,68,69,70,71,72,73,74,75,80,81,82,83,87,88,89,97],
+"Object.entries":[8,17,19,21,22,29,30,35,38,39,42,43,45,48,51,53,58,60,61,63,64,65,67,68,69,70,71,72,73,74,75,80,81,82,83,87,114],
+"Object.getOwnPropertyDescriptors":[8,17,19,21,22,23,29,30,35,38,39,42,43,45,48,51,53,58,60,61,63,65,68,69,70,71,72,73,74,75,80,81,82,83,87,116],
+"Object.values":[8,17,19,21,22,29,30,35,38,39,42,43,45,48,51,53,58,60,61,63,64,65,67,68,69,70,71,72,73,74,75,80,81,82,83,87,126]},
+
+"maxSize":77759,
+"baseSize":3708};
+
+},{}],6:[function(require,module,exports){
 
 
 
@@ -19113,7 +20598,7 @@ score:0};
 
 module.exports=ManualAudit;
 
-},{"../audit.js":3}],6:[function(require,module,exports){
+},{"../audit.js":3}],7:[function(require,module,exports){
 
 
 
@@ -19198,7 +20683,7 @@ throw new Error('audit_ unimplemented');
 
 module.exports=MultiCheckAudit;
 
-},{"./audit.js":3}],7:[function(require,module,exports){
+},{"./audit.js":3}],8:[function(require,module,exports){
 
 
 
@@ -19233,7 +20718,7 @@ return true;
 
 module.exports=ViolationAudit;
 
-},{"./audit.js":3}],8:[function(require,module,exports){
+},{"./audit.js":3}],9:[function(require,module,exports){
 
 
 
@@ -19290,7 +20775,7 @@ return Object.assign(computableArtifact,{request});
 
 module.exports=makeComputedArtifact;
 
-},{"../lib/arbitrary-equality-map.js":63,"lighthouse-logger":137}],9:[function(require,module,exports){
+},{"../lib/arbitrary-equality-map.js":64,"lighthouse-logger":138}],10:[function(require,module,exports){
 
 
 
@@ -19316,6 +20801,9 @@ static isCritical(request,mainResource){
 if(!mainResource){
 throw new Error('mainResource not provided');
 }
+
+
+if(request.requestId===mainResource.requestId)return true;
 
 
 if(request.isLinkPreload){
@@ -19348,6 +20836,10 @@ isIframe||
 request.mimeType&&request.mimeType.startsWith('image/')){
 return false;
 }
+
+
+
+if(!request.initiatorRequest)return false;
 
 return['VeryHigh','High','Medium'].includes(request.priority);
 }
@@ -19460,7 +20952,7 @@ return CriticalRequestChains.extractChain(networkRecords,mainResource);
 
 module.exports=makeComputedArtifact(CriticalRequestChains);
 
-},{"../lib/network-request.js":87,"./computed-artifact.js":8,"./main-resource.js":12,"./network-records.js":39}],10:[function(require,module,exports){
+},{"../lib/network-request.js":88,"./computed-artifact.js":9,"./main-resource.js":13,"./network-records.js":40}],11:[function(require,module,exports){
 
 
 
@@ -19584,7 +21076,7 @@ return bundles;
 
 module.exports=makeComputedArtifact(JSBundles);
 
-},{"../lib/cdt/SDK.js":66,"./computed-artifact.js":8,"lighthouse-logger":137}],11:[function(require,module,exports){
+},{"../lib/cdt/SDK.js":67,"./computed-artifact.js":9,"lighthouse-logger":138}],12:[function(require,module,exports){
 
 
 
@@ -19677,7 +21169,7 @@ return lanternData;
 
 module.exports=makeComputedArtifact(LoadSimulator);
 
-},{"../config/constants.js":53,"../lib/dependency-graph/simulator/simulator.js":74,"./computed-artifact.js":8,"./network-analysis.js":38}],12:[function(require,module,exports){
+},{"../config/constants.js":54,"../lib/dependency-graph/simulator/simulator.js":75,"./computed-artifact.js":9,"./network-analysis.js":39}],13:[function(require,module,exports){
 
 
 
@@ -19713,7 +21205,7 @@ return mainResource;
 
 module.exports=makeComputedArtifact(MainResource);
 
-},{"../lib/dependency-graph/simulator/network-analyzer.js":73,"./computed-artifact.js":8,"./network-records.js":39}],13:[function(require,module,exports){
+},{"../lib/dependency-graph/simulator/network-analyzer.js":74,"./computed-artifact.js":9,"./network-records.js":40}],14:[function(require,module,exports){
 
 
 
@@ -19739,7 +21231,7 @@ return MainThreadTasks_.getMainThreadTasks(mainThreadEvents,frames,timestamps.tr
 
 module.exports=makeComputedArtifact(MainThreadTasks);
 
-},{"../lib/tracehouse/main-thread-tasks.js":96,"./computed-artifact.js":8,"./trace-of-tab.js":44}],14:[function(require,module,exports){
+},{"../lib/tracehouse/main-thread-tasks.js":97,"./computed-artifact.js":9,"./trace-of-tab.js":45}],15:[function(require,module,exports){
 
 
 
@@ -19876,7 +21368,7 @@ allChecks:remainingChecks};
 
 module.exports=makeComputedArtifact(ManifestValues);
 
-},{"../lib/icons.js":79,"./computed-artifact.js":8}],15:[function(require,module,exports){
+},{"../lib/icons.js":80,"./computed-artifact.js":9}],16:[function(require,module,exports){
 
 
 
@@ -19919,13 +21411,28 @@ finalLayoutShiftTraceEventFound}};
 
 }
 
-const cumulativeLayoutShift=
+let cumulativeLayoutShift=
 finalLayoutShift.args&&
 finalLayoutShift.args.data&&
 finalLayoutShift.args.data.cumulative_score;
 
 if(cumulativeLayoutShift===undefined){
 throw new LHError(LHError.errors.LAYOUT_SHIFT_MISSING_DATA);
+}
+
+
+
+
+
+
+
+for(let i=0;i<traceOfTab.mainThreadEvents.length;i++){
+const evt=traceOfTab.mainThreadEvents[i];
+if(evt.name==='LayoutShift'&&evt.args&&evt.args.data&&evt.args.data.is_main_frame){
+if(!evt.args.data.had_recent_input)break;
+if(typeof evt.args.data.score!=='number')continue;
+cumulativeLayoutShift+=evt.args.data.score;
+}
 }
 
 return{
@@ -19939,7 +21446,7 @@ finalLayoutShiftTraceEventFound}};
 
 module.exports=makeComputedArtifact(CumulativeLayoutShift);
 
-},{"../../lib/lh-error.js":83,"../computed-artifact.js":8,"../trace-of-tab.js":44}],16:[function(require,module,exports){
+},{"../../lib/lh-error.js":84,"../computed-artifact.js":9,"../trace-of-tab.js":45}],17:[function(require,module,exports){
 
 
 
@@ -20015,7 +21522,7 @@ timing:EstimatedInputLatency.calculateRollingWindowEIL(events)});
 
 module.exports=makeComputedArtifact(EstimatedInputLatency);
 
-},{"../../lib/lh-error.js":83,"../../lib/tracehouse/trace-processor.js":98,"../computed-artifact.js":8,"./lantern-estimated-input-latency.js":21,"./metric.js":33}],17:[function(require,module,exports){
+},{"../../lib/lh-error.js":84,"../../lib/tracehouse/trace-processor.js":99,"../computed-artifact.js":9,"./lantern-estimated-input-latency.js":22,"./metric.js":34}],18:[function(require,module,exports){
 
 
 
@@ -20053,7 +21560,7 @@ timestamp:traceOfTab.timestamps.firstContentfulPaint};
 
 module.exports=makeComputedArtifact(FirstContentfulPaint);
 
-},{"../computed-artifact.js":8,"./lantern-first-contentful-paint.js":22,"./metric.js":33}],18:[function(require,module,exports){
+},{"../computed-artifact.js":9,"./lantern-first-contentful-paint.js":23,"./metric.js":34}],19:[function(require,module,exports){
 
 
 
@@ -20236,7 +21743,7 @@ return LanternFirstCPUIdle.request(data,context);
 
 static async computeObservedMetric(data){
 const{traceOfTab}=data;
-const navStart=traceOfTab.timestamps.navigationStart;
+const timeOrigin=traceOfTab.timestamps.timeOrigin;
 const FMP=traceOfTab.timings.firstMeaningfulPaint;
 const DCL=traceOfTab.timings.domContentLoaded;
 const traceEnd=traceOfTab.timings.traceEnd;
@@ -20257,7 +21764,7 @@ const valueInMs=Math.max(firstInteractive,DCL);
 
 return Promise.resolve({
 timing:valueInMs,
-timestamp:valueInMs*1000+navStart});
+timestamp:valueInMs*1000+timeOrigin});
 
 }}
 
@@ -20269,7 +21776,7 @@ timestamp:valueInMs*1000+navStart});
 
 module.exports=makeComputedArtifact(FirstCPUIdle);
 
-},{"../../lib/lh-error.js":83,"../../lib/tracehouse/trace-processor.js":98,"../computed-artifact.js":8,"./lantern-first-cpu-idle.js":23,"./metric.js":33}],19:[function(require,module,exports){
+},{"../../lib/lh-error.js":84,"../../lib/tracehouse/trace-processor.js":99,"../computed-artifact.js":9,"./lantern-first-cpu-idle.js":24,"./metric.js":34}],20:[function(require,module,exports){
 
 
 
@@ -20312,7 +21819,7 @@ timestamp:traceOfTab.timestamps.firstMeaningfulPaint};
 
 module.exports=makeComputedArtifact(FirstMeaningfulPaint);
 
-},{"../../lib/lh-error.js":83,"../computed-artifact.js":8,"./lantern-first-meaningful-paint.js":24,"./metric.js":33}],20:[function(require,module,exports){
+},{"../../lib/lh-error.js":84,"../computed-artifact.js":9,"./lantern-first-meaningful-paint.js":25,"./metric.js":34}],21:[function(require,module,exports){
 
 
 
@@ -20363,7 +21870,7 @@ ALLOWED_CONCURRENT_REQUESTS,traceEndTsInMs);
 
 
 static _findCPUQuietPeriods(longTasks,traceOfTab){
-const navStartTsInMs=traceOfTab.timestamps.navigationStart/1000;
+const timeOriginTsInMs=traceOfTab.timestamps.timeOrigin/1000;
 const traceEndTsInMs=traceOfTab.timestamps.traceEnd/1000;
 if(longTasks.length===0){
 return[{start:0,end:traceEndTsInMs}];
@@ -20375,19 +21882,19 @@ longTasks.forEach((task,index)=>{
 if(index===0){
 quietPeriods.push({
 start:0,
-end:task.start+navStartTsInMs});
+end:task.start+timeOriginTsInMs});
 
 }
 
 if(index===longTasks.length-1){
 quietPeriods.push({
-start:task.end+navStartTsInMs,
+start:task.end+timeOriginTsInMs,
 end:traceEndTsInMs});
 
 }else{
 quietPeriods.push({
-start:task.end+navStartTsInMs,
-end:longTasks[index+1].start+navStartTsInMs});
+start:task.end+timeOriginTsInMs,
+end:longTasks[index+1].start+timeOriginTsInMs});
 
 }
 });
@@ -20490,7 +21997,7 @@ cpuQuietPeriod.start,
 traceOfTab.timestamps.firstContentfulPaint/1000,
 traceOfTab.timestamps.domContentLoaded/1000)*
 1000;
-const timing=(timestamp-traceOfTab.timestamps.navigationStart)/1000;
+const timing=(timestamp-traceOfTab.timestamps.timeOrigin)/1000;
 return Promise.resolve({timing,timestamp});
 }}
 
@@ -20503,7 +22010,7 @@ module.exports=makeComputedArtifact(Interactive);
 
 
 
-},{"../../lib/lh-error.js":83,"../../lib/network-recorder.js":86,"../../lib/tracehouse/trace-processor.js":98,"../computed-artifact.js":8,"./lantern-interactive.js":25,"./metric.js":33}],21:[function(require,module,exports){
+},{"../../lib/lh-error.js":84,"../../lib/network-recorder.js":87,"../../lib/tracehouse/trace-processor.js":99,"../computed-artifact.js":9,"./lantern-interactive.js":26,"./metric.js":34}],22:[function(require,module,exports){
 
 
 
@@ -20608,7 +22115,7 @@ return events.sort((a,b)=>a.start-b.start);
 
 module.exports=makeComputedArtifact(LanternEstimatedInputLatency);
 
-},{"../../lib/dependency-graph/base-node.js":68,"../computed-artifact.js":8,"./estimated-input-latency.js":16,"./lantern-first-meaningful-paint.js":24,"./lantern-metric.js":28}],22:[function(require,module,exports){
+},{"../../lib/dependency-graph/base-node.js":69,"../computed-artifact.js":9,"./estimated-input-latency.js":17,"./lantern-first-meaningful-paint.js":25,"./lantern-metric.js":29}],23:[function(require,module,exports){
 
 
 
@@ -20809,7 +22316,7 @@ node=>node.hasRenderBlockingPriority());
 
 module.exports=makeComputedArtifact(LanternFirstContentfulPaint);
 
-},{"../../lib/dependency-graph/base-node.js":68,"../computed-artifact.js":8,"./lantern-metric.js":28}],23:[function(require,module,exports){
+},{"../../lib/dependency-graph/base-node.js":69,"../computed-artifact.js":9,"./lantern-metric.js":29}],24:[function(require,module,exports){
 
 
 
@@ -20882,7 +22389,7 @@ return super.compute_(data,context);
 
 module.exports=makeComputedArtifact(LanternFirstCPUIdle);
 
-},{"../../lib/dependency-graph/base-node.js":68,"../computed-artifact.js":8,"./first-cpu-idle.js":18,"./lantern-interactive.js":25}],24:[function(require,module,exports){
+},{"../../lib/dependency-graph/base-node.js":69,"../computed-artifact.js":9,"./first-cpu-idle.js":19,"./lantern-interactive.js":26}],25:[function(require,module,exports){
 
 
 
@@ -20964,7 +22471,7 @@ return metricResult;
 
 module.exports=makeComputedArtifact(LanternFirstMeaningfulPaint);
 
-},{"../../lib/lh-error.js":83,"../computed-artifact.js":8,"./lantern-first-contentful-paint.js":22,"./lantern-metric.js":28}],25:[function(require,module,exports){
+},{"../../lib/lh-error.js":84,"../computed-artifact.js":9,"./lantern-first-contentful-paint.js":23,"./lantern-metric.js":29}],26:[function(require,module,exports){
 
 
 
@@ -21076,7 +22583,7 @@ reduce((max,x)=>Math.max(max||0,x||0),0);
 
 module.exports=makeComputedArtifact(LanternInteractive);
 
-},{"../../lib/dependency-graph/base-node.js":68,"../../lib/network-request.js":87,"../computed-artifact.js":8,"./lantern-first-meaningful-paint.js":24,"./lantern-metric.js":28}],26:[function(require,module,exports){
+},{"../../lib/dependency-graph/base-node.js":69,"../../lib/network-request.js":88,"../computed-artifact.js":9,"./lantern-first-meaningful-paint.js":25,"./lantern-metric.js":29}],27:[function(require,module,exports){
 
 
 
@@ -21186,7 +22693,7 @@ return metricResult;
 
 module.exports=makeComputedArtifact(LanternLargestContentfulPaint);
 
-},{"../../lib/lh-error.js":83,"../computed-artifact.js":8,"./lantern-first-contentful-paint.js":22,"./lantern-metric.js":28}],27:[function(require,module,exports){
+},{"../../lib/lh-error.js":84,"../computed-artifact.js":9,"./lantern-first-contentful-paint.js":23,"./lantern-metric.js":29}],28:[function(require,module,exports){
 
 
 
@@ -21278,7 +22785,7 @@ map(([_,timing])=>timing);
 
 module.exports=makeComputedArtifact(LanternMaxPotentialFID);
 
-},{"../../lib/dependency-graph/base-node.js":68,"../computed-artifact.js":8,"./lantern-first-contentful-paint.js":22,"./lantern-metric.js":28}],28:[function(require,module,exports){
+},{"../../lib/dependency-graph/base-node.js":69,"../computed-artifact.js":9,"./lantern-first-contentful-paint.js":23,"./lantern-metric.js":29}],29:[function(require,module,exports){
 
 
 
@@ -21439,7 +22946,7 @@ return this.computeMetricWithGraphs(data,context);
 
 module.exports=LanternMetricArtifact;
 
-},{"../../lib/dependency-graph/base-node.js":68,"../../lib/network-request.js":87,"../load-simulator.js":11,"../page-dependency-graph.js":40,"../trace-of-tab.js":44}],29:[function(require,module,exports){
+},{"../../lib/dependency-graph/base-node.js":69,"../../lib/network-request.js":88,"../load-simulator.js":12,"../page-dependency-graph.js":41,"../trace-of-tab.js":45}],30:[function(require,module,exports){
 
 
 
@@ -21576,21 +23083,19 @@ layoutWeights.push({time:timing.endTime,weight:timingWeight});
 }
 }
 
-if(!layoutWeights.length){
-return fcpTimeInMs;
-}
-
 const totalWeightedTime=layoutWeights.
 map(evt=>evt.weight*Math.max(evt.time,fcpTimeInMs)).
 reduce((a,b)=>a+b,0);
 const totalWeight=layoutWeights.map(evt=>evt.weight).reduce((a,b)=>a+b,0);
+
+if(!totalWeight)return fcpTimeInMs;
 return totalWeightedTime/totalWeight;
 }}
 
 
 module.exports=makeComputedArtifact(LanternSpeedIndex);
 
-},{"../../config/constants.js":53,"../../lib/dependency-graph/base-node.js":68,"../computed-artifact.js":8,"../speedline.js":43,"./lantern-first-contentful-paint.js":22,"./lantern-metric.js":28}],30:[function(require,module,exports){
+},{"../../config/constants.js":54,"../../lib/dependency-graph/base-node.js":69,"../computed-artifact.js":9,"../speedline.js":44,"./lantern-first-contentful-paint.js":23,"./lantern-metric.js":29}],31:[function(require,module,exports){
 
 
 
@@ -21716,7 +23221,7 @@ return events;
 
 module.exports=makeComputedArtifact(LanternTotalBlockingTime);
 
-},{"../../lib/dependency-graph/base-node.js":68,"../computed-artifact.js":8,"./lantern-first-contentful-paint.js":22,"./lantern-interactive.js":25,"./lantern-metric.js":28,"./total-blocking-time.js":36}],31:[function(require,module,exports){
+},{"../../lib/dependency-graph/base-node.js":69,"../computed-artifact.js":9,"./lantern-first-contentful-paint.js":23,"./lantern-interactive.js":26,"./lantern-metric.js":29,"./total-blocking-time.js":37}],32:[function(require,module,exports){
 
 
 
@@ -21767,7 +23272,7 @@ timestamp:traceOfTab.timestamps.largestContentfulPaint};
 
 module.exports=makeComputedArtifact(LargestContentfulPaint);
 
-},{"../../lib/lh-error.js":83,"../computed-artifact.js":8,"./lantern-largest-contentful-paint.js":26,"./metric.js":33}],32:[function(require,module,exports){
+},{"../../lib/lh-error.js":84,"../computed-artifact.js":9,"./lantern-largest-contentful-paint.js":27,"./metric.js":34}],33:[function(require,module,exports){
 
 
 
@@ -21814,7 +23319,7 @@ timing:Math.max(...events.map(evt=>evt.duration),16)});
 
 module.exports=makeComputedArtifact(MaxPotentialFID);
 
-},{"../../lib/lh-error.js":83,"../../lib/tracehouse/trace-processor.js":98,"../computed-artifact.js":8,"./lantern-max-potential-fid.js":27,"./metric.js":33}],33:[function(require,module,exports){
+},{"../../lib/lh-error.js":84,"../../lib/tracehouse/trace-processor.js":99,"../computed-artifact.js":9,"./lantern-max-potential-fid.js":28,"./metric.js":34}],34:[function(require,module,exports){
 
 
 
@@ -21888,7 +23393,7 @@ throw new TypeError(`Unrecognized throttling method: ${settings.throttlingMethod
 
 module.exports=ComputedMetric;
 
-},{"../../lib/tracehouse/trace-processor.js":98,"../network-records.js":39,"../trace-of-tab.js":44}],34:[function(require,module,exports){
+},{"../../lib/tracehouse/trace-processor.js":99,"../network-records.js":40,"../trace-of-tab.js":45}],35:[function(require,module,exports){
 
 
 
@@ -21926,7 +23431,7 @@ return Promise.resolve({timing,timestamp});
 
 module.exports=makeComputedArtifact(SpeedIndex);
 
-},{"../computed-artifact.js":8,"../speedline.js":43,"./lantern-speed-index.js":29,"./metric.js":33}],35:[function(require,module,exports){
+},{"../computed-artifact.js":9,"../speedline.js":44,"./lantern-speed-index.js":30,"./metric.js":34}],36:[function(require,module,exports){
 
 
 
@@ -22007,8 +23512,12 @@ maxPotentialFID:maxPotentialFID&&maxPotentialFID.timing,
 cumulativeLayoutShift:cumulativeLayoutShiftValue,
 
 
-observedNavigationStart:traceOfTab.timings.navigationStart,
-observedNavigationStartTs:traceOfTab.timestamps.navigationStart,
+observedTimeOrigin:traceOfTab.timings.timeOrigin,
+observedTimeOriginTs:traceOfTab.timestamps.timeOrigin,
+
+
+observedNavigationStart:traceOfTab.timings.timeOrigin,
+observedNavigationStartTs:traceOfTab.timestamps.timeOrigin,
 observedFirstPaint:traceOfTab.timings.firstPaint,
 observedFirstPaintTs:traceOfTab.timestamps.firstPaint,
 observedFirstContentfulPaint:traceOfTab.timings.firstContentfulPaint,
@@ -22050,7 +23559,7 @@ return TimingSummary.summarize(data.trace,data.devtoolsLog,context);
 
 module.exports=makeComputedArtifact(TimingSummary);
 
-},{"../computed-artifact.js":8,"../speedline.js":43,"../trace-of-tab.js":44,"./cumulative-layout-shift.js":15,"./estimated-input-latency.js":16,"./first-contentful-paint.js":17,"./first-cpu-idle.js":18,"./first-meaningful-paint.js":19,"./interactive.js":20,"./largest-contentful-paint.js":31,"./max-potential-fid.js":32,"./speed-index.js":34,"./total-blocking-time.js":36}],36:[function(require,module,exports){
+},{"../computed-artifact.js":9,"../speedline.js":44,"../trace-of-tab.js":45,"./cumulative-layout-shift.js":16,"./estimated-input-latency.js":17,"./first-contentful-paint.js":18,"./first-cpu-idle.js":19,"./first-meaningful-paint.js":20,"./interactive.js":21,"./largest-contentful-paint.js":32,"./max-potential-fid.js":33,"./speed-index.js":35,"./total-blocking-time.js":37}],37:[function(require,module,exports){
 
 
 
@@ -22166,7 +23675,7 @@ interactiveTimeMs)};
 
 module.exports=makeComputedArtifact(TotalBlockingTime);
 
-},{"../../lib/lh-error.js":83,"../../lib/tracehouse/trace-processor.js":98,"../computed-artifact.js":8,"./interactive.js":20,"./lantern-total-blocking-time.js":30,"./metric.js":33}],37:[function(require,module,exports){
+},{"../../lib/lh-error.js":84,"../../lib/tracehouse/trace-processor.js":99,"../computed-artifact.js":9,"./interactive.js":21,"./lantern-total-blocking-time.js":31,"./metric.js":34}],38:[function(require,module,exports){
 
 
 
@@ -22272,7 +23781,7 @@ return sourceDataAggregated;
 
 module.exports=makeComputedArtifact(ModuleDuplication);
 
-},{"./computed-artifact.js":8,"./js-bundles.js":10}],38:[function(require,module,exports){
+},{"./computed-artifact.js":9,"./js-bundles.js":11}],39:[function(require,module,exports){
 
 
 
@@ -22338,7 +23847,7 @@ return{throughput,...rttAndServerResponseTime};
 
 module.exports=makeComputedArtifact(NetworkAnalysis);
 
-},{"../lib/dependency-graph/simulator/network-analyzer.js":73,"./computed-artifact.js":8,"./network-records.js":39}],39:[function(require,module,exports){
+},{"../lib/dependency-graph/simulator/network-analyzer.js":74,"./computed-artifact.js":9,"./network-records.js":40}],40:[function(require,module,exports){
 
 
 
@@ -22361,7 +23870,7 @@ return NetworkRecorder.recordsFromLogs(devtoolsLog);
 
 module.exports=makeComputedArtifact(NetworkRecords);
 
-},{"../lib/network-recorder.js":86,"./computed-artifact.js":8}],40:[function(require,module,exports){
+},{"../lib/network-recorder.js":87,"./computed-artifact.js":9}],41:[function(require,module,exports){
 
 
 
@@ -22516,15 +24025,20 @@ if(initiators.length){
 initiators.forEach(initiator=>{
 const parentCandidates=networkNodeOutput.urlToNodeMap.get(initiator)||[];
 
-if(parentCandidates.length===1&&parentCandidates[0].startTime<=node.startTime){
+if(parentCandidates.length===1&&
+parentCandidates[0].startTime<=node.startTime&&
+!parentCandidates[0].isDependentOn(node)){
 node.addDependency(parentCandidates[0]);
-}else{
+}else if(!directInitiatorNode.isDependentOn(node)){
 directInitiatorNode.addDependent(node);
 }
 });
-}else if(node!==directInitiatorNode){
+}else if(!directInitiatorNode.isDependentOn(node)){
 directInitiatorNode.addDependent(node);
 }
+
+
+if(node!==rootNode&&node.getDependencies().length===0)node.addDependency(rootNode);
 
 if(!node.record.redirects)return;
 
@@ -22825,7 +24339,7 @@ module.exports=makeComputedArtifact(PageDependencyGraph);
 
 
 
-},{"../lib/dependency-graph/cpu-node.js":69,"../lib/dependency-graph/network-node.js":70,"../lib/dependency-graph/simulator/network-analyzer.js":73,"../lib/network-request.js":87,"../lib/tracehouse/trace-processor.js":98,"./computed-artifact.js":8,"./network-records.js":39,"./trace-of-tab.js":44}],41:[function(require,module,exports){
+},{"../lib/dependency-graph/cpu-node.js":70,"../lib/dependency-graph/network-node.js":71,"../lib/dependency-graph/simulator/network-analyzer.js":74,"../lib/network-request.js":88,"../lib/tracehouse/trace-processor.js":99,"./computed-artifact.js":9,"./network-records.js":40,"./trace-of-tab.js":45}],42:[function(require,module,exports){
 
 
 
@@ -22947,7 +24461,7 @@ return ResourceSummary.summarize(networkRecords,mainResource.url,context);
 
 module.exports=makeComputedArtifact(ResourceSummary);
 
-},{"../config/budget.js":49,"../lib/url-shim.js":"url","../report/html/renderer/util.js":101,"./computed-artifact.js":8,"./main-resource.js":12,"./network-records.js":39}],42:[function(require,module,exports){
+},{"../config/budget.js":50,"../lib/url-shim.js":"url","../report/html/renderer/util.js":102,"./computed-artifact.js":9,"./main-resource.js":13,"./network-records.js":40}],43:[function(require,module,exports){
 
 
 
@@ -22978,7 +24492,7 @@ datauri:`data:image/jpeg;base64,${evt.args.snapshot}`};
 
 module.exports=makeComputedArtifact(Screenshots);
 
-},{"./computed-artifact.js":8}],43:[function(require,module,exports){
+},{"./computed-artifact.js":9}],44:[function(require,module,exports){
 
 
 
@@ -23006,9 +24520,9 @@ return TraceOfTab.request(trace,context).then(traceOfTab=>{
 const traceEvents=trace.traceEvents.slice();
 
 
-const navStart=traceOfTab.timestamps.navigationStart;
+const timeOrigin=traceOfTab.timestamps.timeOrigin;
 return speedline(traceEvents,{
-timeOrigin:navStart,
+timeOrigin,
 fastMode:true,
 include:'speedIndex'});
 
@@ -23034,7 +24548,7 @@ return speedline;
 
 module.exports=makeComputedArtifact(Speedline);
 
-},{"../lib/lh-error.js":83,"./computed-artifact.js":8,"./trace-of-tab.js":44,"speedline-core":195}],44:[function(require,module,exports){
+},{"../lib/lh-error.js":84,"./computed-artifact.js":9,"./trace-of-tab.js":45,"speedline-core":196}],45:[function(require,module,exports){
 
 
 
@@ -23101,7 +24615,7 @@ timestamps:{...timestamps,firstContentfulPaint:firstContentfulPaintTs}};
 
 module.exports=makeComputedArtifact(TraceOfTab);
 
-},{"../lib/lh-error.js":83,"../lib/tracehouse/trace-processor.js":98,"./computed-artifact.js":8}],45:[function(require,module,exports){
+},{"../lib/lh-error.js":84,"../lib/tracehouse/trace-processor.js":99,"./computed-artifact.js":9}],46:[function(require,module,exports){
 
 
 
@@ -23257,7 +24771,7 @@ return items;
 
 module.exports=makeComputedArtifact(UnusedCSS);
 
-},{"../audits/byte-efficiency/byte-efficiency-audit.js":4,"./computed-artifact.js":8,"./network-records.js":39}],46:[function(require,module,exports){
+},{"../audits/byte-efficiency/byte-efficiency-audit.js":4,"./computed-artifact.js":9,"./network-records.js":40}],47:[function(require,module,exports){
 
 
 
@@ -23431,7 +24945,7 @@ sourcesWastedBytes:UnusedJavascriptSummary.createSourceWastedBytes(wasteData,bun
 
 module.exports=makeComputedArtifact(UnusedJavascriptSummary);
 
-},{"./computed-artifact.js":8}],47:[function(require,module,exports){
+},{"./computed-artifact.js":9}],48:[function(require,module,exports){
 
 
 
@@ -23503,9 +25017,9 @@ duration:ut.ts-measuresStartTimes[ut.name]});
 
 
 userTimings.forEach(ut=>{
-ut.startTime=(ut.startTime-traceOfTab.navigationStartEvt.ts)/1000;
+ut.startTime=(ut.startTime-traceOfTab.timeOriginEvt.ts)/1000;
 if(!ut.isMark){
-ut.endTime=(ut.endTime-traceOfTab.navigationStartEvt.ts)/1000;
+ut.endTime=(ut.endTime-traceOfTab.timeOriginEvt.ts)/1000;
 ut.duration=ut.duration/1000;
 }
 });
@@ -23516,7 +25030,7 @@ return userTimings;
 
 module.exports=makeComputedArtifact(UserTimings);
 
-},{"./computed-artifact.js":8,"./trace-of-tab.js":44}],48:[function(require,module,exports){
+},{"./computed-artifact.js":9,"./trace-of-tab.js":45}],49:[function(require,module,exports){
 
 
 
@@ -23574,7 +25088,7 @@ module.exports=makeComputedArtifact(ViewportMeta);
 
 
 
-},{"./computed-artifact.js":8,"metaviewport-parser":160}],49:[function(require,module,exports){
+},{"./computed-artifact.js":9,"metaviewport-parser":161}],50:[function(require,module,exports){
 
 
 
@@ -23919,7 +25433,7 @@ return budgets;
 
 module.exports=Budget;
 
-},{}],50:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 (function(process,global,__dirname){
 
 
@@ -24143,7 +25657,7 @@ resolveModule};
 
 
 }).call(this,require('_process'),typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{},"/lighthouse-core/config");
-},{"../audits/audit.js":3,"../runner.js":103,"_process":172,"path":170}],51:[function(require,module,exports){
+},{"../audits/audit.js":3,"../runner.js":104,"_process":173,"path":171}],52:[function(require,module,exports){
 
 
 
@@ -24368,7 +25882,7 @@ groups:ConfigPlugin._parseGroups(pluginGroupsJson,pluginName)};
 
 module.exports=ConfigPlugin;
 
-},{}],52:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 (function(global,__dirname){
 
 
@@ -24669,8 +26183,10 @@ cloned.audits=cloneArrayWithPluginSafety(json.audits);
 return cloned;
 }
 
-class Config{
 
+
+
+class Config{
 
 
 
@@ -24727,9 +26243,6 @@ Config.filterConfigIfNeeded(this);
 assertValidPasses(this.passes,this.audits);
 assertValidCategories(this.categories,this.audits,this.groups);
 
-
-
-const configJson=this;
 log.timeEnd(status);
 }
 
@@ -25209,7 +26722,7 @@ return fullPasses;
 module.exports=Config;
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{},"/lighthouse-core/config");
-},{"../runner.js":103,"./../lib/i18n/i18n.js":77,"./budget.js":49,"./config-helpers.js":50,"./config-plugin.js":51,"./constants.js":53,"./default-config.js":54,"lighthouse-logger":137,"lodash.isequal":157,"path":170}],53:[function(require,module,exports){
+},{"../runner.js":104,"./../lib/i18n/i18n.js":78,"./budget.js":50,"./config-helpers.js":51,"./config-plugin.js":52,"./constants.js":54,"./default-config.js":55,"lighthouse-logger":138,"lodash.isequal":158,"path":171}],54:[function(require,module,exports){
 
 
 
@@ -25318,7 +26831,7 @@ defaultPassConfig,
 nonSimulatedPassConfigOverrides};
 
 
-},{}],54:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 (function(__filename){
 
 
@@ -25394,7 +26907,7 @@ a11yAudioVideoGroupDescription:'These are opportunities to provide alternative c
 
 a11yTablesListsVideoGroupTitle:'Tables and lists',
 
-a11yTablesListsVideoGroupDescription:'These are opportunities to to improve the experience of reading tabular or list data using assistive technology, like a screen reader.',
+a11yTablesListsVideoGroupDescription:'These are opportunities to improve the experience of reading tabular or list data using assistive technology, like a screen reader.',
 
 seoCategoryTitle:'SEO',
 
@@ -25468,7 +26981,9 @@ gatherers:[
 'meta-elements',
 'script-elements',
 'iframe-elements',
+'form-elements',
 'main-document-content',
+'global-listeners',
 'dobetterweb/appcache',
 'dobetterweb/doctype',
 'dobetterweb/domstats',
@@ -25558,6 +27073,9 @@ audits:[
 'largest-contentful-paint-element',
 'layout-shift-elements',
 'long-tasks',
+'no-unload-listeners',
+'non-composited-animations',
+'unsized-images',
 'manual/pwa-cross-browser',
 'manual/pwa-page-transitions',
 'manual/pwa-each-page-has-url',
@@ -25625,6 +27143,8 @@ audits:[
 'byte-efficiency/uses-text-compression',
 'byte-efficiency/uses-responsive-images',
 'byte-efficiency/efficient-animated-content',
+'byte-efficiency/duplicated-javascript',
+'byte-efficiency/legacy-javascript',
 'dobetterweb/appcache-manifest',
 'dobetterweb/doctype',
 'dobetterweb/charset',
@@ -25764,7 +27284,10 @@ auditRefs:[
 {id:'server-response-time',weight:0,group:'load-opportunities'},
 {id:'redirects',weight:0,group:'load-opportunities'},
 {id:'uses-rel-preload',weight:0,group:'load-opportunities'},
+{id:'uses-http2',weight:0,group:'load-opportunities'},
 {id:'efficient-animated-content',weight:0,group:'load-opportunities'},
+{id:'duplicated-javascript',weight:0,group:'load-opportunities'},
+{id:'legacy-javascript',weight:0,group:'load-opportunities'},
 {id:'total-byte-weight',weight:0,group:'diagnostics'},
 {id:'uses-long-cache-ttl',weight:0,group:'diagnostics'},
 {id:'dom-size',weight:0,group:'diagnostics'},
@@ -25779,10 +27302,11 @@ auditRefs:[
 {id:'third-party-summary',weight:0,group:'diagnostics'},
 {id:'largest-contentful-paint-element',weight:0,group:'diagnostics'},
 {id:'layout-shift-elements',weight:0,group:'diagnostics'},
-{id:'uses-http2',weight:0,group:'diagnostics'},
 {id:'uses-passive-event-listeners',weight:0,group:'diagnostics'},
 {id:'no-document-write',weight:0,group:'diagnostics'},
 {id:'long-tasks',weight:0,group:'diagnostics'},
+{id:'non-composited-animations',weight:0,group:'diagnostics'},
+{id:'unsized-images',weight:0,group:'diagnostics'},
 
 {id:'network-requests',weight:0},
 {id:'network-rtt',weight:0},
@@ -25874,6 +27398,7 @@ auditRefs:[
 {id:'doctype',weight:1,group:'best-practices-browser-compat'},
 {id:'charset',weight:1,group:'best-practices-browser-compat'},
 
+{id:'no-unload-listeners',weight:1,group:'best-practices-general'},
 {id:'appcache-manifest',weight:1,group:'best-practices-general'},
 {id:'js-libraries',weight:0,group:'best-practices-general'},
 {id:'deprecations',weight:1,group:'best-practices-general'},
@@ -25943,7 +27468,7 @@ get:()=>UIStrings});
 
 
 }).call(this,"/lighthouse-core/config/default-config.js");
-},{"../lib/i18n/i18n.js":77,"./constants.js":53}],55:[function(require,module,exports){
+},{"../lib/i18n/i18n.js":78,"./constants.js":54}],56:[function(require,module,exports){
 
 
 
@@ -26107,7 +27632,7 @@ this._eventEmitter=null;
 
 module.exports=Connection;
 
-},{"../../lib/lh-error.js":83,"events":120,"lighthouse-logger":137}],56:[function(require,module,exports){
+},{"../../lib/lh-error.js":84,"events":121,"lighthouse-logger":138}],57:[function(require,module,exports){
 
 
 
@@ -26167,7 +27692,7 @@ this._port.send(message);
 
 module.exports=RawConnection;
 
-},{"./connection.js":55}],57:[function(require,module,exports){
+},{"./connection.js":56}],58:[function(require,module,exports){
 
 
 
@@ -26224,7 +27749,7 @@ this._messages.push(message);
 
 module.exports=DevtoolsLog;
 
-},{}],58:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 (function(Buffer){
 
 
@@ -27745,6 +29270,20 @@ await this.evaluateScriptOnNewDocument(scriptStr);
 
 
 
+
+
+async registerRequestIdleCallbackWrap(settings){
+if(settings.throttlingMethod==='simulate'){
+const scriptStr=`(${pageFunctions.wrapRequestIdleCallbackString})
+        (${settings.throttling.cpuSlowdownMultiplier})`;
+await this.evaluateScriptOnNewDocument(scriptStr);
+}
+}
+
+
+
+
+
 blockUrlPatterns(urls){
 return this.sendCommand('Network.setBlockedURLs',{urls}).
 catch(err=>{
@@ -27777,7 +29316,7 @@ await this.sendCommand('Page.enable');
 module.exports=Driver;
 
 }).call(this,require("buffer").Buffer);
-},{"../config/constants.js":53,"../lib/emulation.js":76,"../lib/lh-element.js":81,"../lib/lh-error.js":83,"../lib/network-recorder.js":86,"../lib/network-request.js":87,"../lib/page-functions.js":88,"../lib/url-shim.js":"url","./connections/connection.js":55,"./devtools-log.js":57,"./fetcher.js":59,"buffer":116,"events":120,"lighthouse-logger":137}],59:[function(require,module,exports){
+},{"../config/constants.js":54,"../lib/emulation.js":77,"../lib/lh-element.js":82,"../lib/lh-error.js":84,"../lib/network-recorder.js":87,"../lib/network-request.js":88,"../lib/page-functions.js":89,"../lib/url-shim.js":"url","./connections/connection.js":56,"./devtools-log.js":58,"./fetcher.js":60,"buffer":117,"events":121,"lighthouse-logger":138}],60:[function(require,module,exports){
 (function(Buffer){
 
 
@@ -27793,6 +29332,8 @@ module.exports=Driver;
 
 
 
+
+const log=require('lighthouse-logger');
 
 class Fetcher{
 
@@ -27850,13 +29391,15 @@ this._onRequestPausedHandlers.set(url,handler);
 
 
 
-async _onRequestPaused(event){
+_onRequestPaused(event){
 const handler=this._onRequestPausedHandlers.get(event.request.url);
 if(handler){
-await handler(event);
+handler(event);
 }else{
 
-await this.driver.sendCommand('Fetch.continueRequest',{requestId:event.requestId});
+this.driver.sendCommand('Fetch.continueRequest',{requestId:event.requestId}).catch(err=>{
+log.error('Fetcher',`Failed to continueRequest: ${err.message}`);
+});
 }
 }
 
@@ -27876,7 +29419,8 @@ throw new Error('Must call `enableRequestInterception` before using fetchResourc
 
 
 const requestInterceptionPromise=new Promise((resolve,reject)=>{
-this._setOnRequestPausedHandler(url,async event=>{
+
+const handlerAsync=async event=>{
 const{requestId,responseStatusCode}=event;
 
 
@@ -27888,7 +29432,7 @@ map(([name,value])=>{
 return{name,value};
 });
 
-this.driver.sendCommand('Fetch.continueRequest',{
+await this.driver.sendCommand('Fetch.continueRequest',{
 requestId,
 headers});
 
@@ -27909,8 +29453,9 @@ resolve(responseBody.body);
 }
 
 
-this.driver.sendCommand('Fetch.failRequest',{requestId,errorReason:'Aborted'});
-});
+await this.driver.sendCommand('Fetch.failRequest',{requestId,errorReason:'Aborted'});
+};
+this._setOnRequestPausedHandler(url,event=>handlerAsync(event).catch(reject));
 });
 
 
@@ -27937,10 +29482,6 @@ delete iframe.onerror;
 document.body.appendChild(iframe);
 }
 
-await this.driver.evaluateAsync(`${injectIframe}(${JSON.stringify(url)})`,{
-useIsolation:true});
-
-
 
 let timeoutHandle;
 
@@ -27949,17 +29490,24 @@ const errorMessage='Timed out fetching resource.';
 timeoutHandle=setTimeout(()=>reject(new Error(errorMessage)),timeout);
 });
 
-return Promise.race([
+const racePromise=Promise.race([
 timeoutPromise,
 requestInterceptionPromise]).
 finally(()=>clearTimeout(timeoutHandle));
+
+const injectionPromise=this.driver.evaluateAsync(`${injectIframe}(${JSON.stringify(url)})`,{
+useIsolation:true});
+
+
+const[fetchResult]=await Promise.all([racePromise,injectionPromise]);
+return fetchResult;
 }}
 
 
 module.exports=Fetcher;
 
 }).call(this,require("buffer").Buffer);
-},{"buffer":116}],60:[function(require,module,exports){
+},{"buffer":117,"lighthouse-logger":138}],61:[function(require,module,exports){
 (function(__filename){
 
 
@@ -28081,6 +29629,7 @@ await driver.enableAsyncStacks();
 await driver.cacheNatives();
 await driver.registerPerformanceObserver();
 await driver.dismissJavaScriptDialogs();
+await driver.registerRequestIdleCallbackWrap(options.settings);
 if(resetStorage)await driver.clearDataForOrigin(options.requestedUrl);
 log.timeEnd(status);
 }
@@ -28183,6 +29732,26 @@ return new LHError(LHError.errors.CHROME_INTERSTITIAL_ERROR);
 
 
 
+static getNonHtmlError(mainRecord){
+
+const HTML_MIME_TYPE='text/html';
+
+
+if(!mainRecord)return undefined;
+
+
+
+if(HTML_MIME_TYPE!==mainRecord.mimeType){
+return new LHError(LHError.errors.NOT_HTML,{mimeType:mainRecord.mimeType});
+}
+return undefined;
+}
+
+
+
+
+
+
 
 
 
@@ -28196,6 +29765,7 @@ mainRecord=NetworkAnalyzer.findMainDocument(networkRecords,passContext.url);
 
 const networkError=GatherRunner.getNetworkError(mainRecord);
 const interstitialError=GatherRunner.getInterstitialError(mainRecord,networkRecords);
+const nonHtmlError=GatherRunner.getNonHtmlError(mainRecord);
 
 
 
@@ -28208,6 +29778,9 @@ if(interstitialError)return interstitialError;
 
 
 if(networkError)return networkError;
+
+
+if(nonHtmlError)return nonHtmlError;
 
 
 
@@ -28725,7 +30298,7 @@ module.exports=GatherRunner;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/gather/gather-runner.js");
-},{"../config/constants.js":53,"../lib/dependency-graph/simulator/network-analyzer.js":73,"../lib/i18n/i18n.js":77,"../lib/lh-error.js":83,"../lib/manifest-parser.js":84,"../lib/network-recorder.js":86,"../lib/stack-collector.js":91,"../lib/url-shim.js":"url","lighthouse-logger":137}],61:[function(require,module,exports){
+},{"../config/constants.js":54,"../lib/dependency-graph/simulator/network-analyzer.js":74,"../lib/i18n/i18n.js":78,"../lib/lh-error.js":84,"../lib/manifest-parser.js":85,"../lib/network-recorder.js":87,"../lib/stack-collector.js":92,"../lib/url-shim.js":"url","lighthouse-logger":138}],62:[function(require,module,exports){
 
 
 
@@ -28786,7 +30359,7 @@ afterPass(passContext,loadData){}}
 
 module.exports=Gatherer;
 
-},{}],62:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 
 
 
@@ -28858,7 +30431,7 @@ lighthouse.NetworkRecords=require('./computed/network-records.js');
 
 module.exports=lighthouse;
 
-},{"./audits/audit.js":3,"./computed/network-records.js":39,"./config/config.js":52,"./gather/connections/cri.js":115,"./gather/driver.js":58,"./gather/gatherers/gatherer.js":61,"./runner.js":103,"lighthouse-logger":137}],63:[function(require,module,exports){
+},{"./audits/audit.js":3,"./computed/network-records.js":40,"./config/config.js":53,"./gather/connections/cri.js":116,"./gather/driver.js":59,"./gather/gatherers/gatherer.js":62,"./runner.js":104,"lighthouse-logger":138}],64:[function(require,module,exports){
 
 
 
@@ -28941,7 +30514,7 @@ return isEqual(objA,objB);
 
 module.exports=ArbitraryEqualityMap;
 
-},{"lodash.isequal":157}],64:[function(require,module,exports){
+},{"lodash.isequal":158}],65:[function(require,module,exports){
 (function(process){
 
 
@@ -29238,7 +30811,7 @@ stringifyReplacer};
 
 
 }).call(this,require('_process'));
-},{"../computed/load-simulator.js":11,"../computed/network-analysis.js":38,"../lib/lh-error.js":83,"./dependency-graph/simulator/simulator.js":74,"./lantern-trace-saver.js":80,"./traces/pwmetrics-events.js":99,"_process":172,"fs":115,"lighthouse-logger":137,"path":170,"rimraf":115,"stream":197}],65:[function(require,module,exports){
+},{"../computed/load-simulator.js":12,"../computed/network-analysis.js":39,"../lib/lh-error.js":84,"./dependency-graph/simulator/simulator.js":75,"./lantern-trace-saver.js":81,"./traces/pwmetrics-events.js":100,"_process":173,"fs":116,"lighthouse-logger":138,"path":171,"rimraf":116,"stream":198}],66:[function(require,module,exports){
 
 
 
@@ -29254,7 +30827,7 @@ console};
 
 module.exports=Common;
 
-},{}],66:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 
 
 
@@ -29403,7 +30976,7 @@ mapping.lastColumnNumber=nextMapping.columnNumber;
 
 module.exports=SDK;
 
-},{"./generated/SourceMap.js":67}],67:[function(require,module,exports){
+},{"./generated/SourceMap.js":68}],68:[function(require,module,exports){
 
 
 const Common=require('../Common.js');
@@ -29438,6 +31011,7 @@ const Common=require('../Common.js');
 
 
 Object.defineProperty(exports,"__esModule",{value:true});
+
 
 
 
@@ -29913,7 +31487,7 @@ TextSourceMap._sourcesListSymbol=Symbol('sourcesList');
 
 
 module.exports=TextSourceMap;
-},{"../Common.js":65}],68:[function(require,module,exports){
+},{"../Common.js":66}],69:[function(require,module,exports){
 
 
 
@@ -30086,6 +31660,28 @@ this.removeDependency(node);
 
 
 
+
+
+
+isDependentOn(node){
+let isDependentOnNode=false;
+this.traverse(currentNode=>{
+if(isDependentOnNode)return;
+isDependentOnNode=currentNode===node;
+},currentNode=>{
+
+if(isDependentOnNode)return[];
+
+return currentNode.getDependencies();
+});
+
+return isDependentOnNode;
+}
+
+
+
+
+
 cloneWithoutRelationships(){
 const node=new BaseNode(this.id);
 node.setIsMainDocument(this._isMainDocument);
@@ -30238,7 +31834,7 @@ CPU:'cpu'};
 
 module.exports=BaseNode;
 
-},{}],69:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 
 
 
@@ -30326,7 +31922,7 @@ return new CPUNode(this._event,this._childEvents);
 
 module.exports=CPUNode;
 
-},{"./base-node.js":68}],70:[function(require,module,exports){
+},{"./base-node.js":69}],71:[function(require,module,exports){
 
 
 
@@ -30428,7 +32024,7 @@ return node;
 
 module.exports=NetworkNode;
 
-},{"../network-request.js":87,"../url-shim.js":"url","./base-node.js":68}],71:[function(require,module,exports){
+},{"../network-request.js":88,"../url-shim.js":"url","./base-node.js":69}],72:[function(require,module,exports){
 
 
 
@@ -30599,7 +32195,7 @@ this._connectionsInUse.delete(connection);
 }};
 
 
-},{"./network-analyzer.js":73,"./tcp-connection.js":75}],72:[function(require,module,exports){
+},{"./network-analyzer.js":74,"./tcp-connection.js":76}],73:[function(require,module,exports){
 
 
 
@@ -30674,7 +32270,7 @@ DNSCache.RTT_MULTIPLIER=DNS_RESOLUTION_RTT_MULTIPLIER;
 
 module.exports=DNSCache;
 
-},{}],73:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 
 
 
@@ -30945,7 +32541,6 @@ const{forceCoarseEstimates=false}=options||{};
 
 
 if(!forceCoarseEstimates&&NetworkAnalyzer.canTrustConnectionInformation(records)){
-
 return new Map(records.map(record=>[record.requestId,!!record.connectionReused]));
 }
 
@@ -31151,7 +32746,7 @@ module.exports=NetworkAnalyzer;
 
 
 
-},{"../../network-request.js":87,"../../url-shim.js":"url"}],74:[function(require,module,exports){
+},{"../../network-request.js":88,"../../url-shim.js":"url"}],75:[function(require,module,exports){
 
 
 
@@ -31693,7 +33288,7 @@ module.exports=Simulator;
 
 
 
-},{"../../../config/constants.js":53,"../base-node.js":68,"./connection-pool.js":71,"./dns-cache.js":72,"./tcp-connection.js":75}],75:[function(require,module,exports){
+},{"../../../config/constants.js":54,"../base-node.js":69,"./connection-pool.js":72,"./dns-cache.js":73,"./tcp-connection.js":76}],76:[function(require,module,exports){
 
 
 
@@ -31901,7 +33496,7 @@ module.exports=TcpConnection;
 
 
 
-},{}],76:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 
 
 
@@ -32071,7 +33666,7 @@ MOBILE_USERAGENT:MOTOG4_USERAGENT,
 DESKTOP_USERAGENT};
 
 
-},{}],77:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 (function(__filename,__dirname){
 
 
@@ -32163,6 +33758,8 @@ columnElement:'Element',
 columnStartTime:'Start Time',
 
 columnDuration:'Duration',
+
+columnFailingElem:'Failing Elements',
 
 totalResourceType:'Total',
 
@@ -32610,7 +34207,7 @@ registerLocaleData};
 
 
 }).call(this,"/lighthouse-core/lib/i18n/i18n.js","/lighthouse-core/lib/i18n");
-},{"./locales.js":78,"intl":115,"intl-messageformat":131,"intl-pluralrules":115,"lighthouse-logger":137,"lodash.isequal":157,"lookup-closest-locale":158,"path":170}],78:[function(require,module,exports){
+},{"./locales.js":79,"intl":116,"intl-messageformat":132,"intl-pluralrules":116,"lighthouse-logger":138,"lodash.isequal":158,"lookup-closest-locale":159,"path":171}],79:[function(require,module,exports){
 
 
 
@@ -32727,7 +34324,7 @@ const locales={
 
 module.exports=locales;
 
-},{"./locales/ar-XB.json":115,"./locales/ar.json":115,"./locales/bg.json":115,"./locales/ca.json":115,"./locales/cs.json":115,"./locales/da.json":115,"./locales/de.json":115,"./locales/el.json":115,"./locales/en-GB.json":115,"./locales/en-US.json":115,"./locales/en-XA.json":115,"./locales/en-XL.json":115,"./locales/es-419.json":115,"./locales/es.json":115,"./locales/fi.json":115,"./locales/fil.json":115,"./locales/fr.json":115,"./locales/he.json":115,"./locales/hi.json":115,"./locales/hr.json":115,"./locales/hu.json":115,"./locales/id.json":115,"./locales/it.json":115,"./locales/ja.json":115,"./locales/ko.json":115,"./locales/lt.json":115,"./locales/lv.json":115,"./locales/nl.json":115,"./locales/no.json":115,"./locales/pl.json":115,"./locales/pt-PT.json":115,"./locales/pt.json":115,"./locales/ro.json":115,"./locales/ru.json":115,"./locales/sk.json":115,"./locales/sl.json":115,"./locales/sr-Latn.json":115,"./locales/sr.json":115,"./locales/sv.json":115,"./locales/ta.json":115,"./locales/te.json":115,"./locales/th.json":115,"./locales/tr.json":115,"./locales/uk.json":115,"./locales/vi.json":115,"./locales/zh-HK.json":115,"./locales/zh-TW.json":115,"./locales/zh.json":115}],79:[function(require,module,exports){
+},{"./locales/ar-XB.json":116,"./locales/ar.json":116,"./locales/bg.json":116,"./locales/ca.json":116,"./locales/cs.json":116,"./locales/da.json":116,"./locales/de.json":116,"./locales/el.json":116,"./locales/en-GB.json":116,"./locales/en-US.json":116,"./locales/en-XA.json":116,"./locales/en-XL.json":116,"./locales/es-419.json":116,"./locales/es.json":116,"./locales/fi.json":116,"./locales/fil.json":116,"./locales/fr.json":116,"./locales/he.json":116,"./locales/hi.json":116,"./locales/hr.json":116,"./locales/hu.json":116,"./locales/id.json":116,"./locales/it.json":116,"./locales/ja.json":116,"./locales/ko.json":116,"./locales/lt.json":116,"./locales/lv.json":116,"./locales/nl.json":116,"./locales/no.json":116,"./locales/pl.json":116,"./locales/pt-PT.json":116,"./locales/pt.json":116,"./locales/ro.json":116,"./locales/ru.json":116,"./locales/sk.json":116,"./locales/sl.json":116,"./locales/sr-Latn.json":116,"./locales/sr.json":116,"./locales/sv.json":116,"./locales/ta.json":116,"./locales/te.json":116,"./locales/th.json":116,"./locales/tr.json":116,"./locales/uk.json":116,"./locales/vi.json":116,"./locales/zh-HK.json":116,"./locales/zh-TW.json":116,"./locales/zh.json":116}],80:[function(require,module,exports){
 
 
 
@@ -32815,7 +34412,7 @@ pngSizedAtLeast,
 containsMaskableIcon};
 
 
-},{"./url-shim.js":"url"}],80:[function(require,module,exports){
+},{"./url-shim.js":"url"}],81:[function(require,module,exports){
 
 
 
@@ -33023,7 +34620,7 @@ simulationNamesToIgnore:[
 convertNodeTimingsToTrace};
 
 
-},{}],81:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 
 
 
@@ -33096,7 +34693,7 @@ catch(()=>null);
 
 module.exports=LHElement;
 
-},{"../gather/driver.js":58}],82:[function(require,module,exports){
+},{"../gather/driver.js":59}],83:[function(require,module,exports){
 (function(process){
 
 
@@ -33112,7 +34709,7 @@ isUnderTest:!!process.env.CI||process.env.NODE_ENV==='test'};
 
 
 }).call(this,require('_process'));
-},{"_process":172}],83:[function(require,module,exports){
+},{"_process":173}],84:[function(require,module,exports){
 (function(__filename){
 
 
@@ -33164,6 +34761,11 @@ internalChromeError:'An internal Chrome error occurred. Please restart Chrome an
 
 requestContentTimeout:'Fetching resource content has exceeded the allotted time',
 
+
+
+
+notHtml:'The page provided is not HTML (served as MIME type {mimeType}).',
+
 urlInvalid:'The URL you have provided appears to be invalid.',
 
 
@@ -33186,7 +34788,13 @@ missingRequiredArtifact:'Required {artifactName} gatherer did not run.',
 
 
 
-erroredRequiredArtifact:'Required {artifactName} gatherer encountered an error: {errorMessage}'};
+erroredRequiredArtifact:'Required {artifactName} gatherer encountered an error: {errorMessage}',
+
+
+
+
+
+oldChromeDoesNotSupportFeature:'This version of Chrome is too old to support \'{featureName}\'. Use a newer version to see full results.'};
 
 
 const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
@@ -33370,6 +34978,10 @@ NO_LCP:{
 code:'NO_LCP',
 message:UIStrings.badTraceRecording},
 
+UNSUPPORTED_OLD_CHROME:{
+code:'UNSUPPORTED_OLD_CHROME',
+message:UIStrings.oldChromeDoesNotSupportFeature},
+
 
 LAYOUT_SHIFT_MISSING_DATA:{
 code:'LAYOUT_SHIFT_MISSING_DATA',
@@ -33426,6 +35038,12 @@ lhrRuntimeError:true},
 PAGE_HUNG:{
 code:'PAGE_HUNG',
 message:UIStrings.pageLoadFailedHung,
+lhrRuntimeError:true},
+
+
+NOT_HTML:{
+code:'NOT_HTML',
+message:UIStrings.notHtml,
 lhrRuntimeError:true},
 
 
@@ -33508,7 +35126,7 @@ module.exports=LighthouseError;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/lib/lh-error.js");
-},{"./i18n/i18n.js":77}],84:[function(require,module,exports){
+},{"./i18n/i18n.js":78}],85:[function(require,module,exports){
 
 
 
@@ -34021,7 +35639,7 @@ warning:manifestUrlWarning};
 
 module.exports=parse;
 
-},{"./url-shim.js":"url","cssstyle/lib/parsers":119}],85:[function(require,module,exports){
+},{"./url-shim.js":"url","cssstyle/lib/parsers":120}],86:[function(require,module,exports){
 
 
 
@@ -34192,7 +35810,7 @@ return computeTokenLength(content,{singlelineComments:false,regex:false});
 
 module.exports={computeJSTokenLength,computeCSSTokenLength};
 
-},{}],86:[function(require,module,exports){
+},{}],87:[function(require,module,exports){
 
 
 
@@ -34554,8 +36172,17 @@ if(sameFrameCandidates.length){
 candidates=sameFrameCandidates;
 }
 }
+if(candidates.length>1&&record.initiator.type==='parser'){
 
-return candidates.length?candidates[0]:null;
+const documentCandidates=candidates.filter(cand=>
+cand.resourceType===NetworkRequest.TYPES.Document);
+if(documentCandidates.length){
+candidates=documentCandidates;
+}
+}
+
+
+return candidates.length===1?candidates[0]:null;
 }
 
 
@@ -34608,7 +36235,7 @@ return records;
 
 module.exports=NetworkRecorder;
 
-},{"./network-request.js":87,"events":120,"lighthouse-logger":137}],87:[function(require,module,exports){
+},{"./network-request.js":88,"events":121,"lighthouse-logger":138}],88:[function(require,module,exports){
 (function(global){
 
 
@@ -35078,7 +36705,7 @@ NetworkRequest.HEADER_FETCHED_SIZE=HEADER_FETCHED_SIZE;
 module.exports=NetworkRequest;
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{"./url-shim.js":"url"}],88:[function(require,module,exports){
+},{"./url-shim.js":"url"}],89:[function(require,module,exports){
 
 
 
@@ -35193,7 +36820,8 @@ return results;
 
 
 
-function getOuterHTMLSnippet(element,ignoreAttrs=[]){
+function getOuterHTMLSnippet(element,ignoreAttrs=[],snippetCharacterLimit=500){
+const ATTRIBUTE_CHAR_LIMIT=75;
 try{
 
 if(element instanceof ShadowRoot){
@@ -35204,9 +36832,26 @@ const clone=element.cloneNode();
 ignoreAttrs.forEach(attribute=>{
 clone.removeAttribute(attribute);
 });
+let charCount=0;
+for(const attributeName of clone.getAttributeNames()){
+if(charCount>snippetCharacterLimit){
+clone.removeAttribute(attributeName);
+}else{
+let attributeValue=clone.getAttribute(attributeName);
+if(attributeValue.length>ATTRIBUTE_CHAR_LIMIT){
+attributeValue=attributeValue.slice(0,ATTRIBUTE_CHAR_LIMIT-1)+'…';
+clone.setAttribute(attributeName,attributeValue);
+}
+charCount+=attributeName.length+attributeValue.length;
+}
+}
+
 const reOpeningTag=/^[\s\S]*?>/;
-const match=clone.outerHTML.match(reOpeningTag);
-return match&&match[0]||'';
+const[match]=clone.outerHTML.match(reOpeningTag)||[];
+if(match&&charCount>snippetCharacterLimit){
+return match.slice(0,match.length-1)+' …>';
+}
+return match||'';
 }catch(_){
 
 return`<${element.localName}>`;
@@ -35384,6 +37029,57 @@ return getNodeLabel(nodeToUseForLabel);
 return tagName;
 }
 
+
+
+
+
+
+function getBoundingClientRect(element){
+
+const rect=element.getBoundingClientRect();
+return{
+top:Math.round(rect.top),
+bottom:Math.round(rect.bottom),
+left:Math.round(rect.left),
+right:Math.round(rect.right),
+width:Math.round(rect.width),
+height:Math.round(rect.height)};
+
+}
+
+
+
+
+
+
+
+
+
+function wrapRequestIdleCallback(cpuSlowdownMultiplier){
+const safetyAllowanceMs=10;
+const maxExecutionTimeMs=Math.floor((50-safetyAllowanceMs)/cpuSlowdownMultiplier);
+const nativeRequestIdleCallback=window.requestIdleCallback;
+window.requestIdleCallback=cb=>{
+const cbWrap=(deadline,timeout)=>{
+const start=Date.now();
+deadline.__timeRemaining=deadline.timeRemaining;
+deadline.timeRemaining=()=>{
+return Math.min(
+deadline.__timeRemaining(),Math.max(0,maxExecutionTimeMs-(Date.now()-start)));
+
+};
+deadline.timeRemaining.toString=()=>{
+return'function timeRemaining() { [native code] }';
+};
+cb(deadline,timeout);
+};
+return nativeRequestIdleCallback(cbWrap);
+};
+window.requestIdleCallback.toString=()=>{
+return'function requestIdleCallback() { [native code] }';
+};
+}
+
 module.exports={
 wrapRuntimeEvalErrorInBrowserString:wrapRuntimeEvalErrorInBrowser.toString(),
 registerPerformanceObserverInPageString:registerPerformanceObserverInPage.toString(),
@@ -35398,10 +37094,12 @@ getNodeSelectorString:getNodeSelector.toString(),
 getNodeSelector:getNodeSelector,
 getNodeLabel:getNodeLabel,
 getNodeLabelString:getNodeLabel.toString(),
-isPositionFixedString:isPositionFixed.toString()};
+isPositionFixedString:isPositionFixed.toString(),
+wrapRequestIdleCallbackString:wrapRequestIdleCallback.toString(),
+getBoundingClientRectString:getBoundingClientRect.toString()};
 
 
-},{}],89:[function(require,module,exports){
+},{}],90:[function(require,module,exports){
 
 
 
@@ -35651,7 +37349,7 @@ filterOutRectsContainedByOthers,
 filterOutTinyRects};
 
 
-},{}],90:[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 
 
 
@@ -35778,7 +37476,7 @@ log.warn(
 
 module.exports=sentryDelegate;
 
-},{"lighthouse-logger":137,"raven":115}],91:[function(require,module,exports){
+},{"lighthouse-logger":138,"raven":116}],92:[function(require,module,exports){
 
 
 
@@ -35831,7 +37529,15 @@ const libraryDetectorTests=d41d8cd98f00b204e9800998ecf8427e_LibraryDetectorTests
 
 for(const[name,lib]of Object.entries(libraryDetectorTests)){
 try{
-const result=await lib.test(window);
+
+let timeout;
+
+
+
+const timeoutPromise=new Promise(r=>timeout=setTimeout(()=>r(false),1000));
+
+const result=await Promise.race([lib.test(window),timeoutPromise]);
+if(timeout)clearTimeout(timeout);
 if(result){
 libraries.push({
 id:lib.id,
@@ -35870,7 +37576,7 @@ npm:lib.npm||undefined}));
 
 module.exports=collectStacks;
 
-},{}],92:[function(require,module,exports){
+},{}],93:[function(require,module,exports){
 
 
 
@@ -35948,7 +37654,7 @@ module.exports={
 getStackPacks};
 
 
-},{"../../stack-packs/index.js":208,"lighthouse-logger":137}],93:[function(require,module,exports){
+},{"../../stack-packs/index.js":209,"lighthouse-logger":138}],94:[function(require,module,exports){
 
 
 
@@ -36067,7 +37773,7 @@ getLogNormalDistribution,
 getLogNormalScore};
 
 
-},{}],94:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 
 
 
@@ -36175,7 +37881,7 @@ module.exports={
 getTappableRectsFromClientRects};
 
 
-},{"./rect-helpers.js":89}],95:[function(require,module,exports){
+},{"./rect-helpers.js":90}],96:[function(require,module,exports){
 
 
 
@@ -36226,7 +37932,7 @@ isThirdParty,
 isFirstParty};
 
 
-},{"third-party-web/httparchive-nostats-subset":200}],96:[function(require,module,exports){
+},{"third-party-web/httparchive-nostats-subset":201}],97:[function(require,module,exports){
 
 
 
@@ -36831,7 +38537,7 @@ return tasks;
 
 module.exports=MainThreadTasks;
 
-},{"./task-groups.js":97}],97:[function(require,module,exports){
+},{"./task-groups.js":98}],98:[function(require,module,exports){
 
 
 
@@ -36944,7 +38650,7 @@ taskGroups,
 taskNameToGroup};
 
 
-},{}],98:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 
 
 
@@ -37323,8 +39029,8 @@ const topLevelEvents=[];
 for(const event of tabTrace.mainThreadEvents){
 if(!this.isScheduleableTask(event)||!event.dur)continue;
 
-const start=(event.ts-tabTrace.navigationStartEvt.ts)/1000;
-const end=(event.ts+event.dur-tabTrace.navigationStartEvt.ts)/1000;
+const start=(event.ts-tabTrace.timeOriginEvt.ts)/1000;
+const end=(event.ts+event.dur-tabTrace.timeOriginEvt.ts)/1000;
 if(start>endTime||end<startTime)continue;
 
 topLevelEvents.push({
@@ -37441,18 +39147,19 @@ const frameEvents=keyEvents.filter(e=>e.args.frame===mainFrameIds.frameId);
 
 const navigationStart=frameEvents.filter(this._isNavigationStartOfInterest).pop();
 if(!navigationStart)throw this.createNoNavstartError();
+const timeOriginEvt=navigationStart;
 
 
-const firstPaint=frameEvents.find(e=>e.name==='firstPaint'&&e.ts>navigationStart.ts);
+const firstPaint=frameEvents.find(e=>e.name==='firstPaint'&&e.ts>timeOriginEvt.ts);
 
 
 const firstContentfulPaint=frameEvents.find(
-e=>e.name==='firstContentfulPaint'&&e.ts>navigationStart.ts);
+e=>e.name==='firstContentfulPaint'&&e.ts>timeOriginEvt.ts);
 
 
 
 let firstMeaningfulPaint=frameEvents.find(
-e=>e.name==='firstMeaningfulPaint'&&e.ts>navigationStart.ts);
+e=>e.name==='firstMeaningfulPaint'&&e.ts>timeOriginEvt.ts);
 
 let fmpFellBack=false;
 
@@ -37481,7 +39188,7 @@ let lcpInvalidated=false;
 for(let i=frameEvents.length-1;i>=0;i--){
 const e=frameEvents[i];
 
-if(e.ts<=navigationStart.ts)break;
+if(e.ts<=timeOriginEvt.ts)break;
 
 if(e.name==='largestContentfulPaint::Invalidate'){
 lcpInvalidated=true;
@@ -37494,9 +39201,9 @@ largestContentfulPaint=e;
 break;
 }
 
-const load=frameEvents.find(e=>e.name==='loadEventEnd'&&e.ts>navigationStart.ts);
+const load=frameEvents.find(e=>e.name==='loadEventEnd'&&e.ts>timeOriginEvt.ts);
 const domContentLoaded=frameEvents.find(
-e=>e.name==='domContentLoadedEventEnd'&&e.ts>navigationStart.ts);
+e=>e.name==='domContentLoadedEventEnd'&&e.ts>timeOriginEvt.ts);
 
 
 
@@ -37517,7 +39224,7 @@ const fakeEndOfTraceEvt={ts:traceEnd.ts+(traceEnd.dur||0)};
 const getTimestamp=event=>event&&event.ts;
 
 const timestamps={
-navigationStart:navigationStart.ts,
+timeOrigin:timeOriginEvt.ts,
 firstPaint:getTimestamp(firstPaint),
 firstContentfulPaint:getTimestamp(firstContentfulPaint),
 firstMeaningfulPaint:getTimestamp(firstMeaningfulPaint),
@@ -37528,12 +39235,12 @@ domContentLoaded:getTimestamp(domContentLoaded)};
 
 
 
-const getTiming=ts=>(ts-navigationStart.ts)/1000;
+const getTiming=ts=>(ts-timeOriginEvt.ts)/1000;
 
 const maybeGetTiming=ts=>ts===undefined?undefined:getTiming(ts);
 
 const timings={
-navigationStart:0,
+timeOrigin:0,
 firstPaint:maybeGetTiming(timestamps.firstPaint),
 firstContentfulPaint:maybeGetTiming(timestamps.firstContentfulPaint),
 firstMeaningfulPaint:maybeGetTiming(timestamps.firstMeaningfulPaint),
@@ -37557,7 +39264,7 @@ processEvents,
 mainThreadEvents,
 mainFrameIds,
 frames,
-navigationStartEvt:navigationStart,
+timeOriginEvt:timeOriginEvt,
 firstPaintEvt:firstPaint,
 firstContentfulPaintEvt:firstContentfulPaint,
 firstMeaningfulPaintEvt:firstMeaningfulPaint,
@@ -37580,7 +39287,7 @@ module.exports=TraceProcessor;
 
 
 
-},{"lighthouse-logger":137}],99:[function(require,module,exports){
+},{"lighthouse-logger":138}],100:[function(require,module,exports){
 
 
 
@@ -37589,6 +39296,7 @@ module.exports=TraceProcessor;
 'use strict';
 
 const log=require('lighthouse-logger');
+const TraceProcessor=require('../tracehouse/trace-processor.js');
 
 
 
@@ -37618,9 +39326,9 @@ this._auditResults=auditResults;
 static get metricsDefinitions(){
 return[
 {
-name:'Navigation Start',
-id:'navstart',
-tsKey:'observedNavigationStartTs'},
+name:'Time Origin',
+id:'timeorigin',
+tsKey:'observedTimeOriginTs'},
 
 {
 name:'First Contentful Paint',
@@ -37710,12 +39418,15 @@ return resolvedMetrics;
 
 
 
-getNavigationStartEvt(metrics){
-const navStartMetric=metrics.find(e=>e.id==='navstart');
-if(!navStartMetric)return;
-return this._traceEvents.find(
-e=>e.name==='navigationStart'&&e.ts===navStartMetric.ts);
-
+getTimeOriginEvt(metrics){
+const timeOriginMetric=metrics.find(e=>e.id==='timeorigin');
+if(!timeOriginMetric)return{errorMessage:'timeorigin Metric not found in definitions'};
+try{
+const frameIds=TraceProcessor.findMainFrameIds(this._traceEvents);
+return{pid:frameIds.pid,tid:frameIds.tid,ts:timeOriginMetric.ts};
+}catch(err){
+return{errorMessage:err.message};
+}
 }
 
 
@@ -37726,11 +39437,11 @@ e=>e.name==='navigationStart'&&e.ts===navStartMetric.ts);
 
 
 
-synthesizeEventPair(metric,navigationStartEvt){
+synthesizeEventPair(metric,timeOriginEvt){
 
 const eventBase={
-pid:navigationStartEvt.pid,
-tid:navigationStartEvt.tid,
+pid:timeOriginEvt.pid,
+tid:timeOriginEvt.tid,
 cat:'blink.user_timing',
 name:metric.name,
 args:{},
@@ -37738,7 +39449,7 @@ args:{},
 id:`0x${(Math.random()*1000000|0).toString(16)}`};
 
 const fakeMeasureStartEvent=Object.assign({},eventBase,{
-ts:navigationStartEvt.ts,
+ts:timeOriginEvt.ts,
 ph:'b'});
 
 const fakeMeasureEndEvent=Object.assign({},eventBase,{
@@ -37758,16 +39469,16 @@ log.error('metrics-events','Metrics collection had errors, not synthetizing trac
 return[];
 }
 
-const navigationStartEvt=this.getNavigationStartEvt(metrics);
-if(!navigationStartEvt){
-log.error('pwmetrics-events','Reference navigationStart not found');
+const timeOriginEvt=this.getTimeOriginEvt(metrics);
+if('errorMessage'in timeOriginEvt){
+log.error('pwmetrics-events',`Reference timeOrigin error: ${timeOriginEvt.errorMessage}`);
 return[];
 }
 
 
 const fakeEvents=[];
 metrics.forEach(metric=>{
-if(metric.id==='navstart'){
+if(metric.id==='timeorigin'){
 return;
 }
 if(!metric.ts){
@@ -37775,7 +39486,7 @@ log.error('pwmetrics-events',`(${metric.name}) missing timestamp. Skipping…`);
 return;
 }
 log.verbose('pwmetrics-events',`Sythesizing trace events for ${metric.name}`);
-fakeEvents.push(...this.synthesizeEventPair(metric,navigationStartEvt));
+fakeEvents.push(...this.synthesizeEventPair(metric,timeOriginEvt));
 });
 return fakeEvents;
 }}
@@ -37783,7 +39494,7 @@ return fakeEvents;
 
 module.exports=Metrics;
 
-},{"lighthouse-logger":137}],100:[function(require,module,exports){
+},{"../tracehouse/trace-processor.js":99,"lighthouse-logger":138}],101:[function(require,module,exports){
 
 
 
@@ -37926,7 +39637,7 @@ module.exports=I18n;
 self.I18n=I18n;
 }
 
-},{}],101:[function(require,module,exports){
+},{}],102:[function(require,module,exports){
 
 
 
@@ -38425,6 +40136,16 @@ Util.reportJson=null;
 
 
 
+
+Util.getUniqueSuffix=(()=>{
+let svgSuffix=0;
+return function(){
+return svgSuffix++;
+};
+})();
+
+
+
 Util.i18n=null;
 
 
@@ -38538,7 +40259,7 @@ module.exports=Util;
 self.Util=Util;
 }
 
-},{}],102:[function(require,module,exports){
+},{}],103:[function(require,module,exports){
 
 
 
@@ -38659,7 +40380,7 @@ return outputAsArray?output:output[0];
 
 module.exports=ReportGenerator;
 
-},{"./html/html-report-assets.js":115}],103:[function(require,module,exports){
+},{"./html/html-report-assets.js":116}],104:[function(require,module,exports){
 (function(process){
 
 
@@ -39065,7 +40786,7 @@ const ignoredFiles=[
 
 
 const fileList=[
-...["accessibility","apple-touch-icon.js","audit.js","bootup-time.js","byte-efficiency","content-width.js","critical-request-chains.js","deprecations.js","diagnostics.js","dobetterweb","errors-in-console.js","final-screenshot.js","font-display.js","image-aspect-ratio.js","image-size-responsive.js","installable-manifest.js","is-on-https.js","largest-contentful-paint-element.js","layout-shift-elements.js","legacy-javascript.js","load-fast-enough-for-pwa.js","long-tasks.js","main-thread-tasks.js","mainthread-work-breakdown.js","manual","maskable-icon.js","metrics","metrics.js","multi-check-audit.js","network-requests.js","network-rtt.js","network-server-latency.js","offline-start-url.js","performance-budget.js","predictive-perf.js","redirects-http.js","redirects.js","resource-summary.js","screenshot-thumbnails.js","seo","server-response-time.js","service-worker.js","splash-screen.js","themed-omnibox.js","third-party-summary.js","timing-budget.js","user-timings.js","uses-rel-preconnect.js","uses-rel-preload.js","viewport.js","violation-audit.js","without-javascript.js","works-offline.js"],
+...["accessibility","apple-touch-icon.js","audit.js","bootup-time.js","byte-efficiency","content-width.js","critical-request-chains.js","deprecations.js","diagnostics.js","dobetterweb","errors-in-console.js","final-screenshot.js","font-display.js","full-page-screenshot.js","image-aspect-ratio.js","image-size-responsive.js","installable-manifest.js","is-on-https.js","largest-contentful-paint-element.js","layout-shift-elements.js","load-fast-enough-for-pwa.js","long-tasks.js","main-thread-tasks.js","mainthread-work-breakdown.js","manual","maskable-icon.js","metrics","metrics.js","multi-check-audit.js","network-requests.js","network-rtt.js","network-server-latency.js","no-unload-listeners.js","non-composited-animations.js","offline-start-url.js","performance-budget.js","predictive-perf.js","redirects-http.js","redirects.js","resource-summary.js","screenshot-thumbnails.js","seo","server-response-time.js","service-worker.js","splash-screen.js","themed-omnibox.js","third-party-summary.js","timing-budget.js","unsized-images.js","user-timings.js","uses-rel-preconnect.js","uses-rel-preload.js","viewport.js","violation-audit.js","without-javascript.js","works-offline.js"],
 ...["appcache-manifest.js","charset.js","doctype.js","dom-size.js","external-anchors-use-rel-noopener.js","geolocation-on-start.js","js-libraries.js","no-document-write.js","no-vulnerable-libraries.js","notification-on-start.js","password-inputs-can-be-pasted-into.js","uses-http2.js","uses-passive-event-listeners.js"].map(f=>`dobetterweb/${f}`),
 ...["cumulative-layout-shift.js","estimated-input-latency.js","first-contentful-paint-3g.js","first-contentful-paint.js","first-cpu-idle.js","first-meaningful-paint.js","interactive.js","largest-contentful-paint.js","max-potential-fid.js","speed-index.js","total-blocking-time.js"].map(f=>`metrics/${f}`),
 ...["canonical.js","crawlable-anchors.js","font-size.js","hreflang.js","http-status-code.js","is-crawlable.js","link-text.js","manual","meta-description.js","plugins.js","robots-txt.js","tap-targets.js"].map(f=>`seo/${f}`),
@@ -39074,7 +40795,7 @@ const fileList=[
 map(f=>`accessibility/${f}`),
 ...["custom-controls-labels.js","custom-controls-roles.js","focus-traps.js","focusable-controls.js","interactive-element-affordance.js","logical-tab-order.js","managed-focus.js","offscreen-content-hidden.js","use-landmarks.js","visual-order-follows-dom.js"].
 map(f=>`accessibility/manual/${f}`),
-...["byte-efficiency-audit.js","duplicated-javascript.js","efficient-animated-content.js","offscreen-images.js","render-blocking-resources.js","total-byte-weight.js","unminified-css.js","unminified-javascript.js","unused-css-rules.js","unused-javascript.js","uses-long-cache-ttl.js","uses-optimized-images.js","uses-responsive-images.js","uses-text-compression.js","uses-webp-images.js"].
+...["byte-efficiency-audit.js","duplicated-javascript.js","efficient-animated-content.js","legacy-javascript.js","offscreen-images.js","polyfill-graph-data.json","render-blocking-resources.js","total-byte-weight.js","unminified-css.js","unminified-javascript.js","unused-css-rules.js","unused-javascript.js","uses-long-cache-ttl.js","uses-optimized-images.js","uses-responsive-images.js","uses-text-compression.js","uses-webp-images.js"].
 map(f=>`byte-efficiency/${f}`),
 ...["manual-audit.js","pwa-cross-browser.js","pwa-each-page-has-url.js","pwa-page-transitions.js"].map(f=>`manual/${f}`)];
 
@@ -39089,7 +40810,7 @@ return /\.js$/.test(f)&&!ignoredFiles.includes(f);
 
 static getGathererList(){
 const fileList=[
-...["accessibility.js","anchor-elements.js","cache-contents.js","console-messages.js","css-usage.js","dobetterweb","gatherer.js","html-without-javascript.js","http-redirect.js","iframe-elements.js","image-elements.js","inspector-issues.js","js-usage.js","link-elements.js","main-document-content.js","meta-elements.js","offline.js","runtime-exceptions.js","script-elements.js","seo","service-worker.js","source-maps.js","start-url.js","trace-elements.js","viewport-dimensions.js"],
+...["accessibility.js","anchor-elements.js","cache-contents.js","console-messages.js","css-usage.js","dobetterweb","form-elements.js","full-page-screenshot.js","gatherer.js","global-listeners.js","html-without-javascript.js","http-redirect.js","iframe-elements.js","image-elements.js","inspector-issues.js","js-usage.js","link-elements.js","main-document-content.js","meta-elements.js","offline.js","runtime-exceptions.js","script-elements.js","seo","service-worker.js","source-maps.js","start-url.js","trace-elements.js","viewport-dimensions.js"],
 ...["embedded-content.js","font-size.js","robots-txt.js","tap-targets.js"].map(f=>`seo/${f}`),
 ...["appcache.js","doctype.js","domstats.js","optimized-images.js","password-inputs-with-prevented-paste.js","response-compression.js","tags-blocking-first-paint.js"].
 map(f=>`dobetterweb/${f}`)];
@@ -39116,7 +40837,7 @@ return path.join(process.cwd(),'latest-run');
 module.exports=Runner;
 
 }).call(this,require('_process'));
-},{"../package.json":207,"./audits/audit.js":3,"./gather/driver.js":58,"./gather/gather-runner.js":60,"./lib/asset-saver.js":64,"./lib/i18n/i18n.js":77,"./lib/lh-error.js":83,"./lib/sentry.js":90,"./lib/stack-packs.js":92,"./lib/url-shim.js":"url","./report/report-generator.js":102,"./scoring.js":104,"_process":172,"lighthouse-logger":137,"lodash.isequal":157,"path":170}],104:[function(require,module,exports){
+},{"../package.json":208,"./audits/audit.js":3,"./gather/driver.js":59,"./gather/gather-runner.js":61,"./lib/asset-saver.js":65,"./lib/i18n/i18n.js":78,"./lib/lh-error.js":84,"./lib/sentry.js":91,"./lib/stack-packs.js":93,"./lib/url-shim.js":"url","./report/report-generator.js":103,"./scoring.js":105,"_process":173,"lighthouse-logger":138,"lodash.isequal":158,"path":171}],105:[function(require,module,exports){
 
 
 
@@ -39211,7 +40932,7 @@ return scoredCategories;
 
 module.exports=ReportScoring;
 
-},{"./audits/audit.js":3}],105:[function(require,module,exports){
+},{"./audits/audit.js":3}],106:[function(require,module,exports){
 const HEADER_REGEXP=/([a-zA-Z][a-zA-Z_-]*)\s*(?:=(?:"([^"]*)"|([^ \t",;]*)))?/g;
 
 const STRINGS={
@@ -39393,7 +41114,7 @@ parse,
 format};
 
 
-},{}],106:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 (function(global){
 'use strict';
 
@@ -39887,7 +41608,7 @@ return keys;
 };
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{"util/":109}],107:[function(require,module,exports){
+},{"util/":110}],108:[function(require,module,exports){
 if(typeof Object.create==='function'){
 
 module.exports=function inherits(ctor,superCtor){
@@ -39912,14 +41633,14 @@ ctor.prototype.constructor=ctor;
 };
 }
 
-},{}],108:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 module.exports=function isBuffer(arg){
 return arg&&typeof arg==='object'&&
 typeof arg.copy==='function'&&
 typeof arg.fill==='function'&&
 typeof arg.readUInt8==='function';
 };
-},{}],109:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 (function(process,global){
 
 
@@ -40509,7 +42230,7 @@ return Object.prototype.hasOwnProperty.call(obj,prop);
 }
 
 }).call(this,require('_process'),typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{"./support/isBuffer":108,"_process":172,"inherits":107}],110:[function(require,module,exports){
+},{"./support/isBuffer":109,"_process":173,"inherits":108}],111:[function(require,module,exports){
 
 const langs=[
 'aa',
@@ -48663,7 +50384,7 @@ axe.utils.validLangs=function(){
 return langs;
 };
 
-},{}],111:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 'use strict';
 
 exports.byteLength=byteLength;
@@ -48816,9 +50537,9 @@ lookup[tmp<<2&0x3F]+
 return parts.join('');
 }
 
-},{}],112:[function(require,module,exports){
-
 },{}],113:[function(require,module,exports){
+
+},{}],114:[function(require,module,exports){
 (function(process,Buffer){
 'use strict';
 
@@ -49230,7 +50951,7 @@ this._error('Failed to reset stream');
 
 exports.Zlib=Zlib;
 }).call(this,require('_process'),require("buffer").Buffer);
-},{"_process":172,"assert":106,"buffer":116,"pako/lib/zlib/constants":163,"pako/lib/zlib/deflate.js":165,"pako/lib/zlib/inflate.js":115,"pako/lib/zlib/zstream":168}],114:[function(require,module,exports){
+},{"_process":173,"assert":107,"buffer":117,"pako/lib/zlib/constants":164,"pako/lib/zlib/deflate.js":166,"pako/lib/zlib/inflate.js":116,"pako/lib/zlib/zstream":169}],115:[function(require,module,exports){
 (function(process){
 'use strict';
 
@@ -49842,9 +51563,9 @@ util.inherits(DeflateRaw,Zlib);
 util.inherits(InflateRaw,Zlib);
 util.inherits(Unzip,Zlib);
 }).call(this,require('_process'));
-},{"./binding":113,"_process":172,"assert":106,"buffer":116,"stream":197,"util":206}],115:[function(require,module,exports){
-arguments[4][112][0].apply(exports,arguments);
-},{"dup":112}],116:[function(require,module,exports){
+},{"./binding":114,"_process":173,"assert":107,"buffer":117,"stream":198,"util":207}],116:[function(require,module,exports){
+arguments[4][113][0].apply(exports,arguments);
+},{"dup":113}],117:[function(require,module,exports){
 (function(Buffer){
 
 
@@ -51625,7 +53346,7 @@ return obj!==obj;
 }
 
 }).call(this,require("buffer").Buffer);
-},{"base64-js":111,"buffer":116,"ieee754":123}],117:[function(require,module,exports){
+},{"base64-js":112,"buffer":117,"ieee754":124}],118:[function(require,module,exports){
 (function(Buffer){
 
 
@@ -51736,7 +53457,7 @@ return Object.prototype.toString.call(o);
 }
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")});
-},{"../../is-buffer/index.js":132}],118:[function(require,module,exports){
+},{"../../is-buffer/index.js":133}],119:[function(require,module,exports){
 module.exports=[
 "aliceblue",
 "antiquewhite",
@@ -51888,7 +53609,7 @@ module.exports=[
 "yellowgreen"];
 
 
-},{}],119:[function(require,module,exports){
+},{}],120:[function(require,module,exports){
 
 
 
@@ -52587,7 +54308,7 @@ dashed='-'+dashed;
 return dashed;
 };
 
-},{"./named_colors.json":118}],120:[function(require,module,exports){
+},{"./named_colors.json":119}],121:[function(require,module,exports){
 
 
 
@@ -53112,7 +54833,7 @@ return fn.apply(context,arguments);
 };
 }
 
-},{}],121:[function(require,module,exports){
+},{}],122:[function(require,module,exports){
 (function(Buffer){
 var querystring=require('querystring');
 var trim=require('./trim');
@@ -53419,12 +55140,12 @@ return refs.join(', ');
 module.exports=Link;
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")});
-},{"../../is-buffer/index.js":132,"./trim":122,"querystring":175}],122:[function(require,module,exports){
+},{"../../is-buffer/index.js":133,"./trim":123,"querystring":176}],123:[function(require,module,exports){
 module.exports=function trim(value){
 return value.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,'');
 };
 
-},{}],123:[function(require,module,exports){
+},{}],124:[function(require,module,exports){
 exports.read=function(buffer,offset,isLE,mLen,nBytes){
 var e,m;
 var eLen=nBytes*8-mLen-1;
@@ -53510,7 +55231,7 @@ for(;eLen>0;buffer[offset+i]=e&0xff,i+=d,e/=256,eLen-=8){}
 buffer[offset+i-d]|=s*128;
 };
 
-},{}],124:[function(require,module,exports){
+},{}],125:[function(require,module,exports){
 
 
 
@@ -53655,9 +55376,9 @@ return sumLuma/lumaValues.length;
 })(ImageSSIM||(ImageSSIM={}));
 module.exports=ImageSSIM;
 
-},{}],125:[function(require,module,exports){
-arguments[4][107][0].apply(exports,arguments);
-},{"dup":107}],126:[function(require,module,exports){
+},{}],126:[function(require,module,exports){
+arguments[4][108][0].apply(exports,arguments);
+},{"dup":108}],127:[function(require,module,exports){
 'use strict';
 
 var parser=require('./lib/parser');
@@ -53665,7 +55386,7 @@ var parser=require('./lib/parser');
 module.exports=parser;
 module.exports['default']=parser;
 
-},{"./lib/parser":127}],127:[function(require,module,exports){
+},{"./lib/parser":128}],128:[function(require,module,exports){
 
 
 
@@ -55218,7 +56939,7 @@ SyntaxError:peg$SyntaxError,
 parse:peg$parse};
 
 
-},{}],128:[function(require,module,exports){
+},{}],129:[function(require,module,exports){
 "use strict";
 
 
@@ -55419,7 +57140,7 @@ return!!f.options;
 }
 exports.isSelectOrPluralFormat=isSelectOrPluralFormat;
 
-},{}],129:[function(require,module,exports){
+},{}],130:[function(require,module,exports){
 "use strict";
 
 
@@ -55668,7 +57389,7 @@ return IntlMessageFormat;
 exports.IntlMessageFormat=IntlMessageFormat;
 exports.default=IntlMessageFormat;
 
-},{"./compiler":128}],130:[function(require,module,exports){
+},{"./compiler":129}],131:[function(require,module,exports){
 "use strict";
 
 
@@ -55685,7 +57406,7 @@ core_1.default.__parse=intl_messageformat_parser_1.default.parse;
 __export(require("./core"));
 exports.default=core_1.default;
 
-},{"./core":129,"intl-messageformat-parser":126}],131:[function(require,module,exports){
+},{"./core":130,"intl-messageformat-parser":127}],132:[function(require,module,exports){
 'use strict';
 var IntlMessageFormat=require('./dist').default;
 
@@ -55695,7 +57416,7 @@ var IntlMessageFormat=require('./dist').default;
 exports=module.exports=IntlMessageFormat;
 exports['default']=exports;
 
-},{"./dist":130}],132:[function(require,module,exports){
+},{"./dist":131}],133:[function(require,module,exports){
 
 
 
@@ -55718,14 +57439,14 @@ function isSlowBuffer(obj){
 return typeof obj.readFloatLE==='function'&&typeof obj.slice==='function'&&isBuffer(obj.slice(0,0));
 }
 
-},{}],133:[function(require,module,exports){
+},{}],134:[function(require,module,exports){
 var toString={}.toString;
 
 module.exports=Array.isArray||function(arr){
 return toString.call(arr)=='[object Array]';
 };
 
-},{}],134:[function(require,module,exports){
+},{}],135:[function(require,module,exports){
 var encode=require('./lib/encoder'),
 decode=require('./lib/decoder');
 
@@ -55734,7 +57455,7 @@ encode:encode,
 decode:decode};
 
 
-},{"./lib/decoder":135,"./lib/encoder":136}],135:[function(require,module,exports){
+},{"./lib/decoder":136,"./lib/encoder":137}],136:[function(require,module,exports){
 (function(Buffer){
 
 
@@ -55805,6 +57526,8 @@ for(j=0;j<codeLengths[i];j++){
 p=code.pop();
 p.children[p.index]=values[k];
 while(p.index>0){
+if(code.length===0)
+throw new Error('Could not recreate Huffman Table');
 p=code.pop();
 }
 p.index++;
@@ -55829,7 +57552,7 @@ return code[0].children;
 function decodeScan(data,offset,
 frame,components,resetInterval,
 spectralStart,spectralEnd,
-successivePrev,successive){
+successivePrev,successive,opts){
 var precision=frame.precision;
 var samplesPerLine=frame.samplesPerLine;
 var scanLines=frame.scanLines;
@@ -55847,7 +57570,7 @@ bitsData=data[offset++];
 if(bitsData==0xFF){
 var nextByte=data[offset++];
 if(nextByte){
-throw"unexpected marker: "+(bitsData<<8|nextByte).toString(16);
+throw new Error("unexpected marker: "+(bitsData<<8|nextByte).toString(16));
 }
 
 }
@@ -55861,7 +57584,7 @@ node=node[bit];
 if(typeof node==='number')
 return node;
 if(typeof node!=='object')
-throw"invalid huffman sequence";
+throw new Error("invalid huffman sequence");
 }
 return null;
 }
@@ -55938,6 +57661,7 @@ function decodeACSuccessive(component,zz){
 var k=spectralStart,e=spectralEnd,r=0;
 while(k<=e){
 var z=dctZigZag[k];
+var direction=zz[z]<0?-1:1;
 switch(successiveACState){
 case 0:
 var rs=decodeHuffman(component.huffmanTableAC);
@@ -55952,7 +57676,7 @@ successiveACState=1;
 }
 }else{
 if(s!==1)
-throw"invalid ACn encoding";
+throw new Error("invalid ACn encoding");
 successiveACNextValue=receiveAndExtend(s);
 successiveACState=r?2:3;
 }
@@ -55960,7 +57684,7 @@ continue;
 case 1:
 case 2:
 if(zz[z])
-zz[z]+=readBit()<<successive;else
+zz[z]+=(readBit()<<successive)*direction;else
 {
 r--;
 if(r===0)
@@ -55969,7 +57693,7 @@ successiveACState=successiveACState==2?3:0;
 break;
 case 3:
 if(zz[z])
-zz[z]+=readBit()<<successive;else
+zz[z]+=(readBit()<<successive)*direction;else
 {
 zz[z]=successiveACNextValue<<successive;
 successiveACState=0;
@@ -55977,7 +57701,7 @@ successiveACState=0;
 break;
 case 4:
 if(zz[z])
-zz[z]+=readBit()<<successive;
+zz[z]+=(readBit()<<successive)*direction;
 break;}
 
 k++;
@@ -55993,11 +57717,17 @@ var mcuRow=mcu/mcusPerLine|0;
 var mcuCol=mcu%mcusPerLine;
 var blockRow=mcuRow*component.v+row;
 var blockCol=mcuCol*component.h+col;
+
+if(component.blocks[blockRow]===undefined&&opts.tolerantDecoding)
+return;
 decode(component,component.blocks[blockRow][blockCol]);
 }
 function decodeBlock(component,decode,mcu){
 var blockRow=mcu/component.blocksPerLine|0;
 var blockCol=mcu%component.blocksPerLine;
+
+if(component.blocks[blockRow]===undefined&&opts.tolerantDecoding)
+return;
 decode(component,component.blocks[blockRow][blockCol]);
 }
 
@@ -56054,11 +57784,23 @@ if(mcu===mcuExpected)break;
 }
 }
 
+if(mcu===mcuExpected){
+
+do{
+if(data[offset]===0xFF){
+if(data[offset+1]!==0x00){
+break;
+}
+}
+offset+=1;
+}while(offset<data.length-2);
+}
+
 
 bitsCount=0;
 marker=data[offset]<<8|data[offset+1];
 if(marker<0xFF00){
-throw"marker was not found";
+throw new Error("marker was not found");
 }
 
 if(marker>=0xFFD0&&marker<=0xFFD7){
@@ -56076,6 +57818,7 @@ var lines=[];
 var blocksPerLine=component.blocksPerLine;
 var blocksPerColumn=component.blocksPerColumn;
 var samplesPerLine=blocksPerLine<<3;
+
 var R=new Int32Array(64),r=new Uint8Array(64);
 
 
@@ -56238,6 +57981,8 @@ dataOut[i]=sample<0?0:sample>0xFF?0xFF:sample;
 }
 }
 
+requestMemoryAllocation(samplesPerLine*blocksPerColumn*8);
+
 var i,j;
 for(var blockRow=0;blockRow<blocksPerColumn;blockRow++){
 var scanLine=blockRow<<3;
@@ -56276,6 +58021,7 @@ this.onload();
 xhr.send(null);
 },
 parse:function parse(data){
+var maxResolutionInPixels=this.opts.maxResolutionInMP*1000*1000;
 var offset=0,length=data.length;
 function readUint16(){
 var value=data[offset]<<8|data[offset+1];
@@ -56307,7 +58053,12 @@ var blocksPerLine=Math.ceil(Math.ceil(frame.samplesPerLine/8)*component.h/maxH);
 var blocksPerColumn=Math.ceil(Math.ceil(frame.scanLines/8)*component.v/maxV);
 var blocksPerLineForMcu=mcusPerLine*component.h;
 var blocksPerColumnForMcu=mcusPerColumn*component.v;
+var blocksToAllocate=blocksPerColumnForMcu*blocksPerLineForMcu;
 var blocks=[];
+
+
+requestMemoryAllocation(blocksToAllocate*256);
+
 for(var i=0;i<blocksPerColumnForMcu;i++){
 var row=[];
 for(var j=0;j<blocksPerLineForMcu;j++)
@@ -56331,8 +58082,9 @@ var frame,resetInterval;
 var quantizationTables=[],frames=[];
 var huffmanTablesAC=[],huffmanTablesDC=[];
 var fileMarker=readUint16();
+this.comments=[];
 if(fileMarker!=0xFFD8){
-throw"SOI not found";
+throw new Error("SOI not found");
 }
 
 fileMarker=readUint16();
@@ -56359,6 +58111,11 @@ case 0xFFEF:
 case 0xFFFE:
 var appData=readDataBlock();
 
+if(fileMarker===0xFFFE){
+var comment=String.fromCharCode.apply(null,appData);
+this.comments.push(comment);
+}
+
 if(fileMarker===0xFFE0){
 if(appData[0]===0x4A&&appData[1]===0x46&&appData[2]===0x49&&
 appData[3]===0x46&&appData[4]===0){
@@ -56371,6 +58128,16 @@ thumbWidth:appData[12],
 thumbHeight:appData[13],
 thumbData:appData.subarray(14,14+3*appData[12]*appData[13])};
 
+}
+}
+
+if(fileMarker===0xFFE1){
+if(appData[0]===0x45&&
+appData[1]===0x78&&
+appData[2]===0x69&&
+appData[3]===0x66&&
+appData[4]===0){
+this.exifBuffer=appData.subarray(5,appData.length);
 }
 }
 
@@ -56392,6 +58159,7 @@ var quantizationTablesLength=readUint16();
 var quantizationTablesEnd=quantizationTablesLength+offset-2;
 while(offset<quantizationTablesEnd){
 var quantizationTableSpec=data[offset++];
+requestMemoryAllocation(64*4);
 var tableData=new Int32Array(64);
 if(quantizationTableSpec>>4===0){
 for(j=0;j<64;j++){
@@ -56404,7 +58172,7 @@ var z=dctZigZag[j];
 tableData[z]=readUint16();
 }
 }else
-throw"DQT: invalid table spec";
+throw new Error("DQT: invalid table spec");
 quantizationTables[quantizationTableSpec&15]=tableData;
 }
 break;
@@ -56421,6 +58189,13 @@ frame.scanLines=readUint16();
 frame.samplesPerLine=readUint16();
 frame.components={};
 frame.componentsOrder=[];
+
+var pixelsInFrame=frame.scanLines*frame.samplesPerLine;
+if(pixelsInFrame>maxResolutionInPixels){
+var exceededAmount=Math.ceil((pixelsInFrame-maxResolutionInPixels)/1e6);
+throw new Error(`maxResolutionInMP limit exceeded by ${exceededAmount}MP`);
+}
+
 var componentsCount=data[offset++],componentId;
 var maxH=0,maxV=0;
 for(i=0;i<componentsCount;i++){
@@ -56446,8 +58221,10 @@ for(i=2;i<huffmanLength;){
 var huffmanTableSpec=data[offset++];
 var codeLengths=new Uint8Array(16);
 var codeLengthSum=0;
-for(j=0;j<16;j++,offset++)
+for(j=0;j<16;j++,offset++){
 codeLengthSum+=codeLengths[j]=data[offset];
+}
+requestMemoryAllocation(16+codeLengthSum);
 var huffmanValues=new Uint8Array(codeLengthSum);
 for(j=0;j<codeLengthSum;j++,offset++)
 huffmanValues[j]=data[offset];
@@ -56481,9 +58258,16 @@ var successiveApproximation=data[offset++];
 var processed=decodeScan(data,offset,
 frame,components,resetInterval,
 spectralStart,spectralEnd,
-successiveApproximation>>4,successiveApproximation&15);
+successiveApproximation>>4,successiveApproximation&15,this.opts);
 offset+=processed;
 break;
+
+case 0xFFFF:
+if(data[offset]!==0xFF){
+offset--;
+}
+break;
+
 default:
 if(data[offset-3]==0xFF&&
 data[offset-2]>=0xC0&&data[offset-2]<=0xFE){
@@ -56492,12 +58276,12 @@ data[offset-2]>=0xC0&&data[offset-2]<=0xFE){
 offset-=3;
 break;
 }
-throw"unknown JPEG marker "+fileMarker.toString(16);}
+throw new Error("unknown JPEG marker "+fileMarker.toString(16));}
 
 fileMarker=readUint16();
 }
 if(frames.length!=1)
-throw"only single frame JPEGs supported";
+throw new Error("only single frame JPEGs supported");
 
 
 for(var i=0;i<frames.length;i++){
@@ -56532,6 +58316,7 @@ var offset=0;
 var Y,Cb,Cr,K,C,M,Ye,R,G,B;
 var colorTransform;
 var dataLength=width*height*this.components.length;
+requestMemoryAllocation(dataLength);
 var data=new Uint8Array(dataLength);
 switch(this.components.length){
 case 1:
@@ -56566,8 +58351,8 @@ colorTransform=true;
 
 if(this.adobe&&this.adobe.transformCode)
 colorTransform=true;else
-if(typeof this.colorTransform!=='undefined')
-colorTransform=!!this.colorTransform;
+if(typeof this.opts.colorTransform!=='undefined')
+colorTransform=!!this.opts.colorTransform;
 
 component1=this.components[0];
 component2=this.components[1];
@@ -56599,14 +58384,14 @@ data[offset++]=B;
 break;
 case 4:
 if(!this.adobe)
-throw'Unsupported color mode (4 components)';
+throw new Error('Unsupported color mode (4 components)');
 
 colorTransform=false;
 
 if(this.adobe&&this.adobe.transformCode)
 colorTransform=true;else
-if(typeof this.colorTransform!=='undefined')
-colorTransform=!!this.colorTransform;
+if(typeof this.opts.colorTransform!=='undefined')
+colorTransform=!!this.opts.colorTransform;
 
 component1=this.components[0];
 component2=this.components[1];
@@ -56641,11 +58426,11 @@ data[offset++]=255-K;
 }
 break;
 default:
-throw'Unsupported color mode';}
+throw new Error('Unsupported color mode');}
 
 return data;
 },
-copyToImageData:function copyToImageData(imageData){
+copyToImageData:function copyToImageData(imageData,formatAsRGBA){
 var width=imageData.width,height=imageData.height;
 var imageDataArray=imageData.data;
 var data=this.getData(width,height);
@@ -56660,7 +58445,9 @@ Y=data[i++];
 imageDataArray[j++]=Y;
 imageDataArray[j++]=Y;
 imageDataArray[j++]=Y;
+if(formatAsRGBA){
 imageDataArray[j++]=255;
+}
 }
 }
 break;
@@ -56674,7 +58461,9 @@ B=data[i++];
 imageDataArray[j++]=R;
 imageDataArray[j++]=G;
 imageDataArray[j++]=B;
+if(formatAsRGBA){
 imageDataArray[j++]=255;
+}
 }
 }
 break;
@@ -56693,38 +58482,104 @@ B=255-clampTo8bit(Y*(1-K/255)+K);
 imageDataArray[j++]=R;
 imageDataArray[j++]=G;
 imageDataArray[j++]=B;
+if(formatAsRGBA){
 imageDataArray[j++]=255;
+}
 }
 }
 break;
 default:
-throw'Unsupported color mode';}
+throw new Error('Unsupported color mode');}
 
 }};
 
 
+
+
+var totalBytesAllocated=0;
+var maxMemoryUsageBytes=0;
+function requestMemoryAllocation(increaseAmount=0){
+var totalMemoryImpactBytes=totalBytesAllocated+increaseAmount;
+if(totalMemoryImpactBytes>maxMemoryUsageBytes){
+var exceededAmount=Math.ceil((totalMemoryImpactBytes-maxMemoryUsageBytes)/1024/1024);
+throw new Error(`maxMemoryUsageInMB limit exceeded by at least ${exceededAmount}MB`);
+}
+
+totalBytesAllocated=totalMemoryImpactBytes;
+}
+
+constructor.resetMaxMemoryUsage=function(maxMemoryUsageBytes_){
+totalBytesAllocated=0;
+maxMemoryUsageBytes=maxMemoryUsageBytes_;
+};
+
+constructor.getBytesAllocated=function(){
+return totalBytesAllocated;
+};
+
+constructor.requestMemoryAllocation=requestMemoryAllocation;
+
 return constructor;
 }();
-module.exports=decode;
 
-function decode(jpegData){
+if(typeof module!=='undefined'){
+module.exports=decode;
+}else if(typeof window!=='undefined'){
+window['jpeg-js']=window['jpeg-js']||{};
+window['jpeg-js'].decode=decode;
+}
+
+function decode(jpegData,userOpts={}){
+var defaultOpts={
+
+colorTransform:undefined,
+useTArray:false,
+formatAsRGBA:true,
+tolerantDecoding:true,
+maxResolutionInMP:100,
+maxMemoryUsageInMB:512};
+
+
+var opts={...defaultOpts,...userOpts};
 var arr=new Uint8Array(jpegData);
 var decoder=new JpegImage();
+decoder.opts=opts;
+
+
+JpegImage.resetMaxMemoryUsage(opts.maxMemoryUsageInMB*1024*1024);
 decoder.parse(arr);
 
+var channels=opts.formatAsRGBA?4:3;
+var bytesNeeded=decoder.width*decoder.height*channels;
+try{
+JpegImage.requestMemoryAllocation(bytesNeeded);
 var image={
 width:decoder.width,
 height:decoder.height,
-data:new Buffer(decoder.width*decoder.height*4)};
+exifBuffer:decoder.exifBuffer,
+data:opts.useTArray?
+new Uint8Array(bytesNeeded):
+new Buffer(bytesNeeded)};
 
+if(decoder.comments.length>0){
+image["comments"]=decoder.comments;
+}
+}catch(err){
+if(err instanceof RangeError){
+throw new Error("Could not allocate enough memory for the image. "+
+"Required: "+bytesNeeded);
+}else{
+throw err;
+}
+}
 
-decoder.copyToImageData(image);
+decoder.copyToImageData(image,opts.formatAsRGBA);
 
 return image;
 }
 
 }).call(this,require("buffer").Buffer);
-},{"buffer":116}],136:[function(require,module,exports){
+},{"buffer":117}],137:[function(require,module,exports){
 (function(Buffer){
 
 
@@ -57022,8 +58877,8 @@ var d0,d1,d2,d3,d4,d5,d6,d7;
 
 var dataOff=0;
 var i;
-const I8=8;
-const I64=64;
+var I8=8;
+var I64=64;
 for(i=0;i<I8;++i)
 {
 d0=data[dataOff];
@@ -57167,6 +59022,32 @@ writeByte(0);
 writeByte(0);
 }
 
+function writeAPP1(exifBuffer){
+if(!exifBuffer)return;
+
+writeWord(0xFFE1);
+
+if(exifBuffer[0]===0x45&&
+exifBuffer[1]===0x78&&
+exifBuffer[2]===0x69&&
+exifBuffer[3]===0x66){
+
+writeWord(exifBuffer.length+2);
+}else{
+
+writeWord(exifBuffer.length+5+2);
+writeByte(0x45);
+writeByte(0x78);
+writeByte(0x69);
+writeByte(0x66);
+writeByte(0);
+}
+
+for(var i=0;i<exifBuffer.length;i++){
+writeByte(exifBuffer[i]);
+}
+}
+
 function writeSOF0(width,height)
 {
 writeWord(0xFFC0);
@@ -57258,9 +59139,9 @@ function processDU(CDU,fdtbl,DC,HTDC,HTAC){
 var EOB=HTAC[0x00];
 var M16zeroes=HTAC[0xF0];
 var pos;
-const I16=16;
-const I63=63;
-const I64=64;
+var I16=16;
+var I63=63;
+var I64=64;
 var DU_DCT=fDCTQuant(CDU,fdtbl);
 
 for(var j=0;j<I64;++j){
@@ -57327,6 +59208,7 @@ bytepos=7;
 
 writeWord(0xFFD8);
 writeAPP0();
+writeAPP1(image.exifBuffer);
 writeDQT();
 writeSOF0(image.width,image.height);
 writeDHT();
@@ -57414,7 +59296,7 @@ writeBits(fillbits);
 
 writeWord(0xFFD9);
 
-
+if(typeof module==='undefined')return new Uint8Array(byteout);
 return new Buffer(byteout);
 
 var jpegDataUri='data:image/jpeg;base64,'+btoa(byteout.join(''));
@@ -57468,7 +59350,13 @@ var duration=new Date().getTime()-time_start;
 init();
 
 };
+
+if(typeof module!=='undefined'){
 module.exports=encode;
+}else if(typeof window!=='undefined'){
+window['jpeg-js']=window['jpeg-js']||{};
+window['jpeg-js'].encode=encode;
+}
 
 function encode(imgData,qu){
 if(typeof qu==='undefined')qu=50;
@@ -57494,7 +59382,7 @@ return ctx.getImageData(0,0,cvs.width,cvs.height);
 }
 
 }).call(this,require("buffer").Buffer);
-},{"buffer":116}],137:[function(require,module,exports){
+},{"buffer":117}],138:[function(require,module,exports){
 (function(process){
 
 
@@ -57739,7 +59627,7 @@ Log.getTimeEntries=()=>marky.getEntries();
 module.exports=Log;
 
 }).call(this,require('_process'));
-},{"_process":172,"debug":138,"events":120,"marky":159}],138:[function(require,module,exports){
+},{"_process":173,"debug":139,"events":121,"marky":160}],139:[function(require,module,exports){
 (function(process){
 
 
@@ -57928,7 +59816,7 @@ return window.localStorage;
 }
 
 }).call(this,require('_process'));
-},{"./debug":139,"_process":172}],139:[function(require,module,exports){
+},{"./debug":140,"_process":173}],140:[function(require,module,exports){
 
 
 
@@ -58132,7 +60020,7 @@ if(val instanceof Error)return val.stack||val.message;
 return val;
 }
 
-},{"ms":140}],140:[function(require,module,exports){
+},{"ms":141}],141:[function(require,module,exports){
 
 
 
@@ -58286,7 +60174,7 @@ return Math.floor(ms/n)+' '+name;
 return Math.ceil(ms/n)+' '+name+'s';
 }
 
-},{}],141:[function(require,module,exports){
+},{}],142:[function(require,module,exports){
 
 
 
@@ -58510,7 +60398,7 @@ node.type===BaseNode.TYPES.NETWORK&&isTargetRequest(node.record));
 
 module.exports=AdLanternMetric;
 
-},{"../utils/resource-classification":155,"lighthouse/lighthouse-core/computed/metrics/lantern-metric":28,"lighthouse/lighthouse-core/lib/dependency-graph/base-node.js":68,"lighthouse/lighthouse-core/lib/dependency-graph/cpu-node.js":69,"lighthouse/lighthouse-core/lib/dependency-graph/network-node.js":70,"url":"url"}],142:[function(require,module,exports){
+},{"../utils/resource-classification":156,"lighthouse/lighthouse-core/computed/metrics/lantern-metric":29,"lighthouse/lighthouse-core/lib/dependency-graph/base-node.js":69,"lighthouse/lighthouse-core/lib/dependency-graph/cpu-node.js":70,"lighthouse/lighthouse-core/lib/dependency-graph/network-node.js":71,"url":"url"}],143:[function(require,module,exports){
 
 
 
@@ -58595,7 +60483,7 @@ AdRenderTime=makeComputedArtifact(AdRenderTime);
 module.exports=AdRenderTime;
 
 
-},{"../utils/network-timing":153,"../utils/resource-classification":155,"./ad-lantern-metric":141,"lighthouse/lighthouse-core/computed/computed-artifact":8,"lighthouse/lighthouse-core/computed/metrics/metric":33}],143:[function(require,module,exports){
+},{"../utils/network-timing":154,"../utils/resource-classification":156,"./ad-lantern-metric":142,"lighthouse/lighthouse-core/computed/computed-artifact":9,"lighthouse/lighthouse-core/computed/metrics/metric":34}],144:[function(require,module,exports){
 
 
 
@@ -58677,7 +60565,7 @@ AdRequestTime=makeComputedArtifact(AdRequestTime);
 
 module.exports=AdRequestTime;
 
-},{"../utils/network-timing":153,"../utils/resource-classification":155,"./ad-lantern-metric":141,"lighthouse/lighthouse-core/computed/computed-artifact":8,"lighthouse/lighthouse-core/computed/metrics/metric":33}],144:[function(require,module,exports){
+},{"../utils/network-timing":154,"../utils/resource-classification":156,"./ad-lantern-metric":142,"lighthouse/lighthouse-core/computed/computed-artifact":9,"lighthouse/lighthouse-core/computed/metrics/metric":34}],145:[function(require,module,exports){
 
 
 
@@ -58768,7 +60656,7 @@ BidRequestTime=makeComputedArtifact(BidRequestTime);
 
 module.exports=BidRequestTime;
 
-},{"../utils/network-timing":153,"../utils/resource-classification":155,"./ad-lantern-metric":141,"lighthouse/lighthouse-core/computed/computed-artifact":8,"lighthouse/lighthouse-core/computed/metrics/metric":33}],145:[function(require,module,exports){
+},{"../utils/network-timing":154,"../utils/resource-classification":156,"./ad-lantern-metric":142,"lighthouse/lighthouse-core/computed/computed-artifact":9,"lighthouse/lighthouse-core/computed/metrics/metric":34}],146:[function(require,module,exports){
 
 
 
@@ -58910,7 +60798,7 @@ LongTasks=makeComputedArtifact(LongTasks);
 
 module.exports=LongTasks;
 
-},{"../computed/ad-lantern-metric":141,"../utils/tasks":156,"lighthouse/lighthouse-core/computed/computed-artifact":8,"lighthouse/lighthouse-core/computed/load-simulator":11,"lighthouse/lighthouse-core/computed/main-thread-tasks":13,"lighthouse/lighthouse-core/computed/metrics/metric":33,"lighthouse/lighthouse-core/computed/network-records":39,"lighthouse/lighthouse-core/computed/page-dependency-graph":40,"lighthouse/lighthouse-core/lib/dependency-graph/base-node.js":68,"lighthouse/lighthouse-core/lib/dependency-graph/cpu-node.js":69,"lighthouse/lighthouse-core/lib/dependency-graph/network-node.js":70}],146:[function(require,module,exports){
+},{"../computed/ad-lantern-metric":142,"../utils/tasks":157,"lighthouse/lighthouse-core/computed/computed-artifact":9,"lighthouse/lighthouse-core/computed/load-simulator":12,"lighthouse/lighthouse-core/computed/main-thread-tasks":14,"lighthouse/lighthouse-core/computed/metrics/metric":34,"lighthouse/lighthouse-core/computed/network-records":40,"lighthouse/lighthouse-core/computed/page-dependency-graph":41,"lighthouse/lighthouse-core/lib/dependency-graph/base-node.js":69,"lighthouse/lighthouse-core/lib/dependency-graph/cpu-node.js":70,"lighthouse/lighthouse-core/lib/dependency-graph/network-node.js":71}],147:[function(require,module,exports){
 
 
 
@@ -58995,7 +60883,7 @@ TagLoadTime=makeComputedArtifact(TagLoadTime);
 module.exports=TagLoadTime;
 
 
-},{"../utils/network-timing":153,"../utils/resource-classification":155,"./ad-lantern-metric":141,"lighthouse/lighthouse-core/computed/computed-artifact":8,"lighthouse/lighthouse-core/computed/metrics/metric":33,"url":"url"}],147:[function(require,module,exports){
+},{"../utils/network-timing":154,"../utils/resource-classification":156,"./ad-lantern-metric":142,"lighthouse/lighthouse-core/computed/computed-artifact":9,"lighthouse/lighthouse-core/computed/metrics/metric":34,"url":"url"}],148:[function(require,module,exports){
 (function(__filename){
 
 
@@ -59099,7 +60987,7 @@ module.exports={auditNotApplicable,runWarning,auditError,group};
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/node_modules/lighthouse-plugin-publisher-ads/messages/common-strings.js");
-},{"lighthouse/lighthouse-core/lib/i18n/i18n":77}],148:[function(require,module,exports){
+},{"lighthouse/lighthouse-core/lib/i18n/i18n":78}],149:[function(require,module,exports){
 
 
 
@@ -59174,7 +61062,7 @@ module.exports={
 count,bucket,flatten};
 
 
-},{}],149:[function(require,module,exports){
+},{}],150:[function(require,module,exports){
 
 
 
@@ -59203,7 +61091,7 @@ module.exports={
 assert};
 
 
-},{}],150:[function(require,module,exports){
+},{}],151:[function(require,module,exports){
 
 
 
@@ -59723,7 +61611,7 @@ patterns:[
 
 
 
-},{}],151:[function(require,module,exports){
+},{}],152:[function(require,module,exports){
 
 
 
@@ -59772,7 +61660,7 @@ boxViewableArea};
 
 
 
-},{}],152:[function(require,module,exports){
+},{}],153:[function(require,module,exports){
 
 
 
@@ -60189,7 +62077,7 @@ getCriticalGraph,
 computeAdRequestWaterfall};
 
 
-},{"../utils/network-timing":153,"../utils/resource-classification":155,"./asserts":149,"./resource-classification":155,"lighthouse/lighthouse-core/computed/network-records":39,"lighthouse/lighthouse-core/computed/page-dependency-graph":40,"lighthouse/lighthouse-core/lib/dependency-graph/base-node":68,"lighthouse/lighthouse-core/lib/dependency-graph/cpu-node.js":69,"lighthouse/lighthouse-core/lib/dependency-graph/network-node.js":70}],153:[function(require,module,exports){
+},{"../utils/network-timing":154,"../utils/resource-classification":156,"./asserts":150,"./resource-classification":156,"lighthouse/lighthouse-core/computed/network-records":40,"lighthouse/lighthouse-core/computed/page-dependency-graph":41,"lighthouse/lighthouse-core/lib/dependency-graph/base-node":69,"lighthouse/lighthouse-core/lib/dependency-graph/cpu-node.js":70,"lighthouse/lighthouse-core/lib/dependency-graph/network-node.js":71}],154:[function(require,module,exports){
 
 
 
@@ -60408,7 +62296,7 @@ getTimingsByRecord,
 getScriptEvaluationTimes};
 
 
-},{"../computed/ad-lantern-metric":141,"./resource-classification":155,"lighthouse/lighthouse-core/computed/load-simulator":11,"lighthouse/lighthouse-core/computed/network-records":39,"lighthouse/lighthouse-core/computed/page-dependency-graph":40,"url":"url"}],154:[function(require,module,exports){
+},{"../computed/ad-lantern-metric":142,"./resource-classification":156,"lighthouse/lighthouse-core/computed/load-simulator":12,"lighthouse/lighthouse-core/computed/network-records":40,"lighthouse/lighthouse-core/computed/page-dependency-graph":41,"url":"url"}],155:[function(require,module,exports){
 
 
 
@@ -60468,7 +62356,7 @@ module.exports={
 isCacheable};
 
 
-},{"@tusbar/cache-control":105,"lighthouse/lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl":"../audits/byte-efficiency/uses-long-cache-ttl"}],155:[function(require,module,exports){
+},{"@tusbar/cache-control":106,"lighthouse/lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl":"../audits/byte-efficiency/uses-long-cache-ttl"}],156:[function(require,module,exports){
 
 
 
@@ -60819,7 +62707,7 @@ trimUrl,
 getAbbreviatedUrl};
 
 
-},{"../utils/network":154,"./bidder-patterns":150,"url":"url"}],156:[function(require,module,exports){
+},{"../utils/network":155,"./bidder-patterns":151,"url":"url"}],157:[function(require,module,exports){
 
 
 
@@ -60864,7 +62752,7 @@ return childUrl;
 
 module.exports={getAttributableUrl};
 
-},{}],157:[function(require,module,exports){
+},{}],158:[function(require,module,exports){
 (function(global){
 
 
@@ -62716,7 +64604,7 @@ return false;
 module.exports=isEqual;
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{}],158:[function(require,module,exports){
+},{}],159:[function(require,module,exports){
 
 
 
@@ -62733,7 +64621,7 @@ current.pop();
 }
 };
 
-},{}],159:[function(require,module,exports){
+},{}],160:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports,'__esModule',{value:true});
@@ -62813,7 +64701,7 @@ exports.getEntries=function(){return entries;};
 exports.clear=function(){entries=[];};
 }
 
-},{}],160:[function(require,module,exports){
+},{}],161:[function(require,module,exports){
 exports.getRenderingDataFromViewport=function(viewportProperties,uaDeviceWidth,uaDeviceHeight,uaMaxZoom,uaMinZoom){
 
 var vw=uaDeviceWidth/100;
@@ -63156,7 +65044,7 @@ exports.expectedValues={
 "viewport-fit":["auto","cover"]};
 
 
-},{}],161:[function(require,module,exports){
+},{}],162:[function(require,module,exports){
 'use strict';
 
 
@@ -63263,7 +65151,7 @@ exports.assign(exports,fnUntyped);
 
 exports.setTyped(TYPED_OK);
 
-},{}],162:[function(require,module,exports){
+},{}],163:[function(require,module,exports){
 'use strict';
 
 
@@ -63316,7 +65204,7 @@ return s1|s2<<16|0;
 
 module.exports=adler32;
 
-},{}],163:[function(require,module,exports){
+},{}],164:[function(require,module,exports){
 'use strict';
 
 
@@ -63386,7 +65274,7 @@ Z_DEFLATED:8};
 
 
 
-},{}],164:[function(require,module,exports){
+},{}],165:[function(require,module,exports){
 'use strict';
 
 
@@ -63447,7 +65335,7 @@ return crc^-1;
 
 module.exports=crc32;
 
-},{}],165:[function(require,module,exports){
+},{}],166:[function(require,module,exports){
 'use strict';
 
 
@@ -65323,7 +67211,7 @@ exports.deflateInfo='pako deflate (from Nodeca project)';
 
 
 
-},{"../utils/common":161,"./adler32":162,"./crc32":164,"./messages":166,"./trees":167}],166:[function(require,module,exports){
+},{"../utils/common":162,"./adler32":163,"./crc32":165,"./messages":167,"./trees":168}],167:[function(require,module,exports){
 'use strict';
 
 
@@ -65357,7 +67245,7 @@ module.exports={
 '-6':'incompatible version'};
 
 
-},{}],167:[function(require,module,exports){
+},{}],168:[function(require,module,exports){
 'use strict';
 
 
@@ -66581,7 +68469,7 @@ exports._tr_flush_block=_tr_flush_block;
 exports._tr_tally=_tr_tally;
 exports._tr_align=_tr_align;
 
-},{"../utils/common":161}],168:[function(require,module,exports){
+},{"../utils/common":162}],169:[function(require,module,exports){
 'use strict';
 
 
@@ -66630,7 +68518,7 @@ this.adler=0;
 
 module.exports=ZStream;
 
-},{}],169:[function(require,module,exports){
+},{}],170:[function(require,module,exports){
 module.exports=function parseCacheControl(field){
 
 if(typeof field!=='string'){
@@ -66669,7 +68557,7 @@ catch(err){}
 return err?null:header;
 };
 
-},{}],170:[function(require,module,exports){
+},{}],171:[function(require,module,exports){
 (function(process){
 
 
@@ -66975,7 +68863,7 @@ return str.substr(start,len);
 
 
 }).call(this,require('_process'));
-},{"_process":172}],171:[function(require,module,exports){
+},{"_process":173}],172:[function(require,module,exports){
 (function(process){
 'use strict';
 
@@ -67024,7 +68912,7 @@ fn.apply(null,args);
 
 
 }).call(this,require('_process'));
-},{"_process":172}],172:[function(require,module,exports){
+},{"_process":173}],173:[function(require,module,exports){
 
 var process=module.exports={};
 
@@ -67210,7 +69098,7 @@ throw new Error('process.chdir is not supported');
 };
 process.umask=function(){return 0;};
 
-},{}],173:[function(require,module,exports){
+},{}],174:[function(require,module,exports){
 
 
 
@@ -67296,7 +69184,7 @@ var isArray=Array.isArray||function(xs){
 return Object.prototype.toString.call(xs)==='[object Array]';
 };
 
-},{}],174:[function(require,module,exports){
+},{}],175:[function(require,module,exports){
 
 
 
@@ -67383,16 +69271,16 @@ if(Object.prototype.hasOwnProperty.call(obj,key))res.push(key);
 return res;
 };
 
-},{}],175:[function(require,module,exports){
+},{}],176:[function(require,module,exports){
 'use strict';
 
 exports.decode=exports.parse=require('./decode');
 exports.encode=exports.stringify=require('./encode');
 
-},{"./decode":173,"./encode":174}],176:[function(require,module,exports){
+},{"./decode":174,"./encode":175}],177:[function(require,module,exports){
 module.exports=require('./lib/_stream_duplex.js');
 
-},{"./lib/_stream_duplex.js":177}],177:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":178}],178:[function(require,module,exports){
 
 
 
@@ -67524,7 +69412,7 @@ this.end();
 
 pna.nextTick(cb,err);
 };
-},{"./_stream_readable":179,"./_stream_writable":181,"core-util-is":117,"inherits":185,"process-nextick-args":171}],178:[function(require,module,exports){
+},{"./_stream_readable":180,"./_stream_writable":182,"core-util-is":118,"inherits":186,"process-nextick-args":172}],179:[function(require,module,exports){
 
 
 
@@ -67572,7 +69460,7 @@ Transform.call(this,options);
 PassThrough.prototype._transform=function(chunk,encoding,cb){
 cb(null,chunk);
 };
-},{"./_stream_transform":180,"core-util-is":117,"inherits":185}],179:[function(require,module,exports){
+},{"./_stream_transform":181,"core-util-is":118,"inherits":186}],180:[function(require,module,exports){
 (function(process,global){
 
 
@@ -68594,7 +70482,7 @@ if(xs[i]===x)return i;
 return-1;
 }
 }).call(this,require('_process'),typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{"./_stream_duplex":177,"./internal/streams/BufferList":182,"./internal/streams/destroy":183,"./internal/streams/stream":184,"_process":172,"core-util-is":117,"events":120,"inherits":185,"isarray":133,"process-nextick-args":171,"safe-buffer":192,"string_decoder/":198,"util":112}],180:[function(require,module,exports){
+},{"./_stream_duplex":178,"./internal/streams/BufferList":183,"./internal/streams/destroy":184,"./internal/streams/stream":185,"_process":173,"core-util-is":118,"events":121,"inherits":186,"isarray":134,"process-nextick-args":172,"safe-buffer":193,"string_decoder/":199,"util":113}],181:[function(require,module,exports){
 
 
 
@@ -68809,7 +70697,7 @@ if(stream._transformState.transforming)throw new Error('Calling transform done w
 
 return stream.push(null);
 }
-},{"./_stream_duplex":177,"core-util-is":117,"inherits":185}],181:[function(require,module,exports){
+},{"./_stream_duplex":178,"core-util-is":118,"inherits":186}],182:[function(require,module,exports){
 (function(process,global,setImmediate){
 
 
@@ -69499,7 +71387,7 @@ this.end();
 cb(err);
 };
 }).call(this,require('_process'),typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{},require("timers").setImmediate);
-},{"./_stream_duplex":177,"./internal/streams/destroy":183,"./internal/streams/stream":184,"_process":172,"core-util-is":117,"inherits":185,"process-nextick-args":171,"safe-buffer":192,"timers":203,"util-deprecate":204}],182:[function(require,module,exports){
+},{"./_stream_duplex":178,"./internal/streams/destroy":184,"./internal/streams/stream":185,"_process":173,"core-util-is":118,"inherits":186,"process-nextick-args":172,"safe-buffer":193,"timers":204,"util-deprecate":205}],183:[function(require,module,exports){
 'use strict';
 
 function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}
@@ -69579,7 +71467,7 @@ var obj=util.inspect({length:this.length});
 return this.constructor.name+' '+obj;
 };
 }
-},{"safe-buffer":192,"util":112}],183:[function(require,module,exports){
+},{"safe-buffer":193,"util":113}],184:[function(require,module,exports){
 'use strict';
 
 
@@ -69654,10 +71542,10 @@ module.exports={
 destroy:destroy,
 undestroy:undestroy};
 
-},{"process-nextick-args":171}],184:[function(require,module,exports){
+},{"process-nextick-args":172}],185:[function(require,module,exports){
 module.exports=require('events').EventEmitter;
 
-},{"events":120}],185:[function(require,module,exports){
+},{"events":121}],186:[function(require,module,exports){
 if(typeof Object.create==='function'){
 
 module.exports=function inherits(ctor,superCtor){
@@ -69686,10 +71574,10 @@ ctor.prototype.constructor=ctor;
 };
 }
 
-},{}],186:[function(require,module,exports){
+},{}],187:[function(require,module,exports){
 module.exports=require('./readable').PassThrough;
 
-},{"./readable":187}],187:[function(require,module,exports){
+},{"./readable":188}],188:[function(require,module,exports){
 exports=module.exports=require('./lib/_stream_readable.js');
 exports.Stream=exports;
 exports.Readable=exports;
@@ -69698,13 +71586,13 @@ exports.Duplex=require('./lib/_stream_duplex.js');
 exports.Transform=require('./lib/_stream_transform.js');
 exports.PassThrough=require('./lib/_stream_passthrough.js');
 
-},{"./lib/_stream_duplex.js":177,"./lib/_stream_passthrough.js":178,"./lib/_stream_readable.js":179,"./lib/_stream_transform.js":180,"./lib/_stream_writable.js":181}],188:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":178,"./lib/_stream_passthrough.js":179,"./lib/_stream_readable.js":180,"./lib/_stream_transform.js":181,"./lib/_stream_writable.js":182}],189:[function(require,module,exports){
 module.exports=require('./readable').Transform;
 
-},{"./readable":187}],189:[function(require,module,exports){
+},{"./readable":188}],190:[function(require,module,exports){
 module.exports=require('./lib/_stream_writable.js');
 
-},{"./lib/_stream_writable.js":181}],190:[function(require,module,exports){
+},{"./lib/_stream_writable.js":182}],191:[function(require,module,exports){
 var URL=require('url').URL;
 
 
@@ -70127,13 +72015,13 @@ return this._sitemaps.slice(0);
 
 module.exports=Robots;
 
-},{"url":"url"}],191:[function(require,module,exports){
+},{"url":"url"}],192:[function(require,module,exports){
 var Robots=require('./Robots');
 
 module.exports=function(url,contents){
 return new Robots(url,contents);
 };
-},{"./Robots":190}],192:[function(require,module,exports){
+},{"./Robots":191}],193:[function(require,module,exports){
 
 var buffer=require('buffer');
 var Buffer=buffer.Buffer;
@@ -70197,7 +72085,7 @@ throw new TypeError('Argument must be a number');
 return buffer.SlowBuffer(size);
 };
 
-},{"buffer":116}],193:[function(require,module,exports){
+},{"buffer":117}],194:[function(require,module,exports){
 (function(process){
 exports=module.exports=SemVer;
 
@@ -71684,7 +73572,7 @@ return parse(match[1]+
 }
 
 }).call(this,require('_process'));
-},{"_process":172}],194:[function(require,module,exports){
+},{"_process":173}],195:[function(require,module,exports){
 (function(Buffer){
 'use strict';
 
@@ -71926,7 +73814,7 @@ create:frame};
 
 
 }).call(this,require("buffer").Buffer);
-},{"buffer":116,"fs":115,"jpeg-js":134}],195:[function(require,module,exports){
+},{"buffer":117,"fs":116,"jpeg-js":135}],196:[function(require,module,exports){
 'use strict';
 
 const frame=require('./frame');
@@ -71996,7 +73884,7 @@ return calculateValues(frames,data);
 });
 };
 
-},{"./frame":194,"./speed-index":196}],196:[function(require,module,exports){
+},{"./frame":195,"./speed-index":197}],197:[function(require,module,exports){
 'use strict';
 
 const imageSSIM=require('image-ssim');
@@ -72268,7 +74156,7 @@ calculatePerceptualProgress,
 calculateSpeedIndexes};
 
 
-},{"image-ssim":124}],197:[function(require,module,exports){
+},{"image-ssim":125}],198:[function(require,module,exports){
 
 
 
@@ -72397,7 +74285,7 @@ dest.emit('pipe',source);
 return dest;
 };
 
-},{"events":120,"inherits":125,"readable-stream/duplex.js":176,"readable-stream/passthrough.js":186,"readable-stream/readable.js":187,"readable-stream/transform.js":188,"readable-stream/writable.js":189}],198:[function(require,module,exports){
+},{"events":121,"inherits":126,"readable-stream/duplex.js":177,"readable-stream/passthrough.js":187,"readable-stream/readable.js":188,"readable-stream/transform.js":189,"readable-stream/writable.js":190}],199:[function(require,module,exports){
 
 
 
@@ -72694,12 +74582,12 @@ return buf.toString(this.encoding);
 function simpleEnd(buf){
 return buf&&buf.length?this.write(buf):'';
 }
-},{"safe-buffer":192}],199:[function(require,module,exports){
-module.exports=[{"name":"Facebook","homepage":"https://www.facebook.com","categories":["social"],"domains":["*.atlassbx.com","*.facebook.com","*.fbsbx.com","fbcdn-photos-e-a.akamaihd.net","*.facebook.net","*.fbcdn.net"],"examples":["www.facebook.com","connect.facebook.net","staticxx.facebook.com","static.xx.fbcdn.net","m.facebook.com","an.facebook.com","platform-lookaside.fbsbx.com"]},{"name":"Google Analytics","company":"Google","homepage":"https://www.google.com/analytics/analytics/","categories":["analytics"],"domains":["*.google-analytics.com","*.urchin.com"],"examples":["www.google-analytics.com","ssl.google-analytics.com"]},{"name":"Google CDN","company":"Google","homepage":"https://developers.google.com/speed/libraries/","categories":["cdn"],"domains":["ajax.googleapis.com","commondatastorage.googleapis.com","www.gstatic.com"]},{"name":"Google/Doubleclick Ads","company":"Google","homepage":"https://www.doubleclickbygoogle.com/","categories":["ad"],"domains":["adservice.google.com","adservice.google.com.au","adservice.google.com.sg","adservice.google.com.br","adservice.google.com.ua","adservice.google.co.uk","adservice.google.co.jp","adservice.google.co.in","adservice.google.co.kr","adservice.google.co.id","adservice.google.co.nz","adservice.google.ie","adservice.google.se","adservice.google.de","adservice.google.ca","adservice.google.be","adservice.google.es","adservice.google.ch","adservice.google.fr","adservice.google.nl","*.googleadservices.com","*.googlesyndication.com","*.googletagservices.com","*.2mdn.net","*.doubleclick.net"],"examples":["pagead2.googlesyndication.com","tpc.googlesyndication.com","ade.googlesyndication.com","googleads.g.doubleclick.net","googleads4.g.doubleclick.net","securepubads.g.doubleclick.net","pubads.g.doubleclick.net","static.doubleclick.net","cm.g.doubleclick.net","bid.g.doubleclick.net","s0.2mdn.net","stats.g.doubleclick.net","survey.g.doubleclick.net","fls.doubleclick.net","ad.doubleclick.net","www.googleadservices.com","https://www.googletagservices.com/tag/js/gpt.js"]},{"name":"Google Tag Manager","company":"Google","homepage":"https://marketingplatform.google.com/about/tag-manager/","categories":["tag-manager"],"domains":["*.googletagmanager.com"],"examples":["www.googletagmanager.com"]},{"name":"Other Google APIs/SDKs","company":"Google","homepage":"https://developers.google.com/apis-explorer/#p/","categories":["utility"],"domains":["accounts.google.com","apis.google.com","calendar.google.com","clients2.google.com","cse.google.com","news.google.com","pay.google.com","payments.google.com","play.google.com","smartlock.google.com","www.google.com","www.google.de","www.google.co.jp","www.google.com.au","www.google.co.uk","www.google.ie","www.google.com.sg","www.google.co.in","www.google.com.br","www.google.ca","www.google.co.kr","www.google.co.nz","www.google.co.id","www.google.fr","www.google.be","www.google.com.ua","www.google.nl","www.google.ru","www.google.se","imasdk.googleapis.com","storage.googleapis.com","translate.googleapis.com","lh3.googleusercontent.com","csi.gstatic.com"]},{"name":"YouTube","homepage":"https://youtube.com","categories":["video"],"domains":["*.ggpht.com","*.youtube-nocookie.com","*.youtube.com","*.ytimg.com"],"examples":["www.youtube.com","s.ytimg.com","yt3.ggpht.com","img.youtube.com","fcmatch.youtube.com"]},{"name":"Yandex Metrica","company":"Yandex","homepage":"https://metrica.yandex.com/about?","categories":["analytics"],"domains":["d31j93rd8oukbv.cloudfront.net","mc.yandex.ru"]},{"name":"Google Maps","company":"Google","homepage":"https://www.google.com/maps","categories":["utility"],"domains":["maps.google.com","maps-api-ssl.google.com","maps.googleapis.com","mts.googleapis.com","maps.gstatic.com"]},{"name":"Twitter","homepage":"https://twitter.com","categories":["social"],"domains":["*.vine.co","*.twimg.com","*.twitpic.com","platform.twitter.com","syndication.twitter.com"],"examples":["cdn.syndication.twimg.com","abs.twimg.com","pbs.twimg.com"]},{"name":"jQuery CDN","homepage":"https://code.jquery.com/","categories":["cdn"],"domains":["*.jquery.com"],"examples":["code.jquery.com"]},{"name":"Hotjar","homepage":"https://www.hotjar.com/","categories":["analytics"],"domains":["*.hotjar.com","*.hotjar.io"],"examples":["script.hotjar.com","static.hotjar.com","in.hotjar.com","vc.hotjar.io","vars.hotjar.com"]},{"name":"WordPress","company":"Automattic","homepage":"https://wp.com/","categories":["hosting"],"domains":["*.wordpress.com","s0.wp.com","s2.wp.com","*.w.org","c0.wp.com","s1.wp.com","widgets.wp.com"],"examples":["s.w.org"]},{"name":"AddThis","homepage":"http://www.addthis.com/","categories":["social"],"domains":["*.addthis.com","*.addthiscdn.com","*.addthisedge.com"],"examples":["s7.addthis.com","r.dlx.addthis.com","su.addthis.com","x.dlx.addthis.com"]},{"name":"Cloudflare CDN","homepage":"https://cdnjs.com/","categories":["cdn"],"domains":["amp.cloudflare.com","cdnjs.cloudflare.com"]},{"name":"Shopify","homepage":"https://www.shopify.com/","categories":["hosting"],"domains":["*.shopify.com","*.shopifyapps.com","*.shopifycdn.com"],"examples":["cdn.shopify.com","productreviews.shopifycdn.com"]},{"name":"Criteo","homepage":"https://www.criteo.com/","categories":["ad"],"domains":["*.criteo.com","*.emailretargeting.com","*.criteo.net"],"examples":["static.criteo.net","bidder.criteo.com","dis.criteo.com","gum.criteo.com","sslwidget.criteo.com","dis.us.criteo.com"]},{"name":"ZenDesk","homepage":"https://zendesk.com/","categories":["customer-success"],"domains":["*.zdassets.com","*.zendesk.com","*.zopim.com"],"examples":["assets.zendesk.com","static.zdassets.com","v2.zopim.com"]},{"name":"Pubmatic","homepage":"https://pubmatic.com/","categories":["ad"],"domains":["*.pubmatic.com"],"examples":["image6.pubmatic.com","ads.pubmatic.com","image2.pubmatic.com","simage2.pubmatic.com","image4.pubmatic.com","simage4.pubmatic.com","image5.pubmatic.com","hbopenbid.pubmatic.com"]},{"name":"AMP","homepage":"https://amp.dev/","categories":["content"],"domains":["*.ampproject.org"],"examples":["cdn.ampproject.org"]},{"name":"Tawk.to","homepage":"https://www.tawk.to/","categories":["customer-success"],"domains":["*.tawk.to"],"examples":["embed.tawk.to"]},{"name":"Wix","homepage":"https://www.wix.com/","categories":["hosting"],"domains":["*.parastorage.com","*.wix.com","*.wixstatic.com","*.wixapps.net"],"examples":["static.parastorage.com","static.wixstatic.com","www.wix.com","instagram.codev.wixapps.net"]},{"name":"Amazon Web Services","homepage":"https://aws.amazon.com/s3/","categories":["other"],"domains":["*.amazon.com","*.amazonaws.com","*.amazonwebapps.com","*.amazonwebservices.com","*.elasticbeanstalk.com","*.images-amazon.com","*.amazon.co.uk"],"examples":["s3.amazonaws.com","us-east-1.amazonaws.com","api-cdn.amazon.com","ecx.images-amazon.com","ws.amazon.co.uk"]},{"name":"Jivochat","homepage":"https://www.jivochat.com/","categories":["customer-success"],"domains":["*.jivosite.com"],"examples":["cdn-ca.jivosite.com","code.jivosite.com"]},{"name":"Squarespace","homepage":"https://www.squarespace.com/","categories":["hosting"],"domains":["*.squarespace.com"],"examples":["static.squarespace.com","static1.squarespace.com"]},{"name":"FontAwesome CDN","homepage":"https://fontawesome.com/","categories":["cdn"],"domains":["*.fontawesome.com"],"examples":["use.fontawesome.com"]},{"name":"JSDelivr CDN","homepage":"https://www.jsdelivr.com/","categories":["cdn"],"domains":["*.jsdelivr.net"],"examples":["cdn.jsdelivr.net"]},{"name":"ShareThis","homepage":"https://www.sharethis.com/","categories":["social"],"domains":["*.sharethis.com"],"examples":["w.sharethis.com","ws.sharethis.com","t.sharethis.com"]},{"name":"Cloudflare","homepage":"https://www.cloudflare.com/website-optimization/","categories":["utility"],"domains":["ajax.cloudflare.com"]},{"name":"Rubicon Project","homepage":"https://rubiconproject.com/","categories":["ad"],"domains":["*.chango.com","*.fimserve.com","*.rubiconproject.com"],"examples":["pixel.rubiconproject.com","fastlane.rubiconproject.com","secure-assets.rubiconproject.com","eus.rubiconproject.com","pixel-us-east.rubiconproject.com","token.rubiconproject.com","ads.rubiconproject.com"]},{"name":"Adobe Tag Manager","company":"Adobe","homepage":"https://www.adobe.com/experience-platform/","categories":["tag-manager"],"domains":["*.adobedtm.com","*.demdex.net","*.everesttech.net"],"examples":["assets.adobedtm.com","sync-tm.everesttech.net","cm.everesttech.net"]},{"name":"Yandex Share","company":"Yandex","homepage":"https://yastatic.net/share2/share.js","categories":["social"],"domains":["*.yastatic.net"]},{"name":"Scorecard Research","homepage":"https://www.scorecardresearch.com/","categories":["ad"],"domains":["*.scorecardresearch.com"],"examples":["sb.scorecardresearch.com","sa.scorecardresearch.com","b.scorecardresearch.com"]},{"name":"Hubspot","homepage":"https://hubspot.com/","categories":["marketing"],"domains":["*.hs-scripts.com","*.hubspot.com","*.leadin.com","*.hs-analytics.net","*.hscollectedforms.net","*.hscta.net","*.hsforms.net","*.hsleadflows.net","*.hsstatic.net","*.hubspot.net"],"examples":["forms.hubspot.com","js.hsforms.net","js.hs-analytics.net","js.leadin.com"]},{"name":"Integral Ad Science","homepage":"https://integralads.com/uk/","categories":["ad"],"domains":["*.adsafeprotected.com","*.iasds01.com"],"examples":["pixel.adsafeprotected.com","static.adsafeprotected.com","fw.adsafeprotected.com","cdn.adsafeprotected.com","dt.adsafeprotected.com"]},{"name":"Media.net","homepage":"https://www.media.net/","categories":["ad"],"domains":["*.media.net","*.mnet-ad.net"],"examples":["contextual.media.net","cdnwest-xch.media.net","hbx.media.net","cs.media.net","hblg.media.net"]},{"name":"Yandex Ads","company":"Yandex","homepage":"https://yandex.com/adv/","categories":["ad"],"domains":["an.yandex.ru"]},{"name":"AddToAny","homepage":"https://www.addtoany.com/","categories":["social"],"domains":["*.addtoany.com"],"examples":["static.addtoany.com"]},{"name":"Tynt","company":"33 Across","categories":["ad"],"domains":["*.tynt.com"]},{"name":"PIXNET","homepage":"https://www.pixnet.net/","categories":["social"],"domains":["*.pixfs.net","*.pixnet.net"],"examples":["front.pixfs.net","falcon-asset.pixfs.net","pixgame-asset.pixfs.net"]},{"name":"Taboola","homepage":"https://www.taboola.com/","categories":["ad"],"domains":["*.taboola.com","*.taboolasyndication.com"],"examples":["cdn.taboola.com","trc.taboola.com","vidstat.taboola.com","images.taboola.com"]},{"name":"Yandex APIs","company":"Yandex","homepage":"https://yandex.ru/","categories":["utility"],"domains":["api-maps.yandex.ru","money.yandex.ru"]},{"name":"Blogger","homepage":"http://www.blogger.com/","categories":["hosting"],"domains":["*.blogblog.com","*.blogger.com","*.blogspot.com","images-blogger-opensocial.googleusercontent.com"],"examples":["1.bp.blogspot.com","www.blogger.com"]},{"name":"Bridgewell DSP","homepage":"https://www.bridgewell.com/","categories":["ad"],"domains":["*.scupio.com"],"examples":["img.scupio.com"]},{"name":"WordAds","company":"Automattic","homepage":"https://wordads.co/","categories":["ad"],"domains":["*.pubmine.com"],"examples":["s.pubmine.com"]},{"name":"Mailchimp","homepage":"https://mailchimp.com/","categories":["marketing"],"domains":["*.chimpstatic.com","*.list-manage.com","*.mailchimp.com"],"examples":["downloads.mailchimp.com"]},{"name":"Amazon Ads","homepage":"https://ad.amazon.com/","categories":["ad"],"domains":["*.amazon-adsystem.com"],"examples":["s.amazon-adsystem.com","c.amazon-adsystem.com","aax.amazon-adsystem.com","z-na.amazon-adsystem.com","fls-na.amazon-adsystem.com","aax-us-east.amazon-adsystem.com","ir-na.amazon-adsystem.com"]},{"name":"Skimbit","categories":["ad"],"domains":["*.redirectingat.com","*.skimresources.com","*.skimresources.net"]},{"name":"Moat","homepage":"https://moat.com/","categories":["ad"],"domains":["*.moatads.com","*.moatpixel.com"],"examples":["z.moatads.com","px.moatads.com","geo.moatads.com","sejs.moatads.com","mb.moatads.com","v4.moatads.com"]},{"name":"Sumo","homepage":"https://sumo.com/","categories":["marketing"],"domains":["*.sumo.com","*.sumome.com","sumo.b-cdn.net"],"examples":["sumo.b-cdn.net","load.sumo.com","load.sumome.com"]},{"name":"Salesforce","homepage":"https://www.salesforce.com/products/marketing-cloud/","categories":["analytics"],"domains":["*.krxd.net"],"examples":["cdn.krxd.net","beacon.krxd.net","consumer.krxd.net","usermatch.krxd.net"]},{"name":"Crazy Egg","homepage":"https://www.crazyegg.com/","categories":["analytics"],"domains":["*.cetrk.com","*.crazyegg.com","*.hellobar.com","dnn506yrbagrg.cloudfront.net"]},{"name":"Stripe","homepage":"https://stripe.com","categories":["utility"],"domains":["*.stripe.com","*.stripecdn.com","*.stripe.network"],"examples":["m.stripe.network","js.stripe.com"]},{"name":"LiveChat","homepage":"https://www.livechatinc.com/","categories":["customer-success"],"domains":["*.livechatinc.com"],"examples":["cdn.livechatinc.com","secure.livechatinc.com"]},{"name":"Hatena Blog","homepage":"https://hatenablog.com/","categories":["hosting"],"domains":["*.st-hatena.com","*.hatena.ne.jp"],"examples":["cdn.blog.st-hatena.com","cdn.pool.st-hatena.com","cdn7.www.st-hatena.com","s.hatena.ne.jp","b.st-hatena.com"]},{"name":"Pinterest","homepage":"https://pinterest.com/","categories":["social"],"domains":["*.pinimg.com","*.pinterest.com"],"examples":["assets.pinterest.com","ct.pinterest.com","log.pinterest.com"]},{"name":"Bing Ads","homepage":"https://bingads.microsoft.com","categories":["ad"],"domains":["*.bing.com","*.microsoft.com","*.msn.com","*.s-msft.com","*.s-msn.com","*.msads.net","*.msecnd.net","*.windows.net"],"examples":["bat.bing.com","c.bing.com","bat.r.msn.com","ajax.microsoft.com"]},{"name":"LinkedIn","homepage":"https://www.linkedin.com/","categories":["social"],"domains":["*.bizographics.com","platform.linkedin.com","*.slideshare.com","*.slidesharecdn.com"]},{"name":"VK","homepage":"https://vk.com/","categories":["social"],"domains":["*.vk.com"]},{"name":"Weebly","homepage":"https://www.weebly.com/","categories":["hosting"],"domains":["*.editmysite.com"]},{"name":"POWr","homepage":"https://www.powr.io","categories":["utility"],"domains":["*.powr.io"],"examples":["www.powr.io"]},{"name":"Intercom","homepage":"https://www.intercom.com","categories":["customer-success"],"domains":["*.intercomcdn.com","*.intercom.io"],"examples":["js.intercomcdn.com","api-iam.intercom.io","widget.intercom.io","nexus-websocket-a.intercom.io"]},{"name":"Vimeo","homepage":"http://vimeo.com/","categories":["video"],"domains":["*.vimeo.com","*.vimeocdn.com"],"examples":["f.vimeocdn.com","player.vimeo.com","i.vimeocdn.com"]},{"name":"Smartsupp","company":"Smartsupp.com","homepage":"https://www.smartsupp.com","categories":["customer-success"],"domains":["*.smartsuppchat.com","*.smartsupp.com","smartsupp-widget-161959.c.cdn77.org"]},{"name":"Trust Pilot","categories":["analytics"],"domains":["*.trustpilot.com"]},{"name":"Tealium","homepage":"https://tealium.com/","categories":["tag-manager"],"domains":["*.aniview.com","*.delvenetworks.com","*.limelight.com","*.tiqcdn.com","*.llnwd.net","*.tealiumiq.com"],"examples":["tags.tiqcdn.com","tealium.hs.llnwd.net","link.videoplatform.limelight.com","datacloud.tealiumiq.com"]},{"name":"iubenda","categories":["utility"],"domains":["*.iubenda.com"],"examples":["www.iubenda.com"]},{"name":"Yotpo","homepage":"https://www.yotpo.com/","categories":["marketing"],"domains":["*.yotpo.com"]},{"name":"Wistia","homepage":"https://wistia.com/","categories":["video"],"domains":["*.wistia.com","embedwistia-a.akamaihd.net","*.wistia.net"],"examples":["fast.wistia.com","fast.wistia.net","distillery.wistia.com","pipedream.wistia.com"]},{"name":"Kakao","categories":["social"],"domains":["*.daum.net","*.daumcdn.net"]},{"name":"mPulse","homepage":"https://developer.akamai.com/akamai-mpulse","categories":["analytics"],"domains":["*.akstat.io","*.go-mpulse.net","*.mpulse.net","*.mpstat.us"],"examples":["c.go-mpulse.net","0211c83c.akstat.io"]},{"name":"PayPal","homepage":"https://paypal.com","categories":["utility"],"domains":["*.paypal.com","*.paypalobjects.com"],"examples":["www.paypalobjects.com"]},{"name":"Baidu Analytics","homepage":"https://tongji.baidu.com/web/welcome/login","categories":["analytics"],"domains":["*.baidu.com"],"examples":["hm.baidu.com"]},{"name":"Nielsen NetRatings SiteCensus","company":"The Nielsen Company","homepage":"http://www.nielsen-online.com/intlpage.html","categories":["analytics"],"domains":["*.imrworldwide.com"]},{"name":"Klaviyo","categories":["ad"],"domains":["*.klaviyo.com"]},{"name":"Privy","categories":["ad"],"domains":["*.privy.com","*.privymktg.com"]},{"name":"DoubleVerify","homepage":"https://www.doubleverify.com/","categories":["ad"],"domains":["*.doubleverify.com","*.dvtps.com","*.iqfp1.com"],"examples":["cdn.doubleverify.com","cdn3.doubleverify.com","tps.doubleverify.com","tps712.doubleverify.com","tps714.doubleverify.com","tps706.doubleverify.com","tps700.doubleverify.com","tps707.doubleverify.com","rtb2.doubleverify.com","rtb0.doubleverify.com","rtbcdn.doubleverify.com","tps11020.doubleverify.com","tm.iqfp1.com"]},{"name":"Adobe TypeKit","company":"Adobe","homepage":"https://fonts.adobe.com/","categories":["cdn"],"domains":["*.typekit.com","*.typekit.net"],"examples":["use.typekit.net","p.typekit.net"]},{"name":"Parking Crew","homepage":"http://parkingcrew.net/","categories":["other"],"domains":["d1lxhc4jvstzrp.cloudfront.net","*.parkingcrew.net"]},{"name":"Optimizely","homepage":"https://www.optimizely.com/","categories":["analytics"],"domains":["*.optimizely.com"],"examples":["cdn.optimizely.com","cdn-pci.optimizely.com","logx.optimizely.com","cdn3.optimizely.com"]},{"name":"Snapchat","homepage":"https://www.snapchat.com","categories":["analytics"],"domains":["*.snapchat.com","*.sc-static.net"],"examples":["tr.snapchat.com"]},{"name":"Bold Commerce","categories":["utility"],"domains":["*.shappify-cdn.com","*.shappify.com","*.boldapps.net"]},{"name":"Sentry","homepage":"https://sentry.io/","categories":["utility"],"domains":["*.getsentry.com","*.ravenjs.com","*.sentry-cdn.com"],"examples":["cdn.ravenjs.com","browser.sentry-cdn.com"]},{"name":"Histats","homepage":"http://histats.com/","categories":["analytics"],"domains":["*.histats.com"],"examples":["s10.histats.com"]},{"name":"Akamai","homepage":"https://www.akamai.com/","categories":["cdn"],"domains":["23.62.3.183","*.akamaitechnologies.com","*.akamaitechnologies.fr","*.akamai.net","*.akamaiedge.net","*.akamaihd.net","*.akamaized.net","*.edgefcs.net","*.edgekey.net","edgesuite.net","*.srip.net"]},{"name":"StatCounter","categories":["analytics"],"domains":["*.statcounter.com"]},{"name":"Distil Networks","homepage":"https://www.distilnetworks.com/","categories":["utility"],"domains":["*.areyouahuman.com"],"examples":["n-cdn.areyouahuman.com"]},{"name":"Segment","homepage":"https://segment.com/","categories":["analytics"],"domains":["*.segment.com","*.segment.io"],"examples":["cdn.segment.com","api.segment.io"]},{"name":"Bigcommerce","categories":["marketing"],"domains":["*.bigcommerce.com"]},{"name":"Instagram","homepage":"https://www.instagram.com","categories":["social"],"domains":["*.cdninstagram.com","*.instagram.com"],"examples":["scontent.cdninstagram.com"]},{"name":"Yahoo!","homepage":"https://www.yahoo.com/","categories":["ad"],"domains":["*.bluelithium.com","*.hostingprod.com","*.lexity.com","*.yahoo.com","*.yahooapis.com","*.yimg.com","*.yimg.jp","*.zenfs.com","*.yahoo.net"],"examples":["ads.yahoo.com","analytics.yahoo.com","geo.yahoo.com","udc.yahoo.com","ganon.yahoo.com","ads.yap.yahoo.com"]},{"name":"Rambler","company":"Rambler & Co","categories":["utility"],"domains":["*.rambler.ru"]},{"name":"Cookiebot","homepage":"https://www.cookiebot.com/","categories":["utility"],"domains":["*.cookiebot.com"],"examples":["consent.cookiebot.com"]},{"name":"Tidio Live Chat","company":"Tidio","homepage":"https://www.tidiochat.com/en/","categories":["customer-success"],"domains":["*.tidiochat.com"]},{"name":"OptinMonster","homepage":"https://optinmonster.com/","categories":["marketing"],"domains":["*.opmnstr.com","*.optmnstr.com","*.optmstr.com"],"examples":["a.optmstr.com","api.opmnstr.com","a.optmnstr.com"]},{"name":"Dealer","homepage":"https://www.dealer.com/","categories":["hosting"],"domains":["*.dealer.com"],"examples":["static.dealer.com"]},{"name":"CreateJS CDN","homepage":"http://code.createjs.com/","categories":["cdn"],"domains":["*.createjs.com"],"examples":["code.createjs.com"]},{"name":"Tumblr","homepage":"https://tumblr.com/","categories":["social"],"domains":["*.tumblr.com"],"examples":["assets.tumblr.com","static.tumblr.com"]},{"name":"Azure Web Services","company":"Microsoft","categories":["cdn"],"domains":["*.azurewebsites.net","*.azureedge.net","*.msedge.net"]},{"name":"Adform","categories":["ad"],"domains":["*.adform.net","*.adformdsp.net"]},{"name":"VigLink","categories":["ad"],"domains":["*.viglink.com"]},{"name":"Lucky Orange","homepage":"https://www.luckyorange.com/","categories":["analytics"],"domains":["*.luckyorange.com","d10lpsik1i8c69.cloudfront.net","*.luckyorange.net"]},{"name":"BrightTag / Signal","company":"Signal","homepage":"https://www.signal.co","categories":["tag-manager"],"domains":["*.btstatic.com","*.thebrighttag.com"]},{"name":"CallRail","categories":["analytics"],"domains":["*.callrail.com"]},{"name":"Gemius","categories":["ad"],"domains":["*.gemius.pl"]},{"name":"Olark","homepage":"https://www.olark.com/","categories":["customer-success"],"domains":["*.olark.com"],"examples":["static.olark.com"]},{"name":"MGID","homepage":"https://www.mgid.com/","categories":["ad"],"domains":["*.mgid.com","*.dt07.net"],"examples":["servicer.mgid.com"]},{"name":"Snowplow","homepage":"https://snowplowanalytics.com/","categories":["analytics"],"domains":["d32hwlnfiv2gyn.cloudfront.net"]},{"name":"Intent Media","homepage":"https://intent.com/","categories":["ad"],"domains":["*.intentmedia.net"]},{"name":"New Relic","homepage":"https://newrelic.com/","categories":["utility"],"domains":["*.newrelic.com","*.nr-data.net"],"examples":["js-agent.newrelic.com","bam.nr-data.net"]},{"name":"FullStory","categories":["analytics"],"domains":["*.fullstory.com"],"examples":["rs.fullstory.com"]},{"name":"District M","categories":["ad"],"domains":["*.districtm.io"]},{"name":"Brightcove","homepage":"https://www.brightcove.com/en/","categories":["video"],"domains":["*.brightcove.com","*.brightcove.net","*.zencdn.net"],"examples":["vjs.zencdn.net","players.brightcove.net"]},{"name":"Mixpanel","homepage":"https://mixpanel.com/","categories":["analytics"],"domains":["*.mixpanel.com","*.mxpnl.com"],"examples":["cdn.mxpnl.com"]},{"name":"Drift","homepage":"https://www.drift.com/","categories":["marketing"],"domains":["*.drift.com","*.driftt.com"],"examples":["js.driftt.com","api.drift.com"]},{"name":"GoDaddy","homepage":"https://www.godaddy.com/","categories":["utility"],"domains":["*.godaddy.com","*.wsimg.com"],"examples":["ocsp.godaddy.com","seal.godaddy.com"]},{"name":"Evidon","categories":["analytics"],"domains":["*.evidon.com"]},{"name":"Gigya","categories":["analytics"],"domains":["*.gigya.com"]},{"name":"Inspectlet","categories":["analytics"],"domains":["*.inspectlet.com"]},{"name":"MediaVine","homepage":"https://www.mediavine.com/","categories":["ad"],"domains":["*.mediavine.com"],"examples":["scripts.mediavine.com","video.mediavine.com"]},{"name":"Ensighten","homepage":"https://www.ensighten.com/","categories":["tag-manager"],"domains":["*.ensighten.com"],"examples":["nexus.ensighten.com"]},{"name":"Adroll","homepage":"https://www.adroll.com/","categories":["ad"],"domains":["*.adroll.com"],"examples":["d.adroll.com","s.adroll.com"]},{"name":"Mapbox","categories":["utility"],"domains":["*.mapbox.com"]},{"name":"Amazon Pay","homepage":"https://pay.amazon.com","categories":["utility"],"domains":["payments.amazon.com","*.payments-amazon.com"]},{"name":"Microsoft Hosted Libs","company":"Microsoft","categories":["cdn"],"domains":["*.aspnetcdn.com"],"examples":["ajax.aspnetcdn.com"]},{"name":"Fastly","categories":["utility"],"domains":["*.fastly.net"]},{"name":"Adloox","categories":["ad"],"domains":["*.adlooxtracking.com"]},{"name":"Index Exchange","company":"WPP","categories":["ad"],"domains":["*.casalemedia.com","*.indexww.com"]},{"name":"Monotype","categories":["cdn"],"domains":["*.fonts.com","*.fonts.net"]},{"name":"Chartbeat","categories":["analytics"],"domains":["*.chartbeat.com","*.chartbeat.net"]},{"name":"Unpkg","homepage":"https://unpkg.com","categories":["cdn"],"domains":["*.unpkg.com"]},{"name":"Teads","categories":["ad"],"domains":["*.teads.tv"]},{"name":"TrustArc","homepage":"https://www.trustarc.com/","categories":["utility"],"domains":["*.trustarc.com"],"examples":["choices.trustarc.com","consent.trustarc.com"]},{"name":"Cxense","categories":["ad"],"domains":["*.cxense.com","*.cxpublic.com","*.emediate.dk","*.emediate.eu"]},{"name":"Outbrain","homepage":"https://www.outbrain.com/","categories":["ad"],"domains":["*.outbrain.com","*.outbrainimg.com","*.visualrevenue.com"]},{"name":"MailMunch","categories":["ad"],"domains":["*.mailmunch.co"]},{"name":"RevJet","homepage":"https://www.revjet.com/","categories":["ad"],"domains":["*.revjet.com"],"examples":["pix.revjet.com","ads.revjet.com"]},{"name":"i-mobile","company":"i-mobile","categories":["ad"],"domains":["*.i-mobile.co.jp"],"examples":["ssp-sync.i-mobile.co.jp"]},{"name":"Treasure Data","categories":["analytics"],"domains":["*.treasuredata.com"]},{"name":"DTSCOUT","categories":["ad"],"domains":["*.dtscout.com"]},{"name":"LivePerson","categories":["customer-success"],"homepage":"https://www.liveperson.com/","domains":["*.liveperson.com","*.look.io","*.liveperson.net","*.lpsnmedia.net"]},{"name":"Marchex","categories":["analytics"],"domains":["*.voicestar.com","*.marchex.io"]},{"name":"VWO","homepage":"https://vwo.com","categories":["analytics"],"domains":["*.visualwebsiteoptimizer.com"],"examples":["dev.visualwebsiteoptimizer.com"]},{"name":"LINE Corporation","categories":["ad"],"domains":["*.line-scdn.net","*.line.me"],"examples":["d.line-scdn.net","tr.line.me"]},{"name":"SoundCloud","homepage":"https://www.soundcloud.com/","categories":["content"],"domains":["*.sndcdn.com","*.soundcloud.com","*.stratus.sc"],"examples":["widget.sndcdn.com"]},{"name":"Ezoic","categories":["analytics"],"domains":["*.ezoic.net"]},{"name":"RD Station","homepage":"https://www.rdstation.com/en/","categories":["marketing"],"domains":["d335luupugsy2.cloudfront.net"]},{"name":"BlueKai","company":"Oracle","categories":["ad"],"domains":["*.bkrtx.com","*.bluekai.com"]},{"name":"Adobe Business Catalyst","homepage":"https://www.businesscatalyst.com/","categories":["hosting"],"domains":["*.businesscatalyst.com"]},{"name":"Sizmek","homepage":"https://www.sizmek.com/","categories":["ad"],"domains":["*.serving-sys.com","*.peer39.net"],"examples":["secure-ds.serving-sys.com","ds.serving-sys.com","bs.serving-sys.com"]},{"name":"FreakOut","categories":["ad"],"domains":["*.fout.jp"]},{"name":"Embedly","categories":["content"],"domains":["*.embedly.com","*.embed.ly"]},{"name":"Celtra","categories":["ad"],"domains":["*.celtra.com"]},{"name":"Infolinks","categories":["ad"],"domains":["*.infolinks.com"]},{"name":"PushCrew","categories":["ad"],"domains":["*.pushcrew.com"]},{"name":"Pure Chat","categories":["customer-success"],"domains":["*.purechat.com"]},{"name":"CDK Dealer Management","company":"CDK Global","homepage":"https://www.cdkglobal.com/us","categories":["hosting"],"domains":["*.assets-cdk.com"],"examples":["media-cf.assets-cdk.com"]},{"name":"AppNexus","homepage":"https://www.appnexus.com/","categories":["ad"],"domains":["*.adnxs.com","*.ctasnet.com"],"examples":["acdn.adnxs.com","secure.adnxs.com","ib.adnxs.com","sharethrough.adnxs.com","cdn.adnxs.com","vcdn.adnxs.com"]},{"name":"LiveJournal","categories":["social"],"domains":["*.livejournal.com","*.livejournal.net"]},{"name":"ContactAtOnce","homepage":"https://www.contactatonce.com/","categories":["customer-success"],"domains":["*.contactatonce.com"],"examples":["tag.contactatonce.com","agentpresence.contactatonce.com"]},{"name":"Shareaholic","homepage":"https://www.shareaholic.com/","categories":["social"],"domains":["*.shareaholic.com","dsms0mj1bbhn4.cloudfront.net"]},{"name":"SmartAdServer","categories":["ad"],"domains":["*.01net.com","*.sascdn.com"],"examples":["securite.01net.com"]},{"name":"Beeketing","homepage":"https://beeketing.com/","categories":["marketing"],"domains":["*.beeketing.com"],"examples":["sdk-cdn.beeketing.com","sdk.beeketing.com"]},{"name":"AB Tasty","categories":["analytics"],"domains":["*.abtasty.com","d1447tq2m68ekg.cloudfront.net"]},{"name":"Dataxu","categories":["marketing"],"domains":["*.w55c.net"]},{"name":"LongTail Ad Solutions","categories":["ad"],"domains":["*.jwpcdn.com","*.jwplatform.com","*.jwplayer.com","*.jwpltx.com","*.jwpsrv.com","*.longtailvideo.com"]},{"name":"LightWidget","categories":["utility"],"domains":["*.lightwidget.com"]},{"name":"Parse.ly","categories":["analytics"],"domains":["*.parsely.com","d1z2jf7jlzjs58.cloudfront.net"]},{"name":"SnapWidget","categories":["content"],"domains":["*.snapwidget.com"]},{"name":"Simplicity Marketing","categories":["ad"],"domains":["*.flashtalking.com"]},{"name":"Quantcast","homepage":"https://www.quantcast.com","categories":["analytics"],"domains":["*.brtstats.com","*.quantcount.com","*.quantserve.com","*.semantictec.com","*.ntv.io"],"examples":["pixel.quantserve.com","secure.quantserve.com","cms.quantserve.com","rules.quantcount.com"]},{"name":"Popads","homepage":"https://www.popads.net/","categories":["ad"],"domains":["*.popads.net"],"examples":["serve.popads.net","c1.popads.net"]},{"name":"Spotify","homepage":"https://www.spotify.com/","categories":["content"],"domains":["*.scdn.co","*.spotify.com"],"examples":["open.spotify.com","open.scdn.co","i.scdn.co"]},{"name":"sovrn","categories":["ad"],"domains":["*.lijit.com"]},{"name":"Heap","categories":["analytics"],"domains":["*.heapanalytics.com"]},{"name":"Ve","company":"Ve Interactive","categories":["marketing"],"domains":["*.veinteractive.com"]},{"name":"Searchanise","categories":["analytics"],"domains":["*.searchanise.com"],"examples":["www.searchanise.com"]},{"name":"TrafficStars","categories":["ad"],"domains":["*.trafficstars.com","*.tsyndicate.com"]},{"name":"Unbounce","categories":["ad"],"domains":["*.ubembed.com","*.unbounce.com","d2xxq4ijfwetlm.cloudfront.net","d9hhrg4mnvzow.cloudfront.net"]},{"name":"PureCars","homepage":"https://www.purecars.com/","categories":["marketing"],"domains":["*.purecars.com"],"examples":["cdn.purecars.com"]},{"name":"Salesforce Commerce Cloud","homepage":"https://www.salesforce.com/products/commerce-cloud/overview/","categories":["hosting"],"domains":["*.cquotient.com","*.demandware.net","demandware.edgesuite.net"]},{"name":"Keen","company":"Keen","homepage":"https://keen.io/","categories":["analytics"],"domains":["*.keen.io","d26b395fwzu5fz.cloudfront.net"]},{"name":"STINGRAY","company":"FlexOne","categories":["ad"],"domains":["*.impact-ad.jp"],"examples":["y.one.impact-ad.jp"]},{"name":"Booking.com","categories":["content"],"domains":["*.bstatic.com"]},{"name":"Net Reviews","categories":["analytics"],"domains":["*.avis-verifies.com"],"examples":["www.avis-verifies.com"]},{"name":"OpenTable","company":"Priceline Group","categories":["content"],"domains":["*.opentable.com","*.opentable.co.uk","*.toptable.co.uk"],"examples":["www.toptable.co.uk"]},{"name":"Smart AdServer","categories":["ad"],"domains":["*.sasqos.com","*.smartadserver.com"]},{"name":"Dailymotion","categories":["content"],"domains":["*.dailymotion.com","*.dmxleo.com","*.dm.gg","*.pxlad.io","*.dmcdn.net","*.sublimevideo.net"],"examples":["ad.pxlad.io","www.dailymotion.com"]},{"name":"Tray Commerce","homepage":"https://www.tray.com.br/","categories":["marketing"],"domains":["*.tcdn.com.br"],"examples":["images.tcdn.com.br"]},{"name":"uLogin","categories":["other"],"domains":["*.ulogin.ru"]},{"name":"Trusted Shops","categories":["utility"],"domains":["*.trustedshops.com"]},{"name":"iPerceptions","categories":["customer-success"],"domains":["*.iperceptions.com"]},{"name":"WordPress Site Stats","company":"Automattic","homepage":"https://wp.com/","categories":["analytics"],"domains":["pixel.wp.com","stats.wp.com"]},{"name":"fam","company":"Fing Co Ltd.","homepage":"http://admin.fam-ad.com/report/","categories":["ad"],"domains":["*.fam-ad.com"],"examples":["img.fam-ad.com"]},{"name":"Roxr Software","categories":["analytics"],"domains":["*.getclicky.com"]},{"name":"MaxCDN Enterprise","company":"MaxCDN","categories":["utility"],"domains":["*.netdna-cdn.com","*.netdna-ssl.com"]},{"name":"Media Math","homepage":"http://www.mediamath.com/","categories":["ad"],"domains":["*.mathads.com","*.mathtag.com"],"examples":["mathid.mathtag.com","sync.mathtag.com","pixel.mathtag.com"]},{"name":"AOL / Oath / Verizon Media","homepage":"https://www.oath.com/","categories":["ad"],"domains":["*.advertising.com","*.aol.com","*.aolcdn.com","*.blogsmithmedia.com","*.oath.com","*.aol.net","*.tacoda.net","*.aol.co.uk"],"examples":["pixel.advertising.com","dtm.advertising.com","tag.sp.advertising.com","service.sp.advertising.com","adtech.advertising.com","adaptv.advertising.com","mighty.aol.net","consent.cmp.oath.com"]},{"name":"issuu","categories":["content"],"domains":["*.issuu.com","*.isu.pub"]},{"name":"Sharethrough","categories":["ad"],"domains":["*.sharethrough.com"]},{"name":"Nosto","categories":["analytics"],"domains":["*.nosto.com"]},{"name":"Yandex CDN","company":"Yandex","homepage":"https://yandex.ru/","categories":["cdn"],"domains":["*.yandex.st"]},{"name":"JuicyAds","categories":["ad"],"domains":["*.juicyads.com"]},{"name":"Siteimprove","categories":["utility"],"domains":["*.siteimprove.com","*.siteimproveanalytics.com"]},{"name":"Help Scout","homepage":"https://www.helpscout.net/","categories":["customer-success"],"domains":["djtflbt20bdde.cloudfront.net","*.helpscout.net"],"examples":["beacon-v2.helpscout.net"]},{"name":"Affirm","categories":["utility"],"domains":["*.affirm.com"]},{"name":"Albacross","homepage":"https://albacross.com/","categories":["marketing"],"domains":["*.albacross.com"],"examples":["serve.albacross.com"]},{"name":"TRUSTe","categories":["utility"],"domains":["*.truste.com"]},{"name":"Seznam","categories":["utility"],"domains":["*.imedia.cz"]},{"name":"Disqus","homepage":"http://disqus.com/","categories":["social"],"domains":["*.disqus.com","*.disquscdn.com"],"examples":["c.disquscdn.com"]},{"name":"Amplitude Mobile Analytics","company":"Amplitude","categories":["analytics"],"domains":["*.amplitude.com","d24n15hnbwhuhn.cloudfront.net"]},{"name":"ExoClick","categories":["ad"],"domains":["*.exoclick.com"]},{"name":"OpenX","homepage":"https://www.openx.com/","categories":["ad"],"domains":["*.deliverimp.com","*.openxadexchange.com","*.servedbyopenx.com","*.jump-time.net","*.openx.net"],"examples":["uk-ads.openx.net","us-ads.openx.net","33across-d.openx.net","rtb.openx.net","us-u.openx.net","eu-u.openx.net","u.openx.net"]},{"name":"LKQD","categories":["ad"],"domains":["*.lkqd.net"]},{"name":"Mouseflow","categories":["analytics"],"domains":["*.mouseflow.com"]},{"name":"Bazaarvoice","categories":["analytics"],"domains":["*.bazaarvoice.com","*.feedmagnet.com"]},{"name":"etracker","categories":["analytics"],"domains":["*.etracker.com","*.etracker.de"],"examples":["www.etracker.com"]},{"name":"DigiTrust","homepage":"http://www.digitru.st/","categories":["analytics"],"domains":["*.digitru.st"],"examples":["cdn.digitru.st"]},{"name":"Optanon","homepage":"https://www.cookielaw.org/","categories":["utility"],"domains":["*.onetrust.com","*.cookielaw.org"],"examples":["cdn.cookielaw.org","geolocation.onetrust.com"]},{"name":"Feefo.com","company":"Feefo","categories":["analytics"],"domains":["*.feefo.com"]},{"name":"AppDynamics","homepage":"https://www.appdynamics.com/","categories":["utility"],"domains":["*.appdynamics.com","*.eum-appdynamics.com","d3tjaysgumg9lf.cloudfront.net"],"examples":["cdn.appdynamics.com"]},{"name":"Accuweather","categories":["content"],"domains":["*.accuweather.com"]},{"name":"GetSiteControl","company":"GetWebCraft","categories":["utility"],"domains":["*.getsitecontrol.com"]},{"name":"Secomapp","categories":["utility"],"domains":["*.secomapp.com"]},{"name":"Adyoulike","categories":["ad"],"domains":["*.adyoulike.com","*.omnitagjs.com","*.adyoulike.net"]},{"name":"Rakuten Marketing","company":"Rakuten","categories":["ad"],"domains":["*.rakuten-static.com","*.rmtag.com"]},{"name":"Sortable","categories":["ad"],"domains":["*.deployads.com"]},{"name":"Vidible","categories":["ad"],"domains":["*.vidible.tv"]},{"name":"Constant Contact","categories":["ad"],"domains":["*.ctctcdn.com"]},{"name":"UserReport","categories":["analytics"],"domains":["*.userreport.com"]},{"name":"Swiftype","categories":["utility"],"domains":["*.swiftype.com","*.swiftypecdn.com"]},{"name":"ContentSquare","categories":["analytics"],"domains":["d1m6l9dfulcyw7.cloudfront.net","*.content-square.net","*.contentsquare.net"]},{"name":"SocialShopWave","categories":["social"],"domains":["*.socialshopwave.com"]},{"name":"Pardot","categories":["marketing"],"domains":["*.pardot.com"]},{"name":"Esri ArcGIS","company":"Esri","categories":["utility"],"domains":["*.arcgis.com","*.arcgisonline.com"]},{"name":"SpringServer","categories":["ad"],"domains":["*.springserve.com"]},{"name":"OptiMonk","categories":["ad"],"domains":["*.optimonk.com"]},{"name":"Refersion","categories":["ad"],"domains":["*.refersion.com"]},{"name":"AddEvent","categories":["utility"],"domains":["*.addevent.com"],"examples":["www.addevent.com"]},{"name":"Marketo","homepage":"https://www.marketo.com","categories":["analytics"],"domains":["*.marketo.com","*.mktoresp.com","*.marketo.net"],"examples":["munchkin.marketo.net"]},{"name":"Bugsnag","categories":["utility"],"domains":["*.bugsnag.com","d2wy8f7a9ursnm.cloudfront.net"],"examples":["notify.bugsnag.com"]},{"name":"Comm100","categories":["customer-success"],"domains":["*.comm100.com"]},{"name":"Foursixty","categories":["customer-success"],"domains":["*.foursixty.com"]},{"name":"BounceX","categories":["analytics"],"homepage":"https://www.bouncex.com/","domains":["*.bounceexchange.com","*.bouncex.net"],"examples":["events.bouncex.net"]},{"name":"Research Online","company":"Skills Development Scotland","categories":["content"],"domains":["*.researchonline.org.uk"],"examples":["www.researchonline.org.uk"]},{"name":"Bizible","categories":["ad"],"domains":["*.bizible.com","*.bizibly.com"]},{"name":"Tencent","categories":["content"],"domains":["*.qq.com","*.ywxi.net"]},{"name":"Nend","categories":["ad"],"domains":["*.nend.net"]},{"name":"Medium","categories":["content"],"domains":["*.medium.com"]},{"name":"SublimeSkinz","categories":["ad"],"domains":["*.ayads.co"]},{"name":"SnapEngage","categories":["customer-success"],"domains":["*.snapengage.com"]},{"name":"TagCommander","categories":["tag-manager"],"domains":["*.commander1.com","*.tagcommander.com"]},{"name":"GitHub","categories":["utility"],"domains":["*.rawgit.com"],"examples":["cdn.rawgit.com"]},{"name":"IPONWEB","categories":["ad"],"domains":["*.company-target.com","*.liadm.com","*.iponweb.net","*.p161.net"],"examples":["pool.udsp.iponweb.net"]},{"name":"Perfect Market","categories":["ad"],"domains":["*.perfectmarket.com"]},{"name":"Admixer for Publishers","company":"Admixer","categories":["ad"],"domains":["*.admixer.net"]},{"name":"iovation","categories":["utility"],"domains":["*.iesnare.com"]},{"name":"Listrak","homepage":"https://www.listrak.com/","categories":["marketing"],"domains":["*.listrak.com","*.listrakbi.com"],"examples":["cdn.listrakbi.com","s1.listrakbi.com"]},{"name":"Nativo","categories":["ad"],"domains":["*.postrelease.com"]},{"name":"piano","categories":["ad"],"domains":["*.npttech.com","*.tinypass.com"],"examples":["www.npttech.com"]},{"name":"Alexa","homepage":"https://www.alexa.com/","categories":["analytics"],"domains":["*.alexametrics.com","d31qbv1cthcecs.cloudfront.net"],"examples":["certify.alexametrics.com"]},{"name":"Revolver Maps","categories":["analytics"],"domains":["*.revolvermaps.com"]},{"name":"LoyaltyLion","categories":["ad"],"domains":["*.loyaltylion.com","*.loyaltylion.net","dg1f2pfrgjxdq.cloudfront.net"]},{"name":"Digioh","categories":["ad"],"domains":["*.lightboxcdn.com"]},{"name":"Permutive","categories":["ad"],"domains":["*.permutive.com","d3alqb8vzo7fun.cloudfront.net"]},{"name":"ForeSee","company":"Answers","categories":["analytics"],"domains":["*.4seeresults.com","*.answerscloud.com","*.foresee.com","*.foreseeresults.com"]},{"name":"Clicktale","categories":["analytics"],"domains":["*.cdngc.net","*.clicktale.net"],"examples":["clicktalecdn.sslcs.cdngc.net"]},{"name":"IBM Digital Analytics","company":"IBM","categories":["analytics"],"domains":["*.cmcore.com","coremetrics.com","data.coremetrics.com","data.de.coremetrics.com","libs.de.coremetrics.com","tmscdn.de.coremetrics.com","iocdn.coremetrics.com","libs.coremetrics.com","tmscdn.coremetrics.com","*.s81c.com","*.unica.com","*.coremetrics.eu"],"examples":["data.coremetrics.eu"]},{"name":"iZooto","homepage":"https://www.izooto.com","categories":["marketing"],"domains":["*.izooto.com"],"examples":["cdn.izooto.com"]},{"name":"Adverline Board","company":"Adverline","categories":["ad"],"domains":["*.adverline.com","*.adnext.fr"]},{"name":"Branch Metrics","categories":["ad"],"domains":["*.branch.io","*.app.link"]},{"name":"Sift Science","categories":["utility"],"domains":["*.siftscience.com"]},{"name":"ResponsiveVoice","categories":["other"],"domains":["*.responsivevoice.org"]},{"name":"iAdvize SAS","categories":["customer-success"],"domains":["*.iadvize.com"]},{"name":"iBillboard","categories":["ad"],"domains":["*.ibillboard.com"]},{"name":"Intercept Interactive","categories":["ad"],"domains":["*.undertone.com"]},{"name":"AdMatic","categories":["ad"],"domains":["*.admatic.com.tr"]},{"name":"Symantec","categories":["utility"],"domains":["*.norton.com","*.symantec.com","*.symcb.com","*.symcd.com"],"examples":["extended-validation-ssl.websecurity.symantec.com"]},{"name":"Convert Insights","categories":["analytics"],"domains":["*.convertexperiments.com"]},{"name":"Ecwid","categories":["hosting"],"domains":["*.ecwid.com","*.shopsettings.com","d3fi9i0jj23cau.cloudfront.net","d3j0zfs7paavns.cloudfront.net"]},{"name":"Bronto Software","categories":["marketing"],"domains":["*.bm23.com","*.bronto.com","*.brontops.com"]},{"name":"Heroku","categories":["other"],"domains":["*.herokuapp.com"]},{"name":"Dynamic Yield","categories":["customer-success"],"domains":["*.dynamicyield.com"]},{"name":"Bootstrap CDN","homepage":"https://www.bootstrapcdn.com/","categories":["cdn"],"domains":["*.bootstrapcdn.com"],"examples":["maxcdn.bootstrapcdn.com","stackpath.bootstrapcdn.com"]},{"name":"Tribal Fusion","company":"Exponential Interactive","categories":["ad"],"domains":["*.tribalfusion.com"]},{"name":"Affiliate Window","company":"Digital Window","categories":["ad"],"domains":["*.dwin1.com"]},{"name":"PowerReviews","categories":["analytics"],"domains":["*.powerreviews.com"]},{"name":"PageSense","homepage":"https://www.zoho.com/pagesense/","categories":["analytics"],"domains":["*.pagesense.io"],"examples":["cdn.pagesense.io"]},{"name":"Geniee","categories":["ad"],"domains":["*.href.asia","*.genieessp.jp","*.genieesspv.jp","*.gssprt.jp"],"examples":["cs.gssprt.jp"]},{"name":"Maxymiser","categories":["analytics"],"domains":["*.maxymiser.net"]},{"name":"Smart Insight Tracking","company":"Emarsys","categories":["analytics"],"domains":["*.scarabresearch.com"]},{"name":"Auto Link Maker","company":"Apple","categories":["ad"],"domains":["*.apple.com"],"examples":["autolinkmaker.itunes.apple.com"]},{"name":"SessionCam","company":"ServiceTick","categories":["analytics"],"domains":["*.sessioncam.com","d2oh4tlt9mrke9.cloudfront.net"]},{"name":"GetResponse","categories":["ad"],"domains":["*.getresponse.com"]},{"name":"Clerk.io ApS","categories":["analytics"],"domains":["*.clerk.io"]},{"name":"Kampyle","categories":["analytics"],"domains":["*.kampyle.com"]},{"name":"Monetate","categories":["analytics"],"domains":["*.monetate.net"]},{"name":"Opentag","company":"Qubit","categories":["tag-manager"],"domains":["*.qutics.com","d3c3cq33003psk.cloudfront.net"],"examples":["opentag-stats.qutics.com"]},{"name":"StickyADS.tv","categories":["ad"],"domains":["*.stickyadstv.com"]},{"name":"Usabilla","homepage":"https://usabilla.com","categories":["analytics"],"domains":["*.usabilla.com","d6tizftlrpuof.cloudfront.net"],"examples":["w.usabilla.com"]},{"name":"Polar","homepage":"https://polar.me/","categories":["ad"],"domains":["*.polarmobile.ca","*.mediaeverywhere.com","*.mediavoice.com","*.plrsrvcs.com","*.polarcdn-engine.com","*.polarcdn-meraxes.com","*.polarcdn-pentos.com","*.polarcdn-static.com","*.polarcdn-terrax.com","*.polarcdn.com","*.polarmobile.com","*.poweredbypolar.com","*.mediaconductor.me","*.polaracademy.me"]},{"name":"TrackJS","categories":["analytics"],"domains":["*.trackjs.com","d2zah9y47r7bi2.cloudfront.net"],"examples":["usage.trackjs.com"]},{"name":"BannerFlow","company":"Nordic Factory Solutions","categories":["ad"],"domains":["*.bannerflow.com"]},{"name":"Fort Awesome","categories":["cdn"],"domains":["*.fortawesome.com"]},{"name":"Twitch","homepage":"https://twitch.tv/","categories":["video"],"domains":["*.twitch.tv"],"examples":["player.twitch.tv"]},{"name":"eBay","categories":["ad"],"domains":["*.ebay.com","*.ebayimg.com","*.fetchback.com"]},{"name":"Adocean","company":"Gemius","categories":["ad"],"domains":["*.adocean.pl"]},{"name":"Po.st","company":"RadiumOne","categories":["utility"],"domains":["*.po.st"]},{"name":"Github","categories":["utility"],"domains":["*.github.com","*.githubusercontent.com","*.github.io"],"examples":["raw.githubusercontent.com"]},{"name":"Rackspace","categories":["hosting"],"domains":["*.rackcdn.com","*.rackspacecloud.com","*.raxcdn.com","*.websitetestlink.com"]},{"name":"Meetrics","categories":["ad"],"domains":["*.de.com","*.meetrics.net","*.mxcdn.net"],"examples":["research.de.com"]},{"name":"Wufoo","categories":["utility"],"domains":["*.wufoo.com"]},{"name":"Pagely","categories":["other"],"domains":["*.optnmstr.com"]},{"name":"LiveTex","categories":["customer-success"],"domains":["*.livetex.ru"]},{"name":"Yieldmo","categories":["ad"],"domains":["*.yieldmo.com"]},{"name":"fluct","categories":["ad"],"domains":["*.adingo.jp"]},{"name":"33 Across","homepage":"https://33across.com/","categories":["ad"],"domains":["*.33across.com"],"examples":["sic.33across.com","cdn-sic.33across.com"]},{"name":"Freshdesk","homepage":"https://freshdesk.com/","categories":["customer-success"],"domains":["d36mpcpuzc4ztk.cloudfront.net"]},{"name":"Market GID","homepage":"https://www.marketgid.com/","categories":["ad"],"domains":["*.marketgid.com"],"examples":["jsc.marketgid.com"]},{"name":"plista","categories":["ad"],"domains":["*.plista.com"]},{"name":"Mather Economics","categories":["analytics"],"domains":["*.matheranalytics.com"]},{"name":"Skype","categories":["other"],"domains":["*.skype.com"]},{"name":"Supership","homepage":"https://supership.jp/","categories":["ad"],"domains":["*.socdm.com"]},{"name":"AIR.TV","categories":["ad"],"domains":["*.air.tv"]},{"name":"Blindado","categories":["utility"],"domains":["*.siteblindado.com"]},{"name":"WebsiteBuilder.com","homepage":"https://www.websitebuilder.com","categories":["hosting"],"domains":["*.mywebsitebuilder.com"]},{"name":"Wishpond Technologies","categories":["marketing"],"domains":["*.wishpond.com","*.wishpond.net"]},{"name":"ClickDesk","categories":["customer-success"],"domains":["*.clickdesk.com","d1gwclp1pmzk26.cloudfront.net"]},{"name":"Media Management Technologies","categories":["ad"],"domains":["*.speedshiftmedia.com"]},{"name":"Wicked Reports","homepage":"https://www.wickedreports.com/","categories":["marketing"],"domains":["*.wickedreports.com"],"examples":["widget.wickedreports.com"]},{"name":"Attentive","homepage":"https://attentivemobile.com/","categories":["ad"],"domains":["*.attn.tv","*.attentivemobile.com"]},{"name":"WisePops","categories":["utility"],"domains":["*.wisepops.com"]},{"name":"Snacktools","categories":["ad"],"domains":["*.bannersnack.com"]},{"name":"Technorati","company":"Synacor","categories":["ad"],"domains":["*.technoratimedia.com"]},{"name":"Fraudlogix","categories":["utility"],"domains":["*.yabidos.com"]},{"name":"Reviews.co.uk","categories":["analytics"],"domains":["*.reviews.co.uk"]},{"name":"Okas Concepts","categories":["utility"],"domains":["*.okasconcepts.com"]},{"name":"Lytics","categories":["ad"],"domains":["*.lytics.io"]},{"name":"Radar","company":"Cedexis","homepage":"https://www.cedexis.com/radar/","categories":["analytics"],"domains":["*.cedexis-test.com","*.cedexis.com","*.cmdolb.com","cedexis.leasewebcdn.com","*.cedexis-radar.net","*.cedexis.net","cedexis-test01.insnw.net","cedexisakamaitest.azureedge.net","cedexispub.cdnetworks.net","cs600.wac.alphacdn.net","cs600.wpc.edgecastdns.net","global2.cmdolb.com","img-cedexis.mncdn.com","a-cedexis.msedge.net","zn3vgszfh.fastestcdn.net"],"examples":["radar.cedexis.com","rpt.cedexis.com","2-01-49cd-0002.cdx.cedexis.net","bench.cedexis-test.com"]},{"name":"TripAdvisor","categories":["content"],"domains":["*.jscache.com","*.tacdn.com","*.tamgrt.com","*.tripadvisor.com","*.viator.com","*.tripadvisor.co.uk"],"examples":["www.jscache.com","www.tamgrt.com"]},{"name":"WebEngage","categories":["customer-success"],"domains":["*.webengage.co","*.webengage.com","d23nd6ymopvz52.cloudfront.net","d3701cc9l7v9a6.cloudfront.net"]},{"name":"Crowd Control","company":"Lotame","categories":["ad"],"domains":["*.crwdcntrl.net"]},{"name":"SaleCycle","categories":["ad"],"domains":["*.salecycle.com","d16fk4ms6rqz1v.cloudfront.net","d22j4fzzszoii2.cloudfront.net","d30ke5tqu2tkyx.cloudfront.net","dn1i8v75r669j.cloudfront.net"]},{"name":"Browsealoud","homepage":"https://www.texthelp.com/en-gb/products/browsealoud/","categories":["other"],"domains":["*.browsealoud.com","*.texthelp.com"],"examples":["www.browsealoud.com"]},{"name":"Decibel Insight","categories":["analytics"],"domains":["*.decibelinsight.net"]},{"name":"Yieldify","categories":["ad"],"domains":["*.yieldify.com","*.yieldifylabs.com","d33wq5gej88ld6.cloudfront.net","dwmvwp56lzq5t.cloudfront.net"],"examples":["geo.yieldifylabs.com"]},{"name":"Fastly Insights","homepage":"https://insights.fastlylabs.com","categories":["analytics"],"domains":["*.fastly-insights.com"],"examples":["www.fastly-insights.com"]},{"name":"Autopilot","categories":["ad"],"domains":["*.autopilothq.com"]},{"name":"Riskified","categories":["utility"],"domains":["*.riskified.com"]},{"name":"AudienceSearch","company":"Intimate Merger","categories":["ad"],"domains":["*.im-apps.net"]},{"name":"SpotXchange","categories":["ad"],"domains":["*.spotxcdn.com","*.spotxchange.com","*.spotx.tv"]},{"name":"Quantum Metric","homepage":"https://www.quantummetric.com/","categories":["analytics"],"domains":["*.quantummetric.com"]},{"name":"Adobe Scene7","company":"Adobe Systems","categories":["content"],"domains":["wwwimages.adobe.com","*.scene7.com","*.everestads.net","*.everestjs.net"]},{"name":"GumGum","categories":["ad"],"domains":["*.gumgum.com"]},{"name":"Forensiq","categories":["utility"],"domains":["*.fqtag.com"]},{"name":"IBM Acoustic Campaign","company":"IBM","categories":["analytics"],"domains":["www.sc.pages01.net","www.sc.pages02.net","www.sc.pages03.net","www.sc.pages04.net","www.sc.pages05.net","www.sc.pages06.net","www.sc.pages07.net","www.sc.pages08.net","www.sc.pages09.net","www.sc.pagesA.net"],"examples":["https://www.sc.pages01.net/lp/static/js/iMAWebCookie.js"]},{"name":"Tail Target","company":"Tail","categories":["ad"],"domains":["*.tailtarget.com"]},{"name":"Between Digital","categories":["ad"],"domains":["*.betweendigital.com"]},{"name":"Pendo","homepage":"https://www.pendo.io","categories":["analytics"],"domains":["*.pendo.io"],"examples":["app.pendo.io"]},{"name":"Picreel","categories":["analytics"],"domains":["*.pcrl.co","*.picreel.com"]},{"name":"LoopMe","categories":["ad"],"domains":["*.loopme.biz","*.loopme.com","*.vntsm.com","*.loopme.me"]},{"name":"Weborama","categories":["ad"],"domains":["*.weborama.com","*.weborama.fr"]},{"name":"Google Plus","company":"Google","categories":["social"],"domains":["plus.google.com"]},{"name":"Evergage","categories":["analytics"],"domains":["*.evergage.com","*.evgnet.com"],"examples":["cdn.evgnet.com"]},{"name":"rewardStyle.com","categories":["ad"],"domains":["*.rewardstyle.com"]},{"name":"Kaltura Video Platform","company":"Kaltura","categories":["content"],"domains":["*.kaltura.com"],"examples":["cdnsecakmi.kaltura.com"]},{"name":"Sooqr Search","company":"Sooqr","categories":["utility"],"domains":["*.sooqr.com"]},{"name":"Revcontent","categories":["content"],"domains":["*.revcontent.com"]},{"name":"Appier","categories":["ad"],"domains":["*.appier.net"]},{"name":"Forter","categories":["utility"],"domains":["*.forter.com"]},{"name":"AddShoppers","categories":["social"],"domains":["*.addshoppers.com","d3rr3d0n31t48m.cloudfront.net","*.shop.pe"]},{"name":"Madison Logic","categories":["marketing"],"domains":["*.ml314.com"]},{"name":"FirstImpression","categories":["ad"],"domains":["*.firstimpression.io"]},{"name":"Salesforce.com","categories":["ad"],"domains":["*.force.com","*.salesforce.com"],"examples":["secure.force.com"]},{"name":"Effective Measure","categories":["ad"],"domains":["*.effectivemeasure.net"]},{"name":"BoldChat","company":"LogMeIn","categories":["customer-success"],"domains":["*.boldchat.com"]},{"name":"Tradelab","categories":["ad"],"domains":["*.tradelab.fr"]},{"name":"Rocket Fuel","categories":["ad"],"domains":["*.rfihub.com","*.ru4.com","*.rfihub.net","*.ad1x.com"]},{"name":"Unruly Media","categories":["ad"],"domains":["*.unrulymedia.com"]},{"name":"Interpublic Group","categories":["ad"],"domains":["*.mbww.com"]},{"name":"Pixlee","categories":["social"],"domains":["*.pixlee.com"]},{"name":"The Trade Desk","homepage":"https://www.thetradedesk.com/","categories":["ad"],"domains":["d1eoo1tco6rr5e.cloudfront.net","*.adsrvr.org"],"examples":["js.adsrvr.org","match.adsrvr.org","insight.adsrvr.org","usw-lax.adsrvr.org","data.adsrvr.org","snap.adsrvr.org"]},{"name":"Keywee","categories":["ad"],"domains":["*.keywee.co"]},{"name":"Audience 360","company":"Datapoint Media","categories":["ad"],"domains":["*.dpmsrv.com"]},{"name":"Fresh Relevance","categories":["analytics"],"domains":["*.freshrelevance.com","*.cloudfront.ne","d1y9qtn9cuc3xw.cloudfront.net","d81mfvml8p5ml.cloudfront.net","dkpklk99llpj0.cloudfront.net"],"examples":["d1y9qtn9cuc3xw.cloudfront.ne"]},{"name":"OneSignal","homepage":"https://onesignal.com/","categories":["utility"],"domains":["*.onesignal.com"],"examples":["cdn.onesignal.com","https://onesignal.com/api/v1/sync/"]},{"name":"ZEDO","categories":["ad"],"domains":["*.zedo.com"]},{"name":"Vidyard","homepage":"https://www.vidyard.com/","categories":["utility"],"domains":["*.vidyard.com"]},{"name":"Opta","company":"Perform Group","categories":["content"],"domains":["*.opta.net"]},{"name":"WebpageFX","categories":["ad"],"domains":["*.leadmanagerfx.com"]},{"name":"Gleam","categories":["marketing"],"domains":["*.gleam.io"]},{"name":"LinkedIn Ads","categories":["ad"],"domains":["*.licdn.com","ads.linkedin.com","www.linkedin.com"],"examples":["snap.licdn.com"]},{"name":"Dynatrace","categories":["analytics"],"domains":["*.ruxit.com","js-cdn.dynatrace.com"]},{"name":"KISSmetrics","categories":["analytics"],"domains":["*.kissmetrics.com","doug1izaerwt3.cloudfront.net","dsyszv14g9ymi.cloudfront.net"]},{"name":"Flowplayer","categories":["content"],"domains":["*.flowplayer.org"]},{"name":"Cloudinary","categories":["content"],"domains":["*.cloudinary.com"]},{"name":"SearchSpring","categories":["utility"],"domains":["*.searchspring.net"]},{"name":"Talkable","categories":["ad"],"domains":["*.talkable.com","d2jjzw81hqbuqv.cloudfront.net"],"examples":["www.talkable.com"]},{"name":"ReadSpeaker","homepage":"https://www.readspeaker.com","categories":["other"],"domains":["*.readspeaker.com"],"examples":["sf1-eu.readspeaker.com"]},{"name":"Curalate","categories":["marketing"],"domains":["*.curalate.com","d116tqlcqfmz3v.cloudfront.net"]},{"name":"Covert Pics","categories":["content"],"domains":["*.covet.pics"]},{"name":"Bootstrap Chinese network","categories":["cdn"],"domains":["*.bootcss.com"]},{"name":"Apester","categories":["analytics"],"domains":["*.apester.com","*.qmerce.com"]},{"name":"JustPremium Ads","company":"JustPremium","categories":["ad"],"domains":["*.justpremium.com"]},{"name":"Ooyala","categories":["ad"],"domains":["*.ooyala.com"]},{"name":"Qualaroo","categories":["analytics"],"domains":["*.qualaroo.com"]},{"name":"Clicktripz","categories":["content"],"domains":["*.clicktripz.com"],"examples":["static.clicktripz.com","www.clicktripz.com"]},{"name":"Arbor","company":"LiveRamp","categories":["other"],"domains":["*.pippio.com"]},{"name":"Concert","homepage":"https://concert.io/","categories":["ad"],"domains":["*.concert.io"],"examples":["cdn.concert.io"]},{"name":"Vox Media","homepage":"https://www.voxmedia.com/","categories":["content"],"domains":["*.vox-cdn.com","*.voxmedia.com"],"examples":["cdn.vox-cdn.com"]},{"name":"Highcharts","categories":["utility"],"domains":["*.highcharts.com"]},{"name":"LiveHelpNow","categories":["customer-success"],"domains":["*.livehelpnow.net"]},{"name":"mParticle","homepage":"https://www.mparticle.com/","categories":["utility"],"domains":["*.mparticle.com"],"examples":["jssdks.mparticle.com","identity.mparticle.com"]},{"name":"Simpli.fi","categories":["ad"],"domains":["*.simpli.fi"]},{"name":"DemandBase","categories":["marketing"],"domains":["*.demandbase.com"]},{"name":"Typepad","categories":["hosting"],"domains":["*.typepad.com"]},{"name":"Omniconvert","categories":["analytics"],"domains":["*.omniconvert.com","d2tgfbvjf3q6hn.cloudfront.net","d3vbj265bmdenw.cloudfront.net"]},{"name":"Adscale","categories":["ad"],"domains":["*.adscale.de"]},{"name":"MaxMind","categories":["utility"],"domains":["*.maxmind.com"]},{"name":"FoxyCart","categories":["utility"],"domains":["*.foxycart.com"]},{"name":"Shopgate","categories":["utility"],"domains":["*.shopgate.com"]},{"name":"DMD Marketing","homepage":"https://www.dmdconnects.com/","categories":["ad"],"domains":["*.medtargetsystem.com"]},{"name":"Qubit Deliver","company":"Qubit","categories":["analytics"],"domains":["d1m54pdnjzjnhe.cloudfront.net","d22rutvoghj3db.cloudfront.net","dd6zx4ibq538k.cloudfront.net"]},{"name":"linkpulse","categories":["analytics"],"domains":["*.lp4.io"]},{"name":"Braze","homepage":"https://www.braze.com","categories":["analytics"],"domains":["*.appboycdn.com"],"examples":["js.appboycdn.com"]},{"name":"Zanox","categories":["ad"],"domains":["*.zanox.com","*.zanox.ws"]},{"name":"Ipify","homepage":"https://www.ipify.org","categories":["utility"],"domains":["*.ipify.org"],"examples":["api.ipify.org","geo.ipify.org"]},{"name":"Turn","categories":["ad"],"domains":["*.turn.com"]},{"name":"Underdog Media","categories":["ad"],"domains":["*.underdog.media","*.udmserve.net"]},{"name":"Adition","homepage":"https://www.adition.com","categories":["ad"],"domains":["*.adition.com"],"examples":["dsp.adfarm1.adition.com"]},{"name":"Stackla PTY","categories":["social"],"domains":["*.stackla.com"]},{"name":"Sekindo","categories":["content"],"domains":["*.sekindo.com"]},{"name":"unpkg","categories":["utility"],"domains":["*.npmcdn.com"]},{"name":"Delta Projects AB","categories":["ad"],"domains":["*.de17a.com"]},{"name":"Snack Media","categories":["content"],"domains":["*.snack-media.com"]},{"name":"Civic","categories":["hosting"],"domains":["*.civiccomputing.com"]},{"name":"Global-e","categories":["hosting"],"domains":["*.global-e.com"]},{"name":"Feedbackify","company":"InsideMetrics","categories":["analytics"],"domains":["*.feedbackify.com"]},{"name":"TINT","categories":["content"],"domains":["*.71n7.com","d33w9bm0n1egwm.cloudfront.net","d36hc0p18k1aoc.cloudfront.net","d3l7tj34e9fc43.cloudfront.net"],"examples":["www.71n7.com"]},{"name":"Key CDN","categories":["utility"],"domains":["*.kxcdn.com"]},{"name":"VoiceFive","categories":["analytics"],"domains":["*.voicefive.com"]},{"name":"Signyfyd","categories":["utility"],"domains":["*.signifyd.com"]},{"name":"CPEx","categories":["content"],"domains":["*.cpex.cz"]},{"name":"Marketplace Web Service","company":"Amazon","categories":["other"],"domains":["*.ssl-images-amazon.com"]},{"name":"Verizon Digital Media CDN","homepage":"https://www.verizondigitalmedia.com/","categories":["cdn"],"domains":["*.edgecastcdn.net","*.edgecastdns.net"]},{"name":"Vibrant Media","categories":["ad"],"domains":["*.intellitxt.com","*.picadmedia.com"]},{"name":"Edge Web Fonts","company":"Adobe Systems","categories":["cdn"],"domains":["*.edgefonts.net"],"examples":["use.edgefonts.net"]},{"name":"Steelhouse","categories":["ad"],"domains":["*.steelhousemedia.com"]},{"name":"Click Guardian","homepage":"https://www.clickguardian.co.uk/","categories":["advertising"],"domains":["*.clickguardian.app","*.clickguardian.co.uk"],"examples":["v2.clickguardian.app","protection.clickguardian.co.uk"]},{"name":"Yottaa","categories":["hosting"],"domains":["*.yottaa.com","*.yottaa.net"]},{"name":"Profitshare","categories":["ad"],"domains":["*.profitshare.ro"]},{"name":"Drip","company":"The Numa Group","categories":["ad"],"domains":["*.getdrip.com"]},{"name":"Infinity Tracking","categories":["analytics"],"domains":["*.infinity-tracking.net"]},{"name":"SurveyMonkey","categories":["analytics"],"domains":["*.surveymonkey.com"]},{"name":"MonetizeMore","categories":["ad"],"domains":["*.m2.ai"]},{"name":"Sidecar","categories":["other"],"domains":["*.getsidecar.com","d3v27wwd40f0xu.cloudfront.net"]},{"name":"ThreatMetrix","categories":["utility"],"domains":["*.online-metrix.net"]},{"name":"Auth0","homepage":"https://auth0.com/","categories":["utility"],"domains":["*.auth0.com"],"examples":["cdn.auth0.com"]},{"name":"Hupso Website Analyzer","company":"Hupso","categories":["analytics"],"domains":["*.hupso.com"]},{"name":"Sirv","categories":["other"],"domains":["*.sirv.com"]},{"name":"PerimeterX Bot Defender","company":"PerimeterX","categories":["utility"],"domains":["*.perimeterx.net","*.pxi.pub"]},{"name":"ResponseTap","categories":["analytics"],"domains":["*.adinsight.com","*.responsetap.com"]},{"name":"Petametrics","categories":["analytics"],"domains":["*.petametrics.com"]},{"name":"Sajari Pty","categories":["utility"],"domains":["*.sajari.com"]},{"name":"Flickr","categories":["content"],"domains":["*.flickr.com","*.staticflickr.com"]},{"name":"Hotmart","homepage":"https://www.hotmart.com/","categories":["content"],"domains":["*.hotmart.com"],"examples":["launchermodule.hotmart.com"]},{"name":"Adkontekst","categories":["ad"],"domains":["*.adkontekst.pl"]},{"name":"Livefyre","categories":["content"],"domains":["*.fyre.co","*.livefyre.com"]},{"name":"The Hut Group","categories":["content"],"domains":["*.thcdn.com"]},{"name":"Survicate","categories":["analytics"],"domains":["*.survicate.com"]},{"name":"Sweet Tooth","categories":["ad"],"domains":["*.sweettooth.io"]},{"name":"Adnium","categories":["ad"],"domains":["*.adnium.com"]},{"name":"CleverTap","categories":["analytics"],"domains":["d2r1yp2w7bby2u.cloudfront.net"]},{"name":"Luigi’s Box","company":"Luigi’s Box","homepage":"https://www.luigisbox.com/","categories":["utility"],"domains":["*.luigisbox.com"]},{"name":"Conversio","categories":["ad"],"domains":["*.conversio.com"]},{"name":"Connatix","categories":["ad"],"domains":["*.connatix.com"]},{"name":"StreamRail","categories":["ad"],"domains":["*.streamrail.com","*.streamrail.net"]},{"name":"Klevu Search","company":"Klevu","categories":["utility"],"domains":["*.klevu.com"]},{"name":"Reviews.io","categories":["analytics"],"domains":["*.reviews.io"]},{"name":"TruConversion","categories":["analytics"],"domains":["*.truconversion.com"]},{"name":"Sparkflow","company":"Intercept Interactive","categories":["ad"],"domains":["*.sparkflow.net"]},{"name":"DialogTech","categories":["ad"],"domains":["*.dialogtech.com"]},{"name":"Fanplayr","categories":["analytics"],"domains":["*.fanplayr.com","d38nbbai6u794i.cloudfront.net"]},{"name":"The ADEX","categories":["ad"],"domains":["*.theadex.com"]},{"name":"Reklama","categories":["ad"],"domains":["*.o2.pl","*.wp.pl"],"examples":["dot.wp.pl","px.o2.pl","px.wp.pl"]},{"name":"Impact Radius","categories":["ad"],"domains":["*.impactradius-event.com","*.impactradius-go.com","*.7eer.net","d3cxv97fi8q177.cloudfront.net","*.evyy.net","*.ojrq.net"],"examples":["a.impactradius-go.com","microsoft-uk.evyy.net"]},{"name":"Accordant Media","categories":["ad"],"domains":["*.a3cloud.net"],"examples":["segment.a3cloud.net"]},{"name":"Ambassador","categories":["ad"],"domains":["*.getambassador.com"]},{"name":"Socialphotos","categories":["social"],"domains":["*.slpht.com"]},{"name":"reEmbed","categories":["other"],"domains":["*.reembed.com"]},{"name":"Customer.io","categories":["ad"],"domains":["*.customer.io"]},{"name":"WebSpectator","categories":["ad"],"domains":["*.webspectator.com"]},{"name":"Best Of Media S.A.","categories":["content"],"domains":["*.servebom.com"]},{"name":"Hola Networks","categories":["other"],"domains":["*.h-cdn.com"]},{"name":"AdRiver","categories":["ad"],"domains":["*.adriver.ru"]},{"name":"Kaizen Platform","categories":["analytics"],"domains":["*.kaizenplatform.net"],"examples":["cdn.kaizenplatform.net","log-v4.kaizenplatform.net"]},{"name":"Calendly","categories":["other"],"domains":["*.calendly.com"]},{"name":"Reevoo","categories":["analytics"],"domains":["*.reevoo.com"]},{"name":"Playbuzz","categories":["hosting"],"domains":["*.playbuzz.com"]},{"name":"Navegg","categories":["ad"],"domains":["*.navdmp.com"]},{"name":"Advance Magazine Group","categories":["content"],"domains":["*.condenastdigital.com","*.condenet.com","*.condenast.co.uk"]},{"name":"GIPHY","categories":["content"],"domains":["*.giphy.com"]},{"name":"GoSquared","homepage":"https://www.gosquared.com","categories":["analytics"],"domains":["*.gosquared.com","d1l6p2sc9645hc.cloudfront.net"],"examples":["data.gosquared.com","data2.gosquared.com"]},{"name":"AdsWizz","categories":["ad"],"domains":["*.adswizz.com"]},{"name":"Kameleoon","categories":["analytics"],"domains":["*.kameleoon.com"]},{"name":"AvantLink","categories":["ad"],"domains":["*.avmws.com"]},{"name":"epoq internet services","categories":["analytics"],"domains":["*.epoq.de"]},{"name":"Elastic Ad","categories":["ad"],"domains":["*.elasticad.net"]},{"name":"NetAffiliation","company":"Kwanco","categories":["ad"],"domains":["*.metaffiliation.com"]},{"name":"GetIntent RTBSuite","company":"GetIntent","categories":["ad"],"domains":["*.adhigh.net"]},{"name":"Zarget","categories":["analytics"],"domains":["*.zarget.com"]},{"name":"Knight Lab","company":"Northwestern University","categories":["utility"],"domains":["*.knightlab.com"]},{"name":"Exponential Interactive","categories":["ad"],"domains":["*.exponential.com"]},{"name":"Viacom","categories":["content"],"domains":["*.mtvnservices.com"]},{"name":"AWeber","categories":["ad"],"domains":["*.aweber.com"]},{"name":"CyberSource (Visa)","categories":["utility"],"domains":["*.authorize.net"]},{"name":"Republer","categories":["ad"],"domains":["*.republer.com"],"examples":["sync.republer.com"]},{"name":"Netlify","homepage":"https://www.netlify.com/","categories":["utility"],"domains":["*.netlify.com","*.netlifyusercontent.com"],"examples":["cloud.netlifyusercontent.com"]},{"name":"Cookie-Script.com","categories":["utility"],"domains":["*.cookie-script.com"]},{"name":"bRealTime","categories":["ad"],"domains":["*.brealtime.com"]},{"name":"AdSniper","categories":["ad"],"domains":["*.adsniper.ru","*.sniperlog.ru"]},{"name":"Bluecore","categories":["analytics"],"domains":["*.bluecore.com"],"examples":["www.bluecore.com"]},{"name":"Zmags","categories":["marketing"],"domains":["*.zmags.com"]},{"name":"Postcode Anywhere (Holdings)","categories":["utility"],"domains":["*.postcodeanywhere.co.uk"]},{"name":"Vivocha S.p.A","categories":["customer-success"],"domains":["*.vivocha.com"]},{"name":"Touch Commerce","categories":["customer-success"],"domains":["*.inq.com","*.touchcommerce.com"]},{"name":"Cachefly","categories":["utility"],"domains":["*.cachefly.net"]},{"name":"JustUno","categories":["ad"],"domains":["*.justuno.com"]},{"name":"OwnerIQ","categories":["ad"],"domains":["*.owneriq.net"]},{"name":"Opinion Stage","categories":["analytics"],"domains":["*.opinionstage.com"],"examples":["www.opinionstage.com"]},{"name":"Woopra","categories":["analytics"],"domains":["*.woopra.com"]},{"name":"Onet","categories":["ad"],"domains":["*.onet.pl"]},{"name":"Adobe Marketing Cloud","company":"Adobe Systems","categories":["ad"],"domains":["*.adobetag.com"]},{"name":"Rakuten LinkShare","company":"Rakuten","categories":["ad"],"domains":["*.linksynergy.com"]},{"name":"Acceptable Ads","homepage":"https://acceptableads.com/","categories":["ad"],"domains":["*.aaxads.com","*.aaxdetect.com"]},{"name":"WalkMe","categories":["customer-success"],"domains":["*.walkme.com"]},{"name":"FLXone","company":"Teradata","categories":["ad"],"domains":["*.pangolin.blue","*.flx1.com","d2hlpp31teaww3.cloudfront.net"]},{"name":"Bookatable","categories":["content"],"domains":["*.bookatable.com","*.livebookings.com"]},{"name":"Conversant Tag Manager","company":"Conversant","categories":["tag-manager"],"domains":["*.mplxtms.com"]},{"name":"Exponea","categories":["analytics"],"domains":["*.exponea.com"]},{"name":"Storygize","categories":["ad"],"domains":["*.storygize.net"],"examples":["www.storygize.net"]},{"name":"Ad6Media","categories":["ad"],"domains":["*.ad6media.fr"]},{"name":"Widespace","homepage":"https://www.widespace.com","categories":["ad"],"domains":["*.widespace.com"],"examples":["sync.widespace.com"]},{"name":"OnScroll","categories":["ad"],"domains":["*.onscroll.com"]},{"name":"Experian Cross-Channel Marketing Platform","company":"Experian","categories":["marketing"],"domains":["*.eccmp.com","*.ccmp.eu"]},{"name":"Mopinion","categories":["analytics"],"domains":["*.mopinion.com"]},{"name":"Netmining","company":"Ignition One","categories":["ad"],"domains":["*.netmng.com"]},{"name":"Tagboard","categories":["social"],"domains":["*.tagboard.com"]},{"name":"[24]7","categories":["customer-success"],"domains":["*.247-inc.net","*.247inc.net","d1af033869koo7.cloudfront.net"]},{"name":"Expedia","categories":["content"],"domains":["*.travel-assets.com","*.trvl-media.com","*.trvl-px.com","*.uciservice.com"],"examples":["www.trvl-px.com","www.uciservice.com"]},{"name":"SlimCut Media Outstream","company":"SlimCut Media","categories":["ad"],"domains":["*.freeskreen.com"]},{"name":"Reflektion","categories":["analytics"],"domains":["*.reflektion.com","d26opx5dl8t69i.cloudfront.net"]},{"name":"Pusher","homepage":"https://pusher.com/","categories":["utility"],"domains":["*.pusher.com","*.pusherapp.com"],"examples":["stats.pusher.com"]},{"name":"Usersnap","homepage":"https://usersnap.com","categories":["customer-success"],"domains":["*.usersnap.com"],"examples":["api.usersnap.com","cdn.usersnap.com"]},{"name":"Datonics","categories":["ad"],"domains":["*.pro-market.net"],"examples":["pbid.pro-market.net"]},{"name":"Transifex","categories":["utility"],"domains":["*.transifex.com"]},{"name":"Barilliance","categories":["analytics"],"domains":["*.barilliance.net","dn3y71tq7jf07.cloudfront.net"]},{"name":"SkyScanner","categories":["content"],"domains":["*.skyscanner.net"],"examples":["api.skyscanner.net"]},{"name":"Site24x7 Real User Monitoring","company":"Site24x7","categories":["analytics"],"domains":["*.site24x7rum.com"]},{"name":"Proper Media","categories":["content"],"domains":["*.proper.io"]},{"name":"News","categories":["social"],"domains":["*.news.com.au","*.newsanalytics.com.au","*.newsapi.com.au","*.newscdn.com.au","*.newsdata.com.au","*.newsdiscover.com.au","*.news-static.com"]},{"name":"Janrain","categories":["analytics"],"domains":["*.janrain.com","*.janrainbackplane.com","*.rpxnow.com","d3hmp0045zy3cs.cloudfront.net"]},{"name":"Resonance Insights","categories":["analytics"],"domains":["*.res-x.com"]},{"name":"Polldaddy","company":"Automattic","categories":["analytics"],"domains":["polldaddy.com"]},{"name":"Mobify","categories":["utility"],"domains":["*.mobify.com","*.mobify.net"]},{"name":"Moxie","homepage":"https://www.gomoxie.com/","categories":["utility"],"domains":["*.gomoxie.solutions"]},{"name":"Cookie Reports","categories":["utility"],"domains":["*.cookiereports.com"]},{"name":"Wow Analytics","categories":["analytics"],"domains":["*.wowanalytics.co.uk"]},{"name":"reddit","categories":["social"],"domains":["*.reddit.com","*.redditstatic.com"],"examples":["www.redditstatic.com"]},{"name":"cloudIQ","categories":["analytics"],"domains":["*.cloud-iq.com"]},{"name":"Friendbuy","categories":["ad"],"domains":["*.friendbuy.com","djnf6e5yyirys.cloudfront.net"]},{"name":"SecuredVisit","company":"4Cite Marketing","categories":["ad"],"domains":["*.securedvisit.com"]},{"name":"Microad","categories":["ad"],"domains":["*.microad.jp"]},{"name":"Ekm Systems","categories":["analytics"],"domains":["*.ekmsecure.com","*.ekmpinpoint.co.uk"],"examples":["globalstats.ekmsecure.com"]},{"name":"Spot.IM","categories":["social"],"domains":["*.spot.im"]},{"name":"Attribution","categories":["ad"],"domains":["*.attributionapp.com"]},{"name":"Qualtrics","categories":["analytics"],"domains":["*.qualtrics.com"]},{"name":"PlayAd Media Group","categories":["ad"],"domains":["*.youplay.se"]},{"name":"Betgenius","company":"Genius Sports","categories":["content"],"domains":["*.connextra.com"]},{"name":"Swoop","categories":["ad"],"domains":["*.swoop.com"]},{"name":"Vergic AB","categories":["customer-success"],"domains":["*.psplugin.com"]},{"name":"Flockler","categories":["ad"],"domains":["*.flockler.com"]},{"name":"Userzoom","categories":["analytics"],"domains":["*.userzoom.com"]},{"name":"AI Media Group","categories":["ad"],"domains":["*.aimediagroup.com"]},{"name":"Optimove","company":"Mobius Solutions","categories":["analytics"],"domains":["*.optimove.net"]},{"name":"Ziff Davis Tech","categories":["ad"],"domains":["*.adziff.com","*.zdbb.net"]},{"name":"Tag Inspector","company":"InfoTrust","categories":["analytics"],"domains":["d22xmn10vbouk4.cloudfront.net"]},{"name":"Triblio","categories":["marketing"],"domains":["*.tribl.io"]},{"name":"ShopRunner","categories":["content"],"domains":["*.shoprunner.com","*.s-9.us"]},{"name":"Oracle Recommendations On Demand","company":"Oracle","categories":["analytics"],"domains":["*.atgsvcs.com"]},{"name":"Twitter Online Conversion Tracking","company":"Twitter","categories":["ad"],"domains":["*.ads-twitter.com","analytics.twitter.com"],"examples":["static.ads-twitter.com"]},{"name":"Sojern","categories":["marketing"],"domains":["*.sojern.com"]},{"name":"emetriq","homepage":"https://www.emetriq.com/","categories":["ad"],"domains":["*.emetriq.de","*.xplosion.de"]},{"name":"Hull.js","categories":["utility"],"domains":["*.hull.io","*.hullapp.io"]},{"name":"Adobe Test & Target","company":"Adobe Systems","categories":["analytics"],"domains":["*.omtrdc.net"],"examples":["tt.omtrdc.net"]},{"name":"Remintrex","company":"SmartUp Venture","categories":["ad"],"domains":["*.remintrex.com"]},{"name":"Polyfill service","company":"Polyfill.io","categories":["other"],"domains":["*.polyfill.io"]},{"name":"Realytics","categories":["analytics"],"domains":["dcniko1cv0rz.cloudfront.net","*.realytics.net"]},{"name":"Council ad Network","categories":["ad"],"domains":["*.counciladvertising.net"]},{"name":"MaxPoint Interactive","categories":["ad"],"domains":["*.mxptint.net"]},{"name":"CleverDATA","categories":["ad"],"domains":["*.1dmp.io"]},{"name":"Mediahawk","categories":["analytics"],"domains":["*.mediahawk.co.uk"]},{"name":"Dynamic Converter","categories":["utility"],"domains":["*.dynamicconverter.com"]},{"name":"Meltwater Group","categories":["customer-success"],"domains":["*.meltwaternews.com"]},{"name":"Raygun","categories":["utility"],"domains":["*.raygun.io"]},{"name":"LoginRadius","categories":["social"],"domains":["*.loginradius.com"]},{"name":"Reactful","categories":["analytics"],"domains":["*.reactful.com"]},{"name":"InSkin Media","categories":["ad"],"domains":["*.inskinad.com","*.inskinmedia.com"]},{"name":"Pingdom RUM","homepage":"https://www.pingdom.com/product/performance-monitoring/","categories":["analytics"],"domains":["*.pingdom.net"],"examples":["rum-static.pingdom.net","rum-collector-2.pingdom.net"]},{"name":"Alchemy","company":"AndBeyond.Media","categories":["ad"],"domains":["*.andbeyond.media"]},{"name":"TripleLift","categories":["ad"],"domains":["*.3lift.com"]},{"name":"CANDDi","company":"Campaign and Digital Intelligence","categories":["ad"],"domains":["*.canddi.com"]},{"name":"Vergic Engage Platform","company":"Vergic","categories":["customer-success"],"domains":["*.vergic.com"]},{"name":"MailPlus","categories":["ad"],"domains":["*.mailplus.nl"]},{"name":"Pixalate","categories":["utility"],"domains":["*.adrta.com"]},{"name":"Exactag","categories":["ad"],"domains":["*.exactag.com"]},{"name":"VidPulse","categories":["analytics"],"domains":["*.vidpulse.com"]},{"name":"CNET Content Solutions","company":"CBS Interactive","categories":["content"],"domains":["*.cnetcontent.com"],"examples":["cdn.cnetcontent.com","ws.cnetcontent.com"]},{"name":"Braintree Payments","company":"Paypal","categories":["utility"],"domains":["*.braintreegateway.com"]},{"name":"Adthink","company":"Adthink Media","categories":["ad"],"domains":["*.adxcore.com","*.dcoengine.com"],"examples":["d.adxcore.com"]},{"name":"Freespee","categories":["customer-success"],"domains":["*.freespee.com"],"examples":["analytics.freespee.com"]},{"name":"Sailthru","categories":["analytics"],"domains":["*.sail-horizon.com","*.sail-personalize.com","*.sail-track.com"]},{"name":"DialogTech SourceTrak","company":"DialogTech","categories":["ad"],"domains":["d31y97ze264gaa.cloudfront.net"]},{"name":"Sonobi","categories":["ad"],"domains":["*.sonobi.com"]},{"name":"Investis","categories":["utility"],"domains":["*.investis.com"]},{"name":"MLveda","categories":["utility"],"domains":["*.mlveda.com"],"examples":["www.mlveda.com"]},{"name":"Fonecall","categories":["analytics"],"domains":["*.web-call-analytics.com"]},{"name":"Vee24","categories":["customer-success"],"domains":["*.vee24.com"]},{"name":"ShopStorm","categories":["utility"],"domains":["*.shopstorm.com"]},{"name":"AdvertServe","categories":["ad"],"domains":["*.advertserve.com"]},{"name":"OneSoon","categories":["analytics"],"domains":["*.adalyser.com"]},{"name":"Ghostery Enterprise","company":"Ghostery","categories":["marketing"],"domains":["*.betrad.com"]},{"name":"AnswerDash","categories":["customer-success"],"domains":["*.answerdash.com"],"examples":["p1.answerdash.com"]},{"name":"Holimetrix","homepage":"https://u360.d-bi.fr/","categories":["marketing"],"domains":["*.d-bi.fr"],"examples":["u360.d-bi.fr"]},{"name":"Neodata","categories":["ad"],"domains":["*.neodatagroup.com"]},{"name":"Iterate","homepage":"https://iteratehq.com/","categories":["analytics"],"domains":["*.iteratehq.com"]},{"name":"ReCollect","categories":["utility"],"domains":["*.recollect.net"]},{"name":"Vertical Mass","categories":["ad"],"domains":["*.vmweb.net"]},{"name":"HotelsCombined","categories":["content"],"domains":["*.datahc.com"]},{"name":"Rakuten MediaForge","company":"Rakuten","categories":["ad"],"domains":["*.mediaforge.com"]},{"name":"Filestack","categories":["content"],"domains":["*.filepicker.io"],"examples":["api.filepicker.io","dialog.filepicker.io","www.filepicker.io"]},{"name":"Web Dissector","company":"Beijing Gridsum Technologies","categories":["analytics"],"domains":["*.gridsumdissector.com","*.webdissector.com"],"examples":["www.webdissector.com"]},{"name":"User Replay","categories":["analytics"],"domains":["*.userreplay.net"]},{"name":"Reach Group","categories":["ad"],"domains":["*.redintelligence.net"]},{"name":"infogr.am","categories":["utility"],"domains":["*.infogr.am","*.jifo.co"]},{"name":"Gfycat","company":"Gycat","categories":["utility"],"domains":["*.gfycat.com"]},{"name":"Video Media Groep","categories":["ad"],"domains":["*.vmg.host","*.inpagevideo.nl"]},{"name":"Aggregate Knowledge","company":"Neustar","categories":["ad"],"domains":["*.agkn.com"]},{"name":"PebblePost","categories":["ad"],"domains":["*.pbbl.co"]},{"name":"UPS i-parcel","company":"UPS","categories":["other"],"domains":["*.i-parcel.com"]},{"name":"RichRelevance","categories":["analytics"],"domains":["*.richrelevance.com"]},{"name":"Datacamp","categories":["utility"],"domains":["*.cdn77.org"]},{"name":"UpSellit","categories":["analytics"],"domains":["*.upsellit.com"],"examples":["www.upsellit.com"]},{"name":"AdTrue","company":"FPT AdTrue","categories":["ad"],"domains":["*.adtrue.com"]},{"name":"NaviStone","categories":["ad"],"domains":["*.murdoog.com"]},{"name":"Boomtrain","categories":["ad"],"domains":["*.boomtrain.com","*.boomtrain.net"]},{"name":"Hawk Search","categories":["utility"],"domains":["*.hawksearch.com"]},{"name":"Intilery","categories":["customer-success"],"domains":["*.intilery-analytics.com"]},{"name":"Byside","homepage":"http://www.byside.com","categories":["analytics"],"domains":["*.byside.com"],"examples":["byce2.byside.com","wce2.byside.com"]},{"name":"StackAdapt","categories":["ad"],"domains":["*.stackadapt.com"]},{"name":"Alliance for Audited Media","categories":["ad"],"domains":["*.aamsitecertifier.com"]},{"name":"Cardosa Enterprises","categories":["analytics"],"domains":["*.y-track.com"]},{"name":"Extole","categories":["ad"],"domains":["*.extole.com","*.extole.io"],"examples":["origin.extole.io"]},{"name":"Mux","categories":["analytics"],"domains":["*.litix.io"]},{"name":"RightNow Service Cloud","company":"Oracle","categories":["customer-success"],"domains":["*.rightnowtech.com","*.rnengage.com"]},{"name":"TurnTo","homepage":"https://www.turntonetworks.com/","categories":["utility"],"domains":["*.turnto.com"]},{"name":"Prezi","categories":["utility"],"domains":["*.prezi.com"]},{"name":"Moovweb","categories":["utility"],"domains":["*.moovweb.net"]},{"name":"TechTarget","categories":["content"],"domains":["*.techtarget.com","*.ttgtmedia.com"]},{"name":"JingDong","categories":["content"],"domains":["*.3.com","*.jd.com"]},{"name":"Borderfree","company":"pitney bowes","categories":["utility"],"domains":["*.borderfree.com","*.fiftyone.com"]},{"name":"Klarna","categories":["utility"],"domains":["*.klarna.com"]},{"name":"Catchpoint","homepage":"https://www.catchpoint.com/","categories":["analytics"],"domains":["*.3gl.net"]},{"name":"ReachForce","categories":["ad"],"domains":["*.reachforce.com"]},{"name":"Adyen","categories":["utility"],"domains":["*.adyen.com"]},{"name":"Salesforce Live Agent","company":"Salesforce.com","categories":["customer-success"],"domains":["*.salesforceliveagent.com"]},{"name":"Elecard StreamEye","company":"Elecard","categories":["other"],"domains":["*.streameye.net"]},{"name":"The Publisher Desk","categories":["ad"],"domains":["*.206ads.com","*.publisherdesk.com"]},{"name":"Perfect Audience","company":"Marin Software","categories":["ad"],"domains":["*.prfct.co","*.marinsm.com","*.perfectaudience.com"]},{"name":"Fastest Forward","categories":["analytics"],"domains":["*.gaug.es"]},{"name":"Kargo","categories":["marketing"],"domains":["*.kargo.com"]},{"name":"ZergNet","categories":["content"],"domains":["*.zergnet.com"]},{"name":"Xaxis","homepage":"https://www.xaxis.com/","categories":["ad"],"domains":["*.247realmedia.com","*.mookie1.com","*.gmads.net"],"examples":["t.mookie1.com","odr.mookie1.com"]},{"name":"DistroScale","categories":["ad"],"domains":["*.jsrdn.com"]},{"name":"Dropbox","categories":["utility"],"domains":["*.dropboxusercontent.com"]},{"name":"PowerFront","categories":["hosting"],"domains":["*.inside-graph.com"]},{"name":"Gravatar","homepage":"http://en.gravatar.com/","categories":["social"],"domains":["*.gravatar.com"],"examples":["secure.gravatar.com","www.gravatar.com"]},{"name":"AdSupply","categories":["ad"],"domains":["*.doublepimp.com"]},{"name":"One by AOL","company":"AOL","categories":["ad"],"domains":["*.adtechjp.com","*.adtech.de"]},{"name":"Smartlook","company":"Smartsupp.com","homepage":"https://www.smartlook.com/","categories":["analytics"],"domains":["*.smartlook.com"]},{"name":"RebelMouse","categories":["ad"],"domains":["*.rebelmouse.com","*.rbl.ms"],"examples":["www.rebelmouse.com"]},{"name":"Now Interact","categories":["analytics"],"domains":["*.nowinteract.com"]},{"name":"Better Business Bureau","categories":["analytics"],"domains":["*.bbb.org"]},{"name":"content.ad","categories":["ad"],"domains":["*.content.ad"]},{"name":"Movable Ink","categories":["analytics"],"domains":["*.micpn.com"]},{"name":"DemandJump","categories":["analytics"],"domains":["*.demandjump.com"]},{"name":"Flipboard","categories":["social"],"domains":["*.flipboard.com"]},{"name":"Trialfire","categories":["analytics"],"domains":["*.trialfire.com"]},{"name":"trueAnthem","categories":["social"],"domains":["*.tru.am"]},{"name":"Improve Digital","categories":["ad"],"domains":["*.360yield.com"]},{"name":"JotForm","categories":["utility"],"domains":["*.jotformpro.com"]},{"name":"2AdPro Media Solutions","categories":["ad"],"domains":["*.2adpro.com"]},{"name":"MathJax","categories":["utility"],"domains":["*.mathjax.org"]},{"name":"Soundest","categories":["ad"],"domains":["*.soundestlink.com","*.soundest.net"]},{"name":"BlueCava","categories":["ad"],"domains":["*.bluecava.com"]},{"name":"Stamped.io","categories":["analytics"],"domains":["*.stamped.io"]},{"name":"Webtrends","categories":["analytics"],"domains":["*.webtrends.com","*.webtrendslive.com","d1q62gfb8siqnm.cloudfront.net"]},{"name":"SPX","company":"Smaato","categories":["ad"],"domains":["*.smaato.net"]},{"name":"StumbleUpon","categories":["content"],"domains":["*.stumble-upon.com","*.stumbleupon.com"]},{"name":"Ceros","categories":["other"],"domains":["ceros.com","view.ceros.com"]},{"name":"Online republic","categories":["content"],"domains":["*.imallcdn.net"]},{"name":"Ambient","company":"Ericcson","categories":["other"],"domains":["*.adnetwork.vn","*.ambientplatform.vn"]},{"name":"Imgur","categories":["utility"],"domains":["*.imgur.com"]},{"name":"SreamAMG","company":"StreamAMG","categories":["other"],"domains":["*.streamamg.com"]},{"name":"eGain","categories":["analytics"],"domains":["*.analytics-egain.com","*.egain.com"]},{"name":"BuySellAds","categories":["ad"],"domains":["*.buysellads.com"]},{"name":"Loop11","categories":["analytics"],"domains":["*.loop11.com"]},{"name":"Click4Assistance","categories":["customer-success"],"domains":["*.click4assistance.co.uk"]},{"name":"Bidtellect","categories":["ad"],"domains":["*.bttrack.com"]},{"name":"Browser-Update.org","categories":["other"],"domains":["*.browser-update.org"]},{"name":"ARM","categories":["analytics"],"domains":["*.tag4arm.com"]},{"name":"Multiview","categories":["content"],"domains":["*.multiview.com","*.track-mv.com"]},{"name":"StackExchange","categories":["social"],"domains":["*.sstatic.net"]},{"name":"ContextWeb","categories":["ad"],"domains":["*.contextweb.com"]},{"name":"YoYo","categories":["utility"],"domains":["*.goadservices.com"]},{"name":"Conversant","categories":["analytics"],"domains":["*.dotomi.com","*.dtmpub.com","*.emjcd.com","mediaplex.com","*.tqlkg.com","*.fastclick.net"],"examples":["www.tqlkg.com"]},{"name":"Sociomantic Labs","company":"DunnHumby","categories":["ad"],"domains":["*.sociomantic.com"]},{"name":"Trustev","company":"TransUnion","categories":["utility"],"domains":["*.trustev.com"]},{"name":"Quora Ads","homepage":"https://www.quora.com/business/","categories":["ad"],"domains":["*.quora.com"],"examples":["q.quora.com"]},{"name":"Peaks & Pies","categories":["analytics"],"domains":["*.bunchbox.co"]},{"name":"Trust Guard","categories":["utility"],"domains":["*.trust-guard.com"]},{"name":"Euroland","categories":["utility"],"domains":["*.euroland.com"]},{"name":"EmailCenter","categories":["ad"],"domains":["*.emailcenteruk.com"]},{"name":"HP Optimost","company":"Hewlett-Packard Development Company","categories":["marketing"],"domains":["*.hp.com","d2uncb19xzxhzx.cloudfront.net"],"examples":["by.marketinghub.hp.com","marketinghub.hp.com"]},{"name":"Retention Science","categories":["ad"],"domains":["*.retentionscience.com","d1stxfv94hrhia.cloudfront.net"]},{"name":"C3 Metrics","categories":["analytics"],"domains":["*.c3tag.com"]},{"name":"Virtual Earth","company":"Microsoft","categories":["utility"],"domains":["*.virtualearth.net"]},{"name":"AliveChat","company":"AYU Technology Solutions","categories":["customer-success"],"domains":["*.websitealive.com","*.websitealive7.com"]},{"name":"Fidelity Media","categories":["ad"],"domains":["*.fidelity-media.com"],"examples":["x.fidelity-media.com"]},{"name":"Clickagy Audience Lab","company":"Clickagy","categories":["ad"],"domains":["*.clickagy.com"],"examples":["aorta.clickagy.com"]},{"name":"Adtech (AOL)","categories":["ad"],"domains":["*.adtechus.com"]},{"name":"smartclip","categories":["ad"],"domains":["*.smartclip.net"]},{"name":"SpeedCurve LUX","homepage":"https://speedcurve.com/features/lux/","categories":["analytics"],"domains":["*.speedcurve.com"],"examples":["cdn.speedcurve.com","lux.speedcurve.com"]},{"name":"Conversion Logic","categories":["ad"],"domains":["*.conversionlogic.net"]},{"name":"ESV Digital","categories":["analytics"],"domains":["*.esearchvision.com"]},{"name":"Tradedoubler","categories":["ad"],"domains":["*.pvnsolutions.com","*.tradedoubler.com"]},{"name":"StrÃ¶er Digital Media","categories":["ad"],"domains":["*.stroeerdigitalmedia.de"]},{"name":"Ruler Analytics","company":"Ruler","categories":["analytics"],"domains":["*.nyltx.com","*.ruleranalytics.com"],"examples":["www.ruleranalytics.com"]},{"name":"RecoBell","categories":["analytics"],"domains":["*.recobell.io"]},{"name":"EmpathyBroker Site Search","company":"EmpathyBroker","categories":["utility"],"domains":["*.empathybroker.com"]},{"name":"Foxentry","company":"AVANTRO","homepage":"https://foxentry.cz/","categories":["utility"],"domains":["*.foxentry.cz"]},{"name":"Glassdoor","categories":["content"],"domains":["*.glassdoor.com"]},{"name":"TrafficJunky","homepage":"https://www.trafficjunky.com/","categories":["ad"],"domains":["*.contentabc.com","*.trafficjunky.net"],"examples":["ads2.contentabc.com","hw-cdn.contentabc.com","media.trafficjunky.net","ads.trafficjunky.net","hw-cdn.trafficjunky.net"]},{"name":"Sub2 Technologies","categories":["analytics"],"domains":["*.sub2tech.com"]},{"name":"SAS Institute","categories":["ad"],"domains":["*.aimatch.com","*.sas.com"]},{"name":"Webtrekk","categories":["analytics"],"domains":["*.wbtrk.net","*.webtrekk-asia.net","*.webtrekk.net","*.wt-eu02.net"]},{"name":"Okta","categories":["analytics"],"domains":["*.okta.com"]},{"name":"MouseStats","categories":["analytics"],"domains":["*.mousestats.com"]},{"name":"Certona","categories":["analytics"],"domains":["*.certona.net"]},{"name":"my6sense","categories":["ad"],"domains":["*.mynativeplatform.com"]},{"name":"MyBuys","categories":["analytics"],"domains":["*.mybuys.com"]},{"name":"eXTReMe digital","categories":["analytics"],"domains":["*.extreme-dm.com"]},{"name":"AdCurve","categories":["ad"],"domains":["*.shop2market.com"]},{"name":"Oracle","categories":["marketing"],"domains":["*.custhelp.com","*.eloqua.com","*.en25.com","*.estara.com","*.instantservice.com"]},{"name":"Burt","categories":["analytics"],"domains":["*.richmetrics.com","*.burt.io"]},{"name":"Silverpop","company":"IBM","categories":["ad"],"domains":["*.mkt912.com","*.mkt922.com","*.mkt932.com","*.mkt941.com","*.mkt51.net","*.mkt61.net","*.pages01.net","*.pages02.net","*.pages03.net","*.pages04.net","*.pages05.net"]},{"name":"AcuityAds","categories":["ad"],"domains":["*.acuityplatform.com"]},{"name":"Performio","categories":["ad"],"domains":["*.performax.cz"],"examples":["ut.performax.cz"]},{"name":"Visual IQ","homepage":"https://www.visualiq.com","categories":["analytics"],"domains":["*.myvisualiq.net"],"examples":["t.myvisualiq.net"]},{"name":"SmarterHQ","categories":["analytics"],"domains":["*.smarterhq.io","d1n00d49gkbray.cloudfront.net","*.smarterremarketer.net"]},{"name":"NetSeer","categories":["ad"],"domains":["*.netseer.com","*.ns-cdn.com"]},{"name":"OneTag","categories":["ad"],"domains":["*.onetag-sys.com"]},{"name":"Jivox","categories":["ad"],"domains":["*.jivox.com"]},{"name":"Expedia USA","company":"Expedia","categories":["content"],"domains":["*.expedia.com"],"examples":["www.expedia.com"]},{"name":"LiveRamp IdentityLink","homepage":"https://liveramp.com/discover-identitylink/","categories":["analytics"],"domains":["*.circulate.com","*.rlcdn.com"],"examples":["idsync.rlcdn.com","id.rlcdn.com","api.rlcdn.com","cdn.rlcdn.com"]},{"name":"Amplience","categories":["marketing"],"domains":["*.10cms.com","*.amplience.com","*.bigcontent.io","*.adis.ws"]},{"name":"ToneMedia","categories":["ad"],"domains":["*.clickfuse.com"]},{"name":"Acquisio","categories":["ad"],"domains":["*.acq.io"]},{"name":"PrintFriendly","categories":["utility"],"domains":["*.printfriendly.com"]},{"name":"Divido","categories":["utility"],"domains":["*.divido.com"]},{"name":"MyRegistry","categories":["other"],"domains":["*.myregistry.com"]},{"name":"Pagefair","categories":["ad"],"domains":["*.pagefair.com","*.pagefair.net"]},{"name":"Heatmap","categories":["analytics"],"domains":["*.heatmap.it"]},{"name":"Uniqodo","categories":["ad"],"domains":["*.uniqodo.com"]},{"name":"Recite Me","categories":["other"],"domains":["*.reciteme.com"]},{"name":"Carbon Ads","homepage":"https://www.carbonads.net/","categories":["ad"],"domains":["*.carbonads.net","*.carbonads.com"]},{"name":"Ahalogy","categories":["social"],"domains":["*.ahalogy.com"]},{"name":"AdultWebmasterEmpire.Com","categories":["ad"],"domains":["*.awempire.com"]},{"name":"Developer Media","categories":["ad"],"domains":["*.developermedia.com"]},{"name":"Adap.tv","categories":["ad"],"domains":["*.adap.tv"]},{"name":"Sokrati","categories":["marketing"],"domains":["*.sokrati.com"]},{"name":"Vizzit","homepage":"http://www.vizzit.se","categories":["analytics"],"domains":["*.vizzit.se"],"examples":["www.vizzit.se","tag.vizzit.se"]},{"name":"Ada","homepage":"https://www.ada.support/","categories":["customer-success"],"domains":["*.ada.support"],"examples":["static.ada.support"]},{"name":"LeasdBoxer","company":"LeadBoxer","categories":["ad"],"domains":["*.leadboxer.com"]},{"name":"FuelX","categories":["ad"],"domains":["*.fuelx.com"]},{"name":"BidTheatre","categories":["ad"],"domains":["*.bidtheatre.com"]},{"name":"Adzerk","categories":["ad"],"domains":["*.adzerk.net"]},{"name":"Account Kit","categories":["other"],"domains":["*.accountkit.com"]},{"name":"Segmento","categories":["ad"],"domains":["*.rutarget.ru"]},{"name":"Mark and Mini","categories":["ad"],"domains":["*.markandmini.com"],"examples":["www.markandmini.com"]},{"name":"Datalicious","categories":["tag-manager"],"domains":["*.supert.ag","*.optimahub.com"]},{"name":"Admedo","categories":["ad"],"domains":["*.a8723.com","*.adizio.com","*.admedo.com"],"examples":["pool.a8723.com"]},{"name":"HyperInzerce","homepage":"https://hyperinzerce.cz","categories":["ad"],"domains":["*.hyperinzerce.cz"],"examples":["motorky.hyperinzerce.cz"]},{"name":"Adwise","categories":["ad"],"domains":["*.adwise.bg"]},{"name":"Numberly","company":"1000mercis","categories":["ad"],"domains":["*.mmtro.com","*.nzaza.com"]},{"name":"Yummley","categories":["other"],"domains":["*.yummly.com"]},{"name":"Sophus3","categories":["analytics"],"domains":["*.s3ae.com","*.sophus3.com"]},{"name":"EMX Digital","homepage":"https://emxdigital.com","categories":["ad"],"domains":["*.emxdgt.com"]},{"name":"WebInsight","company":"dotMailer","categories":["analytics"],"domains":["*.trackedlink.net","*.trackedweb.net"]},{"name":"F@N Communications","homepage":"https://www.fancs.com/","categories":["ad"],"domains":["*.ladsp.com"],"examples":["px.ladsp.com"]},{"name":"Eyeota","categories":["ad"],"domains":["*.eyeota.net"]},{"name":"template-help.com","categories":["hosting"],"domains":["*.template-help.com"]},{"name":"HitsLink","categories":["analytics"],"domains":["*.hitslink.com"]},{"name":"Ometria","categories":["analytics"],"domains":["*.ometria.com"]},{"name":"Luminate","categories":["ad"],"domains":["*.luminate.com"]},{"name":"SLI Systems","categories":["utility"],"domains":["*.resultslist.com","*.resultspage.com","*.sli-spark.com"]},{"name":"j2 Cloud Services","categories":["ad"],"domains":["*.campaigner.com"]},{"name":"Intent IQ","categories":["ad"],"domains":["*.intentiq.com"]},{"name":"freewheel.tv","categories":["content"],"domains":["*.fwmrm.net"]},{"name":"eXelate","categories":["ad"],"domains":["*.exelator.com"]},{"name":"Webmarked","categories":["utility"],"domains":["*.webmarked.net"]},{"name":"Leaflet","categories":["utility"],"domains":["*.leafletjs.com"]},{"name":"Segmint","categories":["analytics"],"domains":["*.segmint.net"]},{"name":"360 picnic platform","company":"MediaV","categories":["ad"],"domains":["*.mediav.com"]},{"name":"adnanny","categories":["ad"],"domains":["*.adserver01.de"]},{"name":"Loggly","categories":["utility"],"domains":["d9jmv9u00p0mv.cloudfront.net"]},{"name":"Firebase","homepage":"https://developers.google.com/apis-explorer/#p/","categories":["utility"],"domains":["firebasestorage.googleapis.com","firestore.googleapis.com"]},{"name":"Connexity","homepage":"http://connexity.com/","categories":["analytics"],"domains":["*.connexity.net"]},{"name":"NEORY Marketing Cloud","company":"NEORY","categories":["marketing"],"domains":["*.ad-srv.net"]},{"name":"CoolaData","categories":["analytics"],"domains":["*.cooladata.com"]},{"name":"ChannelAdvisor","categories":["ad"],"domains":["*.channeladvisor.com","*.searchmarketing.com"]},{"name":"Ido","categories":["customer-success"],"domains":["*.idio.co"]},{"name":"Crimtan","categories":["ad"],"domains":["*.ctnsnet.com"]},{"name":"CogoCast","company":"Cogo Labs","categories":["ad"],"domains":["*.cogocast.net"]},{"name":"AdRecover","categories":["ad"],"domains":["*.adrecover.com"]},{"name":"Piwik","categories":["analytics"],"domains":["*.drtvtracker.com","*.piwikpro.com","*.raac33.net"]},{"name":"Airship","categories":["marketing"],"domains":["*.urbanairship.com","*.aswpsdkus.com"]},{"name":"Vero","company":"Semblance","categories":["ad"],"domains":["*.getvero.com","d3qxef4rp70elm.cloudfront.net"]},{"name":"bd4travel","categories":["analytics"],"domains":["*.bd4travel.com"]},{"name":"Korrelate","company":"JD Power","categories":["analytics"],"domains":["*.korrelate.net"]},{"name":"SourceKnowledge","homepage":"http://www.sourceknowledge.com","categories":["ad"],"domains":["*.provenpixel.com"]},{"name":"Adtegrity","categories":["ad"],"domains":["*.adtpix.com"]},{"name":"LockerDome","categories":["analytics"],"domains":["*.lockerdome.com"]},{"name":"Macropod BugHerd","company":"Macropod","categories":["utility"],"domains":["*.bugherd.com"],"examples":["www.bugherd.com"]},{"name":"Brandmetrics","homepage":"https://www.brandmetrics.com","categories":["analytics"],"domains":["*.brandmetrics.com"],"examples":["collector.brandmetrics.com","cdn.brandmetrics.com"]},{"name":"Admitad","categories":["ad"],"domains":["*.lenmit.com"]},{"name":"Provide Support","categories":["customer-success"],"domains":["*.providesupport.com"]},{"name":"Conversion Labs","categories":["ad"],"domains":["*.net.pl"],"examples":["conversionlabs.net.pl"]},{"name":"Yieldlab","categories":["ad"],"domains":["*.yieldlab.net"]},{"name":"Internet Brands","categories":["content"],"domains":["*.ibpxl.com"]},{"name":"Force24","categories":["ad"],"domains":["*.force24.co.uk"]},{"name":"ipinfo.io","categories":["utility"],"domains":["*.ipinfo.io"]},{"name":"Boxever","categories":["analytics"],"domains":["*.boxever.com"]},{"name":"mbr targeting","categories":["ad"],"domains":["*.m6r.eu"]},{"name":"Bet365","categories":["ad"],"domains":["*.bet365affiliates.com"]},{"name":"Worldpay","categories":["utility"],"domains":["*.worldpay.com"]},{"name":"eDigitalResearch","categories":["customer-success"],"domains":["*.edigitalresearch.com","*.edigitalsurvey.com","*.edrcdn.com"]},{"name":"Reflow","company":"Scenestealer","categories":["ad"],"domains":["*.reflow.tv"]},{"name":"audioBoom","categories":["social"],"domains":["*.audioboom.com","*.audioboo.fm"]},{"name":"Terminus","homepage":"https://terminus.com/","categories":["ad"],"domains":["*.terminus.services"]},{"name":"Thinglink","categories":["utility"],"domains":["*.thinglink.com"]},{"name":"Captify Media","categories":["ad"],"domains":["*.cpx.to"]},{"name":"Bizrate","categories":["analytics"],"domains":["*.bizrate.com"]},{"name":"APSIS Profile Cloud","company":"APSIS","categories":["analytics"],"domains":["*.innomdc.com"]},{"name":"Webkul","company":"Webkul Software","categories":["utility"],"domains":["*.webkul.com"]},{"name":"Vizury","categories":["ad"],"domains":["*.vizury.com"]},{"name":"AirPR","categories":["analytics"],"domains":["*.airpr.com"]},{"name":"Queue-it","categories":["other"],"domains":["*.queue-it.net"]},{"name":"Imagini Holdings","categories":["ad"],"domains":["*.vdna-assets.com"]},{"name":"Mention Me","categories":["ad"],"domains":["*.mention-me.com"],"examples":["tag.mention-me.com"]},{"name":"BloomReach","categories":["ad"],"domains":["*.brcdn.com","*.brsrvr.com","*.brsvr.com"]},{"name":"Infoline","categories":["analytics"],"domains":["*.ioam.de"]},{"name":"RTB House AdPilot","company":"RTB House","categories":["ad"],"domains":["*.erne.co","*.creativecdn.com"]},{"name":"MotionPoint","categories":["other"],"domains":["*.convertlanguage.com"]},{"name":"rss2json","categories":["utility"],"domains":["*.rss2json.com"]},{"name":"Business Week","company":"Bloomberg","categories":["social"],"domains":["*.bwbx.io"]},{"name":"MyFonts","categories":["cdn"],"domains":["*.myfonts.net"]},{"name":"Kenshoo","categories":["marketing"],"domains":["*.xg4ken.com"]},{"name":"Fospha","categories":["analytics"],"domains":["*.fospha.com"],"examples":["router.fospha.com"]},{"name":"PollDaddy (Automattic)","categories":["ad"],"domains":["static.polldaddy.com","*.poll.fm"]},{"name":"Lifestreet Media","categories":["social"],"domains":["*.lfstmedia.com"]},{"name":"AdSpeed","categories":["ad"],"domains":["*.adspeed.net"]},{"name":"Mynewsdesk","categories":["utility"],"domains":["*.mynewsdesk.com"]},{"name":"eyeReturn Marketing","categories":["marketing"],"domains":["*.eyereturn.com"]},{"name":"eKomi","categories":["analytics"],"domains":["*.ekomi.com","*.ekomi.de"]},{"name":"Yellow Robot","categories":["ad"],"domains":["*.backinstock.org"]},{"name":"Effiliation sa","categories":["ad"],"domains":["*.effiliation.com"]},{"name":"dotMailer Surveys","company":"dotMailer","categories":["analytics"],"domains":["*.dotmailer-surveys.com"]},{"name":"EpiServer","homepage":"https://www.episerver.com","categories":["content"],"domains":["*.episerver.net"],"examples":["dl.episerver.net"]},{"name":"Agility","categories":["hosting"],"domains":["*.agilitycms.com"]},{"name":"VisScore","categories":["analytics"],"domains":["*.visscore.com","d2hkbi3gan6yg6.cloudfront.net"]},{"name":"Apptus eSales","company":"Apptus","categories":["analytics"],"domains":["*.apptus.com"]},{"name":"SiteScout","company":"Centro","categories":["ad"],"domains":["*.pixel.ad","*.sitescout.com"]},{"name":"Adblade","categories":["ad"],"domains":["*.adblade.com"]},{"name":"Scroll","homepage":"https://scroll.com/","categories":["utility"],"domains":["*.scroll.com"],"examples":["static.scroll.com","connect.scroll.com"]},{"name":"ClickDimensions","categories":["ad"],"domains":["*.clickdimensions.com"]},{"name":"Comodo","categories":["utility"],"domains":["*.comodo.com","*.trust-provider.com","*.trustlogo.com","usertrust.com","*.comodo.net"],"examples":["ocsp.trust-provider.com"]},{"name":"Targito","company":"VIVmail.cz","homepage":"https://www.targito.com","categories":["marketing"],"domains":["*.targito.com"]},{"name":"Justuno","categories":["ad"],"domains":["d2j3qa5nc37287.cloudfront.net"]},{"name":"Emerse","homepage":"https://www.emerse.com/","categories":["ad"],"domains":["*.emerse.com"],"examples":["tracking.emerse.com"]},{"name":"A-FIS PTE","categories":["analytics"],"domains":["*.websta.me"]},{"name":"SFR","categories":["other"],"domains":["*.sfr.fr"],"examples":["elr.sfr.fr"]},{"name":"WizRocket Technologies","categories":["analytics"],"domains":["*.wzrkt.com"]},{"name":"Affiliatly","categories":["ad"],"domains":["*.affiliatly.com"],"examples":["www.affiliatly.com"]},{"name":"VertaMedia","categories":["ad"],"domains":["*.vertamedia.com"]},{"name":"Spiceworks","homepage":"https://www.spiceworks.com","categories":["analytics"],"domains":["*.spiceworks.com"],"examples":["px.spiceworks.com"]},{"name":"Google reCAPTCHA","company":"Google","categories":["utility"],"domains":["*.recaptcha.net"],"examples":["api.recaptcha.net"]},{"name":"Statuspage","company":"Atlassian","homepage":"https://www.statuspage.io","categories":["utility"],"domains":["*.statuspage.io"],"examples":["1k6wzpspjf99.statuspage.io"]},{"name":"Nanigans","categories":["ad"],"domains":["*.nanigans.com"]},{"name":"Box","categories":["hosting"],"domains":["*.box.com"]},{"name":"PhotoBucket","categories":["content"],"domains":["*.photobucket.com"]},{"name":"Adara Media","categories":["ad"],"domains":["*.yieldoptimizer.com"]},{"name":"Lengow","categories":["hosting"],"domains":["*.lengow.com"]},{"name":"AdGear","company":"Samsung Electronics","categories":["ad"],"domains":["*.adgear.com","*.adgrx.com"]},{"name":"Adelphic","categories":["ad"],"domains":["*.ipredictive.com"]},{"name":"Indeed","categories":["content"],"domains":["*.indeed.com"]},{"name":"Freetobook","categories":["content"],"domains":["*.freetobook.com"],"examples":["www.freetobook.com"]},{"name":"QuinStreet","categories":["ad"],"domains":["*.Quinstreet.com","*.b2btechleadform.com","*.qnsr.com","*.qsstats.com"],"examples":["www.qsstats.com"]},{"name":"AgilOne","categories":["marketing"],"domains":["*.agilone.com"]},{"name":"Purch","categories":["ad"],"domains":["*.bestofmedia.com","*.purch.com"],"examples":["ramp.purch.com"]},{"name":"LeadLander","categories":["analytics"],"domains":["*.formalyzer.com","*.trackalyzer.com"]},{"name":"BeamPulse","categories":["analytics"],"domains":["*.beampulse.com"]},{"name":"Beachfront Media","categories":["ad"],"domains":["*.bfmio.com"]},{"name":"VisualVisitor","categories":["ad"],"domains":["*.id-visitors.com"],"examples":["frontend.id-visitors.com"]},{"name":"SecurityMetrics","categories":["utility"],"domains":["*.securitymetrics.com"]},{"name":"EyeView","categories":["ad"],"domains":["*.eyeviewads.com"]},{"name":"IS Group","categories":["hosting"],"domains":["*.creative-serving.com"]},{"name":"dianomi","categories":["ad"],"domains":["*.dianomi.com","*.dianomioffers.co.uk"]},{"name":"ADventori","categories":["ad"],"domains":["*.adventori.com"]},{"name":"Volvelle","company":"Optomaton","categories":["ad"],"domains":["*.volvelle.tech"]},{"name":"Azure Traffic Manager","company":"Microsoft","categories":["other"],"domains":["*.gateway.net","*.trafficmanager.net"],"examples":["analytics.gateway.net"]},{"name":"feedoptimise","categories":["hosting"],"domains":["*.feedoptimise.com","d1w78njrm56n7g.cloudfront.net"]},{"name":"Samba TV","company":"Samba","categories":["content"],"domains":["*.samba.tv"]},{"name":"GeoTrust","categories":["utility"],"domains":["*.geotrust.com"]},{"name":"Confirmit","categories":["analytics"],"domains":["*.confirmit.com"]},{"name":"PERFORM","categories":["content"],"domains":["*.performgroup.com"]},{"name":"TinyURL","categories":["utility"],"domains":["*.tinyurl.com"]},{"name":"Psyma","categories":["ad"],"domains":["*.psyma.com"]},{"name":"Blogg.se","categories":["hosting"],"domains":["*.cdnme.se","*.publishme.se"]},{"name":"Digital Millennium Copyright Act Services","categories":["utility"],"domains":["*.dmca.com"]},{"name":"Smarter Click","categories":["ad"],"domains":["*.smct.co","*.smarterclick.co.uk"]},{"name":"GlobalSign","categories":["utility"],"domains":["*.globalsign.com","*.globalsign.net"]},{"name":"Vextras","categories":["other"],"domains":["*.vextras.com"]},{"name":"eWAY","company":"Web Active Pty","categories":["utility"],"domains":["*.eway.com.au"],"examples":["www.eway.com.au"]},{"name":"Bidswitch","homepage":"https://www.bidswitch.com/","categories":["ad"],"domains":["*.bidswitch.net"],"examples":["x.bidswitch.net"]},{"name":"Cludo","categories":["utility"],"domains":["*.cludo.com"]},{"name":"ShopiMind","company":"ShopIMind","categories":["ad"],"domains":["*.shopimind.com"]},{"name":"Cross Pixel Media","categories":["ad"],"domains":["*.crsspxl.com"]},{"name":"Flipp","categories":["analytics"],"domains":["*.wishabi.com","d2e0sxz09bo7k2.cloudfront.net","*.wishabi.net"]},{"name":"DigiCert","categories":["utility"],"domains":["*.digicert.com"],"examples":["ocsp.digicert.com"]},{"name":"addtocalendar","categories":["utility"],"domains":["*.addtocalendar.com"]},{"name":"Nano Interactive","categories":["ad"],"domains":["*.audiencemanager.de"]},{"name":"NextPerf","company":"Rakuten Marketing","categories":["ad"],"domains":["*.nxtck.com"]},{"name":"Digital Window","categories":["ad"],"domains":["*.awin1.com","*.zenaps.com"]},{"name":"Google Fonts","company":"Google","homepage":"https://fonts.google.com/","categories":["cdn"],"domains":["fonts.googleapis.com","fonts.gstatic.com"]},{"name":"PriceRunner","categories":["content"],"domains":["*.pricerunner.com"]},{"name":"Sectigo","homepage":"https://sectigo.com/","categories":["utility"],"domains":["*.sectigo.com"]},{"name":"APSIS Forms","company":"APSIS","categories":["other"],"domains":["*.apsisforms.com"],"examples":["forms.apsisforms.com"]},{"name":"Net Applications","categories":["analytics"],"domains":["*.hitsprocessor.com"]},{"name":"Glimr","homepage":"https://glimr.io/","categories":["analytics"],"domains":["*.glimr.io"],"examples":["pixel.glimr.io"]},{"name":"Freshchat","homepage":"https://www.freshworks.com/live-chat-software/","categories":["utility"],"domains":["*.freshchat.com"]},{"name":"Lead Forensics","categories":["ad"],"domains":["*.200summit.com","*.baw5tracker.com","*.business-path-55.com","*.bux1le001.com","*.central-core-7.com","*.direct-azr-78.com","*.explore-123.com","*.forensics1000.com","*.gldsta-02-or.com","*.green-bloc9.com","*.lansrv040.com","*.lead-123.com","*.leadforensics.com","*.mavic852.com","*.mon-com-net.com","*.peak-ip-54.com","*.snta0034.com","*.svr-prc-01.com","*.syntace-094.com","*.tghbn12.com","*.trail-web.com","*.web-01-gbl.com","*.web-cntr-07.com","*.trackdiscovery.net"],"examples":["www.baw5tracker.com","www.lansrv040.com","www.mon-com-net.com","www.peak-ip-54.com","www.tghbn12.com","www.web-01-gbl.com"]},{"name":"Rollbar","categories":["utility"],"domains":["*.rollbar.com","d37gvrvc0wt4s1.cloudfront.net"],"examples":["api.rollbar.com"]},{"name":"S4M","categories":["ad"],"domains":["*.sam4m.com"]},{"name":"AlphaSSL","categories":["utility"],"domains":["*.alphassl.com"]},{"name":"AdTheorent","categories":["ad"],"domains":["*.adentifi.com"]},{"name":"Qeryz","categories":["analytics"],"domains":["*.qeryz.com"]},{"name":"United Internet Media AG","categories":["hosting"],"domains":["*.tifbs.net","*.uicdn.net","*.uimserv.net"]},{"name":"Commission Factory","categories":["ad"],"domains":["*.cfjump.com"]},{"name":"Qode Interactive","categories":["hosting"],"domains":["*.qodeinteractive.com"]},{"name":"Atlas Solutions","homepage":"https://atlassolutions.com","categories":["analytics"],"domains":["*.atdmt.com"],"examples":["ad.atdmt.com","cx.atdmt.com"]},{"name":"codigo","homepage":"http://www.codigo.se","categories":["analytics"],"domains":["*.codigo.se"],"examples":["analytics.codigo.se"]},{"name":"Avocet Systems","categories":["ad"],"domains":["*.avocet.io"]},{"name":"Pulse Insights","categories":["analytics"],"domains":["*.pulseinsights.com"]},{"name":"InAuth","categories":["utility"],"homepage":"https://www.inauth.com/","domains":["*.cdn-net.com"],"examples":["uk.cdn-net.com"]},{"name":"Expedia Australia","company":"Expedia","categories":["content"],"domains":["*.expedia.com.au"],"examples":["www.expedia.com.au"]},{"name":"Travelocity USA","company":"Travelocity","categories":["content"],"domains":["*.travelocity.com"],"examples":["www.travelocity.com"]}];
-},{}],200:[function(require,module,exports){
+},{"safe-buffer":193}],200:[function(require,module,exports){
+module.exports=[{"name":"Facebook","homepage":"https://www.facebook.com","categories":["social"],"domains":["*.atlassbx.com","*.facebook.com","*.fbsbx.com","fbcdn-photos-e-a.akamaihd.net","*.facebook.net","*.fbcdn.net"]},{"name":"Google Analytics","company":"Google","homepage":"https://www.google.com/analytics/analytics/","categories":["analytics"],"domains":["*.google-analytics.com","*.urchin.com","analytics.google.com"]},{"name":"Google CDN","company":"Google","homepage":"https://developers.google.com/speed/libraries/","categories":["cdn"],"domains":["ajax.googleapis.com","commondatastorage.googleapis.com","www.gstatic.com"]},{"name":"Google Tag Manager","company":"Google","homepage":"https://marketingplatform.google.com/about/tag-manager/","categories":["tag-manager"],"domains":["*.googletagmanager.com"]},{"name":"Google/Doubleclick Ads","company":"Google","homepage":"https://www.doubleclickbygoogle.com/","categories":["ad"],"domains":["adservice.google.com","adservice.google.com.au","adservice.google.com.sg","adservice.google.com.br","adservice.google.com.ua","adservice.google.co.uk","adservice.google.co.jp","adservice.google.co.in","adservice.google.co.kr","adservice.google.co.id","adservice.google.co.nz","adservice.google.ie","adservice.google.se","adservice.google.de","adservice.google.ca","adservice.google.be","adservice.google.es","adservice.google.ch","adservice.google.fr","adservice.google.nl","*.googleadservices.com","*.googlesyndication.com","*.googletagservices.com","*.2mdn.net","*.doubleclick.net"]},{"name":"Other Google APIs/SDKs","company":"Google","homepage":"https://developers.google.com/apis-explorer/#p/","categories":["utility"],"domains":["accounts.google.com","apis.google.com","calendar.google.com","clients2.google.com","cse.google.com","news.google.com","pay.google.com","payments.google.com","play.google.com","smartlock.google.com","www.google.com","www.google.de","www.google.co.jp","www.google.com.au","www.google.co.uk","www.google.ie","www.google.com.sg","www.google.co.in","www.google.com.br","www.google.ca","www.google.co.kr","www.google.co.nz","www.google.co.id","www.google.fr","www.google.be","www.google.com.ua","www.google.nl","www.google.ru","www.google.se","imasdk.googleapis.com","storage.googleapis.com","translate.googleapis.com","lh3.googleusercontent.com","csi.gstatic.com"]},{"name":"YouTube","homepage":"https://youtube.com","categories":["video"],"domains":["*.ggpht.com","*.youtube-nocookie.com","*.youtube.com","*.ytimg.com"]},{"name":"Yandex Metrica","company":"Yandex","homepage":"https://metrica.yandex.com/about?","categories":["analytics"],"domains":["d31j93rd8oukbv.cloudfront.net","mc.yandex.ru"]},{"name":"Google Maps","company":"Google","homepage":"https://www.google.com/maps","categories":["utility"],"domains":["maps.google.com","maps-api-ssl.google.com","maps.googleapis.com","mts.googleapis.com","maps.gstatic.com"]},{"name":"Twitter","homepage":"https://twitter.com","categories":["social"],"domains":["*.vine.co","*.twimg.com","*.twitpic.com","platform.twitter.com","syndication.twitter.com"]},{"name":"Hotjar","homepage":"https://www.hotjar.com/","categories":["analytics"],"domains":["*.hotjar.com","*.hotjar.io"]},{"name":"jQuery CDN","homepage":"https://code.jquery.com/","categories":["cdn"],"domains":["*.jquery.com"]},{"name":"AddThis","homepage":"http://www.addthis.com/","categories":["social"],"domains":["*.addthis.com","*.addthiscdn.com","*.addthisedge.com"]},{"name":"Cloudflare CDN","homepage":"https://cdnjs.com/","categories":["cdn"],"domains":["amp.cloudflare.com","cdnjs.cloudflare.com"]},{"name":"Shopify","homepage":"https://www.shopify.com/","categories":["hosting"],"domains":["*.shopify.com","*.shopifyapps.com","*.shopifycdn.com","*.shopifysvc.com"]},{"name":"JSDelivr CDN","homepage":"https://www.jsdelivr.com/","categories":["cdn"],"domains":["*.jsdelivr.net"]},{"name":"WordPress","company":"Automattic","homepage":"https://wp.com/","categories":["hosting"],"domains":["*.wordpress.com","s0.wp.com","s2.wp.com","*.w.org","c0.wp.com","s1.wp.com","widgets.wp.com"]},{"name":"AMP","homepage":"https://amp.dev/","categories":["content"],"domains":["*.ampproject.org"]},{"name":"ZenDesk","homepage":"https://zendesk.com/","categories":["customer-success"],"domains":["*.zdassets.com","*.zendesk.com","*.zopim.com"]},{"name":"Tawk.to","homepage":"https://www.tawk.to/","categories":["customer-success"],"domains":["*.tawk.to"]},{"name":"Criteo","homepage":"https://www.criteo.com/","categories":["ad"],"domains":["*.criteo.com","*.emailretargeting.com","*.criteo.net"]},{"name":"Wix","homepage":"https://www.wix.com/","categories":["hosting"],"domains":["*.parastorage.com","*.wix.com","*.wixstatic.com","*.wixapps.net"]},{"name":"Cloudflare","homepage":"https://www.cloudflare.com/website-optimization/","categories":["utility"],"domains":["ajax.cloudflare.com"]},{"name":"Pubmatic","homepage":"https://pubmatic.com/","categories":["ad"],"domains":["*.pubmatic.com"]},{"name":"Adroll","homepage":"https://www.adroll.com/","categories":["ad"],"domains":["*.adroll.com","*.adroll.mgr.consensu.org"]},{"name":"FontAwesome CDN","homepage":"https://fontawesome.com/","categories":["cdn"],"domains":["*.fontawesome.com"]},{"name":"Jivochat","homepage":"https://www.jivochat.com/","categories":["customer-success"],"domains":["*.jivosite.com"]},{"name":"ShareThis","homepage":"https://www.sharethis.com/","categories":["social"],"domains":["*.sharethis.com"]},{"name":"Squarespace","homepage":"https://www.squarespace.com/","categories":["hosting"],"domains":["*.squarespace.com"]},{"name":"Rubicon Project","homepage":"https://rubiconproject.com/","categories":["ad"],"domains":["*.chango.com","*.fimserve.com","*.rubiconproject.com"]},{"name":"Amazon Web Services","homepage":"https://aws.amazon.com/s3/","categories":["other"],"domains":["*.amazon.com","*.amazonaws.com","*.amazonwebapps.com","*.amazonwebservices.com","*.elasticbeanstalk.com","*.images-amazon.com","*.amazon.co.uk"]},{"name":"Hubspot","homepage":"https://hubspot.com/","categories":["marketing"],"domains":["*.hs-scripts.com","*.hubspot.com","*.leadin.com","*.hs-analytics.net","*.hscollectedforms.net","*.hscta.net","*.hsforms.net","*.hsleadflows.net","*.hsstatic.net","*.hubspot.net"]},{"name":"Adobe Tag Manager","company":"Adobe","homepage":"https://www.adobe.com/experience-platform/","categories":["tag-manager"],"domains":["*.adobedtm.com","*.demdex.net","*.everesttech.net"]},{"name":"Yandex APIs","company":"Yandex","homepage":"https://yandex.ru/","categories":["utility"],"domains":["api-maps.yandex.ru","money.yandex.ru"]},{"name":"Yandex Ads","company":"Yandex","homepage":"https://yandex.com/adv/","categories":["ad"],"domains":["an.yandex.ru"]},{"name":"Amazon Ads","homepage":"https://ad.amazon.com/","categories":["ad"],"domains":["*.amazon-adsystem.com"]},{"name":"Taboola","homepage":"https://www.taboola.com/","categories":["ad"],"domains":["*.taboola.com","*.taboolasyndication.com"]},{"name":"AddToAny","homepage":"https://www.addtoany.com/","categories":["social"],"domains":["*.addtoany.com"]},{"name":"Yandex Share","company":"Yandex","homepage":"https://yastatic.net/share2/share.js","categories":["social"],"domains":["*.yastatic.net"]},{"name":"Blogger","homepage":"http://www.blogger.com/","categories":["hosting"],"domains":["*.blogblog.com","*.blogger.com","*.blogspot.com","images-blogger-opensocial.googleusercontent.com"]},{"name":"Stripe","homepage":"https://stripe.com","categories":["utility"],"domains":["*.stripe.com","*.stripecdn.com","*.stripe.network"]},{"name":"Mailchimp","homepage":"https://mailchimp.com/","categories":["marketing"],"domains":["*.chimpstatic.com","*.list-manage.com","*.mailchimp.com"]},{"name":"Tynt","company":"33 Across","categories":["ad"],"domains":["*.tynt.com"]},{"name":"Cookiebot","homepage":"https://www.cookiebot.com/","categories":["utility"],"domains":["*.cookiebot.com"]},{"name":"Optimizely","homepage":"https://www.optimizely.com/","categories":["analytics"],"domains":["*.optimizely.com"]},{"name":"LiveChat","homepage":"https://www.livechatinc.com/","categories":["customer-success"],"domains":["*.livechatinc.com"]},{"name":"WordAds","company":"Automattic","homepage":"https://wordads.co/","categories":["ad"],"domains":["*.pubmine.com"]},{"name":"Sumo","homepage":"https://sumo.com/","categories":["marketing"],"domains":["*.sumo.com","*.sumome.com","sumo.b-cdn.net"]},{"name":"Adobe TypeKit","company":"Adobe","homepage":"https://fonts.adobe.com/","categories":["cdn"],"domains":["*.typekit.com","*.typekit.net"]},{"name":"Kakao","categories":["social"],"domains":["*.daum.net","*.daumcdn.net"]},{"name":"Pinterest","homepage":"https://pinterest.com/","categories":["social"],"domains":["*.pinimg.com","*.pinterest.com"]},{"name":"POWr","homepage":"https://www.powr.io","categories":["utility"],"domains":["*.powr.io"]},{"name":"Skimbit","categories":["ad"],"domains":["*.redirectingat.com","*.skimresources.com","*.skimresources.net"]},{"name":"Bing Ads","homepage":"https://bingads.microsoft.com","categories":["ad"],"domains":["*.bing.com","*.microsoft.com","*.msn.com","*.s-msft.com","*.s-msn.com","*.msads.net","*.msecnd.net","*.windows.net"]},{"name":"Intercom","homepage":"https://www.intercom.com","categories":["customer-success"],"domains":["*.intercomcdn.com","*.intercom.io"]},{"name":"PayPal","homepage":"https://paypal.com","categories":["utility"],"domains":["*.paypal.com","*.paypalobjects.com"]},{"name":"PIXNET","homepage":"https://www.pixnet.net/","categories":["social"],"domains":["*.pixfs.net","*.pixnet.net"]},{"name":"Trust Pilot","categories":["analytics"],"domains":["*.trustpilot.com"]},{"name":"Klaviyo","categories":["ad"],"domains":["*.klaviyo.com"]},{"name":"Media.net","homepage":"https://www.media.net/","categories":["ad"],"domains":["*.media.net","*.mnet-ad.net"]},{"name":"Bridgewell DSP","homepage":"https://www.bridgewell.com/","categories":["ad"],"domains":["*.scupio.com"]},{"name":"LinkedIn","homepage":"https://www.linkedin.com/","categories":["social"],"domains":["*.bizographics.com","platform.linkedin.com","*.slideshare.com","*.slidesharecdn.com"]},{"name":"Yotpo","homepage":"https://www.yotpo.com/","categories":["marketing"],"domains":["*.yotpo.com"]},{"name":"Histats","homepage":"http://histats.com/","categories":["analytics"],"domains":["*.histats.com"]},{"name":"VK","homepage":"https://vk.com/","categories":["social"],"domains":["*.vk.com"]},{"name":"Snapchat","homepage":"https://www.snapchat.com","categories":["analytics"],"domains":["*.snapchat.com","*.sc-static.net"]},{"name":"Weebly","homepage":"https://www.weebly.com/","categories":["hosting"],"domains":["*.editmysite.com"]},{"name":"Hatena Blog","homepage":"https://hatenablog.com/","categories":["hosting"],"domains":["*.st-hatena.com","*.hatena.ne.jp"]},{"name":"mPulse","homepage":"https://developer.akamai.com/akamai-mpulse","categories":["analytics"],"domains":["*.akstat.io","*.go-mpulse.net","*.mpulse.net","*.mpstat.us"]},{"name":"Bold Commerce","categories":["utility"],"domains":["*.shappify-cdn.com","*.shappify.com","*.boldapps.net"]},{"name":"Wistia","homepage":"https://wistia.com/","categories":["video"],"domains":["*.wistia.com","embedwistia-a.akamaihd.net","*.wistia.net"]},{"name":"New Relic","homepage":"https://newrelic.com/","categories":["utility"],"domains":["*.newrelic.com","*.nr-data.net"]},{"name":"Privy","categories":["ad"],"domains":["*.privy.com","*.privymktg.com"]},{"name":"iubenda","categories":["utility"],"domains":["*.iubenda.com"]},{"name":"DTSCOUT","categories":["ad"],"domains":["*.dtscout.com"]},{"name":"Smartsupp","company":"Smartsupp.com","homepage":"https://www.smartsupp.com","categories":["customer-success"],"domains":["*.smartsuppchat.com","*.smartsupp.com","smartsupp-widget-161959.c.cdn77.org","*.smartsuppcdn.com"]},{"name":"Tidio Live Chat","company":"Tidio","homepage":"https://www.tidiochat.com/en/","categories":["customer-success"],"domains":["*.tidiochat.com"]},{"name":"Tealium","homepage":"https://tealium.com/","categories":["tag-manager"],"domains":["*.aniview.com","*.delvenetworks.com","*.limelight.com","*.tiqcdn.com","*.llnwd.net","*.tealiumiq.com"]},{"name":"Nielsen NetRatings SiteCensus","company":"The Nielsen Company","homepage":"http://www.nielsen-online.com/intlpage.html","categories":["analytics"],"domains":["*.imrworldwide.com"]},{"name":"Salesforce","homepage":"https://www.salesforce.com/products/marketing-cloud/","categories":["analytics"],"domains":["*.krxd.net"]},{"name":"Baidu Analytics","homepage":"https://tongji.baidu.com/web/welcome/login","categories":["analytics"],"domains":["hm.baidu.com","hmcdn.baidu.com"]},{"name":"Azure Web Services","company":"Microsoft","categories":["cdn"],"domains":["*.azurewebsites.net","*.azureedge.net","*.msedge.net"]},{"name":"Vimeo","homepage":"http://vimeo.com/","categories":["video"],"domains":["*.vimeo.com","*.vimeocdn.com"]},{"name":"Bigcommerce","categories":["marketing"],"domains":["*.bigcommerce.com"]},{"name":"Permutive","categories":["ad"],"domains":["*.permutive.com","d3alqb8vzo7fun.cloudfront.net"]},{"name":"Segment","homepage":"https://segment.com/","categories":["analytics"],"domains":["*.segment.com","*.segment.io"]},{"name":"Instagram","homepage":"https://www.instagram.com","categories":["social"],"domains":["*.cdninstagram.com","*.instagram.com"]},{"name":"Sentry","homepage":"https://sentry.io/","categories":["utility"],"domains":["*.getsentry.com","*.ravenjs.com","*.sentry-cdn.com"]},{"name":"Bugsnag","categories":["utility"],"domains":["*.bugsnag.com","d2wy8f7a9ursnm.cloudfront.net"]},{"name":"Dealer","homepage":"https://www.dealer.com/","categories":["hosting"],"domains":["*.dealer.com"]},{"name":"Judge.me","homepage":"https://judge.me/","categories":["marketing"],"domains":["*.judge.me"]},{"name":"MGID","homepage":"https://www.mgid.com/","categories":["ad"],"domains":["*.mgid.com","*.dt07.net"]},{"name":"Outbrain","homepage":"https://www.outbrain.com/","categories":["ad"],"domains":["*.outbrain.com","*.outbrainimg.com","*.visualrevenue.com"]},{"name":"Optanon","homepage":"https://www.cookielaw.org/","categories":["utility"],"domains":["*.onetrust.com","*.cookielaw.org"]},{"name":"Intent Media","homepage":"https://intent.com/","categories":["ad"],"domains":["*.intentmedia.net"]},{"name":"Integral Ad Science","homepage":"https://integralads.com/uk/","categories":["ad"],"domains":["*.adsafeprotected.com","*.iasds01.com"]},{"name":"Tumblr","homepage":"https://tumblr.com/","categories":["social"],"domains":["*.tumblr.com"]},{"name":"Rambler","company":"Rambler & Co","categories":["utility"],"domains":["*.rambler.ru"]},{"name":"FullStory","categories":["analytics"],"domains":["*.fullstory.com"]},{"name":"Lucky Orange","homepage":"https://www.luckyorange.com/","categories":["analytics"],"domains":["*.luckyorange.com","d10lpsik1i8c69.cloudfront.net","*.luckyorange.net"]},{"name":"Mixpanel","homepage":"https://mixpanel.com/","categories":["analytics"],"domains":["*.mixpanel.com","*.mxpnl.com"]},{"name":"OptinMonster","homepage":"https://optinmonster.com/","categories":["marketing"],"domains":["*.opmnstr.com","*.optmnstr.com","*.optmstr.com"]},{"name":"Tilda","homepage":"http://tilda.cc/","categories":["hosting"],"domains":["*.tildacdn.com"]},{"name":"Akamai","homepage":"https://www.akamai.com/","categories":["cdn"],"domains":["23.62.3.183","*.akamaitechnologies.com","*.akamaitechnologies.fr","*.akamai.net","*.akamaiedge.net","*.akamaihd.net","*.akamaized.net","*.edgefcs.net","*.edgekey.net","edgesuite.net","*.srip.net"]},{"name":"VigLink","categories":["ad"],"domains":["*.viglink.com"]},{"name":"CallRail","categories":["analytics"],"domains":["*.callrail.com"]},{"name":"Scorecard Research","homepage":"https://www.scorecardresearch.com/","categories":["ad"],"domains":["*.scorecardresearch.com"]},{"name":"Olark","homepage":"https://www.olark.com/","categories":["customer-success"],"domains":["*.olark.com"]},{"name":"Moat","homepage":"https://moat.com/","categories":["ad"],"domains":["*.moatads.com","*.moatpixel.com"]},{"name":"Adform","categories":["ad"],"domains":["*.adform.net","*.adformdsp.net"]},{"name":"Fastly","categories":["utility"],"domains":["*.fastly.net"]},{"name":"GoDaddy","homepage":"https://www.godaddy.com/","categories":["utility"],"domains":["*.godaddy.com","*.wsimg.com"]},{"name":"Unpkg","homepage":"https://unpkg.com","categories":["cdn"],"domains":["*.unpkg.com","*.npmcdn.com"]},{"name":"Brightcove","homepage":"https://www.brightcove.com/en/","categories":["video"],"domains":["*.brightcove.com","*.brightcove.net","*.zencdn.net"]},{"name":"Drift","homepage":"https://www.drift.com/","categories":["marketing"],"domains":["*.drift.com","*.driftt.com"]},{"name":"RD Station","homepage":"https://www.rdstation.com/en/","categories":["marketing"],"domains":["d335luupugsy2.cloudfront.net"]},{"name":"Mediavine","homepage":"https://www.mediavine.com/","categories":["ad"],"domains":["*.mediavine.com"]},{"name":"Yahoo!","homepage":"https://www.yahoo.com/","categories":["ad"],"domains":["*.bluelithium.com","*.hostingprod.com","*.lexity.com","*.yahoo.com","*.yahooapis.com","*.yimg.com","*.yimg.jp","*.zenfs.com","*.yahoo.net"]},{"name":"Snowplow","homepage":"https://snowplowanalytics.com/","categories":["analytics"],"domains":["d32hwlnfiv2gyn.cloudfront.net"]},{"name":"Adloox","categories":["ad"],"domains":["*.adlooxtracking.com"]},{"name":"Amazon Pay","homepage":"https://pay.amazon.com","categories":["utility"],"domains":["payments.amazon.com","*.payments-amazon.com"]},{"name":"Trusted Shops","categories":["utility"],"domains":["*.trustedshops.com"]},{"name":"Inspectlet","categories":["analytics"],"domains":["*.inspectlet.com"]},{"name":"Embedly","categories":["content"],"domains":["*.embedly.com","*.embed.ly"]},{"name":"Mapbox","categories":["utility"],"domains":["*.mapbox.com"]},{"name":"LINE Corporation","categories":["ad"],"domains":["*.line-scdn.net","*.line.me"]},{"name":"Parking Crew","homepage":"http://parkingcrew.net/","categories":["other"],"domains":["d1lxhc4jvstzrp.cloudfront.net","*.parkingcrew.net"]},{"name":"MailMunch","categories":["ad"],"domains":["*.mailmunch.co"]},{"name":"Crazy Egg","homepage":"https://www.crazyegg.com/","categories":["analytics"],"domains":["*.cetrk.com","*.crazyegg.com","*.hellobar.com","dnn506yrbagrg.cloudfront.net"]},{"name":"Index Exchange","company":"WPP","categories":["ad"],"domains":["*.casalemedia.com","*.indexww.com"]},{"name":"Microsoft Hosted Libs","company":"Microsoft","categories":["cdn"],"domains":["*.aspnetcdn.com"]},{"name":"Treasure Data","categories":["analytics"],"domains":["*.treasuredata.com"]},{"name":"VWO","homepage":"https://vwo.com","categories":["analytics"],"domains":["*.visualwebsiteoptimizer.com"]},{"name":"sovrn","categories":["ad"],"domains":["*.lijit.com"]},{"name":"Pure Chat","categories":["customer-success"],"domains":["*.purechat.com"]},{"name":"Gemius","categories":["ad"],"domains":["*.gemius.pl"]},{"name":"Chartbeat","categories":["analytics"],"domains":["*.chartbeat.com","*.chartbeat.net"]},{"name":"SoundCloud","homepage":"https://www.soundcloud.com/","categories":["content"],"domains":["*.sndcdn.com","*.soundcloud.com","*.stratus.sc"]},{"name":"Cxense","categories":["ad"],"domains":["*.cxense.com","*.cxpublic.com","*.emediate.dk","*.emediate.eu"]},{"name":"LivePerson","categories":["customer-success"],"homepage":"https://www.liveperson.com/","domains":["*.liveperson.com","*.look.io","*.liveperson.net","*.lpsnmedia.net"]},{"name":"Searchanise","categories":["analytics"],"domains":["*.searchanise.com"]},{"name":"Monotype","categories":["cdn"],"domains":["*.fonts.com","*.fonts.net"]},{"name":"Beeketing","homepage":"https://beeketing.com/","categories":["marketing"],"domains":["*.beeketing.com"]},{"name":"FreakOut","categories":["ad"],"domains":["*.fout.jp"]},{"name":"Quantcast","homepage":"https://www.quantcast.com","categories":["analytics"],"domains":["*.brtstats.com","*.quantcount.com","*.quantserve.com","*.semantictec.com","*.ntv.io"]},{"name":"Ensighten","homepage":"https://www.ensighten.com/","categories":["tag-manager"],"domains":["*.ensighten.com"]},{"name":"WordPress Site Stats","company":"Automattic","homepage":"https://wp.com/","categories":["analytics"],"domains":["pixel.wp.com","stats.wp.com"]},{"name":"Infolinks","categories":["ad"],"domains":["*.infolinks.com"]},{"name":"LiveJournal","categories":["social"],"domains":["*.livejournal.com","*.livejournal.net"]},{"name":"BrightTag / Signal","company":"Signal","homepage":"https://www.signal.co","categories":["tag-manager"],"domains":["*.btstatic.com","*.thebrighttag.com"]},{"name":"Unbounce","categories":["ad"],"domains":["*.ubembed.com","*.unbounce.com","d2xxq4ijfwetlm.cloudfront.net","d9hhrg4mnvzow.cloudfront.net"]},{"name":"Accessibe","homepage":"https://accessibe.com/","categories":["utility"],"domains":["*.accessibe.com","*.acsbap.com"]},{"name":"CreateJS CDN","homepage":"http://code.createjs.com/","categories":["cdn"],"domains":["*.createjs.com"]},{"name":"Teads","categories":["ad"],"domains":["*.teads.tv"]},{"name":"LongTail Ad Solutions","categories":["ad"],"domains":["*.jwpcdn.com","*.jwplatform.com","*.jwplayer.com","*.jwpltx.com","*.jwpsrv.com","*.longtailvideo.com"]},{"name":"CDK Dealer Management","company":"CDK Global","homepage":"https://www.cdkglobal.com/us","categories":["hosting"],"domains":["*.assets-cdk.com"]},{"name":"StatCounter","categories":["analytics"],"domains":["*.statcounter.com"]},{"name":"Parse.ly","categories":["analytics"],"domains":["*.parsely.com","d1z2jf7jlzjs58.cloudfront.net"]},{"name":"ContactAtOnce","homepage":"https://www.contactatonce.com/","categories":["customer-success"],"domains":["*.contactatonce.com"]},{"name":"i-mobile","company":"i-mobile","categories":["ad"],"domains":["*.i-mobile.co.jp"]},{"name":"Spotify","homepage":"https://www.spotify.com/","categories":["content"],"domains":["*.scdn.co","*.spotify.com"]},{"name":"Adobe Business Catalyst","homepage":"https://www.businesscatalyst.com/","categories":["hosting"],"domains":["*.businesscatalyst.com"]},{"name":"Tray Commerce","homepage":"https://www.tray.com.br/","categories":["marketing"],"domains":["*.tcdn.com.br"]},{"name":"OpenX","homepage":"https://www.openx.com/","categories":["ad"],"domains":["*.deliverimp.com","*.openxadexchange.com","*.servedbyopenx.com","*.jump-time.net","*.openx.net"]},{"name":"AB Tasty","categories":["analytics"],"domains":["*.abtasty.com","d1447tq2m68ekg.cloudfront.net"]},{"name":"PushCrew","categories":["ad"],"domains":["*.pushcrew.com"]},{"name":"Popads","homepage":"https://www.popads.net/","categories":["ad"],"domains":["*.popads.net"]},{"name":"GumGum","categories":["ad"],"domains":["*.gumgum.com"]},{"name":"PureCars","homepage":"https://www.purecars.com/","categories":["marketing"],"domains":["*.purecars.com"]},{"name":"Smart AdServer","categories":["ad"],"domains":["*.01net.com","*.sascdn.com","*.sasqos.com","*.smartadserver.com"]},{"name":"Salesforce Commerce Cloud","homepage":"https://www.salesforce.com/products/commerce-cloud/overview/","categories":["hosting"],"domains":["*.cquotient.com","*.demandware.net","demandware.edgesuite.net"]},{"name":"SnapWidget","categories":["content"],"domains":["*.snapwidget.com"]},{"name":"District M","categories":["ad"],"domains":["*.districtm.io"]},{"name":"Heap","categories":["analytics"],"domains":["*.heapanalytics.com"]},{"name":"Net Reviews","categories":["analytics"],"domains":["*.avis-verifies.com"]},{"name":"Marchex","categories":["analytics"],"domains":["*.voicestar.com","*.marchex.io"]},{"name":"Affirm","categories":["utility"],"domains":["*.affirm.com"]},{"name":"Amplitude Mobile Analytics","company":"Amplitude","categories":["analytics"],"domains":["*.amplitude.com","d24n15hnbwhuhn.cloudfront.net"]},{"name":"MaxCDN Enterprise","company":"MaxCDN","categories":["utility"],"domains":["*.netdna-cdn.com","*.netdna-ssl.com"]},{"name":"LightWidget","categories":["utility"],"domains":["*.lightwidget.com"]},{"name":"uLogin","categories":["other"],"domains":["*.ulogin.ru"]},{"name":"BlueKai","company":"Oracle","categories":["ad"],"domains":["*.bkrtx.com","*.bluekai.com"]},{"name":"Gigya","categories":["analytics"],"domains":["*.gigya.com"]},{"name":"Tencent","categories":["content"],"domains":["*.qq.com","*.ywxi.net"]},{"name":"Fraudlogix","categories":["utility"],"domains":["*.yabidos.com"]},{"name":"Research Online","company":"Skills Development Scotland","categories":["content"],"domains":["*.researchonline.org.uk"]},{"name":"Help Scout","homepage":"https://www.helpscout.net/","categories":["customer-success"],"domains":["djtflbt20bdde.cloudfront.net","*.helpscout.net"]},{"name":"Secomapp","categories":["utility"],"domains":["*.secomapp.com"]},{"name":"fam","company":"Fing Co Ltd.","homepage":"http://admin.fam-ad.com/report/","categories":["ad"],"domains":["*.fam-ad.com"]},{"name":"SocialShopWave","categories":["social"],"domains":["*.socialshopwave.com"]},{"name":"TrafficStars","categories":["ad"],"domains":["*.trafficstars.com","*.tsyndicate.com"]},{"name":"Heroku","categories":["other"],"domains":["*.herokuapp.com"]},{"name":"iPerceptions","categories":["customer-success"],"domains":["*.iperceptions.com"]},{"name":"Nosto","categories":["analytics"],"domains":["*.nosto.com"]},{"name":"issuu","categories":["content"],"domains":["*.issuu.com","*.isu.pub"]},{"name":"Albacross","homepage":"https://albacross.com/","categories":["marketing"],"domains":["*.albacross.com"]},{"name":"Ve","company":"Ve Interactive","categories":["marketing"],"domains":["*.veinteractive.com"]},{"name":"Bazaarvoice","categories":["analytics"],"domains":["*.bazaarvoice.com","*.feedmagnet.com"]},{"name":"Dailymotion","categories":["content"],"domains":["*.dailymotion.com","*.dmxleo.com","*.dm.gg","*.pxlad.io","*.dmcdn.net","*.sublimevideo.net"]},{"name":"GetSiteControl","company":"GetWebCraft","categories":["utility"],"domains":["*.getsitecontrol.com"]},{"name":"DoubleVerify","homepage":"https://www.doubleverify.com/","categories":["ad"],"domains":["*.doubleverify.com","*.dvtps.com","*.iqfp1.com"]},{"name":"Esri ArcGIS","company":"Esri","categories":["utility"],"domains":["*.arcgis.com","*.arcgisonline.com"]},{"name":"Signyfyd","categories":["utility"],"domains":["*.signifyd.com"]},{"name":"Feefo.com","company":"Feefo","categories":["analytics"],"domains":["*.feefo.com"]},{"name":"Booking.com","categories":["content"],"domains":["*.bstatic.com"]},{"name":"Sharethrough","categories":["ad"],"domains":["*.sharethrough.com"]},{"name":"Seznam","categories":["utility"],"domains":["*.imedia.cz"]},{"name":"etracker","categories":["analytics"],"domains":["*.etracker.com","*.etracker.de"]},{"name":"Roxr Software","categories":["analytics"],"domains":["*.getclicky.com"]},{"name":"OptiMonk","categories":["ad"],"domains":["*.optimonk.com"]},{"name":"Perfect Market","categories":["ad"],"domains":["*.perfectmarket.com"]},{"name":"Yandex CDN","company":"Yandex","homepage":"https://yandex.ru/","categories":["cdn"],"domains":["*.yandex.st"]},{"name":"OpenTable","company":"Priceline Group","categories":["content"],"domains":["*.opentable.com","*.opentable.co.uk","*.toptable.co.uk"]},{"name":"Sortable","categories":["ad"],"domains":["*.deployads.com"]},{"name":"Swiftype","categories":["utility"],"domains":["*.swiftype.com","*.swiftypecdn.com"]},{"name":"Siteimprove","categories":["utility"],"domains":["*.siteimprove.com","*.siteimproveanalytics.com"]},{"name":"JuicyAds","categories":["ad"],"domains":["*.juicyads.com"]},{"name":"Accuweather","categories":["content"],"domains":["*.accuweather.com"]},{"name":"Sizmek","homepage":"https://www.sizmek.com/","categories":["ad"],"domains":["*.serving-sys.com","*.peer39.net"]},{"name":"Key CDN","categories":["utility"],"domains":["*.kxcdn.com"]},{"name":"Bootstrap CDN","homepage":"https://www.bootstrapcdn.com/","categories":["cdn"],"domains":["*.bootstrapcdn.com"]},{"name":"Pardot","categories":["marketing"],"domains":["*.pardot.com"]},{"name":"Foursixty","categories":["customer-success"],"domains":["*.foursixty.com"]},{"name":"Ecwid","categories":["hosting"],"domains":["*.ecwid.com","*.shopsettings.com","d3fi9i0jj23cau.cloudfront.net","d3j0zfs7paavns.cloudfront.net"]},{"name":"BounceX","categories":["analytics"],"homepage":"https://www.bouncex.com/","domains":["*.bounceexchange.com","*.bouncex.net"]},{"name":"TrustArc","homepage":"https://www.trustarc.com/","categories":["utility"],"domains":["*.trustarc.com"]},{"name":"iZooto","homepage":"https://www.izooto.com","categories":["marketing"],"domains":["*.izooto.com"]},{"name":"ContentSquare","categories":["analytics"],"domains":["d1m6l9dfulcyw7.cloudfront.net","*.content-square.net","*.contentsquare.net"]},{"name":"Marketo","homepage":"https://www.marketo.com","categories":["analytics"],"domains":["*.marketo.com","*.mktoresp.com","*.marketo.net"]},{"name":"LKQD","categories":["ad"],"domains":["*.lkqd.net"]},{"name":"Ezoic","categories":["analytics"],"domains":["*.ezoic.net"]},{"name":"Comm100","categories":["customer-success"],"domains":["*.comm100.com"]},{"name":"Refersion","categories":["ad"],"domains":["*.refersion.com"]},{"name":"Constant Contact","categories":["ad"],"domains":["*.ctctcdn.com"]},{"name":"UserReport","categories":["analytics"],"domains":["*.userreport.com"]},{"name":"Bizible","categories":["ad"],"domains":["*.bizible.com","*.bizibly.com"]},{"name":"LoyaltyLion","categories":["ad"],"domains":["*.loyaltylion.com","*.loyaltylion.net","dg1f2pfrgjxdq.cloudfront.net"]},{"name":"PageSense","homepage":"https://www.zoho.com/pagesense/","categories":["analytics"],"domains":["*.pagesense.io"]},{"name":"AppDynamics","homepage":"https://www.appdynamics.com/","categories":["utility"],"domains":["*.appdynamics.com","*.eum-appdynamics.com","d3tjaysgumg9lf.cloudfront.net"]},{"name":"Disqus","homepage":"http://disqus.com/","categories":["social"],"domains":["*.disqus.com","*.disquscdn.com"]},{"name":"AppNexus","homepage":"https://www.appnexus.com/","categories":["ad"],"domains":["*.adnxs.com","*.ctasnet.com","*.adrdgt.com"]},{"name":"ResponsiveVoice","categories":["other"],"domains":["*.responsivevoice.org"]},{"name":"Adyoulike","categories":["ad"],"domains":["*.adyoulike.com","*.omnitagjs.com","*.adyoulike.net"]},{"name":"ExoClick","categories":["ad"],"domains":["*.exoclick.com"]},{"name":"RevJet","homepage":"https://www.revjet.com/","categories":["ad"],"domains":["*.revjet.com"]},{"name":"Rakuten Marketing","company":"Rakuten","categories":["ad"],"domains":["*.rakuten-static.com","*.rmtag.com"]},{"name":"Attentive","homepage":"https://attentivemobile.com/","categories":["ad"],"domains":["*.attn.tv","*.attentivemobile.com"]},{"name":"Unruly Media","categories":["ad"],"domains":["*.unrulymedia.com"]},{"name":"33 Across","homepage":"https://33across.com/","categories":["ad"],"domains":["*.33across.com"]},{"name":"piano","categories":["ad"],"domains":["*.npttech.com","*.tinypass.com"]},{"name":"Smart Insight Tracking","company":"Emarsys","categories":["analytics"],"domains":["*.scarabresearch.com"]},{"name":"Geniee","categories":["ad"],"domains":["*.href.asia","*.genieessp.jp","*.genieesspv.jp","*.gssprt.jp"]},{"name":"Medium","categories":["content"],"domains":["*.medium.com"]},{"name":"Vidible","categories":["ad"],"domains":["*.vidible.tv"]},{"name":"Revolver Maps","categories":["analytics"],"domains":["*.revolvermaps.com"]},{"name":"SublimeSkinz","categories":["ad"],"domains":["*.ayads.co"]},{"name":"Kampyle","categories":["analytics"],"domains":["*.kampyle.com"]},{"name":"Nativo","categories":["ad"],"domains":["*.postrelease.com"]},{"name":"SnapEngage","categories":["customer-success"],"domains":["*.snapengage.com"]},{"name":"Sift Science","categories":["utility"],"domains":["*.siftscience.com"]},{"name":"Riskified","categories":["utility"],"domains":["*.riskified.com"]},{"name":"Listrak","homepage":"https://www.listrak.com/","categories":["marketing"],"domains":["*.listrak.com","*.listrakbi.com"]},{"name":"GetResponse","categories":["ad"],"domains":["*.getresponse.com"]},{"name":"TagCommander","categories":["tag-manager"],"domains":["*.commander1.com","*.tagcommander.com"]},{"name":"Twitch","homepage":"https://twitch.tv/","categories":["video"],"domains":["*.twitch.tv"]},{"name":"Evidon","categories":["analytics"],"domains":["*.evidon.com"]},{"name":"Bronto Software","categories":["marketing"],"domains":["*.bm23.com","*.bronto.com","*.brontops.com"]},{"name":"Tribal Fusion","company":"Exponential Interactive","categories":["ad"],"domains":["*.tribalfusion.com"]},{"name":"PowerReviews","categories":["analytics"],"domains":["*.powerreviews.com"]},{"name":"Admixer for Publishers","company":"Admixer","categories":["ad"],"domains":["*.admixer.net"]},{"name":"Salesforce.com","categories":["ad"],"domains":["*.force.com","*.salesforce.com"]},{"name":"Covert Pics","categories":["content"],"domains":["*.covet.pics"]},{"name":"Keen","company":"Keen","homepage":"https://keen.io/","categories":["analytics"],"domains":["*.keen.io","d26b395fwzu5fz.cloudfront.net"]},{"name":"Branch Metrics","categories":["ad"],"domains":["*.branch.io","*.app.link"]},{"name":"GitHub","categories":["utility"],"domains":["*.github.com","*.githubusercontent.com","*.github.io","*.rawgit.com"]},{"name":"Dynamic Yield","categories":["customer-success"],"domains":["*.dynamicyield.com"]},{"name":"ForeSee","company":"Answers","categories":["analytics"],"domains":["*.4seeresults.com","*.answerscloud.com","*.foresee.com","*.foreseeresults.com"]},{"name":"Clerk.io ApS","categories":["analytics"],"domains":["*.clerk.io"]},{"name":"iovation","categories":["utility"],"domains":["*.iesnare.com"]},{"name":"Convert Insights","categories":["analytics"],"domains":["*.convertexperiments.com"]},{"name":"STINGRAY","company":"FlexOne","categories":["ad"],"domains":["*.impact-ad.jp"]},{"name":"iAdvize SAS","categories":["customer-success"],"domains":["*.iadvize.com"]},{"name":"Digioh","categories":["ad"],"domains":["*.lightboxcdn.com"]},{"name":"Polar","homepage":"https://polar.me/","categories":["ad"],"domains":["*.polarmobile.ca","*.mediaeverywhere.com","*.mediavoice.com","*.plrsrvcs.com","*.polarcdn-engine.com","*.polarcdn-meraxes.com","*.polarcdn-pentos.com","*.polarcdn-static.com","*.polarcdn-terrax.com","*.polarcdn.com","*.polarmobile.com","*.poweredbypolar.com","*.mediaconductor.me","*.polaracademy.me"]},{"name":"eBay","categories":["ad"],"domains":["*.ebay.com","*.ebayimg.com","*.fetchback.com"]},{"name":"Pendo","homepage":"https://www.pendo.io","categories":["analytics"],"domains":["*.pendo.io"]},{"name":"Clicktale","categories":["analytics"],"domains":["*.cdngc.net","*.clicktale.net"]},{"name":"Symantec","categories":["utility"],"domains":["*.norton.com","*.symantec.com","*.symcb.com","*.symcd.com"]},{"name":"Nend","categories":["ad"],"domains":["*.nend.net"]},{"name":"StickyADS.tv","categories":["ad"],"domains":["*.stickyadstv.com"]},{"name":"TrackJS","categories":["analytics"],"domains":["*.trackjs.com","d2zah9y47r7bi2.cloudfront.net"]},{"name":"Usabilla","homepage":"https://usabilla.com","categories":["analytics"],"domains":["*.usabilla.com","d6tizftlrpuof.cloudfront.net"]},{"name":"Technorati","company":"Synacor","categories":["ad"],"domains":["*.technoratimedia.com"]},{"name":"SessionCam","company":"ServiceTick","categories":["analytics"],"domains":["*.sessioncam.com","d2oh4tlt9mrke9.cloudfront.net"]},{"name":"SpringServer","categories":["ad"],"domains":["*.springserve.com"]},{"name":"Hotmart","homepage":"https://www.hotmart.com/","categories":["content"],"domains":["*.hotmart.com"]},{"name":"WisePops","categories":["utility"],"domains":["*.wisepops.com"]},{"name":"IBM Digital Analytics","company":"IBM","categories":["analytics"],"domains":["*.cmcore.com","coremetrics.com","data.coremetrics.com","data.de.coremetrics.com","libs.de.coremetrics.com","tmscdn.de.coremetrics.com","iocdn.coremetrics.com","libs.coremetrics.com","tmscdn.coremetrics.com","*.s81c.com","*.unica.com","*.coremetrics.eu"]},{"name":"ZEDO","categories":["ad"],"domains":["*.zedo.com"]},{"name":"AdMatic","categories":["ad"],"domains":["*.admatic.com.tr"]},{"name":"Wishpond Technologies","categories":["marketing"],"domains":["*.wishpond.com","*.wishpond.net"]},{"name":"Monetate","categories":["analytics"],"domains":["*.monetate.net"]},{"name":"AOL / Oath / Verizon Media","homepage":"https://www.oath.com/","categories":["ad"],"domains":["*.advertising.com","*.aol.com","*.aolcdn.com","*.blogsmithmedia.com","*.oath.com","*.aol.net","*.tacoda.net","*.aol.co.uk"]},{"name":"IPONWEB","categories":["ad"],"domains":["*.company-target.com","*.liadm.com","*.iponweb.net","*.p161.net"]},{"name":"Fort Awesome","categories":["cdn"],"domains":["*.fortawesome.com"]},{"name":"Affiliate Window","company":"Digital Window","categories":["ad"],"domains":["*.dwin1.com"]},{"name":"Forter","categories":["utility"],"domains":["*.forter.com"]},{"name":"WebsiteBuilder.com","homepage":"https://www.websitebuilder.com","categories":["hosting"],"domains":["*.mywebsitebuilder.com"]},{"name":"Reviews.co.uk","categories":["analytics"],"domains":["*.reviews.co.uk"]},{"name":"Maxymiser","categories":["analytics"],"domains":["*.maxymiser.net"]},{"name":"Adocean","company":"Gemius","categories":["ad"],"domains":["*.adocean.pl"]},{"name":"Lytics","categories":["ad"],"domains":["*.lytics.io"]},{"name":"plista","categories":["ad"],"domains":["*.plista.com"]},{"name":"Bootstrap Chinese network","categories":["cdn"],"domains":["*.bootcss.com"]},{"name":"Snacktools","categories":["ad"],"domains":["*.bannersnack.com"]},{"name":"Skype","categories":["other"],"domains":["*.skype.com"]},{"name":"Okas Concepts","categories":["utility"],"domains":["*.okasconcepts.com"]},{"name":"Freshdesk","homepage":"https://freshdesk.com/","categories":["customer-success"],"domains":["d36mpcpuzc4ztk.cloudfront.net"]},{"name":"AIR.TV","categories":["ad"],"domains":["*.air.tv"]},{"name":"Rackspace","categories":["hosting"],"domains":["*.rackcdn.com","*.rackspacecloud.com","*.raxcdn.com","*.websitetestlink.com"]},{"name":"Shareaholic","homepage":"https://www.shareaholic.com/","categories":["social"],"domains":["*.shareaholic.com","dsms0mj1bbhn4.cloudfront.net"]},{"name":"Meetrics","categories":["ad"],"domains":["*.de.com","*.meetrics.net","*.mxcdn.net"]},{"name":"LiveTex","categories":["customer-success"],"domains":["*.livetex.ru"]},{"name":"Media Management Technologies","categories":["ad"],"domains":["*.speedshiftmedia.com"]},{"name":"Opentag","company":"Qubit","categories":["tag-manager"],"domains":["*.qutics.com","d3c3cq33003psk.cloudfront.net"]},{"name":"Crowd Control","company":"Lotame","categories":["ad"],"domains":["*.crwdcntrl.net"]},{"name":"Wufoo","categories":["utility"],"domains":["*.wufoo.com"]},{"name":"Exponea","categories":["analytics"],"domains":["*.exponea.com"]},{"name":"Forensiq","categories":["utility"],"domains":["*.fqtag.com"]},{"name":"fluct","categories":["ad"],"domains":["*.adingo.jp"]},{"name":"Pagely","categories":["other"],"domains":["*.optnmstr.com"]},{"name":"ClickDesk","categories":["customer-success"],"domains":["*.clickdesk.com","d1gwclp1pmzk26.cloudfront.net"]},{"name":"Alexa","homepage":"https://www.alexa.com/","categories":["analytics"],"domains":["*.alexametrics.com","d31qbv1cthcecs.cloudfront.net"]},{"name":"Radar","company":"Cedexis","homepage":"https://www.cedexis.com/radar/","categories":["analytics"],"domains":["*.cedexis-test.com","*.cedexis.com","*.cmdolb.com","cedexis.leasewebcdn.com","*.cedexis-radar.net","*.cedexis.net","cedexis-test01.insnw.net","cedexisakamaitest.azureedge.net","cedexispub.cdnetworks.net","cs600.wac.alphacdn.net","cs600.wpc.edgecastdns.net","global2.cmdolb.com","img-cedexis.mncdn.com","a-cedexis.msedge.net","zn3vgszfh.fastestcdn.net"]},{"name":"Talkable","categories":["ad"],"domains":["*.talkable.com","d2jjzw81hqbuqv.cloudfront.net"]},{"name":"WebEngage","categories":["customer-success"],"domains":["*.webengage.co","*.webengage.com","d23nd6ymopvz52.cloudfront.net","d3701cc9l7v9a6.cloudfront.net"]},{"name":"rewardStyle.com","categories":["ad"],"domains":["*.rewardstyle.com"]},{"name":"Revcontent","categories":["content"],"domains":["*.revcontent.com"]},{"name":"iBillboard","categories":["ad"],"domains":["*.ibillboard.com"]},{"name":"Decibel Insight","categories":["analytics"],"domains":["*.decibelinsight.net"]},{"name":"Vidyard","homepage":"https://www.vidyard.com/","categories":["utility"],"domains":["*.vidyard.com"]},{"name":"Quantum Metric","homepage":"https://www.quantummetric.com/","categories":["analytics"],"domains":["*.quantummetric.com"]},{"name":"Civic","categories":["hosting"],"domains":["*.civiccomputing.com"]},{"name":"Highcharts","categories":["utility"],"domains":["*.highcharts.com"]},{"name":"Dynatrace","categories":["analytics"],"domains":["*.ruxit.com","js-cdn.dynatrace.com"]},{"name":"Auto Link Maker","company":"Apple","categories":["ad"],"domains":["*.apple.com"]},{"name":"Appier","categories":["ad"],"domains":["*.appier.net"]},{"name":"Yieldify","categories":["ad"],"domains":["*.yieldify.com","*.yieldifylabs.com","d33wq5gej88ld6.cloudfront.net","dwmvwp56lzq5t.cloudfront.net"]},{"name":"Sooqr Search","company":"Sooqr","categories":["utility"],"domains":["*.sooqr.com"]},{"name":"Kaltura Video Platform","company":"Kaltura","categories":["content"],"domains":["*.kaltura.com"]},{"name":"BoldChat","company":"LogMeIn","categories":["customer-success"],"domains":["*.boldchat.com"]},{"name":"FirstImpression","categories":["ad"],"domains":["*.firstimpression.io"]},{"name":"Picreel","categories":["analytics"],"domains":["*.pcrl.co","*.picreel.com"]},{"name":"DigiTrust","homepage":"http://www.digitru.st/","categories":["analytics"],"domains":["*.digitru.st"]},{"name":"AdsWizz","categories":["ad"],"domains":["*.adswizz.com"]},{"name":"SaleCycle","categories":["ad"],"domains":["*.salecycle.com","d16fk4ms6rqz1v.cloudfront.net","d22j4fzzszoii2.cloudfront.net","d30ke5tqu2tkyx.cloudfront.net","dn1i8v75r669j.cloudfront.net"]},{"name":"Flowplayer","categories":["content"],"domains":["*.flowplayer.org"]},{"name":"LoopMe","categories":["ad"],"domains":["*.loopme.biz","*.loopme.com","*.vntsm.com","*.loopme.me"]},{"name":"Tail Target","company":"Tail","categories":["ad"],"domains":["*.tailtarget.com"]},{"name":"AddShoppers","categories":["social"],"domains":["*.addshoppers.com","d3rr3d0n31t48m.cloudfront.net","*.shop.pe"]},{"name":"Browsealoud","homepage":"https://www.texthelp.com/en-gb/products/browsealoud/","categories":["other"],"domains":["*.browsealoud.com","*.texthelp.com"]},{"name":"LinkedIn Ads","categories":["ad"],"domains":["*.licdn.com","ads.linkedin.com","www.linkedin.com"]},{"name":"Audience 360","company":"Datapoint Media","categories":["ad"],"domains":["*.dpmsrv.com"]},{"name":"Tag Inspector","company":"InfoTrust","categories":["analytics"],"domains":["d22xmn10vbouk4.cloudfront.net"]},{"name":"MonetizeMore","categories":["ad"],"domains":["*.m2.ai"]},{"name":"Mather Economics","categories":["analytics"],"domains":["*.matheranalytics.com"]},{"name":"Fresh Relevance","categories":["analytics"],"domains":["*.freshrelevance.com","*.cloudfront.ne","d1y9qtn9cuc3xw.cloudfront.net","d81mfvml8p5ml.cloudfront.net","dkpklk99llpj0.cloudfront.net"]},{"name":"Supership","homepage":"https://supership.jp/","categories":["ad"],"domains":["*.socdm.com"]},{"name":"Fastly Insights","homepage":"https://insights.fastlylabs.com","categories":["analytics"],"domains":["*.fastly-insights.com"]},{"name":"Keywee","categories":["ad"],"domains":["*.keywee.co"]},{"name":"LiveHelpNow","categories":["customer-success"],"domains":["*.livehelpnow.net"]},{"name":"AudienceSearch","company":"Intimate Merger","categories":["ad"],"domains":["*.im-apps.net"]},{"name":"Evergage","categories":["analytics"],"domains":["*.evergage.com","*.evgnet.com"]},{"name":"Wicked Reports","homepage":"https://www.wickedreports.com/","categories":["marketing"],"domains":["*.wickedreports.com"]},{"name":"ReadSpeaker","homepage":"https://www.readspeaker.com","categories":["other"],"domains":["*.readspeaker.com"]},{"name":"WebpageFX","categories":["ad"],"domains":["*.leadmanagerfx.com"]},{"name":"Adobe Scene7","company":"Adobe Systems","categories":["content"],"domains":["wwwimages.adobe.com","*.scene7.com","*.everestads.net","*.everestjs.net"]},{"name":"IBM Acoustic Campaign","company":"IBM","categories":["analytics"],"domains":["www.sc.pages01.net","www.sc.pages02.net","www.sc.pages03.net","www.sc.pages04.net","www.sc.pages05.net","www.sc.pages06.net","www.sc.pages07.net","www.sc.pages08.net","www.sc.pages09.net","www.sc.pagesA.net"]},{"name":"The Trade Desk","homepage":"https://www.thetradedesk.com/","categories":["ad"],"domains":["d1eoo1tco6rr5e.cloudfront.net","*.adsrvr.org"]},{"name":"Google Plus","company":"Google","categories":["social"],"domains":["plus.google.com"]},{"name":"SearchSpring","categories":["utility"],"domains":["*.searchspring.net"]},{"name":"Curalate","categories":["marketing"],"domains":["*.curalate.com","d116tqlcqfmz3v.cloudfront.net"]},{"name":"Pixlee","categories":["social"],"domains":["*.pixlee.com"]},{"name":"Weborama","categories":["ad"],"domains":["*.weborama.com","*.weborama.fr"]},{"name":"Apester","categories":["analytics"],"domains":["*.apester.com","*.qmerce.com"]},{"name":"Sekindo","categories":["content"],"domains":["*.sekindo.com"]},{"name":"FoxyCart","categories":["utility"],"domains":["*.foxycart.com"]},{"name":"MaxMind","categories":["utility"],"domains":["*.maxmind.com"]},{"name":"Braze","homepage":"https://www.braze.com","categories":["analytics"],"domains":["*.appboycdn.com"]},{"name":"smartclip","categories":["ad"],"domains":["*.smartclip.net"]},{"name":"Opta","company":"Perform Group","categories":["content"],"domains":["*.opta.net"]},{"name":"Interpublic Group","categories":["ad"],"domains":["*.mbww.com"]},{"name":"Between Digital","categories":["ad"],"domains":["*.betweendigital.com"]},{"name":"CyberSource (Visa)","categories":["utility"],"domains":["*.authorize.net"]},{"name":"JustPremium Ads","company":"JustPremium","categories":["ad"],"domains":["*.justpremium.com"]},{"name":"Concert","homepage":"https://concert.io/","categories":["ad"],"domains":["*.concert.io"]},{"name":"Vox Media","homepage":"https://www.voxmedia.com/","categories":["content"],"domains":["*.vox-cdn.com","*.voxmedia.com"]},{"name":"CPEx","categories":["content"],"domains":["*.cpex.cz"]},{"name":"TripAdvisor","categories":["content"],"domains":["*.jscache.com","*.tacdn.com","*.tamgrt.com","*.tripadvisor.com","*.viator.com","*.tripadvisor.co.uk"]},{"name":"Ipify","homepage":"https://www.ipify.org","categories":["utility"],"domains":["*.ipify.org"]},{"name":"Click Guardian","homepage":"https://www.clickguardian.co.uk/","categories":["advertising"],"domains":["*.clickguardian.app","*.clickguardian.co.uk"]},{"name":"Autopilot","categories":["ad"],"domains":["*.autopilothq.com"]},{"name":"KISSmetrics","categories":["analytics"],"domains":["*.kissmetrics.com","doug1izaerwt3.cloudfront.net","dsyszv14g9ymi.cloudfront.net"]},{"name":"Yieldmo","categories":["ad"],"domains":["*.yieldmo.com"]},{"name":"Simplicity Marketing","categories":["ad"],"domains":["*.flashtalking.com"]},{"name":"mParticle","homepage":"https://www.mparticle.com/","categories":["utility"],"domains":["*.mparticle.com"]},{"name":"Global-e","categories":["hosting"],"domains":["*.global-e.com"]},{"name":"SurveyMonkey","categories":["analytics"],"domains":["*.surveymonkey.com"]},{"name":"Connatix","categories":["ad"],"domains":["*.connatix.com"]},{"name":"Drip","company":"The Numa Group","categories":["ad"],"domains":["*.getdrip.com"]},{"name":"BannerFlow","company":"Nordic Factory Solutions","categories":["ad"],"domains":["*.bannerflow.com"]},{"name":"DemandBase","categories":["marketing"],"domains":["*.demandbase.com"]},{"name":"DMD Marketing","homepage":"https://www.dmdconnects.com/","categories":["ad"],"domains":["*.medtargetsystem.com"]},{"name":"Omniconvert","categories":["analytics"],"domains":["*.omniconvert.com","d2tgfbvjf3q6hn.cloudfront.net","d3vbj265bmdenw.cloudfront.net"]},{"name":"Yottaa","categories":["hosting"],"domains":["*.yottaa.com","*.yottaa.net"]},{"name":"Sirv","categories":["other"],"domains":["*.sirv.com"]},{"name":"TripleLift","categories":["ad"],"domains":["*.3lift.com"]},{"name":"Edge Web Fonts","company":"Adobe Systems","categories":["cdn"],"domains":["*.edgefonts.net"]},{"name":"Tradelab","categories":["ad"],"domains":["*.tradelab.fr"]},{"name":"DialogTech","categories":["ad"],"domains":["*.dialogtech.com"]},{"name":"Calendly","categories":["other"],"domains":["*.calendly.com"]},{"name":"Media Math","homepage":"http://www.mediamath.com/","categories":["ad"],"domains":["*.mathads.com","*.mathtag.com"]},{"name":"Typepad","categories":["hosting"],"domains":["*.typepad.com"]},{"name":"Qualaroo","categories":["analytics"],"domains":["*.qualaroo.com"]},{"name":"Drawbridge","homepage":"https://www.drawbridge.com/","categories":["ad"],"domains":["*.adsymptotic.com"]},{"name":"Stamped.io","categories":["analytics"],"domains":["*.stamped.io"]},{"name":"Feedbackify","company":"InsideMetrics","categories":["analytics"],"domains":["*.feedbackify.com"]},{"name":"Auth0","homepage":"https://auth0.com/","categories":["utility"],"domains":["*.auth0.com"]},{"name":"Datawrapper","categories":["utility"],"domains":["*.datawrapper.de","*.dwcdn.net"]},{"name":"Reviews.io","categories":["analytics"],"domains":["*.reviews.io"]},{"name":"Adscale","categories":["ad"],"domains":["*.adscale.de"]},{"name":"SpotXchange","categories":["ad"],"domains":["*.spotxcdn.com","*.spotxchange.com","*.spotx.tv"]},{"name":"Stackla PTY","categories":["social"],"domains":["*.stackla.com"]},{"name":"linkpulse","categories":["analytics"],"domains":["*.lp4.io"]},{"name":"Market GID","homepage":"https://www.marketgid.com/","categories":["ad"],"domains":["*.marketgid.com"]},{"name":"CleverTap","categories":["analytics"],"domains":["d2r1yp2w7bby2u.cloudfront.net"]},{"name":"Infinity Tracking","categories":["analytics"],"domains":["*.infinity-tracking.net"]},{"name":"Mouseflow","categories":["analytics"],"domains":["*.mouseflow.com"]},{"name":"Luigi’s Box","company":"Luigi’s Box","homepage":"https://www.luigisbox.com/","categories":["utility"],"domains":["*.luigisbox.com"]},{"name":"Shopgate","categories":["utility"],"domains":["*.shopgate.com"]},{"name":"Reklama","categories":["ad"],"domains":["*.o2.pl","*.wp.pl"]},{"name":"Survicate","categories":["analytics"],"domains":["*.survicate.com"]},{"name":"Ad6Media","categories":["ad"],"domains":["*.ad6media.fr"]},{"name":"GetIntent RTBSuite","company":"GetIntent","categories":["ad"],"domains":["*.adhigh.net"]},{"name":"Snack Media","categories":["content"],"domains":["*.snack-media.com"]},{"name":"Cloudinary","categories":["content"],"domains":["*.cloudinary.com"]},{"name":"ThreatMetrix","categories":["utility"],"domains":["*.online-metrix.net"]},{"name":"Delta Projects AB","categories":["ad"],"domains":["*.de17a.com"]},{"name":"Adition","homepage":"https://www.adition.com","categories":["ad"],"domains":["*.adition.com"]},{"name":"Rocket Fuel","categories":["ad"],"domains":["*.rfihub.com","*.ru4.com","*.rfihub.net","*.ad1x.com"]},{"name":"Marketplace Web Service","company":"Amazon","categories":["other"],"domains":["*.ssl-images-amazon.com"]},{"name":"OneSignal","homepage":"https://onesignal.com/","categories":["utility"],"domains":["*.onesignal.com"]},{"name":"Customer.io","categories":["ad"],"domains":["*.customer.io"]},{"name":"Gleam","categories":["marketing"],"domains":["*.gleam.io"]},{"name":"Petametrics","categories":["analytics"],"domains":["*.petametrics.com"]},{"name":"ResponseTap","categories":["analytics"],"domains":["*.adinsight.com","*.responsetap.com"]},{"name":"TINT","categories":["content"],"domains":["*.71n7.com","d33w9bm0n1egwm.cloudfront.net","d36hc0p18k1aoc.cloudfront.net","d3l7tj34e9fc43.cloudfront.net"]},{"name":"Zanox","categories":["ad"],"domains":["*.zanox.com","*.zanox.ws"]},{"name":"infogr.am","categories":["utility"],"domains":["*.infogr.am","*.jifo.co"]},{"name":"Playbuzz","categories":["hosting"],"domains":["*.playbuzz.com"]},{"name":"Klevu Search","company":"Klevu","categories":["utility"],"domains":["*.klevu.com"]},{"name":"Conversio","categories":["ad"],"domains":["*.conversio.com"]},{"name":"Sidecar","categories":["other"],"domains":["*.getsidecar.com","d3v27wwd40f0xu.cloudfront.net"]},{"name":"Sajari Pty","categories":["utility"],"domains":["*.sajari.com"]},{"name":"Profitshare","categories":["ad"],"domains":["*.profitshare.ro"]},{"name":"Qubit Deliver","company":"Qubit","categories":["analytics"],"domains":["d1m54pdnjzjnhe.cloudfront.net","d22rutvoghj3db.cloudfront.net","dd6zx4ibq538k.cloudfront.net"]},{"name":"Arbor","company":"LiveRamp","categories":["other"],"domains":["*.pippio.com"]},{"name":"Best Of Media S.A.","categories":["content"],"domains":["*.servebom.com"]},{"name":"Impact Radius","categories":["ad"],"domains":["*.impactradius-event.com","*.impactradius-go.com","*.7eer.net","d3cxv97fi8q177.cloudfront.net","*.evyy.net","*.ojrq.net"]},{"name":"Flickr","categories":["content"],"domains":["*.flickr.com","*.staticflickr.com"]},{"name":"Fanplayr","categories":["analytics"],"domains":["*.fanplayr.com","d38nbbai6u794i.cloudfront.net"]},{"name":"Navegg","categories":["ad"],"domains":["*.navdmp.com"]},{"name":"Ambassador","categories":["ad"],"domains":["*.getambassador.com"]},{"name":"Intercept Interactive","categories":["ad"],"domains":["*.undertone.com"]},{"name":"Cookie-Script.com","categories":["utility"],"domains":["*.cookie-script.com"]},{"name":"GIPHY","categories":["content"],"domains":["*.giphy.com"]},{"name":"Kaizen Platform","categories":["analytics"],"domains":["*.kaizenplatform.net"]},{"name":"Bluecore","categories":["analytics"],"domains":["*.bluecore.com"]},{"name":"Exponential Interactive","categories":["ad"],"domains":["*.exponential.com"]},{"name":"Hupso Website Analyzer","company":"Hupso","categories":["analytics"],"domains":["*.hupso.com"]},{"name":"Adkontekst","categories":["ad"],"domains":["*.adkontekst.pl"]},{"name":"Rakuten LinkShare","company":"Rakuten","categories":["ad"],"domains":["*.linksynergy.com"]},{"name":"WebSpectator","categories":["ad"],"domains":["*.webspectator.com"]},{"name":"The Hut Group","categories":["content"],"domains":["*.thcdn.com"]},{"name":"Underdog Media","categories":["ad"],"domains":["*.underdog.media","*.udmserve.net"]},{"name":"Steelhouse","categories":["ad"],"domains":["*.steelhousemedia.com"]},{"name":"Bolt","homepage":"https://www.bolt.com/","categories":["utility"],"domains":["*.bolt.com"]},{"name":"AdRiver","categories":["ad"],"domains":["*.adriver.ru"]},{"name":"Viacom","categories":["content"],"domains":["*.mtvnservices.com"]},{"name":"CleverDATA","categories":["ad"],"domains":["*.1dmp.io"]},{"name":"WalkMe","categories":["customer-success"],"domains":["*.walkme.com"]},{"name":"Flockler","categories":["ad"],"domains":["*.flockler.com"]},{"name":"Hola Networks","categories":["other"],"domains":["*.h-cdn.com"]},{"name":"Acceptable Ads","homepage":"https://acceptableads.com/","categories":["ad"],"domains":["*.aaxads.com","*.aaxdetect.com"]},{"name":"Socialphotos","categories":["social"],"domains":["*.slpht.com"]},{"name":"epoq internet services","categories":["analytics"],"domains":["*.epoq.de"]},{"name":"Livefyre","categories":["content"],"domains":["*.fyre.co","*.livefyre.com"]},{"name":"Turn","categories":["ad"],"domains":["*.turn.com"]},{"name":"Kargo","categories":["marketing"],"domains":["*.kargo.com"]},{"name":"Adyen","categories":["utility"],"domains":["*.adyen.com"]},{"name":"Knight Lab","company":"Northwestern University","categories":["utility"],"domains":["*.knightlab.com"]},{"name":"Ziff Davis Tech","categories":["ad"],"domains":["*.adziff.com","*.zdbb.net"]},{"name":"Reevoo","categories":["analytics"],"domains":["*.reevoo.com"]},{"name":"The ADEX","categories":["ad"],"domains":["*.theadex.com"]},{"name":"AWeber","categories":["ad"],"domains":["*.aweber.com"]},{"name":"Proper Media","categories":["content"],"domains":["*.proper.io"]},{"name":"Pusher","homepage":"https://pusher.com/","categories":["utility"],"domains":["*.pusher.com","*.pusherapp.com"]},{"name":"Ooyala","categories":["ad"],"domains":["*.ooyala.com"]},{"name":"Mopinion","categories":["analytics"],"domains":["*.mopinion.com"]},{"name":"Netlify","homepage":"https://www.netlify.com/","categories":["utility"],"domains":["*.netlify.com","*.netlifyusercontent.com"]},{"name":"Experian Cross-Channel Marketing Platform","company":"Experian","categories":["marketing"],"domains":["*.eccmp.com","*.ccmp.eu"]},{"name":"Postcode Anywhere (Holdings)","categories":["utility"],"domains":["*.postcodeanywhere.co.uk"]},{"name":"reEmbed","categories":["other"],"domains":["*.reembed.com"]},{"name":"Vibrant Media","categories":["ad"],"domains":["*.intellitxt.com","*.picadmedia.com"]},{"name":"GoSquared","homepage":"https://www.gosquared.com","categories":["analytics"],"domains":["*.gosquared.com","d1l6p2sc9645hc.cloudfront.net"]},{"name":"Onet","categories":["ad"],"domains":["*.onet.pl"]},{"name":"SlimCut Media Outstream","company":"SlimCut Media","categories":["ad"],"domains":["*.freeskreen.com"]},{"name":"Sojern","categories":["marketing"],"domains":["*.sojern.com"]},{"name":"Tagboard","categories":["social"],"domains":["*.tagboard.com"]},{"name":"reddit","categories":["social"],"domains":["*.reddit.com","*.redditstatic.com"]},{"name":"bRealTime","categories":["ad"],"domains":["*.brealtime.com"]},{"name":"Woopra","categories":["analytics"],"domains":["*.woopra.com"]},{"name":"Cookie Reports","categories":["utility"],"domains":["*.cookiereports.com"]},{"name":"Usersnap","homepage":"https://usersnap.com","categories":["customer-success"],"domains":["*.usersnap.com"]},{"name":"NetAffiliation","company":"Kwanco","categories":["ad"],"domains":["*.metaffiliation.com"]},{"name":"Opinion Stage","categories":["analytics"],"domains":["*.opinionstage.com"]},{"name":"Kameleoon","categories":["analytics"],"domains":["*.kameleoon.com"]},{"name":"Zmags","categories":["marketing"],"domains":["*.zmags.com"]},{"name":"Celtra","categories":["ad"],"domains":["*.celtra.com"]},{"name":"Elastic Ad","categories":["ad"],"domains":["*.elasticad.net"]},{"name":"FLXone","company":"Teradata","categories":["ad"],"domains":["*.pangolin.blue","*.flx1.com","d2hlpp31teaww3.cloudfront.net","*.flxpxl.com"]},{"name":"StreamRail","categories":["ad"],"domains":["*.streamrail.com","*.streamrail.net"]},{"name":"Effective Measure","categories":["ad"],"domains":["*.effectivemeasure.net"]},{"name":"Touch Commerce","categories":["customer-success"],"domains":["*.inq.com","*.touchcommerce.com"]},{"name":"Resonance Insights","categories":["analytics"],"domains":["*.res-x.com"]},{"name":"Advance Magazine Group","categories":["content"],"domains":["*.condenastdigital.com","*.condenet.com","*.condenast.co.uk"]},{"name":"PerimeterX Bot Defender","company":"PerimeterX","categories":["utility"],"domains":["*.perimeterx.net","*.pxi.pub"]},{"name":"Reflektion","categories":["analytics"],"domains":["*.reflektion.com","d26opx5dl8t69i.cloudfront.net"]},{"name":"Clicktripz","categories":["content"],"domains":["*.clicktripz.com"]},{"name":"Barilliance","categories":["analytics"],"domains":["*.barilliance.net","dn3y71tq7jf07.cloudfront.net"]},{"name":"Qualtrics","categories":["analytics"],"domains":["*.qualtrics.com"]},{"name":"Sonobi","categories":["ad"],"domains":["*.sonobi.com"]},{"name":"Polldaddy","company":"Automattic","categories":["analytics"],"domains":["polldaddy.com"]},{"name":"Swoop","categories":["ad"],"domains":["*.swoop.com"]},{"name":"Mobify","categories":["utility"],"domains":["*.mobify.com","*.mobify.net"]},{"name":"Zarget","categories":["analytics"],"domains":["*.zarget.com"]},{"name":"TruConversion","categories":["analytics"],"domains":["*.truconversion.com"]},{"name":"Spot.IM","categories":["social"],"domains":["*.spot.im","*.spotim.market"]},{"name":"Bookatable","categories":["content"],"domains":["*.bookatable.com","*.livebookings.com"]},{"name":"Wow Analytics","categories":["analytics"],"domains":["*.wowanalytics.co.uk"]},{"name":"Clickagy Audience Lab","company":"Clickagy","categories":["ad"],"domains":["*.clickagy.com"]},{"name":"Verizon Digital Media CDN","homepage":"https://www.verizondigitalmedia.com/","categories":["cdn"],"domains":["*.edgecastcdn.net","*.edgecastdns.net"]},{"name":"Moxie","homepage":"https://www.gomoxie.com/","categories":["utility"],"domains":["*.gomoxie.solutions"]},{"name":"OnScroll","categories":["ad"],"domains":["*.onscroll.com"]},{"name":"OwnerIQ","categories":["ad"],"domains":["*.owneriq.net"]},{"name":"Friendbuy","categories":["ad"],"domains":["*.friendbuy.com","djnf6e5yyirys.cloudfront.net"]},{"name":"Transifex","categories":["utility"],"domains":["*.transifex.com"]},{"name":"Twitter Online Conversion Tracking","company":"Twitter","categories":["ad"],"domains":["*.ads-twitter.com","analytics.twitter.com"]},{"name":"PebblePost","categories":["ad"],"domains":["*.pbbl.co"]},{"name":"Cachefly","categories":["utility"],"domains":["*.cachefly.net"]},{"name":"Storygize","categories":["ad"],"domains":["*.storygize.net"]},{"name":"Vergic AB","categories":["customer-success"],"domains":["*.psplugin.com"]},{"name":"Republer","categories":["ad"],"domains":["*.republer.com"]},{"name":"Conversant Tag Manager","company":"Conversant","categories":["tag-manager"],"domains":["*.mplxtms.com"]},{"name":"Attribution","categories":["ad"],"domains":["*.attributionapp.com"]},{"name":"Netmining","company":"Ignition One","categories":["ad"],"domains":["*.netmng.com"]},{"name":"Betgenius","company":"Genius Sports","categories":["content"],"domains":["*.connextra.com"]},{"name":"Intent IQ","categories":["ad"],"domains":["*.intentiq.com"]},{"name":"Site24x7 Real User Monitoring","company":"Site24x7","categories":["analytics"],"domains":["*.site24x7rum.com"]},{"name":"Adobe Marketing Cloud","company":"Adobe Systems","categories":["ad"],"domains":["*.adobetag.com"]},{"name":"SkyScanner","categories":["content"],"domains":["*.skyscanner.net"]},{"name":"Madison Logic","categories":["marketing"],"domains":["*.ml314.com"]},{"name":"Foxentry","company":"AVANTRO","homepage":"https://foxentry.cz/","categories":["utility"],"domains":["*.foxentry.cz"]},{"name":"MailPlus","categories":["ad"],"domains":["*.mailplus.nl"]},{"name":"Mux","categories":["analytics"],"domains":["*.litix.io"]},{"name":"News","categories":["social"],"domains":["*.news.com.au","*.newsanalytics.com.au","*.newsapi.com.au","*.newscdn.com.au","*.newsdata.com.au","*.newsdiscover.com.au","*.news-static.com"]},{"name":"AdTrue","company":"FPT AdTrue","categories":["ad"],"domains":["*.adtrue.com"]},{"name":"Optimove","company":"Mobius Solutions","categories":["analytics"],"domains":["*.optimove.net"]},{"name":"SecuredVisit","company":"4Cite Marketing","categories":["ad"],"domains":["*.securedvisit.com"]},{"name":"Investis","categories":["utility"],"domains":["*.investis.com"]},{"name":"Vivocha S.p.A","categories":["customer-success"],"domains":["*.vivocha.com"]},{"name":"AdSniper","categories":["ad"],"domains":["*.adsniper.ru","*.sniperlog.ru"]},{"name":"Hull.js","categories":["utility"],"domains":["*.hull.io","*.hullapp.io"]},{"name":"ShopRunner","categories":["content"],"domains":["*.shoprunner.com","*.s-9.us"]},{"name":"InAuth","categories":["utility"],"homepage":"https://www.inauth.com/","domains":["*.cdn-net.com"]},{"name":"cloudIQ","categories":["analytics"],"domains":["*.cloud-iq.com"]},{"name":"BuySellAds","categories":["ad"],"domains":["*.buysellads.com","*.buysellads.net"]},{"name":"LiveRamp IdentityLink","homepage":"https://liveramp.com/discover-identitylink/","categories":["analytics"],"domains":["*.circulate.com","*.rlcdn.com"]},{"name":"Expedia","categories":["content"],"domains":["*.travel-assets.com","*.trvl-media.com","*.trvl-px.com","*.uciservice.com"]},{"name":"Aggregate Knowledge","company":"Neustar","categories":["ad"],"domains":["*.agkn.com"]},{"name":"DialogTech SourceTrak","company":"DialogTech","categories":["ad"],"domains":["d31y97ze264gaa.cloudfront.net"]},{"name":"Microad","categories":["ad"],"domains":["*.microad.jp"]},{"name":"Realytics","categories":["analytics"],"domains":["dcniko1cv0rz.cloudfront.net","*.realytics.net"]},{"name":"Holimetrix","homepage":"https://u360.d-bi.fr/","categories":["marketing"],"domains":["*.d-bi.fr"]},{"name":"Kiosked","categories":["ad"],"domains":["*.kiosked.com"]},{"name":"Webkul","company":"Webkul Software","categories":["utility"],"domains":["*.webkul.com"]},{"name":"ReCollect","categories":["utility"],"domains":["*.recollect.net"]},{"name":"CNET Content Solutions","company":"CBS Interactive","categories":["content"],"domains":["*.cnetcontent.com"]},{"name":"Triblio","categories":["marketing"],"domains":["*.tribl.io"]},{"name":"Alchemy","company":"AndBeyond.Media","categories":["ad"],"domains":["*.andbeyond.media"]},{"name":"Vergic Engage Platform","company":"Vergic","categories":["customer-success"],"domains":["*.vergic.com"]},{"name":"Braintree Payments","company":"Paypal","categories":["utility"],"domains":["*.braintreegateway.com"]},{"name":"Reactful","categories":["analytics"],"domains":["*.reactful.com"]},{"name":"[24]7","categories":["customer-success"],"domains":["*.247-inc.net","*.247inc.net","d1af033869koo7.cloudfront.net"]},{"name":"PlayAd Media Group","categories":["ad"],"domains":["*.youplay.se"]},{"name":"Sailthru","categories":["analytics"],"domains":["*.sail-horizon.com","*.sail-personalize.com","*.sail-track.com"]},{"name":"ShopStorm","categories":["utility"],"domains":["*.shopstorm.com"]},{"name":"Dataxu","categories":["marketing"],"domains":["*.w55c.net"]},{"name":"CANDDi","company":"Campaign and Digital Intelligence","categories":["ad"],"domains":["*.canddi.com"]},{"name":"Dynamic Converter","categories":["utility"],"domains":["*.dynamicconverter.com"]},{"name":"Meltwater Group","categories":["customer-success"],"domains":["*.meltwaternews.com"]},{"name":"Datacamp","categories":["utility"],"domains":["*.cdn77.org"]},{"name":"Janrain","categories":["analytics"],"domains":["*.janrain.com","*.janrainbackplane.com","*.rpxnow.com","d3hmp0045zy3cs.cloudfront.net"]},{"name":"Smartlook","company":"Smartsupp.com","homepage":"https://www.smartlook.com/","categories":["analytics"],"domains":["*.smartlook.com"]},{"name":"Iterate","homepage":"https://iteratehq.com/","categories":["analytics"],"domains":["*.iteratehq.com"]},{"name":"Perfect Audience","company":"Marin Software","categories":["ad"],"domains":["*.prfct.co","*.marinsm.com","*.perfectaudience.com"]},{"name":"OneSoon","categories":["analytics"],"domains":["*.adalyser.com"]},{"name":"Fonecall","categories":["analytics"],"domains":["*.web-call-analytics.com"]},{"name":"Oracle Recommendations On Demand","company":"Oracle","categories":["analytics"],"domains":["*.atgsvcs.com"]},{"name":"Salesforce Live Agent","company":"Salesforce.com","categories":["customer-success"],"domains":["*.salesforceliveagent.com"]},{"name":"InSkin Media","categories":["ad"],"domains":["*.inskinad.com","*.inskinmedia.com"]},{"name":"ContextWeb","categories":["ad"],"domains":["*.contextweb.com"]},{"name":"Ekm Systems","categories":["analytics"],"domains":["*.ekmsecure.com","*.ekmpinpoint.co.uk"]},{"name":"VidPulse","categories":["analytics"],"domains":["*.vidpulse.com"]},{"name":"RichRelevance","categories":["analytics"],"domains":["*.richrelevance.com"]},{"name":"Byside","homepage":"http://www.byside.com","categories":["analytics"],"domains":["*.byside.com"]},{"name":"AnswerDash","categories":["customer-success"],"domains":["*.answerdash.com"]},{"name":"Dash Hudson","company":"Dash Hudson","categories":["content"],"domains":["*.dashhudson.com"]},{"name":"Pingdom RUM","homepage":"https://www.pingdom.com/product/performance-monitoring/","categories":["analytics"],"domains":["*.pingdom.net"]},{"name":"Exactag","categories":["ad"],"domains":["*.exactag.com"]},{"name":"Sparkflow","company":"Intercept Interactive","categories":["ad"],"domains":["*.sparkflow.net"]},{"name":"MLveda","categories":["utility"],"domains":["*.mlveda.com"]},{"name":"Dropbox","categories":["utility"],"domains":["*.dropboxusercontent.com"]},{"name":"User Replay","categories":["analytics"],"domains":["*.userreplay.net"]},{"name":"TechTarget","categories":["content"],"domains":["*.techtarget.com","*.ttgtmedia.com"]},{"name":"LoginRadius","categories":["social"],"domains":["*.loginradius.com"]},{"name":"Gfycat","company":"Gycat","categories":["utility"],"domains":["*.gfycat.com"]},{"name":"PowerFront","categories":["hosting"],"domains":["*.inside-graph.com"]},{"name":"Raygun","categories":["utility"],"domains":["*.raygun.io"]},{"name":"Prezi","categories":["utility"],"domains":["*.prezi.com"]},{"name":"Adthink","company":"Adthink Media","categories":["ad"],"domains":["*.adxcore.com","*.dcoengine.com"]},{"name":"JingDong","categories":["content"],"domains":["*.3.com","*.jd.com"]},{"name":"Cardosa Enterprises","categories":["analytics"],"domains":["*.y-track.com"]},{"name":"Remintrex","company":"SmartUp Venture","categories":["ad"],"domains":["*.remintrex.com"]},{"name":"Polyfill service","company":"Polyfill.io","categories":["other"],"domains":["*.polyfill.io"]},{"name":"TRUSTe","categories":["utility"],"domains":["*.truste.com"]},{"name":"AI Media Group","categories":["ad"],"domains":["*.aimediagroup.com"]},{"name":"Alliance for Audited Media","categories":["ad"],"domains":["*.aamsitecertifier.com"]},{"name":"Segmento","categories":["ad"],"domains":["*.rutarget.ru"]},{"name":"Vee24","categories":["customer-success"],"domains":["*.vee24.com"]},{"name":"Performio","categories":["ad"],"domains":["*.performax.cz"]},{"name":"Beachfront Media","categories":["ad"],"domains":["*.bfmio.com"]},{"name":"Magnetic","categories":["ad"],"domains":["*.domdex.com","d3ezl4ajpp2zy8.cloudfront.net"]},{"name":"Web Dissector","company":"Beijing Gridsum Technologies","categories":["analytics"],"domains":["*.gridsumdissector.com","*.webdissector.com"]},{"name":"Chameleon","homepage":"https://www.trychameleon.com/","categories":["marketing"],"domains":["*.trychameleon.com"]},{"name":"UpSellit","categories":["analytics"],"domains":["*.upsellit.com"]},{"name":"UPS i-parcel","company":"UPS","categories":["other"],"domains":["*.i-parcel.com"]},{"name":"Filestack","categories":["content"],"domains":["*.filepicker.io"]},{"name":"MouseStats","categories":["analytics"],"domains":["*.mousestats.com"]},{"name":"MathJax","categories":["utility"],"domains":["*.mathjax.org"]},{"name":"OneTag","categories":["ad"],"domains":["*.onetag-sys.com"]},{"name":"StumbleUpon","categories":["content"],"domains":["*.stumble-upon.com","*.stumbleupon.com"]},{"name":"StackAdapt","categories":["ad"],"domains":["*.stackadapt.com"]},{"name":"TurnTo","homepage":"https://www.turntonetworks.com/","categories":["utility"],"domains":["*.turnto.com"]},{"name":"DemandJump","categories":["analytics"],"domains":["*.demandjump.com"]},{"name":"Xaxis","homepage":"https://www.xaxis.com/","categories":["ad"],"domains":["*.247realmedia.com","*.mookie1.com","*.gmads.net"]},{"name":"Council ad Network","categories":["ad"],"domains":["*.counciladvertising.net"]},{"name":"adKernel","categories":["ad"],"domains":["*.adkernel.com"]},{"name":"Trialfire","categories":["analytics"],"domains":["*.trialfire.com"]},{"name":"AdSupply","categories":["ad"],"domains":["*.doublepimp.com"]},{"name":"Moovweb","categories":["utility"],"domains":["*.moovweb.net"]},{"name":"Imgur","categories":["utility"],"domains":["*.imgur.com"]},{"name":"trueAnthem","categories":["social"],"domains":["*.tru.am"]},{"name":"Google Fonts","company":"Google","homepage":"https://fonts.google.com/","categories":["cdn"],"domains":["fonts.googleapis.com","fonts.gstatic.com"]},{"name":"DistroScale","categories":["ad"],"domains":["*.jsrdn.com"]},{"name":"Extole","categories":["ad"],"domains":["*.extole.com","*.extole.io"]},{"name":"Adverline Board","company":"Adverline","categories":["ad"],"domains":["*.adverline.com","*.adnext.fr"]},{"name":"Datonics","categories":["ad"],"domains":["*.pro-market.net"]},{"name":"StackExchange","categories":["social"],"domains":["*.sstatic.net"]},{"name":"Gravatar","homepage":"http://en.gravatar.com/","categories":["social"],"domains":["*.gravatar.com"]},{"name":"Better Business Bureau","categories":["analytics"],"domains":["*.bbb.org"]},{"name":"content.ad","categories":["ad"],"domains":["*.content.ad"]},{"name":"Freespee","categories":["customer-success"],"domains":["*.freespee.com"]},{"name":"Ceros","categories":["other"],"domains":["ceros.com","view.ceros.com"]},{"name":"Adobe Test & Target","company":"Adobe Systems","categories":["analytics"],"domains":["*.omtrdc.net"]},{"name":"SreamAMG","company":"StreamAMG","categories":["other"],"domains":["*.streamamg.com"]},{"name":"Browser-Update.org","categories":["other"],"domains":["*.browser-update.org"]},{"name":"Ruler Analytics","company":"Ruler","categories":["analytics"],"domains":["*.nyltx.com","*.ruleranalytics.com"]},{"name":"Multiview","categories":["content"],"domains":["*.multiview.com","*.track-mv.com"]},{"name":"Ada","homepage":"https://www.ada.support/","categories":["customer-success"],"domains":["*.ada.support"]},{"name":"Reach Group","categories":["ad"],"domains":["*.redintelligence.net"]},{"name":"Firebase","homepage":"https://developers.google.com/apis-explorer/#p/","categories":["utility"],"domains":["firebasestorage.googleapis.com","firestore.googleapis.com"]},{"name":"AddEvent","categories":["utility"],"domains":["*.addevent.com"]},{"name":"Fastest Forward","categories":["analytics"],"domains":["*.gaug.es"]},{"name":"Constructor.io","categories":["utility"],"domains":["*.cnstrc.com"]},{"name":"ARM","categories":["analytics"],"domains":["*.tag4arm.com"]},{"name":"Hawk Search","categories":["utility"],"domains":["*.hawksearch.com"]},{"name":"BlueCava","categories":["ad"],"domains":["*.bluecava.com"]},{"name":"Loop11","categories":["analytics"],"domains":["*.loop11.com"]},{"name":"AliveChat","company":"AYU Technology Solutions","categories":["customer-success"],"domains":["*.websitealive.com","*.websitealive7.com"]},{"name":"Retention Science","categories":["ad"],"domains":["*.retentionscience.com","d1stxfv94hrhia.cloudfront.net"]},{"name":"VoiceFive","categories":["analytics"],"domains":["*.voicefive.com"]},{"name":"YoYo","categories":["utility"],"domains":["*.goadservices.com"]},{"name":"Virtual Earth","company":"Microsoft","categories":["utility"],"domains":["*.virtualearth.net"]},{"name":"SPX","company":"Smaato","categories":["ad"],"domains":["*.smaato.net"]},{"name":"Klarna","categories":["utility"],"domains":["*.klarna.com"]},{"name":"Flipboard","categories":["social"],"domains":["*.flipboard.com"]},{"name":"Glassdoor","categories":["content"],"domains":["*.glassdoor.com"]},{"name":"Webtrends","categories":["analytics"],"domains":["*.webtrends.com","*.webtrendslive.com","d1q62gfb8siqnm.cloudfront.net"]},{"name":"NaviStone","categories":["ad"],"domains":["*.murdoog.com"]},{"name":"Catchpoint","homepage":"https://www.catchpoint.com/","categories":["analytics"],"domains":["*.3gl.net"]},{"name":"JotForm","categories":["utility"],"domains":["*.jotformpro.com"]},{"name":"Userzoom","categories":["analytics"],"domains":["*.userzoom.com"]},{"name":"Now Interact","categories":["analytics"],"domains":["*.nowinteract.com"]},{"name":"RecoBell","categories":["analytics"],"domains":["*.recobell.io"]},{"name":"EmpathyBroker Site Search","company":"EmpathyBroker","categories":["utility"],"domains":["*.empathybroker.com"]},{"name":"Boomtrain","categories":["ad"],"domains":["*.boomtrain.com","*.boomtrain.net"]},{"name":"Roomkey","categories":["content"],"domains":["*.roomkey.com"]},{"name":"Improve Digital","categories":["ad"],"domains":["*.360yield.com"]},{"name":"Webmarked","categories":["utility"],"domains":["*.webmarked.net"]},{"name":"Soundest","categories":["ad"],"domains":["*.soundestlink.com","*.soundest.net"]},{"name":"ESV Digital","categories":["analytics"],"domains":["*.esearchvision.com"]},{"name":"EmailCenter","categories":["ad"],"domains":["*.emailcenteruk.com"]},{"name":"Amplience","categories":["marketing"],"domains":["*.10cms.com","*.amplience.com","*.bigcontent.io","*.adis.ws"]},{"name":"The Publisher Desk","categories":["ad"],"domains":["*.206ads.com","*.publisherdesk.com"]},{"name":"HP Optimost","company":"Hewlett-Packard Development Company","categories":["marketing"],"domains":["*.hp.com","d2uncb19xzxhzx.cloudfront.net"]},{"name":"Azure Traffic Manager","company":"Microsoft","categories":["other"],"domains":["*.gateway.net","*.trafficmanager.net"]},{"name":"Peaks & Pies","categories":["analytics"],"domains":["*.bunchbox.co"]},{"name":"2AdPro Media Solutions","categories":["ad"],"domains":["*.2adpro.com"]},{"name":"Mediahawk","categories":["analytics"],"domains":["*.mediahawk.co.uk"]},{"name":"Trust Guard","categories":["utility"],"domains":["*.trust-guard.com"]},{"name":"RightNow Service Cloud","company":"Oracle","categories":["customer-success"],"domains":["*.rightnowtech.com","*.rnengage.com"]},{"name":"Trustev","company":"TransUnion","categories":["utility"],"domains":["*.trustev.com"]},{"name":"Ometria","categories":["analytics"],"domains":["*.ometria.com"]},{"name":"Tapad","categories":["ad"],"domains":["*.tapad.com"]},{"name":"Quora Ads","homepage":"https://www.quora.com/business/","categories":["ad"],"domains":["*.quora.com"]},{"name":"RebelMouse","categories":["ad"],"domains":["*.rebelmouse.com","*.rbl.ms"]},{"name":"Cross Pixel Media","categories":["ad"],"domains":["*.crsspxl.com"]},{"name":"Elecard StreamEye","company":"Elecard","categories":["other"],"domains":["*.streameye.net"]},{"name":"Sub2 Technologies","categories":["analytics"],"domains":["*.sub2tech.com"]},{"name":"Pixalate","categories":["utility"],"domains":["*.adrta.com"]},{"name":"Neodata","categories":["ad"],"domains":["*.neodatagroup.com"]},{"name":"HotelsCombined","categories":["content"],"domains":["*.datahc.com"]},{"name":"Infusionsoft","categories":["ad"],"domains":["*.infusionsoft.com"]},{"name":"Online republic","categories":["content"],"domains":["*.imallcdn.net"]},{"name":"MyRegistry","categories":["other"],"domains":["*.myregistry.com"]},{"name":"eGain","categories":["analytics"],"domains":["*.analytics-egain.com","*.egain.com"]},{"name":"Numberly","company":"1000mercis","categories":["ad"],"domains":["*.mmtro.com","*.nzaza.com"]},{"name":"Visual IQ","homepage":"https://www.visualiq.com","categories":["analytics"],"domains":["*.myvisualiq.net"]},{"name":"Click4Assistance","categories":["customer-success"],"domains":["*.click4assistance.co.uk"]},{"name":"Euroland","categories":["utility"],"domains":["*.euroland.com"]},{"name":"Sokrati","categories":["marketing"],"domains":["*.sokrati.com"]},{"name":"Acquisio","categories":["ad"],"domains":["*.acq.io"]},{"name":"AdvertServe","categories":["ad"],"domains":["*.advertserve.com"]},{"name":"eXTReMe digital","categories":["analytics"],"domains":["*.extreme-dm.com"]},{"name":"SAS Institute","categories":["ad"],"domains":["*.aimatch.com","*.sas.com"]},{"name":"Oracle","categories":["marketing"],"domains":["*.custhelp.com","*.eloqua.com","*.en25.com","*.estara.com","*.instantservice.com"]},{"name":"TrafficJunky","homepage":"https://www.trafficjunky.com/","categories":["ad"],"domains":["*.contentabc.com","*.trafficjunky.net"]},{"name":"Conversant","categories":["analytics"],"domains":["*.dotomi.com","*.dtmpub.com","*.emjcd.com","mediaplex.com","*.tqlkg.com","*.fastclick.net"]},{"name":"SiteScout","company":"Centro","categories":["ad"],"domains":["*.pixel.ad","*.sitescout.com"]},{"name":"Silverpop","company":"IBM","categories":["ad"],"domains":["*.mkt912.com","*.mkt922.com","*.mkt932.com","*.mkt941.com","*.mkt51.net","*.mkt61.net","*.pages01.net","*.pages02.net","*.pages03.net","*.pages04.net","*.pages05.net"]},{"name":"eXelate","categories":["ad"],"domains":["*.exelator.com"]},{"name":"SmarterHQ","categories":["analytics"],"domains":["*.smarterhq.io","d1n00d49gkbray.cloudfront.net","*.smarterremarketer.net"]},{"name":"Divido","categories":["utility"],"domains":["*.divido.com"]},{"name":"BidTheatre","categories":["ad"],"domains":["*.bidtheatre.com"]},{"name":"Certona","categories":["analytics"],"domains":["*.certona.net"]},{"name":"Reflow","company":"Scenestealer","categories":["ad"],"domains":["*.reflow.tv"]},{"name":"Account Kit","categories":["other"],"domains":["*.accountkit.com"]},{"name":"Yummley","categories":["other"],"domains":["*.yummly.com"]},{"name":"ZergNet","categories":["content"],"domains":["*.zergnet.com"]},{"name":"LeasdBoxer","company":"LeadBoxer","categories":["ad"],"domains":["*.leadboxer.com"]},{"name":"SalesLoft","homepage":"https://salesloft.com/","categories":["analytics","marketing"],"domains":["*.salesloft.com"]},{"name":"template-help.com","categories":["hosting"],"domains":["*.template-help.com"]},{"name":"Mention Me","categories":["ad"],"domains":["*.mention-me.com"]},{"name":"Borderfree","company":"pitney bowes","categories":["utility"],"domains":["*.borderfree.com","*.fiftyone.com"]},{"name":"360 picnic platform","company":"MediaV","categories":["ad"],"domains":["*.mediav.com"]},{"name":"Webtrekk","categories":["analytics"],"domains":["*.wbtrk.net","*.webtrekk-asia.net","*.webtrekk.net","*.wt-eu02.net"]},{"name":"Airship","categories":["marketing"],"domains":["*.urbanairship.com","*.aswpsdkus.com"]},{"name":"SpeedCurve LUX","homepage":"https://speedcurve.com/features/lux/","categories":["analytics"],"domains":["*.speedcurve.com"]},{"name":"Adzerk","categories":["ad"],"domains":["*.adzerk.net"]},{"name":"AdCurve","categories":["ad"],"domains":["*.shop2market.com"]},{"name":"ToneMedia","categories":["ad"],"domains":["*.clickfuse.com"]},{"name":"F@N Communications","homepage":"https://www.fancs.com/","categories":["ad"],"domains":["*.ladsp.com"]},{"name":"Sophus3","categories":["analytics"],"domains":["*.s3ae.com","*.sophus3.com"]},{"name":"Bidtellect","categories":["ad"],"domains":["*.bttrack.com"]},{"name":"Adtech (AOL)","categories":["ad"],"domains":["*.adtechus.com"]},{"name":"Admedo","categories":["ad"],"domains":["*.a8723.com","*.adizio.com","*.admedo.com"]},{"name":"Heatmap","categories":["analytics"],"domains":["*.heatmap.it"]},{"name":"Widespace","homepage":"https://www.widespace.com","categories":["ad"],"domains":["*.widespace.com"]},{"name":"Rollbar","categories":["utility"],"domains":["*.rollbar.com","d37gvrvc0wt4s1.cloudfront.net"]},{"name":"Adnium","categories":["ad"],"domains":["*.adnium.com"]},{"name":"Business Message","categories":["ad"],"domains":["*.message-business.com"]},{"name":"PrintFriendly","categories":["utility"],"domains":["*.printfriendly.com"]},{"name":"RTB House AdPilot","company":"RTB House","categories":["ad"],"domains":["*.erne.co","*.creativecdn.com"]},{"name":"my6sense","categories":["ad"],"domains":["*.mynativeplatform.com"]},{"name":"Ambient","company":"Ericcson","categories":["other"],"domains":["*.adnetwork.vn","*.ambientplatform.vn"]},{"name":"Vertical Mass","categories":["ad"],"domains":["*.vmweb.net"]},{"name":"MyBuys","categories":["analytics"],"domains":["*.mybuys.com"]},{"name":"Recite Me","categories":["other"],"domains":["*.reciteme.com"]},{"name":"Admitad","categories":["ad"],"domains":["*.lenmit.com"]},{"name":"Infoline","categories":["analytics"],"domains":["*.ioam.de"]},{"name":"Adwise","categories":["ad"],"domains":["*.adwise.bg"]},{"name":"Tradedoubler","categories":["ad"],"domains":["*.pvnsolutions.com","*.tradedoubler.com"]},{"name":"Developer Media","categories":["ad"],"domains":["*.developermedia.com"]},{"name":"bd4travel","categories":["analytics"],"domains":["*.bd4travel.com"]},{"name":"Eyeota","categories":["ad"],"domains":["*.eyeota.net"]},{"name":"Fidelity Media","categories":["ad"],"domains":["*.fidelity-media.com"]},{"name":"Brandmetrics","homepage":"https://www.brandmetrics.com","categories":["analytics"],"domains":["*.brandmetrics.com"]},{"name":"LockerDome","categories":["analytics"],"domains":["*.lockerdome.com"]},{"name":"C3 Metrics","categories":["analytics"],"domains":["*.c3tag.com"]},{"name":"WebInsight","company":"dotMailer","categories":["analytics"],"domains":["*.trackedlink.net","*.trackedweb.net"]},{"name":"Captify Media","categories":["ad"],"domains":["*.cpx.to"]},{"name":"Datalicious","categories":["tag-manager"],"domains":["*.supert.ag","*.optimahub.com"]},{"name":"Movable Ink","categories":["analytics"],"domains":["*.micpn.com"]},{"name":"Okta","categories":["analytics"],"domains":["*.okta.com"]},{"name":"AdSpeed","categories":["ad"],"domains":["*.adspeed.net"]},{"name":"Ahalogy","categories":["social"],"domains":["*.ahalogy.com"]},{"name":"Queue-it","categories":["other"],"domains":["*.queue-it.net"]},{"name":"EMX Digital","homepage":"https://emxdigital.com","categories":["ad"],"domains":["*.emxdgt.com"]},{"name":"Internet Brands","categories":["content"],"domains":["*.ibpxl.com"]},{"name":"HyperInzerce","homepage":"https://hyperinzerce.cz","categories":["ad"],"domains":["*.hyperinzerce.cz"]},{"name":"Smarter Click","categories":["ad"],"domains":["*.smct.co","*.smarterclick.co.uk"]},{"name":"Accordant Media","categories":["ad"],"domains":["*.a3cloud.net"]},{"name":"Expedia USA","company":"Expedia","categories":["content"],"domains":["*.expedia.com"]},{"name":"ClickDimensions","categories":["ad"],"domains":["*.clickdimensions.com"]},{"name":"ipinfo.io","categories":["utility"],"domains":["*.ipinfo.io"]},{"name":"adnanny","categories":["ad"],"domains":["*.adserver01.de"]},{"name":"Force24","categories":["ad"],"domains":["*.force24.co.uk"]},{"name":"freewheel.tv","categories":["content"],"domains":["*.fwmrm.net"]},{"name":"Pulse Insights","categories":["analytics"],"domains":["*.pulseinsights.com"]},{"name":"Ido","categories":["customer-success"],"domains":["*.idio.co"]},{"name":"AirPR","categories":["analytics"],"domains":["*.airpr.com"]},{"name":"Loggly","homepage":"https://www.loggly.com/","categories":["analytics"],"domains":["*.loggly.com","d9jmv9u00p0mv.cloudfront.net"]},{"name":"EQ works","categories":["ad"],"domains":["*.eqads.com"]},{"name":"Segmint","categories":["analytics"],"domains":["*.segmint.net"]},{"name":"Jivox","categories":["ad"],"domains":["*.jivox.com"]},{"name":"Yellow Robot","categories":["ad"],"domains":["*.backinstock.org"]},{"name":"Adtegrity","categories":["ad"],"domains":["*.adtpix.com"]},{"name":"Macropod BugHerd","company":"Macropod","categories":["utility"],"domains":["*.bugherd.com"]},{"name":"Simpli.fi","categories":["ad"],"domains":["*.simpli.fi"]},{"name":"Indeed","categories":["content"],"domains":["*.indeed.com"]},{"name":"SLI Systems","categories":["utility"],"domains":["*.resultslist.com","*.resultspage.com","*.sli-spark.com"]},{"name":"j2 Cloud Services","categories":["ad"],"domains":["*.campaigner.com"]},{"name":"Imagini Holdings","categories":["ad"],"domains":["*.vdna-assets.com"]},{"name":"Business Week","company":"Bloomberg","categories":["social"],"domains":["*.bwbx.io"]},{"name":"WizRocket Technologies","categories":["analytics"],"domains":["*.wzrkt.com"]},{"name":"APSIS Profile Cloud","company":"APSIS","categories":["analytics"],"domains":["*.innomdc.com"]},{"name":"CogoCast","company":"Cogo Labs","categories":["ad"],"domains":["*.cogocast.net"]},{"name":"emetriq","homepage":"https://www.emetriq.com/","categories":["ad"],"domains":["*.emetriq.de","*.xplosion.de"]},{"name":"Crimtan","categories":["ad"],"domains":["*.ctnsnet.com"]},{"name":"Scroll","homepage":"https://scroll.com/","categories":["utility"],"domains":["*.scroll.com"]},{"name":"mbr targeting","categories":["ad"],"domains":["*.m6r.eu"]},{"name":"Thinglink","categories":["utility"],"domains":["*.thinglink.com"]},{"name":"Apptus eSales","company":"Apptus","categories":["analytics"],"domains":["*.apptus.com"]},{"name":"Kenshoo","categories":["marketing"],"domains":["*.xg4ken.com"]},{"name":"Adap.tv","categories":["ad"],"domains":["*.adap.tv"]},{"name":"ChannelAdvisor","categories":["ad"],"domains":["*.channeladvisor.com","*.searchmarketing.com"]},{"name":"Uniqodo","categories":["ad"],"domains":["*.uniqodo.com"]},{"name":"EpiServer","homepage":"https://www.episerver.com","categories":["content"],"domains":["*.episerver.net"]},{"name":"Vero","company":"Semblance","categories":["ad"],"domains":["*.getvero.com","d3qxef4rp70elm.cloudfront.net"]},{"name":"Targito","company":"VIVmail.cz","homepage":"https://www.targito.com","categories":["marketing"],"domains":["*.targito.com"]},{"name":"Burst Media","categories":["ad"],"domains":["*.burstnet.com","*.1rx.io"]},{"name":"Yahoo! Ad Exchange","company":"Yahoo!","categories":["ad"],"domains":["*.yieldmanager.com","*.browsiprod.com"]},{"name":"Confirmit","categories":["analytics"],"domains":["*.confirmit.com"]},{"name":"QuinStreet","categories":["ad"],"domains":["*.Quinstreet.com","*.b2btechleadform.com","*.qnsr.com","*.qsstats.com"]},{"name":"Vizury","categories":["ad"],"domains":["*.vizury.com"]},{"name":"Fospha","categories":["analytics"],"domains":["*.fospha.com"]},{"name":"Vizzit","homepage":"http://www.vizzit.se","categories":["analytics"],"domains":["*.vizzit.se"]},{"name":"Wibbitz","categories":["other"],"domains":["*.wibbitz.com"]},{"name":"rss2json","categories":["utility"],"domains":["*.rss2json.com"]},{"name":"BloomReach","categories":["ad"],"domains":["*.brcdn.com","*.brsrvr.com","*.brsvr.com"]},{"name":"PhotoBucket","categories":["content"],"domains":["*.photobucket.com"]},{"name":"Comodo","categories":["utility"],"domains":["*.comodo.com","*.trust-provider.com","*.trustlogo.com","usertrust.com","*.comodo.net"]},{"name":"Conversion Labs","categories":["ad"],"domains":["*.net.pl"]},{"name":"ObjectPlanet","categories":["analytics"],"domains":["*.easypolls.net"]},{"name":"Lifestreet Media","categories":["social"],"domains":["*.lfstmedia.com"]},{"name":"One by AOL","company":"AOL","categories":["ad"],"domains":["*.adtechjp.com","*.adtech.de"]},{"name":"Box","categories":["hosting"],"domains":["*.box.com"]},{"name":"Piwik","categories":["analytics"],"domains":["*.drtvtracker.com","*.piwikpro.com","*.raac33.net"]},{"name":"sage Pay","company":"Sage Pay Europe","categories":["utility"],"domains":["*.sagepay.com"]},{"name":"Effiliation sa","categories":["ad"],"domains":["*.effiliation.com"]},{"name":"JustUno","categories":["ad"],"domains":["*.justuno.com","d2j3qa5nc37287.cloudfront.net"]},{"name":"StrÃ¶er Digital Media","categories":["ad"],"domains":["*.stroeerdigitalmedia.de"]},{"name":"audioBoom","categories":["social"],"domains":["*.audioboom.com","*.audioboo.fm"]},{"name":"NEORY Marketing Cloud","company":"NEORY","categories":["marketing"],"domains":["*.ad-srv.net"]},{"name":"Provide Support","categories":["customer-success"],"domains":["*.providesupport.com"]},{"name":"Adara Media","categories":["ad"],"domains":["*.yieldoptimizer.com"]},{"name":"AdultWebmasterEmpire.Com","categories":["ad"],"domains":["*.awempire.com"]},{"name":"Flipp","categories":["analytics"],"domains":["*.wishabi.com","d2e0sxz09bo7k2.cloudfront.net","*.wishabi.net"]},{"name":"Carbon Ads","homepage":"https://www.carbonads.net/","categories":["ad"],"domains":["*.carbonads.net","*.carbonads.com"]},{"name":"Playground","homepage":"https://playground.xyz","categories":["ad"],"domains":["*.playground.xyz"]},{"name":"Pepperjam","homepage":"https://www.pepperjam.com/","categories":["marketing","analytics"],"domains":["*.pepperjam.com","*.affiliatetechnology.com"]},{"name":"Mynewsdesk","categories":["utility"],"domains":["*.mynewsdesk.com"]},{"name":"eKomi","categories":["analytics"],"domains":["*.ekomi.com","*.ekomi.de"]},{"name":"mainADV","categories":["ad"],"domains":["*.httptrack.com","*.solocpm.com"]},{"name":"Cludo","categories":["utility"],"domains":["*.cludo.com"]},{"name":"Digital Window","categories":["ad"],"domains":["*.awin1.com","*.zenaps.com"]},{"name":"SourceKnowledge","homepage":"http://www.sourceknowledge.com","categories":["ad"],"domains":["*.provenpixel.com"]},{"name":"Adblade","categories":["ad"],"domains":["*.adblade.com"]},{"name":"eDigital Research","categories":["customer-success"],"domains":["*.edigitalresearch.com","*.edigitalsurvey.com","*.edrcdn.com","*.ecustomeropinions.com"]},{"name":"Leaflet","categories":["utility"],"domains":["*.leafletjs.com"]},{"name":"Terminus","homepage":"https://terminus.com/","categories":["ad"],"domains":["*.terminus.services"]},{"name":"MyFonts","categories":["cdn"],"domains":["*.myfonts.net"]},{"name":"Nanigans","categories":["ad"],"domains":["*.nanigans.com"]},{"name":"Digital Millennium Copyright Act Services","categories":["utility"],"domains":["*.dmca.com"]},{"name":"Statuspage","company":"Atlassian","homepage":"https://www.statuspage.io","categories":["utility"],"domains":["*.statuspage.io"]},{"name":"Intilery","categories":["customer-success"],"domains":["*.intilery-analytics.com"]},{"name":"dianomi","categories":["ad"],"domains":["*.dianomi.com","*.dianomioffers.co.uk"]},{"name":"TinyURL","categories":["utility"],"domains":["*.tinyurl.com"]},{"name":"Lead Forensics","categories":["ad"],"domains":["*.200summit.com","*.baw5tracker.com","*.business-path-55.com","*.bux1le001.com","*.central-core-7.com","*.direct-azr-78.com","*.explore-123.com","*.forensics1000.com","*.gldsta-02-or.com","*.green-bloc9.com","*.lansrv040.com","*.lead-123.com","*.leadforensics.com","*.mavic852.com","*.mon-com-net.com","*.peak-ip-54.com","*.snta0034.com","*.svr-prc-01.com","*.syntace-094.com","*.tghbn12.com","*.trail-web.com","*.web-01-gbl.com","*.web-cntr-07.com","*.trackdiscovery.net"]},{"name":"IS Group","categories":["hosting"],"domains":["*.creative-serving.com"]},{"name":"AgilOne","categories":["marketing"],"domains":["*.agilone.com"]},{"name":"Qeryz","categories":["analytics"],"domains":["*.qeryz.com"]},{"name":"SFR","categories":["other"],"domains":["*.sfr.fr"]},{"name":"Emerse","homepage":"https://www.emerse.com/","categories":["ad"],"domains":["*.emerse.com"]},{"name":"AdRecover","categories":["ad"],"domains":["*.adrecover.com"]},{"name":"Sociomantic Labs","company":"DunnHumby","categories":["ad"],"domains":["*.sociomantic.com"]},{"name":"Beeswax","categories":["ad"],"domains":["*.bidr.io"]},{"name":"Yieldlab","categories":["ad"],"domains":["*.yieldlab.net"]},{"name":"Geoplugin","categories":["utility"],"domains":["*.geoplugin.com","*.geoplugin.net"]},{"name":"eyeReturn Marketing","categories":["marketing"],"domains":["*.eyereturn.com"]},{"name":"Psyma","categories":["ad"],"domains":["*.psyma.com"]},{"name":"Infopark","categories":["hosting"],"domains":["*.scrvt.com"]},{"name":"Lengow","categories":["hosting"],"domains":["*.lengow.com"]},{"name":"Vextras","categories":["other"],"domains":["*.vextras.com"]},{"name":"Agility","categories":["hosting"],"domains":["*.agilitycms.com"]},{"name":"Bizrate","categories":["analytics"],"domains":["*.bizrate.com"]},{"name":"PERFORM","categories":["content"],"domains":["*.performgroup.com"]},{"name":"CoolaData","categories":["analytics"],"domains":["*.cooladata.com"]},{"name":"Consumable","homepage":"http://consumable.com/","categories":["ad"],"domains":["*.serverbid.com"]},{"name":"HitsLink","categories":["analytics"],"domains":["*.hitslink.com"]},{"name":"VisualVisitor","categories":["ad"],"domains":["*.id-visitors.com"]},{"name":"GlobalSign","categories":["utility"],"domains":["*.globalsign.com","*.globalsign.net"]},{"name":"Adelphic","categories":["ad"],"domains":["*.ipredictive.com"]},{"name":"SecurityMetrics","categories":["utility"],"domains":["*.securitymetrics.com"]},{"name":"APSIS Forms","company":"APSIS","categories":["other"],"domains":["*.apsisforms.com"]},{"name":"Affiliatly","categories":["ad"],"domains":["*.affiliatly.com"]},{"name":"Blogg.se","categories":["hosting"],"domains":["*.cdnme.se","*.publishme.se"]},{"name":"Mark and Mini","categories":["ad"],"domains":["*.markandmini.com"]},{"name":"codigo","homepage":"http://www.codigo.se","categories":["analytics"],"domains":["*.codigo.se"]},{"name":"Sectigo","homepage":"https://sectigo.com/","categories":["utility"],"domains":["*.sectigo.com"]},{"name":"Google reCAPTCHA","company":"Google","categories":["utility"],"domains":["*.recaptcha.net"]},{"name":"Qode Interactive","categories":["hosting"],"domains":["*.qodeinteractive.com"]},{"name":"comScore","categories":["analytics"],"domains":["*.adxpose.com","*.comscore.com","*.sitestat.com","*.zqtk.net"]},{"name":"Blindado","categories":["utility"],"domains":["*.siteblindado.com"]},{"name":"MotionPoint","categories":["other"],"domains":["*.convertlanguage.com"]},{"name":"Webcore","categories":["ad"],"domains":["*.onefeed.co.uk"]},{"name":"Spiceworks","homepage":"https://www.spiceworks.com","categories":["analytics"],"domains":["*.spiceworks.com"]},{"name":"Trinity Mirror","categories":["content"],"domains":["*.mirror.co.uk"]},{"name":"PollDaddy (Automattic)","categories":["ad"],"domains":["static.polldaddy.com","*.poll.fm"]},{"name":"ShopiMind","company":"ShopIMind","categories":["ad"],"domains":["*.shopimind.com"]},{"name":"Net Applications","categories":["analytics"],"domains":["*.hitsprocessor.com"]},{"name":"LiveInternet","categories":["analytics"],"domains":["*.yadro.ru"]},{"name":"Vindico","company":"Viant","categories":["ad"],"domains":["*.vindicosuite.com"]},{"name":"PriceRunner","categories":["content"],"domains":["*.pricerunner.com"]},{"name":"dotMailer Surveys","company":"dotMailer","categories":["analytics"],"domains":["*.dotmailer-surveys.com"]},{"name":"OpinionBar","categories":["analytics"],"domains":["*.opinionbar.com"]},{"name":"A-FIS PTE","categories":["analytics"],"domains":["*.websta.me"]},{"name":"IcoMoon","categories":["cdn"],"domains":["d19ayerf5ehaab.cloudfront.net","d1azc1qln24ryf.cloudfront.net"]},{"name":"Improvely","categories":["analytics"],"domains":["*.iljmp.com"]},{"name":"eWAY","company":"Web Active Pty","categories":["utility"],"domains":["*.eway.com.au"]},{"name":"Adsty","categories":["ad"],"domains":["*.adx1.com"]},{"name":"MaxPoint Interactive","categories":["ad"],"domains":["*.mxptint.net"]},{"name":"Sweet Tooth","categories":["ad"],"domains":["*.sweettooth.io"]},{"name":"ADventori","categories":["ad"],"domains":["*.adventori.com"]},{"name":"Samba TV","company":"Samba","categories":["content"],"domains":["*.samba.tv"]},{"name":"Ghostery Enterprise","company":"Ghostery","categories":["marketing"],"domains":["*.betrad.com"]},{"name":"CJ Affiliate by Conversant","company":"Conversant","categories":["ad"],"domains":["*.ftjcfx.com"]},{"name":"Varick Media Management","categories":["ad"],"domains":["*.vmmpxl.com"]},{"name":"Bidswitch","homepage":"https://www.bidswitch.com/","categories":["ad"],"domains":["*.bidswitch.net"]},{"name":"AdTheorent","categories":["ad"],"domains":["*.adentifi.com"]}];
+},{}],201:[function(require,module,exports){
 module.exports=require("./lib/subsets/httparchive-nostats.js");
 
-},{"./lib/subsets/httparchive-nostats.js":202}],201:[function(require,module,exports){
+},{"./lib/subsets/httparchive-nostats.js":203}],202:[function(require,module,exports){
 const DOMAIN_IN_URL_REGEX=/:\/\/(\S*?)(:\d+)?(\/|$)/;
 const DOMAIN_CHARACTERS=/([a-z0-9.-]+\.[a-z0-9]+|localhost)/i;
 const IP_REGEX=/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/;
@@ -72710,7 +74598,7 @@ if(typeof originOrURL!=='string')return null;
 if(originOrURL.length>10000||originOrURL.startsWith('data:'))return null;
 if(DOMAIN_IN_URL_REGEX.test(originOrURL))return originOrURL.match(DOMAIN_IN_URL_REGEX)[1];
 if(DOMAIN_CHARACTERS.test(originOrURL))return originOrURL.match(DOMAIN_CHARACTERS)[0];
-throw new Error(`Unable to find domain in "${originOrURL}"`);
+return null;
 }
 
 function getRootDomain(originOrURL){
@@ -72766,12 +74654,12 @@ return{getEntity,getRootDomain,entities};
 
 module.exports={createAPIFromDataset};
 
-},{}],202:[function(require,module,exports){
+},{}],203:[function(require,module,exports){
 const{createAPIFromDataset}=require('../create-entity-finder-api.js');
 const entities=require('../../dist/entities-httparchive-nostats.json');
 module.exports=createAPIFromDataset(entities);
 
-},{"../../dist/entities-httparchive-nostats.json":199,"../create-entity-finder-api.js":201}],203:[function(require,module,exports){
+},{"../../dist/entities-httparchive-nostats.json":200,"../create-entity-finder-api.js":202}],204:[function(require,module,exports){
 (function(setImmediate,clearImmediate){
 var nextTick=require('process/browser.js').nextTick;
 var apply=Function.prototype.apply;
@@ -72850,7 +74738,7 @@ exports.clearImmediate=typeof clearImmediate==="function"?clearImmediate:functio
 delete immediateIds[id];
 };
 }).call(this,require("timers").setImmediate,require("timers").clearImmediate);
-},{"process/browser.js":172,"timers":203}],204:[function(require,module,exports){
+},{"process/browser.js":173,"timers":204}],205:[function(require,module,exports){
 (function(global){
 
 
@@ -72921,15 +74809,15 @@ return String(val).toLowerCase()==='true';
 }
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{}],205:[function(require,module,exports){
-arguments[4][108][0].apply(exports,arguments);
-},{"dup":108}],206:[function(require,module,exports){
+},{}],206:[function(require,module,exports){
 arguments[4][109][0].apply(exports,arguments);
-},{"./support/isBuffer":205,"_process":172,"dup":109,"inherits":125}],207:[function(require,module,exports){
+},{"dup":109}],207:[function(require,module,exports){
+arguments[4][110][0].apply(exports,arguments);
+},{"./support/isBuffer":206,"_process":173,"dup":110,"inherits":126}],208:[function(require,module,exports){
 module.exports={
-"version":"6.1.0"};
+"version":"6.2.0"};
 
-},{}],208:[function(require,module,exports){
+},{}],209:[function(require,module,exports){
 
 
 
@@ -72949,7 +74837,7 @@ require('./packs/magento.js')];
 
 module.exports=stackPacks;
 
-},{"./packs/amp.js":209,"./packs/angular.js":210,"./packs/magento.js":211,"./packs/react.js":212,"./packs/wordpress.js":213}],209:[function(require,module,exports){
+},{"./packs/amp.js":210,"./packs/angular.js":211,"./packs/magento.js":212,"./packs/react.js":213,"./packs/wordpress.js":214}],210:[function(require,module,exports){
 (function(__filename){
 
 
@@ -72970,7 +74858,7 @@ uses_webp_images:'Consider displaying all your `amp-img` components in WebP form
 
 offscreen_images:'Ensure that you are you using valid `amp-img` tags for your images which automatically lazy-load outside the first viewport. [Learn more](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images).',
 
-render_blocking_resources:'Use tools such as [AMP Optimizer](https://github.com/ampproject/amp-toolbox/tree/master/packages/optimizer) to [server-side render AMP layouts](https://amp.dev/documentation/guides-and-tutorials/optimize-and-measure/server-side-rendering/).',
+render_blocking_resources:'Use tools such as [AMP Optimizer](https://github.com/ampproject/amp-toolbox/tree/main/packages/optimizer) to [server-side render AMP layouts](https://amp.dev/documentation/guides-and-tutorials/optimize-and-measure/server-side-rendering/).',
 
 unminified_css:'Refer to the [AMP documentation](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/style_pages/) to ensure all your styles are supported.',
 
@@ -72997,7 +74885,7 @@ descriptions:{
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/stack-packs/packs/amp.js");
-},{"../../lighthouse-core/lib/i18n/i18n.js":77}],210:[function(require,module,exports){
+},{"../../lighthouse-core/lib/i18n/i18n.js":78}],211:[function(require,module,exports){
 (function(__filename){
 
 
@@ -73046,7 +74934,7 @@ descriptions:{
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/stack-packs/packs/angular.js");
-},{"../../lighthouse-core/lib/i18n/i18n.js":77}],211:[function(require,module,exports){
+},{"../../lighthouse-core/lib/i18n/i18n.js":78}],212:[function(require,module,exports){
 (function(__filename){
 
 
@@ -73113,7 +75001,7 @@ descriptions:{
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/stack-packs/packs/magento.js");
-},{"../../lighthouse-core/lib/i18n/i18n.js":77}],212:[function(require,module,exports){
+},{"../../lighthouse-core/lib/i18n/i18n.js":78}],213:[function(require,module,exports){
 (function(__filename){
 
 
@@ -73164,7 +75052,7 @@ descriptions:{
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/stack-packs/packs/react.js");
-},{"../../lighthouse-core/lib/i18n/i18n.js":77}],213:[function(require,module,exports){
+},{"../../lighthouse-core/lib/i18n/i18n.js":78}],214:[function(require,module,exports){
 (function(__filename){
 
 
@@ -73236,10 +75124,11 @@ descriptions:{
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/stack-packs/packs/wordpress.js");
-},{"../../lighthouse-core/lib/i18n/i18n.js":77}],214:[function(require,module,exports){
+},{"../../lighthouse-core/lib/i18n/i18n.js":78}],215:[function(require,module,exports){
 module.exports={
 "npm":{
 "angular":[
+{"id":"SNYK-JS-ANGULAR-572020","severity":"high","semver":{"vulnerable":["<1.8.0"]}},
 {"id":"SNYK-JS-ANGULAR-570058","severity":"medium","semver":{"vulnerable":["<1.8.0"]}},
 {"id":"SNYK-JS-ANGULAR-534884","severity":"high","semver":{"vulnerable":[">=1.4.0-beta.6 <1.7.9"]}},
 {"id":"SNYK-JS-ANGULAR-471885","severity":"medium","semver":{"vulnerable":["<1.6.3"]}},
@@ -73285,10 +75174,8 @@ module.exports={
 {"id":"SNYK-JS-DOJO-174933","severity":"medium","semver":{"vulnerable":["<1.2.0"]}},
 {"id":"SNYK-JS-DOJO-72305","severity":"medium","semver":{"vulnerable":["<1.14"]}},
 {"id":"npm:dojo:20180818","severity":"medium","semver":{"vulnerable":["<1.10.10",">=1.11.0 <1.11.6",">=1.12.0 <1.12.4",">=1.13.0 <1.13.1"]}},
-{"id":"npm:dojo:20160523","severity":"medium","semver":{"vulnerable":["<1.1.0"]}},
 {"id":"npm:dojo:20100614-6","severity":"medium","semver":{"vulnerable":["<1.4.2"]}},
-{"id":"npm:dojo:20100614","severity":"medium","semver":{"vulnerable":[">=0.4.0 <0.4.4",">=1.0.0 <1.0.3",">=1.1.0 <1.1.2",">=1.2.0 <1.2.4",">=1.3.0 <1.3.3",">=1.4.0 <1.4.2"]}},
-{"id":"npm:dojo:20090409","severity":"medium","semver":{"vulnerable":["<1.1"]}}],
+{"id":"npm:dojo:20100614","severity":"medium","semver":{"vulnerable":[">=0.4.0 <0.4.4",">=1.0.0 <1.0.3",">=1.1.0 <1.1.2",">=1.2.0 <1.2.4",">=1.3.0 <1.3.3",">=1.4.0 <1.4.2"]}}],
 
 "foundation-sites":[
 {"id":"npm:foundation-sites:20170802","severity":"medium","semver":{"vulnerable":["<6.0.0"]}},
@@ -73339,7 +75226,7 @@ module.exports={
 {"id":"npm:knockout:20130701","severity":"medium","semver":{"vulnerable":[">=2.1.0-pre <3.0.0"]}}],
 
 "lodash":[
-{"id":"SNYK-JS-LODASH-567746","severity":"medium","semver":{"vulnerable":["<=4.17.15"]}},
+{"id":"SNYK-JS-LODASH-567746","severity":"medium","semver":{"vulnerable":["<4.17.16"]}},
 {"id":"SNYK-JS-LODASH-450202","severity":"high","semver":{"vulnerable":["<4.17.12"]}},
 {"id":"SNYK-JS-LODASH-73639","severity":"medium","semver":{"vulnerable":["<4.17.11"]}},
 {"id":"SNYK-JS-LODASH-73638","severity":"high","semver":{"vulnerable":["<4.17.11"]}},
@@ -73571,7 +75458,7 @@ module.exports=AdBlockingTasks;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/ad-blocking-tasks.js");
-},{"../computed/ad-request-time":143,"../computed/long-tasks":145,"../messages/common-strings":147,"../utils/resource-classification":155,"../utils/tasks":156,"lighthouse":62,"lighthouse/lighthouse-core/lib/i18n/i18n":77,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/ad-render-blocking-resources":[function(require,module,exports){
+},{"../computed/ad-request-time":144,"../computed/long-tasks":146,"../messages/common-strings":148,"../utils/resource-classification":156,"../utils/tasks":157,"lighthouse":63,"lighthouse/lighthouse-core/lib/i18n/i18n":78,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/ad-render-blocking-resources":[function(require,module,exports){
 (function(__filename){
 
 
@@ -73745,7 +75632,7 @@ module.exports=AdRenderBlockingResources;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/ad-render-blocking-resources.js");
-},{"../messages/common-strings":147,"../utils/network-timing":153,"../utils/resource-classification":155,"lighthouse":62,"lighthouse/lighthouse-core/computed/network-records":39,"lighthouse/lighthouse-core/lib/i18n/i18n":77,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/ad-request-critical-path":[function(require,module,exports){
+},{"../messages/common-strings":148,"../utils/network-timing":154,"../utils/resource-classification":156,"lighthouse":63,"lighthouse/lighthouse-core/computed/network-records":40,"lighthouse/lighthouse-core/lib/i18n/i18n":78,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/ad-request-critical-path":[function(require,module,exports){
 (function(__filename){
 
 
@@ -73933,7 +75820,7 @@ module.exports=AdRequestCriticalPath;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/ad-request-critical-path.js");
-},{"../computed/ad-request-time":143,"../messages/common-strings":147,"../utils/graph":152,"lighthouse":62,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads/audits/ad-request-from-page-start":[function(require,module,exports){
+},{"../computed/ad-request-time":144,"../messages/common-strings":148,"../utils/graph":153,"lighthouse":63,"lighthouse/lighthouse-core/lib/i18n/i18n":78}],"lighthouse-plugin-publisher-ads/audits/ad-request-from-page-start":[function(require,module,exports){
 (function(__filename){
 
 
@@ -74043,7 +75930,7 @@ module.exports=AdRequestFromPageStart;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/ad-request-from-page-start.js");
-},{"../computed/ad-request-time":143,"../messages/common-strings":147,"lighthouse":62,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads/audits/ad-top-of-viewport":[function(require,module,exports){
+},{"../computed/ad-request-time":144,"../messages/common-strings":148,"lighthouse":63,"lighthouse/lighthouse-core/lib/i18n/i18n":78}],"lighthouse-plugin-publisher-ads/audits/ad-top-of-viewport":[function(require,module,exports){
 (function(__filename){
 
 
@@ -74156,7 +76043,7 @@ module.exports=AdTopOfViewport;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/ad-top-of-viewport.js");
-},{"../messages/common-strings":147,"../utils/resource-classification":155,"lighthouse":62,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads/audits/ads-in-viewport":[function(require,module,exports){
+},{"../messages/common-strings":148,"../utils/resource-classification":156,"lighthouse":63,"lighthouse/lighthouse-core/lib/i18n/i18n":78}],"lighthouse-plugin-publisher-ads/audits/ads-in-viewport":[function(require,module,exports){
 (function(__filename){
 
 
@@ -74258,7 +76145,7 @@ module.exports=AdsInViewport;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/ads-in-viewport.js");
-},{"../messages/common-strings":147,"../utils/geometry":151,"../utils/resource-classification":155,"lighthouse":62,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads/audits/async-ad-tags":[function(require,module,exports){
+},{"../messages/common-strings":148,"../utils/geometry":152,"../utils/resource-classification":156,"lighthouse":63,"lighthouse/lighthouse-core/lib/i18n/i18n":78}],"lighthouse-plugin-publisher-ads/audits/async-ad-tags":[function(require,module,exports){
 (function(__filename){
 
 
@@ -74355,7 +76242,7 @@ module.exports=AsyncAdTags;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/async-ad-tags.js");
-},{"../messages/common-strings":147,"../utils/array.js":148,"../utils/resource-classification":155,"lighthouse":62,"lighthouse/lighthouse-core/computed/main-resource":12,"lighthouse/lighthouse-core/computed/network-records":39,"lighthouse/lighthouse-core/lib/i18n/i18n":77,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/bid-request-from-page-start":[function(require,module,exports){
+},{"../messages/common-strings":148,"../utils/array.js":149,"../utils/resource-classification":156,"lighthouse":63,"lighthouse/lighthouse-core/computed/main-resource":13,"lighthouse/lighthouse-core/computed/network-records":40,"lighthouse/lighthouse-core/lib/i18n/i18n":78,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/bid-request-from-page-start":[function(require,module,exports){
 (function(__filename){
 
 
@@ -74464,7 +76351,7 @@ module.exports=BidRequestFromPageStart;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/bid-request-from-page-start.js");
-},{"../computed/bid-request-time":144,"../messages/common-strings":147,"lighthouse":62,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads/audits/blocking-load-events":[function(require,module,exports){
+},{"../computed/bid-request-time":145,"../messages/common-strings":148,"lighthouse":63,"lighthouse/lighthouse-core/lib/i18n/i18n":78}],"lighthouse-plugin-publisher-ads/audits/blocking-load-events":[function(require,module,exports){
 (function(__filename){
 
 
@@ -74719,7 +76606,7 @@ module.exports=BlockingLoadEvents;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/blocking-load-events.js");
-},{"../messages/common-strings":147,"../utils/graph":152,"../utils/network-timing":153,"lighthouse":62,"lighthouse/lighthouse-core/computed/network-records":39,"lighthouse/lighthouse-core/computed/trace-of-tab":44,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads/audits/bottleneck-requests":[function(require,module,exports){
+},{"../messages/common-strings":148,"../utils/graph":153,"../utils/network-timing":154,"lighthouse":63,"lighthouse/lighthouse-core/computed/network-records":40,"lighthouse/lighthouse-core/computed/trace-of-tab":45,"lighthouse/lighthouse-core/lib/i18n/i18n":78}],"lighthouse-plugin-publisher-ads/audits/bottleneck-requests":[function(require,module,exports){
 (function(__filename){
 
 
@@ -74856,7 +76743,7 @@ module.exports=BottleneckRequests;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/bottleneck-requests.js");
-},{"../messages/common-strings":147,"../utils/graph":152,"lighthouse":62,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads/audits/duplicate-tags":[function(require,module,exports){
+},{"../messages/common-strings":148,"../utils/graph":153,"lighthouse":63,"lighthouse/lighthouse-core/lib/i18n/i18n":78}],"lighthouse-plugin-publisher-ads/audits/duplicate-tags":[function(require,module,exports){
 (function(__filename){
 
 
@@ -74981,7 +76868,7 @@ module.exports=DuplicateTags;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/duplicate-tags.js");
-},{"../messages/common-strings":147,"../utils/resource-classification":155,"lighthouse":62,"lighthouse/lighthouse-core/computed/main-resource":12,"lighthouse/lighthouse-core/computed/network-records":39,"lighthouse/lighthouse-core/lib/i18n/i18n":77,"lighthouse/lighthouse-core/lib/network-request":87,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/first-ad-render":[function(require,module,exports){
+},{"../messages/common-strings":148,"../utils/resource-classification":156,"lighthouse":63,"lighthouse/lighthouse-core/computed/main-resource":13,"lighthouse/lighthouse-core/computed/network-records":40,"lighthouse/lighthouse-core/lib/i18n/i18n":78,"lighthouse/lighthouse-core/lib/network-request":88,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/first-ad-render":[function(require,module,exports){
 (function(__filename){
 
 
@@ -75098,7 +76985,7 @@ module.exports=FirstAdRender;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/first-ad-render.js");
-},{"../computed/ad-render-time":142,"../messages/common-strings":147,"lighthouse":62,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads/audits/full-width-slots":[function(require,module,exports){
+},{"../computed/ad-render-time":143,"../messages/common-strings":148,"lighthouse":63,"lighthouse/lighthouse-core/lib/i18n/i18n":78}],"lighthouse-plugin-publisher-ads/audits/full-width-slots":[function(require,module,exports){
 (function(__filename){
 
 
@@ -75207,7 +77094,7 @@ module.exports=FullWidthSlots;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/full-width-slots.js");
-},{"../messages/common-strings":147,"../utils/resource-classification":155,"lighthouse":62,"lighthouse/lighthouse-core/computed/network-records":39,"lighthouse/lighthouse-core/lib/i18n/i18n":77,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/gpt-bids-parallel":[function(require,module,exports){
+},{"../messages/common-strings":148,"../utils/resource-classification":156,"lighthouse":63,"lighthouse/lighthouse-core/computed/network-records":40,"lighthouse/lighthouse-core/lib/i18n/i18n":78,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/gpt-bids-parallel":[function(require,module,exports){
 
 
 
@@ -75336,7 +77223,7 @@ GptBidsInParallel.makeTableDetails(HEADINGS,tableView):undefined};
 module.exports=GptBidsInParallel;
 module.exports.UIStrings=UIStrings;
 
-},{"../messages/common-strings":147,"../utils/asserts":149,"../utils/graph":152,"../utils/network-timing":153,"../utils/resource-classification":155,"lighthouse":62,"lighthouse/lighthouse-core/computed/network-records":39}],"lighthouse-plugin-publisher-ads/audits/loads-ad-tag-over-https":[function(require,module,exports){
+},{"../messages/common-strings":148,"../utils/asserts":150,"../utils/graph":153,"../utils/network-timing":154,"../utils/resource-classification":156,"lighthouse":63,"lighthouse/lighthouse-core/computed/network-records":40}],"lighthouse-plugin-publisher-ads/audits/loads-ad-tag-over-https":[function(require,module,exports){
 (function(__filename){
 
 
@@ -75442,7 +77329,7 @@ module.exports=LoadsAdTagOverHttps;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/loads-ad-tag-over-https.js");
-},{"../messages/common-strings":147,"../utils/resource-classification":155,"lighthouse":62,"lighthouse/lighthouse-core/computed/network-records":39,"lighthouse/lighthouse-core/lib/i18n/i18n":77,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/loads-gpt-from-sgdn":[function(require,module,exports){
+},{"../messages/common-strings":148,"../utils/resource-classification":156,"lighthouse":63,"lighthouse/lighthouse-core/computed/network-records":40,"lighthouse/lighthouse-core/lib/i18n/i18n":78,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/loads-gpt-from-sgdn":[function(require,module,exports){
 (function(__filename){
 
 
@@ -75522,7 +77409,7 @@ module.exports=LoadsGptFromSgdn;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/loads-gpt-from-sgdn.js");
-},{"../messages/common-strings":147,"../utils/resource-classification":155,"lighthouse":62,"lighthouse/lighthouse-core/computed/network-records":39,"lighthouse/lighthouse-core/lib/i18n/i18n":77,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/script-injected-tags":[function(require,module,exports){
+},{"../messages/common-strings":148,"../utils/resource-classification":156,"lighthouse":63,"lighthouse/lighthouse-core/computed/network-records":40,"lighthouse/lighthouse-core/lib/i18n/i18n":78,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/script-injected-tags":[function(require,module,exports){
 (function(__filename){
 
 
@@ -75715,7 +77602,7 @@ module.exports=StaticAdTags;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/script-injected-tags.js");
-},{"../messages/common-strings":147,"../utils/array.js":148,"../utils/graph":152,"../utils/network-timing":153,"lighthouse":62,"lighthouse/lighthouse-core/computed/page-dependency-graph":40,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads/audits/serial-header-bidding":[function(require,module,exports){
+},{"../messages/common-strings":148,"../utils/array.js":149,"../utils/graph":153,"../utils/network-timing":154,"lighthouse":63,"lighthouse/lighthouse-core/computed/page-dependency-graph":41,"lighthouse/lighthouse-core/lib/i18n/i18n":78}],"lighthouse-plugin-publisher-ads/audits/serial-header-bidding":[function(require,module,exports){
 (function(__filename){
 
 
@@ -75966,7 +77853,7 @@ module.exports=SerialHeaderBidding;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/serial-header-bidding.js");
-},{"../computed/ad-request-time":143,"../messages/common-strings":147,"../utils/array":148,"../utils/network":154,"../utils/network-timing":153,"../utils/resource-classification":155,"lighthouse":62,"lighthouse/lighthouse-core/computed/main-resource":12,"lighthouse/lighthouse-core/computed/network-records":39,"lighthouse/lighthouse-core/lib/i18n/i18n":77,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/tag-load-time":[function(require,module,exports){
+},{"../computed/ad-request-time":144,"../messages/common-strings":148,"../utils/array":149,"../utils/network":155,"../utils/network-timing":154,"../utils/resource-classification":156,"lighthouse":63,"lighthouse/lighthouse-core/computed/main-resource":13,"lighthouse/lighthouse-core/computed/network-records":40,"lighthouse/lighthouse-core/lib/i18n/i18n":78,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/tag-load-time":[function(require,module,exports){
 (function(__filename){
 
 
@@ -76077,7 +77964,7 @@ module.exports=TagLoadTime;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/tag-load-time.js");
-},{"../computed/tag-load-time":146,"../messages/common-strings":147,"lighthouse":62,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads/audits/viewport-ad-density":[function(require,module,exports){
+},{"../computed/tag-load-time":147,"../messages/common-strings":148,"lighthouse":63,"lighthouse/lighthouse-core/lib/i18n/i18n":78}],"lighthouse-plugin-publisher-ads/audits/viewport-ad-density":[function(require,module,exports){
 (function(__filename){
 
 
@@ -76171,7 +78058,7 @@ module.exports=ViewportAdDensity;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/viewport-ad-density.js");
-},{"../messages/common-strings":147,"../utils/geometry":151,"../utils/resource-classification":155,"lighthouse":62,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"lighthouse-plugin-publisher-ads":[function(require,module,exports){
+},{"../messages/common-strings":148,"../utils/geometry":152,"../utils/resource-classification":156,"lighthouse":63,"lighthouse/lighthouse-core/lib/i18n/i18n":78}],"lighthouse-plugin-publisher-ads":[function(require,module,exports){
 (function(__filename){
 
 
@@ -76272,7 +78159,7 @@ get:()=>UIStrings});
 
 
 }).call(this,"/node_modules/lighthouse-plugin-publisher-ads/plugin.js");
-},{"./messages/common-strings":147,"lighthouse/lighthouse-core/lib/i18n/i18n":77}],"url":[function(require,module,exports){
+},{"./messages/common-strings":148,"lighthouse/lighthouse-core/lib/i18n/i18n":78}],"url":[function(require,module,exports){
 
 
 
@@ -76459,4 +78346,4 @@ URLShim.INVALID_URL_DEBUG_STRING=
 
 module.exports=URLShim;
 
-},{"../report/html/renderer/util.js":101}]},{},[1]);
+},{"../report/html/renderer/util.js":102}]},{},[1]);

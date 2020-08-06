@@ -51,6 +51,7 @@
   --color-gray: #000000;
   --color-green-700: #018642;
   --color-green: #0CCE6B;
+  --color-lime-400: #D3E156;
   --color-orange-50: #FFF3E0;
   --color-orange-700: #D04900;
   --color-orange: #FFA400;
@@ -1346,7 +1347,7 @@
 }
 
 .lh-table tr {
-  vertical-align: baseline;
+  vertical-align: middle;
 }
 
 /* Looks unnecessary, but mostly for keeping the <th>s left-aligned */
@@ -1538,6 +1539,51 @@
   0% { opacity: 0; }
   75% { opacity: 1; }
   100% { opacity: 1;  filter: drop-shadow(1px 0px 1px #aaa) drop-shadow(0px 2px 4px hsla(206, 6%, 25%, 0.15)); pointer-events: auto; }
+}
+
+/* Element screenshot */
+.lh-element-screenshot {
+  position: relative;
+  overflow: hidden;
+  float: left;
+  margin-right: 20px;
+}
+.lh-element-screenshot__content {
+  overflow: hidden;
+}
+.lh-element-screenshot__image {
+  outline: 2px solid #777;
+  background-color: white;
+  background-repeat: no-repeat;
+}
+.lh-element-screenshot__mask {
+  position: absolute;
+  background: #555;
+  opacity: 0.8;
+}
+.lh-element-screenshot__element-marker {
+  position: absolute;
+  outline: 2px solid var(--color-lime-400);
+}
+.lh-element-screenshot__overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+}
+
+.lh-feature-screenshot-overlay .lh-element-screenshot {
+  cursor: zoom-out;
+}
+.lh-feature-screenshot-overlay .lh-node .lh-element-screenshot {
+  cursor: zoom-in;
 }
 
 /*# sourceURL=report-styles.css */

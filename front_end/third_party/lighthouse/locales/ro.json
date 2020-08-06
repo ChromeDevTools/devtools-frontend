@@ -396,7 +396,7 @@
     "message": "Timp CPU total"
   },
   "lighthouse-core/audits/bootup-time.js | description": {
-    "message": "Poți reduce timpul petrecut cu analizarea, compilarea și executarea JS. Livrarea unor sarcini JS mai mici poate ajuta în acest sens. [Află mai multe](https://web.dev/bootup-time)."
+    "message": "Poți reduce timpul petrecut cu analizarea, compilarea și executarea JS. Livrarea unor sarcini JS mai mici poate ajuta în acest sens. [Află mai multe](https://web.dev/bootup-time/)."
   },
   "lighthouse-core/audits/bootup-time.js | failureTitle": {
     "message": "Redu timpul de execuție JavaScript"
@@ -411,28 +411,34 @@
     "message": "Elimină modulele dublură din grupurile JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | description": {
-    "message": "GIF-urile mari nu sunt eficiente pentru difuzarea conținutului animat. Folosește videoclipuri MPEG4/WebM pentru animații și PNG/WebP pentru imagini statice în locul GIF-urilor ca să economisești date în rețea. [Află mai multe](https://web.dev/efficient-animated-content)"
+    "message": "GIF-urile mari nu sunt eficiente pentru difuzarea conținutului animat. Folosește videoclipuri MPEG4/WebM pentru animații și PNG/WebP pentru imagini statice în locul GIF-urilor ca să economisești date în rețea. [Află mai multe](https://web.dev/efficient-animated-content/)"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | title": {
     "message": "Folosește formate video pentru conținut animat"
   },
+  "lighthouse-core/audits/byte-efficiency/legacy-javascript.js | description": {
+    "message": "Polyfillurile și transformările fac posibilă folosirea noilor funcții JavaScript în browserele vechi. Însă pentru browserele moderne, majoritatea nu sunt necesare. Pentru grupul tău JavaScript, adoptă o strategie modernă de implementare a scriptului, care folosește detectarea funcțiilor module/nomodule, pentru a reduce volumul de cod transferat în browserele moderne și a menține totodată compatibilitatea cu browserele vechi. [Află mai multe](https://philipwalton.com/articles/deploying-es2015-code-in-production-today/)"
+  },
+  "lighthouse-core/audits/byte-efficiency/legacy-javascript.js | title": {
+    "message": "Nu folosi o versiune veche de JavaScript în browsere moderne"
+  },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | description": {
-    "message": "Poți încărca lent imaginile ascunse sau pe cele din afara ecranului după ce toate resursele esențiale s-au încărcat, pentru a micșora timpul până la interactivitate. [Află mai multe](https://web.dev/offscreen-images)."
+    "message": "Poți încărca lent imaginile ascunse sau pe cele din afara ecranului după ce toate resursele esențiale s-au încărcat, pentru a micșora timpul până la interactivitate. [Află mai multe](https://web.dev/offscreen-images/)."
   },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | title": {
     "message": "Amână imaginile din afara ecranului"
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | description": {
-    "message": "Resursele blochează prima redare a paginii. Poți să livrezi conținutul JS/CSS esențial inline și să amâni toate elementele JS/stilurile neesențiale. [Află mai multe](https://web.dev/render-blocking-resources)."
+    "message": "Resursele blochează prima redare a paginii. Poți să livrezi conținutul JS/CSS esențial inline și să amâni toate elementele JS/stilurile neesențiale. [Află mai multe](https://web.dev/render-blocking-resources/)."
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | title": {
     "message": "Elimină resursele care blochează redarea"
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | description": {
-    "message": "Sarcinile mari de rețea îi costă pe utilizatori și sunt corelate cu timpi de încărcare îndelungați. [Află mai multe](https://web.dev/total-byte-weight)."
+    "message": "Sarcinile mari de rețea îi costă pe utilizatori și sunt corelate cu timpi de încărcare îndelungați. [Află mai multe](https://web.dev/total-byte-weight/)."
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | displayValue": {
-    "message": "Dimensiunea totală a fost de {totalBytes, number, bytes} KB"
+    "message": "Dimensiunea totală a fost de {totalBytes, number, bytes} KiB"
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | failureTitle": {
     "message": "Evită sarcinile uriașe de rețea"
@@ -441,31 +447,31 @@
     "message": "Evită sarcinile uriașe de rețea"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | description": {
-    "message": "Comprimarea fișierelor CSS poate reduce dimensiunea sarcinilor de rețea. [Află mai multe](https://web.dev/unminified-css)."
+    "message": "Comprimarea fișierelor CSS poate reduce dimensiunea sarcinilor de rețea. [Află mai multe](https://web.dev/unminified-css/)."
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | title": {
     "message": "Comprimă codul CSS"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | description": {
-    "message": "Comprimarea fișierelor JavaScript poate reduce dimensiunea sarcinilor și timpul de analizare a scripturilor. [Află mai multe](https://web.dev/unminified-javascript)."
+    "message": "Comprimarea fișierelor JavaScript poate reduce dimensiunea sarcinilor și timpul de analizare a scripturilor. [Află mai multe](https://web.dev/unminified-javascript/)."
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | title": {
     "message": "Comprimă codul JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "Elimină regulile nefolosite din foile de stil și amână încărcarea conținutului CSS nefolosit pentru conținutul din partea superioară a paginii ca să reduci numărul de byți consumați de activitatea în rețea. [Află mai multe](https://web.dev/unused-css-rules)."
+    "message": "Elimină regulile nefolosite din foile de stil și amână încărcarea conținutului CSS nefolosit pentru conținutul din partea superioară a paginii ca să reduci numărul de byți consumați de activitatea în rețea. [Află mai multe](https://web.dev/unused-css-rules/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
     "message": "Elimină conținutul CSS nefolosit"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "Elimină codul JavaScript nefolosit pentru a reduce byții consumați de activitatea rețelei. [Află mai multe](https://web.dev/remove-unused-code/)."
+    "message": "Elimină codul JavaScript nefolosit pentru a reduce byții consumați de activitatea rețelei. [Află mai multe](https://web.dev/unused-javascript/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
     "message": "Elimină codul JavaScript nefolosit"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
-    "message": "O durată lungă a memoriei cache poate grăbi accesările repetate ale paginii. [Află mai multe](https://web.dev/uses-long-cache-ttl)."
+    "message": "O durată lungă a memoriei cache poate grăbi accesările repetate ale paginii. [Află mai multe](https://web.dev/uses-long-cache-ttl/)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | displayValue": {
     "message": "{itemCount,plural, =1{o resursă găsită}few{# resurse găsite}other{# de resurse găsite}}"
@@ -477,31 +483,31 @@
     "message": "Folosește o politică eficientă de stocare în memoria cache pentru elementele statice"
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | description": {
-    "message": "Imaginile optimizate se încarcă mai repede și consumă mai puține date mobile. [Află mai multe](https://web.dev/uses-optimized-images)."
+    "message": "Imaginile optimizate se încarcă mai repede și consumă mai puține date mobile. [Află mai multe](https://web.dev/uses-optimized-images/)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Codifică eficient imaginile"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
-    "message": "Difuzează imagini de dimensiuni corespunzătoare ca să economisești date mobile și să obții o încărcare mai rapidă. [Află mai multe](https://web.dev/uses-responsive-images)."
+    "message": "Difuzează imagini de dimensiuni corespunzătoare ca să economisești date mobile și să obții o încărcare mai rapidă. [Află mai multe](https://web.dev/uses-responsive-images/)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | title": {
     "message": "Dimensionează corect imaginile"
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | description": {
-    "message": "Resursele bazate pe text trebuie comprimate (gzip, deflate sau brotli) pentru a minimiza numărul total de byți în rețea. [Află mai multe](https://web.dev/uses-text-compression)."
+    "message": "Resursele bazate pe text trebuie comprimate (gzip, deflate sau brotli) pentru a minimiza numărul total de byți în rețea. [Află mai multe](https://web.dev/uses-text-compression/)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | title": {
     "message": "Activează comprimarea textului"
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | description": {
-    "message": "Formatele de imagine ca JPEG 2000, JPEG XR și WebP oferă adesea o comprimare mai bună decât PNG sau JPEG, ceea ce înseamnă descărcări mai rapide și mai puțin consum de date. [Află mai multe](https://web.dev/uses-webp-images)."
+    "message": "Formatele de imagine ca JPEG 2000, JPEG XR și WebP oferă adesea o comprimare mai bună decât PNG sau JPEG, ceea ce înseamnă descărcări mai rapide și mai puțin consum de date. [Află mai multe](https://web.dev/uses-webp-images/)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | title": {
     "message": "Difuzează imagini în formate moderne"
   },
   "lighthouse-core/audits/content-width.js | description": {
-    "message": "Dacă lățimea conținutului aplicației nu se potrivește cu lățimea ariei vizibile, este posibil ca aplicația să nu fie optimizată pentru ecrane mobile. [Află mai multe](https://web.dev/content-width)."
+    "message": "Dacă lățimea conținutului aplicației nu se potrivește cu lățimea ariei vizibile, este posibil ca aplicația să nu fie optimizată pentru ecrane mobile. [Află mai multe](https://web.dev/content-width/)."
   },
   "lighthouse-core/audits/content-width.js | explanation": {
     "message": "Aria vizibilă de {innerWidth} px nu corespunde cu dimensiunea ferestrei, de {outerWidth} px."
@@ -513,7 +519,7 @@
     "message": "Conținutul este dimensionat corect pentru aria vizibilă"
   },
   "lighthouse-core/audits/critical-request-chains.js | description": {
-    "message": "Lanțurile de solicitări esențiale de mai jos îți arată ce resurse sunt încărcate cu prioritate ridicată. Poți să reduci lungimea lanțurilor, să reduci dimensiunea de descărcare a resurselor sau să amâni descărcarea de resurse inutile pentru a îmbunătăți încărcarea paginilor. [Află mai multe](https://web.dev/critical-request-chains)."
+    "message": "Lanțurile de solicitări esențiale de mai jos îți arată ce resurse sunt încărcate cu prioritate ridicată. Poți să reduci lungimea lanțurilor, să reduci dimensiunea de descărcare a resurselor sau să amâni descărcarea de resurse inutile pentru a îmbunătăți încărcarea paginilor. [Află mai multe](https://web.dev/critical-request-chains/)."
   },
   "lighthouse-core/audits/critical-request-chains.js | displayValue": {
     "message": "{itemCount,plural, =1{un lanț găsit}few{# lanțuri găsite}other{# de lanțuri găsite}}"
@@ -528,7 +534,7 @@
     "message": "Rând"
   },
   "lighthouse-core/audits/deprecations.js | description": {
-    "message": "API-urile învechite vor fi eliminate, în final, din browser. [Află mai multe](https://web.dev/deprecations)."
+    "message": "API-urile învechite vor fi eliminate, în final, din browser. [Află mai multe](https://web.dev/deprecations/)."
   },
   "lighthouse-core/audits/deprecations.js | displayValue": {
     "message": "{itemCount,plural, =1{A fost identificat un avertisment}few{Au fost identificate # avertismente}other{Au fost identificate # de avertismente}}"
@@ -540,7 +546,7 @@
     "message": "Evită API-urile învechite"
   },
   "lighthouse-core/audits/dobetterweb/appcache-manifest.js | description": {
-    "message": "Memoria cache a aplicației este învechită. [Află mai multe](https://web.dev/appcache-manifest)."
+    "message": "Memoria cache a aplicației este învechită. [Află mai multe](https://web.dev/appcache-manifest/)."
   },
   "lighthouse-core/audits/dobetterweb/appcache-manifest.js | displayValue": {
     "message": "Am găsit „{AppCacheManifest}”"
@@ -552,7 +558,7 @@
     "message": "Evită memoria cache a aplicației"
   },
   "lighthouse-core/audits/dobetterweb/charset.js | description": {
-    "message": "Este necesară o declarație privind codificarea caracterelor. Aceasta poate fi obținută folosind o etichetă <meta> în primii 1.024 de byți din HTML sau în antetul de răspuns Content-Type din HTTP. [Află mai multe](https://www.w3.org/International/questions/qa-html-encoding-declarations)."
+    "message": "Este necesară o declarație privind codificarea caracterelor. Aceasta poate fi obținută folosind o etichetă <meta> în primii 1.024 de byți din HTML sau în antetul de răspuns Content-Type din HTTP. [Află mai multe](https://web.dev/charset/)."
   },
   "lighthouse-core/audits/dobetterweb/charset.js | failureTitle": {
     "message": "Declarația privind setul de caractere lipsește sau apare prea târziu în HTML"
@@ -561,7 +567,7 @@
     "message": "Setează corespunzător setul de caractere"
   },
   "lighthouse-core/audits/dobetterweb/doctype.js | description": {
-    "message": "Specificarea unui doctype împiedică browserul să treacă la modul caracteristici speciale. [Află mai multe](https://web.dev/doctype)."
+    "message": "Specificarea unui doctype împiedică browserul să treacă la modul caracteristici speciale. [Află mai multe](https://web.dev/doctype/)."
   },
   "lighthouse-core/audits/dobetterweb/doctype.js | explanationBadDoctype": {
     "message": "Numele doctype trebuie să fie șirul cu litere mici `html`"
@@ -588,7 +594,7 @@
     "message": "Valoare"
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | description": {
-    "message": "Un DOM mare va crește folosirea memoriei și va produce [calcule de stil](https://developers.google.com/web/fundamentals/performance/rendering/reduce-the-scope-and-complexity-of-style-calculations) mai lungi și [rearanjări ale aspectului](https://developers.google.com/speed/articles/reflow) costisitoare. [Află mai multe](https://web.dev/dom-size)."
+    "message": "Un DOM mare va crește folosirea memoriei și va produce [calcule de stil](https://developers.google.com/web/fundamentals/performance/rendering/reduce-the-scope-and-complexity-of-style-calculations) mai lungi și [rearanjări ale aspectului](https://developers.google.com/speed/articles/reflow) costisitoare. [Află mai multe](https://web.dev/dom-size/)."
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | displayValue": {
     "message": "{itemCount,plural, =1{1 element}few{# elemente}other{# de elemente}}"
@@ -612,7 +618,7 @@
     "message": "Ancore cu probleme"
   },
   "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
-    "message": "Adaugă `rel=\"noopener\"` sau `rel=\"noreferrer\"` la orice linkuri externe pentru a îmbunătăți rezultatele și a preveni vulnerabilitățile de securitate. [Află mai multe](https://web.dev/external-anchors-use-rel-noopener)."
+    "message": "Adaugă `rel=\"noopener\"` sau `rel=\"noreferrer\"` la orice linkuri externe pentru a îmbunătăți rezultatele și a preveni vulnerabilitățile de securitate. [Află mai multe](https://web.dev/external-anchors-use-rel-noopener/)."
   },
   "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | failureTitle": {
     "message": "Linkurile spre destinații cu mai multe origini sunt nesigure"
@@ -624,7 +630,7 @@
     "message": "Nu se poate determina destinația pentru ancora ({anchorHTML}). Dacă nu se folosește ca hyperlink, elimină target=_blank."
   },
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | description": {
-    "message": "Utilizatorii nu au încredere sau sunt derutați de site-urile care le solicită locația fără context. Asociază solicitarea cu o acțiune a utilizatorilor. [Află mai multe](https://web.dev/geolocation-on-start)."
+    "message": "Utilizatorii nu au încredere sau sunt derutați de site-urile care le solicită locația fără context. Asociază solicitarea cu o acțiune a utilizatorilor. [Află mai multe](https://web.dev/geolocation-on-start/)."
   },
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | failureTitle": {
     "message": "Solicită permisiunea de localizare geografică la încărcarea paginii"
@@ -636,13 +642,13 @@
     "message": "Versiune"
   },
   "lighthouse-core/audits/dobetterweb/js-libraries.js | description": {
-    "message": "Toate bibliotecile JavaScript front-end detectate în pagină. [Află mai multe](https://web.dev/js-libraries)."
+    "message": "Toate bibliotecile JavaScript front-end detectate în pagină. [Află mai multe](https://web.dev/js-libraries/)."
   },
   "lighthouse-core/audits/dobetterweb/js-libraries.js | title": {
     "message": "Biblioteci JavaScript detectate"
   },
   "lighthouse-core/audits/dobetterweb/no-document-write.js | description": {
-    "message": "Pentru utilizatorii cu conexiuni lente, scripturile externe injectate dinamic prin `document.write()` pot întârzia încărcarea paginilor cu zeci de secunde. [Află mai multe](https://web.dev/no-document-write)."
+    "message": "Pentru utilizatorii cu conexiuni lente, scripturile externe injectate dinamic prin `document.write()` pot întârzia încărcarea paginilor cu zeci de secunde. [Află mai multe](https://web.dev/no-document-write/)."
   },
   "lighthouse-core/audits/dobetterweb/no-document-write.js | failureTitle": {
     "message": "Evită `document.write()`"
@@ -660,7 +666,7 @@
     "message": "Numărul de vulnerabilități"
   },
   "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | description": {
-    "message": "Unele scripturi terță parte pot conține vulnerabilități de securitate cunoscute, ușor de identificat și de exploatat de atacatori. [Află mai multe](https://web.dev/no-vulnerable-libraries)."
+    "message": "Unele scripturi terță parte pot conține vulnerabilități de securitate cunoscute, ușor de identificat și de exploatat de atacatori. [Află mai multe](https://web.dev/no-vulnerable-libraries/)."
   },
   "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | displayValue": {
     "message": "{itemCount,plural, =1{O vulnerabilitate detectată}few{# vulnerabilități detectate}other{# de vulnerabilități detectate}}"
@@ -681,7 +687,7 @@
     "message": "Evită bibliotecile JavaScript front-end cu vulnerabilități de securitate cunoscute"
   },
   "lighthouse-core/audits/dobetterweb/notification-on-start.js | description": {
-    "message": "Utilizatorii nu au încredere sau sunt derutați de site-urile care solicită să trimită notificări fără context. Asociază solicitarea cu gesturile utilizatorilor. [Află mai multe](https://web.dev/notification-on-start)."
+    "message": "Utilizatorii nu au încredere sau sunt derutați de site-urile care solicită să trimită notificări fără context. Asociază solicitarea cu gesturile utilizatorilor. [Află mai multe](https://web.dev/notification-on-start/)."
   },
   "lighthouse-core/audits/dobetterweb/notification-on-start.js | failureTitle": {
     "message": "Solicită permisiunea de notificare la încărcarea paginii"
@@ -689,11 +695,8 @@
   "lighthouse-core/audits/dobetterweb/notification-on-start.js | title": {
     "message": "Evită solicitarea permisiunii de notificare la încărcarea paginii"
   },
-  "lighthouse-core/audits/dobetterweb/password-inputs-can-be-pasted-into.js | columnFailingElem": {
-    "message": "Elemente cu probleme"
-  },
   "lighthouse-core/audits/dobetterweb/password-inputs-can-be-pasted-into.js | description": {
-    "message": "Împiedicarea inserării parolelor subminează buna politică de securitate. [Află mai multe](https://web.dev/password-inputs-can-be-pasted-into)."
+    "message": "Împiedicarea inserării parolelor subminează buna politică de securitate. [Află mai multe](https://web.dev/password-inputs-can-be-pasted-into/)."
   },
   "lighthouse-core/audits/dobetterweb/password-inputs-can-be-pasted-into.js | failureTitle": {
     "message": "Împiedică utilizatorii să insereze în câmpurile pentru parole"
@@ -705,19 +708,16 @@
     "message": "Protocol"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | description": {
-    "message": "HTTP/2 oferă multe beneficii față de HTTP/1.1, inclusiv antete binare, anunțuri multiplex și tehnologie push pentru server. [Află mai multe](https://web.dev/uses-http2)."
+    "message": "HTTP/2 oferă multe beneficii față de HTTP/1.1, inclusiv antete binare, anunțuri multiplex și tehnologie push pentru server. [Află mai multe](https://web.dev/uses-http2/)."
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
     "message": "{itemCount,plural, =1{O solicitare nu a fost difuzată prin HTTP/2}few{# solicitări nu au fost difuzate prin HTTP/2}other{# de solicitări nu au fost difuzate prin HTTP/2}}"
   },
-  "lighthouse-core/audits/dobetterweb/uses-http2.js | failureTitle": {
-    "message": "Nu folosește HTTP/2 pentru toate resursele"
-  },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | title": {
-    "message": "Folosește HTTP/2 pentru propriile sale resurse"
+    "message": "Use HTTP/2"
   },
   "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | description": {
-    "message": "Poți marca funcțiile de procesare a evenimentelor prin atingere sau derulare `passive` pentru a îmbunătăți capacitatea de derulare a paginii. [Află mai multe](https://web.dev/uses-passive-event-listeners)."
+    "message": "Poți marca funcțiile de procesare a evenimentelor prin atingere sau derulare `passive` pentru a îmbunătăți capacitatea de derulare a paginii. [Află mai multe](https://web.dev/uses-passive-event-listeners/)."
   },
   "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | failureTitle": {
     "message": "Nu folosește ascultători pasivi pentru a îmbunătăți performanța la derulare"
@@ -729,7 +729,7 @@
     "message": "Descriere"
   },
   "lighthouse-core/audits/errors-in-console.js | description": {
-    "message": "Erorile înregistrate pe consolă indică probleme nerezolvate Acestea pot fi provocate de erorile de solicitare din rețea și de alte probleme ale browserului. [Află mai multe](https://web.dev/errors-in-console)"
+    "message": "Erorile înregistrate pe consolă indică probleme nerezolvate Acestea pot fi provocate de erorile de solicitare din rețea și de alte probleme ale browserului. [Află mai multe](https://web.dev/errors-in-console/)"
   },
   "lighthouse-core/audits/errors-in-console.js | failureTitle": {
     "message": "S-au înregistrat erori de browser pe consolă"
@@ -738,7 +738,7 @@
     "message": "Nu s-a înregistrat nicio eroare de browser pe consolă"
   },
   "lighthouse-core/audits/font-display.js | description": {
-    "message": "Poți folosi funcția CSS de afișare a fonturilor pentru a verifica dacă textul este vizibil pentru utilizatori în timp ce se încarcă fonturile web. [Află mai multe](https://web.dev/font-display)."
+    "message": "Poți folosi funcția CSS de afișare a fonturilor pentru a verifica dacă textul este vizibil pentru utilizatori în timp ce se încarcă fonturile web. [Află mai multe](https://web.dev/font-display/)."
   },
   "lighthouse-core/audits/font-display.js | failureTitle": {
     "message": "Asigură-te că textul rămâne vizibil în timpul încărcării fonturilor web"
@@ -746,8 +746,8 @@
   "lighthouse-core/audits/font-display.js | title": {
     "message": "Tot textul rămâne vizibil în timpul încărcării fonturilor web"
   },
-  "lighthouse-core/audits/font-display.js | undeclaredFontURLWarning": {
-    "message": "Lighthouse nu a putut verifica automat valoarea de afișare a fonturilor pentru următoarea adresă URL: {fontURL}."
+  "lighthouse-core/audits/font-display.js | undeclaredFontOriginWarning": {
+    "message": "{fontCountForOrigin,plural, =1{Lighthouse nu a putut verifica automat valoarea `font-display` pentru originea {fontOrigin}.}few{Lighthouse nu a putut verifica automat valorile `font-display` pentru originea {fontOrigin}.}other{Lighthouse nu a putut verifica automat valorile `font-display` pentru originea {fontOrigin}.}}"
   },
   "lighthouse-core/audits/image-aspect-ratio.js | columnActual": {
     "message": "Raport de dimensiuni (real)"
@@ -756,7 +756,7 @@
     "message": "Raport de dimensiuni (afișat)"
   },
   "lighthouse-core/audits/image-aspect-ratio.js | description": {
-    "message": "Dimensiunile de afișare a imaginilor trebuie să se potrivească raportului natural de dimensiuni. [Află mai multe](https://web.dev/image-aspect-ratio)."
+    "message": "Dimensiunile de afișare a imaginilor trebuie să se potrivească raportului natural de dimensiuni. [Află mai multe](https://web.dev/image-aspect-ratio/)."
   },
   "lighthouse-core/audits/image-aspect-ratio.js | failureTitle": {
     "message": "Afișează imaginile cu rapoarte de dimensiuni incorecte"
@@ -777,16 +777,16 @@
     "message": "Dimensiunea așteptată"
   },
   "lighthouse-core/audits/image-size-responsive.js | description": {
-    "message": "Dimensiunile naturale ale imaginii trebuie să fie proporționale cu dimensiunea afișajului și cu raportul de pixeli, pentru a maximiza claritatea imaginii. [Află mai multe](https://web.dev/image-size-responsive)."
+    "message": "Dimensiunile naturale ale imaginii trebuie să fie proporționale cu dimensiunea afișajului și cu raportul de pixeli, pentru a maximiza claritatea imaginii. [Află mai multe](https://web.dev/serve-responsive-images/)."
   },
   "lighthouse-core/audits/image-size-responsive.js | failureTitle": {
-    "message": "Afișează imaginile cu dimensiunea incorectă"
+    "message": "Difuzează imagini cu rezoluție mică"
   },
   "lighthouse-core/audits/image-size-responsive.js | title": {
-    "message": "Afișează imaginile cu dimensiunea potrivită"
+    "message": "Difuzează imagini cu rezoluția corectă"
   },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "Browserele le pot solicita utilizatorilor să adauge aplicația pe ecranele de pornire, lucru care poate duce la o implicare mai mare. [Află mai multe](https://web.dev/installable-manifest)."
+    "message": "Browserele le pot solicita utilizatorilor să adauge aplicația pe ecranele de pornire, lucru care poate duce la o implicare mai mare. [Află mai multe](https://web.dev/installable-manifest/)."
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
     "message": "Manifestul aplicației web nu îndeplinește cerințele de instalare"
@@ -794,11 +794,20 @@
   "lighthouse-core/audits/installable-manifest.js | title": {
     "message": "Manifestul aplicației web îndeplinește cerințele de instalare"
   },
+  "lighthouse-core/audits/is-on-https.js | allowed": {
+    "message": "Permisă"
+  },
+  "lighthouse-core/audits/is-on-https.js | blocked": {
+    "message": "Blocată"
+  },
   "lighthouse-core/audits/is-on-https.js | columnInsecureURL": {
     "message": "Adresă URL nesigură"
   },
+  "lighthouse-core/audits/is-on-https.js | columnResolution": {
+    "message": "Soluționarea solicitărilor"
+  },
   "lighthouse-core/audits/is-on-https.js | description": {
-    "message": "Toate site-urile trebuie protejate cu HTTPS, chiar și cele care nu gestionează date sensibile. HTTPS împiedică persoanele străine să modifice sau să asculte pasiv comunicațiile dintre aplicația ta și utilizatori, fiind o cerință obligatorie pentru HTTP/2 și multe API-uri noi pentru platformele web. [Află mai multe](https://web.dev/is-on-https)."
+    "message": "Toate site-urile trebuie protejate cu HTTPS, chiar și cele care nu gestionează date sensibile. Acest lucru presupune evitarea [conținutului mixt](https://developers.google.com/web/fundamentals/security/prevent-mixed-content/what-is-mixed-content), pentru care unele resurse se încarcă prin HTTP, deși solicitarea inițială a fost trimisă prin HTTPS. HTTPS împiedică persoanele străine să modifice sau să asculte pasiv comunicațiile dintre aplicația ta și utilizatori, fiind o cerință obligatorie pentru HTTP/2 și multe API-uri noi pentru platformele web. [Află mai multe](https://web.dev/is-on-https/)."
   },
   "lighthouse-core/audits/is-on-https.js | displayValue": {
     "message": "{itemCount,plural, =1{S-a găsit o solicitare nesigură}few{S-au găsit # solicitări nesigure}other{S-au găsit # de solicitări nesigure}}"
@@ -809,14 +818,35 @@
   "lighthouse-core/audits/is-on-https.js | title": {
     "message": "Folosește HTTPS"
   },
-  "lighthouse-core/audits/legacy-javascript.js | description": {
-    "message": "Polyfillurile și transformările fac posibilă folosirea noilor funcții JavaScript în browserele vechi. Însă pentru browserele moderne, majoritatea nu sunt necesare. Pentru grupul tău JavaScript, adoptă o strategie modernă de implementare a scriptului, care folosește detectarea funcțiilor module/nomodule, pentru a reduce volumul de cod transferat în browserele moderne și a menține totodată compatibilitatea cu browserele vechi. [Află mai multe](https://philipwalton.com/articles/deploying-es2015-code-in-production-today/)"
+  "lighthouse-core/audits/is-on-https.js | upgraded": {
+    "message": "Actualizată automat la HTTPS"
   },
-  "lighthouse-core/audits/legacy-javascript.js | title": {
-    "message": "JavaScript vechi"
+  "lighthouse-core/audits/is-on-https.js | warning": {
+    "message": "Permisă cu avertisment"
+  },
+  "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
+    "message": "Acesta este cel mai mare element de conținut redat în aria vizibilă. [Află mai multe](https://web.dev/lighthouse-largest-contentful-paint/)"
+  },
+  "lighthouse-core/audits/largest-contentful-paint-element.js | displayValue": {
+    "message": "{itemCount,plural, =1{A fost identificat un element}few{Au fost identificate # elemente}other{Au fost identificate # de elemente}}"
+  },
+  "lighthouse-core/audits/largest-contentful-paint-element.js | title": {
+    "message": "Elementul cu cea mai mare redare de conținut"
+  },
+  "lighthouse-core/audits/layout-shift-elements.js | columnContribution": {
+    "message": "Contribuția la CLS"
+  },
+  "lighthouse-core/audits/layout-shift-elements.js | description": {
+    "message": "Aceste elemente DOM contribuie cel mai mult la schimbarea cumulată a aspectului paginii."
+  },
+  "lighthouse-core/audits/layout-shift-elements.js | displayValue": {
+    "message": "{nodeCount,plural, =1{A fost identificat un element}few{Au fost identificate # elemente}other{Au fost identificate # de elemente}}"
+  },
+  "lighthouse-core/audits/layout-shift-elements.js | title": {
+    "message": "Evită schimbările majore ale aspectului"
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "O încărcare rapidă a paginii într-o rețea celulară asigură o experiență bună a utilizatorului pe mobil. [Află mai multe](https://web.dev/load-fast-enough-for-pwa)."
+    "message": "O încărcare rapidă a paginii într-o rețea celulară asigură o experiență bună a utilizatorului pe mobil. [Află mai multe](https://web.dev/load-fast-enough-for-pwa/)."
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
     "message": "Interactiv la {timeInMs, number, seconds} s"
@@ -833,11 +863,20 @@
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | title": {
     "message": "Încărcarea paginii este suficient de rapidă în rețele mobile"
   },
+  "lighthouse-core/audits/long-tasks.js | description": {
+    "message": "Afișează cele mai îndelungate activități din firul principal, ceea ce este util pentru identificarea elementelor care contribuie cel mai mult la întârziere. [Află mai multe](https://web.dev/long-tasks-devtools/)"
+  },
+  "lighthouse-core/audits/long-tasks.js | displayValue": {
+    "message": "{itemCount,plural, =1{A fost identificată # activitate îndelungată}few{Au fost identificate # activități îndelungate}other{Au fost identificate # de activități îndelungate}}"
+  },
+  "lighthouse-core/audits/long-tasks.js | title": {
+    "message": "Evită activitățile îndelungate în firul principal"
+  },
   "lighthouse-core/audits/mainthread-work-breakdown.js | columnCategory": {
     "message": "Categorie"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | description": {
-    "message": "Poți reduce timpul petrecut cu analizarea, compilarea și executarea JS. Livrarea unor sarcini JS mai mici poate ajuta în acest sens. [Află mai multe](https://web.dev/mainthread-work-breakdown)"
+    "message": "Poți reduce timpul petrecut cu analizarea, compilarea și executarea JS. Livrarea unor sarcini JS mai mici poate ajuta în acest sens. [Află mai multe](https://web.dev/mainthread-work-breakdown/)"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | failureTitle": {
     "message": "Minimizează procesarea firului principal"
@@ -846,25 +885,25 @@
     "message": "Minimizează procesarea firului principal"
   },
   "lighthouse-core/audits/manual/pwa-cross-browser.js | description": {
-    "message": "Ca să se adreseze cât mai multor utilizatori, site-urile trebuie să funcționeze în toate browserele importante. [Află mai multe](https://web.dev/pwa-cross-browser)."
+    "message": "Ca să se adreseze cât mai multor utilizatori, site-urile trebuie să funcționeze în toate browserele importante. [Află mai multe](https://web.dev/pwa-cross-browser/)."
   },
   "lighthouse-core/audits/manual/pwa-cross-browser.js | title": {
     "message": "Site-ul funcționează pe orice browser"
   },
   "lighthouse-core/audits/manual/pwa-each-page-has-url.js | description": {
-    "message": "Asigură-te că se pot crea linkuri directe către pagini individuale prin adresa URL și că adresele URL sunt unice, pentru a putea fi trimise în rețelele sociale. [Află mai multe](https://web.dev/pwa-each-page-has-url)."
+    "message": "Asigură-te că se pot crea linkuri directe către pagini individuale prin adresa URL și că adresele URL sunt unice, pentru a putea fi trimise în rețelele sociale. [Află mai multe](https://web.dev/pwa-each-page-has-url/)."
   },
   "lighthouse-core/audits/manual/pwa-each-page-has-url.js | title": {
     "message": "Fiecare pagină are o adresă URL"
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | description": {
-    "message": "Tranzițiile trebuie să aibă loc repede atunci când atingi ecranul, chiar și în rețele lente. Această experiență este esențială pentru performanța percepută de utilizator. [Află mai multe](https://web.dev/pwa-page-transitions)."
+    "message": "Tranzițiile trebuie să aibă loc repede atunci când atingi ecranul, chiar și în rețele lente. Această experiență este esențială pentru performanța percepută de utilizator. [Află mai multe](https://web.dev/pwa-page-transitions/)."
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | title": {
     "message": "Tranzițiile de pagini nu par să blocheze rețeaua"
   },
   "lighthouse-core/audits/maskable-icon.js | description": {
-    "message": "O pictogramă care poate fi mascată asigură faptul că imaginea umple întreaga formă, fără a fi convertită în format letterbox la instalarea unei aplicații pe un dispozitiv. [Află mai multe](https://web.dev/maskable-icon/)."
+    "message": "O pictogramă care poate fi mascată asigură faptul că imaginea umple întreaga formă, fără a fi convertită în format letterbox la instalarea unei aplicații pe un dispozitiv. [Află mai multe](https://web.dev/maskable-icon-audit/)."
   },
   "lighthouse-core/audits/maskable-icon.js | failureTitle": {
     "message": "Manifestul nu are o pictogramă care poate fi mascată"
@@ -873,34 +912,34 @@
     "message": "Manifestul are o pictogramă care poate fi mascată"
   },
   "lighthouse-core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "Schimbarea cumulată a aspectului măsoară deplasarea elementelor vizibile în aria vizibilă. [Află mai multe](https://web.dev/cls)."
+    "message": "Schimbarea cumulată a aspectului măsoară deplasarea elementelor vizibile în aria vizibilă. [Află mai multe](https://web.dev/cls/)."
   },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
-    "message": "Latența estimată a comenzilor reprezintă o estimare a duratei necesare pentru ca aplicația să răspundă la comanda utilizatorului, în milisecunde, în cea mai aglomerată fereastră de cinci secunde de încărcare a paginii. Dacă latența este mai mare de 50 ms, utilizatorii îți pot percepe aplicația ca fiind lentă. [Află mai multe](https://web.dev/estimated-input-latency)."
+    "message": "Latența estimată a comenzilor reprezintă o estimare a duratei necesare pentru ca aplicația să răspundă la comanda utilizatorului, în milisecunde, în cea mai aglomerată fereastră de cinci secunde de încărcare a paginii. Dacă latența este mai mare de 50 ms, utilizatorii îți pot percepe aplicația ca fiind lentă. [Află mai multe](https://web.dev/estimated-input-latency/)."
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
-    "message": "Prima redare de conținut arată momentul când se redă primul text sau prima imagine. [Află mai multe](https://web.dev/first-contentful-paint)."
+    "message": "Prima redare de conținut arată momentul când se redă primul text sau prima imagine. [Află mai multe](https://web.dev/first-contentful-paint/)."
   },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
-    "message": "Primul „CPU inactiv” semnalează primul moment în care firul principal al paginii este suficient de liber pentru a accepta comenzi.  [Află mai multe](https://web.dev/first-cpu-idle)."
+    "message": "Primul „CPU inactiv” semnalează primul moment în care firul principal al paginii este suficient de liber pentru a accepta comenzi.  [Află mai multe](https://web.dev/first-cpu-idle/)."
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
-    "message": "Prima redare semnificativă arată momentul când este vizibil conținutul principal al unei pagini. [Află mai multe](https://web.dev/first-meaningful-paint)."
+    "message": "Prima redare semnificativă arată momentul când este vizibil conținutul principal al unei pagini. [Află mai multe](https://web.dev/first-meaningful-paint/)."
   },
   "lighthouse-core/audits/metrics/interactive.js | description": {
-    "message": "Timpul până la interactivitate este timpul necesar pentru ca pagina să devină complet interactivă. [Află mai multe](https://web.dev/interactive)."
+    "message": "Timpul până la interactivitate este timpul necesar pentru ca pagina să devină complet interactivă. [Află mai multe](https://web.dev/interactive/)."
   },
   "lighthouse-core/audits/metrics/largest-contentful-paint.js | description": {
-    "message": "Cea mai mare redare de conținut semnalează momentul în care este redat cel mai mare text sau cea mai mare imagine. [Află mai multe](https://web.dev/lighthouse-largest-contentful-paint)"
+    "message": "Cea mai mare redare de conținut semnalează momentul în care este redat cel mai mare text sau cea mai mare imagine. [Află mai multe](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
   "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
-    "message": "Timpul maxim potențial de la prima interacțiune cu care utilizatorii se pot confrunta este durata celei mai lungi activități. [Află mai multe](https://web.dev/lighthouse-max-potential-fid)."
+    "message": "Timpul maxim potențial de la prima interacțiune cu care utilizatorii se pot confrunta este durata celei mai lungi activități. [Află mai multe](https://web.dev/lighthouse-max-potential-fid/)."
   },
   "lighthouse-core/audits/metrics/speed-index.js | description": {
-    "message": "Indexul de viteză arată cât de repede se completează vizibil conținutul unei pagini. [Află mai multe](https://web.dev/speed-index)."
+    "message": "Indexul de viteză arată cât de repede se completează vizibil conținutul unei pagini. [Află mai multe](https://web.dev/speed-index/)."
   },
   "lighthouse-core/audits/metrics/total-blocking-time.js | description": {
-    "message": "Suma tuturor perioadelor de timp dintre FCP și Timpul până la interactivitate, când lungimea activității a depășit 50 ms, exprimate în milisecunde. [Află mai multe](https://web.dev/lighthouse-total-blocking-time)."
+    "message": "Suma tuturor perioadelor de timp dintre FCP și Timpul până la interactivitate, când lungimea activității a depășit 50 ms, exprimate în milisecunde. [Află mai multe](https://web.dev/lighthouse-total-blocking-time/)."
   },
   "lighthouse-core/audits/network-rtt.js | description": {
     "message": "Durata pingului în rețea (RTT) are impact important asupra performanței. Dacă RTT către o origine este mare, înseamnă că serverele mai apropiate de utilizator pot îmbunătăți performanța. [Află mai multe](https://hpbn.co/primer-on-latency-and-bandwidth/)."
@@ -914,8 +953,17 @@
   "lighthouse-core/audits/network-server-latency.js | title": {
     "message": "Latențe ale backendului serverului"
   },
+  "lighthouse-core/audits/no-unload-listeners.js | description": {
+    "message": "Evenimentul `unload` nu se declanșează într-un mod fiabil și ascultarea lui poate împiedica optimizări de browser cum ar fi Back-Forward Cache. Îți recomandăm să folosești evenimentele `pagehide` sau `visibilitychange`. [Află mai multe](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+  },
+  "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
+    "message": "Înregistrează un listener `unload`"
+  },
+  "lighthouse-core/audits/no-unload-listeners.js | title": {
+    "message": "Evită funcțiile de procesare a evenimentelor `unload`"
+  },
   "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "Un service worker permite ca aplicația să fie fiabilă în condiții de rețea imprevizibile. [Află mai multe](https://web.dev/offline-start-url)."
+    "message": "Un service worker permite ca aplicația să fie fiabilă în condiții de rețea imprevizibile. [Află mai multe](https://web.dev/offline-start-url/)."
   },
   "lighthouse-core/audits/offline-start-url.js | errorLoading": {
     "message": "Eroare la încărcarea {url} în Service Worker. S-a generat codul de stare {statusCode}"
@@ -939,7 +987,7 @@
     "message": "Buget de performanță"
   },
   "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "Dacă ai configurat deja HTTPS, redirecționează tot traficul HTTP spre HTTPS, ca să activezi funcțiile web sigure pentru toți utilizatorii. [Află mai multe](https://web.dev/redirects-http)."
+    "message": "Dacă ai configurat deja HTTPS, redirecționează tot traficul HTTP spre HTTPS, ca să activezi funcțiile web sigure pentru toți utilizatorii. [Află mai multe](https://web.dev/redirects-http/)."
   },
   "lighthouse-core/audits/redirects-http.js | failureTitle": {
     "message": "Nu redirecționează traficul HTTP spre HTTPS"
@@ -948,22 +996,22 @@
     "message": "Redirecționează traficul HTTP spre HTTPS"
   },
   "lighthouse-core/audits/redirects.js | description": {
-    "message": "Redirecționările introduc întârzieri suplimentare înainte ca pagina să se poată încărca. [Află mai multe](https://web.dev/redirects)."
+    "message": "Redirecționările introduc întârzieri suplimentare înainte ca pagina să se poată încărca. [Află mai multe](https://web.dev/redirects/)."
   },
   "lighthouse-core/audits/redirects.js | title": {
     "message": "Evită mai multe redirecționări ale paginii"
   },
   "lighthouse-core/audits/resource-summary.js | description": {
-    "message": "Ca să setezi bugetele pentru cantitatea și dimensiunea resurselor de pagină, adaugă un fișier budget.json. [Află mai multe](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
+    "message": "Ca să setezi bugetele pentru cantitatea și dimensiunea resurselor de pagină, adaugă un fișier budget.json. [Află mai multe](https://web.dev/use-lighthouse-for-performance-budgets/)."
   },
   "lighthouse-core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount,plural, =1{O solicitare • {byteCount, number, bytes} KB}few{# solicitări • {byteCount, number, bytes} KB}other{# de solicitări • {byteCount, number, bytes} KB}}"
+    "message": "{requestCount,plural, =1{O solicitare • {byteCount, number, bytes} KiB}few{# solicitări • {byteCount, number, bytes} KiB}other{# de solicitări • {byteCount, number, bytes} KiB}}"
   },
   "lighthouse-core/audits/resource-summary.js | title": {
     "message": "Păstrează numărul de solicitări scăzut și dimensiunea transferurilor redusă"
   },
   "lighthouse-core/audits/seo/canonical.js | description": {
-    "message": "Linkurile canonice sugerează care adresă URL să se afișeze în rezultatele căutării. [Află mai multe](https://web.dev/canonical)."
+    "message": "Linkurile canonice sugerează care adresă URL să se afișeze în rezultatele căutării. [Află mai multe](https://web.dev/canonical/)."
   },
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "Mai multe adrese URL incompatibile ({urlList})"
@@ -989,8 +1037,20 @@
   "lighthouse-core/audits/seo/canonical.js | title": {
     "message": "Documentul are un `rel=canonical` valid"
   },
+  "lighthouse-core/audits/seo/crawlable-anchors.js | columnFailingLink": {
+    "message": "Linkul nu poate fi accesat cu crawlere"
+  },
+  "lighthouse-core/audits/seo/crawlable-anchors.js | description": {
+    "message": "Motoarele de căutare pot folosi atribute `href` în linkuri pentru a accesa site-uri cu crawlere. Asigură-te că atributul `href` al elementelor ancoră trimite către o destinație corespunzătoare, pentru a descoperi mai multe pagini din site. [Află mai multe](https://support.google.com/webmasters/answer/9112205)"
+  },
+  "lighthouse-core/audits/seo/crawlable-anchors.js | failureTitle": {
+    "message": "Linkurile nu pot fi accesate cu crawlere"
+  },
+  "lighthouse-core/audits/seo/crawlable-anchors.js | title": {
+    "message": "Linkurile pot fi accesate cu crawlere"
+  },
   "lighthouse-core/audits/seo/font-size.js | description": {
-    "message": "Dimensiunile fontului mai mici de 12 pixeli sunt prea mici pentru a putea fi citite, iar utilizatorii de dispozitive mobile trebuie să „ciupească pentru zoom” pentru a citi. Încearcă să ai peste 60 % din textul paginii cu font ≥12 px. [Află mai multe](https://web.dev/font-size)."
+    "message": "Dimensiunile fontului mai mici de 12 pixeli sunt prea mici pentru a putea fi citite, iar utilizatorii de dispozitive mobile trebuie să „ciupească pentru zoom” pentru a citi. Încearcă să ai peste 60 % din textul paginii cu font ≥12 px. [Află mai multe](https://web.dev/font-size/)."
   },
   "lighthouse-core/audits/seo/font-size.js | displayValue": {
     "message": "Text lizibil {decimalProportion, number, extendedPercent}"
@@ -1005,16 +1065,22 @@
     "message": "Documentul folosește dimensiuni de font lizibile"
   },
   "lighthouse-core/audits/seo/hreflang.js | description": {
-    "message": "Linkurile hreflang spun motoarelor de căutare ce versiune a unei pagini să înregistreze în rezultatele căutării pentru o limbă sau regiune dată. [Află mai multe](https://web.dev/hreflang)."
+    "message": "Linkurile hreflang spun motoarelor de căutare ce versiune a unei pagini să înregistreze în rezultatele căutării pentru o limbă sau regiune dată. [Află mai multe](https://web.dev/hreflang/)."
   },
   "lighthouse-core/audits/seo/hreflang.js | failureTitle": {
     "message": "Document nu are un `hreflang` valid"
   },
+  "lighthouse-core/audits/seo/hreflang.js | notFullyQualified": {
+    "message": "Valoare href relativă"
+  },
   "lighthouse-core/audits/seo/hreflang.js | title": {
     "message": "Documentul are un `hreflang` valid"
   },
+  "lighthouse-core/audits/seo/hreflang.js | unexpectedLanguage": {
+    "message": "Cod de limbă neașteptat"
+  },
   "lighthouse-core/audits/seo/http-status-code.js | description": {
-    "message": "Este posibil ca paginile cu Coduri de stare HTTP nefuncționale să nu fie indexate corect. [Află mai multe](https://web.dev/http-status-code)."
+    "message": "Este posibil ca paginile cu Coduri de stare HTTP nefuncționale să nu fie indexate corect. [Află mai multe](https://web.dev/http-status-code/)."
   },
   "lighthouse-core/audits/seo/http-status-code.js | failureTitle": {
     "message": "Pagina are Cod de stare HTTP nefuncțional"
@@ -1023,7 +1089,7 @@
     "message": "Pagina are Cod de stare HTTP funcțional"
   },
   "lighthouse-core/audits/seo/is-crawlable.js | description": {
-    "message": "Motoarele de căutare nu pot include paginile în rezultatele căutării dacă nu au permisiunea de a le accesa cu crawlere. [Află mai multe](https://web.dev/is-crawable)."
+    "message": "Motoarele de căutare nu pot include paginile în rezultatele căutării dacă nu au permisiunea de a le accesa cu crawlere. [Află mai multe](https://web.dev/is-crawable/)."
   },
   "lighthouse-core/audits/seo/is-crawlable.js | failureTitle": {
     "message": "Indexarea este blocată pentru pagină"
@@ -1032,7 +1098,7 @@
     "message": "Indexarea nu este blocată pentru pagină"
   },
   "lighthouse-core/audits/seo/link-text.js | description": {
-    "message": "Textul descriptiv al linkului ajută motoarele de căutare să înțeleagă conținutul. [Află mai multe](https://web.dev/link-text)."
+    "message": "Textul descriptiv al linkului ajută motoarele de căutare să înțeleagă conținutul. [Află mai multe](https://web.dev/link-text/)."
   },
   "lighthouse-core/audits/seo/link-text.js | displayValue": {
     "message": "{itemCount,plural, =1{S-a găsit un link}few{S-au găsit # linkuri}other{S-au găsit # de linkuri}}"
@@ -1044,13 +1110,13 @@
     "message": "Linkurile au text descriptiv"
   },
   "lighthouse-core/audits/seo/manual/structured-data.js | description": {
-    "message": "Rulează [Instrumentul de testare pentru date structurate](https://search.google.com/structured-data/testing-tool/) și [Structured Data Linter](http://linter.structured-data.org/) pentru a valida datele structurate. [Află mai multe](https://web.dev/structured-data)."
+    "message": "Rulează [Instrumentul de testare pentru date structurate](https://search.google.com/structured-data/testing-tool/) și [Structured Data Linter](http://linter.structured-data.org/) pentru a valida datele structurate. [Află mai multe](https://web.dev/structured-data/)."
   },
   "lighthouse-core/audits/seo/manual/structured-data.js | title": {
     "message": "Datele structurate sunt valide"
   },
   "lighthouse-core/audits/seo/meta-description.js | description": {
-    "message": "Metadescrierile pot fi incluse în rezultatele căutării pentru a rezuma conținutul paginii. [Află mai multe](https://web.dev/meta-description)."
+    "message": "Metadescrierile pot fi incluse în rezultatele căutării pentru a rezuma conținutul paginii. [Află mai multe](https://web.dev/meta-description/)."
   },
   "lighthouse-core/audits/seo/meta-description.js | explanation": {
     "message": "Textul de descriere nu este completat."
@@ -1062,7 +1128,7 @@
     "message": "Documentul are o metadescriere"
   },
   "lighthouse-core/audits/seo/plugins.js | description": {
-    "message": "Motoarele de căutare nu pot indexa conținutul pluginurilor și multe dispozitive restricționează pluginurile sau nu le acceptă. [Află mai multe](https://web.dev/plugins)."
+    "message": "Motoarele de căutare nu pot indexa conținutul pluginurilor și multe dispozitive restricționează pluginurile sau nu le acceptă. [Află mai multe](https://web.dev/plugins/)."
   },
   "lighthouse-core/audits/seo/plugins.js | failureTitle": {
     "message": "Documentul folosește pluginuri"
@@ -1071,7 +1137,7 @@
     "message": "Documentul evită pluginurile"
   },
   "lighthouse-core/audits/seo/robots-txt.js | description": {
-    "message": "Dacă fișierul robots.txt este deteriorat, este posibil ca aplicațiile crawler să nu poată înțelege cum vrei să fie site-ul tău accesat cu crawlere sau indexat. [Află mai multe](https://web.dev/robots-txt)."
+    "message": "Dacă fișierul robots.txt este deteriorat, este posibil ca aplicațiile crawler să nu poată înțelege cum vrei să fie site-ul tău accesat cu crawlere sau indexat. [Află mai multe](https://web.dev/robots-txt/)."
   },
   "lighthouse-core/audits/seo/robots-txt.js | displayValueHttpBadCode": {
     "message": "Cererea pentru robots.txt a returnat starea HTTP: {statusCode}"
@@ -1089,7 +1155,7 @@
     "message": "Fișierul robots.txt este valid"
   },
   "lighthouse-core/audits/seo/tap-targets.js | description": {
-    "message": "Elementele interactive, precum butoanele și linkurile, trebuie să fie suficient de mari (48x48 px) și să aibă suficient spațiu în jurul lor, pentru a fi ușor de atins, fără a se suprapune peste alte elemente. [Află mai multe](https://web.dev/tap-targets)."
+    "message": "Elementele interactive, precum butoanele și linkurile, trebuie să fie suficient de mari (48x48 px) și să aibă suficient spațiu în jurul lor, pentru a fi ușor de atins, fără a se suprapune peste alte elemente. [Află mai multe](https://web.dev/tap-targets/)."
   },
   "lighthouse-core/audits/seo/tap-targets.js | displayValue": {
     "message": "{decimalProportion, number, percent} direcționări ale atingerilor au mărimea corectă"
@@ -1109,8 +1175,20 @@
   "lighthouse-core/audits/seo/tap-targets.js | title": {
     "message": "Direcționările atingerilor sunt dimensionate corect"
   },
+  "lighthouse-core/audits/server-response-time.js | description": {
+    "message": "Menține o durată scurtă de răspuns de la server pentru documentul principal, deoarece toate celelalte solicitări depind de acest lucru. [Află mai multe](https://web.dev/time-to-first-byte/)."
+  },
+  "lighthouse-core/audits/server-response-time.js | displayValue": {
+    "message": "Documentul rădăcină a avut nevoie de {timeInMs, number, milliseconds} ms"
+  },
+  "lighthouse-core/audits/server-response-time.js | failureTitle": {
+    "message": "Redu durata inițială de răspuns de la server"
+  },
+  "lighthouse-core/audits/server-response-time.js | title": {
+    "message": "Durata inițială de răspuns de la server a fost scurtă"
+  },
   "lighthouse-core/audits/service-worker.js | description": {
-    "message": "Service worker este tehnologia care îi permite aplicației să folosească mai multe funcții de aplicații web progresive, cum ar fi cele offline, adăugarea în ecranul de pornire și notificările push. [Află mai multe](https://web.dev/service-worker)."
+    "message": "Service worker este tehnologia care îi permite aplicației să folosească mai multe funcții de aplicații web progresive, cum ar fi cele offline, adăugarea în ecranul de pornire și notificările push. [Află mai multe](https://web.dev/service-worker/)."
   },
   "lighthouse-core/audits/service-worker.js | explanationBadManifest": {
     "message": "Pagina este controlată de un service worker, dar nu s-a găsit niciun `start_url`, deoarece manifestul nu s-a putut analiza ca un JSON valid"
@@ -1131,7 +1209,7 @@
     "message": "Înregistrează un service worker care să controleze pagina și `start_url`"
   },
   "lighthouse-core/audits/splash-screen.js | description": {
-    "message": "Un ecran de întâmpinare tematic asigură o experiență de calitate atunci când utilizatorii lansează aplicația din ecranele de pornire. [Află mai multe](https://web.dev/splash-screen)."
+    "message": "Un ecran de întâmpinare tematic asigură o experiență de calitate atunci când utilizatorii lansează aplicația din ecranele de pornire. [Află mai multe](https://web.dev/splash-screen/)."
   },
   "lighthouse-core/audits/splash-screen.js | failureTitle": {
     "message": "Nu este configurat pentru un ecran de întâmpinare personalizat"
@@ -1140,7 +1218,7 @@
     "message": "Configurat pentru un ecran de întâmpinare personalizat"
   },
   "lighthouse-core/audits/themed-omnibox.js | description": {
-    "message": "Bara de adrese din browser poate avea o temă ce corespunde cu site-ul tău. [Află mai multe](https://web.dev/themed-omnibox)."
+    "message": "Bara de adrese din browser poate avea o temă ce corespunde cu site-ul tău. [Află mai multe](https://web.dev/themed-omnibox/)."
   },
   "lighthouse-core/audits/themed-omnibox.js | failureTitle": {
     "message": "Nu setează o culoare tematică pentru bara de adrese."
@@ -1178,11 +1256,20 @@
   "lighthouse-core/audits/timing-budget.js | title": {
     "message": "Buget pentru durată"
   },
+  "lighthouse-core/audits/unsized-images.js | description": {
+    "message": "Always include explicit width and height on image elements to reduce layout shifts and improve CLS. [Learn more](https://web.dev/optimize-cls/#images-without-dimensions)"
+  },
+  "lighthouse-core/audits/unsized-images.js | failureTitle": {
+    "message": "Image elements do not have explicit `width` and `height`"
+  },
+  "lighthouse-core/audits/unsized-images.js | title": {
+    "message": "Image elements have explicit `width` and `height`"
+  },
   "lighthouse-core/audits/user-timings.js | columnType": {
     "message": "Tip"
   },
   "lighthouse-core/audits/user-timings.js | description": {
-    "message": "Îți poți îmbunătăți aplicația cu API-ul User Timing ca să măsori performanța reală a acesteia în timpul experiențelor de utilizare principale. [Află mai multe](https://web.dev/user-timings)."
+    "message": "Îți poți îmbunătăți aplicația cu API-ul User Timing ca să măsori performanța reală a acesteia în timpul experiențelor de utilizare principale. [Află mai multe](https://web.dev/user-timings/)."
   },
   "lighthouse-core/audits/user-timings.js | displayValue": {
     "message": "{itemCount,plural, =1{o durată a utilizării}few{# durate ale utilizărilor}other{# de durate ale utilizărilor}}"
@@ -1194,7 +1281,7 @@
     "message": "Un <link> preconectat a fost găsit pentru „{securityOrigin}”, dar nu a fost folosit de browser. Verifică dacă folosești corect atributul `crossorigin`."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | description": {
-    "message": "Adaugă indicii de resurse `preconnect` sau `dns-prefetch` pentru a crea conexiunile inițiale la originile terță parte importante. [Află mai multe](https://web.dev/uses-rel-preconnect)."
+    "message": "Adaugă indicii de resurse `preconnect` sau `dns-prefetch` pentru a crea conexiunile inițiale la originile terță parte importante. [Află mai multe](https://web.dev/uses-rel-preconnect/)."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | title": {
     "message": "Preconectează la originile necesare"
@@ -1206,13 +1293,13 @@
     "message": "Un <link> preîncărcat a fost găsit pentru „{preloadURL}”, dar nu a fost folosit de browser. Verifică dacă folosești corect atributul `crossorigin`."
   },
   "lighthouse-core/audits/uses-rel-preload.js | description": {
-    "message": "Poți folosi `<link rel=preload>` ca să acorzi prioritate preluării resurselor care sunt momentan solicitate mai târziu la încărcarea paginii. [Află mai multe](https://web.dev/uses-rel-preload)."
+    "message": "Poți folosi `<link rel=preload>` ca să acorzi prioritate preluării resurselor care sunt momentan solicitate mai târziu la încărcarea paginii. [Află mai multe](https://web.dev/uses-rel-preload/)."
   },
   "lighthouse-core/audits/uses-rel-preload.js | title": {
     "message": "Preîncarcă solicitările importante"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "Adaugă o etichetă `<meta name=\"viewport\">` ca să-ți optimizezi aplicația pentru ecranele mobile. [Află mai multe](https://web.dev/viewport)."
+    "message": "Adaugă o etichetă `<meta name=\"viewport\">` ca să-ți optimizezi aplicația pentru ecranele mobile. [Află mai multe](https://web.dev/viewport/)."
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "Nu s-a găsit nicio etichetă `<meta name=\"viewport\">`"
@@ -1224,7 +1311,7 @@
     "message": "Are o etichetă `<meta name=\"viewport\">` cu `width` sau `initial-scale`"
   },
   "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "Aplicația ta trebuie să afișeze o parte de conținut când JavaScript este dezactivat, chiar dacă este doar o atenționare pentru utilizator că JavaScript este obligatoriu pentru a folosi aplicația. [Află mai multe](https://web.dev/without-javascript)."
+    "message": "Aplicația ta trebuie să afișeze o parte de conținut când JavaScript este dezactivat, chiar dacă este doar o atenționare pentru utilizator că JavaScript este obligatoriu pentru a folosi aplicația. [Află mai multe](https://web.dev/without-javascript/)."
   },
   "lighthouse-core/audits/without-javascript.js | explanation": {
     "message": "Corpul paginii trebuie să redea o parte de conținut dacă scripturile sale nu sunt disponibile."
@@ -1236,7 +1323,7 @@
     "message": "Include o parte de conținut când JavaScript nu este disponibil"
   },
   "lighthouse-core/audits/works-offline.js | description": {
-    "message": "Dacă creezi o aplicație web progresivă, poți folosi un service worker pentru ca aplicația să poată funcționa offline. [Află mai multe](https://web.dev/works-offline)."
+    "message": "Dacă creezi o aplicație web progresivă, poți folosi un service worker pentru ca aplicația să poată funcționa offline. [Află mai multe](https://web.dev/works-offline/)."
   },
   "lighthouse-core/audits/works-offline.js | failureTitle": {
     "message": "Pagina curentă nu răspunde cu codul de stare 200 când este offline"
@@ -1304,8 +1391,20 @@
   "lighthouse-core/config/default-config.js | a11yTablesListsVideoGroupTitle": {
     "message": "Tabele și liste"
   },
+  "lighthouse-core/config/default-config.js | bestPracticesBrowserCompatGroupTitle": {
+    "message": "Compatibilitatea browserului"
+  },
   "lighthouse-core/config/default-config.js | bestPracticesCategoryTitle": {
     "message": "Cele mai bune practici"
+  },
+  "lighthouse-core/config/default-config.js | bestPracticesGeneralGroupTitle": {
+    "message": "General"
+  },
+  "lighthouse-core/config/default-config.js | bestPracticesTrustSafetyGroupTitle": {
+    "message": "Încredere și siguranță"
+  },
+  "lighthouse-core/config/default-config.js | bestPracticesUXGroupTitle": {
+    "message": "Experiența utilizatorului"
   },
   "lighthouse-core/config/default-config.js | budgetsGroupDescription": {
     "message": "Bugetele de performanță stabilesc standarde pentru performanța site-ului."
@@ -1314,7 +1413,7 @@
     "message": "Bugete"
   },
   "lighthouse-core/config/default-config.js | diagnosticsGroupDescription": {
-    "message": "Mai multe informații despre performanța aplicației tale. Numerele nu [influențează direct](https://github.com/GoogleChrome/lighthouse/blob/d2ec9ffbb21de9ad1a0f86ed24575eda32c796f0/docs/scoring.md#how-are-the-scores-weighted) Scorul de performanță."
+    "message": "Mai multe informații despre performanța aplicației tale. Numerele nu [influențează direct](https://web.dev/performance-scoring/) Scorul de performanță."
   },
   "lighthouse-core/config/default-config.js | diagnosticsGroupTitle": {
     "message": "Diagnosticare"
@@ -1326,7 +1425,7 @@
     "message": "Îmbunătățirile pentru prima redare"
   },
   "lighthouse-core/config/default-config.js | loadOpportunitiesGroupDescription": {
-    "message": "Aceste sugestii îți pot face pagina să se încarce mai repede. Ele nu [influențează direct](https://github.com/GoogleChrome/lighthouse/blob/d2ec9ffbb21de9ad1a0f86ed24575eda32c796f0/docs/scoring.md#how-are-the-scores-weighted) scorul de performanță."
+    "message": "Aceste sugestii îți pot face pagina să se încarce mai repede. Ele nu [influențează direct](https://web.dev/performance-scoring/) scorul de performanță."
   },
   "lighthouse-core/config/default-config.js | loadOpportunitiesGroupTitle": {
     "message": "Oportunități"
@@ -1397,6 +1496,15 @@
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "TTL cache"
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnDuration": {
+    "message": "Durată"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnElement": {
+    "message": "Element"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnFailingElem": {
+    "message": "Failing Elements"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnLocation": {
     "message": "Locație"
   },
@@ -1421,6 +1529,9 @@
   "lighthouse-core/lib/i18n/i18n.js | columnSource": {
     "message": "Sursă"
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnStartTime": {
+    "message": "Ora de începere"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnTimeSpent": {
     "message": "Timp petrecut"
   },
@@ -1437,10 +1548,10 @@
     "message": "Economii potențiale"
   },
   "lighthouse-core/lib/i18n/i18n.js | cumulativeLayoutShiftMetric": {
-    "message": "Schimbarea cumulată a aspectului"
+    "message": "Cumulative Layout Shift"
   },
   "lighthouse-core/lib/i18n/i18n.js | displayValueByteSavings": {
-    "message": "Poți economisi {wastedBytes, number, bytes} KB"
+    "message": "Poți economisi {wastedBytes, number, bytes} KiB"
   },
   "lighthouse-core/lib/i18n/i18n.js | displayValueMsSavings": {
     "message": "Poți economisi {wastedMs, number, milliseconds} ms"
@@ -1455,7 +1566,7 @@
     "message": "Primul „CPU inactiv”"
   },
   "lighthouse-core/lib/i18n/i18n.js | firstContentfulPaintMetric": {
-    "message": "Prima redare de conținut"
+    "message": "First Contentful Paint"
   },
   "lighthouse-core/lib/i18n/i18n.js | firstMeaningfulPaintMetric": {
     "message": "Prima redare semnificativă"
@@ -1467,10 +1578,10 @@
     "message": "Imagine"
   },
   "lighthouse-core/lib/i18n/i18n.js | interactiveMetric": {
-    "message": "Timpul până la interactivitate"
+    "message": "Time to Interactive"
   },
   "lighthouse-core/lib/i18n/i18n.js | largestContentfulPaintMetric": {
-    "message": "Cea mai mare redare de conținut"
+    "message": "Largest Contentful Paint"
   },
   "lighthouse-core/lib/i18n/i18n.js | maxPotentialFIDMetric": {
     "message": "Timpul maxim potențial de la prima interacțiune"
@@ -1491,7 +1602,7 @@
     "message": "{timeInMs, number, seconds} s"
   },
   "lighthouse-core/lib/i18n/i18n.js | speedIndexMetric": {
-    "message": "Index de viteză"
+    "message": "Speed Index"
   },
   "lighthouse-core/lib/i18n/i18n.js | stylesheetResourceType": {
     "message": "Foaie de stil"
@@ -1500,7 +1611,7 @@
     "message": "Terță parte"
   },
   "lighthouse-core/lib/i18n/i18n.js | totalBlockingTimeMetric": {
-    "message": "Durata totală de blocare"
+    "message": "Total Blocking Time"
   },
   "lighthouse-core/lib/i18n/i18n.js | totalResourceType": {
     "message": "Total"
@@ -1525,6 +1636,12 @@
   },
   "lighthouse-core/lib/lh-error.js | missingRequiredArtifact": {
     "message": "Colectorul {artifactName} obligatoriu nu a rulat."
+  },
+  "lighthouse-core/lib/lh-error.js | notHtml": {
+    "message": "Pagina introdusă nu este HTML (difuzată în format de tip MIME {mimeType})."
+  },
+  "lighthouse-core/lib/lh-error.js | oldChromeDoesNotSupportFeature": {
+    "message": "Această versiune Chrome este prea veche pentru a fi compatibilă cu „{featureName}”. Folosește o versiune mai nouă pentru a vedea rezultatele complete."
   },
   "lighthouse-core/lib/lh-error.js | pageLoadFailed": {
     "message": "Lighthouse nu a putut încărca în mod sigur pagina solicitată. Asigură-te că testezi adresa URL corectă și că serverul răspunde corect la toate solicitările."
@@ -1558,6 +1675,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
     "message": "Afișează audituri"
+  },
+  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
+    "message": "Accesează calculatorul."
   },
   "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
     "message": "Navigare inițială"
@@ -1677,7 +1797,7 @@
     "message": "Au apărut probleme care au afectat această rulare Lighthouse:"
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
-    "message": "Valorile sunt estimate și pot varia. Scorul de performanță [se bazează doar pe aceste valori](https://github.com/GoogleChrome/lighthouse/blob/d2ec9ffbb21de9ad1a0f86ed24575eda32c796f0/docs/scoring.md#how-are-the-scores-weighted)."
+    "message": "Valorile sunt estimate și pot varia. [Scorul de performanță este calculat](https://web.dev/performance-scoring/) direct folosind aceste valori."
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "Auditări trecute, dar cu avertismente"
@@ -1692,7 +1812,7 @@
     "message": "Verifică dacă folosești etichete `amp-img` valide pentru imaginile tale, care se încarcă lent automat în afara primei arii vizibile. [Află mai multe](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)."
   },
   "stack-packs/packs/amp.js | render_blocking_resources": {
-    "message": "Folosește instrumente precum [AMP Optimizer](https://github.com/ampproject/amp-toolbox/tree/master/packages/optimizer) pentru a [reda aspectele AMP pe server](https://amp.dev/documentation/guides-and-tutorials/optimize-and-measure/server-side-rendering/)."
+    "message": "Folosește instrumente precum [AMP Optimizer](https://github.com/ampproject/amp-toolbox/tree/main/packages/optimizer) pentru a [reda aspectele AMP pe server](https://amp.dev/documentation/guides-and-tutorials/optimize-and-measure/server-side-rendering/)."
   },
   "stack-packs/packs/amp.js | unminified_css": {
     "message": "Consultă [documentația AMP](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/style_pages/) ca să te asiguri că se acceptă toate stilurile."
@@ -1731,7 +1851,10 @@
     "message": "Specifică `@font-display` atunci când [definești fonturile personalizate](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/css-topics/using-fonts.html)."
   },
   "stack-packs/packs/magento.js | offscreen_images": {
-    "message": "Modifică șabloanele de produse și de cataloage ca să folosești funcția de [încărcare lentă](https://web.dev/native-lazy-loading) a platformei web."
+    "message": "Modifică șabloanele de produse și de cataloage ca să folosești funcția de [încărcare lentă](https://web.dev/native-lazy-loading/) a platformei web."
+  },
+  "stack-packs/packs/magento.js | server_response_time": {
+    "message": "Folosește [integrarea Varnish](https://devdocs.magento.com/guides/v2.3/config-guide/varnish/config-varnish.html) din Magento."
   },
   "stack-packs/packs/magento.js | unminified_css": {
     "message": "Activează opțiunea „Minimalizează fișierele CSS” din setările pentru dezvoltatori ale magazinului. [Află mai multe](https://devdocs.magento.com/guides/v2.3/performance-best-practices/configuration.html?itm_source=devdocs&itm_medium=search_page&itm_campaign=federated_search&itm_term=minify%20css%20files)."
@@ -1760,6 +1883,9 @@
   "stack-packs/packs/react.js | redirects": {
     "message": "Dacă folosești React Router, minimalizează folosirea componentei `<Redirect>` pentru [navigările pe traseu](https://reacttraining.com/react-router/web/api/Redirect)."
   },
+  "stack-packs/packs/react.js | server_response_time": {
+    "message": "Dacă redai componente React pe server, poți folosi `renderToNodeStream()` sau `renderToStaticNodeStream()` ca să-i permiți clientului să primească și să completeze diferite părți ale codului de markup, nu pe tot deodată. [Află mai multe](https://reactjs.org/docs/react-dom-server.html#rendertonodestream)."
+  },
   "stack-packs/packs/react.js | unminified_css": {
     "message": "Dacă sistemul de versiuni minimalizează automat fișierele CSS, verifică dacă implementezi versiunea de producție a aplicației. Poți face verificarea cu extensia React Developer Tools. [Află mai multe](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
   },
@@ -1780,6 +1906,9 @@
   },
   "stack-packs/packs/wordpress.js | render_blocking_resources": {
     "message": "Există o serie de pluginuri Wordpress care te pot ajuta să [activezi inline elementele critice](https://wordpress.org/plugins/search/critical+css/) sau să [amâni resurse mai puțin importante](https://wordpress.org/plugins/search/defer+css+javascript/). Atenție, optimizările oferite de aceste pluginuri pot să întrerupă funcțiile temei sau pluginurilor tale, astfel încât este posibil să trebuiască să modifici codul."
+  },
+  "stack-packs/packs/wordpress.js | server_response_time": {
+    "message": "Temele, pluginurile și specificațiile serverului contribuie toate la timpul de răspuns al serverului. Îți recomandăm să găsești o temă mai optimizată, selectând cu atenție un plugin de optimizare și/sau făcând upgrade la server."
   },
   "stack-packs/packs/wordpress.js | total_byte_weight": {
     "message": "Îți recomandăm să afișezi extrase în listele postărilor tale (de exemplu, prin intermediul filei Mai multe), reducând numărul de postări afișate pe o anumită pagină, împărțind postările lungi pe mai multe pagini sau folosind un plugin pentru a încărca lent comentariile."

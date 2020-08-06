@@ -396,7 +396,7 @@
     "message": "总 CPU 时间"
   },
   "lighthouse-core/audits/bootup-time.js | description": {
-    "message": "建议您减少为解析、编译和执行 JS 而花费的时间。您可能会发现，提供较小的 JS 负载有助于实现此目标。[了解详情](https://web.dev/bootup-time)。"
+    "message": "建议您减少为解析、编译和执行 JS 而花费的时间。您可能会发现，提供较小的 JS 负载有助于实现此目标。[了解详情](https://web.dev/bootup-time/)。"
   },
   "lighthouse-core/audits/bootup-time.js | failureTitle": {
     "message": "缩短 JavaScript 执行用时"
@@ -411,28 +411,34 @@
     "message": "请移除 JavaScript 软件包中的重复模块"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | description": {
-    "message": "使用大型 GIF 提供动画内容会导致效率低下。建议您改用 MPEG4/WebM 视频（来提供动画）和 PNG/WebP（来提供静态图片）以减少网络活动消耗的字节数。[了解详情](https://web.dev/efficient-animated-content)"
+    "message": "使用大型 GIF 提供动画内容会导致效率低下。建议您改用 MPEG4/WebM 视频（来提供动画）和 PNG/WebP（来提供静态图片）以减少网络活动消耗的字节数。[了解详情](https://web.dev/efficient-animated-content/)"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | title": {
     "message": "使用视频格式提供动画内容"
   },
+  "lighthouse-core/audits/byte-efficiency/legacy-javascript.js | description": {
+    "message": "Polyfill 和 transform 让旧版浏览器能够使用新的 JavaScript 功能。不过，其中的很多函数对新型浏览器而言并非必需。对于捆绑的 JavaScript，请采用现代脚本部署策略，以便利用 module/nomodule 功能检测机制来减少传送到新型浏览器的代码量，同时保留对旧版浏览器的支持。[了解详情](https://philipwalton.com/articles/deploying-es2015-code-in-production-today/)"
+  },
+  "lighthouse-core/audits/byte-efficiency/legacy-javascript.js | title": {
+    "message": "应避免向新型浏览器提供旧版 JavaScript"
+  },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | description": {
-    "message": "建议您在所有关键资源加载完毕后推迟加载屏幕外图片和处于隐藏状态的图片，从而缩短可交互前的耗时。[了解详情](https://web.dev/offscreen-images)。"
+    "message": "建议您在所有关键资源加载完毕后推迟加载屏幕外图片和处于隐藏状态的图片，从而缩短可交互前的耗时。[了解详情](https://web.dev/offscreen-images/)。"
   },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | title": {
     "message": "推迟加载屏幕外图片"
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | description": {
-    "message": "资源阻止了系统对您网页的首次渲染。建议以内嵌方式提供关键的 JS/CSS，并推迟提供所有非关键的 JS/样式。[了解详情](https://web.dev/render-blocking-resources)。"
+    "message": "资源阻止了系统对您网页的首次渲染。建议以内嵌方式提供关键的 JS/CSS，并推迟提供所有非关键的 JS/样式。[了解详情](https://web.dev/render-blocking-resources/)。"
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | title": {
     "message": "移除阻塞渲染的资源"
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | description": {
-    "message": "网络负载过大不仅会让用户付出真金白银，还极有可能会延长加载用时。[了解详情](https://web.dev/total-byte-weight)。"
+    "message": "网络负载过大不仅会让用户付出真金白银，还极有可能会延长加载用时。[了解详情](https://web.dev/total-byte-weight/)。"
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | displayValue": {
-    "message": "总大小为 {totalBytes, number, bytes} KB"
+    "message": "总大小为 {totalBytes, number, bytes} KiB"
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | failureTitle": {
     "message": "避免网络负载过大"
@@ -441,31 +447,31 @@
     "message": "避免网络负载过大"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | description": {
-    "message": "缩减 CSS 文件大小可缩减网络负载规模。[了解详情](https://web.dev/unminified-css)。"
+    "message": "缩减 CSS 文件大小可缩减网络负载规模。[了解详情](https://web.dev/unminified-css/)。"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | title": {
     "message": "缩减 CSS"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | description": {
-    "message": "如果缩减 JavaScript 文件大小，则既能缩减负载规模，又能缩短脚本解析用时。[了解详情](https://web.dev/unminified-javascript)。"
+    "message": "如果缩减 JavaScript 文件大小，则既能缩减负载规模，又能缩短脚本解析用时。[了解详情](https://web.dev/unminified-javascript/)。"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | title": {
     "message": "缩减 JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "从样式表中移除无效规则并延迟加载首屏内容未使用的 CSS 可减少网络活动的无谓消耗。[了解详情](https://web.dev/unused-css-rules)。"
+    "message": "从样式表中移除无效规则并延迟加载首屏内容未使用的 CSS 可减少网络活动的无谓消耗。[了解详情](https://web.dev/unused-css-rules/)。"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
     "message": "移除未使用的 CSS"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "移除未使用的 JavaScript 以减少网络活动消耗的字节数据。[了解详情](https://web.dev/remove-unused-code/)。"
+    "message": "移除未使用的 JavaScript 以减少网络活动消耗的字节数据。[了解详情](https://web.dev/unused-javascript/)。"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
     "message": "移除未使用的 JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
-    "message": "延长缓存期限可加快重访您网页的速度。[了解详情](https://web.dev/uses-long-cache-ttl)。"
+    "message": "延长缓存期限可加快重访您网页的速度。[了解详情](https://web.dev/uses-long-cache-ttl/)。"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | displayValue": {
     "message": "{itemCount,plural, =1{找到了 1 项资源}other{找到了 # 项资源}}"
@@ -477,31 +483,31 @@
     "message": "针对静态资源使用高效的缓存策略"
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | description": {
-    "message": "如果图片经过了优化，则加载速度会更快，且消耗的移动数据网络流量会更少。[了解详情](https://web.dev/uses-optimized-images)。"
+    "message": "如果图片经过了优化，则加载速度会更快，且消耗的移动数据网络流量会更少。[了解详情](https://web.dev/uses-optimized-images/)。"
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "对图片进行高效编码"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
-    "message": "提供大小合适的图片可节省移动数据网络流量并缩短加载用时。[了解详情](https://web.dev/uses-responsive-images)。"
+    "message": "提供大小合适的图片可节省移动数据网络流量并缩短加载用时。[了解详情](https://web.dev/uses-responsive-images/)。"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | title": {
     "message": "适当调整图片大小"
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | description": {
-    "message": "对于文本资源，应先压缩（gzip、deflate 或 brotli），然后再提供，以最大限度地减少网络活动消耗的字节总数。[了解详情](https://web.dev/uses-text-compression)。"
+    "message": "对于文本资源，应先压缩（gzip、deflate 或 brotli），然后再提供，以最大限度地减少网络活动消耗的字节总数。[了解详情](https://web.dev/uses-text-compression/)。"
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | title": {
     "message": "启用文本压缩"
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | description": {
-    "message": "JPEG 2000、JPEG XR 和 WebP 等图片格式的压缩效果通常比 PNG 或 JPEG 好，因此下载速度更快，消耗的数据流量更少。[了解详情](https://web.dev/uses-webp-images)。"
+    "message": "JPEG 2000、JPEG XR 和 WebP 等图片格式的压缩效果通常比 PNG 或 JPEG 好，因此下载速度更快，消耗的数据流量更少。[了解详情](https://web.dev/uses-webp-images/)。"
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | title": {
     "message": "采用新一代格式提供图片"
   },
   "lighthouse-core/audits/content-width.js | description": {
-    "message": "如果应用内容的宽度与视口的宽度不一致，该应用可能不会针对移动设备屏幕进行优化。[了解详情](https://web.dev/content-width)。"
+    "message": "如果应用内容的宽度与视口的宽度不一致，该应用可能不会针对移动设备屏幕进行优化。[了解详情](https://web.dev/content-width/)。"
   },
   "lighthouse-core/audits/content-width.js | explanation": {
     "message": "视口大小（{innerWidth} 像素）与窗口大小（{outerWidth} 像素）不一致。"
@@ -513,7 +519,7 @@
     "message": "已根据视口正确设置内容尺寸"
   },
   "lighthouse-core/audits/critical-request-chains.js | description": {
-    "message": "下面的关键请求链显示了以高优先级加载的资源。请考虑缩短链长、缩减资源的下载文件大小，或者推迟下载不必要的资源，从而提高网页加载速度。[了解详情](https://web.dev/critical-request-chains)。"
+    "message": "下面的关键请求链显示了以高优先级加载的资源。请考虑缩短链长、缩减资源的下载文件大小，或者推迟下载不必要的资源，从而提高网页加载速度。[了解详情](https://web.dev/critical-request-chains/)。"
   },
   "lighthouse-core/audits/critical-request-chains.js | displayValue": {
     "message": "{itemCount,plural, =1{找到了 1 条请求链}other{找到了 # 条请求链}}"
@@ -528,7 +534,7 @@
     "message": "Line"
   },
   "lighthouse-core/audits/deprecations.js | description": {
-    "message": "已弃用的的 API 最终将从浏览器中移除。[了解详情](https://web.dev/deprecations)。"
+    "message": "已弃用的的 API 最终将从浏览器中移除。[了解详情](https://web.dev/deprecations/)。"
   },
   "lighthouse-core/audits/deprecations.js | displayValue": {
     "message": "{itemCount,plural, =1{发现了 1 条警告}other{发现了 # 条警告}}"
@@ -540,7 +546,7 @@
     "message": "请勿使用已弃用的 API"
   },
   "lighthouse-core/audits/dobetterweb/appcache-manifest.js | description": {
-    "message": "应用缓存已被弃用。[了解详情](https://web.dev/appcache-manifest)。"
+    "message": "应用缓存已被弃用。[了解详情](https://web.dev/appcache-manifest/)。"
   },
   "lighthouse-core/audits/dobetterweb/appcache-manifest.js | displayValue": {
     "message": "发现了“{AppCacheManifest}”"
@@ -552,7 +558,7 @@
     "message": "请勿使用应用缓存"
   },
   "lighthouse-core/audits/dobetterweb/charset.js | description": {
-    "message": "必须声明字符编码。您可以在 HTML 的前 1024 个字节中使用 <meta> 标记来声明，也可以在 HTTP 响应标头 Content-Type 中进行声明。[了解详情](https://www.w3.org/International/questions/qa-html-encoding-declarations)。"
+    "message": "必须声明字符编码。您可以在 HTML 的前 1024 个字节中使用 <meta> 标记来声明，也可以在 HTTP 响应标头 Content-Type 中进行声明。[了解详情](https://web.dev/charset/)。"
   },
   "lighthouse-core/audits/dobetterweb/charset.js | failureTitle": {
     "message": "字符集声明缺失，或者在 HTML 中出现得太晚"
@@ -561,7 +567,7 @@
     "message": "正确地设定了字符集"
   },
   "lighthouse-core/audits/dobetterweb/doctype.js | description": {
-    "message": "指定 DOCTYPE 会阻止浏览器切换到怪异模式。[了解详情](https://web.dev/doctype)。"
+    "message": "指定 DOCTYPE 会阻止浏览器切换到怪异模式。[了解详情](https://web.dev/doctype/)。"
   },
   "lighthouse-core/audits/dobetterweb/doctype.js | explanationBadDoctype": {
     "message": "DOCTYPE 名称必须为小写字符串 `html`"
@@ -588,7 +594,7 @@
     "message": "值"
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | description": {
-    "message": "大型 DOM 会增加内存使用量、导致[样式计算](https://developers.google.com/web/fundamentals/performance/rendering/reduce-the-scope-and-complexity-of-style-calculations)用时延长，并产生高昂的[布局重排](https://developers.google.com/speed/articles/reflow)成本。[了解详情](https://web.dev/dom-size)。"
+    "message": "大型 DOM 会增加内存使用量、导致[样式计算](https://developers.google.com/web/fundamentals/performance/rendering/reduce-the-scope-and-complexity-of-style-calculations)用时延长，并产生高昂的[布局重排](https://developers.google.com/speed/articles/reflow)成本。[了解详情](https://web.dev/dom-size/)。"
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | displayValue": {
     "message": "{itemCount,plural, =1{1 个元素}other{# 个元素}}"
@@ -612,7 +618,7 @@
     "message": "未通过审核的锚点"
   },
   "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
-    "message": "向任何外部链接添加 `rel=\"noopener\"` 或 `rel=\"noreferrer\"`，可提高性能并减少安全漏洞。[了解详情](https://web.dev/external-anchors-use-rel-noopener)。"
+    "message": "向任何外部链接添加 `rel=\"noopener\"` 或 `rel=\"noreferrer\"`，可提高性能并减少安全漏洞。[了解详情](https://web.dev/external-anchors-use-rel-noopener/)。"
   },
   "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | failureTitle": {
     "message": "指向跨域目的地的链接不安全"
@@ -624,7 +630,7 @@
     "message": "无法确定锚点 ({anchorHTML}) 的目的地。如果不用作超链接，建议移除 target=_blank。"
   },
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | description": {
-    "message": "如果网站在缺少上下文的情况下请求位置，会导致用户不信任网站或感到困惑。建议将请求与用户操作进行绑定。[了解详情](https://web.dev/geolocation-on-start)。"
+    "message": "如果网站在缺少上下文的情况下请求位置，会导致用户不信任网站或感到困惑。建议将请求与用户操作进行绑定。[了解详情](https://web.dev/geolocation-on-start/)。"
   },
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | failureTitle": {
     "message": "在网页加载时请求地理定位权限"
@@ -636,13 +642,13 @@
     "message": "版本"
   },
   "lighthouse-core/audits/dobetterweb/js-libraries.js | description": {
-    "message": "页面上检测到的所有前端 JavaScript 库。[了解详情](https://web.dev/js-libraries)。"
+    "message": "页面上检测到的所有前端 JavaScript 库。[了解详情](https://web.dev/js-libraries/)。"
   },
   "lighthouse-core/audits/dobetterweb/js-libraries.js | title": {
     "message": "已检测到的 JavaScript 库"
   },
   "lighthouse-core/audits/dobetterweb/no-document-write.js | description": {
-    "message": "对于连接速度较慢的用户，通过 `document.write()` 动态注入的外部脚本可将网页加载延迟数十秒。[了解详情](https://web.dev/no-document-write)。"
+    "message": "对于连接速度较慢的用户，通过 `document.write()` 动态注入的外部脚本可将网页加载延迟数十秒。[了解详情](https://web.dev/no-document-write/)。"
   },
   "lighthouse-core/audits/dobetterweb/no-document-write.js | failureTitle": {
     "message": "避免使用 `document.write()`"
@@ -660,7 +666,7 @@
     "message": "漏洞数量"
   },
   "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | description": {
-    "message": "某些第三方脚本可能包含已知的安全漏洞，攻击者很容易识别和利用这些漏洞。[了解详情](https://web.dev/no-vulnerable-libraries)。"
+    "message": "某些第三方脚本可能包含已知的安全漏洞，攻击者很容易识别和利用这些漏洞。[了解详情](https://web.dev/no-vulnerable-libraries/)。"
   },
   "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | displayValue": {
     "message": "{itemCount,plural, =1{检测到 1 个漏洞}other{检测到 # 个漏洞}}"
@@ -681,7 +687,7 @@
     "message": "避免使用含已知安全漏洞的前端 JavaScript 库"
   },
   "lighthouse-core/audits/dobetterweb/notification-on-start.js | description": {
-    "message": "如果网站在缺少上下文的情况下请求发送通知，会导致用户不信任网站或感到困惑。建议将请求与用户手势进行绑定。[了解详情](https://web.dev/notification-on-start)。"
+    "message": "如果网站在缺少上下文的情况下请求发送通知，会导致用户不信任网站或感到困惑。建议将请求与用户手势进行绑定。[了解详情](https://web.dev/notification-on-start/)。"
   },
   "lighthouse-core/audits/dobetterweb/notification-on-start.js | failureTitle": {
     "message": "在网页加载时请求通知权限"
@@ -689,11 +695,8 @@
   "lighthouse-core/audits/dobetterweb/notification-on-start.js | title": {
     "message": "避免在网页加载时请求通知权限"
   },
-  "lighthouse-core/audits/dobetterweb/password-inputs-can-be-pasted-into.js | columnFailingElem": {
-    "message": "失败的元素"
-  },
   "lighthouse-core/audits/dobetterweb/password-inputs-can-be-pasted-into.js | description": {
-    "message": "阻止密码粘贴，会破坏良好的安全政策。[了解详情](https://web.dev/password-inputs-can-be-pasted-into)。"
+    "message": "阻止密码粘贴，会破坏良好的安全政策。[了解详情](https://web.dev/password-inputs-can-be-pasted-into/)。"
   },
   "lighthouse-core/audits/dobetterweb/password-inputs-can-be-pasted-into.js | failureTitle": {
     "message": "不允许用户粘贴内容到密码字段"
@@ -705,19 +708,16 @@
     "message": "协议"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | description": {
-    "message": "HTTP/2 提供了许多优于 HTTP/1.1的优点，包括二进制标头、多路复用和服务器推送等。[了解详情](https://web.dev/uses-http2)。"
+    "message": "HTTP/2 提供了许多优于 HTTP/1.1的优点，包括二进制标头、多路复用和服务器推送等。[了解详情](https://web.dev/uses-http2/)。"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
     "message": "{itemCount,plural, =1{1 条请求未通过 HTTP/2 传送}other{# 条请求未通过 HTTP/2 传送}}"
   },
-  "lighthouse-core/audits/dobetterweb/uses-http2.js | failureTitle": {
-    "message": "没有对所有网页资源使用 HTTP/2"
-  },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | title": {
-    "message": "对其自身资源使用了 HTTP/2"
+    "message": "Use HTTP/2"
   },
   "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | description": {
-    "message": "建议您将触摸和滚轮事件监听器标记为 `passive`，以提高页面的滚动性能。[了解详情](https://web.dev/uses-passive-event-listeners)。"
+    "message": "建议您将触摸和滚轮事件监听器标记为 `passive`，以提高页面的滚动性能。[了解详情](https://web.dev/uses-passive-event-listeners/)。"
   },
   "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | failureTitle": {
     "message": "未使用被动式监听器来提高滚动性能"
@@ -729,7 +729,7 @@
     "message": "说明"
   },
   "lighthouse-core/audits/errors-in-console.js | description": {
-    "message": "控制台中记录的错误表明有未解决的问题。导致这些错误的可能原因是网络请求失败和其他浏览器问题。[了解详情](https://web.dev/errors-in-console)"
+    "message": "控制台中记录的错误表明有未解决的问题。导致这些错误的可能原因是网络请求失败和其他浏览器问题。[了解详情](https://web.dev/errors-in-console/)"
   },
   "lighthouse-core/audits/errors-in-console.js | failureTitle": {
     "message": "控制台日志中已记录浏览器错误"
@@ -738,7 +738,7 @@
     "message": "控制台日志中未记录浏览器错误"
   },
   "lighthouse-core/audits/font-display.js | description": {
-    "message": "利用 font-display 这项 CSS 功能，确保文本在网页字体加载期间始终对用户可见。[了解详情](https://web.dev/font-display)。"
+    "message": "利用 font-display 这项 CSS 功能，确保文本在网页字体加载期间始终对用户可见。[了解详情](https://web.dev/font-display/)。"
   },
   "lighthouse-core/audits/font-display.js | failureTitle": {
     "message": "确保文本在网页字体加载期间保持可见状态"
@@ -746,8 +746,8 @@
   "lighthouse-core/audits/font-display.js | title": {
     "message": "在网页字体加载期间，所有文本都保持可见状态"
   },
-  "lighthouse-core/audits/font-display.js | undeclaredFontURLWarning": {
-    "message": "Lighthouse 无法自动检查以下网址的字体显示值：{fontURL}。"
+  "lighthouse-core/audits/font-display.js | undeclaredFontOriginWarning": {
+    "message": "{fontCountForOrigin,plural, =1{Lighthouse 无法自动检查来源 {fontOrigin} 的 `font-display` 值。}other{Lighthouse 无法自动检查来源 {fontOrigin} 的 `font-display` 值。}}"
   },
   "lighthouse-core/audits/image-aspect-ratio.js | columnActual": {
     "message": "宽高比（实际）"
@@ -756,7 +756,7 @@
     "message": "宽高比（显示）"
   },
   "lighthouse-core/audits/image-aspect-ratio.js | description": {
-    "message": "图像显示尺寸应与自然宽高比相匹配。[了解详情](https://web.dev/image-aspect-ratio)。"
+    "message": "图像显示尺寸应与自然宽高比相匹配。[了解详情](https://web.dev/image-aspect-ratio/)。"
   },
   "lighthouse-core/audits/image-aspect-ratio.js | failureTitle": {
     "message": "显示的图像宽高比不正确"
@@ -777,16 +777,16 @@
     "message": "预期大小"
   },
   "lighthouse-core/audits/image-size-responsive.js | description": {
-    "message": "图片的自然尺寸应与显示屏大小及像素比成正比，这样才能令图片达到最清晰的显示效果。[了解详情](https://web.dev/image-size-responsive)。"
+    "message": "图片的自然尺寸应与显示屏大小及像素比成正比，这样才能令图片达到最清晰的显示效果。[了解详情](https://web.dev/serve-responsive-images/)。"
   },
   "lighthouse-core/audits/image-size-responsive.js | failureTitle": {
-    "message": "显示的图片并非都大小得当"
+    "message": "所提供的部分图片采用了较低的分辨率"
   },
   "lighthouse-core/audits/image-size-responsive.js | title": {
-    "message": "显示的图片都大小得当"
+    "message": "所提供的图片都采用了合适的分辨率"
   },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "浏览器可主动提示用户向其主屏幕中添加您的应用，这有助于提高互动度。[了解详情](https://web.dev/installable-manifest)。"
+    "message": "浏览器可主动提示用户向其主屏幕中添加您的应用，这有助于提高互动度。[了解详情](https://web.dev/installable-manifest/)。"
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
     "message": "Web 应用清单不符合可安装性要求"
@@ -794,11 +794,20 @@
   "lighthouse-core/audits/installable-manifest.js | title": {
     "message": "Web 应用清单符合可安装性要求"
   },
+  "lighthouse-core/audits/is-on-https.js | allowed": {
+    "message": "允许"
+  },
+  "lighthouse-core/audits/is-on-https.js | blocked": {
+    "message": "已屏蔽"
+  },
   "lighthouse-core/audits/is-on-https.js | columnInsecureURL": {
     "message": "不安全的网址"
   },
+  "lighthouse-core/audits/is-on-https.js | columnResolution": {
+    "message": "对请求的处理方式"
+  },
   "lighthouse-core/audits/is-on-https.js | description": {
-    "message": "应该使用 HTTPS 保护所有网站（包括不会处理敏感数据的网站）。HTTPS 可防止入侵程序篡改或被动地监听您的应用与用户之间的通信，它是HTTP/2 和许多新的网络平台 API 的先决条件。[了解详情](https://web.dev/is-on-https)。"
+    "message": "所有网站都应该通过 HTTPS 来保护，即使网站不处理敏感数据，也应如此。这包括要避免使用[混合内容](https://developers.google.com/web/fundamentals/security/prevent-mixed-content/what-is-mixed-content)，即通过 HTTPS 实现初始请求，但却通过 HTTP 加载某些资源。HTTPS 可防止入侵程序篡改或被动地监听您的应用与用户之间的通信，它是 HTTP/2 和许多新的网络平台 API 的先决条件。[了解详情](https://web.dev/is-on-https/)。"
   },
   "lighthouse-core/audits/is-on-https.js | displayValue": {
     "message": "{itemCount,plural, =1{发现 1 条不安全的请求}other{发现 # 条不安全的请求}}"
@@ -809,14 +818,35 @@
   "lighthouse-core/audits/is-on-https.js | title": {
     "message": "使用 HTTPS"
   },
-  "lighthouse-core/audits/legacy-javascript.js | description": {
-    "message": "Polyfill 和 transform 让旧版浏览器能够使用新的 JavaScript 功能。不过，其中的很多函数对新型浏览器而言并非必需。对于捆绑的 JavaScript，请采用现代脚本部署策略，以便利用 module/nomodule 功能检测机制来减少传送到新型浏览器的代码量，同时保留对旧版浏览器的支持。[了解详情](https://philipwalton.com/articles/deploying-es2015-code-in-production-today/)"
+  "lighthouse-core/audits/is-on-https.js | upgraded": {
+    "message": "自动升级至 HTTPS"
   },
-  "lighthouse-core/audits/legacy-javascript.js | title": {
-    "message": "旧版 JavaScript"
+  "lighthouse-core/audits/is-on-https.js | warning": {
+    "message": "允许（附带警告）"
+  },
+  "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
+    "message": "这是此视口内渲染的最大内容元素。[了解详情](https://web.dev/lighthouse-largest-contentful-paint/)"
+  },
+  "lighthouse-core/audits/largest-contentful-paint-element.js | displayValue": {
+    "message": "{itemCount,plural, =1{找到了 1 个元素}other{找到了 # 个元素}}"
+  },
+  "lighthouse-core/audits/largest-contentful-paint-element.js | title": {
+    "message": "最大内容渲染时间元素"
+  },
+  "lighthouse-core/audits/layout-shift-elements.js | columnContribution": {
+    "message": "对 CLS 的影响程度"
+  },
+  "lighthouse-core/audits/layout-shift-elements.js | description": {
+    "message": "这些 DOM 元素对该网页的 CLS 影响最大。"
+  },
+  "lighthouse-core/audits/layout-shift-elements.js | displayValue": {
+    "message": "{nodeCount,plural, =1{发现了 1 个元素}other{发现了 # 个元素}}"
+  },
+  "lighthouse-core/audits/layout-shift-elements.js | title": {
+    "message": "请避免出现大幅度的布局偏移"
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "如果网页在移动网络中的加载速度较快，则可确保良好的移动用户体验。[了解详情](https://web.dev/load-fast-enough-for-pwa)。"
+    "message": "如果网页在移动网络中的加载速度较快，则可确保良好的移动用户体验。[了解详情](https://web.dev/load-fast-enough-for-pwa/)。"
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
     "message": "页面交互需要 {timeInMs, number, seconds} 秒"
@@ -833,11 +863,20 @@
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | title": {
     "message": "页面在移动网络上的加载速度足够快"
   },
+  "lighthouse-core/audits/long-tasks.js | description": {
+    "message": "列出了主线程中运行时间最长的任务，有助于识别出导致输入延迟的最主要原因。[了解详情](https://web.dev/long-tasks-devtools/)"
+  },
+  "lighthouse-core/audits/long-tasks.js | displayValue": {
+    "message": "{itemCount,plural, =1{发现了 # 项长时间运行的任务}other{发现了 # 项长时间运行的任务}}"
+  },
+  "lighthouse-core/audits/long-tasks.js | title": {
+    "message": "应避免出现长时间运行的主线程任务"
+  },
   "lighthouse-core/audits/mainthread-work-breakdown.js | columnCategory": {
     "message": "类别"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | description": {
-    "message": "建议您减少为解析、编译和执行 JS 而花费的时间。您可能会发现，提供较小的 JS 负载有助于实现此目标。[了解详情](https://web.dev/mainthread-work-breakdown)"
+    "message": "建议您减少为解析、编译和执行 JS 而花费的时间。您可能会发现，提供较小的 JS 负载有助于实现此目标。[了解详情](https://web.dev/mainthread-work-breakdown/)"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | failureTitle": {
     "message": "最大限度地减少主线程工作"
@@ -846,25 +885,25 @@
     "message": "最大限度地减少主线程工作"
   },
   "lighthouse-core/audits/manual/pwa-cross-browser.js | description": {
-    "message": "网站应该能在所有主流浏览器中正常显示，以便覆盖数量最多的用户。[了解详情](https://web.dev/pwa-cross-browser)。"
+    "message": "网站应该能在所有主流浏览器中正常显示，以便覆盖数量最多的用户。[了解详情](https://web.dev/pwa-cross-browser/)。"
   },
   "lighthouse-core/audits/manual/pwa-cross-browser.js | title": {
     "message": "网站能在各种浏览器中正常显示"
   },
   "lighthouse-core/audits/manual/pwa-each-page-has-url.js | description": {
-    "message": "确保各个网页可通过网址建立深层链接，并且这些网址是独一无二的，可以在社交媒体上共享。[了解详情](https://web.dev/pwa-each-page-has-url)。"
+    "message": "确保各个网页可通过网址建立深层链接，并且这些网址是独一无二的，可以在社交媒体上共享。[了解详情](https://web.dev/pwa-each-page-has-url/)。"
   },
   "lighthouse-core/audits/manual/pwa-each-page-has-url.js | title": {
     "message": "每个网页都有一个网址"
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | description": {
-    "message": "无论点按哪个链接，都应能快速跳转到相应页面，即使网速缓慢也应如此。若想让用户感知到出色的网页加载速度，这种体验至关重要。[了解详情](https://web.dev/pwa-page-transitions)。"
+    "message": "无论点按哪个链接，都应能快速跳转到相应页面，即使网速缓慢也应如此。若想让用户感知到出色的网页加载速度，这种体验至关重要。[了解详情](https://web.dev/pwa-page-transitions/)。"
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | title": {
     "message": "在不同网页之间跳转时，用户感觉不到网页加载缓慢"
   },
   "lighthouse-core/audits/maskable-icon.js | description": {
-    "message": "利用可遮罩的图标，您能确保应用安装到设备上后，图形可填满整个形状轮廓，而不会出现黑边。[了解详情](https://web.dev/maskable-icon/)。"
+    "message": "利用可遮罩的图标，您能确保应用安装到设备上后，图形可填满整个形状轮廓，而不会出现黑边。[了解详情](https://web.dev/maskable-icon-audit/)。"
   },
   "lighthouse-core/audits/maskable-icon.js | failureTitle": {
     "message": "清单不含可遮罩的图标"
@@ -873,34 +912,34 @@
     "message": "清单含有可遮罩的图标"
   },
   "lighthouse-core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "“累积布局偏移”旨在衡量可见元素在视口内的移动情况。[了解详情](https://web.dev/cls)。"
+    "message": "“累积布局偏移”旨在衡量可见元素在视口内的移动情况。[了解详情](https://web.dev/cls/)。"
   },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
-    "message": "预计输入延迟是估算值，表示您的应用在网页加载最繁忙的 5 秒期间大概需要花费多长时间（以毫秒为单位）才能对用户输入做出响应。如果您的延迟时间超过了 50 毫秒，用户可能会感觉您的应用运行迟缓。[了解详情](https://web.dev/estimated-input-latency)。"
+    "message": "预计输入延迟是估算值，表示您的应用在网页加载最繁忙的 5 秒期间大概需要花费多长时间（以毫秒为单位）才能对用户输入做出响应。如果您的延迟时间超过了 50 毫秒，用户可能会感觉您的应用运行迟缓。[了解详情](https://web.dev/estimated-input-latency/)。"
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
-    "message": "首次内容渲染时间标记了渲染出首个文本或首张图片的时间。[了解详情](https://web.dev/first-contentful-paint)。"
+    "message": "首次内容渲染时间标记了渲染出首个文本或首张图片的时间。[了解详情](https://web.dev/first-contentful-paint/)。"
   },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
-    "message": "首次 CPU 闲置时间标记了网页的主线程首次有空处理输入操作的时间。[了解详情](https://web.dev/first-cpu-idle)。"
+    "message": "首次 CPU 闲置时间标记了网页的主线程首次有空处理输入操作的时间。[了解详情](https://web.dev/first-cpu-idle/)。"
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
-    "message": "首次有效渲染时间测量了网页主要内容开始对用户显示的时间。[了解详情](https://web.dev/first-meaningful-paint)。"
+    "message": "首次有效渲染时间测量了网页主要内容开始对用户显示的时间。[了解详情](https://web.dev/first-meaningful-paint/)。"
   },
   "lighthouse-core/audits/metrics/interactive.js | description": {
-    "message": "可交互时间是指网页需要多长时间才能提供完整交互功能。[了解详情](https://web.dev/interactive)。"
+    "message": "可交互时间是指网页需要多长时间才能提供完整交互功能。[了解详情](https://web.dev/interactive/)。"
   },
   "lighthouse-core/audits/metrics/largest-contentful-paint.js | description": {
-    "message": "最大内容渲染时间标记了渲染出最大文本或图片的时间。[了解详情](https://web.dev/lighthouse-largest-contentful-paint)"
+    "message": "最大内容渲染时间标记了渲染出最大文本或图片的时间。[了解详情](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
   "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
-    "message": "您的用户可能会遇到的最长首次输入延迟是用时最长的任务的耗时。[了解详情](https://web.dev/lighthouse-max-potential-fid)。"
+    "message": "您的用户可能会遇到的最长首次输入延迟是用时最长的任务的耗时。[了解详情](https://web.dev/lighthouse-max-potential-fid/)。"
   },
   "lighthouse-core/audits/metrics/speed-index.js | description": {
-    "message": "速度指数表明了网页内容的可见填充速度。[了解详情](https://web.dev/speed-index)。"
+    "message": "速度指数表明了网页内容的可见填充速度。[了解详情](https://web.dev/speed-index/)。"
   },
   "lighthouse-core/audits/metrics/total-blocking-time.js | description": {
-    "message": "首次内容渲染 (FCP) 和可交互时间之间的所有时间段的总和，当任务用时超过 50 毫秒时，该数值以毫秒表示。[了解详情](https://web.dev/lighthouse-total-blocking-time)。"
+    "message": "首次内容渲染 (FCP) 和可交互时间之间的所有时间段的总和，当任务用时超过 50 毫秒时，该数值以毫秒表示。[了解详情](https://web.dev/lighthouse-total-blocking-time/)。"
   },
   "lighthouse-core/audits/network-rtt.js | description": {
     "message": "网络往返时间 (RTT) 对性能有很大的影响。如果与来源之间的 RTT 较长，则表明缩短服务器与用户之间的距离可能会提高性能。[了解详情](https://hpbn.co/primer-on-latency-and-bandwidth/)。"
@@ -914,8 +953,17 @@
   "lighthouse-core/audits/network-server-latency.js | title": {
     "message": "服务器后端延迟"
   },
+  "lighthouse-core/audits/no-unload-listeners.js | description": {
+    "message": "“`unload`”事件不会可靠地触发，而且监听该事件可能会妨碍系统实施“往返缓存”之类的浏览器优化策略。建议您改用“`pagehide`”或“`visibilitychange`”事件。[了解详情](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+  },
+  "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
+    "message": "注册“`unload`”事件监听器"
+  },
+  "lighthouse-core/audits/no-unload-listeners.js | title": {
+    "message": "避免使用“`unload`”事件监听器"
+  },
   "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "Service Worker 可让您的 Web 应用在无法预测的网络状况下正常运行。[了解详情](https://web.dev/offline-start-url)。"
+    "message": "Service Worker 可让您的 Web 应用在无法预测的网络状况下正常运行。[了解详情](https://web.dev/offline-start-url/)。"
   },
   "lighthouse-core/audits/offline-start-url.js | errorLoading": {
     "message": "在 Service Worker 中加载 {url} 时出错，状态代码为 {statusCode}"
@@ -939,7 +987,7 @@
     "message": "性能预算"
   },
   "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "如果您已设置 HTTPS，请确保将所有 HTTP 流量重定向到 HTTPS，以便让所有用户都能使用安全的网络功能。[了解详情](https://web.dev/redirects-http)。"
+    "message": "如果您已设置 HTTPS，请确保将所有 HTTP 流量重定向到 HTTPS，以便让所有用户都能使用安全的网络功能。[了解详情](https://web.dev/redirects-http/)。"
   },
   "lighthouse-core/audits/redirects-http.js | failureTitle": {
     "message": "未将 HTTP 流量重定向到 HTTPS"
@@ -948,22 +996,22 @@
     "message": "将 HTTP 流量重定向到 HTTPS"
   },
   "lighthouse-core/audits/redirects.js | description": {
-    "message": "重定向会在网页可加载前引入更多延迟。[了解详情](https://web.dev/redirects)。"
+    "message": "重定向会在网页可加载前引入更多延迟。[了解详情](https://web.dev/redirects/)。"
   },
   "lighthouse-core/audits/redirects.js | title": {
     "message": "避免多次网页重定向"
   },
   "lighthouse-core/audits/resource-summary.js | description": {
-    "message": "若要设置页面资源数量和大小的预算，请添加 budget.json 文件。[了解详情](https://developers.google.com/web/tools/lighthouse/audits/budgets)。"
+    "message": "若要设置页面资源数量和大小的预算，请添加 budget.json 文件。[了解详情](https://web.dev/use-lighthouse-for-performance-budgets/)。"
   },
   "lighthouse-core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount,plural, =1{1 项请求 • {byteCount, number, bytes} KB}other{# 项请求 • {byteCount, number, bytes} KB}}"
+    "message": "{requestCount,plural, =1{1 项请求 • {byteCount, number, bytes} KiB}other{# 项请求 • {byteCount, number, bytes} KiB}}"
   },
   "lighthouse-core/audits/resource-summary.js | title": {
     "message": "请保持较低的请求数量和较小的传输大小"
   },
   "lighthouse-core/audits/seo/canonical.js | description": {
-    "message": "规范链接用于建议应在搜索结果中显示哪个网址。[了解详情](https://web.dev/canonical)。"
+    "message": "规范链接用于建议应在搜索结果中显示哪个网址。[了解详情](https://web.dev/canonical/)。"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "存在多个相互冲突的网址（{urlList}）"
@@ -989,8 +1037,20 @@
   "lighthouse-core/audits/seo/canonical.js | title": {
     "message": "文档的 `rel=canonical` 有效"
   },
+  "lighthouse-core/audits/seo/crawlable-anchors.js | columnFailingLink": {
+    "message": "无法抓取的链接"
+  },
+  "lighthouse-core/audits/seo/crawlable-anchors.js | description": {
+    "message": "搜索引擎可能会使用链接中的 `href` 属性来抓取网站。请确保锚元素的 `href` 属性链接到合适的目标网站，以便搜索引擎发现该网站上的更多网页。[了解详情](https://support.google.com/webmasters/answer/9112205)"
+  },
+  "lighthouse-core/audits/seo/crawlable-anchors.js | failureTitle": {
+    "message": "有无法抓取的链接"
+  },
+  "lighthouse-core/audits/seo/crawlable-anchors.js | title": {
+    "message": "链接都是可抓取的"
+  },
   "lighthouse-core/audits/seo/font-size.js | description": {
-    "message": "12px 以下的字体过小，会导致用户无法辨认；此外，这样的字体需要移动设备访问者“张合双指进行缩放”才能阅读。请尽量让 60% 以上的页面文字不小于 12px。[了解详情](https://web.dev/font-size)。"
+    "message": "12px 以下的字体过小，会导致用户无法辨认；此外，这样的字体需要移动设备访问者“张合双指进行缩放”才能阅读。请尽量让 60% 以上的页面文字不小于 12px。[了解详情](https://web.dev/font-size/)。"
   },
   "lighthouse-core/audits/seo/font-size.js | displayValue": {
     "message": "{decimalProportion, number, extendedPercent} 清晰可辨的文字"
@@ -1005,16 +1065,22 @@
     "message": "文档所用的字体大小清晰可辨"
   },
   "lighthouse-core/audits/seo/hreflang.js | description": {
-    "message": "hreflang 链接用于告知搜索引擎应在特定语言或地区的搜索结果中显示哪种版本的网页。[了解详情](https://web.dev/hreflang)。"
+    "message": "hreflang 链接用于告知搜索引擎应在特定语言或地区的搜索结果中显示哪种版本的网页。[了解详情](https://web.dev/hreflang/)。"
   },
   "lighthouse-core/audits/seo/hreflang.js | failureTitle": {
     "message": "文档的 `hreflang` 无效"
   },
+  "lighthouse-core/audits/seo/hreflang.js | notFullyQualified": {
+    "message": "相对 href 值"
+  },
   "lighthouse-core/audits/seo/hreflang.js | title": {
     "message": "文档的 `hreflang` 有效"
   },
+  "lighthouse-core/audits/seo/hreflang.js | unexpectedLanguage": {
+    "message": "未预料到的语言代码"
+  },
   "lighthouse-core/audits/seo/http-status-code.js | description": {
-    "message": "返回无效 HTTP 状态代码的页面可能无法被正确编入索引。[了解详情](https://web.dev/http-status-code)。"
+    "message": "返回无效 HTTP 状态代码的页面可能无法被正确编入索引。[了解详情](https://web.dev/http-status-code/)。"
   },
   "lighthouse-core/audits/seo/http-status-code.js | failureTitle": {
     "message": "页面返回了无效的 HTTP 状态代码"
@@ -1023,7 +1089,7 @@
     "message": "页面返回了有效的 HTTP 状态代码"
   },
   "lighthouse-core/audits/seo/is-crawlable.js | description": {
-    "message": "如果搜索引擎无权抓取您的网页，则无法将它们添加到搜索结果中。[了解详情](https://web.dev/is-crawable)。"
+    "message": "如果搜索引擎无权抓取您的网页，则无法将它们添加到搜索结果中。[了解详情](https://web.dev/is-crawable/)。"
   },
   "lighthouse-core/audits/seo/is-crawlable.js | failureTitle": {
     "message": "页面已被屏蔽，无法编入索引"
@@ -1032,7 +1098,7 @@
     "message": "页面未被屏蔽，可编入索引"
   },
   "lighthouse-core/audits/seo/link-text.js | description": {
-    "message": "描述性链接文字有助于搜索引擎理解您的内容。[了解详情](https://web.dev/link-text)。"
+    "message": "描述性链接文字有助于搜索引擎理解您的内容。[了解详情](https://web.dev/link-text/)。"
   },
   "lighthouse-core/audits/seo/link-text.js | displayValue": {
     "message": "{itemCount,plural, =1{找到了 1 个链接}other{找到了 # 个链接}}"
@@ -1044,13 +1110,13 @@
     "message": "链接有描述性文字"
   },
   "lighthouse-core/audits/seo/manual/structured-data.js | description": {
-    "message": "运行[结构化数据测试工具](https://search.google.com/structured-data/testing-tool/) 和 [Structured Data Linter](http://linter.structured-data.org/) 可验证结构化数据。[了解详情](https://web.dev/structured-data)。"
+    "message": "运行[结构化数据测试工具](https://search.google.com/structured-data/testing-tool/) 和 [Structured Data Linter](http://linter.structured-data.org/) 可验证结构化数据。[了解详情](https://web.dev/structured-data/)。"
   },
   "lighthouse-core/audits/seo/manual/structured-data.js | title": {
     "message": "结构化数据有效"
   },
   "lighthouse-core/audits/seo/meta-description.js | description": {
-    "message": "元描述可能会被包含在搜索结果中，以简要概括网页内容。[了解详情](https://web.dev/meta-description)。"
+    "message": "元描述可能会被包含在搜索结果中，以简要概括网页内容。[了解详情](https://web.dev/meta-description/)。"
   },
   "lighthouse-core/audits/seo/meta-description.js | explanation": {
     "message": "描述性文字为空。"
@@ -1062,7 +1128,7 @@
     "message": "文档有 meta 描述"
   },
   "lighthouse-core/audits/seo/plugins.js | description": {
-    "message": "搜索引擎无法将插件内容编入索引，而且许多设备都限制或不支持使用插件。[了解详情](https://web.dev/plugins)。"
+    "message": "搜索引擎无法将插件内容编入索引，而且许多设备都限制或不支持使用插件。[了解详情](https://web.dev/plugins/)。"
   },
   "lighthouse-core/audits/seo/plugins.js | failureTitle": {
     "message": "文档使用了插件"
@@ -1071,7 +1137,7 @@
     "message": "文档中没有插件"
   },
   "lighthouse-core/audits/seo/robots-txt.js | description": {
-    "message": "如果 robots.txt 文件的格式不正确，抓取工具可能无法理解您希望以何种方式抓取网站内容或将其编入索引。[了解详情](https://web.dev/robots-txt)。"
+    "message": "如果 robots.txt 文件的格式不正确，抓取工具可能无法理解您希望以何种方式抓取网站内容或将其编入索引。[了解详情](https://web.dev/robots-txt/)。"
   },
   "lighthouse-core/audits/seo/robots-txt.js | displayValueHttpBadCode": {
     "message": "对 robots.txt 的请求返回了 HTTP 状态代码：{statusCode}"
@@ -1089,7 +1155,7 @@
     "message": "robots.txt 有效"
   },
   "lighthouse-core/audits/seo/tap-targets.js | description": {
-    "message": "交互式元素（例如按钮和链接）应足够大 (48x48px)，且其周围应有足够的空间，以便用户轻松点按且避免遮挡其他元素。[了解详情](https://web.dev/tap-targets)。"
+    "message": "交互式元素（例如按钮和链接）应足够大 (48x48px)，且其周围应有足够的空间，以便用户轻松点按且避免遮挡其他元素。[了解详情](https://web.dev/tap-targets/)。"
   },
   "lighthouse-core/audits/seo/tap-targets.js | displayValue": {
     "message": "{decimalProportion, number, percent} 的点按目标大小合适"
@@ -1109,8 +1175,20 @@
   "lighthouse-core/audits/seo/tap-targets.js | title": {
     "message": "点按目标的大小合适"
   },
+  "lighthouse-core/audits/server-response-time.js | description": {
+    "message": "请确保服务器响应主文档的用时较短，因为这会影响到所有其他请求的响应时间。[了解详情](https://web.dev/time-to-first-byte/)。"
+  },
+  "lighthouse-core/audits/server-response-time.js | displayValue": {
+    "message": "根文档花费了 {timeInMs, number, milliseconds} 毫秒"
+  },
+  "lighthouse-core/audits/server-response-time.js | failureTitle": {
+    "message": "请缩短初始服务器响应用时"
+  },
+  "lighthouse-core/audits/server-response-time.js | title": {
+    "message": "初始服务器响应用时较短"
+  },
   "lighthouse-core/audits/service-worker.js | description": {
-    "message": "Service Worker 是一项技术，可让您的应用使用很多渐进式 Web 应用功能，例如离线、添加到主屏幕和推送通知。[了解详情](https://web.dev/service-worker)。"
+    "message": "Service Worker 是一项技术，可让您的应用使用很多渐进式 Web 应用功能，例如离线、添加到主屏幕和推送通知。[了解详情](https://web.dev/service-worker/)。"
   },
   "lighthouse-core/audits/service-worker.js | explanationBadManifest": {
     "message": "此网页由 Service Worker 控制，但由于清单未能解析为有效的 JSON，因此未找到 `start_url`"
@@ -1131,7 +1209,7 @@
     "message": "注册用于控制网页和 `start_url` 的 Service Worker"
   },
   "lighthouse-core/audits/splash-screen.js | description": {
-    "message": "选定主题的启动画面可确保用户在从主屏幕中启动您应用时获得优质体验。[了解详情](https://web.dev/splash-screen)。"
+    "message": "选定主题的启动画面可确保用户在从主屏幕中启动您应用时获得优质体验。[了解详情](https://web.dev/splash-screen/)。"
   },
   "lighthouse-core/audits/splash-screen.js | failureTitle": {
     "message": "未针对自定义启动画面进行配置"
@@ -1140,7 +1218,7 @@
     "message": "已针对自定义启动画面进行配置"
   },
   "lighthouse-core/audits/themed-omnibox.js | description": {
-    "message": "可以为浏览器地址栏设置与您的网站相契合的主题背景。[了解详情](https://web.dev/themed-omnibox)。"
+    "message": "可以为浏览器地址栏设置与您的网站相契合的主题背景。[了解详情](https://web.dev/themed-omnibox/)。"
   },
   "lighthouse-core/audits/themed-omnibox.js | failureTitle": {
     "message": "没有为地址栏设置主题背景颜色。"
@@ -1178,11 +1256,20 @@
   "lighthouse-core/audits/timing-budget.js | title": {
     "message": "时间预算"
   },
+  "lighthouse-core/audits/unsized-images.js | description": {
+    "message": "Always include explicit width and height on image elements to reduce layout shifts and improve CLS. [Learn more](https://web.dev/optimize-cls/#images-without-dimensions)"
+  },
+  "lighthouse-core/audits/unsized-images.js | failureTitle": {
+    "message": "Image elements do not have explicit `width` and `height`"
+  },
+  "lighthouse-core/audits/unsized-images.js | title": {
+    "message": "Image elements have explicit `width` and `height`"
+  },
   "lighthouse-core/audits/user-timings.js | columnType": {
     "message": "类型"
   },
   "lighthouse-core/audits/user-timings.js | description": {
-    "message": "建议使用 User Timing API 检测您的应用，从而衡量应用在关键用户体验中的实际性能。[了解详情](https://web.dev/user-timings)。"
+    "message": "建议使用 User Timing API 检测您的应用，从而衡量应用在关键用户体验中的实际性能。[了解详情](https://web.dev/user-timings/)。"
   },
   "lighthouse-core/audits/user-timings.js | displayValue": {
     "message": "{itemCount,plural, =1{1 项 User Timing 结果}other{# 项 User Timing 结果}}"
@@ -1194,7 +1281,7 @@
     "message": "发现了“{securityOrigin}”的预连接 <link>，但浏览器未使用该连接。请检查并确保您正确地使用了 `crossorigin` 属性。"
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | description": {
-    "message": "建议添加 `preconnect` 或 `dns-prefetch` 资源提示，以尽早与重要的第三方来源建立连接。[了解详情](https://web.dev/uses-rel-preconnect)。"
+    "message": "建议添加 `preconnect` 或 `dns-prefetch` 资源提示，以尽早与重要的第三方来源建立连接。[了解详情](https://web.dev/uses-rel-preconnect/)。"
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | title": {
     "message": "预先连接到必要的来源"
@@ -1206,13 +1293,13 @@
     "message": "发现了“{preloadURL}”的预加载 <link>，但浏览器未使用该链接。请检查并确保您正确地使用了 `crossorigin` 属性。"
   },
   "lighthouse-core/audits/uses-rel-preload.js | description": {
-    "message": "建议使用 `<link rel=preload>` 来优先提取当前在网页加载后期请求的资源。[了解详情](https://web.dev/uses-rel-preload)。"
+    "message": "建议使用 `<link rel=preload>` 来优先提取当前在网页加载后期请求的资源。[了解详情](https://web.dev/uses-rel-preload/)。"
   },
   "lighthouse-core/audits/uses-rel-preload.js | title": {
     "message": "预加载关键请求"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "添加 `<meta name=\"viewport\">` 标记以针对移动设备屏幕优化您的应用。[了解详情](https://web.dev/viewport)。"
+    "message": "添加 `<meta name=\"viewport\">` 标记以针对移动设备屏幕优化您的应用。[了解详情](https://web.dev/viewport/)。"
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "未找到任何 `<meta name=\"viewport\">` 标记"
@@ -1224,7 +1311,7 @@
     "message": "具有包含 `width` 或 `initial-scale` 的 `<meta name=\"viewport\">` 标记"
   },
   "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "您的应用应该在 JavaScript 被禁用时显示一些内容，哪怕只是向用户显示一则警告（告知其必须启用 JavaScript 才能使用该应用）。[了解详情](https://web.dev/without-javascript)。"
+    "message": "您的应用应该在 JavaScript 被禁用时显示一些内容，哪怕只是向用户显示一则警告（告知其必须启用 JavaScript 才能使用该应用）。[了解详情](https://web.dev/without-javascript/)。"
   },
   "lighthouse-core/audits/without-javascript.js | explanation": {
     "message": "网页正文应该能在其脚本不可用时呈现一些内容。"
@@ -1236,7 +1323,7 @@
     "message": "包含一些 JavaScript 未启用时显示的内容"
   },
   "lighthouse-core/audits/works-offline.js | description": {
-    "message": "如果您想构建渐进式 Web 应用，不妨考虑使用 Service Worker，以确保您的应用可离线工作。[了解详情](https://web.dev/works-offline)。"
+    "message": "如果您想构建渐进式 Web 应用，不妨考虑使用 Service Worker，以确保您的应用可离线工作。[了解详情](https://web.dev/works-offline/)。"
   },
   "lighthouse-core/audits/works-offline.js | failureTitle": {
     "message": "当前网页在离线时没有响应，并返回 200"
@@ -1304,8 +1391,20 @@
   "lighthouse-core/config/default-config.js | a11yTablesListsVideoGroupTitle": {
     "message": "表格和列表"
   },
+  "lighthouse-core/config/default-config.js | bestPracticesBrowserCompatGroupTitle": {
+    "message": "浏览器兼容性"
+  },
   "lighthouse-core/config/default-config.js | bestPracticesCategoryTitle": {
     "message": "最佳做法"
+  },
+  "lighthouse-core/config/default-config.js | bestPracticesGeneralGroupTitle": {
+    "message": "常规"
+  },
+  "lighthouse-core/config/default-config.js | bestPracticesTrustSafetyGroupTitle": {
+    "message": "信任与安全"
+  },
+  "lighthouse-core/config/default-config.js | bestPracticesUXGroupTitle": {
+    "message": "用户体验"
   },
   "lighthouse-core/config/default-config.js | budgetsGroupDescription": {
     "message": "性能预算为您的网站的性能设置了标准。"
@@ -1314,7 +1413,7 @@
     "message": "预算"
   },
   "lighthouse-core/config/default-config.js | diagnosticsGroupDescription": {
-    "message": "详细了解您的应用的性能。这些数字不会[直接影响](https://github.com/GoogleChrome/lighthouse/blob/d2ec9ffbb21de9ad1a0f86ed24575eda32c796f0/docs/scoring.md#how-are-the-scores-weighted)性能得分。"
+    "message": "详细了解您的应用的性能。这些数字不会[直接影响](https://web.dev/performance-scoring/)性能得分。"
   },
   "lighthouse-core/config/default-config.js | diagnosticsGroupTitle": {
     "message": "诊断结果"
@@ -1326,7 +1425,7 @@
     "message": "改进首次绘制"
   },
   "lighthouse-core/config/default-config.js | loadOpportunitiesGroupDescription": {
-    "message": "这些建议可以帮助您提高网页加载速度。它们不会[直接影响](https://github.com/GoogleChrome/lighthouse/blob/d2ec9ffbb21de9ad1a0f86ed24575eda32c796f0/docs/scoring.md#how-are-the-scores-weighted)性能得分。"
+    "message": "这些建议可以帮助您提高网页加载速度。它们不会[直接影响](https://web.dev/performance-scoring/)性能得分。"
   },
   "lighthouse-core/config/default-config.js | loadOpportunitiesGroupTitle": {
     "message": "优化建议"
@@ -1397,6 +1496,15 @@
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "缓存 TTL"
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnDuration": {
+    "message": "时长"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnElement": {
+    "message": "元素"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnFailingElem": {
+    "message": "Failing Elements"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnLocation": {
     "message": "位置"
   },
@@ -1421,6 +1529,9 @@
   "lighthouse-core/lib/i18n/i18n.js | columnSource": {
     "message": "来源"
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnStartTime": {
+    "message": "开始时间"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnTimeSpent": {
     "message": "花费的时间"
   },
@@ -1437,10 +1548,10 @@
     "message": "可能达到的节省程度"
   },
   "lighthouse-core/lib/i18n/i18n.js | cumulativeLayoutShiftMetric": {
-    "message": "累积布局偏移"
+    "message": "Cumulative Layout Shift"
   },
   "lighthouse-core/lib/i18n/i18n.js | displayValueByteSavings": {
-    "message": "有望节省 {wastedBytes, number, bytes} KB"
+    "message": "有望节省 {wastedBytes, number, bytes} KiB"
   },
   "lighthouse-core/lib/i18n/i18n.js | displayValueMsSavings": {
     "message": "有望节省 {wastedMs, number, milliseconds} 毫秒"
@@ -1455,7 +1566,7 @@
     "message": "首次 CPU 闲置时间"
   },
   "lighthouse-core/lib/i18n/i18n.js | firstContentfulPaintMetric": {
-    "message": "首次内容绘制时间"
+    "message": "First Contentful Paint"
   },
   "lighthouse-core/lib/i18n/i18n.js | firstMeaningfulPaintMetric": {
     "message": "首次有效绘制时间"
@@ -1467,10 +1578,10 @@
     "message": "图片"
   },
   "lighthouse-core/lib/i18n/i18n.js | interactiveMetric": {
-    "message": "可交互前的耗时"
+    "message": "Time to Interactive"
   },
   "lighthouse-core/lib/i18n/i18n.js | largestContentfulPaintMetric": {
-    "message": "最大内容渲染"
+    "message": "Largest Contentful Paint"
   },
   "lighthouse-core/lib/i18n/i18n.js | maxPotentialFIDMetric": {
     "message": "首次输入延迟最长预估值"
@@ -1491,7 +1602,7 @@
     "message": "{timeInMs, number, seconds} 秒"
   },
   "lighthouse-core/lib/i18n/i18n.js | speedIndexMetric": {
-    "message": "速度指数"
+    "message": "Speed Index"
   },
   "lighthouse-core/lib/i18n/i18n.js | stylesheetResourceType": {
     "message": "样式表"
@@ -1500,7 +1611,7 @@
     "message": "第三方"
   },
   "lighthouse-core/lib/i18n/i18n.js | totalBlockingTimeMetric": {
-    "message": "总阻塞时间"
+    "message": "Total Blocking Time"
   },
   "lighthouse-core/lib/i18n/i18n.js | totalResourceType": {
     "message": "总计"
@@ -1525,6 +1636,12 @@
   },
   "lighthouse-core/lib/lh-error.js | missingRequiredArtifact": {
     "message": "必需的 {artifactName} 收集器未运行。"
+  },
+  "lighthouse-core/lib/lh-error.js | notHtml": {
+    "message": "所提供的网页不是 HTML（以 MIME 类型 {mimeType} 提供）。"
+  },
+  "lighthouse-core/lib/lh-error.js | oldChromeDoesNotSupportFeature": {
+    "message": "这个 Chrome 版本太旧，不支持“{featureName}”。请使用较新版本以查看完整结果。"
   },
   "lighthouse-core/lib/lh-error.js | pageLoadFailed": {
     "message": "Lighthouse 无法可靠地加载您请求的页面。请确保您测试的网址正确无误并且服务器可正确响应所有请求。"
@@ -1558,6 +1675,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
     "message": "显示审核结果"
+  },
+  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
+    "message": "查看计算器。"
   },
   "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
     "message": "初始导航"
@@ -1677,7 +1797,7 @@
     "message": "此次 Lighthouse 运行并不顺利，原因如下："
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
-    "message": "这些值都是估算值，且可能会因时而异。性能得分[仅基于这些指标](https://github.com/GoogleChrome/lighthouse/blob/d2ec9ffbb21de9ad1a0f86ed24575eda32c796f0/docs/scoring.md#how-are-the-scores-weighted)。"
+    "message": "这些都是估算值，且可能会因时而异。系统会直接基于这些指标来[计算性能得分](https://web.dev/performance-scoring/)。"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "已顺利通过审核，但有警告消息"
@@ -1692,7 +1812,7 @@
     "message": "确保您对图片使用了有效的 `amp-img` 标记，以便在第一个视口外自动延迟加载。[了解详情](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)。"
   },
   "stack-packs/packs/amp.js | render_blocking_resources": {
-    "message": "使用 [AMP Optimizer](https://github.com/ampproject/amp-toolbox/tree/master/packages/optimizer) 之类的工具[在服务器端呈现 AMP 布局](https://amp.dev/documentation/guides-and-tutorials/optimize-and-measure/server-side-rendering/)。"
+    "message": "使用 [AMP Optimizer](https://github.com/ampproject/amp-toolbox/tree/main/packages/optimizer) 之类的工具[在服务器端呈现 AMP 布局](https://amp.dev/documentation/guides-and-tutorials/optimize-and-measure/server-side-rendering/)。"
   },
   "stack-packs/packs/amp.js | unminified_css": {
     "message": "请参阅 [AMP 文档](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/style_pages/)以确保您的所有样式均受支持。"
@@ -1731,7 +1851,10 @@
     "message": "在[定义自定义字体](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/css-topics/using-fonts.html)时指定 `@font-display`。"
   },
   "stack-packs/packs/magento.js | offscreen_images": {
-    "message": "您不妨修改产品和目录模板，以利用这一网络平台的[延迟加载](https://web.dev/native-lazy-loading)功能。"
+    "message": "您不妨修改产品和目录模板，以利用这一网络平台的[延迟加载](https://web.dev/native-lazy-loading/)功能。"
+  },
+  "stack-packs/packs/magento.js | server_response_time": {
+    "message": "使用 Magento 的 [Varnish 集成](https://devdocs.magento.com/guides/v2.3/config-guide/varnish/config-varnish.html)。"
   },
   "stack-packs/packs/magento.js | unminified_css": {
     "message": "在您商店的开发者设置中启用“Minify CSS Files”选项。[了解详情](https://devdocs.magento.com/guides/v2.3/performance-best-practices/configuration.html?itm_source=devdocs&itm_medium=search_page&itm_campaign=federated_search&itm_term=minify%20css%20files)。"
@@ -1760,6 +1883,9 @@
   "stack-packs/packs/react.js | redirects": {
     "message": "如果您使用了 React Router，请尽量避免使用 `<Redirect>` 组件进行[路径导航](https://reacttraining.com/react-router/web/api/Redirect)。"
   },
+  "stack-packs/packs/react.js | server_response_time": {
+    "message": "如果您在服务器端呈现任何 React 组件，不妨使用 `renderToNodeStream()` 或 `renderToStaticNodeStream()` 来允许客户端接收并合成标记的各个不同部分，而不是一次性接收整个标记。[了解详情](https://reactjs.org/docs/react-dom-server.html#rendertonodestream)。"
+  },
   "stack-packs/packs/react.js | unminified_css": {
     "message": "如果您的编译系统可自动压缩 CSS 文件大小，请确保您部署的是正式版应用。您可以通过 React Developer Tools 扩展程序执行此项检查。[了解详情](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)。"
   },
@@ -1780,6 +1906,9 @@
   },
   "stack-packs/packs/wordpress.js | render_blocking_resources": {
     "message": "有很多 WordPress 插件可帮助您[内嵌重要资源](https://wordpress.org/plugins/search/critical+css/)或[推迟加载不太重要的资源](https://wordpress.org/plugins/search/defer+css+javascript/)。请注意，这些插件提供的优化可能会导致您的主题背景或插件的功能中断，因此您可能需要更改代码。"
+  },
+  "stack-packs/packs/wordpress.js | server_response_time": {
+    "message": "主题背景、插件和服务器规范都会影响服务器响应用时。建议您查找更优化的主题背景、仔细选择所需的优化插件并/或升级您的服务器。"
   },
   "stack-packs/packs/wordpress.js | total_byte_weight": {
     "message": "建议您在博文列表中显示摘录（例如，通过“更多”标签）、减少给定页面上显示的博文的数量、将您的长博文拆分成多个页面或者使用插件延迟加载评论。"

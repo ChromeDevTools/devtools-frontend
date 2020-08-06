@@ -70,7 +70,7 @@ class Util {
     for (const audit of Object.values(clone.audits)) {
       // Turn 'not-applicable' (LHR <4.0) and 'not_applicable' (older proto versions)
       // into 'notApplicable' (LHR ≥4.0).
-      // @ts-ignore tsc rightly flags that these values shouldn't occur.
+      // @ts-expect-error tsc rightly flags that these values shouldn't occur.
       // eslint-disable-next-line max-len
       if (audit.scoreDisplayMode === 'not_applicable' || audit.scoreDisplayMode === 'not-applicable') {
         audit.scoreDisplayMode = 'notApplicable';
@@ -79,7 +79,7 @@ class Util {
       if (audit.details) {
         // Turn `auditDetails.type` of undefined (LHR <4.2) and 'diagnostic' (LHR <5.0)
         // into 'debugdata' (LHR ≥5.0).
-        // @ts-ignore tsc rightly flags that these values shouldn't occur.
+        // @ts-expect-error tsc rightly flags that these values shouldn't occur.
         if (audit.details.type === undefined || audit.details.type === 'diagnostic') {
           audit.details.type = 'debugdata';
         }
@@ -494,8 +494,18 @@ class Util {
  */
 Util.reportJson = null;
 
+/**
+ * An always-increasing counter for making unique SVG ID suffixes.
+ */
+Util.getUniqueSuffix = (() => {
+  let svgSuffix = 0;
+  return function() {
+    return svgSuffix++;
+  };
+})();
+
 /** @type {I18n} */
-// @ts-ignore: Is set in report renderer.
+// @ts-expect-error: Is set in report renderer.
 Util.i18n = null;
 
 /**
@@ -653,6 +663,29 @@ class DOM {
    */
   createElement(name, className, attrs = {}) {
     const element = this._document.createElement(name);
+    if (className) {
+      element.className = className;
+    }
+    Object.keys(attrs).forEach(key => {
+      const value = attrs[key];
+      if (typeof value !== 'undefined') {
+        element.setAttribute(key, value);
+      }
+    });
+    return element;
+  }
+
+  /**
+   * @param {string} namespaceURI
+   * @param {string} name
+   * @param {string=} className
+   * @param {Object<string, (string|undefined)>=} attrs Attribute key/val pairs.
+   *     Note: if an attribute key has an undefined value, this method does not
+   *     set the attribute on the node.
+   * @return {Element}
+   */
+  createElementNS(namespaceURI, name, className, attrs = {}) {
+    const element = this._document.createElementNS(namespaceURI, name);
     if (className) {
       element.className = className;
     }
@@ -1044,7 +1077,7 @@ Copyright © 2019 Javan Makhmali
  */
 'use strict';
 
-/* globals self CriticalRequestChainRenderer SnippetRenderer Util URL */
+/* globals self CriticalRequestChainRenderer SnippetRenderer ElementScreenshotRenderer Util URL */
 
 /** @typedef {import('./dom.js')} DOM */
 
@@ -1053,9 +1086,12 @@ const URL_PREFIXES = ['http://', 'https://', 'data:'];
 class DetailsRenderer {
   /**
    * @param {DOM} dom
+   * @param {{fullPageScreenshot?: LH.Audit.Details.FullPageScreenshot}} [options]
    */
-  constructor(dom) {
+  constructor(dom, options = {}) {
     this._dom = dom;
+    this._fullPageScreenshot = options.fullPageScreenshot;
+
     /** @type {ParentNode} */
     this._templateContext; // eslint-disable-line no-unused-expressions
   }
@@ -1087,10 +1123,11 @@ class DetailsRenderer {
       // Internal-only details, not for rendering.
       case 'screenshot':
       case 'debugdata':
+      case 'full-page-screenshot':
         return null;
 
       default: {
-        // @ts-ignore tsc thinks this is unreachable, but be forward compatible
+        // @ts-expect-error tsc thinks this is unreachable, but be forward compatible
         // with new unexpected detail types.
         return this._renderUnknown(details.type, details);
       }
@@ -1260,6 +1297,9 @@ class DetailsRenderer {
         }
         case 'node': {
           return this.renderNode(value);
+        }
+        case 'numeric': {
+          return this._renderNumeric(value);
         }
         case 'source-location': {
           return this.renderSourceLocation(value);
@@ -1532,6 +1572,20 @@ class DetailsRenderer {
     if (item.path) element.setAttribute('data-path', item.path);
     if (item.selector) element.setAttribute('data-selector', item.selector);
     if (item.snippet) element.setAttribute('data-snippet', item.snippet);
+
+    if (!item.boundingRect || !this._fullPageScreenshot) {
+      return element;
+    }
+
+    const maxThumbnailSize = {width: 147, height: 100};
+    const elementScreenshot = ElementScreenshotRenderer.render(
+      this._dom,
+      this._templateContext,
+      this._fullPageScreenshot,
+      item.boundingRect,
+      maxThumbnailSize
+    );
+    element.prepend(elementScreenshot);
 
     return element;
   }
@@ -2179,6 +2233,273 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 ;
 /**
+ * @license Copyright 2020 The Lighthouse Authors. All Rights Reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ */
+'use strict';
+
+/**
+ * @fileoverview These functions define {Rect}s and {Size}s using two different coordinate spaces:
+ *   1. Screenshot coords (SC suffix): where 0,0 is the top left of the screenshot image
+ *   2. Display coords (DC suffix): that match the CSS pixel coordinate space of the LH report's page.
+ */
+
+/* globals self Util */
+
+/** @typedef {import('./dom.js')} DOM */
+/** @typedef {LH.Artifacts.Rect} Rect */
+/** @typedef {{width: number, height: number}} Size */
+
+/**
+ * @param {number} value
+ * @param {number} min
+ * @param {number} max
+ */
+function clamp(value, min, max) {
+  if (value < min) return min;
+  if (value > max) return max;
+  return value;
+}
+
+/**
+ * @param {Rect} rect
+ */
+function getRectCenterPoint(rect) {
+  return {
+    x: rect.left + rect.width / 2,
+    y: rect.top + rect.height / 2,
+  };
+}
+
+class ElementScreenshotRenderer {
+  /**
+   * Given the location of an element and the sizes of the preview and screenshot,
+   * compute the absolute positions (in screenshot coordinate scale) of the screenshot content
+   * and the highlighted rect around the element.
+   * @param {Rect} elementRectSC
+   * @param {Size} elementPreviewSizeSC
+   * @param {Size} screenshotSize
+   */
+  static getScreenshotPositions(elementRectSC, elementPreviewSizeSC, screenshotSize) {
+    const elementRectCenter = getRectCenterPoint(elementRectSC);
+
+    // Try to center clipped region.
+    const screenshotLeftVisibleEdge = clamp(
+      elementRectCenter.x - elementPreviewSizeSC.width / 2,
+      0, screenshotSize.width - elementPreviewSizeSC.width
+    );
+    const screenshotTopVisisbleEdge = clamp(
+      elementRectCenter.y - elementPreviewSizeSC.height / 2,
+      0, screenshotSize.height - elementPreviewSizeSC.height
+    );
+
+    return {
+      screenshot: {
+        left: screenshotLeftVisibleEdge,
+        top: screenshotTopVisisbleEdge,
+      },
+      clip: {
+        left: elementRectSC.left - screenshotLeftVisibleEdge,
+        top: elementRectSC.top - screenshotTopVisisbleEdge,
+      },
+    };
+  }
+
+  /**
+   * Render a clipPath SVG element to assist marking the element's rect.
+   * The elementRect and previewSize are in screenshot coordinate scale.
+   * @param {DOM} dom
+   * @param {HTMLElement} maskEl
+   * @param {{left: number, top: number}} positionClip
+   * @param {LH.Artifacts.Rect} elementRect
+   * @param {Size} elementPreviewSize
+   */
+  static renderClipPathInScreenshot(dom, maskEl, positionClip, elementRect, elementPreviewSize) {
+    const clipPathEl = dom.find('clipPath', maskEl);
+    const clipId = `clip-${Util.getUniqueSuffix()}`;
+    clipPathEl.id = clipId;
+    maskEl.style.clipPath = `url(#${clipId})`;
+
+    // Normalize values between 0-1.
+    const top = positionClip.top / elementPreviewSize.height;
+    const bottom = top + elementRect.height / elementPreviewSize.height;
+    const left = positionClip.left / elementPreviewSize.width;
+    const right = left + elementRect.width / elementPreviewSize.width;
+
+    const polygonsPoints = [
+      `0,0             1,0            1,${top}          0,${top}`,
+      `0,${bottom}     1,${bottom}    1,1               0,1`,
+      `0,${top}        ${left},${top} ${left},${bottom} 0,${bottom}`,
+      `${right},${top} 1,${top}       1,${bottom}       ${right},${bottom}`,
+    ];
+    for (const points of polygonsPoints) {
+      clipPathEl.append(dom.createElementNS(
+        'http://www.w3.org/2000/svg', 'polygon', undefined, {points}));
+    }
+  }
+
+  /**
+   * Called externally and must be injected to the report in order to use this renderer.
+   * @param {DOM} dom
+   * @param {LH.Audit.Details.FullPageScreenshot} fullPageScreenshot
+   */
+  static createBackgroundImageStyle(dom, fullPageScreenshot) {
+    const styleEl = dom.createElement('style');
+    styleEl.id = 'full-page-screenshot-style';
+    styleEl.textContent = `
+      .lh-element-screenshot__image {
+        background-image: url(${fullPageScreenshot.data})
+      }`;
+    return styleEl;
+  }
+
+  /**
+   * Installs the lightbox elements and wires up click listeners to all .lh-element-screenshot elements.
+   * @param {DOM} dom
+   * @param {ParentNode} templateContext
+   * @param {LH.Audit.Details.FullPageScreenshot} fullPageScreenshot
+   */
+  static installOverlayFeature(dom, templateContext, fullPageScreenshot) {
+    const reportEl = dom.find('.lh-report', dom.document());
+    const screenshotOverlayClass = 'lh-feature-screenshot-overlay';
+    if (reportEl.classList.contains(screenshotOverlayClass)) return;
+    reportEl.classList.add(screenshotOverlayClass);
+
+    const maxLightboxSize = {
+      width: dom.document().documentElement.clientWidth,
+      height: dom.document().documentElement.clientHeight * 0.75,
+    };
+
+    dom.document().addEventListener('click', e => {
+      const target = /** @type {?HTMLElement} */ (e.target);
+      if (!target) return;
+      const el = /** @type {?HTMLElement} */ (target.closest('.lh-element-screenshot'));
+      if (!el) return;
+
+      const overlay = dom.createElement('div');
+      overlay.classList.add('lh-element-screenshot__overlay');
+      const elementRectSC = {
+        width: Number(el.dataset['rectWidth']),
+        height: Number(el.dataset['rectHeight']),
+        left: Number(el.dataset['rectLeft']),
+        right: Number(el.dataset['rectLeft']) + Number(el.dataset['rectWidth']),
+        top: Number(el.dataset['rectTop']),
+        bottom: Number(el.dataset['rectTop']) + Number(el.dataset['rectHeight']),
+      };
+      overlay.appendChild(ElementScreenshotRenderer.render(
+        dom,
+        templateContext,
+        fullPageScreenshot,
+        elementRectSC,
+        maxLightboxSize
+      ));
+      overlay.addEventListener('click', () => {
+        overlay.remove();
+      });
+
+      reportEl.appendChild(overlay);
+    });
+  }
+
+  /**
+   * Given the size of the element in the screenshot and the total available size of our preview container,
+   * compute the factor by which we need to zoom out to view the entire element with context.
+   * @param {LH.Artifacts.Rect} elementRectSC
+   * @param {Size} renderContainerSizeDC
+   * @return {number}
+   */
+  static _computeZoomFactor(elementRectSC, renderContainerSizeDC) {
+    const targetClipToViewportRatio = 0.75;
+    const zoomRatioXY = {
+      x: renderContainerSizeDC.width / elementRectSC.width,
+      y: renderContainerSizeDC.height / elementRectSC.height,
+    };
+    const zoomFactor = targetClipToViewportRatio * Math.min(zoomRatioXY.x, zoomRatioXY.y);
+    return Math.min(1, zoomFactor);
+  }
+
+  /**
+   * Renders an element with surrounding context from the full page screenshot.
+   * Used to render both the thumbnail preview in details tables and the full-page screenshot in the lightbox.
+   * @param {DOM} dom
+   * @param {ParentNode} templateContext
+   * @param {LH.Audit.Details.FullPageScreenshot} fullPageScreenshot
+   * @param {LH.Artifacts.Rect} elementRectSC Region of screenshot to highlight.
+   * @param {Size} maxRenderSizeDC e.g. maxThumbnailSize or maxLightboxSize.
+   * @return {Element}
+   */
+  static render(dom, templateContext, fullPageScreenshot, elementRectSC, maxRenderSizeDC) {
+    const tmpl = dom.cloneTemplate('#tmpl-lh-element-screenshot', templateContext);
+    const containerEl = dom.find('.lh-element-screenshot', tmpl);
+
+    containerEl.dataset['rectWidth'] = elementRectSC.width.toString();
+    containerEl.dataset['rectHeight'] = elementRectSC.height.toString();
+    containerEl.dataset['rectLeft'] = elementRectSC.left.toString();
+    containerEl.dataset['rectTop'] = elementRectSC.top.toString();
+
+    // Zoom out when highlighted region takes up most of the viewport.
+    // This provides more context for where on the page this element is.
+    const zoomFactor = this._computeZoomFactor(elementRectSC, maxRenderSizeDC);
+
+    const elementPreviewSizeSC = {
+      width: maxRenderSizeDC.width / zoomFactor,
+      height: maxRenderSizeDC.height / zoomFactor,
+    };
+    elementPreviewSizeSC.width = Math.min(fullPageScreenshot.width, elementPreviewSizeSC.width);
+    /* This preview size is either the size of the thumbnail or size of the Lightbox */
+    const elementPreviewSizeDC = {
+      width: elementPreviewSizeSC.width * zoomFactor,
+      height: elementPreviewSizeSC.height * zoomFactor,
+    };
+
+    const positions = ElementScreenshotRenderer.getScreenshotPositions(
+      elementRectSC,
+      elementPreviewSizeSC,
+      {width: fullPageScreenshot.width, height: fullPageScreenshot.height}
+    );
+
+    const contentEl = dom.find('.lh-element-screenshot__content', containerEl);
+    contentEl.style.top = `-${elementPreviewSizeDC.height}px`;
+
+    const imageEl = dom.find('.lh-element-screenshot__image', containerEl);
+    imageEl.style.width = elementPreviewSizeDC.width + 'px';
+    imageEl.style.height = elementPreviewSizeDC.height + 'px';
+
+    imageEl.style.backgroundPositionY = -(positions.screenshot.top * zoomFactor) + 'px';
+    imageEl.style.backgroundPositionX = -(positions.screenshot.left * zoomFactor) + 'px';
+    imageEl.style.backgroundSize =
+      `${fullPageScreenshot.width * zoomFactor}px ${fullPageScreenshot.height * zoomFactor}px`;
+
+    const markerEl = dom.find('.lh-element-screenshot__element-marker', containerEl);
+    markerEl.style.width = elementRectSC.width * zoomFactor + 'px';
+    markerEl.style.height = elementRectSC.height * zoomFactor + 'px';
+    markerEl.style.left = positions.clip.left * zoomFactor + 'px';
+    markerEl.style.top = positions.clip.top * zoomFactor + 'px';
+
+    const maskEl = dom.find('.lh-element-screenshot__mask', containerEl);
+    maskEl.style.width = elementPreviewSizeDC.width + 'px';
+    maskEl.style.height = elementPreviewSizeDC.height + 'px';
+
+    ElementScreenshotRenderer.renderClipPathInScreenshot(
+      dom,
+      maskEl,
+      positions.clip,
+      elementRectSC,
+      elementPreviewSizeSC
+    );
+
+    return containerEl;
+  }
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = ElementScreenshotRenderer;
+} else {
+  self.ElementScreenshotRenderer = ElementScreenshotRenderer;
+}
+;
+/**
  * @license Copyright 2017 The Lighthouse Authors. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
@@ -2207,7 +2528,7 @@ function getFilenamePrefix(lhr) {
   const dateParts = date.toLocaleDateString('en-US', {
     year: 'numeric', month: '2-digit', day: '2-digit',
   }).split('/');
-  // @ts-ignore - parts exists
+  // @ts-expect-error - parts exists
   dateParts.unshift(dateParts.pop());
   const dateStr = dateParts.join('-');
 
@@ -2328,7 +2649,7 @@ if (typeof module !== 'undefined' && module.exports) {
  * the report.
  */
 
-/* globals getFilenamePrefix Util */
+/* globals getFilenamePrefix Util ElementScreenshotRenderer */
 
 /** @typedef {import('./dom')} DOM */
 
@@ -2387,6 +2708,7 @@ class ReportUIFeatures {
     this._setupMediaQueryListeners();
     this._dropDown.setup(this.onDropDownMenuClick);
     this._setupThirdPartyFilter();
+    this._setupElementScreenshotOverlay();
     this._setUpCollapseDetailsAfterPrinting();
     this._resetUIState();
     this._document.addEventListener('keyup', this.onKeyUp);
@@ -2601,6 +2923,15 @@ class ReportUIFeatures {
     });
   }
 
+  _setupElementScreenshotOverlay() {
+    const fullPageScreenshot =
+      this.json.audits['full-page-screenshot'] && this.json.audits['full-page-screenshot'].details;
+    if (!fullPageScreenshot || fullPageScreenshot.type !== 'full-page-screenshot') return;
+
+    ElementScreenshotRenderer.installOverlayFeature(
+      this._dom, this._templateContext, fullPageScreenshot);
+  }
+
   /**
    * From a table with URL entries, finds the rows containing third-party URLs
    * and returns them.
@@ -2806,7 +3137,7 @@ class ReportUIFeatures {
     });
 
     // The popup's window.name is keyed by version+url+fetchTime, so we reuse/select tabs correctly
-    // @ts-ignore - If this is a v2 LHR, use old `generatedTime`.
+    // @ts-expect-error - If this is a v2 LHR, use old `generatedTime`.
     const fallbackFetchTime = /** @type {string} */ (json.generatedTime);
     const fetchTime = json.fetchTime || fallbackFetchTime;
     const windowName = `${json.lighthouseVersion}-${json.requestedUrl}-${fetchTime}`;
@@ -3967,16 +4298,6 @@ if (typeof module !== 'undefined' && module.exports) {
 
 /* globals self, Util, CategoryRenderer */
 
-/**
- * An always-increasing counter for making unique SVG ID suffixes.
- */
-const getUniqueSuffix = (() => {
-  let svgSuffix = 0;
-  return function() {
-    return svgSuffix++;
-  };
-})();
-
 class PwaCategoryRenderer extends CategoryRenderer {
   /**
    * @param {LH.ReportResult.Category} category
@@ -4123,7 +4444,7 @@ class PwaCategoryRenderer extends CategoryRenderer {
     const defsEl = svgRoot.querySelector('defs');
     if (!defsEl) return;
 
-    const idSuffix = getUniqueSuffix();
+    const idSuffix = Util.getUniqueSuffix();
     const elementsToUpdate = defsEl.querySelectorAll('[id]');
     for (const el of elementsToUpdate) {
       const oldId = el.id;
@@ -4179,7 +4500,7 @@ if (typeof module !== 'undefined' && module.exports) {
 /** @typedef {import('./category-renderer')} CategoryRenderer */
 /** @typedef {import('./dom.js')} DOM */
 
-/* globals self, Util, DetailsRenderer, CategoryRenderer, I18n, PerformanceCategoryRenderer, PwaCategoryRenderer */
+/* globals self, Util, DetailsRenderer, CategoryRenderer, I18n, PerformanceCategoryRenderer, PwaCategoryRenderer, ElementScreenshotRenderer */
 
 class ReportRenderer {
   /**
@@ -4346,7 +4667,16 @@ class ReportRenderer {
     Util.i18n = i18n;
     Util.reportJson = report;
 
-    const detailsRenderer = new DetailsRenderer(this._dom);
+    const fullPageScreenshot =
+      report.audits['full-page-screenshot'] && report.audits['full-page-screenshot'].details &&
+      report.audits['full-page-screenshot'].details.type === 'full-page-screenshot' ?
+      report.audits['full-page-screenshot'].details : undefined;
+    const detailsRenderer = new DetailsRenderer(this._dom, {
+      fullPageScreenshot,
+    });
+    const fullPageScreenshotStyleEl = fullPageScreenshot &&
+      ElementScreenshotRenderer.createBackgroundImageStyle(this._dom, fullPageScreenshot);
+
     const categoryRenderer = new CategoryRenderer(this._dom, detailsRenderer);
     categoryRenderer.setTemplateContext(this._templateContext);
 
@@ -4404,6 +4734,7 @@ class ReportRenderer {
     reportFragment.appendChild(reportContainer);
     reportContainer.appendChild(headerContainer);
     reportContainer.appendChild(reportSection);
+    fullPageScreenshotStyleEl && reportContainer.appendChild(fullPageScreenshotStyleEl);
     reportSection.appendChild(this._renderReportFooter(report));
 
     return reportFragment;

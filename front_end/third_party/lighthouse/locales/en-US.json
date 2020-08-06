@@ -416,6 +416,12 @@
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | title": {
     "message": "Use video formats for animated content"
   },
+  "lighthouse-core/audits/byte-efficiency/legacy-javascript.js | description": {
+    "message": "Polyfills and transforms enable legacy browsers to use new JavaScript features. However, many aren't necessary for modern browsers. For your bundled JavaScript, adopt a modern script deployment strategy using module/nomodule feature detection to reduce the amount of code shipped to modern browsers, while retaining support for legacy browsers. [Learn More](https://philipwalton.com/articles/deploying-es2015-code-in-production-today/)"
+  },
+  "lighthouse-core/audits/byte-efficiency/legacy-javascript.js | title": {
+    "message": "Avoid serving legacy JavaScript to modern browsers"
+  },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | description": {
     "message": "Consider lazy-loading offscreen and hidden images after all critical resources have finished loading to lower time to interactive. [Learn more](https://web.dev/offscreen-images/)."
   },
@@ -459,7 +465,7 @@
     "message": "Remove unused CSS"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "Remove unused JavaScript to reduce bytes consumed by network activity. [Learn more](https://web.dev/remove-unused-code/)."
+    "message": "Remove unused JavaScript to reduce bytes consumed by network activity. [Learn more](https://web.dev/unused-javascript/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
     "message": "Remove unused JavaScript"
@@ -689,9 +695,6 @@
   "lighthouse-core/audits/dobetterweb/notification-on-start.js | title": {
     "message": "Avoids requesting the notification permission on page load"
   },
-  "lighthouse-core/audits/dobetterweb/password-inputs-can-be-pasted-into.js | columnFailingElem": {
-    "message": "Failing Elements"
-  },
   "lighthouse-core/audits/dobetterweb/password-inputs-can-be-pasted-into.js | description": {
     "message": "Preventing password pasting undermines good security policy. [Learn more](https://web.dev/password-inputs-can-be-pasted-into/)."
   },
@@ -710,11 +713,8 @@
   "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
     "message": "{itemCount, plural,\n    =1 {1 request not served via HTTP/2}\n    other {# requests not served via HTTP/2}\n    }"
   },
-  "lighthouse-core/audits/dobetterweb/uses-http2.js | failureTitle": {
-    "message": "Does not use HTTP/2 for all of its resources"
-  },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | title": {
-    "message": "Uses HTTP/2 for its own resources"
+    "message": "Use HTTP/2"
   },
   "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | description": {
     "message": "Consider marking your touch and wheel event listeners as `passive` to improve your page's scroll performance. [Learn more](https://web.dev/uses-passive-event-listeners/)."
@@ -746,8 +746,8 @@
   "lighthouse-core/audits/font-display.js | title": {
     "message": "All text remains visible during webfont loads"
   },
-  "lighthouse-core/audits/font-display.js | undeclaredFontURLWarning": {
-    "message": "Lighthouse was unable to automatically check the font-display value for the following URL: {fontURL}."
+  "lighthouse-core/audits/font-display.js | undeclaredFontOriginWarning": {
+    "message": "{fontCountForOrigin, plural, =1 {Lighthouse was unable to automatically check the `font-display` value for the origin {fontOrigin}.} other {Lighthouse was unable to automatically check the `font-display` values for the origin {fontOrigin}.}}"
   },
   "lighthouse-core/audits/image-aspect-ratio.js | columnActual": {
     "message": "Aspect Ratio (Actual)"
@@ -794,8 +794,17 @@
   "lighthouse-core/audits/installable-manifest.js | title": {
     "message": "Web app manifest meets the installability requirements"
   },
+  "lighthouse-core/audits/is-on-https.js | allowed": {
+    "message": "Allowed"
+  },
+  "lighthouse-core/audits/is-on-https.js | blocked": {
+    "message": "Blocked"
+  },
   "lighthouse-core/audits/is-on-https.js | columnInsecureURL": {
     "message": "Insecure URL"
+  },
+  "lighthouse-core/audits/is-on-https.js | columnResolution": {
+    "message": "Request Resolution"
   },
   "lighthouse-core/audits/is-on-https.js | description": {
     "message": "All sites should be protected with HTTPS, even ones that don't handle sensitive data. This includes avoiding [mixed content](https://developers.google.com/web/fundamentals/security/prevent-mixed-content/what-is-mixed-content), where some resources are loaded over HTTP despite the initial request being servedover HTTPS. HTTPS prevents intruders from tampering with or passively listening in on the communications between your app and your users, and is a prerequisite for HTTP/2 and many new web platform APIs. [Learn more](https://web.dev/is-on-https/)."
@@ -809,8 +818,14 @@
   "lighthouse-core/audits/is-on-https.js | title": {
     "message": "Uses HTTPS"
   },
+  "lighthouse-core/audits/is-on-https.js | upgraded": {
+    "message": "Automatically upgraded to HTTPS"
+  },
+  "lighthouse-core/audits/is-on-https.js | warning": {
+    "message": "Allowed with warning"
+  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
-    "message": "This is the element that was identified as the Largest Contentful Paint. [Learn More](https://web.dev/lighthouse-largest-contentful-paint/)"
+    "message": "This is the largest contentful element painted within the viewport. [Learn More](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
   "lighthouse-core/audits/largest-contentful-paint-element.js | displayValue": {
     "message": "{itemCount, plural,\n    =1 {1 element found}\n    other {# elements found}\n    }"
@@ -829,12 +844,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Avoid large layout shifts"
-  },
-  "lighthouse-core/audits/legacy-javascript.js | description": {
-    "message": "Polyfills and transforms enable legacy browsers to use new JavaScript features. However, many aren't necessary for modern browsers. For your bundled JavaScript, adopt a modern script deployment strategy using module/nomodule feature detection to reduce the amount of code shipped to modern browsers, while retaining support for legacy browsers. [Learn More](https://philipwalton.com/articles/deploying-es2015-code-in-production-today/)"
-  },
-  "lighthouse-core/audits/legacy-javascript.js | title": {
-    "message": "Avoid serving legacy JavaScript to modern browsers"
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
     "message": "A fast page load over a cellular network ensures a good mobile user experience. [Learn more](https://web.dev/load-fast-enough-for-pwa/)."
@@ -944,6 +953,27 @@
   "lighthouse-core/audits/network-server-latency.js | title": {
     "message": "Server Backend Latencies"
   },
+  "lighthouse-core/audits/no-unload-listeners.js | description": {
+    "message": "The `unload` event does not fire reliably and listening for it can prevent browser optimizations like the Back-Forward Cache. Consider using the `pagehide` or `visibilitychange` events instead. [Learn More](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+  },
+  "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
+    "message": "Registers an `unload` listener"
+  },
+  "lighthouse-core/audits/no-unload-listeners.js | title": {
+    "message": "Avoids `unload` event listeners"
+  },
+  "lighthouse-core/audits/non-composited-animations.js | description": {
+    "message": "Animations which are not composited can be janky and contribute to CLS. [Learn more](https://developers.google.com/web/fundamentals/performance/rendering/stick-to-compositor-only-properties-and-manage-layer-count)"
+  },
+  "lighthouse-core/audits/non-composited-animations.js | displayValue": {
+    "message": "{itemCount, plural,\n  =1 {# animated element found}\n  other {# animated elements found}\n  }"
+  },
+  "lighthouse-core/audits/non-composited-animations.js | title": {
+    "message": "Avoid non-composited animations"
+  },
+  "lighthouse-core/audits/non-composited-animations.js | unsupportedCSSProperty": {
+    "message": "Unsupported CSS Property"
+  },
   "lighthouse-core/audits/offline-start-url.js | description": {
     "message": "A service worker enables your web app to be reliable in unpredictable network conditions. [Learn more](https://web.dev/offline-start-url/)."
   },
@@ -1052,8 +1082,14 @@
   "lighthouse-core/audits/seo/hreflang.js | failureTitle": {
     "message": "Document doesn't have a valid `hreflang`"
   },
+  "lighthouse-core/audits/seo/hreflang.js | notFullyQualified": {
+    "message": "Relative href value"
+  },
   "lighthouse-core/audits/seo/hreflang.js | title": {
     "message": "Document has a valid `hreflang`"
+  },
+  "lighthouse-core/audits/seo/hreflang.js | unexpectedLanguage": {
+    "message": "Unexpected language code"
   },
   "lighthouse-core/audits/seo/http-status-code.js | description": {
     "message": "Pages with unsuccessful HTTP status codes may not be indexed properly. [Learn more](https://web.dev/http-status-code/)."
@@ -1232,6 +1268,15 @@
   "lighthouse-core/audits/timing-budget.js | title": {
     "message": "Timing budget"
   },
+  "lighthouse-core/audits/unsized-images.js | description": {
+    "message": "Set an explicit width and height on image elements to reduce layout shifts and improve CLS. [Learn more](https://web.dev/optimize-cls/#images-without-dimensions)"
+  },
+  "lighthouse-core/audits/unsized-images.js | failureTitle": {
+    "message": "Image elements do not have explicit `width` and `height`"
+  },
+  "lighthouse-core/audits/unsized-images.js | title": {
+    "message": "Image elements have explicit `width` and `height`"
+  },
   "lighthouse-core/audits/user-timings.js | columnType": {
     "message": "Type"
   },
@@ -1353,7 +1398,7 @@
     "message": "Navigation"
   },
   "lighthouse-core/config/default-config.js | a11yTablesListsVideoGroupDescription": {
-    "message": "These are opportunities to to improve the experience of reading tabular or list data using assistive technology, like a screen reader."
+    "message": "These are opportunities to improve the experience of reading tabular or list data using assistive technology, like a screen reader."
   },
   "lighthouse-core/config/default-config.js | a11yTablesListsVideoGroupTitle": {
     "message": "Tables and lists"
@@ -1468,6 +1513,9 @@
   },
   "lighthouse-core/lib/i18n/i18n.js | columnElement": {
     "message": "Element"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnFailingElem": {
+    "message": "Failing Elements"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnLocation": {
     "message": "Location"
@@ -1600,6 +1648,12 @@
   },
   "lighthouse-core/lib/lh-error.js | missingRequiredArtifact": {
     "message": "Required {artifactName} gatherer did not run."
+  },
+  "lighthouse-core/lib/lh-error.js | notHtml": {
+    "message": "The page provided is not HTML (served as MIME type {mimeType})."
+  },
+  "lighthouse-core/lib/lh-error.js | oldChromeDoesNotSupportFeature": {
+    "message": "This version of Chrome is too old to support '{featureName}'. Use a newer version to see full results."
   },
   "lighthouse-core/lib/lh-error.js | pageLoadFailed": {
     "message": "Lighthouse was unable to reliably load the page you requested. Make sure you are testing the correct URL and that the server is properly responding to all requests."
@@ -1770,7 +1824,7 @@
     "message": "Ensure that you are you using valid `amp-img` tags for your images which automatically lazy-load outside the first viewport. [Learn more](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)."
   },
   "stack-packs/packs/amp.js | render_blocking_resources": {
-    "message": "Use tools such as [AMP Optimizer](https://github.com/ampproject/amp-toolbox/tree/master/packages/optimizer) to [server-side render AMP layouts](https://amp.dev/documentation/guides-and-tutorials/optimize-and-measure/server-side-rendering/)."
+    "message": "Use tools such as [AMP Optimizer](https://github.com/ampproject/amp-toolbox/tree/main/packages/optimizer) to [server-side render AMP layouts](https://amp.dev/documentation/guides-and-tutorials/optimize-and-measure/server-side-rendering/)."
   },
   "stack-packs/packs/amp.js | unminified_css": {
     "message": "Refer to the [AMP documentation](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/style_pages/) to ensure all your styles are supported."

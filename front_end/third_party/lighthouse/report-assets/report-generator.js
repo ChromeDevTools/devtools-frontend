@@ -14,7 +14,7 @@
 
 /* global Runtime */
 
-// @ts-ignore: Runtime.cachedResources exists in Devtools. https://source.chromium.org/chromium/chromium/src/+/master:third_party/devtools-frontend/src/front_end/root/Runtime.js;l=1169
+// @ts-expect-error: Runtime.cachedResources exists in Devtools. https://source.chromium.org/chromium/chromium/src/+/master:third_party/devtools-frontend/src/front_end/root/Runtime.js;l=1169
 const cachedResources = Runtime.cachedResources;
 
 // Getters are necessary because the DevTools bundling processes

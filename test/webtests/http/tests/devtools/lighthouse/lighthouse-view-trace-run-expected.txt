@@ -18,6 +18,7 @@ critical-request-chains
 cumulative-layout-shift
 diagnostics
 dom-size
+duplicated-javascript
 efficient-animated-content
 estimated-input-latency
 final-screenshot
@@ -29,6 +30,7 @@ interactive
 largest-contentful-paint
 largest-contentful-paint-element
 layout-shift-elements
+legacy-javascript
 long-tasks
 main-thread-tasks
 mainthread-work-breakdown
@@ -38,6 +40,7 @@ network-requests
 network-rtt
 network-server-latency
 no-document-write
+non-composited-animations
 offscreen-images
 performance-budget
 redirects
@@ -52,6 +55,7 @@ total-blocking-time
 total-byte-weight
 unminified-css
 unminified-javascript
+unsized-images
 unused-css-rules
 unused-javascript
 user-timings

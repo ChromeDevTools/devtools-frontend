@@ -18,8 +18,8 @@ template("copy_to_gen") {
         [ devtools_location_prepend + "scripts/build/ninja/copy-files.js" ] +
         sources
 
-    _copy_src = rebase_path(".", root_build_dir) + "/"
-    _copy_dest = "gen/" + rebase_path(_copy_src, "../../")
+    _copy_src = rebase_path(get_path_info(target_name, "dir"))
+    _copy_dest = rebase_path(target_gen_dir)
 
     args = [
       rebase_path(
@@ -63,9 +63,9 @@ template("copy_sources_to_resources") {
                        root_gen_dir + "/" + devtools_location + "front_end",
                        "")
 
-    _copy_src = rebase_path(".", root_build_dir) + "/"
-    _abs_resources_out = rebase_path(resources_out_dir, root_build_dir)
-    _copy_dest = "$_abs_resources_out$_front_end_module_name"
+    _copy_src = rebase_path(get_path_info(target_name, "dir"))
+    _copy_dest = rebase_path(
+            "$root_build_dir/resources/inspector$_front_end_module_name")
 
     args = [
       rebase_path(
@@ -78,7 +78,6 @@ template("copy_sources_to_resources") {
 
     outputs = []
     foreach(_input, sources) {
-      # print("$resources_out_dir$_front_end_module_name/$_input")
       outputs += [ "$resources_out_dir$_front_end_module_name/$_input" ]
     }
   }

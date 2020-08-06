@@ -202,6 +202,7 @@ export class MainImpl {
       'backgroundServicesNotifications',
       'backgroundServicesPushMessaging',
       'backgroundServicesPaymentHandler',
+      'customKeyboardShortcuts',
       'issuesPane',
     ]);
 

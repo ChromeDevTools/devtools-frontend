@@ -15,6 +15,7 @@ group("front_end") {
     "browser_sdk:bundle",
     "changes:bundle",
     "client_variations:bundle",
+    "cm_modes:bundle",
     "color_picker:bundle",
     "common:bundle",
     "component_docs",

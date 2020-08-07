@@ -480,11 +480,11 @@ describe('drawGridAreaNames', () => {
       areaBounds: [
         {
           name: 'foo',
-          bounds: {minX: 0, maxX: 0, minY: 0, maxY: 0},
+          bounds: {allPoints: [{x: 0, y: 0}]},
         },
         {
           name: 'bar',
-          bounds: {minX: 0, maxX: 0, minY: 0, maxY: 0},
+          bounds: {allPoints: [{x: 0, y: 0}]},
         },
       ],
       expectedLabels: [
@@ -497,11 +497,11 @@ describe('drawGridAreaNames', () => {
       areaBounds: [
         {
           name: 'foo',
-          bounds: {minX: 125, maxX: 376, minY: 22, maxY: 428},
+          bounds: {allPoints: [{x: 125, y: 22}]},
         },
         {
           name: 'bar',
-          bounds: {minX: 678, maxX: 1092, minY: 435, maxY: 450},
+          bounds: {allPoints: [{x: 678, y: 435}]},
         },
       ],
       expectedLabels: [

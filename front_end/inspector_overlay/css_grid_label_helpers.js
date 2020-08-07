@@ -5,7 +5,7 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
-import {AreaBounds, Bounds} from './common.js';  // eslint-disable-line no-unused-vars
+import {AreaBounds, Bounds, Position} from './common.js';  // eslint-disable-line no-unused-vars
 
 /**
  * There are 12 different types of arrows for labels.
@@ -69,9 +69,6 @@ let GridPositionNormalizedData;  // eslint-disable-line no-unused-vars
 
 /** @typedef {!{computedSize: number, x: number, y: number}} */
 let TrackSize;  // eslint-disable-line no-unused-vars
-
-/** @typedef {!{x: number, y: number}} */
-let Position;  // eslint-disable-line no-unused-vars
 
 /** @typedef {!{
  * rotationAngle?: number,
@@ -395,8 +392,12 @@ export function drawGridAreaNames(container, areaBounds) {
   for (const {name, bounds} of areaBounds) {
     const element = _createLabelElement(container, name);
 
-    element.style.left = bounds.minX + 'px';
-    element.style.top = bounds.minY + 'px';
+    // The list of all points comes from the path created by the backend. This
+    // path is a rectangle with its starting point being the top left corner.
+    const topLeftCorner = bounds.allPoints[0];
+
+    element.style.left = topLeftCorner.x + 'px';
+    element.style.top = topLeftCorner.y + 'px';
   }
 }
 

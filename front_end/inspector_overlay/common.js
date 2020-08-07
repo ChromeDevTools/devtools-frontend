@@ -5,7 +5,10 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
-/** @typedef {!{minX: number, maxX: number, minY: number, maxY: number, width?: number, height?: number}} */
+/** @typedef {!{x: number, y: number}} */
+export let Position;  // eslint-disable-line no-unused-vars
+
+/** @typedef {!{minX?: number, maxX?: number, minY?: number, maxY?: number, width?: number, height?: number, allPoints?: Position[]}} */
 export let Bounds;  // eslint-disable-line no-unused-vars
 
 /** @typedef {!{name: String, bounds: Bounds}} */

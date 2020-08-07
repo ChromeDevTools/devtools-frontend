@@ -7,7 +7,11 @@ PRESUBMIT.py
 OWNERS
 ENG_REVIEW_OWNERS
 
-third_party
 test
 htaccess
 v8/include
+
+/out
+
+# Exclude the root third_party, but not front_end/third_party, etc
+/third_party

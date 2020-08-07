@@ -40,7 +40,6 @@ ApplicationTestRunner.dumpServiceWorkersView = function() {
   const swView = UI.panels.resources.visibleView;
 
   return swView._currentWorkersView._sectionList.childTextNodes()
-      .concat(swView._otherWorkersView._sectionList.childTextNodes())
       .map(function(node) {
         if (node.textContent === 'Received ' + (new Date(0)).toLocaleString()) {
           return 'Invalid scriptResponseTime (unix epoch)';

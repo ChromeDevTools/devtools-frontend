@@ -81,8 +81,8 @@ let Position;  // eslint-disable-line no-unused-vars
  * negativeRowLineNumberPositions?: Position[],
  * positiveColumnLineNumberPositions?: Position[],
  * negativeColumnLineNumberPositions?: Position[],
- * rowLineNameOffsets?: {name: string, offset: number}[],
- * columnLineNameOffsets?: {name: string, offset: number}[],
+ * rowLineNameOffsets?: {name: string, x: number, y: number}[],
+ * columnLineNameOffsets?: {name: string, x: number, y: number}[],
  * gridHighlightConfig?: Object
  * } */
 let GridHighlightConfig;  // eslint-disable-line no-unused-vars
@@ -162,28 +162,35 @@ function* positionIterator(positions, axis) {
   }
 }
 
-/**
- * Massage the list of line name offsets given by the backend for easier consumption.
- *
- * @param {!{name: string, offset: number}[]} nameOffsets
- * @return {!{offsets: number[], names: string[][]}}
- */
-function _normalizeNameOffsets(nameOffsets) {
-  nameOffsets.sort((a, b) => a.offset - b.offset);
+const last = array => array[array.length - 1];
+const first = array => array[0];
 
-  const offsets = [];
+/**
+ * Massage the list of line name positions given by the backend for easier consumption.
+ *
+ * @param {!{name: string, x: number, y: number}[]} namePositions
+ * @return {!{positions: {x: number, y: number}[], names: string[][]}}
+ */
+function _normalizeNameData(namePositions) {
+  const positions = [];
   const names = [];
 
-  for (const {name, offset} of nameOffsets) {
-    if (offsets.length && Math.round(offset) === offsets[offsets.length - 1]) {
-      names[names.length - 1].push(name);
+  for (const {name, x, y} of namePositions) {
+    const normalizedX = Math.round(x);
+    const normalizedY = Math.round(y);
+
+    // If the same position already exists, just add the name to the existing entry, as there can be
+    // several custom names for a single line.
+    const existingIndex = positions.findIndex(({x, y}) => x === normalizedX && y === normalizedY);
+    if (existingIndex > -1) {
+      names[existingIndex].push(name);
     } else {
-      offsets.push(Math.round(offset));
+      positions.push({x: normalizedX, y: normalizedY});
       names.push([name]);
     }
   }
 
-  return {offsets, names};
+  return {positions, names};
 }
 
 /**
@@ -227,25 +234,23 @@ export function _normalizePositionData(config, bounds) {
   // data is present.
 
   if (config.gridHighlightConfig.showLineNames) {
-    const rowData = _normalizeNameOffsets(config.rowLineNameOffsets);
+    const rowData = _normalizeNameData(config.rowLineNameOffsets);
     data.rows.positive = {
-      positions: rowData.offsets.map(offset => ({x: bounds.minX, y: bounds.minY + offset})),
+      positions: rowData.positions,
       names: rowData.names,
-      hasFirst: rowData.offsets[0] === 0,
-      hasLast: rowData.offsets[rowData.offsets.length - 1] === height
+      hasFirst: rowData.positions.length && first(rowData.positions).y === data.bounds.minY,
+      hasLast: rowData.positions.length && last(rowData.positions).y === data.bounds.maxY
     };
 
-    const columnData = _normalizeNameOffsets(config.columnLineNameOffsets);
+    const columnData = _normalizeNameData(config.columnLineNameOffsets);
     data.columns.positive = {
-      positions: columnData.offsets.map(offset => ({x: bounds.minX + offset, y: bounds.minY})),
+      positions: columnData.positions,
       names: columnData.names,
-      hasFirst: columnData.offsets[0] === 0,
-      hasLast: columnData.offsets[columnData.offsets.length - 1] === width
+      hasFirst: columnData.positions.length && first(columnData.positions).x === data.bounds.minX,
+      hasLast: columnData.positions.length && last(columnData.positions).x === data.bounds.maxX
     };
   } else {
     const normalizeXY = ({x, y}) => ({x: Math.round(x), y: Math.round(y)});
-    const last = array => array[array.length - 1];
-    const first = array => array[0];
     // TODO (alexrudenko): hasFirst & hasLast checks won't probably work for rotated grids.
     if (config.positiveRowLineNumberPositions) {
       data.rows.positive = {

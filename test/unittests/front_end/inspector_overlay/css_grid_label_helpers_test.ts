@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {drawGridAreaNamesAndAssertLabels, drawGridLineNumbersAndAssertLabels, drawMultipleGridLineNumbersAndAssertLabels, getGridLineNumberLabelContainer, getGridTrackSizesLabelContainer, initFrameForGridLabels, initFrameForMultipleGridLabels} from '../helpers/InspectorOverlayHelpers.js';
+import {drawGridAreaNamesAndAssertLabels, drawGridLineNumbersAndAssertLabels, drawMultipleGridLineNumbersAndAssertLabels, getGridLineNumberLabelContainer, getGridTrackSizesLabelContainer, initFrameForGridLabels, initFrameForMultipleGridLabels, drawGridLineNamesAndAssertLabels} from '../helpers/InspectorOverlayHelpers.js';
 import {drawGridLineNumbers, drawGridTrackSizes, _normalizePositionData} from '../../../../front_end/inspector_overlay/css_grid_label_helpers.js';
 
 describe('drawGridLineNumbers label creation', () => {
@@ -429,8 +429,8 @@ describe('_normalizePositionData', () => {
           gridHighlightConfig: {showLineNames: true},
           positiveRowLineNumberPositions: [{x: 0, y: 10}, {x: 0, y: 20}, {x: 0, y: 30}],
           positiveColumnLineNumberPositions: [{x: 10, y: 0}, {x: 20, y: 0}, {x: 30, y: 0}],
-          rowLineNameOffsets: [{name: 'foo', offset: 5}],
-          columnLineNameOffsets: [{name: 'bar', offset: 15}, {name: 'baz', offset: 17}],
+          rowLineNameOffsets: [{name: 'foo', x: 0, y: 10}],
+          columnLineNameOffsets: [{name: 'bar', x: 10, y: 0}, {name: 'baz', x: 20, y: 0}],
         },
         {minX: 0, maxX: 30, minY: 0, maxY: 30});
 
@@ -447,18 +447,21 @@ describe('_normalizePositionData', () => {
         {
           gridHighlightConfig: {showLineNames: true},
           rowLineNameOffsets: [
-            {name: 'foo', offset: 5},
-            {name: 'bar', offset: 5},
-            {name: 'baz', offset: 5},
-            {name: 'test', offset: 20},
+            {name: 'foo', x: 0, y: 5},
+            {name: 'bar', x: 0, y: 5},
+            {name: 'test', x: 0, y: 20},
+            {name: 'baz', x: 0, y: 5},
           ],
-          columnLineNameOffsets: [{name: 'edge-start', offset: 15}, {name: 'edge-end', offset: 17}],
+          columnLineNameOffsets: [
+            {name: 'edge-start', x: 15, y: 0},
+            {name: 'edge-end', x: 17, y: 0},
+          ],
         },
         {minX: 0, maxX: 30, minY: 0, maxY: 30});
 
-    assert.deepStrictEqual(data.rows.positive.positions.map(p => p.y), [5, 20]);
+    assert.deepStrictEqual(data.rows.positive.positions, [{x: 0, y: 5}, {x: 0, y: 20}]);
     assert.deepStrictEqual(data.rows.positive.names, [['foo', 'bar', 'baz'], ['test']]);
-    assert.deepStrictEqual(data.columns.positive.positions.map(p => p.x), [15, 17]);
+    assert.deepStrictEqual(data.columns.positive.positions, [{x: 15, y: 0}, {x: 17, y: 0}]);
     assert.deepStrictEqual(data.columns.positive.names, [['edge-start'], ['edge-end']]);
   });
 });
@@ -582,5 +585,67 @@ describe('drawGridTrackSizes label creation', () => {
       assert.strictEqual(el.children.length, expectedLabels.length, 'The right number of labels got created');
       assert.strictEqual(el.textContent, expectedLabels.join(''), 'The labels text is correct');
     });
+  }
+});
+
+describe('drawGridLineNames', () => {
+  beforeEach(initFrameForGridLabels);
+
+  const TESTS = [
+    {
+      description: 'places labels in the right spot',
+      rowLineNameOffsets: [
+        {x: 100, y: 100, name: 'first-row'},
+        {x: 100, y: 200, name: 'second-row'},
+        {x: 100, y: 300, name: 'third-row'},
+      ],
+      columnLineNameOffsets: [
+        {x: 100, y: 100, name: 'first-col'},
+        {x: 200, y: 100, name: 'second-col'},
+        {x: 300, y: 100, name: 'third-col'},
+      ],
+      expectedLabels: [
+        {type: 'row', textContent: 'first-row', y: 100},
+        {type: 'row', textContent: 'second-row', y: 200},
+        {type: 'row', textContent: 'third-row', y: 300},
+        {type: 'column', textContent: 'first-col', x: 100},
+        {type: 'column', textContent: 'second-col', x: 200},
+        {type: 'column', textContent: 'third-col', x: 300},
+      ],
+    },
+    {
+      description: 'groups labels together when they are for the same line',
+      rowLineNameOffsets: [],
+      columnLineNameOffsets: [
+        {x: 100, y: 100, name: 'first-col'},
+        {x: 100, y: 100, name: 'also-first-col'},
+        {x: 200, y: 100, name: 'second-col'},
+        {x: 100, y: 100, name: 'and-another-first-col'},
+        {x: 200, y: 100, name: 'also-second-col'},
+      ],
+      expectedLabels: [
+        {type: 'column', textContent: 'first-colalso-first-coland-another-first-col'},
+        {type: 'column', textContent: 'second-colalso-second-col'},
+      ],
+    },
+  ];
+
+  for (const {description, rowLineNameOffsets, columnLineNameOffsets, expectedLabels} of TESTS) {
+    it(description,
+       () => drawGridLineNamesAndAssertLabels(
+           {
+             gridHighlightConfig: {
+               showLineNames: true,
+             },
+             rowLineNameOffsets,
+             columnLineNameOffsets,
+           },
+           {
+             minX: 100,
+             maxX: 300,
+             minY: 100,
+             maxY: 300,
+           },
+           expectedLabels));
   }
 });

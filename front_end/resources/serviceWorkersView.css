@@ -120,18 +120,13 @@
 .service-workers-this-origin {
   flex-shrink: 0;
   flex-grow: 0;
-}
-
-.service-workers-this-origin,
-.service-workers-other-origin {
   min-width: 400px;
 }
 
-.service-worker-has-current .service-workers-other-origin {
-  margin-top: 16px;
+.service-worker-has-current {
   border-top: 1px solid rgb(230 230 230);
 }
 
-.service-worker-list-empty .service-workers-other-origin {
+.service-worker-list-empty {
   display: none;
 }

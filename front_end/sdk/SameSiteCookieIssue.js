@@ -28,16 +28,83 @@ export class SameSiteCookieIssue extends Issue {
   }
 
   /**
-   * Calculates an issue code from a reason and an operation. All these together
+   * Returns an array of issues from a given SameSiteCookieIssueDetails.
+   *
+   * @param {!Protocol.Audits.SameSiteCookieIssueDetails} sameSiteDetails
+   * @return {!Array<!Issue>}
+   */
+  static createIssuesFromSameSiteDetails(sameSiteDetails) {
+    /** @type {!Array<!Issue>} */
+    const issues = [];
+
+    // Exclusion reasons have priority. It means a cookie was blocked. Create an issue
+    // for every exclusion reason but ignore warning reasons if the cookie was blocked.
+    // Some exclusion reasons are dependent on warning reasons existing in order to produce an issue.
+    if (sameSiteDetails.cookieExclusionReasons && sameSiteDetails.cookieExclusionReasons.length > 0) {
+      for (const exclusionReason of sameSiteDetails.cookieExclusionReasons) {
+        const code = SameSiteCookieIssue.codeForSameSiteDetails(
+            exclusionReason, sameSiteDetails.cookieWarningReasons, sameSiteDetails.operation,
+            sameSiteDetails.cookieUrl);
+        if (code) {
+          issues.push(new SameSiteCookieIssue(code, sameSiteDetails));
+        }
+      }
+      return issues;
+    }
+
+    if (sameSiteDetails.cookieWarningReasons) {
+      for (const warningReason of sameSiteDetails.cookieWarningReasons) {
+        // warningReasons should be an empty array here.
+        const code = SameSiteCookieIssue.codeForSameSiteDetails(
+            warningReason, [], sameSiteDetails.operation, sameSiteDetails.cookieUrl);
+        if (code) {
+          issues.push(new SameSiteCookieIssue(code, sameSiteDetails));
+        }
+      }
+    }
+    return issues;
+  }
+
+  /**
+   * Calculates an issue code from a reason, an operation, and an array of warningReasons. All these together
    * can uniquely identify a specific SameSite cookie issue.
+   * warningReasons is only needed for some SameSiteCookieExclusionReason in order to determine if an issue should be raised.
+   * It is not required if reason is a SameSiteCookieWarningReason.
    *
    * @param {!Protocol.Audits.SameSiteCookieExclusionReason|!Protocol.Audits.SameSiteCookieWarningReason} reason
+   * @param {!Array<!Protocol.Audits.SameSiteCookieWarningReason>} warningReasons
    * @param {!Protocol.Audits.SameSiteCookieOperation} operation
    * @param {string|undefined} cookieUrl
+   * @returns {?string}
    */
-  static codeForSameSiteDetails(reason, operation, cookieUrl) {
+  static codeForSameSiteDetails(reason, warningReasons, operation, cookieUrl) {
     const isURLSecure = cookieUrl && (cookieUrl.startsWith('https://') || cookieUrl.startsWith('wss://'));
     const secure = isURLSecure ? 'Secure' : 'Insecure';
+
+    if (reason === Protocol.Audits.SameSiteCookieExclusionReason.ExcludeSameSiteStrict ||
+        reason === Protocol.Audits.SameSiteCookieExclusionReason.ExcludeSameSiteLax) {
+      if (warningReasons && warningReasons.length > 0) {
+        if (warningReasons.includes(Protocol.Audits.SameSiteCookieWarningReason.WarnSameSiteStrictLaxDowngradeStrict)) {
+          return [
+            Protocol.Audits.InspectorIssueCode.SameSiteCookieIssue, 'ExcludeNavigationContextDowngrade', secure
+          ].join('::');
+        }
+
+        if (warningReasons.includes(
+                Protocol.Audits.SameSiteCookieWarningReason.WarnSameSiteStrictCrossDowngradeStrict) ||
+            warningReasons.includes(Protocol.Audits.SameSiteCookieWarningReason.WarnSameSiteStrictCrossDowngradeLax) ||
+            warningReasons.includes(Protocol.Audits.SameSiteCookieWarningReason.WarnSameSiteLaxCrossDowngradeStrict) ||
+            warningReasons.includes(Protocol.Audits.SameSiteCookieWarningReason.WarnSameSiteLaxCrossDowngradeLax)) {
+          return [
+            Protocol.Audits.InspectorIssueCode.SameSiteCookieIssue, 'ExcludeContextDowngrade', operation, secure
+          ].join('::');
+        }
+      }
+      // ExcludeSameSiteStrict and ExcludeSameSiteLax require being paired with an appropriate warning. We didn't
+      // find one of those warnings so return null to indicate there shouldn't be an issue created.
+      return null;
+    }
+
     if (reason === Protocol.Audits.SameSiteCookieWarningReason.WarnSameSiteStrictLaxDowngradeStrict) {
       return [Protocol.Audits.InspectorIssueCode.SameSiteCookieIssue, reason, secure].join('::');
     }
@@ -256,7 +323,7 @@ const sameSiteNoneInsecureWarnSet = {
 const schemefulSameSiteArticles = [];
 
 const resolveBySentenceForDowngrade =
-    ls`Resolve this issue by migrating your site entirely to HTTPS. It is also recommended to mark the cookie with the |Secure| attribute if that is not already the case.`;
+    ls`Resolve this issue by migrating your site (as defined by the eTLD+1) entirely to HTTPS. It is also recommended to mark the cookie with the |Secure| attribute if that is not already the case.`;
 
 /**
  * @param {boolean} isSecure
@@ -267,10 +334,27 @@ function sameSiteWarnStrictLaxDowngradeStrict(isSecure) {
   return {
     title: ls`Migrate entirely to HTTPS to continue having cookies sent on same-site requests`,
     message: () => textMessageWithResolutions(
-        ls`A cookie is being sent from ${origin} context to ${
-            destination} origin on a navigation and is specified with |SameSite=Strict|.
+        ls`A cookie is being sent to ${destination} origin from ${origin} context on a navigation.
         Because this cookie is being sent across schemes on the same site, it will not be sent in a future version of Chrome.
-        This behavior protects user data from request forgery by network attackers.`,
+        This behavior enhances the |SameSite| attribute’s protection of user data from request forgery by network attackers.`,
+        resolveBySentenceForDowngrade, []),
+    issueKind: IssueKind.BreakingChange,
+    links: schemefulSameSiteArticles,
+  };
+}
+
+/**
+ * @param {boolean} isSecure
+ */
+function sameSiteExcludeNavigationContextDowngrade(isSecure) {
+  const destination = isSecure ? ls`a secure` : ls`an insecure`;
+  const origin = !isSecure ? ls`a secure` : ls`an insecure`;
+  return {
+    title: ls`Migrate entirely to HTTPS to have cookies sent on same-site requests`,
+    message: () => textMessageWithResolutions(
+        ls`A cookie was not sent to ${destination} origin from ${origin} context on a navigation.
+        Because this cookie would have been sent across schemes on the same site, it was not sent.
+        This behavior enhances the |SameSite| attribute’s protection of user data from request forgery by network attackers.`,
         resolveBySentenceForDowngrade, []),
     issueKind: IssueKind.BreakingChange,
     links: schemefulSameSiteArticles,
@@ -286,10 +370,27 @@ function sameSiteWarnCrossDowngradeRead(isSecure) {
   return {
     title: ls`Migrate entirely to HTTPS to continue having cookies sent to same-site subresources`,
     message: () => textMessageWithResolutions(
-        ls`A cookie is being sent from ${origin} context to ${
-            destination} origin and is specified with |SameSite=Strict| or |SameSite=Lax|.
+        ls`A cookie is being sent to ${destination} origin from ${origin} context.
         Because this cookie is being sent across schemes on the same site, it will not be sent in a future version of Chrome.
-        This behavior protects user data from request forgery by network attackers.`,
+        This behavior enhances the |SameSite| attribute’s protection of user data from request forgery by network attackers.`,
+        resolveBySentenceForDowngrade, []),
+    issueKind: IssueKind.BreakingChange,
+    links: schemefulSameSiteArticles,
+  };
+}
+
+/**
+ * @param {boolean} isSecure
+ */
+function sameSiteExcludeContextDowngradeRead(isSecure) {
+  const destination = isSecure ? ls`a secure` : ls`an insecure`;
+  const origin = !isSecure ? ls`a secure` : ls`an insecure`;
+  return {
+    title: ls`Migrate entirely to HTTPS to have cookies sent to same-site subresources`,
+    message: () => textMessageWithResolutions(
+        ls`A cookie was not sent to ${destination} origin from ${origin} context.
+        Because this cookie would have been sent across schemes on the same site, it was not sent.
+        This behavior enhances the |SameSite| attribute’s protection of user data from request forgery by network attackers.`,
         resolveBySentenceForDowngrade, []),
     issueKind: IssueKind.BreakingChange,
     links: schemefulSameSiteArticles,
@@ -305,10 +406,27 @@ function sameSiteWarnCrossDowngradeSet(isSecure) {
   return {
     title: ls`Migrate entirely to HTTPS to continue allowing cookies to be set by same-site subresources`,
     message: () => textMessageWithResolutions(
-        ls`A cookie is being set by ${origin} origin in ${
-            destination} context and is specified with |SameSite=Strict| or |SameSite=Lax|.
+        ls`A cookie is being set by ${origin} origin in ${destination} context.
         Because this cookie is being set across schemes on the same site, it will be blocked in a future version of Chrome.
-        This behavior protects user data from request forgery by network attackers.`,
+        This behavior enhances the |SameSite| attribute’s protection of user data from request forgery by network attackers.`,
+        resolveBySentenceForDowngrade, []),
+    issueKind: IssueKind.BreakingChange,
+    links: schemefulSameSiteArticles,
+  };
+}
+
+/**
+ * @param {boolean} isSecure
+ */
+function sameSiteExcludeContextDowngradeSet(isSecure) {
+  const destination = isSecure ? ls`a secure` : ls`an insecure`;
+  const origin = !isSecure ? ls`a secure` : ls`an insecure`;
+  return {
+    title: ls`Migrate entirely to HTTPS to allow cookies to be set by same-site subresources`,
+    message: () => textMessageWithResolutions(
+        ls`A cookie was not set by ${origin} origin in ${destination} context.
+        Because this cookie would have been set across schemes on the same site, it was blocked.
+        This behavior enhances the |SameSite| attribute’s protection of user data from request forgery by network attackers.`,
         resolveBySentenceForDowngrade, []),
     issueKind: IssueKind.BreakingChange,
     links: schemefulSameSiteArticles,
@@ -333,5 +451,13 @@ const issueDescriptions = new Map([
   ['SameSiteCookieIssue::WarnCrossDowngrade::ReadCookie::Secure', sameSiteWarnCrossDowngradeRead(true)],
   ['SameSiteCookieIssue::WarnCrossDowngrade::ReadCookie::Insecure', sameSiteWarnCrossDowngradeRead(false)],
   ['SameSiteCookieIssue::WarnCrossDowngrade::SetCookie::Secure', sameSiteWarnCrossDowngradeSet(true)],
-  ['SameSiteCookieIssue::WarnCrossDowngrade::SetCookie::Insecure', sameSiteWarnCrossDowngradeSet(false)]
+  ['SameSiteCookieIssue::WarnCrossDowngrade::SetCookie::Insecure', sameSiteWarnCrossDowngradeSet(false)],
+  ['SameSiteCookieIssue::ExcludeNavigationContextDowngrade::Secure', sameSiteExcludeNavigationContextDowngrade(true)],
+  [
+    'SameSiteCookieIssue::ExcludeNavigationContextDowngrade::Insecure', sameSiteExcludeNavigationContextDowngrade(false)
+  ],
+  ['SameSiteCookieIssue::ExcludeContextDowngrade::ReadCookie::Secure', sameSiteExcludeContextDowngradeRead(true)],
+  ['SameSiteCookieIssue::ExcludeContextDowngrade::ReadCookie::Insecure', sameSiteExcludeContextDowngradeRead(false)],
+  ['SameSiteCookieIssue::ExcludeContextDowngrade::SetCookie::Secure', sameSiteExcludeContextDowngradeSet(true)],
+  ['SameSiteCookieIssue::ExcludeContextDowngrade::SetCookie::Insecure', sameSiteExcludeContextDowngradeSet(false)]
 ]);

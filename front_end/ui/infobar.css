@@ -128,11 +128,17 @@
   color: rgb(33% 33% 33%);
 }
 
-.infobar.infobar-issue .infobar-button:hover,
-.infobar.infobar-issue .infobar-button:focus {
+.infobar.infobar-issue .infobar-button:hover {
   color: rgb(15% 15% 15%);
   background-color: transparent;
   box-shadow: none;
+}
+
+.infobar.infobar-issue .infobar-button:focus {
+  color: rgb(33% 33% 33%);
+  background-color: transparent;
+  box-shadow: none;
+  outline-width: unset;
 }
 
 .infobar.infobar-issue .icon {
@@ -147,4 +153,12 @@
 .infobar.infobar-issue:focus {
   box-shadow: none;
   background-color: hsl(214deg 48% 95%);
+}
+
+:host-context(.-theme-with-dark-background) .infobar.infobar-issue:focus {
+  background-color: hsl(214deg 19% 20%);
+}
+
+.infobar.infobar-issue:focus .infobar-button {
+  background-color: inherit;
 }

@@ -38,9 +38,20 @@ export class ServiceWorkersView extends UI.Widget.VBox {
     /** @type {?SDK.SecurityOriginManager.SecurityOriginManager} */
     this._securityOriginManager = null;
 
-    // TODO(nidhijaju): Add a link to the chrome://serviceworker-internals page
-    // here, along with a UMA coutner to see how many people actually click on
-    // this link.
+    const othersDiv = this.contentElement.createChild('div', 'service-workers-other-origin');
+    const othersView = new UI.ReportView.ReportView();
+    othersView.setHeaderVisible(false);
+    othersView.show(othersDiv);
+    const othersSection = othersView.appendSection(Common.UIString.UIString('Service workers from other origins'));
+    const othersSectionRow = othersSection.appendRow();
+    const seeOthers = UI.Fragment.html
+    `<a class="devtools-link" role="link" tabindex="0" href="chrome://serviceworker-internals" target="_blank" style="display: inline; cursor: pointer;">See all registrations</a>`;
+    self.onInvokeElement(seeOthers, event => {
+      const agent = SDK.SDKModel.TargetManager.instance().mainTarget().targetAgent();
+      agent.invoke_createTarget({url: 'chrome://serviceworker-internals?devtools'});
+      event.consume(true);
+    });
+    othersSectionRow.appendChild(seeOthers);
 
     this._toolbar.appendToolbarItem(
         MobileThrottling.ThrottlingManager.throttlingManager().createOfflineToolbarCheckbox());

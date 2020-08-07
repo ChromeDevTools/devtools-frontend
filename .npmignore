@@ -7,7 +7,6 @@ PRESUBMIT.py
 OWNERS
 ENG_REVIEW_OWNERS
 
-third_party
 test
 htaccess
 v8/include

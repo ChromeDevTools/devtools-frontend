@@ -228,9 +228,6 @@
   <message name="IDS_DEVTOOLS_5bf12c4c7d2579c8586373ced46b5398" desc="Title for CSS Grid tooling option">
     Show all grid line numbers
   </message>
-  <message name="IDS_DEVTOOLS_61326117ed4a9ddf3f754e71e119e5b3" desc="The kind of resolution for a mixed content issue">
-    blocked
-  </message>
   <message name="IDS_DEVTOOLS_6e434cf220a5334cfb7c8b8944686adf" desc="Title for CSS Grid tooling option">
     Show grid track sizes
   </message>

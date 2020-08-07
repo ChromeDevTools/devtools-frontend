@@ -362,6 +362,26 @@ class AffectedDirectivesView extends AffectedResourcesView {
   }
 
   /**
+   * @param {!Element} header
+   */
+  _appendStatusColumnTitle(header) {
+    const status = document.createElement('td');
+    status.classList.add('affected-resource-header');
+    status.textContent = ls`Status`;
+    header.appendChild(status);
+  }
+
+  /**
+   * @param {!Element} element
+   */
+  _appendBlockedStatus(element) {
+    const status = document.createElement('td');
+    status.classList.add('affected-resource-blocked-status');
+    status.textContent = ls`blocked`;
+    element.appendChild(status);
+  }
+
+  /**
    * @param {!Set<!Protocol.Audits.ContentSecurityPolicyIssueDetails>} cspViolations
    */
   _appendAffectedDirectives(cspViolations) {
@@ -369,11 +389,14 @@ class AffectedDirectivesView extends AffectedResourcesView {
     if (this._issue.code() === SDK.ContentSecurityPolicyIssue.inlineViolationCode) {
       this._appendDirectiveColumnTitle(header);
       this._appendElementColumnTitle(header);
+      this._appendSourceCodeColumnTitle(header);
+      this._appendStatusColumnTitle(header);
     } else {
       this._appendURLColumnTitle(header);
+      this._appendStatusColumnTitle(header);
       this._appendDirectiveColumnTitle(header);
+      this._appendSourceCodeColumnTitle(header);
     }
-    this._appendSourceCodeColumnTitle(header);
     this._affectedResources.appendChild(header);
     let count = 0;
     for (const cspViolation of cspViolations) {
@@ -395,6 +418,7 @@ class AffectedDirectivesView extends AffectedResourcesView {
       const url = cspViolation.blockedURL ? cspViolation.blockedURL : '';
       info.textContent = url;
       element.appendChild(info);
+      this._appendBlockedStatus(element);
     }
     const name = document.createElement('td');
     name.textContent = cspViolation.violatedDirective;
@@ -438,6 +462,11 @@ class AffectedDirectivesView extends AffectedResourcesView {
       sourceLocation.appendChild(sourceAnchor);
       element.appendChild(sourceLocation);
     }
+
+    if (this._issue.code() === SDK.ContentSecurityPolicyIssue.inlineViolationCode) {
+      this._appendBlockedStatus(element);
+    }
+
     this._affectedResources.appendChild(element);
   }
 

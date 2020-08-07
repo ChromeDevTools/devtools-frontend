@@ -301,6 +301,10 @@ ul > li.plain-enum::before {
   padding-left: 2px;
 }
 
+.affected-resource-blocked-status {
+  color: red;
+}
+
 .affected-resource-cookie-info {
   color: var(--issue-gray);
   padding: 2px;

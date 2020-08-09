@@ -103,8 +103,6 @@ export class DebuggerModel extends SDKModel {
     /** @type {!Common.ObjectWrapper.ObjectWrapper} */
     this._breakpointResolvedEventTarget = new Common.ObjectWrapper.ObjectWrapper();
 
-    /** @type {!Array<!{start: !Location, end: !Location}>} */
-    this._autoStepSkipList = [];
     /** @type {boolean} */
     this._autoStepOver = false;
 
@@ -293,7 +291,7 @@ export class DebuggerModel extends SDKModel {
   }
 
   /**
-   *  @return {!Promise<!Array<!{start: !Location, end: !Location}>>}
+   *  @return {!Promise<!Array<!LocationRange>>}
    */
   async _computeAutoStepSkipList() {
     // @ts-ignore
@@ -308,7 +306,14 @@ export class DebuggerModel extends SDKModel {
         if (ranges) {
           // TODO(bmeurer): Remove the {rawLocation} from the {ranges}?
           // @ts-ignore
-          return ranges.filter(range => contained(rawLocation, range));
+          const filtered = ranges.filter(range => contained(rawLocation, range));
+          const skipList = filtered.map(
+              // @ts-ignore
+              location => new LocationRange(
+                  this, location.start.scriptId,
+                  new ScriptPosition(this, location.start.lineNumber, location.start.columnNumber),
+                  new ScriptPosition(this, location.end.lineNumber, location.end.columnNumber)));
+          return skipList;
         }
       }
     }
@@ -316,16 +321,16 @@ export class DebuggerModel extends SDKModel {
   }
 
   async stepInto() {
-    this._autoStepSkipList = await this._computeAutoStepSkipList();
-    this._agent.invoke_stepInto({breakOnAsyncCall: false});
+    const skipList = await this._computeAutoStepSkipList();
+    this._agent.invoke_stepInto({breakOnAsyncCall: false, skipList: skipList.map(x => x.payload())});
   }
 
   async stepOver() {
     // Mark that in case of auto-stepping, we should be doing
     // step-over instead of step-in.
     this._autoStepOver = true;
-    this._autoStepSkipList = await this._computeAutoStepSkipList();
-    this._agent.invoke_stepOver({});
+    const skipList = await this._computeAutoStepSkipList();
+    this._agent.invoke_stepOver({skipList: skipList.map(x => x.payload())});
   }
 
   stepOut() {
@@ -517,7 +522,6 @@ export class DebuggerModel extends SDKModel {
     this._stringMap.clear();
     this._discardableScripts = [];
     this._autoStepOver = false;
-    this._autoStepSkipList = [];
   }
 
   /**
@@ -621,12 +625,6 @@ export class DebuggerModel extends SDKModel {
     this._isPausing = false;
     this._debuggerPausedDetails = debuggerPausedDetails;
     if (debuggerPausedDetails) {
-      const rawLocation = debuggerPausedDetails.callFrames[0].location();
-      for (const range of this._autoStepSkipList) {
-        if (contained(rawLocation, range)) {
-          return false;
-        }
-      }
       if (this._beforePausedCallback) {
         if (!this._beforePausedCallback.call(null, debuggerPausedDetails)) {
           return false;
@@ -643,7 +641,6 @@ export class DebuggerModel extends SDKModel {
       // If we resolved a location in auto-stepping callback, reset the
       // step-over marker.
       this._autoStepOver = false;
-      this._autoStepSkipList = [];
       this.dispatchEventToListeners(Events.DebuggerPaused, this);
       this.setSelectedCallFrame(debuggerPausedDetails.callFrames[0]);
     } else {
@@ -1331,6 +1328,48 @@ export class Location {
    */
   id() {
     return this.debuggerModel.target().id() + ':' + this.scriptId + ':' + this.lineNumber + ':' + this.columnNumber;
+  }
+}
+
+export class ScriptPosition {
+  /**
+   * @param {!DebuggerModel} debuggerModel
+   * @param {number} lineNumber
+   * @param {number} columnNumber
+   */
+  constructor(debuggerModel, lineNumber, columnNumber) {
+    this.debuggerModel = debuggerModel;
+    this.lineNumber = lineNumber;
+    this.columnNumber = columnNumber;
+  }
+
+  /**
+   * @return {!Protocol.Debugger.ScriptPosition}
+   */
+  payload() {
+    return {lineNumber: this.lineNumber, columnNumber: this.columnNumber};
+  }
+}
+
+export class LocationRange {
+  /**
+   * @param {!DebuggerModel} debuggerModel
+   * @param {string} scriptId
+   * @param {!ScriptPosition} start
+   * @param {!ScriptPosition} end
+   */
+  constructor(debuggerModel, scriptId, start, end) {
+    this.debuggerModel = debuggerModel;
+    this.scriptId = scriptId;
+    this.start = start;
+    this.end = end;
+  }
+
+  /**
+   * @return {!Protocol.Debugger.LocationRange}
+   */
+  payload() {
+    return {scriptId: this.scriptId, start: this.start.payload(), end: this.end.payload()};
   }
 }
 

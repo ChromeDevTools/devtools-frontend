@@ -10,7 +10,7 @@ import {$, click, enableExperiment, getBrowserAndPages, platform, reloadDevTools
 import {navigateToCssOverviewTab} from '../helpers/css-overview-helpers.js';
 import {clickToggleButton, selectDualScreen, startEmulationWithDualScreenFlag} from '../helpers/emulation-helpers.js';
 import {closeSecurityTab, navigateToSecurityTab} from '../helpers/security-helpers.js';
-import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
+import {openPanelViaMoreTools, openSettingsTab} from '../helpers/settings-helpers.js';
 
 interface UserMetric {
   name: string;
@@ -39,6 +39,8 @@ declare global {
     __issuesPanelOpenedFrom: (evt: Event) => void;
     __keybindSetSettingChanged: (evt: Event) => void;
     __dualScreenDeviceEmulated: (evt: Event) => void;
+    __experimentDisabled: (evt: Event) => void;
+    __experimentEnabled: (evt: Event) => void;
     Host: {UserMetrics: UserMetrics; userMetrics: {actionTaken(name: number): void;}};
   }
 }
@@ -85,6 +87,16 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.__caughtEvents.push({name: 'DevTools.DualScreenDeviceEmulated', value: customEvt.detail.value});
     };
 
+    window.__experimentDisabled = (evt: Event) => {
+      const customEvt = evt as CustomEvent;
+      window.__caughtEvents.push({name: 'DevTools.ExperimentDisabled', value: customEvt.detail.value});
+    };
+
+    window.__experimentEnabled = (evt: Event) => {
+      const customEvt = evt as CustomEvent;
+      window.__caughtEvents.push({name: 'DevTools.ExperimentEnabled', value: customEvt.detail.value});
+    };
+
     window.__caughtEvents = [];
     window.__beginCatchEvents = () => {
       window.addEventListener('DevTools.PanelShown', window.__panelShown);
@@ -95,6 +107,8 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.addEventListener('DevTools.IssuesPanelOpenedFrom', window.__issuesPanelOpenedFrom);
       window.addEventListener('DevTools.KeybindSetSettingChanged', window.__keybindSetSettingChanged);
       window.addEventListener('DevTools.DualScreenDeviceEmulated', window.__dualScreenDeviceEmulated);
+      window.addEventListener('DevTools.ExperimentDisabled', window.__experimentDisabled);
+      window.addEventListener('DevTools.ExperimentEnabled', window.__experimentEnabled);
     };
 
     window.__endCatchEvents = () => {
@@ -106,6 +120,8 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.removeEventListener('DevTools.IssuesPanelOpenedFrom', window.__issuesPanelOpenedFrom);
       window.removeEventListener('DevTools.KeybindSetSettingChanged', window.__keybindSetSettingChanged);
       window.removeEventListener('DevTools.DualScreenDeviceEmulated', window.__dualScreenDeviceEmulated);
+      window.removeEventListener('DevTools.ExperimentDisabled', window.__experimentDisabled);
+      window.removeEventListener('DevTools.ExperimentEnabled', window.__experimentEnabled);
     };
 
     window.__beginCatchEvents();
@@ -336,6 +352,38 @@ describe('User Metrics', () => {
       {
         name: 'DevTools.PanelClosed',
         value: 16,  // Security
+      },
+    ]);
+  });
+
+  it('dispatches an event when experiemnts are enabled and disabled', async () => {
+    await openSettingsTab('Experiments');
+    const customThemeCheckbox = await waitFor('[aria-label="Allow custom UI themes"]');
+    // Enable the experiment
+    await customThemeCheckbox.click();
+    // Disable the experiment
+    await customThemeCheckbox.click();
+
+    await assertCapturedEvents([
+      {
+        name: 'DevTools.ActionTaken',
+        value: 37,  // Settings opened from menu
+      },
+      {
+        name: 'DevTools.PanelShown',
+        value: 29,  // settings-preferences
+      },
+      {
+        name: 'DevTools.PanelShown',
+        value: 31,  // Experiments
+      },
+      {
+        name: 'DevTools.ExperimentEnabled',
+        value: 0,  // Allow Custom UI Themes
+      },
+      {
+        name: 'DevTools.ExperimentDisabled',
+        value: 0,  // Allow Custom UI Themes
       },
     ]);
   });

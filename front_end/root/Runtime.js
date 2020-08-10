@@ -890,6 +890,13 @@ export class ExperimentsSupport {
   }
 
   /**
+  * @return {!Array.<!Experiment>}
+  */
+  enabledExperiments() {
+    return this._experiments.filter(experiment => experiment.isEnabled());
+  }
+
+  /**
   * @param {!Object} value
   */
   _setExperimentsSetting(value) {

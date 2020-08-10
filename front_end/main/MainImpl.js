@@ -137,7 +137,6 @@ export class MainImpl {
   }
 
   _initializeExperiments() {
-    // Keep this sorted alphabetically: both keys and values.
     Root.Runtime.experiments.register('applyCustomStylesheet', 'Allow custom UI themes');
     Root.Runtime.experiments.register('captureNodeCreationStacks', 'Capture node creation stacks');
     Root.Runtime.experiments.register('sourcesPrettyPrint', 'Automatically pretty print in the Sources Panel');
@@ -209,6 +208,10 @@ export class MainImpl {
     if (Host.InspectorFrontendHost.isUnderTest() &&
         Root.Runtime.queryParam('test').includes('live-line-level-heap-profile.js')) {
       Root.Runtime.experiments.enableForTest('liveHeapProfile');
+    }
+
+    for (const experiment of Root.Runtime.experiments.enabledExperiments()) {
+      Host.userMetrics.experimentEnabledAtLaunch(experiment.name);
     }
   }
 

@@ -175,6 +175,35 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.CSSGridSettings, gridSetting, size);
     Common.EventTarget.fireEvent(EnumeratedHistogram.CSSGridSettings, {value: gridSetting});
   }
+
+  /**
+   * @param {string} experimentId
+   */
+  experimentEnabledAtLaunch(experimentId) {
+    const size = DevtoolsExperiments['__lastValidEnumPosition'] + 1;
+    const experiment = DevtoolsExperiments[experimentId];
+    if (experiment === undefined) {
+      return;
+    }
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.ExperimentEnabledAtLaunch, experiment, size);
+    Common.EventTarget.fireEvent(EnumeratedHistogram.ExperimentEnabledAtLaunch, {value: experiment});
+  }
+
+  /**
+   * @param {string} experimentId
+   * @param {boolean} isEnabled
+   */
+  experimentChanged(experimentId, isEnabled) {
+    const size = DevtoolsExperiments['__lastValidEnumPosition'] + 1;
+    const experiment = DevtoolsExperiments[experimentId];
+    if (experiment === undefined) {
+      return;
+    }
+    const actionName = isEnabled ? EnumeratedHistogram.ExperimentEnabled : EnumeratedHistogram.ExperimentDisabled;
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(actionName, experiment, size);
+    Common.EventTarget.fireEvent(actionName, {value: experiment});
+  }
 }
 
 // Codes below are used to collect UMA histograms in the Chromium port.
@@ -414,4 +443,54 @@ export const CSSGridSettings = {
   'showGridLineNumbers.names': 18,
   'showGridTrackSizes.false': 19,
   'showGridTrackSizes.true': 20,
+};
+
+/**
+ * This list should contain the currently active Devtools Experiments.
+ * Therefore, it is possible that the id's will no longer be continuous
+ * as experiemnts are removed.
+ * When adding a new experiemnt:
+ * 1. Add an entry to the bottom of the list before '__lastValidEnumPosition'
+ * 2. Set the value of the new entry and '__lastValidEnumPosition' to
+ *    __lastValidEnumPosition + 1
+ * When removing an experiment, simply delete the line from the enum.
+ */
+/** @type {!Object<string, number>} */
+export const DevtoolsExperiments = {
+  'applyCustomStylesheet': 0,
+  'captureNodeCreationStacks': 1,
+  'sourcesPrettyPrint': 2,
+  'backgroundServices': 3,
+  'backgroundServicesNotifications': 4,
+  'backgroundServicesPaymentHandler': 5,
+  'backgroundServicesPushMessaging': 6,
+  'blackboxJSFramesOnTimeline': 7,
+  'cssOverview': 8,
+  'emptySourceMapAutoStepping': 9,
+  'inputEventsOnTimelineOverview': 10,
+  'liveHeapProfile': 11,
+  'nativeHeapProfiler': 12,
+  'protocolMonitor': 13,
+  'issuesPane': 14,
+  'developerResourcesView': 15,
+  'recordCoverageWithPerformanceTracing': 16,
+  'samplingHeapProfilerTimeline': 17,
+  'showOptionToNotTreatGlobalObjectsAsRoots': 18,
+  'sourceDiff': 19,
+  'sourceOrderViewer': 20,
+  'spotlight': 21,
+  'webauthnPane': 22,
+  'customKeyboardShortcuts': 23,
+  'timelineEventInitiators': 24,
+  'timelineFlowEvents': 25,
+  'timelineInvalidationTracking': 26,
+  'timelineShowAllEvents': 27,
+  'timelineV8RuntimeCallStats': 28,
+  'timelineWebGL': 29,
+  'timelineReplayEvent': 30,
+  'wasmDWARFDebugging': 31,
+  'dualScreenSupport': 32,
+  'cssGridFeatures': 33,
+  'movableTabs': 34,
+  '__lastValidEnumPosition': 34,
 };

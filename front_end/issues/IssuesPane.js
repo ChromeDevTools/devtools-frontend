@@ -104,6 +104,11 @@ class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     this._affectedResources.textContent = '';
   }
 
+  expandIfOneResource() {
+    if (this._affectedResourcesCount === 1) {
+      this.expand();
+    }
+  }
 
   /**
    * This function resolves a requestId to network requests. If the requestId does not resolve, a listener is installed
@@ -1008,6 +1013,7 @@ class IssueView extends UI.TreeOutline.TreeElement {
     ];
 
     this._aggregatedIssuesCount = null;
+    this._hasBeenExpandedBefore = false;
   }
 
   /**
@@ -1057,6 +1063,18 @@ class IssueView extends UI.TreeOutline.TreeElement {
     header.appendChild(title);
 
     this.listItemElement.appendChild(header);
+  }
+
+  /**
+   * @override
+   */
+  onexpand() {
+    if (!this._hasBeenExpandedBefore) {
+      this._hasBeenExpandedBefore = true;
+      for (const view of this._affectedResourceViews) {
+        view.expandIfOneResource();
+      }
+    }
   }
 
   _updateAggregatedIssuesCount() {

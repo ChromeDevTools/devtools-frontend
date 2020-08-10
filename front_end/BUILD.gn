@@ -72,6 +72,7 @@ group("front_end") {
     "sources:bundle",
     "text_editor:bundle",
     "text_utils:bundle",
+    "theme_support:bundle",
     "third_party/lighthouse",
     "timeline:bundle",
     "timeline_model:bundle",

@@ -126,6 +126,7 @@ const OTHER_LICENSE_HEADERS = [
   'source_frame/ResourceSourceFrame.js',
   'sources/ScopeChainSidebarPane.js',
   'sources/SourcesPanel.js',
+  'theme_support/theme_support_impl.js',
   'timeline/TimelinePanel.js',
   'timeline/TimelineUIUtils.js',
   'ui/KeyboardShortcut.js',

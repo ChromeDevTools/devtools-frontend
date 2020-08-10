@@ -22,6 +22,7 @@ interface String {
   trimEndWithMaxLength(maxLength: number): string;
   escapeForRegExp(): string;
   filterRegex(query: string): RegExp;
+  trimMiddle(maxLength: number): string;
 }
 
 interface NumberConstructor {

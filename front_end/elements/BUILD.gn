@@ -4,7 +4,6 @@
 
 import("../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../scripts/build/ninja/devtools_module.gni")
-import("../../scripts/build/ninja/devtools_pre_built.gni")
 import("../../third_party/typescript/typescript.gni")
 
 devtools_module("elements") {

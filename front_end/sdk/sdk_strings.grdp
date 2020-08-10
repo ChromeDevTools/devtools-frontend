@@ -49,6 +49,10 @@
   <message name="IDS_DEVTOOLS_09cdd6a7321c64bae05b8cca859f1461" desc="Title of a setting under the Network category that can be invoked through the Command Menu">
     Enable cache
   </message>
+  <message name="IDS_DEVTOOLS_0bdfd7da77f6e82ca62e5246f1462ffc" desc="Part of message for CSP Issues of eval violation type">
+    To solve this issue, avoid using <ph name="LOCKED_1">|eval()|</ph>, <ph name="LOCKED_1">|new Function()|</ph>, <ph name="LOCKED_1">|setTimeout([string], ...)|</ph> and
+         <ph name="LOCKED_1">|setInterval([string], ...)|</ph> for evaluating strings.
+  </message>
   <message name="IDS_DEVTOOLS_0c94f752d037fd8475e98b0711b543a6" desc="Label for the link for SameSiteCookies Issues">
     SameSite cookies explained
   </message>
@@ -99,11 +103,19 @@
   <message name="IDS_DEVTOOLS_1985576209a186984f171efd81e91e3d" desc="Text in Network Log">
     &lt;anonymous&gt;
   </message>
+  <message name="IDS_DEVTOOLS_1afebac41b13cf486a322ed28cf14d8d" desc="Title for the CSP eval link">
+    Learn more: Content Security Policy - Eval
+  </message>
   <message name="IDS_DEVTOOLS_1b6164cca79eeac4716c6b056dae437a" desc="Suggestion for resolution of MixedContentIssue">
     To resolve this issue load all resources over a secure HTTPS connection.
   </message>
   <message name="IDS_DEVTOOLS_1ccfb518c1eb59a48fa9b2c578073557" desc="Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel">
     redundant
+  </message>
+  <message name="IDS_DEVTOOLS_1da61856ced14822c6b3724836a62ba4" desc="Part of message for CSP Issues of url violation type">
+    To solve this, carefully check that all of the blocked resources listed below are trustworthy; if they are,
+     include their sources in the content security policy of your site. You can set a policy as a HTTP header (recommended),
+     or via an HTML <ph name="LOCKED_1">|&lt;meta&gt;|</ph> tag.
   </message>
   <message name="IDS_DEVTOOLS_1e20b296e8d4ce166160272060b60448" desc="Part of an explenatory text describing an issue in the issues view">
     To solve this, add the following to the embedded frame’s HTML response header:
@@ -126,13 +138,12 @@
   <message name="IDS_DEVTOOLS_2187e1021a911b3807cc1bea2eb1a9ca" desc="Text for a stack, the programming concept">
     Stack
   </message>
+  <message name="IDS_DEVTOOLS_2232bbac4a5c0de1b731b9a4018d0ff9" desc="Part of message for CSP Issues of eval violation type">
+    The Content Security Policy (CSP) prevents the evaluation of arbitrary strings as JavaScript to make it
+         more difficult for an attacker to inject unathorized code on your site.
+  </message>
   <message name="IDS_DEVTOOLS_22af645d1859cb5ca6da0c484f1f37ea" desc="Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel">
     new
-  </message>
-  <message name="IDS_DEVTOOLS_22bd750a4363491a10742105f6c6c777" desc="Part of issue message for CSP url issues">
-    To solve this, carefully check that all of the blocked resources listed below are trustworthy; if they are,
-     include their sources in the content security policy of your site. You can set a policy as a HTTP header (recommended),
-     or via an HTML <ph name="LOCKED_1">&lt;meta&gt;</ph> tag.
   </message>
   <message name="IDS_DEVTOOLS_23e5a7b7976e412ece233ceaf8257bc2" desc="Text in DOMDebugger Model">
     Clipboard
@@ -176,6 +187,9 @@
   </message>
   <message name="IDS_DEVTOOLS_35d4892bb81c31af26ec7047ef5c8872" desc="Resolution for SameSiteCookie issue">
     Specify <ph name="LOCKED_1">|SameSite=Strict|</ph> or <ph name="LOCKED_1">|SameSite=Lax|</ph> if the cookie should not be set by cross-site requests
+  </message>
+  <message name="IDS_DEVTOOLS_3619cc1e0acf34096d9a1e5738129a80" desc="Part of message for CSP Issues of url violation type">
+    Content Security Policy of your site blocks some resources because their origin is not included in the content security policy header
   </message>
   <message name="IDS_DEVTOOLS_3654795479df876aba56836576570751" desc="Title for CSS Grid tooling option">
     Grid Track Sizes
@@ -235,11 +249,24 @@
   <message name="IDS_DEVTOOLS_4cbb2bdce4db02a995cdd7a237a63d69" desc="Title of a setting under the Grid category that turns CSS Grid Area highlighting on">
     Show grid named areas
   </message>
+  <message name="IDS_DEVTOOLS_565b655df6db4b7fea71e9a712bac937" desc="Part of the issue message for CSP eval issues">
+    Content Security Policy of your site blocks the use of <ph name="LOCKED_1">&apos;eval&apos;</ph> in JavaScript
+  </message>
   <message name="IDS_DEVTOOLS_5988f13c0976ce6b6edbc4d667f1bb7a" desc="Part of issue message for CSP inline issues">
     Content Security Policy blocks inline execution of scripts and stylesheets
   </message>
   <message name="IDS_DEVTOOLS_5bf12c4c7d2579c8586373ced46b5398" desc="Title for CSS Grid tooling option">
     Show all grid line numbers
+  </message>
+  <message name="IDS_DEVTOOLS_5e9e1cf450fbfb602580e1340d053c83" desc="Part of message for CSP Issues of eval violation type">
+    ⚠️ Allowing string evaluation comes at the risk of inline script injection.
+  </message>
+  <message name="IDS_DEVTOOLS_5f79b423012732acbb8c6ea2e44d30a9" desc="Part of message for CSP Issues of eval violation type">
+    If you absolutely must: you can enable string evaluation by adding <ph name="LOCKED_1">|unsafe-eval|</ph> as an allowed source
+         in a <ph name="LOCKED_1">|script-src|</ph> directive.
+  </message>
+  <message name="IDS_DEVTOOLS_643c3520c9c703130943711a07b86dc8" desc="Part of message for CSP Issues of inline violation type">
+    To solve this, move all inline scripts (e.g. <ph name="LOCKED_1">|onclick=[JS code]|</ph>) and styles into external files.
   </message>
   <message name="IDS_DEVTOOLS_6e434cf220a5334cfb7c8b8944686adf" desc="Title for CSS Grid tooling option">
     Show grid track sizes
@@ -249,9 +276,6 @@
   </message>
   <message name="IDS_DEVTOOLS_788d0de228ecc87bef71dd9bbf51f704" desc="Section of CSS grid tooling options about line number labels">
     Grid Line Labels
-  </message>
-  <message name="IDS_DEVTOOLS_83551c20aa46bf996b5f9a989ad44948" desc="Part of issue message for CSP issues of url type">
-    Content Security Policy of your site blockes some resources because their origin is not included in the content security policy header
   </message>
   <message name="IDS_DEVTOOLS_8483e29deb85890986985e47b0ec8ccf" desc="Title for a SameSiteCookie issue">
     Migrate entirely to HTTPS to have cookies sent to same-site subresources
@@ -269,6 +293,9 @@
     A cookie was not sent to <ph name="DESTINATION">$1s<ex>a secure</ex></ph> origin from <ph name="ORIGIN">$2s<ex>an insecure</ex></ph> context.
         Because this cookie would have been sent across schemes on the same site, it was not sent.
         This behavior enhances the <ph name="LOCKED_1">|SameSite|</ph> attribute’s protection of user data from request forgery by network attackers.
+  </message>
+  <message name="IDS_DEVTOOLS_a6c571c918bdd52968955c2cb28ddc84" desc="Bullet point about resolving CSP inline violations">
+    adding <ph name="LOCKED_1">|unsafe-inline|</ph> as a source to the CSP header
   </message>
   <message name="IDS_DEVTOOLS_a9dbce0348c4df57c727ce7df2e7a8e6" desc="Title for CSP url link">
     Content Security Policy - Source Allowlists
@@ -625,9 +652,6 @@
   <message name="IDS_DEVTOOLS_b600e0facf21b7d4a9a769a60b236ba1" desc="Title of a setting under the Debugger category that can be invoked through the Command Menu">
     Enable JavaScript
   </message>
-  <message name="IDS_DEVTOOLS_b9192f20af774cee9221afdc60f1b11c" desc="Bullet point for issue message for CSP inline issues">
-    adding unsafe-inline as a source to the CSP header
-  </message>
   <message name="IDS_DEVTOOLS_b9a5a0162829cba9db8b77daa75ec604" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Hide layout shift regions
   </message>
@@ -785,9 +809,6 @@
   </message>
   <message name="IDS_DEVTOOLS_e69d85cd1acdf030f0cede48b61d7720" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Hide scroll performance bottlenecks
-  </message>
-  <message name="IDS_DEVTOOLS_e6cdf35d812f562fb886eadb51a1f402" desc="Part of issue message for CSP issues of inline violation type">
-    To solve this, move all inline scripts (e.g. <ph name="LOCKED_1">onclick=[JS code]</ph>) and styles into external files.
   </message>
   <message name="IDS_DEVTOOLS_e7c7efe6752cbf2c7519913a1636deaa" desc="Title text of an issue in the issues view">
     Specify a more permissive Cross-Origin Resource Policy to prevent a resource from being blocked

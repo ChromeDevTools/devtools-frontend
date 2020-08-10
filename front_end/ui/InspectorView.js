@@ -82,6 +82,7 @@ export class InspectorView extends VBox {
     this._drawerTabbedPane.addEventListener(TabbedPaneEvents.TabSelected, this._tabSelected, this);
     this._drawerTabbedPane.setTabDelegate(this._tabDelegate);
 
+    this._drawerSplitWidget.installResizer(this._drawerTabbedPane.headerElement());
     this._drawerSplitWidget.setSidebarWidget(this._drawerTabbedPane);
     this._drawerTabbedPane.rightToolbar().appendToolbarItem(closeDrawerButton);
 

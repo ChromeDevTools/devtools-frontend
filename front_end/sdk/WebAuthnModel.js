@@ -47,6 +47,23 @@ export class WebAuthnModel extends SDKModel {
   async setAutomaticPresenceSimulation(authenticatorId, enabled) {
     await this._agent.invoke_setAutomaticPresenceSimulation({authenticatorId, enabled});
   }
+
+  /**
+   * @param {!Protocol.WebAuthn.AuthenticatorId} authenticatorId
+   * @return {!Promise<!Array<!Protocol.WebAuthn.Credential>>}
+   */
+  async getCredentials(authenticatorId) {
+    const response = await this._agent.invoke_getCredentials({authenticatorId});
+    return response.credentials;
+  }
+
+  /**
+   * @param {!Protocol.WebAuthn.AuthenticatorId} authenticatorId
+   * @param {string} credentialId
+   */
+  async removeCredential(authenticatorId, credentialId) {
+    await this._agent.invoke_removeCredential({authenticatorId, credentialId});
+  }
 }
 
 SDKModel.register(WebAuthnModel, Capability.WebAuthn, false);

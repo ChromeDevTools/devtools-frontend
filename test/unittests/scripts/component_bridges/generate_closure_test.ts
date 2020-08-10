@@ -974,7 +974,6 @@ export let Person`);
       class Breadcrumbs extends HTMLElement {
         public update(person: Person) {}
       }`);
-
       const interfaces = generateInterfaces(state);
 
       assert.strictEqual(interfaces.length, 2);

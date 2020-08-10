@@ -6,11 +6,11 @@ import * as ts from 'typescript';
 
 import {WalkerState} from './walk_tree.js';
 
-export const findNodeForTypeReferenceName =
-    (state: WalkerState, typeReferenceName: string): ts.InterfaceDeclaration|ts.TypeAliasDeclaration|null => {
-      const matchingNode = Array.from(state.foundInterfaces).find(dec => {
-        return dec.name.escapedText === typeReferenceName;
-      });
+export const findNodeForTypeReferenceName = (state: WalkerState, typeReferenceName: string): ts.InterfaceDeclaration|
+                                            ts.TypeAliasDeclaration|ts.EnumDeclaration|null => {
+  const matchingNode = [...state.foundInterfaces, ...state.foundEnums].find(dec => {
+    return dec.name.escapedText === typeReferenceName;
+  });
 
-      return matchingNode || null;
-    };
+  return matchingNode || null;
+};

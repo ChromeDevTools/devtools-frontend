@@ -59,7 +59,7 @@ describe('walkTree', () => {
     const source = createTypeScriptSourceFile(code);
     assert.throws(
         () => walkTree(source, 'test.ts'),
-        'Could not find definition for interface MissingInterface in the source file or any of its imports.');
+        'Could not find definition for type reference MissingInterface in the source file or any of its imports.');
   });
 
   it('adds any interfaces it finds to state.foundInterfaces', () => {
@@ -432,6 +432,156 @@ describe('walkTree', () => {
       const result = walkTree(source, 'test.ts');
 
       assert.isDefined(result.customElementsDefineCall);
+    });
+  });
+
+  describe('enums', () => {
+    it('adds all const enums to the list of found enums', () => {
+      const code = `export const enum SettingType {
+         boolean = 'boolean',
+         enum = 'enum'
+        }`;
+
+      const source = createTypeScriptSourceFile(code);
+      const result = walkTree(source, 'test.ts');
+      assert.strictEqual(result.foundEnums.size, 1);
+    });
+
+    it('correctly identifies which enums need to be included in the Closure bridge', () => {
+      const code = `const enum Name {
+        alice = 'alice',
+        bob = 'bob'
+      }
+
+      const enum NotUsedEnum {
+        x = 'x',
+        y = 'y'
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public set data(data: {x: Name}) {
+        }
+      }`;
+
+      const source = createTypeScriptSourceFile(code);
+      const result = walkTree(source, 'test.ts');
+      assert.deepEqual(Array.from(result.typeReferencesToConvert), ['Name']);
+    });
+
+    it('correctly finds enums within an interface', () => {
+      const code = `const enum Name {
+        alice = 'alice',
+        bob = 'bob'
+      }
+
+      interface Person {
+        name: Name;
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public set data(data: {x: Person}) {
+        }
+      }`;
+
+      const source = createTypeScriptSourceFile(code);
+      const result = walkTree(source, 'test.ts');
+      assert.deepEqual(Array.from(result.typeReferencesToConvert), ['Person', 'Name']);
+    });
+
+    it('correctly finds enums deeply nested within types and interfaces', () => {
+      const code = `const enum Name {
+        alice = 'alice',
+        bob = 'bob'
+      }
+
+      type Human = {
+        name: Name
+      }
+
+      interface Person {
+        human: Human
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public set data(data: {x: Person}) {
+        }
+      }`;
+
+      const source = createTypeScriptSourceFile(code);
+      const result = walkTree(source, 'test.ts');
+      assert.deepEqual(Array.from(result.typeReferencesToConvert), ['Person', 'Human', 'Name']);
+    });
+
+    it('correctly finds enums when an interface is extended', () => {
+      const code = `const enum Name {
+        alice = 'alice',
+        bob = 'bob'
+      }
+
+      interface Human {
+        name: Name
+      }
+
+      interface Person extends Human {
+        age: number;
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public set data(data: {x: Person}) {
+        }
+      }`;
+
+      const source = createTypeScriptSourceFile(code);
+      const result = walkTree(source, 'test.ts');
+      assert.deepEqual(Array.from(result.typeReferencesToConvert), ['Person', 'Name']);
+    });
+
+    it('correctly finds enums when a type is extended', () => {
+      const code = `const enum Name {
+        alice = 'alice',
+        bob = 'bob'
+      }
+
+      type Human = {
+        name: Name
+      }
+
+      type Person = Human & {
+        age: number;
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public set data(data: {x: Person}) {
+        }
+      }`;
+
+      const source = createTypeScriptSourceFile(code);
+      const result = walkTree(source, 'test.ts');
+      assert.deepEqual(Array.from(result.typeReferencesToConvert), ['Person', 'Name']);
+    });
+
+    it('errors if the enum is not declared as a const enum', () => {
+      const code = `enum SettingType {
+         boolean = 'boolean',
+         enum = 'enum'
+        }`;
+
+      const source = createTypeScriptSourceFile(code);
+      assert.throws(() => {
+        walkTree(source, 'test.ts');
+      }, 'Found enum SettingType that is not a const enum.');
+    });
+
+    it('errors if the enum is not declared with explicit member values', () => {
+      const code = `const enum SettingType {
+         boolean,
+         enum,
+        }`;
+
+      const source = createTypeScriptSourceFile(code);
+      assert.throws(() => {
+        walkTree(source, 'test.ts');
+      }, 'Found enum SettingType whose members do not have manually defined values.');
     });
   });
 });

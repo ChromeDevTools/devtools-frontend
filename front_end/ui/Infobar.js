@@ -81,7 +81,9 @@ export class Infobar {
     ARIAUtils.setDescription(this._closeButton, ls`Close`);
     self.onInvokeElement(this._closeButton, this.dispose.bind(this));
 
-    this._contentElement.tabIndex = 0;
+    if (type !== Type.Issue) {
+      this._contentElement.tabIndex = 0;
+    }
     ARIAUtils.setAccessibleName(this._contentElement, text);
     this._contentElement.addEventListener('keydown', event => {
       if (event.keyCode === Keys.Esc.code) {

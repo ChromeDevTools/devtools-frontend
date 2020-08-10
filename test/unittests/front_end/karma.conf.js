@@ -51,6 +51,7 @@ module.exports = function(config) {
       ...TEST_FILES_SOURCE_MAPS.map(pattern => ({pattern, served: true, included: false})),
       {pattern: TEST_SOURCES, served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/Images/*.{svg,png}'), served: true, included: false},
+      {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.css'), served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.js'), served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.js.map'), served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.mjs'), served: true, included: false},
@@ -66,6 +67,15 @@ module.exports = function(config) {
     browsers,
 
     frameworks: ['mocha', 'chai'],
+
+    client: {
+      /*
+       * Passed through to the client via __karma__ because test_setup.ts
+       * preloads some CSS files and it needs to know the target directory to do
+       * so.
+       */
+      targetDir: path.relative(process.cwd(), GEN_DIRECTORY),
+    },
 
     plugins: [
       require('karma-chrome-launcher'),

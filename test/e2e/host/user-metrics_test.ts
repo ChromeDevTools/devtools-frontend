@@ -40,7 +40,6 @@ declare global {
     __keybindSetSettingChanged: (evt: Event) => void;
     __dualScreenDeviceEmulated: (evt: Event) => void;
     Host: {UserMetrics: UserMetrics; userMetrics: {actionTaken(name: number): void;}};
-    UI: {inspectorView: {_showDrawer(show: boolean): void; showView(name: string): void;}};
   }
 }
 

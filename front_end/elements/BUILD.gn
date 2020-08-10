@@ -41,6 +41,7 @@ devtools_module("elements") {
     "../bindings:bundle",
     "../color_picker:bundle",
     "../common:bundle",
+    "../component_helpers:bundle",
     "../components:bundle",
     "../emulation:bundle",
     "../event_listeners:bundle",

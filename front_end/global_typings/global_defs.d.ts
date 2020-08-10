@@ -4,3 +4,12 @@
 
 // eslint-disable-next-line spaced-comment
 /// <reference path="./resize_observer.d.ts" />
+
+
+interface CSSStyleSheet {
+  replaceSync(content: string): void;
+}
+
+interface ShadowRoot {
+  adoptedStyleSheets: CSSStyleSheet[]
+}

@@ -125,6 +125,7 @@ all_typescript_module_sources = [
   "common/Trie.js",
   "common/WasmDisassembly.js",
   "common/Worker.js",
+  "component_helpers/get-stylesheet.js",
   "components/DockController.js",
   "components/ImagePreview.js",
   "components/JSPresentationUtils.js",

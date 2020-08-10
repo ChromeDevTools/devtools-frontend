@@ -19,6 +19,7 @@ group("front_end") {
     "color_picker:bundle",
     "common:bundle",
     "component_docs",
+    "component_helpers:bundle",
     "components:bundle",
     "console:bundle",
     "console_counters:bundle",

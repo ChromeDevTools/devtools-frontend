@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as ComponentHelpers from '../component_helpers/component_helpers.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
 import {crumbsToRender, CrumbTitle, DOMNode, NodeSelectedEvent, UserScrollPosition} from './ElementsBreadcrumbsUtils.js';
@@ -254,7 +255,6 @@ export class ElementsBreadcrumbs extends HTMLElement {
           background-color: var(--toolbar-bg-color);
         }
 
-
         .overflow:not(:disabled):hover {
           background-color: var(--toolbar-hover-bg-color);
           cursor: pointer;
@@ -273,14 +273,12 @@ export class ElementsBreadcrumbs extends HTMLElement {
           color: inherit;
         }
 
-        @media(prefers-color-scheme: dark) {
-          .overflow:not(:disabled) {
-            color: #fff;
-          }
+        ${ComponentHelpers.GetStylesheet.DARK_MODE_CLASS} .overflow:not(:disabled) {
+          color: #fff;
         }
       </style>
 
-      <nav class="crumbs">
+      <nav class=${`crumbs ${ComponentHelpers.GetStylesheet.applyDarkModeClassIfNeeded()}`}>
         ${this.renderOverflowButton('left', this.userScrollPosition === 'start')}
 
         <div class="crumbs-window" @scroll=${this.onCrumbsWindowScroll}>

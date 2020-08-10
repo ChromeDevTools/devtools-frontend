@@ -620,6 +620,7 @@ export class ResourceTreeFrame {
       this._loaderId = payload.loaderId;
       this._name = payload.name;
       this._url = payload.url;
+      this._domainAndRegistry = payload.domainAndRegistry;
       this._securityOrigin = payload.securityOrigin;
       this._mimeType = payload.mimeType;
       this._unreachableUrl = payload.unreachableUrl || '';
@@ -651,6 +652,7 @@ export class ResourceTreeFrame {
     this._loaderId = framePayload.loaderId;
     this._name = framePayload.name;
     this._url = framePayload.url;
+    this._domainAndRegistry = framePayload.domainAndRegistry;
     this._securityOrigin = framePayload.securityOrigin;
     this._mimeType = framePayload.mimeType;
     this._unreachableUrl = framePayload.unreachableUrl || '';
@@ -689,6 +691,13 @@ export class ResourceTreeFrame {
    */
   get url() {
     return this._url;
+  }
+
+  /**
+   * @return {string}
+   */
+  domainAndRegistry() {
+    return this._domainAndRegistry;
   }
 
   /**

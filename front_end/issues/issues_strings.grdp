@@ -48,6 +48,9 @@
   <message name="IDS_DEVTOOLS_712e023413c1a2069cb68c5cb4a914a0" desc="Title for an unavailable link a request in the network panel">
     Request unavailable in the network panel, try reloading the inspected page
   </message>
+  <message name="IDS_DEVTOOLS_7329dbf9ad4774e8d583f9ea2e150f35" desc="Label on the issues tab">
+    Only third-party issues detected so far
+  </message>
   <message name="IDS_DEVTOOLS_8e2dcfd7e7e24b1ca76c1193f645902b" desc="Singular label for number of affected element resource indication in issue view">
     element
   </message>

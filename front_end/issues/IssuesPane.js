@@ -1171,7 +1171,6 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
 
     this._noIssuesMessageDiv = document.createElement('div');
     this._noIssuesMessageDiv.classList.add('issues-pane-no-issues');
-    this._noIssuesMessageDiv.textContent = ls`No issues detected so far`;
     this.contentElement.appendChild(this._noIssuesMessageDiv);
 
     /** @type {!BrowserSDK.IssuesManager.IssuesManager} */
@@ -1183,6 +1182,7 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     for (const issue of this._aggregator.aggregatedIssues()) {
       this._updateIssueView(issue);
     }
+    this._issuesManager.addEventListener(BrowserSDK.IssuesManager.Events.IssuesCountUpdated, this._updateCounts, this);
     this._updateCounts();
   }
 
@@ -1293,6 +1293,10 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
       this._noIssuesMessageDiv.style.display = 'none';
     } else {
       this._issuesTree.element.hidden = true;
+      // We alreay know that issesCount is zero here.
+      const hasOnlyThirdPartyIssues = this._issuesManager.numberOfAllStoredIssues() > 0;
+      this._noIssuesMessageDiv.textContent =
+          hasOnlyThirdPartyIssues ? ls`Only third-party issues detected so far` : ls`No issues detected so far`;
       this._noIssuesMessageDiv.style.display = 'flex';
     }
   }

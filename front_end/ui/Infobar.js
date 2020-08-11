@@ -32,6 +32,7 @@ export class Infobar {
 
     this._mainRow = this._contentElement.createChild('div', 'infobar-main-row');
     this._detailsRows = this._contentElement.createChild('div', 'infobar-details-rows hidden');
+    this._hasDetails = false;
 
     this._infoContainer = this._mainRow.createChild('div', 'infobar-info-container');
 
@@ -96,7 +97,7 @@ export class Infobar {
         return;
       }
 
-      if (event.key === 'Enter') {
+      if (event.key === 'Enter' && this._hasDetails) {
         this._onToggleDetails();
         event.consume();
         return;
@@ -193,6 +194,7 @@ export class Infobar {
    * @return {!Element}
    */
   createDetailsRowMessage(message) {
+    this._hasDetails = true;
     this._toggleElement.classList.remove('hidden');
     const infobarDetailsRow = this._detailsRows.createChild('div', 'infobar-details-row');
     const detailsRowMessage = infobarDetailsRow.createChild('span', 'infobar-row-message');

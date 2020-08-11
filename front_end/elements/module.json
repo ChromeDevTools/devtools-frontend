@@ -331,6 +331,8 @@
     "StylesSidebarPane.js",
     "StylePropertyTreeElement.js",
     "ComputedStyleWidget.js",
+    "ComputedStyleProperty_bridge.js",
+    "ComputedStyleTrace_bridge.js",
     "ElementsPanel.js",
     "ClassesPaneWidget.js",
     "ElementStatePaneWidget.js",

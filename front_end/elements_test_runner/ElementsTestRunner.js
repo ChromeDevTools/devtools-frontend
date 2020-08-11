@@ -177,27 +177,25 @@ ElementsTestRunner.dumpComputedStyle = async function(doNotAutoExpand, printInne
       continue;
     }
 
-    let dumpText = '';
-    dumpText += text(treeElement.title.querySelector('.property-name'));
-    dumpText += text(treeElement.title.querySelector('.property-value'));
-    TestRunner.addResult(dumpText);
+    const propertyName = text(treeElement.title.querySelector('.webkit-css-property'));
+    const propertyValue = text(treeElement.title.querySelector('.value'));
+    TestRunner.addResult(`${propertyName}: ${propertyValue};`);
 
     if (doNotAutoExpand && !treeElement.expanded) {
       continue;
     }
 
-    for (const trace of treeElement.children()) {
-      const title = trace.title;
+    for (const trace of treeElement.title.querySelectorAll('devtools-computed-style-trace')) {
       let dumpText = '';
 
-      if (trace.title.classList.contains('property-trace-inactive')) {
+      if (trace.shadowRoot.querySelector('.computed-style-trace.inactive')) {
         dumpText += 'OVERLOADED ';
       }
 
-      dumpText += text(title.querySelector('.property-trace-value'));
+      dumpText += text(trace.querySelector('.value'));
       dumpText += ' - ';
-      dumpText += text(title.querySelector('.property-trace-selector'));
-      const link = title.querySelector('.trace-link');
+      dumpText += text(trace.shadowRoot.querySelector('.trace-selector'));
+      const link = trace.querySelector('[slot="trace-link"]');
 
       if (link) {
         dumpText += ' ' + await extractLinkText(link);

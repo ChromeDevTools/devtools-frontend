@@ -25,7 +25,7 @@ http.createServer(requestHandler).listen(serverPort);
 console.log(`Started components server at http://localhost:${serverPort}\n`);
 
 function createComponentIndexFile(componentPath, componentExamples) {
-  const componentName = componentPath.replace('/', '').replace('_', ' ');
+  const componentName = componentPath.replace('/', '').replace(/_/g, ' ');
   // clang-format off
   return `<!DOCTYPE html>
   <html>

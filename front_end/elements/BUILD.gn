@@ -12,6 +12,10 @@ devtools_module("elements") {
     "ClassesPaneWidget.js",
     "ColorSwatchPopoverIcon.js",
     "ComputedStyleModel.js",
+    "ComputedStyleProperty.ts",
+    "ComputedStyleProperty_bridge.js",
+    "ComputedStyleTrace.ts",
+    "ComputedStyleTrace_bridge.js",
     "ComputedStyleWidget.js",
     "DOMLinkifier.js",
     "DOMPath.js",
@@ -65,6 +69,8 @@ devtools_module("elements") {
   ]
 
   visibility = [
+    "../component_docs/computed_style_property",
+    "../component_docs/computed_style_trace",
     "../component_docs/elements_breadcrumbs",
     "../component_docs/layout_pane",
     "../../test/unittests/front_end/elements",

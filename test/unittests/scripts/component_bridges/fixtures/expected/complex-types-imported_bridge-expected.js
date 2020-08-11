@@ -25,9 +25,9 @@ export let Setting;
 /**
 * @typedef {{
 * name:string,
-* type:"enum",
+* type:!SettingType,
 * title:string,
-* options:Array.<!EnumSettingOption>,
+* options:!Array.<!EnumSettingOption>,
 * value:string,
 * }}
 */
@@ -36,19 +36,21 @@ export let EnumSetting;
 /**
 * @typedef {{
 * name:string,
-* type:"boolean",
+* type:!SettingType,
 * title:string,
-* options:Array.<!BooleanSettingOption>,
+* options:!Array.<!BooleanSettingOption>,
 * value:boolean,
 * }}
 */
 // @ts-ignore we export this for Closure not TS
 export let BooleanSetting;
 /**
-* @typedef {"boolean"|"enum"}
+* @enum {string}
 */
 // @ts-ignore we export this for Closure not TS
-export let SettingType;
+export let SettingType = {
+  a: 'a',
+};
 /**
 * @typedef {{
 * title:string,

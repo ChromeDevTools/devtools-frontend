@@ -5,7 +5,10 @@ export interface DOMNode {
   smth: string;
 }
 
-export type SettingType = 'boolean'|'enum';
+export const enum SettingType {
+  a = 'a',
+  b = 'b'
+}
 
 export interface BaseSettingOption {
   label: string;
@@ -24,8 +27,8 @@ export interface BaseSetting {
   settingType: SettingType;
 }
 
-export type BooleanSetting = BaseSetting&{settingType: 'boolean', options: BooleanSettingOption[], value: boolean};
-export type EnumSetting = BaseSetting&{settingType: 'enum', options: EnumSettingOption[], value: string};
+export type BooleanSetting = BaseSetting&{options: BooleanSettingOption[], value: boolean};
+export type EnumSetting = BaseSetting&{options: EnumSettingOption[], value: string};
 export type Setting = EnumSetting|BooleanSetting;
 
 export class LayoutPane extends HTMLElement {

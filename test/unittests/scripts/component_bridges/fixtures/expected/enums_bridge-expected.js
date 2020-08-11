@@ -13,7 +13,7 @@ import './enums.js';
 /**
 * @typedef {{
 * name:string,
-* isGoodDog:GoodDog,
+* isGoodDog:!GoodDog,
 * }}
 */
 // @ts-ignore we export this for Closure not TS

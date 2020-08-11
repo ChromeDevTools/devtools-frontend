@@ -569,7 +569,8 @@ describe('generateClosure', () => {
 * }}`);
     });
 
-    it('can convert interfaces that include a union type', () => {
+    // To be removed in follow up CL that removes support for string literals in unions
+    it.skip('[crbug.com/1115066] can convert interfaces that include a union type', () => {
       const state = parseCode(`interface Person {
         name: 'jack'|'paul'|'tim';
         age: number;
@@ -588,7 +589,8 @@ describe('generateClosure', () => {
 * }}`);
     });
 
-    it('can convert interfaces that include a union type defined separately', () => {
+    // To be removed in follow up CL that removes support for string literals in unions
+    it.skip('[crbug.com/1115066] can convert interfaces that include a union type defined separately', () => {
       const state = parseCode(`type Name = 'jack'|'paul'|'tim';
 
       interface Person {
@@ -714,7 +716,7 @@ describe('generateClosure', () => {
 
       interface DogFood {
         name: string;
-        foodType: 'healthy'|'tasty';
+        brand: string;
       }
       interface Dog {
         name: string;
@@ -737,7 +739,7 @@ describe('generateClosure', () => {
 
       assert.include(interfaces[1].join('\n'), `* @typedef {{
 * name:string,
-* food:DogFood,
+* food:!DogFood,
 * }}`);
       assert.include(interfaces[1].join('\n'), 'export let Dog');
 
@@ -748,7 +750,7 @@ describe('generateClosure', () => {
 
       assert.include(interfaces[3].join('\n'), `* @typedef {{
 * name:string,
-* foodType:"healthy"|"tasty",
+* brand:string,
 * }}`);
       assert.include(interfaces[3].join('\n'), 'export let DogFood');
     });
@@ -845,13 +847,13 @@ export let Person`);
 
       assert.strictEqual(interfaces.length, 2);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
-* name:Name,
+* name:!Name,
 * age:number,
 * }}`);
       assert.include(interfaces[0].join('\n'), 'export let Person');
       assert.include(interfaces[1].join('\n'), `* @typedef {{
 * firstLetter:string,
-* rest:Array.<string>,
+* rest:!Array.<string>,
 * }}`);
       assert.include(interfaces[1].join('\n'), 'export let Name');
     });
@@ -875,13 +877,13 @@ export let Person`);
 
       assert.strictEqual(interfaces.length, 2);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
-* name:Name,
+* name:!Name,
 * age:number,
 * }}`);
       assert.include(interfaces[0].join('\n'), 'export let Person');
       assert.include(interfaces[1].join('\n'), `* @typedef {{
 * firstLetter:string,
-* rest:Array.<string>,
+* rest:!Array.<string>,
 * }}`);
       assert.include(interfaces[1].join('\n'), 'export let Name');
     });
@@ -934,8 +936,11 @@ export let Person`);
       assert.include(interfaces[0].join('\n'), 'export let Person');
     });
 
-    it('correctly picks the right most field when a type extends a type and overrides a field', () => {
-      const state = parseCode(`type NamedThing = {
+    // To be removed in follow up CL that removes support for string literals in unions
+    it.skip(
+        '[crbug.com/1115066] correctly picks the right most field when a type extends a type and overrides a field',
+        () => {
+          const state = parseCode(`type NamedThing = {
         name: string;
       }
 
@@ -949,15 +954,15 @@ export let Person`);
         public update(person: Person) {}
       }`);
 
-      const interfaces = generateTypeReferences(state);
+          const interfaces = generateTypeReferences(state);
 
-      assert.strictEqual(interfaces.length, 1);
-      assert.include(interfaces[0].join('\n'), `* @typedef {{
+          assert.strictEqual(interfaces.length, 1);
+          assert.include(interfaces[0].join('\n'), `* @typedef {{
 * name:"jack",
 * age:number,
 * }}`);
-      assert.include(interfaces[0].join('\n'), 'export let Person');
-    });
+          assert.include(interfaces[0].join('\n'), 'export let Person');
+        });
 
     it('correctly includes interfaces from types that get extended', () => {
       const state = parseCode(`type NamedThing = {
@@ -969,7 +974,7 @@ export let Person`);
         id: number;
       }
 
-      type Person = NamedThing & { name: 'jack' };
+      type Person = NamedThing & { otherField: string };
 
       class Breadcrumbs extends HTMLElement {
         public update(person: Person) {}
@@ -978,8 +983,9 @@ export let Person`);
 
       assert.strictEqual(interfaces.length, 2);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
-* name:"jack",
-* details:Array.<!Detail>,
+* name:string,
+* details:!Array.<!Detail>,
+* otherField:string,
 * }}`);
       assert.include(interfaces[0].join('\n'), 'export let Person');
       assert.include(interfaces[1].join('\n'), `* @typedef {{
@@ -1008,7 +1014,7 @@ export let Person`);
       assert.strictEqual(interfaces.length, 2);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
 * name:string,
-* details:Array.<!Detail>,
+* details:!Array.<!Detail>,
 * }}`);
       assert.include(interfaces[0].join('\n'), 'export let Person');
       assert.include(interfaces[1].join('\n'), `* @typedef {{
@@ -1128,7 +1134,7 @@ export let Person`);
 
       assert.strictEqual(interfaces.length, 2);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
-* name:Name,
+* name:!Name,
 * favouriteColour:string,
 * }}`);
       assert.include(interfaces[0].join('\n'), 'export let Person');
@@ -1198,7 +1204,7 @@ export let Person`);
       assert.strictEqual(references.length, 2);
       const interfaceOutput = references[0].join('\n');
       assert.include(interfaceOutput, '* @typedef {{');
-      assert.include(interfaceOutput, '* settingType:SettingType');
+      assert.include(interfaceOutput, '* settingType:!SettingType');
       assert.include(interfaceOutput, 'export let Setting');
 
       const enumOutput = references[1].join('\n');

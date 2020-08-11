@@ -271,8 +271,15 @@ const generateInterfaceMembers = (members: ts.NodeArray<ts.TypeElement|ts.TypeNo
         } else {
           nodeValue = `(!${nodeValue}|undefined)`;
         }
+      } else {
+        if (!nodeIsPrimitive(member.type)) {
+          if (nodeValue.startsWith('"')) {
+            nodeValue = `!(${nodeValue})`;
+          } else {
+            nodeValue = `!${nodeValue}`;
+          }
+        }
       }
-
       output.push(`* ${keyName}:${nodeValue},`);
     }
   });

@@ -6,7 +6,9 @@ export interface DOMNode {
   smth: string;
 }
 
-export type SettingType = 'boolean'|'enum';
+export const enum SettingType {
+  a = 'a'
+}
 
 export interface BaseSettingOption {
   title: string;
@@ -26,6 +28,6 @@ export interface BaseSetting {
   title: string;
 }
 
-export type BooleanSetting = BaseSetting&{type: 'boolean', options: BooleanSettingOption[], value: boolean};
-export type EnumSetting = BaseSetting&{type: 'enum', options: EnumSettingOption[], value: string};
+export type BooleanSetting = BaseSetting&{options: BooleanSettingOption[], value: boolean};
+export type EnumSetting = BaseSetting&{options: EnumSettingOption[], value: string};
 export type Setting = EnumSetting|BooleanSetting;

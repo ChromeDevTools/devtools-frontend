@@ -476,6 +476,7 @@ class AffectedDirectivesView extends AffectedResourcesView {
       this._appendDirectiveColumnTitle(header);
       this._appendStatusColumnTitle(header);
     } else {
+      this.updateAffectedResourceCount(0);
       return;
     }
     this._affectedResources.appendChild(header);

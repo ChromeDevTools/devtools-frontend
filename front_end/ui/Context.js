@@ -6,6 +6,7 @@
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';
+import * as Root from '../root/root.js';  // eslint-disable-line no-unused-vars
 import {ContextFlavorListener} from './ContextFlavorListener.js';
 
 

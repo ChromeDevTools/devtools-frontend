@@ -2,8 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
+import * as Root from '../root/root.js';  // eslint-disable-line no-unused-vars
 
 import {Action} from './Action.js';
 import {Context} from './Context.js';  // eslint-disable-line no-unused-vars
@@ -16,6 +15,8 @@ export class ActionRegistry {
   }
 
   _registerActions() {
+    // @ts-ignore
+    // TODO(crbug.com/1058320): Use Runtime.instance() once it no longer crashes at this point.
     self.runtime.extensions('action').forEach(registerExtension, this);
 
     /**
@@ -23,8 +24,11 @@ export class ActionRegistry {
      * @this {ActionRegistry}
      */
     function registerExtension(extension) {
-      const actionId = extension.descriptor()['actionId'];
-      console.assert(actionId);
+      const actionId = extension.descriptor().actionId;
+      if (!actionId) {
+        console.error(`No actionId provided for extension ${extension.descriptor().name}`);
+        return;
+      }
       console.assert(!this._actionsById.get(actionId));
 
       const action = new Action(extension);
@@ -43,6 +47,8 @@ export class ActionRegistry {
    * @return {!Array.<!Action>}
    */
   availableActions() {
+    // @ts-ignore
+    // TODO(crbug.com/1058320): Replace self.UI.context global.
     return this.applicableActions([...this._actionsById.keys()], self.UI.context);
   }
 
@@ -60,12 +66,12 @@ export class ActionRegistry {
    */
   applicableActions(actionIds, context) {
     const extensions = [];
-    actionIds.forEach(function(actionId) {
+    for (const actionId of actionIds) {
       const action = this._actionsById.get(actionId);
       if (action && action.enabled()) {
         extensions.push(action.extension());
       }
-    }, this);
+    }
     return [...context.applicableExtensions(extensions)].map(extensionToAction.bind(this));
 
     /**
@@ -74,8 +80,8 @@ export class ActionRegistry {
      * @this {ActionRegistry}
      */
     function extensionToAction(extension) {
-      return (
-          /** @type {!Action} */ (this.action(extension.descriptor()['actionId'])));
+      const actionId = /** @type {string} */ (extension.descriptor().actionId);
+      return /** @type {!Action} */ (this.action(actionId));
     }
   }
 

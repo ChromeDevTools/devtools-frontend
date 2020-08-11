@@ -969,9 +969,6 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_eaeb30f9f18e0c50b178676f3eaef45f" desc="Text in Timeline UIUtils of the Performance panel">
     Task
   </message>
-  <message name="IDS_DEVTOOLS_ebd9bec4d70abc789d439c1f136b0538" desc="Text in Timeline UIUtils of the Performance panel">
-    Layout
-  </message>
   <message name="IDS_DEVTOOLS_ecfc2dffe568c10a67dbc6d3724cfde2" desc="Text in Timeline Tree View of the Performance panel">
     Activity
   </message>

@@ -231,6 +231,9 @@
   <message name="IDS_DEVTOOLS_a78163b8c3f5e5a69fddd2a70c7f7309" desc="Text in Styles Sidebar Pane of the Elements panel">
     Style Attribute
   </message>
+  <message name="IDS_DEVTOOLS_a915992a9a41d2e12c6c60cbd2b30e93" desc="Title of a section in the Layout Sidebar pane of the Elements panel">
+    Overlay display settings
+  </message>
   <message name="IDS_DEVTOOLS_a98895bde5922dd43c82ad7050abc05a" desc="Tooltip text that appears on the setting when hovering over it in Event Listeners Widget of the Elements panel">
     Show listeners on the ancestors
   </message>

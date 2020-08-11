@@ -229,6 +229,9 @@
   <message name="IDS_DEVTOOLS_51360304ea03557e79bdf5ff9cd2e234" desc="Text for the issuer of an item">
     Issuer
   </message>
+  <message name="IDS_DEVTOOLS_5174d1309f275ba6f275db3af9eb3e18" desc="Title of a section on CSS Grid tooling">
+    Grid
+  </message>
   <message name="IDS_DEVTOOLS_529a032eab49b8ddc6f49f8bcc086607" desc="Prev button title in Film Strip View of the Performance panel">
     Previous frame
   </message>
@@ -669,6 +672,9 @@
   </message>
   <message name="IDS_DEVTOOLS_eb902cf204f3e4dfffeb56d92a9b5c26" desc="Text to show since when an item is valid">
     Valid from
+  </message>
+  <message name="IDS_DEVTOOLS_ebd9bec4d70abc789d439c1f136b0538" desc="Text in Timeline UIUtils of the Performance panel">
+    Layout
   </message>
   <message name="IDS_DEVTOOLS_ec211f7c20af43e742bf2570c3cb84f9" desc="Text to add something">
     Add

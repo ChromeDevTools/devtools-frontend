@@ -288,6 +288,17 @@
       "order": 10,
       "persistence": "permanent",
       "className": "Elements.NodeStackTraceWidget"
+    },
+    {
+      "type": "view",
+      "experiment": "cssGridFeatures",
+      "location": "elements-sidebar",
+      "id": "elements.layout",
+      "title": "Layout",
+      "order": 11,
+      "hasToolbar": false,
+      "persistence": "permanent",
+      "className": "Elements.LayoutSidebarPane"
     }
   ],
   "dependencies": [
@@ -325,7 +336,9 @@
     "ElementStatePaneWidget.js",
     "ElementsTreeElementHighlighter.js",
     "ImagePreviewPopover.js",
-    "ElementsBreadcrumbs_bridge.js"
+    "ElementsBreadcrumbs_bridge.js",
+    "LayoutSidebarPane.js",
+    "LayoutPane_bridge.js"
   ],
   "resources": [
     "classesPaneWidget.css",

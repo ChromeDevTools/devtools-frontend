@@ -27,6 +27,10 @@ devtools_module("elements") {
     "EventListenersWidget.js",
     "ImagePreviewPopover.js",
     "InspectElementModeController.js",
+    "LayoutPane.ts",
+    "LayoutPaneUtils.ts",
+    "LayoutPane_bridge.js",
+    "LayoutSidebarPane.js",
     "MarkerDecorator.js",
     "MetricsSidebarPane.js",
     "NodeStackTraceWidget.js",
@@ -62,6 +66,7 @@ devtools_module("elements") {
 
   visibility = [
     "../component_docs/elements_breadcrumbs",
+    "../component_docs/layout_pane",
     "../../test/unittests/front_end/elements",
   ]
 }

@@ -61,6 +61,10 @@ ruleTester.run('es_modules_import', rule, {
       filename: 'front_end/elements/ElementsBreadcrumbs.ts',
     },
     {
+      code: 'import {classMap} from \'../third_party/lit-html/package/directives/class-map.js\';',
+      filename: 'front_end/elements/LayoutPane.ts',
+    },
+    {
       code: 'import * as WasmDis from \'../third_party/wasmparser/WasmDis.js\';',
       filename: 'front_end/wasmparser_worker/WasmParserWorker.js',
     },

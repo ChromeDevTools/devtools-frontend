@@ -5,6 +5,7 @@ ts_library("elements") {
   sources = [
     "Adorner_test.ts",
     "ElementsBreadcrumbs_test.ts",
+    "LayoutPane_test.ts",
   ]
 
   deps = [

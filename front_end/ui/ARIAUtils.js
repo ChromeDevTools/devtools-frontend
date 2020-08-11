@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 let _id = 0;
 
 /**
@@ -88,7 +85,7 @@ export function markAsLink(element) {
  */
 export function markAsMenuButton(element) {
   markAsButton(element);
-  element.setAttribute('aria-haspopup', true);
+  element.setAttribute('aria-haspopup', 'true');
 }
 
 /**
@@ -98,8 +95,8 @@ export function markAsMenuButton(element) {
  */
 export function markAsProgressBar(element, min = 0, max = 100) {
   element.setAttribute('role', 'progressbar');
-  element.setAttribute('aria-valuemin', min);
-  element.setAttribute('aria-valuemax', max);
+  element.setAttribute('aria-valuemin', min.toString());
+  element.setAttribute('aria-valuemax', max.toString());
 }
 
 /**
@@ -163,7 +160,7 @@ export function markAsMenuItem(element) {
  */
 export function markAsMenuItemSubMenu(element) {
   markAsMenuItem(element);
-  element.setAttribute('aria-haspopup', true);
+  element.setAttribute('aria-haspopup', 'true');
 }
 
 /**
@@ -234,7 +231,7 @@ export function markAsSlider(element, min = 0, max = 100) {
  */
 export function markAsHeading(element, level) {
   element.setAttribute('role', 'heading');
-  element.setAttribute('aria-level', level);
+  element.setAttribute('aria-level', level.toString());
 }
 
 /**
@@ -344,7 +341,7 @@ export function setControls(element, controlledElement) {
  * @param {boolean} value
  */
 export function setChecked(element, value) {
-  element.setAttribute('aria-checked', !!value);
+  element.setAttribute('aria-checked', (!!value).toString());
 }
 
 /**
@@ -359,7 +356,7 @@ export function setCheckboxAsIndeterminate(element) {
  * @param {boolean} value
  */
 export function setDisabled(element, value) {
-  element.setAttribute('aria-disabled', !!value);
+  element.setAttribute('aria-disabled', (!!value).toString());
 }
 
 /**
@@ -367,7 +364,7 @@ export function setDisabled(element, value) {
  * @param {boolean} value
  */
 export function setExpanded(element, value) {
-  element.setAttribute('aria-expanded', !!value);
+  element.setAttribute('aria-expanded', (!!value).toString());
 }
 
 /**
@@ -382,7 +379,7 @@ export function unsetExpandable(element) {
  * @param {boolean} value
  */
 export function setHidden(element, value) {
-  element.setAttribute('aria-hidden', !!value);
+  element.setAttribute('aria-hidden', (!!value).toString());
 }
 
 /**
@@ -390,7 +387,7 @@ export function setHidden(element, value) {
  * @param {number} level
  */
 export function setLevel(element, level) {
-  element.setAttribute('aria-level', level);
+  element.setAttribute('aria-level', level.toString());
 }
 
 /**
@@ -419,9 +416,12 @@ export function setSelected(element, value) {
   // aria-selected behaves differently for false and undefined.
   // Often times undefined values are unintentionally typed as booleans.
   // Use !! to make sure this is true or false.
-  element.setAttribute('aria-selected', !!value);
+  element.setAttribute('aria-selected', (!!value).toString());
 }
 
+/**
+ * @param {!Element} element
+ */
 export function clearSelected(element) {
   element.removeAttribute('aria-selected');
 }
@@ -432,7 +432,7 @@ export function clearSelected(element) {
  */
 export function setInvalid(element, value) {
   if (value) {
-    element.setAttribute('aria-invalid', value);
+    element.setAttribute('aria-invalid', value.toString());
   } else {
     element.removeAttribute('aria-invalid');
   }
@@ -446,7 +446,7 @@ export function setPressed(element, value) {
   // aria-pressed behaves differently for false and undefined.
   // Often times undefined values are unintentionally typed as booleans.
   // Use !! to make sure this is true or false.
-  element.setAttribute('aria-pressed', !!value);
+  element.setAttribute('aria-pressed', (!!value).toString());
 }
 
 /**
@@ -454,11 +454,15 @@ export function setPressed(element, value) {
  * @param {number} value
  */
 export function setValueNow(element, value) {
-  element.setAttribute('aria-valuenow', value);
+  element.setAttribute('aria-valuenow', value.toString());
 }
 
+/**
+ * @param {!Element} element
+ * @param {number} value
+ */
 export function setValueText(element, value) {
-  element.setAttribute('aria-valuetext', value);
+  element.setAttribute('aria-valuetext', value.toString());
 }
 
 /**
@@ -467,7 +471,7 @@ export function setValueText(element, value) {
  * @param {string=} valueText
  */
 export function setProgressBarValue(element, valueNow, valueText) {
-  element.setAttribute('aria-valuenow', valueNow);
+  element.setAttribute('aria-valuenow', valueNow.toString());
 
   if (valueText) {
     element.setAttribute('aria-valuetext', valueText);
@@ -511,8 +515,9 @@ export function setDescription(element, description) {
   // The rest of DevTools shouldn't have to worry about this,
   // so there is some unfortunate code below.
 
-  if (_descriptionMap.has(element)) {
-    _descriptionMap.get(element).remove();
+  const oldDescription = _descriptionMap.get(element);
+  if (oldDescription) {
+    oldDescription.remove();
   }
   element.removeAttribute('data-aria-utils-animation-hack');
 
@@ -524,7 +529,7 @@ export function setDescription(element, description) {
 
   // We make a hidden element that contains the decsription
   // and will be pointed to by aria-describedby.
-  const descriptionElement = createElement('span');
+  const descriptionElement = document.createElement('span');
   descriptionElement.textContent = description;
   descriptionElement.style.display = 'none';
   ensureId(descriptionElement);
@@ -598,7 +603,7 @@ export function setActiveDescendant(element, activedescendant) {
  * @param {number} size
  */
 export function setSetSize(element, size) {
-  element.setAttribute('aria-setsize', size);
+  element.setAttribute('aria-setsize', size.toString());
 }
 
 /**
@@ -606,11 +611,11 @@ export function setSetSize(element, size) {
  * @param {number} position
  */
 export function setPositionInSet(element, position) {
-  element.setAttribute('aria-posinset', position);
+  element.setAttribute('aria-posinset', position.toString());
 }
 
 /**
- * @param {!Element} element
+ * @param {!HTMLElement} element
  */
 function hideFromLayout(element) {
   element.style.position = 'absolute';

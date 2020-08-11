@@ -105,6 +105,7 @@ interface Event {
 
 interface Node {
   getComponentSelection(): Selection|null;
+  hasSameShadowRoot(other: Node): boolean;
 }
 
 declare function isEnterKey(event: Event): boolean;

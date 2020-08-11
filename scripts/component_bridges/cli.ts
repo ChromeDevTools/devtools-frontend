@@ -24,11 +24,11 @@ export const writeToDisk = (inputFilePath: string, generatedCode: GeneratedCode)
 
   const importStatement = `import './${baseName}.js';`;
 
-  const interfaces = generatedCode.interfaces
-                         .map(interfacePart => {
-                           return interfacePart.join('\n');
-                         })
-                         .join('\n');
+  const types = generatedCode.types
+                    .map(typePart => {
+                      return typePart.join('\n');
+                    })
+                    .join('\n');
   const classDeclaration = generatedCode.closureClass.join('\n');
   const creatorFunction = generatedCode.creatorFunction.join('\n');
 
@@ -44,7 +44,7 @@ export const writeToDisk = (inputFilePath: string, generatedCode: GeneratedCode)
 
   // extra \n to ensure ending with a linebreak at end of file
   const finalCode =
-      [chromeLicense, byHandWarning, importStatement, interfaces, classDeclaration, creatorFunction].join('\n') + '\n';
+      [chromeLicense, byHandWarning, importStatement, types, classDeclaration, creatorFunction].join('\n') + '\n';
 
   fs.writeFileSync(outputFileName, finalCode, {encoding: 'utf8'});
 

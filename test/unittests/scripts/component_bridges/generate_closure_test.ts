@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import {assert} from 'chai';
 
-import {generateClosureBridge, generateClosureClass, generateCreatorFunction, generateInterfaces} from '../../../../scripts/component_bridges/generate_closure.js';
+import {generateClosureBridge, generateClosureClass, generateCreatorFunction, generateTypeReferences} from '../../../../scripts/component_bridges/generate_closure.js';
 import {WalkerState, walkTree} from '../../../../scripts/component_bridges/walk_tree.js';
 
 import {createTypeScriptSourceFile} from './test_utils.js';
@@ -31,7 +31,7 @@ describe('generateClosure', () => {
 
       const generatedCode = generateClosureBridge(state);
 
-      assert.include(generatedCode.interfaces.join(''), 'Person');
+      assert.include(generatedCode.types.join(''), 'Person');
       assert.include(generatedCode.closureClass.join(''), 'class BreadcrumbsClosureInterface');
       assert.include(generatedCode.creatorFunction.join(''), 'function createBreadcrumbs()');
     });
@@ -481,7 +481,7 @@ describe('generateClosure', () => {
     });
   });
 
-  describe('generateInterfaces', () => {
+  describe('generateTypeReferences', () => {
     it('only generates interfaces taken by public methods', () => {
       const state = parseCode(`interface Person {
         name: string
@@ -499,7 +499,7 @@ describe('generateClosure', () => {
         public update(person: Person) {}
       }`);
 
-      const interfaces = generateInterfaces(state);
+      const interfaces = generateTypeReferences(state);
 
       assert.strictEqual(interfaces.length, 1);
       assert.isTrue(interfaces[0].join('').includes('export let Person'));
@@ -522,7 +522,7 @@ describe('generateClosure', () => {
         public update(people: Person[]) {}
       }`);
 
-      const interfaces = generateInterfaces(state);
+      const interfaces = generateTypeReferences(state);
 
       assert.strictEqual(interfaces.length, 1);
       assert.isTrue(interfaces[0].join('').includes('export let Person'));
@@ -543,7 +543,7 @@ describe('generateClosure', () => {
         public update(people: ReadonlyArray<Person>, dog: Readonly<Dog>) {}
       }`);
 
-      const interfaces = generateInterfaces(state);
+      const interfaces = generateTypeReferences(state);
 
       assert.strictEqual(interfaces.length, 2);
       assert.isTrue(interfaces[0].join('').includes('export let Person'));
@@ -560,7 +560,7 @@ describe('generateClosure', () => {
         public update(person: Person) {}
       }`);
 
-      const interfaces = generateInterfaces(state);
+      const interfaces = generateTypeReferences(state);
 
       assert.strictEqual(interfaces.length, 1);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
@@ -579,7 +579,7 @@ describe('generateClosure', () => {
         public update(person: Person) {}
       }`);
 
-      const interfaces = generateInterfaces(state);
+      const interfaces = generateTypeReferences(state);
 
       assert.strictEqual(interfaces.length, 1);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
@@ -600,7 +600,7 @@ describe('generateClosure', () => {
         public update(person: Person) {}
       }`);
 
-      const interfaces = generateInterfaces(state);
+      const interfaces = generateTypeReferences(state);
 
       assert.strictEqual(interfaces.length, 2);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
@@ -628,7 +628,7 @@ describe('generateClosure', () => {
         public update(animal: Animal) {}
       }`);
 
-      const interfaces = generateInterfaces(state);
+      const interfaces = generateTypeReferences(state);
 
       assert.strictEqual(interfaces.length, 3);
       assert.include(interfaces[0].join('\n'), '* @typedef {Dog|Cat}');
@@ -660,7 +660,7 @@ describe('generateClosure', () => {
         public update(animal: Animal) {}
       }`);
 
-      const interfaces = generateInterfaces(state);
+      const interfaces = generateTypeReferences(state);
 
       assert.strictEqual(interfaces.length, 3);
       assert.include(interfaces[0].join('\n'), '* @typedef {Dog|Cat}');
@@ -692,7 +692,7 @@ describe('generateClosure', () => {
         public update(animal: Animal) {}
       }`);
 
-      const interfaces = generateInterfaces(state);
+      const interfaces = generateTypeReferences(state);
 
       assert.strictEqual(interfaces.length, 3);
       assert.include(interfaces[0].join('\n'), '* @typedef {Dog|Cat|string|number}');
@@ -729,7 +729,7 @@ describe('generateClosure', () => {
         public update(animal: Animal) {}
       }`);
 
-      const interfaces = generateInterfaces(state);
+      const interfaces = generateTypeReferences(state);
 
       assert.strictEqual(interfaces.length, 4);
       assert.include(interfaces[0].join('\n'), '* @typedef {Dog|Cat}');
@@ -762,7 +762,7 @@ describe('generateClosure', () => {
         public update(person: Person) {}
       }`);
 
-      const interfaces = generateInterfaces(state);
+      const interfaces = generateTypeReferences(state);
 
       assert.strictEqual(interfaces.length, 1);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
@@ -781,7 +781,7 @@ describe('generateClosure', () => {
         public update(person: Person) {}
       }`);
 
-      const interfaces = generateInterfaces(state);
+      const interfaces = generateTypeReferences(state);
 
       assert.strictEqual(interfaces.length, 2);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
@@ -799,7 +799,7 @@ describe('generateClosure', () => {
         public update(person: Person) {}
       }`);
 
-      const interfaces = generateInterfaces(state);
+      const interfaces = generateTypeReferences(state);
 
       assert.strictEqual(interfaces.length, 1);
       assert.include(interfaces[0].join('\n'), `// @ts-ignore we export this for Closure not TS
@@ -816,7 +816,7 @@ export let Person`);
         public update(person: Person) {}
       }`);
 
-      const interfaces = generateInterfaces(state);
+      const interfaces = generateTypeReferences(state);
 
       assert.strictEqual(interfaces.length, 1);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
@@ -841,7 +841,7 @@ export let Person`);
         public update(person: Person) {}
       }`);
 
-      const interfaces = generateInterfaces(state);
+      const interfaces = generateTypeReferences(state);
 
       assert.strictEqual(interfaces.length, 2);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
@@ -871,7 +871,7 @@ export let Person`);
         public update(person: Person) {}
       }`);
 
-      const interfaces = generateInterfaces(state);
+      const interfaces = generateTypeReferences(state);
 
       assert.strictEqual(interfaces.length, 2);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
@@ -899,7 +899,7 @@ export let Person`);
         public update(person: Person) {}
       }`);
 
-      const interfaces = generateInterfaces(state);
+      const interfaces = generateTypeReferences(state);
 
       assert.strictEqual(interfaces.length, 1);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
@@ -924,7 +924,7 @@ export let Person`);
         public update(person: Person) {}
       }`);
 
-      const interfaces = generateInterfaces(state);
+      const interfaces = generateTypeReferences(state);
 
       assert.strictEqual(interfaces.length, 1);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
@@ -949,7 +949,7 @@ export let Person`);
         public update(person: Person) {}
       }`);
 
-      const interfaces = generateInterfaces(state);
+      const interfaces = generateTypeReferences(state);
 
       assert.strictEqual(interfaces.length, 1);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
@@ -974,7 +974,7 @@ export let Person`);
       class Breadcrumbs extends HTMLElement {
         public update(person: Person) {}
       }`);
-      const interfaces = generateInterfaces(state);
+      const interfaces = generateTypeReferences(state);
 
       assert.strictEqual(interfaces.length, 2);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
@@ -1003,7 +1003,7 @@ export let Person`);
         public update(person: Person) {}
       }`);
 
-      const interfaces = generateInterfaces(state);
+      const interfaces = generateTypeReferences(state);
 
       assert.strictEqual(interfaces.length, 2);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
@@ -1023,7 +1023,7 @@ export let Person`);
         public set data(data: { people: Object[] }) {
         }
       }`);
-      const interfaces = generateInterfaces(state);
+      const interfaces = generateTypeReferences(state);
       assert.strictEqual(interfaces.length, 0);
     });
 
@@ -1040,7 +1040,7 @@ export let Person`);
         public update(person: Person) {}
       }`);
 
-      const interfaces = generateInterfaces(state);
+      const interfaces = generateTypeReferences(state);
 
       assert.strictEqual(interfaces.length, 1);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
@@ -1067,7 +1067,7 @@ export let Person`);
         public update(person: Person) {}
       }`);
 
-      const interfaces = generateInterfaces(state);
+      const interfaces = generateTypeReferences(state);
 
       assert.strictEqual(interfaces.length, 1);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
@@ -1095,7 +1095,7 @@ export let Person`);
         public update(person: Person) {}
       }`);
 
-      const interfaces = generateInterfaces(state);
+      const interfaces = generateTypeReferences(state);
 
       assert.strictEqual(interfaces.length, 1);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
@@ -1124,7 +1124,7 @@ export let Person`);
         public update(person: Person) {}
       }`);
 
-      const interfaces = generateInterfaces(state);
+      const interfaces = generateTypeReferences(state);
 
       assert.strictEqual(interfaces.length, 2);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
@@ -1137,6 +1137,76 @@ export let Person`);
 * last:string,
 * }}`);
       assert.include(interfaces[1].join('\n'), 'export let Name');
+    });
+
+    it('can convert a TS enum of strings into Closure', () => {
+      const state = parseCode(`export const enum SettingType {
+        boolean = 'boolean',
+        enum = 'enum'
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public update(setting: SettingType) {}
+      }`);
+
+      const enums = generateTypeReferences(state);
+      assert.strictEqual(enums.length, 1);
+      const enumOutput = enums[0].join('\n');
+      assert.include(enumOutput, '* @enum {string}');
+      assert.include(enumOutput, '// @ts-ignore we export this for Closure not TS');
+      assert.include(enumOutput, 'export let SettingType = {');
+      assert.include(enumOutput, 'boolean: \'boolean\',');
+      assert.include(enumOutput, 'enum: \'enum\',');
+      assert.include(enumOutput, '};');
+    });
+
+    it('can convert a TS enum of numbers into Closure', () => {
+      const state = parseCode(`export const enum SettingType {
+        boolean = 0,
+        enum = 1,
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public update(setting: SettingType) {}
+      }`);
+
+      const enums = generateTypeReferences(state);
+      assert.strictEqual(enums.length, 1);
+      const enumOutput = enums[0].join('\n');
+      assert.include(enumOutput, '* @enum {number}');
+      assert.include(enumOutput, 'export let SettingType = {');
+      assert.include(enumOutput, 'boolean: 0,');
+      assert.include(enumOutput, 'enum: 1,');
+      assert.include(enumOutput, '};');
+    });
+
+    it('correctly generates an interface that references an enum', () => {
+      const state = parseCode(`export const enum SettingType {
+        boolean = 0,
+        enum = 1,
+      }
+
+      interface Setting {
+        settingType: SettingType,
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public update(setting: Setting) {}
+      }`);
+
+      const references = generateTypeReferences(state);
+      assert.strictEqual(references.length, 2);
+      const interfaceOutput = references[0].join('\n');
+      assert.include(interfaceOutput, '* @typedef {{');
+      assert.include(interfaceOutput, '* settingType:SettingType');
+      assert.include(interfaceOutput, 'export let Setting');
+
+      const enumOutput = references[1].join('\n');
+      assert.include(enumOutput, '* @enum {number}');
+      assert.include(enumOutput, 'export let SettingType = {');
+      assert.include(enumOutput, 'boolean: 0,');
+      assert.include(enumOutput, 'enum: 1,');
+      assert.include(enumOutput, '};');
     });
   });
 });

@@ -46,6 +46,10 @@ describe('bridges CLI fixture tests', () => {
     runFixtureTestAndAssertMatch('getters-setters-component');
   });
 
+  it('correctly parses TypeScript enums', () => {
+    runFixtureTestAndAssertMatch('enums');
+  });
+
   it('can handle setters with object literal data parameter', () => {
     runFixtureTestAndAssertMatch('setters-object-literal');
   });

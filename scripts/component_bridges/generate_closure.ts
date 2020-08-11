@@ -359,6 +359,10 @@ const generateClosureForInterface =
         throw new Error(`Could not find definition for reference: ${interfaceName}`);
       }
 
+      if (ts.isEnumDeclaration(typeReferenceNode)) {
+        return generateEnumOutput(typeReferenceNode);
+      }
+
       const interfaceBits: string[] = ['/**'];
 
       if (ts.isInterfaceDeclaration(typeReferenceNode)) {
@@ -428,8 +432,6 @@ const generateClosureForInterface =
 
         interfaceBits.push('* }}');
         interfaceBits.push('*/');
-      } else if (ts.isEnumDeclaration(typeReferenceNode)) {
-        // TODO: generate enum types
       } else {
         throw new Error(`Unsupported type alias nested type: ${ts.SyntaxKind[typeReferenceNode.type.kind]}.`);
       }
@@ -440,7 +442,7 @@ const generateClosureForInterface =
       return interfaceBits;
     };
 
-export const generateInterfaces = (state: WalkerState): Array<string[]> => {
+export const generateTypeReferences = (state: WalkerState): Array<string[]> => {
   const finalCode: Array<string[]> = [];
 
   state.typeReferencesToConvert.forEach(interfaceName => {
@@ -450,15 +452,56 @@ export const generateInterfaces = (state: WalkerState): Array<string[]> => {
   return finalCode;
 };
 
+const getEnumType = (node: ts.EnumDeclaration): 'string'|'number' => {
+  const firstMember = node.members[0];
+  const enumName = node.name.escapedText.toString();
+
+  if (!firstMember.initializer) {
+    throw new Error(`Enum ${enumName} has an unitialized member.`);
+  }
+
+  if (ts.isStringLiteral(firstMember.initializer)) {
+    return 'string';
+  }
+  if (ts.isNumericLiteral(firstMember.initializer)) {
+    return 'number';
+  }
+
+  throw new Error(`Enum ${enumName} has a member whose type is not string or number.`);
+};
+
+const generateEnumOutput = (enumDeclaration: ts.EnumDeclaration): string[] => {
+  const enumOutput: string[] = [];
+  const enumType = getEnumType(enumDeclaration);
+  enumOutput.push('/**');
+  enumOutput.push(`* @enum {${enumType}}`);
+  enumOutput.push('*/');
+  const enumName = enumDeclaration.name.escapedText.toString();
+  enumOutput.push('// @ts-ignore we export this for Closure not TS');
+  enumOutput.push(`export let ${enumName} = {`);
+  enumDeclaration.members.forEach(member => {
+    if (!ts.isIdentifier(member.name)) {
+      throw new Error(`Unexpected: member of enum ${enumName} does not have an identifier`);
+    }
+    const enumKey = member.name.escapedText.toString();
+    const enumValue = member.initializer && (member.initializer as ts.StringLiteral | ts.NumericLiteral).text;
+    const valueToOutput = enumType === 'string' ? `'${enumValue}'` : enumValue;
+    enumOutput.push(`  ${enumKey}: ${valueToOutput},`);
+  });
+  enumOutput.push('};');
+
+  return enumOutput;
+};
+
 export interface GeneratedCode {
-  interfaces: string[][];
+  types: string[][];
   closureClass: string[];
   creatorFunction: string[];
 }
 
 export const generateClosureBridge = (state: WalkerState): GeneratedCode => {
   const result: GeneratedCode = {
-    interfaces: generateInterfaces(state),
+    types: generateTypeReferences(state),
     closureClass: generateClosureClass(state),
     creatorFunction: generateCreatorFunction(state),
   };

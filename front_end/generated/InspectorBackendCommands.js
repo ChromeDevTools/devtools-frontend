@@ -618,6 +618,14 @@ export function registerCommands(inspectorBackend) {
       [{'name': 'depth', 'type': 'number', 'optional': true}, {'name': 'pierce', 'type': 'boolean', 'optional': true}],
       ['nodes']);
   inspectorBackend.registerCommand(
+      'DOM.getNodesForSubtreeByStyle',
+      [
+        {'name': 'nodeId', 'type': 'number', 'optional': false},
+        {'name': 'computedStyles', 'type': 'object', 'optional': false},
+        {'name': 'pierce', 'type': 'boolean', 'optional': true}
+      ],
+      ['nodeIds']);
+  inspectorBackend.registerCommand(
       'DOM.getNodeForLocation',
       [
         {'name': 'x', 'type': 'number', 'optional': false}, {'name': 'y', 'type': 'number', 'optional': false},

@@ -125,12 +125,19 @@ export class ConsoleViewport {
     if (this._muteCopyHandler) {
       return;
     }
+
     const text = this._selectedText();
     if (!text) {
       return;
     }
+
     event.preventDefault();
-    event.clipboardData.setData('text/plain', text);
+
+    if (this._selectionContainsTable()) {
+      this.copyWithStyles();
+    } else {
+      event.clipboardData.setData('text/plain', text);
+    }
   }
 
   /**
@@ -458,6 +465,20 @@ export class ConsoleViewport {
     }
 
     selection.setBaseAndExtent(anchorElement, anchorOffset, headElement, headOffset);
+  }
+
+  _selectionContainsTable() {
+    if (!this._anchorSelection || !this._headSelection) {
+      return false;
+    }
+
+    for (let i = this._anchorSelection.item; i <= this._headSelection.item; i++) {
+      if (this._renderedItems[i].consoleMessage().type === 'table') {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   refresh() {

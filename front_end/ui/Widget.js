@@ -28,6 +28,7 @@
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';
+import * as DOMExtension from '../dom_extension/dom_extension.js';
 import {Constraints, Size} from './Geometry.js';
 import {appendStyle} from './utils/append-style.js';
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
@@ -324,9 +325,9 @@ export class Widget extends Common.ObjectWrapper.ObjectWrapper {
         Widget._incrementWidgetCounter(parentElement, this.element);
       }
       if (insertBefore) {
-        Widget._originalInsertBefore.call(parentElement, this.element, insertBefore);
+        DOMExtension.DOMExtension.originalInsertBefore.call(parentElement, this.element, insertBefore);
       } else {
-        Widget._originalAppendChild.call(parentElement, this.element);
+        DOMExtension.DOMExtension.originalAppendChild.call(parentElement, this.element);
       }
     }
 
@@ -362,7 +363,7 @@ export class Widget extends Common.ObjectWrapper.ObjectWrapper {
     if (removeFromDOM) {
       // Force legal removal
       Widget._decrementWidgetCounter(parentElement, this.element);
-      Widget._originalRemoveChild.call(parentElement, this.element);
+      DOMExtension.DOMExtension.originalRemoveChild.call(parentElement, this.element);
     } else {
       this.element.classList.add('hidden');
     }
@@ -395,7 +396,7 @@ export class Widget extends Common.ObjectWrapper.ObjectWrapper {
       const parentElement = this.element.parentElement;
       // Force kick out from DOM.
       Widget._decrementWidgetCounter(parentElement, this.element);
-      Widget._originalRemoveChild.call(parentElement, this.element);
+      DOMExtension.DOMExtension.originalRemoveChild.call(parentElement, this.element);
     }
 
     // Update widget hierarchy.
@@ -638,12 +639,6 @@ export class Widget extends Common.ObjectWrapper.ObjectWrapper {
   }
 }
 
-export const _originalAppendChild = Element.prototype.appendChild;
-export const _originalInsertBefore = Element.prototype.insertBefore;
-export const _originalRemoveChild = Element.prototype.removeChild;
-export const _originalRemoveChildren = Element.prototype.removeChildren;
-
-
 /**
  * @unrestricted
  */
@@ -757,49 +752,3 @@ export class WidgetFocusRestorer {
     this._widget = null;
   }
 }
-
-/**
- * @override
- * @param {?Node} child
- * @return {!Node}
- * @suppress {duplicate}
- */
-Element.prototype.appendChild = function(child) {
-  Widget.__assert(!child.__widget || child.parentElement === this, 'Attempt to add widget via regular DOM operation.');
-  return Widget._originalAppendChild.call(this, child);
-};
-
-/**
- * @override
- * @param {?Node} child
- * @param {?Node} anchor
- * @return {!Node}
- * @suppress {duplicate}
- */
-Element.prototype.insertBefore = function(child, anchor) {
-  Widget.__assert(!child.__widget || child.parentElement === this, 'Attempt to add widget via regular DOM operation.');
-  return Widget._originalInsertBefore.call(this, child, anchor);
-};
-
-/**
- * @override
- * @param {?Node} child
- * @return {!Node}
- * @suppress {duplicate}
- */
-Element.prototype.removeChild = function(child) {
-  Widget.__assert(
-      !child.__widgetCounter && !child.__widget,
-      'Attempt to remove element containing widget via regular DOM operation');
-  return Widget._originalRemoveChild.call(this, child);
-};
-
-Element.prototype.removeChildren = function() {
-  Widget.__assert(!this.__widgetCounter, 'Attempt to remove element containing widget via regular DOM operation');
-  Widget._originalRemoveChildren.call(this);
-};
-
-Widget._originalAppendChild = _originalAppendChild;
-Widget._originalInsertBefore = _originalInsertBefore;
-Widget._originalRemoveChild = _originalRemoveChild;
-Widget._originalRemoveChildren = _originalRemoveChildren;

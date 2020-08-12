@@ -131,7 +131,7 @@ export class DeviceModeView extends UI.Widget.VBox {
    */
   _createResizer(element, widthFactor, heightFactor) {
     const resizer = new UI.ResizerWidget.ResizerWidget();
-    resizer.addElement(element);
+    resizer.addElement(/** @type {!HTMLElement} */ (element));
     let cursor = widthFactor ? 'ew-resize' : 'ns-resize';
     if (widthFactor * heightFactor > 0) {
       cursor = 'nwse-resize';

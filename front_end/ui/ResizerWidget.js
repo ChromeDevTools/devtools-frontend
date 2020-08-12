@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import {elementDragStart} from './UIUtils.js';
 
@@ -16,7 +13,7 @@ export class ResizerWidget extends Common.ObjectWrapper.ObjectWrapper {
     super();
 
     this._isEnabled = true;
-    /** @type {!Set<!Element>} */
+    /** @type {!Set<!HTMLElement>} */
     this._elements = new Set();
     this._installDragOnMouseDownBound = this._installDragOnMouseDown.bind(this);
     this._cursor = 'nwse-resize';
@@ -45,7 +42,7 @@ export class ResizerWidget extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Element} element
+   * @param {!HTMLElement} element
    */
   addElement(element) {
     if (!this._elements.has(element)) {
@@ -56,7 +53,7 @@ export class ResizerWidget extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Element} element
+   * @param {!HTMLElement} element
    */
   removeElement(element) {
     if (this._elements.has(element)) {
@@ -71,7 +68,7 @@ export class ResizerWidget extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Element} element
+   * @param {!HTMLElement} element
    */
   _updateElementCursor(element) {
     if (this._isEnabled) {
@@ -100,7 +97,7 @@ export class ResizerWidget extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!Event} event
    */
   _installDragOnMouseDown(event) {
-    const element = /** @type {!Element} */ (event.target);
+    const element = /** @type {!HTMLElement} */ (event.target);
     // Only handle drags of the nodes specified.
     if (!this._elements.has(element)) {
       return false;
@@ -108,6 +105,7 @@ export class ResizerWidget extends Common.ObjectWrapper.ObjectWrapper {
     elementDragStart(element, this._dragStart.bind(this), event => {
       this._drag(event);
     }, this._dragEnd.bind(this), this.cursor(), event);
+    return undefined;
   }
 
   /**
@@ -142,7 +140,9 @@ export class ResizerWidget extends Common.ObjectWrapper.ObjectWrapper {
       return true;  // Cancel drag.
     }
 
-    this.sendDragMove(this._startX, event.pageX, this._startY, event.pageY, event.shiftKey);
+    this.sendDragMove(
+        /** @type {number} */ (this._startX), event.pageX, /** @type {number} */ (this._startY), event.pageY,
+        event.shiftKey);
     event.preventDefault();
     return false;  // Continue drag.
   }

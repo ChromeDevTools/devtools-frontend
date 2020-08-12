@@ -818,14 +818,14 @@ export class SplitWidget extends Widget {
    * @param {!Element} resizerElement
    */
   installResizer(resizerElement) {
-    this._resizerWidget.addElement(resizerElement);
+    this._resizerWidget.addElement(/** @type {!HTMLElement} */ (resizerElement));
   }
 
   /**
    * @param {!Element} resizerElement
    */
   uninstallResizer(resizerElement) {
-    this._resizerWidget.removeElement(resizerElement);
+    this._resizerWidget.removeElement(/** @type {!HTMLElement} */ (resizerElement));
   }
 
   /**

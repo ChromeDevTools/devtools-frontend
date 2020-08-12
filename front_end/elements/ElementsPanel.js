@@ -109,12 +109,12 @@ export class ElementsPanel extends UI.Panel.Panel {
 
     crumbsContainer.id = 'elements-crumbs';
 
-    this._newBreadcrumbs = createElementsBreadcrumbs();
-    this._newBreadcrumbs.addEventListener('node-selected', event => {
+    this._breadcrumbs = createElementsBreadcrumbs();
+    this._breadcrumbs.addEventListener('node-selected', event => {
       this._crumbNodeSelected(/** @type {{data: *}} */ (event));
     });
 
-    crumbsContainer.appendChild(this._newBreadcrumbs);
+    crumbsContainer.appendChild(this._breadcrumbs);
 
     this._stylesWidget = new StylesSidebarPane();
     this._computedStyleWidget = new ComputedStyleWidget();
@@ -370,12 +370,12 @@ export class ElementsPanel extends UI.Panel.Panel {
         crumbs.push(legacyNodeToNewBreadcrumbsNode(current));
       }
 
-      this._newBreadcrumbs.data = {
+      this._breadcrumbs.data = {
         crumbs,
         selectedNode: legacyNodeToNewBreadcrumbsNode(selectedNode),
       };
     } else {
-      this._newBreadcrumbs.data = {crumbs: [], selectedNode: null};
+      this._breadcrumbs.data = {crumbs: [], selectedNode: null};
     }
 
     self.UI.context.setFlavor(SDK.DOMModel.DOMNode, selectedNode);
@@ -701,7 +701,7 @@ export class ElementsPanel extends UI.Panel.Panel {
     /* If we don't have a selected node then we can tell the breadcrumbs that & bail. */
     const selectedNode = this.selectedDOMNode();
     if (!selectedNode) {
-      this._newBreadcrumbs.data = {
+      this._breadcrumbs.data = {
         crumbs: [],
         selectedNode: null,
       };
@@ -734,7 +734,7 @@ export class ElementsPanel extends UI.Panel.Panel {
       return replacement || crumb;
     });
 
-    this._newBreadcrumbs.data = {
+    this._breadcrumbs.data = {
       crumbs: newSetOfCrumbs,
       selectedNode: activeNode,
     };

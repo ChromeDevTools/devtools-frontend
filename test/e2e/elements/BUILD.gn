@@ -7,6 +7,7 @@ import("../../../third_party/typescript/typescript.gni")
 node_ts_library("elements") {
   sources = [
     "adornment_test.ts",
+    "classes-pane_test.ts",
     "computed-pane-properties_test.ts",
     "element-breadcrumbs_test.ts",
     "pseudo-states_test.ts",

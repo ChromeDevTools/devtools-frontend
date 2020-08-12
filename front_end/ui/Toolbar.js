@@ -1132,7 +1132,12 @@ export class ToolbarCheckbox extends ToolbarItem {
     this.element.classList.add('checkbox');
     this.inputElement = this.element.checkboxElement;
     if (tooltip) {
-      Tooltip.install(this.element, tooltip, undefined, {
+      // install on the checkbox
+      Tooltip.install(this.inputElement, tooltip, undefined, {
+        anchorTooltipAtElement: true,
+      });
+      // install on the checkbox label
+      Tooltip.install(this.element.textElement, tooltip, undefined, {
         anchorTooltipAtElement: true,
       });
     }

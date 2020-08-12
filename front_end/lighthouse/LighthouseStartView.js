@@ -79,9 +79,8 @@ export class StartView extends UI.Widget.Widget {
     for (const preset of Presets) {
       const formElements = preset.plugin ? pluginFormElements : categoryFormElements;
       preset.setting.setTitle(preset.title);
-      const checkbox = new UI.Toolbar.ToolbarSettingCheckbox(preset.setting);
+      const checkbox = new UI.Toolbar.ToolbarSettingCheckbox(preset.setting, preset.description);
       const row = formElements.createChild('div', 'vbox lighthouse-launcher-row');
-      row.title = preset.description;
       row.appendChild(checkbox.element);
     }
     UI.ARIAUtils.markAsGroup(categoryFormElements);

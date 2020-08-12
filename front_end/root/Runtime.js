@@ -288,7 +288,7 @@ export class Runtime {
 
   /**
    * @param {!Extension} extension
-   * @param {!Set.<!Function>=} currentContextTypes
+   * @param {!Set.<function(new:Object, ...?):void>} currentContextTypes
    * @return {boolean}
    */
   isExtensionApplicableToContextTypes(extension, currentContextTypes) {
@@ -300,7 +300,7 @@ export class Runtime {
 
     if (currentContextTypes) {
       /**
-       * @param {!Function} targetType
+       * @param {function(new:Object, ...?):void} targetType
        * @return {boolean}
        */
       callback = targetType => {
@@ -843,7 +843,7 @@ export class Extension {
   }
 
   /**
-  * @param {function(new:Object)} contextType
+  * @param {function(new:Object, ...?):void} contextType
   * @return {boolean}
   */
   hasContextType(contextType) {

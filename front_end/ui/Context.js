@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Root from '../root/root.js';  // eslint-disable-line no-unused-vars
 import {ContextFlavorListener} from './ContextFlavorListener.js';
@@ -17,7 +14,7 @@ export class Context {
   }
 
   /**
-   * @param {function(new:T, ...):void} flavorType
+   * @param {function(new:T, ...?):void} flavorType
    * @param {?T} flavorValue
    * @template T
    */
@@ -36,12 +33,15 @@ export class Context {
   }
 
   /**
-   * @param {function(new:T, ...):void} flavorType
+   * @param {function(new:T, ...?):void} flavorType
    * @param {?T} flavorValue
    * @template T
    */
   _dispatchFlavorChange(flavorType, flavorValue) {
-    for (const extension of self.runtime.extensions(ContextFlavorListener)) {
+    // @ts-ignore
+    // TODO(crbug.com/1058320): Use Runtime.instance() here once we no longer crash using it.
+    const runtime = /** @type {!Root.Runtime.Runtime} */ (self.runtime);
+    for (const extension of runtime.extensions(ContextFlavorListener)) {
       if (extension.hasContextType(flavorType)) {
         extension.instance().then(
             instance => /** @type {!ContextFlavorListener} */ (instance).flavorChanged(flavorValue));
@@ -55,7 +55,7 @@ export class Context {
   }
 
   /**
-   * @param {function(new:Object, ...):void} flavorType
+   * @param {function(new:Object, ...?):void} flavorType
    * @param {function(!Common.EventTarget.EventTargetEvent):*} listener
    * @param {!Object=} thisObject
    */
@@ -69,7 +69,7 @@ export class Context {
   }
 
   /**
-   * @param {function(new:Object, ...):void} flavorType
+   * @param {function(new:Object, ...?):void} flavorType
    * @param {function(!Common.EventTarget.EventTargetEvent):*} listener
    * @param {!Object=} thisObject
    */
@@ -85,7 +85,7 @@ export class Context {
   }
 
   /**
-   * @param {function(new:T, ...):void} flavorType
+   * @param {function(new:T, ...?):void} flavorType
    * @return {?T}
    * @template T
    */
@@ -94,7 +94,7 @@ export class Context {
   }
 
   /**
-   * @return {!Set.<function(new:Object, ...)>}
+   * @return {!Set.<function(new:Object):void>}
    */
   flavors() {
     return new Set(this._flavors.keys());
@@ -108,11 +108,13 @@ export class Context {
     const targetExtensionSet = new Set();
 
     const availableFlavors = this.flavors();
-    extensions.forEach(function(extension) {
+    for (const extension of extensions) {
+      // @ts-ignore
+      // TODO(crbug.com/1058320): Use Runtime.instance() here once Closure is gone or can handle the type.
       if (self.runtime.isExtensionApplicableToContextTypes(extension, availableFlavors)) {
         targetExtensionSet.add(extension);
       }
-    });
+    }
 
     return targetExtensionSet;
   }

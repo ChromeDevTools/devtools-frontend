@@ -9,7 +9,7 @@
  * @param {string} localName
  * @param {string} typeExtension
  * @param {function(new:HTMLElement, *):void} definition
- * @return {function():void}
+ * @return {function():!Element}
  * @suppressGlobalPropertiesCheck
  */
 export function registerCustomElement(localName, typeExtension, definition) {

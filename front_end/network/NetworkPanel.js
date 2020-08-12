@@ -191,13 +191,17 @@ export class NetworkPanel extends UI.Panel.Panel {
   }
 
   /**
-   * @param {!Array<{filterType: !FilterType, filterValue: string}>} filters
+   * @param {!Array<{filterType: ?FilterType, filterValue: string}>} filters
    */
   static revealAndFilter(filters) {
     const panel = NetworkPanel._instance();
     let filterString = '';
     for (const filter of filters) {
-      filterString += `${filter.filterType}:${filter.filterValue} `;
+      if (filter.filterType) {
+        filterString += `${filter.filterType}:${filter.filterValue} `;
+      } else {
+        filterString += `${filter.filterValue} `;
+      }
     }
     panel._networkLogView.setTextFilterValue(filterString);
     UI.ViewManager.ViewManager.instance().showView('network');

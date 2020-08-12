@@ -176,7 +176,7 @@ export class Section extends VBox {
   /**
    * @param {string} title
    * @param {string=} textValue
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   appendField(title, textValue) {
     let row = this._fieldMap.get(title);
@@ -189,7 +189,7 @@ export class Section extends VBox {
     if (textValue) {
       row.lastElementChild.textContent = textValue;
     }
-    return /** @type {!Element} */ (row.lastElementChild);
+    return /** @type {!HTMLElement} */ (row.lastElementChild);
   }
 
   /**

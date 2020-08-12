@@ -166,11 +166,17 @@ table is empty.
   <message name="IDS_DEVTOOLS_579fdc74b6520ab8906ecddf3e62d951" desc="Text in Application Panel Sidebar of the Application panel">
     Application Cache
   </message>
+  <message name="IDS_DEVTOOLS_5ae203f5b272a30e8cf0457d5677dd7e" desc="Text for a link that applies a filter to the network panel">
+    Show matching requests
+  </message>
   <message name="IDS_DEVTOOLS_5af7e09b8b3d8b201c0621de9815bcb0" desc="Manifest installability error in the Application panel">
     Downloaded icon was empty or corrupted
   </message>
   <message name="IDS_DEVTOOLS_5bb07b23ba5cd47d49a0a030556b21ba" desc="Text in Background Service View of the Application panel">
     Background Fetch
+  </message>
+  <message name="IDS_DEVTOOLS_5d0d3256a9b63b8093b6842a8e4a089b" desc="Title for unreachable URL field">
+    Unreachable URL
   </message>
   <message name="IDS_DEVTOOLS_5e76cbfe956a74b7dda68e1e2e0dd716" desc="Title for ad frame type field">
     Ad Status
@@ -413,6 +419,9 @@ as used by Chrome
   </message>
   <message name="IDS_DEVTOOLS_ca72bcf0fbdc4c621360d906f930a956" desc="Warning message for icons from the manifest">
     Actual height (<ph name="IMAGE_NATURALHEIGHT">$1s<ex>100</ex></ph>px) of icon <ph name="ICONURL">$2s<ex>https://example.com/icon.png</ex></ph> does not match specified height (<ph name="HEIGHT">$3s<ex>100</ex></ph>px)
+  </message>
+  <message name="IDS_DEVTOOLS_caf1bc6193bddb09f022758b3610ff1a" desc="Title for a link that applies a filter to the network panel">
+    Requires network log, try reloading the inspected page if unavailable
   </message>
   <message name="IDS_DEVTOOLS_cbd71dc96b9c7d3a0663a5546f3798b5" desc="Text wrapping a link pointing to more information on maskable icons in App Manifest view of the Application panel">
     Need help? Read our <ph name="DOCUMENTATIONLINK">$1s<ex>https://example.com/</ex></ph>.

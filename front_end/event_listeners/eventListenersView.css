@@ -84,8 +84,8 @@
     border-color: ButtonText;
   }
 
-  .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] .event-listener-button,
-  .tree-outline-disclosure li[data-keyboard-focus="true"]:focus .gray-info-message {
+  .tree-outline.hide-selection-when-blurred .selected:focus-visible .event-listener-button,
+  .tree-outline-disclosure li:focus-visible .gray-info-message {
     background-color: Highlight;
     color: HighlightText;
     border-color: HighlightText;

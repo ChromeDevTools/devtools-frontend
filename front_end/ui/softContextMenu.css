@@ -148,7 +148,7 @@
     color: HighlightText;
   }
 
-  .soft-context-menu[data-keyboard-focus="true"]:focus {
+  .soft-context-menu:focus-visible {
     forced-color-adjust: none;
     background: canvas;
     border-color: Highlight;

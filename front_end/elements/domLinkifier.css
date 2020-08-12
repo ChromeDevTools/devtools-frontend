@@ -14,7 +14,7 @@
   pointer-events: auto;
 }
 
-.node-link[data-keyboard-focus="true"]:focus {
+.node-link:focus-visible {
   outline-width: unset;
 }
 

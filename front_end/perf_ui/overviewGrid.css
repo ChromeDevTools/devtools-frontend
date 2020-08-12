@@ -24,7 +24,7 @@
   z-index: 500;
 }
 
-.overview-grid-window-resizer[data-keyboard-focus="true"]:focus {
+.overview-grid-window-resizer:focus-visible {
   background-color: var(--active-control-bg-color);
 }
 
@@ -89,7 +89,7 @@
 
   .overview-grid-window-resizer:hover,
   .overview-grid-window-resizer:active,
-  .overview-grid-window-resizer[data-keyboard-focus="true"]:focus {
+  .overview-grid-window-resizer:focus-visible {
     forced-color-adjust: none;
     background-color: Highlight;
   }

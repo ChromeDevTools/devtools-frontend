@@ -129,7 +129,7 @@
   vertical-align: middle;
 }
 
-.devtools-link[data-keyboard-focus="true"]:focus {
+.devtools-link:focus-visible {
   outline-width: unset;
 }
 
@@ -189,7 +189,7 @@
     color: linktext;
   }
 
-  .devtools-link[data-keyboard-focus="true"]:focus {
+  .devtools-link:focus-visible {
     background: Highlight;
     color: HighlightText;
   }

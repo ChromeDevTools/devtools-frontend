@@ -21,7 +21,7 @@
   padding: 2px 0;
 }
 
-.breakpoint-entry[data-keyboard-focus="true"] {
+.breakpoint-entry:focus-visible {
   background-color: var(--focus-bg-color);
 }
 
@@ -40,13 +40,13 @@
 }
 
 @media (forced-colors: active) {
-  .breakpoint-list .breakpoint-entry:hover,
-  .breakpoint-entry[data-keyboard-focus="true"] {
+  .breakpoint-entry:focus-visible,
+  .breakpoint-list .breakpoint-entry:hover {
     forced-color-adjust: none;
     background-color: Highlight;
   }
 
-  .breakpoint-entry[data-keyboard-focus="true"] *,
+  .breakpoint-entry:focus-visible *,
   .breakpoint-list .breakpoint-entry:hover * {
     color: HighlightText;
   }

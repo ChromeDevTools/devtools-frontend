@@ -225,12 +225,12 @@ select.toolbar-item:disabled {
   opacity: 50%;
 }
 
-select.toolbar-item[data-keyboard-focus="true"]:focus {
+select.toolbar-item:focus-visible {
   background: rgb(0 0 0 / 8%);
   border-radius: 2px;
 }
 
-select.toolbar-item[data-keyboard-focus="true"]:focus > * {
+select.toolbar-item:focus-visible > * {
   background: white;
 }
 
@@ -309,7 +309,7 @@ select.toolbar-item[data-keyboard-focus="true"]:focus > * {
   background-color: rgb(163 163 163);
 }
 
-.toolbar-button[data-keyboard-focus="true"]:focus::after {
+.toolbar-button:focus-visible::after {
   position: absolute;
   top: 2px;
   bottom: 2px;

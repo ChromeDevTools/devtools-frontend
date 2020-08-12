@@ -58,7 +58,7 @@
   font-weight: bold;
 }
 
-.pie-chart-legend-row[data-keyboard-focus="true"]:focus {
+.pie-chart-legend-row:focus-visible {
   box-shadow: 0 0 0 2px var(--selection-bg-color) !important;
 }
 

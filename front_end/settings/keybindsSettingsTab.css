@@ -47,7 +47,7 @@ h1 {
   flex: auto 1 1;
 }
 
-.keybinds-list-item:focus[data-keyboard-focus="true"] {
+.keybinds-list-item:focus-visible {
   background-color: var(--focus-bg-color);
 }
 

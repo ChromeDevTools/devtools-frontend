@@ -29,7 +29,7 @@
   min-width: 35px;
 }
 
-.history-dropdown-button[data-keyboard-focus="true"]:focus::before {
+.history-dropdown-button:focus-visible::before {
   content: "";
   position: absolute;
   top: 2px;

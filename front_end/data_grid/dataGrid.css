@@ -218,7 +218,7 @@
   color: inherit;
 }
 
-.data-grid.no-selection[data-keyboard-focus="true"]:focus {
+.data-grid.no-selection:focus-visible {
   border: 1px solid var(--accent-color) !important;
 }
 
@@ -279,6 +279,10 @@
     background-color: ButtonText;
   }
 
+  .data-grid.no-selection:focus-visible * {
+    color: ButtonText;
+  }
+
   .data-grid th.sortable:hover *,
   .data-grid th.sortable:hover .sort-order-icon-container [is=ui-icon].icon-mask,
   .data-grid tr.parent.selected td.disclosure::before,
@@ -294,13 +298,9 @@
     background-color: canvas;
   }
 
-  .data-grid.no-selection[data-keyboard-focus="true"]:focus {
+  .data-grid.no-selection:focus-visible {
     forced-color-adjust: none;
     border-color: Highlight;
-  }
-
-  .data-grid.no-selection[data-keyboard-focus="true"]:focus * {
-    color: ButtonText;
   }
 
   .data-grid th.sortable:hover,

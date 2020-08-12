@@ -26,11 +26,11 @@
   font-style: italic;
 }
 
-.styles-section[data-keyboard-focus="true"]:focus {
+.styles-section:focus-visible {
   background-color: hsl(214deg 48% 95%);
 }
 
-.styles-section.read-only[data-keyboard-focus="true"]:focus {
+.styles-section.read-only:focus-visible {
   background-color: hsl(215deg 25% 87%);
 }
 
@@ -230,7 +230,7 @@
   z-index: 0;
 }
 
-.styles-section[data-keyboard-focus="true"]:focus .sidebar-pane-section-toolbar {
+.styles-section:focus-visible .sidebar-pane-section-toolbar {
   background-color: hsl(214deg 67% 95% / 90%);
 }
 
@@ -251,8 +251,8 @@
     background: ButtonFace;
   }
 
-  .styles-section[data-keyboard-focus="true"]:focus,
-  .styles-section.read-only[data-keyboard-focus="true"]:focus {
+  .styles-section:focus-visible,
+  .styles-section.read-only:focus-visible {
     forced-color-adjust: none;
     background-color: Highlight;
   }
@@ -262,9 +262,9 @@
     text-decoration-color: linktext;
   }
 
-  .styles-section[data-keyboard-focus="true"]:focus *,
-  .styles-section.read-only[data-keyboard-focus="true"]:focus *,
-  .styles-section[data-keyboard-focus="true"]:focus .styles-section-subtitle .devtools-link {
+  .styles-section:focus-visible *,
+  .styles-section.read-only:focus-visible *,
+  .styles-section:focus-visible .styles-section-subtitle .devtools-link {
     color: HighlightText;
     text-decoration-color: HighlightText;
   }
@@ -275,7 +275,7 @@
     background-color: ButtonFace;
   }
 
-  .styles-section[data-keyboard-focus="true"]:focus .sidebar-pane-section-toolbar {
+  .styles-section:focus-visible .sidebar-pane-section-toolbar {
     background-color: ButtonFace;
   }
 }

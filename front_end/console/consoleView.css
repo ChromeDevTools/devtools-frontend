@@ -517,8 +517,13 @@
     color: HighlightText !important;
   }
 
-  #console-messages .link[data-keyboard-focus="true"]:focus,
-  #console-messages .devtools-link[data-keyboard-focus="true"]:focus {
+  #console-messages .devtools-link,
+  #console-messages .devtools-link:hover {
+    color: linktext;
+  }
+
+  #console-messages .link:focus-visible,
+  #console-messages .devtools-link:focus-visible {
     background: Highlight;
     color: HighlightText;
   }
@@ -530,10 +535,5 @@
   .console-message-wrapper.console-error-level:focus,
   .console-message-wrapper.console-error-level:focus:last-of-type {
     --error-text-color: HighlightText;
-  }
-
-  #console-messages .devtools-link,
-  #console-messages .devtools-link:hover {
-    color: linktext;
   }
 }

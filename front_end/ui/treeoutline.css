@@ -21,7 +21,7 @@
   position: relative;
 }
 
-.tree-outline[data-keyboard-focus="true"] {
+.tree-outline:focus-visible {
   box-shadow: 0 0 0 2px var(--accent-color) inset;
 }
 
@@ -153,12 +153,12 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus * {
   padding-left: 10px;
 }
 
-.tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] {
+.tree-outline.hide-selection-when-blurred .selected:focus-visible {
   background: var(--focus-bg-color);
   border-radius: 2px;
 }
 
-.tree-outline-disclosure:not(.tree-outline-disclosure-hide-overflow) .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] {
+.tree-outline-disclosure:not(.tree-outline-disclosure-hide-overflow) .tree-outline.hide-selection-when-blurred .selected:focus-visible {
   width: fit-content;
   padding-right: 3px;
 }
@@ -182,20 +182,20 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus * {
   }
 
   ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection,
-  .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] {
+  .tree-outline.hide-selection-when-blurred .selected:focus-visible {
     forced-color-adjust: none;
     background-color: Highlight;
   }
 
   ol.tree-outline:not(.hide-selection-when-blurred) li.parent.selected::before,
   ol.tree-outline:not(.hide-selection-when-blurred) li.parent.selected:focus::before,
-  .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"]::before {
+  .tree-outline.hide-selection-when-blurred .selected:focus-visible::before {
     background-color: HighlightText;
   }
 
   .tree-outline li:not(.parent)::before,
   .tree-outline li:not(.parent):hover::before,
-  .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"]:not(.parent)::before {
+  .tree-outline.hide-selection-when-blurred .selected:focus-visible:not(.parent)::before {
     forced-color-adjust: none;
     background-color: transparent;
   }
@@ -208,10 +208,10 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus * {
   ol.tree-outline:not(.hide-selection-when-blurred) li.selected,
   .tree-outline:not(.hide-selection-when-blurred) li.selected .tree-element-title,
   .tree-outline:not(.hide-selection-when-blurred) li.selected:focus,
+  .tree-outline:not(.hide-selection-when-blurred) li:focus-visible .tree-element-title,
   .tree-outline:not(.hide-selection-when-blurred) li.selected:focus .tree-element-title,
-  .tree-outline:not(.hide-selection-when-blurred) li[data-keyboard-focus="true"]:focus .tree-element-title,
   .tree-outline:not(.hide-selection-when-blurred) li.selected span,
-  .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] span {
+  .tree-outline.hide-selection-when-blurred .selected:focus-visible span {
     forced-color-adjust: none;
     color: HighlightText;
   }

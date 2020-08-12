@@ -112,7 +112,7 @@
   margin-left: -12px;
 }
 
-.elements-disclosure .elements-tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] .highlight > * {
+.elements-disclosure .elements-tree-outline.hide-selection-when-blurred .selected:focus-visible .highlight > * {
   background: var(--focus-bg-color);
   border-radius: 2px;
   box-shadow: 0 0 0 2px var(--focus-bg-color);

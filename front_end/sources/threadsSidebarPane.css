@@ -21,7 +21,7 @@
   background-color: #eee;
 }
 
-.thread-item[data-keyboard-focus="true"] {
+.thread-item:focus-visible {
   background-color: var(--focus-bg-color);
 }
 
@@ -51,13 +51,13 @@
 
 @media (forced-colors: active) {
   .thread-item:hover,
-  .thread-item[data-keyboard-focus="true"] {
+  .thread-item:focus-visible {
     forced-color-adjust: none;
     background-color: Highlight;
   }
 
   .thread-item:hover > div,
-  .thread-item[data-keyboard-focus="true"] > div {
+  .thread-item:focus-visible > div {
     color: HighlightText;
   }
 }

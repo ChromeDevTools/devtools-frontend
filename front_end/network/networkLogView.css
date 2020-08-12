@@ -33,7 +33,7 @@
   flex: auto;
 }
 
-.network-log-grid.data-grid.no-selection[data-keyboard-focus="true"]:focus {
+.network-log-grid.data-grid.no-selection:focus-visible {
   border: none !important;
 }
 

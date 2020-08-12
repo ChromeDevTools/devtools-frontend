@@ -55,7 +55,7 @@
   background-color: #f8f8f8;
 }
 
-.perfmon-indicator[data-keyboard-focus="true"]:focus {
+.perfmon-indicator:focus-visible {
   background-color: #f8f8f8;
 }
 

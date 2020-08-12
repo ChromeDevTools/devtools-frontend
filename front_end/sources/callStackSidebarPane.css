@@ -53,10 +53,6 @@
   border-top: 1px solid #efefef;
 }
 
-.call-frame-item:not(.async-header):hover {
-  background-color: #eee;
-}
-
 .call-frame-item-title,
 .call-frame-location {
   display: flex;
@@ -72,9 +68,13 @@
   z-index: 1;
 }
 
-.call-frame-item[data-keyboard-focus="true"]:focus,
-.call-frame-item.async-header[data-keyboard-focus="true"]:focus .call-frame-item-title {
+.call-frame-item:focus-visible,
+.call-frame-item.async-header:focus-visible .call-frame-item-title {
   background-color: var(--focus-bg-color);
+}
+
+.call-frame-item:not(.async-header):hover {
+  background-color: #eee;
 }
 
 .call-frame-location {
@@ -118,14 +118,14 @@
 }
 
 @media (forced-colors: active) {
-  .call-frame-item:not(.async-header):hover,
-  .call-frame-item[data-keyboard-focus="true"]:focus {
+  .call-frame-item:focus-visible,
+  .call-frame-item:not(.async-header):hover {
     forced-color-adjust: none;
     background-color: Highlight;
   }
 
-  .call-frame-item:not(.async-header):hover *,
-  .call-frame-item[data-keyboard-focus="true"]:focus * {
+  .call-frame-item:focus-visible *,
+  .call-frame-item:not(.async-header):hover * {
     color: HighlightText;
   }
 }

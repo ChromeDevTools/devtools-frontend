@@ -158,7 +158,7 @@ body.inactive .profile-launcher-view-content button.running:not(.toolbar-item) {
   }
 
   .javascript-vm-instances-list:focus .profile-memory-usage-item.selected,
-  .javascript-vm-instances-list[data-keyboard-focus="true"]:focus .profile-memory-usage-item.selected {
+  .javascript-vm-instances-list:focus-visible .profile-memory-usage-item.selected {
     background-color: Highlight;
     border-color: ButtonText;
     color: HighlightText;

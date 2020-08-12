@@ -101,7 +101,7 @@ li.watch-expression-tree-item:hover {
   background-color: #f0f0f0;
 }
 
-.watch-expression-header:focus[data-keyboard-focus="true"] {
+.watch-expression-header:focus-visible {
   background: var(--focus-bg-color);
 }
 

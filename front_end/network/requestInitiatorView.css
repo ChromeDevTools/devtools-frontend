@@ -14,7 +14,7 @@
   padding: 4px;
 }
 
-.request-initiator-view-section-title[data-keyboard-focus="true"]:focus {
+.request-initiator-view-section-title:focus-visible {
   background-color: rgb(0 0 0 / 8%);
 }
 
@@ -23,11 +23,11 @@
 }
 
 @media (forced-colors: active) {
-  .request-initiator-view-section-title[data-keyboard-focus="true"]:focus [is=ui-icon].icon-mask {
+  .request-initiator-view-section-title:focus-visible [is=ui-icon].icon-mask {
     background-color: HighlightText;
   }
 
-  .request-initiator-view-section-title[data-keyboard-focus="true"]:focus {
+  .request-initiator-view-section-title:focus-visible {
     forced-color-adjust: none;
     background-color: Highlight;
     color: HighlightText;

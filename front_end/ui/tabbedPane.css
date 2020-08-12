@@ -62,7 +62,7 @@
   margin: 2px;
 }
 
-.tabbed-pane-placeholder-row[data-keyboard-focus="true"]:focus {
+.tabbed-pane-placeholder-row:focus-visible {
   outline-width: unset;
 }
 
@@ -129,7 +129,7 @@
 }
 
 .tabbed-pane-header-tab:hover,
-.tabbed-pane-shadow .tabbed-pane-header-tab[data-keyboard-focus="true"]:focus {
+.tabbed-pane-shadow .tabbed-pane-header-tab:focus-visible {
   color: #333;
   background-color: var(--toolbar-hover-bg-color);
 }
@@ -180,7 +180,7 @@
 }
 
 .tabbed-pane-header-tabs-drop-down-container:hover,
-.tabbed-pane-header-tabs-drop-down-container[data-keyboard-focus="true"]:focus {
+.tabbed-pane-header-tabs-drop-down-container:focus-visible {
   background-color: rgb(0 0 0 / 8%);
 }
 
@@ -308,7 +308,7 @@
   }
 
   .tabbed-pane-header-tab:hover,
-  .tabbed-pane-shadow .tabbed-pane-header-tab[data-keyboard-focus="true"]:focus {
+  .tabbed-pane-shadow .tabbed-pane-header-tab:focus-visible {
     background-color: Highlight;
     color: HighlightText;
   }
@@ -318,7 +318,7 @@
   }
 
   .tabbed-pane-header-tabs-drop-down-container:hover,
-  .tabbed-pane-header-tabs-drop-down-container[data-keyboard-focus="true"]:focus {
+  .tabbed-pane-header-tabs-drop-down-container:focus-visible {
     background-color: Highlight;
   }
 
@@ -327,7 +327,7 @@
   }
 
   .tabbed-pane-header-tabs-drop-down-container:hover > .chevron-icon,
-  .tabbed-pane-header-tabs-drop-down-container[data-keyboard-focus="true"]:focus > .chevron-icon {
+  .tabbed-pane-header-tabs-drop-down-container:focus-visible > .chevron-icon {
     background-color: HighlightText;
   }
 }

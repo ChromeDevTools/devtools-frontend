@@ -28,7 +28,7 @@
   flex: 0 0 150px;
 }
 
-.animation-node-description[data-keyboard-focus="true"]:focus {
+.animation-node-description:focus-visible {
   overflow: auto;
   box-shadow: 0 0 0 2px var(--accent-color) inset;
 }
@@ -250,8 +250,8 @@ svg.animation-ui g:first-child {
   opacity: 100%;
 }
 
-svg.animation-ui circle[data-keyboard-focus="true"],
-svg.animation-ui path[data-keyboard-focus="true"] {
+svg.animation-ui circle:focus-visible,
+svg.animation-ui path:focus-visible {
   outline: 2px solid -webkit-focus-ring-color;
 }
 
@@ -333,11 +333,11 @@ text.animation-timeline-grid-label {
   cursor: pointer;
 }
 
-.animation-buffer-preview[data-keyboard-focus="true"]:focus {
+.animation-buffer-preview:focus-visible {
   outline: -webkit-focus-ring-color auto 5px;
 }
 
-.animation-buffer-preview[data-keyboard-focus="true"]:not(.selected):focus,
+.animation-buffer-preview:not(.selected):focus-visible,
 .animation-buffer-preview:not(.selected):hover {
   background-color: hsl(217deg 90% 92% / 100%);
 }
@@ -412,19 +412,6 @@ text.animation-timeline-grid-label {
   border-radius: 0 4px 4px 0;
 }
 
-.animation-playback-rate-button[data-keyboard-focus="true"].selected:focus {
-  color: hsl(0deg 0% 0%);
-}
-
-.animation-playback-rate-button[data-keyboard-focus="true"].selected:first-child:focus,
-.animation-playback-rate-button[data-keyboard-focus="true"]:focus {
-  background-color: var(--focus-bg-color);
-}
-
-.animation-playback-rate-button:not(.selected):hover {
-  background: hsl(211deg 100% 95%);
-}
-
 .animation-playback-rate-button.selected {
   color: hsl(0deg 100% 100%);
   background-color: var(--selection-bg-color);
@@ -435,6 +422,19 @@ text.animation-timeline-grid-label {
 .animation-playback-rate-button.selected:first-child {
   color: var(--selection-bg-color);
   background-color: hsl(217deg 89% 100%);
+}
+
+.animation-playback-rate-button.selected:focus-visible {
+  color: hsl(0deg 0% 0%);
+}
+
+.animation-playback-rate-button.selected:first-child:focus-visible,
+.animation-playback-rate-button:focus-visible {
+  background-color: var(--focus-bg-color);
+}
+
+.animation-playback-rate-button:not(.selected):hover {
+  background: hsl(211deg 100% 95%);
 }
 
 .animation-remove-button,
@@ -466,16 +466,16 @@ text.animation-timeline-grid-label {
 }
 
 @media (forced-colors: active) {
-  .animation-playback-rate-button[data-keyboard-focus="true"].selected:first-child:focus,
-  .animation-playback-rate-button[data-keyboard-focus="true"]:focus,
   .animation-playback-rate-button.selected,
-  .animation-playback-rate-button.selected:first-child {
+  .animation-playback-rate-button.selected:first-child,
+  .animation-playback-rate-button.selected:first-child:focus-visible,
+  .animation-playback-rate-button:focus-visible {
     forced-color-adjust: none;
     color: HighlightText;
     background-color: Highlight;
   }
 
-  .animation-node-description[data-keyboard-focus="true"]:focus {
+  .animation-node-description:focus-visible {
     background-color: canvas;
     forced-color-adjust: none;
   }

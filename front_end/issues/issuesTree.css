@@ -77,7 +77,7 @@ p {
 
 /* Override selected tree item styles for issues to avoid changing width. */
 
-.tree-outline-disclosure:not(.tree-outline-disclosure-hide-overflow) .tree-outline.hide-selection-when-blurred .issue.selected:focus[data-keyboard-focus="true"] {
+.tree-outline-disclosure:not(.tree-outline-disclosure-hide-overflow) .tree-outline.hide-selection-when-blurred .issue.selected:focus-visible {
   width: auto;
   padding-right: 8px;
 }

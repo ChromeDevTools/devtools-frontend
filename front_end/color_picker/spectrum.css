@@ -86,8 +86,8 @@
   border-radius: 2px;
 }
 
-.spectrum-hue[data-keyboard-focus="true"] .spectrum-slider,
-.spectrum-alpha[data-keyboard-focus="true"] .spectrum-slider {
+.spectrum-hue:focus-visible .spectrum-slider,
+.spectrum-alpha:focus-visible .spectrum-slider {
   border: 1px solid var(--accent-color-hover);
   width: 14px;
   height: 14px;
@@ -316,7 +316,7 @@
 }
 
 .swatch-overlay:hover,
-.swatch-overlay[data-keyboard-focus="true"]:focus {
+.swatch-overlay:focus-visible {
   background-color: rgb(0 0 0 / 30%);
   opacity: 100%;
 }
@@ -384,7 +384,7 @@
   background-color: #ddd;
 }
 
-.spectrum-switcher[data-keyboard-focus="true"]:focus {
+.spectrum-switcher:focus-visible {
   background-color: var(--focus-bg-color);
 }
 
@@ -544,7 +544,7 @@ div.palette-preview {
   flex: 0 0 84px;
 }
 
-.palette-preview[data-keyboard-focus="true"]:focus,
+.palette-preview:focus-visible,
 .palette-preview:hover {
   background-color: #eee;
 }
@@ -660,7 +660,7 @@ div.palette-preview {
   }
 
   .spectrum-switcher:hover,
-  .spectrum-switcher[data-keyboard-focus="true"]:focus {
+  .spectrum-switcher:focus-visible {
     forced-color-adjust: none;
     background-color: Highlight !important;
   }
@@ -670,7 +670,7 @@ div.palette-preview {
   }
 
   .spectrum-switcher:hover svg,
-  .spectrum-switcher[data-keyboard-focus="true"]:focus svg {
+  .spectrum-switcher:focus-visible svg {
     fill: HighlightText;
   }
 
@@ -685,7 +685,7 @@ div.palette-preview {
   }
 
   .swatch-overlay:hover,
-  .swatch-overlay[data-keyboard-focus="true"]:focus {
+  .swatch-overlay:focus-visible {
     background-color: canvas !important;
   }
 

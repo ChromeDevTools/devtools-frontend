@@ -64,12 +64,12 @@
   margin-bottom: -2px;
 }
 
-.expandable-view-title[data-keyboard-focus="true"]:focus {
+.expandable-view-title:focus-visible {
   background-color: var(--focus-bg-color);
 }
 
 @media (forced-colors: active) {
-  .expandable-view-title[data-keyboard-focus="true"]:focus {
+  .expandable-view-title:focus-visible {
     forced-color-adjust: none;
     background: canvas !important;
     box-shadow: 0 0 0 2px Highlight inset;

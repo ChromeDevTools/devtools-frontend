@@ -23,7 +23,7 @@ button.soft-dropdown > .title {
   text-overflow: ellipsis;
 }
 
-button.soft-dropdown[data-keyboard-focus="true"]:focus::before {
+button.soft-dropdown:focus-visible::before {
   content: "";
   position: absolute;
   top: 2px;

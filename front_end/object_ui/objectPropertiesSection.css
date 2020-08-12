@@ -70,13 +70,13 @@
   margin-left: 4px;
 }
 
-.tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] {
+.tree-outline.hide-selection-when-blurred .selected:focus-visible {
   background: none;
 }
 
-.tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] ::slotted(*),
-.tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] .tree-element-title,
-.tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] .name-and-value {
+.tree-outline.hide-selection-when-blurred .selected:focus-visible ::slotted(*),
+.tree-outline.hide-selection-when-blurred .selected:focus-visible .tree-element-title,
+.tree-outline.hide-selection-when-blurred .selected:focus-visible .name-and-value {
   background: var(--focus-bg-color);
   border-radius: 2px;
   box-shadow: 0 0 0 2px var(--focus-bg-color);
@@ -87,7 +87,7 @@
     opacity: 100%;
   }
 
-  .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] {
+  .tree-outline.hide-selection-when-blurred .selected:focus-visible {
     background: Highlight;
   }
 
@@ -96,14 +96,14 @@
     color: ButtonText;
   }
 
-  .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] .tree-element-title,
-  .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] .name-and-value {
+  .tree-outline.hide-selection-when-blurred .selected:focus-visible .tree-element-title,
+  .tree-outline.hide-selection-when-blurred .selected:focus-visible .name-and-value {
     background: transparent;
     box-shadow: none;
   }
 
-  .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] span,
-  .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] .gray-info-message {
+  .tree-outline.hide-selection-when-blurred .selected:focus-visible span,
+  .tree-outline.hide-selection-when-blurred .selected:focus-visible .gray-info-message {
     color: HighlightText;
   }
 

@@ -66,7 +66,7 @@
   overflow: hidden;
 }
 
-.filter-bitset-filter span[data-keyboard-focus="true"] {
+.filter-bitset-filter span:focus-visible {
   outline: -webkit-focus-ring-color auto 5px;
 }
 

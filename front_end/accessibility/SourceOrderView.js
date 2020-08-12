@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../host/host.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
@@ -74,6 +75,7 @@ export class SourceOrderPane extends AccessibilitySubPane {
     }
 
     if (this._checkboxElement.checked) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.SourceOrderViewActivated);
       this._overlayModel.highlightSourceOrderInOverlay(this._node);
     } else {
       this._overlayModel.hideSourceOrderInOverlay();

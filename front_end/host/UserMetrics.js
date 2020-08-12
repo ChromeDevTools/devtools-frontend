@@ -254,7 +254,8 @@ export const Action = {
   TabMovedToDrawer: 39,
   TabMovedToMainPanel: 40,
   CaptureCssOverviewClicked: 41,
-  VirtualAuthenticatorEnvironmentEnabled: 42
+  VirtualAuthenticatorEnvironmentEnabled: 42,
+  SourceOrderViewActivated: 43,
 };
 
 /** @type {!Object<string, number>} */

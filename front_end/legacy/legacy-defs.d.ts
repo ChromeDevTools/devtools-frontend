@@ -38,7 +38,13 @@ declare namespace Runtime {
   const cachedResources: {[cachePath: string]: string};
 }
 
-declare class AnchorBox {}
+declare class AnchorBox {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  relativeToElement(element: Element): AnchorBox;
+}
 
 declare namespace Adb {
   interface Page {
@@ -101,16 +107,19 @@ interface Element {
   createChild(tagName: string, className?: string, content?: string): Element;
   createTextChild(text: string): Text;
   hasFocus(): boolean;
+  positionAt(x: (number|undefined), y: (number|undefined), relativeTo?: Element): void;
   removeChildren(): void;
 }
 
 interface Event {
   consume(preventDefault: boolean): void;
+  deepElementFromPoint(): Node|null;
 }
 
 interface Node {
   getComponentSelection(): Selection|null;
   hasSameShadowRoot(other: Node): boolean;
+  isSelfOrAncestor(node: Node|null): boolean;
   parentElementOrShadowHost(): Element|null;
   traverseNextNode(stayWithin?: Node): Node|null;
 }

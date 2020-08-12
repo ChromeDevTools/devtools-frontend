@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 
@@ -21,7 +18,9 @@ export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
     this.element = this._widget.element;
     this.contentElement = this._widget.contentElement;
     this._arrowElement = Icon.create('', 'arrow hidden');
-    this.element.shadowRoot.appendChild(this._arrowElement);
+    if (this.element.shadowRoot) {
+      this.element.shadowRoot.appendChild(this._arrowElement);
+    }
 
     this.registerRequiredCSS('ui/glassPane.css');
     this.setPointerEventsBehavior(PointerEventsBehavior.PierceGlassPane);
@@ -147,7 +146,7 @@ export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
     }
     // TODO(crbug.com/1006759): Extract the magic number
     // Deliberately starts with 3000 to hide other z-indexed elements below.
-    this.element.style.zIndex = 3000 + 1000 * _panes.size;
+    this.element.style.zIndex = `${3000 + 1000 * _panes.size}`;
     document.body.addEventListener('mousedown', this._onMouseDownBound, true);
     this._widget.show(document.body);
     _panes.add(this);
@@ -187,7 +186,8 @@ export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
     const scrollbarSize = measuredScrollbarWidth(this.element.ownerDocument);
     const arrowSize = 10;
 
-    const container = _containers.get(/** @type {!Document} */ (this.element.ownerDocument));
+    const container =
+        /** @type {!HTMLElement} */ (_containers.get(/** @type {!Document} */ (this.element.ownerDocument)));
     if (this._sizeBehavior === SizeBehavior.MeasureContent) {
       this.contentElement.positionAt(0, 0);
       this.contentElement.style.width = '';
@@ -377,7 +377,7 @@ export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
    * @return {!Element}
    */
   static container(document) {
-    return _containers.get(document);
+    return /** @type {!Element} */ (_containers.get(document));
   }
 
   /**

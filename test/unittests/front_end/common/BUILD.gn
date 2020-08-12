@@ -4,7 +4,6 @@ ts_library("common") {
   testonly = true
   sources = [
     "CharacterIdMap_test.ts",
-    "ClientVariationsParser_test.ts",
     "ColorUtils_test.ts",
     "Color_test.ts",
     "Console_test.ts",

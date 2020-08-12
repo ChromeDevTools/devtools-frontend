@@ -11,6 +11,7 @@ group("front_end") {
     "../../../front_end/Images",
     "bindings",
     "browser_sdk",
+    "client_variations",
     "common",
     "component_helpers",
     "dom_extension",

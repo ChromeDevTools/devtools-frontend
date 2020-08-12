@@ -163,8 +163,6 @@
 
 .x-client-data-details {
   padding-left: 10px;
-  word-break: break-word;
-  white-space: initial;
 }
 
 @media (forced-colors: active) {

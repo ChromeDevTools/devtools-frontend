@@ -3,11 +3,19 @@
 # found in the LICENSE file.
 
 import("../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../scripts/build/ninja/devtools_module.gni")
+
+devtools_module("client_variations") {
+  sources = [ "format_client_variations.js" ]
+}
 
 devtools_entrypoint("bundle") {
   entrypoint = "client_variations.js"
 
   is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
 
-  deps = [ "../third_party/chromium" ]
+  deps = [
+    ":client_variations",
+    "../third_party/chromium",
+  ]
 }

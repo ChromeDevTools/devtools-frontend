@@ -32,7 +32,7 @@
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
-import * as ClientVariationsParser from '../client_variations/client_variations.js';
+import * as ClientVariations from '../client_variations/client_variations.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
@@ -787,22 +787,17 @@ export class RequestHeadersView extends UI.Widget.VBox {
       headersTreeElement.appendChild(headerTreeElement);
 
       if (headerId === 'x-client-data') {
-        // https://source.chromium.org/chromium/chromium/src/+/master:components/variations/proto/client_variations.proto;l=14-21
-        const {variationIds, triggerVariationIds} = ClientVariationsParser.parseClientVariations(header.value);
-        if (variationIds.length || triggerVariationIds.length) {
-          const element = createElement('div');
-          element.classList.add('x-client-data-details');
-          if (variationIds.length) {
-            element.createChild('div').textContent =
-                ls`Active client experiment variation IDs: ${variationIds.join(', ')}`;
-          }
-          if (triggerVariationIds.length) {
-            element.createChild('div').textContent =
-                ls`Active client experiment variation IDs that trigger server-side behavior: ${
-                    triggerVariationIds.join(', ')}`;
-          }
-          headerTreeElement.listItemElement.appendChild(element);
-        }
+        const data = ClientVariations.Parser.parseClientVariations(header.value);
+        const output = ClientVariations.Formatter.formatClientVariations(
+            data, ls`Active client experiment variation IDs.`,
+            ls`Active client experiment variation IDs that trigger server-side behavior.`);
+        const wrapper = createElement('div');
+        wrapper.classList.add('x-client-data-details');
+        wrapper.createTextChild(ls`Decoded:`);
+        const div = wrapper.createChild('div');
+        div.classList.add('source-code');
+        div.textContent = output;
+        headerTreeElement.listItemElement.appendChild(wrapper);
       }
     }
   }

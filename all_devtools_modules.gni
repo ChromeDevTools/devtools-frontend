@@ -95,6 +95,7 @@ all_typescript_module_sources = [
   "changes/ChangesSidebar.js",
   "changes/ChangesTextEditor.js",
   "changes/ChangesView.js",
+  "client_variations/format_client_variations.js",
   "cm_modes/DefaultCodeMirrorMimeMode.js",
   "color_picker/ContrastDetails.js",
   "color_picker/ContrastInfo.js",

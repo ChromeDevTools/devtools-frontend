@@ -48,9 +48,6 @@
   <message name="IDS_DEVTOOLS_0db377921f4ce762c62526131097968f" desc="Text in Request Headers View of the Network panel">
     General
   </message>
-  <message name="IDS_DEVTOOLS_0edec22265ba6e09745b283f6f54ceba" desc="Text for X-Client-Data HTTP headers in Headers View of the Network panel">
-    Active client experiment variation IDs: <ph name="VARIATION_IDS">$1s<ex>111, 222, 333</ex></ph>
-  </message>
   <message name="IDS_DEVTOOLS_0f591b1d87c91e77d4fa11dc6e44288c" desc="Text in Network Item View of the Network panel">
     Request and response timeline
   </message>
@@ -168,9 +165,6 @@
   <message name="IDS_DEVTOOLS_324c6483c84f17f8af6b9a0d20145dda" desc="Text in Network Log View of the Network panel">
     <ph name="RESOURCESIZE">$1s<ex>10</ex></ph> B resources loaded by the page
   </message>
-  <message name="IDS_DEVTOOLS_32ac16c44f3339f7da811c289390d4fe" desc="Text for X-Client-Data HTTP headers in Headers View of the Network panel">
-    Active client experiment variation IDs that trigger server-side behavior: <ph name="TRIGGER_VARIATION_IDS">$1s<ex>111, 222, 333</ex></ph>
-  </message>
   <message name="IDS_DEVTOOLS_336439019ce67912717a20d54298bf24" desc="Text in Request Timing View of the Network panel">
     Receiving Push
   </message>
@@ -233,6 +227,9 @@
   </message>
   <message name="IDS_DEVTOOLS_408f8a4ecdacbe1d9989b800a0c12936" desc="An option in the user agent dropdown menu in the Network conditions tool">
     <ph name="LOCKED_1">Internet Explorer 11</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_4109dce9b5309157da5948c7aac41e29" desc="Comment used in decoded X-Client-Data HTTP header output in Headers View of the Network panel">
+    Active client experiment variation IDs that trigger server-side behavior.
   </message>
   <message name="IDS_DEVTOOLS_4145ea54b6f576d7646d6a68eb39813f" desc="An option in the user agent dropdown menu in the Network conditions tool">
     <ph name="LOCKED_1">Opera (Presto) — Mac</ph>
@@ -438,6 +435,9 @@
   <message name="IDS_DEVTOOLS_a1725c50b8a42b8b7af43912a64eb7d2" desc="Tooltip to explain lack of raw headers for a particular network request">
     Only provisional headers are available because this request was not sent over the network and instead was served from a local cache, which doesn’t store the original request headers. Disable cache to see full request headers.
   </message>
+  <message name="IDS_DEVTOOLS_a65043efa3ffbf89834b6d9c362d56a8" desc="Comment used in decoded X-Client-Data HTTP header output in Headers View of the Network panel">
+    Active client experiment variation IDs.
+  </message>
   <message name="IDS_DEVTOOLS_bb9fd331bd610fd877425ceff23708a7" desc="Time at which a response was retrieved">
     Retrieval Time: <ph name="THIS__REQUEST_RESPONSERETRIEVALTIME">$1s<ex>Fri Apr 10 2020 17:20:27 GMT-0700 (Pacific Daylight Time)</ex></ph>
   </message>
@@ -473,6 +473,9 @@
   </message>
   <message name="IDS_DEVTOOLS_d0ba1750af6bfca9c78ae8105e2d2c96" desc="Tooltip for a filter in the Network panel">
     Only show blocked requests
+  </message>
+  <message name="IDS_DEVTOOLS_d2dcef098e49899b0c4270c71b927b31" desc="Text in Headers View of the Network panel for X-Client-Data HTTP headers">
+    Decoded:
   </message>
   <message name="IDS_DEVTOOLS_d3a5ba3be76f23c067151787387512d2" desc="Text for a link to the issues panel">
     Learn more in the issues tab

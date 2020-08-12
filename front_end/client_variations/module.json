@@ -2,6 +2,7 @@
   "skip_rollup": true,
   "modules": [
     "client_variations.js",
+    "format_client_variations.js",
     "../third_party/chromium/client-variations/ClientVariationsParser.js"
   ],
   "skip_compilation": [

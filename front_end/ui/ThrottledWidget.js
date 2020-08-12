@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import {VBox} from './Widget.js';
 
@@ -33,19 +30,13 @@ export class ThrottledWidget extends VBox {
     if (this._updateWhenVisible) {
       return;
     }
-    this._updateThrottler.schedule(innerUpdate.bind(this));
-
-    /**
-     * @this {ThrottledWidget}
-     * @return {!Promise<?>}
-     */
-    function innerUpdate() {
+    this._updateThrottler.schedule(() => {
       if (this.isShowing()) {
         return this.doUpdate();
       }
       this._updateWhenVisible = true;
       return Promise.resolve();
-    }
+    });
   }
 
   /**

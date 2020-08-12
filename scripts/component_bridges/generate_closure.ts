@@ -250,42 +250,52 @@ export const generateClosureClass = (state: WalkerState): string[] => {
 };
 
 
-const generateInterfaceMembers = (members: ts.NodeArray<ts.TypeElement|ts.TypeNode>|
-                                  Array<ts.TypeElement|ts.TypeNode>): string[] => {
-  const output: string[] = [];
+const generateInterfaceMembers =
+    (members: ts.NodeArray<ts.TypeElement|ts.TypeNode>|Array<ts.TypeElement|ts.TypeNode>, interfaceName: string):
+        string[] => {
+          const output: string[] = [];
 
-  members.forEach(member => {
-    if (ts.isPropertySignature(member)) {
-      if (!member.type) {
-        throw new Error(`Interface member ${ts.SyntaxKind[member.kind]} did not have a type key, aborting.`);
-      }
+          members.forEach(member => {
+            if (ts.isPropertySignature(member)) {
+              if (!member.type) {
+                throw new Error(`Interface member ${ts.SyntaxKind[member.kind]} did not have a type key, aborting.`);
+              }
 
-      const keyIdentifer = member.name as ts.Identifier;
-      const memberIsOptional = !!member.questionToken;
-      const keyName = keyIdentifer.escapedText;
-      let nodeValue = valueForTypeNode(member.type);
 
-      if (memberIsOptional) {
-        if (nodeIsPrimitive(member.type)) {
-          nodeValue = `(${nodeValue}|undefined)`;
-        } else {
-          nodeValue = `(!${nodeValue}|undefined)`;
-        }
-      } else {
-        if (!nodeIsPrimitive(member.type)) {
-          if (nodeValue.startsWith('"')) {
-            nodeValue = `!(${nodeValue})`;
-          } else {
-            nodeValue = `!${nodeValue}`;
-          }
-        }
-      }
-      output.push(`* ${keyName}:${nodeValue},`);
-    }
-  });
+              const keyIdentifer = member.name as ts.Identifier;
+              const memberIsOptional = !!member.questionToken;
+              const keyName = keyIdentifer.escapedText;
+              let nodeValue = valueForTypeNode(member.type);
 
-  return output;
-};
+              if (ts.isLiteralTypeNode(member.type) && ts.isStringLiteral(member.type.literal)) {
+                throw new Error(`Error: type ${interfaceName} has string literal key ${keyName}: ${nodeValue}`);
+              }
+
+              if (ts.isUnionTypeNode(member.type)) {
+                checkUnionTypeValid(member.type, `${interfaceName}.${keyName}`);
+              }
+
+              if (memberIsOptional) {
+                if (nodeIsPrimitive(member.type)) {
+                  nodeValue = `(${nodeValue}|undefined)`;
+                } else {
+                  nodeValue = `(!${nodeValue}|undefined)`;
+                }
+              } else {
+                if (!nodeIsPrimitive(member.type)) {
+                  if (nodeValue.startsWith('"')) {
+                    nodeValue = `!(${nodeValue})`;
+                  } else {
+                    nodeValue = `!${nodeValue}`;
+                  }
+                }
+              }
+              output.push(`* ${keyName}:${nodeValue},`);
+            }
+          });
+
+          return output;
+        };
 
 /**
  * Takes a type reference node, looks up the state of found interface for it,
@@ -358,6 +368,15 @@ const gatherMembersForInterface =
           return allMembers;
         };
 
+const checkUnionTypeValid = (node: ts.UnionTypeNode, typeName: string) => {
+  node.types.forEach(unionTypeMember => {
+    if (ts.isLiteralTypeNode(unionTypeMember) && ts.isStringLiteral(unionTypeMember.literal)) {
+      const actualLiteralValue = unionTypeMember.literal.text;
+      throw new Error(`Error: union type ${typeName} has a string literal member: "${actualLiteralValue}"`);
+    }
+  });
+};
+
 const generateClosureForInterface =
     (state: WalkerState, interfaceName: string): string[] => {
       const typeReferenceNode = findNodeForTypeReferenceName(state, interfaceName);
@@ -375,10 +394,11 @@ const generateClosureForInterface =
       if (ts.isInterfaceDeclaration(typeReferenceNode)) {
         interfaceBits.push('* @typedef {{');
         const allMembersOfInterface = gatherMembersForInterface(state, typeReferenceNode);
-        interfaceBits.push(...generateInterfaceMembers(allMembersOfInterface));
+        interfaceBits.push(...generateInterfaceMembers(allMembersOfInterface, interfaceName));
         interfaceBits.push('* }}');
         interfaceBits.push('*/');
       } else if (ts.isTypeAliasDeclaration(typeReferenceNode) && ts.isUnionTypeNode(typeReferenceNode.type)) {
+        checkUnionTypeValid(typeReferenceNode.type, interfaceName);
         // e.g. type X = A|B, type Y = string|number, etc
         const unionTypeConverted = typeReferenceNode.type.types.map(v => valueForTypeNode(v)).join('|');
         interfaceBits.push(`* @typedef {${unionTypeConverted}}`);
@@ -386,7 +406,7 @@ const generateClosureForInterface =
       } else if (ts.isTypeAliasDeclaration(typeReferenceNode) && ts.isTypeLiteralNode(typeReferenceNode.type)) {
         // e.g. type X = { name: string; }
         interfaceBits.push('* @typedef {{');
-        interfaceBits.push(...generateInterfaceMembers(typeReferenceNode.type.members));
+        interfaceBits.push(...generateInterfaceMembers(typeReferenceNode.type.members, interfaceName));
         interfaceBits.push('* }}');
         interfaceBits.push('*/');
       } else if (ts.isTypeAliasDeclaration(typeReferenceNode) && ts.isIntersectionTypeNode(typeReferenceNode.type)) {
@@ -435,7 +455,7 @@ const generateClosureForInterface =
           membersToOutput.set(keyIdentifer, member);
         });
         const finalMembers = ts.createNodeArray([...membersToOutput.values()]);
-        interfaceBits.push(...generateInterfaceMembers(finalMembers));
+        interfaceBits.push(...generateInterfaceMembers(finalMembers, interfaceName));
 
         interfaceBits.push('* }}');
         interfaceBits.push('*/');

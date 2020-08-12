@@ -569,52 +569,6 @@ describe('generateClosure', () => {
 * }}`);
     });
 
-    // To be removed in follow up CL that removes support for string literals in unions
-    it.skip('[crbug.com/1115066] can convert interfaces that include a union type', () => {
-      const state = parseCode(`interface Person {
-        name: 'jack'|'paul'|'tim';
-        age: number;
-      }
-
-      class Breadcrumbs extends HTMLElement {
-        public update(person: Person) {}
-      }`);
-
-      const interfaces = generateTypeReferences(state);
-
-      assert.strictEqual(interfaces.length, 1);
-      assert.include(interfaces[0].join('\n'), `* @typedef {{
-* name:"jack"|"paul"|"tim",
-* age:number,
-* }}`);
-    });
-
-    // To be removed in follow up CL that removes support for string literals in unions
-    it.skip('[crbug.com/1115066] can convert interfaces that include a union type defined separately', () => {
-      const state = parseCode(`type Name = 'jack'|'paul'|'tim';
-
-      interface Person {
-        name: Name;
-        age: number;
-      }
-
-      class Breadcrumbs extends HTMLElement {
-        public update(person: Person) {}
-      }`);
-
-      const interfaces = generateTypeReferences(state);
-
-      assert.strictEqual(interfaces.length, 2);
-      assert.include(interfaces[0].join('\n'), `* @typedef {{
-* name:Name,
-* age:number,
-* }}`);
-      assert.include(interfaces[0].join('\n'), 'export let Person');
-
-      assert.include(interfaces[1].join('\n'), '* @typedef {"jack"|"paul"|"tim"}');
-      assert.include(interfaces[1].join('\n'), 'export let Name');
-    });
-
     it('supports unions of interfaces', () => {
       const state = parseCode(`type Animal = Dog|Cat;
 
@@ -936,33 +890,6 @@ export let Person`);
       assert.include(interfaces[0].join('\n'), 'export let Person');
     });
 
-    // To be removed in follow up CL that removes support for string literals in unions
-    it.skip(
-        '[crbug.com/1115066] correctly picks the right most field when a type extends a type and overrides a field',
-        () => {
-          const state = parseCode(`type NamedThing = {
-        name: string;
-      }
-
-      type AgedThing = {
-        age: number;
-      }
-
-      type Person = NamedThing & AgedThing & { name: 'jack' };
-
-      class Breadcrumbs extends HTMLElement {
-        public update(person: Person) {}
-      }`);
-
-          const interfaces = generateTypeReferences(state);
-
-          assert.strictEqual(interfaces.length, 1);
-          assert.include(interfaces[0].join('\n'), `* @typedef {{
-* name:"jack",
-* age:number,
-* }}`);
-          assert.include(interfaces[0].join('\n'), 'export let Person');
-        });
 
     it('correctly includes interfaces from types that get extended', () => {
       const state = parseCode(`type NamedThing = {
@@ -1213,6 +1140,80 @@ export let Person`);
       assert.include(enumOutput, 'boolean: 0,');
       assert.include(enumOutput, 'enum: 1,');
       assert.include(enumOutput, '};');
+    });
+
+    describe('erroring on string literal types', () => {
+      it('errors if it finds a union type of string literals', () => {
+        const state = parseCode(`type Name = 'a' | 'b';
+
+        class Breadcrumbs extends HTMLElement {
+          public update(name: Name) {}
+        }`);
+        assert.throws(() => generateTypeReferences(state), 'Error: union type Name has a string literal member: "a"');
+      });
+
+      it('errors if it finds a union type with just one string literal', () => {
+        const state = parseCode(`type Name = number | 'b';
+
+        class Breadcrumbs extends HTMLElement {
+          public update(name: Name) {}
+        }`);
+        assert.throws(() => generateTypeReferences(state), 'Error: union type Name has a string literal member: "b"');
+      });
+
+      it('errors if it finds a union type of string literals referenced from an interface', () => {
+        const state = parseCode(`type Name = 'a' | 'b';
+
+        interface Settings {
+          name: Name
+        }
+
+        class Breadcrumbs extends HTMLElement {
+          public update(settings: Settings) {}
+        }`);
+        assert.throws(() => generateTypeReferences(state), 'Error: union type Name has a string literal member: "a"');
+      });
+
+      it('errors if it finds a union type defined within an interface', () => {
+        const state = parseCode(`interface Settings {
+          name: 'a' | 'b'
+        }
+
+        class Breadcrumbs extends HTMLElement {
+          public update(settings: Settings) {}
+        }`);
+        assert.throws(
+            () => generateTypeReferences(state), 'Error: union type Settings.name has a string literal member: "a"');
+      });
+
+      it('errors if it finds a string literal type in an interface', () => {
+        const state = parseCode(`interface Settings {
+          name: 'jack'
+        }
+
+        class Breadcrumbs extends HTMLElement {
+          public update(settings: Settings) {}
+        }`);
+        assert.throws(() => generateTypeReferences(state), 'Error: type Settings has string literal key name: "jack"');
+      });
+
+      it('errors when a type is extended with a string literal', () => {
+        const state = parseCode(`type NamedThing = {
+          name: string;
+        }
+
+        type AgedThing = {
+          age: number;
+        }
+
+        type Person = NamedThing & AgedThing & { name: 'jack' };
+
+        class Breadcrumbs extends HTMLElement {
+          public update(person: Person) {}
+        }`);
+
+        assert.throws(() => generateTypeReferences(state), 'Error: type Person has string literal key name: "jack"');
+      });
     });
   });
 });

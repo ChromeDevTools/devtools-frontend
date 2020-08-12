@@ -63,11 +63,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
 
     tr = table.createChild('tr');
     tr.appendChild(createCheckbox.call(null, 'focus-within'));
-    try {
-      tr.querySelector(':focus-visible');  // Will throw if not supported
-      tr.appendChild(createCheckbox.call(null, 'focus-visible'));
-    } catch (e) {
-    }
+    tr.appendChild(createCheckbox.call(null, 'focus-visible'));
 
     this.contentElement.appendChild(table);
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this._update, this);

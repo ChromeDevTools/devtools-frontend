@@ -17,7 +17,7 @@ for (const file of files.split(',')) {
     // Check contents, return early if match
     const destContents = fs.readFileSync(destPath);
     if (srcContents.equals(destContents)) {
-      return;
+      continue;
     }
   }
 

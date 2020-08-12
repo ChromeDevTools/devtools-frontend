@@ -149,9 +149,6 @@ export class ServiceWorkersView extends UI.Widget.VBox {
     const movedSections = [];
     for (const section of this._sections.values()) {
       const expectedView = this._getReportViewForOrigin(section._registration.securityOrigin);
-      if (!expectedView) {
-        continue;
-      }
       hasThis |= expectedView === this._currentWorkersView;
       if (section._section.parentWidget() !== expectedView) {
         movedSections.push(section);

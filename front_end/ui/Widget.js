@@ -430,22 +430,18 @@ export class Widget extends Common.ObjectWrapper.ObjectWrapper {
 
   storeScrollPositions() {
     const elements = this.elementsToRestoreScrollPositionsFor();
-    for (let i = 0; i < elements.length; ++i) {
-      const container = elements[i];
-      container._scrollTop = container.scrollTop;
-      container._scrollLeft = container.scrollLeft;
+    for (const container of elements) {
+      storedScrollPositions.set(container, {scrollLeft: container.scrollLeft, scrollTop: container.scrollTop});
     }
   }
 
   restoreScrollPositions() {
     const elements = this.elementsToRestoreScrollPositionsFor();
-    for (let i = 0; i < elements.length; ++i) {
-      const container = elements[i];
-      if (container._scrollTop) {
-        container.scrollTop = container._scrollTop;
-      }
-      if (container._scrollLeft) {
-        container.scrollLeft = container._scrollLeft;
+    for (const container of elements) {
+      const storedPositions = storedScrollPositions.get(container);
+      if (storedPositions) {
+        container.scrollLeft = storedPositions.scrollLeft;
+        container.scrollTop = storedPositions.scrollTop;
       }
     }
   }
@@ -638,6 +634,11 @@ export class Widget extends Common.ObjectWrapper.ObjectWrapper {
     this._externallyManaged = true;
   }
 }
+
+/**
+ * @type {!WeakMap<!Element, !{ scrollLeft: number, scrollTop: number }>}
+ */
+const storedScrollPositions = new WeakMap();
 
 /**
  * @unrestricted

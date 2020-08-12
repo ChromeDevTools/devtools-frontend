@@ -71,11 +71,12 @@
 .node-panel {
   align-items: center;
   justify-content: flex-start;
+  overflow-y: auto;
 }
 
 .network-discovery-view {
   min-width: 400px;
-  flex: auto;
+  text-align: left;
 }
 
 :host-context(.node-frontend) .network-discovery-list-empty {
@@ -88,19 +89,14 @@
 }
 
 .node-panel-center {
-  display: flex;
-  align-items: stretch;
-  justify-content: center;
   max-width: 600px;
-  flex-direction: column;
   padding-top: 50px;
+  text-align: center;
 }
 
 .node-panel-logo {
-  align-self: center;
   width: 400px;
   margin-bottom: 50px;
-  flex: none;
 }
 
 :host-context(.node-frontend) .network-discovery-edit-row input {

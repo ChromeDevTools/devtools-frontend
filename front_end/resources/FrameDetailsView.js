@@ -85,3 +85,61 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     }
   }
 }
+
+export class OpenedWindowDetailsView extends UI.ThrottledWidget.ThrottledWidget {
+  /**
+   * @param {!Protocol.Target.TargetInfo} targetInfo
+   * @param {boolean} isWindowClosed
+   */
+  constructor(targetInfo, isWindowClosed) {
+    super();
+    this._targetInfo = targetInfo;
+    this._isWindowClosed = isWindowClosed;
+    this._reportView = new UI.ReportView.ReportView(this.buildTitle());
+    this._reportView.registerRequiredCSS('resources/frameDetailsReportView.css');
+    this._reportView.show(this.contentElement);
+
+    this._documentSection = this._reportView.appendSection(ls`Document`);
+    this._URLFieldValue = this._documentSection.appendField(ls`URL`);
+
+    this._securitySection = this._reportView.appendSection(ls`Security`);
+    this._hasDOMAccessValue = this._securitySection.appendField(ls`Access to opener`);
+
+    this.update();
+  }
+
+  /**
+   * @override
+   * @return {!Promise<?>}
+   */
+  async doUpdate() {
+    this._reportView.setTitle(this.buildTitle());
+    this._URLFieldValue.textContent = this._targetInfo.url;
+    this._hasDOMAccessValue.textContent = this._targetInfo.canAccessOpener ? ls`Yes` : ls`No`;
+  }
+
+  /**
+   * @return {string}
+   */
+  buildTitle() {
+    let title = this._targetInfo.title || ls`Window without title`;
+    if (this._isWindowClosed) {
+      title += ` (${ls`closed`})`;
+    }
+    return title;
+  }
+
+  /**
+   * @param {boolean} isWindowClosed
+   */
+  setIsWindowClosed(isWindowClosed) {
+    this._isWindowClosed = isWindowClosed;
+  }
+
+  /**
+   * @param {!Protocol.Target.TargetInfo} targetInfo
+   */
+  setTargetInfo(targetInfo) {
+    this._targetInfo = targetInfo;
+  }
+}

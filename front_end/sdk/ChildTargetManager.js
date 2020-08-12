@@ -7,7 +7,7 @@ import * as Host from '../host/host.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
 
 import {ParallelConnection} from './Connections.js';
-import {Capability, Events, SDKModel, Target, TargetManager, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import {Capability, Events as SDKModelEvents, SDKModel, Target, TargetManager, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 let _lastAnonymousTargetId = 0;
 
@@ -94,6 +94,7 @@ export class ChildTargetManager extends SDKModel {
   targetCreated({targetInfo}) {
     this._targetInfos.set(targetInfo.targetId, targetInfo);
     this._fireAvailableTargetsChanged();
+    this.dispatchEventToListeners(Events.TargetCreated, targetInfo);
   }
 
   /**
@@ -103,6 +104,7 @@ export class ChildTargetManager extends SDKModel {
   targetInfoChanged({targetInfo}) {
     this._targetInfos.set(targetInfo.targetId, targetInfo);
     this._fireAvailableTargetsChanged();
+    this.dispatchEventToListeners(Events.TargetInfoChanged, targetInfo);
   }
 
   /**
@@ -112,6 +114,7 @@ export class ChildTargetManager extends SDKModel {
   targetDestroyed({targetId}) {
     this._targetInfos.delete(targetId);
     this._fireAvailableTargetsChanged();
+    this.dispatchEventToListeners(Events.TargetDestroyed, targetId);
   }
 
   /**
@@ -122,7 +125,8 @@ export class ChildTargetManager extends SDKModel {
   }
 
   _fireAvailableTargetsChanged() {
-    TargetManager.instance().dispatchEventToListeners(Events.AvailableTargetsChanged, [...this._targetInfos.values()]);
+    TargetManager.instance().dispatchEventToListeners(
+        SDKModelEvents.AvailableTargetsChanged, [...this._targetInfos.values()]);
   }
 
   /**
@@ -234,4 +238,18 @@ export class ChildTargetManager extends SDKModel {
     });
     return {connection, sessionId};
   }
+
+  /**
+   * @return {!Array<!Protocol.Target.TargetInfo>}
+   */
+  targetInfos() {
+    return Array.from(this._targetInfos.values());
+  }
 }
+
+/** @enum {symbol} */
+export const Events = {
+  TargetCreated: Symbol('TargetCreated'),
+  TargetDestroyed: Symbol('TargetDestroyed'),
+  TargetInfoChanged: Symbol('TargetInforChanged'),
+};

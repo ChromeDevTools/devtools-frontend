@@ -94,6 +94,9 @@ table is empty.
   <message name="IDS_DEVTOOLS_3472423ee4037c94e20d64b3aea8aa49" desc="Text in Service Workers View of the Application panel">
     <ph name="SCOPEURL">$1s<ex>example.com</ex></ph> - deleted
   </message>
+  <message name="IDS_DEVTOOLS_349e686330723975502e9ef4f939a5ac" desc="Label suffix in the Application Panel Frames section for windows which are already closed">
+    closed
+  </message>
   <message name="IDS_DEVTOOLS_34b6cd75171affba6957e308dcbd92be" desc="Text in Indexed DBViews of the Application panel">
     Version
   </message>
@@ -147,6 +150,9 @@ table is empty.
   </message>
   <message name="IDS_DEVTOOLS_4f36f645368158bc46346b8902fc2566" desc="Text in Service Workers View of the Application panel">
     #<ph name="ACTIVE_ID">$1s<ex>1</ex></ph> activated and is <ph name="ACTIVE_RUNNINGSTATUS">$2s<ex>stopped</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_4f3ade619e6f7281df9feb06ab0162ed" desc="Text in Frames View of the Application panel">
+    Window without title
   </message>
   <message name="IDS_DEVTOOLS_50868c2251b0c3b64ca50052891aec4c" desc="Text in Service Workers View of the Application panel">
     Push data
@@ -336,6 +342,9 @@ as used by Chrome
   <message name="IDS_DEVTOOLS_ab6ee23f23d1d5f342588e64297efc1c" desc="Text in Application Panel Sidebar of the Application panel">
     Session Storage
   </message>
+  <message name="IDS_DEVTOOLS_ac069aac2ab29611211e1ac00b4e361d" desc="Text in Frames View of the Application panel">
+    Opened Windows
+  </message>
   <message name="IDS_DEVTOOLS_acb91a6bfd0644c5b90280f9ebf38774" desc="Text in Service Worker Cache Views of the Application panel">
     Response-Type
   </message>
@@ -458,6 +467,9 @@ as used by Chrome
   </message>
   <message name="IDS_DEVTOOLS_d9b14828b34925dfb6661e86caa12cbc" desc="Title for a link to the Elements panel">
     Click to reveal in Elements panel
+  </message>
+  <message name="IDS_DEVTOOLS_d9f00792ca0927318989dd736f088617" desc="Label in opened window's details view whether window has access to its opener">
+    Access to opener
   </message>
   <message name="IDS_DEVTOOLS_da131b6bd53f501c1323af4b198740d2" desc="Text in Background Service View of the Application panel">
     Push Messaging

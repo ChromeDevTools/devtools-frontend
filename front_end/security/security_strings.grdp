@@ -41,9 +41,6 @@ If you believe this is shown in error please visit https://bugs.chromium.org/p/c
   <message name="IDS_DEVTOOLS_2eceed1e0d7fca78cb8113e90e07de0c" desc="Summary phrase for a security problem where the site's certificate chain contains a SHA1 signature.">
     insecure (SHA-1)
   </message>
-  <message name="IDS_DEVTOOLS_2fae32629d4ef4fc6341f1751b405e45" desc="Title of the 'Security' tool">
-    Security
-  </message>
   <message name="IDS_DEVTOOLS_327b7960c5a9f1601c2054fef8dd8640" desc="Summary phrase for a security problem where the site's certificate is missing a subjectAltName extension.">
     Subject Alternative Name missing
   </message>

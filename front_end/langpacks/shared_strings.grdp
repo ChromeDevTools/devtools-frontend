@@ -130,6 +130,9 @@
   <message name="IDS_DEVTOOLS_2f04f3e6eee339eeb0ddb6c39606424d" desc="Text for searching with regular expressinn">
     Use Regular Expression
   </message>
+  <message name="IDS_DEVTOOLS_2fae32629d4ef4fc6341f1751b405e45" desc="Title of the 'Security' tool">
+    Security
+  </message>
   <message name="IDS_DEVTOOLS_31fde7b05ac8952dacf4af8a704074ec" desc="Text for previewing items">
     Preview
   </message>

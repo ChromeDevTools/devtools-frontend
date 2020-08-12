@@ -18,7 +18,8 @@ export class ObjectEventListenersSidebarPane extends UI.Widget.VBox {
     this._refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._refreshClick, this);
     this._refreshButton.setEnabled(false);
 
-    this._eventListenersView = new EventListeners.EventListenersView.EventListenersView(this.update.bind(this));
+    this._eventListenersView = new EventListeners.EventListenersView.EventListenersView(
+        this.update.bind(this), /* enableDefaultTreeFocus */ true);
     this._eventListenersView.show(this.element);
     this.setDefaultFocusedChild(this._eventListenersView);
   }

@@ -19,10 +19,12 @@ import {frameworkEventListeners, FrameworkEventListenersObject} from './EventLis
 export class EventListenersView extends UI.Widget.VBox {
   /**
    * @param {function()} changeCallback
+   * @param {boolean=} enableDefaultTreeFocus
    */
-  constructor(changeCallback) {
+  constructor(changeCallback, enableDefaultTreeFocus = false) {
     super();
     this._changeCallback = changeCallback;
+    this._enableDefaultTreeFocus = enableDefaultTreeFocus;
     this._treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     this._treeOutline.hideOverflow();
     this._treeOutline.registerRequiredCSS('object_ui/objectValue.css');
@@ -45,6 +47,9 @@ export class EventListenersView extends UI.Widget.VBox {
    * @override
    */
   focus() {
+    if (!this._enableDefaultTreeFocus) {
+      return;
+    }
     if (!this._emptyHolder.parentNode) {
       this._treeOutline.forceSelect();
     } else {

@@ -892,12 +892,12 @@ self.injectedExtensionAPI = function(
   chrome.devtools.network = coreAPI.network;
   chrome.devtools.panels = coreAPI.panels;
   chrome.devtools.panels.themeName = themeName;
+  chrome.devtools.languageServices = new LanguageServicesAPI();
 
   // default to expose experimental APIs for now.
   if (extensionInfo.exposeExperimentalAPIs !== false) {
     chrome.experimental = chrome.experimental || {};
     chrome.experimental.devtools = chrome.experimental.devtools || {};
-    chrome.experimental.devtools.languageServices = new LanguageServicesAPI();
 
     const properties = Object.getOwnPropertyNames(coreAPI);
     for (let i = 0; i < properties.length; ++i) {

@@ -39,7 +39,6 @@ describe('The Debugger Language Plugins', async () => {
         const extensionInfo = {
           startPage: `${resourcePath}/sources/language_extensions.html`,
           name: 'TestExtension',
-          exposeExperimentalAPIs: true,
         };
         extensionServer._addExtension(extensionInfo);
 

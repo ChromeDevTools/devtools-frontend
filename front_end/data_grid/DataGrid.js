@@ -892,8 +892,10 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   _resetColumnWeights() {
-    for (let i = 0; i < this._columnsArray.length; ++i) {
-      const column = this._columnsArray[i];
+    for (const column of this._columnsArray) {
+      if (!column.defaultWeight) {
+        continue;
+      }
       column.weight = column.defaultWeight;
     }
     this._applyColumnWeights();
@@ -2570,7 +2572,8 @@ export let Parameters;
  *   disclosure: (boolean|undefined),
  *   weight: (number|undefined),
  *   allowInSortByEvenWhenHidden: (boolean|undefined),
- *   dataType: (?DataType|undefined)
+ *   dataType: (?DataType|undefined),
+ *   defaultWeight: (number|undefined)
  * }}
  */
 export let ColumnDescriptor;

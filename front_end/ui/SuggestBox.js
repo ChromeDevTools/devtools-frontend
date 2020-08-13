@@ -409,6 +409,17 @@ export class SuggestBox {
   *      hideGhostText: (boolean|undefined)
   * }}
   */
+let SuggestionComplete;  // eslint-disable-line no-unused-vars
+
+// Typedef for `Suggestion`
+// With only the above @typedef, TypeScript will complain about missing
+// fields when a literal is initialized without the "optional" fields
+// beeing present. To work around this, we introduce a `Partial` @typedef
+// that works with TS and a normal "export @typedef" that works with
+// Closure.
+// TODO(crbug.com/1011811): Replace with TS `type` when closure is removed.
+/** @typedef {!Partial<SuggestionComplete>} Suggestion */
+/** @typedef {!SuggestionComplete} */
 export let Suggestion;
 
 /**

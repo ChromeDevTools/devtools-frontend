@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import {Suggestions} from './SuggestBox.js';  // eslint-disable-line no-unused-vars
 
 export class FilterSuggestionBuilder {
@@ -37,6 +34,7 @@ export class FilterSuggestionBuilder {
     const modifier = negative ? '-' : '';
     const valueDelimiterIndex = prefix.indexOf(':');
 
+    /** @type {!Suggestions} */
     const suggestions = [];
     if (valueDelimiterIndex === -1) {
       const matcher = new RegExp('^' + prefix.escapeForRegExp(), 'i');
@@ -69,10 +67,12 @@ export class FilterSuggestionBuilder {
       return;
     }
 
-    if (!this._valuesMap.get(key)) {
-      this._valuesMap.set(key, /** @type {!Set<string>} */ (new Set()));
+    let set = this._valuesMap.get(key);
+    if (!set) {
+      set = /** @type {!Set<string>} */ (new Set());
+      this._valuesMap.set(key, set);
     }
-    this._valuesMap.get(key).add(value);
+    set.add(value);
   }
 
   clear() {

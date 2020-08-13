@@ -20,9 +20,9 @@ import './ElementsBreadcrumbs.js';
 * nodeName:string,
 * nodeNameNicelyCased:string,
 * legacyDomNode:*,
-* highlightNode:function(): void,
-* clearHighlight:function(): void,
-* getAttribute:function(string): (string|undefined),
+* highlightNode:function():void,
+* clearHighlight:function():void,
+* getAttribute:function(string):(string|undefined),
 * }}
 */
 // @ts-ignore we export this for Closure not TS

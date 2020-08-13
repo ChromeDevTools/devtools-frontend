@@ -2,12 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {execSync} from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 
 import {main} from './cli';
 
-const regenerateBridge = (pathToBridge: string) => {
+const regenerateBridge = (pathToBridge: string): string|null => {
   const sourceFile = pathToBridge.replace('_bridge.js', '.ts');
 
   if (!fs.existsSync(sourceFile)) {
@@ -15,10 +16,15 @@ const regenerateBridge = (pathToBridge: string) => {
   }
 
   try {
-    main([sourceFile, ...process.argv.slice(2)]);
+    const outputPath = main([sourceFile, ...process.argv.slice(2)]);
+    if (outputPath) {
+      const relativePath = path.relative(process.cwd(), outputPath);
+      return relativePath;
+    }
   } catch (e) {
     console.error(`ERROR regenerating bridge: ${e.message}`);
   }
+  return null;
 };
 
 const excludedDirectories = new Set([path.resolve(path.join(process.cwd(), 'front_end', 'third_party'))]);
@@ -43,4 +49,8 @@ const searchForBridgeFiles = (directory: string, foundFiles: string[] = []) => {
 const rootDir = path.resolve(path.join(process.cwd(), 'front_end'));
 const allBridgeFiles = searchForBridgeFiles(rootDir);
 
-allBridgeFiles.forEach(filePath => regenerateBridge(filePath));
+const filesToReformat = allBridgeFiles.map(filePath => regenerateBridge(filePath)).filter(x => x !== null);
+
+const clFormatCommand = `git cl format --js ${filesToReformat.join(' ')}`;
+console.log(`\nRunning clang-format on bridge files: ${clFormatCommand}`);
+execSync(clFormatCommand);

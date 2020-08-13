@@ -9,6 +9,11 @@
 *  npm run generate-bridge-file front_end/elements/LayoutPane.ts
 */
 
+/**
+ * MANUALLY_EDITED_BRIDGE=requires currently in-flight bridge fix to enable support for TS enums.
+ * CL: https://crrev.com/c/2354094
+ */
+
 import './LayoutPane.js';
 /**
 * @typedef {EnumSetting|BooleanSetting}

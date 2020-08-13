@@ -98,6 +98,8 @@ export const main = (args: string[]) => {
   if (output) {
     console.log('Wrote bridge file to', path.relative(process.cwd(), output));
   }
+
+  return output;
 };
 
 if (require.main === module) {

@@ -14,7 +14,7 @@ import './ComputedStyleProperty.js';
 * @typedef {{
 * inherited:boolean,
 * expanded:boolean,
-* onNavigateToSource:function(Event): void,
+* onNavigateToSource:function(Event):void,
 * }}
 */
 // @ts-ignore we export this for Closure not TS

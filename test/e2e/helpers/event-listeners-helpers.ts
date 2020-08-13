@@ -4,7 +4,7 @@
 
 import {$$, click, getBrowserAndPages, goToResource, waitFor} from '../../shared/helper.js';
 
-import {waitForContentOfSelectedElementsNode, waitForElementsStyleSection} from './elements-helpers.js';
+import {assertContentOfSelectedElementsNode, waitForElementsStyleSection} from './elements-helpers.js';
 
 export const loadEventListenersAndSelectButtonNode = async () => {
   const {frontend} = getBrowserAndPages();
@@ -12,11 +12,11 @@ export const loadEventListenersAndSelectButtonNode = async () => {
   await waitForElementsStyleSection();
 
   // Sanity check to make sure we have the correct node selected after opening a file
-  await waitForContentOfSelectedElementsNode('<body>\u200B');
+  await assertContentOfSelectedElementsNode('<body>\u200B');
 
   // Select the button that has the events and make sure it's selected
   await frontend.keyboard.press('ArrowRight');
-  await waitForContentOfSelectedElementsNode('<button id=\u200B"test-button">\u200Bhello world\u200B</button>\u200B');
+  await assertContentOfSelectedElementsNode('<button id=\u200B"test-button">\u200Bhello world\u200B</button>\u200B');
 };
 
 const EVENT_LISTENERS_PANEL_LINK = '[aria-label="Event Listeners"]';

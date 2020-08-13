@@ -40,9 +40,13 @@ export const getElementPosition =
     async (selector: string|puppeteer.JSHandle, root?: puppeteer.JSHandle, maxPixelsFromLeft?: number) => {
   let element;
   if (typeof selector === 'string') {
-    element = await waitFor(selector, root);
+    element = await $(selector, root);
   } else {
     element = selector;
+  }
+
+  if (!element) {
+    throw new Error(`Unable to find element with selector "${selector}"`);
   }
 
   const rect = await element.evaluate(element => {
@@ -71,7 +75,7 @@ export const getElementPosition =
 
 export const click = async (
     selector: string|puppeteer.JSHandle,
-    options?: {root?: puppeteer.JSHandle; clickOptions?: puppeteer.ClickOptions; maxPixelsFromLeft?: number;}) => {
+    options?: {root?: puppeteer.JSHandle, clickOptions?: puppeteer.ClickOptions, maxPixelsFromLeft?: number}) => {
   const {frontend} = getBrowserAndPages();
   const clickableElement =
       await getElementPosition(selector, options && options.root, options && options.maxPixelsFromLeft);
@@ -89,8 +93,8 @@ export const click = async (
 };
 
 export const doubleClick =
-    async (selector: string, options?: {root?: puppeteer.JSHandle; clickOptions?: puppeteer.ClickOptions}) => {
-  const passedClickOptions = (options && options.clickOptions) || {};
+    async (selector: string, options?: {root?: puppeteer.JSHandle, clickOptions?: puppeteer.ClickOptions}) => {
+  const passedClickOptions = options && options.clickOptions || {};
   const clickOptionsWithDoubleClick: puppeteer.ClickOptions = {
     ...passedClickOptions,
     clickCount: 2,
@@ -174,6 +178,9 @@ export const $textContent = async (textContent: string, root?: puppeteer.JSHandl
   const {frontend} = getBrowserAndPages();
   const rootElement = root ? root as puppeteer.ElementHandle : frontend;
   const element = await rootElement.$('pierceShadowText/' + textContent);
+  if (!element) {
+    throw new Error(`Unable to find element with textContent ${textContent}`);
+  }
   return element;
 };
 
@@ -199,19 +206,18 @@ export const waitForNone = async (selector: string, root?: puppeteer.JSHandle, a
 export const waitForElementWithTextContent =
     (textContent: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope()) => {
       return asyncScope.exec(() => waitForFunction(async () => {
-                               const elem = await $textContent(textContent, root);
-                               return elem || undefined;
+                               return await $textContent(textContent, root);
                              }, asyncScope));
     };
 
 export const waitForFunction = async<T>(fn: () => Promise<T|undefined>, asyncScope = new AsyncScope()): Promise<T> => {
   return await asyncScope.exec(async () => {
     while (true) {
+      await timeout(100);
       const result = await fn();
       if (result) {
         return result;
       }
-      await timeout(100);
     }
   });
 };

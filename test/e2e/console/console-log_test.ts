@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
-import {getBrowserAndPages, waitForFunction} from '../../shared/helper.js';
+import {getBrowserAndPages} from '../../shared/helper.js';
 import {getStructuredConsoleMessages, navigateToConsoleTab, showVerboseMessages} from '../helpers/console-helpers.js';
 
 /* eslint-disable no-console */
@@ -230,10 +230,7 @@ describe('The Console Tab', async () => {
       await navigateToConsoleTab();
       await showVerboseMessages();
       await target.evaluate(test.evaluate);
-      const actualMessages = await waitForFunction(async () => {
-        const messages = await getStructuredConsoleMessages();
-        return messages.length === test.expectedMessages.length ? messages : undefined;
-      });
+      const actualMessages = await getStructuredConsoleMessages();
       assert.deepEqual(actualMessages, test.expectedMessages, 'Console message does not match the expected message');
     });
   }

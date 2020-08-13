@@ -6,16 +6,12 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 import * as puppeteer from 'puppeteer';
 
-import {$$, click, getBrowserAndPages, goToResource, step, waitFor, waitForFunction} from '../../shared/helper.js';
+import {$$, click, getBrowserAndPages, goToResource, step, waitFor} from '../../shared/helper.js';
 import {addBreakpointForLine, createSelectorsForWorkerFile, getBreakpointDecorators, getExecutionLine, getOpenSources, openNestedWorkerFile, PAUSE_BUTTON, RESUME_BUTTON} from '../helpers/sources-helpers.js';
 
 async function validateSourceTabs() {
   await step('Validate exactly one source file is open', async () => {
-    const openSources = await waitForFunction(async () => {
-      const sources = await getOpenSources();
-      return sources.length === 1 ? sources : undefined;
-    });
-    assert.deepEqual(openSources, ['multi-workers.js']);
+    assert.deepEqual(await getOpenSources(), ['multi-workers.js']);
   });
 }
 

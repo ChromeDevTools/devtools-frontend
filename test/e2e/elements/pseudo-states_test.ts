@@ -5,8 +5,8 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {debuggerStatement, getBrowserAndPages, goToResource} from '../../shared/helper.js';
-import {assertContentOfSelectedElementsNode, assertGutterDecorationForDomNodeExists, forcePseudoState, getComputedStylesForDomNode, removePseudoState, waitForDomNodeToBeHidden, waitForDomNodeToBeVisible, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
+import {debuggerStatement, getBrowserAndPages, goToResource, timeout} from '../../shared/helper.js';
+import {assertGutterDecorationForDomNodeExists, forcePseudoState, getComputedStylesForDomNode, removePseudoState, waitForContentOfSelectedElementsNode, waitForDomNodeToBeHidden, waitForDomNodeToBeVisible, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
 
 const TARGET_SHOWN_ON_HOVER_SELECTOR = '.show-on-hover';
 const TARGET_SHOWN_ON_FOCUS_SELECTOR = '.show-on-focus';
@@ -20,11 +20,14 @@ describe('The Elements tab', async () => {
     await waitForElementsStyleSection();
 
     // Sanity check to make sure we have the correct node selected after opening a file
-    await assertContentOfSelectedElementsNode('<body>\u200B');
+    await waitForContentOfSelectedElementsNode('<body>\u200B');
+
+    // FIXME(crbug/1112692): Refactor test to remove the timeout.
+    await timeout(50);
 
     // Select div that we can hover on
     await frontend.keyboard.press('ArrowRight');
-    await assertContentOfSelectedElementsNode('<div id=\u200B"hover">\u200B…\u200B</div>\u200B');
+    await waitForContentOfSelectedElementsNode('<div id=\u200B"hover">\u200B…\u200B</div>\u200B');
 
     await forcePseudoState(':hover');
     await assertGutterDecorationForDomNodeExists();
@@ -42,11 +45,14 @@ describe('The Elements tab', async () => {
     await waitForElementsStyleSection();
 
     // Sanity check to make sure we have the correct node selected after opening a file
-    await assertContentOfSelectedElementsNode('<body>\u200B');
+    await waitForContentOfSelectedElementsNode('<body>\u200B');
+
+    // FIXME(crbug/1112692): Refactor test to remove the timeout.
+    await timeout(50);
 
     // Select div that we can focus
     await frontend.keyboard.press('ArrowRight');
-    await assertContentOfSelectedElementsNode('<div id=\u200B"focus" tabindex=\u200B"0">\u200B…\u200B</div>\u200B');
+    await waitForContentOfSelectedElementsNode('<div id=\u200B"focus" tabindex=\u200B"0">\u200B…\u200B</div>\u200B');
 
     await forcePseudoState(':focus');
     await assertGutterDecorationForDomNodeExists();
@@ -67,11 +73,14 @@ describe('The Elements tab', async () => {
     await waitForElementsStyleSection();
 
     // Sanity check to make sure we have the correct node selected after opening a file
-    await assertContentOfSelectedElementsNode('<body>\u200B');
+    await waitForContentOfSelectedElementsNode('<body>\u200B');
+
+    // FIXME(crbug/1112692): Refactor test to remove the timeout.
+    await timeout(50);
 
     // Select div that we can focus
     await frontend.keyboard.press('ArrowRight');
-    await assertContentOfSelectedElementsNode('<div id=\u200B"focus" tabindex=\u200B"0">\u200B…\u200B</div>\u200B');
+    await waitForContentOfSelectedElementsNode('<div id=\u200B"focus" tabindex=\u200B"0">\u200B…\u200B</div>\u200B');
 
     await forcePseudoState(':focus');
     await assertGutterDecorationForDomNodeExists();

@@ -4,7 +4,7 @@
 
 import * as puppeteer from 'puppeteer';
 
-import {$, click, getBrowserAndPages, goToResource, pasteText, waitFor} from '../../shared/helper.js';
+import {$, click, getBrowserAndPages, goToResource, pasteText, timeout, waitFor} from '../../shared/helper.js';
 
 export const CONSOLE_TAB_SELECTOR = '#tab-console';
 export const CONSOLE_MESSAGES_SELECTOR = '.console-group-messages';
@@ -74,6 +74,9 @@ export async function getCurrentConsoleMessages(
 
   const selector = withAnchor ? CONSOLE_MESSAGE_TEXT_AND_ANCHOR_SELECTOR : CONSOLE_FIRST_MESSAGES_SELECTOR;
 
+  // FIXME(crbug/1112692): Refactor test to remove the timeout.
+  await timeout(100);
+
   // Get the messages from the console.
   return frontend.evaluate(selector => {
     return Array.from(document.querySelectorAll(selector)).map(message => message.textContent);
@@ -118,6 +121,8 @@ export async function focusConsolePrompt() {
   await waitFor(CONSOLE_PROMPT_SELECTOR);
   await click(CONSOLE_PROMPT_SELECTOR);
   await waitFor('[aria-label="Console prompt"]');
+  // FIXME(crbug/1112692): Refactor test to remove the timeout.
+  await timeout(50);
 }
 
 export async function showVerboseMessages() {

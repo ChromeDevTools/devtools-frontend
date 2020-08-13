@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import * as puppeteer from 'puppeteer';
 
-import {$$, click, getBrowserAndPages, getHostedModeServerPort, goToResource, pressKey, step, typeText, waitFor} from '../../shared/helper.js';
+import {$$, click, getBrowserAndPages, getHostedModeServerPort, goToResource, pressKey, step, typeText, waitFor, waitForFunction} from '../../shared/helper.js';
 
 export const PAUSE_ON_EXCEPTION_BUTTON = '[aria-label="Pause on exceptions"]';
 export const PAUSE_BUTTON = '[aria-label="Pause script execution"]';
@@ -19,8 +19,8 @@ export const TURNED_OFF_PAUSE_BUTTON_SELECTOR = 'button.toolbar-state-off';
 export const TURNED_ON_PAUSE_BUTTON_SELECTOR = 'button.toolbar-state-on';
 
 export async function doubleClickSourceTreeItem(selector: string) {
-  await waitFor(selector);
-  await click(selector, {clickOptions: {clickCount: 2}, maxPixelsFromLeft: 40});
+  const item = await waitFor(selector);
+  await click(item, {clickOptions: {clickCount: 2}, maxPixelsFromLeft: 40});
 }
 
 export async function openSourcesPanel() {
@@ -111,9 +111,16 @@ export async function sourceLineNumberSelector(lineNumber: number) {
   return `div.CodeMirror-code > div:nth-child(${lineNumber}) div.CodeMirror-linenumber.CodeMirror-gutter-elt`;
 }
 
+export function waitForSourceCodeLines(noOfLines: number) {
+  return waitForFunction(async () => {
+    const elements = await $$(SOURCES_LINES_SELECTOR);
+    return elements.length >= noOfLines ? elements : undefined;
+  });
+}
+
 export async function checkBreakpointIsActive(lineNumber: number) {
   await step(`check that the breakpoint is still active at line ${lineNumber}`, async () => {
-    const sourcesLines = await $$(SOURCES_LINES_SELECTOR);
+    const sourcesLines = await waitForSourceCodeLines(lineNumber);
     const codeLineNums = await Promise.all(sourcesLines.map(elements => {
       return elements.evaluate(el => el.className);
     }));
@@ -125,7 +132,7 @@ export async function checkBreakpointIsActive(lineNumber: number) {
 
 export async function checkBreakpointIsNotActive(lineNumber: number) {
   await step(`check that the breakpoint is not active at line ${lineNumber}`, async () => {
-    const sourcesLines = await $$(SOURCES_LINES_SELECTOR);
+    const sourcesLines = await waitForSourceCodeLines(lineNumber);
     const codeLineNums = await Promise.all(sourcesLines.map(elements => {
       return elements.evaluate(el => el.className);
     }));
@@ -310,7 +317,7 @@ export async function getScopeNames() {
   return scopeNames;
 }
 
-export async function getValuesForScope(scope: string, expandCount = 0) {
+export async function getValuesForScope(scope: string, expandCount = 0, waitForNoOfValues = 0) {
   const scopeSelector = `[aria-label="${scope}"]`;
   await waitFor(scopeSelector);
   for (let i = 0; i < expandCount; i++) {
@@ -319,7 +326,13 @@ export async function getValuesForScope(scope: string, expandCount = 0) {
     await click(unexpandedSelector);
   }
   const valueSelector = `${scopeSelector} + ol .name-and-value`;
-  const valueSelectorElements = await $$(valueSelector);
+  const valueSelectorElements = await waitForFunction(async () => {
+    const elements = await $$(valueSelector);
+    if (elements.length >= waitForNoOfValues) {
+      return elements;
+    }
+    return undefined;
+  });
   const values = await Promise.all(valueSelectorElements.map(elem => elem.evaluate(n => n.textContent as string)));
   return values;
 }

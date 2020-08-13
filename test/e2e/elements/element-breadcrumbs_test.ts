@@ -6,7 +6,7 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
 import {click, goToResource, waitForElementWithTextContent} from '../../shared/helper.js';
-import {assertContentOfSelectedElementsNode, assertSelectedElementsNodeTextIncludes, expandSelectedNodeRecursively, getBreadcrumbsTextContent, getSelectedBreadcrumbTextContent, waitForElementsStyleSection, waitForSelectedTreeElementSelectorWithTextcontent} from '../helpers/elements-helpers.js';
+import {assertSelectedElementsNodeTextIncludes, expandSelectedNodeRecursively, getBreadcrumbsTextContent, getSelectedBreadcrumbTextContent, waitForContentOfSelectedElementsNode, waitForElementsStyleSection, waitForSelectedTreeElementSelectorWithTextcontent} from '../helpers/elements-helpers.js';
 
 const EXPECTED_TEXT_CONTENT = `<div class=\u200B"div2">\u200B
           last child
@@ -18,7 +18,7 @@ describe('Element breadcrumbs', async () => {
     await waitForElementsStyleSection();
 
     // Sanity check to make sure we have the correct node selected after opening a file
-    await assertContentOfSelectedElementsNode('<body>\u200B');
+    await waitForContentOfSelectedElementsNode('<body>\u200B');
 
     // expand the tree and then navigate down to the target node
     await expandSelectedNodeRecursively();

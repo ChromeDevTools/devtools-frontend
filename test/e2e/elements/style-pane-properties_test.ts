@@ -6,8 +6,8 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 import * as puppeteer from 'puppeteer';
 
-import {click, getBrowserAndPages, goToResource, waitFor} from '../../shared/helper.js';
-import {assertContentOfSelectedElementsNode, getAriaLabelSelectorFromPropertiesSelector, getComputedStylesForDomNode, getCSSPropertySwatchStyle, getDisplayedCSSPropertyNames, getDisplayedStyleRules, getStyleSectionSubtitles, waitForElementsStyleSection, waitForStyleRule} from '../helpers/elements-helpers.js';
+import {click, getBrowserAndPages, goToResource, timeout, waitFor} from '../../shared/helper.js';
+import {getAriaLabelSelectorFromPropertiesSelector, getComputedStylesForDomNode, getCSSPropertySwatchStyle, getDisplayedCSSPropertyNames, getDisplayedStyleRules, getStyleSectionSubtitles, waitForContentOfSelectedElementsNode, waitForElementsStyleSection, waitForStyleRule} from '../helpers/elements-helpers.js';
 
 const PROPERTIES_TO_DELETE_SELECTOR = '#properties-to-delete';
 const PROPERTIES_TO_INSPECT_SELECTOR = '#properties-to-inspect';
@@ -34,6 +34,13 @@ describe('The Styles pane', async () => {
 
     // Select the H1 element by pressing down, since <body> is the default selected element.
     const onH1RuleAppeared = waitForStyleRule('h1');
+
+    // Sanity check to make sure we have the correct node selected after opening a file
+    await waitForContentOfSelectedElementsNode('<body>\u200B');
+
+    // FIXME(crbug/1112692): Refactor test to remove the timeout.
+    await timeout(50);
+
     await frontend.keyboard.press('ArrowDown');
     await onH1RuleAppeared;
 
@@ -60,11 +67,14 @@ describe('The Styles pane', async () => {
     await waitForElementsStyleSection();
 
     // Sanity check to make sure we have the correct node selected after opening a file
-    await assertContentOfSelectedElementsNode('<body>\u200B');
+    await waitForContentOfSelectedElementsNode('<body>\u200B');
+
+    // FIXME(crbug/1112692): Refactor test to remove the timeout.
+    await timeout(50);
 
     // Select div that we will inspect the CSS variables for
     await frontend.keyboard.press('ArrowRight');
-    await assertContentOfSelectedElementsNode('<div id=\u200B"properties-to-inspect">\u200B</div>\u200B');
+    await waitForContentOfSelectedElementsNode('<div id=\u200B"properties-to-inspect">\u200B</div>\u200B');
 
     const propertiesSection = await waitFor(getAriaLabelSelectorFromPropertiesSelector(PROPERTIES_TO_INSPECT_SELECTOR));
     const swatchStyle = await getCSSPropertySwatchStyle(propertiesSection);
@@ -78,11 +88,14 @@ describe('The Styles pane', async () => {
     await waitForElementsStyleSection();
 
     // Sanity check to make sure we have the correct node selected after opening a file
-    await assertContentOfSelectedElementsNode('<body>\u200B');
+    await waitForContentOfSelectedElementsNode('<body>\u200B');
+
+    // FIXME(crbug/1112692): Refactor test to remove the timeout.
+    await timeout(50);
 
     // Select div that we will remove the CSS properties from
     await frontend.keyboard.press('ArrowRight');
-    await assertContentOfSelectedElementsNode('<div id=\u200B"properties-to-delete">\u200B</div>\u200B');
+    await waitForContentOfSelectedElementsNode('<div id=\u200B"properties-to-delete">\u200B</div>\u200B');
 
     const propertiesSection = await waitFor(getAriaLabelSelectorFromPropertiesSelector(PROPERTIES_TO_DELETE_SELECTOR));
     {
@@ -128,6 +141,13 @@ describe('The Styles pane', async () => {
 
     // Select the div element by pressing down, since <body> is the default selected element.
     const onDivRuleAppeared = waitForStyleRule('div');
+
+    // Sanity check to make sure we have the correct node selected after opening a file
+    await waitForContentOfSelectedElementsNode('<body>\u200B');
+
+    // FIXME(crbug/1112692): Refactor test to remove the timeout.
+    await timeout(50);
+
     await frontend.keyboard.press('ArrowDown');
     await onDivRuleAppeared;
 
@@ -156,11 +176,14 @@ describe('The Styles pane', async () => {
     await waitForElementsStyleSection();
 
     // Sanity check to make sure we have the correct node selected after opening a file.
-    await assertContentOfSelectedElementsNode('<body>\u200B');
+    await waitForContentOfSelectedElementsNode('<body>\u200B');
+
+    // FIXME(crbug/1112692): Refactor test to remove the timeout.
+    await timeout(50);
 
     // Select div that we will remove a CSS property from.
     await frontend.keyboard.press('ArrowRight');
-    await assertContentOfSelectedElementsNode('<div class=\u200B"rule1 rule2">\u200B</div>\u200B');
+    await waitForContentOfSelectedElementsNode('<div class=\u200B"rule1 rule2">\u200B</div>\u200B');
 
     // Verify that initial CSS properties correspond to the ones in the test file.
     const rule1PropertiesSection = await waitFor(getAriaLabelSelectorFromPropertiesSelector(RULE1_SELECTOR));

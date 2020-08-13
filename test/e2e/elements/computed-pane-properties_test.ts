@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {getBrowserAndPages, goToResource} from '../../shared/helper.js';
+import {getBrowserAndPages, goToResource, waitForFunction} from '../../shared/helper.js';
 import {focusElementsTree, getAllPropertiesFromComputedPane, getContentOfComputedPane, navigateToSidePane, toggleShowAllComputedProperties, waitForComputedPaneChange, waitForElementsComputedSection} from '../helpers/elements-helpers.js';
 
 describe('The Computed pane', async () => {
@@ -65,8 +65,12 @@ describe('The Computed pane', async () => {
     await toggleShowAllComputedProperties();
     await waitForElementsComputedSection();
 
-    const allH1Properties = await getAllPropertiesFromComputedPane();
-    const alignContentProperty = allH1Properties.find(property => property && property.name === 'align-content');
+    const getAlignContentProperty = async () => {
+      const allH1Properties = await getAllPropertiesFromComputedPane();
+      const prop = allH1Properties.find(property => property && property.name === 'align-content');
+      return prop;
+    };
+    const alignContentProperty = await waitForFunction(getAlignContentProperty);
     assert.exists(alignContentProperty, 'H1 element should display the inherited align-content computed property');
     assert.deepEqual(alignContentProperty, {
       name: 'align-content',

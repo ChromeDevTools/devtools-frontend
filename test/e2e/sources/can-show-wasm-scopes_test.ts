@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {click, getBrowserAndPages, step, waitFor} from '../../shared/helper.js';
+import {click, getBrowserAndPages, step, waitFor, waitForFunction} from '../../shared/helper.js';
 import {addBreakpointForLine, getScopeNames, getValuesForScope, openSourceCodeEditorForFile, PAUSE_INDICATOR_SELECTOR, RESUME_BUTTON, sourceLineNumberSelector} from '../helpers/sources-helpers.js';
 
 describe('Source Tab', async () => {
@@ -32,7 +32,10 @@ describe('Source Tab', async () => {
     });
 
     await step('check that the module, local, and stack scope appear', async () => {
-      const scopeNames = await getScopeNames();
+      const scopeNames = await waitForFunction(async () => {
+        const names = await getScopeNames();
+        return names.length === 3 ? names : undefined;
+      });
       assert.deepEqual(scopeNames, ['Module', 'Local', 'Stack']);
     });
 
@@ -66,12 +69,12 @@ describe('Source Tab', async () => {
     });
 
     await step('check that the module scope content is as before', async () => {
-      const currentModuleScopeValues = await getValuesForScope('Module');
+      const currentModuleScopeValues = await getValuesForScope('Module', 0, moduleScopeValues.length);
       assert.deepEqual(currentModuleScopeValues, moduleScopeValues);
     });
 
     await step('check that the local scope content is as before', async () => {
-      const updatedLocalScopeValues = await getValuesForScope('Local');
+      const updatedLocalScopeValues = await getValuesForScope('Local', 0, localScopeValues.length);
       assert.deepEqual(updatedLocalScopeValues, localScopeValues);
     });
 

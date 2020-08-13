@@ -103,7 +103,7 @@ export const valueForTypeNode = (node: ts.TypeNode, isFunctionParam: boolean = f
                        })
                        .join(', ');
 
-    value = `function(${params}): ${returnType}`;
+    value = `function(${params}):${returnType}`;
   } else if (ts.isTypeLiteralNode(node)) {
     const members = node.members
                         .map(member => {

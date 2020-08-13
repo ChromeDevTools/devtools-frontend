@@ -281,14 +281,11 @@ const generateInterfaceMembers =
                 } else {
                   nodeValue = `(!${nodeValue}|undefined)`;
                 }
-              } else {
-                if (!nodeIsPrimitive(member.type)) {
-                  if (nodeValue.startsWith('"')) {
-                    nodeValue = `!(${nodeValue})`;
-                  } else {
-                    nodeValue = `!${nodeValue}`;
-                  }
-                }
+              } else if (ts.isTypeReferenceNode(member.type) || ts.isArrayTypeNode(member.type)) {
+                /* If the member not optional and is a reference to another type, or an Array,
+                  * it needs an explicit ! at the beginning
+                  */
+                nodeValue = `!${nodeValue}`;
               }
               output.push(`* ${keyName}:${nodeValue},`);
             }

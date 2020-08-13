@@ -812,6 +812,60 @@ export let Person`);
       assert.include(interfaces[1].join('\n'), 'export let Name');
     });
 
+    it('does not prefix a function type with a ! in the typedef', () => {
+      const state = parseCode(`interface Person {
+        getName: () => string
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public update(person: Person) {}
+      }`);
+
+      const interfaces = generateTypeReferences(state);
+
+      assert.strictEqual(interfaces.length, 1);
+      assert.include(interfaces[0].join('\n'), `* @typedef {{
+* getName:function():string,
+* }}`);
+      assert.include(interfaces[0].join('\n'), 'export let Person');
+    });
+
+    it('does not prefix an optional primitive type with a ! in the typedef', () => {
+      const state = parseCode(`interface Person {
+        name?: string;
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public update(person: Person) {}
+      }`);
+
+      const interfaces = generateTypeReferences(state);
+
+      assert.strictEqual(interfaces.length, 1);
+      assert.include(interfaces[0].join('\n'), `* @typedef {{
+* name:(string|undefined),
+* }}`);
+      assert.include(interfaces[0].join('\n'), 'export let Person');
+    });
+
+    it('does not prefix a nullable primitive type with a ! in the typedef', () => {
+      const state = parseCode(`interface Person {
+        name: string|null;
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public update(person: Person) {}
+      }`);
+
+      const interfaces = generateTypeReferences(state);
+
+      assert.strictEqual(interfaces.length, 1);
+      assert.include(interfaces[0].join('\n'), `* @typedef {{
+* name:?string,
+* }}`);
+      assert.include(interfaces[0].join('\n'), 'export let Person');
+    });
+
     it('pulls out a type that is nested within an interface', () => {
       const state = parseCode(`interface Person {
         name: Name;

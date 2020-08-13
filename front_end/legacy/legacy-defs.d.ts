@@ -125,8 +125,10 @@ interface Node {
   hasSameShadowRoot(other: Node): boolean;
   isSelfOrAncestor(node: Node|null): boolean;
   parentElementOrShadowHost(): Element|null;
+  parentNodeOrShadowHost(): Node|null;
   traverseNextNode(stayWithin?: Node): Node|null;
 }
 
 declare function isEnterKey(event: Event): boolean;
+declare function isEnterOrSpaceKey(event: Event): boolean;
 declare function createPlainTextSearchRegex(query: string, flags?: string): RegExp;

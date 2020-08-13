@@ -228,7 +228,7 @@ const _class = index => 'template-class-' + index;
 const _templateCache = new Map();
 
 /**
- * @param {!Array<string>} strings
+ * @param {(!Array<string>|!ITemplateArray)} strings
  * @param {...*} vararg
  * @return {!Element}
  */

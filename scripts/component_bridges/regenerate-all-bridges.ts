@@ -14,7 +14,11 @@ const regenerateBridge = (pathToBridge: string) => {
     throw new Error(`Could not find source file ${sourceFile}`);
   }
 
-  main([sourceFile, ...process.argv.slice(2)]);
+  try {
+    main([sourceFile, ...process.argv.slice(2)]);
+  } catch (e) {
+    console.error(`ERROR regenerating bridge: ${e.message}`);
+  }
 };
 
 const excludedDirectories = new Set([path.resolve(path.join(process.cwd(), 'front_end', 'third_party'))]);

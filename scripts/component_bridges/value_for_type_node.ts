@@ -34,7 +34,13 @@ export const valueForTypeNode = (node: ts.TypeNode, isFunctionParam: boolean = f
       const arrayNode = ts.factory.createArrayTypeNode(node.typeArguments[0]);
       return valueForTypeNode(arrayNode, isFunctionParam);
     }
-    value = (node.typeName as ts.Identifier).escapedText.toString();
+    if (ts.isIdentifier(node.typeName)) {
+      value = node.typeName.escapedText.toString();
+    } else if (ts.isIdentifier(node.typeName.left)) {
+      value = node.typeName.left.escapedText.toString();
+    } else {
+      throw new Error('Internal error: cannot map a node to value.');
+    }
   } else if (ts.isArrayTypeNode(node)) {
     const isPrimitive = nodeIsPrimitive(node.elementType);
     const modifier = isPrimitive ? '' : '!';

@@ -82,17 +82,12 @@ const findTypeReferencesWithinNode = (node: ts.Node): Set<string> => {
       ts.isIdentifier(node.elementType.typeName)) {
     foundInterfaces.add(node.elementType.typeName.escapedText.toString());
 
-  } else if (ts.isTypeReferenceNode(node)) {
-    if (!ts.isIdentifier(node.typeName)) {
-      /*
-      * This means that an interface is being referenced via a qualifier, e.g.:
-      * `Interfaces.Person` rather than `Person`.
-      * We don't support this - all interfaces must be referenced directly.
-      */
-      throw new Error(
-          'Found an interface that was referenced indirectly. You must reference interfaces directly, rather than via a qualifier. For example, `Person` rather than `Foo.Person`');
-    }
+  } else if (ts.isTypeReferenceNode(node) && ts.isIdentifier(node.typeName)) {
     foundInterfaces.add(node.typeName.escapedText.toString());
+  } else if (ts.isTypeReferenceNode(node) && ts.isQualifiedName(node.typeName)) {
+    // We will need only the left type to support enum member references (e.g., 'MyEnum.Member').
+    const left = node.typeName.left;
+    foundInterfaces.add((left as ts.Identifier).escapedText.toString());
   } else if (ts.isUnionTypeNode(node)) {
     /**
      * If the param is something like `x: Foo|null` we want to loop over each type

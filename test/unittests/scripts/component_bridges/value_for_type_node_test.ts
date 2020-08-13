@@ -45,6 +45,11 @@ describe('valueForTypeNode', () => {
     assert.strictEqual(valueForTypeNode(undefinedNode), 'undefined');
   });
 
+  it('supports qualified types by taking the left type', () => {
+    const node = ts.createTypeReferenceNode(ts.createQualifiedName(ts.createIdentifier('MyEnum'), 'myMember'), []);
+    assert.strictEqual(valueForTypeNode(node), 'MyEnum');
+  });
+
   it('converts union types', () => {
     const stringNode = createNode(ts.SyntaxKind.StringKeyword);
     const numberNode = createNode(ts.SyntaxKind.NumberKeyword);

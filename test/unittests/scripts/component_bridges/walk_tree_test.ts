@@ -34,15 +34,6 @@ describe('walkTree', () => {
     assert.deepEqual(Array.from(result.typeReferencesToConvert), ['Person', 'Dog', 'DogOwner']);
   });
 
-  it('errors if a user references an interface via a qualifier', () => {
-    const filePath = path.resolve(path.join(fixturesPath, 'component-with-external-interface-import-star.ts'));
-
-    const source = createTypeScriptSourceFromFilePath(filePath);
-    assert.throws(() => {
-      walkTree(source, filePath);
-    }, 'Found an interface that was referenced indirectly. You must reference interfaces directly, rather than via a qualifier. For example, `Person` rather than `Foo.Person`');
-  });
-
   it('errors loudly if it cannot find an interface', () => {
     const code = `class Breadcrumbs extends HTMLElement {
       private render() {

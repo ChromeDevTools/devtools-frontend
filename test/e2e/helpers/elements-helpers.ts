@@ -5,7 +5,7 @@ import {assert} from 'chai';
 import {performance} from 'perf_hooks';
 import * as puppeteer from 'puppeteer';
 
-import {$$, click, getBrowserAndPages, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
+import {$$, click, getBrowserAndPages, step, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
 
 const SELECTED_TREE_ELEMENT_SELECTOR = '.selected[role="treeitem"]';
 const CSS_PROPERTY_NAME_SELECTOR = '.webkit-css-property';
@@ -16,6 +16,47 @@ const COMPUTED_STYLES_PANEL_SELECTOR = '[aria-label="Computed panel"]';
 const COMPUTED_STYLES_SHOW_ALL_SELECTOR = '[aria-label="Show all"]';
 const ELEMENTS_PANEL_SELECTOR = '.panel[aria-label="elements"]';
 const SECTION_SUBTITLE_SELECTOR = '.styles-section-subtitle';
+const MORE_TABS_SELECTOR = '[aria-label="More tabs"]';
+const LAYOUT_PANE_TAB_SELECTOR = '[aria-label="Layout"]';
+const INACTIVE_GRID_ADORNER_SELECTOR = '[aria-label="Enable grid mode"]';
+const ACTIVE_GRID_ADORNER_SELECTOR = '[aria-label="Disable grid mode"]';
+const ELEMENT_CHECKBOX_IN_LAYOUT_PANE_SELECTOR = '.elements input[type=checkbox]';
+
+export const openLayoutPane = async () => {
+  await step('Open Layout pane', async () => {
+    await waitFor(MORE_TABS_SELECTOR);
+    await click(MORE_TABS_SELECTOR);
+    await waitFor(LAYOUT_PANE_TAB_SELECTOR);
+    await click(LAYOUT_PANE_TAB_SELECTOR);
+  });
+};
+
+export const assertInactiveAdorners = async (expectedAdorners: string[]) => {
+  await step('Assert inactive adorners in Elements panel', async () => {
+    const actualAdorners = await $$(INACTIVE_GRID_ADORNER_SELECTOR);
+    const actualAdornersContent = await Promise.all(actualAdorners.map(n => n.evaluate(node => node.textContent)));
+    assert.deepEqual(
+        actualAdornersContent, expectedAdorners,
+        `did not have exactly ${expectedAdorners.length} adorner(s) in the inactive state`);
+  });
+};
+
+export const assertActiveAdorners = async (expectedAdorners: string[]) => {
+  await step('Assert active adorners in Elements panel', async () => {
+    const actualAdorners = await $$(ACTIVE_GRID_ADORNER_SELECTOR);
+    const actualAdornersContent = await Promise.all(actualAdorners.map(n => n.evaluate(node => node.textContent)));
+    assert.deepEqual(
+        actualAdornersContent, expectedAdorners,
+        `did not have exactly ${expectedAdorners.length} adorner(s) in the inactive state`);
+  });
+};
+
+export const toggleElementCheckboxInLayoutPane = async () => {
+  await step('Click element checkbox in Layout pane', async () => {
+    await waitFor(ELEMENT_CHECKBOX_IN_LAYOUT_PANE_SELECTOR);
+    await click(ELEMENT_CHECKBOX_IN_LAYOUT_PANE_SELECTOR);
+  });
+};
 
 export const assertContentOfSelectedElementsNode = async (expectedTextContent: string) => {
   const selectedNode = await waitFor(SELECTED_TREE_ELEMENT_SELECTOR);

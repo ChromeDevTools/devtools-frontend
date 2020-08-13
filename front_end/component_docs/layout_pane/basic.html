@@ -11,7 +11,7 @@
     <title>Basic Layout Pane example</title>
     <style>
       #container {
-        width: 80%;
+        width: 300px;
         border: 1px solid black;
       }
     </style>
@@ -28,7 +28,20 @@
       document.getElementById('container').appendChild(component);
 
       component.data = {
-        selectedNode: {},
+        gridElements: [
+          {
+            id: 1,
+            name: 'div',
+            domId: 'foo',
+            enabled: false,
+          },
+          {
+            id: 2,
+            name: 'div',
+            domClasses: ['for', 'bar', 'some-very-long-class-name-very-very-very-very-very-long'],
+            enabled: true,
+          }
+        ],
         settings: [
           {
             name: 'showGridTracks',

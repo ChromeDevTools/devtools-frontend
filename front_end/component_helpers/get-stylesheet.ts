@@ -22,6 +22,10 @@ export function getStyleSheets(path: string, {patchThemeSupport = false} = {}): 
     return cachedResult.sheets;
   }
 
+  if (!self.Runtime) {
+    return [];
+  }
+
   const content = self.Runtime.cachedResources[path] || '';
   if (!content) {
     throw new Error(`${path} not preloaded.`);

@@ -84,7 +84,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
     }
 
     if (title.extras.classes && title.extras.classes.length > 0) {
-      const text = title.extras.classes.map(c => `.${c}`).join('');
+      const text = title.extras.classes.map(c => `.${CSS.escape(c)}`).join('');
       parts.push(LitHtml.html`<span class="extra node-label-class">${text}</span>`);
     }
 

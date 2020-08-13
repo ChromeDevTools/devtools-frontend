@@ -8,8 +8,9 @@ import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
 const {render, html} = LitHtml;
 const ls = Common.ls;
+const getStyleSheets = ComponentHelpers.GetStylesheet.getStyleSheets;
 
-import {BooleanSetting, EnumSetting, Setting, SettingType} from './LayoutPaneUtils.js';
+import {BooleanSetting, Element, EnumSetting, Setting, SettingType} from './LayoutPaneUtils.js';
 
 export class SettingChangedEvent extends Event {
   data: {setting: string, value: string|boolean};
@@ -17,6 +18,15 @@ export class SettingChangedEvent extends Event {
   constructor(setting: string, value: string|boolean) {
     super('setting-changed', {});
     this.data = {setting, value};
+  }
+}
+
+export class OverlayChangedEvent extends Event {
+  data: {id: number, value: boolean};
+
+  constructor(id: number, value: boolean) {
+    super('overlay-changed', {});
+    this.data = {id, value};
   }
 }
 
@@ -35,15 +45,19 @@ function isBooleanSetting(setting: Setting): setting is BooleanSetting {
 export class LayoutPane extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private settings: Readonly<Setting[]> = [];
+  private gridElements: Readonly<Element[]> = [];
 
   constructor() {
     super();
-    this.shadow.adoptedStyleSheets =
-        ComponentHelpers.GetStylesheet.getStyleSheets('ui/inspectorCommon.css', {patchThemeSupport: true});
+    this.shadow.adoptedStyleSheets = [
+      ...getStyleSheets('ui/inspectorCommon.css', {patchThemeSupport: true}),
+      ...getStyleSheets('ui/inspectorSyntaxHighlight.css', {patchThemeSupport: true}),
+    ];
   }
 
-  set data(data: {settings: Setting[]}) {
+  set data(data: {settings: Setting[], gridElements: Element[]}) {
     this.settings = data.settings;
+    this.gridElements = data.gridElements;
     this.render();
   }
 
@@ -52,6 +66,10 @@ export class LayoutPane extends HTMLElement {
     // clang-format off
     render(html`
       <style>
+        * {
+          box-sizing: border-box;
+          font-size: 12px;
+        }
         .header {
           align-items: center;
           background-color: var(--toolbar-bg-color, #f3f3f3);
@@ -65,6 +83,7 @@ export class LayoutPane extends HTMLElement {
         }
         .content-section {
           padding: 16px;
+          border-bottom: var(--divider-border, 1px solid #d0d0d0);
         }
         .content-section-title {
           font-size: 12px;
@@ -82,6 +101,11 @@ export class LayoutPane extends HTMLElement {
         .checkbox-label {
           display: flex;
           flex-direction: row;
+          align-items: start;
+          margin-bottom: 8px;
+        }
+        .checkbox-label:last-child {
+          margin-bottom: 0;
         }
         .checkbox-label input {
           margin: 0 6px 0 0;
@@ -100,11 +124,22 @@ export class LayoutPane extends HTMLElement {
         .select-label span {
           margin-bottom: 4px;
         }
+        .elements {
+          margin-top: 12px;
+          color: var(--dom-tag-name-color);
+        }
       </style>
       <details open>
         <summary class="header">
           ${ls`Grid`}
         </summary>
+        ${this.gridElements ?
+          html`<div class="content-section">
+            <h3 class="content-section-title">${ls`Grid overlays`}</h3>
+            <div class="elements">
+              ${this.gridElements.map(element => this.renderElement(element))}
+            </div>
+          </div>` : ''}
         <div class="content-section">
           <h3 class="content-section-title">${ls`Overlay display settings`}</h3>
           <div class="checkbox-settings">
@@ -137,6 +172,31 @@ export class LayoutPane extends HTMLElement {
   private onEnumSettingChange(setting: EnumSetting, event: HTMLInputElementEvent) {
     event.preventDefault();
     this.dispatchEvent(new SettingChangedEvent(setting.name, event.target.value));
+  }
+
+  private onElementToggle(element: Element, event: HTMLInputElementEvent) {
+    event.preventDefault();
+    this.dispatchEvent(new OverlayChangedEvent(element.id, event.target.checked));
+  }
+
+  private renderElement(element: Element) {
+    const name = this.buildElementName(element);
+    const onElementToggle = this.onElementToggle.bind(this, element);
+    return html`<label data-element="true" class="checkbox-label" title=${name}>
+      <input data-input="true" type="checkbox" .checked=${element.enabled} @change=${onElementToggle} />
+      <span data-label="true">${name}</span>
+    </label>`;
+  }
+
+  private buildElementName(element: Element) {
+    const parts = [element.name];
+    if (element.domId) {
+      parts.push(`#${CSS.escape(element.domId)}`);
+    }
+    if (element.domClasses) {
+      parts.push(...element.domClasses.map(cls => `.${CSS.escape(cls)}`));
+    }
+    return parts.join('');
   }
 
   private renderBooleanSetting(setting: BooleanSetting) {

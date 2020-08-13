@@ -9,6 +9,7 @@ node_ts_library("elements") {
     "adornment_test.ts",
     "computed-pane-properties_test.ts",
     "element-breadcrumbs_test.ts",
+    "layout-pane_test.ts",
     "pseudo-states_test.ts",
     "selection-after-delete_test.ts",
     "shadowroot-styles_test.ts",

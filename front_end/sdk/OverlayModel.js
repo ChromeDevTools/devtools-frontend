@@ -330,6 +330,14 @@ export class OverlayModel extends SDKModel {
    */
   highlightGridInPersistentOverlay(nodeId) {
     this._persistentGridHighlighter.highlightInOverlay(nodeId);
+    this.dispatchEventToListeners(Events.PersistentGridOverlayStateChanged, {nodeId, enabled: true});
+  }
+
+  /**
+   * @param {number} nodeId
+   */
+  isHighlightedGridInPersistentOverlay(nodeId) {
+    return this._persistentGridHighlighter.isHighlighted(nodeId);
   }
 
   /**
@@ -337,6 +345,7 @@ export class OverlayModel extends SDKModel {
    */
   hideGridInPersistentOverlay(nodeId) {
     this._persistentGridHighlighter.hideInOverlay(nodeId);
+    this.dispatchEventToListeners(Events.PersistentGridOverlayStateChanged, {nodeId, enabled: false});
   }
 
   /**
@@ -566,6 +575,7 @@ export const Events = {
   HighlightNodeRequested: Symbol('HighlightNodeRequested'),
   ScreenshotRequested: Symbol('ScreenshotRequested'),
   PersistentGridOverlayCleared: Symbol('PersistentGridOverlayCleared'),
+  PersistentGridOverlayStateChanged: Symbol('PersistentGridOverlayStateChanged'),
 };
 
 /**
@@ -663,6 +673,14 @@ export class PersistentGridHighlighter {
   }
 
   refreshHighlights() {
+  }
+
+  /**
+   * @param {number} nodeId
+   * @return {boolean}
+   */
+  isHighlighted(nodeId) {
+    return false;
   }
 }
 
@@ -846,6 +864,15 @@ class DefaultPersistentGridHighlighter {
   highlightInOverlay(nodeId) {
     this._gridHighlights.set(nodeId, this._buildGridHighlightConfig());
     this._updateHighlightsInOverlay();
+  }
+
+  /**
+   * @override
+   * @param {number} nodeId
+   * @return {boolean}
+   */
+  isHighlighted(nodeId) {
+    return this._gridHighlights.has(nodeId);
   }
 
   /**

@@ -1659,6 +1659,20 @@ export class DOMModel extends SDKModel {
   }
 
   /**
+   * @param {!Array<!{name: string, value: string}>} computedStyles
+   * @param {boolean} pierce
+   * @return {!Promise<!Array<number>>}
+   */
+  async getNodesByStyle(computedStyles, pierce = false) {
+    const response =
+        await this._agent.invoke_getNodesForSubtreeByStyle({nodeId: this._document.id, computedStyles, pierce});
+    if (response.getError()) {
+      throw response.getError();
+    }
+    return response.nodeIds;
+  }
+
+  /**
    * @param {string} query
    * @param {boolean} includeUserAgentShadowDOM
    * @return {!Promise<number>}

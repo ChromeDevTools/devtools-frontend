@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_03f126ba6fa92a1218920ff632546eb1" desc="Title of a section in Layout sidebar pane">
+    Grid overlays
+  </message>
   <message name="IDS_DEVTOOLS_05ffd37b74b38636b25349b7a8c1ebba" desc="ARIA label for Elements Tree adorners">
     Enable grid mode
   </message>

@@ -17,10 +17,21 @@ import './LayoutPane.js';
 export let Setting;
 /**
 * @typedef {{
+* id:number,
 * name:string,
-* type:string,
+* domId:(string|undefined),
+* domClasses:(!Array.<string>|undefined),
+* enabled:boolean,
+* }}
+*/
+// @ts-ignore we export this for Closure not TS
+export let Element;
+/**
+* @typedef {{
+* name:string,
+* type:!SettingType,
 * title:string,
-* options:Array.<!EnumSettingOption>,
+* options:!Array.<!EnumSettingOption>,
 * value:string,
 * }}
 */
@@ -29,21 +40,25 @@ export let EnumSetting;
 /**
 * @typedef {{
 * name:string,
-* type:string,
+* type:!SettingType,
 * title:string,
-* options:Array.<!BooleanSettingOption>,
+* options:!Array.<!BooleanSettingOption>,
 * value:boolean,
 * }}
 */
 // @ts-ignore we export this for Closure not TS
 export let BooleanSetting;
 /**
-* @typedef {string}
+* @enum {string}
 */
 // @ts-ignore we export this for Closure not TS
-export let SettingType;
+export const SettingType = {
+  BOOLEAN: 'boolean',
+  ENUM: 'enum',
+};
 /**
 * @typedef {{
+* title:string,
 * value:string,
 * }}
 */
@@ -51,6 +66,7 @@ export let SettingType;
 export let EnumSettingOption;
 /**
 * @typedef {{
+* title:string,
 * value:boolean,
 * }}
 */
@@ -59,7 +75,7 @@ export let BooleanSettingOption;
 // eslint-disable-next-line no-unused-vars
 export class LayoutPaneClosureInterface extends HTMLElement {
   /**
-  * @param {{settings: !Array.<!Setting>}} data
+  * @param {{settings: !Array.<!Setting>, gridElements: !Array.<!Element>}} data
   */
   set data(data) {
   }

@@ -111,6 +111,10 @@ interface Element {
   removeChildren(): void;
 }
 
+interface DocumentFragment {
+  createChild(tagName: string, className?: string, content?: string): Element;
+}
+
 interface Event {
   consume(preventDefault: boolean): void;
   deepElementFromPoint(): Node|null;

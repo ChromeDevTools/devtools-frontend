@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 
@@ -20,7 +17,9 @@ export class TextEditorFactory {
    * @param {!Options} options
    * @return {!TextEditor}
    */
-  createEditor(options) {}
+  createEditor(options) {
+    throw new Error('not implemented');
+  }
 }
 
 /**
@@ -31,18 +30,21 @@ export class TextEditor extends Common.EventTarget.EventTarget {
    * @return {!Widget}
    */
   widget() {
+    throw new Error('not implemented');
   }
 
   /**
    * @return {!TextUtils.TextRange.TextRange}
    */
   fullRange() {
+    throw new Error('not implemented');
   }
 
   /**
    * @return {!TextUtils.TextRange.TextRange}
    */
   selection() {
+    throw new Error('not implemented');
   }
 
   /**
@@ -56,12 +58,14 @@ export class TextEditor extends Common.EventTarget.EventTarget {
    * @return {string}
    */
   text(textRange) {
+    throw new Error('not implemented');
   }
 
   /**
    * @return {string}
    */
   textWithCurrentSuggestion() {
+    throw new Error('not implemented');
   }
 
   /**
@@ -75,6 +79,7 @@ export class TextEditor extends Common.EventTarget.EventTarget {
    * @return {string}
    */
   line(lineNumber) {
+    throw new Error('not implemented');
   }
 
   newlineAndIndent() {
@@ -101,6 +106,7 @@ export class TextEditor extends Common.EventTarget.EventTarget {
    * @return {!{x: number, y: number}}
    */
   visualCoordinates(lineNumber, columnNumber) {
+    throw new Error('not implemented');
   }
 
   /**
@@ -109,6 +115,7 @@ export class TextEditor extends Common.EventTarget.EventTarget {
    * @return {?{startColumn: number, endColumn: number, type: string}}
    */
   tokenAtTextPosition(lineNumber, columnNumber) {
+    throw new Error('not implemented');
   }
 
   /**
@@ -138,6 +145,7 @@ export const Events = {
   *  lineWiseCopyCut: (boolean|undefined)
   * }}
   */
+// @ts-ignore typedef
 export let Options;
 
 /**
@@ -149,4 +157,5 @@ export let Options;
   *     anchorBehavior: (AnchorBehavior|undefined)
   * }}
   */
+// @ts-ignore typedef
 export let AutocompleteConfig;

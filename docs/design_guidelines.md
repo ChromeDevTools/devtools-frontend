@@ -80,7 +80,7 @@ Stuck proposals can be escalated to the [ENG_REVIEW_OWNERS](https://cs.chromium.
 1. IC sends a mail to the EnReOw
    1. TL in CC
    1. Link to design doc in the mail
-1. The EnReOw is obligated to review the doc and optionally add himself to the list of LGTM providers.
+1. The EnReOw is obligated to review the doc and optionally add themselves to the list of LGTM providers.
 1. Next steps to unblock the feature are decided.
 1. If the blocker is not resolved afterwards or new, unresolvable blockers are discovered, goto 8.
 1. Optional: If "not LGTMs" are added after the feature was approved already, they should be treated like normal, unresolved issues.

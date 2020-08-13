@@ -44,6 +44,20 @@ template("devtools_entrypoint") {
 
         deps = invoker.deps
       }
+
+      # In debug mode we also want to copy the sourcemap of the entrypoint into
+      # resources/inspector so that when you DevTools-on-DevTools it can find
+      # the sourcemaps. devtools_module takes care of copying all of the TS
+      # files but we also need the entrypoint's .js.map file copied from gen
+      # into resources/inspector
+      _typescript_target_dep = ":$_ts_library_target_name"
+      _copy_gen_name = _ts_library_target_name + "copy-source-maps"
+      copy_gen_to_resources(_copy_gen_name) {
+        sources = filter_include(get_target_outputs(_typescript_target_dep),
+                                 [ "*.map" ])
+
+        public_deps = [ _typescript_target_dep ]
+      }
     } else {
       action(_entrypoint_target_name) {
         script = "//third_party/node/node.py"

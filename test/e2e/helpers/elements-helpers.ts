@@ -16,9 +16,6 @@ const COMPUTED_STYLES_PANEL_SELECTOR = '[aria-label="Computed panel"]';
 const COMPUTED_STYLES_SHOW_ALL_SELECTOR = '[aria-label="Show all"]';
 const ELEMENTS_PANEL_SELECTOR = '.panel[aria-label="elements"]';
 const SECTION_SUBTITLE_SELECTOR = '.styles-section-subtitle';
-const CLS_PANE_SELECTOR = '.styles-sidebar-toolbar-pane';
-const CLS_BUTTON_SELECTOR = '[aria-label="Element Classes"]';
-const CLS_INPUT_SELECTOR = '[aria-placeholder="Add new class"]';
 
 export const assertContentOfSelectedElementsNode = async (expectedTextContent: string) => {
   const selectedNode = await waitFor(SELECTED_TREE_ELEMENT_SELECTOR);
@@ -278,51 +275,4 @@ export const navigateToElementsTab = async () => {
 export const clickOnFirstLinkInStylesPanel = async () => {
   const stylesPane = await waitFor('div.styles-pane');
   await click('div.styles-section-subtitle span.devtools-link', {root: stylesPane});
-};
-
-export const toggleClassesPane = async () => {
-  await click(CLS_BUTTON_SELECTOR);
-};
-
-export const typeInClassesPaneInput =
-    async (text: string, commitWith: string = 'Enter', waitForNodeChange: Boolean = true) => {
-  const clsInput = await waitFor(CLS_INPUT_SELECTOR);
-  await clsInput.type(text);
-
-  if (commitWith) {
-    const {frontend} = getBrowserAndPages();
-    await frontend.keyboard.press(commitWith);
-  }
-
-  if (waitForNodeChange) {
-    // Make sure the classes provided in text can be found in the selected element's content. This is important as the
-    // cls pane applies classes as you type, so we need to wait until all of them are applied.
-    await waitForFunction(async () => {
-      const nodeContent = await getContentOfSelectedNode();
-      return text.split(' ').every(cls => nodeContent.includes(cls));
-    });
-  }
-};
-
-export const toggleClassesPaneCheckbox = async (checkboxLabel: string) => {
-  const initialValue = await getContentOfSelectedNode();
-
-  const classesPane = await waitFor(CLS_PANE_SELECTOR);
-  await click(`input[aria-label="${checkboxLabel}"]`, {root: classesPane});
-
-  await waitForSelectedNodeChange(initialValue);
-};
-
-export const assertSelectedNodeClasses = async (expectedClasses: string[]) => {
-  const nodeText = await getContentOfSelectedNode();
-  const match = nodeText.match(/class=\u200B"([^"]*)/);
-  const classText = match ? match[1] : '';
-  const classes = classText.split(/[\s]/).map(className => className.trim()).filter(className => className.length);
-
-  assert.strictEqual(
-      classes.length, expectedClasses.length, 'Did not find the expected number of classes on the element');
-
-  for (const expectedClass of expectedClasses) {
-    assert.include(classes, expectedClass, `Could not find class ${expectedClass} on the element`);
-  }
 };

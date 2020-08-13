@@ -84,6 +84,14 @@ export class CSSModel extends SDKModel {
     /** @type {!Map<string, !CSSFontFace>} */
     this._fontFaces = new Map();
 
+    /** @type {?CSSPropertyTracker} */
+    this._cssPropertyTracker = null;  // TODO: support multiple trackers when we refactor the backend
+    this._isCSSPropertyTrackingEnabled = false;
+    this._isTrackingRequestPending = false;
+    /** @type {!Map<number, !Array<!Protocol.CSS.CSSComputedStyleProperty>>} */
+    this._trackedCSSProperties = new Map();
+    this._stylePollingThrottler = new Common.Throttler.Throttler(StylePollingInterval);
+
     this._sourceMapManager.setEnabled(Common.Settings.Settings.instance().moduleSetting('cssSourceMapsEnabled').get());
     Common.Settings.Settings.instance()
         .moduleSetting('cssSourceMapsEnabled')
@@ -771,9 +779,65 @@ export class CSSModel extends SDKModel {
   }
 
   /**
+   @param {!Array.<!Protocol.CSS.CSSComputedStyleProperty>} propertiesToTrack
+   */
+  createCSSPropertyTracker(propertiesToTrack) {
+    const gridStyleTracker = new CSSPropertyTracker(this, propertiesToTrack);
+    return gridStyleTracker;
+  }
+
+  /**
+   * @param {!CSSPropertyTracker} cssPropertyTracker
+   */
+  enableCSSPropertyTracker(cssPropertyTracker) {
+    const propertiesToTrack = cssPropertyTracker.getTrackedProperties();
+    if (propertiesToTrack.length === 0) {
+      return;
+    }
+    this._agent.invoke_trackComputedStyleUpdates({propertiesToTrack});
+    this._isCSSPropertyTrackingEnabled = true;
+    this._cssPropertyTracker = cssPropertyTracker;
+    this._pollComputedStyleUpdates();
+  }
+
+  // Since we only support one tracker at a time, this call effectively disables
+  // style tracking.
+  disableCSSPropertyTracker() {
+    this._isCSSPropertyTrackingEnabled = false;
+    this._cssPropertyTracker = null;
+    // Sending an empty list to the backend signals the close of style tracking
+    this._agent.invoke_trackComputedStyleUpdates({propertiesToTrack: []});
+  }
+
+  async _pollComputedStyleUpdates() {
+    if (this._isTrackingRequestPending) {
+      return;
+    }
+
+    if (this._isCSSPropertyTrackingEnabled) {
+      this._isTrackingRequestPending = true;
+      const result = await this._agent.invoke_takeComputedStyleUpdates();
+      this._isTrackingRequestPending = false;
+
+      if (result.getError() || !result.nodeIds) {
+        return;
+      }
+
+      this._cssPropertyTracker.dispatchEventToListeners(CSSPropertyTrackerEvents.TrackedCSSPropertiesUpdated, {
+        domNodes: result.nodeIds.map(nodeId => this._domModel.nodeForId(nodeId)),
+      });
+    }
+
+    if (this._isCSSPropertyTrackingEnabled) {
+      this._stylePollingThrottler.schedule(this._pollComputedStyleUpdates.bind(this));
+    }
+  }
+
+  /**
    * @override
    */
   dispose() {
+    this.disableCSSPropertyTracker();
     super.dispose();
     this._sourceMapManager.dispose();
   }
@@ -787,7 +851,7 @@ export const Events = {
   PseudoStateForced: Symbol('PseudoStateForced'),
   StyleSheetAdded: Symbol('StyleSheetAdded'),
   StyleSheetChanged: Symbol('StyleSheetChanged'),
-  StyleSheetRemoved: Symbol('StyleSheetRemoved')
+  StyleSheetRemoved: Symbol('StyleSheetRemoved'),
 };
 
 const PseudoStateMarker = 'pseudo-state-marker';
@@ -944,6 +1008,40 @@ export class InlineStyleResult {
     this.attributesStyle = attributesStyle;
   }
 }
+
+export class CSSPropertyTracker extends Common.ObjectWrapper.ObjectWrapper {
+  /**
+   * @param {!CSSModel} cssModel
+   * @param {!Array.<!Protocol.CSS.CSSComputedStyleProperty>} propertiesToTrack
+   */
+  constructor(cssModel, propertiesToTrack) {
+    super();
+    this._cssModel = cssModel;
+    this._properties = propertiesToTrack;
+  }
+
+  start() {
+    this._cssModel.enableCSSPropertyTracker(this);
+  }
+
+  stop() {
+    this._cssModel.disableCSSPropertyTracker();
+  }
+
+  /**
+   * @return {!Array.<!Protocol.CSS.CSSComputedStyleProperty>}
+   */
+  getTrackedProperties() {
+    return this._properties;
+  }
+}
+
+const StylePollingInterval = 1000;  // throttling interval for style polling, in milliseconds
+
+/** @enum {symbol} */
+export const CSSPropertyTrackerEvents = {
+  TrackedCSSPropertiesUpdated: Symbol('TrackedCSSPropertiesUpdated'),
+};
 
 SDKModel.register(CSSModel, Capability.DOM, true);
 

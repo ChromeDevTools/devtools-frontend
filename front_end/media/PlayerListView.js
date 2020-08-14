@@ -87,12 +87,6 @@ export class PlayerListView extends UI.Widget.VBox {
     this.contentElement.appendChild(this._sidebarTree.element);
     this._sidebarTree.registerRequiredCSS('media/playerListView.css');
 
-    // Audio capture / output devices.
-    this._audioDevices = this._addListSection(Common.UIString('Audio I/O'));
-
-    // Video capture devices.
-    this._videoDevices = this._addListSection(Common.UIString('Video Capture Devices'));
-
     // Players active in this tab.
     this._playerList = this._addListSection(Common.UIString('Players'));
     this._playerList.listItemElement.classList.add('player-entry-header');

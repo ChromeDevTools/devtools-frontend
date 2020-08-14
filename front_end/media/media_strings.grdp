@@ -69,12 +69,6 @@
   <message name="IDS_DEVTOOLS_93ec972c68d5caca43370a9746a08cea" desc="Side-panel entry title text for the players section.">
     Players
   </message>
-  <message name="IDS_DEVTOOLS_a20467c4e87b5469cbb1a6c31775393c" desc="Side-panel entry title text for the audio devices section.">
-    Audio I/O
-  </message>
-  <message name="IDS_DEVTOOLS_d9f6db9c0f0579391eccedbac66aef9b" desc="Side-panel entry title text for the video capture devices section.">
-    Video Capture Devices
-  </message>
   <message name="IDS_DEVTOOLS_045b78ffe29652f98998ccf799c7ed6b" desc="Media property describing where the media is playing from.">
     Playback Frame URL
   </message>

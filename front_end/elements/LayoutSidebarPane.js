@@ -16,13 +16,16 @@ import {createLayoutPane, Element} from './LayoutPane_bridge.js';  // eslint-dis
  * @return {!Array<!Element>}
  */
 const gridNodesToElements = nodes => {
-  return nodes.map(node => ({
-                     id: node.id,
-                     name: node.localName(),
-                     domId: node.getAttribute('id'),
-                     domClasses: (node.getAttribute('class') || '').split(/\s+/),
-                     enabled: node.domModel().overlayModel().isHighlightedGridInPersistentOverlay(node.id)
-                   }));
+  return nodes.map(node => {
+    const className = node.getAttribute('class');
+    return {
+      id: node.id,
+      name: node.localName(),
+      domId: node.getAttribute('id'),
+      domClasses: className ? className.split(/\s+/) : null,
+      enabled: node.domModel().overlayModel().isHighlightedGridInPersistentOverlay(node.id)
+    };
+  });
 };
 
 /**

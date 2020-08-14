@@ -127,6 +127,11 @@ describe('LayoutPane', () => {
           domClasses: ['class1', 'class2'],
           enabled: false,
         },
+        {
+          id: 3,
+          name: 'div',
+          enabled: false,
+        },
       ],
       settings: [],
     };
@@ -136,6 +141,7 @@ describe('LayoutPane', () => {
     assert.deepEqual(queryLabels(component, '[data-element]'), [
       {label: 'div#elementId', input: 'INPUT'},
       {label: 'span.class1.class2', input: 'INPUT'},
+      {label: 'div', input: 'INPUT'},
     ]);
   });
 

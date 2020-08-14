@@ -39,9 +39,13 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     this._settings = [
       'showGridBorder', 'showGridLines', 'showGridLineNumbers', 'showGridGaps', 'showGridAreas', 'showGridTrackSizes'
     ];
-    this._node = self.UI.context.flavor(SDK.DOMModel.DOMNode);
     this._boundOnSettingChanged = this.onSettingChanged.bind(this);
     this._boundOnOverlayChanged = this.onOverlayChanged.bind(this);
+    this._pullNode();
+  }
+
+  _pullNode() {
+    this._node = self.UI.context.flavor(SDK.DOMModel.DOMNode);
   }
 
   async _fetchGridNodes() {
@@ -80,6 +84,7 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
    * @return {!Promise<void>}
    */
   async doUpdate() {
+    this._pullNode();
     this._layoutPane.data = {
       gridElements: gridNodesToElements(await this._fetchGridNodes()),
       settings: this._mapSettings(),
@@ -117,6 +122,7 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     const overlayModel = this._node.domModel().overlayModel();
     overlayModel.addEventListener(SDK.OverlayModel.Events.PersistentGridOverlayCleared, this.update, this);
     overlayModel.addEventListener(SDK.OverlayModel.Events.PersistentGridOverlayStateChanged, this.update, this);
+    self.UI.context.addFlavorChangeListener(SDK.DOMModel.DOMNode, this.update, this);
     this.update();
   }
 
@@ -132,5 +138,6 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     const overlayModel = this._node.domModel().overlayModel();
     overlayModel.removeEventListener(SDK.OverlayModel.Events.PersistentGridOverlayCleared, this.update, this);
     overlayModel.removeEventListener(SDK.OverlayModel.Events.PersistentGridOverlayStateChanged, this.update, this);
+    self.UI.context.removeFlavorChangeListener(SDK.DOMModel.DOMNode, this.update, this);
   }
 }

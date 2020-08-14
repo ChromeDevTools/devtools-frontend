@@ -4,6 +4,13 @@
 
 import * as Mocha from 'mocha';
 
+const {beforeEach, describe} = Mocha;
+
+export {
+  beforeEach,
+  describe,
+};
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function timeoutHook(done: Mocha.Done|undefined, err?: any) {
   function* joinStacks() {
@@ -38,6 +45,12 @@ it.skip = function(name: string, callback: Mocha.Func|Mocha.AsyncFunc) {
 
 it.only = function(name: string, callback: Mocha.Func|Mocha.AsyncFunc) {
   wrapMochaCall(Mocha.it.only, name, callback);
+};
+
+it.repeat = function(repeat: number, name: string, callback: Mocha.Func|Mocha.AsyncFunc) {
+  for (let i = 0; i < repeat; i++) {
+    wrapMochaCall(Mocha.it, name, callback);
+  }
 };
 
 function wrapMochaCall(

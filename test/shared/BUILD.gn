@@ -6,9 +6,9 @@ import("../../third_party/typescript/typescript.gni")
 
 node_ts_library("shared") {
   sources = [
-    "async-tracing.ts",
     "config.ts",
     "helper.ts",
+    "mocha-extensions.ts",
     "text-color.ts",
   ]
   deps = [ "../conductor:implementation" ]

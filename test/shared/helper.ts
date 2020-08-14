@@ -8,7 +8,7 @@ import * as puppeteer from 'puppeteer';
 
 import {reloadDevTools} from '../conductor/hooks.js';
 import {getBrowserAndPages, getHostedModeServerPort} from '../conductor/puppeteer-state.js';
-import {AsyncScope} from './async-tracing.js';
+import {AsyncScope} from './mocha-extensions.js';
 
 export let platform: string;
 switch (os.platform()) {

@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
-import {$, $$, getBrowserAndPages, goToResource, waitFor} from '../../shared/helper.js';
+import {$, $$, getBrowserAndPages, goToResource, waitFor, waitForFunction} from '../../shared/helper.js';
 import {triggerFindDialog} from '../helpers/search-helpers.js';
 
 describe('The Search Panel', async () => {
@@ -33,10 +33,11 @@ describe('The Search Panel', async () => {
 
     // Wait for results.
     const resultsContainer = await waitFor(SEARCH_RESULTS);
-    await waitFor(SEARCH_FILE_RESULT, resultsContainer);
 
-    // Process the results into something manageable.
-    const fileResults = await $$(SEARCH_FILE_RESULT, resultsContainer);
+    const fileResults = await waitForFunction(async () => {
+      const results = await $$(SEARCH_FILE_RESULT, resultsContainer);
+      return results.length === 3 ? results : undefined;
+    });
 
     interface FileSearchResult {
       matchesCount: number;

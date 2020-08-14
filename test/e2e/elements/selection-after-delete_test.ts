@@ -5,7 +5,7 @@
 import {describe, it} from 'mocha';
 
 import {click, getBrowserAndPages, goToResource, waitForElementWithTextContent} from '../../shared/helper.js';
-import {assertContentOfSelectedElementsNode, expandSelectedNodeRecursively, getContentOfSelectedNode, waitForElementsStyleSection, waitForSelectedNodeChange} from '../helpers/elements-helpers.js';
+import {expandSelectedNodeRecursively, getContentOfSelectedNode, waitForContentOfSelectedElementsNode, waitForElementsStyleSection, waitForSelectedNodeChange} from '../helpers/elements-helpers.js';
 
 describe('The Elements tab', async () => {
   // Flaky test
@@ -18,7 +18,7 @@ describe('The Elements tab', async () => {
     await waitForElementsStyleSection();
 
     // Sanity check to make sure we have the correct node selected after opening a file
-    await assertContentOfSelectedElementsNode('<body>\u200B');
+    await waitForContentOfSelectedElementsNode('<body>\u200B');
     await expandSelectedNodeRecursively();
 
     // Wait for the expansion and select the final child in the tree.
@@ -41,7 +41,7 @@ describe('The Elements tab', async () => {
       await frontend.keyboard.press('Backspace');
       await waitForSelectedNodeChange(initialValue);
 
-      await assertContentOfSelectedElementsNode(nextVal);
+      await waitForContentOfSelectedElementsNode(nextVal);
     } while (expected.length);
   });
 });

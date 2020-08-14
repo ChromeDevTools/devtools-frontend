@@ -2,9 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert} from 'chai';
-
-import {$$, click, goToResource, waitFor, waitForNone} from '../../shared/helper.js';
+import {$$, click, goToResource, waitFor, waitForFunction, waitForNone} from '../../shared/helper.js';
 
 const NEW_HEAP_SNAPSHOT_BUTTON = 'button[aria-label="Take heap snapshot"]';
 const MEMORY_PANEL_CONTENT = 'div[aria-label="Memory panel"]';
@@ -27,8 +25,11 @@ export async function takeHeapSnapshot() {
 export async function waitForHeapSnapshotData() {
   await waitFor('#profile-views');
   await waitFor('#profile-views .data-grid');
-  const rowCount = await getCountOfDataGridRows('#profile-views table.data');
-  assert.notEqual(rowCount, 0);
+  const rowCountNotZero = async () => {
+    const rowCount = await getCountOfDataGridRows('#profile-views table.data');
+    return rowCount !== 0;
+  };
+  await waitForFunction(rowCountNotZero);
 }
 
 export async function getCountOfDataGridRows(selector: string) {

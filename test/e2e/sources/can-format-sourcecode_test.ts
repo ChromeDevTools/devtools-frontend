@@ -6,7 +6,7 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 import * as puppeteer from 'puppeteer';
 
-import {click, getBrowserAndPages, waitFor} from '../../shared/helper.js';
+import {$$, click, getBrowserAndPages, waitFor, waitForFunction} from '../../shared/helper.js';
 import {addBreakpointForLine, openSourceCodeEditorForFile, retrieveTopCallFrameScriptLocation} from '../helpers/sources-helpers.js';
 
 const PRETTY_PRINT_BUTTON = '[aria-label="Pretty print minified-sourcecode.js"]';
@@ -74,14 +74,17 @@ describe('The Sources Tab', async function() {
     await click('#tab-console');
 
     await waitFor('.console-group-messages');
-
-    const messageLinks = await frontend.evaluate(() => {
-      return Array.from(document.querySelectorAll('.console-group-messages .source-code'))
-          .map(message => ({
-                 message: message.querySelector('.console-message-text')!.textContent,
-                 lineNumber: message.querySelector('.console-message-anchor')!.textContent,
-               }));
+    const messages = await waitForFunction(async () => {
+      const messages = await $$('.console-group-messages .source-code');
+      return messages.length === 2 ? messages : undefined;
     });
+
+    const messageLinks = await Promise.all(messages.map(
+        messageHandle =>
+            (messageHandle.evaluate(message => ({
+                                      message: message.querySelector('.console-message-text')!.textContent,
+                                      lineNumber: message.querySelector('.console-message-anchor')!.textContent,
+                                    })))));
 
     assert.deepEqual(messageLinks, [
       {

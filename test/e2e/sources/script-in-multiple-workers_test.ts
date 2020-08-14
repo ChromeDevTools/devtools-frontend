@@ -6,12 +6,16 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 import * as puppeteer from 'puppeteer';
 
-import {$$, click, getBrowserAndPages, goToResource, step, waitFor} from '../../shared/helper.js';
+import {$$, click, getBrowserAndPages, goToResource, step, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
 import {addBreakpointForLine, createSelectorsForWorkerFile, getBreakpointDecorators, getExecutionLine, getOpenSources, openNestedWorkerFile, PAUSE_BUTTON, RESUME_BUTTON} from '../helpers/sources-helpers.js';
 
 async function validateSourceTabs() {
   await step('Validate exactly one source file is open', async () => {
-    assert.deepEqual(await getOpenSources(), ['multi-workers.js']);
+    const openSources = await waitForFunction(async () => {
+      const sources = await getOpenSources();
+      return sources.length === 1 ? sources : undefined;
+    });
+    assert.deepEqual(openSources, ['multi-workers.js']);
   });
 }
 
@@ -123,49 +127,65 @@ describe('Multi-Workers', async function() {
         await click('#tab-sources');
         // Wait for all workers to load
         await validateNavigationTree();
-        // Open file from second worker
-        await openNestedWorkerFile(workerFileSelectors(2));
-        // Set two breakpoints
-        await addBreakpointForLine(frontend, 6);
-        // Disable first breakpoint
-        const bpEntry = await waitFor('.breakpoint-entry');
-        const bpCheckbox = await waitFor('input', bpEntry);
-        if (!bpCheckbox) {
-          assert.fail('Could not find checkbox to disable breakpoint');
-          return;
-        }
-        await bpCheckbox.evaluate(n => (n as HTMLElement).click());
-        await frontend.waitForSelector('.cm-breakpoint-disabled');
-        // Add another breakpoint
-        await addBreakpointForLine(frontend, 12);
 
-        // Check breakpoints
-        await validateBreakpoints(frontend);
+        await step('Open file from second worker', async () => {
+          await openNestedWorkerFile(workerFileSelectors(2));
+        });
 
-        // Close tab
-        await click('[aria-label="Close multi-workers.js"]');
+        await step('Set two breakpoints', async () => {
+          await addBreakpointForLine(frontend, 6);
+        });
+
+        await step('Disable first breakpoint', async () => {
+          const bpEntry = await waitFor('.breakpoint-entry');
+          const bpCheckbox = await waitFor('input', bpEntry);
+          await bpCheckbox.evaluate(n => (n as HTMLElement).click());
+          await frontend.waitForSelector('.cm-breakpoint-disabled');
+        });
+
+        await step('Add another breakpoint', async () => {
+          await addBreakpointForLine(frontend, 12);
+        });
+
+        await step('Check breakpoints', async () => {
+          await validateBreakpoints(frontend);
+        });
+
+        await step('Close tab', async () => {
+          await click('[aria-label="Close multi-workers.js"]');
+        });
       });
 
       it('when opening different file in editor', async () => {
         const {frontend} = getBrowserAndPages();
 
         // Open different worker
-        await openNestedWorkerFile(workerFileSelectors(3));
+        await step('Open different worker', async () => {
+          await openNestedWorkerFile(workerFileSelectors(3));
+        });
 
-        // Check breakpoints
-        await validateBreakpoints(frontend);
+        await step('Check breakpoints', async () => {
+          await validateBreakpoints(frontend);
+        });
       });
 
       it('after reloading', async () => {
         const {target, frontend} = getBrowserAndPages();
 
-        await target.reload();
+        await step('Reload page', async () => {
+          await target.reload();
+        });
 
-        // Open different worker
-        await openNestedWorkerFile(workerFileSelectors(4));
+        // FIXME(crbug/1112692): Refactor test to remove the timeout.
+        await timeout(100);
 
-        // Check breakpoints
-        await validateBreakpoints(frontend);
+        await step('Open different worker', async () => {
+          await openNestedWorkerFile(workerFileSelectors(4));
+        });
+
+        await step('Check breakpoints', async () => {
+          await validateBreakpoints(frontend);
+        });
       });
     });
 

@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {click, getBrowserAndPages, goToResource, pasteText, step} from '../../shared/helper.js';
+import {$$, click, getBrowserAndPages, goToResource, pasteText, step, waitForFunction} from '../../shared/helper.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', async function() {
@@ -20,8 +20,9 @@ describe('The Console Tab', async function() {
     await frontend.keyboard.press('Enter');
 
     await step('wait for the result to appear in the console', async () => {
-      await frontend.waitForFunction(() => {
-        return document.querySelectorAll('.console-user-command-result').length === 1;
+      await waitForFunction(async () => {
+        const results = await $$('.console-user-command-result');
+        return results.length === 1;
       });
     });
 

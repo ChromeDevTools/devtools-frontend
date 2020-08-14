@@ -142,6 +142,7 @@ module.exports = {
     'rulesdir/check_license_header': 2,
     'rulesdir/check_test_definitions': 2,
     'rulesdir/avoid_assert_equal': 2,
+    'rulesdir/no_repeated_tests': 2,
   },
   'overrides': [{
     'files': ['*.ts'],

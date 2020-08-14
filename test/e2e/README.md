@@ -31,6 +31,12 @@ before your test script is about to execute. The test will then run to completio
 await `await new Promise(() => {});` at the end of your test to give you some time to examine the result of your
 test script.
 
+The `it.repeat` helper is useful for reproducing a flaky test failure. e.g.
+
+```js
+it.repeat(20, 'find element', async () => {...});
+```
+
 ## General implementation details
 
 To that end, the "what" from the "how" are separate in end-to-end tests.

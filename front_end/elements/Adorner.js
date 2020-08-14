@@ -56,12 +56,6 @@ template.innerHTML = `
       border-radius: var(--adorner-border-radius, 10px);
     }
 
-    :host-context(.-theme-with-dark-background) slot {
-      color: var(--adorner-text-color, #ffffffde);
-      background-color: var(--adorner-background-color, #5db0d726);
-      border: var(--adorner-border, 1px solid #5db0d780);
-    }
-
     ::slotted(*) {
       height: 10px;
     }

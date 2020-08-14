@@ -1547,6 +1547,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     const tagNameElement =
         tagElement.createChild('span', isClosingTag ? 'webkit-html-close-tag-name' : 'webkit-html-tag-name');
     tagNameElement.textContent = (isClosingTag ? '/' : '') + tagName;
+    // Force screen readers to consider the tagname as one label, this avoids announcing <div id> as one word "divid".
+    UI.ARIAUtils.setAccessibleName(tagNameElement, tagName);
     if (!isClosingTag) {
       if (node.hasAttributes()) {
         const attributes = node.attributes();

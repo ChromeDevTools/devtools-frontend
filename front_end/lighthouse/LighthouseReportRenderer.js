@@ -25,6 +25,7 @@ export class LighthouseReportRenderer extends ReportRenderer {
       return;
     }
 
+    const simulated = artifacts.settings.throttlingMethod === 'simulate';
     const container = el.querySelector('.lh-audit-group');
     const disclaimerEl = container.querySelector('.lh-metrics__disclaimer');
     // If it was a PWA-only run, we'd have a trace but no perf category to add the button to
@@ -33,8 +34,12 @@ export class LighthouseReportRenderer extends ReportRenderer {
     }
 
     const defaultPassTrace = artifacts.traces.defaultPass;
-    const timelineButton =
-        UI.UIUtils.createTextButton(Common.UIString.UIString('View Trace'), onViewTraceClick, 'view-trace');
+    const label = simulated ? Common.UIString.UIString('View Original Trace') : Common.UIString.UIString('View Trace');
+    const timelineButton = UI.UIUtils.createTextButton(label, onViewTraceClick, 'view-trace');
+    if (simulated) {
+      timelineButton.title = Common.UIString.UIString(
+          'The performance metrics above are simulated and won\'t match the timings found in this trace. Disable simulated throttling in "Lighthouse Settings" if you want the timings to match.');
+    }
     container.insertBefore(timelineButton, disclaimerEl.nextSibling);
 
     async function onViewTraceClick() {

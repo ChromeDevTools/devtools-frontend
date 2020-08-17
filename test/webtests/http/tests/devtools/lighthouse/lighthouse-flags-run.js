@@ -26,5 +26,9 @@
   TestRunner.addResult(`throttlingMethod: ${lhr.configSettings.throttlingMethod}`);
   TestRunner.addResult(`TestedAsMobileDevice: ${artifacts.TestedAsMobileDevice}`);
 
+  const viewTraceButton = LighthouseTestRunner.getResultsElement().querySelector('.view-trace');
+  TestRunner.addResult(`\nView Trace Button Text: "${viewTraceButton.textContent}"`);
+  TestRunner.addResult(`View Trace Button Title: "${viewTraceButton.title}"`);
+
   TestRunner.completeTest();
 })();

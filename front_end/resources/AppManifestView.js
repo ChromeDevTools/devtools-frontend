@@ -373,6 +373,14 @@ export class AppManifestView extends UI.Widget.VBox {
         case 'prefer-related-applications':
           errorMessage = ls`Manifest specifies prefer_related_applications: true`;
           break;
+        case 'prefer-related-applications-only-beta-stable':
+          errorMessage =
+              ls`prefer_related_applications is only supported on Chrome Beta and Stable channels on Android.`;
+          break;
+        case 'manifest-display-override-not-supported':
+          errorMessage =
+              ls`Manifest contains 'display_override' field, and the first supported display mode must be one of 'standalone', 'fullscreen', or 'minimal-ui'`;
+          break;
         default:
           console.error(`Installability error id '${installabilityError.errorId}' is not recognized`);
           break;

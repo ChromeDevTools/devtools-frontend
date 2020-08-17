@@ -10,7 +10,7 @@
     Page is not served from a secure origin
   </message>
   <message name="IDS_DEVTOOLS_03ea25886ec5efba7a20fbeb6c7070fa" desc="Manifest installability error in the Application panel">
-    The specified application platform is not supported on Android
+    The specified application platform is not supported on <ph name="LOCKED_1">Android</ph>
   </message>
   <message name="IDS_DEVTOOLS_05b2812ab435addb8ae4853ead93f1b3" desc="Text in Service Workers View of the Application panel">
     Received <ph name="NEW_DATE_VERSION_SCRIPTRESPONSETIME_________TOLOCALESTRING__">$1s<ex>7/3/2019, 3:38:37 PM</ex></ph>
@@ -59,6 +59,9 @@
   </message>
   <message name="IDS_DEVTOOLS_1bea0f12b50db07ee7f2265b790417ff" desc="Text in App Manifest View of the Application panel">
     Installability
+  </message>
+  <message name="IDS_DEVTOOLS_1dacfb77b471afe19dc1b591c8c9f0a3" desc="Manifest installability error in the Application panel">
+    Manifest contains &apos;<ph name="LOCKED_1">display_override</ph>&apos; field, and the first supported display mode must be one of &apos;<ph name="LOCKED_2">standalone</ph>&apos;, &apos;<ph name="LOCKED_3">fullscreen</ph>&apos;, or &apos;<ph name="LOCKED_4">minimal-ui</ph>&apos;
   </message>
   <message name="IDS_DEVTOOLS_1e9cf6d18aa0124e44d013131c79b0c1" desc="Tooltip in Application Panel Sidebar of the Application panel">
     Version: <ph name="THIS__DATABASE_VERSION">$1s<ex>1.0</ex></ph> (empty)
@@ -122,7 +125,7 @@ table is empty.
     <ph name="THIS__REGISTRATION_ERRORS_LENGTH">$1s<ex>3</ex></ph> registration errors
   </message>
   <message name="IDS_DEVTOOLS_3d7394095f1d2e18e2e09b736c5af485" desc="Manifest installability error in the Application panel">
-    Manifest specifies prefer_related_applications: true
+    Manifest specifies <ph name="LOCKED_1">prefer_related_applications</ph>: true
   </message>
   <message name="IDS_DEVTOOLS_3ea5d985e1b51235f5f4056921ea4f38" desc="Manifest installability error in the Application panel">
     Page is not loaded in the main frame
@@ -319,13 +322,16 @@ read the &quot;<ph name="THIS_TABLENAME">$1s<ex>database</ex></ph>&quot; table.
   </message>
   <message name="IDS_DEVTOOLS_a0394c82ef53a78ef470b18ecbf960b4" desc="Label for the primary icon loaded from the manifest">
     Primary icon
-as used by Chrome
+as used by <ph name="LOCKED_1">Chrome</ph>
   </message>
   <message name="IDS_DEVTOOLS_a049ac2b4afe0fb6e78656082858067e" desc="Text in Clear Storage View of the Application panel">
     Storage Usage
   </message>
   <message name="IDS_DEVTOOLS_a274f4d4670213a9045ce258c6c56b80" desc="Text in Background Service View of the Application panel">
     Notifications
+  </message>
+  <message name="IDS_DEVTOOLS_a355b60c9b21eeba5dbbf8c3dc767257" desc="Manifest installability error in the Application panel">
+    <ph name="LOCKED_1">prefer_related_applications</ph> is only supported on <ph name="LOCKED_2">Chrome</ph> Beta and Stable channels on <ph name="LOCKED_3">Android</ph>.
   </message>
   <message name="IDS_DEVTOOLS_a7d5ee58baead2f3bc229d3d9c047875" desc="Text in Service Workers View of the Application panel">
     Unregister <ph name="LOCKED_TERM">service worker</ph>
@@ -496,7 +502,7 @@ as used by Chrome
     Total entries: <ph name="STRING_METADATA_ENTRIESCOUNT_">$1s<ex>2</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_dce1121d5ec5434e70d2d809fd7828e1" desc="Manifest installability error in the Application panel">
-    Manifest &apos;display&apos; property must be one of &apos;standalone&apos;, &apos;fullscreen&apos;, or &apos;minimal-ui&apos;
+    Manifest &apos;<ph name="LOCKED_1">display</ph>&apos; property must be one of &apos;<ph name="LOCKED_2">standalone</ph>&apos;, &apos;<ph name="LOCKED_3">fullscreen</ph>&apos;, or &apos;<ph name="LOCKED_3">minimal-ui</ph>&apos;
   </message>
   <message name="IDS_DEVTOOLS_e00a7ac13697ba51e098449fd644935b" desc="Text in Background Service View of the Application panel">
     Show events from other domains
@@ -526,7 +532,7 @@ as used by Chrome
     View Request
   </message>
   <message name="IDS_DEVTOOLS_ebfabf3434ab96d355274e76214e61ed" desc="Manifest installability error in the Application panel">
-    Manifest does not contain a &apos;name&apos; or &apos;short_name&apos; field
+    Manifest does not contain a &apos;<ph name="LOCKED_1">name</ph>&apos; or &apos;<ph name="LOCKED_2">short_name</ph>&apos; field
   </message>
   <message name="IDS_DEVTOOLS_ec1e074d56484165315c26a9baebaebd" desc="Text in Application Panel Sidebar of the Application panel">
     Web SQL
@@ -550,7 +556,7 @@ as used by Chrome
     stop
   </message>
   <message name="IDS_DEVTOOLS_f0134cf28b55123eff2dc62bd223d0dd" desc="Manifest installability error in the Application panel">
-    Could not check <ph name="LOCKED_TERM">service worker</ph> without a &apos;start_url&apos; field in the manifest
+    Could not check <ph name="LOCKED_TERM">service worker</ph> without a &apos;<ph name="LOCKED_1">start_url</ph>&apos; field in the manifest
   </message>
   <message name="IDS_DEVTOOLS_f18cd4b9f925d85b3a669adc015a9797" desc="Text used to show that data was retrieved from ServiceWorker Cache">
     <ph name="LOCKED_TERM">Service Worker</ph> Cache

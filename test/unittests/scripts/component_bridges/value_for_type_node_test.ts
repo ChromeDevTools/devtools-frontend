@@ -147,6 +147,48 @@ describe('valueForTypeNode', () => {
     });
   });
 
+  describe('converting Maps', () => {
+    it('converts maps of primitives', () => {
+      // Map<string, number>
+      const node = ts.createTypeReferenceNode(
+          ts.createIdentifier('Map'),
+          [
+            ts.createKeywordTypeNode(ts.SyntaxKind.StringKeyword),
+            ts.createKeywordTypeNode(ts.SyntaxKind.NumberKeyword),
+          ],
+      );
+      assert.strictEqual(valueForTypeNode(node), 'Map<string, number>');
+    });
+
+    it('converts maps of type references', () => {
+      // Map<string, ExampleInterface>
+      const node = ts.createTypeReferenceNode(
+          ts.createIdentifier('Map'),
+          [
+            ts.createKeywordTypeNode(ts.SyntaxKind.StringKeyword),
+            ts.createTypeReferenceNode(ts.createIdentifier('ExampleInterface')),
+          ],
+      );
+      assert.strictEqual(valueForTypeNode(node), 'Map<string, !ExampleInterface>');
+    });
+
+    it('converts maps with optional type reference values', () => {
+      const nullNode = createNode(ts.SyntaxKind.NullKeyword);
+      const typeRefNode = ts.createTypeReferenceNode(ts.createIdentifier('ExampleInterface'), []);
+      const returnUnionNode = ts.createUnionTypeNode([typeRefNode, nullNode]);
+
+      // Map<string, ExampleInterface | null>
+      const node = ts.createTypeReferenceNode(
+          ts.createIdentifier('Map'),
+          [
+            ts.createKeywordTypeNode(ts.SyntaxKind.StringKeyword),
+            returnUnionNode,
+          ],
+      );
+      assert.strictEqual(valueForTypeNode(node), 'Map<string, !ExampleInterface|null>');
+    });
+  });
+
   describe('converting functions', () => {
     it('converts functions with no parameters', () => {
       const returnTypeNode = createNode(ts.SyntaxKind.StringKeyword);

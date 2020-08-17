@@ -1014,6 +1014,48 @@ export let Person`);
       assert.strictEqual(interfaces.length, 0);
     });
 
+    it('can parse and convert basic Map types', () => {
+      const state = parseCode(`interface Person {
+        foo: Map<string, number>
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public set data(data: { person: Person }) {
+        }
+      }`);
+      const interfaces = generateTypeReferences(state);
+      assert.strictEqual(interfaces.length, 1);
+      assert.include(interfaces[0].join('\n'), `* @typedef {{
+* foo:!Map<string, number>,
+* }}`);
+      assert.include(interfaces[0].join('\n'), 'export let Person');
+    });
+
+    it('can parse and convert Map types with type references within', () => {
+      const state = parseCode(`interface Person {
+        friends: Map<string, Friend>
+      }
+
+      interface Friend {
+        name: string;
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public set data(data: { person: Person }) {
+        }
+      }`);
+      const interfaces = generateTypeReferences(state);
+      assert.strictEqual(interfaces.length, 2);
+      assert.include(interfaces[0].join('\n'), `* @typedef {{
+* friends:!Map<string, !Friend>,
+* }}`);
+      assert.include(interfaces[0].join('\n'), 'export let Person');
+      assert.include(interfaces[1].join('\n'), `* @typedef {{
+* name:string,
+* }}`);
+      assert.include(interfaces[1].join('\n'), 'export let Friend');
+    });
+
     it('understands interfaces that extend other interfaces and fully defines them', () => {
       const state = parseCode(`interface NamedThing {
         name: string;

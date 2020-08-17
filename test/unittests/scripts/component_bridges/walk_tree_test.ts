@@ -340,6 +340,26 @@ describe('walkTree', () => {
       assert.deepEqual(Array.from(result.typeReferencesToConvert), ['Person']);
     });
 
+    it('finds interfaces nested within generics', () => {
+      const code = `interface Person {
+        friends: Map<string, Friend>
+      }
+
+      interface Friend {
+        name: string;
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public set data(data: { person: Person }) {
+        }
+      }`;
+
+      const source = createTypeScriptSourceFile(code);
+      const result = walkTree(source, 'test.ts');
+
+      assert.deepEqual(Array.from(result.typeReferencesToConvert), ['Person', 'Friend']);
+    });
+
 
     it('deals with setters that take an object and pulls out the interfaces', () => {
       const code = `interface Person { name: string }

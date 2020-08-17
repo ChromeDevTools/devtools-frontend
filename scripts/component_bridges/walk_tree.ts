@@ -57,16 +57,13 @@ export const nodeIsReadOnlyArrayInterfaceReference = (node: ts.Node): node is ts
       node.typeName.escapedText === 'ReadonlyArray';
 };
 
-/* takes a type and checks if it's either an array of interfaces or an interface
- * e.g, we're looking for: Array<Foo> or Foo
- * and not for primitives like string, number, etc
- *
- * This is so we gather a list of all user defined type references that we might need
- * to convert into Closure typedefs.
+/**
+ * Takes a Node and looks for any type references within that Node. This is done
+ * so that if an interface references another within its definition, that other
+ * interface is found and generated within the bridge.
  */
 const findTypeReferencesWithinNode = (node: ts.Node): Set<string> => {
   const foundInterfaces = new Set<string>();
-
   /*
    * If the Node is ReadOnly<X>, then we want to ditch the ReadOnly and recurse to
    * parse the inner type to check if that's an interface.
@@ -83,7 +80,20 @@ const findTypeReferencesWithinNode = (node: ts.Node): Set<string> => {
     foundInterfaces.add(node.elementType.typeName.escapedText.toString());
 
   } else if (ts.isTypeReferenceNode(node) && ts.isIdentifier(node.typeName)) {
-    foundInterfaces.add(node.typeName.escapedText.toString());
+    if (node.typeName.escapedText === 'Map') {
+      // Map<X, Y> so if X and/or Y are type-refs, we need to look in those for any nested types
+      if (!node.typeArguments) {
+        throw new Error('Found a Map without type arguments.');
+      }
+
+      const [keyNode, valueNode] = node.typeArguments;
+      const keyRefs = findTypeReferencesWithinNode(keyNode);
+      const valueRefs = findTypeReferencesWithinNode(valueNode);
+      keyRefs.forEach(r => foundInterfaces.add(r));
+      valueRefs.forEach(r => foundInterfaces.add(r));
+    } else {
+      foundInterfaces.add(node.typeName.escapedText.toString());
+    }
   } else if (ts.isTypeReferenceNode(node) && ts.isQualifiedName(node.typeName)) {
     // We will need only the left type to support enum member references (e.g., 'MyEnum.Member').
     const left = node.typeName.left;
@@ -378,6 +388,7 @@ const populateTypeReferencesToConvert = (state: WalkerState): WalkerState => {
   return state;
 };
 
+
 export const walkTree = (startNode: ts.SourceFile, resolvedFilePath: string): WalkerState => {
   let state = walkNode(startNode);
 
@@ -398,10 +409,15 @@ export const walkTree = (startNode: ts.SourceFile, resolvedFilePath: string): Wa
         }),
   ]);
 
-  // Some components may (rarely) use the TypeScript Object type
-  // But that's defined by TypeScript, not us, and maps directly to Closure's Object
-  // So we don't need to generate any typedefs for the `Object` type.
-  state.typeReferencesToConvert.delete('Object');
+  // This is a list of types that TS + Closure understand that aren't defined by
+  // the user and therefore we don't need to generate typedefs for them, and
+  // just convert them into Closure Note that built-in types that take generics
+  // are not in this list (e.g. Map, Set) because we special case parsing them
+  // because of the generics.
+  const builtInTypeScriptTypes = [
+    'Object',
+  ];
+  builtInTypeScriptTypes.forEach(builtIn => state.typeReferencesToConvert.delete(builtIn));
 
   const missingTypeReferences = Array.from(state.typeReferencesToConvert).filter(name => {
     return allFoundTypeReferencesNames.has(name) === false;

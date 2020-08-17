@@ -1056,6 +1056,66 @@ export let Person`);
       assert.include(interfaces[1].join('\n'), 'export let Friend');
     });
 
+    it('correctly converts HTMLElement types', () => {
+      const state = parseCode(`interface Person {
+        node: HTMLElement,
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public set data(data: { person: Person }) {
+        }
+      }`);
+      const interfaces = generateTypeReferences(state);
+      assert.strictEqual(interfaces.length, 1);
+      assert.include(interfaces[0].join('\n'), `* @typedef {{
+* node:!HTMLElement,
+* }}`);
+      assert.include(interfaces[0].join('\n'), 'export let Person');
+    });
+
+    it('correctly converts Element types', () => {
+      const state = parseCode(`interface Person {
+        node: Element,
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public set data(data: { person: Person }) {
+        }
+      }`);
+      const interfaces = generateTypeReferences(state);
+      assert.strictEqual(interfaces.length, 1);
+      assert.include(interfaces[0].join('\n'), `* @typedef {{
+* node:!Element,
+* }}`);
+      assert.include(interfaces[0].join('\n'), 'export let Person');
+    });
+    it('correctly converts more specific HTML element types', () => {
+      const state = parseCode(`interface Person {
+        div: HTMLDivElement,
+        textarea: HTMLTextAreaElement,
+        input: HTMLInputElement,
+        select: HTMLSelectElement,
+        option: HTMLOptionElement,
+        canvas: HTMLCanvasElement,
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public set data(data: { person: Person }) {
+        }
+      }`);
+      const interfaces = generateTypeReferences(state);
+      assert.strictEqual(interfaces.length, 1);
+      assert.include(interfaces[0].join('\n'), `* @typedef {{
+* div:!HTMLDivElement,
+* textarea:!HTMLTextAreaElement,
+* input:!HTMLInputElement,
+* select:!HTMLSelectElement,
+* option:!HTMLOptionElement,
+* canvas:!HTMLCanvasElement,
+* }}`);
+      assert.include(interfaces[0].join('\n'), 'export let Person');
+    });
+
     it('understands interfaces that extend other interfaces and fully defines them', () => {
       const state = parseCode(`interface NamedThing {
         name: string;

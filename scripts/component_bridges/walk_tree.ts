@@ -389,6 +389,23 @@ const populateTypeReferencesToConvert = (state: WalkerState): WalkerState => {
 };
 
 
+// This is a list of types that TS + Closure understand that aren't defined by
+// the user and therefore we don't need to generate typedefs for them, and
+// just convert them into Closure Note that built-in types that take generics
+// are not in this list (e.g. Map, Set) because we special case parsing them
+// because of the generics.
+const builtInTypeScriptTypes = new Set([
+  'Object',
+  'Element',
+  'HTMLElement',
+  'HTMLDivElement',
+  'HTMLTextAreaElement',
+  'HTMLInputElement',
+  'HTMLSelectElement',
+  'HTMLOptionElement',
+  'HTMLCanvasElement',
+]);
+
 export const walkTree = (startNode: ts.SourceFile, resolvedFilePath: string): WalkerState => {
   let state = walkNode(startNode);
 
@@ -409,16 +426,6 @@ export const walkTree = (startNode: ts.SourceFile, resolvedFilePath: string): Wa
         }),
   ]);
 
-  // This is a list of types that TS + Closure understand that aren't defined by
-  // the user and therefore we don't need to generate typedefs for them, and
-  // just convert them into Closure Note that built-in types that take generics
-  // are not in this list (e.g. Map, Set) because we special case parsing them
-  // because of the generics.
-  const builtInTypeScriptTypes = [
-    'Object',
-  ];
-  builtInTypeScriptTypes.forEach(builtIn => state.typeReferencesToConvert.delete(builtIn));
-
   const missingTypeReferences = Array.from(state.typeReferencesToConvert).filter(name => {
     return allFoundTypeReferencesNames.has(name) === false;
   });
@@ -429,6 +436,10 @@ export const walkTree = (startNode: ts.SourceFile, resolvedFilePath: string): Wa
   const importsToCheck = new Set<string>();
 
   missingTypeReferences.forEach(missingInterfaceName => {
+    if (builtInTypeScriptTypes.has(missingInterfaceName)) {
+      return;
+    }
+
     const importForMissingInterface = Array.from(state.imports).find(imp => imp.namedImports.has(missingInterfaceName));
 
     if (!importForMissingInterface) {
@@ -477,6 +488,10 @@ export const walkTree = (startNode: ts.SourceFile, resolvedFilePath: string): Wa
    */
 
   state = populateTypeReferencesToConvert(state);
+
+  // If we found any nested references that reference built-in TS types we can
+  // just delete them.
+  builtInTypeScriptTypes.forEach(builtIn => state.typeReferencesToConvert.delete(builtIn));
 
   return state;
 };

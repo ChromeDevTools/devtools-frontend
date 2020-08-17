@@ -1056,6 +1056,48 @@ export let Person`);
       assert.include(interfaces[1].join('\n'), 'export let Friend');
     });
 
+    it('can parse and convert basic Set types', () => {
+      const state = parseCode(`interface Person {
+        foo: Set<string>
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public set data(data: { person: Person }) {
+        }
+      }`);
+      const interfaces = generateTypeReferences(state);
+      assert.strictEqual(interfaces.length, 1);
+      assert.include(interfaces[0].join('\n'), `* @typedef {{
+* foo:!Set<string>,
+* }}`);
+      assert.include(interfaces[0].join('\n'), 'export let Person');
+    });
+
+    it('can parse and convert Sets of interfaces', () => {
+      const state = parseCode(`interface Person {
+        foo: Set<Foo>
+      }
+
+      interface Foo {
+        name: string;
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public set data(data: { person: Person }) {
+        }
+      }`);
+      const interfaces = generateTypeReferences(state);
+      assert.strictEqual(interfaces.length, 2);
+      assert.include(interfaces[0].join('\n'), `* @typedef {{
+* foo:!Set<!Foo>,
+* }}`);
+      assert.include(interfaces[0].join('\n'), 'export let Person');
+      assert.include(interfaces[1].join('\n'), `* @typedef {{
+* name:string,
+* }}`);
+      assert.include(interfaces[1].join('\n'), 'export let Foo');
+    });
+
     it('correctly converts HTMLElement types', () => {
       const state = parseCode(`interface Person {
         node: HTMLElement,

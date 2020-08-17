@@ -36,20 +36,27 @@ export const valueForTypeNode = (node: ts.TypeNode, isFunctionParam: boolean = f
     }
     if (ts.isIdentifier(node.typeName)) {
       value = node.typeName.escapedText.toString();
+      /* For both Maps and Sets we make an assumption that the value within
+         * needs a non-nullable ! prefixed. This is a bit of a simplification
+         * where we assume the value needs a ! if it is not a primitive. There
+         * could be times where this is incorrect. However a search of the
+         * DevTools codebase found no usages of a Map without a `!` for the
+         * value type. So rather than invest in the work now, let's wait until
+         * it causes us a problem and we can revisit.
+         */
       if (value === 'Map' && node.typeArguments) {
         const keyType = valueForTypeNode(node.typeArguments[0]);
         let valueType = valueForTypeNode(node.typeArguments[1]);
-        /* This is a bit of a simplification where we assume the value needs a !
-         * if it is not a primitive. There could be times where this is
-         * incorrect. However a search of the DevTools codebase found no usages
-         * of a Map without a `!` for the value type. So rather than invest in
-         * the work now, let's wait until it causes us a problem and we can
-         * revisit.
-         */
         if (!nodeIsPrimitive(node.typeArguments[1])) {
           valueType = `!${valueType}`;
         }
         value = `Map<${keyType}, ${valueType}>`;
+      } else if (value === 'Set' && node.typeArguments) {
+        let valueType = valueForTypeNode(node.typeArguments[0]);
+        if (!nodeIsPrimitive(node.typeArguments[0])) {
+          valueType = `!${valueType}`;
+        }
+        value = `Set<${valueType}>`;
       }
     } else if (ts.isIdentifier(node.typeName.left)) {
       value = node.typeName.left.escapedText.toString();

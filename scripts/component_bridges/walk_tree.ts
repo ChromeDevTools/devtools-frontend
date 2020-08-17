@@ -80,17 +80,13 @@ const findTypeReferencesWithinNode = (node: ts.Node): Set<string> => {
     foundInterfaces.add(node.elementType.typeName.escapedText.toString());
 
   } else if (ts.isTypeReferenceNode(node) && ts.isIdentifier(node.typeName)) {
-    if (node.typeName.escapedText === 'Map') {
-      // Map<X, Y> so if X and/or Y are type-refs, we need to look in those for any nested types
+    if (node.typeName.escapedText === 'Map' || node.typeName.escapedText === 'Set') {
+      // Map<X, Y> or Set<X> - we need to check the type arguments for any references>
       if (!node.typeArguments) {
-        throw new Error('Found a Map without type arguments.');
+        throw new Error(`Found a ${node.typeName.escapedText} without type arguments.`);
       }
-
-      const [keyNode, valueNode] = node.typeArguments;
-      const keyRefs = findTypeReferencesWithinNode(keyNode);
-      const valueRefs = findTypeReferencesWithinNode(valueNode);
-      keyRefs.forEach(r => foundInterfaces.add(r));
-      valueRefs.forEach(r => foundInterfaces.add(r));
+      const referencesWithinGenerics = node.typeArguments.flatMap(node => [...findTypeReferencesWithinNode(node)]);
+      referencesWithinGenerics.forEach(r => foundInterfaces.add(r));
     } else {
       foundInterfaces.add(node.typeName.escapedText.toString());
     }

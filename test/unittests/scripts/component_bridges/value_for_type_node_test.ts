@@ -189,6 +189,28 @@ describe('valueForTypeNode', () => {
     });
   });
 
+  describe('converting Sets', () => {
+    it('can convert primitive sets', () => {
+      // Set<string>
+      const node = ts.createTypeReferenceNode(
+          ts.createIdentifier('Set'),
+          [
+            ts.createKeywordTypeNode(ts.SyntaxKind.StringKeyword),
+          ],
+      );
+      assert.strictEqual(valueForTypeNode(node), 'Set<string>');
+    });
+
+    it('can convert sets of type references', () => {
+      // Set<ExampleInterface>
+      const node = ts.createTypeReferenceNode(
+          ts.createIdentifier('Set'),
+          [ts.createTypeReferenceNode(ts.createIdentifier('ExampleInterface'), [])],
+      );
+      assert.strictEqual(valueForTypeNode(node), 'Set<!ExampleInterface>');
+    });
+  });
+
   describe('converting functions', () => {
     it('converts functions with no parameters', () => {
       const returnTypeNode = createNode(ts.SyntaxKind.StringKeyword);

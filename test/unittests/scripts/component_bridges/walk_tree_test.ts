@@ -340,9 +340,29 @@ describe('walkTree', () => {
       assert.deepEqual(Array.from(result.typeReferencesToConvert), ['Person']);
     });
 
-    it('finds interfaces nested within generics', () => {
+    it('finds interfaces nested within a Map generic type', () => {
       const code = `interface Person {
         friends: Map<string, Friend>
+      }
+
+      interface Friend {
+        name: string;
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        public set data(data: { person: Person }) {
+        }
+      }`;
+
+      const source = createTypeScriptSourceFile(code);
+      const result = walkTree(source, 'test.ts');
+
+      assert.deepEqual(Array.from(result.typeReferencesToConvert), ['Person', 'Friend']);
+    });
+
+    it('finds interfaces nested within a Set generic type', () => {
+      const code = `interface Person {
+        friends: Set<Friend>,
       }
 
       interface Friend {

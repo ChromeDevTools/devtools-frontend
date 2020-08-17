@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import * as puppeteer from 'puppeteer';
 
-import {$, click, getBrowserAndPages, goToResource, step, timeout, waitFor} from '../../shared/helper.js';
+import {$, click, getBrowserAndPages, goToResource, step, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {addBreakpointForLine, checkBreakpointDidNotActivate, checkBreakpointIsActive, checkBreakpointIsNotActive, clearSourceFilesAdded, getBreakpointDecorators, getNonBreakableLines, listenForSourceFilesAdded, openSourceCodeEditorForFile, openSourcesPanel, RESUME_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, retrieveTopCallFrameWithoutResuming, SCOPE_LOCAL_VALUES_SELECTOR, SELECTED_THREAD_SELECTOR, sourceLineNumberSelector, stepThroughTheCode, TURNED_OFF_PAUSE_BUTTON_SELECTOR, waitForAdditionalSourceFiles, waitForSourceCodeLines} from '../helpers/sources-helpers.js';
 
@@ -175,11 +175,12 @@ describe('Sources Tab', async function() {
     await step('check that the variables in the scope view show the correct values', async () => {
       await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
       const localScopeView = await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
-      const local_scope_values = await localScopeView.evaluate(element => {
-        return (element as HTMLElement).innerText;
+      await waitForFunction(async () => {
+        const local_scope_values = await localScopeView.evaluate(element => {
+          return (element as HTMLElement).innerText;
+        });
+        return local_scope_values === '"": 42';
       });
-
-      assert.strictEqual(local_scope_values, '"": 42', 'local scope does not contain the correct values');
     });
 
     await step('remove the breakpoint from the 23rd line', async () => {
@@ -215,6 +216,12 @@ describe('Sources Tab', async function() {
     await step('check that the variables in the scope view show the correct values', async () => {
       await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
       const localScopeView = await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
+      await waitForFunction(async () => {
+        const local_scope_values = await localScopeView.evaluate(element => {
+          return (element as HTMLElement).innerText;
+        });
+        return local_scope_values === '"": 50';
+      });
       const local_scope_values = await localScopeView.evaluate(element => {
         return (element as HTMLElement).innerText;
       });
@@ -276,11 +283,12 @@ describe('Sources Tab', async function() {
     await step('check that the variables in the scope view show the correct values', async () => {
       await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
       const localScopeView = await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
-      const local_scope_values = await localScopeView.evaluate(element => {
-        return (element as HTMLElement).innerText;
+      await waitForFunction(async () => {
+        const local_scope_values = await localScopeView.evaluate(element => {
+          return (element as HTMLElement).innerText;
+        });
+        return local_scope_values === '"": 42';
       });
-
-      assert.strictEqual(local_scope_values, '"": 42', 'lables do not contain the correct contents');
     });
 
     await step('remove the breakpoint from the 23rd line', async () => {
@@ -324,11 +332,12 @@ describe('Sources Tab', async function() {
     await step('check that the variables in the scope view show the correct values', async () => {
       await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
       const localScopeView = await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
-      const local_scope_values = await localScopeView.evaluate(element => {
-        return (element as HTMLElement).innerText;
+      await waitForFunction(async () => {
+        const local_scope_values = await localScopeView.evaluate(element => {
+          return (element as HTMLElement).innerText;
+        });
+        return local_scope_values === '"": 50';
       });
-
-      assert.strictEqual(local_scope_values, '"": 50', 'lables do not contain the correct contents');
     });
 
     await step('remove the breakpoint from the 8th line', async () => {
@@ -380,11 +389,12 @@ describe('Sources Tab', async function() {
     await step('check that the variables in the scope view show the correct values', async () => {
       await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
       const localScopeView = await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
-      const local_scope_values = await localScopeView.evaluate(element => {
-        return (element as HTMLElement).innerText;
+      await waitForFunction(async () => {
+        const local_scope_values = await localScopeView.evaluate(element => {
+          return (element as HTMLElement).innerText;
+        });
+        return local_scope_values === '"": 42';
       });
-
-      assert.strictEqual(local_scope_values, '"": 42', 'lables do not contain the correct contents');
     });
 
     await step('remove the breakpoint from the 30th line', async () => {
@@ -429,11 +439,12 @@ describe('Sources Tab', async function() {
     await step('check that the variables in the scope view show the correct values', async () => {
       await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
       const localScopeView = await waitFor(SCOPE_LOCAL_VALUES_SELECTOR);
-      const local_scope_values = await localScopeView.evaluate(element => {
-        return (element as HTMLElement).innerText;
+      await waitForFunction(async () => {
+        const local_scope_values = await localScopeView.evaluate(element => {
+          return (element as HTMLElement).innerText;
+        });
+        return local_scope_values === '"": 42';
       });
-
-      assert.strictEqual(local_scope_values, '"": 42', 'lables do not contain the correct contents');
     });
 
     await step('resume script execution', async () => {

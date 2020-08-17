@@ -36,6 +36,9 @@
   <message name="IDS_DEVTOOLS_74421a69b1bc40c166be4de5caf0b036" desc="Text of a DOM element in Contrast Details of the Color Picker">
     Contrast ratio
   </message>
+  <message name="IDS_DEVTOOLS_78e8ce0d9ebcd8c91e2b7fc105224b57" desc="Text of a button in Contrast Details of the Color Picker">
+    Use suggested color <ph name="SUGGESTEDCOLORSTRING">$1s<ex>rgba(0 0 0 / 100%)</ex></ph> to fix low contrast
+  </message>
   <message name="IDS_DEVTOOLS_8ddbf32368d9216105c893235f8f634e" desc="Aria label for color format switcher button in Color Picker">
     Change color format
   </message>

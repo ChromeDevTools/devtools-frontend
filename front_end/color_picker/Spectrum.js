@@ -158,7 +158,7 @@ export class Spectrum extends UI.Widget.VBox {
       this._contrastOverlay = new ContrastOverlay(this._contrastInfo, this._colorElement);
       this._contrastDetails = new ContrastDetails(
           this._contrastInfo, this.contentElement, this._toggleColorPicker.bind(this),
-          this._contrastPanelExpanded.bind(this));
+          this._contrastPanelExpanded.bind(this), this.colorSelected.bind(this));
 
       this._contrastDetailsBackgroundColorPickedToggledBound =
           this._contrastDetailsBackgroundColorPickedToggled.bind(this);
@@ -867,6 +867,14 @@ export class Spectrum extends UI.Widget.VBox {
     const colorValues = this._color().canonicalHSLA();
     UI.ARIAUtils.setValueNow(this._hueElement, colorValues[0]);
     UI.ARIAUtils.setValueText(this._alphaElement, colorValues[3]);
+  }
+
+  /**
+   * @param {!Common.Color.Color} color
+   */
+  colorSelected(color) {
+    this._innerSetColor(
+        color.hsva(), undefined, undefined /* colorName */, undefined /* colorFormat */, ChangeSource.Other);
   }
 
   /**

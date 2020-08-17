@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {beforeEach, describe, it} from 'mocha';
 import {click, getBrowserAndPages, typeText, waitFor, waitForNone} from '../../shared/helper.js';
+import {beforeEach, describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', async () => {

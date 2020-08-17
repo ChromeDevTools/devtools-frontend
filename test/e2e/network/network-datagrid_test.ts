@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
 
 import {click, getBrowserAndPages, waitFor} from '../../shared/helper.js';
+import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToNetworkTab, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
 
 describe('The Network Tab', async () => {

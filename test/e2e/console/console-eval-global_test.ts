@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
 
 import {click, getBrowserAndPages, pasteText, step} from '../../shared/helper.js';
+import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
 import {getCurrentConsoleMessages} from '../helpers/console-helpers.js';
 

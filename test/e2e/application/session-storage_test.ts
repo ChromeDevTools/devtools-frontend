@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
 
 import {getBrowserAndPages, getHostedModeServerPort, step} from '../../shared/helper.js';
+import {describe, it} from '../../shared/mocha-extensions.js';
 import {doubleClickSourceTreeItem, getDataGridData, navigateToApplicationTab} from '../helpers/application-helpers.js';
 
 const SESSION_STORAGE_SELECTOR = '[aria-label="Session Storage"]';

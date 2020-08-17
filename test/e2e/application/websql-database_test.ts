@@ -3,10 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
 
 import {debuggerStatement, getBrowserAndPages, waitFor} from '../../shared/helper.js';
-
+import {describe, it} from '../../shared/mocha-extensions.js';
 import {doubleClickSourceTreeItem, navigateToApplicationTab} from '../helpers/application-helpers.js';
 
 const WEB_SQL_SELECTOR = '[aria-label="Web SQL"]';

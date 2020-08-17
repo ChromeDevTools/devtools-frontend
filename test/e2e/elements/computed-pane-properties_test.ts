@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
 
 import {getBrowserAndPages, goToResource, waitForFunction} from '../../shared/helper.js';
+import {describe, it} from '../../shared/mocha-extensions.js';
 import {focusElementsTree, getAllPropertiesFromComputedPane, getContentOfComputedPane, navigateToSidePane, toggleShowAllComputedProperties, waitForComputedPaneChange, waitForElementsComputedSection} from '../helpers/elements-helpers.js';
 
 describe('The Computed pane', async () => {

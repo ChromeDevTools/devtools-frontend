@@ -2,9 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {describe, it} from 'mocha';
-
 import {click, enableExperiment, reloadDevTools, waitFor} from '../../shared/helper.js';
+import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToConsoleTab, navigateToIssuesPanelViaInfoBar, waitForConsoleMessageAndClickOnLink} from '../helpers/console-helpers.js';
 import {clickOnContextMenuItemFromTab, prepareForCrossToolScenario, tabExistsInDrawer, tabExistsInMainPanel} from '../helpers/cross-tool-helper.js';
 import {clickOnFirstLinkInStylesPanel, navigateToElementsTab} from '../helpers/elements-helpers.js';

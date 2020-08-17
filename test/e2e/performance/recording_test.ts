@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
+import {describe, it} from '../../shared/mocha-extensions.js';
 
 import {getTotalTimeFromSummary, navigateToPerformanceTab, startRecording, stopRecording} from '../helpers/performance-helpers.js';
 

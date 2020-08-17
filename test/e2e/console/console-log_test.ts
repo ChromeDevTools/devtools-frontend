@@ -3,8 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
+
 import {getBrowserAndPages, waitForFunction} from '../../shared/helper.js';
+import {describe, it} from '../../shared/mocha-extensions.js';
 import {getStructuredConsoleMessages, navigateToConsoleTab, showVerboseMessages} from '../helpers/console-helpers.js';
 
 /* eslint-disable no-console */

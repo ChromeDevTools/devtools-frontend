@@ -3,10 +3,10 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
 import * as puppeteer from 'puppeteer';
 
 import {$, getBrowserAndPages, step} from '../../shared/helper.js';
+import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_MESSAGE_WRAPPER_SELECTOR, deleteConsoleMessagesFilter, filterConsoleMessages, getConsoleMessages, getCurrentConsoleMessages, showVerboseMessages} from '../helpers/console-helpers.js';
 
 type MessageCheck = (msg: string) => boolean;

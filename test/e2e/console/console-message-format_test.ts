@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
 
 import {getHostedModeServerPort} from '../../shared/helper.js';
+import {describe, it} from '../../shared/mocha-extensions.js';
 import {getConsoleMessages, showVerboseMessages} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', async () => {

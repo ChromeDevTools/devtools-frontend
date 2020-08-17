@@ -2,9 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {describe, it} from 'mocha';
-
 import {click, getBrowserAndPages, waitFor} from '../../shared/helper.js';
+import {describe, it} from '../../shared/mocha-extensions.js';
 import {openSettingsTab} from '../helpers/settings-helpers.js';
 import {addBreakpointForLine, openSourceCodeEditorForFile} from '../helpers/sources-helpers.js';
 

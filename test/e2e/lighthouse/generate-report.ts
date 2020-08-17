@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
 
 import {goToResource} from '../../shared/helper.js';
+import {describe, it} from '../../shared/mocha-extensions.js';
 import {isGenerateReportButtonDisabled, navigateToLighthouseTab} from '../helpers/lighthouse-helpers.js';
 
 describe('The Lighthouse Tab', async () => {

@@ -3,10 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
 
 import {getBrowserAndPages} from '../../shared/helper.js';
-
+import {describe, it} from '../../shared/mocha-extensions.js';
 import {listenForSourceFilesAdded, openFileInSourcesPanel, retrieveSourceFilesAdded, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
 
 declare global {

@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
 
 import {getBrowserAndPages, step, timeout} from '../../shared/helper.js';
+import {describe, it} from '../../shared/mocha-extensions.js';
 import {addBreakpointForLine, checkBreakpointDidNotActivate, checkBreakpointIsActive, checkBreakpointIsNotActive, openFileInEditor, openSourceCodeEditorForFile, retrieveTopCallFrameScriptLocation, retrieveTopCallFrameWithoutResuming, sourceLineNumberSelector, waitForSourceCodeLines} from '../helpers/sources-helpers.js';
 
 describe('The Sources Tab', async () => {

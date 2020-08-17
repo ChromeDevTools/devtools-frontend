@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
 
 import {click} from '../../shared/helper.js';
+import {describe, it} from '../../shared/mocha-extensions.js';
 import {getDisplayedEventListenerNames, getFirstNodeForEventListener, loadEventListenersAndSelectButtonNode, openEventListenersPaneAndWaitForListeners} from '../helpers/event-listeners-helpers.js';
 
 describe('Removing event listeners in the elements sidebar', async () => {

@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
 
 import {$$, getBrowserAndPages, goToResource, waitFor, waitForFunction} from '../../shared/helper.js';
+import {describe, it} from '../../shared/mocha-extensions.js';
 import {waitForChildrenOfSelectedElementNode, waitForContentOfSelectedElementsNode} from '../helpers/elements-helpers.js';
 
 describe('The Elements Tab', async () => {

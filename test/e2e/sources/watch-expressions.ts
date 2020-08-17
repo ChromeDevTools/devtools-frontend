@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
 
 import {click, getBrowserAndPages, typeText, waitFor} from '../../shared/helper.js';
+import {describe, it} from '../../shared/mocha-extensions.js';
 import {openSourcesPanel} from '../helpers/sources-helpers.js';
 
 describe('Watch Expression Pane', async () => {

@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
 
 import {getBrowserAndPages, getResourcesPath, goToResource, timeout, waitFor} from '../../shared/helper.js';
+import {describe, it} from '../../shared/mocha-extensions.js';
 import {getCurrentUrl} from '../helpers/layers-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 

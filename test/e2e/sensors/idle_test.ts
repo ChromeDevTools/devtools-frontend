@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
 
 import {clearPermissionsOverride, getBrowserAndPages, goToResource, overridePermissions, selectOption, step, waitFor} from '../../shared/helper.js';
+import {describe, it} from '../../shared/mocha-extensions.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 describe('Idle Emulation on Sensors panel', () => {

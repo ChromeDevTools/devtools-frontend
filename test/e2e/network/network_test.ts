@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
 
 import {goTo} from '../../shared/helper.js';
+import {describe, it} from '../../shared/mocha-extensions.js';
 import {getAllRequestNames, getSelectedRequestName, navigateToNetworkTab, selectRequestByName, togglePersistLog, waitForSelectedRequestChange, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
 
 const SIMPLE_PAGE_REQUEST_NUMBER = 10;

@@ -787,8 +787,8 @@ export class RequestHeadersView extends UI.Widget.VBox {
       headersTreeElement.appendChild(headerTreeElement);
 
       if (headerId === 'x-client-data') {
-        const data = ClientVariations.Parser.parseClientVariations(header.value);
-        const output = ClientVariations.Formatter.formatClientVariations(
+        const data = ClientVariations.parseClientVariations(header.value);
+        const output = ClientVariations.formatClientVariations(
             data, ls`Active client experiment variation IDs.`,
             ls`Active client experiment variation IDs that trigger server-side behavior.`);
         const wrapper = createElement('div');

@@ -3,6 +3,6 @@
     "composite": true
   },
   "files": [
-    "client-variations/ClientVariationsParser.js"
+    "client-variations/ClientVariations.js"
   ]
 }

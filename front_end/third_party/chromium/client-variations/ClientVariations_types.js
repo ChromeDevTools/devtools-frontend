@@ -10,3 +10,15 @@
  * }}
  */
 export function parseClientVariations(data) {}
+
+/**
+ * @param {{
+ *   variationIds: !Array<number>,
+ *   triggerVariationIds: !Array<number>,
+ * }} data
+ * @param {string=} variationIdsComment
+ * @param {string=} triggerVariationIdsComment
+ * @return {string}
+ */
+export function formatClientVariations(
+    data, variationIdsComment, triggerVariationIdsComment) {}

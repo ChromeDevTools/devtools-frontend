@@ -28,8 +28,8 @@ FILES = [
 # Files whose location within devtools-frontend differs from the upstream location.
 FILE_MAPPINGS = {
     # chromium_path => devtools_frontend_path
-    'components/variations/proto/devtools/client_variations_parser.js':
-    'front_end/third_party/chromium/client-variations/ClientVariationsParser.js',
+    'components/variations/proto/devtools/client_variations.js':
+    'front_end/third_party/chromium/client-variations/ClientVariations.js',
 }
 
 for f in FILES:

@@ -8,7 +8,7 @@ import * as ClientVariations from '../../../../front_end/client_variations/clien
 
 describe('formatClientVariations', () => {
   it('formats input containing both types of variation IDs', () => {
-    const result = ClientVariations.Formatter.formatClientVariations({
+    const result = ClientVariations.formatClientVariations({
       variationIds: [111, 222, 333],
       triggerVariationIds: [444, 555],
     });
@@ -18,7 +18,7 @@ describe('formatClientVariations', () => {
   });
 
   it('formats input containing only plain variation IDs', () => {
-    const result = ClientVariations.Formatter.formatClientVariations({
+    const result = ClientVariations.formatClientVariations({
       variationIds: [111, 222, 333],
       triggerVariationIds: [],
     });
@@ -28,7 +28,7 @@ describe('formatClientVariations', () => {
   });
 
   it('formats input containing only trigger variation IDs', () => {
-    const result = ClientVariations.Formatter.formatClientVariations({
+    const result = ClientVariations.formatClientVariations({
       variationIds: [],
       triggerVariationIds: [444, 555],
     });
@@ -38,7 +38,7 @@ describe('formatClientVariations', () => {
   });
 
   it('formats input containing no variation IDs', () => {
-    const result = ClientVariations.Formatter.formatClientVariations({
+    const result = ClientVariations.formatClientVariations({
       variationIds: [],
       triggerVariationIds: [],
     });
@@ -48,7 +48,7 @@ describe('formatClientVariations', () => {
 
 describe('parseClientVariations', () => {
   it('returns empty lists for unparseable text', () => {
-    const result = ClientVariations.Parser.parseClientVariations('gibberish');
+    const result = ClientVariations.parseClientVariations('gibberish');
     assert.deepEqual(result, {
       variationIds: [],
       triggerVariationIds: [],
@@ -56,7 +56,7 @@ describe('parseClientVariations', () => {
   });
 
   it('returns empty lists for empty input', () => {
-    const result = ClientVariations.Parser.parseClientVariations('');
+    const result = ClientVariations.parseClientVariations('');
     assert.deepEqual(result, {
       variationIds: [],
       triggerVariationIds: [],
@@ -64,7 +64,7 @@ describe('parseClientVariations', () => {
   });
 
   it('parses a valid serialized proto', () => {
-    const result = ClientVariations.Parser.parseClientVariations('CG8I3gEIzQIYvAMYqwQ=');
+    const result = ClientVariations.parseClientVariations('CG8I3gEIzQIYvAMYqwQ=');
     assert.deepEqual(result, {
       variationIds: [111, 222, 333],
       triggerVariationIds: [444, 555],

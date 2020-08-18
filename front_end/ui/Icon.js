@@ -183,6 +183,7 @@ export const Descriptors = {
   'mediumicon-frame-embedded': {position: 'f6', spritesheet: 'mediumicons', isMask: true},
   'mediumicon-frame-opened': {position: 'f5', spritesheet: 'mediumicons', isMask: true},
   'mediumicon-frame-embedded-blocked': {position: 'f4', spritesheet: 'mediumicons', isMask: true},
+  'mediumicon-frame-blocked': {position: 'g4', spritesheet: 'mediumicons', isMask: true},
   'mediumicon-elements-panel': {position: 'f3', spritesheet: 'mediumicons', isMask: true},
   'mediumicon-network-panel': {position: 'f2', spritesheet: 'mediumicons', isMask: true},
   'mediumicon-frame-top': {position: 'f1', spritesheet: 'mediumicons', isMask: true},

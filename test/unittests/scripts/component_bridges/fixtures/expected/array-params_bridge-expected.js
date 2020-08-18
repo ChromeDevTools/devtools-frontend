@@ -22,6 +22,7 @@ export let Dog;
 export class ArrayParamsClosureInterface extends HTMLElement {
   /**
   * @param {!Array.<!Dog>} dogs
+  * @return {void}
   */
   update(dogs) {
   }

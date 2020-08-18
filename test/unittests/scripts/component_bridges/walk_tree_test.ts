@@ -40,7 +40,7 @@ describe('walkTree', () => {
         console.log('render')
       }
 
-      public update(foo: MissingInterface) {
+      public update(foo: MissingInterface): void {
         console.log('update')
       }
     }
@@ -190,7 +190,7 @@ describe('walkTree', () => {
       assert.strictEqual(result.componentClass.name.escapedText.toString(), 'Breadcrumbs');
     });
 
-    it('finds any public functions on the class', () => {
+    it('errors if a public method does not have an explicit type annotation', () => {
       const code = `class Breadcrumbs extends HTMLElement {
 
         private render() {
@@ -198,6 +198,23 @@ describe('walkTree', () => {
         }
 
         public update() {
+          console.log('update')
+        }
+      }`;
+
+      const source = createTypeScriptSourceFile(code);
+      assert.throws(
+          () => walkTree(source, 'test.ts'), 'Public method update needs an explicit return type annotation.');
+    });
+
+    it('finds any public functions on the class', () => {
+      const code = `class Breadcrumbs extends HTMLElement {
+
+        private render() {
+          console.log('render')
+        }
+
+        public update(): void {
           console.log('update')
         }
       }`;
@@ -214,6 +231,34 @@ describe('walkTree', () => {
       });
 
       assert.deepEqual(publicMethodNames, ['update']);
+    });
+
+    it('adds any return types to the list of type references to convert', () => {
+      const code = `interface Foo {
+        name: string;
+      }
+
+      class Breadcrumbs extends HTMLElement {
+        private render() {
+          console.log('render')
+        }
+
+        public update(): Foo {
+          return {
+            name: 'jack',
+          }
+        }
+      }`;
+
+      const source = createTypeScriptSourceFile(code);
+      const result = walkTree(source, 'test.ts');
+
+      const publicMethodNames = Array.from(result.publicMethods, method => {
+        return (method.name as ts.Identifier).escapedText as string;
+      });
+
+      assert.deepEqual(publicMethodNames, ['update']);
+      assert.deepEqual(Array.from(result.typeReferencesToConvert), ['Foo']);
     });
 
     it('ignores any component lifecycle methods in the class', () => {
@@ -452,7 +497,7 @@ describe('walkTree', () => {
           console.log('render')
         }
 
-        public update() {
+        public update(): void {
           console.log('update')
         }
       }

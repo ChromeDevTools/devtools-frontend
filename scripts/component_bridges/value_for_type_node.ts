@@ -13,6 +13,7 @@ export const nodeIsPrimitive = (node: ts.TypeNode): boolean => {
     ts.SyntaxKind.BooleanKeyword,
     ts.SyntaxKind.AnyKeyword,
     ts.SyntaxKind.UnknownKeyword,
+    ts.SyntaxKind.VoidKeyword,
   ].includes(node.kind);
 };
 

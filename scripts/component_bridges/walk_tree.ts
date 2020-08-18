@@ -158,12 +158,22 @@ const walkNode = (node: ts.Node, startState?: WalkerState): WalkerState => {
             /* We skip custom element lifecycle methods. Whilst they are public,
             they are never called from user code, so the bridge file does not
             need to include them.*/
+
+            if (!member.type) {
+              throw new Error(`Public method ${methodName} needs an explicit return type annotation.`);
+            }
+
+            /* If the method returns an interface, we should include it as an
+             * interface to convert. Note that this has limitations: it will
+             * only work with type references, not if the type is defined
+             * literally in the return type annotation. This is an accepted
+             * restriction for now; we can revisit if it causes problems.
+             */
+            if (member.type && ts.isTypeReferenceNode(member.type) && ts.isIdentifier(member.type.typeName)) {
+              state.typeReferencesToConvert.add(member.type.typeName.escapedText.toString());
+            }
             state.publicMethods.add(member);
           }
-
-          // TODO: we should check the return type of the method - if
-          // that's an interface we should include it in the _bridge.js
-          // file.
 
           // now find its interfaces that we need to make public from the method parmeters
           member.parameters.forEach(param => {

@@ -8,10 +8,10 @@ interface Dog {
 }
 
 class MultipleMethods extends HTMLElement {
-  public update(dog: Dog) {
+  public update(dog: Dog): void {
   }
 
-  public otherMethod(name: string) {
+  public otherMethod(name: string): void {
   }
 
   private somethingElse() {

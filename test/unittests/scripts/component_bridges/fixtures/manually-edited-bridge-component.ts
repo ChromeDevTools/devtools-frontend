@@ -8,7 +8,7 @@ interface Dog {
 }
 
 class BasicComponent extends HTMLElement {
-  public update(dog: Dog) {
+  public update(dog: Dog): void {
   }
 }
 

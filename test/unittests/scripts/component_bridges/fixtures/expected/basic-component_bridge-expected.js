@@ -22,6 +22,7 @@ export let Dog;
 export class BasicComponentClosureInterface extends HTMLElement {
   /**
   * @param {!Dog} dog
+  * @return {void}
   */
   update(dog) {
   }

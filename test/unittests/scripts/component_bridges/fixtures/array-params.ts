@@ -12,7 +12,7 @@ interface Other {
 }
 
 class ArrayParams extends HTMLElement {
-  public update(dogs: Dog[]) {
+  public update(dogs: Dog[]): void {
   }
 
   private thing(x: Other) {

@@ -177,6 +177,15 @@ export const generateClosureClass = (state: WalkerState): string[] => {
       jsDocForFunc.push(parsedParam);
     });
 
+    if (method.type) {
+      const parsedReturnType = typeNodeToJSDocClosureType(method.type, {
+        nodeIsOptional: false,
+        paramName: 'return type',
+        docType: 'return',
+      });
+      jsDocForFunc.push(parsedReturnType);
+    }
+
     jsDocForFunc.push('*/');
     jsDocForFunc = jsDocForFunc.map(line => indent(line, 2));
 

@@ -22,11 +22,13 @@ export let Dog;
 export class MultipleMethodsClosureInterface extends HTMLElement {
   /**
   * @param {!Dog} dog
+  * @return {void}
   */
   update(dog) {
   }
   /**
   * @param {string} name
+  * @return {void}
   */
   otherMethod(name) {
   }

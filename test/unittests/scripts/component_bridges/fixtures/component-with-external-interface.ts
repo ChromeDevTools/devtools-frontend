@@ -11,7 +11,7 @@ interface Dog {
 }
 
 class Breadcrumbs extends HTMLElement {
-  public update(person: Person, dog: Dog) {
+  public update(person: Person, dog: Dog): void {
   }
 }
 

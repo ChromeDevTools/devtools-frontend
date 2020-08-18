@@ -23,7 +23,7 @@ describe('generateClosure', () => {
         age: number
       }
       class Breadcrumbs extends HTMLElement {
-        public update(person: Person) {}
+        public update(person: Person): void {}
       }
 
       customElements.define('devtools-breadcrumbs', Breadcrumbs)
@@ -44,7 +44,7 @@ describe('generateClosure', () => {
         age: number
       }
       class Breadcrumbs extends HTMLElement {
-        public update(person: Person) {}
+        public update(person: Person): void {}
       }
 
       customElements.define('devtools-breadcrumbs', Breadcrumbs)
@@ -63,7 +63,7 @@ describe('generateClosure', () => {
         age: number
       }
       class Breadcrumbs extends HTMLElement {
-        public update(person: Person) {}
+        public update(person: Person): void {}
       }
 
       customElements.define('devtools-breadcrumbs', Breadcrumbs)
@@ -80,7 +80,7 @@ describe('generateClosure', () => {
         age: number
       }
       class Breadcrumbs extends HTMLElement {
-        public update(person: Person) {}
+        public update(person: Person): void {}
       }
 
       customElements.define('devtools-breadcrumbs', Breadcrumbs)
@@ -103,7 +103,7 @@ describe('generateClosure', () => {
       class Breadcrumbs extends HTMLElement {
         private render() {}
 
-        public update(person: Person) {}
+        public update(person: Person): void {}
       }`);
 
       const classOutput = generateClosureClass(state);
@@ -111,7 +111,7 @@ describe('generateClosure', () => {
       assert.isTrue(classOutput.includes('export class BreadcrumbsClosureInterface extends HTMLElement {'));
     });
 
-    it('generates the correct JSDoc for the public methods', () => {
+    it('generates the correct JSDoc for the public methods including their return type', () => {
       const state = parseCode(`interface Person {
         name: string
         age: number
@@ -119,7 +119,7 @@ describe('generateClosure', () => {
       class Breadcrumbs extends HTMLElement {
         private render() {}
 
-        public update(person: Person) {}
+        public update(person: Person): void {}
       }`);
 
       const classOutput = generateClosureClass(state);
@@ -127,6 +127,27 @@ describe('generateClosure', () => {
       assert.include(classOutput.join('\n'), `
   /**
   * @param {!Person} person
+  * @return {void}
+  */`);
+    });
+
+    it('generates the correct JSDoc for the public methods that return interfaces', () => {
+      const state = parseCode(`interface Person {
+        name: string
+        age: number
+      }
+      class Breadcrumbs extends HTMLElement {
+        private render() {}
+
+        public update(person: Person): Person {}
+      }`);
+
+      const classOutput = generateClosureClass(state);
+
+      assert.include(classOutput.join('\n'), `
+  /**
+  * @param {!Person} person
+  * @return {!Person}
   */`);
     });
 
@@ -138,7 +159,7 @@ describe('generateClosure', () => {
       class Breadcrumbs extends HTMLElement {
         private render() {}
 
-        public update(people: Person[]) {}
+        public update(people: Person[]): void {}
       }`);
 
       const classOutput = generateClosureClass(state);
@@ -146,6 +167,7 @@ describe('generateClosure', () => {
       assert.include(classOutput.join('\n'), `
   /**
   * @param {!Array.<!Person>} people
+  * @return {void}
   */`);
     });
 
@@ -153,7 +175,7 @@ describe('generateClosure', () => {
       const state = parseCode(`class Breadcrumbs extends HTMLElement {
         private render() {}
 
-        public update(people: string[]) {}
+        public update(people: string[]): void {}
       }`);
 
       const classOutput = generateClosureClass(state);
@@ -161,6 +183,7 @@ describe('generateClosure', () => {
       assert.include(classOutput.join('\n'), `
   /**
   * @param {!Array.<string>} people
+  * @return {void}
   */`);
     });
 
@@ -168,7 +191,7 @@ describe('generateClosure', () => {
       const state = parseCode(`class Breadcrumbs extends HTMLElement {
         private render() {}
 
-        public update(people?: string[]) {}
+        public update(people?: string[]): void {}
       }`);
 
       const classOutput = generateClosureClass(state);
@@ -176,6 +199,7 @@ describe('generateClosure', () => {
       assert.include(classOutput.join('\n'), `
   /**
   * @param {(!Array.<string>|undefined)=} people
+  * @return {void}
   */`);
     });
 
@@ -187,7 +211,7 @@ describe('generateClosure', () => {
       class Breadcrumbs extends HTMLElement {
         private render() {}
 
-        public update(people?: Person[]) {}
+        public update(people?: Person[]): void {}
       }`);
 
       const classOutput = generateClosureClass(state);
@@ -195,6 +219,7 @@ describe('generateClosure', () => {
       assert.include(classOutput.join('\n'), `
   /**
   * @param {(!Array.<!Person>|undefined)=} people
+  * @return {void}
   */`);
     });
 
@@ -206,7 +231,7 @@ describe('generateClosure', () => {
       class Breadcrumbs extends HTMLElement {
         private render() {}
 
-        public update(person?: Person) {}
+        public update(person?: Person): void {}
       }`);
 
       const classOutput = generateClosureClass(state);
@@ -214,6 +239,7 @@ describe('generateClosure', () => {
       assert.include(classOutput.join('\n'), `
   /**
   * @param {!Person=} person
+  * @return {void}
   */`);
     });
 
@@ -221,7 +247,7 @@ describe('generateClosure', () => {
       const state = parseCode(`class Breadcrumbs extends HTMLElement {
         private render() {}
 
-        public update(name?: string) {}
+        public update(name?: string): void {}
       }`);
 
       const classOutput = generateClosureClass(state);
@@ -229,6 +255,7 @@ describe('generateClosure', () => {
       assert.include(classOutput.join('\n'), `
   /**
   * @param {(string|undefined)=} name
+  * @return {void}
   */`);
     });
 
@@ -236,7 +263,7 @@ describe('generateClosure', () => {
       const state = parseCode(`class Breadcrumbs extends HTMLElement {
         private render() {}
 
-        public update(name: string) {}
+        public update(name: string): void {}
       }`);
 
       const classOutput = generateClosureClass(state);
@@ -244,6 +271,7 @@ describe('generateClosure', () => {
       assert.include(classOutput.join('\n'), `
   /**
   * @param {string} name
+  * @return {void}
   */`);
     });
 
@@ -255,7 +283,7 @@ describe('generateClosure', () => {
       class Breadcrumbs extends HTMLElement {
         private render() {}
 
-        public update(person: Person | null) {}
+        public update(person: Person | null): void {}
       }`);
 
       const classOutput = generateClosureClass(state);
@@ -263,6 +291,7 @@ describe('generateClosure', () => {
       assert.include(classOutput.join('\n'), `
   /**
   * @param {?Person} person
+  * @return {void}
   */`);
     });
 
@@ -496,7 +525,7 @@ describe('generateClosure', () => {
       class Breadcrumbs extends HTMLElement {
         private render(dog: Dog) {}
 
-        public update(person: Person) {}
+        public update(person: Person): void {}
       }`);
 
       const interfaces = generateTypeReferences(state);
@@ -519,7 +548,7 @@ describe('generateClosure', () => {
       class Breadcrumbs extends HTMLElement {
         private render(dog: Dog) {}
 
-        public update(people: Person[]) {}
+        public update(people: Person[]): void {}
       }`);
 
       const interfaces = generateTypeReferences(state);
@@ -540,7 +569,7 @@ describe('generateClosure', () => {
       }
 
       class Breadcrumbs extends HTMLElement {
-        public update(people: ReadonlyArray<Person>, dog: Readonly<Dog>) {}
+        public update(people: ReadonlyArray<Person>, dog: Readonly<Dog>): void {}
       }`);
 
       const interfaces = generateTypeReferences(state);
@@ -557,7 +586,7 @@ describe('generateClosure', () => {
       }
 
       class Breadcrumbs extends HTMLElement {
-        public update(person: Person) {}
+        public update(person: Person): void {}
       }`);
 
       const interfaces = generateTypeReferences(state);
@@ -581,7 +610,7 @@ describe('generateClosure', () => {
       }
 
       class Breadcrumbs extends HTMLElement {
-        public update(animal: Animal) {}
+        public update(animal: Animal): void {}
       }`);
 
       const interfaces = generateTypeReferences(state);
@@ -613,7 +642,7 @@ describe('generateClosure', () => {
       }
 
       class Breadcrumbs extends HTMLElement {
-        public update(animal: Animal) {}
+        public update(animal: Animal): void {}
       }`);
 
       const interfaces = generateTypeReferences(state);
@@ -645,7 +674,7 @@ describe('generateClosure', () => {
       }
 
       class Breadcrumbs extends HTMLElement {
-        public update(animal: Animal) {}
+        public update(animal: Animal): void {}
       }`);
 
       const interfaces = generateTypeReferences(state);
@@ -682,7 +711,7 @@ describe('generateClosure', () => {
       }
 
       class Breadcrumbs extends HTMLElement {
-        public update(animal: Animal) {}
+        public update(animal: Animal): void {}
       }`);
 
       const interfaces = generateTypeReferences(state);
@@ -715,7 +744,7 @@ describe('generateClosure', () => {
       }
 
       class Breadcrumbs extends HTMLElement {
-        public update(person: Person) {}
+        public update(person: Person): void {}
       }`);
 
       const interfaces = generateTypeReferences(state);
@@ -734,7 +763,7 @@ describe('generateClosure', () => {
       interface Pet {}
 
       class Breadcrumbs extends HTMLElement {
-        public update(person: Person) {}
+        public update(person: Person): void {}
       }`);
 
       const interfaces = generateTypeReferences(state);
@@ -752,7 +781,7 @@ describe('generateClosure', () => {
       }
 
       class Breadcrumbs extends HTMLElement {
-        public update(person: Person) {}
+        public update(person: Person): void {}
       }`);
 
       const interfaces = generateTypeReferences(state);
@@ -769,7 +798,7 @@ export let Person`);
       }
 
       class Breadcrumbs extends HTMLElement {
-        public update(person: Person) {}
+        public update(person: Person): void {}
       }`);
 
       const interfaces = generateTypeReferences(state);
@@ -794,7 +823,7 @@ export let Person`);
       }
 
       class Breadcrumbs extends HTMLElement {
-        public update(person: Person) {}
+        public update(person: Person): void {}
       }`);
 
       const interfaces = generateTypeReferences(state);
@@ -818,7 +847,7 @@ export let Person`);
       }
 
       class Breadcrumbs extends HTMLElement {
-        public update(person: Person) {}
+        public update(person: Person): void {}
       }`);
 
       const interfaces = generateTypeReferences(state);
@@ -836,7 +865,7 @@ export let Person`);
       }
 
       class Breadcrumbs extends HTMLElement {
-        public update(person: Person) {}
+        public update(person: Person): void {}
       }`);
 
       const interfaces = generateTypeReferences(state);
@@ -854,7 +883,7 @@ export let Person`);
       }
 
       class Breadcrumbs extends HTMLElement {
-        public update(person: Person) {}
+        public update(person: Person): void {}
       }`);
 
       const interfaces = generateTypeReferences(state);
@@ -878,7 +907,7 @@ export let Person`);
       }
 
       class Breadcrumbs extends HTMLElement {
-        public update(person: Person) {}
+        public update(person: Person): void {}
       }`);
 
       const interfaces = generateTypeReferences(state);
@@ -906,7 +935,7 @@ export let Person`);
       }
 
       class Breadcrumbs extends HTMLElement {
-        public update(person: Person) {}
+        public update(person: Person): void {}
       }`);
 
       const interfaces = generateTypeReferences(state);
@@ -931,7 +960,7 @@ export let Person`);
       type Person = NamedThing & AgedThing;
 
       class Breadcrumbs extends HTMLElement {
-        public update(person: Person) {}
+        public update(person: Person): void {}
       }`);
 
       const interfaces = generateTypeReferences(state);
@@ -958,7 +987,7 @@ export let Person`);
       type Person = NamedThing & { otherField: string };
 
       class Breadcrumbs extends HTMLElement {
-        public update(person: Person) {}
+        public update(person: Person): void {}
       }`);
       const interfaces = generateTypeReferences(state);
 
@@ -987,7 +1016,7 @@ export let Person`);
       type Person = NamedThing & { details: Detail[] };
 
       class Breadcrumbs extends HTMLElement {
-        public update(person: Person) {}
+        public update(person: Person): void {}
       }`);
 
       const interfaces = generateTypeReferences(state);
@@ -1168,7 +1197,7 @@ export let Person`);
       }
 
       class Breadcrumbs extends HTMLElement {
-        public update(person: Person) {}
+        public update(person: Person): void {}
       }`);
 
       const interfaces = generateTypeReferences(state);
@@ -1195,7 +1224,7 @@ export let Person`);
       }
 
       class Breadcrumbs extends HTMLElement {
-        public update(person: Person) {}
+        public update(person: Person): void {}
       }`);
 
       const interfaces = generateTypeReferences(state);
@@ -1223,7 +1252,7 @@ export let Person`);
       }
 
       class Breadcrumbs extends HTMLElement {
-        public update(person: Person) {}
+        public update(person: Person): void {}
       }`);
 
       const interfaces = generateTypeReferences(state);
@@ -1252,7 +1281,7 @@ export let Person`);
       }
 
       class Breadcrumbs extends HTMLElement {
-        public update(person: Person) {}
+        public update(person: Person): void {}
       }`);
 
       const interfaces = generateTypeReferences(state);
@@ -1277,7 +1306,7 @@ export let Person`);
       }
 
       class Breadcrumbs extends HTMLElement {
-        public update(setting: SettingType) {}
+        public update(setting: SettingType): void {}
       }`);
 
       const enums = generateTypeReferences(state);
@@ -1298,7 +1327,7 @@ export let Person`);
       }
 
       class Breadcrumbs extends HTMLElement {
-        public update(setting: SettingType) {}
+        public update(setting: SettingType): void {}
       }`);
 
       const enums = generateTypeReferences(state);
@@ -1322,7 +1351,7 @@ export let Person`);
       }
 
       class Breadcrumbs extends HTMLElement {
-        public update(setting: Setting) {}
+        public update(setting: Setting): void {}
       }`);
 
       const references = generateTypeReferences(state);
@@ -1345,7 +1374,7 @@ export let Person`);
         const state = parseCode(`type Name = 'a' | 'b';
 
         class Breadcrumbs extends HTMLElement {
-          public update(name: Name) {}
+          public update(name: Name): void {}
         }`);
         assert.throws(() => generateTypeReferences(state), 'Error: union type Name has a string literal member: "a"');
       });
@@ -1354,7 +1383,7 @@ export let Person`);
         const state = parseCode(`type Name = number | 'b';
 
         class Breadcrumbs extends HTMLElement {
-          public update(name: Name) {}
+          public update(name: Name): void {}
         }`);
         assert.throws(() => generateTypeReferences(state), 'Error: union type Name has a string literal member: "b"');
       });
@@ -1367,7 +1396,7 @@ export let Person`);
         }
 
         class Breadcrumbs extends HTMLElement {
-          public update(settings: Settings) {}
+          public update(settings: Settings): void {}
         }`);
         assert.throws(() => generateTypeReferences(state), 'Error: union type Name has a string literal member: "a"');
       });
@@ -1378,7 +1407,7 @@ export let Person`);
         }
 
         class Breadcrumbs extends HTMLElement {
-          public update(settings: Settings) {}
+          public update(settings: Settings): void {}
         }`);
         assert.throws(
             () => generateTypeReferences(state), 'Error: union type Settings.name has a string literal member: "a"');
@@ -1390,7 +1419,7 @@ export let Person`);
         }
 
         class Breadcrumbs extends HTMLElement {
-          public update(settings: Settings) {}
+          public update(settings: Settings): void {}
         }`);
         assert.throws(() => generateTypeReferences(state), 'Error: type Settings has string literal key name: "jack"');
       });
@@ -1407,7 +1436,7 @@ export let Person`);
         type Person = NamedThing & AgedThing & { name: 'jack' };
 
         class Breadcrumbs extends HTMLElement {
-          public update(person: Person) {}
+          public update(person: Person): void {}
         }`);
 
         assert.throws(() => generateTypeReferences(state), 'Error: type Person has string literal key name: "jack"');

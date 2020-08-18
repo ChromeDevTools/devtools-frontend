@@ -31,9 +31,10 @@ function WidgetfocusWidgetForNode(node) {
  */
 function XWidgetfocusWidgetForNode(node) {
   node = node && node.parentNodeOrShadowHost();
+  const XWidgetCtor = customElements.get('x-widget');
   let widget = null;
   while (node) {
-    if (node instanceof self.XWidget) {
+    if (node instanceof XWidgetCtor) {
       if (widget) {
         node._defaultFocusedElement = widget;
       }

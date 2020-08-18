@@ -116,7 +116,7 @@ interface DocumentFragment {
 }
 
 interface Event {
-  consume(preventDefault: boolean): void;
+  consume(preventDefault?: boolean): void;
   deepElementFromPoint(): Node|null;
 }
 
@@ -132,3 +132,4 @@ interface Node {
 declare function isEnterKey(event: Event): boolean;
 declare function isEnterOrSpaceKey(event: Event): boolean;
 declare function createPlainTextSearchRegex(query: string, flags?: string): RegExp;
+declare function onInvokeElement(element: Element, callback: (event: Event) => void): void;

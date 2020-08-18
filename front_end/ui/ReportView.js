@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as ARIAUtils from './ARIAUtils.js';
 import {Toolbar} from './Toolbar.js';
 import {VBox} from './Widget.js';
@@ -23,7 +20,9 @@ export class ReportView extends VBox {
     this._contentBox = this.contentElement.createChild('div', 'report-content-box');
     this._headerElement = this._contentBox.createChild('div', 'report-header vbox');
     this._titleElement = this._headerElement.createChild('div', 'report-title');
-    this._titleElement.textContent = title;
+    if (title) {
+      this._titleElement.textContent = title;
+    }
     ARIAUtils.markAsHeading(this._titleElement, 1);
 
     this._sectionList = this._contentBox.createChild('div', 'vbox');
@@ -142,7 +141,7 @@ export class Section extends VBox {
    * @return {string}
    */
   title() {
-    return this._titleElement.textContent;
+    return this._titleElement.textContent || '';
   }
 
   /**
@@ -186,7 +185,7 @@ export class Section extends VBox {
       this._fieldMap.set(title, row);
       row.createChild('div', 'report-field-value');
     }
-    if (textValue) {
+    if (textValue && row.lastElementChild) {
       row.lastElementChild.textContent = textValue;
     }
     return /** @type {!HTMLElement} */ (row.lastElementChild);

@@ -10,11 +10,11 @@ import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {ElementsPanel} from './ElementsPanel.js';
-import {createLayoutPane, Element} from './LayoutPane_bridge.js';  // eslint-disable-line no-unused-vars
+import {createLayoutPane, LayoutElement} from './LayoutPane_bridge.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @param {!Array<!SDK.DOMModel.DOMNode>} nodes
- * @return {!Array<!Element>}
+ * @return {!Array<!LayoutElement>}
  */
 const gridNodesToElements = nodes => {
   return nodes.map(node => {

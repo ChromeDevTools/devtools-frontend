@@ -28,7 +28,7 @@ export type BooleanSetting = BaseSetting&{options: BooleanSettingOption[], value
 export type EnumSetting = BaseSetting&{options: EnumSettingOption[], value: string};
 export type Setting = EnumSetting|BooleanSetting;
 
-export interface Element {
+export interface LayoutElement {
   id: number;
   name: string;
   domId?: string;

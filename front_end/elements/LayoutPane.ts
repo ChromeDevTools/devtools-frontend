@@ -6,7 +6,7 @@ import * as Common from '../common/common.js';
 import * as ComponentHelpers from '../component_helpers/component_helpers.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
-import {BooleanSetting, Element, EnumSetting, Setting, SettingType} from './LayoutPaneUtils.js';
+import {BooleanSetting, EnumSetting, LayoutElement, Setting, SettingType} from './LayoutPaneUtils.js';
 
 const {render, html} = LitHtml;
 const ls = Common.ls;
@@ -55,7 +55,7 @@ function isBooleanSetting(setting: Setting): setting is BooleanSetting {
 export class LayoutPane extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private settings: Readonly<Setting[]> = [];
-  private gridElements: Readonly<Element[]> = [];
+  private gridElements: Readonly<LayoutElement[]> = [];
 
   constructor() {
     super();
@@ -65,7 +65,7 @@ export class LayoutPane extends HTMLElement {
     ];
   }
 
-  set data(data: {settings: Setting[], gridElements: Element[]}) {
+  set data(data: {settings: Setting[], gridElements: LayoutElement[]}) {
     this.settings = data.settings;
     this.gridElements = data.gridElements;
     this.render();
@@ -210,17 +210,17 @@ export class LayoutPane extends HTMLElement {
     this.dispatchEvent(new SettingChangedEvent(setting.name, event.target.value));
   }
 
-  private onElementToggle(element: Element, event: HTMLInputElementEvent) {
+  private onElementToggle(element: LayoutElement, event: HTMLInputElementEvent) {
     event.preventDefault();
     this.dispatchEvent(new OverlayChangedEvent(element.id, event.target.checked));
   }
 
-  private onElementClick(element: Element, event: HTMLInputElementEvent) {
+  private onElementClick(element: LayoutElement, event: HTMLInputElementEvent) {
     event.preventDefault();
     this.dispatchEvent(new ElementClickedEvent(element.id));
   }
 
-  private renderElement(element: Element) {
+  private renderElement(element: LayoutElement) {
     const name = this.buildElementName(element);
     const onElementToggle = this.onElementToggle.bind(this, element);
     const onElementClick = this.onElementClick.bind(this, element);
@@ -234,7 +234,7 @@ export class LayoutPane extends HTMLElement {
   </div>`;
   }
 
-  private buildElementName(element: Element) {
+  private buildElementName(element: LayoutElement) {
     const parts = [element.name];
     if (element.domId) {
       parts.push(`#${CSS.escape(element.domId)}`);

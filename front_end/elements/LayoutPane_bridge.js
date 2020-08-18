@@ -52,7 +52,7 @@ export let BooleanSetting;
 * @enum {string}
 */
 // @ts-ignore we export this for Closure not TS
-export const SettingType = {
+export let SettingType = {
   BOOLEAN: 'boolean',
   ENUM: 'enum',
 };

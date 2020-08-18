@@ -23,7 +23,6 @@ devtools_image_files = [
   "cssoverview_icons_2x.png",
   "errorWave.svg",
   "ic_info_black_18dp.svg",
-  "ic_suggest_color.svg",
   "ic_warning_black_18dp.svg",
   "largeIcons.svg",
   "mediumIcons.svg",

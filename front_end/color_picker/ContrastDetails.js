@@ -14,10 +14,8 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!Element} contentElement
    * @param {function(boolean=, !Common.EventTarget.EventTargetEvent=):void} toggleMainColorPickerCallback
    * @param {function():void} expandedChangedCallback
-   * @param {function(!Common.Color.Color):void} colorSelectedCallback
    */
-  constructor(
-      contrastInfo, contentElement, toggleMainColorPickerCallback, expandedChangedCallback, colorSelectedCallback) {
+  constructor(contrastInfo, contentElement, toggleMainColorPickerCallback, expandedChangedCallback) {
     super();
     /** @type {!ContrastInfo} */
     this._contrastInfo = contrastInfo;
@@ -30,9 +28,6 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
 
     /** @type {function():void} */
     this._expandedChangedCallback = expandedChangedCallback;
-
-    /** @type {function(!Common.Color.Color):void} */
-    this._colorSelectedCallback = colorSelectedCallback;
 
     /** @type {boolean} */
     this._expanded = false;
@@ -118,50 +113,6 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
     this._noContrastInfoAvailable.classList.add('hidden');
   }
 
-  /**
-   * @param {string} threshold
-   */
-  _computeSuggestedColor(threshold) {
-    const fgColor = this._contrastInfo.color();
-    const bgColor = this._contrastInfo.bgColor();
-    if (!fgColor || !bgColor) {
-      return;
-    }
-
-    const requiredContrast = this._contrastInfo.contrastRatioThreshold(threshold);
-    if (!requiredContrast) {
-      return;
-    }
-
-    return Common.Color.Color.findFgColorForContrast(fgColor, bgColor, requiredContrast);
-  }
-
-  /**
-   * @param {string} threshold
-   */
-  _onSuggestColor(threshold) {
-    const color = this._computeSuggestedColor(threshold);
-    if (color) {
-      this._colorSelectedCallback(color);
-    }
-  }
-
-  /**
-   * @param {!Element} parent
-   * @param {!Common.Color.Color} suggestedColor
-   */
-  _createFixColorButton(parent, suggestedColor) {
-    const fgColor = this._contrastInfo.color();
-    const button = /** @type {!HTMLElement} */ (parent.createChild('button', 'contrast-fix-button'));
-    const suggestedColorString = `${suggestedColor.asString(fgColor ? fgColor.format() : undefined)}`;
-    const label = ls`Use suggested color ${suggestedColorString} to fix low contrast`;
-    UI.ARIAUtils.setAccessibleName(button, label);
-    button.title = label;
-    button.tabIndex = 0;
-    button.style.backgroundColor = suggestedColorString;
-    return button;
-  }
-
   _update() {
     if (this._contrastInfo.isNull()) {
       this._showNoContrastInfoAvailableMessage();
@@ -204,11 +155,6 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
       this._contrastPassFailAA.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
     } else {
       this._contrastPassFailAA.appendChild(UI.Icon.Icon.create('smallicon-no'));
-      const suggestedColor = this._computeSuggestedColor('aa');
-      if (suggestedColor) {
-        const fixAA = this._createFixColorButton(this._contrastPassFailAA, suggestedColor);
-        fixAA.addEventListener('click', () => this._onSuggestColor('aa'));
-      }
     }
 
     // In greater then comparisons we can substite null with 0.
@@ -222,11 +168,6 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
       this._contrastPassFailAAA.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
     } else {
       this._contrastPassFailAAA.appendChild(UI.Icon.Icon.create('smallicon-no'));
-      const suggestedColor = this._computeSuggestedColor('aaa');
-      if (suggestedColor) {
-        const fixAAA = this._createFixColorButton(this._contrastPassFailAAA, suggestedColor);
-        fixAAA.addEventListener('click', () => this._onSuggestColor('aaa'));
-      }
     }
 
     [labelAA, labelAAA].forEach(

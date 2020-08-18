@@ -29,7 +29,6 @@ grd_files_release_sources = [
   "front_end/Images/cssoverview_icons_2x.png",
   "front_end/Images/errorWave.svg",
   "front_end/Images/ic_info_black_18dp.svg",
-  "front_end/Images/ic_suggest_color.svg",
   "front_end/Images/ic_warning_black_18dp.svg",
   "front_end/Images/largeIcons.svg",
   "front_end/Images/lighthouse_logo.svg",

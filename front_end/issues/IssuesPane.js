@@ -1298,7 +1298,7 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
       // We alreay know that issesCount is zero here.
       const hasOnlyThirdPartyIssues = this._issuesManager.numberOfAllStoredIssues() > 0;
       this._noIssuesMessageDiv.textContent =
-          hasOnlyThirdPartyIssues ? ls`Only third-party issues detected so far` : ls`No issues detected so far`;
+          hasOnlyThirdPartyIssues ? ls`Only third-party cookie issues detected so far` : ls`No issues detected so far`;
       this._noIssuesMessageDiv.style.display = 'flex';
     }
   }

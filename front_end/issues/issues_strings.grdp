@@ -33,6 +33,9 @@
   <message name="IDS_DEVTOOLS_6011ea0969680deba3975ac5bd0e153e" desc="Title for a link to further information in issue view">
     Learn more: <ph name="THIS__DETAILS_LINKTITLE">$1s<ex>SameSite Cookies Explained</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_64c7927762778c9380d74b0bc7ca5a89" desc="Label on the issues tab">
+    Only third-party cookie issues detected so far
+  </message>
   <message name="IDS_DEVTOOLS_6a7f245843454cf4f28ad7c5e2572aa2" desc="Plural label for number of affected element resource indication in issue view">
     elements
   </message>
@@ -41,9 +44,6 @@
   </message>
   <message name="IDS_DEVTOOLS_712e023413c1a2069cb68c5cb4a914a0" desc="Title for an unavailable link a request in the network panel">
     Request unavailable in the network panel, try reloading the inspected page
-  </message>
-  <message name="IDS_DEVTOOLS_7329dbf9ad4774e8d583f9ea2e150f35" desc="Label on the issues tab">
-    Only third-party issues detected so far
   </message>
   <message name="IDS_DEVTOOLS_8e2dcfd7e7e24b1ca76c1193f645902b" desc="Singular label for number of affected element resource indication in issue view">
     element

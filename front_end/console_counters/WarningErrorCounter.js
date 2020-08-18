@@ -172,7 +172,7 @@ export class WarningErrorCounter {
     }
 
     this._titles = '';
-    if (errors & warnings) {
+    if (errors && warnings) {
       this._titles = ls`${errorCountTitle}, ${warningCountTitle}`;
     } else if (errors) {
       this._titles = errorCountTitle;

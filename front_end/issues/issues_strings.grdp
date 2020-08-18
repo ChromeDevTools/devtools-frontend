@@ -6,9 +6,6 @@
   <message name="IDS_DEVTOOLS_05bb50eae282e818b1a9a4b0ada16150" desc="Reason for a Heavy Ad being flagged in issue view">
     Network limit
   </message>
-  <message name="IDS_DEVTOOLS_2631c466911c8c8de9c6b3332b1a0768" desc="Title for a checkbox. Whether the issues tab should include third-party issues or not.">
-    Include Issues caused by third-party sites
-  </message>
   <message name="IDS_DEVTOOLS_07fad2e297fd65e042fa00d6977b4f2d" desc="Tooltip for button linking to the Elements panel">
     Click to reveal the violating DOM node in the Elements panel
   </message>
@@ -23,9 +20,6 @@
   </message>
   <message name="IDS_DEVTOOLS_3298f13049d19cffaa37ca931dd4d421" desc="Label for number of affected resources indication in issue view">
     requests
-  </message>
-  <message name="IDS_DEVTOOLS_4c256011797a3f452ce4955e7f0c396f" desc="Label for a checkbox. Whether the issues tab should include third-party issues or not.">
-    Include third-party issues
   </message>
   <message name="IDS_DEVTOOLS_55b558c7ef820e6e00e5993b9e55d93b" desc="Label for number of affected resources indication in issue view">
     resources
@@ -63,6 +57,9 @@
   <message name="IDS_DEVTOOLS_96ab4e163f4ee03aaa4d1051aa51d204" desc="Label for number of affected resources indication in issue view">
     resource
   </message>
+  <message name="IDS_DEVTOOLS_9bb0b0febed28d7b9503d4e7872e7145" desc="Label for a checkbox. Whether the issues tab should include third-party issues or not.">
+    Include third-party cookie issues
+  </message>
   <message name="IDS_DEVTOOLS_a4d7581ea74e5240c4a1a7c32532d6f8" desc="Label for mixed content issue's restriction status">
     Restriction Status
   </message>
@@ -83,6 +80,9 @@
   </message>
   <message name="IDS_DEVTOOLS_ba514415c6a7f5b7aa2b54d0914a122d" desc="Title for a column in an Heavy Ads issue view">
     Resolution Status
+  </message>
+  <message name="IDS_DEVTOOLS_c8af22df9d871d6025aefc70795a91d6" desc="Title for a checkbox. Whether the issues tab should include third-party issues or not.">
+    Include cookie Issues caused by third-party sites
   </message>
   <message name="IDS_DEVTOOLS_c8f2c7aa04b8080f5d0bb020dc886d82" desc="Title for a column in an Heavy Ads issue view">
     Frame URL

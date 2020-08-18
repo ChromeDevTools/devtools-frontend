@@ -1206,7 +1206,8 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     // TODO(crbug.com/1011811): Remove cast once closure is gone. Closure requires an upcast to 'any' from 'boolean'.
     const thirdPartySetting = /** @type {!Common.Settings.Setting<*>} */ (SDK.Issue.getShowThirdPartyIssuesSetting());
     const showThirdPartyCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
-        thirdPartySetting, ls`Include Issues caused by third-party sites`, ls`Include third-party issues`);
+        thirdPartySetting, ls`Include cookie Issues caused by third-party sites`,
+        ls`Include third-party cookie issues`);
     rightToolbar.appendToolbarItem(showThirdPartyCheckbox);
 
     rightToolbar.appendSeparator();

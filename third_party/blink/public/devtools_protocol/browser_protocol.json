@@ -10426,6 +10426,63 @@
                             }
                         }
                     ]
+                },
+                {
+                    "id": "CrossOriginOpenerPolicyValue",
+                    "experimental": true,
+                    "type": "string",
+                    "enum": [
+                        "SameOrigin",
+                        "SameOriginAllowPopups",
+                        "UnsafeNone",
+                        "SameOriginPlusCoep"
+                    ]
+                },
+                {
+                    "id": "CrossOriginOpenerPolicyStatus",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "value",
+                            "$ref": "CrossOriginOpenerPolicyValue"
+                        }
+                    ]
+                },
+                {
+                    "id": "CrossOriginEmbedderPolicyValue",
+                    "experimental": true,
+                    "type": "string",
+                    "enum": [
+                        "None",
+                        "RequireCorp"
+                    ]
+                },
+                {
+                    "id": "CrossOriginEmbedderPolicyStatus",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "value",
+                            "$ref": "CrossOriginEmbedderPolicyValue"
+                        }
+                    ]
+                },
+                {
+                    "id": "SecurityIsolationStatus",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "coop",
+                            "$ref": "CrossOriginOpenerPolicyStatus"
+                        },
+                        {
+                            "name": "coep",
+                            "$ref": "CrossOriginEmbedderPolicyStatus"
+                        }
+                    ]
                 }
             ],
             "commands": [
@@ -11007,6 +11064,25 @@
                             "experimental": true,
                             "optional": true,
                             "$ref": "Emulation.UserAgentMetadata"
+                        }
+                    ]
+                },
+                {
+                    "name": "getSecurityIsolationStatus",
+                    "description": "Returns information about the COEP/COOP isolation status.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "frameId",
+                            "description": "If no frameId is provided, the status of the target is provided.",
+                            "optional": true,
+                            "$ref": "Page.FrameId"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "status",
+                            "$ref": "SecurityIsolationStatus"
                         }
                     ]
                 }

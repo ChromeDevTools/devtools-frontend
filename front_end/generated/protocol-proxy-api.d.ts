@@ -1781,6 +1781,12 @@ declare namespace ProtocolProxyApi {
      */
     invoke_setUserAgentOverride(params: Protocol.Network.SetUserAgentOverrideRequest):
         Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Returns information about the COEP/COOP isolation status.
+     */
+    invoke_getSecurityIsolationStatus(params: Protocol.Network.GetSecurityIsolationStatusRequest):
+        Promise<Protocol.Network.GetSecurityIsolationStatusResponse>;
   }
   export interface NetworkDispatcher extends Protocol.Dispatcher {
     /**

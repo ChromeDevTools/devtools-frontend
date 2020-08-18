@@ -57,9 +57,14 @@ export function getStyleSheets(path: string, {patchThemeSupport = false} = {}): 
  * See ElementsBreadcrumbs.ts for an example of how this is used.
  */
 export const DARK_MODE_CLASS = '.component-in-dark-mode';
+
+export function isInDarkMode() {
+  return document.documentElement.classList.contains('-theme-with-dark-background') ||
+      window.matchMedia('prefers-color-scheme: dark').matches;
+}
+
 export function applyDarkModeClassIfNeeded() {
-  if (document.documentElement.classList.contains('-theme-with-dark-background') ||
-      window.matchMedia('prefers-color-scheme: dark')) {
+  if (isInDarkMode()) {
     return DARK_MODE_CLASS.slice(1);
   }
 

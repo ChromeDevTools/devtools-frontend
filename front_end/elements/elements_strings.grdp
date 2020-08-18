@@ -291,6 +291,9 @@
   <message name="IDS_DEVTOOLS_e24ee2487879116dcab772c0ac4fe341" desc="Text to focus on something">
     Focus
   </message>
+  <message name="IDS_DEVTOOLS_e861292dd862be2d3772ada299050acc" desc="Title of the show element button in the Layout pane of the Elements panel">
+    Show element in the Elements panel
+  </message>
   <message name="IDS_DEVTOOLS_eb92025cb8c66f1850c13a9b602a1856" desc="Text in Computed Style Widget of the Elements panel">
     Show all
   </message>

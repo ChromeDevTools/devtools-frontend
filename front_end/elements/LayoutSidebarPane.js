@@ -9,6 +9,7 @@ import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
+import {ElementsPanel} from './ElementsPanel.js';
 import {createLayoutPane, Element} from './LayoutPane_bridge.js';  // eslint-disable-line no-unused-vars
 
 /**
@@ -39,6 +40,7 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     this._settings = ['showGridLines', 'showGridLineNumbers', 'showGridGaps', 'showGridAreas', 'showGridTrackSizes'];
     this._boundOnSettingChanged = this.onSettingChanged.bind(this);
     this._boundOnOverlayChanged = this.onOverlayChanged.bind(this);
+    this._boundOnElementClicked = this.onElementClicked.bind(this);
     this._pullNode();
   }
 
@@ -109,6 +111,14 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   /**
+   * @param {*} event
+   */
+  onElementClicked(event) {
+    const node = this._node.domModel().nodeForId(event.data.id);
+    ElementsPanel.instance().revealAndSelectNode(node, true, true);
+  }
+
+  /**
    * @override
    */
   wasShown() {
@@ -117,6 +127,7 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     }
     this._layoutPane.addEventListener('setting-changed', this._boundOnSettingChanged);
     this._layoutPane.addEventListener('overlay-changed', this._boundOnOverlayChanged);
+    this._layoutPane.addEventListener('element-clicked', this._boundOnElementClicked);
     const overlayModel = this._node.domModel().overlayModel();
     overlayModel.addEventListener(SDK.OverlayModel.Events.PersistentGridOverlayCleared, this.update, this);
     overlayModel.addEventListener(SDK.OverlayModel.Events.PersistentGridOverlayStateChanged, this.update, this);
@@ -133,6 +144,7 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     }
     this._layoutPane.removeEventListener('setting-changed', this._boundOnSettingChanged);
     this._layoutPane.removeEventListener('overlay-changed', this._boundOnOverlayChanged);
+    this._layoutPane.removeEventListener('element-clicked', this._boundOnElementClicked);
     const overlayModel = this._node.domModel().overlayModel();
     overlayModel.removeEventListener(SDK.OverlayModel.Events.PersistentGridOverlayCleared, this.update, this);
     overlayModel.removeEventListener(SDK.OverlayModel.Events.PersistentGridOverlayStateChanged, this.update, this);

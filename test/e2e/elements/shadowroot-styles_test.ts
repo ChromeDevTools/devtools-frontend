@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {$$, getBrowserAndPages, goToResource, waitFor, waitForFunction} from '../../shared/helper.js';
+import {$$, getBrowserAndPages, goToResource, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {waitForChildrenOfSelectedElementNode, waitForContentOfSelectedElementsNode} from '../helpers/elements-helpers.js';
 
@@ -19,6 +19,9 @@ describe('The Elements Tab', async () => {
 
     // Sanity check to make sure we have the correct node selected after opening a file
     await waitForContentOfSelectedElementsNode('<body>\u200B');
+
+    // FIXME(crbug/1112692): Refactor test to remove the timeout.
+    await timeout(50);
 
     await frontend.keyboard.press('ArrowRight');
     await waitForContentOfSelectedElementsNode('<div id=\u200B"host">\u200B…\u200B</div>\u200B');

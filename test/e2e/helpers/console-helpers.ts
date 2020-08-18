@@ -4,7 +4,7 @@
 
 import * as puppeteer from 'puppeteer';
 
-import {$, click, getBrowserAndPages, goToResource, pasteText, timeout, waitFor} from '../../shared/helper.js';
+import {$, $$, click, getBrowserAndPages, goToResource, pasteText, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
 
 export const CONSOLE_TAB_SELECTOR = '#tab-console';
 export const CONSOLE_MESSAGES_SELECTOR = '.console-group-messages';
@@ -42,8 +42,19 @@ export async function filterConsoleMessages(frontend: puppeteer.Page, filter: st
   await frontend.keyboard.press('Enter');
 }
 
-export async function getConsoleMessages(
-    testName: string, withAnchor = false, callback?: (page: puppeteer.Page) => Promise<void>) {
+export async function waitForConsoleMessagesToBeNonEmpty(numberOfMessages: number) {
+  await waitForFunction(async () => {
+    const messages = await $$(CONSOLE_FIRST_MESSAGES_SELECTOR);
+    if (messages.length < numberOfMessages) {
+      return false;
+    }
+    const textContents =
+        await Promise.all(messages.map(message => message.evaluate(message => message.textContent || '')));
+    return textContents.every(text => text !== '');
+  });
+}
+
+export async function getConsoleMessages(testName: string, withAnchor = false, callback?: () => Promise<void>) {
   // Ensure Console is loaded before the page is loaded to avoid a race condition.
   await getCurrentConsoleMessages();
 
@@ -53,8 +64,7 @@ export async function getConsoleMessages(
   return getCurrentConsoleMessages(withAnchor, callback);
 }
 
-export async function getCurrentConsoleMessages(
-    withAnchor = false, callback?: (page: puppeteer.Page) => Promise<void>) {
+export async function getCurrentConsoleMessages(withAnchor = false, callback?: () => Promise<void>) {
   const {frontend} = getBrowserAndPages();
 
   await navigateToConsoleTab();
@@ -63,7 +73,7 @@ export async function getCurrentConsoleMessages(
   await waitFor(CONSOLE_MESSAGES_SELECTOR);
 
   if (callback) {
-    await callback(frontend);
+    await callback();
   }
 
   // Ensure all messages are populated.

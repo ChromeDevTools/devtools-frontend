@@ -222,11 +222,6 @@ describe('Sources Tab', async function() {
         });
         return local_scope_values === '"": 50';
       });
-      const local_scope_values = await localScopeView.evaluate(element => {
-        return (element as HTMLElement).innerText;
-      });
-
-      assert.strictEqual(local_scope_values, '"": 50', 'lables do not contain the correct contents');
     });
 
     await step('resume script execution', async () => {

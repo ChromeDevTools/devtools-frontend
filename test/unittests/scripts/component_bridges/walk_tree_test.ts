@@ -660,4 +660,26 @@ describe('walkTree', () => {
       }, 'Found enum SettingType whose members do not have manually defined values.');
     });
   });
+
+  it('warns if it encounters an interface definition for a built-in type', () => {
+    const code = `interface Element {
+        name: string;
+      }`;
+
+    const source = createTypeScriptSourceFile(code);
+    assert.throws(() => {
+      walkTree(source, 'test.ts');
+    }, 'Found interface Element that conflicts with TypeScript\'s built-in type. Please choose a different name!');
+  });
+
+  it('warns if it encounters a type definition for a built-in type', () => {
+    const code = `type Element = {
+        name: string;
+      }`;
+
+    const source = createTypeScriptSourceFile(code);
+    assert.throws(() => {
+      walkTree(source, 'test.ts');
+    }, 'Found type Element that conflicts with TypeScript\'s built-in type. Please choose a different name!');
+  });
 });

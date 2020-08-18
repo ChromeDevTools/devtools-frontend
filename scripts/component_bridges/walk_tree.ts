@@ -213,8 +213,18 @@ const walkNode = (node: ts.Node, startState?: WalkerState): WalkerState => {
     }
 
   } else if (ts.isInterfaceDeclaration(node)) {
+    const interfaceName = node.name.escapedText.toString();
+    if (builtInTypeScriptTypes.has(interfaceName)) {
+      throw new Error(`Found interface ${
+          interfaceName} that conflicts with TypeScript's built-in type. Please choose a different name!`);
+    }
     state.foundInterfaces.add(node);
   } else if (ts.isTypeAliasDeclaration(node)) {
+    const typeName = node.name.escapedText.toString();
+    if (builtInTypeScriptTypes.has(typeName)) {
+      throw new Error(
+          `Found type ${typeName} that conflicts with TypeScript's built-in type. Please choose a different name!`);
+    }
     state.foundInterfaces.add(node);
   } else if (ts.isEnumDeclaration(node)) {
     const isConstEnum = node.modifiers && node.modifiers.some(modifier => modifier.kind === ts.SyntaxKind.ConstKeyword);

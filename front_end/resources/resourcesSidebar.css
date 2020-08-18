@@ -29,8 +29,8 @@ li.storage-group-list-item::before {
   display: none;
 }
 
-.navigator-tree-item {
-  margin: -3px -7px -3px -7px;
+.icons-container .red-icon {
+  background-color: rgb(235 57 65);
 }
 
 .navigator-file-tree-item {
@@ -39,10 +39,6 @@ li.storage-group-list-item::before {
 
 .navigator-folder-tree-item {
   background: linear-gradient(45deg, hsl(210deg 82% 65%), hsl(210deg 82% 80%));
-}
-
-.navigator-frame-tree-item {
-  background-color: #5a5a5a;
 }
 
 .navigator-script-tree-item {
@@ -60,10 +56,6 @@ li.storage-group-list-item::before {
 
 .resource-tree-item {
   background: rgb(90 90 90 / 70%);
-}
-
-.window-tree-item {
-  margin: 0 -1px 0 -1px;
 }
 
 .window-closed .tree-element-title {

@@ -664,6 +664,13 @@ class AffectedRequestsView extends AffectedResourcesView {
    */
   update() {
     this.clear();
+    // eslint-disable-next-line no-unused-vars
+    for (const _ of this._issue.blockedByResponseDetails()) {
+      // If the issue has blockedByResponseDetails, the corresponding AffectedBlockedByResponseView
+      // will take care of displaying the request.
+      this.updateAffectedResourceCount(0);
+      return;
+    }
     this._appendAffectedRequests(this._issue.requests());
   }
 }

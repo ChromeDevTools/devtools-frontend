@@ -24,6 +24,7 @@
     "ContextMenu.js",
     "GlassPane.js",
     "Dialog.js",
+    "DockController.js",
     "SyntaxHighlighter.js",
     "DropTarget.js",
     "EmptyWidget.js",

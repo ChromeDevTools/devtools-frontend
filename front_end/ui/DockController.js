@@ -33,7 +33,10 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
-import * as UI from '../ui/ui.js';
+
+import {ActionDelegate} from './ActionDelegate.js';                 // eslint-disable-line no-unused-vars
+import {Context} from './Context.js';                               // eslint-disable-line no-unused-vars
+import {Provider, ToolbarButton, ToolbarItem} from './Toolbar.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
@@ -46,9 +49,9 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper {
     super();
     this._canDock = canDock;
 
-    this._closeButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Close'), 'largeicon-delete');
+    this._closeButton = new ToolbarButton(Common.UIString.UIString('Close'), 'largeicon-delete');
     this._closeButton.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.Click,
+        ToolbarButton.Events.Click,
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.closeWindow.bind(
             Host.InspectorFrontendHost.InspectorFrontendHostInstance));
 
@@ -175,32 +178,32 @@ export const Events = {
 };
 
 /**
- * @implements {UI.ActionDelegate.ActionDelegate}
+ * @implements {ActionDelegate}
  * @unrestricted
  */
 export class ToggleDockActionDelegate {
   /**
    * @override
-   * @param {!UI.Context.Context} context
+   * @param {!Context} context
    * @param {string} actionId
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    self.Components.dockController._toggleDockSide();
+    self.UI.dockController._toggleDockSide();
     return true;
   }
 }
 
 /**
- * @implements {UI.Toolbar.Provider}
+ * @implements {Provider}
  * @unrestricted
  */
 export class CloseButtonProvider {
   /**
    * @override
-   * @return {?UI.Toolbar.ToolbarItem}
+   * @return {?ToolbarItem}
    */
   item() {
-    return self.Components.dockController._closeButton;
+    return self.UI.dockController._closeButton;
   }
 }

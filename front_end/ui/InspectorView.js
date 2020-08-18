@@ -38,6 +38,7 @@ import {ActionDelegate as ActionDelegateInterface} from './ActionDelegate.js';  
 import {Context} from './Context.js';                                           // eslint-disable-line no-unused-vars
 import {ContextMenu} from './ContextMenu.js';                                   // eslint-disable-line no-unused-vars
 import {Dialog} from './Dialog.js';
+import {DockController} from './DockController.js';
 import {GlassPane} from './GlassPane.js';
 import {Icon} from './Icon.js';  // eslint-disable-line no-unused-vars
 import {Infobar, Type as InfobarType} from './Infobar.js';
@@ -408,6 +409,10 @@ export class InspectorView extends VBox {
           text: ls`Reload DevTools`,
           highlight: true,
           delegate: () => {
+            if (self.UI.dockController.canDock() &&
+                self.UI.dockController.dockSide() === DockController.State.Undocked) {
+              Host.InspectorFrontendHost.InspectorFrontendHostInstance.setIsDocked(true, function() {});
+            }
             Host.InspectorFrontendHost.InspectorFrontendHostInstance.reattach(() => window.location.reload());
           },
           dismiss: false

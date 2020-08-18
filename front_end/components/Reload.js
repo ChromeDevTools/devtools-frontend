@@ -6,11 +6,10 @@
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Host from '../host/host.js';
-
-import {State} from './DockController.js';
+import * as UI from '../ui/ui.js';
 
 export function reload() {
-  if (self.Components.dockController.canDock() && self.Components.dockController.dockSide() === State.Undocked) {
+  if (self.UI.dockController.canDock() && self.UI.dockController.dockSide() === UI.DockController.State.Undocked) {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.setIsDocked(true, function() {});
   }
   Host.InspectorFrontendHost.InspectorFrontendHostInstance.reattach(() => window.location.reload());

@@ -10,20 +10,6 @@ self.Components = self.Components || {};
 Components = Components || {};
 
 /** @constructor */
-Components.DockController = ComponentsModule.DockController.DockController;
-
-Components.DockController.State = ComponentsModule.DockController.State;
-
-/** @enum {symbol} */
-Components.DockController.Events = ComponentsModule.DockController.Events;
-
-/** @constructor */
-Components.DockController.ToggleDockActionDelegate = ComponentsModule.DockController.ToggleDockActionDelegate;
-
-/** @constructor */
-Components.DockController.CloseButtonProvider = ComponentsModule.DockController.CloseButtonProvider;
-
-/** @constructor */
 Components.ImagePreview = ComponentsModule.ImagePreview.ImagePreview;
 
 Components.JSPresentationUtils = {};
@@ -50,8 +36,3 @@ Components.reload = ComponentsModule.Reload.reload;
 
 /** @constructor */
 Components.TargetDetachedDialog = ComponentsModule.TargetDetachedDialog.TargetDetachedDialog;
-
-/**
- * @type {!Components.DockController}
- */
-Components.dockController;

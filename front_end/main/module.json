@@ -100,7 +100,7 @@
       "category": "Global",
       "title": "Restore last dock position",
       "actionId": "main.toggle-dock",
-      "className": "Components.DockController.ToggleDockActionDelegate",
+      "className": "UI.DockController.ToggleDockActionDelegate",
       "bindings": [
         {
           "platform": "windows,linux",
@@ -361,7 +361,7 @@
     },
     {
       "type": "@UI.ToolbarItem.Provider",
-      "className": "Components.DockController.CloseButtonProvider",
+      "className": "UI.DockController.CloseButtonProvider",
       "order": 100,
       "location": "main-toolbar-right"
     },

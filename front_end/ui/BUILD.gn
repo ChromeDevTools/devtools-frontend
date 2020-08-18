@@ -15,6 +15,7 @@ devtools_module("ui") {
     "ContextFlavorListener.js",
     "ContextMenu.js",
     "Dialog.js",
+    "DockController.js",
     "DropTarget.js",
     "EmptyWidget.js",
     "FilterBar.js",

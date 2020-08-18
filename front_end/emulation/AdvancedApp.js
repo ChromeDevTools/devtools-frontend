@@ -6,7 +6,6 @@
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
-import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
 import * as UI from '../ui/ui.js';
 
@@ -22,8 +21,8 @@ let _appInstance;
  */
 export class AdvancedApp {
   constructor() {
-    self.Components.dockController.addEventListener(
-        Components.DockController.Events.BeforeDockSideChanged, this._openToolboxWindow, this);
+    self.UI.dockController.addEventListener(
+        UI.DockController.Events.BeforeDockSideChanged, this._openToolboxWindow, this);
   }
 
   /**
@@ -53,12 +52,11 @@ export class AdvancedApp {
     this._inspectedPagePlaceholder.addEventListener(Events.Update, this._onSetInspectedPageBounds.bind(this), this);
     this._deviceModeView = new DeviceModeWrapper(this._inspectedPagePlaceholder);
 
-    self.Components.dockController.addEventListener(
-        Components.DockController.Events.BeforeDockSideChanged, this._onBeforeDockSideChange, this);
-    self.Components.dockController.addEventListener(
-        Components.DockController.Events.DockSideChanged, this._onDockSideChange, this);
-    self.Components.dockController.addEventListener(
-        Components.DockController.Events.AfterDockSideChanged, this._onAfterDockSideChange, this);
+    self.UI.dockController.addEventListener(
+        UI.DockController.Events.BeforeDockSideChanged, this._onBeforeDockSideChange, this);
+    self.UI.dockController.addEventListener(UI.DockController.Events.DockSideChanged, this._onDockSideChange, this);
+    self.UI.dockController.addEventListener(
+        UI.DockController.Events.AfterDockSideChanged, this._onAfterDockSideChange, this);
     this._onDockSideChange();
 
     console.timeStamp('AdvancedApp.attachToBody');
@@ -71,7 +69,7 @@ export class AdvancedApp {
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _openToolboxWindow(event) {
-    if (/** @type {string} */ (event.data.to) !== Components.DockController.State.Undocked) {
+    if (/** @type {string} */ (event.data.to) !== UI.DockController.State.Undocked) {
       return;
     }
 
@@ -111,7 +109,7 @@ export class AdvancedApp {
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onBeforeDockSideChange(event) {
-    if (/** @type {string} */ (event.data.to) === Components.DockController.State.Undocked && this._toolboxRootView) {
+    if (/** @type {string} */ (event.data.to) === UI.DockController.State.Undocked && this._toolboxRootView) {
       // Hide inspectorView and force layout to mimic the undocked state.
       this._rootSplitWidget.hideSidebar();
       this._inspectedPagePlaceholder.update();
@@ -126,12 +124,12 @@ export class AdvancedApp {
   _onDockSideChange(event) {
     this._updateDeviceModeView();
 
-    const toDockSide = event ? /** @type {string} */ (event.data.to) : self.Components.dockController.dockSide();
-    if (toDockSide === Components.DockController.State.Undocked) {
+    const toDockSide = event ? /** @type {string} */ (event.data.to) : self.UI.dockController.dockSide();
+    if (toDockSide === UI.DockController.State.Undocked) {
       this._updateForUndocked();
     } else if (
         this._toolboxRootView && event &&
-        /** @type {string} */ (event.data.from) === Components.DockController.State.Undocked) {
+        /** @type {string} */ (event.data.from) === UI.DockController.State.Undocked) {
       // Don't update yet for smooth transition.
       this._rootSplitWidget.hideSidebar();
     } else {
@@ -147,7 +145,7 @@ export class AdvancedApp {
     if (!this._changingDockSide) {
       return;
     }
-    if (/** @type {string} */ (event.data.from) === Components.DockController.State.Undocked) {
+    if (/** @type {string} */ (event.data.from) === UI.DockController.State.Undocked) {
       // Restore docked layout in case of smooth transition.
       this._updateForDocked(/** @type {string} */ (event.data.to));
     }
@@ -159,19 +157,16 @@ export class AdvancedApp {
    * @param {string} dockSide
    */
   _updateForDocked(dockSide) {
-    this._rootSplitWidget.resizerElement().style.transform =
-        dockSide === Components.DockController.State.DockedToRight ?
+    this._rootSplitWidget.resizerElement().style.transform = dockSide === UI.DockController.State.DockedToRight ?
         'translateX(2px)' :
-        dockSide === Components.DockController.State.DockedToLeft ? 'translateX(-2px)' : '';
+        dockSide === UI.DockController.State.DockedToLeft ? 'translateX(-2px)' : '';
     this._rootSplitWidget.setVertical(
-        dockSide === Components.DockController.State.DockedToRight ||
-        dockSide === Components.DockController.State.DockedToLeft);
+        dockSide === UI.DockController.State.DockedToRight || dockSide === UI.DockController.State.DockedToLeft);
     this._rootSplitWidget.setSecondIsSidebar(
-        dockSide === Components.DockController.State.DockedToRight ||
-        dockSide === Components.DockController.State.DockedToBottom);
+        dockSide === UI.DockController.State.DockedToRight || dockSide === UI.DockController.State.DockedToBottom);
     this._rootSplitWidget.toggleResizer(this._rootSplitWidget.resizerElement(), true);
     this._rootSplitWidget.toggleResizer(
-        self.UI.inspectorView.topResizerElement(), dockSide === Components.DockController.State.DockedToBottom);
+        self.UI.inspectorView.topResizerElement(), dockSide === UI.DockController.State.DockedToBottom);
     this._rootSplitWidget.showBoth();
   }
 
@@ -182,7 +177,7 @@ export class AdvancedApp {
   }
 
   _isDocked() {
-    return self.Components.dockController.dockSide() !== Components.DockController.State.Undocked;
+    return self.UI.dockController.dockSide() !== UI.DockController.State.Undocked;
   }
 
   /**

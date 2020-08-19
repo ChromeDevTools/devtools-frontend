@@ -140,12 +140,12 @@ export class SourcesPanel extends UI.Panel.Panel {
 
     this._liveLocationPool = new Bindings.LiveLocation.LiveLocationPool();
 
-    this._setTarget(self.UI.context.flavor(SDK.SDKModel.Target));
+    this._setTarget(UI.Context.Context.instance().flavor(SDK.SDKModel.Target));
     Common.Settings.Settings.instance()
         .moduleSetting('breakpointsActive')
         .addChangeListener(this._breakpointsActiveStateChanged, this);
-    self.UI.context.addFlavorChangeListener(SDK.SDKModel.Target, this._onCurrentTargetChanged, this);
-    self.UI.context.addFlavorChangeListener(SDK.DebuggerModel.CallFrame, this._callFrameChanged, this);
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.SDKModel.Target, this._onCurrentTargetChanged, this);
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.DebuggerModel.CallFrame, this._callFrameChanged, this);
     SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerWasEnabled, this._debuggerWasEnabled, this);
     SDK.SDKModel.TargetManager.instance().addModelListener(
@@ -260,7 +260,7 @@ export class SourcesPanel extends UI.Panel.Panel {
    * @override
    */
   wasShown() {
-    self.UI.context.setFlavor(SourcesPanel, this);
+    UI.Context.Context.instance().setFlavor(SourcesPanel, this);
     super.wasShown();
     const wrapper = WrapperView._instance;
     if (wrapper && wrapper.isShowing()) {
@@ -275,7 +275,7 @@ export class SourcesPanel extends UI.Panel.Panel {
    */
   willHide() {
     super.willHide();
-    self.UI.context.setFlavor(SourcesPanel, null);
+    UI.Context.Context.instance().setFlavor(SourcesPanel, null);
     if (WrapperView.isShowing()) {
       WrapperView._instance._showViewInWrapper();
       self.UI.inspectorView.setDrawerMinimized(false);
@@ -337,10 +337,10 @@ export class SourcesPanel extends UI.Panel.Panel {
       this._setAsCurrentPanel();
     }
 
-    if (self.UI.context.flavor(SDK.SDKModel.Target) === debuggerModel.target()) {
+    if (UI.Context.Context.instance().flavor(SDK.SDKModel.Target) === debuggerModel.target()) {
       this._showDebuggerPausedDetails(/** @type {!SDK.DebuggerModel.DebuggerPausedDetails} */ (details));
     } else if (!this._paused) {
-      self.UI.context.setFlavor(SDK.SDKModel.Target, debuggerModel.target());
+      UI.Context.Context.instance().setFlavor(SDK.SDKModel.Target, debuggerModel.target());
     }
   }
 
@@ -350,7 +350,7 @@ export class SourcesPanel extends UI.Panel.Panel {
   _showDebuggerPausedDetails(details) {
     this._paused = true;
     this._updateDebuggerButtonsAndStatus();
-    self.UI.context.setFlavor(SDK.DebuggerModel.DebuggerPausedDetails, details);
+    UI.Context.Context.instance().setFlavor(SDK.DebuggerModel.DebuggerPausedDetails, details);
     this._toggleDebuggerSidebarButton.setEnabled(false);
     this._revealDebuggerSidebar();
     window.focus();
@@ -362,7 +362,7 @@ export class SourcesPanel extends UI.Panel.Panel {
    */
   _debuggerResumed(debuggerModel) {
     const target = debuggerModel.target();
-    if (self.UI.context.flavor(SDK.SDKModel.Target) !== target) {
+    if (UI.Context.Context.instance().flavor(SDK.SDKModel.Target) !== target) {
       return;
     }
     this._paused = false;
@@ -376,7 +376,7 @@ export class SourcesPanel extends UI.Panel.Panel {
    */
   _debuggerWasEnabled(event) {
     const debuggerModel = /** @type {!SDK.DebuggerModel.DebuggerModel} */ (event.data);
-    if (self.UI.context.flavor(SDK.SDKModel.Target) !== debuggerModel.target()) {
+    if (UI.Context.Context.instance().flavor(SDK.SDKModel.Target) !== debuggerModel.target()) {
       return;
     }
 
@@ -497,7 +497,7 @@ export class SourcesPanel extends UI.Panel.Panel {
   }
 
   async _callFrameChanged() {
-    const callFrame = self.UI.context.flavor(SDK.DebuggerModel.CallFrame);
+    const callFrame = UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame);
     if (!callFrame) {
       return;
     }
@@ -517,7 +517,7 @@ export class SourcesPanel extends UI.Panel.Panel {
   }
 
   async _updateDebuggerButtonsAndStatus() {
-    const currentTarget = self.UI.context.flavor(SDK.SDKModel.Target);
+    const currentTarget = UI.Context.Context.instance().flavor(SDK.SDKModel.Target);
     const currentDebuggerModel = currentTarget ? currentTarget.model(SDK.DebuggerModel.DebuggerModel) : null;
     if (!currentDebuggerModel) {
       this._togglePauseAction.setEnabled(false);
@@ -555,7 +555,7 @@ export class SourcesPanel extends UI.Panel.Panel {
 
   _clearInterface() {
     this._updateDebuggerButtonsAndStatus();
-    self.UI.context.setFlavor(SDK.DebuggerModel.DebuggerPausedDetails, null);
+    UI.Context.Context.instance().setFlavor(SDK.DebuggerModel.DebuggerPausedDetails, null);
 
     if (this._switchToPausedTargetTimeout) {
       clearTimeout(this._switchToPausedTargetTimeout);
@@ -574,7 +574,7 @@ export class SourcesPanel extends UI.Panel.Panel {
 
     for (const debuggerModel of SDK.SDKModel.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel)) {
       if (debuggerModel.isPaused()) {
-        self.UI.context.setFlavor(SDK.SDKModel.Target, debuggerModel.target());
+        UI.Context.Context.instance().setFlavor(SDK.SDKModel.Target, debuggerModel.target());
         break;
       }
     }
@@ -608,7 +608,7 @@ export class SourcesPanel extends UI.Panel.Panel {
    * @return {boolean}
    */
   _togglePause() {
-    const target = self.UI.context.flavor(SDK.SDKModel.Target);
+    const target = UI.Context.Context.instance().flavor(SDK.SDKModel.Target);
     if (!target) {
       return true;
     }
@@ -640,7 +640,7 @@ export class SourcesPanel extends UI.Panel.Panel {
     this._paused = false;
 
     this._clearInterface();
-    const target = self.UI.context.flavor(SDK.SDKModel.Target);
+    const target = UI.Context.Context.instance().flavor(SDK.SDKModel.Target);
     return target ? target.model(SDK.DebuggerModel.DebuggerModel) : null;
   }
 
@@ -714,7 +714,7 @@ export class SourcesPanel extends UI.Panel.Panel {
    * @param {!Workspace.UISourceCode.UILocation} uiLocation
    */
   async _continueToLocation(uiLocation) {
-    const executionContext = self.UI.context.flavor(SDK.RuntimeModel.ExecutionContext);
+    const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
     if (!executionContext) {
       return;
     }
@@ -842,7 +842,7 @@ export class SourcesPanel extends UI.Panel.Panel {
 
     const contentType = uiSourceCode.contentType();
     if (contentType.hasScripts()) {
-      const target = self.UI.context.flavor(SDK.SDKModel.Target);
+      const target = UI.Context.Context.instance().flavor(SDK.SDKModel.Target);
       const debuggerModel = target ? target.model(SDK.DebuggerModel.DebuggerModel) : null;
       if (debuggerModel && debuggerModel.isPaused()) {
         contextMenu.debugSection().appendItem(
@@ -870,7 +870,7 @@ export class SourcesPanel extends UI.Panel.Panel {
       return;
     }
     const remoteObject = /** @type {!SDK.RemoteObject.RemoteObject} */ (target);
-    const executionContext = self.UI.context.flavor(SDK.RuntimeModel.ExecutionContext);
+    const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
     contextMenu.debugSection().appendItem(
         ls`Store as global variable`,
         () => SDK.ConsoleModel.ConsoleModel.instance().saveToTempVariable(executionContext, remoteObject));
@@ -1219,10 +1219,10 @@ export class DebuggingActionDelegate {
         return true;
       }
       case 'debugger.evaluate-selection': {
-        const frame = self.UI.context.flavor(UISourceCodeFrame);
+        const frame = UI.Context.Context.instance().flavor(UISourceCodeFrame);
         if (frame) {
           let text = frame.textEditor.text(frame.textEditor.selection());
-          const executionContext = self.UI.context.flavor(SDK.RuntimeModel.ExecutionContext);
+          const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
           if (executionContext) {
             const message = SDK.ConsoleModel.ConsoleModel.instance().addCommandMessage(executionContext, text);
             text = ObjectUI.JavaScriptREPL.JavaScriptREPL.wrapObjectLiteral(text);

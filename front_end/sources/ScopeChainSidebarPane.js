@@ -72,7 +72,7 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
       return;
     }
 
-    if (self.UI.context.flavor(SDK.DebuggerModel.DebuggerPausedDetails)) {
+    if (UI.Context.Context.instance().flavor(SDK.DebuggerModel.DebuggerPausedDetails)) {
       this._treeOutline.forceSelect();
     }
   }
@@ -82,8 +82,8 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
   }
 
   _update() {
-    const callFrame = self.UI.context.flavor(SDK.DebuggerModel.CallFrame);
-    const details = self.UI.context.flavor(SDK.DebuggerModel.DebuggerPausedDetails);
+    const callFrame = UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame);
+    const details = UI.Context.Context.instance().flavor(SDK.DebuggerModel.DebuggerPausedDetails);
     this._linkifier.reset();
     resolveThisObject(callFrame).then(this._innerUpdate.bind(this, details, callFrame));
   }

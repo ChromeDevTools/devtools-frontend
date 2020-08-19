@@ -6,11 +6,28 @@ import * as Common from '../common/common.js';
 import * as Root from '../root/root.js';  // eslint-disable-line no-unused-vars
 import {ContextFlavorListener} from './ContextFlavorListener.js';
 
+/** @type {!Context} */
+let contextInstance;
 
 export class Context {
+  /**
+   * @private
+   */
   constructor() {
     this._flavors = new Map();
     this._eventDispatchers = new Map();
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!contextInstance || forceNew) {
+      contextInstance = new Context();
+    }
+
+    return contextInstance;
   }
 
   /**

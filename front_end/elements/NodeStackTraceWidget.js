@@ -28,7 +28,7 @@ export class NodeStackTraceWidget extends UI.ThrottledWidget.ThrottledWidget {
    * @override
    */
   wasShown() {
-    self.UI.context.addFlavorChangeListener(SDK.DOMModel.DOMNode, this.update, this);
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.update, this);
     this.update();
   }
 
@@ -36,7 +36,7 @@ export class NodeStackTraceWidget extends UI.ThrottledWidget.ThrottledWidget {
    * @override
    */
   willHide() {
-    self.UI.context.removeFlavorChangeListener(SDK.DOMModel.DOMNode, this.update, this);
+    UI.Context.Context.instance().removeFlavorChangeListener(SDK.DOMModel.DOMNode, this.update, this);
   }
 
   /**
@@ -45,7 +45,7 @@ export class NodeStackTraceWidget extends UI.ThrottledWidget.ThrottledWidget {
    * @return {!Promise<undefined>}
    */
   async doUpdate() {
-    const node = self.UI.context.flavor(SDK.DOMModel.DOMNode);
+    const node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
 
     if (!node) {
       this._noStackTraceElement.classList.remove('hidden');

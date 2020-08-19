@@ -701,14 +701,16 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
      * @this {ExtensionServer}
      */
     function onElementsSubscriptionStarted() {
-      self.UI.context.addFlavorChangeListener(SDK.DOMModel.DOMNode, this._notifyElementsSelectionChanged, this);
+      UI.Context.Context.instance().addFlavorChangeListener(
+          SDK.DOMModel.DOMNode, this._notifyElementsSelectionChanged, this);
     }
 
     /**
      * @this {ExtensionServer}
      */
     function onElementsSubscriptionStopped() {
-      self.UI.context.removeFlavorChangeListener(SDK.DOMModel.DOMNode, this._notifyElementsSelectionChanged, this);
+      UI.Context.Context.instance().removeFlavorChangeListener(
+          SDK.DOMModel.DOMNode, this._notifyElementsSelectionChanged, this);
     }
 
     this._registerSubscriptionHandler(

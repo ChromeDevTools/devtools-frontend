@@ -830,7 +830,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
   async _saveNodeToTempVariable(node) {
     const remoteObjectForConsole = await node.resolveToObject();
     await SDK.ConsoleModel.ConsoleModel.instance().saveToTempVariable(
-        self.UI.context.flavor(SDK.RuntimeModel.ExecutionContext), remoteObjectForConsole);
+        UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext), remoteObjectForConsole);
   }
 
   runPendingUpdates() {

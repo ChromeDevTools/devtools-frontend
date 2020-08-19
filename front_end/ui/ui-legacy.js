@@ -250,7 +250,7 @@ UI.XLink = UIModule.XLink.XLink;
 UI.XLink.ContextMenuProvider = UIModule.XLink.ContextMenuProvider;
 
 /** @type {!UIModule.Context.Context} */
-self.UI.context = new UIModule.Context.Context();
+self.UI.context = UIModule.Context.Context.instance();
 
 
 /**

@@ -41,9 +41,10 @@ export class ConsoleContextSelector {
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated,
         this);
 
-    self.UI.context.addFlavorChangeListener(
+    UI.Context.Context.instance().addFlavorChangeListener(
         SDK.RuntimeModel.ExecutionContext, this._executionContextChangedExternally, this);
-    self.UI.context.addFlavorChangeListener(SDK.DebuggerModel.CallFrame, this._callFrameSelectedInUI, this);
+    UI.Context.Context.instance().addFlavorChangeListener(
+        SDK.DebuggerModel.CallFrame, this._callFrameSelectedInUI, this);
     SDK.SDKModel.TargetManager.instance().observeModels(SDK.RuntimeModel.RuntimeModel, this);
     SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.CallFrameSelected, this._callFrameSelectedInModel,
@@ -136,7 +137,7 @@ export class ConsoleContextSelector {
   _executionContextCreated(executionContext) {
     this._items.insertWithComparator(executionContext, executionContext.runtimeModel.executionContextComparator());
 
-    if (executionContext === self.UI.context.flavor(SDK.RuntimeModel.ExecutionContext)) {
+    if (executionContext === UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext)) {
       this._dropDown.selectItem(executionContext);
     }
   }
@@ -299,14 +300,14 @@ export class ConsoleContextSelector {
     this._toolbarItem.element.classList.toggle('warning', !this._isTopContext(item) && this._hasTopContext());
     const title = item ? ls`JavaScript context: ${this.titleFor(item)}` : ls`JavaScript context: Not selected`;
     this._toolbarItem.setTitle(title);
-    self.UI.context.setFlavor(SDK.RuntimeModel.ExecutionContext, item);
+    UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, item);
   }
 
   _callFrameSelectedInUI() {
-    const callFrame = self.UI.context.flavor(SDK.DebuggerModel.CallFrame);
+    const callFrame = UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame);
     const callFrameContext = callFrame && callFrame.script.executionContext();
     if (callFrameContext) {
-      self.UI.context.setFlavor(SDK.RuntimeModel.ExecutionContext, callFrameContext);
+      UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, callFrameContext);
     }
   }
 

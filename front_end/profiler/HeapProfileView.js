@@ -287,7 +287,7 @@ export class SamplingHeapProfileTypeBase extends ProfileType {
   }
 
   _startRecordingProfile() {
-    const heapProfilerModel = self.UI.context.flavor(SDK.HeapProfilerModel.HeapProfilerModel);
+    const heapProfilerModel = UI.Context.Context.instance().flavor(SDK.HeapProfilerModel.HeapProfilerModel);
     if (this.profileBeingRecorded() || !heapProfilerModel) {
       return;
     }
@@ -516,7 +516,7 @@ export class SamplingNativeHeapSnapshotType extends SamplingHeapProfileTypeBase 
     if (this.profileBeingRecorded()) {
       return;
     }
-    const heapProfilerModel = self.UI.context.flavor(SDK.HeapProfilerModel.HeapProfilerModel);
+    const heapProfilerModel = UI.Context.Context.instance().flavor(SDK.HeapProfilerModel.HeapProfilerModel);
     if (!heapProfilerModel) {
       return;
     }

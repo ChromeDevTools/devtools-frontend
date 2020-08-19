@@ -636,7 +636,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     const deviceModeWrapperAction = new Emulation.DeviceModeWrapper.ActionDelegate();
     contextMenu.viewSection().appendItem(
         ls`Capture node screenshot`,
-        deviceModeWrapperAction.handleAction.bind(null, self.UI.context, 'emulation.capture-node-screenshot'));
+        deviceModeWrapperAction.handleAction.bind(
+            null, UI.Context.Context.instance(), 'emulation.capture-node-screenshot'));
   }
 
   _startEditing() {

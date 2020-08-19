@@ -112,7 +112,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     this._idleCallbackManager = null;
     this._needsForceUpdate = false;
     StylesSidebarPane._instance = this;
-    self.UI.context.addFlavorChangeListener(SDK.DOMModel.DOMNode, this.forceUpdate, this);
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.forceUpdate, this);
     this.contentElement.addEventListener('copy', this._clipboardCopy.bind(this));
     this._resizeThrottler = new Common.Throttler.Throttler(100);
 
@@ -2797,14 +2797,14 @@ export class ButtonProvider {
     this._button.element.appendChild(longclickTriangle);
 
     new UI.UIUtils.LongClickController(this._button.element, this._longClicked.bind(this));
-    self.UI.context.addFlavorChangeListener(SDK.DOMModel.DOMNode, onNodeChanged.bind(this));
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, onNodeChanged.bind(this));
     onNodeChanged.call(this);
 
     /**
      * @this {ButtonProvider}
      */
     function onNodeChanged() {
-      let node = self.UI.context.flavor(SDK.DOMModel.DOMNode);
+      let node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
       node = node ? node.enclosingElementOrSelf() : null;
       this._button.setEnabled(!!node);
     }

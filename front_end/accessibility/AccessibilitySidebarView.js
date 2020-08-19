@@ -34,7 +34,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
       this._sidebarPaneStack.showView(this._sourceOrderSubPane);
     }
     this._sidebarPaneStack.widget().show(this.element);
-    self.UI.context.addFlavorChangeListener(SDK.DOMModel.DOMNode, this._pullNode, this);
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this._pullNode, this);
     this._pullNode();
   }
 
@@ -147,7 +147,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
       this._skipNextPullNode = false;
       return;
     }
-    this.setNode(self.UI.context.flavor(SDK.DOMModel.DOMNode));
+    this.setNode(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode));
   }
 
   /**

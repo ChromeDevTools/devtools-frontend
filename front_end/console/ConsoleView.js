@@ -258,7 +258,8 @@ export class ConsoleView extends UI.Widget.VBox {
 
     this._registerWithMessageSink();
 
-    self.UI.context.addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, this._executionContextChanged, this);
+    UI.Context.Context.instance().addFlavorChangeListener(
+        SDK.RuntimeModel.ExecutionContext, this._executionContextChanged, this);
 
     this._messagesElement.addEventListener(
         'mousedown', event => this._updateStickToBottomOnPointerDown(event.button === 2), false);
@@ -1374,7 +1375,8 @@ export class ConsoleViewFilter {
     this._messageLevelFiltersSetting.addChangeListener(this._onFilterChanged.bind(this));
     this._hideNetworkMessagesSetting.addChangeListener(this._onFilterChanged.bind(this));
     this._filterByExecutionContextSetting.addChangeListener(this._onFilterChanged.bind(this));
-    self.UI.context.addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, this._onFilterChanged, this);
+    UI.Context.Context.instance().addFlavorChangeListener(
+        SDK.RuntimeModel.ExecutionContext, this._onFilterChanged, this);
 
     const filterKeys = Object.values(FilterType);
     this._suggestionBuilder = new UI.FilterSuggestionBuilder.FilterSuggestionBuilder(filterKeys);
@@ -1442,8 +1444,9 @@ export class ConsoleViewFilter {
       parsedFilters.push({key: FilterType.Source, text: SDK.ConsoleModel.MessageSource.Network, negative: true});
     }
 
-    this._currentFilter.executionContext =
-        this._filterByExecutionContextSetting.get() ? self.UI.context.flavor(SDK.RuntimeModel.ExecutionContext) : null;
+    this._currentFilter.executionContext = this._filterByExecutionContextSetting.get() ?
+        UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext) :
+        null;
     this._currentFilter.parsedFilters = parsedFilters;
     this._currentFilter.levelsMask = this._messageLevelFiltersSetting.get();
   }

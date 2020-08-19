@@ -91,7 +91,7 @@ export class JavaScriptCompilerPlugin extends Plugin {
     if (!runtimeModel) {
       return;
     }
-    const currentExecutionContext = self.UI.context.flavor(SDK.RuntimeModel.ExecutionContext);
+    const currentExecutionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
     if (!currentExecutionContext) {
       return;
     }

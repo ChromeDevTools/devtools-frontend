@@ -30,12 +30,10 @@ export class ForwardedInputEventHandler {
       return;
     }
 
-    // @ts-ignore
-    // TODO(crbug.com/1058320): Replace self.UI.context global.
-    const context = /** @type {!Context} */ (self.UI.context);
+    const context = Context.instance();
 
     // @ts-ignore
-    // TODO(crbug.com/1058320): Replace self.UI.context global.
+    // TODO(crbug.com/1058320): Replace self.UI.shortcutRegistry global.
     const shortcutRegistry = /** @type {!ShortcutRegistry} */ (self.UI.shortcutRegistry);
 
     context.setFlavor(ForwardedShortcut, ForwardedShortcut.instance);

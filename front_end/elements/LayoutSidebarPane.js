@@ -45,7 +45,7 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   _pullNode() {
-    this._node = self.UI.context.flavor(SDK.DOMModel.DOMNode);
+    this._node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
   }
 
   async _fetchGridNodes() {
@@ -131,7 +131,7 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     const overlayModel = this._node.domModel().overlayModel();
     overlayModel.addEventListener(SDK.OverlayModel.Events.PersistentGridOverlayCleared, this.update, this);
     overlayModel.addEventListener(SDK.OverlayModel.Events.PersistentGridOverlayStateChanged, this.update, this);
-    self.UI.context.addFlavorChangeListener(SDK.DOMModel.DOMNode, this.update, this);
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.update, this);
     this.update();
   }
 
@@ -148,6 +148,6 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     const overlayModel = this._node.domModel().overlayModel();
     overlayModel.removeEventListener(SDK.OverlayModel.Events.PersistentGridOverlayCleared, this.update, this);
     overlayModel.removeEventListener(SDK.OverlayModel.Events.PersistentGridOverlayStateChanged, this.update, this);
-    self.UI.context.removeFlavorChangeListener(SDK.DOMModel.DOMNode, this.update, this);
+    UI.Context.Context.instance().removeFlavorChangeListener(SDK.DOMModel.DOMNode, this.update, this);
   }
 }

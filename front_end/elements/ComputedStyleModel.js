@@ -7,6 +7,7 @@
 
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
 
 /**
  * @unrestricted
@@ -14,10 +15,10 @@ import * as SDK from '../sdk/sdk.js';
 export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
-    this._node = self.UI.context.flavor(SDK.DOMModel.DOMNode);
+    this._node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
     this._cssModel = null;
     this._eventListeners = [];
-    self.UI.context.addFlavorChangeListener(SDK.DOMModel.DOMNode, this._onNodeChanged, this);
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this._onNodeChanged, this);
   }
 
   /**

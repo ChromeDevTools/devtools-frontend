@@ -292,7 +292,7 @@ export class ElementsPanel extends UI.Panel.Panel {
    * @override
    */
   wasShown() {
-    self.UI.context.setFlavor(ElementsPanel, this);
+    UI.Context.Context.instance().setFlavor(ElementsPanel, this);
 
     for (const treeOutline of this._treeOutlines) {
       // Attach heavy component lazily
@@ -340,7 +340,7 @@ export class ElementsPanel extends UI.Panel.Panel {
       }
     }
     super.willHide();
-    self.UI.context.setFlavor(ElementsPanel, null);
+    UI.Context.Context.instance().setFlavor(ElementsPanel, null);
   }
 
   /**
@@ -384,7 +384,7 @@ export class ElementsPanel extends UI.Panel.Panel {
       this._breadcrumbs.data = {crumbs: [], selectedNode: null};
     }
 
-    self.UI.context.setFlavor(SDK.DOMModel.DOMNode, selectedNode);
+    UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, selectedNode);
 
     if (!selectedNode) {
       return;
@@ -399,7 +399,7 @@ export class ElementsPanel extends UI.Panel.Panel {
     const nodeFrameId = selectedNode.frameId();
     for (const context of executionContexts) {
       if (context.frameId === nodeFrameId) {
-        self.UI.context.setFlavor(SDK.RuntimeModel.ExecutionContext, context);
+        UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, context);
         break;
       }
     }
@@ -1211,7 +1211,7 @@ export class ElementsActionDelegate {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    const node = self.UI.context.flavor(SDK.DOMModel.DOMNode);
+    const node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
     if (!node) {
       return true;
     }

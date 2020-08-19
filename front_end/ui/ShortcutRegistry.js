@@ -60,7 +60,7 @@ export class ShortcutRegistry {
     if (keyNode) {
       actions = keyNode.actions();
     }
-    const applicableActions = this._actionRegistry.applicableActions(actions, self.UI.context);
+    const applicableActions = this._actionRegistry.applicableActions(actions, Context.instance());
     if (keyNode) {
       for (const actionId of Object.keys(handlers)) {
         if (keyNode.actions().indexOf(actionId) >= 0) {
@@ -89,7 +89,7 @@ export class ShortcutRegistry {
     const keys = [];
     for (const node of this._keyMap.chords().values()) {
       const actions = node.actions();
-      const applicableActions = this._actionRegistry.applicableActions(actions, new Context());
+      const applicableActions = this._actionRegistry.applicableActions(actions, Context.instance());
       if (applicableActions.length || node.hasChords()) {
         keys.push(node.key());
       }

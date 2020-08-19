@@ -49,7 +49,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
     SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
     SDK.SDKModel.TargetManager.instance().observeModels(AnimationModel, this);
-    self.UI.context.addFlavorChangeListener(SDK.DOMModel.DOMNode, this._nodeChanged, this);
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this._nodeChanged, this);
   }
 
   /**
@@ -871,7 +871,8 @@ export class NodeUI {
 
   _nodeChanged() {
     this.element.classList.toggle(
-        'animation-node-selected', this._node && this._node === self.UI.context.flavor(SDK.DOMModel.DOMNode));
+        'animation-node-selected',
+        this._node && this._node === UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode));
   }
 }
 

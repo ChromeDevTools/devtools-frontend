@@ -37,7 +37,7 @@ export class ObjectEventListenersSidebarPane extends UI.Widget.VBox {
       this._lastRequestedContext.runtimeModel.releaseObjectGroup(objectGroupName);
       delete this._lastRequestedContext;
     }
-    const executionContext = self.UI.context.flavor(SDK.RuntimeModel.ExecutionContext);
+    const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
     if (!executionContext) {
       this._eventListenersView.reset();
       this._eventListenersView.addEmptyHolderIfNeeded();
@@ -53,7 +53,7 @@ export class ObjectEventListenersSidebarPane extends UI.Widget.VBox {
    */
   wasShown() {
     super.wasShown();
-    self.UI.context.addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, this.update, this);
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, this.update, this);
     this._refreshButton.setEnabled(true);
     this.update();
   }
@@ -63,7 +63,7 @@ export class ObjectEventListenersSidebarPane extends UI.Widget.VBox {
    */
   willHide() {
     super.willHide();
-    self.UI.context.removeFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, this.update, this);
+    UI.Context.Context.instance().removeFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, this.update, this);
     this._refreshButton.setEnabled(false);
   }
 

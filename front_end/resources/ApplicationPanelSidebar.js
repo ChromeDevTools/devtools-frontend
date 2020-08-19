@@ -914,7 +914,7 @@ export class BackgroundServiceTreeElement extends BaseStorageTreeElement {
       this._view = new BackgroundServiceView(this._serviceName, this._model);
     }
     this.showView(this._view);
-    self.UI.context.setFlavor(BackgroundServiceView, this._view);
+    UI.Context.Context.instance().setFlavor(BackgroundServiceView, this._view);
     return false;
   }
 }

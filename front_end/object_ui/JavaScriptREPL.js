@@ -6,6 +6,7 @@
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
 
 import {RemoteObjectPreviewFormatter} from './RemoteObjectPreviewFormatter.js';
 
@@ -52,7 +53,7 @@ export class JavaScriptREPL {
    * @return {!Promise<!{preview: !DocumentFragment, result: ?SDK.RuntimeModel.EvaluationResult}>}
    */
   static async evaluateAndBuildPreview(text, throwOnSideEffect, timeout, allowErrors, objectGroup) {
-    const executionContext = self.UI.context.flavor(SDK.RuntimeModel.ExecutionContext);
+    const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
     const maxLength = typeof self.ObjectUI.JavaScriptREPL._MaxLengthForEvaluation !== 'undefined' ?
         self.ObjectUI.JavaScriptREPL._MaxLengthForEvaluation :
         MaxLengthForEvaluation;

@@ -1203,7 +1203,7 @@ export class HeapSnapshotProfileType extends ProfileType {
     if (this.profileBeingRecorded()) {
       return;
     }
-    const heapProfilerModel = self.UI.context.flavor(SDK.HeapProfilerModel.HeapProfilerModel);
+    const heapProfilerModel = UI.Context.Context.instance().flavor(SDK.HeapProfilerModel.HeapProfilerModel);
     if (!heapProfilerModel) {
       return;
     }
@@ -1410,7 +1410,7 @@ export class TrackingHeapSnapshotProfileType extends HeapSnapshotProfileType {
    * @return {?SDK.HeapProfilerModel.HeapProfilerModel}
    */
   _addNewProfile() {
-    const heapProfilerModel = self.UI.context.flavor(SDK.HeapProfilerModel.HeapProfilerModel);
+    const heapProfilerModel = UI.Context.Context.instance().flavor(SDK.HeapProfilerModel.HeapProfilerModel);
     if (!heapProfilerModel) {
       return null;
     }

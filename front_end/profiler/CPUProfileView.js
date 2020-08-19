@@ -176,7 +176,7 @@ export class CPUProfileType extends ProfileType {
   }
 
   _startRecordingProfile() {
-    const cpuProfilerModel = self.UI.context.flavor(SDK.CPUProfilerModel.CPUProfilerModel);
+    const cpuProfilerModel = UI.Context.Context.instance().flavor(SDK.CPUProfilerModel.CPUProfilerModel);
     if (this.profileBeingRecorded() || !cpuProfilerModel) {
       return;
     }

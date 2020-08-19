@@ -9,6 +9,7 @@ import * as Common from '../common/common.js';
 import * as Persistence from '../persistence/persistence.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 
 /**
@@ -183,7 +184,7 @@ export async function evaluateScriptSnippet(uiSourceCode) {
     return;
   }
 
-  const executionContext = self.UI.context.flavor(SDK.RuntimeModel.ExecutionContext);
+  const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
   if (!executionContext) {
     return;
   }

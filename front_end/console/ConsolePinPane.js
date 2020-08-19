@@ -258,7 +258,7 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
     const isEditing = this._pinElement.hasFocus();
     const throwOnSideEffect = isEditing && text !== this._committedExpression;
     const timeout = throwOnSideEffect ? 250 : undefined;
-    const executionContext = self.UI.context.flavor(SDK.RuntimeModel.ExecutionContext);
+    const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
     const {preview, result} = await ObjectUI.JavaScriptREPL.JavaScriptREPL.evaluateAndBuildPreview(
         text, throwOnSideEffect, timeout, !isEditing /* allowErrors */, 'console');
     if (this._lastResult && this._lastExecutionContext) {

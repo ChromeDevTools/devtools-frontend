@@ -79,9 +79,11 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
     this._boundOnBindingChanged = this._onBindingChanged.bind(this);
 
     this.textEditor.addEventListener(
-        SourceFrame.SourcesTextEditor.Events.EditorBlurred, () => self.UI.context.setFlavor(UISourceCodeFrame, null));
+        SourceFrame.SourcesTextEditor.Events.EditorBlurred,
+        () => UI.Context.Context.instance().setFlavor(UISourceCodeFrame, null));
     this.textEditor.addEventListener(
-        SourceFrame.SourcesTextEditor.Events.EditorFocused, () => self.UI.context.setFlavor(UISourceCodeFrame, this));
+        SourceFrame.SourcesTextEditor.Events.EditorFocused,
+        () => UI.Context.Context.instance().setFlavor(UISourceCodeFrame, this));
     Common.Settings.Settings.instance()
         .moduleSetting('persistenceNetworkOverridesEnabled')
         .addChangeListener(this._onNetworkPersistenceChanged, this);
@@ -224,7 +226,7 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
       plugin.willHide();
     }
     super.willHide();
-    self.UI.context.setFlavor(UISourceCodeFrame, null);
+    UI.Context.Context.instance().setFlavor(UISourceCodeFrame, null);
     this._uiSourceCode.removeWorkingCopyGetter();
   }
 

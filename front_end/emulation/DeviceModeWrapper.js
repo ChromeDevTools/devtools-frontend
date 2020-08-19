@@ -118,7 +118,7 @@ export class ActionDelegate {
           return DeviceModeView.wrapperInstance._captureScreenshot();
 
         case 'emulation.capture-node-screenshot': {
-          const node = self.UI.context.flavor(SDK.DOMModel.DOMNode);
+          const node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
           if (!node) {
             return true;
           }

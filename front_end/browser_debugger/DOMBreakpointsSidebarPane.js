@@ -276,7 +276,7 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox {
   }
 
   _update() {
-    const details = self.UI.context.flavor(SDK.DebuggerModel.DebuggerPausedDetails);
+    const details = UI.Context.Context.instance().flavor(SDK.DebuggerModel.DebuggerPausedDetails);
     if (this._highlightedBreakpoint) {
       const oldHighlightedBreakpoint = this._highlightedBreakpoint;
       delete this._highlightedBreakpoint;

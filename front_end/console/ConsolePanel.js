@@ -52,7 +52,7 @@ export class ConsolePanel extends UI.Panel.Panel {
 
   static _updateContextFlavor() {
     const consoleView = ConsolePanel.instance()._view;
-    self.UI.context.setFlavor(ConsoleView, consoleView.isShowing() ? consoleView : null);
+    UI.Context.Context.instance().setFlavor(ConsoleView, consoleView.isShowing() ? consoleView : null);
   }
 
   /**

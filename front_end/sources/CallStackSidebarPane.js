@@ -99,14 +99,14 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
   async _doUpdate() {
     this._locationPool.disposeAll();
 
-    const details = self.UI.context.flavor(SDK.DebuggerModel.DebuggerPausedDetails);
+    const details = UI.Context.Context.instance().flavor(SDK.DebuggerModel.DebuggerPausedDetails);
     if (!details) {
       this.setDefaultFocusedElement(this._notPausedMessageElement);
       this._notPausedMessageElement.classList.remove('hidden');
       this._blackboxedMessageElement.classList.add('hidden');
       this._showMoreMessageElement.classList.add('hidden');
       this._items.replaceAll([]);
-      self.UI.context.setFlavor(SDK.DebuggerModel.CallFrame, null);
+      UI.Context.Context.instance().setFlavor(SDK.DebuggerModel.CallFrame, null);
       return;
     }
 
@@ -238,7 +238,8 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
         UI.ARIAUtils.setDisabled(element, true);
       }
     }
-    const isSelected = item[debuggerCallFrameSymbol] === self.UI.context.flavor(SDK.DebuggerModel.CallFrame);
+    const isSelected =
+        item[debuggerCallFrameSymbol] === UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame);
     element.classList.toggle('selected', isSelected);
     UI.ARIAUtils.setSelected(element, isSelected);
     element.classList.toggle('hidden', !this._showBlackboxed && item.isBlackboxed);
@@ -380,7 +381,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
     const oldItem = this.activeCallFrameItem();
     if (debuggerCallFrame && oldItem !== item) {
       debuggerCallFrame.debuggerModel.setSelectedCallFrame(debuggerCallFrame);
-      self.UI.context.setFlavor(SDK.DebuggerModel.CallFrame, debuggerCallFrame);
+      UI.Context.Context.instance().setFlavor(SDK.DebuggerModel.CallFrame, debuggerCallFrame);
       if (oldItem) {
         this._refreshItem(oldItem);
       }
@@ -394,7 +395,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
    * @return {?Item}
    */
   activeCallFrameItem() {
-    const callFrame = self.UI.context.flavor(SDK.DebuggerModel.CallFrame);
+    const callFrame = UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame);
     if (callFrame) {
       return this._items.find(callFrameItem => callFrameItem[debuggerCallFrameSymbol] === callFrame) || null;
     }

@@ -4,7 +4,9 @@
 
 import * as Common from '../common/common.js';
 import * as Root from '../root/root.js';
+
 import {ActionDelegate} from './ActionDelegate.js';  // eslint-disable-line no-unused-vars
+import {Context} from './Context.js';
 
 class ActionRuntimeExtensionDescriptor extends  // eslint-disable-line no-unused-vars
     Root.Runtime.RuntimeExtensionDescriptor {
@@ -75,9 +77,7 @@ export class Action extends Common.ObjectWrapper.ObjectWrapper {
     }
     const delegate = /** @type {!ActionDelegate} */ (await this._extension.instance());
     const actionId = this.id();
-    // @ts-ignore
-    // TODO(crbug.com/1011811): Replace self.UI.context global.
-    return delegate.handleAction(self.UI.context, actionId);
+    return delegate.handleAction(Context.instance(), actionId);
   }
 
   /**

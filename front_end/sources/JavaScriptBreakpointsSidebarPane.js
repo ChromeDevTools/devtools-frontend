@@ -116,7 +116,7 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
    * @return {!Promise<?Workspace.UISourceCode.UILocation>}
    */
   async _getSelectedUILocation() {
-    const details = self.UI.context.flavor(SDK.DebuggerModel.DebuggerPausedDetails);
+    const details = UI.Context.Context.instance().flavor(SDK.DebuggerModel.DebuggerPausedDetails);
     if (details && details.callFrames.length) {
       return await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(
           details.callFrames[0].location());

@@ -7,3 +7,7 @@
 .report-field-value-part {
   padding-left: 1ex;
 }
+
+.report-field-name {
+  flex: 0 0 200px;
+}

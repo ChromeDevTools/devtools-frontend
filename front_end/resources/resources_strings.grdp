@@ -6,6 +6,9 @@
   <message name="IDS_DEVTOOLS_01abfc750a0c942167651c40d088531d" desc="Text in Background Service View of the Application panel">
     #
   </message>
+  <message name="IDS_DEVTOOLS_01fdf6a2a9189d68b1d8a1bd8da7778a" desc="Row title in the Frame Details view">
+    Cross-Origin Opener Policy
+  </message>
   <message name="IDS_DEVTOOLS_027a5c9fbe6caf85fd598a81eaf26492" desc="Manifest installability error in the Application panel">
     Page is not served from a secure origin
   </message>
@@ -246,6 +249,9 @@ table is empty.
   </message>
   <message name="IDS_DEVTOOLS_1a9c7bf3cdba253c6a3f5da142989bdb" desc="Description for ad frame type">
     This frame has been identified as the a child frame of an ad
+  </message>
+  <message name="IDS_DEVTOOLS_817f5e98888edb4bb357c3410879476c" desc="Section header in the Frame Details view">
+    Security &amp; Isolation
   </message>
   <message name="IDS_DEVTOOLS_820896cf2e3ec9d7731c43cdad4b8943" desc="Text in App Manifest View of the Application panel">
     Shortcut #<ph name="SHORTCUTINDEX">$1s<ex>1</ex></ph>
@@ -518,6 +524,9 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   </message>
   <message name="IDS_DEVTOOLS_e498749f3c42246d50b15c81c101d988" desc="Text in Application Panel Sidebar of the Application panel">
     Application
+  </message>
+  <message name="IDS_DEVTOOLS_e5155c66ce8e2bd39dfa50b62afb00c7" desc="Row title in the Frame Details view">
+    Cross-Origin Embedder Policy
   </message>
   <message name="IDS_DEVTOOLS_e60593abb5603af48307343eb862d86a" desc="Text in DOMStorage Items View of the Application panel">
     DOM Storage

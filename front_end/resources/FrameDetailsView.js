@@ -35,6 +35,9 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
       }
     });
     this._adStatus = this._generalSection.appendField(ls`Ad Status`);
+    this._isolationSection = this._reportView.appendSection(ls`Security & Isolation`);
+    this._coepPolicy = this._isolationSection.appendField(ls`Cross-Origin Embedder Policy`);
+    this._coopPolicy = this._isolationSection.appendField(ls`Cross-Origin Opener Policy`);
     this.update();
   }
 
@@ -65,6 +68,16 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     if (this._ownerDomNode) {
       this._ownerElementFieldValue.textContent = `<${this._ownerDomNode.nodeName().toLocaleLowerCase()}>`;
     }
+    await this._updateCoopCoepStatus();
+  }
+
+  async _updateCoopCoepStatus() {
+    const info = await this._frame.resourceTreeModel()
+                     .target()
+                     .model(SDK.NetworkManager.NetworkManager)
+                     .getSecurityIsolationStatus(this._frame.id);
+    this._coepPolicy.textContent = info.coep.value;
+    this._coopPolicy.textContent = info.coop.value;
   }
 
   /**

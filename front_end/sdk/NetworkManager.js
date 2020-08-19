@@ -218,6 +218,18 @@ export class NetworkManager extends SDKModel {
   _bypassServiceWorkerChanged() {
     this._networkAgent.invoke_setBypassServiceWorker({bypass: this._bypassServiceWorkerSetting.get()});
   }
+
+  /**
+   * @param {string} frameId
+   * @returns {!Promise<?Protocol.Network.SecurityIsolationStatus>}
+   */
+  async getSecurityIsolationStatus(frameId) {
+    const result = await this._networkAgent.invoke_getSecurityIsolationStatus({frameId});
+    if (result.getError()) {
+      return null;
+    }
+    return result.status;
+  }
 }
 
 /** @enum {symbol} */

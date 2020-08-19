@@ -148,7 +148,7 @@ export class SourcesView extends UI.Widget.VBox {
       } else {
         row.createChild('div', 'tabbed-pane-no-shortcut').textContent = shortcut.description;
       }
-      const action = self.UI.actionRegistry.action(shortcut.actionId);
+      const action = UI.ActionRegistry.ActionRegistry.instance().action(shortcut.actionId);
       const actionHandler = action.execute.bind(action);
       this._placeholderOptionArray.push({element: row, handler: actionHandler});
     }

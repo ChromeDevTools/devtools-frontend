@@ -307,8 +307,10 @@ export class MainImpl {
 
     new PauseListener();
 
-    self.UI.actionRegistry = new UI.ActionRegistry.ActionRegistry();
-    self.UI.shortcutRegistry = new UI.ShortcutRegistry.ShortcutRegistry(self.UI.actionRegistry);
+    const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
+    // Required for legacy a11y layout tests
+    self.UI.actionRegistry = actionRegistryInstance;
+    self.UI.shortcutRegistry = new UI.ShortcutRegistry.ShortcutRegistry(actionRegistryInstance);
     UI.ShortcutsScreen.ShortcutsScreen.registerShortcuts();
     this._registerMessageSinkListener();
 
@@ -327,7 +329,7 @@ export class MainImpl {
     self.UI.dockController.initialize();
     app.presentUI(document);
 
-    const toggleSearchNodeAction = self.UI.actionRegistry.action('elements.toggle-element-search');
+    const toggleSearchNodeAction = UI.ActionRegistry.ActionRegistry.instance().action('elements.toggle-element-search');
     // TODO: we should not access actions from other modules.
     if (toggleSearchNodeAction) {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(

@@ -46,7 +46,7 @@ export class InspectElementModeController {
    * @suppressGlobalPropertiesCheck
    */
   constructor() {
-    this._toggleSearchAction = self.UI.actionRegistry.action('elements.toggle-element-search');
+    this._toggleSearchAction = UI.ActionRegistry.ActionRegistry.instance().action('elements.toggle-element-search');
     this._mode = Protocol.Overlay.InspectMode.None;
     SDK.SDKModel.TargetManager.instance().addEventListener(
         SDK.SDKModel.Events.SuspendStateChanged, this._suspendStateChanged, this);

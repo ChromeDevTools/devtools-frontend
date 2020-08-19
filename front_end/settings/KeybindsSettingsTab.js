@@ -133,7 +133,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox {
    * @returns {!Array.<!KeybindsItem>}
    */
   _createListItems() {
-    const actions = self.UI.actionRegistry.actions().sort((actionA, actionB) => {
+    const actions = UI.ActionRegistry.ActionRegistry.instance().actions().sort((actionA, actionB) => {
       if (actionA.category() < actionB.category()) {
         return -1;
       }

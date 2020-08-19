@@ -7,11 +7,26 @@ import * as Root from '../root/root.js';  // eslint-disable-line no-unused-vars
 import {Action} from './Action.js';
 import {Context} from './Context.js';  // eslint-disable-line no-unused-vars
 
+/** @type {!ActionRegistry} */
+let actionRegistryInstance;
+
 export class ActionRegistry {
   constructor() {
     /** @type {!Map.<string, !Action>} */
     this._actionsById = new Map();
     this._registerActions();
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!actionRegistryInstance || forceNew) {
+      actionRegistryInstance = new ActionRegistry();
+    }
+
+    return actionRegistryInstance;
   }
 
   _registerActions() {

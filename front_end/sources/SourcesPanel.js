@@ -62,16 +62,18 @@ export class SourcesPanel extends UI.Panel.Panel {
     this._workspace = Workspace.Workspace.WorkspaceImpl.instance();
 
     this._togglePauseAction =
-        /** @type {!UI.Action.Action }*/ (self.UI.actionRegistry.action('debugger.toggle-pause'));
+        /** @type {!UI.Action.Action }*/ (UI.ActionRegistry.ActionRegistry.instance().action('debugger.toggle-pause'));
     this._stepOverAction =
-        /** @type {!UI.Action.Action }*/ (self.UI.actionRegistry.action('debugger.step-over'));
+        /** @type {!UI.Action.Action }*/ (UI.ActionRegistry.ActionRegistry.instance().action('debugger.step-over'));
     this._stepIntoAction =
-        /** @type {!UI.Action.Action }*/ (self.UI.actionRegistry.action('debugger.step-into'));
-    this._stepOutAction = /** @type {!UI.Action.Action }*/ (self.UI.actionRegistry.action('debugger.step-out'));
+        /** @type {!UI.Action.Action }*/ (UI.ActionRegistry.ActionRegistry.instance().action('debugger.step-into'));
+    this._stepOutAction =
+        /** @type {!UI.Action.Action }*/ (UI.ActionRegistry.ActionRegistry.instance().action('debugger.step-out'));
     this._stepAction =
-        /** @type {!UI.Action.Action }*/ (self.UI.actionRegistry.action('debugger.step'));
+        /** @type {!UI.Action.Action }*/ (UI.ActionRegistry.ActionRegistry.instance().action('debugger.step'));
     this._toggleBreakpointsActiveAction =
-        /** @type {!UI.Action.Action }*/ (self.UI.actionRegistry.action('debugger.toggle-breakpoints-active'));
+        /** @type {!UI.Action.Action }*/ (
+            UI.ActionRegistry.ActionRegistry.instance().action('debugger.toggle-breakpoints-active'));
 
     this._debugToolbar = this._createDebugToolbar();
     this._debugToolbarDrawer = this._createDebugToolbarDrawer();

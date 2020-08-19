@@ -1870,7 +1870,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
   _editAsHTML() {
     const promise = Common.Revealer.reveal(this.node());
-    promise.then(() => self.UI.actionRegistry.action('elements.edit-as-html').execute());
+    promise.then(() => UI.ActionRegistry.ActionRegistry.instance().action('elements.edit-as-html').execute());
   }
 
   // TODO: add unit tests for adorner-related methods after component and TypeScript works are done

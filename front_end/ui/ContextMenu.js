@@ -34,6 +34,7 @@
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Host from '../host/host.js';
 
+import {ActionRegistry} from './ActionRegistry.js';
 import {SoftContextMenu} from './SoftContextMenu.js';
 
 /**
@@ -169,7 +170,7 @@ export class Section {
    * @param {boolean=} optional
    */
   appendAction(actionId, label, optional) {
-    const action = self.UI.actionRegistry.action(actionId);
+    const action = ActionRegistry.instance().action(actionId);
     if (!action) {
       if (!optional) {
         console.error(`Action ${actionId} was not defined`);

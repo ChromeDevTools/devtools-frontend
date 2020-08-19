@@ -210,7 +210,7 @@ export class CommandMenuProvider extends Provider {
     const allCommands = commandMenu.commands();
 
     // Populate allowlisted actions.
-    const actions = self.UI.actionRegistry.availableActions();
+    const actions = UI.ActionRegistry.ActionRegistry.instance().availableActions();
     for (const action of actions) {
       const category = action.category();
       if (!category) {

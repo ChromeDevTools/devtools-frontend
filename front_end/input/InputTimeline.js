@@ -32,11 +32,11 @@ export class InputTimeline extends UI.Widget.VBox {
 
 
     this._toggleRecordAction =
-        /** @type {!UI.Action.Action }*/ (self.UI.actionRegistry.action('input.toggle-recording'));
+        /** @type {!UI.Action.Action }*/ (UI.ActionRegistry.ActionRegistry.instance().action('input.toggle-recording'));
     this._startReplayAction =
-        /** @type {!UI.Action.Action }*/ (self.UI.actionRegistry.action('input.start-replaying'));
+        /** @type {!UI.Action.Action }*/ (UI.ActionRegistry.ActionRegistry.instance().action('input.start-replaying'));
     this._togglePauseAction =
-        /** @type {!UI.Action.Action }*/ (self.UI.actionRegistry.action('input.toggle-pause'));
+        /** @type {!UI.Action.Action }*/ (UI.ActionRegistry.ActionRegistry.instance().action('input.toggle-pause'));
 
     const toolbarContainer = this.contentElement.createChild('div', 'input-timeline-toolbar-container');
     this._panelToolbar = new UI.Toolbar.Toolbar('input-timeline-toolbar', toolbarContainer);

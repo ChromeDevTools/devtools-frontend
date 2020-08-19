@@ -5712,6 +5712,28 @@ domain Page
       # This frame is the root of an ad frame.
       root
 
+  # Indicates whether the frame is a secure context and why it is the case.
+  experimental type SecureContextType extends string
+    enum
+      # The origin is a secure context.
+      Secure
+      # The host is localhost and hence is considered secure.
+      SecureLocalhost
+      # The origin has an insecure scheme and is not localhost.
+      InsecureScheme
+      # One of the ancestor frames is not a secure context.
+      InsecureAncestor
+
+  # Indicates whether the frame is cross-origin isolated and why it is the case.
+  experimental type CrossOriginIsolatedContextType extends string
+    enum
+      # The origin is cross-origin isolated.
+      Isolated
+      # The origin is not cross-origin isolated.
+      NotIsolated
+      # The cross-origin isolation feature is disabled.
+      NotIsolatedFeatureDisabled
+
   # Information about the Frame on the page.
   type Frame extends object
     properties
@@ -5740,6 +5762,10 @@ domain Page
       experimental optional string unreachableUrl
       # Indicates whether this frame was tagged as an ad.
       experimental optional AdFrameType adFrameType
+      # Indicates whether the main document is a secure context and explains why that is the case.
+      experimental SecureContextType secureContextType
+      # Indicates whether this is a cross origin isolated context.
+      experimental CrossOriginIsolatedContextType crossOriginIsolatedContextType
 
   # Information about the Resource on the page.
   experimental type FrameResource extends object

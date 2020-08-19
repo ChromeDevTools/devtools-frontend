@@ -12403,6 +12403,29 @@
                     ]
                 },
                 {
+                    "id": "SecureContextType",
+                    "description": "Indicates whether the frame is a secure context and why it is the case.",
+                    "experimental": true,
+                    "type": "string",
+                    "enum": [
+                        "Secure",
+                        "SecureLocalhost",
+                        "InsecureScheme",
+                        "InsecureAncestor"
+                    ]
+                },
+                {
+                    "id": "CrossOriginIsolatedContextType",
+                    "description": "Indicates whether the frame is cross-origin isolated and why it is the case.",
+                    "experimental": true,
+                    "type": "string",
+                    "enum": [
+                        "Isolated",
+                        "NotIsolated",
+                        "NotIsolatedFeatureDisabled"
+                    ]
+                },
+                {
                     "id": "Frame",
                     "description": "Information about the Frame on the page.",
                     "type": "object",
@@ -12470,6 +12493,18 @@
                             "experimental": true,
                             "optional": true,
                             "$ref": "AdFrameType"
+                        },
+                        {
+                            "name": "secureContextType",
+                            "description": "Indicates whether the main document is a secure context and explains why that is the case.",
+                            "experimental": true,
+                            "$ref": "SecureContextType"
+                        },
+                        {
+                            "name": "crossOriginIsolatedContextType",
+                            "description": "Indicates whether this is a cross origin isolated context.",
+                            "experimental": true,
+                            "$ref": "CrossOriginIsolatedContextType"
                         }
                     ]
                 },

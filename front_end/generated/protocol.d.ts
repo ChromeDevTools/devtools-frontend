@@ -8495,6 +8495,25 @@ declare namespace Protocol {
     }
 
     /**
+     * Indicates whether the frame is a secure context and why it is the case.
+     */
+    export enum SecureContextType {
+      Secure = 'Secure',
+      SecureLocalhost = 'SecureLocalhost',
+      InsecureScheme = 'InsecureScheme',
+      InsecureAncestor = 'InsecureAncestor',
+    }
+
+    /**
+     * Indicates whether the frame is cross-origin isolated and why it is the case.
+     */
+    export enum CrossOriginIsolatedContextType {
+      Isolated = 'Isolated',
+      NotIsolated = 'NotIsolated',
+      NotIsolatedFeatureDisabled = 'NotIsolatedFeatureDisabled',
+    }
+
+    /**
      * Information about the Frame on the page.
      */
     export interface Frame {
@@ -8545,6 +8564,14 @@ declare namespace Protocol {
        * Indicates whether this frame was tagged as an ad.
        */
       adFrameType?: AdFrameType;
+      /**
+       * Indicates whether the main document is a secure context and explains why that is the case.
+       */
+      secureContextType: SecureContextType;
+      /**
+       * Indicates whether this is a cross origin isolated context.
+       */
+      crossOriginIsolatedContextType: CrossOriginIsolatedContextType;
     }
 
     /**

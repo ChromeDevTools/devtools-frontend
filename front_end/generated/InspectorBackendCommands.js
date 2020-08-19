@@ -1679,6 +1679,15 @@ export function registerCommands(inspectorBackend) {
 
   // Page.
   inspectorBackend.registerEnum('Page.AdFrameType', {None: 'none', Child: 'child', Root: 'root'});
+  inspectorBackend.registerEnum('Page.SecureContextType', {
+    Secure: 'Secure',
+    SecureLocalhost: 'SecureLocalhost',
+    InsecureScheme: 'InsecureScheme',
+    InsecureAncestor: 'InsecureAncestor'
+  });
+  inspectorBackend.registerEnum(
+      'Page.CrossOriginIsolatedContextType',
+      {Isolated: 'Isolated', NotIsolated: 'NotIsolated', NotIsolatedFeatureDisabled: 'NotIsolatedFeatureDisabled'});
   inspectorBackend.registerEnum('Page.TransitionType', {
     Link: 'link',
     Typed: 'typed',

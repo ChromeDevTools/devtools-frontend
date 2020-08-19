@@ -108,7 +108,7 @@
   position: relative;
   background-color: white;
   width: 100%;
-  height: 78px;
+  height: 83px;
   top: 0;
   font-size: 13px;
   color: #333;
@@ -149,6 +149,8 @@
 
 .contrast-pass-fail {
   margin-left: 0.5em;
+  display: flex;
+  align-items: center;
 }
 
 .contrast-choose-bg-color {
@@ -158,7 +160,47 @@
 
 .spectrum-contrast-details .contrast-choose-bg-color,
 .spectrum-contrast-details .contrast-thresholds {
-  width: 145px;
+  width: 150px;
+}
+
+.contrast-threshold:first-child {
+  margin-bottom: 5px;
+}
+
+.contrast-fix-button {
+  cursor: pointer;
+  font-size: 13px;
+  padding: 0;
+  margin: 0 0 0 10px;
+  background: 0;
+  width: 12px;
+  height: 12px;
+  border: 1px solid rgb(0 0 0 / 10%);
+  display: inline-block;
+  position: relative;
+}
+
+.contrast-fix-button::after {
+  content: " ";
+  width: 13px;
+  height: 13px;
+  background-image: url(Images/ic_suggest_color.svg);
+  background-size: contain;
+  position: absolute;
+  left: 5.5px;
+  top: 3.5px;
+  background-color: white;
+  border-radius: 50%;
+}
+
+:host-context(.-theme-with-dark-background) .contrast-fix-button::after {
+  background-color: rgb(36 36 36);
+}
+
+.contrast-fix-button:hover,
+.contrast-fix-button:focus {
+  border: 1px solid var(--accent-color-hover);
+  transform: scale(1.2);
 }
 
 .contrast-link-label {

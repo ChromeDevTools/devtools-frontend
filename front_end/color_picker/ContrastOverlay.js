@@ -97,7 +97,6 @@ export class ContrastRatioLineBuilder {
     }
 
     const dS = 0.02;
-    const epsilon = 0.0002;
     const H = 0;
     const S = 1;
     const V = 2;
@@ -128,57 +127,6 @@ export class ContrastRatioLineBuilder {
     Common.Color.Color.hsva2rgba(candidateHSVA, candidateRGBA);
     blendedRGBA = Common.ColorUtils.blendColors(candidateRGBA, bgRGBA);
 
-    /**
-     * @param {number} index
-     * @param {number} x
-     */
-    function updateCandidateAndComputeDelta(index, x) {
-      candidateHSVA[index] = x;
-      Common.Color.Color.hsva2rgba(candidateHSVA, candidateRGBA);
-      blendedRGBA = Common.ColorUtils.blendColors(candidateRGBA, bgRGBA);
-      return Common.ColorUtils.luminance(blendedRGBA) - desiredLuminance;
-    }
-
-    /**
-     * Approach a value of the given component of `candidateHSVA` such that the
-     * calculated luminance of `candidateHSVA` approximates `desiredLuminance`.
-     * @param {number} index The component of `candidateHSVA` to modify.
-     * @return {?number} The new value for the modified component, or `null` if
-     *     no suitable value exists.
-     */
-    function approach(index) {
-      let x = candidateHSVA[index];
-      let multiplier = 1;
-      let dLuminance = updateCandidateAndComputeDelta(index, x);
-      let previousSign = Math.sign(dLuminance);
-
-      for (let guard = 100; guard; guard--) {
-        if (Math.abs(dLuminance) < epsilon) {
-          return x;
-        }
-
-        const sign = Math.sign(dLuminance);
-        if (sign !== previousSign) {
-          // If `x` overshoots the correct value, halve the step size.
-          multiplier /= 2;
-          previousSign = sign;
-        } else if (x < 0 || x > 1) {
-          // If there is no overshoot and `x` is out of bounds, there is no
-          // acceptable value for `x`.
-          return null;
-        }
-
-        // Adjust `x` by a multiple of `dLuminance` to decrease step size as
-        // the computed luminance converges on `desiredLuminance`.
-        x += multiplier * (index === V ? -dLuminance : dLuminance);
-
-        dLuminance = updateCandidateAndComputeDelta(index, x);
-      }
-      // The loop should always converge or go out of bounds on its own.
-      console.error('Loop exited unexpectedly');
-      return null;
-    }
-
     // Plot V for values of S such that the computed luminance approximates
     // `desiredLuminance`, until no suitable value for V can be found, or the
     // current value of S goes of out bounds.
@@ -191,7 +139,7 @@ export class ContrastRatioLineBuilder {
       // gradient of the curve.
       candidateHSVA[V] = lastV + currentSlope * dS;
 
-      const v = approach(V);
+      const v = Common.Color.Color.approachColorValue(candidateHSVA, bgRGBA, V, desiredLuminance);
       if (v === null) {
         break;
       }
@@ -210,7 +158,7 @@ export class ContrastRatioLineBuilder {
     if (s < 1 + dS) {
       s -= dS;
       candidateHSVA[V] = 1;
-      s = approach(S);
+      s = Common.Color.Color.approachColorValue(candidateHSVA, bgRGBA, S, desiredLuminance);
       if (s !== null) {
         pathBuilder = pathBuilder.concat(['L', (s * width).toFixed(2), '-0.1']);
       }

@@ -21,6 +21,66 @@ const commandMenuShortcut = Host.Platform.isMac() ? 'Command+Shift+P' : 'Control
 export const releaseNoteText = [
   {
     version: 27,
+    header: 'Highlights from the Chrome 86 update',
+    highlights: [
+      {
+        title: 'New Media panel',
+        subtitle: 'View and download media information on a browser tab.',
+        link: 'https://developers.google.com/web/updates/2020/08/devtools#media-panel',
+      },
+      {
+        title: 'Issues tab updates',
+        subtitle:
+            'The Issues warning bar is replaced with a regular message. Issues tab has a new checkbox to filter third-party cookie issues.',
+        link: 'https://developers.google.com/web/updates/2020/08/devtools#issues-tab',
+      },
+      {
+        title: 'Emulate missing local fonts',
+        subtitle: 'Emulate missing `local()` sources in @font-face rules.',
+        link: 'https://developers.google.com/web/updates/2020/08/devtools#emulate-local-fonts',
+      },
+      {
+        title: 'Emulate inactive users',
+        subtitle: 'Emulate idle state changes for both the user state and the screen state.',
+        link: 'https://developers.google.com/web/updates/2020/08/devtools#emulate-inactive-users',
+      },
+      {
+        title: 'Emulate prefers-reduced-data',
+        subtitle: 'Emulate the user preference on using less data for the page to be rendered.',
+        link: 'https://developers.google.com/web/updates/2020/08/devtools#emulate-prefers-reduced-data',
+      },
+      {
+        title: 'Support for new JavaScript features',
+        subtitle: 'Syntax support for logical assignment operators and numeric separators.',
+        link: 'https://developers.google.com/web/updates/2020/08/devtools#javascript',
+      },
+      {
+        title: 'Lighthouse 6.2',
+        subtitle:
+            'Enhance the unused-javascript audit if a page has publicly-accessible JavaScript source maps, and more.',
+        link: 'https://developers.google.com/web/updates/2020/08/devtools#lighthouse',
+      },
+      {
+        title: 'Deprecation of Service Workers “other origins” listing',
+        subtitle: 'View “other origins” listing in chrome://serviceworker-internals/?devtools instead.',
+        link: 'https://developers.google.com/web/updates/2020/08/devtools#deprecate-sw-other-origins',
+      },
+      {
+        title: 'New frame detailed view',
+        subtitle: 'A new detailed view for each frame and window with security information.',
+        link: 'https://developers.google.com/web/updates/2020/08/devtools#frame-detailed-view',
+      },
+      {
+        title: 'Network and Elements panel updates',
+        subtitle:
+            'Capture node screenshots shortcut, accessible color suggestion, human-readable `X-Client-Data`, and more',
+        link: 'https://developers.google.com/web/updates/2020/08/devtools#elements-network',
+      },
+    ],
+    link: 'https://developers.google.com/web/updates/2020/08/devtools',
+  },
+  {
+    version: 27,
     header: 'Highlights from the Chrome 85 update',
     highlights: [
       {

@@ -84,12 +84,6 @@
   <message name="IDS_DEVTOOLS_86f849e1a655c2df19f28cb3dfe07bc9" desc="Title of a setting under the Network category that can be invoked through the Command Menu">
     Block ads on this site
   </message>
-  <message name="IDS_DEVTOOLS_886f598a8a9e6a4bfe0c09fcf7779611" desc="Title of a setting under the DevTools category that can be invoked through the Command Menu">
-    Emulate a focused page
-  </message>
-  <message name="IDS_DEVTOOLS_9182eda0635ccdc88276ba9e013c5c1b" desc="Title of a setting under the DevTools category that can be invoked through the Command Menu">
-    Do not emulate a focused page
-  </message>
   <message name="IDS_DEVTOOLS_960568e27eb66ea554c3be4cfbefe3d0" desc="Text in Rendering Options">
     Layer borders
   </message>
@@ -113,6 +107,9 @@
   </message>
   <message name="IDS_DEVTOOLS_d543dbe64db0c952d6e13c9519218b3e" desc="Title of an action in the inspector main tool to hard reload">
     Hard reload page
+  </message>
+  <message name="IDS_DEVTOOLS_e99c5958dd97b67bea019c65ddb0d971" desc="Accessibility subtitle for checkbox in Rendering tool">
+    Emulates a focused page.
   </message>
   <message name="IDS_DEVTOOLS_f23c9ba06e7123f0b4c906de90fbcc9f" desc="Title of a setting under the DevTools category that can be invoked through the Command Menu">
     Auto-open <ph name="LOCKED_1">DevTools</ph> for popups

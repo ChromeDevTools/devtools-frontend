@@ -80,6 +80,9 @@ export class RenderingOptionsView extends UI.Widget.VBox {
     this._appendCheckbox(
         ls`Disable local fonts`, ls`Disables local() sources in @font-face rules. Requires a page reload to apply.`,
         Common.Settings.Settings.instance().moduleSetting('localFontsDisabled'));
+    this._appendCheckbox(
+        ls`Emulate a focused page`, ls`Emulates a focused page.`,
+        Common.Settings.Settings.instance().moduleSetting('emulatePageFocus'));
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
     this._appendSelect(

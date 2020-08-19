@@ -382,6 +382,9 @@
   <message name="IDS_DEVTOOLS_884680dd63eae99eab1a407133df66b7" desc="Text to view a security certificate">
     View certificate
   </message>
+  <message name="IDS_DEVTOOLS_886f598a8a9e6a4bfe0c09fcf7779611" desc="Title of a Rendering setting that can be invoked through the Command Menu">
+    Emulate a focused page
+  </message>
   <message name="IDS_DEVTOOLS_888a77f5ac0748b6c8001822417df8b6" desc="Text for security or network protocol">
     Protocol
   </message>

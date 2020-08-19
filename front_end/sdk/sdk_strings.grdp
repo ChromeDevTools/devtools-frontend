@@ -283,6 +283,9 @@
   <message name="IDS_DEVTOOLS_87d9ba4d9f1c832fff7132d0855229b4" desc="Resolution for a SameSiteCookie issue">
     Resolve this issue by migrating your site (as defined by the eTLD+1) entirely to HTTPS. It is also recommended to mark the cookie with the |Secure| attribute if that is not already the case.
   </message>
+  <message name="IDS_DEVTOOLS_9182eda0635ccdc88276ba9e013c5c1b" desc="Title of a Rendering setting that can be invoked through the Command Menu">
+    Do not emulate a focused page
+  </message>
   <message name="IDS_DEVTOOLS_9485d0acccd869b51a96f2b35fd0b620" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Do not emulate CSS prefers-reduced-data
   </message>

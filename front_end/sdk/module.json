@@ -411,6 +411,25 @@
     {
       "type": "setting",
       "category": "Rendering",
+      "title": "Emulate a focused page",
+      "settingName": "emulatePageFocus",
+      "settingType": "boolean",
+      "storageType": "session",
+      "defaultValue": false,
+      "options": [
+        {
+          "value": true,
+          "title": "Emulate a focused page"
+        },
+        {
+          "value": false,
+          "title": "Do not emulate a focused page"
+        }
+      ]
+    },
+    {
+      "type": "setting",
+      "category": "Rendering",
       "settingName": "emulatedCSSMedia",
       "settingType": "enum",
       "storageType": "session",

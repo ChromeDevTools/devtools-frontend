@@ -191,7 +191,11 @@ const initialDescriptors = new Map([
   ['mediumicon-frame-blocked', {position: 'g4', spritesheet: 'mediumicons', isMask: true}],
   ['mediumicon-elements-panel', {position: 'f3', spritesheet: 'mediumicons', isMask: true}],
   ['mediumicon-network-panel', {position: 'f2', spritesheet: 'mediumicons', isMask: true}],
+  ['mediumicon-sources-panel', {position: 'g1', spritesheet: 'mediumicons', isMask: true}],
   ['mediumicon-frame-top', {position: 'f1', spritesheet: 'mediumicons', isMask: true}],
+  ['mediumicon-checkmark', {position: 'g2', spritesheet: 'mediumicons', isMask: true}],
+  ['mediumicon-not-available', {position: 'g3', spritesheet: 'mediumicons', isMask: true}],
+  ['mediumicon-warning-circle', {position: 'g5', spritesheet: 'mediumicons', isMask: true}],
 
   ['badge-navigator-file-sync', {position: 'a9', spritesheet: 'largeicons'}],
   ['largeicon-add', {position: 'a8', spritesheet: 'largeicons', isMask: true}],

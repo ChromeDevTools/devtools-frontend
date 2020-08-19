@@ -42,6 +42,9 @@
   <message name="IDS_DEVTOOLS_769667ac82abe561c47b57d183f6aa57" desc="Title of a section option in Sensors tab for idle emulation">
     Emulate Idle Detector state
   </message>
+  <message name="IDS_DEVTOOLS_7c4e6c518a502500856e59e1a1481260" desc="Text for experimental api button when the api is enabled">
+    &quot;<ph name="LOCKED_1">Experimental Web Platform Feature</ph>&quot; flag is enabled. Click to disable it.
+  </message>
   <message name="IDS_DEVTOOLS_7cc843457525ef424db9f857de4939a2" desc="Title of an option in Sensors tab idle emulation select">
     User active, screen locked
   </message>
@@ -395,6 +398,9 @@
   </message>
   <message name="IDS_DEVTOOLS_fb216d9e8791e63c8d12bdc420956839" desc="Text in Sensors View of the Device Toolbar">
     locale
+  </message>
+  <message name="IDS_DEVTOOLS_fca8edb4a0871d81211511efc6a7d95a" desc="Text for experimental api button when the api is disabled">
+    &quot;<ph name="LOCKED_1">Experimental Web Platform Feature</ph>&quot; flag is disabled. Click to enable it.
   </message>
   <message name="IDS_DEVTOOLS_fd0a6990abd15cd06c80309237b01262" desc="Text of a DOM element in Devices Settings Tab of the Device Toolbar">
     Emulated Devices

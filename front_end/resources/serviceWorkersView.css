@@ -43,6 +43,7 @@
   margin-right: 5px;
   border-radius: 50%;
   border: 1px solid #555;
+  align-self: center;
 }
 
 .service-worker-active-circle {

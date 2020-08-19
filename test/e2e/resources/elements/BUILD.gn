@@ -10,6 +10,7 @@ copy_to_gen("elements") {
     "css-grid.html",
     "css-variables.html",
     "element-breadcrumbs.html",
+    "element-reveal-inline-issue.html",
     "focus.html",
     "hover.html",
     "multiple-constructed-stylesheets.html",

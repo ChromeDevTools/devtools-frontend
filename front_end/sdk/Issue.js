@@ -127,13 +127,6 @@ export class Issue extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @returns {!Iterable<!Protocol.Audits.ContentSecurityPolicyIssueDetails>}
-   */
-  cspViolations() {
-    return [];
-  }
-
-  /**
    * @return {!Iterable<!Protocol.Audits.AffectedRequest>}
    */
   requests() {

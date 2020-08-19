@@ -110,6 +110,14 @@ export const waitForSelectedTreeElementSelectorWithTextcontent = async (expected
   });
 };
 
+export const waitForSelectedTreeElementSelectorWhichIncludesText = async (expectedTextContent: string) => {
+  await waitForFunction(async () => {
+    const selectedNode = await waitFor(SELECTED_TREE_ELEMENT_SELECTOR);
+    const selectedTextContent = await selectedNode.evaluate(node => node.textContent);
+    return selectedTextContent && selectedTextContent.includes(expectedTextContent);
+  });
+};
+
 export const waitForChildrenOfSelectedElementNode = async () => {
   await waitFor(`${SELECTED_TREE_ELEMENT_SELECTOR} + ol > li`);
 };

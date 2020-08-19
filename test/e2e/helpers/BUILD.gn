@@ -16,6 +16,7 @@ node_ts_library("helpers") {
     "elements-helpers.ts",
     "emulation-helpers.ts",
     "event-listeners-helpers.ts",
+    "issues-helpers.ts",
     "layers-helpers.ts",
     "lighthouse-helpers.ts",
     "media-helpers.ts",

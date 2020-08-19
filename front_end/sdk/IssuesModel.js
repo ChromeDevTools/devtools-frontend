@@ -28,6 +28,7 @@ export class IssuesModel extends SDKModel {
     /** @type {*} */
     this._auditsAgent = null;
     this.ensureEnabled();
+    this._disposed = false;
   }
 
   /**
@@ -81,6 +82,24 @@ export class IssuesModel extends SDKModel {
     console.warn(`No handler registered for issue code ${inspectorIssue.code}`);
     return [];
   }
+
+  /**
+   * @override
+   */
+  dispose() {
+    super.dispose();
+    this._disposed = true;
+  }
+
+  /**
+   * @returns {?Target}
+   */
+  getTargetIfNotDisposed() {
+    if (!this._disposed) {
+      return this.target();
+    }
+    return null;
+  }
 }
 
 /**
@@ -124,7 +143,7 @@ function createIssuesForContentSecurityPolicyIssue(issuesModel, inspectorDetails
     console.warn('Content security policy issue without details received.');
     return [];
   }
-  return [new ContentSecurityPolicyIssue(cspDetails)];
+  return [new ContentSecurityPolicyIssue(cspDetails, issuesModel)];
 }
 
 

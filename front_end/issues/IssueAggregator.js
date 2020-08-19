@@ -27,8 +27,8 @@ export class AggregatedIssue extends SDK.Issue.Issue {
     this._mixedContents = new Map();
     /** @type {!Map<string, !Protocol.Audits.HeavyAdIssueDetails>} */
     this._heavyAdIssueDetails = new Map();
-    /** @type {!Set<!Protocol.Audits.ContentSecurityPolicyIssueDetails>} */
-    this._cspViolations = new Set();
+    /** @type {!Set<!SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue>} */
+    this._cspIssues = new Set();
     /** @type {!Map<string, !Protocol.Audits.BlockedByResponseIssueDetails>} */
     this._blockedByResponseDetails = new Map();
     this._aggregatedIssuesCount = 0;
@@ -82,11 +82,10 @@ export class AggregatedIssue extends SDK.Issue.Issue {
   }
 
   /**
-   * @override
-   * @returns {!Set<!Protocol.Audits.ContentSecurityPolicyIssueDetails>}
+   * @returns {!Iterable<!SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue>}
    */
-  cspViolations() {
-    return this._cspViolations;
+  cspIssues() {
+    return this._cspIssues;
   }
 
   /**
@@ -164,12 +163,12 @@ export class AggregatedIssue extends SDK.Issue.Issue {
       const key = JSON.stringify(heavyAds);
       this._heavyAdIssueDetails.set(key, heavyAds);
     }
-    for (const cspViolation of issue.cspViolations()) {
-      this._cspViolations.add(cspViolation);
-    }
     for (const details of issue.blockedByResponseDetails()) {
       const key = JSON.stringify(details, ['parentFrame', 'blockedFrame', 'requestId', 'frameId', 'reason', 'request']);
       this._blockedByResponseDetails.set(key, details);
+    }
+    if (issue instanceof SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue) {
+      this._cspIssues.add(issue);
     }
   }
 }

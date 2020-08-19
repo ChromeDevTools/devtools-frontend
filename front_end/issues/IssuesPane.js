@@ -410,28 +410,33 @@ class AffectedDirectivesView extends AffectedResourcesView {
   /**
    * @param {!Element} element
    * @param {number | undefined} nodeId
+   * @param {?SDK.SDKModel.Target} target
    */
-  _appendBlockedElement(element, nodeId) {
+  _appendBlockedElement(element, nodeId, target) {
     const violatingNode = document.createElement('td');
     violatingNode.classList.add('affected-resource-csp-info-node');
 
     if (nodeId) {
       const violatingNodeId = nodeId;
       const icon = UI.Icon.Icon.create('largeicon-node-search', 'icon');
+      icon.classList.add('element-reveal-icon');
 
-      const target = /** @type {!SDK.SDKModel.Target} */ (SDK.SDKModel.TargetManager.instance().mainTarget());
       icon.onclick = () => {
-        const deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(target, violatingNodeId);
-        Common.Revealer.reveal(deferredDOMNode);
+        if (target) {
+          const deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(target, violatingNodeId);
+          Common.Revealer.reveal(deferredDOMNode);
+        }
       };
 
       UI.Tooltip.Tooltip.install(icon, ls`Click to reveal the violating DOM node in the Elements panel`);
       violatingNode.appendChild(icon);
 
       violatingNode.onmouseenter = () => {
-        const deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(target, violatingNodeId);
-        if (deferredDOMNode) {
-          deferredDOMNode.highlight();
+        if (target) {
+          const deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(target, violatingNodeId);
+          if (deferredDOMNode) {
+            deferredDOMNode.highlight();
+          }
         }
       };
       violatingNode.onmouseleave = () => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
@@ -457,9 +462,9 @@ class AffectedDirectivesView extends AffectedResourcesView {
   }
 
   /**
-   * @param {!Set<!Protocol.Audits.ContentSecurityPolicyIssueDetails>} cspViolations
+   * @param {!Iterable<!SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue>} cspIssues
    */
-  _appendAffectedContentSecurityPolicyDetails(cspViolations) {
+  _appendAffectedContentSecurityPolicyDetails(cspIssues) {
     const header = document.createElement('tr');
     if (this._issue.code() === SDK.ContentSecurityPolicyIssue.inlineViolationCode) {
       this._appendDirectiveColumnTitle(header);
@@ -481,34 +486,35 @@ class AffectedDirectivesView extends AffectedResourcesView {
     }
     this._affectedResources.appendChild(header);
     let count = 0;
-    for (const cspViolation of cspViolations) {
+    for (const cspIssue of cspIssues) {
       count++;
-      this._appendAffectedContentSecurityPolicyDetail(cspViolation);
+      this._appendAffectedContentSecurityPolicyDetail(cspIssue);
     }
     this.updateAffectedResourceCount(count);
   }
 
   /**
-   * @param {!Protocol.Audits.ContentSecurityPolicyIssueDetails} cspViolation
+   * @param {!SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue} cspIssue
    */
-  _appendAffectedContentSecurityPolicyDetail(cspViolation) {
+  _appendAffectedContentSecurityPolicyDetail(cspIssue) {
     const element = document.createElement('tr');
     element.classList.add('affected-resource-directive');
 
+    const cspIssueDetails = cspIssue.details();
     if (this._issue.code() === SDK.ContentSecurityPolicyIssue.inlineViolationCode) {
-      this._appendViolatedDirective(element, cspViolation.violatedDirective);
-      this._appendBlockedElement(element, cspViolation.violatingNodeId);
-      this._appendSourceLocation(element, cspViolation.sourceCodeLocation);
+      this._appendViolatedDirective(element, cspIssueDetails.violatedDirective);
+      this._appendBlockedElement(element, cspIssueDetails.violatingNodeId, cspIssue.model().getTargetIfNotDisposed());
+      this._appendSourceLocation(element, cspIssueDetails.sourceCodeLocation);
       this._appendBlockedStatus(element);
     } else if (this._issue.code() === SDK.ContentSecurityPolicyIssue.urlViolationCode) {
-      const url = cspViolation.blockedURL ? cspViolation.blockedURL : '';
+      const url = cspIssueDetails.blockedURL ? cspIssueDetails.blockedURL : '';
       this._appendBlockedURL(element, url);
       this._appendBlockedStatus(element);
-      this._appendViolatedDirective(element, cspViolation.violatedDirective);
-      this._appendSourceLocation(element, cspViolation.sourceCodeLocation);
+      this._appendViolatedDirective(element, cspIssueDetails.violatedDirective);
+      this._appendSourceLocation(element, cspIssueDetails.sourceCodeLocation);
     } else if (this._issue.code() === SDK.ContentSecurityPolicyIssue.evalViolationCode) {
-      this._appendSourceLocation(element, cspViolation.sourceCodeLocation);
-      this._appendViolatedDirective(element, cspViolation.violatedDirective);
+      this._appendSourceLocation(element, cspIssueDetails.sourceCodeLocation);
+      this._appendViolatedDirective(element, cspIssueDetails.violatedDirective);
       this._appendBlockedStatus(element);
     } else {
       return;
@@ -522,7 +528,7 @@ class AffectedDirectivesView extends AffectedResourcesView {
    */
   update() {
     this.clear();
-    this._appendAffectedContentSecurityPolicyDetails(this._issue.cspViolations());
+    this._appendAffectedContentSecurityPolicyDetails(this._issue.cspIssues());
   }
 }
 

@@ -174,6 +174,9 @@
   <message name="IDS_DEVTOOLS_6ae2f9f803d108269a2cdb714b9851a1" desc="Text in Styles Sidebar Pane of the Elements panel">
     <ph name="NODE_NODENAMEINCORRECTCASE__">$1s<ex>html</ex></ph>[Attributes Style]
   </message>
+  <message name="IDS_DEVTOOLS_6b293c33d0d28889ca822e472f1ad60f" desc="Title for Ad adorner">
+    This frame was identified as an ad frame
+  </message>
   <message name="IDS_DEVTOOLS_6f3cab519fe7e8f3b7834cf882f9dfe6" desc="Text in Classes Pane Widget of the Elements panel">
     Element Classes
   </message>

@@ -72,6 +72,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     if (this._node.nodeType() === Node.ELEMENT_NODE && !isClosingTag) {
       this._canAddAttributes = true;
     }
+    /** @type {?string} */
     this._searchQuery = null;
     this._expandedChildrenLimit = InitialChildrenLimit;
     this._decorationsThrottler = new Common.Throttler.Throttler(100);
@@ -88,6 +89,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         // This flag check is put here because currently the only style adorner is Grid;
         // we will refactor this logic when we have more style-related adorners
         this.updateStyleAdorners();
+      }
+      if (node.isAdFrameNode()) {
+        const adorner = this.adornText('Ad', AdornerCategories.Security);
+        adorner.title = ls`This frame was identified as an ad frame`;
       }
     }
 

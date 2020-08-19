@@ -39,6 +39,7 @@ import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as Root from '../root/root.js';
 
 import {CSSModel} from './CSSModel.js';
+import {FrameManager} from './FrameManager.js';
 import {OverlayModel} from './OverlayModel.js';
 import {RemoteObject} from './RemoteObject.js';  // eslint-disable-line no-unused-vars
 import {RuntimeModel} from './RuntimeModel.js';
@@ -173,6 +174,20 @@ export class DOMNode {
       this.name = payload.name;
       this.value = payload.value;
     }
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isAdFrameNode() {
+    if (this.isIframe() && this._frameOwnerFrameId) {
+      const frame = FrameManager.instance().getFrame(this._frameOwnerFrameId);
+      if (!frame) {
+        return false;
+      }
+      return frame.adFrameType() !== Protocol.Page.AdFrameType.None;
+    }
+    return false;
   }
 
   /**

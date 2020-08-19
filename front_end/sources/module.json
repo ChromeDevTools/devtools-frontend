@@ -703,15 +703,7 @@
           "shortcut": "Alt+w"
         },
         {
-          "platform": "windows,linux",
           "shortcut": "Ctrl+W",
-          "keybindSets": [
-            "vsCode"
-          ]
-        },
-        {
-          "platform": "mac",
-          "shortcut": "Meta+W",
           "keybindSets": [
             "vsCode"
           ]

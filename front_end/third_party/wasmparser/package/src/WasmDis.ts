@@ -487,7 +487,6 @@ export class WasmDisassembler {
   private _nameResolver: INameResolver;
   private _exportMetadata: IExportMetadata = null;
   private _labelMode: LabelMode;
-  private _maxLines: number;
   private _functionBodyOffsets: Array<IFunctionBodyOffset>;
   private _currentFunctionBodyOffset: IFunctionBodyOffset;
   private _logFirstInstruction: boolean;
@@ -519,7 +518,6 @@ export class WasmDisassembler {
     this._initExpression = [];
     this._backrefLabels = null;
     this._labelIndex = 0;
-    this._maxLines = 0;
   }
   public get addOffsets() {
     return this._addOffsets;
@@ -560,9 +558,6 @@ export class WasmDisassembler {
     if (this._currentPosition)
       throw new Error("Cannot switch nameResolver during processing.");
     this._nameResolver = resolver;
-  }
-  public set maxLines(value: number) {
-    this._maxLines = value;
   }
   private appendBuffer(s: string) {
     this._buffer += s;
@@ -1005,11 +1000,6 @@ export class WasmDisassembler {
         "Invalid state: disassembly process was already finished."
       );
     while (true) {
-      if (this._maxLines && this._lines.length >= this._maxLines) {
-        this.appendBuffer(";; -- text is truncated due to size --");
-        this.newLine();
-        return true;
-      }
       this._currentPosition = reader.position + offsetInModule;
       if (!reader.read()) return false;
       switch (reader.state) {

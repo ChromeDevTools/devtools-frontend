@@ -1,3 +1,43 @@
+## [3.1.1](https://github.com/wasdk/wasmparser/compare/v3.1.0...v3.1.1) (2020-08-19)
+
+
+### Bug Fixes
+
+* **threads:** add atomic.fence ([a9fd605](https://github.com/wasdk/wasmparser/commit/a9fd605d175fe91f4991321cd43d0db7868f01df)), closes [/github.com/WebAssembly/wabt/commit/d041025854ba2b00b3df9f308914c8aba05dcda9#diff-25d902c24283ab8cfbac54dfa101ad31](https://github.com//github.com/WebAssembly/wabt/commit/d041025854ba2b00b3df9f308914c8aba05dcda9/issues/diff-25d902c24283ab8cfbac54dfa101ad31)
+
+# [3.1.0](https://github.com/wasdk/wasmparser/compare/v3.0.0...v3.1.0) (2020-07-13)
+
+
+### Bug Fixes
+
+* make chunked parsing work for element entries ([34d35d0](https://github.com/wasdk/wasmparser/commit/34d35d0820da552963d619ee473877be4e1fbcca)), closes [#22](https://github.com/wasdk/wasmparser/issues/22)
+
+
+### Features
+
+* add tests for chunked disassembly ([4976b44](https://github.com/wasdk/wasmparser/commit/4976b4404c3e6fcf48481ac205d8b6fc611b2b29))
+
+# [3.0.0](https://github.com/wasdk/wasmparser/compare/v2.2.5...v3.0.0) (2020-06-24)
+
+
+* revert!: add option to truncate disassembly ([2eb0025](https://github.com/wasdk/wasmparser/commit/2eb002523493efbe286f3661696fa8f4fd31d402)), closes [#30](https://github.com/wasdk/wasmparser/issues/30)
+
+
+### BREAKING CHANGES
+
+* dropping the `WasmDisassembler#maxLines`
+feature that was introduced earlier.
+
+The `WasmDisassembler#maxLines` feature doesn't interact well
+with the chunked disassembly machinery, in particular the
+logic in `getResult()` to avoid breaking def-use chains for
+labels didn't play well with the `maxLines` feature at all
+(it would remove `;; -- text is truncated due to size --`
+marker when the line limit was reached).
+
+Since there's already support for chunked disassembly built
+into wasmparser by design, that should be used instead.
+
 ## [2.2.5](https://github.com/wasdk/wasmparser/compare/v2.2.4...v2.2.5) (2020-06-23)
 
 

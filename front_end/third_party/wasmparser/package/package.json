@@ -1,6 +1,6 @@
 {
   "name": "wasmparser",
-  "version": "2.2.5",
+  "version": "3.1.1",
   "description": "Binary WebAssembly file parser.",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -15,6 +15,13 @@
     "lint": "eslint '**/*.ts' --quiet",
     "prepare": "npm run build",
     "test": "jest"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "(.+/WasmParser).js": "$1.ts"
+    }
   },
   "author": "Yury Delendik <ydelendik@mozilla.com.",
   "contributors": [
@@ -46,7 +53,7 @@
     "semantic-release": "^17.0.8",
     "ts-jest": "^26.1.0",
     "typescript": "^3.9.5",
-    "wabt": "1.0.13"
+    "wabt": "1.0.15"
   },
   "dependencies": {
     "@types/node": "^14.0.13"

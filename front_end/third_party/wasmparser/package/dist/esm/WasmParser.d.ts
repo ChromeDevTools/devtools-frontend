@@ -222,6 +222,7 @@ export declare const enum OperatorCode {
     atomic_notify = 65024,
     i32_atomic_wait = 65025,
     i64_atomic_wait = 65026,
+    atomic_fence = 65027,
     i32_atomic_load = 65040,
     i64_atomic_load = 65041,
     i32_atomic_load8_u = 65042,

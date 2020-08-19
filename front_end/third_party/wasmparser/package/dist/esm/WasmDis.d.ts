@@ -83,7 +83,6 @@ export declare class WasmDisassembler {
     private _nameResolver;
     private _exportMetadata;
     private _labelMode;
-    private _maxLines;
     private _functionBodyOffsets;
     private _currentFunctionBodyOffset;
     private _logFirstInstruction;
@@ -99,7 +98,6 @@ export declare class WasmDisassembler {
     set exportMetadata(exportMetadata: IExportMetadata);
     get nameResolver(): INameResolver;
     set nameResolver(resolver: INameResolver);
-    set maxLines(value: number);
     private appendBuffer;
     private newLine;
     private logStartOfFunctionBodyOffset;

@@ -248,6 +248,7 @@ export const enum OperatorCode {
   atomic_notify = 0xfe00,
   i32_atomic_wait = 0xfe01,
   i64_atomic_wait = 0xfe02,
+  atomic_fence = 0xfe03,
   i32_atomic_load = 0xfe10,
   i64_atomic_load = 0xfe11,
   i32_atomic_load8_u = 0xfe12,
@@ -1032,7 +1033,7 @@ export const OperatorCodeNames = [
   "memory.atomic.notify",
   "memory.atomic.wait32",
   "memory.atomic.wait64",
-  undefined,
+  "atomic.fence",
   undefined,
   undefined,
   undefined,
@@ -1793,32 +1794,43 @@ export class BinaryReader {
   }
   private readElementEntryBody(): boolean {
     let funcType = Type.unspecified;
+    const pos = this._pos;
     if (
       this._segmentFlags &
       (SegmentFlags.IsPassive | SegmentFlags.HasTableIndex)
     ) {
+      if (!this.hasMoreBytes()) return false;
       funcType = this.readVarInt7();
     }
-    if (!this.hasVarIntBytes()) return false;
-    const pos = this._pos;
-    const numElemements = this.readVarUint32();
-    if (!this.hasBytes(numElemements)) {
-      // Shall have at least the numElemements amount of bytes.
+    if (!this.hasVarIntBytes()) {
       this._pos = pos;
       return false;
     }
+    const numElemements = this.readVarUint32();
     const elements = new Uint32Array(numElemements);
     for (let i = 0; i < numElemements; i++) {
       if (this._segmentFlags & SegmentFlags.FunctionsAsElements) {
+        if (!this.hasMoreBytes()) {
+          this._pos = pos;
+          return false;
+        }
         // Read initializer expression, which must either be null ref or func ref
         let operator = this.readUint8();
         if (operator == OperatorCode.ref_null) {
           elements[i] = NULL_FUNCTION_INDEX;
         } else if (operator == OperatorCode.ref_func) {
+          if (!this.hasVarIntBytes()) {
+            this._pos = pos;
+            return false;
+          }
           elements[i] = this.readVarInt32();
         } else {
           this.error = new Error("Invalid initializer expression for element");
           return true;
+        }
+        if (!this.hasMoreBytes()) {
+          this._pos = pos;
+          return false;
         }
         operator = this.readUint8();
         if (operator != OperatorCode.end) {
@@ -2390,6 +2402,15 @@ export class BinaryReader {
       case OperatorCode.i64_atomic_rmw32_cmpxchg_u:
         memoryAddress = this.readMemoryImmediate();
         break;
+      case OperatorCode.atomic_fence: {
+        var consistency_model = this.readUint8();
+        if (consistency_model != 0) {
+          this.error = new Error("atomic.fence consistency model must be 0");
+          this.state = BinaryReaderState.ERROR;
+          return true;
+        }
+        break;
+      }
       default:
         this.error = new Error(`Unknown operator: ${code}`);
         this.state = BinaryReaderState.ERROR;

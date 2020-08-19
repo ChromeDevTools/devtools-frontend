@@ -371,7 +371,6 @@ export class WasmDisassembler {
         this._initExpression = [];
         this._backrefLabels = null;
         this._labelIndex = 0;
-        this._maxLines = 0;
     }
     get addOffsets() {
         return this._addOffsets;
@@ -412,9 +411,6 @@ export class WasmDisassembler {
         if (this._currentPosition)
             throw new Error("Cannot switch nameResolver during processing.");
         this._nameResolver = resolver;
-    }
-    set maxLines(value) {
-        this._maxLines = value;
     }
     appendBuffer(s) {
         this._buffer += s;
@@ -829,11 +825,6 @@ export class WasmDisassembler {
         if (this._done)
             throw new Error("Invalid state: disassembly process was already finished.");
         while (true) {
-            if (this._maxLines && this._lines.length >= this._maxLines) {
-                this.appendBuffer(";; -- text is truncated due to size --");
-                this.newLine();
-                return true;
-            }
             this._currentPosition = reader.position + offsetInModule;
             if (!reader.read())
                 return false;

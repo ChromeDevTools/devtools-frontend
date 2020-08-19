@@ -399,7 +399,6 @@ var WasmDisassembler = /** @class */ (function () {
         this._initExpression = [];
         this._backrefLabels = null;
         this._labelIndex = 0;
-        this._maxLines = 0;
     };
     Object.defineProperty(WasmDisassembler.prototype, "addOffsets", {
         get: function () {
@@ -457,13 +456,6 @@ var WasmDisassembler = /** @class */ (function () {
             if (this._currentPosition)
                 throw new Error("Cannot switch nameResolver during processing.");
             this._nameResolver = resolver;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(WasmDisassembler.prototype, "maxLines", {
-        set: function (value) {
-            this._maxLines = value;
         },
         enumerable: false,
         configurable: true
@@ -884,11 +876,6 @@ var WasmDisassembler = /** @class */ (function () {
         if (this._done)
             throw new Error("Invalid state: disassembly process was already finished.");
         var _loop_1 = function () {
-            if (this_1._maxLines && this_1._lines.length >= this_1._maxLines) {
-                this_1.appendBuffer(";; -- text is truncated due to size --");
-                this_1.newLine();
-                return { value: true };
-            }
             this_1._currentPosition = reader.position + offsetInModule;
             if (!reader.read())
                 return { value: false };

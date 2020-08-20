@@ -24,6 +24,7 @@ export class BasicComponentClosureInterface extends HTMLElement {
   * @return {!Dog}
   */
   get dog() {
+    throw new Error('Not implemented in _bridge.js');
   }
   /**
   * @param {!Dog} dog

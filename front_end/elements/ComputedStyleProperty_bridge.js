@@ -22,8 +22,10 @@ export let ComputedStylePropertyData;
 // eslint-disable-next-line no-unused-vars
 export class ComputedStylePropertyClosureInterface extends HTMLElement {
   /**
+  * @return {boolean}
   */
   isExpanded() {
+    throw new Error('Not implemented in _bridge.js');
   }
   /**
   * @param {!ComputedStylePropertyData} data

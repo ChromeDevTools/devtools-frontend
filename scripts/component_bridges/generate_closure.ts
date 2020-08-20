@@ -190,11 +190,23 @@ export const generateClosureClass = (state: WalkerState): string[] => {
     jsDocForFunc = jsDocForFunc.map(line => indent(line, 2));
 
     output.push(jsDocForFunc.join('\n'));
+    output.push(indent(`${methodName}(${argsForFunc}) {`, 2));
+    /**
+     * If we have a function that returns a value, in the bridge we will get
+     * TypeScript errors saying that a function is defined and returns a value,
+     * but the implementation is empty. This is fine, because the actual
+     * implementation doesn't live in the bridge file, but we need to satisfy
+     * TS. Adding an error that it thrown will keep it happy and it's safe
+     * because the bridge code is never actually executed; it exists only to
+     * keep Closure happy.
+     */
+    if (method.type && method.type.kind !== ts.SyntaxKind.VoidKeyword) {
+      output.push(indent('throw new Error(\'Not implemented in _bridge.js\');', 4));
+    }
     /* We split the closing brace onto its own line as that's how Clang format
      * does things - so doing it here means we save an extra change when the presubmit
      * checks run Clang and reformat the braces.
      */
-    output.push(indent(`${methodName}(${argsForFunc}) {`, 2));
     output.push(indent('}', 2));
   });
 
@@ -221,6 +233,7 @@ export const generateClosureClass = (state: WalkerState): string[] => {
 
     output.push(jsDocForFunc.join('\n'));
     output.push(indent(`get ${getterName}() {`, 2));
+    output.push(indent('throw new Error(\'Not implemented in _bridge.js\');', 4));
     output.push(indent('}', 2));
   });
 

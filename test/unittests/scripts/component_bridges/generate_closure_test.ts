@@ -151,6 +151,44 @@ describe('generateClosure', () => {
   */`);
     });
 
+    it('adds an error to the function body to prevent TS warning about a function not returning the right value',
+       () => {
+         const state = parseCode(`interface Person {
+        name: string
+        age: number
+      }
+      class Breadcrumbs extends HTMLElement {
+        private render() {}
+
+        public update(person: Person): Person {}
+      }`);
+
+         const classOutput = generateClosureClass(state);
+
+         assert.include(classOutput.join('\n'), `
+  update(person) {
+    throw new Error('Not implemented in _bridge.js');
+  }`);
+       });
+
+    it('does not add an error if the function returns void', () => {
+      const state = parseCode(`interface Person {
+        name: string
+        age: number
+      }
+      class Breadcrumbs extends HTMLElement {
+        private render() {}
+
+        public update(person: Person): void {}
+      }`);
+
+      const classOutput = generateClosureClass(state);
+
+      assert.notInclude(classOutput.join('\n'), `
+    throw new Error('Not implemented in _bridge.js');
+  `);
+    });
+
     it('generates the correct interface for arrays of interfaces', () => {
       const state = parseCode(`interface Person {
         name: string
@@ -326,6 +364,26 @@ describe('generateClosure', () => {
       }`);
 
       assert.throws(() => generateClosureClass(state), 'Found invalid getter with no return type: person');
+    });
+
+    it('puts an error throw in the function body to satisfy TypeScript', () => {
+      const state = parseCode(`interface Person {
+        name: string
+        age: number
+      }
+      class Breadcrumbs extends HTMLElement {
+        public get person(): Person {
+        }
+      }`);
+
+      const classOutput = generateClosureClass(state);
+
+      assert.include(classOutput.join('\n'), `
+  /**
+  * @return {!Person}
+  */`);
+
+      assert.include(classOutput.join('\n'), 'throw new Error(\'Not implemented in _bridge.js\')');
     });
 
     it('handles getter functions with optional return', () => {

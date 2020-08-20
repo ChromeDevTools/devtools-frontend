@@ -144,6 +144,9 @@
   <message name="IDS_DEVTOOLS_95c74dafb449d894014c2eb1d80ded01" desc="A context menu item in the Console Pin Pane of the Console panel">
     Edit expression
   </message>
+  <message name="IDS_DEVTOOLS_97a85fee9bf3c13b66286331fa81e9ca" desc="Alert message for screen readers when the console is cleared">
+    Console cleared
+  </message>
   <message name="IDS_DEVTOOLS_97b0da743d68f96933d990003383ccf1" desc="Text in Console Sidebar of the Console panel to show that there is 1 warning">
     1 warning
   </message>

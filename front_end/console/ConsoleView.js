@@ -815,6 +815,7 @@ export class ConsoleView extends UI.Widget.VBox {
     if (hadFocus) {
       this._prompt.focus();
     }
+    UI.ARIAUtils.alert(ls`Console cleared`, this._viewport.element);
   }
 
   /**

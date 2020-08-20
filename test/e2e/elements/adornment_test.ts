@@ -2,14 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert} from 'chai';
-
-import {$$, click, enableExperiment, goToResource} from '../../shared/helper.js';
+import {click, enableExperiment, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {expandSelectedNodeRecursively, waitForContentOfSelectedElementsNode, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
-
-const INACTIVE_GRID_ADORNER_SELECTOR = '[aria-label="Enable grid mode"]';
-const ACTIVE_GRID_ADORNER_SELECTOR = '[aria-label="Disable grid mode"]';
+import {assertActiveAdorners, assertInactiveAdorners, expandSelectedNodeRecursively, INACTIVE_GRID_ADORNER_SELECTOR, waitForContentOfSelectedElementsNode, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
 
 const prepareElementsTab = async () => {
   await waitForElementsStyleSection();
@@ -18,37 +13,25 @@ const prepareElementsTab = async () => {
 };
 
 describe('Adornment in the Elements Tab', async () => {
-  beforeEach(async function() {
-    await goToResource('elements/adornment.html');
-    await prepareElementsTab();
-  });
-
   it('displays Grid adorners and they can be toggled', async () => {
+    await goToResource('elements/adornment.html');
     await enableExperiment('cssGridFeatures');
     await prepareElementsTab();
 
-    const inactiveGridAdorners = await $$(INACTIVE_GRID_ADORNER_SELECTOR);
-    const getNodeContent = (node: Element) => node.textContent;
-    const inactiveContent = await Promise.all(inactiveGridAdorners.map(n => n.evaluate(getNodeContent)));
-    assert.deepEqual(
-        inactiveContent,
-        [
-          'grid',
-          'grid',
-        ],
-        'did not have exactly 2 Grid adorners in the inactive state');
+    await assertInactiveAdorners([
+      'grid',
+      'grid',
+    ]);
+    await assertActiveAdorners([]);
 
     // Toggle both grid adorners on and try to select them with the active selector
     await click(INACTIVE_GRID_ADORNER_SELECTOR);
     await click(INACTIVE_GRID_ADORNER_SELECTOR);
-    const activeGridAdorners = await $$(ACTIVE_GRID_ADORNER_SELECTOR);
-    const activeContent = await Promise.all(activeGridAdorners.map(n => n.evaluate(getNodeContent)));
-    assert.deepEqual(
-        activeContent,
-        [
-          'grid',
-          'grid',
-        ],
-        'did not have exactly 2 Grid adorners in the active state');
+
+    await assertInactiveAdorners([]);
+    await assertActiveAdorners([
+      'grid',
+      'grid',
+    ]);
   });
 });

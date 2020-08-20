@@ -21,8 +21,8 @@ const CLS_BUTTON_SELECTOR = '[aria-label="Element Classes"]';
 const CLS_INPUT_SELECTOR = '[aria-placeholder="Add new class"]';
 const MORE_TABS_SELECTOR = '[aria-label="More tabs"]';
 const LAYOUT_PANE_TAB_SELECTOR = '[aria-label="Layout"]';
-const INACTIVE_GRID_ADORNER_SELECTOR = '[aria-label="Enable grid mode"]';
-const ACTIVE_GRID_ADORNER_SELECTOR = '[aria-label="Disable grid mode"]';
+export const INACTIVE_GRID_ADORNER_SELECTOR = '[aria-label="Enable grid mode"]';
+export const ACTIVE_GRID_ADORNER_SELECTOR = '[aria-label="Disable grid mode"]';
 const ELEMENT_CHECKBOX_IN_LAYOUT_PANE_SELECTOR = '.elements input[type=checkbox]';
 
 export const openLayoutPane = async () => {

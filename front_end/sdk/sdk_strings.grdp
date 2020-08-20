@@ -297,6 +297,9 @@
         Because this cookie would have been sent across schemes on the same site, it was not sent.
         This behavior enhances the <ph name="LOCKED_1">|SameSite|</ph> attribute’s protection of user data from request forgery by network attackers.
   </message>
+  <message name="IDS_DEVTOOLS_a56491b51306fc59e63d029cb33328ee" desc="Label for the link for Schemeful Same-Site Issues">
+    How <ph name="FEATURE_NAME_SCHEMEFUL_SAME_SITE">Schemeful Same-Site</ph> Works
+  </message>
   <message name="IDS_DEVTOOLS_a6c571c918bdd52968955c2cb28ddc84" desc="Bullet point about resolving CSP inline violations">
     adding <ph name="LOCKED_1">|unsafe-inline|</ph> as a source to the CSP header
   </message>

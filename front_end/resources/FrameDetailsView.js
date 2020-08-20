@@ -8,6 +8,11 @@ import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 
+/**
+ * @param {boolean} b
+ */
+const booleanToYesNo = b => b ? ls`Yes` : ls`No`;
+
 export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
   /**
    * @param {!SDK.ResourceTreeModel.ResourceTreeFrame} frame
@@ -36,6 +41,7 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     });
     this._adStatus = this._generalSection.appendField(ls`Ad Status`);
     this._isolationSection = this._reportView.appendSection(ls`Security & Isolation`);
+    this._secureContext = this._isolationSection.appendField(ls`Secure Context`);
     this._coepPolicy = this._isolationSection.appendField(ls`Cross-Origin Embedder Policy`);
     this._coopPolicy = this._isolationSection.appendField(ls`Cross-Origin Opener Policy`);
     this.update();
@@ -69,6 +75,7 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
       this._ownerElementFieldValue.textContent = `<${this._ownerDomNode.nodeName().toLocaleLowerCase()}>`;
     }
     await this._updateCoopCoepStatus();
+    this._updateContextStatus();
   }
 
   async _updateCoopCoepStatus() {
@@ -78,6 +85,38 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
                      .getSecurityIsolationStatus(this._frame.id);
     this._coepPolicy.textContent = info.coep.value;
     this._coopPolicy.textContent = info.coop.value;
+  }
+
+  /**
+   * @param {?Protocol.Page.SecureContextType} type
+   * @returns {?string}
+   */
+  _explanationFromSecureContextType(type) {
+    switch (type) {
+      case Protocol.Page.SecureContextType.Secure:
+        return null;
+      case Protocol.Page.SecureContextType.SecureLocalhost:
+        return ls`Localhost is always a secure context`;
+      case Protocol.Page.SecureContextType.InsecureAncestor:
+        return ls`A frame ancestor is an insecure context`;
+      case Protocol.Page.SecureContextType.InsecureScheme:
+        return ls`The frame's scheme is insecure`;
+    }
+    return null;
+  }
+
+  _updateContextStatus() {
+    if (this._frame.unreachableUrl()) {
+      this._isolationSection.setFieldVisible(ls`Secure Context`, false);
+      return;
+    }
+    this._isolationSection.setFieldVisible(ls`Secure Context`, true);
+    this._secureContext.textContent = booleanToYesNo(this._frame.isSecureContext());
+    const secureContextExplanation = this._explanationFromSecureContextType(this._frame.getSecureContextType());
+    if (secureContextExplanation) {
+      const secureContextType = this._secureContext.createChild('span', 'report-field-value-part more-info');
+      secureContextType.textContent = secureContextExplanation;
+    }
   }
 
   /**
@@ -172,7 +211,7 @@ export class OpenedWindowDetailsView extends UI.ThrottledWidget.ThrottledWidget 
   async doUpdate() {
     this._reportView.setTitle(this.buildTitle());
     this._URLFieldValue.textContent = this._targetInfo.url;
-    this._hasDOMAccessValue.textContent = this._targetInfo.canAccessOpener ? ls`Yes` : ls`No`;
+    this._hasDOMAccessValue.textContent = booleanToYesNo(this._targetInfo.canAccessOpener);
   }
 
   /**

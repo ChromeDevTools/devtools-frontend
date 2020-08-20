@@ -11,3 +11,7 @@
 .report-field-name {
   flex: 0 0 200px;
 }
+
+.report-field .more-info {
+  color: #555;
+}

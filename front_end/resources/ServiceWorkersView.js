@@ -391,7 +391,9 @@ export class Section {
   _addVersion(versionsStack, icon, label) {
     const installingEntry = versionsStack.createChild('div', 'service-worker-version');
     installingEntry.createChild('div', icon);
-    installingEntry.createChild('span', 'service-worker-version-string').textContent = label;
+    const statusString = installingEntry.createChild('span', 'service-worker-version-string');
+    statusString.textContent = label;
+    UI.ARIAUtils.markAsAlert(statusString);
     return installingEntry;
   }
 

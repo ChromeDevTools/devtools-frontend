@@ -410,9 +410,9 @@ class AffectedDirectivesView extends AffectedResourcesView {
   /**
    * @param {!Element} element
    * @param {number | undefined} nodeId
-   * @param {?SDK.SDKModel.Target} target
+   * @param {!SDK.IssuesModel.IssuesModel} model
    */
-  _appendBlockedElement(element, nodeId, target) {
+  _appendBlockedElement(element, nodeId, model) {
     const violatingNode = document.createElement('td');
     violatingNode.classList.add('affected-resource-csp-info-node');
 
@@ -422,6 +422,7 @@ class AffectedDirectivesView extends AffectedResourcesView {
       icon.classList.add('element-reveal-icon');
 
       icon.onclick = () => {
+        const target = model.getTargetIfNotDisposed();
         if (target) {
           const deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(target, violatingNodeId);
           Common.Revealer.reveal(deferredDOMNode);
@@ -432,6 +433,7 @@ class AffectedDirectivesView extends AffectedResourcesView {
       violatingNode.appendChild(icon);
 
       violatingNode.onmouseenter = () => {
+        const target = model.getTargetIfNotDisposed();
         if (target) {
           const deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(target, violatingNodeId);
           if (deferredDOMNode) {
@@ -503,7 +505,7 @@ class AffectedDirectivesView extends AffectedResourcesView {
     const cspIssueDetails = cspIssue.details();
     if (this._issue.code() === SDK.ContentSecurityPolicyIssue.inlineViolationCode) {
       this._appendViolatedDirective(element, cspIssueDetails.violatedDirective);
-      this._appendBlockedElement(element, cspIssueDetails.violatingNodeId, cspIssue.model().getTargetIfNotDisposed());
+      this._appendBlockedElement(element, cspIssueDetails.violatingNodeId, cspIssue.model());
       this._appendSourceLocation(element, cspIssueDetails.sourceCodeLocation);
       this._appendBlockedStatus(element);
     } else if (this._issue.code() === SDK.ContentSecurityPolicyIssue.urlViolationCode) {

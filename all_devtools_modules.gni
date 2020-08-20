@@ -192,6 +192,7 @@ all_typescript_module_sources = [
   "elements/MarkerDecorator.js",
   "elements/MetricsSidebarPane.js",
   "elements/NodeStackTraceWidget.js",
+  "elements/NodeText.js",
   "elements/PlatformFontsWidget.js",
   "elements/PropertiesWidget.js",
   "elements/StylePropertyHighlighter.js",

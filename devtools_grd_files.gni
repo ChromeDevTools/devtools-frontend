@@ -449,6 +449,7 @@ grd_files_debug_sources = [
   "front_end/elements/MarkerDecorator.js",
   "front_end/elements/MetricsSidebarPane.js",
   "front_end/elements/NodeStackTraceWidget.js",
+  "front_end/elements/NodeText.js",
   "front_end/elements/PlatformFontsWidget.js",
   "front_end/elements/PropertiesWidget.js",
   "front_end/elements/StylePropertyHighlighter.js",

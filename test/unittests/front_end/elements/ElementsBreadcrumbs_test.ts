@@ -196,11 +196,7 @@ describe('ElementsBreadcrumbs', () => {
 
       const crumbs = Array.from(component.shadowRoot.querySelectorAll('[data-crumb]'));
 
-      const crumbTitles = crumbs.map(crumb => {
-        return crumb.textContent ? crumb.textContent.trim() : '';
-      });
-
-      assert.deepEqual(crumbTitles, ['body', 'div#test-id']);
+      assert.lengthOf(crumbs, 2);
     });
 
     it('highlights the active breadcrumb', () => {
@@ -233,9 +229,6 @@ describe('ElementsBreadcrumbs', () => {
 
       const activeCrumbs = component.shadowRoot.querySelectorAll('.crumb.selected');
       assert.lengthOf(activeCrumbs, 1);
-
-      const activeCrumb = activeCrumbs[0];
-      assert.strictEqual(activeCrumb.textContent!.trim(), 'body');
     });
 
     it('shows the scrolling icons if the crumbs do not fit in their container', () => {

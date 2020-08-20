@@ -308,16 +308,19 @@ export async function editCSSProperty(selector: string, propertyName: string, ne
 }
 
 export const getBreadcrumbsTextContent = async () => {
-  const crumbs = await $$('li.crumb > a');
+  const crumbs = await $$('li.crumb > a > devtools-node-text');
 
-  const crumbsAsText: string[] =
-      await Promise.all(crumbs.map(node => node.evaluate(node => node.textContent as string)));
+  const crumbsAsText: string[] = await Promise.all(crumbs.map(node => node.evaluate(node => {
+    return Array.from(node.shadowRoot!.querySelectorAll('span')).map(span => span.textContent).join('');
+  })));
   return crumbsAsText;
 };
 
 export const getSelectedBreadcrumbTextContent = async () => {
-  const selectedCrumb = await waitFor('li.crumb.selected > a');
-  const text = selectedCrumb.evaluate(node => node.textContent as string);
+  const selectedCrumb = await waitFor('li.crumb.selected > a > devtools-node-text');
+  const text = selectedCrumb.evaluate(node => {
+    return Array.from(node.shadowRoot!.querySelectorAll('span')).map(span => span.textContent).join('');
+  });
   return text;
 };
 

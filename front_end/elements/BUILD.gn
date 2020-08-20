@@ -38,6 +38,7 @@ devtools_module("elements") {
     "MarkerDecorator.js",
     "MetricsSidebarPane.js",
     "NodeStackTraceWidget.js",
+    "NodeText.ts",
     "PlatformFontsWidget.js",
     "PropertiesWidget.js",
     "StylePropertyHighlighter.js",

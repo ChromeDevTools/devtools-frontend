@@ -8,6 +8,7 @@ ts_library("elements") {
     "ComputedStyleTrace_test.ts",
     "ElementsBreadcrumbs_test.ts",
     "LayoutPane_test.ts",
+    "NodeText_test.ts",
   ]
 
   deps = [

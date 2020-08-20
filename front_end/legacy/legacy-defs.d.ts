@@ -110,6 +110,9 @@ interface Element {
   hasFocus(): boolean;
   positionAt(x: (number|undefined), y: (number|undefined), relativeTo?: Element): void;
   removeChildren(): void;
+  scrollIntoViewIfNeeded(): void;
+  totalOffsetTop(): number;
+  totalOffsetLeft(): number;
 }
 
 interface DocumentFragment {
@@ -129,6 +132,9 @@ interface Node {
   parentElementOrShadowHost(): Element|null;
   parentNodeOrShadowHost(): Node|null;
   traverseNextNode(stayWithin?: Node): Node|null;
+  enclosingNodeOrSelfWithClass(className: string, stayWithin?: Element): Element;
+  window(): Window;
+  hasSelection(): boolean;
 }
 
 declare function isEnterKey(event: Event): boolean;

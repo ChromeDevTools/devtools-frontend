@@ -75,7 +75,7 @@
 .-theme-with-dark-background {
   --accent-color: #0e639c;
   --accent-fg-color: #ccc;
-  --accent-fg-color-hover: #ccc;
+  --accent-fg-color-hover: #fff;
   --accent-color-hover: rgb(17 119 187);
   --active-control-bg-color: #cdcdcd;
   --focus-bg-color: hsl(214deg 19% 27%);

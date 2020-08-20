@@ -15,6 +15,7 @@
 
   /* for buttons */
   --accent-color: var(--color-blue);
+  --accent-color-hover: #17b;
   --color-bg: white;
   --font-size: 14px;
   --report-font-family: roboto, helvetica, arial, sans-serif;

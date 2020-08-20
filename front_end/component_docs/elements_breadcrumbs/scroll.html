@@ -21,70 +21,74 @@
     </div>
 
     <script type="module">
+      import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
       import {ElementsBreadcrumbs} from '../../elements/ElementsBreadcrumbs.js';
+      ComponentHelpers.ComponentServerSetup.setup().then(() => renderComponent())
 
-      let id = 0;
-      const makeCrumb = (overrides = {}) => {
-        const attributes = overrides.attributes || {};
-        const newCrumb = {
+      const renderComponent = () => {
+        let id = 0;
+        const makeCrumb = (overrides = {}) => {
+          const attributes = overrides.attributes || {};
+          const newCrumb = {
+            nodeType: Node.ELEMENT_NODE,
+            id: id++,
+            pseudoType: '',
+            shadowRootType: '',
+            nodeName: 'body',
+            nodeNameNicelyCased: 'body',
+            legacyDomNode: {},
+            highlightNode: () => {},
+            clearHighlight: () => {},
+            getAttribute: x => attributes[x] || '',
+            ...overrides,
+          };
+          return newCrumb;
+        };
+
+        const component = new ElementsBreadcrumbs();
+        const bodyCrumb = makeCrumb({
           nodeType: Node.ELEMENT_NODE,
-          id: id++,
-          pseudoType: '',
-          shadowRootType: '',
           nodeName: 'body',
           nodeNameNicelyCased: 'body',
-          legacyDomNode: {},
-          highlightNode: () => {},
-          clearHighlight: () => {},
-          getAttribute: x => attributes[x] || '',
-          ...overrides,
+          attributes: {
+            class: 'body-class1 body-class2'
+          }
+        });
+
+        const divCrumb = makeCrumb({
+          nodeType: Node.ELEMENT_NODE,
+          nodeName: 'div',
+          nodeNameNicelyCased: 'div',
+          attributes: {
+            id: 'test-id',
+            class: 'wrapper-div',
+          },
+        });
+
+        const spanCrumb = makeCrumb({
+          nodeType: Node.ELEMENT_NODE,
+          nodeName: 'span',
+          nodeNameNicelyCased: 'span',
+          attributes: {
+            id: 'my-span-has-a-long-id',
+          },
+        });
+
+        const emCrumb = makeCrumb({
+          nodeType: Node.ELEMENT_NODE,
+          nodeName: 'em',
+          nodeNameNicelyCased: 'em',
+          attributes: {
+            id: 'my-em-has-a-long-id',
+          },
+        });
+
+        document.getElementById('container').appendChild(component);
+
+        component.data = {
+          crumbs: [emCrumb, spanCrumb, divCrumb, bodyCrumb],
+          selectedNode: bodyCrumb,
         };
-        return newCrumb;
-      };
-
-      const component = new ElementsBreadcrumbs();
-      const bodyCrumb = makeCrumb({
-        nodeType: Node.ELEMENT_NODE,
-        nodeName: 'body',
-        nodeNameNicelyCased: 'body',
-        attributes: {
-          class: 'body-class1 body-class2'
-        }
-      });
-
-      const divCrumb = makeCrumb({
-        nodeType: Node.ELEMENT_NODE,
-        nodeName: 'div',
-        nodeNameNicelyCased: 'div',
-        attributes: {
-          id: 'test-id',
-          class: 'wrapper-div',
-        },
-      });
-
-      const spanCrumb = makeCrumb({
-        nodeType: Node.ELEMENT_NODE,
-        nodeName: 'span',
-        nodeNameNicelyCased: 'span',
-        attributes: {
-          id: 'my-span-has-a-long-id',
-        },
-      });
-
-      const emCrumb = makeCrumb({
-        nodeType: Node.ELEMENT_NODE,
-        nodeName: 'em',
-        nodeNameNicelyCased: 'em',
-        attributes: {
-          id: 'my-em-has-a-long-id',
-        },
-      });
-
-      document.getElementById('container').appendChild(component);
-
-      component.data = {
-        crumbs: [emCrumb, spanCrumb, divCrumb, bodyCrumb],
-        selectedNode: bodyCrumb,
       };
 
     </script>

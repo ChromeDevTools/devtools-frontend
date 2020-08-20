@@ -8,7 +8,10 @@ import("../../scripts/build/ninja/devtools_pre_built.gni")
 import("../../third_party/typescript/typescript.gni")
 
 devtools_module("component_helpers") {
-  sources = [ "get-stylesheet.ts" ]
+  sources = [
+    "component-server-setup.ts",
+    "get-stylesheet.ts",
+  ]
 
   deps = [
     "../root:bundle",

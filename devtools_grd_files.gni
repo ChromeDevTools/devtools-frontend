@@ -380,6 +380,7 @@ grd_files_debug_sources = [
   "front_end/common/Trie.js",
   "front_end/common/WasmDisassembly.js",
   "front_end/common/Worker.js",
+  "front_end/component_helpers/component-server-setup.js",
   "front_end/component_helpers/get-stylesheet.js",
   "front_end/components/ImagePreview.js",
   "front_end/components/JSPresentationUtils.js",

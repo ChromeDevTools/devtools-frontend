@@ -236,7 +236,7 @@ export class ColorSwatchPopoverIcon {
    * @param {!Event} event
    */
   _onScroll(event) {
-    this._swatchPopoverHelper.reposition();
+    this._swatchPopoverHelper.hide(true);
   }
 
   /**

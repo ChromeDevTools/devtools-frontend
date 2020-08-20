@@ -20,6 +20,7 @@ beforeEach(resetTestDOM);
  * them through to the right place, respecting Karma's ROOT_DIRECTORY setting.
  */
 const CSS_RESOURCES_TO_LOAD_INTO_RUNTIME = [
+  '/front_end/elements/layoutPane.css',
   '/front_end/ui/checkboxTextLabel.css',
   '/front_end/ui/closeButton.css',
   '/front_end/ui/confirmDialog.css',

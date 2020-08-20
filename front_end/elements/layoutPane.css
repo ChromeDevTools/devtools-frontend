@@ -1,0 +1,104 @@
+* {
+  box-sizing: border-box;
+  font-size: 12px;
+}
+
+.header {
+  align-items: center;
+  background-color: var(--toolbar-bg-color, #f3f3f3);
+  border-bottom: var(--divider-border, 1px solid #d0d0d0);
+  border-top: var(--divider-border, 1px solid #d0d0d0);
+  display: flex;
+  line-height: 1.6;
+  overflow: hidden;
+  padding: 0 5px;
+  white-space: nowrap;
+}
+
+.content-section {
+  padding: 16px;
+  border-bottom: var(--divider-border, 1px solid #d0d0d0);
+}
+
+.content-section-title {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.1;
+  margin: 0;
+  padding: 0;
+}
+
+.checkbox-settings {
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 5px;
+}
+
+.checkbox-label {
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+}
+
+.checkbox-settings .checkbox-label {
+  margin-bottom: 8px;
+}
+
+.checkbox-settings .checkbox-label:last-child {
+  margin-bottom: 0;
+}
+
+.checkbox-label input {
+  margin: 0 6px 0 0;
+  padding: 0;
+}
+
+.select-settings {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 150px);
+  gap: 16px;
+}
+
+.select-label {
+  display: flex;
+  flex-direction: column;
+}
+
+.select-label span {
+  margin-bottom: 4px;
+}
+
+.elements {
+  margin-top: 12px;
+  color: var(--dom-tag-name-color);
+}
+
+.element {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.element:last-child {
+  margin-bottom: 0;
+}
+
+.show-element {
+  margin: 0 0 0 8px;
+  padding: 0;
+  background: none;
+  border: none;
+  -webkit-mask-image: url(Images/ic_show_node_16x16.svg);
+  background-color: rgba(0 0 0 / 62%);
+  width: 16px;
+  height: 16px;
+  display: block;
+  cursor: pointer;
+}
+
+:host-context(.-theme-with-dark-background) .show-element {
+  background-color: rgb(204 204 204);
+}

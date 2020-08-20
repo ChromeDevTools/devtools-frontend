@@ -350,6 +350,7 @@
     "elementsPanel.css",
     "elementStatePaneWidget.css",
     "elementsTreeOutline.css",
+    "layoutPane.css",
     "metricsSidebarPane.css",
     "platformFontsWidget.css",
     "nodeStackTraceWidget.css",

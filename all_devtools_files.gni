@@ -109,6 +109,7 @@ all_devtools_files = [
   "front_end/elements/elementsPanel.css",
   "front_end/elements/elementStatePaneWidget.css",
   "front_end/elements/elementsTreeOutline.css",
+  "front_end/elements/layoutPane.css",
   "front_end/elements/metricsSidebarPane.css",
   "front_end/elements/module.json",
   "front_end/elements/nodeStackTraceWidget.css",

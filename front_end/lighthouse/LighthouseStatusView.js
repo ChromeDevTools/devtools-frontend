@@ -281,8 +281,11 @@ export class StatusView {
    * @param {string} auditURL
    */
   _renderBugReportBody(err, auditURL) {
+    // @ts-ignore Lighthouse sets `friendlyMessage` on certain
+    // important errors such as PROTOCOL_TIMEOUT.
+    const errorMessage = err.friendlyMessage || err.message;
     const issueBody = `
-${err.message}
+${errorMessage}
 \`\`\`
 Channel: DevTools
 Initial URL: ${auditURL}

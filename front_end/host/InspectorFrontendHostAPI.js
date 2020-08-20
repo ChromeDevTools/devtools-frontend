@@ -409,6 +409,7 @@ export let ExtensionDescriptor;
  */
 export const EnumeratedHistogram = {
   ActionTaken: 'DevTools.ActionTaken',
+  ColorPickerFixedColor: 'DevTools.ColorPicker.FixedColor',
   PanelClosed: 'DevTools.PanelClosed',
   PanelShown: 'DevTools.PanelShown',
   KeyboardShortcutFired: 'DevTools.KeyboardShortcutFired',

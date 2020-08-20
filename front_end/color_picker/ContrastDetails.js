@@ -141,6 +141,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
    * @param {string} threshold
    */
   _onSuggestColor(threshold) {
+    Host.userMetrics.colorFixed(threshold);
     const color = this._computeSuggestedColor(threshold);
     if (color) {
       this._colorSelectedCallback(color);

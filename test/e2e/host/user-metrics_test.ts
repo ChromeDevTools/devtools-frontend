@@ -41,7 +41,10 @@ declare global {
     __dualScreenDeviceEmulated: (evt: Event) => void;
     __experimentDisabled: (evt: Event) => void;
     __experimentEnabled: (evt: Event) => void;
-    Host: {UserMetrics: UserMetrics; userMetrics: {actionTaken(name: number): void;}};
+    __colorFixed: (evt: Event) => void;
+    Host: {
+      UserMetrics: UserMetrics; userMetrics: {actionTaken(name: number): void; colorFixed(threshold: string): void;}
+    };
   }
 }
 
@@ -97,6 +100,11 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.__caughtEvents.push({name: 'DevTools.ExperimentEnabled', value: customEvt.detail.value});
     };
 
+    window.__colorFixed = (evt: Event) => {
+      const customEvt = evt as CustomEvent;
+      window.__caughtEvents.push({name: 'DevTools.ColorPicker.FixedColor', value: customEvt.detail.value});
+    };
+
     window.__caughtEvents = [];
     window.__beginCatchEvents = () => {
       window.addEventListener('DevTools.PanelShown', window.__panelShown);
@@ -109,6 +117,7 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.addEventListener('DevTools.DualScreenDeviceEmulated', window.__dualScreenDeviceEmulated);
       window.addEventListener('DevTools.ExperimentDisabled', window.__experimentDisabled);
       window.addEventListener('DevTools.ExperimentEnabled', window.__experimentEnabled);
+      window.addEventListener('DevTools.ColorPicker.FixedColor', window.__colorFixed);
     };
 
     window.__endCatchEvents = () => {
@@ -122,6 +131,7 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.removeEventListener('DevTools.DualScreenDeviceEmulated', window.__dualScreenDeviceEmulated);
       window.removeEventListener('DevTools.ExperimentDisabled', window.__experimentDisabled);
       window.removeEventListener('DevTools.ExperimentEnabled', window.__experimentEnabled);
+      window.removeEventListener('DevTools.ColorPicker.FixedColor', window.__colorFixed);
     };
 
     window.__beginCatchEvents();
@@ -472,6 +482,39 @@ describe('User Metrics for CSS Overview', () => {
       {
         name: 'DevTools.ActionTaken',
         value: 41,  // CaptureCssOverviewClicked
+      },
+    ]);
+  });
+
+  afterEach(async () => {
+    const {frontend} = getBrowserAndPages();
+    await endCatchEvents(frontend);
+  });
+});
+
+describe('User Metrics for Color Picker', () => {
+  beforeEach(async () => {
+    const {frontend} = getBrowserAndPages();
+    await beginCatchEvents(frontend);
+  });
+
+  it('dispatch ColorPickerFixedColor events', async () => {
+    const {frontend} = getBrowserAndPages();
+
+    await frontend.evaluate(() => {
+      self.Host.userMetrics.colorFixed('aa');
+      self.Host.userMetrics.colorFixed('aaa');
+      self.Host.userMetrics.colorFixed('wrong');
+    });
+
+    await assertCapturedEvents([
+      {
+        name: 'DevTools.ColorPicker.FixedColor',
+        value: 0,  // AA
+      },
+      {
+        name: 'DevTools.ColorPicker.FixedColor',
+        value: 1,  // AAA
       },
     ]);
   });

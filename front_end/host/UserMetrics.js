@@ -44,6 +44,20 @@ export class UserMetrics {
   }
 
   /**
+   * @param {string} contrastThreshold
+   */
+  colorFixed(contrastThreshold) {
+    const code = ContrastThresholds[contrastThreshold];
+    if (code === undefined) {
+      console.error(`Unknown contrast threshold: ${contrastThreshold}`);
+      return;
+    }
+    const size = Object.keys(ContrastThresholds).length + 1;
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.ColorPickerFixedColor, code, size);
+    Common.EventTarget.fireEvent(EnumeratedHistogram.ColorPickerFixedColor, {value: code});
+  }
+
+  /**
    * @param {string} panelName
    */
   panelShown(panelName) {
@@ -256,6 +270,12 @@ export const Action = {
   CaptureCssOverviewClicked: 41,
   VirtualAuthenticatorEnvironmentEnabled: 42,
   SourceOrderViewActivated: 43,
+};
+
+/** @type {!Object<string, number>} */
+export const ContrastThresholds = {
+  aa: 0,
+  aaa: 1,
 };
 
 /** @type {!Object<string, number>} */

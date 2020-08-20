@@ -23,24 +23,6 @@ export class SettingChangedEvent extends Event {
   }
 }
 
-export class OverlayChangedEvent extends Event {
-  data: {id: number, value: boolean};
-
-  constructor(id: number, value: boolean) {
-    super('overlay-changed', {});
-    this.data = {id, value};
-  }
-}
-
-export class ElementClickedEvent extends Event {
-  data: {id: number};
-
-  constructor(id: number) {
-    super('element-clicked', {});
-    this.data = {id};
-  }
-}
-
 interface HTMLInputElementEvent extends Event {
   target: HTMLInputElement;
 }
@@ -124,12 +106,12 @@ export class LayoutPane extends HTMLElement {
 
   private onElementToggle(element: LayoutElement, event: HTMLInputElementEvent) {
     event.preventDefault();
-    this.dispatchEvent(new OverlayChangedEvent(element.id, event.target.checked));
+    element.toggle(event.target.checked);
   }
 
   private onElementClick(element: LayoutElement, event: HTMLInputElementEvent) {
     event.preventDefault();
-    this.dispatchEvent(new ElementClickedEvent(element.id));
+    element.reveal();
   }
 
   private renderElement(element: LayoutElement) {

@@ -34,4 +34,6 @@ export interface LayoutElement {
   domId?: string;
   domClasses?: string[];
   enabled: boolean;
+  reveal: () => void;
+  toggle: (value: boolean) => void;
 }

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {ElementClickedEvent, LayoutPane, OverlayChangedEvent, SettingChangedEvent} from '../../../../front_end/elements/LayoutPane.js';
+import {LayoutPane, SettingChangedEvent} from '../../../../front_end/elements/LayoutPane.js';
 import {SettingType} from '../../../../front_end/elements/LayoutPaneUtils.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
@@ -120,17 +120,23 @@ describe('LayoutPane', () => {
           name: 'div',
           domId: 'elementId',
           enabled: false,
+          reveal: () => {},
+          toggle: () => {},
         },
         {
           id: 2,
           name: 'span',
           domClasses: ['class1', 'class2'],
           enabled: false,
+          reveal: () => {},
+          toggle: () => {},
         },
         {
           id: 3,
           name: 'div',
           enabled: false,
+          reveal: () => {},
+          toggle: () => {},
         },
       ],
       settings: [],
@@ -145,12 +151,18 @@ describe('LayoutPane', () => {
     const component = new LayoutPane();
     renderElementIntoDOM(component);
 
+    let called = 0;
     component.data = {
       gridElements: [
         {
           id: 1,
           name: 'div',
           enabled: false,
+          reveal: () => {},
+          toggle: value => {
+            called++;
+            assert.strictEqual(value, true);
+          },
         },
       ],
       settings: [],
@@ -159,47 +171,31 @@ describe('LayoutPane', () => {
     assertShadowRoot(component.shadowRoot);
 
     const input = component.shadowRoot.querySelector('[data-input]') as HTMLInputElement;
-
-    const eventPromise = new Promise<OverlayChangedEvent>(resolve => {
-      component.addEventListener('overlay-changed', (event: Event) => {
-        resolve(event as OverlayChangedEvent);
-      }, false);
-    });
-
     input.click();
-
-    const event = await eventPromise;
-    assert.deepEqual(event.data, {id: 1, value: true});
+    assert.strictEqual(called, 1);
   });
 
   it('send an event when an element’s Show element button is pressed', async () => {
     const component = new LayoutPane();
-    renderElementIntoDOM(component);
-
+    let called = 0;
     component.data = {
       gridElements: [
         {
           id: 1,
           name: 'div',
           enabled: false,
+          reveal: () => {
+            called++;
+          },
+          toggle: () => {},
         },
       ],
       settings: [],
     };
-
+    renderElementIntoDOM(component);
     assertShadowRoot(component.shadowRoot);
-
     const button = component.shadowRoot.querySelector('button.show-element') as HTMLInputElement;
-
-    const eventPromise = new Promise<ElementClickedEvent>(resolve => {
-      component.addEventListener('element-clicked', (event: Event) => {
-        resolve(event as ElementClickedEvent);
-      }, false);
-    });
-
     button.click();
-
-    const event = await eventPromise;
-    assert.deepEqual(event.data, {id: 1});
+    assert.strictEqual(called, 1);
   });
 });

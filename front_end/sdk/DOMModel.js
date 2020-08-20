@@ -1679,6 +1679,7 @@ export class DOMModel extends SDKModel {
    * @return {!Promise<!Array<number>>}
    */
   async getNodesByStyle(computedStyles, pierce = false) {
+    await this.requestDocument();
     const response =
         await this._agent.invoke_getNodesForSubtreeByStyle({nodeId: this._document.id, computedStyles, pierce});
     if (response.getError()) {

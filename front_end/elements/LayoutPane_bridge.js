@@ -22,6 +22,8 @@ export let Setting;
 * domId:(string|undefined),
 * domClasses:(!Array.<string>|undefined),
 * enabled:boolean,
+* reveal:function():void,
+* toggle:function(boolean):void,
 * }}
 */
 // @ts-ignore we export this for Closure not TS

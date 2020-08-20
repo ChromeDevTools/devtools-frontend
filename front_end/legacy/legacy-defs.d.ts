@@ -43,6 +43,7 @@ declare class AnchorBox {
   y: number;
   width: number;
   height: number;
+  contains(x: number, y: number): boolean;
   relativeToElement(element: Element): AnchorBox;
 }
 
@@ -124,6 +125,7 @@ interface Node {
   getComponentSelection(): Selection|null;
   hasSameShadowRoot(other: Node): boolean;
   isSelfOrAncestor(node: Node|null): boolean;
+  isSelfOrDescendant(node: Node|null): boolean;
   parentElementOrShadowHost(): Element|null;
   parentNodeOrShadowHost(): Node|null;
   traverseNextNode(stayWithin?: Node): Node|null;

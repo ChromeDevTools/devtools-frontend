@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import {GlassPane, MarginBehavior, SizeBehavior} from './GlassPane.js';
 
 export class PopoverHelper {
@@ -85,10 +82,11 @@ export class PopoverHelper {
   }
 
   /**
-   * @param {!Event} event
+   * @param {!Event} ev
    * @return {boolean}
    */
-  _eventInScheduledContent(event) {
+  _eventInScheduledContent(ev) {
+    const event = /** @type {!MouseEvent} */ (ev);
     return this._scheduledRequest ? this._scheduledRequest.box.contains(event.clientX, event.clientY) : false;
   }
 
@@ -110,9 +108,10 @@ export class PopoverHelper {
   }
 
   /**
-   * @param {!Event} event
+   * @param {!Event} ev
    */
-  _mouseMove(event) {
+  _mouseMove(ev) {
+    const event = /** @type {!MouseEvent} */ (ev);
     // Pretend that nothing has happened.
     if (this._eventInScheduledContent(event)) {
       return;
@@ -123,8 +122,7 @@ export class PopoverHelper {
     if (event.which && this._disableOnClick) {
       return;
     }
-    this._startShowPopoverTimer(
-        /** @type {!MouseEvent} */ (event), this.isPopoverVisible() ? this._showTimeout * 0.6 : this._showTimeout);
+    this._startShowPopoverTimer(event, this.isPopoverVisible() ? this._showTimeout * 0.6 : this._showTimeout);
   }
 
   /**
@@ -136,13 +134,15 @@ export class PopoverHelper {
 
   /**
    * @param {!GlassPane} popover
-   * @param {!Event} event
+   * @param {!Event} ev
    */
-  _popoverMouseOut(popover, event) {
+  _popoverMouseOut(popover, ev) {
+    const event = /** @type {!MouseEvent} */ (ev);
     if (!popover.isShowing()) {
       return;
     }
-    if (event.relatedTarget && !event.relatedTarget.isSelfOrDescendant(popover.contentElement)) {
+    const node = /** @type {?Node} */ (event.relatedTarget);
+    if (node && !node.isSelfOrDescendant(popover.contentElement)) {
       this._startHidePopoverTimer(this._hideTimeout);
     }
   }
@@ -188,7 +188,8 @@ export class PopoverHelper {
       this._showPopoverTimer = null;
       this._stopHidePopoverTimer();
       this._hidePopover();
-      this._showPopover(event.target.ownerDocument);
+      const document = /** @type {!Document} */ (/** @type {!Node} */ (event.target).ownerDocument);
+      this._showPopover(document);
     }, timeout);
   }
 
@@ -229,6 +230,9 @@ export class PopoverHelper {
     popover.setSizeBehavior(SizeBehavior.MeasureContent);
     popover.setMarginBehavior(MarginBehavior.Arrow);
     const request = this._scheduledRequest;
+    if (!request) {
+      return;
+    }
     request.show.call(null, popover).then(success => {
       if (!success) {
         return;
@@ -242,11 +246,11 @@ export class PopoverHelper {
       }
 
       // This should not happen, but we hide previous popover to be on the safe side.
-      if (PopoverHelper._popoverHelper) {
+      if (popoverHelperInstance) {
         console.error('One popover is already visible');
-        PopoverHelper._popoverHelper.hidePopover();
+        popoverHelperInstance.hidePopover();
       }
-      PopoverHelper._popoverHelper = this;
+      popoverHelperInstance = this;
 
       popover.contentElement.classList.toggle('has-padding', this._hasPadding);
       popover.contentElement.addEventListener('mousemove', this._popoverMouseMove.bind(this), true);
@@ -259,7 +263,7 @@ export class PopoverHelper {
           request.hide.call(null);
         }
         popover.hide();
-        delete PopoverHelper._popoverHelper;
+        popoverHelperInstance = null;
       };
     });
   }
@@ -283,5 +287,9 @@ export class PopoverHelper {
   }
 }
 
+/** @type {?PopoverHelper} */
+let popoverHelperInstance = null;
+
 /** @typedef {{box: !AnchorBox, show:(function(!GlassPane):!Promise<boolean>), hide:(function():void|undefined)}} */
+// @ts-ignore typedef
 export let PopoverRequest;

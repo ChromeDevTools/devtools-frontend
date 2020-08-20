@@ -27,6 +27,13 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// @ts-nocheck
+// TODO(crbug.com/1011811): Enable TypeScript compiler checks
+
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as Host from '../host/host.js';
+import * as ObjectUI from '../object_ui/object_ui.js';
+import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 /**
@@ -35,27 +42,144 @@ import * as UI from '../ui/ui.js';
 export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
   constructor() {
     super(true /* isWebComponent */);
+    this.registerRequiredCSS('elements/propertiesWidget.css');
 
+    SDK.SDKModel.TargetManager.instance().addModelListener(
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrModified, this._onNodeChange, this);
+    SDK.SDKModel.TargetManager.instance().addModelListener(
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrRemoved, this._onNodeChange, this);
+    SDK.SDKModel.TargetManager.instance().addModelListener(
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.CharacterDataModified, this._onNodeChange, this);
+    SDK.SDKModel.TargetManager.instance().addModelListener(
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.ChildNodeCountUpdated, this._onNodeChange, this);
+    self.UI.context.addFlavorChangeListener(SDK.DOMModel.DOMNode, this._setNode, this);
+    this._node = self.UI.context.flavor(SDK.DOMModel.DOMNode);
+
+    this._treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline({readOnly: true});
+    this._treeOutline.setShowSelectionOnKeyboardFocus(/* show */ true, /* preventTabOrder */ false);
+    this._expandController =
+        new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeExpandController(this._treeOutline);
+    this.contentElement.appendChild(this._treeOutline.element);
+
+    this._treeOutline.addEventListener(UI.TreeOutline.Events.ElementExpanded, () => {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.DOMPropertiesExpanded);
+    });
+
+    this.update();
+  }
+
+  /**
+   * @param {!Common.EventTarget.EventTargetEvent} event
+   */
+  _setNode(event) {
+    this._node = /** @type {?SDK.DOMModel.DOMNode} */ (event.data);
     this.update();
   }
 
   /**
    * @override
    * @protected
-   * @return {!Promise<void>}
+   * @return {!Promise<undefined>}
    */
   async doUpdate() {
-    const deprecationMessage = this.contentElement.createChild('span');
-    deprecationMessage.style.padding = '5px';
-    deprecationMessage.append(UI.UIUtils.formatLocalized(
-        'This panel has been deprecated in favor of executing the following in the console:', []));
+    if (this._lastRequestedNode) {
+      this._lastRequestedNode.domModel().runtimeModel().releaseObjectGroup(_objectGroupName);
+      delete this._lastRequestedNode;
+    }
 
-    const codeSnippet = document.createElement('pre');
-    codeSnippet.style.userSelect = 'all';
-    codeSnippet.innerText = 'console.dir($0)';
-    deprecationMessage.append(codeSnippet);
+    if (!this._node) {
+      this._treeOutline.removeChildren();
+      return;
+    }
 
-    deprecationMessage.append(UI.UIUtils.formatLocalized(
-        '(%s is a reference to the currently selected DOM node in the elements tree.)', ['$0']));
+    this._lastRequestedNode = this._node;
+    const object = await this._node.resolveToObject(_objectGroupName);
+    if (!object) {
+      return;
+    }
+
+    const result = await object.callFunction(protoList);
+    object.release();
+
+    if (!result.object || result.wasThrown) {
+      return;
+    }
+
+    const propertiesResult = await result.object.getOwnProperties(false /* generatePreview */);
+    result.object.release();
+
+    if (!propertiesResult || !propertiesResult.properties) {
+      return;
+    }
+
+    const properties = propertiesResult.properties;
+    this._treeOutline.removeChildren();
+
+    let selected = false;
+    // Get array of property user-friendly names.
+    for (let i = 0; i < properties.length; ++i) {
+      if (!parseInt(properties[i].name, 10)) {
+        continue;
+      }
+      const property = properties[i].value;
+      let title = property.description;
+      title = title.replace(/Prototype$/, '');
+
+      const section = this._createSectionTreeElement(property, title);
+      this._treeOutline.appendChild(section);
+      if (!selected) {
+        section.select(/* omitFocus= */ true, /* selectedByUser= */ false);
+        selected = true;
+      }
+    }
+
+    /**
+     * @suppressReceiverCheck
+     * @this {*}
+     */
+    function protoList() {
+      let proto = this;
+      const result = {__proto__: null};
+      let counter = 1;
+      while (proto) {
+        result[counter++] = proto;
+        proto = proto.__proto__;
+      }
+      return result;
+    }
+  }
+
+  /**
+   * @param {!SDK.RemoteObject.RemoteObject} property
+   * @param {string} title
+   * @returns {!ObjectUI.ObjectPropertiesSection.RootElement}
+   */
+  _createSectionTreeElement(property, title) {
+    const titleElement = document.createElement('span');
+    titleElement.classList.add('tree-element-title');
+    titleElement.textContent = title;
+
+    const section = new ObjectUI.ObjectPropertiesSection.RootElement(property);
+    section.title = titleElement;
+    this._expandController.watchSection(title, section);
+
+    return section;
+  }
+
+  /**
+   * @param {!Common.EventTarget.EventTargetEvent} event
+   */
+  _onNodeChange(event) {
+    if (!this._node) {
+      return;
+    }
+    const data = event.data;
+    const node = /** @type {!SDK.DOMModel.DOMNode} */ (data instanceof SDK.DOMModel.DOMNode ? data : data.node);
+    if (this._node !== node) {
+      return;
+    }
+    this.update();
   }
 }
+
+export const _objectGroupName = 'properties-sidebar-pane';

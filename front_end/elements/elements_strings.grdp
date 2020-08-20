@@ -9,9 +9,6 @@
   <message name="IDS_DEVTOOLS_068bc495b79facfaa7918369fa9909eb" desc="Text in Elements Tree Element of the Elements panel">
     Cut element
   </message>
-  <message name="IDS_DEVTOOLS_07ac88884a74a656722bb8041d5c828e" desc="Deprecation message for the Properties subpane in the Elements panel">
-    This panel has been deprecated in favor of executing the following in the console:
-  </message>
   <message name="IDS_DEVTOOLS_07f01edb2a05909a9c0d04031d7c43e1" desc="ARIA accessible name in Styles Sidebar Pane of the Elements panel">
     Filter Styles
   </message>
@@ -155,9 +152,6 @@
   </message>
   <message name="IDS_DEVTOOLS_605e072850e19521394f8bad7082acf4" desc="Text of a DOM element in Element State Pane Widget of the Elements panel">
     Force element state
-  </message>
-  <message name="IDS_DEVTOOLS_685db349070d4d06c11a83153b7ed4c0" desc="Text that describes the console placeholder used to to reference the currently selected element in the DOM tree">
-    (<ph name="DOLLAR_ZERO"><ex>DollarSignZero</ex>$1s</ph> is a reference to the currently selected DOM node in the elements tree.)
   </message>
   <message name="IDS_DEVTOOLS_686676f33cf19ca00788564f43b992cb" desc="ARIA accessible name in Computed Style Widget of the Elements panel">
     Filter Computed Styles

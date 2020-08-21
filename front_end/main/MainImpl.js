@@ -203,6 +203,7 @@ export class MainImpl {
       'backgroundServicesPaymentHandler',
       'customKeyboardShortcuts',
       'issuesPane',
+      'webauthnPane',
     ]);
 
     if (Host.InspectorFrontendHost.isUnderTest() &&

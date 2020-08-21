@@ -460,9 +460,15 @@ export class Color {
 
     const desiredLuminance = Color.desiredLuminance(bgLuminance, requiredContrast, fgIsLighter);
 
+    const saturationComponentIndex = 1;
     const valueComponentIndex = 2;
 
     if (Color.approachColorValue(candidateHSVA, bgRGBA, valueComponentIndex, desiredLuminance)) {
+      return Color.fromHSVA(candidateHSVA);
+    }
+
+    candidateHSVA[valueComponentIndex] = 1;
+    if (Color.approachColorValue(candidateHSVA, bgRGBA, saturationComponentIndex, desiredLuminance)) {
       return Color.fromHSVA(candidateHSVA);
     }
 

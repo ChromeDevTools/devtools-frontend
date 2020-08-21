@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {buildPath, emptyBounds} from '../../../../front_end/inspector_overlay/highlight_common.js';
+import {applyMatrixToPoint, buildPath, emptyBounds} from '../../../../front_end/inspector_overlay/highlight_common.js';
 
 describe('highlight common helper', () => {
   it('can build a path and set bounds', () => {
@@ -20,5 +20,25 @@ describe('highlight common helper', () => {
     assert.deepStrictEqual(bounds.bottommostYForX, {'100': 204, '420': 204});
     assert.deepStrictEqual(bounds.rightmostXForY, {'60': 420, '204': 420});
     assert.deepStrictEqual(bounds.topmostYForX, {'100': 60, '420': 60});
+  });
+
+  it('can map points using writing-mode matrices', () => {
+    const point = {x: 0, y: 0};
+    const matrix = new DOMMatrix();
+
+    assert.deepStrictEqual(
+        applyMatrixToPoint(point, matrix),
+        {x: 0, y: 0},
+        'The identity matrix does not move the point',
+    );
+
+    point.x = 10;
+    point.y = 10;
+    matrix.translateSelf(10, 10, 0);
+    assert.deepStrictEqual(
+        applyMatrixToPoint(point, matrix),
+        {x: 20, y: 20},
+        'A simple translation matrix does transform a point',
+    );
   });
 });

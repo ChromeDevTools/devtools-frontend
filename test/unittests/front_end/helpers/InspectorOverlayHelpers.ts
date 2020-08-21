@@ -8,6 +8,7 @@ import {assertNotNull, renderElementIntoDOM} from './DOMHelpers.js';
 import {reset} from '../../../../front_end/inspector_overlay/common.js';
 import {_normalizePositionData, drawGridAreaNames, drawGridLineNumbers, drawGridLineNames} from '../../../../front_end/inspector_overlay/css_grid_label_helpers.js';
 import {AreaBounds, Bounds} from '../../../../front_end/inspector_overlay/common.js';
+import '../../../../front_end/inspector_overlay/tool_highlight_grid.js';
 
 const GRID_LABEL_CONTAINER_ID = 'grid-label-container';
 const DEFAULT_GRID_LABEL_LAYER_ID = 'grid-labels';
@@ -21,7 +22,8 @@ declare global {
   interface Window {
     gridPageMargin: number;
     canvasWidth: number;
-    canvasHeight: number,
+    canvasHeight: number;
+    setPlatform: Function;
   }
 }
 
@@ -55,6 +57,7 @@ export function initFrame() {
  */
 export function initFrameForGridLabels() {
   initFrame();
+  window.setPlatform('mac');
   createGridLabelContainer();
 }
 
@@ -161,6 +164,7 @@ interface HighlightConfig {
   rowTrackSizes?: TrackSize[];
   columnTrackSizes?: TrackSize[];
   rotationAngle?: number;
+  writingMode?: string;
 }
 
 interface ExpectedLayerLabel {
@@ -189,8 +193,10 @@ export function drawGridLineNumbersAndAssertLabels(
     config: HighlightConfig, bounds: Bounds, expectedLabels: ExpectedLineNumberLabel[]) {
   const el = getGridLineNumberLabelContainer(config.layerId);
   const data = _normalizePositionData(config, bounds);
-  drawGridLineNumbers(el, data);
 
+  // Note that this test helper is focused on testing the number and orientation of the labels, not their exact position
+  // so we pass the identity matrix here in all cases, even when a different writing mode is provided.
+  drawGridLineNumbers(el, data, new DOMMatrix(), config.writingMode);
   let totalLabelCount = 0;
   for (const {className, count} of expectedLabels) {
     const labels =
@@ -263,9 +269,11 @@ export function drawGridLineNamesAndAssertLabels(
   }
 }
 
-export function drawGridAreaNamesAndAssertLabels(areaNames: AreaBounds[], expectedLabels: ExpectedAreaNameLabel[]) {
+export function drawGridAreaNamesAndAssertLabels(
+    areaNames: AreaBounds[], writingModeMatrix: DOMMatrix|undefined, writingMode: string|undefined,
+    expectedLabels: ExpectedAreaNameLabel[]) {
   const el = getGridAreaNameLabelContainer();
-  drawGridAreaNames(el, areaNames);
+  drawGridAreaNames(el, areaNames, writingModeMatrix, writingMode);
 
   const labels = el.querySelectorAll(`.${GRID_LINE_AREA_LABEL_CONTAINER_CLASS} .grid-label-content`);
   assert.strictEqual(labels.length, expectedLabels.length, 'The right total number of area name labels were displayed');

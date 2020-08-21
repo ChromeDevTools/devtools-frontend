@@ -146,3 +146,14 @@ export function emptyBounds() {
   };
   return bounds;
 }
+
+/**
+ * @param {{x: number, y: number}} point
+ * @param {DOMMatrix} matrix
+ * @return {{x: number, y: number}}
+ */
+export function applyMatrixToPoint(point, matrix) {
+  point = new DOMPoint(point.x, point.y);
+  point = point.matrixTransform(matrix);
+  return {x: point.x, y: point.y};
+}

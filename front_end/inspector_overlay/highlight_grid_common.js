@@ -33,7 +33,7 @@
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import {drawGridLabels} from './css_grid_label_helpers.js';
-import {buildPath, DEFAULT_RULER_COLOR, emptyBounds} from './highlight_common.js';
+import {applyMatrixToPoint, buildPath, DEFAULT_RULER_COLOR, emptyBounds} from './highlight_common.js';
 
 export const gridStyle = `
 /* Grid row and column labels */
@@ -199,9 +199,14 @@ export const gridStyle = `
 }`;
 
 export function drawLayoutGridHighlight(highlight, context) {
-  // Draw Grid border
   const gridBounds = emptyBounds();
   const gridPath = buildPath(highlight.gridBorder, gridBounds);
+
+  // Transform the context to match the current writing-mode.
+  context.save();
+  _applyWritingModeTransformation(highlight.writingMode, gridBounds, context);
+
+  // Draw Grid border
   if (highlight.gridHighlightConfig.gridBorderColor) {
     context.save();
     context.translate(0.5, 0.5);
@@ -215,8 +220,8 @@ export function drawLayoutGridHighlight(highlight, context) {
   }
 
   // Draw grid lines
-  _drawGridLines(context, highlight, 'row');
-  _drawGridLines(context, highlight, 'column');
+  const rowBounds = _drawGridLines(context, highlight, 'row');
+  const columnBounds = _drawGridLines(context, highlight, 'column');
 
   // Draw gaps
   _drawGridGap(
@@ -229,18 +234,55 @@ export function drawLayoutGridHighlight(highlight, context) {
   // Draw named grid areas
   const areaBounds = _drawGridAreas(context, highlight.areaNames, highlight.gridHighlightConfig.areaBorderColor);
 
+  // The rest of the overlay is drawn without the writing-mode transformation, but we keep the matrix to transform relevant points.
+  const writingModeMatrix = context.getTransform();
+  context.restore();
+
+  if (highlight.gridHighlightConfig.showGridExtensionLines) {
+    if (rowBounds) {
+      _drawExtendedGridLines(context, rowBounds, highlight.gridHighlightConfig.rowLineDash, writingModeMatrix);
+    }
+    if (columnBounds) {
+      _drawExtendedGridLines(context, columnBounds, highlight.gridHighlightConfig.columnLineDash, writingModeMatrix);
+    }
+  }
+
   // Draw all the labels
-  drawGridLabels(highlight, gridBounds, areaBounds);
+  drawGridLabels(highlight, gridBounds, areaBounds, writingModeMatrix);
+}
+
+function _applyWritingModeTransformation(writingMode, gridBounds, context) {
+  if (writingMode !== 'vertical-rl' && writingMode !== 'vertical-lr') {
+    return;
+  }
+
+  const topLeft = gridBounds.allPoints[0];
+  const bottomLeft = gridBounds.allPoints[3];
+
+  // Move to the top-left corner to do all transformations there.
+  context.translate(topLeft.x, topLeft.y);
+
+  if (writingMode === 'vertical-rl') {
+    context.rotate(90 * Math.PI / 180);
+    context.translate(0, -1 * (bottomLeft.y - topLeft.y));
+  }
+
+  if (writingMode === 'vertical-lr') {
+    context.rotate(90 * Math.PI / 180);
+    context.scale(1, -1);
+  }
+
+  // Move back to the original point.
+  context.translate(topLeft.x * -1, topLeft.y * -1);
 }
 
 function _drawGridLines(context, highlight, direction) {
   const tracks = highlight[`${direction}s`];
   const color = highlight.gridHighlightConfig[`${direction}LineColor`];
   const dash = highlight.gridHighlightConfig[`${direction}LineDash`];
-  const extensionLines = highlight.gridHighlightConfig.showGridExtensionLines;
 
   if (!color) {
-    return;
+    return null;
   }
 
   const bounds = emptyBounds();
@@ -260,12 +302,10 @@ function _drawGridLines(context, highlight, direction) {
 
   context.restore();
 
-  if (extensionLines) {
-    _drawExtendedGridLines(context, bounds, dash);
-  }
+  return bounds;
 }
 
-function _drawExtendedGridLines(context, bounds, dash) {
+function _drawExtendedGridLines(context, bounds, dash, writingModeMatrix) {
   context.save();
   context.strokeStyle = DEFAULT_RULER_COLOR;
   context.lineWidth = 1;
@@ -277,8 +317,8 @@ function _drawExtendedGridLines(context, bounds, dash) {
   // A grid track path is a list of lines defined by 2 points.
   // Here we're going through the list of all points 2 by 2, so we can draw the extensions at the edges of each line.
   for (let i = 0; i < bounds.allPoints.length; i += 2) {
-    let point1 = bounds.allPoints[i];
-    let point2 = bounds.allPoints[i + 1];
+    let point1 = applyMatrixToPoint(bounds.allPoints[i], writingModeMatrix);
+    let point2 = applyMatrixToPoint(bounds.allPoints[i + 1], writingModeMatrix);
     let edgePoint1;
     let edgePoint2;
 

@@ -9,7 +9,7 @@ import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-l
 import {Events as SecurityOriginManagerEvents, SecurityOriginManager} from './SecurityOriginManager.js';
 
 /**
- * @implements {ProtocolProxyApiWorkaround_StorageDispatcher}
+ * @implements {ProtocolProxyApi.StorageDispatcher}
  */
 export class ServiceWorkerCacheModel extends SDKModel {
   /**

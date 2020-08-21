@@ -6,7 +6,7 @@ import {OverlayModel} from './OverlayModel.js';
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 /**
- * @implements {ProtocolProxyApiWorkaround_PageDispatcher}
+ * @implements {ProtocolProxyApi.PageDispatcher}
  */
 export class ScreenCaptureModel extends SDKModel {
   /**

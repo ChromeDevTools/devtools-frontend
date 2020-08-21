@@ -321,7 +321,7 @@ class NativeHeapProfile {
 }
 
 /**
- * @implements {ProtocolProxyApiWorkaround_HeapProfilerDispatcher}
+ * @implements {ProtocolProxyApi.HeapProfilerDispatcher}
  */
 class HeapProfilerDispatcher {
   /**

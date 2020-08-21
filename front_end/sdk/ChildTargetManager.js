@@ -15,7 +15,7 @@ let _lastAnonymousTargetId = 0;
 let _attachCallback;
 
 /**
- * @implements {ProtocolProxyApiWorkaround_TargetDispatcher}
+ * @implements {ProtocolProxyApi.TargetDispatcher}
  */
 export class ChildTargetManager extends SDKModel {
   /**

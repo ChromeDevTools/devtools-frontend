@@ -279,7 +279,7 @@ export const Fast3GConditions = {
 const MAX_EAGER_POST_REQUEST_BODY_LENGTH = 64 * 1024;  // bytes
 
 /**
- * @implements {ProtocolProxyApiWorkaround_NetworkDispatcher}
+ * @implements {ProtocolProxyApi.NetworkDispatcher}
  * @unrestricted
  */
 export class NetworkDispatcher {

@@ -1824,7 +1824,7 @@ export const Events = {
 };
 
 /**
- * @implements {ProtocolProxyApiWorkaround_DOMDispatcher}
+ * @implements {ProtocolProxyApi.DOMDispatcher}
  */
 class DOMDispatcher {
   /**

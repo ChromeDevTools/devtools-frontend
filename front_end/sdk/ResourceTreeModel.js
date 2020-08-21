@@ -1011,7 +1011,7 @@ export class ResourceTreeFrame {
 }
 
 /**
- * @implements {ProtocolProxyApiWorkaround_PageDispatcher}
+ * @implements {ProtocolProxyApi.PageDispatcher}
  * @unrestricted
  */
 export class PageDispatcher {

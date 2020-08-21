@@ -402,12 +402,6 @@ const emitApi = (moduleName: string, protocolModuleName: string, domains: Protoc
   domains.forEach(d => emitDomainApi(d, protocolModulePrefix));
   emitCloseBlock();
   emitLine();
-
-  emitLine('// Include the workaround for https://github.com/microsoft/TypeScript/issues/38640');
-  domains.forEach(d => {
-    emitLine(
-        `interface ProtocolProxyApiWorkaround_${d.domain}Dispatcher extends ProtocolProxyApi.${d.domain}Dispatcher {}`);
-  });
 };
 
 const flushEmitToFile = (path: string) => {

@@ -16,7 +16,7 @@ import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-l
  * class (usually derived from `Issue`) and passes the instances on via a dispatched event.
  * We chose this approach here because the lifetime of the Model is tied to the target, but DevTools
  * wants to preserve issues for targets (e.g. iframes) that are already gone as well.
- * @implements {ProtocolProxyApiWorkaround_AuditsDispatcher}
+ * @implements {ProtocolProxyApi.AuditsDispatcher}
  */
 export class IssuesModel extends SDKModel {
   /**

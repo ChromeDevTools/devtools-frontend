@@ -625,39 +625,30 @@ function hideFromLayout(element) {
 }
 
 /**
- * @type {!WeakMap<!Document, !{alertElement: !HTMLElement, messageElement: !HTMLElement}>}
+ * @type {!WeakMap<!Document, !HTMLElement>}>}
  */
 const alertsMap = new WeakMap();
 
 /**
  * This function is used to announce a message with the screen reader.
  * Setting the textContent would allow the SR to access the offscreen element via browse mode
- * Due to existing NVDA bugs (https://github.com/nvaccess/nvda/issues/10140), setting the
- * aria-label of the alert element results in the message being read twice.
- * The current workaround is to set the aria-describedby of the alert element
- * to a description element where the aria-label is set to the message.
+ * Due to existing NVDA bugs (https://github.com/nvaccess/nvda/issues/6680), this alert will
+ * be read twice for NVDA users.
+ * This function should work as expected for other supported screen reader programs.
  * @param {string} message
  * @param {!Element} element
  */
 export function alert(message, element) {
   const document = /** @type {!Document} */ (element.ownerDocument);
 
-  let alertElements = alertsMap.get(document);
-  if (!alertElements) {
-    const messageElement = /** @type {!HTMLElement} */ (document.body.createChild('div'));
-    const messageElementId = 'ariaLiveMessageElement';
-    messageElement.id = messageElementId;
-    hideFromLayout(messageElement);
-
-    const alertElement = /** @type {!HTMLElement} */ (document.body.createChild('div'));
+  let alertElement = alertsMap.get(document);
+  if (!alertElement) {
+    alertElement = /** @type {!HTMLElement} */ (document.body.createChild('div'));
     hideFromLayout(alertElement);
     alertElement.setAttribute('role', 'alert');
     alertElement.setAttribute('aria-atomic', 'true');
-    alertElement.setAttribute('aria-describedby', messageElementId);
-
-    alertElements = {messageElement, alertElement};
-    alertsMap.set(document, alertElements);
+    alertsMap.set(document, alertElement);
   }
 
-  setAccessibleName(alertElements.messageElement, message.trimEndWithMaxLength(10000));
+  setAccessibleName(alertElement, message.trimEndWithMaxLength(10000));
 }

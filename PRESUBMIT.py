@@ -34,6 +34,7 @@ for more details about the presubmit API built into gcl.
 
 import sys
 import six
+import time
 
 EXCLUSIVE_CHANGE_DIRECTORIES = [
     [ 'third_party', 'v8' ],
@@ -48,12 +49,17 @@ def _ExecuteSubProcess(input_api, output_api, script_path, args, results):
     if isinstance(script_path, six.string_types):
         script_path = [input_api.python_executable, script_path]
 
+    start_time = time.time()
     process = input_api.subprocess.Popen(script_path + args, stdout=input_api.subprocess.PIPE, stderr=input_api.subprocess.STDOUT)
     out, _ = process.communicate()
+    end_time = time.time()
+
+    time_difference = end_time - start_time
+    time_info = "Script execution time was %.1fs seconds\n" % (time_difference)
     if process.returncode != 0:
-        results.append(output_api.PresubmitError(out))
+        results.append(output_api.PresubmitError(time_info + out))
     else:
-        results.append(output_api.PresubmitNotifyResult(out))
+        results.append(output_api.PresubmitNotifyResult(time_info + out))
     return results
 
 
@@ -101,10 +107,6 @@ def _CheckBuildGN(input_api, output_api):
 
 
 def _CheckExperimentTelemetry(input_api, output_api):
-    results = [
-        output_api.PresubmitNotifyResult('Running Experiment Telemetry check:')
-    ]
-
     experiment_telemetry_files = [
         input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end',
                                'main', 'MainImpl.js'),
@@ -115,8 +117,14 @@ def _CheckExperimentTelemetry(input_api, output_api):
                                             experiment_telemetry_files, [],
                                             ['.js'])
     if len(affected_main_files) == 0:
-        return results
+        return [
+            output_api.PresubmitNotifyResult(
+                'No affected files for telemetry check')
+        ]
 
+    results = [
+        output_api.PresubmitNotifyResult('Running Experiment Telemetry check:')
+    ]
     script_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
                                          'scripts', 'check_experiments.js')
     results.extend(_checkWithNodeScript(input_api, output_api, script_path))
@@ -143,7 +151,6 @@ def _CheckFormat(input_api, output_api):
 
 
 def _CheckDevtoolsLocalization(input_api, output_api, check_all_files=False):  # pylint: disable=invalid-name
-    results = [output_api.PresubmitNotifyResult('Running Localization Checks:')]
     devtools_root = input_api.PresubmitLocalPath()
     script_path = input_api.os_path.join(devtools_root, 'scripts', 'test', 'run_localization_check.py')
     if check_all_files == True:
@@ -155,7 +162,10 @@ def _CheckDevtoolsLocalization(input_api, output_api, check_all_files=False):  #
                                                      ['.js', '.grdp', '.grd', 'module.json'])
 
         if len(affected_front_end_files) == 0:
-            return results
+            return [
+                output_api.PresubmitNotifyResult(
+                    'No affected files for localization check')
+            ]
 
         with input_api.CreateTemporaryFile() as file_list:
             for affected_file in affected_front_end_files:
@@ -165,13 +175,14 @@ def _CheckDevtoolsLocalization(input_api, output_api, check_all_files=False):  #
         # Scan only added or modified files with specific extensions.
         args = ['--autofix', '--file-list', file_list.name]
 
+    results = [
+        output_api.PresubmitNotifyResult('Running Localization Checks:')
+    ]
     return _ExecuteSubProcess(input_api, output_api, script_path, args, results)
 
 
 def _CheckDevToolsStyleJS(input_api, output_api):
-    results = [
-        output_api.PresubmitNotifyResult('Running DevTools JS style check:')
-    ]
+    results = [output_api.PresubmitNotifyResult('JS style check:')]
     lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
                                        'scripts', 'test',
                                        'run_lint_check_js.js')
@@ -216,9 +227,7 @@ def _CheckDevToolsStyleJS(input_api, output_api):
 
 
 def _CheckDevToolsStyleCSS(input_api, output_api):
-    results = [
-        output_api.PresubmitNotifyResult('Running DevTools CSS style check:')
-    ]
+    results = [output_api.PresubmitNotifyResult('CSS style check:')]
     lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
                                        'scripts', 'test',
                                        'run_lint_check_css.py')
@@ -256,11 +265,12 @@ def _CheckDevToolsStyleCSS(input_api, output_api):
 
 
 def _CheckOptimizeSVGHashes(input_api, output_api):
+    if not input_api.platform.startswith('linux'):
+        return [output_api.PresubmitNotifyResult('Skipping SVG hash check')]
+
     results = [
         output_api.PresubmitNotifyResult('Running SVG optimization check:')
     ]
-    if not input_api.platform.startswith('linux'):
-        return results
 
     original_sys_path = sys.path
     try:
@@ -311,7 +321,10 @@ def _CheckGeneratedFiles(input_api, output_api):
     ], [], ['.pdl', '.json5', '.py', '.js'])
 
     if len(affected_files) == 0:
-        return []
+        return [
+            output_api.PresubmitNotifyResult(
+                'No affected files for generated files check')
+        ]
 
     results = [output_api.PresubmitNotifyResult('Running Generated Files Check:')]
     generate_protocol_resources_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'deps',

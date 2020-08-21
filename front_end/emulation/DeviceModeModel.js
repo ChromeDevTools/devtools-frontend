@@ -419,7 +419,8 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
       }
       const resourceTreeModel = emulationModel.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
       if (resourceTreeModel) {
-        resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameResized, this._onFrameResized, this);
+        resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameResized, this._onFrameChange, this);
+        resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, this._onFrameChange, this);
       }
     } else {
       emulationModel.emulateTouch(this._touchEnabled, this._touchMobile);
@@ -443,7 +444,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     return this._emulationModel ? this._emulationModel.target().inspectedURL() : null;
   }
 
-  _onFrameResized() {
+  _onFrameChange() {
     const overlayModel = this._emulationModel ? this._emulationModel.overlayModel() : null;
     if (!overlayModel) {
       return;

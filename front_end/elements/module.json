@@ -295,7 +295,7 @@
       "location": "elements-sidebar",
       "id": "elements.layout",
       "title": "Layout",
-      "order": 11,
+      "order": 4,
       "hasToolbar": false,
       "persistence": "permanent",
       "className": "Elements.LayoutSidebarPane"

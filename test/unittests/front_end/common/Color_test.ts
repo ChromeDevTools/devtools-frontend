@@ -309,6 +309,12 @@ describe('Color', () => {
         contrast: 7.05,
         result: 'hsl(120deg 100% 20%)',
       },
+      {
+        bgColor: 'black',
+        fgColor: '#b114ff',
+        contrast: 7.05,
+        result: 'hsl(280deg 100% 71%)',
+      },
     ];
     for (const {fgColor, bgColor, contrast, result} of colors) {
       const suggestedColor =

@@ -20,14 +20,23 @@ const getDetailAndSummaryFromNonInheritedProperty = (root: ShadowRoot) => {
   return {detailsElement, summaryElement};
 };
 
+const initialData = {
+  propertyName: 'display',
+  propertyValue: 'block',
+  inherited: false,
+  traceable: true,
+  expanded: false,
+  onNavigateToSource: () => {},
+};
+
 describe('ComputedStyleProperty', () => {
   it('renders inherited property correctly', () => {
     const component = new ComputedStyleProperty();
     renderElementIntoDOM(component);
     const data = {
+      ...initialData,
+      traceable: false,
       inherited: true,
-      expanded: false,
-      onNavigateToSource: () => {},
     };
     component.data = data;
 
@@ -43,14 +52,10 @@ describe('ComputedStyleProperty', () => {
         'should contain name and value slots under .inherited selector');
   });
 
-  it('renders non-inherited property correctly', () => {
+  it('renders traceable property correctly', () => {
     const component = new ComputedStyleProperty();
     renderElementIntoDOM(component);
-    const data = {
-      inherited: false,
-      expanded: false,
-      onNavigateToSource: () => {},
-    };
+    const data = {...initialData};
     component.data = data;
 
     assertShadowRoot(component.shadowRoot);
@@ -68,11 +73,7 @@ describe('ComputedStyleProperty', () => {
   it('renders expanded property correctly', () => {
     const component = new ComputedStyleProperty();
     renderElementIntoDOM(component);
-    const data = {
-      inherited: false,
-      expanded: true,
-      onNavigateToSource: () => {},
-    };
+    const data = {...initialData, expanded: true};
     component.data = data;
 
     assertShadowRoot(component.shadowRoot);
@@ -92,11 +93,7 @@ describe('ComputedStyleProperty', () => {
   it('renders collapsed property correctly', () => {
     const component = new ComputedStyleProperty();
     renderElementIntoDOM(component);
-    const data = {
-      inherited: false,
-      expanded: false,
-      onNavigateToSource: () => {},
-    };
+    const data = {...initialData};
     component.data = data;
 
     assertShadowRoot(component.shadowRoot);
@@ -118,8 +115,7 @@ describe('ComputedStyleProperty', () => {
     renderElementIntoDOM(component);
     let isOnNavigateToSourceCalled = false;
     const data = {
-      inherited: false,
-      expanded: false,
+      ...initialData,
       onNavigateToSource: () => {
         isOnNavigateToSourceCalled = true;
       },

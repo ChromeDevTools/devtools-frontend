@@ -12,7 +12,10 @@
 import './ComputedStyleProperty.js';
 /**
 * @typedef {{
+* propertyName:string,
+* propertyValue:string,
 * inherited:boolean,
+* traceable:boolean,
 * expanded:boolean,
 * onNavigateToSource:function(Event):void,
 * }}
@@ -21,6 +24,18 @@ import './ComputedStyleProperty.js';
 export let ComputedStylePropertyData;
 // eslint-disable-next-line no-unused-vars
 export class ComputedStylePropertyClosureInterface extends HTMLElement {
+  /**
+  * @return {string}
+  */
+  getPropertyName() {
+    throw new Error('Not implemented in _bridge.js');
+  }
+  /**
+  * @return {string}
+  */
+  getPropertyValue() {
+    throw new Error('Not implemented in _bridge.js');
+  }
   /**
   * @return {boolean}
   */

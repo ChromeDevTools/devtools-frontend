@@ -8,11 +8,6 @@
   content: none;
 }
 
-.tree-outline li.even-row {
-  position: relative;
-  background-color: #f5f5f5;
-}
-
 .tree-outline,
 .tree-outline ol {
   padding-left: 0;

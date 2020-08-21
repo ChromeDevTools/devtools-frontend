@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_03937134cedab9078be39a77ee3a48a0" desc="Group toggle text in Computed Style Widget of the Elements panel">
+    Group
+  </message>
   <message name="IDS_DEVTOOLS_03f126ba6fa92a1218920ff632546eb1" desc="Title of a section in Layout sidebar pane">
     Grid overlays
   </message>

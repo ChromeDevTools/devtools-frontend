@@ -42,3 +42,7 @@
     border: 1px solid ButtonText;
   }
 }
+
+:host-context(.-theme-with-dark-background) devtools-computed-style-group-lists {
+  --group-title-color: #e8eaed;
+}

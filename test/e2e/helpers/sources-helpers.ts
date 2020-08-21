@@ -38,7 +38,11 @@ export async function openFileInSourcesPanel(testInput: string) {
 }
 
 export async function openSnippetsSubPane() {
-  await click('[aria-label="More tabs"]', {root: await waitFor('.navigator-tabbed-pane')});
+  const root = await waitFor('.navigator-tabbed-pane');
+
+  await waitFor('[aria-label="More tabs"]', root);
+  await click('[aria-label="More tabs"]', {root});
+
   await waitFor('[aria-label="Snippets"]');
 
   await click('[aria-label="Snippets"]');

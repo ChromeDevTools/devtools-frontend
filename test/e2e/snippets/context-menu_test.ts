@@ -10,8 +10,7 @@ import {getAvailableSnippets, openCommandMenu, showSnippetsAutocompletion} from 
 import {createNewSnippet, openSnippetsSubPane, openSourcesPanel} from '../helpers/sources-helpers.js';
 
 describe('Snippets subpane', () => {
-  // Disabled due to flakiness
-  it.skip('[crbug.com/1111255] can show newly created snippets show up in command menu', async () => {
+  it('can show newly created snippets show up in command menu', async () => {
     const {frontend} = getBrowserAndPages();
 
     await openSourcesPanel();

@@ -483,6 +483,16 @@ export class NetworkLogView extends UI.Widget.VBox {
     return request.parsedURL.isValid && (request.scheme in HTTPSchemas);
   }
 
+
+  /**
+   * @param {string} value
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
+   * @return {boolean}
+   */
+  static _resourceTypeFilter(value, request) {
+    return request.resourceType().name() === value;
+  }
+
   /**
    * @param {number} windowStart
    * @param {number} windowEnd
@@ -1303,6 +1313,7 @@ export class NetworkLogView extends UI.Widget.VBox {
     this._suggestionBuilder.addItem(FilterType.MimeType, request.mimeType);
     this._suggestionBuilder.addItem(FilterType.Scheme, '' + request.scheme);
     this._suggestionBuilder.addItem(FilterType.StatusCode, '' + request.statusCode);
+    this._suggestionBuilder.addItem(FilterType.ResourceType, request.resourceType().name());
 
     const priority = request.priority();
     if (priority) {
@@ -1723,6 +1734,9 @@ export class NetworkLogView extends UI.Widget.VBox {
 
       case FilterType.StatusCode:
         return NetworkLogView._statusCodeFilter.bind(null, value);
+
+      case FilterType.ResourceType:
+        return NetworkLogView._resourceTypeFilter.bind(null, value);
     }
     return null;
   }
@@ -2178,6 +2192,7 @@ export const FilterType = {
   SetCookieDomain: 'set-cookie-domain',
   SetCookieName: 'set-cookie-name',
   SetCookieValue: 'set-cookie-value',
+  ResourceType: 'resource-type',
   CookieDomain: 'cookie-domain',
   CookieName: 'cookie-name',
   CookiePath: 'cookie-path',

@@ -61,7 +61,7 @@ test('does not mutate regexes', function (t) {
 
 test('does not perform operations observable to Proxies', { skip: typeof Proxy !== 'function' }, function (t) {
 	var Handler = function () {
-		this.trapCalls = 0;
+		this.trapCalls = [];
 	};
 
 	forEach([
@@ -78,7 +78,7 @@ test('does not perform operations observable to Proxies', { skip: typeof Proxy !
 		'setPrototypeOf'
 	], function (trapName) {
 		Handler.prototype[trapName] = function () {
-			this.trapCalls += 1;
+			this.trapCalls.push(trapName);
 			return Reflect[trapName].apply(Reflect, arguments);
 		};
 	});
@@ -88,7 +88,7 @@ test('does not perform operations observable to Proxies', { skip: typeof Proxy !
 		var proxy = new Proxy({ lastIndex: 0 }, handler);
 
 		st.equal(isRegex(proxy), false, 'proxy of plain object is not regex');
-		st.equal(handler.trapCalls, 0, 'no proxy traps were triggered');
+		st.deepEqual(handler.trapCalls, ['getOwnPropertyDescriptor'], 'no unexpected proxy traps were triggered');
 		st.end();
 	});
 
@@ -97,7 +97,7 @@ test('does not perform operations observable to Proxies', { skip: typeof Proxy !
 		var proxy = new Proxy(/a/, handler);
 
 		st.equal(isRegex(proxy), false, 'proxy of RegExp instance is not regex');
-		st.equal(handler.trapCalls, 0, 'no proxy traps were triggered');
+		st.deepEqual(handler.trapCalls, ['getOwnPropertyDescriptor'], 'no unexpected proxy traps were triggered');
 		st.end();
 	});
 

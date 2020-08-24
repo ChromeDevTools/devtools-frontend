@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.6.1](https://www.github.com/yargs/yargs-unparser/compare/v1.6.0...v1.6.1) (2020-06-17)
+
+
+### Bug Fixes
+
+* **deps:** downgrade yargs, such that we continue supporting Node 6 ([#57](https://www.github.com/yargs/yargs-unparser/issues/57)) ([f69406c](https://www.github.com/yargs/yargs-unparser/commit/f69406c34bead63011590f7b51a24a6f311c1a48))
+
 ## 1.6.0 (2019-07-30)
 
 

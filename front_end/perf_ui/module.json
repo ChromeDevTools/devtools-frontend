@@ -82,7 +82,6 @@
     "LiveHeapProfile.js",
     "NetworkPriorities.js",
     "OverviewGrid.js",
-    "PieChart.js",
     "PieChart2_bridge.js",
     "TimelineGrid.js",
     "TimelineOverviewPane.js"
@@ -92,7 +91,6 @@
     "filmStripView.css",
     "flameChart.css",
     "overviewGrid.css",
-    "pieChart.css",
     "timelineGrid.css",
     "timelineOverviewInfo.css"
   ],

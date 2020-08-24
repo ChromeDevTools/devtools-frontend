@@ -212,7 +212,6 @@ all_devtools_files = [
   "front_end/perf_ui/flameChart.css",
   "front_end/perf_ui/module.json",
   "front_end/perf_ui/overviewGrid.css",
-  "front_end/perf_ui/pieChart.css",
   "front_end/perf_ui/timelineGrid.css",
   "front_end/perf_ui/timelineOverviewInfo.css",
   "front_end/performance_monitor/module.json",

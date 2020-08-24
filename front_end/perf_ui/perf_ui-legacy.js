@@ -67,9 +67,6 @@ PerfUI.OverviewGrid.Window = PerfUIModule.OverviewGrid.Window;
 PerfUI.OverviewGrid.Events = PerfUIModule.OverviewGrid.Events;
 
 /** @constructor */
-PerfUI.PieChart = PerfUIModule.PieChart.PieChart;
-
-/** @constructor */
 PerfUI.TimelineGrid = PerfUIModule.TimelineGrid.TimelineGrid;
 
 /** @interface */

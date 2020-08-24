@@ -326,7 +326,6 @@ all_typescript_module_sources = [
   "perf_ui/LiveHeapProfile.js",
   "perf_ui/NetworkPriorities.js",
   "perf_ui/OverviewGrid.js",
-  "perf_ui/PieChart.js",
   "perf_ui/PieChart2.js",
   "perf_ui/PieChart2_bridge.js",
   "perf_ui/TimelineGrid.js",

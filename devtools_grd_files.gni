@@ -606,7 +606,6 @@ grd_files_debug_sources = [
   "front_end/perf_ui/LiveHeapProfile.js",
   "front_end/perf_ui/NetworkPriorities.js",
   "front_end/perf_ui/OverviewGrid.js",
-  "front_end/perf_ui/PieChart.js",
   "front_end/perf_ui/PieChart2.js",
   "front_end/perf_ui/PieChart2_bridge.js",
   "front_end/perf_ui/TimelineGrid.js",

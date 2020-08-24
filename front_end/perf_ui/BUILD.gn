@@ -15,7 +15,6 @@ devtools_module("perf_ui") {
     "LiveHeapProfile.js",
     "NetworkPriorities.js",
     "OverviewGrid.js",
-    "PieChart.js",
     "PieChart2.ts",
     "PieChart2_bridge.js",
     "TimelineGrid.js",

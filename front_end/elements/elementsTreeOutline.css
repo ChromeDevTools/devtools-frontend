@@ -37,10 +37,11 @@
   /** Keep margin-left & padding-left in sync with ElementsTreeElements.updateDecorators **/
   padding: 1px 0 0 14px;
   margin-left: -2px;
-  word-wrap: break-word;
+  word-break: normal;
   position: relative;
   min-height: 15px;
   line-height: 1.36;
+  min-width: 200px;
 }
 
 .elements-disclosure li.parent {

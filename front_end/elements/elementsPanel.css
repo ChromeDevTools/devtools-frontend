@@ -46,10 +46,6 @@
   min-width: 100%;
 }
 
-#elements-content.elements-wrap {
-  overflow-x: hidden;
-}
-
 #elements-crumbs {
   flex: 0 0 23px;
   background-color: white;

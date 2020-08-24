@@ -2,7 +2,7 @@
 
 ## Merges and Cherry-Picks
 
-The documentation on this can be found in the main [README.md](../README.md).
+The documentation on cherry-picks and merges (including backmerges and backports) can be found in [`workflows.md`](../workflows.md#merges-and-cherry_picks).
 
 ## Versioning
 

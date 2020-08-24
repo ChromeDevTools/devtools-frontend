@@ -1989,7 +1989,7 @@ export class ThemeSupport {
 
     switch (this._themeName) {
       case 'dark': {
-        const minCap = colorUsage & ThemeSupport.ColorUsage.Background ? 0.14 : 0.58;
+        const minCap = colorUsage & ThemeSupport.ColorUsage.Background ? 0.14 : 0;
         const maxCap = colorUsage & ThemeSupport.ColorUsage.Foreground ? 0.9 : 1;
         lit = 1 - lit;
         if (lit < minCap * 2) {

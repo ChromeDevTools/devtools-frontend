@@ -129,6 +129,7 @@ generated_typescript_entrypoint_sources = [
   "$resources_out_dir/heap_snapshot_model/heap_snapshot_model.js",
   "$resources_out_dir/help/help.js",
   "$resources_out_dir/host/host.js",
+  "$resources_out_dir/i18n/i18n.js",
   "$resources_out_dir/inline_editor/inline_editor.js",
   "$resources_out_dir/input/input.js",
   "$resources_out_dir/inspector_main/inspector_main.js",

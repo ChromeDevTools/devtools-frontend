@@ -334,7 +334,7 @@ action("generate_devtools_grd") {
       generated_applications_html + generated_applications_js +
       generated_non_autostart_non_remote_modules + devtools_embedder_scripts +
       generated_worker_bundles + generated_typescript_entrypoint_sources +
-      generated_typescript_modules +
+      generated_typescript_modules + generated_devtools_locale_files +
       [
         "$resources_out_dir/devtools_extension_api.js",
         "$resources_out_dir/sdk/wasm_source_map/pkg/wasm_source_map_bg.wasm",

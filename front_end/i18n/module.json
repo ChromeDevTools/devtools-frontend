@@ -1,0 +1,16 @@
+{
+  "dependencies": [
+    "platform"
+  ],
+  "skip_rollup": true,
+  "modules":[
+    "i18n.js",
+    "i18nImpl.js"
+  ],
+  "scripts": [
+    "../third_party/i18n/i18n-bundle.js"
+  ],
+  "skip_compilation":[
+    "../third_party/i18n/i18n-bundle.js"
+  ]
+}

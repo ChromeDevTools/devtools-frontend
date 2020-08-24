@@ -204,9 +204,6 @@
   <message name="IDS_DEVTOOLS_befbd2dc59039a04238411a0c4e2842f" desc="Compositing reason description displayed in the Layer Details View of the Layers panel">
     Is an accelerated video.
   </message>
-  <message name="IDS_DEVTOOLS_c0f4be326648f3fee18ffd278b614126" desc="Text in Paint Profiler View of the Layers panel">
-    Profiling Results
-  </message>
   <message name="IDS_DEVTOOLS_c634209b1884c963528d21a21cb64ac8" desc="Text in Layer Details View of the Layers panel">
     Nearest Layer Shifting Containing Block
   </message>
@@ -269,5 +266,8 @@
   </message>
   <message name="IDS_DEVTOOLS_fdf193b625172465932a139feb6963a9" desc="Text in Layer Details View of the Layers panel">
     Main thread scrolling reason
+  </message>
+  <message name="IDS_DEVTOOLS_ffe78d1ba7ed4d45c9276465ba9e1b86" desc="ARIA label for a pie chart that shows the results of the paint profiler">
+    Profiling results
   </message>
 </grit-part>

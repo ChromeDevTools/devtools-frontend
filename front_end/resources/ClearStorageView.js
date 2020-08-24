@@ -52,11 +52,10 @@ export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
         ls`Learn more`);
     learnMoreRow.appendChild(learnMore);
     this._quotaUsage = null;
-    this._pieChart = new PerfUI.PieChart.PieChart(
-        {chartName: ls`Storage Usage`, size: 110, formatter: Platform.NumberUtilities.bytesToString, showLegend: true});
+    this._pieChart = PerfUI.PieChart2.createPieChart2();
     const usageBreakdownRow = quota.appendRow();
     usageBreakdownRow.classList.add('usage-breakdown-row');
-    usageBreakdownRow.appendChild(this._pieChart.element);
+    usageBreakdownRow.appendChild(this._pieChart);
 
     const clearButtonSection = this._reportView.appendSection('', 'clear-storage-button').appendRow();
     this._clearButton = UI.UIUtils.createTextButton(ls`Clear site data`, this._clear.bind(this));
@@ -235,7 +234,7 @@ export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
   async doUpdate() {
     if (!this._securityOrigin || !this._target) {
       this._quotaRow.textContent = '';
-      this._resetPieChart(0);
+      this._populatePieChart(0, []);
       return;
     }
 
@@ -243,7 +242,7 @@ export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
     const response = await this._target.storageAgent().invoke_getUsageAndQuota({origin: securityOrigin});
     if (response.getError()) {
       this._quotaRow.textContent = '';
-      this._resetPieChart(0);
+      this._populatePieChart(0, []);
       return;
     }
     this._quotaRow.textContent = Common.UIString.UIString(
@@ -256,7 +255,8 @@ export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
 
     if (this._quotaUsage === null || this._quotaUsage !== response.usage) {
       this._quotaUsage = response.usage;
-      this._resetPieChart(response.usage);
+      /** @type {!Array<!PerfUI.PieChart2.Slice>} */
+      const slices = [];
       for (const usageForType of response.usageBreakdown.sort((a, b) => b.usage - a.usage)) {
         const value = usageForType.usage;
         if (!value) {
@@ -264,8 +264,9 @@ export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
         }
         const title = this._getStorageTypeName(usageForType.storageType);
         const color = this._pieColors.get(usageForType.storageType) || '#ccc';
-        this._pieChart.addSlice(value, color, title);
+        slices.push({value, color, title});
       }
+      this._populatePieChart(response.usage, slices);
     }
 
     this._usageUpdatedForTest(response.usage, response.quota, response.usageBreakdown);
@@ -274,9 +275,17 @@ export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
 
   /**
    * @param {number} total
+   * @param {!Array<!PerfUI.PieChart2.Slice>} slices
    */
-  _resetPieChart(total) {
-    this._pieChart.initializeWithTotal(total);
+  _populatePieChart(total, slices) {
+    this._pieChart.data = {
+      chartName: ls`Storage usage`,
+      size: 110,
+      formatter: Platform.NumberUtilities.bytesToString,
+      showLegend: true,
+      total,
+      slices
+    };
   }
 
   /**

@@ -286,6 +286,9 @@ table is empty.
   <message name="IDS_DEVTOOLS_8a6bd58d43215a9efccc3753ab42b347" desc="Manifest installability error in the Application panel">
     Manifest does not contain a suitable icon - PNG, SVG or WebP format of at least <ph name="MINIMUM_ICON_SIZE">$1s<ex>100</ex></ph>px is required, the sizes attribute must be set, and the purpose attribute, if set, must include &quot;any&quot; or &quot;maskable&quot;.
   </message>
+  <message name="IDS_DEVTOOLS_8bf93164da9c0dfb017c81bfc458b7b5" desc="ARIA label for a pie chart in the Clear Storage View of the Application panel">
+    Storage usage
+  </message>
   <message name="IDS_DEVTOOLS_8c4aa541ee911e8d80451ef8cc304806" desc="Text in Application Panel Sidebar of the Application panel">
     Storage
   </message>
@@ -335,9 +338,6 @@ read the &quot;<ph name="THIS_TABLENAME">$1s<ex>database</ex></ph>&quot; table.
   <message name="IDS_DEVTOOLS_a0394c82ef53a78ef470b18ecbf960b4" desc="Label for the primary icon loaded from the manifest">
     Primary icon
 as used by <ph name="LOCKED_1">Chrome</ph>
-  </message>
-  <message name="IDS_DEVTOOLS_a049ac2b4afe0fb6e78656082858067e" desc="Text in Clear Storage View of the Application panel">
-    Storage Usage
   </message>
   <message name="IDS_DEVTOOLS_a20961082dd1a8a90cb08914b976639b" desc="Explanatory text in the Frame Details view">
     Localhost is always a secure context

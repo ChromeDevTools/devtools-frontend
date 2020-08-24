@@ -39,6 +39,9 @@
   <message name="IDS_DEVTOOLS_13b5bfe96f3e2fe411c9f66f4a582adf" desc="Text in Heap Snapshot Grid Nodes of a profiler tool">
     in
   </message>
+  <message name="IDS_DEVTOOLS_1562ab43174df434a6d43573a00ecba0" desc="Label on a pie chart in the statistics view for the Heap Snapshot tool">
+    JS arrays
+  </message>
   <message name="IDS_DEVTOOLS_164c4aca31febd73a41b50c4a9c406be" desc="Text in Heap Profile View of a profiler tool">
     Snapshotting…
   </message>
@@ -50,6 +53,9 @@
   </message>
   <message name="IDS_DEVTOOLS_1816452291df3cd48db5667463361f25" desc="Tooltip text that appears when hovering over the largeicon visibility button in the Profile View of a profiler tool">
     Focus selected function
+  </message>
+  <message name="IDS_DEVTOOLS_1c590d8853fcdfe28f171984d16f21ac" desc="Label on a pie chart in the statistics view for the Heap Snapshot tool">
+    System objects
   </message>
   <message name="IDS_DEVTOOLS_1c793c126ee9b80cc0b6f29ab67220bc" desc="Data grid name for Heap Snapshot Retainment data grids">
     Heap Snapshot Retainment
@@ -69,8 +75,8 @@
   <message name="IDS_DEVTOOLS_2db1f9be46028cfdf9b8f96a0110e637" desc="Text in CPUProfile View of a profiler tool">
     <ph name="VALUE">$1.2f<ex>21.33</ex></ph> %%
   </message>
-  <message name="IDS_DEVTOOLS_2def01e5dee6051b68f5b1e5e2fc8ad4" desc="Text in Heap Snapshot View of a profiler tool">
-    System Objects
+  <message name="IDS_DEVTOOLS_2dba1d44b9565f07db17a35dcc4cccbb" desc="Label on a pie chart in the statistics view for the Heap Snapshot tool">
+    Typed arrays
   </message>
   <message name="IDS_DEVTOOLS_2ebf8a926edeb0ca7de35c9b563ba797" desc="Filter label text in the Memory tool to filter class names for a heap snapshot">
     Class filter
@@ -110,9 +116,6 @@
   </message>
   <message name="IDS_DEVTOOLS_3eea5ef5cf936633884b33c458451013" desc="Title of a setting under the Performance category in Settings">
     Show native functions in JS Profile
-  </message>
-  <message name="IDS_DEVTOOLS_412ec4c9168f10f6e2061f65f0358079" desc="Text in Heap Snapshot View of a profiler tool">
-    Typed Arrays
   </message>
   <message name="IDS_DEVTOOLS_42db600672cae99246e499a23827146b" desc="Text in Heap Snapshot View of a profiler tool">
     Heap snapshot profiles show memory distribution among your page&apos;s JavaScript objects and related DOM nodes.
@@ -176,9 +179,6 @@
   </message>
   <message name="IDS_DEVTOOLS_61b4b76027d49142c386737a0e94cedb" desc="Text in Heap Profile View of a profiler tool">
     NATIVE SNAPSHOTS
-  </message>
-  <message name="IDS_DEVTOOLS_62b96ca53ee08544d8d96269112df323" desc="Text in Heap Snapshot View of a profiler tool">
-    JS Arrays
   </message>
   <message name="IDS_DEVTOOLS_678d0a4421b60dc59999ac02837496a6" desc="Text in Heap Snapshot Data Grids of a profiler tool">
     Constructor

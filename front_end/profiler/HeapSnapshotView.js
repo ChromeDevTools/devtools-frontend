@@ -319,12 +319,15 @@ export class HeapSnapshotView extends UI.View.SimpleView {
    */
   async _retrieveStatistics(heapSnapshotProxy) {
     const statistics = await heapSnapshotProxy.getStatistics();
-    this._statisticsView.setTotal(statistics.total);
-    this._statisticsView.addRecord(statistics.code, Common.UIString.UIString('Code'), '#f77');
-    this._statisticsView.addRecord(statistics.strings, Common.UIString.UIString('Strings'), '#5e5');
-    this._statisticsView.addRecord(statistics.jsArrays, Common.UIString.UIString('JS Arrays'), '#7af');
-    this._statisticsView.addRecord(statistics.native, Common.UIString.UIString('Typed Arrays'), '#fc5');
-    this._statisticsView.addRecord(statistics.system, Common.UIString.UIString('System Objects'), '#98f');
+
+    const records = [
+      {value: statistics.code, color: '#f77', title: ls`Code`},
+      {value: statistics.strings, color: '#5e5', title: ls`Strings`},
+      {value: statistics.jsArrays, color: '#7af', title: ls`JS arrays`},
+      {value: statistics.native, color: '#fc5', title: ls`Typed arrays`},
+      {value: statistics.system, color: '#98f', title: ls`System objects`},
+    ];
+    this._statisticsView.setTotalAndRecords(statistics.total, records);
     return statistics;
   }
 
@@ -1771,14 +1774,9 @@ export class HeapSnapshotStatisticsView extends UI.Widget.VBox {
   constructor() {
     super();
     this.element.classList.add('heap-snapshot-statistics-view');
-    this._pieChart = new PerfUI.PieChart.PieChart({
-      chartName: ls`Heap memory usage`,
-      size: 150,
-      formatter: HeapSnapshotStatisticsView._valueFormatter,
-      showLegend: true
-    });
-    this._pieChart.element.classList.add('heap-snapshot-stats-pie-chart');
-    this.element.appendChild(this._pieChart.element);
+    this._pieChart = PerfUI.PieChart2.createPieChart2();
+    this._pieChart.classList.add('heap-snapshot-stats-pie-chart');
+    this.element.appendChild(this._pieChart);
   }
 
   /**
@@ -1790,19 +1788,18 @@ export class HeapSnapshotStatisticsView extends UI.Widget.VBox {
   }
 
   /**
-   * @param {number} value
+   * @param {number} total
+   * @param {!Array<!PerfUI.PieChart2.Slice>} records
    */
-  setTotal(value) {
-    this._pieChart.initializeWithTotal(value);
-  }
-
-  /**
-   * @param {number} value
-   * @param {string} name
-   * @param {string} color
-   */
-  addRecord(value, name, color) {
-    this._pieChart.addSlice(value, color, name);
+  setTotalAndRecords(total, records) {
+    this._pieChart.data = {
+      chartName: ls`Heap memory usage`,
+      size: 150,
+      formatter: HeapSnapshotStatisticsView._valueFormatter,
+      showLegend: true,
+      total,
+      slices: records
+    };
   }
 }
 

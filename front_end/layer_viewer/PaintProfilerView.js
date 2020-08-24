@@ -51,10 +51,9 @@ export class PaintProfilerView extends UI.Widget.HBox {
     this._canvasContainer = this.contentElement.createChild('div', 'paint-profiler-canvas-container');
     this._progressBanner = this.contentElement.createChild('div', 'full-widget-dimmed-banner hidden');
     this._progressBanner.textContent = Common.UIString.UIString('Profiling…');
-    this._pieChart = new PerfUI.PieChart.PieChart(
-        {chartName: ls`Profiling Results`, size: 55, formatter: this._formatPieChartTime.bind(this)});
-    this._pieChart.element.classList.add('paint-profiler-pie-chart');
-    this.contentElement.appendChild(this._pieChart.element);
+    this._pieChart = PerfUI.PieChart2.createPieChart2();
+    this._pieChart.classList.add('paint-profiler-pie-chart');
+    this.contentElement.appendChild(this._pieChart);
 
     this._showImageCallback = showImageCallback;
 
@@ -180,7 +179,7 @@ export class PaintProfilerView extends UI.Widget.HBox {
 
     if (!this._snapshot) {
       this._update();
-      this._pieChart.initializeWithTotal(0);
+      this._populatePieChart(0, []);
       this._selectionWindow.setEnabled(false);
       return;
     }
@@ -292,6 +291,11 @@ export class PaintProfilerView extends UI.Widget.HBox {
   }
 
   _updatePieChart() {
+    const {total, slices} = this._calculatePieChart();
+    this._populatePieChart(total, slices);
+  }
+
+  _calculatePieChart() {
     const window = this.selectionWindow();
     if (!this._profiles || !this._profiles.length || !window) {
       return;
@@ -308,10 +312,27 @@ export class PaintProfilerView extends UI.Widget.HBox {
         timeByCategory[category.color] += time;
       }
     }
-    this._pieChart.initializeWithTotal(totalTime / this._profiles.length);
+    /** @type {!Array<!PerfUI.PieChart2.Slice>} */
+    const slices = [];
     for (const color in timeByCategory) {
-      this._pieChart.addSlice(timeByCategory[color] / this._profiles.length, color);
+      slices.push({value: timeByCategory[color] / this._profiles.length, color, title: ''});
     }
+    return {total: totalTime / this._profiles.length, slices};
+  }
+
+  /**
+   * @param {number} total
+   * @param {!Array<!PerfUI.PieChart2.Slice>} slices
+   */
+  _populatePieChart(total, slices) {
+    this._pieChart.data = {
+      chartName: ls`Profiling results`,
+      size: 55,
+      formatter: this._formatPieChartTime.bind(this),
+      showLegend: false,
+      total,
+      slices
+    };
   }
 
   /**

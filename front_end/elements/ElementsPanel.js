@@ -507,6 +507,9 @@ export class ElementsPanel extends UI.Panel.Panel {
    * @param {boolean=} jumpBackwards
    */
   performSearch(searchConfig, shouldJump, jumpBackwards) {
+    if (!searchConfig) {
+      return;
+    }
     const query = searchConfig.query;
 
     const whitespaceTrimmedQuery = query.trim();

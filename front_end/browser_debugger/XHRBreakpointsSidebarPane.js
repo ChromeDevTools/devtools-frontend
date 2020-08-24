@@ -67,6 +67,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox {
     inputElementContainer.textContent = Common.UIString.UIString('Break when URL contains:');
 
     const inputElement = inputElementContainer.createChild('span', 'breakpoint-condition-input');
+    UI.ARIAUtils.setAccessibleName(inputElement, ls`URL Breakpoint`);
     this._addListElement(inputElementContainer, /** @type {?Element} */ (this._list.element.firstChild));
 
     /**

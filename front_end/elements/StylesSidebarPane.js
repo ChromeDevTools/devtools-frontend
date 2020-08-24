@@ -571,7 +571,6 @@ export class StylesSidebarPane extends ElementsSidebarPane {
       const element = section.closestPropertyForEditing(propertyIndex);
       if (!element) {
         section.element.focus();
-        UI.UIUtils.markAsFocusedByKeyboard(section.element);
         return;
       }
       element.startEditing();

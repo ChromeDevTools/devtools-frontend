@@ -97,7 +97,7 @@ export class StartView extends UI.Widget.Widget {
         ls`Generate report`,
         () => this._controller.dispatchEventToListeners(
             Events.RequestLighthouseStart,
-            /* keyboardInitiated */ UI.UIUtils.elementIsFocusedByKeyboard(this._startButton)),
+            /* keyboardInitiated */ this._startButton.matches(':focus-visible')),
         /* className */ '', /* primary */ true);
     this.setDefaultFocusedElement(this._startButton);
 

@@ -715,12 +715,8 @@ export class MainMenuItem {
      * @suppressGlobalPropertiesCheck
      */
     function setDockSide(side) {
-      const hadKeyboardFocus = document.deepActiveElement().hasAttribute('data-keyboard-focus');
       self.UI.dockController.once(UI.DockController.Events.AfterDockSideChanged).then(() => {
         button.focus();
-        if (hadKeyboardFocus) {
-          UI.UIUtils.markAsFocusedByKeyboard(button);
-        }
       });
       self.UI.dockController.setDockSide(side);
       contextMenu.discard();

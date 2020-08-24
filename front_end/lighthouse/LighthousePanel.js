@@ -310,10 +310,6 @@ export class LighthousePanel extends UI.Panel.Panel {
       this._buildReportUI(lighthouseResponse.lhr, lighthouseResponse.artifacts);
       // Give focus to the new audit button when completed
       this._newButton.element.focus();
-      const keyboardInitiated = /** @type {boolean} */ (event.data);
-      if (keyboardInitiated) {
-        UI.UIUtils.markAsFocusedByKeyboard(this._newButton.element);
-      }
     } catch (err) {
       await this._resetEmulationAndProtocolConnection();
       if (err instanceof Error) {

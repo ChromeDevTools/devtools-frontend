@@ -1086,7 +1086,7 @@ export class NetworkLogView extends UI.Widget.VBox {
   }
 
   _onDataGridFocus() {
-    if (UI.UIUtils.elementIsFocusedByKeyboard(this._dataGrid.element)) {
+    if (this._dataGrid.element.matches(':focus-visible')) {
       this.element.classList.add('grid-focused');
     }
     this.updateNodeBackground();

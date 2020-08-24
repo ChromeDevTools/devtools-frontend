@@ -56,8 +56,6 @@ import {XLink} from './XLink.js';
 export const highlightedSearchResultClassName = 'highlighted-search-result';
 export const highlightedCurrentSearchResultClassName = 'current-search-result';
 
-export {markAsFocusedByKeyboard} from './utils/focus-changed.js';
-
 /**
  * @param {!Element} element
  * @param {?function(!MouseEvent): boolean} elementDragStart
@@ -756,19 +754,6 @@ function _windowFocused(document, event) {
   if (event.target.document.nodeType === Node.DOCUMENT_NODE) {
     document.body.classList.remove('inactive');
   }
-  UI._keyboardFocus = true;
-  const listener = () => {
-    const activeElement = document.deepActiveElement();
-    if (activeElement) {
-      activeElement.removeAttribute('data-keyboard-focus');
-    }
-    UI._keyboardFocus = false;
-  };
-  document.defaultView.requestAnimationFrame(() => {
-    UI._keyboardFocus = false;
-    document.removeEventListener('mousedown', listener, true);
-  });
-  document.addEventListener('mousedown', listener, true);
 }
 
 /**
@@ -779,14 +764,6 @@ function _windowBlurred(document, event) {
   if (event.target.document.nodeType === Node.DOCUMENT_NODE) {
     document.body.classList.add('inactive');
   }
-}
-
-/**
- * @param {!Element} element
- * @returns {boolean}
- */
-export function elementIsFocusedByKeyboard(element) {
-  return element.hasAttribute('data-keyboard-focus');
 }
 
 /**
@@ -1208,13 +1185,6 @@ export class LongClickController extends Common.ObjectWrapper.ObjectWrapper {
 
 LongClickController.TIME_MS = 200;
 
-function _trackKeyboardFocus() {
-  UI._keyboardFocus = true;
-  document.defaultView.requestAnimationFrame(() => {
-    UI._keyboardFocus = false;
-  });
-}
-
 /**
  * @param {!Document} document
  * @param {!Common.Settings.Setting<string>} themeSetting
@@ -1224,12 +1194,6 @@ export function initializeUIUtils(document, themeSetting) {
   document.defaultView.addEventListener('focus', _windowFocused.bind(UI, document), false);
   document.defaultView.addEventListener('blur', _windowBlurred.bind(UI, document), false);
   document.addEventListener('focus', focusChanged.bind(UI), true);
-
-  // Track which focus changes occur due to keyboard input.
-  // When focus changes from tab navigation (keydown).
-  // When focus() is called in keyboard initiated click events (keyup).
-  document.addEventListener('keydown', _trackKeyboardFocus, true);
-  document.addEventListener('keyup', _trackKeyboardFocus, true);
 
   if (!self.UI.themeSupport) {
     self.UI.themeSupport = new ThemeSupport(themeSetting);

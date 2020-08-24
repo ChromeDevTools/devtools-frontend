@@ -52,14 +52,4 @@ export function focusChanged(event) {
   const element = document ? document.deepActiveElement() : null;
   WidgetfocusWidgetForNode(element);
   XWidgetfocusWidgetForNode(element);
-  if (!UI._keyboardFocus) {
-    return;
-  }
-
-  markAsFocusedByKeyboard(element);
-}
-
-export function markAsFocusedByKeyboard(element) {
-  element.setAttribute('data-keyboard-focus', 'true');
-  element.addEventListener('blur', () => element.removeAttribute('data-keyboard-focus'), {once: true, capture: true});
 }

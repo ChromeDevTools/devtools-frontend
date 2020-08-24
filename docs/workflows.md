@@ -244,26 +244,25 @@ The following scripts run as AutoRollers, but can be manually invoked if desired
 - To roll the HEAD commit of DevTools frontend into Chromium, use `scripts/deps/roll_to_chromium.py`.
 - To update DevTools frontend's DEPS, use `roll-dep`.
 
-## Merges and Cherry-Picks
+## Merges and cherry-picks
 
-_Merge request/approval is handled by Chromium Release Managers. DevTools follows [The Zen of Merge Requests](https://www.chromium.org/developers/the-zen-of-merge-requests). In exceptional
-cases please get in touch with hablich@chromium.org._
+_Merge request/approval is handled by Chromium Release Managers. DevTools follows [The Zen of Merge Requests](https://www.chromium.org/developers/the-zen-of-merge-requests). In exceptional cases please get in touch with hablich@chromium.org._
 
 Step-by-step guide on how to merge:
 
-1. Request and receive approval to merge
-1. Backmerges are done to the chromium/xxxx (e.g. chromium/3979) branch respectively on the DevTools frontend repo
-1. Use [Omahaproxy](https://omahaproxy.appspot.com/) to find out what
-   branch a major Chromium version has (column true_branch).
-   Open the to-be-merged commit in Gerrit e.g.
-   [Example](https://chromium-review.googlesource.com/c/devtools/devtools-frontend/+/1928912)
-1. Click hamburger menu on the top right and select Cherry Pick
-1. Select branch to merge to e.g. chromium/3968
-1. Cherry Pick CL is created e.g.
-   [Example](https://chromium-review.googlesource.com/c/devtools/devtools-frontend/+/1928913)
-1. Get it reviewed if necessary
-1. Click hamburger menu on the cherry pick CL and select Submit
-1. Done
+1. Request and receive approval to merge.
+1. Backmerges are done to the `chromium/xxxx` (e.g. `chromium/3979`) branch on the DevTools frontend repo.
+   Use <https://chromiumdash.appspot.com/branches> or [Omahaproxy](https://omahaproxy.appspot.com/)
+   to find out what branch a major Chromium version has (column `true_branch`).
+1. Open the to-be-merged commit in Gerrit
+   ([example](https://chromium-review.googlesource.com/c/devtools/devtools-frontend/+/1928912)).
+1. Click the hamburger menu on the top right and select “Cherry pick”.
+1. Select the branch to merge to e.g. `chromium/3968`.
+1. The cherry-pick CL is created
+   ([example](https://chromium-review.googlesource.com/c/devtools/devtools-frontend/+/1928913)).
+1. Get it reviewed if necessary.
+1. Click the hamburger menu on the cherry-pick CL and select “Submit”.
+1. Done.
 
 ## Useful Commands
 

@@ -21,6 +21,7 @@ group("front_end") {
     "inspector_overlay",
     "issues",
     "media",
+    "perf_ui",
     "persistence",
     "platform",
     "protocol_client",

@@ -16,6 +16,8 @@ devtools_module("perf_ui") {
     "NetworkPriorities.js",
     "OverviewGrid.js",
     "PieChart.js",
+    "PieChart2.ts",
+    "PieChart2_bridge.js",
     "TimelineGrid.js",
     "TimelineOverviewPane.js",
   ]
@@ -28,8 +30,14 @@ devtools_module("perf_ui") {
     "../sdk:bundle",
     "../source_frame:bundle",
     "../text_editor:bundle",
+    "../third_party/lit-html:bundle",
     "../ui:bundle",
     "../workspace:bundle",
+  ]
+
+  visibility = [
+    "../../test/unittests/front_end/perf_ui",
+    "../component_docs/perf_piechart",
   ]
 }
 

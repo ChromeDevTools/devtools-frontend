@@ -11,6 +11,7 @@ import * as LiveHeapProfile from './LiveHeapProfile.js';
 import * as NetworkPriorities from './NetworkPriorities.js';
 import * as OverviewGrid from './OverviewGrid.js';
 import * as PieChart from './PieChart.js';
+import * as PieChart2 from './PieChart2_bridge.js';
 import * as TimelineGrid from './TimelineGrid.js';
 import * as TimelineOverviewPane from './TimelineOverviewPane.js';
 
@@ -24,6 +25,7 @@ export {
   NetworkPriorities,
   OverviewGrid,
   PieChart,
+  PieChart2,
   TimelineGrid,
   TimelineOverviewPane,
 };

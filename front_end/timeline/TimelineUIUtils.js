@@ -1835,16 +1835,11 @@ export class TimelineUIUtils {
     const element = document.createElement('div');
     element.classList.add('timeline-details-view-pie-chart-wrapper');
     element.classList.add('hbox');
-    const pieChart = new PerfUI.PieChart.PieChart({
-      chartName: ls`Time spent in rendering`,
-      size: 110,
-      formatter: value => Number.preciseMillisToString(value),
-      showLegend: true,
-    });
-    pieChart.element.classList.add('timeline-details-view-pie-chart');
-    pieChart.initializeWithTotal(total);
+
+    const pieChart = PerfUI.PieChart2.createPieChart2();
     const pieChartContainer = element.createChild('div', 'vbox');
-    pieChartContainer.appendChild(pieChart.element);
+    pieChartContainer.appendChild(pieChart);
+    const slices = [];
 
     /**
      * @param {string} name
@@ -1856,7 +1851,7 @@ export class TimelineUIUtils {
       if (!value) {
         return;
       }
-      pieChart.addSlice(value, color, title);
+      slices.push({value, color, title});
     }
 
     // In case of self time, first add self, then children of the same category.
@@ -1883,6 +1878,16 @@ export class TimelineUIUtils {
       }
       appendLegendRow(category.name, category.title, aggregatedStats[category.name], category.childColor);
     }
+
+    pieChart.data = {
+      chartName: ls`Time spent in rendering`,
+      size: 110,
+      formatter: value => Number.preciseMillisToString(value),
+      showLegend: true,
+      total,
+      slices
+    };
+
     return element;
   }
 

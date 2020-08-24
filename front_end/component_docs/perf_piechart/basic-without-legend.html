@@ -1,0 +1,36 @@
+<!--
+  Copyright 2020 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>PieChart example without a legend</title>
+  </head>
+  <body>
+
+    <div id="container">
+    </div>
+
+    <script type="module">
+      import {PieChart2} from '../../perf_ui/PieChart2.js';
+
+      const chart = new PieChart2();
+      document.getElementById('container').appendChild(chart);
+
+      chart.data = {
+        chartName: 'Nice Chart',
+        size: 110,
+        formatter: (value) => String(value) + ' %',
+        showLegend: false,
+        total: 100,
+        slices: [
+          {value: 75, color: 'crimson', title: 'Filling'},
+          {value: 25, color: 'burlywood', title: 'Crust'}
+        ],
+      };
+    </script>
+  </body>
+</html>

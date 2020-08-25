@@ -2,30 +2,17 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../all_devtools_files.gni")
-import("../../scripts/build/ninja/devtools_entrypoint.gni")
-import("../../scripts/build/ninja/devtools_module.gni")
-import("../../scripts/build/ninja/devtools_pre_built.gni")
+action("bundle_i18n") {
+  out_dir = "$root_out_dir/resources/inspector/i18n"
+  script = "../../scripts/localizationV2/bundle_i18n_library.py"
 
-devtools_module("i18n") {
-  sources = [ "i18nImpl.js" ]
+  inputs = [ "../third_party/i18n/i18n.js" ]
 
-  deps = [
-    "../platform:bundle",
-    "../third_party/i18n/:bundle_i18n",
+  # These files should exist after the action is completed.
+  outputs = [ "$out_dir/i18n-bundle.js" ]
+
+  args = [
+    "--output_path=" + rebase_path(out_dir),
+    "--i18n_path=" + rebase_path("../third_party/i18n/i18n.js"),
   ]
-}
-
-devtools_entrypoint("bundle") {
-  entrypoint = "i18n.js"
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
-  deps = [
-    ":i18n",
-    ":i18n_locales",
-  ]
-}
-
-devtools_pre_built("i18n_locales") {
-  sources = [ "i18n_locales-tsconfig.json" ]
-  sources += devtools_locale_files
 }

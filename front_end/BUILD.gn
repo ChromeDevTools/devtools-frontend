@@ -39,7 +39,7 @@ group("front_end") {
     "har_importer:bundle",
     "heap_snapshot_model:bundle",
     "help:bundle",
-    "i18n:bundle",
+    "i18n:bundle_i18n",
     "inline_editor:bundle",
     "input:bundle",
     "inspector_main:bundle",

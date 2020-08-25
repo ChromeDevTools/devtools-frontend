@@ -346,7 +346,6 @@ def prepare_closure_frontend_compile(temp_devtools_path, descriptors, namespace_
                     'acorn-numeric-separator.mjs',
                     'acorn.mjs',
                     'ClientVariations.js',
-                    "i18n-bundle.js",
                     'marked.esm.js',
                     'wasm_source_map.js',
             ]:

@@ -196,6 +196,7 @@ const initialDescriptors = new Map([
   ['mediumicon-checkmark', {position: 'g2', spritesheet: 'mediumicons', isMask: true}],
   ['mediumicon-not-available', {position: 'g3', spritesheet: 'mediumicons', isMask: true}],
   ['mediumicon-warning-circle', {position: 'g5', spritesheet: 'mediumicons', isMask: true}],
+  ['mediumicon-feedback', {position: 'g6', spritesheet: 'mediumicons', isMask: true}],
 
   ['badge-navigator-file-sync', {position: 'a9', spritesheet: 'largeicons'}],
   ['largeicon-add', {position: 'a8', spritesheet: 'largeicons', isMask: true}],

@@ -5,6 +5,7 @@
 import * as puppeteer from 'puppeteer';
 
 import {$, $$, click, getBrowserAndPages, goToResource, pasteText, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
+import {AsyncScope} from '../../shared/mocha-extensions.js';
 
 export const CONSOLE_TAB_SELECTOR = '#tab-console';
 export const CONSOLE_MESSAGES_SELECTOR = '.console-group-messages';
@@ -66,21 +67,22 @@ export async function getConsoleMessages(testName: string, withAnchor = false, c
 
 export async function getCurrentConsoleMessages(withAnchor = false, callback?: () => Promise<void>) {
   const {frontend} = getBrowserAndPages();
+  const asyncScope = new AsyncScope();
 
   await navigateToConsoleTab();
 
   // Get console messages that were logged.
-  await waitFor(CONSOLE_MESSAGES_SELECTOR);
+  await waitFor(CONSOLE_MESSAGES_SELECTOR, undefined, asyncScope);
 
   if (callback) {
     await callback();
   }
 
   // Ensure all messages are populated.
-  await frontend.waitForFunction(CONSOLE_FIRST_MESSAGES_SELECTOR => {
+  await asyncScope.exec(() => frontend.waitForFunction(CONSOLE_FIRST_MESSAGES_SELECTOR => {
     return Array.from(document.querySelectorAll(CONSOLE_FIRST_MESSAGES_SELECTOR))
         .every(message => message.childNodes.length > 0);
-  }, {timeout: 3000}, CONSOLE_FIRST_MESSAGES_SELECTOR);
+  }, {timeout: 0}, CONSOLE_FIRST_MESSAGES_SELECTOR));
 
   const selector = withAnchor ? CONSOLE_MESSAGE_TEXT_AND_ANCHOR_SELECTOR : CONSOLE_FIRST_MESSAGES_SELECTOR;
 
@@ -95,17 +97,18 @@ export async function getCurrentConsoleMessages(withAnchor = false, callback?: (
 
 export async function getStructuredConsoleMessages() {
   const {frontend} = getBrowserAndPages();
+  const asyncScope = new AsyncScope();
 
   await navigateToConsoleTab();
 
   // Get console messages that were logged.
-  await waitFor(CONSOLE_MESSAGES_SELECTOR);
+  await waitFor(CONSOLE_MESSAGES_SELECTOR, undefined, asyncScope);
 
   // Ensure all messages are populated.
-  await frontend.waitForFunction(CONSOLE_FIRST_MESSAGES_SELECTOR => {
+  await asyncScope.exec(() => frontend.waitForFunction(CONSOLE_FIRST_MESSAGES_SELECTOR => {
     return Array.from(document.querySelectorAll(CONSOLE_FIRST_MESSAGES_SELECTOR))
         .every(message => message.childNodes.length > 0);
-  }, {timeout: 3000}, CONSOLE_FIRST_MESSAGES_SELECTOR);
+  }, {timeout: 0}, CONSOLE_FIRST_MESSAGES_SELECTOR));
 
   return frontend.evaluate((CONSOLE_MESSAGE_WRAPPER_SELECTOR, STACK_PREVIEW_CONTAINER) => {
     return Array.from(document.querySelectorAll(CONSOLE_MESSAGE_WRAPPER_SELECTOR)).map(wrapper => {
@@ -141,10 +144,11 @@ export async function showVerboseMessages() {
 }
 
 export async function typeIntoConsole(frontend: puppeteer.Page, message: string) {
-  const consoleElement = await waitFor(CONSOLE_PROMPT_SELECTOR);
+  const asyncScope = new AsyncScope();
+  const consoleElement = await waitFor(CONSOLE_PROMPT_SELECTOR, undefined, asyncScope);
   await consoleElement.type(message);
   // Wait for autocomplete text to catch up.
-  const line = await waitFor('.CodeMirror-activeline', consoleElement);
+  const line = await waitFor('.CodeMirror-activeline', consoleElement, asyncScope);
   const autocomplete = await line.$('.auto-complete-text');
   // The autocomplete element doesn't exist until the first autocomplete suggestion
   // is actually given.
@@ -154,7 +158,8 @@ export async function typeIntoConsole(frontend: puppeteer.Page, message: string)
   if (autocomplete && await autocomplete.evaluate(e => e.textContent)) {
     consoleElement.press('Escape');
   }
-  await frontend.waitForFunction((msg, ln) => ln.textContent === msg, undefined, message, line);
+  await asyncScope.exec(
+      () => frontend.waitForFunction((msg, ln) => ln.textContent === msg, {timeout: 0}, message, line));
   await consoleElement.press('Enter');
 }
 
@@ -166,9 +171,9 @@ export async function typeIntoConsoleAndWaitForResult(frontend: puppeteer.Page, 
 
   await typeIntoConsole(frontend, message);
 
-  await frontend.waitForFunction(originalLength => {
+  await new AsyncScope().exec(() => frontend.waitForFunction(originalLength => {
     return document.querySelectorAll('.console-user-command-result').length === originalLength + 1;
-  }, {}, originalLength);
+  }, {timeout: 0}, originalLength));
 }
 
 export async function unifyLogVM(actualLog: string, expectedLog: string) {

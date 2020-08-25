@@ -121,6 +121,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
 
   async _addButtonClicked() {
     await UI.ViewManager.ViewManager.instance().showView('sources.watch');
+    this._emptyElement.classList.add('hidden');
     this._createWatchExpression(null).startEditing();
   }
 

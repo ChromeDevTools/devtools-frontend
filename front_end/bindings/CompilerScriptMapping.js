@@ -27,8 +27,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
@@ -135,7 +133,7 @@ export class CompilerScriptMapping {
    * @return {?string}
    */
   static uiSourceCodeOrigin(uiSourceCode) {
-    const sourceMap = uiSourceCode[_sourceMapSymbol];
+    const sourceMap = uiSourceCodeToSourceMap.get(uiSourceCode);
     if (!sourceMap) {
       return null;
     }
@@ -212,7 +210,7 @@ export class CompilerScriptMapping {
    * @return {!Array<!SDK.DebuggerModel.Location>}
    */
   uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
-    const sourceMap = uiSourceCode[_sourceMapSymbol];
+    const sourceMap = uiSourceCodeToSourceMap.get(uiSourceCode);
     if (!sourceMap) {
       return [];
     }
@@ -322,7 +320,7 @@ export class CompilerScriptMapping {
    * @return {boolean}
    */
   static uiLineHasMapping(uiSourceCode, lineNumber) {
-    const sourceMap = uiSourceCode[_sourceMapSymbol];
+    const sourceMap = uiSourceCodeToSourceMap.get(uiSourceCode);
     if (!sourceMap) {
       return true;
     }
@@ -337,7 +335,8 @@ export class CompilerScriptMapping {
   }
 }
 
-const _sourceMapSymbol = Symbol('_sourceMapSymbol');
+/** @type {!WeakMap<!Workspace.UISourceCode.UISourceCode, !SDK.SourceMap.SourceMap>} */
+const uiSourceCodeToSourceMap = new WeakMap();
 
 class Binding {
   /**
@@ -350,6 +349,7 @@ class Binding {
 
     /** @type {!Array<!SDK.SourceMap.SourceMap>} */
     this._referringSourceMaps = [];
+    /** @type {?SDK.SourceMap.SourceMap} */
     this._activeSourceMap = null;
     this._uiSourceCode = null;
   }
@@ -359,14 +359,14 @@ class Binding {
    */
   _recreateUISourceCodeIfNeeded(frameId) {
     const sourceMap = this._referringSourceMaps.peekLast();
-    if (this._activeSourceMap === sourceMap) {
+    if (!sourceMap || this._activeSourceMap === sourceMap) {
       return;
     }
     this._activeSourceMap = sourceMap;
 
     const newUISourceCode =
         this._project.createUISourceCode(this._url, Common.ResourceType.resourceTypes.SourceMapScript);
-    newUISourceCode[_sourceMapSymbol] = sourceMap;
+    uiSourceCodeToSourceMap.set(newUISourceCode, sourceMap);
     const contentProvider =
         sourceMap.sourceContentProvider(this._url, Common.ResourceType.resourceTypes.SourceMapScript);
     const mimeType = Common.ResourceType.ResourceType.mimeFromURL(this._url) || 'text/javascript';
@@ -402,14 +402,14 @@ class Binding {
    * @param {!Protocol.Page.FrameId} frameId
    */
   removeSourceMap(sourceMap, frameId) {
-    NetworkProject.removeFrameAttribution(
-        /** @type {!Workspace.UISourceCode.UISourceCode} */ (this._uiSourceCode), frameId);
+    const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (this._uiSourceCode);
+    NetworkProject.removeFrameAttribution(uiSourceCode, frameId);
     const lastIndex = this._referringSourceMaps.lastIndexOf(sourceMap);
     if (lastIndex !== -1) {
       this._referringSourceMaps.splice(lastIndex, 1);
     }
     if (!this._referringSourceMaps.length) {
-      this._project.removeFile(this._uiSourceCode.url());
+      this._project.removeFile(uiSourceCode.url());
       this._uiSourceCode = null;
     } else {
       this._recreateUISourceCodeIfNeeded(frameId);

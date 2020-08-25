@@ -145,7 +145,7 @@ export class LanguageExtensionEndpoint {
    * @override
    * @param {string} name
    * @param {!Bindings.DebuggerLanguagePlugins.RawLocation} location
-   * @return {!Promise<?Bindings.DebuggerLanguagePlugins.RawModule>}
+   * @return {!Promise<?Bindings.DebuggerLanguagePlugins.EvaluatorModule>}
    * @throws {Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginError}
   */
   evaluateVariable(name, location) {

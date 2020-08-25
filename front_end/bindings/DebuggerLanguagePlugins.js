@@ -124,7 +124,13 @@ class SourceVariable extends SDK.RemoteObject.RemoteObjectImpl {
   async doGetProperties(ownProperties, accessorPropertiesOnly, generatePreview) {
     const getRepr = async (evaluatorPromise, callFrame, plugin) => {
       const evaluator = await evaluatorPromise;
-      if (!evaluator || !evaluator.code) {
+      if (!evaluator) {
+        return null;
+      }
+      if (evaluator.constantValue) {
+        return this._getRepresentation(evaluator.constantValue);
+      }
+      if (!evaluator.code) {
         return null;
       }
       const evaluateResponse = await callFrame.debuggerModel.executeWasmEvaluator(callFrame.id, evaluator.code);
@@ -777,6 +783,14 @@ export let Variable;
 export let VariableValue;
 
 
+/** Either the code of an evaluator module or a constant representation of a variable
+ * @typedef {{
+ *            code: (!ArrayBuffer|undefined),
+ *            constantValue: (!VariableValue|undefined)
+ *          }}
+ */
+export let EvaluatorModule;
+
 /**
  * @interface
  */
@@ -828,7 +842,7 @@ export class DebuggerLanguagePlugin {
   /** Evaluate the content of a variable in a given lexical scope
    * @param {string} name
    * @param {!RawLocation} location
-   * @return {!Promise<?RawModule>}
+   * @return {!Promise<?EvaluatorModule>}
    * @throws {DebuggerLanguagePluginError}
   */
   async evaluateVariable(name, location) {

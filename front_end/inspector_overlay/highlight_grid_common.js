@@ -39,18 +39,12 @@ export const gridStyle = `
 /* Grid row and column labels */
 .grid-label-content {
   position: absolute;
-  z-index: 10;
   -webkit-user-select: none;
-}
-
-.grid-label-content {
-  background-color: #1A73E8;
   padding: 2px;
   font-family: Menlo, monospace;
   font-size: 10px;
   min-width: 17px;
   min-height: 15px;
-  color: #FFFFFF;
   border-radius: 2px;
   box-sizing: border-box;
   z-index: 1;
@@ -60,6 +54,16 @@ export const gridStyle = `
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.grid-label-content[data-direction=row] {
+  background-color: var(--row-label-color, #1A73E8);
+  color: var(--row-label-text-color, #FFFFFF);
+}
+
+.grid-label-content[data-direction=column] {
+  background-color: var(--column-label-color, #1A73E8);
+  color: var(--column-label-text-color, #FFFFFF);
 }
 
 .line-names ul,
@@ -110,11 +114,22 @@ export const gridStyle = `
   z-index: 1;
   pointer-events: none;
   content: "";
-  background: #1A73E8;
   width: 3px;
   height: 3px;
   border: 1px solid white;
   border-width: 0 1px 1px 0;
+}
+
+.line-names .grid-label-content[data-direction=row]::before,
+.line-numbers .grid-label-content[data-direction=row]::before,
+.track-sizes .grid-label-content[data-direction=row]::before {
+  background: var(--row-label-color, #1A73E8);
+}
+
+.line-names .grid-label-content[data-direction=column]::before,
+.line-numbers .grid-label-content[data-direction=column]::before,
+.track-sizes .grid-label-content[data-direction=column]::before {
+  background: var(--column-label-color, #1A73E8);
 }
 
 .grid-label-content.bottom-mid::before {

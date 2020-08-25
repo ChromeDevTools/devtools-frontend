@@ -5,6 +5,9 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
+import {Color, Format} from '../common/Color.js';
+import {luminance} from '../common/ColorUtils.js';
+
 import {AreaBounds, Bounds, Position} from './common.js';  // eslint-disable-line no-unused-vars
 import {applyMatrixToPoint} from './highlight_common.js';
 
@@ -55,6 +58,7 @@ const gridPageMargin = 20;
 const gridLabelDistance = 20;
 // The maximum number of custom line names that can be displayed in a label.
 const maxLineNamesCount = 3;
+const defaultLabelColor = '#1A73E8';
 
 /** @typedef {!{contentTop: number, contentLeft: number}} */
 let GridLabelPositions;  // eslint-disable-line no-unused-vars
@@ -108,6 +112,12 @@ export function drawGridLabels(config, gridBounds, areaBounds, writingModeMatrix
     const mainLabelLayerContainer = document.getElementById('grid-label-container');
     labelContainerForNode = mainLabelLayerContainer.createChild('div');
     labelContainerForNode.id = labelContainerId;
+
+    const labelColor = getLabelColors(config);
+    labelContainerForNode.style.setProperty('--row-label-color', labelColor.rowBackground);
+    labelContainerForNode.style.setProperty('--column-label-color', labelColor.columnBackground);
+    labelContainerForNode.style.setProperty('--row-label-text-color', labelColor.rowText);
+    labelContainerForNode.style.setProperty('--column-label-text-color', labelColor.columnText);
   }
   labelContainerForNode.removeChildren();
 
@@ -136,6 +146,31 @@ export function drawGridLabels(config, gridBounds, areaBounds, writingModeMatrix
     // Draw row sizes.
     drawGridTrackSizes(trackSizesContainer, config.rowTrackSizes, 'row', writingModeMatrix, config.writingMode);
   }
+}
+
+function getLabelColors(config) {
+  // Use semi-transparent white to create a label background color from the line color.
+  const white = (new Color([1, 1, 1], Format.RGB)).setAlpha(.2);
+  const rowBackground = Color.parse(config.gridHighlightConfig.rowLineColor || defaultLabelColor).blendWith(white);
+  const columnBackground =
+      Color.parse(config.gridHighlightConfig.columnLineColor || defaultLabelColor).blendWith(white);
+
+  // Decide the text color between white and black, by comparing the luminance with the label background color,
+  // using WCAG's color contrast's formula: https://www.w3.org/TR/WCAG20/#contrast-ratiodef
+  const rowL = luminance(rowBackground.rgba());
+  const rowContrastForBlack = (rowL + 0.05) / 0.05;
+  const rowContrastForWhite = 1.05 / (rowL + 0.05);
+
+  const columnL = luminance(columnBackground.rgba());
+  const columnContrastForBlack = (columnL + 0.05) / 0.05;
+  const columnContrastForWhite = 1.05 / (columnL + 0.05);
+
+  return {
+    rowBackground: rowBackground.asString(),
+    columnBackground: columnBackground.asString(),
+    rowText: rowContrastForBlack > rowContrastForWhite ? 'black' : 'white',
+    columnText: columnContrastForBlack > columnContrastForWhite ? 'black' : 'white'
+  };
 }
 
 /**
@@ -304,27 +339,28 @@ export function drawGridLineNumbers(
     container, data, writingModeMatrix = new DOMMatrix(), writingMode = 'horizontal-tb') {
   if (!data.columns.positive.names) {
     for (const [i, pos] of positionIterator(data.columns.positive.positions, 'x')) {
-      const element = _createLabelElement(container, (i + 1).toString());
+      const element = _createLabelElement(container, (i + 1).toString(), 'column');
       _placePositiveColumnLabel(element, applyMatrixToPoint(pos, writingModeMatrix), data, writingMode);
     }
   }
 
   if (!data.rows.positive.names) {
     for (const [i, pos] of positionIterator(data.rows.positive.positions, 'y')) {
-      const element = _createLabelElement(container, (i + 1).toString());
+      const element = _createLabelElement(container, (i + 1).toString(), 'row');
       _placePositiveRowLabel(element, applyMatrixToPoint(pos, writingModeMatrix), data, writingMode);
     }
   }
 
   for (const [i, pos] of positionIterator(data.columns.negative.positions, 'x')) {
     // Negative positions are sorted such that the first position corresponds to the line closest to start edge of the grid.
-    const element = _createLabelElement(container, (data.columns.negative.positions.length * -1 + i).toString());
+    const element =
+        _createLabelElement(container, (data.columns.negative.positions.length * -1 + i).toString(), 'column');
     _placeNegativeColumnLabel(element, applyMatrixToPoint(pos, writingModeMatrix), data, writingMode);
   }
 
   for (const [i, pos] of positionIterator(data.rows.negative.positions, 'y')) {
     // Negative positions are sorted such that the first position corresponds to the line closest to start edge of the grid.
-    const element = _createLabelElement(container, (data.rows.negative.positions.length * -1 + i).toString());
+    const element = _createLabelElement(container, (data.rows.negative.positions.length * -1 + i).toString(), 'row');
     _placeNegativeRowLabel(element, applyMatrixToPoint(pos, writingModeMatrix), data, writingMode);
   }
 }
@@ -348,7 +384,8 @@ export function drawGridTrackSizes(
 
     const size = computedSize.toFixed(2);
     const formattedComputed = `${size.endsWith('.00') ? size.slice(0, -3) : size}px`;
-    const element = _createLabelElement(container, `${authoredSize ? authoredSize + '·' : ''}${formattedComputed}`);
+    const element =
+        _createLabelElement(container, `${authoredSize ? authoredSize + '·' : ''}${formattedComputed}`, direction);
     const labelSize = _getLabelSize(element, writingMode);
 
     let flipIn = point[main] - labelSize.mainSize < gridPageMargin;
@@ -376,13 +413,13 @@ export function drawGridTrackSizes(
 export function drawGridLineNames(container, data, writingModeMatrix = new DOMMatrix(), writingMode = 'horizontal-tb') {
   for (const [i, pos] of data.columns.positive.positions.entries()) {
     const names = data.columns.positive.names[i];
-    const element = _createLabelElement(container, _makeLineNameLabelContent(names));
+    const element = _createLabelElement(container, _makeLineNameLabelContent(names), 'column');
     _placePositiveColumnLabel(element, applyMatrixToPoint(pos, writingModeMatrix), data, writingMode);
   }
 
   for (const [i, pos] of data.rows.positive.positions.entries()) {
     const names = data.rows.positive.names[i];
-    const element = _createLabelElement(container, _makeLineNameLabelContent(names));
+    const element = _createLabelElement(container, _makeLineNameLabelContent(names), 'row');
     _placePositiveRowLabel(element, applyMatrixToPoint(pos, writingModeMatrix), data, writingMode);
   }
 }
@@ -415,7 +452,7 @@ function _makeLineNameLabelContent(names) {
 export function drawGridAreaNames(
     container, areaBounds, writingModeMatrix = new DOMMatrix(), writingMode = 'horizontal-tb') {
   for (const {name, bounds} of areaBounds) {
-    const element = _createLabelElement(container, name);
+    const element = _createLabelElement(container, name, 'row');
 
     // The list of all points comes from the path created by the backend. This path is a rectangle with its starting point being
     // the top left corner, which is where we want to place the label (except for vertical-rl writing-mode).
@@ -432,11 +469,13 @@ export function drawGridAreaNames(
  *
  * @param {HTMLElement} container The DOM element where to append the label
  * @param {string|HTMLElement} textContent The text, or DOM node to display in the label
+ * @param {string} direction "row" if this label is for rows, "column" otherwise
  * @return {Element} The new label element
  */
-function _createLabelElement(container, textContent) {
+function _createLabelElement(container, textContent, direction) {
   const wrapper = container.createChild('div');
   const element = wrapper.createChild('div', 'grid-label-content');
+  element.dataset.direction = direction;
 
   if (typeof textContent === 'string') {
     element.textContent = textContent;

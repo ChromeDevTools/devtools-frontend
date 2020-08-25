@@ -35,6 +35,7 @@ import * as Common from '../common/common.js';
 import * as HostModule from '../host/host.js';
 import * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
+import * as Root from '../root/root.js';
 
 import {CSSFontFace} from './CSSFontFace.js';
 import {CSSMatchedStyles} from './CSSMatchedStyles.js';
@@ -819,7 +820,7 @@ export class CSSModel extends SDKModel {
       const result = await this._agent.invoke_takeComputedStyleUpdates();
       this._isTrackingRequestPending = false;
 
-      if (result.getError() || !result.nodeIds) {
+      if (result.getError() || !result.nodeIds || !this._isCSSPropertyTrackingEnabled) {
         return;
       }
 
@@ -837,7 +838,9 @@ export class CSSModel extends SDKModel {
    * @override
    */
   dispose() {
-    this.disableCSSPropertyTracker();
+    if (Root.Runtime.experiments.isEnabled('cssGridFeatures')) {
+      this.disableCSSPropertyTracker();
+    }
     super.dispose();
     this._sourceMapManager.dispose();
   }

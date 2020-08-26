@@ -109,6 +109,7 @@ interface HTMLElement {
 }
 
 interface Element {
+  boxInWindow(targetWindow?: Window): AnchorBox;
   createChild(tagName: string, className?: string, content?: string): Element;
   createTextChild(text: string): Text;
   hasFocus(): boolean;

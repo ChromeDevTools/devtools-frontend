@@ -20,6 +20,9 @@ interface Array<T> {
 // to TemplateStringsArray in TypeScript land
 type ITemplateArray = TemplateStringsArray
 
+// Type alias for the type that has been removed in Chrome 54.
+type FileError = Error;
+
 interface String {
   compareTo(other: string): number;
   trimEndWithMaxLength(maxLength: number): string;

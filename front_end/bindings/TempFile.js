@@ -104,7 +104,7 @@ export class TempFile {
       outputStream.close();
       return Promise.resolve(/** @type {?FileError} */ (null));
     }
-    const reader = new ChunkedFileReader(/** @type {!Blob} */ (this._lastBlob), 10 * 1000 * 1000, progress);
+    const reader = new ChunkedFileReader(/** @type {!File} */ (this._lastBlob), 10 * 1000 * 1000, progress);
     return reader.read(outputStream).then(success => success ? null : reader.error());
   }
 

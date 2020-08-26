@@ -27,8 +27,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Workspace from '../workspace/workspace.js';
@@ -41,18 +39,21 @@ export class ChunkedReader {
    * @return {number}
    */
   fileSize() {
+    throw new Error('Not implemented yet');
   }
 
   /**
    * @return {number}
    */
   loadedSize() {
+    throw new Error('Not implemented yet');
   }
 
   /**
    * @return {string}
    */
   fileName() {
+    throw new Error('Not implemented yet');
   }
 
   cancel() {
@@ -61,7 +62,9 @@ export class ChunkedReader {
   /**
    * @return {?FileError}
    */
-  error() {}
+  error() {
+    throw new Error('Not implemented yet');
+  }
 }
 
 /**
@@ -70,11 +73,12 @@ export class ChunkedReader {
  */
 export class ChunkedFileReader {
   /**
-   * @param {!Blob} blob
+   * @param {!File} blob
    * @param {number} chunkSize
    * @param {function(!ChunkedReader)=} chunkTransferredCallback
    */
   constructor(blob, chunkSize, chunkTransferredCallback) {
+    /** @type {?File} */
     this._file = blob;
     this._fileSize = blob.size;
     this._loadedSize = 0;
@@ -84,6 +88,8 @@ export class ChunkedFileReader {
     this._isCanceled = false;
     /** @type {?FileError} */
     this._error = null;
+    /** @type {function(boolean):void} */
+    this._transferFinished;
   }
 
   /**
@@ -132,6 +138,9 @@ export class ChunkedFileReader {
    * @return {string}
    */
   fileName() {
+    if (!this._file) {
+      return '';
+    }
     return this._file.name;
   }
 
@@ -151,11 +160,16 @@ export class ChunkedFileReader {
       return;
     }
 
-    if (event.target.readyState !== FileReader.DONE) {
+    const eventTarget = /** @type {!FileReader} */ (event.target);
+    if (eventTarget.readyState !== FileReader.DONE) {
       return;
     }
 
-    const buffer = this._reader.result;
+    if (!this._output || !this._reader) {
+      return;
+    }
+
+    const buffer = /** @type {!ArrayBuffer} */ (this._reader.result);
     this._loadedSize += buffer.byteLength;
     const endOfFile = this._loadedSize === this._fileSize;
     const decodedString = this._decoder.decode(buffer, {stream: !endOfFile});
@@ -179,6 +193,9 @@ export class ChunkedFileReader {
   }
 
   _loadChunk() {
+    if (!this._output || !this._reader || !this._file) {
+      return;
+    }
     const chunkStart = this._loadedSize;
     const chunkEnd = Math.min(this._fileSize, chunkStart + this._chunkSize);
     const nextPart = this._file.slice(chunkStart, chunkEnd);
@@ -189,7 +206,8 @@ export class ChunkedFileReader {
    * @param {!Event} event
    */
   _onError(event) {
-    this._error = event.target.error;
+    const eventTarget = /** @type {!FileReader} */ (event.target);
+    this._error = /** @type {!FileError} */ (eventTarget.error);
     this._transferFinished(false);
   }
 }
@@ -199,13 +217,20 @@ export class ChunkedFileReader {
  * @unrestricted
  */
 export class FileOutputStream {
+  constructor() {
+    /** @type {!Array<function():void>} */
+    this._writeCallbacks = [];
+    /** @type {string} */
+    this._fileName;
+  }
+
   /**
    * @param {string} fileName
    * @return {!Promise<boolean>}
    */
   async open(fileName) {
     this._closed = false;
-    /** @type {!Array<function()>} */
+    /** @type {!Array<function():void>} */
     this._writeCallbacks = [];
     this._fileName = fileName;
     const saveResponse = await Workspace.FileManager.FileManager.instance().save(this._fileName, '', true);
@@ -219,7 +244,7 @@ export class FileOutputStream {
   /**
    * @override
    * @param {string} data
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   write(data) {
     return new Promise(resolve => {
@@ -248,7 +273,10 @@ export class FileOutputStream {
     if (event.data !== this._fileName) {
       return;
     }
-    this._writeCallbacks.shift()();
+    const writeCallback = this._writeCallbacks.shift();
+    if (writeCallback) {
+      writeCallback();
+    }
     if (this._writeCallbacks.length) {
       return;
     }

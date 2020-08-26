@@ -11,6 +11,7 @@ import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {FileSystemWorkspaceBinding} from './FileSystemWorkspaceBinding.js';
+import {NetworkPersistenceManager} from './NetworkPersistenceManager.js';
 import {Events, PersistenceBinding, PersistenceImpl} from './PersistenceImpl.js';  // eslint-disable-line no-unused-vars
 
 export class PersistenceUtils {
@@ -45,7 +46,7 @@ export class PersistenceUtils {
       const icon = UI.Icon.Icon.create('mediumicon-file-sync');
       icon.title = PersistenceUtils.tooltipForUISourceCode(binding.network);
       // TODO(allada) This will not work properly with dark theme.
-      if (self.Persistence.networkPersistenceManager.project() === binding.fileSystem.project()) {
+      if (NetworkPersistenceManager.instance().project() === binding.fileSystem.project()) {
         icon.style.filter = 'hue-rotate(160deg)';
       }
       return icon;

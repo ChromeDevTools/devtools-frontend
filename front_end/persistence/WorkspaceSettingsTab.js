@@ -12,6 +12,7 @@ import {EditFileSystemView} from './EditFileSystemView.js';
 import {FileSystem} from './FileSystemWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
 import {IsolatedFileSystem} from './IsolatedFileSystem.js';
 import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
+import {NetworkPersistenceManager} from './NetworkPersistenceManager.js';
 import {PlatformFileSystem} from './PlatformFileSystem.js';  // eslint-disable-line no-unused-vars
 
 export class WorkspaceSettingsTab extends UI.Widget.VBox {
@@ -97,7 +98,7 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     if (!(fileSystem instanceof IsolatedFileSystem)) {
       return;
     }
-    const networkPersistenceProject = self.Persistence.networkPersistenceManager.project();
+    const networkPersistenceProject = NetworkPersistenceManager.instance().project();
     if (networkPersistenceProject &&
         IsolatedFileSystemManager.instance().fileSystem(
             /** @type {!FileSystem} */ (networkPersistenceProject).fileSystemPath()) === fileSystem) {

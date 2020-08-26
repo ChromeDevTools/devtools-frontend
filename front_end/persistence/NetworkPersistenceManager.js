@@ -12,8 +12,12 @@ import * as Workspace from '../workspace/workspace.js';
 import {FileSystem, FileSystemWorkspaceBinding} from './FileSystemWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
 import {PersistenceBinding} from './PersistenceImpl.js';
 
+/** @type {?NetworkPersistenceManager} */
+let networkPersistenceManagerInstance;
+
 export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrapper {
   /**
+   * @private
    * @param {!Workspace.Workspace.WorkspaceImpl} workspace
    */
   constructor(workspace) {
@@ -52,6 +56,21 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     /** @type {!Array<!Common.EventTarget.EventDescriptor>} */
     this._eventDescriptors = [];
     this._enabledChanged();
+  }
+
+  /**
+   * @param {{forceNew: ?boolean, workspace: ?Workspace.Workspace.WorkspaceImpl}} opts
+   */
+  static instance(opts = {forceNew: null, workspace: null}) {
+    const {forceNew, workspace} = opts;
+    if (!networkPersistenceManagerInstance || forceNew) {
+      if (!workspace) {
+        throw new Error('Missing workspace for NetworkPersistenceManager');
+      }
+      networkPersistenceManagerInstance = new NetworkPersistenceManager(workspace);
+    }
+
+    return networkPersistenceManagerInstance;
   }
 
   /**

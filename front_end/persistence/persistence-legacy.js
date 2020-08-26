@@ -66,8 +66,5 @@ Persistence.WorkspaceSettingsTab = PersistenceModule.WorkspaceSettingsTab.Worksp
  */
 self.Persistence.isolatedFileSystemManager;
 
-/** @type {!PersistenceModule.NetworkPersistenceManager.NetworkPersistenceManager} */
-self.Persistence.networkPersistenceManager;
-
 /** @type {!PersistenceModule.Persistence.PersistenceImpl} */
 self.Persistence.persistence;

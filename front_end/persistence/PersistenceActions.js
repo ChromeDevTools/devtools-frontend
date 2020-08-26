@@ -11,6 +11,8 @@ import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-lin
 import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
 import * as Workspace from '../workspace/workspace.js';
 
+import {NetworkPersistenceManager} from './NetworkPersistenceManager.js';
+
 /**
  * @implements {UI.ContextMenu.Provider}
  * @unrestricted
@@ -43,10 +45,10 @@ export class ContextMenuProvider {
 
     // Retrieve uiSourceCode by URL to pick network resources everywhere.
     const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(contentProvider.contentURL());
-    if (uiSourceCode && self.Persistence.networkPersistenceManager.canSaveUISourceCodeForOverrides(uiSourceCode)) {
+    if (uiSourceCode && NetworkPersistenceManager.instance().canSaveUISourceCodeForOverrides(uiSourceCode)) {
       contextMenu.saveSection().appendItem(Common.UIString.UIString('Save for overrides'), () => {
         uiSourceCode.commitWorkingCopy();
-        self.Persistence.networkPersistenceManager.saveUISourceCodeForOverrides(
+        NetworkPersistenceManager.instance().saveUISourceCodeForOverrides(
             /** @type {!Workspace.UISourceCode.UISourceCode} */ (uiSourceCode));
         Common.Revealer.reveal(uiSourceCode);
       });

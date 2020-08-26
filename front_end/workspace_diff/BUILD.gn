@@ -12,6 +12,7 @@ devtools_module("workspace_diff") {
     "../common:bundle",
     "../diff:bundle",
     "../host:bundle",
+    "../persistence:bundle",
     "../workspace:bundle",
   ]
 }

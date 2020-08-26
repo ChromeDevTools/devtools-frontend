@@ -8,6 +8,7 @@
 import * as Common from '../common/common.js';
 import * as Diff from '../diff/diff.js';
 import * as Host from '../host/host.js';
+import * as Persistence from '../persistence/persistence.js';
 import * as Workspace from '../workspace/workspace.js';
 
 export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper {
@@ -274,7 +275,8 @@ export class UISourceCodeDiff extends Common.ObjectWrapper.ObjectWrapper {
    */
   async _originalContent() {
     const originalNetworkContent =
-        self.Persistence.networkPersistenceManager.originalContentForUISourceCode(this._uiSourceCode);
+        Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().originalContentForUISourceCode(
+            this._uiSourceCode);
     if (originalNetworkContent) {
       return originalNetworkContent;
     }

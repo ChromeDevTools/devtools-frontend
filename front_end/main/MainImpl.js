@@ -297,8 +297,9 @@ export class MainImpl {
         Workspace.Workspace.WorkspaceImpl.instance());
     self.Persistence.persistence = new Persistence.Persistence.PersistenceImpl(
         Workspace.Workspace.WorkspaceImpl.instance(), Bindings.BreakpointManager.BreakpointManager.instance());
-    self.Persistence.networkPersistenceManager = new Persistence.NetworkPersistenceManager.NetworkPersistenceManager(
-        Workspace.Workspace.WorkspaceImpl.instance());
+    self.Persistence.networkPersistenceManager =
+        Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance(
+            {forceNew: true, workspace: Workspace.Workspace.WorkspaceImpl.instance()});
 
     new ExecutionContextSelector(SDK.SDKModel.TargetManager.instance(), UI.Context.Context.instance());
     self.Bindings.blackboxManager = Bindings.BlackboxManager.BlackboxManager.instance({

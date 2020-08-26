@@ -8,6 +8,7 @@ import * as puppeteer from 'puppeteer';
 import {$, click, enableExperiment, getBrowserAndPages, platform, reloadDevTools, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToCssOverviewTab} from '../helpers/css-overview-helpers.js';
+import {navigateToSidePane} from '../helpers/elements-helpers.js';
 import {clickToggleButton, selectDualScreen, startEmulationWithDualScreenFlag} from '../helpers/emulation-helpers.js';
 import {closeSecurityTab, navigateToSecurityTab} from '../helpers/security-helpers.js';
 import {openPanelViaMoreTools, openSettingsTab} from '../helpers/settings-helpers.js';
@@ -34,6 +35,7 @@ declare global {
     __panelLoaded: (evt: Event) => void;
     __panelShown: (evt: Event) => void;
     __panelClosed: (evt: Event) => void;
+    __sidebarPaneShown: (evt: Event) => void;
     __actionTaken: (evt: Event) => void;
     __keyboardShortcutFired: (evt: Event) => void;
     __issuesPanelOpenedFrom: (evt: Event) => void;
@@ -63,6 +65,11 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
     window.__panelLoaded = (evt: Event) => {
       const customEvt = evt as CustomEvent;
       window.__caughtEvents.push({name: 'DevTools.PanelLoaded', value: customEvt.detail.value});
+    };
+
+    window.__sidebarPaneShown = (evt: Event) => {
+      const customEvt = evt as CustomEvent;
+      window.__caughtEvents.push({name: 'DevTools.SidebarPaneShown', value: customEvt.detail.value});
     };
 
     window.__actionTaken = (evt: Event) => {
@@ -110,6 +117,7 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.addEventListener('DevTools.PanelShown', window.__panelShown);
       window.addEventListener('DevTools.PanelClosed', window.__panelClosed);
       window.addEventListener('DevTools.PanelLoaded', window.__panelLoaded);
+      window.addEventListener('DevTools.SidebarPaneShown', window.__sidebarPaneShown);
       window.addEventListener('DevTools.ActionTaken', window.__actionTaken);
       window.addEventListener('DevTools.KeyboardShortcutFired', window.__keyboardShortcutFired);
       window.addEventListener('DevTools.IssuesPanelOpenedFrom', window.__issuesPanelOpenedFrom);
@@ -124,6 +132,7 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.removeEventListener('DevTools.PanelShown', window.__panelShown);
       window.removeEventListener('DevTools.PanelClosed', window.__panelClosed);
       window.removeEventListener('DevTools.PanelLoaded', window.__panelLoaded);
+      window.removeEventListener('DevTools.SidebarPaneShown', window.__sidebarPaneShown);
       window.removeEventListener('DevTools.ActionTaken', window.__actionTaken);
       window.removeEventListener('DevTools.KeyboardShortcutFired', window.__keyboardShortcutFired);
       window.removeEventListener('DevTools.IssuesPanelOpenedFrom', window.__issuesPanelOpenedFrom);
@@ -518,5 +527,32 @@ describe('User Metrics for Color Picker', () => {
   afterEach(async () => {
     const {frontend} = getBrowserAndPages();
     await endCatchEvents(frontend);
+  });
+});
+
+describe('User Metrics for sidebar panes', () => {
+  beforeEach(async () => {
+    const {frontend} = getBrowserAndPages();
+    await beginCatchEvents(frontend);
+  });
+
+  afterEach(async () => {
+    const {frontend} = getBrowserAndPages();
+    await endCatchEvents(frontend);
+  });
+
+  it('dispatches sidebar panes events for navigating Elements Panel sidebar panes', async () => {
+    await navigateToSidePane('Computed');
+    await assertCapturedEvents([
+      {
+        name: 'DevTools.SidebarPaneShown',
+        value: 2,  // Computed
+      },
+    ]);
+  });
+
+  it('should not dispatch sidebar panes events for navigating to the same pane', async () => {
+    await navigateToSidePane('Styles');
+    await assertCapturedEvents([]);
   });
 });

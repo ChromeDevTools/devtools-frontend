@@ -83,6 +83,16 @@ export class UserMetrics {
   }
 
   /**
+   * @param {string} sidebarPaneName
+   */
+  sidebarPaneShown(sidebarPaneName) {
+    const code = SidebarPaneCodes[sidebarPaneName] || 0;
+    const size = Object.keys(SidebarPaneCodes).length + 1;
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.SidebarPaneShown, code, size);
+    Common.EventTarget.fireEvent(EnumeratedHistogram.SidebarPaneShown, {value: code});
+  }
+
+  /**
    * @param {string} settingsViewId
    */
   settingsPanelShown(settingsViewId) {
@@ -320,6 +330,18 @@ export const PanelCodes = {
   'issues-pane': 37,
   'settings-keybinds': 38,
   'cssoverview': 39
+};
+
+/** @type {!Object<string, number>} */
+export const SidebarPaneCodes = {
+  'OtherSidebarPane': 0,
+  'Styles': 1,
+  'Computed': 2,
+  'elements.layout': 3,
+  'elements.eventListeners': 4,
+  'elements.domBreakpoints': 5,
+  'elements.domProperties': 6,
+  'accessibility.view': 7,
 };
 
 /** @type {!Object<string, number>} */

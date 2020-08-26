@@ -897,6 +897,8 @@ export class ElementsPanel extends UI.Panel.Panel {
     computedStylePanesWrapper.element.classList.add('style-panes-wrapper');
     this._computedStyleWidget.show(computedStylePanesWrapper.element);
 
+    let skippedInitialTabSelectedEvent = false;
+
     /**
      * @param {!Common.EventTarget.EventTargetEvent} event
      */
@@ -912,6 +914,14 @@ export class ElementsPanel extends UI.Panel.Panel {
             this._metricsWidget.show(matchedStylePanesWrapper.element);
           });
         }
+      }
+
+      if (skippedInitialTabSelectedEvent) {
+        // We don't log the initially selected sidebar pane to UMA because
+        // it will skew the histogram heavily toward the Styles pane
+        Host.userMetrics.sidebarPaneShown(tabId);
+      } else {
+        skippedInitialTabSelectedEvent = true;
       }
     };
 

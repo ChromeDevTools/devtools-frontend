@@ -366,6 +366,7 @@
     ColorPickerFixedColor: 'DevTools.ColorPicker.FixedColor',
     PanelClosed: 'DevTools.PanelClosed',
     PanelShown: 'DevTools.PanelShown',
+    SidebarPaneShown: 'DevTools.SidebarPaneShown',
     KeyboardShortcutFired: 'DevTools.KeyboardShortcutFired',
     IssuesPanelOpenedFrom: 'DevTools.IssuesPanelOpenedFrom',
     KeybindSetSettingChanged: 'DevTools.KeybindSetSettingChanged',

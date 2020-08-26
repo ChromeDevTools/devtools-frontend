@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as ARIAUtils from './ARIAUtils.js';
@@ -64,6 +61,7 @@ export class FilterBar extends HBox {
     this._filterButton =
         new ToolbarSettingToggle(this._stateSetting, 'largeicon-filter', Common.UIString.UIString('Filter'));
 
+    /** @type {!Array<!FilterUI>} */
     this._filters = [];
 
     this._updateFilterBar();
@@ -87,6 +85,7 @@ export class FilterBar extends HBox {
     this._updateFilterButton();
   }
 
+  /** @param {boolean} enabled */
   setEnabled(enabled) {
     this._enabled = enabled;
     this._filterButton.setEnabled(enabled);
@@ -180,12 +179,15 @@ export class FilterUI extends Common.EventTarget.EventTarget {
    * @return {boolean}
    */
   isActive() {
+    throw new Error('not implemented');
   }
 
   /**
    * @return {!Element}
    */
-  element() {}
+  element() {
+    throw new Error('not implemented');
+  }
 }
 
 /** @enum {symbol} */
@@ -200,7 +202,7 @@ FilterUI.Events = {
 export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
-    this._filterElement = createElement('div');
+    this._filterElement = document.createElement('div');
     this._filterElement.className = 'filter-text-filter';
 
     const container = this._filterElement.createChild('div', 'filter-input-container');
@@ -208,7 +210,8 @@ export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper {
 
     this._prompt = new TextPrompt();
     this._prompt.initialize(this._completions.bind(this), ' ');
-    this._proxyElement = this._prompt.attach(this._filterInputElement);
+    /** @type {!HTMLElement} */
+    this._proxyElement = /** @type {!HTMLElement} */ (this._prompt.attach(this._filterInputElement));
     this._proxyElement.title = Common.UIString.UIString('e.g. /small[\\d]+/ url:a.com/b');
     this._prompt.setPlaceholder(Common.UIString.UIString('Filter'));
     this._prompt.addEventListener(Events.TextChanged, this._valueChanged.bind(this));
@@ -312,8 +315,11 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper {
     this._filtersElement.title = Common.UIString.UIString(
         '%sClick to select multiple types', KeyboardShortcut.shortcutToString('', Modifiers.CtrlOrMeta));
 
-    this._allowedTypes = {};
-    /** @type {!Array.<!Element>} */
+    /** @type {!WeakMap<!HTMLElement, string>} */
+    this._typeFilterElementTypeNames = new WeakMap();
+    /** @type {!Set<string>} */
+    this._allowedTypes = new Set();
+    /** @type {!Array.<!HTMLElement>} */
     this._typeFilterElements = [];
     this._addBit(NamedBitSetFilterUI.ALL_TYPES, Common.UIString.UIString('All'));
     this._typeFilterElements[0].tabIndex = 0;
@@ -341,7 +347,7 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper {
    * @return {boolean}
    */
   isActive() {
-    return !this._allowedTypes[NamedBitSetFilterUI.ALL_TYPES];
+    return !this._allowedTypes.has(NamedBitSetFilterUI.ALL_TYPES);
   }
 
   /**
@@ -357,28 +363,29 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper {
    * @return {boolean}
    */
   accept(typeName) {
-    return !!this._allowedTypes[NamedBitSetFilterUI.ALL_TYPES] || !!this._allowedTypes[typeName];
+    return this._allowedTypes.has(NamedBitSetFilterUI.ALL_TYPES) || this._allowedTypes.has(typeName);
   }
 
   _settingChanged() {
-    const allowedTypes = this._setting.get();
-    this._allowedTypes = {};
+    const allowedTypesFromSetting = /** @type {!Common.Settings.Setting<*>} */ (this._setting).get();
+    this._allowedTypes = new Set();
     for (const element of this._typeFilterElements) {
-      if (allowedTypes[element.typeName]) {
-        this._allowedTypes[element.typeName] = true;
+      const typeName = this._typeFilterElementTypeNames.get(element);
+      if (typeName && allowedTypesFromSetting[typeName]) {
+        this._allowedTypes.add(typeName);
       }
     }
     this._update();
   }
 
   _update() {
-    if ((Object.keys(this._allowedTypes).length === 0) || this._allowedTypes[NamedBitSetFilterUI.ALL_TYPES]) {
-      this._allowedTypes = {};
-      this._allowedTypes[NamedBitSetFilterUI.ALL_TYPES] = true;
+    if (this._allowedTypes.size === 0 || this._allowedTypes.has(NamedBitSetFilterUI.ALL_TYPES)) {
+      this._allowedTypes = new Set();
+      this._allowedTypes.add(NamedBitSetFilterUI.ALL_TYPES);
     }
     for (const element of this._typeFilterElements) {
-      const typeName = element.typeName;
-      const active = !!this._allowedTypes[typeName];
+      const typeName = this._typeFilterElementTypeNames.get(element);
+      const active = this._allowedTypes.has(typeName || '');
       element.classList.toggle('selected', active);
       ARIAUtils.setSelected(element, active);
     }
@@ -391,9 +398,9 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper {
    * @param {string=} title
    */
   _addBit(name, label, title) {
-    const typeFilterElement = this._filtersElement.createChild('span', name);
+    const typeFilterElement = /** @type {!HTMLElement} */ (this._filtersElement.createChild('span', name));
     typeFilterElement.tabIndex = -1;
-    typeFilterElement.typeName = name;
+    this._typeFilterElementTypeNames.set(typeFilterElement, name);
     typeFilterElement.createTextChild(label);
     ARIAUtils.markAsOption(typeFilterElement);
     if (title) {
@@ -405,23 +412,29 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Event} e
+   * @param {!Event} event
    */
-  _onTypeFilterClicked(e) {
+  _onTypeFilterClicked(event) {
+    const e = /** @type {!KeyboardEvent} */ (event);
     let toggle;
     if (Host.Platform.isMac()) {
       toggle = e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey;
     } else {
       toggle = e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey;
     }
-    this._toggleTypeFilter(e.target.typeName, toggle);
+    if (e.target) {
+      const element = /** @type {!HTMLElement} */ (e.target);
+      const typeName = /** @type {string} */ (this._typeFilterElementTypeNames.get(element));
+      this._toggleTypeFilter(typeName, toggle);
+    }
   }
 
   /**
-   * @param {!Event} event
+   * @param {!Event} ev
    */
-  _onTypeFilterKeydown(event) {
-    const element = /** @type {?Element} */ (event.target);
+  _onTypeFilterKeydown(ev) {
+    const event = /** @type {!KeyboardEvent} */ (ev);
+    const element = /** @type {?HTMLElement} */ (event.target);
     if (!element) {
       return;
     }
@@ -440,7 +453,7 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Element} target
+   * @param {!HTMLElement} target
    * @param {boolean} selectPrevious
    * @returns {!boolean}
    */
@@ -467,15 +480,24 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper {
    */
   _toggleTypeFilter(typeName, allowMultiSelect) {
     if (allowMultiSelect && typeName !== NamedBitSetFilterUI.ALL_TYPES) {
-      this._allowedTypes[NamedBitSetFilterUI.ALL_TYPES] = false;
+      this._allowedTypes.delete(NamedBitSetFilterUI.ALL_TYPES);
     } else {
-      this._allowedTypes = {};
+      this._allowedTypes = new Set();
     }
 
-    this._allowedTypes[typeName] = !this._allowedTypes[typeName];
+    if (this._allowedTypes.has(typeName)) {
+      this._allowedTypes.delete(typeName);
+    } else {
+      this._allowedTypes.add(typeName);
+    }
 
     if (this._setting) {
-      this._setting.set(this._allowedTypes);
+      // Settings do not support `Sets` so convert it back to the Map-like object.
+      const updatedSetting = /** @type {*} */ ({});
+      for (const type of this._allowedTypes) {
+        updatedSetting[type] = true;
+      }
+      this._setting.set(updatedSetting);
     } else {
       this._update();
     }
@@ -563,4 +585,5 @@ export class CheckboxFilterUI extends Common.ObjectWrapper.ObjectWrapper {
 }
 
 /** @typedef {{name: string, label: string, title: (string|undefined)}} */
+// @ts-ignore typedef
 export let Item;

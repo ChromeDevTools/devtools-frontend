@@ -33,8 +33,8 @@ export class ContextMenuProvider {
         content = window.atob(content);
       }
       const url = contentProvider.contentURL();
-      self.Workspace.fileManager.save(url, /** @type {string} */ (content), true);
-      self.Workspace.fileManager.close(url);
+      Workspace.FileManager.FileManager.instance().save(url, /** @type {string} */ (content), true);
+      Workspace.FileManager.FileManager.instance().close(url);
     }
 
     if (contentProvider.contentType().isDocumentOrScriptOrStyleSheet()) {

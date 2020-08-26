@@ -208,9 +208,10 @@ export class FileOutputStream {
     /** @type {!Array<function()>} */
     this._writeCallbacks = [];
     this._fileName = fileName;
-    const saveResponse = await self.Workspace.fileManager.save(this._fileName, '', true);
+    const saveResponse = await Workspace.FileManager.FileManager.instance().save(this._fileName, '', true);
     if (saveResponse) {
-      self.Workspace.fileManager.addEventListener(Workspace.FileManager.Events.AppendedToURL, this._onAppendDone, this);
+      Workspace.FileManager.FileManager.instance().addEventListener(
+          Workspace.FileManager.Events.AppendedToURL, this._onAppendDone, this);
     }
     return !!saveResponse;
   }
@@ -223,7 +224,7 @@ export class FileOutputStream {
   write(data) {
     return new Promise(resolve => {
       this._writeCallbacks.push(resolve);
-      self.Workspace.fileManager.append(this._fileName, data);
+      Workspace.FileManager.FileManager.instance().append(this._fileName, data);
     });
   }
 
@@ -235,9 +236,9 @@ export class FileOutputStream {
     if (this._writeCallbacks.length) {
       return;
     }
-    self.Workspace.fileManager.removeEventListener(
+    Workspace.FileManager.FileManager.instance().removeEventListener(
         Workspace.FileManager.Events.AppendedToURL, this._onAppendDone, this);
-    self.Workspace.fileManager.close(this._fileName);
+    Workspace.FileManager.FileManager.instance().close(this._fileName);
   }
 
   /**
@@ -254,8 +255,8 @@ export class FileOutputStream {
     if (!this._closed) {
       return;
     }
-    self.Workspace.fileManager.removeEventListener(
+    Workspace.FileManager.FileManager.instance().removeEventListener(
         Workspace.FileManager.Events.AppendedToURL, this._onAppendDone, this);
-    self.Workspace.fileManager.close(this._fileName);
+    Workspace.FileManager.FileManager.instance().close(this._fileName);
   }
 }

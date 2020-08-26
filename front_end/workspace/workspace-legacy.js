@@ -41,11 +41,6 @@ Workspace.projectTypes = WorkspaceModule.Workspace.projectTypes;
 Workspace.ProjectStore = WorkspaceModule.Workspace.ProjectStore;
 
 /**
- * @type {?WorkspaceModule.FileManager.FileManager}
- */
-self.Workspace.fileManager;
-
-/**
  * @type {!WorkspaceModule.Workspace.WorkspaceImpl}
  */
 self.Workspace.workspace;

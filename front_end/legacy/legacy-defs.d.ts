@@ -125,6 +125,7 @@ interface Event {
 }
 
 interface Node {
+  getComponentRoot(): Document|DocumentFragment|null;
   getComponentSelection(): Selection|null;
   hasSameShadowRoot(other: Node): boolean;
   isSelfOrAncestor(node: Node|null): boolean;

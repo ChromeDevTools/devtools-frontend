@@ -650,6 +650,13 @@ export class TargetBase {
   // Agent accessors, keep alphabetically sorted.
 
   /**
+   * @return {!ProtocolProxyApi.ApplicationCacheApi}
+   */
+  applicationCacheAgent() {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
    * @return {!ProtocolProxyApi.AuditsApi}
    */
   auditsAgent() {
@@ -763,6 +770,13 @@ export class TargetBase {
 
 
   // Dispatcher registration, keep alphabetically sorted.
+
+  /**
+   * @param {!ProtocolProxyApi.ApplicationCacheDispatcher} dispatcher
+   */
+  registerApplicationCacheDispatcher(dispatcher) {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
 
   /**
    * @param {!ProtocolProxyApi.AuditsDispatcher} dispatcher

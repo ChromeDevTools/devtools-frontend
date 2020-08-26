@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Diff from '../diff/diff.js';
 import * as Host from '../host/host.js';
@@ -20,7 +17,7 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper {
     /** @type {!WeakMap<!Workspace.UISourceCode.UISourceCode, !UISourceCodeDiff>} */
     this._uiSourceCodeDiffs = new WeakMap();
 
-    /** @type {!Map<!Workspace.UISourceCode.UISourceCode, !Promise>} */
+    /** @type {!Map<!Workspace.UISourceCode.UISourceCode, !Promise<?>>} */
     this._loadingUISourceCodes = new Map();
 
     /** @type {!Set<!Workspace.UISourceCode.UISourceCode>} */
@@ -43,7 +40,7 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   * @param {function(!Common.EventTarget.EventTargetEvent)} callback
+   * @param {function(!Common.EventTarget.EventTargetEvent):void} callback
    * @param {!Object=} thisObj
    */
   subscribeToDiffChange(uiSourceCode, callback, thisObj) {
@@ -52,7 +49,7 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   * @param {function(!Common.EventTarget.EventTargetEvent)} callback
+   * @param {function(!Common.EventTarget.EventTargetEvent):void} callback
    * @param {!Object=} thisObj
    */
   unsubscribeFromDiffChange(uiSourceCode, callback, thisObj) {
@@ -79,10 +76,12 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper {
    * @return {!UISourceCodeDiff}
    */
   _uiSourceCodeDiff(uiSourceCode) {
-    if (!this._uiSourceCodeDiffs.has(uiSourceCode)) {
-      this._uiSourceCodeDiffs.set(uiSourceCode, new UISourceCodeDiff(uiSourceCode));
+    let diff = this._uiSourceCodeDiffs.get(uiSourceCode);
+    if (!diff) {
+      diff = new UISourceCodeDiff(uiSourceCode);
+      this._uiSourceCodeDiffs.set(uiSourceCode, diff);
     }
-    return this._uiSourceCodeDiffs.get(uiSourceCode);
+    return diff;
   }
 
   /**
@@ -204,7 +203,7 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   revertToOriginal(uiSourceCode) {
     /**
@@ -282,7 +281,7 @@ export class UISourceCodeDiff extends Common.ObjectWrapper.ObjectWrapper {
     }
 
     const content = await this._uiSourceCode.project().requestFileContent(this._uiSourceCode);
-    return content.content || content.error || '';
+    return content.content || ('error' in content && content.error) || '';
   }
 
   /**
@@ -294,6 +293,9 @@ export class UISourceCodeDiff extends Common.ObjectWrapper.ObjectWrapper {
     }
 
     const baseline = await this._originalContent();
+    if (!baseline) {
+      return null;
+    }
     if (baseline.length > 1024 * 1024) {
       return null;
     }
@@ -304,7 +306,7 @@ export class UISourceCodeDiff extends Common.ObjectWrapper.ObjectWrapper {
 
     let current = this._uiSourceCode.workingCopy();
     if (!current && !this._uiSourceCode.contentLoaded()) {
-      current = (await this._uiSourceCode.requestContent()).content;
+      current = /** @type {string} */ ((await this._uiSourceCode.requestContent()).content);
     }
 
     if (current.length > 1024 * 1024) {

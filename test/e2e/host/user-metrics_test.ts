@@ -366,7 +366,7 @@ describe('User Metrics', () => {
     ]);
   });
 
-  it('dispatches an event when experiemnts are enabled and disabled', async () => {
+  it('dispatches an event when experiments are enabled and disabled', async () => {
     await openSettingsTab('Experiments');
     const customThemeCheckbox = await waitFor('[aria-label="Allow custom UI themes"]');
     // Enable the experiment
@@ -375,10 +375,6 @@ describe('User Metrics', () => {
     await customThemeCheckbox.click();
 
     await assertCapturedEvents([
-      {
-        name: 'DevTools.ActionTaken',
-        value: 37,  // Settings opened from menu
-      },
       {
         name: 'DevTools.PanelShown',
         value: 29,  // settings-preferences

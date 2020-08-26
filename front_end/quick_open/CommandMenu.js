@@ -138,11 +138,6 @@ export class CommandMenu {
 
       /** @type {!RevealViewCommandOptions} */
       const options = {extension, category: ls(category), userActionCode: undefined};
-
-      if (category === 'Settings') {
-        options.userActionCode = Host.UserMetrics.Action.SettingsOpenedFromCommandMenu;
-      }
-
       this._commands.push(CommandMenu.createRevealViewCommand(options));
     }
 
@@ -219,10 +214,6 @@ export class CommandMenuProvider extends Provider {
 
       /** @type {!ActionCommandOptions} */
       const options = {action};
-      if (category === 'Settings') {
-        options.userActionCode = Host.UserMetrics.Action.SettingsOpenedFromCommandMenu;
-      }
-
       this._commands.push(CommandMenu.createActionCommand(options));
     }
 

@@ -391,7 +391,6 @@ export class ActionDelegate {
             UI.UIUtils.addReferrerToURL('https://developers.google.com/web/tools/chrome-devtools/'));
         return true;
       case 'settings.shortcuts':
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.SettingsOpenedFromMenu);
         screen = {name: ls`Shortcuts`, focusTabHeader: true};
         if (Root.Runtime.experiments.isEnabled('customKeyboardShortcuts')) {
           screen = {name: 'keybinds', focusTabHeader: true};

@@ -739,14 +739,6 @@ export class MainMenuItem {
     for (const extension of extensions) {
       const descriptor = extension.descriptor();
 
-      if (descriptor['id'] === 'settings-default') {
-        moreTools.defaultSection().appendItem(extension.title(), () => {
-          Host.userMetrics.actionTaken(Host.UserMetrics.Action.SettingsOpenedFromMenu);
-          UI.ViewManager.ViewManager.instance().showView('preferences', /* userGesture */ true);
-        });
-        continue;
-      }
-
       if (descriptor['id'] === 'issues-pane') {
         moreTools.defaultSection().appendItem(extension.title(), () => {
           Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.HamburgerMenu);
@@ -779,8 +771,7 @@ export class MainMenuItem {
 export class SettingsButtonProvider {
   constructor() {
     const settingsActionId = 'settings.show';
-    this._settingsButton = UI.Toolbar.Toolbar.createActionButtonForId(
-        settingsActionId, {showLabel: false, userActionCode: Host.UserMetrics.Action.SettingsOpenedFromGear});
+    this._settingsButton = UI.Toolbar.Toolbar.createActionButtonForId(settingsActionId, {showLabel: false});
   }
 
   /**

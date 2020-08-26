@@ -26,27 +26,15 @@ export const openPanelViaMoreTools = async (panelTitle: string) => {
 };
 
 export const openSettingsTab = async (tabTitle: string) => {
-  const {frontend} = getBrowserAndPages();
-
-  const moreToolsSelector = '[aria-label="More tools"]';
-  const contextMenuItemSelector = '.soft-context-menu-item[aria-label="Settings"]';
+  const gearIconSelector = '.toolbar-button[aria-label="Settings"]';
   const settingsMenuSelector = `.tabbed-pane-header-tab[aria-label="${tabTitle}"]`;
   const panelSelector = `.view-container[aria-label="${tabTitle} panel"]`;
 
-  // Head to the triple dot menu.
-  await click('.toolbar-button[aria-label="Customize and control DevTools"]');
+  // Click on the Settings Gear toolbar icon.
+  await click(gearIconSelector);
 
-  // Hover over the “More Tools” option.
-  const moreTools = await getElementPosition(moreToolsSelector);
-  await frontend.mouse.move(moreTools.x, moreTools.y);
-
-  // Choose the desired menu item and wait for the corresponding panel
-  // to appear.
-  await waitFor(contextMenuItemSelector);
-  await click(contextMenuItemSelector);
+  // Click on the Settings tab and wait for the panel to appear.
   await waitFor(settingsMenuSelector);
-
-  // Open the right tab in settings.
   await click(settingsMenuSelector);
   await waitFor(panelSelector);
 };

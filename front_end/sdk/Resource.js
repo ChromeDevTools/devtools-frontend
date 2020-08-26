@@ -319,7 +319,7 @@ export class Resource {
   }
 
   /**
-   * @return {!ResourceTreeFrame}
+   * @return {?ResourceTreeFrame}
    */
   frame() {
     return this._resourceTreeModel.frameForId(this._frameId);

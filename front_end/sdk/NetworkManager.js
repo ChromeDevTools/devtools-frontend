@@ -553,6 +553,7 @@ export class NetworkDispatcher {
     if (!networkRequest) {
       const lastModifiedHeader = lowercaseHeaders['last-modified'];
       // We missed the requestWillBeSent.
+      /** @type {!RequestUpdateDroppedEventData} */
       const eventData = {
         url: response.url,
         frameId: frameId || '',
@@ -1697,3 +1698,7 @@ export let InterceptionPattern;
 /** @typedef {!function(!InterceptedRequest):!Promise<void>} */
 // @ts-ignore typedef
 export let RequestInterceptor;
+
+/** @typedef {!{url: string, frameId: string, loaderId: string, resourceType: Protocol.Network.ResourceType, mimeType: string, lastModified: ?Date}} */
+// @ts-ignore typedef
+export let RequestUpdateDroppedEventData;

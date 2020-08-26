@@ -670,8 +670,7 @@ export class ElementsPanel extends UI.Panel.Panel {
     if (!searchResult.node) {
       return;
     }
-    const treeOutline = ElementsTreeOutline.forDOMModel(searchResult.node.domModel());
-    const treeElement = treeOutline.findTreeElement(searchResult.node);
+    const treeElement = this._treeElementForNode(searchResult.node);
     if (treeElement) {
       treeElement.hideSearchHighlights();
     }

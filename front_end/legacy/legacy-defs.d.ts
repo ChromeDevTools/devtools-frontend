@@ -110,7 +110,7 @@ interface Element {
   hasFocus(): boolean;
   positionAt(x: (number|undefined), y: (number|undefined), relativeTo?: Element): void;
   removeChildren(): void;
-  scrollIntoViewIfNeeded(): void;
+  scrollIntoViewIfNeeded(center?: boolean): void;
   totalOffsetTop(): number;
   totalOffsetLeft(): number;
 }
@@ -140,5 +140,6 @@ interface Node {
 
 declare function isEnterKey(event: Event): boolean;
 declare function isEnterOrSpaceKey(event: Event): boolean;
+declare function isEscKey(event: Event): boolean;
 declare function createPlainTextSearchRegex(query: string, flags?: string): RegExp;
 declare function onInvokeElement(element: Element, callback: (event: Event) => void): void;

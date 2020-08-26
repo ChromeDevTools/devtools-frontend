@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
@@ -106,10 +103,10 @@ export class ListWidget extends VBox {
     const nextIsSeparator = next && next.classList.contains('list-separator');
 
     if (previousIsSeparator && (nextIsSeparator || !next)) {
-      previous.remove();
+      /** @type {!Element} */ (previous).remove();
     }
     if (nextIsSeparator && !previous) {
-      next.remove();
+      /** @type {!Element} */ (next).remove();
     }
     element.remove();
 
@@ -161,7 +158,7 @@ export class ListWidget extends VBox {
     return controls;
 
     /**
-     * @this {ListWidget}
+     * @this {!ListWidget<?>}
      */
     function onEditClicked() {
       const index = this._elements.indexOf(element);
@@ -170,7 +167,7 @@ export class ListWidget extends VBox {
     }
 
     /**
-     * @this {ListWidget}
+     * @this {!ListWidget<?>}
      */
     function onRemoveClicked() {
       const index = this._elements.indexOf(element);
@@ -233,7 +230,9 @@ export class ListWidget extends VBox {
     const isNew = !this._editElement;
     const editor = /** @type {!Editor<T>} */ (this._editor);
     this._stopEditing();
-    this._delegate.commitEdit(editItem, editor, isNew);
+    if (editItem) {
+      this._delegate.commitEdit(editItem, editor, isNew);
+    }
   }
 
   _stopEditing() {
@@ -266,6 +265,7 @@ export class Delegate {
    * @return {!Element}
    */
   renderItem(item, editable) {
+    throw new Error('not implemented yet');
   }
 
   /**
@@ -280,6 +280,7 @@ export class Delegate {
    * @return {!Editor<T>}
    */
   beginEdit(item) {
+    throw new Error('not implemented yet');
   }
 
   /**
@@ -379,7 +380,7 @@ export class Editor {
     const select = /** @type {!HTMLSelectElement} */ (document.createElement('select'));
     select.classList.add('chrome-select');
     for (let index = 0; index < options.length; ++index) {
-      const option = select.createChild('option');
+      const option = /** @type {!HTMLOptionElement} */ (select.createChild('option'));
       option.value = options[index];
       option.textContent = options[index];
     }
@@ -411,7 +412,8 @@ export class Editor {
     this._errorMessageContainer.textContent = '';
     for (let index = 0; index < this._controls.length; ++index) {
       const input = this._controls[index];
-      const {valid, errorMessage} = this._validators[index].call(null, this._item, this._index, input);
+      const {valid, errorMessage} =
+          this._validators[index].call(null, /** @type {!T} */ (this._item), this._index, input);
 
       input.classList.toggle('error-input', !valid && !forceValid);
       if (valid || forceValid) {
@@ -424,7 +426,7 @@ export class Editor {
         this._errorMessageContainer.textContent = errorMessage;
       }
 
-      allValid &= valid;
+      allValid = allValid && valid;
     }
     this._commitButton.disabled = !allValid;
   }
@@ -460,7 +462,9 @@ export class Editor {
     this._cancel = null;
     this._item = null;
     this._index = -1;
-    commit();
+    if (commit) {
+      commit();
+    }
   }
 
   _cancelClicked() {
@@ -469,9 +473,12 @@ export class Editor {
     this._cancel = null;
     this._item = null;
     this._index = -1;
-    cancel();
+    if (cancel) {
+      cancel();
+    }
   }
 }
 
 /** @typedef {{valid: boolean, errorMessage: (string|undefined)}} */
+// @ts-ignore typedef
 export let ValidatorResult;

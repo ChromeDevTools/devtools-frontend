@@ -32,6 +32,10 @@ interface NumberConstructor {
   withThousandsSeparator(num: number): string
 }
 
+interface Int32Array {
+  lowerBound(object: number, comparator?: {(a: number, b: number): number}, left?: number, right?: number): number;
+}
+
 declare let ls: (template: ITemplateArray, ...args: any[]) => string;
 
 declare namespace Runtime {

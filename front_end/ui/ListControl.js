@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Platform from '../platform/platform.js';
 
@@ -22,6 +19,7 @@ export class ListDelegate {
    * @return {!Element}
    */
   createElementForItem(item) {
+    throw new Error('not implemented yet');
   }
 
   /**
@@ -31,6 +29,7 @@ export class ListDelegate {
    * @return {number}
    */
   heightForItem(item) {
+    throw new Error('not implemented yet');
   }
 
   /**
@@ -38,6 +37,7 @@ export class ListDelegate {
    * @return {boolean}
    */
   isItemSelectable(item) {
+    throw new Error('not implemented yet');
   }
 
   /**
@@ -55,6 +55,7 @@ export class ListDelegate {
    * @return {boolean}
    */
   updateSelectedItemARIA(fromElement, toElement) {
+    throw new Error('not implemented yet');
   }
 }
 
@@ -75,14 +76,16 @@ export class ListControl {
    * @param {!ListMode=} mode
    */
   constructor(model, delegate, mode) {
-    this.element = createElement('div');
+    this.element = document.createElement('div');
     this.element.style.overflowY = 'auto';
     this._topElement = this.element.createChild('div');
     this._bottomElement = this.element.createChild('div');
     this._firstIndex = 0;
     this._lastIndex = 0;
     this._renderedHeight = 0;
+    /** @type {number} */
     this._topHeight = 0;
+    /** @type {number} */
     this._bottomHeight = 0;
 
     this._model = model;
@@ -101,6 +104,7 @@ export class ListControl {
     this._delegate = delegate;
     this._mode = mode || ListMode.EqualHeightItems;
     this._fixedHeight = 0;
+    /** @type {!Int32Array} */
     this._variableOffsets = new Int32Array(0);
     this._clearContents();
 
@@ -397,9 +401,10 @@ export class ListControl {
   }
 
   /**
-   * @param {!Event} event
+   * @param {!Event} ev
    */
-  _onKeyDown(event) {
+  _onKeyDown(ev) {
+    const event = /** @type {!KeyboardEvent} */ (ev);
     let selected = false;
     switch (event.key) {
       case 'ArrowUp':
@@ -466,11 +471,10 @@ export class ListControl {
   _refreshARIA() {
     for (let index = this._firstIndex; index <= this._lastIndex; index++) {
       const item = this._model.at(index);
-      if (!this._itemToElement.has(item)) {
-        continue;
+      const element = this._itemToElement.get(item);
+      if (element) {
+        this._updateElementARIA(element, index);
       }
-
-      this._updateElementARIA(this._itemToElement.get(item), index);
     }
   }
 
@@ -523,7 +527,7 @@ export class ListControl {
       oldItem = this._selectedItem;
     }
     if (oldElement === undefined) {
-      oldElement = this._itemToElement.get(oldItem) || null;
+      oldElement = this._itemToElement.get(/** @type {!T} */ (oldItem)) || null;
     }
     this._selectedIndex = index;
     this._selectedItem = index === -1 ? null : this._model.at(index);
@@ -670,10 +674,10 @@ export class ListControl {
   _invalidateNonViewportMode(start, remove, add) {
     let startElement = this._topElement;
     for (let index = 0; index < start; index++) {
-      startElement = startElement.nextElementSibling;
+      startElement = /** @type {!HTMLElement} */ (startElement.nextElementSibling);
     }
     while (remove--) {
-      startElement.nextElementSibling.remove();
+      /** @type {!HTMLElement} */ (startElement.nextElementSibling).remove();
     }
     while (add--) {
       this.element.insertBefore(this._elementAtIndex(start + add), startElement.nextElementSibling);

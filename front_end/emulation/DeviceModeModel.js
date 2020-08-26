@@ -753,7 +753,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
   exitHingeMode() {
     const overlayModel = this._emulationModel ? this._emulationModel.overlayModel() : null;
     if (overlayModel) {
-      overlayModel.showHingeForDualScreen(false);
+      overlayModel.showHingeForDualScreen(null);
     }
   }
 
@@ -855,11 +855,11 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
   _showHingeIfApplicable(overlayModel) {
     const orientation = (this._device && this._mode) ? this._device.orientationByName(this._mode.orientation) : null;
     if (this._experimentDualScreenSupport && orientation && orientation.hinge) {
-      overlayModel.showHingeForDualScreen(/* show*/ true, orientation.hinge);
+      overlayModel.showHingeForDualScreen(orientation.hinge);
       return;
     }
 
-    overlayModel.showHingeForDualScreen(false);
+    overlayModel.showHingeForDualScreen(null);
   }
 
   /**

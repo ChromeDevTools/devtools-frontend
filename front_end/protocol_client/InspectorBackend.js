@@ -706,6 +706,13 @@ export class TargetBase {
   }
 
   /**
+   * @return {!ProtocolProxyApi.OverlayApi}
+   */
+  overlayAgent() {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
    * @return {!ProtocolProxyApi.PageApi}
    */
   pageAgent() {
@@ -789,6 +796,13 @@ export class TargetBase {
    * @param {!ProtocolProxyApi.NetworkDispatcher} dispatcher
    */
   registerNetworkDispatcher(dispatcher) {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
+   * @param {!ProtocolProxyApi.OverlayDispatcher} dispatcher
+   */
+  registerOverlayDispatcher(dispatcher) {
     throw new Error('Implemented in InspectorBackend.js');
   }
 

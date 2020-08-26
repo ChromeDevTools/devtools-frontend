@@ -57,7 +57,7 @@ export class TimelineController {
    * @return {!Promise<!Object>}
    */
   async startRecording(options, providers) {
-    this._extensionTraceProviders = self.Extensions.extensionServer.traceProviders().slice();
+    this._extensionTraceProviders = Extensions.ExtensionServer.ExtensionServer.instance().traceProviders().slice();
 
     /**
      * @param {string} category

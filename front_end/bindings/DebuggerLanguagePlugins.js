@@ -339,6 +339,7 @@ export class DebuggerLanguagePluginManager {
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
     /** @type {!Array<!DebuggerLanguagePlugin>} */
     this._plugins = [];
+    // TODO(crbug.com/1122000): Break cycle between bindings and extensions
     for (const extension of self.Extensions.extensionServer.languageExtensionEndpoints) {
       this._plugins.push(extension);
     }
@@ -361,6 +362,7 @@ export class DebuggerLanguagePluginManager {
     this._eventHandlers = [
       this._debuggerModel.addEventListener(
           SDK.DebuggerModel.Events.ParsedScriptSource, this._newScriptSourceListener, this),
+      // TODO(crbug.com/1122000): Break cycle between bindings and extensions
       self.Extensions.extensionServer.addEventListener(
           Extensions.ExtensionServer.Events.LanguageExtensionEndpointAdded, this._languageExtensionPluginAdded, this)
     ];

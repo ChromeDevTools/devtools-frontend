@@ -34,7 +34,7 @@ describe('The Debugger Language Plugins', async () => {
     await frontend.evaluate(resourcePath => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       globalThis.installExtensionPlugin = function(registerPluginCallback: any) {
-        const extensionServer = globalThis.Extensions.extensionServer;
+        const extensionServer = globalThis.Extensions.ExtensionServer.instance();
         /** @type {!{startPage: string, name: string, exposeExperimentalAPIs: boolean}} */
         const extensionInfo = {
           startPage: `${resourcePath}/sources/language_extensions.html`,

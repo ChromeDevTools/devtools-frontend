@@ -148,7 +148,7 @@ export class TimelinePanel extends UI.Panel.Panel {
     this._showLandingPage();
     this._updateTimelineControls();
 
-    self.Extensions.extensionServer.addEventListener(
+    Extensions.ExtensionServer.ExtensionServer.instance().addEventListener(
         Extensions.ExtensionServer.Events.TraceProviderAdded, this._appendExtensionsToToolbar, this);
     SDK.SDKModel.TargetManager.instance().addEventListener(
         SDK.SDKModel.Events.SuspendStateChanged, this._onSuspendStateChanged, this);
@@ -561,7 +561,7 @@ export class TimelinePanel extends UI.Panel.Panel {
 
     this._showRecordingStarted();
 
-    const enabledTraceProviders = self.Extensions.extensionServer.traceProviders().filter(
+    const enabledTraceProviders = Extensions.ExtensionServer.ExtensionServer.instance().traceProviders().filter(
         provider => TimelinePanel._settingForTraceProvider(provider).get());
 
     const mainTarget = /** @type {!SDK.SDKModel.Target} */ (SDK.SDKModel.TargetManager.instance().mainTarget());

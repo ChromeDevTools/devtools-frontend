@@ -290,7 +290,7 @@ export class MainImpl {
       targetManager: SDK.SDKModel.TargetManager.instance(),
       debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
     });
-    self.Extensions.extensionServer = new Extensions.ExtensionServer.ExtensionServer();
+    self.Extensions.extensionServer = Extensions.ExtensionServer.ExtensionServer.instance({forceNew: true});
 
     new Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding(
         Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance(),
@@ -383,7 +383,7 @@ export class MainImpl {
   _lateInitialization() {
     MainImpl.time('Main._lateInitialization');
     this._registerShortcuts();
-    self.Extensions.extensionServer.initializeExtensions();
+    Extensions.ExtensionServer.ExtensionServer.instance().initializeExtensions();
     const extensions = self.runtime.extensions('late-initialization');
     const promises = [];
     for (const extension of extensions) {

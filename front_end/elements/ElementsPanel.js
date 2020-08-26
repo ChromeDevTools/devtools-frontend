@@ -140,7 +140,7 @@ export class ElementsPanel extends UI.Panel.Panel {
         .addChangeListener(this._showUAShadowDOMChanged.bind(this));
     SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.DocumentUpdated, this._documentUpdatedEvent, this);
-    self.Extensions.extensionServer.addEventListener(
+    Extensions.ExtensionServer.ExtensionServer.instance().addEventListener(
         Extensions.ExtensionServer.Events.SidebarPaneAdded, this._extensionSidebarPaneAdded, this);
 
     /**
@@ -936,7 +936,7 @@ export class ElementsPanel extends UI.Panel.Panel {
     this._stylesViewToReveal = stylesView;
 
     this.sidebarPaneView.appendApplicableItems('elements-sidebar');
-    const extensionSidebarPanes = self.Extensions.extensionServer.sidebarPanes();
+    const extensionSidebarPanes = Extensions.ExtensionServer.ExtensionServer.instance().sidebarPanes();
     for (let i = 0; i < extensionSidebarPanes.length; ++i) {
       this._addExtensionSidebarPane(extensionSidebarPanes[i]);
     }

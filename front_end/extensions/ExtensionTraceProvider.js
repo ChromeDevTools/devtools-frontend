@@ -5,6 +5,8 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
+import {ExtensionServer} from './ExtensionServer.js';
+
 /**
  * @unrestricted
  */
@@ -27,11 +29,11 @@ export class ExtensionTraceProvider {
    */
   start(session) {
     const sessionId = String(++_lastSessionId);
-    self.Extensions.extensionServer.startTraceRecording(this._id, sessionId, session);
+    ExtensionServer.instance().startTraceRecording(this._id, sessionId, session);
   }
 
   stop() {
-    self.Extensions.extensionServer.stopTraceRecording(this._id);
+    ExtensionServer.instance().stopTraceRecording(this._id);
   }
 
   /**

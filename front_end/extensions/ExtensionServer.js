@@ -54,12 +54,16 @@ const kAllowedOrigins = [
   'chrome://new-tab-page',
 ].map(url => (new URL(url)).origin);
 
+/** @type {?ExtensionServer} */
+let extensionServerInstance;
+
 /**
  * @unrestricted
  */
 export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @suppressGlobalPropertiesCheck
+   * @private
    */
   constructor() {
     super();
@@ -128,6 +132,18 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     /** @type {!Array<!LanguageExtensionEndpoint>} */
     this._languageExtensionEndpoints = [];
     this._initExtensions();
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!extensionServerInstance || forceNew) {
+      extensionServerInstance = new ExtensionServer();
+    }
+
+    return extensionServerInstance;
   }
 
   initializeExtensions() {
@@ -787,7 +803,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         const injectedAPI = self.buildExtensionAPIInjectedScript(
             /** @type {!{startPage: string, name: string, exposeExperimentalAPIs: boolean}} */ (extensionInfo),
             this._inspectedTabId, self.UI.themeSupport.themeName(), self.UI.shortcutRegistry.globalShortcutKeys(),
-            self.Extensions.extensionServer['_extensionAPITestHook']);
+            ExtensionServer.instance()['_extensionAPITestHook']);
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.setInjectedScriptForOrigin(
             extensionOrigin, injectedAPI);
         const name = extensionInfo.name || `Extension ${extensionOrigin}`;

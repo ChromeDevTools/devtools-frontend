@@ -27,6 +27,3 @@ Extensions.ExtensionTraceProvider = ExtensionsModule.ExtensionTraceProvider.Exte
 
 /** @interface */
 Extensions.TracingSession = ExtensionsModule.ExtensionTraceProvider.TracingSession;
-
-/** @type {!Extensions.ExtensionServer} */
-self.Extensions.extensionServer;

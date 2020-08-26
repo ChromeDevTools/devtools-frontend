@@ -156,7 +156,7 @@ export class SourcesPanel extends UI.Panel.Panel {
     SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared,
         event => this._debuggerResumed(/** @type {!SDK.DebuggerModel.DebuggerModel} */ (event.data)));
-    self.Extensions.extensionServer.addEventListener(
+    Extensions.ExtensionServer.ExtensionServer.instance().addEventListener(
         Extensions.ExtensionServer.Events.SidebarPaneAdded, this._extensionSidebarPaneAdded, this);
     SDK.SDKModel.TargetManager.instance().observeTargets(this);
   }
@@ -1018,7 +1018,7 @@ export class SourcesPanel extends UI.Panel.Panel {
     }
 
     this._sidebarPaneStack.appendApplicableItems('sources.sidebar-bottom');
-    const extensionSidebarPanes = self.Extensions.extensionServer.sidebarPanes();
+    const extensionSidebarPanes = Extensions.ExtensionServer.ExtensionServer.instance().sidebarPanes();
     for (let i = 0; i < extensionSidebarPanes.length; ++i) {
       this._addExtensionSidebarPane(extensionSidebarPanes[i]);
     }

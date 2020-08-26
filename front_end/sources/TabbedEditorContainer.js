@@ -32,6 +32,7 @@
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';
+import * as Extensions from '../extensions/extensions.js';
 import * as Persistence from '../persistence/persistence.js';
 import * as Snippets from '../snippets/snippets.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
@@ -271,7 +272,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
     this._history.updateSelectionRange(this._currentFile.url(), range);
     this._history.save(this._previouslyViewedFilesSetting);
 
-    self.Extensions.extensionServer.sourceSelectionChanged(this._currentFile.url(), range);
+    Extensions.ExtensionServer.ExtensionServer.instance().sourceSelectionChanged(this._currentFile.url(), range);
   }
 
   /**

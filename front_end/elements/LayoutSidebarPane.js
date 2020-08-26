@@ -47,7 +47,7 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     super(true /* isWebComponent */);
     this._layoutPane = createLayoutPane();
     this.contentElement.appendChild(this._layoutPane);
-    this._settings = ['showGridLines', 'showGridLineNumbers', 'showGridGaps', 'showGridAreas', 'showGridTrackSizes'];
+    this._settings = ['showGridLineLabels', 'showGridTrackSizes', 'showGridAreas', 'extendGridLines'];
     this._boundOnSettingChanged = this.onSettingChanged.bind(this);
     this._domModels = [];
   }

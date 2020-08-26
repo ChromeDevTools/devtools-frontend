@@ -733,17 +733,11 @@ class DefaultPersistentGridHighlighter {
     this._gridHighlights = new Map();
 
     /** @type {!Common.Settings.Setting<*>} */
-    this._showGridBorderSetting = Common.Settings.Settings.instance().moduleSetting('showGridBorder');
-    this._showGridBorderSetting.addChangeListener(this._onSettingChange, this);
+    this._showGridLineLabelsSetting = Common.Settings.Settings.instance().moduleSetting('showGridLineLabels');
+    this._showGridLineLabelsSetting.addChangeListener(this._onSettingChange, this);
     /** @type {!Common.Settings.Setting<*>} */
-    this._showGridLinesSetting = Common.Settings.Settings.instance().moduleSetting('showGridLines');
-    this._showGridLinesSetting.addChangeListener(this._onSettingChange, this);
-    /** @type {!Common.Settings.Setting<*>} */
-    this._showGridLineNumbersSetting = Common.Settings.Settings.instance().moduleSetting('showGridLineNumbers');
-    this._showGridLineNumbersSetting.addChangeListener(this._onSettingChange, this);
-    /** @type {!Common.Settings.Setting<*>} */
-    this._showGridGapsSetting = Common.Settings.Settings.instance().moduleSetting('showGridGaps');
-    this._showGridGapsSetting.addChangeListener(this._onSettingChange, this);
+    this._extendGridLinesSetting = Common.Settings.Settings.instance().moduleSetting('extendGridLines');
+    this._extendGridLinesSetting.addChangeListener(this._onSettingChange, this);
     /** @type {!Common.Settings.Setting<*>} */
     this._showGridAreasSetting = Common.Settings.Settings.instance().moduleSetting('showGridAreas');
     this._showGridAreasSetting.addChangeListener(this._onSettingChange, this);
@@ -776,10 +770,8 @@ class DefaultPersistentGridHighlighter {
     if (DefaultPersistentGridHighlighter.getGridTelemetryLogged()) {
       return;
     }
-    this._recordGridSetting(this._showGridBorderSetting);
-    this._recordGridSetting(this._showGridLinesSetting);
-    this._recordGridSetting(this._showGridLineNumbersSetting);
-    this._recordGridSetting(this._showGridGapsSetting);
+    this._recordGridSetting(this._showGridLineLabelsSetting);
+    this._recordGridSetting(this._extendGridLinesSetting);
     this._recordGridSetting(this._showGridAreasSetting);
     this._recordGridSetting(this._showGridTrackSizesSetting);
     DefaultPersistentGridHighlighter.setGridTelemetryLogged(true);
@@ -799,91 +791,20 @@ class DefaultPersistentGridHighlighter {
    * @return {!Protocol.Overlay.GridHighlightConfig}
    */
   _buildGridHighlightConfig() {
-    let showGridBorder = false;
-    let gridBorderDashed = false;
-    switch (this._showGridBorderSetting.get()) {
-      case 'dashed':
-        showGridBorder = true;
-        gridBorderDashed = true;
-        break;
-      case 'solid':
-        showGridBorder = true;
-        break;
-      default:
-        break;
-    }
-    let showGridLines = false;
-    let gridLinesDashed = false;
-    let showGridExtensionLines;
-    switch (this._showGridLinesSetting.get()) {
-      case 'dashed':
-        showGridLines = true;
-        gridLinesDashed = true;
-        break;
-      case 'solid':
-        showGridLines = true;
-        break;
-      case 'extended-dashed':
-        showGridLines = true;
-        gridLinesDashed = true;
-        showGridExtensionLines = true;
-        break;
-      case 'extended-solid':
-        showGridLines = true;
-        showGridExtensionLines = true;
-        break;
-      default:
-        break;
-    }
-    let showPositiveLineNumbers = false;
-    let showNegativeLineNumbers = false;
-    let showLineNames = false;
-    switch (this._showGridLineNumbersSetting.get()) {
-      case 'positive':
-        showPositiveLineNumbers = true;
-        break;
-      case 'negative':
-        showNegativeLineNumbers = true;
-        break;
-      case 'both':
-        showPositiveLineNumbers = true;
-        showNegativeLineNumbers = true;
-        break;
-      case 'names':
-        showLineNames = true;
-        break;
-      default:
-        break;
-    }
-    let showGridRowGaps = false;
-    let showGridColumnGaps = false;
-    switch (this._showGridGapsSetting.get()) {
-      case 'both':
-        showGridRowGaps = true;
-        showGridColumnGaps = true;
-        break;
-      case 'row-gaps':
-        showGridRowGaps = true;
-        break;
-      case 'column-gaps':
-        showGridColumnGaps = true;
-        break;
-      default:
-        break;
-    }
-
+    const showGridExtensionLines = /** @type {boolean} */ (this._extendGridLinesSetting.get());
+    const showPositiveLineNumbers = this._showGridLineLabelsSetting.get() === 'lineNumbers';
+    const showNegativeLineNumbers = showPositiveLineNumbers;
+    const showLineNames = this._showGridLineLabelsSetting.get() === 'lineNames';
     return {
-      rowGapColor: showGridRowGaps ? Common.Color.PageHighlight.GridRowGapBackground.toProtocolRGBA() : undefined,
-      rowHatchColor: showGridRowGaps ? Common.Color.PageHighlight.GridRowGapHatch.toProtocolRGBA() : undefined,
-      columnGapColor: showGridColumnGaps ? Common.Color.PageHighlight.GridColumnGapBackground.toProtocolRGBA() :
-                                           undefined,
-      columnHatchColor: showGridColumnGaps ? Common.Color.PageHighlight.GridColumnGapHatch.toProtocolRGBA() : undefined,
-      gridBorderColor: showGridBorder ? Common.Color.PageHighlight.GridBorder.toProtocolRGBA() : undefined,
-      gridBorderDash: gridBorderDashed,
-      rowLineColor: showGridLines ? Common.Color.PageHighlight.GridRowLine.toProtocolRGBA() : undefined,
-      columnLineColor: showGridLines ? Common.Color.PageHighlight.GridColumnLine.toProtocolRGBA() : undefined,
-      rowLineDash: gridLinesDashed,
-      columnLineDash: gridLinesDashed,
+      rowGapColor: Common.Color.PageHighlight.GridRowGapBackground.toProtocolRGBA(),
+      rowHatchColor: Common.Color.PageHighlight.GridRowGapHatch.toProtocolRGBA(),
+      columnGapColor: Common.Color.PageHighlight.GridColumnGapBackground.toProtocolRGBA(),
+      columnHatchColor: Common.Color.PageHighlight.GridColumnGapHatch.toProtocolRGBA(),
+      gridBorderDash: false,
+      rowLineColor: Common.Color.PageHighlight.GridRowLine.toProtocolRGBA(),
+      columnLineColor: Common.Color.PageHighlight.GridColumnLine.toProtocolRGBA(),
+      rowLineDash: true,
+      columnLineDash: true,
       showGridExtensionLines,
       showPositiveLineNumbers,
       showNegativeLineNumbers,

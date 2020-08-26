@@ -118,136 +118,7 @@
     {
       "type": "setting",
       "category": "Grid",
-      "title": "Grid Border",
-      "experiment": "cssGridFeatures",
-      "settingName": "showGridBorder",
-      "settingType": "enum",
-      "defaultValue": "none",
-      "options": [
-        {
-          "title": "Do not show grid container border",
-          "text": "None",
-          "value": "none"
-        },
-        {
-          "title": "Show dashed grid container border",
-          "text": "Dashed",
-          "value": "dashed"
-        },
-        {
-          "title": "Show solid grid container border",
-          "text": "Solid",
-          "value": "solid"
-        }
-      ]
-    },
-    {
-      "type": "setting",
-      "category": "Grid",
-      "title": "Grid Lines",
-      "experiment": "cssGridFeatures",
-      "settingName": "showGridLines",
-      "settingType": "enum",
-      "defaultValue": "extended-dashed",
-      "options": [
-        {
-          "title": "Do not show grid lines",
-          "text": "None",
-          "value": "none"
-        },
-        {
-          "title": "Show dashed grid lines",
-          "text": "Dashed",
-          "value": "dashed"
-        },
-        {
-          "title": "Show solid grid lines",
-          "text": "Solid",
-          "value": "solid"
-        },
-        {
-          "title": "Show dashed grid lines extended to the edge of page",
-          "text": "Extended Dashed",
-          "value": "extended-dashed"
-        },
-        {
-          "title": "Show solid grid lines extended to the edge of the page",
-          "text": "Extended Solid",
-          "value": "extended-solid"
-        }
-      ]
-    },
-    {
-      "type": "setting",
-      "category": "Grid",
-      "title": "Grid Line Labels",
-      "experiment": "cssGridFeatures",
-      "settingName": "showGridLineNumbers",
-      "settingType": "enum",
-      "defaultValue": "both",
-      "options": [
-        {
-          "title": "Do not show labels for grid line",
-          "text": "None",
-          "value": "none"
-        },
-        {
-          "title": "Show positive grid line numbers",
-          "text": "Positive numbers",
-          "value": "positive"
-        },
-        {
-          "title": "Show negative grid line numbers",
-          "text": "Negative numbers",
-          "value": "negative"
-        },
-        {
-          "title": "Show all grid line numbers",
-          "text": "All numbers",
-          "value": "both"
-        },
-        {
-          "title": "Show grid line names",
-          "text": "Names",
-          "value": "names"
-        }
-      ]
-    },
-    {
-      "type": "setting",
-      "category": "Grid",
-      "title": "Grid Gaps",
-      "experiment": "cssGridFeatures",
-      "settingName": "showGridGaps",
-      "settingType": "enum",
-      "defaultValue": "both",
-      "options": [
-        {
-          "title": "Do not shade grid gaps",
-          "text": "None",
-          "value": "none"
-        },
-        {
-          "title": "Shade row gaps",
-          "text": "Row Gaps",
-          "value": "row-gaps"
-        },
-        {
-          "title": "Shade column gaps",
-          "text": "Column Gaps",
-          "value": "column-gaps"
-        },
-        {
-          "title": "Shade both row and column gaps",
-          "text": "Both",
-          "value": "both"
-        }
-      ]
-    },
-    {
-      "type": "setting",
-      "category": "Grid",
-      "title": "Grid Areas",
+      "title": "Show area names",
       "experiment": "cssGridFeatures",
       "settingName": "showGridAreas",
       "settingType": "boolean",
@@ -266,7 +137,7 @@
     {
       "type": "setting",
       "category": "Grid",
-      "title": "Grid Track Sizes",
+      "title": "Show track sizes",
       "experiment": "cssGridFeatures",
       "settingName": "showGridTrackSizes",
       "settingType": "boolean",
@@ -281,6 +152,51 @@
         }
       ],
       "defaultValue": false
+    },
+    {
+      "type": "setting",
+      "category": "Grid",
+      "title": "Extend grid lines",
+      "experiment": "cssGridFeatures",
+      "settingName": "extendGridLines",
+      "settingType": "boolean",
+      "options": [
+        {
+          "value": true,
+          "title": "Extend grid lines"
+        },
+        {
+          "value": false,
+          "title": "Do not extend grid lines"
+        }
+      ],
+      "defaultValue": false
+    },
+    {
+      "type": "setting",
+      "category": "Grid",
+      "title": "Show line labels",
+      "experiment": "cssGridFeatures",
+      "settingName": "showGridLineLabels",
+      "settingType": "enum",
+      "options": [
+        {
+          "title": "Hide line labels",
+          "text": "Hide line labels",
+          "value": "none"
+        },
+        {
+          "title": "Show line numbers",
+          "text": "Show line numbers",
+          "value": "lineNumbers"
+        },
+        {
+          "title": "Show line names",
+          "text": "Show line names",
+          "value": "lineNames"
+        }
+      ],
+      "defaultValue": "lineNumbers"
     },
     {
       "type": "setting",

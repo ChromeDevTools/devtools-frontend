@@ -443,27 +443,15 @@ export const DualScreenDeviceEmulated = {
 
 /** @type {!Object<string, number>} */
 export const CSSGridSettings = {
-  'showGridBorder.none': 0,
-  'showGridBorder.dashed': 1,
-  'showGridBorder.solid': 2,
-  'showGridLines.none': 3,
-  'showGridLines.dashed': 4,
-  'showGridLines.solid': 5,
-  'showGridLines.extended-dashed': 6,
-  'showGridLines.extended-solid': 7,
-  'showGridLineNumbers.none': 8,
-  'showGridLineNumbers.positive': 9,
-  'showGridLineNumbers.negative': 10,
-  'showGridLineNumbers.both': 11,
-  'showGridGaps.none': 12,
-  'showGridGaps.row-gaps': 13,
-  'showGridGaps.column-gaps': 14,
-  'showGridGaps.both': 15,
-  'showGridAreas.false': 16,
-  'showGridAreas.true': 17,
-  'showGridLineNumbers.names': 18,
-  'showGridTrackSizes.false': 19,
-  'showGridTrackSizes.true': 20,
+  'showGridLineLabels.none': 0,
+  'showGridLineLabels.lineNumbers': 1,
+  'showGridLineLabels.lineNames': 2,
+  'extendGridLines.false': 3,
+  'extendGridLines.true': 4,
+  'showGridAreas.false': 5,
+  'showGridAreas.true': 6,
+  'showGridTrackSizes.false': 7,
+  'showGridTrackSizes.true': 8,
 };
 
 /**

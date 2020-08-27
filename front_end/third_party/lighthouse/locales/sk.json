@@ -714,7 +714,7 @@
     "message": "{itemCount,plural, =1{1 žiadosť nebola odoslaná cez HTTP/2}few{# žiadosti neboli odoslané cez HTTP/2}many{# requests not served via HTTP/2}other{# žiadostí nebolo odoslaných cez HTTP/2}}"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | title": {
-    "message": "Use HTTP/2"
+    "message": "Použite HTTP/2"
   },
   "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | description": {
     "message": "Odporúčame zmeniť prijímače udalostí aktivovaných dotykom alebo kolieskom myši na `passive`, čím zlepšíte výkonnosť posúvania stránky. [Ďalšie informácie](https://web.dev/uses-passive-event-listeners/)"
@@ -827,9 +827,6 @@
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "Toto je najväčší prvok s obsahom vykreslený v oblasti zobrazenia. [Ďalšie informácie](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
-  "lighthouse-core/audits/largest-contentful-paint-element.js | displayValue": {
-    "message": "{itemCount,plural, =1{Bol nájdený 1 prvok}few{Boli nájdené # prvky}many{# elements found}other{Bolo nájdených # prvkov}}"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | title": {
     "message": "Prvok vykreslenia najväčšieho obsahu"
   },
@@ -838,9 +835,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | description": {
     "message": "Ku kumulatívnej zmene rozloženia danej stránky prispievajú najviac tieto prvky modelu DOM."
-  },
-  "lighthouse-core/audits/layout-shift-elements.js | displayValue": {
-    "message": "{nodeCount,plural, =1{Našiel sa 1 prvok}few{Našli sa # prvky}many{# elements found}other{Našlo sa # prvkov}}"
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Nepoužívajte veľké posuny rozloženia"
@@ -1257,13 +1251,13 @@
     "message": "Časový rozpočet"
   },
   "lighthouse-core/audits/unsized-images.js | description": {
-    "message": "Always include explicit width and height on image elements to reduce layout shifts and improve CLS. [Learn more](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "V prvkoch obrázka vždy zahrňte explicitnú šírku aj výšku, aby ste znížili posuny rozloženia a zlepšili kumulatívnu zmenu rozloženia. [Ďalšie informácie](https://web.dev/optimize-cls/#images-without-dimensions)"
   },
   "lighthouse-core/audits/unsized-images.js | failureTitle": {
-    "message": "Image elements do not have explicit `width` and `height`"
+    "message": "Prvky obrázkov nemajú explicitné hodnoty `width` a `height`"
   },
   "lighthouse-core/audits/unsized-images.js | title": {
-    "message": "Image elements have explicit `width` and `height`"
+    "message": "Prvky obrázka majú explicitné hodnoty `width` a `height`"
   },
   "lighthouse-core/audits/user-timings.js | columnType": {
     "message": "Typ"
@@ -1503,7 +1497,7 @@
     "message": "Prvok"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnFailingElem": {
-    "message": "Failing Elements"
+    "message": "Prvky s chybami"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnLocation": {
     "message": "Umiestnenie"

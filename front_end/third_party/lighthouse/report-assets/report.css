@@ -69,6 +69,7 @@
   --color-informative: var(--color-blue-900);
   --color-pass-secondary: var(--color-green-700);
   --color-pass: var(--color-green);
+  --color-not-applicable: var(--color-gray-600);
 
   /* Component variables */
   --audit-description-padding-left: calc(var(--score-icon-size) + var(--score-icon-margin-left) + var(--score-icon-margin-right));
@@ -1061,6 +1062,12 @@
   color: var(--color-fail);
   fill: var(--color-fail);
   stroke: var(--color-fail);
+}
+
+.lh-gauge__wrapper--not-applicable {
+  color: var(--color-not-applicable);
+  fill: var(--color-not-applicable);
+  stroke: var(--color-not-applicable);
 }
 
 .lh-gauge {

@@ -714,7 +714,7 @@
     "message": "{itemCount,plural, =1{HTTP/2를 통해 게재되지 않는 요청 1건}other{HTTP/2를 통해 게재되지 않는 요청 #건}}"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | title": {
-    "message": "Use HTTP/2"
+    "message": "HTTP/2를 사용하세요"
   },
   "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | description": {
     "message": "터치 및 휠 이벤트 리스너를 `passive`(으)로 표시하면 페이지 스크롤 성능을 개선할 수 있습니다. [자세히 알아보기](https://web.dev/uses-passive-event-listeners/)"
@@ -827,9 +827,6 @@
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "표시 영역에 페인팅된 가장 큰 콘텐츠가 포함된 요소입니다. [자세히 알아보기](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
-  "lighthouse-core/audits/largest-contentful-paint-element.js | displayValue": {
-    "message": "{itemCount,plural, =1{요소 1개 발견됨}other{요소 #개 발견됨}}"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | title": {
     "message": "콘텐츠가 포함된 최대 페인트 요소"
   },
@@ -838,9 +835,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | description": {
     "message": "DOM 요소가 페이지 CLS의 대부분을 차지합니다."
-  },
-  "lighthouse-core/audits/layout-shift-elements.js | displayValue": {
-    "message": "{nodeCount,plural, =1{요소 1개 발견됨}other{요소 #개 발견됨}}"
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "대규모 레이아웃 변경 피하기"
@@ -1257,13 +1251,13 @@
     "message": "시기 예산"
   },
   "lighthouse-core/audits/unsized-images.js | description": {
-    "message": "Always include explicit width and height on image elements to reduce layout shifts and improve CLS. [Learn more](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "이미지 요소에 명시적인 너비 및 높이를 항상 포함하여 레이아웃 변경 횟수를 줄이고 누적 레이아웃 변경을 개선합니다. [자세히 알아보기](https://web.dev/optimize-cls/#images-without-dimensions)"
   },
   "lighthouse-core/audits/unsized-images.js | failureTitle": {
-    "message": "Image elements do not have explicit `width` and `height`"
+    "message": "이미지 요소에 `width` 및 `height`가 명시되어 있지 않습니다"
   },
   "lighthouse-core/audits/unsized-images.js | title": {
-    "message": "Image elements have explicit `width` and `height`"
+    "message": "이미지 요소에 `width` 및 `height`가 명시되어 있습니다"
   },
   "lighthouse-core/audits/user-timings.js | columnType": {
     "message": "유형"
@@ -1503,7 +1497,7 @@
     "message": "요소"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnFailingElem": {
-    "message": "Failing Elements"
+    "message": "통과하지 못한 요소"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnLocation": {
     "message": "위치"

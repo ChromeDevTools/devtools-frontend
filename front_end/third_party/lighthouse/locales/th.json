@@ -714,7 +714,7 @@
     "message": "{itemCount,plural, =1{คำขอ 1 รายการไม่ได้แสดงผ่าน HTTP/2}other{คำขอ # รายการไม่ได้แสดงผ่าน HTTP/2}}"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | title": {
-    "message": "Use HTTP/2"
+    "message": "ใช้ HTTP/2"
   },
   "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | description": {
     "message": "ลองระบุ Listener เหตุการณ์แบบแตะและลูกกลิ้งเป็น `passive` เพื่อปรับปรุงประสิทธิภาพการเลื่อนของหน้าเว็บ [ดูข้อมูลเพิ่มเติม](https://web.dev/uses-passive-event-listeners/)"
@@ -827,9 +827,6 @@
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "นี่คือองค์ประกอบที่มีเนื้อหาเต็มขนาดใหญ่ที่สุดซึ่งแสดงผลภายในวิวพอร์ต [ดูข้อมูลเพิ่มเติม](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
-  "lighthouse-core/audits/largest-contentful-paint-element.js | displayValue": {
-    "message": "{itemCount,plural, =1{พบ 1 องค์ประกอบ}other{พบ # องค์ประกอบ}}"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | title": {
     "message": "องค์ประกอบ Largest Contentful Paint"
   },
@@ -838,9 +835,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | description": {
     "message": "องค์ประกอบ DOM เหล่านี้มีส่วนอย่างมากที่สุดต่อ CLS ของหน้า"
-  },
-  "lighthouse-core/audits/layout-shift-elements.js | displayValue": {
-    "message": "{nodeCount,plural, =1{พบ 1 องค์ประกอบ}other{พบ # องค์ประกอบ}}"
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "หลีกเลี่ยงการเลื่อนเลย์เอาต์ขนาดใหญ่"
@@ -1257,13 +1251,13 @@
     "message": "งบประมาณด้านเวลา"
   },
   "lighthouse-core/audits/unsized-images.js | description": {
-    "message": "Always include explicit width and height on image elements to reduce layout shifts and improve CLS. [Learn more](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "ต้องรวมด้านกว้างและยาวที่ชัดเจนขององค์ประกอบรูปภาพเสมอ เพื่อลดการเปลี่ยนเลย์เอาต์และเพิ่มคุณภาพ CLS [ดูข้อมูลเพิ่มเติม](https://web.dev/optimize-cls/#images-without-dimensions)"
   },
   "lighthouse-core/audits/unsized-images.js | failureTitle": {
-    "message": "Image elements do not have explicit `width` and `height`"
+    "message": "องค์ประกอบรูปภาพไม่มี `width` และ `height` ที่ชัดเจน"
   },
   "lighthouse-core/audits/unsized-images.js | title": {
-    "message": "Image elements have explicit `width` and `height`"
+    "message": "องค์ประกอบรูปภาพมี `width` และ `height` ที่ชัดเจน"
   },
   "lighthouse-core/audits/user-timings.js | columnType": {
     "message": "ประเภท"
@@ -1503,7 +1497,7 @@
     "message": "องค์ประกอบ"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnFailingElem": {
-    "message": "Failing Elements"
+    "message": "องค์ประกอบที่ไม่ผ่านการตรวจสอบ"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnLocation": {
     "message": "ตำแหน่ง"

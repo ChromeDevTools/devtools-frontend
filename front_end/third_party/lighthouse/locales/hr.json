@@ -714,7 +714,7 @@
     "message": "{itemCount,plural, =1{Jedan zahtjev koji nije poslužen protokolom HTTP/2}one{Broj zahtjeva koji nisu posluženi protokolom HTTP/2: #}few{Broj zahtjeva koji nisu posluženi protokolom HTTP/2: #}other{Broj zahtjeva koji nisu posluženi protokolom HTTP/2: #}}"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | title": {
-    "message": "Use HTTP/2"
+    "message": "Koristi HTTP/2"
   },
   "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | description": {
     "message": "Razmislite o tome da svoje pasivne slušatelje događaja označite kao `passive` da biste poboljšali rezultate pretraživanja. [Saznajte više](https://web.dev/uses-passive-event-listeners/)."
@@ -827,9 +827,6 @@
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "Ovo je element s najvećim renderiranjem sadržaja unutar vidljivog dijela. [Saznajte više](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
-  "lighthouse-core/audits/largest-contentful-paint-element.js | displayValue": {
-    "message": "{itemCount,plural, =1{Pronađen je jedan element}one{Pronađen je # element}few{Pronađena su # elementa}other{Pronađeno je # elemenata}}"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | title": {
     "message": "Element s najvećim renderiranjem sadržaja"
   },
@@ -838,9 +835,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | description": {
     "message": "Ti DOM elementi najviše doprinose CLS-u stranice."
-  },
-  "lighthouse-core/audits/layout-shift-elements.js | displayValue": {
-    "message": "{nodeCount,plural, =1{Pronađen je jedan element}one{Pronađen je # element}few{Pronađena su # elementa}other{Pronađeno je # elemenata}}"
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Izbjegavajte velike pomake izgleda"
@@ -1257,13 +1251,13 @@
     "message": "Proračun za tempiranje"
   },
   "lighthouse-core/audits/unsized-images.js | description": {
-    "message": "Always include explicit width and height on image elements to reduce layout shifts and improve CLS. [Learn more](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "Uvijek uključi eksplicitnu širinu i visinu na elementima slika da bi se smanjili prijelazi izgleda i poboljšao CLS. [Saznajte više](https://web.dev/optimize-cls/#images-without-dimensions)"
   },
   "lighthouse-core/audits/unsized-images.js | failureTitle": {
-    "message": "Image elements do not have explicit `width` and `height`"
+    "message": "Elementi slike nemaju eksplicitnu `width` i `height`"
   },
   "lighthouse-core/audits/unsized-images.js | title": {
-    "message": "Image elements have explicit `width` and `height`"
+    "message": "Elementi slike imaju eksplicitnu `width` i `height`"
   },
   "lighthouse-core/audits/user-timings.js | columnType": {
     "message": "Vrsta"
@@ -1503,7 +1497,7 @@
     "message": "Element"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnFailingElem": {
-    "message": "Failing Elements"
+    "message": "Elementi koji nisu prošli provjeru"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnLocation": {
     "message": "Lokacija"

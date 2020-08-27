@@ -2,11 +2,11 @@ Tests that exporting works.
 
 ++++++++ testExportHtml
 
-# of .lh-audit divs (original): 133
+# of .lh-audit divs (original): 135
 
-# of .lh-audit divs (exported html): 133
+# of .lh-audit divs (exported html): 135
 
 ++++++++ testExportJson
 
-# of audits (json): 149
+# of audits (json): 151
 

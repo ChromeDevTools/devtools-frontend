@@ -714,7 +714,7 @@
     "message": "{itemCount,plural, =1{1 запит не розміщено через протокол HTTP/2}one{# запит не розміщено через протокол HTTP/2}few{# запити не розміщено через протокол HTTP/2}many{# запитів не розміщено через протокол HTTP/2}other{# запиту не розміщено через протокол HTTP/2}}"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | title": {
-    "message": "Use HTTP/2"
+    "message": "Увімкніть протокол HTTP/2"
   },
   "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | description": {
     "message": "Щоб сторінка краще прокручувалася, позначте блоки прослуховування подій сенсорного екрана та коліщатка як `passive`. [Докладніше](https://web.dev/uses-passive-event-listeners/)."
@@ -827,9 +827,6 @@
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "Це найбільший елемент контенту, який видно в області перегляду. [Докладніше](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
-  "lighthouse-core/audits/largest-contentful-paint-element.js | displayValue": {
-    "message": "{itemCount,plural, =1{Знайдено 1 елемент}one{Знайдено # елемент}few{Знайдено # елементи}many{Знайдено # елементів}other{Знайдено # елемента}}"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | title": {
     "message": "Елемент візуалізації великого контенту"
   },
@@ -838,9 +835,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | description": {
     "message": "Ці елементи DOM найбільше впливають на сукупне зміщення макета сторінки."
-  },
-  "lighthouse-core/audits/layout-shift-elements.js | displayValue": {
-    "message": "{nodeCount,plural, =1{Знайдено 1 елемент}one{Знайдено # елемент}few{Знайдено # елементи}many{Знайдено # елементів}other{Знайдено # елемента}}"
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Уникайте великих зсувів макета"
@@ -1257,13 +1251,13 @@
     "message": "Обмеження часу"
   },
   "lighthouse-core/audits/unsized-images.js | description": {
-    "message": "Always include explicit width and height on image elements to reduce layout shifts and improve CLS. [Learn more](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "Завжди включати явні ширину й висоту для елементів зображення, щоб зменшувати зміщення макета й покращувати показник CLS. [Докладніше](https://web.dev/optimize-cls/#images-without-dimensions)"
   },
   "lighthouse-core/audits/unsized-images.js | failureTitle": {
-    "message": "Image elements do not have explicit `width` and `height`"
+    "message": "Зображення містить елементи, у яких `width` та `height` не є явними"
   },
   "lighthouse-core/audits/unsized-images.js | title": {
-    "message": "Image elements have explicit `width` and `height`"
+    "message": "Зображення містить елементи, у яких `width` та `height` є явними"
   },
   "lighthouse-core/audits/user-timings.js | columnType": {
     "message": "Тип"
@@ -1503,7 +1497,7 @@
     "message": "Елемент"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnFailingElem": {
-    "message": "Failing Elements"
+    "message": "Відхилені елементи"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnLocation": {
     "message": "Місцезнаходження"

@@ -714,7 +714,7 @@
     "message": "{itemCount,plural, =1{لم يتم عرض طلب واحد عبر HTTP/2}zero{لم يتم عرض # طلب عبر HTTP/2}two{لم يتم عرض طلبين (#) عبر HTTP/2}few{لم يتم عرض # طلبات عبر HTTP/2}many{لم يتم عرض # طلبًا عبر HTTP/2}other{لم يتم عرض # طلب عبر HTTP/2}}"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | title": {
-    "message": "Use HTTP/2"
+    "message": "استخدام HTTP/2"
   },
   "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | description": {
     "message": "يمكنك وضع علامة على \"أدوات معالجة أحداث لمس الشاشة وتحريك الماوس\" بصفتها `passive` لتحسين عملية التنقل في صفحتك. [مزيد من المعلومات](https://web.dev/uses-passive-event-listeners/)"
@@ -827,9 +827,6 @@
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "هذا هو الجزء من المحتوى الذي تم عرضه بأكبر سرعة على الصفحة ضمن إطار العرض. [مزيد من المعلومات](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
-  "lighthouse-core/audits/largest-contentful-paint-element.js | displayValue": {
-    "message": "{itemCount,plural, =1{تم العثور على عنصر واحد.}zero{تم العثور على # عنصر.}two{تم العثور على عنصرَين.}few{تم العثور على # عناصر.}many{تم العثور على # عنصرًا.}other{تم العثور على # عنصر.}}"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | title": {
     "message": "عنصر \"سرعة عرض أكبر جزء من المحتوى على الصفحة\""
   },
@@ -838,9 +835,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | description": {
     "message": "تساهم عناصر DOM هذه أكثر في متغيّرات التصميم التراكمية (CLS) الخاصة بالصفحة."
-  },
-  "lighthouse-core/audits/layout-shift-elements.js | displayValue": {
-    "message": "{nodeCount,plural, =1{تم العثور على عنصر واحد}zero{تم العثور على # عنصر}two{تم العثور على عنصرَين}few{تم العثور على # عناصر}many{تم العثور على # عنصرًا}other{تم العثور على # عنصر}}"
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "تجنُّب متغيّرات التصميم الكبيرة"
@@ -1257,13 +1251,13 @@
     "message": "ميزانية قائمة على الوقت"
   },
   "lighthouse-core/audits/unsized-images.js | description": {
-    "message": "Always include explicit width and height on image elements to reduce layout shifts and improve CLS. [Learn more](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "أدرِج دائمًا قيَم عرض وارتفاع محدَّدة في عناصر الصور للحدّ من متغيّرات التصميم وتحسين متغيّرات التصميم التراكمية (CLS). [مزيد من المعلومات](https://web.dev/optimize-cls/#images-without-dimensions)"
   },
   "lighthouse-core/audits/unsized-images.js | failureTitle": {
-    "message": "Image elements do not have explicit `width` and `height`"
+    "message": "عناصر الصور لا تحتوي على قيَم `width` و`height` محدَّدة"
   },
   "lighthouse-core/audits/unsized-images.js | title": {
-    "message": "Image elements have explicit `width` and `height`"
+    "message": "عناصر الصورة تحتوي على قيَم `width` و`height` محدَّدة"
   },
   "lighthouse-core/audits/user-timings.js | columnType": {
     "message": "النوع"
@@ -1503,7 +1497,7 @@
     "message": "العنصر"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnFailingElem": {
-    "message": "Failing Elements"
+    "message": "العناصر التي لم تلبِّ الشروط"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnLocation": {
     "message": "الموقع الجغرافي"

@@ -216,6 +216,7 @@ Auditing: Manifest has a maskable icon
 Auditing: Content is sized correctly for the viewport
 Auditing: Displays images with correct aspect ratio
 Auditing: Serves images with appropriate resolution
+Auditing: Fonts with `font-display: optional` are preloaded
 Auditing: Avoids deprecated APIs
 Auditing: Minimizes main-thread work
 Computing artifact: MainThreadTasks
@@ -242,7 +243,8 @@ Auditing: Avoid large layout shifts
 Auditing: Avoid long main-thread tasks
 Auditing: Avoids `unload` event listeners
 Auditing: Avoid non-composited animations
-Auditing: Image elements have explicit `width` and `height`
+Auditing: Avoids large JavaScript libraries with smaller alternatives
+Auditing: Page has valid source maps
 Auditing: Site works cross-browser
 Auditing: Page transitions don't feel like they block on the network
 Auditing: Each page has a URL
@@ -347,7 +349,7 @@ Generating results...
 
 =============== Lighthouse Results ===============
 URL: http://127.0.0.1:8000/devtools/lighthouse/resources/lighthouse-basic.html
-Version: 6.2.0
+Version: 6.3.0
 TestedAsMobileDevice: true
 ViewportDimensions: {
   "innerWidth": 980,
@@ -425,6 +427,7 @@ is-crawlable: pass
 is-on-https: pass
 js-libraries: pass
 label: notApplicable
+large-javascript-libraries: pass
 largest-contentful-paint: numeric
 largest-contentful-paint-element: informative
 layout-shift-elements: notApplicable
@@ -461,6 +464,7 @@ offscreen-images: flaky
 password-inputs-can-be-pasted-into: pass
 performance-budget: notApplicable
 plugins: pass
+preload-fonts: notApplicable
 pwa-cross-browser: manual
 pwa-each-page-has-url: manual
 pwa-page-transitions: manual
@@ -486,7 +490,6 @@ total-blocking-time: numeric
 total-byte-weight: numeric
 unminified-css: flaky
 unminified-javascript: flaky
-unsized-images: notApplicable
 unused-css-rules: flaky
 unused-javascript: numeric
 use-landmarks: manual
@@ -501,6 +504,7 @@ uses-responsive-images: flaky
 uses-text-compression: flaky
 uses-webp-images: flaky
 valid-lang: notApplicable
+valid-source-maps: pass
 video-caption: notApplicable
 video-description: notApplicable
 viewport: fail
@@ -508,5 +512,5 @@ visual-order-follows-dom: manual
 without-javascript: pass
 works-offline: fail
 
-# of .lh-audit divs: 133
+# of .lh-audit divs: 135
 

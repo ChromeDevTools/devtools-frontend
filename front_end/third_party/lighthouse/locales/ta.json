@@ -714,7 +714,7 @@
     "message": "{itemCount,plural, =1{HTTP/2 வழியாக 1 கோரிக்கை பதிலளிக்கப்படவில்லை}other{HTTP/2 வழியாக # கோரிக்கைகள் பதிலளிக்கப்படவில்லை}}"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | title": {
-    "message": "Use HTTP/2"
+    "message": "HTTP/2ஐப் பயன்படுத்து"
   },
   "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | description": {
     "message": "உங்கள் பக்கத்தின் நகர்த்துதல் செயல்திறனை மேம்படுத்த டச் மற்றும் வீல் ஈவண்ட் லிசனர்களை `passive` என அமைக்கவும். [மேலும் அறிக](https://web.dev/uses-passive-event-listeners/)."
@@ -804,7 +804,7 @@
     "message": "பாதுகாப்பில்லாத URL"
   },
   "lighthouse-core/audits/is-on-https.js | columnResolution": {
-    "message": "ரெசல்யூஷனைக் கோருக"
+    "message": "கோரிக்கைக்கான தீர்வு"
   },
   "lighthouse-core/audits/is-on-https.js | description": {
     "message": "அனைத்துத் தளங்களும் HTTPS மூலம் பாதுகாக்கப்பட வேண்டும், பாதுகாக்கப்பட வேண்டிய தனிப்பட்ட தரவைக் கொண்டிருக்காத தளங்களுக்கும் இது பொருந்தும். HTTPS மூலம் தொடக்கக் கோரிக்கை செய்யப்பட்டிருந்தாலும் HTTP மூலம் சில ஆதாரங்கள் ஏற்றப்படும் [கலவையான உள்ளடக்கத்தைத்](https://developers.google.com/web/fundamentals/security/prevent-mixed-content/what-is-mixed-content) தவிர்ப்பதும் இதில் உள்ளடங்கும். உங்கள் ஆப்ஸிற்கும் பயனர்களுக்கும் இடையில் நடக்கும் தகவல் பரிமாற்றத்தில் குறுக்கிடுபவர்களையும் மறைந்திருந்து கவனிப்பவர்களையும் HTTPS தடுக்கிறது. அது HTTP/2 மற்றும் பல புதிய பிளாட்ஃபார்ம் APIகளில் முக்கியமாக இருக்க வேண்டியதாகும். [மேலும் அறிக](https://web.dev/is-on-https/)."
@@ -827,9 +827,6 @@
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "இது காட்சிப் பகுதிக்குள் தோன்றக்கூடிய உள்ளடக்கமுள்ள மிகப்பெரிய உறுப்பாகும். [மேலும் அறிக](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
-  "lighthouse-core/audits/largest-contentful-paint-element.js | displayValue": {
-    "message": "{itemCount,plural, =1{1 உறுப்பு உள்ளது}other{# உறுப்புகள் உள்ளன}}"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | title": {
     "message": "பெரிய பகுதியைக் காண்பிக்கும் நேரத்திற்கான உறுப்பு"
   },
@@ -838,9 +835,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | description": {
     "message": "பக்கத்தின் பெரும்பான்மையான CLSஸில் இந்த DOM உறுப்புகள் பங்களிக்கின்றன."
-  },
-  "lighthouse-core/audits/layout-shift-elements.js | displayValue": {
-    "message": "{nodeCount,plural, =1{1 உறுப்பு உள்ளது}other{# உறுப்புகள் உள்ளன}}"
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "பெரிய தளவமைப்பு ஷிஃப்ட்களைத் தவிர்த்தல்"
@@ -1257,13 +1251,13 @@
     "message": "டைமிங் பட்ஜெட்"
   },
   "lighthouse-core/audits/unsized-images.js | description": {
-    "message": "Always include explicit width and height on image elements to reduce layout shifts and improve CLS. [Learn more](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "லேயவுட் ஷிஃப்ட்டுகளைக் குறைப்பதற்கும் CLSஸை மேம்படுத்துவதற்கும் எப்போதும் படத்தின் துல்லியமான அகலத்தையும் உயரத்தையும் சேர்க்கவும். [மேலும் அறிக](https://web.dev/optimize-cls/#images-without-dimensions)"
   },
   "lighthouse-core/audits/unsized-images.js | failureTitle": {
-    "message": "Image elements do not have explicit `width` and `height`"
+    "message": "பட உறுப்புகள் துல்லியமான `width`, `height` ஆகியவற்றைக் கொண்டிருக்கவில்லை"
   },
   "lighthouse-core/audits/unsized-images.js | title": {
-    "message": "Image elements have explicit `width` and `height`"
+    "message": "பட உறுப்புகள் துல்லியமான `width`, `height` ஆகியவற்றைக் கொண்டுள்ளன"
   },
   "lighthouse-core/audits/user-timings.js | columnType": {
     "message": "வகை"
@@ -1503,7 +1497,7 @@
     "message": "உறுப்பு"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnFailingElem": {
-    "message": "Failing Elements"
+    "message": "தோல்வியுறும் உறுப்புகள்"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnLocation": {
     "message": "இடம்"

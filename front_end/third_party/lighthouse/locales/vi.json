@@ -123,7 +123,7 @@
     "message": "Bằng việc thêm các cách bỏ qua nội dung lặp lại, người dùng bàn phím có thể khám phá trang một cách hiệu quả hơn. [Tìm hiểu thêm](https://web.dev/bypass/)."
   },
   "lighthouse-core/audits/accessibility/bypass.js | failureTitle": {
-    "message": "Trang này không chứa tiêu đề, đường dẫn liên kết bỏ qua hoặc vùng mốc"
+    "message": "Trang này không chứa tiêu đề, đường liên kết bỏ qua hoặc vùng mốc"
   },
   "lighthouse-core/audits/accessibility/bypass.js | title": {
     "message": "Trang này chứa tiêu đề, phần tử liên kết bỏ qua hoặc vùng mốc"
@@ -264,7 +264,7 @@
     "message": "Các phần tử `<table>` dạng trình bày tránh sử dụng `<th>`, `<caption>` hoặc thuộc tính `[summary]`."
   },
   "lighthouse-core/audits/accessibility/link-name.js | description": {
-    "message": "Văn bản liên kết (và văn bản thay thế cho hình ảnh, khi dùng làm đường dẫn liên kết) có thể thấy rõ, duy nhất và có thể lấy tiêu điểm sẽ cải thiện trải nghiệm khám phá cho người dùng trình đọc màn hình. [Tìm hiểu thêm](https://web.dev/link-name/)."
+    "message": "Văn bản liên kết (và văn bản thay thế cho hình ảnh, khi dùng làm đường liên kết) có thể thấy rõ, duy nhất và có thể lấy tiêu điểm sẽ cải thiện trải nghiệm khám phá cho người dùng trình đọc màn hình. [Tìm hiểu thêm](https://web.dev/link-name/)."
   },
   "lighthouse-core/audits/accessibility/link-name.js | failureTitle": {
     "message": "Các phần tử liên kết không có tên có thể nhận rõ"
@@ -618,13 +618,13 @@
     "message": "Đường liên kết không kiểm tra được"
   },
   "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
-    "message": "Thêm `rel=\"noopener\"` hoặc `rel=\"noreferrer\"` vào mọi đường dẫn liên kết ngoài để cải thiện hiệu suất và ngăn chặn các lỗ hổng bảo mật. [Tìm hiểu thêm](https://web.dev/external-anchors-use-rel-noopener/)."
+    "message": "Thêm `rel=\"noopener\"` hoặc `rel=\"noreferrer\"` vào mọi đường liên kết ngoài để cải thiện hiệu suất và ngăn chặn các lỗ hổng bảo mật. [Tìm hiểu thêm](https://web.dev/external-anchors-use-rel-noopener/)."
   },
   "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | failureTitle": {
-    "message": "Các đường dẫn liên kết đến các trang đích trên nhiều nguồn gốc là không an toàn"
+    "message": "Các đường liên kết đến các trang đích trên nhiều nguồn gốc là không an toàn"
   },
   "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | title": {
-    "message": "Các đường dẫn liên kết đến các trang đích trên nhiều nguồn gốc là an toàn"
+    "message": "Các đường liên kết đến các trang đích trên nhiều nguồn gốc là an toàn"
   },
   "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | warning": {
     "message": "Không thể xác định trang đích cho phần tử neo ({anchorHTML}). Nếu không dùng làm siêu liên kết, hãy cân nhắc xóa target=_blank."
@@ -714,7 +714,7 @@
     "message": "{itemCount,plural, =1{Chưa phân phát 1 yêu cầu qua HTTP/2}other{Chưa phân phát # yêu cầu qua HTTP/2}}"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | title": {
-    "message": "Use HTTP/2"
+    "message": "Sử dụng HTTP/2"
   },
   "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | description": {
     "message": "Hãy cân nhắc đánh dấu trình xử lý sự kiện chạm và di chuyển con lăn là `passive` để cải thiện hiệu suất cuộn trên trang. [Tìm hiểu thêm](https://web.dev/uses-passive-event-listeners/)."
@@ -827,9 +827,6 @@
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "Đây là thành phần nội dung lớn nhất hiển thị trong khung nhìn. [Tìm hiểu thêm](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
-  "lighthouse-core/audits/largest-contentful-paint-element.js | displayValue": {
-    "message": "{itemCount,plural, =1{Đã tìm thấy 1 thành phần}other{Đã tìm thấy # thành phần}}"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | title": {
     "message": "Thành phần Thời gian hiển thị nội dung lớn nhất"
   },
@@ -838,9 +835,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | description": {
     "message": "Những thành phần DOM này đóng góp nhiều nhất vào Điểm số tổng hợp về mức thay đổi bố cục (CLS) của trang."
-  },
-  "lighthouse-core/audits/layout-shift-elements.js | displayValue": {
-    "message": "{nodeCount,plural, =1{Phát hiện thấy 1 thành phần}other{Phát hiện thấy # thành phần}}"
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Tránh các thay đổi lớn về bố cục"
@@ -1098,7 +1092,7 @@
     "message": "Trang không bị chặn lập chỉ mục"
   },
   "lighthouse-core/audits/seo/link-text.js | description": {
-    "message": "Văn bản mô tả trên đường dẫn liên kết giúp công cụ tìm kiếm hiểu được nội dung của bạn. [Tìm hiểu thêm](https://web.dev/link-text/)."
+    "message": "Văn bản mô tả trên đường liên kết giúp công cụ tìm kiếm hiểu được nội dung của bạn. [Tìm hiểu thêm](https://web.dev/link-text/)."
   },
   "lighthouse-core/audits/seo/link-text.js | displayValue": {
     "message": "{itemCount,plural, =1{Đã tìm thấy 1 liên kết}other{Đã tìm thấy # liên kết}}"
@@ -1257,13 +1251,13 @@
     "message": "Giới hạn về thời gian"
   },
   "lighthouse-core/audits/unsized-images.js | description": {
-    "message": "Always include explicit width and height on image elements to reduce layout shifts and improve CLS. [Learn more](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "Luôn bao gồm chiều rộng và chiều cao rõ ràng đối với các phần tử hình ảnh để giảm sự thay đổi về bố cục và cải thiện CLS. [Tìm hiểu thêm](https://web.dev/optimize-cls/#images-without-dimensions)"
   },
   "lighthouse-core/audits/unsized-images.js | failureTitle": {
-    "message": "Image elements do not have explicit `width` and `height`"
+    "message": "Các phần tử hình ảnh không có `width` và `height` rõ ràng"
   },
   "lighthouse-core/audits/unsized-images.js | title": {
-    "message": "Image elements have explicit `width` and `height`"
+    "message": "Các phần tử hình ảnh có `width` và `height` rõ ràng"
   },
   "lighthouse-core/audits/user-timings.js | columnType": {
     "message": "Loại"
@@ -1503,7 +1497,7 @@
     "message": "Phần tử"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnFailingElem": {
-    "message": "Failing Elements"
+    "message": "Các phần tử không đạt"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnLocation": {
     "message": "Vị trí"

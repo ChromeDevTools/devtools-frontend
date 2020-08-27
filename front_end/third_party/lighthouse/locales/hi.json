@@ -714,7 +714,7 @@
     "message": "{itemCount,plural, =1{1 अनुरोध HTTP/2 से सर्व नहीं किया गया}one{# अनुरोध HTTP/2 से सर्व नहीं किए गए}other{# अनुरोध HTTP/2 से सर्व नहीं किए गए}}"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | title": {
-    "message": "Use HTTP/2"
+    "message": "HTTP/2 का इस्तेमाल करें"
   },
   "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | description": {
     "message": "अपने 'टच एंड व्हील' घटना श्रोता पर `passive` का निशान लगाएं, ताकि आपके पेज की स्क्रोल परफ़ॉर्मेंस को बेहतर किया जा सके. [ज़्यादा जानें](https://web.dev/uses-passive-event-listeners/)."
@@ -827,9 +827,6 @@
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "यह व्यूपोर्ट में पेंट किया गया सबसे बड़ा कॉन्टेंटफ़ुल एलिमेंट है. [ज़्यादा जानें](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
-  "lighthouse-core/audits/largest-contentful-paint-element.js | displayValue": {
-    "message": "{itemCount,plural, =1{1 एलिमेंट मिला}one{# एलिमेंट मिला}other{# एलिमेंट मिले}}"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | title": {
     "message": "सबसे बड़ा कॉन्टेंटफ़ुल पेंट वाला एलिमेंट"
   },
@@ -838,9 +835,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | description": {
     "message": "पेज के सीएलएस में सबसे ज़्यादा योगदान ये डीओएम एलिमेंट देते हैं."
-  },
-  "lighthouse-core/audits/layout-shift-elements.js | displayValue": {
-    "message": "{nodeCount,plural, =1{1 एलिमेंट मिला}one{# एलिमेंट मिला}other{# एलिमेंट मिले}}"
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "बड़े लेआउट शिफ़्ट से बचें"
@@ -1257,13 +1251,13 @@
     "message": "टाइमिंग बजट"
   },
   "lighthouse-core/audits/unsized-images.js | description": {
-    "message": "Always include explicit width and height on image elements to reduce layout shifts and improve CLS. [Learn more](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "इमेज एलिमेंट पर, चौड़ाई और ऊंचाई की जानकारी हमेशा साफ़ तौर पर दें, ताकि लेआउट शिफ़्ट कम किया जा सके और सीएलएस को बेहतर बनाया जा सके. [ज़्यादा जानें](https://web.dev/optimize-cls/#images-without-dimensions)"
   },
   "lighthouse-core/audits/unsized-images.js | failureTitle": {
-    "message": "Image elements do not have explicit `width` and `height`"
+    "message": "इमेज एलिमेंट पर, `width` और `height` के बारे में साफ़-साफ़ नहीं बताया गया है"
   },
   "lighthouse-core/audits/unsized-images.js | title": {
-    "message": "Image elements have explicit `width` and `height`"
+    "message": "इमेज एलिमेंट पर, `width` और `height` की जानकारी साफ़ तौर पर दी गई है"
   },
   "lighthouse-core/audits/user-timings.js | columnType": {
     "message": "प्रकार"
@@ -1503,7 +1497,7 @@
     "message": "तत्व"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnFailingElem": {
-    "message": "Failing Elements"
+    "message": "काम नहीं कर पाने वाले एलिमेंट"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnLocation": {
     "message": "जगह की जानकारी"
@@ -1851,7 +1845,7 @@
     "message": "[पसंद के मुताबिक फ़ॉन्ट बनाते समय](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/css-topics/using-fonts.html), `@font-display` तय करें."
   },
   "stack-packs/packs/magento.js | offscreen_images": {
-    "message": "वेब प्लैटफ़ॉर्म की [धीमे लोड होने](https://web.dev/native-lazy-loading/) की सुविधा का इस्तेमाल करने के लिए, अपने उत्पाद और कैटलॉग टेम्प्लेट में बदलाव करें."
+    "message": "वेब प्लैटफ़ॉर्म की [धीमे लोड होने](https://web.dev/native-lazy-loading/) की सुविधा का इस्तेमाल करने के लिए, अपने प्रॉडक्ट और कैटलॉग टेम्प्लेट में बदलाव करें."
   },
   "stack-packs/packs/magento.js | server_response_time": {
     "message": "Magento का [Varnish इंटीग्रेशन](https://devdocs.magento.com/guides/v2.3/config-guide/varnish/config-varnish.html) इस्तेमाल करें."

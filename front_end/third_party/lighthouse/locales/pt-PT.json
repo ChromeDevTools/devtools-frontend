@@ -714,7 +714,7 @@
     "message": "{itemCount,plural, =1{1 pedido não publicado através de HTTP/2}other{# pedidos não publicados através de HTTP/2}}"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | title": {
-    "message": "Use HTTP/2"
+    "message": "Utilize HTTP/2"
   },
   "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | description": {
     "message": "Considere marcar os seus event listeners de toque e roda como `passive` para melhorar o desempenho de deslocamento da sua página. [Saiba mais](https://web.dev/uses-passive-event-listeners/)."
@@ -827,9 +827,6 @@
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "Este é o elemento de maior preenchimento com conteúdo na área visível. [Saiba mais](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
-  "lighthouse-core/audits/largest-contentful-paint-element.js | displayValue": {
-    "message": "{itemCount,plural, =1{1 elemento encontrado}other{# elementos encontrados}}"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | title": {
     "message": "Elemento de Maior preenchimento com conteúdo"
   },
@@ -838,9 +835,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | description": {
     "message": "Estes elementos DOM são os que mais contribuem para o CLS da página."
-  },
-  "lighthouse-core/audits/layout-shift-elements.js | displayValue": {
-    "message": "{nodeCount,plural, =1{1 elemento encontrado}other{# elementos encontrados}}"
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Evite mudanças de esquemas grandes"
@@ -1257,13 +1251,13 @@
     "message": "Orçamento de tempo"
   },
   "lighthouse-core/audits/unsized-images.js | description": {
-    "message": "Always include explicit width and height on image elements to reduce layout shifts and improve CLS. [Learn more](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "Inclua sempre largura e altura explícitas nos elementos de imagem para reduzir mudanças de esquema e melhorar o CLS. [Saiba mais](https://web.dev/optimize-cls/#images-without-dimensions)"
   },
   "lighthouse-core/audits/unsized-images.js | failureTitle": {
-    "message": "Image elements do not have explicit `width` and `height`"
+    "message": "Os elementos de imagem não têm `width` e `height` explícitas."
   },
   "lighthouse-core/audits/unsized-images.js | title": {
-    "message": "Image elements have explicit `width` and `height`"
+    "message": "Os elementos de imagem têm `width` e `height` explícitas"
   },
   "lighthouse-core/audits/user-timings.js | columnType": {
     "message": "Tipo"
@@ -1503,7 +1497,7 @@
     "message": "Elemento"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnFailingElem": {
-    "message": "Failing Elements"
+    "message": "Elementos reprovados"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnLocation": {
     "message": "Localização"

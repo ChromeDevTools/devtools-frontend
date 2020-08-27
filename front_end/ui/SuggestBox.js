@@ -28,8 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
+import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {Size} from './Geometry.js';
@@ -60,7 +59,7 @@ export class SuggestBoxDelegate {
 }
 
 /**
- * @implements {ListDelegate}
+ * @implements {ListDelegate<!Suggestion>}
  */
 export class SuggestBox {
   /**
@@ -157,8 +156,8 @@ export class SuggestBox {
     }
     // TODO(dgozman): take document as a parameter.
     this._glassPane.show(document);
-    this._rowHeight =
-        measurePreferredSize(this.createElementForItem({text: '1', subtitle: '12'}), this._element).height;
+    const suggestion = /** @type {!Suggestion} */ ({text: '1', subtitle: '12'});
+    this._rowHeight = measurePreferredSize(this.createElementForItem(suggestion), this._element).height;
   }
 
   hide() {
@@ -234,7 +233,7 @@ export class SuggestBox {
     titleElement.createChild('span').textContent = displayText.substring(index > -1 ? index + query.length : 0);
     titleElement.createChild('span', 'spacer');
     if (item.subtitleRenderer) {
-      const subtitleElement = item.subtitleRenderer.call(null);
+      const subtitleElement = /** @type {!HTMLElement} */ (item.subtitleRenderer.call(null));
       subtitleElement.classList.add('suggestion-subtitle');
       element.appendChild(subtitleElement);
     } else if (item.subtitle) {
@@ -409,31 +408,23 @@ export class SuggestBox {
   *      hideGhostText: (boolean|undefined)
   * }}
   */
-let SuggestionComplete;  // eslint-disable-line no-unused-vars
-
-// Typedef for `Suggestion`
-// With only the above @typedef, TypeScript will complain about missing
-// fields when a literal is initialized without the "optional" fields
-// beeing present. To work around this, we introduce a `Partial` @typedef
-// that works with TS and a normal "export @typedef" that works with
-// Closure.
-// TODO(crbug.com/1011811): Replace with TS `type` when closure is removed.
-/** @typedef {!Partial<SuggestionComplete>} Suggestion */
-/** @typedef {!SuggestionComplete} */
+// @ts-ignore typedef
 export let Suggestion;
 
 /**
   * @typedef {!Array<!Suggestion>}
   */
+// @ts-ignore typedef
 export let Suggestions;
 
 /**
   * @typedef {{
-    *     substituteRangeCallback: ((function(number, number):?TextUtils.TextRange)|undefined),
+    *     substituteRangeCallback: ((function(number, number):?TextUtils.TextRange.TextRange)|undefined),
     *     tooltipCallback: ((function(number, number):!Promise<?Element>)|undefined),
-    *     suggestionsCallback: ((function(!TextUtils.TextRange, !TextUtils.TextRange, boolean=):?Promise.<!Suggestions>)|undefined),
+    *     suggestionsCallback: ((function(!TextUtils.TextRange.TextRange, !TextUtils.TextRange.TextRange, boolean=):?Promise.<!Suggestions>)|undefined),
     *     isWordChar: ((function(string):boolean)|undefined),
     *     anchorBehavior: (AnchorBehavior|undefined)
     * }}
     */
+// @ts-ignore typedef
 export let AutocompleteConfig;

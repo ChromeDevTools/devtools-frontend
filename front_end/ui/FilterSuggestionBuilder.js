@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {Suggestions} from './SuggestBox.js';  // eslint-disable-line no-unused-vars
+import {Suggestion, Suggestions} from './SuggestBox.js';  // eslint-disable-line no-unused-vars
 
 export class FilterSuggestionBuilder {
   /**
@@ -40,7 +40,7 @@ export class FilterSuggestionBuilder {
       const matcher = new RegExp('^' + prefix.escapeForRegExp(), 'i');
       for (const key of this._keys) {
         if (matcher.test(key)) {
-          suggestions.push({text: modifier + key + ':'});
+          suggestions.push(/** @type {!Suggestion} */ ({text: modifier + key + ':'}));
         }
       }
     } else {
@@ -51,7 +51,7 @@ export class FilterSuggestionBuilder {
       this._valueSorter(key, values);
       for (const item of values) {
         if (matcher.test(item) && (item !== value)) {
-          suggestions.push({text: modifier + key + ':' + item});
+          suggestions.push(/** @type {!Suggestion} */ ({text: modifier + key + ':' + item}));
         }
       }
     }

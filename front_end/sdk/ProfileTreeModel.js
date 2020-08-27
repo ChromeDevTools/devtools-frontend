@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import {Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 /**
@@ -29,6 +26,8 @@ export class ProfileNode {
     this.parent = null;
     /** @type {!Array<!ProfileNode>} */
     this.children = [];
+    /** @type {number} */
+    this.depth;
   }
 
   /**
@@ -76,6 +75,10 @@ export class ProfileTreeModel {
    */
   constructor(target) {
     this._target = target || null;
+    /** @type {!ProfileNode} */
+    this.root;
+    /** @type {number} */
+    this.total;
   }
 
   /**
@@ -95,15 +98,13 @@ export class ProfileTreeModel {
     this.maxDepth = 0;
     const nodesToTraverse = [root];
     while (nodesToTraverse.length) {
-      const parent = nodesToTraverse.pop();
+      const parent = /** @type {!ProfileNode} */ (nodesToTraverse.pop());
       const depth = parent.depth + 1;
       if (depth > this.maxDepth) {
         this.maxDepth = depth;
       }
       const children = parent.children;
-      const length = children.length;
-      for (let i = 0; i < length; ++i) {
-        const child = children[i];
+      for (const child of children) {
         child.depth = depth;
         child.parent = parent;
         if (child.children.length) {
@@ -121,14 +122,16 @@ export class ProfileTreeModel {
     const nodesToTraverse = [root];
     const dfsList = [];
     while (nodesToTraverse.length) {
-      const node = nodesToTraverse.pop();
+      const node = /** @type {!ProfileNode} */ (nodesToTraverse.pop());
       node.total = node.self;
       dfsList.push(node);
       nodesToTraverse.push(...node.children);
     }
     while (dfsList.length > 1) {
-      const node = dfsList.pop();
-      node.parent.total += node.total;
+      const node = /** @type {!ProfileNode} */ (dfsList.pop());
+      if (node.parent) {
+        node.parent.total += node.total;
+      }
     }
     return root.total;
   }

@@ -961,7 +961,8 @@ export class ElementsPanel extends UI.Panel.Panel {
 
     const position = Common.Settings.Settings.instance().moduleSetting('sidebarPosition').get();
     let splitMode = _splitMode.Horizontal;
-    if (position === 'right' || (position === 'auto' && self.UI.inspectorView.element.offsetWidth > 680)) {
+    if (position === 'right' ||
+        (position === 'auto' && UI.InspectorView.InspectorView.instance().element.offsetWidth > 680)) {
       splitMode = _splitMode.Vertical;
     }
     if (!this.sidebarPaneView) {

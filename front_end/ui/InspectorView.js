@@ -454,19 +454,19 @@ export class ActionDelegate {
   handleAction(context, actionId) {
     switch (actionId) {
       case 'main.toggle-drawer':
-        if (self.UI.inspectorView.drawerVisible()) {
-          self.UI.inspectorView._closeDrawer();
+        if (InspectorView.instance().drawerVisible()) {
+          InspectorView.instance()._closeDrawer();
         } else {
-          self.UI.inspectorView._showDrawer(true);
+          InspectorView.instance()._showDrawer(true);
         }
         return true;
       case 'main.next-tab':
-        self.UI.inspectorView._tabbedPane.selectNextTab();
-        self.UI.inspectorView._tabbedPane.focus();
+        InspectorView.instance()._tabbedPane.selectNextTab();
+        InspectorView.instance()._tabbedPane.focus();
         return true;
       case 'main.previous-tab':
-        self.UI.inspectorView._tabbedPane.selectPrevTab();
-        self.UI.inspectorView._tabbedPane.focus();
+        InspectorView.instance()._tabbedPane.selectPrevTab();
+        InspectorView.instance()._tabbedPane.focus();
         return true;
     }
     return false;

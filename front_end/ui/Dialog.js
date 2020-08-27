@@ -33,6 +33,7 @@
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {GlassPane, PointerEventsBehavior} from './GlassPane.js';
+import {InspectorView} from './InspectorView.js';
 import {KeyboardShortcut, Keys} from './KeyboardShortcut.js';
 import {SplitWidget} from './SplitWidget.js';  // eslint-disable-line no-unused-vars
 import {WidgetFocusRestorer} from './Widget.js';
@@ -75,7 +76,7 @@ export class Dialog extends GlassPane {
    */
   show(where) {
     const document = /** @type {!Document} */ (
-        where instanceof Document ? where : (where || self.UI.inspectorView.element).ownerDocument);
+        where instanceof Document ? where : (where || InspectorView.instance().element).ownerDocument);
     this._targetDocument = document;
     this._targetDocument.addEventListener('keydown', this._targetDocumentKeyDownHandler, true);
 
@@ -133,7 +134,7 @@ export class Dialog extends GlassPane {
 
     let exclusionSet = /** @type {?Set.<!HTMLElement>} */ (null);
     if (this._tabIndexBehavior === OutsideTabIndexBehavior.PreserveMainViewTabIndex) {
-      exclusionSet = this._getMainWidgetTabIndexElements(self.UI.inspectorView.ownerSplit());
+      exclusionSet = this._getMainWidgetTabIndexElements(InspectorView.instance().ownerSplit());
     }
 
     this._tabIndexMap.clear();

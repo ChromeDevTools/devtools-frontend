@@ -12,7 +12,7 @@ import * as UI from '../ui/ui.js';
 export class NetworkPanelIndicator {
   constructor() {
     // TODO: we should not access network from other modules.
-    if (!self.UI.inspectorView.hasPanel('network')) {
+    if (!UI.InspectorView.InspectorView.instance().hasPanel('network')) {
       return;
     }
     const manager = SDK.NetworkManager.MultitargetNetworkManager.instance();
@@ -34,7 +34,7 @@ export class NetworkPanelIndicator {
         icon = UI.Icon.Icon.create('smallicon-warning');
         icon.title = Common.UIString.UIString('Requests may be blocked');
       }
-      self.UI.inspectorView.setPanelIcon('network', icon);
+      UI.InspectorView.InspectorView.instance().setPanelIcon('network', icon);
     }
   }
 }

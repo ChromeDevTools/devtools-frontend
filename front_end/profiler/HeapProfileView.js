@@ -298,7 +298,7 @@ export class SamplingHeapProfileTypeBase extends ProfileType {
 
     const icon = UI.Icon.Icon.create('smallicon-warning');
     icon.title = ls`Heap profiler is recording`;
-    self.UI.inspectorView.setPanelIcon('heap_profiler', icon);
+    UI.InspectorView.InspectorView.instance().setPanelIcon('heap_profiler', icon);
 
     this._recording = true;
     this._startSampling();
@@ -319,7 +319,7 @@ export class SamplingHeapProfileTypeBase extends ProfileType {
       recordedProfile.updateStatus('');
       this.setProfileBeingRecorded(null);
     }
-    self.UI.inspectorView.setPanelIcon('heap_profiler', null);
+    UI.InspectorView.InspectorView.instance().setPanelIcon('heap_profiler', null);
     this.dispatchEventToListeners(ProfileEvents.ProfileComplete, recordedProfile);
   }
 

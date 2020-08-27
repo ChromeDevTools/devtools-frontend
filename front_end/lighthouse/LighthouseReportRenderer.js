@@ -45,7 +45,7 @@ export class LighthouseReportRenderer extends ReportRenderer {
 
     async function onViewTraceClick() {
       HostModule.userMetrics.actionTaken(Host.UserMetrics.Action.LighthouseViewTrace);
-      await self.UI.inspectorView.showPanel('timeline');
+      await UI.InspectorView.InspectorView.instance().showPanel('timeline');
       Timeline.TimelinePanel.TimelinePanel.instance().loadFromEvents(defaultPassTrace.traceEvents);
     }
   }

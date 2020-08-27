@@ -343,7 +343,7 @@ export class MainImpl {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.RevealSourceLine, this._revealSourceLine, this);
 
-    self.UI.inspectorView.createToolbars();
+    UI.InspectorView.InspectorView.instance().createToolbars();
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.loadCompleted();
 
     const extensions = self.runtime.extensions(Common.QueryParamHandler.QueryParamHandler);
@@ -553,7 +553,7 @@ export class MainImpl {
 
   _onSuspendStateChanged() {
     const suspended = SDK.SDKModel.TargetManager.instance().allTargetsSuspended();
-    self.UI.inspectorView.onSuspendStateChanged(suspended);
+    UI.InspectorView.InspectorView.instance().onSuspendStateChanged(suspended);
   }
 }
 
@@ -603,7 +603,7 @@ export class SearchActionDelegate {
   handleAction(context, actionId) {
     let searchableView = UI.SearchableView.SearchableView.fromElement(document.deepActiveElement());
     if (!searchableView) {
-      const currentPanel = self.UI.inspectorView.currentPanelDeprecated();
+      const currentPanel = UI.InspectorView.InspectorView.instance().currentPanelDeprecated();
       if (currentPanel) {
         searchableView = currentPanel.searchableView();
       }
@@ -732,8 +732,8 @@ export class MainMenuItem {
 
     contextMenu.defaultSection().appendAction(
         'main.toggle-drawer',
-        self.UI.inspectorView.drawerVisible() ? Common.UIString.UIString('Hide console drawer') :
-                                                Common.UIString.UIString('Show console drawer'));
+        UI.InspectorView.InspectorView.instance().drawerVisible() ? Common.UIString.UIString('Hide console drawer') :
+                                                                    Common.UIString.UIString('Show console drawer'));
     contextMenu.appendItemsAtLocation('mainMenu');
     const moreTools = contextMenu.defaultSection().appendSubMenuItem(Common.UIString.UIString('More tools'));
     const extensions = self.runtime.extensions('view', undefined, true);

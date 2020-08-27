@@ -35,6 +35,7 @@
 import * as Common from '../common/common.js';
 
 import {HistoryInput} from './HistoryInput.js';
+import {InspectorView} from './InspectorView.js';
 import {Toolbar, ToolbarButton, ToolbarToggle} from './Toolbar.js';
 import {createTextButton} from './UIUtils.js';
 import {VBox} from './Widget.js';
@@ -347,7 +348,7 @@ export class SearchableView extends VBox {
 
     let queryCandidate;
     if (!this._searchInputElement.hasFocus()) {
-      const selection = self.UI.inspectorView.element.window().getSelection();
+      const selection = InspectorView.instance().element.window().getSelection();
       if (selection.rangeCount) {
         queryCandidate = selection.toString().replace(/\r?\n.*/, '');
       }

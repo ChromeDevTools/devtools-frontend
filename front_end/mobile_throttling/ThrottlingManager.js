@@ -219,7 +219,7 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
     for (const control of this._cpuThrottlingControls) {
       control.setSelectedIndex(index);
     }
-    self.UI.inspectorView.setPanelIcon('timeline', icon);
+    UI.InspectorView.InspectorView.instance().setPanelIcon('timeline', icon);
     this.dispatchEventToListeners(Events.RateChanged, this._cpuThrottlingRate);
   }
 

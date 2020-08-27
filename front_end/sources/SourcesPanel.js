@@ -178,7 +178,7 @@ export class SourcesPanel extends UI.Panel.Panel {
     panel._sourcesView.leftToolbar().removeToolbarItems();
     panel._sourcesView.rightToolbar().removeToolbarItems();
     panel._sourcesView.bottomToolbar().removeToolbarItems();
-    const isInWrapper = WrapperView.isShowing() && !self.UI.inspectorView.isDrawerMinimized();
+    const isInWrapper = WrapperView.isShowing() && !UI.InspectorView.InspectorView.instance().isDrawerMinimized();
     if (panel._splitWidget.isVertical() || isInWrapper) {
       panel._splitWidget.uninstallResizer(panel._sourcesView.toolbarContainerElement());
     } else {
@@ -264,7 +264,7 @@ export class SourcesPanel extends UI.Panel.Panel {
     super.wasShown();
     const wrapper = WrapperView._instance;
     if (wrapper && wrapper.isShowing()) {
-      self.UI.inspectorView.setDrawerMinimized(true);
+      UI.InspectorView.InspectorView.instance().setDrawerMinimized(true);
       SourcesPanel.updateResizerAndSidebarButtons(this);
     }
     this.editorView.setMainWidget(this._sourcesView);
@@ -278,7 +278,7 @@ export class SourcesPanel extends UI.Panel.Panel {
     UI.Context.Context.instance().setFlavor(SourcesPanel, null);
     if (WrapperView.isShowing()) {
       WrapperView._instance._showViewInWrapper();
-      self.UI.inspectorView.setDrawerMinimized(false);
+      UI.InspectorView.InspectorView.instance().setDrawerMinimized(false);
       SourcesPanel.updateResizerAndSidebarButtons(this);
     }
   }
@@ -303,7 +303,7 @@ export class SourcesPanel extends UI.Panel.Panel {
     if (WrapperView.isShowing()) {
       return true;
     }
-    if (!self.UI.inspectorView.canSelectPanel('sources')) {
+    if (!UI.InspectorView.InspectorView.instance().canSelectPanel('sources')) {
       return false;
     }
     UI.ViewManager.ViewManager.instance().showView('sources');
@@ -938,7 +938,7 @@ export class SourcesPanel extends UI.Panel.Panel {
     } else if (position === 'bottom') {
       vertically = true;
     } else {
-      vertically = self.UI.inspectorView.element.offsetWidth < 680;
+      vertically = UI.InspectorView.InspectorView.instance().element.offsetWidth < 680;
     }
 
     if (this.sidebarPaneView && vertically === !this._splitWidget.isVertical()) {
@@ -1262,7 +1262,7 @@ export class WrapperView extends UI.Widget.VBox {
     if (!SourcesPanel.instance().isShowing()) {
       this._showViewInWrapper();
     } else {
-      self.UI.inspectorView.setDrawerMinimized(true);
+      UI.InspectorView.InspectorView.instance().setDrawerMinimized(true);
     }
     SourcesPanel.updateResizerAndSidebarButtons(SourcesPanel.instance());
   }
@@ -1271,7 +1271,7 @@ export class WrapperView extends UI.Widget.VBox {
    * @override
    */
   willHide() {
-    self.UI.inspectorView.setDrawerMinimized(false);
+    UI.InspectorView.InspectorView.instance().setDrawerMinimized(false);
     setImmediate(() => SourcesPanel.updateResizerAndSidebarButtons(SourcesPanel.instance()));
   }
 

@@ -19,7 +19,7 @@ export class SimpleApp {
    */
   presentUI(document) {
     const rootView = new UI.RootView.RootView();
-    self.UI.inspectorView.show(rootView.element);
+    UI.InspectorView.InspectorView.instance().show(rootView.element);
     rootView.attachToDocument(document);
     rootView.focus();
   }

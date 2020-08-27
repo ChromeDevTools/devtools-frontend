@@ -68,7 +68,7 @@ export class ReleaseNoteView extends UI.Widget.VBox {
 
     actionContainer.appendChild(UI.UIUtils.createTextButton(ls`Close`, event => {
       event.consume(true);
-      self.UI.inspectorView.closeDrawerTab(releaseNoteViewId, true);
+      UI.InspectorView.InspectorView.instance().closeDrawerTab(releaseNoteViewId, true);
     }, 'close-release-note'));
 
     const imageLink = UI.XLink.XLink.create(releaseNote.link, ' ');

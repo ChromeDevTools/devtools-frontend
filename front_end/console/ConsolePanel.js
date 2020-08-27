@@ -62,7 +62,7 @@ export class ConsolePanel extends UI.Panel.Panel {
     super.wasShown();
     const wrapper = WrapperView._instance;
     if (wrapper && wrapper.isShowing()) {
-      self.UI.inspectorView.setDrawerMinimized(true);
+      UI.InspectorView.InspectorView.instance().setDrawerMinimized(true);
     }
     this._view.show(this.element);
     ConsolePanel._updateContextFlavor();
@@ -75,7 +75,7 @@ export class ConsolePanel extends UI.Panel.Panel {
     super.willHide();
     // The minimized drawer has 0 height, and showing Console inside may set
     // Console's scrollTop to 0. Unminimize before calling show to avoid this.
-    self.UI.inspectorView.setDrawerMinimized(false);
+    UI.InspectorView.InspectorView.instance().setDrawerMinimized(false);
     if (WrapperView._instance) {
       WrapperView._instance._showViewInWrapper();
     }
@@ -111,7 +111,7 @@ export class WrapperView extends UI.Widget.VBox {
     if (!ConsolePanel.instance().isShowing()) {
       this._showViewInWrapper();
     } else {
-      self.UI.inspectorView.setDrawerMinimized(true);
+      UI.InspectorView.InspectorView.instance().setDrawerMinimized(true);
     }
     ConsolePanel._updateContextFlavor();
   }
@@ -120,7 +120,7 @@ export class WrapperView extends UI.Widget.VBox {
    * @override
    */
   willHide() {
-    self.UI.inspectorView.setDrawerMinimized(false);
+    UI.InspectorView.InspectorView.instance().setDrawerMinimized(false);
     ConsolePanel._updateContextFlavor();
   }
 

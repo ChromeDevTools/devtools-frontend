@@ -54,7 +54,7 @@ export class ScreencastApp {
     this._rootSplitWidget.hideMain();
 
     this._rootSplitWidget.setSidebarWidget(self.UI.inspectorView);
-    self.UI.inspectorView.setOwnerSplit(this._rootSplitWidget);
+    UI.InspectorView.InspectorView.instance().setOwnerSplit(this._rootSplitWidget);
     rootView.attachToDocument(document);
     rootView.focus();
   }

@@ -60,7 +60,7 @@ export class ActionDelegate {
    * @return {!Promise}
    */
   _showSearch() {
-    const selection = self.UI.inspectorView.element.window().getSelection();
+    const selection = UI.InspectorView.InspectorView.instance().element.window().getSelection();
     let queryCandidate = '';
     if (selection.rangeCount) {
       queryCandidate = selection.toString().replace(/\r?\n.*/, '');

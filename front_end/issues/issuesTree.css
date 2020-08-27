@@ -339,7 +339,7 @@ ul > li.plain-enum::before {
 
 .affected-resource-cell span.icon {
   margin-right: 0.5ex;
-  vertical-align: middle;
+  vertical-align: sub;
 }
 
 .affected-resource-cell [is=ui-icon].icon-mask.link {

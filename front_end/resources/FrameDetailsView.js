@@ -29,12 +29,12 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     this._unreachableURL = this._generalSection.appendField(ls`Unreachable URL`);
     this._originFieldValue = this._generalSection.appendField(ls`Origin`);
 
-    this._ownerElementFieldValue = this._generalSection.appendField(ls`Owner Element`);
-    this._ownerElementFieldValue.classList.add('devtools-link');
-    this._ownerElementFieldValue.title = ls`Click to reveal in Elements panel`;
+    const ownerElementLinkContainer = this._generalSection.appendField(ls`Owner Element`);
+    this._ownerElementLink = ownerElementLinkContainer.createChild('div', 'report-field-value-link devtools-link');
+    this._ownerElementLink.title = ls`Click to reveal in Elements panel`;
     /** @type {?SDK.DOMModel.DOMNode} */
     this._ownerDomNode = null;
-    this._ownerElementFieldValue.addEventListener('click', () => {
+    this._ownerElementLink.addEventListener('click', () => {
       if (this._ownerDomNode) {
         Common.Revealer.reveal(this._ownerDomNode);
       }
@@ -54,8 +54,9 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
   async doUpdate() {
     this._urlFieldValue.textContent = this._frame.url;
     if (!this._frame.unreachableUrl()) {
-      const revealSources = this._urlFieldValue.createChild('span', 'report-field-value-part devtools-link');
-      revealSources.textContent = ls`View Source`;
+      const revealSources = UI.Icon.Icon.create('mediumicon-sources-panel', 'icon-link devtools-link');
+      this._urlFieldValue.appendChild(revealSources);
+      revealSources.title = ls`Click to reveal in Sources panel`;
       revealSources.addEventListener('click', () => {
         const sourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(this._frame.url);
         Common.Revealer.reveal(sourceCode);
@@ -72,7 +73,11 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     this._ownerDomNode = await this._frame.getOwnerDOMNodeOrDocument();
     this._updateAdStatus();
     if (this._ownerDomNode) {
-      this._ownerElementFieldValue.textContent = `<${this._ownerDomNode.nodeName().toLocaleLowerCase()}>`;
+      this._ownerElementLink.textContent = `<${this._ownerDomNode.nodeName().toLocaleLowerCase()}>`;
+      const icon = UI.Icon.Icon.create('mediumicon-elements-panel', 'icon-link devtools-link');
+      this._ownerElementLink.appendChild(icon);
+    } else {
+      this._ownerElementLink.removeChildren();
     }
     await this._updateCoopCoepStatus();
     this._updateContextStatus();
@@ -114,7 +119,7 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     this._secureContext.textContent = booleanToYesNo(this._frame.isSecureContext());
     const secureContextExplanation = this._explanationFromSecureContextType(this._frame.getSecureContextType());
     if (secureContextExplanation) {
-      const secureContextType = this._secureContext.createChild('span', 'report-field-value-part more-info');
+      const secureContextType = this._secureContext.createChild('span', 'more-info');
       secureContextType.textContent = secureContextExplanation;
     }
   }
@@ -126,9 +131,9 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
   static maybeAppendLinkToRequest(element, resource) {
     if (resource && resource.request) {
       const request = resource.request;
-      const revealRequest = element.createChild('span', 'report-field-value-part');
-      revealRequest.textContent = ls`View Request`;
-      revealRequest.classList.add('devtools-link');
+      const revealRequest = UI.Icon.Icon.create('mediumicon-network-panel', 'icon-link devtools-link');
+      element.appendChild(revealRequest);
+      revealRequest.title = ls`Click to reveal in Network panel`;
       revealRequest.addEventListener('click', () => {
         Network.NetworkPanel.NetworkPanel.selectAndShowRequest(request, Network.NetworkItemView.Tabs.Headers);
       });
@@ -146,9 +151,10 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     if (!unreachableUrl) {
       return;
     }
-    const revealRequest = this._unreachableURL.createChild('span', 'report-field-value-part devtools-link');
-    revealRequest.textContent = ls`Show matching requests`;
-    revealRequest.title = ls`Requires network log, try reloading the inspected page if unavailable`;
+    const revealRequest = UI.Icon.Icon.create('mediumicon-network-panel', 'icon-link devtools-link');
+    this._unreachableURL.appendChild(revealRequest);
+    revealRequest.title = ls`Click to reveal in Network panel (might require page reload)`;
+
     revealRequest.addEventListener('click', () => {
       Network.NetworkPanel.NetworkPanel.revealAndFilter([
         {

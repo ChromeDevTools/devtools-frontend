@@ -79,6 +79,9 @@ table is empty.
   <message name="IDS_DEVTOOLS_22554c2f3f431fa4243965df392b9ea9" desc="Text in Application Cache Items View of the Application panel">
     AppCache
   </message>
+  <message name="IDS_DEVTOOLS_285fab11101a84ace7c3b14e5d0a3c1c" desc="Title for a link to the Network panel">
+    Click to reveal in Network panel
+  </message>
   <message name="IDS_DEVTOOLS_29104d3ede0231043a4b92a90b9c2873" desc="Title of needs refresh in indexed dbviews of the application panel">
     Some entries may have been modified
   </message>
@@ -175,9 +178,6 @@ table is empty.
   <message name="IDS_DEVTOOLS_579fdc74b6520ab8906ecddf3e62d951" desc="Text in Application Panel Sidebar of the Application panel">
     Application Cache
   </message>
-  <message name="IDS_DEVTOOLS_5ae203f5b272a30e8cf0457d5677dd7e" desc="Text for a link that applies a filter to the network panel">
-    Show matching requests
-  </message>
   <message name="IDS_DEVTOOLS_5af7e09b8b3d8b201c0621de9815bcb0" desc="Manifest installability error in the Application panel">
     Downloaded icon was empty or corrupted
   </message>
@@ -268,6 +268,9 @@ table is empty.
   <message name="IDS_DEVTOOLS_85227db7fd939316f51910ce690955a0" desc="Manifest installability error in the Application panel">
     Manifest could not be fetched, is empty, or could not be parsed
   </message>
+  <message name="IDS_DEVTOOLS_854ec26bacf1452229df502b5c3a32c5" desc="Title for a link that applies a filter to the network panel">
+    Click to reveal in Network panel (might require page reload)
+  </message>
   <message name="IDS_DEVTOOLS_85b285ed4a5b8960e8f85a6e5c125680" desc="Text in the Periodic Background Service View of the Application panel">
     Periodic Background Sync
   </message>
@@ -279,9 +282,6 @@ table is empty.
   </message>
   <message name="IDS_DEVTOOLS_897356954c2cd3d41b221e3f24f99bba" desc="Text in DOMStorage Items View of the Application panel">
     Key
-  </message>
-  <message name="IDS_DEVTOOLS_89babd10371e21bb9eaf39937de7c656" desc="Text for a link to the Sources panel">
-    View Source
   </message>
   <message name="IDS_DEVTOOLS_8a6bd58d43215a9efccc3753ab42b347" desc="Manifest installability error in the Application panel">
     Manifest does not contain a suitable icon - PNG, SVG or WebP format of at least <ph name="MINIMUM_ICON_SIZE">$1s<ex>100</ex></ph>px is required, the sizes attribute must be set, and the purpose attribute, if set, must include &quot;any&quot; or &quot;maskable&quot;.
@@ -444,9 +444,6 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   <message name="IDS_DEVTOOLS_ca72bcf0fbdc4c621360d906f930a956" desc="Warning message for icons from the manifest">
     Actual height (<ph name="IMAGE_NATURALHEIGHT">$1s<ex>100</ex></ph>px) of icon <ph name="ICONURL">$2s<ex>https://example.com/icon.png</ex></ph> does not match specified height (<ph name="HEIGHT">$3s<ex>100</ex></ph>px)
   </message>
-  <message name="IDS_DEVTOOLS_caf1bc6193bddb09f022758b3610ff1a" desc="Title for a link that applies a filter to the network panel">
-    Requires network log, try reloading the inspected page if unavailable
-  </message>
   <message name="IDS_DEVTOOLS_cbd71dc96b9c7d3a0663a5546f3798b5" desc="Text wrapping a link pointing to more information on maskable icons in App Manifest view of the Application panel">
     Need help? Read our <ph name="DOCUMENTATIONLINK">$1s<ex>https://example.com/</ex></ph>.
   </message>
@@ -522,6 +519,9 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   <message name="IDS_DEVTOOLS_dce1121d5ec5434e70d2d809fd7828e1" desc="Manifest installability error in the Application panel">
     Manifest &apos;<ph name="LOCKED_1">display</ph>&apos; property must be one of &apos;<ph name="LOCKED_2">standalone</ph>&apos;, &apos;<ph name="LOCKED_3">fullscreen</ph>&apos;, or &apos;<ph name="LOCKED_3">minimal-ui</ph>&apos;
   </message>
+  <message name="IDS_DEVTOOLS_dd860f47538dbbd789203089078e33c5" desc="Title for a link to the Sources panel">
+    Click to reveal in Sources panel
+  </message>
   <message name="IDS_DEVTOOLS_e00a7ac13697ba51e098449fd644935b" desc="Text in Background Service View of the Application panel">
     Show events from other domains
   </message>
@@ -548,9 +548,6 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   </message>
   <message name="IDS_DEVTOOLS_ea2b2676c28c0db26d39331a336c6b92" desc="Text in Service Workers View of the Application panel">
     start
-  </message>
-  <message name="IDS_DEVTOOLS_eb4111d5e2da22c6dcd33573e7557c17" desc="Text for a link to the Elements panel">
-    View Request
   </message>
   <message name="IDS_DEVTOOLS_ebfabf3434ab96d355274e76214e61ed" desc="Manifest installability error in the Application panel">
     Manifest does not contain a &apos;<ph name="LOCKED_1">name</ph>&apos; or &apos;<ph name="LOCKED_2">short_name</ph>&apos; field

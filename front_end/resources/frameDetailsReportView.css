@@ -4,14 +4,26 @@
  * found in the LICENSE file.
  */
 
-.report-field-value-part {
-  padding-left: 1ex;
-}
-
 .report-field-name {
   flex: 0 0 200px;
 }
 
 .report-field .more-info {
   color: #555;
+  padding-left: 1ex;
+}
+
+.report-field-value-link {
+  display: inline-block;
+}
+
+.icon-link.devtools-link {
+  background-color: rgb(17 85 204);
+  margin-left: 0.5ex;
+  vertical-align: sub;
+}
+
+.-theme-with-dark-background .icon-link.devtools-link,
+:host-context(.-theme-with-dark-background) .icon-link.devtools-link {
+  background-color: hsl(0deg 0% 67%);
 }

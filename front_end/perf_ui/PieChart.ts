@@ -12,7 +12,7 @@ export interface Slice {
   value: number, color: string, title: string
 }
 
-export class PieChart2 extends HTMLElement {
+export class PieChart extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private chartName = '';
   private size = 0;
@@ -297,10 +297,10 @@ export class PieChart2 extends HTMLElement {
   }
 }
 
-customElements.define('devtools-perf-piechart', PieChart2);
+customElements.define('devtools-perf-piechart', PieChart);
 
 declare global {
   interface HTMLElementTagNameMap {
-    'devtools-perf-piechart': PieChart2;
+    'devtools-perf-piechart': PieChart;
   }
 }

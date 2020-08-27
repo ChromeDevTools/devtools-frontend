@@ -2,7 +2,7 @@ import("../../../../third_party/typescript/typescript.gni")
 
 ts_library("perf_ui") {
   testonly = true
-  sources = [ "PieChart2_test.ts" ]
+  sources = [ "PieChart_test.ts" ]
 
   deps = [
     "../../../../front_end/perf_ui:bundle",

@@ -51,7 +51,7 @@ export class PaintProfilerView extends UI.Widget.HBox {
     this._canvasContainer = this.contentElement.createChild('div', 'paint-profiler-canvas-container');
     this._progressBanner = this.contentElement.createChild('div', 'full-widget-dimmed-banner hidden');
     this._progressBanner.textContent = Common.UIString.UIString('Profiling…');
-    this._pieChart = PerfUI.PieChart2.createPieChart2();
+    this._pieChart = PerfUI.PieChart.createPieChart();
     this._pieChart.classList.add('paint-profiler-pie-chart');
     this.contentElement.appendChild(this._pieChart);
 
@@ -312,7 +312,7 @@ export class PaintProfilerView extends UI.Widget.HBox {
         timeByCategory[category.color] += time;
       }
     }
-    /** @type {!Array<!PerfUI.PieChart2.Slice>} */
+    /** @type {!Array<!PerfUI.PieChart.Slice>} */
     const slices = [];
     for (const color in timeByCategory) {
       slices.push({value: timeByCategory[color] / this._profiles.length, color, title: ''});
@@ -322,7 +322,7 @@ export class PaintProfilerView extends UI.Widget.HBox {
 
   /**
    * @param {number} total
-   * @param {!Array<!PerfUI.PieChart2.Slice>} slices
+   * @param {!Array<!PerfUI.PieChart.Slice>} slices
    */
   _populatePieChart(total, slices) {
     this._pieChart.data = {

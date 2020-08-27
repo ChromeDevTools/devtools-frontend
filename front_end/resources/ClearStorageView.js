@@ -52,7 +52,7 @@ export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
         ls`Learn more`);
     learnMoreRow.appendChild(learnMore);
     this._quotaUsage = null;
-    this._pieChart = PerfUI.PieChart2.createPieChart2();
+    this._pieChart = PerfUI.PieChart.createPieChart();
     const usageBreakdownRow = quota.appendRow();
     usageBreakdownRow.classList.add('usage-breakdown-row');
     usageBreakdownRow.appendChild(this._pieChart);
@@ -255,7 +255,7 @@ export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
 
     if (this._quotaUsage === null || this._quotaUsage !== response.usage) {
       this._quotaUsage = response.usage;
-      /** @type {!Array<!PerfUI.PieChart2.Slice>} */
+      /** @type {!Array<!PerfUI.PieChart.Slice>} */
       const slices = [];
       for (const usageForType of response.usageBreakdown.sort((a, b) => b.usage - a.usage)) {
         const value = usageForType.usage;
@@ -275,7 +275,7 @@ export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
 
   /**
    * @param {number} total
-   * @param {!Array<!PerfUI.PieChart2.Slice>} slices
+   * @param {!Array<!PerfUI.PieChart.Slice>} slices
    */
   _populatePieChart(total, slices) {
     this._pieChart.data = {

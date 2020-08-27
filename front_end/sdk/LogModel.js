@@ -2,15 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Host from '../host/host.js';
 
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 /**
- * @implements {Protocol.LogDispatcher}
+ * @implements {ProtocolProxyApi.LogDispatcher}
  */
 export class LogModel extends SDKModel {
   /**
@@ -20,26 +17,39 @@ export class LogModel extends SDKModel {
     super(target);
     target.registerLogDispatcher(this);
     this._logAgent = target.logAgent();
-    this._logAgent.enable();
+    this._logAgent.invoke_enable();
     if (!Host.InspectorFrontendHost.isUnderTest()) {
-      this._logAgent.startViolationsReport([
-        {name: 'longTask', threshold: 200}, {name: 'longLayout', threshold: 30}, {name: 'blockedEvent', threshold: 100},
-        {name: 'blockedParser', threshold: -1}, {name: 'handler', threshold: 150},
-        {name: 'recurringHandler', threshold: 50}, {name: 'discouragedAPIUse', threshold: -1}
-      ]);
+      this._logAgent.invoke_startViolationsReport({
+        config: [
+          {name: Protocol.Log.ViolationSettingName.LongTask, threshold: 200},
+          {name: Protocol.Log.ViolationSettingName.LongLayout, threshold: 30},
+          {name: Protocol.Log.ViolationSettingName.BlockedEvent, threshold: 100},
+          {name: Protocol.Log.ViolationSettingName.BlockedParser, threshold: -1},
+          {name: Protocol.Log.ViolationSettingName.Handler, threshold: 150},
+          {name: Protocol.Log.ViolationSettingName.RecurringHandler, threshold: 50},
+          {name: Protocol.Log.ViolationSettingName.DiscouragedAPIUse, threshold: -1}
+        ]
+      });
     }
   }
 
   /**
    * @override
-   * @param {!Protocol.Log.LogEntry} payload
+   * @param {!Protocol.Log.EntryAddedEvent} event
    */
-  entryAdded(payload) {
-    this.dispatchEventToListeners(Events.EntryAdded, {logModel: this, entry: payload});
+  entryAdded({entry}) {
+    this.dispatchEventToListeners(Events.EntryAdded, {logModel: this, entry});
   }
 
   requestClear() {
-    this._logAgent.clear();
+    this._logAgent.invoke_clear();
+  }
+
+  /**
+   * @return {!Protocol.UsesObjectNotation}
+   */
+  usesObjectNotation() {
+    return true;
   }
 }
 

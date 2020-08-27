@@ -699,6 +699,13 @@ export class TargetBase {
   }
 
   /**
+   * @return {!ProtocolProxyApi.LogApi}
+   */
+  logAgent() {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
    * @return {!ProtocolProxyApi.MemoryApi}
    */
   memoryAgent() {
@@ -803,6 +810,13 @@ export class TargetBase {
    * @param {!ProtocolProxyApi.HeapProfilerDispatcher} dispatcher
    */
   registerHeapProfilerDispatcher(dispatcher) {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
+   * @param {!ProtocolProxyApi.LogDispatcher} dispatcher
+   */
+  registerLogDispatcher(dispatcher) {
     throw new Error('Implemented in InspectorBackend.js');
   }
 

@@ -5,7 +5,8 @@
       "esnext",
       "dom",
       "webworker"
-    ]
+    ],
+    "outDir": "ignored-for-vscode"
   },
   "include": [
     "front_end/",

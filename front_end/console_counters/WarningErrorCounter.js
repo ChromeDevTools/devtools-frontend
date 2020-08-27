@@ -2,12 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -19,16 +17,16 @@ export class WarningErrorCounter {
   constructor() {
     WarningErrorCounter._instanceForTest = this;
 
-    const countersWrapper = createElement('div');
+    const countersWrapper = document.createElement('div');
     this._toolbarItem = new UI.Toolbar.ToolbarItem(countersWrapper);
 
-    this._counter = createElement('div');
+    this._counter = document.createElement('div');
     this._counter.addEventListener('click', Common.Console.Console.instance().show.bind(Common.Console.Console.instance()), false);
     const shadowRoot =
         UI.Utils.createShadowRootWithCoreStyles(this._counter, 'console_counters/errorWarningCounter.css');
     countersWrapper.appendChild(this._counter);
 
-    this._violationCounter = createElement('div');
+    this._violationCounter = document.createElement('div');
     this._violationCounter.addEventListener('click', () => {
       UI.ViewManager.ViewManager.instance().showView('lighthouse');
     });
@@ -38,7 +36,7 @@ export class WarningErrorCounter {
       countersWrapper.appendChild(this._violationCounter);
     }
 
-    this._issuesCounter = createElement('div');
+    this._issuesCounter = document.createElement('div');
     this._issuesCounter.addEventListener('click', () => {
       Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.StatusBarIssuesCounter);
       UI.ViewManager.ViewManager.instance().showView('issues-pane');
@@ -58,9 +56,13 @@ export class WarningErrorCounter {
       this._issues = this._createItem(issuesShadowRoot, 'smallicon-issue-blue-text');
     }
     this._titles = '';
+    /** @type {number} */
     this._errorCount = -1;
+    /** @type {number} */
     this._warningCount = -1;
+    /** @type {number} */
     this._violationCount = -1;
+    /** @type {number} */
     this._issuesCount = -1;
     this._throttler = new Common.Throttler.Throttler(100);
 
@@ -89,7 +91,7 @@ export class WarningErrorCounter {
     const item = document.createElement('span');
     item.classList.add('counter-item');
     UI.ARIAUtils.markAsHidden(item);
-    const icon = item.createChild('span', '', 'dt-icon-label');
+    const icon = /** @type {!UI.UIUtils.DevToolsIconLabel} */ (item.createChild('span', '', 'dt-icon-label'));
     icon.type = iconType;
     const text = icon.createChild('span');
     shadowRoot.appendChild(item);
@@ -104,7 +106,7 @@ export class WarningErrorCounter {
   _updateItem(item, count, first) {
     item.item.classList.toggle('hidden', !count);
     item.item.classList.toggle('counter-item-first', first);
-    item.text.textContent = count;
+    item.text.textContent = String(count);
   }
 
   _update() {
@@ -113,7 +115,7 @@ export class WarningErrorCounter {
   }
 
   /**
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   _updateThrottled() {
     const errors = SDK.ConsoleModel.ConsoleModel.instance().errors();
@@ -149,7 +151,7 @@ export class WarningErrorCounter {
     }
     this._updateItem(this._warnings, warnings, !errors);
 
-    if (Root.Runtime.experiments.isEnabled('spotlight')) {
+    if (Root.Runtime.experiments.isEnabled('spotlight') && this._violations) {
       let violationCountTitle = '';
       if (violations === 1) {
         violationCountTitle = ls`${violations} violation`;
@@ -160,7 +162,7 @@ export class WarningErrorCounter {
       this._violationCounter.title = violationCountTitle;
     }
 
-    if (Root.Runtime.experiments.isEnabled('issuesPane')) {
+    if (Root.Runtime.experiments.isEnabled('issuesPane') && this._issues) {
       let issuesCountTitle = '';
       if (issues === 1) {
         issuesCountTitle = ls`Issues pertaining to ${issues} operation detected.`;
@@ -195,3 +197,6 @@ export class WarningErrorCounter {
     return this._toolbarItem;
   }
 }
+
+/** @type {?WarningErrorCounter} */
+WarningErrorCounter._instanceForTest = null;

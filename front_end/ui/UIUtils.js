@@ -1387,6 +1387,25 @@ export class CheckboxLabel extends HTMLSpanElement {
   }
 }
 
+export class DevToolsIconLabel extends HTMLSpanElement {
+  constructor() {
+    super();
+    const root = createShadowRootWithCoreStyles(this);
+    this._iconElement = Icon.create();
+    this._iconElement.style.setProperty('margin-right', '4px');
+    root.appendChild(this._iconElement);
+    root.createChild('slot');
+  }
+
+  /**
+     * @param {string} type
+     * @this {Element}
+     */
+  set type(type) {
+    this._iconElement.setIconType(type);
+  }
+}
+
 (function() {
 let labelId = 0;
 registerCustomElement('span', 'dt-radio', class extends HTMLSpanElement {
@@ -1418,24 +1437,7 @@ function radioClickHandler(event) {
   this.radioElement.dispatchEvent(new Event('change'));
 }
 
-registerCustomElement('span', 'dt-icon-label', class extends HTMLSpanElement {
-  constructor() {
-    super();
-    const root = createShadowRootWithCoreStyles(this);
-    this._iconElement = Icon.create();
-    this._iconElement.style.setProperty('margin-right', '4px');
-    root.appendChild(this._iconElement);
-    root.createChild('slot');
-  }
-
-  /**
-     * @param {string} type
-     * @this {Element}
-     */
-  set type(type) {
-    this._iconElement.setIconType(type);
-  }
-});
+registerCustomElement('span', 'dt-icon-label', DevToolsIconLabel);
 
 registerCustomElement('span', 'dt-slider', class extends HTMLSpanElement {
   constructor() {

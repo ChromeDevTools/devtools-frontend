@@ -189,9 +189,11 @@ function* positionIterator(positions, axis) {
     // Or if this is the last.
     const isLast = i === positions.length - 1;
     // Or if there is some minimum distance between the last emitted position.
-    const isFarEnoughFromPrevious = pos[axis] - (lastEmittedPos ? lastEmittedPos[axis] : 0) > gridLabelDistance;
+    const isFarEnoughFromPrevious =
+        Math.abs(pos[axis] - (lastEmittedPos ? lastEmittedPos[axis] : 0)) > gridLabelDistance;
     // And if there is also some minium distance from the very last position.
-    const isFarEnoughFromLast = !isLast && positions[positions.length - 1][axis] - pos[axis] > gridLabelDistance;
+    const isFarEnoughFromLast =
+        Math.abs(!isLast && positions[positions.length - 1][axis] - pos[axis]) > gridLabelDistance;
 
     if (isFirst || isLast || (isFarEnoughFromPrevious && isFarEnoughFromLast)) {
       yield [i, pos];
@@ -453,14 +455,17 @@ export function drawGridAreaNames(
     container, areaBounds, writingModeMatrix = new DOMMatrix(), writingMode = 'horizontal-tb') {
   for (const {name, bounds} of areaBounds) {
     const element = _createLabelElement(container, name, 'row');
+    const {width, height} = _getLabelSize(element, writingMode);
 
     // The list of all points comes from the path created by the backend. This path is a rectangle with its starting point being
     // the top left corner, which is where we want to place the label (except for vertical-rl writing-mode).
     const point = writingMode === 'vertical-rl' ? bounds.allPoints[3] : bounds.allPoints[0];
     const corner = applyMatrixToPoint(point, writingModeMatrix);
 
-    element.style.top = corner.y + 'px';
-    element.style.left = corner.x + 'px';
+    const flipX = bounds.allPoints[1].x < bounds.allPoints[0].x;
+    const flipY = bounds.allPoints[3].y < bounds.allPoints[0].y;
+    element.style.left = (corner.x - (flipX ? width : 0)) + 'px';
+    element.style.top = (corner.y - (flipY ? height : 0)) + 'px';
   }
 }
 

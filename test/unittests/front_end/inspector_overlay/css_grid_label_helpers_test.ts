@@ -651,11 +651,11 @@ describe('drawGridAreaNames', () => {
       areaBounds: [
         {
           name: 'foo',
-          bounds: {allPoints: [{x: 0, y: 0}]},
+          bounds: {allPoints: [{x: 0, y: 0}, {x: 10, y: 0}, {x: 10, y: 10}, {x: 0, y: 10}]},
         },
         {
           name: 'bar',
-          bounds: {allPoints: [{x: 0, y: 0}]},
+          bounds: {allPoints: [{x: 0, y: 0}, {x: 10, y: 0}, {x: 10, y: 10}, {x: 0, y: 10}]},
         },
       ],
       expectedLabels: [
@@ -668,11 +668,11 @@ describe('drawGridAreaNames', () => {
       areaBounds: [
         {
           name: 'foo',
-          bounds: {allPoints: [{x: 125, y: 22}]},
+          bounds: {allPoints: [{x: 125, y: 22}, {x: 225, y: 22}, {x: 225, y: 42}, {x: 125, y: 42}]},
         },
         {
           name: 'bar',
-          bounds: {allPoints: [{x: 678, y: 435}]},
+          bounds: {allPoints: [{x: 678, y: 435}, {x: 878, y: 435}, {x: 878, y: 635}, {x: 678, y: 635}]},
         },
       ],
       expectedLabels: [

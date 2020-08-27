@@ -84,6 +84,7 @@ export class LanguageExtensionEndpoint {
 
   /**
    * Notifies the plugin that a script is removed.
+   * @override
    * @param {string} rawModuleId
    * @return {!Promise<undefined>}
    * @throws {Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginError}

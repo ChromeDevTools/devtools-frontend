@@ -1,15 +1,14 @@
 // Copyright 2020 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';
-import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
 
+import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
 import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
+import {NetworkProject} from './NetworkProject.js';
 
 class SourceVariable extends SDK.RemoteObject.RemoteObjectImpl {
   /**
@@ -43,14 +42,14 @@ class SourceVariable extends SDK.RemoteObject.RemoteObjectImpl {
   }
 
   /**
-   * @return {!Promise<?RawModule>}
+   * @return {!Promise<?EvaluatorModule>}
    */
-  _getEvaluator() {
+  async _getEvaluator() {
     if (!this._evaluator) {
-      this._evaluator = this._plugin.evaluateVariable(this._variable.name, this._location)
-                            .catch(
-                                error => Common.Console.Console.instance().warn(
-                                    ls`Error in debugger language plugin: ${error.message} (${error.code})`));
+      this._evaluator = await this._plugin.evaluateVariable(this._variable.name, this._location).catch(error => {
+        Common.Console.Console.instance().warn(ls`Error in debugger language plugin: ${error.message} (${error.code})`);
+        return null;
+      });
     }
     return this._evaluator;
   }
@@ -73,8 +72,9 @@ class SourceVariable extends SDK.RemoteObject.RemoteObjectImpl {
    * @param {!VariableValue} value
    */
   _reprCompound(value) {
+    /** @type {!Object<string, *>} */
     const result = {};
-    for (const property of value.value) {
+    for (const property of /** @type {!Array<!VariableValue>} */ (value.value)) {
       result[property.name] = this._repr(property);
     }
     return result;
@@ -84,11 +84,13 @@ class SourceVariable extends SDK.RemoteObject.RemoteObjectImpl {
    * @param {!VariableValue} value
    */
   _reprArray(value) {
-    return value.value.map(v => this._repr(v));
+    return /** @type {!Array<!VariableValue>} */ (value.value).map(v => this._repr(v));
   }
 
-  /** Get the representation for a variable value
+  /**
+   * Get the representation for a variable value
    * @param {!VariableValue} value
+   * @return {*}
    */
   _repr(value) {
     if (value.js_type === 'array') {
@@ -122,26 +124,36 @@ class SourceVariable extends SDK.RemoteObject.RemoteObjectImpl {
    * @return {!Promise<!SDK.RemoteObject.GetPropertiesResult>}
    */
   async doGetProperties(ownProperties, accessorPropertiesOnly, generatePreview) {
+    /**
+     * @param {!Promise<(?RawModule|?EvaluatorModule)>} evaluatorPromise
+     * @param {!SDK.DebuggerModel.CallFrame} callFrame
+     * @param {!DebuggerLanguagePlugin} plugin
+     */
     const getRepr = async (evaluatorPromise, callFrame, plugin) => {
       const evaluator = await evaluatorPromise;
       if (!evaluator) {
         return null;
       }
-      if (evaluator.constantValue) {
+      if ('constantValue' in evaluator && evaluator.constantValue) {
         return this._getRepresentation(evaluator.constantValue);
       }
       if (!evaluator.code) {
         return null;
       }
-      const evaluateResponse = await callFrame.debuggerModel.executeWasmEvaluator(callFrame.id, evaluator.code);
-      if (evaluateResponse[ProtocolClient.InspectorBackend.ProtocolError] || evaluateResponse.exceptionDetails) {
+      // `executeWasmEvaluator` expects a string, but `evaluator.code` is an ArrayBuffer
+      const evaluateResponse = await callFrame.debuggerModel.executeWasmEvaluator(
+          callFrame.id, /** @type {string} */ (/** @type {*} */ (evaluator.code)));
+      if (evaluateResponse.getError()) {
+        console.error(evaluateResponse.getError());
+        return null;
+      }
+      if (evaluateResponse.exceptionDetails) {
         console.error(
-            evaluateResponse[ProtocolClient.InspectorBackend.ProtocolError] ||
-            evaluateResponse.exceptionDetails.exception.description);
+            /** @type {!Protocol.Runtime.RemoteObject} */ (evaluateResponse.exceptionDetails.exception).description);
         return null;
       }
 
-      const value = /** @type {!VariableValue} */ (JSON.parse(evaluateResponse.result.value));
+      const value = /** @type {!VariableValue} */ (JSON.parse(/** @type {string} */ (evaluateResponse.result.value)));
       return this._getRepresentation(value);
     };
 
@@ -211,8 +223,13 @@ class SourceScopeRemoteObject extends SDK.RemoteObject.RemoteObjectImpl {
     }
 
     const properties = [];
+    /** @type {!Object<string, !SDK.RemoteObject.RemoteObject>} */
     const namespaces = {};
 
+    /**
+     * @param {string} name
+     * @param {!SDK.RemoteObject.RemoteObject} obj
+     */
     function makeProperty(name, obj) {
       return new SDK.RemoteObject.RemoteObjectProperty(
           name, obj,
@@ -224,10 +241,13 @@ class SourceScopeRemoteObject extends SDK.RemoteObject.RemoteObjectImpl {
       if (variable.nestedName && variable.nestedName.length > 1) {
         let parent = namespaces;
         for (let index = 0; index < variable.nestedName.length - 1; index++) {
-          if (!parent[variable.nestedName[index]]) {
-            parent[variable.nestedName[index]] = new NamespaceObject({});
+          const nestedName = variable.nestedName[index];
+          let child = parent[nestedName];
+          if (!child) {
+            child = new NamespaceObject({});
+            parent[nestedName] = child;
           }
-          parent = parent[variable.nestedName[index]].value;
+          parent = child.value;
         }
         const name = variable.nestedName[variable.nestedName.length - 1];
         parent[name] = sourceVar;
@@ -237,7 +257,7 @@ class SourceScopeRemoteObject extends SDK.RemoteObject.RemoteObjectImpl {
     }
 
     for (const namespace in namespaces) {
-      properties.push(makeProperty(namespace, namespaces[namespace]));
+      properties.push(makeProperty(namespace, /** @type {!SDK.RemoteObject.RemoteObject} */ (namespaces[namespace])));
     }
 
     return /** @type {!SDK.RemoteObject.GetPropertiesResult} */ ({properties: properties, internalProperties: []});
@@ -340,30 +360,33 @@ export class DebuggerLanguagePluginManager {
     /** @type {!Array<!DebuggerLanguagePlugin>} */
     this._plugins = [];
     // TODO(crbug.com/1122000): Break cycle between bindings and extensions
+    // @ts-expect-error
     for (const extension of self.Extensions.extensionServer.languageExtensionEndpoints) {
       this._plugins.push(extension);
     }
 
-    // @type {!Map<!Workspace.UISourceCode.UISourceCode, !Array<[string, !SDK.Script.Script]>>}
+    /** @type {!Map<!Workspace.UISourceCode.UISourceCode, !Array<!{sourceFileURL: string, script: !SDK.Script.Script}>>} */
     this._uiSourceCodes = new Map();
-    // @type {!Map<string, !Promise<?DebuggerLanguagePlugin>>}
+    /** @type {!Map<string, !Promise<?DebuggerLanguagePlugin>>} */
     this._pluginForScriptId = new Map();
 
     /** @type {!Set<!SDK.Script.Script>} */
     this._unhandledScripts = new Set();
 
     const target = this._debuggerModel.target();
-    this._project = new Bindings.ContentProviderBasedProject(
+    this._project = new ContentProviderBasedProject(
         workspace, 'language_plugins::' + target.id(), Workspace.Workspace.projectTypes.Network, '',
         false /* isServiceProject */);
-    Bindings.NetworkProject.setTargetForProject(this._project, target);
+    NetworkProject.setTargetForProject(this._project, target);
 
 
     this._eventHandlers = [
       this._debuggerModel.addEventListener(
           SDK.DebuggerModel.Events.ParsedScriptSource, this._newScriptSourceListener, this),
       // TODO(crbug.com/1122000): Break cycle between bindings and extensions
+      // @ts-expect-error
       self.Extensions.extensionServer.addEventListener(
+          // @ts-expect-error
           Extensions.ExtensionServer.Events.LanguageExtensionEndpointAdded, this._languageExtensionPluginAdded, this)
     ];
   }
@@ -387,8 +410,11 @@ export class DebuggerLanguagePluginManager {
     scripts.forEach(script => this._pluginForScriptId.set(script.scriptId, this._loadScript(plugin, script)));
   }
 
+  /**
+   * @param {!Common.EventTarget.EventTargetEvent} event
+   */
   _languageExtensionPluginAdded(event) {
-    this.addPlugin(event.data);
+    this.addPlugin(/** @type {!DebuggerLanguagePlugin} */ (event.data));
   }
 
   /**
@@ -404,7 +430,7 @@ export class DebuggerLanguagePluginManager {
    * @return {!Promise<?DebuggerLanguagePlugin>}
    */
   _getPluginForScript(script) {
-    return Promise.resolve(this._pluginForScriptId.get(script.scriptId));
+    return Promise.resolve(this._pluginForScriptId.get(script.scriptId) || null);
   }
 
   /**
@@ -425,7 +451,7 @@ export class DebuggerLanguagePluginManager {
       rawModuleId: script.sourceURL,
       // RawLocation.columnNumber is the byte offset in the full raw wasm module. Plugins expect the offset in the code
       // section, so subtract the offset of the code section in the module here.
-      codeOffset: rawLocation.columnNumber - script.codeOffset()
+      codeOffset: rawLocation.columnNumber - (script.codeOffset() || 0)
     };
 
     let sourceLocations;
@@ -467,7 +493,7 @@ export class DebuggerLanguagePluginManager {
     }
 
     const locationPromises = [];
-    for (const [sourceFileURL, script] of mappedSourceFiles) {
+    for (const {sourceFileURL, script} of mappedSourceFiles) {
       const plugin = await this._getPluginForScript(script);
       if (plugin) {
         locationPromises.push(getLocations(this._debuggerModel, plugin, sourceFileURL, script));
@@ -503,12 +529,13 @@ export class DebuggerLanguagePluginManager {
         return [];
       }
 
-      return rawLocations.map(m => ({
-                                start: new SDK.DebuggerModel.Location(
-                                    debuggerModel, script.scriptId, 0, Number(m.startOffset) + script.codeOffset()),
-                                end: new SDK.DebuggerModel.Location(
-                                    debuggerModel, script.scriptId, 0, Number(m.endOffset) + script.codeOffset())
-                              }));
+      return rawLocations.map(
+          m => ({
+            start: new SDK.DebuggerModel.Location(
+                debuggerModel, script.scriptId, 0, Number(m.startOffset) + (script.codeOffset() || 0)),
+            end: new SDK.DebuggerModel.Location(
+                debuggerModel, script.scriptId, 0, Number(m.endOffset) + (script.codeOffset() || 0))
+          }));
     }
   }
 
@@ -532,7 +559,7 @@ export class DebuggerLanguagePluginManager {
      */
   async _getRawModule(script) {
     if (!script.sourceURL.startsWith('wasm://')) {
-      return {url: script.sourceURL};
+      return {url: script.sourceURL, code: undefined};
     }
     if (script.sourceMapURL === SDK.SourceMap.WasmSourceMap.FAKE_URL) {
       return {code: await script.getWasmBytecode(), url: script.sourceURL};
@@ -552,7 +579,7 @@ export class DebuggerLanguagePluginManager {
     }
 
     uiSourceCode = this._project.createUISourceCode(sourceFileURL, Common.ResourceType.resourceTypes.SourceMapScript);
-    Bindings.NetworkProject.setInitialFrameAttribution(uiSourceCode, script.frameId);
+    NetworkProject.setInitialFrameAttribution(uiSourceCode, script.frameId);
     const contentProvider = new SDK.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(
         sourceFileURL, Common.ResourceType.resourceTypes.SourceMapScript, script.createPageResourceLoadInitiator());
     this._bindUISourceCode(uiSourceCode, script, sourceFileURL);
@@ -570,9 +597,9 @@ export class DebuggerLanguagePluginManager {
   _bindUISourceCode(uiSourceCode, script, sourceFileURL) {
     const entries = this._uiSourceCodes.get(uiSourceCode);
     if (entries) {
-      entries.push([sourceFileURL, script]);
+      entries.push({sourceFileURL, script});
     } else {
-      this._uiSourceCodes.set(uiSourceCode, [[sourceFileURL, script]]);
+      this._uiSourceCodes.set(uiSourceCode, [{sourceFileURL, script}]);
     }
   }
 
@@ -581,8 +608,11 @@ export class DebuggerLanguagePluginManager {
    * @param {!SDK.Script.Script} deletedScript
    */
   _unbindUISourceCode(uiSourceCode, deletedScript) {
-    const remainingEntries =
-        this._uiSourceCodes.get(uiSourceCode).filter(([sourceFileURL, script]) => script !== deletedScript);
+    const entry = this._uiSourceCodes.get(uiSourceCode);
+    if (!entry) {
+      return;
+    }
+    const remainingEntries = entry.filter(({script}) => script !== deletedScript);
     this._uiSourceCodes.set(uiSourceCode, remainingEntries);
     if (remainingEntries.length === 0) {
       this._project.removeFile(uiSourceCode.url());
@@ -667,16 +697,18 @@ export class DebuggerLanguagePluginManager {
     /** @type {!RawLocation}} */
     const location = {
       'rawModuleId': script.sourceURL,
-      'codeOffset': callFrame.location().columnNumber - script.codeOffset()
+      'codeOffset': callFrame.location().columnNumber - (script.codeOffset() || 0)
     };
 
     try {
       const variables = await plugin.listVariablesInScope(location);
       for (const variable of variables || []) {
-        if (!scopes.has(variable.scope)) {
-          scopes.set(variable.scope, new SourceScope(callFrame, variable.scope, plugin, location));
+        let scope = scopes.get(variable.scope);
+        if (!scope) {
+          scope = new SourceScope(callFrame, variable.scope, plugin, location);
+          scopes.set(variable.scope, scope);
         }
-        scopes.get(variable.scope).object().variables.push(variable);
+        scope.object().variables.push(variable);
       }
       return Array.from(scopes.values());
     } catch (error) {
@@ -735,6 +767,7 @@ export class DebuggerLanguagePluginError extends Error {
  *            code: (ArrayBuffer|undefined)
  *          }}
  */
+// @ts-ignore typedef
 export let RawModule;
 
 /** Code ranges in raw modules
@@ -744,6 +777,7 @@ export let RawModule;
  *            endOffset:number
  *          }}
  */
+// @ts-ignore typedef
 export let RawLocationRange;
 
 /** Offsets in raw modules
@@ -752,6 +786,7 @@ export let RawLocationRange;
  *            codeOffset:number
  *          }}
  */
+// @ts-ignore typedef
 export let RawLocation;
 
 /** Locations in source files
@@ -762,6 +797,7 @@ export let RawLocation;
  *            columnNumber: number
  *          }}
  */
+// @ts-ignore typedef
 export let SourceLocation;
 
 /** A source language variable
@@ -772,6 +808,7 @@ export let SourceLocation;
  *            nestedName: ?Array<string>
  *          }}
  */
+// @ts-ignore typedef
 export let Variable;
 
 /** The value of a source language variable
@@ -782,6 +819,7 @@ export let Variable;
  *            name: string
  *          }}
  */
+// @ts-ignore typedef
 export let VariableValue;
 
 
@@ -791,6 +829,7 @@ export let VariableValue;
  *            constantValue: (!VariableValue|undefined)
  *          }}
  */
+// @ts-ignore typedef
 export let EvaluatorModule;
 
 /**
@@ -802,6 +841,7 @@ export class DebuggerLanguagePlugin {
    * @return {boolean} True if this plugin should handle this script
    */
   handleScript(script) {
+    throw new Error('Not implemented yet');
   }
 
   dispose() {
@@ -815,6 +855,7 @@ export class DebuggerLanguagePlugin {
    * @throws {DebuggerLanguagePluginError}
   */
   async addRawModule(rawModuleId, symbolsURL, rawModule) {
+    throw new Error('Not implemented yet');
   }
 
   /** Find locations in raw modules from a location in a source file
@@ -823,6 +864,7 @@ export class DebuggerLanguagePlugin {
    * @throws {DebuggerLanguagePluginError}
   */
   async sourceLocationToRawLocation(sourceLocation) {
+    throw new Error('Not implemented yet');
   }
 
   /** Find locations in source files from a location in a raw module
@@ -831,6 +873,7 @@ export class DebuggerLanguagePlugin {
    * @throws {DebuggerLanguagePluginError}
   */
   async rawLocationToSourceLocation(rawLocation) {
+    throw new Error('Not implemented yet');
   }
 
   /** List all variables in lexical scope at a given location in a raw module
@@ -839,6 +882,7 @@ export class DebuggerLanguagePlugin {
    * @throws {DebuggerLanguagePluginError}
   */
   async listVariablesInScope(rawLocation) {
+    throw new Error('Not implemented yet');
   }
 
   /** Evaluate the content of a variable in a given lexical scope
@@ -848,5 +892,16 @@ export class DebuggerLanguagePlugin {
    * @throws {DebuggerLanguagePluginError}
   */
   async evaluateVariable(name, location) {
+    throw new Error('Not implemented yet');
+  }
+
+  /**
+   * Notifies the plugin that a script is removed.
+   * @param {string} rawModuleId
+   * @return {!Promise<void>}
+   * @throws {Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginError}
+   */
+  removeRawModule(rawModuleId) {
+    throw new Error('Not implemented yet');
   }
 }

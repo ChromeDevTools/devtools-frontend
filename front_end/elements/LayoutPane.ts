@@ -63,13 +63,6 @@ export class LayoutPane extends HTMLElement {
         <summary class="header">
           ${ls`Grid`}
         </summary>
-        ${this.gridElements ?
-          html`<div class="content-section">
-            <h3 class="content-section-title">${ls`Grid overlays`}</h3>
-            <div class="elements">
-              ${this.gridElements.map(element => this.renderElement(element))}
-            </div>
-          </div>` : ''}
         <div class="content-section">
           <h3 class="content-section-title">${ls`Overlay display settings`}</h3>
           <div class="checkbox-settings">
@@ -79,6 +72,13 @@ export class LayoutPane extends HTMLElement {
             ${this.getEnumSettings().map(setting => this.renderEnumSetting(setting))}
           </div>
         </div>
+        ${this.gridElements ?
+          html`<div class="content-section">
+            <h3 class="content-section-title">${ls`Grid overlays`}</h3>
+            <div class="elements">
+              ${this.gridElements.map(element => this.renderElement(element))}
+            </div>
+          </div>` : ''}
       </details>
     `, this.shadow, {
       eventContext: this,

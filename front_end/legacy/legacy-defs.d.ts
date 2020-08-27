@@ -151,3 +151,11 @@ declare function isEnterOrSpaceKey(event: Event): boolean;
 declare function isEscKey(event: Event): boolean;
 declare function createPlainTextSearchRegex(query: string, flags?: string): RegExp;
 declare function onInvokeElement(element: Element, callback: (event: Event) => void): void;
+
+interface ServicePort {
+  setHandlers(messageHandler: (arg: string) => void, closeHandler: () => void): void;
+
+  send(message: string): Promise<boolean>;
+
+  close(): Promise<boolean>;
+}

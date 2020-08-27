@@ -1481,7 +1481,7 @@ InspectorFrontendHostAPI.EnumeratedHistogram = {
 class ServicePort {
   /**
    * @param {function(string)} messageHandler
-   * @param {function(string)} closeHandler
+   * @param {function()} closeHandler
    */
   setHandlers(messageHandler, closeHandler) {
   }

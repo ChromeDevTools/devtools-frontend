@@ -2,10 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Host from '../host/host.js';
+import * as Root from '../root/root.js';
 
 /**
  * @unrestricted
@@ -17,7 +16,7 @@ export class ServiceManager {
    */
   createRemoteService(serviceName) {
     if (!this._remoteConnection) {
-      const url = Root.Runtime.queryParam('service-backend');
+      const url = Root.Runtime.Runtime.queryParam('service-backend');
       if (!url) {
         console.error('No endpoint address specified');
         return /** @type {!Promise<?Service>} */ (Promise.resolve(null));
@@ -34,8 +33,8 @@ export class ServiceManager {
    */
   createAppService(appName, serviceName) {
     let url = appName + '.js';
-    const remoteBase = Root.Runtime.queryParam('remoteBase');
-    const debugFrontend = Root.Runtime.queryParam('debugFrontend');
+    const remoteBase = Root.Runtime.Runtime.queryParam('remoteBase');
+    const debugFrontend = Root.Runtime.Runtime.queryParam('debugFrontend');
     const isUnderTest = Host.InspectorFrontendHost.isUnderTest();
 
     const queryParams = [];
@@ -71,7 +70,7 @@ export class Connection {
     this._port.setHandlers(this._onMessage.bind(this), this._connectionClosed.bind(this));
 
     this._lastId = 1;
-    /** @type {!Map<number, function(?Object)>}*/
+    /** @type {!Map<number, function(?Object):void>}*/
     this._callbacks = new Map();
     /** @type {!Map<string, !Service>}*/
     this._services = new Map();
@@ -107,7 +106,7 @@ export class Connection {
   /**
    * @param {string} method
    * @param {!Object=} params
-   * @return {!Promise<?Object>}
+   * @return {!Promise<?Object<string, ?>>}
    */
   _sendCommand(method, params) {
     const id = this._lastId++;
@@ -135,8 +134,11 @@ export class Connection {
       if (object.error) {
         console.error('Service error: ' + object.error);
       }
-      this._callbacks.get(object.id)(object.error ? null : object.result);
-      this._callbacks.delete(object.id);
+      const callback = this._callbacks.get(object.id);
+      if (callback) {
+        callback(object.error ? null : object.result);
+        this._callbacks.delete(object.id);
+      }
       return;
     }
 
@@ -176,12 +178,12 @@ export class Service {
     this._connection = connection;
     this._serviceName = serviceName;
     this._objectId = objectId;
-    /** @type {!Map<string, function(!Object=)>}*/
+    /** @type {!Map<string, function(!Object=):void>}*/
     this._notificationHandlers = new Map();
   }
 
   /**
-   * @return {!Promise}
+   * @return {!Promise<?>}
    */
   dispose() {
     const params = {id: this._objectId};
@@ -192,7 +194,7 @@ export class Service {
 
   /**
    * @param {string} methodName
-   * @param {function(!Object=)} handler
+   * @param {function(!Object=):void} handler
    */
   on(methodName, handler) {
     this._notificationHandlers.set(methodName, handler);
@@ -200,8 +202,8 @@ export class Service {
 
   /**
    * @param {string} methodName
-   * @param {!Object=} params
-   * @return {!Promise}
+   * @param {!Object<string, ?>=} params
+   * @return {!Promise<?>}
    */
   send(methodName, params) {
     params = params || {};
@@ -233,12 +235,14 @@ export class RemoteServicePort {
    */
   constructor(url) {
     this._url = url;
+    /** @type {?WebSocket} */
+    this._socket;
   }
 
   /**
    * @override
-   * @param {function(string)} messageHandler
-   * @param {function(string)} closeHandler
+   * @param {function(string):void} messageHandler
+   * @param {function():void} closeHandler
    */
   setHandlers(messageHandler, closeHandler) {
     this._messageHandler = messageHandler;
@@ -255,10 +259,11 @@ export class RemoteServicePort {
     return this._connectionPromise;
 
     /**
-     * @param {function(boolean)} fulfill
+     * @param {function(boolean):void} fulfill
      * @this {RemoteServicePort}
      */
     function promiseBody(fulfill) {
+      /** @type {?WebSocket} */
       let socket;
       try {
         socket = new WebSocket(/** @type {string} */ (this._url));
@@ -278,11 +283,13 @@ export class RemoteServicePort {
       }
 
       /**
-       * @param {!Event} event
+       * @param {!Common.EventTarget.EventTargetEvent} event
        * @this {RemoteServicePort}
        */
       function onMessage(event) {
-        this._messageHandler(event.data);
+        if (this._messageHandler) {
+          this._messageHandler(event.data);
+        }
       }
 
       /**
@@ -314,7 +321,7 @@ export class RemoteServicePort {
 
   /**
    * @override
-   * @return {!Promise}
+   * @return {!Promise<?>}
    */
   close() {
     return this._open().then(() => {
@@ -332,7 +339,7 @@ export class RemoteServicePort {
   _socketClosed(notifyClient) {
     this._socket = null;
     delete this._connectionPromise;
-    if (notifyClient) {
+    if (notifyClient && this._closeHandler) {
       this._closeHandler();
     }
   }
@@ -349,16 +356,16 @@ export class WorkerServicePort {
   constructor(worker) {
     this._worker = worker;
 
+    /** @type {function(boolean):void} */
     let fulfill;
     this._workerPromise = new Promise(resolve => {
       fulfill = resolve;
     });
 
     this._worker.onmessage = onMessage.bind(this);
-    this._worker.onclose = this._closeHandler;
 
     /**
-     * @param {!Event} event
+     * @param {!MessageEvent} event
      * @this {WorkerServicePort}
      */
     function onMessage(event) {
@@ -366,14 +373,16 @@ export class WorkerServicePort {
         fulfill(true);
         return;
       }
-      this._messageHandler(event.data);
+      if (this._messageHandler) {
+        this._messageHandler(event.data);
+      }
     }
   }
 
   /**
    * @override
-   * @param {function(string)} messageHandler
-   * @param {function(string)} closeHandler
+   * @param {function(string):void} messageHandler
+   * @param {function():void} closeHandler
    */
   setHandlers(messageHandler, closeHandler) {
     this._messageHandler = messageHandler;
@@ -398,7 +407,7 @@ export class WorkerServicePort {
 
   /**
    * @override
-   * @return {!Promise}
+   * @return {!Promise<?>}
    */
   close() {
     return this._workerPromise.then(() => {

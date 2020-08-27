@@ -34,7 +34,7 @@
 }
 
 .style-panes-wrapper {
-  overflow: hidden auto;
+  overflow: scroll;
 }
 
 .style-panes-wrapper > div:not(:first-child) {

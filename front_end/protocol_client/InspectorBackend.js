@@ -734,6 +734,13 @@ export class TargetBase {
   }
 
   /**
+   * @return {!ProtocolProxyApi.ProfilerApi}
+   */
+  profilerAgent() {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
    * @return {!ProtocolProxyApi.PerformanceApi}
    */
   performanceAgent() {
@@ -838,6 +845,13 @@ export class TargetBase {
    * @param {!ProtocolProxyApi.PageDispatcher} dispatcher
    */
   registerPageDispatcher(dispatcher) {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
+   * @param {!ProtocolProxyApi.ProfilerDispatcher} dispatcher
+   */
+  registerProfilerDispatcher(dispatcher) {
     throw new Error('Implemented in InspectorBackend.js');
   }
 

@@ -69,7 +69,6 @@ export class ImageView extends UI.View.SimpleView {
     this._container = this.element.createChild('div', 'image');
     this._imagePreviewElement = this._container.createChild('img', 'resource-image-view');
     this._imagePreviewElement.addEventListener('contextmenu', this._contextMenu.bind(this), true);
-    this._imagePreviewElement.alt = ls`Image from ${this._url}`;
   }
 
   /**
@@ -120,6 +119,7 @@ export class ImageView extends UI.View.SimpleView {
       this._imagePreviewElement.onload = x;
     });
     this._imagePreviewElement.src = imageSrc;
+    this._imagePreviewElement.alt = ls`Image from ${this._url}`;
     const size = content && !contentEncoded ? content.length : base64ToSize(content);
     this._sizeLabel.setText(Platform.NumberUtilities.bytesToString(size));
     await loadPromise;

@@ -229,13 +229,15 @@ export class TracingModel {
     // Track only main thread navigation start items. This is done by tracking isLoadingMainFrame,
     // and whether documentLoaderURL is set.
     if (payload.name === 'navigationStart') {
-      const data = /** @type {!{isLoadingMainFrame: boolean, documentLoaderURL: string, navigationId: string}} */ (
+      const data = /** @type {?{isLoadingMainFrame: boolean, documentLoaderURL: string, navigationId: string}} */ (
           payload.args.data);
-      const {isLoadingMainFrame, documentLoaderURL, navigationId} = data;
-      if (isLoadingMainFrame && documentLoaderURL !== '') {
-        const thread = process.threadById(payload.tid);
-        const navStartEvent = Event.fromPayload(payload, thread);
-        this._mainFrameNavStartTimes.set(navigationId, navStartEvent);
+      if (data) {
+        const {isLoadingMainFrame, documentLoaderURL, navigationId} = data;
+        if (isLoadingMainFrame && documentLoaderURL !== '') {
+          const thread = process.threadById(payload.tid);
+          const navStartEvent = Event.fromPayload(payload, thread);
+          this._mainFrameNavStartTimes.set(navigationId, navStartEvent);
+        }
       }
     }
 

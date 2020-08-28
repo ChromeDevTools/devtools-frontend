@@ -75,7 +75,6 @@ export class PieChart extends HTMLElement {
         .pie-chart-total {
           margin: auto;
           padding: 2px 5px;
-          background-color: rgb(255 255 255 / 60%);
           pointer-events: auto;
         }
 

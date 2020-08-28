@@ -7,7 +7,5 @@ import("../../scripts/build/ninja/devtools_entrypoint.gni")
 devtools_entrypoint("cm_headless") {
   entrypoint = "cm_headless.js"
 
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
-
   deps = [ "../third_party/codemirror" ]
 }

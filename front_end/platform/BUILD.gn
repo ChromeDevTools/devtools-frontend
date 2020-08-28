@@ -22,7 +22,5 @@ devtools_module("platform") {
 devtools_entrypoint("bundle") {
   entrypoint = "platform.js"
 
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
-
   deps = [ ":platform" ]
 }

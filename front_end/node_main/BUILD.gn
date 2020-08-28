@@ -23,7 +23,6 @@ devtools_module("node_main") {
 
 devtools_entrypoint("bundle") {
   entrypoint = "node_main.js"
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
 
   deps = [ ":node_main" ]
 }

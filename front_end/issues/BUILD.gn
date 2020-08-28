@@ -32,6 +32,6 @@ devtools_module("issues") {
 
 devtools_entrypoint("bundle") {
   entrypoint = "issues.js"
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
+
   deps = [ ":issues" ]
 }

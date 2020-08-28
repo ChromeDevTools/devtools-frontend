@@ -23,7 +23,6 @@ devtools_module("web_audio") {
 
 devtools_entrypoint("bundle") {
   entrypoint = "web_audio.js"
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
 
   deps = [ ":web_audio" ]
 }

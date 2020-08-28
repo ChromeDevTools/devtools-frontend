@@ -24,7 +24,6 @@ devtools_module("color_picker") {
 
 devtools_entrypoint("bundle") {
   entrypoint = "color_picker.js"
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
 
   deps = [ ":color_picker" ]
 }

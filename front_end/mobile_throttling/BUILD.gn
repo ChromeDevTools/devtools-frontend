@@ -25,7 +25,6 @@ devtools_module("mobile_throttling") {
 
 devtools_entrypoint("bundle") {
   entrypoint = "mobile_throttling.js"
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
 
   deps = [ ":mobile_throttling" ]
 }

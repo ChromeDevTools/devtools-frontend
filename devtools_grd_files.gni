@@ -315,6 +315,7 @@ grd_files_debug_sources = [
   "front_end/accessibility/AccessibilitySidebarView.js",
   "front_end/accessibility/AccessibilityStrings.js",
   "front_end/accessibility/AccessibilitySubPane.js",
+  "front_end/accessibility/SourceOrderView.js",
   "front_end/animation/AnimationGroupPreviewUI.js",
   "front_end/animation/AnimationModel.js",
   "front_end/animation/AnimationScreenshotPopover.js",

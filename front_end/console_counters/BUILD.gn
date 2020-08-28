@@ -20,7 +20,5 @@ devtools_module("console_counters") {
 devtools_entrypoint("bundle") {
   entrypoint = "console_counters.js"
 
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
-
   deps = [ ":console_counters" ]
 }

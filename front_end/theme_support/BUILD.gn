@@ -18,7 +18,5 @@ devtools_module("theme_support") {
 devtools_entrypoint("bundle") {
   entrypoint = "theme_support.js"
 
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
-
   deps = [ ":theme_support" ]
 }

@@ -20,7 +20,6 @@ devtools_module("cookie_table") {
 
 devtools_entrypoint("bundle") {
   entrypoint = "cookie_table.js"
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
 
   deps = [ ":cookie_table" ]
 }

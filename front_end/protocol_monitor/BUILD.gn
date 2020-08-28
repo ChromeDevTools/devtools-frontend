@@ -21,7 +21,6 @@ devtools_module("protocol_monitor") {
 
 devtools_entrypoint("bundle") {
   entrypoint = "protocol_monitor.js"
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
 
   deps = [ ":protocol_monitor" ]
 }

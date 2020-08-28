@@ -3,9 +3,9 @@
 # found in the LICENSE file.
 
 import("../../scripts/build/ninja/devtools_entrypoint.gni")
-import("../../scripts/build/ninja/devtools_pre_built.gni")
+import("../../scripts/build/ninja/devtools_module.gni")
 
-devtools_pre_built("accessibility") {
+devtools_module("accessibility") {
   sources = [
     "ARIAAttributesView.js",
     "ARIAMetadata.js",
@@ -17,15 +17,18 @@ devtools_pre_built("accessibility") {
     "AccessibilitySubPane.js",
     "SourceOrderView.js",
   ]
+
+  deps = [
+    "../common:bundle",
+    "../generated",
+    "../host:bundle",
+    "../sdk:bundle",
+    "../ui:bundle",
+  ]
 }
 
 devtools_entrypoint("bundle") {
   entrypoint = "accessibility.js"
 
-  deps = [
-    ":accessibility",
-    "../elements:bundle",
-    "../generated",
-    "../sdk:bundle",
-  ]
+  deps = [ ":accessibility" ]
 }

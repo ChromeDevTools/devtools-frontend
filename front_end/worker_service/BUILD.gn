@@ -13,7 +13,6 @@ devtools_module("worker_service") {
 
 devtools_entrypoint("bundle") {
   entrypoint = "worker_service.js"
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
 
   deps = [ ":worker_service" ]
 }

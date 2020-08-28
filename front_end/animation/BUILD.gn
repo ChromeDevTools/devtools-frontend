@@ -26,7 +26,6 @@ devtools_module("animation") {
 
 devtools_entrypoint("bundle") {
   entrypoint = "animation.js"
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
 
   deps = [ ":animation" ]
 }

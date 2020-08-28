@@ -26,7 +26,6 @@ devtools_module("layer_viewer") {
 
 devtools_entrypoint("bundle") {
   entrypoint = "layer_viewer.js"
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
 
   deps = [ ":layer_viewer" ]
 }

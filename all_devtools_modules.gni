@@ -65,6 +65,7 @@ all_typescript_module_sources = [
   "accessibility/AccessibilitySidebarView.js",
   "accessibility/AccessibilityStrings.js",
   "accessibility/AccessibilitySubPane.js",
+  "accessibility/SourceOrderView.js",
   "animation/AnimationGroupPreviewUI.js",
   "animation/AnimationModel.js",
   "animation/AnimationScreenshotPopover.js",

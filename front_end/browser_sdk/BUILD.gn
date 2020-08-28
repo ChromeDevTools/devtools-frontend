@@ -21,7 +21,5 @@ devtools_module("browser_sdk") {
 devtools_entrypoint("bundle") {
   entrypoint = "browser_sdk.js"
 
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
-
   deps = [ ":browser_sdk" ]
 }

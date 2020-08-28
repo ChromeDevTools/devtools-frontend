@@ -35,7 +35,6 @@ devtools_module("persistence") {
 
 devtools_entrypoint("bundle") {
   entrypoint = "persistence.js"
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
 
   deps = [ ":persistence" ]
 }

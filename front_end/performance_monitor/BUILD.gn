@@ -19,7 +19,6 @@ devtools_module("performance_monitor") {
 
 devtools_entrypoint("bundle") {
   entrypoint = "performance_monitor.js"
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
 
   deps = [ ":performance_monitor" ]
 }

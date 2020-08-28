@@ -18,7 +18,6 @@ devtools_module("i18n") {
 
 devtools_entrypoint("bundle") {
   entrypoint = "i18n.js"
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
   deps = [
     ":i18n",
     ":i18n_locales",

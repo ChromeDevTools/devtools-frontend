@@ -24,7 +24,6 @@ devtools_module("formatter") {
 
 devtools_entrypoint("bundle") {
   entrypoint = "formatter.js"
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
 
   deps = [ ":formatter" ]
 }

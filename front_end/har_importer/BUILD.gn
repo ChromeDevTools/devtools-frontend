@@ -19,7 +19,6 @@ devtools_module("har_importer") {
 
 devtools_entrypoint("bundle") {
   entrypoint = "har_importer.js"
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
 
   deps = [ ":har_importer" ]
 }

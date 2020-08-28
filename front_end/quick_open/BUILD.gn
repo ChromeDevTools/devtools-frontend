@@ -27,7 +27,6 @@ devtools_module("quick_open") {
 
 devtools_entrypoint("bundle") {
   entrypoint = "quick_open.js"
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
 
   deps = [ ":quick_open" ]
 }

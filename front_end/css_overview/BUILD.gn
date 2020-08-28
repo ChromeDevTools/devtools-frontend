@@ -30,7 +30,6 @@ devtools_module("css_overview") {
 
 devtools_entrypoint("bundle") {
   entrypoint = "css_overview.js"
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
 
   deps = [ ":css_overview" ]
 }

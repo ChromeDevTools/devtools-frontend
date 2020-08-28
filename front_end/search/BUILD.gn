@@ -24,7 +24,5 @@ devtools_module("search") {
 devtools_entrypoint("bundle") {
   entrypoint = "search.js"
 
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
-
   deps = [ ":search" ]
 }

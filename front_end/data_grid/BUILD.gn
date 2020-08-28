@@ -22,7 +22,6 @@ devtools_module("data_grid") {
 
 devtools_entrypoint("bundle") {
   entrypoint = "data_grid.js"
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
 
   deps = [ ":data_grid" ]
 }

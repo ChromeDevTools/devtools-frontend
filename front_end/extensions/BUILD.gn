@@ -34,7 +34,5 @@ devtools_module("extensions") {
 devtools_entrypoint("bundle") {
   entrypoint = "extensions.js"
 
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
-
   deps = [ ":extensions" ]
 }

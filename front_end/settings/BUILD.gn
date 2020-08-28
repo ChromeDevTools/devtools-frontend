@@ -22,7 +22,6 @@ devtools_module("settings") {
 
 devtools_entrypoint("bundle") {
   entrypoint = "settings.js"
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
 
   deps = [ ":settings" ]
 }

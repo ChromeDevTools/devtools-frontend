@@ -14,8 +14,6 @@ devtools_module("cm_modes") {
 devtools_entrypoint("bundle") {
   entrypoint = "cm_modes.js"
 
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
-
   deps = [
     ":cm_modes",
     "../third_party/codemirror",

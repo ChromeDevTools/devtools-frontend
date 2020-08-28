@@ -13,7 +13,6 @@ devtools_module("heap_snapshot_model") {
 
 devtools_entrypoint("bundle") {
   entrypoint = "heap_snapshot_model.js"
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
 
   deps = [ ":heap_snapshot_model" ]
 }

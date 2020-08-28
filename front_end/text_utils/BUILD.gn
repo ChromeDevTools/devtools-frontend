@@ -27,7 +27,5 @@ devtools_module("text_utils") {
 devtools_entrypoint("bundle") {
   entrypoint = "text_utils.js"
 
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
-
   deps = [ ":text_utils" ]
 }

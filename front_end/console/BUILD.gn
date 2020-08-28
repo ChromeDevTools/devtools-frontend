@@ -35,7 +35,6 @@ devtools_module("console") {
 
 devtools_entrypoint("bundle") {
   entrypoint = "console.js"
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
 
   deps = [ ":console" ]
 }

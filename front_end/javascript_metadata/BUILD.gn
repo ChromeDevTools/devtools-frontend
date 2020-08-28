@@ -16,7 +16,6 @@ devtools_module("javascript_metadata") {
 
 devtools_entrypoint("bundle") {
   entrypoint = "javascript_metadata.js"
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
 
   deps = [ ":javascript_metadata" ]
 }

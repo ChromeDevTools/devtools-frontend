@@ -16,7 +16,6 @@ devtools_module("diff") {
 
 devtools_entrypoint("bundle") {
   entrypoint = "diff.js"
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
 
   deps = [ ":diff" ]
 }

@@ -29,7 +29,6 @@ devtools_module("object_ui") {
 
 devtools_entrypoint("bundle") {
   entrypoint = "object_ui.js"
-  is_legacy_javascript_entrypoint = [ "crbug.com/1011811" ]
 
   deps = [ ":object_ui" ]
 }

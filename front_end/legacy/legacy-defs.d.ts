@@ -4,6 +4,7 @@
 interface StringConstructor {
   sprintf(format: string, ...var_arg: any): string;
   hashCode(id: string): number;
+  naturalOrderComparator(a: string, b: string): number;
 }
 
 interface Window {
@@ -12,6 +13,7 @@ interface Window {
 
 interface Array<T> {
   peekLast(): T | undefined;
+  intersectOrdered(array: T[], comparator: (a: T, b: T) => number): T[];
   lowerBound<S>(object: S, comparator?: {(a: S, b: T): number}, left?: number, right?: number): number;
   upperBound<S>(object: S, comparator?: {(a: S, b: T): number}, left?: number, right?: number): number;
 }

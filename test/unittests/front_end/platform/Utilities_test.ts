@@ -10,7 +10,6 @@ import '../../../../front_end/platform/utilities.js';
 declare global {
   interface Array<T> {
     mergeOrdered(array: T[], comparator: (a: T, b: T) => number): T[];
-    intersectOrdered(array: T[], comparator: (a: T, b: T) => number): T[];
     upperBound(value: T, comparator?: (a: T, b: T) => number): number;
     lowerBound(value: T, comparator?: (a: T, b: T) => number): number;
     binaryIndexOf(value: T, comparator: (a: T, b: T) => number): number;

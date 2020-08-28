@@ -28,10 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';  // eslint-disable-line no-unused-vars
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -165,7 +163,9 @@ export class FileSystemWorkspaceBinding {
   _onFileSystemRemoved(event) {
     const fileSystem = /** @type {!PlatformFileSystem} */ (event.data);
     const boundFileSystem = this._boundFileSystems.get(fileSystem.path());
-    boundFileSystem.dispose();
+    if (boundFileSystem) {
+      boundFileSystem.dispose();
+    }
     this._boundFileSystems.delete(fileSystem.path());
   }
 
@@ -283,12 +283,13 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
    * @return {!Promise<?Workspace.UISourceCode.UISourceCodeMetadata>}
    */
   requestMetadata(uiSourceCode) {
-    if (uiSourceCode[_metadata]) {
-      return uiSourceCode[_metadata];
+    const metadata = sourceCodeToMetadataMap.get(uiSourceCode);
+    if (metadata) {
+      return metadata;
     }
     const relativePath = this._filePathForUISourceCode(uiSourceCode);
     const promise = this._fileSystem.getMetadata(relativePath).then(onMetadata);
-    uiSourceCode[_metadata] = promise;
+    sourceCodeToMetadataMap.set(uiSourceCode, promise);
     return promise;
 
     /**
@@ -334,7 +335,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {string} newContent
    * @param {boolean} isBase64
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   async setFileContent(uiSourceCode, newContent, isBase64) {
     const filePath = this._filePathForUISourceCode(uiSourceCode);
@@ -364,7 +365,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
    * @override
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {string} newName
-   * @param {function(boolean, string=, string=, !Common.ResourceType.ResourceType=)} callback
+   * @param {function(boolean, string=, string=, !Common.ResourceType.ResourceType=):void} callback
    */
   rename(uiSourceCode, newName, callback) {
     if (newName === uiSourceCode.name()) {
@@ -385,7 +386,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
         callback(false, newName);
         return;
       }
-      console.assert(newName);
+      console.assert(!!newName);
       const slash = filePath.lastIndexOf('/');
       const parentPath = filePath.substring(0, slash);
       filePath = parentPath + '/' + newName;
@@ -573,7 +574,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
       this.addUISourceCode(this.createUISourceCode(path, contentType));
       return;
     }
-    uiSourceCode[_metadata] = null;
+    sourceCodeToMetadataMap.delete(uiSourceCode);
     uiSourceCode.checkContentUpdated();
   }
 
@@ -590,7 +591,9 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
   }
 }
 
-const _metadata = Symbol('FileSystemWorkspaceBinding.Metadata');
+/** @type {!WeakMap<!Workspace.UISourceCode.UISourceCode, !Promise<?Workspace.UISourceCode.UISourceCodeMetadata>>} */
+const sourceCodeToMetadataMap = new WeakMap();
 
 /** @typedef {!{changed:!Platform.Multimap<string, string>, added:!Platform.Multimap<string, string>, removed:!Platform.Multimap<string, string>}} */
+// @ts-ignore typedef
 export let FilesChangedData;

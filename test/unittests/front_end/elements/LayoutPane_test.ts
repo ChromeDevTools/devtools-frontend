@@ -13,7 +13,7 @@ describe('LayoutPane', () => {
     assertShadowRoot(component.shadowRoot);
     return Array.from(component.shadowRoot.querySelectorAll(selector)).map(label => {
       return {
-        label: label.querySelector('[data-label]')!.textContent,
+        label: label.getAttribute('title'),
         input: label.querySelector('[data-input]')!.tagName,
       };
     });

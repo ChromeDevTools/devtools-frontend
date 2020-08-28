@@ -23,7 +23,7 @@ const gridNodesToElements = nodes => {
       id: node.id,
       name: node.localName(),
       domId: node.getAttribute('id'),
-      domClasses: className ? className.split(/\s+/) : null,
+      domClasses: className ? className.split(/\s+/).filter(s => !!s) : null,
       enabled: node.domModel().overlayModel().isHighlightedGridInPersistentOverlay(node.id),
       reveal: () => {
         ElementsPanel.instance().revealAndSelectNode(node, true, true);

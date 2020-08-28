@@ -41,6 +41,12 @@ export class NodeText extends HTMLElement {
     // clang-format off
     render(html`
       <style>
+        .node-label {
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
+
         .node-label-name {
           color: var(--dom-tag-name-color);
         }
@@ -49,7 +55,9 @@ export class NodeText extends HTMLElement {
           color: var(--dom-attribute-name-color);
         }
       </style>
-      ${parts}
+      <div class="node-label">
+        ${parts}
+      </div>
     `, this.shadow, {
       eventContext: this,
     });

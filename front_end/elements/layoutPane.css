@@ -38,7 +38,7 @@
 .checkbox-label {
   display: flex;
   flex-direction: row;
-  align-items: start;
+  align-items: center;
 }
 
 .checkbox-settings .checkbox-label {
@@ -52,6 +52,7 @@
 .checkbox-label input {
   margin: 0 6px 0 0;
   padding: 0;
+  flex: none;
 }
 
 .select-settings {
@@ -73,17 +74,15 @@
 .elements {
   margin-top: 12px;
   color: var(--dom-tag-name-color);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr));
+  gap: 8px;
 }
 
 .element {
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-bottom: 8px;
-}
-
-.element:last-child {
-  margin-bottom: 0;
 }
 
 .show-element {
@@ -97,6 +96,7 @@
   height: 16px;
   display: block;
   cursor: pointer;
+  flex: none;
 }
 
 :host-context(.-theme-with-dark-background) .show-element {

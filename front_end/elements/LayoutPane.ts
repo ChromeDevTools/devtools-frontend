@@ -65,11 +65,11 @@ export class LayoutPane extends HTMLElement {
         </summary>
         <div class="content-section">
           <h3 class="content-section-title">${ls`Overlay display settings`}</h3>
-          <div class="checkbox-settings">
-            ${this.getBooleanSettings().map(setting => this.renderBooleanSetting(setting))}
-          </div>
           <div class="select-settings">
             ${this.getEnumSettings().map(setting => this.renderEnumSetting(setting))}
+          </div>
+          <div class="checkbox-settings">
+            ${this.getBooleanSettings().map(setting => this.renderBooleanSetting(setting))}
           </div>
         </div>
         ${this.gridElements ?
@@ -129,9 +129,8 @@ export class LayoutPane extends HTMLElement {
       <label data-element="true" class="checkbox-label" title=${element.name}>
         <input data-input="true" type="checkbox" .checked=${element.enabled} @change=${onElementToggle} />
         <span data-label="true">${nodeText}</span>
-        </label>
-        <button @click=${onElementClick} title=${showElementButtonTitle} class="show-element">
-        </button>
+      </label>
+      <button @click=${onElementClick} title=${showElementButtonTitle} class="show-element"></button>
     </div>`;
     // clang-format on
   }
@@ -147,7 +146,6 @@ export class LayoutPane extends HTMLElement {
   private renderEnumSetting(setting: EnumSetting) {
     const onEnumSettingChange = this.onEnumSettingChange.bind(this, setting);
     return html`<label data-enum-setting="true" class="select-label" title=${setting.title}>
-      <span data-label="true">${setting.title}</span>
       <select class="chrome-select" data-input="true" @change=${onEnumSettingChange}>
         ${
         setting.options.map(

@@ -28,16 +28,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as UI from '../ui/ui.js';
 
 import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
+import {PlatformFileSystem} from './PlatformFileSystem.js';  // eslint-disable-line no-unused-vars
 
 /**
- * @implements {UI.ListWidget.Delegate}
+ * @implements {UI.ListWidget.Delegate<*>}
  * @unrestricted
  */
 export class EditFileSystemView extends UI.Widget.VBox {
@@ -48,6 +46,9 @@ export class EditFileSystemView extends UI.Widget.VBox {
     super(true);
     this.registerRequiredCSS('persistence/editFileSystemView.css');
     this._fileSystemPath = fileSystemPath;
+
+    /** @type {!Array<string>} */
+    this._excludedFolders = [];
 
     this._eventListeners = [
       IsolatedFileSystemManager.instance().addEventListener(Events.ExcludedFolderAdded, this._update, this),
@@ -75,6 +76,13 @@ export class EditFileSystemView extends UI.Widget.VBox {
     Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners);
   }
 
+  /**
+   * @return {!PlatformFileSystem}
+   */
+  _getFileSystem() {
+    return /** @type {!PlatformFileSystem} */ (IsolatedFileSystemManager.instance().fileSystem(this._fileSystemPath));
+  }
+
   _update() {
     if (this._muteUpdate) {
       return;
@@ -82,10 +90,7 @@ export class EditFileSystemView extends UI.Widget.VBox {
 
     this._excludedFoldersList.clear();
     this._excludedFolders = [];
-    for (const folder of IsolatedFileSystemManager.instance()
-             .fileSystem(this._fileSystemPath)
-             .excludedFolders()
-             .values()) {
+    for (const folder of this._getFileSystem().excludedFolders().values()) {
       this._excludedFolders.push(folder);
       this._excludedFoldersList.appendItem(folder, true);
     }
@@ -117,27 +122,21 @@ export class EditFileSystemView extends UI.Widget.VBox {
    * @param {number} index
    */
   removeItemRequested(item, index) {
-    IsolatedFileSystemManager.instance()
-        .fileSystem(this._fileSystemPath)
-        .removeExcludedFolder(this._excludedFolders[index]);
+    this._getFileSystem().removeExcludedFolder(this._excludedFolders[index]);
   }
 
   /**
    * @override
    * @param {*} item
-   * @param {!UI.ListWidget.Editor} editor
+   * @param {!UI.ListWidget.Editor<?>} editor
    * @param {boolean} isNew
    */
   commitEdit(item, editor, isNew) {
     this._muteUpdate = true;
     if (!isNew) {
-      IsolatedFileSystemManager.instance()
-          .fileSystem(this._fileSystemPath)
-          .removeExcludedFolder(/** @type {string} */ (item));
+      this._getFileSystem().removeExcludedFolder(/** @type {string} */ (item));
     }
-    IsolatedFileSystemManager.instance()
-        .fileSystem(this._fileSystemPath)
-        .addExcludedFolder(this._normalizePrefix(editor.control('pathPrefix').value));
+    this._getFileSystem().addExcludedFolder(this._normalizePrefix(editor.control('pathPrefix').value));
     this._muteUpdate = false;
     this._update();
   }
@@ -145,7 +144,7 @@ export class EditFileSystemView extends UI.Widget.VBox {
   /**
    * @override
    * @param {*} item
-   * @return {!UI.ListWidget.Editor}
+   * @return {!UI.ListWidget.Editor<?>}
    */
   beginEdit(item) {
     const editor = this._createExcludedFolderEditor();
@@ -154,7 +153,7 @@ export class EditFileSystemView extends UI.Widget.VBox {
   }
 
   /**
-   * @return {!UI.ListWidget.Editor}
+   * @return {!UI.ListWidget.Editor<?>}
    */
   _createExcludedFolderEditor() {
     if (this._excludedFolderEditor) {
@@ -188,14 +187,13 @@ export class EditFileSystemView extends UI.Widget.VBox {
         return {valid: false, errorMessage: ls`Enter a path`};
       }
 
-      const configurableCount =
-          IsolatedFileSystemManager.instance().fileSystem(this._fileSystemPath).excludedFolders().size;
+      const configurableCount = this._getFileSystem().excludedFolders().size;
       for (let i = 0; i < configurableCount; ++i) {
         if (i !== index && this._excludedFolders[i] === prefix) {
           return {valid: false, errorMessage: ls`Enter a unique path`};
         }
       }
-      return {valid: true};
+      return {valid: true, errorMessage: undefined};
     }
   }
 

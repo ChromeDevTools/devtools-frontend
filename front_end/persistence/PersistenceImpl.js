@@ -147,6 +147,7 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!AutomappingStatus} status
+   * @return {!Promise<void>}
    */
   async _onStatusAdded(status) {
     const binding = new PersistenceBinding(status.network, status.fileSystem);
@@ -156,6 +157,7 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!AutomappingStatus} status
+   * @return {!Promise<void>}
    */
   async _onStatusRemoved(status) {
     const binding = /** @type {!PersistenceBinding} */ (status[_binding]);

@@ -23,7 +23,7 @@ interface Array<T> {
 type ITemplateArray = TemplateStringsArray
 
 // Type alias for the type that has been removed in Chrome 54.
-type FileError = Error;
+type FileError = DOMError;
 
 interface String {
   compareTo(other: string): number;

@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
@@ -65,7 +62,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     this._initialFilePaths = new Set();
     /** @type {!Set<string>} */
     this._initialGitFolders = new Set();
-    /** @type {!Map<string, !Promise>} */
+    /** @type {!Map<string, !Promise<?>>} */
     this._fileLocks = new Map();
   }
 
@@ -87,15 +84,16 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     const fileSystem = new IsolatedFileSystem(manager, path, embedderPath, domFileSystem, type);
     return fileSystem._initializeFilePaths().then(() => fileSystem).catch(error => {
       console.error(error);
+      return null;
     });
   }
 
   /**
-   * @param {!DOMError} error
+   * @param {*} error
    * @return {string}
    */
   static errorMessage(error) {
-    return Common.UIString.UIString('File system error: %s', error.message);
+    return Common.UIString.UIString('File system error: %s', /** @type {*} */ (error).message);
   }
 
   /**
@@ -116,6 +114,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
    * @return {!Promise<?{modificationTime: !Date, size: number}>}
    */
   getMetadata(path) {
+    /** @type {function(?{modificationTime: !Date, size: number}):void} */
     let fulfill;
     const promise = new Promise(f => {
       fulfill = f;
@@ -165,9 +164,10 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   }
 
   /**
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   _initializeFilePaths() {
+    /** @type {function():void} */
     let fulfill;
     const promise = new Promise(x => {
       fulfill = x;
@@ -273,17 +273,18 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     function createFileCandidate(name, newFileIndex) {
       return new Promise(resolve => {
         const nameCandidate = name + (newFileIndex || '');
-        dirEntry.getFile(nameCandidate, {create: true, exclusive: true}, resolve, error => {
-          if (error.name === 'InvalidModificationError') {
-            resolve(createFileCandidate.call(this, name, (newFileIndex ? newFileIndex + 1 : 1)));
-            return;
-          }
-          const errorMessage = IsolatedFileSystem.errorMessage(error);
-          console.error(
-              errorMessage + ' when testing if file exists \'' + (this.path() + '/' + path + '/' + nameCandidate) +
-              '\'');
-          resolve(null);
-        });
+        /** @type {!DirectoryEntry} */ (dirEntry).getFile(
+            nameCandidate, {create: true, exclusive: true}, resolve, error => {
+              if (error.name === 'InvalidModificationError') {
+                resolve(createFileCandidate.call(this, name, (newFileIndex ? newFileIndex + 1 : 1)));
+                return;
+              }
+              const errorMessage = IsolatedFileSystem.errorMessage(error);
+              console.error(
+                  errorMessage + ' when testing if file exists \'' + (this.path() + '/' + path + '/' + nameCandidate) +
+                  '\'');
+              resolve(null);
+            });
       });
     }
   }
@@ -294,6 +295,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
    * @return {!Promise<boolean>}
    */
   deleteFile(path) {
+    /** @type {function(boolean):void} */
     let resolveCallback;
     const promise = new Promise(resolve => {
       resolveCallback = resolve;
@@ -338,6 +340,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
       }, errorHandler.bind(this));
 
       /**
+       * @param {!DOMError} error
        * @this {IsolatedFileSystem}
        */
       function errorHandler(error) {
@@ -413,6 +416,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
    */
   async setFileContent(path, content, isBase64) {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.FileSavedInWorkspace);
+    /** @type {function():void} */
     let callback;
     const innerSetFileContent = () => {
       const promise = new Promise(x => {
@@ -439,6 +443,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     async function fileWriterCreated(fileWriter) {
       fileWriter.onerror = errorHandler.bind(this);
       fileWriter.onwriteend = fileWritten;
+      /** @type {!Blob} */
       let blob;
       if (isBase64) {
         blob = await (await fetch(`data:application/octet-stream;base64,${content}`)).blob();
@@ -454,6 +459,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     }
 
     /**
+     * @param {*} error
      * @this {IsolatedFileSystem}
      */
     function errorHandler(error) {
@@ -467,7 +473,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
    * @override
    * @param {string} path
    * @param {string} newName
-   * @param {function(boolean, string=)} callback
+   * @param {function(boolean, string=):void} callback
    */
   renameFile(path, newName, callback) {
     newName = newName ? newName.trim() : newName;
@@ -475,7 +481,9 @@ export class IsolatedFileSystem extends PlatformFileSystem {
       callback(false);
       return;
     }
+    /** @type {!FileEntry} */
     let fileEntry;
+    /** @type {!DirectoryEntry} */
     let dirEntry;
 
     this._domFileSystem.root.getFile(path, undefined, fileEntryLoaded.bind(this), errorHandler.bind(this));
@@ -499,8 +507,8 @@ export class IsolatedFileSystem extends PlatformFileSystem {
      * @this {IsolatedFileSystem}
      */
     function dirEntryLoaded(entry) {
-      dirEntry = entry;
-      dirEntry.getFile(newName, null, newFileEntryLoaded, newFileEntryLoadErrorHandler.bind(this));
+      dirEntry = /** @type {!DirectoryEntry} */ (entry);
+      dirEntry.getFile(newName, undefined, newFileEntryLoaded, newFileEntryLoadErrorHandler.bind(this));
     }
 
     /**
@@ -511,6 +519,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     }
 
     /**
+     * @param {!DOMError} error
      * @this {IsolatedFileSystem}
      */
     function newFileEntryLoadErrorHandler(error) {
@@ -522,13 +531,14 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     }
 
     /**
-     * @param {!FileEntry} entry
+     * @param {!Entry} entry
      */
     function fileRenamed(entry) {
       callback(true, entry.name);
     }
 
     /**
+     * @param {!DOMError} error
      * @this {IsolatedFileSystem}
      */
     function errorHandler(error) {
@@ -540,12 +550,16 @@ export class IsolatedFileSystem extends PlatformFileSystem {
 
   /**
    * @param {!DirectoryEntry} dirEntry
-   * @param {function(!Array.<!FileEntry>)} callback
+   * @param {function(!Array.<!FileEntry>):void} callback
    */
   _readDirectory(dirEntry, callback) {
     const dirReader = dirEntry.createReader();
+    /** @type {!Array.<!FileEntry>} */
     let entries = [];
 
+    /**
+     * @param {!Array.<!Entry>} results
+     */
     function innerCallback(results) {
       if (!results.length) {
         callback(entries.sort());
@@ -555,12 +569,18 @@ export class IsolatedFileSystem extends PlatformFileSystem {
       }
     }
 
+    /**
+     * @param {!Array.<!Entry>} list
+     */
     function toArray(list) {
       return Array.prototype.slice.call(list || [], 0);
     }
 
     dirReader.readEntries(innerCallback, errorHandler);
 
+    /**
+     * @param {!DOMError} error
+     */
     function errorHandler(error) {
       const errorMessage = IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when reading directory \'' + dirEntry.fullPath + '\'');
@@ -570,7 +590,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
 
   /**
    * @param {string} path
-   * @param {function(!Array.<!FileEntry>)} callback
+   * @param {function(!Array.<!FileEntry>):void} callback
    */
   _requestEntries(path, callback) {
     this._domFileSystem.root.getDirectory(path, undefined, innerCallback.bind(this), errorHandler);
@@ -583,6 +603,9 @@ export class IsolatedFileSystem extends PlatformFileSystem {
       this._readDirectory(dirEntry, callback);
     }
 
+    /**
+     * @param {!DOMError} error
+     */
     function errorHandler(error) {
       const errorMessage = IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when requesting entry \'' + path + '\'');
@@ -634,7 +657,8 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     if (this._excludedFolders.has(folderPath)) {
       return true;
     }
-    const regex = this._manager.workspaceFolderExcludePatternSetting().asRegExp();
+    const regex =
+        /** @type {!Common.Settings.RegExpSetting} */ (this._manager.workspaceFolderExcludePatternSetting()).asRegExp();
     return !!(regex && regex.test(folderPath));
   }
 

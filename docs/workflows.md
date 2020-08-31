@@ -250,7 +250,7 @@ _Merge request/approval is handled by Chromium Release Managers. DevTools follow
 
 Step-by-step guide on how to merge:
 
-1. Request and receive approval to merge.
+1. Request approval to merge by adding the `Merge-Request-XX` label to the relevant crbug. A bot will come by and either ask for more info ([example](https://bugs.chromium.org/p/chromium/issues/detail?id=1123307#c1)) or approve the request.
 1. Backmerges are done to the `chromium/xxxx` (e.g. `chromium/3979`) branch on the DevTools frontend repo.
    Use <https://chromiumdash.appspot.com/branches> or [Omahaproxy](https://omahaproxy.appspot.com/)
    to find out what branch a major Chromium version has (column `true_branch`).
@@ -261,7 +261,7 @@ Step-by-step guide on how to merge:
 1. The cherry-pick CL is created
    ([example](https://chromium-review.googlesource.com/c/devtools/devtools-frontend/+/1928913)).
 1. Get it reviewed if necessary.
-1. Click the hamburger menu on the cherry-pick CL and select “Submit”.
+1. Once merge request approval is granted (see step 1), click the hamburger menu on the cherry-pick CL and select “Submit”. (Setting the Commit-Queue bit (+2) has no effect because these branches don’t have a commit queue.)
 1. Done.
 
 ## Useful Commands

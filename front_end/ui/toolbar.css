@@ -9,6 +9,10 @@
   padding: 0 2px;
 }
 
+:host-context(.-theme-with-dark-background) {
+  --accent-color: #4688f1;
+}
+
 .toolbar-shadow {
   position: relative;
   white-space: nowrap;

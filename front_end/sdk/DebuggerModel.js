@@ -40,6 +40,30 @@ import {Capability, SDKModel, Target, Type} from './SDKModel.js';  // eslint-dis
 import {SourceMapManager} from './SourceMapManager.js';
 
 /**
+*  @param {!Array<!LocationRange>} locationRanges
+*  @return {!Array<!LocationRange>}
+*/
+export function sortAndMergeRanges(locationRanges) {
+  if (locationRanges.length === 0) {
+    return [];
+  }
+  locationRanges.sort(LocationRange.comparator);
+  let prev = locationRanges[0];
+  const merged = [];
+  for (let i = 1; i < locationRanges.length; ++i) {
+    const current = locationRanges[i];
+    if (prev.overlap(current)) {
+      prev = new LocationRange(prev.scriptId, prev.start, current.end);
+    } else {
+      merged.push(prev);
+      prev = current;
+    }
+  }
+  merged.push(prev);
+  return merged;
+}
+
+/**
  * TODO(bmeurer): Introduce a dedicated {DebuggerLocationRange} class or something!
  *
  * @param {!Location} location
@@ -310,10 +334,9 @@ export class DebuggerModel extends SDKModel {
           const skipList = filtered.map(
               // @ts-ignore
               location => new LocationRange(
-                  this, location.start.scriptId,
-                  new ScriptPosition(this, location.start.lineNumber, location.start.columnNumber),
-                  new ScriptPosition(this, location.end.lineNumber, location.end.columnNumber)));
-          return skipList;
+                  location.start.scriptId, new ScriptPosition(location.start.lineNumber, location.start.columnNumber),
+                  new ScriptPosition(location.end.lineNumber, location.end.columnNumber)));
+          return sortAndMergeRanges(skipList);
         }
       }
     }
@@ -1333,12 +1356,10 @@ export class Location {
 
 export class ScriptPosition {
   /**
-   * @param {!DebuggerModel} debuggerModel
    * @param {number} lineNumber
    * @param {number} columnNumber
    */
-  constructor(debuggerModel, lineNumber, columnNumber) {
-    this.debuggerModel = debuggerModel;
+  constructor(lineNumber, columnNumber) {
     this.lineNumber = lineNumber;
     this.columnNumber = columnNumber;
   }
@@ -1349,17 +1370,26 @@ export class ScriptPosition {
   payload() {
     return {lineNumber: this.lineNumber, columnNumber: this.columnNumber};
   }
+
+  /**
+  * @param {!ScriptPosition} other
+  * @return {number}
+  */
+  compareTo(other) {
+    if (this.lineNumber !== other.lineNumber) {
+      return this.lineNumber - other.lineNumber;
+    }
+    return this.columnNumber - other.columnNumber;
+  }
 }
 
 export class LocationRange {
   /**
-   * @param {!DebuggerModel} debuggerModel
    * @param {string} scriptId
    * @param {!ScriptPosition} start
    * @param {!ScriptPosition} end
    */
-  constructor(debuggerModel, scriptId, start, end) {
-    this.debuggerModel = debuggerModel;
+  constructor(scriptId, start, end) {
     this.scriptId = scriptId;
     this.start = start;
     this.end = end;
@@ -1370,6 +1400,52 @@ export class LocationRange {
    */
   payload() {
     return {scriptId: this.scriptId, start: this.start.payload(), end: this.end.payload()};
+  }
+
+  /**
+   * @param {!LocationRange} location1
+   * @param {!LocationRange} location2
+   * @return {number}
+   */
+  static comparator(location1, location2) {
+    return location1.compareTo(location2);
+  }
+
+  /**
+   * @param {!LocationRange} other
+   * @return {number}
+   */
+  compareTo(other) {
+    if (this.scriptId !== other.scriptId) {
+      return this.scriptId > other.scriptId ? 1 : -1;
+    }
+
+    const startCmp = this.start.compareTo(other.start);
+    if (startCmp) {
+      return startCmp;
+    }
+
+    return this.end.compareTo(other.end);
+  }
+
+  /**
+   * @param {!LocationRange} other
+   * @return boolean
+   */
+  overlap(other) {
+    if (this.scriptId !== other.scriptId) {
+      return false;
+    }
+
+    const startCmp = this.start.compareTo(other.start);
+    if (startCmp < 0) {
+      return this.end.compareTo(other.start) >= 0;
+    }
+    if (startCmp > 0) {
+      return this.start.compareTo(other.end) <= 0;
+    }
+
+    return true;
   }
 }
 

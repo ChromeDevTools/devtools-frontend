@@ -6,6 +6,7 @@ ts_library("sdk") {
     "CSSPropertyParser_test.ts",
     "CookieParser_test.ts",
     "Cookie_test.ts",
+    "DebuggerModel_test.ts",
     "FrameManager_test.ts",
     "Issue_test.ts",
     "MockIssuesModel.ts",

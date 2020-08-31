@@ -138,9 +138,8 @@ export class DebuggerPlugin extends Plugin {
     };
     this._textEditor.element.addEventListener('wheel', this._boundWheel, true);
 
-    this._textEditor.addEventListener(SourceFrame.SourcesTextEditor.Events.GutterClick, event => {
-      this._handleGutterClick(event);
-    }, this);
+    this._boundGutterClick = /** @type {function({data: *})} */ (this._handleGutterClick.bind(this));
+    this._textEditor.addEventListener(SourceFrame.SourcesTextEditor.Events.GutterClick, this._boundGutterClick, this);
 
     this._breakpointManager.addEventListener(
         Bindings.BreakpointManager.Events.BreakpointAdded, this._breakpointAdded, this);
@@ -1798,9 +1797,8 @@ export class DebuggerPlugin extends Plugin {
     this._textEditor.element.removeEventListener('focusout', this._boundBlur, false);
     this._textEditor.element.removeEventListener('wheel', this._boundWheel, true);
 
-    this._textEditor.removeEventListener(SourceFrame.SourcesTextEditor.Events.GutterClick, event => {
-      this._handleGutterClick(event);
-    }, this);
+    this._textEditor.removeEventListener(
+        SourceFrame.SourcesTextEditor.Events.GutterClick, this._boundGutterClick, this);
     this._popoverHelper.hidePopover();
     this._popoverHelper.dispose();
 

@@ -36,7 +36,6 @@ import * as ClientVariations from '../client_variations/client_variations.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
-import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -168,8 +167,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
         }
       }
 
-      if (Root.Runtime.experiments.isEnabled('issuesPane') &&
-          BrowserSDK.RelatedIssue.hasIssueOfCategory(
+      if (BrowserSDK.RelatedIssue.hasIssueOfCategory(
               this._request, SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy)) {
         const link = document.createElement('div');
         link.classList.add('devtools-link');

@@ -33,7 +33,6 @@ import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
-import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
@@ -291,13 +290,11 @@ export class ConsoleView extends UI.Widget.VBox {
         SDK.ConsoleModel.Events.CommandEvaluated, this._commandEvaluated, this);
     SDK.ConsoleModel.ConsoleModel.instance().messages().forEach(this._addConsoleMessage, this);
 
-    if (Root.Runtime.experiments.isEnabled('issuesPane')) {
-      const issuesManager = BrowserSDK.IssuesManager.IssuesManager.instance();
-      issuesManager.addEventListener(
-          BrowserSDK.IssuesManager.Events.IssuesCountUpdated, this._onIssuesCountChanged.bind(this));
-      if (issuesManager.numberOfIssues()) {
-        this._onIssuesCountChanged();
-      }
+    const issuesManager = BrowserSDK.IssuesManager.IssuesManager.instance();
+    issuesManager.addEventListener(
+        BrowserSDK.IssuesManager.Events.IssuesCountUpdated, this._onIssuesCountChanged.bind(this));
+    if (issuesManager.numberOfIssues()) {
+      this._onIssuesCountChanged();
     }
   }
 

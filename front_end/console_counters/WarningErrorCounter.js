@@ -43,18 +43,14 @@ export class WarningErrorCounter {
     });
     const issuesShadowRoot =
         UI.Utils.createShadowRootWithCoreStyles(this._issuesCounter, 'console_counters/errorWarningCounter.css');
-    if (Root.Runtime.experiments.isEnabled('issuesPane')) {
-      countersWrapper.appendChild(this._issuesCounter);
-    }
+    countersWrapper.appendChild(this._issuesCounter);
 
     this._errors = this._createItem(shadowRoot, 'smallicon-error');
     this._warnings = this._createItem(shadowRoot, 'smallicon-warning');
     if (Root.Runtime.experiments.isEnabled('spotlight')) {
       this._violations = this._createItem(violationShadowRoot, 'smallicon-info');
     }
-    if (Root.Runtime.experiments.isEnabled('issuesPane')) {
-      this._issues = this._createItem(issuesShadowRoot, 'smallicon-issue-blue-text');
-    }
+    this._issues = this._createItem(issuesShadowRoot, 'smallicon-issue-blue-text');
     this._titles = '';
     /** @type {number} */
     this._errorCount = -1;
@@ -162,7 +158,7 @@ export class WarningErrorCounter {
       this._violationCounter.title = violationCountTitle;
     }
 
-    if (Root.Runtime.experiments.isEnabled('issuesPane') && this._issues) {
+    if (this._issues) {
       let issuesCountTitle = '';
       if (issues === 1) {
         issuesCountTitle = ls`Issues pertaining to ${issues} operation detected.`;

@@ -502,7 +502,6 @@ export const DevtoolsExperiments = {
   'liveHeapProfile': 11,
   'nativeHeapProfiler': 12,
   'protocolMonitor': 13,
-  'issuesPane': 14,
   'developerResourcesView': 15,
   'recordCoverageWithPerformanceTracing': 16,
   'samplingHeapProfilerTimeline': 17,

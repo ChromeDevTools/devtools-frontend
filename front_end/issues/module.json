@@ -7,8 +7,7 @@
       "title": "Issues",
       "order": 100,
       "persistence": "closeable",
-      "className": "Issues.IssuesPane",
-      "experiment": "issuesPane"
+      "className": "Issues.IssuesPane"
     },
     {
       "type": "@Common.Revealer",

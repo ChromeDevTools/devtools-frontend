@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 /**
  * @type {number}
  */
@@ -131,8 +128,8 @@ export class CubicBezier {
   static parse(text) {
     const keywordValues = CubicBezier.KeywordValues;
     const value = text.toLowerCase().replace(/\s+/g, '');
-    if (Object.keys(keywordValues).indexOf(value) !== -1) {
-      return CubicBezier.parse(keywordValues[value]);
+    if (keywordValues.has(value)) {
+      return CubicBezier.parse(/** @type {string} */ (keywordValues.get(value)));
     }
     const bezierRegex = /^cubic-bezier\(([^,]+),([^,]+),([^,]+),([^,]+)\)$/;
     const match = value.match(bezierRegex);
@@ -169,8 +166,8 @@ export class CubicBezier {
   asCSSText() {
     const raw = 'cubic-bezier(' + this.controlPoints.join(', ') + ')';
     const keywordValues = CubicBezier.KeywordValues;
-    for (const keyword in keywordValues) {
-      if (raw === keywordValues[keyword]) {
+    for (const [keyword, value] of keywordValues) {
+      if (raw === value) {
         return keyword;
       }
     }
@@ -181,13 +178,14 @@ export class CubicBezier {
 /** @type {!RegExp} */
 CubicBezier.Regex = /((cubic-bezier\([^)]+\))|\b(linear|ease-in-out|ease-in|ease-out|ease)\b)/g;
 
-CubicBezier.KeywordValues = {
-  'linear': 'cubic-bezier(0, 0, 1, 1)',
-  'ease': 'cubic-bezier(0.25, 0.1, 0.25, 1)',
-  'ease-in': 'cubic-bezier(0.42, 0, 1, 1)',
-  'ease-in-out': 'cubic-bezier(0.42, 0, 0.58, 1)',
-  'ease-out': 'cubic-bezier(0, 0, 0.58, 1)'
-};
+/** @type {!Map<string, string>} */
+CubicBezier.KeywordValues = new Map([
+  ['linear', 'cubic-bezier(0, 0, 1, 1)'],
+  ['ease', 'cubic-bezier(0.25, 0.1, 0.25, 1)'],
+  ['ease-in', 'cubic-bezier(0.42, 0, 1, 1)'],
+  ['ease-in-out', 'cubic-bezier(0.42, 0, 0.58, 1)'],
+  ['ease-out', 'cubic-bezier(0, 0, 0.58, 1)'],
+]);
 
 
 export class EulerAngles {
@@ -319,7 +317,7 @@ export const boundsForTransformedPoints = function(matrix, points, aggregateBoun
     aggregateBounds = {minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity};
   }
   if (points.length % 3) {
-    console.assert('Invalid size of points array');
+    console.warn('Invalid size of points array');
   }
   for (let p = 0; p < points.length; p += 3) {
     let vector = new Vector(points[p], points[p + 1], points[p + 2]);

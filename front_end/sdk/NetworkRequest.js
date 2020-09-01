@@ -361,6 +361,13 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
+   * @return {string}
+   */
+  securityOrigin() {
+    return this._parsedURL.securityOrigin();
+  }
+
+  /**
    * @param {!Protocol.Network.SecurityDetails} securityDetails
    */
   setSecurityDetails(securityDetails) {

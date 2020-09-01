@@ -2,10 +2,23 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as SDK from '../sdk/sdk.js';
+
+/** @enum {string} */
+export const CoreAxPropertyName = {
+  Name: 'name',
+  Description: 'description',
+  Value: 'value',
+  Role: 'role',
+};
+
+/** @typedef {{
+ *   name: (CoreAxPropertyName | Protocol.Accessibility.AXPropertyName),
+ *   value: Protocol.Accessibility.AXValue
+ * }}
+ */
+// @ts-ignore typedef
+export let CoreOrProtocolAxProperty;
 
 /**
  * @unrestricted
@@ -72,20 +85,20 @@ export class AccessibilityNode {
   }
 
   /**
-   * @return {!Array<!Protocol.Accessibility.AXProperty>}
+   * @return {!Array<!CoreOrProtocolAxProperty>}
    */
   coreProperties() {
+    /** @type {!Array<!CoreOrProtocolAxProperty>} */
     const properties = [];
 
     if (this._name) {
-      properties.push(/** @type {!Protocol.Accessibility.AXProperty} */ ({name: 'name', value: this._name}));
+      properties.push({name: CoreAxPropertyName.Name, value: this._name});
     }
     if (this._description) {
-      properties.push(
-          /** @type {!Protocol.Accessibility.AXProperty} */ ({name: 'description', value: this._description}));
+      properties.push({name: CoreAxPropertyName.Description, value: this._description});
     }
     if (this._value) {
-      properties.push(/** @type {!Protocol.Accessibility.AXProperty} */ ({name: 'value', value: this._value}));
+      properties.push({name: CoreAxPropertyName.Value, value: this._value});
     }
 
     return properties;
@@ -155,23 +168,23 @@ export class AccessibilityNode {
   }
 
   highlightDOMNode() {
-    if (!this.deferredDOMNode()) {
+    const deferredNode = this.deferredDOMNode();
+    if (!deferredNode) {
       return;
     }
-
     // Highlight node in page.
-    this.deferredDOMNode().highlight();
+    deferredNode.highlight();
   }
 
   /**
    * @return {!Array<!AccessibilityNode>}
    */
   children() {
-    const children = [];
     if (!this._childIds) {
-      return children;
+      return [];
     }
 
+    const children = [];
     for (const childId of this._childIds) {
       const child = this._accessibilityModel.axNodeForId(childId);
       if (child) {
@@ -226,15 +239,16 @@ export class AccessibilityModel extends SDK.SDKModel.SDKModel {
 
   /**
    * @param {!SDK.DOMModel.DOMNode} node
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   async requestPartialAXTree(node) {
-    const payloads = await this._agent.getPartialAXTree(node.id, undefined, undefined, true);
-    if (!payloads) {
+    const {nodes} = await this._agent.invoke_getPartialAXTree(
+        {nodeId: node.id, backendNodeId: undefined, objectId: undefined, fetchRelatives: true});
+    if (!nodes) {
       return;
     }
 
-    for (const payload of payloads) {
+    for (const payload of nodes) {
       new AccessibilityNode(this, payload);
     }
 
@@ -250,7 +264,7 @@ export class AccessibilityModel extends SDK.SDKModel.SDKModel {
    * @return {?AccessibilityNode}
    */
   axNodeForId(axId) {
-    return this._axIdToAXNode.get(axId);
+    return this._axIdToAXNode.get(axId) || null;
   }
 
   /**

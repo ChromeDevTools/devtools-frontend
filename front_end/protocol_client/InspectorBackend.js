@@ -650,6 +650,13 @@ export class TargetBase {
   // Agent accessors, keep alphabetically sorted.
 
   /**
+   * @return {!ProtocolProxyApi.AccessibilityApi}
+   */
+  accessibilityAgent() {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
    * @return {!ProtocolProxyApi.ApplicationCacheApi}
    */
   applicationCacheAgent() {

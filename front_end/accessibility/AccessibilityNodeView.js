@@ -9,7 +9,7 @@ import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-import {AccessibilityNode} from './AccessibilityModel.js';  // eslint-disable-line no-unused-vars
+import {AccessibilityNode, CoreAxPropertyName, CoreOrProtocolAxProperty} from './AccessibilityModel.js';  // eslint-disable-line no-unused-vars
 import {AXAttributes, AXNativeSourceTypes, AXSourceTypes} from './AccessibilityStrings.js';
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
 
@@ -97,7 +97,7 @@ export class AXNodeSubPane extends AccessibilitySubPane {
     treeOutline.element.classList.remove('hidden');
 
     /**
-     * @param {!Protocol.Accessibility.AXProperty} property
+     * @param {!CoreOrProtocolAxProperty} property
      */
     function addProperty(property) {
       treeOutline.appendChild(
@@ -108,8 +108,12 @@ export class AXNodeSubPane extends AccessibilitySubPane {
       addProperty(property);
     }
 
-    const roleProperty = /** @type {!Protocol.Accessibility.AXProperty} */ ({name: 'role', value: axNode.role()});
-    addProperty(roleProperty);
+    const role = axNode.role();
+    if (role) {
+      /** @type {!CoreOrProtocolAxProperty} */
+      const roleProperty = {name: CoreAxPropertyName.Role, value: role};
+      addProperty(roleProperty);
+    }
     for (const property of /** @type {!Array.<!Protocol.Accessibility.AXProperty>} */ (axNode.properties())) {
       addProperty(property);
     }
@@ -296,7 +300,7 @@ export const StringProperties = new Set([
  */
 export class AXNodePropertyTreePropertyElement extends AXNodePropertyTreeElement {
   /**
-   * @param {!Protocol.Accessibility.AXProperty} property
+   * @param {!CoreOrProtocolAxProperty} property
    * @param {!AccessibilityNode} axNode
    */
   constructor(property, axNode) {

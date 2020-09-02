@@ -1888,6 +1888,11 @@ export class ThemeSupport {
       return;
     }
 
+    // Don't operate on CSS variables.
+    if (/^var\(.*\)$/.test(value)) {
+      return;
+    }
+
     if (selectorText.indexOf('-theme-') !== -1) {
       return;
     }

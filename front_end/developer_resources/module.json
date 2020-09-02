@@ -11,6 +11,7 @@
       "experiment": "developerResourcesView"
     }
   ],
+  "skip_rollup": true,
   "dependencies": [
     "common",
     "platform",

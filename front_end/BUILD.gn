@@ -28,6 +28,7 @@ group("front_end") {
     "coverage:bundle",
     "css_overview:bundle",
     "data_grid:bundle",
+    "developer_resources:bundle",
     "devices:bundle",
     "diff:bundle",
     "dom_extension:bundle",

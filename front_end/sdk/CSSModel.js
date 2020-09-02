@@ -36,6 +36,7 @@ import * as HostModule from '../host/host.js';
 import * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as Root from '../root/root.js';
+import * as TextUtils from '../text_utils/text_utils.js';
 
 import {CSSFontFace} from './CSSFontFace.js';
 import {CSSMatchedStyles} from './CSSMatchedStyles.js';
@@ -190,7 +191,7 @@ export class CSSModel extends SDKModel {
 
   /**
    * @param {!Protocol.CSS.StyleSheetId} styleSheetId
-   * @param {!TextUtils.TextRange} range
+   * @param {!TextUtils.TextRange.TextRange} range
    * @param {string} text
    * @param {boolean} majorChange
    * @return {!Promise<boolean>}
@@ -216,7 +217,7 @@ export class CSSModel extends SDKModel {
 
   /**
    * @param {!Protocol.CSS.StyleSheetId} styleSheetId
-   * @param {!TextUtils.TextRange} range
+   * @param {!TextUtils.TextRange.TextRange} range
    * @param {string} text
    * @return {!Promise<boolean>}
    */
@@ -241,7 +242,7 @@ export class CSSModel extends SDKModel {
 
   /**
    * @param {!Protocol.CSS.StyleSheetId} styleSheetId
-   * @param {!TextUtils.TextRange} range
+   * @param {!TextUtils.TextRange.TextRange} range
    * @param {string} text
    * @return {!Promise<boolean>}
    */
@@ -461,7 +462,7 @@ export class CSSModel extends SDKModel {
 
   /**
    * @param {!Protocol.CSS.StyleSheetId} styleSheetId
-   * @param {!TextUtils.TextRange} range
+   * @param {!TextUtils.TextRange.TextRange} range
    * @param {string} newMediaText
    * @return {!Promise<boolean>}
    */
@@ -487,7 +488,7 @@ export class CSSModel extends SDKModel {
   /**
    * @param {!Protocol.CSS.StyleSheetId} styleSheetId
    * @param {string} ruleText
-   * @param {!TextUtils.TextRange} ruleLocation
+   * @param {!TextUtils.TextRange.TextRange} ruleLocation
    * @return {!Promise<?CSSStyleRule>}
    */
   async addRule(styleSheetId, ruleText, ruleLocation) {
@@ -863,14 +864,14 @@ const PseudoStateMarker = 'pseudo-state-marker';
 export class Edit {
   /**
    * @param {!Protocol.CSS.StyleSheetId} styleSheetId
-   * @param {!TextUtils.TextRange} oldRange
+   * @param {!TextUtils.TextRange.TextRange} oldRange
    * @param {string} newText
    * @param {?Object} payload
    */
   constructor(styleSheetId, oldRange, newText, payload) {
     this.styleSheetId = styleSheetId;
     this.oldRange = oldRange;
-    this.newRange = TextUtils.TextRange.fromEdit(oldRange, newText);
+    this.newRange = TextUtils.TextRange.TextRange.fromEdit(oldRange, newText);
     this.newText = newText;
     this.payload = payload;
   }

@@ -73,10 +73,7 @@ devtools_module("elements") {
   ]
 
   visibility = [
-    "../component_docs/computed_style_property",
-    "../component_docs/computed_style_trace",
-    "../component_docs/elements_breadcrumbs",
-    "../component_docs/layout_pane",
+    "../component_docs/*",
     "../../test/unittests/front_end/elements",
   ]
 }

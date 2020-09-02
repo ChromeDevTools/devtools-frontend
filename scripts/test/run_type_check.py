@@ -282,12 +282,19 @@ common_closure_args = [
     '--warning_level',
     'VERBOSE',
     '--language_in=ECMASCRIPT_NEXT',
-    '--language_out=ES5_STRICT',
+    '--language_out=ECMASCRIPT_NEXT',
     '--extra_annotation_name',
     'suppressReceiverCheck',
     '--extra_annotation_name',
     'suppressGlobalPropertiesCheck',
     '--checks-only',
+    # Bounded Generics should be supported (https://github.com/google/closure-compiler/wiki/Generic-Types#declaring-a-bounded-generic-type)
+    # however, when running it against the source code it throws an error. Here
+    # we switch off compilation of bounded generics for Closure Compiler (though
+    # TypeScript Compiler understands them, which is handy) and hide warnings for
+    # files which make use of them.
+    '--jscomp_off',
+    'boundedGenerics',
 ]
 
 
@@ -322,8 +329,20 @@ def prepare_closure_frontend_compile(temp_devtools_path, descriptors, namespace_
 
     all_files = descriptors.all_compiled_files()
     args = []
-    for file in all_files:
 
+    # Closure Compiler currently doesn't understand Bounded Generics (see common
+    # args comment above), and the files listed below make use of them so we hide
+    # warnings for those files.
+    bounded_generics = [
+        'SourceMapManager.js',
+        'CSSWorkspaceBinding.js',
+        'SASSSourceMapping.js',
+    ]
+
+    for file in bounded_generics:
+        args.extend(['--hide_warnings_for', file])
+
+    for file in all_files:
         args.extend(['--js', file])
         if 'InspectorBackend.js' in file:
             args.extend(['--js', protocol_externs_file])

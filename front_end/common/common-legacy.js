@@ -76,7 +76,7 @@ Common.CompositeProgress = CommonModule.Progress.CompositeProgress;
 Common.QueryParamHandler = CommonModule.QueryParamHandler.QueryParamHandler;
 
 /**
- * @enum {!ResourceType}
+ * @enum {!CommonModule.ResourceType.ResourceType}
  */
 Common.resourceTypes = CommonModule.ResourceType.resourceTypes;
 

@@ -1298,7 +1298,7 @@
       };
 
       Object.defineProperty(HTMLSlotElement.prototype, 'select', {
-        async set(selector) {
+        set(selector) {
           this.name = selector;
         }
       });

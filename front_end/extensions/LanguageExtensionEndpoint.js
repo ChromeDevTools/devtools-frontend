@@ -151,7 +151,7 @@ export class LanguageExtensionEndpoint {
   */
   evaluateVariable(name, location) {
     try {
-      return /** @type {!Promise<?Bindings.DebuggerLanguagePlugins.RawModule>}*/ (
+      return /** @type {!Promise<?Bindings.DebuggerLanguagePlugins.EvaluatorModule>}*/ (
           this._sendRequest(this._commands.EvaluateVariable, {name, location}));
     } catch (error) {
       throw new Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginError('EXTENSION_ERROR', error.message);

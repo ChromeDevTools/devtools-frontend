@@ -28,11 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
-import * as ProtocolClient from '../protocol_client/protocol_client.js';
-
 import {DebuggerModel, FunctionDetails} from './DebuggerModel.js';  // eslint-disable-line no-unused-vars
 import {RuntimeModel} from './RuntimeModel.js';    // eslint-disable-line no-unused-vars
 
@@ -84,8 +79,8 @@ export class RemoteObject {
     }
     // Array lengths in V8-generated descriptions switched from square brackets to parentheses.
     // Both formats are checked in case the front end is dealing with an old version of V8.
-    const parenMatches = object.description.match(_descriptionLengthParenRegex);
-    const squareMatches = object.description.match(_descriptionLengthSquareRegex);
+    const parenMatches = object.description && object.description.match(_descriptionLengthParenRegex);
+    const squareMatches = object.description && object.description.match(_descriptionLengthSquareRegex);
     return parenMatches ? parseInt(parenMatches[1], 10) : (squareMatches ? parseInt(squareMatches[1], 10) : 0);
   }
 
@@ -140,20 +135,21 @@ export class RemoteObject {
 
     // The unserializableValue is a function on RemoteObject's and a simple property on
     // Protocol.Runtime.RemoteObject's.
+    const objectAsProtocolRemoteObject = /** @type {!Protocol.Runtime.RemoteObject} */ (object);
     if (object instanceof RemoteObject) {
       const unserializableValue = object.unserializableValue();
       if (unserializableValue !== undefined) {
         return {unserializableValue: unserializableValue};
       }
-    } else if (object.unserializableValue !== undefined) {
-      return {unserializableValue: object.unserializableValue};
+    } else if (objectAsProtocolRemoteObject.unserializableValue !== undefined) {
+      return {unserializableValue: objectAsProtocolRemoteObject.unserializableValue};
     }
 
-    if (typeof object.objectId !== 'undefined') {
-      return {objectId: object.objectId};
+    if (typeof objectAsProtocolRemoteObject.objectId !== 'undefined') {
+      return {objectId: objectAsProtocolRemoteObject.objectId};
     }
 
-    return {value: object.value};
+    return {value: objectAsProtocolRemoteObject.value};
   }
 
   /**
@@ -297,7 +293,7 @@ export class RemoteObject {
   }
 
   /**
-   * @param {function(this:Object, ...):T} functionDeclaration
+   * @param {function(this:Object, ...?):T} functionDeclaration
    * @param {!Array<!Protocol.Runtime.CallArgument>=} args
    * @return {!Promise<!CallFunctionResult>}
    * @template T
@@ -307,7 +303,7 @@ export class RemoteObject {
   }
 
   /**
-   * @param {function(this:Object, ...):T} functionDeclaration
+   * @param {function(this:Object, ...?):T} functionDeclaration
    * @param {!Array<!Protocol.Runtime.CallArgument>|undefined} args
    * @return {!Promise<T>}
    * @template T
@@ -512,7 +508,7 @@ export class RemoteObjectImpl extends RemoteObject {
 
     const response = await this._runtimeAgent.invoke_getProperties(
         {objectId: this._objectId, ownProperties, accessorPropertiesOnly, generatePreview});
-    if (response[ProtocolClient.InspectorBackend.ProtocolError]) {
+    if (response.getError()) {
       return /** @type {!GetPropertiesResult} */ ({properties: null, internalProperties: null});
     }
     if (response.exceptionDetails) {
@@ -539,7 +535,8 @@ export class RemoteObjectImpl extends RemoteObject {
       result.push(remoteProperty);
     }
     for (const property of privateProperties) {
-      const propertyValue = this._runtimeModel.createRemoteObject(property.value);
+      const propertyValue =
+          this._runtimeModel.createRemoteObject(/** @type {!Protocol.Runtime.RemoteObject} */ (property.value));
       const remoteProperty = new RemoteObjectProperty(
           property.name, propertyValue, true, true, true, false, undefined, false, undefined, true);
       result.push(remoteProperty);
@@ -572,8 +569,8 @@ export class RemoteObjectImpl extends RemoteObject {
     }
 
     const response = await this._runtimeAgent.invoke_evaluate({expression: value, silent: true});
-    if (response[ProtocolClient.InspectorBackend.ProtocolError] || response.exceptionDetails) {
-      return response[ProtocolClient.InspectorBackend.ProtocolError] ||
+    if (response.getError() || response.exceptionDetails) {
+      return response.getError() ||
           (response.result.type !== 'string' ? response.result.description :
                                                /** @type {string} */ (response.result.value));
     }
@@ -585,7 +582,7 @@ export class RemoteObjectImpl extends RemoteObject {
     const resultPromise = this.doSetObjectPropertyValue(response.result, name);
 
     if (response.result.objectId) {
-      this._runtimeAgent.releaseObject(response.result.objectId);
+      this._runtimeAgent.invoke_releaseObject({objectId: response.result.objectId});
     }
 
     return resultPromise;
@@ -606,7 +603,7 @@ export class RemoteObjectImpl extends RemoteObject {
     const argv = [name, RemoteObject.toCallArgument(result)];
     const response = await this._runtimeAgent.invoke_callFunctionOn(
         {objectId: this._objectId, functionDeclaration: setPropertyValueFunction, arguments: argv, silent: true});
-    const error = response[ProtocolClient.InspectorBackend.ProtocolError];
+    const error = response.getError();
     return error || response.exceptionDetails ? error || response.result.description : undefined;
   }
 
@@ -624,18 +621,20 @@ export class RemoteObjectImpl extends RemoteObject {
     const response = await this._runtimeAgent.invoke_callFunctionOn(
         {objectId: this._objectId, functionDeclaration: deletePropertyFunction, arguments: [name], silent: true});
 
-    if (response[ProtocolClient.InspectorBackend.ProtocolError] || response.exceptionDetails) {
-      return response[ProtocolClient.InspectorBackend.ProtocolError] || response.result.description;
+    if (response.getError() || response.exceptionDetails) {
+      return response.getError() || response.result.description;
     }
 
     if (!response.result.value) {
       return 'Failed to delete property.';
     }
+
+    return undefined;
   }
 
   /**
    * @override
-   * @param {function(this:Object, ...):T} functionDeclaration
+   * @param {function(this:Object, ...?):T} functionDeclaration
    * @param {!Array<!Protocol.Runtime.CallArgument>=} args
    * @return {!Promise<!CallFunctionResult>}
    * @template T
@@ -643,7 +642,7 @@ export class RemoteObjectImpl extends RemoteObject {
   async callFunction(functionDeclaration, args) {
     const response = await this._runtimeAgent.invoke_callFunctionOn(
         {objectId: this._objectId, functionDeclaration: functionDeclaration.toString(), arguments: args, silent: true});
-    if (response[ProtocolClient.InspectorBackend.ProtocolError]) {
+    if (response.getError()) {
       return {object: null, wasThrown: false};
     }
     // TODO: release exceptionDetails object
@@ -652,7 +651,7 @@ export class RemoteObjectImpl extends RemoteObject {
 
   /**
    * @override
-   * @param {function(this:Object, ...):T} functionDeclaration
+   * @param {function(this:Object, ...?):T} functionDeclaration
    * @param {!Array<!Protocol.Runtime.CallArgument>|undefined} args
    * @return {!Promise<T>}
    * @template T
@@ -665,8 +664,7 @@ export class RemoteObjectImpl extends RemoteObject {
       silent: true,
       returnByValue: true
     });
-    return response[ProtocolClient.InspectorBackend.ProtocolError] || response.exceptionDetails ? null :
-                                                                                                  response.result.value;
+    return response.getError() || response.exceptionDetails ? null : response.result.value;
   }
 
   /**
@@ -676,7 +674,7 @@ export class RemoteObjectImpl extends RemoteObject {
     if (!this._objectId) {
       return;
     }
-    this._runtimeAgent.releaseObject(this._objectId);
+    this._runtimeAgent.invoke_releaseObject({objectId: this._objectId});
   }
 
   /**
@@ -771,7 +769,8 @@ export class ScopeRemoteObject extends RemoteObjectImpl {
   async doSetObjectPropertyValue(result, argumentName) {
     const name = /** @type {string} */ (argumentName.value);
     const error = await this.debuggerModel().setVariableValue(
-        this._scopeRef.number, name, RemoteObject.toCallArgument(result), this._scopeRef.callFrameId);
+        this._scopeRef.number, name, RemoteObject.toCallArgument(result),
+        /** @type {string} */ (this._scopeRef.callFrameId));
     if (error) {
       return error;
     }
@@ -782,6 +781,7 @@ export class ScopeRemoteObject extends RemoteObjectImpl {
         }
       }
     }
+    return;
   }
 }
 
@@ -830,6 +830,11 @@ export class RemoteObjectProperty {
       this.syntheticSetter = syntheticSetter;
     }
     this.private = !!isPrivate;
+
+    /** @type {(!RemoteObject|undefined)} */
+    this.getter;
+    /** @type {(!RemoteObject|undefined)} */
+    this.setter;
   }
 
   /**
@@ -914,7 +919,7 @@ export class LocalJSONObject extends RemoteObject {
      * @this {LocalJSONObject}
      */
     function formatArrayItem(property) {
-      return this._formatValue(property.value);
+      return this._formatValue(property.value || null);
     }
 
     /**
@@ -927,7 +932,7 @@ export class LocalJSONObject extends RemoteObject {
       if (/^\s|\s$|^$|\n/.test(name)) {
         name = '"' + name.replace(/\n/g, '\u21B5') + '"';
       }
-      return name + ': ' + this._formatValue(property.value);
+      return name + ': ' + this._formatValue(property.value || null);
     }
 
     if (this.type === 'object') {
@@ -1062,7 +1067,7 @@ export class LocalJSONObject extends RemoteObject {
     if (!this.hasChildren) {
       return [];
     }
-    const value = /** @type {!Object} */ (this._value);
+    const value = /** @type {*} */ (this._value);
 
     /**
      * @param {string} propName
@@ -1076,7 +1081,7 @@ export class LocalJSONObject extends RemoteObject {
       return new RemoteObjectProperty(propName, propValue);
     }
     if (!this._cachedChildren) {
-      this._cachedChildren = Object.keys(value).map(buildProperty);
+      this._cachedChildren = Object.keys(/** @type {!Object} */ (value)).map(buildProperty);
     }
     return this._cachedChildren;
   }
@@ -1091,13 +1096,13 @@ export class LocalJSONObject extends RemoteObject {
 
   /**
    * @override
-   * @param {function(this:Object, ...):T} functionDeclaration
+   * @param {function(this:Object, ...?):T} functionDeclaration
    * @param {!Array<!Protocol.Runtime.CallArgument>=} args
    * @return {!Promise<!CallFunctionResult>}
    * @template T
    */
   callFunction(functionDeclaration, args) {
-    const target = /** @type {?Object} */ (this._value);
+    const target = /** @type {!Object} */ (this._value);
     const rawArgs = args ? args.map(arg => arg.value) : [];
 
     let result;
@@ -1116,13 +1121,13 @@ export class LocalJSONObject extends RemoteObject {
 
   /**
    * @override
-   * @param {function(this:Object, ...):T} functionDeclaration
+   * @param {function(this:Object, ...?):T} functionDeclaration
    * @param {!Array<!Protocol.Runtime.CallArgument>|undefined} args
    * @return {!Promise<T>}
    * @template T
    */
   callFunctionJSON(functionDeclaration, args) {
-    const target = /** @type {?Object} */ (this._value);
+    const target = /** @type {!Object} */ (this._value);
     const rawArgs = args ? args.map(arg => arg.value) : [];
 
     let result;
@@ -1132,7 +1137,7 @@ export class LocalJSONObject extends RemoteObject {
       result = null;
     }
 
-    return Promise.resolve(result);
+    return Promise.resolve(/** @type {T} */ (result));
   }
 }
 
@@ -1205,7 +1210,7 @@ export class RemoteArray {
      * @suppressReceiverCheck
      * @param {number} index
      * @return {*}
-     * @this {!Object}
+     * @this {*}
      */
     function at(index) {
       return this[index];
@@ -1288,7 +1293,7 @@ export class RemoteFunction {
       const internalProperties = ownProperties.internalProperties;
       for (const property of internalProperties) {
         if (property.name === '[[TargetFunction]]') {
-          return property.value;
+          return /** @type {!RemoteObject} */ (property.value);
         }
       }
       return this._object;
@@ -1359,9 +1364,11 @@ const UnserializableNumber = {
 /**
  * @typedef {{object: ?RemoteObject, wasThrown: (boolean|undefined)}}
  */
+// @ts-ignore typedef
 export let CallFunctionResult;
 
 /**
  * @typedef {{properties: ?Array<!RemoteObjectProperty>, internalProperties: ?Array<!RemoteObjectProperty>}}
  */
+// @ts-ignore typedef
 export let GetPropertiesResult;

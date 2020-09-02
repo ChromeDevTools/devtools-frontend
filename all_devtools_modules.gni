@@ -11,9 +11,6 @@ all_devtools_module_sources = [
   "heap_snapshot_worker/HeapSnapshotWorker.js",
   "heap_snapshot_worker/HeapSnapshotWorkerDispatcher.js",
   "test_runner/TestRunner.js",
-  "third_party/wasmparser/package/dist/esm/WasmDis.js",
-  "third_party/wasmparser/package/dist/esm/WasmParser.js",
-  "wasmparser_worker/WasmParserWorker.js",
 ]
 
 input_devtools_modules = []
@@ -581,6 +578,8 @@ all_typescript_module_sources = [
   "third_party/lit-html/package/lib/template.js",
   "third_party/lit-html/package/lit-html.js",
   "third_party/marked/package/lib/marked.esm.js",
+  "third_party/wasmparser/package/dist/esm/WasmDis.js",
+  "third_party/wasmparser/package/dist/esm/WasmParser.js",
   "timeline/CLSLinkifier.js",
   "timeline/CountersGraph.js",
   "timeline/EventsTimelineTreeView.js",
@@ -675,6 +674,7 @@ all_typescript_module_sources = [
   "ui/utils/measured-scrollbar-width.js",
   "ui/utils/register-custom-element.js",
   "ui/utils/utils.js",
+  "wasmparser_worker/WasmParserWorker.js",
   "web_audio/AudioContextContentBuilder.js",
   "web_audio/AudioContextSelector.js",
   "web_audio/WebAudioModel.js",

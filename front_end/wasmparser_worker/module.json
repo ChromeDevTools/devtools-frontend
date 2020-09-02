@@ -1,4 +1,5 @@
 {
+  "skip_rollup": true,
   "modules": [
     "../third_party/wasmparser/package/dist/esm/WasmDis.js",
     "../third_party/wasmparser/package/dist/esm/WasmParser.js",

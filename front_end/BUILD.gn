@@ -82,6 +82,7 @@ group("front_end") {
     "timeline_model:bundle",
     "toolbox_bootstrap:bundle",
     "ui:bundle",
+    "wasmparser_worker:bundle",
     "web_audio:bundle",
     "webauthn:bundle",
     "worker_main:bundle",

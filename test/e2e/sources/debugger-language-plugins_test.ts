@@ -324,4 +324,71 @@ describe('The Debugger Language Plugins', async () => {
     const locals = await getValuesForScope('LOCAL', 1, 2);
     assert.deepEqual(locals, ['local: int', 'value: 23']);
   });
+
+  it('shows variable value in popover', async () => {
+    const {frontend} = getBrowserAndPages();
+    await frontend.evaluateHandle(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        () => globalThis.installExtensionPlugin((extensionServerClient: any, extensionAPI: any) => {
+          class VariableListingPlugin {
+            _modules: Map<string, string>;
+            evaluatedVariables: Array<string>;
+            constructor() {
+              this._modules = new Map();
+              this.evaluatedVariables = [];
+            }
+
+            async addRawModule(
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                rawModuleId: any, symbols: any,  // eslint-disable-line @typescript-eslint/no-unused-vars
+                rawModule: any) {                // eslint-disable-line @typescript-eslint/no-explicit-any
+              this._modules.set(rawModuleId.url, rawModule.url);
+              const fileUrl = new URL('unreachable.ll', rawModule.url);
+              return [fileUrl.href];
+            }
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            async rawLocationToSourceLocation(rawLocation: any) {
+              if (rawLocation.codeOffset === 6) {
+                const moduleUrl = this._modules.get(rawLocation.rawModuleId);
+                const sourceFile = new URL('unreachable.ll', moduleUrl);
+                return [{sourceFileURL: sourceFile.href, lineNumber: 5, columnNumber: 2}];
+              }
+              return null;
+            }
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            async listVariablesInScope(rawLocation: any) {  // eslint-disable-line @typescript-eslint/no-unused-vars
+              // The source code is LLVM IR so there are no meaningful variable names. Most tokens are however
+              // identified as js-variable tokens by codemirror, so we can pretend they're variables. The unreachable
+              // instruction is where we pause at, so it's really easy to find in the page and is a great mock variable
+              // candidate.
+              return [{scope: 'LOCAL', name: 'unreachable', type: 'int'}];
+            }
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            async evaluateVariable(name: any, location: any) {  // eslint-disable-line @typescript-eslint/no-unused-vars
+              if (name === 'unreachable') {
+                return {constantValue: {value: '23', js_type: 'number', type: 'int', name: 'unreachable'}};
+              }
+              return null;
+            }
+          }
+
+          RegisterExtension(
+              extensionAPI, new VariableListingPlugin(), 'Location Mapping',
+              {language: 'WebAssembly', symbol_types: ['None']});
+        }));
+
+    await openSourcesPanel();
+    await click(PAUSE_ON_EXCEPTION_BUTTON);
+    await goToResource('sources/wasm/unreachable.html');
+    await waitFor(RESUME_BUTTON);
+
+    const pausedPosition = await waitFor('.cm-execution-line-tail');
+    await pausedPosition.hover();
+    const popover = await waitFor('[data-stable-name-for-test="object-popover-content"]');
+    const value = await waitFor('.object-value-number', popover).then(e => e.evaluate(node => node.textContent));
+    assert.strictEqual(value, '23');
+  });
 });

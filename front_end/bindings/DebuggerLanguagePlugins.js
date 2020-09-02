@@ -265,10 +265,9 @@ class SourceScopeRemoteObject extends SDK.RemoteObject.RemoteObjectImpl {
 }
 
 /**
- * @unrestricted
- * TODO rename Scope to RawScope and add a common interface
+ * @implements {SDK.DebuggerModel.ScopeChainEntry}
  */
-class SourceScope {
+export class SourceScope {
   /**
    * @param {!SDK.DebuggerModel.CallFrame} callFrame
    * @param {string} type
@@ -280,13 +279,43 @@ class SourceScope {
     this._type = type;
     this._object = new SourceScopeRemoteObject(callFrame, plugin, location);
     this._name = type;
-    /** @type {?Location} */
+    /** @type {?SDK.DebuggerModel.Location} */
     this._startLocation = null;
-    /** @type {?Location} */
+    /** @type {?SDK.DebuggerModel.Location} */
     this._endLocation = null;
   }
 
   /**
+   * @param {string} name
+   * @return {!Promise<?SDK.RemoteObject.RemoteObject>}
+   */
+  async getVariableValue(name) {
+    for (let v = 0; v < this._object.variables.length; ++v) {
+      if (this._object.variables[v].name !== name) {
+        continue;
+      }
+      const properties = await this._object.getAllProperties(false, false);
+      if (!properties.properties) {
+        continue;
+      }
+      const {value} = properties.properties[v];
+      if (!value) {
+        continue;
+      }
+      const valueProperties = await value.getAllProperties(false, false);
+      if (!valueProperties || !valueProperties.properties || valueProperties.properties.length === 0) {
+        continue;
+      }
+      const prop = valueProperties.properties[0];
+      if (prop.name === 'value' && prop.value) {
+        return prop.value;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * @override
    * @return {!SDK.DebuggerModel.CallFrame}
    */
   callFrame() {
@@ -294,6 +323,7 @@ class SourceScope {
   }
 
   /**
+   * @override
    * @return {string}
    */
   type() {
@@ -301,6 +331,7 @@ class SourceScope {
   }
 
   /**
+   * @override
    * @return {string}
    */
   typeName() {
@@ -309,6 +340,7 @@ class SourceScope {
 
 
   /**
+   * @override
    * @return {string|undefined}
    */
   name() {
@@ -316,20 +348,23 @@ class SourceScope {
   }
 
   /**
-   * @return {?Location}
+   * @override
+   * @return {?SDK.DebuggerModel.Location}
    */
   startLocation() {
     return this._startLocation;
   }
 
   /**
-   * @return {?Location}
+   * @override
+   * @return {?SDK.DebuggerModel.Location}
    */
   endLocation() {
     return this._endLocation;
   }
 
   /**
+   * @override
    * @return {!SourceScopeRemoteObject}
    */
   object() {
@@ -337,6 +372,7 @@ class SourceScope {
   }
 
   /**
+   * @override
    * @return {string}
    */
   description() {

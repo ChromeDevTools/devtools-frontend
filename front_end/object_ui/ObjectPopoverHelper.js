@@ -90,6 +90,7 @@ export class ObjectPopoverHelper {
         section.titleLessMode();
         popoverContentElement.appendChild(section.element);
       }
+      popoverContentElement.dataset.stableNameForTest = 'object-popover-content';
       popover.setMaxContentSize(new UI.Geometry.Size(300, 250));
       popover.setSizeBehavior(UI.GlassPane.SizeBehavior.SetExactSize);
       popover.contentElement.appendChild(popoverContentElement);
@@ -97,6 +98,7 @@ export class ObjectPopoverHelper {
     }
 
     popoverContentElement = createElement('span');
+    popoverContentElement.dataset.stableNameForTest = 'object-popover-content';
     UI.Utils.appendStyle(popoverContentElement, 'object_ui/objectValue.css');
     UI.Utils.appendStyle(popoverContentElement, 'object_ui/objectPopover.css');
     const valueElement = popoverContentElement.createChild('span', 'monospace object-value-' + result.type);

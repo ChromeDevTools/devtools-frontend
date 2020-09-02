@@ -118,6 +118,7 @@
     "sources",
     "console"
   ],
+  "skip_rollup": true,
   "modules": [
     "browser_debugger.js",
     "browser_debugger-legacy.js",

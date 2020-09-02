@@ -11,6 +11,7 @@
       "experiment": "webauthnPane"
     }
   ],
+  "skip_rollup": true,
   "dependencies": [
     "common",
     "platform",

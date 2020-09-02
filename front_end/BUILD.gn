@@ -82,6 +82,7 @@ group("front_end") {
     "toolbox_bootstrap:bundle",
     "ui:bundle",
     "web_audio:bundle",
+    "webauthn:bundle",
     "worker_main:bundle",
     "worker_service:bundle",
     "workspace:bundle",

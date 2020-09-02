@@ -16,7 +16,6 @@ all_devtools_module_sources = [
   "third_party/wasmparser/package/dist/esm/WasmDis.js",
   "third_party/wasmparser/package/dist/esm/WasmParser.js",
   "wasmparser_worker/WasmParserWorker.js",
-  "webauthn/WebauthnPane.js",
 ]
 
 input_devtools_modules = []
@@ -686,6 +685,7 @@ all_typescript_module_sources = [
   "web_audio/graph_visualizer/GraphView.js",
   "web_audio/graph_visualizer/NodeRendererUtility.js",
   "web_audio/graph_visualizer/NodeView.js",
+  "webauthn/WebauthnPane.js",
   "worker_main/WorkerMain.js",
   "worker_service/ServiceDispatcher.js",
   "workspace/FileManager.js",

@@ -40,6 +40,7 @@ group("front_end") {
     "formatter_worker:bundle",
     "har_importer:bundle",
     "heap_snapshot_model:bundle",
+    "heap_snapshot_worker:bundle",
     "help:bundle",
     "i18n:bundle",
     "inline_editor:bundle",

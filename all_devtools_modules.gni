@@ -4,14 +4,7 @@
 
 import("./scripts/build/ninja/vars.gni")
 
-all_devtools_module_sources = [
-  "heap_snapshot_worker/AllocationProfile.js",
-  "heap_snapshot_worker/HeapSnapshot.js",
-  "heap_snapshot_worker/HeapSnapshotLoader.js",
-  "heap_snapshot_worker/HeapSnapshotWorker.js",
-  "heap_snapshot_worker/HeapSnapshotWorkerDispatcher.js",
-  "test_runner/TestRunner.js",
-]
+all_devtools_module_sources = [ "test_runner/TestRunner.js" ]
 
 input_devtools_modules = []
 output_devtools_modules = []
@@ -217,6 +210,11 @@ all_typescript_module_sources = [
   "har_importer/HARFormat.js",
   "har_importer/HARImporter.js",
   "heap_snapshot_model/HeapSnapshotModel.js",
+  "heap_snapshot_worker/AllocationProfile.js",
+  "heap_snapshot_worker/HeapSnapshot.js",
+  "heap_snapshot_worker/HeapSnapshotLoader.js",
+  "heap_snapshot_worker/HeapSnapshotWorker.js",
+  "heap_snapshot_worker/HeapSnapshotWorkerDispatcher.js",
   "help/HelpImpl.js",
   "help/ReleaseNoteText.js",
   "help/ReleaseNoteView.js",

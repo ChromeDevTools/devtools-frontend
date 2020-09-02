@@ -18,13 +18,6 @@ const gnPath = path.resolve(__dirname, '..', 'BUILD.gn');
 const gnFile = fs.readFileSync(gnPath, 'utf-8');
 const gnLines = gnFile.split('\n');
 
-const EXCLUDED_FILE_NAMES = [
-  // TODO: ignore generated until the import locations are using devtools_{module,entrypoint,pre_built}
-  '../generated/SupportedCSSProperties.js',
-  '../generated/ARIAProperties.js',
-  '../generated/InspectorBackendCommands.js',
-];
-
 /**
  * Ensures that generated module files are in the right list in BUILD.gn.
  * This is primarily to avoid remote modules from accidentally getting
@@ -73,27 +66,6 @@ function checkAllDevToolsFiles() {
       ...resources,
     ];
   });
-}
-
-function checkAllDevToolsModules() {
-  return checkGNVariable(
-      'all_devtools_modules', 'all_devtools_module_sources',
-      (moduleJSON, folderName) => {
-        if (moduleJSON.skip_rollup) {
-          return [];
-        }
-        return (moduleJSON.modules || []).filter(fileName => {
-          if (EXCLUDED_FILE_NAMES.includes(fileName) || fileName.startsWith('../third_party/codemirror') ||
-              fileName.startsWith('../third_party/acorn')) {
-            return false;
-          }
-          return fileName !== `${folderName}.js` && fileName !== `${folderName}-legacy.js`;
-        });
-      },
-      buildGNPath => filename => {
-        const relativePath = path.normalize(`${buildGNPath}/${filename}`);
-        return `"${relativePath}",`;
-      });
 }
 
 function checkDevtoolsModuleEntrypoints() {
@@ -191,7 +163,6 @@ function main() {
   const errors = [
     ...checkNonAutostartNonRemoteModules(),
     ...checkAllDevToolsFiles(),
-    ...checkAllDevToolsModules(),
     ...checkDevtoolsModuleEntrypoints(),
   ];
   if (errors.length) {

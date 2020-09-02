@@ -90,6 +90,25 @@ group("front_end") {
   data_deps = [
     ":embedder-scripts",
     ":front_end_html_entrypoints",
+    ":legacy_css",
+  ]
+}
+
+group("legacy_css") {
+  public_deps = [
+    "cm:legacy_css",
+    "components:legacy_css",
+    "console:legacy_css",
+    "console_counters:legacy_css",
+    "data_grid:legacy_css",
+    "elements:legacy_css",
+    "emulation:legacy_css",
+    "help:legacy_css",
+    "inspector_main:legacy_css",
+    "mobile_throttling:legacy_css",
+    "object_ui:legacy_css",
+    "persistence:legacy_css",
+    "ui:legacy_css",
   ]
 }
 

@@ -33,6 +33,16 @@ devtools_module("console") {
   ]
 }
 
+copy_to_gen("legacy_css") {
+  sources = [
+    "consoleContextSelector.css",
+    "consolePinPane.css",
+    "consolePrompt.css",
+    "consoleSidebar.css",
+    "consoleView.css",
+  ]
+}
+
 devtools_entrypoint("bundle") {
   entrypoint = "console.js"
 

@@ -19,6 +19,10 @@ devtools_module("help") {
   ]
 }
 
+copy_to_gen("legacy_css") {
+  sources = [ "releaseNote.css" ]
+}
+
 devtools_entrypoint("bundle") {
   entrypoint = "help.js"
 

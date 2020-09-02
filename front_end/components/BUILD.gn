@@ -26,6 +26,13 @@ devtools_module("components") {
   ]
 }
 
+copy_to_gen("legacy_css") {
+  sources = [
+    "imagePreview.css",
+    "jsUtils.css",
+  ]
+}
+
 devtools_entrypoint("bundle") {
   entrypoint = "components.js"
 

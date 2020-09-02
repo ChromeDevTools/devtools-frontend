@@ -78,6 +78,50 @@ devtools_module("ui") {
   ]
 }
 
+copy_to_gen("legacy_css") {
+  sources = [
+    "checkboxTextLabel.css",
+    "closeButton.css",
+    "confirmDialog.css",
+    "dialog.css",
+    "dropTarget.css",
+    "emptyWidget.css",
+    "filter.css",
+    "glassPane.css",
+    "infobar.css",
+    "inlineButton.css",
+    "inspectorCommon.css",
+    "inspectorStyle.css",
+    "inspectorSyntaxHighlight.css",
+    "inspectorSyntaxHighlightDark.css",
+    "inspectorViewTabbedPane.css",
+    "listWidget.css",
+    "popover.css",
+    "progressIndicator.css",
+    "radioButton.css",
+    "remoteDebuggingTerminatedScreen.css",
+    "reportView.css",
+    "rootView.css",
+    "searchableView.css",
+    "segmentedButton.css",
+    "slider.css",
+    "smallBubble.css",
+    "softContextMenu.css",
+    "softDropDown.css",
+    "softDropDownButton.css",
+    "splitWidget.css",
+    "suggestBox.css",
+    "tabbedPane.css",
+    "targetCrashedScreen.css",
+    "textButton.css",
+    "textPrompt.css",
+    "toolbar.css",
+    "tooltip.css",
+    "treeoutline.css",
+    "viewContainers.css",
+  ]
+}
+
 devtools_entrypoint("bundle") {
   entrypoint = "ui.js"
 

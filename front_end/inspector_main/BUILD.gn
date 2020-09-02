@@ -21,6 +21,13 @@ devtools_module("inspector_main") {
   ]
 }
 
+copy_to_gen("legacy_css") {
+  sources = [
+    "nodeIcon.css",
+    "renderingOptions.css",
+  ]
+}
+
 devtools_entrypoint("bundle") {
   entrypoint = "inspector_main.js"
 

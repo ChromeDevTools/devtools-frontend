@@ -75,6 +75,7 @@ group("front_end") {
     "snippets:bundle",
     "source_frame:bundle",
     "sources:bundle",
+    "test_runner:bundle",
     "text_editor:bundle",
     "text_utils:bundle",
     "theme_support:bundle",

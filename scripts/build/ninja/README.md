@@ -119,5 +119,3 @@ All implementation files for components are listed in `/all_devtools_modules.gni
 > Rule: the implementation files are only present in the GRD file in a debug build, because the release build bundles all files into the respective entrypoint
 
 > Rule: all implementation files that are checked by TypeScript (this includes typescriptified implementaion files) or are copied with `devtools_pre_built` are listed in `all_typescript_module_sources`
-
-> Rule: all implementation files that are **only** checked by Closure Compiler and are not part of `devtools_module` or `devtools_pre_built` are listed in `all_devtools_module_sources`

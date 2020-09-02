@@ -276,10 +276,6 @@ devtools_frontend_resources_deps = [
   "test",
 ]
 
-if (is_debug) {
-  devtools_frontend_resources_deps += [ ":copy_devtools_modules" ]
-}
-
 group("devtools_all_files") {
   testonly = true
   data = all_devtools_files + generated_devtools_module_entrypoint_sources
@@ -303,34 +299,13 @@ copy("copy_emulated_devices_images") {
   outputs = [ "$resources_out_dir/emulated_devices/{{source_file_part}}" ]
 }
 
-if (is_debug) {
-  action("copy_devtools_modules") {
-    script = "scripts/build/copy_devtools_modules.py"
-
-    deps = [ ":build_release_devtools" ]
-
-    inputs = input_devtools_modules
-    response_file_contents = inputs
-    outputs = output_devtools_modules
-
-    args = [
-      "--file_list",
-      "{{response_file_name}}",
-      "--input_path",
-      rebase_path(".", root_build_dir),
-      "--output_path",
-      rebase_path(resources_out_dir, root_build_dir),
-    ]
-  }
-}
-
 action("generate_devtools_grd") {
   script = "scripts/build/generate_devtools_grd.py"
 
   deps = [ ":devtools_frontend_resources" ]
 
   grd_files =
-      generated_devtools_module_entrypoint_sources + output_devtools_modules +
+      generated_devtools_module_entrypoint_sources +
       generated_applications_html + generated_applications_js +
       generated_non_autostart_non_remote_modules + devtools_embedder_scripts +
       generated_worker_bundles + generated_typescript_entrypoint_sources +
@@ -425,7 +400,7 @@ action("build_release_devtools") {
 
   inputs = helper_scripts + all_devtools_files + devtools_test_files +
            application_templates + all_worker_entrypoints +
-           front_end_devtools_module_entrypoint_sources + input_devtools_modules
+           front_end_devtools_module_entrypoint_sources
   outputs =
       generated_applications_js + generated_non_autostart_non_remote_modules +
       generated_remote_modules + generated_test_modules +

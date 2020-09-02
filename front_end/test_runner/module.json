@@ -6,6 +6,7 @@
     "host",
     "main"
   ],
+  "skip_rollup": true,
   "modules": [
     "test_runner.js",
     "TestRunner.js"

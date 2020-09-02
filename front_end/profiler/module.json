@@ -150,6 +150,5 @@
     "profileLauncherView.css",
     "profilesPanel.css",
     "profilesSidebarTree.css"
-  ],
-  "skip_rollup": true
+  ]
 }

@@ -12,6 +12,5 @@
     "js_main.js",
     "js_main-legacy.js",
     "JsMain.js"
-  ],
-  "skip_rollup": true
+  ]
 }

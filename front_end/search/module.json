@@ -1,9 +1,7 @@
 {
   "dependencies": [
     "components"
-  ],
-  "skip_rollup": true,
-  "modules": [
+  ],  "modules": [
     "search.js",
     "search-legacy.js",
     "SearchView.js",

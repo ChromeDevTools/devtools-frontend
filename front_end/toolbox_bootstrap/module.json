@@ -5,6 +5,5 @@
   ],
   "modules": [
     "toolbox_bootstrap.js"
-  ],
-  "skip_rollup": true
+  ]
 }

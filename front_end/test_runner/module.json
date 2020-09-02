@@ -5,9 +5,7 @@
     "ui",
     "host",
     "main"
-  ],
-  "skip_rollup": true,
-  "modules": [
+  ],  "modules": [
     "test_runner.js",
     "TestRunner.js"
   ]

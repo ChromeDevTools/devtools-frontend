@@ -278,6 +278,5 @@
     "timelinePanel.css",
     "timelinePaintProfiler.css",
     "timelineStatusDialog.css"
-  ],
-  "skip_rollup": true
+  ]
 }

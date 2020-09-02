@@ -67,6 +67,5 @@
   "resources": [
     "coverageListView.css",
     "coverageView.css"
-  ],
-  "skip_rollup": true
+  ]
 }

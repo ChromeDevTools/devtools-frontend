@@ -31,6 +31,5 @@
     "accessibilityNode.css",
     "accessibilityProperties.css",
     "axBreadcrumbs.css"
-  ],
-  "skip_rollup": true
+  ]
 }

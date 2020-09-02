@@ -18,9 +18,7 @@
     "data_grid",
     "source_frame",
     "perf_ui"
-  ],
-  "skip_rollup": true,
-  "modules": [
+  ],  "modules": [
     "media.js",
     "media-legacy.js",
     "EventDisplayTable.js",

@@ -543,6 +543,5 @@
     "SimpleApp.js",
     "ExecutionContextSelector.js",
     "MainImpl.js"
-  ],
-  "skip_rollup": true
+  ]
 }

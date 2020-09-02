@@ -307,9 +307,7 @@
     "inline_editor",
     "color_picker",
     "event_listeners"
-  ],
-  "skip_rollup": true,
-  "modules": [
+  ],  "modules": [
     "elements.js",
     "elements-legacy.js",
     "InspectElementModeController.js",

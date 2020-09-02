@@ -9,7 +9,5 @@
     "number-utilities.js",
     "array-utilities.js",
     "UIString.js"
-  ],
-
-  "skip_rollup": true
+  ]
 }

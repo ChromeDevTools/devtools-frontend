@@ -11,7 +11,5 @@
     "Platform.js",
     "ResourceLoader.js",
     "UserMetrics.js"
-  ],
-
-  "skip_rollup": true
+  ]
 }

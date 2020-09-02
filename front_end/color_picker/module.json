@@ -13,6 +13,5 @@
   ],
   "resources": [
     "spectrum.css"
-  ],
-  "skip_rollup": true
+  ]
 }

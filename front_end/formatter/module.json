@@ -8,6 +8,5 @@
     "FormatterWorkerPool.js",
     "ScriptFormatter.js",
     "SourceFormatter.js"
-  ],
-  "skip_rollup": true
+  ]
 }

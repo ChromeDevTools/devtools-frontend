@@ -12,6 +12,5 @@
     "TimelineJSProfile.js",
     "TimelineFrameModel.js",
     "TimelineProfileTree.js"
-  ],
-  "skip_rollup": true
+  ]
 }

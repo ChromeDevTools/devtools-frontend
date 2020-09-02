@@ -72,13 +72,8 @@ function checkDevtoolsModuleEntrypoints() {
   return checkGNVariable(
       'devtools_module_entrypoints', 'devtools_module_entrypoint_sources',
       (moduleJSON, folderName) => {
-        // TODO(crbug.com/1101738): Remove the exemption and change the variable to
-        // `generated_typescript_entrypoint_sources` instead.
-        if (moduleJSON.skip_rollup) {
-          return [];
-        }
         return (moduleJSON.modules || []).filter(fileName => {
-          return fileName === `${folderName}.js` || fileName === `${folderName}-legacy.js`;
+          return fileName === `${folderName}-legacy.js`;
         });
       },
       buildGNPath => filename => {

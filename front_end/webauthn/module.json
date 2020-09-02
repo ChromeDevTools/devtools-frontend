@@ -10,9 +10,7 @@
       "className": "Webauthn.WebauthnPane",
       "experiment": "webauthnPane"
     }
-  ],
-  "skip_rollup": true,
-  "dependencies": [
+  ],  "dependencies": [
     "common",
     "platform",
     "ui",

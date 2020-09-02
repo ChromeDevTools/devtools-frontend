@@ -1,6 +1,4 @@
-{
-  "skip_rollup": true,
-  "modules": [
+{  "modules": [
     "marked.js",
     "../third_party/marked/package/lib/marked.esm.js"
   ],

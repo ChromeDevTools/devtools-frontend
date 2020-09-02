@@ -11,6 +11,5 @@
   ],
   "resources": [
     "cookiesTable.css"
-  ],
-  "skip_rollup": true
+  ]
 }

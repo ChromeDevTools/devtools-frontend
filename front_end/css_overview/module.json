@@ -35,6 +35,5 @@
     "cssOverviewProcessingView.css",
     "cssOverviewCompletedView.css",
     "cssOverviewSidebarPanel.css"
-  ],
-  "skip_rollup": true
+  ]
 }

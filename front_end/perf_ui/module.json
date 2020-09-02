@@ -93,6 +93,5 @@
     "overviewGrid.css",
     "timelineGrid.css",
     "timelineOverviewInfo.css"
-  ],
-  "skip_rollup": true
+  ]
 }

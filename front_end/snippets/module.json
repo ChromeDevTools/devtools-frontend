@@ -17,6 +17,5 @@
     "snippets-legacy.js",
     "ScriptSnippetFileSystem.js",
     "SnippetsQuickOpen.js"
-  ],
-  "skip_rollup": true
+  ]
 }

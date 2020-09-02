@@ -13,6 +13,5 @@
     "javascript_metadata-legacy.js",
     "NativeFunctions.js",
     "JavaScriptMetadata.js"
-  ],
-  "skip_rollup": true
+  ]
 }

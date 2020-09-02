@@ -238,6 +238,5 @@
     "consolePrompt.css",
     "consoleSidebar.css",
     "consoleView.css"
-  ],
-  "skip_rollup": true
+  ]
 }

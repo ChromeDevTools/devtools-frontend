@@ -546,9 +546,7 @@
         }
       ]
     }
-  ],
-  "skip_rollup": true,
-  "modules": [
+  ],  "modules": [
     "../generated/SupportedCSSProperties.js",
     "sdk.js",
     "sdk-legacy.js",

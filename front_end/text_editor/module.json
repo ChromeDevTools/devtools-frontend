@@ -27,9 +27,7 @@
     "CodeMirrorUtils.js",
     "TextEditorAutocompleteController.js",
     "CodeMirrorTextEditor.js"
-  ],
-  "skip_rollup": true,
-  "skip_compilation": [
+  ],  "skip_compilation": [
     "../third_party/codemirror/package/mode/css/css.js",
     "../third_party/codemirror/package/mode/javascript/javascript.js",
     "../third_party/codemirror/package/mode/xml/xml.js",

@@ -111,6 +111,5 @@
   ],
   "resources": [
     "filteredListWidget.css"
-  ],
-  "skip_rollup": true
+  ]
 }

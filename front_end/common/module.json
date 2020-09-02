@@ -31,6 +31,5 @@
     "StringOutputStream.js",
     "CharacterIdMap.js",
     "Lazy.js"
-  ],
-  "skip_rollup": true
+  ]
 }

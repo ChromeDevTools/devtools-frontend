@@ -10,6 +10,5 @@
   ],
   "skip_compilation": [
     "diff_match_patch.js"
-  ],
-  "skip_rollup": true
+  ]
 }

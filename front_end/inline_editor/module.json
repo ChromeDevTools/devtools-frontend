@@ -19,6 +19,5 @@
     "cssShadowSwatch.css",
     "cssShadowEditor.css",
     "swatchPopover.css"
-  ],
-  "skip_rollup": true
+  ]
 }

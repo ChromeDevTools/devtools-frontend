@@ -7,9 +7,7 @@
     "HeapSnapshotLoader.js",
     "HeapSnapshotWorkerDispatcher.js",
     "HeapSnapshotWorker.js"
-  ],
-  "skip_rollup": true,
-  "dependencies": [
+  ],  "dependencies": [
     "heap_snapshot_model",
     "platform",
     "common"

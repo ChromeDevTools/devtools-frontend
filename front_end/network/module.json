@@ -245,6 +245,5 @@
     "signedExchangeInfoTree.css",
     "signedExchangeInfoView.css",
     "webSocketFrameView.css"
-  ],
-  "skip_rollup": true
+  ]
 }

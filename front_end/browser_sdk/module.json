@@ -19,9 +19,7 @@
         }
       ]
     }
-  ],
-  "skip_rollup": true,
-  "modules": [
+  ],  "modules": [
     "browser_sdk.js",
     "browser_sdk-legacy.js",
     "LogManager.js",

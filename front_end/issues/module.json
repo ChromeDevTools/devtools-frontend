@@ -28,9 +28,7 @@
     "marked",
     "network",
     "browser_sdk"
-  ],
-  "skip_rollup": true,
-  "modules": [
+  ],  "modules": [
     "issues.js",
     "issues-legacy.js",
     "IssuesPane.js",

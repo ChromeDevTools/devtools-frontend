@@ -28,6 +28,5 @@
   ],
   "resources": [
     "nodeConnectionsPanel.css"
-  ],
-  "skip_rollup": true
+  ]
 }

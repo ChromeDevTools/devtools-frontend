@@ -172,8 +172,7 @@ class ReleaseBuilder(object):
                 if len(non_autostart_deps):
                     bail_error(
                         'Non-autostart dependencies specified for the autostarted module "%s": %s' % (name, non_autostart_deps))
-                self._rollup_module(name, desc.get('modules', []),
-                                    desc.get('skip_rollup', False))
+                self._rollup_module(name, desc.get('modules', []))
             else:
                 non_autostart.add(name)
 
@@ -201,13 +200,16 @@ class ReleaseBuilder(object):
         if resources:
             self._write_module_resources(resources, output)
         if modules:
-            self._rollup_module(module_name, modules,
-                                module.get('skip_rollup', False))
+            self._rollup_module(module_name, modules)
         output_file_path = concatenated_module_filename(module_name, self.output_dir)
         write_file(output_file_path, minify_js(output.getvalue()))
         output.close()
 
-    def _rollup_module(self, module_name, modules, skip_rollup):
+    def _rollup_module(
+            self,
+            module_name,
+            modules,
+    ):
         legacyFileName = module_name + '-legacy.js'
         if legacyFileName in modules:
             write_file(
@@ -216,31 +218,6 @@ class ReleaseBuilder(object):
                     read_file(
                         join(self.application_dir, module_name,
                              legacyFileName))))
-
-        # Temporary hack, as we use `devtools_entrypoint` for this module now
-        # TODO(crbug.com/1101738): remove once all folders are migrated
-        if skip_rollup:
-            return
-
-        js_entrypoint = join(self.application_dir, module_name, module_name + '.js')
-        out = ''
-        if self.use_rollup:
-            rollup_process = subprocess.Popen([
-                devtools_paths.node_path(),
-                devtools_paths.rollup_path(), '--config',
-                join(FRONT_END_DIRECTORY, 'rollup.config.js'), '--input',
-                js_entrypoint
-            ],
-                                              stdout=subprocess.PIPE,
-                                              stderr=subprocess.PIPE)
-            out, error = rollup_process.communicate()
-            if rollup_process.returncode != 0:
-                print(error)
-                sys.exit(rollup_process.returncode)
-        else:
-            out = read_file(js_entrypoint)
-        write_file(join(self.output_dir, module_name, module_name + '.js'),
-                   minify_js(out))
 
 
 if __name__ == '__main__':

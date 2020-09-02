@@ -9,6 +9,5 @@
     "protocol_client-legacy.js",
     "NodeURL.js",
     "InspectorBackend.js"
-  ],
-  "skip_rollup": true
+  ]
 }

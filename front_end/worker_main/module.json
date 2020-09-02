@@ -13,6 +13,5 @@
     "worker_main.js",
     "worker_main-legacy.js",
     "WorkerMain.js"
-  ],
-  "skip_rollup": true
+  ]
 }

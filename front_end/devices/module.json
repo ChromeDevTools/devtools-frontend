@@ -20,6 +20,5 @@
   "modules": [
     "devices.js",
     "DevicesView.js"
-  ],
-  "skip_rollup": true
+  ]
 }

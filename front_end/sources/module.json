@@ -1145,6 +1145,5 @@
     "threadsSidebarPane.css",
     "watchExpressionsSidebarPane.css",
     "dialog.css"
-  ],
-  "skip_rollup": true
+  ]
 }

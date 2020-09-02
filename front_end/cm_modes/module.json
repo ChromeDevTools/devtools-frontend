@@ -117,6 +117,5 @@
     "../third_party/codemirror/package/mode/markdown/markdown.js",
     "../third_party/codemirror/package/mode/clojure/clojure.js",
     "../third_party/codemirror/package/mode/jsx/jsx.js"
-  ],
-  "skip_rollup": true
+  ]
 }

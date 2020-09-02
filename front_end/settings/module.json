@@ -135,6 +135,5 @@
     "frameworkBlackboxSettingsTab.css",
     "settingsScreen.css",
     "keybindsSettingsTab.css"
-  ],
-  "skip_rollup": true
+  ]
 }

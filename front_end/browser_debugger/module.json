@@ -117,9 +117,7 @@
     "elements",
     "sources",
     "console"
-  ],
-  "skip_rollup": true,
-  "modules": [
+  ],  "modules": [
     "browser_debugger.js",
     "browser_debugger-legacy.js",
     "DOMBreakpointsSidebarPane.js",

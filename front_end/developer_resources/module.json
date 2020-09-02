@@ -10,9 +10,7 @@
       "className": "DeveloperResources.DeveloperResourcesView",
       "experiment": "developerResourcesView"
     }
-  ],
-  "skip_rollup": true,
-  "dependencies": [
+  ],  "dependencies": [
     "common",
     "platform",
     "ui",

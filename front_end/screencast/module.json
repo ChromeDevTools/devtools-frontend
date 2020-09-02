@@ -31,6 +31,5 @@
   ],
   "resources": [
     "screencastView.css"
-  ],
-  "skip_rollup": true
+  ]
 }

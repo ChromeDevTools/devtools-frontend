@@ -3,9 +3,7 @@
     "bindings",
     "platform",
     "ui"
-  ],
-  "skip_rollup": true,
-  "modules": [
+  ],  "modules": [
     "components.js",
     "components-legacy.js",
     "JSPresentationUtils.js",

@@ -8,6 +8,5 @@
     "har_importer-legacy.js",
     "HARFormat.js",
     "HARImporter.js"
-  ],
-  "skip_rollup": true
+  ]
 }

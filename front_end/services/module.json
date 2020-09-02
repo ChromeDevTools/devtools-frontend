@@ -7,6 +7,5 @@
     "services.js",
     "services-legacy.js",
     "ServiceManager.js"
-  ],
-  "skip_rollup": true
+  ]
 }

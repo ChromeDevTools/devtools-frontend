@@ -99,9 +99,6 @@
     },
     "experiment": {
       "type": "string"
-    },
-    "skip_rollup": {
-      "type": "boolean"
     }
   },
   "definitions": {

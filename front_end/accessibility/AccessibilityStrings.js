@@ -182,6 +182,7 @@ export const AXAttributes = {
       'label': {name: ls`From label`, description: ls`Value from label element.`},
       'labelfor': {name: ls`From label (for)`, description: ls`Value from label element with for= attribute.`},
       'labelwrapped': {name: ls`From label (wrapped)`, description: ls`Value from label element wrapped.`},
+      'legend': {name: ls`From legend`, description: ls`Value from legend element.`},
       'tablecaption': {name: ls`From caption`, description: ls`Value from table caption.`},
       'title': {name: ls`From title`, description: ls`Value from title attribute.`},
       'other': {name: ls`From native HTML`, description: ls`Value from native HTML (unknown source).`},

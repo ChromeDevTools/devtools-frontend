@@ -297,6 +297,9 @@
   <message name="IDS_DEVTOOLS_cfa5234b2737df4bc3dc737484605c39" desc="Reason element in Accessibility Node View of the Accessibility panel">
     <ph name="ARIAHIDDENSPAN">$1s<ex>aria-hidden</ex></ph> is <ph name="TRUESPAN">$2s<ex>true</ex></ph> on ancestor: '''
   </message>
+  <message name="IDS_DEVTOOLS_d3bdbf575a8458b68be1c70a84bc4632" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
+    From legend
+  </message>
   <message name="IDS_DEVTOOLS_d3fd6a090f523416f156281b8735573b" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
     From title
   </message>
@@ -353,6 +356,9 @@
   </message>
   <message name="IDS_DEVTOOLS_e8ce1fb5b4c870b68d6f6e5c7037c61f" desc="Tooltip text that appears when hovering over the 'From style' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
     Value from style.
+  </message>
+  <message name="IDS_DEVTOOLS_edea336844af38e1386b869df2fbf603" desc="Tooltip text that appears when hovering over the 'From legend' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
+    Value from legend element.
   </message>
   <message name="IDS_DEVTOOLS_f36499431cc70b125fea5984d3d0d17c" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
     Active descendant

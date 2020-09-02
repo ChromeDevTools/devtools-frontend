@@ -138,17 +138,18 @@ interface Event {
 }
 
 interface Node {
+  enclosingNodeOrSelfWithClass(className: string, stayWithin?: Element): Element;
   getComponentRoot(): Document|DocumentFragment|null;
   getComponentSelection(): Selection|null;
   hasSameShadowRoot(other: Node): boolean;
+  hasSelection(): boolean;
   isSelfOrAncestor(node: Node|null): boolean;
   isSelfOrDescendant(node: Node|null): boolean;
   parentElementOrShadowHost(): Element|null;
   parentNodeOrShadowHost(): Node|null;
+  setTextContentTruncatedIfNeeded(text: any, placeholder?: string): boolean;
   traverseNextNode(stayWithin?: Node): Node|null;
-  enclosingNodeOrSelfWithClass(className: string, stayWithin?: Element): Element;
   window(): Window;
-  hasSelection(): boolean;
 }
 
 declare function isEnterKey(event: Event): boolean;

@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {assertNotNull, renderElementIntoDOM} from './DOMHelpers.js';
+import {renderElementIntoDOM, assertElements, assertElement} from './DOMHelpers.js';
 import {reset} from '../../../../front_end/inspector_overlay/common.js';
 import {_normalizePositionData, drawGridAreaNames, drawGridLineNumbers, drawGridLineNames} from '../../../../front_end/inspector_overlay/css_grid_label_helpers.js';
 import {AreaBounds, Bounds} from '../../../../front_end/inspector_overlay/common.js';
@@ -87,51 +87,47 @@ export function createGridLabelContainer(layerId?: number) {
 }
 
 export function getMainGridLabelContainer(): HTMLElement {
-  const el = document.getElementById(GRID_LABEL_CONTAINER_ID) as HTMLElement;
-  assertNotNull(el);
+  const el = document.getElementById(GRID_LABEL_CONTAINER_ID);
+  assertElement(el, HTMLElement);
   return el;
 }
 
 export function getGridLabelContainer(layerId?: number): HTMLElement {
   const id = layerId ? `grid-${layerId}-labels` : DEFAULT_GRID_LABEL_LAYER_ID;
-  const el = document.querySelector(`#${GRID_LABEL_CONTAINER_ID} #${CSS.escape(id)}`) as HTMLElement;
-  assertNotNull(el);
+  const el = document.querySelector(`#${GRID_LABEL_CONTAINER_ID} #${CSS.escape(id)}`);
+  assertElement(el, HTMLElement);
   return el;
 }
 
 export function getGridLineNumberLabelContainer(layerId?: number): HTMLElement {
   const id = layerId ? `grid-${layerId}-labels` : DEFAULT_GRID_LABEL_LAYER_ID;
-  const el =
-      document.querySelector(
-          `#${GRID_LABEL_CONTAINER_ID} #${CSS.escape(id)} .${GRID_LINE_NUMBER_LABEL_CONTAINER_CLASS}`) as HTMLElement;
-  assertNotNull(el);
+  const el = document.querySelector(
+      `#${GRID_LABEL_CONTAINER_ID} #${CSS.escape(id)} .${GRID_LINE_NUMBER_LABEL_CONTAINER_CLASS}`);
+  assertElement(el, HTMLElement);
   return el;
 }
 
 export function getGridLineNameLabelContainer(layerId?: number): HTMLElement {
   const id = layerId ? `grid-${layerId}-labels` : DEFAULT_GRID_LABEL_LAYER_ID;
   const el =
-      document.querySelector(
-          `#${GRID_LABEL_CONTAINER_ID} #${CSS.escape(id)} .${GRID_LINE_NAME_LABEL_CONTAINER_CLASS}`) as HTMLElement;
-  assertNotNull(el);
+      document.querySelector(`#${GRID_LABEL_CONTAINER_ID} #${CSS.escape(id)} .${GRID_LINE_NAME_LABEL_CONTAINER_CLASS}`);
+  assertElement(el, HTMLElement);
   return el;
 }
 
 export function getGridTrackSizesLabelContainer(layerId?: number): HTMLElement {
   const id = layerId ? `grid-${layerId}-labels` : DEFAULT_GRID_LABEL_LAYER_ID;
-  const el =
-      document.querySelector(
-          `#${GRID_LABEL_CONTAINER_ID} #${CSS.escape(id)} .${GRID_TRACK_SIZES_LABEL_CONTAINER_CLASS}`) as HTMLElement;
-  assertNotNull(el);
+  const el = document.querySelector(
+      `#${GRID_LABEL_CONTAINER_ID} #${CSS.escape(id)} .${GRID_TRACK_SIZES_LABEL_CONTAINER_CLASS}`);
+  assertElement(el, HTMLElement);
   return el;
 }
 
 export function getGridAreaNameLabelContainer(layerId?: number): HTMLElement {
   const id = layerId ? `grid-${layerId}-labels` : DEFAULT_GRID_LABEL_LAYER_ID;
   const el =
-      document.querySelector(
-          `#${GRID_LABEL_CONTAINER_ID} #${CSS.escape(id)} .${GRID_LINE_AREA_LABEL_CONTAINER_CLASS}`) as HTMLElement;
-  assertNotNull(el);
+      document.querySelector(`#${GRID_LABEL_CONTAINER_ID} #${CSS.escape(id)} .${GRID_LINE_AREA_LABEL_CONTAINER_CLASS}`);
+  assertElement(el, HTMLElement);
   return el;
 }
 
@@ -218,10 +214,10 @@ export function drawGridLineNamesAndAssertLabels(
 
   const labels = el.querySelectorAll(`.${GRID_LINE_NAME_LABEL_CONTAINER_CLASS} .grid-label-content`);
   assert.strictEqual(labels.length, expectedLabels.length, 'The right total number of line name labels were displayed');
+  assertElements(labels, HTMLElement);
 
   const foundLabels: {textContent: string, x: number, y: number}[] = [];
-  labels.forEach(label => {
-    const el = label as HTMLElement;
+  labels.forEach(el => {
     const width = el.offsetWidth;
     const height = el.offsetHeight;
     const top = parseInt(el.style.top, 10);
@@ -242,7 +238,7 @@ export function drawGridLineNamesAndAssertLabels(
     }
 
     foundLabels.push({
-      textContent: label.textContent || '',
+      textContent: el.textContent || '',
       x: left + columnOffset,
       y: top + rowOffset,
     });
@@ -277,13 +273,14 @@ export function drawGridAreaNamesAndAssertLabels(
 
   const labels = el.querySelectorAll(`.${GRID_LINE_AREA_LABEL_CONTAINER_CLASS} .grid-label-content`);
   assert.strictEqual(labels.length, expectedLabels.length, 'The right total number of area name labels were displayed');
+  assertElements(labels, HTMLElement);
 
   const foundLabels: ExpectedAreaNameLabel[] = [];
   labels.forEach(label => {
     foundLabels.push({
       textContent: label.textContent || '',
-      top: (label as HTMLElement).style.top,
-      left: (label as HTMLElement).style.left,
+      top: label.style.top,
+      left: label.style.left,
     });
   });
   for (const expected of expectedLabels) {

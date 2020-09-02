@@ -4,7 +4,7 @@
 
 import {ElementsBreadcrumbs} from '../../../../front_end/elements/ElementsBreadcrumbs.js';
 import {crumbsToRender, determineElementTitle, DOMNode} from '../../../../front_end/elements/ElementsBreadcrumbsUtils.js';
-import {assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
+import {assertElements, assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const {assert} = chai;
 
@@ -267,7 +267,8 @@ describe('ElementsBreadcrumbs', () => {
 
       assertShadowRoot(component.shadowRoot);
 
-      const scrollButtons = component.shadowRoot.querySelectorAll<HTMLButtonElement>('button.overflow');
+      const scrollButtons = component.shadowRoot.querySelectorAll('button.overflow');
+      assertElements(scrollButtons, HTMLButtonElement);
 
       if (!scrollButtons) {
         assert.fail('Expected to find some scrollButtons');

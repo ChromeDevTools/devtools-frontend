@@ -70,3 +70,23 @@ export function assertNotNull<T>(val: T): asserts val is NonNullable<T> {
 export function assertShadowRoot(shadowRoot: ShadowRoot|null): asserts shadowRoot is ShadowRoot {
   assert.instanceOf(shadowRoot, ShadowRoot);
 }
+
+type Constructor<T> = {
+  new (...args: unknown[]): T
+};
+
+/**
+ * Asserts that `element` is of type `T`.
+ */
+export function assertElement<T extends Element>(
+    element: Element|null, elementClass: Constructor<T>): asserts element is T {
+  assert.instanceOf(element, elementClass);
+}
+
+/**
+ * Asserts that all emenents of `nodeList` are at least of type `T`.
+ */
+export function assertElements<T extends Element>(
+    nodeList: NodeListOf<Element>, elementClass: Constructor<T>): asserts nodeList is NodeListOf<T> {
+  nodeList.forEach(e => assert.instanceOf(e, elementClass));
+}

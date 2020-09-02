@@ -4,7 +4,7 @@
 
 import {LayoutPane, SettingChangedEvent} from '../../../../front_end/elements/LayoutPane.js';
 import {SettingType} from '../../../../front_end/elements/LayoutPaneUtils.js';
-import {assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
+import {assertElement, assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const {assert} = chai;
 
@@ -95,7 +95,8 @@ describe('LayoutPane', () => {
 
     assertShadowRoot(component.shadowRoot);
 
-    const input = component.shadowRoot.querySelector('[data-input]') as HTMLInputElement;
+    const input = component.shadowRoot.querySelector('[data-input]');
+    assertElement(input, HTMLInputElement);
 
     const eventPromise = new Promise<SettingChangedEvent>(resolve => {
       component.addEventListener('setting-changed', (event: Event) => {
@@ -170,7 +171,8 @@ describe('LayoutPane', () => {
 
     assertShadowRoot(component.shadowRoot);
 
-    const input = component.shadowRoot.querySelector('[data-input]') as HTMLInputElement;
+    const input = component.shadowRoot.querySelector('[data-input]');
+    assertElement(input, HTMLInputElement);
     input.click();
     assert.strictEqual(called, 1);
   });
@@ -194,7 +196,8 @@ describe('LayoutPane', () => {
     };
     renderElementIntoDOM(component);
     assertShadowRoot(component.shadowRoot);
-    const button = component.shadowRoot.querySelector('button.show-element') as HTMLInputElement;
+    const button = component.shadowRoot.querySelector('button.show-element');
+    assertElement(button, HTMLButtonElement);
     button.click();
     assert.strictEqual(called, 1);
   });

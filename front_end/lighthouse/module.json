@@ -10,6 +10,7 @@
       "tags": "lighthouse, pwa"
     }
   ],
+  "skip_rollup": true,
   "dependencies": [
     "components",
     "emulation",

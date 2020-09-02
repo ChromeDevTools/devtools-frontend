@@ -49,6 +49,7 @@ group("front_end") {
     "js_main:bundle",
     "layer_viewer:bundle",
     "layers:bundle",
+    "lighthouse:bundle",
     "main:bundle",
     "media:bundle",
     "mobile_throttling:bundle",

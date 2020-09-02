@@ -71,22 +71,6 @@ export function applyDarkModeClassIfNeeded() {
   return '';
 }
 
-export async function populateRuntimeCacheForTests() {
-  if (self.Runtime) {
-    console.error('poulateRuntimeCacheForTests found existing Runtime, refusing to overwrite it.');
-  }
-
-  self.Runtime = {cachedResources: {}};
-
-  const allPromises = CSS_RESOURCES_TO_LOAD_INTO_RUNTIME.map(resourcePath => {
-    return fetch('/' + resourcePath).then(response => response.text()).then(cssText => {
-      self.Runtime.cachedResources[resourcePath] = cssText;
-    });
-  });
-
-  return Promise.all(allPromises);
-}
-
 /*
  * The getStylesheet helper in components reads styles out of the runtime cache.
  * In a proper build this is populated but in test runs because we don't load

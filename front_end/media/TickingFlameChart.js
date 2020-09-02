@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// @ts-nocheck
+// TODO(crbug.com/1011811): Enable TypeScript compiler checks
+
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
@@ -70,7 +73,7 @@ let EventProperties;  // eslint-disable-line no-unused-vars
  * Wrapper class for each event displayed on the timeline.
  * @unrestricted
  */
-class Event {
+export class Event {
   constructor(timelineData, eventHandlers, eventProperties = {}) {
     // These allow the event to privately change it's own data in the timeline.
     this._timelineData = timelineData;

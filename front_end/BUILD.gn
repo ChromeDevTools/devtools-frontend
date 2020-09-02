@@ -50,6 +50,7 @@ group("front_end") {
     "layer_viewer:bundle",
     "layers:bundle",
     "main:bundle",
+    "media:bundle",
     "mobile_throttling:bundle",
     "network:bundle",
     "node_main:bundle",

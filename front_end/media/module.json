@@ -19,6 +19,7 @@
     "source_frame",
     "perf_ui"
   ],
+  "skip_rollup": true,
   "modules": [
     "media.js",
     "media-legacy.js",

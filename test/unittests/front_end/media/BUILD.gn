@@ -4,5 +4,5 @@ ts_library("media") {
   testonly = true
   sources = [ "TickingFlameChartHelpers_test.ts" ]
 
-  deps = [ "../../../../front_end/media" ]
+  deps = [ "../../../../front_end/media:bundle" ]
 }

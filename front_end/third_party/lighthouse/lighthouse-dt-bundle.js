@@ -34454,12 +34454,12 @@ style:'percent'}}};
 
 
 
-function lookupLocale(locale){
+function lookupLocale(locales){
 
-const canonicalLocale=Intl.getCanonicalLocales(locale)[0];
+const canonicalLocales=Intl.getCanonicalLocales(locales);
 
-const closestLocale=lookupClosestLocale(canonicalLocale,LOCALES);
-return closestLocale||'en';
+const closestLocale=lookupClosestLocale(canonicalLocales,LOCALES);
+return closestLocale||DEFAULT_LOCALE;
 }
 
 

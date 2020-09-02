@@ -51,11 +51,12 @@ class LighthouseService {  // eslint-disable-line
       this.statusUpdate(message[1]);
     });
 
-    return Promise.resolve()
-        .then(_ => {
+    return this.fetchLocaleData(params.locales)
+        .then(locale => {
           const flags = params.flags;
           flags.logLevel = flags.logLevel || 'info';
           flags.channel = 'devtools';
+          flags.locale = locale;
 
           const connection = self.setUpWorkerConnection(this);
           const config = self.createConfig(params.categoryIDs, flags.emulatedFormFactor);
@@ -72,6 +73,33 @@ class LighthouseService {  // eslint-disable-line
                  message: err.message,
                  stack: err.stack,
                }));
+  }
+
+  /**
+   * @param {string[]} locales
+   * @return {string|undefined}
+   */
+  async fetchLocaleData(locales) {
+    const locale = self.lookupLocale(locales);
+
+    // If the locale is en-US, no need to fetch locale data.
+    if (locale === 'en-US' || locale === 'en') {
+      return;
+    }
+
+    // Try to load the locale data.
+    const localeResource = `../third_party/lighthouse/locales/${locale}.json`;
+    try {
+      // @ts-ignore self.runtime needs to be moved to ESModules so we can import this
+      const module = self.runtime.module('lighthouse_worker');
+      const localeDataText = await module.fetchResource(localeResource);
+      const localeData = JSON.parse(localeDataText);
+      self.registerLocaleData(locale, localeData);
+      return locale;
+    } catch (_) {
+    }
+
+    // If no locale was found, or fetching locale data fails, Lighthouse will use `en-US` by default.
   }
 
   /**

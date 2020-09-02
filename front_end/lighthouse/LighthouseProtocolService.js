@@ -32,6 +32,10 @@ export class ProtocolService extends Common.ObjectWrapper.ObjectWrapper {
     this._rawConnection = await childTargetManager.createParallelConnection(this._dispatchProtocolMessage.bind(this));
   }
 
+  getLocales() {
+    return navigator.languages;
+  }
+
   /**
    * @param {string} auditURL
    * @param {!Array<string>} categoryIDs
@@ -39,7 +43,8 @@ export class ProtocolService extends Common.ObjectWrapper.ObjectWrapper {
    * @return {!Promise<!ReportRenderer.RunnerResult>}
    */
   startLighthouse(auditURL, categoryIDs, flags) {
-    return this._send('start', {url: auditURL, categoryIDs, flags});
+    const locales = this.getLocales();
+    return this._send('start', {url: auditURL, categoryIDs, flags, locales});
   }
 
   /**

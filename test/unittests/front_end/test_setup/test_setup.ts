@@ -34,9 +34,16 @@ before(async function() {
   self.Runtime = self.Runtime || {cachedResources: {}};
   const allPromises = ComponentHelpers.GetStylesheet.CSS_RESOURCES_TO_LOAD_INTO_RUNTIME.map(resourcePath => {
     const pathWithKarmaPrefix = `/base/${targetDir}/front_end/${resourcePath}`;
-    return fetch(pathWithKarmaPrefix).then(response => response.text()).then(cssText => {
-      self.Runtime.cachedResources[resourcePath] = cssText;
-    });
+    return fetch(pathWithKarmaPrefix)
+        .then(response => {
+          if (response.status > 399) {
+            throw new Error(`Error preloading CSS file: ${pathWithKarmaPrefix}: ${response.status}`);
+          }
+          return response.text();
+        })
+        .then(cssText => {
+          self.Runtime.cachedResources[resourcePath] = cssText;
+        });
   });
   return Promise.all(allPromises);
 });

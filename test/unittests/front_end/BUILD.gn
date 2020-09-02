@@ -53,6 +53,7 @@ copy_to_gen("copy-css-resources") {
     "../../../front_end/console/consoleView.css",
     "../../../front_end/console_counters/errorWarningCounter.css",
     "../../../front_end/data_grid/dataGrid.css",
+    "../../../front_end/elements/layoutPane.css",
     "../../../front_end/emulation/deviceModeToolbar.css",
     "../../../front_end/emulation/deviceModeView.css",
     "../../../front_end/emulation/devicesSettingsTab.css",

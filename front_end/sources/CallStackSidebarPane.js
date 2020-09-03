@@ -29,6 +29,7 @@
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as Persistence from '../persistence/persistence.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -407,7 +408,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   appendBlackboxURLContextMenuItems(contextMenu, uiSourceCode) {
-    const binding = self.Persistence.persistence.binding(uiSourceCode);
+    const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
     if (binding) {
       uiSourceCode = binding.network;
     }

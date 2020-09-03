@@ -6,6 +6,7 @@
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';
+import * as Persistence from '../persistence/persistence.js';
 import * as QuickOpen from '../quick_open/quick_open.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -54,7 +55,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
    * @return {boolean}
    */
   _filterUISourceCode(uiSourceCode) {
-    const binding = self.Persistence.persistence.binding(uiSourceCode);
+    const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
     return !binding || binding.fileSystem === uiSourceCode;
   }
 
@@ -121,7 +122,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
 
     let multiplier = 10;
     if (uiSourceCode.project().type() === Workspace.Workspace.projectTypes.FileSystem &&
-        !self.Persistence.persistence.binding(uiSourceCode)) {
+        !Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode)) {
       multiplier = 5;
     }
 

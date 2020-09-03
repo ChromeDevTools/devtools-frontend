@@ -33,6 +33,7 @@
 
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
+import * as Persistence from '../persistence/persistence.js';
 import * as Search from '../search/search.js';  // eslint-disable-line no-unused-vars
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -67,9 +68,9 @@ export class SourcesSearchScope {
       return 1;
     }
     const isFileSystem1 = uiSourceCode1.project().type() === Workspace.Workspace.projectTypes.FileSystem &&
-        !self.Persistence.persistence.binding(uiSourceCode1);
+        !Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode1);
     const isFileSystem2 = uiSourceCode2.project().type() === Workspace.Workspace.projectTypes.FileSystem &&
-        !self.Persistence.persistence.binding(uiSourceCode2);
+        !Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode2);
     if (isFileSystem1 !== isFileSystem2) {
       return isFileSystem1 ? 1 : -1;
     }
@@ -169,7 +170,7 @@ export class SourcesSearchScope {
       if (!uiSourceCode.contentType().isTextType()) {
         continue;
       }
-      const binding = self.Persistence.persistence.binding(uiSourceCode);
+      const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
       if (binding && binding.network === uiSourceCode) {
         continue;
       }

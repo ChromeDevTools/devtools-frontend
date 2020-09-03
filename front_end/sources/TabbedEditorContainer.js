@@ -85,9 +85,9 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
     this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabClosed, this._tabClosed, this);
     this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._tabSelected, this);
 
-    self.Persistence.persistence.addEventListener(
+    Persistence.Persistence.PersistenceImpl.instance().addEventListener(
         Persistence.Persistence.Events.BindingCreated, this._onBindingCreated, this);
-    self.Persistence.persistence.addEventListener(
+    Persistence.Persistence.PersistenceImpl.instance().addEventListener(
         Persistence.Persistence.Events.BindingRemoved, this._onBindingRemoved, this);
 
     this._tabIds = new Map();
@@ -280,7 +280,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
    * @param {boolean=} userGesture
    */
   _innerShowFile(uiSourceCode, userGesture) {
-    const binding = self.Persistence.persistence.binding(uiSourceCode);
+    const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
     uiSourceCode = binding ? binding.fileSystem : uiSourceCode;
     if (this._currentFile === uiSourceCode) {
       return;
@@ -401,7 +401,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
   addUISourceCode(uiSourceCode) {
     const canonicalSourceCode = this._canonicalUISourceCode(uiSourceCode);
     const duplicated = canonicalSourceCode !== uiSourceCode;
-    const binding = self.Persistence.persistence.binding(canonicalSourceCode);
+    const binding = Persistence.Persistence.PersistenceImpl.instance().binding(canonicalSourceCode);
     uiSourceCode = binding ? binding.fileSystem : canonicalSourceCode;
 
     if (duplicated && uiSourceCode.project().type() !== Workspace.Workspace.projectTypes.FileSystem) {
@@ -495,7 +495,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
    * @return {string}
    */
   _tooltipForFile(uiSourceCode) {
-    uiSourceCode = self.Persistence.persistence.network(uiSourceCode) || uiSourceCode;
+    uiSourceCode = Persistence.Persistence.PersistenceImpl.instance().network(uiSourceCode) || uiSourceCode;
     return uiSourceCode.url();
   }
 
@@ -639,7 +639,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
       if (uiSourceCode.loadError()) {
         icon = UI.Icon.Icon.create('smallicon-error');
         icon.title = ls`Unable to load this content.`;
-      } else if (self.Persistence.persistence.hasUnsavedCommittedChanges(uiSourceCode)) {
+      } else if (Persistence.Persistence.PersistenceImpl.instance().hasUnsavedCommittedChanges(uiSourceCode)) {
         icon = UI.Icon.Icon.create('smallicon-warning');
         icon.title = Common.UIString.UIString('Changes to this file were not saved to file system.');
       } else {

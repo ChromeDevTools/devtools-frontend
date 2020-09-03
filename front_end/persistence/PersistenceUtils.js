@@ -20,7 +20,7 @@ export class PersistenceUtils {
    * @return {string}
    */
   static tooltipForUISourceCode(uiSourceCode) {
-    const binding = self.Persistence.persistence.binding(uiSourceCode);
+    const binding = PersistenceImpl.instance().binding(uiSourceCode);
     if (!binding) {
       return '';
     }
@@ -38,7 +38,7 @@ export class PersistenceUtils {
    * @return {?UI.Icon.Icon}
    */
   static iconForUISourceCode(uiSourceCode) {
-    const binding = self.Persistence.persistence.binding(uiSourceCode);
+    const binding = PersistenceImpl.instance().binding(uiSourceCode);
     if (binding) {
       if (!binding.fileSystem.url().startsWith('file://')) {
         return null;

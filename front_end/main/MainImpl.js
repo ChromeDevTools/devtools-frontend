@@ -293,8 +293,11 @@ export class MainImpl {
     new Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding(
         Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance(),
         Workspace.Workspace.WorkspaceImpl.instance());
-    self.Persistence.persistence = new Persistence.Persistence.PersistenceImpl(
-        Workspace.Workspace.WorkspaceImpl.instance(), Bindings.BreakpointManager.BreakpointManager.instance());
+    self.Persistence.persistence = Persistence.Persistence.PersistenceImpl.instance({
+      forceNew: true,
+      workspace: Workspace.Workspace.WorkspaceImpl.instance(),
+      breakpointManager: Bindings.BreakpointManager.BreakpointManager.instance()
+    });
     self.Persistence.networkPersistenceManager =
         Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance(
             {forceNew: true, workspace: Workspace.Workspace.WorkspaceImpl.instance()});

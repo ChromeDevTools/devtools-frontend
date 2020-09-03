@@ -10,7 +10,7 @@ import * as SDK from '../sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {FileSystem, FileSystemWorkspaceBinding} from './FileSystemWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
-import {PersistenceBinding} from './PersistenceImpl.js';
+import {PersistenceBinding, PersistenceImpl} from './PersistenceImpl.js';
 
 /** @type {?NetworkPersistenceManager} */
 let networkPersistenceManagerInstance;
@@ -51,7 +51,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
       this._onProjectRemoved(/** @type {!Workspace.Workspace.Project} */ (event.data));
     });
 
-    self.Persistence.persistence.addNetworkInterceptor(this._canHandleNetworkUISourceCode.bind(this));
+    PersistenceImpl.instance().addNetworkInterceptor(this._canHandleNetworkUISourceCode.bind(this));
 
     /** @type {!Array<!Common.EventTarget.EventDescriptor>} */
     this._eventDescriptors = [];
@@ -179,7 +179,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
           this._project.uiSourceCodes().map(uiSourceCode => this._filesystemUISourceCodeRemoved(uiSourceCode)));
       this._networkUISourceCodeForEncodedPath.clear();
     }
-    self.Persistence.persistence.refreshAutomapping();
+    PersistenceImpl.instance().refreshAutomapping();
   }
 
   /**
@@ -275,7 +275,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     if (binding) {
       delete binding.network[this._bindingSymbol];
       delete binding.fileSystem[this._bindingSymbol];
-      await self.Persistence.persistence.removeBinding(binding);
+      await PersistenceImpl.instance().removeBinding(binding);
     }
   }
 
@@ -293,11 +293,11 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     const binding = new PersistenceBinding(networkUISourceCode, fileSystemUISourceCode);
     networkUISourceCode[this._bindingSymbol] = binding;
     fileSystemUISourceCode[this._bindingSymbol] = binding;
-    await self.Persistence.persistence.addBinding(binding);
+    await PersistenceImpl.instance().addBinding(binding);
     const uiSourceCodeOfTruth = networkUISourceCode[this._savingSymbol] ? networkUISourceCode : fileSystemUISourceCode;
     const [{content}, encoded] =
         await Promise.all([uiSourceCodeOfTruth.requestContent(), uiSourceCodeOfTruth.contentEncoded()]);
-    self.Persistence.persistence.syncContent(uiSourceCodeOfTruth, content, encoded);
+    PersistenceImpl.instance().syncContent(uiSourceCodeOfTruth, content, encoded);
   }
 
   /**

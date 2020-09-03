@@ -7,6 +7,7 @@
 
 import * as Common from '../common/common.js';
 import * as Diff from '../diff/diff.js';  // eslint-disable-line no-unused-vars
+import * as Persistence from '../persistence/persistence.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as TextEditor from '../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';                            // eslint-disable-line no-unused-vars
@@ -270,7 +271,7 @@ export class ContextMenuProvider {
    */
   appendApplicableItems(event, contextMenu, target) {
     let uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (target);
-    const binding = self.Persistence.persistence.binding(uiSourceCode);
+    const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
     if (binding) {
       uiSourceCode = binding.network;
     }

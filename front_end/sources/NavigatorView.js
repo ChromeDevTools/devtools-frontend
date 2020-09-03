@@ -81,9 +81,9 @@ export class NavigatorView extends UI.Widget.VBox {
 
     this._initGrouping();
 
-    self.Persistence.persistence.addEventListener(
+    Persistence.Persistence.PersistenceImpl.instance().addEventListener(
         Persistence.Persistence.Events.BindingCreated, this._onBindingChanged, this);
-    self.Persistence.persistence.addEventListener(
+    Persistence.Persistence.PersistenceImpl.instance().addEventListener(
         Persistence.Persistence.Events.BindingRemoved, this._onBindingChanged, this);
     SDK.SDKModel.TargetManager.instance().addEventListener(
         SDK.SDKModel.Events.NameChanged, this._targetNameChanged, this);
@@ -1166,7 +1166,7 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   updateIcon() {
-    const binding = self.Persistence.persistence.binding(this._uiSourceCode);
+    const binding = Persistence.Persistence.PersistenceImpl.instance().binding(this._uiSourceCode);
     if (binding) {
       const container = document.createElement('span');
       container.classList.add('icon-stack');
@@ -1671,7 +1671,8 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
     const absoluteFileSystemPath =
         Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemPath(this._project.id()) + '/' +
         this._folderPath;
-    const hasMappedFiles = self.Persistence.persistence.filePathHasBindings(absoluteFileSystemPath);
+    const hasMappedFiles =
+        Persistence.Persistence.PersistenceImpl.instance().filePathHasBindings(absoluteFileSystemPath);
     this._treeElement.listItemElement.classList.toggle('has-mapped-files', hasMappedFiles);
   }
 
@@ -1856,7 +1857,7 @@ export class NavigatorGroupTreeNode extends NavigatorTreeNode {
     const fileSystemPath =
         Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemPath(this._project.id());
     const wasActive = this._treeElement.listItemElement.classList.contains('has-mapped-files');
-    const isActive = self.Persistence.persistence.filePathHasBindings(fileSystemPath);
+    const isActive = Persistence.Persistence.PersistenceImpl.instance().filePathHasBindings(fileSystemPath);
     if (wasActive === isActive) {
       return;
     }

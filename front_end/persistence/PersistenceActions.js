@@ -12,6 +12,7 @@ import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
 import * as Workspace from '../workspace/workspace.js';
 
 import {NetworkPersistenceManager} from './NetworkPersistenceManager.js';
+import {PersistenceImpl} from './PersistenceImpl.js';
 
 /**
  * @implements {UI.ContextMenu.Provider}
@@ -54,7 +55,7 @@ export class ContextMenuProvider {
       });
     }
 
-    const binding = uiSourceCode && self.Persistence.persistence.binding(uiSourceCode);
+    const binding = uiSourceCode && PersistenceImpl.instance().binding(uiSourceCode);
     const fileURL = binding ? binding.fileSystem.contentURL() : contentProvider.contentURL();
     if (fileURL.startsWith('file://')) {
       const path = Common.ParsedURL.ParsedURL.urlToPlatformPath(fileURL, Host.Platform.isWin());

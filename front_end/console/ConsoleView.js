@@ -333,7 +333,6 @@ export class ConsoleView extends UI.Widget.VBox {
         fastHeight() {
           return this._cachedIssueBarHeight || 37;
         },
-        toExportString: () => ls`Some messages have been moved to the Issues panel.`,
         _cachedIssueBarHeight: 0
       };
       this._scheduleViewportRefresh();
@@ -858,7 +857,7 @@ export class ConsoleView extends UI.Widget.VBox {
     }
 
     const sourceElement = eventTarget.enclosingNodeOrSelfWithClass('console-message-wrapper');
-    const consoleMessage = (sourceElement && 'message' in sourceElement) ?
+    const consoleMessage = sourceElement ?
         // @ts-expect-error We can't convert this to a Weakmap, as it comes from `ConsoleViewMessage` instead.
         /** @type {!ConsoleViewMessage} */ (sourceElement.message).consoleMessage() :
         null;

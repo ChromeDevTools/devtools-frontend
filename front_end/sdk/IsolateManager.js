@@ -8,15 +8,15 @@ import {HeapProfilerModel} from './HeapProfilerModel.js';  // eslint-disable-lin
 import {RuntimeModel} from './RuntimeModel.js';
 import {SDKModelObserver, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
+/** @type {!IsolateManager} */
+let isolateManagerInstance;
+
 /**
  * @implements {SDKModelObserver<!RuntimeModel>}
  */
 export class IsolateManager extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
-    // @ts-ignore
-    // TODO(crbug.com/1058320): Replace self.SDK.isolateManager global.
-    console.assert(!self.SDK.isolateManager, 'Use self.SDK.isolateManager singleton.');
     /** @type {!Map<string, !Isolate>} */
     this._isolates = new Map();
     // _isolateIdByModel contains null while the isolateId is being retrieved.
@@ -26,6 +26,17 @@ export class IsolateManager extends Common.ObjectWrapper.ObjectWrapper {
     this._observers = new Set();
     TargetManager.instance().observeModels(RuntimeModel, this);
     this._pollId = 0;
+  }
+
+  /**
+   * @param {{forceNew: boolean}} opts
+   */
+  static instance({forceNew} = {forceNew: false}) {
+    if (!isolateManagerInstance || forceNew) {
+      isolateManagerInstance = new IsolateManager();
+    }
+
+    return isolateManagerInstance;
   }
 
   /**
@@ -225,8 +236,7 @@ export class Isolate {
     }
     this._usedHeapSize = usage.usedSize;
     this._memoryTrend.add(this._usedHeapSize);
-    // @ts-ignore Replace with IsolateManager.instance.
-    self.SDK.isolateManager.dispatchEventToListeners(Events.MemoryChanged, this);
+    IsolateManager.instance().dispatchEventToListeners(Events.MemoryChanged, this);
   }
 
   /**

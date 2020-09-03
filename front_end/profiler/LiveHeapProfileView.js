@@ -114,7 +114,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
   async _poll() {
     const pollId = this._currentPollId;
     do {
-      const isolates = Array.from(self.SDK.isolateManager.isolates());
+      const isolates = Array.from(SDK.IsolateManager.IsolateManager.instance().isolates());
       const profiles = await Promise.all(
           isolates.map(isolate => isolate.heapProfilerModel() && isolate.heapProfilerModel().getSamplingProfile()));
       if (this._currentPollId !== pollId) {

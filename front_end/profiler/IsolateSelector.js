@@ -39,7 +39,7 @@ export class IsolateSelector extends UI.Widget.VBox {
     this._totalTrendDiv.title = ls`Total page JS heap size change trend over the last ${trendIntervalMinutes} minutes.`;
     this._totalValueDiv.title = ls`Total page JS heap size across all VM instances.`;
 
-    self.SDK.isolateManager.observeIsolates(this);
+    SDK.IsolateManager.IsolateManager.instance().observeIsolates(this);
     SDK.SDKModel.TargetManager.instance().addEventListener(SDK.SDKModel.Events.NameChanged, this._targetChanged, this);
     SDK.SDKModel.TargetManager.instance().addEventListener(
         SDK.SDKModel.Events.InspectedURLChanged, this._targetChanged, this);
@@ -49,14 +49,16 @@ export class IsolateSelector extends UI.Widget.VBox {
    * @override
    */
   wasShown() {
-    self.SDK.isolateManager.addEventListener(SDK.IsolateManager.Events.MemoryChanged, this._heapStatsChanged, this);
+    SDK.IsolateManager.IsolateManager.instance().addEventListener(
+        SDK.IsolateManager.Events.MemoryChanged, this._heapStatsChanged, this);
   }
 
   /**
    * @override
    */
   willHide() {
-    self.SDK.isolateManager.removeEventListener(SDK.IsolateManager.Events.MemoryChanged, this._heapStatsChanged, this);
+    SDK.IsolateManager.IsolateManager.instance().removeEventListener(
+        SDK.IsolateManager.Events.MemoryChanged, this._heapStatsChanged, this);
   }
 
   /**
@@ -108,7 +110,7 @@ export class IsolateSelector extends UI.Widget.VBox {
     if (!model) {
       return;
     }
-    const isolate = self.SDK.isolateManager.isolateByModel(model);
+    const isolate = SDK.IsolateManager.IsolateManager.instance().isolateByModel(model);
     const item = isolate && this._itemByIsolate.get(isolate);
     if (item) {
       item.updateTitle();
@@ -130,7 +132,7 @@ export class IsolateSelector extends UI.Widget.VBox {
   _updateTotal() {
     let total = 0;
     let trend = 0;
-    for (const isolate of self.SDK.isolateManager.isolates()) {
+    for (const isolate of SDK.IsolateManager.IsolateManager.instance().isolates()) {
       total += isolate.usedHeapSize();
       trend += isolate.usedHeapSizeGrowRate();
     }

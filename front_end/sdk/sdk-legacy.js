@@ -251,5 +251,5 @@ SDK.TracingModel.DevToolsMetadataEventCategory = SDKModule.TracingModel.DevTools
 SDK.TracingModel.Event = SDKModule.TracingModel.Event;
 
 self.SDK.targetManager = SDKModule.SDKModel.TargetManager.instance();
-self.SDK.isolateManager = new SDKModule.IsolateManager.IsolateManager();
+self.SDK.isolateManager = SDKModule.IsolateManager.IsolateManager.instance({forceNew: true});
 self.SDK.domModelUndoStack = SDKModule.DOMModel.DOMModelUndoStack.instance();

@@ -1187,7 +1187,7 @@ class IssueView extends UI.TreeOutline.TreeElement {
       // TODO(crbug.com/1108501): Allow x-link elements to subscribe to the events 'click' and 'keydown' if the key
       //       is the 'Enter' key, or add some mechanism that allows to add telemetry to this element.
       const link = UI.XLink.XLink.create(description.link, ls`Learn more: ${description.linkTitle}`, 'link');
-      const linkIcon = UI.Icon.Icon.create('largeicon-link', 'link-icon');
+      const linkIcon = UI.Icon.Icon.create('largeicon-link', 'link');
       link.prepend(linkIcon);
 
       const linkListItem = linkList.createChild('li');

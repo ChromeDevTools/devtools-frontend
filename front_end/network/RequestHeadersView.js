@@ -183,7 +183,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
         callToActionBody.appendChild(link);
       } else if (header.details.link) {
         const link = UI.XLink.XLink.create(header.details.link.url, ls`Learn more`, 'link');
-        link.prepend(UI.Icon.Icon.create('largeicon-link', 'link-icon'));
+        link.prepend(UI.Icon.Icon.create('largeicon-link'));
         callToActionBody.appendChild(link);
       }
     }

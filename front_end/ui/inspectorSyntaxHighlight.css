@@ -130,6 +130,10 @@
   vertical-align: middle;
 }
 
+.devtools-link [is=ui-icon].icon-mask {
+  background-color: var(--link-color);
+}
+
 .devtools-link:focus-visible {
   outline-width: unset;
 }

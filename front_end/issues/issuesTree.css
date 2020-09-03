@@ -346,6 +346,10 @@ ul > li.plain-enum::before {
   background-color: var(--issue-link);
 }
 
+.devtools-link [is=ui-icon].icon-mask.link {
+  background-color: var(--issue-link);
+}
+
 .affected-resource-cell [is=ui-icon].icon-mask.unavailable {
   background-color: var(--issue-warning);
 }

@@ -122,7 +122,7 @@
 }
 
 .devtools-link {
-  color: rgb(17 85 204);
+  color: var(--link-color);
   text-decoration: underline;
 }
 
@@ -140,11 +140,6 @@
 
 .devtools-link:not(.devtools-link-prevent-click) {
   cursor: pointer;
-}
-
-.-theme-with-dark-background .devtools-link,
-:host-context(.-theme-with-dark-background) .devtools-link {
-  color: hsl(0deg 0% 67%);
 }
 
 /* Default CodeMirror Theme */

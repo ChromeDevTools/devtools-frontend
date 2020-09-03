@@ -50,7 +50,6 @@
 .webkit-html-attribute-name { color: var(--dom-attribute-name-color); }
 .webkit-html-attribute-value { color: rgb(242 151 102); }
 .webkit-html-comment { color: rgb(137 137 137); }
-.devtools-link { color: rgb(231 194 111); }
 .webkit-html-tag { color: var(--dom-tag-name-color); }
 .webkit-html-tag-name { color: var(--dom-tag-name-color); }
 .webkit-html-close-tag-name { color: var(--dom-tag-name-color); }

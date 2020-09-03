@@ -70,6 +70,7 @@
   --network-grid-from-frame-color: rgb(224 247 250 / 40%);
   --network-grid-is-product-color: rgb(255 252 225 / 60%);
   --network-frame-divider-color: #fccc49;
+  --link-color: rgb(17 85 204);
 }
 
 .-theme-with-dark-background {
@@ -106,6 +107,7 @@
   --network-grid-focus-selected-color-has-error: rgb(217 58 58 / 15%);
   --network-grid-from-frame-color: rgb(224 247 250 / 40%);
   --network-grid-is-product-color: rgb(255 252 225 / 60%);
+  --link-color: rgb(171 171 171);
 }
 
 body {

@@ -120,7 +120,7 @@
   min-width: 28px;
   background: transparent;
   border: none;
-  color: rgb(17 85 204);
+  color: var(--link-color);
   text-decoration: underline;
   cursor: pointer;
 }

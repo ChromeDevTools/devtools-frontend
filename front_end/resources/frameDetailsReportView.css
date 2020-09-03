@@ -39,12 +39,7 @@
 }
 
 .icon-link.devtools-link {
-  background-color: rgb(17 85 204);
+  background-color: var(--link-color);
   margin-left: 0.5ex;
   vertical-align: sub;
-}
-
-.-theme-with-dark-background .icon-link.devtools-link,
-:host-context(.-theme-with-dark-background) .icon-link.devtools-link {
-  background-color: hsl(0deg 0% 67%);
 }

@@ -9,7 +9,8 @@ import * as Host from '../host/host.js';
 import * as UI from '../ui/ui.js';
 
 export function reload() {
-  if (self.UI.dockController.canDock() && self.UI.dockController.dockSide() === UI.DockController.State.Undocked) {
+  if (UI.DockController.DockController.instance().canDock() &&
+      UI.DockController.DockController.instance().dockSide() === UI.DockController.State.Undocked) {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.setIsDocked(true, function() {});
   }
   Host.InspectorFrontendHost.InspectorFrontendHostInstance.reattach(() => window.location.reload());

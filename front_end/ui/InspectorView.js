@@ -409,8 +409,8 @@ export class InspectorView extends VBox {
           text: ls`Reload DevTools`,
           highlight: true,
           delegate: () => {
-            if (self.UI.dockController.canDock() &&
-                self.UI.dockController.dockSide() === DockController.State.Undocked) {
+            if (DockController.instance().canDock() &&
+                DockController.instance().dockSide() === DockController.State.Undocked) {
               Host.InspectorFrontendHost.InspectorFrontendHostInstance.setIsDocked(true, function() {});
             }
             Host.InspectorFrontendHost.InspectorFrontendHostInstance.reattach(() => window.location.reload());

@@ -38,6 +38,9 @@ import {ActionDelegate} from './ActionDelegate.js';                 // eslint-di
 import {Context} from './Context.js';                               // eslint-disable-line no-unused-vars
 import {Provider, ToolbarButton, ToolbarItem} from './Toolbar.js';  // eslint-disable-line no-unused-vars
 
+/** @type {!DockController} */
+let dockControllerInstance;
+
 /**
  * @unrestricted
  */
@@ -71,6 +74,19 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper {
     if (this._states.indexOf(this._lastDockStateSetting.get()) === -1) {
       this._currentDockStateSetting.set('bottom');
     }
+  }
+
+  /**
+   * @param {{forceNew: ?boolean, canDock: boolean}} opts
+   * @return {!DockController}
+   */
+  static instance(opts = {forceNew: null, canDock: false}) {
+    const {forceNew, canDock} = opts;
+    if (!dockControllerInstance || forceNew) {
+      dockControllerInstance = new DockController(canDock);
+    }
+
+    return dockControllerInstance;
   }
 
   initialize() {
@@ -189,7 +205,7 @@ export class ToggleDockActionDelegate {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    self.UI.dockController._toggleDockSide();
+    DockController.instance()._toggleDockSide();
     return true;
   }
 }
@@ -204,6 +220,6 @@ export class CloseButtonProvider {
    * @return {?ToolbarItem}
    */
   item() {
-    return self.UI.dockController._closeButton;
+    return DockController.instance()._closeButton;
   }
 }

@@ -249,7 +249,7 @@ export class MainImpl {
     UI.ContextMenu.ContextMenu.installHandler(document);
     UI.Tooltip.Tooltip.installHandler(document);
     self.SDK.consoleModel = SDK.ConsoleModel.ConsoleModel.instance();
-    self.UI.dockController = new UI.DockController.DockController(canDock);
+    self.UI.dockController = UI.DockController.DockController.instance({forceNew: true, canDock});
     self.SDK.multitargetNetworkManager = SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});
     self.SDK.domDebuggerManager = new SDK.DOMDebuggerModel.DOMDebuggerManager();
     SDK.SDKModel.TargetManager.instance().addEventListener(
@@ -326,7 +326,7 @@ export class MainImpl {
     MainImpl.time('Main._showAppUI');
     const app = /** @type {!Common.AppProvider.AppProvider} */ (appProvider).createApp();
     // It is important to kick controller lifetime after apps are instantiated.
-    self.UI.dockController.initialize();
+    UI.DockController.DockController.instance().initialize();
     app.presentUI(document);
 
     const toggleSearchNodeAction = UI.ActionRegistry.ActionRegistry.instance().action('elements.toggle-element-search');
@@ -473,7 +473,7 @@ export class MainImpl {
         shortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Tilde, UI.KeyboardShortcut.Modifiers.Ctrl),
         toggleConsoleLabel);
     section.addKey(shortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Esc), Common.UIString.UIString('Toggle drawer'));
-    if (self.UI.dockController.canDock()) {
+    if (UI.DockController.DockController.instance().canDock()) {
       section.addKey(
           shortcut.makeDescriptor('M', UI.KeyboardShortcut.Modifiers.CtrlOrMeta | UI.KeyboardShortcut.Modifiers.Shift),
           Common.UIString.UIString('Toggle device mode'));
@@ -644,7 +644,7 @@ export class MainMenuItem {
    * @param {!UI.ContextMenu.ContextMenu} contextMenu
    */
   _handleContextMenu(contextMenu) {
-    if (self.UI.dockController.canDock()) {
+    if (UI.DockController.DockController.instance().canDock()) {
       const dockItemElement = document.createElement('div');
       dockItemElement.classList.add('flex-centered');
       dockItemElement.classList.add('flex-auto');
@@ -678,10 +678,12 @@ export class MainMenuItem {
           UI.Toolbar.ToolbarButton.Events.Click, setDockSide.bind(null, UI.DockController.State.DockedToRight));
       left.addEventListener(
           UI.Toolbar.ToolbarButton.Events.Click, setDockSide.bind(null, UI.DockController.State.DockedToLeft));
-      undock.setToggled(self.UI.dockController.dockSide() === UI.DockController.State.Undocked);
-      bottom.setToggled(self.UI.dockController.dockSide() === UI.DockController.State.DockedToBottom);
-      right.setToggled(self.UI.dockController.dockSide() === UI.DockController.State.DockedToRight);
-      left.setToggled(self.UI.dockController.dockSide() === UI.DockController.State.DockedToLeft);
+      undock.setToggled(UI.DockController.DockController.instance().dockSide() === UI.DockController.State.Undocked);
+      bottom.setToggled(
+          UI.DockController.DockController.instance().dockSide() === UI.DockController.State.DockedToBottom);
+      right.setToggled(
+          UI.DockController.DockController.instance().dockSide() === UI.DockController.State.DockedToRight);
+      left.setToggled(UI.DockController.DockController.instance().dockSide() === UI.DockController.State.DockedToLeft);
       dockItemToolbar.appendToolbarItem(undock);
       dockItemToolbar.appendToolbarItem(left);
       dockItemToolbar.appendToolbarItem(bottom);
@@ -714,14 +716,14 @@ export class MainMenuItem {
      * @suppressGlobalPropertiesCheck
      */
     function setDockSide(side) {
-      self.UI.dockController.once(UI.DockController.Events.AfterDockSideChanged).then(() => {
+      UI.DockController.DockController.instance().once(UI.DockController.Events.AfterDockSideChanged).then(() => {
         button.focus();
       });
-      self.UI.dockController.setDockSide(side);
+      UI.DockController.DockController.instance().setDockSide(side);
       contextMenu.discard();
     }
 
-    if (self.UI.dockController.dockSide() === UI.DockController.State.Undocked &&
+    if (UI.DockController.DockController.instance().dockSide() === UI.DockController.State.Undocked &&
         SDK.SDKModel.TargetManager.instance().mainTarget() &&
         SDK.SDKModel.TargetManager.instance().mainTarget().type() === SDK.SDKModel.Type.Frame) {
       contextMenu.defaultSection().appendAction(

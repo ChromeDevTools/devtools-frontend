@@ -21,7 +21,7 @@ let _appInstance;
  */
 export class AdvancedApp {
   constructor() {
-    self.UI.dockController.addEventListener(
+    UI.DockController.DockController.instance().addEventListener(
         UI.DockController.Events.BeforeDockSideChanged, this._openToolboxWindow, this);
   }
 
@@ -52,10 +52,11 @@ export class AdvancedApp {
     this._inspectedPagePlaceholder.addEventListener(Events.Update, this._onSetInspectedPageBounds.bind(this), this);
     this._deviceModeView = new DeviceModeWrapper(this._inspectedPagePlaceholder);
 
-    self.UI.dockController.addEventListener(
+    UI.DockController.DockController.instance().addEventListener(
         UI.DockController.Events.BeforeDockSideChanged, this._onBeforeDockSideChange, this);
-    self.UI.dockController.addEventListener(UI.DockController.Events.DockSideChanged, this._onDockSideChange, this);
-    self.UI.dockController.addEventListener(
+    UI.DockController.DockController.instance().addEventListener(
+        UI.DockController.Events.DockSideChanged, this._onDockSideChange, this);
+    UI.DockController.DockController.instance().addEventListener(
         UI.DockController.Events.AfterDockSideChanged, this._onAfterDockSideChange, this);
     this._onDockSideChange();
 
@@ -124,7 +125,8 @@ export class AdvancedApp {
   _onDockSideChange(event) {
     this._updateDeviceModeView();
 
-    const toDockSide = event ? /** @type {string} */ (event.data.to) : self.UI.dockController.dockSide();
+    const toDockSide =
+        event ? /** @type {string} */ (event.data.to) : UI.DockController.DockController.instance().dockSide();
     if (toDockSide === UI.DockController.State.Undocked) {
       this._updateForUndocked();
     } else if (
@@ -178,7 +180,7 @@ export class AdvancedApp {
   }
 
   _isDocked() {
-    return self.UI.dockController.dockSide() !== UI.DockController.State.Undocked;
+    return UI.DockController.DockController.instance().dockSide() !== UI.DockController.State.Undocked;
   }
 
   /**

@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 
@@ -27,10 +24,13 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
     this._overlayAgent = target.overlayAgent();
   }
 
+  /**
+   * @param {number} node
+   */
   highlightNode(node) {
     const highlightConfig = {contentColor: Common.Color.PageHighlight.Content.toProtocolRGBA(), showInfo: true};
 
-    this._overlayAgent.invoke_hideHighlight({});
+    this._overlayAgent.invoke_hideHighlight();
     this._overlayAgent.invoke_highlightNode({backendNodeId: node, highlightConfig});
   }
 
@@ -70,6 +70,11 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
       ]
     };
 
+    /**
+     * @param {number} id
+     * @param {number} nodeId
+     * @param {!Map<string, !Set<number>>} target
+     */
     const storeColor = (id, nodeId, target) => {
       if (id === -1) {
         return;
@@ -89,6 +94,9 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
       // Format the color and use as the key.
       const colorFormatted =
           color.hasAlpha() ? color.asString(Common.Color.Format.HEXA) : color.asString(Common.Color.Format.HEX);
+      if (!colorFormatted) {
+        return;
+      }
 
       // Get the existing set of nodes with the color, or create a new set.
       const colorValues = target.get(colorFormatted) || new Set();
@@ -98,6 +106,9 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
       target.set(colorFormatted, colorValues);
     };
 
+    /**
+     * @param {string} nodeName
+     */
     const isSVGNode = nodeName => {
       const validNodes = new Set([
         'altglyph', 'circle', 'ellipse', 'path', 'polygon', 'polyline', 'rect', 'svg', 'text', 'textpath', 'tref',
@@ -106,17 +117,25 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
       return validNodes.has(nodeName.toLowerCase());
     };
 
+    /**
+     * @param {string} nodeName
+     */
     const isReplacedContent = nodeName => {
       const validNodes = new Set(['iframe', 'video', 'embed', 'img']);
       return validNodes.has(nodeName.toLowerCase());
     };
 
+    /**
+     * @param {string} nodeName
+     * @param {string} display
+     */
     const isTableElementWithDefaultStyles = (nodeName, display) => {
       const validNodes = new Set(['tr', 'td', 'thead', 'tbody']);
       return validNodes.has(nodeName.toLowerCase()) && display.startsWith('table');
     };
 
     let elementCount = 0;
+
     const {documents, strings} = await this._domSnapshotAgent.invoke_captureSnapshot(snapshotConfig);
     for (const {nodes, layout} of documents) {
       // Track the number of elements in the documents.
@@ -125,6 +144,9 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
       for (let idx = 0; idx < layout.styles.length; idx++) {
         const styles = layout.styles[idx];
         const nodeIdx = layout.nodeIndex[idx];
+        if (!nodes.backendNodeId || !nodes.nodeName) {
+          continue;
+        }
         const nodeId = nodes.backendNodeId[nodeIdx];
         const nodeName = nodes.nodeName[nodeIdx];
 
@@ -223,19 +245,22 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
     return {backgroundColors, textColors, fillColors, borderColors, fontInfo, unusedDeclarations, elementCount};
   }
 
+  /**
+   * @param {!Protocol.DOM.NodeId} nodeId
+   */
   getComputedStyleForNode(nodeId) {
-    return this._cssAgent.getComputedStyleForNode(nodeId);
+    return this._cssAgent.invoke_getComputedStyleForNode({nodeId});
   }
 
   async getMediaQueries() {
-    const queries = await this._cssAgent.getMediaQueries();
+    const queries = await this._cssAgent.invoke_getMediaQueries();
     const queryMap = new Map();
 
     if (!queries) {
       return queryMap;
     }
 
-    for (const query of queries) {
+    for (const query of queries.medias) {
       // Ignore media queries applied to stylesheets; instead only use declared media rules.
       if (query.source === 'linkedSheet') {
         continue;

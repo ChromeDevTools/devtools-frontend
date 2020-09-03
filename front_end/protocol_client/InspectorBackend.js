@@ -678,6 +678,13 @@ export class TargetBase {
   }
 
   /**
+   * @return {!ProtocolProxyApi.CSSApi}
+   */
+  cssAgent() {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
    * @return {!ProtocolProxyApi.DebuggerApi}
    */
   debuggerAgent() {
@@ -685,9 +692,23 @@ export class TargetBase {
   }
 
   /**
+   * @return {!ProtocolProxyApi.DOMApi}
+   */
+  domAgent() {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
    * @return {!ProtocolProxyApi.DOMDebuggerApi}
    */
   domdebuggerAgent() {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
+   * @return {!ProtocolProxyApi.DOMSnapshotApi}
+   */
+  domsnapshotAgent() {
     throw new Error('Implemented in InspectorBackend.js');
   }
 

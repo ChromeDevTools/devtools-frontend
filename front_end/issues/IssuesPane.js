@@ -452,6 +452,7 @@ class AffectedDirectivesView extends AffectedResourcesView {
    */
   _appendSourceLocation(element, sourceLocation) {
     const sourceCodeLocation = document.createElement('td');
+    sourceCodeLocation.classList.add('affected-source-location');
     if (sourceLocation) {
       const maxLengthForDisplayedURLs = 40;  // Same as console messages.
       const linkifier = new Components.Linkifier.Linkifier(maxLengthForDisplayedURLs);

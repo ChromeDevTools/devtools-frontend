@@ -7,6 +7,7 @@ import * as puppeteer from 'puppeteer';
 
 import {$$, click, getBrowserAndPages, getHostedModeServerPort, goToResource, pressKey, step, timeout, typeText, waitFor, waitForFunction} from '../../shared/helper.js';
 
+export const ACTIVE_LINE = '.CodeMirror-activeline > pre > span';
 export const PAUSE_ON_EXCEPTION_BUTTON = '[aria-label="Pause on exceptions"]';
 export const PAUSE_BUTTON = '[aria-label="Pause script execution"]';
 export const RESUME_BUTTON = '[aria-label="Resume script execution"]';
@@ -79,6 +80,12 @@ export async function getOpenSources() {
   const openSources =
       await sourceTabs.$$eval('.tabbed-pane-header-tab', nodes => nodes.map(n => n.getAttribute('aria-label')));
   return openSources;
+}
+
+export async function waitForhighlightedLineWhichIncludesText(expectedTextContent: string) {
+  const selectedLine = await waitFor(ACTIVE_LINE);
+  const text = await selectedLine.evaluate(node => node.textContent);
+  assert.deepInclude(text, expectedTextContent);
 }
 
 // We can't use the click helper, as it is not possible to select a particular

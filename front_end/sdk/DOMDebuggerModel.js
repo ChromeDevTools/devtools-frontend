@@ -604,6 +604,9 @@ export class EventListenerBreakpoint {
 EventListenerBreakpoint._listener = 'listener:';
 EventListenerBreakpoint._instrumentation = 'instrumentation:';
 
+/** @type {!DOMDebuggerManager} */
+let domDebuggerManagerInstance;
+
 /**
  * @implements {SDKModelObserver<!DOMDebuggerModel>}
  */
@@ -782,6 +785,19 @@ export class DOMDebuggerManager {
     }
 
     TargetManager.instance().observeModels(DOMDebuggerModel, this);
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   * @return {!DOMDebuggerManager}
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!domDebuggerManagerInstance || forceNew) {
+      domDebuggerManagerInstance = new DOMDebuggerManager();
+    }
+
+    return domDebuggerManagerInstance;
   }
 
   /**

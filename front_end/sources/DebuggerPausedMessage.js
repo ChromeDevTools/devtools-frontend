@@ -105,8 +105,9 @@ export class DebuggerPausedMessage {
     } else if (details.reason === SDK.DebuggerModel.BreakReason.EventListener) {
       let eventNameForUI = '';
       if (details.auxData) {
-        eventNameForUI =
-            self.SDK.domDebuggerManager.resolveEventListenerBreakpointTitle(/** @type {!Object} */ (details.auxData));
+        eventNameForUI = SDK.DOMDebuggerModel.DOMDebuggerManager.instance().resolveEventListenerBreakpointTitle(
+            /** @type {!{directiveText: string, eventName: string, targetName: string, webglErrorName: string}} */ (
+                details.auxData));
       }
       messageWrapper = buildWrapper(Common.UIString.UIString('Paused on event listener'), eventNameForUI);
     } else if (details.reason === SDK.DebuggerModel.BreakReason.XHR) {

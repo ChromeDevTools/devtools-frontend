@@ -255,12 +255,12 @@ export class MainImpl {
     SDK.SDKModel.TargetManager.instance().addEventListener(
         SDK.SDKModel.Events.SuspendStateChanged, this._onSuspendStateChanged.bind(this));
 
-    self.UI.shortcutsScreen = new UI.ShortcutsScreen.ShortcutsScreen();
+    self.UI.shortcutsScreen = UI.ShortcutsScreen.ShortcutsScreen.instance({forceNew: true});
     // set order of some sections explicitly
-    self.UI.shortcutsScreen.section(Common.UIString.UIString('Elements Panel'));
-    self.UI.shortcutsScreen.section(Common.UIString.UIString('Styles Pane'));
-    self.UI.shortcutsScreen.section(Common.UIString.UIString('Debugger'));
-    self.UI.shortcutsScreen.section(Common.UIString.UIString('Console'));
+    UI.ShortcutsScreen.ShortcutsScreen.instance().section(Common.UIString.UIString('Elements Panel'));
+    UI.ShortcutsScreen.ShortcutsScreen.instance().section(Common.UIString.UIString('Styles Pane'));
+    UI.ShortcutsScreen.ShortcutsScreen.instance().section(Common.UIString.UIString('Debugger'));
+    UI.ShortcutsScreen.ShortcutsScreen.instance().section(Common.UIString.UIString('Console'));
 
     self.Workspace.fileManager = Workspace.FileManager.FileManager.instance({forceNew: true});
     self.Workspace.workspace = Workspace.Workspace.WorkspaceImpl.instance();
@@ -461,7 +461,7 @@ export class MainImpl {
 
   _registerShortcuts() {
     const shortcut = UI.KeyboardShortcut.KeyboardShortcut;
-    const section = self.UI.shortcutsScreen.section(Common.UIString.UIString('All Panels'));
+    const section = UI.ShortcutsScreen.ShortcutsScreen.instance().section(Common.UIString.UIString('All Panels'));
     let keys = [
       shortcut.makeDescriptor('[', UI.KeyboardShortcut.Modifiers.CtrlOrMeta),
       shortcut.makeDescriptor(']', UI.KeyboardShortcut.Modifiers.CtrlOrMeta)

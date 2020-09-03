@@ -65,7 +65,7 @@ export class SettingsScreen extends UI.Widget.VBox {
 
     if (!Root.Runtime.experiments.isEnabled('customKeyboardShortcuts')) {
       const shortcutsView = new UI.View.SimpleView(ls`Shortcuts`);
-      self.UI.shortcutsScreen.createShortcutsTabView().show(shortcutsView.element);
+      UI.ShortcutsScreen.ShortcutsScreen.instance().createShortcutsTabView().show(shortcutsView.element);
       this._tabbedLocation.appendView(shortcutsView);
     }
     tabbedPane.show(this.contentElement);

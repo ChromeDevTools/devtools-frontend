@@ -14,6 +14,7 @@ const CSS_STYLE_RULE_SELECTOR = '[aria-label*="css selector"]';
 const COMPUTED_PROPERTY_SELECTOR = 'devtools-computed-style-property';
 const COMPUTED_STYLES_PANEL_SELECTOR = '[aria-label="Computed panel"]';
 const COMPUTED_STYLES_SHOW_ALL_SELECTOR = '[aria-label="Show all"]';
+const COMPUTED_STYLES_GROUP_SELECTOR = '[aria-label="Group"]';
 const ELEMENTS_PANEL_SELECTOR = '.panel[aria-label="elements"]';
 const SECTION_SUBTITLE_SELECTOR = '.styles-section-subtitle';
 const CLS_PANE_SELECTOR = '.styles-sidebar-toolbar-pane';
@@ -208,6 +209,21 @@ export const toggleShowAllComputedProperties = async () => {
   const showAllButton = await waitFor(COMPUTED_STYLES_SHOW_ALL_SELECTOR, computedPanel);
   await click(showAllButton);
   await waitForComputedPaneChange(initialContent);
+};
+
+export const toggleGroupComputedProperties = async () => {
+  const computedPanel = await waitFor(COMPUTED_STYLES_PANEL_SELECTOR);
+  const groupCheckbox = await waitFor(COMPUTED_STYLES_GROUP_SELECTOR, computedPanel);
+
+  const wasChecked = await groupCheckbox.evaluate(checkbox => (checkbox as HTMLInputElement).checked);
+
+  await click(groupCheckbox);
+
+  if (wasChecked) {
+    await waitFor('devtools-computed-style-group-lists.hidden', computedPanel);
+  } else {
+    await waitFor('div.computed-properties.hidden', computedPanel);
+  }
 };
 
 export const waitForDomNodeToBeVisible = async (elementSelector: string) => {

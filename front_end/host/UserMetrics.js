@@ -228,6 +228,16 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(actionName, experiment, size);
     Common.EventTarget.fireEvent(actionName, {value: experiment});
   }
+
+  /**
+   * @param {boolean} isEnabled
+   */
+  computedStyleGrouping(isEnabled) {
+    const size = Object.keys(ComputedStyleGroupingState).length + 1;
+    const code = isEnabled ? ComputedStyleGroupingState.enabled : ComputedStyleGroupingState.disabled;
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.ComputedStyleGrouping, code, size);
+    Common.EventTarget.fireEvent(EnumeratedHistogram.ComputedStyleGrouping, {value: code});
+  }
 }
 
 // Codes below are used to collect UMA histograms in the Chromium port.
@@ -523,4 +533,10 @@ export const DevtoolsExperiments = {
   'cssGridFeatures': 33,
   'movableTabs': 34,
   '__lastValidEnumPosition': 34,
+};
+
+/** @type {!Object<string, number>} */
+export const ComputedStyleGroupingState = {
+  'enabled': 0,
+  'disabled': 1,
 };

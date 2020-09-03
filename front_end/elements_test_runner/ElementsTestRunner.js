@@ -171,9 +171,8 @@ ElementsTestRunner.dumpComputedStyle = async function(doNotAutoExpand, printInne
   const children = treeOutline.rootElement().children();
 
   for (const treeElement of children) {
-    const property = treeElement[Elements.ComputedStyleWidget._propertySymbol];
-
-    if (property.name === 'width' || property.name === 'height') {
+    const property = computed._propertyByTreeElement.get(treeElement);
+    if (!property || property.name === 'width' || property.name === 'height') {
       continue;
     }
 
@@ -216,8 +215,10 @@ ElementsTestRunner.findComputedPropertyWithName = function(name) {
   const children = treeOutline.rootElement().children();
 
   for (const treeElement of children) {
-    const property = treeElement[Elements.ComputedStyleWidget._propertySymbol];
-
+    const property = computed._propertyByTreeElement.get(treeElement);
+    if (!property) {
+      continue;
+    }
     if (property.name === name) {
       return treeElement;
     }
@@ -440,8 +441,8 @@ ElementsTestRunner.dumpRenderedMatchedStyles = function() {
   }
 };
 
-ElementsTestRunner.dumpSelectedElementStyles = async function(
-    excludeComputed, excludeMatched, omitLonghands, includeSelectorGroupMarks, printInnerText) {
+ElementsTestRunner.dumpSelectedElementStyles =
+    async function(excludeComputed, excludeMatched, omitLonghands, includeSelectorGroupMarks, printInnerText) {
   const sectionBlocks = UI.panels.elements._stylesWidget._sectionBlocks;
 
   if (!excludeComputed) {

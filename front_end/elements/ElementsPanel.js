@@ -1241,11 +1241,11 @@ export class ElementsActionDelegate {
         treeOutline.toggleEditAsHTML(node);
         return true;
       case 'elements.undo':
-        self.SDK.domModelUndoStack.undo();
+        SDK.DOMModel.DOMModelUndoStack.instance().undo();
         ElementsPanel.instance()._stylesWidget.forceUpdate();
         return true;
       case 'elements.redo':
-        self.SDK.domModelUndoStack.redo();
+        SDK.DOMModel.DOMModelUndoStack.instance().redo();
         ElementsPanel.instance()._stylesWidget.forceUpdate();
         return true;
     }

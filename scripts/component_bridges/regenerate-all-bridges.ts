@@ -52,5 +52,4 @@ const allBridgeFiles = searchForBridgeFiles(rootDir);
 const filesToReformat = allBridgeFiles.map(filePath => regenerateBridge(filePath)).filter(x => x !== null);
 
 const clFormatCommand = `git cl format --js ${filesToReformat.join(' ')}`;
-console.log(`\nRunning clang-format on bridge files: ${clFormatCommand}`);
 execSync(clFormatCommand);

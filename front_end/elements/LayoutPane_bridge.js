@@ -18,6 +18,7 @@ export let Setting;
 /**
 * @typedef {{
 * id:number,
+* color:string,
 * name:string,
 * domId:(string|undefined),
 * domClasses:(!Array.<string>|undefined),

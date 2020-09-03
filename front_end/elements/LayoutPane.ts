@@ -45,6 +45,7 @@ export class LayoutPane extends HTMLElement {
     this.shadow.adoptedStyleSheets = [
       ...getStyleSheets('ui/inspectorCommon.css', {patchThemeSupport: true}),
       ...getStyleSheets('ui/inspectorSyntaxHighlight.css', {patchThemeSupport: true}),
+      ...getStyleSheets('inline_editor/colorSwatch.css', {patchThemeSupport: true}),
       ...getStyleSheets('elements/layoutPane.css'),
     ];
   }
@@ -129,6 +130,9 @@ export class LayoutPane extends HTMLElement {
       <label data-element="true" class="checkbox-label" title=${element.name}>
         <input data-input="true" type="checkbox" .checked=${element.enabled} @change=${onElementToggle} />
         <span data-label="true">${nodeText}</span>
+        <span class="color-swatch">
+          <span class="color-swatch-inner" style="background:${element.color}"></span>
+        </span>
       </label>
       <button @click=${onElementClick} title=${showElementButtonTitle} class="show-element"></button>
     </div>`;

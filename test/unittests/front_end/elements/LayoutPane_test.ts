@@ -118,6 +118,7 @@ describe('LayoutPane', () => {
       gridElements: [
         {
           id: 1,
+          color: 'red',
           name: 'div',
           domId: 'elementId',
           enabled: false,
@@ -126,6 +127,7 @@ describe('LayoutPane', () => {
         },
         {
           id: 2,
+          color: 'blue',
           name: 'span',
           domClasses: ['class1', 'class2'],
           enabled: false,
@@ -134,6 +136,7 @@ describe('LayoutPane', () => {
         },
         {
           id: 3,
+          color: 'green',
           name: 'div',
           enabled: false,
           reveal: () => {},
@@ -157,6 +160,7 @@ describe('LayoutPane', () => {
       gridElements: [
         {
           id: 1,
+          color: 'red',
           name: 'div',
           enabled: false,
           reveal: () => {},
@@ -184,6 +188,7 @@ describe('LayoutPane', () => {
       gridElements: [
         {
           id: 1,
+          color: 'red',
           name: 'div',
           enabled: false,
           reveal: () => {

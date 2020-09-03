@@ -30,6 +30,7 @@ export type Setting = EnumSetting|BooleanSetting;
 
 export interface LayoutElement {
   id: number;
+  color: string;
   name: string;
   domId?: string;
   domClasses?: string[];

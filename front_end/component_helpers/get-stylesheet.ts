@@ -134,6 +134,7 @@ export const CSS_RESOURCES_TO_LOAD_INTO_RUNTIME = [
   'emulation/locationsSettingsTab.css',
   'emulation/mediaQueryInspector.css',
   'emulation/sensors.css',
+  'inline_editor/colorSwatch.css',
   'inspector_main/nodeIcon.css',
   'inspector_main/renderingOptions.css',
   'data_grid/dataGrid.css',

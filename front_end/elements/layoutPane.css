@@ -55,6 +55,10 @@
   flex: none;
 }
 
+.checkbox-label .color-swatch {
+  margin: 0 0 0 8px;
+}
+
 .select-settings {
   margin-top: 16px;
   display: grid;

@@ -372,6 +372,7 @@
     KeybindSetSettingChanged: 'DevTools.KeybindSetSettingChanged',
     DualScreenDeviceEmulated: 'DevTools.DualScreenDeviceEmulated',
     CSSGridSettings: 'DevTools.CSSGridSettings2',
+    HighlightedPersistentCSSGridCount: 'DevTools.HighlightedPersistentCSSGridCount',
     ExperimentEnabledAtLaunch: 'DevTools.ExperimentEnabledAtLaunch',
     ExperimentEnabled: 'DevTools.ExperimentEnabled',
     ExperimentDisabled: 'DevTools.ExperimentDisabled',

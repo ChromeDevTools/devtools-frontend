@@ -10,10 +10,10 @@
 
 const fs = require('fs');
 const path = require('path');
-const {promisify} = require('util');
-const writeFileAsync = promisify(fs.writeFile);
-const renameFileAsync = promisify(fs.rename);
+const writeFileAsync = fs.promises.writeFile;
+const renameFileAsync = fs.promises.rename;
 const localizationUtils = require('./localization_utils');
+const checkLocalizability = require('./check_localizability');
 const escodegen = localizationUtils.escodegen;
 const espreeTypes = localizationUtils.espreeTypes;
 const espree = localizationUtils.espree;
@@ -266,7 +266,7 @@ async function parseLocalizableStringsFromFile(filePath) {
         ' Please update the code and use official JavaScript features.');
   }
   for (const node of ast.body) {
-    parseLocalizableStringFromNode(node, filePath);
+    parseLocalizableStringFromNode(undefined, node, filePath);
   }
 }
 
@@ -306,14 +306,14 @@ function parseLocalizableStringFromModuleJson(fileContent, filePath) {
   }
 }
 
-function parseLocalizableStringFromNode(node, filePath) {
+function parseLocalizableStringFromNode(parentNode, node, filePath) {
   if (!node) {
     return;
   }
 
   if (Array.isArray(node)) {
     for (const child of node) {
-      parseLocalizableStringFromNode(child, filePath);
+      parseLocalizableStringFromNode(node, child, filePath);
     }
 
     return;
@@ -327,36 +327,37 @@ function parseLocalizableStringFromNode(node, filePath) {
   }
 
   const locCase = localizationUtils.getLocalizationCase(node);
+  const code = escodegen.generate(node);
   switch (locCase) {
     case 'Common.UIString':
     case 'Platform.UIString':
     case 'Common.UIStringFormat': {
+      checkLocalizability.analyzeCommonUIStringNode(node, filePath, code);
       handleCommonUIString(node, filePath);
       break;
     }
     case 'UI.formatLocalized': {
+      checkLocalizability.analyzeCommonUIStringNode(node, filePath, code);
       if (node.arguments !== undefined && node.arguments[1] !== undefined && node.arguments[1].elements !== undefined) {
         handleCommonUIString(node, filePath, node.arguments[1].elements);
       }
       break;
     }
     case 'Tagged Template': {
-      handleTemplateLiteral(node.quasi, escodegen.generate(node), filePath);
-      break;
-    }
-    case null: {
+      checkLocalizability.analyzeTaggedTemplateNode(node, filePath, code);
+      handleTemplateLiteral(node.quasi, code, filePath);
       break;
     }
     default: {
-      throw new Error(
-          `${filePath}${localizationUtils.getLocationMessage(node.loc)}: unexpected localization case for node: ${
-              escodegen.generate(node)}`);
+      // String concatenation to localization call(s) should be changed
+      checkLocalizability.checkConcatenation(parentNode, node, filePath);
+      break;
     }
   }
 
   for (const key of objKeys) {
     // recursively parse all the child nodes
-    parseLocalizableStringFromNode(node[key], filePath);
+    parseLocalizableStringFromNode(node, node[key], filePath);
   }
 }
 
@@ -498,6 +499,7 @@ function convertToFrontendPlaceholders(message) {
 
 async function parseGRDPFile(filePath) {
   const fileContent = await localizationUtils.parseFileContent(filePath);
+  checkLocalizability.auditGrdpFile(filePath, fileContent);
 
   function stripWhitespacePadding(message) {
     let match = message.match(/^'''/);
@@ -699,12 +701,22 @@ function getLongestDescription(messages) {
   return longestDescription;
 }
 
+function getLocalizabilityError() {
+  let error = '';
+  if (checkLocalizability.localizabilityErrors.length > 0) {
+    error += '\nDevTools localizability errors detected! Please fix these manually.\n';
+    error += checkLocalizability.localizabilityErrors.join('\n');
+  }
+  return error;
+}
+
 module.exports = {
   parseLocalizableResourceMaps,
   getAndReportIDSKeysToModify,
   getAndReportResourcesToAdd,
   getAndReportResourcesToRemove,
   getIDSKeysToModify,
+  getLocalizabilityError,
   getLongestDescription,
   getMessagesToAdd,
   getMessagesToRemove,

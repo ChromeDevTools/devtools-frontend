@@ -2,11 +2,8 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../../scripts/build/ninja/copy.gni")
-
 group("front_end") {
   deps = [
-    ":copy_karma_conf",
     "../../../front_end/Images",
     "bindings",
     "browser_sdk",
@@ -30,9 +27,4 @@ group("front_end") {
     "text_utils",
     "ui",
   ]
-}
-
-copy("copy_karma_conf") {
-  sources = [ "karma.conf.js" ]
-  outputs = [ "$target_gen_dir/karma.conf.js" ]
 }

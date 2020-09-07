@@ -7,6 +7,6 @@ group("test") {
     "e2e",
     "perf",
     "shared",
-    "unittests/front_end",
+    "unittests",
   ]
 }

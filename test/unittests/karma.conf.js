@@ -13,32 +13,40 @@ const COVERAGE_ENABLED = !!process.env['COVERAGE'];
 // true by default
 const TEXT_COVERAGE_ENABLED = COVERAGE_ENABLED && !process.env['NO_TEXT_COVERAGE'];
 
-const GEN_DIRECTORY = path.join(__dirname, '..', '..', '..');
+const GEN_DIRECTORY = path.join(__dirname, '..', '..');
 const ROOT_DIRECTORY = path.join(GEN_DIRECTORY, '..', '..', '..');
-
 const browsers = DEBUG_ENABLED ? ['Chrome'] : ['ChromeHeadless'];
 
 const coverageReporters = COVERAGE_ENABLED ? ['coverage'] : [];
 const coveragePreprocessors = COVERAGE_ENABLED ? ['coverage'] : [];
 const commonIstanbulReporters = [{type: 'html'}, {type: 'json-summary'}];
-const istanbulReportOutputs = TEXT_COVERAGE_ENABLED ? [{type: 'text'}, ...commonIstanbulReporters] : commonIstanbulReporters;
+const istanbulReportOutputs =
+    TEXT_COVERAGE_ENABLED ? [{type: 'text'}, ...commonIstanbulReporters] : commonIstanbulReporters;
 
-const UNIT_TESTS_FOLDER = path.join(ROOT_DIRECTORY, 'test', 'unittests', 'front_end');
-const TEST_SOURCES = path.join(UNIT_TESTS_FOLDER, '**/*.ts');
+const UNIT_TESTS_ROOT_FOLDER = path.join(ROOT_DIRECTORY, 'test', 'unittests');
+const UNIT_TESTS_FOLDERS = [
+  path.join(UNIT_TESTS_ROOT_FOLDER, 'front_end'),
+];
+const TEST_SOURCES = UNIT_TESTS_FOLDERS.map(folder => path.join(folder, '**/*.ts'));
 
 // To make sure that any leftover JavaScript files (e.g. that were outputs from now-removed tests)
 // aren't incorrectly included, we glob for the TypeScript files instead and use that
 // to instruct Mocha to run the output JavaScript file.
-const TEST_FILES = glob.sync(TEST_SOURCES).map(fileName => {
-  const jsFile = fileName.replace(/\.ts$/, '.js');
-  const generatedJsFile = path.join(__dirname, path.relative(UNIT_TESTS_FOLDER, jsFile));
+const TEST_FILES =
+    TEST_SOURCES
+        .map(source => {
+          return glob.sync(source).map(fileName => {
+            const jsFile = fileName.replace(/\.ts$/, '.js');
+            const generatedJsFile = path.join(__dirname, path.relative(UNIT_TESTS_ROOT_FOLDER, jsFile));
+            if (!fs.existsSync(generatedJsFile)) {
+              throw new Error(`Test file ${fileName} is not included in a BUILD.gn and therefore will not be run.`);
+            }
 
-  if (!fs.existsSync(generatedJsFile)) {
-    throw new Error(`Test file ${fileName} is not included in a BUILD.gn and therefore will not be run.`);
-  }
+            return generatedJsFile;
+          });
+        })
+        .flat();
 
-  return generatedJsFile;
-});
 
 const TEST_FILES_SOURCE_MAPS = TEST_FILES.map(fileName => `${fileName}.map`);
 
@@ -49,7 +57,7 @@ module.exports = function(config) {
     files: [
       ...TEST_FILES.map(pattern => ({pattern, type: 'module'})),
       ...TEST_FILES_SOURCE_MAPS.map(pattern => ({pattern, served: true, included: false})),
-      {pattern: TEST_SOURCES, served: true, included: false},
+      ...TEST_SOURCES.map(source => ({pattern: source, served: true, included: false})),
       {pattern: path.join(GEN_DIRECTORY, 'front_end/Images/*.{svg,png}'), served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.css'), served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.js'), served: true, included: false},
@@ -57,6 +65,8 @@ module.exports = function(config) {
       {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.mjs'), served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.mjs.map'), served: true, included: false},
       {pattern: path.join(ROOT_DIRECTORY, 'front_end/**/*.ts'), served: true, included: false},
+      {pattern: path.join(GEN_DIRECTORY, 'inspector_overlay/**/*.js'), served: true, included: false},
+      {pattern: path.join(GEN_DIRECTORY, 'inspector_overlay/**/*.js.map'), served: true, included: false},
     ],
 
     reporters: [

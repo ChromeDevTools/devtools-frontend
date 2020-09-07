@@ -24,7 +24,8 @@ import devtools_paths
 
 def run_tests(chrome_binary, target, no_text_coverage, coverage):
     cwd = devtools_paths.devtools_root_path()
-    karmaconfig_path = os.path.join(cwd, 'out', target, 'gen', 'test', 'unittests', 'front_end', 'karma.conf.js')
+    karmaconfig_path = os.path.join(cwd, 'out', target, 'gen', 'test',
+                                    'unittests', 'karma.conf.js')
 
     if not os.path.exists(karmaconfig_path):
         print('Unable to find Karma config at ' + karmaconfig_path)
@@ -43,7 +44,6 @@ def run_tests(chrome_binary, target, no_text_coverage, coverage):
         env['COVERAGE'] = '1'
     if (chrome_binary is not None):
         env['CHROME_BIN'] = chrome_binary
-
     exit_code = test_helpers.popen(exec_command, cwd=cwd, env=env)
     if exit_code == 1:
         return True

@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {applyMatrixToPoint, buildPath, emptyBounds} from '../../../../inspector_overlay/highlight_common.js';
+import {applyMatrixToPoint, buildPath, emptyBounds} from '../../../inspector_overlay/highlight_common.js';
 
 describe('highlight common helper', () => {
   it('can build a path and set bounds', () => {

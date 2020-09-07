@@ -1,4 +1,4 @@
-import("../../../../third_party/typescript/typescript.gni")
+import("../../../third_party/typescript/typescript.gni")
 
 ts_library("inspector_overlay") {
   testonly = true
@@ -10,7 +10,7 @@ ts_library("inspector_overlay") {
   ]
 
   deps = [
-    "../../../../inspector_overlay",
-    "../helpers",
+    "../../../inspector_overlay",
+    "../front_end/helpers",
   ]
 }

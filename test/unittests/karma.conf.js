@@ -26,6 +26,7 @@ const istanbulReportOutputs =
 const UNIT_TESTS_ROOT_FOLDER = path.join(ROOT_DIRECTORY, 'test', 'unittests');
 const UNIT_TESTS_FOLDERS = [
   path.join(UNIT_TESTS_ROOT_FOLDER, 'front_end'),
+  path.join(UNIT_TESTS_ROOT_FOLDER, 'inspector_overlay'),
 ];
 const TEST_SOURCES = UNIT_TESTS_FOLDERS.map(folder => path.join(folder, '**/*.ts'));
 
@@ -65,6 +66,7 @@ module.exports = function(config) {
       {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.mjs'), served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.mjs.map'), served: true, included: false},
       {pattern: path.join(ROOT_DIRECTORY, 'front_end/**/*.ts'), served: true, included: false},
+      {pattern: path.join(ROOT_DIRECTORY, 'inspector_overlay/**/*.ts'), served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'inspector_overlay/**/*.js'), served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'inspector_overlay/**/*.js.map'), served: true, included: false},
     ],

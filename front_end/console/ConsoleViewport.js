@@ -33,6 +33,7 @@
 
 import * as Components from '../components/components.js';
 import * as UI from '../ui/ui.js';
+import * as ConsoleViewMessage from './ConsoleViewMessage.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
@@ -472,8 +473,12 @@ export class ConsoleViewport {
       return false;
     }
 
-    for (let i = this._anchorSelection.item; i <= this._headSelection.item; i++) {
-      if (this._renderedItems[i].consoleMessage().type === 'table') {
+    const start = this._selectionIsBackward ? this._headSelection.item : this._anchorSelection.item;
+    const end = this._selectionIsBackward ? this._anchorSelection.item : this._headSelection.item;
+
+    for (let i = start; i <= end; i++) {
+      const element = /** @type {!ConsoleViewMessage} */ (this._providerElement(i));
+      if (element && element.consoleMessage().type === 'table') {
         return true;
       }
     }

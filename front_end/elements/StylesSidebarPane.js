@@ -1857,11 +1857,9 @@ export class StylePropertiesSection {
   }
 
   /**
-   * @param {!Element} editor
-   * @param {!Event} blurEvent
    * @return {boolean}
    */
-  _editingMediaBlurHandler(editor, blurEvent) {
+  _editingMediaBlurHandler() {
     return true;
   }
 

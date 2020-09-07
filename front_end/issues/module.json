@@ -38,6 +38,11 @@
     "MarkdownView_bridge.js"
   ],
   "resources": [
+    "descriptions/CoepCoopSandboxedIframeCannotNavigateToCoopPage.md",
+    "descriptions/CoepCorpNotSameSite.md",
+    "descriptions/CoepCorpNotSameOriginAfterDefaultedToSameOriginByCoep.md",
+    "descriptions/CoepCorpNotSameOrigin.md",
+    "descriptions/CoepFrameResourceNeedsCoepHeader.md",
     "issuesPane.css",
     "issuesTree.css"
   ]

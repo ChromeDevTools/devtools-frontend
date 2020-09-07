@@ -28,7 +28,7 @@ class ExtensionPluginBase {
    */
   /*async */ addRawModule(rawModuleId, symbols, rawModule) {
     if (this._impl.addRawModule) {
-      return this._impl.addRawModule(rawModule, symbols, rawModule);
+      return this._impl.addRawModule(rawModuleId, symbols, rawModule);
     }
     return Promise.resolve([]);
   }

@@ -6,6 +6,7 @@ import {assert} from 'chai';
 import * as puppeteer from 'puppeteer';
 
 import {$$, click, getBrowserAndPages, getHostedModeServerPort, goToResource, pressKey, step, timeout, typeText, waitFor, waitForFunction} from '../../shared/helper.js';
+import {AsyncScope} from '../../shared/mocha-extensions.js';
 
 export const ACTIVE_LINE = '.CodeMirror-activeline > pre > span';
 export const PAUSE_ON_EXCEPTION_BUTTON = '[aria-label="Pause on exceptions"]';
@@ -91,9 +92,10 @@ export async function waitForhighlightedLineWhichIncludesText(expectedTextConten
 // We can't use the click helper, as it is not possible to select a particular
 // line number element in CodeMirror.
 export async function addBreakpointForLine(frontend: puppeteer.Page, index: number, expectedFail: boolean = false) {
-  await frontend.waitForFunction((index, CODE_LINE_SELECTOR) => {
+  const asyncScope = new AsyncScope();
+  await asyncScope.exec(() => frontend.waitForFunction((index, CODE_LINE_SELECTOR) => {
     return document.querySelectorAll(CODE_LINE_SELECTOR).length >= (index - 1);
-  }, undefined, index, CODE_LINE_SELECTOR);
+  }, {timeout: 0}, index, CODE_LINE_SELECTOR));
   const breakpointLineNumber = await frontend.evaluate((index, CODE_LINE_SELECTOR) => {
     const element = document.querySelectorAll(CODE_LINE_SELECTOR)[index - 1];
 
@@ -112,10 +114,10 @@ export async function addBreakpointForLine(frontend: puppeteer.Page, index: numb
     return;
   }
 
-  await frontend.waitForFunction(bpCount => {
+  await asyncScope.exec(() => frontend.waitForFunction(bpCount => {
     return document.querySelectorAll('.cm-breakpoint').length > bpCount &&
         document.querySelectorAll('.cm-breakpoint-unbound').length === 0;
-  }, undefined, currentBreakpointCount);
+  }, {timeout: 0}, currentBreakpointCount));
 }
 
 export function sourceLineNumberSelector(lineNumber: number) {

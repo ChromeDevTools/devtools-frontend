@@ -19,9 +19,66 @@ declare global {
   }
 }
 
+type RawModule = {
+  url: string,
+  code?: ArrayBuffer
+};
+
+type RawLocationRange = {
+  rawModuleId: string,
+  startOffset: number,
+  endOffset: number
+};
+
+type RawLocation = {
+  rawModuleId: string,
+  codeOffset: number
+};
+
+type SourceLocation = {
+  rawModuleId: string,
+  sourceFileURL: string,
+  lineNumber: number,
+  columnNumber: number
+};
+
+type Variable = {
+  scope: string,
+  name: string,
+  type: string,
+  nestedName?: Array<string>
+};
+
+type VariableValue = {
+  value: string|Array<VariableValue>,
+  js_type: string,
+  type: string,
+  name: string
+};
+
+type EvaluatorModule = {
+  code?: ArrayBuffer,
+  constantValue?: VariableValue
+};
+
+interface TestPluginImpl {
+  addRawModule?(rawModuleId: string, symbolsURL: string, rawModule: {url: string}): Promise<Array<string>>;
+
+  removeRawModule?(rawModuleId: string): Promise<void>;
+
+  sourceLocationToRawLocation?(sourceLocation: SourceLocation): Promise<Array<RawLocationRange>>;
+
+  rawLocationToSourceLocation?(rawLocation: RawLocation): Promise<Array<SourceLocation>>;
+
+  listVariablesInScope?(rawLocation: RawLocation): Promise<Array<Variable>>;
+
+  evaluateVariable?(name: string, location: RawLocation): Promise<EvaluatorModule|null>;
+
+  dispose?(): void;
+}
+
 declare function RegisterExtension(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    extensionAPI: {languageServices: any}, pluginImpl: any, name: string,
+    extensionAPI: unknown, pluginImpl: TestPluginImpl, name: string,
     supportedScriptTypes: {language: string, symbol_types: string[]}): void;
 
 // This testcase reaches into DevTools internals to install the extension plugin. At this point, there is no sensible
@@ -32,8 +89,8 @@ describe('The Debugger Language Plugins', async () => {
 
     const {frontend} = getBrowserAndPages();
     await frontend.evaluate(resourcePath => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      globalThis.installExtensionPlugin = function(registerPluginCallback: any) {
+      globalThis.installExtensionPlugin = function(
+          registerPluginCallback: (extensionServerClient: unknown, extensionAPI: unknown) => void) {
         const extensionServer = globalThis.Extensions.ExtensionServer.instance();
         /** @type {!{startPage: string, name: string, exposeExperimentalAPIs: boolean}} */
         const extensionInfo = {
@@ -72,21 +129,19 @@ describe('The Debugger Language Plugins', async () => {
   // Load a simple wasm file and verify that the source file shows up in the file tree.
   it('can show C filenames after loading the module', async () => {
     const {target, frontend} = getBrowserAndPages();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await frontend.evaluate(() => globalThis.installExtensionPlugin((extensionServerClient: any, extensionAPI: any) => {
-      // A simple plugin that resolves to a single source file
-      class SingleFilePlugin {
-        async addRawModule(
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            rawModuleId: any, symbols: any, rawModule: any) {  // eslint-disable-line @typescript-eslint/no-unused-vars
-          const fileUrl = new URL('/source_file.c', rawModule.url);
-          return [fileUrl.href];
-        }
-      }
+    await frontend.evaluate(
+        () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {
+          // A simple plugin that resolves to a single source file
+          class SingleFilePlugin {
+            async addRawModule(rawModuleId: string, symbols: string, rawModule: RawModule) {
+              const fileUrl = new URL('/source_file.c', rawModule.url || symbols);
+              return [fileUrl.href];
+            }
+          }
 
-      RegisterExtension(
-          extensionAPI, new SingleFilePlugin(), 'Single File', {language: 'WebAssembly', symbol_types: ['None']});
-    }));
+          RegisterExtension(
+              extensionAPI, new SingleFilePlugin(), 'Single File', {language: 'WebAssembly', symbol_types: ['None']});
+        }));
 
     await openFileInSourcesPanel('wasm/global_variable.html');
     await listenForSourceFilesAdded(frontend);
@@ -100,40 +155,38 @@ describe('The Debugger Language Plugins', async () => {
 
 
   // Resolve a single code offset to a source line to test the correctness of offset computations.
-  // Disabled to the Chromium binary -> DevTools roller working again.
   it('use correct code offsets to interpret raw locations', async () => {
     const {frontend} = getBrowserAndPages();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await frontend.evaluate(() => globalThis.installExtensionPlugin((extensionServerClient: any, extensionAPI: any) => {
-      class LocationMappingPlugin {
-        _modules: Map<string, string>;
-        constructor() {
-          this._modules = new Map();
-        }
+    await frontend.evaluate(
+        () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {
+          class LocationMappingPlugin {
+            _modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocation?: SourceLocation}>;
+            constructor() {
+              this._modules = new Map();
+            }
 
-        async addRawModule(
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            rawModuleId: any, symbols: any, rawModule: any) {  // eslint-disable-line @typescript-eslint/no-unused-vars
-          this._modules.set(rawModuleId.url, rawModule.url);
-          const fileUrl = new URL('unreachable.ll', rawModule.url);
-          return [fileUrl.href];
-        }
+            async addRawModule(rawModuleId: string, symbols: string, rawModule: RawModule) {
+              const sourceFileURL = new URL('unreachable.ll', rawModule.url || symbols).href;
+              this._modules.set(rawModuleId, {
+                rawLocationRange: {rawModuleId, startOffset: 6, endOffset: 7},
+                sourceLocation: {rawModuleId, sourceFileURL, lineNumber: 5, columnNumber: 2},
+              });
+              return [sourceFileURL];
+            }
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        async rawLocationToSourceLocation(rawLocation: any) {
-          if (rawLocation.codeOffset === 6) {
-            const moduleUrl = this._modules.get(rawLocation.rawModuleId);
-            const sourceFile = new URL('unreachable.ll', moduleUrl);
-            return [{sourceFileURL: sourceFile.href, lineNumber: 5, columnNumber: 2}];
+            async rawLocationToSourceLocation(rawLocation: RawLocation) {
+              const {rawLocationRange, sourceLocation} = this._modules.get(rawLocation.rawModuleId) || {};
+              if (rawLocationRange && sourceLocation && rawLocationRange.startOffset <= rawLocation.codeOffset &&
+                  rawLocation.codeOffset < rawLocationRange.endOffset) {
+                return [sourceLocation];
+              }
+              return [];
+            }
           }
-          return null;
-        }
-      }
-
-      RegisterExtension(
-          extensionAPI, new LocationMappingPlugin(), 'Location Mapping',
-          {language: 'WebAssembly', symbol_types: ['None']});
-    }));
+          RegisterExtension(
+              extensionAPI, new LocationMappingPlugin(), 'Location Mapping',
+              {language: 'WebAssembly', symbol_types: ['None']});
+        }));
 
     await openSourcesPanel();
     await click(PAUSE_ON_EXCEPTION_BUTTON);
@@ -148,50 +201,49 @@ describe('The Debugger Language Plugins', async () => {
   // Resolve the location for a breakpoint.
   it('resolve locations for breakpoints correctly', async () => {
     const {target, frontend} = getBrowserAndPages();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await frontend.evaluate(() => globalThis.installExtensionPlugin((extensionServerClient: any, extensionAPI: any) => {
-      // This plugin will emulate a source mapping with a single file and a single corresponding source line and byte
-      // code offset pair.
-      class LocationMappingPlugin {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        sourceLocation: any;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        rawLocationRange: any;
-        async addRawModule(
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            rawModuleId: any, symbols: any, rawModule: any) {  // eslint-disable-line @typescript-eslint/no-unused-vars
-          this.sourceLocation = {
-            sourceFileURL: new URL('global_variable.ll', rawModule.url).href,
-            lineNumber: 8,
-            columnNumber: 0,
-          };
-          this.rawLocationRange = {rawModuleId: rawModuleId.url, startOffset: 25, endOffset: 26};
-          return [this.sourceLocation.sourceFileURL];
-        }
+    await frontend.evaluate(
+        () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {
+          // This plugin will emulate a source mapping with a single file and a single corresponding source line and byte
+          // code offset pair.
+          class LocationMappingPlugin {
+            _modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocation?: SourceLocation}>;
+            constructor() {
+              this._modules = new Map();
+            }
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        async rawLocationToSourceLocation(rawLocation: any) {
-          if (rawLocation.rawModuleId === this.rawLocationRange.rawModuleId &&
-              rawLocation.codeOffset === this.rawLocationRange.startOffset) {
-            return [this.sourceLocation];
+            async addRawModule(rawModuleId: string, symbols: string, rawModule: RawModule) {
+              const sourceFileURL = new URL('global_variable.ll', rawModule.url || symbols).href;
+              this._modules.set(rawModuleId, {
+                rawLocationRange: {rawModuleId, startOffset: 25, endOffset: 26},
+                sourceLocation: {rawModuleId, sourceFileURL, lineNumber: 8, columnNumber: 0},
+              });
+              return [sourceFileURL];
+            }
+
+            async rawLocationToSourceLocation(rawLocation: RawLocation) {
+              const {rawLocationRange, sourceLocation} = this._modules.get(rawLocation.rawModuleId) || {};
+              if (rawLocationRange && sourceLocation && rawLocationRange.startOffset <= rawLocation.codeOffset &&
+                  rawLocation.codeOffset < rawLocationRange.endOffset) {
+                return [sourceLocation];
+              }
+              return [];
+            }
+
+
+            async sourceLocationToRawLocation(sourceLocationArg: SourceLocation) {
+              const {rawLocationRange, sourceLocation} = this._modules.get(sourceLocationArg.rawModuleId) || {};
+              if (rawLocationRange && sourceLocation &&
+                  JSON.stringify(sourceLocation) === JSON.stringify(sourceLocationArg)) {
+                return [rawLocationRange];
+              }
+              return [];
+            }
           }
-          return null;
-        }
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        async sourceLocationToRawLocation(sourceLocation: any) {
-          if (sourceLocation.sourceFileURL === this.sourceLocation.sourceFileURL &&
-              sourceLocation.lineNumber === this.sourceLocation.lineNumber) {
-            return [this.rawLocationRange];
-          }
-          return null;
-        }
-      }
-
-      RegisterExtension(
-          extensionAPI, new LocationMappingPlugin(), 'Location Mapping',
-          {language: 'WebAssembly', symbol_types: ['None']});
-    }));
+          RegisterExtension(
+              extensionAPI, new LocationMappingPlugin(), 'Location Mapping',
+              {language: 'WebAssembly', symbol_types: ['None']});
+        }));
 
     await openFileInSourcesPanel('wasm/global_variable.html');
     await target.evaluate('go();');
@@ -205,46 +257,41 @@ describe('The Debugger Language Plugins', async () => {
   it('shows top-level and nested variables', async () => {
     const {frontend} = getBrowserAndPages();
     await frontend.evaluateHandle(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        () => globalThis.installExtensionPlugin((extensionServerClient: any, extensionAPI: any) => {
+        () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {
           class VariableListingPlugin {
-            _modules: Map<string, string>;
-            evaluatedVariables: Array<string>;
+            _modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocation?: SourceLocation}>;
             constructor() {
               this._modules = new Map();
-              this.evaluatedVariables = [];
             }
 
-            async addRawModule(
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                rawModuleId: any, symbols: any,  // eslint-disable-line @typescript-eslint/no-unused-vars
-                rawModule: any) {                // eslint-disable-line @typescript-eslint/no-explicit-any
-              this._modules.set(rawModuleId.url, rawModule.url);
-              const fileUrl = new URL('unreachable.ll', rawModule.url);
-              return [fileUrl.href];
+            async addRawModule(rawModuleId: string, symbols: string, rawModule: RawModule) {
+              const sourceFileURL = new URL('unreachable.ll', rawModule.url || symbols).href;
+              this._modules.set(rawModuleId, {
+                rawLocationRange: {rawModuleId, startOffset: 6, endOffset: 7},
+                sourceLocation: {rawModuleId, sourceFileURL, lineNumber: 5, columnNumber: 2},
+              });
+              return [sourceFileURL];
             }
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            async rawLocationToSourceLocation(rawLocation: any) {
-              if (rawLocation.codeOffset === 6) {
-                const moduleUrl = this._modules.get(rawLocation.rawModuleId);
-                const sourceFile = new URL('unreachable.ll', moduleUrl);
-                return [{sourceFileURL: sourceFile.href, lineNumber: 5, columnNumber: 2}];
+            async rawLocationToSourceLocation(rawLocation: RawLocation) {
+              const {rawLocationRange, sourceLocation} = this._modules.get(rawLocation.rawModuleId) || {};
+              if (rawLocationRange && sourceLocation && rawLocationRange.startOffset <= rawLocation.codeOffset &&
+                  rawLocation.codeOffset < rawLocationRange.endOffset) {
+                return [sourceLocation];
               }
-              return null;
+              return [];
             }
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            async listVariablesInScope(rawLocation: any) {  // eslint-disable-line @typescript-eslint/no-unused-vars
-              return [
-                {scope: 'LOCAL', name: 'localX', type: 'int'},
-                {scope: 'GLOBAL', name: 'n1::n2::globalY', nestedName: ['n1', 'n2', 'globalY'], type: 'float'},
-              ];
-            }
-
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            async evaluateVariable(name: any, location: any) {  // eslint-disable-line @typescript-eslint/no-unused-vars
-              console.error(`Test was not supposed to evaluate ${name}`);
+            async listVariablesInScope(rawLocation: RawLocation) {
+              const {rawLocationRange} = this._modules.get(rawLocation.rawModuleId) || {};
+              if (rawLocationRange && rawLocationRange.startOffset <= rawLocation.codeOffset &&
+                  rawLocation.codeOffset < rawLocationRange.endOffset) {
+                return [
+                  {scope: 'LOCAL', name: 'localX', type: 'int'},
+                  {scope: 'GLOBAL', name: 'n1::n2::globalY', nestedName: ['n1', 'n2', 'globalY'], type: 'float'},
+                ];
+              }
+              return [];
             }
           }
 
@@ -267,43 +314,44 @@ describe('The Debugger Language Plugins', async () => {
   it('shows constant variable value', async () => {
     const {frontend} = getBrowserAndPages();
     await frontend.evaluateHandle(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        () => globalThis.installExtensionPlugin((extensionServerClient: any, extensionAPI: any) => {
+        () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {
           class VariableListingPlugin {
-            _modules: Map<string, string>;
-            evaluatedVariables: Array<string>;
+            _modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocation?: SourceLocation}>;
             constructor() {
               this._modules = new Map();
-              this.evaluatedVariables = [];
             }
 
-            async addRawModule(
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                rawModuleId: any, symbols: any,  // eslint-disable-line @typescript-eslint/no-unused-vars
-                rawModule: any) {                // eslint-disable-line @typescript-eslint/no-explicit-any
-              this._modules.set(rawModuleId.url, rawModule.url);
-              const fileUrl = new URL('unreachable.ll', rawModule.url);
-              return [fileUrl.href];
+            async addRawModule(rawModuleId: string, symbols: string, rawModule: RawModule) {
+              const sourceFileURL = new URL('unreachable.ll', rawModule.url || symbols).href;
+              this._modules.set(rawModuleId, {
+                rawLocationRange: {rawModuleId, startOffset: 6, endOffset: 7},
+                sourceLocation: {rawModuleId, sourceFileURL, lineNumber: 5, columnNumber: 2},
+              });
+              return [sourceFileURL];
             }
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            async rawLocationToSourceLocation(rawLocation: any) {
-              if (rawLocation.codeOffset === 6) {
-                const moduleUrl = this._modules.get(rawLocation.rawModuleId);
-                const sourceFile = new URL('unreachable.ll', moduleUrl);
-                return [{sourceFileURL: sourceFile.href, lineNumber: 5, columnNumber: 2}];
+            async rawLocationToSourceLocation(rawLocation: RawLocation) {
+              const {rawLocationRange, sourceLocation} = this._modules.get(rawLocation.rawModuleId) || {};
+              if (rawLocationRange && sourceLocation && rawLocationRange.startOffset <= rawLocation.codeOffset &&
+                  rawLocation.codeOffset < rawLocationRange.endOffset) {
+                return [sourceLocation];
               }
-              return null;
+              return [];
             }
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            async listVariablesInScope(rawLocation: any) {  // eslint-disable-line @typescript-eslint/no-unused-vars
-              return [{scope: 'LOCAL', name: 'local', type: 'int'}];
+            async listVariablesInScope(rawLocation: RawLocation) {
+              const {rawLocationRange} = this._modules.get(rawLocation.rawModuleId) || {};
+              if (rawLocationRange && rawLocationRange.startOffset <= rawLocation.codeOffset &&
+                  rawLocation.codeOffset < rawLocationRange.endOffset) {
+                return [{scope: 'LOCAL', name: 'local', type: 'int'}];
+              }
+              return [];
             }
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            async evaluateVariable(name: any, location: any) {  // eslint-disable-line @typescript-eslint/no-unused-vars
-              if (name === 'local') {
+            async evaluateVariable(name: string, location: RawLocation) {
+              const {rawLocationRange} = this._modules.get(location.rawModuleId) || {};
+              if (rawLocationRange && rawLocationRange.startOffset <= location.codeOffset &&
+                  location.codeOffset < rawLocationRange.endOffset && name === 'local') {
                 return {constantValue: {value: '23', js_type: 'number', type: 'int', name: 'local'}};
               }
               return null;
@@ -328,37 +376,39 @@ describe('The Debugger Language Plugins', async () => {
   it('shows variable value in popover', async () => {
     const {frontend} = getBrowserAndPages();
     await frontend.evaluateHandle(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        () => globalThis.installExtensionPlugin((extensionServerClient: any, extensionAPI: any) => {
+        () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {
           class VariableListingPlugin {
-            _modules: Map<string, string>;
-            evaluatedVariables: Array<string>;
+            _modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocation?: SourceLocation}>;
             constructor() {
               this._modules = new Map();
-              this.evaluatedVariables = [];
             }
 
-            async addRawModule(
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                rawModuleId: any, symbols: any,  // eslint-disable-line @typescript-eslint/no-unused-vars
-                rawModule: any) {                // eslint-disable-line @typescript-eslint/no-explicit-any
-              this._modules.set(rawModuleId.url, rawModule.url);
-              const fileUrl = new URL('unreachable.ll', rawModule.url);
-              return [fileUrl.href];
+            async addRawModule(rawModuleId: string, symbols: string, rawModule: RawModule) {
+              const sourceFileURL = new URL('unreachable.ll', rawModule.url || symbols).href;
+              this._modules.set(rawModuleId, {
+                rawLocationRange: {rawModuleId, startOffset: 6, endOffset: 7},
+                sourceLocation: {rawModuleId, sourceFileURL, lineNumber: 5, columnNumber: 2},
+              });
+              return [sourceFileURL];
             }
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            async rawLocationToSourceLocation(rawLocation: any) {
-              if (rawLocation.codeOffset === 6) {
-                const moduleUrl = this._modules.get(rawLocation.rawModuleId);
-                const sourceFile = new URL('unreachable.ll', moduleUrl);
-                return [{sourceFileURL: sourceFile.href, lineNumber: 5, columnNumber: 2}];
+            async rawLocationToSourceLocation(rawLocation: RawLocation) {
+              const {rawLocationRange, sourceLocation} = this._modules.get(rawLocation.rawModuleId) || {};
+              if (rawLocationRange && sourceLocation && rawLocationRange.startOffset <= rawLocation.codeOffset &&
+                  rawLocation.codeOffset < rawLocationRange.endOffset) {
+                return [sourceLocation];
               }
-              return null;
+              return [];
             }
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            async listVariablesInScope(rawLocation: any) {  // eslint-disable-line @typescript-eslint/no-unused-vars
+            async listVariablesInScope(rawLocation: RawLocation) {
+              const {rawLocationRange} = this._modules.get(rawLocation.rawModuleId) || {};
+              const {codeOffset} = rawLocation;
+              if (!rawLocationRange || rawLocationRange.startOffset > codeOffset ||
+                  rawLocationRange.endOffset <= codeOffset) {
+                return [];
+              }
+
               // The source code is LLVM IR so there are no meaningful variable names. Most tokens are however
               // identified as js-variable tokens by codemirror, so we can pretend they're variables. The unreachable
               // instruction is where we pause at, so it's really easy to find in the page and is a great mock variable
@@ -366,8 +416,8 @@ describe('The Debugger Language Plugins', async () => {
               return [{scope: 'LOCAL', name: 'unreachable', type: 'int'}];
             }
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            async evaluateVariable(name: any, location: any) {  // eslint-disable-line @typescript-eslint/no-unused-vars
+            async evaluateVariable(
+                name: string, location: RawLocation) {  // eslint-disable-line @typescript-eslint/no-unused-vars
               if (name === 'unreachable') {
                 return {constantValue: {value: '23', js_type: 'number', type: 'int', name: 'unreachable'}};
               }

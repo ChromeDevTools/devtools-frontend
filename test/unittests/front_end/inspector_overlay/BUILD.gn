@@ -10,7 +10,7 @@ ts_library("inspector_overlay") {
   ]
 
   deps = [
-    "../../../../front_end/inspector_overlay",
+    "../../../../inspector_overlay",
     "../helpers",
   ]
 }

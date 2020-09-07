@@ -11,5 +11,5 @@ ts_library("helpers") {
     "InspectorOverlayHelpers.ts",
   ]
 
-  deps = [ "../../../../front_end/inspector_overlay" ]
+  deps = [ "../../../../inspector_overlay" ]
 }

@@ -2,12 +2,12 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../third_party/typescript/typescript.gni")
+import("../third_party/typescript/typescript.gni")
 
 resources_out_dir = "$root_out_dir/resources/inspector_overlay"
 
 action("build_inspector_overlay") {
-  script = "../../scripts/build/build_inspector_overlay.py"
+  script = "../scripts/build/build_inspector_overlay.py"
 
   inputs = [
     "./common.css",
@@ -97,5 +97,5 @@ ts_library("inspector_overlay") {
     "tool_viewport_size.js",
     "tool_viewport_size_impl.js",
   ]
-  deps = [ "../common:bundle" ]
+  deps = [ "../front_end/common:bundle" ]
 }

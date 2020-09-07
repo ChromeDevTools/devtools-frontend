@@ -31,7 +31,7 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
-import {contrastRatio, rgbaToHsla} from '../common/ColorUtils.js';
+import {contrastRatio, rgbaToHsla} from '../front_end/common/ColorUtils.js';
 
 import {Bounds, createElement} from './common.js';  // eslint-disable-line no-unused-vars
 import {buildPath, drawRulers, emptyBounds} from './highlight_common.js';

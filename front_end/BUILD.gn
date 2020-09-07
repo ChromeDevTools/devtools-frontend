@@ -162,7 +162,6 @@ ts_library("ts_library-verification") {
     "common:bundle",
     "dom_extension:bundle",
     "host:bundle",
-    "inspector_overlay",
     "protocol_client:bundle",
     "root:bundle",
     "sdk:bundle",

@@ -5,8 +5,8 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
-import {Color, Format} from '../common/Color.js';
-import {luminance} from '../common/ColorUtils.js';
+import {Color, Format} from '../front_end/common/Color.js';
+import {luminance} from '../front_end/common/ColorUtils.js';
 
 import {AreaBounds, Bounds, Position} from './common.js';  // eslint-disable-line no-unused-vars
 import {applyMatrixToPoint} from './highlight_common.js';

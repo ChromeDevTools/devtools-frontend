@@ -291,7 +291,7 @@ group("devtools_frontend_resources") {
 }
 
 group("generate_devtools_inspector_overlay_resources") {
-  public_deps = [ "front_end/inspector_overlay:build_inspector_overlay" ]
+  public_deps = [ "inspector_overlay:build_inspector_overlay" ]
 }
 
 copy("copy_emulated_devices_images") {

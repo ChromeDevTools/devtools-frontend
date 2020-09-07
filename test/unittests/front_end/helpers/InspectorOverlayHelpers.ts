@@ -5,10 +5,10 @@
 const {assert} = chai;
 
 import {renderElementIntoDOM, assertElements, assertElement} from './DOMHelpers.js';
-import {reset} from '../../../../front_end/inspector_overlay/common.js';
-import {_normalizePositionData, drawGridAreaNames, drawGridLineNumbers, drawGridLineNames} from '../../../../front_end/inspector_overlay/css_grid_label_helpers.js';
-import {AreaBounds, Bounds} from '../../../../front_end/inspector_overlay/common.js';
-import '../../../../front_end/inspector_overlay/tool_highlight_grid.js';
+import {reset} from '../../../../inspector_overlay/common.js';
+import {_normalizePositionData, drawGridAreaNames, drawGridLineNumbers, drawGridLineNames} from '../../../../inspector_overlay/css_grid_label_helpers.js';
+import {AreaBounds, Bounds} from '../../../../inspector_overlay/common.js';
+import '../../../../inspector_overlay/tool_highlight_grid.js';
 
 const GRID_LABEL_CONTAINER_ID = 'grid-label-container';
 const DEFAULT_GRID_LABEL_LAYER_ID = 'grid-labels';

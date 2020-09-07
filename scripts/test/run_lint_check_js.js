@@ -10,10 +10,12 @@ const CLIEngine = require('eslint').CLIEngine;
 
 const ROOT_DIRECTORY = path.join(__dirname, '..', '..');
 const FRONT_END_DIRECTORY = path.join(ROOT_DIRECTORY, 'front_end');
+const INSPECTOR_OVERLAY_DIRECTORY = path.join(ROOT_DIRECTORY, 'inspector_overlay');
 const TEST_DIRECTORY = path.join(ROOT_DIRECTORY, 'test');
 const SCRIPTS_DIRECTORY = path.join(ROOT_DIRECTORY, 'scripts');
 
-const DEFAULT_DIRECTORIES_TO_LINT = [FRONT_END_DIRECTORY, TEST_DIRECTORY, SCRIPTS_DIRECTORY];
+const DEFAULT_DIRECTORIES_TO_LINT =
+    [FRONT_END_DIRECTORY, INSPECTOR_OVERLAY_DIRECTORY, TEST_DIRECTORY, SCRIPTS_DIRECTORY];
 
 const eslintignorePath = path.join(ROOT_DIRECTORY, '.eslintignore');
 

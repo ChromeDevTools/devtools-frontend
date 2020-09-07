@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {createElement, setPlatform, reset} from '../../../../front_end/inspector_overlay/common.js';
+import {createElement, setPlatform, reset} from '../../../../inspector_overlay/common.js';
 
 // Make sure typescript knows about the custom properties that are set on the window object.
 declare global {

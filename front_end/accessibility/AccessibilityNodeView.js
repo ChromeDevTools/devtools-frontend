@@ -683,7 +683,9 @@ export class AXNodeIgnoredReasonTreeElement extends AXNodePropertyTreeElement {
     this.listItemElement.removeChildren();
 
     this._reasonElement = AXNodeIgnoredReasonTreeElement.createReasonElement(this._property.name, this._axNode);
-    this.listItemElement.appendChild(this._reasonElement);
+    if (this._reasonElement) {
+      this.listItemElement.appendChild(this._reasonElement);
+    }
 
     const value = this._property.value;
     if (value.type === Protocol.Accessibility.AXValueType.Idref) {

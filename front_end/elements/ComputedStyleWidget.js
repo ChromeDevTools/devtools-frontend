@@ -27,9 +27,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
@@ -39,7 +36,7 @@ import * as UI from '../ui/ui.js';
 
 import {createComputedStyleGroupLists, PropertyGroup} from './ComputedStyleGroupLists_bridge.js';  // eslint-disable-line no-unused-vars
 import {ComputedStyle, ComputedStyleModel, Events} from './ComputedStyleModel.js';  // eslint-disable-line no-unused-vars
-import {ComputedStylePropertyData, createComputedStyleProperty} from './ComputedStyleProperty_bridge.js';  // eslint-disable-line no-unused-vars
+import {ComputedStylePropertyClosureInterface, ComputedStylePropertyData, createComputedStyleProperty} from './ComputedStyleProperty_bridge.js';  // eslint-disable-line no-unused-vars
 import {createComputedStyleTrace} from './ComputedStyleTrace_bridge.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {PlatformFontsWidget} from './PlatformFontsWidget.js';
@@ -49,12 +46,12 @@ import {IdleCallbackManager, StylePropertiesSection, StylesSidebarPane, StylesSi
 /**
  * @param {!SDK.DOMModel.DOMNode} node
  * @param {string} propertyName
- * @param {string | undefined} propertyValue
+ * @param {string} propertyValue
  */
 const createPropertyElement = (node, propertyName, propertyValue) => {
   const propertyElement = createComputedStyleProperty();
 
-  const renderer = new StylesSidebarPropertyRenderer(null, node, propertyName, /** @type {string} */ (propertyValue));
+  const renderer = new StylesSidebarPropertyRenderer(null, node, propertyName, propertyValue);
   renderer.setColorHandler(processComputedColor);
 
   const propertyNameElement = renderer.renderName();
@@ -149,10 +146,10 @@ const navigateToSource = (cssProperty, event) => {
  * @return {number}
  */
 const propertySorter = (propA, propB) => {
-  if (propA.startsWith('--') ^ propB.startsWith('--')) {
+  if (propA.startsWith('--') !== propB.startsWith('--')) {
     return propA.startsWith('--') ? 1 : -1;
   }
-  if (propA.startsWith('-webkit') ^ propB.startsWith('-webkit')) {
+  if (propA.startsWith('-webkit') !== propB.startsWith('-webkit')) {
     return propA.startsWith('-webkit') ? 1 : -1;
   }
   const canonicalA = SDK.CSSMetadata.cssMetadata().canonicalPropertyName(propA);
@@ -209,7 +206,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     this._propertiesOutline.addEventListener(UI.TreeOutline.Events.ElementCollapsed, this._onTreeElementToggled, this);
     this.contentElement.appendChild(this._propertiesOutline.element);
 
-    /** @type {!Array<!PropertyGroup>} */
+    /** @type {!Array<!{group: string, properties: !Array<!ComputedStylePropertyClosureInterface>}>} */
     this._propertyGroups = [];
     this._groupLists = createComputedStyleGroupLists();
     this._groupLists.classList.add('monospace', 'computed-properties');
@@ -247,8 +244,8 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     const fontsWidget = new PlatformFontsWidget(this._computedStyleModel);
     fontsWidget.show(this.contentElement);
 
-    /** @type {?IdleCallbackManager} */
-    this._idleCallbackManager = null;
+    /** @type {!IdleCallbackManager} */
+    this._idleCallbackManager = new IdleCallbackManager();
   }
 
   /**
@@ -279,8 +276,8 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
    * @return {!Promise.<?>}
    */
   async doUpdate() {
-    const promises = [this._computedStyleModel.fetchComputedStyle(), this._fetchMatchedCascade()];
-    const [nodeStyles, matchedStyles] = await Promise.all(promises);
+    const [nodeStyles, matchedStyles] =
+        await Promise.all([this._computedStyleModel.fetchComputedStyle(), this._fetchMatchedCascade()]);
     const shouldGroupComputedStyles = this._groupComputedStylesSetting.get();
     if (shouldGroupComputedStyles) {
       await this._rebuildGroupedList(nodeStyles, matchedStyles);
@@ -298,7 +295,12 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
       return Promise.resolve(/** @type {?SDK.CSSMatchedStyles.CSSMatchedStyles} */ (null));
     }
 
-    return this._computedStyleModel.cssModel().cachedMatchedCascadeForNode(node).then(validateStyles.bind(this));
+    const cssModel = this._computedStyleModel.cssModel();
+    if (!cssModel) {
+      return Promise.resolve(null);
+    }
+
+    return cssModel.cachedMatchedCascadeForNode(node).then(validateStyles.bind(this));
 
     /**
      * @param {?SDK.CSSMatchedStyles.CSSMatchedStyles} matchedStyles
@@ -335,7 +337,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     const computedStyleQueue = [];
     // filter and preprocess properties to line up in the computed style queue
     for (const propertyName of uniqueProperties) {
-      const propertyValue = nodeStyle.computedStyle.get(propertyName);
+      const propertyValue = nodeStyle.computedStyle.get(propertyName) || '';
       const canonicalName = SDK.CSSMetadata.cssMetadata().canonicalPropertyName(propertyName);
       const isInherited = !nonInheritedProperties.has(canonicalName);
       if (!showInherited && isInherited && !_alwaysShownComputedProperties.has(propertyName)) {
@@ -512,6 +514,9 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     this._groupLists.classList.remove('hidden');
   }
 
+  /**
+   * @param {!Common.EventTarget.EventTargetEvent} event
+   */
   _onTreeElementToggled(event) {
     const treeElement = /** @type {!UI.TreeOutline.TreeElement} */ (event.data);
     const property = this._propertyByTreeElement.get(treeElement);
@@ -630,7 +635,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
       }
       const matched = !regex || regex.test(property.name) || regex.test(property.value);
       child.hidden = !matched;
-      hasMatch |= matched;
+      hasMatch = hasMatch || matched;
     }
     this._noMatchesElement.classList.toggle('hidden', !!hasMatch);
   }

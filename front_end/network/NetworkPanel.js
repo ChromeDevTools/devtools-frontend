@@ -598,9 +598,13 @@ export class NetworkPanel extends UI.Panel.Panel {
   }
 
   _updateUI() {
-    this._detailsWidget.element.classList.toggle(
-        'network-details-view-tall-header', this._networkLogLargeRowsSetting.get());
-    this._networkLogView.switchViewMode(!this._splitWidget.isResizable());
+    if (this._detailsWidget) {
+      this._detailsWidget.element.classList.toggle(
+          'network-details-view-tall-header', this._networkLogLargeRowsSetting.get());
+    }
+    if (this._networkLogView) {
+      this._networkLogView.switchViewMode(!this._splitWidget.isResizable());
+    }
   }
 
   /**

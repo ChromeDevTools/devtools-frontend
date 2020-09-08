@@ -24,7 +24,7 @@ export declare class TemplateInstance {
     readonly options: RenderOptions;
     readonly template: Template;
     constructor(template: Template, processor: TemplateProcessor, options: RenderOptions);
-    update(values: ReadonlyArray<unknown>): void;
+    update(values: readonly unknown[]): void;
     _clone(): DocumentFragment;
 }
 //# sourceMappingURL=template-instance.d.ts.map

@@ -11,9 +11,6 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-/**
- * @module lit-html
- */
 import { TemplateFactory } from './template-factory.js';
 export interface RenderOptions {
     readonly templateFactory: TemplateFactory;

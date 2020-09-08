@@ -18,10 +18,10 @@ import { TemplateProcessor } from './template-processor.js';
  */
 export declare class TemplateResult {
     readonly strings: TemplateStringsArray;
-    readonly values: ReadonlyArray<unknown>;
+    readonly values: readonly unknown[];
     readonly type: string;
     readonly processor: TemplateProcessor;
-    constructor(strings: TemplateStringsArray, values: ReadonlyArray<unknown>, type: string, processor: TemplateProcessor);
+    constructor(strings: TemplateStringsArray, values: readonly unknown[], type: string, processor: TemplateProcessor);
     /**
      * Returns a string of HTML used to create a `<template>` element.
      */

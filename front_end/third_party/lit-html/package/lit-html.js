@@ -21,8 +21,7 @@
  * -  [[svg]]
  * -  [[render]]
  *
- * @module lit-html
- * @preferred
+ * @packageDocumentation
  */
 /**
  * Do not remove this comment; it keeps typedoc from misplacing the module
@@ -44,7 +43,9 @@ export { createMarker, isTemplatePartActive, Template } from './lib/template.js'
 // IMPORTANT: do not change the property name or the assignment expression.
 // This line will be used in regexes to search for lit-html usage.
 // TODO(justinfagnani): inject version number at build time
-(window['litHtmlVersions'] || (window['litHtmlVersions'] = [])).push('1.1.2');
+if (typeof window !== 'undefined') {
+    (window['litHtmlVersions'] || (window['litHtmlVersions'] = [])).push('1.3.0');
+}
 /**
  * Interprets a template literal as an HTML template that can efficiently
  * render to and update a container.

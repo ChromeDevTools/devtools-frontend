@@ -14,7 +14,8 @@
 /**
  * True if the custom elements polyfill is in use.
  */
-export const isCEPolyfill = window.customElements !== undefined &&
+export const isCEPolyfill = typeof window !== 'undefined' &&
+    window.customElements != null &&
     window.customElements.polyfillWrapFlushCallback !==
         undefined;
 /**

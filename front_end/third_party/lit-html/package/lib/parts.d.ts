@@ -13,12 +13,12 @@
  */
 import { Part } from './part.js';
 import { RenderOptions } from './render-options.js';
-export declare type Primitive = null | undefined | boolean | number | string | Symbol | bigint;
+export declare type Primitive = null | undefined | boolean | number | string | symbol | bigint;
 export declare const isPrimitive: (value: unknown) => value is Primitive;
 export declare const isIterable: (value: unknown) => value is Iterable<unknown>;
 /**
  * Writes attribute values to the DOM for a group of AttributeParts bound to a
- * single attibute. The value is only set once even if there are multiple parts
+ * single attribute. The value is only set once even if there are multiple parts
  * for an attribute.
  */
 export declare class AttributeCommitter {
@@ -105,10 +105,10 @@ export declare class NodePart implements Part {
 export declare class BooleanAttributePart implements Part {
     readonly element: Element;
     readonly name: string;
-    readonly strings: ReadonlyArray<string>;
+    readonly strings: readonly string[];
     value: unknown;
     private __pendingValue;
-    constructor(element: Element, name: string, strings: ReadonlyArray<string>);
+    constructor(element: Element, name: string, strings: readonly string[]);
     setValue(value: unknown): void;
     commit(): void;
 }

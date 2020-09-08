@@ -29,5 +29,5 @@ import { Part } from '../lit-html.js';
  * @param mapper An optional function that maps from (value, index) to another
  *     value. Useful for generating templates for each item in the iterable.
  */
-export declare const asyncAppend: (value: AsyncIterable<unknown>, mapper?: ((v: unknown, index?: number | undefined) => unknown) | undefined) => (part: Part) => Promise<void>;
+export declare const asyncAppend: <T>(value: AsyncIterable<T>, mapper?: ((v: T, index?: number | undefined) => unknown) | undefined) => (part: Part) => Promise<void>;
 //# sourceMappingURL=async-append.d.ts.map

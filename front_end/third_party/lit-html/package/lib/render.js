@@ -11,9 +11,6 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-/**
- * @module lit-html
- */
 import { removeNodes } from './dom.js';
 import { NodePart } from './parts.js';
 import { templateFactory } from './template-factory.js';

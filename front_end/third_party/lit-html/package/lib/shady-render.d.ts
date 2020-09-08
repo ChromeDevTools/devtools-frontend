@@ -12,7 +12,14 @@
  * http://polymer.github.io/PATENTS.txt
  */
 import { RenderOptions } from './render-options.js';
+import { TemplateResult } from './template-result.js';
+import { Template } from './template.js';
 export { html, svg, TemplateResult } from '../lit-html.js';
+/**
+ * Template factory which scopes template DOM using ShadyCSS.
+ * @param scopeName {string}
+ */
+export declare const shadyTemplateFactory: (scopeName: string) => (result: TemplateResult) => Template;
 export interface ShadyRenderOptions extends Partial<RenderOptions> {
     scopeName: string;
 }

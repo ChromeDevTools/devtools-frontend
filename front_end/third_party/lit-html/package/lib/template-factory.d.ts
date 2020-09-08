@@ -11,9 +11,6 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-/**
- * @module lit-html
- */
 import { TemplateResult } from './template-result.js';
 import { Template } from './template.js';
 /**
@@ -47,14 +44,14 @@ export declare function templateFactory(result: TemplateResult): Template;
  * calls to a tag for the same literal, so we can cache work done per literal
  * in a Map.
  *
- * Safari currently has a bug which occasionally breaks this behaviour, so we
+ * Safari currently has a bug which occasionally breaks this behavior, so we
  * need to cache the Template at two levels. We first cache the
  * TemplateStringsArray, and if that fails, we cache a key constructed by
  * joining the strings array.
  */
-export declare type templateCache = {
+export interface TemplateCache {
     readonly stringsArray: WeakMap<TemplateStringsArray, Template>;
     readonly keyString: Map<string, Template>;
-};
-export declare const templateCaches: Map<string, templateCache>;
+}
+export declare const templateCaches: Map<string, TemplateCache>;
 //# sourceMappingURL=template-factory.d.ts.map

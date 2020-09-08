@@ -11,9 +11,6 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-/**
- * @module lit-html
- */
 import { TemplateResult } from './template-result.js';
 /**
  * An expression marker with embedded unique key to avoid collision with
@@ -31,7 +28,7 @@ export declare const markerRegex: RegExp;
  */
 export declare const boundAttributeSuffix = "$lit$";
 /**
- * An updateable Template that tracks the location of dynamic parts.
+ * An updatable Template that tracks the location of dynamic parts.
  */
 export declare class Template {
     readonly parts: TemplatePart[];

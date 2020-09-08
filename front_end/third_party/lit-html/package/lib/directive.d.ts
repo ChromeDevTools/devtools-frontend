@@ -11,9 +11,6 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-/**
- * @module lit-html
- */
 import { Part } from './part.js';
 export declare type DirectiveFactory = (...args: any[]) => object;
 export declare type DirectiveFn = (part: Part) => void;

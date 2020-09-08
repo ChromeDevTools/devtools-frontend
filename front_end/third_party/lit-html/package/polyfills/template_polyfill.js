@@ -18,7 +18,7 @@ import { removeNodes, reparentNodes } from '../lib/dom.js';
  * natively supported.
  * Please note that nested template, cloning template node and innerHTML getter
  * do NOT work with this polyfill.
- * If it can not fullfill your requirement, please consider using the full
+ * If it can not fulfill your requirement, please consider using the full
  * polyfill: https://github.com/webcomponents/template
  */
 export const initTemplatePolyfill = (forced = false) => {
@@ -38,10 +38,10 @@ export const initTemplatePolyfill = (forced = false) => {
     const upgrade = (template) => {
         const content = contentDoc.createDocumentFragment();
         Object.defineProperties(template, {
-            content: Object.assign({}, descriptor, { get() {
+            content: Object.assign(Object.assign({}, descriptor), { get() {
                     return content;
                 } }),
-            innerHTML: Object.assign({}, descriptor, { set: function (text) {
+            innerHTML: Object.assign(Object.assign({}, descriptor), { set: function (text) {
                     body.innerHTML = text;
                     removeNodes(content, content.firstChild);
                     reparentNodes(content, body.firstChild);

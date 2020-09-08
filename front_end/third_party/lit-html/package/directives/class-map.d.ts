@@ -19,9 +19,8 @@ export interface ClassInfo {
  * A directive that applies CSS classes. This must be used in the `class`
  * attribute and must be the only part used in the attribute. It takes each
  * property in the `classInfo` argument and adds the property name to the
- * element's `classList` if the property value is truthy; if the property value
- * is falsey, the property name is removed from the element's `classList`. For
- * example
+ * element's `class` if the property value is truthy; if the property value is
+ * falsey, the property name is removed from the element's `class`. For example
  * `{foo: bar}` applies the class `foo` if the value of `bar` is truthy.
  * @param classInfo {ClassInfo}
  */

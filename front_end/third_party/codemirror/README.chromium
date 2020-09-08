@@ -1,7 +1,7 @@
 Name: CodeMirror is a versatile text editor implemented in JavaScript for the browser.
 Short Name: CodeMirror
 URL: https://github.com/codemirror/CodeMirror/
-Version: 5.53.2
+Version: 5.57.0
 License: MIT
 License File: LICENSE
 Security Critical: no
@@ -14,7 +14,7 @@ Every language comes with fully-featured code and syntax highlighting to help wi
 To update this package, run the following command (replace version number with updated version number):
 
 ```bash
-wget -qO- https://registry.npmjs.org/codemirror/-/codemirror-5.53.2.tgz | tar xzf -
+wget -qO- https://registry.npmjs.org/codemirror/-/codemirror-5.57.0.tgz | tar xzf -
 ```
 
 Local changes applied:

@@ -550,7 +550,7 @@ CodeMirror.cmpPos = function(pos1, pos2) {};
 
 /**
  * @constructor
- * @param {(!Array<string>|string)} line
+ * @param {string} line
  * @param {number=} index
  */
 CodeMirror.StringStream = function(line, index) {

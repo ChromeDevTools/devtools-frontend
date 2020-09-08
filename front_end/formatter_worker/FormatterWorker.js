@@ -63,8 +63,7 @@ export function createTokenizer(mimeType) {
    * @param {function(string, ?string, number, number):?} callback
    */
   return (line, callback) => {
-    // @ts-expect-error Broken in @types/codemirror
-    const stream = new CodeMirror.StringStream([line], 0);
+    const stream = new CodeMirror.StringStream(line);
     while (!stream.eol()) {
       // @ts-expect-error TypeScript can't determine that `mode.token` is defined based on lines above
       const style = mode.token(stream, state);

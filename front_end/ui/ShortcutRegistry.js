@@ -5,6 +5,7 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
+import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
 
@@ -37,7 +38,7 @@ export class ShortcutRegistry {
     this._consumePrefix = null;
     /** @type {!Set.<string>} */
     this._devToolsDefaultShortcutActions = new Set();
-    const keybindSetSetting = self.Common.settings.moduleSetting('activeKeybindSet');
+    const keybindSetSetting = Common.Settings.Settings.instance().moduleSetting('activeKeybindSet');
     if (!Root.Runtime.experiments.isEnabled('customKeyboardShortcuts') &&
         keybindSetSetting.get() !== DefaultShortcutSetting) {
       keybindSetSetting.set(DefaultShortcutSetting);
@@ -324,7 +325,7 @@ export class ShortcutRegistry {
     this._keyToShortcut.clear();
     this._actionToShortcut.clear();
     this._keyMap.clear();
-    const keybindSet = self.Common.settings.moduleSetting('activeKeybindSet').get();
+    const keybindSet = Common.Settings.Settings.instance().moduleSetting('activeKeybindSet').get();
     const extensions = self.runtime.extensions('action');
     const forwardedKeys = [];
     extensions.forEach(registerExtension, this);

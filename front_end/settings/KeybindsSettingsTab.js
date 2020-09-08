@@ -5,6 +5,7 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
+import * as Common from '../common/common.js';
 import * as UI from '../ui/ui.js';
 
 /**
@@ -17,7 +18,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox {
 
     const header = this.contentElement.createChild('header');
     header.createChild('h1').textContent = ls`Shortcuts`;
-    const keybindsSetSetting = self.Common.settings.moduleSetting('activeKeybindSet');
+    const keybindsSetSetting = Common.Settings.Settings.instance().moduleSetting('activeKeybindSet');
     keybindsSetSetting.addChangeListener(this.update, this);
     const keybindsSetSelect =
         UI.SettingsUI.createControlForSetting(keybindsSetSetting, ls`Match shortcuts from preset`);

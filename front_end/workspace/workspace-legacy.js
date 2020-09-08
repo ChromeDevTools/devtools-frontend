@@ -39,8 +39,3 @@ Workspace.projectTypes = WorkspaceModule.Workspace.projectTypes;
 
 /** @constructor */
 Workspace.ProjectStore = WorkspaceModule.Workspace.ProjectStore;
-
-/**
- * @type {!WorkspaceModule.Workspace.WorkspaceImpl}
- */
-self.Workspace.workspace;

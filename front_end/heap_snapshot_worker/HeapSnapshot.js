@@ -3273,14 +3273,6 @@ export class JSHeapSnapshotRetainerEdge extends HeapSnapshotRetainerEdge {
   }
 }
 
-(function disableLoggingForTest() {
-  // Runtime doesn't exist because this file is loaded as a one-off
-  // file in some inspector-protocol tests.
-  if (self.Root && self.Root.Runtime && Root.Runtime.queryParam('test')) {
-    console.warn = () => undefined;
-  }
-})();
-
 /**
  * @typedef {!{
  *   count: number,

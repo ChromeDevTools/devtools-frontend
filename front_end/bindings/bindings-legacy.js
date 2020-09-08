@@ -101,19 +101,3 @@ Bindings.TempFile = BindingsModule.TempFile.TempFile;
 
 /** @constructor */
 Bindings.TempFileBackingStorage = BindingsModule.TempFile.TempFileBackingStorage;
-
-/** @type {!BindingsModule.BlackboxManager.BlackboxManager} */
-self.Bindings.blackboxManager;
-
-/** @type {!BindingsModule.BreakpointManager.BreakpointManager} */
-self.Bindings.breakpointManager;
-
-/**
- * @type {!BindingsModule.CSSWorkspaceBinding.CSSWorkspaceBinding}
- */
-self.Bindings.cssWorkspaceBinding;
-
-/**
- * @type {!BindingsModule.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding}
- */
-self.Bindings.debuggerWorkspaceBinding;

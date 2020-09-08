@@ -34,10 +34,10 @@ const excludeDirs = [
   'langpacks',
   'node_modules',
   'lighthouse_worker',
-  'front_end/third_party',
-  'front_end/dagre_layout',
-  'front_end/javascript_metadata',
-  'front_end/generated',
+  `front_end${path.sep}third_party`,
+  `front_end${path.sep}dagre_layout`,
+  `front_end${path.sep}javascript_metadata`,
+  `front_end${path.sep}generated`,
 ];
 
 const cppSpecialCharactersMap = {

@@ -512,6 +512,10 @@ def _getFilesToLint(input_api, output_api, lint_config_files,
                                           default_linted_directories, ['D'],
                                           accepted_endings)
 
+        # Exclude front_end/third_party files.
+        files_to_lint = filter(lambda path: "third_party" not in path,
+                               files_to_lint)
+
         if len(files_to_lint) is 0:
             results.append(
                 output_api.PresubmitNotifyResult(

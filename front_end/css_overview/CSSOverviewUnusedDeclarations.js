@@ -2,19 +2,40 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
+/**
+ * @typedef {{
+ * declaration:string,
+ * nodeId:number,
+ * }}
+ */
+// @ts-ignore typedef
+export let UnusedDeclaration;
 
 /**
  * @unrestricted
  */
 export class CSSOverviewUnusedDeclarations {
+  /**
+   * @param {!Map<string,!Array<!UnusedDeclaration>>} target
+   * @param {string} key
+   * @param {{declaration: string, nodeId:number}} item
+   */
   static _add(target, key, item) {
     const values = target.get(key) || [];
     values.push(item);
     target.set(key, values);
   }
 
+  /**
+   * @param {!Map<string, !Array<!UnusedDeclaration>>} unusedDeclarations
+   * @param {number} nodeId
+   * @param {!Array<string>} strings
+   * @param {number} positionIdx
+   * @param {number} topIdx
+   * @param {number} leftIdx
+   * @param {number} rightIdx
+   * @param {number} bottomIdx
+   */
   static checkForUnusedPositionValues(
       unusedDeclarations, nodeId, strings, positionIdx, topIdx, leftIdx, rightIdx, bottomIdx) {
     if (strings[positionIdx] !== 'static') {
@@ -54,6 +75,14 @@ export class CSSOverviewUnusedDeclarations {
     }
   }
 
+  /**
+   * @param {!Map<string, !Array<!UnusedDeclaration>>} unusedDeclarations
+   * @param {number} nodeId
+   * @param {!Array<string>} strings
+   * @param {number} displayIdx
+   * @param {number} widthIdx
+   * @param {number} heightIdx
+   */
   static checkForUnusedWidthAndHeightValues(unusedDeclarations, nodeId, strings, displayIdx, widthIdx, heightIdx) {
     if (strings[displayIdx] !== 'inline') {
       return;
@@ -76,6 +105,13 @@ export class CSSOverviewUnusedDeclarations {
     }
   }
 
+  /**
+   * @param {!Map<string, !Array<!UnusedDeclaration>>} unusedDeclarations
+   * @param {number} nodeId
+   * @param {!Array<string>} strings
+   * @param {number} displayIdx
+   * @param {number} verticalAlignIdx
+   */
   static checkForInvalidVerticalAlignment(unusedDeclarations, nodeId, strings, displayIdx, verticalAlignIdx) {
     if (!strings[displayIdx] || strings[displayIdx] === 'inline' || strings[displayIdx].startsWith('table')) {
       return;

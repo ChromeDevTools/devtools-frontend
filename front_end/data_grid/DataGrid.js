@@ -1712,6 +1712,9 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
    */
   createCells(element) {
     element.removeChildren();
+    if (!this.dataGrid) {
+      return;
+    }
     const columnsArray = this.dataGrid.visibleColumnsArray;
     const accessibleTextArray = [];
     // Add depth if node is part of a tree

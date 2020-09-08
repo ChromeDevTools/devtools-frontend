@@ -166,6 +166,7 @@ generated_typescript_entrypoint_sources = [
   "$resources_out_dir/theme_support/theme_support.js",
   "$resources_out_dir/third_party/acorn/acorn.js",
   "$resources_out_dir/third_party/lit-html/lit-html.js",
+  "$resources_out_dir/third_party/puppeteer/puppeteer.js",
   "$resources_out_dir/timeline/timeline.js",
   "$resources_out_dir/timeline_model/timeline_model.js",
   "$resources_out_dir/toolbox_bootstrap/toolbox_bootstrap.js",

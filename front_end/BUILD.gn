@@ -80,6 +80,7 @@ group("front_end") {
     "text_utils:bundle",
     "theme_support:bundle",
     "third_party/lighthouse",
+    "third_party/puppeteer:bundle",
     "timeline:bundle",
     "timeline_model:bundle",
     "toolbox_bootstrap:bundle",

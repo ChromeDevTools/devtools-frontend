@@ -35,6 +35,7 @@ import * as Common from '../common/common.js';  // eslint-disable-line no-unused
 import * as Host from '../host/host.js';
 
 import {ActionRegistry} from './ActionRegistry.js';
+import {ShortcutRegistry} from './ShortcutRegistry.js';
 import {SoftContextMenu} from './SoftContextMenu.js';
 
 /**
@@ -181,7 +182,7 @@ export class Section {
       label = action.title();
     }
     const result = this.appendItem(label, action.execute.bind(action));
-    const shortcut = self.UI.shortcutRegistry.shortcutTitleForAction(actionId);
+    const shortcut = ShortcutRegistry.instance().shortcutTitleForAction(actionId);
     if (shortcut) {
       result.setShortcut(shortcut);
     }

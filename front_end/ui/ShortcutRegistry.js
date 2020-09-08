@@ -15,6 +15,8 @@ import {Dialog} from './Dialog.js';
 import {Descriptor, KeyboardShortcut, Modifiers, Type} from './KeyboardShortcut.js';  // eslint-disable-line no-unused-vars
 import {isEditing} from './UIUtils.js';
 
+/** @type {!ShortcutRegistry} */
+let shortcutRegistryInstance;
 
 export class ShortcutRegistry {
   /**
@@ -46,6 +48,21 @@ export class ShortcutRegistry {
     });
 
     this._registerBindings();
+  }
+
+  /**
+   * @param {{forceNew: ?boolean, actionRegistry: ?ActionRegistry}} opts
+   */
+  static instance(opts = {forceNew: null, actionRegistry: null}) {
+    const {forceNew, actionRegistry} = opts;
+    if (!shortcutRegistryInstance || forceNew) {
+      if (!actionRegistry) {
+        throw new Error('Missing actionRegistry for shortcutRegistry');
+      }
+      shortcutRegistryInstance = new ShortcutRegistry(actionRegistry);
+    }
+
+    return shortcutRegistryInstance;
   }
 
   /**

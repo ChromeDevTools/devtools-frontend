@@ -313,7 +313,8 @@ export class MainImpl {
     const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
     // Required for legacy a11y layout tests
     self.UI.actionRegistry = actionRegistryInstance;
-    self.UI.shortcutRegistry = new UI.ShortcutRegistry.ShortcutRegistry(actionRegistryInstance);
+    self.UI.shortcutRegistry =
+        UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
     UI.ShortcutsScreen.ShortcutsScreen.registerShortcuts();
     this._registerMessageSinkListener();
 
@@ -494,7 +495,7 @@ export class MainImpl {
     section.addKey(advancedSearchShortcut, Common.UIString.UIString('Search across all sources'));
 
     const inspectElementModeShortcuts =
-        self.UI.shortcutRegistry.shortcutDescriptorsForAction('elements.toggle-element-search');
+        UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutDescriptorsForAction('elements.toggle-element-search');
     if (inspectElementModeShortcuts.length) {
       section.addKey(inspectElementModeShortcuts[0], Common.UIString.UIString('Select node to inspect'));
     }
@@ -514,7 +515,7 @@ export class MainImpl {
 
   _postDocumentKeyDown(event) {
     if (!event.handled) {
-      self.UI.shortcutRegistry.handleShortcut(event);
+      UI.ShortcutRegistry.ShortcutRegistry.instance().handleShortcut(event);
     }
   }
 
@@ -654,7 +655,8 @@ export class MainMenuItem {
       dockItemElement.tabIndex = -1;
       const titleElement = dockItemElement.createChild('span', 'flex-auto');
       titleElement.textContent = Common.UIString.UIString('Dock side');
-      const toggleDockSideShorcuts = self.UI.shortcutRegistry.shortcutsForAction('main.toggle-dock');
+      const toggleDockSideShorcuts =
+          UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction('main.toggle-dock');
       titleElement.title = Common.UIString.UIString(
           'Placement of DevTools relative to the page. (%s to restore last position)',
           toggleDockSideShorcuts[0].title());

@@ -802,7 +802,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         // See ExtensionAPI.js for details.
         const injectedAPI = self.buildExtensionAPIInjectedScript(
             /** @type {!{startPage: string, name: string, exposeExperimentalAPIs: boolean}} */ (extensionInfo),
-            this._inspectedTabId, self.UI.themeSupport.themeName(), self.UI.shortcutRegistry.globalShortcutKeys(),
+            this._inspectedTabId, self.UI.themeSupport.themeName(),
+            UI.ShortcutRegistry.ShortcutRegistry.instance().globalShortcutKeys(),
             ExtensionServer.instance()['_extensionAPITestHook']);
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.setInjectedScriptForOrigin(
             extensionOrigin, injectedAPI);

@@ -8,6 +8,7 @@
 import * as Platform from '../platform/platform.js';
 
 import {GlassPane} from './GlassPane.js';
+import {ShortcutRegistry} from './ShortcutRegistry.js';
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
 import {Events as ZoomManagerEvents, ZoomManager} from './ZoomManager.js';
 
@@ -162,7 +163,7 @@ export class Tooltip {
     }
 
     if (tooltip.actionId) {
-      const shortcuts = self.UI.shortcutRegistry.shortcutsForAction(tooltip.actionId);
+      const shortcuts = ShortcutRegistry.instance().shortcutsForAction(tooltip.actionId);
       for (const shortcut of shortcuts) {
         const shortcutElement = this._tooltipElement.createChild('div', 'tooltip-shortcut');
         shortcutElement.textContent = shortcut.title();

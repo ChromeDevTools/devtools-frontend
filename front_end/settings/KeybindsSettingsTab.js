@@ -53,7 +53,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox {
     } else {
       UI.ARIAUtils.setLevel(itemElement, 2);
       itemElement.createChild('div', 'keybinds-action-name keybinds-list-text').textContent = item.title();
-      const shortcuts = self.UI.shortcutRegistry.shortcutsForAction(item.id());
+      const shortcuts = UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction(item.id());
       shortcuts.forEach((shortcut, index) => {
         if (!shortcut.isDefault()) {
           const icon = UI.Icon.Icon.create('largeicon-shortcut-changed', 'keybinds-modified');
@@ -67,7 +67,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox {
         });
       });
       if (shortcuts.length === 0) {
-        if (self.UI.shortcutRegistry.actionHasDefaultShortcut(item.id())) {
+        if (UI.ShortcutRegistry.ShortcutRegistry.instance().actionHasDefaultShortcut(item.id())) {
           const icon = UI.Icon.Icon.create('largeicon-shortcut-changed', 'keybinds-modified');
           UI.ARIAUtils.setAccessibleName(icon, ls`Shortcut provided by preset`);
           itemElement.appendChild(icon);

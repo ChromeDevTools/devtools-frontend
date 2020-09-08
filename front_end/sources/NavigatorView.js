@@ -73,7 +73,7 @@ export class NavigatorView extends UI.Widget.VBox {
     this._frameNodes = new Map();
 
     this.contentElement.addEventListener('contextmenu', this.handleContextMenu.bind(this), false);
-    self.UI.shortcutRegistry.addShortcutListener(
+    UI.ShortcutRegistry.ShortcutRegistry.instance().addShortcutListener(
         this.contentElement, {'sources.rename': this._renameShortcut.bind(this)});
 
     this._navigatorGroupByFolderSetting = Common.Settings.Settings.instance().moduleSetting('navigatorGroupByFolder');

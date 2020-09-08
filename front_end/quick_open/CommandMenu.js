@@ -89,7 +89,7 @@ export class CommandMenu {
    */
   static createActionCommand(options) {
     const {action, userActionCode} = options;
-    const shortcut = self.UI.shortcutRegistry.shortcutTitleForAction(action.id()) || '';
+    const shortcut = UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction(action.id()) || '';
 
     return CommandMenu.createCommand({
       category: action.category(),

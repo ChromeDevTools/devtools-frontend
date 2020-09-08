@@ -768,10 +768,11 @@ export class TimelinePanel extends UI.Panel.Panel {
         'https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/',
         Common.UIString.UIString('Learn\xa0more'));
 
-    const recordKey =
-        encloseWithTag('b', self.UI.shortcutRegistry.shortcutsForAction('timeline.toggle-recording')[0].title());
-    const reloadKey =
-        encloseWithTag('b', self.UI.shortcutRegistry.shortcutsForAction('timeline.record-reload')[0].title());
+    const recordKey = encloseWithTag(
+        'b',
+        UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction('timeline.toggle-recording')[0].title());
+    const reloadKey = encloseWithTag(
+        'b', UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction('timeline.record-reload')[0].title());
     const navigateNode = encloseWithTag('b', Common.UIString.UIString('WASD'));
 
     this._landingPage = new UI.Widget.VBox();

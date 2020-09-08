@@ -80,6 +80,7 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     this._parentDataDisplayDelegate = dataDisplayDelegate;
 
     this._searchableView = new UI.SearchableView.SearchableView(this);
+    this._searchableView.setPlaceholder(ls`Find`, ls`Find`);
     this._searchableView.show(this.element);
 
     this._splitWidget = new UI.SplitWidget.SplitWidget(false, true, 'heapSnapshotSplitViewState', 200, 200);

@@ -1,0 +1,23 @@
+<!--
+  Copyright 2020 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<h1>Memory Panel (Heap profiler) Test</h1>
+<script>
+  class Retainer {
+    constructor(foo) {
+      this.foo = foo;
+    }
+  }
+  var retainer = null;
+  function run() {
+    function leaking() {
+      console.log('leaking');
+    }
+    var div = document.createElement('div');
+    div.addEventListener('click', leaking, true);
+    retainer = new Retainer(div);
+  }
+  run();
+</script>

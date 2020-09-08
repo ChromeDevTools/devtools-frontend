@@ -2,15 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {$$, click, goToResource, waitFor, waitForFunction, waitForNone} from '../../shared/helper.js';
+import {assert} from 'chai';
+import * as puppeteer from 'puppeteer';
+
+import {platform} from '../../shared/helper.js';
+import {$$, click, getBrowserAndPages, pasteText, waitFor, waitForFunction, waitForNone} from '../../shared/helper.js';
+
 
 const NEW_HEAP_SNAPSHOT_BUTTON = 'button[aria-label="Take heap snapshot"]';
 const MEMORY_PANEL_CONTENT = 'div[aria-label="Memory panel"]';
 const PROFILE_TREE_SIDEBAR = 'div.profiles-tree-sidebar';
 export const MEMORY_TAB_ID = '#tab-heap_profiler';
+const CLASS_FILTER_INPUT = 'div[aria-placeholder="Class filter"]';
 
 export async function navigateToMemoryTab() {
-  await goToResource('memory/default.html');
   await click(MEMORY_TAB_ID);
   await waitFor(MEMORY_PANEL_CONTENT);
   await waitFor(PROFILE_TREE_SIDEBAR);
@@ -25,16 +30,147 @@ export async function takeHeapSnapshot() {
 export async function waitForHeapSnapshotData() {
   await waitFor('#profile-views');
   await waitFor('#profile-views .data-grid');
-  const rowCountNotZero = async () => {
-    const rowCount = await getCountOfDataGridRows('#profile-views table.data');
-    return rowCount !== 0;
+  const rowCountMatches = async () => {
+    const rows = await getDataGridRows('#profile-views table.data');
+    if (rows.length > 0) {
+      return rows;
+    }
+    return undefined;
   };
-  await waitForFunction(rowCountNotZero);
+  return await waitForFunction(rowCountMatches);
 }
 
-export async function getCountOfDataGridRows(selector: string) {
+export async function waitForNonEmptyHeapSnapshotData() {
+  const rows = await waitForHeapSnapshotData();
+  assert.isTrue(rows.length > 0);
+}
+
+export async function getDataGridRows(selector: string) {
   // The grid in Memory Tab contains a tree
   const grid = await waitFor(selector);
-  const dataGridNodes = await $$('.data-grid-data-grid-node', grid);
-  return dataGridNodes.length;
+  return await $$('.data-grid-data-grid-node', grid);
+}
+
+export async function setClassFilter(text: string) {
+  const classFilter = await waitFor(CLASS_FILTER_INPUT);
+  await classFilter.focus();
+  pasteText(text);
+}
+
+export async function triggerLocalFindDialog(frontend: puppeteer.Page) {
+  switch (platform) {
+    case 'mac':
+      await frontend.keyboard.down('Meta');
+      break;
+
+    default:
+      await frontend.keyboard.down('Control');
+  }
+
+  await frontend.keyboard.press('f');
+
+  switch (platform) {
+    case 'mac':
+      await frontend.keyboard.up('Meta');
+      break;
+
+    default:
+      await frontend.keyboard.up('Control');
+  }
+}
+
+export async function setSearchFilter(text: string) {
+  const {frontend} = getBrowserAndPages();
+  const grid = await waitFor('#profile-views table.data');
+  await grid.focus();
+  await triggerLocalFindDialog(frontend);
+  const SEARCH_QUERY = '[aria-label="Find"]';
+  const inputElement = await waitFor(SEARCH_QUERY);
+  if (!inputElement) {
+    assert.fail('Unable to find search input field');
+  }
+  await inputElement.focus();
+  await inputElement.type(text);
+}
+
+export async function waitForSearchResultNumber(results: number) {
+  const findMatch = async () => {
+    const currentMatch = await waitFor('label[for=\'search-input-field\']');
+    const currentTextContent = currentMatch && await currentMatch.evaluate(el => el.textContent);
+    if (currentTextContent && currentTextContent.endsWith(` ${results}`)) {
+      return currentMatch;
+    }
+    return undefined;
+  };
+  return await waitForFunction(findMatch);
+}
+
+/**
+ * Waits for the next selected row in `grid` whose text content is different from `previousContent`.
+ *
+ * @param grid the grid root element
+ * @param previousContent the previously selected text content
+ */
+async function waitForNextSelectedRow(grid: puppeteer.ElementHandle<Element>, previousContent: string) {
+  const findMatch = async () => {
+    const currentMatch = await grid.$('.data-grid-data-grid-node.selected');
+    const currentTextContent = currentMatch && await currentMatch.evaluate(el => el.textContent);
+    if (currentMatch && currentTextContent !== previousContent) {
+      return currentMatch;
+    }
+    return undefined;
+  };
+  return await waitForFunction(findMatch);
+}
+
+export async function findSearchResult(p: (el: puppeteer.ElementHandle<Element>) => Promise<boolean>) {
+  const grid = await waitFor('#profile-views table.data');
+  const next = await waitFor('[aria-label="Search next"]');
+  let previousContent = '';
+  const findSearchResult = async () => {
+    const currentMatch = await waitForNextSelectedRow(grid, previousContent);
+    if (currentMatch && await p(currentMatch)) {
+      return currentMatch;
+    }
+    // Since `waitForNextSelectedRow` above waited for the new selection, we haven't found
+    // the right search result yet, so click on the button for the next search result.
+    previousContent = currentMatch && await currentMatch.evaluate(el => el.textContent) || '';
+    await next.click();
+    return undefined;
+  };
+  return await waitForFunction(findSearchResult);
+}
+
+export async function assertRetainerChain(expectedRetainers: Array<string>) {
+  // Give some time for the expansion to finish.
+  const retainerGridElements = await getDataGridRows('.retaining-paths-view table.data');
+  if (retainerGridElements.length < expectedRetainers.length) {
+    return false;
+  }
+  for (let i = 0; i < retainerGridElements.length; ++i) {
+    const retainer = retainerGridElements[i];
+    let retainerName = await retainer.$eval('span.object-value-object', el => el.textContent);
+    if (!retainerName) {
+      assert.fail('Could not get retainer name');
+    }
+    // Retainers starting with `Window /` might have host information in their
+    // name, including the port, so we need to strip that.
+    if (retainerName.startsWith('Window /')) {
+      retainerName = 'Window /';
+    }
+    if (retainerName !== expectedRetainers[i]) {
+      return false;
+    }
+    if (await retainer.evaluate(el => !el.classList.contains('expanded'))) {
+      // Only follow the shortest retainer chain to the end. This relies on
+      // the retainer view behavior that auto-expands the shortest retaining
+      // chain.
+      break;
+    }
+  }
+  return true;
+}
+
+export async function waitForRetainerChain(expectedRetainers: Array<string>) {
+  await waitForFunction(assertRetainerChain.bind(null, expectedRetainers));
 }

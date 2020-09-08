@@ -34,6 +34,7 @@
 
 import * as Common from '../common/common.js';
 
+import * as ARIAUtils from './ARIAUtils.js';
 import {HistoryInput} from './HistoryInput.js';
 import {InspectorView} from './InspectorView.js';
 import {Toolbar, ToolbarButton, ToolbarToggle} from './Toolbar.js';
@@ -86,11 +87,13 @@ export class SearchableView extends VBox {
         searchNavigationElement.createChild('div', 'toolbar-search-navigation toolbar-search-navigation-prev');
     this._searchNavigationPrevElement.addEventListener('click', this._onPrevButtonSearch.bind(this), false);
     this._searchNavigationPrevElement.title = Common.UIString.UIString('Search previous');
+    ARIAUtils.setAccessibleName(this._searchNavigationPrevElement, Common.UIString.UIString('Search previous'));
 
     this._searchNavigationNextElement =
         searchNavigationElement.createChild('div', 'toolbar-search-navigation toolbar-search-navigation-next');
     this._searchNavigationNextElement.addEventListener('click', this._onNextButtonSearch.bind(this), false);
     this._searchNavigationNextElement.title = Common.UIString.UIString('Search next');
+    ARIAUtils.setAccessibleName(this._searchNavigationNextElement, Common.UIString.UIString('Search next'));
 
     this._searchInputElement.addEventListener('keydown', this._onSearchKeyDown.bind(this), true);
     this._searchInputElement.addEventListener('input', this._onInput.bind(this), false);
@@ -198,9 +201,13 @@ export class SearchableView extends VBox {
 
   /**
    * @param {string} placeholder
+   * @param {string=} ariaLabel
    */
-  setPlaceholder(placeholder) {
+  setPlaceholder(placeholder, ariaLabel) {
     this._searchInputElement.placeholder = placeholder;
+    if (ariaLabel) {
+      ARIAUtils.setAccessibleName(this._searchInputElement, ariaLabel);
+    }
   }
 
   /**

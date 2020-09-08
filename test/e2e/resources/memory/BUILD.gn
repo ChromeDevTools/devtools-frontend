@@ -5,5 +5,8 @@
 import("../../../../scripts/build/ninja/copy.gni")
 
 copy_to_gen("memory") {
-  sources = [ "default.html" ]
+  sources = [
+    "default.html",
+    "detached-node.html",
+  ]
 }

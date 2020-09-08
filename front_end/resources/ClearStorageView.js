@@ -53,6 +53,7 @@ export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
     learnMoreRow.appendChild(learnMore);
     this._quotaUsage = null;
     this._pieChart = PerfUI.PieChart.createPieChart();
+    this._populatePieChart(0, []);
     const usageBreakdownRow = quota.appendRow();
     usageBreakdownRow.classList.add('usage-breakdown-row');
     usageBreakdownRow.appendChild(this._pieChart);

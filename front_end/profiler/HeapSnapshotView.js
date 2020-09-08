@@ -1775,6 +1775,7 @@ export class HeapSnapshotStatisticsView extends UI.Widget.VBox {
     super();
     this.element.classList.add('heap-snapshot-statistics-view');
     this._pieChart = PerfUI.PieChart.createPieChart();
+    this.setTotalAndRecords(0, []);
     this._pieChart.classList.add('heap-snapshot-stats-pie-chart');
     this.element.appendChild(this._pieChart);
   }

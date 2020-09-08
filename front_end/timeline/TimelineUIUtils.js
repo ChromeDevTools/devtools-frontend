@@ -1837,8 +1837,6 @@ export class TimelineUIUtils {
     element.classList.add('hbox');
 
     const pieChart = PerfUI.PieChart.createPieChart();
-    const pieChartContainer = element.createChild('div', 'vbox');
-    pieChartContainer.appendChild(pieChart);
     const slices = [];
 
     /**
@@ -1887,6 +1885,8 @@ export class TimelineUIUtils {
       total,
       slices
     };
+    const pieChartContainer = element.createChild('div', 'vbox');
+    pieChartContainer.appendChild(pieChart);
 
     return element;
   }

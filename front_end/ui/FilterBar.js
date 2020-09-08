@@ -55,7 +55,6 @@ export class FilterBar extends HBox {
     this._enabled = true;
     this.element.classList.add('filter-bar');
 
-    // Note: go via self.Common for globally-namespaced singletons.
     this._stateSetting =
         Common.Settings.Settings.instance().createSetting('filterBar-' + name + '-toggled', !!visibleByDefault);
     this._filterButton =

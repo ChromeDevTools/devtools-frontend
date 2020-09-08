@@ -54,7 +54,6 @@ export class SearchableView extends VBox {
     this.element[_symbol] = this;
 
     this._searchProvider = searchable;
-    // Note: go via self.Common for globally-namespaced singletons.
     this._setting = settingName ? Common.Settings.Settings.instance().createSetting(settingName, {}) : null;
     this._replaceable = false;
 

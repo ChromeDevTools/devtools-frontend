@@ -31,10 +31,7 @@ export class ForwardedInputEventHandler {
     }
 
     const context = Context.instance();
-
-    // @ts-ignore
-    // TODO(crbug.com/1058320): Replace self.UI.shortcutRegistry global.
-    const shortcutRegistry = /** @type {!ShortcutRegistry} */ (self.UI.shortcutRegistry);
+    const shortcutRegistry = ShortcutRegistry.instance();
 
     context.setFlavor(ForwardedShortcut, ForwardedShortcut.instance);
     shortcutRegistry.handleKey(KeyboardShortcut.makeKey(keyCode, modifiers), key);

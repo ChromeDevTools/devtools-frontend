@@ -75,7 +75,6 @@ export class SplitWidget extends Widget {
     this._defaultSidebarHeight = defaultSidebarHeight || this._defaultSidebarWidth;
     this._constraintsInDip = !!constraintsInDip;
     this._resizeStartSizeDIP = 0;
-    // Note: go via self.Common for globally-namespaced singletons.
     this._setting = settingName ? Common.Settings.Settings.instance().createSetting(settingName, {}) : null;
 
     this._totalSizeCSS = 0;

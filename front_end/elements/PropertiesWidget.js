@@ -52,8 +52,8 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.CharacterDataModified, this._onNodeChange, this);
     SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.ChildNodeCountUpdated, this._onNodeChange, this);
-    self.UI.context.addFlavorChangeListener(SDK.DOMModel.DOMNode, this._setNode, this);
-    this._node = self.UI.context.flavor(SDK.DOMModel.DOMNode);
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this._setNode, this);
+    this._node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
 
     this._treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline({readOnly: true});
     this._treeOutline.setShowSelectionOnKeyboardFocus(/* show */ true, /* preventTabOrder */ false);

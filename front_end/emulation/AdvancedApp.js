@@ -44,8 +44,8 @@ export class AdvancedApp {
 
     this._rootSplitWidget = new UI.SplitWidget.SplitWidget(false, true, 'InspectorView.splitViewState', 555, 300, true);
     this._rootSplitWidget.show(rootView.element);
-    this._rootSplitWidget.setSidebarWidget(self.UI.inspectorView);
-    this._rootSplitWidget.setDefaultFocusedChild(self.UI.inspectorView);
+    this._rootSplitWidget.setSidebarWidget(UI.InspectorView.InspectorView.instance());
+    this._rootSplitWidget.setDefaultFocusedChild(UI.InspectorView.InspectorView.instance());
     UI.InspectorView.InspectorView.instance().setOwnerSplit(this._rootSplitWidget);
 
     this._inspectedPagePlaceholder = instance();

@@ -39,6 +39,7 @@ devtools_module("timeline") {
     "../mobile_throttling:bundle",
     "../perf_ui:bundle",
     "../profiler:bundle",
+    "../theme_support:bundle",
     "../timeline_model:bundle",
   ]
 }

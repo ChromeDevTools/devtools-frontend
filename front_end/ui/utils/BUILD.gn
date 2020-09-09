@@ -14,6 +14,8 @@ devtools_module("ui_utils") {
     "measured-scrollbar-width.js",
     "register-custom-element.js",
   ]
+
+  deps = [ "../../theme_support:bundle" ]
 }
 
 devtools_entrypoint("bundle") {

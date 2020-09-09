@@ -4,5 +4,8 @@ ts_library("component_helpers") {
   testonly = true
   sources = [ "get-stylesheet_test.ts" ]
 
-  deps = [ "../../../../front_end/component_helpers:bundle" ]
+  deps = [
+    "../../../../front_end/component_helpers:bundle",
+    "../../../../front_end/theme_support:bundle",
+  ]
 }

@@ -9,6 +9,7 @@ import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
+import * as ThemeSupport from '../theme_support/theme_support.js';
 import * as UI from '../ui/ui.js';
 
 /**
@@ -30,8 +31,8 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
     this._scaleHeight = 16;
     /** @const */
     this._graphHeight = 90;
-    this._gridColor =
-        self.UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.08)', UI.UIUtils.ThemeSupport.ColorUsage.Foreground);
+    this._gridColor = ThemeSupport.ThemeSupport.instance().patchColorText(
+        'rgba(0, 0, 0, 0.08)', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
     this._controlPane = new ControlPane(this.contentElement);
     const chartContainer = this.contentElement.createChild('div', 'perfmon-chart-container');
     this._canvas = /** @type {!HTMLCanvasElement} */ (chartContainer.createChild('canvas'));
@@ -168,11 +169,11 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
    */
   _drawHorizontalGrid(ctx) {
     const labelDistanceSeconds = 10;
-    const lightGray =
-        self.UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.02)', UI.UIUtils.ThemeSupport.ColorUsage.Foreground);
+    const lightGray = ThemeSupport.ThemeSupport.instance().patchColorText(
+        'rgba(0, 0, 0, 0.02)', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
     ctx.font = '10px ' + Host.Platform.fontFamily();
-    ctx.fillStyle =
-        self.UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.55)', UI.UIUtils.ThemeSupport.ColorUsage.Foreground);
+    ctx.fillStyle = ThemeSupport.ThemeSupport.instance().patchColorText(
+        'rgba(0, 0, 0, 0.55)', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
     const currentTime = Date.now() / 1000;
     for (let sec = Math.ceil(currentTime);; --sec) {
       const x = this._width - ((currentTime - sec) * 1000 - this._pollIntervalMs) * this._pixelsPerMs;
@@ -213,7 +214,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
       });
     }
     const backgroundColor = Common.Color.Color.parse(
-        self.UI.themeSupport.patchColorText('white', UI.UIUtils.ThemeSupport.ColorUsage.Background));
+        ThemeSupport.ThemeSupport.instance().patchColorText('white', ThemeSupport.ThemeSupport.ColorUsage.Background));
     for (const path of paths.reverse()) {
       const color = path.color;
       ctx.save();
@@ -224,8 +225,8 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
       ctx.stroke(path.path);
       ctx.restore();
     }
-    ctx.fillStyle =
-        self.UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.55)', UI.UIUtils.ThemeSupport.ColorUsage.Foreground);
+    ctx.fillStyle = ThemeSupport.ThemeSupport.instance().patchColorText(
+        'rgba(0, 0, 0, 0.55)', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
     ctx.font = `10px  ${Host.Platform.fontFamily()}`;
     ctx.fillText(chartInfo.title, 8, 10);
     this._drawVerticalGrid(ctx, height - bottomPadding, max, chartInfo);
@@ -282,8 +283,8 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
     const span = max;
     const topPadding = 18;
     const visibleHeight = height - topPadding;
-    ctx.fillStyle =
-        self.UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.55)', UI.UIUtils.ThemeSupport.ColorUsage.Foreground);
+    ctx.fillStyle = ThemeSupport.ThemeSupport.instance().patchColorText(
+        'rgba(0, 0, 0, 0.55)', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
     ctx.strokeStyle = this._gridColor;
     ctx.beginPath();
     for (let i = 0; i < 2; ++i) {
@@ -300,8 +301,8 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
     ctx.beginPath();
     ctx.moveTo(0, height + 0.5);
     ctx.lineTo(this._width, height + 0.5);
-    ctx.strokeStyle =
-        self.UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.2)', UI.UIUtils.ThemeSupport.ColorUsage.Foreground);
+    ctx.strokeStyle = ThemeSupport.ThemeSupport.instance().patchColorText(
+        'rgba(0, 0, 0, 0.2)', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
     ctx.stroke();
     /**
      * @param {number} value
@@ -453,10 +454,12 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
     ];
     for (const info of this._chartsInfo) {
       if (info.color) {
-        info.color = self.UI.themeSupport.patchColorText(info.color, UI.UIUtils.ThemeSupport.ColorUsage.Foreground);
+        info.color = ThemeSupport.ThemeSupport.instance().patchColorText(
+            info.color, ThemeSupport.ThemeSupport.ColorUsage.Foreground);
       }
       for (const metric of info.metrics) {
-        metric.color = self.UI.themeSupport.patchColorText(metric.color, UI.UIUtils.ThemeSupport.ColorUsage.Foreground);
+        metric.color = ThemeSupport.ThemeSupport.instance().patchColorText(
+            metric.color, ThemeSupport.ThemeSupport.ColorUsage.Foreground);
       }
     }
 

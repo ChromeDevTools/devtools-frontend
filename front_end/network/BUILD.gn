@@ -53,6 +53,7 @@ devtools_module("network") {
     "../search:bundle",
     "../source_frame:bundle",
     "../text_utils:bundle",
+    "../theme_support:bundle",
     "../ui:bundle",
     "../workspace:bundle",
   ]

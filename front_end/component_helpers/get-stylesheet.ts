@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Root from '../root/root.js';
-import * as UI from '../ui/ui.js';
+import * as ThemeSupport from '../theme_support/theme_support.js';
 
 const sheetsCache = new Map<string, {sheets: CSSStyleSheet[], patchThemeSupport: boolean}>();
 
@@ -34,7 +34,7 @@ export function getStyleSheets(path: string, {patchThemeSupport = false} = {}): 
   const originalStylesheet = new CSSStyleSheet();
   originalStylesheet.replaceSync(content);
 
-  const themeStyleSheet = self.UI && (self.UI.themeSupport as UI.UIUtils.ThemeSupport).themeStyleSheet(path, content);
+  const themeStyleSheet = ThemeSupport.ThemeSupport.instance().themeStyleSheet(path, content);
   if (!patchThemeSupport || !themeStyleSheet) {
     sheetsCache.set(path, {patchThemeSupport, sheets: [originalStylesheet]});
     return [originalStylesheet];

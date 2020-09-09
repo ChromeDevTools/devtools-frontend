@@ -8,6 +8,7 @@
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as SDK from '../sdk/sdk.js';
+import * as ThemeSupport from '../theme_support/theme_support.js';
 
 import {NetworkLogView} from './NetworkLogView.js';
 import {NetworkTimeBoundary} from './NetworkTimeCalculator.js';
@@ -275,7 +276,7 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
       const y = ((band === -1) ? 0 : (band % this._numBands + 1)) * _bandHeight + paddingTop;
       const timeRanges = RequestTimingView.calculateRequestTimeRanges(request, this.calculator().minimumBoundary());
 
-      context.fillStyle = self.UI.themeSupport.getComputedValue('--selection-bg-color');
+      context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--selection-bg-color');
 
       const start = timeRanges[0].start * 1000;
       const end = timeRanges[0].end * 1000;
@@ -322,7 +323,7 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
     if (this._selectedFilmStripTime !== -1) {
       context.lineWidth = 2;
       context.beginPath();
-      context.strokeStyle = self.UI.themeSupport.getComputedValue('--network-frame-divider-color');
+      context.strokeStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--network-frame-divider-color');
       const x = Math.round(calculator.computePosition(this._selectedFilmStripTime));
       context.moveTo(x, 0);
       context.lineTo(x, height);

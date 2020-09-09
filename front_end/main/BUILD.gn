@@ -22,6 +22,7 @@ devtools_module("main") {
     "../platform:bundle",
     "../protocol_client:bundle",
     "../sdk:bundle",
+    "../theme_support:bundle",
     "../ui:bundle",
     "../workspace:bundle",
   ]

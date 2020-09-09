@@ -32,6 +32,7 @@
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Host from '../host/host.js';
+import * as ThemeSupport from '../theme_support/theme_support.js';
 import * as UI from '../ui/ui.js';
 
 /**
@@ -111,8 +112,8 @@ export class TimelineGrid {
     context.save();
     context.scale(window.devicePixelRatio, window.devicePixelRatio);
     const height = Math.floor(context.canvas.height / window.devicePixelRatio);
-    context.strokeStyle =
-        self.UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.1)', UI.UIUtils.ThemeSupport.ColorUsage.Foreground);
+    context.strokeStyle = ThemeSupport.ThemeSupport.instance().patchColorText(
+        'rgba(0, 0, 0, 0.1)', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
     context.lineWidth = 1;
 
     context.translate(0.5, 0.5);
@@ -139,11 +140,12 @@ export class TimelineGrid {
     const width = Math.ceil(context.canvas.width / window.devicePixelRatio);
 
     context.beginPath();
-    context.fillStyle =
-        self.UI.themeSupport.patchColorText('rgba(255, 255, 255, 0.5)', UI.UIUtils.ThemeSupport.ColorUsage.Background);
+    context.fillStyle = ThemeSupport.ThemeSupport.instance().patchColorText(
+        'rgba(255, 255, 255, 0.5)', ThemeSupport.ThemeSupport.ColorUsage.Background);
     context.fillRect(0, 0, width, headerHeight);
 
-    context.fillStyle = self.UI.themeSupport.patchColorText('#333', UI.UIUtils.ThemeSupport.ColorUsage.Foreground);
+    context.fillStyle =
+        ThemeSupport.ThemeSupport.instance().patchColorText('#333', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
     context.textBaseline = 'hanging';
     context.font = '11px ' + Host.Platform.fontFamily();
 

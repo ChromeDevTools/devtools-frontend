@@ -29,6 +29,7 @@ devtools_module("console") {
     "../platform:bundle",
     "../sdk:bundle",
     "../text_utils:bundle",
+    "../theme_support:bundle",
     "../ui:bundle",
   ]
 }

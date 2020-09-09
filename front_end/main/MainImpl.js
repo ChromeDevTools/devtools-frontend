@@ -44,6 +44,7 @@ import * as Persistence from '../persistence/persistence.js';
 import * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as SDK from '../sdk/sdk.js';
+import * as ThemeSupport from '../theme_support/theme_support.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -662,7 +663,7 @@ export class MainMenuItem {
           toggleDockSideShorcuts[0].title());
       dockItemElement.appendChild(titleElement);
       const dockItemToolbar = new UI.Toolbar.Toolbar('', dockItemElement);
-      if (Host.Platform.isMac() && !self.UI.themeSupport.hasTheme()) {
+      if (Host.Platform.isMac() && !ThemeSupport.ThemeSupport.instance().hasTheme()) {
         dockItemToolbar.makeBlueOnHover();
       }
       const undock =

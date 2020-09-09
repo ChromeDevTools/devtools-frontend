@@ -26,6 +26,7 @@ devtools_module("extensions") {
     "../root:bundle",
     "../sdk:bundle",
     "../text_utils:bundle",
+    "../theme_support:bundle",
     "../ui:bundle",
     "../workspace:bundle",
   ]

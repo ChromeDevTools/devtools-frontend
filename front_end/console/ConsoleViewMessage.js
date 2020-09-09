@@ -38,6 +38,7 @@ import * as ObjectUI from '../object_ui/object_ui.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
+import * as ThemeSupport from '../theme_support/theme_support.js';
 import * as UI from '../ui/ui.js';
 
 import {ConsoleViewportElement} from './ConsoleViewport.js';  // eslint-disable-line no-unused-vars
@@ -986,8 +987,8 @@ export class ConsoleViewMessage {
     element.style.setProperty('-webkit-text-stroke', '0', 'important');
     element.style.setProperty('text-decoration', 'underline', 'important');
 
-    const themedColor =
-        self.UI.themeSupport.patchColorText('rgb(33%, 33%, 33%)', UI.UIUtils.ThemeSupport.ColorUsage.Foreground);
+    const themedColor = ThemeSupport.ThemeSupport.instance().patchColorText(
+        'rgb(33%, 33%, 33%)', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
     element.style.setProperty('color', themedColor, 'important');
 
     let backgroundColor = 'hsl(0, 0%, 100%)';
@@ -996,8 +997,8 @@ export class ConsoleViewMessage {
     } else if (this._message.level === SDK.ConsoleModel.MessageLevel.Warning || this._shouldRenderAsWarning()) {
       backgroundColor = 'hsl(50, 100%, 95%)';
     }
-    const themedBackgroundColor =
-        self.UI.themeSupport.patchColorText(backgroundColor, UI.UIUtils.ThemeSupport.ColorUsage.Background);
+    const themedBackgroundColor = ThemeSupport.ThemeSupport.instance().patchColorText(
+        backgroundColor, ThemeSupport.ThemeSupport.ColorUsage.Background);
     element.style.setProperty('background-color', themedBackgroundColor, 'important');
   }
 

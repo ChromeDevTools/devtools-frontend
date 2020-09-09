@@ -13,6 +13,7 @@ devtools_module("performance_monitor") {
     "../host:bundle",
     "../platform:bundle",
     "../sdk:bundle",
+    "../theme_support:bundle",
     "../ui:bundle",
   ]
 }

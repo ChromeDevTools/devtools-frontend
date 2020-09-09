@@ -40,6 +40,7 @@ import * as ProtocolClient from '../protocol_client/protocol_client.js';  // esl
 import * as Root from '../root/root.js';                                  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
+import * as ThemeSupport from '../theme_support/theme_support.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -324,11 +325,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     styleSheet.textContent = message.styleSheet;
     document.head.appendChild(styleSheet);
 
-    self.UI.themeSupport.addCustomStylesheet(message.styleSheet);
+    ThemeSupport.ThemeSupport.instance().addCustomStylesheet(message.styleSheet);
     // Add to all the shadow roots that have already been created
     for (let node = document.body; node; node = node.traverseNextNode(document.body)) {
       if (node instanceof ShadowRoot) {
-        self.UI.themeSupport.injectCustomStyleSheets(node);
+        ThemeSupport.ThemeSupport.instance().injectCustomStyleSheets(node);
       }
     }
   }
@@ -802,7 +803,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         // See ExtensionAPI.js for details.
         const injectedAPI = self.buildExtensionAPIInjectedScript(
             /** @type {!{startPage: string, name: string, exposeExperimentalAPIs: boolean}} */ (extensionInfo),
-            this._inspectedTabId, self.UI.themeSupport.themeName(),
+            this._inspectedTabId, ThemeSupport.ThemeSupport.instance().themeName(),
             UI.ShortcutRegistry.ShortcutRegistry.instance().globalShortcutKeys(),
             ExtensionServer.instance()['_extensionAPITestHook']);
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.setInjectedScriptForOrigin(

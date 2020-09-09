@@ -10,6 +10,7 @@ import * as Components from '../components/components.js';
 import * as HostModule from '../host/host.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
+import * as ThemeSupport from '../theme_support/theme_support.js';
 import * as Timeline from '../timeline/timeline.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -109,7 +110,7 @@ export class LighthouseReportRenderer extends ReportRenderer {
    * @param {!Element} el
    */
   static handleDarkMode(el) {
-    if (self.UI.themeSupport.themeName() === 'dark') {
+    if (ThemeSupport.ThemeSupport.instance().themeName() === 'dark') {
       el.classList.add('dark');
     }
   }

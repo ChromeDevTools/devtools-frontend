@@ -29,6 +29,7 @@ devtools_module("perf_ui") {
     "../sdk:bundle",
     "../source_frame:bundle",
     "../text_editor:bundle",
+    "../theme_support:bundle",
     "../third_party/lit-html:bundle",
     "../ui:bundle",
     "../workspace:bundle",

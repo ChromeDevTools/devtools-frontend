@@ -5,6 +5,8 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
+import * as ThemeSupport from '../../theme_support/theme_support.js';
+
 /**
  * @param {!Node} node
  * @param {string} cssFile
@@ -19,7 +21,7 @@ export function appendStyle(node, cssFile) {
   styleElement.textContent = content;
   node.appendChild(styleElement);
 
-  const themeStyleSheet = self.UI.themeSupport.themeStyleSheet(cssFile, content);
+  const themeStyleSheet = ThemeSupport.ThemeSupport.instance().themeStyleSheet(cssFile, content);
   if (themeStyleSheet) {
     styleElement = createElement('style');
     styleElement.textContent = themeStyleSheet + '\n' + Root.Runtime.resolveSourceURL(cssFile + '.theme');

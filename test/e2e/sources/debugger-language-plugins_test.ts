@@ -102,8 +102,8 @@ describe('The Debugger Language Plugins', async () => {
 
         const extensionIFrames = document.body.querySelectorAll(`[data-devtools-extension="${extensionInfo.name}"]`);
         const injectedAPI = globalThis.buildExtensionAPIInjectedScript(
-            extensionInfo, undefined, globalThis.UI.themeSupport.themeName(),
-            globalThis.UI.shortcutRegistry.globalShortcutKeys(), registerPluginCallback);
+            extensionInfo, undefined, 'default', globalThis.UI.shortcutRegistry.globalShortcutKeys(),
+            registerPluginCallback);
 
         function injectAPICallback(completionCallback: () => void) {
           return (ev: Event) => {

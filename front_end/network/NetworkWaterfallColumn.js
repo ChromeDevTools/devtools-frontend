@@ -8,6 +8,7 @@
 import * as Common from '../common/common.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as ThemeSupport from '../theme_support/theme_support.js';
 import * as UI from '../ui/ui.js';
 
 import {NetworkNode} from './NetworkDataGridNode.js';              // eslint-disable-line no-unused-vars
@@ -77,7 +78,8 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     /** @type {!Map<!Common.ResourceType.ResourceType, !_LayerStyle>} */
     this._styleForDownloadingResourceType = resourceStyleTuple[1];
 
-    const baseLineColor = self.UI.themeSupport.patchColorText('#a5a5a5', UI.UIUtils.ThemeSupport.ColorUsage.Foreground);
+    const baseLineColor =
+        ThemeSupport.ThemeSupport.instance().patchColorText('#a5a5a5', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
     /** @type {!_LayerStyle} */
     this._wiskerStyle = {borderColor: baseLineColor, lineWidth: 1};
     /** @type {!_LayerStyle} */
@@ -450,7 +452,8 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     this._drawLayers(context);
 
     context.save();
-    context.fillStyle = self.UI.themeSupport.patchColorText('#888', UI.UIUtils.ThemeSupport.ColorUsage.Foreground);
+    context.fillStyle =
+        ThemeSupport.ThemeSupport.instance().patchColorText('#888', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
     for (const textData of this._textLayers) {
       context.fillText(textData.text, textData.x, textData.y);
     }
@@ -663,7 +666,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     const nodeBgColorId = node.backgroundColor();
     context.save();
     context.beginPath();
-    context.fillStyle = self.UI.themeSupport.getComputedValue(nodeBgColorId);
+    context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue(nodeBgColorId);
     context.rect(0, y, this._offsetWidth, this._rowHeight);
     context.fill();
     context.restore();

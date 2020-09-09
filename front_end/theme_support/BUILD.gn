@@ -11,7 +11,6 @@ devtools_module("theme_support") {
   deps = [
     "../common:bundle",
     "../platform:bundle",
-    "../ui:bundle",
   ]
 }
 

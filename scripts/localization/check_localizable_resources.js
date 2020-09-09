@@ -45,31 +45,49 @@ async function main() {
 main();
 
 async function getErrors() {
-  // get localization V1 errors
-  const toAddError = checkLocalizedStrings.getAndReportResourcesToAdd();
-  const toModifyError = checkLocalizedStrings.getAndReportIDSKeysToModify();
-  const toRemoveError = checkLocalizedStrings.getAndReportResourcesToRemove();
-  const localizabilityError = checkLocalizedStrings.getLocalizabilityError();
-  let error = `${toAddError || ''}${toModifyError || ''}${toRemoveError || ''}${localizabilityError || ''}`;
-
-  // get localization V2 errors
-  const checkUIStringsError = await localizationV2Checks.checkUIStrings();
-  if (checkUIStringsError !== '') {
-    error += checkUIStringsError;
-  }
+  let error = getV1Errors();
+  error += await getV2Errors();
 
   if (error === '') {
     console.log('DevTools localizable resources checker passed.');
     return;
   }
 
-  error += '\nThe errors are potentially fixable with the `--autofix` option.';
-
+  error += '\nSome errors are potentially fixable with the `--autofix` option.';
   throw new Error(error);
 }
 
+function getV1Errors() {
+  const toAddError = checkLocalizedStrings.getAndReportResourcesToAdd();
+  const toModifyError = checkLocalizedStrings.getAndReportIDSKeysToModify();
+  const toRemoveError = checkLocalizedStrings.getAndReportResourcesToRemove();
+  const localizabilityError = checkLocalizedStrings.getLocalizabilityError();
+  const v1ErrorMessage = `${toAddError || ''}${toModifyError || ''}${toRemoveError || ''}${localizabilityError || ''}`;
+  return v1ErrorMessage;
+}
+
+async function getV2Errors() {
+  const checkUIStringsError = await localizationV2Checks.checkUIStrings();
+  const checkMigratedDirectoryError = localizationV2Checks.checkNoV1CallsInMigratedDir();
+  const v2ErrorMessage = `${checkUIStringsError || ''}${checkMigratedDirectoryError || ''}`;
+  return v2ErrorMessage;
+}
+
 async function autofix(existingError) {
-  // autofix V1 errors
+  let autoFixMessage = await autofixV1(existingError);
+  autoFixMessage += await autofixV2();
+
+  if (autoFixMessage === '') {
+    console.log('DevTools localizable resources checker passed.');
+    return;
+  }
+
+  autoFixMessage += '\n';
+  autoFixMessage += '\nUse git status to see what has changed.';
+  throw new Error(autoFixMessage);
+}
+
+async function autofixV1(existingError) {
   const localizabilityError = checkLocalizedStrings.getLocalizabilityError();
   const keysToAddToGRD = checkLocalizedStrings.getMessagesToAdd();
   const keysToRemoveFromGRD = checkLocalizedStrings.getMessagesToRemove();
@@ -79,14 +97,6 @@ async function autofix(existingError) {
   const shouldAddExampleTag = checkShouldAddExampleTag(keysToAddToGRD);
   const isV1checksPassed =
       !localizabilityError && !resourceAdded && !resourceRemoved && !resourceModified && existingError === '';
-
-  // autofix V2 errors
-  const checkAndFixUIStringsError = await localizationV2Checks.checkUIStrings(true);
-
-  if (isV1checksPassed && checkAndFixUIStringsError === '') {
-    console.log('DevTools localizable resources checker passed.');
-    return;
-  }
 
   let message = '';
   if (!isV1checksPassed) {
@@ -107,16 +117,26 @@ async function autofix(existingError) {
     if (resourceRemoved && duplicateRemoved(keysToRemoveFromGRD)) {
       message += '\nDuplicate <message> entries are removed. Please verify the retained descriptions are correct.';
     }
+    if (localizabilityError) {
+      message += localizabilityError;
+    }
   }
-  if (checkAndFixUIStringsError !== '') {
+  return message;
+}
+
+async function autofixV2() {
+  const checkAndFixUIStringsError = await localizationV2Checks.checkUIStrings(true);
+  const checkMigratedDirectoryError = localizationV2Checks.checkNoV1CallsInMigratedDir();
+
+  let message = '';
+  if (checkAndFixUIStringsError) {
     message += `\n${checkAndFixUIStringsError}`;
   }
-  if (localizabilityError) {
-    message += localizabilityError;
+  if (checkMigratedDirectoryError) {
+    message += `\n${checkMigratedDirectoryError}`;
   }
-  message += '\n';
-  message += '\nUse git status to see what has changed.';
-  throw new Error(message);
+
+  return message;
 }
 
 function checkShouldAddExampleTag(keys) {

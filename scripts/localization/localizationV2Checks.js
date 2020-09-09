@@ -42,7 +42,7 @@ async function checkUIStrings(shouldAutoFix) {
     }
     return addUIStringsCheckError(errorMap);
   }
-  return '';
+  return;
 }
 
 /**
@@ -148,7 +148,31 @@ function getTextToRemove(filePath, content, unusedUIStringsEntries) {
   return collectUnusedPropertyTextsFromNode(uiStringsNode);
 }
 
+/**
+ * Verifies that there are no V1 APIs added in a directories that are migrated.
+ * The check will be removed when the migration process is done.
+ */
+function checkNoV1CallsInMigratedDir() {
+  const filesContainV1Calls = parseLocalizableResources.locV1CallsInMigratedFiles;
+  if (filesContainV1Calls.size === 0) {
+    return;
+  }
+
+  fileMigratedError = 'Localization V1 APIs used in these files that have already migrated to V2:\n';
+  for (const filePath of filesContainV1Calls) {
+    fileMigratedError += `\n${filePath}`;
+  }
+  fileMigratedError += '\nAutofix are not supported for this check. Please manually update V1 APIs to V2 APIs.';
+  fileMigratedError += `\nFor example:
+    ls("An example string") ---> i18n.i18n.getLocalizedString(_str, UIStrings.theExampleString)
+    and then add it to UIStrings:
+    const UIStrings = { theExampleString: 'An example string' } with descriptions.`;
+  fileMigratedError += '\nFor more details. See devtools-frontend\\src\\docs\\localization\\README.md';
+  return fileMigratedError;
+}
+
 module.exports = {
   checkUIStrings,
   removeUnusedEntries,
+  checkNoV1CallsInMigratedDir,
 };

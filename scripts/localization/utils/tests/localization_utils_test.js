@@ -3,7 +3,8 @@
 // found in the LICENSE file.
 
 const ts = require('typescript');
-const {isLocalizationCall, espree, getLocalizationCase, isLocalizationV2Call} = require('../localization_utils');
+const {isLocalizationCall, espree, getLocalizationCaseAndVersion, isLocalizationV2Call} =
+    require('../localization_utils');
 const {removeUnusedEntries} = require('../../localizationV2Checks');
 const {findUIStringsNode} = require('../check_localized_strings');
 const {assert} = require('chai');
@@ -69,47 +70,59 @@ describe('isLocalizationV2Call', () => {
   });
 });
 
-describe('getLocalizationCase', () => {
-  it('returns correctly for a tagged template', () => {
+describe('getLocalizationCaseAndVersion', () => {
+  it('returns {locCase: "Tagged Template, locVersion: 1} for a tagged template', () => {
     const ast = parseCode('ls`foo`');
-    assert.strictEqual(getLocalizationCase(ast.body[0].expression), 'Tagged Template');
+    assert.deepStrictEqual(
+        getLocalizationCaseAndVersion(ast.body[0].expression), {locCase: 'Tagged Template', locVersion: 1});
   });
 
-  it('returns correctly for Common.UIString', () => {
+  it('returns {locCase: "Common.UIString", locVersion: 1} for Common.UIString', () => {
     const ast = parseCode('Common.UIString(\'blah\', 2)');
-    assert.strictEqual(getLocalizationCase(ast.body[0].expression), 'Common.UIString');
+    assert.deepStrictEqual(
+        getLocalizationCaseAndVersion(ast.body[0].expression), {locCase: 'Common.UIString', locVersion: 1});
   });
 
-  it('returns Common.UIString for Common.UIString.UIString', () => {
+  it('returns {locCase: "Common.UIString", locVersion: 1} for Common.UIString.UIString', () => {
     const ast = parseCode('Common.UIString(\'blah\', 2)');
-    assert.strictEqual(getLocalizationCase(ast.body[0].expression), 'Common.UIString');
+    assert.deepStrictEqual(
+        getLocalizationCaseAndVersion(ast.body[0].expression), {locCase: 'Common.UIString', locVersion: 1});
   });
 
-  it('returns UI.formatLocalized for UI.formatLocalized', () => {
+  it('returns {locCase: "UI.formatLocalized", locVersion: 1} for UI.formatLocalized', () => {
     const ast = parseCode('UI.formatLocalized(\'blahblah %s, 2\')');
-    assert.strictEqual(getLocalizationCase(ast.body[0].expression), 'UI.formatLocalized');
+    assert.deepStrictEqual(
+        getLocalizationCaseAndVersion(ast.body[0].expression), {locCase: 'UI.formatLocalized', locVersion: 1});
   });
 
-  it('returns Platform.UIString for Platform.UIString.UIString', () => {
+  it('returns {locCase: "Platform.UIString", locVersion: 1} for Platform.UIString.UIString', () => {
     const ast = parseCode('Platform.UIString.UIString(\'blahblah %s, 2\')');
-    assert.strictEqual(getLocalizationCase(ast.body[0].expression), 'Platform.UIString');
+    assert.deepStrictEqual(
+        getLocalizationCaseAndVersion(ast.body[0].expression), {locCase: 'Platform.UIString', locVersion: 1});
   });
 
-  it('returns Platform.UIString for UIString', () => {
+  it('returns {locCase: "Platform.UIString", locVersion: 1} for UIString', () => {
     const ast = parseCode('UIString(\'blahblah %s, 2\')');
-    assert.strictEqual(getLocalizationCase(ast.body[0].expression), 'Platform.UIString');
+    assert.deepStrictEqual(
+        getLocalizationCaseAndVersion(ast.body[0].expression), {locCase: 'Platform.UIString', locVersion: 1});
   });
-  it('returns i18n.i18n.getLocalizedString for i18n.i18n.getLocalizedString', () => {
+  it('returns {locCase: "i18n.i18n.getLocalizedString", locVersion: 2} for i18n.i18n.getLocalizedString', () => {
     const ast = parseCode('i18n.i18n.getLocalizedString(_str, UIStrings.fakeID)');
-    assert.strictEqual(getLocalizationCase(ast.body[0].expression), 'i18n.i18n.getLocalizedString');
+    assert.deepStrictEqual(
+        getLocalizationCaseAndVersion(ast.body[0].expression),
+        {locCase: 'i18n.i18n.getLocalizedString', locVersion: 2});
   });
-  it('returns i18n.i18n.getFormatLocalizedString for i18n.i18n.getFormatLocalizedString', () => {
-    const ast = parseCode('i18n.i18n.getFormatLocalizedString(_str, UIStrings.fakeID)');
-    assert.strictEqual(getLocalizationCase(ast.body[0].expression), 'i18n.i18n.getFormatLocalizedString');
-  });
-  it('returns UIStrings for UIStrings', () => {
+  it('returns locCase: "i18n.i18n.getFormatLocalizedString", locVersion: 2} for i18n.i18n.getFormatLocalizedString',
+     () => {
+       const ast = parseCode('i18n.i18n.getFormatLocalizedString(_str, UIStrings.fakeID)');
+       assert.deepStrictEqual(
+           getLocalizationCaseAndVersion(ast.body[0].expression),
+           {locCase: 'i18n.i18n.getFormatLocalizedString', locVersion: 2});
+     });
+  it('returns {locCase: "UIStrings", locVersion: 2} for UIStrings', () => {
     const ast = parseCode('const UIStrings = {fakeID: "Hello World"}');
-    assert.strictEqual(getLocalizationCase(ast.body[0].declarations[0]), 'UIStrings');
+    assert.deepStrictEqual(
+        getLocalizationCaseAndVersion(ast.body[0].declarations[0]), {locCase: 'UIStrings', locVersion: 2});
   });
 });
 

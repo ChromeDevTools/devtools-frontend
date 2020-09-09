@@ -36,7 +36,7 @@ def main():
                         help='Whether to output coverage')
     args = parser.parse_args(sys.argv[1:])
 
-    efficiently_recompile.recompile(args.target, 'test/unittests/front_end')
+    efficiently_recompile.recompile(args.target, 'test/unittests')
     run_unittests.run_unit_tests_on_ninja_build_target(args.target,
                                                        args.no_text_coverage,
                                                        args.coverage)

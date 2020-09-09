@@ -92,7 +92,7 @@ const createTraceElement = (node, property, isPropertyOverloaded, matchedStyles,
   trace.data = {
     selector: rule ? rule.selectorText() : 'element.style',
     active: !isPropertyOverloaded,
-    onNavigateToSource: /** @type {function(?Event):void} */ (navigateToSource.bind(null, property)),
+    onNavigateToSource: /** @type {function(!Event=):void} */ (navigateToSource.bind(null, property)),
   };
 
   return trace;
@@ -376,7 +376,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
           const propertyElement = createPropertyElement(node, propertyName, propertyValue);
 
           const trace = propertyTraces.get(propertyName);
-          /** @type {function(?Event):void} */
+          /** @type {function(!Event=):void} */
           let navigate = () => {};
           if (trace) {
             const traceContainer = document.createElement('div');
@@ -390,7 +390,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
                 'contextmenu',
                 this._handleContextMenuEvent.bind(
                     this, /** @type {!SDK.CSSMatchedStyles.CSSMatchedStyles} */ (matchedStyles), activeProperty));
-            navigate = /** @type {function(?Event):void} */ (navigateToSource.bind(this, activeProperty));
+            navigate = /** @type {function(!Event=):void} */ (navigateToSource.bind(this, activeProperty));
             propertyElement.appendChild(traceContainer);
             propertyElement.addEventListener('traces-toggled', this._onTracesToggled.bind(this));
           }
@@ -467,7 +467,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
         const propertyElement = createPropertyElement(node, propertyName, propertyValue);
 
         const trace = propertyTraces.get(propertyName);
-        /** @type {function(?Event):void} */
+        /** @type {function(!Event=):void} */
         let navigate = () => {};
         if (trace) {
           const traceContainer = document.createElement('div');
@@ -478,7 +478,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
               'contextmenu',
               this._handleContextMenuEvent.bind(
                   this, /** @type {!SDK.CSSMatchedStyles.CSSMatchedStyles} */ (matchedStyles), activeProperty));
-          navigate = /** @type {function(?Event):void} */ (navigateToSource.bind(this, activeProperty));
+          navigate = /** @type {function(!Event=):void} */ (navigateToSource.bind(this, activeProperty));
           propertyElement.appendChild(traceContainer);
           propertyElement.addEventListener('traces-toggled', this._onTracesToggled.bind(this));
         }

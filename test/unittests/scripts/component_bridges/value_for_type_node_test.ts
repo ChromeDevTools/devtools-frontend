@@ -237,5 +237,39 @@ describe('valueForTypeNode', () => {
       const node = ts.createFunctionTypeNode([], [stringParam], returnUnionNode);
       assert.strictEqual(valueForTypeNode(node), 'function(string):(string|undefined)');
     });
+
+    it('correctly deals with optional type reference parameters', () => {
+      const stringNode = createNode(ts.SyntaxKind.StringKeyword);
+      const typeReferenceNode = ts.createTypeReferenceNode(ts.createIdentifier('ExampleInterface'), []);
+      const functionParam = ts.createParameter(
+          [], [], undefined, ts.createIdentifier('foo'), ts.createToken(ts.SyntaxKind.QuestionToken),
+          typeReferenceNode);
+
+      // function(foo?: ExampleInterface):string
+      const node = ts.createFunctionTypeNode([], [functionParam], stringNode);
+      assert.strictEqual(valueForTypeNode(node), 'function(!ExampleInterface=):string');
+    });
+
+    it('correctly deals with required type reference parameters', () => {
+      const stringNode = createNode(ts.SyntaxKind.StringKeyword);
+      const typeReferenceNode = ts.createTypeReferenceNode(ts.createIdentifier('ExampleInterface'), []);
+      const functionParam =
+          ts.createParameter([], [], undefined, ts.createIdentifier('foo'), undefined, typeReferenceNode);
+
+      // function(foo: ExampleInterface):string
+      const node = ts.createFunctionTypeNode([], [functionParam], stringNode);
+      assert.strictEqual(valueForTypeNode(node), 'function(!ExampleInterface):string');
+    });
+
+    it('correctly deals with optional primitive parameters', () => {
+      const returnTypeNode = createNode(ts.SyntaxKind.StringKeyword);
+      const stringParam = ts.createParameter(
+          [], [], undefined, ts.createIdentifier('foo'), ts.createToken(ts.SyntaxKind.QuestionToken),
+          createNode(ts.SyntaxKind.StringKeyword));
+      const node = ts.createFunctionTypeNode([], [stringParam], returnTypeNode);
+
+      // function(foo?: string):string
+      assert.strictEqual(valueForTypeNode(node), 'function(string=):string');
+    });
   });
 });

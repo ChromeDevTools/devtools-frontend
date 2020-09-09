@@ -128,7 +128,22 @@ export const valueForTypeNode = (node: ts.TypeNode, isFunctionParam: boolean = f
                          if (!param.type) {
                            return '';
                          }
-                         return valueForTypeNode(param.type);
+
+                         const valueForParam = valueForTypeNode(param.type, true);
+
+                         if (nodeIsPrimitive(param.type)) {
+                           // A primitive never has a ! at the start, but does have a = at the end if it's optional.
+                           return param.questionToken ? `${valueForParam}=` : valueForParam;
+                         }
+
+                         // If it's not a primitive, it's a type ref and needs a
+                         // non-nullable ! at the start and a = at the end if
+                         // it's optional.
+                         return [
+                           '!',
+                           valueForTypeNode(param.type, true),
+                           param.questionToken ? '=' : '',
+                         ].join('');
                        })
                        .join(', ');
 

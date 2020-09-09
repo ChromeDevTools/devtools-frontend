@@ -17,7 +17,7 @@ import './ComputedStyleProperty.js';
 * inherited:boolean,
 * traceable:boolean,
 * expanded:boolean,
-* onNavigateToSource:function(Event):void,
+* onNavigateToSource:function(!Event=):void,
 * }}
 */
 // @ts-ignore we export this for Closure not TS

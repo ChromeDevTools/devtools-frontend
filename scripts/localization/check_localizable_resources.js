@@ -16,6 +16,7 @@ const writeFileAsync = fs.promises.writeFile;
 const appendFileAsync = fs.promises.appendFile;
 const checkLocalizedStrings = require('./utils/check_localized_strings');
 const localizationUtils = require('./utils/localization_utils');
+const localizationV2Checks = require('./localizationV2Checks');
 
 const grdpFileStart = '<?xml version="1.0" encoding="utf-8"?>\n<grit-part>\n';
 const grdpFileEnd = '</grit-part>';
@@ -32,8 +33,9 @@ async function main() {
     if (shouldAutoFix) {
       await autofix(error);
     } else {
-      getErrors();
+      await getErrors();
     }
+
   } catch (e) {
     console.log(e.stack);
     process.exit(1);
@@ -42,13 +44,19 @@ async function main() {
 
 main();
 
-function getErrors(existingError) {
+async function getErrors() {
+  // get localization V1 errors
   const toAddError = checkLocalizedStrings.getAndReportResourcesToAdd();
   const toModifyError = checkLocalizedStrings.getAndReportIDSKeysToModify();
   const toRemoveError = checkLocalizedStrings.getAndReportResourcesToRemove();
   const localizabilityError = checkLocalizedStrings.getLocalizabilityError();
-  let error = `${existingError ? `${existingError}\n` : ''}${toAddError || ''}${toModifyError || ''}${
-      toRemoveError || ''}${localizabilityError || ''}`;
+  let error = `${toAddError || ''}${toModifyError || ''}${toRemoveError || ''}${localizabilityError || ''}`;
+
+  // get localization V2 errors
+  const checkUIStringsError = await localizationV2Checks.checkUIStrings();
+  if (checkUIStringsError !== '') {
+    error += checkUIStringsError;
+  }
 
   if (error === '') {
     console.log('DevTools localizable resources checker passed.');
@@ -61,6 +69,7 @@ function getErrors(existingError) {
 }
 
 async function autofix(existingError) {
+  // autofix V1 errors
   const localizabilityError = checkLocalizedStrings.getLocalizabilityError();
   const keysToAddToGRD = checkLocalizedStrings.getMessagesToAdd();
   const keysToRemoveFromGRD = checkLocalizedStrings.getMessagesToRemove();
@@ -68,28 +77,39 @@ async function autofix(existingError) {
   const resourceModified = await modifyResourcesInGRDP();
   const resourceRemoved = await removeResourcesFromGRDP(keysToRemoveFromGRD);
   const shouldAddExampleTag = checkShouldAddExampleTag(keysToAddToGRD);
+  const isV1checksPassed =
+      !localizabilityError && !resourceAdded && !resourceRemoved && !resourceModified && existingError === '';
 
-  if (!localizabilityError && !resourceAdded && !resourceRemoved && !resourceModified && existingError === '') {
+  // autofix V2 errors
+  const checkAndFixUIStringsError = await localizationV2Checks.checkUIStrings(true);
+
+  if (isV1checksPassed && checkAndFixUIStringsError === '') {
     console.log('DevTools localizable resources checker passed.');
     return;
   }
 
-  let message =
-      'Found changes to localizable DevTools resources.\nDevTools localizable resources checker has updated the appropriate grd/grdp file(s).';
-  if (existingError !== '') {
+  let message = '';
+  if (!isV1checksPassed) {
     message +=
-        `\nGrd/Grdp files have been updated. Please verify the updated grdp files and/or the <part> file references in ${
-            localizationUtils.getRelativeFilePathFromSrc(localizationUtils.GRD_PATH)} are correct.`;
-  }
-  if (resourceAdded) {
-    message += '\nManually write a description for any new <message> entries.';
-    if (shouldAddExampleTag) {
-      message += ' Add example tag(s) <ex> for messages that contain placeholder(s)';
+        'Found changes to localizable DevTools resources.\nDevTools localizable resources checker has updated the appropriate grd/grdp file(s).';
+    if (existingError !== '') {
+      message +=
+          `\nGrd/Grdp files have been updated. Please verify the updated grdp files and/or the <part> file references in ${
+              localizationUtils.getRelativeFilePathFromSrc(localizationUtils.GRD_PATH)} are correct.`;
     }
-    message += '\nFor more details, see src/docs/localization/grdp_files.md';
+    if (resourceAdded) {
+      message += '\nManually write a description for any new <message> entries.';
+      if (shouldAddExampleTag) {
+        message += ' Add example tag(s) <ex> for messages that contain placeholder(s)';
+      }
+      message += '\nFor more details, see src/docs/localization/grdp_files.md';
+    }
+    if (resourceRemoved && duplicateRemoved(keysToRemoveFromGRD)) {
+      message += '\nDuplicate <message> entries are removed. Please verify the retained descriptions are correct.';
+    }
   }
-  if (resourceRemoved && duplicateRemoved(keysToRemoveFromGRD)) {
-    message += '\nDuplicate <message> entries are removed. Please verify the retained descriptions are correct.';
+  if (checkAndFixUIStringsError !== '') {
+    message += `\n${checkAndFixUIStringsError}`;
   }
   if (localizabilityError) {
     message += localizabilityError;

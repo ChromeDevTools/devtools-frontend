@@ -19,7 +19,8 @@ const espreeTypes = {
   MEMBER_EXPR: 'MemberExpression',
   NEW_EXPR: 'NewExpression',
   TAGGED_TEMP_EXPR: 'TaggedTemplateExpression',
-  TEMP_LITERAL: 'TemplateLiteral'
+  TEMP_LITERAL: 'TemplateLiteral',
+  VARIABLE_DECLARATOR: 'VariableDeclarator'
 };
 
 
@@ -122,6 +123,18 @@ function isNodelsTaggedTemplateExpression(node) {
       node.quasi !== undefined && node.quasi.type !== undefined && node.quasi.type === espreeTypes.TEMP_LITERAL;
 }
 
+function isNodeGetLocalizedStringCall(node) {
+  return isNodeCallOnNestedObject(node, 'i18n', 'i18n', 'getLocalizedString');
+}
+
+function isNodeGetFormatLocalizedStringCall(node) {
+  return isNodeCallOnNestedObject(node, 'i18n', 'i18n', 'getFormatLocalizedString');
+}
+
+function isNodeDeclaresUIStrings(node) {
+  return (node.type === espreeTypes.VARIABLE_DECLARATOR && node.id && node.id.name === 'UIStrings');
+}
+
 /**
  * Verify callee of objectName.propertyName(), e.g. Common.UIString().
  */
@@ -159,12 +172,29 @@ function getLocalizationCase(node) {
   if (isNodePlatformUIStringCall(node) || isNodeUIStringDirectCall(node)) {
     return 'Platform.UIString';
   }
+  if (isNodeGetLocalizedStringCall(node)) {
+    return 'i18n.i18n.getLocalizedString';
+  }
+  if (isNodeGetFormatLocalizedStringCall(node)) {
+    return 'i18n.i18n.getFormatLocalizedString';
+  }
+  if (isNodeDeclaresUIStrings(node)) {
+    return 'UIStrings';
+  }
   return null;
 }
 
 function isLocalizationCall(node) {
   return isNodeCommonUIStringCall(node) || isNodelsTaggedTemplateExpression(node) || isNodeUIformatLocalized(node) ||
       isNodePlatformUIStringCall(node) || isNodeUIStringDirectCall(node);
+}
+
+/**
+ * A helper function for localization V2 APIs unit tests.
+ */
+function isLocalizationV2Call(node) {
+  return isNodeDeclaresUIStrings(node) || isNodeGetFormatLocalizedStringCall(node) ||
+      isNodeGetLocalizedStringCall(node);
 }
 
 /**
@@ -394,6 +424,7 @@ module.exports = {
   GRD_PATH,
   IDSPrefix,
   isLocalizationCall,
+  isLocalizationV2Call,
   lineNumberOfIndex,
   modifyStringIntoGRDFormat,
   parseFileContent,

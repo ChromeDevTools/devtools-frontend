@@ -61,10 +61,10 @@ def builder(
     swarming_tags=defaults.swarming_tags,
     **kvargs):
   """Create builder with dtf defaults"""
-  mastername = kvargs.pop('mastername')
+  builder_group = kvargs.pop('builder_group')
 
   properties = dict(kvargs.pop('properties', {}))
-  properties.update(mastername=mastername)
+  properties.update(builder_group=builder_group)
   properties.update(goma_rbe_prod_default)
   kvargs['properties'] = properties
 
@@ -92,7 +92,7 @@ def builder_coverage(covered_oss, builder_factory, builder_name_pattern, **kvarg
 def config_section(name, branch,
     view=None,
     name_suffix=None,
-    mastername="client.devtools-frontend.integration",
+    builder_group="client.devtools-frontend.integration",
     repo=defaults.repo,
     notifiers=[]):
   view = view or name.capitalize()
@@ -104,7 +104,7 @@ def config_section(name, branch,
     repo=repo,
     view=view,
     name_suffix=name_suffix,
-    mastername=mastername,
+    builder_group=builder_group,
     notifiers=notifiers
   )
 
@@ -148,7 +148,7 @@ def generate_ci_configs(configurations, builders):
       category=kvargs.pop('console_category')
       builder(
           bucket="ci",
-          mastername=c.mastername,
+          builder_group=c.builder_group,
           service_account=SERVICE_ACCOUNT,
           schedule="triggered",
           properties=goma_rbe_prod_default,

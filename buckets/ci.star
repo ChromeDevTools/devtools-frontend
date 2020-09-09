@@ -24,7 +24,7 @@ generate_ci_configs(
         repo='https://chromium.googlesource.com/chromium/src',
         branch='refs/heads/master',
         name_suffix = ' (chromium)',
-        mastername="chromium.devtools-frontend",
+        builder_group="chromium.devtools-frontend",
         notifiers=['devtools tree closer'],
       ),
       config_section(
@@ -72,7 +72,7 @@ generate_ci_configs(
 builder(
     name="Auto-roll - devtools deps",
     bucket="ci",
-    mastername="client.devtools-frontend.integration",
+    builder_group="client.devtools-frontend.integration",
     service_account='devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com',
     schedule="0 3,12 * * *",
     recipe_name="v8/auto_roll_v8_deps",
@@ -83,7 +83,7 @@ builder(
 builder(
     name="Auto-roll - devtools chromium",
     bucket="ci",
-    mastername="client.devtools-frontend.integration",
+    builder_group="client.devtools-frontend.integration",
     service_account='devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com',
     schedule="0 6 * * *",
     recipe_name="v8/auto_roll_v8_deps",

@@ -28,7 +28,7 @@ try_builders=[]
 def try_builder(**kvargs):
   builder(
     bucket=BUCKET_NAME,
-    mastername="tryserver.devtools-frontend",
+    builder_group="tryserver.devtools-frontend",
     service_account=SERVICE_ACCOUNT,
     **kvargs
   )

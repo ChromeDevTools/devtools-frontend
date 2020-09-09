@@ -177,6 +177,31 @@ function analyzeTaggedTemplateNode(node, filePath, code) {
   }
 }
 
+function analyzeGetLocalizedStringNode(node, filePath) {
+  // For example,
+  // node: i18n.i18n.getLocalizedString(str_, UIStrings.url)
+  // firstArg : str_
+  // secondArg : UIStrings.url
+  if (!node.arguments || node.arguments.length < 2) {
+    addError(`${localizationUtils.getRelativeFilePathFromSrc(filePath)}${
+        localizationUtils.getLocationMessage(node.loc)}: getLocalizedString call should have two arguments`);
+    return;
+  }
+  const firstArg = node.arguments[0];
+  if (firstArg.type !== espreeTypes.IDENTIFIER || firstArg.name !== 'str_') {
+    addError(`${localizationUtils.getRelativeFilePathFromSrc(filePath)}${
+        localizationUtils.getLocationMessage(node.loc)}: first argument should be 'str_'`);
+  }
+  const secondArg = node.arguments[1];
+  const isCallingUIStringsObject = (secondArg.object && secondArg.object.name === 'UIStrings');
+  const isPropertyAnIdentifier = (secondArg.property && secondArg.property.type === espreeTypes.IDENTIFIER);
+  if (secondArg.type !== espreeTypes.MEMBER_EXPR || !isCallingUIStringsObject || !isPropertyAnIdentifier) {
+    addError(`${localizationUtils.getRelativeFilePathFromSrc(filePath)}${
+        localizationUtils.getLocationMessage(
+            node.loc)}: second argument should reference an identifier in UIStrings object`);
+  }
+}
+
 function auditGrdpFile(filePath, fileContent) {
   function reportMissingPlaceholderExample(messageContent, lineNumber) {
     const phRegex = /<ph[^>]*name="([^"]*)">\$\d(s|d|\.\df)(?!<ex>)<\/ph>/gms;
@@ -214,6 +239,7 @@ function auditGrdpFile(filePath, fileContent) {
 
 module.exports = {
   analyzeCommonUIStringNode,
+  analyzeGetLocalizedStringNode,
   analyzeTaggedTemplateNode,
   auditGrdpFile,
   checkConcatenation,

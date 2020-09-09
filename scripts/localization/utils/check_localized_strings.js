@@ -415,6 +415,7 @@ function parseLocalizableStringFromNode(parentNode, node, filePath) {
     }
     case 'i18n.i18n.getLocalizedString':
     case 'i18n.i18n.getFormatLocalizedString': {
+      checkLocalizability.analyzeGetLocalizedStringNode(node, filePath);
       if (node.arguments !== undefined && node.arguments[1] !== undefined) {
         handleGetLocalizedStringNode(filePath, node);
       }

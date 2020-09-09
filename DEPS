@@ -6,7 +6,7 @@ use_relative_paths = True
 
 vars = {
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': '9c1d4223d1a61e1afbbcbcd302c3299d09c95ea8',
+  'build_revision': 'b557c091de262e2455f43bb05353d99123973863',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
   'buildtools_revision': 'ff93f3ea1a7f033d3caf8f60ec1937cc71351419',

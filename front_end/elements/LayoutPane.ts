@@ -75,10 +75,13 @@ export class LayoutPane extends HTMLElement {
         </div>
         ${this.gridElements ?
           html`<div class="content-section">
-            <h3 class="content-section-title">${ls`Grid overlays`}</h3>
-            <div class="elements">
-              ${this.gridElements.map(element => this.renderElement(element))}
-            </div>
+            <h3 class="content-section-title">
+              ${this.gridElements.length ? ls`Grid overlays` : ls`No grid layouts found on this page`}
+            </h3>
+            ${this.gridElements.length ?
+              html`<div class="elements">
+                ${this.gridElements.map(element => this.renderElement(element))}
+              </div>` : ''}
           </div>` : ''}
       </details>
     `, this.shadow, {

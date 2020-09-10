@@ -220,9 +220,9 @@ export const toggleGroupComputedProperties = async () => {
   await click(groupCheckbox);
 
   if (wasChecked) {
-    await waitFor('devtools-computed-style-group-lists.hidden', computedPanel);
+    await waitFor('[role="tree"].alphabetical-list', computedPanel);
   } else {
-    await waitFor('div.computed-properties.hidden', computedPanel);
+    await waitFor('[role="tree"].grouped-list', computedPanel);
   }
 };
 

@@ -4,11 +4,63 @@
  * found in the LICENSE file.
  */
 
-.tree-outline li::before {
-  content: none;
-}
-
 .tree-outline,
 .tree-outline ol {
   padding-left: 0;
+}
+
+.tree-outline li:hover {
+  background-color: var(--focus-bg-color);
+  cursor: pointer;
+}
+
+.tree-outline li::before {
+  margin: 0 -1px 0 4px;
+}
+
+.group-title {
+  /* tree-outline li::before is set to be 16px wide */
+  padding-right: 16px;
+}
+
+.tree-outline li.group-title:hover {
+  background-color: transparent;
+}
+
+.group-title > h1 {
+  margin: 1px 0 0 0;
+  padding: 1em 0;
+  width: 100%;
+  cursor: pointer;
+  color: #5f6368;
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.group-title:not(.first-group) > h1 {
+  border-top: 1px solid var(--divider-color);
+}
+
+:host-context(.-theme-with-dark-background) .group-title > h1 {
+  color: #e8eaed;
+}
+
+.group-title + ol.children {
+  margin-bottom: 1em;
+}
+
+@media (forced-colors: active) {
+  :host-context(.monospace.computed-properties) .tree-outline li:hover {
+    forced-color-adjust: none;
+    background-color: Highlight;
+  }
+
+  :host-context(.monospace.computed-properties) .tree-outline:not(.hide-selection-when-blurred) li.parent:hover.selected::before,
+  :host-context(.monospace.computed-properties) .tree-outline-disclosure li.parent:hover::before {
+    background-color: HighlightText;
+  }
+
+  :host-context(.monospace.computed-properties) .tree-outline li:hover * {
+    color: HighlightText;
+  }
 }

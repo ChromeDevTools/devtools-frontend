@@ -7,65 +7,29 @@ import * as LitHtml from '../third_party/lit-html/lit-html.js';
 const {render, html} = LitHtml;
 
 export interface ComputedStylePropertyData {
-  propertyName: string;
-  propertyValue: string;
   inherited: boolean;
   traceable: boolean;
-  expanded: boolean;
   onNavigateToSource: (event?: Event) => void;
-}
-
-export class TracesToggledEvent extends Event {
-  data: {propertyName: string, shown: boolean};
-
-  constructor(propertyName: string, shown: boolean) {
-    super('traces-toggled', {});
-    this.data = {propertyName, shown};
-  }
 }
 
 export class ComputedStyleProperty extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
 
-  private propertyName = '';
-  private propertyValue = '';
   private inherited = false;
   private traceable = false;
-  private expanded = false;
   private onNavigateToSource: ((event?: Event) => void) = () => {};
 
   set data(data: ComputedStylePropertyData) {
-    this.propertyName = data.propertyName;
-    this.propertyValue = data.propertyValue;
     this.inherited = data.inherited;
     this.traceable = data.traceable;
-    this.expanded = data.expanded;
     this.onNavigateToSource = data.onNavigateToSource;
     this.render();
   }
 
-  // TODO: remove name and value getters after ComputedStyleWidget refactor
-  getPropertyName(): string {
-    return this.propertyName;
-  }
-
-  getPropertyValue(): string {
-    return this.propertyValue;
-  }
-
-  isExpanded(): boolean {
-    return this.expanded;
-  }
-
-  private onSummaryClick(event: Event) {
-    event.preventDefault();
-    this.expanded = !this.expanded;
-    this.render();
-    this.dispatchEvent(new TracesToggledEvent(this.propertyName, this.expanded));
-  }
-
-  private renderStyle() {
-    return html`
+  private render() {
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    render(html`
       <style>
         :host {
           position: relative;
@@ -74,29 +38,11 @@ export class ComputedStyleProperty extends HTMLElement {
           text-overflow: ellipsis;
         }
 
-        summary {
-          outline: none;
-        }
-
-        summary::-webkit-details-marker {
-          position: absolute;
-          top: 4.5px;
-          left: 4px;
-          color: var(--active-control-bg-color, #727272);
-        }
-
         .computed-style-property {
           min-height: 16px;
-          padding-left: 1.4em;
           box-sizing: border-box;
           padding-top: 2px;
           white-space: nowrap;
-        }
-
-        .computed-style-property:hover,
-        summary:focus .computed-style-property {
-          background-color: var(--focus-bg-color);
-          cursor: pointer;
         }
 
         .computed-style-property.inherited {
@@ -140,10 +86,6 @@ export class ComputedStyleProperty extends HTMLElement {
           display: none;
         }
 
-        ::slotted([slot="property-traces"]) {
-          margin-left: 16px;
-        }
-
         /* narrowed styles */
         :host-context(.computed-narrow) .computed-style-property {
           white-space: normal;
@@ -168,15 +110,12 @@ export class ComputedStyleProperty extends HTMLElement {
             opacity: 100%;
           }
 
-          :host-context(.monospace.computed-properties) .computed-style-property:hover,
-          :host-context(.monospace.computed-properties) summary:focus .computed-style-property {
+          :host-context(.monospace.computed-properties) .computed-style-property:hover {
             forced-color-adjust: none;
             background-color: Highlight;
           }
 
-          :host-context(.monospace.computed-properties) .computed-style-property:hover *,
-          :host-context(.monospace.computed-properties) summary:focus .computed-style-property *,
-          :host-context(.monospace.computed-properties) details[open] > summary:hover::-webkit-details-marker {
+          :host-context(.monospace.computed-properties) .computed-style-property:hover * {
             color: HighlightText;
           }
 
@@ -185,13 +124,7 @@ export class ComputedStyleProperty extends HTMLElement {
           }
         }
       </style>
-    `;
-  }
 
-  private renderProperty() {
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    return html`
       <div class="computed-style-property ${this.inherited ? 'inherited' : ''}">
         <slot name="property-name"></slot>
         <span class="hidden" aria-hidden="false">: </span>
@@ -201,33 +134,9 @@ export class ComputedStyleProperty extends HTMLElement {
         <slot name="property-value"></slot>
         <span class="hidden" aria-hidden="false">;</span>
       </div>
-    `;
-    // clang-format on
-  }
-
-  private render() {
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    if (this.traceable) {
-      render(html`
-        ${this.renderStyle()}
-        <details ?open=${this.expanded}>
-          <summary @click=${this.onSummaryClick}>
-            ${this.renderProperty()}
-          </summary>
-          <slot name="property-traces"></slot>
-        </details>
-      `, this.shadow, {
-        eventContext: this,
-      });
-    } else {
-      render(html`
-        ${this.renderStyle()}
-        ${this.renderProperty()}
-      `, this.shadow, {
-        eventContext: this,
-      });
-    }
+    `, this.shadow, {
+      eventContext: this,
+    });
     // clang-format on
   }
 }

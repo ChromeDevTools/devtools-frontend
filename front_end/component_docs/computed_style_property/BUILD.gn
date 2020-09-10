@@ -5,10 +5,7 @@
 import("../../../scripts/build/ninja/copy.gni")
 
 copy_to_gen("computed_style_property") {
-  sources = [
-    "inherited.html",
-    "traceable.html",
-  ]
+  sources = [ "basic.html" ]
 
   deps = [ "../../elements" ]
 }

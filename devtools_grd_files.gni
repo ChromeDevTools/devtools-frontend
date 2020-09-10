@@ -424,8 +424,6 @@ grd_files_debug_sources = [
   "front_end/elements/Adorner.js",
   "front_end/elements/ClassesPaneWidget.js",
   "front_end/elements/ColorSwatchPopoverIcon.js",
-  "front_end/elements/ComputedStyleGroupLists.js",
-  "front_end/elements/ComputedStyleGroupLists_bridge.js",
   "front_end/elements/ComputedStyleModel.js",
   "front_end/elements/ComputedStyleProperty.js",
   "front_end/elements/ComputedStyleProperty_bridge.js",

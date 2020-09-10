@@ -184,7 +184,8 @@ ElementsTestRunner.dumpComputedStyle = async function(doNotAutoExpand, printInne
       continue;
     }
 
-    for (const trace of treeElement.title.querySelectorAll('devtools-computed-style-trace')) {
+    for (const traceTreeElement of treeElement.children()) {
+      const trace = traceTreeElement.title;
       let dumpText = '';
 
       if (trace.shadowRoot.querySelector('.computed-style-trace.inactive')) {

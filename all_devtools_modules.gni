@@ -123,8 +123,6 @@ all_typescript_module_sources = [
   "elements/Adorner.js",
   "elements/ClassesPaneWidget.js",
   "elements/ColorSwatchPopoverIcon.js",
-  "elements/ComputedStyleGroupLists.js",
-  "elements/ComputedStyleGroupLists_bridge.js",
   "elements/ComputedStyleModel.js",
   "elements/ComputedStyleProperty.js",
   "elements/ComputedStyleProperty_bridge.js",

@@ -328,7 +328,6 @@
     "StylePropertyHighlighter.js",
     "StylesSidebarPane.js",
     "StylePropertyTreeElement.js",
-    "ComputedStyleGroupLists_bridge.js",
     "ComputedStyleWidget.js",
     "ComputedStyleProperty_bridge.js",
     "ComputedStyleTrace_bridge.js",

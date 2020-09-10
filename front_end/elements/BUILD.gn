@@ -11,8 +11,6 @@ devtools_module("elements") {
     "Adorner.js",
     "ClassesPaneWidget.js",
     "ColorSwatchPopoverIcon.js",
-    "ComputedStyleGroupLists.ts",
-    "ComputedStyleGroupLists_bridge.js",
     "ComputedStyleModel.js",
     "ComputedStyleProperty.ts",
     "ComputedStyleProperty_bridge.js",

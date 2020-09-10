@@ -387,7 +387,7 @@ export class FilteredListWidget extends UI.Widget.VBox {
     const query = this._provider.rewriteQuery(this._cleanValue());
     this._query = query;
 
-    const filterRegex = query ? String.filterRegex(query) : null;
+    const filterRegex = query ? Platform.StringUtilities.filterRegex(query) : null;
 
     const filteredItems = [];
 

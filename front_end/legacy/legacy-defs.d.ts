@@ -32,7 +32,6 @@ interface String {
   compareTo(other: string): number;
   trimEndWithMaxLength(maxLength: number): string;
   escapeForRegExp(): string;
-  filterRegex(query: string): RegExp;
   trimMiddle(maxLength: number): string;
 }
 

@@ -540,4 +540,20 @@ describe('StringUtilities', () => {
       assert.strictEqual(StringUtilities.removeURLFragment(input), 'http://www.example.com/foo.html?x=1');
     });
   });
+  describe('filterRegex', () => {
+    it('should do nothing for single non-special character', () => {
+      const regex = StringUtilities.filterRegex('f');
+      assert.strictEqual(regex.toString(), '/f/i');
+    });
+
+    it('should prepend [^\\0 ]* patterns for following characters', () => {
+      const regex = StringUtilities.filterRegex('bar');
+      assert.strictEqual(regex.toString(), '/b[^\\0a]*a[^\\0r]*r/i');
+    });
+
+    it('should espace special characters', () => {
+      const regex = StringUtilities.filterRegex('{?}');
+      assert.strictEqual(regex.toString(), '/\\{[^\\0\\?]*\\?[^\\0\\}]*\\}/i');
+    });
+  });
 });

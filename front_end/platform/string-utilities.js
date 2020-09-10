@@ -470,3 +470,30 @@ export const removeURLFragment = inputStr => {
   url.hash = '';
   return url.toString();
 };
+
+/**
+ * @return {string}
+ */
+export const regexSpecialCharacters = function() {
+  return '^[]{}()\\.^$*+?|-,';
+};
+
+/**
+ * @param {string} query
+ * @return {!RegExp}
+ */
+export const filterRegex = function(query) {
+  const toEscape = regexSpecialCharacters();
+  let regexString = '';
+  for (let i = 0; i < query.length; ++i) {
+    let c = query.charAt(i);
+    if (toEscape.indexOf(c) !== -1) {
+      c = '\\' + c;
+    }
+    if (i) {
+      regexString += '[^\\0' + c + ']*';
+    }
+    regexString += c;
+  }
+  return new RegExp(regexString, 'i');
+};

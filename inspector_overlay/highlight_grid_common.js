@@ -251,6 +251,7 @@ export function drawLayoutGridHighlight(highlight, context) {
 
   // The rest of the overlay is drawn without the writing-mode transformation, but we keep the matrix to transform relevant points.
   const writingModeMatrix = context.getTransform();
+  writingModeMatrix.scaleSelf(1 / window.deviceScaleFactor);
   context.restore();
 
   if (highlight.gridHighlightConfig.showGridExtensionLines) {

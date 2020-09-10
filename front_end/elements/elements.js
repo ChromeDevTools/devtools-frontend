@@ -33,6 +33,7 @@ import * as ComputedStyleWidget from './ComputedStyleWidget.js';
 import * as DOMLinkifier from './DOMLinkifier.js';
 import * as DOMPath from './DOMPath.js';
 import * as ElementsPanel from './ElementsPanel.js';
+import * as ElementsPanelLink from './ElementsPanelLink_bridge.js';
 import * as ElementsSidebarPane from './ElementsSidebarPane.js';
 import * as ElementStatePaneWidget from './ElementStatePaneWidget.js';
 import * as ElementsTreeElement from './ElementsTreeElement.js';
@@ -59,6 +60,7 @@ export {
   DOMLinkifier,
   DOMPath,
   ElementsPanel,
+  ElementsPanelLink,
   ElementsSidebarPane,
   ElementStatePaneWidget,
   ElementsTreeElement,

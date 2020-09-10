@@ -339,6 +339,7 @@
     "ElementsTreeElementHighlighter.js",
     "ImagePreviewPopover.js",
     "ElementsBreadcrumbs_bridge.js",
+    "ElementsPanelLink_bridge.js",
     "LayoutSidebarPane.js",
     "LayoutPane_bridge.js"
   ],

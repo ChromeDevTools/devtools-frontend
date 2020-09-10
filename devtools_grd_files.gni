@@ -439,6 +439,8 @@ grd_files_debug_sources = [
   "front_end/elements/ElementsBreadcrumbsUtils.js",
   "front_end/elements/ElementsBreadcrumbs_bridge.js",
   "front_end/elements/ElementsPanel.js",
+  "front_end/elements/ElementsPanelLink.js",
+  "front_end/elements/ElementsPanelLink_bridge.js",
   "front_end/elements/ElementsSidebarPane.js",
   "front_end/elements/ElementsTreeElement.js",
   "front_end/elements/ElementsTreeElementHighlighter.js",

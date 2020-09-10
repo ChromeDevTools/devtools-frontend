@@ -26,6 +26,8 @@ devtools_module("elements") {
     "ElementsBreadcrumbsUtils.ts",
     "ElementsBreadcrumbs_bridge.js",
     "ElementsPanel.js",
+    "ElementsPanelLink.ts",
+    "ElementsPanelLink_bridge.js",
     "ElementsSidebarPane.js",
     "ElementsTreeElement.js",
     "ElementsTreeElementHighlighter.js",
@@ -73,8 +75,8 @@ devtools_module("elements") {
   ]
 
   visibility = [
-    "../component_docs/*",
     "../../test/unittests/front_end/elements",
+    "../component_docs/*",
   ]
 }
 

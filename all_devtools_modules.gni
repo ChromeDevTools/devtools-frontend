@@ -138,6 +138,8 @@ all_typescript_module_sources = [
   "elements/ElementsBreadcrumbsUtils.js",
   "elements/ElementsBreadcrumbs_bridge.js",
   "elements/ElementsPanel.js",
+  "elements/ElementsPanelLink.js",
+  "elements/ElementsPanelLink_bridge.js",
   "elements/ElementsSidebarPane.js",
   "elements/ElementsTreeElement.js",
   "elements/ElementsTreeElementHighlighter.js",

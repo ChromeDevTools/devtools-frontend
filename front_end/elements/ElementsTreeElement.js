@@ -1954,12 +1954,11 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
 
+    const styles = await node.domModel().cssModel().computedStylePromise(nodeId);
     for (const styleAdorner of this._styleAdorners) {
       this.removeAdorner(styleAdorner);
     }
     this._styleAdorners = [];
-
-    const styles = await node.domModel().cssModel().computedStylePromise(nodeId);
     if (!styles) {
       return;
     }

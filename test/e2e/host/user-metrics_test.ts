@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import * as puppeteer from 'puppeteer';
 
-import {$, click, enableExperiment, getBrowserAndPages, platform, reloadDevTools, waitFor} from '../../shared/helper.js';
+import {$, click, enableExperiment, getBrowserAndPages, goToResource, platform, reloadDevTools, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToCssOverviewTab} from '../helpers/css-overview-helpers.js';
 import {navigateToSidePane, toggleGroupComputedProperties} from '../helpers/elements-helpers.js';
@@ -45,6 +45,8 @@ declare global {
     __experimentEnabled: (evt: Event) => void;
     __colorFixed: (evt: Event) => void;
     __computedStyleGrouping: (evt: Event) => void;
+    __issuesPanelIssueExpanded: (evt: Event) => void;
+    __issuesPanelResourceOpened: (evt: Event) => void;
     Host: {
       UserMetrics: UserMetrics; userMetrics: {actionTaken(name: number): void; colorFixed(threshold: string): void;}
     };
@@ -118,6 +120,16 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.__caughtEvents.push({name: 'DevTools.ComputedStyleGrouping', value: customEvt.detail.value});
     };
 
+    window.__issuesPanelIssueExpanded = (evt: Event) => {
+      const customEvt = evt as CustomEvent;
+      window.__caughtEvents.push({name: 'DevTools.IssuesPanelIssueExpanded', value: customEvt.detail.value});
+    };
+
+    window.__issuesPanelResourceOpened = (evt: Event) => {
+      const customEvt = evt as CustomEvent;
+      window.__caughtEvents.push({name: 'DevTools.IssuesPanelResourceOpened', value: customEvt.detail.value});
+    };
+
     window.__caughtEvents = [];
     window.__beginCatchEvents = () => {
       window.addEventListener('DevTools.PanelShown', window.__panelShown);
@@ -133,6 +145,8 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.addEventListener('DevTools.ExperimentEnabled', window.__experimentEnabled);
       window.addEventListener('DevTools.ColorPicker.FixedColor', window.__colorFixed);
       window.addEventListener('DevTools.ComputedStyleGrouping', window.__computedStyleGrouping);
+      window.addEventListener('DevTools.IssuesPanelIssueExpanded', window.__issuesPanelIssueExpanded);
+      window.addEventListener('DevTools.IssuesPanelResourceOpened', window.__issuesPanelResourceOpened);
     };
 
     window.__endCatchEvents = () => {
@@ -149,6 +163,8 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.removeEventListener('DevTools.ExperimentEnabled', window.__experimentEnabled);
       window.removeEventListener('DevTools.ColorPicker.FixedColor', window.__colorFixed);
       window.removeEventListener('DevTools.ComputedStyleGrouping', window.__computedStyleGrouping);
+      window.removeEventListener('DevTools.IssuesPanelIssueExpanded', window.__issuesPanelIssueExpanded);
+      window.removeEventListener('DevTools.IssuesPanelResourceOpened', window.__issuesPanelResourceOpened);
     };
 
     window.__beginCatchEvents();
@@ -595,6 +611,34 @@ describe('User Metrics for Computed Styles grouping', () => {
       {
         name: 'DevTools.ComputedStyleGrouping',
         value: 1,  // disabled
+      },
+    ]);
+  });
+
+  afterEach(async () => {
+    const {frontend} = getBrowserAndPages();
+    await endCatchEvents(frontend);
+  });
+});
+
+
+describe('User Metrics for Issue Panel', () => {
+  beforeEach(async () => {
+    await openPanelViaMoreTools('Issues');
+    const {frontend} = getBrowserAndPages();
+    await beginCatchEvents(frontend);
+  });
+
+  it('dispatch events when expand an issue', async () => {
+    await goToResource('host/cookie-issue.html');
+    await waitFor('.issue');
+
+    await click('.issue');
+
+    await assertCapturedEvents([
+      {
+        name: 'DevTools.IssuesPanelIssueExpanded',
+        value: 2,  // SameSiteCookie
       },
     ]);
   });

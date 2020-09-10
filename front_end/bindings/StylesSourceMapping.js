@@ -115,7 +115,7 @@ export class StylesSourceMapping {
    * @param {!SDK.CSSStyleSheetHeader.CSSStyleSheetHeader} header
    */
   _acceptsHeader(header) {
-    if (header.isMutable) {
+    if (header.isConstructed) {
       return false;
     }
     if (header.isInline && !header.hasSourceURL && header.origin !== 'inspector') {

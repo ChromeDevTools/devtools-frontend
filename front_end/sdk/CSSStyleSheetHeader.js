@@ -31,6 +31,8 @@ export class CSSStyleSheetHeader {
     this.disabled = payload.disabled;
     this.isInline = payload.isInline;
     this.isMutable = payload.isMutable;
+    // TODO(alexrudenko): Needs a roll of the browser_protocol.pdl.
+    this.isConstructed = /** @type {*} */ (payload).isConstructed;
     this.startLine = payload.startLine;
     this.startColumn = payload.startColumn;
     this.endLine = payload.endLine;

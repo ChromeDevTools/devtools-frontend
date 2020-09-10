@@ -8,8 +8,6 @@ devtools_pre_built("acorn-loose") {
   sources = [
     "acorn-loose-tsconfig.json",
     "package/dist/acorn-loose.d.ts",
-    "package/dist/acorn-loose.js",
-    "package/dist/acorn-loose.js.map",
     "package/dist/acorn-loose.mjs",
   ]
 }

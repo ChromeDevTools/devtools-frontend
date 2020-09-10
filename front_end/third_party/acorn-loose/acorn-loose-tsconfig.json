@@ -3,6 +3,6 @@
     "composite": true
   },
   "files": [
-    "package/dist/acorn-loose.js"
+    "package/dist/acorn-loose.mjs"
   ]
 }

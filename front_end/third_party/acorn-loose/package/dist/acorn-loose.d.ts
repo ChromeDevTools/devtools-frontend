@@ -9,7 +9,7 @@
 export as namespace AcornLoose
 export = AcornLoose
 
-import { Options } from '../../../acorn/package/dist/acorn.js';
+import { Options } from '../../../acorn/package/dist/acorn.mjs';
 
 declare namespace AcornLoose {
   function parse(input: string, options?: Options): Node;

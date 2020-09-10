@@ -834,7 +834,7 @@ export class ResourceTreeFrame {
    * @return {boolean}
    */
   isTopFrame() {
-    return !this._sameTargetParentFrame && !this._crossTargetParentFrameId;
+    return !this._model.target().parentTarget() && !this._sameTargetParentFrame && !this._crossTargetParentFrameId;
   }
 
   /**

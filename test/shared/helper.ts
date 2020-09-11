@@ -177,6 +177,19 @@ export const $textContent = async (textContent: string, root?: puppeteer.JSHandl
   return element;
 };
 
+/**
+ * Search for all elements based on their textContent
+ *
+ * @param textContent The text content to search for.
+ * @param root The root of the search.
+ */
+export const $$textContent = async (textContent: string, root?: puppeteer.JSHandle) => {
+  const {frontend} = getBrowserAndPages();
+  const rootElement = root ? root as puppeteer.ElementHandle : frontend;
+  const element = await rootElement.$$('pierceShadowText/' + textContent);
+  return element;
+};
+
 export const timeout = (duration: number) => new Promise(resolve => setTimeout(resolve, duration));
 
 export const waitFor = async (selector: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope()) => {
@@ -201,6 +214,18 @@ export const waitForElementWithTextContent =
       return asyncScope.exec(() => waitForFunction(async () => {
                                const elem = await $textContent(textContent, root);
                                return elem || undefined;
+                             }, asyncScope));
+    };
+
+export const waitForElementsWithTextContent =
+    (textContent: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope()) => {
+      return asyncScope.exec(() => waitForFunction(async () => {
+                               const elems = await $$textContent(textContent, root);
+                               if (elems && elems.length) {
+                                 return elems;
+                               }
+
+                               return undefined;
                              }, asyncScope));
     };
 

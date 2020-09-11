@@ -3,10 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-
-import {$$, goToResource} from '../../shared/helper.js';
+import {$$, click, getBrowserAndPages, goToResource, waitForElementsWithTextContent, waitForElementWithTextContent, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {findSearchResult, navigateToMemoryTab, setSearchFilter, takeHeapSnapshot, waitForNonEmptyHeapSnapshotData, waitForRetainerChain, waitForSearchResultNumber} from '../helpers/memory-helpers.js';
+import {changeViewViaDropdown, findSearchResult, navigateToMemoryTab, setSearchFilter, takeHeapSnapshot, waitForNonEmptyHeapSnapshotData, waitForRetainerChain, waitForSearchResultNumber} from '../helpers/memory-helpers.js';
 
 describe('The Memory Panel', async () => {
   it('Loads content', async () => {
@@ -68,5 +67,24 @@ describe('The Memory Panel', async () => {
       'HTMLDocument',
       'Window /',
     ]);
+  });
+
+  it('Puts all ActiveDOMObjects with pending activities into one group', async () => {
+    await goToResource('memory/dom-objects.html');
+    await navigateToMemoryTab();
+    await takeHeapSnapshot();
+    await waitForNonEmptyHeapSnapshotData();
+    await changeViewViaDropdown('Containment');
+    const pendingActiviesElement = await waitForElementWithTextContent('Pending activities');
+
+    // Focus and then expand the pending activities row to show its children
+    await click(pendingActiviesElement);
+    const {frontend} = getBrowserAndPages();
+    await frontend.keyboard.press('ArrowRight');
+
+    await waitForFunction(async () => {
+      const pendingActiviesChildren = await waitForElementsWithTextContent('MediaQueryList');
+      return pendingActiviesChildren.length === 2;
+    });
   });
 });

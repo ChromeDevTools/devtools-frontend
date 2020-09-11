@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import * as puppeteer from 'puppeteer';
 
-import {platform} from '../../shared/helper.js';
+import {$, platform, waitForElementWithTextContent} from '../../shared/helper.js';
 import {$$, click, getBrowserAndPages, pasteText, waitFor, waitForFunction, waitForNone} from '../../shared/helper.js';
 
 
@@ -173,4 +173,16 @@ export async function assertRetainerChain(expectedRetainers: Array<string>) {
 
 export async function waitForRetainerChain(expectedRetainers: Array<string>) {
   await waitForFunction(assertRetainerChain.bind(null, expectedRetainers));
+}
+
+export async function changeViewViaDropdown(newPerspective: string) {
+  const perspectiveDropdownSelector = 'select[aria-label="Perspective"]';
+  const dropdown = await $(perspectiveDropdownSelector) as puppeteer.ElementHandle<HTMLSelectElement>;
+
+  const optionToSelect = await waitForElementWithTextContent(newPerspective, dropdown);
+  const optionValue = await optionToSelect.evaluate(opt => opt.getAttribute('value'));
+  if (!optionValue) {
+    throw new Error(`Could not find heap snapshot perspective option: ${newPerspective}`);
+  }
+  dropdown.select(optionValue);
 }

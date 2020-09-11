@@ -15,6 +15,7 @@ all_devtools_files = [
   "front_end/animation/animationScreenshotPopover.css",
   "front_end/animation/animationTimeline.css",
   "front_end/animation/module.json",
+  "front_end/application_test_runner/application_test_runner.js",
   "front_end/application_test_runner/AppcacheTestRunner.js",
   "front_end/application_test_runner/CacheStorageTestRunner.js",
   "front_end/application_test_runner/IndexedDBTestRunner.js",

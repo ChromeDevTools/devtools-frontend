@@ -14,6 +14,7 @@ devtools_test_files = [
   "//third_party/axe-core/axe.js",
   "front_end/accessibility_test_runner/accessibility_test_runner.js",
   "front_end/accessibility_test_runner/module.json",
+  "front_end/application_test_runner/application_test_runner.js",
   "front_end/application_test_runner/AppcacheTestRunner.js",
   "front_end/application_test_runner/CacheStorageTestRunner.js",
   "front_end/application_test_runner/IndexedDBTestRunner.js",

@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as QuickOpen from '../quick_open/quick_open.js';
 import * as UI from '../ui/ui.js';
@@ -66,7 +63,7 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
       return null;
     }
     const line = parseInt(parts[1], 10);
-    let column;
+    let column = 0;
     if (parts[2]) {
       column = parseInt(parts[2].substring(1), 10);
     }

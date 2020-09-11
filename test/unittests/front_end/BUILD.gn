@@ -20,6 +20,7 @@ group("front_end") {
     "persistence",
     "platform",
     "protocol_client",
+    "root",
     "sdk",
     "sources",
     "test_setup",

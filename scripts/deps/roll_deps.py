@@ -19,10 +19,6 @@ FILES = [
     'third_party/blink/renderer/core/css/css_properties.json5',
     'third_party/blink/renderer/core/html/aria_properties.json5',
     'third_party/blink/public/devtools_protocol/browser_protocol.pdl',
-    'third_party/axe-core/axe.d.ts',
-    'third_party/axe-core/axe.js',
-    'third_party/axe-core/axe.min.js',
-    'third_party/axe-core/LICENSE',
 ]
 
 # Files whose location within devtools-frontend differs from the upstream location.
@@ -30,6 +26,11 @@ FILE_MAPPINGS = {
     # chromium_path => devtools_frontend_path
     'components/variations/proto/devtools/client_variations.js':
     'front_end/third_party/chromium/client-variations/ClientVariations.js',
+    'third_party/axe-core/axe.d.ts': 'front_end/third_party/axe-core/axe.d.ts',
+    'third_party/axe-core/axe.js': 'front_end/third_party/axe-core/axe.js',
+    'third_party/axe-core/axe.min.js':
+    'front_end/third_party/axe-core/axe.min.js',
+    'third_party/axe-core/LICENSE': 'front_end/third_party/axe-core/LICENSE',
 }
 
 for f in FILES:

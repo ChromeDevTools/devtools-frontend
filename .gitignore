@@ -26,7 +26,6 @@ npm-debug.log
 /buildtools
 /out
 /third_party/*
-!/third_party/axe-core
 !/third_party/blink
 !/third_party/i18n
 !/third_party/pyjson5

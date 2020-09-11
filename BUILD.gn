@@ -12,7 +12,7 @@ import("./front_end/emulated_devices/optimized/optimized_images.gni")
 import("./scripts/build/ninja/vars.gni")
 
 devtools_test_files = [
-  "//third_party/axe-core/axe.js",
+  "front_end/third_party/axe-core/axe.js",
   "front_end/accessibility_test_runner/accessibility_test_runner.js",
   "front_end/accessibility_test_runner/module.json",
   "front_end/application_test_runner/application_test_runner.js",
@@ -25,7 +25,7 @@ devtools_test_files = [
   "front_end/application_test_runner/ServiceWorkersTestRunner.js",
   "front_end/lighthouse_test_runner/LighthouseTestRunner.js",
   "front_end/lighthouse_test_runner/module.json",
-  "front_end/axe_core_test_runner/AxeCoreTestRunner.js",
+  "front_end/axe_core_test_runner/axe_core_test_runner.js",
   "front_end/axe_core_test_runner/module.json",
   "front_end/bindings_test_runner/AutomappingTestRunner.js",
   "front_end/bindings_test_runner/BindingsTestRunner.js",

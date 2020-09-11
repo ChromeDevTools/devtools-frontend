@@ -2,12 +2,12 @@
   "dependencies": [
     "test_runner"
   ],
-  "scripts": [
-    "../../third_party/axe-core/axe.js",
-    "AxeCoreTestRunner.js"
+  "modules": [
+    "../third_party/axe-core/axe.js",
+    "axe_core_test_runner.js"
   ],
   "skip_compilation": [
-    "../../third_party/axe-core/axe.js",
-    "AxeCoreTestRunner.js"
+    "../third_party/axe-core/axe.js",
+    "axe_core_test_runner.js"
   ]
 }

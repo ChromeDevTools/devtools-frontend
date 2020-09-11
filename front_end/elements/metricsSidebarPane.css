@@ -136,6 +136,6 @@
  * color of the text for all the children to light. This also fixes
  * hovering over anything within margin such as border/padding.
  */
-:host-context(.-theme-with-dark-background) .metrics .margin:hover div {
+:host-context(.-theme-with-dark-background) .metrics > div:hover div {
   color: #ccc;
 }

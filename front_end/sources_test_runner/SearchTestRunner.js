@@ -92,7 +92,7 @@ SourcesTestRunner.replaceAndDumpChange = function(sourceFrame, searchConfig, rep
   const modifiersString = (modifiers.length ? ' (' + modifiers.join(', ') + ')' : '');
   TestRunner.addResult(
       'Running replace test for /' + searchConfig.query + '/' + replacement + '/ ' + modifiersString + ':');
-  editor = sourceFrame._textEditor;
+  const editor = sourceFrame._textEditor;
   const oldLines = [];
 
   for (let i = 0; i < editor.linesCount; ++i) {

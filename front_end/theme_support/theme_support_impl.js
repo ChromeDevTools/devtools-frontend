@@ -34,6 +34,7 @@
 
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
+import * as Root from '../root/root.js';
 
 /**
  * @type {!ThemeSupport}
@@ -132,7 +133,7 @@ export class ThemeSupport {
    * @suppressGlobalPropertiesCheck
    */
   _appendStyle(node, cssFile) {
-    const content = self.Runtime.cachedResources[cssFile] || '';
+    const content = Root.Runtime.cachedResources.get(cssFile) || '';
     if (!content) {
       console.error(cssFile + ' not preloaded. Check module.json');
     }
@@ -143,7 +144,7 @@ export class ThemeSupport {
     const themeStyleSheet = ThemeSupport.instance().themeStyleSheet(cssFile, content);
     if (themeStyleSheet) {
       styleElement = createElement('style');
-      styleElement.textContent = themeStyleSheet + '\n' + Root.Runtime.resolveSourceURL(cssFile + '.theme');
+      styleElement.textContent = themeStyleSheet + '\n' + Root.Runtime.Runtime.resolveSourceURL(cssFile + '.theme');
       node.appendChild(styleElement);
     }
   }

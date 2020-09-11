@@ -264,7 +264,7 @@ SDKTestRunner.PageMock = class {
   }
 };
 
-MockPageConnection = class {
+class MockPageConnection {
   constructor(page) {
     this._page = page;
   }
@@ -292,4 +292,4 @@ MockPageConnection = class {
     this._onMessage = null;
     return Promise.resolve();
   }
-};
+}

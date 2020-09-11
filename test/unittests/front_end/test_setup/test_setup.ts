@@ -7,6 +7,8 @@
  * loads and injects all *.js files it finds.
  */
 import * as ComponentHelpers from '../../../../front_end/component_helpers/component_helpers.js';
+import * as Root from '../../../../front_end/root/root.js';
+
 import {resetTestDOM} from '../helpers/DOMHelpers.js';
 
 beforeEach(resetTestDOM);
@@ -31,7 +33,6 @@ before(async function() {
  * The out/Release/gen/front_end URL is prepended so within the Karma config we can proxy
  * them through to the right place, respecting Karma's ROOT_DIRECTORY setting.
  */
-  self.Runtime = self.Runtime || {cachedResources: {}};
   const allPromises = ComponentHelpers.GetStylesheet.CSS_RESOURCES_TO_LOAD_INTO_RUNTIME.map(resourcePath => {
     const pathWithKarmaPrefix = `/base/${targetDir}/front_end/${resourcePath}`;
     return fetch(pathWithKarmaPrefix)
@@ -42,13 +43,12 @@ before(async function() {
           return response.text();
         })
         .then(cssText => {
-          self.Runtime.cachedResources[resourcePath] = cssText;
+          Root.Runtime.cachedResources.set(resourcePath, cssText);
         });
   });
   return Promise.all(allPromises);
 });
 
 after(() => {
-  // @ts-expect-error cachedResources is readonly but we want to nuke it after test runs.
-  self.Runtime.cachedResources = {};
+  Root.Runtime.cachedResources.clear();
 });

@@ -15,7 +15,10 @@ devtools_module("ui_utils") {
     "register-custom-element.js",
   ]
 
-  deps = [ "../../theme_support:bundle" ]
+  deps = [
+    "../../root:bundle",
+    "../../theme_support:bundle",
+  ]
 }
 
 devtools_entrypoint("bundle") {

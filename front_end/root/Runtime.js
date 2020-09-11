@@ -601,7 +601,7 @@ export class Module {
    */
   resource(name) {
     const fullName = this._name + '/' + name;
-    const content = self.Runtime.cachedResources[fullName];
+    const content = cachedResources.get(fullName);
     if (!content) {
       throw new Error(fullName + ' not preloaded. Check module.json');
     }
@@ -642,7 +642,7 @@ export class Module {
    * @return {!Promise.<void>}
    * @this {Module}
    */
-  _loadResources() {
+  async _loadResources() {
     const resources = this._descriptor['resources'];
     if (!resources || !resources.length) {
       return Promise.resolve();
@@ -656,9 +656,9 @@ export class Module {
     return Promise.all(promises).then(undefined);
   }
 
-  _loadModules() {
+  async _loadModules() {
     if (!this._descriptor.modules || !this._descriptor.modules.length) {
-      return Promise.resolve();
+      return;
     }
 
     const namespace = this._computeNamespace();
@@ -666,10 +666,27 @@ export class Module {
     self[namespace] = self[namespace] || {};
 
     const legacyFileName = `${this._name}-legacy.js`;
-    const fileName = this._descriptor.modules.includes(legacyFileName) ? legacyFileName : `${this._name}.js`;
+    const moduleFileName = `${this._name}_module.js`;
+    const entrypointFileName = `${this._name}.js`;
+
+    // If a module has resources, they are part of the `_module.js` files that are generated
+    // by `build_release_applications`. These need to be loaded before any other code is
+    // loaded, to make sure that the resource content is properly cached in `cachedResources`.
+    if (this._descriptor.modules.includes(moduleFileName)) {
+      // TODO(crbug.com/1011811): Remove eval when we use TypeScript which does support dynamic imports
+      await eval(`import('../${this._name}/${moduleFileName}')`);
+    }
+
+    // All `*_test_runner` directories don't necessarily have an entrypoint
+    // These runners are typically included in the `_module.js` file already.
+    if (!this._descriptor.modules.includes(entrypointFileName)) {
+      return;
+    }
+
+    const fileName = this._descriptor.modules.includes(legacyFileName) ? legacyFileName : entrypointFileName;
 
     // TODO(crbug.com/1011811): Remove eval when we use TypeScript which does support dynamic imports
-    return eval(`import('../${this._name}/${fileName}')`);
+    await eval(`import('../${this._name}/${fileName}')`);
   }
 
   /**
@@ -1176,7 +1193,7 @@ function loadResourceIntoCache(url, appendSourceURL) {
       return;
     }
     const sourceURL = appendSourceURL ? Runtime.resolveSourceURL(path) : '';
-    self.Runtime.cachedResources[path] = content + sourceURL;
+    cachedResources.set(path, content + sourceURL);
   }
 }
 
@@ -1222,3 +1239,13 @@ importScriptPathPrefix = baseUrl.substring(0, baseUrl.lastIndexOf('/') + 1);
 
 // This must be constructed after the query parameters have been parsed.
 export const experiments = new ExperimentsSupport();
+
+/**
+ * @type {!Map<string, string>}
+ */
+export const cachedResources = new Map();
+
+// Only exported for LightHouse, which uses it in `report-generator.js`.
+// Do not use this global in DevTools' implementation.
+// TODO(crbug.com/1127292): remove this global
+globalThis.EXPORTED_CACHED_RESOURCES_ONLY_FOR_LIGHTHOUSE = cachedResources;

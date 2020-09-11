@@ -8,6 +8,7 @@
 import * as Common from '../common/common.js';
 import * as Emulation from '../emulation/emulation.js';  // eslint-disable-line no-unused-vars
 import * as HostModule from '../host/host.js';
+import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -198,7 +199,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     const dom = new DOM(/** @type {!Document} */ (this._auditResultsElement.ownerDocument));
     const renderer = new LighthouseReportRenderer(dom);
 
-    const templatesHTML = self.Runtime.cachedResources['third_party/lighthouse/report-assets/templates.html'];
+    const templatesHTML = Root.Runtime.cachedResources.get('third_party/lighthouse/report-assets/templates.html');
     const templatesDOM = new DOMParser().parseFromString(templatesHTML, 'text/html');
     if (!templatesDOM) {
       return;

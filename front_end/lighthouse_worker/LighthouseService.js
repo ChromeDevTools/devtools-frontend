@@ -163,11 +163,11 @@ class LighthouseService {  // eslint-disable-line
 }
 
 // Make lighthouse and traceviewer happy.
-global = self;
-global.isVinn = true;
-global.document = {};
-global.document.documentElement = {};
-global.document.documentElement.style = {
+globalThis.global = self;
+globalThis.global.isVinn = true;
+globalThis.global.document = {};
+globalThis.global.document.documentElement = {};
+globalThis.global.document.documentElement.style = {
   WebkitAppearance: 'WebkitAppearance'
 };
-global.LighthouseService = LighthouseService;
+globalThis.global.LighthouseService = LighthouseService;

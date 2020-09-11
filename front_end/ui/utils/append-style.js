@@ -5,6 +5,7 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
+import * as Root from '../../root/root.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';
 
 /**
@@ -13,7 +14,7 @@ import * as ThemeSupport from '../../theme_support/theme_support.js';
  * @suppressGlobalPropertiesCheck
  */
 export function appendStyle(node, cssFile) {
-  const content = self.Runtime.cachedResources[cssFile] || '';
+  const content = Root.Runtime.cachedResources.get(cssFile) || '';
   if (!content) {
     console.error(cssFile + ' not preloaded. Check module.json');
   }
@@ -24,7 +25,7 @@ export function appendStyle(node, cssFile) {
   const themeStyleSheet = ThemeSupport.ThemeSupport.instance().themeStyleSheet(cssFile, content);
   if (themeStyleSheet) {
     styleElement = createElement('style');
-    styleElement.textContent = themeStyleSheet + '\n' + Root.Runtime.resolveSourceURL(cssFile + '.theme');
+    styleElement.textContent = themeStyleSheet + '\n' + Root.Runtime.Runtime.resolveSourceURL(cssFile + '.theme');
     node.appendChild(styleElement);
   }
 }

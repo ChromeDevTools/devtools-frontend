@@ -37,13 +37,6 @@ import * as RootModule from './root/root.js';
 self.Runtime = self.Runtime || {};
 Runtime = Runtime || {};
 
-/**
- * @type {!Object.<string, string>}
- */
-self.Runtime.cachedResources = {
-  __proto__: null
-};
-
 self.Root = self.Root || {};
 Root = Root || {};
 

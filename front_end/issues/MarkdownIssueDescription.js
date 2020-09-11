@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Marked from '../marked/marked.js';
+import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 
 import {createMarkdownView} from './MarkdownView_bridge.js';
@@ -21,7 +22,7 @@ export function createIssueDescriptionFromMarkdown(description) {
  * @return {string}
  */
 function getMarkdownFileContent(filename) {
-  const rawMarkdown = self.Runtime.cachedResources[filename];
+  const rawMarkdown = Root.Runtime.cachedResources.get(filename);
   if (!rawMarkdown) {
     throw new Error(`Markdown file ${filename} not found. Declare it as a resource in the module.json file`);
   }

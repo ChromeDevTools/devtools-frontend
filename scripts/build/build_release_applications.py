@@ -136,8 +136,9 @@ class ReleaseBuilder(object):
                         del module['scripts']
                 else:
                     # Non-autostart modules are vulcanized.
-                    module['scripts'] = [name + '_module.js']
-                    module['modules'] = module.get('modules', [])
+                    module['scripts'] = []
+                    module['modules'] = [name + '_module.js'] + module.get(
+                        'modules', [])
             # Resources are already baked into scripts.
             if resources is not None:
                 del module['resources']
@@ -147,7 +148,8 @@ class ReleaseBuilder(object):
     def _write_module_resources(self, resource_names, output):
         for resource_name in resource_names:
             resource_name = path.normpath(resource_name).replace('\\', '/')
-            output.write('self.Runtime.cachedResources["%s"] = "' % resource_name)
+            output.write('RootModule.Runtime.cachedResources.set("%s", "' %
+                         resource_name)
             resource_content = read_file(path.join(self.application_dir, resource_name))
             if not (resource_name.endswith('.html')
                     or resource_name.endswith('md')):
@@ -157,7 +159,7 @@ class ReleaseBuilder(object):
             resource_content = resource_content.replace('\n', '\\n')
             resource_content = resource_content.replace('"', '\\"')
             output.write(resource_content)
-            output.write('";\n')
+            output.write('");\n')
 
     def _concatenate_autostart_modules(self, output):
         non_autostart = set()
@@ -183,10 +185,11 @@ class ReleaseBuilder(object):
         else:
             output.write('Root.applicationDescriptor = %s;' % self.descriptors.application_json())
 
+        output.write("import * as RootModule from './root/root.js';")
+        self._write_module_resources(self.autorun_resource_names(), output)
+
         output.write(minify_js(read_file(join(self.application_dir, self.app_file('js')))))
         self._concatenate_autostart_modules(output)
-
-        self._write_module_resources(self.autorun_resource_names(), output)
 
     def _concatenate_dynamic_module(self, module_name):
         module = self.descriptors.modules[module_name]
@@ -198,6 +201,7 @@ class ReleaseBuilder(object):
         if scripts:
             modular_build.concatenate_scripts(scripts, module_dir, self.output_dir, output)
         if resources:
+            output.write("import * as RootModule from '../root/root.js';")
             self._write_module_resources(resources, output)
         if modules:
             self._rollup_module(module_name, modules)

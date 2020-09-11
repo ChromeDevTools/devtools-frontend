@@ -122,3 +122,7 @@ Number.constrain = function(num, min, max) {
   }
   return num;
 };
+
+export function adoptStyleSheet(styleSheet) {
+  document.adoptedStyleSheets = [...document.adoptedStyleSheets, styleSheet];
+}

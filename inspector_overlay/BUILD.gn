@@ -10,7 +10,8 @@ action("build_inspector_overlay") {
   script = "../scripts/build/build_inspector_overlay.py"
 
   inputs = [
-    "./common.css",
+    "$target_gen_dir/common.css",
+    "$target_gen_dir/tool_paused.css",
     "$target_gen_dir/common.js",
     "$target_gen_dir/css_grid_label_helpers.js",
     "$target_gen_dir/highlight_common.js",
@@ -60,12 +61,15 @@ action("build_inspector_overlay") {
     "tool_source_order.js",
     "10000",  # max_size in bytes
     "--input_path",
-    rebase_path(".", root_build_dir),
+    rebase_path(target_gen_dir, root_build_dir),
     "--output_path",
     rebase_path(resources_out_dir, root_build_dir),
+    "--rollup_plugin",
+    rebase_path("loadCSS.rollup.js", root_build_dir),
   ]
 
   public_deps = [
+    ":copy_css_to_gen",
     ":copy_resources",
     ":inspector_overlay",
   ]
@@ -74,6 +78,14 @@ action("build_inspector_overlay") {
 copy("copy_resources") {
   sources = [ "resources.grd" ]
   outputs = [ "$resources_out_dir/inspector_overlay_resources.grd" ]
+}
+
+copy("copy_css_to_gen") {
+  sources = [
+    "common.css",
+    "tool_paused.css",
+  ]
+  outputs = [ "$target_gen_dir/{{source_file_part}}" ]
 }
 
 ts_library("inspector_overlay") {

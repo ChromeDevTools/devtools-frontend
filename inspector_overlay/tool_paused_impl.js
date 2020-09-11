@@ -5,6 +5,8 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
+import {eventHasCtrlOrMeta} from './common.js';
+
 export function drawPausedInDebuggerMessage(message) {
   document.getElementById('paused-in-debugger').textContent = message;
 }

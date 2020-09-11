@@ -37,12 +37,13 @@ def check_size(filename, data, max_size):
         filename, max_size, len(data))
 
 
-def rollup(input_path, output_path, filename, max_size):
+def rollup(input_path, output_path, filename, max_size, rollup_plugin):
     target = join(input_path, filename)
     rollup_process = subprocess.Popen(
         [devtools_paths.node_path(),
          devtools_paths.rollup_path()] +
-        ['--format', 'iife', '-n', 'InspectorOverlay'] + ['--input', target],
+        ['--format', 'iife', '-n', 'InspectorOverlay'] + ['--input', target] +
+        ['--plugin', rollup_plugin],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE)
     out, error = rollup_process.communicate()
@@ -66,12 +67,15 @@ def main(argv):
         input_path = argv[input_path_flag_index + 1]
         output_path_flag_index = argv.index('--output_path')
         output_path = argv[output_path_flag_index + 1]
+        rollup_plugin_index = argv.index('--rollup_plugin')
+        rollup_plugin = argv[rollup_plugin_index + 1]
 
         file_names_with_sizes = to_pairs(argv[1:input_path_flag_index])
         for filename, max_size in file_names_with_sizes:
             max_size = int(max_size)
             if filename.endswith(".js"):
-                rollup(input_path, output_path, filename, max_size)
+                rollup(input_path, output_path, filename, max_size,
+                       rollup_plugin)
             if filename.endswith(".css"):
                 css_file = read_file(join(input_path, filename))
                 check_size(filename, css_file, max_size)

@@ -13,7 +13,7 @@
     { "name": "dagre_layout", "type": "remote" },
     { "name": "devices" },
     { "name": "elements" },
-    { "name": "emulated_devices" , "type": "remote" },
+    { "name": "emulated_devices" },
     { "name": "issues" },
     { "name": "developer_resources" },
     { "name": "har_importer" },

@@ -33,6 +33,7 @@ group("front_end") {
     "diff:bundle",
     "dom_extension:bundle",
     "elements:bundle",
+    "emulated_devices/optimized:optimized_emulated_devices",
     "emulation:bundle",
     "event_listeners:bundle",
     "extensions:bundle",

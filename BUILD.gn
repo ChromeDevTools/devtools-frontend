@@ -8,6 +8,7 @@ import("./all_devtools_modules.gni")
 import("./devtools_grd_files.gni")
 import("./devtools_image_files.gni")
 import("./devtools_module_entrypoints.gni")
+import("./front_end/emulated_devices/optimized/optimized_images.gni")
 import("./scripts/build/ninja/vars.gni")
 
 devtools_test_files = [
@@ -80,47 +81,6 @@ devtools_test_files = [
 devtools_embedder_scripts = [
   "front_end/devtools_compatibility.js",
   "front_end/Tests.js",
-]
-
-devtools_emulated_devices_images = [
-  "front_end/emulated_devices/google-nexus-5-horizontal-default-1x.png",
-  "front_end/emulated_devices/google-nexus-5-horizontal-default-2x.png",
-  "front_end/emulated_devices/google-nexus-5-horizontal-keyboard-1x.png",
-  "front_end/emulated_devices/google-nexus-5-horizontal-keyboard-2x.png",
-  "front_end/emulated_devices/google-nexus-5-horizontal-navigation-1x.png",
-  "front_end/emulated_devices/google-nexus-5-horizontal-navigation-2x.png",
-  "front_end/emulated_devices/google-nexus-5-vertical-default-1x.png",
-  "front_end/emulated_devices/google-nexus-5-vertical-default-2x.png",
-  "front_end/emulated_devices/google-nexus-5-vertical-keyboard-1x.png",
-  "front_end/emulated_devices/google-nexus-5-vertical-keyboard-2x.png",
-  "front_end/emulated_devices/google-nexus-5-vertical-navigation-1x.png",
-  "front_end/emulated_devices/google-nexus-5-vertical-navigation-2x.png",
-  "front_end/emulated_devices/google-nexus-5x-horizontal-default-1x.png",
-  "front_end/emulated_devices/google-nexus-5x-horizontal-default-2x.png",
-  "front_end/emulated_devices/google-nexus-5x-horizontal-keyboard-1x.png",
-  "front_end/emulated_devices/google-nexus-5x-horizontal-keyboard-2x.png",
-  "front_end/emulated_devices/google-nexus-5x-horizontal-navigation-1x.png",
-  "front_end/emulated_devices/google-nexus-5x-horizontal-navigation-2x.png",
-  "front_end/emulated_devices/google-nexus-5x-vertical-default-1x.png",
-  "front_end/emulated_devices/google-nexus-5x-vertical-default-2x.png",
-  "front_end/emulated_devices/google-nexus-5x-vertical-keyboard-1x.png",
-  "front_end/emulated_devices/google-nexus-5x-vertical-keyboard-2x.png",
-  "front_end/emulated_devices/google-nexus-5x-vertical-navigation-1x.png",
-  "front_end/emulated_devices/google-nexus-5x-vertical-navigation-2x.png",
-  "front_end/emulated_devices/iPad-landscape.svg",
-  "front_end/emulated_devices/iPad-portrait.svg",
-  "front_end/emulated_devices/iPhone5-landscape.svg",
-  "front_end/emulated_devices/iPhone5-portrait.svg",
-  "front_end/emulated_devices/iPhone6-landscape.svg",
-  "front_end/emulated_devices/iPhone6-portrait.svg",
-  "front_end/emulated_devices/iPhone6Plus-landscape.svg",
-  "front_end/emulated_devices/iPhone6Plus-portrait.svg",
-  "front_end/emulated_devices/MotoG4-landscape.svg",
-  "front_end/emulated_devices/MotoG4-portrait.svg",
-  "front_end/emulated_devices/Nexus5X-landscape.svg",
-  "front_end/emulated_devices/Nexus5X-portrait.svg",
-  "front_end/emulated_devices/Nexus6P-landscape.svg",
-  "front_end/emulated_devices/Nexus6P-portrait.svg",
 ]
 
 application_templates = [
@@ -210,12 +170,12 @@ generated_non_autostart_non_remote_modules = [
   "$resources_out_dir/web_audio/web_audio_module.js",
   "$resources_out_dir/webauthn/webauthn_module.js",
   "$resources_out_dir/workspace_diff/workspace_diff_module.js",
+  "$resources_out_dir/emulated_devices/emulated_devices_module.js",
 ]
 
 generated_remote_modules = [
   "$resources_out_dir/lighthouse_worker/lighthouse_worker_module.js",
   "$resources_out_dir/dagre_layout/dagre_layout_module.js",
-  "$resources_out_dir/emulated_devices/emulated_devices_module.js",
 ]
 
 generated_test_modules = [
@@ -271,7 +231,6 @@ devtools_applications = [
 
 devtools_frontend_resources_deps = [
   ":build_release_devtools",
-  ":copy_emulated_devices_images",
   ":devtools_extension_api",
   "front_end",
   "test",
@@ -295,11 +254,6 @@ group("generate_devtools_inspector_overlay_resources") {
   public_deps = [ "inspector_overlay:build_inspector_overlay" ]
 }
 
-copy("copy_emulated_devices_images") {
-  sources = devtools_emulated_devices_images
-  outputs = [ "$resources_out_dir/emulated_devices/{{source_file_part}}" ]
-}
-
 action("generate_devtools_grd") {
   script = "scripts/build/generate_devtools_grd.py"
 
@@ -311,6 +265,7 @@ action("generate_devtools_grd") {
       generated_non_autostart_non_remote_modules + devtools_embedder_scripts +
       generated_worker_bundles + generated_typescript_entrypoint_sources +
       generated_typescript_modules + generated_devtools_locale_files +
+      generated_emulated_device_images +
       [
         "$resources_out_dir/devtools_extension_api.js",
         "$resources_out_dir/sdk/wasm_source_map/pkg/wasm_source_map_bg.wasm",

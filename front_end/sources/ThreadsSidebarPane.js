@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
@@ -114,14 +111,16 @@ export class ThreadsSidebarPane extends UI.Widget.VBox {
    * @param {?Element} toElement
    */
   selectedItemChanged(from, to, fromElement, toElement) {
-    if (fromElement) {
-      fromElement.tabIndex = -1;
+    const fromEle = /** @type {?HTMLElement} */ (fromElement);
+    if (fromEle) {
+      fromEle.tabIndex = -1;
     }
-    if (toElement) {
-      this.setDefaultFocusedElement(toElement);
-      toElement.tabIndex = 0;
+    const toEle = /** @type {?HTMLElement} */ (toElement);
+    if (toEle) {
+      this.setDefaultFocusedElement(toEle);
+      toEle.tabIndex = 0;
       if (this.hasFocus()) {
-        toElement.focus();
+        toEle.focus();
       }
     }
   }

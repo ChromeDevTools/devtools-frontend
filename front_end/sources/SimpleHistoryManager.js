@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 /**
  * @interface
  */
@@ -39,6 +36,7 @@ export class HistoryEntry {
    * @return {boolean}
    */
   valid() {
+    throw new Error('not implemented');
   }
 
   reveal() {}
@@ -52,6 +50,7 @@ export class SimpleHistoryManager {
    * @param {number} historyDepth
    */
   constructor(historyDepth) {
+    /** @type {!Array<!HistoryEntry>} */
     this._entries = [];
     this._activeEntryIndex = -1;
     this._coalescingReadonly = 0;

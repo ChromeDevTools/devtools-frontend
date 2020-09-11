@@ -392,23 +392,23 @@ function parseLocalizableStringFromNode(parentNode, node, filePath) {
     checkMigratedDirectory(filePath);
   }
 
-  const code = escodegen.generate(node);
   switch (locCase) {
     case 'Common.UIString':
     case 'Platform.UIString':
     case 'Common.UIStringFormat': {
-      checkLocalizability.analyzeCommonUIStringNode(node, filePath, code);
+      checkLocalizability.analyzeCommonUIStringNode(node, filePath, escodegen.generate(node));
       handleCommonUIString(node, filePath);
       break;
     }
     case 'UI.formatLocalized': {
-      checkLocalizability.analyzeCommonUIStringNode(node, filePath, code);
+      checkLocalizability.analyzeCommonUIStringNode(node, filePath, escodegen.generate(node));
       if (node.arguments !== undefined && node.arguments[1] !== undefined && node.arguments[1].elements !== undefined) {
         handleCommonUIString(node, filePath, node.arguments[1].elements);
       }
       break;
     }
     case 'Tagged Template': {
+      const code = escodegen.generate(node);
       checkLocalizability.analyzeTaggedTemplateNode(node, filePath, code);
       handleTemplateLiteral(node.quasi, code, filePath);
       break;

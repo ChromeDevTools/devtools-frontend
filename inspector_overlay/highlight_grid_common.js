@@ -33,7 +33,9 @@
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import {drawGridLabels} from './css_grid_label_helpers.js';
-import {applyMatrixToPoint, buildPath, DEFAULT_RULER_COLOR, emptyBounds} from './highlight_common.js';
+import {applyMatrixToPoint, buildPath, emptyBounds} from './highlight_common.js';
+
+const DEFAULT_EXTENDED_LINE_COLOR = 'rgba(128, 128, 128, 0.3)';
 
 export const gridStyle = `
 /* Grid row and column labels */
@@ -323,7 +325,7 @@ function _drawGridLines(context, highlight, direction) {
 
 function _drawExtendedGridLines(context, bounds, dash, writingModeMatrix) {
   context.save();
-  context.strokeStyle = DEFAULT_RULER_COLOR;
+  context.strokeStyle = DEFAULT_EXTENDED_LINE_COLOR;
   context.lineWidth = 1;
   context.translate(0.5, 0.5);
   if (dash) {

@@ -32,7 +32,7 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
-export const DEFAULT_RULER_COLOR = 'rgba(128, 128, 128, 0.3)';
+const DEFAULT_RULER_COLOR = 'rgba(128, 128, 128, 0.3)';
 
 export function drawRulers(context, bounds, rulerAtRight, rulerAtBottom, color, dash) {
   context.save();

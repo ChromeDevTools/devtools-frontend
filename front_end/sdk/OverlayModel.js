@@ -841,6 +841,7 @@ class DefaultPersistentGridHighlighter {
       rowHatchColor: gapHatch.toProtocolRGBA(),
       columnGapColor: gapBackground.toProtocolRGBA(),
       columnHatchColor: gapHatch.toProtocolRGBA(),
+      gridBorderColor: mainColor.toProtocolRGBA(),
       gridBorderDash: false,
       rowLineColor: mainColor.toProtocolRGBA(),
       columnLineColor: mainColor.toProtocolRGBA(),

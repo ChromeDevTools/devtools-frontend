@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Bindings from '../bindings/bindings.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Snippets from '../snippets/snippets.js';
@@ -81,9 +78,8 @@ export class JavaScriptCompilerPlugin extends Plugin {
         return debuggerModels[i].runtimeModel();
       }
     }
-    return SDK.SDKModel.TargetManager.instance().mainTarget() ?
-        SDK.SDKModel.TargetManager.instance().mainTarget().model(SDK.RuntimeModel.RuntimeModel) :
-        null;
+    const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
+    return mainTarget ? mainTarget.model(SDK.RuntimeModel.RuntimeModel) : null;
   }
 
   async _compile() {

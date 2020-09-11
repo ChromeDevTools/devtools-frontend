@@ -2,10 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -99,7 +97,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
     this._axNodeSubPane.setNode(node);
     this._ariaSubPane.setNode(node);
     this._breadcrumbsSubPane.setNode(node);
-    if (this._sourceOrderViewerExperimentEnabled) {
+    if (this._sourceOrderViewerExperimentEnabled && this._sourceOrderSubPane) {
       this._sourceOrderSubPane.setNodeAsync(node);
     }
     if (!node) {

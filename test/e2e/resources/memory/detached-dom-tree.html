@@ -1,0 +1,12 @@
+<!--
+  Copyright 2020 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<h1>Memory Panel (Heap profiler) Test</h1>
+<script>
+  window.retaining_wrapper = document.createElement('div');
+  var t = document.createElement('div');
+  retaining_wrapper.appendChild(t);
+  t.appendChild(document.createElement('div'));
+</script>

@@ -7,6 +7,7 @@ import("../../../../scripts/build/ninja/copy.gni")
 copy_to_gen("memory") {
   sources = [
     "default.html",
+    "detached-dom-tree.html",
     "detached-node.html",
     "dom-objects.html",
     "event-listeners.html",

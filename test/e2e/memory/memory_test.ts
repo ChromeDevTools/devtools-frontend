@@ -87,4 +87,13 @@ describe('The Memory Panel', async () => {
       return pendingActiviesChildren.length === 2;
     });
   });
+
+  it('Shows the correct number of divs for a detached DOM tree correctly', async () => {
+    await goToResource('memory/detached-dom-tree.html');
+    await navigateToMemoryTab();
+    await takeHeapSnapshot();
+    await waitForNonEmptyHeapSnapshotData();
+    await setSearchFilter('Detached HTMLDivElement');
+    await waitForSearchResultNumber(3);
+  });
 });

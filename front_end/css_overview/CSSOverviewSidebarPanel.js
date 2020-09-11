@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as UI from '../ui/ui.js';
 
 export class CSSOverviewSidebarPanel extends UI.Widget.VBox {
@@ -33,6 +30,11 @@ export class CSSOverviewSidebarPanel extends UI.Widget.VBox {
     toolbar.appendToolbarItem(clearResultsButton);
   }
 
+
+  /**
+   * @param {string} name
+   * @param {string} id
+   */
   addItem(name, id) {
     const item = this.contentElement.createChild('div', CSSOverviewSidebarPanel.ITEM_CLASS_NAME);
     item.textContent = name;
@@ -45,22 +47,29 @@ export class CSSOverviewSidebarPanel extends UI.Widget.VBox {
 
   _deselectAllItems() {
     const items = this.contentElement.querySelectorAll(`.${CSSOverviewSidebarPanel.ITEM_CLASS_NAME}`);
-    for (const item of items) {
+    items.forEach(item => {
       item.classList.remove(CSSOverviewSidebarPanel.SELECTED);
-    }
+    });
   }
 
+  /** @param {!Event} event */
   _onItemClick(event) {
-    const target = event.path[0];
+    const target = /** @type {!HTMLElement} */ (event.composedPath()[0]);
     if (!target.classList.contains(CSSOverviewSidebarPanel.ITEM_CLASS_NAME)) {
       return;
     }
 
     const {id} = target.dataset;
+    if (!id) {
+      return;
+    }
     this.select(id);
     this.dispatchEventToListeners(SidebarEvents.ItemSelected, id);
   }
 
+  /**
+   * @param {string} id
+   */
   select(id) {
     const target = this.contentElement.querySelector(`[data-id=${CSS.escape(id)}]`);
     if (!target) {

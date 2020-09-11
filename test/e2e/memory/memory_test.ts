@@ -46,4 +46,27 @@ describe('The Memory Panel', async () => {
       'Window /',
     ]);
   });
+
+  it('Correctly retains the path for event listeners', async () => {
+    await goToResource('memory/event-listeners.html');
+    await navigateToMemoryTab();
+    await takeHeapSnapshot();
+    await waitForNonEmptyHeapSnapshotData();
+    await setSearchFilter('myEventListener');
+    await waitForSearchResultNumber(4);
+    await findSearchResult(async p => {
+      const el = await p.$(':scope > td > div > .object-value-function');
+      return !!el && await el.evaluate(el => el.textContent === 'myEventListener()');
+    });
+    await waitForRetainerChain([
+      'V8EventListener',
+      'EventListener',
+      'InternalNode',
+      'InternalNode',
+      'HTMLBodyElement',
+      'HTMLHtmlElement',
+      'HTMLDocument',
+      'Window /',
+    ]);
+  });
 });

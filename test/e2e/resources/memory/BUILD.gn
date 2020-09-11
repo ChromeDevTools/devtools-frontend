@@ -8,5 +8,6 @@ copy_to_gen("memory") {
   sources = [
     "default.html",
     "detached-node.html",
+    "event-listeners.html",
   ]
 }

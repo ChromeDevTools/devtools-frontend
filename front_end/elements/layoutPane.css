@@ -57,6 +57,7 @@
 
 .checkbox-label .color-swatch {
   margin: 0 0 0 8px;
+  flex: none;
 }
 
 .checkbox-label > span {

@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as UI from '../ui/ui.js';                       // eslint-disable-line no-unused-vars
 import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
 
@@ -43,7 +40,7 @@ export class Plugin {
   /**
    * @param {!UI.ContextMenu.ContextMenu} contextMenu
    * @param {number} lineNumber
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   populateLineGutterContextMenu(contextMenu, lineNumber) {
     return Promise.resolve();
@@ -53,7 +50,7 @@ export class Plugin {
    * @param {!UI.ContextMenu.ContextMenu} contextMenu
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   populateTextAreaContextMenu(contextMenu, lineNumber, columnNumber) {
     return Promise.resolve();

@@ -12,7 +12,7 @@ import("./scripts/build/ninja/vars.gni")
 
 devtools_test_files = [
   "//third_party/axe-core/axe.js",
-  "front_end/accessibility_test_runner/AccessibilityPaneTestRunner.js",
+  "front_end/accessibility_test_runner/accessibility_test_runner.js",
   "front_end/accessibility_test_runner/module.json",
   "front_end/application_test_runner/AppcacheTestRunner.js",
   "front_end/application_test_runner/CacheStorageTestRunner.js",
@@ -396,7 +396,10 @@ action("build_release_devtools") {
     "front_end/rollup.config.js",
   ]
 
-  deps = [ "front_end" ]
+  deps = [
+    "front_end",
+    "front_end:legacy_test-resources",
+  ]
 
   inputs = helper_scripts + all_devtools_files + devtools_test_files +
            application_templates + all_worker_entrypoints +

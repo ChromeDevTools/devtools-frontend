@@ -6,7 +6,7 @@ import("./scripts/build/ninja/vars.gni")
 
 all_devtools_files = [
   "front_end/shell.js",
-  "front_end/accessibility_test_runner/AccessibilityPaneTestRunner.js",
+  "front_end/accessibility_test_runner/accessibility_test_runner.js",
   "front_end/accessibility_test_runner/module.json",
   "front_end/accessibility/accessibilityNode.css",
   "front_end/accessibility/accessibilityProperties.css",

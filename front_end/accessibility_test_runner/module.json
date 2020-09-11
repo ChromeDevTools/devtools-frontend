@@ -4,10 +4,10 @@
     "accessibility",
     "elements_test_runner"
   ],
-  "scripts": [
-    "AccessibilityPaneTestRunner.js"
+  "modules": [
+    "accessibility_test_runner.js"
   ],
   "skip_compilation": [
-    "AccessibilityPaneTestRunner.js"
+    "accessibility_test_runner.js"
   ]
 }

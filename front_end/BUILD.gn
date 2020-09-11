@@ -101,6 +101,10 @@ group("front_end") {
   ]
 }
 
+group("legacy_test-resources") {
+  public_deps = [ "accessibility_test_runner:bundle" ]
+}
+
 group("legacy_css") {
   public_deps = [
     "cm:legacy_css",

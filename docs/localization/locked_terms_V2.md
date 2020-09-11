@@ -4,6 +4,8 @@ For example, if the `robots.txt` in string `Requesting for robots.txt ...` shoul
 
 ```javascript
 // in example.js file
+
+import * as i18n from '../i18n/i18n.js';
 const UIStrings = {
   /**
    * @description Example description. Note: "robots.txt" is a canonical filename and should not be translated.
@@ -11,9 +13,9 @@ const UIStrings = {
    */
   requestMessage: 'Requesting for {PH1} ...',
 };
-const str_ = Common.i18n.registerUIStrings('example.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('example.js', UIStrings);
 
-const message = Common.i18n.getLocalizedString(str_, UIStrings.requestMessage, {PH1: 'robots.txt'});
+const message = i18n.i18n.getLocalizedString(str_, UIStrings.requestMessage, {PH1: 'robots.txt'});
 ```
 
 ## What should not be localized?

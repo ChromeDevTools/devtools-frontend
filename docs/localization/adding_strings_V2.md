@@ -10,8 +10,9 @@ Before proceeding, make sure you know the different [localization APIs](localiza
 
 Code example:
   ```javascript
-  // at the top of example.js file, after import statements
+  import * as i18n from '../i18n/i18n.js';
 
+  // at the top of example.js file, after import statements
   const UIStrings = {
     /**
       * @description A string that is already added
@@ -27,20 +28,20 @@ Code example:
       */
     addAnotherString: 'Another new string I want to add, with {PH1}',
   };
-  const str_ = Common.i18n.registerUIStrings('example.js', UIStrings);
+  const str_ = i18n.i18n.registerUIStrings('example.js', UIStrings);
   ```
 
   ```javascript
   // in example.js file, where you want to call the string
 
-  const message1 = Common.i18n.getLocalizedString(str_, UIStrings.addThisString);
+  const message1 = i18n.i18n.getLocalizedString(str_, UIStrings.addThisString);
   console.log(message1); // The new string I want to add
 
-  const message2 = Common.i18n.getLocalizedString(str_, UIStrings.addAnotherString, {PH1: 'a placeholder'});
+  const message2 = i18n.i18n.getLocalizedString(str_, UIStrings.addAnotherString, {PH1: 'a placeholder'});
   console.log(message2); // Another new string I want to add, with a placeholder
   ```
 1. If there is already `UIStrings = {}` declared in the file, add your string to it.
-  If there isn't `UIStrings = {}` in the file, create one and add your string, also add the line `const str_ = Common.i18n.registerUIStrings({the current fileName.js, relative to front_end}, UIStrings);` so the new UIStrings can be registered into `en-US.json`.
+  If there isn't `UIStrings = {}` in the file, create one and add your string, also add the line `const str_ = i18n.i18n.registerUIStrings({the current fileName.js, relative to front_end}, UIStrings);` so the new UIStrings can be registered into `en-US.json`.
 
 
 2. Add description and examples for placeholder(if any):

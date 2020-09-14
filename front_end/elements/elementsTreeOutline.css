@@ -133,10 +133,11 @@
 
 .elements-disclosure ol.children {
   display: none;
+  min-width: 100%;
 }
 
 .elements-disclosure ol.children.expanded {
-  display: block;
+  display: inline-block;
 }
 
 .elements-disclosure > ol {

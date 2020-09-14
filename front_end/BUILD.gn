@@ -119,6 +119,7 @@ group("legacy_test-resources") {
     "layers_test_runner:bundle",
     "lighthouse_test_runner:bundle",
     "network_test_runner:bundle",
+    "performance_test_runner:bundle",
   ]
 }
 

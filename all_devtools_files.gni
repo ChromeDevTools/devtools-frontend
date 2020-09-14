@@ -222,6 +222,7 @@ all_devtools_files = [
   "front_end/perf_ui/timelineOverviewInfo.css",
   "front_end/performance_monitor/module.json",
   "front_end/performance_monitor/performanceMonitor.css",
+  "front_end/performance_test_runner/performance_test_runner.js",
   "front_end/performance_test_runner/module.json",
   "front_end/performance_test_runner/TimelineDataTestRunner.js",
   "front_end/performance_test_runner/TimelineTestRunner.js",

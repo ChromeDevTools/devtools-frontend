@@ -4,7 +4,8 @@
     "timeline_model",
     "timeline"
   ],
-  "scripts": [
+  "modules": [
+    "performance_test_runner.js",
     "TimelineTestRunner.js",
     "TimelineDataTestRunner.js"
   ],

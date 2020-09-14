@@ -107,6 +107,7 @@ group("legacy_test-resources") {
     "accessibility_test_runner:bundle",
     "application_test_runner:bundle",
     "axe_core_test_runner:bundle",
+    "bindings_test_runner:bundle",
   ]
 }
 

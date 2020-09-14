@@ -171,7 +171,7 @@ all_devtools_files = [
   "front_end/layer_viewer/layers3DView.css",
   "front_end/layer_viewer/module.json",
   "front_end/layer_viewer/paintProfiler.css",
-  "front_end/layers_test_runner/LayersTestRunner.js",
+  "front_end/layers_test_runner/layers_test_runner.js",
   "front_end/layers_test_runner/module.json",
   "front_end/layers/module.json",
   "front_end/main/module.json",

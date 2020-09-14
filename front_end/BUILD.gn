@@ -113,6 +113,7 @@ group("legacy_test-resources") {
     "cpu_profiler_test_runner:bundle",
     "data_grid_test_runner:bundle",
     "device_mode_test_runner:bundle",
+    "elements_test_runner:bundle",
   ]
 }
 

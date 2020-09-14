@@ -99,6 +99,7 @@ all_devtools_files = [
   "front_end/devices/module.json",
   "front_end/diff/module.json",
   "front_end/dom_extension/module.json",
+  "front_end/elements_test_runner/elements_test_runner.js",
   "front_end/elements_test_runner/EditDOMTestRunner.js",
   "front_end/elements_test_runner/ElementsPanelShadowSelectionOnRefreshTestRunner.js",
   "front_end/elements_test_runner/ElementsTestRunner.js",

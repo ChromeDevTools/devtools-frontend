@@ -44,6 +44,7 @@ devtools_test_files = [
   "front_end/data_grid_test_runner/module.json",
   "front_end/device_mode_test_runner/device_mode_test_runner.js",
   "front_end/device_mode_test_runner/module.json",
+  "front_end/elements_test_runner/elements_test_runner.js",
   "front_end/elements_test_runner/EditDOMTestRunner.js",
   "front_end/elements_test_runner/ElementsPanelShadowSelectionOnRefreshTestRunner.js",
   "front_end/elements_test_runner/ElementsTestRunner.js",

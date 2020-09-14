@@ -5,7 +5,8 @@
     "event_listeners",
     "animation"
   ],
-  "scripts": [
+  "modules": [
+    "elements_test_runner.js",
     "ElementsTestRunner.js",
     "EditDOMTestRunner.js",
     "SetOuterHTMLTestRunner.js",
@@ -13,6 +14,7 @@
     "StylesUpdateLinksTestRunner.js"
   ],
   "skip_compilation": [
+    "elements_test_runner.js",
     "ElementsTestRunner.js",
     "EditDOMTestRunner.js",
     "SetOuterHTMLTestRunner.js",

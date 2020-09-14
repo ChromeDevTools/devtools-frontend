@@ -37,6 +37,8 @@ The `it.repeat` helper is useful for reproducing a flaky test failure. e.g.
 it.repeat(20, 'find element', async () => {...});
 ```
 
+`it.repeat` behaves like `it.only` in that it will cause just that single test to be run.
+
 ## General implementation details
 
 To that end, the "what" from the "how" are separate in end-to-end tests.

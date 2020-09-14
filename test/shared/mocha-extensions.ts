@@ -49,7 +49,7 @@ it.only = function(name: string, callback: Mocha.Func|Mocha.AsyncFunc) {
 
 it.repeat = function(repeat: number, name: string, callback: Mocha.Func|Mocha.AsyncFunc) {
   for (let i = 0; i < repeat; i++) {
-    wrapMochaCall(Mocha.it, name, callback);
+    wrapMochaCall(Mocha.it.only, name, callback);
   }
 };
 

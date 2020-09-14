@@ -117,6 +117,7 @@ group("legacy_test-resources") {
     "extensions_test_runner:bundle",
     "heap_profiler_test_runner:bundle",
     "layers_test_runner:bundle",
+    "lighthouse_test_runner:bundle",
   ]
 }
 

@@ -1749,14 +1749,6 @@ export class DOMModel extends SDKModel {
   }
 
   /**
-   * @param {!Protocol.DOM.NodeId} nodeId
-   * @return {!Promise<void>}
-   */
-  async scrollIntoViewIfNeeded(nodeId) {
-    await this._agent.invoke_scrollIntoViewIfNeeded({nodeId});
-  }
-
-  /**
    * @param {boolean=} minorChange
    */
   markUndoableState(minorChange) {

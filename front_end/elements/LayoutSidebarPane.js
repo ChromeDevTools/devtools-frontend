@@ -28,7 +28,7 @@ const gridNodesToElements = nodes => {
       enabled: node.domModel().overlayModel().isHighlightedGridInPersistentOverlay(node.id),
       reveal: () => {
         ElementsPanel.instance().revealAndSelectNode(node, true, true);
-        node.domModel().scrollIntoViewIfNeeded(node.id);
+        node.scrollIntoView();
       },
       toggle: value => {
         if (value) {

@@ -8,13 +8,15 @@
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
+import * as ThemeSupport from '../theme_support/theme_support.js';
 import * as UI from '../ui/ui.js';
 
 import {PlayerEvent} from './MediaModel.js';  // eslint-disable-line no-unused-vars
 import {Bounds, FormatMillisecondsToSeconds} from './TickingFlameChartHelpers.js';
 
 const defaultFont = '11px ' + Host.Platform.fontFamily();
-const defaultColor = '#444';
+const defaultColor =
+    ThemeSupport.ThemeSupport.instance().patchColorText('#444', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
 
 const DefaultStyle = {
   height: 20,

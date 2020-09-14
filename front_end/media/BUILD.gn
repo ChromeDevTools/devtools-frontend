@@ -25,6 +25,7 @@ devtools_module("media") {
     "../host:bundle",
     "../perf_ui:bundle",
     "../sdk:bundle",
+    "../theme_support:bundle",
     "../ui:bundle",
   ]
 }

@@ -81,7 +81,7 @@ all_devtools_files = [
   "front_end/coverage/coverageView.css",
   "front_end/coverage/module.json",
   "front_end/cpu_profiler_test_runner/module.json",
-  "front_end/cpu_profiler_test_runner/ProfilerTestRunner.js",
+  "front_end/cpu_profiler_test_runner/cpu_profiler_test_runner.js",
   "front_end/css_overview/cssOverview.css",
   "front_end/css_overview/cssOverviewCompletedView.css",
   "front_end/css_overview/cssOverviewProcessingView.css",

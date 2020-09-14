@@ -60,7 +60,6 @@ CPUProfilerTestRunner.waitUntilProfileViewIsShown = function(title, callback) {
   } else {
     CPUProfilerTestRunner._waitUntilProfileViewIsShownCallback = {title: title, callback: callback};
   }
-
 };
 
 CPUProfilerTestRunner._profileViewRefresh = function() {

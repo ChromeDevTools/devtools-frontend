@@ -168,8 +168,8 @@ function getLabelColors(config) {
   return {
     rowBackground: rowBackground.asString(),
     columnBackground: columnBackground.asString(),
-    rowText: rowContrastForBlack > rowContrastForWhite ? 'black' : 'white',
-    columnText: columnContrastForBlack > columnContrastForWhite ? 'black' : 'white'
+    rowText: rowContrastForBlack > rowContrastForWhite ? '#121212' : 'white',
+    columnText: columnContrastForBlack > columnContrastForWhite ? '#121212' : 'white'
   };
 }
 

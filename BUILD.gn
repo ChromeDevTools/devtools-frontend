@@ -36,7 +36,7 @@ devtools_test_files = [
   "front_end/bindings_test_runner/PersistenceTestRunner.js",
   "front_end/console_test_runner/console_test_runner.js",
   "front_end/console_test_runner/module.json",
-  "front_end/coverage_test_runner/CoverageTestRunner.js",
+  "front_end/coverage_test_runner/coverage_test_runner.js",
   "front_end/coverage_test_runner/module.json",
   "front_end/cpu_profiler_test_runner/module.json",
   "front_end/cpu_profiler_test_runner/ProfilerTestRunner.js",

@@ -75,7 +75,7 @@ all_devtools_files = [
   "front_end/console/module.json",
   "front_end/cookie_table/cookiesTable.css",
   "front_end/cookie_table/module.json",
-  "front_end/coverage_test_runner/CoverageTestRunner.js",
+  "front_end/coverage_test_runner/coverage_test_runner.js",
   "front_end/coverage_test_runner/module.json",
   "front_end/coverage/coverageListView.css",
   "front_end/coverage/coverageView.css",

@@ -40,7 +40,7 @@ devtools_test_files = [
   "front_end/coverage_test_runner/module.json",
   "front_end/cpu_profiler_test_runner/module.json",
   "front_end/cpu_profiler_test_runner/cpu_profiler_test_runner.js",
-  "front_end/data_grid_test_runner/DataGridTestRunner.js",
+  "front_end/data_grid_test_runner/data_grid_test_runner.js",
   "front_end/data_grid_test_runner/module.json",
   "front_end/device_mode_test_runner/DeviceModeTestRunner.js",
   "front_end/device_mode_test_runner/module.json",

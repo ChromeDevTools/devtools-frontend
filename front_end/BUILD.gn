@@ -111,6 +111,7 @@ group("legacy_test-resources") {
     "console_test_runner:bundle",
     "coverage_test_runner:bundle",
     "cpu_profiler_test_runner:bundle",
+    "data_grid_test_runner:bundle",
   ]
 }
 

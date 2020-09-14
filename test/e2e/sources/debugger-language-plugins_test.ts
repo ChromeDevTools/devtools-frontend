@@ -373,7 +373,8 @@ describe('The Debugger Language Plugins', async () => {
     assert.deepEqual(locals, ['local: int', 'value: 23']);
   });
 
-  it('shows variable value in popover', async () => {
+  // Flaky test
+  it.skip('[crbug.com/1127785]: shows variable value in popover', async () => {
     const {frontend} = getBrowserAndPages();
     await frontend.evaluateHandle(
         () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {

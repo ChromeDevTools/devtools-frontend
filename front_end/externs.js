@@ -1440,7 +1440,10 @@ InspectorFrontendHostAPI.LoadNetworkResourceResult;
 
 /**
  * Enum for recordEnumeratedHistogram
- * Warning: There are three definitions of this enum in the DevTools code base, keep them in sync.
+ * Warning: There are two other definitions of this enum in the DevTools code
+ * base, keep them in sync:
+ * front_end/devtools_compatibility.js
+ * front_end/host/InspectorFrontendHostAPI.js
  * @readonly
  * @enum {string}
  */
@@ -1462,6 +1465,7 @@ InspectorFrontendHostAPI.EnumeratedHistogram = {
   ExperimentEnabled: 'DevTools.ExperimentEnabled',
   ExperimentDisabled: 'DevTools.ExperimentDisabled',
   ComputedStyleGrouping: 'DevTools.ComputedStyleGrouping',
+  GridOverlayOpenedFrom: 'DevTools.GridOverlayOpenedFrom',
 };
 
 /**

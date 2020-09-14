@@ -345,12 +345,14 @@ export class OverlayModel extends SDKModel {
 
   /**
    * @param {number} nodeId
+   * @param {!Host.UserMetrics.GridOverlayOpener} gridOverlayOpener
    */
-  highlightGridInPersistentOverlay(nodeId) {
+  highlightGridInPersistentOverlay(nodeId, gridOverlayOpener) {
     if (!this._persistentGridHighlighter) {
       return;
     }
     this._persistentGridHighlighter.highlightInOverlay(nodeId);
+    Host.userMetrics.gridOverlayOpenedFrom(gridOverlayOpener);
     this.dispatchEventToListeners(Events.PersistentGridOverlayStateChanged, {nodeId, enabled: true});
   }
 

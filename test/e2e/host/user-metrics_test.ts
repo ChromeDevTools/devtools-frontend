@@ -8,7 +8,7 @@ import * as puppeteer from 'puppeteer';
 import {$, click, enableExperiment, getBrowserAndPages, goToResource, platform, reloadDevTools, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToCssOverviewTab} from '../helpers/css-overview-helpers.js';
-import {navigateToSidePane, toggleGroupComputedProperties} from '../helpers/elements-helpers.js';
+import {expandSelectedNodeRecursively, INACTIVE_GRID_ADORNER_SELECTOR, navigateToSidePane, openLayoutPane, toggleElementCheckboxInLayoutPane, toggleGroupComputedProperties, waitForContentOfSelectedElementsNode, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
 import {clickToggleButton, selectDualScreen, startEmulationWithDualScreenFlag} from '../helpers/emulation-helpers.js';
 import {closeSecurityTab, navigateToSecurityTab} from '../helpers/security-helpers.js';
 import {openPanelViaMoreTools, openSettingsTab} from '../helpers/settings-helpers.js';
@@ -47,6 +47,7 @@ declare global {
     __computedStyleGrouping: (evt: Event) => void;
     __issuesPanelIssueExpanded: (evt: Event) => void;
     __issuesPanelResourceOpened: (evt: Event) => void;
+    __gridOverlayOpenedFrom: (evt: Event) => void;
     Host: {
       UserMetrics: UserMetrics; userMetrics: {actionTaken(name: number): void; colorFixed(threshold: string): void;}
     };
@@ -130,6 +131,11 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.__caughtEvents.push({name: 'DevTools.IssuesPanelResourceOpened', value: customEvt.detail.value});
     };
 
+    window.__gridOverlayOpenedFrom = (evt: Event) => {
+      const customEvt = evt as CustomEvent;
+      window.__caughtEvents.push({name: 'DevTools.GridOverlayOpenedFrom', value: customEvt.detail.value});
+    };
+
     window.__caughtEvents = [];
     window.__beginCatchEvents = () => {
       window.addEventListener('DevTools.PanelShown', window.__panelShown);
@@ -147,6 +153,7 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.addEventListener('DevTools.ComputedStyleGrouping', window.__computedStyleGrouping);
       window.addEventListener('DevTools.IssuesPanelIssueExpanded', window.__issuesPanelIssueExpanded);
       window.addEventListener('DevTools.IssuesPanelResourceOpened', window.__issuesPanelResourceOpened);
+      window.addEventListener('DevTools.GridOverlayOpenedFrom', window.__gridOverlayOpenedFrom);
     };
 
     window.__endCatchEvents = () => {
@@ -165,6 +172,7 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.removeEventListener('DevTools.ComputedStyleGrouping', window.__computedStyleGrouping);
       window.removeEventListener('DevTools.IssuesPanelIssueExpanded', window.__issuesPanelIssueExpanded);
       window.removeEventListener('DevTools.IssuesPanelResourceOpened', window.__issuesPanelResourceOpened);
+      window.removeEventListener('DevTools.GridOverlayOpenedFrom', window.__gridOverlayOpenedFrom);
     };
 
     window.__beginCatchEvents();
@@ -621,7 +629,6 @@ describe('User Metrics for Computed Styles grouping', () => {
   });
 });
 
-
 describe('User Metrics for Issue Panel', () => {
   beforeEach(async () => {
     await openPanelViaMoreTools('Issues');
@@ -639,6 +646,48 @@ describe('User Metrics for Issue Panel', () => {
       {
         name: 'DevTools.IssuesPanelIssueExpanded',
         value: 2,  // SameSiteCookie
+      },
+    ]);
+  });
+
+  afterEach(async () => {
+    const {frontend} = getBrowserAndPages();
+    await endCatchEvents(frontend);
+  });
+});
+
+describe('User Metrics for Grid Overlay', () => {
+  beforeEach(async () => {
+    await goToResource('elements/adornment.html');
+    await enableExperiment('cssGridFeatures');
+
+    const {frontend} = getBrowserAndPages();
+    await beginCatchEvents(frontend);
+
+    await waitForElementsStyleSection();
+    await waitForContentOfSelectedElementsNode('<body>\u200B');
+    await expandSelectedNodeRecursively();
+  });
+
+  it('dispatch events when opening Grid overlay from adorner', async () => {
+    await click(INACTIVE_GRID_ADORNER_SELECTOR);
+
+    await assertEventsHaveBeenFired([
+      {
+        name: 'DevTools.GridOverlayOpenedFrom',
+        value: 0,  // adorner
+      },
+    ]);
+  });
+
+  it('dispatch events when opening Grid overlay from Layout pane', async () => {
+    await openLayoutPane();
+    await toggleElementCheckboxInLayoutPane();
+
+    await assertEventsHaveBeenFired([
+      {
+        name: 'DevTools.GridOverlayOpenedFrom',
+        value: 1,  // layout pane
       },
     ]);
   });

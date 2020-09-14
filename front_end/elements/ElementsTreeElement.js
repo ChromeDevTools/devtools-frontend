@@ -1970,7 +1970,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       gridAdorner.classList.add('grid');
       const onClick = /** @type {!EventListener} */ (() => {
         if (gridAdorner.isActive()) {
-          node.domModel().overlayModel().highlightGridInPersistentOverlay(nodeId);
+          node.domModel().overlayModel().highlightGridInPersistentOverlay(
+              nodeId, Host.UserMetrics.GridOverlayOpener.Adorner);
         } else {
           node.domModel().overlayModel().hideGridInPersistentOverlay(nodeId);
         }

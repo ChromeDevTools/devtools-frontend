@@ -301,6 +301,16 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.ComputedStyleGrouping, code, size);
     Common.EventTarget.fireEvent(EnumeratedHistogram.ComputedStyleGrouping, {value: code});
   }
+
+  /**
+   * @param {!GridOverlayOpener} gridOverlayOpener
+   */
+  gridOverlayOpenedFrom(gridOverlayOpener) {
+    const size = Object.keys(GridOverlayOpener).length + 1;
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.GridOverlayOpenedFrom, gridOverlayOpener, size);
+    Common.EventTarget.fireEvent(EnumeratedHistogram.GridOverlayOpenedFrom, {value: gridOverlayOpener});
+  }
 }
 
 // Codes below are used to collect UMA histograms in the Chromium port.
@@ -636,4 +646,10 @@ export const IssueResourceOpened = {
   HeavyAdElement: 5,
   ContentSecurityPolicyDirective: 6,
   ContentSecurityPolicyElement: 7
+};
+
+/** @enum {number} */
+export const GridOverlayOpener = {
+  Adorner: 0,
+  LayoutPane: 1,
 };

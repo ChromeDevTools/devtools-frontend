@@ -627,7 +627,6 @@ export class Module {
     }
 
     this._pendingLoadPromise = Promise.all(dependencyPromises)
-                                   .then(this._loadResources.bind(this))
                                    .then(this._loadModules.bind(this))
                                    .then(this._loadScripts.bind(this))
                                    .then(() => {
@@ -636,24 +635,6 @@ export class Module {
                                    });
 
     return this._pendingLoadPromise;
-  }
-
-  /**
-   * @return {!Promise.<void>}
-   * @this {Module}
-   */
-  async _loadResources() {
-    const resources = this._descriptor['resources'];
-    if (!resources || !resources.length) {
-      return Promise.resolve();
-    }
-    const promises = [];
-    for (const resource of resources) {
-      const url = this._modularizeURL(resource);
-      const shouldAppendSourceURL = !(url.endsWith('.html') || url.endsWith('.md'));
-      promises.push(loadResourceIntoCache(url, shouldAppendSourceURL));
-    }
-    return Promise.all(promises).then(undefined);
   }
 
   async _loadModules() {
@@ -1172,28 +1153,6 @@ function loadResourcePromiseWithFallback(url) {
     }
     return loadResourcePromise(urlWithFallbackVersion);
   });
-}
-
-/**
- * @param {string} url
- * @param {boolean} appendSourceURL
- * @return {!Promise<void>}
- */
-function loadResourceIntoCache(url, appendSourceURL) {
-  return loadResourcePromise(url).then(cacheResource.bind(null, url), cacheResource.bind(null, url, undefined));
-
-  /**
-   * @param {string} path
-   * @param {string=} content
-   */
-  function cacheResource(path, content) {
-    if (!content) {
-      console.error('Failed to load resource: ' + path);
-      return;
-    }
-    const sourceURL = appendSourceURL ? Runtime.resolveSourceURL(path) : '';
-    cachedResources.set(path, content + sourceURL);
-  }
 }
 
 /**

@@ -305,8 +305,8 @@ ConsoleTestRunner.simpleFormatter = function(element, message) {
  * @param {boolean=} dumpClassNames
  * @param {!ConsoleTestRunner.Formatter=} messageFormatter
  */
-ConsoleTestRunner.dumpConsoleMessagesIgnoreErrorStackFrames = async function(
-    printOriginatingCommand, dumpClassNames, messageFormatter) {
+ConsoleTestRunner.dumpConsoleMessagesIgnoreErrorStackFrames =
+    async function(printOriginatingCommand, dumpClassNames, messageFormatter) {
   TestRunner.addResults(await ConsoleTestRunner.dumpConsoleMessagesIntoArray(
       printOriginatingCommand, dumpClassNames,
       ConsoleTestRunner.formatterIgnoreStackFrameUrls.bind(this, messageFormatter)));

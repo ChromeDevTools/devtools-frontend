@@ -65,7 +65,7 @@ all_devtools_files = [
   "front_end/components/module.json",
   "front_end/console_counters/errorWarningCounter.css",
   "front_end/console_counters/module.json",
-  "front_end/console_test_runner/ConsoleTestRunner.js",
+  "front_end/console_test_runner/console_test_runner.js",
   "front_end/console_test_runner/module.json",
   "front_end/console/consoleContextSelector.css",
   "front_end/console/consolePinPane.css",

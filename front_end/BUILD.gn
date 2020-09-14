@@ -108,6 +108,7 @@ group("legacy_test-resources") {
     "application_test_runner:bundle",
     "axe_core_test_runner:bundle",
     "bindings_test_runner:bundle",
+    "console_test_runner:bundle",
   ]
 }
 

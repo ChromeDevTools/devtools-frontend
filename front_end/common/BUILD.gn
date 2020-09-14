@@ -13,6 +13,7 @@ devtools_module("common") {
     "Color.js",
     "ColorUtils.js",
     "Console.js",
+    "Debouncer.js",
     "EventTarget.js",
     "JavaScriptMetaData.js",
     "Lazy.js",

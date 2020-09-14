@@ -766,7 +766,7 @@ class DefaultPersistentGridHighlighter {
     this._logCurrentGridSettings();
 
     // Debounce recording highlighted grids in order to avoid counting rapidly turning grids on and off.
-    this._recordHighlightedGridCount = debounce(this._doRecordHighlightedGridCount.bind(this), 1000);
+    this._recordHighlightedGridCount = Common.Debouncer.debounce(this._doRecordHighlightedGridCount.bind(this), 1000);
     /** @type {!Array<number>} */
     this._previouslyRecordedGridCountNodeIds = [];
   }
@@ -1006,22 +1006,6 @@ SDKModel.register(OverlayModel, Capability.DOM, true);
 /** @typedef {!{node: !DOMNode, selectorList: (string|undefined)} | !{deferredNode: DeferredDOMNode, selectorList: (string|undefined)} | !{object: !RemoteObject, selectorList: (string|undefined)} | !{clear: *}} */
 // @ts-ignore typedef
 export let HighlightData;
-
-/**
- * Debounce utility function, ensures that the function passed in is only called once the function stops being called and the delay has expired.
- * @param {!Function} func The function to debounce
- * @param {number} delay The time to wait before calling the function
- * @return {!Function} The debounced function
- */
-const debounce = function(func, delay) {
-  let timer = 0;
-  const debounced = () => {
-    clearTimeout(timer);
-    // @ts-ignore typedef
-    timer = setTimeout(() => func(), delay);
-  };
-  return debounced;
-};
 
 /**
  * Checks if 2 arrays are equal.

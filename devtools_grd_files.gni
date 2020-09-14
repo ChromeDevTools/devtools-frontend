@@ -401,6 +401,7 @@ grd_files_debug_sources = [
   "front_end/common/Color.js",
   "front_end/common/ColorUtils.js",
   "front_end/common/Console.js",
+  "front_end/common/Debouncer.js",
   "front_end/common/EventTarget.js",
   "front_end/common/JavaScriptMetaData.js",
   "front_end/common/Lazy.js",

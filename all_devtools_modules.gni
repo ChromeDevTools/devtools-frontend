@@ -61,6 +61,7 @@ all_typescript_module_sources = [
   "common/Color.js",
   "common/ColorUtils.js",
   "common/Console.js",
+  "common/Debouncer.js",
   "common/EventTarget.js",
   "common/JavaScriptMetaData.js",
   "common/Lazy.js",

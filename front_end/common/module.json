@@ -13,6 +13,7 @@
     "Color.js",
     "ColorUtils.js",
     "Console.js",
+    "Debouncer.js",
     "ParsedURL.js",
     "Progress.js",
     "ResourceType.js",

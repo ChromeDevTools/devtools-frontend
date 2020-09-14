@@ -10,6 +10,7 @@ import * as CharacterIdMap from './CharacterIdMap.js';
 import * as Color from './Color.js';
 import * as ColorUtils from './ColorUtils.js';
 import * as Console from './Console.js';
+import * as Debouncer from './Debouncer.js';
 import * as EventTarget from './EventTarget.js';
 import * as JavaScriptMetaData from './JavaScriptMetaData.js';
 import * as Lazy from './Lazy.js';
@@ -52,6 +53,7 @@ export {
   Color,
   ColorUtils,
   Console,
+  Debouncer,
   EventTarget,
   JavaScriptMetaData,
   Lazy,

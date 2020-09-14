@@ -396,17 +396,28 @@ def _CheckComponentBridgesUpToDate(input_api, output_api):
     return results
 
 
+def _RunCannedChecks(input_api, output_api):
+    results = []
+    results.extend(
+        input_api.canned_checks.CheckOwnersFormat(input_api, output_api))
+    results.extend(input_api.canned_checks.CheckOwners(input_api, output_api))
+    results.extend(
+        input_api.canned_checks.CheckChangeHasNoCrAndHasOnlyOneEol(
+            input_api, output_api))
+    results.extend(
+        input_api.canned_checks.CheckChangeHasNoStrayWhitespace(
+            input_api, output_api))
+    results.extend(
+        input_api.canned_checks.CheckGenderNeutral(input_api, output_api))
+    return results
+
+
 def _CommonChecks(input_api, output_api):
     """Checks common to both upload and commit."""
     results = []
     results.extend(
         input_api.canned_checks.CheckAuthorizedAuthor(
             input_api, output_api, bot_allowlist=[AUTOROLL_ACCOUNT]))
-    results.extend(input_api.canned_checks.CheckOwnersFormat(input_api, output_api))
-    results.extend(input_api.canned_checks.CheckOwners(input_api, output_api))
-    results.extend(input_api.canned_checks.CheckChangeHasNoCrAndHasOnlyOneEol(input_api, output_api))
-    results.extend(input_api.canned_checks.CheckChangeHasNoStrayWhitespace(input_api, output_api))
-    results.extend(input_api.canned_checks.CheckGenderNeutral(input_api, output_api))
     results.extend(_CheckBuildGN(input_api, output_api))
     results.extend(_CheckExperimentTelemetry(input_api, output_api))
     results.extend(_CheckGeneratedFiles(input_api, output_api))
@@ -417,6 +428,16 @@ def _CommonChecks(input_api, output_api):
     results.extend(_CheckOptimizeSVGHashes(input_api, output_api))
     results.extend(_CheckChangesAreExclusiveToDirectory(input_api, output_api))
     results.extend(_CheckComponentBridgesUpToDate(input_api, output_api))
+    # Run the canned checks from `depot_tools` after the custom DevTools checks.
+    # The canned checks for example check that lines have line endings. The
+    # DevTools presubmit checks automatically fix these issues. If we would run
+    # the canned checks before the DevTools checks, they would erroneously conclude
+    # that there are issues in the code. Since the canned checks are allowed to be
+    # ignored, a confusing message is shown that asks if the failed presubmit can
+    # be continued regardless. By fixing the issues before we reach the canned checks,
+    # we don't show the message to suppress these errors, which would otherwise be
+    # causing CQ to fail.
+    results.extend(_RunCannedChecks(input_api, output_api))
     results.extend(_CheckNoUncheckedFiles(input_api, output_api))
     results.extend(_CheckForTooLargeFiles(input_api, output_api))
     return results

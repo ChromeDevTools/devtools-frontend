@@ -64,36 +64,17 @@ export async function startApplication(appName) {
     allDescriptorsByName[d['name']] = d;
   }
 
-  if (!Root.applicationDescriptor) {
-    let data = await RootModule.Runtime.loadResourcePromise(appName + '.json');
-    Root.applicationDescriptor = JSON.parse(data);
-    let descriptor = Root.applicationDescriptor;
-    while (descriptor.extends) {
-      data = await RootModule.Runtime.loadResourcePromise(descriptor.extends + '.json');
-      descriptor = JSON.parse(data);
-      Root.applicationDescriptor.modules = descriptor.modules.concat(Root.applicationDescriptor.modules);
-    }
-  }
-
   const configuration = Root.applicationDescriptor.modules;
-  const moduleJSONPromises = [];
+  const moduleDescriptors = [];
   const coreModuleNames = [];
   for (let i = 0; i < configuration.length; ++i) {
     const descriptor = configuration[i];
     const name = descriptor['name'];
-    const moduleJSON = allDescriptorsByName[name];
-    if (moduleJSON) {
-      moduleJSONPromises.push(Promise.resolve(moduleJSON));
-    } else {
-      moduleJSONPromises.push(
-          RootModule.Runtime.loadResourcePromise(name + '/module.json').then(JSON.parse.bind(JSON)));
-    }
+    moduleDescriptors.push(allDescriptorsByName[name]);
     if (descriptor['type'] === 'autostart') {
       coreModuleNames.push(name);
     }
   }
-
-  const moduleDescriptors = await Promise.all(moduleJSONPromises);
 
   for (let i = 0; i < moduleDescriptors.length; ++i) {
     moduleDescriptors[i].name = configuration[i]['name'];

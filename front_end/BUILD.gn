@@ -114,6 +114,7 @@ group("legacy_test-resources") {
     "data_grid_test_runner:bundle",
     "device_mode_test_runner:bundle",
     "elements_test_runner:bundle",
+    "extensions_test_runner:bundle",
   ]
 }
 

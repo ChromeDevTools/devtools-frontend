@@ -51,6 +51,7 @@ devtools_test_files = [
   "front_end/elements_test_runner/module.json",
   "front_end/elements_test_runner/SetOuterHTMLTestRunner.js",
   "front_end/elements_test_runner/StylesUpdateLinksTestRunner.js",
+  "front_end/extensions_test_runner/extensions_test_runner.js",
   "front_end/extensions_test_runner/ExtensionsNetworkTestRunner.js",
   "front_end/extensions_test_runner/ExtensionsTestRunner.js",
   "front_end/extensions_test_runner/module.json",

@@ -132,6 +132,7 @@ all_devtools_files = [
   "front_end/emulation/sensors.css",
   "front_end/event_listeners/eventListenersView.css",
   "front_end/event_listeners/module.json",
+  "front_end/extensions_test_runner/extensions_test_runner.js",
   "front_end/extensions_test_runner/ExtensionsNetworkTestRunner.js",
   "front_end/extensions_test_runner/ExtensionsTestRunner.js",
   "front_end/extensions_test_runner/module.json",

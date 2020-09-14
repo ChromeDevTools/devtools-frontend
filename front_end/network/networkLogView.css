@@ -158,7 +158,7 @@
 .network-log-grid.data-grid tr.selected.network-error-row,
 .network-log-grid.data-grid tr.selected.network-error-row .network-cell-subtitle,
 .network-log-grid.data-grid tr.selected.network-error-row .network-dim-cell,
-.network-log-grid.data-grid:focus tr.selected .devtools-link,
+.network-log-grid.data-grid:focus tr.selected.network-error-row .devtools-link,
 .network-log-grid.data-grid:focus tr.selected.network-error-row,
 .network-log-grid.data-grid:focus tr.selected.network-error-row .network-cell-subtitle,
 .network-log-grid.data-grid:focus tr.selected.network-error-row .network-dim-cell {

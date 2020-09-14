@@ -118,6 +118,7 @@ group("legacy_test-resources") {
     "heap_profiler_test_runner:bundle",
     "layers_test_runner:bundle",
     "lighthouse_test_runner:bundle",
+    "network_test_runner:bundle",
   ]
 }
 

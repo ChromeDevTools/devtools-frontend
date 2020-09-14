@@ -3,10 +3,10 @@
     "test_runner",
     "console_test_runner"
   ],
-  "scripts": [
-    "NetworkTestRunner.js"
+  "modules": [
+    "network_test_runner.js"
   ],
   "skip_compilation": [
-    "NetworkTestRunner.js"
+    "network_test_runner.js"
   ]
 }

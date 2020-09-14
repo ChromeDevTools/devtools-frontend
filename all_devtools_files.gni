@@ -186,7 +186,7 @@ all_devtools_files = [
   "front_end/mobile_throttling/throttlingSettingsTab.css",
   "front_end/ndb_app.json",
   "front_end/network_test_runner/module.json",
-  "front_end/network_test_runner/NetworkTestRunner.js",
+  "front_end/network_test_runner/network_test_runner.js",
   "front_end/network/binaryResourceView.css",
   "front_end/network/blockedURLsPane.css",
   "front_end/network/eventSourceMessagesView.css",

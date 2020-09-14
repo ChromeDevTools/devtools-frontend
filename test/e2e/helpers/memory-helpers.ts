@@ -141,6 +141,24 @@ export async function findSearchResult(p: (el: puppeteer.ElementHandle<Element>)
   return await waitForFunction(findSearchResult);
 }
 
+const normalizRetainerName = (retainerName: string) => {
+  // Retainers starting with `Window /` might have host information in their
+  // name, including the port, so we need to strip that.
+  if (retainerName.startsWith('Window /')) {
+    return 'Window /';
+  }
+  // Retainers including double-colons :: are names from the C++ implementation
+  // exposed through Chromium's gn arg `enable_additional_blink_object_names`;
+  // these should be considered implementation details, so we normalize them.
+  if (retainerName.includes('::')) {
+    if (retainerName.startsWith('Detached')) {
+      return 'Detached InternalNode';
+    }
+    return 'InternalNode';
+  }
+  return retainerName;
+};
+
 export async function assertRetainerChain(expectedRetainers: Array<string>) {
   // Give some time for the expansion to finish.
   const retainerGridElements = await getDataGridRows('.retaining-paths-view table.data');
@@ -149,16 +167,12 @@ export async function assertRetainerChain(expectedRetainers: Array<string>) {
   }
   for (let i = 0; i < retainerGridElements.length; ++i) {
     const retainer = retainerGridElements[i];
-    let retainerName = await retainer.$eval('span.object-value-object', el => el.textContent);
+    const retainerName = await retainer.$eval('span.object-value-object', el => el.textContent);
     if (!retainerName) {
       assert.fail('Could not get retainer name');
     }
-    // Retainers starting with `Window /` might have host information in their
-    // name, including the port, so we need to strip that.
-    if (retainerName.startsWith('Window /')) {
-      retainerName = 'Window /';
-    }
-    if (retainerName !== expectedRetainers[i]) {
+    const normalizedRetainerName = normalizRetainerName(retainerName);
+    if (normalizedRetainerName !== expectedRetainers[i]) {
       return false;
     }
     if (await retainer.evaluate(el => !el.classList.contains('expanded'))) {

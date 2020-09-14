@@ -314,6 +314,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
 
     metricsElement.appendChild(previousBox);
     metricsElement.addEventListener('mouseover', this._highlightDOMNode.bind(this, false, 'all'), false);
+    metricsElement.addEventListener('mouseleave', this._highlightDOMNode.bind(this, false, 'all'), false);
     this.contentElement.removeChildren();
     this.contentElement.appendChild(metricsElement);
   }

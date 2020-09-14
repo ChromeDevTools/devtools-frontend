@@ -7,7 +7,12 @@ import {$$, click, getBrowserAndPages, goToResource, waitForElementsWithTextCont
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {changeViewViaDropdown, findSearchResult, navigateToMemoryTab, setSearchFilter, takeHeapSnapshot, waitForNonEmptyHeapSnapshotData, waitForRetainerChain, waitForSearchResultNumber} from '../helpers/memory-helpers.js';
 
-describe('The Memory Panel', async () => {
+describe('The Memory Panel', async function() {
+  // These tests render large chunks of data into DevTools and filter/search
+  // through it. On bots with less CPU power, these can fail because the
+  // rendering takes a long time, so we allow a larger timeout.
+  this.timeout(15000);
+
   it('Loads content', async () => {
     await goToResource('memory/default.html');
     await navigateToMemoryTab();

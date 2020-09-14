@@ -3,10 +3,10 @@
     "test_runner",
     "emulation"
   ],
-  "scripts": [
-    "DeviceModeTestRunner.js"
+  "modules": [
+    "device_mode_test_runner.js"
   ],
   "skip_compilation": [
-    "DeviceModeTestRunner.js"
+    "device_mode_test_runner.js"
   ]
 }

@@ -94,7 +94,7 @@ all_devtools_files = [
   "front_end/data_grid_test_runner/module.json",
   "front_end/data_grid/dataGrid.css",
   "front_end/data_grid/module.json",
-  "front_end/device_mode_test_runner/DeviceModeTestRunner.js",
+  "front_end/device_mode_test_runner/device_mode_test_runner.js",
   "front_end/device_mode_test_runner/module.json",
   "front_end/devices/module.json",
   "front_end/diff/module.json",

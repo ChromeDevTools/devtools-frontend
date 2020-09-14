@@ -71,7 +71,7 @@ devtools_test_files = [
   "front_end/sdk_test_runner/module.json",
   "front_end/sdk_test_runner/sdk_test_runner.js",
   "front_end/security_test_runner/module.json",
-  "front_end/security_test_runner/SecurityTestRunner.js",
+  "front_end/security_test_runner/security_test_runner.js",
   "front_end/sources_test_runner/AutocompleteTestRunner.js",
   "front_end/sources_test_runner/DebuggerTestRunner.js",
   "front_end/sources_test_runner/EditorTestRunner.js",

@@ -121,6 +121,7 @@ group("legacy_test-resources") {
     "network_test_runner:bundle",
     "performance_test_runner:bundle",
     "sdk_test_runner:bundle",
+    "security_test_runner:bundle",
   ]
 }
 

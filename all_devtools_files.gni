@@ -273,7 +273,7 @@ all_devtools_files = [
   "front_end/search/searchResultsPane.css",
   "front_end/search/searchView.css",
   "front_end/security_test_runner/module.json",
-  "front_end/security_test_runner/SecurityTestRunner.js",
+  "front_end/security_test_runner/security_test_runner.js",
   "front_end/security/lockIcon.css",
   "front_end/security/mainView.css",
   "front_end/security/module.json",

@@ -5,10 +5,10 @@
     "profiler",
     "data_grid"
   ],
-  "scripts": [
-    "HeapProfilerTestRunner.js"
+  "modules": [
+    "heap_profiler_test_runner.js"
   ],
   "skip_compilation": [
-    "HeapProfilerTestRunner.js"
+    "heap_profiler_test_runner.js"
   ]
 }

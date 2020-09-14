@@ -55,7 +55,7 @@ devtools_test_files = [
   "front_end/extensions_test_runner/ExtensionsNetworkTestRunner.js",
   "front_end/extensions_test_runner/ExtensionsTestRunner.js",
   "front_end/extensions_test_runner/module.json",
-  "front_end/heap_profiler_test_runner/HeapProfilerTestRunner.js",
+  "front_end/heap_profiler_test_runner/heap_profiler_test_runner.js",
   "front_end/heap_profiler_test_runner/module.json",
   "front_end/integration_test_runner.html",
   "front_end/integration_test_runner.js",

@@ -731,7 +731,6 @@ HeapProfilerTestRunner._waitUntilProfileViewIsShown = function(title, callback) 
   } else {
     HeapProfilerTestRunner._waitUntilProfileViewIsShownCallback = {title: title, callback: callback};
   }
-
 };
 
 HeapProfilerTestRunner._profileViewRefresh = function() {

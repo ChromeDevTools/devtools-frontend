@@ -294,6 +294,7 @@ all_devtools_files = [
   "front_end/source_frame/resourceSourceFrame.css",
   "front_end/source_frame/xmlTree.css",
   "front_end/source_frame/xmlView.css",
+  "front_end/sources_test_runner/sources_test_runner.js",
   "front_end/sources_test_runner/AutocompleteTestRunner.js",
   "front_end/sources_test_runner/DebuggerTestRunner.js",
   "front_end/sources_test_runner/EditorTestRunner.js",

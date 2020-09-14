@@ -8,7 +8,8 @@
     "cm_modes",
     "browser_debugger"
   ],
-  "scripts": [
+  "modules": [
+    "sources_test_runner.js",
     "SourcesTestRunner.js",
     "DebuggerTestRunner.js",
     "LiveEditTestRunner.js",
@@ -17,6 +18,7 @@
     "AutocompleteTestRunner.js"
   ],
   "skip_compilation": [
+    "sources_test_runner.js",
     "DebuggerTestRunner.js",
     "LiveEditTestRunner.js",
     "SearchTestRunner.js",

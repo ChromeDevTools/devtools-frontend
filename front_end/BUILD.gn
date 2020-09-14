@@ -120,6 +120,7 @@ group("legacy_test-resources") {
     "lighthouse_test_runner:bundle",
     "network_test_runner:bundle",
     "performance_test_runner:bundle",
+    "sdk_test_runner:bundle",
   ]
 }
 

@@ -69,7 +69,7 @@ devtools_test_files = [
   "front_end/performance_test_runner/TimelineDataTestRunner.js",
   "front_end/performance_test_runner/TimelineTestRunner.js",
   "front_end/sdk_test_runner/module.json",
-  "front_end/sdk_test_runner/PageMockTestRunner.js",
+  "front_end/sdk_test_runner/sdk_test_runner.js",
   "front_end/security_test_runner/module.json",
   "front_end/security_test_runner/SecurityTestRunner.js",
   "front_end/sources_test_runner/AutocompleteTestRunner.js",

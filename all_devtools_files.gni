@@ -267,7 +267,7 @@ all_devtools_files = [
   "front_end/screencast/module.json",
   "front_end/screencast/screencastView.css",
   "front_end/sdk_test_runner/module.json",
-  "front_end/sdk_test_runner/PageMockTestRunner.js",
+  "front_end/sdk_test_runner/sdk_test_runner.js",
   "front_end/sdk/module.json",
   "front_end/search/module.json",
   "front_end/search/searchResultsPane.css",

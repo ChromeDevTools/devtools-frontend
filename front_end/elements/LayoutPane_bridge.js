@@ -25,6 +25,7 @@ export let Setting;
 * enabled:boolean,
 * reveal:function():void,
 * toggle:function(boolean):void,
+* setColor:function(string):void,
 * }}
 */
 // @ts-ignore we export this for Closure not TS

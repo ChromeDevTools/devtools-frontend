@@ -45,8 +45,7 @@ export class LayoutPane extends HTMLElement {
     this.shadow.adoptedStyleSheets = [
       ...getStyleSheets('ui/inspectorCommon.css', {patchThemeSupport: true}),
       ...getStyleSheets('ui/inspectorSyntaxHighlight.css', {patchThemeSupport: true}),
-      ...getStyleSheets('inline_editor/colorSwatch.css', {patchThemeSupport: true}),
-      ...getStyleSheets('elements/layoutPane.css'),
+      ...getStyleSheets('elements/layoutPane.css', {patchThemeSupport: false}),
     ];
   }
 
@@ -118,6 +117,12 @@ export class LayoutPane extends HTMLElement {
     element.reveal();
   }
 
+  private onColorChange(element: LayoutElement, event: HTMLInputElementEvent) {
+    event.preventDefault();
+    element.setColor(event.target.value);
+    this.render();
+  }
+
   private renderElement(element: LayoutElement) {
     const nodeText = new NodeText();
     nodeText.data = {
@@ -127,15 +132,16 @@ export class LayoutPane extends HTMLElement {
     };
     const onElementToggle = this.onElementToggle.bind(this, element);
     const onElementClick = this.onElementClick.bind(this, element);
+    const onColorChange = this.onColorChange.bind(this, element);
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`<div class="element">
       <label data-element="true" class="checkbox-label" title=${element.name}>
         <input data-input="true" type="checkbox" .checked=${element.enabled} @change=${onElementToggle} />
         <span data-label="true">${nodeText}</span>
-        <span class="color-swatch">
-          <span class="color-swatch-inner" style="background:${element.color}"></span>
-        </span>
+      </label>
+      <label class="color-picker-label" style="background:${element.color}">
+        <input @change=${onColorChange} @input=${onColorChange} class="color-picker" type="color" value=${element.color} />
       </label>
       <button @click=${onElementClick} title=${showElementButtonTitle} class="show-element"></button>
     </div>`;

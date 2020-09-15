@@ -55,11 +55,6 @@
   flex: none;
 }
 
-.checkbox-label .color-swatch {
-  margin: 0 0 0 8px;
-  flex: none;
-}
-
 .checkbox-label > span {
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -112,4 +107,18 @@
 
 :host-context(.-theme-with-dark-background) .show-element {
   background-color: rgb(204 204 204);
+}
+
+.color-picker {
+  visibility: hidden;
+}
+
+.color-picker-label {
+  border: 1px solid rgb(128 128 128 / 60%);
+  cursor: default;
+  display: inline-block;
+  flex: none;
+  height: 10px;
+  margin: 0 0 0 8px;
+  width: 10px;
 }

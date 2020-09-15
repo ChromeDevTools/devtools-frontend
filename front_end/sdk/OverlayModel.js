@@ -394,7 +394,23 @@ export class OverlayModel extends SDKModel {
     if (!this._persistentGridHighlighter) {
       return null;
     }
-    return this._persistentGridHighlighter.colorOfGrid(nodeId).asString();
+    return this._persistentGridHighlighter.colorOfGrid(nodeId).asString(Common.Color.Format.HEX);
+  }
+
+  /**
+   * @param {number} nodeId
+   * @param {string} colorStr
+   */
+  setColorOfGridInPersistentOverlay(nodeId, colorStr) {
+    if (!this._persistentGridHighlighter) {
+      return;
+    }
+    const color = Common.Color.Color.parse(colorStr);
+    if (!color) {
+      return;
+    }
+    this._persistentGridHighlighter.setColorOfGrid(nodeId, color);
+    this._persistentGridHighlighter._resetOverlay();
   }
 
   hideSourceOrderInOverlay() {
@@ -887,6 +903,14 @@ class DefaultPersistentGridHighlighter {
     }
 
     return color;
+  }
+
+  /**
+   * @param {number} nodeId
+   * @param {!Common.Color.Color} color
+   */
+  setColorOfGrid(nodeId, color) {
+    this._gridColors.set(nodeId, color);
   }
 
   /**

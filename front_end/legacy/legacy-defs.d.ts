@@ -36,7 +36,8 @@ interface String {
 }
 
 interface NumberConstructor {
-  withThousandsSeparator(num: number): string
+  withThousandsSeparator(num: number): string;
+  toFixedIfFloating(value: string): string;
 }
 
 interface Int32Array {

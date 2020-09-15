@@ -26,9 +26,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
@@ -43,8 +40,16 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     super();
     this.registerRequiredCSS('elements/metricsSidebarPane.css');
 
+    /** @type {?SDK.CSSProperty.CSSProperty} */
+    this.originalPropertyData = null;
+    /** @type {?SDK.CSSProperty.CSSProperty} */
+    this.previousPropertyDataCandidate = null;
     /** @type {?SDK.CSSStyleDeclaration.CSSStyleDeclaration} */
     this._inlineStyle = null;
+    /** @type {string} */
+    this._highlightMode = '';
+    /** @type {!Array<!{element: !HTMLElement, name: string, backgroundColor: string}>} */
+    this._boxElements = [];
   }
 
   /**
@@ -77,19 +82,18 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
       }
       this._updateMetrics(style);
     }
-    /**
-     * @param {?SDK.CSSModel.InlineStyleResult} inlineStyleResult
-     * @this {MetricsSidebarPane}
-     */
-    function inlineStyleCallback(inlineStyleResult) {
-      if (inlineStyleResult && this.node() === node) {
-        this._inlineStyle = inlineStyleResult.inlineStyle;
-      }
+
+    if (!node.id) {
+      return Promise.resolve();
     }
 
     const promises = [
       cssModel.computedStylePromise(node.id).then(callback.bind(this)),
-      cssModel.inlineStylesPromise(node.id).then(inlineStyleCallback.bind(this))
+      cssModel.inlineStylesPromise(node.id).then(inlineStyleResult => {
+        if (inlineStyleResult && this.node() === node) {
+          this._inlineStyle = inlineStyleResult.inlineStyle;
+        }
+      }),
     ];
     return Promise.all(promises);
   }
@@ -107,7 +111,11 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
    * @return {number}
    */
   _getPropertyValueAsPx(style, propertyName) {
-    return Number(style.get(propertyName).replace(/px$/, '') || 0);
+    const propertyValue = style.get(propertyName);
+    if (!propertyValue) {
+      return 0;
+    }
+    return Number(propertyValue.replace(/px$/, '') || 0);
   }
 
   /**
@@ -120,7 +128,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     const top = this._getPropertyValueAsPx(computedStyle, componentName + '-top' + suffix);
     const right = this._getPropertyValueAsPx(computedStyle, componentName + '-right' + suffix);
     const bottom = this._getPropertyValueAsPx(computedStyle, componentName + '-bottom' + suffix);
-    return {left: left, top: top, right: right, bottom: bottom};
+    return {left, top, right, bottom};
   }
 
   /**
@@ -130,21 +138,21 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
    */
   _highlightDOMNode(showHighlight, mode, event) {
     event.consume();
-    if (showHighlight && this.node()) {
+    const node = this.node();
+    if (showHighlight && node) {
       if (this._highlightMode === mode) {
         return;
       }
       this._highlightMode = mode;
-      this.node().highlight(mode);
+      node.highlight(mode);
     } else {
-      delete this._highlightMode;
+      this._highlightMode = '';
       SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
     }
 
-    for (let i = 0; this._boxElements && i < this._boxElements.length; ++i) {
-      const element = this._boxElements[i];
-      if (!this.node() || mode === 'all' || element._name === mode) {
-        element.style.backgroundColor = element._backgroundColor;
+    for (const {element, name, backgroundColor} of this._boxElements) {
+      if (!node || mode === 'all' || name === mode) {
+        element.style.backgroundColor = backgroundColor;
       } else {
         element.style.backgroundColor = '';
       }
@@ -156,7 +164,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
    */
   _updateMetrics(style) {
     // Updating with computed style.
-    const metricsElement = createElement('div');
+    const metricsElement = document.createElement('div');
     metricsElement.className = 'metrics';
     const self = this;
 
@@ -168,8 +176,15 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
      * @this {MetricsSidebarPane}
      */
     function createBoxPartElement(style, name, side, suffix) {
+      const element = document.createElement('div');
+      element.className = side;
+
       const propertyName = (name !== 'position' ? name + '-' : '') + side + suffix;
       let value = style.get(propertyName);
+      if (value === undefined) {
+        return element;
+      }
+
       if (value === '' || (name !== 'position' && value === '0px')) {
         value = '\u2012';
       } else if (name === 'position' && value === 'auto') {
@@ -178,8 +193,6 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
       value = value.replace(/px$/, '');
       value = Number.toFixedIfFloating(value);
 
-      const element = createElement('div');
-      element.className = side;
       element.textContent = value;
       element.addEventListener('dblclick', this.startEditing.bind(this, element, name, propertyName, style), false);
       return element;
@@ -190,15 +203,20 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
      * @return {string}
      */
     function getContentAreaWidthPx(style) {
-      let width = style.get('width').replace(/px$/, '');
-      if (!isNaN(width) && style.get('box-sizing') === 'border-box') {
+      let width = style.get('width');
+      if (!width) {
+        return '';
+      }
+      width = width.replace(/px$/, '');
+      const widthValue = Number(width);
+      if (!isNaN(widthValue) && style.get('box-sizing') === 'border-box') {
         const borderBox = self._getBox(style, 'border');
         const paddingBox = self._getBox(style, 'padding');
 
-        width = width - borderBox.left - borderBox.right - paddingBox.left - paddingBox.right;
+        width = (widthValue - borderBox.left - borderBox.right - paddingBox.left - paddingBox.right).toString();
       }
 
-      return Number.toFixedIfFloating(width.toString());
+      return Number.toFixedIfFloating(width);
     }
 
     /**
@@ -206,40 +224,45 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
      * @return {string}
      */
     function getContentAreaHeightPx(style) {
-      let height = style.get('height').replace(/px$/, '');
-      if (!isNaN(height) && style.get('box-sizing') === 'border-box') {
+      let height = style.get('height');
+      if (!height) {
+        return '';
+      }
+      height = height.replace(/px$/, '');
+      const heightValue = Number(height);
+      if (!isNaN(heightValue) && style.get('box-sizing') === 'border-box') {
         const borderBox = self._getBox(style, 'border');
         const paddingBox = self._getBox(style, 'padding');
 
-        height = height - borderBox.top - borderBox.bottom - paddingBox.top - paddingBox.bottom;
+        height = (heightValue - borderBox.top - borderBox.bottom - paddingBox.top - paddingBox.bottom).toString();
       }
 
-      return Number.toFixedIfFloating(height.toString());
+      return Number.toFixedIfFloating(height);
     }
 
     // Display types for which margin is ignored.
-    const noMarginDisplayType = {
-      'table-cell': true,
-      'table-column': true,
-      'table-column-group': true,
-      'table-footer-group': true,
-      'table-header-group': true,
-      'table-row': true,
-      'table-row-group': true
-    };
+    const noMarginDisplayType = new Set([
+      'table-cell',
+      'table-column',
+      'table-column-group',
+      'table-footer-group',
+      'table-header-group',
+      'table-row',
+      'table-row-group',
+    ]);
 
     // Display types for which padding is ignored.
-    const noPaddingDisplayType = {
-      'table-column': true,
-      'table-column-group': true,
-      'table-footer-group': true,
-      'table-header-group': true,
-      'table-row': true,
-      'table-row-group': true
-    };
+    const noPaddingDisplayType = new Set([
+      'table-column',
+      'table-column-group',
+      'table-footer-group',
+      'table-header-group',
+      'table-row',
+      'table-row-group',
+    ]);
 
     // Position types for which top, left, bottom and right are ignored.
-    const noPositionType = {'static': true};
+    const noPositionType = new Set(['static']);
 
     const boxes = ['content', 'padding', 'border', 'margin', 'position'];
     const boxColors = [
@@ -254,33 +277,36 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     this._boxElements = [];
     for (let i = 0; i < boxes.length; ++i) {
       const name = boxes[i];
+      const display = style.get('display');
+      const position = style.get('position');
+      if (!display || !position) {
+        continue;
+      }
+      if (name === 'margin' && noMarginDisplayType.has(display)) {
+        continue;
+      }
+      if (name === 'padding' && noPaddingDisplayType.has(display)) {
+        continue;
+      }
+      if (name === 'position' && noPositionType.has(position)) {
+        continue;
+      }
 
-      if (name === 'margin' && noMarginDisplayType[style.get('display')]) {
-        continue;
-      }
-      if (name === 'padding' && noPaddingDisplayType[style.get('display')]) {
-        continue;
-      }
-      if (name === 'position' && noPositionType[style.get('position')]) {
-        continue;
-      }
-
-      const boxElement = createElement('div');
+      const boxElement = /** @type {!HTMLDivElement} */ (document.createElement('div'));
       boxElement.className = name;
-      boxElement._backgroundColor = boxColors[i].asString(Common.Color.Format.RGBA);
-      boxElement._name = name;
-      boxElement.style.backgroundColor = boxElement._backgroundColor;
+      const backgroundColor = boxColors[i].asString(Common.Color.Format.RGBA) || '';
+      boxElement.style.backgroundColor = backgroundColor;
       boxElement.addEventListener(
           'mouseover', this._highlightDOMNode.bind(this, true, name === 'position' ? 'all' : name), false);
-      this._boxElements.push(boxElement);
+      this._boxElements.push({element: boxElement, name, backgroundColor});
 
       if (name === 'content') {
-        const widthElement = createElement('span');
+        const widthElement = document.createElement('span');
         widthElement.textContent = getContentAreaWidthPx(style);
         widthElement.addEventListener(
             'dblclick', this.startEditing.bind(this, widthElement, 'width', 'width', style), false);
 
-        const heightElement = createElement('span');
+        const heightElement = document.createElement('span');
         heightElement.textContent = getContentAreaHeightPx(style);
         heightElement.addEventListener(
             'dblclick', this.startEditing.bind(this, heightElement, 'height', 'height', style), false);
@@ -291,13 +317,13 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
       } else {
         const suffix = (name === 'border' ? '-width' : '');
 
-        const labelElement = createElement('div');
+        const labelElement = document.createElement('div');
         labelElement.className = 'label';
         labelElement.textContent = boxLabels[i];
         boxElement.appendChild(labelElement);
 
         boxElement.appendChild(createBoxPartElement.call(this, style, name, 'top', suffix));
-        boxElement.appendChild(createElement('br'));
+        boxElement.appendChild(document.createElement('br'));
         boxElement.appendChild(createBoxPartElement.call(this, style, name, 'left', suffix));
 
         if (previousBox) {
@@ -305,14 +331,14 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
         }
 
         boxElement.appendChild(createBoxPartElement.call(this, style, name, 'right', suffix));
-        boxElement.appendChild(createElement('br'));
+        boxElement.appendChild(document.createElement('br'));
         boxElement.appendChild(createBoxPartElement.call(this, style, name, 'bottom', suffix));
       }
 
       previousBox = boxElement;
     }
 
-    metricsElement.appendChild(previousBox);
+    metricsElement.appendChild(/** @type {!HTMLDivElement} */ (previousBox));
     metricsElement.addEventListener('mouseover', this._highlightDOMNode.bind(this, false, 'all'), false);
     metricsElement.addEventListener('mouseleave', this._highlightDOMNode.bind(this, false, 'all'), false);
     this.contentElement.removeChildren();
@@ -330,8 +356,9 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
       return;
     }
 
-    const context = {box: box, styleProperty: styleProperty, computedStyle: computedStyle};
-    const boundKeyDown = this._handleKeyDown.bind(this, context, styleProperty);
+    /** @type {!{box: string, styleProperty: string, computedStyle: !Map.<string, string>, keyDownHandler: function(!Event):void}} */
+    const context = {box, styleProperty, computedStyle, keyDownHandler: () => {}};
+    const boundKeyDown = this._handleKeyDown.bind(this, context);
     context.keyDownHandler = boundKeyDown;
     targetElement.addEventListener('keydown', boundKeyDown, false);
 
@@ -339,13 +366,18 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
 
     const config =
         new UI.InplaceEditor.Config(this._editingCommitted.bind(this), this.editingCancelled.bind(this), context);
-    UI.InplaceEditor.InplaceEditor.startEditing(targetElement, config);
+    UI.InplaceEditor.InplaceEditor.startEditing(targetElement, /** @type {!UI.InplaceEditor.Config<?>} */ (config));
 
-    targetElement.getComponentSelection().selectAllChildren(targetElement);
+    const selection = targetElement.getComponentSelection();
+    selection && selection.selectAllChildren(targetElement);
   }
 
-  _handleKeyDown(context, styleProperty, event) {
-    const element = event.currentTarget;
+  /**
+   * @param {!{box: string, styleProperty: string, computedStyle: !Map.<string, string>, keyDownHandler: function(!Event):void}} context
+   * @param {!Event} event
+   */
+  _handleKeyDown(context, event) {
+    const element = /** @type {!Element} */ (event.currentTarget);
 
     /**
      * @param {string} originalValue
@@ -363,7 +395,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
      * @return {string}
      */
     function customNumberHandler(prefix, number, suffix) {
-      if (styleProperty !== 'margin' && number < 0) {
+      if (context.styleProperty !== 'margin' && number < 0) {
         number = 0;
       }
       return prefix + number + suffix;
@@ -373,15 +405,23 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
         event, element, finishHandler.bind(this), undefined, customNumberHandler);
   }
 
+  /**
+   * @param {!Element} element
+   * @param {!{keyDownHandler: function(!Event):void}} context
+   */
   editingEnded(element, context) {
-    delete this.originalPropertyData;
-    delete this.previousPropertyDataCandidate;
+    this.originalPropertyData = null;
+    this.previousPropertyDataCandidate = null;
     element.removeEventListener('keydown', context.keyDownHandler, false);
     delete this._isEditingMetrics;
   }
 
+  /**
+   * @param {!Element} element
+   * @param {!{box: string, styleProperty: string, computedStyle: !Map.<string, string>, keyDownHandler: function(!Event):void}} context
+   */
   editingCancelled(element, context) {
-    if ('originalPropertyData' in this && this._inlineStyle) {
+    if (this._inlineStyle) {
       if (!this.originalPropertyData) {
         // An added property, remove the last property in the style.
         const pastLastSourcePropertyIndex = this._inlineStyle.pastLastSourcePropertyIndex();
@@ -390,13 +430,20 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
         }
       } else {
         this._inlineStyle.allProperties()[this.originalPropertyData.index].setText(
-            this.originalPropertyData.propertyText, false);
+            this.originalPropertyData.propertyText || '', false);
       }
     }
     this.editingEnded(element, context);
     this.update();
   }
 
+  /**
+   * @param {!Element} element
+   * @param {string} userInput
+   * @param {string} previousContent
+   * @param {!{box: string, styleProperty: string, computedStyle: !Map.<string, string>, keyDownHandler: function(!Event):void}} context
+   * @param {boolean} commitEditor
+   */
   _applyUserInput(element, userInput, previousContent, context, commitEditor) {
     if (!this._inlineStyle) {
       // Element has no renderer.
@@ -468,12 +515,16 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
       if (!success) {
         return;
       }
-      if (!('originalPropertyData' in this)) {
+      if (!this.originalPropertyData) {
         this.originalPropertyData = this.previousPropertyDataCandidate;
       }
 
-      if (typeof this._highlightMode !== 'undefined') {
-        this.node().highlight(this._highlightMode);
+      if (this._highlightMode) {
+        const node = this.node();
+        if (!node) {
+          return;
+        }
+        node.highlight(this._highlightMode);
       }
 
       if (commitEditor) {
@@ -482,6 +533,12 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     }
   }
 
+  /**
+   * @param {!Element} element
+   * @param {string} userInput
+   * @param {string} previousContent
+   * @param {!{box: string, styleProperty: string, computedStyle: !Map.<string, string>, keyDownHandler: function(!Event):void}} context
+   */
   _editingCommitted(element, userInput, previousContent, context) {
     this.editingEnded(element, context);
     this._applyUserInput(element, userInput, previousContent, context, true);

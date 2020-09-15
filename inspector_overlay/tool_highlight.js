@@ -7,7 +7,8 @@
 
 import {dispatch, reset, setPlatform} from './common.js';
 import {gridStyle} from './highlight_grid_common.js';
-import {doReset, drawHighlight} from './tool_highlight_impl.js';
+import {doReset as doGridReset, drawGridHighlight} from './tool_highlight_grid_impl.js';
+import {doReset as doHighlightReset, drawHighlight} from './tool_highlight_impl.js';
 
 const style = `
 body {
@@ -45,7 +46,7 @@ body {
   box-sizing: border-box;
   min-width: 100px;
   max-width: min(300px, 100% - 4px);
-  z-index: 1;
+  z-index: 2;
   background-clip: padding-box;
   will-change: transform;
   text-rendering: optimizeLegibility;
@@ -301,7 +302,9 @@ window.setPlatform = function(platform) {
 
 window.reset = function(data) {
   reset(data);
-  doReset(data);
+  doHighlightReset(data);
+  doGridReset(data);
 };
 window.drawHighlight = drawHighlight;
+window.drawGridHighlight = drawGridHighlight;
 window.dispatch = dispatch;

@@ -84,8 +84,6 @@ export class OverlayModel extends SDKModel {
       this._wireAgentToSettings();
     }
 
-    this._isPersistentGridModeOn = false;
-
     /** @type {?DefaultPersistentGridHighlighter} */
     this._persistentGridHighlighter = null;
     if (this._gridFeaturesExperimentEnabled) {
@@ -260,13 +258,6 @@ export class OverlayModel extends SDKModel {
     this._overlayAgent.invoke_setShowViewportSizeOnResize({show});
   }
 
-  /**
-   * @param {boolean} isPersistentGridModeOn
-   */
-  setPersistentGridMode(isPersistentGridModeOn) {
-    this._isPersistentGridModeOn = isPersistentGridModeOn;
-  }
-
   _updatePausedInDebuggerMessage() {
     if (this.target().suspended()) {
       return;
@@ -295,10 +286,6 @@ export class OverlayModel extends SDKModel {
     this._inspectModeEnabled = mode !== Protocol.Overlay.InspectMode.None;
     this.dispatchEventToListeners(Events.InspectModeWillBeToggled, this);
     this._highlighter.setInspectMode(mode, this._buildHighlightConfig('all', showDetailedTooltip));
-    if (this._inspectModeEnabled && this._gridFeaturesExperimentEnabled && this._persistentGridHighlighter) {
-      this._persistentGridHighlighter.hideAllInOverlay();
-      this.dispatchEventToListeners(Events.PersistentGridOverlayCleared);
-    }
   }
 
   /**
@@ -314,11 +301,6 @@ export class OverlayModel extends SDKModel {
    * @param {boolean=} showInfo
    */
   highlightInOverlay(data, mode, showInfo) {
-    if (this._isPersistentGridModeOn) {
-      // TODO: Currently the backend doesn't support normal highlights when
-      // the persistent highlight is turned on: https://crbug.com/1109224.
-      return;
-    }
     if (this._sourceOrderModeActive) {
       // Return early if the source order is currently being shown the in the
       // overlay, so that it is not cleared by the highlight
@@ -961,7 +943,6 @@ class DefaultPersistentGridHighlighter {
 
   _updateHighlightsInOverlay() {
     const hasGridNodesToHighlight = this._gridHighlights.size > 0;
-    this._model.setPersistentGridMode(hasGridNodesToHighlight);
     this._model.setShowViewportSizeOnResize(!hasGridNodesToHighlight);
     const overlayModel = this._model;
     const gridNodeHighlightConfigs = [];
@@ -969,7 +950,6 @@ class DefaultPersistentGridHighlighter {
       gridNodeHighlightConfigs.push({nodeId, gridHighlightConfig});
     }
     overlayModel.target().overlayAgent().invoke_setShowGridOverlays({gridNodeHighlightConfigs});
-
     this._recordHighlightedGridCount();
   }
 }

@@ -6,6 +6,7 @@ import("../../../../scripts/build/ninja/copy.gni")
 
 copy_to_gen("memory") {
   sources = [
+    "attached-iframe.html",
     "default.html",
     "detached-dom-tree.html",
     "detached-node.html",

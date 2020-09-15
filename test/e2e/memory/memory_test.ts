@@ -5,13 +5,13 @@
 import {assert} from 'chai';
 import {$$, click, getBrowserAndPages, goToResource, waitForElementsWithTextContent, waitForElementWithTextContent, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {changeViewViaDropdown, findSearchResult, navigateToMemoryTab, setSearchFilter, takeHeapSnapshot, waitForNonEmptyHeapSnapshotData, waitForRetainerChain, waitForSearchResultNumber} from '../helpers/memory-helpers.js';
+import {changeViewViaDropdown, findSearchResult, navigateToMemoryTab, setSearchFilter, takeHeapSnapshot, waitForNonEmptyHeapSnapshotData, waitForRetainerChain, waitForSearchResultNumber, waitUntilRetainerChainSatisfies} from '../helpers/memory-helpers.js';
 
 describe('The Memory Panel', async function() {
   // These tests render large chunks of data into DevTools and filter/search
   // through it. On bots with less CPU power, these can fail because the
   // rendering takes a long time, so we allow a larger timeout.
-  this.timeout(15000);
+  this.timeout(20000);
 
   it('Loads content', async () => {
     await goToResource('memory/default.html');
@@ -100,5 +100,24 @@ describe('The Memory Panel', async function() {
     await waitForNonEmptyHeapSnapshotData();
     await setSearchFilter('Detached HTMLDivElement');
     await waitForSearchResultNumber(3);
+  });
+
+  it('Shows the correct output for an attached iframe', async () => {
+    await goToResource('memory/attached-iframe.html');
+    await navigateToMemoryTab();
+    await takeHeapSnapshot();
+    await waitForNonEmptyHeapSnapshotData();
+    await setSearchFilter('Retainer');
+    await waitForSearchResultNumber(8);
+    await findSearchResult(async p => {
+      const el = await p.$(':scope > td > div > .object-value-object');
+      return !!el && await el.evaluate(el => el.textContent === 'Retainer');
+    });
+    // The following line checks two things: That the property 'aUniqueName'
+    // in the iframe is retaining the Retainer class object, and that the
+    // iframe window is not detached.
+    await waitUntilRetainerChainSatisfies(
+        retainerChain => retainerChain.some(
+            ({propertyName, retainerClassName}) => propertyName === 'aUniqueName' && retainerClassName === 'Window /'));
   });
 });

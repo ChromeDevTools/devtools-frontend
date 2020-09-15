@@ -832,7 +832,7 @@ export class HeapSnapshotObjectNode extends HeapSnapshotGenericObjectNode {
     if (this._cycledWithAncestorGridNode) {
       div.classList.add('cycled-ancessor-node');
     }
-    div.prepend(UI.Fragment.html`<span class="${nameClass}">${name}</span>
+    div.prepend(UI.Fragment.html`<span class="property-name ${nameClass}">${name}</span>
                         <span class="grayed">${this._edgeNodeSeparator()}</span>`);
   }
 

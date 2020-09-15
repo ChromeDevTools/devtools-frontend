@@ -159,22 +159,27 @@ const normalizRetainerName = (retainerName: string) => {
   return retainerName;
 };
 
-export async function assertRetainerChain(expectedRetainers: Array<string>) {
+interface RetainerChainEntry {
+  propertyName: string;
+  retainerClassName: string;
+}
+
+export async function assertRetainerChainSatisfies(p: (retainerChain: Array<RetainerChainEntry>) => boolean) {
   // Give some time for the expansion to finish.
   const retainerGridElements = await getDataGridRows('.retaining-paths-view table.data');
-  if (retainerGridElements.length < expectedRetainers.length) {
-    return false;
-  }
+  const retainerChain = [];
   for (let i = 0; i < retainerGridElements.length; ++i) {
     const retainer = retainerGridElements[i];
-    const retainerName = await retainer.$eval('span.object-value-object', el => el.textContent);
-    if (!retainerName) {
+    const propertyName = await retainer.$eval('span.property-name', el => el.textContent);
+    const rawRetainerClassName = await retainer.$eval('span.value', el => el.textContent);
+    if (!propertyName) {
       assert.fail('Could not get retainer name');
     }
-    const normalizedRetainerName = normalizRetainerName(retainerName);
-    if (normalizedRetainerName !== expectedRetainers[i]) {
-      return false;
+    if (!rawRetainerClassName) {
+      assert.fail('Could not get retainer value');
     }
+    const retainerClassName = normalizRetainerName(rawRetainerClassName);
+    retainerChain.push({propertyName, retainerClassName});
     if (await retainer.evaluate(el => !el.classList.contains('expanded'))) {
       // Only follow the shortest retainer chain to the end. This relies on
       // the retainer view behavior that auto-expands the shortest retaining
@@ -182,11 +187,25 @@ export async function assertRetainerChain(expectedRetainers: Array<string>) {
       break;
     }
   }
-  return true;
+  return p(retainerChain);
+}
+
+export async function waitUntilRetainerChainSatisfies(p: (retainerChain: Array<RetainerChainEntry>) => boolean) {
+  await waitForFunction(assertRetainerChainSatisfies.bind(null, p));
 }
 
 export async function waitForRetainerChain(expectedRetainers: Array<string>) {
-  await waitForFunction(assertRetainerChain.bind(null, expectedRetainers));
+  await waitForFunction(assertRetainerChainSatisfies.bind(null, retainerChain => {
+    if (retainerChain.length !== expectedRetainers.length) {
+      return false;
+    }
+    for (let i = 0; i < expectedRetainers.length; ++i) {
+      if (retainerChain[i].retainerClassName !== expectedRetainers[i]) {
+        return false;
+      }
+    }
+    return true;
+  }));
 }
 
 export async function changeViewViaDropdown(newPerspective: string) {

@@ -3,11 +3,13 @@
 # found in the LICENSE file.
 
 import("../scripts/build/ninja/copy.gni")
+import("../scripts/build/ninja/vars.gni")
 import("../third_party/typescript/typescript.gni")
 
 group("front_end") {
   public_deps = [
-    ":front_end_html_entrypoints",
+    ":entrypoint_copy",
+    ":html_entrypoints",
     ":ts_library-verification",
     "accessibility:bundle",
     "animation:bundle",
@@ -97,7 +99,7 @@ group("front_end") {
 
   data_deps = [
     ":embedder-scripts",
-    ":front_end_html_entrypoints",
+    ":html_entrypoints",
     ":legacy_css",
   ]
 }
@@ -144,17 +146,39 @@ group("legacy_css") {
   ]
 }
 
-copy_sources_to_resources("front_end_html_entrypoints") {
+copy_sources_to_resources("entrypoint_copy") {
   sources = [
-    "devtools_app.html",
     "formatter_worker_entrypoint.js",
-    "inspector.html",
     "integration_test_runner.html",
-    "js_app.html",
-    "ndb_app.html",
-    "node_app.html",
-    "toolbox.html",
-    "worker_app.html",
+  ]
+}
+
+action("html_entrypoints") {
+  inputs = [
+    "entrypoint_template.html",
+    devtools_location_prepend + "scripts/build/generate_html_entrypoint.js",
+  ]
+
+  script = "//third_party/node/node.py"
+
+  args = [
+    rebase_path(
+        devtools_location_prepend + "scripts/build/generate_html_entrypoint.js",
+        root_build_dir),
+    "--template",
+    rebase_path("entrypoint_template.html", root_build_dir),
+    "--out-directory",
+    rebase_path(resources_out_dir, root_build_dir),
+  ]
+
+  outputs = [
+    "$resources_out_dir/devtools_app.html",
+    "$resources_out_dir/inspector.html",
+    "$resources_out_dir/js_app.html",
+    "$resources_out_dir/ndb_app.html",
+    "$resources_out_dir/node_app.html",
+    "$resources_out_dir/toolbox.html",
+    "$resources_out_dir/worker_app.html",
   ]
 }
 

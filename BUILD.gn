@@ -88,16 +88,7 @@ devtools_embedder_scripts = [
   "front_end/Tests.js",
 ]
 
-application_templates = [
-  "front_end/devtools_app.html",
-  "front_end/inspector.html",
-  "front_end/integration_test_runner.html",
-  "front_end/js_app.html",
-  "front_end/ndb_app.html",
-  "front_end/node_app.html",
-  "front_end/toolbox.html",
-  "front_end/worker_app.html",
-]
+application_templates = [ "front_end/entrypoint_template.html" ]
 
 generated_applications_html = [
   "$resources_out_dir/devtools_app.html",

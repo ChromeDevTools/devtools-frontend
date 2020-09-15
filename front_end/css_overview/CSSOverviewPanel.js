@@ -2,18 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Host from '../host/host.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {CSSOverviewCompletedView} from './CSSOverviewCompletedView.js';
+import {FontInfo} from './CSSOverviewCompletedView.js';        // eslint-disable-line no-unused-vars
+import {NodeStyleStats} from './CSSOverviewCompletedView.js';  // eslint-disable-line no-unused-vars
 import {Events, OverviewController} from './CSSOverviewController.js';
 import {CSSOverviewModel} from './CSSOverviewModel.js';
 import {CSSOverviewProcessingView} from './CSSOverviewProcessingView.js';
 import {CSSOverviewStartView} from './CSSOverviewStartView.js';
+import {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
@@ -25,7 +26,7 @@ export class CSSOverviewPanel extends UI.Panel.Panel {
     this.element.classList.add('css-overview-panel');
 
     const [model] = SDK.SDKModel.TargetManager.instance().models(CSSOverviewModel);
-    this._model = model;
+    this._model = /** @type {!CSSOverviewModel} */ (model);
 
     this._controller = new OverviewController();
     this._startView = new CSSOverviewStartView(this._controller);
@@ -50,7 +51,7 @@ export class CSSOverviewPanel extends UI.Panel.Panel {
     this._fillColors = new Map();
     this._borderColors = new Map();
     this._fontInfo = new Map();
-    this._mediaQueries = [];
+    this._mediaQueries = new Map();
     this._unusedDeclarations = new Map();
     this._elementCount = 0;
     this._cancelled = false;
@@ -73,8 +74,11 @@ export class CSSOverviewPanel extends UI.Panel.Panel {
     this._renderInitialView();
   }
 
+  /**
+   * @param {!Common.EventTarget.EventTargetEvent} evt
+   */
   _requestNodeHighlight(evt) {
-    this._model.highlightNode(evt.data);
+    this._model.highlightNode(/** @type {number}*/ (evt.data));
   }
 
   _renderInitialView() {
@@ -97,15 +101,15 @@ export class CSSOverviewPanel extends UI.Panel.Panel {
 
     this._completedView.show(this.contentElement);
     this._completedView.setOverviewData({
-      backgroundColors: this._backgroundColors,
-      textColors: this._textColors,
-      fillColors: this._fillColors,
-      borderColors: this._borderColors,
+      backgroundColors: /** @type {!NodeStyleStats} */ (this._backgroundColors),
+      textColors: /** @type {!NodeStyleStats} */ (this._textColors),
+      fillColors: /** @type {!NodeStyleStats} */ (this._fillColors),
+      borderColors: /** @type {!NodeStyleStats} */ (this._borderColors),
       globalStyleStats: this._globalStyleStats,
-      fontInfo: this._fontInfo,
-      elementCount: this._elementCount,
-      mediaQueries: this._mediaQueries,
-      unusedDeclarations: this._unusedDeclarations,
+      fontInfo: /** @type {!FontInfo} */ (this._fontInfo),
+      elementCount: /** @type {number} */ (this._elementCount),
+      mediaQueries: /** @type {!Map<string, !Array<!Protocol.CSS.CSSMedia>>} */ (this._mediaQueries),
+      unusedDeclarations: /** @type {!Map<string, !Array<!UnusedDeclaration>>} */ (this._unusedDeclarations),
     });
   }
 
@@ -157,6 +161,10 @@ export class CSSOverviewPanel extends UI.Panel.Panel {
     this._controller.dispatchEventToListeners(Events.OverviewCompleted);
   }
 
+  /**
+   * @param {!Array<!Protocol.CSS.CSSComputedStyleProperty>} styles
+   * @param {string} name
+   */
   _getStyleValue(styles, name) {
     const item = styles.filter(style => style.name === name);
     if (!item.length) {

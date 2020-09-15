@@ -143,9 +143,10 @@ export async function findSearchResult(p: (el: puppeteer.ElementHandle<Element>)
 
 const normalizRetainerName = (retainerName: string) => {
   // Retainers starting with `Window /` might have host information in their
-  // name, including the port, so we need to strip that.
+  // name, including the port, so we need to strip that. We can't distinguish
+  // Window from Window / either, because on Mac it is often just Window.
   if (retainerName.startsWith('Window /')) {
-    return 'Window /';
+    return 'Window';
   }
   // Retainers including double-colons :: are names from the C++ implementation
   // exposed through Chromium's gn arg `enable_additional_blink_object_names`;

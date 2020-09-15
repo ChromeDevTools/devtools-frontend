@@ -47,7 +47,7 @@ describe('The Memory Panel', async function() {
       'Detached InternalNode',
       'Detached HTMLDivElement',
       'Retainer',
-      'Window /',
+      'Window',
     ]);
   });
 
@@ -70,7 +70,7 @@ describe('The Memory Panel', async function() {
       'HTMLBodyElement',
       'HTMLHtmlElement',
       'HTMLDocument',
-      'Window /',
+      'Window',
     ]);
   });
 
@@ -118,6 +118,6 @@ describe('The Memory Panel', async function() {
     // iframe window is not detached.
     await waitUntilRetainerChainSatisfies(
         retainerChain => retainerChain.some(
-            ({propertyName, retainerClassName}) => propertyName === 'aUniqueName' && retainerClassName === 'Window /'));
+            ({propertyName, retainerClassName}) => propertyName === 'aUniqueName' && retainerClassName === 'Window'));
   });
 });

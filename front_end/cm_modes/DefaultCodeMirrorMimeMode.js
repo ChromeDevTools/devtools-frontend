@@ -21,4 +21,7 @@ export class DefaultCodeMirrorMimeMode {
   }
 }
 
+self.CmModes = self.CmModes || {};
+CmModes = CmModes || {};
+
 CmModes.DefaultCodeMirrorMimeMode = DefaultCodeMirrorMimeMode;

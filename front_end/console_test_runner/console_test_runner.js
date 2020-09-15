@@ -7,6 +7,8 @@
  * @suppress {accessControls}
  */
 
+self.ConsoleTestRunner = self.ConsoleTestRunner || {};
+
 /** @typedef {function(!Element, !SDK.ConsoleMessage=):string} */
 ConsoleTestRunner.Formatter;
 

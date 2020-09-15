@@ -6,6 +6,7 @@
  * @fileoverview using private properties isn't a Closure violation in tests.
  * @suppress {accessControls}
  */
+self.CoverageTestRunner = self.CoverageTestRunner || {};
 
 /**
  * @param jsCoveragePerBlock - Collect per Block coverage if `true`, per function coverage otherwise.

@@ -6,6 +6,7 @@
  * @fileoverview using private properties isn't a Closure violation in tests.
  * @suppress {accessControls}
  */
+self.ElementsTestRunner = self.ElementsTestRunner || {};
 
 function flattenRuleRanges(rule) {
   const ranges = [];

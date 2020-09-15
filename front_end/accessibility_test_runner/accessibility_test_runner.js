@@ -7,6 +7,8 @@
  * @suppress {accessControls}
  */
 
+self.AccessibilityTestRunner = self.AccessibilityTestRunner || {};
+
 AccessibilityTestRunner.accessibilitySidebarPane = function() {
   return self.runtime.sharedInstance(Accessibility.AccessibilitySidebarView);
 };

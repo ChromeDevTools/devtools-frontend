@@ -6,6 +6,7 @@
  * @fileoverview using private properties isn't a Closure violation in tests.
  * @suppress {accessControls}
  */
+self.NetworkTestRunner = self.NetworkTestRunner || {};
 
 NetworkTestRunner.waitForRequestResponse = function(request) {
   if (request.responseReceivedTime !== -1) {

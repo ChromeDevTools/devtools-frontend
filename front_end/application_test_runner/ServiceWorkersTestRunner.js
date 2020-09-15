@@ -6,6 +6,7 @@
  * @fileoverview using private properties isn't a Closure violation in tests.
  * @suppress {accessControls}
  */
+self.ApplicationTestRunner = self.ApplicationTestRunner || {};
 
 ApplicationTestRunner.registerServiceWorker = function(script, scope) {
   return TestRunner.callFunctionInPageAsync('registerServiceWorker', [script, scope]);

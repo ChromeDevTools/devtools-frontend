@@ -6,6 +6,7 @@
  * @fileoverview using private properties isn't a Closure violation in tests.
  * @suppress {accessControls}
  */
+self.LayersTestRunner = self.LayersTestRunner || {};
 
 LayersTestRunner.layerTreeModel = function() {
   if (!LayersTestRunner._layerTreeModel) {

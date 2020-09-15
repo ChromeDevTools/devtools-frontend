@@ -7,6 +7,8 @@
  * @suppress {accessControls}
  */
 
+self.BindingsTestRunner = self.BindingsTestRunner || {};
+
 Persistence.PersistenceBinding.prototype.toString = function() {
   const lines = ['{', '       network: ' + this.network.url(), '    fileSystem: ' + this.fileSystem.url(), '}'];
 

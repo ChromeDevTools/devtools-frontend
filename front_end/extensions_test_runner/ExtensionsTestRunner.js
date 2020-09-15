@@ -6,6 +6,7 @@
  * @fileoverview using private properties isn't a Closure violation in tests.
  * @suppress {accessControls}
  */
+self.ExtensionsTestRunner = self.ExtensionsTestRunner || {};
 
 const extensionsHost = 'devtools-extensions.oopif.test';
 self.Extensions.extensionServer._registerHandler('evaluateForTestInFrontEnd', onEvaluate);

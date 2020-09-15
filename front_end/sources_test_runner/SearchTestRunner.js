@@ -6,6 +6,7 @@
  * @fileoverview using private properties isn't a Closure violation in tests.
  * @suppress {accessControls}
  */
+self.SourcesTestRunner = self.SourcesTestRunner || {};
 
 SourcesTestRunner.dumpSearchResults = function(searchResults) {
   function comparator(a, b) {

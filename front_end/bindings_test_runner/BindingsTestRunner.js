@@ -6,6 +6,7 @@
  * @fileoverview using private properties isn't a Closure violation in tests.
  * @suppress {accessControls}
  */
+self.BindingsTestRunner = self.BindingsTestRunner || {};
 
 BindingsTestRunner.cleanupURL = function(url) {
   if (!url.startsWith('debugger://')) {

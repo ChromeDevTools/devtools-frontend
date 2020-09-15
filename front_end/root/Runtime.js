@@ -539,22 +539,6 @@ export class RuntimeExtensionDescriptor {
   }
 }
 
-// Module namespaces.
-// NOTE: Update scripts/build/special_case_namespaces.json if you add a special cased namespace.
-/** @type {!Object<string,string>} */
-const specialCases = {
-  'sdk': 'SDK',
-  'js_sdk': 'JSSDK',
-  'browser_sdk': 'BrowserSDK',
-  'ui': 'UI',
-  'object_ui': 'ObjectUI',
-  'javascript_metadata': 'JavaScriptMetadata',
-  'perf_ui': 'PerfUI',
-  'har_importer': 'HARImporter',
-  'sdk_test_runner': 'SDKTestRunner',
-  'cpu_profiler_test_runner': 'CPUProfilerTestRunner'
-};
-
 /**
  * @unrestricted
  */
@@ -642,10 +626,6 @@ export class Module {
       return;
     }
 
-    const namespace = this._computeNamespace();
-    // @ts-ignore Legacy global namespace instantation
-    self[namespace] = self[namespace] || {};
-
     const legacyFileName = `${this._name}-legacy.js`;
     const moduleFileName = `${this._name}_module.js`;
     const entrypointFileName = `${this._name}.js`;
@@ -678,18 +658,7 @@ export class Module {
       return Promise.resolve();
     }
 
-    const namespace = this._computeNamespace();
-    // @ts-ignore Legacy global namespace instantation
-    self[namespace] = self[namespace] || {};
     return loadScriptsPromise(this._descriptor.scripts.map(this._modularizeURL, this), this._remoteBase());
-  }
-
-  /**
-   * @return {string}
-   */
-  _computeNamespace() {
-    return specialCases[this._name] ||
-        this._name.split('_').map(a => a.substring(0, 1).toUpperCase() + a.substring(1)).join('');
   }
 
   /**

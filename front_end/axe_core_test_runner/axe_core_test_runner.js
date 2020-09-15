@@ -4,6 +4,8 @@
 
 import '../third_party/axe-core/axe.js';
 
+self.AxeCoreTestRunner = self.AxeCoreTestRunner || {};
+
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  * @suppress {accessControls}

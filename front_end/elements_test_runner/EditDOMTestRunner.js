@@ -6,6 +6,7 @@
  * @fileoverview using private properties isn't a Closure violation in tests.
  * @suppress {accessControls}
  */
+self.ElementsTestRunner = self.ElementsTestRunner || {};
 
 ElementsTestRunner.doAddAttribute = function(testName, dataNodeId, attributeText, next) {
   ElementsTestRunner.domActionTestForNodeId(testName, dataNodeId, testBody, next);

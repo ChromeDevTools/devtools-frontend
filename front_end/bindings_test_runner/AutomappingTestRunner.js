@@ -7,6 +7,8 @@
  * @suppress {accessControls}
  */
 
+self.BindingsTestRunner = self.BindingsTestRunner || {};
+
 BindingsTestRunner.addFiles = function(testFileSystem, files) {
   for (const filePath in files) {
     const file = files[filePath];

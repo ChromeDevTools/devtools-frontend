@@ -6,6 +6,7 @@
  * @fileoverview using private properties isn't a Closure violation in tests.
  * @suppress {accessControls}
  */
+self.SecurityTestRunner = self.SecurityTestRunner || {};
 
 SecurityTestRunner.dumpSecurityPanelSidebarOrigins = function() {
   for (const key in Security.SecurityPanelSidebarTree.OriginGroup) {

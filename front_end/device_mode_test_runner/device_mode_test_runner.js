@@ -6,6 +6,7 @@
  * @fileoverview using private properties isn't a Closure violation in tests.
  * @suppress {accessControls}
  */
+self.DeviceModeTestRunner = self.DeviceModeTestRunner || {};
 
 DeviceModeTestRunner.buildFakePhone = function(overrides) {
   const StandardPhoneJSON = {

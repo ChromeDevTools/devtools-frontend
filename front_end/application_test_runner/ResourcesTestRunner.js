@@ -6,6 +6,7 @@
  * @fileoverview using private properties isn't a Closure violation in tests.
  * @suppress {accessControls}
  */
+self.ApplicationTestRunner = self.ApplicationTestRunner || {};
 
 /**
  * Many application panel tests are flaky because storage state (e.g. IndexedDB)

@@ -7,6 +7,8 @@
  * @suppress {accessControls}
  */
 
+self.ApplicationTestRunner = self.ApplicationTestRunner || {};
+
 ApplicationTestRunner.createAndNavigateIFrame = function(url, callback) {
   TestRunner.addSniffer(SDK.ResourceTreeModel.prototype, '_frameNavigated', frameNavigated);
   TestRunner.evaluateInPageAnonymously('createAndNavigateIFrame(unescape(\'' + escape(url) + '\'))');

@@ -6,6 +6,7 @@
  * @fileoverview using private properties isn't a Closure violation in tests.
  * @suppress {accessControls}
  */
+self.SourcesTestRunner = self.SourcesTestRunner || {};
 
 SourcesTestRunner.replaceInSource = function(sourceFrame, string, replacement) {
   sourceFrame._textEditor.setReadOnly(false);

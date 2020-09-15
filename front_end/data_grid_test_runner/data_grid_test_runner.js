@@ -6,6 +6,7 @@
  * @fileoverview using private properties isn't a Closure violation in tests.
  * @suppress {accessControls}
  */
+self.DataGridTestRunner = self.DataGridTestRunner || {};
 
 DataGridTestRunner.dumpDataGrid = function(root, descentIntoCollapsed, prefix) {
   if (!prefix) {

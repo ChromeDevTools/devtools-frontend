@@ -6,6 +6,7 @@
  * @fileoverview using private properties isn't a Closure violation in tests.
  * @suppress {accessControls}
  */
+self.BindingsTestRunner = self.BindingsTestRunner || {};
 
 Host.InspectorFrontendHost.isolatedFileSystem = function(name) {
   return BindingsTestRunner.TestFileSystem._instances[name];

@@ -27,6 +27,8 @@ template("devtools_entrypoint") {
 
   _ts_library_target_name = _entrypoint_target_name + "-typescript"
 
+  _is_web_worker = defined(invoker.is_web_worker) && invoker.is_web_worker
+
   # In debug mode, the entrypoint is kept as-is. This means we only
   # need to compile with TypeScript, which means it will fetch all
   # of its files as separate network requests.
@@ -37,6 +39,8 @@ template("devtools_entrypoint") {
       sources = [ invoker.entrypoint ]
 
       deps = invoker.deps
+
+      is_web_worker = _is_web_worker
     }
 
     # In debug mode we also want to copy the sourcemap of the entrypoint into
@@ -125,6 +129,8 @@ template("devtools_entrypoint") {
       rootdir = target_gen_dir
 
       public_deps = [ ":$_copy_target_name" ]
+
+      is_web_worker = _is_web_worker
     }
 
     rollup(_rollup_target_name) {

@@ -119,14 +119,6 @@ export class FormatterWorkerPool {
   }
 
   /**
-   * @param {string} content
-   * @return {!Promise<!Array<!SCSSRule>>}
-   */
-  parseSCSS(content) {
-    return this._runTask('parseSCSS', {content: content}).then(rules => rules || []);
-  }
-
-  /**
    * @param {string} mimeType
    * @param {string} content
    * @param {string} indentString

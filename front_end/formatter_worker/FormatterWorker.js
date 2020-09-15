@@ -28,19 +28,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import '../cm_headless/cm_headless.js';
+import '../third_party/codemirror/package/mode/css/css.js';
+import '../third_party/codemirror/package/mode/xml/xml.js';
+
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as Acorn from '../third_party/acorn/acorn.js';
 
 import {AcornTokenizer, ECMA_VERSION} from './AcornTokenizer.js';
 import {CSSFormatter} from './CSSFormatter.js';
-import {parseCSS} from './CSSRuleParser.js';
 import {ESTreeWalker} from './ESTreeWalker.js';
 import {FormattedContentBuilder} from './FormattedContentBuilder.js';
 import {HTMLFormatter} from './HTMLFormatter.js';
 import {IdentityFormatter} from './IdentityFormatter.js';
 import {JavaScriptFormatter} from './JavaScriptFormatter.js';
-import {javaScriptOutline} from './JavaScriptOutline.js';
 
 /**
  * @param {string} mimeType
@@ -77,49 +79,6 @@ export function createTokenizer(mimeType) {
 }
 
 export const AbortTokenization = {};
-
-/**
- * @param {!MessageEvent} event
- */
-self.onmessage = function(event) {
-  const method = /** @type {string} */ (event.data.method);
-  const params = /** @type {!{indentString: string, content: string, mimeType: string}} */ (event.data.params);
-  if (!method) {
-    return;
-  }
-
-  switch (method) {
-    case 'format':
-      format(params.mimeType, params.content, params.indentString);
-      break;
-    case 'parseCSS':
-      parseCSS(params.content);
-      break;
-    case 'parseSCSS':
-      FormatterWorkerContentParser.parse(params.content, 'text/x-scss');
-      break;
-    case 'javaScriptOutline':
-      javaScriptOutline(params.content);
-      break;
-    case 'javaScriptIdentifiers':
-      javaScriptIdentifiers(params.content);
-      break;
-    case 'evaluatableJavaScriptSubstring':
-      evaluatableJavaScriptSubstring(params.content);
-      break;
-    case 'findLastExpression':
-      postMessage(findLastExpression(params.content));
-      break;
-    case 'findLastFunctionCall':
-      postMessage(findLastFunctionCall(params.content));
-      break;
-    case 'argumentsList':
-      postMessage(argumentsList(params.content));
-      break;
-    default:
-      console.error('Unsupport method name: ' + method);
-  }
-};
 
 /**
  * @param {string} content
@@ -163,7 +122,7 @@ export function evaluatableJavaScriptSubstring(content) {
   } catch (e) {
     console.error(e);
   }
-  postMessage(result);
+  self.postMessage(result);
 }
 
 /**
@@ -217,7 +176,7 @@ export function javaScriptIdentifiers(content) {
   }
 
   if (!root || root.type !== 'Program' || root.body.length !== 1 || !isFunction(root.body[0])) {
-    postMessage([]);
+    self.postMessage([]);
     return;
   }
 
@@ -227,7 +186,7 @@ export function javaScriptIdentifiers(content) {
   }
   walker.walk(functionNode.body);
   const reduced = identifiers.map(id => ({name: 'name' in id && id.name, offset: id.start}));
-  postMessage(reduced);
+  self.postMessage(reduced);
   return;
 }
 
@@ -271,7 +230,7 @@ export function format(mimeType, text, indentString) {
     result.mapping = {original: [0], formatted: [0]};
     result.content = text;
   }
-  postMessage(result);
+  self.postMessage(result);
 }
 
 /**
@@ -479,46 +438,6 @@ export function _lastCompleteExpression(content, suffix, types) {
   }
   return {baseNode, baseExpression};
 }
-
-/**
- * @interface
- */
-export class FormatterWorkerContentParser {
-  /**
-   * @param {string} content
-   * @return {!Object}
-   */
-  parse(content) {
-    throw new Error('Not implemented yet');
-  }
-}
-
-/**
- * @param {string} content
- * @param {string} mimeType
- */
-FormatterWorkerContentParser.parse = function(content, mimeType) {
-  const extension = Root.Runtime.Runtime.instance().extensions(FormatterWorkerContentParser).find(findExtension);
-  console.assert(!!extension);
-  if (!extension) {
-    return;
-  }
-  extension.instance()
-      .then(instance => /** @type {!FormatterWorkerContentParser} */ (instance).parse(content))
-      .catch(error => {
-        console.error(error);
-      })
-      .then(postMessage);
-
-  /**
-   * @param {!Root.Runtime.Extension} extension
-   * @return {boolean}
-   */
-  function findExtension(extension) {
-    const descriptor = extension.descriptor();
-    return 'mimeType' in descriptor && descriptor['mimeType'] === mimeType;
-  }
-};
 
 (function disableLoggingForTest() {
   if (Root.Runtime.Runtime.queryParam('test')) {

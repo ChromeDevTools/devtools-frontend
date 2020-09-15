@@ -2,28 +2,45 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../cm_headless/cm_headless.js';
-import '../third_party/codemirror/package/mode/css/css.js';
-import '../third_party/codemirror/package/mode/xml/xml.js';
-
-import * as AcornTokenizer from './AcornTokenizer.js';
-import * as CSSFormatter from './CSSFormatter.js';
 import * as CSSRuleParser from './CSSRuleParser.js';
-import * as ESTreeWalker from './ESTreeWalker.js';
-import * as FormattedContentBuilder from './FormattedContentBuilder.js';
 import * as FormatterWorker from './FormatterWorker.js';
-import * as HTMLFormatter from './HTMLFormatter.js';
-import * as JavaScriptFormatter from './JavaScriptFormatter.js';
 import * as JavaScriptOutline from './JavaScriptOutline.js';
 
-export {
-  AcornTokenizer,
-  CSSFormatter,
-  CSSRuleParser,
-  ESTreeWalker,
-  FormattedContentBuilder,
-  FormatterWorker,
-  HTMLFormatter,
-  JavaScriptFormatter,
-  JavaScriptOutline,
+self.onmessage = function(event: MessageEvent) {
+  const method: string = event.data.method;
+  const params: {indentString: string; content: string; mimeType: string;} = event.data.params;
+  if (!method) {
+    return;
+  }
+
+  switch (method) {
+    case 'format':
+      FormatterWorker.format(params.mimeType, params.content, params.indentString);
+      break;
+    case 'parseCSS':
+      CSSRuleParser.parseCSS(params.content);
+      break;
+    case 'javaScriptOutline':
+      JavaScriptOutline.javaScriptOutline(params.content);
+      break;
+    case 'javaScriptIdentifiers':
+      FormatterWorker.javaScriptIdentifiers(params.content);
+      break;
+    case 'evaluatableJavaScriptSubstring':
+      FormatterWorker.evaluatableJavaScriptSubstring(params.content);
+      break;
+    case 'findLastExpression':
+      self.postMessage(FormatterWorker.findLastExpression(params.content));
+      break;
+    case 'findLastFunctionCall':
+      self.postMessage(FormatterWorker.findLastFunctionCall(params.content));
+      break;
+    case 'argumentsList':
+      self.postMessage(FormatterWorker.argumentsList(params.content));
+      break;
+    default:
+      console.error('Unsupport method name: ' + method);
+  }
 };
+
+self.postMessage('workerReady');

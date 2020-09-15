@@ -10,12 +10,17 @@ import * as Acorn from '../third_party/acorn/acorn.js';
 import {ECMA_VERSION} from './AcornTokenizer.js';
 import {ESTreeWalker} from './ESTreeWalker.js';
 
+/** @typedef {{name: string, line: number, column: number, arguments: (string|undefined)}} */
+// @ts-ignore typedef
+export let Chunk;
+
 /**
  * @param {string} content
+ * @return {{chunk: !Array<!Chunk>, isLastChunk: boolean}}
  */
 export function javaScriptOutline(content) {
   const chunkSize = 100000;
-  /** @type {!Array<{name: string, line: number, column: number, arguments: (string|undefined)}>} */
+  /** @type {!Array<!Chunk>} */
   let outlineChunk = [];
   let lastReportedOffset = 0;
 
@@ -36,8 +41,7 @@ export function javaScriptOutline(content) {
   // typecheck it.
   walker.walk(ast);
 
-  // @ts-ignore Worker.postMessage signature is different to Window.postMessage; lib.dom.ts assumes this code is on window.
-  postMessage({chunk: outlineChunk, isLastChunk: true});
+  return {chunk: outlineChunk, isLastChunk: true};
 
   /**
    * @param {!ESTree.Node} node
@@ -175,7 +179,7 @@ export function javaScriptOutline(content) {
   }
 
   /**
-   * @param {{name: string, line: number, column: number, arguments: (string|undefined)}} item
+   * @param {!Chunk} item
    */
   function addOutlineItem(item) {
     outlineChunk.push(item);

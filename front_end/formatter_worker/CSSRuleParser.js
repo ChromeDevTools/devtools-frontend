@@ -13,13 +13,6 @@ export const CSSParserStates = {
   AtRule: 'AtRule'
 };
 
-/**
- * @param {string} text
- */
-export function parseCSS(text) {
-  _innerParseCSS(text, postMessage);
-}
-
 /** @typedef {*} */
 let Rule;  // eslint-disable-line no-unused-vars
 
@@ -31,7 +24,7 @@ let Chunk;  // eslint-disable-line no-unused-vars
  * @param {string} text
  * @param {function({ chunk: !Array.<!Rule>, isLastChunk:boolean}):void} chunkCallback
  */
-export function _innerParseCSS(text, chunkCallback) {
+export function parseCSS(text, chunkCallback) {
   const chunkSize = 100000;  // characters per data chunk
   const lines = text.split('\n');
   /** @type {!Array.<!Rule>} */
@@ -124,7 +117,7 @@ export function _innerParseCSS(text, chunkCallback) {
           const uncommentedText = tokenValue.substring(2, tokenValue.length - 2);
           const fakeRule = 'a{\n' + uncommentedText + '}';
           disabledRules = [];
-          _innerParseCSS(fakeRule, disabledRulesCallback);
+          parseCSS(fakeRule, disabledRulesCallback);
           if (disabledRules.length === 1 && disabledRules[0].properties.length === 1) {
             const disabledProperty = disabledRules[0].properties[0];
             disabledProperty.disabled = true;

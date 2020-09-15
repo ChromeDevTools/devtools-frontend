@@ -15,19 +15,19 @@ self.onmessage = function(event: MessageEvent) {
 
   switch (method) {
     case 'format':
-      FormatterWorker.format(params.mimeType, params.content, params.indentString);
+      self.postMessage(FormatterWorker.format(params.mimeType, params.content, params.indentString));
       break;
     case 'parseCSS':
-      CSSRuleParser.parseCSS(params.content);
+      CSSRuleParser.parseCSS(params.content, self.postMessage);
       break;
     case 'javaScriptOutline':
-      JavaScriptOutline.javaScriptOutline(params.content);
+      self.postMessage(JavaScriptOutline.javaScriptOutline(params.content));
       break;
     case 'javaScriptIdentifiers':
-      FormatterWorker.javaScriptIdentifiers(params.content);
+      self.postMessage(FormatterWorker.javaScriptIdentifiers(params.content));
       break;
     case 'evaluatableJavaScriptSubstring':
-      FormatterWorker.evaluatableJavaScriptSubstring(params.content);
+      self.postMessage(FormatterWorker.evaluatableJavaScriptSubstring(params.content));
       break;
     case 'findLastExpression':
       self.postMessage(FormatterWorker.findLastExpression(params.content));

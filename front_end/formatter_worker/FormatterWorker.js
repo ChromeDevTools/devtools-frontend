@@ -82,6 +82,7 @@ export const AbortTokenization = {};
 
 /**
  * @param {string} content
+ * @return {string}
  */
 export function evaluatableJavaScriptSubstring(content) {
   const tokenizer = Acorn.tokenizer(content, {ecmaVersion: ECMA_VERSION});
@@ -122,11 +123,12 @@ export function evaluatableJavaScriptSubstring(content) {
   } catch (e) {
     console.error(e);
   }
-  self.postMessage(result);
+  return result;
 }
 
 /**
  * @param {string} content
+ * @return {!Array<!{name: (string|undefined), offset: number}>}
  */
 export function javaScriptIdentifiers(content) {
   /** @type {?ESTree.Node} */
@@ -176,8 +178,7 @@ export function javaScriptIdentifiers(content) {
   }
 
   if (!root || root.type !== 'Program' || root.body.length !== 1 || !isFunction(root.body[0])) {
-    self.postMessage([]);
-    return;
+    return [];
   }
 
   const functionNode = /** @type {!ESTree.FunctionDeclaration} */ (root.body[0]);
@@ -185,15 +186,14 @@ export function javaScriptIdentifiers(content) {
     walker.walk(param);
   }
   walker.walk(functionNode.body);
-  const reduced = identifiers.map(id => ({name: 'name' in id && id.name, offset: id.start}));
-  self.postMessage(reduced);
-  return;
+  return identifiers.map(id => ({name: 'name' in id && id.name || undefined, offset: id.start}));
 }
 
 /**
  * @param {string} mimeType
  * @param {string} text
  * @param {string=} indentString
+ * @return {{mapping: {original: !Array<number>, formatted: !Array<number>}, content: string}}
  */
 export function format(mimeType, text, indentString) {
   // Default to a 4-space indent.
@@ -230,7 +230,7 @@ export function format(mimeType, text, indentString) {
     result.mapping = {original: [0], formatted: [0]};
     result.content = text;
   }
-  self.postMessage(result);
+  return result;
 }
 
 /**

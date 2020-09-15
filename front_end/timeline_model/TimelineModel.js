@@ -142,6 +142,13 @@ export class TimelineModelImpl {
    * @param {!SDK.TracingModel.Event} event
    * @return {boolean}
    */
+  isUserTimingEvent(event) {
+    return event.categoriesString === TimelineModelImpl.Category.UserTiming;
+  }
+  /**
+   * @param {!SDK.TracingModel.Event} event
+   * @return {boolean}
+   */
   isParseHTMLEvent(event) {
     return event.name === RecordType.ParseHTML;
   }

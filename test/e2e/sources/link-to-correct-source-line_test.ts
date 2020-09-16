@@ -8,7 +8,8 @@ import {expandIssue, navigateToIssuesTab, revealViolatingSourcesLines} from '../
 import {waitForhighlightedLineWhichIncludesText} from '../helpers/sources-helpers.js';
 
 describe('The Issues tab', async () => {
-  it('should highlight a line in the Sources panel when the link is clicked', async () => {
+  // Flaky test
+  it.skip('[crbug.com/1073406]: should highlight a line in the Sources panel when the link is clicked', async () => {
     await goToResource('elements/element-reveal-inline-issue.html');
 
     await navigateToIssuesTab();

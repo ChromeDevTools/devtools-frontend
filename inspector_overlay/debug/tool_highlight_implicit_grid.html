@@ -11,6 +11,9 @@ found in the LICENSE file.
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="stylesheet" href="../common.css">
   <script type="module" src="../tool_highlight.js"></script>
+  <style>
+    body { background: #ccc; }
+  </style>
 </head>
 <body>
   <script type="module">
@@ -24,8 +27,6 @@ found in the LICENSE file.
 
     drawHighlight({
       "paths":[
-        {"path":["M",200,400,"L",800,400,"L",800,800,"L",200,800,"Z"],"fillColor":"rgba(111, 168, 220, .66)","name":"content"},
-        {"path":["M",180,380,"L",820,380,"L",820,820,"L",180,820,"Z"],"fillColor":"rgba(246, 178, 107, .6)","name":"margin"}
       ],
       "gridInfo":[
         {
@@ -38,7 +39,7 @@ found in the LICENSE file.
           "positiveColumnLineNumberPositions":[{x:400,y:400},{x:600,y:400},{x:800,y:400}],
           "negativeColumnLineNumberPositions":[{x:200,y:800},{x:400,y:800},{x:600,y:800}],
           "gridBorder":["M",200,400,"L",800,400,"L",800,800,"L",200,800,"Z"],
-          "gridHighlightConfig":{"gridBorderDash":false,"rowLineDash":true,"columnLineDash":true,"showGridExtensionLines":false,"showPositiveLineNumbers":true,"showNegativeLineNumbers":true,"rowLineColor":"rgba(147, 52, 230, 1)","columnLineColor":"rgba(147, 52, 230, 1)","rowHatchColor":"rgba(147, 52, 230, .8)","columnHatchColor":"rgba(147, 52, 230, .8)"},
+          "gridHighlightConfig":{"gridBackgroundColor":"rgba(147, 52, 230, .1)","gridBorderColor":"rgba(147, 52, 230, 1)","gridBorderDash":false,"rowLineDash":true,"columnLineDash":true,"showGridExtensionLines":true,"showPositiveLineNumbers":true,"showNegativeLineNumbers":true,"rowLineColor":"rgba(147, 52, 230, 1)","columnLineColor":"rgba(147, 52, 230, 1)","rowHatchColor":"rgba(147, 52, 230, .8)","columnHatchColor":"rgba(147, 52, 230, .8)","rowGapColor":"rgba(147, 52, 230, .2)"},
           "isPrimaryGrid":true
         }
       ]

@@ -223,6 +223,12 @@ export function drawLayoutGridHighlight(highlight, context) {
   context.save();
   _applyWritingModeTransformation(highlight.writingMode, gridBounds, context);
 
+  // Draw grid background
+  if (highlight.gridHighlightConfig.gridBackgroundColor) {
+    context.fillStyle = highlight.gridHighlightConfig.gridBackgroundColor;
+    context.fill(gridPath);
+  }
+
   // Draw Grid border
   if (highlight.gridHighlightConfig.gridBorderColor) {
     context.save();

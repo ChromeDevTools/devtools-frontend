@@ -9,6 +9,7 @@ copy_to_gen("memory") {
     "attached-iframe.html",
     "default.html",
     "detached-dom-tree.html",
+    "detached-iframe.html",
     "detached-node.html",
     "dom-objects.html",
     "event-listeners.html",

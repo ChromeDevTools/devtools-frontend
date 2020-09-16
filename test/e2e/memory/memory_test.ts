@@ -120,4 +120,15 @@ describe('The Memory Panel', async function() {
         retainerChain => retainerChain.some(
             ({propertyName, retainerClassName}) => propertyName === 'aUniqueName' && retainerClassName === 'Window'));
   });
+
+  it('Shows the correct output for a detached iframe', async () => {
+    await goToResource('memory/detached-iframe.html');
+    await navigateToMemoryTab();
+    await takeHeapSnapshot();
+    await waitForNonEmptyHeapSnapshotData();
+    await setSearchFilter('Leak');
+    await waitForSearchResultNumber(8);
+    await waitUntilRetainerChainSatisfies(
+        retainerChain => retainerChain.some(({retainerClassName}) => retainerClassName === 'Detached Window'));
+  });
 });

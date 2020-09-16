@@ -1,0 +1,21 @@
+<!--
+  Copyright 2020 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<h1>Memory Panel (Heap profiler) Test</h1>
+<script>
+  const frame = document.createElement('iframe');
+  frame.src = 'data:text/html,<script>class Leak{}; var x = new Leak();<'+
+                    '/script>';
+  document.body.appendChild(frame);
+  frame.addEventListener("load", function() {
+    const iframeWindow  = this.contentWindow;
+    const retainingListener = () => {
+      // This is leaking the iframe.
+      console.log(iframeWindow);
+    }
+    document.body.addEventListener('click', retainingListener, true);
+    document.body.removeChild(this);
+  });
+</script>

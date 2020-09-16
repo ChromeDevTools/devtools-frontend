@@ -27,6 +27,9 @@
   <message name="IDS_DEVTOOLS_6e3e66da4fb111d1cf68b4b1e4730261" desc="A right-click context menu entry which when clicked causes the menu entry for that player to be removed.">
     Hide player
   </message>
+  <message name="IDS_DEVTOOLS_e40b9e25ca3de7314333b1ecdfaefd49" desc="Place holder text stating that there are no text tracks on this player.">
+    No Text Tracks
+  </message>
   <message name="IDS_DEVTOOLS_e6818a215084646ac80a1a07561ecf35" desc="A device that converts media files into playable streams of audio or video.">
     Decoder
   </message>

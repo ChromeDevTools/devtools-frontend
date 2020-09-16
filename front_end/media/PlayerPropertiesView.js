@@ -242,7 +242,6 @@ class GenericTrackMenu extends UI.TabbedPane.TabbedPane {
   }
 }
 
-
 class DecoderTrackMenu extends GenericTrackMenu {
   constructor(decoderName, informationalElement) {
     super(decoderName);
@@ -252,6 +251,24 @@ class DecoderTrackMenu extends GenericTrackMenu {
     const propertiesLocalized = Common.UIString.UIString('Properties');
     const hoverText = `${title} ${propertiesLocalized}`;
     this.appendTab('DecoderProperties', title, informationalElement, hoverText);
+  }
+}
+
+class NoTracksPlaceholderMenu extends UI.Widget.VBox {
+  constructor(wrapping, placeholder_text) {
+    super();
+    this._isPlaceholder = true;
+    this._wrapping = wrapping;
+    this._wrapping.appendTab('_placeholder', placeholder_text, new UI.Widget.VBox(), placeholder_text);
+    this._wrapping.show(this.contentElement);
+  }
+
+  addNewTab(trackNumber, element) {
+    if (this._isPlaceholder) {
+      this._wrapping.closeTab('_placeholder');
+      this._isPlaceholder = false;
+    }
+    this._wrapping.addNewTab(trackNumber, element);
   }
 }
 
@@ -279,7 +296,8 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
 
   _lazyCreateTrackTabs() {
     if (this._textTrackTabs === null) {
-      this._textTrackTabs = new GenericTrackMenu(ls`Text Track`);
+      const textTracks = new GenericTrackMenu(ls`Text Track`);
+      this._textTrackTabs = new NoTracksPlaceholderMenu(textTracks, ls`No Text Tracks`);
       this._textTrackTabs.show(this.contentElement);
     }
     return this._textTrackTabs;

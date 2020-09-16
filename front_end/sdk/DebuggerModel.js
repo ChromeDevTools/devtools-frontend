@@ -53,7 +53,8 @@ export function sortAndMergeRanges(locationRanges) {
   for (let i = 1; i < locationRanges.length; ++i) {
     const current = locationRanges[i];
     if (prev.overlap(current)) {
-      prev = new LocationRange(prev.scriptId, prev.start, current.end);
+      const largerEnd = prev.end.compareTo(current.end) > 0 ? prev.end : current.end;
+      prev = new LocationRange(prev.scriptId, prev.start, largerEnd);
     } else {
       merged.push(prev);
       prev = current;

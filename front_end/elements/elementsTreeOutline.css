@@ -316,22 +316,20 @@ li.selected {
 li.hovered:not(.always-parent) + ol.children,
 .elements-tree-outline ol.shadow-root,
 li.selected:not(.always-parent) + ol.children {
-  margin-left: 5px;
-  padding-inline-start: 6px;
-  border-width: 1px;
-  border-left-style: solid;
+  background: linear-gradient(to right, var(--indentation-level-border-color), var(--indentation-level-border-color) 0.5px, transparent 0);
+  background-position-x: 5px;
 }
 
 li.selected:not(.always-parent) + ol.children {
-  border-color: hsl(216deg 68% 80% / 100%) !important;
+  --indentation-level-border-color: hsl(216deg 68% 80% / 100%) !important;
 }
 
 li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
-  border-color: hsl(0deg 0% 0% / 10%);
+  --indentation-level-border-color: hsl(0deg 0% 0% / 10%);
 }
 
 .elements-tree-outline ol.shadow-root {
-  border-color: hsl(0deg 0% 80% / 100%);
+  --indentation-level-border-color: hsl(0deg 0% 80% / 100%);
 }
 
 @media (forced-colors: active) {

@@ -20,6 +20,7 @@
   },
   "scripts": {
     "auto-debug-e2etest": "autoninja -C out/Default && npm run debug-e2etest",
+    "auto-debug-unittest": "autoninja -C out/Default && DEBUG=1 npm run unittest",
     "auto-e2etest": "autoninja -C out/Default && npm run e2etest",
     "auto-unittest": "python scripts/test/run_auto_unittests.py --no-text-coverage",
     "check": "npm run check-json && npm run check-gn && npm run check-lint && npm run check-loc && npm run check-type-closure",

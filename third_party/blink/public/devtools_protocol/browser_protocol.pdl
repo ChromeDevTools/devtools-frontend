@@ -826,8 +826,6 @@ domain Browser
       # For "push" permission, may specify userVisibleOnly.
       # Note that userVisibleOnly = true is the only currently supported type.
       optional boolean userVisibleOnly
-      # For "wake-lock" permission, must specify type as either "screen" or "system".
-      optional string type
       # For "clipboard" permission, may specify allowWithoutSanitization.
       optional boolean allowWithoutSanitization
 
@@ -1078,9 +1076,11 @@ experimental domain CSS
       boolean isInline
       # Whether this stylesheet is mutable. Inline stylesheets become mutable
       # after they have been modified via CSSOM API.
-      # <link> element's stylesheets are never mutable. Constructed stylesheets
-      # (new CSSStyleSheet()) are mutable immediately after creation.
+      # <link> element's stylesheets become mutable only if DevTools modifies them.
+      # Constructed stylesheets (new CSSStyleSheet()) are mutable immediately after creation.
       boolean isMutable
+      # Whether this stylesheet is a constructed stylesheet (created using new CSSStyleSheet()).
+      boolean isConstructed
       # Line offset of the stylesheet within the resource (zero based).
       number startLine
       # Column offset of the stylesheet within the resource (zero based).
@@ -5052,6 +5052,12 @@ domain Network
       # Map with extra HTTP headers.
       Headers headers
 
+  # Specifies whether to sned a debug header to all outgoing requests.
+  experimental command setAttachDebugHeader
+    parameters
+      # Whether to send a debug header.
+      boolean enabled
+
   # Sets the requests to intercept that match the provided patterns and optionally resource types.
   # Deprecated, please use Fetch.enable instead.
   experimental deprecated command setRequestInterception
@@ -5421,6 +5427,8 @@ experimental domain Overlay
       optional DOM.RGBA columnHatchColor
       # The named grid areas border color (Default: transparent).
       optional DOM.RGBA areaBorderColor
+      # The grid container background color (Default: transparent).
+      optional DOM.RGBA gridBackgroundColor
 
   # Configuration data for the highlighting of page elements.
   type HighlightConfig extends object
@@ -7690,7 +7698,7 @@ experimental domain Tracing
       optional StreamCompression streamCompression
 
 # A domain for letting clients substitute browser's network layer with client code.
-experimental domain Fetch
+domain Fetch
   depends on Network
   depends on IO
   depends on Page
@@ -7701,12 +7709,12 @@ experimental domain Fetch
   # Stages of the request to handle. Request will intercept before the request is
   # sent. Response will intercept after the response is received (but before response
   # body is received.
-  experimental type RequestStage extends string
+  type RequestStage extends string
     enum
       Request
       Response
 
-  experimental type RequestPattern extends object
+  type RequestPattern extends object
     properties
       # Wildcards ('*' -> zero or more, '?' -> exactly one) are allowed. Escape character is
       # backslash. Omitting is equivalent to "*".
@@ -7723,7 +7731,7 @@ experimental domain Fetch
       string value
 
   # Authorization challenge for HTTP status code 401 or 407.
-  experimental type AuthChallenge extends object
+  type AuthChallenge extends object
     properties
       # Source of the authentication challenge.
       optional enum source
@@ -7737,7 +7745,7 @@ experimental domain Fetch
       string realm
 
   # Response to an AuthChallenge.
-  experimental type AuthChallengeResponse extends object
+  type AuthChallengeResponse extends object
     properties
       # The decision on what to do in response to the authorization challenge.  Default means
       # deferring to the default behavior of the net stack, which will likely either the Cancel
@@ -7966,7 +7974,7 @@ experimental domain WebAudio
       # Context sample rate.
       number sampleRate
 
-# Protocol object for AudioListner
+# Protocol object for AudioListener
   type AudioListener extends object
     properties
       GraphObjectId listenerId

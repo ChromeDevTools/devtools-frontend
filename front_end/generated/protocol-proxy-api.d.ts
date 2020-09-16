@@ -1770,6 +1770,12 @@ declare namespace ProtocolProxyApi {
         Promise<Protocol.ProtocolResponseWithError>;
 
     /**
+     * Specifies whether to sned a debug header to all outgoing requests.
+     */
+    invoke_setAttachDebugHeader(params: Protocol.Network.SetAttachDebugHeaderRequest):
+        Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
      * Sets the requests to intercept that match the provided patterns and optionally resource types.
      * Deprecated, please use Fetch.enable instead.
      */
@@ -3500,6 +3506,21 @@ declare namespace ProtocolProxyApi {
      * Collect type profile.
      */
     invoke_takeTypeProfile(): Promise<Protocol.Profiler.TakeTypeProfileResponse>;
+
+    /**
+     * Enable counters collection.
+     */
+    invoke_enableCounters(): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Disable counters collection.
+     */
+    invoke_disableCounters(): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Retrieve counters.
+     */
+    invoke_getCounters(): Promise<Protocol.Profiler.GetCountersResponse>;
 
     /**
      * Enable run time call stats collection.

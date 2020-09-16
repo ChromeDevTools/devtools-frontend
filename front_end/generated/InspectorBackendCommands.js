@@ -1559,6 +1559,8 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand(
       'Network.setExtraHTTPHeaders', [{'name': 'headers', 'type': 'object', 'optional': false}], []);
   inspectorBackend.registerCommand(
+      'Network.setAttachDebugHeader', [{'name': 'enabled', 'type': 'boolean', 'optional': false}], []);
+  inspectorBackend.registerCommand(
       'Network.setRequestInterception', [{'name': 'patterns', 'type': 'object', 'optional': false}], []);
   inspectorBackend.registerCommand(
       'Network.setUserAgentOverride',
@@ -2644,6 +2646,9 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand('Profiler.stopTypeProfile', [], []);
   inspectorBackend.registerCommand('Profiler.takePreciseCoverage', [], ['result', 'timestamp']);
   inspectorBackend.registerCommand('Profiler.takeTypeProfile', [], ['result']);
+  inspectorBackend.registerCommand('Profiler.enableCounters', [], []);
+  inspectorBackend.registerCommand('Profiler.disableCounters', [], []);
+  inspectorBackend.registerCommand('Profiler.getCounters', [], ['result']);
   inspectorBackend.registerCommand('Profiler.enableRuntimeCallStats', [], []);
   inspectorBackend.registerCommand('Profiler.disableRuntimeCallStats', [], []);
   inspectorBackend.registerCommand('Profiler.getRuntimeCallStats', [], ['result']);

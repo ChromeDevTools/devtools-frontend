@@ -110,9 +110,27 @@ async function checkFileExists(filePath) {
   }
 }
 
+/**
+ * In Devtools-Frontend we load images without a leading slash, e.g.
+ * url(Images/checker.png). This works within devtools, but breaks this component
+ * server as the path ends up as /component_docs/my_component/Image/checker.png.
+ * So we check if the path ends in Images/*.* and if so, remove anything before
+ * it. Then it will be resolved correctly.
+ */
+function normalizeImagePathIfRequired(filePath) {
+  const imagePathRegex = /\/Images\/(\S+)\.(\w{3})/;
+  const match = imagePathRegex.exec(filePath);
+  if (!match) {
+    return filePath;
+  }
+
+  const [, imageName, imageExt] = match;
+  const normalizedPath = path.join('Images', `${imageName}.${imageExt}`);
+  return normalizedPath;
+}
+
 async function requestHandler(request, response) {
   const filePath = parseURL(request.url).pathname;
-
   if (filePath === '/favicon.ico') {
     send404(response, '404, no favicon');
     return;
@@ -127,8 +145,9 @@ async function requestHandler(request, response) {
     const componentHtml = await getExamplesForPath(filePath);
     respondWithHtml(response, componentHtml);
   } else {
-    // This means it's an asset like a JS file.
-    const fullPath = path.join(devtoolsFrontendFolder, filePath);
+    // This means it's an asset like a JS file or an image.
+    const normalizedPath = normalizeImagePathIfRequired(filePath);
+    const fullPath = path.join(devtoolsFrontendFolder, normalizedPath);
 
     if (!fullPath.startsWith(devtoolsFrontendFolder)) {
       console.error(`Path ${fullPath} is outside the DevTools Frontend root dir.`);

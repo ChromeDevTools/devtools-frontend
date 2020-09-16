@@ -363,6 +363,9 @@ export const Action = {
   CaptureCssOverviewClicked: 41,
   VirtualAuthenticatorEnvironmentEnabled: 42,
   SourceOrderViewActivated: 43,
+  UserShortcutAdded: 44,
+  ShortcutRemoved: 45,
+  ShortcutModified: 46,
 };
 
 /** @type {!Object<string, number>} */
@@ -617,7 +620,8 @@ export const DevtoolsExperiments = {
   'dualScreenSupport': 32,
   'cssGridFeatures': 33,
   'movableTabs': 34,
-  '__lastValidEnumPosition': 34,
+  'keyboardShortcutEditor': 35,
+  '__lastValidEnumPosition': 35,
 };
 
 /** @type {!Object<string, number>} */

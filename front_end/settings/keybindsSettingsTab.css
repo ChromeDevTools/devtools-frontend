@@ -39,11 +39,10 @@ h1 {
 }
 
 .keybinds-list-item {
-  padding: 0 5px;
   min-height: 30px;
   display: grid;
-  grid-auto-rows: 30px;
-  grid-template-columns: 1fr 30px 1fr;
+  grid-template-rows: repeat(auto-fit, 30px);
+  grid-template-columns: 1fr 30px 1fr 30px 30px;
   flex: auto 1 1;
 }
 
@@ -55,18 +54,76 @@ h1 {
   padding-left: 20px;
 }
 
+.keybinds-list-item.keybinds-editing {
+  background-color: rgb(0 0 0 / 5%);
+}
+
 .keybinds-action-name {
   grid-row: 1 / span 1;
   grid-column: 1 / span 1;
 }
 
-.keybinds-shortcut {
+.keybinds-shortcut,
+.keybinds-info {
   grid-row: auto;
   grid-column: 3 / span 1;
 }
 
+.keybinds-info .devtools-link {
+  padding-top: 6px;
+}
+
+.keybinds-error {
+  color: var(--input-validation-error);
+}
+
+:host-context(.-theme-with-dark-background) .keybinds-error {
+  color: #ff6161;
+}
+
+.keybinds-list-item.keybinds-editing .keybinds-shortcut {
+  display: flex;
+}
+
 .keybinds-modified {
   grid-column: 2 / span 1;
+}
+
+.keybinds-list-item button {
+  border: none;
+  padding: 0;
+  background: transparent;
+}
+
+.keybinds-list-item button:hover .icon-mask {
+  background-color: #333;
+}
+
+.keybinds-list-item button:focus-visible {
+  background-color: var(--focus-bg-color);
+}
+
+.keybinds-list-item button[disabled] {
+  opacity: 40%;
+}
+
+.keybinds-confirm-button {
+  grid-column: -2 / span 1;
+}
+
+.keybinds-cancel-button {
+  grid-column: -1 / span 1;
+}
+
+.keybinds-edit-button {
+  display: none;
+  grid-row: 1 / span 1;
+  grid-column: 4 / span 1;
+}
+
+.keybinds-list-item:not(.keybinds-editing):hover .keybinds-edit-button,
+.keybinds-list-item:not(.keybinds-editing):focus-within .keybinds-edit-button {
+  display: inline-block;
 }
 
 .keybinds-list-text {
@@ -106,4 +163,13 @@ h1 {
 
 .keybinds-set-select select {
   margin-left: 6px;
+}
+
+button.text-button {
+  margin-top: 4px;
+  width: fit-content;
+}
+
+.keybinds-list-text input {
+  margin: 0 2px;
 }

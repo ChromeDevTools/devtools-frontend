@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_0b18903e47498fe0b4f2ad1a16ae56ff" desc="Label for a button in the settings pane that removes a keyboard shortcut.">
+    Remove shortcut
+  </message>
   <message name="IDS_DEVTOOLS_0f653ae68147586eb189d7baf37a696a" desc="Text of button in Settings Screen of the Settings">
     Restore defaults and reload
   </message>
@@ -21,11 +24,17 @@
   <message name="IDS_DEVTOOLS_57391192dfa1f247ad015a0fe2eca48e" desc="Aria accessible name in Framework Blackbox Settings Tab of the Settings">
     Pattern
   </message>
+  <message name="IDS_DEVTOOLS_57c69dec9f5b9b3f413fa34e66493589" desc="Label for a button in the settings pane that edits a keyboard shortcut">
+    Edit shortcut
+  </message>
+  <message name="IDS_DEVTOOLS_6d507b9a707831f7702af21fa5dec071" desc="Label for a button in the settings pane that confirms changes to a keyboard shortcut">
+    Confirm changes
+  </message>
+  <message name="IDS_DEVTOOLS_78a2d21769b961c903a0c2bfe998d0fc" desc="Screen reader label for an icon denoting a shortcut that has been changed from its default">
+    Shortcut modified
+  </message>
   <message name="IDS_DEVTOOLS_7ab792e440250e15b2a2066eaeee3563" desc="Aria accessible name in Framework Blackbox Settings Tab of the Settings">
     Add filename pattern
-  </message>
-  <message name="IDS_DEVTOOLS_751e59737c652a9eb70be6fea8632ec5" desc="Screen-reader accessible label for an icon denoting a non-default/common shortcut.">
-    Shortcut provided by preset
   </message>
   <message name="IDS_DEVTOOLS_7c3ebe810fd87afa74649e8230167a75" desc="Message text content in Settings Screen of the Settings">
     These experiments are particularly unstable. Enable at your own risk.
@@ -39,8 +48,20 @@
   <message name="IDS_DEVTOOLS_89bacc9715d030658f2602ce65426a7f" desc="Warning text content in Settings Screen of the Settings">
     WARNING:
   </message>
+  <message name="IDS_DEVTOOLS_8d8b60173c13cf082880028b50ed4c5b" desc="Message shown in settings when the user inputs a modifier-only shortcut such as Ctrl+Shift.">
+    Shortcuts cannot contain only modifier keys.
+  </message>
   <message name="IDS_DEVTOOLS_8ef2494e10ba96444744adaecb2ceddd" desc="Text appearing before a select control offering users their choice of keyboard shortcut presets.">
     Match shortcuts from preset
+  </message>
+  <message name="IDS_DEVTOOLS_98313f623bb6f464b9a154eca0b99bf3" desc="Label for a button in the settings pane that discards changes to the shortcut being edited">
+    Discard changes
+  </message>
+  <message name="IDS_DEVTOOLS_a89b8b9966ec3e3321ae2d3135e238e3" desc="Label for a button in the settings pane that resets all shortcuts to defaults">
+    Restore default shortcuts
+  </message>
+  <message name="IDS_DEVTOOLS_aa67d07f58dbd8660eb21376b3e59830" desc="Link text in the settings pane to add another shortcut for an action">
+    Add a shortcut
   </message>
   <message name="IDS_DEVTOOLS_ae25bc3ceebf44be4b59d0ade0e53f0b" desc="Placeholder text content in Framework Blackbox Settings Tab of the Settings">
     No blackboxed patterns
@@ -68,6 +89,9 @@
   </message>
   <message name="IDS_DEVTOOLS_e3b2f7d0af9c89f5ea504968ffcd2ef0" desc="Message text content in Settings Screen of the Settings">
     These experiments could be dangerous and may require restart.
+  </message>
+  <message name="IDS_DEVTOOLS_eafc5915e8d8dd2a8c5aa30581f08ba5" desc="Messages shown in shortcuts settings when the user inputs a shortcut that is already in use.">
+      This shortcut is in use by <ph name="ACTION_TITLE__">$1s<ex>Start/stop recording</ex></ph>.
   </message>
   <message name="IDS_DEVTOOLS_f4f70727dc34561dfde1a3c529b6205c" desc="Name of the Settings view">
     Settings

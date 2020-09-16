@@ -168,6 +168,7 @@ export class MainImpl {
     Root.Runtime.experiments.register('webauthnPane', 'WebAuthn Pane');
     Root.Runtime.experiments.register(
         'customKeyboardShortcuts', 'Enable custom keyboard shortcuts settings tab (requires reload)');
+    Root.Runtime.experiments.register('keyboardShortcutEditor', 'Enable keyboard shortcut editor', true);
 
     // Timeline
     Root.Runtime.experiments.register('timelineEventInitiators', 'Timeline: event initiators');

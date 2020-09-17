@@ -113,7 +113,7 @@ async function checkFileExists(filePath) {
 /**
  * In Devtools-Frontend we load images without a leading slash, e.g.
  * url(Images/checker.png). This works within devtools, but breaks this component
- * server as the path ends up as /component_docs/my_component/Image/checker.png.
+ * server as the path ends up as /component_docs/my_component/Images/checker.png.
  * So we check if the path ends in Images/*.* and if so, remove anything before
  * it. Then it will be resolved correctly.
  */

@@ -36,23 +36,6 @@ class DependencyPreprocessor(object):
         shutil.copytree(devtools_frontend_path, self.temp_frontend_path)
         self._special_case_namespaces = special_case_namespaces.special_case_namespaces
 
-    def enforce_dependencies(self):
-        arg_list = []
-        for module in self.modules:
-            dependencies = set(self.descriptors.sorted_dependencies_closure(module))
-            excluded_modules = self.modules - {module} - dependencies
-            excluded_namespaces = [self._map_module_to_namespace(m) for m in excluded_modules]
-            file_paths = [
-                path.join(self.temp_frontend_path, module, file_name)
-                for file_name in self.descriptors.module_compiled_files(module)
-            ]
-            arg = {
-                'excluded_namespaces': excluded_namespaces,
-                'file_paths': file_paths,
-            }
-            arg_list.append(arg)
-        parallelize(poison_module, arg_list)
-
     def _map_module_to_namespace(self, module):
         return self._special_case_namespaces.get(module, self._to_camel_case(module))
 

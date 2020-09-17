@@ -58,11 +58,9 @@ function checkNonAutostartNonRemoteModules() {
  */
 function checkAllDevToolsFiles() {
   return checkGNVariable('all_devtools_files', 'all_devtools_files', moduleJSON => {
-    const scripts = moduleJSON.scripts || [];
     const resources = moduleJSON.resources || [];
     return [
       'module.json',
-      ...scripts,
       ...resources,
     ];
   });

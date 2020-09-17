@@ -126,22 +126,14 @@ class ReleaseBuilder(object):
         for name in module_descriptors:
             module = copy.copy(module_descriptors[name])
             module_type = self.descriptors.application[name].get('type')
-            # Clear scripts, as they are not used at runtime
-            # (only the fact of their presence is important).
             resources = module.get('resources', None)
-            if module.get('scripts') or resources:
-                if module_type == 'autostart':
-                    if module.get('scripts'):
-                        # Autostart modules are already baked in.
-                        del module['scripts']
-                else:
+            if resources:
+                # Resources are already baked into _module.
+                del module['resources']
+                if not module_type == 'autostart':
                     # Non-autostart modules are vulcanized.
-                    module['scripts'] = []
                     module['modules'] = [name + '_module.js'] + module.get(
                         'modules', [])
-            # Resources are already baked into scripts.
-            if resources is not None:
-                del module['resources']
             result.append(module)
         return json.dumps(result)
 
@@ -193,13 +185,10 @@ class ReleaseBuilder(object):
 
     def _concatenate_dynamic_module(self, module_name):
         module = self.descriptors.modules[module_name]
-        scripts = module.get('scripts')
         modules = module.get('modules')
         resources = self.descriptors.module_resources(module_name)
         module_dir = join(self.application_dir, module_name)
         output = StringIO()
-        if scripts:
-            modular_build.concatenate_scripts(scripts, module_dir, self.output_dir, output)
         if resources:
             output.write("import * as RootModule from '../root/root.js';")
             self._write_module_resources(resources, output)

@@ -73,12 +73,6 @@
         "type": "string"
       }
     },
-    "scripts": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
     "modules": {
       "type": "array",
       "items": {

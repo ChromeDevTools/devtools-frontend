@@ -320,7 +320,6 @@ def check_conditional_dependencies(modules_by_name):
 def prepare_closure_frontend_compile(temp_devtools_path, descriptors, namespace_externs_path, protocol_externs_file):
     temp_frontend_path = path.join(temp_devtools_path, 'front_end')
     checker = dependency_preprocessor.DependencyPreprocessor(descriptors, temp_frontend_path, DEVTOOLS_FRONTEND_PATH)
-    checker.enforce_dependencies()
 
     command = common_closure_args + [
         '--externs',

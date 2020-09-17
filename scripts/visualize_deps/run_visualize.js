@@ -50,7 +50,7 @@ function generateDot() {
       const moduleJSON = require(moduleJSONPath);
       let moduleSize = 0;
 
-      const resources = (moduleJSON.scripts || []).concat((moduleJSON.resources || []));
+      const resources = moduleJSON.resources || [];
       for (const script of resources) {
         if (fs.existsSync(path.join(FRONTEND_PATH, module, script))) {
           moduleSize += fs.statSync(path.join(FRONTEND_PATH, module, script)).size;

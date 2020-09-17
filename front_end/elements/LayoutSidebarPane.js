@@ -31,6 +31,12 @@ const gridNodesToElements = nodes => {
         ElementsPanel.instance().revealAndSelectNode(node, true, true);
         node.scrollIntoView();
       },
+      highlight: () => {
+        node.highlight();
+      },
+      hideHighlight: () => {
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+      },
       toggle: value => {
         if (value) {
           node.domModel().overlayModel().highlightGridInPersistentOverlay(

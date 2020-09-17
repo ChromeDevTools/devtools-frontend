@@ -122,3 +122,13 @@
   margin: 0 0 0 8px;
   width: 10px;
 }
+
+.node-text-container {
+  line-height: 16px;
+  padding: 0 0.5ex;
+  border-radius: 5px;
+}
+
+.node-text-container:hover {
+  background-color: var(--item-hover-color);
+}

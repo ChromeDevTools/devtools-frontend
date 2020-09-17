@@ -26,6 +26,8 @@ export let Setting;
 * reveal:function():void,
 * toggle:function(boolean):void,
 * setColor:function(string):void,
+* highlight:function():void,
+* hideHighlight:function():void,
 * }}
 */
 // @ts-ignore we export this for Closure not TS

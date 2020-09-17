@@ -79,7 +79,6 @@ export async function startApplication(appName) {
   for (let i = 0; i < moduleDescriptors.length; ++i) {
     moduleDescriptors[i].name = configuration[i]['name'];
     moduleDescriptors[i].condition = configuration[i]['condition'];
-    moduleDescriptors[i].remote = configuration[i]['type'] === 'remote';
   }
   self.runtime = RootModule.Runtime.Runtime.instance({forceNew: true, moduleDescriptors});
   if (coreModuleNames) {

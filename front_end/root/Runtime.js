@@ -3,7 +3,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const REMOTE_MODULE_FALLBACK_REVISION = '@9c7912d3335c02d62f63be2749d84b2d0b788982';
 const instanceSymbol = Symbol('instance');
 
 const originalConsole = console;
@@ -12,9 +11,7 @@ const originalAssert = console.assert;
 /** @type {!URLSearchParams} */
 const queryParamsObject = new URLSearchParams(location.search);
 
-// The following two variables are initialized all the way at the bottom of this file
-/** @type {?string} */
-let remoteBase;
+// The following variable are initialized all the way at the bottom of this file
 /** @type {string} */
 let importScriptPathPrefix;
 
@@ -197,13 +194,6 @@ export class Runtime {
    */
   static setL10nCallback(localizationFunction) {
     l10nCallback = localizationFunction;
-  }
-
-  useTestBase() {
-    remoteBase = 'http://localhost:8000/inspector-sources/';
-    if (Runtime.queryParam('debugFrontend')) {
-      remoteBase += 'debug/';
-    }
   }
 
   /**
@@ -454,11 +444,6 @@ export class ModuleDescriptor {
      */
     this.condition;
 
-    /**
-     * @type {boolean|undefined}
-     */
-    this.remote;
-
     /** @type {string|null} */
     this.experiment;
   }
@@ -612,7 +597,6 @@ export class Module {
 
     this._pendingLoadPromise = Promise.all(dependencyPromises)
                                    .then(this._loadModules.bind(this))
-                                   .then(this._loadScripts.bind(this))
                                    .then(() => {
                                      this._loadedForTest = true;
                                      return this._loadedForTest;
@@ -651,17 +635,6 @@ export class Module {
   }
 
   /**
-   * @return {!Promise.<void>}
-   */
-  _loadScripts() {
-    if (!this._descriptor.scripts || !this._descriptor.scripts.length) {
-      return Promise.resolve();
-    }
-
-    return loadScriptsPromise(this._descriptor.scripts.map(this._modularizeURL, this), this._remoteBase());
-  }
-
-  /**
    * @param {string} resourceName
    */
   _modularizeURL(resourceName) {
@@ -669,20 +642,12 @@ export class Module {
   }
 
   /**
-   * @return {string|undefined}
-   */
-  _remoteBase() {
-    return !Runtime.queryParam('debugFrontend') && this._descriptor.remote && remoteBase || undefined;
-  }
-
-  /**
    * @param {string} resourceName
    * @return {!Promise.<string>}
    */
   fetchResource(resourceName) {
-    const base = this._remoteBase();
-    const sourceURL = getResourceURL(this._modularizeURL(resourceName), base);
-    return base ? loadResourcePromiseWithFallback(sourceURL) : loadResourcePromise(sourceURL);
+    const sourceURL = getResourceURL(this._modularizeURL(resourceName));
+    return loadResourcePromise(sourceURL);
   }
 
   /**
@@ -1052,79 +1017,6 @@ function internalLoadResourcePromise(url, asBinary) {
 }
 
 /**
- * @type {!Object<string,boolean>}
- */
-const loadedScripts = {};
-
-/**
- * @param {!Array.<string>} scriptNames
- * @param {string=} base
- * @return {!Promise.<void>}
- */
-function loadScriptsPromise(scriptNames, base) {
-  /** @type {!Array<!Promise<void>>} */
-  const promises = [];
-  /** @type {!Array<string>} */
-  const urls = [];
-  const sources = new Array(scriptNames.length);
-  let scriptToEval = 0;
-  for (let i = 0; i < scriptNames.length; ++i) {
-    const scriptName = scriptNames[i];
-    const sourceURL = getResourceURL(scriptName, base);
-
-    if (loadedScripts[sourceURL]) {
-      continue;
-    }
-    urls.push(sourceURL);
-    const promise = base ? loadResourcePromiseWithFallback(sourceURL) : loadResourcePromise(sourceURL);
-    promises.push(promise.then(scriptSourceLoaded.bind(null, i), scriptSourceLoaded.bind(null, i, undefined)));
-  }
-  return Promise.all(promises).then(undefined);
-
-  /**
-   * @param {number} scriptNumber
-   * @param {string=} scriptSource
-   */
-  function scriptSourceLoaded(scriptNumber, scriptSource) {
-    sources[scriptNumber] = scriptSource || '';
-    // Eval scripts as fast as possible.
-    while (typeof sources[scriptToEval] !== 'undefined') {
-      evaluateScript(urls[scriptToEval], sources[scriptToEval]);
-      ++scriptToEval;
-    }
-  }
-
-  /**
-   * @param {string} sourceURL
-   * @param {string=} scriptSource
-   */
-  function evaluateScript(sourceURL, scriptSource) {
-    loadedScripts[sourceURL] = true;
-    if (!scriptSource) {
-      // Do not reject, as this is normal in the hosted mode.
-      console.error('Empty response arrived for script \'' + sourceURL + '\'');
-      return;
-    }
-    self.eval(scriptSource + '\n//# sourceURL=' + sourceURL);
-  }
-}
-
-/**
- * @param {string} url
- * @return {!Promise.<string>}
- */
-function loadResourcePromiseWithFallback(url) {
-  return loadResourcePromise(url).catch(err => {
-    const urlWithFallbackVersion = url.replace(/@[0-9a-f]{40}/, REMOTE_MODULE_FALLBACK_REVISION);
-    // TODO(phulce): mark fallbacks in module.json and modify build script instead
-    if (urlWithFallbackVersion === url || !url.includes('lighthouse_worker_module')) {
-      throw err;
-    }
-    return loadResourcePromise(urlWithFallbackVersion);
-  });
-}
-
-/**
  * @param {string} url
  * @return {!Promise.<string>}
  */
@@ -1146,18 +1038,6 @@ function getResourceURL(scriptName, base) {
   }
   return sourceURL.substring(0, pathIndex) + Runtime.normalizePath(sourceURL.substring(pathIndex));
 }
-
-(function validateRemoteBase() {
-  if (location.href.startsWith('devtools://devtools/bundled/')) {
-    const queryParam = Runtime.queryParam('remoteBase');
-    if (queryParam) {
-      const versionMatch = /\/serve_file\/(@[0-9a-zA-Z]+)\/?$/.exec(queryParam);
-      if (versionMatch) {
-        remoteBase = `${location.origin}/remote/serve_file/${versionMatch[1]}/`;
-      }
-    }
-  }
-})();
 
 (function() {
 const baseUrl = self.location ? self.location.origin + self.location.pathname : '';

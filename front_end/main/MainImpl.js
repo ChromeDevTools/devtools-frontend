@@ -95,9 +95,6 @@ export class MainImpl {
    */
   _gotPreferences(prefs) {
     console.timeStamp('Main._gotPreferences');
-    if (Host.InspectorFrontendHost.isUnderTest(prefs)) {
-      self.runtime.useTestBase();
-    }
     this._createSettings(prefs);
     this._createAppUI();
   }

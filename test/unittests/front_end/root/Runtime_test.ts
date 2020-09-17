@@ -21,7 +21,6 @@ describe('Runtime', () => {
         modules: [],
         resources: [],
         condition: undefined,
-        remote: false,
         experiment: null,
       });
     });

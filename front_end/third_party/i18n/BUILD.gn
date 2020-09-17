@@ -2,32 +2,12 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../../scripts/build/ninja/copy.gni")
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
-import("../../../third_party/typescript/typescript.gni")
 
-action("bundle_i18n_action") {
-  script = "../../../scripts/localizationV2/bundle_i18n_library.py"
-
-  # These files should exist after the action is completed.
-  outputs = [ "$target_gen_dir/i18n-bundle.js" ]
-
-  args = [
-    "--output_path=" + rebase_path(target_gen_dir),
-    "--i18n_path=" + rebase_path("./i18n.js"),
-  ]
-
-  deps = [ ":bundle_i18n_tsconfig" ]
-}
-
-devtools_pre_built("bundle_i18n_tsconfig") {
+devtools_pre_built("bundle") {
   sources = [
-    "bundle_i18n-tsconfig.json",
-    "i18n-bundle.d.ts",
+    "bundle-tsconfig.json",
+    "i18n.d.ts",
+    "i18n.js",
   ]
-}
-
-copy_gen_to_resources("bundle_i18n") {
-  sources = [ "$target_gen_dir/i18n-bundle.js" ]
-  deps = [ ":bundle_i18n_action" ]
 }

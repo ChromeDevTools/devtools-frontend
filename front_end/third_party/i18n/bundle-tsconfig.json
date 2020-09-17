@@ -3,6 +3,6 @@
     "composite": true
   },
   "files": [
-    "i18n-bundle.js"
+    "i18n.js"
   ]
 }

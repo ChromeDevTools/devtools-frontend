@@ -547,7 +547,7 @@ all_typescript_module_sources = [
   "third_party/codemirror/package/mode/shell/shell.js",
   "third_party/codemirror/package/mode/wast/wast.js",
   "third_party/codemirror/package/mode/xml/xml.js",
-  "third_party/i18n/i18n-bundle.js",
+  "third_party/i18n/i18n.js",
   "third_party/lighthouse/report-assets/report-generator.js",
   "third_party/lighthouse/report-assets/report.js",
   "third_party/lit-html/directives.js",

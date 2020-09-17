@@ -886,7 +886,7 @@ grd_files_debug_sources = [
   "front_end/third_party/codemirror/package/mode/shell/shell.js",
   "front_end/third_party/codemirror/package/mode/wast/wast.js",
   "front_end/third_party/codemirror/package/mode/xml/xml.js",
-  "front_end/third_party/i18n/i18n-bundle.js",
+  "front_end/third_party/i18n/i18n.js",
   "front_end/third_party/lighthouse/report-assets/report-generator.js",
   "front_end/third_party/lighthouse/report-assets/report.js",
   "front_end/third_party/lit-html/directives.js",

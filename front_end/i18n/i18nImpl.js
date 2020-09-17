@@ -4,7 +4,7 @@
 import * as Platform from '../platform/platform.js';
 
 // eslint-disable-next-line
-import i18nBundle from '../third_party/i18n/i18n-bundle.js';
+import i18nBundle from '../third_party/i18n/i18n.js';
 
 /**
  * The locale that DevTools displays

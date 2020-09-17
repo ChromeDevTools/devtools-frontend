@@ -5,17 +5,18 @@
  * - the default locale ('en-US') if no match is found
  *
  * If `locale` isn't provided, the default is used.
- * @param {string=} locale
+ * @param {string} locale
+ * @return {string}
  */
-declare function lookupLocale(locale: string): string;
+export function lookupLocale(locale){return ""};
 
 /**
- * Function to retrieve all 'argumentElement's from an ICU message. An argumentElement
+ * export function to retrieve all 'argumentElement's from an ICU message. An argumentElement
  * is an ICU element with an argument in it, like '{varName}' or '{varName, number, bytes}'. This
  * differs from 'messageElement's which are just arbitrary text in a message.
  *
  * Notes:
- *  This function will recursively inspect plural elements for nested argumentElements.
+ *  This export function will recursively inspect plural elements for nested argumentElements.
  *
  *  We need to find all the elements from the plural format sections, but
  *  they need to be deduplicated. I.e. "=1{hello {icu}} =other{hello {icu}}"
@@ -23,45 +24,60 @@ declare function lookupLocale(locale: string): string;
  *  be stored in a set because they are not equal since their locations are different,
  *  thus they are stored via a Map keyed on the "id" which is the ICU varName.
  *
- * @param {ArrayLike<Object>} icuElements
- * @param {Map<string, T>} [seenElementsById]
- * @return {Map<string, T>}
+ * @param {Array<Object>} icuElements
+ * @param {Map<string, Object>} [seenElementsById]
+ * @return {Map<string, Object>}
  */
-declare function collectAllCustomElementsFromICU<T>(icuElements: ArrayLike<Object>, seenElementsById?: Map<string, T>): T;
+ export function collectAllCustomElementsFromICU(icuElements, seenElementsById){
+   let result = new Map();
+   result.set("", {})
+   return result;
+ };
 
 /** @param {ArrayLike<string>} pathInLHR */
-declare function _formatPathAsString(pathInLHR: string[]): string;
+ export function _formatPathAsString(pathInLHR){};
 
 /**
  * @param {string} locale
+ * @return {string}
  */
-declare function getRendererFormattedStrings(locale: string): {};
+ export function getRendererFormattedStrings(locale){return ""};
 
 /**
  * Register a file's UIStrings with i18n, return function to
  * generate the string ids.
  *
  * @param {string} filename
+ * @param {*} fileStrings
+ * @return {function(string, *):string}
  */
-declare function createMessageInstanceIdFn(filename: string, fileStrings: Object): typeof getMessageInstanceIdFn;
+ export function createMessageInstanceIdFn(filename, fileStrings) {
+   let result = new Map();
+   result.set("", {})
+   return (a, result) => {
+     return ""
+   }
+ };
 
 /**
  * Returns true if string is an ICUMessage reference.
  * @param {string} icuMessageIdOrRawString
  */
-declare function isIcuMessage(icuMessageIdOrRawString: string): boolean;
+ export function isIcuMessage(icuMessageIdOrRawString){};
 
 /**
  * @param {string} icuMessageIdOrRawString
  * @param {string} locale
+ * @return {string}
  */
-declare function getFormatted(icuMessageIdOrRawString: string, locale: string): string;
+ export function getFormatted(icuMessageIdOrRawString, locale){return ""};
 
 /**
  * @param {string} icuMessageIdOrRawString
  * @param {string} locale
+ * @return {Object}
  */
-declare function getFormatter(icuMessageIdOrRawString: string, locale: string): any;
+ export function getFormatter(icuMessageIdOrRawString, locale){return {getAst: ()=>{}}};
 
 /**
  * @param {string} locale
@@ -69,7 +85,7 @@ declare function getFormatter(icuMessageIdOrRawString: string, locale: string): 
  * @param {Object} [values]
 
  */
-declare function getFormattedFromIdAndValues(locale: string, icuMessageId: string, values: Object): string;
+ export function getFormattedFromIdAndValues(locale , icuMessageId , values){};
 
 /**
  * Recursively walk the input object, looking for property values that are
@@ -78,7 +94,7 @@ declare function getFormattedFromIdAndValues(locale: string, icuMessageId: strin
  * @param {*} inputObject
  * @param {string} locale
  */
-declare function replaceIcuMessageInstanceIds(inputObject: any, locale: string): {};
+ export function replaceIcuMessageInstanceIds(inputObject, locale){};
 
 /**
  * Populate the i18n string lookup dict with locale data
@@ -87,27 +103,26 @@ declare function replaceIcuMessageInstanceIds(inputObject: any, locale: string):
  * @param {string} locale
  * @param {*} lhlMessages
  */
-declare function registerLocaleData(locale: string, lhlMessages: any): void;
+ export function registerLocaleData(locale, lhlMessages){};
 
 /**
  * @param {string} icuMessage
  * @param {Object} [values]
  */
-declare function getMessageInstanceIdFn(icuMessage: string, values: Object | null): string;
+ export function getMessageInstanceIdFn(icuMessage , values){};
 
-declare var i18n: {
-  _formatPathAsString: typeof _formatPathAsString;
-  _ICUMsgNotFoundMsg: string;
-  lookupLocale: typeof lookupLocale;
-  getRendererFormattedStrings: typeof getRendererFormattedStrings;
-  createMessageInstanceIdFn: typeof createMessageInstanceIdFn;
-  getFormatted: typeof getFormatted;
-  getFormatter: typeof getFormatter;
-  getFormattedFromIdAndValues: typeof getFormattedFromIdAndValues;
-  replaceIcuMessageInstanceIds: typeof replaceIcuMessageInstanceIds;
-  isIcuMessage: typeof isIcuMessage;
-  collectAllCustomElementsFromICU: typeof collectAllCustomElementsFromICU;
-  registerLocaleData: typeof registerLocaleData;
+ var i18n =  {
+  _formatPathAsString,
+  lookupLocale,
+  getRendererFormattedStrings,
+  createMessageInstanceIdFn,
+  getFormatted,
+  getFormatter,
+  getFormattedFromIdAndValues,
+  replaceIcuMessageInstanceIds,
+  isIcuMessage,
+  collectAllCustomElementsFromICU,
+  registerLocaleData
 };
 
 export default i18n;

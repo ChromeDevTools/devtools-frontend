@@ -469,6 +469,9 @@ class ModelData {
    */
   _beforePaused(debuggerPausedDetails) {
     const callFrame = debuggerPausedDetails.callFrames[0];
+    if (!callFrame) {
+      return false;
+    }
     if (callFrame.script.sourceMapURL !== SDK.SourceMap.WasmSourceMap.FAKE_URL &&
         !Root.Runtime.experiments.isEnabled('emptySourceMapAutoStepping')) {
       return true;

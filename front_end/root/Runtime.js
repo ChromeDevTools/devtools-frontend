@@ -57,7 +57,7 @@ export class Runtime {
    */
   static instance(opts = {forceNew: null, moduleDescriptors: null}) {
     const {forceNew, moduleDescriptors} = opts;
-    if (!moduleDescriptors || forceNew) {
+    if (!runtimeInstance || forceNew) {
       if (!moduleDescriptors) {
         throw new Error(
             `Unable to create settings: targetManager and workspace must be provided: ${new Error().stack}`);

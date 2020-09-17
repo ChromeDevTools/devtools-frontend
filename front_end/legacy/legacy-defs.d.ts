@@ -139,6 +139,7 @@ interface Node {
   getComponentSelection(): Selection|null;
   hasSameShadowRoot(other: Node): boolean;
   hasSelection(): boolean;
+  isAncestor(node: Node|null): boolean;
   isSelfOrAncestor(node: Node|null): boolean;
   isSelfOrDescendant(node: Node|null): boolean;
   parentElementOrShadowHost(): Element|null;

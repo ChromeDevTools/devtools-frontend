@@ -65,6 +65,7 @@ devtools_module("elements") {
     "../object_ui:bundle",
     "../platform:bundle",
     "../protocol_client:bundle",
+    "../root:bundle",
     "../sdk:bundle",
     "../sdk:bundle",
     "../third_party/lit-html:bundle",

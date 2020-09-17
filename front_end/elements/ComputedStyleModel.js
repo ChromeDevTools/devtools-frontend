@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
@@ -16,7 +13,9 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
     this._node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
+    /** @type {?SDK.CSSModel.CSSModel} */
     this._cssModel = null;
+    /** @type {!Array<!Common.EventTarget.EventDescriptor>} */
     this._eventListeners = [];
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this._onNodeChanged, this);
   }
@@ -114,7 +113,11 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
    * @return {?SDK.DOMModel.DOMNode}
    */
   _elementNode() {
-    return this.node() ? this.node().enclosingElementOrSelf() : null;
+    const node = this.node();
+    if (!node) {
+      return null;
+    }
+    return node.enclosingElementOrSelf();
   }
 
   /**
@@ -126,10 +129,13 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
     if (!elementNode || !cssModel) {
       return Promise.resolve(/** @type {?ComputedStyle} */ (null));
     }
+    const nodeId = elementNode.id;
+    if (!nodeId) {
+      return Promise.resolve(/** @type {?ComputedStyle} */ (null));
+    }
 
     if (!this._computedStylePromise) {
-      this._computedStylePromise =
-          cssModel.computedStylePromise(elementNode.id).then(verifyOutdated.bind(this, elementNode));
+      this._computedStylePromise = cssModel.computedStylePromise(nodeId).then(verifyOutdated.bind(this, elementNode));
     }
 
     return this._computedStylePromise;

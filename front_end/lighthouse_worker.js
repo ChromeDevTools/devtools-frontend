@@ -5,7 +5,6 @@
 import './RuntimeInstantiator.js';
 import './platform/platform.js';
 import './worker_service/worker_service.js';
-import './lighthouse_worker/lighthouse_worker.js';
 
 import {startWorker} from './RuntimeInstantiator.js';
 

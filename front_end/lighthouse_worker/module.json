@@ -9,7 +9,7 @@
       "name": "LighthouseService"
     }
   ],
-  "modules": [
+  "scripts": [
     "LighthouseService.js",
     "../third_party/lighthouse/lighthouse-dt-bundle.js"
   ],

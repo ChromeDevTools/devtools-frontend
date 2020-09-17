@@ -11,8 +11,6 @@ template("devtools_pre_built") {
 
   copy_to_gen(_copy_to_gen_target_name) {
     sources = invoker.sources
-
-    deps = invoker.deps
   }
 
   copy_sources_to_resources(target_name) {
@@ -31,8 +29,4 @@ template("devtools_pre_built") {
         _filtered_target_outputs == [],
         "$_filtered_target_outputs are not listed in all_typescript_module_sources")
   }
-}
-
-set_defaults("devtools_pre_built") {
-  deps = []
 }

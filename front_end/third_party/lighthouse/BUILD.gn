@@ -12,7 +12,5 @@ devtools_pre_built("lighthouse") {
               "report-assets/report.d.ts",
               "report-assets/report-generator.js",
               "report-assets/report-generator.d.ts",
-              "lighthouse-dt-bundle.js",
-              "lighthouse-dt-bundle.d.ts",
             ]
 }

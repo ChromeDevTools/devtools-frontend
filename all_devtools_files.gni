@@ -88,6 +88,8 @@ all_devtools_files = [
   "front_end/css_overview/cssOverviewSidebarPanel.css",
   "front_end/css_overview/cssOverviewStartView.css",
   "front_end/css_overview/module.json",
+  "front_end/dagre_layout/dagre.js",
+  "front_end/dagre_layout/module.json",
   "front_end/data_grid_test_runner/data_grid_test_runner.js",
   "front_end/data_grid_test_runner/module.json",
   "front_end/data_grid/dataGrid.css",

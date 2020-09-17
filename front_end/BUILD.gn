@@ -55,7 +55,6 @@ group("front_end") {
     "layer_viewer:bundle",
     "layers:bundle",
     "lighthouse:bundle",
-    "lighthouse_worker:bundle",
     "main:bundle",
     "media:bundle",
     "mobile_throttling:bundle",

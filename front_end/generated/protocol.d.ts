@@ -7134,6 +7134,9 @@ declare namespace Protocol {
 
     export interface CrossOriginOpenerPolicyStatus {
       value: CrossOriginOpenerPolicyValue;
+      reportOnlyValue: CrossOriginOpenerPolicyValue;
+      reportingEndpoint?: string;
+      reportOnlyReportingEndpoint?: string;
     }
 
     export enum CrossOriginEmbedderPolicyValue {
@@ -7143,6 +7146,9 @@ declare namespace Protocol {
 
     export interface CrossOriginEmbedderPolicyStatus {
       value: CrossOriginEmbedderPolicyValue;
+      reportOnlyValue: CrossOriginEmbedderPolicyValue;
+      reportingEndpoint?: string;
+      reportOnlyReportingEndpoint?: string;
     }
 
     export interface SecurityIsolationStatus {

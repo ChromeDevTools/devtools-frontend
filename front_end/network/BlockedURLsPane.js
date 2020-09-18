@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
@@ -91,7 +88,7 @@ export class BlockedURLsPane extends UI.Widget.VBox {
     const count = this._blockedRequestsCount(pattern.url);
     const element = document.createElement('div');
     element.classList.add('blocked-url');
-    const checkbox = element.createChild('input', 'blocked-url-checkbox');
+    const checkbox = /** @type {!HTMLInputElement} */ (element.createChild('input', 'blocked-url-checkbox'));
     checkbox.type = 'checkbox';
     checkbox.checked = pattern.enabled;
     checkbox.disabled = !this._manager.blockingEnabled();
@@ -132,7 +129,7 @@ export class BlockedURLsPane extends UI.Widget.VBox {
   /**
    * @override
    * @param {!SDK.NetworkManager.BlockedPattern} pattern
-   * @return {!UI.ListWidget.Editor}
+   * @return {!UI.ListWidget.Editor<!SDK.NetworkManager.BlockedPattern>}
    */
   beginEdit(pattern) {
     this._editor = this._createEditor();
@@ -143,7 +140,7 @@ export class BlockedURLsPane extends UI.Widget.VBox {
   /**
    * @override
    * @param {!SDK.NetworkManager.BlockedPattern} item
-   * @param {!UI.ListWidget.Editor} editor
+   * @param {!UI.ListWidget.Editor<!SDK.NetworkManager.BlockedPattern>} editor
    * @param {boolean} isNew
    */
   commitEdit(item, editor, isNew) {
@@ -172,6 +169,11 @@ export class BlockedURLsPane extends UI.Widget.VBox {
     titles.createChild('div').textContent =
         Common.UIString.UIString('Text pattern to block matching requests; use * for wildcard');
     const fields = content.createChild('div', 'blocked-url-edit-row');
+    /**
+     * @param {!SDK.NetworkManager.BlockedPattern} item
+     * @param {number} index
+     * @param {(!HTMLInputElement|!HTMLSelectElement)} input
+     */
     const validator = (item, index, input) => {
       let valid = true;
       let errorMessage;
@@ -219,7 +221,7 @@ export class BlockedURLsPane extends UI.Widget.VBox {
     let result = 0;
     for (const blockedUrl of this._blockedCountForUrl.keys()) {
       if (this._matches(url, blockedUrl)) {
-        result += this._blockedCountForUrl.get(blockedUrl);
+        result += /** @type {number} */ (this._blockedCountForUrl.get(blockedUrl));
       }
     }
     return result;

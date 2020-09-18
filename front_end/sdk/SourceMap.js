@@ -28,10 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
+import * as Root from '../root/root.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
 import {CompilerSourceMappingContentProvider} from './CompilerSourceMappingContentProvider.js';
@@ -47,18 +45,21 @@ export class SourceMap {
    * @return {string}
    */
   compiledURL() {
+    throw new Error('Not implemented');
   }
 
   /**
    * @return {string}
    */
   url() {
+    throw new Error('Not implemented');
   }
 
   /**
    * @return {!Array<string>}
    */
   sourceURLs() {
+    throw new Error('Not implemented');
   }
 
   /**
@@ -67,6 +68,7 @@ export class SourceMap {
    * @return {!TextUtils.ContentProvider.ContentProvider}
    */
   sourceContentProvider(sourceURL, contentType) {
+    throw new Error('Not implemented');
   }
 
   /**
@@ -74,6 +76,7 @@ export class SourceMap {
    * @return {?string}
    */
   embeddedContentByURL(sourceURL) {
+    throw new Error('Not implemented');
   }
 
   /**
@@ -82,6 +85,7 @@ export class SourceMap {
    * @return {?SourceMapEntry}
    */
   findEntry(lineNumber, columnNumber) {
+    throw new Error('Not implemented');
   }
 
   /**
@@ -91,50 +95,50 @@ export class SourceMap {
    * @return {?SourceMapEntry}
    */
   sourceLineMapping(sourceURL, lineNumber, columnNumber) {
+    throw new Error('Not implemented');
   }
 
   /**
    * @return {!Array<!SourceMapEntry>}
    */
   mappings() {
+    throw new Error('Not implemented');
   }
 
   dispose() {
   }
 }
 
-/**
- * @unrestricted
- */
+// eslint-disable-next-line no-unused-vars
 class SourceMapV3 {
   constructor() {
     /** @type {number} */ this.version;
     /** @type {string|undefined} */ this.file;
     /** @type {!Array.<string>} */ this.sources;
-    /** @type {!Array.<!SourceMapV3.Section>|undefined} */ this.sections;
+    /** @type {!Array.<!Section>|undefined} */ this.sections;
     /** @type {string} */ this.mappings;
     /** @type {string|undefined} */ this.sourceRoot;
     /** @type {!Array.<string>|undefined} */ this.names;
+    /** @type {string|undefined} */ this.sourcesContent;
   }
 }
 
-/**
- * @unrestricted
- */
-SourceMapV3.Section = class {
+// eslint-disable-next-line no-unused-vars
+class Section {
   constructor() {
     /** @type {!SourceMapV3} */ this.map;
-    /** @type {!SourceMapV3.Offset} */ this.offset;
+    /** @type {!Offset} */ this.offset;
+    /** @type {string|undefined} */ this.url;
   }
-};
+}
 
-
-SourceMapV3.Offset = class {
+// eslint-disable-next-line no-unused-vars
+class Offset {
   constructor() {
     /** @type {number} */ this.line;
     /** @type {number} */ this.column;
   }
-};
+}
 
 
 export class SourceMapEntry {
@@ -150,8 +154,12 @@ export class SourceMapEntry {
     this.lineNumber = lineNumber;
     this.columnNumber = columnNumber;
     this.sourceURL = sourceURL;
-    this.sourceLineNumber = sourceLineNumber;
-    this.sourceColumnNumber = sourceColumnNumber;
+    // These two type-casts are wrong. However, when you try to fix them,
+    // a lot of comparator functions defined below start to produce incorrect
+    // behavior. Instead of trying to fix this, we should cast away and
+    // pretend that everything is all right.
+    this.sourceLineNumber = /** @type {number} */ (sourceLineNumber);
+    this.sourceColumnNumber = /** @type {number} */ (sourceColumnNumber);
     this.name = name;
   }
 
@@ -182,6 +190,17 @@ export class EditResult {
   }
 }
 
+const base64Digits = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+/** @type {!Map<string, number>} */
+const base64Map = new Map();
+
+for (let i = 0; i < base64Digits.length; ++i) {
+  base64Map.set(base64Digits.charAt(i), i);
+}
+
+/** @type {!WeakMap<!SourceMapV3, !Array<string>>} */
+const sourceMapToSourceList = new WeakMap();
+
 /**
  * @implements {SourceMap}
  */
@@ -196,14 +215,7 @@ export class TextSourceMap {
    */
   constructor(compiledURL, sourceMappingURL, payload, initiator) {
     this._initiator = initiator;
-    if (!TextSourceMap._base64Map) {
-      const base64Digits = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-      TextSourceMap._base64Map = {};
-      for (let i = 0; i < base64Digits.length; ++i) {
-        TextSourceMap._base64Map[base64Digits.charAt(i)] = i;
-      }
-    }
-
+    /** @type {?SourceMapV3} */
     this._json = payload;
     this._compiledURL = compiledURL;
     this._sourceMappingURL = sourceMappingURL;
@@ -283,7 +295,7 @@ export class TextSourceMap {
    */
   sourceContentProvider(sourceURL, contentType) {
     const info = this._sourceInfos.get(sourceURL);
-    if (info.content) {
+    if (info && info.content) {
       return TextUtils.StaticContentProvider.StaticContentProvider.fromString(sourceURL, contentType, info.content);
     }
     return new CompilerSourceMappingContentProvider(sourceURL, contentType, this._initiator);
@@ -295,10 +307,11 @@ export class TextSourceMap {
    * @return {?string}
    */
   embeddedContentByURL(sourceURL) {
-    if (!this._sourceInfos.has(sourceURL)) {
+    const entry = this._sourceInfos.get(sourceURL);
+    if (!entry) {
       return null;
     }
-    return this._sourceInfos.get(sourceURL).content;
+    return entry.content;
   }
 
   /**
@@ -383,11 +396,11 @@ export class TextSourceMap {
    * @return {!Array.<!SourceMapEntry>}
    */
   _reversedMappings(sourceURL) {
-    if (!this._sourceInfos.has(sourceURL)) {
+    const info = this._sourceInfos.get(sourceURL);
+    if (!info) {
       return [];
     }
     const mappings = this.mappings();
-    const info = this._sourceInfos.get(sourceURL);
     if (info.reverseMappings === null) {
       info.reverseMappings = mappings.filter(mapping => mapping.sourceURL === sourceURL).sort(sourceMappingComparator);
     }
@@ -416,9 +429,12 @@ export class TextSourceMap {
   }
 
   /**
-   * @param {function(!SourceMapV3, number, number)} callback
+   * @param {function(!SourceMapV3, number, number):void} callback
    */
   _eachSection(callback) {
+    if (!this._json) {
+      return;
+    }
     if (!this._json.sections) {
       callback(this._json, 0, 0);
       return;
@@ -444,10 +460,10 @@ export class TextSourceMap {
       if (url === this._compiledURL && source) {
         url += Common.UIString.UIString('? [sm]');
       }
-      this._sourceInfos.set(url, new TextSourceMap.SourceInfo(source, null));
+      this._sourceInfos.set(url, new TextSourceMap.SourceInfo(source || null, null));
       sourcesList.push(url);
     }
-    sourceMap[TextSourceMap._sourcesListSymbol] = sourcesList;
+    sourceMapToSourceList.set(sourceMap, sourcesList);
   }
 
   /**
@@ -460,10 +476,16 @@ export class TextSourceMap {
     let sourceLineNumber = 0;
     let sourceColumnNumber = 0;
     let nameIndex = 0;
-    const sources = map[TextSourceMap._sourcesListSymbol];
+    // TODO(crbug.com/1011811): refactor away map.
+    // `sources` can be undefined if it wasn't previously
+    // processed and added to the list. However, that
+    // is not WAI and we should make sure that we can
+    // only reach this point when we are certain
+    // we have the list available.
+    const sources = sourceMapToSourceList.get(map);
     const names = map.names || [];
     const stringCharIterator = new TextSourceMap.StringCharIterator(map.mappings);
-    let sourceURL = sources[sourceIndex];
+    let sourceURL = sources && sources[sourceIndex];
 
     while (true) {
       if (stringCharIterator.peek() === ',') {
@@ -481,31 +503,33 @@ export class TextSourceMap {
 
       columnNumber += this._decodeVLQ(stringCharIterator);
       if (!stringCharIterator.hasNext() || this._isSeparator(stringCharIterator.peek())) {
-        this._mappings.push(new SourceMapEntry(lineNumber, columnNumber));
+        this.mappings().push(new SourceMapEntry(lineNumber, columnNumber));
         continue;
       }
 
       const sourceIndexDelta = this._decodeVLQ(stringCharIterator);
       if (sourceIndexDelta) {
         sourceIndex += sourceIndexDelta;
-        sourceURL = sources[sourceIndex];
+        if (sources) {
+          sourceURL = sources[sourceIndex];
+        }
       }
       sourceLineNumber += this._decodeVLQ(stringCharIterator);
       sourceColumnNumber += this._decodeVLQ(stringCharIterator);
 
       if (!stringCharIterator.hasNext() || this._isSeparator(stringCharIterator.peek())) {
-        this._mappings.push(
+        this.mappings().push(
             new SourceMapEntry(lineNumber, columnNumber, sourceURL, sourceLineNumber, sourceColumnNumber));
         continue;
       }
 
       nameIndex += this._decodeVLQ(stringCharIterator);
-      this._mappings.push(new SourceMapEntry(
+      this.mappings().push(new SourceMapEntry(
           lineNumber, columnNumber, sourceURL, sourceLineNumber, sourceColumnNumber, names[nameIndex]));
     }
 
     // As per spec, mappings are not necessarily sorted.
-    this._mappings.sort(SourceMapEntry.compare);
+    this.mappings().sort(SourceMapEntry.compare);
   }
 
   /**
@@ -524,12 +548,12 @@ export class TextSourceMap {
     // Read unsigned value.
     let result = 0;
     let shift = 0;
-    let digit;
-    do {
-      digit = TextSourceMap._base64Map[stringCharIterator.next()];
+    let digit = TextSourceMap._VLQ_CONTINUATION_MASK;
+    while (digit & TextSourceMap._VLQ_CONTINUATION_MASK) {
+      digit = base64Map.get(stringCharIterator.next()) || 0;
       result += (digit & TextSourceMap._VLQ_BASE_MASK) << shift;
       shift += TextSourceMap._VLQ_BASE_SHIFT;
-    } while (digit & TextSourceMap._VLQ_CONTINUATION_MASK);
+    }
 
     // Fix the sign.
     const negative = result & 1;
@@ -626,7 +650,8 @@ TextSourceMap.SourceInfo = class {
   }
 };
 
-TextSourceMap._sourcesListSymbol = Symbol('sourcesList');
+/** @type {?Promise<typeof WasmResolver>} */
+let asyncResolver;
 
 /**
  * @implements {SourceMap}
@@ -648,8 +673,8 @@ export class WasmSourceMap {
    * @private
    */
   static async _loadBindings() {
-    const arrayBuffer =
-        await self.runtime.loadBinaryResourcePromise('./sdk/wasm_source_map/pkg/wasm_source_map_bg.wasm', true);
+    const arrayBuffer = await Root.Runtime.Runtime.instance().loadBinaryResourcePromise(
+        './sdk/wasm_source_map/pkg/wasm_source_map_bg.wasm');
     await initWasm(arrayBuffer);
     return WasmResolver;
   }
@@ -658,10 +683,10 @@ export class WasmSourceMap {
    * @private
    */
   static _loadBindingsOnce() {
-    if (!WasmSourceMap._asyncResolver) {
-      WasmSourceMap._asyncResolver = WasmSourceMap._loadBindings();
+    if (!asyncResolver) {
+      asyncResolver = WasmSourceMap._loadBindings();
     }
-    return WasmSourceMap._asyncResolver;
+    return asyncResolver;
   }
 
   /**
@@ -728,7 +753,7 @@ export class WasmSourceMap {
     if (lineNumber !== 0) {
       console.warn(new Error('Invalid non-zero line number.'));
     }
-    return this._resolver.resolve(columnNumber);
+    return this._resolver.resolve(columnNumber) || null;
   }
 
   /**
@@ -739,7 +764,7 @@ export class WasmSourceMap {
    * @return {?SourceMapEntry}
    */
   sourceLineMapping(sourceURL, lineNumber, columnNumber) {
-    return this._resolver.resolveReverse(sourceURL, lineNumber, columnNumber);
+    return this._resolver.resolveReverse(sourceURL, lineNumber, columnNumber) || null;
   }
 
   /**

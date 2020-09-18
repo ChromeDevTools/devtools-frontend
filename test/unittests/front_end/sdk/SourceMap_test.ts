@@ -118,6 +118,7 @@ describe('TextSourceMap', () => {
       sections: undefined,
       sourceRoot: undefined,
       names: undefined,
+      sourcesContent: undefined,
     };
     const sourceMap = new TextSourceMap('compiled.js', 'source-map.json', mappingPayload, fakeInitiator);
 
@@ -145,6 +146,7 @@ describe('TextSourceMap', () => {
       sections: undefined,
       sourceRoot: undefined,
       names: undefined,
+      sourcesContent: undefined,
     };
     const sourceMap = new TextSourceMap('compiled.js', 'source-map.json', mappingPayload, fakeInitiator);
 
@@ -166,6 +168,7 @@ describe('TextSourceMap', () => {
       sections: undefined,
       sourceRoot: undefined,
       names: undefined,
+      sourcesContent: undefined,
     };
     const sourceMap = new TextSourceMap('compiled.js', 'source-map.json', mappingPayload, fakeInitiator);
 
@@ -188,7 +191,9 @@ describe('TextSourceMap', () => {
             sections: undefined,
             sourceRoot: undefined,
             names: undefined,
+            sourcesContent: undefined,
           },
+          url: undefined,
         },
         {
           offset: {line: 2, 'column': 10},
@@ -200,13 +205,16 @@ describe('TextSourceMap', () => {
             sections: undefined,
             sourceRoot: undefined,
             names: undefined,
+            sourcesContent: undefined,
           },
+          url: undefined,
         },
       ],
       version: 1,
       file: undefined,
       sourceRoot: undefined,
       names: undefined,
+      sourcesContent: undefined,
     };
     const sourceMap = new TextSourceMap('compiled.js', 'source-map.json', mappingPayload, fakeInitiator);
 

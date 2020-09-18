@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
@@ -29,10 +26,10 @@ export class ARIAAttributesPane extends AccessibilitySubPane {
   setNode(node) {
     super.setNode(node);
     this._treeOutline.removeChildren();
-    if (!this.node()) {
+    if (!node) {
       return;
     }
-    const target = this.node().domModel().target();
+    const target = node.domModel().target();
     const attributes = node.attributes();
     for (let i = 0; i < attributes.length; ++i) {
       const attribute = attributes[i];
@@ -106,7 +103,7 @@ export class ARIAAttributesTreeElement extends UI.TreeOutline.TreeElement {
    * @param {string} name
    */
   appendNameElement(name) {
-    this._nameElement = createElement('span');
+    this._nameElement = document.createElement('span');
     this._nameElement.textContent = name;
     this._nameElement.classList.add('ax-name');
     this._nameElement.classList.add('monospace');
@@ -137,11 +134,11 @@ export class ARIAAttributesTreeElement extends UI.TreeOutline.TreeElement {
   _startEditing() {
     const valueElement = this._valueElement;
 
-    if (UI.UIUtils.isBeingEdited(valueElement)) {
+    if (!valueElement || UI.UIUtils.isBeingEdited(valueElement)) {
       return;
     }
 
-    const previousContent = valueElement.textContent;
+    const previousContent = valueElement.textContent || '';
 
     /**
      * @param {string} previousContent
@@ -149,17 +146,22 @@ export class ARIAAttributesTreeElement extends UI.TreeOutline.TreeElement {
      * @this {ARIAAttributesTreeElement}
      */
     function blurListener(previousContent, event) {
-      const text = event.target.textContent;
+      const target = /** @type {!HTMLElement} */ (event.target);
+      const text = target.textContent || '';
       this._editingCommitted(text, previousContent);
     }
 
-    this._prompt = new ARIAAttributePrompt(ariaMetadata().valuesForProperty(this._nameElement.textContent), this);
+    const attributeName = /** @type {!HTMLSpanElement} */ (this._nameElement).textContent || '';
+    this._prompt = new ARIAAttributePrompt(ariaMetadata().valuesForProperty(attributeName), this);
     this._prompt.setAutocompletionTimeout(0);
     const proxyElement = this._prompt.attachAndStartEditing(valueElement, blurListener.bind(this, previousContent));
 
     proxyElement.addEventListener('keydown', this._editingValueKeyDown.bind(this, previousContent), false);
 
-    valueElement.getComponentSelection().selectAllChildren(valueElement);
+    const selection = valueElement.getComponentSelection();
+    if (selection) {
+      selection.selectAllChildren(valueElement);
+    }
   }
 
   _removePrompt() {
@@ -179,7 +181,8 @@ export class ARIAAttributesTreeElement extends UI.TreeOutline.TreeElement {
 
     // Make the changes to the attribute
     if (userInput !== previousContent) {
-      this._parentPane.node().setAttributeValue(this._attribute.name, userInput);
+      const node = /** @type {!SDK.DOMModel.DOMNode} */ (this._parentPane.node());
+      node.setAttributeValue(this._attribute.name, userInput);
     }
   }
 
@@ -198,7 +201,8 @@ export class ARIAAttributesTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     if (isEnterKey(event)) {
-      this._editingCommitted(event.target.textContent, previousContent);
+      const target = /** @type {!HTMLElement} */ (event.target);
+      this._editingCommitted(target.textContent || '', previousContent);
       event.consume();
       return;
     }
@@ -235,10 +239,21 @@ export class ARIAAttributePrompt extends UI.TextPrompt.TextPrompt {
    */
   _buildPropertyCompletions(expression, prefix, force) {
     prefix = prefix.toLowerCase();
-    if (!prefix && !force && (this._isEditingName || expression)) {
+    if (!prefix && !force && expression) {
       return Promise.resolve([]);
     }
-    return Promise.resolve(this._ariaCompletions.filter(value => value.startsWith(prefix)).map(c => ({text: c})));
+    return Promise.resolve(
+        this._ariaCompletions.filter(value => value.startsWith(prefix)).map(c => ({
+                                                                              text: c,
+                                                                              title: undefined,
+                                                                              subtitle: undefined,
+                                                                              iconType: undefined,
+                                                                              priority: undefined,
+                                                                              isSecondary: undefined,
+                                                                              subtitleRenderer: undefined,
+                                                                              selectionRange: undefined,
+                                                                              hideGhostText: undefined,
+                                                                            })));
   }
 }
 

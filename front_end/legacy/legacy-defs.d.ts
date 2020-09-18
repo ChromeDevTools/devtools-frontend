@@ -131,6 +131,7 @@ interface DocumentFragment {
 interface Event {
   consume(preventDefault?: boolean): void;
   deepElementFromPoint(): Node|null;
+  handled: boolean|undefined;
 }
 
 interface Node {

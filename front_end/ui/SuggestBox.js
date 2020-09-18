@@ -403,7 +403,7 @@ export class SuggestBox {
   *      iconType: (string|undefined),
   *      priority: (number|undefined),
   *      isSecondary: (boolean|undefined),
-  *      subtitleRenderer: (function():!Element|undefined),
+  *      subtitleRenderer: ((function():!Element)|undefined),
   *      selectionRange: ({startColumn: number, endColumn: number}|undefined),
   *      hideGhostText: (boolean|undefined)
   * }}

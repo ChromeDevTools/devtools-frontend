@@ -2,24 +2,32 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
+import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
+
+/** @typedef {{
+ * renderedWidth: number,
+ * renderedHeight: number,
+ * currentSrc: (string|undefined)
+ * }}
+ */
+// @ts-ignore typedef
+export let PrecomputedFeatures;
 
 export class ImagePreview {
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.SDKModel.Target} target
    * @param {string} originalImageURL
    * @param {boolean} showDimensions
-   * @param {!{precomputedFeatures: (!Object|undefined), imageAltText: (string|undefined)}=} options
+   * @param {!{precomputedFeatures: (!PrecomputedFeatures|undefined), imageAltText: (string|undefined)}=} options
    * @return {!Promise<?Element>}
    */
-  static build(target, originalImageURL, showDimensions, options = {}) {
+  static build(
+      target, originalImageURL, showDimensions, options = {precomputedFeatures: undefined, imageAltText: undefined}) {
     const {precomputedFeatures, imageAltText} = options;
-    const resourceTreeModel = target.model(SDK.ResourceTreeModel);
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     if (!resourceTreeModel) {
       return Promise.resolve(/** @type {?Element} */ (null));
     }
@@ -33,11 +41,12 @@ export class ImagePreview {
       return Promise.resolve(/** @type {?Element} */ (null));
     }
 
+    /** @type {function(*):void} */
     let fulfill;
     const promise = new Promise(x => {
       fulfill = x;
     });
-    const imageElement = createElement('img');
+    const imageElement = /** @type{!HTMLImageElement} */ (document.createElement('img'));
     imageElement.addEventListener('load', buildContent, false);
     imageElement.addEventListener('error', () => fulfill(null), false);
     if (imageAltText) {
@@ -47,7 +56,7 @@ export class ImagePreview {
     return promise;
 
     /**
-     * @param {?SDK.Resource} resource
+     * @param {?SDK.Resource.Resource} resource
      * @return {boolean}
      */
     function isImageResource(resource) {
@@ -55,7 +64,7 @@ export class ImagePreview {
     }
 
     function buildContent() {
-      const container = createElement('table');
+      const container = document.createElement('table');
       UI.Utils.appendStyle(container, 'components/imagePreview.css');
       container.className = 'image-preview-container';
       const intrinsicWidth = imageElement.naturalWidth;
@@ -85,8 +94,8 @@ export class ImagePreview {
   }
 
   /**
-   * @param {!SDK.DOMNode} node
-   * @return {!Promise<!Object|undefined>}
+   * @param {!SDK.DOMModel.DOMNode} node
+   * @return {!Promise<!PrecomputedFeatures|undefined>}
    */
   static async loadDimensionsForNode(node) {
     if (!node.nodeName() || node.nodeName().toLowerCase() !== 'img') {
@@ -104,9 +113,9 @@ export class ImagePreview {
     return featuresObject;
 
     /**
-     * @return {!{renderedWidth: number, renderedHeight: number, currentSrc: (string|undefined)}}
+     * @return {!PrecomputedFeatures}
      * @suppressReceiverCheck
-     * @this {!Element}
+     * @this {!HTMLImageElement}
      */
     function features() {
       return {renderedWidth: this.width, renderedHeight: this.height, currentSrc: this.currentSrc};

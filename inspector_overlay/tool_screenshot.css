@@ -1,0 +1,10 @@
+body {
+  cursor: crosshair;
+}
+
+#zone {
+  background-color: #0003;
+  border: 1px solid #fffd;
+  display: none;
+  position: absolute;
+}

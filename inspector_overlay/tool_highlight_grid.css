@@ -1,0 +1,7 @@
+@media (forced-colors: active) {
+  :root,
+  body {
+    background-color: transparent;
+    forced-color-adjust: none;
+  }
+}

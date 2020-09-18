@@ -5,7 +5,7 @@ Inspector Overlay provides JS/CSS modules which are responsible for rendering th
 ## How build works
 
 - Overlay modules are built using rollup and copied to $root_gen_dir.
-- CSS files are imported using a custom rollup plugin that transforms CSS into a CSSStyleSheet.
+- CSS files are imported using a custom rollup plugin that transforms CSS into a CSSStyleSheet. *Only use CSS imports in the bundle entrypoint*.
 - `inspector_overlay_resources.grd` file is copied as well and it defines how modules are packaged in a `.pak` file.
 - The Chromium build uses `inspector_overlay_resources.grd` and produces a `.pak` file.
 - `inspector_overlay_agent.cc` extracts the modules and inlines them onto the overlay page.

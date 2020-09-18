@@ -5,26 +5,13 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
-import {dispatch, reset, setPlatform} from './common.js';
+import {adoptStyleSheet, dispatch, reset, setPlatform} from './common.js';
+import style from './tool_screenshot.css';
 import {loaded} from './tool_screenshot_impl.js';
 
-const style = `
-body {
-  cursor: crosshair;
-}
-#zone {
-  background-color: #0003;
-  border: 1px solid #fffd;
-  display: none;
-  position: absolute;
-}
- `;
-
-
 window.setPlatform = function(platform) {
-  const styleTag = document.createElement('style');
-  styleTag.innerHTML = style;
-  document.head.append(styleTag);
+  adoptStyleSheet(style);
+
   document.body.onload = loaded;
 
   const zone = document.createElement('div');

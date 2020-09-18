@@ -5,10 +5,10 @@
 const {assert} = chai;
 
 import {renderElementIntoDOM, assertElements, assertElement} from './DOMHelpers.js';
-import {reset} from '../../../../inspector_overlay/common.js';
+import {reset, setPlatform} from '../../../../inspector_overlay/common.js';
 import {_normalizePositionData, drawGridAreaNames, drawGridLineNumbers, drawGridLineNames} from '../../../../inspector_overlay/css_grid_label_helpers.js';
 import {AreaBounds, Bounds} from '../../../../inspector_overlay/common.js';
-import '../../../../inspector_overlay/tool_highlight_grid.js';
+import {gridStyle} from '../../../../inspector_overlay/highlight_grid_common.js';
 
 const GRID_LABEL_CONTAINER_ID = 'grid-label-container';
 const DEFAULT_GRID_LABEL_LAYER_ID = 'grid-labels';
@@ -56,8 +56,11 @@ export function initFrame() {
  * This does the same as initFrame but also prepares the DOM for testing grid labels.
  */
 export function initFrameForGridLabels() {
+  const styleTag = document.createElement('style');
+  styleTag.textContent = gridStyle;
+  document.head.append(styleTag);
   initFrame();
-  window.setPlatform('mac');
+  setPlatform('mac');
   createGridLabelContainer();
 }
 

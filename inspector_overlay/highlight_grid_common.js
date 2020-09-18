@@ -37,6 +37,7 @@ import {applyMatrixToPoint, buildPath, emptyBounds} from './highlight_common.js'
 
 const DEFAULT_EXTENDED_LINE_COLOR = 'rgba(128, 128, 128, 0.3)';
 
+// TODO(alexrudenko): Grid label unit tests depend on this style so it cannot be extracted yet.
 export const gridStyle = `
 /* Grid row and column labels */
 .grid-label-content {

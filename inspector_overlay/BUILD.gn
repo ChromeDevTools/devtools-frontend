@@ -11,36 +11,40 @@ action("build_inspector_overlay") {
 
   inputs = [
     "$target_gen_dir/common.css",
-    "$target_gen_dir/tool_paused.css",
     "$target_gen_dir/common.js",
     "$target_gen_dir/css_grid_label_helpers.js",
     "$target_gen_dir/highlight_common.js",
     "$target_gen_dir/highlight_grid_common.js",
-    "$target_gen_dir/tool_highlight_impl.js",
-    "$target_gen_dir/tool_highlight.js",
-    "$target_gen_dir/tool_highlight_grid_impl.js",
-    "$target_gen_dir/tool_highlight_grid.js",
-    "$target_gen_dir/tool_paused_impl.js",
-    "$target_gen_dir/tool_paused.js",
-    "$target_gen_dir/tool_screenshot_impl.js",
-    "$target_gen_dir/tool_screenshot.js",
-    "$target_gen_dir/tool_viewport_size_impl.js",
-    "$target_gen_dir/tool_viewport_size.js",
     "$target_gen_dir/tool_distances_impl.js",
     "$target_gen_dir/tool_distances.js",
+    "$target_gen_dir/tool_highlight_grid_impl.js",
+    "$target_gen_dir/tool_highlight_grid.css",
+    "$target_gen_dir/tool_highlight_grid.js",
+    "$target_gen_dir/tool_highlight_impl.js",
+    "$target_gen_dir/tool_highlight.css",
+    "$target_gen_dir/tool_highlight.js",
+    "$target_gen_dir/tool_paused_impl.js",
+    "$target_gen_dir/tool_paused.css",
+    "$target_gen_dir/tool_paused.js",
+    "$target_gen_dir/tool_screenshot_impl.js",
+    "$target_gen_dir/tool_screenshot.css",
+    "$target_gen_dir/tool_screenshot.js",
     "$target_gen_dir/tool_source_order_impl.js",
+    "$target_gen_dir/tool_source_order.css",
     "$target_gen_dir/tool_source_order.js",
+    "$target_gen_dir/tool_viewport_size_impl.js",
+    "$target_gen_dir/tool_viewport_size.js",
   ]
 
   outputs = [
     "$resources_out_dir/common.css",
-    "$resources_out_dir/tool_highlight.js",
-    "$resources_out_dir/tool_highlight_grid.js",
     "$resources_out_dir/tool_distances.js",
+    "$resources_out_dir/tool_highlight_grid.js",
+    "$resources_out_dir/tool_highlight.js",
     "$resources_out_dir/tool_paused.js",
     "$resources_out_dir/tool_screenshot.js",
-    "$resources_out_dir/tool_viewport_size.js",
     "$resources_out_dir/tool_source_order.js",
+    "$resources_out_dir/tool_viewport_size.js",
   ]
 
   args = [
@@ -83,7 +87,11 @@ copy("copy_resources") {
 copy("copy_css_to_gen") {
   sources = [
     "common.css",
+    "tool_highlight.css",
+    "tool_highlight_grid.css",
     "tool_paused.css",
+    "tool_screenshot.css",
+    "tool_source_order.css",
   ]
   outputs = [ "$target_gen_dir/{{source_file_part}}" ]
 }

@@ -5,22 +5,16 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
-import {dispatch, reset, setPlatform} from './common.js';
+import {adoptStyleSheet, dispatch, reset, setPlatform} from './common.js';
 import {gridStyle} from './highlight_grid_common.js';
+import style from './tool_highlight_grid.css';
 import {doReset, drawGridHighlight} from './tool_highlight_grid_impl.js';
 
-const style = `
-@media (forced-colors: active) {
-  :root, body {
-      background-color: transparent;
-      forced-color-adjust: none;
-  }
-}`;
-
 window.setPlatform = function(platform) {
-  const styleTag = document.createElement('style');
-  styleTag.textContent = `${style}${gridStyle}`;
-  document.head.append(styleTag);
+  adoptStyleSheet(style);
+  const gridStyleSheet = new CSSStyleSheet();
+  gridStyleSheet.replaceSync(gridStyle);
+  adoptStyleSheet(gridStyleSheet);
 
   document.body.classList.add('fill');
 

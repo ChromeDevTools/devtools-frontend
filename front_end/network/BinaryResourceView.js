@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Host from '../host/host.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
@@ -20,13 +17,6 @@ export class BinaryResourceView extends UI.Widget.VBox {
   constructor(base64content, contentUrl, resourceType) {
     super();
     this.registerRequiredCSS('network/binaryResourceView.css');
-
-    /** @type {boolean} */
-    this._empty = !base64content.length;
-    if (this._empty) {
-      new UI.EmptyWidget.EmptyWidget('No data present in selected item').show(this.element);
-      return;
-    }
 
     this._binaryResourceViewFactory =
         new SourceFrame.BinaryResourceViewFactory.BinaryResourceViewFactory(base64content, contentUrl, resourceType);
@@ -79,10 +69,10 @@ export class BinaryResourceView extends UI.Widget.VBox {
    * @return {?BinaryViewObject}
    */
   _getCurrentViewObject() {
-    const filter = obj => obj.type === this._binaryViewTypeSetting.get();
+    const filter = /** @param {!BinaryViewObject} obj */ obj => obj.type === this._binaryViewTypeSetting.get();
     const binaryViewObject = this._binaryViewObjects.find(filter);
     console.assert(
-        binaryViewObject,
+        !!binaryViewObject,
         `No binary view found for binary view type found in setting 'binaryViewType': ${
             this._binaryViewTypeSetting.get()}`);
     return binaryViewObject || null;
@@ -90,6 +80,9 @@ export class BinaryResourceView extends UI.Widget.VBox {
 
   async _copySelectedViewToClipboard() {
     const viewObject = this._getCurrentViewObject();
+    if (!viewObject) {
+      return;
+    }
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText((await viewObject.content()).content);
     this._copiedText.setText(viewObject.copiedMessage);
     this._copiedText.element.classList.remove('fadeout');
@@ -103,16 +96,14 @@ export class BinaryResourceView extends UI.Widget.VBox {
       clearTimeout(this._addFadeoutSettimeoutId);
       this._addFadeoutSettimeoutId = null;
     }
-    this._addFadeoutSettimeoutId = setTimeout(addFadeoutClass.bind(this), 2000);
+    this._addFadeoutSettimeoutId = window.setTimeout(addFadeoutClass.bind(this), 2000);
   }
 
   /**
    * @override
    */
   wasShown() {
-    if (!this._empty) {
-      this._updateView();
-    }
+    this._updateView();
   }
 
   _updateView() {
@@ -136,7 +127,11 @@ export class BinaryResourceView extends UI.Widget.VBox {
   }
 
   _binaryViewTypeChanged() {
-    const newViewType = this._binaryViewTypeCombobox.selectedOption().value;
+    const selectedOption = /** @type {?HTMLOptionElement} */ (this._binaryViewTypeCombobox.selectedOption());
+    if (!selectedOption) {
+      return;
+    }
+    const newViewType = selectedOption.value;
     if (this._binaryViewTypeSetting.get() === newViewType) {
       return;
     }
@@ -149,9 +144,6 @@ export class BinaryResourceView extends UI.Widget.VBox {
    * @param {string} submenuItemText
    */
   addCopyToContextMenu(contextMenu, submenuItemText) {
-    if (this._empty) {
-      return;
-    }
     const copyMenu = contextMenu.clipboardSection().appendSubMenuItem(submenuItemText);
     const footerSection = copyMenu.footerSection();
 

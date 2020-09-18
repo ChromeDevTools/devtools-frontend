@@ -26,6 +26,21 @@ let l10nCallback;
 /** @type {!Runtime} */
 let runtimeInstance;
 
+export function getRemoteBase(location = self.location.toString()) {
+  const url = new URL(location);
+  const remoteBase = url.searchParams.get('remoteBase');
+  if (!remoteBase) {
+    return null;
+  }
+
+  const version = /\/serve_file\/(@[0-9a-zA-Z]+)\/?$/.exec(remoteBase);
+  if (!version) {
+    return null;
+  }
+
+  return {base: `${url.origin}/remote/serve_file/${version[1]}/`, version: version[1]};
+}
+
 /**
  * @unrestricted
  */

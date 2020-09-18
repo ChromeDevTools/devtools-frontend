@@ -8,9 +8,30 @@
   flex: 0 0 200px;
 }
 
-.report-field .more-info {
+.report-field .copyable {
+  user-select: text;
+}
+
+.report-field .inline-name {
+  color: #888;
+  padding-left: 2ex;
+}
+
+.report-field .inline-name::after {
+  content: ":\A0";
+}
+
+.report-field .inline-comment {
   color: #555;
   padding-left: 1ex;
+}
+
+.report-field .inline-comment::before {
+  content: "(";
+}
+
+.report-field .inline-comment::after {
+  content: ")";
 }
 
 .report-field-value-link {

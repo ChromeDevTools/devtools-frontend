@@ -217,6 +217,9 @@ table is empty.
   <message name="IDS_DEVTOOLS_6c202452e44c42e323204da2a3a3c24a" desc="Text in Clear Storage View of the Application panel">
     File System
   </message>
+  <message name="IDS_DEVTOOLS_6cf9494c4b53b910c03613070767018f" desc="Label the Frame Details view">
+    reporting to
+  </message>
   <message name="IDS_DEVTOOLS_6d65f4db97e4eb3e0324e2d84ad16b28" desc="Manifest installability error in the Application panel">
     Page does not work offline
   </message>

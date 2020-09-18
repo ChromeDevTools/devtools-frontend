@@ -40,6 +40,7 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
       }
     });
     this._adStatus = this._generalSection.appendField(ls`Ad Status`);
+
     this._isolationSection = this._reportView.appendSection(ls`Security & Isolation`);
     this._secureContext = this._isolationSection.appendField(ls`Secure Context`);
     this._coepPolicy = this._isolationSection.appendField(ls`Cross-Origin Embedder Policy`);
@@ -83,13 +84,49 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     this._updateContextStatus();
   }
 
+  /**
+   *
+   * @param {!HTMLElement} field
+   * @param {function((!Protocol.Network.CrossOriginEmbedderPolicyValue|!Protocol.Network.CrossOriginOpenerPolicyValue)):boolean} isEnabled
+   * @param {!Protocol.Network.CrossOriginEmbedderPolicyStatus|!Protocol.Network.CrossOriginOpenerPolicyStatus} info
+   */
+  static fillCrossOriginPolicy(field, isEnabled, info) {
+    const enabled = isEnabled(info.value);
+    field.textContent = enabled ? info.value : info.reportOnlyValue;
+    if (!enabled && isEnabled(info.reportOnlyValue)) {
+      const reportOnly = document.createElement('span');
+      reportOnly.classList.add('inline-comment');
+      reportOnly.textContent = 'report-only';
+      field.appendChild(reportOnly);
+    }
+    const endpoint = enabled ? info.reportingEndpoint : info.reportOnlyReportingEndpoint;
+    if (endpoint) {
+      const reportingEndpointPrefix = field.createChild('span', 'inline-name');
+      reportingEndpointPrefix.textContent = ls`reporting to`;
+      const reportingEndpointName = field.createChild('span', 'copyable');
+      reportingEndpointName.textContent = endpoint;
+    }
+  }
+
   async _updateCoopCoepStatus() {
-    const info = await this._frame.resourceTreeModel()
-                     .target()
-                     .model(SDK.NetworkManager.NetworkManager)
-                     .getSecurityIsolationStatus(this._frame.id);
-    this._coepPolicy.textContent = info.coep.value;
-    this._coopPolicy.textContent = info.coop.value;
+    const info =
+        /** @type {?Protocol.Network.SecurityIsolationStatus} */ (await this._frame.resourceTreeModel()
+                                                                      .target()
+                                                                      .model(SDK.NetworkManager.NetworkManager)
+                                                                      .getSecurityIsolationStatus(this._frame.id));
+    if (!info) {
+      return;
+    }
+    /**
+    * @param {!Protocol.Network.CrossOriginEmbedderPolicyValue|!Protocol.Network.CrossOriginOpenerPolicyValue} value
+    */
+    const coepIsEnabled = value => value !== Protocol.Network.CrossOriginEmbedderPolicyValue.None;
+    FrameDetailsView.fillCrossOriginPolicy(this._coepPolicy, coepIsEnabled, info.coep);
+    /**
+    * @param {!Protocol.Network.CrossOriginEmbedderPolicyValue|!Protocol.Network.CrossOriginOpenerPolicyValue} value
+    */
+    const coopIsEnabled = value => value !== Protocol.Network.CrossOriginOpenerPolicyValue.UnsafeNone;
+    FrameDetailsView.fillCrossOriginPolicy(this._coopPolicy, coopIsEnabled, info.coop);
   }
 
   /**
@@ -119,7 +156,7 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     this._secureContext.textContent = booleanToYesNo(this._frame.isSecureContext());
     const secureContextExplanation = this._explanationFromSecureContextType(this._frame.getSecureContextType());
     if (secureContextExplanation) {
-      const secureContextType = this._secureContext.createChild('span', 'more-info');
+      const secureContextType = this._secureContext.createChild('span');
       secureContextType.textContent = secureContextExplanation;
     }
   }

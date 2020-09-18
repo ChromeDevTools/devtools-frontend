@@ -2,15 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
 /**
- * @implements {UI.ListWidget.Delegate}
+ * @implements {UI.ListWidget.Delegate<!SDK.NetworkManager.Conditions>}
  * @unrestricted
  */
 export class ThrottlingSettingsTab extends UI.Widget.VBox {
@@ -62,12 +59,11 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
 
   /**
    * @override
-   * @param {*} item
+   * @param {!SDK.NetworkManager.Conditions} conditions
    * @param {boolean} editable
    * @return {!Element}
    */
-  renderItem(item, editable) {
-    const conditions = /** @type {!SDK.NetworkManager.Conditions} */ (item);
+  renderItem(conditions, editable) {
     const element = document.createElement('div');
     element.classList.add('conditions-list-item');
     const title = element.createChild('div', 'conditions-list-text conditions-list-title');
@@ -97,12 +93,11 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
 
   /**
    * @override
-   * @param {*} item
-   * @param {!UI.ListWidget.Editor} editor
+   * @param {!SDK.NetworkManager.Conditions} conditions
+   * @param {!UI.ListWidget.Editor<!SDK.NetworkManager.Conditions>} editor
    * @param {boolean} isNew
    */
-  commitEdit(item, editor, isNew) {
-    const conditions = /** @type {?SDK.NetworkManager.Conditions} */ (item);
+  commitEdit(conditions, editor, isNew) {
     conditions.title = editor.control('title').value.trim();
     const download = editor.control('download').value.trim();
     conditions.download = download ? parseInt(download, 10) * (1024 / 8) : -1;
@@ -120,11 +115,10 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
 
   /**
    * @override
-   * @param {*} item
-   * @return {!UI.ListWidget.Editor}
+   * @param {!SDK.NetworkManager.Conditions} conditions
+   * @return {!UI.ListWidget.Editor<!SDK.NetworkManager.Conditions>}
    */
-  beginEdit(item) {
-    const conditions = /** @type {?SDK.NetworkManager.Conditions} */ (item);
+  beginEdit(conditions) {
     const editor = this._createEditor();
     editor.control('title').value = conditions.title;
     editor.control('download').value = conditions.download <= 0 ? '' : String(conditions.download / (1024 / 8));
@@ -134,7 +128,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
   }
 
   /**
-   * @return {!UI.ListWidget.Editor}
+   * @return {!UI.ListWidget.Editor<!SDK.NetworkManager.Conditions>}
    */
   _createEditor() {
     if (this._editor) {
@@ -198,7 +192,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
     return editor;
 
     /**
-     * @param {*} item
+     * @param {!SDK.NetworkManager.Conditions} item
      * @param {number} index
      * @param {!HTMLInputElement|!HTMLSelectElement} input
      * @return {!UI.ListWidget.ValidatorResult}
@@ -211,11 +205,11 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
         const errorMessage = ls`Profile Name characters length must be between 1 to ${maxLength} inclusive`;
         return {valid, errorMessage};
       }
-      return {valid};
+      return {valid, errorMessage: undefined};
     }
 
     /**
-     * @param {*} item
+     * @param {!SDK.NetworkManager.Conditions} item
      * @param {number} index
      * @param {!HTMLInputElement|!HTMLSelectElement} input
      * @return {!UI.ListWidget.ValidatorResult}
@@ -232,11 +226,11 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
             ls`${throughput} must be a number between ${minThroughput}kb/s to ${maxThroughput}kb/s inclusive`;
         return {valid, errorMessage};
       }
-      return {valid};
+      return {valid, errorMessage: undefined};
     }
 
     /**
-     * @param {*} item
+     * @param {!SDK.NetworkManager.Conditions} item
      * @param {number} index
      * @param {!HTMLInputElement|!HTMLSelectElement} input
      * @return {!UI.ListWidget.ValidatorResult}
@@ -251,7 +245,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
         const errorMessage = ls`Latency must be an integer between ${minLatency}ms to ${maxLatency}ms inclusive`;
         return {valid, errorMessage};
       }
-      return {valid};
+      return {valid, errorMessage: undefined};
     }
   }
 }

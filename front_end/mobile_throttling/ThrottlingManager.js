@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as SDK from '../sdk/sdk.js';
@@ -14,10 +11,16 @@ import {MobileThrottlingSelector} from './MobileThrottlingSelector.js';
 import {NetworkThrottlingSelector} from './NetworkThrottlingSelector.js';
 import {Conditions, ConditionsList, cpuThrottlingPresets, CPUThrottlingRates, CustomConditions, MobileThrottlingConditionsGroup, NetworkThrottlingConditionsGroup} from './ThrottlingPresets.js';  // eslint-disable-line no-unused-vars
 
+/** @type {!ThrottlingManager} */
+let throttlingManagerInstance;
+
 /**
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.EmulationModel.EmulationModel>}
  */
 export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
+  /**
+   * @private
+   */
   constructor() {
     super();
     /** @type {!CPUThrottlingRates} */
@@ -42,12 +45,24 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
     SDK.SDKModel.TargetManager.instance().observeModels(SDK.EmulationModel.EmulationModel, this);
   }
 
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!throttlingManagerInstance || forceNew) {
+      throttlingManagerInstance = new ThrottlingManager();
+    }
+
+    return throttlingManagerInstance;
+  }
 
   /**
    * @param {!HTMLSelectElement} selectElement
    * @return {!NetworkThrottlingSelector}
    */
   decorateSelectWithNetworkThrottling(selectElement) {
+    /** @type {!Array<?SDK.NetworkManager.Conditions>} */
     let options = [];
     const selector = new NetworkThrottlingSelector(populate, select, this._customNetworkConditionsSetting);
     selectElement.addEventListener('change', optionSelected, false);
@@ -62,7 +77,7 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
       options = [];
       for (let i = 0; i < groups.length; ++i) {
         const group = groups[i];
-        const groupElement = selectElement.createChild('optgroup');
+        const groupElement = /** @type {!HTMLOptGroupElement} */ (selectElement.createChild('optgroup'));
         groupElement.label = group.title;
         for (const conditions of group.items) {
           const title = conditions.title;
@@ -85,7 +100,10 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
       if (selectElement.selectedIndex === selectElement.options.length - 1) {
         selector.revealAndUpdate();
       } else {
-        selector.optionSelected(options[selectElement.selectedIndex]);
+        const option = options[selectElement.selectedIndex];
+        if (option) {
+          selector.optionSelected(option);
+        }
       }
     }
 
@@ -189,8 +207,11 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
      */
     function select(index) {
       selectedIndex = index;
-      button.setText(options[index].title);
-      button.setTitle(options[index].description);
+      const option = options[index];
+      if (option) {
+        button.setText(option.title);
+        button.setTitle(option.description);
+      }
     }
   }
 
@@ -245,7 +266,9 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
    */
   createCPUThrottlingSelector() {
     const control = new UI.Toolbar.ToolbarComboBox(
-        event => this.setCPUThrottlingRate(this._cpuThrottlingRates[event.target.selectedIndex]), ls`CPU throttling`);
+        event => this.setCPUThrottlingRate(
+            this._cpuThrottlingRates[/** @type {!HTMLSelectElement} */ (event.target).selectedIndex]),
+        ls`CPU throttling`);
     this._cpuThrottlingControls.add(control);
     const currentRate = this._cpuThrottlingRate;
 
@@ -305,5 +328,5 @@ export class ActionDelegate {
  * @return {!ThrottlingManager}
  */
 export function throttlingManager() {
-  return self.singleton(ThrottlingManager);
+  return ThrottlingManager.instance();
 }

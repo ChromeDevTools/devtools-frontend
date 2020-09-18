@@ -835,6 +835,21 @@ export class HeapSnapshotProblemReport {
 }
 
 /**
+ * DOM node link state.
+ *
+ * @enum {number}
+ */
+const DOMLinkState = {
+  /** @type {number} */
+  'Unknown': 0,
+  /** @type {number} */
+  'Attached': 1,
+  /** @type {number} */
+  'Detached': 2
+};
+Object.freeze(DOMLinkState);
+
+/**
  * @unrestricted
  */
 export class HeapSnapshot {
@@ -884,6 +899,7 @@ export class HeapSnapshot {
     this._nodeSelfSizeOffset = meta.node_fields.indexOf('self_size');
     this._nodeEdgeCountOffset = meta.node_fields.indexOf('edge_count');
     this._nodeTraceNodeIdOffset = meta.node_fields.indexOf('trace_node_id');
+    this._nodeDetachednessOffset = meta.node_fields.indexOf('detachedness');
     this._nodeFieldCount = meta.node_fields.length;
 
     this._nodeTypes = meta.node_types[this._nodeTypeOffset];
@@ -934,6 +950,8 @@ export class HeapSnapshot {
     this._buildEdgeIndexes();
     this._progress.updateStatus(ls`Building retainers…`);
     this._buildRetainers();
+    this._progress.updateStatus(ls`Propagating DOM state…`);
+    this._propagateDOMState();
     this._progress.updateStatus(ls`Calculating node flags…`);
     this.calculateFlags();
     this._progress.updateStatus(ls`Calculating distances…`);
@@ -1886,6 +1904,165 @@ export class HeapSnapshot {
       dominatedRefIndex += (--dominatedNodes[dominatedRefIndex]);
       dominatedNodes[dominatedRefIndex] = nodeOrdinal * nodeFieldCount;
     }
+  }
+
+  /**
+   * Iterates children of a node.
+   *
+   * @param {number} nodeOrdinal The ordinal number representing the node.
+   * @param {function(number):boolean} edgeFilterCallback Callback that allows for filtering edge types.
+   * @param {function(number)} childCallback Callback invoked with the ordinal number representing the child.
+   */
+  _iterateFilteredChildren(nodeOrdinal, edgeFilterCallback, childCallback) {
+    const beginEdgeIndex = this._firstEdgeIndexes[nodeOrdinal];
+    const endEdgeIndex = this._firstEdgeIndexes[nodeOrdinal + 1];
+    for (let edgeIndex = beginEdgeIndex; edgeIndex < endEdgeIndex; edgeIndex += this._edgeFieldsCount) {
+      const childNodeIndex = this.containmentEdges[edgeIndex + this._edgeToNodeOffset];
+      const childNodeOrdinal = childNodeIndex / this._nodeFieldCount;
+      const type = this.containmentEdges[edgeIndex + this._edgeTypeOffset];
+      if (!edgeFilterCallback(type)) {
+        continue;
+      }
+      childCallback(childNodeOrdinal);
+    }
+  }
+
+  /**
+   * Adds a string to the snapshot.
+   *
+   * @param {string} string added to the snapshot.
+   * @returns the index to refer to the string through snapshot.strings[index].
+   */
+  _addString(string) {
+    this.strings.push(string);
+    return this.strings.length - 1;
+  }
+
+  /**
+    * The phase propagates whether a node is attached or detached through the
+    * graph and adjusts the low-level representation of nodes.
+    *
+    * State propagation:
+    * 1. Any object reachable from an attached object is itself attached.
+    * 2. Any object reachable from a detached object that is not already
+    *    attached is considered detached.
+    *
+    * Representation:
+    * - Name of any detached node is changed from "<Name>"" to
+    *   "Detached <Name>".
+    */
+  _propagateDOMState() {
+    if (this._nodeDetachednessOffset === -1) {
+      return;
+    }
+
+    console.time('propagateDOMState');
+
+    /** @type {!Uint8Array} */
+    const visited = new Uint8Array(this.nodeCount);
+    /** @type {!Array<number>} */
+    const attached = [];
+    /** @type {!Array<number>} */
+    const detached = [];
+
+    /** @type {!Map<number, number>} */
+    const stringIndexCache = new Map();
+
+    /**
+     * Adds a 'Detached ' prefix to the name of a node.
+     *
+     * @param {!HeapSnapshot} snapshot The snapshot to work on.
+     * @param {number} nodeIndex The index representing the node.
+     */
+    const addDetachedPrefixToNodeName = function(snapshot, nodeIndex) {
+      const oldStringIndex = snapshot.nodes[nodeIndex + snapshot._nodeNameOffset];
+      let newStringIndex = stringIndexCache.get(oldStringIndex);
+      if (newStringIndex === undefined) {
+        newStringIndex = snapshot._addString('Detached ' + snapshot.strings[oldStringIndex]);
+        stringIndexCache.set(oldStringIndex, newStringIndex);
+      }
+      snapshot.nodes[nodeIndex + snapshot._nodeNameOffset] = newStringIndex;
+    };
+
+    /**
+     * Processes a node represented by nodeOrdinal:
+     * - Changes its name based on newState.
+     * - Puts it onto working sets for attached or detached nodes.
+     *
+     * @param {!HeapSnapshot} snapshot The snapshot to work on.
+     * @param {number} nodeOrdinal The ordinal number representing the node.
+     * @param {number} newState New detached state for the node.
+     */
+    const processNode = function(snapshot, nodeOrdinal, newState) {
+      if (visited[nodeOrdinal]) {
+        return;
+      }
+
+      const nodeIndex = nodeOrdinal * snapshot._nodeFieldCount;
+
+      // Early bailout: Do not propagate the state (and name change) through JavaScript. Every
+      // entry point into embedder code is a node that knows its own state. All embedder nodes
+      // have their node type set to native.
+      if (snapshot.nodes[nodeIndex + snapshot._nodeTypeOffset] !== snapshot._nodeNativeType) {
+        visited[nodeOrdinal] = 1;
+        return;
+      }
+
+      snapshot.nodes[nodeIndex + snapshot._nodeDetachednessOffset] = newState;
+
+      if (newState === DOMLinkState.Attached) {
+        attached.push(nodeOrdinal);
+      } else if (newState === DOMLinkState.Detached) {
+        // Detached state: Rewire node name.
+        addDetachedPrefixToNodeName(snapshot, nodeIndex);
+        detached.push(nodeOrdinal);
+      }
+
+      visited[nodeOrdinal] = 1;
+    };
+
+    /**
+     * @param {!HeapSnapshot} snapshot
+     * @param {number} parentNodeOrdinal
+     * @param {number} newState
+     */
+    const propagateState = function(snapshot, parentNodeOrdinal, newState) {
+      snapshot._iterateFilteredChildren(
+          parentNodeOrdinal,
+          edgeType =>
+              ![snapshot._edgeHiddenType, snapshot._edgeInvisibleType, snapshot._edgeWeakType].includes(edgeType),
+          nodeOrdinal => processNode(snapshot, nodeOrdinal, newState));
+    };
+
+    // 1. We re-use the deserialized field to store the propagated state. While
+    //    the state for known nodes is already set, they still need to go
+    //    through processing to have their name adjusted and them enqueued in
+    //    the respective queues.
+    for (let nodeOrdinal = 0; nodeOrdinal < this.nodeCount; ++nodeOrdinal) {
+      const state = this.nodes[nodeOrdinal * this._nodeFieldCount + this._nodeDetachednessOffset];
+      // Bail out for objects that have no known state. For all other objects set that state.
+      if (state === DOMLinkState.Unknown) {
+        continue;
+      }
+      processNode(this, nodeOrdinal, state);
+    }
+    // 2. If the parent is attached, then the child is also attached.
+    while (attached.length !== 0) {
+      const nodeOrdinal = attached.pop();
+      propagateState(this, nodeOrdinal, DOMLinkState.Attached);
+    }
+    // 3. If the parent is not attached, then the child inherits the parent's state.
+    while (detached.length !== 0) {
+      const nodeOrdinal = detached.pop();
+      const nodeState = this.nodes[nodeOrdinal * this._nodeFieldCount + this._nodeDetachednessOffset];
+      // Ignore if the node has been found through propagating forward attached state.
+      if (nodeState === DOMLinkState.Attached) {
+        continue;
+      }
+      propagateState(this, nodeOrdinal, DOMLinkState.Detached);
+    }
+
+    console.timeEnd('propagateDOMState');
   }
 
   _buildSamples() {

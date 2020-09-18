@@ -15,6 +15,9 @@
   <message name="IDS_DEVTOOLS_42b1c19d788d56dae8f4274ae0e06388" desc="Text to indicate the status of a heap snapshot in the Performance Pane">
     Building dominated nodes…
   </message>
+  <message name="IDS_DEVTOOLS_4f4ab1bcde09dd773a950f9a1be8cb5e" desc="Text to indicate the status of a heap snapshot in the Performance Pane">
+    Propagating DOM state…
+  </message>
   <message name="IDS_DEVTOOLS_508b42300b35ed4e3062adf330b76aad" desc="Text to indicate the status of a heap snapshot in the Performance Pane">
     Building dominator tree…
   </message>

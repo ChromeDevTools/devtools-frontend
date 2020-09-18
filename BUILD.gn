@@ -169,11 +169,6 @@ generated_non_autostart_non_remote_modules = [
   "$resources_out_dir/emulated_devices/emulated_devices_module.js",
 ]
 
-generated_remote_modules = [
-  "$resources_out_dir/lighthouse_worker/lighthouse_worker_module.js",
-  "$resources_out_dir/dagre_layout/dagre_layout_module.js",
-]
-
 generated_test_modules = [
   "$resources_out_dir/accessibility_test_runner/accessibility_test_runner_module.js",
   "$resources_out_dir/application_test_runner/application_test_runner_module.js",
@@ -358,8 +353,8 @@ action("build_release_devtools") {
            front_end_devtools_module_entrypoint_sources
   outputs =
       generated_applications_js + generated_non_autostart_non_remote_modules +
-      generated_remote_modules + generated_test_modules +
-      generated_worker_bundles + generated_devtools_module_entrypoint_sources
+      generated_test_modules + generated_worker_bundles +
+      generated_devtools_module_entrypoint_sources
 
   args = devtools_applications + [
            "--input_path",

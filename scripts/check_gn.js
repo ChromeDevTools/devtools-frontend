@@ -34,7 +34,7 @@ function checkNonAutostartNonRemoteModules() {
     ];
   }
   const text = lines.join('\n');
-  const modules = manifestModules.filter(m => m.type !== 'autostart' && m.type !== 'remote').map(m => m.name);
+  const modules = manifestModules.filter(m => m.type !== 'autostart').map(m => m.name);
 
   const missingModules = modules.filter(m => !text.includes(`${m}/${m}_module.js`));
   if (missingModules.length) {

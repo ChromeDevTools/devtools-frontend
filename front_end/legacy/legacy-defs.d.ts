@@ -38,6 +38,7 @@ interface String {
 interface NumberConstructor {
   withThousandsSeparator(num: number): string;
   toFixedIfFloating(value: string): string;
+  secondsToString(seconds: number, higherResolution?: boolean): string;
 }
 
 interface Int32Array {

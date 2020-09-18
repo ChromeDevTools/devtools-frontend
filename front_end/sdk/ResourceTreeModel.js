@@ -978,19 +978,34 @@ export class ResourceTreeFrame {
    */
   async highlight() {
     const parentFrame = this.parentFrame();
-    if (parentFrame) {
-      const domModel = parentFrame.resourceTreeModel().domModel();
+    const parentTarget = this.resourceTreeModel().target().parentTarget();
+    /**
+     * @param {!DOMModel} domModel
+     */
+    const highlightFrameOwner = async domModel => {
       const deferredNode = await domModel.getOwnerNodeForFrame(this._id);
       if (deferredNode) {
         domModel.overlayModel().highlightInOverlay({deferredNode, selectorList: ''}, 'all', true);
       }
-    } else {
-      // For the top frame there is no owner node. Highlight the whole document instead.
-      const document = await this.resourceTreeModel().domModel().requestDocument();
-      if (document) {
-        this.resourceTreeModel().domModel().overlayModel().highlightInOverlay(
-            {node: document, selectorList: ''}, 'all', true);
+    };
+
+    if (parentFrame) {
+      return highlightFrameOwner(parentFrame.resourceTreeModel().domModel());
+    }
+
+    // Portals.
+    if (parentTarget) {
+      const domModel = parentTarget.model(DOMModel);
+      if (domModel) {
+        return highlightFrameOwner(domModel);
       }
+    }
+
+    // For the top frame there is no owner node. Highlight the whole document instead.
+    const document = await this.resourceTreeModel().domModel().requestDocument();
+    if (document) {
+      this.resourceTreeModel().domModel().overlayModel().highlightInOverlay(
+          {node: document, selectorList: ''}, 'all', true);
     }
   }
 }

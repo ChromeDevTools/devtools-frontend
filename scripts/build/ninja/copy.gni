@@ -64,8 +64,8 @@ template("copy_sources_to_resources") {
                        "")
 
     _copy_src = rebase_path(get_path_info(target_name, "dir"))
-    _copy_dest = rebase_path(
-            "$root_build_dir/resources/inspector$_front_end_module_name")
+    _copy_dest =
+        rebase_path("$root_out_dir/resources/inspector$_front_end_module_name")
 
     args = [
       rebase_path(

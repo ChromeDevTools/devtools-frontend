@@ -4,7 +4,8 @@
 
 import {ElementsBreadcrumbs} from '../../../../front_end/elements/ElementsBreadcrumbs.js';
 import {crumbsToRender, determineElementTitle, DOMNode} from '../../../../front_end/elements/ElementsBreadcrumbsUtils.js';
-import {assertElements, assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
+import {assertElement, assertElements, assertShadowRoot, dispatchClickEvent, renderElementIntoDOM, waitForScrollDone} from '../helpers/DOMHelpers.js';
+import {withNoMutations} from '../helpers/MutationHelpers.js';
 
 const {assert} = chai;
 
@@ -231,15 +232,47 @@ describe('ElementsBreadcrumbs', () => {
       assert.lengthOf(activeCrumbs, 1);
     });
 
-    it('shows the scrolling icons if the crumbs do not fit in their container', () => {
-      const thinWrapper = document.createElement('div');
-      thinWrapper.style.width = '100px';
-
+    it('updates the text if a crumb\'s title changes', async () => {
       const component = new ElementsBreadcrumbs();
-      thinWrapper.appendChild(component);
+      renderElementIntoDOM(component);
 
-      renderElementIntoDOM(thinWrapper);
+      const bodyCrumb = makeCrumb({
+        nodeType: Node.ELEMENT_NODE,
+        id: 2,
+        nodeName: 'body',
+        nodeNameNicelyCased: 'body',
+      });
 
+      const divCrumb = makeCrumb({
+        nodeType: Node.ELEMENT_NODE,
+        id: 3,
+        nodeName: 'div',
+        nodeNameNicelyCased: 'div',
+        attributes: {
+          id: 'test-id',
+        },
+      });
+
+      component.data = {
+        crumbs: [divCrumb, bodyCrumb],
+        selectedNode: bodyCrumb,
+      };
+
+      assertShadowRoot(component.shadowRoot);
+      await withNoMutations(component.shadowRoot, shadowRoot => {
+        const newDiv: DOMNode = {...divCrumb, nodeName: 'span', nodeNameNicelyCased: 'span'};
+        component.data = {
+          crumbs: [newDiv, bodyCrumb],
+          selectedNode: bodyCrumb,
+        };
+
+        const renderedTextForUpdatedCrumb = shadowRoot.querySelector('.crumb:last-child devtools-node-text');
+        assertElement(renderedTextForUpdatedCrumb, HTMLElement);
+        assert.strictEqual(renderedTextForUpdatedCrumb.dataset.nodeTitle, 'span');
+      });
+    });
+
+    describe('when the breadcrumbs overflow', () => {
       const bodyCrumb = makeCrumb({
         nodeType: Node.ELEMENT_NODE,
         id: 2,
@@ -260,28 +293,63 @@ describe('ElementsBreadcrumbs', () => {
         },
       });
 
-      component.data = {
-        crumbs: [divCrumb, bodyCrumb],
-        selectedNode: bodyCrumb,
-      };
+      it('shows the scrolling icons if the crumbs do not fit in their container', () => {
+        const thinWrapper = document.createElement('div');
+        thinWrapper.style.width = '400px';
 
-      assertShadowRoot(component.shadowRoot);
+        const component = new ElementsBreadcrumbs();
+        thinWrapper.appendChild(component);
 
-      const scrollButtons = component.shadowRoot.querySelectorAll('button.overflow');
-      assertElements(scrollButtons, HTMLButtonElement);
+        renderElementIntoDOM(thinWrapper);
 
-      if (!scrollButtons) {
-        assert.fail('Expected to find some scrollButtons');
-        return;
-      }
+        component.data = {
+          crumbs: [divCrumb, bodyCrumb],
+          selectedNode: bodyCrumb,
+        };
 
-      assert.strictEqual(scrollButtons.length, 2, 'there are two scroll buttons');
+        assertShadowRoot(component.shadowRoot);
 
-      const leftButton = scrollButtons[0];
-      const rightButton = scrollButtons[1];
+        const scrollButtons = component.shadowRoot.querySelectorAll('button.overflow');
+        assertElements(scrollButtons, HTMLButtonElement);
 
-      assert.isTrue(leftButton.disabled);
-      assert.isFalse(rightButton.disabled);
+        assert.strictEqual(scrollButtons.length, 2, 'there are two scroll buttons');
+        const leftButton = scrollButtons[0];
+        const rightButton = scrollButtons[1];
+
+        assert.isTrue(leftButton.disabled);
+        assert.isFalse(rightButton.disabled);
+      });
+
+      it('disables the right button once the user has scrolled to the end', async () => {
+        const thinWrapper = document.createElement('div');
+        thinWrapper.style.width = '400px';
+
+        const component = new ElementsBreadcrumbs();
+        thinWrapper.appendChild(component);
+
+        renderElementIntoDOM(thinWrapper);
+
+        component.data = {
+          crumbs: [divCrumb, bodyCrumb],
+          selectedNode: bodyCrumb,
+        };
+
+        assertShadowRoot(component.shadowRoot);
+
+        const rightButton = component.shadowRoot.querySelector('button.overflow.right');
+        assertElement(rightButton, HTMLButtonElement);
+
+        assert.isFalse(rightButton.disabled);
+
+        await withNoMutations(component.shadowRoot, async shadowRoot => {
+          dispatchClickEvent(rightButton);
+          const scrollWrapper = shadowRoot.querySelector('.crumbs-window');
+          assertElement(scrollWrapper, HTMLDivElement);
+          await waitForScrollDone(scrollWrapper);
+          assert.isTrue(rightButton.disabled);
+        });
+      });
     });
+
   });
 });

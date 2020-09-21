@@ -6,17 +6,17 @@ import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
 const {render, html} = LitHtml;
 
+export interface NodeTextData {
+  nodeTitle: string, nodeId?: string, nodeClasses?: string[]
+}
+
 export class NodeText extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private nodeTitle: string = '';
   private nodeId?: string = '';
   private nodeClasses?: string[] = [];
 
-  constructor() {
-    super();
-  }
-
-  set data(data: {nodeTitle: string, nodeId?: string, nodeClasses?: string[]}) {
+  set data(data: NodeTextData) {
     this.nodeTitle = data.nodeTitle;
     this.nodeId = data.nodeId;
     this.nodeClasses = data.nodeClasses;

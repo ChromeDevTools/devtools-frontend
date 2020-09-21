@@ -58,8 +58,8 @@ export class Runtime {
     /** @type {!Object<string, !ModuleDescriptor>} */
     this._descriptorsMap = {};
 
-    for (let i = 0; i < descriptors.length; ++i) {
-      this._registerModule(descriptors[i]);
+    for (const descriptor of descriptors) {
+      this._registerModule(descriptor);
     }
   }
 
@@ -101,8 +101,7 @@ export class Runtime {
 
     const normalizedSegments = [];
     const segments = path.split('/');
-    for (let i = 0; i < segments.length; i++) {
-      const segment = segments[i];
+    for (const segment of segments) {
       if (segment === '.') {
         continue;
       } else if (segment === '..') {
@@ -242,8 +241,8 @@ export class Runtime {
    */
   loadAutoStartModules(moduleNames) {
     const promises = [];
-    for (let i = 0; i < moduleNames.length; ++i) {
-      promises.push(this.loadModulePromise(moduleNames[i]));
+    for (const moduleName of moduleNames) {
+      promises.push(this.loadModulePromise(moduleName));
     }
     return Promise.all(promises);
   }
@@ -813,10 +812,10 @@ export class ExperimentsSupport {
   constructor() {
     /** @type {!Array<!Experiment>} */
     this._experiments = [];
-    /** @type {!Object<string,boolean>} */
-    this._experimentNames = {};
-    /** @type {!Object<string,boolean>} */
-    this._enabledTransiently = {};
+    /** @type {!Set<string>} */
+    this._experimentNames = new Set();
+    /** @type {!Set<string>} */
+    this._enabledTransiently = new Set();
     /** @type {!Set<string>} */
     this._enabledByDefault = new Set();
     /** @type {!Set<string>} */
@@ -828,9 +827,8 @@ export class ExperimentsSupport {
   */
   allConfigurableExperiments() {
     const result = [];
-    for (let i = 0; i < this._experiments.length; i++) {
-      const experiment = this._experiments[i];
-      if (!this._enabledTransiently[experiment.name]) {
+    for (const experiment of this._experiments) {
+      if (!this._enabledTransiently.has(experiment.name)) {
         result.push(experiment);
       }
     }
@@ -860,8 +858,9 @@ export class ExperimentsSupport {
   * @param {boolean=} unstable
   */
   register(experimentName, experimentTitle, unstable) {
-    Runtime._assert(!this._experimentNames[experimentName], 'Duplicate registration of experiment ' + experimentName);
-    this._experimentNames[experimentName] = true;
+    Runtime._assert(
+        !this._experimentNames.has(experimentName), 'Duplicate registration of experiment ' + experimentName);
+    this._experimentNames.add(experimentName);
     this._experiments.push(new Experiment(this, experimentName, experimentTitle, !!unstable));
   }
 
@@ -876,7 +875,7 @@ export class ExperimentsSupport {
     if (Runtime._experimentsSetting()[experimentName] === false) {
       return false;
     }
-    if (this._enabledTransiently[experimentName] || this._enabledByDefault.has(experimentName)) {
+    if (this._enabledTransiently.has(experimentName) || this._enabledByDefault.has(experimentName)) {
       return true;
     }
     if (this._serverEnabled.has(experimentName)) {
@@ -901,9 +900,9 @@ export class ExperimentsSupport {
   * @param {!Array.<string>} experimentNames
   */
   enableExperimentsTransiently(experimentNames) {
-    for (let i = 0; i < experimentNames.length; ++i) {
-      this._checkExperiment(experimentNames[i]);
-      this._enabledTransiently[experimentNames[i]] = true;
+    for (const experimentName of experimentNames) {
+      this._checkExperiment(experimentName);
+      this._enabledTransiently.add(experimentName);
     }
   }
 
@@ -932,13 +931,13 @@ export class ExperimentsSupport {
   */
   enableForTest(experimentName) {
     this._checkExperiment(experimentName);
-    this._enabledTransiently[experimentName] = true;
+    this._enabledTransiently.add(experimentName);
   }
 
   clearForTest() {
     this._experiments = [];
-    this._experimentNames = {};
-    this._enabledTransiently = {};
+    this._experimentNames.clear();
+    this._enabledTransiently.clear();
     this._enabledByDefault.clear();
     this._serverEnabled.clear();
   }
@@ -962,7 +961,7 @@ export class ExperimentsSupport {
   * @param {string} experimentName
   */
   _checkExperiment(experimentName) {
-    Runtime._assert(this._experimentNames[experimentName], 'Unknown experiment ' + experimentName);
+    Runtime._assert(this._experimentNames.has(experimentName), 'Unknown experiment ' + experimentName);
   }
 }
 

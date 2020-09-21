@@ -90,37 +90,3 @@ export function assertElements<T extends Element>(
     nodeList: NodeListOf<Element>, elementClass: Constructor<T>): asserts nodeList is NodeListOf<T> {
   nodeList.forEach(e => assert.instanceOf(e, elementClass));
 }
-
-/**
- * Returns a promise that resolves when an element finishes being scrolled.
- */
-export function waitForScrollDone<T extends Element>(element: T, scrollDeltaThreshold = 3): Promise<void> {
-  let lastKnownScroll = -1;
-  return new Promise(resolve => {
-    const onScrollEventListener = () => {
-      // When we do smooth scrolling, the last two scroll events won't have the
-      // exact same scroll left, but they will be very close. e.g. as the smooth
-      // scroll finishes, the last two scroll events will have nearly but not
-      // quite the same values. So, if they are 1px or 2px apart, we treat that
-      // as finished.
-      if (element.scrollLeft - lastKnownScroll < scrollDeltaThreshold && lastKnownScroll > -1) {
-        element.removeEventListener('scroll', onScrollEventListener);
-        resolve();
-      } else {
-        lastKnownScroll = element.scrollLeft;
-      }
-    };
-    element.addEventListener('scroll', onScrollEventListener);
-  });
-}
-
-/**
- * Dispatches a mouse click event. Errors if the event was not dispatched successfully.
- */
-export function dispatchClickEvent<T extends Element>(element: T, options: MouseEventInit = {}) {
-  const clickEvent = new MouseEvent('click', options);
-  const success = element.dispatchEvent(clickEvent);
-  if (!success) {
-    assert.fail('Failed to trigger click event successfully.');
-  }
-}

@@ -104,6 +104,8 @@ export class RenderingOptionsView extends UI.Widget.VBox {
     this._appendSelect(
         ls`Forces vision deficiency emulation`,
         Common.Settings.Settings.instance().moduleSetting('emulatedVisionDeficiency'));
+
+    this.contentElement.createChild('div').classList.add('panel-section-separator');
   }
 
   /**

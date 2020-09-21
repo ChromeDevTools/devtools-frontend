@@ -20,6 +20,10 @@
   flex: none;
 }
 
+.panel-section-separator:last-child {
+  background: transparent;
+}
+
 .chrome-select-label {
   margin-bottom: 16px;
 }

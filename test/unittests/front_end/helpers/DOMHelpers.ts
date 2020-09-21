@@ -90,3 +90,43 @@ export function assertElements<T extends Element>(
     nodeList: NodeListOf<Element>, elementClass: Constructor<T>): asserts nodeList is NodeListOf<T> {
   nodeList.forEach(e => assert.instanceOf(e, elementClass));
 }
+
+/* Waits for the given element to have a scrollLeft property of at least desiredScrollLeft */
+export function waitForScrollLeft<T extends Element>(element: T, desiredScrollLeft: number): Promise<void> {
+  let lastScrollLeft = -1;
+  let scrollLeftTimeout: number|null = null;
+
+  const timeBetweenPolls = 50;
+
+
+  return new Promise(resolve => {
+    const pollForScrollLeft = () => {
+      const newScrollLeft = element.scrollLeft;
+      // If we get the same scroll value twice in a row, and it's at least what
+      // we want, we're done!
+      if (lastScrollLeft === newScrollLeft && newScrollLeft >= desiredScrollLeft) {
+        if (scrollLeftTimeout) {
+          window.clearTimeout(scrollLeftTimeout);
+        }
+        resolve();
+        return;
+      }
+
+      lastScrollLeft = newScrollLeft;
+      scrollLeftTimeout = window.setTimeout(pollForScrollLeft, timeBetweenPolls);
+    };
+
+    window.setTimeout(pollForScrollLeft, timeBetweenPolls);
+  });
+}
+
+/**
+ * Dispatches a mouse click event. Errors if the event was not dispatched successfully.
+ */
+export function dispatchClickEvent<T extends Element>(element: T, options: MouseEventInit = {}) {
+  const clickEvent = new MouseEvent('click', options);
+  const success = element.dispatchEvent(clickEvent);
+  if (!success) {
+    assert.fail('Failed to trigger click event successfully.');
+  }
+}

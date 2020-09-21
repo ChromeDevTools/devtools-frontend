@@ -5,8 +5,8 @@
 import * as ComponentHelpers from '../component_helpers/component_helpers.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
-import {crumbsToRender, CrumbTitle, DOMNode, NodeSelectedEvent, UserScrollPosition} from './ElementsBreadcrumbsUtils.js';
-import {NodeText} from './NodeText.js';
+import {crumbsToRender, DOMNode, NodeSelectedEvent, UserScrollPosition} from './ElementsBreadcrumbsUtils.js';
+import {NodeTextData} from './NodeText.js';
 
 export class ElementsBreadcrumbs extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
@@ -74,17 +74,6 @@ export class ElementsBreadcrumbs extends HTMLElement {
     this.resizeObserver.observe(crumbs);
     this.isObservingResize = true;
   }
-
-  private renderCrumbText(title: CrumbTitle) {
-    const text = new NodeText();
-    text.data = {
-      nodeTitle: title.main,
-      nodeId: title.extras.id,
-      nodeClasses: title.extras.classes,
-    };
-    return text;
-  }
-
 
   /**
    * This method runs after render and checks if the crumbs are too large for
@@ -181,13 +170,15 @@ export class ElementsBreadcrumbs extends HTMLElement {
   }
 
   private renderOverflowButton(direction: 'left'|'right', disabled: boolean) {
-    if (this.overflowing === false) {
-      return LitHtml.html``;
-    }
+    const buttonStyles = LitHtml.Directives.classMap({
+      overflow: true,
+      [direction]: true,
+      hidden: this.overflowing === false,
+    });
 
     return LitHtml.html`
       <button
-        class="overflow ${direction}"
+        class=${buttonStyles}
         @click=${this.onOverflowClick(direction)}
         ?disabled=${disabled}
         aria-label="Scroll ${direction}"
@@ -250,6 +241,10 @@ export class ElementsBreadcrumbs extends HTMLElement {
           background-color: var(--toolbar-bg-color);
         }
 
+        .overflow.hidden {
+          display: none;
+        }
+
         .overflow:not(:disabled):hover {
           background-color: var(--toolbar-hover-bg-color);
           cursor: pointer;
@@ -275,7 +270,6 @@ export class ElementsBreadcrumbs extends HTMLElement {
                 crumb: true,
                 selected: crumb.selected,
               };
-              const crumbText = this.renderCrumbText(crumb.title);
               return LitHtml.html`
                 <li class=${LitHtml.Directives.classMap(crumbClasses)}
                   data-node-id=${crumb.node.id}
@@ -288,7 +282,11 @@ export class ElementsBreadcrumbs extends HTMLElement {
                     @mouseleave=${this.onCrumbMouseLeave(crumb.node)}
                     @focus=${this.onCrumbFocus(crumb.node)}
                     @blur=${this.onCrumbBlur(crumb.node)}
-                  >${crumbText}</a>
+                  ><devtools-node-text data-node-title=${crumb.title.main} .data=${{
+                    nodeTitle: crumb.title.main,
+                    nodeId: crumb.title.extras.id,
+                    nodeClasses: crumb.title.extras.classes,
+                  } as NodeTextData}></devtools-node-text></a>
                 </li>`;
             })}
           </ul>

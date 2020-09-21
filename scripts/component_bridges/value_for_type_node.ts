@@ -84,7 +84,6 @@ export const valueForTypeNode = (node: ts.TypeNode, isFunctionParam: boolean = f
     const isNullUnion = node.types.some(node => {
       return ts.isLiteralTypeNode(node) && node.literal.kind === ts.SyntaxKind.NullKeyword;
     });
-
     if (isNullUnion) {
       if (node.types.length > 2) {
         /* decided to defer support for complex types like string | number | null until we hit a legitimate case to use them */
@@ -97,17 +96,8 @@ export const valueForTypeNode = (node: ts.TypeNode, isFunctionParam: boolean = f
         throw new Error('Found null union without a not null node.');
       }
 
-      // if it's primitive|null, return ?primitive
-      if (nodeIsPrimitive(notNullNode)) {
-        const value = valueForTypeNode(notNullNode);
-        return `?${value}`;
-      }
-      /* for non primitives, we return !Foo|null
-       * if we are in an interface
-       * but still ?Foo for parameters
-       */
       const value = valueForTypeNode(notNullNode);
-      return isFunctionParam ? `?${value}` : `!${value}|null`;
+      return `?${value}`;
     }
 
     const parts = node.types.map(n => valueForTypeNode(n, isFunctionParam));

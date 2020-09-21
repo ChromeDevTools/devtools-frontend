@@ -832,6 +832,25 @@ describe('generateClosure', () => {
 * }}`);
     });
 
+    it('converts nullable non-primitives correctly', () => {
+      const state = parseCode(`interface Person {
+        pet: Pet|null
+      }
+
+      interface Pet {}
+
+      class Breadcrumbs extends HTMLElement {
+        public update(person: Person): void {}
+      }`);
+
+      const interfaces = generateTypeReferences(state);
+
+      assert.strictEqual(interfaces.length, 2);
+      assert.include(interfaces[0].join('\n'), `* @typedef {{
+* pet:?Pet,
+* }}`);
+    });
+
     it('includes the export with the @ts-ignore', () => {
       const state = parseCode(`interface Person {
         name: string

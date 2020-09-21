@@ -67,12 +67,12 @@ describe('valueForTypeNode', () => {
       assert.strictEqual(valueForTypeNode(unionNode), '?string');
     });
 
-    it('converts null unions with an interface into !X | null', () => {
+    it('converts null unions with an interface into ?X', () => {
       const interfaceNode = ts.createTypeReferenceNode(ts.createIdentifier('ExampleInterface'), []);
       const nullLiteral = createNullLiteral();
 
       const unionNode = ts.createUnionTypeNode([interfaceNode, nullLiteral]);
-      assert.strictEqual(valueForTypeNode(unionNode), '!ExampleInterface|null');
+      assert.strictEqual(valueForTypeNode(unionNode), '?ExampleInterface');
     });
 
     it('converts null unions into ?X if they are a func param', () => {
@@ -119,7 +119,7 @@ describe('valueForTypeNode', () => {
       const node = ts.createTypeLiteralNode([
         ts.createPropertySignature(undefined, 'x', undefined, unionNode, undefined),
       ]);
-      assert.strictEqual(valueForTypeNode(node), '{x: !ExampleInterface|null}');
+      assert.strictEqual(valueForTypeNode(node), '{x: ?ExampleInterface}');
     });
 
     it('converts union types of type refs and null correctly when in function parameters', () => {

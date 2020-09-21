@@ -531,7 +531,7 @@ const _extraPropertyValues = {
   'max-height': {values: ['min-content', 'max-content', '-webkit-fill-available', 'fit-content']},
   'color': {values: ['black']},
   'background-color': {values: ['white']},
-  'box-shadow': {values: ['inset', '0 0 black']},
+  'box-shadow': {values: ['inset']},
   'text-shadow': {values: ['0 0 black']},
   '-webkit-writing-mode': {values: ['horizontal-tb', 'vertical-rl', 'vertical-lr']},
   'writing-mode': {values: ['lr', 'rl', 'tb', 'lr-tb', 'rl-tb', 'tb-rl']},

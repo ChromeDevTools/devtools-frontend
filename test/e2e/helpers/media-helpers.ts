@@ -9,7 +9,7 @@ export async function playMediaFile(media: string) {
   await goToResource(`media/${media}`);
 
   // Need to click play manually - autoplay policy prevents it otherwise.
-  return new Promise(async resolve => {
+  return new Promise<void>(async resolve => {
     await target.exposeFunction('resolve', resolve);
     await target.evaluate(() => {
       const videoElement = document.getElementsByName('media')[0] as HTMLVideoElement;

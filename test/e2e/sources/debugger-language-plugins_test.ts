@@ -118,7 +118,7 @@ describe('The Debugger Language Plugins', async () => {
           };
         }
 
-        return Promise.all(Array.from(extensionIFrames, element => new Promise(resolve => {
+        return Promise.all(Array.from(extensionIFrames, element => new Promise<void>(resolve => {
                                                           (element as HTMLIFrameElement).onload =
                                                               injectAPICallback(resolve);
                                                         })));

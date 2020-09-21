@@ -34,7 +34,7 @@ export const mochaHooks = {
       console.log(' - Press enter to run the test suite.');
       console.log(' - Press ctrl + c to quit.');
 
-      await new Promise(resolve => {
+      await new Promise<void>(resolve => {
         const {stdin} = process;
 
         stdin.on('data', () => {

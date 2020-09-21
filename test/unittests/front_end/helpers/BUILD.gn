@@ -9,6 +9,7 @@ ts_library("helpers") {
   sources = [
     "DOMHelpers.ts",
     "InspectorOverlayHelpers.ts",
+    "MutationHelpers.ts",
   ]
 
   deps = [ "../../../../inspector_overlay" ]

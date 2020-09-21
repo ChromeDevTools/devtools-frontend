@@ -55,6 +55,12 @@ generate_ci_configs(
         excluded_from=['chromium']
       ),
       builder_descriptor(
+        name="Linux Compile Debug",
+        recipe_name="devtools/devtools-frontend",
+        excluded_from=['chromium'],
+        properties = {"builder_config": "Debug"},
+      ),
+      builder_descriptor(
         name="Stand-alone Mac",
         recipe_name="devtools/devtools-frontend",
         dims=dimensions.mac,

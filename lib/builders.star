@@ -108,13 +108,14 @@ def config_section(name, branch,
     notifiers=notifiers
   )
 
-def builder_descriptor(name, recipe_name, dims=dimensions.default_ubuntu, excluded_from=[], notification_muted=False):
+def builder_descriptor(name, recipe_name, dims=dimensions.default_ubuntu, excluded_from=[], notification_muted=False, properties=None):
   return struct(
     name=name,
     recipe_name=recipe_name,
     dims=dims,
     excluded_from=excluded_from,
     notification_muted=notification_muted,
+    properties=properties
   )
 
 def generate_ci_configs(configurations, builders):
@@ -146,12 +147,14 @@ def generate_ci_configs(configurations, builders):
 
     def ci_builder(**kvargs):
       category=kvargs.pop('console_category')
+      properties=kvargs.pop('properties')
+      properties.update(goma_rbe_prod_default)
       builder(
           bucket="ci",
           builder_group=c.builder_group,
           service_account=SERVICE_ACCOUNT,
           schedule="triggered",
-          properties=goma_rbe_prod_default,
+          properties=properties,
           **kvargs
       )
       builders_refs.append((kvargs['name'], category))
@@ -165,6 +168,7 @@ def generate_ci_configs(configurations, builders):
           execution_timeout=2 * time.hour,
           console_category='Linux',
           notifies=[] if b.notification_muted else c.notifiers,
+          properties = b.properties or {},
         )
 
     luci.console_view(

@@ -88,20 +88,20 @@ builder_coverage(
 )
 
 builder_coverage(
-  covered_oss = ["linux", "win64"],
-  builder_factory = try_builder,
-  builder_name_pattern = "devtools_backend_%s_rel",
-  recipe_name="devtools/devtools-backend",
-  execution_timeout=2 * time.hour,
-)
-
-builder_coverage(
   covered_oss = ["linux"],
   builder_factory = try_builder,
   builder_name_pattern = "devtools_frontend_%s_dbg",
   recipe_name="devtools/devtools-frontend",
   execution_timeout=2 * time.hour,
   properties = {"builder_config": "Debug"},
+)
+
+builder_coverage(
+  covered_oss = ["linux", "win64"],
+  builder_factory = try_builder,
+  builder_name_pattern = "devtools_backend_%s_rel",
+  recipe_name="devtools/devtools-backend",
+  execution_timeout=2 * time.hour,
 )
 
 luci.list_view(
@@ -135,6 +135,7 @@ cq_master_builders=[
   'devtools_frontend_linux_rel',
   'devtools_frontend_mac_rel',
   'devtools_frontend_win64_rel',
+  'devtools_frontend_linux_dbg',
   'devtools_backend_linux_rel',
   #'devtools_backend_mac_rel',
   'devtools_backend_win64_rel',

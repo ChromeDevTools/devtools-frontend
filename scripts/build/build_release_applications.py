@@ -109,7 +109,7 @@ class ReleaseBuilder(object):
 
     def build_app(self):
         self._build_app_script()
-        for module in filter(lambda desc: (not desc.get('type') or desc.get('type') == 'remote'),
+        for module in filter(lambda desc: (not desc.get('type')),
                              self.descriptors.application.values()):
             self._concatenate_dynamic_module(module['name'])
 

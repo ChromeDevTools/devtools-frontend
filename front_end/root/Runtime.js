@@ -818,6 +818,8 @@ export class ExperimentsSupport {
     /** @type {!Object<string,boolean>} */
     this._enabledTransiently = {};
     /** @type {!Set<string>} */
+    this._enabledByDefault = new Set();
+    /** @type {!Set<string>} */
     this._serverEnabled = new Set();
   }
 
@@ -874,7 +876,7 @@ export class ExperimentsSupport {
     if (Runtime._experimentsSetting()[experimentName] === false) {
       return false;
     }
-    if (this._enabledTransiently[experimentName]) {
+    if (this._enabledTransiently[experimentName] || this._enabledByDefault.has(experimentName)) {
       return true;
     }
     if (this._serverEnabled.has(experimentName)) {
@@ -898,10 +900,20 @@ export class ExperimentsSupport {
   /**
   * @param {!Array.<string>} experimentNames
   */
-  setDefaultExperiments(experimentNames) {
+  enableExperimentsTransiently(experimentNames) {
     for (let i = 0; i < experimentNames.length; ++i) {
       this._checkExperiment(experimentNames[i]);
       this._enabledTransiently[experimentNames[i]] = true;
+    }
+  }
+
+  /**
+  * @param {!Array.<string>} experimentNames
+  */
+  enableExperimentsByDefault(experimentNames) {
+    for (const experimentName of experimentNames) {
+      this._checkExperiment(experimentName);
+      this._enabledByDefault.add(experimentName);
     }
   }
 
@@ -927,6 +939,7 @@ export class ExperimentsSupport {
     this._experiments = [];
     this._experimentNames = {};
     this._enabledTransiently = {};
+    this._enabledByDefault.clear();
     this._serverEnabled.clear();
   }
 
@@ -934,10 +947,12 @@ export class ExperimentsSupport {
     const experimentsSetting = Runtime._experimentsSetting();
     /** @type {!Object<string,boolean>} */
     const cleanedUpExperimentSetting = {};
-    for (let i = 0; i < this._experiments.length; ++i) {
-      const experimentName = this._experiments[i].name;
-      if (experimentsSetting[experimentName]) {
-        cleanedUpExperimentSetting[experimentName] = true;
+    for (const {name: experimentName} of this._experiments) {
+      if (experimentsSetting.hasOwnProperty(experimentName)) {
+        const isEnabled = experimentsSetting[experimentName];
+        if (isEnabled || this._enabledByDefault.has(experimentName)) {
+          cleanedUpExperimentSetting[experimentName] = isEnabled;
+        }
       }
     }
     this._setExperimentsSetting(cleanedUpExperimentSetting);

@@ -167,47 +167,43 @@ export class IsolatedFileSystem extends PlatformFileSystem {
    * @return {!Promise<void>}
    */
   _initializeFilePaths() {
-    /** @type {function():void} */
-    let fulfill;
-    const promise = new Promise(x => {
-      fulfill = x;
-    });
-    let pendingRequests = 1;
-    const boundInnerCallback = innerCallback.bind(this);
-    this._requestEntries('', boundInnerCallback);
-    return promise;
+    return new Promise(fulfill => {
+      let pendingRequests = 1;
+      const boundInnerCallback = innerCallback.bind(this);
+      this._requestEntries('', boundInnerCallback);
 
-    /**
-     * @param {!Array.<!FileEntry>} entries
-     * @this {IsolatedFileSystem}
-     */
-    function innerCallback(entries) {
-      for (let i = 0; i < entries.length; ++i) {
-        const entry = entries[i];
-        if (!entry.isDirectory) {
-          if (this.isFileExcluded(entry.fullPath)) {
-            continue;
+      /**
+       * @param {!Array.<!FileEntry>} entries
+       * @this {IsolatedFileSystem}
+       */
+      function innerCallback(entries) {
+        for (let i = 0; i < entries.length; ++i) {
+          const entry = entries[i];
+          if (!entry.isDirectory) {
+            if (this.isFileExcluded(entry.fullPath)) {
+              continue;
+            }
+            this._initialFilePaths.add(entry.fullPath.substr(1));
+          } else {
+            if (entry.fullPath.endsWith('/.git')) {
+              const lastSlash = entry.fullPath.lastIndexOf('/');
+              const parentFolder = entry.fullPath.substring(1, lastSlash);
+              this._initialGitFolders.add(parentFolder);
+            }
+            if (this.isFileExcluded(entry.fullPath + '/')) {
+              this._excludedEmbedderFolders.push(
+                  Common.ParsedURL.ParsedURL.urlToPlatformPath(this.path() + entry.fullPath, Host.Platform.isWin()));
+              continue;
+            }
+            ++pendingRequests;
+            this._requestEntries(entry.fullPath, boundInnerCallback);
           }
-          this._initialFilePaths.add(entry.fullPath.substr(1));
-        } else {
-          if (entry.fullPath.endsWith('/.git')) {
-            const lastSlash = entry.fullPath.lastIndexOf('/');
-            const parentFolder = entry.fullPath.substring(1, lastSlash);
-            this._initialGitFolders.add(parentFolder);
-          }
-          if (this.isFileExcluded(entry.fullPath + '/')) {
-            this._excludedEmbedderFolders.push(
-                Common.ParsedURL.ParsedURL.urlToPlatformPath(this.path() + entry.fullPath, Host.Platform.isWin()));
-            continue;
-          }
-          ++pendingRequests;
-          this._requestEntries(entry.fullPath, boundInnerCallback);
+        }
+        if ((--pendingRequests === 0)) {
+          fulfill();
         }
       }
-      if ((--pendingRequests === 0)) {
-        fulfill();
-      }
-    }
+    });
   }
 
   /**
@@ -416,7 +412,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
    */
   async setFileContent(path, content, isBase64) {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.FileSavedInWorkspace);
-    /** @type {function():void} */
+    /** @type {function(*):void} */
     let callback;
     const innerSetFileContent = () => {
       const promise = new Promise(x => {
@@ -465,7 +461,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     function errorHandler(error) {
       const errorMessage = IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when setting content for file \'' + (this.path() + '/' + path) + '\'');
-      callback();
+      callback(undefined);
     }
   }
 

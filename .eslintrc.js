@@ -24,7 +24,7 @@ module.exports = {
      * All available rules: http://eslint.org/docs/rules/
      *
      * Rules take the following form:
-     *   "rule-name", [severity, { opts }]
+     *   'rule-name', [severity, { opts }]
      * Severity: 2 == error, 1 == warning, 0 == off.
      */
   'rules': {
@@ -151,7 +151,7 @@ module.exports = {
       'comma-dangle': [2, 'always-multiline'],
       // run just the TypeScript unused-vars rule, else we get duplicate errors
       'no-unused-vars': 0,
-      '@typescript-eslint/no-unused-vars': [2],
+      '@typescript-eslint/no-unused-vars': [2, {'argsIgnorePattern': '^_'}],
     }
   }]
 };

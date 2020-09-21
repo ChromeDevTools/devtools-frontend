@@ -39,7 +39,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
     this._maxConcurrentLoads = maxConcurrentLoads;
     /** @type{!Map<string, !PageResource>} */
     this._pageResources = new Map();
-    /** @type {!Array<!{resolve:function():void, reject:function(*):void}>} */
+    /** @type {!Array<!{resolve:function(*):void, reject:function(*):void}>} */
     this._queuedLoads = [];
     TargetManager.instance().addModelListener(
         ResourceTreeModel, ResourceTreeModelEvents.MainFrameNavigated, this._onMainFrameNavigated, this);
@@ -97,7 +97,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
   async _acquireLoadSlot() {
     this._currentlyLoading++;
     if (this._currentlyLoading > this._maxConcurrentLoads) {
-      /** @type {!{resolve:function():void, reject:function():void}} */
+      /** @type {!{resolve:function(*):void, reject:function(*):void}} */
       const pair = {resolve: () => {}, reject: () => {}};
       const waitForCapacity = new Promise((resolve, reject) => {
         pair.resolve = resolve;
@@ -112,7 +112,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
     this._currentlyLoading--;
     const entry = this._queuedLoads.shift();
     if (entry) {
-      entry.resolve();
+      entry.resolve(undefined);
     }
   }
 

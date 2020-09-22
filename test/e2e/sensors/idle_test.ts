@@ -16,8 +16,11 @@ describe('Idle Emulation on Sensors panel', () => {
   });
 
   before(async () => {
-    await step('overriding permissions with \'notifications\'', async () => {
-      await overridePermissions(['notifications']);
+    await step('overriding permissions with \'idle-detection\'', async () => {
+      // IdleDetector switched permission from 'notifications' to
+      // 'idle-detection', but 'idle-detection' is not in the @types/puppeteer
+      // package, so `as 'notifications'` needed for TypeScript.
+      await overridePermissions(['idle-detection' as 'notifications']);
     });
   });
 
@@ -59,8 +62,7 @@ describe('Idle Emulation on Sensors panel', () => {
     assert.deepEqual(actual, expected);
   });
 
-  // Skip this test since it's preventing Chrome -> DevTools roll: https://crrev.com/c/2420957
-  it.skip('[crbug.com/1130513] changing idle state emulation causes change of the IdleDetector state', async () => {
+  it('changing idle state emulation causes change of the IdleDetector state', async () => {
     await step('opening idle-detector.html', async () => {
       await goToResource('sensors/idle-detector.html');
     });

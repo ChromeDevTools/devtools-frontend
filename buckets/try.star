@@ -150,7 +150,6 @@ cq_master_experiment_builders = [
   'dtf_linux_experiments',
   'devtools_backend_mac_rel',
   'devtools_backend_win64_rel',
-  'devtools_frontend_linux_dbg',
 ]
 
 def experiment_builder(builder):

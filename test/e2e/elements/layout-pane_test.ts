@@ -4,7 +4,7 @@
 
 import {enableExperiment, goToResource, step} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {assertActiveAdorners, assertInactiveAdorners, expandSelectedNodeRecursively, openLayoutPane, toggleElementCheckboxInLayoutPane, waitForContentOfSelectedElementsNode, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
+import {expandSelectedNodeRecursively, openLayoutPane, toggleElementCheckboxInLayoutPane, waitForAdorners, waitForContentOfSelectedElementsNode, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
 
 describe('Layout Pane in the Elements Tab', async function() {
   it('displays Layout pane', async () => {
@@ -15,15 +15,13 @@ describe('Layout Pane in the Elements Tab', async function() {
       await waitForContentOfSelectedElementsNode('<body>\u200B');
       await expandSelectedNodeRecursively();
     });
-    await assertInactiveAdorners([
-      'grid',
+    await waitForAdorners([
+      {textContent: 'grid', isActive: false},
     ]);
-    await assertActiveAdorners([]);
     await openLayoutPane();
     await toggleElementCheckboxInLayoutPane();
-    await assertInactiveAdorners([]);
-    await assertActiveAdorners([
-      'grid',
+    await waitForAdorners([
+      {textContent: 'grid', isActive: true},
     ]);
   });
 });

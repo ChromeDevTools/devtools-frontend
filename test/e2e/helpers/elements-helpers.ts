@@ -21,6 +21,7 @@ const CLS_PANE_SELECTOR = '.styles-sidebar-toolbar-pane';
 const CLS_BUTTON_SELECTOR = '[aria-label="Element Classes"]';
 const CLS_INPUT_SELECTOR = '[aria-placeholder="Add new class"]';
 const LAYOUT_PANE_TAB_SELECTOR = '[aria-label="Layout"]';
+const ADORNER_SELECTOR = 'devtools-adorner';
 export const INACTIVE_GRID_ADORNER_SELECTOR = '[aria-label="Enable grid mode"]';
 export const ACTIVE_GRID_ADORNER_SELECTOR = '[aria-label="Disable grid mode"]';
 const ELEMENT_CHECKBOX_IN_LAYOUT_PANE_SELECTOR = '.elements input[type=checkbox]';
@@ -32,23 +33,30 @@ export const openLayoutPane = async () => {
   });
 };
 
-export const assertInactiveAdorners = async (expectedAdorners: string[]) => {
-  await step('Assert inactive adorners in Elements panel', async () => {
-    const actualAdorners = await $$(INACTIVE_GRID_ADORNER_SELECTOR);
-    const actualAdornersContent = await Promise.all(actualAdorners.map(n => n.evaluate(node => node.textContent)));
-    assert.deepEqual(
-        actualAdornersContent, expectedAdorners,
-        `did not have exactly ${expectedAdorners.length} adorner(s) in the inactive state`);
-  });
-};
+export const waitForAdorners = async (expectedAdorners: {textContent: string, isActive: boolean}[]) => {
+  await waitForFunction(async () => {
+    const actualAdorners = await $$(ADORNER_SELECTOR);
+    const actualAdornersStates = await Promise.all(actualAdorners.map(n => {
+      return n.evaluate((node, activeSelector: string) => {
+        return {textContent: node.textContent, isActive: node.matches(activeSelector)};
+      }, ACTIVE_GRID_ADORNER_SELECTOR);
+    }));
 
-export const assertActiveAdorners = async (expectedAdorners: string[]) => {
-  await step('Assert active adorners in Elements panel', async () => {
-    const actualAdorners = await $$(ACTIVE_GRID_ADORNER_SELECTOR);
-    const actualAdornersContent = await Promise.all(actualAdorners.map(n => n.evaluate(node => node.textContent)));
-    assert.deepEqual(
-        actualAdornersContent, expectedAdorners,
-        `did not have exactly ${expectedAdorners.length} adorner(s) in the inactive state`);
+    if (actualAdornersStates.length !== expectedAdorners.length) {
+      return false;
+    }
+
+    for (let i = 0; i < actualAdornersStates.length; i++) {
+      const index = expectedAdorners.findIndex(expected => {
+        const actual = actualAdornersStates[i];
+        return expected.textContent === actual.textContent && expected.isActive === actual.isActive;
+      });
+      if (index !== -1) {
+        expectedAdorners.splice(index, 1);
+      }
+    }
+
+    return expectedAdorners.length === 0;
   });
 };
 

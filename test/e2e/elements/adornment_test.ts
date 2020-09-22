@@ -4,7 +4,7 @@
 
 import {click, enableExperiment, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {assertActiveAdorners, assertInactiveAdorners, expandSelectedNodeRecursively, INACTIVE_GRID_ADORNER_SELECTOR, waitForContentOfSelectedElementsNode, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
+import {expandSelectedNodeRecursively, INACTIVE_GRID_ADORNER_SELECTOR, waitForAdorners, waitForContentOfSelectedElementsNode, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
 
 const prepareElementsTab = async () => {
   await waitForElementsStyleSection();
@@ -18,20 +18,28 @@ describe('Adornment in the Elements Tab', async () => {
     await enableExperiment('cssGridFeatures');
     await prepareElementsTab();
 
-    await assertInactiveAdorners([
-      'grid',
-      'grid',
+    await waitForAdorners([
+      {textContent: 'grid', isActive: false},
+      {textContent: 'grid', isActive: false},
     ]);
-    await assertActiveAdorners([]);
 
     // Toggle both grid adorners on and try to select them with the active selector
     await click(INACTIVE_GRID_ADORNER_SELECTOR);
     await click(INACTIVE_GRID_ADORNER_SELECTOR);
 
-    await assertInactiveAdorners([]);
-    await assertActiveAdorners([
-      'grid',
-      'grid',
+    await waitForAdorners([
+      {textContent: 'grid', isActive: true},
+      {textContent: 'grid', isActive: true},
+    ]);
+  });
+
+  it('does not display adorners on shadow roots when their parents are grids', async () => {
+    await goToResource('elements/adornment-shadow.html');
+    await enableExperiment('cssGridFeatures');
+    await prepareElementsTab();
+
+    await waitForAdorners([
+      {textContent: 'grid', isActive: false},
     ]);
   });
 });

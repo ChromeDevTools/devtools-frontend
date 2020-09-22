@@ -1951,7 +1951,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
     const node = this.node();
     const nodeId = node.id;
-    if (node.nodeType() === Node.COMMENT_NODE || nodeId === undefined) {
+    if (node.nodeType() === Node.COMMENT_NODE || node.nodeType() === Node.DOCUMENT_FRAGMENT_NODE ||
+        nodeId === undefined) {
       return;
     }
 

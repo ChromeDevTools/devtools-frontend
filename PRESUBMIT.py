@@ -333,6 +333,30 @@ def _CheckGeneratedFiles(input_api, output_api):
     return _ExecuteSubProcess(input_api, output_api, generate_protocol_resources_path, [], results)
 
 
+def _CollectStrings(input_api, output_api):
+    devtools_root = input_api.PresubmitLocalPath()
+    devtools_front_end = input_api.os_path.join(devtools_root, 'front_end')
+    affected_front_end_files = _getAffectedFiles(input_api,
+                                                 [devtools_front_end], ['D'],
+                                                 ['.js'])
+    if len(affected_front_end_files) == 0:
+        return [
+            output_api.PresubmitNotifyResult(
+                'No affected files to run collect-strings')
+        ]
+
+    results = [
+        output_api.PresubmitNotifyResult('Collecting strings from front_end:')
+    ]
+    script_path = input_api.os_path.join(devtools_root, 'third_party', 'i18n',
+                                         'collect-strings.js')
+    results.extend(_checkWithNodeScript(input_api, output_api, script_path))
+    results.append(
+        output_api.PresubmitNotifyResult(
+            'Please commit en-US.json if changes are generated.'))
+    return results
+
+
 def _CheckNoUncheckedFiles(input_api, output_api):
     results = []
     process = input_api.subprocess.Popen(['git', 'diff', '--exit-code'],
@@ -447,6 +471,8 @@ def CheckChangeOnUpload(input_api, output_api):
     results = []
     results.extend(_CommonChecks(input_api, output_api))
     results.extend(_CheckDevtoolsLocalization(input_api, output_api))
+    # Run collectStrings after localization check that cleans up unused strings
+    results.extend(_CollectStrings(input_api, output_api))
     return results
 
 
@@ -454,6 +480,8 @@ def CheckChangeOnCommit(input_api, output_api):
     results = []
     results.extend(_CommonChecks(input_api, output_api))
     results.extend(_CheckDevtoolsLocalization(input_api, output_api, True))
+    # Run collectStrings after localization check that cleans up unused strings
+    results.extend(_CollectStrings(input_api, output_api))
     results.extend(input_api.canned_checks.CheckChangeHasDescription(input_api, output_api))
     return results
 

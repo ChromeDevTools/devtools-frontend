@@ -568,8 +568,6 @@ function collectAllStringsInDir(dir) {
   });
   for (const relativeToRootPath of files) {
     const absolutePath = path.join(SRC_ROOT, relativeToRootPath);
-    if (!process.env.CI)
-      console.log('Collecting from', relativeToRootPath);
 
     const content = fs.readFileSync(absolutePath, 'utf8');
     const regexMatch = content.match(UISTRINGS_REGEX);
@@ -644,17 +642,12 @@ if (require.main === module) {
 
   const strings = {...frontendStrings};
   writeStringsToCtcFiles('en-US', strings);
-  console.log('Written to disk!', 'en-US.ctc.json');
   // Generate local pseudolocalized files for debugging while translating
   writeStringsToCtcFiles('en-XL', createPsuedoLocaleStrings(strings));
-  console.log('Written to disk!', 'en-XL.ctc.json');
 
   // Bake the ctc en-US and en-XL files into en-US and en-XL LHL format
   const lhl = collectAndBakeCtcStrings(
       path.join(SRC_ROOT, 'front_end/i18n/locales/'), path.join(SRC_ROOT, 'front_end/i18n/locales/'));
-  lhl.forEach(function(locale) {
-    console.log(`Baked ${locale} into LHL format.`);
-  });
 }
 
 module.exports = {

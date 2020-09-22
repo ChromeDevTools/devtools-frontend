@@ -1,6 +1,7 @@
 .DS_Store
 .git_cl_description_backup
 .vscode
+*.ctc.json
 *.Makefile
 *.mk
 *.pyc
@@ -15,6 +16,7 @@
 /.test_cache
 /back_end/CXXDWARFSymbols/third_party/
 /front_end/protocol_externs.js
+/front_end/i18n/locales/en-XL.json
 /release
 /scripts/visualize_deps/out
 config.gypi

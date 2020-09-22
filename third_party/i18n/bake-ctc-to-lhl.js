@@ -129,8 +129,6 @@ function collectAndBakeCtcStrings(dir, outputDir) {
     const relativePath = path.relative(SRC_ROOT, fullPath);
 
     if (filename.endsWith('.ctc.json')) {
-      if (!process.env.CI)
-        console.log('Baking', relativePath);
       const ctcStrings = loadCtcStrings(fullPath);
       const strings = bakePlaceholders(ctcStrings);
       const outputFile = outputDir + path.basename(filename).replace('.ctc', '');

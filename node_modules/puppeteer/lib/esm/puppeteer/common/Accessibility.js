@@ -106,11 +106,11 @@ export class Accessibility {
             return null;
         return this.serializeTree(needle, interestingNodes)[0];
     }
-    serializeTree(node, whitelistedNodes) {
+    serializeTree(node, interestingNodes) {
         const children = [];
         for (const child of node.children)
-            children.push(...this.serializeTree(child, whitelistedNodes));
-        if (whitelistedNodes && !whitelistedNodes.has(node))
+            children.push(...this.serializeTree(child, interestingNodes));
+        if (interestingNodes && !interestingNodes.has(node))
             return children;
         const serializedNode = node.serialize();
         if (children.length)
@@ -137,6 +137,7 @@ class AXNode {
         this.payload = payload;
         this._name = this.payload.name ? this.payload.name.value : '';
         this._role = this.payload.role ? this.payload.role.value : 'Unknown';
+        this._ignored = this.payload.ignored;
         for (const property of this.payload.properties || []) {
             if (property.name === 'editable') {
                 this._richlyEditable = property.value.value === 'richtext';
@@ -153,9 +154,7 @@ class AXNode {
             return false;
         if (this._editable)
             return true;
-        return (this._role === 'textbox' ||
-            this._role === 'ComboBox' ||
-            this._role === 'searchbox');
+        return this._role === 'textbox' || this._role === 'searchbox';
     }
     _isTextOnlyObject() {
         const role = this._role;
@@ -240,6 +239,7 @@ class AXNode {
             case 'tab':
             case 'textbox':
             case 'tree':
+            case 'treeitem':
                 return true;
             default:
                 return false;
@@ -247,7 +247,7 @@ class AXNode {
     }
     isInteresting(insideControl) {
         const role = this._role;
-        if (role === 'Ignored' || this._hidden)
+        if (role === 'Ignored' || this._hidden || this._ignored)
             return false;
         if (this._focusable || this._richlyEditable)
             return true;

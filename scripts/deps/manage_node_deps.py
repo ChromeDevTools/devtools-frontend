@@ -59,7 +59,7 @@ DEPS = {
     "karma-sourcemap-loader": "0.3.0",
     "license-checker": "25.0.1",
     "mocha": "8.0.1",
-    "puppeteer": "5.2.1",
+    "puppeteer": "5.3.1",
     "recast": "0.18.2",
     "rimraf": "3.0.2",
     "rollup": "2.3.3",

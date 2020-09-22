@@ -1,12 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-/** Mitt: Tiny (~200b) functional event emitter / pubsub.
- *  @name mitt
- *  @returns {Mitt}
+/**
+ * Mitt: Tiny (~200b) functional event emitter / pubsub.
+ * @name mitt
+ * @returns {Mitt}
  */
 function mitt(all) {
     all = all || new Map();
     return {
+        /**
+         * A Map of event names to registered handler functions.
+         */
+        all,
         /**
          * Register an event handler for the given type.
          * @param {string|symbol} type Type of event to listen for, or `"*"` for all events
@@ -22,7 +27,6 @@ function mitt(all) {
         },
         /**
          * Remove an event handler for the given type.
-         *
          * @param {string|symbol} type Type of event to unregister `handler` from, or `"*"`
          * @param {Function} handler Handler function to remove
          * @memberOf mitt

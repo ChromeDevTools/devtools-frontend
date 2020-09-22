@@ -16,6 +16,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Frame = exports.FrameManager = exports.FrameManagerEmittedEvents = void 0;
+const Debug_js_1 = require("../common/Debug.js");
 const EventEmitter_js_1 = require("./EventEmitter.js");
 const assert_js_1 = require("./assert.js");
 const helper_js_1 = require("./helper.js");
@@ -61,6 +62,7 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
         this._client.on('Runtime.executionContextDestroyed', (event) => this._onExecutionContextDestroyed(event.executionContextId));
         this._client.on('Runtime.executionContextsCleared', () => this._onExecutionContextsCleared());
         this._client.on('Page.lifecycleEvent', (event) => this._onLifecycleEvent(event));
+        this._client.on('Target.attachedToTarget', async (event) => this._onFrameMoved(event));
     }
     async initialize() {
         const result = await Promise.all([
@@ -131,6 +133,16 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
         if (error)
             throw error;
         return watcher.navigationResponse();
+    }
+    async _onFrameMoved(event) {
+        if (event.targetInfo.type !== 'iframe') {
+            return;
+        }
+        // TODO(sadym): Remove debug message once proper OOPIF support is
+        // implemented: https://github.com/puppeteer/puppeteer/issues/2548
+        Debug_js_1.debug('puppeteer:frame')(`The frame '${event.targetInfo.targetId}' moved to another session. ` +
+            `Out-of-process iframes (OOPIF) are not supported by Puppeteer yet. ` +
+            `https://github.com/puppeteer/puppeteer/issues/2548`);
     }
     _onLifecycleEvent(event) {
         const frame = this._frames.get(event.frameId);
@@ -747,9 +759,15 @@ class Frame {
      * wait for.
      * @param options - optional waiting parameters.
      * @param args - arguments to pass to `pageFunction`.
+     *
+     * @deprecated Don't use this method directly. Instead use the more explicit
+     * methods available: {@link Frame.waitForSelector},
+     * {@link Frame.waitForXPath}, {@link Frame.waitForFunction} or
+     * {@link Frame.waitForTimeout}.
      */
     waitFor(selectorOrFunctionOrTimeout, options = {}, ...args) {
         const xPathPattern = '//';
+        console.warn('waitFor is deprecated and will be removed in a future release. See https://github.com/puppeteer/puppeteer/issues/6214 for details and how to migrate your code.');
         if (helper_js_1.helper.isString(selectorOrFunctionOrTimeout)) {
             const string = selectorOrFunctionOrTimeout;
             if (string.startsWith(xPathPattern))
@@ -761,6 +779,29 @@ class Frame {
         if (typeof selectorOrFunctionOrTimeout === 'function')
             return this.waitForFunction(selectorOrFunctionOrTimeout, options, ...args);
         return Promise.reject(new Error('Unsupported target type: ' + typeof selectorOrFunctionOrTimeout));
+    }
+    /**
+     * Causes your script to wait for the given number of milliseconds.
+     *
+     * @remarks
+     * It's generally recommended to not wait for a number of seconds, but instead
+     * use {@link Frame.waitForSelector}, {@link Frame.waitForXPath} or
+     * {@link Frame.waitForFunction} to wait for exactly the conditions you want.
+     *
+     * @example
+     *
+     * Wait for 1 second:
+     *
+     * ```
+     * await frame.waitForTimeout(1000);
+     * ```
+     *
+     * @param milliseconds - the number of milliseconds to wait.
+     */
+    waitForTimeout(milliseconds) {
+        return new Promise((resolve) => {
+            setTimeout(resolve, milliseconds);
+        });
     }
     /**
      * @remarks
@@ -879,7 +920,7 @@ class Frame {
      */
     _navigated(framePayload) {
         this._name = framePayload.name;
-        this._url = framePayload.url;
+        this._url = `${framePayload.url}${framePayload.urlFragment || ''}`;
     }
     /**
      * @internal

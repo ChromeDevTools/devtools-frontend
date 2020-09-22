@@ -217,12 +217,15 @@ class HTTPRequest {
         assert_js_1.assert(!this._interceptionHandled, 'Request is already handled!');
         const { url, method, postData, headers } = overrides;
         this._interceptionHandled = true;
+        const postDataBinaryBase64 = postData
+            ? Buffer.from(postData).toString('base64')
+            : undefined;
         await this._client
             .send('Fetch.continueRequest', {
             requestId: this._interceptionId,
             url,
             method,
-            postData,
+            postData: postDataBinaryBase64,
             headers: headers ? headersArray(headers) : undefined,
         })
             .catch((error) => {

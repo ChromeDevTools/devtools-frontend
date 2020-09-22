@@ -1,3 +1,0 @@
-[submodule "scripts/inspector_protocol"]
-	path = scripts/inspector_protocol
-	url = https://chromium.googlesource.com/deps/inspector_protocol

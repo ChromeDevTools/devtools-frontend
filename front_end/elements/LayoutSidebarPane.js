@@ -109,10 +109,10 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
           return {
             type: descriptor.settingType,
             name: descriptor.settingName,
-            title: descriptor.title,
+            title: ls(descriptor.title),
             value: setting.get(),
             options: descriptor.options.map(opt => ({
-                                              title: opt.text,
+                                              title: ls(opt.title),
                                               value: opt.value,
                                             }))
           };

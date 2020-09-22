@@ -55,6 +55,10 @@
   flex: none;
 }
 
+.checkbox-label input:focus {
+  outline: auto 5px -webkit-focus-ring-color;
+}
+
 .checkbox-label > span {
   white-space: nowrap;
   text-overflow: ellipsis;

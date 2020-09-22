@@ -323,6 +323,79 @@ export const step = async (description: string, step: Function) => {
   }
 };
 
+export const waitForAnimationFrame = async () => {
+  const {target} = getBrowserAndPages();
+
+  await target.waitForFunction(() => {
+    return new Promise(resolve => {
+      requestAnimationFrame(resolve);
+    });
+  });
+};
+
+export const activeElement = async () => {
+  const {target} = getBrowserAndPages();
+
+  await waitForAnimationFrame();
+
+  return target.evaluateHandle(() => {
+    let activeElement = document.activeElement;
+
+    while (activeElement && activeElement.shadowRoot) {
+      activeElement = activeElement.shadowRoot.activeElement;
+    }
+
+    return activeElement;
+  });
+};
+
+export const activeElementTextContent = async () => {
+  const element = await activeElement();
+  return element.evaluate(node => node.textContent);
+};
+
+export const tabForward = async () => {
+  const {target} = getBrowserAndPages();
+
+  await target.keyboard.press('Tab');
+};
+
+export const tabBackward = async () => {
+  const {target} = getBrowserAndPages();
+
+  await target.keyboard.down('Shift');
+  await target.keyboard.press('Tab');
+  await target.keyboard.up('Shift');
+};
+
+export const selectTextFromNodeToNode = async (
+    from: puppeteer.JSHandle|Promise<puppeteer.JSHandle>, to: puppeteer.JSHandle|Promise<puppeteer.JSHandle>,
+    direction: 'up'|'down') => {
+  const {target} = getBrowserAndPages();
+
+  // The clipboard api does not allow you to copy, unless the tab is focused.
+  await target.bringToFront();
+
+  return target.evaluate(async (from, to, direction) => {
+    const selection = from.getRootNode().getSelection();
+    const range = document.createRange();
+    if (direction === 'down') {
+      range.setStartBefore(from);
+      range.setEndAfter(to);
+    } else {
+      range.setStartBefore(to);
+      range.setEndAfter(from);
+    }
+
+    selection.removeAllRanges();
+    selection.addRange(range);
+
+    document.execCommand('copy');
+
+    return navigator.clipboard.readText();
+  }, await from, await to, direction);
+};
+
 export const closePanelTab = async (panelTabSelector: string) => {
   // Get close button from tab element
   const selector = `${panelTabSelector} > .tabbed-pane-close-button`;

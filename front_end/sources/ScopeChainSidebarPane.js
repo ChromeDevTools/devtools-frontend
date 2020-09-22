@@ -24,9 +24,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
@@ -49,7 +46,7 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
     this._expandController =
         new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeExpandController(this._treeOutline);
     this._linkifier = new Components.Linkifier.Linkifier();
-    this._infoElement = createElement('div');
+    this._infoElement = document.createElement('div');
     this._infoElement.className = 'gray-info-message';
     this._infoElement.textContent = ls`Not paused`;
     this._infoElement.tabIndex = -1;
@@ -77,8 +74,12 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
     }
   }
 
+  /**
+   * @param {!SDK.DebuggerModel.CallFrame} callFrame
+   * @return {!Array<!SDK.DebuggerModel.Scope>}
+   */
   _getScopeChain(callFrame) {
-    return callFrame.sourceScopeChain || callFrame.scopeChain();
+    return /** @type {?Array<!SDK.DebuggerModel.Scope>} */ (callFrame.sourceScopeChain) || callFrame.scopeChain();
   }
 
   _update() {
@@ -148,9 +149,10 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
         title = ls`Closure`;
       }
     }
+    /** @type {?string} */
     let subtitle = scope.description();
     if (!title || title === subtitle) {
-      subtitle = undefined;
+      subtitle = null;
     }
 
     const titleElement = document.createElement('div');
@@ -172,8 +174,8 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
 
   /**
    * @param {!SDK.DebuggerModel.Scope} scope
-   * @param {?SDK.DebuggerModel.DebuggerPausedDetails} details
-   * @param {?SDK.DebuggerModel.CallFrame} callFrame
+   * @param {!SDK.DebuggerModel.DebuggerPausedDetails} details
+   * @param {!SDK.DebuggerModel.CallFrame} callFrame
    * @param {?SDK.RemoteObject.RemoteObject} thisObject
    * @param {boolean} isFirstScope
    * @return {!Array.<!SDK.RemoteObject.RemoteObjectProperty>}

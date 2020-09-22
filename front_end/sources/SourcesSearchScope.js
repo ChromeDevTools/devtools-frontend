@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Persistence from '../persistence/persistence.js';
@@ -47,9 +44,9 @@ export class SourcesSearchScope {
     this._searchId = 0;
     /** @type {!Array<!Workspace.UISourceCode.UISourceCode>} */
     this._searchResultCandidates = [];
-    /** @type {?function(!Search.SearchConfig.SearchResult)} */
+    /** @type {?function(!Search.SearchConfig.SearchResult):void} */
     this._searchResultCallback = null;
-    /** @type {?function(boolean)} */
+    /** @type {?function(boolean):void} */
     this._searchFinishedCallback = null;
     /** @type {?Workspace.Workspace.ProjectSearchConfig} */
     this._searchConfig = null;
@@ -126,8 +123,8 @@ export class SourcesSearchScope {
    * @override
    * @param {!Workspace.Workspace.ProjectSearchConfig} searchConfig
    * @param {!Common.Progress.Progress} progress
-   * @param {function(!Search.SearchConfig.SearchResult)} searchResultCallback
-   * @param {function(boolean)} searchFinishedCallback
+   * @param {function(!Search.SearchConfig.SearchResult):void} searchResultCallback
+   * @param {function(boolean):void} searchFinishedCallback
    */
   performSearch(searchConfig, progress, searchResultCallback, searchFinishedCallback) {
     this.stopSearch();
@@ -193,7 +190,7 @@ export class SourcesSearchScope {
    * @param {!Array<string>} files
    */
   _processMatchingFilesForProject(searchId, project, searchConfig, filesMathingFileQuery, files) {
-    if (searchId !== this._searchId) {
+    if (searchId !== this._searchId && this._searchFinishedCallback) {
       this._searchFinishedCallback(false);
       return;
     }
@@ -223,10 +220,10 @@ export class SourcesSearchScope {
   /**
    * @param {number} searchId
    * @param {!Common.Progress.Progress} progress
-   * @param {function()} callback
+   * @param {function():void} callback
    */
   _processMatchingFiles(searchId, progress, callback) {
-    if (searchId !== this._searchId) {
+    if (searchId !== this._searchId && this._searchFinishedCallback) {
       this._searchFinishedCallback(false);
       return;
     }
@@ -295,16 +292,18 @@ export class SourcesSearchScope {
       }
 
       progress.worked(1);
+      /** @type {!Array<!TextUtils.ContentProvider.SearchMatch>} */
       let matches = [];
-      const queries = this._searchConfig.queries();
+      const searchConfig = /** @type {!Workspace.Workspace.ProjectSearchConfig} */ (this._searchConfig);
+      const queries = searchConfig.queries();
       if (content !== null) {
         for (let i = 0; i < queries.length; ++i) {
           const nextMatches = TextUtils.TextUtils.performSearchInContent(
-              content, queries[i], !this._searchConfig.ignoreCase(), this._searchConfig.isRegex());
+              content, queries[i], !searchConfig.ignoreCase(), searchConfig.isRegex());
           matches = matches.mergeOrdered(nextMatches, matchesComparator);
         }
       }
-      if (matches) {
+      if (matches && this._searchResultCallback) {
         const searchResult = new FileBasedSearchResult(uiSourceCode, matches);
         this._searchResultCallback(searchResult);
       }

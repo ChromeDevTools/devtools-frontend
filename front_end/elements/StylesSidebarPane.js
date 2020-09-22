@@ -1109,6 +1109,16 @@ export class StylePropertiesSection {
     const closeBrace = this._innerElement.createChild('div', 'sidebar-pane-closing-brace');
     closeBrace.textContent = '}';
 
+    if (this._style.parentRule) {
+      const newRuleButton =
+          new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Insert Style Rule Below'), 'largeicon-add');
+      newRuleButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._onNewRuleClick, this);
+      newRuleButton.element.tabIndex = -1;
+      const expandToolbar = new UI.Toolbar.Toolbar('sidebar-pane-section-toolbar', this._innerElement);
+      expandToolbar.appendToolbarItem(newRuleButton);
+      UI.ARIAUtils.markAsHidden(expandToolbar.element);
+    }
+
     this._selectorElement.addEventListener('click', this._handleSelectorClick.bind(this), false);
     this.element.addEventListener('mousedown', this._handleEmptySpaceMouseDown.bind(this), false);
     this.element.addEventListener('click', this._handleEmptySpaceClick.bind(this), false);
@@ -1428,6 +1438,17 @@ export class StylePropertiesSection {
     } while (curElement && !curElement._section);
 
     return curElement ? curElement._section : null;
+  }
+
+  /**
+   * @param {!Common.EventTarget.EventTargetEvent} event
+   */
+  _onNewRuleClick(event) {
+    event.data.consume();
+    const rule = this._style.parentRule;
+    const range =
+        TextUtils.TextRange.TextRange.createFromLocation(rule.style.range.endLine, rule.style.range.endColumn + 1);
+    this._parentPane._addBlankSection(this, /** @type {string} */ (rule.styleSheetId), range);
   }
 
   /**

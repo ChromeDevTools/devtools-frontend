@@ -249,6 +249,9 @@
   <message name="IDS_DEVTOOLS_abdf882c25e08d9ba219fe33f17591fe" desc="Link text content in Elements Tree Outline of the Elements panel">
     reveal
   </message>
+  <message name="IDS_DEVTOOLS_ad4ac01e4a5688063dace5ba5d0f04de" desc="Tooltip text that appears when hovering over the largeicon add button in the Styles Sidebar Pane of the Elements panel">
+    Insert Style Rule Below
+  </message>
   <message name="IDS_DEVTOOLS_b0351810a5721f657b088608865849dd" desc="Text in Styles Sidebar Pane of the Elements panel">
     via inspector
   </message>

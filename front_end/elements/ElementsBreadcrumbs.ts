@@ -234,7 +234,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
 
         .crumb.selected,
         .crumb:hover {
-          background-color: var(--toolbar-bg-color);
+          background-color: var(--tab-selected-bg-color);
         }
 
         .overflow {

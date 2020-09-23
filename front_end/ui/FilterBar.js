@@ -518,7 +518,7 @@ export class CheckboxFilterUI extends Common.ObjectWrapper.ObjectWrapper {
    */
   constructor(className, title, activeWhenChecked, setting) {
     super();
-    this._filterElement = document.createElement('div');
+    this._filterElement = /** @type {!HTMLDivElement} */ (document.createElement('div'));
     this._filterElement.classList.add('filter-checkbox-filter');
     this._activeWhenChecked = !!activeWhenChecked;
     this._label = CheckboxLabel.create(title);
@@ -556,7 +556,7 @@ export class CheckboxFilterUI extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @override
-   * @return {!Element}
+   * @return {!HTMLDivElement}
    */
   element() {
     return this._filterElement;

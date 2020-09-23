@@ -117,9 +117,9 @@ def main():
     ] or []
     tsconfig['compilerOptions']['outDir'] = '.'
     tsconfig['compilerOptions']['tsBuildInfoFile'] = tsbuildinfo_name
-    tsconfig['compilerOptions']['lib'] = [
-        'esnext', opts.is_web_worker and 'webworker' or 'dom'
-    ]
+    tsconfig['compilerOptions']['lib'] = ['esnext'] + (
+        opts.is_web_worker and ['webworker', 'webworker.iterable']
+        or ['dom', 'dom.iterable'])
 
     with open(tsconfig_output_location, 'w') as generated_tsconfig:
         try:

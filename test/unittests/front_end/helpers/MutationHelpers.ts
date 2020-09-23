@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-enum MutationType {
+export enum MutationType {
   ADD = 'ADD',
   REMOVE = 'REMOVE'
 }

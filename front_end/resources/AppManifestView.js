@@ -32,6 +32,7 @@ export class AppManifestView extends UI.Widget.VBox {
     this._emptyView.hideWidget();
 
     this._reportView = new UI.ReportView.ReportView(Common.UIString.UIString('App Manifest'));
+    this._reportView.registerRequiredCSS('resources/appManifestView.css');
     this._reportView.show(this.contentElement);
     this._reportView.hideWidget();
 

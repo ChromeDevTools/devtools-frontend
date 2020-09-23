@@ -42,6 +42,7 @@ import * as FrameManager from './FrameManager.js';
 import * as HARLog from './HARLog.js';
 import * as HeapProfilerModel from './HeapProfilerModel.js';
 import * as HeavyAdIssue from './HeavyAdIssue.js';
+import * as IOModel from './IOModel.js';
 import * as IsolateManager from './IsolateManager.js';
 import * as Issue from './Issue.js';
 import * as IssuesModel from './IssuesModel.js';
@@ -109,6 +110,7 @@ export {
   HARLog,
   HeapProfilerModel,
   HeavyAdIssue,
+  IOModel,
   IsolateManager,
   Issue,
   IssuesModel,

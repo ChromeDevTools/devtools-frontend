@@ -733,6 +733,13 @@ export class TargetBase {
   }
 
   /**
+   * @return {!ProtocolProxyApi.IOApi}
+   */
+  ioAgent() {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
    * @return {!ProtocolProxyApi.LayerTreeApi}
    */
   layerTreeAgent() {

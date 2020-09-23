@@ -31,6 +31,7 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
+import * as Common from '../common/common.js';
 import * as WasmDis from '../third_party/wasmparser/package/dist/esm/WasmDis.js';
 import * as WasmParser from '../third_party/wasmparser/package/dist/esm/WasmParser.js';
 
@@ -58,39 +59,6 @@ class BinaryReaderWithProgress extends WasmParser.BinaryReader {
   }
 }
 
-const BASE64_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-const BASE64_CODES = new Uint8Array(123);
-for (let index = 0; index < BASE64_CHARS.length; ++index) {
-  BASE64_CODES[BASE64_CHARS.charCodeAt(index)] = index;
-}
-
-/**
- * Decodes Base64-encoded data from a string without performing any kind of checking.
- *
- * @param {string} input valid Base64-encoded data
- * @return {!ArrayBuffer} decoded result
- */
-function base64Decode(input) {
-  let bytesLength = ((input.length * 3) / 4) >>> 0;
-  if (input.charCodeAt(input.length - 2) === 0x3d /* '=' */) {
-    bytesLength -= 2;
-  } else if (input.charCodeAt(input.length - 1) === 0x3d /* '=' */) {
-    bytesLength -= 1;
-  }
-
-  const bytes = new Uint8Array(bytesLength);
-  for (let index = 0, offset = 0; index < input.length; index += 4) {
-    const a = BASE64_CODES[input.charCodeAt(index + 0)];
-    const b = BASE64_CODES[input.charCodeAt(index + 1)];
-    const c = BASE64_CODES[input.charCodeAt(index + 2)];
-    const d = BASE64_CODES[input.charCodeAt(index + 3)];
-    bytes[offset++] = (a << 2) | (b >> 4);
-    bytes[offset++] = ((b & 0x0f) << 4) | (c >> 2);
-    bytes[offset++] = ((c & 0x03) << 6) | (d & 0x3f);
-  }
-  return bytes.buffer;
-}
-
 self.onmessage = async function(event) {
   const method = /** @type {string} */ (event.data.method);
   const params = /** @type !{content: string} */ (event.data.params);
@@ -102,7 +70,7 @@ self.onmessage = async function(event) {
   const DISASSEMBLY_WEIGHT = 69;
   const FINALIZATION_WEIGHT = NAME_GENERATOR_WEIGHT + DISASSEMBLY_WEIGHT;
 
-  const buffer = base64Decode(params.content);
+  const buffer = Common.Base64.decode(params.content);
 
   let parser = new BinaryReaderWithProgress(percentage => {
     this.postMessage({event: 'progress', params: {percentage: percentage * (NAME_GENERATOR_WEIGHT / 100)}});

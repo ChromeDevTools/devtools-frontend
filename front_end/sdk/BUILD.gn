@@ -38,6 +38,7 @@ devtools_module("sdk") {
     "HARLog.js",
     "HeapProfilerModel.js",
     "HeavyAdIssue.js",
+    "IOModel.js",
     "IsolateManager.js",
     "Issue.js",
     "IssuesModel.js",

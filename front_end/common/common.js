@@ -6,6 +6,7 @@ import * as Platform from '../platform/platform.js';
 
 import * as App from './App.js';
 import * as AppProvider from './AppProvider.js';
+import * as Base64 from './Base64.js';
 import * as CharacterIdMap from './CharacterIdMap.js';
 import * as Color from './Color.js';
 import * as ColorUtils from './ColorUtils.js';
@@ -49,6 +50,7 @@ export let settings;
 export {
   App,
   AppProvider,
+  Base64,
   CharacterIdMap,
   Color,
   ColorUtils,

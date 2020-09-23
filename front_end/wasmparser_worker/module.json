@@ -1,7 +1,11 @@
-{  "modules": [
+{
+  "modules": [
     "../third_party/wasmparser/package/dist/esm/WasmDis.js",
     "../third_party/wasmparser/package/dist/esm/WasmParser.js",
     "wasmparser_worker.js",
     "WasmParserWorker.js"
+  ],
+  "dependencies": [
+    "common"
   ]
 }

@@ -168,6 +168,9 @@
   <message name="IDS_DEVTOOLS_69f83bbab45ca27c374e76d304ab76be" desc="Text in Elements Panel of the Elements panel">
     Find by string, selector, or XPath
   </message>
+  <message name="IDS_DEVTOOLS_6a5e84f70fe7d0861c27908f1dec5c28" desc="Title of the Computed Styles sidebar toggle in the Styles pane">
+    Computed Styles sidebar
+  </message>
   <message name="IDS_DEVTOOLS_6ac7142d0aa79d17f03677fac1249c98" desc="A context menu item in the Elements Tree Element of the Elements panel">
     Force state
   </message>

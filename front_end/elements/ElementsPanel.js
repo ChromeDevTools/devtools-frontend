@@ -897,7 +897,6 @@ export class ElementsPanel extends UI.Panel.Panel {
   }
 
   /**
-   *
    * @param {!_splitMode} splitMode
    */
   _initializeSidebarPanes(splitMode) {
@@ -913,6 +912,27 @@ export class ElementsPanel extends UI.Panel.Panel {
     computedStylePanesWrapper.element.classList.add('style-panes-wrapper');
     this._computedStyleWidget.show(computedStylePanesWrapper.element);
 
+    const stylesSplitWidget = new UI.SplitWidget.SplitWidget(
+        true /* isVertical */, true /* secondIsSidebar */, 'elements.styles.sidebar.width', 100);
+    stylesSplitWidget.setMainWidget(matchedStylePanesWrapper);
+    stylesSplitWidget.hideSidebar();
+    stylesSplitWidget.enableShowModeSaving();
+    stylesSplitWidget.addEventListener(UI.SplitWidget.Events.ShowModeChanged, () => {
+      showMetricsWidgetInStylesPane();
+    });
+    this._stylesWidget.addEventListener(StylesSidebarPaneEvents.InitialUpdateCompleted, () => {
+      this._stylesWidget.appendToolbarItem(stylesSplitWidget.createShowHideSidebarButton(ls`Computed Styles sidebar`));
+    });
+
+    const showMetricsWidgetInStylesPane = () => {
+      const showMergedComputedPane = stylesSplitWidget.showMode() === UI.SplitWidget.ShowMode.Both;
+      if (showMergedComputedPane) {
+        this._metricsWidget.show(computedStylePanesWrapper.element, this._computedStyleWidget.element);
+      } else {
+        this._metricsWidget.show(matchedStylePanesWrapper.element);
+      }
+    };
+
     let skippedInitialTabSelectedEvent = false;
 
     /**
@@ -921,13 +941,15 @@ export class ElementsPanel extends UI.Panel.Panel {
     const tabSelected = event => {
       const tabId = /** @type {string} */ (event.data.tabId);
       if (tabId === Common.UIString.UIString('Computed')) {
+        computedStylePanesWrapper.show(computedView.element);
         this._metricsWidget.show(computedStylePanesWrapper.element, this._computedStyleWidget.element);
       } else if (tabId === Common.UIString.UIString('Styles')) {
+        stylesSplitWidget.setSidebarWidget(computedStylePanesWrapper);
         if (this._stylesWidget.initialUpdateCompleted()) {
-          this._metricsWidget.show(matchedStylePanesWrapper.element);
+          showMetricsWidgetInStylesPane();
         } else {
           this._stylesWidget.addEventListener(StylesSidebarPaneEvents.InitialUpdateCompleted, () => {
-            this._metricsWidget.show(matchedStylePanesWrapper.element);
+            showMetricsWidgetInStylesPane();
           });
         }
       }
@@ -951,11 +973,10 @@ export class ElementsPanel extends UI.Panel.Panel {
     const stylesView = new UI.View.SimpleView(Common.UIString.UIString('Styles'));
     this.sidebarPaneView.appendView(stylesView);
     stylesView.element.classList.add('flex-auto');
-    matchedStylePanesWrapper.show(stylesView.element);
+    stylesSplitWidget.show(stylesView.element);
 
     const computedView = new UI.View.SimpleView(Common.UIString.UIString('Computed'));
     computedView.element.classList.add('composite', 'fill');
-    computedStylePanesWrapper.show(computedView.element);
 
     tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, tabSelected, this);
     this.sidebarPaneView.appendView(computedView);

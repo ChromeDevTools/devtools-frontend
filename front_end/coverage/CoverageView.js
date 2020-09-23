@@ -125,10 +125,11 @@ export class CoverageView extends UI.Widget.VBox {
     toolbar.appendSeparator();
     this._showContentScriptsSetting = Common.Settings.Settings.instance().createSetting('showContentScripts', false);
     this._showContentScriptsSetting.addChangeListener(this._onFilterChanged, this);
-    const contentScriptsCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
+    this._contentScriptsCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
         this._showContentScriptsSetting, Common.UIString.UIString('Include extension content scripts'),
         Common.UIString.UIString('Content scripts'));
-    toolbar.appendToolbarItem(contentScriptsCheckbox);
+    this._contentScriptsCheckbox.setEnabled(false);
+    toolbar.appendToolbarItem(this._contentScriptsCheckbox);
 
     this._coverageResultsElement = this.contentElement.createChild('div', 'coverage-results');
     this._landingPage = this._buildLandingPage();
@@ -179,6 +180,7 @@ export class CoverageView extends UI.Widget.VBox {
     this._statusMessageElement.textContent = '';
     this._filterInput.setEnabled(false);
     this._filterByTypeComboBox.setEnabled(false);
+    this._contentScriptsCheckbox.setEnabled(false);
     this._saveButton.setEnabled(false);
   }
 
@@ -280,6 +282,7 @@ export class CoverageView extends UI.Widget.VBox {
     this._coverageTypeComboBox.setEnabled(false);
     this._filterInput.setEnabled(true);
     this._filterByTypeComboBox.setEnabled(true);
+    this._contentScriptsCheckbox.setEnabled(true);
     if (this._landingPage.isShowing()) {
       this._landingPage.detach();
     }
@@ -350,14 +353,16 @@ export class CoverageView extends UI.Widget.VBox {
     const all = {total: 0, unused: 0};
     const filtered = {total: 0, unused: 0};
     let filterApplied = false;
-    for (const info of this._model.entries()) {
-      all.total += info.size();
-      all.unused += info.unusedSize();
-      if (this._isVisible(false, info)) {
-        filtered.total += info.size();
-        filtered.unused += info.unusedSize();
-      } else {
-        filterApplied = true;
+    if (this._model) {
+      for (const info of this._model.entries()) {
+        all.total += info.size();
+        all.unused += info.unusedSize();
+        if (this._isVisible(false, info)) {
+          filtered.total += info.size();
+          filtered.unused += info.unusedSize();
+        } else {
+          filterApplied = true;
+        }
       }
     }
     this._statusMessageElement.textContent =

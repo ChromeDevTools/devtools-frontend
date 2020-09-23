@@ -76,6 +76,74 @@ describe('walkTree', () => {
     assert.deepEqual(foundInterfaceNames, ['Person', 'Dog']);
   });
 
+  describe('it enforces the .data as X pattern in lit-html html calls', () => {
+    it('errors with LitHtml.html`` if the .data object has no "as X" declared', () => {
+      const code = 'LitHtml.html\`<node-text .data=${{title: \'Jack\'}}></node-text>\`';
+
+      const source = createTypeScriptSourceFile(code);
+      assert.throws(() => {
+        walkTree(source, 'test.ts');
+      }, 'Error: found a lit-html .data= without an `as X` typecast.');
+    });
+
+    it('errors with just html`` if the .data object has no "as X" declared', () => {
+      const code = 'html\`<node-text .data=${{title: \'Jack\'}}></node-text>\`';
+
+      const source = createTypeScriptSourceFile(code);
+      assert.throws(() => {
+        walkTree(source, 'test.ts');
+      }, 'Error: found a lit-html .data= without an `as X` typecast.');
+    });
+
+    it('errors if the data is type cast to an object literal', () => {
+      const code = 'html\`<node-text .data=${{title: \'Jack\'} as { title: string }}}></node-text>\`';
+
+      const source = createTypeScriptSourceFile(code);
+      assert.throws(() => {
+        walkTree(source, 'test.ts');
+      }, 'Error: found a lit-html .data= with an object literal typecast.');
+    });
+
+
+    it('finds the error in a larger template', () => {
+      const code = 'html\`<p>${foo}</p><node-text .data=${{title: \'Jack\'}}></node-text><p>${foo}</p>\`';
+
+      const source = createTypeScriptSourceFile(code);
+      assert.throws(() => {
+        walkTree(source, 'test.ts');
+      }, 'Error: found a lit-html .data= without an `as X` typecast.');
+    });
+
+    it('checks all .data calls and finds errors correctly', () => {
+      const code =
+          'html\`<p>${foo}</p><node-text .data=${{title: \'Jack\'} as X}></node-text><p>${foo}</p><node-text .data=${{title: \'Jack\'}}></node-text>\`';
+
+      const source = createTypeScriptSourceFile(code);
+      assert.throws(() => {
+        walkTree(source, 'test.ts');
+      }, 'Error: found a lit-html .data= without an `as X` typecast.');
+    });
+
+    it('does not error if the .data= is properly type cast', () => {
+      const code = 'LitHtml.html\`<node-text .data=${{title: \'Jack\'} as Data}></node-text>\`';
+
+      const source = createTypeScriptSourceFile(code);
+      assert.doesNotThrow(() => {
+        walkTree(source, 'test.ts');
+      });
+    });
+
+    it('ignores any tagged templates that are not html or LitHtml.html', () => {
+      const code = 'SomeOtherHtmlThing.foo\`<node-text .data=${{title: \'Jack\'}}></node-text>\`';
+
+      const source = createTypeScriptSourceFile(code);
+      assert.doesNotThrow(() => {
+        walkTree(source, 'test.ts');
+      });
+    });
+  });
+
+
   describe('nested interfaces', () => {
     it('correctly identifies interfaces that reference other interfaces', () => {
       const code = `interface WebVitalsTimelineTask {

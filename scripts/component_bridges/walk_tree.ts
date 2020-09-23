@@ -121,6 +121,39 @@ const isPrivate = (node: ts.MethodDeclaration|ts.GetAccessorDeclaration|ts.SetAc
   return node.modifiers && node.modifiers.some(modifier => modifier.kind === ts.SyntaxKind.PrivateKeyword) || false;
 };
 
+// We want to check that the identifier is either LitHtml.html or just html.
+// If it's not a LitHtml.html call, we don't care about this node.
+const taggedTemplateExpressionIsLitHtmlCall = (node: ts.TaggedTemplateExpression): boolean => {
+  // This means it's .y`blah` - so need to check if X.y is LitHtml.html
+  if (ts.isPropertyAccessExpression(node.tag) && ts.isIdentifier(node.tag.expression) &&
+      ts.isIdentifier(node.tag.name)) {
+    const objectName = node.tag.expression.escapedText.toString();
+    const propertyName = node.tag.name.escapedText.toString();
+    return objectName === 'LitHtml' && propertyName === 'html';
+  }
+
+  // This means it's just x`blah` - so check if x is named `html`.
+  if (ts.isIdentifier(node.tag)) {
+    return node.tag.escapedText.toString() === 'html';
+  }
+
+  return false;
+};
+
+const checkTemplateSpanForTypeCastOfData = (matchingSpan: ts.TemplateSpan) => {
+  const spanHasTypeCast = ts.isAsExpression(matchingSpan.expression);
+  if (!spanHasTypeCast) {
+    throw new Error('Error: found a lit-html .data= without an `as X` typecast.');
+  }
+
+  const typeCastIsTypeReference =
+      ts.isAsExpression(matchingSpan.expression) && ts.isTypeReferenceNode(matchingSpan.expression.type);
+  if (!typeCastIsTypeReference) {
+    throw new Error('Error: found a lit-html .data= with an object literal typecast.');
+  }
+};
+
+
 const CUSTOM_ELEMENTS_LIFECYCLE_METHODS = new Set([
   'connectedCallback',
   'disconnectedCallback',
@@ -266,6 +299,49 @@ const walkNode = (node: ts.Node, startState?: WalkerState): WalkerState => {
         if (leftSideText === 'customElements' && rightSideText === 'define') {
           state.customElementsDefineCall = node;
         }
+      }
+    }
+  } else if (ts.isTaggedTemplateExpression(node)) {
+    if (taggedTemplateExpressionIsLitHtmlCall(node) && ts.isTemplateExpression(node.template)) {
+      // Search for a template part that ends in .data=
+      const dataSetterText = '.data=';
+
+      /* This is the easy case: the template starts with it, so we grab the
+       * first template span and check that.
+       *
+       * Here the AST will look something like:
+       * TemplateExpression
+       * - head: "<devtools-foo .data="
+       * TemplateSpans
+       * - 0: AST representing { foo: 'foo' } as X code
+      */
+      if (node.template.head.text.endsWith(dataSetterText)) {
+        const matchingSpan = node.template.templateSpans[0];
+        checkTemplateSpanForTypeCastOfData(matchingSpan);
+      } else {
+        /* Slightly harder case, it's not at the start, so we need to look
+        * through each template span to find a template middle that ends with
+        * `.data=`. A TemplateSpan contains an expression (the part being
+        * interpolated) and a "middle", which is the raw text that leads up to
+        * the next interpolation. Here the AST will look something like: head:
+        * "foo" TemplateSpans
+        * - 0:
+        *   - expression representing the interpolation
+        *   - middle: "<devtools-foo .data="
+        * - 1:
+        *   - AST representing { foo: 'foo' } as X
+        *
+        * So we want to find a TemplateSpan whose "middle" ends with ".data=",
+        * and then look at the expression in the next TemplateSpan.
+        */
+        node.template.templateSpans.forEach((templateSpan, index) => {
+          if (templateSpan.literal.text.endsWith(dataSetterText) && ts.isTemplateExpression(node.template)) {
+            // Now we found the span with the literal text, the next span will
+            // have the expression within.
+            const spanWithExpression = node.template.templateSpans[index + 1];
+            checkTemplateSpanForTypeCastOfData(spanWithExpression);
+          }
+        });
       }
     }
   }

@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 
@@ -277,6 +274,12 @@ export class ShortcutsScreen {
     for (const section in this._sections) {
       orderedSections.push(this._sections[section]);
     }
+
+    /**
+     * @param {!ShortcutsSection} a
+     * @param {!ShortcutsSection} b
+     * @return {number}
+     */
     function compareSections(a, b) {
       return a.order - b.order;
     }
@@ -309,7 +312,8 @@ class ShortcutsSection {
    */
   constructor(name) {
     this.name = name;
-    this._lines = /** @type {!Array.<!{key: !Node, text: string}>} */ ([]);
+    /** @type {!Array.<!{key: !Node, text: string}>} */
+    this._lines = [];
     this.order = ++ShortcutsSection._sequenceNumber;
   }
 
@@ -391,19 +395,19 @@ class ShortcutsSection {
    * @return {!Element}
    */
   _createSpan(className, textContent) {
-    const node = createElement('span');
+    const node = document.createElement('span');
     node.className = className;
     node.textContent = textContent;
     return node;
   }
 
   /**
-   * @param {!Array.<!Element>} nodes
+   * @param {!Array.<!Element|!Node>} nodes
    * @param {!Element} delimiter
    * @return {!Node}
    */
   _joinNodes(nodes, delimiter) {
-    const result = createDocumentFragment();
+    const result = document.createDocumentFragment();
     for (let i = 0; i < nodes.length; ++i) {
       if (i > 0) {
         result.appendChild(delimiter.cloneNode(true));

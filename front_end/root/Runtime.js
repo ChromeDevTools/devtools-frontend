@@ -90,6 +90,14 @@ export class Runtime {
   }
 
   /**
+   * @param {string} url
+   * @return {!Promise.<string>}
+   */
+  loadTextResourcePromise(url) {
+    return internalLoadResourcePromise(url, false);
+  }
+
+  /**
    * http://tools.ietf.org/html/rfc3986#section-5.2.4
    * @param {string} path
    * @return {string}

@@ -12,6 +12,14 @@
 import './ElementsBreadcrumbs.js';
 /**
 * @typedef {{
+* selectedNode:?DOMNode,
+* crumbs:!Array.<!DOMNode>,
+* }}
+*/
+// @ts-ignore we export this for Closure not TS
+export let ElementsBreadcrumbsData;
+/**
+* @typedef {{
 * parentNode:(!DOMNode|undefined),
 * id:number,
 * nodeType:number,
@@ -30,7 +38,7 @@ export let DOMNode;
 // eslint-disable-next-line no-unused-vars
 export class ElementsBreadcrumbsClosureInterface extends HTMLElement {
   /**
-  * @param {{selectedNode: ?DOMNode, crumbs: !Array.<!DOMNode>}} data
+  * @param {!ElementsBreadcrumbsData} data
   */
   set data(data) {
   }

@@ -54,10 +54,6 @@ describe('bridges CLI fixture tests', () => {
     runFixtureTestAndAssertMatch('enum-members');
   });
 
-  it('can handle setters with object literal data parameter', () => {
-    runFixtureTestAndAssertMatch('setters-object-literal');
-  });
-
   it('correctly parses interfaces wrapped in Readonly or ReadonlyArray', () => {
     runFixtureTestAndAssertMatch('setters-readonly');
   });

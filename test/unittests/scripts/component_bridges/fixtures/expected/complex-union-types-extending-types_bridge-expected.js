@@ -11,6 +11,13 @@
 
 import './complex-union-types-extending-types.js';
 /**
+* @typedef {{
+* input:!Array.<!Setting>,
+* }}
+*/
+// @ts-ignore we export this for Closure not TS
+export let LayoutPaneData;
+/**
 * @typedef {EnumSetting|BooleanSetting}
 */
 // @ts-ignore we export this for Closure not TS
@@ -60,7 +67,7 @@ export let BooleanSettingOption;
 // eslint-disable-next-line no-unused-vars
 export class LayoutPaneClosureInterface extends HTMLElement {
   /**
-  * @param {{input: !Array.<!Setting>}} data
+  * @param {!LayoutPaneData} data
   */
   set data(data) {
   }

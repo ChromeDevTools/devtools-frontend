@@ -3,12 +3,15 @@
 // found in the LICENSE file.
 import {DOMNode, Settings} from './multiple-interfaces-utils.js';
 
+interface LayoutPaneData {
+  selectedNode: DOMNode|null, settings: Settings
+}
 export class LayoutPane extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private settings: Readonly<Settings>|null = null;
   private selectedDOMNode: Readonly<DOMNode>|null = null;
 
-  set data(data: {selectedNode: DOMNode|null, settings: Settings}) {
+  set data(data: LayoutPaneData) {
     this.selectedDOMNode = data.selectedNode;
     this.settings = data.settings;
     this.update();

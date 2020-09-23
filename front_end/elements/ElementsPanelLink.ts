@@ -4,6 +4,11 @@
 
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
+export interface ElementsPanelLinkData {
+  onElementRevealIconClick: (event?: Event) => void;
+  onElementRevealIconMouseEnter: (event?: Event) => void;
+  onElementRevealIconMouseLeave: (event?: Event) => void;
+}
 export class ElementsPanelLink extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
 
@@ -11,11 +16,7 @@ export class ElementsPanelLink extends HTMLElement {
   private onElementRevealIconMouseEnter: ((event?: Event) => void) = () => {};
   private onElementRevealIconMouseLeave: ((event?: Event) => void) = () => {};
 
-  set data(data: {
-    onElementRevealIconClick: (event?: Event) => void,
-    onElementRevealIconMouseEnter: (event?: Event) => void,
-    onElementRevealIconMouseLeave: (event?: Event) => void
-  }) {
+  set data(data: ElementsPanelLinkData) {
     this.onElementRevealIconClick = data.onElementRevealIconClick;
     this.onElementRevealIconMouseEnter = data.onElementRevealIconMouseEnter;
     this.onElementRevealIconMouseLeave = data.onElementRevealIconMouseLeave;

@@ -237,6 +237,14 @@ const walkNode = (node: ts.Node, startState?: WalkerState): WalkerState => {
           if (member.parameters[0]) {
             const setterParamType = member.parameters[0].type;
             if (setterParamType) {
+              /* We require that setters are of the form:
+               * set data(data: SomeInterface)
+               * rather than defining the interface inline as an object literal.
+               */
+              const setterName = ts.isIdentifier(member.name) ? member.name.escapedText.toString() : '(unknown)';
+              if (!ts.isTypeReferenceNode(setterParamType)) {
+                throw new Error(`Setter ${setterName} has an argument whose type is not a direct type reference.`);
+              }
               const foundTypeReferences = findTypeReferencesWithinNode(setterParamType);
               foundTypeReferences.forEach(i => state.typeReferencesToConvert.add(i));
             }
@@ -500,6 +508,25 @@ const builtInTypeScriptTypes = new Set([
 
 export const walkTree = (startNode: ts.SourceFile, resolvedFilePath: string): WalkerState => {
   let state = walkNode(startNode);
+  /**
+   * Now we have a list of top level interfaces we need to convert, we need to
+   * go through each one and look for any interfaces referenced within e.g.:
+   *
+   * ```
+   * interface Baz {...}
+   *
+   * interface Foo {
+   *   x: Baz
+   * }
+   *
+   * // in the component
+   * set data(data: { foo: Foo }) {}
+   * ```
+   *
+   * We know we have to convert the Foo interface in the _bridge.js, but we need
+   * to also convert Baz because Foo references it.
+   */
+  state = populateTypeReferencesToConvert(state);
 
   /* if we are here and found an interface passed to a public method
    * that we didn't find the definition for, that means it's imported
@@ -560,25 +587,13 @@ export const walkTree = (startNode: ts.SourceFile, resolvedFilePath: string): Wa
     });
   });
 
-  /**
-   * Now we have a list of top level interfaces we need to convert, we need to
-   * go through each one and look for any interfaces referenced within e.g.:
-   *
-   * ```
-   * interface Baz {...}
-   *
-   * interface Foo {
-   *   x: Baz
-   * }
-   *
-   * // in the component
-   * set data(data: { foo: Foo }) {}
-   * ```
-   *
-   * We know we have to convert the Foo interface in the _bridge.js, but we need
-   * to also convert Baz because Foo references it.
-   */
 
+  // We did this before parsing any imports from other files, but we now do it
+  // again. If we found a definition in another module that we care about, we
+  // need to parse it to check its nested state. This could be more efficient
+  // (we have to do two passes, before and after parsing 3rd party imports), but
+  // given component bridges are not going to be around forever, we will defer
+  // any performance concerns here until they start slowing us down day to day.
   state = populateTypeReferencesToConvert(state);
 
   // If we found any nested references that reference built-in TS types we can

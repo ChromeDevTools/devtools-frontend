@@ -8,6 +8,10 @@ import * as LitHtml from '../third_party/lit-html/lit-html.js';
 import {crumbsToRender, DOMNode, NodeSelectedEvent, UserScrollPosition} from './ElementsBreadcrumbsUtils.js';
 import {NodeTextData} from './NodeText.js';
 
+export interface ElementsBreadcrumbsData {
+  selectedNode: DOMNode|null;
+  crumbs: DOMNode[];
+}
 export class ElementsBreadcrumbs extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private readonly resizeObserver = new ResizeObserver(() => this.update());
@@ -18,7 +22,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
   private userScrollPosition: UserScrollPosition = 'start';
   private isObservingResize = false;
 
-  set data(data: {selectedNode: DOMNode|null, crumbs: DOMNode[]}) {
+  set data(data: ElementsBreadcrumbsData) {
     this.selectedDOMNode = data.selectedNode;
     this.crumbsData = data.crumbs;
     this.update();

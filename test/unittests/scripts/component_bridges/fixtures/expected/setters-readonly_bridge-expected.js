@@ -12,6 +12,14 @@
 import './setters-readonly.js';
 /**
 * @typedef {{
+* dog:!Dog,
+* otherAnimals:!Array.<!Cat>,
+* }}
+*/
+// @ts-ignore we export this for Closure not TS
+export let BasicData;
+/**
+* @typedef {{
 * name:string,
 * isGoodDog:boolean,
 * }}
@@ -28,7 +36,7 @@ export let Cat;
 // eslint-disable-next-line no-unused-vars
 export class BasicComponentClosureInterface extends HTMLElement {
   /**
-  * @param {{dog: !Dog, otherAnimals: !Array.<!Cat>}} data
+  * @param {!BasicData} data
   */
   set data(data) {
   }

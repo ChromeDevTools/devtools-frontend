@@ -12,6 +12,14 @@ export interface Slice {
   value: number, color: string, title: string
 }
 
+export interface PieChartData {
+  chartName: string;
+  size: number;
+  formatter: (value: number) => string;
+  showLegend: boolean;
+  total: number;
+  slices: Slice[];
+}
 // If the slices are not available when constructing the pie chart, set .data
 // immediately, with total=0 and slices=[], so that the chart is rendered with
 // the correct initial size. This avoids a layout shift when the slices are
@@ -31,14 +39,7 @@ export class PieChart extends HTMLElement {
   private readonly innerR = 0.618;
   private lastAngle = -Math.PI / 2;
 
-  set data(data: {
-    chartName: string,
-    size: number,
-    formatter: (value: number) => string,
-    showLegend: boolean,
-    total: number,
-    slices: Slice[]
-  }) {
+  set data(data: PieChartData) {
     this.chartName = data.chartName;
     this.size = data.size;
     this.formatter = data.formatter;

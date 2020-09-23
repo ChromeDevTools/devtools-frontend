@@ -10,11 +10,19 @@
 */
 
 import './ElementsPanelLink.js';
-
+/**
+* @typedef {{
+* onElementRevealIconClick:function(!Event=):void,
+* onElementRevealIconMouseEnter:function(!Event=):void,
+* onElementRevealIconMouseLeave:function(!Event=):void,
+* }}
+*/
+// @ts-ignore we export this for Closure not TS
+export let ElementsPanelLinkData;
 // eslint-disable-next-line no-unused-vars
 export class ElementsPanelLinkClosureInterface extends HTMLElement {
   /**
-  * @param {{onElementRevealIconClick: function(!Event=):void, onElementRevealIconMouseEnter: function(!Event=):void, onElementRevealIconMouseLeave: function(!Event=):void}} data
+  * @param {!ElementsPanelLinkData} data
   */
   set data(data) {
   }

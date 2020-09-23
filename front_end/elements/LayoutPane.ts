@@ -35,6 +35,11 @@ function isBooleanSetting(setting: Setting): setting is BooleanSetting {
   return setting.type === SettingType.BOOLEAN;
 }
 
+export interface LayoutPaneData {
+  settings: Setting[];
+  gridElements: LayoutElement[];
+}
+
 export class LayoutPane extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private settings: Readonly<Setting[]> = [];
@@ -49,7 +54,7 @@ export class LayoutPane extends HTMLElement {
     ];
   }
 
-  set data(data: {settings: Setting[], gridElements: LayoutElement[]}) {
+  set data(data: LayoutPaneData) {
     this.settings = data.settings;
     this.gridElements = data.gridElements;
     this.render();

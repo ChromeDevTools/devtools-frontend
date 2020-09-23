@@ -12,6 +12,18 @@
 import './PieChart.js';
 /**
 * @typedef {{
+* chartName:string,
+* size:number,
+* formatter:function(number):string,
+* showLegend:boolean,
+* total:number,
+* slices:!Array.<!Slice>,
+* }}
+*/
+// @ts-ignore we export this for Closure not TS
+export let PieChartData;
+/**
+* @typedef {{
 * value:number,
 * color:string,
 * title:string,
@@ -22,7 +34,7 @@ export let Slice;
 // eslint-disable-next-line no-unused-vars
 export class PieChartClosureInterface extends HTMLElement {
   /**
-  * @param {{chartName: string, size: number, formatter: function(number):string, showLegend: boolean, total: number, slices: !Array.<!Slice>}} data
+  * @param {!PieChartData} data
   */
   set data(data) {
   }

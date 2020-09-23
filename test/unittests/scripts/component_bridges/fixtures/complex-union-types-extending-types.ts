@@ -27,6 +27,10 @@ export interface BaseSetting {
   settingType: SettingType;
 }
 
+interface LayoutPaneData {
+  input: Setting[]
+}
+
 export type BooleanSetting = BaseSetting&{options: BooleanSettingOption[], value: boolean};
 export type EnumSetting = BaseSetting&{options: EnumSettingOption[], value: string};
 export type Setting = EnumSetting|BooleanSetting;
@@ -34,7 +38,7 @@ export type Setting = EnumSetting|BooleanSetting;
 export class LayoutPane extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
 
-  set data(data: {input: Setting[]}) {
+  set data(data: LayoutPaneData) {
   }
 
   private render() {

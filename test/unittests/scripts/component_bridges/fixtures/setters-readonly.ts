@@ -11,8 +11,12 @@ interface Cat {
   name: string;
 }
 
+interface BasicData {
+  dog: Readonly<Dog>, otherAnimals: ReadonlyArray<Cat>
+}
+
 class BasicComponent extends HTMLElement {
-  public set data(data: {dog: Readonly<Dog>, otherAnimals: ReadonlyArray<Cat>}) {
+  public set data(data: BasicData) {
   }
 }
 

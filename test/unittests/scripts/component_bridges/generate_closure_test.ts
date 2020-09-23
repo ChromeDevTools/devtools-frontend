@@ -471,101 +471,6 @@ describe('generateClosure', () => {
 
       assert.include(classOutput.join('\n'), 'set person(person) {');
     });
-
-    it('handles object parameters in setters', () => {
-      const state = parseCode(`interface Person {
-        name: string
-        age: number
-      }
-
-      class Breadcrumbs extends HTMLElement {
-        public set data(data: { person: Person, somethingElse: number }) {
-        }
-      }`);
-
-      const classOutput = generateClosureClass(state);
-
-      assert.include(classOutput.join('\n'), `
-  /**
-  * @param {{person: !Person, somethingElse: number}} data
-  */`);
-
-      assert.include(classOutput.join('\n'), 'set data(data) {');
-    });
-
-    it('correctly handles Readonly and outputs the inner type', () => {
-      const state = parseCode(`interface Person {
-        name: string
-        age: number
-      }
-
-      class Breadcrumbs extends HTMLElement {
-        public set data(data: { person: Readonly<Person> }) {
-        }
-      }`);
-
-      const classOutput = generateClosureClass(state);
-
-      assert.include(classOutput.join('\n'), `
-  /**
-  * @param {{person: !Person}} data
-  */`);
-
-      assert.include(classOutput.join('\n'), 'set data(data) {');
-    });
-
-    it('correctly handles ReadonlyArray and outputs the inner type', () => {
-      const state = parseCode(`interface Person {
-        name: string
-        age: number
-      }
-
-      class Breadcrumbs extends HTMLElement {
-        public set data(data: { person: ReadonlyArray<Person> }) {
-        }
-      }`);
-
-      const classOutput = generateClosureClass(state);
-
-      assert.include(classOutput.join('\n'), `
-  /**
-  * @param {{person: !Array.<!Person>}} data
-  */`);
-
-      assert.include(classOutput.join('\n'), 'set data(data) {');
-    });
-
-    it('correctly handles TypeScript Object type', () => {
-      const state = parseCode(`
-      class Breadcrumbs extends HTMLElement {
-        public set data(data: { person: Object }) {
-        }
-      }`);
-
-      const classOutput = generateClosureClass(state);
-
-      assert.include(classOutput.join('\n'), `
-  /**
-  * @param {{person: !Object}} data
-  */`);
-      assert.include(classOutput.join('\n'), 'set data(data) {');
-    });
-
-    it('correctly handles TypeScript array of Object type', () => {
-      const state = parseCode(`
-      class Breadcrumbs extends HTMLElement {
-        public set data(data: { people: Object[] }) {
-        }
-      }`);
-
-      const classOutput = generateClosureClass(state);
-
-      assert.include(classOutput.join('\n'), `
-  /**
-  * @param {{people: !Array.<!Object>}} data
-  */`);
-      assert.include(classOutput.join('\n'), 'set data(data) {');
-    });
   });
 
   describe('generateTypeReferences', () => {
@@ -1111,13 +1016,20 @@ export let Person`);
     });
 
     it('ignores the Object type', () => {
-      const state = parseCode(`
+      const state = parseCode(`interface Data {
+        people: Object[]
+      }
+
       class Breadcrumbs extends HTMLElement {
-        public set data(data: { people: Object[] }) {
+        public set data(data: Data) {
         }
       }`);
       const interfaces = generateTypeReferences(state);
-      assert.strictEqual(interfaces.length, 0);
+      assert.strictEqual(interfaces.length, 1);
+      assert.include(interfaces[0].join('\n'), `* @typedef {{
+* people:!Array.<!Object>,
+* }}`);
+      assert.include(interfaces[0].join('\n'), 'export let Data');
     });
 
     it('can parse and convert basic Map types', () => {
@@ -1125,16 +1037,24 @@ export let Person`);
         foo: Map<string, number>
       }
 
+      interface Data {
+        person: Person,
+      }
+
       class Breadcrumbs extends HTMLElement {
-        public set data(data: { person: Person }) {
+        public set data(data: Data) {
         }
       }`);
       const interfaces = generateTypeReferences(state);
-      assert.strictEqual(interfaces.length, 1);
+      assert.strictEqual(interfaces.length, 2);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
+* person:!Person,
+* }}`);
+      assert.include(interfaces[0].join('\n'), 'export let Data');
+      assert.include(interfaces[1].join('\n'), `* @typedef {{
 * foo:!Map<string, number>,
 * }}`);
-      assert.include(interfaces[0].join('\n'), 'export let Person');
+      assert.include(interfaces[1].join('\n'), 'export let Person');
     });
 
     it('can parse and convert Map types with type references within', () => {
@@ -1146,20 +1066,28 @@ export let Person`);
         name: string;
       }
 
+      interface Data {
+        person: Person,
+      }
+
       class Breadcrumbs extends HTMLElement {
-        public set data(data: { person: Person }) {
+        public set data(data: Data) {
         }
       }`);
       const interfaces = generateTypeReferences(state);
-      assert.strictEqual(interfaces.length, 2);
+      assert.strictEqual(interfaces.length, 3);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
+* person:!Person,
+* }}`);
+      assert.include(interfaces[0].join('\n'), 'export let Data');
+      assert.include(interfaces[1].join('\n'), `* @typedef {{
 * friends:!Map<string, !Friend>,
 * }}`);
-      assert.include(interfaces[0].join('\n'), 'export let Person');
-      assert.include(interfaces[1].join('\n'), `* @typedef {{
+      assert.include(interfaces[1].join('\n'), 'export let Person');
+      assert.include(interfaces[2].join('\n'), `* @typedef {{
 * name:string,
 * }}`);
-      assert.include(interfaces[1].join('\n'), 'export let Friend');
+      assert.include(interfaces[2].join('\n'), 'export let Friend');
     });
 
     it('can parse and convert basic Set types', () => {
@@ -1167,16 +1095,24 @@ export let Person`);
         foo: Set<string>
       }
 
+      interface Data {
+        person: Person
+      }
+
       class Breadcrumbs extends HTMLElement {
-        public set data(data: { person: Person }) {
+        public set data(data: Data) {
         }
       }`);
       const interfaces = generateTypeReferences(state);
-      assert.strictEqual(interfaces.length, 1);
+      assert.strictEqual(interfaces.length, 2);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
+* person:!Person,
+* }}`);
+      assert.include(interfaces[0].join('\n'), 'export let Data');
+      assert.include(interfaces[1].join('\n'), `* @typedef {{
 * foo:!Set<string>,
 * }}`);
-      assert.include(interfaces[0].join('\n'), 'export let Person');
+      assert.include(interfaces[1].join('\n'), 'export let Person');
     });
 
     it('can parse and convert Sets of interfaces', () => {
@@ -1188,20 +1124,28 @@ export let Person`);
         name: string;
       }
 
+      interface Data {
+        person: Person
+      }
+
       class Breadcrumbs extends HTMLElement {
-        public set data(data: { person: Person }) {
+        public set data(data: Data) {
         }
       }`);
       const interfaces = generateTypeReferences(state);
-      assert.strictEqual(interfaces.length, 2);
+      assert.strictEqual(interfaces.length, 3);
       assert.include(interfaces[0].join('\n'), `* @typedef {{
+* person:!Person,
+* }}`);
+      assert.include(interfaces[0].join('\n'), 'export let Data');
+      assert.include(interfaces[1].join('\n'), `* @typedef {{
 * foo:!Set<!Foo>,
 * }}`);
-      assert.include(interfaces[0].join('\n'), 'export let Person');
-      assert.include(interfaces[1].join('\n'), `* @typedef {{
+      assert.include(interfaces[1].join('\n'), 'export let Person');
+      assert.include(interfaces[2].join('\n'), `* @typedef {{
 * name:string,
 * }}`);
-      assert.include(interfaces[1].join('\n'), 'export let Foo');
+      assert.include(interfaces[2].join('\n'), 'export let Foo');
     });
 
     it('correctly converts HTMLElement types', () => {
@@ -1210,7 +1154,7 @@ export let Person`);
       }
 
       class Breadcrumbs extends HTMLElement {
-        public set data(data: { person: Person }) {
+        public set data(data: Person) {
         }
       }`);
       const interfaces = generateTypeReferences(state);
@@ -1227,7 +1171,7 @@ export let Person`);
       }
 
       class Breadcrumbs extends HTMLElement {
-        public set data(data: { person: Person }) {
+        public set data(data: Person) {
         }
       }`);
       const interfaces = generateTypeReferences(state);
@@ -1248,7 +1192,7 @@ export let Person`);
       }
 
       class Breadcrumbs extends HTMLElement {
-        public set data(data: { person: Person }) {
+        public set data(data: Person) {
         }
       }`);
       const interfaces = generateTypeReferences(state);

@@ -7,12 +7,16 @@ import * as LitHtml from '../third_party/lit-html/lit-html.js';
 const html = LitHtml.html;
 const render = LitHtml.render;
 
+export interface MarkdownViewData {
+  tokens: Object[];
+}
+
 export class MarkdownView extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
 
   private tokenData: ReadonlyArray<Object> = [];
 
-  set data(data: {tokens: Object[]}) {
+  set data(data: MarkdownViewData) {
     this.tokenData = data.tokens;
     this.update();
   }

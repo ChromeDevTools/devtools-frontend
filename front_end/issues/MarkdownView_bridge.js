@@ -10,11 +10,17 @@
 */
 
 import './MarkdownView.js';
-
+/**
+* @typedef {{
+* tokens:!Array.<!Object>,
+* }}
+*/
+// @ts-ignore we export this for Closure not TS
+export let MarkdownViewData;
 // eslint-disable-next-line no-unused-vars
 export class MarkdownViewClosureInterface extends HTMLElement {
   /**
-  * @param {{tokens: !Array.<!Object>}} data
+  * @param {!MarkdownViewData} data
   */
   set data(data) {
   }

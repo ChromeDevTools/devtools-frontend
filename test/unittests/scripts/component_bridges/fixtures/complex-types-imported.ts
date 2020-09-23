@@ -13,13 +13,17 @@ export class SettingChangedEvent extends Event {
   }
 }
 
+interface LayoutPaneData {
+  selectedNode: DOMNode|null, settings: Setting[],
+}
+
 export class LayoutPane extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private settings: Readonly<Setting[]>|null = null;
   private selectedDOMNode: Readonly<DOMNode>|null = null;
   private collapsed = false;
 
-  set data(data: {selectedNode: DOMNode|null, settings: Setting[]}) {
+  set data(data: LayoutPaneData) {
     this.selectedDOMNode = data.selectedNode;
     this.settings = data.settings;
     this.update();

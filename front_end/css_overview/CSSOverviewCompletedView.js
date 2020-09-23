@@ -21,8 +21,21 @@ export let NodeStyleStats;
 
 /**
  * @typedef {{
+ *  nodeId: number,
+ *  contrastRatio: number,
+ *  textColor: Common.Color.Color,
+ *  backgroundColor: Common.Color.Color,
+ *  thresholdsViolated: !{aa: boolean, aaa:boolean},
+ * }}
+ */
+// @ts-ignore typedef
+export let ContrastIssue;
+
+/**
+ * @typedef {{
  * backgroundColors: NodeStyleStats,
  * textColors: NodeStyleStats,
+ * textColorContrastIssues: !Map<string, !Array<!ContrastIssue>>,
  * fillColors: NodeStyleStats,
  * borderColors: NodeStyleStats,
  * globalStyleStats: !{
@@ -166,6 +179,19 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
 
     let payload;
     switch (type) {
+      case 'contrast': {
+        const section = dataset.section;
+        const key = dataset.key;
+
+        if (!key) {
+          return;
+        }
+
+        // Remap the Set to an object that is the same shape as the unused declarations.
+        const nodes = (this._data.textColorContrastIssues.get(key) || []).map(issue => ({nodeId: issue.nodeId}));
+        payload = {type, key, nodes, section};
+        break;
+      }
       case 'color': {
         const color = dataset.color;
         const section = dataset.section;
@@ -300,6 +326,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
       elementCount,
       backgroundColors,
       textColors,
+      textColorContrastIssues,
       fillColors,
       borderColors,
       globalStyleStats,
@@ -379,6 +406,8 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
           ${sortedTextColors.map(this._colorsToFragment.bind(this, 'text'))}
         </ul>
 
+        ${textColorContrastIssues.size > 0 ? this._contrastIssuesToFragment(textColorContrastIssues) : ''}
+
         <h2>${ls`Fill colors: ${sortedFillColors.length}`}</h2>
         <ul>
           ${sortedFillColors.map(this._colorsToFragment.bind(this, 'fill'))}
@@ -427,6 +456,13 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     let tabTitle = '';
 
     switch (type) {
+      case 'contrast': {
+        const {section, key} = evt.data;
+        id = `${section}-${key}`;
+        tabTitle = ls`Contrast issues`;
+        break;
+      }
+
       case 'color': {
         const {section, color} = evt.data;
         id = `${section}-${color}`;
@@ -531,6 +567,81 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
       </li>`;
     })}
     </ul>`;
+  }
+
+  /**
+   * @param {!Map<string, !Array<!ContrastIssue>>} issues
+   */
+  _contrastIssuesToFragment(issues) {
+    return UI.Fragment.Fragment.build`
+      <h2>${ls`Contrast issues: ${issues.size}`}</h2>
+      <ul>
+        ${[...issues.entries()].map(([key, value]) => this._contrastIssueToFragment(key, value))}
+      </ul>
+    `;
+  }
+
+  /**
+   * @param {string} key
+   * @param {!Array<!ContrastIssue>} issues
+   */
+  _contrastIssueToFragment(key, issues) {
+    console.assert(issues.length > 0);
+
+    let minContrastIssue = issues[0];
+    for (const issue of issues) {
+      if (issue.contrastRatio < minContrastIssue.contrastRatio) {
+        minContrastIssue = issue;
+      }
+    }
+
+    const color = /** @type { string }*/ (minContrastIssue.textColor.asString(Common.Color.Format.HEXA));
+    const backgroundColor =
+        /** @type { string }*/ (minContrastIssue.backgroundColor.asString(Common.Color.Format.HEXA));
+
+    const blockFragment = UI.Fragment.Fragment.build`<li>
+      <button
+        title="${
+        ls`Text color ${color} over ${backgroundColor} background results in low contrast for ${
+            issues.length} elements`}"
+        data-type="contrast" data-key="${key}" data-section="contrast" class="block" $="color">
+        Text
+      </button>
+      <div class="block-title">
+        <div class="contrast-warning" $="aa"><span class="threshold-label">${ls`AA`}</span></div>
+        <div class="contrast-warning" $="aaa"><span class="threshold-label">${ls`AAA`}</span></div>
+      </div>
+    </li>`;
+
+    const aa = /** @type {!HTMLElement} */ (blockFragment.$('aa'));
+    if (minContrastIssue.thresholdsViolated.aa) {
+      aa.appendChild(UI.Icon.Icon.create('smallicon-no'));
+    } else {
+      aa.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
+    }
+    const aaa = /** @type {!HTMLElement} */ (blockFragment.$('aaa'));
+    if (minContrastIssue.thresholdsViolated.aaa) {
+      aaa.appendChild(UI.Icon.Icon.create('smallicon-no'));
+    } else {
+      aaa.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
+    }
+
+    const block = /** @type {!HTMLElement} */ (blockFragment.$('color'));
+    block.style.backgroundColor = backgroundColor;
+    block.style.color = color;
+
+    let [h, s, l] = minContrastIssue.backgroundColor.hsla();
+    h = Math.round(h * 360);
+    s = Math.round(s * 100);
+    l = Math.round(l * 100);
+
+    // Reduce the lightness of the border to make sure that there's always a visible outline.
+    l = Math.max(0, l - 15);
+
+    const borderString = `1px solid hsl(${h}deg ${s}% ${l}%)`;
+    block.style.border = borderString;
+
+    return blockFragment;
   }
 
   /**

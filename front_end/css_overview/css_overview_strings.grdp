@@ -54,8 +54,14 @@
   <message name="IDS_DEVTOOLS_6246655a4c0a99b49f104cd87a0a7a7a" desc="Column header title denoting which declaration is unused">
     Declaration
   </message>
+  <message name="IDS_DEVTOOLS_627586b94b26bcae5b62b8f73a89f1a5" desc="Section header for contrast issues in the CSS Overview Panel">
+    Contrast issues: <ph name="ISSUES_SIZE">$1s<ex>1</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_6ad170a0581c9c116ca254758bd0c5b9" desc="Label for the number of ID selectors in the CSS Overview report">
     ID selectors
+  </message>
+  <message name="IDS_DEVTOOLS_71313e1afe9449abaf57bc44842ae2ed" desc="Title of the button for a contrast issue in the CSS Overview Panel">
+    Text color <ph name="COLOR">$1s<ex>#333333</ex></ph> over <ph name="BACKGROUNDCOLOR">$2s<ex>#333333</ex></ph> background results in low contrast for <ph name="ISSUES_LENGTH">$3s<ex>2</ex></ph> elements
   </message>
   <message name="IDS_DEVTOOLS_7828f7fcacd1ee27cb2c88647b86a748" desc="Label for unique text colors in the CSS Overview Panel">
     Text colors: <ph name="SORTEDTEXTCOLORS_LENGTH">$1s<ex>32</ex></ph>
@@ -101,6 +107,9 @@
   </message>
   <message name="IDS_DEVTOOLS_e9c6934e961dad71d311f68c679dfd3b" desc="Label for the capture button in the CSS Overview Panel">
     Capture overview
+  </message>
+  <message name="IDS_DEVTOOLS_ecc42da5151e447b34b376da2a5c4bb0" desc="Title of the Drawer for contrast issues in the CSS Overview Panel">
+    Contrast issues
   </message>
   <message name="IDS_DEVTOOLS_f1637e0528f8c9d37be5de8b50fd2926" desc="Label for the number of inline style elements in the CSS Overview report">
     Inline style elements

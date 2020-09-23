@@ -15,7 +15,8 @@
     "ui",
     "sdk",
     "data_grid",
-    "extensions"
+    "extensions",
+    "color_picker"
   ],
   "modules": [
     "css_overview.js",

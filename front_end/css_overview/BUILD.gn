@@ -18,6 +18,7 @@ devtools_module("css_overview") {
   ]
 
   deps = [
+    "../color_picker:bundle",
     "../common:bundle",
     "../components:bundle",
     "../data_grid:bundle",

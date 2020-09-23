@@ -18,9 +18,6 @@
   <message name="IDS_DEVTOOLS_39186fc9ea0f3ccf697b31a288e0723f" desc="Tooltip text that appears when hovering over largeicon eyedropper button in Contrast Details of the Color Picker">
     Toggle background color picker
   </message>
-  <message name="IDS_DEVTOOLS_3b98e2dffc6cb06a89dcb0d5c60a0206" desc="Label aa text content in Contrast Details of the Color Picker">
-    AA
-  </message>
   <message name="IDS_DEVTOOLS_52318660306e9ed2a2b4b7adb9e858f9" desc="Color element title in Spectrum of the Color Picker">
     Long-click or long-press space to show alternate shades of <ph name="PALETTE_COLORS_I_">$1s<ex>#9c1724</ex></ph>
   </message>
@@ -68,8 +65,5 @@
   </message>
   <message name="IDS_DEVTOOLS_df5b49c2e7eb48841103d5bec2d12ffd" desc="Aria label for RGBA and HSLA color format inputs in Color Picker">
     <ph name="THIS__TEXTLABELS_TEXTCONTENT_CHARAT_I_">$1s<ex>R</ex></ph> in <ph name="THIS__TEXTLABELS_TEXTCONTENT">$2s<ex>RGBA</ex></ph>
-  </message>
-  <message name="IDS_DEVTOOLS_e1faffb3e614e6c2fba74296962386b7" desc="Label aaa text content in Contrast Details of the Color Picker">
-    AAA
   </message>
 </grit-part>

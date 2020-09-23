@@ -13,9 +13,11 @@
 
 .overview-completed-view .summary ul,
 .overview-completed-view .colors ul {
+  display: flex;
+  flex-wrap: wrap;
   list-style: none;
-  padding: 0;
   margin: 0;
+  padding: 0;
 }
 
 .overview-completed-view .summary ul {
@@ -26,8 +28,8 @@
 
 .overview-completed-view .colors ul li {
   display: inline-block;
-  padding: 0;
   margin: 0 0 16px 0;
+  padding: 0 8px 0 0;
 }
 
 .overview-completed-view .summary ul li {
@@ -287,4 +289,27 @@
 
 .overview-completed-view .font-family:first-of-type {
   padding-top: 0;
+}
+
+.contrast-warning {
+  display: flex;
+  align-items: baseline;
+}
+
+.contrast-warning .threshold-label {
+  font-weight: normal;
+  width: 25px;
+}
+
+.contrast-warning [is=ui-icon] {
+  margin-left: 5px;
+}
+
+.contrast-warning [is=ui-icon].smallicon-checkmark-square,
+.contrast-warning [is=ui-icon].smallicon-checkmark-behind {
+  background-color: #00b06f;
+}
+
+.contrast-warning [is=ui-icon].smallicon-no {
+  background-color: red;
 }

@@ -7,7 +7,7 @@ import * as Host from '../host/host.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-import {CSSOverviewCompletedView} from './CSSOverviewCompletedView.js';
+import {ContrastIssue, CSSOverviewCompletedView} from './CSSOverviewCompletedView.js';  // eslint-disable-line no-unused-vars
 import {FontInfo} from './CSSOverviewCompletedView.js';        // eslint-disable-line no-unused-vars
 import {NodeStyleStats} from './CSSOverviewCompletedView.js';  // eslint-disable-line no-unused-vars
 import {Events, OverviewController} from './CSSOverviewController.js';
@@ -103,6 +103,7 @@ export class CSSOverviewPanel extends UI.Panel.Panel {
     this._completedView.setOverviewData({
       backgroundColors: /** @type {!NodeStyleStats} */ (this._backgroundColors),
       textColors: /** @type {!NodeStyleStats} */ (this._textColors),
+      textColorContrastIssues: /** @type {!Map<string, !Array<!ContrastIssue>>} */ (this._textColorContrastIssues),
       fillColors: /** @type {!NodeStyleStats} */ (this._fillColors),
       borderColors: /** @type {!NodeStyleStats} */ (this._borderColors),
       globalStyleStats: this._globalStyleStats,
@@ -116,7 +117,7 @@ export class CSSOverviewPanel extends UI.Panel.Panel {
   async _startOverview() {
     this._renderOverviewStartedView();
 
-    const [globalStyleStats, {elementCount, backgroundColors, textColors, fillColors, borderColors, fontInfo, unusedDeclarations}, mediaQueries] =
+    const [globalStyleStats, {elementCount, backgroundColors, textColors, textColorContrastIssues, fillColors, borderColors, fontInfo, unusedDeclarations}, mediaQueries] =
         await Promise.all([
           this._model.getGlobalStylesheetStats(), this._model.getNodeStyleStats(),
           this._model.getMediaQueries()
@@ -140,6 +141,10 @@ export class CSSOverviewPanel extends UI.Panel.Panel {
 
     if (textColors) {
       this._textColors = textColors;
+    }
+
+    if (textColorContrastIssues) {
+      this._textColorContrastIssues = textColorContrastIssues;
     }
 
     if (fillColors) {

@@ -190,7 +190,7 @@
     Disable DOM word wrap
   </message>
   <message name="IDS_DEVTOOLS_795630f9fe735d5c002f28f851d78fac" desc="Title of show framework listeners setting in event listeners widget of the elements panel">
-    Framework listeners
+    <ph name="LOCKED_1">Framework</ph> listeners
   </message>
   <message name="IDS_DEVTOOLS_7c90d60be6418bb4a858b3733b2560a8" desc="Text in Styles Sidebar Pane of the Elements panel">
     Unknown property name

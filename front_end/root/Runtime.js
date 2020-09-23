@@ -628,10 +628,6 @@ export class Module {
   }
 
   async _loadModules() {
-    if (!this._descriptor.modules || !this._descriptor.modules.length) {
-      return;
-    }
-
     const legacyFileName = `${this._name}-legacy.js`;
     const moduleFileName = `${this._name}_module.js`;
     const entrypointFileName = `${this._name}.js`;
@@ -642,12 +638,6 @@ export class Module {
     if (this._descriptor.modules.includes(moduleFileName)) {
       // TODO(crbug.com/1011811): Remove eval when we use TypeScript which does support dynamic imports
       await eval(`import('../${this._name}/${moduleFileName}')`);
-    }
-
-    // All `*_test_runner` directories don't necessarily have an entrypoint
-    // These runners are typically included in the `_module.js` file already.
-    if (!this._descriptor.modules.includes(entrypointFileName)) {
-      return;
     }
 
     const fileName = this._descriptor.modules.includes(legacyFileName) ? legacyFileName : entrypointFileName;

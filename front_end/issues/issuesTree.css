@@ -20,6 +20,7 @@
   --issue-link: #1967d2;
   --issue-black: #202124;
   --issue-code: #f0f0f0;
+  --issue-indent: 8px;
   --affected-resource-background: #f8f9fa;
 }
 
@@ -55,8 +56,10 @@
   transform: rotate(90deg);
 }
 
+.issue-category,
 .issue {
   padding: 0 8px;
+  padding-left: var(--issue-indent);
   overflow: hidden;
   flex: none;
   transition: background-color 200ms;
@@ -65,8 +68,12 @@
   border-width: 0 0 1px;
 }
 
+.issue-category + .children .issue,
 .issue.expanded {
   background: #fff;
+}
+
+.issue.expanded {
   border-width: 0;
 }
 
@@ -77,6 +84,7 @@ p {
 
 /* Override selected tree item styles for issues to avoid changing width. */
 
+.tree-outline-disclosure:not(.tree-outline-disclosure-hide-overflow) .tree-outline.hide-selection-when-blurred .issue-category.selected:focus-visible,
 .tree-outline-disclosure:not(.tree-outline-disclosure-hide-overflow) .tree-outline.hide-selection-when-blurred .issue.selected:focus-visible {
   width: auto;
   padding-right: 8px;
@@ -89,6 +97,11 @@ p {
   padding: 6px 0;
   cursor: pointer;
   width: 100%;
+}
+
+.issue-category .header {
+  line-height: 24px;
+  padding-left: 2px;
 }
 
 .title {
@@ -107,9 +120,15 @@ p {
   border-bottom: 1px solid #e5e5e5;
   padding: 6px 0;
   position: relative;
-  padding-left: 51px;
+  padding-left: calc(var(--issue-indent) + 43px);
   padding-bottom: 26px;
   padding-right: 8px;
+}
+
+.issue-category + .children {
+  --issue-indent: 24px;
+
+  padding-left: 0;
 }
 
 /* Show a colored border on the left side of opened issues. */
@@ -118,7 +137,7 @@ p {
   content: '';
   display: block;
   position: absolute;
-  left: 31px;
+  left: calc(var(--issue-indent) + 23px);
   top: 0;
   bottom: 20px;
   border-left: 2px solid var(--breaking-change-color);

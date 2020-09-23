@@ -1041,6 +1041,52 @@ class AffectedBlockedByResponseView extends AffectedResourcesView {
   }
 }
 
+/** @type {!Map<!SDK.Issue.IssueCategory, string>} */
+export const IssueCategoryNames = new Map([
+  [SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy, ls`Cross Origin Embedder Policy`],
+  [SDK.Issue.IssueCategory.MixedContent, ls`Mixed Content`],
+  [SDK.Issue.IssueCategory.SameSiteCookie, ls`SameSite Cookie`], [SDK.Issue.IssueCategory.HeavyAd, ls`Heavy Ads`],
+  [SDK.Issue.IssueCategory.ContentSecurityPolicy, ls`Content Security Policy`],
+  [SDK.Issue.IssueCategory.Other, ls`Other`]
+]);
+
+class IssueCategoryView extends UI.TreeOutline.TreeElement {
+  /**
+   * @param {!SDK.Issue.IssueCategory} category
+   */
+  constructor(category) {
+    super();
+    this._category = category;
+    /** @type {!Array<!AggregatedIssue>} */
+    this._issues = [];
+
+    this.toggleOnClick = true;
+    this.listItemElement.classList.add('issue-category');
+  }
+
+  getCategoryName() {
+    return IssueCategoryNames.get(this._category) || ls`Other`;
+  }
+
+  /**
+   * @override
+   */
+  onattach() {
+    this._appendHeader();
+  }
+
+  _appendHeader() {
+    const header = document.createElement('div');
+    header.classList.add('header');
+
+    const title = document.createElement('div');
+    title.classList.add('title');
+    title.textContent = this.getCategoryName();
+    header.appendChild(title);
+
+    this.listItemElement.appendChild(header);
+  }
+}
 
 class IssueView extends UI.TreeOutline.TreeElement {
   /**
@@ -1214,12 +1260,18 @@ class IssueView extends UI.TreeOutline.TreeElement {
   }
 }
 
+/** @return {!Common.Settings.Setting<boolean>} */
+export function getGroupIssuesByCategorySetting() {
+  return Common.Settings.Settings.instance().createSetting('groupIssuesByCategory', false);
+}
+
 export class IssuesPaneImpl extends UI.Widget.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('issues/issuesPane.css');
     this.contentElement.classList.add('issues-pane');
 
+    this._categoryViews = new Map();
     this._issueViews = new Map();
 
     const {toolbarContainer, updateToolbarIssuesCount} = this._createToolbars();
@@ -1264,6 +1316,16 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     const toolbarContainer = this.contentElement.createChild('div', 'issues-toolbar-container');
     new UI.Toolbar.Toolbar('issues-toolbar-left', toolbarContainer);
     const rightToolbar = new UI.Toolbar.Toolbar('issues-toolbar-right', toolbarContainer);
+
+    const groupByCategorySetting = /** @type {!Common.Settings.Setting<*>} */ (getGroupIssuesByCategorySetting());
+    const groupByCategoryCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
+        groupByCategorySetting, ls`Group displayed issues under associated categories`, ls`Group by category`);
+    // Hide the option to toggle category grouping for now.
+    groupByCategoryCheckbox.setVisible(false);
+    rightToolbar.appendToolbarItem(groupByCategoryCheckbox);
+    groupByCategorySetting.addChangeListener(() => {
+      this._fullUpdate();
+    });
 
     // TODO(crbug.com/1011811): Remove cast once closure is gone. Closure requires an upcast to 'any' from 'boolean'.
     const thirdPartySetting = /** @type {!Common.Settings.Setting<*>} */ (SDK.Issue.getShowThirdPartyIssuesSetting());
@@ -1317,7 +1379,8 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
       }
       const view = new IssueView(this, issue, /** @type {!SDK.Issue.IssueDescription} */ (description));
       this._issueViews.set(issue.code(), view);
-      this._issuesTree.appendChild(view, (a, b) => {
+      const parent = this._getIssueViewParent(issue);
+      parent.appendChild(view, (a, b) => {
         if (a instanceof IssueView && b instanceof IssueView) {
           return a.getIssueTitle().localeCompare(b.getIssueTitle());
         }
@@ -1329,11 +1392,45 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     this._updateCounts();
   }
 
-  _fullUpdate() {
-    for (const view of this._issueViews.values()) {
-      this._issuesTree.removeChild(view);
+  /**
+   * @param {!AggregatedIssue} issue
+   * @returns {!UI.TreeOutline.TreeOutline | !UI.TreeOutline.TreeElement}
+   */
+  _getIssueViewParent(issue) {
+    if (!getGroupIssuesByCategorySetting().get()) {
+      return this._issuesTree;
     }
-    this._issueViews.clear();
+
+    const category = issue.getCategory();
+    const view = this._categoryViews.get(category);
+    if (view) {
+      return view;
+    }
+
+    const newView = new IssueCategoryView(category);
+    this._issuesTree.appendChild(newView, (a, b) => {
+      if (a instanceof IssueCategoryView && b instanceof IssueCategoryView) {
+        return a.getCategoryName().localeCompare(b.getCategoryName());
+      }
+      return 0;
+    });
+    this._categoryViews.set(category, newView);
+    return newView;
+  }
+
+  /**
+   * @param {!Map<*, !UI.TreeOutline.TreeElement>} views
+   */
+  _clearViews(views) {
+    for (const view of views.values()) {
+      view.parent.removeChild(view);
+    }
+    views.clear();
+  }
+
+  _fullUpdate() {
+    this._clearViews(this._categoryViews);
+    this._clearViews(this._issueViews);
     if (this._aggregator) {
       for (const issue of this._aggregator.aggregatedIssues()) {
         this._updateIssueView(issue);

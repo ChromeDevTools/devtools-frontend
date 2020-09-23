@@ -24,6 +24,7 @@ node_ts_library("tests") {
     "elements",
     "emulation",
     "host",
+    "issues",
     "layers",
     "lighthouse",
     "media",

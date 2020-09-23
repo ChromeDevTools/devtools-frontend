@@ -21,6 +21,12 @@
   <message name="IDS_DEVTOOLS_3298f13049d19cffaa37ca931dd4d421" desc="Label for number of affected resources indication in issue view">
     requests
   </message>
+  <message name="IDS_DEVTOOLS_330c6bbd83d7bbec5d92acd8fb8161c1" desc="Category title for a group of SameSite cookie issues">
+    SameSite Cookie
+  </message>
+  <message name="IDS_DEVTOOLS_518dbfcc162c16f899d0df7b7dfaabbb" desc="Category title for a group of mixed content issues">
+    Mixed Content
+  </message>
   <message name="IDS_DEVTOOLS_55b558c7ef820e6e00e5993b9e55d93b" desc="Label for number of affected resources indication in issue view">
     resources
   </message>
@@ -33,6 +39,9 @@
   <message name="IDS_DEVTOOLS_6011ea0969680deba3975ac5bd0e153e" desc="Title for a link to further information in issue view">
     Learn more: <ph name="THIS__DETAILS_LINKTITLE">$1s<ex>SameSite Cookies Explained</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_640250cf8c78740c663c2ef111fd1f16" desc="Label for a checkbox which toggles grouping by category in the issues tab">
+    Group by category
+  </message>
   <message name="IDS_DEVTOOLS_64c7927762778c9380d74b0bc7ca5a89" desc="Label on the issues tab">
     Only third-party cookie issues detected so far
   </message>
@@ -44,6 +53,9 @@
   </message>
   <message name="IDS_DEVTOOLS_712e023413c1a2069cb68c5cb4a914a0" desc="Title for an unavailable link a request in the network panel">
     Request unavailable in the network panel, try reloading the inspected page
+  </message>
+  <message name="IDS_DEVTOOLS_7232b2cfdea953afe7f0087a11712c9b" desc="Category title for a group of content security policy (CSP) issues">
+    Content Security Policy
   </message>
   <message name="IDS_DEVTOOLS_8e2dcfd7e7e24b1ca76c1193f645902b" desc="Singular label for number of affected element resource indication in issue view">
     element
@@ -59,6 +71,9 @@
   </message>
   <message name="IDS_DEVTOOLS_9bb0b0febed28d7b9503d4e7872e7145" desc="Label for a checkbox. Whether the issues tab should include third-party issues or not.">
     Include third-party cookie issues
+  </message>
+  <message name="IDS_DEVTOOLS_a35e12e7c5b04c128af39e1c2e1ed793" desc="Category title for a group of heavy ads issues">
+    Heavy Ads
   </message>
   <message name="IDS_DEVTOOLS_a4d7581ea74e5240c4a1a7c32532d6f8" desc="Label for mixed content issue's restriction status">
     Restriction Status
@@ -78,6 +93,9 @@
   <message name="IDS_DEVTOOLS_93f07b720ebf7d1246512569761a5804" desc="The kind of resolution for a Heavy Ads issue">
     Removed
   </message>
+  <message name="IDS_DEVTOOLS_b404999a151ab49a38d35be7e094e7e7" desc="Title for a checkbox which toggles grouping by category in the issues tab">
+    Group displayed issues under associated categories
+  </message>
   <message name="IDS_DEVTOOLS_ba514415c6a7f5b7aa2b54d0914a122d" desc="Title for a column in an Heavy Ads issue view">
     Resolution Status
   </message>
@@ -89,6 +107,9 @@
   </message>
   <message name="IDS_DEVTOOLS_d09fde8cce3e04fe6dfc89c15e3c449f" desc="Title for a column in an issue view">
     Blocked Resource
+  </message>
+  <message name="IDS_DEVTOOLS_d4cfcb4d43733c39d7b1b802fe2fc235" desc="Category title for a group of cross origin embedder policy (COEP) issues">
+    Cross Origin Embedder Policy
   </message>
   <message name="IDS_DEVTOOLS_d63605063a480a98396822bd7ee88a11" desc="Title for a column in an issue view">
     Parent Frame

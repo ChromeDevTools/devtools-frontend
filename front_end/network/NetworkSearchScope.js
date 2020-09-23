@@ -8,6 +8,7 @@
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';           // eslint-disable-line no-unused-vars
 import * as Search from '../search/search.js';  // eslint-disable-line no-unused-vars
+import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @implements {Search.SearchConfig.SearchScope}

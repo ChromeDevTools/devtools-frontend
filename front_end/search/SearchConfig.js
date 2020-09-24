@@ -2,10 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
-import * as Common from '../common/common.js';           // eslint-disable-line no-unused-vars
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as Platform from '../platform/platform.js';
 import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
 
 /**
@@ -99,7 +97,7 @@ export class SearchConfig {
         /** @type {!Array.<!RegexQuery>} */
         this._fileRegexQueries = this._fileRegexQueries || [];
         this._fileRegexQueries.push(
-            {regex: new RegExp(fileQuery.text, this.ignoreCase ? 'i' : ''), isNegative: fileQuery.isNegative});
+            {regex: new RegExp(fileQuery.text, this.ignoreCase() ? 'i' : ''), isNegative: fileQuery.isNegative});
         continue;
       }
       if (this._isRegex) {
@@ -139,13 +137,19 @@ export class SearchConfig {
    * @return {!Array.<string>}
    */
   queries() {
-    return this._queries;
+    return this._queries || [];
   }
 
+  /**
+   * @param {string} query
+   */
   _parseUnquotedQuery(query) {
     return query.replace(/\\(.)/g, '$1');
   }
 
+  /**
+   * @param {string} query
+   */
   _parseQuotedQuery(query) {
     return query.substring(1, query.length - 1).replace(/\\(.)/g, '$1');
   }
@@ -173,7 +177,7 @@ export class SearchConfig {
           result += ' ';
         }
       } else {
-        if (String.regexSpecialCharacters().indexOf(query.charAt(i)) !== -1) {
+        if (Platform.StringUtilities.regexSpecialCharacters().indexOf(query.charAt(i)) !== -1) {
           result += '\\';
         }
         result += query.charAt(i);
@@ -205,18 +209,21 @@ export class SearchResult {
    * @return {string}
    */
   label() {
+    throw new Error('not implemented here');
   }
 
   /**
    * @return {string}
    */
   description() {
+    throw new Error('not implemented here');
   }
 
   /**
    * @return {number}
    */
   matchesCount() {
+    throw new Error('not implemented here');
   }
 
   /**
@@ -224,6 +231,7 @@ export class SearchResult {
    * @return {string}
    */
   matchLabel(index) {
+    throw new Error('not implemented here');
   }
 
   /**
@@ -231,13 +239,16 @@ export class SearchResult {
    * @return {string}
    */
   matchLineContent(index) {
+    throw new Error('not implemented here');
   }
 
   /**
    * @param {number} index
    * @return {!Object}
    */
-  matchRevealable(index) {}
+  matchRevealable(index) {
+    throw new Error('not implemented here');
+  }
 }
 
 /**
@@ -247,8 +258,8 @@ export class SearchScope {
   /**
    * @param {!SearchConfig} searchConfig
    * @param {!Common.Progress.Progress} progress
-   * @param {function(!SearchResult)} searchResultCallback
-   * @param {function(boolean)} searchFinishedCallback
+   * @param {function(!SearchResult):void} searchResultCallback
+   * @param {function(boolean):void} searchFinishedCallback
    */
   performSearch(searchConfig, progress, searchResultCallback, searchFinishedCallback) {
   }
@@ -263,4 +274,5 @@ export class SearchScope {
 }
 
 /** @typedef {!{regex: !RegExp, isNegative: boolean}} */
+// @ts-ignore typedef
 export let RegexQuery;

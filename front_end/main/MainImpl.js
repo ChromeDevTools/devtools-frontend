@@ -190,8 +190,7 @@ export class MainImpl {
     Root.Runtime.experiments.register('movableTabs', 'Enable support to move tabs between panels');
 
     Root.Runtime.experiments.enableExperimentsByDefault([
-      // crbug.com/1131147: temporarily disable turning on cssGridFeatures by default
-      // 'cssGridFeatures',
+      'cssGridFeatures',
     ]);
     Root.Runtime.experiments.cleanUpStaleExperiments();
     const enabledExperiments = Root.Runtime.queryParam('enabledExperiments');

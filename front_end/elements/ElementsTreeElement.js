@@ -76,7 +76,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     this._searchQuery = null;
     this._expandedChildrenLimit = InitialChildrenLimit;
     this._decorationsThrottler = new Common.Throttler.Throttler(100);
-    this.updateStyleAdorners = Common.Debouncer.debounce(this._doUpdateStyleAdorners.bind(this), 100);
 
     if (!isClosingTag) {
       this._adornerContainer = this.listItemElement.createChild('div', 'adorner-container hidden');
@@ -1944,7 +1943,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     return Promise.resolve();
   }
 
-  async _doUpdateStyleAdorners() {
+  async updateStyleAdorners() {
     if (this._isClosingTag) {
       return;
     }

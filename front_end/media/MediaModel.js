@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as SDK from '../sdk/sdk.js';
 
 // We extend Protocol.Media.PlayerEvent here to allow for displayTimestamp.
@@ -15,6 +12,7 @@ import * as SDK from '../sdk/sdk.js';
  *     displayTimestamp: string
  * }}
  */
+// @ts-ignore typedef
 export let PlayerEvent;
 
 /** @enum {symbol} */
@@ -27,7 +25,7 @@ export const ProtocolTriggers = {
 };
 
 /**
- * @implements {Protocol.MediaDispatcher}
+ * @implements {ProtocolProxyApi.MediaDispatcher}
  */
 export class MediaModel extends SDK.SDKModel.SDKModel {
   /**
@@ -44,63 +42,65 @@ export class MediaModel extends SDK.SDKModel.SDKModel {
 
   /**
    * @override
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
-  resumeModel() {
+  async resumeModel() {
     if (!this._enabled) {
       return Promise.resolve();
     }
-    return this._agent.enable();
+    await this._agent.invoke_enable();
   }
 
   ensureEnabled() {
-    this._agent.enable();
+    this._agent.invoke_enable();
     this._enabled = true;
   }
 
   /**
-   * @param {!Protocol.Media.PlayerId} playerId
-   * @param {!Array.<!Protocol.Media.PlayerProperty>} properties
+   * @param {!Protocol.Media.PlayerPropertiesChangedEvent} event
    * @override
    */
-  playerPropertiesChanged(playerId, properties) {
-    this.dispatchEventToListeners(
-        ProtocolTriggers.PlayerPropertiesChanged, {playerId: playerId, properties: properties});
+  playerPropertiesChanged(event) {
+    this.dispatchEventToListeners(ProtocolTriggers.PlayerPropertiesChanged, event);
   }
 
   /**
-   * @param {!Protocol.Media.PlayerId} playerId
-   * @param {!Array.<!Protocol.Media.PlayerEvent>} events
+   * @param {!Protocol.Media.PlayerEventsAddedEvent} event
    * @override
    */
-  playerEventsAdded(playerId, events) {
-    this.dispatchEventToListeners(ProtocolTriggers.PlayerEventsAdded, {playerId: playerId, events: events});
+  playerEventsAdded(event) {
+    this.dispatchEventToListeners(ProtocolTriggers.PlayerEventsAdded, event);
   }
 
   /**
-   * @param {!Protocol.Media.PlayerId} playerId
-   * @param {!Array.<!Protocol.Media.PlayerMessage>} messages
+   * @param {!Protocol.Media.PlayerMessagesLoggedEvent} event
    * @override
    */
-  playerMessagesLogged(playerId, messages) {
-    this.dispatchEventToListeners(ProtocolTriggers.PlayerMessagesLogged, {playerId: playerId, messages: messages});
+  playerMessagesLogged(event) {
+    this.dispatchEventToListeners(ProtocolTriggers.PlayerMessagesLogged, event);
   }
 
   /**
-   * @param {!Protocol.Media.PlayerId} playerId
-   * @param {!Array.<!Protocol.Media.PlayerError>} errors
+   * @param {!Protocol.Media.PlayerErrorsRaisedEvent} event
    * @override
    */
-  playerErrorsRaised(playerId, errors) {
-    this.dispatchEventToListeners(ProtocolTriggers.PlayerErrorsRaised, {playerId: playerId, errors: errors});
+  playerErrorsRaised(event) {
+    this.dispatchEventToListeners(ProtocolTriggers.PlayerErrorsRaised, event);
   }
 
   /**
-   * @param {!Array.<!Protocol.Media.PlayerId>} playerIds
+   * @param {!Protocol.Media.PlayersCreatedEvent} event
    * @override
    */
-  playersCreated(playerIds) {
-    this.dispatchEventToListeners(ProtocolTriggers.PlayersCreated, playerIds);
+  playersCreated({players}) {
+    this.dispatchEventToListeners(ProtocolTriggers.PlayersCreated, players);
+  }
+
+  /**
+   * @return {!Protocol.UsesObjectNotation}
+   */
+  usesObjectNotation() {
+    return true;
   }
 }
 

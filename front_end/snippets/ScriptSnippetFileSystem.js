@@ -246,3 +246,11 @@ export function isSnippetsProject(project) {
 
 Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addPlatformFileSystem(
     'snippet://', new SnippetFileSystem());
+
+/** @type {!Workspace.Workspace.Project} */
+export const project =
+    (Workspace.Workspace.WorkspaceImpl.instance()
+         .projectsForType(Workspace.Workspace.projectTypes.FileSystem)
+         .find(
+             project => Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) ===
+                 'snippets'));

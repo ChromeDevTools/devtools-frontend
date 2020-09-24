@@ -10,6 +10,7 @@ group("front_end") {
     "client_variations",
     "common",
     "component_helpers",
+    "coverage",
     "dom_extension",
     "elements",
     "formatter_worker",

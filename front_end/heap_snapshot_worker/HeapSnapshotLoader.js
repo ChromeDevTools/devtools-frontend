@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as TextUtils from '../text_utils/text_utils.js';
 
 import {HeapSnapshotHeader, HeapSnapshotProgress, JSHeapSnapshot} from './HeapSnapshot.js';  // eslint-disable-line no-unused-vars
@@ -50,6 +47,21 @@ export class HeapSnapshotLoader {
     this._dataCallback = null;
     this._done = false;
     this._parseInput();
+
+    /**
+     * @type {!Object.<string, *>|undefined}
+     */
+    this._snapshot;
+
+    /**
+     * @type {!Uint32Array|!Array<number>|null}
+     */
+    this._array;
+
+    /**
+     * @type {number}
+     */
+    this._arrayIndex;
   }
 
   dispose() {
@@ -58,7 +70,7 @@ export class HeapSnapshotLoader {
 
   _reset() {
     this._json = '';
-    this._snapshot = {};
+    this._snapshot = undefined;
   }
 
   close() {
@@ -72,6 +84,8 @@ export class HeapSnapshotLoader {
    * @return {!JSHeapSnapshot}
    */
   buildSnapshot() {
+    this._snapshot = this._snapshot || {};
+
     this._progress.updateStatus(ls`Processing snapshot…`);
     const result = new JSHeapSnapshot(this._snapshot, this._progress);
     this._reset();
@@ -114,6 +128,9 @@ export class HeapSnapshotLoader {
         this._json = this._json.slice(startIndex);
         return true;
       }
+      if (!this._array) {
+        throw new Error('Array not instantiated');
+      }
       this._array[this._arrayIndex++] = nextNumber;
     }
   }
@@ -125,6 +142,10 @@ export class HeapSnapshotLoader {
       throw new Error('Incomplete JSON');
     }
     this._json = this._json.slice(0, closingBracketIndex + 1);
+
+    if (!this._snapshot) {
+      throw new Error('No snapshot in parseStringsArray');
+    }
     this._snapshot.strings = JSON.parse(this._json);
   }
 
@@ -199,6 +220,8 @@ export class HeapSnapshotLoader {
     this._jsonTokenizer = new TextUtils.TextUtils.BalancedJSONTokenizer(metaJSON => {
       this._json = this._jsonTokenizer.remainder();
       this._jsonTokenizer = null;
+
+      this._snapshot = this._snapshot || {};
       this._snapshot.snapshot = /** @type {!HeapSnapshotHeader} */ (JSON.parse(metaJSON));
     });
     this._jsonTokenizer.write(json);
@@ -206,19 +229,26 @@ export class HeapSnapshotLoader {
       this._jsonTokenizer.write(await this._fetchChunk());
     }
 
-    this._snapshot.nodes = await this._parseArray(
+    this._snapshot = this._snapshot || {};
+    const nodes = await this._parseArray(
         '"nodes"', ls`Loading nodes… %d%%`,
         this._snapshot.snapshot.meta.node_fields.length * this._snapshot.snapshot.node_count);
 
-    this._snapshot.edges = await this._parseArray(
+    this._snapshot.nodes = /** @type {!Uint32Array} */ (nodes);
+
+    const edges = await this._parseArray(
         '"edges"', ls`Loading edges… %d%%`,
         this._snapshot.snapshot.meta.edge_fields.length * this._snapshot.snapshot.edge_count);
 
+    this._snapshot.edges = /** @type {!Uint32Array} */ (edges);
+
     if (this._snapshot.snapshot.trace_function_count) {
-      this._snapshot.trace_function_infos = await this._parseArray(
+      const trace_function_infos = await this._parseArray(
           '"trace_function_infos"', ls`Loading allocation traces… %d%%`,
           this._snapshot.snapshot.meta.trace_function_info_fields.length *
               this._snapshot.snapshot.trace_function_count);
+
+      this._snapshot.trace_function_infos = /** @type {!Uint32Array} */ (trace_function_infos);
 
       const thisTokenEndIndex = await this._findToken(':');
       const nextTokenIndex = await this._findToken('"', thisTokenEndIndex);
@@ -229,11 +259,13 @@ export class HeapSnapshotLoader {
     }
 
     if (this._snapshot.snapshot.meta.sample_fields) {
-      this._snapshot.samples = await this._parseArray('"samples"', ls`Loading samples…`);
+      const samples = await this._parseArray('"samples"', ls`Loading samples…`);
+      this._snapshot.samples = /** @type {!Array<number>} */ (samples);
     }
 
     if (this._snapshot.snapshot.meta['location_fields']) {
-      this._snapshot.locations = await this._parseArray('"locations"', ls`Loading locations…`);
+      const locations = await this._parseArray('"locations"', ls`Loading locations…`);
+      this._snapshot.locations = /** @type {!Array<number>} */ (locations);
     } else {
       this._snapshot.locations = [];
     }

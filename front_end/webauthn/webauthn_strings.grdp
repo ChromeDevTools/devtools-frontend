@@ -6,6 +6,9 @@
   <message name="IDS_DEVTOOLS_01b484b2d7cebadc6189b5ab0a60c866" desc="Label for field that describes whether a credential is a resident credential.">
     Is Resident
   </message>
+  <message name="IDS_DEVTOOLS_06df33001c1d7187fdd81ea1f5b277aa" desc="Label for column with actions for credentials.">
+    Actions
+  </message>
   <message name="IDS_DEVTOOLS_0e0edfb003932bece727ff95bcd5fc0d" desc="Title for button that enables user to save name of authenticator after editing it.">
     Save name
   </message>
@@ -42,6 +45,9 @@
   <message name="IDS_DEVTOOLS_a2fa4d14469cfe7cb10b8aee391f904f" desc="Label for credential field that represents the Relying Party ID that the credential is scoped to.">
     RP ID
   </message>
+  <message name="IDS_DEVTOOLS_b18e858123037a94447def339df85287" desc="Label for empty credentials table.">
+    No credentials. Try calling <ph name="CODE">$1s<ex>navigator.credentials.create()</ex></ph> from your website.
+  </message>
   <message name="IDS_DEVTOOLS_b619a70d232386cc6ec78feda20b9fb6" desc="Label for checkbox that toggles user verification support on virtual authenticators.">
     Supports user verification
   </message>
@@ -53,12 +59,6 @@
   </message>
   <message name="IDS_DEVTOOLS_c71b9516b291807af81c15ad0e241382" desc="Title for a user-added virtual authenticator which is uniquely identified with its AUTHENTICATORID.">
     Authenticator <ph name="AUTHENTICATORID">$1s<ex>8c7873be-0b13-4996-a794-1521331bbd96</ex></ph>
-  </message>
-  <message name="IDS_DEVTOOLS_e00157524891d9bb5cfaea01e5db09a6" desc="The default text used to fill the Relying Party ID field for a credential when the id is unknown.">
-    &lt;unknown RP ID&gt;
-  </message>
-  <message name="IDS_DEVTOOLS_ecd03991e89019251a16cde7cd81288e" desc="The default text to fill the User Handle field for a credential when there is no user handle.">
-    &lt;no user handle&gt;
   </message>
   <message name="IDS_DEVTOOLS_f1c2261d89d52febeed15edf1f34a5b7" desc="Title for button that enables user to customize name of authenticator.">
     Edit name

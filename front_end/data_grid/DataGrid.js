@@ -1729,7 +1729,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
       accessibleTextArray.push(`${localizedTitle}: ${this.cellAccessibleTextMap.get(column.id) || cell.textContent}`);
     }
     this.nodeAccessibleText = accessibleTextArray.join(', ');
-    element.appendChild(this._createTDWithClass('corner'));
+    element.appendChild(this.createTDWithClass('corner'));
   }
 
   /**
@@ -1950,10 +1950,11 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
+   * @protected
    * @param {string} className
    * @return {!HTMLElement}
    */
-  _createTDWithClass(className) {
+  createTDWithClass(className) {
     const cell = /** @type {!HTMLElement} */ (document.createElement('td'));
     if (className) {
       cell.className = className;
@@ -1970,7 +1971,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
    * @return {!HTMLElement}
    */
   createTD(columnId) {
-    const cell = this._createTDWithClass(columnId + '-column');
+    const cell = this.createTDWithClass(columnId + '-column');
     cell[DataGrid._columnIdSymbol] = columnId;
 
     const alignment = this.dataGrid._columns[columnId].align;

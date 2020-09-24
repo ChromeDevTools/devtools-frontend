@@ -24,6 +24,7 @@
 
 .authenticators-view {
   margin: 0 10px;
+  padding: 10px 0;
 }
 
 /* New Authenticator Section */
@@ -146,63 +147,21 @@ td .text-button {
 }
 
 /* Credentials Table */
-.credentials-table-wrapper {
-  width: 100%;
-  overflow: scroll;
-}
 
-.credentials-table {
-  margin: 5px 0 15px 0;
-  border-spacing: 0;
-  border: var(--divider-border);
-  table-layout: fixed;
-}
-
-thead {
-  background-color: #f3f3f3;
-  height: 18px;
-}
-
-.credentials-table thead th {
-  font-weight: normal;
+.data-grid-data-grid-node.centered {
   text-align: center;
-  border-bottom: var(--divider-color) 1px solid;
-  border-left: var(--divider-color) 1px solid;
-  border-right: var(--divider-color) 1px solid;
-  padding: 1px 4px;
-  white-space: nowrap;
-  overflow: hidden;
-  width: 80px;
 }
 
-.credentials-table thead th.id-cell {
-  width: 150px;
-  text-align: left;
-}
-
-.credentials-table button {
-  display: block;
-  width: 100%;
-  margin: auto;
-}
-
-.credentials-table td {
-  padding: 5px;
-  min-height: 20px;
-  border-left: var(--divider-color) 1px solid;
-  border-right: var(--divider-color) 1px solid;
-  white-space: nowrap;
-  text-align: center;
-  max-width: 200px;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-
-.credentials-table tbody tr:nth-child(even) {
-  background-color: #f3f3f3;
+.data-grid td {
+  vertical-align: middle;
 }
 
 .credentials-title {
+  display: block;
   font-weight: bold;
-  margin: 5px 0 0 0;
+  margin: 8px 0;
+}
+
+.code {
+  font-family: monospace;
 }

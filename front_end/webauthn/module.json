@@ -10,8 +10,10 @@
       "className": "Webauthn.WebauthnPane",
       "experiment": "webauthnPane"
     }
-  ],  "dependencies": [
+  ],
+  "dependencies": [
     "common",
+    "data_grid",
     "platform",
     "ui",
     "host"

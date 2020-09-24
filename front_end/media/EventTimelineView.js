@@ -2,11 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import {PlayerEvent} from './MediaModel.js';  // eslint-disable-line no-unused-vars
-import {ColdColorScheme, HotColorScheme, TickingFlameChart} from './TickingFlameChart.js';
+import {ColdColorScheme, Event, EventProperties, HotColorScheme, TickingFlameChart} from './TickingFlameChart.js';  // eslint-disable-line no-unused-vars
 
 // Has to be a double, see https://v8.dev/blog/react-cliff
 const NO_NORMALIZED_TIMESTAMP = -1.5;
@@ -23,11 +20,13 @@ export class PlayerEventsTimeline extends TickingFlameChart {
     this.addGroup('Playback Status', 2);
     this.addGroup('Buffering Status', 2);  // video on top, audio on bottom
 
+    /** @type {?Event} */
     this._playbackStatusLastEvent = null;
     this._audioBufferingStateEvent = null;
     this._videoBufferingStateEvent = null;
   }
 
+  /** @param {number} normalizedTime */
   _ensureNoPreviousPlaybackEvent(normalizedTime) {
     if (this._playbackStatusLastEvent !== null) {
       this._playbackStatusLastEvent.endTime = normalizedTime;
@@ -38,6 +37,8 @@ export class PlayerEventsTimeline extends TickingFlameChart {
   /**
    * Playback events are {kPlay, kPause, kSuspended, kEnded, and kWebMediaPlayerDestroyed}
    * once destroyed, a player cannot recieve more events of any kind.
+   * @param {!PlayerEvent} event
+   * @param {number} normalizedTime
    */
   _onPlaybackEvent(event, normalizedTime) {
     switch (event.event) {
@@ -45,21 +46,45 @@ export class PlayerEventsTimeline extends TickingFlameChart {
         this.canTick = true;
         this._ensureNoPreviousPlaybackEvent(normalizedTime);
 
-        this._playbackStatusLastEvent = this.startEvent({level: 0, startTime: normalizedTime, name: 'Play'});
+        // Disabled until Closure is gone.
+        // clang-format off
+        this._playbackStatusLastEvent = this.startEvent(/** @type {!EventProperties} */ ({
+          level: 0,
+          startTime: normalizedTime,
+          name: 'Play'
+        }));
+        // clang-format on
         break;
 
       case 'kPause':
         // Don't change ticking state - the player is still active even during
         // video pause. It may recieve buffering events, seeks, etc.
         this._ensureNoPreviousPlaybackEvent(normalizedTime);
-        this._playbackStatusLastEvent =
-            this.startEvent({level: 0, startTime: normalizedTime, name: 'Pause', color: HotColorScheme[1]});
+
+        // Disabled until Closure is gone.
+        // clang-format off
+        this._playbackStatusLastEvent = this.startEvent(/** @type {!EventProperties} */ ({
+          level: 0,
+          startTime: normalizedTime,
+          name: 'Pause',
+          color: HotColorScheme[1]
+        }));
+        // clang-format on
         break;
 
       case 'kWebMediaPlayerDestroyed':
         this.canTick = false;
         this._ensureNoPreviousPlaybackEvent(normalizedTime);
-        this.addMarker({level: 1, startTime: normalizedTime, name: 'Destroyed', color: HotColorScheme[4]});
+
+        // Disabled until Closure is gone.
+        // clang-format off
+        this.addMarker(/** @type {!EventProperties} */ ({
+          level: 1,
+          startTime: normalizedTime,
+          name: 'Destroyed',
+          color: HotColorScheme[4]
+        }));
+        // clang-format on
         break;
 
       case 'kSuspended':
@@ -67,15 +92,31 @@ export class PlayerEventsTimeline extends TickingFlameChart {
         // destroyed, so stop the ticking.
         this.canTick = false;
         this._ensureNoPreviousPlaybackEvent(normalizedTime);
-        this._playbackStatusLastEvent =
-            this.startEvent({level: 1, startTime: normalizedTime, name: 'Suspended', color: HotColorScheme[3]});
+
+        // Disabled until Closure is gone.
+        // clang-format off
+        this._playbackStatusLastEvent = this.startEvent(/** @type {!EventProperties} */ ({
+          level: 1,
+          startTime: normalizedTime,
+          name: 'Suspended',
+          color: HotColorScheme[3]
+        }));
+        // clang-format on
         break;
 
       case 'kEnded':
         // Player ending can still have seeks & other events.
         this._ensureNoPreviousPlaybackEvent(normalizedTime);
-        this._playbackStatusLastEvent =
-            this.startEvent({level: 1, startTime: normalizedTime, name: 'Ended', color: HotColorScheme[2]});
+
+        // Disabled until Closure is gone.
+        // clang-format off
+        this._playbackStatusLastEvent = this.startEvent(/** @type {!EventProperties} */ ({
+          level: 1,
+          startTime: normalizedTime,
+          name: 'Ended',
+          color: HotColorScheme[2]
+        }));
+        // clang-format on
         break;
 
       default:
@@ -83,10 +124,15 @@ export class PlayerEventsTimeline extends TickingFlameChart {
     }
   }
 
+  /** @param {*} state */
   _bufferedEnough(state) {
     return state['state'] === 'BUFFERING_HAVE_ENOUGH';
   }
 
+  /**
+   * @param {!PlayerEvent} event
+   * @param {number} normalizedTime
+   */
   _onBufferingStatus(event, normalizedTime) {
     // No declarations inside the case labels.
     let audioState = null;
@@ -107,12 +153,12 @@ export class PlayerEventsTimeline extends TickingFlameChart {
             this._audioBufferingStateEvent = null;
           }
           if (!this._bufferedEnough(audioState)) {
-            this._audioBufferingStateEvent = this.startEvent({
+            this._audioBufferingStateEvent = this.startEvent(/** @type {!EventProperties} */ ({
               level: 3,
               startTime: normalizedTime,
               name: 'Audio Buffering',
               color: ColdColorScheme[1],
-            });
+            }));
           }
         }
 
@@ -122,12 +168,12 @@ export class PlayerEventsTimeline extends TickingFlameChart {
             this._videoBufferingStateEvent = null;
           }
           if (!this._bufferedEnough(videoState)) {
-            this._videoBufferingStateEvent = this.startEvent({
+            this._videoBufferingStateEvent = this.startEvent(/** @type {!EventProperties} */ ({
               level: 2,
               startTime: normalizedTime,
               name: 'Video Buffering',
               color: ColdColorScheme[0],
-            });
+            }));
           }
         }
         break;
@@ -142,9 +188,9 @@ export class PlayerEventsTimeline extends TickingFlameChart {
    */
   onEvent(event) {
     if (this._normalizedTimestamp === NO_NORMALIZED_TIMESTAMP) {
-      this._normalizedTimestamp = event.timestamp;
+      this._normalizedTimestamp = Number(event.timestamp);
     }
-    const inMilliseconds = (event.timestamp - this._normalizedTimestamp) * 1000;
+    const inMilliseconds = (Number(event.timestamp) - this._normalizedTimestamp) * 1000;
 
     switch (event.event) {
       case 'kPlay':

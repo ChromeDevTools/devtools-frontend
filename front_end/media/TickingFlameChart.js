@@ -69,7 +69,7 @@ let EventHandlers;  // eslint-disable-line no-unused-vars
  *     hoverData: (Object|undefined|null)
  * }}
  */
-let EventProperties;  // eslint-disable-line no-unused-vars
+export let EventProperties;  // eslint-disable-line no-unused-vars
 
 /**
  * Wrapper class for each event displayed on the timeline.

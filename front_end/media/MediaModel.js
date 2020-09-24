@@ -9,7 +9,8 @@ import * as SDK from '../sdk/sdk.js';
  * @typedef {{
  *     value: *,
  *     timestamp: (number|string|undefined),
- *     displayTimestamp: string
+ *     displayTimestamp: string,
+ *     event: string,
  * }}
  */
 // @ts-ignore typedef

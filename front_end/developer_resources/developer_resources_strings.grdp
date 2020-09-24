@@ -9,8 +9,14 @@
   <message name="IDS_DEVTOOLS_3ee28fe1a60c95b89d29317f122c7021" desc="Text for the status column of a list view">
     failure
   </message>
+  <message name="IDS_DEVTOOLS_6a3d54a1c17e028d602414d82ef8138e" desc="Text for a context menu entry">
+    Copy initiator URL
+  </message>
   <message name="IDS_DEVTOOLS_7c6c2e5d48ab37a007cbf70d3ea25fa4" desc="Text for the status column of a list view">
     pending
+  </message>
+  <message name="IDS_DEVTOOLS_9de711d6eb379d46caa26e86cdafa0e9" desc="Text for a context menu entry">
+    Copy URL
   </message>
   <message name="IDS_DEVTOOLS_b9115fc501f975441a03e2861d1da466" desc="Title for the developer resources tab">
     Developer Resources

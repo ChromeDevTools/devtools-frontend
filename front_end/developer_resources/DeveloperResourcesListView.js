@@ -2,10 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as DataGrid from '../data_grid/data_grid.js';
+import * as Host from '../host/host.js';
 import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as TextUtils from '../text_utils/text_utils.js';
@@ -23,10 +21,11 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
     /** @type {?RegExp} */
     this._highlightRegExp = null;
     this.registerRequiredCSS('developer_resources/developerResourcesListView.css');
-    const columns = [
+
+    const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
       {id: 'status', title: ls`Status`, width: '60px', fixedWidth: true, sortable: true},
       {id: 'url', title: ls`URL`, width: '250px', fixedWidth: false, sortable: true},
-      {id: 'frame', title: ls`Frame`, width: '80px', fixedWidth: false, sortable: true}, {
+      {id: 'initiator', title: ls`Initiator`, width: '80px', fixedWidth: false, sortable: true}, {
         id: 'size',
         title: ls`Total Bytes`,
         width: '80px',
@@ -41,16 +40,40 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
         fixedWidth: false,
         sortable: true,
       }
-    ];
+    ]);
     /** @type {!DataGrid.SortableDataGrid.SortableDataGrid<!GridNode>} */
-    this._dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({displayName: ls`Developer Resources`, columns});
+    this._dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
+      displayName: ls`Developer Resources`,
+      columns,
+      editCallback: undefined,
+      refreshCallback: undefined,
+      deleteCallback: undefined
+    });
     this._dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.Last);
     this._dataGrid.element.classList.add('flex-auto');
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortingChanged, this);
+    this._dataGrid.setRowContextMenuCallback(this._populateContextMenu.bind(this));
 
     const dataGridWidget = this._dataGrid.asWidget();
     dataGridWidget.show(this.contentElement);
     this.setDefaultFocusedChild(dataGridWidget);
+  }
+
+
+  /**
+   * @param {!UI.ContextMenu.ContextMenu} contextMenu
+   * @param {!GridNode} gridNode
+   */
+  _populateContextMenu(contextMenu, gridNode) {
+    const item = gridNode.item;
+    contextMenu.clipboardSection().appendItem(ls`Copy URL`, () => {
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(item.url);
+    });
+    if (item.initiator.initiatorUrl) {
+      contextMenu.clipboardSection().appendItem(ls`Copy initiator URL`, () => {
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(item.initiator.initiatorUrl);
+      });
+    }
   }
 
   /**
@@ -179,15 +202,13 @@ class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
         this.setCellAccessibleName(this.item.url, cell, columnId);
         break;
       }
-      case 'frame': {
-        const frame = SDK.FrameManager.FrameManager.instance().getFrame(this.item.frameId);
-        if (frame) {
-          cell.textContent = frame.displayName();
-        } else {
-          cell.textContent = this.item.frameId;
-        }
+      case 'initiator': {
+        const url = this.item.initiator.initiatorUrl || '';
+        cell.textContent = url;
+        cell.title = url;
+        this.setCellAccessibleName(url, cell, columnId);
         cell.onmouseenter = () => {
-          const frame = SDK.FrameManager.FrameManager.instance().getFrame(this.item.frameId);
+          const frame = SDK.FrameManager.FrameManager.instance().getFrame(this.item.initiator.frameId || '');
           if (frame) {
             frame.highlight();
           }
@@ -262,8 +283,8 @@ class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
         };
       case 'size':
         return (a, b) => nullToNegative(a.item.size) - nullToNegative(b.item.size);
-      case 'frame':
-        return (a, b) => a.item.frameId.localeCompare(b.item.frameId);
+      case 'initiator':
+        return (a, b) => (a.item.initiator.initiatorUrl || '').localeCompare(b.item.initiator.initiatorUrl || '');
       case 'errorMessage':
         return (a, b) => (a.item.errorMessage || '').localeCompare(b.item.errorMessage || '');
       default:

@@ -86,7 +86,7 @@ export class SortableDataGrid extends ViewportDataGrid {
 
     const columns = /** @type {!Array<!ColumnDescriptor>} */ ([]);
     for (let i = 0; i < columnNames.length; ++i) {
-      columns.push({id: String(i), title: columnNames[i], width: columnNames[i].length, sortable: true});
+      columns.push({id: String(i), title: columnNames[i], sortable: true});
     }
 
     const nodes = [];

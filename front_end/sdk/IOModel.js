@@ -7,7 +7,7 @@ import * as Common from '../common/common.js';
 import {RemoteObject} from './RemoteObject.js';              // eslint-disable-line no-unused-vars
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
-class IOModel extends SDKModel {
+export class IOModel extends SDKModel {
   /**
    * @param {!Target} target
    */

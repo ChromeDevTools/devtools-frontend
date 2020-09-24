@@ -2568,6 +2568,7 @@ export let Parameters;
  *   sortable: boolean,
  *   sort: (?Order|undefined),
  *   align: (?Align|undefined),
+ *   width: (string|undefined),
  *   fixedWidth: (boolean|undefined),
  *   editable: (boolean|undefined),
  *   nonSelectable: (boolean|undefined),

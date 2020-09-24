@@ -121,6 +121,28 @@ function isHTTPError(netError) {
 }
 
 /**
+ *
+ * @param {number|undefined} netError
+ * @param {number|undefined} httpStatusCode
+ * @param {string|undefined} netErrorName
+ */
+export function netErrorToMessage(netError, httpStatusCode, netErrorName) {
+  if (netError === undefined || httpStatusCode === undefined || netErrorName === undefined) {
+    return null;
+  }
+  if (netError !== 0) {
+    if (isHTTPError(netError)) {
+      return ls`HTTP error: status code ${httpStatusCode}, ${netErrorName}`;
+    }
+    const errorCategory = getNetErrorCategory(netError);
+    // We don't localize here, as `errorCategory` is already localized,
+    // and `netErrorName` is an error code like 'net::ERR_CERT_AUTHORITY_INVALID'.
+    return `${errorCategory}: ${netErrorName}`;
+  }
+  return null;
+}
+
+/**
  * @param {!LoadNetworkResourceResult} response
  * @returns {!{success:boolean, description: !LoadErrorDescription}}
  */
@@ -138,15 +160,9 @@ function createErrorMessageFromResponse(response) {
         message = ls`Unknown error`;
       }
     } else {
-      if (netError !== 0) {
-        if (isHTTPError(netError)) {
-          message += ls`HTTP error: status code ${statusCode}, ${netErrorName}`;
-        } else {
-          const errorCategory = getNetErrorCategory(netError);
-          // We don't localize here, as `errorCategory` is already localized,
-          // and `netErrorName` is an error code like 'net::ERR_CERT_AUTHORITY_INVALID'.
-          message = `${errorCategory}: ${netErrorName}`;
-        }
+      const maybeMessage = netErrorToMessage(netError, statusCode, netErrorName);
+      if (maybeMessage) {
+        message = maybeMessage;
       }
     }
   }

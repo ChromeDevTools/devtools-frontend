@@ -230,6 +230,20 @@ export class NetworkManager extends SDKModel {
     }
     return result.status;
   }
+
+  /**
+    * @param {string} frameId
+    * @param {string} url
+    * @param {!Protocol.Network.LoadNetworkResourceOptions} options
+    * @return {!Promise<!Protocol.Network.LoadNetworkResourcePageResult>}
+    */
+  async loadNetworkResource(frameId, url, options) {
+    const result = await this._networkAgent.invoke_loadNetworkResource({frameId, url, options});
+    if (result.getError()) {
+      throw new Error(result.getError());
+    }
+    return result.resource;
+  }
 }
 
 /** @enum {symbol} */

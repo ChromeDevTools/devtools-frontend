@@ -408,6 +408,13 @@ export class ParsedURL {
   /**
    * @return {boolean}
    */
+  isHttpOrHttps() {
+    return this.scheme === 'http' || this.scheme === 'https';
+  }
+
+  /**
+   * @return {boolean}
+   */
   isBlobURL() {
     return this.url.startsWith('blob:');
   }

@@ -24,9 +24,6 @@
   <message name="IDS_DEVTOOLS_a900fc2e67bbbc74a2ce79242906b842" desc="Name of an error category used in error messages">
     FTP error
   </message>
-  <message name="IDS_DEVTOOLS_aee9784c03b80d38d3271cde2b252b8d" desc="Name of an error category used in error messages">
-    Unknown error
-  </message>
   <message name="IDS_DEVTOOLS_bf945532466a63b144bf9ad4dc26bde9" desc="Name of an error category used in error messages">
     Decoding Data URL failed
   </message>

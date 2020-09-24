@@ -6,7 +6,10 @@ import * as Common from '../common/common.js';
 import {ls} from '../common/common.js';   // eslint-disable-line rulesdir/es_modules_import
 import * as Host from '../host/host.js';  // eslint-disable-line no-unused-vars
 
+import {FrameManager} from './FrameManager.js';
+import {IOModel} from './IOModel.js';
 import {MultitargetNetworkManager} from './NetworkManager.js';
+import {NetworkManager} from './NetworkManager.js';
 import {Events as ResourceTreeModelEvents, ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars
 import {Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
@@ -156,8 +159,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
     this.dispatchEventToListeners(Events.Update);
     try {
       await this._acquireLoadSlot();
-      const resultPromise =
-          this._loadOverride ? this._loadOverride(url) : MultitargetNetworkManager.instance().loadResource(url);
+      const resultPromise = this._dispatchLoad(url, initiator);
       const result = await PageResourceLoader._withTimeout(resultPromise, this._loadTimeout);
       pageResource.errorMessage = result.errorDescription.message;
       pageResource.success = result.success;
@@ -177,6 +179,77 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
     } finally {
       this._releaseLoadSlot();
       this.dispatchEventToListeners(Events.Update);
+    }
+  }
+
+  /**
+   * @param {string} url
+   * @param {!PageResourceLoadInitiator} initiator
+   * @return {!Promise<!{success: boolean, content: string, errorDescription: !Host.ResourceLoader.LoadErrorDescription}>}
+   */
+  async _dispatchLoad(url, initiator) {
+    /** @type {string|null} */
+    let failureReason = null;
+    if (this._loadOverride) {
+      return this._loadOverride(url);
+    }
+    const parsedURL = Common.ParsedURL.ParsedURL.fromString(url);
+    if (parsedURL && parsedURL.isHttpOrHttps()) {
+      try {
+        if (initiator.target) {
+          const result = await this._loadFromTarget(initiator.target, initiator.frameId, url);
+          return result;
+        }
+        const frame = FrameManager.instance().getFrame(initiator.frameId || '');
+        if (frame) {
+          const result = await this._loadFromTarget(frame.resourceTreeModel().target(), initiator.frameId, url);
+          return result;
+        }
+      } catch (e) {
+        if (e instanceof Error) {
+          failureReason = e.message;
+        }
+      }
+      console.warn('Fallback triggered', url, initiator);
+    }
+    const result = await MultitargetNetworkManager.instance().loadResource(url);
+    if (failureReason) {
+      // In case we have a success, add a note about why the load through the target failed.
+      result.errorDescription.message =
+          `Fetch through target failed: ${failureReason}; Fallback: ${result.errorDescription.message}`;
+    }
+    return result;
+  }
+
+  /**
+   * @param {!Target} target
+   * @param {?Protocol.Page.FrameId} frameId
+   * @param {string} url
+   */
+  async _loadFromTarget(target, frameId, url) {
+    const networkManager = /** @type {!NetworkManager} */ (target.model(NetworkManager));
+    const ioModel = /** @type {!IOModel} */ (target.model(IOModel));
+    const resource =
+        await networkManager.loadNetworkResource(frameId || '', url, {disableCache: true, includeCredentials: true});
+    try {
+      const content = resource.stream ? await ioModel.readTextToString(resource.stream) : '';
+      return {
+        success: resource.success,
+        content,
+        errorDescription: {
+          statusCode: resource.httpStatusCode || 0,
+          netError: resource.netError,
+          netErrorName: resource.netErrorName,
+          message: Host.ResourceLoader.netErrorToMessage(
+                       resource.netError, resource.httpStatusCode, resource.netErrorName) ||
+              ls`Unknown error`,
+          urlValid: undefined
+        }
+      };
+    } finally {
+      if (resource.stream) {
+        ioModel.close(resource.stream);
+      }
     }
   }
 }

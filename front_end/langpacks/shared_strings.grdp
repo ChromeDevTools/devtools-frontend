@@ -514,6 +514,9 @@
   <message name="IDS_DEVTOOLS_ad921d60486366258809553a3db49a4a" desc="Text in Object Properties Section">
     unknown
   </message>
+  <message name="IDS_DEVTOOLS_aee9784c03b80d38d3271cde2b252b8d" desc="Name of an error category used in error messages">
+    Unknown error
+  </message>
   <message name="IDS_DEVTOOLS_af4bb376939e77df0e7c2332b837a866" desc="Text that refers to closure as a programming term">
     Closure
   </message>

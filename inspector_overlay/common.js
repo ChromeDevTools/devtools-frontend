@@ -14,6 +14,71 @@ export let Bounds;  // eslint-disable-line no-unused-vars
 /** @typedef {!{name: String, bounds: Bounds}} */
 export let AreaBounds;  // eslint-disable-line no-unused-vars
 
+// Overlay class should be used to implement various tools and provide
+// access to globals via the window object it receives in the constructor.
+// Old logic is kept temporarily while the tools are being migrated.
+export class Overlay {
+  constructor(window) {
+    this.viewportSize = {width: 800, height: 600};
+    this.deviceScaleFactor = 1;
+    this.emulationScaleFactor = 1;
+    this.pageScaleFactor = 1;
+    this.pageZoomFactor = 1;
+    this.scrollX = 0;
+    this.scrollY = 0;
+    this.window = window;
+    this.document = window.document;
+  }
+
+  setCanvas(canvas) {
+    this.canvas = canvas;
+    this.context = canvas.getContext('2d');
+  }
+
+  reset(resetData) {
+    if (resetData) {
+      this.viewportSize = resetData.viewportSize;
+      this.deviceScaleFactor = resetData.deviceScaleFactor;
+      this.pageScaleFactor = resetData.pageScaleFactor;
+      this.pageZoomFactor = resetData.pageZoomFactor;
+      this.emulationScaleFactor = resetData.emulationScaleFactor;
+      this.window.scrollX = this.scrollX = Math.round(resetData.scrollX);
+      this.window.scrollY = this.scrollY = Math.round(resetData.scrollY);
+    }
+    this.resetCanvas();
+  }
+
+  resetCanvas() {
+    if (!this.canvas) {
+      return;
+    }
+
+    this.canvas.width = this.deviceScaleFactor * this.viewportSize.width;
+    this.canvas.height = this.deviceScaleFactor * this.viewportSize.height;
+    this.canvas.style.width = this.viewportSize.width + 'px';
+    this.canvas.style.height = this.viewportSize.height + 'px';
+
+    this.context.scale(this.deviceScaleFactor, this.deviceScaleFactor);
+
+    this.canvasWidth = this.viewportSize.width;
+    this.canvasHeight = this.viewportSize.height;
+  }
+
+  setPlatform(platform) {
+    this.platform = platform;
+    this.document.body.classList.add('platform-' + platform);
+  }
+
+  dispatch(message) {
+    const functionName = message.shift();
+    this[functionName].apply(this, message);
+  }
+
+  eventHasCtrlOrMeta(event) {
+    return this.window.platform === 'mac' ? (event.metaKey && !event.ctrlKey) : (event.ctrlKey && !event.metaKey);
+  }
+}
+
 window.viewportSize = {
   width: 800,
   height: 600

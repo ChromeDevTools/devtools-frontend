@@ -5,22 +5,10 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
-import {dispatch, reset, setPlatform} from './common.js';
-import {drawDistances} from './tool_distances_impl.js';
+import {DistancesOverlay} from './tool_distances_impl.js';
 
-window.setPlatform = function(platform) {
-  document.body.classList.add('fill');
+const overlay = new DistancesOverlay(window);
 
-  const canvas = document.createElement('canvas');
-  canvas.id = 'canvas';
-  canvas.classList.add('fill');
-  document.body.append(canvas);
-
-  setPlatform(platform);
+window.dispatch = message => {
+  overlay.dispatch(message);
 };
-
-window.reset = function(data) {
-  reset(data);
-};
-window.drawDistances = drawDistances;
-window.dispatch = dispatch;

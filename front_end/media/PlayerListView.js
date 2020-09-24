@@ -2,30 +2,30 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
+import * as Common from '../common/common.js';
 import * as UI from '../ui/ui.js';
 
-import {TriggerDispatcher} from './MainView.js';  // eslint-disable-line no-unused-vars
+import {MainView, TriggerDispatcher} from './MainView.js';  // eslint-disable-line no-unused-vars
 import {PlayerEvent} from './MediaModel.js';      // eslint-disable-line no-unused-vars
 import {PlayerPropertyKeys} from './PlayerPropertiesView.js';
 
 /**
  * @typedef {{playerTitle: string, playerID: string, exists: boolean, playing: boolean, titleEdited: boolean}}
  */
+// @ts-ignore typedef
 export let PlayerStatus;
 
 /**
  * @typedef {{playerStatus: !PlayerStatus, playerTitleElement: ?HTMLElement}}
  */
+// @ts-ignore typedef
 export let PlayerStatusMapElement;
 
 
 export class PlayerEntryTreeElement extends UI.TreeOutline.TreeElement {
   /**
    * @param {!PlayerStatus} playerStatus
-   * @param {!Media.MainView} displayContainer
+   * @param {!MainView} displayContainer
    * @param {string} playerID
    */
   constructor(playerStatus, displayContainer, playerID) {
@@ -40,6 +40,7 @@ export class PlayerEntryTreeElement extends UI.TreeOutline.TreeElement {
 
   /**
    * @override
+   * @param {boolean=} selectedByUser
    * @return {boolean}
    */
   onselect(selectedByUser) {
@@ -47,6 +48,10 @@ export class PlayerEntryTreeElement extends UI.TreeOutline.TreeElement {
     return true;
   }
 
+  /**
+   * @param {string} playerID
+   * @param {!Event} event
+   */
   _rightClickContextMenu(playerID, event) {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.headerSection().appendItem(ls`Hide player`, this._hidePlayer.bind(this, playerID));
@@ -56,14 +61,17 @@ export class PlayerEntryTreeElement extends UI.TreeOutline.TreeElement {
     return true;
   }
 
+  /** @param {string} playerID */
   _hidePlayer(playerID) {
     this._displayContainer.markPlayerForDeletion(playerID);
   }
 
+  /** @param {string} playerID */
   _savePlayer(playerID) {
     this._displayContainer.exportPlayerData(playerID);
   }
 
+  /** @param {string} playerID */
   _hideOthers(playerID) {
     this._displayContainer.markOtherPlayersForDeletion(playerID);
   }
@@ -75,7 +83,7 @@ export class PlayerEntryTreeElement extends UI.TreeOutline.TreeElement {
  */
 export class PlayerListView extends UI.Widget.VBox {
   /**
-   * @param {!Media.MainView} mainContainer
+   * @param {!MainView} mainContainer
    */
   constructor(mainContainer) {
     super(true);
@@ -91,10 +99,11 @@ export class PlayerListView extends UI.Widget.VBox {
     this._sidebarTree.registerRequiredCSS('media/playerListView.css');
 
     // Players active in this tab.
-    this._playerList = this._addListSection(Common.UIString('Players'));
+    this._playerList = this._addListSection(Common.UIString.UIString('Players'));
     this._playerList.listItemElement.classList.add('player-entry-header');
   }
 
+  /** @param {string} playerID */
   deletePlayer(playerID) {
     this._playerList.removeChild(this._playerStatuses.get(playerID));
     this._playerStatuses.delete(playerID);

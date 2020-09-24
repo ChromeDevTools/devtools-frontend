@@ -3,8 +3,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const instanceSymbol = Symbol('instance');
-
 const originalConsole = console;
 const originalAssert = console.assert;
 
@@ -37,6 +35,9 @@ export function getRemoteBase(location = self.location.toString()) {
 
   return {base: `${url.origin}/remote/serve_file/${version[1]}/`, version: version[1]};
 }
+
+/** @type {!WeakMap<function(new:?), ?>} */
+const constructedInstances = new WeakMap();
 
 /**
  * @unrestricted
@@ -413,15 +414,18 @@ export class Runtime {
    * @template T
    */
   sharedInstance(constructorFunction) {
-    if (instanceSymbol in constructorFunction &&
-        Object.getOwnPropertySymbols(constructorFunction).includes(instanceSymbol)) {
-      // @ts-ignore Usage of symbols
-      return constructorFunction[instanceSymbol];
+    const instanceDescriptor = Object.getOwnPropertyDescriptor(constructorFunction, 'instance');
+    if (instanceDescriptor) {
+      const method = instanceDescriptor.value;
+      if (method instanceof Function) {
+        return method.call(null);
+      }
     }
-
-    const instance = new constructorFunction();
-    // @ts-ignore Usage of symbols
-    constructorFunction[instanceSymbol] = instance;
+    let instance = constructedInstances.get(constructorFunction);
+    if (!instance) {
+      instance = new constructorFunction();
+      constructedInstances.set(constructorFunction, instance);
+    }
     return instance;
   }
 }

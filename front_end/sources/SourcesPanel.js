@@ -44,6 +44,9 @@ import {Events, SourcesView} from './SourcesView.js';
 import {ThreadsSidebarPane} from './ThreadsSidebarPane.js';
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';
 
+/** @type {!SourcesPanel} */
+let sourcesPanelInstance;
+
 /**
  * @implements {UI.ContextMenu.Provider}
  * @implements {SDK.SDKModel.Observer}
@@ -162,13 +165,16 @@ export class SourcesPanel extends UI.Panel.Panel {
   }
 
   /**
+   * @param {{forceNew: ?boolean}=} opts
    * @return {!SourcesPanel}
    */
-  static instance() {
-    if (SourcesPanel._instance) {
-      return SourcesPanel._instance;
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!sourcesPanelInstance || forceNew) {
+      sourcesPanelInstance = new SourcesPanel();
     }
-    return /** @type {!SourcesPanel} */ (self.runtime.sharedInstance(SourcesPanel));
+
+    return sourcesPanelInstance;
   }
 
   /**

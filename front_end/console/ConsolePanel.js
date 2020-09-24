@@ -34,6 +34,9 @@ import * as UI from '../ui/ui.js';
 
 import {ConsoleView} from './ConsoleView.js';
 
+/** @type {!ConsolePanel} */
+let consolePanelInstance;
+
 /**
  * @unrestricted
  */
@@ -44,10 +47,16 @@ export class ConsolePanel extends UI.Panel.Panel {
   }
 
   /**
+   * @param {{forceNew: ?boolean}=} opts
    * @return {!ConsolePanel}
    */
-  static instance() {
-    return /** @type {!ConsolePanel} */ (self.runtime.sharedInstance(ConsolePanel));
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!consolePanelInstance || forceNew) {
+      consolePanelInstance = new ConsolePanel();
+    }
+
+    return consolePanelInstance;
   }
 
   static _updateContextFlavor() {

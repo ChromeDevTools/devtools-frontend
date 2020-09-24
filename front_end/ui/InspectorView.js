@@ -52,6 +52,9 @@ import {View, ViewLocation, ViewLocationResolver} from './View.js';  // eslint-d
 import {ViewManager} from './ViewManager.js';
 import {VBox, WidgetFocusRestorer} from './Widget.js';
 
+/** @type {!InspectorView} */
+let inspectorViewInstance;
+
 /**
  * @implements {ViewLocationResolver}
  * @unrestricted
@@ -130,10 +133,16 @@ export class InspectorView extends VBox {
   }
 
   /**
+   * @param {{forceNew: ?boolean}=} opts
    * @return {!InspectorView}
    */
-  static instance() {
-    return /** @type {!InspectorView} */ (self.runtime.sharedInstance(InspectorView));
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!inspectorViewInstance || forceNew) {
+      inspectorViewInstance = new InspectorView();
+    }
+
+    return inspectorViewInstance;
   }
 
   /**

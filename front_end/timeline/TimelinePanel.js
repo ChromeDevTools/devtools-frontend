@@ -53,6 +53,9 @@ import {TimelineUIUtils} from './TimelineUIUtils.js';
 import {UIDevtoolsController} from './UIDevtoolsController.js';
 import {UIDevtoolsUtils} from './UIDevtoolsUtils.js';
 
+/** @type {!TimelinePanel} */
+let timelinePanelInstance;
+
 /**
  * @implements {Client}
  * @implements {TimelineModeViewDelegate}
@@ -155,10 +158,16 @@ export class TimelinePanel extends UI.Panel.Panel {
   }
 
   /**
+   * @param {{forceNew: ?boolean}=} opts
    * @return {!TimelinePanel}
    */
-  static instance() {
-    return /** @type {!TimelinePanel} */ (self.runtime.sharedInstance(TimelinePanel));
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!timelinePanelInstance || forceNew) {
+      timelinePanelInstance = new TimelinePanel();
+    }
+
+    return timelinePanelInstance;
   }
 
   /**

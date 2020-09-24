@@ -66,6 +66,8 @@ const legacyNodeToNewBreadcrumbsNode = node => {
   };
 };
 
+/** @type {!ElementsPanel} */
+let elementsPanelInstance;
 
 /**
  * @implements {UI.SearchableView.Searchable}
@@ -151,10 +153,16 @@ export class ElementsPanel extends UI.Panel.Panel {
   }
 
   /**
+   * @param {{forceNew: ?boolean}=} opts
    * @return {!ElementsPanel}
    */
-  static instance() {
-    return /** @type {!ElementsPanel} */ (Root.Runtime.Runtime.instance().sharedInstance(ElementsPanel));
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!elementsPanelInstance || forceNew) {
+      elementsPanelInstance = new ElementsPanel();
+    }
+
+    return elementsPanelInstance;
   }
 
   /**

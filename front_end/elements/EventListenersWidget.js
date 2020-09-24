@@ -35,6 +35,9 @@ import * as EventListeners from '../event_listeners/event_listeners.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
+/** @type {!EventListenersWidget} */
+let eventListenersWidgetInstance;
+
 /**
  * @implements {UI.Toolbar.ItemsProvider}
  * @unrestricted
@@ -88,6 +91,19 @@ export class EventListenersWidget extends UI.ThrottledWidget.ThrottledWidget {
 
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.update, this);
     this.update();
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}=} opts
+   * @return {!EventListenersWidget}
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!eventListenersWidgetInstance || forceNew) {
+      eventListenersWidgetInstance = new EventListenersWidget();
+    }
+
+    return eventListenersWidgetInstance;
   }
 
   /**

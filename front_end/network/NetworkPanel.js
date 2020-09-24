@@ -924,9 +924,24 @@ export class RequestLocationRevealer {
   }
 }
 
+/** @type {!SearchNetworkView} */
+let searchNetworkViewInstance;
+
 export class SearchNetworkView extends Search.SearchView.SearchView {
   constructor() {
     super('network');
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!searchNetworkViewInstance || forceNew) {
+      searchNetworkViewInstance = new SearchNetworkView();
+    }
+
+    return searchNetworkViewInstance;
   }
 
   /**
@@ -936,8 +951,7 @@ export class SearchNetworkView extends Search.SearchView.SearchView {
    */
   static async openSearch(query, searchImmediately) {
     await UI.ViewManager.ViewManager.instance().showView('network.search-network-tab');
-    const searchView =
-        /** @type {!SearchNetworkView} */ (self.runtime.sharedInstance(SearchNetworkView));
+    const searchView = SearchNetworkView.instance();
     searchView.toggle(query, !!searchImmediately);
     return searchView;
   }

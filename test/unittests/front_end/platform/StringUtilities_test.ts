@@ -556,4 +556,22 @@ describe('StringUtilities', () => {
       assert.strictEqual(regex.toString(), '/\\{[^\\0\\?]*\\?[^\\0\\}]*\\}/i');
     });
   });
+
+  describe('createSearchRegex', () => {
+    it('returns a case sensitive regex if the call states it is case sensitive', () => {
+      const regex = StringUtilities.createSearchRegex('foo', true, false);
+      assert.strictEqual(regex.ignoreCase, false);
+      assert.strictEqual(regex.source, 'foo');
+    });
+
+    it('creates a regex from plain text if the given input is not already a regex', () => {
+      const regex = StringUtilities.createSearchRegex('[foo]', false, false);
+      assert.strictEqual(regex.source, '\\[foo\\]');
+    });
+
+    it('leaves the input be if it is already a regex', () => {
+      const regex = StringUtilities.createSearchRegex('[foo]', false, true);
+      assert.strictEqual(regex.source, '[foo]');
+    });
+  });
 });

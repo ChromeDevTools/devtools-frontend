@@ -497,3 +497,28 @@ export const filterRegex = function(query) {
   }
   return new RegExp(regexString, 'i');
 };
+
+/**
+ * @param {string} query
+ * @param {boolean} caseSensitive
+ * @param {boolean} isRegex
+ * @return {!RegExp}
+ */
+export const createSearchRegex = function(query, caseSensitive, isRegex) {
+  const regexFlags = caseSensitive ? 'g' : 'gi';
+  let regexObject;
+
+  if (isRegex) {
+    try {
+      regexObject = new RegExp(query, regexFlags);
+    } catch (e) {
+      // Silent catch.
+    }
+  }
+
+  if (!regexObject) {
+    regexObject = self.createPlainTextSearchRegex(query, regexFlags);
+  }
+
+  return regexObject;
+};

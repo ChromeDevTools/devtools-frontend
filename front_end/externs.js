@@ -859,14 +859,6 @@ const mod = function(m, n) {};
 
 /**
  * @param {string} query
- * @param {boolean} caseSensitive
- * @param {boolean} isRegex
- * @return {!RegExp}
- */
-const createSearchRegex = function(query, caseSensitive, isRegex) {};
-
-/**
- * @param {string} query
  * @param {string=} flags
  * @return {!RegExp}
  */

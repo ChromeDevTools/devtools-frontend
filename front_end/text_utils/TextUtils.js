@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Platform from '../platform/platform.js';
+
 import {SearchMatch} from './ContentProvider.js';
 import {Text} from './Text.js';
 
@@ -411,8 +413,7 @@ export function isMinified(text) {
  * @return {!Array.<!SearchMatch>}
  */
 export const performSearchInContent = function(content, query, caseSensitive, isRegex) {
-  // @ts-ignore global function
-  const regex = createSearchRegex(query, caseSensitive, isRegex);
+  const regex = Platform.StringUtilities.createSearchRegex(query, caseSensitive, isRegex);
 
   const text = new Text(content);
   const result = [];

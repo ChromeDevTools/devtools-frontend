@@ -440,31 +440,6 @@ Object.defineProperty(Array.prototype, 'peekLast', {
 
 /**
  * @param {string} query
- * @param {boolean} caseSensitive
- * @param {boolean} isRegex
- * @return {!RegExp}
- */
-self.createSearchRegex = function(query, caseSensitive, isRegex) {
-  const regexFlags = caseSensitive ? 'g' : 'gi';
-  let regexObject;
-
-  if (isRegex) {
-    try {
-      regexObject = new RegExp(query, regexFlags);
-    } catch (e) {
-      // Silent catch.
-    }
-  }
-
-  if (!regexObject) {
-    regexObject = self.createPlainTextSearchRegex(query, regexFlags);
-  }
-
-  return regexObject;
-};
-
-/**
- * @param {string} query
  * @param {string=} flags
  * @return {!RegExp}
  */

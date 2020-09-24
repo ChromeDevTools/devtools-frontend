@@ -7,6 +7,7 @@
 
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
+import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
@@ -144,7 +145,8 @@ export class SearchResultsTreeElement extends UI.TreeOutline.TreeElement {
     const queries = this._searchConfig.queries();
     const regexes = [];
     for (let i = 0; i < queries.length; ++i) {
-      regexes.push(createSearchRegex(queries[i], !this._searchConfig.ignoreCase(), this._searchConfig.isRegex()));
+      regexes.push(Platform.StringUtilities.createSearchRegex(
+          queries[i], !this._searchConfig.ignoreCase(), this._searchConfig.isRegex()));
     }
 
     for (let i = fromIndex; i < toIndex; ++i) {

@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -17,7 +14,10 @@ Devices.DevicesView = class extends UI.Widget.VBox {
     `<a class="devtools-link" role="link" tabindex="0" href="#" style="display: inline; cursor: pointer;">chrome://inspect/#devices</a>`;
 
     self.onInvokeElement(documentationLink, event => {
-      SDK.SDKModel.TargetManager.instance().mainTarget().pageAgent().navigate('chrome://inspect/#devices');
+      const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
+      if (mainTarget) {
+        mainTarget.pageAgent().invoke_navigate({url: 'chrome://inspect/#devices'});
+      }
       event.consume(true);
     });
 

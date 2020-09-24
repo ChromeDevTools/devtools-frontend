@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 /**
  * @param {number} ms
  * @param {number} decimalPlaces
@@ -16,13 +13,17 @@ export function FormatMillisecondsToSeconds(ms, decimalPlaces) {
   return `${Math.round(ms / roundPower) / denominatorPower} s`;
 }
 
-
 /**
  * Manage the bounding box properties for the ticking flame chart.
  * kept in a separate file for unit testing.
- * @unrestricted
  */
 export class Bounds {
+  /**
+   * @param {number} initialLow
+   * @param {number} initialHigh
+   * @param {number} maxRange
+   * @param {number} minRange
+   */
   constructor(initialLow, initialHigh, maxRange, minRange) {
     this._min = initialLow;
     this._max = initialHigh;

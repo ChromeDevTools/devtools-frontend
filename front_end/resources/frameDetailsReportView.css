@@ -40,6 +40,5 @@
 
 .icon-link.devtools-link {
   background-color: var(--link-color);
-  margin-left: 0.5ex;
   vertical-align: sub;
 }

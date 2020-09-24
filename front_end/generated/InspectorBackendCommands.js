@@ -1573,6 +1573,13 @@ export function registerCommands(inspectorBackend) {
       []);
   inspectorBackend.registerCommand(
       'Network.getSecurityIsolationStatus', [{'name': 'frameId', 'type': 'string', 'optional': true}], ['status']);
+  inspectorBackend.registerCommand(
+      'Network.loadNetworkResource',
+      [
+        {'name': 'frameId', 'type': 'string', 'optional': false}, {'name': 'url', 'type': 'string', 'optional': false},
+        {'name': 'options', 'type': 'object', 'optional': false}
+      ],
+      ['resource']);
 
   // Overlay.
   inspectorBackend.registerEnum('Overlay.ColorFormat', {Rgb: 'rgb', Hsl: 'hsl', Hex: 'hex'});

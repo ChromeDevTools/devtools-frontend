@@ -1793,6 +1793,12 @@ declare namespace ProtocolProxyApi {
      */
     invoke_getSecurityIsolationStatus(params: Protocol.Network.GetSecurityIsolationStatusRequest):
         Promise<Protocol.Network.GetSecurityIsolationStatusResponse>;
+
+    /**
+     * Fetches the resource and returns the content.
+     */
+    invoke_loadNetworkResource(params: Protocol.Network.LoadNetworkResourceRequest):
+        Promise<Protocol.Network.LoadNetworkResourceResponse>;
   }
   export interface NetworkDispatcher extends Protocol.Dispatcher {
     /**

@@ -1816,6 +1816,13 @@ export namespace ProtocolMapping {
       returnType: Protocol.Network.GetSecurityIsolationStatusResponse;
     };
     /**
+     * Fetches the resource and returns the content.
+     */
+    'Network.loadNetworkResource': {
+      paramsType: [Protocol.Network.LoadNetworkResourceRequest];
+      returnType: Protocol.Network.LoadNetworkResourceResponse;
+    };
+    /**
      * Disables domain notifications.
      */
     'Overlay.disable': {paramsType: []; returnType: void;};

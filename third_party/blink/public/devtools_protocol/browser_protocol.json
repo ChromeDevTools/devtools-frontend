@@ -10510,6 +10510,62 @@
                             "$ref": "CrossOriginEmbedderPolicyStatus"
                         }
                     ]
+                },
+                {
+                    "id": "LoadNetworkResourcePageResult",
+                    "description": "An object providing the result of a network resource load.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "success",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "netError",
+                            "description": "Optional values used for error reporting.",
+                            "optional": true,
+                            "type": "number"
+                        },
+                        {
+                            "name": "netErrorName",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "httpStatusCode",
+                            "optional": true,
+                            "type": "number"
+                        },
+                        {
+                            "name": "stream",
+                            "description": "If successful, one of the following two fields holds the result.",
+                            "optional": true,
+                            "$ref": "IO.StreamHandle"
+                        },
+                        {
+                            "name": "headers",
+                            "description": "Response headers.",
+                            "optional": true,
+                            "$ref": "Network.Headers"
+                        }
+                    ]
+                },
+                {
+                    "id": "LoadNetworkResourceOptions",
+                    "description": "An options object that may be extended later to better support CORS,\nCORB and streaming.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "disableCache",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "includeCredentials",
+                            "type": "boolean"
+                        }
+                    ]
                 }
             ],
             "commands": [
@@ -11122,6 +11178,34 @@
                         {
                             "name": "status",
                             "$ref": "SecurityIsolationStatus"
+                        }
+                    ]
+                },
+                {
+                    "name": "loadNetworkResource",
+                    "description": "Fetches the resource and returns the content.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "frameId",
+                            "description": "Frame id to get the resource for.",
+                            "$ref": "Page.FrameId"
+                        },
+                        {
+                            "name": "url",
+                            "description": "URL of the resource to get content for.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "options",
+                            "description": "Options for the request.",
+                            "$ref": "LoadNetworkResourceOptions"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "resource",
+                            "$ref": "LoadNetworkResourcePageResult"
                         }
                     ]
                 }

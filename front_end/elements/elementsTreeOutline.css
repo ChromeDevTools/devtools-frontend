@@ -354,26 +354,3 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
     forced-color-adjust: none;
   }
 }
-
-/** Adorner */
-.adorner-container {
-  display: inline-block;
-}
-
-.adorner-container.hidden {
-  display: none;
-}
-
-.adorner-container devtools-adorner {
-  margin-left: 3px;
-  vertical-align: text-bottom;
-}
-
-:host-context(.-theme-with-dark-background) devtools-adorner {
-  --adorner-text-color: #ffffffde;
-  --adorner-background-color: #5db0d726;
-  --adorner-border: 1px solid #5db0d780;
-  --adorner-border-focus: 1px solid #5db0d7;
-  --adorner-text-color-active: #242424;
-  --adorner-background-color-active: #5db0d7;
-}

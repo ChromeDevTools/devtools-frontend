@@ -483,25 +483,6 @@ self.createPlainTextSearchRegex = function(query, flags) {
 };
 
 /**
- * @param {number} spacesCount
- * @return {string}
- */
-self.spacesPadding = function(spacesCount) {
-  return '\xA0'.repeat(spacesCount);
-};
-
-/**
- * @param {number} value
- * @param {number} symbolsCount
- * @return {string}
- */
-self.numberToStringWithSpacesPadding = function(value, symbolsCount) {
-  const numberString = value.toString();
-  const paddingLength = Math.max(0, symbolsCount - numberString.length);
-  return self.spacesPadding(paddingLength) + numberString;
-};
-
-/**
  * @return {?T}
  * @template T
  */

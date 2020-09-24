@@ -43,7 +43,7 @@ export class ChangesView extends UI.Widget.VBox {
       devtoolsAccessibleName: ls`Changes diff viewer`,
       lineNumbers: true,
       lineWrapping: false,
-      maxHighlightLength: Infinity  // This is to avoid CodeMirror bailing out of highlighting big diffs.
+      maxHighlightLength: Infinity,  // Avoid CodeMirror bailing out of highlighting big diffs.
     });
     this._editor.setReadOnly(true);
     const editorContainer = mainWidget.element.createChild('div', 'editor-container');
@@ -340,11 +340,11 @@ export class ChangesView extends UI.Widget.VBox {
       showBaseNumber = true;
       showCurrentNumber = true;
     }
-    const base = showBaseNumber ? numberToStringWithSpacesPadding(row.baselineLineNumber, this._maxLineDigits) :
-                                  spacesPadding(this._maxLineDigits);
-    const current = showCurrentNumber ? numberToStringWithSpacesPadding(row.currentLineNumber, this._maxLineDigits) :
-                                        spacesPadding(this._maxLineDigits);
-    return base + spacesPadding(1) + current;
+    const baseText = showBaseNumber ? String(row.baselineLineNumber) : '';
+    const base = baseText.padStart(this._maxLineDigits, '\xA0');
+    const currentText = showCurrentNumber ? String(row.currentLineNumber) : '';
+    const current = currentText.padStart(this._maxLineDigits, '\xA0');
+    return base + '\xA0' + current;
   }
 }
 

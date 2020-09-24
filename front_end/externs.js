@@ -873,19 +873,6 @@ const createSearchRegex = function(query, caseSensitive, isRegex) {};
 const createPlainTextSearchRegex = function(query, flags) {};
 
 /**
- * @param {number} spacesCount
- * @return {string}
- */
-const spacesPadding = function(spacesCount) {};
-
-/**
- * @param {number} value
- * @param {number} symbolsCount
- * @return {string}
- */
-const numberToStringWithSpacesPadding = function(value, symbolsCount) {};
-
-/**
  * @param {*} value
  */
 const suppressUnused = function(value) {};

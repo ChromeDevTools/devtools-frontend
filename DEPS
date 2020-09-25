@@ -17,18 +17,8 @@ vars = {
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
   'inspector_protocol_revision': '351a2b717e7cd0e59c3d81505c1a803673667dac',
 
-  'llvm_url': 'https://chromium.googlesource.com/external/github.com/llvm/llvm-project/',
-  'llvm_revision': '7edc7f6edbcb5be439886c271a71df43b3f0a8e3',
-  'build_symbol_server': False,
-
   'clang_format_url': 'https://chromium.googlesource.com/chromium/llvm-project/cfe/tools/clang-format.git',
   'clang_format_revision': '96636aa0e9f047f17447f2d45a094d0b59ed7917',
-
-  'clang_url': 'https://chromium.googlesource.com/chromium/src/tools/clang.git',
-  'clang_revision': '116e3ee70d1877ee7d92e0d8bfdf9420b773cd43',
-
-  'cmake_version': 'version:3.16.1',
-  'protoc_version': 'protobuf_version:v3.11.4',
 
   # GN CIPD package version.
   'gn_version': 'git_revision:e002e68a48d1c82648eadde2f6aafa20d08c36f2',
@@ -89,35 +79,6 @@ deps = {
     Var('depot_tools_url') + '@' + Var('depot_tools_revision'),
   'third_party/inspector_protocol':
     Var('inspector_protocol_url') + '@' + Var('inspector_protocol_revision'),
-
-  'back_end/CXXDWARFSymbols/third_party/llvm': {
-    'url': Var('llvm_url') + '@' + Var('llvm_revision'),
-    'condition': 'build_symbol_server'
-  },
-  'third_party/clang': {
-    'url': Var('clang_url') + '@' + Var('clang_revision'),
-    'condition': 'build_symbol_server'
-  },
-  'third_party/cmake': {
-    'packages': [
-      {
-        'package': 'infra/cmake/${{platform}}',
-        'version': Var('cmake_version')
-      }
-    ],
-    'dep_type': 'cipd',
-    'condition': 'build_symbol_server'
-  },
-  'third_party/protoc': {
-    'packages': [
-      {
-        'package': 'infra/tools/protoc/${{platform}}',
-        'version':  Var('protoc_version')
-      }
-    ],
-    'dep_type': 'cipd',
-    'condition': 'build_symbol_server'
-  }
 }
 
 hooks = [
@@ -247,14 +208,6 @@ hooks = [
                 'chrome-linux/chrome',
                 Var('chromium_linux'),
     ],
-  },
-  {
-    # Note: On Win, this should run after win_toolchain, as it may use it.
-    'name': 'clang',
-    'pattern': '.',
-    # clang not supported on aix
-    'condition': 'host_os != "aix" and build_symbol_server',
-    'action': ['python', 'third_party/clang/scripts/update.py'],
   },
   {
     'name': 'sysroot_x64',

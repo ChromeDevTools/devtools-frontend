@@ -1,8 +1,0 @@
-# Copyright 2020 The Chromium Authors. All rights reserved.
-# Use of this source code is governed by a BSD-style license that can be
-# found in the LICENSE file.
-
-config.llvm_build_mode = "@LLVM_BUILD_MODE@"
-config.symbol_server_obj_root = '@PROJECT_BINARY_DIR@'
-
-lit_config.load_config(config, '@PROJECT_SOURCE_DIR@/tests/Unittests/lit.cfg.py')

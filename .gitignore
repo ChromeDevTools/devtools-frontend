@@ -14,7 +14,6 @@
 *.xcodeproj*
 /.dev_profile
 /.test_cache
-/back_end/CXXDWARFSymbols/third_party/
 /front_end/protocol_externs.js
 /front_end/i18n/locales/en-XL.json
 /release

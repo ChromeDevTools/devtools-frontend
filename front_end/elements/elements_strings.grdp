@@ -72,8 +72,8 @@
   <message name="IDS_DEVTOOLS_2ce5967e3862c73a31059c4aa5847464" desc="Icon element title in Color Swatch Popover Icon of the Elements panel">
     Open shadow editor.
   </message>
-  <message name="IDS_DEVTOOLS_2de42fbb00305f8282310f1b3e10ce9a" desc="Text in Metrics Sidebar Pane of the Elements panel">
-    border
+  <message name="IDS_DEVTOOLS_2de42fbb00305f8282310f1b3e10ce9a" desc="Label of the border property on the styles box diagram, represent the property name.">
+     <ph name="LOCKED_1">border</ph>
   </message>
   <message name="IDS_DEVTOOLS_2dff19d6ed78c6ca35cb3beab7b5bf55" desc="Section title text content in Platform Fonts Widget of the Elements panel">
     Rendered Fonts
@@ -117,8 +117,8 @@
   <message name="IDS_DEVTOOLS_47210336f82b1488b69932b14038bdff" desc="Title of  in styles sidebar pane of the elements panel">
     Increment/decrement with mousewheel or up/down keys. <ph name="CMDORCTRL">$1s<ex>Ctrl</ex></ph>: ±100, Shift: ±10, Alt: ±0.1
   </message>
-  <message name="IDS_DEVTOOLS_4757fe07fd492a8be0ea6a760d683d6e" desc="Text in Metrics Sidebar Pane of the Elements panel">
-    position
+  <message name="IDS_DEVTOOLS_4757fe07fd492a8be0ea6a760d683d6e" desc="Label of the position property on the styles box diagram, represent the property name.">
+    <ph name="LOCKED_1">position</ph>
   </message>
   <message name="IDS_DEVTOOLS_4a27b8d01ae86c80074e4c57be48f8c6" desc="Text in Elements Tree Element of the Elements panel">
     Copy styles
@@ -258,8 +258,8 @@
   <message name="IDS_DEVTOOLS_b28bafc65dea7e88bb2bbd14c3dcb4aa" desc="The warning text shown in Elements panel when font-variation-settings don't match allowed values">
     Value for setting “<ph name="ELEMENTSETTING_TAG">$1s<ex>wdth</ex></ph>” <ph name="ELEMENTSETTING_VALUE">$2s<ex>100</ex></ph> is outside the supported range [<ph name="FONTSETTING_MINVALUE">$3s<ex>10</ex></ph>, <ph name="FONTSETTING_MAXVALUE">$4s<ex>20</ex></ph>] for font-family “<ph name="FONT_GETFONTFAMILY__">$5s<ex>Arial</ex></ph>”.
   </message>
-  <message name="IDS_DEVTOOLS_b70cdb878a204fecf91c7dd1af312421" desc="Text in Metrics Sidebar Pane of the Elements panel">
-    padding
+  <message name="IDS_DEVTOOLS_b70cdb878a204fecf91c7dd1af312421" desc="Label of the padding property on the styles diagram, represent the property name.">
+    <ph name="LOCKED_1">padding</ph>
   </message>
   <message name="IDS_DEVTOOLS_b9740e9a829cf440e2e863124d53eba3" desc="Text in Color Swatch Popover Icon of the Elements panel">
     Shift + Click to change color format.
@@ -294,8 +294,8 @@
   <message name="IDS_DEVTOOLS_d2303f7f6800bc01a1036c7fbd5bc0f0" desc="Text in Styles Sidebar Pane of the Elements panel">
     constructed stylesheet
   </message>
-  <message name="IDS_DEVTOOLS_d42f4851e770aa0f758b01388874f67b" desc="Text in Metrics Sidebar Pane of the Elements panel">
-    margin
+  <message name="IDS_DEVTOOLS_d42f4851e770aa0f758b01388874f67b" desc="Label of the margin property on the styles box diagram, represent the property name.">
+     <ph name="LOCKED_1">margin</ph>
   </message>
   <message name="IDS_DEVTOOLS_e24ee2487879116dcab772c0ac4fe341" desc="Text to focus on something">
     Focus

@@ -250,6 +250,9 @@ table is empty.
   <message name="IDS_DEVTOOLS_7d52bfc51222e4122623057310cba1ce" desc="Tooltip text that appears when hovering over the largeicon play back button in the Indexed DBViews of the Application panel">
     Show previous page
   </message>
+  <message name="IDS_DEVTOOLS_7d845435be5375e71502bf8db76a14bf" desc="Alert message for screen reader to announce # of cookies in the table">
+    Number of cookies shown in table: <ph name="SHOWNCOOKIES_LENGTH">$1s<ex>5</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_7e91f7be5e9ff7a50a44d4a7f21afb90" desc="Text in App Manifest View of the Application panel">
     Start URL
   </message>

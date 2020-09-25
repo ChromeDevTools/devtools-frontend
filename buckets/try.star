@@ -96,14 +96,6 @@ builder_coverage(
     properties = {"builder_config": "Debug"},
 )
 
-builder_coverage(
-    covered_oss = ["linux", "win64"],
-    builder_factory = try_builder,
-    builder_name_pattern = "devtools_backend_%s_rel",
-    recipe_name = "devtools/devtools-backend",
-    execution_timeout = 2 * time.hour,
-)
-
 luci.list_view(
     name = "tryserver",
     title = "Tryserver",
@@ -136,9 +128,6 @@ cq_master_builders = [
     "devtools_frontend_mac_rel",
     "devtools_frontend_win64_rel",
     "devtools_frontend_linux_dbg",
-    "devtools_backend_linux_rel",
-    #'devtools_backend_mac_rel',
-    "devtools_backend_win64_rel",
     "dtf_presubmit_linux",
     "dtf_presubmit_win64",
     "dtf_linux_experiments",
@@ -148,8 +137,7 @@ cq_master_experiment_builders = [
     # Quarantine a builder here
     # This will make them experiment 100%
     "dtf_linux_experiments",
-    "devtools_backend_mac_rel",
-    "devtools_backend_win64_rel",
+    "devtools_frontend_linux_dbg",
 ]
 
 def experiment_builder(builder):

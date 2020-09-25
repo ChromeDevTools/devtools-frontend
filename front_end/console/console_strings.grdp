@@ -160,7 +160,7 @@
     Expression
   </message>
   <message name="IDS_DEVTOOLS_a3eb3c95c4cb8e06fd3682c1f0d70bc0" desc="Tooltip text that appears on the setting when hovering over it in Console View of the Console panel">
-    Only show messages from the current context (top, iframe, worker, extension)
+    Only show messages from the current context (<ph name="LOCKED_1">top</ph>, <ph name="LOCKED_2">iframe</ph>, <ph name="LOCKED_3">worker</ph>, extension)
   </message>
   <message name="IDS_DEVTOOLS_a5e4febd4637e35098ee6e8f493ca390" desc="Text in Console Sidebar of the Console panel to show that there is 1 message">
     1 message
@@ -232,7 +232,7 @@
     ''' M&lt;XX&gt;
   </message>
   <message name="IDS_DEVTOOLS_d7746aa6b562c73487a4015eef3244e9" desc="Text in Console Context Selector of the Console panel">
-    IFrame
+    <ph name="LOCKED_1">IFrame</ph>
   </message>
   <message name="IDS_DEVTOOLS_d779282283c011149d163edbcd5e5f11" desc="Side effect label title in Console Pin Pane of the Console panel">
     Evaluate, allowing side effects

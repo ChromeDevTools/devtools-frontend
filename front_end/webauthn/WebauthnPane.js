@@ -390,11 +390,15 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
    * @param {!Protocol.WebAuthn.Credential} credential
    */
   _exportCredential(credential) {
-    const pem = '-----BEGIN PRIVATE KEY-----\n' + credential.privateKey + '\n-----END PRIVATE KEY-----';
+    let pem = '-----BEGIN PRIVATE KEY-----\n';
+    for (let i = 0; i < credential.privateKey.length; i += 64) {
+      pem += credential.privateKey.substring(i, i + 64) + '\n';
+    }
+    pem += '-----END PRIVATE KEY-----';
 
     const link = document.createElement('a');
     link.download = ls`Private key.pem`;
-    link.href = 'data:application/x-pem-file;charset=utf-8,' + encodeURIComponent(pem);
+    link.href = 'data:application/x-pem-file,' + encodeURIComponent(pem);
     link.click();
   }
 

@@ -3,8 +3,8 @@
   <message name="IDS_DEVTOOLS_17c9736b5d9c0a3840fbbfc5567ae847" desc="Context menu entry which downloads the json dump when clicked">
     Save player info
   </message>
-  <message name="IDS_DEVTOOLS_2e71b9a9b6dde4fd59a2326476d131da" desc="Menu label for text tracks, it is followed by a number, like 'Text Track #1'">
-    Text Track
+  <message name="IDS_DEVTOOLS_1f5d2c7268200ed16538cfa70367b81a" desc="Menu label for text tracks, it is followed by a number, like 'Text Track #1'">
+    Text track
   </message>
   <message name="IDS_DEVTOOLS_3d1f92a565d3b1a61880236e33c49bf3" desc="Title for the timeline tab.">
     Timeline
@@ -15,8 +15,8 @@
   <message name="IDS_DEVTOOLS_421b47ffd946ca083b65cd668c6b17e6" desc="The type of media. Lower case.">
     video
   </message>
-  <message name="IDS_DEVTOOLS_13dfca9cbe1740873c59b90e24cfb348" desc="Default text for user-text-entry for searching log messages.">
-    filter log messages
+  <message name="IDS_DEVTOOLS_8d842d3193b5335e5733964d44b2c445" desc="Default text for user-text-entry for searching log messages.">
+    Filter log messages
   </message>
   <message name="IDS_DEVTOOLS_368cc7b17925cc0f9c4b5a90db1e68c1" desc="The video or audio stream, much like on an old cd.">
     track
@@ -24,17 +24,20 @@
   <message name="IDS_DEVTOOLS_6245bb413f62feb4e4c5cd7141a83182" desc="A right-click context menu entry which should keep the element selected, while hiding all other entries.">
     Hide all others
   </message>
+  <message name="IDS_DEVTOOLS_664b13315c97047b2ba2a1ac2375e0ce" desc="The label for a timestamp when a video was started.">
+    Start time
+  </message>
   <message name="IDS_DEVTOOLS_6e3e66da4fb111d1cf68b4b1e4730261" desc="A right-click context menu entry which when clicked causes the menu entry for that player to be removed.">
     Hide player
   </message>
-  <message name="IDS_DEVTOOLS_e40b9e25ca3de7314333b1ecdfaefd49" desc="Place holder text stating that there are no text tracks on this player.">
-    No Text Tracks
+  <message name="IDS_DEVTOOLS_2dac8a7ec30b19fa5861a79d178d354a" desc="Place holder text stating that there are no text tracks on this player.">
+    No text tracks
   </message>
   <message name="IDS_DEVTOOLS_e6818a215084646ac80a1a07561ecf35" desc="A device that converts media files into playable streams of audio or video.">
     Decoder
   </message>
-  <message name="IDS_DEVTOOLS_42895832ab7605d00676bebb0521991f" desc="Media property giving the distance of the playback quality from the ideal playback.">
-    Video Playback Roughness
+  <message name="IDS_DEVTOOLS_7481fe6f7016843da5454ad438029364" desc="Media property giving the distance of the playback quality from the ideal playback.">
+    Video playback roughness
   </message>
   <message name="IDS_DEVTOOLS_5b999e8e6e64d49616bdf5a24a3d02bf" desc="Hovertext for Timeline tab.">
     Player timeline
@@ -42,8 +45,8 @@
   <message name="IDS_DEVTOOLS_62933a2951ef01f4eafd9bdf4d3cd2f0" desc="Media player">
     media
   </message>
-  <message name="IDS_DEVTOOLS_7020795fd5ab35cbfb085a79d323ba50" desc="The column header for event names.">
-    Event Name
+  <message name="IDS_DEVTOOLS_aaa6e61ccb9bc32c365cac9fe5b8fc15" desc="The column header for event names.">
+    Event name
   </message>
   <message name="IDS_DEVTOOLS_83341e272df7a4f2982e7b96b7f26a4a" desc="Button text for viewing properties.">
     Player properties
@@ -54,8 +57,8 @@
   <message name="IDS_DEVTOOLS_92ea731d3af6677905303c88689f5d55" desc="A video or audio stream - but capitalized.">
     Track
   </message>
-  <message name="IDS_DEVTOOLS_9cb334507c95e83a9c863f5014ab317e" desc="Media property giving the media file frame rate">
-    Frame Rate
+  <message name="IDS_DEVTOOLS_801309c4a0e25a4db3fe5739b322b0a7" desc="Media property giving the media file frame rate">
+    Frame rate
   </message>
   <message name="IDS_DEVTOOLS_9a8eea4475eb7a8d51024b7eefc0c1b1" desc="Column header for messages view.">
     Player messages
@@ -72,26 +75,26 @@
   <message name="IDS_DEVTOOLS_93ec972c68d5caca43370a9746a08cea" desc="Side-panel entry title text for the players section.">
     Players
   </message>
-  <message name="IDS_DEVTOOLS_045b78ffe29652f98998ccf799c7ed6b" desc="Media property describing where the media is playing from.">
-    Playback Frame URL
+  <message name="IDS_DEVTOOLS_9e90e756ac736a085c24b84673b84372" desc="Media property describing where the media is playing from.">
+    Playback frame URL
   </message>
-  <message name="IDS_DEVTOOLS_3fbd7503863be0666b56f6ea73eafeb9" desc="Media property describing whether the file is single or cross origin in nature">
-    Is Single Origin Playback
+  <message name="IDS_DEVTOOLS_64bf7c26d953e394a1889f41c9e5a795" desc="Media property describing whether the file is single or cross origin in nature">
+    Single-origin playback
   </message>
-  <message name="IDS_DEVTOOLS_52103b0dec1c2ea61de56078b8183096" desc="Media property giving the name of the decoder being used">
-    Decoder Name
+  <message name="IDS_DEVTOOLS_44da191d5e00bb0e9c035c7a38183e7b" desc="Media property giving the name of the decoder being used">
+    Decoder name
   </message>
   <message name="IDS_DEVTOOLS_700a01983c221effeb06e8d7faa6e8dd" desc="Media property giving the media file bitrate">
     Bitrate
   </message>
-  <message name="IDS_DEVTOOLS_8276cedc2966d8a4334c65e1670b6c5c" desc="Media property signaling whether a hardware decoder is being used">
-    Hardware Decoder
+  <message name="IDS_DEVTOOLS_f225b5c51484faae6fe55b1d2246d3e6" desc="Media property signaling whether a hardware decoder is being used">
+    Hardware decoder
   </message>
-  <message name="IDS_DEVTOOLS_89cfa2eeab650a8849721c59c37b1b49" desc="Media property describing support for range http headers">
-    Range Header Support
+  <message name="IDS_DEVTOOLS_9cc1a94893f2b90b69dab1a64ca4e287" desc="Media property describing support for range http headers">
+    Range header support
   </message>
-  <message name="IDS_DEVTOOLS_a00fe904aecabd4bff74d8776e6da2c5" desc="Media property giving the file size of the media">
-    File Size
+  <message name="IDS_DEVTOOLS_1908624a0bca678cd26b99bfd405324e" desc="Media property giving the file size of the media">
+    File size
   </message>
   <message name="IDS_DEVTOOLS_ac21d502848247aa2f578d0f718f5d1d" desc="Media property signaling whether the media is streaming">
     Streaming
@@ -99,19 +102,19 @@
   <message name="IDS_DEVTOOLS_b5a4b64b2aa505bd7c11f79b8a9f458d" desc="Media property giving the width x height of the video">
     Resolution
   </message>
-  <message name="IDS_DEVTOOLS_e95c013230e5d1b944fed845b44ded28" desc="Media property giving the title of the frame where the media is embedded">
-    Playback Frame Title
+  <message name="IDS_DEVTOOLS_699e737534e29856cb73c9aed849f762" desc="Media property giving the title of the frame where the media is embedded">
+    Playback frame title
   </message>
-  <message name="IDS_DEVTOOLS_f4ac5f45c490b495f6eb032e44e4dd59" desc="Label for selecting between the set of log levels to show.">
-    Log Level:
+  <message name="IDS_DEVTOOLS_d22c39fc0b11766a6ba91c68495b4e0e" desc="Label for selecting between the set of log levels to show.">
+    Log level:
   </message>
-  <message name="IDS_DEVTOOLS_fb731aa4f5e2e27d0e54fcceac99ebb0" desc="Media property signaling whether the content is encrypted">
-    Decrypting Demuxer
+  <message name="IDS_DEVTOOLS_82f52ea3b879dcc0929bb521ab18eb67" desc="Media property signaling whether the content is encrypted">
+    Decrypting demuxer
   </message>
-  <message name="IDS_DEVTOOLS_4b0996f27563cdee4d394aee43e466e2" desc="There is no decoder">
-    No Decoder
+  <message name="IDS_DEVTOOLS_30063158c49b8017884274a83fdcbd01" desc="There is no decoder">
+    No decoder
   </message>
-  <message name="IDS_DEVTOOLS_f9d75af4b2cfafd31404df971213ef3c" desc="Data grid name for Event Display data grids">
-    Event Display
+  <message name="IDS_DEVTOOLS_9a027c710abaef0a12a7a88712eca23a" desc="Data grid name for Event Display data grids">
+    Event display
   </message>
 </grit-part>

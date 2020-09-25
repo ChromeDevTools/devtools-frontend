@@ -191,7 +191,7 @@ export class PlayerMessagesView extends UI.Widget.VBox {
 
   _buildToolbar() {
     const toolbar = new UI.Toolbar.Toolbar('media-messages-toolbar', this._headerPanel);
-    toolbar.appendText(ls`Log Level:`);
+    toolbar.appendText(ls`Log level:`);
     toolbar.appendToolbarItem(this._createDropdown());
     toolbar.appendSeparator();
     toolbar.appendToolbarItem(this._createFilterInput());
@@ -217,7 +217,7 @@ export class PlayerMessagesView extends UI.Widget.VBox {
   }
 
   _createFilterInput() {
-    const filterInput = new UI.Toolbar.ToolbarInput(ls`filter log messages`);
+    const filterInput = new UI.Toolbar.ToolbarInput(ls`Filter log messages`);
     filterInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this._filterByString, this);
     return filterInput;
   }

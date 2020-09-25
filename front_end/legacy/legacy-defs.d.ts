@@ -149,6 +149,7 @@ interface Node {
   parentNodeOrShadowHost(): Node|null;
   setTextContentTruncatedIfNeeded(text: any, placeholder?: string): boolean;
   traverseNextNode(stayWithin?: Node): Node|null;
+  deepTextContent(): string
   window(): Window;
 }
 

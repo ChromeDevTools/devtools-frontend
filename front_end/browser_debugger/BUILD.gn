@@ -17,6 +17,7 @@ devtools_module("browser_debugger") {
     "../common:bundle",
     "../event_listeners:bundle",
     "../sdk:bundle",
+    "../sources:bundle",
     "../ui:bundle",
   ]
 }

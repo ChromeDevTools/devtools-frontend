@@ -619,7 +619,6 @@ export const DevtoolsExperiments = {
   'wasmDWARFDebugging': 31,
   'dualScreenSupport': 32,
   'cssGridFeatures': 33,
-  'movableTabs': 34,
   'keyboardShortcutEditor': 35,
   '__lastValidEnumPosition': 35,
 };

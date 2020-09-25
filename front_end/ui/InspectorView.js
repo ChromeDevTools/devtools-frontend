@@ -526,11 +526,6 @@ export class InspectorViewTabDelegate {
       return;
     }
 
-    // Only show the context menu if the experiment is enabled
-    if (!Root.Runtime.experiments.isEnabled('movableTabs')) {
-      return;
-    }
-
     const locationName = ViewManager.instance().locationNameForViewId(tabId);
     if (locationName === 'drawer-view') {
       contextMenu.defaultSection().appendItem(

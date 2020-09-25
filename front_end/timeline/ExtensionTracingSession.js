@@ -1,8 +1,6 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Extensions from '../extensions/extensions.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';                       // eslint-disable-line no-unused-vars
@@ -22,8 +20,9 @@ export class ExtensionTracingSession {
   constructor(provider, performanceModel) {
     this._provider = provider;
     this._performanceModel = performanceModel;
-    /** @type {function()} */
+    /** @type {function(): void} */
     this._completionCallback;
+    /** @type {!Promise<void>} */
     this._completionPromise = new Promise(fulfill => {
       this._completionCallback = fulfill;
     });
@@ -75,7 +74,7 @@ export class ExtensionTracingSession {
     this._provider.start(this);
   }
 
-  /** @return {!Promise<string>} */
+  /** @return {!Promise<void>} */
   stop() {
     this._provider.stop();
     return this._completionPromise;

@@ -305,11 +305,23 @@
   margin-left: 5px;
 }
 
-.contrast-warning [is=ui-icon].smallicon-checkmark-square,
-.contrast-warning [is=ui-icon].smallicon-checkmark-behind {
+.contrast-preview {
+  padding: 0 5px;
+}
+
+.contrast-container-in-grid {
+  display: flex;
+  align-items: baseline;
+}
+
+.contrast-container-in-grid > * {
+  margin-right: 5px;
+}
+
+[is=ui-icon].smallicon-checkmark-square {
   background-color: #00b06f;
 }
 
-.contrast-warning [is=ui-icon].smallicon-no {
+[is=ui-icon].smallicon-no {
   background-color: red;
 }

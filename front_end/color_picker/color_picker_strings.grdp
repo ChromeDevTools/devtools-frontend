@@ -30,9 +30,6 @@
   <message name="IDS_DEVTOOLS_704c5365ab9b8fb8d8be5f08b8c0f19c" desc="Aria label for alpha slider in Color Picker">
     Change alpha
   </message>
-  <message name="IDS_DEVTOOLS_74421a69b1bc40c166be4de5caf0b036" desc="Text of a DOM element in Contrast Details of the Color Picker">
-    Contrast ratio
-  </message>
   <message name="IDS_DEVTOOLS_78e8ce0d9ebcd8c91e2b7fc105224b57" desc="Text of a button in Contrast Details of the Color Picker">
     Use suggested color <ph name="SUGGESTEDCOLORSTRING">$1s<ex>rgba(0 0 0 / 100%)</ex></ph> to fix low contrast
   </message>

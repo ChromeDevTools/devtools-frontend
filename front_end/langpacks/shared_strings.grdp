@@ -328,6 +328,9 @@
   <message name="IDS_DEVTOOLS_72507d307327a430052f9fcd914dfaee" desc="Title of an action that reloads the DevTools">
     Reload DevTools
   </message>
+  <message name="IDS_DEVTOOLS_74421a69b1bc40c166be4de5caf0b036" desc="Text of a DOM element in Contrast Details of the Color Picker">
+    Contrast ratio
+  </message>
   <message name="IDS_DEVTOOLS_74540c79e377bea903e1023a46df5574" desc="Text to open a file">
     Open file
   </message>

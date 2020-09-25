@@ -67,6 +67,21 @@ export let OverviewData;
 export let FontInfo;
 
 /**
+ * @param {!Common.Color.Color} color
+ */
+function getBorderString(color) {
+  let [h, s, l] = color.hsla();
+  h = Math.round(h * 360);
+  s = Math.round(s * 100);
+  l = Math.round(l * 100);
+
+  // Reduce the lightness of the border to make sure that there's always a visible outline.
+  l = Math.max(0, l - 15);
+
+  return `1px solid hsl(${h}deg ${s}% ${l}%)`;
+}
+
+/**
  * @unrestricted
  */
 export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
@@ -188,7 +203,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
         }
 
         // Remap the Set to an object that is the same shape as the unused declarations.
-        const nodes = (this._data.textColorContrastIssues.get(key) || []).map(issue => ({nodeId: issue.nodeId}));
+        const nodes = this._data.textColorContrastIssues.get(key) || [];
         payload = {type, key, nodes, section};
         break;
       }
@@ -629,17 +644,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     const block = /** @type {!HTMLElement} */ (blockFragment.$('color'));
     block.style.backgroundColor = backgroundColor;
     block.style.color = color;
-
-    let [h, s, l] = minContrastIssue.backgroundColor.hsla();
-    h = Math.round(h * 360);
-    s = Math.round(s * 100);
-    l = Math.round(l * 100);
-
-    // Reduce the lightness of the border to make sure that there's always a visible outline.
-    l = Math.max(0, l - 15);
-
-    const borderString = `1px solid hsl(${h}deg ${s}% ${l}%)`;
-    block.style.border = borderString;
+    block.style.border = getBorderString(minContrastIssue.backgroundColor);
 
     return blockFragment;
   }
@@ -661,16 +666,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     if (!borderColor) {
       return;
     }
-    let [h, s, l] = borderColor.hsla();
-    h = Math.round(h * 360);
-    s = Math.round(s * 100);
-    l = Math.round(l * 100);
-
-    // Reduce the lightness of the border to make sure that there's always a visible outline.
-    l = Math.max(0, l - 15);
-
-    const borderString = `1px solid hsl(${h}, ${s}%, ${l}%)`;
-    block.style.border = borderString;
+    block.style.border = getBorderString(borderColor);
 
     return blockFragment;
   }
@@ -799,6 +795,24 @@ export class ElementDetailsView extends UI.Widget.Widget {
         dataType: undefined,
         defaultWeight: undefined,
       },
+      {
+        id: 'contrastRatio',
+        title: ls`Contrast ratio`,
+        sortable: true,
+        weight: 25,
+        titleDOMFragment: undefined,
+        sort: undefined,
+        align: undefined,
+        width: undefined,
+        fixedWidth: undefined,
+        editable: undefined,
+        nonSelectable: undefined,
+        longText: undefined,
+        disclosure: undefined,
+        allowInSortByEvenWhenHidden: undefined,
+        dataType: undefined,
+        defaultWeight: undefined,
+      },
     ];
 
     this._elementGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
@@ -857,7 +871,8 @@ export class ElementDetailsView extends UI.Widget.Widget {
     const visibility = {
       'nodeId': !!firstItem.nodeId,
       'declaration': !!firstItem.declaration,
-      'sourceURL': !!firstItem.sourceURL
+      'sourceURL': !!firstItem.sourceURL,
+      'contrastRatio': !!firstItem.contrastRatio,
     };
 
     let relatedNodesMap;
@@ -953,6 +968,32 @@ export class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode 
       } else {
         cell.textContent = '(unable to link to inlined styles)';
       }
+      return cell;
+    }
+
+    if (columnId === 'contrastRatio') {
+      const cell = this.createTD(columnId);
+      const contrastFragment = UI.Fragment.Fragment.build`
+        <div class="contrast-container-in-grid" $="container">
+          <span class="contrast-preview" style="border: ${getBorderString(this.data.backgroundColor)}; color: ${
+          this.data.textColor.asString()}; background-color: ${this.data.backgroundColor.asString()};">Aa</span>
+          <span>${this.data.contrastRatio.toFixed(2)}</span>
+        </div>
+      `;
+      const container = contrastFragment.$('container');
+      container.append(UI.Fragment.Fragment.build`<span>${ls`AA`}</span>`.element());
+      if (this.data.thresholdsViolated.aa) {
+        container.appendChild(UI.Icon.Icon.create('smallicon-no'));
+      } else {
+        container.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
+      }
+      container.append(UI.Fragment.Fragment.build`<span>${ls`AAA`}</span>`.element());
+      if (this.data.thresholdsViolated.aaa) {
+        container.appendChild(UI.Icon.Icon.create('smallicon-no'));
+      } else {
+        container.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
+      }
+      cell.appendChild(contrastFragment.element());
       return cell;
     }
 

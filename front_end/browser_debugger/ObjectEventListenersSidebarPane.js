@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as EventListeners from '../event_listeners/event_listeners.js';
 import * as SDK from '../sdk/sdk.js';
@@ -83,11 +80,21 @@ export class ObjectEventListenersSidebarPane extends UI.Widget.VBox {
               includeCommandLineAPI: false,
               silent: true,
               returnByValue: false,
-              generatePreview: false
+              generatePreview: false,
+              timeout: undefined,
+              throwOnSideEffect: undefined,
+              disableBreaks: undefined,
+              replMode: undefined,
+              allowUnsafeEvalBlockedByCSP: undefined,
             },
             /* userGesture */ false,
             /* awaitPromise */ false)
-        .then(result => result.object && !result.exceptionDetails ? result.object : null);
+        .then(result => {
+          if ('error' in result || result.exceptionDetails) {
+            return null;
+          }
+          return result.object;
+        });
   }
 
   /**

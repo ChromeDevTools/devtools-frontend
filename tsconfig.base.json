@@ -11,6 +11,12 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    "composite": true,
+    "declaration": true,
+
+    "sourceMap": true,
+    "inlineSources": true
   }
 }

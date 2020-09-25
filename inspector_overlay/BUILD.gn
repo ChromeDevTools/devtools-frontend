@@ -112,8 +112,8 @@ ts_library("inspector_overlay") {
     "tool_paused_impl.js",
     "tool_screenshot.js",
     "tool_screenshot_impl.js",
-    "tool_source_order.js",
-    "tool_source_order_impl.js",
+    "tool_source_order.ts",
+    "tool_source_order_impl.ts",
     "tool_viewport_size.js",
     "tool_viewport_size_impl.js",
   ]

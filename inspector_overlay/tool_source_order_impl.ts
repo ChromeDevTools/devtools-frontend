@@ -43,7 +43,7 @@ export class SourceOrderOverlay extends Overlay {
     }
   }
 
-  setPlatform(platform) {
+  setPlatform(platform: string) {
     super.setPlatform(platform);
 
     this.document.body.classList.add('fill');
@@ -83,7 +83,7 @@ export class SourceOrderOverlay extends Overlay {
     return {bounds: bounds};
   }
 
-  _drawSourceOrderLabel(sourceOrder, color, bounds) {
+  _drawSourceOrderLabel(sourceOrder: string, color: string, bounds: Bounds) {
     const sourceOrderContainer = this.sourceOrderContainer;
     const otherLabels = sourceOrderContainer.children;
     const labelContainer = sourceOrderContainer.createChild('div', 'source-order-label-container');
@@ -152,14 +152,18 @@ export const LabelTypes = {
   bottomCornerWiderTaller: 'bottom-corner-wider-taller',
 };
 
+interface Bounds {
+  minX: number;
+  maxX: number;
+  minY: number;
+  maxY: number;
+}
+
 /**
  * Calculates the coordinates to place the label based on position type
- * @param {string} positionType
- * @param {object} bounds
- * @param {number} labelHeight
- * @returns {{contentTop: number; contentLeft: number}}
  */
-export function _getPositionFromLabelType(positionType, bounds, labelHeight) {
+export function _getPositionFromLabelType(
+    positionType: string, bounds: Bounds, labelHeight: number): {contentTop: number; contentLeft: number} {
   let contentTop;
   switch (positionType) {
     case LabelTypes.topCorner:
@@ -188,14 +192,10 @@ export function _getPositionFromLabelType(positionType, bounds, labelHeight) {
 /**
  * Determines the position type of the label based on the element it's associated
  * with, avoiding overlaps between other labels
- * @param {object} bounds
- * @param {number} labelHeight
- * @param {number} labelWidth
- * @param {HTMLCollection} otherLabels
- * @param {number} canvasHeight
- * @returns {string}
  */
-export function _getLabelType(bounds, labelHeight, labelWidth, otherLabels, canvasHeight) {
+export function _getLabelType(
+    bounds: Bounds, labelHeight: number, labelWidth: number, otherLabels: HTMLCollection,
+    canvasHeight: number): keyof typeof LabelTypes {
   let labelType;
   // Label goes in the top left corner if the element is bigger than the label
   // or if there are too many child nodes
@@ -250,7 +250,8 @@ export function _getLabelType(bounds, labelHeight, labelWidth, otherLabels, canv
   return labelType;
 }
 
-function _drawPath(context, commands, outlineColor, isChild, bounds) {
+function _drawPath(
+    context: CanvasRenderingContext2D, commands, outlineColor?: string, isChild: boolean, bounds: Bounds): Path2D {
   context.save();
   const path = buildPath(commands, bounds);
   if (outlineColor) {

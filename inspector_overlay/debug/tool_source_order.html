@@ -15,12 +15,12 @@ found in the LICENSE file.
 <body>
   <script type="module">
     function test() {
-        setPlatform("mac");
-        reset(window);
-        drawSourceOrder({"paths":[{"path":["M",122,133.796875,"L",750,133.796875,"L",750,208.796875,"L",122,208.796875,"Z"], "outlineColor":"rgba(244, 90, 183, 1)","name":"content"},],
-        "sourceOrder": 0, colorFormat: "hsl"});
-        drawSourceOrder({"paths":[{"path":["M",300,133.796875,"L",600,133.796875,"L",600,208.796875,"L",300,208.796875,"Z"], "outlineColor":"rgba(0, 120, 212, 1)","name":"content"},],
-        "sourceOrder": 1, colorFormat: "hsl"});
+        dispatch(["setPlatform", "mac"]);
+        dispatch(["reset"]);
+        dispatch(["drawSourceOrder", {"paths":[{"path":["M",122,133.796875,"L",750,133.796875,"L",750,208.796875,"L",122,208.796875,"Z"], "outlineColor":"rgba(244, 90, 183, 1)","name":"content"},],
+        "sourceOrder": 0, colorFormat: "hsl"}]);
+        dispatch(["drawSourceOrder", {"paths":[{"path":["M",300,133.796875,"L",600,133.796875,"L",600,208.796875,"L",300,208.796875,"Z"], "outlineColor":"rgba(0, 120, 212, 1)","name":"content"},],
+        "sourceOrder": 1, colorFormat: "hsl"}]);
     }
     test();
   </script>

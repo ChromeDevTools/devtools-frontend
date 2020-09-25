@@ -18,7 +18,7 @@ export let AreaBounds;  // eslint-disable-line no-unused-vars
 // access to globals via the window object it receives in the constructor.
 // Old logic is kept temporarily while the tools are being migrated.
 export class Overlay {
-  constructor(window) {
+  constructor(window, style) {
     this.viewportSize = {width: 800, height: 600};
     this.deviceScaleFactor = 1;
     this.emulationScaleFactor = 1;
@@ -28,6 +28,7 @@ export class Overlay {
     this.scrollY = 0;
     this.window = window;
     this.document = window.document;
+    this.style = style;
   }
 
   setCanvas(canvas) {
@@ -65,6 +66,9 @@ export class Overlay {
   }
 
   setPlatform(platform) {
+    if (this.style) {
+      adoptStyleSheet(this.style);
+    }
     this.platform = platform;
     this.document.body.classList.add('platform-' + platform);
   }

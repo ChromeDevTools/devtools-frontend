@@ -5,31 +5,11 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
-import {adoptStyleSheet, dispatch, reset, setPlatform} from './common.js';
 import style from './tool_source_order.css';
-import {doReset, drawSourceOrder} from './tool_source_order_impl.js';
+import {SourceOrderOverlay} from './tool_source_order_impl.js';
 
-window.setPlatform = function(platform) {
-  adoptStyleSheet(style);
+const overlay = new SourceOrderOverlay(window, style);
 
-  document.body.classList.add('fill');
-
-  const canvas = document.createElement('canvas');
-  canvas.id = 'canvas';
-  canvas.classList.add('fill');
-  document.body.append(canvas);
-
-  const sourceOrder = document.createElement('div');
-  sourceOrder.id = 'source-order-container';
-  document.body.append(sourceOrder);
-
-  setPlatform(platform);
+window.dispatch = message => {
+  overlay.dispatch(message);
 };
-
-window.reset = function(data) {
-  reset(data);
-  doReset(data);
-};
-
-window.drawSourceOrder = drawSourceOrder;
-window.dispatch = dispatch;

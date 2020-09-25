@@ -63,7 +63,7 @@ action("build_inspector_overlay") {
     "tool_viewport_size.js",
     "5000",  # max_size in bytes
     "tool_source_order.js",
-    "10000",  # max_size in bytes
+    "11000",  # max_size in bytes
     "--input_path",
     rebase_path(target_gen_dir, root_build_dir),
     "--output_path",

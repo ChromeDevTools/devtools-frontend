@@ -42,10 +42,6 @@ describe('_getLabelType', () => {
   const shortBounds = {minX: 100, minY: 100, maxX: 200, maxY: 110};
   const canvasHeight = 1000;
 
-  beforeEach(() => {
-    window.canvasHeight = canvasHeight;
-  });
-
   const TESTS = [
     {
       description: 'can assign topCorner type when the associated element is large enough',
@@ -129,7 +125,7 @@ describe('_getLabelType', () => {
         otherLabelsCollection[0] = overlappingLabel;
       }
 
-      const positionType = _getLabelType(bounds, labelHeight, labelWidth, otherLabelsCollection);
+      const positionType = _getLabelType(bounds, labelHeight, labelWidth, otherLabelsCollection, canvasHeight);
       assert.strictEqual(positionType, expectedType, 'incorrect position type');
     });
   }

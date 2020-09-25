@@ -32,7 +32,74 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
+import {Overlay} from './common.js';
 import {buildPath, emptyBounds} from './highlight_common.js';
+
+export class SourceOrderOverlay extends Overlay {
+  reset(resetData) {
+    super.reset(resetData);
+    if (this.sourceOrderContainer) {
+      this.sourceOrderContainer.removeChildren();
+    }
+  }
+
+  setPlatform(platform) {
+    super.setPlatform(platform);
+
+    this.document.body.classList.add('fill');
+
+    const canvas = this.document.createElement('canvas');
+    canvas.id = 'canvas';
+    canvas.classList.add('fill');
+    this.document.body.append(canvas);
+
+    const sourceOrderContainer = this.document.createElement('div');
+    sourceOrderContainer.id = 'source-order-container';
+    this.document.body.append(sourceOrderContainer);
+    this.sourceOrderContainer = sourceOrderContainer;
+
+    this.setCanvas(canvas);
+  }
+
+  drawSourceOrder(highlight) {
+    const context = this.context;
+
+    context.save();
+    const bounds = emptyBounds();
+    const sourceOrder = highlight.sourceOrder || 0;
+    const path = highlight.paths.slice().pop();
+    const outlineColor = path.outlineColor;
+
+    context.save();
+    _drawPath(context, path.path, outlineColor, !!sourceOrder, bounds);
+    context.restore();
+
+    context.save();
+    if (!!sourceOrder) {
+      this._drawSourceOrderLabel(sourceOrder, outlineColor, bounds);
+    }
+    context.restore();
+
+    return {bounds: bounds};
+  }
+
+  _drawSourceOrderLabel(sourceOrder, color, bounds) {
+    const sourceOrderContainer = this.sourceOrderContainer;
+    const otherLabels = sourceOrderContainer.children;
+    const labelContainer = sourceOrderContainer.createChild('div', 'source-order-label-container');
+    labelContainer.style.color = color;
+    labelContainer.textContent = sourceOrder;
+
+    const labelHeight = labelContainer.offsetHeight;
+    const labelWidth = labelContainer.offsetWidth;
+    const labelType = _getLabelType(bounds, labelHeight, labelWidth, otherLabels, this.canvasHeight);
+    const labelPosition = _getPositionFromLabelType(labelType, bounds, labelHeight);
+
+    labelContainer.classList.add(labelType);
+    labelContainer.style.top = labelPosition.contentTop + 'px';
+    labelContainer.style.left = labelPosition.contentLeft + 'px';
+  }
+}
 
 // If there is a large number of child elements, labels will be placed in the top
 // corner in order to keep the overlay rendering quick
@@ -85,10 +152,6 @@ export const LabelTypes = {
   bottomCornerWiderTaller: 'bottom-corner-wider-taller',
 };
 
-export function doReset() {
-  document.getElementById('source-order-container').removeChildren();
-}
-
 /**
  * Calculates the coordinates to place the label based on position type
  * @param {string} positionType
@@ -129,9 +192,10 @@ export function _getPositionFromLabelType(positionType, bounds, labelHeight) {
  * @param {number} labelHeight
  * @param {number} labelWidth
  * @param {HTMLCollection} otherLabels
+ * @param {number} canvasHeight
  * @returns {string}
  */
-export function _getLabelType(bounds, labelHeight, labelWidth, otherLabels) {
+export function _getLabelType(bounds, labelHeight, labelWidth, otherLabels, canvasHeight) {
   let labelType;
   // Label goes in the top left corner if the element is bigger than the label
   // or if there are too many child nodes
@@ -168,7 +232,7 @@ export function _getLabelType(bounds, labelHeight, labelWidth, otherLabels) {
       labelType = LabelTypes.aboveElementWider;
     }
     // Label goes below the element if would go off the screen/overlap with another label
-  } else if (bounds.maxY + labelHeight < window.canvasHeight) {
+  } else if (bounds.maxY + labelHeight < canvasHeight) {
     labelType = LabelTypes.belowElement;
     if (widerThanElement) {
       labelType = LabelTypes.belowElementWider;
@@ -186,23 +250,6 @@ export function _getLabelType(bounds, labelHeight, labelWidth, otherLabels) {
   return labelType;
 }
 
-function _drawSourceOrderLabel(sourceOrder, color, bounds) {
-  const sourceOrderContainer = document.getElementById('source-order-container');
-  const otherLabels = sourceOrderContainer.children;
-  const labelContainer = sourceOrderContainer.createChild('div', 'source-order-label-container');
-  labelContainer.style.color = color;
-  labelContainer.textContent = sourceOrder;
-
-  const labelHeight = labelContainer.offsetHeight;
-  const labelWidth = labelContainer.offsetWidth;
-  const labelType = _getLabelType(bounds, labelHeight, labelWidth, otherLabels);
-  const labelPosition = _getPositionFromLabelType(labelType, bounds, labelHeight);
-
-  labelContainer.classList.add(labelType);
-  labelContainer.style.top = labelPosition.contentTop + 'px';
-  labelContainer.style.left = labelPosition.contentLeft + 'px';
-}
-
 function _drawPath(context, commands, outlineColor, isChild, bounds) {
   context.save();
   const path = buildPath(commands, bounds);
@@ -216,26 +263,4 @@ function _drawPath(context, commands, outlineColor, isChild, bounds) {
   }
   context.restore();
   return path;
-}
-
-export function drawSourceOrder(highlight, context) {
-  context = context || window.context;
-
-  context.save();
-  const bounds = emptyBounds();
-  const sourceOrder = highlight.sourceOrder || 0;
-  const path = highlight.paths.slice().pop();
-  const outlineColor = path.outlineColor;
-
-  context.save();
-  _drawPath(context, path.path, outlineColor, !!sourceOrder, bounds);
-  context.restore();
-
-  context.save();
-  if (!!sourceOrder) {
-    _drawSourceOrderLabel(sourceOrder, outlineColor, bounds);
-  }
-  context.restore();
-
-  return {bounds: bounds};
 }

@@ -81,6 +81,8 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     this._pendingWidget = null;
     /** @type {?UI.Toolbar.ToolbarToggle} */
     this._pendingWidgetToggle = null;
+    /** @type {?UI.Toolbar.Toolbar} */
+    this._toolbar = null;
     this._toolbarPaneElement = this._createStylesSidebarToolbar();
     this._computedStyleModel = new ComputedStyleModel();
 
@@ -842,6 +844,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     const toolbar = new UI.Toolbar.Toolbar('styles-pane-toolbar', hbox);
     toolbar.makeToggledGray();
     toolbar.appendItemsAtLocation('styles-sidebarpane-toolbar');
+    this._toolbar = toolbar;
     const toolbarPaneContainer = container.createChild('div', 'styles-sidebar-toolbar-pane-container');
     const toolbarPaneContent = toolbarPaneContainer.createChild('div', 'styles-sidebar-toolbar-pane');
 
@@ -866,6 +869,15 @@ export class StylesSidebarPane extends ElementsSidebarPane {
 
     if (widget && toggle) {
       toggle.setToggled(true);
+    }
+  }
+
+  /**
+   * @param {!UI.Toolbar.ToolbarItem} item
+   */
+  appendToolbarItem(item) {
+    if (this._toolbar) {
+      this._toolbar.appendToolbarItem(item);
     }
   }
 

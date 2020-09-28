@@ -2,13 +2,6 @@
 <svg width="374px" height="795px" viewBox="0 0 374 795" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <title>iPhone 5</title>
     <defs>
-        <linearGradient x1="58.9659534%" y1="48.080666%" x2="34.111078%" y2="53.3994176%" id="linearGradient-1">
-            <stop stop-color="#3A3E3A" offset="8.860001%"></stop>
-            <stop stop-color="#2E332E" offset="34.31%"></stop>
-            <stop stop-color="#C0C1C2" offset="36%"></stop>
-            <stop stop-color="#3C3F3E" offset="51.34%"></stop>
-            <stop stop-color="#4B4E4B" offset="64.16%"></stop>
-        </linearGradient>
         <linearGradient x1="-17.9960388%" y1="8.33030962%" x2="65.7898338%" y2="59.671955%" id="linearGradient-2">
             <stop stop-color="#787A81" offset="0%"></stop>
             <stop stop-color="#50555D" offset="63.53%"></stop>
@@ -57,7 +50,7 @@
                 <path d="M244.4,5.7 L244.4,2 C244.4,1 245.2,0.2 246.2,0.2 L301.8,0.2 C302.8,0.2 303.6,1 303.6,2 L303.6,5.7 L244.4,5.7 L244.4,5.7 Z" id="Shape" fill="#808086"></path>
                 <path d="M0.8,182.4 C0.8,181.4 1.6,180.5 2.7,180.5 L6.4,180.5 L6.4,208.6 L2.7,208.6 C1.7,208.6 0.8,207.8 0.8,206.7 L0.8,182.4 L0.8,182.4 L0.8,182.4 Z" id="Shape" fill="#808086"></path>
                 <path d="M0.8,248.8 C0.8,247.8 1.6,246.9 2.7,246.9 L6.4,246.9 L6.4,275 L2.7,275 C1.7,275 0.8,274.2 0.8,273.1 L0.8,248.8 L0.8,248.8 L0.8,248.8 Z" id="Shape" fill="#808086"></path>
-                <path d="M60.6,794.7 C29.4,794.7 4,769.3 4,738.1 L4,61.5 C4,30.3 29.4,4.9 60.6,4.9 L316.6,4.9 C347.8,4.9 373.2,30.3 373.2,61.5 L373.2,738.1 C373.2,769.3 347.8,794.7 316.6,794.7 L60.6,794.7 L60.6,794.7 Z" id="Shape" fill="url(#linearGradient-1)"></path>
+                <path d="M60.6,794.7 C29.4,794.7 4,769.3 4,738.1 L4,61.5 C4,30.3 29.4,4.9 60.6,4.9 L316.6,4.9 C347.8,4.9 373.2,30.3 373.2,61.5 L373.2,738.1 C373.2,769.3 347.8,794.7 316.6,794.7 L60.6,794.7 L60.6,794.7 Z" id="Shape" fill="#3A3E3A"></path>
                 <path d="M60.6,790.6 C31.7,790.6 8.1,767.1 8.1,738.1 L8.1,61.5 C8.1,32.5 31.7,9 60.6,9 L316.6,9 C345.6,9 369.1,32.5 369.1,61.5 L369.1,738.1 C369.1,767.1 345.6,790.6 316.6,790.6 L60.6,790.6 L60.6,790.6 L60.6,790.6 Z" id="Shape" fill="url(#linearGradient-2)"></path>
                 <rect id="Rectangle-path" fill="#2E2E2E" x="4" y="72" width="6.7" height="6"></rect>
                 <rect id="Rectangle-path" fill="#1F1F1F" x="366.5" y="72" width="6.7" height="6"></rect>

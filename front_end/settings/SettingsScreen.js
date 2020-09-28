@@ -319,7 +319,8 @@ export class ExperimentsSettingsTab extends SettingsTab {
     const stableExperiments = experiments.filter(e => !e.unstable);
     if (stableExperiments.length) {
       const experimentsSection = this._appendSection();
-      const warningMessage = Common.UIString.UIString('These experiments could be dangerous and may require restart.');
+      const warningMessage = Common.UIString.UIString(
+          'These experiments could be unstable or unreliable and may require you to restart DevTools.');
       experimentsSection.appendChild(this._createExperimentsWarningSubsection(warningMessage));
       for (const experiment of stableExperiments) {
         experimentsSection.appendChild(this._createExperimentCheckbox(experiment));

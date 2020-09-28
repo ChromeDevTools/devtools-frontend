@@ -27,6 +27,9 @@
   <message name="IDS_DEVTOOLS_57c69dec9f5b9b3f413fa34e66493589" desc="Label for a button in the settings pane that edits a keyboard shortcut">
     Edit shortcut
   </message>
+  <message name="IDS_DEVTOOLS_5fc5205a5450ccfb41faeda43663d589" desc="Message shown in the experiments panel to warn users about any possible unstable features.">
+    These experiments could be unstable or unreliable and may require you to restart DevTools.
+  </message>
   <message name="IDS_DEVTOOLS_6d507b9a707831f7702af21fa5dec071" desc="Label for a button in the settings pane that confirms changes to a keyboard shortcut">
     Confirm changes
   </message>
@@ -86,9 +89,6 @@
   </message>
   <message name="IDS_DEVTOOLS_dd08f9d5ae3e9ba421754fd31db1a44a" desc="Error message in Framework Blackbox settings pane that declares pattern already exits">
     Pattern already exists
-  </message>
-  <message name="IDS_DEVTOOLS_e3b2f7d0af9c89f5ea504968ffcd2ef0" desc="Message text content in Settings Screen of the Settings">
-    These experiments could be dangerous and may require restart.
   </message>
   <message name="IDS_DEVTOOLS_eafc5915e8d8dd2a8c5aa30581f08ba5" desc="Messages shown in shortcuts settings when the user inputs a shortcut that is already in use.">
       This shortcut is in use by <ph name="ACTION_TITLE__">$1s<ex>Start/stop recording</ex></ph>.

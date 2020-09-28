@@ -47,7 +47,7 @@ class SourceVariable extends SDK.RemoteObject.RemoteObjectImpl {
   async _getEvaluator() {
     if (!this._evaluator) {
       this._evaluator = await this._plugin.evaluateVariable(this._variable.name, this._location).catch(error => {
-        Common.Console.Console.instance().warn(ls`Error in debugger language plugin: ${error.message} (${error.code})`);
+        Common.Console.Console.instance().error(ls`Error in debugger language plugin: ${error.message}`);
         return null;
       });
     }
@@ -494,10 +494,7 @@ export class DebuggerLanguagePluginManager {
     try {
       sourceLocations = await plugin.rawLocationToSourceLocation(pluginLocation);
     } catch (error) {
-      if (!(error instanceof DebuggerLanguagePluginError)) {
-        throw error;
-      }
-      Common.Console.Console.instance().warn(ls`Error in debugger language plugin: ${error.message} (${error.code})`);
+      Common.Console.Console.instance().error(ls`Error in debugger language plugin: ${error.message}`);
       return null;
     }
 
@@ -543,10 +540,7 @@ export class DebuggerLanguagePluginManager {
     try {
       return (await Promise.all(locationPromises)).flat();
     } catch (error) {
-      if (!(error instanceof DebuggerLanguagePluginError)) {
-        throw error;
-      }
-      Common.Console.Console.instance().warn(ls`Error in debugger language plugin: ${error.message} (${error.code})`);
+      Common.Console.Console.instance().error(ls`Error in debugger language plugin: ${error.message}`);
       return null;
     }
 
@@ -674,10 +668,7 @@ export class DebuggerLanguagePluginManager {
       this._debuggerWorkspaceBinding.updateLocations(script);
       return plugin;
     } catch (error) {
-      if (!(error instanceof DebuggerLanguagePluginError)) {
-        throw error;
-      }
-      Common.Console.Console.instance().warn(ls`Error in debugger language plugin: ${error.message} (${error.code})`);
+      Common.Console.Console.instance().error(ls`Error in debugger language plugin: ${error.message}`);
       return null;
     }
   }
@@ -748,10 +739,7 @@ export class DebuggerLanguagePluginManager {
       }
       return Array.from(scopes.values());
     } catch (error) {
-      if (!(error instanceof DebuggerLanguagePluginError)) {
-        throw error;
-      }
-      Common.Console.Console.instance().warn(ls`Error in debugger language plugin: ${error.message} (${error.code})`);
+      Common.Console.Console.instance().error(ls`Error in debugger language plugin: ${error.message}`);
       return null;
     }
   }
@@ -774,26 +762,11 @@ export class DebuggerLanguagePluginManager {
     try {
       await plugin.removeRawModule(script.sourceURL);
     } catch (error) {
-      if (!(error instanceof DebuggerLanguagePluginError)) {
-        throw error;
-      }
-      Common.Console.Console.instance().warn(ls`Error in debugger language plugin: ${error.message} (${error.code})`);
+      Common.Console.Console.instance().error(ls`Error in debugger language plugin: ${error.message}`);
     }
     for (const uiSourceCode of this._uiSourceCodes.keys()) {
       this._unbindUISourceCode(uiSourceCode, script);
     }
-  }
-}
-
-export class DebuggerLanguagePluginError extends Error {
-  /**
-   * @param {string} code
-   * @param {string} message
-   */
-  constructor(code, message) {
-    super(message);
-    this.code = code;
-    this.name = 'DebuggerLanguagePluginError';
   }
 }
 
@@ -888,7 +861,6 @@ export class DebuggerLanguagePlugin {
    * @param {string} symbolsURL - URL of a file providing the debug symbols for this module
    * @param {!RawModule} rawModule
    * @return {!Promise<!Array<string>>} - An array of URLs for the source files for the raw module
-   * @throws {DebuggerLanguagePluginError}
   */
   async addRawModule(rawModuleId, symbolsURL, rawModule) {
     throw new Error('Not implemented yet');
@@ -897,7 +869,6 @@ export class DebuggerLanguagePlugin {
   /** Find locations in raw modules from a location in a source file
    * @param {!SourceLocation} sourceLocation
    * @return {!Promise<!Array<!RawLocationRange>>}
-   * @throws {DebuggerLanguagePluginError}
   */
   async sourceLocationToRawLocation(sourceLocation) {
     throw new Error('Not implemented yet');
@@ -906,7 +877,6 @@ export class DebuggerLanguagePlugin {
   /** Find locations in source files from a location in a raw module
    * @param {!RawLocation} rawLocation
    * @return {!Promise<!Array<!SourceLocation>>}
-   * @throws {DebuggerLanguagePluginError}
   */
   async rawLocationToSourceLocation(rawLocation) {
     throw new Error('Not implemented yet');
@@ -915,7 +885,6 @@ export class DebuggerLanguagePlugin {
   /** List all variables in lexical scope at a given location in a raw module
    * @param {!RawLocation} rawLocation
    * @return {!Promise<!Array<!Variable>>}
-   * @throws {DebuggerLanguagePluginError}
   */
   async listVariablesInScope(rawLocation) {
     throw new Error('Not implemented yet');
@@ -925,7 +894,6 @@ export class DebuggerLanguagePlugin {
    * @param {string} name
    * @param {!RawLocation} location
    * @return {!Promise<?EvaluatorModule>}
-   * @throws {DebuggerLanguagePluginError}
   */
   async evaluateVariable(name, location) {
     throw new Error('Not implemented yet');
@@ -935,7 +903,6 @@ export class DebuggerLanguagePlugin {
    * Notifies the plugin that a script is removed.
    * @param {string} rawModuleId
    * @return {!Promise<void>}
-   * @throws {Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginError}
    */
   removeRawModule(rawModuleId) {
     throw new Error('Not implemented yet');

@@ -5,7 +5,7 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
-import * as Bindings from '../bindings/bindings.js';
+import * as Bindings from '../bindings/bindings.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 
 /**
@@ -71,15 +71,10 @@ export class LanguageExtensionEndpoint {
    * @param {string} symbolsURL - URL of a file providing the debug symbols for this module
    * @param {!Bindings.DebuggerLanguagePlugins.RawModule} rawModule
    * @return {!Promise<!Array<string>>} - An array of URLs for the source files for the raw module
-   * @throws {Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginError}
   */
   addRawModule(rawModuleId, symbolsURL, rawModule) {
-    try {
-      return /** @type {!Promise<!Array<string>>} */ (
-          this._sendRequest(this._commands.AddRawModule, {rawModuleId, symbolsURL, rawModule}));
-    } catch (error) {
-      throw new Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginError('EXTENSION_ERROR', error.message);
-    }
+    return /** @type {!Promise<!Array<string>>} */ (
+        this._sendRequest(this._commands.AddRawModule, {rawModuleId, symbolsURL, rawModule}));
   }
 
   /**
@@ -87,59 +82,39 @@ export class LanguageExtensionEndpoint {
    * @override
    * @param {string} rawModuleId
    * @return {!Promise<undefined>}
-   * @throws {Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginError}
    */
   removeRawModule(rawModuleId) {
-    try {
-      return /** @type {!Promise<undefined>} */ (this._sendRequest(this._commands.RemoveRawModule, {rawModuleId}));
-    } catch (error) {
-      throw new Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginError('EXTENSION_ERROR', error.message);
-    }
+    return /** @type {!Promise<undefined>} */ (this._sendRequest(this._commands.RemoveRawModule, {rawModuleId}));
   }
 
   /** Find locations in raw modules from a location in a source file
    * @override
    * @param {!Bindings.DebuggerLanguagePlugins.SourceLocation} sourceLocation
    * @return {!Promise<!Array<!Bindings.DebuggerLanguagePlugins.RawLocationRange>>}
-   * @throws {Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginError}
   */
   sourceLocationToRawLocation(sourceLocation) {
-    try {
-      return /** @type {!Promise<!Array<!Bindings.DebuggerLanguagePlugins.RawLocationRange>>} */ (
-          this._sendRequest(this._commands.SourceLocationToRawLocation, {sourceLocation}));
-    } catch (error) {
-      throw new Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginError('EXTENSION_ERROR', error.message);
-    }
+    return /** @type {!Promise<!Array<!Bindings.DebuggerLanguagePlugins.RawLocationRange>>} */ (
+        this._sendRequest(this._commands.SourceLocationToRawLocation, {sourceLocation}));
   }
 
   /** Find locations in source files from a location in a raw module
    * @override
    * @param {!Bindings.DebuggerLanguagePlugins.RawLocation} rawLocation
    * @return {!Promise<!Array<!Bindings.DebuggerLanguagePlugins.SourceLocation>>}
-   * @throws {Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginError}
   */
   rawLocationToSourceLocation(rawLocation) {
-    try {
-      return /** @type {!Promise<!Array<!Bindings.DebuggerLanguagePlugins.SourceLocation>>} */ (
-          this._sendRequest(this._commands.RawLocationToSourceLocation, {rawLocation}));
-    } catch (error) {
-      throw new Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginError('EXTENSION_ERROR', error.message);
-    }
+    return /** @type {!Promise<!Array<!Bindings.DebuggerLanguagePlugins.SourceLocation>>} */ (
+        this._sendRequest(this._commands.RawLocationToSourceLocation, {rawLocation}));
   }
 
   /** List all variables in lexical scope at a given location in a raw module
    * @override
    * @param {!Bindings.DebuggerLanguagePlugins.RawLocation} rawLocation
    * @return {!Promise<!Array<!Bindings.DebuggerLanguagePlugins.Variable>>}
-   * @throws {Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginError}
   */
   listVariablesInScope(rawLocation) {
-    try {
-      return /** @type {!Promise<!Array<!Bindings.DebuggerLanguagePlugins.Variable>>} */ (
-          this._sendRequest(this._commands.ListVariablesInScope, {rawLocation}));
-    } catch (error) {
-      throw new Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginError('EXTENSION_ERROR', error.message);
-    }
+    return /** @type {!Promise<!Array<!Bindings.DebuggerLanguagePlugins.Variable>>} */ (
+        this._sendRequest(this._commands.ListVariablesInScope, {rawLocation}));
   }
 
   /** Evaluate the content of a variable in a given lexical scope
@@ -147,15 +122,10 @@ export class LanguageExtensionEndpoint {
    * @param {string} name
    * @param {!Bindings.DebuggerLanguagePlugins.RawLocation} location
    * @return {!Promise<?Bindings.DebuggerLanguagePlugins.EvaluatorModule>}
-   * @throws {Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginError}
   */
   evaluateVariable(name, location) {
-    try {
-      return /** @type {!Promise<?Bindings.DebuggerLanguagePlugins.EvaluatorModule>}*/ (
-          this._sendRequest(this._commands.EvaluateVariable, {name, location}));
-    } catch (error) {
-      throw new Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginError('EXTENSION_ERROR', error.message);
-    }
+    return /** @type {!Promise<?Bindings.DebuggerLanguagePlugins.EvaluatorModule>}*/ (
+        this._sendRequest(this._commands.EvaluateVariable, {name, location}));
   }
 
   /**

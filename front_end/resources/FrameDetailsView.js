@@ -19,15 +19,21 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
    */
   constructor(frame) {
     super();
+    this.registerRequiredCSS('resources/frameDetailsReportView.css');
     this._frame = frame;
+    this.contentElement.classList.add('frame-details-container');
+
     this._reportView = new UI.ReportView.ReportView(frame.displayName());
     this._reportView.registerRequiredCSS('resources/frameDetailsReportView.css');
     this._reportView.show(this.contentElement);
+    this._reportView.element.classList.add('frame-details-report-container');
 
     this._generalSection = this._reportView.appendSection(ls`Document`);
     this._urlFieldValue = this._generalSection.appendField(ls`URL`);
+    this._urlStringElement = this._urlFieldValue.createChild('div', 'text-ellipsis');
     this._unreachableURL = this._generalSection.appendField(ls`Unreachable URL`);
-    this._originFieldValue = this._generalSection.appendField(ls`Origin`);
+    const originFieldValue = this._generalSection.appendField(ls`Origin`);
+    this._originStringElement = originFieldValue.createChild('div', 'text-ellipsis');
     this._ownerFieldValue = this._generalSection.appendField(ls`Owner Element`);
     /** @type {?SDK.DOMModel.DOMNode} */
     this._ownerDomNode = null;
@@ -45,7 +51,10 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
    * @return {!Promise<?>}
    */
   async doUpdate() {
-    this._urlFieldValue.textContent = this._frame.url;
+    this._urlFieldValue.removeChildren();
+    this._urlStringElement.textContent = this._frame.url;
+    this._urlStringElement.title = this._frame.url;
+    this._urlFieldValue.appendChild(this._urlStringElement);
     if (!this._frame.unreachableUrl()) {
       const sourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(this._frame.url);
       const revealSource = FrameDetailsView.linkifyIcon(
@@ -55,7 +64,8 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     FrameDetailsView.maybeAppendLinkToRequest(this._urlFieldValue, this._frame.resourceForURL(this._frame.url));
     this._maybeAppendLinkForUnreachableUrl();
     if (this._frame.securityOrigin && this._frame.securityOrigin !== '://') {
-      this._originFieldValue.textContent = this._frame.securityOrigin;
+      this._originStringElement.textContent = this._frame.securityOrigin;
+      this._originStringElement.title = this._frame.securityOrigin;
       this._generalSection.setFieldVisible(ls`Origin`, true);
     } else {
       this._generalSection.setFieldVisible(ls`Origin`, false);

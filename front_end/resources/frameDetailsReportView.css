@@ -42,3 +42,21 @@
   background-color: var(--link-color);
   vertical-align: sub;
 }
+
+.frame-details-container {
+  overflow: auto;
+}
+
+.frame-details-report-container {
+  min-width: 500px;
+}
+
+.text-ellipsis {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.report-field-value {
+  display: flex;
+}

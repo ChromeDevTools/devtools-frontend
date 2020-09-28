@@ -19,6 +19,8 @@ import {IndexedDBModel} from './IndexedDBModel.js';
 export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
   constructor() {
     super(true, 1000);
+    this.registerRequiredCSS('resources/clearStorageView.css');
+    this.contentElement.classList.add('clear-storage-container');
     const types = Protocol.Storage.StorageType;
     this._pieColors = new Map([
       [types.Appcache, 'rgb(110, 161, 226)'],        // blue

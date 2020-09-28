@@ -26,3 +26,11 @@
 .usage-breakdown-row {
   min-width: fit-content;
 }
+
+.clear-storage-container {
+  overflow: auto;
+}
+
+.clear-storage-header {
+  min-width: 400px;
+}

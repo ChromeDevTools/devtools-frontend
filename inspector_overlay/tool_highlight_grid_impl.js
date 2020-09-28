@@ -32,21 +32,49 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
+import {Overlay} from './common.js';
 import {drawLayoutGridHighlight} from './highlight_grid_common.js';
 
-export function doReset() {
-  document.getElementById('grid-label-container').removeChildren();
-  window._gridLayerCounter = 1;
-  window._gridPainted = false;
-}
+export class HighlightGridOverlay extends Overlay {
+  reset(resetData) {
+    super.reset(resetData);
+    this.gridLabels.removeChildren();
+    this.window._gridLayerCounter = 1;
+    this.window._gridPainted = false;
+    // TODO(alexrudenko): Temporarily expose canvas params globally.
+    window.canvasWidth = this.canvasWidth;
+    window.canvasHeight = this.canvasHeight;
+  }
 
-export function drawGridHighlight(highlight, context) {
-  context = context || window.context;
-  context.save();
+  setPlatform(platform) {
+    super.setPlatform(platform);
 
-  drawLayoutGridHighlight(highlight, context);
+    this.document.body.classList.add('fill');
 
-  context.restore();
+    const canvas = this.document.createElement('canvas');
+    canvas.id = 'canvas';
+    canvas.classList.add('fill');
+    this.document.body.append(canvas);
 
-  return;
+    this.renderGridMarkup();
+
+    this.setCanvas(canvas);
+  }
+
+  renderGridMarkup() {
+    const gridLabels = this.document.createElement('div');
+    gridLabels.id = 'grid-label-container';
+    this.document.body.append(gridLabels);
+    this.gridLabels = gridLabels;
+  }
+
+  drawGridHighlight(highlight) {
+    const context = this.context;
+
+    context.save();
+
+    drawLayoutGridHighlight(highlight, context, this.deviceScaleFactor, this.canvasWidth, this.canvasHeight);
+
+    context.restore();
+  }
 }

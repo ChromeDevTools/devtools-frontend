@@ -14,15 +14,21 @@ found in the LICENSE file.
 </head>
 <body>
   <script type="module">
-    window.viewportSize = {
-      width: document.documentElement.clientWidth,
-      height: document.documentElement.clientHeight
-    };
+    dispatch(["setPlatform", "mac"]);
+    dispatch(["reset", {
+      viewportSize: {
+        width: document.documentElement.clientWidth,
+        height: document.documentElement.clientHeight
+      },
+      deviceScaleFactor: 1,
+      pageScaleFactor: 1,
+      pageZoomFactor: 1,
+      emulationScaleFactor: 1,
+      scrollX: 0,
+      scrollY: 0,
+    }]);
 
-    setPlatform("mac");
-    reset(window);
-
-    drawHighlight({
+    dispatch(["drawHighlight", {
       "paths": [],
       "gridInfo": [
         {
@@ -39,7 +45,7 @@ found in the LICENSE file.
           "isPrimaryGrid":true
         }
       ]
-    });
+    }]);
   </script>
 </body>
 </html>

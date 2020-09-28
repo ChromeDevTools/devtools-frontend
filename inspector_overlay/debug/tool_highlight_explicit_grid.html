@@ -14,10 +14,10 @@ found in the LICENSE file.
 </head>
 <body>
   <script type="module">
-    setPlatform("mac");
-    reset(window);
+    dispatch(["setPlatform", "mac"]);
+    dispatch(["reset"]);
 
-    drawHighlight({
+    dispatch(["drawHighlight", {
       "paths":[
         {"path":["M",100,60,"L",420,60,"L",420,204,"L",100,204,"Z"],"fillColor":"rgba(111, 168, 220, .66)","name":"content"},
         {"path":["M",90,50,"L",430,50,"L",430,214,"L",90,214,"Z"],"fillColor":"rgba(147, 196, 125, .55)","name":"padding"},
@@ -39,7 +39,7 @@ found in the LICENSE file.
           "isPrimaryGrid":true
         }
       ]
-    });
+    }]);
   </script>
 </body>
 </html>

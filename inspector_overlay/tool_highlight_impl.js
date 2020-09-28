@@ -33,9 +33,237 @@
 
 import {contrastRatio, rgbaToHsla} from '../front_end/common/ColorUtils.js';
 
+import {Overlay} from './common.js';
 import {Bounds, createElement} from './common.js';  // eslint-disable-line no-unused-vars
-import {buildPath, drawRulers, emptyBounds} from './highlight_common.js';
+import {buildPath, emptyBounds} from './highlight_common.js';
 import {drawLayoutGridHighlight} from './highlight_grid_common.js';
+import {HighlightGridOverlay} from './tool_highlight_grid_impl.js';
+
+export class HighlightOverlay extends Overlay {
+  reset(resetData) {
+    super.reset(resetData);
+    this.tooltip.removeChildren();
+    this.gridOverlay.reset(resetData);
+
+    // TODO(alexrudenko): Temporarily expose canvas params globally.
+    window.canvasWidth = this.canvasWidth;
+    window.canvasHeight = this.canvasHeight;
+  }
+
+  setPlatform(platform) {
+    super.setPlatform(platform);
+
+    this.document.body.classList.add('fill');
+
+    const canvas = this.document.createElement('canvas');
+    canvas.id = 'canvas';
+    canvas.classList.add('fill');
+    this.document.body.append(canvas);
+
+    const tooltip = this.document.createElement('div');
+    tooltip.id = 'tooltip-container';
+    this.document.body.append(tooltip);
+    this.tooltip = tooltip;
+
+    this.gridOverlay = new HighlightGridOverlay(this.window);
+    this.gridOverlay.renderGridMarkup();
+    this.gridOverlay.setCanvas(canvas);
+
+    this.setCanvas(canvas);
+  }
+
+  drawHighlight(highlight) {
+    const context = this.context;
+    context.save();
+
+    const bounds = emptyBounds();
+
+    for (let paths = highlight.paths.slice(); paths.length;) {
+      const path = paths.pop();
+      context.save();
+      drawPath(context, path.path, path.fillColor, path.outlineColor, bounds);
+      if (paths.length) {
+        context.globalCompositeOperation = 'destination-out';
+        drawPath(context, paths[paths.length - 1].path, 'red', null, bounds);
+      }
+      context.restore();
+    }
+    context.restore();
+
+    context.save();
+
+    const rulerAtRight =
+        highlight.paths.length && highlight.showRulers && bounds.minX < 20 && bounds.maxX + 20 < this.canvasWidth;
+    const rulerAtBottom =
+        highlight.paths.length && highlight.showRulers && bounds.minY < 20 && bounds.maxY + 20 < this.canvasHeight;
+
+    if (highlight.showRulers) {
+      this._drawAxis(context, rulerAtRight, rulerAtBottom);
+    }
+
+    if (highlight.paths.length) {
+      if (highlight.showExtensionLines) {
+        drawRulers(
+            context, bounds, rulerAtRight, rulerAtBottom, undefined, undefined, this.canvasWidth, this.canvasHeight);
+      }
+
+      if (highlight.elementInfo) {
+        _drawElementTitle(highlight.elementInfo, highlight.colorFormat, bounds, this.canvasWidth, this.canvasHeight);
+      }
+    }
+    if (highlight.gridInfo) {
+      for (const grid of highlight.gridInfo) {
+        drawLayoutGridHighlight(grid, context, this.deviceScaleFactor, this.canvasWidth, this.canvasHeight);
+      }
+    }
+    context.restore();
+
+    return {bounds: bounds};
+  }
+
+  drawGridHighlight(highlight) {
+    this.gridOverlay.drawGridHighlight(highlight, this.context, this.deviceScaleFactor);
+  }
+
+  _drawAxis(context, rulerAtRight, rulerAtBottom) {
+    if (this.window._gridPainted) {
+      return;
+    }
+    this.window._gridPainted = true;
+
+    context.save();
+
+    const pageFactor = this.pageZoomFactor * this.pageScaleFactor * this.emulationScaleFactor;
+    const scrollX = this.scrollX * this.pageScaleFactor;
+    const scrollY = this.scrollY * this.pageScaleFactor;
+    function zoom(x) {
+      return Math.round(x * pageFactor);
+    }
+    function unzoom(x) {
+      return Math.round(x / pageFactor);
+    }
+
+    const width = this.canvasWidth / pageFactor;
+    const height = this.canvasHeight / pageFactor;
+
+    const gridSubStep = 5;
+    const gridStep = 50;
+
+    {
+      // Draw X grid background
+      context.save();
+      context.fillStyle = gridBackgroundColor;
+      if (rulerAtBottom) {
+        context.fillRect(0, zoom(height) - 15, zoom(width), zoom(height));
+      } else {
+        context.fillRect(0, 0, zoom(width), 15);
+      }
+
+      // Clip out backgrounds intersection
+      context.globalCompositeOperation = 'destination-out';
+      context.fillStyle = 'red';
+      if (rulerAtRight) {
+        context.fillRect(zoom(width) - 15, 0, zoom(width), zoom(height));
+      } else {
+        context.fillRect(0, 0, 15, zoom(height));
+      }
+      context.restore();
+
+      // Draw Y grid background
+      context.fillStyle = gridBackgroundColor;
+      if (rulerAtRight) {
+        context.fillRect(zoom(width) - 15, 0, zoom(width), zoom(height));
+      } else {
+        context.fillRect(0, 0, 15, zoom(height));
+      }
+    }
+
+    context.lineWidth = 1;
+    context.strokeStyle = darkGridColor;
+    context.fillStyle = darkGridColor;
+    {
+      // Draw labels.
+      context.save();
+      context.translate(-scrollX, 0.5 - scrollY);
+      const maxY = height + unzoom(scrollY);
+      for (let y = 2 * gridStep; y < maxY; y += 2 * gridStep) {
+        context.save();
+        context.translate(scrollX, zoom(y));
+        context.rotate(-Math.PI / 2);
+        context.fillText(y, 2, rulerAtRight ? zoom(width) - 7 : 13);
+        context.restore();
+      }
+      context.translate(0.5, -0.5);
+      const maxX = width + unzoom(scrollX);
+      for (let x = 2 * gridStep; x < maxX; x += 2 * gridStep) {
+        context.save();
+        context.fillText(x, zoom(x) + 2, rulerAtBottom ? scrollY + zoom(height) - 7 : scrollY + 13);
+        context.restore();
+      }
+      context.restore();
+    }
+
+    {
+      // Draw vertical grid
+      context.save();
+      if (rulerAtRight) {
+        context.translate(zoom(width), 0);
+        context.scale(-1, 1);
+      }
+      context.translate(-scrollX, 0.5 - scrollY);
+      const maxY = height + unzoom(scrollY);
+      for (let y = gridStep; y < maxY; y += gridStep) {
+        context.beginPath();
+        context.moveTo(scrollX, zoom(y));
+        const markLength = (y % (gridStep * 2)) ? 5 : 8;
+        context.lineTo(scrollX + markLength, zoom(y));
+        context.stroke();
+      }
+      context.strokeStyle = lightGridColor;
+      for (let y = gridSubStep; y < maxY; y += gridSubStep) {
+        if (!(y % gridStep)) {
+          continue;
+        }
+        context.beginPath();
+        context.moveTo(scrollX, zoom(y));
+        context.lineTo(scrollX + gridSubStep, zoom(y));
+        context.stroke();
+      }
+      context.restore();
+    }
+
+    {
+      // Draw horizontal grid
+      context.save();
+      if (rulerAtBottom) {
+        context.translate(0, zoom(height));
+        context.scale(1, -1);
+      }
+      context.translate(0.5 - scrollX, -scrollY);
+      const maxX = width + unzoom(scrollX);
+      for (let x = gridStep; x < maxX; x += gridStep) {
+        context.beginPath();
+        context.moveTo(zoom(x), scrollY);
+        const markLength = (x % (gridStep * 2)) ? 5 : 8;
+        context.lineTo(zoom(x), scrollY + markLength);
+        context.stroke();
+      }
+      context.strokeStyle = lightGridColor;
+      for (let x = gridSubStep; x < maxX; x += gridSubStep) {
+        if (!(x % gridStep)) {
+          continue;
+        }
+        context.beginPath();
+        context.moveTo(zoom(x), scrollY);
+        context.lineTo(zoom(x), scrollY + gridSubStep);
+        context.stroke();
+      }
+      context.restore();
+    }
+
+    context.restore();
+  }
+}
 
 const lightGridColor = 'rgba(0,0,0,0.2)';
 const darkGridColor = 'rgba(0,0,0,0.7)';
@@ -43,151 +271,6 @@ const gridBackgroundColor = 'rgba(255, 255, 255, 0.8)';
 
 /** @typedef {!Object<string, Array>} */
 let AreaPaths;  // eslint-disable-line no-unused-vars
-
-function _drawAxis(context, rulerAtRight, rulerAtBottom) {
-  if (window._gridPainted) {
-    return;
-  }
-  window._gridPainted = true;
-
-  context.save();
-
-  const pageFactor = pageZoomFactor * pageScaleFactor * emulationScaleFactor;
-  const scrollX = window.scrollX * pageScaleFactor;
-  const scrollY = window.scrollY * pageScaleFactor;
-  function zoom(x) {
-    return Math.round(x * pageFactor);
-  }
-  function unzoom(x) {
-    return Math.round(x / pageFactor);
-  }
-
-  const width = canvasWidth / pageFactor;
-  const height = canvasHeight / pageFactor;
-
-  const gridSubStep = 5;
-  const gridStep = 50;
-
-  {
-    // Draw X grid background
-    context.save();
-    context.fillStyle = gridBackgroundColor;
-    if (rulerAtBottom) {
-      context.fillRect(0, zoom(height) - 15, zoom(width), zoom(height));
-    } else {
-      context.fillRect(0, 0, zoom(width), 15);
-    }
-
-    // Clip out backgrounds intersection
-    context.globalCompositeOperation = 'destination-out';
-    context.fillStyle = 'red';
-    if (rulerAtRight) {
-      context.fillRect(zoom(width) - 15, 0, zoom(width), zoom(height));
-    } else {
-      context.fillRect(0, 0, 15, zoom(height));
-    }
-    context.restore();
-
-    // Draw Y grid background
-    context.fillStyle = gridBackgroundColor;
-    if (rulerAtRight) {
-      context.fillRect(zoom(width) - 15, 0, zoom(width), zoom(height));
-    } else {
-      context.fillRect(0, 0, 15, zoom(height));
-    }
-  }
-
-  context.lineWidth = 1;
-  context.strokeStyle = darkGridColor;
-  context.fillStyle = darkGridColor;
-  {
-    // Draw labels.
-    context.save();
-    context.translate(-scrollX, 0.5 - scrollY);
-    const maxY = height + unzoom(scrollY);
-    for (let y = 2 * gridStep; y < maxY; y += 2 * gridStep) {
-      context.save();
-      context.translate(scrollX, zoom(y));
-      context.rotate(-Math.PI / 2);
-      context.fillText(y, 2, rulerAtRight ? zoom(width) - 7 : 13);
-      context.restore();
-    }
-    context.translate(0.5, -0.5);
-    const maxX = width + unzoom(scrollX);
-    for (let x = 2 * gridStep; x < maxX; x += 2 * gridStep) {
-      context.save();
-      context.fillText(x, zoom(x) + 2, rulerAtBottom ? scrollY + zoom(height) - 7 : scrollY + 13);
-      context.restore();
-    }
-    context.restore();
-  }
-
-  {
-    // Draw vertical grid
-    context.save();
-    if (rulerAtRight) {
-      context.translate(zoom(width), 0);
-      context.scale(-1, 1);
-    }
-    context.translate(-scrollX, 0.5 - scrollY);
-    const maxY = height + unzoom(scrollY);
-    for (let y = gridStep; y < maxY; y += gridStep) {
-      context.beginPath();
-      context.moveTo(scrollX, zoom(y));
-      const markLength = (y % (gridStep * 2)) ? 5 : 8;
-      context.lineTo(scrollX + markLength, zoom(y));
-      context.stroke();
-    }
-    context.strokeStyle = lightGridColor;
-    for (let y = gridSubStep; y < maxY; y += gridSubStep) {
-      if (!(y % gridStep)) {
-        continue;
-      }
-      context.beginPath();
-      context.moveTo(scrollX, zoom(y));
-      context.lineTo(scrollX + gridSubStep, zoom(y));
-      context.stroke();
-    }
-    context.restore();
-  }
-
-  {
-    // Draw horizontal grid
-    context.save();
-    if (rulerAtBottom) {
-      context.translate(0, zoom(height));
-      context.scale(1, -1);
-    }
-    context.translate(0.5 - scrollX, -scrollY);
-    const maxX = width + unzoom(scrollX);
-    for (let x = gridStep; x < maxX; x += gridStep) {
-      context.beginPath();
-      context.moveTo(zoom(x), scrollY);
-      const markLength = (x % (gridStep * 2)) ? 5 : 8;
-      context.lineTo(zoom(x), scrollY + markLength);
-      context.stroke();
-    }
-    context.strokeStyle = lightGridColor;
-    for (let x = gridSubStep; x < maxX; x += gridSubStep) {
-      if (!(x % gridStep)) {
-        continue;
-      }
-      context.beginPath();
-      context.moveTo(zoom(x), scrollY);
-      context.lineTo(zoom(x), scrollY + gridSubStep);
-      context.stroke();
-    }
-    context.restore();
-  }
-
-  context.restore();
-}
-
-export function doReset() {
-  document.getElementById('tooltip-container').removeChildren();
-  document.getElementById('grid-label-container').removeChildren();
-  window._gridPainted = false;
-}
 
 /**
  * @param {!String} hexa
@@ -400,8 +483,10 @@ function _createElementDescription(elementInfo, colorFormat) {
  * @param {Object} elementInfo The highlight config object passed to drawHighlight
  * @param {String} colorFormat
  * @param {Object} bounds
+ * @param {number} canvasWidth
+ * @param {number} canvasHeight
  */
-function _drawElementTitle(elementInfo, colorFormat, bounds) {
+function _drawElementTitle(elementInfo, colorFormat, bounds, canvasWidth, canvasHeight) {
   // Get the tooltip container and empty it, there can only be one tooltip displayed at the same time.
   const tooltipContainer = document.getElementById('tooltip-container');
   tooltipContainer.removeChildren();
@@ -495,50 +580,50 @@ function drawPath(context, commands, fillColor, outlineColor, bounds) {
   return path;
 }
 
-export function drawHighlight(highlight, context) {
-  context = context || window.context;
+const DEFAULT_RULER_COLOR = 'rgba(128, 128, 128, 0.3)';
+
+function drawRulers(context, bounds, rulerAtRight, rulerAtBottom, color, dash, canvasWidth, canvasHeight) {
   context.save();
-
-  const bounds = emptyBounds();
-
-  for (let paths = highlight.paths.slice(); paths.length;) {
-    const path = paths.pop();
-    context.save();
-    drawPath(context, path.path, path.fillColor, path.outlineColor, bounds);
-    if (paths.length) {
-      context.globalCompositeOperation = 'destination-out';
-      drawPath(context, paths[paths.length - 1].path, 'red', null, bounds);
-    }
-    context.restore();
+  const width = canvasWidth;
+  const height = canvasHeight;
+  context.strokeStyle = color || DEFAULT_RULER_COLOR;
+  context.lineWidth = 1;
+  context.translate(0.5, 0.5);
+  if (dash) {
+    context.setLineDash([3, 3]);
   }
+
+  if (rulerAtRight) {
+    for (const y in bounds.rightmostXForY) {
+      context.beginPath();
+      context.moveTo(width, y);
+      context.lineTo(bounds.rightmostXForY[y], y);
+      context.stroke();
+    }
+  } else {
+    for (const y in bounds.leftmostXForY) {
+      context.beginPath();
+      context.moveTo(0, y);
+      context.lineTo(bounds.leftmostXForY[y], y);
+      context.stroke();
+    }
+  }
+
+  if (rulerAtBottom) {
+    for (const x in bounds.bottommostYForX) {
+      context.beginPath();
+      context.moveTo(x, height);
+      context.lineTo(x, bounds.topmostYForX[x]);
+      context.stroke();
+    }
+  } else {
+    for (const x in bounds.topmostYForX) {
+      context.beginPath();
+      context.moveTo(x, 0);
+      context.lineTo(x, bounds.topmostYForX[x]);
+      context.stroke();
+    }
+  }
+
   context.restore();
-
-  context.save();
-
-  const rulerAtRight =
-      highlight.paths.length && highlight.showRulers && bounds.minX < 20 && bounds.maxX + 20 < canvasWidth;
-  const rulerAtBottom =
-      highlight.paths.length && highlight.showRulers && bounds.minY < 20 && bounds.maxY + 20 < canvasHeight;
-
-  if (highlight.showRulers) {
-    _drawAxis(context, rulerAtRight, rulerAtBottom);
-  }
-
-  if (highlight.paths.length) {
-    if (highlight.showExtensionLines) {
-      drawRulers(context, bounds, rulerAtRight, rulerAtBottom);
-    }
-
-    if (highlight.elementInfo) {
-      _drawElementTitle(highlight.elementInfo, highlight.colorFormat, bounds);
-    }
-  }
-  if (highlight.gridInfo) {
-    for (const grid of highlight.gridInfo) {
-      drawLayoutGridHighlight(grid, context);
-    }
-  }
-  context.restore();
-
-  return {bounds: bounds};
 }

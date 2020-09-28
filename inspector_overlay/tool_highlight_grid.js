@@ -5,34 +5,15 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
-import {adoptStyleSheet, dispatch, reset, setPlatform} from './common.js';
 import {gridStyle} from './highlight_grid_common.js';
 import style from './tool_highlight_grid.css';
-import {doReset, drawGridHighlight} from './tool_highlight_grid_impl.js';
+import {HighlightGridOverlay} from './tool_highlight_grid_impl.js';
 
-window.setPlatform = function(platform) {
-  adoptStyleSheet(style);
-  const gridStyleSheet = new CSSStyleSheet();
-  gridStyleSheet.replaceSync(gridStyle);
-  adoptStyleSheet(gridStyleSheet);
+const gridStyleSheet = new CSSStyleSheet();
+gridStyleSheet.replaceSync(gridStyle);
 
-  document.body.classList.add('fill');
+const overlay = new HighlightGridOverlay(window, [style, gridStyleSheet]);
 
-  const canvas = document.createElement('canvas');
-  canvas.id = 'canvas';
-  canvas.classList.add('fill');
-  document.body.append(canvas);
-
-  const gridLabels = document.createElement('div');
-  gridLabels.id = 'grid-label-container';
-  document.body.append(gridLabels);
-
-  setPlatform(platform);
+window.dispatch = message => {
+  overlay.dispatch(message);
 };
-
-window.reset = function(data) {
-  reset(data);
-  doReset(data);
-};
-window.drawGridHighlight = drawGridHighlight;
-window.dispatch = dispatch;

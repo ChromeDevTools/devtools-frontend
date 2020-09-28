@@ -32,54 +32,6 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
-const DEFAULT_RULER_COLOR = 'rgba(128, 128, 128, 0.3)';
-
-export function drawRulers(context, bounds, rulerAtRight, rulerAtBottom, color, dash) {
-  context.save();
-  const width = canvasWidth;
-  const height = canvasHeight;
-  context.strokeStyle = color || DEFAULT_RULER_COLOR;
-  context.lineWidth = 1;
-  context.translate(0.5, 0.5);
-  if (dash) {
-    context.setLineDash([3, 3]);
-  }
-
-  if (rulerAtRight) {
-    for (const y in bounds.rightmostXForY) {
-      context.beginPath();
-      context.moveTo(width, y);
-      context.lineTo(bounds.rightmostXForY[y], y);
-      context.stroke();
-    }
-  } else {
-    for (const y in bounds.leftmostXForY) {
-      context.beginPath();
-      context.moveTo(0, y);
-      context.lineTo(bounds.leftmostXForY[y], y);
-      context.stroke();
-    }
-  }
-
-  if (rulerAtBottom) {
-    for (const x in bounds.bottommostYForX) {
-      context.beginPath();
-      context.moveTo(x, height);
-      context.lineTo(x, bounds.topmostYForX[x]);
-      context.stroke();
-    }
-  } else {
-    for (const x in bounds.topmostYForX) {
-      context.beginPath();
-      context.moveTo(x, 0);
-      context.lineTo(x, bounds.topmostYForX[x]);
-      context.stroke();
-    }
-  }
-
-  context.restore();
-}
-
 export function buildPath(commands, bounds) {
   let commandsIndex = 0;
 

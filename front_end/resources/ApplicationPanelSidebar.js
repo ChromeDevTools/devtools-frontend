@@ -378,7 +378,9 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
         if (i > 0) {
           elementPath[j].expand();
         }
-        elementPath[j].select();
+        if (!elementPath[j].selected) {
+          elementPath[j].select();
+        }
       }
       i--;
       j--;

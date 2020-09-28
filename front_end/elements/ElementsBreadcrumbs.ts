@@ -2,11 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import './NodeText.js';
+
 import * as ComponentHelpers from '../component_helpers/component_helpers.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
 import {crumbsToRender, DOMNode, NodeSelectedEvent, UserScrollPosition} from './ElementsBreadcrumbsUtils.js';
-import {NodeTextData} from './NodeText.js';
+
+import type {NodeTextData} from './NodeText.js';
 
 export interface ElementsBreadcrumbsData {
   selectedNode: DOMNode|null;

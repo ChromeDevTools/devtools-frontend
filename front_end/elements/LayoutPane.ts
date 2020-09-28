@@ -2,12 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import './NodeText.js';
+
 import * as Common from '../common/common.js';
 import * as ComponentHelpers from '../component_helpers/component_helpers.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
 import {BooleanSetting, EnumSetting, LayoutElement, Setting, SettingType} from './LayoutPaneUtils.js';
-import {NodeText} from './NodeText.js';
+
+import type {NodeTextData} from './NodeText.js';
 
 const {render, html} = LitHtml;
 const ls = Common.ls;
@@ -139,12 +142,6 @@ export class LayoutPane extends HTMLElement {
   }
 
   private renderElement(element: LayoutElement) {
-    const nodeText = new NodeText();
-    nodeText.data = {
-      nodeId: element.domId,
-      nodeTitle: element.name,
-      nodeClasses: element.domClasses,
-    };
     const onElementToggle = this.onElementToggle.bind(this, element);
     const onElementClick = this.onElementClick.bind(this, element);
     const onColorChange = this.onColorChange.bind(this, element);
@@ -155,7 +152,13 @@ export class LayoutPane extends HTMLElement {
     return html`<div class="element">
       <label data-element="true" class="checkbox-label" title=${element.name}>
         <input data-input="true" type="checkbox" .checked=${element.enabled} @change=${onElementToggle} />
-        <span class="node-text-container" data-label="true" @mouseenter=${onMouseEnter} @mouseleave=${onMouseLeave}>${nodeText}</span>
+        <span class="node-text-container" data-label="true" @mouseenter=${onMouseEnter} @mouseleave=${onMouseLeave}>
+          <devtools-node-text .data=${{
+            nodeId: element.domId,
+            nodeTitle: element.name,
+            nodeClasses: element.domClasses,
+          } as NodeTextData}></devtools-node-text>
+        </span>
       </label>
       <label class="color-picker-label" style="background:${element.color}">
         <input @change=${onColorChange} @input=${onColorChange} class="color-picker" type="color" value=${element.color} />

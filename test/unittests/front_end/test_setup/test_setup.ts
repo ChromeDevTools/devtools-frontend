@@ -6,9 +6,10 @@
  * This file is automatically loaded and run by Karma because it automatically
  * loads and injects all *.js files it finds.
  */
+import * as Common from '../../../../front_end/common/common.js';
 import * as ComponentHelpers from '../../../../front_end/component_helpers/component_helpers.js';
 import * as Root from '../../../../front_end/root/root.js';
-
+import * as ThemeSupport from '../../../../front_end/theme_support/theme_support.js';
 import {resetTestDOM} from '../helpers/DOMHelpers.js';
 
 beforeEach(resetTestDOM);
@@ -51,4 +52,15 @@ before(async function() {
 
 after(() => {
   Root.Runtime.cachedResources.clear();
+});
+
+beforeEach(() => {
+  // Some unit tests exercise code that assumes a ThemeSupport instance is available.
+  // Run this in a beforeEach in case an individual test overrides it.
+  const setting = {
+    get() {
+      return 'default';
+    },
+  } as Common.Settings.Setting<string>;
+  ThemeSupport.ThemeSupport.instance({forceNew: true, setting});
 });

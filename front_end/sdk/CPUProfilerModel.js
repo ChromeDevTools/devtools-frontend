@@ -29,6 +29,7 @@
  */
 
 import * as Common from '../common/common.js';
+import * as Root from '../root/root.js';
 
 import {DebuggerModel, Location} from './DebuggerModel.js';
 import {RuntimeModel} from './RuntimeModel.js';              // eslint-disable-line no-unused-vars
@@ -90,9 +91,7 @@ export class CPUProfilerModel extends SDKModel {
       this._anonymousConsoleProfileIdToTitle.delete(id);
     }
     // Make sure ProfilesPanel is initialized and CPUProfileType is created.
-    // @ts-ignore
-    // TODO(crbug.com/1058320): Using Root.Runtime.Runtime.instance() here causes layout tests to fail.
-    self.runtime.loadModulePromise('profiler').then(() => {
+    Root.Runtime.Runtime.instance().loadModulePromise('profiler').then(() => {
       this._dispatchProfileEvent(Events.ConsoleProfileFinished, id, location, title, profile);
     });
   }

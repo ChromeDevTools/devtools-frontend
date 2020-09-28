@@ -8,6 +8,7 @@
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
+import * as Root from '../root/root.js';
 
 import {Action} from './Action.js';                  // eslint-disable-line no-unused-vars
 import {ActionRegistry} from './ActionRegistry.js';  // eslint-disable-line no-unused-vars
@@ -396,7 +397,7 @@ export class ShortcutRegistry {
     this._actionToShortcut.clear();
     this._keyMap.clear();
     const keybindSet = this._keybindSetSetting.get();
-    const extensions = self.runtime.extensions('action');
+    const extensions = Root.Runtime.Runtime.instance().extensions('action');
     this._disabledDefaultShortcutsForAction.clear();
     this._devToolsDefaultShortcutActions.clear();
     const forwardedKeys = [];

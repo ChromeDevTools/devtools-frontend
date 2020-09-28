@@ -7,6 +7,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as Root from '../root/root.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {ContextMenu} from './ContextMenu.js';  // eslint-disable-line no-unused-vars
@@ -38,7 +39,7 @@ export class ViewManager {
     this._locationOverrideSetting = Common.Settings.Settings.instance().createSetting('viewsLocationOverride', {});
     const preferredExtensionLocations = this._locationOverrideSetting.get();
 
-    for (const extension of self.runtime.extensions('view')) {
+    for (const extension of Root.Runtime.Runtime.instance().extensions('view')) {
       const descriptor = extension.descriptor();
       const descriptorId = descriptor['id'];
       this._views.set(descriptorId, new ProvidedView(extension));
@@ -185,8 +186,9 @@ export class ViewManager {
       return /** @type {!Promise<?_Location>} */ (Promise.resolve(null));
     }
 
-    const resolverExtensions =
-        self.runtime.extensions(ViewLocationResolver).filter(extension => extension.descriptor()['name'] === location);
+    const resolverExtensions = Root.Runtime.Runtime.instance()
+                                   .extensions(ViewLocationResolver)
+                                   .filter(extension => extension.descriptor()['name'] === location);
     if (!resolverExtensions.length) {
       throw new Error('Unresolved location: ' + location);
     }

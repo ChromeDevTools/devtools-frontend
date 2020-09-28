@@ -5,6 +5,8 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
+import * as Root from '../root/root.js';
+
 /**
  * @interface
  */
@@ -62,8 +64,8 @@ class ServiceDispatcher {
     const method = domainAndMethod[1];
 
     if (method === 'create') {
-      const extensions =
-          self.runtime.extensions(Service).filter(extension => extension.descriptor()['name'] === serviceName);
+      const extensions = Root.Runtime.Runtime.instance().extensions(Service).filter(
+          extension => extension.descriptor()['name'] === serviceName);
       if (!extensions.length) {
         this._sendErrorResponse(message['id'], 'Could not resolve service \'' + serviceName + '\'');
         return;

@@ -8,6 +8,7 @@
 import * as Common from '../common/common.js';
 import * as Diff from '../diff/diff.js';
 import * as Host from '../host/host.js';
+import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
 import {FilteredListWidget, Provider} from './FilteredListWidget.js';
@@ -122,14 +123,14 @@ export class CommandMenu {
 
   _loadCommands() {
     const locations = new Map();
-    self.runtime.extensions(UI.View.ViewLocationResolver).forEach(extension => {
+    Root.Runtime.Runtime.instance().extensions(UI.View.ViewLocationResolver).forEach(extension => {
       const category = extension.descriptor()['category'];
       const name = extension.descriptor()['name'];
       if (category && name) {
         locations.set(name, category);
       }
     });
-    const viewExtensions = self.runtime.extensions('view');
+    const viewExtensions = Root.Runtime.Runtime.instance().extensions('view');
     for (const extension of viewExtensions) {
       const category = locations.get(extension.descriptor()['location']);
       if (!category) {
@@ -142,7 +143,7 @@ export class CommandMenu {
     }
 
     // Populate allowlisted settings.
-    const settingExtensions = self.runtime.extensions('setting');
+    const settingExtensions = Root.Runtime.Runtime.instance().extensions('setting');
     for (const extension of settingExtensions) {
       const options = extension.descriptor()['options'];
       if (!options || !extension.descriptor()['category']) {

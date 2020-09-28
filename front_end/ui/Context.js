@@ -4,6 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as Root from '../root/root.js';  // eslint-disable-line no-unused-vars
+
 import {ContextFlavorListener} from './ContextFlavorListener.js';
 
 /** @type {!Context} */
@@ -60,10 +61,7 @@ export class Context {
    * @template T
    */
   _dispatchFlavorChange(flavorType, flavorValue) {
-    // @ts-ignore
-    // TODO(crbug.com/1058320): Use Runtime.instance() here once we no longer crash using it.
-    const runtime = /** @type {!Root.Runtime.Runtime} */ (self.runtime);
-    for (const extension of runtime.extensions(ContextFlavorListener)) {
+    for (const extension of Root.Runtime.Runtime.instance().extensions(ContextFlavorListener)) {
       if (extension.hasContextType(flavorType)) {
         extension.instance().then(
             instance => /** @type {!ContextFlavorListener} */ (instance).flavorChanged(flavorValue));
@@ -131,9 +129,7 @@ export class Context {
 
     const availableFlavors = this.flavors();
     for (const extension of extensions) {
-      // @ts-ignore
-      // TODO(crbug.com/1058320): Use Runtime.instance() here once Closure is gone or can handle the type.
-      if (self.runtime.isExtensionApplicableToContextTypes(extension, availableFlavors)) {
+      if (Root.Runtime.Runtime.instance().isExtensionApplicableToContextTypes(extension, availableFlavors)) {
         targetExtensionSet.add(extension);
       }
     }

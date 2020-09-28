@@ -32,6 +32,7 @@ import * as Common from '../common/common.js';
 import * as Extensions from '../extensions/extensions.js';
 import * as Host from '../host/host.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
+import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Snippets from '../snippets/snippets.js';
 import * as UI from '../ui/ui.js';
@@ -128,7 +129,7 @@ export class SourcesPanel extends UI.Panel.Panel {
 
     this._threadsSidebarPane = null;
     this._watchSidebarPane = /** @type {!UI.View.View} */ (UI.ViewManager.ViewManager.instance().view('sources.watch'));
-    this._callstackPane = self.runtime.sharedInstance(CallStackSidebarPane);
+    this._callstackPane = Root.Runtime.Runtime.instance().sharedInstance(CallStackSidebarPane);
 
     Common.Settings.Settings.instance()
         .moduleSetting('sidebarPosition')
@@ -434,7 +435,7 @@ export class SourcesPanel extends UI.Panel.Panel {
    * @param {boolean=} skipReveal
    */
   _revealInNavigator(uiSourceCode, skipReveal) {
-    const extensions = self.runtime.extensions(NavigatorView);
+    const extensions = Root.Runtime.Runtime.instance().extensions(NavigatorView);
     Promise.all(extensions.map(extension => extension.instance())).then(filterNavigators.bind(this));
 
     /**

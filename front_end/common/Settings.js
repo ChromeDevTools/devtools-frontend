@@ -59,8 +59,7 @@ export class Settings {
     this._registry = new Map();
     /** @type {!Map<string, !Setting<*>>} */
     this._moduleSettings = new Map();
-    // @ts-ignore Needs runtime exported
-    self.runtime.extensions('setting').forEach(this._registerModuleSetting.bind(this));
+    Root.Runtime.Runtime.instance().extensions('setting').forEach(this._registerModuleSetting.bind(this));
   }
 
   static hasInstance() {

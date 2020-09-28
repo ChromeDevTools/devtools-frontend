@@ -43,6 +43,7 @@ import * as Host from '../host/host.js';
 import * as Persistence from '../persistence/persistence.js';
 import * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
+import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';
 import * as UI from '../ui/ui.js';
@@ -85,8 +86,8 @@ export class MainImpl {
   async _loaded() {
     console.timeStamp('Main._loaded');
     await Runtime.appStarted;
-    Root.Runtime.setPlatform(Host.Platform.platform());
-    Root.Runtime.setL10nCallback(ls);
+    Root.Runtime.Runtime.setPlatform(Host.Platform.platform());
+    Root.Runtime.Runtime.setL10nCallback(ls);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.getPreferences(this._gotPreferences.bind(this));
   }
 
@@ -109,7 +110,7 @@ export class MainImpl {
     if (Host.Platform.isCustomDevtoolsFrontend()) {
       storagePrefix = '__custom__';
     } else if (
-        !Root.Runtime.queryParam('can_dock') && !!Root.Runtime.queryParam('debugFrontend') &&
+        !Root.Runtime.Runtime.queryParam('can_dock') && !!Root.Runtime.Runtime.queryParam('debugFrontend') &&
         !Host.InspectorFrontendHost.isUnderTest()) {
       storagePrefix = '__bundled__';
     }
@@ -190,7 +191,7 @@ export class MainImpl {
       'cssGridFeatures',
     ]);
     Root.Runtime.experiments.cleanUpStaleExperiments();
-    const enabledExperiments = Root.Runtime.queryParam('enabledExperiments');
+    const enabledExperiments = Root.Runtime.Runtime.queryParam('enabledExperiments');
     if (enabledExperiments) {
       Root.Runtime.experiments.setServerEnabledExperiments(enabledExperiments.split(';'));
     }
@@ -204,7 +205,7 @@ export class MainImpl {
     ]);
 
     if (Host.InspectorFrontendHost.isUnderTest() &&
-        Root.Runtime.queryParam('test').includes('live-line-level-heap-profile.js')) {
+        Root.Runtime.Runtime.queryParam('test').includes('live-line-level-heap-profile.js')) {
       Root.Runtime.experiments.enableForTest('liveHeapProfile');
     }
 
@@ -240,7 +241,7 @@ export class MainImpl {
 
     this._addMainEventListeners(document);
 
-    const canDock = !!Root.Runtime.queryParam('can_dock');
+    const canDock = !!Root.Runtime.Runtime.queryParam('can_dock');
     self.UI.zoomManager = UI.ZoomManager.ZoomManager.instance(
         {forceNew: true, win: window, frontendHost: Host.InspectorFrontendHost.InspectorFrontendHostInstance});
     self.UI.inspectorView = UI.InspectorView.InspectorView.instance();
@@ -318,7 +319,7 @@ export class MainImpl {
     this._registerMessageSinkListener();
 
     MainImpl.timeEnd('Main._createAppUI');
-    this._showAppUI(await self.runtime.extension(Common.AppProvider.AppProvider).instance());
+    this._showAppUI(await Root.Runtime.Runtime.instance().extension(Common.AppProvider.AppProvider).instance());
   }
 
   /**
@@ -347,20 +348,15 @@ export class MainImpl {
     UI.InspectorView.InspectorView.instance().createToolbars();
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.loadCompleted();
 
-    const extensions = self.runtime.extensions(Common.QueryParamHandler.QueryParamHandler);
+    const extensions = Root.Runtime.Runtime.instance().extensions(Common.QueryParamHandler.QueryParamHandler);
     for (const extension of extensions) {
-      const value = Root.Runtime.queryParam(extension.descriptor()['name']);
+      const value = Root.Runtime.Runtime.queryParam(extension.descriptor()['name']);
       if (value !== null) {
-        extension.instance().then(handleQueryParam.bind(null, value));
+        extension.instance().then(handler => {
+          /** @type {!Common.QueryParamHandler.QueryParamHandler} */ (handler).handleQueryParam(
+              /** @type {string} */ (value));
+        });
       }
-    }
-
-    /**
-     * @param {string} value
-     * @param {!Common.QueryParamHandler.QueryParamHandler} handler
-     */
-    function handleQueryParam(value, handler) {
-      handler.handleQueryParam(value);
     }
 
     // Allow UI cycles to repaint prior to creating connection.
@@ -370,8 +366,8 @@ export class MainImpl {
 
   async _initializeTarget() {
     MainImpl.time('Main._initializeTarget');
-    const instances =
-        await Promise.all(self.runtime.extensions('early-initialization').map(extension => extension.instance()));
+    const instances = await Promise.all(
+        Root.Runtime.Runtime.instance().extensions('early-initialization').map(extension => extension.instance()));
     for (const instance of instances) {
       await /** @type {!Common.Runnable.Runnable} */ (instance).run();
     }
@@ -386,7 +382,7 @@ export class MainImpl {
     MainImpl.time('Main._lateInitialization');
     this._registerShortcuts();
     Extensions.ExtensionServer.ExtensionServer.instance().initializeExtensions();
-    const extensions = self.runtime.extensions('late-initialization');
+    const extensions = Root.Runtime.Runtime.instance().extensions('late-initialization');
     const promises = [];
     for (const extension of extensions) {
       const setting = extension.descriptor()['setting'];
@@ -740,7 +736,7 @@ export class MainMenuItem {
                                                                     Common.UIString.UIString('Show console drawer'));
     contextMenu.appendItemsAtLocation('mainMenu');
     const moreTools = contextMenu.defaultSection().appendSubMenuItem(Common.UIString.UIString('More tools'));
-    const extensions = self.runtime.extensions('view', undefined, true);
+    const extensions = Root.Runtime.Runtime.instance().extensions('view', undefined, true);
     for (const extension of extensions) {
       const descriptor = extension.descriptor();
 

@@ -80,7 +80,7 @@ export class Console extends ObjectWrapper {
   }
 
   /**
-   * @return {!Promise.<undefined>}
+   * @return {!Promise.<void>}
    */
   showPromise() {
     return reveal(this);

@@ -4,6 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as Diff from '../diff/diff.js';
+import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
 import * as WorkspaceDiff from '../workspace_diff/workspace_diff.js';
@@ -377,8 +378,7 @@ export class DiffUILocationRevealer {
       throw new Error('Internal error: not a diff ui location');
     }
     /** @type {!ChangesView} */
-    // @ts-ignore self.runtime needs to be moved to ESModules so we can import this.
-    const changesView = self.runtime.sharedInstance(ChangesView);
+    const changesView = Root.Runtime.Runtime.instance().sharedInstance(ChangesView);
     await UI.ViewManager.ViewManager.instance().showView('changes.changes');
     changesView._changesSidebar.selectUISourceCode(diffUILocation.uiSourceCode, omitFocus);
   }

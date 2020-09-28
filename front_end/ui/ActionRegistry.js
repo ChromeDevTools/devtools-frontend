@@ -33,9 +33,7 @@ export class ActionRegistry {
   }
 
   _registerActions() {
-    // @ts-ignore
-    // TODO(crbug.com/1058320): Use Runtime.instance() once it no longer crashes at this point.
-    self.runtime.extensions('action').forEach(registerExtension, this);
+    Root.Runtime.Runtime.instance().extensions('action').forEach(registerExtension, this);
 
     /**
      * @param {!Root.Runtime.Extension} extension

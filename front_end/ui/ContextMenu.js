@@ -33,6 +33,7 @@
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Host from '../host/host.js';
+import * as Root from '../root/root.js';
 
 import {ActionRegistry} from './ActionRegistry.js';
 import {ShortcutRegistry} from './ShortcutRegistry.js';
@@ -346,7 +347,7 @@ export class SubMenu extends Item {
    * @param {string} location
    */
   appendItemsAtLocation(location) {
-    for (const extension of self.runtime.extensions('context-menu-item')) {
+    for (const extension of Root.Runtime.Runtime.instance().extensions('context-menu-item')) {
       const itemLocation = extension.descriptor()['location'] || '';
       if (!itemLocation.startsWith(location + '/')) {
         continue;
@@ -559,7 +560,7 @@ export class ContextMenu extends SubMenu {
    * @param {!Object} target
    */
   appendApplicableItems(target) {
-    this._pendingPromises.push(self.runtime.allInstances(Provider, target));
+    this._pendingPromises.push(Root.Runtime.Runtime.instance().allInstances(Provider, target));
     this._pendingTargets.push(target);
   }
 }

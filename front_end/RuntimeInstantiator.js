@@ -80,9 +80,11 @@ export async function startApplication(appName) {
     moduleDescriptors[i].name = configuration[i]['name'];
     moduleDescriptors[i].condition = configuration[i]['condition'];
   }
-  self.runtime = RootModule.Runtime.Runtime.instance({forceNew: true, moduleDescriptors});
+  const runtimeInstance = RootModule.Runtime.Runtime.instance({forceNew: true, moduleDescriptors});
+  // Exposed for legacy layout tests
+  self.runtime = runtimeInstance;
   if (coreModuleNames) {
-    await self.runtime.loadAutoStartModules(coreModuleNames);
+    await runtimeInstance.loadAutoStartModules(coreModuleNames);
   }
   appStartedPromiseCallback();
 }

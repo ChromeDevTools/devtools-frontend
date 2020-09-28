@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Root from '../root/root.js';
+
 /**
  * @interface
  */
@@ -19,14 +21,15 @@ export class Revealer {
 /**
  * @param {?Object} revealable
  * @param {boolean=} omitFocus
- * @return {!Promise.<undefined>}
+ * @return {!Promise.<void>}
  */
 export let reveal = function(revealable, omitFocus) {
   if (!revealable) {
     return Promise.reject(new Error('Can\'t reveal ' + revealable));
   }
-  // @ts-ignore self.runtime needs to be moved to ESModules so we can import this
-  return self.runtime.allInstances(Revealer, revealable).then(reveal);
+  return Root.Runtime.Runtime.instance()
+      .allInstances(Revealer, revealable)
+      .then(revealers => reveal(/** @type {!Array<!Revealer>} */ (revealers)));
 
   /**
    * @param {!Array.<!Revealer>} revealers
@@ -53,8 +56,7 @@ export function setRevealForTest(newReveal) {
  * @return {?string}
  */
 export const revealDestination = function(revealable) {
-  // @ts-ignore self.runtime needs to be moved to ESModules so we can import this
-  const extension = self.runtime.extension(Revealer, revealable);
+  const extension = Root.Runtime.Runtime.instance().extension(Revealer, revealable);
   if (!extension) {
     return null;
   }

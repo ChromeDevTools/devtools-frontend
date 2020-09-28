@@ -5,6 +5,7 @@
 import * as Common from '../common/common.js';
 import * as HostModule from '../host/host.js';
 import * as Platform from '../platform/platform.js';
+import * as Root from '../root/root.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
 import {cssMetadata, GridAreaRowRegex} from './CSSMetadata.js';
@@ -187,9 +188,11 @@ export class CSSProperty {
     const endIndentation = this.ownerStyle.cssText ? indentation.substring(0, this.ownerStyle.range.endColumn) : '';
     const text = new TextUtils.Text.Text(this.ownerStyle.cssText || '');
     const newStyleText = text.replaceRange(range, Platform.StringUtilities.sprintf(';%s;', propertyText));
-    // TODO(crbug.com/1081614) replace self.runtime with Root.Runtime.Runtime.instance()
-    // @ts-ignore: undefined `self.runtime`
-    const tokenizerFactory = await self.runtime.extension(TextUtils.TextUtils.TokenizerFactory).instance();
+    const tokenizerFactory =
+        /** @type {!TextUtils.TextUtils.TokenizerFactory} */ (
+            await /** @type {!Root.Runtime.Extension} */ (
+                Root.Runtime.Runtime.instance().extension(TextUtils.TextUtils.TokenizerFactory))
+                .instance());
     const styleText = CSSProperty._formatStyle(newStyleText, indentation, endIndentation, tokenizerFactory);
     return this.ownerStyle.setText(styleText, majorChange);
   }

@@ -33,6 +33,7 @@
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
+import * as Root from '../root/root.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
@@ -308,7 +309,7 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox {
     const installed = loadedMimeModeExtensions;
 
     const nameToExtension = new Map();
-    const extensions = self.runtime.extensions(CodeMirrorMimeMode);
+    const extensions = Root.Runtime.Runtime.instance().extensions(CodeMirrorMimeMode);
     for (const extension of extensions) {
       nameToExtension.set(extension.descriptor()['fileName'], extension);
     }

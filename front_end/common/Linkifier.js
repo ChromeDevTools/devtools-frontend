@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Root from '../root/root.js';
+
 /**
  * @interface
  */
@@ -24,8 +26,9 @@ export class Linkifier {
     if (!object) {
       return Promise.reject(new Error('Can\'t linkify ' + object));
     }
-    // @ts-ignore self.runtime needs to be moved to ESModules so we can import this.
-    return self.runtime.extension(Linkifier, object).instance().then(linkifier => linkifier.linkify(object, options));
+    return /** @type {!Root.Runtime.Extension} */ (Root.Runtime.Runtime.instance().extension(Linkifier, object))
+        .instance()
+        .then(linkifier => /** @type {!Linkifier} */ (linkifier).linkify(/** @type {!Object} */ (object), options));
   }
 }
 

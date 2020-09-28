@@ -9,6 +9,7 @@ import * as Common from '../common/common.js';
 import * as Persistence from '../persistence/persistence.js';
 import * as Platform from '../platform/platform.js';
 import * as QuickOpen from '../quick_open/quick_open.js';
+import * as Root from '../root/root.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -54,7 +55,7 @@ export class SourcesView extends UI.Widget.VBox {
     this._toolbarContainerElement = this.element.createChild('div', 'sources-toolbar');
     if (!Root.Runtime.experiments.isEnabled('sourcesPrettyPrint')) {
       this._toolbarEditorActions = new UI.Toolbar.Toolbar('', this._toolbarContainerElement);
-      self.runtime.allInstances(EditorAction).then(appendButtonsForExtensions.bind(this));
+      Root.Runtime.Runtime.instance().allInstances(EditorAction).then(appendButtonsForExtensions.bind(this));
     }
     /**
      * @param {!Array.<!EditorAction>} actions

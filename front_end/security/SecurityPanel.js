@@ -8,6 +8,7 @@
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as Network from '../network/network.js';
+import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -49,7 +50,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar {
    */
   static _instance() {
     return (
-        /** @type {!SecurityPanel} */ (self.runtime.sharedInstance(SecurityPanel)));
+        /** @type {!SecurityPanel} */ (Root.Runtime.Runtime.instance().sharedInstance(SecurityPanel)));
   }
 
   /**

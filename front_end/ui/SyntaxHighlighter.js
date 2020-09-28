@@ -67,10 +67,7 @@ export class SyntaxHighlighter {
     /** @type {string} */
     let line;
 
-    // @ts-ignore
-    // TODO(crbug.com/1058320): Replace self.runtime global.
-    const runtime = /** @type {!Root.Runtime.Runtime} */ (self.runtime);
-    const extension = runtime.extension(TextUtils.TextUtils.TokenizerFactory);
+    const extension = Root.Runtime.Runtime.instance().extension(TextUtils.TextUtils.TokenizerFactory);
     if (extension) {
       return extension.instance().then(
           factory => processTokens.call(this, /** @type {!TextUtils.TextUtils.TokenizerFactory} */ (factory)));

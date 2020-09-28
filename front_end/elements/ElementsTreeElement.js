@@ -894,7 +894,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     // Append editor.
     this.listItemElement.appendChild(this._htmlEditElement);
 
-    self.runtime.extension(UI.TextEditor.TextEditorFactory).instance().then(gotFactory.bind(this));
+    Root.Runtime.Runtime.instance().extension(UI.TextEditor.TextEditorFactory).instance().then(factory => {
+      gotFactory.call(this, /** @type {!UI.TextEditor.TextEditorFactory} */ (factory));
+    });
 
     /**
      * @param {!UI.TextEditor.TextEditorFactory} factory
@@ -1261,7 +1263,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     const node = this._node;
 
     if (!this.treeOutline._decoratorExtensions) {
-      this.treeOutline._decoratorExtensions = self.runtime.extensions(MarkerDecorator);
+      this.treeOutline._decoratorExtensions = Root.Runtime.Runtime.instance().extensions(MarkerDecorator);
     }
 
     const markerToExtension = new Map();

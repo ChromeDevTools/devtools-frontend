@@ -34,6 +34,7 @@
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
+import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
 /**
@@ -79,7 +80,7 @@ export class SettingsScreen extends UI.Widget.VBox {
    */
   static _revealSettingsScreen() {
     /** @type {!SettingsScreen} */
-    const settingsScreen = self.runtime.sharedInstance(SettingsScreen);
+    const settingsScreen = Root.Runtime.Runtime.instance().sharedInstance(SettingsScreen);
     if (settingsScreen.isShowing()) {
       return settingsScreen;
     }
@@ -217,8 +218,8 @@ export class GenericSettingsTab extends SettingsTab {
     for (const sectionName of explicitSectionOrder) {
       this._createSectionElement(sectionName);
     }
-    self.runtime.extensions('setting').forEach(this._addSetting.bind(this));
-    self.runtime.extensions(UI.SettingsUI.SettingUI).forEach(this._addSettingUI.bind(this));
+    Root.Runtime.Runtime.instance().extensions('setting').forEach(this._addSetting.bind(this));
+    Root.Runtime.Runtime.instance().extensions(UI.SettingsUI.SettingUI).forEach(this._addSettingUI.bind(this));
 
     this._appendSection().appendChild(
         UI.UIUtils.createTextButton(Common.UIString.UIString('Restore defaults and reload'), restoreAndReload));
@@ -418,9 +419,9 @@ export class Revealer {
     const setting = /** @type {!Common.Settings.Setting} */ (object);
     let success = false;
 
-    self.runtime.extensions('setting').forEach(revealModuleSetting);
-    self.runtime.extensions(UI.SettingsUI.SettingUI).forEach(revealSettingUI);
-    self.runtime.extensions('view').forEach(revealSettingsView);
+    Root.Runtime.Runtime.instance().extensions('setting').forEach(revealModuleSetting);
+    Root.Runtime.Runtime.instance().extensions(UI.SettingsUI.SettingUI).forEach(revealSettingUI);
+    Root.Runtime.Runtime.instance().extensions('view').forEach(revealSettingsView);
 
     return success ? Promise.resolve() : Promise.reject();
 

@@ -35,6 +35,7 @@
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
+import * as Root from '../root/root.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';
 
@@ -1882,7 +1883,7 @@ Renderer.render = async function(object, options) {
   if (!object) {
     throw new Error('Can\'t render ' + object);
   }
-  const renderer = await self.runtime.extension(Renderer, object).instance();
+  const renderer = await Root.Runtime.Runtime.instance().extension(Renderer, object).instance();
   return renderer ? renderer.render(object, options || {}) : null;
 };
 

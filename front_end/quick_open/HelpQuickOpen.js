@@ -5,6 +5,8 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
+import * as Root from '../root/root.js';
+
 import {Provider} from './FilteredListWidget.js';
 import {QuickOpenImpl} from './QuickOpen.js';
 
@@ -13,7 +15,7 @@ export class HelpQuickOpen extends Provider {
     super();
     /** @type {!Array<{prefix: string, title: string}>} */
     this._providers = [];
-    self.runtime.extensions(Provider).forEach(this._addProvider.bind(this));
+    Root.Runtime.Runtime.instance().extensions(Provider).forEach(this._addProvider.bind(this));
   }
 
   /**

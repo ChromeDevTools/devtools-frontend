@@ -39,6 +39,7 @@ import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
+import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';
 import * as UI from '../ui/ui.js';
@@ -676,7 +677,7 @@ export class TimelinePanel extends UI.Panel.Panel {
   }
 
   _reset() {
-    self.runtime.sharedInstance(PerfUI.LineLevelProfile.Performance).reset();
+    Root.Runtime.Runtime.instance().sharedInstance(PerfUI.LineLevelProfile.Performance).reset();
     this._setModel(null);
   }
 
@@ -713,7 +714,7 @@ export class TimelinePanel extends UI.Panel.Panel {
       this._overviewPane.setNavStartTimes(model.timelineModel().navStartTimes());
       this._overviewPane.setBounds(
           model.timelineModel().minimumRecordTime(), model.timelineModel().maximumRecordTime());
-      const lineLevelProfile = self.runtime.sharedInstance(PerfUI.LineLevelProfile.Performance);
+      const lineLevelProfile = Root.Runtime.Runtime.instance().sharedInstance(PerfUI.LineLevelProfile.Performance);
       lineLevelProfile.reset();
       for (const profile of model.timelineModel().cpuProfiles()) {
         lineLevelProfile.appendCPUProfile(profile);

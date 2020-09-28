@@ -6,6 +6,7 @@
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';
+import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -586,7 +587,7 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper {
 
   _updateStandardDevices() {
     const devices = new Set();
-    const extensions = self.runtime.extensions('emulated-device');
+    const extensions = Root.Runtime.Runtime.instance().extensions('emulated-device');
     for (const extension of extensions) {
       const device = EmulatedDevice.fromJSONV1(extension.descriptor()['device']);
       device.setExtension(extension);

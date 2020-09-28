@@ -8,7 +8,7 @@ import("../../scripts/build/ninja/devtools_module.gni")
 devtools_module("worker_service") {
   sources = [ "ServiceDispatcher.js" ]
 
-  deps = []
+  deps = [ "../root:bundle" ]
 }
 
 devtools_entrypoint("bundle") {

@@ -34,6 +34,7 @@
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
@@ -629,7 +630,7 @@ export class Linkifier {
    */
   static registerLinkHandler(title, handler) {
     _linkHandlers.set(title, handler);
-    self.runtime.sharedInstance(LinkHandlerSettingUI)._update();
+    Root.Runtime.Runtime.instance().sharedInstance(LinkHandlerSettingUI)._update();
   }
 
   /**
@@ -637,7 +638,7 @@ export class Linkifier {
    */
   static unregisterLinkHandler(title) {
     _linkHandlers.delete(title);
-    self.runtime.sharedInstance(LinkHandlerSettingUI)._update();
+    Root.Runtime.Runtime.instance().sharedInstance(LinkHandlerSettingUI)._update();
   }
 
   /**

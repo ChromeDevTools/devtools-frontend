@@ -6,6 +6,7 @@
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as UI from '../ui/ui.js';
@@ -57,7 +58,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
    * @return {!ResourcesPanel}
    */
   static _instance() {
-    return /** @type {!ResourcesPanel} */ (self.runtime.sharedInstance(ResourcesPanel));
+    return /** @type {!ResourcesPanel} */ (Root.Runtime.Runtime.instance().sharedInstance(ResourcesPanel));
   }
 
   /**

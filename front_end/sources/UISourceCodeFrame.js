@@ -34,6 +34,7 @@
 import * as Common from '../common/common.js';
 import * as Persistence from '../persistence/persistence.js';  // eslint-disable-line no-unused-vars
 import * as Platform from '../platform/platform.js';
+import * as Root from '../root/root.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as TextEditor from '../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
 import * as TextUtils from '../text_utils/text_utils.js';
@@ -590,7 +591,8 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
       return;
     }
     this._typeDecorationsPending.add(type);
-    const decorator = await self.runtime.extensions(SourceFrame.SourceFrame.LineDecorator)
+    const decorator = await Root.Runtime.Runtime.instance()
+                          .extensions(SourceFrame.SourceFrame.LineDecorator)
                           .find(extension => extension.descriptor()['decoratorType'] === type)
                           .instance();
     this._typeDecorationsPending.delete(type);
@@ -604,7 +606,7 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
     if (!this.loaded) {
       return;
     }
-    for (const extension of self.runtime.extensions(SourceFrame.SourceFrame.LineDecorator)) {
+    for (const extension of Root.Runtime.Runtime.instance().extensions(SourceFrame.SourceFrame.LineDecorator)) {
       const type = extension.descriptor()['decoratorType'];
       if (this._uiSourceCode.decorationsForType(type)) {
         this._decorateTypeThrottled(type);

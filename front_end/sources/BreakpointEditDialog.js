@@ -6,6 +6,7 @@
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as ObjectUI from '../object_ui/object_ui.js';
+import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
 export class BreakpointEditDialog extends UI.Widget.Widget {
@@ -43,7 +44,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     this._typeSelector.select(this._isLogpoint ? logpointOption : conditionalOption);
     toolbar.appendToolbarItem(this._typeSelector);
 
-    self.runtime.extension(UI.TextEditor.TextEditorFactory).instance().then(factory => {
+    Root.Runtime.Runtime.instance().extension(UI.TextEditor.TextEditorFactory).instance().then(factory => {
       const editorOptions = {lineNumbers: false, lineWrapping: true, mimeType: 'javascript', autoHeight: true};
       this._editor = factory.createEditor(editorOptions);
       this._updatePlaceholder();

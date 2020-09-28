@@ -7,6 +7,7 @@
 
 import * as Common from '../common/common.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
+import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
@@ -166,41 +167,42 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
       }
     }, false);
 
-    this._editorPromise = self.runtime.extension(UI.TextEditor.TextEditorFactory).instance().then(factory => {
-      this._editor = factory.createEditor({
-        devtoolsAccessibleName: ls`Live expression editor`,
-        lineNumbers: false,
-        lineWrapping: true,
-        mimeType: 'javascript',
-        autoHeight: true,
-        placeholder: ls`Expression`
-      });
-      this._editor.configureAutocomplete(
-          ObjectUI.JavaScriptAutocomplete.JavaScriptAutocompleteConfig.createConfigForEditor(this._editor));
-      this._editor.widget().show(nameElement);
-      this._editor.widget().element.classList.add('console-pin-editor');
-      this._editor.widget().element.tabIndex = -1;
-      this._editor.setText(expression);
-      this._editor.widget().element.addEventListener('keydown', event => {
-        if (event.key === 'Tab' && !this._editor.text()) {
-          event.consume();
-          return;
-        }
-        if (event.keyCode === UI.KeyboardShortcut.Keys.Esc.code) {
-          this._editor.setText(this._committedExpression);
-        }
-      }, true);
-      this._editor.widget().element.addEventListener('focusout', event => {
-        const text = this._editor.text();
-        const trimmedText = text.trim();
-        if (text.length !== trimmedText.length) {
-          this._editor.setText(trimmedText);
-        }
-        this._committedExpression = trimmedText;
-        pinPane._savePins();
-        this._editor.setSelection(TextUtils.TextRange.TextRange.createFromLocation(Infinity, Infinity));
-      });
-    });
+    this._editorPromise =
+        Root.Runtime.Runtime.instance().extension(UI.TextEditor.TextEditorFactory).instance().then(factory => {
+          this._editor = factory.createEditor({
+            devtoolsAccessibleName: ls`Live expression editor`,
+            lineNumbers: false,
+            lineWrapping: true,
+            mimeType: 'javascript',
+            autoHeight: true,
+            placeholder: ls`Expression`
+          });
+          this._editor.configureAutocomplete(
+              ObjectUI.JavaScriptAutocomplete.JavaScriptAutocompleteConfig.createConfigForEditor(this._editor));
+          this._editor.widget().show(nameElement);
+          this._editor.widget().element.classList.add('console-pin-editor');
+          this._editor.widget().element.tabIndex = -1;
+          this._editor.setText(expression);
+          this._editor.widget().element.addEventListener('keydown', event => {
+            if (event.key === 'Tab' && !this._editor.text()) {
+              event.consume();
+              return;
+            }
+            if (event.keyCode === UI.KeyboardShortcut.Keys.Esc.code) {
+              this._editor.setText(this._committedExpression);
+            }
+          }, true);
+          this._editor.widget().element.addEventListener('focusout', event => {
+            const text = this._editor.text();
+            const trimmedText = text.trim();
+            if (text.length !== trimmedText.length) {
+              this._editor.setText(trimmedText);
+            }
+            this._committedExpression = trimmedText;
+            pinPane._savePins();
+            this._editor.setSelection(TextUtils.TextRange.TextRange.createFromLocation(Infinity, Infinity));
+          });
+        });
   }
 
   /**

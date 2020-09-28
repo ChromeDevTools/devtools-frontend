@@ -30,6 +30,7 @@ import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
+import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -61,7 +62,7 @@ export class CPUProfileView extends ProfileView {
    */
   wasShown() {
     super.wasShown();
-    const lineLevelProfile = self.runtime.sharedInstance(PerfUI.LineLevelProfile.Performance);
+    const lineLevelProfile = Root.Runtime.Runtime.instance().sharedInstance(PerfUI.LineLevelProfile.Performance);
     lineLevelProfile.reset();
     lineLevelProfile.appendCPUProfile(this._profileHeader.profileModel());
   }

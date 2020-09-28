@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../front_end/common/common.js';
+import * as Root from '../../../../front_end/root/root.js';
 
 /**
  * This method sets up the local/global settings storage. Settings are not loaded
@@ -14,10 +15,7 @@ import * as Common from '../../../../front_end/common/common.js';
  * so settings can't leak between unit tests.
  */
 export function resetSettingsStorage(): Common.Settings.Settings {
-  // @ts-ignore
-  // Settings instantiation looks up settings for extensions.
-  // We set a dummy value here, otherwise this will result in a call to undefined.
-  self.runtime = self.runtime || {extensions: () => []};
+  Root.Runtime.Runtime.instance({forceNew: true, moduleDescriptors: []});
 
   return Common.Settings.Settings.instance({
     forceNew: true,

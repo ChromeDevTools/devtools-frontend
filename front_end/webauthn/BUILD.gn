@@ -9,6 +9,7 @@ devtools_module("webauthn") {
   sources = [ "WebauthnPane.js" ]
 
   deps = [
+    "../common:bundle",
     "../data_grid:bundle",
     "../host:bundle",
     "../sdk:bundle",

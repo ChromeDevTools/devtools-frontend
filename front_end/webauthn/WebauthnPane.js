@@ -5,6 +5,7 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
+import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as Host from '../host/host.js';
 import * as SDK from '../sdk/sdk.js';
@@ -101,6 +102,9 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     /** @type {!Map<!Protocol.WebAuthn.AuthenticatorId, !DataGrid.DataGrid.DataGridImpl>} */
     this._dataGrids = new Map();
 
+    this._availableAuthenticatorSetting =
+        Common.Settings.Settings.instance().createSetting('webauthnAuthenticators', []);
+
     const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
     if (mainTarget) {
       this._model = mainTarget.model(SDK.WebAuthnModel.WebAuthnModel);
@@ -110,6 +114,26 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     this._authenticatorsView = this.contentElement.createChild('div', 'authenticators-view');
     this._createNewAuthenticatorSection();
     this._updateVisibility(false);
+  }
+
+  async _loadInitialAuthenticators() {
+    let activeAuthenticatorId = null;
+    const availableAuthenticators = this._availableAuthenticatorSetting.get();
+    for (const options of availableAuthenticators) {
+      const authenticatorId = await this._model.addAuthenticator(options);
+      this._addAuthenticatorSection(authenticatorId, options);
+      // Update the authenticatorIds in the options.
+      options.authenticatorId = authenticatorId;
+      if (options.active) {
+        activeAuthenticatorId = authenticatorId;
+      }
+    }
+
+    // Update the settings to reflect the new authenticatorIds.
+    this._availableAuthenticatorSetting.set(availableAuthenticators);
+    if (activeAuthenticatorId) {
+      this._setActiveAuthenticator(activeAuthenticatorId);
+    }
   }
 
   /**
@@ -227,7 +251,9 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     this._enabled = enable;
     this._model.setVirtualAuthEnvEnabled(enable);
     this._updateVisibility(enable);
-    if (!enable) {
+    if (enable) {
+      this._loadInitialAuthenticators();
+    } else {
       this._removeAuthenticatorSections();
     }
   }
@@ -249,6 +275,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
 
   _removeAuthenticatorSections() {
     this._authenticatorsView.innerHTML = '';
+    this._dataGrids.clear();
   }
 
   _handleCheckboxToggle() {
@@ -357,6 +384,10 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
   async _handleAddAuthenticatorButton() {
     const options = this._createOptionsFromCurrentInputs();
     const authenticatorId = await this._model.addAuthenticator(options);
+    const availableAuthenticators = this._availableAuthenticatorSetting.get();
+    availableAuthenticators.push({authenticatorId, ...options});
+    this._availableAuthenticatorSetting.set(
+        availableAuthenticators.map(a => ({...a, active: a.authenticatorId === authenticatorId})));
     this._addAuthenticatorSection(authenticatorId, options);
   }
 
@@ -533,8 +564,19 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     this._authenticatorsView.querySelector(`[data-authenticator-id=${CSS.escape(authenticatorId)}]`).remove();
     this._dataGrids.delete(authenticatorId);
     this._model.removeAuthenticator(authenticatorId);
+
+    // Update available authenticator setting.
+    const prevAvailableAuthenticators = this._availableAuthenticatorSetting.get();
+    const newAvailableAuthenticators = prevAvailableAuthenticators.filter(a => a.authenticatorId !== authenticatorId);
+    this._availableAuthenticatorSetting.set(newAvailableAuthenticators);
+
     if (this._activeAuthId === authenticatorId) {
-      this._activeAuthId = null;
+      const availableAuthenticatorIds = Array.from(this._dataGrids.keys());
+      if (availableAuthenticatorIds.length) {
+        this._setActiveAuthenticator(availableAuthenticatorIds[0]);
+      } else {
+        this._activeAuthId = null;
+      }
     }
   }
 
@@ -562,6 +604,12 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     await this._clearActiveAuthenticator();
     await this._model.setAutomaticPresenceSimulation(authenticatorId, true);
     this._activeAuthId = authenticatorId;
+
+    const prevAvailableAuthenticators = this._availableAuthenticatorSetting.get();
+    const newAvailableAuthenticators =
+        prevAvailableAuthenticators.map(a => ({...a, active: a.authenticatorId === authenticatorId}));
+    this._availableAuthenticatorSetting.set(newAvailableAuthenticators);
+
     this._updateActiveButtons();
   }
 

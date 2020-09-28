@@ -28,13 +28,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as SDK from '../sdk/sdk.js';
 
 import {RecordType, TimelineData} from './TimelineModel.js';
-import {TracingLayerTree} from './TracingLayerTree.js';
+import {TracingLayerTile, TracingLayerTree} from './TracingLayerTree.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
@@ -45,6 +42,29 @@ export class TimelineFrameModel {
    */
   constructor(categoryMapper) {
     this._categoryMapper = categoryMapper;
+    /** @type {!Array<!TimelineFrame>} */
+    this._frames;
+    /** @type {!Object<number, !TimelineFrame>} */
+    this._frameById;
+    /** @type {number} */
+    this._minimumRecordTime;
+    /** @type {?TimelineFrame} */
+    this._lastFrame;
+    /** @type {boolean} */
+    this._mainFrameCommitted;
+    /** @type {boolean} */
+    this._mainFrameRequested;
+    /** @type {number} */
+    this._minimumRecordTime;
+    /** @type {?TracingFrameLayerTree} */
+    this._lastLayerTree;
+    /** @type {?PendingFrame} */
+    this._framePendingActivation;
+    /** @type {!Object<string, number>} */
+    this._currentTaskTimeByCategory;
+    /** @type {?SDK.SDKModel.Target} */
+    this._target;
+
     this.reset();
   }
 
@@ -81,14 +101,14 @@ export class TimelineFrameModel {
 
   /**
    * @param {!SDK.TracingModel.Event} rasterTask
-   * @return Promise<?{rect: !Protocol.DOM.Rect, snapshot: !SDK.PaintProfiler.PaintProfilerSnapshot}>}
+   * @return {!Promise<?{rect: !Protocol.DOM.Rect, snapshot: !SDK.PaintProfiler.PaintProfilerSnapshot}>}
    */
   rasterTilePromise(rasterTask) {
     if (!this._target) {
       return Promise.resolve(null);
     }
     const data = rasterTask.args['tileData'];
-    const frameId = data['sourceFrameNumber'];
+    const frameId = /** @type {number} */ (data['sourceFrameNumber']);
     const tileId = data['tileId'] && data['tileId']['id_ref'];
     const frame = frameId && this._frameById[frameId];
     if (!frame || !frame.layerTree || !tileId) {
@@ -219,8 +239,9 @@ export class TimelineFrameModel {
     if (this._lastLayerTree) {
       this._lastLayerTree._setPaints(frame._paints);
     }
-    if (this._frames.length &&
-        (frame.startTime !== this._frames.peekLast().endTime || frame.startTime > frame.endTime)) {
+    const lastFrame = this._frames.peekLast();
+    if (this._frames.length && lastFrame &&
+        (frame.startTime !== lastFrame.endTime || frame.startTime > frame.endTime)) {
       console.assert(
           false, `Inconsistent frame time for frame ${this._frames.length} (${frame.startTime} - ${frame.endTime})`);
     }
@@ -231,6 +252,10 @@ export class TimelineFrameModel {
   }
 
   _commitPendingFrame() {
+    if (!this._framePendingActivation || !this._lastFrame) {
+      return;
+    }
+
     this._lastFrame._addTimeForCategories(this._framePendingActivation.timeByCategory);
     this._lastFrame._paints = this._framePendingActivation.paints;
     this._lastFrame._mainFrameId = this._framePendingActivation.mainFrameId;
@@ -267,8 +292,9 @@ export class TimelineFrameModel {
     if (event.name === eventNames.SetLayerTreeId) {
       this._layerTreeId = event.args['layerTreeId'] || event.args['data']['layerTreeId'];
     } else if (
-        event.phase === SDK.TracingModel.Phase.SnapshotObject && event.name === eventNames.LayerTreeHostImplSnapshot &&
-        parseInt(event.id, 0) === this._layerTreeId) {
+        event.id && event.phase === SDK.TracingModel.Phase.SnapshotObject &&
+        event.name === eventNames.LayerTreeHostImplSnapshot && parseInt(event.id, 0) === this._layerTreeId &&
+        this._target) {
       const snapshot = /** @type {!SDK.TracingModel.ObjectSnapshot} */ (event);
       this.handleLayerTreeSnapshot(new TracingFrameLayerTree(this._target, snapshot));
     } else {
@@ -374,12 +400,12 @@ export class TracingFrameLayerTree {
    * @return {!Promise<?TracingLayerTree>}
    */
   async layerTreePromise() {
-    const result = await this._snapshot.objectPromise();
+    const result = /** @type {!Object<string, *>} */ (await this._snapshot.objectPromise());
     if (!result) {
       return null;
     }
-    const viewport = result['device_viewport_size'];
-    const tiles = result['active_tiles'];
+    const viewport = /** @type {!{width: number, height: number}} */ (result['device_viewport_size']);
+    const tiles = /** @type {!Array<!TracingLayerTile>} */ (result['active_tiles']);
     const rootLayer = result['active_tree']['root_layer'];
     const layers = result['active_tree']['layers'];
     const layerTree = new TracingLayerTree(this._target);
@@ -418,6 +444,7 @@ export class TimelineFrame {
     this.startTimeOffset = startTimeOffset;
     this.endTime = this.startTime;
     this.duration = 0;
+    /** @type {!Object<string, number>} */
     this.timeByCategory = {};
     this.cpuTime = 0;
     this.idle = false;
@@ -452,7 +479,7 @@ export class TimelineFrame {
   }
 
   /**
-   * @param {!Object} timeByCategory
+   * @param {!Object<string, number>} timeByCategory
    */
   _addTimeForCategories(timeByCategory) {
     for (const category in timeByCategory) {
@@ -502,14 +529,22 @@ export class LayerPaintEvent {
    */
   picturePromise() {
     const picture = TimelineData.forEvent(this._event).picture;
-    return picture.objectPromise().then(result => {
-      if (!result) {
-        return null;
-      }
-      const rect = result['params'] && result['params']['layer_rect'];
-      const picture = result['skp64'];
-      return rect && picture ? {rect: rect, serializedPicture: picture} : null;
-    });
+    if (!picture) {
+      return Promise.resolve(null);
+    }
+
+    return picture.objectPromise().then(
+        /**
+       * @param {*} result
+       */
+        result => {
+          if (!result) {
+            return null;
+          }
+          const rect = result['params'] && result['params']['layer_rect'];
+          const picture = result['skp64'];
+          return rect && picture ? {rect: rect, serializedPicture: picture} : null;
+        });
   }
 
   /**
@@ -522,7 +557,11 @@ export class LayerPaintEvent {
         return null;
       }
       return paintProfilerModel.loadSnapshot(picture.serializedPicture)
-          .then(snapshot => snapshot ? {rect: picture.rect, snapshot: snapshot} : null);
+          .then(
+              /**
+             * @param {!SDK.PaintProfiler.PaintProfilerModel} snapshot
+             */
+              snapshot => snapshot ? {rect: picture.rect, snapshot: snapshot} : null);
     });
   }
 }

@@ -13,9 +13,27 @@ import * as SourceFrame from '../source_frame/source_frame.js';  // eslint-disab
 import * as TextEditor from '../text_editor/text_editor.js';     // eslint-disable-line no-unused-vars
 import * as Workspace from '../workspace/workspace.js';          // eslint-disable-line no-unused-vars
 
+/** @type {!Performance} */
+let performanceInstance;
+
 export class Performance {
+  /**
+   * @private
+   */
   constructor() {
     this._helper = new Helper('performance');
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!performanceInstance || forceNew) {
+      performanceInstance = new Performance();
+    }
+
+    return performanceInstance;
   }
 
   reset() {
@@ -74,9 +92,27 @@ export class Performance {
   }
 }
 
+/** @type {!Memory} */
+let memoryInstance;
+
 export class Memory {
+  /**
+   * @private
+   */
   constructor() {
     this._helper = new Helper('memory');
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!memoryInstance || forceNew) {
+      memoryInstance = new Memory();
+    }
+
+    return memoryInstance;
   }
 
   reset() {

@@ -37,11 +37,17 @@ import * as Host from '../host/host.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
+/** @type {!SettingsScreen} */
+let settingsScreenInstance;
+
 /**
  * @implements {UI.View.ViewLocationResolver}
  * @unrestricted
  */
 export class SettingsScreen extends UI.Widget.VBox {
+  /**
+   * @private
+   */
   constructor() {
     super(true);
     this.registerRequiredCSS('settings/settingsScreen.css');
@@ -76,11 +82,22 @@ export class SettingsScreen extends UI.Widget.VBox {
   }
 
   /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!settingsScreenInstance || forceNew) {
+      settingsScreenInstance = new SettingsScreen();
+    }
+
+    return settingsScreenInstance;
+  }
+
+  /**
    * @return {!SettingsScreen}
    */
   static _revealSettingsScreen() {
-    /** @type {!SettingsScreen} */
-    const settingsScreen = Root.Runtime.Runtime.instance().sharedInstance(SettingsScreen);
+    const settingsScreen = SettingsScreen.instance();
     if (settingsScreen.isShowing()) {
       return settingsScreen;
     }

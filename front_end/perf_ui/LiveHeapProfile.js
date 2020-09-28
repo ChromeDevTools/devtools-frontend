@@ -7,7 +7,6 @@
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Host from '../host/host.js';
-import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 
 import {Memory} from './LineLevelProfile.js';
@@ -66,11 +65,10 @@ export class LiveHeapProfile {
       if (sessionId !== this._sessionId) {
         break;
       }
-      const lineLevelProfile = Root.Runtime.Runtime.instance().sharedInstance(Memory);
-      lineLevelProfile.reset();
+      Memory.instance().reset();
       for (let i = 0; i < profiles.length; ++i) {
         if (profiles[i]) {
-          lineLevelProfile.appendHeapProfile(profiles[i], models[i].target());
+          Memory.instance().appendHeapProfile(profiles[i], models[i].target());
         }
       }
       await Promise.race([
@@ -86,7 +84,7 @@ export class LiveHeapProfile {
     for (const model of SDK.SDKModel.TargetManager.instance().models(SDK.HeapProfilerModel.HeapProfilerModel)) {
       model.stopSampling();
     }
-    Root.Runtime.Runtime.instance().sharedInstance(Memory).reset();
+    Memory.instance().reset();
   }
 
   _stopProfiling() {

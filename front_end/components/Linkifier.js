@@ -34,7 +34,6 @@
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
-import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
@@ -630,7 +629,7 @@ export class Linkifier {
    */
   static registerLinkHandler(title, handler) {
     _linkHandlers.set(title, handler);
-    Root.Runtime.Runtime.instance().sharedInstance(LinkHandlerSettingUI)._update();
+    LinkHandlerSettingUI.instance()._update();
   }
 
   /**
@@ -638,7 +637,7 @@ export class Linkifier {
    */
   static unregisterLinkHandler(title) {
     _linkHandlers.delete(title);
-    Root.Runtime.Runtime.instance().sharedInstance(LinkHandlerSettingUI)._update();
+    LinkHandlerSettingUI.instance()._update();
   }
 
   /**
@@ -770,16 +769,34 @@ export class LinkContextMenuProvider {
   }
 }
 
+/** @type {!LinkHandlerSettingUI} */
+let linkHandlerSettingUIInstance;
+
 /**
  * @implements {UI.SettingsUI.SettingUI}
  * @unrestricted
  */
 export class LinkHandlerSettingUI {
+  /**
+   * @private
+   */
   constructor() {
     this._element = document.createElement('select');
     this._element.classList.add('chrome-select');
     this._element.addEventListener('change', this._onChange.bind(this), false);
     this._update();
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!linkHandlerSettingUIInstance || forceNew) {
+      linkHandlerSettingUIInstance = new LinkHandlerSettingUI();
+    }
+
+    return linkHandlerSettingUIInstance;
   }
 
   _update() {

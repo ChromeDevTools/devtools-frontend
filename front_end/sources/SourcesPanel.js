@@ -129,7 +129,7 @@ export class SourcesPanel extends UI.Panel.Panel {
 
     this._threadsSidebarPane = null;
     this._watchSidebarPane = /** @type {!UI.View.View} */ (UI.ViewManager.ViewManager.instance().view('sources.watch'));
-    this._callstackPane = Root.Runtime.Runtime.instance().sharedInstance(CallStackSidebarPane);
+    this._callstackPane = CallStackSidebarPane.instance();
 
     Common.Settings.Settings.instance()
         .moduleSetting('sidebarPosition')

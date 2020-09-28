@@ -6,7 +6,6 @@
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
-import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as UI from '../ui/ui.js';
@@ -19,7 +18,13 @@ import {DOMStorageItemsView} from './DOMStorageItemsView.js';
 import {DOMStorage} from './DOMStorageModel.js';  // eslint-disable-line no-unused-vars
 import {StorageItemsView} from './StorageItemsView.js';
 
+/** @type {!ResourcesPanel} */
+let resourcesPanelInstance;
+
 export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
+  /**
+   * @private
+   */
   constructor() {
     super('resources');
     this.registerRequiredCSS('resources/resourcesPanel.css');
@@ -55,10 +60,22 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
   }
 
   /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!resourcesPanelInstance || forceNew) {
+      resourcesPanelInstance = new ResourcesPanel();
+    }
+
+    return resourcesPanelInstance;
+  }
+
+  /**
    * @return {!ResourcesPanel}
    */
   static _instance() {
-    return /** @type {!ResourcesPanel} */ (Root.Runtime.Runtime.instance().sharedInstance(ResourcesPanel));
+    return ResourcesPanel.instance();
   }
 
   /**

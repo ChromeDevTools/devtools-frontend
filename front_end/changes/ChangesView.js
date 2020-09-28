@@ -4,7 +4,6 @@
 
 import * as Common from '../common/common.js';
 import * as Diff from '../diff/diff.js';
-import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
 import * as WorkspaceDiff from '../workspace_diff/workspace_diff.js';
@@ -12,7 +11,13 @@ import * as WorkspaceDiff from '../workspace_diff/workspace_diff.js';
 import {ChangesSidebar, Events} from './ChangesSidebar.js';
 import {ChangesTextEditor} from './ChangesTextEditor.js';
 
+/** @type {!ChangesView} */
+let changesViewInstance;
+
 export class ChangesView extends UI.Widget.VBox {
+  /**
+   * @private
+   */
   constructor() {
     super(true);
     this.registerRequiredCSS('changes/changesView.css');
@@ -67,6 +72,18 @@ export class ChangesView extends UI.Widget.VBox {
 
     this._hideDiff(ls`No changes`);
     this._selectedUISourceCodeChanged();
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!changesViewInstance || forceNew) {
+      changesViewInstance = new ChangesView();
+    }
+
+    return changesViewInstance;
   }
 
   _selectedUISourceCodeChanged() {
@@ -377,10 +394,8 @@ export class DiffUILocationRevealer {
     if (!(diffUILocation instanceof WorkspaceDiff.WorkspaceDiff.DiffUILocation)) {
       throw new Error('Internal error: not a diff ui location');
     }
-    /** @type {!ChangesView} */
-    const changesView = Root.Runtime.Runtime.instance().sharedInstance(ChangesView);
     await UI.ViewManager.ViewManager.instance().showView('changes.changes');
-    changesView._changesSidebar.selectUISourceCode(diffUILocation.uiSourceCode, omitFocus);
+    ChangesView.instance()._changesSidebar.selectUISourceCode(diffUILocation.uiSourceCode, omitFocus);
   }
 }
 

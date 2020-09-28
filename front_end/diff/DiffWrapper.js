@@ -1,8 +1,6 @@
 // Copyright 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';
 
@@ -38,7 +36,7 @@ export const DiffWrapper = {
     for (let i = 0; i < diff.length; i++) {
       const lines = [];
       for (let j = 0; j < diff[i][1].length; j++) {
-        lines.push(idMap.fromChar(diff[i][1][j]));
+        lines.push(idMap.fromChar(diff[i][1][j]) || '');
       }
 
       lineDiff.push({0: diff[i][0], 1: lines});
@@ -113,4 +111,5 @@ export const Operation = {
 };
 
 /** @typedef {!Array<!{0: !Operation, 1: !Array<string>}>} */
+// @ts-ignore typedef
 export let DiffArray;

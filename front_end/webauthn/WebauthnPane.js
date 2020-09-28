@@ -255,6 +255,51 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     this._setVirtualAuthEnvEnabled(!this._enabled);
   }
 
+  /**
+   * @param {!Array<!Protocol.WebAuthn.AuthenticatorTransport>} enabledOptions
+   */
+  _updateEnabledTransportOptions(enabledOptions) {
+    const prevValue = this._transportSelect.value;
+    this._transportSelect.removeChildren();
+
+    for (const option of enabledOptions) {
+      this._transportSelect.appendChild(new Option(option, option));
+    }
+
+    // Make sure the currently selected value stays the same.
+    this._transportSelect.value = prevValue;
+    // If the new set does not include the previous value.
+    if (!this._transportSelect.value) {
+      // Select the first available value.
+      this._transportSelect.selectedIndex = 0;
+    }
+  }
+
+  _updateNewAuthenticatorSectionOptions() {
+    if (this._protocolSelect.value === Protocol.WebAuthn.AuthenticatorProtocol.Ctap2) {
+      this._residentKeyCheckbox.disabled = false;
+      this._userVerificationCheckbox.disabled = false;
+      this._updateEnabledTransportOptions([
+        Protocol.WebAuthn.AuthenticatorTransport.Usb,
+        Protocol.WebAuthn.AuthenticatorTransport.Ble,
+        Protocol.WebAuthn.AuthenticatorTransport.Nfc,
+        // TODO (crbug.com/1034663): Toggle cable as option depending on if cablev2 flag is on.
+        // Protocol.WebAuthn.AuthenticatorTransport.Cable,
+        Protocol.WebAuthn.AuthenticatorTransport.Internal,
+      ]);
+    } else {
+      this._residentKeyCheckbox.value = false;
+      this._residentKeyCheckbox.disabled = true;
+      this._userVerificationCheckbox.value = false;
+      this._userVerificationCheckbox.disabled = true;
+      this._updateEnabledTransportOptions([
+        Protocol.WebAuthn.AuthenticatorTransport.Usb,
+        Protocol.WebAuthn.AuthenticatorTransport.Ble,
+        Protocol.WebAuthn.AuthenticatorTransport.Nfc,
+      ]);
+    }
+  }
+
   _createNewAuthenticatorSection() {
     this._newAuthenticatorSection = this.contentElement.createChild('div', 'new-authenticator-container');
     const newAuthenticatorTitle = UI.UIUtils.createLabel(ls`New authenticator`, 'new-authenticator-title');
@@ -271,22 +316,16 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     protocolGroup.appendChild(protocolSelectTitle);
     this._protocolSelect = protocolGroup.createChild('select', 'chrome-select');
     UI.ARIAUtils.bindLabelToControl(protocolSelectTitle, this._protocolSelect);
-    Object.values(Protocol.WebAuthn.AuthenticatorProtocol).forEach(option => {
+    Object.values(Protocol.WebAuthn.AuthenticatorProtocol).sort().forEach(option => {
       this._protocolSelect.appendChild(new Option(option, option));
     });
-    this._protocolSelect.selectedIndex = 0;
+    this._protocolSelect.value = Protocol.WebAuthn.AuthenticatorProtocol.Ctap2;
 
     const transportSelectTitle = UI.UIUtils.createLabel(ls`Transport`, 'authenticator-option-label');
     transportGroup.appendChild(transportSelectTitle);
     this._transportSelect = transportGroup.createChild('select', 'chrome-select');
     UI.ARIAUtils.bindLabelToControl(transportSelectTitle, this._transportSelect);
-    // TODO (crbug.com/1034663): Toggle cable as option depending on if cablev2 flag is on.
-    Object.values(Protocol.WebAuthn.AuthenticatorTransport).forEach(option => {
-      if (option !== Protocol.WebAuthn.AuthenticatorTransport.Cable) {
-        this._transportSelect.appendChild(new Option(option, option));
-      }
-    });
-    this._transportSelect.selectedIndex = 0;
+    // transportSelect will be populated in _updateNewAuthenticatorSectionOptions.
 
     this._residentKeyCheckboxLabel = UI.UIUtils.CheckboxLabel.create(ls`Supports resident keys`, false);
     this._residentKeyCheckboxLabel.textElement.classList.add('authenticator-option-label');
@@ -310,6 +349,9 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     addButtonGroup.appendChild(this._addAuthenticatorButton);
     const addAuthenticatorTitle = UI.UIUtils.createLabel(ls`Add authenticator`, '');
     UI.ARIAUtils.bindLabelToControl(addAuthenticatorTitle, this._addAuthenticatorButton);
+
+    this._updateNewAuthenticatorSectionOptions();
+    this._protocolSelect.addEventListener('change', this._updateNewAuthenticatorSectionOptions.bind(this));
   }
 
   async _handleAddAuthenticatorButton() {

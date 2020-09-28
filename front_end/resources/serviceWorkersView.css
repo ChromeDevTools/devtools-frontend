@@ -93,6 +93,12 @@
   text-overflow: ellipsis;
 }
 
+.report-field-value-filename {
+  /* hack to prevent focus-ring from being cut off on the left */
+  padding-left: 2px;
+  margin-left: -2px;
+}
+
 .report-field-value-subtitle {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -131,4 +137,18 @@
 .service-worker-has-current .service-workers-other-origin {
   margin-top: 16px;
   border-top: 1px solid rgb(230 230 230);
+}
+
+.devtools-link {
+  line-height: 14px;
+  align-self: center;
+  padding: 1px;
+}
+
+button.link {
+  padding: 1px;
+}
+
+button.link:focus-visible {
+  background-color: inherit;
 }

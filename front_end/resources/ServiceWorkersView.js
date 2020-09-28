@@ -347,7 +347,8 @@ export class Section {
   _createSyncNotificationField(label, initialValue, placeholder, callback) {
     const form =
         this._wrapWidget(this._section.appendField(label)).createChild('form', 'service-worker-editor-with-button');
-    const editor = form.createChild('input', 'source-code service-worker-notification-editor');
+    const editor = UI.UIUtils.createInput('source-code service-worker-notification-editor');
+    form.appendChild(editor);
     const button = UI.UIUtils.createTextButton(label);
     button.type = 'submit';
     form.appendChild(button);
@@ -520,7 +521,7 @@ export class Section {
    */
   _createLink(parent, title, listener, className, useCapture) {
     const button = parent.createChild('button', className);
-    button.classList.add('link');
+    button.classList.add('link', 'devtools-link');
     button.textContent = title;
     button.tabIndex = 0;
     button.addEventListener('click', listener, useCapture);

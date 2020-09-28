@@ -117,6 +117,15 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
   cursor: pointer;
 }
 
+.toolbar-render-as-links button {
+  height: 14px;
+  margin: 2px;
+}
+
+.toolbar-render-as-links button:focus-visible {
+  outline: auto 5px -webkit-focus-ring-color;
+}
+
 .toolbar-glyph {
   background-color: #5a5a5a;
   flex: none;
@@ -311,17 +320,6 @@ select.toolbar-item:focus-visible > * {
 
 .toolbar-button.emulate-active {
   background-color: rgb(163 163 163);
-}
-
-.toolbar-button:focus-visible::after {
-  position: absolute;
-  top: 2px;
-  bottom: 2px;
-  left: 2px;
-  right: 2px;
-  background-color: rgb(0 0 0 / 8%);
-  border-radius: 2px;
-  content: "";
 }
 
 .toolbar-shadow.floating {

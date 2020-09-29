@@ -147,6 +147,16 @@ export class LayoutPane extends HTMLElement {
     const onColorChange = this.onColorChange.bind(this, element);
     const onMouseEnter = this.onElementMouseEnter.bind(this, element);
     const onMouseLeave = this.onElementMouseLeave.bind(this, element);
+    const onColorLabelKeyUp = (event: KeyboardEvent) => {
+      // Handle Enter and Space events to make the color picker accessible.
+      if (event.key !== 'Enter' && event.key !== ' ') {
+        return;
+      }
+      const target = event.target as HTMLLabelElement;
+      const input = target.querySelector('input') as HTMLInputElement;
+      input.click();
+      event.preventDefault();
+    };
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`<div class="element">
@@ -160,10 +170,10 @@ export class LayoutPane extends HTMLElement {
           } as NodeTextData}></devtools-node-text>
         </span>
       </label>
-      <label class="color-picker-label" style="background:${element.color}">
+      <label @keyup=${onColorLabelKeyUp} tabindex="0" class="color-picker-label" style="background:${element.color}">
         <input @change=${onColorChange} @input=${onColorChange} class="color-picker" type="color" value=${element.color} />
       </label>
-      <button @click=${onElementClick} title=${showElementButtonTitle} class="show-element"></button>
+      <button tabindex="0" @click=${onElementClick} title=${showElementButtonTitle} class="show-element"></button>
     </div>`;
     // clang-format on
   }

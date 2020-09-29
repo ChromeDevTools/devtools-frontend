@@ -101,7 +101,7 @@
   background: none;
   border: none;
   -webkit-mask-image: url(Images/ic_show_node_16x16.svg);
-  background-color: rgba(0 0 0 / 62%);
+  background-color: #333;
   width: 16px;
   height: 16px;
   display: block;
@@ -109,8 +109,18 @@
   flex: none;
 }
 
+.show-element:focus,
+.show-element:hover {
+  background-color: #6e6e6e;
+}
+
 :host-context(.-theme-with-dark-background) .show-element {
   background-color: rgb(204 204 204);
+}
+
+:host-context(.-theme-with-dark-background) .show-element:focus,
+:host-context(.-theme-with-dark-background) .show-element:hover {
+  background-color: #6e6e6e;
 }
 
 .color-picker {
@@ -125,6 +135,12 @@
   height: 10px;
   margin: 0 0 0 8px;
   width: 10px;
+}
+
+.color-picker-label:hover,
+.color-picker-label:focus {
+  border: 1px solid var(--accent-color-hover);
+  transform: scale(1.2);
 }
 
 .node-text-container {

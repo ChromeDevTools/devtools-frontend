@@ -325,3 +325,42 @@
 [is=ui-icon].smallicon-no {
   background-color: red;
 }
+
+.data .nodeId-column {
+  align-items: center;
+  display: flex;
+  height: 20px;
+}
+
+.show-element {
+  margin: 0 0 0 8px;
+  padding: 0;
+  background: none;
+  border: none;
+  -webkit-mask-image: url(Images/ic_show_node_16x16.svg);
+  background-color: #333;
+  width: 16px;
+  height: 16px;
+  display: none;
+  cursor: pointer;
+  flex: none;
+}
+
+.show-element:focus,
+.show-element:hover {
+  background-color: #6e6e6e;
+}
+
+.nodeId-column:focus-within .show-element,
+.nodeId-column:hover .show-element {
+  display: inline-block;
+}
+
+:host-context(.-theme-with-dark-background) .show-element {
+  background-color: rgb(204 204 204);
+}
+
+:host-context(.-theme-with-dark-background) .show-element:focus,
+:host-context(.-theme-with-dark-background) .show-element:hover {
+  background-color: #6e6e6e;
+}

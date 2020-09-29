@@ -90,6 +90,9 @@
   <message name="IDS_DEVTOOLS_985cb652a91ccbc2c28c617412af2823" desc="Label to explain why top values are ignored">
     Top applied to a statically positioned element
   </message>
+  <message name="IDS_DEVTOOLS_9e2e5001f7d370c47fc79a213a47fadb" desc="Title of the button to show the element in the CSS Overview panel">
+    Show element
+  </message>
   <message name="IDS_DEVTOOLS_aff1062318f6d07520a0feba60f3f253" desc="Label for the number of type selectors in the CSS Overview report">
     Type selectors
   </message>

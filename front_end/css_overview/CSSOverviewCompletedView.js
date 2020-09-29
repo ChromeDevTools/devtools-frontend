@@ -947,6 +947,12 @@ export class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode 
         cell.textContent = '';
         /** @type {!HTMLElement} */ (link).dataset.backendNodeId = this.data.node.backendNodeId();
         cell.appendChild(link);
+        const button = document.createElement('button');
+        button.classList.add('show-element');
+        button.title = ls`Show element`;
+        button.tabIndex = 0;
+        button.onclick = () => this.data.node.scrollIntoView();
+        cell.appendChild(button);
       });
       return cell;
     }

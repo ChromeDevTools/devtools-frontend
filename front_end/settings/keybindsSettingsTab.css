@@ -141,6 +141,7 @@ h1 {
 .keybinds-category-header {
   font-weight: bold;
   line-height: 30px;
+  white-space: nowrap;
 }
 
 .keybinds-category-header:not(:nth-child(2)) {

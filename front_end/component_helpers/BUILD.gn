@@ -14,6 +14,7 @@ devtools_module("component_helpers") {
   ]
 
   deps = [
+    "../common:bundle",
     "../root:bundle",
     "../theme_support:bundle",
   ]

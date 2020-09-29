@@ -533,7 +533,6 @@ export class DeviceModeToolbar {
       return;
     }
     this._model.emulate(this._model.type(), device, newMode, scale);
-    this._model.reloadPage();
     return;
   }
 
@@ -560,7 +559,6 @@ export class DeviceModeToolbar {
         device.modes[0].orientation !== device.modes[1].orientation) {
       const scale = autoAdjustScaleSetting.get() ? undefined : model.scaleSetting().get();
       model.emulate(model.type(), model.device(), device.getRotationPartner(model.mode()), scale);
-      this._model.reloadPage();
       return;
     }
 

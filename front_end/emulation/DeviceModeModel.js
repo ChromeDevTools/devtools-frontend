@@ -477,16 +477,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     this._calculateAndEmulate(false);
   }
 
-  reloadPage() {
-    const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
-    if (mainTarget) {
-      const resourceModel = mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
-      if (resourceModel) {
-        resourceModel.reloadPage();
-      }
-    }
-  }
-
   /**
    * @return {number}
    */

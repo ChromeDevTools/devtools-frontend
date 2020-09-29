@@ -804,7 +804,7 @@ export class ObjectSnapshot extends Event {
   }
 
   /**
-   * @return {!Promise<?>}
+   * @return {!Promise<*>}
    */
   objectPromise() {
     if (!this._objectPromise) {

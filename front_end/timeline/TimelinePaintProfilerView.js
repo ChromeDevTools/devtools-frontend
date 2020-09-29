@@ -1,8 +1,6 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as LayerViewer from '../layer_viewer/layer_viewer.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
@@ -99,15 +97,20 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
     this._logTreeView.setCommandLog([]);
     this._paintProfilerView.setSnapshotAndLog(null, [], null);
 
+    /** @type {!Promise<?{rect: ?Protocol.DOM.Rect, snapshot: !SDK.PaintProfiler.PaintProfilerSnapshot}>} */
     let snapshotPromise;
     if (this._pendingSnapshot) {
       snapshotPromise = Promise.resolve({rect: null, snapshot: this._pendingSnapshot});
-    } else if (this._event.name === TimelineModel.TimelineModel.RecordType.Paint) {
-      const picture = TimelineModel.TimelineModel.TimelineData.forEvent(this._event).picture;
+    } else if (this._event && this._event.name === TimelineModel.TimelineModel.RecordType.Paint) {
+      /** @type {!SDK.TracingModel.ObjectSnapshot} */
+      const picture = /** @type {!SDK.TracingModel.ObjectSnapshot} */ (
+          TimelineModel.TimelineModel.TimelineData.forEvent(this._event).picture);
       snapshotPromise = picture.objectPromise()
-                            .then(data => this._paintProfilerModel.loadSnapshot(data['skp64']))
+                            .then(
+                                data => /** @type {!SDK.PaintProfiler.PaintProfilerModel} */ (this._paintProfilerModel)
+                                            .loadSnapshot(data['skp64']))
                             .then(snapshot => snapshot && {rect: null, snapshot: snapshot});
-    } else if (this._event.name === TimelineModel.TimelineModel.RecordType.RasterTask) {
+    } else if (this._event && this._event.name === TimelineModel.TimelineModel.RecordType.RasterTask) {
       snapshotPromise = this._frameModel.rasterTilePromise(this._event);
     } else {
       console.assert(false, 'Unexpected event type or no snapshot');
@@ -122,7 +125,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
       const snapshot = snapshotWithRect.snapshot;
       this._lastLoadedSnapshot = snapshot;
       this._imageView.setMask(snapshotWithRect.rect);
-      snapshot.commandLog().then(log => onCommandLogDone.call(this, snapshot, snapshotWithRect.rect, log));
+      snapshot.commandLog().then(log => onCommandLogDone.call(this, snapshot, snapshotWithRect.rect, log || []));
     });
 
     /**
@@ -159,7 +162,8 @@ export class TimelinePaintImageView extends UI.Widget.Widget {
     this.registerRequiredCSS('timeline/timelinePaintProfiler.css');
     this.contentElement.classList.add('fill', 'paint-profiler-image-view');
     this._imageContainer = this.contentElement.createChild('div', 'paint-profiler-image-container');
-    this._imageElement = this._imageContainer.createChild('img');
+    /** @type {!HTMLImageElement} */
+    this._imageElement = /** @type {!HTMLImageElement} */ (this._imageContainer.createChild('img'));
     this._maskElement = this._imageContainer.createChild('div');
     this._imageElement.addEventListener('load', this._updateImagePosition.bind(this), false);
 

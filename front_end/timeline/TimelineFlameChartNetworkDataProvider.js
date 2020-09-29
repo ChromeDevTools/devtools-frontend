@@ -1,8 +1,6 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
@@ -39,10 +37,14 @@ export class TimelineFlameChartNetworkDataProvider {
       useDecoratorsForOverview: true,
       shareHeaderLine: false
     };
-    this._group = {startLevel: 0, name: Common.UIString.UIString('Network'), expanded: false, style: this._style};
+    /** @type {!PerfUI.FlameChart.Group} */
+    this._group = ({startLevel: 0, name: Common.UIString.UIString('Network'), expanded: false, style: this._style});
     this._minimumBoundary = 0;
     this._maximumBoundary = 0;
     this._timeSpan = 0;
+    /** @type {!Array<!TimelineModel.TimelineModel.NetworkRequest>} */
+    this._requests = [];
+    this._maxLevel = 0;
   }
 
   /**
@@ -50,10 +52,7 @@ export class TimelineFlameChartNetworkDataProvider {
    */
   setModel(performanceModel) {
     this._model = performanceModel && performanceModel.timelineModel();
-    this._maxLevel = 0;
     this._timelineData = null;
-    /** @type {!Array<!TimelineModel.TimelineModel.NetworkRequest>} */
-    this._requests = [];
   }
 
   /**
@@ -210,6 +209,7 @@ export class TimelineFlameChartNetworkDataProvider {
     if (!request.timing) {
       return false;
     }
+    const timing = /** @type {*} */ (request.timing);
 
     const beginTime = request.beginTime();
     /**
@@ -237,9 +237,9 @@ export class TimelineFlameChartNetworkDataProvider {
     context.fillRect(finish, barY - 0.5, barX + barWidth - finish, barHeight);
 
     // If the request is from cache, pushStart refers to the original request, and hence cannot be used.
-    if (!request.cached() && request.timing.pushStart) {
-      const pushStart = timeToPixel(request.timing.pushStart * 1000);
-      const pushEnd = request.timing.pushEnd ? timeToPixel(request.timing.pushEnd * 1000) : start;
+    if (!request.cached() && timing.pushStart) {
+      const pushStart = timeToPixel(timing.pushStart * 1000);
+      const pushEnd = timing.pushEnd ? timeToPixel(timing.pushEnd * 1000) : start;
       const dentSize = Platform.NumberUtilities.clamp(pushEnd - pushStart - 2, 0, 4);
       const padding = 1;
       context.save();
@@ -251,7 +251,7 @@ export class TimelineFlameChartNetworkDataProvider {
       context.lineTo(pushEnd - dentSize, barY + barHeight - padding);
       context.lineTo(pushStart, barY + barHeight - padding);
       context.closePath();
-      if (request.timing.pushEnd) {
+      if (timing.pushEnd) {
         context.fillStyle = this.entryColor(index);
       } else {
         // Use a gradient to indicate that `pushEnd` is not known here to work
@@ -338,7 +338,7 @@ export class TimelineFlameChartNetworkDataProvider {
     if (!request.url) {
       return null;
     }
-    const element = createElement('div');
+    const element = document.createElement('div');
     const root = UI.Utils.createShadowRootWithCoreStyles(element, 'timeline/timelineFlamechartPopover.css');
     const contents = root.createChild('div', 'timeline-flamechart-popover');
     const startTime = request.getStartTime();
@@ -347,7 +347,7 @@ export class TimelineFlameChartNetworkDataProvider {
       contents.createChild('span', 'timeline-info-network-time').textContent = Number.millisToString(duration, true);
     }
     if (typeof request.priority === 'string') {
-      const div = contents.createChild('span');
+      const div = /** @type {!HTMLElement} */ (contents.createChild('span'));
       div.textContent = PerfUI.NetworkPriorities.uiLabelForNetworkPriority(
           /** @type {!Protocol.Network.ResourcePriority} */ (request.priority));
       div.style.color = this._colorForPriority(request.priority) || 'black';
@@ -363,6 +363,7 @@ export class TimelineFlameChartNetworkDataProvider {
   _colorForPriority(priority) {
     if (!this._priorityToValue) {
       const priorities = Protocol.Network.ResourcePriority;
+      /** @type {!Map<string, number>} */
       this._priorityToValue = new Map([
         [priorities.VeryLow, 1], [priorities.Low, 2], [priorities.Medium, 3], [priorities.High, 4],
         [priorities.VeryHigh, 5]
@@ -373,11 +374,13 @@ export class TimelineFlameChartNetworkDataProvider {
   }
 
   _appendTimelineData() {
-    this._minimumBoundary = this._model.minimumRecordTime();
-    this._maximumBoundary = this._model.maximumRecordTime();
-    this._timeSpan = this._model.isEmpty() ? 1000 : this._maximumBoundary - this._minimumBoundary;
-    this._model.networkRequests().forEach(this._appendEntry.bind(this));
-    this._updateTimelineData();
+    if (this._model) {
+      this._minimumBoundary = this._model.minimumRecordTime();
+      this._maximumBoundary = this._model.maximumRecordTime();
+      this._timeSpan = this._model.isEmpty() ? 1000 : this._maximumBoundary - this._minimumBoundary;
+      this._model.networkRequests().forEach(this._appendEntry.bind(this));
+      this._updateTimelineData();
+    }
   }
 
   _updateTimelineData() {
@@ -389,12 +392,14 @@ export class TimelineFlameChartNetworkDataProvider {
     for (let i = 0; i < this._requests.length; ++i) {
       const r = this._requests[i];
       const beginTime = r.beginTime();
-      const visible = beginTime < this._endTime && r.endTime > this._startTime;
+      const startTime = /** @type {number} */ (this._startTime);
+      const endTime = /** @type {number} */ (this._endTime);
+      const visible = beginTime < endTime && r.endTime > startTime;
       if (!visible) {
         this._timelineData.entryLevels[i] = -1;
         continue;
       }
-      while (lastTimeByLevel.length && lastTimeByLevel.peekLast() <= beginTime) {
+      while (lastTimeByLevel.length && lastTimeByLevel[lastTimeByLevel.length - 1] <= beginTime) {
         lastTimeByLevel.pop();
       }
       this._timelineData.entryLevels[i] = lastTimeByLevel.length;
@@ -434,7 +439,7 @@ export class TimelineFlameChartNetworkDataProvider {
    * @return {boolean}
    */
   isExpanded() {
-    return this._group.expanded;
+    return this._group && !!this._group.expanded;
   }
 
   /**

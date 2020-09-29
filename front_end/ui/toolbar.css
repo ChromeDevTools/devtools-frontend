@@ -126,6 +126,17 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
   outline: auto 5px -webkit-focus-ring-color;
 }
 
+:not(.toolbar-render-as-links) .toolbar-button:focus-visible::after {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  left: 2px;
+  right: 2px;
+  background-color: rgb(0 0 0 / 8%);
+  border-radius: 2px;
+  content: "";
+}
+
 .toolbar-glyph {
   background-color: #5a5a5a;
   flex: none;

@@ -123,6 +123,9 @@
   <message name="IDS_DEVTOOLS_650140bd73628d283d870d4648ae3324" desc="Text in Console View of the Console panel">
     Find string in logs
   </message>
+  <message name="IDS_DEVTOOLS_66da1ec20aa268f70f4c11ab95c0cd4f" desc="Screen reader label for delete button on a blank live expression">
+    Remove blank expression
+  </message>
   <message name="IDS_DEVTOOLS_6775864ce3df150aabbf2d60eb12f513" desc="Text in Console Pin Pane of the Console panel">
     Live expression editor
   </message>
@@ -179,6 +182,9 @@
   </message>
   <message name="IDS_DEVTOOLS_ad410611ff249a09acdba47cc8505186" desc="Text in Console Sidebar of the Console panel to show that there is no verbose messages">
     No verbose
+  </message>
+  <message name="IDS_DEVTOOLS_b04636e6c6acb60fabadde4cb82ae619" desc="Screen reader label for delete button on a non-blank live expression">
+    Remove expression: <ph name="EXPRESSION">$1s<ex>document</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_b184e7a44bed11a41d9c104529010e23" desc="Text in Console View of the Console panel">
     <ph name="THIS__LEVELLABELS_NAME_">$1s<ex>Warnings</ex></ph> only

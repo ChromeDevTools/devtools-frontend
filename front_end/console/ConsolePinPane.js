@@ -126,14 +126,19 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
    */
   constructor(expression, pinPane) {
     super();
-    const deletePinIcon = UI.Icon.Icon.create('smallicon-cross', 'console-delete-pin');
+    const deletePinIcon = document.createElement('div', {is: 'dt-close-button'});
+    deletePinIcon.gray = true;
+    deletePinIcon.classList.add('close-button');
+    deletePinIcon.setTabbable(true);
+    if (expression.length) {
+      deletePinIcon.setAccessibleName(ls`Remove expression: ${expression}`);
+    } else {
+      deletePinIcon.setAccessibleName(ls`Remove blank expression`);
+    }
     self.onInvokeElement(deletePinIcon, event => {
       pinPane._removePin(this);
       event.consume(true);
     });
-    deletePinIcon.tabIndex = 0;
-    UI.ARIAUtils.setAccessibleName(deletePinIcon, ls`Remove expression`);
-    UI.ARIAUtils.markAsButton(deletePinIcon);
 
     const fragment = UI.Fragment.Fragment.build`
     <div class='console-pin'>
@@ -200,6 +205,11 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
             }
             this._committedExpression = trimmedText;
             pinPane._savePins();
+            if (this._committedExpression.length) {
+              deletePinIcon.setAccessibleName(ls`Remove expression: ${this._committedExpression}`);
+            } else {
+              deletePinIcon.setAccessibleName(ls`Remove blank expression`);
+            }
             this._editor.setSelection(TextUtils.TextRange.TextRange.createFromLocation(Infinity, Infinity));
           });
         });

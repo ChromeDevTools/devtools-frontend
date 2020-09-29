@@ -4,6 +4,12 @@
  * found in the LICENSE file.
  */
 
+.close-button {
+  position: absolute;
+  top: 7px;
+  left: 5px;
+}
+
 .console-pins {
   max-height: 200px;
   overflow-y: auto;

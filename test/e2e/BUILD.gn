@@ -17,6 +17,7 @@ node_ts_library("tests") {
   deps = [
     "animations",
     "application",
+    "assertion",
     "changes",
     "console",
     "coverage",

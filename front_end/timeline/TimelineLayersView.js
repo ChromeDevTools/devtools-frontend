@@ -1,8 +1,6 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as LayerViewer from '../layer_viewer/layer_viewer.js';
@@ -16,7 +14,7 @@ import * as UI from '../ui/ui.js';
 export class TimelineLayersView extends UI.SplitWidget.SplitWidget {
   /**
    * @param {!TimelineModel.TimelineModel.TimelineModelImpl} model
-   * @param {function(!SDK.PaintProfiler.PaintProfilerSnapshot)} showPaintProfilerCallback
+   * @param {function(!SDK.PaintProfiler.PaintProfilerSnapshot):void} showPaintProfilerCallback
    */
   constructor(model, showPaintProfilerCallback) {
     super(true, false, 'timelineLayersView');
@@ -82,6 +80,8 @@ export class TimelineLayersView extends UI.SplitWidget.SplitWidget {
   }
 
   _update() {
-    this._frameLayerTree.layerTreePromise().then(layerTree => this._layerViewHost.setLayerTree(layerTree));
+    if (this._frameLayerTree) {
+      this._frameLayerTree.layerTreePromise().then(layerTree => this._layerViewHost.setLayerTree(layerTree));
+    }
   }
 }

@@ -36,18 +36,13 @@ generate_ci_configs(
             name = "stable",
             branch = "refs/heads/chromium/4183",
             notifiers = ["devtools notifier"],
-        ),
-        config_section(
-            name = "previous",
-            branch = "refs/heads/chromium/4147",
-            notifiers = ["devtools notifier"],
-        ),
+        )
     ],
     builders = [
         builder_descriptor(
             name = "DevTools Linux",
             recipe_name = "chromium_integration",
-            excluded_from = ["beta", "stable", "previous"],
+            excluded_from = ["beta", "stable"],
         ),
         builder_descriptor(
             name = "Stand-alone Linux",
@@ -64,7 +59,7 @@ generate_ci_configs(
             name = "Stand-alone Mac",
             recipe_name = "devtools/devtools-frontend",
             dims = dimensions.mac,
-            excluded_from = ["chromium", "beta", "stable", "previous"],
+            excluded_from = ["chromium", "beta", "stable"],
         ),
     ],
 )

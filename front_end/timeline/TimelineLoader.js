@@ -1,8 +1,6 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
@@ -20,12 +18,14 @@ export class TimelineLoader {
    * @param {!Client} client
    */
   constructor(client) {
+    /** @type {?Client} */
     this._client = client;
 
     this._backingStorage = new Bindings.TempFile.TempFileBackingStorage();
+    /** @type {?SDK.TracingModel.TracingModel} */
     this._tracingModel = new SDK.TracingModel.TracingModel(this._backingStorage);
 
-    /** @type {?function()} */
+    /** @type {?function():void} */
     this._canceledCallback = null;
     this._state = State.Initial;
     this._buffer = '';
@@ -48,8 +48,8 @@ export class TimelineLoader {
     loader._canceledCallback = fileReader.cancel.bind(fileReader);
     loader._totalSize = file.size;
     fileReader.read(loader).then(success => {
-      if (!success) {
-        loader._reportErrorAndCancelLoading(fileReader.error().message);
+      if (!success && fileReader.error()) {
+        loader._reportErrorAndCancelLoading(/** @type {*} */ (fileReader.error()).message);
       }
     });
     return loader;
@@ -68,7 +68,7 @@ export class TimelineLoader {
       client.loadingStarted();
       for (let i = 0; i < events.length; i += eventsPerChunk) {
         const chunk = events.slice(i, i + eventsPerChunk);
-        loader._tracingModel.addEvents(chunk);
+        /** @type {!SDK.TracingModel.TracingModel} */ (loader._tracingModel).addEvents(chunk);
         client.loadingProgress((i + chunk.length) / events.length);
         await new Promise(r => setTimeout(r));  // Yield event loop to paint.
       }
@@ -92,8 +92,10 @@ export class TimelineLoader {
   cancel() {
     this._tracingModel = null;
     this._backingStorage.reset();
-    this._client.loadingComplete(null);
-    this._client = null;
+    if (this._client) {
+      this._client.loadingComplete(null);
+      this._client = null;
+    }
     if (this._canceledCallback) {
       this._canceledCallback();
     }
@@ -102,7 +104,7 @@ export class TimelineLoader {
   /**
    * @override
    * @param {string} chunk
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   write(chunk) {
     if (!this._client) {
@@ -191,7 +193,7 @@ export class TimelineLoader {
     }
 
     try {
-      this._tracingModel.addEvents(items);
+      /** @type {!SDK.TracingModel.TracingModel} */ (this._tracingModel).addEvents(items);
     } catch (e) {
       this._reportErrorAndCancelLoading(Common.UIString.UIString('Malformed timeline data: %s', e.toString()));
     }
@@ -231,8 +233,8 @@ export class TimelineLoader {
       this._parseCPUProfileFormat(this._buffer);
       this._buffer = '';
     }
-    this._tracingModel.tracingComplete();
-    this._client.loadingComplete(this._tracingModel);
+    /** @type {!SDK.TracingModel.TracingModel} */ (this._tracingModel).tracingComplete();
+    /** @type {!Client} */ (this._client).loadingComplete(this._tracingModel);
   }
 
   /**
@@ -248,7 +250,7 @@ export class TimelineLoader {
       this._reportErrorAndCancelLoading(Common.UIString.UIString('Malformed CPU profile format'));
       return;
     }
-    this._tracingModel.addEvents(traceEvents);
+    /** @type {!SDK.TracingModel.TracingModel} */ (this._tracingModel).addEvents(traceEvents);
   }
 }
 

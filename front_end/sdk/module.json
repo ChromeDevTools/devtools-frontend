@@ -510,7 +510,7 @@
     {
       "type": "setting",
       "category": "Network",
-      "title": "Enable request blocking",
+      "title": "Enable network request blocking",
       "settingName": "requestBlockingEnabled",
       "settingType": "boolean",
       "storageType": "session",
@@ -518,11 +518,11 @@
       "options": [
         {
           "value": true,
-          "title": "Enable request blocking"
+          "title": "Enable network request blocking"
         },
         {
           "value": false,
-          "title": "Disable request blocking"
+          "title": "Disable network request blocking"
         }
       ]
     },

@@ -570,6 +570,9 @@
   <message name="IDS_DEVTOOLS_b600e0facf21b7d4a9a769a60b236ba1" desc="Title of a setting under the Debugger category that can be invoked through the Command Menu">
     Enable JavaScript
   </message>
+  <message name="IDS_DEVTOOLS_b711d25c13ec723bbe0b9b18526bbc95" desc="Title of a setting under the Network category that can be invoked through the Command Menu">
+    Disable network request blocking
+  </message>
   <message name="IDS_DEVTOOLS_b9a5a0162829cba9db8b77daa75ec604" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Hide layout shift regions
   </message>
@@ -654,9 +657,6 @@
   </message>
   <message name="IDS_DEVTOOLS_d24a22fef757966373800aa9795458dc" desc="Text in Source Map">
     ? [sm]
-  </message>
-  <message name="IDS_DEVTOOLS_d4fad802fc7bf0248d34c685533bd56f" desc="Title of a setting under the Network category that can be invoked through the Command Menu">
-    Disable request blocking
   </message>
   <message name="IDS_DEVTOOLS_d5746b506b158b2dfedca3c0868bf51a" desc="Title for SameSiteCookie issue">
     Indicate whether a cookie is intended to be set in a cross-site context by specifying its SameSite attribute

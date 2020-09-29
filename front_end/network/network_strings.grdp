@@ -303,9 +303,6 @@
   <message name="IDS_DEVTOOLS_5223b56f806ed0547f295a2c643061ec" desc="Text in Headers View of the Network panel">
     To use this resource from a different origin, the server needs to specify a cross-origin resource policy in the response headers:
   </message>
-  <message name="IDS_DEVTOOLS_52c2263c92c8b0f41e36892ccd8cb119" desc="Accessible label for the button to add request blocking patterns in the Request blocking tool">
-    Add request blocking pattern
-  </message>
   <message name="IDS_DEVTOOLS_53fa249ce3d02c8a686b657b31d02ee7" desc="Text in Network Log View of the Network panel">
     Copy response
   </message>
@@ -314,6 +311,9 @@
   </message>
   <message name="IDS_DEVTOOLS_5639d3df5aea3d9e78027b843ee3cbb2" desc="Text in Resource Web Socket Frame View of the Network panel">
     Receive
+  </message>
+  <message name="IDS_DEVTOOLS_566054a0cc477c285fcdb4b7579db3cf" desc="Accessible label for the button to add request blocking patterns in the network request blocking tool">
+    Add network request blocking pattern
   </message>
   <message name="IDS_DEVTOOLS_566bbee0f961ad71b54c3c2fd36db053" desc="Reason in Network Data Grid Node of the Network panel">
     extension
@@ -498,6 +498,9 @@
   <message name="IDS_DEVTOOLS_de04f7066e574ccce5b163308115dd2c" desc="Text used to show that data was retrieved using ServiceWorker fallback code">
     Fallback code
   </message>
+  <message name="IDS_DEVTOOLS_de334a2dc1db5a51d8d8cd49e13ca1c4" desc="Button to add a pattern to block netwrok requests in the Network request blocking tool">
+    Network requests are not blocked. <ph name="ADD_BUTTON">$1s<ex>Add pattern</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_de9b14d980b77c264d42463f407180be" desc="Message to explain lack of raw headers for a particular network request">
     Provisional headers are shown
   </message>
@@ -521,6 +524,9 @@
   </message>
   <message name="IDS_DEVTOOLS_e48c00bc05b642164b5520137b66d011" desc="Text in Network Log View of the Network panel">
     Copy all as Node.js fetch
+  </message>
+  <message name="IDS_DEVTOOLS_eb7a6acbba5314f2cd2c41476115d732" desc="Title of the 'Network request blocking' tool in the bottom drawer">
+    Network request blocking
   </message>
   <message name="IDS_DEVTOOLS_f0c5b7ae2d085f65b7b003d43a7d7521" desc="Name of storage cache from which a response was fetched">
     Cache storage cache name: <ph name="THIS__REQUEST_RESPONSECACHESTORAGECACHENAME">$1s<ex>v1</ex></ph>
@@ -689,9 +695,6 @@
   </message>
   <message name="IDS_DEVTOOLS_986371172510b03c03ac7cd17c1f84d4" desc="Cell title in Network Data Grid Node of the Network panel">
     Served from Signed HTTP Exchange, resource size: <ph name="RESOURCESIZE">$1s<ex>4 B</ex></ph>
-  </message>
-  <message name="IDS_DEVTOOLS_986491ef3610ed7ef82bd863e4ee00a2" desc="Title of the 'Request blocking' tool in the bottom drawer">
-    Request blocking
   </message>
   <message name="IDS_DEVTOOLS_986c37480b1f1c2e443504b38b6361b4" desc="A group title in the user agent dropdown menu in the Network conditions tool">
     <ph name="LOCKED_1">Chrome</ph>
@@ -881,9 +884,6 @@
   </message>
   <message name="IDS_DEVTOOLS_cc0af601bfd673427a8abb171f62c707" desc="Reason in Network Data Grid Node of the Network panel">
     content-type
-  </message>
-  <message name="IDS_DEVTOOLS_cc910147ba0845397ea686345faf7340" desc="Button to add a pattern to block requests in the Request Blocking tool">
-    Requests are not blocked. <ph name="ADD_BUTTON">$1s<ex>Add pattern</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_ce9d64b8fde226fd9e5fa4c0947c7ee0" desc="Tooltip to explain what response cookies are">
     Cookies that were received from the server in the &apos;set-cookie&apos; header of the response

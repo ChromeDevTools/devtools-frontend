@@ -122,7 +122,7 @@
       "type": "view",
       "location": "drawer-view",
       "id": "network.blocked-urls",
-      "title": "Request blocking",
+      "title": "Network request blocking",
       "persistence": "closeable",
       "order": 60,
       "className": "Network.BlockedURLsPane"

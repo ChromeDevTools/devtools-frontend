@@ -25,14 +25,14 @@
   <message name="IDS_DEVTOOLS_0b484cfcf50c8fabff48c0aad426f544" desc="Text to dock the DevTools to the left of the browser tab">
     Dock to left
   </message>
+  <message name="IDS_DEVTOOLS_0be7b7d0111a248185e7b1bebaf8595b" desc="Text to enable blocking of network requests">
+    Enable network request blocking
+  </message>
   <message name="IDS_DEVTOOLS_0ca08f8f4a8a19f7f1ae87c119494327" desc="Title as part of a tool to override existing configurations">
     Overrides
   </message>
   <message name="IDS_DEVTOOLS_0eaadb4fcb48a0a0ed7bc9868be9fbaa" desc="Text to indicate an item is a warning">
     Warning
-  </message>
-  <message name="IDS_DEVTOOLS_0f44e9e39cbe2f22bd1bd7b6070cf13d" desc="Text to enable blocking of network requests">
-    Enable request blocking
   </message>
   <message name="IDS_DEVTOOLS_105078d294d30c978ca2badf7f376934" desc="The action to scroll">
     Scroll

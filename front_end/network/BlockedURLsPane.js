@@ -25,7 +25,7 @@ export class BlockedURLsPane extends UI.Widget.VBox {
 
     this._toolbar = new UI.Toolbar.Toolbar('', this.contentElement);
     this._enabledCheckbox = new UI.Toolbar.ToolbarCheckbox(
-        Common.UIString.UIString('Enable request blocking'), undefined, this._toggleEnabled.bind(this));
+        Common.UIString.UIString('Enable network request blocking'), undefined, this._toggleEnabled.bind(this));
     this._toolbar.appendToolbarItem(this._enabledCheckbox);
     this._toolbar.appendSeparator();
     const addButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Add pattern'), 'largeicon-add');
@@ -62,8 +62,8 @@ export class BlockedURLsPane extends UI.Widget.VBox {
   _createEmptyPlaceholder() {
     const element = this.contentElement.createChild('div', 'no-blocked-urls');
     const addButton = UI.UIUtils.createTextButton(ls`Add pattern`, this._addButtonClicked.bind(this), 'add-button');
-    UI.ARIAUtils.setAccessibleName(addButton, ls`Add request blocking pattern`);
-    element.appendChild(UI.UIUtils.formatLocalized('Requests are not blocked. %s', [addButton]));
+    UI.ARIAUtils.setAccessibleName(addButton, ls`Add network request blocking pattern`);
+    element.appendChild(UI.UIUtils.formatLocalized('Network requests are not blocked. %s', [addButton]));
     return element;
   }
 

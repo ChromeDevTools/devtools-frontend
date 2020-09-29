@@ -20,6 +20,8 @@ vars = {
   'clang_format_url': 'https://chromium.googlesource.com/chromium/llvm-project/cfe/tools/clang-format.git',
   'clang_format_revision': '96636aa0e9f047f17447f2d45a094d0b59ed7917',
 
+  'emscripten_tag': '7a7f38ca19da152d4cd6da4776921a0f1e3f3e3f',
+
   # GN CIPD package version.
   'gn_version': 'git_revision:e002e68a48d1c82648eadde2f6aafa20d08c36f2',
 
@@ -216,5 +218,9 @@ hooks = [
     'action': ['python', 'build/linux/sysroot_scripts/install-sysroot.py',
                '--arch=x64'],
   },
-
+  {
+    'name': 'emscripten',
+    'pattern': '.',
+    'action': ['python', 'scripts/deps/download_emscripten.py', Var('emscripten_tag'), 'third_party/emscripten-releases'],
+  },
 ]

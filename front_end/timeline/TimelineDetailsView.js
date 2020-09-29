@@ -1,8 +1,6 @@
 // Copyright 2017 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
@@ -62,6 +60,9 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     this.element.appendChild(this._additionalMetricsToolbar.element);
 
     this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._tabSelected, this);
+
+    /** @type {!PerformanceModel} */
+    this._model;
   }
 
   /**
@@ -73,7 +74,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
       if (this._model) {
         this._model.removeEventListener(Events.WindowChanged, this._onWindowChanged, this);
       }
-      this._model = model;
+      this._model = /** @type {!PerformanceModel} */ (model);
       if (this._model) {
         this._model.addEventListener(Events.WindowChanged, this._onWindowChanged, this);
       }
@@ -94,8 +95,8 @@ export class TimelineDetailsView extends UI.Widget.VBox {
       const isEstimate = estimated ? ` (${ls`estimated`})` : '';
       const message = ls`Total blocking time: ${time.toFixed(2)}ms${isEstimate}`;
 
-      const warning = createElement('span');
-      const clsLink = UI.UIUtils.createWebDevLink('tbt/', ls`Learn more`);
+      const warning = document.createElement('span');
+      const clsLink = /** @type {!UI.XLink.XLink} */ (UI.UIUtils.createWebDevLink('tbt/', ls`Learn more`));
       // crbug.com/1103188: In dark mode the focus ring is hidden by the surrounding
       // container of this link. For some additional spacing on the right to make
       // sure the ring is fully visible.
@@ -232,7 +233,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
   }
 
   /**
-   * @return {!UI.Widget.Widget}
+   * @return {!TimelineLayersView}
    */
   _layersView() {
     if (this._lazyLayersView) {

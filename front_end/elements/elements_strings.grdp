@@ -45,8 +45,8 @@
   <message name="IDS_DEVTOOLS_21c12abe8367dcbdf5d3fee56a4ae9d8" desc="Title of a setting under the Elements category in Settings">
     Show detailed inspect tooltip
   </message>
-  <message name="IDS_DEVTOOLS_22a11a2e07e4412afd106977262d7617" desc="Text in Elements Tree Element of the Elements panel">
-    Copy selector
+  <message name="IDS_DEVTOOLS_22a11a2e07e4412afd106977262d7617" desc="Text in Elements Tree Element of the Elements panel, copy should be used as a verb">
+    Copy <ph name="LOCKED_1">selector</ph>
   </message>
   <message name="IDS_DEVTOOLS_243bcfa8bb3e955a2c98c5815c2fe446" desc="Console warning when the user tries to reveal a deferred DOM Node that resolves as null.">
     The deferred DOM Node could not be resolved into a valid node.
@@ -120,7 +120,7 @@
   <message name="IDS_DEVTOOLS_4757fe07fd492a8be0ea6a760d683d6e" desc="Label of the position property on the styles box diagram, represent the property name.">
     <ph name="LOCKED_1">position</ph>
   </message>
-  <message name="IDS_DEVTOOLS_4a27b8d01ae86c80074e4c57be48f8c6" desc="Text in Elements Tree Element of the Elements panel">
+  <message name="IDS_DEVTOOLS_4a27b8d01ae86c80074e4c57be48f8c6" desc="Text in Elements Tree Element of the Elements panel, copy should be used as a verb">
     Copy styles
   </message>
   <message name="IDS_DEVTOOLS_4c1c7d945fcd04d68bd3b3f1d99a55a1" desc="Text in Elements Panel of the Elements panel">
@@ -153,7 +153,7 @@
   <message name="IDS_DEVTOOLS_5eeb03a9c080c299d4804ac765c818c2" desc="No matches element text content in Styles Sidebar Pane of the Elements panel">
     No matching selector or style
   </message>
-  <message name="IDS_DEVTOOLS_6053f828a109e7d9da3690a7416e4eec" desc="Text in Elements Tree Element of the Elements panel">
+  <message name="IDS_DEVTOOLS_6053f828a109e7d9da3690a7416e4eec" desc="Text in Elements Tree Element of the Elements panel, copy should be used as a verb">
     Copy XPath
   </message>
   <message name="IDS_DEVTOOLS_605e072850e19521394f8bad7082acf4" desc="Text of a DOM element in Element State Pane Widget of the Elements panel">
@@ -225,7 +225,7 @@
   <message name="IDS_DEVTOOLS_92c2cabd05b5ccef986c062a504cbcfb" desc="Accessible label for Elements panel adorners (suffix badges in Elements Tree Outline)">
     adorner active
   </message>
-  <message name="IDS_DEVTOOLS_97d28fbc573f9f331f5b1886b5c1eeef" desc="Text in Elements Tree Element of the Elements panel">
+  <message name="IDS_DEVTOOLS_97d28fbc573f9f331f5b1886b5c1eeef" desc="Text in Elements Tree Element of the Elements panel, copy should be used as a verb">
     Copy full XPath
   </message>
   <message name="IDS_DEVTOOLS_9a0364b9e99bb480dd25e1f0284c8555" desc="Text in Metrics Sidebar Pane of the Elements panel">
@@ -270,13 +270,13 @@
   <message name="IDS_DEVTOOLS_be9548cd999232697505d4ca2eed2a23" desc="The UI destination when right clicking an item that can be revealed">
     Elements panel
   </message>
-  <message name="IDS_DEVTOOLS_bf22eb56a74b42a33fecf10c831e9509" desc="Text in Elements Tree Element of the Elements panel">
+  <message name="IDS_DEVTOOLS_bf22eb56a74b42a33fecf10c831e9509" desc="Text in Elements Tree Element of the Elements panel, copy should be used as a verb">
     Copy outerHTML
   </message>
   <message name="IDS_DEVTOOLS_c3c20058cbdd08782b780612204daafd" desc="Title of an action in the elements tool to toggle element search">
     Select an element in the page to inspect it
   </message>
-  <message name="IDS_DEVTOOLS_c64955a6a59816d4e1206d600020a9fe" desc="Text in Elements Tree Element of the Elements panel">
+  <message name="IDS_DEVTOOLS_c64955a6a59816d4e1206d600020a9fe" desc="Text in Elements Tree Element of the Elements panel, copy should be used as a verb">
     Copy element
   </message>
   <message name="IDS_DEVTOOLS_c736f6b512801b5fe4670e5968ee7be7" desc="Text in Element State Pane Widget of the Elements panel">

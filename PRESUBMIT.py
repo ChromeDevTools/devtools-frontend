@@ -189,13 +189,16 @@ def _CheckDevToolsStyleJS(input_api, output_api):
 
     front_end_directory = input_api.os_path.join(
         input_api.PresubmitLocalPath(), 'front_end')
+    inspector_overlay_directory = input_api.os_path.join(
+        input_api.PresubmitLocalPath(), 'inspector_overlay')
     test_directory = input_api.os_path.join(input_api.PresubmitLocalPath(),
                                             'test')
     scripts_directory = input_api.os_path.join(input_api.PresubmitLocalPath(),
                                                'scripts')
 
     default_linted_directories = [
-        front_end_directory, test_directory, scripts_directory
+        front_end_directory, test_directory, scripts_directory,
+        inspector_overlay_directory
     ]
 
     eslint_related_files = [
@@ -234,7 +237,11 @@ def _CheckDevToolsStyleCSS(input_api, output_api):
 
     front_end_directory = input_api.os_path.join(
         input_api.PresubmitLocalPath(), 'front_end')
-    default_linted_directories = [front_end_directory]
+    inspector_overlay_directory = input_api.os_path.join(
+        input_api.PresubmitLocalPath(), 'inspector_overlay')
+    default_linted_directories = [
+        front_end_directory, inspector_overlay_directory
+    ]
 
     scripts_directory = input_api.os_path.join(input_api.PresubmitLocalPath(),
                                                'scripts')

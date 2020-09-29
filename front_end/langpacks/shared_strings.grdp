@@ -604,9 +604,6 @@
   <message name="IDS_DEVTOOLS_ce5bf551379459c1c61d2a204061c455" desc="Title for a group of cities">
     Location
   </message>
-  <message name="IDS_DEVTOOLS_ce7668534c7b08cd0b81dfa574d681f8" desc="Toolip shown for the issues count in several places of the UI">
-    Issues pertaining to <ph name="ISSUES">$1s<ex>13</ex></ph> operations detected.
-  </message>
   <message name="IDS_DEVTOOLS_ce82e07fa1f0521f5cee30e368fe2e73" desc="Text that starts with a colon and includes a placeholder">
     : <ph name="AA_NUMBER">$1s<ex>3.0</ex></ph>
   </message>
@@ -750,9 +747,6 @@
   </message>
   <message name="IDS_DEVTOOLS_fa7c73b6eb5f3c3b77e47d8a4557af3e" desc="Tooltip text that appears when hovering over the largeicon load button">
     Load profile…
-  </message>
-  <message name="IDS_DEVTOOLS_faa6cbbf56829034b2653e796abdd062" desc="Toolip shown for the issues count in several places of the UI">
-    Issues pertaining to <ph name="ISSUES">$1s<ex>1</ex></ph> operation detected.
   </message>
   <message name="IDS_DEVTOOLS_fb61758d0f0fda4ba867c3d5a46c16a7" desc="Name of the Sources panel">
     Sources

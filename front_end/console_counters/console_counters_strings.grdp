@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_26f980b1e673e6e2f478116fa1b378f5" desc="Tooltip shown for a main toolbar button that opens the Lighthouse panel">
+    Open Lighthouse to view <ph name="VIOLATIONSUMMARY">$1s<ex>1 violation</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_3ea4bcbe73ddfe465efc48e7ee7b381a" desc="Issues count title in the Issues Error Counter shown in the main toolbar">
+    <ph name="ISSUES">$1s<ex>3</ex></ph> issues
+  </message>
   <message name="IDS_DEVTOOLS_5415b9709f6fda34d7148558bbf4e36b" desc="Warning count title in Warning Error Counter of the Console panel">
     <ph name="WARNINGS">$1s<ex>1</ex></ph> warning
+  </message>
+  <message name="IDS_DEVTOOLS_7cf5ca3a1ac676d518648624fbb35d7e" desc="Tooltip shown for a main toolbar button that opens the Issues panel">
+    Open Issues to view <ph name="ISSUESSUMMARY">$1s<ex>1 issue</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_8e8fda2f7538782b27f82f8ec3c160eb" desc="Warning count title in Warning Error Counter of the Console panel">
     <ph name="WARNINGS">$1s<ex>3</ex></ph> warnings
@@ -9,8 +18,14 @@
   <message name="IDS_DEVTOOLS_9a075279073f00bab27c1c7612bb9fc0" desc="Error count title in Warning Error Counter of the Console panel">
     <ph name="ERRORS">$1s<ex>3</ex></ph> errors
   </message>
+  <message name="IDS_DEVTOOLS_a009c68019d8b4b52469003660f7fb6e" desc="Issues count title in the Issues Error Counter shown in the main toolbar">
+    <ph name="ISSUES">$1s<ex>1</ex></ph> issue
+  </message>
   <message name="IDS_DEVTOOLS_a1c00c8d8c543411f73883be7ecfb01b" desc="Error count title in Warning Error Counter of the Console panel">
     <ph name="ERRORS">$1s<ex>1</ex></ph> error
+  </message>
+  <message name="IDS_DEVTOOLS_b042338b60adc2a4dccbc96b2857f939" desc="Tooltip shown for a main toolbar button that opens the Console panel">
+    Open Console to view <ph name="CONSOLESUMMARY">$1s<ex>2 errors, 1 warning</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_dac90a385f9ee1c4d4cac02579d68185" desc="Violation count title in Warning Error Counter of the Console panel">
     <ph name="VIOLATIONS">$1s<ex>1</ex></ph> violation

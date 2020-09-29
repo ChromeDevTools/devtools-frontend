@@ -33,7 +33,7 @@
 
 import * as Components from '../components/components.js';
 import * as UI from '../ui/ui.js';
-import * as ConsoleViewMessage from './ConsoleViewMessage.js';  // eslint-disable-line no-unused-vars
+import {ConsoleViewMessage} from './ConsoleViewMessage.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted

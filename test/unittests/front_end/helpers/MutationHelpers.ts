@@ -13,6 +13,43 @@ interface ExpectedMutation {
   type?: MutationType, tagName: string, max?: number,
 }
 
+const nodeShouldBeIgnored = (node: Node): boolean => {
+  const isCommentNode = node.nodeType === Node.COMMENT_NODE;
+  const isTextNode = node.nodeType === Node.TEXT_NODE;
+
+  if (isCommentNode) {
+    return true;
+  }
+
+  if (isTextNode) {
+    // We ignore textNode changes where the trimmed text is empty - these are
+    // most likely whitespace changes from LitHtml and not important.
+    return (node.textContent || '').trim() === '';
+  }
+
+  return false;
+};
+
+const getUnmatchedNodeMutations =
+    (observedMutations: MutationRecord[], nodesThatHaveBeenMatchedToExpectation: Set<Node>) => {
+      return observedMutations.flatMap(mutation => {
+        const unmatchedMutations: Array<{type: MutationType; tagName: string;}> = [];
+        for (const added of mutation.addedNodes) {
+          if (!nodesThatHaveBeenMatchedToExpectation.has(added) && !nodeShouldBeIgnored(added)) {
+            unmatchedMutations.push({type: MutationType.ADD, tagName: added.nodeName.toLowerCase()});
+          }
+        }
+        for (const removed of mutation.removedNodes) {
+          if (!nodesThatHaveBeenMatchedToExpectation.has(removed) && !nodeShouldBeIgnored(removed)) {
+            unmatchedMutations.push({type: MutationType.REMOVE, tagName: removed.nodeName.toLowerCase()});
+          }
+        }
+
+        return unmatchedMutations;
+      });
+    };
+
+
 const gatherMatchingNodesForExpectedMutation =
     (expectedMutation: ExpectedMutation, observedMutations: MutationRecord[]): Node[] => {
       const matchingNodes: Node[] = [];
@@ -129,8 +166,13 @@ export const withMutations = async(
     }
   }
 
+  const nodesThatHaveBeenMatchedToExpectation = new Set<Node>();
   for (const expectedMutation of expectedMutations) {
     const matchingNodes = gatherMatchingNodesForExpectedMutation(expectedMutation, observedMutations);
+
+    for (const matched of matchingNodes) {
+      nodesThatHaveBeenMatchedToExpectation.add(matched);
+    }
 
     const amountOfMatchingMutations = matchingNodes.length;
     const maxMutationsAllowed = expectedMutation.max || DEFAULT_MAX_MUTATIONS_LIMIT;
@@ -139,11 +181,21 @@ export const withMutations = async(
           expectedMutation.type || 'ADD/REMOVE'} ${expectedMutation.tagName}, but got ${amountOfMatchingMutations}`);
     }
   }
+
+  const unmatchedNodeMutations = getUnmatchedNodeMutations(observedMutations, nodesThatHaveBeenMatchedToExpectation);
+  if (unmatchedNodeMutations.length > 0) {
+    const output = unmatchedNodeMutations
+                       .map(mutation => {
+                         return `${mutation.type === MutationType.ADD ? 'Added' : 'Removed'}: ${mutation.tagName}`;
+                       })
+                       .join('\n');
+    assert.fail(`Additional unexpected mutations were detected:\n${output}`);
+  }
 };
 
 /**
  * Ensure that a code block runs whilst making no mutations to the DOM. Given an
- * element and a callback, it will execute the callback function and ensure
+ * element and a callback, it will execute th e callback function and ensure
  * afterwards that a MutatonObserver saw no changes.
  */
 export const withNoMutations = async(element: ShadowRoot, fn: (shadowRoot: ShadowRoot) => void): Promise<void> => {

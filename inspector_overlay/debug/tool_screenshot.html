@@ -15,8 +15,8 @@
 <body>
   <script type="module">
     function test() {
-      setPlatform("mac");
-      reset(window);
+      dispatch(["setPlatform", "mac"]);
+      dispatch(["reset"]);
     }
     test();
   </script>

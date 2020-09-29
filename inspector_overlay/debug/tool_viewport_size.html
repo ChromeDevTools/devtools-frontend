@@ -15,9 +15,9 @@ found in the LICENSE file.
 <body>
   <script type="module">
     function test() {
-      setPlatform("mac");
-      reset(window);
-      drawViewSize();
+      dispatch(["setPlatform", "mac"]);
+      dispatch(["reset"]);
+      dispatch(["drawViewSize"]);
     }
     test();
   </script>

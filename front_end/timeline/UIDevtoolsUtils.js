@@ -27,10 +27,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
+
+import * as Root from '../root/root.js';
 
 import {TimelineCategory, TimelineRecordStyle} from './TimelineUIUtils.js';
+
+/** @type {?Object<string, !TimelineRecordStyle>} */
+let _eventStylesMap = null;
+
+/** @type {?Object<string, !TimelineCategory>} */
+let _categories = null;
 
 /**
  * @unrestricted
@@ -40,15 +46,15 @@ export class UIDevtoolsUtils {
    * @return {boolean}
    */
   static isUiDevTools() {
-    return Root.Runtime.queryParam('uiDevTools') === 'true';
+    return Root.Runtime.Runtime.queryParam('uiDevTools') === 'true';
   }
 
   /**
    * @return {!Object.<string, !TimelineRecordStyle>}
    */
   static categorizeEvents() {
-    if (UIDevtoolsUtils._eventStylesMap) {
-      return UIDevtoolsUtils._eventStylesMap;
+    if (_eventStylesMap) {
+      return _eventStylesMap;
     }
 
     const type = RecordType;
@@ -59,6 +65,7 @@ export class UIDevtoolsUtils {
     const painting = categories['painting'];
     const other = categories['other'];
 
+    /** @type {!Object<string, !TimelineRecordStyle>} */
     const eventStyles = {};
 
     // Paint Categories
@@ -88,7 +95,7 @@ export class UIDevtoolsUtils {
     // Other Categories
     eventStyles[type.ThreadControllerImplRunTask] = new TimelineRecordStyle(ls`ThreadControllerImpl::RunTask`, other);
 
-    UIDevtoolsUtils._eventStylesMap = eventStyles;
+    _eventStylesMap = eventStyles;
     return eventStyles;
   }
 
@@ -96,10 +103,10 @@ export class UIDevtoolsUtils {
    * @return {!Object.<string, !TimelineCategory>}
    */
   static categories() {
-    if (UIDevtoolsUtils._categories) {
-      return UIDevtoolsUtils._categories;
+    if (_categories) {
+      return _categories;
     }
-    UIDevtoolsUtils._categories = {
+    _categories = {
       layout: new TimelineCategory('layout', ls`Layout`, true, 'hsl(214, 67%, 74%)', 'hsl(214, 67%, 66%)'),
       rasterizing:
           new TimelineCategory('rasterizing', ls`Rasterizing`, true, 'hsl(43, 83%, 72%)', 'hsl(43, 83%, 64%) '),
@@ -108,11 +115,11 @@ export class UIDevtoolsUtils {
       other: new TimelineCategory('other', ls`System`, false, 'hsl(0, 0%, 87%)', 'hsl(0, 0%, 79%)'),
       idle: new TimelineCategory('idle', ls`Idle`, false, 'hsl(0, 0%, 98%)', 'hsl(0, 0%, 98%)')
     };
-    return UIDevtoolsUtils._categories;
+    return _categories;
   }
 
   /**
-   * @return {!Array}
+   * @return {!Array<string>}
    */
   static getMainCategoriesList() {
     return ['idle', 'drawing', 'painting', 'rasterizing', 'layout', 'other'];

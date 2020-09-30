@@ -210,9 +210,6 @@
   <message name="IDS_DEVTOOLS_c9818b2c0890a205d294a2b31354f8b4" desc="Text in Console View of the Console panel">
     All levels
   </message>
-  <message name="IDS_DEVTOOLS_ca3c4b269c23985d3c1204c203ad84d8" desc="Tooltip text that appears on the setting when hovering over it in Console View of the Console panel">
-    Group similar
-  </message>
   <message name="IDS_DEVTOOLS_ca6ceb8e597abb1298b84b1aaadc229b" desc="Title of a setting under the Console category that can be invoked through the Command Menu">
     Show timestamps
   </message>

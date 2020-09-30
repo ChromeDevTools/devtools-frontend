@@ -124,8 +124,8 @@ export class ConsoleView extends UI.Widget.VBox {
     this._progressToolbarItem = new UI.Toolbar.ToolbarItem(document.createElement('div'));
     this._groupSimilarSetting = Common.Settings.Settings.instance().moduleSetting('consoleGroupSimilar');
     this._groupSimilarSetting.addChangeListener(() => this._updateMessageList());
-    const groupSimilarToggle =
-        new UI.Toolbar.ToolbarSettingCheckbox(this._groupSimilarSetting, Common.UIString.UIString('Group similar'));
+    const groupSimilarToggle = new UI.Toolbar.ToolbarSettingCheckbox(
+        this._groupSimilarSetting, Common.UIString.UIString('Group similar messages in console'));
 
     const toolbar = new UI.Toolbar.Toolbar('console-main-toolbar', this._consoleToolbarContainer);
     const rightToolbar = new UI.Toolbar.Toolbar('', this._consoleToolbarContainer);

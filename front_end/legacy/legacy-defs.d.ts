@@ -17,6 +17,9 @@ interface Array<T> {
   mergeOrdered(array: T[], comparator: (a: T, b: T) => number): T[];
   lowerBound<S>(object: S, comparator?: {(a: S, b: T): number}, left?: number, right?: number): number;
   upperBound<S>(object: S, comparator?: {(a: S, b: T): number}, left?: number, right?: number): number;
+  sortRange<T>(
+      comparator: (a: T, b: T) => number, leftBound: number, rightBound: number, sortWindowLeft: number,
+      sortWindowRight: number): T[];
 }
 
 // Type alias for the Closure-supported ITemplateArray which is equivalent

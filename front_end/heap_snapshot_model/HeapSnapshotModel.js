@@ -193,7 +193,7 @@ export class AggregateForDiff {
   constructor() {
     /** @type {!Array.<number>} */
     this.indexes = [];
-    /** @type {!Array.<string>} */
+    /** @type {!Array.<number>} */
     this.ids = [];
     /** @type {!Array.<number>} */
     this.selfSizes = [];
@@ -217,6 +217,10 @@ export class Diff {
     this.deletedIndexes = [];
     /** @type {!Array.<number>} */
     this.addedIndexes = [];
+    /** @type {number} */
+    this.countDelta;
+    /** @type {number} */
+    this.sizeDelta;
   }
 }
 

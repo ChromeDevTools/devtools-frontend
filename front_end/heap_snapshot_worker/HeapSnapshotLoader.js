@@ -30,7 +30,7 @@
 
 import * as TextUtils from '../text_utils/text_utils.js';
 
-import {HeapSnapshotHeader, HeapSnapshotProgress, JSHeapSnapshot} from './HeapSnapshot.js';  // eslint-disable-line no-unused-vars
+import {HeapSnapshotHeader, HeapSnapshotProgress, JSHeapSnapshot, Profile} from './HeapSnapshot.js';  // eslint-disable-line no-unused-vars
 import {HeapSnapshotWorkerDispatcher} from './HeapSnapshotWorkerDispatcher.js';  // eslint-disable-line no-unused-vars
 
 /**
@@ -87,7 +87,7 @@ export class HeapSnapshotLoader {
     this._snapshot = this._snapshot || {};
 
     this._progress.updateStatus(ls`Processing snapshot…`);
-    const result = new JSHeapSnapshot(this._snapshot, this._progress);
+    const result = new JSHeapSnapshot(/** @type {!Profile} */ (this._snapshot), this._progress);
     this._reset();
     return result;
   }

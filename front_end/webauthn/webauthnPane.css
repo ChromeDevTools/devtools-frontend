@@ -81,6 +81,7 @@
   font-weight: bold;
   border: none;
   animation: save-flash 0.2s;
+  text-overflow: ellipsis;
 }
 
 .authenticator-section-title.editing-name .authenticator-name-field {

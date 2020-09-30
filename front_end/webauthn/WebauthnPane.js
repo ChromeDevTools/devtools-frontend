@@ -406,17 +406,18 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     const titleElement = headerElement.createChild('div', 'authenticator-section-title');
     UI.ARIAUtils.markAsHeading(titleElement, 2);
 
-    const removeButton = headerElement.createChild('button', 'text-button');
-    removeButton.textContent = ls`Remove`;
-    removeButton.addEventListener('click', this._removeAuthenticator.bind(this, authenticatorId));
-
     await this._clearActiveAuthenticator();
     const activeButtonContainer = headerElement.createChild('div', 'active-button-container');
-    const activeLabel = UI.UIUtils.createRadioLabel('active-authenticator', ls`Active`);
+    const activeLabel = UI.UIUtils.createRadioLabel(`active-authenticator-${authenticatorId}`, ls`Active`);
     activeLabel.radioElement.addEventListener('click', this._setActiveAuthenticator.bind(this, authenticatorId));
     activeButtonContainer.appendChild(activeLabel);
     activeLabel.radioElement.checked = true;
     this._activeAuthId = authenticatorId;  // Newly added authenticator is automatically set as active.
+
+
+    const removeButton = headerElement.createChild('button', 'text-button');
+    removeButton.textContent = ls`Remove`;
+    removeButton.addEventListener('click', this._removeAuthenticator.bind(this, authenticatorId));
 
     const toolbar = new UI.Toolbar.Toolbar('edit-name-toolbar', titleElement);
     const editName = new UI.Toolbar.ToolbarButton(ls`Edit name`, 'largeicon-edit');
@@ -616,8 +617,11 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
   _updateActiveButtons() {
     const authenticators = this._authenticatorsView.getElementsByClassName('authenticator-section');
     Array.from(authenticators).forEach(authenticator => {
-      authenticator.querySelector('input.dt-radio-button').checked =
-          authenticator.getAttribute('data-authenticator-id') === this._activeAuthId;
+      const button = authenticator.querySelector('input.dt-radio-button');
+      if (!button) {
+        return;
+      }
+      button.checked = authenticator.dataset.authenticatorId === this._activeAuthId;
     });
   }
 
@@ -626,5 +630,6 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
       await this._model.setAutomaticPresenceSimulation(this._activeAuthId, false);
     }
     this._activeAuthId = null;
+    this._updateActiveButtons();
   }
 }

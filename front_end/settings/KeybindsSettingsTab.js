@@ -210,6 +210,15 @@ export class KeybindsSettingsTab extends UI.Widget.VBox {
     return items;
   }
 
+  /**
+   * @param {!Event} event
+   */
+  onEscapeKeyPressed(event) {
+    if (this._editingRow && document.deepActiveElement().nodeName === 'INPUT') {
+      this._editingRow.onEscapeKeyPressed(event);
+    }
+  }
+
   update() {
     if (this._editingItem) {
       this.stopEditing(this._editingItem);
@@ -403,6 +412,20 @@ export class ShortcutListItem {
       }
       this._validateInputs();
       event.consume(true);
+    }
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  onEscapeKeyPressed(event) {
+    const activeElement = document.deepActiveElement();
+    for (const [shortcut, shortcutInput] of this._shortcutInputs.entries()) {
+      if (activeElement === shortcutInput) {
+        this._onShortcutInputKeyDown(
+            /** @type {!UI.KeyboardShortcut.KeyboardShortcut} */ (shortcut),
+            /** @type {!HTMLInputElement} */ (shortcutInput), event);
+      }
     }
   }
 

@@ -74,6 +74,10 @@ export class SettingsScreen extends UI.Widget.VBox {
       const shortcutsView = new UI.View.SimpleView(ls`Shortcuts`);
       UI.ShortcutsScreen.ShortcutsScreen.instance().createShortcutsTabView().show(shortcutsView.element);
       this._tabbedLocation.appendView(shortcutsView);
+    } else {
+      UI.ViewManager.ViewManager.instance().view('keybinds').widget().then(widget => {
+        this._keybindsTab = widget;
+      });
     }
     tabbedPane.show(this.contentElement);
     tabbedPane.selectTab('preferences');
@@ -110,6 +114,7 @@ export class SettingsScreen extends UI.Widget.VBox {
     dialog.setPointerEventsBehavior(UI.GlassPane.PointerEventsBehavior.PierceGlassPane);
     dialog.setOutsideTabIndexBehavior(UI.Dialog.OutsideTabIndexBehavior.PreserveMainViewTabIndex);
     settingsScreen.show(dialog.contentElement);
+    dialog.setEscapeKeyCallback(settingsScreen._onEscapeKeyPressed.bind(settingsScreen));
     dialog.show();
 
     return settingsScreen;
@@ -177,6 +182,15 @@ export class SettingsScreen extends UI.Widget.VBox {
     }
 
     Host.userMetrics.settingsPanelShown(tabId);
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _onEscapeKeyPressed(event) {
+    if (this._tabbedLocation.tabbedPane().selectedTabId === 'keybinds' && this._keybindsTab) {
+      this._keybindsTab.onEscapeKeyPressed(event);
+    }
   }
 }
 

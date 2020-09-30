@@ -172,6 +172,14 @@ export class NetworkProject {
   }
 
   /**
+   * @param {!Workspace.Workspace.Project} project
+   * @return {?SDK.SDKModel.Target}
+   */
+  static getTargetForProject(project) {
+    return project[_targetSymbol] || null;
+  }
+
+  /**
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {!Array<!SDK.ResourceTreeModel.ResourceTreeFrame>}
    */

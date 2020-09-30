@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Network from '../network/network.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
@@ -56,7 +57,7 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     this._urlStringElement.title = this._frame.url;
     this._urlFieldValue.appendChild(this._urlStringElement);
     if (!this._frame.unreachableUrl()) {
-      const sourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(this._frame.url);
+      const sourceCode = this.uiSourceCodeForFrame(this._frame);
       const revealSource = FrameDetailsView.linkifyIcon(
           'mediumicon-sources-panel', ls`Click to reveal in Sources panel`, () => Common.Revealer.reveal(sourceCode));
       this._urlFieldValue.appendChild(revealSource);
@@ -84,6 +85,23 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     }
     await this._updateCoopCoepStatus();
     this._updateContextStatus();
+  }
+
+  /**
+   * @param {!SDK.ResourceTreeModel.ResourceTreeFrame} frame
+   * @return {?Workspace.UISourceCode.UISourceCode}
+   */
+  uiSourceCodeForFrame(frame) {
+    for (const project of Workspace.Workspace.WorkspaceImpl.instance().projects()) {
+      const projectTarget = Bindings.NetworkProject.NetworkProject.getTargetForProject(project);
+      if (projectTarget && projectTarget === frame.resourceTreeModel().target()) {
+        const uiSourceCode = project.uiSourceCodeForURL(frame.url);
+        if (uiSourceCode) {
+          return uiSourceCode;
+        }
+      }
+    }
+    return null;
   }
 
   /**

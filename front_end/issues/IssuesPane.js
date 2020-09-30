@@ -1273,6 +1273,7 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
 
     this._categoryViews = new Map();
     this._issueViews = new Map();
+    this._showThirdPartyCheckbox = null;
 
     const {toolbarContainer, updateToolbarIssuesCount} = this._createToolbars();
     this._issuesToolbarContainer = toolbarContainer;
@@ -1283,6 +1284,13 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     this._issuesTree.setShowSelectionOnKeyboardFocus(true);
     this._issuesTree.contentElement.classList.add('issues');
     this.contentElement.appendChild(this._issuesTree.element);
+
+    // Setting the default focused element to the issuesTree container which
+    // will delegate focus to either the first issue in the pane or the checkbox
+    // if no issue is available. We add an event listener to delegate focus
+    // since issues and the checkbox are not populated at this point.
+    this.setDefaultFocusedElement(this._issuesTree.contentElement);
+    this._issuesTree.contentElement.addEventListener('focus', this._selectFirstChildOrCheckbox.bind(this), false);
 
     this._noIssuesMessageDiv = document.createElement('div');
     this._noIssuesMessageDiv.classList.add('issues-pane-no-issues');
@@ -1329,10 +1337,10 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
 
     // TODO(crbug.com/1011811): Remove cast once closure is gone. Closure requires an upcast to 'any' from 'boolean'.
     const thirdPartySetting = /** @type {!Common.Settings.Setting<*>} */ (SDK.Issue.getShowThirdPartyIssuesSetting());
-    const showThirdPartyCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
+    this._showThirdPartyCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
         thirdPartySetting, ls`Include cookie Issues caused by third-party sites`,
         ls`Include third-party cookie issues`);
-    rightToolbar.appendToolbarItem(showThirdPartyCheckbox);
+    rightToolbar.appendToolbarItem(this._showThirdPartyCheckbox);
 
     rightToolbar.appendSeparator();
     const toolbarWarnings = document.createElement('div');
@@ -1470,6 +1478,15 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     if (issueView) {
       issueView.expand();
       issueView.reveal();
+    }
+  }
+
+  _selectFirstChildOrCheckbox() {
+    const firstChild = this._issuesTree.firstChild();
+    if (firstChild) {
+      firstChild.select();
+    } else if (this._showThirdPartyCheckbox) {
+      this._showThirdPartyCheckbox.inputElement.focus();
     }
   }
 }

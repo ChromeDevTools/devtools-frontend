@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as SDK from '../sdk/sdk.js';
 
 /**
@@ -52,10 +49,11 @@ export const cssPath = function(node, optimized) {
  * @return {boolean}
  */
 export const canGetJSPath = function(node) {
+  /** @type {?SDK.DOMModel.DOMNode} */
   let wp = node;
   while (wp) {
-    if (wp.ancestorShadowRoot() &&
-        wp.ancestorShadowRoot().shadowRootType() !== SDK.DOMModel.DOMNode.ShadowRootTypes.Open) {
+    const shadowRoot = wp.ancestorShadowRoot();
+    if (shadowRoot && shadowRoot.shadowRootType() !== SDK.DOMModel.DOMNode.ShadowRootTypes.Open) {
       return false;
     }
     wp = wp.ancestorShadowHost();
@@ -74,6 +72,7 @@ export const jsPath = function(node, optimized) {
   }
 
   const path = [];
+  /** @type {?SDK.DOMModel.DOMNode} */
   let wp = node;
   while (wp) {
     path.push(cssPath(wp, optimized));
@@ -286,7 +285,13 @@ export const _xPathValue = function(node, optimized) {
  * @return {number}
  */
 export const _xPathIndex = function(node) {
-  // Returns -1 in case of error, 0 if no siblings matching the same expression, <XPath index among the same expression-matching sibling nodes> otherwise.
+  /**
+   * Returns -1 in case of error, 0 if no siblings matching the same expression,
+   * <XPath index among the same expression-matching sibling nodes> otherwise.
+   *
+   * @param {!SDK.DOMModel.DOMNode} left
+   * @param {!SDK.DOMModel.DOMNode} right
+   */
   function areNodesSimilar(left, right) {
     if (left === right) {
       return true;

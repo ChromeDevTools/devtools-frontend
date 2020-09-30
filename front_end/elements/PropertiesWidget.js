@@ -27,9 +27,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Host from '../host/host.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
@@ -79,7 +76,7 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
   /**
    * @override
    * @protected
-   * @return {!Promise<undefined>}
+   * @return {!Promise<void>}
    */
   async doUpdate() {
     if (this._lastRequestedNode) {
@@ -122,7 +119,13 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
         continue;
       }
       const property = properties[i].value;
+      if (!property) {
+        continue;
+      }
       let title = property.description;
+      if (!title) {
+        continue;
+      }
       title = title.replace(/Prototype$/, '');
 
       const section = this._createSectionTreeElement(property, title);
@@ -139,6 +142,7 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
      */
     function protoList() {
       let proto = this;
+      /** @type {!Object<(number|string), *>} */
       const result = {__proto__: null};
       let counter = 1;
       while (proto) {

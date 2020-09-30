@@ -20,7 +20,49 @@ const commandMenuShortcut = Host.Platform.isMac() ? 'Command+Shift+P' : 'Control
 /** @type {!Array<!ReleaseNote>} */
 export const releaseNoteText = [
   {
-    version: 27,
+    version: 29,
+    header: 'Highlights from the Chrome 87 update',
+    highlights: [
+      {
+        title: 'New CSS Grid debugging tools',
+        subtitle: 'Debug and inspect CSS Grid with the new CSS Grid debugging tools.',
+        link: 'https://developers.google.com/web/updates/2020/10/devtools#css-grid',
+      },
+      {
+        title: 'New WebAuthn tab',
+        subtitle: 'Emulate authenticators and debug the Web Authentication API with the new WebAuthn tab.',
+        link: 'https://developers.google.com/web/updates/2020/10/devtools#webauthn',
+      },
+      {
+        title: 'Move tools between top and bottom panel',
+        subtitle: 'Move tools in DevTools between the top and bottom panel.',
+        link: 'https://developers.google.com/web/updates/2020/10/devtools#moveable-tools',
+      },
+      {
+        title: 'Elements panel updates',
+        subtitle: 'View the Computed sidebar pane in the Styles pane, and more.',
+        link: 'https://developers.google.com/web/updates/2020/10/devtools#elements-panel',
+      },
+      {
+        title: 'Lighthouse 6.3',
+        subtitle: 'New audits to validate preload fonts, suggests alternatives to large JavaScript library, and more.',
+        link: 'https://developers.google.com/web/updates/2020/10/devtools#lighthouse',
+      },
+      {
+        title: '`performance.mark()` events in the Timings section',
+        subtitle: 'Performance recording now marks `performance.mark()` events.',
+        link: 'https://developers.google.com/web/updates/2020/10/devtools#perf-mark',
+      },
+      {
+        title: 'New filters in the Network panel',
+        subtitle: 'New `resource-type` and `url` keywords in the **Network panel** to filter network requests.',
+        link: 'https://developers.google.com/web/updates/2020/10/devtools#network-filters',
+      },
+    ],
+    link: 'https://developers.google.com/web/updates/2020/10/devtools',
+  },
+  {
+    version: 28,
     header: 'Highlights from the Chrome 86 update',
     highlights: [
       {

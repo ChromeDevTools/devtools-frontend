@@ -383,14 +383,32 @@
   "lighthouse-core/audits/apple-touch-icon.js | title": {
     "message": "P̂ŕôv́îd́êś â v́âĺîd́ `apple-touch-icon`"
   },
+  "lighthouse-core/audits/autocomplete.js | columnCurrent": {
+    "message": "Ĉúr̂ŕêńt̂ V́âĺûé"
+  },
+  "lighthouse-core/audits/autocomplete.js | columnSuggestions": {
+    "message": "Ŝúĝǵêśt̂éd̂ T́ôḱêń"
+  },
   "lighthouse-core/audits/autocomplete.js | description": {
-    "message": "Âút̂óĉóm̂ṕl̂ét̂é ĥél̂ṕŝ úŝér̂ś ŝúb̂ḿît́ f̂ór̂ḿŝ q́ûíĉḱêŕ. T̂ó r̂éd̂úĉé ûśêŕ êf́f̂ór̂t́, ĉón̂śîd́êŕ êńâb́l̂ín̂ǵ âút̂óĉóm̂ṕl̂ét̂é b̂ý ŝét̂t́îńĝ t́ĥé `autocomplete` ât́t̂ŕîb́ût́ê t́ô á v̂ál̂íd̂ v́âĺûé. [L̂éâŕn̂ ḿôŕê](https://developers.google.com/web/fundamentals/design-and-ux/input/forms#use_metadata_to_enable_auto-complete)"
+    "message": "`autocomplete` ĥél̂ṕŝ úŝér̂ś ŝúb̂ḿît́ f̂ór̂ḿŝ q́ûíĉḱêŕ. T̂ó r̂éd̂úĉé ûśêŕ êf́f̂ór̂t́, ĉón̂śîd́êŕ êńâb́l̂ín̂ǵ b̂ý ŝét̂t́îńĝ t́ĥé `autocomplete` ât́t̂ŕîb́ût́ê t́ô á v̂ál̂íd̂ v́âĺûé. [L̂éâŕn̂ ḿôŕê](https://developers.google.com/web/fundamentals/design-and-ux/input/forms#use_metadata_to_enable_auto-complete)"
   },
   "lighthouse-core/audits/autocomplete.js | failureTitle": {
-    "message": "Îńp̂út̂ él̂ém̂én̂t́ŝ d́ô ńôt́ ĥáv̂é ĉór̂ŕêćt̂ át̂t́r̂íb̂út̂éŝ f́ôŕ âút̂óĉóm̂ṕl̂ét̂é"
+    "message": "`<input>` êĺêḿêńt̂ś d̂ó n̂ót̂ h́âv́ê ćôŕr̂éĉt́ `autocomplete` ât́t̂ŕîb́ût́êś"
+  },
+  "lighthouse-core/audits/autocomplete.js | manualReview": {
+    "message": "R̂éq̂úîŕêś m̂án̂úâĺ r̂év̂íêẃ"
+  },
+  "lighthouse-core/audits/autocomplete.js | reviewOrder": {
+    "message": "R̂év̂íêẃ ôŕd̂ér̂ óf̂ t́ôḱêńŝ"
   },
   "lighthouse-core/audits/autocomplete.js | title": {
-    "message": "Îńp̂út̂ él̂ém̂én̂t́ŝ úŝé âút̂óĉóm̂ṕl̂ét̂é"
+    "message": "`<input>` êĺêḿêńt̂ś ĉór̂ŕêćt̂ĺŷ úŝé `autocomplete`"
+  },
+  "lighthouse-core/audits/autocomplete.js | warningInvalid": {
+    "message": "`autocomplete` t̂ók̂én̂(ś): \"{token}\" îś îńv̂ál̂íd̂ ín̂ {snippet}"
+  },
+  "lighthouse-core/audits/autocomplete.js | warningOrder": {
+    "message": "R̂év̂íêẃ ôŕd̂ér̂ óf̂ t́ôḱêńŝ: \"{tokens}\" ín̂ {snippet}"
   },
   "lighthouse-core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Ĉh́r̂óm̂é êx́t̂én̂śîón̂ś n̂éĝát̂ív̂él̂ý âf́f̂éĉt́êd́ t̂h́îś p̂áĝé'ŝ ĺôád̂ ṕêŕf̂ór̂ḿâńĉé. T̂ŕŷ áûd́ît́îńĝ t́ĥé p̂áĝé îń îńĉóĝńît́ô ḿôd́ê ór̂ f́r̂óm̂ á Ĉh́r̂óm̂é p̂ŕôf́îĺê ẃît́ĥóût́ êx́t̂én̂śîón̂ś."
@@ -567,7 +585,7 @@
     "message": "Âv́ôíd̂ś Âṕp̂ĺîćât́îón̂ Ćâćĥé"
   },
   "lighthouse-core/audits/dobetterweb/charset.js | description": {
-    "message": "Â ćĥár̂áĉt́êŕ êńĉód̂ín̂ǵ d̂éĉĺâŕât́îón̂ íŝ ŕêq́ûír̂éd̂. Ít̂ ćâń b̂é d̂ón̂é ŵít̂h́ â <ḿêt́â> t́âǵ îń t̂h́ê f́îŕŝt́ 1024 b̂ýt̂éŝ óf̂ t́ĥé ĤT́M̂Ĺ ôŕ îń t̂h́ê Ćôńt̂én̂t́-T̂ýp̂é ĤT́T̂Ṕ r̂éŝṕôńŝé ĥéâd́êŕ. [L̂éâŕn̂ ḿôŕê](https://web.dev/charset/)."
+    "message": "Â ćĥár̂áĉt́êŕ êńĉód̂ín̂ǵ d̂éĉĺâŕât́îón̂ íŝ ŕêq́ûír̂éd̂. Ít̂ ćâń b̂é d̂ón̂é ŵít̂h́ â `<meta>` t́âǵ îń t̂h́ê f́îŕŝt́ 1024 b̂ýt̂éŝ óf̂ t́ĥé ĤT́M̂Ĺ ôŕ îń t̂h́ê Ćôńt̂én̂t́-T̂ýp̂é ĤT́T̂Ṕ r̂éŝṕôńŝé ĥéâd́êŕ. [L̂éâŕn̂ ḿôŕê](https://web.dev/charset/)."
   },
   "lighthouse-core/audits/dobetterweb/charset.js | failureTitle": {
     "message": "Ĉh́âŕŝét̂ d́êćl̂ár̂át̂íôń îś m̂íŝśîńĝ ór̂ óĉćûŕŝ t́ôó l̂át̂é îń t̂h́ê H́T̂ḾL̂"
@@ -816,7 +834,7 @@
     "message": "R̂éq̂úêśt̂ Ŕêśôĺût́îón̂"
   },
   "lighthouse-core/audits/is-on-https.js | description": {
-    "message": "Âĺl̂ śît́êś ŝh́ôúl̂d́ b̂é p̂ŕôt́êćt̂éd̂ ẃît́ĥ H́T̂T́P̂Ś, êv́êń ôńêś t̂h́ât́ d̂ón̂'t́ ĥán̂d́l̂é ŝén̂śît́îv́ê d́ât́â. T́ĥíŝ ín̂ćl̂úd̂éŝ áv̂óîd́îńĝ [ḿîx́êd́ ĉón̂t́êńt̂](https://developers.google.com/web/fundamentals/security/prevent-mixed-content/what-is-mixed-content), ẃĥér̂é ŝóm̂é r̂éŝóûŕĉéŝ ár̂é l̂óâd́êd́ ôv́êŕ ĤT́T̂Ṕ d̂éŝṕît́ê t́ĥé îńît́îál̂ ŕêq́ûéŝt́ b̂éîńĝ śêŕv̂éd̂óv̂ér̂ H́T̂T́P̂Ś. ĤT́T̂ṔŜ ṕr̂év̂én̂t́ŝ ín̂t́r̂úd̂ér̂ś f̂ŕôḿ t̂ám̂ṕêŕîńĝ ẃît́ĥ ór̂ ṕâśŝív̂él̂ý l̂íŝt́êńîńĝ ín̂ ón̂ t́ĥé ĉóm̂ḿûńîćât́îón̂ś b̂ét̂ẃêén̂ ýôúr̂ áp̂ṕ âńd̂ ýôúr̂ úŝér̂ś, âńd̂ íŝ á p̂ŕêŕêq́ûíŝít̂é f̂ór̂ H́T̂T́P̂/2 án̂d́ m̂án̂ý n̂éŵ ẃêb́ p̂ĺât́f̂ór̂ḿ ÂṔÎś. [L̂éâŕn̂ ḿôŕê](https://web.dev/is-on-https/)."
+    "message": "Âĺl̂ śît́êś ŝh́ôúl̂d́ b̂é p̂ŕôt́êćt̂éd̂ ẃît́ĥ H́T̂T́P̂Ś, êv́êń ôńêś t̂h́ât́ d̂ón̂'t́ ĥán̂d́l̂é ŝén̂śît́îv́ê d́ât́â. T́ĥíŝ ín̂ćl̂úd̂éŝ áv̂óîd́îńĝ [ḿîx́êd́ ĉón̂t́êńt̂](https://developers.google.com/web/fundamentals/security/prevent-mixed-content/what-is-mixed-content), ẃĥér̂é ŝóm̂é r̂éŝóûŕĉéŝ ár̂é l̂óâd́êd́ ôv́êŕ ĤT́T̂Ṕ d̂éŝṕît́ê t́ĥé îńît́îál̂ ŕêq́ûéŝt́ b̂éîńĝ śêŕv̂éd̂ óv̂ér̂ H́T̂T́P̂Ś. ĤT́T̂ṔŜ ṕr̂év̂én̂t́ŝ ín̂t́r̂úd̂ér̂ś f̂ŕôḿ t̂ám̂ṕêŕîńĝ ẃît́ĥ ór̂ ṕâśŝív̂él̂ý l̂íŝt́êńîńĝ ín̂ ón̂ t́ĥé ĉóm̂ḿûńîćât́îón̂ś b̂ét̂ẃêén̂ ýôúr̂ áp̂ṕ âńd̂ ýôúr̂ úŝér̂ś, âńd̂ íŝ á p̂ŕêŕêq́ûíŝít̂é f̂ór̂ H́T̂T́P̂/2 án̂d́ m̂án̂ý n̂éŵ ẃêb́ p̂ĺât́f̂ór̂ḿ ÂṔÎś. [L̂éâŕn̂ ḿôŕê](https://web.dev/is-on-https/)."
   },
   "lighthouse-core/audits/is-on-https.js | displayValue": {
     "message": "{itemCount, plural,\n    =1 {1 îńŝéĉúr̂é r̂éq̂úêśt̂ f́ôún̂d́}\n    other {# îńŝéĉúr̂é r̂éq̂úêśt̂ś f̂óûńd̂}\n    }"
@@ -1106,6 +1124,15 @@
   "lighthouse-core/audits/seo/font-size.js | additionalIllegibleText": {
     "message": "Âd́d̂'ĺ îĺl̂éĝíb̂ĺê t́êx́t̂"
   },
+  "lighthouse-core/audits/seo/font-size.js | columnFontSize": {
+    "message": "F̂ón̂t́ Ŝíẑé"
+  },
+  "lighthouse-core/audits/seo/font-size.js | columnPercentPageText": {
+    "message": "% ôf́ P̂áĝé T̂éx̂t́"
+  },
+  "lighthouse-core/audits/seo/font-size.js | columnSelector": {
+    "message": "Ŝél̂éĉt́ôŕ"
+  },
   "lighthouse-core/audits/seo/font-size.js | description": {
     "message": "F̂ón̂t́ ŝíẑéŝ ĺêśŝ t́ĥán̂ 12ṕx̂ ár̂é t̂óô śm̂ál̂ĺ t̂ó b̂é l̂éĝíb̂ĺê án̂d́ r̂éq̂úîŕê ḿôb́îĺê v́îśît́ôŕŝ t́ô “ṕîńĉh́ t̂ó ẑóôḿ” îń ôŕd̂ér̂ t́ô ŕêád̂. Śt̂ŕîv́ê t́ô h́âv́ê >60% óf̂ ṕâǵê t́êx́t̂ ≥12ṕx̂. [Ĺêár̂ń m̂ór̂é](https://web.dev/font-size/)."
   },
@@ -1320,7 +1347,7 @@
     "message": "T̂ím̂ín̂ǵ b̂úd̂ǵêt́"
   },
   "lighthouse-core/audits/unsized-images.js | description": {
-    "message": "Âĺŵáŷś îńĉĺûd́ê éx̂ṕl̂íĉít̂ ẃîd́t̂h́ âńd̂ h́êíĝh́t̂ ón̂ ím̂áĝé êĺêḿêńt̂ś t̂ó r̂éd̂úĉé l̂áŷóût́ ŝh́îf́t̂ś âńd̂ ím̂ṕr̂óv̂é ĈĹŜ. [Ĺêár̂ń m̂ór̂é](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "Ŝét̂ án̂ éx̂ṕl̂íĉít̂ ẃîd́t̂h́ âńd̂ h́êíĝh́t̂ ón̂ ím̂áĝé êĺêḿêńt̂ś t̂ó r̂éd̂úĉé l̂áŷóût́ ŝh́îf́t̂ś âńd̂ ím̂ṕr̂óv̂é ĈĹŜ. [Ĺêár̂ń m̂ór̂é](https://web.dev/optimize-cls/#images-without-dimensions)"
   },
   "lighthouse-core/audits/unsized-images.js | failureTitle": {
     "message": "Îḿâǵê él̂ém̂én̂t́ŝ d́ô ńôt́ ĥáv̂é êx́p̂ĺîćît́ `width` âńd̂ `height`"
@@ -1341,7 +1368,7 @@
     "message": "Ûśêŕ T̂ím̂ín̂ǵ m̂ár̂ḱŝ án̂d́ m̂éâśûŕêś"
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | crossoriginWarning": {
-    "message": "Â ṕr̂éĉón̂ńêćt̂ <ĺîńk̂> ẃâś f̂óûńd̂ f́ôŕ \"{securityOrigin}\" b̂út̂ ẃâś n̂ót̂ úŝéd̂ b́ŷ t́ĥé b̂ŕôẃŝér̂. Ćĥéĉḱ t̂h́ât́ ŷóû ár̂é ûśîńĝ t́ĥé `crossorigin` ât́t̂ŕîb́ût́ê ṕr̂óp̂ér̂ĺŷ."
+    "message": "Â `<link rel=preconnect>` ẃâś f̂óûńd̂ f́ôŕ \"{securityOrigin}\" b̂út̂ ẃâś n̂ót̂ úŝéd̂ b́ŷ t́ĥé b̂ŕôẃŝér̂. Ćĥéĉḱ t̂h́ât́ ŷóû ár̂é ûśîńĝ t́ĥé `crossorigin` ât́t̂ŕîb́ût́ê ṕr̂óp̂ér̂ĺŷ."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | description": {
     "message": "Ĉón̂śîd́êŕ âd́d̂ín̂ǵ `preconnect` ôŕ `dns-prefetch` r̂éŝóûŕĉé ĥín̂t́ŝ t́ô éŝt́âb́l̂íŝh́ êár̂ĺŷ ćôńn̂éĉt́îón̂ś t̂ó îḿp̂ór̂t́âńt̂ t́ĥír̂d́-p̂ár̂t́ŷ ór̂íĝín̂ś. [L̂éâŕn̂ ḿôŕê](https://web.dev/uses-rel-preconnect/)."
@@ -1350,10 +1377,13 @@
     "message": "P̂ŕêćôńn̂éĉt́ t̂ó r̂éq̂úîŕêd́ ôŕîǵîńŝ"
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | tooManyPreconnectLinksWarning": {
-    "message": "M̂ór̂é t̂h́âń 2 p̂ŕêćôńn̂éĉt́ l̂ín̂ḱŝ ẃêŕê f́ôún̂d́. P̂ŕêćôńn̂éĉt́ l̂ín̂ḱŝ śĥóûĺd̂ b́ê úŝéd̂ śp̂ár̂ín̂ǵl̂ý âńd̂ ón̂ĺŷ t́ô t́ĥé m̂óŝt́ îḿp̂ór̂t́âńt̂ ór̂íĝín̂ś."
+    "message": "M̂ór̂é t̂h́âń 2 `<link rel=preconnect>` ĉón̂ńêćt̂íôńŝ ẃêŕê f́ôún̂d́. T̂h́êśê śĥóûĺd̂ b́ê úŝéd̂ śp̂ár̂ín̂ǵl̂ý âńd̂ ón̂ĺŷ t́ô t́ĥé m̂óŝt́ îḿp̂ór̂t́âńt̂ ór̂íĝín̂ś."
+  },
+  "lighthouse-core/audits/uses-rel-preconnect.js | unusedWarning": {
+    "message": "Â `<link rel=preconnect>` ẃâś f̂óûńd̂ f́ôŕ \"{securityOrigin}\" b̂út̂ ẃâś n̂ót̂ úŝéd̂ b́ŷ t́ĥé b̂ŕôẃŝér̂. Ón̂ĺŷ úŝé `preconnect` f̂ór̂ ím̂ṕôŕt̂án̂t́ ôŕîǵîńŝ t́ĥát̂ t́ĥé p̂áĝé ŵíl̂ĺ ĉér̂t́âín̂ĺŷ ŕêq́ûéŝt́."
   },
   "lighthouse-core/audits/uses-rel-preload.js | crossoriginWarning": {
-    "message": "Â ṕr̂él̂óâd́ <l̂ín̂ḱ> ŵáŝ f́ôún̂d́ f̂ór̂ \"{preloadURL}\" b́ût́ ŵáŝ ńôt́ ûśêd́ b̂ý t̂h́ê b́r̂óŵśêŕ. Ĉh́êćk̂ t́ĥát̂ ýôú âŕê úŝín̂ǵ t̂h́ê `crossorigin` át̂t́r̂íb̂út̂é p̂ŕôṕêŕl̂ý."
+    "message": "Â ṕr̂él̂óâd́ `<link>` ŵáŝ f́ôún̂d́ f̂ór̂ \"{preloadURL}\" b́ût́ ŵáŝ ńôt́ ûśêd́ b̂ý t̂h́ê b́r̂óŵśêŕ. Ĉh́êćk̂ t́ĥát̂ ýôú âŕê úŝín̂ǵ t̂h́ê `crossorigin` át̂t́r̂íb̂út̂é p̂ŕôṕêŕl̂ý."
   },
   "lighthouse-core/audits/uses-rel-preload.js | description": {
     "message": "Ĉón̂śîd́êŕ ûśîńĝ `<link rel=preload>` t́ô ṕr̂íôŕît́îźê f́êt́ĉh́îńĝ ŕêśôúr̂ćêś t̂h́ât́ âŕê ćûŕr̂én̂t́l̂ý r̂éq̂úêśt̂éd̂ ĺât́êŕ îń p̂áĝé l̂óâd́. [L̂éâŕn̂ ḿôŕê](https://web.dev/uses-rel-preload/)."
@@ -1567,6 +1597,9 @@
   },
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "M̂ób̂íl̂é F̂ŕîén̂d́l̂ý"
+  },
+  "lighthouse-core/gather/driver.js | warningData": {
+    "message": "{locationCount, plural,\n    =1 {T̂h́êŕê ḿâý b̂é ŝt́ôŕêd́ d̂át̂á âf́f̂éĉt́îńĝ ĺôád̂ín̂ǵ p̂ér̂f́ôŕm̂án̂ćê ín̂ t́ĥíŝ ĺôćât́îón̂: {locations}. Áûd́ît́ t̂h́îś p̂áĝé îń âń îńĉóĝńît́ô ẃîńd̂óŵ t́ô ṕr̂év̂én̂t́ t̂h́ôśê ŕêśôúr̂ćêś f̂ŕôḿ âf́f̂éĉt́îńĝ ýôúr̂ śĉór̂éŝ.}\n    other {T́ĥér̂é m̂áŷ b́ê śt̂ór̂éd̂ d́ât́â áf̂f́êćt̂ín̂ǵ l̂óâd́îńĝ ṕêŕf̂ór̂ḿâńĉé îń t̂h́êśê ĺôćât́îón̂ś: {locations}. Âúd̂ít̂ t́ĥíŝ ṕâǵê ín̂ án̂ ín̂ćôǵn̂ít̂ó ŵín̂d́ôẃ t̂ó p̂ŕêv́êńt̂ t́ĥóŝé r̂éŝóûŕĉéŝ f́r̂óm̂ áf̂f́êćt̂ín̂ǵ ŷóûŕ ŝćôŕêś.}\n  }"
   },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "T̂h́ê ṕâǵê ḿâý n̂ót̂ b́ê ĺôád̂ín̂ǵ âś êx́p̂éĉt́êd́ b̂éĉáûśê ýôúr̂ t́êśt̂ ÚR̂Ĺ ({requested}) ŵáŝ ŕêd́îŕêćt̂éd̂ t́ô {final}. T́r̂ý t̂éŝt́îńĝ t́ĥé ŝéĉón̂d́ ÛŔL̂ d́îŕêćt̂ĺŷ."
@@ -1892,139 +1925,226 @@
   "lighthouse-core/report/html/renderer/util.js | warningHeader": {
     "message": "Ŵár̂ńîńĝś: "
   },
-  "stack-packs/packs/amp.js | efficient_animated_content": {
-    "message": "F̂ór̂ án̂ím̂át̂éd̂ ćôńt̂én̂t́, ûśê [ám̂ṕ-âńîḿ](https://amp.dev/documentation/components/amp-anim/) t̂ó m̂ín̂ím̂íẑé ĈṔÛ úŝáĝé ŵh́îĺê t́ĥé ĉón̂t́êńt̂ ŕêḿâín̂ś ôf́f̂śĉŕêén̂."
+  "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
+    "message": "F̂ór̂ án̂ím̂át̂éd̂ ćôńt̂én̂t́, ûśê [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) t́ô ḿîńîḿîźê ĆP̂Ú ûśâǵê ẃĥén̂ t́ĥé ĉón̂t́êńt̂ íŝ óf̂f́ŝćr̂éêń."
   },
-  "stack-packs/packs/amp.js | offscreen_images": {
-    "message": "Êńŝúr̂é t̂h́ât́ ŷóû ár̂é ŷóû úŝín̂ǵ v̂ál̂íd̂ `amp-img` t́âǵŝ f́ôŕ ŷóûŕ îḿâǵêś ŵh́îćĥ áût́ôḿât́îćâĺl̂ý l̂áẑý-l̂óâd́ ôút̂śîd́ê t́ĥé f̂ír̂śt̂ v́îéŵṕôŕt̂. [Ĺêár̂ń m̂ór̂é](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)."
+  "node_modules/lighthouse-stack-packs/packs/amp.js | offscreen-images": {
+    "message": "Êńŝúr̂é t̂h́ât́ ŷóû ár̂é ûśîńĝ [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) f́ôŕ îḿâǵêś t̂ó âút̂óm̂át̂íĉál̂ĺŷ ĺâźŷ-ĺôád̂. [Ĺêár̂ń m̂ór̂é](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)."
   },
-  "stack-packs/packs/amp.js | render_blocking_resources": {
-    "message": "Ûśê t́ôól̂ś ŝúĉh́ âś [ÂḾP̂ Óp̂t́îḿîźêŕ](https://github.com/ampproject/amp-toolbox/tree/main/packages/optimizer) t̂ó [ŝér̂v́êŕ-ŝíd̂é r̂én̂d́êŕ ÂḾP̂ ĺâýôút̂ś](https://amp.dev/documentation/guides-and-tutorials/optimize-and-measure/server-side-rendering/)."
+  "node_modules/lighthouse-stack-packs/packs/amp.js | render-blocking-resources": {
+    "message": "Ûśê t́ôól̂ś ŝúĉh́ âś [ÂḾP̂ Óp̂t́îḿîźêŕ](https://github.com/ampproject/amp-toolbox/tree/master/packages/optimizer) t̂ó [ŝér̂v́êŕ-ŝíd̂é r̂én̂d́êŕ ÂḾP̂ ĺâýôút̂ś](https://amp.dev/documentation/guides-and-tutorials/optimize-and-measure/server-side-rendering/)."
   },
-  "stack-packs/packs/amp.js | unminified_css": {
-    "message": "R̂éf̂ér̂ t́ô t́ĥé [ÂḾP̂ d́ôćûḿêńt̂át̂íôń](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/style_pages/) t̂ó êńŝúr̂é âĺl̂ ýôúr̂ śt̂ýl̂éŝ ár̂é ŝúp̂ṕôŕt̂éd̂."
+  "node_modules/lighthouse-stack-packs/packs/amp.js | unminified-css": {
+    "message": "R̂éf̂ér̂ t́ô t́ĥé [ÂḾP̂ d́ôćûḿêńt̂át̂íôń](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/style_pages/) t̂ó êńŝúr̂é âĺl̂ śt̂ýl̂éŝ ár̂é ŝúp̂ṕôŕt̂éd̂."
   },
-  "stack-packs/packs/amp.js | uses_responsive_images": {
-    "message": "T̂h́ê `amp-img` él̂ém̂én̂t́ ŝúp̂ṕôŕt̂ś t̂h́ê `srcset` át̂t́r̂íb̂út̂é t̂ó ŝṕêćîf́ŷ ẃĥíĉh́ îḿâǵê áŝśêt́ŝ t́ô úŝé b̂áŝéd̂ ón̂ t́ĥé ŝćr̂éêń ŝíẑé.  [L̂éâŕn̂ ḿôŕê](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/art_direction/)."
+  "node_modules/lighthouse-stack-packs/packs/amp.js | uses-responsive-images": {
+    "message": "T̂h́ê [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) ćôḿp̂ón̂én̂t́ ŝúp̂ṕôŕt̂ś t̂h́ê [`srcset`](https://web.dev/use-srcset-to-automatically-choose-the-right-image/) át̂t́r̂íb̂út̂é t̂ó ŝṕêćîf́ŷ ẃĥíĉh́ îḿâǵê áŝśêt́ŝ t́ô úŝé b̂áŝéd̂ ón̂ t́ĥé ŝćr̂éêń ŝíẑé. [L̂éâŕn̂ ḿôŕê](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/art_direction/)."
   },
-  "stack-packs/packs/amp.js | uses_webp_images": {
-    "message": "Ĉón̂śîd́êŕ d̂íŝṕl̂áŷín̂ǵ âĺl̂ ýôúr̂ `amp-img` ćôḿp̂ón̂én̂t́ŝ ín̂ Ẃêb́P̂ f́ôŕm̂át̂ś ŵh́îĺê śp̂éĉíf̂ýîńĝ án̂ áp̂ṕr̂óp̂ŕîát̂é f̂ál̂ĺb̂áĉḱ f̂ór̂ ót̂h́êŕ b̂ŕôẃŝér̂ś. [L̂éâŕn̂ ḿôŕê](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)."
+  "node_modules/lighthouse-stack-packs/packs/amp.js | uses-webp-images": {
+    "message": "Ĉón̂śîd́êŕ d̂íŝṕl̂áŷín̂ǵ âĺl̂ [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) ćôḿp̂ón̂én̂t́ŝ ín̂ Ẃêb́P̂ f́ôŕm̂át̂ś ŵh́îĺê śp̂éĉíf̂ýîńĝ án̂ áp̂ṕr̂óp̂ŕîát̂é f̂ál̂ĺb̂áĉḱ f̂ór̂ ót̂h́êŕ b̂ŕôẃŝér̂ś. [L̂éâŕn̂ ḿôŕê](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)."
   },
-  "stack-packs/packs/angular.js | dom_size": {
+  "node_modules/lighthouse-stack-packs/packs/angular.js | dom-size": {
     "message": "Ĉón̂śîd́êŕ v̂ír̂t́ûál̂ śĉŕôĺl̂ín̂ǵ ŵít̂h́ t̂h́ê Ćôḿp̂ón̂én̂t́ D̂év̂ Ḱît́ (ĈD́K̂) íf̂ v́êŕŷ ĺâŕĝé l̂íŝt́ŝ ár̂é b̂éîńĝ ŕêńd̂ér̂éd̂. [Ĺêár̂ń m̂ór̂é](https://web.dev/virtualize-lists-with-angular-cdk/)."
   },
-  "stack-packs/packs/angular.js | total_byte_weight": {
-    "message": "Âṕp̂ĺŷ [ŕôút̂é-l̂év̂él̂ ćôd́ê-śp̂ĺît́t̂ín̂ǵ](https://web.dev/route-level-code-splitting-in-angular/) t̂ó m̂ín̂ím̂íẑé t̂h́ê śîźê óf̂ ýôúr̂ J́âv́âŚĉŕîṕt̂ b́ûńd̂ĺêś. Âĺŝó, ĉón̂śîd́êŕ p̂ŕêćâćĥín̂ǵ âśŝét̂ś ŵít̂h́ t̂h́ê [Án̂ǵûĺâŕ ŝér̂v́îćê ẃôŕk̂ér̂](https://web.dev/precaching-with-the-angular-service-worker/)."
+  "node_modules/lighthouse-stack-packs/packs/angular.js | total-byte-weight": {
+    "message": "Âṕp̂ĺŷ [ŕôút̂é-l̂év̂él̂ ćôd́ê śp̂ĺît́t̂ín̂ǵ](https://web.dev/route-level-code-splitting-in-angular/) t̂ó m̂ín̂ím̂íẑé t̂h́ê śîźê óf̂ ýôúr̂ J́âv́âŚĉŕîṕt̂ b́ûńd̂ĺêś. Âĺŝó, ĉón̂śîd́êŕ p̂ŕêćâćĥín̂ǵ âśŝét̂ś ŵít̂h́ t̂h́ê [Án̂ǵûĺâŕ ŝér̂v́îćê ẃôŕk̂ér̂](https://web.dev/precaching-with-the-angular-service-worker/)."
   },
-  "stack-packs/packs/angular.js | unminified_warning": {
+  "node_modules/lighthouse-stack-packs/packs/angular.js | unminified-warning": {
     "message": "Îf́ ŷóû ár̂é ûśîńĝ Án̂ǵûĺâŕ ĈĹÎ, én̂śûŕê t́ĥát̂ b́ûíl̂d́ŝ ár̂é ĝén̂ér̂át̂éd̂ ín̂ ṕr̂ód̂úĉt́îón̂ ḿôd́ê. [Ĺêár̂ń m̂ór̂é](https://angular.io/guide/deployment#enable-runtime-production-mode)."
   },
-  "stack-packs/packs/angular.js | unused_javascript": {
-    "message": "Îf́ ŷóû ár̂é ûśîńĝ Án̂ǵûĺâŕ ĈĹÎ, ín̂ćl̂úd̂é ŝóûŕĉé m̂áp̂ś îńt̂ó ŷóûŕ p̂ŕôd́ûćt̂íôń b̂úîĺd̂ t́ô ín̂śp̂éĉt́ ŷóûŕ b̂ún̂d́l̂éŝ. [Ĺêár̂ń m̂ór̂é](https://angular.io/guide/deployment#inspect-the-bundles)."
+  "node_modules/lighthouse-stack-packs/packs/angular.js | unused-javascript": {
+    "message": "Îf́ ŷóû ár̂é ûśîńĝ Án̂ǵûĺâŕ ĈĹÎ, ín̂ćl̂úd̂é ŝóûŕĉé m̂áp̂ś îń ŷóûŕ p̂ŕôd́ûćt̂íôń b̂úîĺd̂ t́ô ín̂śp̂éĉt́ ŷóûŕ b̂ún̂d́l̂éŝ. [Ĺêár̂ń m̂ór̂é](https://angular.io/guide/deployment#inspect-the-bundles)."
   },
-  "stack-packs/packs/angular.js | uses_rel_preload": {
+  "node_modules/lighthouse-stack-packs/packs/angular.js | uses-rel-preload": {
     "message": "P̂ŕêĺôád̂ ŕôút̂éŝ áĥéâd́ ôf́ t̂ím̂é t̂ó ŝṕêéd̂ úp̂ ńâv́îǵât́îón̂. [Ĺêár̂ń m̂ór̂é](https://web.dev/route-preloading-in-angular/)."
   },
-  "stack-packs/packs/angular.js | uses_responsive_images": {
+  "node_modules/lighthouse-stack-packs/packs/angular.js | uses-responsive-images": {
     "message": "Ĉón̂śîd́êŕ ûśîńĝ t́ĥé `BreakpointObserver` ût́îĺît́ŷ ín̂ t́ĥé Ĉóm̂ṕôńêńt̂ D́êv́ K̂ít̂ (ĆD̂Ḱ) t̂ó m̂án̂áĝé îḿâǵê b́r̂éâḱp̂óîńt̂ś. [L̂éâŕn̂ ḿôŕê](https://material.angular.io/cdk/layout/overview)."
   },
-  "stack-packs/packs/magento.js | critical_request_chains": {
-    "message": "Îf́ ŷóû ár̂é n̂ót̂ b́ûńd̂ĺîńĝ ýôúr̂ J́âv́âŚĉŕîṕt̂ áŝśêt́ŝ, ćôńŝíd̂ér̂ úŝín̂ǵ [b̂ál̂ér̂](https://github.com/magento/baler)."
-  },
-  "stack-packs/packs/magento.js | disable_bundling": {
-    "message": "D̂íŝáb̂ĺê Ḿâǵêńt̂ó'ŝ b́ûíl̂t́-îń [Ĵáv̂áŜćr̂íp̂t́ b̂ún̂d́l̂ín̂ǵ âńd̂ ḿîńîf́îćât́îón̂](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html), án̂d́ ĉón̂śîd́êŕ ûśîńĝ [b́âĺêŕ](https://github.com/magento/baler/) îńŝt́êád̂."
-  },
-  "stack-packs/packs/magento.js | font_display": {
-    "message": "Ŝṕêćîf́ŷ `@font-display` ẃĥén̂ [d́êf́îńîńĝ ćûśt̂óm̂ f́ôńt̂ś](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/css-topics/using-fonts.html)."
-  },
-  "stack-packs/packs/magento.js | offscreen_images": {
-    "message": "Ĉón̂śîd́êŕ m̂ód̂íf̂ýîńĝ ýôúr̂ ṕr̂ód̂úĉt́ âńd̂ ćât́âĺôǵ t̂ém̂ṕl̂át̂éŝ t́ô ḿâḱê úŝé ôf́ t̂h́ê ẃêb́ p̂ĺât́f̂ór̂ḿ'ŝ [ĺâźŷ ĺôád̂ín̂ǵ](https://web.dev/native-lazy-loading/) f̂éât́ûŕê."
-  },
-  "stack-packs/packs/magento.js | server_response_time": {
-    "message": "Ûśê Ḿâǵêńt̂ó'ŝ [V́âŕn̂íŝh́ îńt̂éĝŕât́îón̂](https://devdocs.magento.com/guides/v2.3/config-guide/varnish/config-varnish.html)."
-  },
-  "stack-packs/packs/magento.js | unminified_css": {
-    "message": "Êńâb́l̂é t̂h́ê \"Ḿîńîf́ŷ ĆŜŚ F̂íl̂éŝ\" óp̂t́îón̂ ín̂ ýôúr̂ śt̂ór̂é'ŝ D́êv́êĺôṕêŕ ŝét̂t́îńĝś. [L̂éâŕn̂ ḿôŕê](https://devdocs.magento.com/guides/v2.3/performance-best-practices/configuration.html?itm_source=devdocs&itm_medium=search_page&itm_campaign=federated_search&itm_term=minify%20css%20files)."
-  },
-  "stack-packs/packs/magento.js | unminified_javascript": {
-    "message": "Ûśê [T́êŕŝér̂](https://www.npmjs.com/package/terser) t́ô ḿîńîf́ŷ ál̂ĺ Ĵáv̂áŜćr̂íp̂t́ âśŝét̂ś ôút̂f́r̂óm̂ f́r̂óm̂ śt̂át̂íĉ ćôńt̂én̂t́ d̂ép̂ĺôým̂én̂t́, âńd̂ d́îśâb́l̂é t̂h́ê b́ûíl̂t́-îń m̂ín̂íf̂íĉát̂íôń f̂éât́ûŕê."
-  },
-  "stack-packs/packs/magento.js | unused_javascript": {
-    "message": "D̂íŝáb̂ĺê Ḿâǵêńt̂ó'ŝ b́ûíl̂t́-îń [Ĵáv̂áŜćr̂íp̂t́ b̂ún̂d́l̂ín̂ǵ](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html)."
-  },
-  "stack-packs/packs/magento.js | uses_optimized_images": {
-    "message": "Ĉón̂śîd́êŕ ŝéâŕĉh́îńĝ t́ĥé [M̂áĝén̂t́ô Ḿâŕk̂ét̂ṕl̂áĉé](https://marketplace.magento.com/catalogsearch/result/?q=optimize%20image) f̂ór̂ á v̂ár̂íêt́ŷ óf̂ t́ĥír̂d́ p̂ár̂t́ŷ éx̂t́êńŝíôńŝ t́ô óp̂t́îḿîźê ím̂áĝéŝ."
-  },
-  "stack-packs/packs/magento.js | uses_rel_preconnect": {
-    "message": "P̂ŕêćôńn̂éĉt́ ôŕ d̂ńŝ-ṕr̂éf̂ét̂ćĥ ŕêśôúr̂ćê h́îńt̂ś ĉán̂ b́ê ád̂d́êd́ b̂ý [m̂ód̂íf̂ýîńĝ á t̂h́êḿêś'ŝ ĺâýôút̂](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
-  },
-  "stack-packs/packs/magento.js | uses_rel_preload": {
-    "message": "`<link rel=preload>` t̂áĝś ĉán̂ b́ê ád̂d́êd́ b̂ý [m̂ód̂íf̂ýîńĝ á t̂h́êḿêś'ŝ ĺâýôút̂](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
-  },
-  "stack-packs/packs/magento.js | uses_webp_images": {
-    "message": "Ĉón̂śîd́êŕ ŝéâŕĉh́îńĝ t́ĥé [M̂áĝén̂t́ô Ḿâŕk̂ét̂ṕl̂áĉé](https://marketplace.magento.com/catalogsearch/result/?q=webp) f̂ór̂ á v̂ár̂íêt́ŷ óf̂ t́ĥír̂d́-p̂ár̂t́ŷ éx̂t́êńŝíôńŝ t́ô ĺêv́êŕâǵê ńêẃêŕ îḿâǵê f́ôŕm̂át̂ś."
-  },
-  "stack-packs/packs/react.js | dom_size": {
-    "message": "Ĉón̂śîd́êŕ ûśîńĝ á “ŵín̂d́ôẃîńĝ” ĺîb́r̂ár̂ý l̂ík̂é `react-window` t̂ó m̂ín̂ím̂íẑé t̂h́ê ńûḿb̂ér̂ óf̂ D́ÔḾ n̂ód̂éŝ ćr̂éât́êd́ îf́ ŷóû ár̂é r̂én̂d́êŕîńĝ ḿâńŷ ŕêṕêát̂éd̂ él̂ém̂én̂t́ŝ ón̂ t́ĥé p̂áĝé. [L̂éâŕn̂ ḿôŕê](https://web.dev/virtualize-long-lists-react-window/). Ál̂śô, ḿîńîḿîźê ún̂éĉéŝśâŕŷ ŕê-ŕêńd̂ér̂ś ûśîńĝ [śĥóûĺd̂Ćôḿp̂ón̂én̂t́Ûṕd̂át̂é](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [P̂úr̂éĈóm̂ṕôńêńt̂](https://reactjs.org/docs/react-api.html#reactpurecomponent), ór̂ [Ŕêáĉt́.m̂ém̂ó](https://reactjs.org/docs/react-api.html#reactmemo) âńd̂ [śk̂íp̂ éf̂f́êćt̂ś](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) ôńl̂ý ûńt̂íl̂ ćêŕt̂áîń d̂ép̂én̂d́êńĉíêś ĥáv̂é ĉh́âńĝéd̂ íf̂ ýôú âŕê úŝín̂ǵ t̂h́ê Éf̂f́êćt̂ h́ôók̂ t́ô ím̂ṕr̂óv̂é r̂ún̂t́îḿê ṕêŕf̂ór̂ḿâńĉé."
-  },
-  "stack-packs/packs/react.js | redirects": {
-    "message": "Îf́ ŷóû ár̂é ûśîńĝ Ŕêáĉt́ R̂óût́êŕ, m̂ín̂ím̂íẑé ûśâǵê óf̂ t́ĥé `<Redirect>` ĉóm̂ṕôńêńt̂ f́ôŕ [r̂óût́ê ńâv́îǵât́îón̂ś](https://reacttraining.com/react-router/web/api/Redirect)."
-  },
-  "stack-packs/packs/react.js | server_response_time": {
-    "message": "Îf́ ŷóû ár̂é ŝér̂v́êŕ-ŝíd̂é r̂én̂d́êŕîńĝ án̂ý R̂éâćt̂ ćôḿp̂ón̂én̂t́ŝ, ćôńŝíd̂ér̂ úŝín̂ǵ `renderToNodeStream()` ôŕ `renderToStaticNodeStream()` t̂ó âĺl̂óŵ t́ĥé ĉĺîén̂t́ t̂ó r̂éĉéîv́ê án̂d́ ĥýd̂ŕât́ê d́îf́f̂ér̂én̂t́ p̂ár̂t́ŝ óf̂ t́ĥé m̂ár̂ḱûṕ îńŝt́êád̂ óf̂ ál̂ĺ ât́ ôńĉé. [L̂éâŕn̂ ḿôŕê](https://reactjs.org/docs/react-dom-server.html#rendertonodestream)."
-  },
-  "stack-packs/packs/react.js | unminified_css": {
-    "message": "Îf́ ŷóûŕ b̂úîĺd̂ śŷśt̂ém̂ ḿîńîf́îéŝ ýôúr̂ ĆŜŚ f̂íl̂éŝ áût́ôḿât́îćâĺl̂ý, êńŝúr̂é t̂h́ât́ ŷóû ár̂é d̂ép̂ĺôýîńĝ t́ĥé p̂ŕôd́ûćt̂íôń b̂úîĺd̂ óf̂ ýôúr̂ áp̂ṕl̂íĉát̂íôń. Ŷóû ćâń ĉh́êćk̂ t́ĥíŝ ẃît́ĥ t́ĥé R̂éâćt̂ D́êv́êĺôṕêŕ T̂óôĺŝ éx̂t́êńŝíôń. [L̂éâŕn̂ ḿôŕê](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
-  },
-  "stack-packs/packs/react.js | unminified_javascript": {
-    "message": "Îf́ ŷóûŕ b̂úîĺd̂ śŷśt̂ém̂ ḿîńîf́îéŝ ýôúr̂ J́Ŝ f́îĺêś âút̂óm̂át̂íĉál̂ĺŷ, én̂śûŕê t́ĥát̂ ýôú âŕê d́êṕl̂óŷín̂ǵ t̂h́ê ṕr̂ód̂úĉt́îón̂ b́ûíl̂d́ ôf́ ŷóûŕ âṕp̂ĺîćât́îón̂. Ýôú ĉán̂ ćĥéĉḱ t̂h́îś ŵít̂h́ t̂h́ê Ŕêáĉt́ D̂év̂él̂óp̂ér̂ T́ôól̂ś êx́t̂én̂śîón̂. [Ĺêár̂ń m̂ór̂é](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
-  },
-  "stack-packs/packs/react.js | unused_javascript": {
-    "message": "Îf́ ŷóû ár̂é n̂ót̂ śêŕv̂ér̂-śîd́ê ŕêńd̂ér̂ín̂ǵ, [ŝṕl̂ít̂ ýôúr̂ J́âv́âŚĉŕîṕt̂ b́ûńd̂ĺêś](https://web.dev/code-splitting-suspense/) ŵít̂h́ `React.lazy()`. Ôt́ĥér̂ẃîśê, ćôd́ê-śp̂ĺît́ ûśîńĝ á t̂h́îŕd̂-ṕâŕt̂ý l̂íb̂ŕâŕŷ śûćĥ áŝ [ĺôád̂áb̂ĺê-ćôḿp̂ón̂én̂t́ŝ](https://www.smooth-code.com/open-source/loadable-components/docs/getting-started/)."
-  },
-  "stack-packs/packs/react.js | user_timings": {
-    "message": "Ûśê t́ĥé R̂éâćt̂ D́êv́T̂óôĺŝ Ṕr̂óf̂íl̂ér̂, ẃĥíĉh́ m̂ák̂éŝ úŝé ôf́ t̂h́ê Ṕr̂óf̂íl̂ér̂ ÁP̂Í, t̂ó m̂éâśûŕê t́ĥé r̂én̂d́êŕîńĝ ṕêŕf̂ór̂ḿâńĉé ôf́ ŷóûŕ ĉóm̂ṕôńêńt̂ś. [L̂éâŕn̂ ḿôŕê.](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
-  },
-  "stack-packs/packs/wordpress.js | efficient_animated_content": {
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | efficient-animated-content": {
     "message": "Ĉón̂śîd́êŕ ûṕl̂óâd́îńĝ ýôúr̂ ǴÎF́ t̂ó â śêŕv̂íĉé ŵh́îćĥ ẃîĺl̂ ḿâḱê ít̂ áv̂áîĺâb́l̂é t̂ó êḿb̂éd̂ áŝ án̂ H́T̂ḾL̂5 v́îd́êó."
   },
-  "stack-packs/packs/wordpress.js | offscreen_images": {
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | font-display": {
+    "message": "Ŝṕêćîf́ŷ `@font-display` ẃĥén̂ d́êf́îńîńĝ ćûśt̂óm̂ f́ôńt̂ś îń ŷóûŕ t̂h́êḿê."
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | offscreen-images": {
+    "message": "Îńŝt́âĺl̂ [á D̂ŕûṕâĺ m̂ód̂úl̂é](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) t̂h́ât́ ĉán̂ ĺâźŷ ĺôád̂ ím̂áĝéŝ. Śûćĥ ḿôd́ûĺêś p̂ŕôv́îd́ê t́ĥé âb́îĺît́ŷ t́ô d́êf́êŕ âńŷ óf̂f́ŝćr̂éêń îḿâǵêś t̂ó îḿp̂ŕôv́ê ṕêŕf̂ór̂ḿâńĉé."
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
+    "message": "Ĉón̂śîd́êŕ ûśîńĝ á m̂ód̂úl̂é t̂ó îńl̂ín̂é ĉŕît́îćâĺ ĈŚŜ án̂d́ Ĵáv̂áŜćr̂íp̂t́, ôŕ p̂ót̂én̂t́îál̂ĺŷ ĺôád̂ áŝśêt́ŝ áŝýn̂ćĥŕôńôúŝĺŷ v́îá Ĵáv̂áŜćr̂íp̂t́ ŝúĉh́ âś t̂h́ê [Ád̂v́âńĉéd̂ ĆŜŚ/ĴŚ Âǵĝŕêǵât́îón̂](https://www.drupal.org/project/advagg) ḿôd́ûĺê. B́êẃâŕê t́ĥát̂ óp̂t́îḿîźât́îón̂ś p̂ŕôv́îd́êd́ b̂ý t̂h́îś m̂ód̂úl̂é m̂áŷ b́r̂éâḱ ŷóûŕ ŝít̂é, ŝó ŷóû ẃîĺl̂ ĺîḱêĺŷ ńêéd̂ t́ô ḿâḱê ćôd́ê ćĥán̂ǵêś."
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | time-to-first-byte": {
+    "message": "T̂h́êḿêś, m̂ód̂úl̂éŝ, án̂d́ ŝér̂v́êŕ ŝṕêćîf́îćât́îón̂ś âĺl̂ ćôńt̂ŕîb́ût́ê t́ô śêŕv̂ér̂ ŕêśp̂ón̂śê t́îḿê. Ćôńŝíd̂ér̂ f́îńd̂ín̂ǵ â ḿôŕê óp̂t́îḿîźêd́ t̂h́êḿê, ćâŕêf́ûĺl̂ý ŝél̂éĉt́îńĝ án̂ óp̂t́îḿîźât́îón̂ ḿôd́ûĺê, án̂d́/ôŕ ûṕĝŕâd́îńĝ ýôúr̂ śêŕv̂ér̂. Ýôúr̂ h́ôśt̂ín̂ǵ ŝér̂v́êŕŝ śĥóûĺd̂ ḿâḱê úŝé ôf́ P̂H́P̂ óp̂ćôd́ê ćâćĥín̂ǵ, m̂ém̂ór̂ý-ĉáĉh́îńĝ t́ô ŕêd́ûćê d́ât́âb́âśê q́ûér̂ý t̂ím̂éŝ śûćĥ áŝ Ŕêd́îś ôŕ M̂ém̂ćâćĥéd̂, áŝ ẃêĺl̂ áŝ óp̂t́îḿîźêd́ âṕp̂ĺîćât́îón̂ ĺôǵîć t̂ó p̂ŕêṕâŕê ṕâǵêś f̂áŝt́êŕ."
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | total-byte-weight": {
+    "message": "Ĉón̂śîd́êŕ ûśîńĝ [Ŕêśp̂ón̂śîv́ê Ím̂áĝé Ŝt́ŷĺêś](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) t̂ó r̂éd̂úĉé t̂h́ê śîźê óf̂ ím̂áĝéŝ ĺôád̂éd̂ ón̂ ýôúr̂ ṕâǵê. Íf̂ ýôú âŕê úŝín̂ǵ V̂íêẃŝ t́ô śĥóŵ ḿûĺt̂íp̂ĺê ćôńt̂én̂t́ ît́êḿŝ ón̂ á p̂áĝé, ĉón̂śîd́êŕ îḿp̂ĺêḿêńt̂ín̂ǵ p̂áĝín̂át̂íôń t̂ó l̂ím̂ít̂ t́ĥé n̂úm̂b́êŕ ôf́ ĉón̂t́êńt̂ ít̂ém̂ś ŝh́ôẃn̂ ón̂ á ĝív̂én̂ ṕâǵê."
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
+    "message": "Êńŝúr̂é ŷóû h́âv́ê én̂áb̂ĺêd́ \"Âǵĝŕêǵât́ê ĆŜŚ f̂íl̂éŝ\" ín̂ t́ĥé \"Âd́m̂ín̂íŝt́r̂át̂íôń » Ĉón̂f́îǵûŕât́îón̂ » D́êv́êĺôṕm̂én̂t́\" p̂áĝé. Ŷóû ćâń âĺŝó ĉón̂f́îǵûŕê ḿôŕê ád̂v́âńĉéd̂ áĝǵr̂éĝát̂íôń ôṕt̂íôńŝ t́ĥŕôúĝh́ [âd́d̂ít̂íôńâĺ m̂ód̂úl̂éŝ](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search) t́ô śp̂éêd́ ûṕ ŷóûŕ ŝít̂é b̂ý ĉón̂ćât́êńât́îńĝ, ḿîńîf́ŷín̂ǵ, âńd̂ ćôḿp̂ŕêśŝín̂ǵ ŷóûŕ ĈŚŜ śt̂ýl̂éŝ."
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
+    "message": "Êńŝúr̂é ŷóû h́âv́ê én̂áb̂ĺêd́ \"Âǵĝŕêǵât́ê J́âv́âŚĉŕîṕt̂ f́îĺêś\" îń t̂h́ê \"Ád̂ḿîńîśt̂ŕât́îón̂ » Ćôńf̂íĝúr̂át̂íôń » D̂év̂él̂óp̂ḿêńt̂\" ṕâǵê. Ýôú ĉán̂ ál̂śô ćôńf̂íĝúr̂é m̂ór̂é âd́v̂án̂ćêd́ âǵĝŕêǵât́îón̂ óp̂t́îón̂ś t̂h́r̂óûǵĥ [ád̂d́ît́îón̂ál̂ ḿôd́ûĺêś](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search) t̂ó ŝṕêéd̂ úp̂ ýôúr̂ śît́ê b́ŷ ćôńĉát̂én̂át̂ín̂ǵ, m̂ín̂íf̂ýîńĝ, án̂d́ ĉóm̂ṕr̂éŝśîńĝ ýôúr̂ J́âv́âŚĉŕîṕt̂ áŝśêt́ŝ."
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
+    "message": "Ĉón̂śîd́êŕ r̂ém̂óv̂ín̂ǵ ûńûśêd́ ĈŚŜ ŕûĺêś âńd̂ ón̂ĺŷ át̂t́âćĥ t́ĥé n̂éêd́êd́ D̂ŕûṕâĺ l̂íb̂ŕâŕîéŝ t́ô t́ĥé r̂él̂év̂án̂t́ p̂áĝé ôŕ ĉóm̂ṕôńêńt̂ ín̂ á p̂áĝé. Ŝéê t́ĥé [D̂ŕûṕâĺ d̂óĉúm̂én̂t́ât́îón̂ ĺîńk̂](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) f́ôŕ d̂ét̂áîĺŝ. T́ô íd̂én̂t́îf́ŷ át̂t́âćĥéd̂ ĺîb́r̂ár̂íêś t̂h́ât́ âŕê ád̂d́îńĝ éx̂t́r̂án̂éôúŝ ĆŜŚ, t̂ŕŷ ŕûńn̂ín̂ǵ [ĉód̂é ĉóv̂ér̂áĝé](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) îń Ĉh́r̂óm̂é D̂év̂T́ôól̂ś. Ŷóû ćâń îd́êńt̂íf̂ý t̂h́ê t́ĥém̂é/m̂ód̂úl̂é r̂éŝṕôńŝíb̂ĺê f́r̂óm̂ t́ĥé ÛŔL̂ óf̂ t́ĥé ŝt́ŷĺêśĥéêt́ ŵh́êń ĈŚŜ áĝǵr̂éĝát̂íôń îś d̂íŝáb̂ĺêd́ îń ŷóûŕ D̂ŕûṕâĺ ŝít̂é. L̂óôḱ ôút̂ f́ôŕ t̂h́êḿêś/m̂ód̂úl̂éŝ t́ĥát̂ h́âv́ê ḿâńŷ śt̂ýl̂éŝh́êét̂ś îń t̂h́ê ĺîśt̂ ẃĥíĉh́ ĥáv̂é â ĺôt́ ôf́ r̂éd̂ ín̂ ćôd́ê ćôv́êŕâǵê. Á t̂h́êḿê/ḿôd́ûĺê śĥóûĺd̂ ón̂ĺŷ én̂q́ûéûé â śt̂ýl̂éŝh́êét̂ íf̂ ít̂ íŝ áĉt́ûál̂ĺŷ úŝéd̂ ón̂ t́ĥé p̂áĝé."
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-javascript": {
+    "message": "Ĉón̂śîd́êŕ r̂ém̂óv̂ín̂ǵ ûńûśêd́ Ĵáv̂áŜćr̂íp̂t́ âśŝét̂ś âńd̂ ón̂ĺŷ át̂t́âćĥ t́ĥé n̂éêd́êd́ D̂ŕûṕâĺ l̂íb̂ŕâŕîéŝ t́ô t́ĥé r̂él̂év̂án̂t́ p̂áĝé ôŕ ĉóm̂ṕôńêńt̂ ín̂ á p̂áĝé. Ŝéê t́ĥé [D̂ŕûṕâĺ d̂óĉúm̂én̂t́ât́îón̂ ĺîńk̂](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) f́ôŕ d̂ét̂áîĺŝ. T́ô íd̂én̂t́îf́ŷ át̂t́âćĥéd̂ ĺîb́r̂ár̂íêś t̂h́ât́ âŕê ád̂d́îńĝ éx̂t́r̂án̂éôúŝ J́âv́âŚĉŕîṕt̂, t́r̂ý r̂ún̂ńîńĝ [ćôd́ê ćôv́êŕâǵê](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) ín̂ Ćĥŕôḿê D́êv́T̂óôĺŝ. Ýôú ĉán̂ íd̂én̂t́îf́ŷ t́ĥé t̂h́êḿê/ḿôd́ûĺê ŕêśp̂ón̂śîb́l̂é f̂ŕôḿ t̂h́ê ÚR̂Ĺ ôf́ t̂h́ê śĉŕîṕt̂ ẃĥén̂ J́âv́âŚĉŕîṕt̂ áĝǵr̂éĝát̂íôń îś d̂íŝáb̂ĺêd́ îń ŷóûŕ D̂ŕûṕâĺ ŝít̂é. L̂óôḱ ôút̂ f́ôŕ t̂h́êḿêś/m̂ód̂úl̂éŝ t́ĥát̂ h́âv́ê ḿâńŷ śĉŕîṕt̂ś îń t̂h́ê ĺîśt̂ ẃĥíĉh́ ĥáv̂é â ĺôt́ ôf́ r̂éd̂ ín̂ ćôd́ê ćôv́êŕâǵê. Á t̂h́êḿê/ḿôd́ûĺê śĥóûĺd̂ ón̂ĺŷ én̂q́ûéûé â śĉŕîṕt̂ íf̂ ít̂ íŝ áĉt́ûál̂ĺŷ úŝéd̂ ón̂ t́ĥé p̂áĝé."
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-long-cache-ttl": {
+    "message": "Ŝét̂ t́ĥé \"B̂ŕôẃŝér̂ án̂d́ p̂ŕôx́ŷ ćâćĥé m̂áx̂ím̂úm̂ áĝé\" îń t̂h́ê \"Ád̂ḿîńîśt̂ŕât́îón̂ » Ćôńf̂íĝúr̂át̂íôń » D̂év̂él̂óp̂ḿêńt̂\" ṕâǵê. Ŕêád̂ áb̂óût́ [D̂ŕûṕâĺ ĉáĉh́ê án̂d́ ôṕt̂ím̂íẑín̂ǵ f̂ór̂ ṕêŕf̂ór̂ḿâńĉé](https://www.drupal.org/docs/7/managing-site-performance-and-scalability/caching-to-improve-performance/caching-overview#s-drupal-performance-resources)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-optimized-images": {
+    "message": "Ĉón̂śîd́êŕ ûśîńĝ [á m̂ód̂úl̂é](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=optimize+images&solrsort=iss_project_release_usage+desc&op=Search) t̂h́ât́ âút̂óm̂át̂íĉál̂ĺŷ óp̂t́îḿîźêś âńd̂ ŕêd́ûćêś t̂h́ê śîźê óf̂ ím̂áĝéŝ úp̂ĺôád̂éd̂ t́ĥŕôúĝh́ t̂h́ê śît́ê ẃĥíl̂é r̂ét̂áîńîńĝ q́ûál̂ít̂ý. Âĺŝó, êńŝúr̂é ŷóû ár̂é ûśîńĝ t́ĥé n̂át̂ív̂é [R̂éŝṕôńŝív̂é Îḿâǵê Śt̂ýl̂éŝ](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) ṕr̂óv̂íd̂éd̂ f́r̂óm̂ D́r̂úp̂ál̂ (áv̂áîĺâb́l̂é îń D̂ŕûṕâĺ 8 âńd̂ áb̂óv̂é) f̂ór̂ ál̂ĺ îḿâǵêś r̂én̂d́êŕêd́ ôń t̂h́ê śît́ê."
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-rel-preconnect": {
+    "message": "P̂ŕêćôńn̂éĉt́ ôŕ d̂ńŝ-ṕr̂éf̂ét̂ćĥ ŕêśôúr̂ćê h́îńt̂ś ĉán̂ b́ê ád̂d́êd́ b̂ý îńŝt́âĺl̂ín̂ǵ âńd̂ ćôńf̂íĝúr̂ín̂ǵ [â ḿôd́ûĺê](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=dns-prefetch&solrsort=iss_project_release_usage+desc&op=Search) t́ĥát̂ ṕr̂óv̂íd̂éŝ f́âćîĺît́îéŝ f́ôŕ ûśêŕ âǵêńt̂ ŕêśôúr̂ćê h́îńt̂ś."
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-responsive-images": {
+    "message": "Êńŝúr̂é t̂h́ât́ ŷóû ár̂é ûśîńĝ t́ĥé n̂át̂ív̂é [R̂éŝṕôńŝív̂é Îḿâǵê Śt̂ýl̂éŝ](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) ṕr̂óv̂íd̂éd̂ f́r̂óm̂ D́r̂úp̂ál̂ (áv̂áîĺâb́l̂é îń D̂ŕûṕâĺ 8 âńd̂ áb̂óv̂é). Ûśê t́ĥé R̂éŝṕôńŝív̂é Îḿâǵê Śt̂ýl̂éŝ ẃĥén̂ ŕêńd̂ér̂ín̂ǵ îḿâǵê f́îél̂d́ŝ t́ĥŕôúĝh́ v̂íêẃ m̂ód̂éŝ, v́îéŵś, ôŕ îḿâǵêś ûṕl̂óâd́êd́ t̂h́r̂óûǵĥ t́ĥé ŴÝŜÍŴÝĜ éd̂ít̂ór̂."
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-webp-images": {
+    "message": "Ĉón̂śîd́êŕ îńŝt́âĺl̂ín̂ǵ âńd̂ ćôńf̂íĝúr̂ín̂ǵ [â ḿôd́ûĺê t́ô ĺêv́êŕâǵê Ẃêb́P̂ ím̂áĝé f̂ór̂ḿât́ŝ](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=webp&solrsort=iss_project_release_usage+desc&op=Search) ín̂ ýôúr̂ śît́ê. Śûćĥ ḿôd́ûĺêś âút̂óm̂át̂íĉál̂ĺŷ ǵêńêŕât́ê á Ŵéb̂Ṕ v̂ér̂śîón̂ óf̂ ýôúr̂ úp̂ĺôád̂éd̂ ím̂áĝéŝ t́ô óp̂t́îḿîźê ĺôád̂ín̂ǵ t̂ím̂éŝ."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
+    "message": "Ĉón̂śîd́êŕ ûṕl̂óâd́îńĝ ýôúr̂ ǴÎF́ t̂ó â śêŕv̂íĉé ŵh́îćĥ ẃîĺl̂ ḿâḱê ít̂ áv̂áîĺâb́l̂é t̂ó êḿb̂éd̂ áŝ án̂ H́T̂ḾL̂5 v́îd́êó."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
+    "message": "Îńŝt́âĺl̂ á [l̂áẑý-l̂óâd́ Ĵóôḿl̂á p̂ĺûǵîń](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) t̂h́ât́ p̂ŕôv́îd́êś t̂h́ê áb̂íl̂ít̂ý t̂ó d̂éf̂ér̂ án̂ý ôf́f̂śĉŕêén̂ ím̂áĝéŝ, ór̂ śŵít̂ćĥ t́ô á t̂ém̂ṕl̂át̂é t̂h́ât́ p̂ŕôv́îd́êś t̂h́ât́ f̂ún̂ćt̂íôńâĺît́ŷ. Śt̂ár̂t́îńĝ ẃît́ĥ J́ôóm̂ĺâ 4.0, á d̂éd̂íĉát̂éd̂ ĺâźŷ-ĺôád̂ín̂ǵ p̂ĺûǵîń ĉán̂ b́ê én̂áb̂ĺêd́ b̂ý ûśîńĝ t́ĥé \"Ĉón̂t́êńt̂ - Ĺâźŷ Ĺôád̂ín̂ǵ Îḿâǵêś\" p̂ĺûǵîń. Âĺŝó ĉón̂śîd́êŕ ûśîńĝ [án̂ ÁM̂Ṕ p̂ĺûǵîń](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | render-blocking-resources": {
+    "message": "T̂h́êŕê ár̂é â ńûḿb̂ér̂ óf̂ J́ôóm̂ĺâ ṕl̂úĝín̂ś t̂h́ât́ ĉán̂ h́êĺp̂ ýôú [îńl̂ín̂é ĉŕît́îćâĺ âśŝét̂ś](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) ôŕ [d̂éf̂ér̂ ĺêśŝ ím̂ṕôŕt̂án̂t́ r̂éŝóûŕĉéŝ](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance). B́êẃâŕê t́ĥát̂ óp̂t́îḿîźât́îón̂ś p̂ŕôv́îd́êd́ b̂ý t̂h́êśê ṕl̂úĝín̂ś m̂áŷ b́r̂éâḱ f̂éât́ûŕêś ôf́ ŷóûŕ t̂ém̂ṕl̂át̂éŝ ór̂ ṕl̂úĝín̂ś, ŝó ŷóû ẃîĺl̂ ńêéd̂ t́ô t́êśt̂ t́ĥéŝé t̂h́ôŕôúĝh́l̂ý."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | server-response-time": {
+    "message": "T̂ém̂ṕl̂át̂éŝ, éx̂t́êńŝíôńŝ, án̂d́ ŝér̂v́êŕ ŝṕêćîf́îćât́îón̂ś âĺl̂ ćôńt̂ŕîb́ût́ê t́ô śêŕv̂ér̂ ŕêśp̂ón̂śê t́îḿê. Ćôńŝíd̂ér̂ f́îńd̂ín̂ǵ â ḿôŕê óp̂t́îḿîźêd́ t̂ém̂ṕl̂át̂é, ĉár̂éf̂úl̂ĺŷ śêĺêćt̂ín̂ǵ âń ôṕt̂ím̂íẑát̂íôń êx́t̂én̂śîón̂, án̂d́/ôŕ ûṕĝŕâd́îńĝ ýôúr̂ śêŕv̂ér̂."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | total-byte-weight": {
+    "message": "Ĉón̂śîd́êŕ ŝh́ôẃîńĝ éx̂ćêŕp̂t́ŝ ín̂ ýôúr̂ ár̂t́îćl̂é ĉát̂éĝór̂íêś (ê.ǵ. v̂íâ t́ĥé r̂éâd́ m̂ór̂é l̂ín̂ḱ), r̂éd̂úĉín̂ǵ t̂h́ê ńûḿb̂ér̂ óf̂ ár̂t́îćl̂éŝ śĥóŵń ôń â ǵîv́êń p̂áĝé, b̂ŕêák̂ín̂ǵ ŷóûŕ l̂ón̂ǵ p̂óŝt́ŝ ín̂t́ô ḿûĺt̂íp̂ĺê ṕâǵêś, ôŕ ûśîńĝ á p̂ĺûǵîń t̂ó l̂áẑý-l̂óâd́ ĉóm̂ḿêńt̂ś."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | unminified-css": {
+    "message": "Â ńûḿb̂ér̂ óf̂ [J́ôóm̂ĺâ éx̂t́êńŝíôńŝ](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) ćâń ŝṕêéd̂ úp̂ ýôúr̂ śît́ê b́ŷ ćôńĉát̂én̂át̂ín̂ǵ, m̂ín̂íf̂ýîńĝ, án̂d́ ĉóm̂ṕr̂éŝśîńĝ ýôúr̂ ćŝś ŝt́ŷĺêś. T̂h́êŕê ár̂é âĺŝó t̂ém̂ṕl̂át̂éŝ t́ĥát̂ ṕr̂óv̂íd̂é t̂h́îś f̂ún̂ćt̂íôńâĺît́ŷ."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | unminified-javascript": {
+    "message": "Â ńûḿb̂ér̂ óf̂ [J́ôóm̂ĺâ éx̂t́êńŝíôńŝ](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) ćâń ŝṕêéd̂ úp̂ ýôúr̂ śît́ê b́ŷ ćôńĉát̂én̂át̂ín̂ǵ, m̂ín̂íf̂ýîńĝ, án̂d́ ĉóm̂ṕr̂éŝśîńĝ ýôúr̂ śĉŕîṕt̂ś. T̂h́êŕê ár̂é âĺŝó t̂ém̂ṕl̂át̂éŝ t́ĥát̂ ṕr̂óv̂íd̂é t̂h́îś f̂ún̂ćt̂íôńâĺît́ŷ."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | unused-css-rules": {
+    "message": "Ĉón̂śîd́êŕ r̂éd̂úĉín̂ǵ, ôŕ ŝẃît́ĉh́îńĝ, t́ĥé n̂úm̂b́êŕ ôf́ [Ĵóôḿl̂á êx́t̂én̂śîón̂ś](https://extensions.joomla.org/) l̂óâd́îńĝ ún̂úŝéd̂ ĆŜŚ îń ŷóûŕ p̂áĝé. T̂ó îd́êńt̂íf̂ý êx́t̂én̂śîón̂ś t̂h́ât́ âŕê ád̂d́îńĝ éx̂t́r̂án̂éôúŝ ĆŜŚ, t̂ŕŷ ŕûńn̂ín̂ǵ [ĉód̂é ĉóv̂ér̂áĝé](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) îń Ĉh́r̂óm̂é D̂év̂T́ôól̂ś. Ŷóû ćâń îd́êńt̂íf̂ý t̂h́ê t́ĥém̂é/p̂ĺûǵîń r̂éŝṕôńŝíb̂ĺê f́r̂óm̂ t́ĥé ÛŔL̂ óf̂ t́ĥé ŝt́ŷĺêśĥéêt́. L̂óôḱ ôút̂ f́ôŕ p̂ĺûǵîńŝ t́ĥát̂ h́âv́ê ḿâńŷ śt̂ýl̂éŝh́êét̂ś îń t̂h́ê ĺîśt̂ ẃĥíĉh́ ĥáv̂é â ĺôt́ ôf́ r̂éd̂ ín̂ ćôd́ê ćôv́êŕâǵê. Á p̂ĺûǵîń ŝh́ôúl̂d́ ôńl̂ý êńq̂úêúê á ŝt́ŷĺêśĥéêt́ îf́ ît́ îś âćt̂úâĺl̂ý ûśêd́ ôń t̂h́ê ṕâǵê."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | unused-javascript": {
+    "message": "Ĉón̂śîd́êŕ r̂éd̂úĉín̂ǵ, ôŕ ŝẃît́ĉh́îńĝ, t́ĥé n̂úm̂b́êŕ ôf́ [Ĵóôḿl̂á êx́t̂én̂śîón̂ś](https://extensions.joomla.org/) l̂óâd́îńĝ ún̂úŝéd̂ J́âv́âŚĉŕîṕt̂ ín̂ ýôúr̂ ṕâǵê. T́ô íd̂én̂t́îf́ŷ ṕl̂úĝín̂ś t̂h́ât́ âŕê ád̂d́îńĝ éx̂t́r̂án̂éôúŝ J́Ŝ, t́r̂ý r̂ún̂ńîńĝ [ćôd́ê ćôv́êŕâǵê](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) ín̂ Ćĥŕôḿê D́êv́T̂óôĺŝ. Ýôú ĉán̂ íd̂én̂t́îf́ŷ t́ĥé êx́t̂én̂śîón̂ ŕêśp̂ón̂śîb́l̂é f̂ŕôḿ t̂h́ê ÚR̂Ĺ ôf́ t̂h́ê śĉŕîṕt̂. Ĺôók̂ óût́ f̂ór̂ éx̂t́êńŝíôńŝ t́ĥát̂ h́âv́ê ḿâńŷ śĉŕîṕt̂ś îń t̂h́ê ĺîśt̂ ẃĥíĉh́ ĥáv̂é â ĺôt́ ôf́ r̂éd̂ ín̂ ćôd́ê ćôv́êŕâǵê. Án̂ éx̂t́êńŝíôń ŝh́ôúl̂d́ ôńl̂ý êńq̂úêúê á ŝćr̂íp̂t́ îf́ ît́ îś âćt̂úâĺl̂ý ûśêd́ ôń t̂h́ê ṕâǵê."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-long-cache-ttl": {
+    "message": "R̂éâd́ âb́ôút̂ [B́r̂óŵśêŕ Ĉáĉh́îńĝ ín̂ J́ôóm̂ĺâ](https://docs.joomla.org/Cache)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-optimized-images": {
+    "message": "Ĉón̂śîd́êŕ ûśîńĝ án̂ [ím̂áĝé ôṕt̂ím̂íẑát̂íôń p̂ĺûǵîń](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) t̂h́ât́ ĉóm̂ṕr̂éŝśêś ŷóûŕ îḿâǵêś ŵh́îĺê ŕêt́âín̂ín̂ǵ q̂úâĺît́ŷ."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-responsive-images": {
+    "message": "Ĉón̂śîd́êŕ ûśîńĝ á [r̂éŝṕôńŝív̂é îḿâǵêś p̂ĺûǵîń](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=responsive%20images) t̂ó ûśê ŕêśp̂ón̂śîv́ê ím̂áĝéŝ ín̂ ýôúr̂ ćôńt̂én̂t́."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-text-compression": {
+    "message": "Ŷóû ćâń êńâb́l̂é t̂éx̂t́ ĉóm̂ṕr̂éŝśîón̂ b́ŷ én̂áb̂ĺîńĝ Ǵẑíp̂ Ṕâǵê Ćôḿp̂ŕêśŝíôń îń Ĵóôḿl̂á (Ŝýŝt́êḿ > Ĝĺôb́âĺ ĉón̂f́îǵûŕât́îón̂ > Śêŕv̂ér̂)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-webp-images": {
+    "message": "Ĉón̂śîd́êŕ ûśîńĝ á [p̂ĺûǵîń](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp) ôŕ ŝér̂v́îćê t́ĥát̂ ẃîĺl̂ áût́ôḿât́îćâĺl̂ý ĉón̂v́êŕt̂ ýôúr̂ úp̂ĺôád̂éd̂ ím̂áĝéŝ t́ô t́ĥé ôṕt̂ím̂ál̂ f́ôŕm̂át̂ś."
+  },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | critical-request-chains": {
+    "message": "Îf́ ŷóû ár̂é n̂ót̂ b́ûńd̂ĺîńĝ ýôúr̂ J́âv́âŚĉŕîṕt̂ áŝśêt́ŝ, ćôńŝíd̂ér̂ úŝín̂ǵ [b̂ál̂ér̂](https://github.com/magento/baler)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | disable-bundling": {
+    "message": "D̂íŝáb̂ĺê Ḿâǵêńt̂ó'ŝ b́ûíl̂t́-îń [Ĵáv̂áŜćr̂íp̂t́ b̂ún̂d́l̂ín̂ǵ âńd̂ ḿîńîf́îćât́îón̂](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html), án̂d́ ĉón̂śîd́êŕ ûśîńĝ [b́âĺêŕ](https://github.com/magento/baler/) îńŝt́êád̂."
+  },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | font-display": {
+    "message": "Ŝṕêćîf́ŷ `@font-display` ẃĥén̂ [d́êf́îńîńĝ ćûśt̂óm̂ f́ôńt̂ś](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/css-topics/using-fonts.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | offscreen-images": {
+    "message": "Ĉón̂śîd́êŕ m̂ód̂íf̂ýîńĝ ýôúr̂ ṕr̂ód̂úĉt́ âńd̂ ćât́âĺôǵ t̂ém̂ṕl̂át̂éŝ t́ô ḿâḱê úŝé ôf́ t̂h́ê ẃêb́ p̂ĺât́f̂ór̂ḿ'ŝ [ĺâźŷ ĺôád̂ín̂ǵ](https://web.dev/native-lazy-loading) f̂éât́ûŕê."
+  },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | time-to-first-byte": {
+    "message": "Ûśê Ḿâǵêńt̂ó'ŝ [V́âŕn̂íŝh́ îńt̂éĝŕât́îón̂](https://devdocs.magento.com/guides/v2.3/config-guide/varnish/config-varnish.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | unminified-css": {
+    "message": "Êńâb́l̂é t̂h́ê \"Ḿîńîf́ŷ ĆŜŚ F̂íl̂éŝ\" óp̂t́îón̂ ín̂ ýôúr̂ śt̂ór̂é'ŝ D́êv́êĺôṕêŕ ŝét̂t́îńĝś. [L̂éâŕn̂ ḿôŕê](https://devdocs.magento.com/guides/v2.3/performance-best-practices/configuration.html?itm_source=devdocs&itm_medium=search_page&itm_campaign=federated_search&itm_term=minify%20css%20files)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | unminified-javascript": {
+    "message": "Ûśê [T́êŕŝér̂](https://www.npmjs.com/package/terser) t́ô ḿîńîf́ŷ ál̂ĺ Ĵáv̂áŜćr̂íp̂t́ âśŝét̂ś f̂ŕôḿ ŝt́ât́îć ĉón̂t́êńt̂ d́êṕl̂óŷḿêńt̂, án̂d́ d̂íŝáb̂ĺê t́ĥé b̂úîĺt̂-ín̂ ḿîńîf́îćât́îón̂ f́êát̂úr̂é."
+  },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | unused-javascript": {
+    "message": "D̂íŝáb̂ĺê Ḿâǵêńt̂ó'ŝ b́ûíl̂t́-îń [Ĵáv̂áŜćr̂íp̂t́ b̂ún̂d́l̂ín̂ǵ](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | uses-optimized-images": {
+    "message": "Ĉón̂śîd́êŕ ŝéâŕĉh́îńĝ t́ĥé [M̂áĝén̂t́ô Ḿâŕk̂ét̂ṕl̂áĉé](https://marketplace.magento.com/catalogsearch/result/?q=optimize%20image) f̂ór̂ á v̂ár̂íêt́ŷ óf̂ t́ĥír̂d́ p̂ár̂t́ŷ éx̂t́êńŝíôńŝ t́ô óp̂t́îḿîźê ím̂áĝéŝ."
+  },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preconnect": {
+    "message": "P̂ŕêćôńn̂éĉt́ ôŕ d̂ńŝ-ṕr̂éf̂ét̂ćĥ ŕêśôúr̂ćê h́îńt̂ś ĉán̂ b́ê ád̂d́êd́ b̂ý [m̂ód̂íf̂ýîńĝ á t̂h́êḿêś'ŝ ĺâýôút̂](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
+    "message": "`<link rel=preload>` t̂áĝś ĉán̂ b́ê ád̂d́êd́ b̂ý [m̂ód̂íf̂ýîńĝ á t̂h́êḿêś'ŝ ĺâýôút̂](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
+    "message": "Ĉón̂śîd́êŕ ŝéâŕĉh́îńĝ t́ĥé [M̂áĝén̂t́ô Ḿâŕk̂ét̂ṕl̂áĉé](https://marketplace.magento.com/catalogsearch/result/?q=webp) f̂ór̂ á v̂ár̂íêt́ŷ óf̂ t́ĥír̂d́-p̂ár̂t́ŷ éx̂t́êńŝíôńŝ t́ô ĺêv́êŕâǵê ńêẃêŕ îḿâǵê f́ôŕm̂át̂ś."
+  },
+  "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
+    "message": "Ĉón̂śîd́êŕ ûśîńĝ á “ŵín̂d́ôẃîńĝ” ĺîb́r̂ár̂ý l̂ík̂é `react-window` t̂ó m̂ín̂ím̂íẑé t̂h́ê ńûḿb̂ér̂ óf̂ D́ÔḾ n̂ód̂éŝ ćr̂éât́êd́ îf́ ŷóû ár̂é r̂én̂d́êŕîńĝ ḿâńŷ ŕêṕêát̂éd̂ él̂ém̂én̂t́ŝ ón̂ t́ĥé p̂áĝé. [L̂éâŕn̂ ḿôŕê](https://web.dev/virtualize-long-lists-react-window/). Ál̂śô, ḿîńîḿîźê ún̂ńêćêśŝár̂ý r̂é-r̂én̂d́êŕŝ úŝín̂ǵ [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent), ôŕ [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) âńd̂ [śk̂íp̂ éf̂f́êćt̂ś](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) ôńl̂ý ûńt̂íl̂ ćêŕt̂áîń d̂ép̂én̂d́êńĉíêś ĥáv̂é ĉh́âńĝéd̂ íf̂ ýôú âŕê úŝín̂ǵ t̂h́ê `Effect` h́ôók̂ t́ô ím̂ṕr̂óv̂é r̂ún̂t́îḿê ṕêŕf̂ór̂ḿâńĉé."
+  },
+  "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
+    "message": "Îf́ ŷóû ár̂é ûśîńĝ Ŕêáĉt́ R̂óût́êŕ, m̂ín̂ím̂íẑé ûśâǵê óf̂ t́ĥé `<Redirect>` ĉóm̂ṕôńêńt̂ f́ôŕ [r̂óût́ê ńâv́îǵât́îón̂ś](https://reacttraining.com/react-router/web/api/Redirect)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/react.js | time-to-first-byte": {
+    "message": "Îf́ ŷóû ár̂é ŝér̂v́êŕ-ŝíd̂é r̂én̂d́êŕîńĝ án̂ý R̂éâćt̂ ćôḿp̂ón̂én̂t́ŝ, ćôńŝíd̂ér̂ úŝín̂ǵ `renderToNodeStream()` ôŕ `renderToStaticNodeStream()` t̂ó âĺl̂óŵ t́ĥé ĉĺîén̂t́ t̂ó r̂éĉéîv́ê án̂d́ ĥýd̂ŕât́ê d́îf́f̂ér̂én̂t́ p̂ár̂t́ŝ óf̂ t́ĥé m̂ár̂ḱûṕ îńŝt́êád̂ óf̂ ál̂ĺ ât́ ôńĉé. [L̂éâŕn̂ ḿôŕê](https://reactjs.org/docs/react-dom-server.html#rendertonodestream)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/react.js | unminified-css": {
+    "message": "Îf́ ŷóûŕ b̂úîĺd̂ śŷśt̂ém̂ ḿîńîf́îéŝ ĆŜŚ f̂íl̂éŝ áût́ôḿât́îćâĺl̂ý, êńŝúr̂é t̂h́ât́ ŷóû ár̂é d̂ép̂ĺôýîńĝ t́ĥé p̂ŕôd́ûćt̂íôń b̂úîĺd̂ óf̂ ýôúr̂ áp̂ṕl̂íĉát̂íôń. Ŷóû ćâń ĉh́êćk̂ t́ĥíŝ ẃît́ĥ t́ĥé R̂éâćt̂ D́êv́êĺôṕêŕ T̂óôĺŝ éx̂t́êńŝíôń. [L̂éâŕn̂ ḿôŕê](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/react.js | unminified-javascript": {
+    "message": "Îf́ ŷóûŕ b̂úîĺd̂ śŷśt̂ém̂ ḿîńîf́îéŝ J́Ŝ f́îĺêś âút̂óm̂át̂íĉál̂ĺŷ, én̂śûŕê t́ĥát̂ ýôú âŕê d́êṕl̂óŷín̂ǵ t̂h́ê ṕr̂ód̂úĉt́îón̂ b́ûíl̂d́ ôf́ ŷóûŕ âṕp̂ĺîćât́îón̂. Ýôú ĉán̂ ćĥéĉḱ t̂h́îś ŵít̂h́ t̂h́ê Ŕêáĉt́ D̂év̂él̂óp̂ér̂ T́ôól̂ś êx́t̂én̂śîón̂. [Ĺêár̂ń m̂ór̂é](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/react.js | unused-javascript": {
+    "message": "Îf́ ŷóû ár̂é n̂ót̂ śêŕv̂ér̂-śîd́ê ŕêńd̂ér̂ín̂ǵ, [ŝṕl̂ít̂ ýôúr̂ J́âv́âŚĉŕîṕt̂ b́ûńd̂ĺêś](https://web.dev/code-splitting-suspense/) ŵít̂h́ `React.lazy()`. Ôt́ĥér̂ẃîśê, ćôd́ê-śp̂ĺît́ ûśîńĝ á t̂h́îŕd̂-ṕâŕt̂ý l̂íb̂ŕâŕŷ śûćĥ áŝ [ĺôád̂áb̂ĺê-ćôḿp̂ón̂én̂t́ŝ](https://www.smooth-code.com/open-source/loadable-components/docs/getting-started/)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/react.js | user-timings": {
+    "message": "Ûśê t́ĥé R̂éâćt̂ D́êv́T̂óôĺŝ Ṕr̂óf̂íl̂ér̂, ẃĥíĉh́ m̂ák̂éŝ úŝé ôf́ t̂h́ê Ṕr̂óf̂íl̂ér̂ ÁP̂Í, t̂ó m̂éâśûŕê t́ĥé r̂én̂d́êŕîńĝ ṕêŕf̂ór̂ḿâńĉé ôf́ ŷóûŕ ĉóm̂ṕôńêńt̂ś. [L̂éâŕn̂ ḿôŕê.](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
+    "message": "Ĉón̂śîd́êŕ ûṕl̂óâd́îńĝ ýôúr̂ ǴÎF́ t̂ó â śêŕv̂íĉé ŵh́îćĥ ẃîĺl̂ ḿâḱê ít̂ áv̂áîĺâb́l̂é t̂ó êḿb̂éd̂ áŝ án̂ H́T̂ḾL̂5 v́îd́êó."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | offscreen-images": {
     "message": "Îńŝt́âĺl̂ á [l̂áẑý-l̂óâd́ Ŵór̂d́P̂ŕêśŝ ṕl̂úĝín̂](https://wordpress.org/plugins/search/lazy+load/) t́ĥát̂ ṕr̂óv̂íd̂éŝ t́ĥé âb́îĺît́ŷ t́ô d́êf́êŕ âńŷ óf̂f́ŝćr̂éêń îḿâǵêś, ôŕ ŝẃît́ĉh́ t̂ó â t́ĥém̂é t̂h́ât́ p̂ŕôv́îd́êś t̂h́ât́ f̂ún̂ćt̂íôńâĺît́ŷ. Ál̂śô ćôńŝíd̂ér̂ úŝín̂ǵ [t̂h́ê ÁM̂Ṕ p̂ĺûǵîń](https://wordpress.org/plugins/amp/)."
   },
-  "stack-packs/packs/wordpress.js | render_blocking_resources": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | render-blocking-resources": {
     "message": "T̂h́êŕê ár̂é â ńûḿb̂ér̂ óf̂ Ẃôŕd̂Ṕr̂éŝś p̂ĺûǵîńŝ t́ĥát̂ ćâń ĥél̂ṕ ŷóû [ín̂ĺîńê ćr̂ít̂íĉál̂ áŝśêt́ŝ](https://wordpress.org/plugins/search/critical+css/) ór̂ [d́êf́êŕ l̂éŝś îḿp̂ór̂t́âńt̂ ŕêśôúr̂ćêś](https://wordpress.org/plugins/search/defer+css+javascript/). B̂éŵár̂é t̂h́ât́ ôṕt̂ím̂íẑát̂íôńŝ ṕr̂óv̂íd̂éd̂ b́ŷ t́ĥéŝé p̂ĺûǵîńŝ ḿâý b̂ŕêák̂ f́êát̂úr̂éŝ óf̂ ýôúr̂ t́ĥém̂é ôŕ p̂ĺûǵîńŝ, śô ýôú ŵíl̂ĺ l̂ík̂él̂ý n̂éêd́ t̂ó m̂ák̂é ĉód̂é ĉh́âńĝéŝ."
   },
-  "stack-packs/packs/wordpress.js | server_response_time": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | time-to-first-byte": {
     "message": "T̂h́êḿêś, p̂ĺûǵîńŝ, án̂d́ ŝér̂v́êŕ ŝṕêćîf́îćât́îón̂ś âĺl̂ ćôńt̂ŕîb́ût́ê t́ô śêŕv̂ér̂ ŕêśp̂ón̂śê t́îḿê. Ćôńŝíd̂ér̂ f́îńd̂ín̂ǵ â ḿôŕê óp̂t́îḿîźêd́ t̂h́êḿê, ćâŕêf́ûĺl̂ý ŝél̂éĉt́îńĝ án̂ óp̂t́îḿîźât́îón̂ ṕl̂úĝín̂, án̂d́/ôŕ ûṕĝŕâd́îńĝ ýôúr̂ śêŕv̂ér̂."
   },
-  "stack-packs/packs/wordpress.js | total_byte_weight": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | total-byte-weight": {
     "message": "Ĉón̂śîd́êŕ ŝh́ôẃîńĝ éx̂ćêŕp̂t́ŝ ín̂ ýôúr̂ ṕôśt̂ ĺîśt̂ś (ê.ǵ. v̂íâ t́ĥé m̂ór̂é t̂áĝ), ŕêd́ûćîńĝ t́ĥé n̂úm̂b́êŕ ôf́ p̂óŝt́ŝ śĥóŵń ôń â ǵîv́êń p̂áĝé, b̂ŕêák̂ín̂ǵ ŷóûŕ l̂ón̂ǵ p̂óŝt́ŝ ín̂t́ô ḿûĺt̂íp̂ĺê ṕâǵêś, ôŕ ûśîńĝ á p̂ĺûǵîń t̂ó l̂áẑý-l̂óâd́ ĉóm̂ḿêńt̂ś."
   },
-  "stack-packs/packs/wordpress.js | unminified_css": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | unminified-css": {
     "message": "Â ńûḿb̂ér̂ óf̂ [Ẃôŕd̂Ṕr̂éŝś p̂ĺûǵîńŝ](https://wordpress.org/plugins/search/minify+css/) ćâń ŝṕêéd̂ úp̂ ýôúr̂ śît́ê b́ŷ ćôńĉát̂én̂át̂ín̂ǵ, m̂ín̂íf̂ýîńĝ, án̂d́ ĉóm̂ṕr̂éŝśîńĝ ýôúr̂ śt̂ýl̂éŝ. Ýôú m̂áŷ ál̂śô ẃâńt̂ t́ô úŝé â b́ûíl̂d́ p̂ŕôćêśŝ t́ô d́ô t́ĥíŝ ḿîńîf́îćât́îón̂ úp̂-f́r̂ón̂t́ îf́ p̂óŝśîb́l̂é."
   },
-  "stack-packs/packs/wordpress.js | unminified_javascript": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | unminified-javascript": {
     "message": "Â ńûḿb̂ér̂ óf̂ [Ẃôŕd̂Ṕr̂éŝś p̂ĺûǵîńŝ](https://wordpress.org/plugins/search/minify+javascript/) ćâń ŝṕêéd̂ úp̂ ýôúr̂ śît́ê b́ŷ ćôńĉát̂én̂át̂ín̂ǵ, m̂ín̂íf̂ýîńĝ, án̂d́ ĉóm̂ṕr̂éŝśîńĝ ýôúr̂ śĉŕîṕt̂ś. Ŷóû ḿâý âĺŝó ŵán̂t́ t̂ó ûśê á b̂úîĺd̂ ṕr̂óĉéŝś t̂ó d̂ó t̂h́îś m̂ín̂íf̂íĉát̂íôń ûṕ f̂ŕôńt̂ íf̂ ṕôśŝíb̂ĺê."
   },
-  "stack-packs/packs/wordpress.js | unused_css_rules": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | unused-css-rules": {
     "message": "Ĉón̂śîd́êŕ r̂éd̂úĉín̂ǵ, ôŕ ŝẃît́ĉh́îńĝ, t́ĥé n̂úm̂b́êŕ ôf́ [Ŵór̂d́P̂ŕêśŝ ṕl̂úĝín̂ś](https://wordpress.org/plugins/) l̂óâd́îńĝ ún̂úŝéd̂ ĆŜŚ îń ŷóûŕ p̂áĝé. T̂ó îd́êńt̂íf̂ý p̂ĺûǵîńŝ t́ĥát̂ ár̂é âd́d̂ín̂ǵ êx́t̂ŕâńêóûś ĈŚŜ, t́r̂ý r̂ún̂ńîńĝ [ćôd́ê ćôv́êŕâǵê](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) ín̂ Ćĥŕôḿê D́êv́T̂óôĺŝ. Ýôú ĉán̂ íd̂én̂t́îf́ŷ t́ĥé t̂h́êḿê/ṕl̂úĝín̂ ŕêśp̂ón̂śîb́l̂é f̂ŕôḿ t̂h́ê ÚR̂Ĺ ôf́ t̂h́ê śt̂ýl̂éŝh́êét̂. Ĺôók̂ óût́ f̂ór̂ ṕl̂úĝín̂ś t̂h́ât́ ĥáv̂é m̂án̂ý ŝt́ŷĺêśĥéêt́ŝ ín̂ t́ĥé l̂íŝt́ ŵh́îćĥ h́âv́ê á l̂ót̂ óf̂ ŕêd́ îń ĉód̂é ĉóv̂ér̂áĝé. Â ṕl̂úĝín̂ śĥóûĺd̂ ón̂ĺŷ én̂q́ûéûé â śt̂ýl̂éŝh́êét̂ íf̂ ít̂ íŝ áĉt́ûál̂ĺŷ úŝéd̂ ón̂ t́ĥé p̂áĝé."
   },
-  "stack-packs/packs/wordpress.js | unused_javascript": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | unused-javascript": {
     "message": "Ĉón̂śîd́êŕ r̂éd̂úĉín̂ǵ, ôŕ ŝẃît́ĉh́îńĝ, t́ĥé n̂úm̂b́êŕ ôf́ [Ŵór̂d́P̂ŕêśŝ ṕl̂úĝín̂ś](https://wordpress.org/plugins/) l̂óâd́îńĝ ún̂úŝéd̂ J́âv́âŚĉŕîṕt̂ ín̂ ýôúr̂ ṕâǵê. T́ô íd̂én̂t́îf́ŷ ṕl̂úĝín̂ś t̂h́ât́ âŕê ád̂d́îńĝ éx̂t́r̂án̂éôúŝ J́Ŝ, t́r̂ý r̂ún̂ńîńĝ [ćôd́ê ćôv́êŕâǵê](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) ín̂ Ćĥŕôḿê D́êv́T̂óôĺŝ. Ýôú ĉán̂ íd̂én̂t́îf́ŷ t́ĥé t̂h́êḿê/ṕl̂úĝín̂ ŕêśp̂ón̂śîb́l̂é f̂ŕôḿ t̂h́ê ÚR̂Ĺ ôf́ t̂h́ê śĉŕîṕt̂. Ĺôók̂ óût́ f̂ór̂ ṕl̂úĝín̂ś t̂h́ât́ ĥáv̂é m̂án̂ý ŝćr̂íp̂t́ŝ ín̂ t́ĥé l̂íŝt́ ŵh́îćĥ h́âv́ê á l̂ót̂ óf̂ ŕêd́ îń ĉód̂é ĉóv̂ér̂áĝé. Â ṕl̂úĝín̂ śĥóûĺd̂ ón̂ĺŷ én̂q́ûéûé â śĉŕîṕt̂ íf̂ ít̂ íŝ áĉt́ûál̂ĺŷ úŝéd̂ ón̂ t́ĥé p̂áĝé."
   },
-  "stack-packs/packs/wordpress.js | uses_long_cache_ttl": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-long-cache-ttl": {
     "message": "R̂éâd́ âb́ôút̂ [B́r̂óŵśêŕ Ĉáĉh́îńĝ ín̂ Ẃôŕd̂Ṕr̂éŝś](https://wordpress.org/support/article/optimization/#browser-caching)."
   },
-  "stack-packs/packs/wordpress.js | uses_optimized_images": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-optimized-images": {
     "message": "Ĉón̂śîd́êŕ ûśîńĝ án̂ [ím̂áĝé ôṕt̂ím̂íẑát̂íôń Ŵór̂d́P̂ŕêśŝ ṕl̂úĝín̂](https://wordpress.org/plugins/search/optimize+images/) t́ĥát̂ ćôḿp̂ŕêśŝéŝ ýôúr̂ ím̂áĝéŝ ẃĥíl̂é r̂ét̂áîńîńĝ q́ûál̂ít̂ý."
   },
-  "stack-packs/packs/wordpress.js | uses_responsive_images": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-responsive-images": {
     "message": "Ûṕl̂óâd́ îḿâǵêś d̂ír̂éĉt́l̂ý t̂h́r̂óûǵĥ t́ĥé [m̂éd̂íâ ĺîb́r̂ár̂ý](https://wordpress.org/support/article/media-library-screen/) t̂ó êńŝúr̂é t̂h́ât́ t̂h́ê ŕêq́ûír̂éd̂ ím̂áĝé ŝíẑéŝ ár̂é âv́âíl̂áb̂ĺê, án̂d́ t̂h́êń îńŝér̂t́ t̂h́êḿ f̂ŕôḿ t̂h́ê ḿêd́îá l̂íb̂ŕâŕŷ ór̂ úŝé t̂h́ê ím̂áĝé ŵíd̂ǵêt́ t̂ó êńŝúr̂é t̂h́ê óp̂t́îḿâĺ îḿâǵê śîźêś âŕê úŝéd̂ (ín̂ćl̂úd̂ín̂ǵ t̂h́ôśê f́ôŕ t̂h́ê ŕêśp̂ón̂śîv́ê b́r̂éâḱp̂óîńt̂ś). Âv́ôíd̂ úŝín̂ǵ `Full Size` îḿâǵêś ûńl̂éŝś t̂h́ê d́îḿêńŝíôńŝ ár̂é âd́êq́ûát̂é f̂ór̂ t́ĥéîŕ ûśâǵê. [Ĺêár̂ń M̂ór̂é](https://wordpress.org/support/article/inserting-images-into-posts-and-pages/)."
   },
-  "stack-packs/packs/wordpress.js | uses_text_compression": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "Ŷóû ćâń êńâb́l̂é t̂éx̂t́ ĉóm̂ṕr̂éŝśîón̂ ín̂ ýôúr̂ ẃêb́ ŝér̂v́êŕ ĉón̂f́îǵûŕât́îón̂."
   },
-  "stack-packs/packs/wordpress.js | uses_webp_images": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-webp-images": {
     "message": "Ĉón̂śîd́êŕ ûśîńĝ á [p̂ĺûǵîń](https://wordpress.org/plugins/search/convert+webp/) ôŕ ŝér̂v́îćê t́ĥát̂ ẃîĺl̂ áût́ôḿât́îćâĺl̂ý ĉón̂v́êŕt̂ ýôúr̂ úp̂ĺôád̂éd̂ ím̂áĝéŝ t́ô t́ĥé ôṕt̂ím̂ál̂ f́ôŕm̂át̂ś."
   }
 }

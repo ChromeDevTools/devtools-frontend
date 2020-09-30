@@ -27,7 +27,6 @@ first-cpu-idle
 first-meaningful-paint
 font-display
 interactive
-large-javascript-libraries
 largest-contentful-paint
 largest-contentful-paint-element
 layout-shift-elements
@@ -56,6 +55,7 @@ total-blocking-time
 total-byte-weight
 unminified-css
 unminified-javascript
+unsized-images
 unused-css-rules
 unused-javascript
 user-timings

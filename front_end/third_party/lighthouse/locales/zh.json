@@ -383,6 +383,33 @@
   "lighthouse-core/audits/apple-touch-icon.js | title": {
     "message": "提供了有效的 `apple-touch-icon`"
   },
+  "lighthouse-core/audits/autocomplete.js | columnCurrent": {
+    "message": "Current Value"
+  },
+  "lighthouse-core/audits/autocomplete.js | columnSuggestions": {
+    "message": "Suggested Token"
+  },
+  "lighthouse-core/audits/autocomplete.js | description": {
+    "message": "`autocomplete` helps users submit forms quicker. To reduce user effort, consider enabling by setting the `autocomplete` attribute to a valid value. [Learn more](https://developers.google.com/web/fundamentals/design-and-ux/input/forms#use_metadata_to_enable_auto-complete)"
+  },
+  "lighthouse-core/audits/autocomplete.js | failureTitle": {
+    "message": "`<input>` elements do not have correct `autocomplete` attributes"
+  },
+  "lighthouse-core/audits/autocomplete.js | manualReview": {
+    "message": "需要人工审核"
+  },
+  "lighthouse-core/audits/autocomplete.js | reviewOrder": {
+    "message": "请检查令牌的顺序"
+  },
+  "lighthouse-core/audits/autocomplete.js | title": {
+    "message": "`<input>` elements correctly use `autocomplete`"
+  },
+  "lighthouse-core/audits/autocomplete.js | warningInvalid": {
+    "message": "`autocomplete` token(s): \"{token}\" is invalid in {snippet}"
+  },
+  "lighthouse-core/audits/autocomplete.js | warningOrder": {
+    "message": "检查令牌的顺序：{snippet} 中的“{tokens}”"
+  },
   "lighthouse-core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Chrome 扩展程序对此网页的加载性能产生了负面影响。请尝试在无痕模式下或使用未安装这些扩展程序的 Chrome 个人资料审核此网页。"
   },
@@ -558,7 +585,7 @@
     "message": "请勿使用应用缓存"
   },
   "lighthouse-core/audits/dobetterweb/charset.js | description": {
-    "message": "必须声明字符编码。您可以在 HTML 的前 1024 个字节中使用 <meta> 标记来声明，也可以在 HTTP 响应标头 Content-Type 中进行声明。[了解详情](https://web.dev/charset/)。"
+    "message": "A character encoding declaration is required. It can be done with a `<meta>` tag in the first 1024 bytes of the HTML or in the Content-Type HTTP response header. [Learn more](https://web.dev/charset/)."
   },
   "lighthouse-core/audits/dobetterweb/charset.js | failureTitle": {
     "message": "字符集声明缺失，或者在 HTML 中出现得太晚"
@@ -807,7 +834,7 @@
     "message": "对请求的处理方式"
   },
   "lighthouse-core/audits/is-on-https.js | description": {
-    "message": "所有网站都应该通过 HTTPS 来保护，即使网站不处理敏感数据，也应如此。这包括要避免使用[混合内容](https://developers.google.com/web/fundamentals/security/prevent-mixed-content/what-is-mixed-content)，即通过 HTTPS 实现初始请求，但却通过 HTTP 加载某些资源。HTTPS 可防止入侵程序篡改或被动地监听您的应用与用户之间的通信，它是 HTTP/2 和许多新的网络平台 API 的先决条件。[了解详情](https://web.dev/is-on-https/)。"
+    "message": "All sites should be protected with HTTPS, even ones that don't handle sensitive data. This includes avoiding [mixed content](https://developers.google.com/web/fundamentals/security/prevent-mixed-content/what-is-mixed-content), where some resources are loaded over HTTP despite the initial request being served over HTTPS. HTTPS prevents intruders from tampering with or passively listening in on the communications between your app and your users, and is a prerequisite for HTTP/2 and many new web platform APIs. [Learn more](https://web.dev/is-on-https/)."
   },
   "lighthouse-core/audits/is-on-https.js | displayValue": {
     "message": "{itemCount,plural, =1{发现 1 条不安全的请求}other{发现 # 条不安全的请求}}"
@@ -823,6 +850,21 @@
   },
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "允许（附带警告）"
+  },
+  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
+    "message": "库"
+  },
+  "lighthouse-core/audits/large-javascript-libraries.js | description": {
+    "message": "大型 JavaScript 库可能会导致性能不佳。最好使用功能相当且规模较小的 JavaScript 库，以缩减软件包大小。[了解详情](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)。"
+  },
+  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
+    "message": "{libraryCount,plural, =1{发现了 1 个大型库}other{发现了 # 个大型库}}"
+  },
+  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
+    "message": "替换不必要的大型 JavaScript 库"
+  },
+  "lighthouse-core/audits/large-javascript-libraries.js | title": {
+    "message": "请避免使用大型 JavaScript 库，尽量用功能相当且规模较小的库替换"
   },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "这是此视口内渲染的最大内容元素。[了解详情](https://web.dev/lighthouse-largest-contentful-paint/)"
@@ -956,6 +998,33 @@
   "lighthouse-core/audits/no-unload-listeners.js | title": {
     "message": "避免使用“`unload`”事件监听器"
   },
+  "lighthouse-core/audits/non-composited-animations.js | description": {
+    "message": "未合成的动画可能会卡顿并增加 CLS。[了解详情](https://web.dev/non-composited-animations)"
+  },
+  "lighthouse-core/audits/non-composited-animations.js | displayValue": {
+    "message": "{itemCount,plural, =1{发现了 # 个动画元素}other{发现了 # 个动画元素}}"
+  },
+  "lighthouse-core/audits/non-composited-animations.js | filterMayMovePixels": {
+    "message": "某个过滤相关属性可能会移动像素"
+  },
+  "lighthouse-core/audits/non-composited-animations.js | incompatibleAnimations": {
+    "message": "目标中另有一个不兼容的动画"
+  },
+  "lighthouse-core/audits/non-composited-animations.js | nonReplaceCompositeMode": {
+    "message": "效果中含有除了“replace”以外的合成模式"
+  },
+  "lighthouse-core/audits/non-composited-animations.js | title": {
+    "message": "避免使用未合成的动画"
+  },
+  "lighthouse-core/audits/non-composited-animations.js | transformDependsBoxSize": {
+    "message": "某个转换相关属性取决于元素边界框的大小"
+  },
+  "lighthouse-core/audits/non-composited-animations.js | unsupportedCSSProperty": {
+    "message": "{propertyCount,plural, =1{不受支持的 CSS 属性：{properties}}other{不受支持的 CSS 属性：{properties}}}"
+  },
+  "lighthouse-core/audits/non-composited-animations.js | unsupportedTimingParameters": {
+    "message": "效果含有不受支持的时间参数"
+  },
   "lighthouse-core/audits/offline-start-url.js | description": {
     "message": "Service Worker 可让您的 Web 应用在无法预测的网络状况下正常运行。[了解详情](https://web.dev/offline-start-url/)。"
   },
@@ -979,6 +1048,15 @@
   },
   "lighthouse-core/audits/performance-budget.js | title": {
     "message": "性能预算"
+  },
+  "lighthouse-core/audits/preload-fonts.js | description": {
+    "message": "请预加载 `optional` 字体以方便初访者使用。[了解详情](https://web.dev/preload-optional-fonts/)"
+  },
+  "lighthouse-core/audits/preload-fonts.js | failureTitle": {
+    "message": "未预加载使用 `font-display: optional` 的字体"
+  },
+  "lighthouse-core/audits/preload-fonts.js | title": {
+    "message": "已预加载使用 `font-display: optional` 的字体"
   },
   "lighthouse-core/audits/redirects-http.js | description": {
     "message": "如果您已设置 HTTPS，请确保将所有 HTTP 流量重定向到 HTTPS，以便让所有用户都能使用安全的网络功能。[了解详情](https://web.dev/redirects-http/)。"
@@ -1043,6 +1121,18 @@
   "lighthouse-core/audits/seo/crawlable-anchors.js | title": {
     "message": "链接都是可抓取的"
   },
+  "lighthouse-core/audits/seo/font-size.js | additionalIllegibleText": {
+    "message": "其他无法辨认的文字"
+  },
+  "lighthouse-core/audits/seo/font-size.js | columnFontSize": {
+    "message": "字号"
+  },
+  "lighthouse-core/audits/seo/font-size.js | columnPercentPageText": {
+    "message": "网页文本百分比"
+  },
+  "lighthouse-core/audits/seo/font-size.js | columnSelector": {
+    "message": "选择器"
+  },
   "lighthouse-core/audits/seo/font-size.js | description": {
     "message": "12px 以下的字体过小，会导致用户无法辨认；此外，这样的字体需要移动设备访问者“张合双指进行缩放”才能阅读。请尽量让 60% 以上的页面文字不小于 12px。[了解详情](https://web.dev/font-size/)。"
   },
@@ -1054,6 +1144,9 @@
   },
   "lighthouse-core/audits/seo/font-size.js | failureTitle": {
     "message": "文档未使用清晰可辨的字体大小"
+  },
+  "lighthouse-core/audits/seo/font-size.js | legibleText": {
+    "message": "清晰可辨的文字"
   },
   "lighthouse-core/audits/seo/font-size.js | title": {
     "message": "文档所用的字体大小清晰可辨"
@@ -1235,6 +1328,9 @@
   "lighthouse-core/audits/third-party-summary.js | failureTitle": {
     "message": "降低第三方代码的影响"
   },
+  "lighthouse-core/audits/third-party-summary.js | otherValue": {
+    "message": "其他资源"
+  },
   "lighthouse-core/audits/third-party-summary.js | title": {
     "message": "尽量减少第三方使用"
   },
@@ -1251,7 +1347,7 @@
     "message": "时间预算"
   },
   "lighthouse-core/audits/unsized-images.js | description": {
-    "message": "请务必为图片元素添加明确的宽度值和高度值，以减少布局偏移并改善 CLS。[了解详情](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "请为图片元素设置明确的宽度值和高度值，以减少布局偏移并改善 CLS。[了解详情](https://web.dev/optimize-cls/#images-without-dimensions)"
   },
   "lighthouse-core/audits/unsized-images.js | failureTitle": {
     "message": "图片元素没有明确的`width`和`height`"
@@ -1272,7 +1368,7 @@
     "message": "User Timing 标记和测量结果"
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | crossoriginWarning": {
-    "message": "发现了“{securityOrigin}”的预连接 <link>，但浏览器未使用该连接。请检查并确保您正确地使用了 `crossorigin` 属性。"
+    "message": "A `<link rel=preconnect>` was found for \"{securityOrigin}\" but was not used by the browser. Check that you are using the `crossorigin` attribute properly."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | description": {
     "message": "建议添加 `preconnect` 或 `dns-prefetch` 资源提示，以尽早与重要的第三方来源建立连接。[了解详情](https://web.dev/uses-rel-preconnect/)。"
@@ -1281,16 +1377,37 @@
     "message": "预先连接到必要的来源"
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | tooManyPreconnectLinksWarning": {
-    "message": "发现了不止 2 个预连接链接。预连接链接应尽量少用，且应仅用于指向最重要的来源。"
+    "message": "More than 2 `<link rel=preconnect>` connections were found. These should be used sparingly and only to the most important origins."
+  },
+  "lighthouse-core/audits/uses-rel-preconnect.js | unusedWarning": {
+    "message": "A `<link rel=preconnect>` was found for \"{securityOrigin}\" but was not used by the browser. Only use `preconnect` for important origins that the page will certainly request."
   },
   "lighthouse-core/audits/uses-rel-preload.js | crossoriginWarning": {
-    "message": "发现了“{preloadURL}”的预加载 <link>，但浏览器未使用该链接。请检查并确保您正确地使用了 `crossorigin` 属性。"
+    "message": "A preload `<link>` was found for \"{preloadURL}\" but was not used by the browser. Check that you are using the `crossorigin` attribute properly."
   },
   "lighthouse-core/audits/uses-rel-preload.js | description": {
     "message": "建议使用 `<link rel=preload>` 来优先提取当前在网页加载后期请求的资源。[了解详情](https://web.dev/uses-rel-preload/)。"
   },
   "lighthouse-core/audits/uses-rel-preload.js | title": {
     "message": "预加载关键请求"
+  },
+  "lighthouse-core/audits/valid-source-maps.js | columnMapURL": {
+    "message": "映射网址"
+  },
+  "lighthouse-core/audits/valid-source-maps.js | description": {
+    "message": "源代码映射会将缩减了大小的代码转换成原始源代码。这有助于开发者在正式版中调试。此外，Lighthouse 还能提供进一步的数据分析。您不妨考虑部署源代码映射以充分利用这些好处。[了解详情](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)。"
+  },
+  "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
+    "message": "大型第一方 JavaScript 缺少源代码映射"
+  },
+  "lighthouse-core/audits/valid-source-maps.js | missingSourceMapErrorMessage": {
+    "message": "大型 JavaScript 文件缺少源代码映射"
+  },
+  "lighthouse-core/audits/valid-source-maps.js | missingSourceMapItemsWarningMesssage": {
+    "message": "{missingItems,plural, =1{警告：`.sourcesContent` 中缺少 1 项内容}other{警告：`.sourcesContent` 中缺少 # 项内容}}"
+  },
+  "lighthouse-core/audits/valid-source-maps.js | title": {
+    "message": "页面包含有效的源代码映射"
   },
   "lighthouse-core/audits/viewport.js | description": {
     "message": "添加 `<meta name=\"viewport\">` 标记以针对移动设备屏幕优化您的应用。[了解详情](https://web.dev/viewport/)。"
@@ -1547,6 +1664,9 @@
   "lighthouse-core/lib/i18n/i18n.js | displayValueByteSavings": {
     "message": "有望节省 {wastedBytes, number, bytes} KiB"
   },
+  "lighthouse-core/lib/i18n/i18n.js | displayValueElementsFound": {
+    "message": "{nodeCount,plural, =1{发现了 1 个元素}other{发现了 # 个元素}}"
+  },
   "lighthouse-core/lib/i18n/i18n.js | displayValueMsSavings": {
     "message": "有望节省 {wastedMs, number, milliseconds} 毫秒"
   },
@@ -1742,6 +1862,9 @@
   "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
     "message": "无模拟"
   },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsAxeVersion": {
+    "message": "Axe 版本"
+  },
   "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
     "message": "CPU/内存能力"
   },
@@ -1799,139 +1922,226 @@
   "lighthouse-core/report/html/renderer/util.js | warningHeader": {
     "message": "警告： "
   },
-  "stack-packs/packs/amp.js | efficient_animated_content": {
-    "message": "对于动画内容，请使用 [amp-anim](https://amp.dev/documentation/components/amp-anim/) 以尽量降低内容在屏幕外时的 CPU 使用量。"
+  "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
+    "message": "For animated content, use [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) to minimize CPU usage when the content is offscreen."
   },
-  "stack-packs/packs/amp.js | offscreen_images": {
-    "message": "确保您对图片使用了有效的 `amp-img` 标记，以便在第一个视口外自动延迟加载。[了解详情](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)。"
+  "node_modules/lighthouse-stack-packs/packs/amp.js | offscreen-images": {
+    "message": "Ensure that you are using [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) for images to automatically lazy-load. [Learn more](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)."
   },
-  "stack-packs/packs/amp.js | render_blocking_resources": {
-    "message": "使用 [AMP Optimizer](https://github.com/ampproject/amp-toolbox/tree/main/packages/optimizer) 之类的工具[在服务器端呈现 AMP 布局](https://amp.dev/documentation/guides-and-tutorials/optimize-and-measure/server-side-rendering/)。"
+  "node_modules/lighthouse-stack-packs/packs/amp.js | render-blocking-resources": {
+    "message": "使用 [AMP Optimizer](https://github.com/ampproject/amp-toolbox/tree/master/packages/optimizer) 之类的工具[在服务器端呈现 AMP 布局](https://amp.dev/documentation/guides-and-tutorials/optimize-and-measure/server-side-rendering/)。"
   },
-  "stack-packs/packs/amp.js | unminified_css": {
-    "message": "请参阅 [AMP 文档](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/style_pages/)以确保您的所有样式均受支持。"
+  "node_modules/lighthouse-stack-packs/packs/amp.js | unminified-css": {
+    "message": "Refer to the [AMP documentation](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/style_pages/) to ensure all styles are supported."
   },
-  "stack-packs/packs/amp.js | uses_responsive_images": {
-    "message": "`amp-img` 元素支持 `srcset` 属性，以便系统根据屏幕尺寸指定要使用的图片资源。[了解详情](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/art_direction/)。"
+  "node_modules/lighthouse-stack-packs/packs/amp.js | uses-responsive-images": {
+    "message": "The [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) component supports the [`srcset`](https://web.dev/use-srcset-to-automatically-choose-the-right-image/) attribute to specify which image assets to use based on the screen size. [Learn more](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/art_direction/)."
   },
-  "stack-packs/packs/amp.js | uses_webp_images": {
-    "message": "您不妨既以 WebP 格式显示所有 `amp-img` 组件，也为其他浏览器指定适当的后备图片。[了解详情](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)。"
+  "node_modules/lighthouse-stack-packs/packs/amp.js | uses-webp-images": {
+    "message": "Consider displaying all [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) components in WebP formats while specifying an appropriate fallback for other browsers. [Learn more](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)."
   },
-  "stack-packs/packs/angular.js | dom_size": {
+  "node_modules/lighthouse-stack-packs/packs/angular.js | dom-size": {
     "message": "如果要呈现的列表非常大，您不妨使用 Component Dev Kit (CDK) 进行虚拟滚动。[了解详情](https://web.dev/virtualize-lists-with-angular-cdk/)。"
   },
-  "stack-packs/packs/angular.js | total_byte_weight": {
-    "message": "采用[路径级代码拆分](https://web.dev/route-level-code-splitting-in-angular/)，以尽量压缩 JavaScript 软件包的大小。您也可考虑使用 [Angular Service Worker](https://web.dev/precaching-with-the-angular-service-worker/) 预缓存资源。"
+  "node_modules/lighthouse-stack-packs/packs/angular.js | total-byte-weight": {
+    "message": "Apply [route-level code splitting](https://web.dev/route-level-code-splitting-in-angular/) to minimize the size of your JavaScript bundles. Also, consider precaching assets with the [Angular service worker](https://web.dev/precaching-with-the-angular-service-worker/)."
   },
-  "stack-packs/packs/angular.js | unminified_warning": {
+  "node_modules/lighthouse-stack-packs/packs/angular.js | unminified-warning": {
     "message": "如果您使用的是 Angular CLI，请确保在正式版模式下生成版本。[了解详情](https://angular.io/guide/deployment#enable-runtime-production-mode)。"
   },
-  "stack-packs/packs/angular.js | unused_javascript": {
-    "message": "如果您使用的是 Angular CLI，请在正式版中添加源代码映射以检查您的软件包。[了解详情](https://angular.io/guide/deployment#inspect-the-bundles)。"
+  "node_modules/lighthouse-stack-packs/packs/angular.js | unused-javascript": {
+    "message": "If you are using Angular CLI, include source maps in your production build to inspect your bundles. [Learn more](https://angular.io/guide/deployment#inspect-the-bundles)."
   },
-  "stack-packs/packs/angular.js | uses_rel_preload": {
+  "node_modules/lighthouse-stack-packs/packs/angular.js | uses-rel-preload": {
     "message": "提前预加载路径以加快导航速度。[了解详情](https://web.dev/route-preloading-in-angular/)。"
   },
-  "stack-packs/packs/angular.js | uses_responsive_images": {
+  "node_modules/lighthouse-stack-packs/packs/angular.js | uses-responsive-images": {
     "message": "您不妨使用 Component Dev Kit (CDK) 中的 `BreakpointObserver` 实用程序管理映像断点。[了解详情](https://material.angular.io/cdk/layout/overview)。"
   },
-  "stack-packs/packs/magento.js | critical_request_chains": {
-    "message": "如果您没有捆绑 JavaScript 资源，不妨使用 [baler](https://github.com/magento/baler)。"
-  },
-  "stack-packs/packs/magento.js | disable_bundling": {
-    "message": "停用 Magento 内置的 [JavaScript 捆绑和缩减](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html)功能，并考虑改用 [baler](https://github.com/magento/baler/)。"
-  },
-  "stack-packs/packs/magento.js | font_display": {
-    "message": "在[定义自定义字体](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/css-topics/using-fonts.html)时指定 `@font-display`。"
-  },
-  "stack-packs/packs/magento.js | offscreen_images": {
-    "message": "您不妨修改产品和目录模板，以利用这一网络平台的[延迟加载](https://web.dev/native-lazy-loading/)功能。"
-  },
-  "stack-packs/packs/magento.js | server_response_time": {
-    "message": "使用 Magento 的 [Varnish 集成](https://devdocs.magento.com/guides/v2.3/config-guide/varnish/config-varnish.html)。"
-  },
-  "stack-packs/packs/magento.js | unminified_css": {
-    "message": "在您商店的开发者设置中启用“Minify CSS Files”选项。[了解详情](https://devdocs.magento.com/guides/v2.3/performance-best-practices/configuration.html?itm_source=devdocs&itm_medium=search_page&itm_campaign=federated_search&itm_term=minify%20css%20files)。"
-  },
-  "stack-packs/packs/magento.js | unminified_javascript": {
-    "message": "使用 [Terser](https://www.npmjs.com/package/terser) 缩减静态内容部署中的所有 JavaScript 资源，并停用内置的缩减功能。"
-  },
-  "stack-packs/packs/magento.js | unused_javascript": {
-    "message": "停用 Magento 内置的 [JavaScript 捆绑](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html)功能。"
-  },
-  "stack-packs/packs/magento.js | uses_optimized_images": {
-    "message": "您不妨在 [Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=optimize%20image) 中搜索各种第三方扩展程序，以便优化图片。"
-  },
-  "stack-packs/packs/magento.js | uses_rel_preconnect": {
-    "message": "您可以通过[修改主题背景的布局](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)来添加 preconnect 或 dns-prefetch 资源提示。"
-  },
-  "stack-packs/packs/magento.js | uses_rel_preload": {
-    "message": "您可以通过[修改主题背景的布局](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)来添加 `<link rel=preload>` 标记。"
-  },
-  "stack-packs/packs/magento.js | uses_webp_images": {
-    "message": "您不妨在 [Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=webp) 中搜索各种第三方扩展程序，以利用更新的图片格式。"
-  },
-  "stack-packs/packs/react.js | dom_size": {
-    "message": "如果您要在页面上呈现很多重复元素，不妨使用“windowing”库（如 `react-window`）以尽量减少所创建的 DOM 节点数。[了解详情](https://web.dev/virtualize-long-lists-react-window/)。此外，如果您使用 Effect 钩子提高运行时性能，则还要使用 [shouldComponentUpdate](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action)、[PureComponent](https://reactjs.org/docs/react-api.html#reactpurecomponent) 或 [React.memo](https://reactjs.org/docs/react-api.html#reactmemo) 及[跳过效果](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects)以尽量减少不必要的重复呈现，直到某些依赖项发生更改为止。"
-  },
-  "stack-packs/packs/react.js | redirects": {
-    "message": "如果您使用了 React Router，请尽量避免使用 `<Redirect>` 组件进行[路径导航](https://reacttraining.com/react-router/web/api/Redirect)。"
-  },
-  "stack-packs/packs/react.js | server_response_time": {
-    "message": "如果您在服务器端呈现任何 React 组件，不妨使用 `renderToNodeStream()` 或 `renderToStaticNodeStream()` 来允许客户端接收并合成标记的各个不同部分，而不是一次性接收整个标记。[了解详情](https://reactjs.org/docs/react-dom-server.html#rendertonodestream)。"
-  },
-  "stack-packs/packs/react.js | unminified_css": {
-    "message": "如果您的编译系统可自动压缩 CSS 文件大小，请确保您部署的是正式版应用。您可以通过 React Developer Tools 扩展程序执行此项检查。[了解详情](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)。"
-  },
-  "stack-packs/packs/react.js | unminified_javascript": {
-    "message": "如果您的编译系统可自动压缩 JS 文件大小，请确保您部署的是正式版应用。您可以通过 React Developer Tools 扩展程序执行此项检查。[了解详情](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)。"
-  },
-  "stack-packs/packs/react.js | unused_javascript": {
-    "message": "如果您不使用服务器端呈现，请使用 `React.lazy()` [拆分 JavaScript 软件包](https://web.dev/code-splitting-suspense/)。否则，请使用第三方库（如 [loadable-components](https://www.smooth-code.com/open-source/loadable-components/docs/getting-started/)）拆分代码。"
-  },
-  "stack-packs/packs/react.js | user_timings": {
-    "message": "使用 React DevTools Profiler，从而利用 Profiler API 来衡量组件的呈现性能。[了解详情](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)。"
-  },
-  "stack-packs/packs/wordpress.js | efficient_animated_content": {
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | efficient-animated-content": {
     "message": "建议您将 GIF 上传到可让其作为 HTML5 视频嵌入的服务。"
   },
-  "stack-packs/packs/wordpress.js | offscreen_images": {
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | font-display": {
+    "message": "在主题背景中定义自定义字体时，您可以指定 `@font-display`。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | offscreen-images": {
+    "message": "Install [a Drupal module](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) that can lazy load images. Such modules provide the ability to defer any offscreen images to improve performance."
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
+    "message": "Consider using a module to inline critical CSS and JavaScript, or potentially load assets asynchronously via JavaScript such as the [Advanced CSS/JS Aggregation](https://www.drupal.org/project/advagg) module. Beware that optimizations provided by this module may break your site, so you will likely need to make code changes."
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | time-to-first-byte": {
+    "message": "主题背景、模块和服务器规格都会影响服务器响应用时。建议您查找更优化的主题背景、仔细选择优化模块并/或升级您的服务器。您的托管服务器应该使用 PHP 运算码缓存、内存缓存（例如 Redis 或 Memcached）来缩短数据库查询时间，并优化应用逻辑以加快网页准备速度。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | total-byte-weight": {
+    "message": "建议您使用[自适应图片样式](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8)减小在您网页上加载的图片的大小。如果您使用 Views 在网页上显示多个内容项，请考虑实现分页，以限制给定网页上显示的内容项的数量。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
+    "message": "确保您已在“管理 » 配置 » 开发”页面中启用了“聚合 CSS 文件”。您还可以通过[其他模块](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search)配置更高级的聚合选项，以通过串联、缩减和压缩您的 CSS 样式来加快您网站的加载速度。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
+    "message": "确保您已在“管理 » 配置 » 开发”页面中启用了“聚合 JavaScript 文件”。您还可以通过[其他模块](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search)配置更高级的聚合选项，从而通过串联、缩减和压缩您的 JavaScript 资源加快您网站的加载速度。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
+    "message": "建议您移除未使用的 CSS 规则，仅将所需的 Drupal 库附加到相关网页或网页中的组件。如需了解详情，请访问 [Drupal 文档链接](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library)。若想找出会添加无关 CSS 的附加库，请尝试在 Chrome 开发者工具中运行[代码覆盖率](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage)测试。在 Drupal 网站中停用 CSS 聚合后，您可根据样式表网址找出导致问题的主题背景/模块。请留意列表中哪些主题背景/模块有大量样式表的代码覆盖率偏红。主题背景/模块应该只将网页中确实用到的样式表加入队列。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-javascript": {
+    "message": "Consider removing unused JavaScript assets and only attach the needed Drupal libraries to the relevant page or component in a page. See the [Drupal documentation link](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) for details. To identify attached libraries that are adding extraneous JavaScript, try running [code coverage](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) in Chrome DevTools. You can identify the theme/module responsible from the URL of the script when JavaScript aggregation is disabled in your Drupal site. Look out for themes/modules that have many scripts in the list which have a lot of red in code coverage. A theme/module should only enqueue a script if it is actually used on the page."
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-long-cache-ttl": {
+    "message": "在“管理 » 配置 » 开发”页面中设置“浏览器和代理缓存最长时限”。了解 [Drupal 缓存和性能优化](https://www.drupal.org/docs/7/managing-site-performance-and-scalability/caching-to-improve-performance/caching-overview#s-drupal-performance-resources)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-optimized-images": {
+    "message": "建议您使用[模块](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=optimize+images&solrsort=iss_project_release_usage+desc&op=Search)自动优化通过网站上传的图片，并在不影响图片质量的前提下缩减这些图片的大小。此外，还请确保为网站上呈现的所有图片使用 Drupal 的原生[自适应图片样式](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8)（在 Drupal 8 及更高版本中提供）。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-rel-preconnect": {
+    "message": "您可以通过安装和配置[一个能协助创建用户代理资源提示的模块](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=dns-prefetch&solrsort=iss_project_release_usage+desc&op=Search)，来添加 preconnect 或 dns-prefetch 资源提示。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-responsive-images": {
+    "message": "确保您使用的是 Drupal 提供的原生[自适应图片样式](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8)（在 Drupal 8 及更高版本中提供）。通过视图模式、视图或借助 WYSIWYG 编辑器上传的图片呈现图片字段时，请使用自适应图片样式。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-webp-images": {
+    "message": "Consider installing and configuring [a module to leverage WebP image formats](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=webp&solrsort=iss_project_release_usage+desc&op=Search) in your site. Such modules automatically generate a WebP version of your uploaded images to optimize loading times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
+    "message": "建议您将 GIF 上传到可让其作为 HTML5 视频嵌入的服务。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
+    "message": "Install a [lazy-load Joomla plugin](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) that provides the ability to defer any offscreen images, or switch to a template that provides that functionality. Starting with Joomla 4.0, a dedicated lazy-loading plugin can be enabled by using the \"Content - Lazy Loading Images\" plugin. Also consider using [an AMP plugin](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | render-blocking-resources": {
+    "message": "有很多 Joomla 插件可帮助您[内嵌重要资源](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance)或[推迟加载不太重要的资源](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance)。请注意，这些插件执行的优化可能会导致您的模板或插件功能无法正常运行，因此您需要全面测试这些插件。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | server-response-time": {
+    "message": "模板、扩展程序和服务器规格都会影响服务器响应用时。建议您查找更优化的模板、仔细选择优化扩展程序并/或升级您的服务器。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | total-byte-weight": {
+    "message": "建议您在文章类别中显示摘录（例如，通过“了解详情”链接）、减少给定页面上显示的文章的数量、将长博文拆分成多个页面，或者使用插件延迟加载评论。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | unminified-css": {
+    "message": "很多 [Joomla 扩展程序](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance)可通过串联、缩减和压缩您的 CSS 样式来加快您网站的加载速度。部分模板也提供此功能。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | unminified-javascript": {
+    "message": "很多 [Joomla 扩展程序](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance)都可通过串联、缩减和压缩您的脚本来加快您网站的加载速度。部分模板也提供此功能。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | unused-css-rules": {
+    "message": "某些 [Joomla 扩展程序](https://extensions.joomla.org/)会在您的网页中加载未使用的 CSS，建议您减少这类扩展程序的数量，或改用其他扩展程序。若想找出会添加无关 CSS 的扩展程序，请尝试在 Chrome 开发者工具中运行[代码覆盖率](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage)测试。您可根据样式表网址找出导致问题的主题背景/插件。请留意列表中哪些插件有大量样式表的代码覆盖率偏红。插件应该只将网页中确实用到的样式表加入队列。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | unused-javascript": {
+    "message": "某些 [Joomla 扩展程序](https://extensions.joomla.org/)会在您的网页中加载未使用的 JavaScript，建议您减少这类扩展程序的数量，或改用其他扩展程序。若想找出会添加无关 JS 的插件，请尝试在 Chrome 开发者工具中运行[代码覆盖率](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage)测试。您可根据脚本网址找出导致问题的扩展程序。请留意列表中哪些扩展程序有大量脚本的代码覆盖率偏红。扩展程序应该只将网页中确实用到的脚本加入队列。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-long-cache-ttl": {
+    "message": "了解 [Joomla 中的浏览器缓存功能](https://docs.joomla.org/Cache)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-optimized-images": {
+    "message": "建议您使用[图片优化插件](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance)，以在不影响图片质量的前提下压缩图片。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-responsive-images": {
+    "message": "建议您使用[自适应图片插件](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=responsive%20images)，以在您的内容中使用自适应图片。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-text-compression": {
+    "message": "您可以通过在 Joomla 中启用 Gzip 页面压缩（“系统”>“全局配置”>“服务器”）来启用文本压缩功能。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-webp-images": {
+    "message": "建议您使用可自动将您上传的图片转换为最佳格式的[插件](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp)或服务。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | critical-request-chains": {
+    "message": "如果您没有捆绑 JavaScript 资源，不妨使用 [baler](https://github.com/magento/baler)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | disable-bundling": {
+    "message": "停用 Magento 内置的 [JavaScript 捆绑和缩减](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html)功能，并考虑改用 [baler](https://github.com/magento/baler/)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | font-display": {
+    "message": "在[定义自定义字体](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/css-topics/using-fonts.html)时指定 `@font-display`。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | offscreen-images": {
+    "message": "您不妨修改产品和目录模板，以利用这一网络平台的[延迟加载](https://web.dev/native-lazy-loading)功能。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | time-to-first-byte": {
+    "message": "使用 Magento 的 [Varnish 集成](https://devdocs.magento.com/guides/v2.3/config-guide/varnish/config-varnish.html)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | unminified-css": {
+    "message": "在您商店的开发者设置中启用“Minify CSS Files”选项。[了解详情](https://devdocs.magento.com/guides/v2.3/performance-best-practices/configuration.html?itm_source=devdocs&itm_medium=search_page&itm_campaign=federated_search&itm_term=minify%20css%20files)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | unminified-javascript": {
+    "message": "使用 [Terser](https://www.npmjs.com/package/terser) 缩减静态内容部署中的所有 JavaScript 资源，并停用内置的缩减功能。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | unused-javascript": {
+    "message": "停用 Magento 内置的 [JavaScript 捆绑](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html)功能。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | uses-optimized-images": {
+    "message": "您不妨在 [Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=optimize%20image) 中搜索各种第三方扩展程序，以便优化图片。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preconnect": {
+    "message": "您可以通过[修改主题背景的布局](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)来添加 preconnect 或 dns-prefetch 资源提示。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
+    "message": "您可以通过[修改主题背景的布局](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)来添加 `<link rel=preload>` 标记。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
+    "message": "您不妨在 [Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=webp) 中搜索各种第三方扩展程序，以利用更新的图片格式。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
+    "message": "Consider using a “windowing” library like `react-window` to minimize the number of DOM nodes created if you are rendering many repeated elements on the page. [Learn more](https://web.dev/virtualize-long-lists-react-window/). Also, minimize unnecessary re-renders using [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent), or [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) and [skip effects](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) only until certain dependencies have changed if you are using the `Effect` hook to improve runtime performance."
+  },
+  "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
+    "message": "如果您使用了 React Router，请尽量避免使用 `<Redirect>` 组件进行[路径导航](https://reacttraining.com/react-router/web/api/Redirect)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/react.js | time-to-first-byte": {
+    "message": "如果您在服务器端呈现任何 React 组件，不妨使用 `renderToNodeStream()` 或 `renderToStaticNodeStream()` 来允许客户端接收并合成标记的各个不同部分，而不是一次性接收整个标记。[了解详情](https://reactjs.org/docs/react-dom-server.html#rendertonodestream)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/react.js | unminified-css": {
+    "message": "If your build system minifies CSS files automatically, ensure that you are deploying the production build of your application. You can check this with the React Developer Tools extension. [Learn more](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/react.js | unminified-javascript": {
+    "message": "If your build system minifies JS files automatically, ensure that you are deploying the production build of your application. You can check this with the React Developer Tools extension. [Learn more](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/react.js | unused-javascript": {
+    "message": "如果您不使用服务器端呈现，请使用 `React.lazy()` [拆分 JavaScript 软件包](https://web.dev/code-splitting-suspense/)。否则，请使用第三方库（如 [loadable-components](https://www.smooth-code.com/open-source/loadable-components/docs/getting-started/)）拆分代码。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/react.js | user-timings": {
+    "message": "使用 React DevTools Profiler，从而利用 Profiler API 来衡量组件的呈现性能。[了解详情](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
+    "message": "建议您将 GIF 上传到可让其作为 HTML5 视频嵌入的服务。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | offscreen-images": {
     "message": "安装[延迟加载 WordPress 插件](https://wordpress.org/plugins/search/lazy+load/)以便能够推迟加载所有的屏幕外图片，或者改用可提供该功能的主题背景。另外，建议您使用 [AMP 插件](https://wordpress.org/plugins/amp/)。"
   },
-  "stack-packs/packs/wordpress.js | render_blocking_resources": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | render-blocking-resources": {
     "message": "有很多 WordPress 插件可帮助您[内嵌重要资源](https://wordpress.org/plugins/search/critical+css/)或[推迟加载不太重要的资源](https://wordpress.org/plugins/search/defer+css+javascript/)。请注意，这些插件提供的优化可能会导致您的主题背景或插件的功能中断，因此您可能需要更改代码。"
   },
-  "stack-packs/packs/wordpress.js | server_response_time": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | time-to-first-byte": {
     "message": "主题背景、插件和服务器规范都会影响服务器响应用时。建议您查找更优化的主题背景、仔细选择所需的优化插件并/或升级您的服务器。"
   },
-  "stack-packs/packs/wordpress.js | total_byte_weight": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | total-byte-weight": {
     "message": "建议您在博文列表中显示摘录（例如，通过“更多”标签）、减少给定页面上显示的博文的数量、将您的长博文拆分成多个页面或者使用插件延迟加载评论。"
   },
-  "stack-packs/packs/wordpress.js | unminified_css": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | unminified-css": {
     "message": "很多 [WordPress 插件](https://wordpress.org/plugins/search/minify+css/)都可通过连接、削减和压缩您的样式来加快您网站的加载速度。另外，您最好使用编译流程预先执行此缩减操作（如果可能的话）。"
   },
-  "stack-packs/packs/wordpress.js | unminified_javascript": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | unminified-javascript": {
     "message": "很多 [WordPress 插件](https://wordpress.org/plugins/search/minify+javascript/)都可通过连接、削减和压缩您的脚本来加快您网站的加载速度。另外，您最好使用编译流程预先执行此缩减操作（如果可能的话）。"
   },
-  "stack-packs/packs/wordpress.js | unused_css_rules": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | unused-css-rules": {
     "message": "建议您减少或改变会在您网页中加载未使用的 CSS 的 [WordPress 插件](https://wordpress.org/plugins/)的数量。若想找出会添加无关 CSS 的插件，请尝试在 Chrome DevTools 中运行[代码覆盖率](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage)测试。您可根据样式表网址找出导致问题的主题背景/插件。请留意在列表中包含多个以大量红色显示代码覆盖率的样式表的插件。插件应该只将网页中确实用到的样式表加入队列。"
   },
-  "stack-packs/packs/wordpress.js | unused_javascript": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | unused-javascript": {
     "message": "建议您减少或改变会在您网页中加载未使用的 JavaScript 的 [WordPress 插件](https://wordpress.org/plugins/)的数量。若想找出会添加无关 JS 的插件，请尝试在 Chrome DevTools 中运行[代码覆盖率](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage)测试。您可根据脚本网址找出导致问题的主题背景/插件。请留意在列表中包含多个以大量红色显示代码覆盖率的脚本的插件。插件应只将网页中确实用到的脚本加入队列。"
   },
-  "stack-packs/packs/wordpress.js | uses_long_cache_ttl": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-long-cache-ttl": {
     "message": "了解 [WordPress 中的浏览器缓存](https://wordpress.org/support/article/optimization/#browser-caching)。"
   },
-  "stack-packs/packs/wordpress.js | uses_optimized_images": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-optimized-images": {
     "message": "建议您使用[图片优化 WordPress 插件](https://wordpress.org/plugins/search/optimize+images/)，以在不影响图片质量的前提下压缩图片大小。"
   },
-  "stack-packs/packs/wordpress.js | uses_responsive_images": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-responsive-images": {
     "message": "直接通过[媒体库](https://wordpress.org/support/article/media-library-screen/)上传图片，以确保能够按要求的尺寸提供图片，然后从媒体库插入图片，或使用图片微件来确保采用最佳的图片尺寸（包括适用于自适应断点的尺寸）。避免使用 `Full Size` 图片，除非有足够的可用空间。[了解详情](https://wordpress.org/support/article/inserting-images-into-posts-and-pages/)。"
   },
-  "stack-packs/packs/wordpress.js | uses_text_compression": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "您可以在网络服务器配置中启用文本压缩。"
   },
-  "stack-packs/packs/wordpress.js | uses_webp_images": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-webp-images": {
     "message": "建议您使用可自动将您上传的图片转换为最佳格式的[插件](https://wordpress.org/plugins/search/convert+webp/)或服务。"
   }
 }

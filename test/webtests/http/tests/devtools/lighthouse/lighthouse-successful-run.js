@@ -41,6 +41,15 @@
   await TestRunner.loadModule('lighthouse_test_runner');
   await TestRunner.showPanel('lighthouse');
 
+  // Use all the default settings, but also enable a plugin.
+  const containerElement = LighthouseTestRunner.getContainerElement();
+  const checkboxes = containerElement.querySelectorAll('.checkbox');
+  for (const checkbox of checkboxes) {
+    if (checkbox.textElement.textContent === 'Publisher Ads') {
+      checkbox.checkboxElement.click();
+    }
+  }
+
   LighthouseTestRunner.dumpStartAuditState();
 
   TestRunner.addResult('\n=============== Lighthouse Status Updates ===============');

@@ -383,6 +383,33 @@
   "lighthouse-core/audits/apple-touch-icon.js | title": {
     "message": "Proporciona una `apple-touch-icon` vàlida"
   },
+  "lighthouse-core/audits/autocomplete.js | columnCurrent": {
+    "message": "Current Value"
+  },
+  "lighthouse-core/audits/autocomplete.js | columnSuggestions": {
+    "message": "Suggested Token"
+  },
+  "lighthouse-core/audits/autocomplete.js | description": {
+    "message": "`autocomplete` helps users submit forms quicker. To reduce user effort, consider enabling by setting the `autocomplete` attribute to a valid value. [Learn more](https://developers.google.com/web/fundamentals/design-and-ux/input/forms#use_metadata_to_enable_auto-complete)"
+  },
+  "lighthouse-core/audits/autocomplete.js | failureTitle": {
+    "message": "`<input>` elements do not have correct `autocomplete` attributes"
+  },
+  "lighthouse-core/audits/autocomplete.js | manualReview": {
+    "message": "Requereix una revisió manual"
+  },
+  "lighthouse-core/audits/autocomplete.js | reviewOrder": {
+    "message": "Revisa l'ordre dels testimonis"
+  },
+  "lighthouse-core/audits/autocomplete.js | title": {
+    "message": "`<input>` elements correctly use `autocomplete`"
+  },
+  "lighthouse-core/audits/autocomplete.js | warningInvalid": {
+    "message": "`autocomplete` token(s): \"{token}\" is invalid in {snippet}"
+  },
+  "lighthouse-core/audits/autocomplete.js | warningOrder": {
+    "message": "Revisa l'ordre dels testimonis: \"{tokens}\" a {snippet}"
+  },
   "lighthouse-core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Les extensions de Chrome han afectat negativament el rendiment de càrrega de la pàgina. Audita la pàgina en mode d'incògnit o des d'un perfil de Chrome sense extensions."
   },
@@ -558,7 +585,7 @@
     "message": "Evita la memòria cau de l'aplicació"
   },
   "lighthouse-core/audits/dobetterweb/charset.js | description": {
-    "message": "Cal una declaració de codificació de caràcters. Es pot fer amb una etiqueta <meta> als primers 1024 bytes de l'HTML o a la capçalera de resposta HTTP de tipus contingut. [Obtén més informació](https://web.dev/charset/)."
+    "message": "A character encoding declaration is required. It can be done with a `<meta>` tag in the first 1024 bytes of the HTML or in the Content-Type HTTP response header. [Learn more](https://web.dev/charset/)."
   },
   "lighthouse-core/audits/dobetterweb/charset.js | failureTitle": {
     "message": "Falta la declaració del conjunt de caràcters o es produeix massa tard a l'HTML"
@@ -807,7 +834,7 @@
     "message": "Resolució de sol·licituds"
   },
   "lighthouse-core/audits/is-on-https.js | description": {
-    "message": "Tots els llocs web haurien d'estar protegits amb HTTPS, fins i tot els que no gestionen dades sensibles. Això inclou evitar el [contingut mixt](https://developers.google.com/web/fundamentals/security/prevent-mixed-content/what-is-mixed-content), en què alguns recursos es carreguen per HTTP encara que la sol·licitud inicial es faci per HTTPS. L'HTTPS evita que els intrusos manipulin o escoltin passivament les comunicacions entre la teva aplicació i els usuaris, i és un requisit previ per a HTTP/2 i per a moltes API de plataforma web noves. [Obtén més informació](https://web.dev/is-on-https/)."
+    "message": "All sites should be protected with HTTPS, even ones that don't handle sensitive data. This includes avoiding [mixed content](https://developers.google.com/web/fundamentals/security/prevent-mixed-content/what-is-mixed-content), where some resources are loaded over HTTP despite the initial request being served over HTTPS. HTTPS prevents intruders from tampering with or passively listening in on the communications between your app and your users, and is a prerequisite for HTTP/2 and many new web platform APIs. [Learn more](https://web.dev/is-on-https/)."
   },
   "lighthouse-core/audits/is-on-https.js | displayValue": {
     "message": "{itemCount,plural, =1{S'ha trobat 1 sol·licitud no segura}other{S'han trobat # sol·licituds no segures}}"
@@ -823,6 +850,21 @@
   },
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "Permès amb un advertiment"
+  },
+  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
+    "message": "Biblioteca"
+  },
+  "lighthouse-core/audits/large-javascript-libraries.js | description": {
+    "message": "Les biblioteques grans de JavaScript poden comportar un rendiment baix. Per reduir la mida del paquet, dona preferència a les biblioteques més petites que tinguin funcions equivalents. [Obtén més informació](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)."
+  },
+  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
+    "message": "{libraryCount,plural, =1{1 biblioteca gran trobada}other{# biblioteques grans trobades}}"
+  },
+  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
+    "message": "Substitueix les biblioteques innecessàriament grans de JavaScript"
+  },
+  "lighthouse-core/audits/large-javascript-libraries.js | title": {
+    "message": "Evita les biblioteques grans de JavaScript amb alternatives més petites"
   },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "Aquest és l'element més gran amb contingut que hi ha a la finestra gràfica. [Més informació](https://web.dev/lighthouse-largest-contentful-paint/)"
@@ -956,6 +998,33 @@
   "lighthouse-core/audits/no-unload-listeners.js | title": {
     "message": "Evita detectors d'esdeveniments `unload`"
   },
+  "lighthouse-core/audits/non-composited-animations.js | description": {
+    "message": "Les animacions que no són compostes poden ser lentes i augmentar el canvi de disseny acumulatiu. [Més informació](https://web.dev/non-composited-animations)"
+  },
+  "lighthouse-core/audits/non-composited-animations.js | displayValue": {
+    "message": "{itemCount,plural, =1{S'ha trobat # element animat}other{S'han trobat # elements animats}}"
+  },
+  "lighthouse-core/audits/non-composited-animations.js | filterMayMovePixels": {
+    "message": "És possible que la propietat relacionada amb \"filter\" mogui píxels"
+  },
+  "lighthouse-core/audits/non-composited-animations.js | incompatibleAnimations": {
+    "message": "L'objectiu té una altra animació que no s'admet"
+  },
+  "lighthouse-core/audits/non-composited-animations.js | nonReplaceCompositeMode": {
+    "message": "L'efecte té un mode compost que no és \"replace\""
+  },
+  "lighthouse-core/audits/non-composited-animations.js | title": {
+    "message": "Evita les animacions que no siguin compostes"
+  },
+  "lighthouse-core/audits/non-composited-animations.js | transformDependsBoxSize": {
+    "message": "La propietat relacionada amb \"transform\" depèn de la mida del quadre"
+  },
+  "lighthouse-core/audits/non-composited-animations.js | unsupportedCSSProperty": {
+    "message": "{propertyCount,plural, =1{La propietat CSS no s'admet: {properties}}other{Les propietats CSS no s'admeten: {properties}}}"
+  },
+  "lighthouse-core/audits/non-composited-animations.js | unsupportedTimingParameters": {
+    "message": "L'efecte té paràmetres de temps no admesos"
+  },
   "lighthouse-core/audits/offline-start-url.js | description": {
     "message": "Els Service Workers permeten que la teva aplicació sigui fiable en condicions imprevisibles de la xarxa. [Obtén més informació](https://web.dev/offline-start-url/)."
   },
@@ -979,6 +1048,15 @@
   },
   "lighthouse-core/audits/performance-budget.js | title": {
     "message": "Pressupost de rendiment"
+  },
+  "lighthouse-core/audits/preload-fonts.js | description": {
+    "message": "Carrega prèviament els tipus de lletra `optional` perquè els visitants nous puguin utilitzar-los. [Més informació](https://web.dev/preload-optional-fonts/)"
+  },
+  "lighthouse-core/audits/preload-fonts.js | failureTitle": {
+    "message": "No s'han carregat prèviament els tipus de lletra `font-display: optional`"
+  },
+  "lighthouse-core/audits/preload-fonts.js | title": {
+    "message": "S'han carregat prèviament els tipus de lletra `font-display: optional`"
   },
   "lighthouse-core/audits/redirects-http.js | description": {
     "message": "Si ja has configurat el format HTTPS, assegura't de redirigir tot el trànsit HTTP cap a HTTPS per activar funcions web segures per a tots els usuaris. [Obtén més informació](https://web.dev/redirects-http/)."
@@ -1043,6 +1121,18 @@
   "lighthouse-core/audits/seo/crawlable-anchors.js | title": {
     "message": "Els enllaços es poden rastrejar"
   },
+  "lighthouse-core/audits/seo/font-size.js | additionalIllegibleText": {
+    "message": "Text il·legible addicional"
+  },
+  "lighthouse-core/audits/seo/font-size.js | columnFontSize": {
+    "message": "Mida de la lletra"
+  },
+  "lighthouse-core/audits/seo/font-size.js | columnPercentPageText": {
+    "message": "% del text de pàgina"
+  },
+  "lighthouse-core/audits/seo/font-size.js | columnSelector": {
+    "message": "Selector"
+  },
   "lighthouse-core/audits/seo/font-size.js | description": {
     "message": "Les lletres amb una mida inferior als 12 píxels són massa petites i obliguen els usuaris de mòbils a \"pinçar per fer zoom\" a fi d'ampliar el text i poder llegir-lo. Intenta que la mida de més del 60% del text de la pàgina sigui igual o superior a 12 píxels. [Obtén més informació](https://web.dev/font-size/)."
   },
@@ -1054,6 +1144,9 @@
   },
   "lighthouse-core/audits/seo/font-size.js | failureTitle": {
     "message": "El document no utilitza lletres amb mides llegibles"
+  },
+  "lighthouse-core/audits/seo/font-size.js | legibleText": {
+    "message": "Text llegible"
   },
   "lighthouse-core/audits/seo/font-size.js | title": {
     "message": "El document utilitza lletres amb mides llegibles"
@@ -1235,6 +1328,9 @@
   "lighthouse-core/audits/third-party-summary.js | failureTitle": {
     "message": "Redueix l'impacte del codi de tercers"
   },
+  "lighthouse-core/audits/third-party-summary.js | otherValue": {
+    "message": "Altres recursos"
+  },
   "lighthouse-core/audits/third-party-summary.js | title": {
     "message": "Redueix l'ús de tercers"
   },
@@ -1251,7 +1347,7 @@
     "message": "Pressupost de temps"
   },
   "lighthouse-core/audits/unsized-images.js | description": {
-    "message": "En els elements d'imatge, inclou sempre una amplada i una alçada explícites per reduir els canvis de disseny i millorar el CLS. [Més informació](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "Als elements d'imatge, defineix una amplada i una alçada explícites per reduir els canvis de disseny i millorar el CLS. [Més informació](https://web.dev/optimize-cls/#images-without-dimensions)"
   },
   "lighthouse-core/audits/unsized-images.js | failureTitle": {
     "message": "Els elements d'imatge no tenen una `width` ni una `height` explícites."
@@ -1272,7 +1368,7 @@
     "message": "Marques i mesures de Temps d'usuari"
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | crossoriginWarning": {
-    "message": "S'ha trobat un element <link> de connexió prèvia per a \"{securityOrigin}\", però el navegador no l'ha utilitzat. Comprova que estiguis utilitzant correctament l'atribut `crossorigin`."
+    "message": "A `<link rel=preconnect>` was found for \"{securityOrigin}\" but was not used by the browser. Check that you are using the `crossorigin` attribute properly."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | description": {
     "message": "Et recomanem que afegeixis suggeriments de recursos `preconnect` o `dns-prefetch` per establir connexions anticipades a orígens importants de tercers. [Obtén més informació](https://web.dev/uses-rel-preconnect/)."
@@ -1281,16 +1377,37 @@
     "message": "Connecta't prèviament als orígens necessaris"
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | tooManyPreconnectLinksWarning": {
-    "message": "S'han trobat més de 2 enllaços preconnectats. Els enllaços preconnectats s'han d'utilitzar amb moderació i només per als orígens més importants."
+    "message": "More than 2 `<link rel=preconnect>` connections were found. These should be used sparingly and only to the most important origins."
+  },
+  "lighthouse-core/audits/uses-rel-preconnect.js | unusedWarning": {
+    "message": "A `<link rel=preconnect>` was found for \"{securityOrigin}\" but was not used by the browser. Only use `preconnect` for important origins that the page will certainly request."
   },
   "lighthouse-core/audits/uses-rel-preload.js | crossoriginWarning": {
-    "message": "S'ha trobat un element <link> de càrrega prèvia per a \"{preloadURL}\", però el navegador no l'ha utilitzat. Comprova que estiguis utilitzant correctament l'atribut `crossorigin`."
+    "message": "A preload `<link>` was found for \"{preloadURL}\" but was not used by the browser. Check that you are using the `crossorigin` attribute properly."
   },
   "lighthouse-core/audits/uses-rel-preload.js | description": {
     "message": "Et recomanem que utilitzis `<link rel=preload>` per prioritzar l'obtenció de recursos que en aquests moments se sol·liciten en un moment posterior de la càrrega de pàgines. [Obtén més informació](https://web.dev/uses-rel-preload/)."
   },
   "lighthouse-core/audits/uses-rel-preload.js | title": {
     "message": "Carrega prèviament les sol·licituds de clau"
+  },
+  "lighthouse-core/audits/valid-source-maps.js | columnMapURL": {
+    "message": "URL del mapa"
+  },
+  "lighthouse-core/audits/valid-source-maps.js | description": {
+    "message": "Els mapes d'origen tradueixen el codi reduït al codi font original. Això ajuda els desenvolupadors a depurar durant la producció. A més, Lighthouse pot proporcionar estadístiques addicionals. Planteja't implementar mapes d'origen per treure partit d'aquests avantatges. [Obtén més informació](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
+  },
+  "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
+    "message": "Falten mapes d'origen per a un fitxer JavaScript propi gran"
+  },
+  "lighthouse-core/audits/valid-source-maps.js | missingSourceMapErrorMessage": {
+    "message": "Un fitxer gran de JavaScript no té un mapa d'origen"
+  },
+  "lighthouse-core/audits/valid-source-maps.js | missingSourceMapItemsWarningMesssage": {
+    "message": "{missingItems,plural, =1{Advertiment: falta 1 element a `.sourcesContent`}other{Advertiment: falten # elements a `.sourcesContent`}}"
+  },
+  "lighthouse-core/audits/valid-source-maps.js | title": {
+    "message": "La pàgina té mapes d'origen vàlids"
   },
   "lighthouse-core/audits/viewport.js | description": {
     "message": "Afegeix una etiqueta `<meta name=\"viewport\">` a fi d'optimitzar l'aplicació per a pantalles de dispositius mòbils. [Obtén més informació](https://web.dev/viewport/)."
@@ -1547,6 +1664,9 @@
   "lighthouse-core/lib/i18n/i18n.js | displayValueByteSavings": {
     "message": "Possible estalvi de {wastedBytes, number, bytes} KiB"
   },
+  "lighthouse-core/lib/i18n/i18n.js | displayValueElementsFound": {
+    "message": "{nodeCount,plural, =1{1 element trobat}other{# elements trobats}}"
+  },
   "lighthouse-core/lib/i18n/i18n.js | displayValueMsSavings": {
     "message": "Possible estalvi de {wastedMs, number, milliseconds} ms"
   },
@@ -1742,6 +1862,9 @@
   "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
     "message": "Sense emulació"
   },
+  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsAxeVersion": {
+    "message": "Versió d'axe"
+  },
   "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
     "message": "Rendiment de la CPU/memòria"
   },
@@ -1799,139 +1922,226 @@
   "lighthouse-core/report/html/renderer/util.js | warningHeader": {
     "message": "Advertiments: "
   },
-  "stack-packs/packs/amp.js | efficient_animated_content": {
-    "message": "En el cas de contingut animat, fes servir [amp-anim](https://amp.dev/documentation/components/amp-anim/) per minimitzar l'ús de la CPU mentre el contingut roman fora de la pantalla."
+  "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
+    "message": "For animated content, use [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) to minimize CPU usage when the content is offscreen."
   },
-  "stack-packs/packs/amp.js | offscreen_images": {
-    "message": "Comprova que estàs fent servir etiquetes `amp-img` vàlides per a les imatges que es carregaran automàticament de manera diferida fora de la primera finestra gràfica. [Obtén més informació](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)."
+  "node_modules/lighthouse-stack-packs/packs/amp.js | offscreen-images": {
+    "message": "Ensure that you are using [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) for images to automatically lazy-load. [Learn more](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)."
   },
-  "stack-packs/packs/amp.js | render_blocking_resources": {
-    "message": "Fes servir eines com ara [AMP Optimizer](https://github.com/ampproject/amp-toolbox/tree/main/packages/optimizer) per [renderitzar dissenys d'AMP des del servidor](https://amp.dev/documentation/guides-and-tutorials/optimize-and-measure/server-side-rendering/)."
+  "node_modules/lighthouse-stack-packs/packs/amp.js | render-blocking-resources": {
+    "message": "Fes servir eines com ara [AMP Optimizer](https://github.com/ampproject/amp-toolbox/tree/master/packages/optimizer) per [renderitzar dissenys d'AMP des del servidor](https://amp.dev/documentation/guides-and-tutorials/optimize-and-measure/server-side-rendering/)."
   },
-  "stack-packs/packs/amp.js | unminified_css": {
-    "message": "Consulta la [documentació d'AMP](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/style_pages/) per assegurar-te que s'admeten tots els teus estils."
+  "node_modules/lighthouse-stack-packs/packs/amp.js | unminified-css": {
+    "message": "Refer to the [AMP documentation](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/style_pages/) to ensure all styles are supported."
   },
-  "stack-packs/packs/amp.js | uses_responsive_images": {
-    "message": "L'element `amp-img` admet l'atribut `srcset` per especificar quins recursos d'imatge s'utilitzaran en funció de la mida de la pantalla.  [Obtén més informació](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/art_direction/)."
+  "node_modules/lighthouse-stack-packs/packs/amp.js | uses-responsive-images": {
+    "message": "The [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) component supports the [`srcset`](https://web.dev/use-srcset-to-automatically-choose-the-right-image/) attribute to specify which image assets to use based on the screen size. [Learn more](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/art_direction/)."
   },
-  "stack-packs/packs/amp.js | uses_webp_images": {
-    "message": "Pots optar per mostrar tots els teus components `amp-img` en formats WebP mentre especifiques una alternativa adequada per a altres navegadors. [Obtén més informació](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)."
+  "node_modules/lighthouse-stack-packs/packs/amp.js | uses-webp-images": {
+    "message": "Consider displaying all [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) components in WebP formats while specifying an appropriate fallback for other browsers. [Learn more](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)."
   },
-  "stack-packs/packs/angular.js | dom_size": {
+  "node_modules/lighthouse-stack-packs/packs/angular.js | dom-size": {
     "message": "Si s'estan renderitzant llistes molt llargues, pots optar per un desplaçament virtual amb el Component Dev Kit (CDK). [Obtén més informació](https://web.dev/virtualize-lists-with-angular-cdk/)."
   },
-  "stack-packs/packs/angular.js | total_byte_weight": {
-    "message": "Aplica la [divisió de codi a la ruta](https://web.dev/route-level-code-splitting-in-angular/) per reduir la mida dels paquets de JavaScript. També pots optar per capturar prèviament els recursos amb el [Service Worker d'Angular](https://web.dev/precaching-with-the-angular-service-worker/)."
+  "node_modules/lighthouse-stack-packs/packs/angular.js | total-byte-weight": {
+    "message": "Apply [route-level code splitting](https://web.dev/route-level-code-splitting-in-angular/) to minimize the size of your JavaScript bundles. Also, consider precaching assets with the [Angular service worker](https://web.dev/precaching-with-the-angular-service-worker/)."
   },
-  "stack-packs/packs/angular.js | unminified_warning": {
+  "node_modules/lighthouse-stack-packs/packs/angular.js | unminified-warning": {
     "message": "Si utilitzes Angular CLI, comprova que les compilacions es generin en el mode de producció. [Obtén més informació](https://angular.io/guide/deployment#enable-runtime-production-mode)."
   },
-  "stack-packs/packs/angular.js | unused_javascript": {
-    "message": "Si utilitzes Angular CLI, inclou mapes d'origen a la compilació de producció per inspeccionar els teus paquets. [Obtén més informació](https://angular.io/guide/deployment#inspect-the-bundles)."
+  "node_modules/lighthouse-stack-packs/packs/angular.js | unused-javascript": {
+    "message": "If you are using Angular CLI, include source maps in your production build to inspect your bundles. [Learn more](https://angular.io/guide/deployment#inspect-the-bundles)."
   },
-  "stack-packs/packs/angular.js | uses_rel_preload": {
+  "node_modules/lighthouse-stack-packs/packs/angular.js | uses-rel-preload": {
     "message": "Carrega rutes amb antelació per accelerar la navegació. [Obtén més informació](https://web.dev/route-preloading-in-angular/)."
   },
-  "stack-packs/packs/angular.js | uses_responsive_images": {
+  "node_modules/lighthouse-stack-packs/packs/angular.js | uses-responsive-images": {
     "message": "Pots optar per fer servir la utilitat `BreakpointObserver` del Component Dev Kit (CDK) per gestionar els punts de ruptura de la imatge. [Obtén més informació](https://material.angular.io/cdk/layout/overview)."
   },
-  "stack-packs/packs/magento.js | critical_request_chains": {
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | efficient-animated-content": {
+    "message": "Pots penjar el GIF en un servei que permeti inserir-lo com un vídeo HTML5."
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | font-display": {
+    "message": "Especifica `@font-display` quan defineixis tipus de lletra personalitzats al teu tema."
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | offscreen-images": {
+    "message": "Install [a Drupal module](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) that can lazy load images. Such modules provide the ability to defer any offscreen images to improve performance."
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
+    "message": "Consider using a module to inline critical CSS and JavaScript, or potentially load assets asynchronously via JavaScript such as the [Advanced CSS/JS Aggregation](https://www.drupal.org/project/advagg) module. Beware that optimizations provided by this module may break your site, so you will likely need to make code changes."
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | time-to-first-byte": {
+    "message": "Els temes, els mòduls i les especificacions del servidor repercuteixen en el temps de resposta del servidor. Pots buscar un tema més optimitzat, seleccionar amb cura un mòdul d'optimització o actualitzar el servidor. Els servidors d'allotjament haurien d'utilitzar l'opció de desar a la memòria cau del codi d'operacions PHP, l'opció de desar a la memòria cau per reduir els temps de consulta de la base de dades, com ara Redis o Memcached, així com la lògica de l'aplicació optimitzada per preparar les pàgines més ràpidament."
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | total-byte-weight": {
+    "message": "Pots utilitzar [estils d'imatges responsives](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) per reduir la mida de les imatges que carregues a la pàgina. Si utilitzes Views per mostrar diversos elements de contingut en una pàgina, pots implementar paginació per limitar el nombre d'elements de contingut que es mostren en una pàgina determinada."
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
+    "message": "Comprova que hagis activat Aggregate CSS files (Fitxers CSS agregats) a la pàgina Administration > Configuration > Development (Administració > Configuració > Desenvolupament). També pots configurar opcions d'agregació més avançades mitjançant [mòduls addicionals](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search) per accelerar el teu lloc web. Per fer-ho, concatenen, redueixen i comprimeixen els estils de CSS."
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
+    "message": "Comprova que hagis activat Aggregate JavaScript files (Fitxers JavaScript agregats) a la pàgina Administration > Configuration > Development (Administració > Configuració > Desenvolupament). També pots configurar opcions d'agregació més avançades mitjançant [mòduls addicionals](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search) per accelerar el teu lloc web. Per fer-ho, concatenen, redueixen i comprimeixen els recursos de JavaScript."
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
+    "message": "Pots suprimir les regles de CSS no utilitzades i adjuntar només les biblioteques de Drupal necessàries a la pàgina o al component rellevants d'una pàgina. Per obtenir-ne informació, segueix l'[enllaç a la documentació de Drupal](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library). Per identificar les biblioteques adjuntes que afegeixen fitxers CSS externs, prova d'executar la [cobertura de codi](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) a Chrome DevTools. Pots identificar el tema o el mòdul responsable a partir de l'URL del full d'estil quan l'agregació de CSS estigui desactivada al teu lloc web de Drupal. Posa atenció als temes o els mòduls que tinguin molts fulls d'estil a la llista amb molt de vermell a la cobertura de codi. Un tema o mòdul només hauria de tenir un full d'estil a la cua si es fa servir a la pàgina."
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-javascript": {
+    "message": "Consider removing unused JavaScript assets and only attach the needed Drupal libraries to the relevant page or component in a page. See the [Drupal documentation link](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) for details. To identify attached libraries that are adding extraneous JavaScript, try running [code coverage](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) in Chrome DevTools. You can identify the theme/module responsible from the URL of the script when JavaScript aggregation is disabled in your Drupal site. Look out for themes/modules that have many scripts in the list which have a lot of red in code coverage. A theme/module should only enqueue a script if it is actually used on the page."
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-long-cache-ttl": {
+    "message": "Defineix l'opció Browser and proxy cache maximum age (Antiguitat màxima de la memòria cau del navegador i del servidor intermediari) a la pàgina Administration > Configuration > Development (Administració > Configuració > Desenvolupament). Obtén informació sobre [l'optimització per a un bon rendiment i la memòria cau de Drupal](https://www.drupal.org/docs/7/managing-site-performance-and-scalability/caching-to-improve-performance/caching-overview#s-drupal-performance-resources)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-optimized-images": {
+    "message": "Pots utilitzar [un mòdul](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=optimize+images&solrsort=iss_project_release_usage+desc&op=Search) que optimitzi i redueixi automàticament la mida de les imatges penjades a través del lloc web sense perdre qualitat. A més, comprova que estiguis utilitzant els [estils d'imatges responsives](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) natius proporcionats per Drupal (disponibles a Drupal 8 i en versions posteriors) en totes les imatges renderitzades al lloc web."
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-rel-preconnect": {
+    "message": "Es poden afegir suggeriments de recursos amb connexió prèvia o recollida prèvia de DNS instal·lant i configurant [un mòdul](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=dns-prefetch&solrsort=iss_project_release_usage+desc&op=Search) que proporcioni elements per a les suggerències dels recursos d'agent d'usuari."
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-responsive-images": {
+    "message": "Comprova que estiguis utilitzant els [estils d'imatges responsives](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) natius proporcionats per Drupal (disponibles a Drupal 8 i en versions posteriors). Utilitza els estils d'imatges responsives per renderitzar camps d'imatge mitjançant modes de visualització, visualitzacions o l'editor WYSIWYG."
+  },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-webp-images": {
+    "message": "Consider installing and configuring [a module to leverage WebP image formats](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=webp&solrsort=iss_project_release_usage+desc&op=Search) in your site. Such modules automatically generate a WebP version of your uploaded images to optimize loading times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
+    "message": "Pots penjar el GIF en un servei que permeti inserir-lo com un vídeo HTML5."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
+    "message": "Install a [lazy-load Joomla plugin](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) that provides the ability to defer any offscreen images, or switch to a template that provides that functionality. Starting with Joomla 4.0, a dedicated lazy-loading plugin can be enabled by using the \"Content - Lazy Loading Images\" plugin. Also consider using [an AMP plugin](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | render-blocking-resources": {
+    "message": "Hi ha diversos connectors de Joomla que et poden ajudar a [inserir recursos essencials](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) o a [ajornar els recursos menys importants](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance). Tingues en compte que les optimitzacions que proporcionen aquests connectors poden afectar les funcions de les plantilles o dels connectors, de manera que hi hauràs de fer proves minucioses."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | server-response-time": {
+    "message": "Les plantilles, les extensions i les especificacions del servidor repercuteixen en el temps de resposta del servidor. Pots buscar una plantilla més optimitzada, seleccionar amb cura una extensió d'optimització o actualitzar el servidor."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | total-byte-weight": {
+    "message": "Pots mostrar extractes a les categories d'articles (per exemple, amb l'enllaç de més informació), reduir el nombre d'articles que es mostren en una pàgina concreta, tallar les publicacions llargues en diverses pàgines o fer servir un connector per als comentaris de càrrega lenta."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | unminified-css": {
+    "message": "Hi ha diverses [extensions de Joomla](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) que poden accelerar el teu lloc web. Per fer-ho, concatenen, redueixen i comprimeixen els estils. També hi ha plantilles que ofereixen aquesta funcionalitat."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | unminified-javascript": {
+    "message": "Hi ha diverses [extensions de Joomla](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) que poden accelerar el teu lloc web. Per fer-ho, concatenen, redueixen i comprimeixen els scripts. També hi ha plantilles que ofereixen aquesta funcionalitat."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | unused-css-rules": {
+    "message": "Pots reduir o canviar el nombre d'[extensions de Joomla](https://extensions.joomla.org/) que carreguen fitxers CSS no utilitzats a la pàgina. Per identificar les extensions que afegeixen fitxers CSS externs, prova d'executar la [cobertura de codi](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) a Chrome DevTools. Pots identificar el tema o el connector responsable a partir de l'URL del full d'estil. Posa atenció als connectors que tinguin molts fulls d'estil a la llista amb molt de vermell a la cobertura de codi. Un connector només hauria de tenir un full d'estil a la cua si es fa servir a la pàgina."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | unused-javascript": {
+    "message": "Pots reduir o canviar el nombre d'[extensions de Joomla](https://extensions.joomla.org/) que carreguen fitxers JavaScript no utilitzats a la pàgina. Per identificar els connectors que afegeixen fitxers JavaScript externs, prova d'executar la [cobertura de codi](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) a Chrome DevTools. Pots identificar l'extensió responsable a partir de l'URL de l'script. Posa atenció a les extensions que tinguin molts scripts a la llista amb molt de vermell a la cobertura de codi. Una extensió només hauria de tenir un script a la cua si es fa servir a la pàgina."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-long-cache-ttl": {
+    "message": "Obtén informació sobre la [memòria cau del navegador a Joomla](https://docs.joomla.org/Cache)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-optimized-images": {
+    "message": "Pots utilitzar un [connector d'optimització d'imatges](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) per comprimir les imatges sense perdre qualitat."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-responsive-images": {
+    "message": "Pots utilitzar un [connector d'imatges responsives](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=responsive%20images) per fer servir aquest tipus d'imatges al teu contingut."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-text-compression": {
+    "message": "Pots activar la compressió de text activant la compressió de pàgines amb Gzip a Joomla (System > Global configuration > Server [Sistema > Configuració global > Servidor])."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-webp-images": {
+    "message": "Pots fer servir un [connector](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp) o un servei que converteixi automàticament les imatges penjades als formats òptims."
+  },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | critical-request-chains": {
     "message": "Si no estàs agrupant els recursos de JavaScript, pots optar per utilitzar un [empaquetador](https://github.com/magento/baler)."
   },
-  "stack-packs/packs/magento.js | disable_bundling": {
+  "node_modules/lighthouse-stack-packs/packs/magento.js | disable-bundling": {
     "message": "Desactiva la [minimització i l'agrupació de JavaScript](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html) integrades de Magento i planteja't la possibilitat d'utilitzar l'[empaquetador](https://github.com/magento/baler/)."
   },
-  "stack-packs/packs/magento.js | font_display": {
+  "node_modules/lighthouse-stack-packs/packs/magento.js | font-display": {
     "message": "Especifica `@font-display` en [definir tipus de lletra personalitzats](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/css-topics/using-fonts.html)."
   },
-  "stack-packs/packs/magento.js | offscreen_images": {
-    "message": "Pots optar per modificar les plantilles de producte i de catàleg perquè utilitzin la funció de [càrrega diferida](https://web.dev/native-lazy-loading/) de la plataforma web."
+  "node_modules/lighthouse-stack-packs/packs/magento.js | offscreen-images": {
+    "message": "Pots optar per modificar les plantilles de producte i de catàleg perquè utilitzin la funció de [càrrega diferida](https://web.dev/native-lazy-loading) de la plataforma web."
   },
-  "stack-packs/packs/magento.js | server_response_time": {
+  "node_modules/lighthouse-stack-packs/packs/magento.js | time-to-first-byte": {
     "message": "Fes servir la [integració amb Varnish](https://devdocs.magento.com/guides/v2.3/config-guide/varnish/config-varnish.html) de Magento."
   },
-  "stack-packs/packs/magento.js | unminified_css": {
+  "node_modules/lighthouse-stack-packs/packs/magento.js | unminified-css": {
     "message": "Activa l'opció \"Redueix els fitxers CSS\" a la configuració del desenvolupador de la botiga. [Obtén més informació](https://devdocs.magento.com/guides/v2.3/performance-best-practices/configuration.html?itm_source=devdocs&itm_medium=search_page&itm_campaign=federated_search&itm_term=minify%20css%20files)."
   },
-  "stack-packs/packs/magento.js | unminified_javascript": {
+  "node_modules/lighthouse-stack-packs/packs/magento.js | unminified-javascript": {
     "message": "Fes servir [Terser](https://www.npmjs.com/package/terser) per reduir tots els recursos de JavaScript provinents de la implementació de contingut estàtic i desactiva la funció de minimització integrada."
   },
-  "stack-packs/packs/magento.js | unused_javascript": {
+  "node_modules/lighthouse-stack-packs/packs/magento.js | unused-javascript": {
     "message": "Desactiva l'[agrupació de JavaScript](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html) integrada de Magento."
   },
-  "stack-packs/packs/magento.js | uses_optimized_images": {
+  "node_modules/lighthouse-stack-packs/packs/magento.js | uses-optimized-images": {
     "message": "Pots optar per cercar diverses extensions de tercers a [Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=optimize%20image) per optimitzar les imatges."
   },
-  "stack-packs/packs/magento.js | uses_rel_preconnect": {
-    "message": "Es poden afegir optimitzacions de recursos connectades prèviament o que han obtingut el DNS prèviament [modificant el disseny d'un tema](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preconnect": {
+    "message": "Es poden afegir suggeriments de recursos amb connexió prèvia o recollida prèvia de DNS [modificant el disseny d'un tema](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
-  "stack-packs/packs/magento.js | uses_rel_preload": {
+  "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "Es poden afegir etiquetes `<link rel=preload>` [modificant el disseny dels temes](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
-  "stack-packs/packs/magento.js | uses_webp_images": {
+  "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
     "message": "Pots optar per cercar diverses extensions de tercers a [Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=webp) per utilitzar formats d'imatge més nous."
   },
-  "stack-packs/packs/react.js | dom_size": {
-    "message": "Pots optar per utilitzar una biblioteca que s'obri en finestres, com ara `react-window`, per reduir el nombre de nodes DOM que es crea en renderitzar molts elements repetits a la pàgina. [Obtén més informació](https://web.dev/virtualize-long-lists-react-window/). Si estàs utilitzant el ganxo Effect per millorar el rendiment en temps d'execució, també pots reduir les renderitzacions repetides innecessàries utilitzant [shouldComponentUpdate](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [PureComponent](https://reactjs.org/docs/react-api.html#reactpurecomponent) o [React.memo](https://reactjs.org/docs/react-api.html#reactmemo) i [ometre els efectes](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) només fins que certes dependències canviïn."
+  "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
+    "message": "Consider using a “windowing” library like `react-window` to minimize the number of DOM nodes created if you are rendering many repeated elements on the page. [Learn more](https://web.dev/virtualize-long-lists-react-window/). Also, minimize unnecessary re-renders using [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent), or [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) and [skip effects](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) only until certain dependencies have changed if you are using the `Effect` hook to improve runtime performance."
   },
-  "stack-packs/packs/react.js | redirects": {
+  "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
     "message": "Si estàs utilitzant un encaminador de React, redueix l'ús del component `<Redirect>` a les [navegacions per rutes](https://reacttraining.com/react-router/web/api/Redirect)."
   },
-  "stack-packs/packs/react.js | server_response_time": {
+  "node_modules/lighthouse-stack-packs/packs/react.js | time-to-first-byte": {
     "message": "Si estàs renderitzant qualsevol component de React des del servidor, pots optar per utilitzar `renderToNodeStream()` o `renderToStaticNodeStream()` per permetre que el client rebi i hidrati diferents parts de l'etiquetatge en lloc de fer-ho amb tots a la vegada. [Obtén més informació](https://reactjs.org/docs/react-dom-server.html#rendertonodestream)."
   },
-  "stack-packs/packs/react.js | unminified_css": {
-    "message": "Si el sistema de compilació redueix automàticament els fitxers CSS, comprova que estiguis implementant la compilació de producció de l'aplicació. Pots comprovar-ho amb l'extensió React Developer Tools. [Obtén més informació](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
+  "node_modules/lighthouse-stack-packs/packs/react.js | unminified-css": {
+    "message": "If your build system minifies CSS files automatically, ensure that you are deploying the production build of your application. You can check this with the React Developer Tools extension. [Learn more](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
   },
-  "stack-packs/packs/react.js | unminified_javascript": {
-    "message": "Si el sistema de compilació redueix automàticament els fitxers JS, comprova que estiguis implementant la compilació de producció de l'aplicació. Pots comprovar-ho amb l'extensió React Developer Tools. [Obtén més informació](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
+  "node_modules/lighthouse-stack-packs/packs/react.js | unminified-javascript": {
+    "message": "If your build system minifies JS files automatically, ensure that you are deploying the production build of your application. You can check this with the React Developer Tools extension. [Learn more](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
   },
-  "stack-packs/packs/react.js | unused_javascript": {
+  "node_modules/lighthouse-stack-packs/packs/react.js | unused-javascript": {
     "message": "Si no estàs renderitzant des del servidor, [divideix els paquets de JavaScript](https://web.dev/code-splitting-suspense/) amb `React.lazy()`. En cas contrari, divideix el codi fent servir una biblioteca de tercers, com ara [loadable-components](https://www.smooth-code.com/open-source/loadable-components/docs/getting-started/)."
   },
-  "stack-packs/packs/react.js | user_timings": {
+  "node_modules/lighthouse-stack-packs/packs/react.js | user-timings": {
     "message": "Fes servir l'analitzador de rendiment de DevTools per a React, que utilitza l'API de l'analitzador de rendiment per mesurar el resultat de la renderització dels components. [Obtén més informació](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)."
   },
-  "stack-packs/packs/wordpress.js | efficient_animated_content": {
-    "message": "Pots pujar el GIF en un servei que permeti inserir-lo en un vídeo HTML5."
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
+    "message": "Pots penjar el GIF en un servei que permeti inserir-lo com un vídeo HTML5."
   },
-  "stack-packs/packs/wordpress.js | offscreen_images": {
-    "message": "Instal·la un [connector de WordPress de càrrega diferida](https://wordpress.org/plugins/search/lazy+load/) que t'ofereixi la possibilitat d'ajornar les imatges fora de pantalla o canviar a un tema que t'ofereixi aquesta funció. També pots fer servir [el connector AMP](https://wordpress.org/plugins/amp/)."
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | offscreen-images": {
+    "message": "Instal·la un [connector de WordPress de càrrega diferida](https://wordpress.org/plugins/search/lazy+load/) que t'ofereixi la possibilitat d'ajornar les imatges fora de pantalla o canviar a un tema que t'ofereixi aquesta funcionalitat. També pots fer servir [el connector AMP](https://wordpress.org/plugins/amp/)."
   },
-  "stack-packs/packs/wordpress.js | render_blocking_resources": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | render-blocking-resources": {
     "message": "Hi ha diversos connectors de WordPress que et poden ajudar a [inserir recursos essencials](https://wordpress.org/plugins/search/critical+css/) o a [ajornar els recursos menys importants](https://wordpress.org/plugins/search/defer+css+javascript/). Tingues en compte que les optimitzacions que proporcionen aquests connectors poden afectar les funcions del tema o dels connectors, de manera que és possible que hagis de fer canvis al codi."
   },
-  "stack-packs/packs/wordpress.js | server_response_time": {
-    "message": "Els temes, els connectors i les especificacions del servidor contribueixen al temps de resposta del servidor. Pots buscar un tema més optimitzat, seleccionar amb cura un connector d'optimització o actualitzar el servidor."
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | time-to-first-byte": {
+    "message": "Els temes, els connectors i les especificacions del servidor repercuteixen en el temps de resposta del servidor. Pots buscar un tema més optimitzat, seleccionar amb cura un connector d'optimització o actualitzar el servidor."
   },
-  "stack-packs/packs/wordpress.js | total_byte_weight": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | total-byte-weight": {
     "message": "Pots mostrar extractes a les llistes de publicacions (per exemple, amb l'etiqueta més), reduir el nombre de publicacions que es mostren en una pàgina concreta, tallar les publicacions llargues en diverses pàgines o fer servir un connector per als comentaris de càrrega diferida."
   },
-  "stack-packs/packs/wordpress.js | unminified_css": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | unminified-css": {
     "message": "Hi ha diversos [connectors de WordPress](https://wordpress.org/plugins/search/minify+css/) que poden accelerar el teu lloc web. Per fer-ho, concatenen, redueixen i comprimeixen els estils. També et recomanem que utilitzis un procés de compilació per fer aquesta minimització de manera anticipada, si és possible."
   },
-  "stack-packs/packs/wordpress.js | unminified_javascript": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | unminified-javascript": {
     "message": "Hi ha diversos [connectors de WordPress](https://wordpress.org/plugins/search/minify+javascript/) que poden accelerar el teu lloc web. Per fer-ho, concatenen, redueixen i comprimeixen els scripts. També et recomanem que utilitzis un procés de compilació per fer aquesta minimització de manera anticipada, si és possible."
   },
-  "stack-packs/packs/wordpress.js | unused_css_rules": {
-    "message": "Pots reduir o canviar el nombre de [connectors de WordPress](https://wordpress.org/plugins/) que carreguen fitxers CSS no utilitzats a la pàgina. Per identificar els connectors que afegeixen fitxers CSS externs, prova d'executar la [cobertura de codi](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) a Chrome DevTools. Pots identificar el tema o el connector responsable a partir de l'URL del full d'estil. Cerca connectors que tinguin molts fulls d'estil a la llista amb molt vermell a la cobertura de codi. Un connector només hauria de tenir un full d'estil a la cua si es fa servir a la pàgina."
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | unused-css-rules": {
+    "message": "Pots reduir o canviar el nombre de [connectors de WordPress](https://wordpress.org/plugins/) que carreguen fitxers CSS no utilitzats a la pàgina. Per identificar els connectors que afegeixen fitxers CSS externs, prova d'executar la [cobertura de codi](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) a Chrome DevTools. Pots identificar el tema o el connector responsable a partir de l'URL del full d'estil. Posa atenció als connectors que tinguin molts fulls d'estil a la llista amb molt de vermell a la cobertura de codi. Un connector només hauria de tenir un full d'estil a la cua si es fa servir a la pàgina."
   },
-  "stack-packs/packs/wordpress.js | unused_javascript": {
-    "message": "Pots reduir o canviar el nombre de [connectors de WordPress](https://wordpress.org/plugins/) que carreguen fitxers JavaScript no utilitzats a la pàgina. Per identificar els connectors que afegeixen fitxers JavaScript externs, prova d'executar la [cobertura de codi](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) a Chrome DevTools. Pots identificar el tema o el connector responsable a partir de l'URL de l'script. Cerca connectors que tinguin molts scripts a la llista amb molt vermell a la cobertura de codi. Un connector només hauria de tenir un script a la cua si es fa servir a la pàgina."
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | unused-javascript": {
+    "message": "Pots reduir o canviar el nombre de [connectors de WordPress](https://wordpress.org/plugins/) que carreguen fitxers JavaScript no utilitzats a la pàgina. Per identificar els connectors que afegeixen fitxers JavaScript externs, prova d'executar la [cobertura de codi](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) a Chrome DevTools. Pots identificar el tema o el connector responsable a partir de l'URL de l'script. Posa atenció als connectors que tinguin molts scripts a la llista amb molt de vermell a la cobertura de codi. Un connector només hauria de tenir un script a la cua si es fa servir a la pàgina."
   },
-  "stack-packs/packs/wordpress.js | uses_long_cache_ttl": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-long-cache-ttl": {
     "message": "Obtén informació sobre la [memòria cau del navegador a WordPress](https://wordpress.org/support/article/optimization/#browser-caching)."
   },
-  "stack-packs/packs/wordpress.js | uses_optimized_images": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-optimized-images": {
     "message": "Pots utilitzar un [connector de WordPress d'optimització d'imatges](https://wordpress.org/plugins/search/optimize+images/) per comprimir les imatges sense perdre qualitat."
   },
-  "stack-packs/packs/wordpress.js | uses_responsive_images": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-responsive-images": {
     "message": "Penja imatges directament mitjançant la [biblioteca multimèdia](https://wordpress.org/support/article/media-library-screen/) per garantir que les mides de la imatge necessàries estiguin disponibles i, a continuació, insereix-les des de la biblioteca multimèdia o fes servir el widget per garantir que es fan servir les mides de la imatge òptimes (incloses les dels punts de ruptura responsius). Evita utilitzar imatges de `Full Size`, tret que les dimensions siguin les adequades per a l'ús que se'n farà. [Obtén més informació](https://wordpress.org/support/article/inserting-images-into-posts-and-pages/)."
   },
-  "stack-packs/packs/wordpress.js | uses_text_compression": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "Pots activar la compressió de text a la configuració del servidor web."
   },
-  "stack-packs/packs/wordpress.js | uses_webp_images": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-webp-images": {
     "message": "Pots fer servir un [connector](https://wordpress.org/plugins/search/convert+webp/) o un servei que converteixi automàticament les imatges penjades als formats òptims."
   }
 }

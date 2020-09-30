@@ -12,9 +12,9 @@
  * lighthouse-core/report/html/html-report-assets.js in Devtools.
  */
 
-/* global Runtime */
+/* global globalThis */
 
-// @ts-expect-error: Runtime.cachedResources exists in Devtools. https://source.chromium.org/chromium/chromium/src/+/master:third_party/devtools-frontend/src/front_end/root/Runtime.js;l=1169
+// @ts-expect-error: globalThis.EXPORTED_CACHED_RESOURCES_ONLY_FOR_LIGHTHOUSE exists in Devtools. https://source.chromium.org/chromium/chromium/src/+/master:third_party/devtools-frontend/src/front_end/root/Runtime.js;l=1247-1250;drc=c4e2fefe3327aa9fe5f4398a1baddb8726c230d5
 const cachedResources = globalThis.EXPORTED_CACHED_RESOURCES_ONLY_FOR_LIGHTHOUSE;
 
 // Getters are necessary because the DevTools bundling processes
@@ -105,19 +105,25 @@ class ReportGenerator {
     const separator = ',';
     /** @param {string} value @return {string} */
     const escape = value => `"${value.replace(/"/g, '""')}"`;
+    /** @param {Array<string | number>} row @return {string[]} */
+    const rowFormatter = row => row.map(value => value.toString()).map(escape);
 
     // Possible TODO: tightly couple headers and row values
     const header = ['requestedUrl', 'finalUrl', 'category', 'name', 'title', 'type', 'score'];
-    const table = Object.values(lhr.categories).map(category => {
-      return category.auditRefs.map(auditRef => {
+    const table = Object.keys(lhr.categories).map(categoryId => {
+      const rows = [];
+      const category = lhr.categories[categoryId];
+      const overallCategoryScore = category.score === null ? -1 : category.score;
+      rows.push(rowFormatter([lhr.requestedUrl, lhr.finalUrl, category.title,
+        `${categoryId}-score`, `Overall ${category.title} Category Score`, 'numeric',
+        overallCategoryScore]));
+      return rows.concat(category.auditRefs.map(auditRef => {
         const audit = lhr.audits[auditRef.id];
         // CSV validator wants all scores to be numeric, use -1 for now
         const numericScore = audit.score === null ? -1 : audit.score;
-        return [lhr.requestedUrl, lhr.finalUrl, category.title, audit.id, audit.title,
-          audit.scoreDisplayMode, numericScore]
-          .map(value => value.toString())
-          .map(escape);
-      });
+        return rowFormatter([lhr.requestedUrl, lhr.finalUrl, category.title, audit.id, audit.title,
+          audit.scoreDisplayMode, numericScore]);
+      }));
     });
 
     return [header].concat(...table)

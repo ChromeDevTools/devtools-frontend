@@ -194,7 +194,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
       return this._loadOverride(url);
     }
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(url);
-    if (parsedURL && parsedURL.isHttpOrHttps()) {
+    if (getLoadThroughTargetSetting().get() && parsedURL && parsedURL.isHttpOrHttps()) {
       try {
         if (initiator.target) {
           const result = await this._loadFromTarget(initiator.target, initiator.frameId, url);
@@ -252,6 +252,11 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
       }
     }
   }
+}
+
+/** @return {!Common.Settings.Setting<boolean>} */
+export function getLoadThroughTargetSetting() {
+  return Common.Settings.Settings.instance().createSetting('loadThroughTarget', true);
 }
 
 /** @enum {symbol} */

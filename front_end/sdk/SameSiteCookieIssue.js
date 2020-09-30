@@ -85,7 +85,8 @@ export class SameSiteCookieIssue extends Issue {
     const secure = isURLSecure ? 'Secure' : 'Insecure';
 
     if (reason === Protocol.Audits.SameSiteCookieExclusionReason.ExcludeSameSiteStrict ||
-        reason === Protocol.Audits.SameSiteCookieExclusionReason.ExcludeSameSiteLax) {
+        reason === Protocol.Audits.SameSiteCookieExclusionReason.ExcludeSameSiteLax ||
+        reason === Protocol.Audits.SameSiteCookieExclusionReason.ExcludeSameSiteUnspecifiedTreatedAsLax) {
       if (warningReasons && warningReasons.length > 0) {
         if (warningReasons.includes(Protocol.Audits.SameSiteCookieWarningReason.WarnSameSiteStrictLaxDowngradeStrict)) {
           return [
@@ -103,6 +104,13 @@ export class SameSiteCookieIssue extends Issue {
           ].join('::');
         }
       }
+
+      // If we have ExcludeSameSiteUnspecifiedTreatedAsLax but no corresponding warnings, then add just
+      // the Issue code for ExcludeSameSiteUnspecifiedTreatedAsLax.
+      if (reason === Protocol.Audits.SameSiteCookieExclusionReason.ExcludeSameSiteUnspecifiedTreatedAsLax) {
+        return [Protocol.Audits.InspectorIssueCode.SameSiteCookieIssue, reason, operation].join('::');
+      }
+
       // ExcludeSameSiteStrict and ExcludeSameSiteLax require being paired with an appropriate warning. We didn't
       // find one of those warnings so return null to indicate there shouldn't be an issue created.
       return null;

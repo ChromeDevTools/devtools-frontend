@@ -76,14 +76,15 @@ export class ElementsTreeElementHighlighter {
     delete this._alreadyExpandedParentElement;
     if (node) {
       let deepestExpandedParent = node;
-      const treeElementSymbol = this._treeOutline.treeElementSymbol();
-      while (deepestExpandedParent &&
-             (!deepestExpandedParent[treeElementSymbol] || !deepestExpandedParent[treeElementSymbol].expanded)) {
+      const treeElementByNode = this._treeOutline.treeElementByNode;
+      while (
+          deepestExpandedParent &&
+          (!treeElementByNode.has(deepestExpandedParent) || !treeElementByNode.get(deepestExpandedParent).expanded)) {
         deepestExpandedParent = deepestExpandedParent.parentNode;
       }
 
       this._alreadyExpandedParentElement =
-          deepestExpandedParent ? deepestExpandedParent[treeElementSymbol] : this._treeOutline.rootElement();
+          deepestExpandedParent ? treeElementByNode.get(deepestExpandedParent) : this._treeOutline.rootElement();
       treeElement = this._treeOutline.createTreeElementFor(node);
     }
 

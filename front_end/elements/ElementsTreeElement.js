@@ -312,7 +312,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
    */
   onbind() {
     if (!this._isClosingTag) {
-      this._node[this.treeOutline.treeElementSymbol()] = this;
+      this.treeOutline.treeElementByNode.set(this._node, this);
     }
   }
 
@@ -323,8 +323,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     if (this._editing) {
       this._editing.cancel();
     }
-    if (this._node[this.treeOutline.treeElementSymbol()] === this) {
-      this._node[this.treeOutline.treeElementSymbol()] = null;
+    if (this.treeOutline.treeElementByNode.get(this._node) === this) {
+      this.treeOutline.treeElementByNode.delete(this._node);
     }
   }
 

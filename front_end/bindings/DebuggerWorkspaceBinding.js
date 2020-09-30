@@ -152,7 +152,7 @@ export class DebuggerWorkspaceBinding {
    * @param {!Array<!SDK.DebuggerModel.Location>} rawLocations
    * @param {function(!LiveLocation)} updateDelegate
    * @param {!LiveLocationPool} locationPool
-   * @return {!Promise<!Bindings.LiveLocation>}
+   * @return {!Promise<!LiveLocation>}
    */
   async createStackTraceTopFrameLiveLocation(rawLocations, updateDelegate, locationPool) {
     console.assert(rawLocations.length);

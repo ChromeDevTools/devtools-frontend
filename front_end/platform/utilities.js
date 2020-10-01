@@ -38,14 +38,12 @@ import {escapeCharacters, regexSpecialCharacters, sprintf} from './string-utilit
 // Still used in the test runners that can't use ES modules :(
 String.sprintf = sprintf;
 
-String.regexSpecialCharacters = regexSpecialCharacters;
-
 /**
  * @this {string}
  * @return {string}
  */
 String.prototype.escapeForRegExp = function() {
-  return escapeCharacters(this, String.regexSpecialCharacters());
+  return escapeCharacters(this, regexSpecialCharacters());
 };
 
 /**
@@ -445,11 +443,10 @@ Object.defineProperty(Array.prototype, 'peekLast', {
  */
 self.createPlainTextSearchRegex = function(query, flags) {
   // This should be kept the same as the one in StringUtil.cpp.
-  const regexSpecialCharacters = String.regexSpecialCharacters();
   let regex = '';
   for (let i = 0; i < query.length; ++i) {
     const c = query.charAt(i);
-    if (regexSpecialCharacters.indexOf(c) !== -1) {
+    if (regexSpecialCharacters().indexOf(c) !== -1) {
       regex += '\\';
     }
     regex += c;

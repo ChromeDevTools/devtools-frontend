@@ -2,21 +2,47 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as ARIAProperties from '../generated/ARIAProperties.js';
+
+/**
+ * @typedef {{
+ *   name: string,
+ *   type: string,
+ *   enum: (!Array<string>|undefined),
+ * }}
+ */
+// @ts-ignore typedef
+export let AttributeConfig;
+
+/**
+ * @typedef {{
+ *   name: string,
+ * }}
+ */
+// @ts-ignore typedef
+export let RoleConfig;
+
+/**
+ * @typedef {{
+ *   attributes: !Array<!AttributeConfig>,
+ *   roles: !Array<!RoleConfig>
+ * }}
+ */
+// @ts-ignore typedef
+export let Config;
 
 /**
  * @unrestricted
  */
 export class ARIAMetadata {
   /**
-   * @param {?Object} config
+   * @param {?Config} config
    */
   constructor(config) {
     /** @type {!Map<string, !Attribute>} */
     this._attributes = new Map();
+    /** @type {!Array<string>} */
+    this._roleNames = [];
 
     if (config) {
       this._initialize(config);
@@ -24,7 +50,7 @@ export class ARIAMetadata {
   }
 
   /**
-   * @param {!Object} config
+   * @param {!Config} config
    */
   _initialize(config) {
     const attributes = config['attributes'];
@@ -46,8 +72,9 @@ export class ARIAMetadata {
    * @return {!Array<string>}
    */
   valuesForProperty(property) {
-    if (this._attributes.has(property)) {
-      return this._attributes.get(property).getEnum();
+    const attribute = this._attributes.get(property);
+    if (attribute) {
+      return attribute.getEnum();
     }
 
     if (property === 'role') {
@@ -59,13 +86,18 @@ export class ARIAMetadata {
 }
 
 /**
+ * @type {!ARIAMetadata | undefined}
+ */
+let _instance;
+
+/**
  * @return {!ARIAMetadata}
  */
 export function ariaMetadata() {
-  if (!ARIAMetadata._instance) {
-    ARIAMetadata._instance = new ARIAMetadata(ARIAProperties.config || null);
+  if (!_instance) {
+    _instance = new ARIAMetadata(/** @type {!Config} */ (ARIAProperties.config) || null);
   }
-  return ARIAMetadata._instance;
+  return _instance;
 }
 
 /**
@@ -73,13 +105,13 @@ export function ariaMetadata() {
  */
 export class Attribute {
   /**
-   * @param {!Object} config
+   * @param {!AttributeConfig} config
    */
   constructor(config) {
     /** @type {!Array<string>} */
     this._enum = [];
 
-    if ('enum' in config) {
+    if (config.enum) {
       this._enum = config.enum;
     }
   }

@@ -41,8 +41,8 @@ export const releaseNoteText = [
         link: 'https://developers.google.com/web/updates/2020/10/devtools#elements-panel',
       },
       {
-        title: 'Lighthouse 6.3',
-        subtitle: 'New audits to validate preload fonts, suggests alternatives to large JavaScript library, and more.',
+        title: 'Lighthouse 6.4',
+        subtitle: 'New audits to validate preload fonts, valid sourcemaps, and more.',
         link: 'https://developers.google.com/web/updates/2020/10/devtools#lighthouse',
       },
       {

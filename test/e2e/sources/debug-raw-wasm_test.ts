@@ -232,7 +232,7 @@ describe('Sources Tab', async function() {
     await checkBreakpointDidNotActivate();
   });
 
-  it('is able to step with state in multi-threaded code', async () => {
+  it('is able to step with state in multi-threaded code in main thread', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await step('navigate to a page and open the Sources tab', async () => {
@@ -345,6 +345,25 @@ describe('Sources Tab', async function() {
     });
 
     await checkBreakpointDidNotActivate();
+  });
+
+  // Setting a breakpoint on a worker does not hit breakpoint until reloaded a couple of times.
+  it.skip('[crbug.com/1134120] is able to step with state in multi-threaded code in worker thread', async () => {
+    const {target, frontend} = getBrowserAndPages();
+
+    await step('navigate to a page and open the Sources tab', async () => {
+      await openSourceCodeEditorForFile('stepping-with-state.wasm', 'wasm/stepping-with-state-and-threads.html');
+    });
+
+    const numberOfLines = 32;
+
+    await step('check that the main thread is selected', async () => {
+      const selectedThreadElement = await waitFor(SELECTED_THREAD_SELECTOR);
+      const selectedThreadName = await selectedThreadElement.evaluate(element => {
+        return (element as HTMLElement).innerText;
+      });
+      assert.strictEqual(selectedThreadName, 'Main', 'the Main thread is not active');
+    });
 
     await step('add a breakpoint to line No.30', async () => {
       await addBreakpointForLine(frontend, 30);

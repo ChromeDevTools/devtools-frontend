@@ -525,9 +525,6 @@
   <message name="IDS_DEVTOOLS_e00091b180f1cf683d5271820cd71b4f" desc="Text in Debugger Plugin of the Sources panel">
     The debugger will skip stepping through this script, and will not stop on exceptions.
   </message>
-  <message name="IDS_DEVTOOLS_e3de97b1a66edbe3fceddb1d5db2df2d" desc="A context menu item in the Watch Expressions Sidebar Pane of the Sources panel">
-    Copy value
-  </message>
   <message name="IDS_DEVTOOLS_e64479370fed877b3ff0b51ee73c95ac" desc="A context menu item in the Sources Panel of the Sources panel">
     Reveal in sidebar
   </message>

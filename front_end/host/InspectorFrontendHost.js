@@ -224,8 +224,13 @@ export class InspectorFrontendHostStub {
     let fileName = '';
 
     if (url) {
-      const trimmed = Platform.StringUtilities.trimURL(url);
-      fileName = Platform.StringUtilities.removeURLFragment(trimmed);
+      try {
+        const trimmed = Platform.StringUtilities.trimURL(url);
+        fileName = Platform.StringUtilities.removeURLFragment(trimmed);
+      } catch (err) {
+        // If url is not a valid URL, it is probably a filename.
+        fileName = url;
+      }
     }
 
     const link = document.createElement('a');

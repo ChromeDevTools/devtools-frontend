@@ -94,13 +94,6 @@ export class InplaceEditor {
   }
 
   /**
-   * @param {!EditingContext} editingContext
-   * @param {*} handle
-   */
-  augmentEditingHandle(editingContext, handle) {
-  }
-
-  /**
    * @param {!Element} element
    * @param {!Config<*>=} inputConfig
    * @return {?Controller}
@@ -232,7 +225,6 @@ export class InplaceEditor {
     }
 
     const handle = {cancel: editingCancelled.bind(element), commit: editingCommitted.bind(element)};
-    this.augmentEditingHandle(editingContext, handle);
     return handle;
   }
 }

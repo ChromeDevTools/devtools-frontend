@@ -514,7 +514,7 @@ export class CheckboxFilterUI extends Common.ObjectWrapper.ObjectWrapper {
    * @param {string} className
    * @param {string} title
    * @param {boolean=} activeWhenChecked
-   * @param {!Common.Settings.Setting<*>=} setting
+   * @param {!Common.Settings.Setting<boolean>=} setting
    */
   constructor(className, title, activeWhenChecked, setting) {
     super();

@@ -1325,7 +1325,7 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     new UI.Toolbar.Toolbar('issues-toolbar-left', toolbarContainer);
     const rightToolbar = new UI.Toolbar.Toolbar('issues-toolbar-right', toolbarContainer);
 
-    const groupByCategorySetting = /** @type {!Common.Settings.Setting<*>} */ (getGroupIssuesByCategorySetting());
+    const groupByCategorySetting = getGroupIssuesByCategorySetting();
     const groupByCategoryCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
         groupByCategorySetting, ls`Group displayed issues under associated categories`, ls`Group by category`);
     // Hide the option to toggle category grouping for now.
@@ -1335,8 +1335,7 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
       this._fullUpdate();
     });
 
-    // TODO(crbug.com/1011811): Remove cast once closure is gone. Closure requires an upcast to 'any' from 'boolean'.
-    const thirdPartySetting = /** @type {!Common.Settings.Setting<*>} */ (SDK.Issue.getShowThirdPartyIssuesSetting());
+    const thirdPartySetting = SDK.Issue.getShowThirdPartyIssuesSetting();
     this._showThirdPartyCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
         thirdPartySetting, ls`Include cookie Issues caused by third-party sites`,
         ls`Include third-party cookie issues`);

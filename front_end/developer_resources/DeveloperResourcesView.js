@@ -24,8 +24,7 @@ export class DeveloperResourcesView extends UI.Widget.VBox {
     this._filterInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this._onFilterChanged, this);
     toolbar.appendToolbarItem(this._filterInput);
 
-    const loadThroughTarget =
-        /** @type {!Common.Settings.Setting<*>} */ (SDK.PageResourceLoader.getLoadThroughTargetSetting());
+    const loadThroughTarget = SDK.PageResourceLoader.getLoadThroughTargetSetting();
     const loadThroughTargetCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
         loadThroughTarget, ls`Load HTTP(S) developer resources through the inspected target`,
         ls`Enable loading through target`);

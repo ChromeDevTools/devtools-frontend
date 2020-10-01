@@ -37,7 +37,7 @@ import {CheckboxLabel} from './UIUtils.js';
 
 /**
  * @param {string} name
- * @param {!Common.Settings.Setting<*>} setting
+ * @param {!Common.Settings.Setting<boolean>} setting
  * @param {boolean=} omitParagraphElement
  * @param {string=} tooltip
  * @return {!Element}
@@ -121,11 +121,10 @@ const createSettingSelect = function(name, options, requiresReload, setting, sub
 
 /**
  * @param {!Element} inputElement
- * @param {!Common.Settings.Setting<*>} booleanSetting
+ * @param {!Common.Settings.Setting<boolean>} setting
  */
-export const bindCheckbox = function(inputElement, booleanSetting) {
+export const bindCheckbox = function(inputElement, setting) {
   const input = /** @type {!HTMLInputElement} */ (inputElement);
-  const setting = /** @type {!Common.Settings.Setting<boolean>} */ (booleanSetting);
   function settingChanged() {
     if (input.checked !== setting.get()) {
       input.checked = setting.get();
@@ -190,7 +189,7 @@ export const createControlForSetting = function(setting, subtitle) {
   const uiTitle = Common.UIString.UIString(setting.title() || '');
   switch (descriptor.settingType) {
     case 'boolean':
-      return createSettingCheckbox(uiTitle, setting);
+      return createSettingCheckbox(uiTitle, /** @type {!Common.Settings.Setting<boolean>} */ (setting));
     case 'enum':
       if (Array.isArray(descriptor.options)) {
         return createSettingSelect(uiTitle, descriptor.options, descriptor.reloadRequired, setting, subtitle);

@@ -1175,7 +1175,7 @@ export class ToolbarCheckbox extends ToolbarItem {
 
 export class ToolbarSettingCheckbox extends ToolbarCheckbox {
   /**
-   * @param {!Common.Settings.Setting<*>} setting
+   * @param {!Common.Settings.Setting<boolean>} setting
    * @param {string=} tooltip
    * @param {string=} alternateTitle
    */

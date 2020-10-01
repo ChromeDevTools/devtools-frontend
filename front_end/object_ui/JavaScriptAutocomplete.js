@@ -92,7 +92,7 @@ export class JavaScriptAutocomplete {
       return (result && !result.exceptionDetails && result.object) ? result.object : null;
     }, functionCall.functionName);
     executionContext.runtimeModel.releaseObjectGroup('argumentsHint');
-    if (!args.length || (args.length === 1 && !args[0].length)) {
+    if (!args.length || (args.length === 1 && (!args[0] || !args[0].length))) {
       return null;
     }
     return {args, argumentIndex: functionCall.argumentIndex};
@@ -145,6 +145,9 @@ export class JavaScriptAutocomplete {
       return uniqueSignatures;
     }
     const receiverObj = await receiverObjGetter();
+    if (!receiverObj) {
+      return [];
+    }
     const className = receiverObj.className;
     if (javaScriptMetadata.signaturesForInstanceMethod(name, className)) {
       return javaScriptMetadata.signaturesForInstanceMethod(name, className);

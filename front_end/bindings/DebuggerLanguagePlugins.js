@@ -487,7 +487,8 @@ export class DebuggerLanguagePluginManager {
       rawModuleId: script.sourceURL,
       // RawLocation.columnNumber is the byte offset in the full raw wasm module. Plugins expect the offset in the code
       // section, so subtract the offset of the code section in the module here.
-      codeOffset: rawLocation.columnNumber - (script.codeOffset() || 0)
+      codeOffset: rawLocation.columnNumber - (script.codeOffset() || 0),
+      inlineFrameIndex: rawLocation.inlineFrameIndex
     };
 
     let sourceLocations;
@@ -721,10 +722,11 @@ export class DebuggerLanguagePluginManager {
     }
     /** @type {!Map<string, !SourceScope>} */
     const scopes = new Map();
-    /** @type {!RawLocation}} */
+    /** @type {!RawLocation} */
     const location = {
       'rawModuleId': script.sourceURL,
-      'codeOffset': callFrame.location().columnNumber - (script.codeOffset() || 0)
+      'codeOffset': callFrame.location().columnNumber - (script.codeOffset() || 0),
+      'inlineFrameIndex': callFrame.inlineFrameIndex
     };
 
     try {
@@ -740,6 +742,36 @@ export class DebuggerLanguagePluginManager {
       return Array.from(scopes.values());
     } catch (error) {
       Common.Console.Console.instance().error(ls`Error in debugger language plugin: ${error.message}`);
+      return null;
+    }
+  }
+
+  /**
+   * @param {!SDK.DebuggerModel.CallFrame} callFrame
+   * @return {!Promise<?{frames: !Array<!FunctionInfo>}>}
+   */
+  async getFunctionInfo(callFrame) {
+    if (!callFrame) {
+      return null;
+    }
+    const script = callFrame.script;
+    const plugin = await this._getPluginForScript(script);
+    if (!plugin) {
+      return null;
+    }
+    /** @type {!RawLocation}} */
+    const location = {
+      'rawModuleId': script.sourceURL,
+      'codeOffset': callFrame.location().columnNumber - (script.codeOffset() || 0),
+      // TODO(crbug.com/1134110): Once closure->typescript migration is complete, delete this and
+      // change type definition to show that this field is optional.
+      'inlineFrameIndex': undefined
+    };
+
+    try {
+      return await plugin.getFunctionInfo(location);
+    } catch (error) {
+      Common.Console.Console.instance().warn(ls`Error in debugger language plugin: ${error.message}`);
       return null;
     }
   }
@@ -791,8 +823,9 @@ export let RawLocationRange;
 
 /** Offsets in raw modules
  * @typedef {{
- *            rawModuleId:string,
- *            codeOffset:number
+ *            rawModuleId: string,
+ *            codeOffset: number,
+ *            inlineFrameIndex: (number|undefined)
  *          }}
  */
 // @ts-ignore typedef
@@ -840,6 +873,14 @@ export let VariableValue;
  */
 // @ts-ignore typedef
 export let EvaluatorModule;
+
+/** Either the code of an evaluator module or a constant representation of a variable
+ * @typedef {{
+ *            name: string
+ *          }}
+ */
+// @ts-ignore typedef
+export let FunctionInfo;
 
 /**
  * @interface
@@ -905,6 +946,14 @@ export class DebuggerLanguagePlugin {
    * @return {!Promise<void>}
    */
   removeRawModule(rawModuleId) {
+    throw new Error('Not implemented yet');
+  }
+
+  /** Find locations in source files from a location in a raw module
+   * @param {!RawLocation} rawLocation
+   * @return {!Promise<?{frames: !Array<!FunctionInfo>}>}
+  */
+  async getFunctionInfo(rawLocation) {
     throw new Error('Not implemented yet');
   }
 }

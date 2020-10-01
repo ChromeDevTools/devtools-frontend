@@ -66,6 +66,17 @@ class ExtensionPluginBase {
     return Promise.resolve([]);
   }
 
+  /** List all variables in lexical scope at a given location in a raw module
+   * @param {!RawLocation} rawLocation
+   * @return {!Promise<?Array<!*>>}
+   */
+  /*async*/ getFunctionInfo(rawLocation) {
+    if (this._impl.getFunctionInfo) {
+      return this._impl.getFunctionInfo(rawLocation);
+    }
+    return Promise.resolve(null);
+  }
+
   /** Evaluate the content of a variable in a given lexical scope
    * @param {string} name
    * @param {!RawLocation} location

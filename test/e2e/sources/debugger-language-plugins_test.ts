@@ -6,7 +6,7 @@ import {assert} from 'chai';
 
 import {$, click, enableExperiment, getBrowserAndPages, getResourcesPath, goToResource, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {addBreakpointForLine, getValuesForScope, listenForSourceFilesAdded, openFileInEditor, openFileInSourcesPanel, openSourcesPanel, PAUSE_ON_EXCEPTION_BUTTON, RESUME_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
+import {addBreakpointForLine, getCallFrameLocations, getCallFrameNames, getValuesForScope, listenForSourceFilesAdded, openFileInEditor, openFileInSourcesPanel, openSourcesPanel, PAUSE_ON_EXCEPTION_BUTTON, RESUME_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, switchToCallFrame, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
 
 
 // TODO: Remove once Chromium updates its version of Node.js to 12+.
@@ -32,7 +32,8 @@ type RawLocationRange = {
 
 type RawLocation = {
   rawModuleId: string,
-  codeOffset: number
+  codeOffset: number,
+  inlineFrameIndex?: number
 };
 
 type SourceLocation = {
@@ -61,6 +62,10 @@ type EvaluatorModule = {
   constantValue?: VariableValue
 };
 
+type FunctionInfo = {
+  name?: string
+};
+
 interface TestPluginImpl {
   addRawModule?(rawModuleId: string, symbolsURL: string, rawModule: {url: string}): Promise<Array<string>>;
 
@@ -73,6 +78,8 @@ interface TestPluginImpl {
   listVariablesInScope?(rawLocation: RawLocation): Promise<Array<Variable>>;
 
   evaluateVariable?(name: string, location: RawLocation): Promise<EvaluatorModule|null>;
+
+  getFunctionInfo?(rawLocation: RawLocation): Promise<{frames: Array<FunctionInfo>}|null>;
 
   dispose?(): void;
 }
@@ -309,6 +316,89 @@ describe('The Debugger Language Plugins', async () => {
     assert.deepEqual(locals, ['localX: int']);
     const globals = await getValuesForScope('GLOBAL', 2);
     assert.deepEqual(globals, ['n1: namespace', 'n2: namespace', 'globalY: float']);
+  });
+
+  it('shows inline frames', async () => {
+    const {frontend} = getBrowserAndPages();
+    await frontend.evaluateHandle(
+        () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {
+          class InliningPlugin {
+            _modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocations?: SourceLocation[]}>;
+            constructor() {
+              this._modules = new Map();
+            }
+
+            async addRawModule(rawModuleId: string, symbols: string, rawModule: RawModule) {
+              const sourceFileURL = new URL('unreachable.ll', rawModule.url || symbols).href;
+              this._modules.set(rawModuleId, {
+                rawLocationRange: {rawModuleId, startOffset: 6, endOffset: 7},
+                sourceLocations: [
+                  {rawModuleId, sourceFileURL, lineNumber: 5, columnNumber: 2},
+                  {rawModuleId, sourceFileURL, lineNumber: 10, columnNumber: 2},
+                  {rawModuleId, sourceFileURL, lineNumber: 15, columnNumber: 2},
+                ],
+              });
+              return [sourceFileURL];
+            }
+
+            async rawLocationToSourceLocation(rawLocation: RawLocation) {
+              const {rawLocationRange, sourceLocations} = this._modules.get(rawLocation.rawModuleId) || {};
+              if (rawLocationRange && sourceLocations && rawLocationRange.startOffset <= rawLocation.codeOffset &&
+                  rawLocation.codeOffset < rawLocationRange.endOffset) {
+                return [sourceLocations[rawLocation.inlineFrameIndex || 0]];
+              }
+              return [];
+            }
+
+            async getFunctionInfo(rawLocation: RawLocation) {
+              const {rawLocationRange} = this._modules.get(rawLocation.rawModuleId) || {};
+              if (rawLocationRange && rawLocationRange.startOffset <= rawLocation.codeOffset &&
+                  rawLocation.codeOffset < rawLocationRange.endOffset) {
+                return {frames: [{name: 'inner_inline_func'}, {name: 'outer_inline_func'}, {name: 'Main'}]};
+              }
+              return null;
+            }
+
+            async listVariablesInScope(rawLocation: RawLocation) {
+              const {rawLocationRange} = this._modules.get(rawLocation.rawModuleId) || {};
+              const frame = rawLocation.inlineFrameIndex || 0;
+              if (rawLocationRange && rawLocationRange.startOffset <= rawLocation.codeOffset &&
+                  rawLocation.codeOffset < rawLocationRange.endOffset) {
+                return [
+                  {scope: 'LOCAL', name: `localX${frame}`, type: 'int'},
+                ];
+              }
+              return [];
+            }
+          }
+
+          RegisterExtension(
+              extensionAPI, new InliningPlugin(), 'Inlining', {language: 'WebAssembly', symbol_types: ['None']});
+        }));
+
+    await openSourcesPanel();
+    await click(PAUSE_ON_EXCEPTION_BUTTON);
+    await goToResource('sources/wasm/unreachable.html');
+    await waitFor(RESUME_BUTTON);
+
+    // Call stack shows inline function names and source locations.
+    const funcNames = await getCallFrameNames();
+    assert.deepEqual(
+        funcNames, ['inner_inline_func', 'outer_inline_func', 'Main', 'go', 'await in go (async)', '(anonymous)']);
+    const sourceLocations = await getCallFrameLocations();
+    assert.deepEqual(
+        sourceLocations,
+        ['unreachable.ll:6', 'unreachable.ll:11', 'unreachable.ll:16', 'unreachable.html:27', 'unreachable.html:30']);
+
+    // We see variables for innermost frame.
+    assert.deepEqual(await getValuesForScope('LOCAL'), ['localX0: int']);
+
+    // Switching frames affects what variables we see.
+    await switchToCallFrame(2);
+    assert.deepEqual(await getValuesForScope('LOCAL'), ['localX1: int']);
+
+    await switchToCallFrame(3);
+    assert.deepEqual(await getValuesForScope('LOCAL'), ['localX2: int']);
   });
 
   it('shows constant variable value', async () => {

@@ -185,6 +185,34 @@ export async function getExecutionLineText() {
   return await activeLine.evaluate(n => n.textContent as string);
 }
 
+export async function getCallFrameNames() {
+  await waitFor('.call-frame-item-title');
+  const items = await $$('.call-frame-item-title');
+  const promises = items.map(handle => handle.evaluate(el => el.textContent as string));
+  const results = [];
+  for (const promise of promises) {
+    results.push(await promise);
+  }
+  return results;
+}
+
+export async function getCallFrameLocations() {
+  await waitFor('.call-frame-location');
+  const items = await $$('.call-frame-location');
+  const promises = items.map(handle => handle.evaluate(el => el.textContent as string));
+  const results = [];
+  for (const promise of promises) {
+    results.push(await promise);
+  }
+  return results;
+}
+
+export async function switchToCallFrame(index: number) {
+  const selector = `.call-frame-item[aria-posinset="${index}"]`;
+  await click(selector);
+  await waitFor(selector + '[aria-selected="true"]');
+}
+
 export async function retrieveTopCallFrameScriptLocation(script: string, target: puppeteer.Page) {
   // The script will run into a breakpoint, which means that it will not actually
   // finish the evaluation, until we continue executing.

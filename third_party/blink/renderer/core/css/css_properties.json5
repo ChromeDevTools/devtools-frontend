@@ -968,6 +968,18 @@
       priority: "High",
     },
     {
+      name: "math-depth",
+      default_value: 0,
+      field_group: "*",
+      field_template: "primitive",
+      inherited: true,
+      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      runtime_flag: "CSSMathDepth",
+      style_builder_custom_functions: ["value"],
+      type_name: "short",
+      typedom_types: ["Number"],
+    },
+    {
       name: "text-orientation",
       property_methods: ["CSSValueFromComputedStyleInternal"],
       inherited: true,
@@ -1081,10 +1093,10 @@
       field_group: "box",
       field_template: "external",
       keywords: ["auto"],
-      default_value: "base::nullopt",
-      type_name: "base::Optional<IntSize>",
+      default_value: "StyleAspectRatio(EAspectRatioType::kAuto, FloatSize())",
+      type_name: "StyleAspectRatio",
       converter: "ConvertAspectRatio",
-      include_paths: ["third_party/blink/renderer/platform/geometry/length_size.h"],
+      include_paths: ["third_party/blink/renderer/core/style/style_aspect_ratio.h"],
       runtime_flag: "CSSAspectRatioProperty"
     },
     {
@@ -1801,7 +1813,6 @@
       type_name: "Vector<AtomicString>",
       default_value: "Vector<AtomicString, 0>()",
       field_template: "external",
-      priority: "High",
     },
     {
       name: "column-fill",
@@ -2516,26 +2527,25 @@
       keywords: ["luminance", "alpha"],
       typedom_types: ["Keyword"]
     },
-    // TODO(rbuis): should be moved to high priority later.
+    {
+      name: "math-shift",
+      property_methods: ["CSSValueFromComputedStyleInternal"],
+      field_template: "keyword",
+      inherited: true,
+      keywords: ["normal", "compact"],
+      typedom_types: ["Keyword"],
+      default_value: "normal",
+      runtime_flag: "CSSMathShift"
+    },
     {
       name: "math-style",
       property_methods: ["CSSValueFromComputedStyleInternal"],
       field_template: "keyword",
       inherited: true,
-      keywords: ["inline", "display"],
+      keywords: ["normal", "compact"],
       typedom_types: ["Keyword"],
-      default_value: "inline",
+      default_value: "normal",
       runtime_flag: "CSSMathStyle"
-    },
-    {
-      name: "math-superscript-shift-style",
-      property_methods: ["CSSValueFromComputedStyleInternal"],
-      field_template: "keyword",
-      inherited: true,
-      keywords: ["inline", "display"],
-      typedom_types: ["Keyword"],
-      default_value: "display",
-      runtime_flag: "CSSMathSuperscriptShiftStyle"
     },
     {
       name: "max-height",
@@ -5134,7 +5144,7 @@
       name: "advance-override",
       is_descriptor: true,
       is_property: false,
-      runtime_flag: "CSSFontMetricsOverride",
+      runtime_flag: "CSSFontFaceAdvanceOverride",
     },
     {
       name: "line-gap-override",

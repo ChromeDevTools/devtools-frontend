@@ -383,6 +383,53 @@
                             }
                         }
                     ]
+                },
+                {
+                    "name": "queryAXTree",
+                    "description": "Query a DOM node's accessibility subtree for accessible name and role.\nThis command computes the name and role for all nodes in the subtree, including those that are\nignored for accessibility, and returns those that mactch the specified name and role. If no DOM\nnode is specified, or the DOM node does not exist, the command returns an error. If neither\n`accessibleName` or `role` is specified, it returns all the accessibility nodes in the subtree.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "nodeId",
+                            "description": "Identifier of the node for the root to query.",
+                            "optional": true,
+                            "$ref": "DOM.NodeId"
+                        },
+                        {
+                            "name": "backendNodeId",
+                            "description": "Identifier of the backend node for the root to query.",
+                            "optional": true,
+                            "$ref": "DOM.BackendNodeId"
+                        },
+                        {
+                            "name": "objectId",
+                            "description": "JavaScript object id of the node wrapper for the root to query.",
+                            "optional": true,
+                            "$ref": "Runtime.RemoteObjectId"
+                        },
+                        {
+                            "name": "accessibleName",
+                            "description": "Find nodes with this computed name.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "role",
+                            "description": "Find nodes with this computed role.",
+                            "optional": true,
+                            "type": "string"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "nodes",
+                            "description": "A list of `Accessibility.AXNode` matching the specified attributes,\nincluding nodes that are ignored for accessibility.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "AXNode"
+                            }
+                        }
+                    ]
                 }
             ]
         },
@@ -11056,7 +11103,8 @@
                     "returns": [
                         {
                             "name": "success",
-                            "description": "True if successfully set cookie.",
+                            "description": "Always set to true. If an error occurs, the response indicates protocol error.",
+                            "deprecated": true,
                             "type": "boolean"
                         }
                     ]
@@ -16030,9 +16078,16 @@
                         },
                         {
                             "name": "canAccessOpener",
-                            "description": "Whether the opened window has access to the originating window.",
+                            "description": "Whether the target has access to the originating window.",
                             "experimental": true,
                             "type": "boolean"
+                        },
+                        {
+                            "name": "openerFrameId",
+                            "description": "Frame id of originating window (is only set if target has an opener).",
+                            "experimental": true,
+                            "optional": true,
+                            "$ref": "Page.FrameId"
                         },
                         {
                             "name": "browserContextId",
@@ -16116,6 +16171,8 @@
                     "returns": [
                         {
                             "name": "success",
+                            "description": "Always set to true. If an error occurs, the response indicates protocol error.",
+                            "deprecated": true,
                             "type": "boolean"
                         }
                     ]

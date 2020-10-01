@@ -109,6 +109,16 @@ export function registerCommands(inspectorBackend) {
       ],
       ['nodes']);
   inspectorBackend.registerCommand('Accessibility.getFullAXTree', [], ['nodes']);
+  inspectorBackend.registerCommand(
+      'Accessibility.queryAXTree',
+      [
+        {'name': 'nodeId', 'type': 'number', 'optional': true},
+        {'name': 'backendNodeId', 'type': 'number', 'optional': true},
+        {'name': 'objectId', 'type': 'string', 'optional': true},
+        {'name': 'accessibleName', 'type': 'string', 'optional': true},
+        {'name': 'role', 'type': 'string', 'optional': true}
+      ],
+      ['nodes']);
 
   // Animation.
   inspectorBackend.registerEnum(

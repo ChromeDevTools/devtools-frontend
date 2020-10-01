@@ -123,7 +123,7 @@ def main(argv):
 
     try:
         os.makedirs(path.join(output_directory, 'Images'))
-    except OSError, e:
+    except OSError as e:
         if e.errno != errno.EEXIST:
             raise e
 
@@ -147,7 +147,7 @@ def main(argv):
             shutil.copy(path.join(dirname, filename), path.join(output_directory, 'Images'))
             add_file_to_grd(doc, path.join('Images', filename))
 
-    with open(parsed_args.output_filename, 'w') as output_file:
+    with open(parsed_args.output_filename, 'wb') as output_file:
         output_file.write(doc.toxml(encoding='UTF-8'))
 
 

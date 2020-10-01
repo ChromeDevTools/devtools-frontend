@@ -7,6 +7,8 @@
 Utilities for the modular DevTools build.
 """
 
+from __future__ import print_function
+
 import collections
 from os import path
 import os
@@ -40,7 +42,7 @@ def load_and_parse_json(filename):
     try:
         return json.loads(read_file(filename))
     except:
-        print 'ERROR: Failed to parse %s' % filename
+        print('ERROR: Failed to parse %s' % filename)
         raise
 
 class Descriptors:

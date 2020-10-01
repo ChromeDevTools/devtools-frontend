@@ -38,7 +38,7 @@ import * as UI from '../ui/ui.js';
 
 import {linkifyDeferredNodeReference} from './DOMLinkifier.js';
 import {ElementsTreeElement, InitialChildrenLimit} from './ElementsTreeElement.js';
-import {HrefSymbol, ImagePreviewPopover} from './ImagePreviewPopover.js';
+import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 
 /**
  * @unrestricted
@@ -95,7 +95,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
         this.contentElement,
         event => {
           let link = event.target;
-          while (link && !link[HrefSymbol]) {
+          while (link && !ImagePreviewPopover.getImageURL(link)) {
             link = link.parentElementOrShadowHost();
           }
           return link;

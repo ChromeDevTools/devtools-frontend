@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Components from '../components/components.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
@@ -35,7 +32,11 @@ export class ImagePreviewPopover {
     */
   _handleRequest(event) {
     const link = this._getLinkElement(event);
-    if (!link || !link[HrefSymbol]) {
+    if (!link) {
+      return null;
+    }
+    const href = elementToURLMap.get(link);
+    if (!href) {
       return null;
     }
     return {
@@ -48,7 +49,7 @@ export class ImagePreviewPopover {
         }
         const precomputedFeatures = await Components.ImagePreview.ImagePreview.loadDimensionsForNode(node);
         const preview = await Components.ImagePreview.ImagePreview.build(
-            node.domModel().target(), link[HrefSymbol], true, {precomputedFeatures});
+            node.domModel().target(), href, true, {imageAltText: undefined, precomputedFeatures});
         if (preview) {
           popover.contentElement.appendChild(preview);
         }
@@ -66,9 +67,17 @@ export class ImagePreviewPopover {
      * @param {string} url
      */
   static setImageUrl(element, url) {
-    element[HrefSymbol] = url;
+    elementToURLMap.set(element, url);
     return element;
+  }
+
+  /**
+   * @param {!Element} element
+   */
+  static getImageURL(element) {
+    return elementToURLMap.get(element);
   }
 }
 
-export const HrefSymbol = Symbol('ImagePreviewPopover.Href');
+/** @type {!WeakMap<!Element, string>} */
+const elementToURLMap = new WeakMap();

@@ -168,7 +168,7 @@ export class PopoverHelper {
       return;
     }
 
-    this._hidePopoverTimer = setTimeout(() => {
+    this._hidePopoverTimer = window.setTimeout(() => {
       this._hidePopover();
       this._hidePopoverTimer = null;
     }, timeout);
@@ -184,7 +184,7 @@ export class PopoverHelper {
       return;
     }
 
-    this._showPopoverTimer = setTimeout(() => {
+    this._showPopoverTimer = window.setTimeout(() => {
       this._showPopoverTimer = null;
       this._stopHidePopoverTimer();
       this._hidePopover();
@@ -290,6 +290,6 @@ export class PopoverHelper {
 /** @type {?PopoverHelper} */
 let popoverHelperInstance = null;
 
-/** @typedef {{box: !AnchorBox, show:(function(!GlassPane):!Promise<boolean>), hide:(function():void|undefined)}} */
+/** @typedef {{box: !AnchorBox, show:(function(!GlassPane):!Promise<boolean>), hide:((function():void)|undefined)}} */
 // @ts-ignore typedef
 export let PopoverRequest;

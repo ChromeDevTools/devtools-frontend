@@ -10,7 +10,6 @@
 
 .report-content-box {
   background-color: white;
-  white-space: nowrap;
   overflow: auto;
 }
 

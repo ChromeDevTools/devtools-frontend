@@ -129,7 +129,8 @@ export class WarningErrorCounter {
 
     this._counter.classList.toggle('hidden', !(errors || warnings));
     this._violationCounter.classList.toggle('hidden', !violations);
-    this._toolbarItem.setVisible(!!(errors || warnings || violations));
+    const violationsEnabled = Root.Runtime.experiments.isEnabled('spotlight');
+    this._toolbarItem.setVisible(!!(errors || warnings || (violationsEnabled && violations) || issues));
 
     let errorCountTitle = '';
     if (errors === 1) {
@@ -147,7 +148,7 @@ export class WarningErrorCounter {
     }
     this._updateItem(this._warnings, warnings, !errors);
 
-    if (Root.Runtime.experiments.isEnabled('spotlight') && this._violations) {
+    if (violationsEnabled && this._violations) {
       let violationCountTitle = '';
       if (violations === 1) {
         violationCountTitle = ls`${violations} violation`;

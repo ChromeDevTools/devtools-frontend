@@ -27,8 +27,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
@@ -76,17 +74,17 @@ export function displayNameForURL(url) {
   }
 
   const parsedURL = Common.ParsedURL.ParsedURL.fromString(inspectedURL);
-  const lastPathComponent = parsedURL ? parsedURL.lastPathComponent : parsedURL;
+  if (!parsedURL) {
+    return url;
+  }
+
+  const lastPathComponent = parsedURL.lastPathComponent;
   const index = inspectedURL.indexOf(lastPathComponent);
   if (index !== -1 && index + lastPathComponent.length === inspectedURL.length) {
     const baseURL = inspectedURL.substring(0, index);
     if (url.startsWith(baseURL)) {
       return url.substring(index);
     }
-  }
-
-  if (!parsedURL) {
-    return url;
   }
 
   const displayName = Platform.StringUtilities.trimURL(url, parsedURL.host);

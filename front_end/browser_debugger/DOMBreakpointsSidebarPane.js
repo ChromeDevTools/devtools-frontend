@@ -91,12 +91,11 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox {
     UI.ARIAUtils.markAsListitem(element);
     element.tabIndex = -1;
 
-    const checkboxLabel = UI.UIUtils.CheckboxLabel.create(/* title */ '', item.enabled);
+    const checkboxLabel = UI.UIUtils.CheckboxLabel.create(/* title */ undefined, item.enabled);
     const checkboxElement = checkboxLabel.checkboxElement;
     checkboxElement.addEventListener('click', this._checkboxClicked.bind(this, item), false);
     checkboxElement.tabIndex = this._list.selectedItem() === item ? 0 : -1;
     this.elementToCheckboxes.set(element, checkboxElement);
-    UI.ARIAUtils.markAsHidden(checkboxLabel);
     element.appendChild(checkboxLabel);
 
     const labelElement = document.createElement('div');
@@ -105,6 +104,7 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox {
     const description = document.createElement('div');
     const breakpointTypeLabel = BreakpointTypeLabels.get(item.type);
     description.textContent = breakpointTypeLabel || null;
+    UI.ARIAUtils.setAccessibleName(checkboxElement, ls`${breakpointTypeLabel}`);
     const linkifiedNode = document.createElement('monospace');
     linkifiedNode.style.display = 'block';
     labelElement.appendChild(linkifiedNode);

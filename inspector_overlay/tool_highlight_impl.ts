@@ -28,29 +28,64 @@
 //  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 //  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import {contrastRatio, rgbaToHsla} from '../front_end/common/ColorUtils.js';
 
-import {Overlay} from './common.js';
-import {Bounds, createElement} from './common.js';  // eslint-disable-line no-unused-vars
-import {buildPath, emptyBounds} from './highlight_common.js';
-import {drawLayoutGridHighlight} from './highlight_grid_common.js';
+import {Bounds, constrainNumber, createChild, createElement, createTextChild, ellipsify, Overlay, ResetData} from './common.js';
+import {buildPath, emptyBounds, PathBounds} from './highlight_common.js';
+import {drawLayoutGridHighlight, GridHighlight} from './highlight_grid_common.js';
 import {HighlightGridOverlay} from './tool_highlight_grid_impl.js';
 
-export class HighlightOverlay extends Overlay {
-  reset(resetData) {
-    super.reset(resetData);
-    this.tooltip.removeChildren();
-    this.gridOverlay.reset(resetData);
+interface Path {
+  path: Array<string|number>, outlineColor: string;
+  fillColor: string;
+  name: string;
+}
 
-    // TODO(alexrudenko): Temporarily expose canvas params globally.
-    window.canvasWidth = this.canvasWidth;
-    window.canvasHeight = this.canvasHeight;
+interface ContrastInfo {
+  backgroundColor: string;
+  fontSize: string;
+  fontWeight: string;
+}
+
+interface ElementInfo {
+  contrast?: ContrastInfo;
+  tagName: string;
+  idValue: string;
+  className?: string;
+  nodeWidth: number;
+  nodeHeight: number;
+  isLockedAncestor: boolean;
+  style: {[key: string]: string|undefined};
+  showAccessibilityInfo: boolean;
+  isKeyboardFocusable: boolean;
+  accessibleName: string;
+  accessibleRole: string;
+  layoutObjectName?: string;
+}
+
+interface Highlight {
+  paths: Path[];
+  showRulers: boolean;
+  showExtensionLines: boolean;
+  elementInfo: ElementInfo;
+  colorFormat: string;
+  gridInfo: GridHighlight[];
+}
+
+export class HighlightOverlay extends Overlay {
+  private tooltip!: HTMLElement;
+  private gridOverlay?: HighlightGridOverlay;
+  private gridLabelState = {gridLayerCounter: 1};
+
+  reset(resetData: ResetData) {
+    super.reset(resetData);
+    this.tooltip.innerHTML = '';
+    if (this.gridOverlay) {
+      this.gridOverlay.reset(resetData);
+    }
   }
 
-  setPlatform(platform) {
+  setPlatform(platform: string) {
     super.setPlatform(platform);
 
     this.document.body.classList.add('fill');
@@ -72,39 +107,41 @@ export class HighlightOverlay extends Overlay {
     this.setCanvas(canvas);
   }
 
-  drawHighlight(highlight) {
-    const context = this.context;
-    context.save();
+  drawHighlight(highlight: Highlight) {
+    this.context.save();
 
     const bounds = emptyBounds();
 
     for (let paths = highlight.paths.slice(); paths.length;) {
       const path = paths.pop();
-      context.save();
-      drawPath(context, path.path, path.fillColor, path.outlineColor, bounds);
-      if (paths.length) {
-        context.globalCompositeOperation = 'destination-out';
-        drawPath(context, paths[paths.length - 1].path, 'red', null, bounds);
+      if (!path) {
+        continue;
       }
-      context.restore();
+      this.context.save();
+      drawPath(this.context, path.path, path.fillColor, path.outlineColor, bounds, this.emulationScaleFactor);
+      if (paths.length) {
+        this.context.globalCompositeOperation = 'destination-out';
+        drawPath(this.context, paths[paths.length - 1].path, 'red', undefined, bounds, this.emulationScaleFactor);
+      }
+      this.context.restore();
     }
-    context.restore();
+    this.context.restore();
 
-    context.save();
+    this.context.save();
 
     const rulerAtRight =
-        highlight.paths.length && highlight.showRulers && bounds.minX < 20 && bounds.maxX + 20 < this.canvasWidth;
+        !!(highlight.paths.length && highlight.showRulers && bounds.minX < 20 && bounds.maxX + 20 < this.canvasWidth);
     const rulerAtBottom =
-        highlight.paths.length && highlight.showRulers && bounds.minY < 20 && bounds.maxY + 20 < this.canvasHeight;
+        !!(highlight.paths.length && highlight.showRulers && bounds.minY < 20 && bounds.maxY + 20 < this.canvasHeight);
 
     if (highlight.showRulers) {
-      this._drawAxis(context, rulerAtRight, rulerAtBottom);
+      this._drawAxis(this.context, rulerAtRight, rulerAtBottom);
     }
 
     if (highlight.paths.length) {
       if (highlight.showExtensionLines) {
         drawRulers(
-            context, bounds, rulerAtRight, rulerAtBottom, undefined, undefined, this.canvasWidth, this.canvasHeight);
+            this.context, bounds, rulerAtRight, rulerAtBottom, undefined, false, this.canvasWidth, this.canvasHeight);
       }
 
       if (highlight.elementInfo) {
@@ -113,33 +150,32 @@ export class HighlightOverlay extends Overlay {
     }
     if (highlight.gridInfo) {
       for (const grid of highlight.gridInfo) {
-        drawLayoutGridHighlight(grid, context, this.deviceScaleFactor, this.canvasWidth, this.canvasHeight);
+        drawLayoutGridHighlight(
+            grid, this.context, this.deviceScaleFactor, this.canvasWidth, this.canvasHeight, this.emulationScaleFactor,
+            this.gridLabelState);
       }
     }
-    context.restore();
+    this.context.restore();
 
     return {bounds: bounds};
   }
 
-  drawGridHighlight(highlight) {
-    this.gridOverlay.drawGridHighlight(highlight, this.context, this.deviceScaleFactor);
+  drawGridHighlight(highlight: GridHighlight) {
+    if (this.gridOverlay) {
+      this.gridOverlay.drawGridHighlight(highlight);
+    }
   }
 
-  _drawAxis(context, rulerAtRight, rulerAtBottom) {
-    if (this.window._gridPainted) {
-      return;
-    }
-    this.window._gridPainted = true;
-
+  _drawAxis(context: CanvasRenderingContext2D, rulerAtRight: boolean, rulerAtBottom: boolean) {
     context.save();
 
     const pageFactor = this.pageZoomFactor * this.pageScaleFactor * this.emulationScaleFactor;
     const scrollX = this.scrollX * this.pageScaleFactor;
     const scrollY = this.scrollY * this.pageScaleFactor;
-    function zoom(x) {
+    function zoom(x: number) {
       return Math.round(x * pageFactor);
     }
-    function unzoom(x) {
+    function unzoom(x: number) {
       return Math.round(x / pageFactor);
     }
 
@@ -190,14 +226,14 @@ export class HighlightOverlay extends Overlay {
         context.save();
         context.translate(scrollX, zoom(y));
         context.rotate(-Math.PI / 2);
-        context.fillText(y, 2, rulerAtRight ? zoom(width) - 7 : 13);
+        context.fillText(String(y), 2, rulerAtRight ? zoom(width) - 7 : 13);
         context.restore();
       }
       context.translate(0.5, -0.5);
       const maxX = width + unzoom(scrollX);
       for (let x = 2 * gridStep; x < maxX; x += 2 * gridStep) {
         context.save();
-        context.fillText(x, zoom(x) + 2, rulerAtBottom ? scrollY + zoom(height) - 7 : scrollY + 13);
+        context.fillText(String(x), zoom(x) + 2, rulerAtBottom ? scrollY + zoom(height) - 7 : scrollY + 13);
         context.restore();
       }
       context.restore();
@@ -269,23 +305,11 @@ const lightGridColor = 'rgba(0,0,0,0.2)';
 const darkGridColor = 'rgba(0,0,0,0.7)';
 const gridBackgroundColor = 'rgba(255, 255, 255, 0.8)';
 
-/** @typedef {!Object<string, Array>} */
-let AreaPaths;  // eslint-disable-line no-unused-vars
-
-/**
- * @param {!String} hexa
- * @return {!Array<number>}
- */
-function parseHexa(hexa) {
-  return hexa.match(/#(\w\w)(\w\w)(\w\w)(\w\w)/).slice(1).map(c => parseInt(c, 16) / 255);
+function parseHexa(hexa: string): Array<number> {
+  return (hexa.match(/#(\w\w)(\w\w)(\w\w)(\w\w)/) || []).slice(1).map(c => parseInt(c, 16) / 255);
 }
 
-/**
- * @param {!String} hexa
- * @param {!String} colorFormat
- * @return {!String}
- */
-function formatColor(hexa, colorFormat) {
+function formatColor(hexa: string, colorFormat: string): string {
   if (colorFormat === 'rgb') {
     const [r, g, b, a] = parseHexa(hexa);
     // rgb(r g b [ / a])
@@ -308,7 +332,7 @@ function formatColor(hexa, colorFormat) {
   return hexa;
 }
 
-function computeIsLargeFont(contrast) {
+function computeIsLargeFont(contrast: ContrastInfo) {
   const boldWeights = new Set(['bold', 'bolder', '600', '700', '800', '900']);
 
   const fontSizePx = parseFloat(contrast.fontSize.replace('px', ''));
@@ -326,7 +350,7 @@ function computeIsLargeFont(contrast) {
  * @param {Object} elementInfo The element information, part of the config object passed to drawHighlight
  * @return {String|null} The layout type of the object, or null if none was found
  */
-function _getElementLayoutType(elementInfo) {
+function _getElementLayoutType(elementInfo: ElementInfo): string|null {
   // TODO(patrickbrosset): elementInfo.layoutObjectName can be any of the values returned by
   // LayoutObject.GetName on the backend. For now we only care about grid. In the future, modify this code
   // to allow other layout object types. See CRBug 1099682.
@@ -339,40 +363,37 @@ function _getElementLayoutType(elementInfo) {
 
 /**
  * Create the DOM node that displays the description of the highlighted element
- * @param {Object} elementInfo The element information, part of the config object passed to drawHighlight
- * @param {String} colorFormat
- * @return {DOMNode}
  */
-function _createElementDescription(elementInfo, colorFormat) {
+function _createElementDescription(elementInfo: ElementInfo, colorFormat: string): Element {
   const elementInfoElement = createElement('div', 'element-info');
-  const elementInfoHeaderElement = elementInfoElement.createChild('div', 'element-info-header');
+  const elementInfoHeaderElement = createChild(elementInfoElement, 'div', 'element-info-header');
 
   const layoutType = _getElementLayoutType(elementInfo);
   if (layoutType) {
-    elementInfoHeaderElement.createChild('div', `element-layout-type ${layoutType}`);
+    createChild(elementInfoHeaderElement, 'div', `element-layout-type ${layoutType}`);
   }
-  const descriptionElement = elementInfoHeaderElement.createChild('div', 'element-description monospace');
-  const tagNameElement = descriptionElement.createChild('span', 'material-tag-name');
+  const descriptionElement = createChild(elementInfoHeaderElement, 'div', 'element-description monospace');
+  const tagNameElement = createChild(descriptionElement, 'span', 'material-tag-name');
   tagNameElement.textContent = elementInfo.tagName;
-  const nodeIdElement = descriptionElement.createChild('span', 'material-node-id');
+  const nodeIdElement = createChild(descriptionElement, 'span', 'material-node-id');
   const maxLength = 80;
-  nodeIdElement.textContent = elementInfo.idValue ? '#' + elementInfo.idValue.trimEnd(maxLength) : '';
+  nodeIdElement.textContent = elementInfo.idValue ? '#' + ellipsify(elementInfo.idValue, maxLength) : '';
   nodeIdElement.classList.toggle('hidden', !elementInfo.idValue);
 
-  const classNameElement = descriptionElement.createChild('span', 'material-class-name');
+  const classNameElement = createChild(descriptionElement, 'span', 'material-class-name');
   if (nodeIdElement.textContent.length < maxLength) {
-    classNameElement.textContent = (elementInfo.className || '').trimEnd(maxLength - nodeIdElement.textContent.length);
+    classNameElement.textContent = ellipsify(elementInfo.className || '', maxLength - nodeIdElement.textContent.length);
   }
   classNameElement.classList.toggle('hidden', !elementInfo.className);
-  const dimensionsElement = elementInfoHeaderElement.createChild('div', 'dimensions');
-  dimensionsElement.createChild('span', 'material-node-width').textContent =
-      Math.round(elementInfo.nodeWidth * 100) / 100;
-  dimensionsElement.createTextChild('\u00d7');
-  dimensionsElement.createChild('span', 'material-node-height').textContent =
-      Math.round(elementInfo.nodeHeight * 100) / 100;
+  const dimensionsElement = createChild(elementInfoHeaderElement, 'div', 'dimensions');
+  createChild(dimensionsElement, 'span', 'material-node-width').textContent =
+      String(Math.round(elementInfo.nodeWidth * 100) / 100);
+  createTextChild(dimensionsElement, '\u00d7');
+  createChild(dimensionsElement, 'span', 'material-node-height').textContent =
+      String(Math.round(elementInfo.nodeHeight * 100) / 100);
 
   const style = elementInfo.style || {};
-  let elementInfoBodyElement;
+  let elementInfoBodyElement: HTMLElement;
 
   if (elementInfo.isLockedAncestor) {
     addTextRow('Showing the locked ancestor', '');
@@ -410,7 +431,7 @@ function _createElementDescription(elementInfo, colorFormat) {
   if (elementInfo.showAccessibilityInfo) {
     addSection('Accessibility');
 
-    if (hasContrastInfo) {
+    if (hasContrastInfo && style['color'] && elementInfo.contrast) {
       addContrastRow(style['color'], elementInfo.contrast);
     }
 
@@ -423,57 +444,57 @@ function _createElementDescription(elementInfo, colorFormat) {
 
   function ensureElementInfoBody() {
     if (!elementInfoBodyElement) {
-      elementInfoBodyElement = elementInfoElement.createChild('div', 'element-info-body');
+      elementInfoBodyElement = createChild(elementInfoElement, 'div', 'element-info-body');
     }
   }
 
-  function addSection(name) {
+  function addSection(name: string) {
     ensureElementInfoBody();
-    const rowElement = elementInfoBodyElement.createChild('div', 'element-info-row element-info-section');
-    const nameElement = rowElement.createChild('div', 'section-name');
+    const rowElement = createChild(elementInfoBodyElement, 'div', 'element-info-row element-info-section');
+    const nameElement = createChild(rowElement, 'div', 'section-name');
     nameElement.textContent = name;
-    rowElement.createChild('div', 'separator-container').createChild('div', 'separator');
+    createChild(createChild(rowElement, 'div', 'separator-container'), 'div', 'separator');
   }
 
-  function addRow(name, rowClassName, valueClassName) {
+  function addRow(name: string, rowClassName: string|undefined, valueClassName: string|undefined) {
     ensureElementInfoBody();
-    const rowElement = elementInfoBodyElement.createChild('div', 'element-info-row');
+    const rowElement = createChild(elementInfoBodyElement, 'div', 'element-info-row');
     if (rowClassName) {
       rowElement.classList.add(rowClassName);
     }
-    const nameElement = rowElement.createChild('div', 'element-info-name');
+    const nameElement = createChild(rowElement, 'div', 'element-info-name');
     nameElement.textContent = name;
-    rowElement.createChild('div', 'element-info-gap');
-    return rowElement.createChild('div', valueClassName || '');
+    createChild(rowElement, 'div', 'element-info-gap');
+    return createChild(rowElement, 'div', valueClassName || '');
   }
 
-  function addIconRow(name, value) {
-    addRow(name, '', 'element-info-value-icon').createChild('div', value);
+  function addIconRow(name: string, value: string) {
+    createChild(addRow(name, '', 'element-info-value-icon'), 'div', value);
   }
 
-  function addTextRow(name, value) {
-    addRow(name, '', 'element-info-value-text').createTextChild(value);
+  function addTextRow(name: string, value: string) {
+    createTextChild(addRow(name, '', 'element-info-value-text'), value);
   }
 
-  function addColorRow(name, color, colorFormat) {
+  function addColorRow(name: string, color: string, colorFormat: string) {
     const valueElement = addRow(name, '', 'element-info-value-color');
-    const swatch = valueElement.createChild('div', 'color-swatch');
-    const inner = swatch.createChild('div', 'color-swatch-inner');
+    const swatch = createChild(valueElement, 'div', 'color-swatch');
+    const inner = createChild(swatch, 'div', 'color-swatch-inner');
     inner.style.backgroundColor = color;
-    valueElement.createTextChild(formatColor(color, colorFormat));
+    createTextChild(valueElement, formatColor(color, colorFormat));
   }
 
-  function addContrastRow(fgColor, contrast) {
+  function addContrastRow(fgColor: string, contrast: ContrastInfo) {
     const ratio = contrastRatio(parseHexa(fgColor), parseHexa(contrast.backgroundColor));
     const threshold = computeIsLargeFont(contrast) ? 3.0 : 4.5;
     const valueElement = addRow('Contrast', '', 'element-info-value-contrast');
-    const sampleText = valueElement.createChild('div', 'contrast-text');
+    const sampleText = createChild(valueElement, 'div', 'contrast-text');
     sampleText.style.color = fgColor;
     sampleText.style.backgroundColor = contrast.backgroundColor;
     sampleText.textContent = 'Aa';
-    const valueSpan = valueElement.createChild('span');
-    valueSpan.textContent = Math.round(ratio * 100) / 100;
-    valueElement.createChild('div', ratio < threshold ? 'a11y-icon a11y-icon-warning' : 'a11y-icon a11y-icon-ok');
+    const valueSpan = createChild(valueElement, 'span');
+    valueSpan.textContent = String(Math.round(ratio * 100) / 100);
+    createChild(valueElement, 'div', ratio < threshold ? 'a11y-icon a11y-icon-warning' : 'a11y-icon a11y-icon-ok');
   }
 
   return elementInfoElement;
@@ -486,14 +507,19 @@ function _createElementDescription(elementInfo, colorFormat) {
  * @param {number} canvasWidth
  * @param {number} canvasHeight
  */
-function _drawElementTitle(elementInfo, colorFormat, bounds, canvasWidth, canvasHeight) {
+function _drawElementTitle(
+    elementInfo: ElementInfo, colorFormat: string, bounds: Bounds, canvasWidth: number, canvasHeight: number) {
   // Get the tooltip container and empty it, there can only be one tooltip displayed at the same time.
   const tooltipContainer = document.getElementById('tooltip-container');
-  tooltipContainer.removeChildren();
+  if (!tooltipContainer) {
+    throw new Error('#tooltip-container is not found');
+  }
+
+  tooltipContainer.innerHTML = '';
 
   // Create the necessary wrappers.
-  const wrapper = tooltipContainer.createChild('div');
-  const tooltipContent = wrapper.createChild('div', 'tooltip-content');
+  const wrapper = createChild(tooltipContainer, 'div');
+  const tooltipContent = createChild(wrapper, 'div', 'tooltip-content');
 
   // Create the tooltip content and append it.
   const tooltip = _createElementDescription(elementInfo, colorFormat);
@@ -512,7 +538,7 @@ function _drawElementTitle(elementInfo, colorFormat, bounds, canvasWidth, canvas
   // Left align arrow to the tooltip but ensure it is pointing to the element.
   // Center align arrow if the inspected element bounds are too narrow.
   const boundsAreTooNarrow = bounds.maxX - bounds.minX < arrowWidth + 2 * arrowInset;
-  let arrowX;
+  let arrowX: number;
   if (boundsAreTooNarrow) {
     arrowX = (bounds.minX + bounds.maxX) * 0.5 - arrowHalfWidth;
   } else {
@@ -521,14 +547,14 @@ function _drawElementTitle(elementInfo, colorFormat, bounds, canvasWidth, canvas
     if (xFromLeftBound > containerMinX && xFromLeftBound < containerMaxX) {
       arrowX = xFromLeftBound;
     } else {
-      arrowX = Number.constrain(containerMinX, xFromLeftBound, xFromRightBound);
+      arrowX = constrainNumber(containerMinX, xFromLeftBound, xFromRightBound);
     }
   }
   // Hide arrow if element is completely off the sides of the page.
   const arrowHidden = arrowX < containerMinX || arrowX > containerMaxX;
 
   let boxX = arrowX - arrowInset;
-  boxX = Number.constrain(boxX, pageMargin, canvasWidth - titleWidth - pageMargin);
+  boxX = constrainNumber(boxX, pageMargin, canvasWidth - titleWidth - pageMargin);
 
   let boxY = bounds.minY - arrowHalfWidth - titleHeight;
   let onTop = true;
@@ -564,9 +590,11 @@ function _drawElementTitle(elementInfo, colorFormat, bounds, canvasWidth, canvas
   tooltipContent.style.setProperty('--arrow-left', (arrowX - boxX) + 'px');
 }
 
-function drawPath(context, commands, fillColor, outlineColor, bounds) {
+function drawPath(
+    context: CanvasRenderingContext2D, commands: Array<string|number>, fillColor: string|undefined,
+    outlineColor: string|undefined, bounds: PathBounds, emulationScaleFactor: number) {
   context.save();
-  const path = buildPath(commands, bounds);
+  const path = buildPath(commands, bounds, emulationScaleFactor);
   if (fillColor) {
     context.fillStyle = fillColor;
     context.fill(path);
@@ -582,7 +610,9 @@ function drawPath(context, commands, fillColor, outlineColor, bounds) {
 
 const DEFAULT_RULER_COLOR = 'rgba(128, 128, 128, 0.3)';
 
-function drawRulers(context, bounds, rulerAtRight, rulerAtBottom, color, dash, canvasWidth, canvasHeight) {
+function drawRulers(
+    context: CanvasRenderingContext2D, bounds: PathBounds, rulerAtRight: boolean, rulerAtBottom: boolean,
+    color: string|undefined, dash: boolean, canvasWidth: number, canvasHeight: number) {
   context.save();
   const width = canvasWidth;
   const height = canvasHeight;
@@ -596,15 +626,15 @@ function drawRulers(context, bounds, rulerAtRight, rulerAtBottom, color, dash, c
   if (rulerAtRight) {
     for (const y in bounds.rightmostXForY) {
       context.beginPath();
-      context.moveTo(width, y);
-      context.lineTo(bounds.rightmostXForY[y], y);
+      context.moveTo(width, Number(y));
+      context.lineTo(bounds.rightmostXForY[y], Number(y));
       context.stroke();
     }
   } else {
     for (const y in bounds.leftmostXForY) {
       context.beginPath();
-      context.moveTo(0, y);
-      context.lineTo(bounds.leftmostXForY[y], y);
+      context.moveTo(0, Number(y));
+      context.lineTo(bounds.leftmostXForY[y], Number(y));
       context.stroke();
     }
   }
@@ -612,15 +642,15 @@ function drawRulers(context, bounds, rulerAtRight, rulerAtBottom, color, dash, c
   if (rulerAtBottom) {
     for (const x in bounds.bottommostYForX) {
       context.beginPath();
-      context.moveTo(x, height);
-      context.lineTo(x, bounds.topmostYForX[x]);
+      context.moveTo(Number(x), height);
+      context.lineTo(Number(x), bounds.topmostYForX[x]);
       context.stroke();
     }
   } else {
     for (const x in bounds.topmostYForX) {
       context.beginPath();
-      context.moveTo(x, 0);
-      context.lineTo(x, bounds.topmostYForX[x]);
+      context.moveTo(Number(x), 0);
+      context.lineTo(Number(x), bounds.topmostYForX[x]);
       context.stroke();
     }
   }

@@ -13,10 +13,3 @@ const overlay = new SourceOrderOverlay(window, style);
 window.dispatch = message => {
   overlay.dispatch(message);
 };
-
-declare global {
-  interface Window {
-    // This method is invoked by the inspector overlay agent on the backend to send messages to the overlay.
-    dispatch: (message: unknown) => void;
-  }
-}

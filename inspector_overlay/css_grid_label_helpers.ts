@@ -2,13 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import {Color, Format} from '../front_end/common/Color.js';
 import {luminance} from '../front_end/common/ColorUtils.js';
 
-import {AreaBounds, Bounds, Position} from './common.js';  // eslint-disable-line no-unused-vars
+import {AreaBounds, Bounds, createChild, Position} from './common.js';  // eslint-disable-line no-unused-vars
 import {applyMatrixToPoint} from './highlight_common.js';
 
 /**
@@ -60,57 +57,109 @@ const gridLabelDistance = 20;
 const maxLineNamesCount = 3;
 const defaultLabelColor = '#1A73E8';
 
-/** @typedef {!{contentTop: number, contentLeft: number}} */
-let GridLabelPositions;  // eslint-disable-line no-unused-vars
+export interface CanvasSize {
+  canvasWidth: number;
+  canvasHeight: number;
+}
 
-/** @typedef {!{positions: Position[], hasFirst: boolean, hasLast: boolean, names?: string[][]}} */
-let PositionData;  // eslint-disable-line no-unused-vars
+interface PositionData {
+  positions: Position[];
+  hasFirst: boolean;
+  hasLast: boolean;
+  names?: string[][];
+}
 
-/** @typedef {!{positive: PositionData, negative: PositionData}} */
-let TracksPositionData;  // eslint-disable-line no-unused-vars
+type PositionDataWithNames = PositionData&{
+  names: string[][];
+}
 
-/** @typedef {!{rows: TracksPositionData, columns: TracksPositionData, bounds: Bounds}} */
-let GridPositionNormalizedData;  // eslint-disable-line no-unused-vars
+interface TracksPositionData {
+  positive: PositionData;
+  negative: PositionData;
+}
 
-/** @typedef {!{computedSize: number, x: number, y: number}} */
-let TrackSize;  // eslint-disable-line no-unused-vars
+interface TracksPositionDataWithNames {
+  positive: PositionDataWithNames;
+  negative: PositionDataWithNames;
+}
 
-/** @typedef {!{
- * rotationAngle?: number,
- * writingMode?: string,
- * columnTrackSizes?: TrackSize[],
- * rowTrackSizes?: TrackSize[],
- * positiveRowLineNumberPositions?: Position[],
- * negativeRowLineNumberPositions?: Position[],
- * positiveColumnLineNumberPositions?: Position[],
- * negativeColumnLineNumberPositions?: Position[],
- * rowLineNameOffsets?: {name: string, x: number, y: number}[],
- * columnLineNameOffsets?: {name: string, x: number, y: number}[],
- * gridHighlightConfig?: Object
- * } */
-let GridHighlightConfig;  // eslint-disable-line no-unused-vars
+interface GridPositionNormalizedData {
+  rows: TracksPositionData;
+  columns: TracksPositionData;
+  bounds: Bounds;
+}
 
-/** @typedef {!{width: number, height: number, mainSize: number, crossSize: number}} */
-let LabelSize;  // eslint-disable-line no-unused-vars
+export interface GridPositionNormalizedDataWithNames {
+  rows: TracksPositionDataWithNames;
+  columns: TracksPositionDataWithNames;
+  bounds: Bounds;
+}
+
+interface TrackSize {
+  computedSize: number;
+  authoredSize?: number;
+  x: number;
+  y: number;
+}
+
+
+export interface GridHighlightOptions {
+  gridBorderDash: boolean;
+  rowLineDash: boolean;
+  columnLineDash: boolean;
+  showGridExtensionLines: boolean;
+  showPositiveLineNumbers: boolean;
+  showNegativeLineNumbers: boolean;
+  rowLineColor: string;
+  columnLineColor: string;
+  rowHatchColor: string;
+  columnHatchColor: string;
+  showLineNames: boolean;
+}
+
+export interface GridHighlightConfig {
+  rotationAngle?: number;
+  writingMode?: string;
+  columnTrackSizes?: TrackSize[];
+  rowTrackSizes?: TrackSize[];
+  positiveRowLineNumberPositions?: Position[];
+  negativeRowLineNumberPositions?: Position[];
+  positiveColumnLineNumberPositions?: Position[];
+  negativeColumnLineNumberPositions?: Position[];
+  rowLineNameOffsets?: {name: string, x: number, y: number}[];
+  columnLineNameOffsets?: {name: string, x: number, y: number}[];
+  gridHighlightConfig?: GridHighlightOptions;
+}
+
+interface LabelSize {
+  width: number;
+  height: number;
+  mainSize: number;
+  crossSize: number;
+}
+
+export interface GridLabelState {
+  gridLayerCounter: number;
+}
 
 /**
  * Places all of the required grid labels on the overlay. This includes row and
  * column line number labels, and area labels.
- *
- * @param {GridHighlightConfig} config The grid highlight configuration.
- * @param {Bounds} gridBounds The grid container bounds.
- * @param {AreaBounds[]} areaBounds The list of named grid areas with their bounds.
- * @param {DOMMatrix=} writingModeMatrix The transformation matrix in case a vertical writing-mode is applied, to map label positions
  */
-export function drawGridLabels(config, gridBounds, areaBounds, writingModeMatrix = new DOMMatrix()) {
+export function drawGridLabels(
+    config: GridHighlightConfig, gridBounds: Bounds, areaBounds: AreaBounds[], canvasSize: CanvasSize,
+    labelState: GridLabelState, writingModeMatrix: DOMMatrix|undefined = new DOMMatrix()) {
   // Find and clear the layer for the node specified in the config, or the default layer:
   // Each node has a layer for grid labels in order to draw multiple grid highlights
   // at once.
-  const labelContainerId = window._gridLayerCounter ? `grid-${window._gridLayerCounter++}-labels` : 'grid-labels';
+  const labelContainerId = labelState.gridLayerCounter ? `grid-${labelState.gridLayerCounter++}-labels` : 'grid-labels';
   let labelContainerForNode = document.getElementById(labelContainerId);
   if (!labelContainerForNode) {
     const mainLabelLayerContainer = document.getElementById('grid-label-container');
-    labelContainerForNode = mainLabelLayerContainer.createChild('div');
+    if (!mainLabelLayerContainer) {
+      throw new Error('#grid-label-container is not found');
+    }
+    labelContainerForNode = createChild(mainLabelLayerContainer, 'div');
     labelContainerForNode.id = labelContainerId;
 
     const labelColor = getLabelColors(config);
@@ -119,20 +168,23 @@ export function drawGridLabels(config, gridBounds, areaBounds, writingModeMatrix
     labelContainerForNode.style.setProperty('--row-label-text-color', labelColor.rowText);
     labelContainerForNode.style.setProperty('--column-label-text-color', labelColor.columnText);
   }
-  labelContainerForNode.removeChildren();
+
+  labelContainerForNode.innerText = '';
 
   // Add the containers for the line and area to the node's layer
-  const areaNameContainer = labelContainerForNode.createChild('div', 'area-names');
-  const lineNameContainer = labelContainerForNode.createChild('div', 'line-names');
-  const lineNumberContainer = labelContainerForNode.createChild('div', 'line-numbers');
-  const trackSizesContainer = labelContainerForNode.createChild('div', 'track-sizes');
+  const areaNameContainer = createChild(labelContainerForNode, 'div', 'area-names');
+  const lineNameContainer = createChild(labelContainerForNode, 'div', 'line-names');
+  const lineNumberContainer = createChild(labelContainerForNode, 'div', 'line-numbers');
+  const trackSizesContainer = createChild(labelContainerForNode, 'div', 'track-sizes');
 
   // Draw line numbers and names.
-  const normalizedData = _normalizePositionData(config, gridBounds, writingModeMatrix);
-  if (config.gridHighlightConfig.showLineNames) {
-    drawGridLineNames(lineNameContainer, normalizedData, writingModeMatrix, config.writingMode);
+  const normalizedData = _normalizePositionData(config, gridBounds);
+  if (config.gridHighlightConfig && config.gridHighlightConfig.showLineNames) {
+    drawGridLineNames(
+        lineNameContainer, normalizedData as GridPositionNormalizedDataWithNames, canvasSize, writingModeMatrix,
+        config.writingMode);
   } else {
-    drawGridLineNumbers(lineNumberContainer, normalizedData, writingModeMatrix, config.writingMode);
+    drawGridLineNumbers(lineNumberContainer, normalizedData, canvasSize, writingModeMatrix, config.writingMode);
   }
 
   // Draw area names.
@@ -140,20 +192,23 @@ export function drawGridLabels(config, gridBounds, areaBounds, writingModeMatrix
 
   if (config.columnTrackSizes) {
     // Draw column sizes.
-    drawGridTrackSizes(trackSizesContainer, config.columnTrackSizes, 'column', writingModeMatrix, config.writingMode);
+    drawGridTrackSizes(
+        trackSizesContainer, config.columnTrackSizes, 'column', canvasSize, writingModeMatrix, config.writingMode);
   }
   if (config.rowTrackSizes) {
     // Draw row sizes.
-    drawGridTrackSizes(trackSizesContainer, config.rowTrackSizes, 'row', writingModeMatrix, config.writingMode);
+    drawGridTrackSizes(
+        trackSizesContainer, config.rowTrackSizes, 'row', canvasSize, writingModeMatrix, config.writingMode);
   }
 }
 
-function getLabelColors(config) {
+function getLabelColors(config: GridHighlightConfig) {
+  const rowLineColor = config.gridHighlightConfig ? config.gridHighlightConfig.rowLineColor : defaultLabelColor;
+  const columnLineColor = config.gridHighlightConfig ? config.gridHighlightConfig.columnLineColor : defaultLabelColor;
   // Use semi-transparent white to create a label background color from the line color.
   const white = (new Color([1, 1, 1], Format.RGB)).setAlpha(.2);
-  const rowBackground = Color.parse(config.gridHighlightConfig.rowLineColor || defaultLabelColor).blendWith(white);
-  const columnBackground =
-      Color.parse(config.gridHighlightConfig.columnLineColor || defaultLabelColor).blendWith(white);
+  const rowBackground = Color.parse(rowLineColor)!.blendWith(white);
+  const columnBackground = Color.parse(columnLineColor)!.blendWith(white);
 
   // Decide the text color between white and black, by comparing the luminance with the label background color,
   // using WCAG's color contrast's formula: https://www.w3.org/TR/WCAG20/#contrast-ratiodef
@@ -169,18 +224,15 @@ function getLabelColors(config) {
     rowBackground: rowBackground.asString(),
     columnBackground: columnBackground.asString(),
     rowText: rowContrastForBlack > rowContrastForWhite ? '#121212' : 'white',
-    columnText: columnContrastForBlack > columnContrastForWhite ? '#121212' : 'white'
+    columnText: columnContrastForBlack > columnContrastForWhite ? '#121212' : 'white',
   };
 }
 
 /**
  * This is a generator function used to iterate over grid label positions in a way
  * that skips the ones that are too close to eachother, in order to avoid overlaps.
- *
- * @param {Position[]} positions
- * @param {string} axis - 'x' or 'y' in Position
  */
-function* positionIterator(positions, axis) {
+function* positionIterator(positions: Position[], axis: 'x'|'y'): Generator<[number, Position]> {
   let lastEmittedPos = null;
 
   for (const [i, pos] of positions.entries()) {
@@ -193,7 +245,7 @@ function* positionIterator(positions, axis) {
         Math.abs(pos[axis] - (lastEmittedPos ? lastEmittedPos[axis] : 0)) > gridLabelDistance;
     // And if there is also some minium distance from the very last position.
     const isFarEnoughFromLast =
-        Math.abs(!isLast && positions[positions.length - 1][axis] - pos[axis]) > gridLabelDistance;
+        !isLast && Math.abs(positions[positions.length - 1][axis] - pos[axis]) > gridLabelDistance;
 
     if (isFirst || isLast || (isFarEnoughFromPrevious && isFarEnoughFromLast)) {
       yield [i, pos];
@@ -202,16 +254,14 @@ function* positionIterator(positions, axis) {
   }
 }
 
-const last = array => array[array.length - 1];
-const first = array => array[0];
+const last = <T>(array: T[]) => array[array.length - 1];
+const first = <T>(array: T[]) => array[0];
 
 /**
  * Massage the list of line name positions given by the backend for easier consumption.
- *
- * @param {!{name: string, x: number, y: number}[]} namePositions
- * @return {!{positions: {x: number, y: number}[], names: string[][]}}
  */
-function _normalizeNameData(namePositions) {
+function _normalizeNameData(namePositions: {name: string; x: number; y: number;}[]):
+    {positions: {x: number; y: number;}[]; names: string[][];} {
   const positions = [];
   const names = [];
 
@@ -233,6 +283,16 @@ function _normalizeNameData(namePositions) {
   return {positions, names};
 }
 
+export interface NormalizePositionDataConfig {
+  positiveRowLineNumberPositions?: Position[];
+  negativeRowLineNumberPositions?: Position[];
+  positiveColumnLineNumberPositions?: Position[];
+  negativeColumnLineNumberPositions?: Position[];
+  rowLineNameOffsets?: {name: string, x: number, y: number}[];
+  columnLineNameOffsets?: {name: string, x: number, y: number}[];
+  gridHighlightConfig?: {showLineNames: boolean};
+}
+
 /**
  * Take the highlight config and bound objects in, and spits out an object with
  * the same information, but with 2 key differences:
@@ -241,23 +301,20 @@ function _normalizeNameData(namePositions) {
  * - all pixel values are rounded to integers in order to safely compare
  *   positions (on high-dpi monitors floats are passed by the backend, this means
  *   checking if a position is at either edges of the container can't be done).
- *
- * @param {GridHighlightConfig} config The highlight config object from the backend
- * @param {Bounds} bounds The bounds of the grid container
- * @return {GridPositionNormalizedData} The new, normalized, data object
  */
-export function _normalizePositionData(config, bounds) {
+export function _normalizePositionData(
+    config: NormalizePositionDataConfig, bounds: Bounds): GridPositionNormalizedData {
   const width = Math.round(bounds.maxX - bounds.minX);
   const height = Math.round(bounds.maxY - bounds.minY);
 
   const data = {
     rows: {
-      positive: {positions: [], hasFirst: false, hasLast: false},
-      negative: {positions: [], hasFirst: false, hasLast: false},
+      positive: {positions: [] as Position[], hasFirst: false, hasLast: false},
+      negative: {positions: [] as Position[], hasFirst: false, hasLast: false},
     },
     columns: {
-      positive: {positions: [], hasFirst: false, hasLast: false},
-      negative: {positions: [], hasFirst: false, hasLast: false},
+      positive: {positions: [] as Position[], hasFirst: false, hasLast: false},
+      negative: {positions: [] as Position[], hasFirst: false, hasLast: false},
     },
     bounds: {
       minX: Math.round(bounds.minX),
@@ -267,31 +324,33 @@ export function _normalizePositionData(config, bounds) {
       allPoints: bounds.allPoints,
       width,
       height,
-    }
+    },
   };
 
   // Line numbers and line names can't be shown together at once for now.
   // If showLineNames is set to true, then don't show line numbers, even if the
   // data is present.
 
-  if (config.gridHighlightConfig.showLineNames) {
-    const rowData = _normalizeNameData(config.rowLineNameOffsets);
-    data.rows.positive = {
+  if (config.gridHighlightConfig && config.gridHighlightConfig.showLineNames) {
+    const rowData = _normalizeNameData(config.rowLineNameOffsets || []);
+    const positiveRows: PositionDataWithNames = {
       positions: rowData.positions,
       names: rowData.names,
-      hasFirst: rowData.positions.length && first(rowData.positions).y === data.bounds.minY,
-      hasLast: rowData.positions.length && last(rowData.positions).y === data.bounds.maxY
+      hasFirst: rowData.positions.length ? first(rowData.positions).y === data.bounds.minY : false,
+      hasLast: rowData.positions.length ? last(rowData.positions).y === data.bounds.maxY : false,
     };
+    data.rows.positive = positiveRows;
 
-    const columnData = _normalizeNameData(config.columnLineNameOffsets);
-    data.columns.positive = {
+    const columnData = _normalizeNameData(config.columnLineNameOffsets || []);
+    const positiveColumns: PositionDataWithNames = {
       positions: columnData.positions,
       names: columnData.names,
-      hasFirst: columnData.positions.length && first(columnData.positions).x === data.bounds.minX,
-      hasLast: columnData.positions.length && last(columnData.positions).x === data.bounds.maxX
+      hasFirst: columnData.positions.length ? first(columnData.positions).x === data.bounds.minX : false,
+      hasLast: columnData.positions.length ? last(columnData.positions).x === data.bounds.maxX : false,
     };
+    data.columns.positive = positiveColumns;
   } else {
-    const normalizeXY = ({x, y}) => ({x: Math.round(x), y: Math.round(y)});
+    const normalizeXY = ({x, y}: {x: number, y: number}) => ({x: Math.round(x), y: Math.round(y)});
     // TODO (alexrudenko): hasFirst & hasLast checks won't probably work for rotated grids.
     if (config.positiveRowLineNumberPositions) {
       data.rows.positive = {
@@ -305,7 +364,7 @@ export function _normalizePositionData(config, bounds) {
       data.rows.negative = {
         positions: config.negativeRowLineNumberPositions.map(normalizeXY),
         hasFirst: Math.round(first(config.negativeRowLineNumberPositions).y) === data.bounds.minY,
-        hasLast: Math.round(last(config.negativeRowLineNumberPositions).y) === data.bounds.maxY
+        hasLast: Math.round(last(config.negativeRowLineNumberPositions).y) === data.bounds.maxY,
       };
     }
 
@@ -313,7 +372,7 @@ export function _normalizePositionData(config, bounds) {
       data.columns.positive = {
         positions: config.positiveColumnLineNumberPositions.map(normalizeXY),
         hasFirst: Math.round(first(config.positiveColumnLineNumberPositions).x) === data.bounds.minX,
-        hasLast: Math.round(last(config.positiveColumnLineNumberPositions).x) === data.bounds.maxX
+        hasLast: Math.round(last(config.positiveColumnLineNumberPositions).x) === data.bounds.maxX,
       };
     }
 
@@ -321,7 +380,7 @@ export function _normalizePositionData(config, bounds) {
       data.columns.negative = {
         positions: config.negativeColumnLineNumberPositions.map(normalizeXY),
         hasFirst: Math.round(first(config.negativeColumnLineNumberPositions).x) === data.bounds.minX,
-        hasLast: Math.round(last(config.negativeColumnLineNumberPositions).x) === data.bounds.maxX
+        hasLast: Math.round(last(config.negativeColumnLineNumberPositions).x) === data.bounds.maxX,
       };
     }
   }
@@ -338,18 +397,19 @@ export function _normalizePositionData(config, bounds) {
  * @param {string=} writingMode The current writing-mode value
  */
 export function drawGridLineNumbers(
-    container, data, writingModeMatrix = new DOMMatrix(), writingMode = 'horizontal-tb') {
+    container: HTMLElement, data: GridPositionNormalizedData, canvasSize: CanvasSize,
+    writingModeMatrix: DOMMatrix|undefined = new DOMMatrix(), writingMode: string|undefined = 'horizontal-tb') {
   if (!data.columns.positive.names) {
     for (const [i, pos] of positionIterator(data.columns.positive.positions, 'x')) {
       const element = _createLabelElement(container, (i + 1).toString(), 'column');
-      _placePositiveColumnLabel(element, applyMatrixToPoint(pos, writingModeMatrix), data, writingMode);
+      _placePositiveColumnLabel(element, applyMatrixToPoint(pos, writingModeMatrix), data, writingMode, canvasSize);
     }
   }
 
   if (!data.rows.positive.names) {
     for (const [i, pos] of positionIterator(data.rows.positive.positions, 'y')) {
       const element = _createLabelElement(container, (i + 1).toString(), 'row');
-      _placePositiveRowLabel(element, applyMatrixToPoint(pos, writingModeMatrix), data, writingMode);
+      _placePositiveRowLabel(element, applyMatrixToPoint(pos, writingModeMatrix), data, writingMode, canvasSize);
     }
   }
 
@@ -357,29 +417,24 @@ export function drawGridLineNumbers(
     // Negative positions are sorted such that the first position corresponds to the line closest to start edge of the grid.
     const element =
         _createLabelElement(container, (data.columns.negative.positions.length * -1 + i).toString(), 'column');
-    _placeNegativeColumnLabel(element, applyMatrixToPoint(pos, writingModeMatrix), data, writingMode);
+    _placeNegativeColumnLabel(element, applyMatrixToPoint(pos, writingModeMatrix), data, writingMode, canvasSize);
   }
 
   for (const [i, pos] of positionIterator(data.rows.negative.positions, 'y')) {
     // Negative positions are sorted such that the first position corresponds to the line closest to start edge of the grid.
     const element = _createLabelElement(container, (data.rows.negative.positions.length * -1 + i).toString(), 'row');
-    _placeNegativeRowLabel(element, applyMatrixToPoint(pos, writingModeMatrix), data, writingMode);
+    _placeNegativeRowLabel(element, applyMatrixToPoint(pos, writingModeMatrix), data, writingMode, canvasSize);
   }
 }
 
 /**
  * Places the grid track size labels on the overlay.
- *
- * @param {HTMLElement} container Where to append the labels
- * @param {!Array<TrackSize>} trackSizes The list of sizes to draw
- * @param {string} direction Either 'column' or 'row'
- * @param {DOMMatrix=} writingModeMatrix The transformation matrix in case a vertical writing-mode is applied, to map label positions
- * @param {string=} writingMode The current writing-mode value
  */
 export function drawGridTrackSizes(
-    container, trackSizes, direction, writingModeMatrix = new DOMMatrix(), writingMode = 'horizontal-tb') {
+    container: HTMLElement, trackSizes: Array<TrackSize>, direction: 'row'|'column', canvasSize: CanvasSize,
+    writingModeMatrix: DOMMatrix|undefined = new DOMMatrix(), writingMode: string|undefined = 'horizontal-tb') {
   const {main, cross} = _getAxes(writingMode);
-  const {crossSize} = _getCanvasSizes(writingMode);
+  const {crossSize} = _getCanvasSizes(writingMode, canvasSize);
 
   for (const {x, y, computedSize, authoredSize} of trackSizes) {
     const point = applyMatrixToPoint({x, y}, writingModeMatrix);
@@ -406,38 +461,32 @@ export function drawGridTrackSizes(
 
 /**
  * Places the grid row and column name labels on the overlay.
- *
- * @param {HTMLElement} container
- * @param {GridPositionNormalizedData} data
- * @param {DOMMatrix=} writingModeMatrix The transformation matrix in case a vertical writing-mode is applied, to map label positions
- * @param {string=} writingMode The current writing-mode value
  */
-export function drawGridLineNames(container, data, writingModeMatrix = new DOMMatrix(), writingMode = 'horizontal-tb') {
+export function drawGridLineNames(
+    container: HTMLElement, data: GridPositionNormalizedDataWithNames, canvasSize: CanvasSize,
+    writingModeMatrix: DOMMatrix|undefined = new DOMMatrix(), writingMode: string|undefined = 'horizontal-tb') {
   for (const [i, pos] of data.columns.positive.positions.entries()) {
     const names = data.columns.positive.names[i];
     const element = _createLabelElement(container, _makeLineNameLabelContent(names), 'column');
-    _placePositiveColumnLabel(element, applyMatrixToPoint(pos, writingModeMatrix), data, writingMode);
+    _placePositiveColumnLabel(element, applyMatrixToPoint(pos, writingModeMatrix), data, writingMode, canvasSize);
   }
 
   for (const [i, pos] of data.rows.positive.positions.entries()) {
     const names = data.rows.positive.names[i];
     const element = _createLabelElement(container, _makeLineNameLabelContent(names), 'row');
-    _placePositiveRowLabel(element, applyMatrixToPoint(pos, writingModeMatrix), data, writingMode);
+    _placePositiveRowLabel(element, applyMatrixToPoint(pos, writingModeMatrix), data, writingMode, canvasSize);
   }
 }
 
 /**
  * Turn an array of custom line names into DOM content that can be used in a label.
- *
- * @param {string[]} names
- * @return {HTMLElement}
  */
-function _makeLineNameLabelContent(names) {
+function _makeLineNameLabelContent(names: string[]): HTMLElement {
   const content = document.createElement('ul');
   const namesToDisplay = names.slice(0, maxLineNamesCount);
 
   for (const name of namesToDisplay) {
-    content.createChild('li', 'line-name').textContent = name;
+    createChild(content, 'li', 'line-name').textContent = name;
   }
 
   return content;
@@ -445,14 +494,10 @@ function _makeLineNameLabelContent(names) {
 
 /**
  * Places the grid area name labels on the overlay.
- *
- * @param {HTMLElement} container
- * @param {AreaBounds[]} areaBounds
- * @param {DOMMatrix=} writingModeMatrix The transformation matrix in case a vertical writing-mode is applied, to map label positions
- * @param {string=} writingMode The current writing mode
  */
 export function drawGridAreaNames(
-    container, areaBounds, writingModeMatrix = new DOMMatrix(), writingMode = 'horizontal-tb') {
+    container: HTMLElement, areaBounds: AreaBounds[], writingModeMatrix: DOMMatrix|undefined = new DOMMatrix(),
+    writingMode: string|undefined = 'horizontal-tb') {
   for (const {name, bounds} of areaBounds) {
     const element = _createLabelElement(container, name, 'row');
     const {width, height} = _getLabelSize(element, writingMode);
@@ -471,15 +516,11 @@ export function drawGridAreaNames(
 
 /**
  * Create the necessary DOM for a single label element.
- *
- * @param {HTMLElement} container The DOM element where to append the label
- * @param {string|HTMLElement} textContent The text, or DOM node to display in the label
- * @param {string} direction "row" if this label is for rows, "column" otherwise
- * @return {Element} The new label element
  */
-function _createLabelElement(container, textContent, direction) {
-  const wrapper = container.createChild('div');
-  const element = wrapper.createChild('div', 'grid-label-content');
+function _createLabelElement(
+    container: HTMLElement, textContent: string|HTMLElement, direction: 'row'|'column'): HTMLElement {
+  const wrapper = createChild(container, 'div');
+  const element = createChild(wrapper, 'div', 'grid-label-content');
   element.dataset.direction = direction;
 
   if (typeof textContent === 'string') {
@@ -493,13 +534,9 @@ function _createLabelElement(container, textContent, direction) {
 
 /**
  * Get the start and end points of the edge where labels are displayed.
- *
- * @param {Bounds} gridBounds The grid container bounds
- * @param {string} direction "row" if we are considering row labels, "column" otherwise
- * @param {string} side "positive" if we are considering positive labels, "negative" otherwise
- * @return {{start: {x: number, y: number}, end: {x: number, y: number}}} The start and end {x,y} points
  */
-function _getLabelSideEdgePoints(gridBounds, direction, side) {
+function _getLabelSideEdgePoints(gridBounds: Bounds, direction: string, side: string):
+    {start: {x: number; y: number;}; end: {x: number; y: number;};} {
   const [p1, p2, p3, p4] = gridBounds.allPoints;
 
   // Here are where all the points are in standard, untransformed, horizontal-tb mode:
@@ -521,11 +558,8 @@ function _getLabelSideEdgePoints(gridBounds, direction, side) {
  * In "normal" horizonta-tb mode, the main axis is the one that goes horizontally from left to right,
  * hence, the x axis.
  * In vertical writing modes, the axes are swapped.
- *
- * @param {string} writingMode The current writing mode.
- * @return {{main: string, cross: string}}
  */
-function _getAxes(writingMode) {
+function _getAxes(writingMode: string): {main: 'x'|'y'; cross: 'x' | 'y';} {
   return writingMode.startsWith('vertical') ? {main: 'y', cross: 'x'} : {main: 'x', cross: 'y'};
 }
 
@@ -534,27 +568,21 @@ function _getAxes(writingMode) {
  * In "normal" horizonta-tb mode, the main axis is the one that goes horizontally from left to right,
  * hence, the main size of the canvas is its width, and its cross size is its height.
  * In vertical writing modes, those sizes are swapped.
- *
- * @param {string} writingMode The current writing mode.
- * @return {{mainSize: number, crossSize: number}}
  */
-function _getCanvasSizes(writingMode) {
-  return writingMode.startsWith('vertical') ? {mainSize: canvasHeight, crossSize: canvasWidth} :
-                                              {mainSize: canvasWidth, crossSize: canvasHeight};
+function _getCanvasSizes(writingMode: string, canvasSize: CanvasSize): {mainSize: number; crossSize: number;} {
+  return writingMode.startsWith('vertical') ? {mainSize: canvasSize.canvasHeight, crossSize: canvasSize.canvasWidth} :
+                                              {mainSize: canvasSize.canvasWidth, crossSize: canvasSize.canvasHeight};
 }
 
 /**
  * Determine the position of a positive row label, and place it.
- *
- * @param {HTMLElement} element The label DOM element
- * @param {Position} pos The corresponding grid line position
- * @param {GridPositionNormalizedData} data The normalized position data
- * @param {string} writingMode The current writing mode
  */
-function _placePositiveRowLabel(element, pos, data, writingMode) {
+function _placePositiveRowLabel(
+    element: HTMLElement, pos: Position, data: GridPositionNormalizedData, writingMode: string,
+    canvasSize: CanvasSize) {
   const {start, end} = _getLabelSideEdgePoints(data.bounds, 'row', 'positive');
   const {main, cross} = _getAxes(writingMode);
-  const {crossSize} = _getCanvasSizes(writingMode);
+  const {crossSize} = _getCanvasSizes(writingMode, canvasSize);
   const labelSize = _getLabelSize(element, writingMode);
 
   const isAtSharedStartCorner = pos[cross] === start[cross] && data.columns && data.columns.positive.hasFirst;
@@ -580,16 +608,13 @@ function _placePositiveRowLabel(element, pos, data, writingMode) {
 
 /**
  * Determine the position of a negative row label, and place it.
- *
- * @param {HTMLElement} element The label DOM element
- * @param {Position} pos The corresponding grid line position
- * @param {GridPositionNormalizedData} data The normalized position data
- * @param {string} writingMode The current writing mode
  */
-function _placeNegativeRowLabel(element, pos, data, writingMode) {
+function _placeNegativeRowLabel(
+    element: HTMLElement, pos: Position, data: GridPositionNormalizedData, writingMode: string,
+    canvasSize: CanvasSize) {
   const {start, end} = _getLabelSideEdgePoints(data.bounds, 'row', 'negative');
   const {main, cross} = _getAxes(writingMode);
-  const {mainSize, crossSize} = _getCanvasSizes(writingMode);
+  const {mainSize, crossSize} = _getCanvasSizes(writingMode, canvasSize);
   const labelSize = _getLabelSize(element, writingMode);
 
   const isAtSharedStartCorner = pos[cross] === start[cross] && data.columns && data.columns.positive.hasLast;
@@ -615,16 +640,13 @@ function _placeNegativeRowLabel(element, pos, data, writingMode) {
 
 /**
  * Determine the position of a positive column label, and place it.
- *
- * @param {HTMLElement} element The label DOM element
- * @param {Position} pos The corresponding grid line position
- * @param {GridPositionNormalizedData} data The normalized position data
- * @param {string} writingMode The current writing mode
  */
-function _placePositiveColumnLabel(element, pos, data, writingMode) {
+function _placePositiveColumnLabel(
+    element: HTMLElement, pos: Position, data: GridPositionNormalizedData, writingMode: string,
+    canvasSize: CanvasSize) {
   const {start, end} = _getLabelSideEdgePoints(data.bounds, 'column', 'positive');
   const {main, cross} = _getAxes(writingMode);
-  const {mainSize, crossSize} = _getCanvasSizes(writingMode);
+  const {mainSize, crossSize} = _getCanvasSizes(writingMode, canvasSize);
   const labelSize = _getLabelSize(element, writingMode);
 
   const isAtSharedStartCorner = pos[main] === start[main] && data.rows && data.rows.positive.hasFirst;
@@ -652,16 +674,13 @@ function _placePositiveColumnLabel(element, pos, data, writingMode) {
 
 /**
  * Determine the position of a negative column label, and place it.
- *
- * @param {HTMLElement} element The label DOM element
- * @param {Position} pos The corresponding grid line position
- * @param {GridPositionNormalizedData} data The normalized position data
- * @param {string} writingMode The current writing mode
  */
-function _placeNegativeColumnLabel(element, pos, data, writingMode) {
+function _placeNegativeColumnLabel(
+    element: HTMLElement, pos: Position, data: GridPositionNormalizedData, writingMode: string,
+    canvasSize: CanvasSize) {
   const {start, end} = _getLabelSideEdgePoints(data.bounds, 'column', 'negative');
   const {main, cross} = _getAxes(writingMode);
-  const {mainSize, crossSize} = _getCanvasSizes(writingMode);
+  const {mainSize, crossSize} = _getCanvasSizes(writingMode, canvasSize);
   const labelSize = _getLabelSize(element, writingMode);
 
   const isAtSharedStartCorner = pos[main] === start[main] && data.rows && data.rows.positive.hasLast;
@@ -692,14 +711,8 @@ function _placeNegativeColumnLabel(element, pos, data, writingMode) {
  * Therefore, the width of the text in the label, and the position of the arrow
  * relative to the label are taken into account here to calculate the final x
  * and y coordinates of the label DOM element.
- *
- * @param {HTMLElement} element The label element
- * @param {string} arrowType One of GridArrowTypes' values
- * @param {number} x Where to place the label on the x axis
- * @param {number} y Where to place the label on the y axis
- * @param {LabelSize} labelSize The size of the label element
  */
-function _placeLineLabel(element, arrowType, x, y, labelSize) {
+function _placeLineLabel(element: HTMLElement, arrowType: string, x: number, y: number, labelSize: LabelSize) {
   const {contentLeft, contentTop} = _getLabelPositionByArrowType(arrowType, x, y, labelSize.width, labelSize.height);
 
   element.classList.add(arrowType);
@@ -710,12 +723,8 @@ function _placeLineLabel(element, arrowType, x, y, labelSize) {
 /**
  * Given a label element, return its width and height, as well as what the main and cross sizes are depending on
  * the current writing mode.
- *
- * @param {HTMLElement} element  The label DOM element
- * @param {string} writingMode The current writing mode
- * @return {LabelSize}
  */
-function _getLabelSize(element, writingMode) {
+function _getLabelSize(element: HTMLElement, writingMode: string): LabelSize {
   const width = _getAdjustedLabelWidth(element);
   const height = element.getBoundingClientRect().height;
   const mainSize = writingMode.startsWith('vertical') ? height : width;
@@ -727,11 +736,8 @@ function _getLabelSize(element, writingMode) {
 /**
  * Forces the width of the provided grid label element to be an even
  * number of pixels to allow centered placement of the arrow
- *
- * @param {HTMLElement} element
- * @return {number} The width of the element
  */
-function _getAdjustedLabelWidth(element) {
+function _getAdjustedLabelWidth(element: HTMLElement) {
   let labelWidth = element.getBoundingClientRect().width;
   if (labelWidth % 2 === 1) {
     labelWidth += 1;
@@ -763,12 +769,8 @@ function _getAdjustedLabelWidth(element) {
  * |                  |      |   |
  * |                  +------+   |
  *  -----------------------------
- *
- * @param {string} arrowType
- * @param {boolean} flipIn
- * @return {string} The new arrow type
  */
-function _flipArrowTypeIfNeeded(arrowType, flipIn) {
+function _flipArrowTypeIfNeeded(arrowType: string, flipIn: boolean): string {
   if (!flipIn) {
     return arrowType;
   }
@@ -799,22 +801,16 @@ function _flipArrowTypeIfNeeded(arrowType, flipIn) {
     case GridArrowTypes.bottomRight:
       return GridArrowTypes.topRight;
   }
+
+  return arrowType;
 }
 
 
 /**
  * Given an arrow type for the standard horizontal-tb writing-mode, return the corresponding type for a differnet
  * writing-mode.
- *
- * @param {string} arrowType
- * @param {string} writingMode
- * @return {string} the new arrow type
  */
-function _adaptArrowTypeForWritingMode(arrowType, writingMode) {
-  if (writingMode !== 'vertical-rl' && writingMode !== 'vertical-lr') {
-    return arrowType;
-  }
-
+function _adaptArrowTypeForWritingMode(arrowType: string, writingMode: string): string {
   if (writingMode === 'vertical-lr') {
     switch (arrowType) {
       case GridArrowTypes.leftTop:
@@ -872,22 +868,18 @@ function _adaptArrowTypeForWritingMode(arrowType, writingMode) {
         return GridArrowTypes.leftBottom;
     }
   }
+
+  return arrowType;
 }
 
 /**
  * Returns the required properties needed to place a label arrow based on the
  * arrow type and dimensions of the label
- *
- * @param {string} arrowType
- * @param {number} x
- * @param {number} y
- * @param {number} labelWidth
- * @param {number} labelHeight
- * @returns {GridLabelPositions}
  */
-function _getLabelPositionByArrowType(arrowType, x, y, labelWidth, labelHeight) {
-  let contentTop;
-  let contentLeft;
+function _getLabelPositionByArrowType(arrowType: string, x: number, y: number, labelWidth: number, labelHeight: number):
+    {contentTop: number, contentLeft: number} {
+  let contentTop = 0;
+  let contentLeft = 0;
   switch (arrowType) {
     case GridArrowTypes.leftTop:
       contentTop = y;

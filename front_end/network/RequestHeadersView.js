@@ -122,6 +122,23 @@ export class RequestHeadersView extends UI.Widget.VBox {
   }
 
   /**
+   * @param {!UI.TreeOutline.TreeElement} treeElement
+   * @param {string} value
+   */
+  _addEntryContextMenuHandler(treeElement, value) {
+    treeElement.listItemElement.addEventListener('contextmenu', event => {
+      event.consume(true);
+      const contextMenu = new UI.ContextMenu.ContextMenu(event);
+      const decodedValue = decodeURIComponent(value);
+      const copyDecodedValueHandler = () => {
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(decodedValue);
+      };
+      contextMenu.clipboardSection().appendItem(ls`Copy value`, copyDecodedValueHandler);
+      contextMenu.show();
+    });
+  }
+
+  /**
    * @param {string} name
    * @param {string} value
    * @return {!DocumentFragment}
@@ -397,6 +414,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
       }
 
       const paramTreeElement = new UI.TreeOutline.TreeElement(paramNameValue);
+      this._addEntryContextMenuHandler(paramTreeElement, params[i].value);
       paramsTreeElement.appendChild(paramTreeElement);
     }
 
@@ -782,6 +800,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
         }
       }
 
+      this._addEntryContextMenuHandler(headerTreeElement, header.value);
       headersTreeElement.appendChild(headerTreeElement);
 
       if (headerId === 'x-client-data') {

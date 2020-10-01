@@ -522,3 +522,17 @@ export const createSearchRegex = function(query, caseSensitive, isRegex) {
 
   return regexObject;
 };
+
+/**
+ * @param {string} a
+ * @param {string} b
+ * @return {number}
+ */
+export const caseInsensetiveComparator = function(a, b) {
+  a = a.toUpperCase();
+  b = b.toUpperCase();
+  if (a === b) {
+    return 0;
+  }
+  return a > b ? 1 : -1;
+};

@@ -33,10 +33,13 @@
  * extensions but in the mean time if an old func in here depends on one
  * that has been migrated it will need to be imported
  */
-import {escapeCharacters, regexSpecialCharacters, sprintf} from './string-utilities.js';
+import {caseInsensetiveComparator, escapeCharacters, regexSpecialCharacters, sprintf} from './string-utilities.js';
 
 // Still used in the test runners that can't use ES modules :(
 String.sprintf = sprintf;
+
+String.regexSpecialCharacters = regexSpecialCharacters;
+String.caseInsensetiveComparator = caseInsensetiveComparator;
 
 /**
  * @this {string}
@@ -162,20 +165,6 @@ String.naturalOrderComparator = function(a, b) {
     a = a.substring(chunka.length);
     b = b.substring(chunkb.length);
   }
-};
-
-/**
- * @param {string} a
- * @param {string} b
- * @return {number}
- */
-String.caseInsensetiveComparator = function(a, b) {
-  a = a.toUpperCase();
-  b = b.toUpperCase();
-  if (a === b) {
-    return 0;
-  }
-  return a > b ? 1 : -1;
 };
 
 /**

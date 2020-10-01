@@ -138,7 +138,7 @@ export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
     if (this._small) {
       this.listItemElement.classList.add('small');
     }
-    this.listItemElement.appendChildren(this._iconElement, this._titlesElement);
+    this.listItemElement.append(this._iconElement, this._titlesElement);
     this.listItemElement.addEventListener('contextmenu', this._handleContextMenuEvent.bind(this), true);
 
     UI.ARIAUtils.setDescription(this.listItemElement, ls`${this.profile.profileType().name}`);

@@ -619,15 +619,6 @@ Element.prototype.selectionLeftOffset = function() {
 };
 
 /**
- * @param {...!Node} var_args
- */
-Node.prototype.appendChildren = function(var_args) {
-  for (let i = 0, n = arguments.length; i < n; ++i) {
-    this.appendChild(arguments[i]);
-  }
-};
-
-/**
  * @return {string}
  */
 Node.prototype.deepTextContent = function() {

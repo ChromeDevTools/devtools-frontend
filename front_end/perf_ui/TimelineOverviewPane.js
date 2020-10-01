@@ -60,6 +60,7 @@ export class TimelineOverviewPane extends UI.Widget.VBox {
     this._overviewGrid.setResizeEnabled(false);
     this._overviewGrid.addEventListener(OverviewGridEvents.WindowChanged, this._onWindowChanged, this);
     this._overviewGrid.setClickHandler(this._onClick.bind(this));
+    /** @type {!Array.<!TimelineOverview>} */
     this._overviewControls = [];
     this._markers = new Map();
 
@@ -96,7 +97,7 @@ export class TimelineOverviewPane extends UI.Widget.VBox {
     const x = this._cursorPosition;
     const elements = await Promise.all(this._overviewControls.map(control => control.overviewInfoPromise(x)));
     const fragment = document.createDocumentFragment();
-    fragment.appendChildren.apply(fragment, elements.filter(element => element !== null));
+    fragment.append(...elements.filter(element => element !== null));
     return fragment;
   }
 

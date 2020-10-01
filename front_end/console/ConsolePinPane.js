@@ -78,9 +78,14 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
    */
   _removePin(pin) {
     pin.element().remove();
+    const newFocusedPin = this._focusedPinAfterDeletion(pin);
     this._pins.delete(pin);
     this._savePins();
-    this._liveExpressionButton.element.focus();
+    if (newFocusedPin) {
+      newFocusedPin.focus();
+    } else {
+      this._liveExpressionButton.element.focus();
+    }
   }
 
   /**
@@ -96,6 +101,26 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
       pin.focus();
     }
     this.update();
+  }
+
+  /**
+   * @param {!ConsolePin} deletedPin
+   * @return {?ConsolePin}
+   */
+  _focusedPinAfterDeletion(deletedPin) {
+    const pinArray = Array.from(this._pins);
+    for (let i = 0; i < pinArray.length; i++) {
+      if (pinArray[i] === deletedPin) {
+        if (pinArray.length === 1) {
+          return null;
+        }
+        if (i === pinArray.length - 1) {
+          return pinArray[i - 1];
+        }
+        return pinArray[i + 1];
+      }
+    }
+    return null;
   }
 
   /**

@@ -803,7 +803,7 @@ export class NetworkLogView extends UI.Widget.VBox {
 
   _setupDataGrid() {
     this._dataGrid.setRowContextMenuCallback((contextMenu, node) => {
-      const request = node.request();
+      const request = (/** @type {!NetworkNode} */ (node)).request();
       if (request) {
         this.handleContextMenuForRequest(contextMenu, request);
       }
@@ -831,7 +831,8 @@ export class NetworkLogView extends UI.Widget.VBox {
    */
   _dataGridMouseMove(event) {
     const mouseEvent = /** @type {!MouseEvent} */ (event);
-    const node = (this._dataGrid.dataGridNodeFromNode(/** @type {!Node} */ (mouseEvent.target)));
+    const node =
+        /** @type {!NetworkNode} */ (this._dataGrid.dataGridNodeFromNode(/** @type {!Node} */ (mouseEvent.target)));
     const highlightInitiatorChain = mouseEvent.shiftKey;
     this._setHoveredNode(node, highlightInitiatorChain);
   }
@@ -1133,7 +1134,7 @@ export class NetworkLogView extends UI.Widget.VBox {
   /** @override */
   updateNodeBackground() {
     if (this._dataGrid.selectedNode) {
-      this._dataGrid.selectedNode.updateBackgroundColor();
+      (/** @type {!NetworkNode} */ (this._dataGrid.selectedNode)).updateBackgroundColor();
     }
   }
 
@@ -1214,9 +1215,12 @@ export class NetworkLogView extends UI.Widget.VBox {
       const removeFromParent = node.parent && (isFilteredOut || node.parent !== newParent);
       if (removeFromParent) {
         let parent = node.parent;
+        if (!parent) {
+          continue;
+        }
         parent.removeChild(node);
         while (parent && !parent.hasChildren() && parent.dataGrid && parent.dataGrid.rootNode() !== parent) {
-          const grandparent = parent.parent;
+          const grandparent = /** @type {!NetworkNode} */ (parent.parent);
           grandparent.removeChild(parent);
           parent = grandparent;
         }
@@ -1227,7 +1231,7 @@ export class NetworkLogView extends UI.Widget.VBox {
       }
 
       if (!newParent.dataGrid && !nodesToInsert.has(newParent)) {
-        nodesToInsert.set(newParent, this._dataGrid.rootNode());
+        nodesToInsert.set(newParent, /** @type {!NetworkNode} */ (this._dataGrid.rootNode()));
         nodesToRefresh.push(newParent);
       }
       nodesToInsert.set(node, newParent);
@@ -1260,12 +1264,12 @@ export class NetworkLogView extends UI.Widget.VBox {
    */
   _parentNodeForInsert(node) {
     if (!this._activeGroupLookup) {
-      return this._dataGrid.rootNode();
+      return /** @type {!NetworkNode} */ (this._dataGrid.rootNode());
     }
 
     const groupNode = this._activeGroupLookup.groupNodeForRequest(node.request());
     if (!groupNode) {
-      return this._dataGrid.rootNode();
+      return /** @type {!NetworkNode} */ (this._dataGrid.rootNode());
     }
     return groupNode;
   }

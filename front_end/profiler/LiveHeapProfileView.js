@@ -163,7 +163,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
       if (!exisitingNodes.has(node)) {
         node.remove();
       }
-      this._gridNodeByUrl.delete(node);
+      this._gridNodeByUrl.delete(node._url);
     }
 
     this._sortingChanged();

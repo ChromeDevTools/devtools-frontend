@@ -356,7 +356,9 @@ export class NetworkLogViewColumns {
         this._waterfallColumnSortIcon.setIconType('smallicon-triangle-down');
       }
 
-      const sortFunction = NetworkRequestNode.RequestPropertyComparator.bind(null, this._activeWaterfallSortId);
+      const sortFunction =
+          /** @type {function(!DataGrid.SortableDataGrid.SortableDataGridNode<!NetworkNode>, !DataGrid.SortableDataGrid.SortableDataGridNode<!NetworkNode>):number} */
+          (NetworkRequestNode.RequestPropertyComparator.bind(null, this._activeWaterfallSortId));
       this._dataGrid.sortNodes(sortFunction, !this._dataGrid.isSortOrderAscending());
       this._dataGridSortedForTest();
       return;
@@ -367,8 +369,13 @@ export class NetworkLogViewColumns {
     if (!columnConfig || !columnConfig.sortingFunction) {
       return;
     }
-
-    this._dataGrid.sortNodes(columnConfig.sortingFunction, !this._dataGrid.isSortOrderAscending());
+    const sortingFunction =
+        /** @type {undefined|function(!DataGrid.SortableDataGrid.SortableDataGridNode<!NetworkNode>, !DataGrid.SortableDataGrid.SortableDataGridNode<!NetworkNode>):number} */
+        (columnConfig.sortingFunction);
+    if (!sortingFunction) {
+      return;
+    }
+    this._dataGrid.sortNodes(sortingFunction, !this._dataGrid.isSortOrderAscending());
     this._dataGridSortedForTest();
   }
 

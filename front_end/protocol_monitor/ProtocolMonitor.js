@@ -126,7 +126,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
 
   /**
    * @param {!UI.ContextMenu.ContextMenu} contextMenu
-   * @param {!ProtocolNode} node
+   * @param {!DataGrid.SortableDataGrid.SortableDataGridNode<!ProtocolNode>} node
    */
   _innerRowContextMenu(contextMenu, node) {
     contextMenu.defaultSection().appendItem(ls`Filter`, () => {
@@ -227,7 +227,10 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
       node.hasError = !!message.error;
       node.refresh();
       if (this._dataGrid.selectedNode === node) {
-        this._infoWidget.render(node.data);
+        const data =
+            /** @type {?{method: string, direction: string, request: ?Object, response: ?Object, timestamp: number}}*/ (
+                node.data);
+        this._infoWidget.render(data);
       }
       return;
     }
@@ -269,7 +272,9 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     }
   }
 }
-
+/**
+ * @extends {DataGrid.SortableDataGrid.SortableDataGridNode<ProtocolNode>}
+ */
 export class ProtocolNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
   constructor(data) {
     super(data);

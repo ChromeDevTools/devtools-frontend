@@ -220,6 +220,7 @@ export class NetworkLogViewInterface {
 
 /**
  * @unrestricted
+ * @extends {DataGrid.SortableDataGrid.SortableDataGridNode<NetworkNode>}
  */
 export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
   /**
@@ -1388,7 +1389,7 @@ export class NetworkGroupNode extends NetworkNode {
    */
   select(supressSelectedEvent) {
     super.select(supressSelectedEvent);
-    const firstChildNode = this.traverseNextNode(false, true);
+    const firstChildNode = this.traverseNextNode(false, undefined, true);
     if (firstChildNode && firstChildNode.request()) {
       this.parentView().dispatchEventToListeners(Events.RequestSelected, firstChildNode.request());
     }

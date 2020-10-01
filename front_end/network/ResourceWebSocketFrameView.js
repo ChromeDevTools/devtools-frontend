@@ -62,8 +62,8 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
     this._dataGrid.setStickToBottom(true);
     this._dataGrid.setCellClass('websocket-frame-view-td');
     this._timeComparator =
-        /** @type {function(!ResourceWebSocketFrameNode, !ResourceWebSocketFrameNode):number} */ (
-            ResourceWebSocketFrameNodeTimeComparator);
+        /** @type {function(!DataGrid.SortableDataGrid.SortableDataGridNode<!ResourceWebSocketFrameNode>, !DataGrid.SortableDataGrid.SortableDataGridNode<!ResourceWebSocketFrameNode>):number} */
+        (ResourceWebSocketFrameNodeTimeComparator);
     this._dataGrid.sortNodes(this._timeComparator, false);
     this._dataGrid.markColumnAsSortedBy('time', DataGrid.DataGrid.Order.Ascending);
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortItems, this);

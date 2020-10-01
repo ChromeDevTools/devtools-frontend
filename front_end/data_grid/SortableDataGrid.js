@@ -1,15 +1,12 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import {ColumnDescriptor, Events, Parameters} from './DataGrid.js';  // eslint-disable-line no-unused-vars
 import {ViewportDataGrid, ViewportDataGridNode} from './ViewportDataGrid.js';
 
 /**
  * @unrestricted
- * @extends {ViewportDataGrid<!NODE_TYPE>}
+ * @extends {ViewportDataGrid<!SortableDataGridNode<NODE_TYPE>>}
  * @template NODE_TYPE
  */
 export class SortableDataGrid extends ViewportDataGrid {
@@ -18,15 +15,15 @@ export class SortableDataGrid extends ViewportDataGrid {
    */
   constructor(dataGridParameters) {
     super(dataGridParameters);
-    /** @type {function(!NODE_TYPE, !NODE_TYPE):number} */
     this._sortingFunction = SortableDataGrid.TrivialComparator;
     this.setRootNode(/** @type {!SortableDataGridNode<!NODE_TYPE>} */ (new SortableDataGridNode()));
   }
 
   /**
-   * @param {!SortableDataGridNode} a
-   * @param {!DataGrid.SortableDataGridNode} b
+   * @param {!SortableDataGridNode<!NODE_TYPE>} a
+   * @param {!SortableDataGridNode<!NODE_TYPE>} b
    * @return {number}
+   * @template NODE_TYPE
    */
   static TrivialComparator(a, b) {
     return 0;
@@ -34,9 +31,10 @@ export class SortableDataGrid extends ViewportDataGrid {
 
   /**
    * @param {string} columnId
-   * @param {!SortableDataGridNode} a
-   * @param {!DataGrid.SortableDataGridNode} b
+   * @param {!SortableDataGridNode<!NODE_TYPE>} a
+   * @param {!SortableDataGridNode<!NODE_TYPE>} b
    * @return {number}
+   * @template NODE_TYPE
    */
   static NumericComparator(columnId, a, b) {
     const aValue = a.data[columnId];
@@ -48,23 +46,27 @@ export class SortableDataGrid extends ViewportDataGrid {
 
   /**
    * @param {string} columnId
-   * @param {!SortableDataGridNode} a
-   * @param {!DataGrid.SortableDataGridNode} b
+   * @param {!SortableDataGridNode<!NODE_TYPE>} a
+   * @param {!SortableDataGridNode<!NODE_TYPE>} b
    * @return {number}
+   * @template NODE_TYPE
    */
   static StringComparator(columnId, a, b) {
     const aValue = a.data[columnId];
     const bValue = b.data[columnId];
     const aString = aValue instanceof Node ? aValue.textContent : String(aValue);
     const bString = bValue instanceof Node ? bValue.textContent : String(bValue);
+    if (!aString || !bString) {
+      return 0;
+    }
     return aString < bString ? -1 : (aString > bString ? 1 : 0);
   }
 
   /**
-   * @param {function(!NODE_TYPE, !NODE_TYPE):number} comparator
+   * @param {function(!SortableDataGridNode<!NODE_TYPE>, !SortableDataGridNode<!NODE_TYPE>):number} comparator
    * @param {boolean} reverseMode
-   * @param {!NODE_TYPE} a
-   * @param {!NODE_TYPE} b
+   * @param {!SortableDataGridNode<!NODE_TYPE>} a
+   * @param {!SortableDataGridNode<!NODE_TYPE>} b
    * @return {number}
    * @template NODE_TYPE
    */
@@ -76,7 +78,8 @@ export class SortableDataGrid extends ViewportDataGrid {
    * @param {!Array.<string>} columnNames
    * @param {!Array.<string>} values
    * @param {string} displayName
-   * @return {?SortableDataGrid<!SortableDataGridNode>}
+   * @return {?SortableDataGrid<!SortableDataGridNode<!NODE_TYPE>>}
+   * @template NODE_TYPE
    */
   static create(columnNames, values, displayName) {
     const numColumns = columnNames.length;
@@ -86,11 +89,13 @@ export class SortableDataGrid extends ViewportDataGrid {
 
     const columns = /** @type {!Array<!ColumnDescriptor>} */ ([]);
     for (let i = 0; i < columnNames.length; ++i) {
-      columns.push({id: String(i), title: columnNames[i], sortable: true});
+      const id = String(i);
+      columns.push(/** @type {!ColumnDescriptor} */ ({id, title: columnNames[i], sortable: true}));
     }
 
     const nodes = [];
     for (let i = 0; i < values.length / numColumns; ++i) {
+      /** @type {!Object<number, string>} */
       const data = {};
       for (let j = 0; j < columnNames.length; ++j) {
         data[j] = values[numColumns * i + j];
@@ -101,7 +106,7 @@ export class SortableDataGrid extends ViewportDataGrid {
       nodes.push(node);
     }
 
-    const dataGrid = new SortableDataGrid({displayName, columns});
+    const dataGrid = new SortableDataGrid(/** @type {!Parameters} */ ({displayName, columns}));
     const length = nodes.length;
     const rootNode = dataGrid.rootNode();
     for (let i = 0; i < length; ++i) {
@@ -133,7 +138,7 @@ export class SortableDataGrid extends ViewportDataGrid {
   }
 
   /**
-   * @param {!NODE_TYPE} node
+   * @param {!SortableDataGridNode<!NODE_TYPE>} node
    */
   insertChild(node) {
     const root = /** @type {!SortableDataGridNode<!NODE_TYPE>} */ (this.rootNode());
@@ -141,20 +146,20 @@ export class SortableDataGrid extends ViewportDataGrid {
   }
 
   /**
-   * @param {function(!NODE_TYPE, !NODE_TYPE):number} comparator
+   * @param {function(!SortableDataGridNode<!NODE_TYPE>, !SortableDataGridNode<!NODE_TYPE>):number} comparator
    * @param {boolean} reverseMode
    */
   sortNodes(comparator, reverseMode) {
     this._sortingFunction = SortableDataGrid.Comparator.bind(null, comparator, reverseMode);
     this.rootNode().recalculateSiblings(0);
-    this.rootNode()._sortChildren(reverseMode);
+    this.rootNode()._sortChildren();
     this.scheduleUpdateStructure();
   }
 }
 
 /**
  * @unrestricted
- * @extends {ViewportDataGridNode<!NODE_TYPE>}
+ * @extends {ViewportDataGridNode<SortableDataGridNode<NODE_TYPE>>}
  * @template NODE_TYPE
  */
 export class SortableDataGridNode extends ViewportDataGridNode {
@@ -167,18 +172,27 @@ export class SortableDataGridNode extends ViewportDataGridNode {
   }
 
   /**
-   * @param {!NODE_TYPE} node
+   * @param {!SortableDataGridNode<!NODE_TYPE>} node
    */
   insertChildOrdered(node) {
-    this.insertChild(node, this.children.upperBound(node, this.dataGrid._sortingFunction));
+    const dataGrid = /** @type {?SortableDataGrid<!NODE_TYPE>} */ (this.dataGrid);
+    if (dataGrid) {
+      this.insertChild(node, this.children.upperBound(node, dataGrid._sortingFunction));
+    }
   }
 
   _sortChildren() {
-    this.children.sort(this.dataGrid._sortingFunction);
-    for (let i = 0; i < this.children.length; ++i) {
-      this.children[i].recalculateSiblings(i);
+    const dataGrid = /** @type {?SortableDataGrid<!NODE_TYPE>} */ (this.dataGrid);
+    if (!dataGrid) {
+      return;
     }
-    for (const child of this.children) {
+    this.children.sort(dataGrid._sortingFunction);
+    for (let i = 0; i < this.children.length; ++i) {
+      const child = /** @type {!SortableDataGridNode<!NODE_TYPE>} */ (this.children[i]);
+      child.recalculateSiblings(i);
+    }
+    for (let i = 0; i < this.children.length; ++i) {
+      const child = /** @type {!SortableDataGridNode<!NODE_TYPE>} */ (this.children[i]);
       child._sortChildren();
     }
   }

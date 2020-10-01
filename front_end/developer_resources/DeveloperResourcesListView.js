@@ -62,10 +62,10 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
 
   /**
    * @param {!UI.ContextMenu.ContextMenu} contextMenu
-   * @param {!GridNode} gridNode
+   * @param {!DataGrid.SortableDataGrid.SortableDataGridNode<!GridNode>} gridNode
    */
   _populateContextMenu(contextMenu, gridNode) {
-    const item = gridNode.item;
+    const item = (/** @type {!GridNode} */ (gridNode)).item;
     contextMenu.clipboardSection().appendItem(ls`Copy URL`, () => {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(item.url);
     });
@@ -140,7 +140,9 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
       return;
     }
 
-    const sortFunction = GridNode.sortFunctionForColumn(columnId);
+    const sortFunction =
+        /** @type {null|function(!DataGrid.SortableDataGrid.SortableDataGridNode<!GridNode>, !DataGrid.SortableDataGrid.SortableDataGridNode<!GridNode>):number} */
+        (GridNode.sortFunctionForColumn(columnId));
     if (sortFunction) {
       this._dataGrid.sortNodes(sortFunction, !this._dataGrid.isSortOrderAscending());
     }

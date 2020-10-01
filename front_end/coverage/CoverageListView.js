@@ -188,7 +188,9 @@ export class CoverageListView extends UI.Widget.VBox {
     if (!columnId) {
       return;
     }
-    const sortFunction = GridNode.sortFunctionForColumn(columnId);
+    const sortFunction =
+        /** @type {null|function(!DataGrid.SortableDataGrid.SortableDataGridNode<!GridNode>, !DataGrid.SortableDataGrid.SortableDataGridNode<!GridNode>):number} */
+        (GridNode.sortFunctionForColumn(columnId));
     if (!sortFunction) {
       return;
     }

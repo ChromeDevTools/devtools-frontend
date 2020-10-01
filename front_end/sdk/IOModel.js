@@ -67,20 +67,23 @@ export class IOModel extends SDKModel {
    * @param {!Protocol.IO.StreamHandle} handle
    * @throws {!Error}
    */
-  async readTextToString(handle) {
+  async readToString(handle) {
     /** @type {!Array<string>} */
     const strings = [];
+    const decoder = new TextDecoder();
     for (;;) {
       const data = await this.read(handle, 1024 * 1024);
-      if (data instanceof ArrayBuffer) {
-        throw new Error('Unexpected binary result form read');
-      }
       if (data === null) {
+        strings.push(decoder.decode());
         break;
       }
-      strings.push(data);
+      if (data instanceof ArrayBuffer) {
+        strings.push(decoder.decode(data, {stream: true}));
+      } else {
+        strings.push(data);
+      }
     }
-    return strings.join();
+    return strings.join('');
   }
 }
 

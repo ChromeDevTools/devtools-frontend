@@ -19,7 +19,8 @@ export class ColorSwatch extends HTMLSpanElement {
     super();
     const root = UI.Utils.createShadowRootWithCoreStyles(this, 'inline_editor/colorSwatch.css');
 
-    this._iconElement = root.createChild('span', 'color-swatch');
+    /** @type {!HTMLSpanElement} */
+    this._iconElement = /** @type {!HTMLSpanElement} */ (root.createChild('span', 'color-swatch'));
     this._iconElement.title = Common.UIString.UIString('Shift-click to change color format');
     this._swatchInner = this._iconElement.createChild('span', 'color-swatch-inner');
     this._swatchInner.addEventListener('dblclick', e => e.consume(), false);
@@ -148,7 +149,7 @@ export class ColorSwatch extends HTMLSpanElement {
   }
 
   /**
-   * @return {!Element}
+   * @return {!HTMLSpanElement}
    */
   iconElement() {
     return this._iconElement;
@@ -214,7 +215,7 @@ export class BezierSwatch extends HTMLSpanElement {
   }
 
   /**
-   * @return {!Element}
+   * @return {!HTMLSpanElement}
    */
   iconElement() {
     return this._iconElement;

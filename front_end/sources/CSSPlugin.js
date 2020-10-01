@@ -28,15 +28,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as ColorPicker from '../color_picker/color_picker.js';
 import * as Common from '../common/common.js';
 import * as InlineEditor from '../inline_editor/inline_editor.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
+import * as TextEditor from '../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
@@ -61,14 +59,20 @@ export class CSSPlugin extends Plugin {
     this._spectrum = null;
     /** @type {?Element} */
     this._currentSwatch = null;
-    this._textEditor.configureAutocomplete(
-        {suggestionsCallback: this._cssSuggestions.bind(this), isWordChar: this._isWordChar.bind(this)});
+    this._textEditor.configureAutocomplete({
+      suggestionsCallback: this._cssSuggestions.bind(this),
+      isWordChar: this._isWordChar.bind(this),
+      anchorBehavior: undefined,
+      substituteRangeCallback: undefined,
+      tooltipCallback: undefined
+    });
     this._textEditor.addEventListener(
         SourceFrame.SourcesTextEditor.Events.ScrollChanged, this._textEditorScrolled, this);
     this._textEditor.addEventListener(UI.TextEditor.Events.TextChanged, this._onTextChanged, this);
     this._updateSwatches(0, this._textEditor.linesCount - 1);
 
-    this._shortcuts = {};
+    /** @type {!Map<number, function():boolean>} */
+    this._shortcuts = new Map();
     this._registerShortcuts();
     this._boundHandleKeyDown = this._handleKeyDown.bind(this);
     this._textEditor.element.addEventListener('keydown', this._boundHandleKeyDown, false);
@@ -86,16 +90,16 @@ export class CSSPlugin extends Plugin {
   _registerShortcuts() {
     const shortcutKeys = UI.ShortcutsScreen.SourcesPanelShortcuts;
     for (const descriptor of shortcutKeys.IncreaseCSSUnitByOne) {
-      this._shortcuts[descriptor.key] = this._handleUnitModification.bind(this, 1);
+      this._shortcuts.set(descriptor.key, this._handleUnitModification.bind(this, 1));
     }
     for (const descriptor of shortcutKeys.DecreaseCSSUnitByOne) {
-      this._shortcuts[descriptor.key] = this._handleUnitModification.bind(this, -1);
+      this._shortcuts.set(descriptor.key, this._handleUnitModification.bind(this, -1));
     }
     for (const descriptor of shortcutKeys.IncreaseCSSUnitByTen) {
-      this._shortcuts[descriptor.key] = this._handleUnitModification.bind(this, 10);
+      this._shortcuts.set(descriptor.key, this._handleUnitModification.bind(this, 10));
     }
     for (const descriptor of shortcutKeys.DecreaseCSSUnitByTen) {
-      this._shortcuts[descriptor.key] = this._handleUnitModification.bind(this, -10);
+      this._shortcuts.set(descriptor.key, this._handleUnitModification.bind(this, -10));
     }
   }
 
@@ -104,7 +108,7 @@ export class CSSPlugin extends Plugin {
    */
   _handleKeyDown(event) {
     const shortcutKey = UI.KeyboardShortcut.KeyboardShortcut.makeKeyFromEvent(/** @type {!KeyboardEvent} */ (event));
-    const handler = this._shortcuts[shortcutKey];
+    const handler = this._shortcuts.get(shortcutKey);
     if (handler && handler()) {
       event.consume(true);
     }
@@ -168,11 +172,14 @@ export class CSSPlugin extends Plugin {
    * @param {number} endLine
    */
   _updateSwatches(startLine, endLine) {
+    /** @type {!Array<!HTMLElement>} */
     const swatches = [];
+    /** @type {!Array<!TextUtils.TextRange.TextRange>} */
     const swatchPositions = [];
 
     const regexes =
         [SDK.CSSMetadata.VariableRegex, SDK.CSSMetadata.URLRegex, UI.Geometry.CubicBezier.Regex, Common.Color.Regex];
+    /** @type {!Map<!RegExp, function(string): ?HTMLElement>} */
     const handlers = new Map();
     handlers.set(Common.Color.Regex, this._createColorSwatch.bind(this));
     handlers.set(UI.Geometry.CubicBezier.Regex, this._createBezierSwatch.bind(this));
@@ -182,7 +189,8 @@ export class CSSPlugin extends Plugin {
       const results = TextUtils.TextUtils.Utils.splitStringByRegexes(line, regexes);
       for (let i = 0; i < results.length; i++) {
         const result = results[i];
-        if (result.regexIndex === -1 || !handlers.has(regexes[result.regexIndex])) {
+        const handler = handlers.get(regexes[result.regexIndex]);
+        if (result.regexIndex === -1 || !handler) {
           continue;
         }
         const delimiters = /[\s:;,(){}]/;
@@ -192,7 +200,7 @@ export class CSSPlugin extends Plugin {
             positionAfter < line.length && !delimiters.test(line.charAt(positionAfter))) {
           continue;
         }
-        const swatch = handlers.get(regexes[result.regexIndex])(result.value);
+        const swatch = handler(result.value);
         if (!swatch) {
           continue;
         }
@@ -215,7 +223,7 @@ export class CSSPlugin extends Plugin {
         const swatchPosition = swatchPositions[i];
         const bookmark =
             this._textEditor.addBookmark(swatchPosition.startLine, swatchPosition.startColumn, swatch, SwatchBookmark);
-        swatch[SwatchBookmark] = bookmark;
+        swatchToBookmark.set(swatch, bookmark);
       }
     }
   }
@@ -261,10 +269,19 @@ export class CSSPlugin extends Plugin {
     event.consume(true);
     this._hadSwatchChange = false;
     this._muteSwatchProcessing = true;
-    const swatchPosition = swatch[SwatchBookmark].position();
+    const bookmark = swatchToBookmark.get(swatch);
+    if (!bookmark) {
+      return;
+    }
+    const swatchPosition = bookmark.position();
+    if (!swatchPosition) {
+      return;
+    }
     this._textEditor.setSelection(swatchPosition);
     this._editedSwatchTextRange = swatchPosition.clone();
-    this._editedSwatchTextRange.endColumn += swatch.textContent.length;
+    if (this._editedSwatchTextRange) {
+      this._editedSwatchTextRange.endColumn += (swatch.textContent || '').length;
+    }
     this._currentSwatch = swatch;
 
     if (swatch instanceof InlineEditor.ColorSwatch.ColorSwatch) {
@@ -300,10 +317,12 @@ export class CSSPlugin extends Plugin {
   _spectrumChanged(event) {
     const colorString = /** @type {string} */ (event.data);
     const color = Common.Color.Color.parse(colorString);
-    if (!color) {
+    if (!color || !this._currentSwatch) {
       return;
     }
-    this._currentSwatch.setColor(color);
+    if (this._currentSwatch instanceof InlineEditor.ColorSwatch.ColorSwatch) {
+      this._currentSwatch.setColor(color);
+    }
     this._changeSwatchText(colorString);
   }
 
@@ -329,7 +348,9 @@ export class CSSPlugin extends Plugin {
    */
   _bezierChanged(event) {
     const bezierString = /** @type {string} */ (event.data);
-    this._currentSwatch.setBezierText(bezierString);
+    if (this._currentSwatch instanceof InlineEditor.ColorSwatch.BezierSwatch) {
+      this._currentSwatch.setBezierText(bezierString);
+    }
     this._changeSwatchText(bezierString);
   }
 
@@ -338,9 +359,9 @@ export class CSSPlugin extends Plugin {
    */
   _changeSwatchText(text) {
     this._hadSwatchChange = true;
-    this._textEditor.editRange(
-        /** @type {!TextUtils.TextRange.TextRange} */ (this._editedSwatchTextRange), text, '*swatch-text-changed');
-    this._editedSwatchTextRange.endColumn = this._editedSwatchTextRange.startColumn + text.length;
+    const editedRange = /** @type {!TextUtils.TextRange.TextRange} */ (this._editedSwatchTextRange);
+    this._textEditor.editRange(editedRange, text, '*swatch-text-changed');
+    editedRange.endColumn = editedRange.startColumn + text.length;
   }
 
   /**
@@ -389,7 +410,19 @@ export class CSSPlugin extends Plugin {
     const line = this._textEditor.line(prefixRange.startLine);
     const tokenContent = line.substring(propertyToken.startColumn, propertyToken.endColumn);
     const propertyValues = SDK.CSSMetadata.cssMetadata().propertyValues(tokenContent);
-    return Promise.resolve(propertyValues.filter(value => value.startsWith(prefix)).map(value => ({text: value})));
+    return Promise.resolve(propertyValues.filter(value => value.startsWith(prefix)).map(value => {
+      return {
+        text: value,
+        title: undefined,
+        subtitle: undefined,
+        iconType: undefined,
+        priority: undefined,
+        isSecondary: undefined,
+        subtitleRenderer: undefined,
+        selectionRange: undefined,
+        hideGhostText: undefined,
+      };
+    }));
   }
 
   /**
@@ -447,3 +480,6 @@ export const maxSwatchProcessingLength = 300;
 
 /** @type {symbol} */
 export const SwatchBookmark = Symbol('swatch');
+
+/** @type {!WeakMap<!Element, !TextEditor.CodeMirrorTextEditor.TextEditorBookMark>} */
+const swatchToBookmark = new WeakMap();

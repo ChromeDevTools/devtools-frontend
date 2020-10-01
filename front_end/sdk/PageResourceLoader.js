@@ -232,7 +232,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
     const resource =
         await networkManager.loadNetworkResource(frameId || '', url, {disableCache: true, includeCredentials: true});
     try {
-      const content = resource.stream ? await ioModel.readTextToString(resource.stream) : '';
+      const content = resource.stream ? await ioModel.readToString(resource.stream) : '';
       return {
         success: resource.success,
         content,
@@ -242,7 +242,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
           netErrorName: resource.netErrorName,
           message: Host.ResourceLoader.netErrorToMessage(
                        resource.netError, resource.httpStatusCode, resource.netErrorName) ||
-              ls`Unknown error`,
+              '',
           urlValid: undefined
         }
       };

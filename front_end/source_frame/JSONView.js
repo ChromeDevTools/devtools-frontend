@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
 import * as Platform from '../platform/platform.js';
@@ -59,7 +56,7 @@ export class JSONView extends UI.Widget.VBox {
     this._treeOutline;
     /** @type {number} */
     this._currentSearchFocusIndex = 0;
-    /** @type {!Array.<!UI.TreeOutline.TreeElement>} */
+    /** @type {!Array.<!ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement>} */
     this._currentSearchTreeElements = [];
     /** @type {?RegExp} */
     this._searchRegex = null;
@@ -94,7 +91,7 @@ export class JSONView extends UI.Widget.VBox {
     searchableView.setPlaceholder(Common.UIString.UIString('Find'));
     jsonView._searchableView = searchableView;
     jsonView.show(searchableView.element);
-    jsonView.element.setAttribute('tabIndex', 0);
+    jsonView.element.tabIndex = 0;
     return searchableView;
   }
 
@@ -192,7 +189,10 @@ export class JSONView extends UI.Widget.VBox {
       this._treeOutline.expand();
     }
     this.element.appendChild(this._treeOutline.element);
-    this._treeOutline.firstChild().select(true /* omitFocus */, false /* selectedByUser */);
+    const firstChild = this._treeOutline.firstChild();
+    if (firstChild) {
+      firstChild.select(true /* omitFocus */, false /* selectedByUser */);
+    }
   }
 
   /**
@@ -245,7 +245,11 @@ export class JSONView extends UI.Widget.VBox {
     this._searchRegex = null;
     this._currentSearchTreeElements = [];
 
-    for (let element = this._treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {
+    /**
+     * @type {?UI.TreeOutline.TreeElement}
+     */
+    let element;
+    for (element = this._treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {
       if (!(element instanceof ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement)) {
         continue;
       }
@@ -267,7 +271,11 @@ export class JSONView extends UI.Widget.VBox {
     this.searchCanceled();
     this._searchRegex = searchConfig.toSearchRegex(true);
 
-    for (let element = this._treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {
+    /**
+     * @type {?UI.TreeOutline.TreeElement}
+     */
+    let element;
+    for (element = this._treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {
       if (!(element instanceof ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement)) {
         continue;
       }

@@ -112,7 +112,6 @@ export class ColorSwatchPopoverIcon {
    */
   constructor(treeElement, swatchPopoverHelper, swatch) {
     this._treeElement = treeElement;
-    this._treeElement[ColorSwatchPopoverIcon._treeElementSymbol] = this;
     this._swatchPopoverHelper = swatchPopoverHelper;
     this._swatch = swatch;
 
@@ -151,14 +150,6 @@ export class ColorSwatchPopoverIcon {
       colorNames.push(cssVariable);
     }
     return {title: 'CSS Variables', mutable: false, matchUserFormat: true, colors: colors, colorNames: colorNames};
-  }
-
-  /**
-   * @param {!StylePropertyTreeElement} treeElement
-   * @return {?ColorSwatchPopoverIcon}
-   */
-  static forTreeElement(treeElement) {
-    return treeElement[ColorSwatchPopoverIcon._treeElementSymbol] || null;
   }
 
   /**
@@ -257,8 +248,6 @@ export class ColorSwatchPopoverIcon {
   }
 }
 
-ColorSwatchPopoverIcon._treeElementSymbol = Symbol('ColorSwatchPopoverIcon._treeElementSymbol');
-
 /**
  * @unrestricted
  */
@@ -270,7 +259,6 @@ export class ShadowSwatchPopoverHelper {
    */
   constructor(treeElement, swatchPopoverHelper, shadowSwatch) {
     this._treeElement = treeElement;
-    this._treeElement[ShadowSwatchPopoverHelper._treeElementSymbol] = this;
     this._swatchPopoverHelper = swatchPopoverHelper;
     this._shadowSwatch = shadowSwatch;
     this._iconElement = shadowSwatch.iconElement();
@@ -281,14 +269,6 @@ export class ShadowSwatchPopoverHelper {
 
     this._boundShadowChanged = this._shadowChanged.bind(this);
     this._boundOnScroll = this._onScroll.bind(this);
-  }
-
-  /**
-   * @param {!StylePropertyTreeElement} treeElement
-   * @return {?ShadowSwatchPopoverHelper}
-   */
-  static forTreeElement(treeElement) {
-    return treeElement[ShadowSwatchPopoverHelper._treeElementSymbol] || null;
   }
 
   /**
@@ -356,5 +336,3 @@ export class ShadowSwatchPopoverHelper {
     delete this._originalPropertyText;
   }
 }
-
-ShadowSwatchPopoverHelper._treeElementSymbol = Symbol('ShadowSwatchPopoverHelper._treeElementSymbol');

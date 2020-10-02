@@ -83,9 +83,12 @@ function createServerIndexFile(componentNames) {
 
 async function getExamplesForPath(filePath) {
   const componentDirectory = path.join(devtoolsFrontendFolder, 'component_docs', filePath);
-  const contents = await fs.promises.readdir(componentDirectory);
+  const allFiles = await fs.promises.readdir(componentDirectory);
+  const htmlExampleFiles = allFiles.filter(file => {
+    return path.extname(file) === '.html';
+  });
 
-  return createComponentIndexFile(filePath, contents);
+  return createComponentIndexFile(filePath, htmlExampleFiles);
 }
 
 function respondWithHtml(response, html) {

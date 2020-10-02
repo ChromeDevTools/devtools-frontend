@@ -162,6 +162,7 @@ export class ThreadsSidebarPane extends UI.Widget.VBox {
     const hadFocus = this.hasFocus();
     const target = /** @type {!SDK.SDKModel.Target} */ (event.data);
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+    this._list.selectItem(debuggerModel);
     if (debuggerModel) {
       this._list.refreshItem(debuggerModel);
     }

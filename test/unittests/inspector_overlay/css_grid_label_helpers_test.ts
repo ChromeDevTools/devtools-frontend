@@ -22,9 +22,6 @@ describe('drawGridLineNumbers label creation', () => {
     {
       description: 'can display positive row line numbers',
       config: {
-        gridHighlightConfig: {
-          showPositiveLineNumbers: true,
-        },
         positiveRowLineNumberPositions: [{x: 0, y: 0}, {x: 0, y: 50}, {x: 0, y: 100}, {x: 0, y: 150}],
       },
       bounds,
@@ -33,9 +30,6 @@ describe('drawGridLineNumbers label creation', () => {
     {
       description: 'can display negative row line numbers',
       config: {
-        gridHighlightConfig: {
-          showNegativeLineNumbers: true,
-        },
         negativeRowLineNumberPositions: [{x: 0, y: 0}, {x: 0, y: 50}, {x: 0, y: 100}, {x: 0, y: 150}],
       },
       bounds,
@@ -44,9 +38,6 @@ describe('drawGridLineNumbers label creation', () => {
     {
       description: 'can display positive column line numbers',
       config: {
-        gridHighlightConfig: {
-          showPositiveLineNumbers: true,
-        },
         positiveColumnLineNumberPositions: [{x: 0, y: 0}, {x: 50, y: 0}, {x: 100, y: 0}],
       },
       bounds,
@@ -55,9 +46,6 @@ describe('drawGridLineNumbers label creation', () => {
     {
       description: 'can display negative column line numbers',
       config: {
-        gridHighlightConfig: {
-          showNegativeLineNumbers: true,
-        },
         negativeColumnLineNumberPositions: [{x: 0, y: 0}, {x: 50, y: 0}, {x: 100, y: 0}],
       },
       bounds,
@@ -66,10 +54,6 @@ describe('drawGridLineNumbers label creation', () => {
     {
       description: 'can display all line numbers',
       config: {
-        gridHighlightConfig: {
-          showPositiveLineNumbers: true,
-          showNegativeLineNumbers: true,
-        },
         positiveColumnLineNumberPositions: [{x: 0, y: 0}, {x: 50, y: 0}, {x: 100, y: 0}],
         positiveRowLineNumberPositions: [{x: 0, y: 0}, {x: 0, y: 50}, {x: 0, y: 100}, {x: 0, y: 150}],
         negativeColumnLineNumberPositions: [{x: 0, y: 0}, {x: 50, y: 0}, {x: 100, y: 0}],
@@ -84,7 +68,7 @@ describe('drawGridLineNumbers label creation', () => {
     it(description, () => {
       const el = getGridLineNumberLabelContainer();
       const data = _normalizePositionData(config, bounds);
-      drawGridLineNumbers(el, data);
+      drawGridLineNumbers(el, data, {canvasWidth: 800, canvasHeight: 600});
 
       assert.strictEqual(el.children.length, expectedLabels.length, 'The right number of labels got created');
       assert.strictEqual(el.textContent, expectedLabels.join(''), 'The labels text is correct');
@@ -107,10 +91,6 @@ describe('drawGridLineNumbers label placement', () => {
     {
       description: 'places row labels left and right under normal conditions',
       config: {
-        gridHighlightConfig: {
-          showPositiveLineNumbers: true,
-          showNegativeLineNumbers: true,
-        },
         positiveRowLineNumberPositions: [{x: 100, y: 140}, {x: 100, y: 180}, {x: 100, y: 220}, {x: 100, y: 260}],
         negativeRowLineNumberPositions: [{x: 300, y: 140}, {x: 300, y: 180}, {x: 300, y: 220}, {x: 300, y: 260}],
       },
@@ -123,10 +103,6 @@ describe('drawGridLineNumbers label placement', () => {
     {
       description: 'places column labels top and bottom under normal conditions',
       config: {
-        gridHighlightConfig: {
-          showPositiveLineNumbers: true,
-          showNegativeLineNumbers: true,
-        },
         positiveColumnLineNumberPositions: [{x: 140, y: 100}, {x: 180, y: 100}, {x: 220, y: 100}, {x: 260, y: 100}],
         negativeColumnLineNumberPositions: [{x: 140, y: 300}, {x: 180, y: 300}, {x: 220, y: 300}, {x: 260, y: 300}],
       },
@@ -139,9 +115,6 @@ describe('drawGridLineNumbers label placement', () => {
     {
       description: 'shifts the first row label down when the first column also has a label',
       config: {
-        gridHighlightConfig: {
-          showPositiveLineNumbers: true,
-        },
         positiveRowLineNumberPositions: [{x: 100, y: 100}, {x: 100, y: 140}],
         positiveColumnLineNumberPositions: [{x: 100, y: 100}, {x: 140, y: 100}],
       },
@@ -155,7 +128,6 @@ describe('drawGridLineNumbers label placement', () => {
     {
       description: 'moves positive row labels inside the grid when they are too close to the edge',
       config: {
-        gridHighlightConfig: {showPositiveLineNumbers: true},
         positiveRowLineNumberPositions: [{x: 0, y: 20}, {x: 0, y: 40}],
       },
       bounds: {
@@ -172,7 +144,6 @@ describe('drawGridLineNumbers label placement', () => {
     {
       description: 'moves negative row labels inside the grid when they are too close to the edge',
       config: {
-        gridHighlightConfig: {showNegativeLineNumbers: true},
         negativeRowLineNumberPositions: [{x: 995, y: 120}, {x: 995, y: 140}],
       },
       bounds: {
@@ -189,7 +160,6 @@ describe('drawGridLineNumbers label placement', () => {
     {
       description: 'moves positive column labels inside the grid when they are too close to the edge',
       config: {
-        gridHighlightConfig: {showPositiveLineNumbers: true},
         positiveColumnLineNumberPositions: [{x: 20, y: 0}, {x: 40, y: 0}],
       },
       bounds: {
@@ -206,7 +176,6 @@ describe('drawGridLineNumbers label placement', () => {
     {
       description: 'moves negative column labels inside the grid when they are too close to the edge',
       config: {
-        gridHighlightConfig: {showNegativeLineNumbers: true},
         negativeColumnLineNumberPositions: [{x: 20, y: 995}, {x: 40, y: 995}],
       },
       bounds: {
@@ -223,7 +192,9 @@ describe('drawGridLineNumbers label placement', () => {
   ];
 
   for (const {description, config, bounds, expectedLabels} of TESTS) {
-    it(description, () => drawGridLineNumbersAndAssertLabels(config, bounds, expectedLabels));
+    it(description,
+       () => drawGridLineNumbersAndAssertLabels(
+           config, bounds, {canvasWidth: 800, canvasHeight: 600}, 0, expectedLabels));
   }
 });
 
@@ -243,9 +214,6 @@ describe('drawGridLineNumbers inner-grid label placement', () => {
     {
       description: 'flips positive row labels inside the grid',
       config: {
-        gridHighlightConfig: {
-          showPositiveLineNumbers: true,
-        },
         positiveRowLineNumberPositions: [{x: 0, y: 0}, {x: 0, y: 500}, {x: 0, y: 1000}],
       },
       bounds,
@@ -258,9 +226,6 @@ describe('drawGridLineNumbers inner-grid label placement', () => {
     {
       description: 'flips negative row labels inside the grid',
       config: {
-        gridHighlightConfig: {
-          showNegativeLineNumbers: true,
-        },
         negativeRowLineNumberPositions: [{x: 1000, y: 0}, {x: 1000, y: 500}, {x: 1000, y: 1000}],
       },
       bounds,
@@ -273,9 +238,6 @@ describe('drawGridLineNumbers inner-grid label placement', () => {
     {
       description: 'flips positive column labels inside the grid',
       config: {
-        gridHighlightConfig: {
-          showPositiveLineNumbers: true,
-        },
         positiveColumnLineNumberPositions: [{x: 0, y: 0}, {x: 500, y: 0}, {x: 1000, y: 0}],
       },
       bounds,
@@ -288,9 +250,6 @@ describe('drawGridLineNumbers inner-grid label placement', () => {
     {
       description: 'flips negative column labels inside the grid',
       config: {
-        gridHighlightConfig: {
-          showNegativeLineNumbers: true,
-        },
         negativeColumnLineNumberPositions: [{x: 0, y: 1000}, {x: 500, y: 1000}, {x: 1000, y: 1000}],
       },
       bounds,
@@ -303,7 +262,9 @@ describe('drawGridLineNumbers inner-grid label placement', () => {
   ];
 
   for (const {description, config, bounds, expectedLabels} of TESTS) {
-    it(description, () => drawGridLineNumbersAndAssertLabels(config, bounds, expectedLabels));
+    it(description,
+       () => drawGridLineNumbersAndAssertLabels(
+           config, bounds, {canvasWidth: 800, canvasHeight: 600}, 0, expectedLabels));
   }
 });
 
@@ -313,10 +274,6 @@ describe('drawGridLineNumbers label skipping logic', () => {
   it('skips labels on all sides when they are too close to each other', () => {
     drawGridLineNumbersAndAssertLabels(
         {
-          gridHighlightConfig: {
-            showPositiveLineNumbers: true,
-            showNegativeLineNumbers: true,
-          },
           positiveRowLineNumberPositions:
               [0, 20, 40, 60, 80, 100, 120, 140, 160, 180, 200].map(y => ({x: 100, y: y + 100})),
           negativeRowLineNumberPositions:
@@ -333,7 +290,11 @@ describe('drawGridLineNumbers label skipping logic', () => {
           maxY: 300,
           allPoints: [{x: 100, y: 100}, {x: 300, y: 100}, {x: 300, y: 300}, {x: 100, y: 300}],
         },
-        [
+        {
+          canvasWidth: 800,
+          canvasHeight: 600,
+        },
+        0, [
           // Expecting every other positive column labels.
           {className: 'bottom-mid', count: 6},
           // Expecting every other negative column labels.
@@ -370,9 +331,6 @@ describe('drawGridLineNumbers label placement with vertical writing mode', () =>
       description: 'vertical-lr positive row labels should be displayed at the top of the grid',
       config: {
         writingMode: 'vertical-lr',
-        gridHighlightConfig: {
-          showPositiveLineNumbers: true,
-        },
         positiveRowLineNumberPositions: [{x: 100, y: 140}, {x: 100, y: 180}, {x: 100, y: 220}, {x: 100, y: 260}],
       },
       bounds,
@@ -384,9 +342,6 @@ describe('drawGridLineNumbers label placement with vertical writing mode', () =>
       description: 'vertical-lr positive column labels should be displayed left of the grid',
       config: {
         writingMode: 'vertical-lr',
-        gridHighlightConfig: {
-          showPositiveLineNumbers: true,
-        },
         positiveColumnLineNumberPositions: [{x: 140, y: 100}, {x: 180, y: 100}, {x: 220, y: 100}, {x: 260, y: 100}],
       },
       bounds,
@@ -398,9 +353,6 @@ describe('drawGridLineNumbers label placement with vertical writing mode', () =>
       description: 'vertical-lr negative row labels should be displayed at the bottom of the grid',
       config: {
         writingMode: 'vertical-lr',
-        gridHighlightConfig: {
-          showNegativeLineNumbers: true,
-        },
         negativeRowLineNumberPositions: [{x: 300, y: 140}, {x: 300, y: 180}, {x: 300, y: 220}, {x: 300, y: 260}],
       },
       bounds,
@@ -412,9 +364,6 @@ describe('drawGridLineNumbers label placement with vertical writing mode', () =>
       description: 'vertical-lr negative column labels should be displayed right of the grid',
       config: {
         writingMode: 'vertical-lr',
-        gridHighlightConfig: {
-          showNegativeLineNumbers: true,
-        },
         negativeColumnLineNumberPositions: [{x: 140, y: 300}, {x: 180, y: 300}, {x: 220, y: 300}, {x: 260, y: 300}],
       },
       bounds,
@@ -426,9 +375,6 @@ describe('drawGridLineNumbers label placement with vertical writing mode', () =>
       description: 'vertical-rl positive row labels should be displayed at the top of the grid',
       config: {
         writingMode: 'vertical-rl',
-        gridHighlightConfig: {
-          showPositiveLineNumbers: true,
-        },
         positiveRowLineNumberPositions: [{x: 100, y: 140}, {x: 100, y: 180}, {x: 100, y: 220}, {x: 100, y: 260}],
       },
       bounds,
@@ -440,9 +386,6 @@ describe('drawGridLineNumbers label placement with vertical writing mode', () =>
       description: 'vertical-rl positive column labels should be displayed right of the grid',
       config: {
         writingMode: 'vertical-rl',
-        gridHighlightConfig: {
-          showPositiveLineNumbers: true,
-        },
         positiveColumnLineNumberPositions: [{x: 140, y: 100}, {x: 180, y: 100}, {x: 220, y: 100}, {x: 260, y: 100}],
       },
       bounds,
@@ -454,9 +397,6 @@ describe('drawGridLineNumbers label placement with vertical writing mode', () =>
       description: 'vertical-rl negative row labels should be displayed at the bottom of the grid',
       config: {
         writingMode: 'vertical-rl',
-        gridHighlightConfig: {
-          showNegativeLineNumbers: true,
-        },
         negativeRowLineNumberPositions: [{x: 300, y: 140}, {x: 300, y: 180}, {x: 300, y: 220}, {x: 300, y: 260}],
       },
       bounds,
@@ -468,9 +408,6 @@ describe('drawGridLineNumbers label placement with vertical writing mode', () =>
       description: 'vertical-rl negative column labels should be displayed left of the grid',
       config: {
         writingMode: 'vertical-rl',
-        gridHighlightConfig: {
-          showNegativeLineNumbers: true,
-        },
         negativeColumnLineNumberPositions: [{x: 140, y: 300}, {x: 180, y: 300}, {x: 220, y: 300}, {x: 260, y: 300}],
       },
       bounds,
@@ -481,13 +418,15 @@ describe('drawGridLineNumbers label placement with vertical writing mode', () =>
   ];
 
   for (const {description, config, bounds, expectedLabels} of TESTS) {
-    it(description, () => drawGridLineNumbersAndAssertLabels(config, bounds, expectedLabels));
+    it(description,
+       () => drawGridLineNumbersAndAssertLabels(
+           config, bounds, {canvasWidth: 800, canvasHeight: 600}, 0, expectedLabels));
   }
 });
 
 describe('_normalizePositionData', () => {
   it('returns an object with default values', () => {
-    const data = _normalizePositionData({gridHighlightConfig: {}}, {
+    const data = _normalizePositionData({}, {
       minX: 0,
       maxX: 100,
       minY: 0,
@@ -539,7 +478,6 @@ describe('_normalizePositionData', () => {
           negativeRowLineNumberPositions: [{y: 3, x: 0}, {y: 6.3265, x: 0}, {y: 28.463532, x: 0}, {y: 50, x: 0}],
           positiveColumnLineNumberPositions: [{x: 0.654535365378, y: 0}, {x: 1.1323256, y: 0}, {x: 1.896057, y: 0}],
           negativeColumnLineNumberPositions: [{x: 2, y: 0}, {x: 6, y: 0}, {x: 10.564543, y: 0}],
-          gridHighlightConfig: {},
         },
         {
           minX: 0,
@@ -562,7 +500,6 @@ describe('_normalizePositionData', () => {
           negativeRowLineNumberPositions: [{y: 10, x: 30}, {y: 20, x: 30}, {y: 30, x: 30}],
           positiveColumnLineNumberPositions: [{x: 10, y: 0}, {x: 20, y: 0}],
           negativeColumnLineNumberPositions: [{x: 0, y: 30}, {x: 30, y: 30}],
-          gridHighlightConfig: {},
         },
         {
           minX: 0,
@@ -727,16 +664,10 @@ describe('drawMultipleGridLabels', () => {
     const configs = [
       {
         layerId: 1,
-        gridHighlightConfig: {
-          showPositiveLineNumbers: true,
-        },
         positiveRowLineNumberPositions: [{x: 100, y: 100}, {x: 100, y: 150}, {x: 100, y: 200}],
       },
       {
         layerId: 2,
-        gridHighlightConfig: {
-          showPositiveLineNumbers: true,
-        },
         positiveRowLineNumberPositions: [{x: 100, y: 100}, {x: 100, y: 150}, {x: 100, y: 200}],
       },
     ];
@@ -754,7 +685,9 @@ describe('drawMultipleGridLabels', () => {
         ],
       },
     ];
-    drawMultipleGridLineNumbersAndAssertLabels(configs, bounds, expectedLayers);
+    drawMultipleGridLineNumbersAndAssertLabels(
+        configs.map(config => ({config, layerId: config.layerId})), bounds, {canvasWidth: 800, canvasHeight: 600},
+        expectedLayers);
   });
 });
 
@@ -779,8 +712,8 @@ describe('drawGridTrackSizes label creation', () => {
   for (const {description, config, expectedLabels} of TESTS) {
     it(description, () => {
       const el = getGridTrackSizesLabelContainer();
-      drawGridTrackSizes(el, config.rowTrackSizes, 'row');
-      drawGridTrackSizes(el, config.columnTrackSizes, 'column');
+      drawGridTrackSizes(el, config.rowTrackSizes, 'row', {canvasWidth: 800, canvasHeight: 600});
+      drawGridTrackSizes(el, config.columnTrackSizes, 'column', {canvasWidth: 800, canvasHeight: 600});
       assert.strictEqual(el.children.length, expectedLabels.length, 'The right number of labels got created');
       assert.strictEqual(el.textContent, expectedLabels.join(''), 'The labels text is correct');
     });
@@ -846,6 +779,6 @@ describe('drawGridLineNames', () => {
              maxY: 300,
              allPoints: [{x: 100, y: 100}, {x: 300, y: 100}, {x: 300, y: 300}, {x: 100, y: 300}],
            },
-           expectedLabels));
+           {canvasWidth: 800, canvasHeight: 600}, 0, expectedLabels));
   }
 });

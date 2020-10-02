@@ -2,15 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import {Overlay} from './common.js';
 
-export class PausedOverlay extends Overlay {
-  setPlatform(platform) {
-    super.setPlatform(platform);
+declare global {
+  interface Window {
+    InspectorOverlayHost: {send(data: string): void;}
+  }
+}
 
+export class PausedOverlay extends Overlay {
+  private container!: HTMLElement;
+
+  setPlatform(platform: string) {
+    super.setPlatform(platform);
     const controlsLine = this.document.createElement('div');
     controlsLine.classList.add('controls-line');
 
@@ -44,20 +48,20 @@ export class PausedOverlay extends Overlay {
 
     this.initListeners();
 
-    resumeButton.addEventListener('click', () => InspectorOverlayHost.send('resume'));
-    stepOverButton.addEventListener('click', () => InspectorOverlayHost.send('stepOver'));
+    resumeButton.addEventListener('click', () => this.window.InspectorOverlayHost.send('resume'));
+    stepOverButton.addEventListener('click', () => this.window.InspectorOverlayHost.send('stepOver'));
   }
 
-  drawPausedInDebuggerMessage(message) {
+  drawPausedInDebuggerMessage(message: string) {
     this.container.textContent = message;
   }
 
   initListeners() {
     this.document.addEventListener('keydown', event => {
       if (event.key === 'F8' || this.eventHasCtrlOrMeta(event) && event.keyCode === 220 /* backslash */) {
-        InspectorOverlayHost.send('resume');
+        this.window.InspectorOverlayHost.send('resume');
       } else if (event.key === 'F10' || this.eventHasCtrlOrMeta(event) && event.keyCode === 222 /* single quote */) {
-        InspectorOverlayHost.send('stepOver');
+        this.window.InspectorOverlayHost.send('stepOver');
       }
     });
   }

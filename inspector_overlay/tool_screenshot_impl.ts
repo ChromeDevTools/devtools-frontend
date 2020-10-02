@@ -2,17 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import {Overlay} from './common.js';
 
-let anchor = null;
-let position = null;
+let anchor: {x: number, y: number}|null = null;
+let position: {x: number, y: number}|null = null;
+
+declare global {
+  interface Window {
+    InspectorOverlayHost: {send(data: string): void;}
+  }
+}
 
 export class ScreenshotOverlay extends Overlay {
-  setPlatform(platform) {
-    super.setPlatform();
+  private zone!: HTMLElement;
+
+  setPlatform(platform: string) {
+    super.setPlatform(platform);
 
     this.document.body.onload = this.loaded.bind(this);
 
@@ -24,9 +29,7 @@ export class ScreenshotOverlay extends Overlay {
   }
 
   loaded() {
-    const document = this.document;
-
-    document.documentElement.addEventListener('mousedown', event => {
+    this.document.documentElement.addEventListener('mousedown', event => {
       anchor = {x: event.pageX, y: event.pageY};
       position = anchor;
       this.updateZone();
@@ -34,11 +37,11 @@ export class ScreenshotOverlay extends Overlay {
       event.preventDefault();
     }, true);
 
-    document.documentElement.addEventListener('mouseup', event => {
+    this.document.documentElement.addEventListener('mouseup', event => {
       if (anchor && position) {
         const rect = currentRect();
         if (rect.width >= 5 && rect.height >= 5) {
-          InspectorOverlayHost.send(JSON.stringify(rect));
+          this.window.InspectorOverlayHost.send(JSON.stringify(rect));
         }
       }
       cancel();
@@ -47,7 +50,7 @@ export class ScreenshotOverlay extends Overlay {
       event.preventDefault();
     }, true);
 
-    document.documentElement.addEventListener('mousemove', event => {
+    this.document.documentElement.addEventListener('mousemove', event => {
       if (anchor && event.buttons === 1) {
         position = {x: event.pageX, y: event.pageY};
       } else {
@@ -58,7 +61,7 @@ export class ScreenshotOverlay extends Overlay {
       event.preventDefault();
     }, true);
 
-    document.documentElement.addEventListener('keydown', event => {
+    this.document.documentElement.addEventListener('keydown', event => {
       if (anchor && event.key === 'Escape') {
         cancel();
         this.updateZone();
@@ -85,10 +88,10 @@ export class ScreenshotOverlay extends Overlay {
 
 function currentRect() {
   return {
-    x: Math.min(anchor.x, position.x),
-    y: Math.min(anchor.y, position.y),
-    width: Math.abs(anchor.x - position.x),
-    height: Math.abs(anchor.y - position.y)
+    x: Math.min(anchor!.x, position!.x),
+    y: Math.min(anchor!.y, position!.y),
+    width: Math.abs(anchor!.x - position!.x),
+    height: Math.abs(anchor!.y - position!.y),
   };
 }
 

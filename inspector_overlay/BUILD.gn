@@ -51,7 +51,7 @@ action("build_inspector_overlay") {
     "common.css",
     "1200",  # max_size in bytes
     "tool_highlight.js",
-    "90000",  # max_size in bytes
+    "90500",  # max_size in bytes
     "tool_highlight_grid.js",
     "70000",  # max_size in bytes
     "tool_distances.js",
@@ -98,24 +98,25 @@ copy("copy_css_to_gen") {
 
 ts_library("inspector_overlay") {
   sources = [
-    "common.js",
-    "css_grid_label_helpers.js",
-    "highlight_common.js",
-    "highlight_grid_common.js",
+    "common.ts",
+    "css_grid_label_helpers.ts",
+    "highlight_common.ts",
+    "highlight_grid_common.ts",
     "tool_distances.ts",
     "tool_distances_impl.ts",
-    "tool_highlight.js",
-    "tool_highlight_grid.js",
-    "tool_highlight_grid_impl.js",
-    "tool_highlight_impl.js",
-    "tool_paused.js",
-    "tool_paused_impl.js",
-    "tool_screenshot.js",
-    "tool_screenshot_impl.js",
+    "tool_highlight.ts",
+    "tool_highlight_grid.ts",
+    "tool_highlight_grid_impl.ts",
+    "tool_highlight_impl.ts",
+    "tool_paused.ts",
+    "tool_paused_impl.ts",
+    "tool_screenshot.ts",
+    "tool_screenshot_impl.ts",
     "tool_source_order.ts",
     "tool_source_order_impl.ts",
-    "tool_viewport_size.js",
-    "tool_viewport_size_impl.js",
+    "tool_viewport_size.ts",
+    "tool_viewport_size_impl.ts",
   ]
+
   deps = [ "../front_end/common:bundle" ]
 }

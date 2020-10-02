@@ -10,7 +10,11 @@ ts_library("helpers") {
     "DOMHelpers.ts",
     "InspectorOverlayHelpers.ts",
     "MutationHelpers.ts",
+    "MutationHelpers_test.ts",
   ]
 
-  deps = [ "../../../../inspector_overlay" ]
+  deps = [
+    "../../../../front_end/third_party/lit-html:bundle",
+    "../../../../inspector_overlay",
+  ]
 }

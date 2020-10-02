@@ -6,11 +6,16 @@ const {assert} = chai;
 
 export enum MutationType {
   ADD = 'ADD',
-  REMOVE = 'REMOVE'
+  REMOVE = 'REMOVE',
+  TEXT_UPDATE = 'TEXT_UPDATE',
 }
 
+export const TEXT_NODE = 'TEXT_NODE';
+
 interface ExpectedMutation {
-  type?: MutationType, tagName: string, max?: number,
+  max?: number;
+  target: keyof HTMLElementTagNameMap|typeof TEXT_NODE;
+  type?: MutationType
 }
 
 const nodeShouldBeIgnored = (node: Node): boolean => {
@@ -30,104 +35,128 @@ const nodeShouldBeIgnored = (node: Node): boolean => {
   return false;
 };
 
-const getUnmatchedNodeMutations =
-    (observedMutations: MutationRecord[], nodesThatHaveBeenMatchedToExpectation: Set<Node>) => {
-      return observedMutations.flatMap(mutation => {
-        const unmatchedMutations: Array<{type: MutationType; tagName: string;}> = [];
-        for (const added of mutation.addedNodes) {
-          if (!nodesThatHaveBeenMatchedToExpectation.has(added) && !nodeShouldBeIgnored(added)) {
-            unmatchedMutations.push({type: MutationType.ADD, tagName: added.nodeName.toLowerCase()});
-          }
-        }
-        for (const removed of mutation.removedNodes) {
-          if (!nodesThatHaveBeenMatchedToExpectation.has(removed) && !nodeShouldBeIgnored(removed)) {
-            unmatchedMutations.push({type: MutationType.REMOVE, tagName: removed.nodeName.toLowerCase()});
-          }
-        }
 
-        return unmatchedMutations;
-      });
-    };
-
-
-const gatherMatchingNodesForExpectedMutation =
-    (expectedMutation: ExpectedMutation, observedMutations: MutationRecord[]): Node[] => {
-      const matchingNodes: Node[] = [];
+const observedMutationsThatMatchExpected =
+    (expectedMutation: ExpectedMutation, observedMutations: ObservedMutation[]): ObservedMutation[] => {
+      const matching: ObservedMutation[] = [];
 
       for (const mutation of observedMutations) {
-        let nodesToCheck: Node[] = [];
-        if (expectedMutation.type) {
-          nodesToCheck =
-              Array.from(expectedMutation.type === MutationType.ADD ? mutation.addedNodes : mutation.removedNodes);
-        } else {
-          nodesToCheck = [...Array.from(mutation.addedNodes), ...Array.from(mutation.removedNodes)];
-        }
-        for (const node of nodesToCheck) {
-          if (node.nodeName.toLowerCase() === expectedMutation.tagName) {
-            matchingNodes.push(node);
+        if (expectedMutation.target === TEXT_NODE) {
+          if (mutation.target === TEXT_NODE) {
+            matching.push(mutation);
+          }
+        } else if (expectedMutation.target === mutation.target) {
+          if (!expectedMutation.type) {
+            matching.push(mutation);
+          } else if (expectedMutation.type === mutation.type) {
+            matching.push(mutation);
           }
         }
       }
-
-      return matchingNodes;
+      return matching;
     };
 
 interface MutationCount {
-  ADD: number, REMOVE: number,
+  ADD: number, REMOVE: number, TEXT_UPDATE: number,
 }
 
 const getMutationsForTagName = (trackedMutations: Map<string, MutationCount>, tagName: string): MutationCount => {
-  return trackedMutations.get(tagName) || {ADD: 0, REMOVE: 0};
+  return trackedMutations.get(tagName) || {ADD: 0, REMOVE: 0, TEXT_UPDATE: 0};
 };
 
-const getAllMutationCounts = (observedMutations: MutationRecord[]): Map<string, MutationCount> => {
+const getAllMutationCounts = (observedMutations: ObservedMutation[]): Map<string, MutationCount> => {
   const trackedMutations = new Map<string, MutationCount>();
 
   for (const mutation of observedMutations) {
-    mutation.addedNodes.forEach(node => {
-      const tagName = node.nodeName.toLowerCase();
+    if (mutation.target === TEXT_NODE) {
+      const mutationsForTagName = getMutationsForTagName(trackedMutations, TEXT_NODE);
+      mutationsForTagName.TEXT_UPDATE++;
+      trackedMutations.set(TEXT_NODE, mutationsForTagName);
+    }
+
+    const tagName = mutation.target;
+    if (mutation.type === MutationType.ADD) {
       const mutationsForTagName = getMutationsForTagName(trackedMutations, tagName);
       mutationsForTagName.ADD++;
       trackedMutations.set(tagName, mutationsForTagName);
-    });
-    mutation.removedNodes.forEach(node => {
-      const tagName = node.nodeName.toLowerCase();
+    } else if (mutation.type === MutationType.REMOVE) {
       const mutationsForTagName = getMutationsForTagName(trackedMutations, tagName);
       mutationsForTagName.REMOVE++;
       trackedMutations.set(tagName, mutationsForTagName);
-    });
+    }
   }
 
   return trackedMutations;
 };
 
-const storeRelevantMutationEntries = (entries: MutationRecord[], storageArray: MutationRecord[]) => {
+type ObservedMutation = {
+  target: keyof HTMLElementTagNameMap,
+  type: MutationType
+}|{target: typeof TEXT_NODE, type: MutationType.TEXT_UPDATE};
+
+const storeRelevantMutationEntries = (entries: MutationRecord[], storageArray: ObservedMutation[]) => {
   for (const entry of entries) {
-    if (entry.addedNodes.length || entry.removedNodes.length) {
-      storageArray.push(entry);
+    if (entry.type === 'characterData') {
+      storageArray.push({
+        target: TEXT_NODE,
+        type: MutationType.TEXT_UPDATE,
+      });
+    }
+
+    for (const added of entry.addedNodes) {
+      if (!nodeShouldBeIgnored(added)) {
+        storageArray.push({
+          target: added.nodeName.toLowerCase() as keyof HTMLElementTagNameMap,
+          type: MutationType.ADD,
+        });
+      }
+    }
+
+    for (const removed of entry.removedNodes) {
+      if (!nodeShouldBeIgnored(removed)) {
+        storageArray.push({
+          target: removed.nodeName.toLowerCase() as keyof HTMLElementTagNameMap,
+          type: MutationType.REMOVE,
+        });
+      }
     }
   }
 };
 
 
-const errorMessageWhenExpectingNoMutations = (observedMutations: MutationRecord[]) => {
+const generateOutputForMutationList = (observedMutations: ObservedMutation[]): string => {
   const debugOutput: string[] = [];
   const mutationCounts = getAllMutationCounts(observedMutations);
   const allMutations = Array.from(mutationCounts.entries());
   for (const [elem, mutations] of allMutations) {
-    let output = `${elem}: `;
+    const output = `${elem}: `;
+    const mutationOutput: string[] = [];
     const addMutations = mutations.ADD;
     if (addMutations) {
-      output += `${addMutations} additions`;
+      mutationOutput.push(`${addMutations} ${pluralize(addMutations, 'addition', 'additions')}`);
     }
     const removeMutations = mutations.REMOVE;
     if (removeMutations) {
-      output += ` ${removeMutations} removals`;
+      mutationOutput.push(`${removeMutations} ${pluralize(removeMutations, 'removal', 'removals')}`);
     }
-    debugOutput.push(output);
+    const updateMutations = mutations.TEXT_UPDATE;
+    if (updateMutations) {
+      mutationOutput.push(`${updateMutations} ${pluralize(updateMutations, 'update', 'updates')}`);
+    }
+    debugOutput.push(output + mutationOutput.join(', '));
   }
-  assert.fail(`Expected no mutations, but got ${observedMutations.length}: \n${debugOutput.join('\n')}`);
+
+  return debugOutput.join('\n');
 };
+
+const errorMessageWhenExpectingNoMutations = (observedMutations: ObservedMutation[]) => {
+  const debugOutput = generateOutputForMutationList(observedMutations);
+  assert.fail(`Expected no mutations, but got ${observedMutations.length}: \n${debugOutput}`);
+};
+
+function pluralize(count: number, singular: string, plural: string): string {
+  return count === 1 ? singular : plural;
+}
 
 const DEFAULT_MAX_MUTATIONS_LIMIT = 10;
 /**
@@ -136,9 +165,9 @@ const DEFAULT_MAX_MUTATIONS_LIMIT = 10;
  * unnecessarily.
  */
 export const withMutations = async(
-    expectedMutations: ExpectedMutation[], shadowRoot: ShadowRoot,
-    functionToObserve: (shadowRoot: ShadowRoot) => void): Promise<void> => {
-  const observedMutations: MutationRecord[] = [];
+    expectedMutations: ExpectedMutation[], shadowRoot: ShadowRoot|Element,
+    functionToObserve: (shadowRoot: ShadowRoot|Element) => void): Promise<void> => {
+  const observedMutations: ObservedMutation[] = [];
   const mutationObserver = new MutationObserver(entries => {
     storeRelevantMutationEntries(entries, observedMutations);
   });
@@ -147,6 +176,8 @@ export const withMutations = async(
     subtree: true,
     attributes: true,
     childList: true,
+    characterData: true,
+    characterDataOldValue: true,
   });
 
   await functionToObserve(shadowRoot);
@@ -166,33 +197,38 @@ export const withMutations = async(
     }
   }
 
-  const nodesThatHaveBeenMatchedToExpectation = new Set<Node>();
+  const mutationsMatchedToExpected = new Set<ObservedMutation>();
   for (const expectedMutation of expectedMutations) {
-    const matchingNodes = gatherMatchingNodesForExpectedMutation(expectedMutation, observedMutations);
-
-    for (const matched of matchingNodes) {
-      nodesThatHaveBeenMatchedToExpectation.add(matched);
+    // Gather all observed mutations that match the given expectation. e.g. if
+    // the expected mutation is { target: 'div' } this will gather all observed
+    // mutations with a target of `div`.
+    const matchingMutations = observedMutationsThatMatchExpected(expectedMutation, observedMutations);
+    for (const matched of matchingMutations) {
+      mutationsMatchedToExpected.add(matched);
     }
 
-    const amountOfMatchingMutations = matchingNodes.length;
+    const amountOfMatchingMutations = matchingMutations.length;
     // Make sure we check for undefined, not truthyness, as the user could
     // supply a max of 0.
     const maxMutationsAllowed = expectedMutation.max === undefined ? DEFAULT_MAX_MUTATIONS_LIMIT : expectedMutation.max;
 
     if (amountOfMatchingMutations > maxMutationsAllowed) {
       assert.fail(`Expected no more than ${maxMutationsAllowed} mutations for ${
-          expectedMutation.type || 'ADD/REMOVE'} ${expectedMutation.tagName}, but got ${amountOfMatchingMutations}`);
+          expectedMutation.type || 'ADD/REMOVE'} ${expectedMutation.target}, but got ${amountOfMatchingMutations}`);
+    } else if (amountOfMatchingMutations === 0 && maxMutationsAllowed > 0) {
+      assert.fail(`Expected at least one mutation for ${expectedMutation.type || 'ADD/REMOVE'} ${
+          expectedMutation.target}, but got ${amountOfMatchingMutations}`);
     }
   }
 
-  const unmatchedNodeMutations = getUnmatchedNodeMutations(observedMutations, nodesThatHaveBeenMatchedToExpectation);
-  if (unmatchedNodeMutations.length > 0) {
-    const output = unmatchedNodeMutations
-                       .map(mutation => {
-                         return `${mutation.type === MutationType.ADD ? 'Added' : 'Removed'}: ${mutation.tagName}`;
-                       })
-                       .join('\n');
-    assert.fail(`Additional unexpected mutations were detected:\n${output}`);
+
+  // These are mutations that happened but the user did not explicitly list as
+  // expected, so we want to fail the test on them.
+  const unmatchedMutations = observedMutations.filter(mutation => !mutationsMatchedToExpected.has(mutation));
+
+  if (unmatchedMutations.length > 0) {
+    const unexpectedOutput = generateOutputForMutationList(unmatchedMutations);
+    assert.fail(`Additional unexpected mutations were detected:\n${unexpectedOutput}`);
   }
 };
 
@@ -201,6 +237,7 @@ export const withMutations = async(
  * element and a callback, it will execute th e callback function and ensure
  * afterwards that a MutatonObserver saw no changes.
  */
-export const withNoMutations = async(element: ShadowRoot, fn: (shadowRoot: ShadowRoot) => void): Promise<void> => {
+export const withNoMutations =
+    async(element: ShadowRoot|Element, fn: (shadowRoot: ShadowRoot|Element) => void): Promise<void> => {
   return await withMutations([], element, fn);
 };

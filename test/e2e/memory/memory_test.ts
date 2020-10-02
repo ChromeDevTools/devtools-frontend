@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {$$, click, getBrowserAndPages, goToResource, waitForElementsWithTextContent, waitForElementWithTextContent, waitForFunction} from '../../shared/helper.js';
+import {$$, click, getBrowserAndPages, goToResource, step, waitForElementsWithTextContent, waitForElementWithTextContent, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {changeViewViaDropdown, findSearchResult, getDataGridRows, navigateToMemoryTab, setSearchFilter, takeHeapSnapshot, waitForNonEmptyHeapSnapshotData, waitForRetainerChain, waitForSearchResultNumber, waitUntilRetainerChainSatisfies} from '../helpers/memory-helpers.js';
 
@@ -11,7 +11,7 @@ describe('The Memory Panel', async function() {
   // These tests render large chunks of data into DevTools and filter/search
   // through it. On bots with less CPU power, these can fail because the
   // rendering takes a long time, so we allow a larger timeout.
-  this.timeout(20000);
+  this.timeout(35000);
 
   it('Loads content', async () => {
     await goToResource('memory/default.html');
@@ -53,25 +53,35 @@ describe('The Memory Panel', async function() {
 
   it('Correctly retains the path for event listeners', async () => {
     await goToResource('memory/event-listeners.html');
-    await navigateToMemoryTab();
-    await takeHeapSnapshot();
-    await waitForNonEmptyHeapSnapshotData();
-    await setSearchFilter('myEventListener');
-    await waitForSearchResultNumber(4);
-    await findSearchResult(async p => {
-      const el = await p.$(':scope > td > div > .object-value-function');
-      return !!el && await el.evaluate(el => el.textContent === 'myEventListener()');
+    await step('taking a heap snapshot', async () => {
+      await navigateToMemoryTab();
+      await takeHeapSnapshot();
+      await waitForNonEmptyHeapSnapshotData();
     });
-    await waitForRetainerChain([
-      'V8EventListener',
-      'EventListener',
-      'InternalNode',
-      'InternalNode',
-      'HTMLBodyElement',
-      'HTMLHtmlElement',
-      'HTMLDocument',
-      'Window',
-    ]);
+    await step('searching for the event listener', async () => {
+      await setSearchFilter('myEventListener');
+      await waitForSearchResultNumber(4);
+    });
+
+    await step('selecting the search result that we need', async () => {
+      await findSearchResult(async p => {
+        const el = await p.$(':scope > td > div > .object-value-function');
+        return !!el && await el.evaluate(el => el.textContent === 'myEventListener()');
+      });
+    });
+
+    await step('waiting for retainer chain', async () => {
+      await waitForRetainerChain([
+        'V8EventListener',
+        'EventListener',
+        'InternalNode',
+        'InternalNode',
+        'HTMLBodyElement',
+        'HTMLHtmlElement',
+        'HTMLDocument',
+        'Window',
+      ]);
+    });
   });
 
   it('Puts all ActiveDOMObjects with pending activities into one group', async () => {

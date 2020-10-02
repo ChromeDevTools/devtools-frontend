@@ -553,6 +553,9 @@ export class RuntimeExtensionDescriptor {
 
     /** @type {string|null} */
     this.color;
+
+    /** @type {string|null} */
+    this.prefix;
   }
 }
 

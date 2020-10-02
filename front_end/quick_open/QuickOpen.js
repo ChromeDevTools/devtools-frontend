@@ -2,27 +2,24 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
 
 import {FilteredListWidget, Provider} from './FilteredListWidget.js';
 
+/** @type {!Array<string>} */
 export const history = [];
 
-/**
- * @unrestricted
- */
 export class QuickOpenImpl {
   constructor() {
+    /** @type {?string} */
     this._prefix = null;
     this._query = '';
     /** @type {!Map<string, function():!Promise<!Provider>>} */
     this._providers = new Map();
     /** @type {!Array<string>} */
     this._prefixes = [];
+    /** @type {?FilteredListWidget} */
     this._filteredListWidget = null;
     Root.Runtime.Runtime.instance().extensions(Provider).forEach(this._addProvider.bind(this));
     this._prefixes.sort((a, b) => b.length - a.length);
@@ -45,7 +42,10 @@ export class QuickOpenImpl {
    * @param {!Root.Runtime.Extension} extension
    */
   _addProvider(extension) {
-    const prefix = extension.descriptor()['prefix'];
+    const prefix = extension.descriptor().prefix;
+    if (prefix === null) {
+      return;
+    }
     this._prefixes.push(prefix);
     this._providers.set(
         prefix, /** @type {function():!Promise<!Provider>} */
@@ -62,10 +62,17 @@ export class QuickOpenImpl {
     }
 
     this._prefix = prefix;
+    if (!this._filteredListWidget) {
+      return;
+    }
     this._filteredListWidget.setPrefix(prefix);
     this._filteredListWidget.setProvider(null);
-    this._providers.get(prefix)().then(provider => {
-      if (this._prefix !== prefix) {
+    const provider = this._providers.get(prefix);
+    if (!provider) {
+      return;
+    }
+    provider().then(provider => {
+      if (this._prefix !== prefix || !this._filteredListWidget) {
         return;
       }
       this._filteredListWidget.setProvider(provider);

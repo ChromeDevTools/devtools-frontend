@@ -1086,16 +1086,19 @@ export class DOMNode {
     if (this.nodeType() !== Node.ELEMENT_NODE) {
       return lowerCaseName;
     }
-    if (lowerCaseName === 'input' && this.getAttribute('type') && !this.getAttribute('id') &&
-        !this.getAttribute('class')) {
-      return lowerCaseName + '[type="' + this.getAttribute('type') + '"]';
+    const type = this.getAttribute('type');
+    const id = this.getAttribute('id');
+    const classes = this.getAttribute('class');
+
+    if (lowerCaseName === 'input' && type && !id && !classes) {
+      return lowerCaseName + '[type="' + CSS.escape(type) + '"]';
     }
-    if (this.getAttribute('id')) {
-      return lowerCaseName + '#' + this.getAttribute('id');
+    if (id) {
+      return lowerCaseName + '#' + CSS.escape(id);
     }
-    if (this.getAttribute('class')) {
-      return (lowerCaseName === 'div' ? '' : lowerCaseName) + '.' +
-          this.getAttribute('class').trim().replace(/\s+/g, '.');
+    if (classes) {
+      const classList = classes.trim().split(/\s+/g);
+      return (lowerCaseName === 'div' ? '' : lowerCaseName) + '.' + classList.map(cls => CSS.escape(cls)).join('.');
     }
     return lowerCaseName;
   }

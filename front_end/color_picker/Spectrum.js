@@ -445,10 +445,12 @@ export class Spectrum extends UI.Widget.VBox {
       colorElement.tabIndex = -1;
       colorElement.addEventListener(
           'mousedown',
-          this._paletteColorSelected.bind(this, palette.colors[i], palette.colorNames[i], palette.matchUserFormat));
+          this._paletteColorSelected.bind(
+              this, palette.colors[i], palette.colorNames[i], Boolean(palette.matchUserFormat)));
       colorElement.addEventListener(
           'focus',
-          this._paletteColorSelected.bind(this, palette.colors[i], palette.colorNames[i], palette.matchUserFormat));
+          this._paletteColorSelected.bind(
+              this, palette.colors[i], palette.colorNames[i], Boolean(palette.matchUserFormat)));
       colorElement.addEventListener('keydown', this._onPaletteColorKeydown.bind(this, i));
       if (palette.mutable) {
         colorElement.__mutable = true;
@@ -1399,5 +1401,5 @@ export class Swatch {
   }
 }
 
-/** @typedef {{ title: string, colors: !Array<string>, colorNames: !Array<string>, mutable: boolean }} */
+/** @typedef {{ title: string, colors: !Array<string>, colorNames: !Array<string>, mutable: boolean, matchUserFormat: (boolean|undefined) }} */
 export let Palette;

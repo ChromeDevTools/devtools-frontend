@@ -282,7 +282,7 @@ export class CSSShadowSwatch extends HTMLSpanElement {
   }
 
   /**
-   * @return {!Element}
+   * @return {!HTMLSpanElement}
    */
   iconElement() {
     return this._iconElement;

@@ -33,6 +33,7 @@
 
 import * as Common from '../common/common.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
+import * as Root from '../root/root.js';                                  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -112,6 +113,9 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
     this._updateRecords = new Map();
     /** @type {!Set<!ElementsTreeElement>} */
     this._treeElementsBeingUpdated = new Set();
+
+    /** @type {?Array<!Root.Runtime.Extension>} */
+    this.decoratorExtensions = null;
 
     this._showHTMLCommentsSetting = Common.Settings.Settings.instance().moduleSetting('showHTMLComments');
     this._showHTMLCommentsSetting.addChangeListener(this._onShowHTMLCommentsChange.bind(this));

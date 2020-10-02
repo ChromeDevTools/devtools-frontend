@@ -299,6 +299,7 @@ export class KeyboardShortcut {
 
 /**
  * Constants for encoding modifier key set as a bit mask.
+ * @enum {number}
  * @see #_makeKeyFromCodeAndModifiers
  */
 export const Modifiers = {
@@ -307,14 +308,10 @@ export const Modifiers = {
   Ctrl: 2,
   Alt: 4,
   Meta: 8,  // Command key on Mac, Win key on other platforms.
-  get CtrlOrMeta() {
-    // "default" command/ctrl key for platform, Command on Mac, Ctrl on other platforms
-    return Host.Platform.isMac() ? this.Meta : this.Ctrl;
-  },
-  get ShiftOrOption() {
-    // Option on Mac, Shift on other platforms
-    return Host.Platform.isMac() ? this.Alt : this.Shift;
-  }
+  // "default" command/ctrl key for platform, Command on Mac, Ctrl on other platforms
+  CtrlOrMeta: Host.Platform.isMac() ? 8 /* Meta */ : 2 /* Ctrl */,
+  // Option on Mac, Shift on other platforms
+  ShiftOrOption: Host.Platform.isMac() ? 4 /* Alt */ : 1 /* Shift */,
 };
 
 /** @type {!Object.<string, !Key>} */

@@ -133,12 +133,14 @@ interface Element {
 
 interface DocumentFragment {
   createChild(tagName: string, className?: string, content?: string): Element;
+  createTextChild(text: string): Text;
 }
 
 interface Event {
   consume(preventDefault?: boolean): void;
   deepElementFromPoint(): Node|null;
   handled: boolean|undefined;
+  isMetaOrCtrlForTest: boolean;
 }
 
 interface Node {

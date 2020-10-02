@@ -808,7 +808,7 @@ export function highlightSearchResult(element, offset, length, domChanges) {
 /**
  * @param {!Element} element
  * @param {!Array.<!TextUtils.TextRange.SourceRange>} resultRanges
- * @param {!Array.<!Object>=} changes
+ * @param {!Array.<!HighlightChange>=} changes
  * @return {!Array.<!Element>}
  */
 export function highlightSearchResults(element, resultRanges, changes) {
@@ -837,7 +837,7 @@ export function runCSSAnimationOnce(element, className) {
  * @param {!Element} element
  * @param {!Array.<!TextUtils.TextRange.SourceRange>} resultRanges
  * @param {string} styleClass
- * @param {!Array.<!Object>=} changes
+ * @param {!Array.<!HighlightChange>=} changes
  * @return {!Array.<!Element>}
  */
 export function highlightRangesWithStyleClass(element, resultRanges, styleClass, changes) {
@@ -1912,3 +1912,14 @@ export function formatTimestamp(timestamp, full) {
 
 /** @typedef {!{title: (string|!Element|undefined), editable: (boolean|undefined) }} */
 export let Options;
+
+/** @typedef {{
+ *  node: !Element,
+ *  type: string,
+ *  oldText: string,
+ *  newText: string,
+ *  nextSibling: (Node|undefined),
+ *  parent: (Node|undefined),
+ * }}
+ */
+export let HighlightChange;

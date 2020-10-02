@@ -7,6 +7,7 @@
 .report-row {
   display: flex;
   align-items: center;
+  white-space: normal;
 }
 
 .clear-storage-button .report-row {

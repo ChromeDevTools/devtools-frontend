@@ -13,7 +13,8 @@ const prepareElementsTab = async () => {
 };
 
 describe('Adornment in the Elements Tab', async () => {
-  it('displays Grid adorners and they can be toggled', async () => {
+  // Flaky test
+  it.skip('[crbug.com/1134593] displays Grid adorners and they can be toggled', async () => {
     await goToResource('elements/adornment.html');
     await enableExperiment('cssGridFeatures');
     await prepareElementsTab();

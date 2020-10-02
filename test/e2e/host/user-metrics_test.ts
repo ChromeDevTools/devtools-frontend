@@ -669,7 +669,8 @@ describe('User Metrics for Grid Overlay', () => {
     await expandSelectedNodeRecursively();
   });
 
-  it('dispatch events when opening Grid overlay from adorner', async () => {
+  // Flaky test
+  it.skip('[crbug.com/1134593] dispatch events when opening Grid overlay from adorner', async () => {
     await click(INACTIVE_GRID_ADORNER_SELECTOR);
 
     await assertEventsHaveBeenFired([

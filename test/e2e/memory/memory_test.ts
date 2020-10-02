@@ -51,7 +51,8 @@ describe('The Memory Panel', async function() {
     ]);
   });
 
-  it('Correctly retains the path for event listeners', async () => {
+  // Flaky test
+  it.skip('[crbug.com/1134602] Correctly retains the path for event listeners', async () => {
     await goToResource('memory/event-listeners.html');
     await step('taking a heap snapshot', async () => {
       await navigateToMemoryTab();

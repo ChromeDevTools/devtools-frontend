@@ -5,7 +5,8 @@
 const {assert} = chai;
 
 import {renderElementIntoDOM, assertElements, assertElement} from './DOMHelpers.js';
-import {_normalizePositionData, drawGridAreaNames, drawGridLineNumbers, drawGridLineNames, CanvasSize, GridPositionNormalizedDataWithNames, NormalizePositionDataConfig} from '../../../../inspector_overlay/css_grid_label_helpers.js';
+import {reset, setPlatform} from '../../../../inspector_overlay/common.js';
+import {_normalizePositionData, drawGridAreaNames, drawGridLineNumbers, drawGridLineNames} from '../../../../inspector_overlay/css_grid_label_helpers.js';
 import {AreaBounds, Bounds} from '../../../../inspector_overlay/common.js';
 import {gridStyle} from '../../../../inspector_overlay/highlight_grid_common.js';
 
@@ -16,6 +17,41 @@ const GRID_LINE_NAME_LABEL_CONTAINER_CLASS = 'line-names';
 const GRID_LINE_AREA_LABEL_CONTAINER_CLASS = 'area-names';
 const GRID_TRACK_SIZES_LABEL_CONTAINER_CLASS = 'track-sizes';
 
+// Make sure typescript knows about the custom properties that are set on the window object.
+declare global {
+  interface Window {
+    gridPageMargin: number;
+    canvasWidth: number;
+    canvasHeight: number;
+    setPlatform: Function;
+  }
+}
+
+/**
+ * Before the content of an overlay can be added to the page, the backend normally calls a reset function on window to
+ * set the viewport size and resize the canvas to it, and do a few other things.
+ * This helper function can be called before each overlay test to simulate this.
+ * Consider using initFrameForGridLabels instead if you are going to be testing grid labels.
+ */
+export function initFrame() {
+  reset({
+    viewportSize: {
+      width: 1000,
+      height: 1000,
+    },
+    deviceScaleFactor: 1,
+    emulationScaleFactor: 1,
+    pageScaleFactor: 1,
+    pageZoomFactor: 1,
+    scrollX: 0,
+    scrollY: 0,
+  });
+
+  window.gridPageMargin = 20;
+  window.canvasHeight = 600;
+  window.canvasWidth = 800;
+}
+
 /**
  * This does the same as initFrame but also prepares the DOM for testing grid labels.
  */
@@ -23,10 +59,13 @@ export function initFrameForGridLabels() {
   const styleTag = document.createElement('style');
   styleTag.textContent = gridStyle;
   document.head.append(styleTag);
+  initFrame();
+  setPlatform('mac');
   createGridLabelContainer();
 }
 
 export function initFrameForMultipleGridLabels(numGrids: number) {
+  initFrame();
   for (let i = 1; i <= numGrids; i++) {
     createGridLabelContainer(i);
   }
@@ -95,6 +134,12 @@ export function getGridAreaNameLabelContainer(layerId?: number): HTMLElement {
   return el;
 }
 
+interface GridHighlightConfig {
+  showPositiveLineNumbers?: boolean;
+  showNegativeLineNumbers?: boolean;
+  showLineNames?: boolean;
+}
+
 interface Position {
   x: number;
   y: number;
@@ -106,6 +151,19 @@ interface TrackSize extends Position {
 
 interface NamedLinePosition extends Position {
   name: string;
+}
+
+interface HighlightConfig {
+  gridHighlightConfig: GridHighlightConfig;
+  positiveRowLineNumberPositions?: Position[];
+  negativeRowLineNumberPositions?: Position[];
+  positiveColumnLineNumberPositions?: Position[];
+  negativeColumnLineNumberPositions?: Position[];
+  rowLineNameOffsets?: NamedLinePosition[], columnLineNameOffsets?: NamedLinePosition[], layerId?: number;
+  rowTrackSizes?: TrackSize[];
+  columnTrackSizes?: TrackSize[];
+  rotationAngle?: number;
+  writingMode?: string;
 }
 
 interface ExpectedLayerLabel {
@@ -131,14 +189,13 @@ interface ExpectedAreaNameLabel {
 }
 
 export function drawGridLineNumbersAndAssertLabels(
-    config: NormalizePositionDataConfig&{writingMode?: string}, bounds: Bounds, canvasSize: CanvasSize, layerId: number,
-    expectedLabels: ExpectedLineNumberLabel[]) {
-  const el = getGridLineNumberLabelContainer(layerId);
+    config: HighlightConfig, bounds: Bounds, expectedLabels: ExpectedLineNumberLabel[]) {
+  const el = getGridLineNumberLabelContainer(config.layerId);
   const data = _normalizePositionData(config, bounds);
 
   // Note that this test helper is focused on testing the number and orientation of the labels, not their exact position
   // so we pass the identity matrix here in all cases, even when a different writing mode is provided.
-  drawGridLineNumbers(el, data, canvasSize, new DOMMatrix(), config.writingMode);
+  drawGridLineNumbers(el, data, new DOMMatrix(), config.writingMode);
   let totalLabelCount = 0;
   for (const {className, count} of expectedLabels) {
     const labels =
@@ -153,11 +210,10 @@ export function drawGridLineNumbersAndAssertLabels(
 }
 
 export function drawGridLineNamesAndAssertLabels(
-    config: NormalizePositionDataConfig, bounds: Bounds, canvasSize: CanvasSize, layerId: number,
-    expectedLabels: ExpectedLineNameLabel[]) {
-  const el = getGridLineNameLabelContainer(layerId);
+    config: HighlightConfig, bounds: Bounds, expectedLabels: ExpectedLineNameLabel[]) {
+  const el = getGridLineNameLabelContainer(config.layerId);
   const data = _normalizePositionData(config, bounds);
-  drawGridLineNames(el, data as GridPositionNormalizedDataWithNames, canvasSize);
+  drawGridLineNames(el, data);
 
   const labels = el.querySelectorAll(`.${GRID_LINE_NAME_LABEL_CONTAINER_CLASS} .grid-label-content`);
   assert.strictEqual(labels.length, expectedLabels.length, 'The right total number of line name labels were displayed');
@@ -252,12 +308,11 @@ export function drawGridAreaNamesAndAssertLabels(
 }
 
 export function drawMultipleGridLineNumbersAndAssertLabels(
-    configs: Array<{config: NormalizePositionDataConfig, layerId: number}>, bounds: Bounds, canvasSize: CanvasSize,
-    expectedLabelList: ExpectedLayerLabel[]) {
-  for (const item of configs) {
-    const el = getGridLineNumberLabelContainer(item.layerId);
-    const data = _normalizePositionData(item.config, bounds);
-    drawGridLineNumbers(el, data, canvasSize);
+    configs: HighlightConfig[], bounds: Bounds, expectedLabelList: ExpectedLayerLabel[]) {
+  for (const config of configs) {
+    const el = getGridLineNumberLabelContainer(config.layerId);
+    const data = _normalizePositionData(config, bounds);
+    drawGridLineNumbers(el, data);
   }
 
   let totalLabelCount = 0;

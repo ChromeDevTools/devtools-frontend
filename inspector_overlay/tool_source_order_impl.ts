@@ -28,26 +28,18 @@
 //  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 //  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import {Bounds, createChild, Overlay, ResetData} from './common.js';
-import {buildPath, emptyBounds, PathBounds} from './highlight_common.js';
 
-interface Path {
-  path: Array<string|number>, outlineColor: string;
-  name: string;
-}
+// @ts-nocheck
+// TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
-interface SourceOrderHighlight {
-  sourceOrder: number;
-  paths: Path[];
-}
+import {Overlay} from './common.js';
+import {buildPath, emptyBounds} from './highlight_common.js';
 
 export class SourceOrderOverlay extends Overlay {
-  private sourceOrderContainer = document.createElement('div');
-
-  reset(resetData: ResetData) {
+  reset(resetData) {
     super.reset(resetData);
     if (this.sourceOrderContainer) {
-      this.sourceOrderContainer.textContent = '';
+      this.sourceOrderContainer.removeChildren();
     }
   }
 
@@ -69,42 +61,38 @@ export class SourceOrderOverlay extends Overlay {
     this.setCanvas(canvas);
   }
 
-  drawSourceOrder(highlight: SourceOrderHighlight) {
+  drawSourceOrder(highlight) {
+    const context = this.context;
+
+    context.save();
+    const bounds = emptyBounds();
     const sourceOrder = highlight.sourceOrder || 0;
     const path = highlight.paths.slice().pop();
-
-    if (!path) {
-      throw new Error('No path provided');
-    }
-
-    this.context.save();
-    const bounds = emptyBounds();
     const outlineColor = path.outlineColor;
 
-    this.context.save();
-    _drawPath(this.context, path.path, outlineColor, !!sourceOrder, bounds, this.emulationScaleFactor);
-    this.context.restore();
+    context.save();
+    _drawPath(context, path.path, outlineColor, !!sourceOrder, bounds);
+    context.restore();
 
-    this.context.save();
+    context.save();
     if (!!sourceOrder) {
       this._drawSourceOrderLabel(sourceOrder, outlineColor, bounds);
     }
-    this.context.restore();
+    context.restore();
 
     return {bounds: bounds};
   }
 
-  _drawSourceOrderLabel(sourceOrder: number, color: string, bounds: PathBounds) {
+  _drawSourceOrderLabel(sourceOrder: string, color: string, bounds: Bounds) {
     const sourceOrderContainer = this.sourceOrderContainer;
     const otherLabels = sourceOrderContainer.children;
-    const labelContainer = createChild(sourceOrderContainer, 'div', 'source-order-label-container');
+    const labelContainer = sourceOrderContainer.createChild('div', 'source-order-label-container');
     labelContainer.style.color = color;
-    labelContainer.textContent = String(sourceOrder);
+    labelContainer.textContent = sourceOrder;
 
     const labelHeight = labelContainer.offsetHeight;
     const labelWidth = labelContainer.offsetWidth;
-    const labelType =
-        _getLabelType(bounds, labelHeight, labelWidth, otherLabels as HTMLCollectionOf<HTMLElement>, this.canvasHeight);
+    const labelType = _getLabelType(bounds, labelHeight, labelWidth, otherLabels, this.canvasHeight);
     const labelPosition = _getPositionFromLabelType(labelType, bounds, labelHeight);
 
     labelContainer.classList.add(labelType);
@@ -164,12 +152,19 @@ export const LabelTypes = {
   bottomCornerWiderTaller: 'bottom-corner-wider-taller',
 };
 
+interface Bounds {
+  minX: number;
+  maxX: number;
+  minY: number;
+  maxY: number;
+}
+
 /**
  * Calculates the coordinates to place the label based on position type
  */
-export function _getPositionFromLabelType(positionType: string, bounds: Omit<Bounds, 'allPoints'>, labelHeight: number):
-    {contentTop: number; contentLeft: number} {
-  let contentTop = 0;
+export function _getPositionFromLabelType(
+    positionType: string, bounds: Bounds, labelHeight: number): {contentTop: number; contentLeft: number} {
+  let contentTop;
   switch (positionType) {
     case LabelTypes.topCorner:
       contentTop = bounds.minY;
@@ -199,8 +194,8 @@ export function _getPositionFromLabelType(positionType: string, bounds: Omit<Bou
  * with, avoiding overlaps between other labels
  */
 export function _getLabelType(
-    bounds: Omit<Bounds, 'allPoints'>, labelHeight: number, labelWidth: number,
-    otherLabels: HTMLCollectionOf<HTMLElement>, canvasHeight: number): string {
+    bounds: Bounds, labelHeight: number, labelWidth: number, otherLabels: HTMLCollection,
+    canvasHeight: number): keyof typeof LabelTypes {
   let labelType;
   // Label goes in the top left corner if the element is bigger than the label
   // or if there are too many child nodes
@@ -256,10 +251,9 @@ export function _getLabelType(
 }
 
 function _drawPath(
-    context: CanvasRenderingContext2D, commands: Array<string|number>, outlineColor: string|undefined, isChild: boolean,
-    bounds: PathBounds, emulationScaleFactor: number): Path2D {
+    context: CanvasRenderingContext2D, commands, outlineColor?: string, isChild: boolean, bounds: Bounds): Path2D {
   context.save();
-  const path = buildPath(commands, bounds, emulationScaleFactor);
+  const path = buildPath(commands, bounds);
   if (outlineColor) {
     context.strokeStyle = outlineColor;
     context.lineWidth = 2;

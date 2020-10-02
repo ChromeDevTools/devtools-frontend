@@ -4,13 +4,16 @@
 
 const {assert} = chai;
 
+import {initFrame} from '../front_end/helpers/InspectorOverlayHelpers.js';
 import {applyMatrixToPoint, buildPath, emptyBounds} from '../../../inspector_overlay/highlight_common.js';
 
 describe('highlight common helper', () => {
   it('can build a path and set bounds', () => {
+    initFrame();
+
     const bounds = emptyBounds();
     const highlightPath = ['M', 100, 60, 'L', 420, 60, 'L', 420, 204, 'L', 100, 204, 'Z'];
-    buildPath(highlightPath, bounds, 1);
+    buildPath(highlightPath, bounds);
 
     assert.strictEqual(bounds.minX, 100);
     assert.strictEqual(bounds.minY, 60);

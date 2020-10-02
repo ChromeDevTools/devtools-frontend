@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {createElement, Overlay} from '../../../inspector_overlay/common.js';
+import {createElement, setPlatform, reset} from '../../../inspector_overlay/common.js';
 
 // Make sure typescript knows about the custom properties that are set on the window object.
 declare global {
@@ -42,9 +42,26 @@ describe('common helper', () => {
   });
 
   it('sets the right platform', () => {
-    const overlay = new Overlay(window);
     const platform = 'mac';
-    overlay.setPlatform(platform);
+    setPlatform(platform);
+
     assert.isTrue(document.body.classList.contains(`platform-${platform}`));
+    assert.strictEqual(window.platform, platform);
+  });
+
+  it('sets the right window dimensions on reset', () => {
+    const canvas = <HTMLCanvasElement>document.body.createChild('canvas');
+    canvas.id = 'canvas';
+
+    const viewportSize = {width: 100, height: 200};
+    const deviceScaleFactor = 1.5;
+
+    reset({viewportSize, deviceScaleFactor});
+
+    assert.deepStrictEqual(window.viewportSize, viewportSize, 'The viewport size was set on the window');
+    assert.strictEqual(window.deviceScaleFactor, deviceScaleFactor, 'The scale factor was set on the window');
+    assert.strictEqual(canvas.width, viewportSize.width * deviceScaleFactor, 'The canvas was given the correct width');
+    assert.strictEqual(
+        canvas.height, viewportSize.height * deviceScaleFactor, 'The canvas was given the correct height');
   });
 });

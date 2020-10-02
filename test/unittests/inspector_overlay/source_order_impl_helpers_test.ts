@@ -113,10 +113,10 @@ describe('_getLabelType', () => {
 
   for (const {description, bounds, overlap, expectedType} of TESTS) {
     it(description, () => {
-      const otherLabelsCollection = <HTMLCollectionOf<HTMLElement>><unknown>[];
+      const otherLabelsCollection = <HTMLCollection><unknown>[];
       if (overlap) {
         const y = bounds.minY - labelHeight;
-        const overlappingLabel = <HTMLElement><unknown>{
+        const overlappingLabel = <Element><unknown>{
           getBoundingClientRect: () => {
             return new DOMRect(bounds.minX, y, labelWidth, labelHeight);
           },

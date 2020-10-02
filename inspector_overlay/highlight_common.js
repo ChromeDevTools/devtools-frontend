@@ -28,27 +28,22 @@
 //  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 //  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import {Bounds} from './common.js';
 
-export type PathBounds = Bounds&{
-  leftmostXForY: {[key: string]: number};
-  rightmostXForY: {[key: string]: number};
-  topmostYForX: {[key: string]: number};
-  bottommostYForX: {[key: string]: number};
-}
+// @ts-nocheck
+// TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
-export function buildPath(commands: Array<string|number>, bounds: PathBounds, emulationScaleFactor: number): Path2D {
+export function buildPath(commands, bounds) {
   let commandsIndex = 0;
 
-  function extractPoints(count: number): number[] {
+  function extractPoints(count) {
     const points = [];
 
     for (let i = 0; i < count; ++i) {
-      const x = Math.round(commands[commandsIndex++] as number * emulationScaleFactor);
+      const x = Math.round(commands[commandsIndex++] * emulationScaleFactor);
       bounds.maxX = Math.max(bounds.maxX, x);
       bounds.minX = Math.min(bounds.minX, x);
 
-      const y = Math.round(commands[commandsIndex++] as number * emulationScaleFactor);
+      const y = Math.round(commands[commandsIndex++] * emulationScaleFactor);
       bounds.maxY = Math.max(bounds.maxY, y);
       bounds.minY = Math.min(bounds.minY, y);
 
@@ -61,7 +56,6 @@ export function buildPath(commands: Array<string|number>, bounds: PathBounds, em
 
       points.push(x, y);
     }
-
     return points;
   }
 
@@ -70,16 +64,16 @@ export function buildPath(commands: Array<string|number>, bounds: PathBounds, em
   while (commandsIndex < commandsLength) {
     switch (commands[commandsIndex++]) {
       case 'M':
-        path.moveTo.apply(path, extractPoints(1) as [number, number]);
+        path.moveTo.apply(path, extractPoints(1));
         break;
       case 'L':
-        path.lineTo.apply(path, extractPoints(1) as [number, number]);
+        path.lineTo.apply(path, extractPoints(1));
         break;
       case 'C':
-        path.bezierCurveTo.apply(path, extractPoints(3) as [number, number, number, number, number, number]);
+        path.bezierCurveTo.apply(path, extractPoints(3));
         break;
       case 'Q':
-        path.quadraticCurveTo.apply(path, extractPoints(2) as [number, number, number, number]);
+        path.quadraticCurveTo.apply(path, extractPoints(2));
         break;
       case 'Z':
         path.closePath();
@@ -90,7 +84,7 @@ export function buildPath(commands: Array<string|number>, bounds: PathBounds, em
   return path;
 }
 
-export function emptyBounds(): PathBounds {
+export function emptyBounds() {
   const bounds = {
     minX: Number.MAX_VALUE,
     minY: Number.MAX_VALUE,
@@ -100,13 +94,18 @@ export function emptyBounds(): PathBounds {
     rightmostXForY: {},
     topmostYForX: {},
     bottommostYForX: {},
-    allPoints: [],
+    allPoints: []
   };
   return bounds;
 }
 
-export function applyMatrixToPoint(point: {x: number; y: number;}, matrix: DOMMatrix): {x: number; y: number;} {
-  let domPoint = new DOMPoint(point.x, point.y);
-  domPoint = domPoint.matrixTransform(matrix);
-  return {x: domPoint.x, y: domPoint.y};
+/**
+ * @param {{x: number, y: number}} point
+ * @param {DOMMatrix} matrix
+ * @return {{x: number, y: number}}
+ */
+export function applyMatrixToPoint(point, matrix) {
+  point = new DOMPoint(point.x, point.y);
+  point = point.matrixTransform(matrix);
+  return {x: point.x, y: point.y};
 }

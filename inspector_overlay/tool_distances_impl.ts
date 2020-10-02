@@ -42,16 +42,17 @@ export class DistancesOverlay extends Overlay {
       return;
     }
     const rect = quadToRect(getVisualQuad(distanceInfo));
-    this.context.save();
-    this.context.strokeStyle = '#ccc';
+    const context = this.context;
+    context.save();
+    context.strokeStyle = '#ccc';
     for (const box of distanceInfo.boxes) {
-      this.context.strokeRect(box[0], box[1], box[2], box[3]);
+      context.strokeRect(box[0], box[1], box[2], box[3]);
     }
-    this.context.strokeStyle = '#f00';
-    this.context.lineWidth = 1;
-    this.context.rect(rect.x - 0.5, rect.y - 0.5, rect.w + 1, rect.h + 1);
-    this.context.stroke();
-    this.context.restore();
+    context.strokeStyle = '#f00';
+    context.lineWidth = 1;
+    context.rect(rect.x - 0.5, rect.y - 0.5, rect.w + 1, rect.h + 1);
+    context.stroke();
+    context.restore();
   }
 
   setPlatform(platform: string) {

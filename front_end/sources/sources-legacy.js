@@ -26,7 +26,6 @@ Sources.CSSPlugin.SwatchBookmark = SourcesModule.CSSPlugin.SwatchBookmark;
 /** @constructor */
 Sources.CallStackSidebarPane = SourcesModule.CallStackSidebarPane.CallStackSidebarPane;
 
-Sources.CallStackSidebarPane._debuggerCallFrameSymbol = SourcesModule.CallStackSidebarPane.debuggerCallFrameSymbol;
 Sources.CallStackSidebarPane._elementSymbol = SourcesModule.CallStackSidebarPane.elementSymbol;
 Sources.CallStackSidebarPane._defaultMaxAsyncStackChainDepth =
     SourcesModule.CallStackSidebarPane.defaultMaxAsyncStackChainDepth;

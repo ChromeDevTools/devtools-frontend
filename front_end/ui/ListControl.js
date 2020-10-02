@@ -43,8 +43,8 @@ export class ListDelegate {
   /**
    * @param {?T} from
    * @param {?T} to
-   * @param {?Element} fromElement
-   * @param {?Element} toElement
+   * @param {?HTMLElement} fromElement
+   * @param {?HTMLElement} toElement
    */
   selectedItemChanged(from, to, fromElement, toElement) {
   }
@@ -534,7 +534,8 @@ export class ListControl {
     const newItem = this._selectedItem;
     const newElement = this._selectedIndex !== -1 ? this._elementAtIndex(index) : null;
 
-    this._delegate.selectedItemChanged(oldItem, newItem, /** @type {?Element} */ (oldElement), newElement);
+    this._delegate.selectedItemChanged(
+        oldItem, newItem, /** @type {?HTMLElement} */ (oldElement), /** @type {?HTMLElement} */ (newElement));
     if (!this._delegate.updateSelectedItemARIA(/** @type {?Element} */ (oldElement), newElement)) {
       if (oldElement) {
         ARIAUtils.setSelected(oldElement, false);

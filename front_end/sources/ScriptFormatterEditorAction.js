@@ -2,12 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as FormatterModule from '../formatter/formatter.js';
 import * as Persistence from '../persistence/persistence.js';
+import * as SourceFrame from '../source_frame/source_frame.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -21,6 +19,11 @@ export class ScriptFormatterEditorAction {
   constructor() {
     /** @type {!Set<string>} */
     this._pathsToFormatOnLoad = new Set();
+
+    /** @type {!SourcesView} */
+    this._sourcesView;
+    /** @type {!UI.Toolbar.ToolbarButton} */
+    this._button;
   }
 
   /**
@@ -124,7 +127,7 @@ export class ScriptFormatterEditorAction {
    */
   toggleFormatScriptSource(event) {
     const uiSourceCode = this._sourcesView.currentUISourceCode();
-    if (!this._isFormatableScript(uiSourceCode)) {
+    if (!uiSourceCode || !this._isFormatableScript(uiSourceCode)) {
       return;
     }
     this._pathsToFormatOnLoad.add(uiSourceCode.url());
@@ -141,7 +144,7 @@ export class ScriptFormatterEditorAction {
     }
     const sourceFrame = this._sourcesView.viewForFile(uiSourceCode);
     let start = [0, 0];
-    if (sourceFrame) {
+    if (sourceFrame instanceof SourceFrame.SourceFrame.SourceFrameImpl) {
       const selection = sourceFrame.selection();
       start = formatData.mapping.originalToFormatted(selection.startLine, selection.startColumn);
     }

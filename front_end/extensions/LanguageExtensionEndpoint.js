@@ -6,7 +6,7 @@
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Bindings from '../bindings/bindings.js';  // eslint-disable-line no-unused-vars
-import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as SDK from '../sdk/sdk.js';                 // eslint-disable-line no-unused-vars
 
 /**
  * @implements {Bindings.DebuggerLanguagePlugins.DebuggerLanguagePlugin}
@@ -135,6 +135,28 @@ export class LanguageExtensionEndpoint {
   getFunctionInfo(rawLocation) {
     return /** @type {!Promise<?{frames: !Array<!Bindings.DebuggerLanguagePlugins.FunctionInfo>}>} */ (
         this._sendRequest(this._commands.GetFunctionInfo, {rawLocation}));
+  }
+
+  /**
+   * @override
+   * @param {string} expression
+   * @param {!Bindings.DebuggerLanguagePlugins.RawLocation} context
+   * @return {!Promise<?{typeInfos: !Array<!Bindings.DebuggerLanguagePlugins.TypeInfo>, base: !Bindings.DebuggerLanguagePlugins.EvalBase}>}
+   */
+  getTypeInfo(expression, context) {
+    return /** @type {!Promise<?{typeInfos: !Array<!Bindings.DebuggerLanguagePlugins.TypeInfo>, base: !Bindings.DebuggerLanguagePlugins.EvalBase}>} */ (
+        this._sendRequest(this._commands.GetTypeInfo, {expression, context}));
+  }
+
+  /**
+   * @override
+   * @param {string|{base: !Bindings.DebuggerLanguagePlugins.EvalBase, field: !Array<!Bindings.DebuggerLanguagePlugins.FieldInfo>}} expressionOrField
+   * @param {!Bindings.DebuggerLanguagePlugins.RawLocation} context
+   * @return {!Promise<!{js: string}>}
+   */
+  getFormatter(expressionOrField, context) {
+    return /** @type {!Promise<!{js: string}>} */ (
+        this._sendRequest(this._commands.GetFormatter, {expressionOrField, context}));
   }
 
   /**

@@ -88,6 +88,30 @@ class ExtensionPluginBase {
     }
     return Promise.resolve(null);
   }
+
+  /**
+   * @param {string} expression
+   * @param {!RawLocation} context
+   * @return {!Promise<?{typeInfos: !TypeInfo[], base: !EvalBase}>}
+   */
+  getTypeInfo(expression, context) {
+    if (this._impl.getTypeInfo) {
+      return this._impl.getTypeInfo(expression, context);
+    }
+    return Promise.resolve(null);
+  }
+
+  /**
+   * @param {string|{base: EvalBase, field: FieldInfo[]}} expressionOrField
+   * @param {!RawLocation} context
+   * @return {!Promise<?{js:string}>}
+   */
+  getFormatter(expressionOrField, context) {
+    if (this._impl.getFormatter) {
+      return this._impl.getFormatter(expressionOrField, context);
+    }
+    return Promise.resolve(null);
+  }
 }
 
 /**

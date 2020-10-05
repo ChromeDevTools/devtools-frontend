@@ -2,12 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Formatter from '../formatter/formatter.js';
 import * as Persistence from '../persistence/persistence.js';
+import * as SourceFrame from '../source_frame/source_frame.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
 
@@ -18,6 +16,12 @@ import {EditorAction, Events, SourcesView} from './SourcesView.js';  // eslint-d
  * @unrestricted
  */
 export class InplaceFormatterEditorAction {
+  constructor() {
+    /** @type {!UI.Toolbar.ToolbarButton} */
+    this._button;
+    /** @type {!SourcesView} */
+    this._sourcesView;
+  }
   /**
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
@@ -42,7 +46,7 @@ export class InplaceFormatterEditorAction {
   _updateButton(uiSourceCode) {
     const isFormattable = this._isFormattable(uiSourceCode);
     this._button.element.classList.toggle('hidden', !isFormattable);
-    if (isFormattable) {
+    if (uiSourceCode && isFormattable) {
       this._button.setTitle(Common.UIString.UIString(`Format ${uiSourceCode.name()}`));
     }
   }
@@ -90,7 +94,7 @@ export class InplaceFormatterEditorAction {
    */
   _formatSourceInPlace(event) {
     const uiSourceCode = this._sourcesView.currentUISourceCode();
-    if (!this._isFormattable(uiSourceCode)) {
+    if (!uiSourceCode || !this._isFormattable(uiSourceCode)) {
       return;
     }
 
@@ -98,13 +102,14 @@ export class InplaceFormatterEditorAction {
       this._contentLoaded(uiSourceCode, uiSourceCode.workingCopy());
     } else {
       uiSourceCode.requestContent().then(deferredContent => {
-        this._contentLoaded(uiSourceCode, deferredContent.content);
+        this._contentLoaded(
+            /** @type {!Workspace.UISourceCode.UISourceCode} */ (uiSourceCode), deferredContent.content || '');
       });
     }
   }
 
   /**
-   * @param {?Workspace.UISourceCode.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {string} content
    */
   _contentLoaded(uiSourceCode, content) {
@@ -116,16 +121,17 @@ export class InplaceFormatterEditorAction {
   }
 
   /**
-     * Post-format callback
-     * @param {?Workspace.UISourceCode.UISourceCode} uiSourceCode
-     * @param {string} formattedContent
-     * @param {!Formatter.ScriptFormatter.FormatterSourceMapping} formatterMapping
-     */
+   * Post-format callback
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
+   * @param {string} formattedContent
+   * @param {!Formatter.ScriptFormatter.FormatterSourceMapping} formatterMapping
+   */
   _formattingComplete(uiSourceCode, formattedContent, formatterMapping) {
     if (uiSourceCode.workingCopy() === formattedContent) {
       return;
     }
-    const sourceFrame = this._sourcesView.viewForFile(uiSourceCode);
+    const sourceFrame =
+        /** @type {!SourceFrame.SourceFrame.SourceFrameImpl} */ (this._sourcesView.viewForFile(uiSourceCode));
     let start = [0, 0];
     if (sourceFrame) {
       const selection = sourceFrame.selection();

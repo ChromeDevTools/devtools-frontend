@@ -922,7 +922,7 @@ export class DOMDebuggerManager {
     this._xhrBreakpoints.set(url, enabled);
     if (enabled) {
       for (const model of TargetManager.instance().models(DOMDebuggerModel)) {
-        model._agent.setXHRBreakpoint(url);
+        model._agent.invoke_setXHRBreakpoint({url});
       }
     }
     this._saveXHRBreakpoints();
@@ -936,7 +936,7 @@ export class DOMDebuggerManager {
     this._xhrBreakpoints.delete(url);
     if (enabled) {
       for (const model of TargetManager.instance().models(DOMDebuggerModel)) {
-        model._agent.removeXHRBreakpoint(url);
+        model._agent.invoke_removeXHRBreakpoint({url});
       }
     }
     this._saveXHRBreakpoints();
@@ -950,9 +950,9 @@ export class DOMDebuggerManager {
     this._xhrBreakpoints.set(url, enabled);
     for (const model of TargetManager.instance().models(DOMDebuggerModel)) {
       if (enabled) {
-        model._agent.setXHRBreakpoint(url);
+        model._agent.invoke_setXHRBreakpoint({url});
       } else {
-        model._agent.removeXHRBreakpoint(url);
+        model._agent.invoke_removeXHRBreakpoint({url});
       }
     }
     this._saveXHRBreakpoints();

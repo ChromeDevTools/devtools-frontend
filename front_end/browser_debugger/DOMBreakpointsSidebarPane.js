@@ -303,7 +303,7 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox {
     if (!domDebuggerModel) {
       return;
     }
-    const data = domDebuggerModel.resolveDOMBreakpointData(/** @type {!Object} */ (details.auxData));
+    const data = domDebuggerModel.resolveDOMBreakpointData(/** @type {*} */ (details.auxData));
     if (!data) {
       return;
     }
@@ -350,6 +350,9 @@ export class ContextMenuProvider {
      * @param {!Protocol.DOMDebugger.DOMBreakpointType} type
      */
     function toggleBreakpoint(type) {
+      if (!domDebuggerModel) {
+        return;
+      }
       if (domDebuggerModel.hasDOMBreakpoint(node, type)) {
         domDebuggerModel.removeDOMBreakpoint(node, type);
       } else {

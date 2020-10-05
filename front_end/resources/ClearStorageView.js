@@ -102,7 +102,8 @@ export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
       return;
     }
     this._target = target;
-    const securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager);
+    const securityOriginManager = /** @type {!SDK.SecurityOriginManager.SecurityOriginManager} */ (
+        target.model(SDK.SecurityOriginManager.SecurityOriginManager));
     this._updateOrigin(
         securityOriginManager.mainSecurityOrigin(), securityOriginManager.unreachableMainSecurityOrigin());
     securityOriginManager.addEventListener(
@@ -117,7 +118,8 @@ export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
     if (this._target !== target) {
       return;
     }
-    const securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager);
+    const securityOriginManager = /** @type {!SDK.SecurityOriginManager.SecurityOriginManager} */ (
+        target.model(SDK.SecurityOriginManager.SecurityOriginManager));
     securityOriginManager.removeEventListener(
         SDK.SecurityOriginManager.Events.MainSecurityOriginChanged, this._originChanged, this);
   }
@@ -133,7 +135,7 @@ export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
 
   /**
    * @param {string} mainOrigin
-   * @param {string} unreachableMainOrigin
+   * @param {?string} unreachableMainOrigin
    */
   _updateOrigin(mainOrigin, unreachableMainOrigin) {
     if (unreachableMainOrigin) {

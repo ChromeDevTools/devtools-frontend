@@ -118,7 +118,7 @@ export class OverlayModel extends SDKModel {
   static highlightObjectAsDOMNode(object) {
     const domModel = object.runtimeModel().target().model(DOMModel);
     if (domModel) {
-      domModel.overlayModel().highlightInOverlay({object});
+      domModel.overlayModel().highlightInOverlay({object, selectorList: undefined});
     }
   }
 
@@ -220,7 +220,7 @@ export class OverlayModel extends SDKModel {
     if (this._showHitTestBordersSetting.get()) {
       this._overlayAgent.invoke_setShowHitTestBorders({show: true});
     }
-    if (this._debuggerModel.isPaused()) {
+    if (this._debuggerModel && this._debuggerModel.isPaused()) {
       this._updatePausedInDebuggerMessage();
     }
     await this._overlayAgent.invoke_setShowViewportSizeOnResize({show: this._showViewportSizeOnResize});
@@ -262,7 +262,7 @@ export class OverlayModel extends SDKModel {
     if (this.target().suspended()) {
       return;
     }
-    const message = this._debuggerModel.isPaused() &&
+    const message = this._debuggerModel && this._debuggerModel.isPaused() &&
             !Common.Settings.Settings.instance().moduleSetting('disablePausedStateOverlay').get() ?
         Common.UIString.UIString('Paused in debugger') :
         undefined;

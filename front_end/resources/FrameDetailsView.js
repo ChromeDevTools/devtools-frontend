@@ -129,11 +129,8 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   async _updateCoopCoepStatus() {
-    const info =
-        /** @type {?Protocol.Network.SecurityIsolationStatus} */ (await this._frame.resourceTreeModel()
-                                                                      .target()
-                                                                      .model(SDK.NetworkManager.NetworkManager)
-                                                                      .getSecurityIsolationStatus(this._frame.id));
+    const model = this._frame.resourceTreeModel().target().model(SDK.NetworkManager.NetworkManager);
+    const info = model && await model.getSecurityIsolationStatus(this._frame.id);
     if (!info) {
       return;
     }

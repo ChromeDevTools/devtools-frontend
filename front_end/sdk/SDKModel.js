@@ -232,9 +232,9 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
   }
 
   /**
-   * @param {function(new:SDKModel, !Target)} modelClass
+   * @param {function(new:T, !Target)} modelClass
    * @return {?T}
-   * @template T
+   * @template {!SDKModel} T
    */
   model(modelClass) {
     if (!this._modelByConstructor.get(modelClass)) {
@@ -372,7 +372,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
     this._observers = new Set();
     /** @type {!Platform.Multimap<symbol, !{modelClass: function(new:SDKModel, !Target), thisObject: (!Object|undefined), listener: function(!Common.EventTarget.EventTargetEvent):void}>} */
     this._modelListeners = new Platform.Multimap();
-    /** @type {!Platform.Multimap<function(new:SDKModel, !Target), !SDKModelObserver<*>>} */
+    /** @type {!Platform.Multimap<function(new:SDKModel, !Target), !SDKModelObserver<?>>} */
     this._modelObservers = new Platform.Multimap();
     this._isSuspended = false;
   }
@@ -423,9 +423,9 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {function(new:SDKModel,!Target)} modelClass
+   * @param {function(new:T,!Target)} modelClass
    * @return {!Array<!T>}
-   * @template T
+   * @template {!SDKModel} T
    */
   models(modelClass) {
     const result = [];
@@ -447,9 +447,9 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {function(new:SDKModel,!Target)} modelClass
-   * @param {!SDKModelObserver<T>} observer
-   * @template T
+   * @param {function(new:T,!Target)} modelClass
+   * @param {!SDKModelObserver<?>} observer
+   * @template {!SDKModel} T
    */
   observeModels(modelClass, observer) {
     const models = this.models(modelClass);

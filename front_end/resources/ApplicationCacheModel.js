@@ -41,7 +41,10 @@ export class ApplicationCacheModel extends SDK.SDKModel.SDKModel {
     this._agent.invoke_enable();
 
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated, this);
+    if (!resourceTreeModel) {
+      throw new Error('Target must provide an ResourceTreeModel');
+    }
+    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, this._frameNavigatedCallback, this);
     resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameDetached, this._frameDetached, this);
 
     /** @type {!Map<!Protocol.Page.FrameId, number>} */
@@ -51,6 +54,13 @@ export class ApplicationCacheModel extends SDK.SDKModel.SDKModel {
 
     this._mainFrameNavigated();
     this._onLine = true;
+  }
+
+  /**
+   * @param {!Common.EventTarget.EventTargetEvent} event
+   */
+  _frameNavigatedCallback(event) {
+    this._frameNavigated(event);
   }
 
   /**

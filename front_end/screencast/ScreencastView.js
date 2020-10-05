@@ -312,9 +312,9 @@ export class ScreencastView extends UI.Widget.VBox {
 
     if (event.type === 'mousemove') {
       this.highlightInOverlay({node, selectorList: undefined}, this._inspectModeConfig);
-      this._domModel.overlayModel().nodeHighlightRequested(node.id);
+      this._domModel.overlayModel().nodeHighlightRequested({nodeId: /** @type {number} */ (node.id)});
     } else if (event.type === 'click') {
-      this._domModel.overlayModel().inspectNodeRequested(node.backendNodeId());
+      this._domModel.overlayModel().inspectNodeRequested({backendNodeId: node.backendNodeId()});
     }
   }
 
@@ -735,8 +735,11 @@ export class ScreencastView extends UI.Widget.VBox {
    * @param {number} offset
    */
   _navigateToHistoryEntry(offset) {
-    const newIndex = this._historyIndex + offset;
-    if (newIndex < 0 || newIndex >= this._historyEntries.length) {
+    if (!this._resourceTreeModel) {
+      return;
+    }
+    const newIndex = (this._historyIndex || 0) + offset;
+    if (!this._historyEntries || newIndex < 0 || newIndex >= this._historyEntries.length) {
       return;
     }
     this._resourceTreeModel.navigateToHistoryEntry(this._historyEntries[newIndex]);
@@ -744,6 +747,9 @@ export class ScreencastView extends UI.Widget.VBox {
   }
 
   _navigateReload() {
+    if (!this._resourceTreeModel) {
+      return;
+    }
     this._resourceTreeModel.reloadPage();
   }
 
@@ -766,7 +772,9 @@ export class ScreencastView extends UI.Widget.VBox {
     // decodeURI has no effect on strings that are already decoded
     // encodeURI ensures an encoded URL is always passed to the backend
     // This allows the input field to support both encoded and decoded URLs
-    this._resourceTreeModel.navigate(encodeURI(decodeURI(url)));
+    if (this._resourceTreeModel) {
+      this._resourceTreeModel.navigate(encodeURI(decodeURI(url)));
+    }
     this._canvasElement.focus();
   }
 
@@ -778,7 +786,7 @@ export class ScreencastView extends UI.Widget.VBox {
   }
 
   async _requestNavigationHistory() {
-    const history = await this._resourceTreeModel.navigationHistory();
+    const history = this._resourceTreeModel ? await this._resourceTreeModel.navigationHistory() : null;
     if (!history) {
       return;
     }

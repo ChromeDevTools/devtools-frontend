@@ -813,7 +813,8 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
       await this._emulationModel.resetPageScaleFactor();
       await this._emulationModel.emulateDevice(deviceMetrics);
     }
-    const screenshot = await screenCaptureModel.captureScreenshot('png', 100, clip);
+    const screenshot =
+        await screenCaptureModel.captureScreenshot(Protocol.Page.CaptureScreenshotRequestFormat.Png, 100, clip);
     if (fullSize) {
       if (this._device) {
         const orientation = this._device.orientationByName(this._mode.orientation);

@@ -120,8 +120,13 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     this.splitWidget().setSidebarWidget(this._sideBar);
     this.splitWidget().setMainWidget(this._mainContainer);
 
-    this._cssModel = target.model(SDK.CSSModel.CSSModel);
-    this._domModel = target.model(SDK.DOMModel.DOMModel);
+    const cssModel = target.model(SDK.CSSModel.CSSModel);
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    if (!cssModel || !domModel) {
+      throw new Error('Target must provide CSS and DOM models');
+    }
+    this._cssModel = cssModel;
+    this._domModel = domModel;
     this._domAgent = target.domAgent();
     this._linkifier = new Components.Linkifier.Linkifier(/* maxLinkLength */ 20, /* useLinkDecorator */ true);
 

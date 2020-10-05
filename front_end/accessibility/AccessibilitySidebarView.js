@@ -90,9 +90,9 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
   /**
    * @override
    * @protected
-   * @return {!Promise.<?>}
+   * @return {!Promise.<void>}
    */
-  doUpdate() {
+  async doUpdate() {
     const node = this.node();
     this._axNodeSubPane.setNode(node);
     this._ariaSubPane.setNode(node);
@@ -101,13 +101,15 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
       this._sourceOrderSubPane.setNodeAsync(node);
     }
     if (!node) {
-      return Promise.resolve();
+      return;
     }
     const accessibilityModel = node.domModel().target().model(AccessibilityModel);
+    if (!accessibilityModel) {
+      return;
+    }
     accessibilityModel.clear();
-    return accessibilityModel.requestPartialAXTree(node).then(() => {
-      this.accessibilityNodeCallback(accessibilityModel.axNodeForDOMNode(node));
-    });
+    await accessibilityModel.requestPartialAXTree(node);
+    this.accessibilityNodeCallback(accessibilityModel.axNodeForDOMNode(node));
   }
 
   /**

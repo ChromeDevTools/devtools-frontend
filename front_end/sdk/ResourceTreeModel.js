@@ -52,7 +52,7 @@ export class ResourceTreeModel extends SDKModel {
     }
     this._agent = target.pageAgent();
     this._agent.invoke_enable();
-    this._securityOriginManager = target.model(SecurityOriginManager);
+    this._securityOriginManager = /** @type {!SecurityOriginManager} */ (target.model(SecurityOriginManager));
 
     target.registerPageDispatcher(new PageDispatcher(this));
 

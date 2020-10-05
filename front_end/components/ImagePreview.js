@@ -37,7 +37,7 @@ export class ImagePreview {
       imageURL = precomputedFeatures.currentSrc;
       resource = resourceTreeModel.resourceForURL(imageURL);
     }
-    if (!isImageResource(resource)) {
+    if (!resource || !isImageResource(resource)) {
       return Promise.resolve(/** @type {?Element} */ (null));
     }
 

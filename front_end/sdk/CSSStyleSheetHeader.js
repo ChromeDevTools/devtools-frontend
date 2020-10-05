@@ -96,8 +96,16 @@ export class CSSStyleSheetHeader {
    * @return {string}
    */
   _viaInspectorResourceURL() {
-    const frame = this._cssModel.target().model(ResourceTreeModel).frameForId(this.frameId);
-    console.assert(frame);
+    const model = this._cssModel.target().model(ResourceTreeModel);
+    console.assert(!!model);
+    if (!model) {
+      return '';
+    }
+    const frame = model.frameForId(this.frameId);
+    if (!frame) {
+      return '';
+    }
+    console.assert(!!frame);
     const parsedURL = new Common.ParsedURL.ParsedURL(frame.url);
     let fakeURL = 'inspector://' + parsedURL.host + parsedURL.folderPathComponents;
     if (!fakeURL.endsWith('/')) {

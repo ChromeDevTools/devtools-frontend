@@ -25,8 +25,7 @@ export class ServiceWorkerCacheModel extends SDKModel {
 
     this._cacheAgent = target.cacheStorageAgent();
     this._storageAgent = target.storageAgent();
-
-    this._securityOriginManager = target.model(SecurityOriginManager);
+    this._securityOriginManager = /** @type {!SecurityOriginManager} */ (target.model(SecurityOriginManager));
 
     this._originsUpdated = new Set();
     this._throttler = new Common.Throttler.Throttler(2000);

@@ -34,12 +34,14 @@ export class CoveragePlugin extends Plugin {
     const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
     if (mainTarget) {
       this._model = mainTarget.model(Coverage.CoverageModel.CoverageModel);
-      this._model.addEventListener(Coverage.CoverageModel.Events.CoverageReset, this._handleReset, this);
+      if (this._model) {
+        this._model.addEventListener(Coverage.CoverageModel.Events.CoverageReset, this._handleReset, this);
 
-      this._coverage = this._model.getCoverageForUrl(this._originalSourceCode.url());
-      if (this._coverage) {
-        this._coverage.addEventListener(
-            Coverage.CoverageModel.URLCoverageInfo.Events.SizesChanged, this._handleCoverageSizesChanged, this);
+        this._coverage = this._model.getCoverageForUrl(this._originalSourceCode.url());
+        if (this._coverage) {
+          this._coverage.addEventListener(
+              Coverage.CoverageModel.URLCoverageInfo.Events.SizesChanged, this._handleCoverageSizesChanged, this);
+        }
       }
     }
 

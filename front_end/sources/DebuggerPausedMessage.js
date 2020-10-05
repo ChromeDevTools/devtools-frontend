@@ -47,7 +47,9 @@ export class DebuggerPausedMessage {
     if (!details.auxData || !domDebuggerModel) {
       return messageWrapper;
     }
-    const data = domDebuggerModel.resolveDOMBreakpointData(/** @type {!Object} */ (details.auxData));
+    const data = domDebuggerModel.resolveDOMBreakpointData(
+        /** @type {!{type: !Protocol.DOMDebugger.DOMBreakpointType, nodeId: !Protocol.DOM.NodeId, targetNodeId: !Protocol.DOM.NodeId, insertion: boolean}} */
+        (details.auxData));
     if (!data) {
       return messageWrapper;
     }

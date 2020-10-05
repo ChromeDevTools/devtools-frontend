@@ -352,6 +352,9 @@ export class Linkifier {
     }
 
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+    if (!debuggerModel) {
+      return fallbackAnchor;
+    }
     const rawLocations = debuggerModel.createRawLocationsByStackTrace(stackTrace);
     if (rawLocations.length === 0) {
       return fallbackAnchor;

@@ -548,21 +548,16 @@ export class LayerPaintEvent {
   }
 
   /**
-   * @return !Promise<?{rect: !Array<number>, snapshot: !SDK.PaintProfiler.PaintProfilerSnapshot}>}
+   * @return {!Promise<?{rect: !Array<number>, snapshot: !SDK.PaintProfiler.PaintProfilerSnapshot}>}
    */
-  snapshotPromise() {
+  async snapshotPromise() {
     const paintProfilerModel = this._target && this._target.model(SDK.PaintProfiler.PaintProfilerModel);
-    return this.picturePromise().then(picture => {
-      if (!picture || !paintProfilerModel) {
-        return null;
-      }
-      return paintProfilerModel.loadSnapshot(picture.serializedPicture)
-          .then(
-              /**
-             * @param {!SDK.PaintProfiler.PaintProfilerModel} snapshot
-             */
-              snapshot => snapshot ? {rect: picture.rect, snapshot: snapshot} : null);
-    });
+    const picture = await this.picturePromise();
+    if (!picture || !paintProfilerModel) {
+      return null;
+    }
+    const snapshot = await paintProfilerModel.loadSnapshot(picture.serializedPicture);
+    return snapshot ? {rect: picture.rect, snapshot: snapshot} : null;
   }
 }
 

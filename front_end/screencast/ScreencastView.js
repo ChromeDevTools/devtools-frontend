@@ -79,9 +79,7 @@ export class ScreencastView extends UI.Widget.VBox {
     /** @type {!HTMLElement} */
     this._tagNameElement;
     /** @type {!HTMLElement} */
-    this._nodeIdElement;
-    /** @type {!HTMLElement} */
-    this._classNameElement;
+    this._attributeElement;
     /** @type {!HTMLElement} */
     this._nodeWidthElement;
     /** @type {!HTMLElement} */
@@ -123,18 +121,16 @@ export class ScreencastView extends UI.Widget.VBox {
     this._canvasElement.addEventListener('keypress', this._handleKeyEvent.bind(this), false);
     this._canvasElement.addEventListener('blur', this._handleBlurEvent.bind(this), false);
 
-    this._titleElement = /** @type {!HTMLElement} */ (
-        this._canvasContainerElement.createChild('div', 'screencast-element-title monospace hidden'));
+    this._titleElement = /** @type {!HTMLElement} */ (this._canvasContainerElement.createChild(
+        'div', 'screencast-element-title monospace hidden -theme-not-patched'));
     this._tagNameElement = /** @type {!HTMLElement} */ (this._titleElement.createChild('span', 'screencast-tag-name'));
-    this._nodeIdElement = /** @type {!HTMLElement} */ (this._titleElement.createChild('span', 'screencast-node-id'));
-    this._classNameElement =
-        /** @type {!HTMLElement} */ (this._titleElement.createChild('span', 'screencast-class-name'));
+    this._attributeElement =
+        /** @type {!HTMLElement} */ (this._titleElement.createChild('span', 'screencast-attribute'));
     this._titleElement.createTextChild(' ');
-    this._nodeWidthElement = /** @type {!HTMLElement} */ (this._titleElement.createChild('span'));
-    this._titleElement.createChild('span', 'screencast-px').textContent = 'px';
-    this._titleElement.createTextChild(' × ');
-    this._nodeHeightElement = /** @type {!HTMLElement} */ (this._titleElement.createChild('span'));
-    this._titleElement.createChild('span', 'screencast-px').textContent = 'px';
+    const dimension = /** @type {!HTMLElement} */ (this._titleElement.createChild('span', 'screencast-dimension'));
+    this._nodeWidthElement = /** @type {!HTMLElement} */ (dimension.createChild('span'));
+    dimension.createTextChild(' × ');
+    this._nodeHeightElement = /** @type {!HTMLElement} */ (dimension.createChild('span'));
     this._titleElement.style.top = '0';
     this._titleElement.style.left = '0';
 
@@ -589,13 +585,8 @@ export class ScreencastView extends UI.Widget.VBox {
 
     const lowerCaseName = this._node.localName() || this._node.nodeName().toLowerCase();
     this._tagNameElement.textContent = lowerCaseName;
-    this._nodeIdElement.textContent = this._node.getAttribute('id') ? '#' + this._node.getAttribute('id') : '';
-    this._nodeIdElement.textContent = this._node.getAttribute('id') ? '#' + this._node.getAttribute('id') : '';
-    let className = this._node.getAttribute('class');
-    if (className && className.length > 50) {
-      className = className.substring(0, 50) + '…';
-    }
-    this._classNameElement.textContent = className || '';
+
+    this._attributeElement.textContent = getAttributesForElementTitle(this._node);
     this._nodeWidthElement.textContent = String(this._model ? this._model.width : 0);
     this._nodeHeightElement.textContent = String(this._model ? this._model.height : 0);
 
@@ -926,4 +917,24 @@ export class ProgressTracker {
   _displayProgress(progress) {
     this._element.style.width = (100 * progress) + '%';
   }
+}
+
+/**
+ * @param {!SDK.DOMModel.DOMNode} node
+ * @return {string}
+ */
+function getAttributesForElementTitle(node) {
+  const id = node.getAttribute('id');
+  const className = node.getAttribute('class');
+
+  let selector = id ? '#' + id : '';
+  if (className) {
+    selector += '.' + className.trim().replace(/\s+/g, '.');
+  }
+
+  if (selector.length > 50) {
+    selector = selector.substring(0, 50) + '…';
+  }
+
+  return selector;
 }

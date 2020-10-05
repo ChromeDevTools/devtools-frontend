@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Search from '../search/search.js';
 import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
 
@@ -18,13 +15,15 @@ export class SearchSourcesView extends Search.SearchView.SearchView {
   /**
    * @param {string} query
    * @param {boolean=} searchImmediately
-   * @return {!Promise}
+   * @return {!Promise<!UI.Widget.Widget>}
    */
   static async openSearch(query, searchImmediately) {
-    const view = UI.ViewManager.ViewManager.instance().view('sources.search-sources-tab');
+    const view =
+        /** @type {!UI.View.View} */ (UI.ViewManager.ViewManager.instance().view('sources.search-sources-tab'));
     // Deliberately use target location name so that it could be changed
     // based on the setting later.
-    const location = await UI.ViewManager.ViewManager.instance().resolveLocation('drawer-view');
+    const location = /** @type {!UI.View.ViewLocation} */ (
+        /** @type {*} */ (await UI.ViewManager.ViewManager.instance().resolveLocation('drawer-view')));
     location.appendView(view);
     await UI.ViewManager.ViewManager.instance().revealView(/** @type {!UI.View.View} */ (view));
     const widget = /** @type {!Search.SearchView.SearchView} */ (await view.widget());
@@ -57,12 +56,12 @@ export class ActionDelegate {
   }
 
   /**
-   * @return {!Promise}
+   * @return {!Promise<!UI.Widget.Widget>}
    */
   _showSearch() {
     const selection = UI.InspectorView.InspectorView.instance().element.window().getSelection();
     let queryCandidate = '';
-    if (selection.rangeCount) {
+    if (selection && selection.rangeCount) {
       queryCandidate = selection.toString().replace(/\r?\n.*/, '');
     }
 

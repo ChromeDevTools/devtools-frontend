@@ -110,7 +110,6 @@ export class SearchView extends UI.Widget.VBox {
   }
 
   /**
-   * @protected
    * @param {string} queryCandidate
    * @param {boolean=} searchImmediately
    */

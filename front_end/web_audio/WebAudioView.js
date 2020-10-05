@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
@@ -131,7 +128,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   /**
-   * @param {!WebAudio.WebAudioModel} webAudioModel
+   * @param {!WebAudioModel} webAudioModel
    */
   _removeEventListeners(webAudioModel) {
     webAudioModel.removeEventListener(ModelEvents.ContextCreated, this._contextCreated, this);
@@ -395,7 +392,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget {
       return;
     }
 
-    for (const model of SDK.SDKModel.TargetManager.instance().models(WebAudio.WebAudioModel)) {
+    for (const model of SDK.SDKModel.TargetManager.instance().models(WebAudioModel)) {
       // Display summary only for real-time context.
       if (context.contextType === 'realtime') {
         if (!this._graphManager.hasContext(context.contextId)) {

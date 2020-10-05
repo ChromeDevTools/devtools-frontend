@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as UI from '../ui/ui.js';
 
@@ -148,7 +145,7 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper {
       this._toolbarItem.setTitle(ls`Audio context: ${this.titleFor(item)}`);
     }
 
-    this.dispatchEventToListeners(WebAudio.AudioContextSelector.Events.ContextSelected, item);
+    this.dispatchEventToListeners(Events.ContextSelected, item);
   }
 
   reset() {

@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as UI from '../ui/ui.js';
 
 export class ContextDetailBuilder {
@@ -12,7 +9,7 @@ export class ContextDetailBuilder {
    * @param {!Protocol.WebAudio.BaseAudioContext} context
    */
   constructor(context) {
-    this._fragment = createDocumentFragment();
+    this._fragment = document.createDocumentFragment();
     this._container = document.createElement('div');
     this._container.classList.add('context-detail-container');
     this._fragment.appendChild(this._container);
@@ -79,7 +76,7 @@ export class ContextSummaryBuilder {
     const mean = (contextRealtimeData.callbackIntervalMean * 1000).toFixed(3);
     const stddev = (Math.sqrt(contextRealtimeData.callbackIntervalVariance) * 1000).toFixed(3);
     const capacity = (contextRealtimeData.renderCapacity * 100).toFixed(3);
-    this._fragment = createDocumentFragment();
+    this._fragment = document.createDocumentFragment();
     this._fragment.appendChild(UI.Fragment.html`
       <div class="context-summary-container">
         <span>${ls`Current Time`}: ${time} s</span>

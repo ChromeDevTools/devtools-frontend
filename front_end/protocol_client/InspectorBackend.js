@@ -838,6 +838,13 @@ export class TargetBase {
   }
 
   /**
+   * @return {!ProtocolProxyApi.WebAudioApi}
+   */
+  webAudioAgent() {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
    * @return {!ProtocolProxyApi.WebAuthnApi}
    */
   webAuthnAgent() {
@@ -949,6 +956,13 @@ export class TargetBase {
    * @param {!ProtocolProxyApi.TracingDispatcher} dispatcher
    */
   registerTracingDispatcher(dispatcher) {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
+   * @param {!ProtocolProxyApi.WebAudioDispatcher} dispatcher
+   */
+  registerWebAudioDispatcher(dispatcher) {
     throw new Error('Implemented in InspectorBackend.js');
   }
 }
